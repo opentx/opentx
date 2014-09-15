@@ -246,6 +246,12 @@ BYTE wait_ready (void)
 }
 
 
+static void spi_reset()
+{
+  for(int n=0; n < 520; ++n) {
+    stm32_spi_rw(0xFF);  
+  }
+}
 
 /*-----------------------------------------------------------------------*/
 /* Deselect the card and release SPI bus                                 */
@@ -475,7 +481,10 @@ BOOL rcvr_datablock (
         do {                                                    /* Wait for data packet in timeout of 100ms */
                 token = rcvr_spi();
         } while ((token == 0xFF) && Timer1);
-        if(token != 0xFE) return FALSE; /* If not valid data token, return with error */
+        if(token != 0xFE) {
+          spi_reset();
+          return FALSE; /* If not valid data token, return with error */
+        }
 
 #ifdef STM32_SD_USE_DMA
         stm32_dma_transfer( TRUE, buff, btr );
@@ -500,6 +509,8 @@ BOOL rcvr_datablock (
 /* Send a data packet to MMC                                             */
 /*-----------------------------------------------------------------------*/
 
+#define DATA_RESPONSE_TIMEOUT   10
+
 static
 BOOL xmit_datablock (
         const BYTE *buff,       /* 512 byte data block to be transmitted */
@@ -511,7 +522,10 @@ BOOL xmit_datablock (
         BYTE wc;
 #endif
 
-        if (wait_ready() != 0xFF) return FALSE;
+        if (wait_ready() != 0xFF) {
+          spi_reset();
+          return FALSE;
+        }
 
         xmit_spi(token);                                        /* transmit data token */
         if (token != 0xFD) {    /* Is data token */
@@ -528,9 +542,25 @@ BOOL xmit_datablock (
 
                 xmit_spi(0xFF);                                 /* CRC (Dummy) */
                 xmit_spi(0xFF);
-                resp = rcvr_spi();                              /* Receive data response */
-                if ((resp & 0x1F) != 0x05)              /* If not accepted, return with error */
-                        return FALSE;
+
+                /*
+                Despite what the SD card standard says, the reality is that (at least for some SD cards)
+                the Data Response byte does not come immediately after the last byte of data.
+
+                This delay only happens very rarely, but it does happen. Typical response delay is some 10ms
+                */
+                Timer2 = DATA_RESPONSE_TIMEOUT;   
+                do {
+                  resp = rcvr_spi();                              /* Receive data response */
+                  if ((resp & 0x1F) == 0x05) {              /* If not accepted, return with error */
+                    return TRUE;
+                  }
+                  if (resp != 0xFF) {
+                    spi_reset();
+                    return FALSE;
+                  }
+                } while (Timer2);
+
         }
 
         return TRUE;
@@ -559,6 +589,7 @@ BYTE send_cmd (
         /* Select the card and wait for ready */
         SELECT();
         if (wait_ready() != 0xFF) {
+                spi_reset();
                 return 0xFF;
         }
 
@@ -577,9 +608,9 @@ BYTE send_cmd (
         if (cmd == CMD12) rcvr_spi();           /* Skip a stuff byte when stop reading */
 
         n = 10;                                                         /* Wait for a valid response in timeout of 10 attempts */
-        do
+        do {
                 res = rcvr_spi();
-        while ((res & 0x80) && --n);
+        } while ((res & 0x80) && --n);
 
         return res;                     /* Return with the response value */
 }
@@ -675,6 +706,9 @@ int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
         count = 0;
       }
     }
+    else {
+      spi_reset();
+    }
   }
   else {                          /* Multiple block read */
     if (send_cmd(CMD18, sector) == 0) {     /* READ_MULTIPLE_BLOCK */
@@ -686,11 +720,14 @@ int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
       } while (--count);
       send_cmd(CMD12, 0);                             /* STOP_TRANSMISSION */
     }
+    else {
+      spi_reset();
+    }
   }
 
   release_spi();
 
-  return 0;
+  return count ? -1 : 0;
 }
 
 DRESULT disk_read (
@@ -702,10 +739,8 @@ DRESULT disk_read (
 {
         if (drv || !count) return RES_PARERR;
         if (Stat & STA_NOINIT) return RES_NOTRDY;
-
-        SD_ReadSectors(buff, sector, count);
-
-        return RES_OK;
+        int8_t res = SD_ReadSectors(buff, sector, count);
+        return (res != 0) ? RES_ERROR : RES_OK;
 }
 
 
@@ -715,22 +750,37 @@ DRESULT disk_read (
 /*-----------------------------------------------------------------------*/
 
 // TODO quick & dirty
-int8_t SD_WriteSectors(uint8_t *buff, uint32_t sector, uint32_t count)
+int8_t SD_WriteSectors(const uint8_t *buff, uint32_t sector, uint32_t count)
 {
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
-  if (CardType & CT_SDC) send_cmd(ACMD23, count);
-  if (send_cmd(CMD25, sector) == 0) {     /* WRITE_MULTIPLE_BLOCK */
-    do {
-      if (!xmit_datablock(buff, 0xFC)) break;
-      buff += 512;
-    } while (--count);
-    if (!xmit_datablock(0, 0xFD))   /* STOP_TRAN token */
-      count = 1;
+  if (count == 1) {       /* Single block write */
+    if (send_cmd(CMD24, sector) == 0) {     /* WRITE_BLOCK */
+      if (xmit_datablock(buff, 0xFE)) {
+        count = 0;
+      }
+    }
+    else {
+      spi_reset();
+    }
+  }
+  else {
+    if (CardType & CT_SDC) send_cmd(ACMD23, count);
+    if (send_cmd(CMD25, sector) == 0) {     /* WRITE_MULTIPLE_BLOCK */
+      do {
+        if (!xmit_datablock(buff, 0xFC)) break;
+        buff += 512;
+      } while (--count);
+      if (!xmit_datablock(0, 0xFD))   /* STOP_TRAN token */
+        count = 1;
+    }
+    else {
+      spi_reset();
+    }
   }
 
   release_spi();
 
-  return 0;
+  return count ? -1 : 0;
 }
 
 #if _FS_READONLY == 0
@@ -745,28 +795,8 @@ DRESULT disk_write (
         if (drv || !count) return RES_PARERR;
         if (Stat & STA_NOINIT) return RES_NOTRDY;
         if (Stat & STA_PROTECT) return RES_WRPRT;
-
-        if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
-
-        if (count == 1) {       /* Single block write */
-                if ((send_cmd(CMD24, sector) == 0)      /* WRITE_BLOCK */
-                        && xmit_datablock(buff, 0xFE))
-                        count = 0;
-        }
-        else {                          /* Multiple block write */
-                if (CardType & CT_SDC) send_cmd(ACMD23, count);
-                if (send_cmd(CMD25, sector) == 0) {     /* WRITE_MULTIPLE_BLOCK */
-                        do {
-                                if (!xmit_datablock(buff, 0xFC)) break;
-                                buff += 512;
-                        } while (--count);
-                        if (!xmit_datablock(0, 0xFD))   /* STOP_TRAN token */
-                                count = 1;
-                }
-        }
-        release_spi();
-
-        return count ? RES_ERROR : RES_OK;
+        int8_t res = SD_WriteSectors(buff, sector, count);
+        return (res != 0) ? RES_ERROR : RES_OK;
 }
 #endif /* _READONLY == 0 */
 
