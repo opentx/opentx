@@ -252,6 +252,10 @@ EEPROM_PROGRESS_BAR = NO
 # Values = YES, NO
 DEBUG = NO
 
+# Activate writing of SPORT telemetry received data to sport.log file
+# Values = YES, NO
+SPORT_FILE_LOG = NO
+
 # Flight Modes
 # Values = YES, NO
 FLIGHT_MODES = YES
@@ -605,6 +609,9 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
     CPPDEFS += -DROTARY_ENCODERS=1
     CPPSRC += targets/sky9x/rotenc_driver.cpp 
   endif
+  ifeq ($(SPORT_FILE_LOG), YES)
+    CPPDEFS += -DSPORT_FILE_LOG
+  endif
   INCDIRS += targets/sky9x CoOS/kernel CoOS/portable
   BOARDSRC = targets/sky9x/board_sky9x.cpp
   EXTRABOARDSRC = targets/sky9x/lcd_driver.cpp
@@ -661,6 +668,10 @@ ifeq ($(PCB), TARANIS)
   else
     CPPDEFS = -DREV4
   endif
+  ifeq ($(SPORT_FILE_LOG), YES)
+    DEBUG = YES
+    CPPDEFS += -DSPORT_FILE_LOG
+  endif  
   LDSCRIPT = targets/taranis/stm32_flash_bl.ld
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
