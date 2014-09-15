@@ -527,6 +527,7 @@ static int luaModelGetInfo(lua_State *L)
 {
   lua_newtable(L);
   lua_pushtablezstring(L, "name", g_model.header.name);
+  lua_pushtablenzstring(L, "bitmap", g_model.header.bitmap);
   lua_pushtableinteger(L, "id", g_model.header.modelId);
   return 1;
 }
@@ -541,6 +542,10 @@ static int luaModelSetInfo(lua_State *L)
       const char * name = luaL_checkstring(L, -1);
       str2zchar(g_model.header.name, name, sizeof(g_model.header.name));
       memcpy(modelHeaders[g_eeGeneral.currModel].name, g_model.header.name, sizeof(g_model.header.name));
+    }
+    else if (!strcmp(key, "bitmap")) {
+      const char * name = luaL_checkstring(L, -1);
+      strncpy(g_model.header.bitmap, name, sizeof(g_model.header.bitmap));
     }
     else if (!strcmp(key, "id")) {
       g_model.header.modelId = luaL_checkinteger(L, -1);
