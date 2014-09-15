@@ -863,7 +863,14 @@ struct TimerState {
 extern TimerState timersStates[MAX_TIMERS];
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
-extern int8_t safetyCh[NUM_CHNOUT];
+#if defined(CPUARM)
+  typedef int16_t safetych_t;
+  #define OVERRIDE_CHANNEL_UNDEFINED -4096
+#else
+  typedef int8_t safetych_t;
+  #define OVERRIDE_CHANNEL_UNDEFINED -128
+#endif
+extern safetych_t safetyCh[NUM_CHNOUT];
 #endif
 
 extern uint8_t trimsCheckTimer;

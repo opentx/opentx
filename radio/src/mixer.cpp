@@ -252,8 +252,10 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   if (lim->revert) ofs = -ofs; // finally do the reverse.
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
-  if (safetyCh[channel] != -128) // if safety channel available for channel check
+  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) {
+    // safety channel available for channel check
     ofs = calc100toRESX(safetyCh[channel]);
+  }
 #endif
 
   return ofs;
