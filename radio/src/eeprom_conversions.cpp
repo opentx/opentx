@@ -186,6 +186,26 @@ PACK(typedef struct {
   char     name[LEN_EXPOMIX_NAME];
   uint8_t  spare2[2];
 }) MixData_v215;
+PACK(typedef struct {
+  uint8_t  destCh;
+  uint16_t flightModes;
+  uint8_t  mltpx:2;         // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint8_t  carryTrim:1;
+  uint8_t  spare1:5;
+  int16_t  weight;
+  int8_t   swtch;
+  CurveRef curve;
+  uint8_t  mixWarn:4;       // mixer warning
+  uint8_t  spare2:4;
+  uint8_t  delayUp;
+  uint8_t  delayDown;
+  uint8_t  speedUp;
+  uint8_t  speedDown;
+  uint8_t  srcRaw;
+  int16_t  offset;
+  char     name[LEN_EXPOMIX_NAME];
+  uint8_t  spare3;
+}) MixData_v216;
 #else
 PACK(typedef struct {
   uint8_t  destCh;
@@ -208,6 +228,26 @@ PACK(typedef struct {
   int16_t  offset;
   char     name[LEN_EXPOMIX_NAME];
 }) MixData_v215;
+PACK(typedef struct {
+  uint8_t  destCh:5;
+  uint8_t  mixWarn:3;         // mixer warning
+  uint16_t flightModes;
+  uint8_t  curveMode:1;
+  uint8_t  noExpo:1;
+  int8_t   carryTrim:3;
+  uint8_t  mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint8_t  spare:1;
+  int16_t  weight;
+  int8_t   swtch;
+  int8_t   curveParam;
+  uint8_t  delayUp;
+  uint8_t  delayDown;
+  uint8_t  speedUp;
+  uint8_t  speedDown;
+  uint8_t  srcRaw;
+  int16_t  offset;
+  char     name[LEN_EXPOMIX_NAME];
+}) MixData_v216;
 #endif
 
 PACK(typedef struct {
@@ -353,7 +393,7 @@ PACK(typedef struct {
   uint8_t   throttleReversed:1;
   AVR_FIELD(int8_t ppmDelay)
   BeepANACenter beepANACenter;        // 1<<0->A1.. 1<<6->A7
-  MixData   mixData[MAX_MIXERS];
+  MixData_v216 mixData[MAX_MIXERS];
   LimitData_v216 limitData[NUM_CHNOUT];
   ExpoData  expoData[MAX_EXPOS];
 
@@ -675,7 +715,7 @@ void ConvertModel_215_to_216(ModelData &model)
 #endif
 
   for (uint8_t i=0; i<64; i++) {
-    MixData * mix = &newModel.mixData[i];
+    MixData_v216 * mix = &newModel.mixData[i];
     MixData_v215 * oldMix = &oldModel.mixData[i];
 #if defined(PCBTARANIS)
     mix->destCh = oldMix->destCh;

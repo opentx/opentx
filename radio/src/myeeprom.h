@@ -1781,7 +1781,7 @@ enum TelemetryProtocol
   PROTOCOL_FRSKY_D_SECONDARY
 };
 
-PACK(typedef struct t_ModelData {
+PACK(typedef struct {
   ModelHeader header;
   TimerData timers[MAX_TIMERS];
   AVR_FIELD(uint8_t   protocol:3)
@@ -1822,6 +1822,7 @@ PACK(typedef struct t_ModelData {
 
   MODELDATA_EXTRA
 
+  ARM_FIELD(uint8_t spare3[188]) // TODO dirty hack for eeprom conversions (we load the model inside the g_model structure)
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;
