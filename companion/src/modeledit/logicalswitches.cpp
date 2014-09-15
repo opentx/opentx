@@ -11,6 +11,8 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
   ModelPanel(parent, model, generalSettings, firmware),
   selectedSwitch(0)
 {
+  int channelsMax = model.getChannelsMax(true);
+
   QGridLayout * gridLayout = new QGridLayout(this);
 
   int col = 1;
@@ -48,8 +50,8 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     gridLayout->addWidget(cswitchSource1[i], i+1, 2);
     cswitchSource1[i]->setVisible(false);
     cswitchValue[i] = new QDoubleSpinBox(this);
-    cswitchValue[i]->setMaximum(125);
-    cswitchValue[i]->setMinimum(-125);
+    cswitchValue[i]->setMaximum(channelsMax);
+    cswitchValue[i]->setMinimum(-channelsMax);
     cswitchValue[i]->setAccelerated(true);
     cswitchValue[i]->setDecimals(0);
     cswitchValue[i]->setProperty("index", i);
@@ -66,8 +68,8 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     cswitchSource2[i]->setVisible(false);
     cswitchOffset[i] = new QDoubleSpinBox(this);
     cswitchOffset[i]->setProperty("index",i);
-    cswitchOffset[i]->setMaximum(125);
-    cswitchOffset[i]->setMinimum(-125);
+    cswitchOffset[i]->setMaximum(channelsMax);
+    cswitchOffset[i]->setMinimum(-channelsMax);
     cswitchOffset[i]->setAccelerated(true);
     cswitchOffset[i]->setDecimals(0);
     connect(cswitchOffset[i], SIGNAL(valueChanged(double)), this, SLOT(edited()));
@@ -75,8 +77,8 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     v2Layout->addWidget(cswitchOffset[i]);
     cswitchOffset2[i] = new QDoubleSpinBox(this);
     cswitchOffset2[i]->setProperty("index",i);
-    cswitchOffset2[i]->setMaximum(125);
-    cswitchOffset2[i]->setMinimum(-125);
+    cswitchOffset2[i]->setMaximum(channelsMax);
+    cswitchOffset2[i]->setMinimum(-channelsMax);
     cswitchOffset2[i]->setAccelerated(true);
     cswitchOffset2[i]->setDecimals(0);
     connect(cswitchOffset2[i], SIGNAL(valueChanged(double)), this, SLOT(edited()));

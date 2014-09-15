@@ -576,7 +576,7 @@ t_Open9xArmFuncSwData_v208::operator FuncSwData ()
   FuncSwData c9x;
   c9x.swtch = open9xArmToSwitch(swtch);
   c9x.func = (AssignFunc)(func);
-  if (c9x.func <= FuncSafetyCh32) {
+  if (c9x.func <= FuncOverrideCH32) {
     c9x.enabled=param & 0x01;
     c9x.param = (param>>1)<<1;
   }

@@ -318,11 +318,12 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 
     int index = fswtchFunc[i]->currentIndex();
 
-    if (index>=FuncSafetyCh1 && index<=FuncSafetyCh32) {
+    if (index>=FuncOverrideCH1 && index<=FuncOverrideCH32) {
+      int channelsMax = model.getChannelsMax(true);
       fswtchParam[i]->setDecimals(0);
       fswtchParam[i]->setSingleStep(1);
-      fswtchParam[i]->setMinimum(-125);
-      fswtchParam[i]->setMaximum(125);
+      fswtchParam[i]->setMinimum(-channelsMax);
+      fswtchParam[i]->setMaximum(channelsMax);
       if (modified) {
         model.funcSw[i].param = fswtchParam[i]->value();
       }
@@ -590,7 +591,7 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
   b->clear();
   for (unsigned int i=0; i<FuncCount; i++) {
     b->addItem(FuncSwData(AssignFunc(i)).funcToString());
-    if (((i>=FuncSafetyCh1 && i<=FuncSafetyCh32) && !firmware->getCapability(SafetyChannelCustomFunction)) ||
+    if (((i>=FuncOverrideCH1 && i<=FuncOverrideCH32) && !firmware->getCapability(SafetyChannelCustomFunction)) ||
         ((i==FuncVolume || i==FuncBackgroundMusic || i==FuncBackgroundMusicPause) && !firmware->getCapability(HasVolume)) ||
         ((i==FuncPlayHaptic) && !firmware->getCapability(Haptic)) ||
         ((i==FuncPlayBoth) && !firmware->getCapability(HasBeeper)) ||

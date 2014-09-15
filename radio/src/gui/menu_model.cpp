@@ -4491,7 +4491,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
           else
 #endif
           {
-            v2_min = -125; v2_max = 125;
+            v2_min = -LIMIT_EXT_PERCENT; v2_max = +LIMIT_EXT_PERCENT;
             lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cs->v2, LEFT|attr);
           }
         }
@@ -4788,7 +4788,7 @@ void menuModelLogicalSwitches(uint8_t event)
         else
 #endif
         {
-          v2_min = -125; v2_max = +125;
+          v2_min = -LIMIT_EXT_PERCENT; v2_max = +LIMIT_EXT_PERCENT;
         }
       }
 #else
@@ -4798,7 +4798,7 @@ void menuModelLogicalSwitches(uint8_t event)
       }
       else {
         lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, LEFT|attr2);
-        v2_min = -125; v2_max = 125;
+        v2_min = -LIMIT_EXT_PERCENT; v2_max = +LIMIT_EXT_PERCENT;
       }
 #endif
     }
@@ -5119,8 +5119,10 @@ void menuModelCustomFunctions(uint8_t event)
           }
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
           else if (func == FUNC_OVERRIDE_CHANNEL) {
+#if !defined(CPUARM)
             val_displayed = (int8_t)CFN_PARAM(sd);
-            val_min = -125; val_max = 125;
+#endif
+            val_min = -LIMIT_EXT_PERCENT; val_max = +LIMIT_EXT_PERCENT;
             lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
           }
 #endif

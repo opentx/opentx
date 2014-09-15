@@ -164,7 +164,7 @@ void displayTrims(uint8_t phase)
     uint8_t att = ROUND;
     int16_t val = getTrimValue(phase, i);
 
-    if (val < -125 || val > 125)
+    if (val < TRIM_MIN || val > TRIM_MAX)
       att = BLINK|INVERS|ROUND;
 
     if (val < -(TRIM_LEN+1)*4)

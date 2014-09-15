@@ -1868,10 +1868,10 @@ class ArmCustomFunctionField: public TransformedField {
       else
         _active = (fn.enabled ? 1 : 0);
 
-      if (fn.func >= FuncSafetyCh1 && fn.func <= FuncSafetyCh32) {
+      if (fn.func >= FuncOverrideCH1 && fn.func <= FuncOverrideCH32) {
         if (version >= 216) {
           *((uint16_t *)_param) = fn.param;
-          *((uint8_t *)(_param+3)) = fn.func - FuncSafetyCh1;
+          *((uint8_t *)(_param+3)) = fn.func - FuncOverrideCH1;
         }
         else {
           *((uint32_t *)_param) = fn.param;
@@ -1950,7 +1950,7 @@ class ArmCustomFunctionField: public TransformedField {
         value = *((uint32_t *)_param);
       }
 
-      if (fn.func >= FuncSafetyCh1 && fn.func <= FuncSafetyCh32) {
+      if (fn.func >= FuncOverrideCH1 && fn.func <= FuncOverrideCH32) {
         fn.func = AssignFunc(fn.func + index);
         fn.param = (int8_t)value;
       }
@@ -2055,9 +2055,9 @@ class AvrCustomFunctionField: public TransformedField {
       _param = fn.param;
       _active = (fn.enabled ? 1 : 0);
 
-      if (fn.func >= FuncSafetyCh1 && fn.func <= FuncSafetyCh32) {
+      if (fn.func >= FuncOverrideCH1 && fn.func <= FuncOverrideCH32) {
         if (version >= 216)
-          _union_param = fn.func - FuncSafetyCh1;
+          _union_param = fn.func - FuncOverrideCH1;
         else if (version >= 213)
           _active += ((fn.func % 4) << 1);
       }
@@ -2115,7 +2115,7 @@ class AvrCustomFunctionField: public TransformedField {
         fn.enabled = (_active & 0x01);
       }
 
-      if (fn.func >= FuncSafetyCh1 && fn.func <= FuncSafetyCh32) {
+      if (fn.func >= FuncOverrideCH1 && fn.func <= FuncOverrideCH32) {
         if (version >= 216)
           fn.func = AssignFunc(fn.func + _union_param);
         else if (version >= 213)
