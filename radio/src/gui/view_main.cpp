@@ -167,7 +167,7 @@ void displayTrims(uint8_t phase)
 #if !defined(CPUM64) || !defined(FRSKY)
     int16_t dir = val;
     bool exttrim = false;
-    if (val < -125 || val > 125) {
+    if (val < TRIM_MIN || val > TRIM_MAX) {
       exttrim = true;
     }
 #endif

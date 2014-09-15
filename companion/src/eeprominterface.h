@@ -727,8 +727,8 @@ class LogicalSwitchData { // Logical Switches data
 };
 
 enum AssignFunc {
-  FuncSafetyCh1 = 0,
-  FuncSafetyCh32 = FuncSafetyCh1+C9X_NUM_CHNOUT-1,
+  FuncOverrideCH1 = 0,
+  FuncOverrideCH32 = FuncOverrideCH1+C9X_NUM_CHNOUT-1,
   FuncTrainer,
   FuncTrainerRUD,
   FuncTrainerELE,
@@ -758,7 +758,7 @@ enum AssignFunc {
 
 class FuncSwData { // Function Switches data
   public:
-    FuncSwData(AssignFunc func=FuncSafetyCh1) { clear(); this->func = func; }
+    FuncSwData(AssignFunc func=FuncOverrideCH1) { clear(); this->func = func; }
     RawSwitch    swtch;
     AssignFunc   func;
     int param;
@@ -1049,7 +1049,7 @@ class ModelData {
     void clearMixes();
     void clearInputs();
 
-    int getChannelsMax();
+    int getChannelsMax(bool forceExtendedLimits=false) const;
 
   protected:
     void removeGlobalVar(int & var);

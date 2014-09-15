@@ -302,7 +302,7 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
       break;
 
     default:
-      result.max = (model.extendedLimits ? 125 : 100);
+      result.max = model.getChannelsMax(true);
       result.min = -result.max;
       break;
   }
@@ -724,7 +724,7 @@ void FuncSwData::clear()
 QString FuncSwData::funcToString()
 {
   ModelData model;
-  if (func >= FuncSafetyCh1 && func <= FuncSafetyCh32)
+  if (func >= FuncOverrideCH1 && func <= FuncOverrideCH32)
     return QObject::tr("Override %1").arg(RawSource(SOURCE_TYPE_CH, func).toString(model));
   else if (func == FuncTrainer)
     return QObject::tr("Trainer");
@@ -1311,9 +1311,9 @@ ModelData ModelData::removeGlobalVars()
   return result;
 }
 
-int ModelData::getChannelsMax()
+int ModelData::getChannelsMax(bool forceExtendedLimits) const
 {
-  if (extendedLimits)
+  if (forceExtendedLimits || extendedLimits)
     return IS_TARANIS(GetCurrentFirmware()->getBoard()) ? 150 : 125;
   else
     return 100;
