@@ -83,12 +83,11 @@
 #define JACK_PPM_IN()            PORTG &= ~(1<<OUT_G_SIM_CTL)
 
 // SD driver
+#define sdDone()
 #if !defined(SIMU)
 bool sdMounted();
 void sdMountPoll();
 void sdPoll10ms();
-#define sdDone()
-
 #define SD_IS_HC()               (0)
 #define SD_GET_BLOCKNR()         (0)
 #define SD_GET_SIZE_MB()         (0)
@@ -143,6 +142,7 @@ void sdPoll10ms();
 #  define OUT_G_SIM_CTL  4 //1 : phone-jack=ppm_in
 
 #  define INP_C_ID1      0
+#  define INP_C_ID2      1
 
 #  define INP_G_RF_POW   1
 #  define INP_G_RuddDR   0
@@ -154,8 +154,6 @@ void sdPoll10ms();
 #  define OUT_B_Speaker  7
 #  define OUT_B_PPM      6
 #  define INP_B_Trainer  5
-
-#  define INP_C_ID2      1
 
 #if defined(VOICE)
 #  define OUT_H_14DRESET 3
