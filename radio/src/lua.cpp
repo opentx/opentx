@@ -810,6 +810,8 @@ static int luaModelGetMix(lua_State *L)
     lua_pushtableinteger(L, "weight", mix->weight);
     lua_pushtableinteger(L, "offset", mix->offset);
     lua_pushtableinteger(L, "switch", mix->swtch);
+    lua_pushtableinteger(L, "curveType", mix->curve.type);
+    lua_pushtableinteger(L, "curveValue", mix->curve.value);
     lua_pushtableinteger(L, "multiplex", mix->mltpx);
   }
   else {
@@ -850,6 +852,12 @@ static int luaModelInsertMix(lua_State *L)
       }
       else if (!strcmp(key, "switch")) {
         mix->swtch = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "curveType")) {
+        mix->curve.type = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "curveValue")) {
+        mix->curve.value = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "multiplex")) {
         mix->mltpx = luaL_checkinteger(L, -1);
@@ -937,6 +945,48 @@ static int luaModelSetLogicalSwitch(lua_State *L)
   }
 
   return 0;
+}
+
+static int luaModelGetCurve(lua_State *L)
+{
+  int idx = luaL_checkunsigned(L, 1);
+  if (idx < MAX_CURVES) {
+    CurveInfo & curveInfo = g_model.curves[idx];
+    lua_newtable(L);
+    lua_pushtablezstring(L, "name", g_model.curveNames[idx]);
+    lua_pushtableinteger(L, "type", curveInfo.type);
+    lua_pushtableboolean(L, "smooth", curveInfo.smooth);
+    lua_pushtableinteger(L, "points", curveInfo.points+5);
+    lua_pushstring(L, "y");
+    lua_newtable(L);
+    int8_t * point = curveAddress(idx);
+    for (int i=0; i<curveInfo.points+5; i++) {
+      lua_pushinteger(L, i);
+      lua_pushinteger(L, *point++);
+      lua_settable(L, -3);
+    }
+    lua_settable(L, -3);
+    if (curveInfo.type == CURVE_TYPE_CUSTOM) {
+      lua_pushstring(L, "x");
+      lua_newtable(L);
+      lua_pushinteger(L, 0);
+      lua_pushinteger(L, 0);
+      lua_settable(L, -3);
+      for (int i=0; i<curveInfo.points+3; i++) {
+        lua_pushinteger(L, i+1);
+        lua_pushinteger(L, *point++);
+        lua_settable(L, -3);
+      }
+      lua_pushinteger(L, curveInfo.points+4);
+      lua_pushinteger(L, 100);
+      lua_settable(L, -3);
+      lua_settable(L, -3);
+    }
+  }
+  else {
+    lua_pushnil(L);
+  }
+  return 1;
 }
 
 static int luaModelGetCustomFunction(lua_State *L)
@@ -1412,6 +1462,7 @@ const luaL_Reg modelLib[] = {
   { "setLogicalSwitch", luaModelSetLogicalSwitch },
   { "getCustomFunction", luaModelGetCustomFunction },
   { "setCustomFunction", luaModelSetCustomFunction },
+  { "getCurve", luaModelGetCurve },
   { "getOutput", luaModelGetOutput },
   { "setOutput", luaModelSetOutput },
   { "getGlobalVariable", luaModelGetGlobalVariable },

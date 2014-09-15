@@ -171,7 +171,7 @@
     CURVE_TYPE_CUSTOM,
     CURVE_TYPE_LAST = CURVE_TYPE_CUSTOM
   };
-PACK(typedef struct t_CurveInfo {
+PACK(typedef struct {
   uint8_t type:3;
   uint8_t smooth:1;
   uint8_t spare:4;
@@ -479,7 +479,7 @@ enum CurveRefType {
   CURVE_REF_FUNC,
   CURVE_REF_CUSTOM
 };
-PACK(typedef struct t_CurveRef {
+PACK(typedef struct {
   uint8_t type;
   int8_t  value;
 }) CurveRef;
