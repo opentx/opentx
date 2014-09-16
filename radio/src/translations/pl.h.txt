@@ -71,7 +71,7 @@
 #define TR_VRENAVIG            "No REaREb"
 
 #define LEN_VBLMODE            TR("\004", "\010")
-#define TR_VBLMODE             TR("Wył\0""Przy""Drąż""Oba\0""Zał\0", "Wyłączone ""Przyciski ""Drązki\0   ""Oba\0")
+#define TR_VBLMODE             TR("Wył\0""Przy""Drąż""Oba\0""Zał\0", "Wyłącz  ""Przycisk""Drązki\0 ""Oba\0    ""Włącz   ")
 
 #define LEN_TRNMODE            "\003"
 #define TR_TRNMODE             "Wył"" +="" :="
@@ -598,7 +598,7 @@
 #define TR_RENAVIG             "Nawigacja potencjometrem"
 #define TR_THROTTLE_LABEL      "Gaz    "
 #define TR_THROTTLEREVERSE     TR("OdwrGaz", INDENT "OdwrGaz")
-#define TR_TIMER_NAME          INDENT "Name"
+#define TR_TIMER_NAME          INDENT "Nazwa"
 #define TR_MINUTEBEEP          TR(INDENT "Minuta", INDENT "PikCoMinutę")
 #define TR_BEEPCOUNTDOWN       INDENT "Odliczanie"
 #define TR_PERSISTENT          TR(INDENT "Dokł.", INDENT "Dokładny")
