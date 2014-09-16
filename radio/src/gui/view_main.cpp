@@ -479,6 +479,7 @@ void menuMainViewChannelsMonitor(uint8_t event)
     case EVT_KEY_BREAK(KEY_PAGE):
     case EVT_KEY_BREAK(KEY_EXIT):
       chainMenu(menuMainView);
+      event = 0;
       break;
   }
 
