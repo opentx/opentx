@@ -62,7 +62,7 @@
 volatile uint16_t Analog_values[NUMBER_ANALOG];
 
 #if defined(REVPLUS)
-  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,1,-1,1,  1};
+  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,-1,1,  1};
 #elif defined(REV4a)
   const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,0,-1,1,  1};
 #elif !defined(REV3)
