@@ -1487,7 +1487,8 @@ bool isInputSourceAvailable(int source)
 enum SwitchContext
 {
   LogicalSwitchesContext,
-  CustomFunctionsContext,
+  ModelCustomFunctionsContext,
+  GeneralCustomFunctionsContext,
   TimersContext,
   MixesContext
 };
@@ -1518,17 +1519,22 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
   }
 #endif
 
-  if (context != LogicalSwitchesContext && swtch >= SWSRC_FIRST_LOGICAL_SWITCH && swtch <= SWSRC_LAST_LOGICAL_SWITCH) {
-    LogicalSwitchData * cs = lswAddress(swtch-SWSRC_FIRST_LOGICAL_SWITCH);
-    return (cs->func != LS_FUNC_NONE);
+  if (swtch >= SWSRC_FIRST_LOGICAL_SWITCH && swtch <= SWSRC_LAST_LOGICAL_SWITCH) {
+    if (context == GeneralCustomFunctionsContext) {
+      return false;
+    }
+    else if (context != LogicalSwitchesContext) {
+      LogicalSwitchData * cs = lswAddress(swtch-SWSRC_FIRST_LOGICAL_SWITCH);
+      return (cs->func != LS_FUNC_NONE);
+    }
   }
 
-  if (context != CustomFunctionsContext && (swtch == SWSRC_ON || swtch == SWSRC_One)) {
+  if (context != ModelCustomFunctionsContext && context != GeneralCustomFunctionsContext && (swtch == SWSRC_ON || swtch == SWSRC_One)) {
     return false;
   }
 
   if (swtch >= SWSRC_FIRST_FLIGHT_MODE && swtch <= SWSRC_LAST_FLIGHT_MODE) {
-    if (context == MixesContext) {
+    if (context == MixesContext || context == GeneralCustomFunctionsContext) {
       return false;
     }
     else {
@@ -1551,7 +1557,10 @@ bool isSwitchAvailableInLogicalSwitches(int swtch)
 
 bool isSwitchAvailableInCustomFunctions(int swtch)
 {
-  return isSwitchAvailable(swtch, CustomFunctionsContext);
+  if (g_menuStack[0] == menuModelCustomFunctions)
+    return isSwitchAvailable(swtch, ModelCustomFunctionsContext);
+  else
+    return isSwitchAvailable(swtch, GeneralCustomFunctionsContext);
 }
 
 bool isSwitchAvailableInMixes(int swtch)
@@ -1587,15 +1596,23 @@ bool isLogicalSwitchFunctionAvailable(int function)
 
 bool isAssignableFunctionAvailable(int function)
 {
+  bool modelFunctions = (g_menuStack[0] == menuModelCustomFunctions);
+
   switch (function) {
-#if !defined(OVERRIDE_CHANNEL_FUNCTION)
     case FUNC_OVERRIDE_CHANNEL:
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
+      return modelFunctions;
+#else
+      return false;
+#endif
+    case FUNC_ADJUST_GVAR:
+#if defined(GVARS)
+      return modelFunctions;
+#else
+      return false;
 #endif
 #if !defined(HAPTIC)
     case FUNC_HAPTIC:
-#endif
-#if !defined(GVARS)
-    case FUNC_ADJUST_GVAR:
 #endif
     case FUNC_PLAY_DIFF:
     case FUNC_RESERVE1:

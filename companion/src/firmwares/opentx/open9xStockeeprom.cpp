@@ -564,9 +564,9 @@ Open9xLogicalSwitchData_v209::operator LogicalSwitchData ()
   return c9x;
 }
 
-t_Open9xFuncSwData_v201::operator FuncSwData ()
+t_Open9xCustomFunctionData_v201::operator CustomFunctionData ()
 {
-  FuncSwData c9x;
+  CustomFunctionData c9x;
   c9x.swtch = open9xStockToSwitch(swtch);
   c9x.func = (AssignFunc)(func+16);
   return c9x;
@@ -598,9 +598,9 @@ enum Functions {
   FUNC_MAX
 };
 
-t_Open9xFuncSwData_v203::operator FuncSwData ()
+t_Open9xCustomFunctionData_v203::operator CustomFunctionData ()
 {
-  FuncSwData c9x;
+  CustomFunctionData c9x;
   c9x.swtch = open9xStockToSwitch(swtch);
   if (func < 16) {
     c9x.enabled=param & 0x01;
@@ -628,9 +628,9 @@ t_Open9xFuncSwData_v203::operator FuncSwData ()
   return c9x; 
 }
 
-t_Open9xFuncSwData_v210::operator FuncSwData ()
+t_Open9xCustomFunctionData_v210::operator CustomFunctionData ()
 {
-  FuncSwData c9x;
+  CustomFunctionData c9x;
   c9x.swtch = open9xStockToSwitch(swtch);
   c9x.param = param;
   if (func < 22) {
@@ -977,9 +977,9 @@ t_Open9xModelData_v201::operator ModelData ()
   }
 
   for (int i=0; i<12; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<12; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   // for (int i=0; i<16; i++)
   //   c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
@@ -1051,9 +1051,9 @@ t_Open9xModelData_v202::operator ModelData ()
   }
 
   for (int i=0; i<12; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<12; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   // for (int i=0; i<16; i++)
   //  c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
@@ -1127,9 +1127,9 @@ t_Open9xModelData_v203::operator ModelData ()
   }
 
   for (int i=0; i<12; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<16; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
@@ -1201,9 +1201,9 @@ t_Open9xModelData_v204::operator ModelData ()
   }
 
   for (int i=0; i<12; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<16; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.frsky.rssiAlarms[0] = frskyRssiAlarms[0].get(0);
@@ -1280,9 +1280,9 @@ t_Open9xModelData_v205::operator ModelData ()
   }
 
   for (int i=0; i<12; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<16; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
@@ -1366,9 +1366,9 @@ t_Open9xModelData_v208::operator ModelData ()
   }
 
   for (int i=0; i<12; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<16; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.frsky.varioSource = varioSource;
@@ -1459,9 +1459,9 @@ t_Open9xModelData_v209::operator ModelData ()
   }
 
   for (int i=0; i<12; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<16; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.frsky.varioSource = varioSource;
@@ -1556,9 +1556,9 @@ t_Open9xModelData_v210::operator ModelData ()
   }
 
   for (int i=0; i<12; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<16; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.switchWarningStates = switchWarningStates;
@@ -1644,9 +1644,9 @@ t_Open9xModelData_v211::operator ModelData ()
   }
 
   for (int i=0; i<12; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<16; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.switchWarningStates = switchWarningStates;

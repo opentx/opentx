@@ -103,6 +103,7 @@ void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 typedef void (*MenuFuncP)(uint8_t event);
 typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
 extern const MenuFuncP_PROGMEM menuTabModel[];
+extern const MenuFuncP_PROGMEM menuTabGeneral[];
 
 extern MenuFuncP g_menuStack[5];
 extern uint8_t g_menuPos[4];
@@ -133,6 +134,7 @@ void menuTelemetryFrsky(uint8_t event);
 #endif
 void menuGeneralSetup(uint8_t event);
 void menuGeneralCalib(uint8_t event);
+void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext);
 
 void menuModelSelect(uint8_t event);
 void menuModelCustomFunctions(uint8_t event);
@@ -232,14 +234,20 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   bool isSwitchAvailableInTimers(int swtch);
   bool isModuleAvailable(int module);
   #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
+  #define CHECK_INCDEC_SWITCH(event, var, min, max, flags, available) \
+    var = checkIncDec(event, var, min, max, (flags)|INCDEC_SWITCH|NO_INCDEC_MARKS, available)
   #define CHECK_INCDEC_MODELSWITCH(event, var, min, max, available) \
-    var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH|NO_INCDEC_MARKS, available)
+    CHECK_INCDEC_SWITCH(event, var, min, max, EE_MODEL, available)
 #elif defined(AUTOSWITCH)
   #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
+  #define CHECK_INCDEC_SWITCH(event, var, min, max, flags, available) \
+    var = checkIncDec(event, var, min, max, (flags)|INCDEC_SWITCH)
   #define CHECK_INCDEC_MODELSWITCH(event, var, min, max, available) \
-    var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH)
+    CHECK_INCDEC_SWITCH(event, var, min, max, EE_MODEL, available)
 #else
   #define AUTOSWITCH_ENTER_LONG() (0)
+  #define CHECK_INCDEC_SWITCH(event, var, min, max, flags, available) \
+    CHECK_INCDEC_MODELVAR(event, var, min, max)
   #define CHECK_INCDEC_MODELSWITCH(event, var, min, max, available) \
     CHECK_INCDEC_MODELVAR(event, var, min, max)
 #endif

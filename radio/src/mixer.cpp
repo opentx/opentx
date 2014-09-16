@@ -1027,7 +1027,13 @@ void evalMixes(uint8_t tick10ms)
 #if defined(CPUARM)
     requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
 #endif
+
+#if defined(CPUARM)
+    evalFunctions(g_eeGeneral.customFn, globalFunctionsContext);
+    evalFunctions(g_model.customFn, modelFunctionsContext);
+#else
     evalFunctions();
+#endif
   }
 
   //========== LIMITS ===============

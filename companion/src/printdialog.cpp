@@ -577,10 +577,10 @@ void PrintDialog::printSwitches()
     str.append("<tr><td><table border=0 cellspacing=0 cellpadding=3>");
 
     for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
-      if (g_model->customSw[i].func) {
+      if (g_model->logicalSw[i].func) {
         str.append("<tr>");
         str.append("<td width=\"60\"><b>"+tr("L")+QString("%1</b></td>").arg(i+1));
-        QString tstr = g_model->customSw[i].toString(*g_model, *g_eeGeneral);
+        QString tstr = g_model->logicalSw[i].toString(*g_model, *g_eeGeneral);
         str.append(doTL(tstr,"green"));
         str.append("</tr>");
         sc++;
@@ -630,21 +630,21 @@ void PrintDialog::printFSwitches()
     str.append(doTL(tr("Enabled"), "", true));
     str.append("</tr>");
     for(int i=0; i<firmware->getCapability(CustomFunctions); i++) {
-      if (g_model->funcSw[i].swtch.type!=SWITCH_TYPE_NONE) {
+      if (g_model->customFn[i].swtch.type!=SWITCH_TYPE_NONE) {
           str.append("<tr>");
           str.append(doTL(tr("SF%1").arg(i+1),"", true));
-          str.append(doTL(g_model->funcSw[i].swtch.toString(),"green"));
-          str.append(doTL(g_model->funcSw[i].funcToString(),"green"));
-          str.append(doTL(g_model->funcSw[i].paramToString(),"green"));
-          int index=g_model->funcSw[i].func;
-          if ((g_model->funcSw[i].repeatParam>0) && 
+          str.append(doTL(g_model->customFn[i].swtch.toString(),"green"));
+          str.append(doTL(g_model->customFn[i].funcToString(),"green"));
+          str.append(doTL(g_model->customFn[i].paramToString(),"green"));
+          int index=g_model->customFn[i].func;
+          if ((g_model->customFn[i].repeatParam>0) && 
               (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic)) {
-            str.append(doTL(QString("%1").arg(g_model->funcSw[i].repeatParam),"green"));
+            str.append(doTL(QString("%1").arg(g_model->customFn[i].repeatParam),"green"));
           } else {
             str.append(doTL( "&nbsp;","green"));
           }
           if ((index<=FuncInstantTrim) || (index>FuncBackgroundMusicPause)) {
-            str.append(doTL((g_model->funcSw[i].enabled ? "ON" : "OFF"),"green"));
+            str.append(doTL((g_model->customFn[i].enabled ? "ON" : "OFF"),"green"));
           } else {
             str.append(doTL( "---","green"));
           }

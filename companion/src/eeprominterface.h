@@ -756,9 +756,9 @@ enum AssignFunc {
   FuncReserve = -1
 };
 
-class FuncSwData { // Function Switches data
+class CustomFunctionData { // Function Switches data
   public:
-    FuncSwData(AssignFunc func=FuncOverrideCH1) { clear(); this->func = func; }
+    CustomFunctionData(AssignFunc func=FuncOverrideCH1) { clear(); this->func = func; }
     RawSwitch    swtch;
     AssignFunc   func;
     int param;
@@ -1019,8 +1019,8 @@ class ModelData {
     ExpoData  expoData[C9X_MAX_EXPOS];
 
     CurveData curves[C9X_MAX_CURVES];
-    LogicalSwitchData  customSw[C9X_NUM_CSW];
-    FuncSwData    funcSw[C9X_MAX_CUSTOM_FUNCTIONS];
+    LogicalSwitchData  logicalSw[C9X_NUM_CSW];
+    CustomFunctionData customFn[C9X_MAX_CUSTOM_FUNCTIONS];
     SwashRingData swashRingData;
     unsigned int thrTraceSrc;
     unsigned int modelId;
@@ -1289,18 +1289,18 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
   // virtual switches
   for (int i=0; i<C9X_NUM_CSW; i++) {
     RawSource source;
-    switch (model.customSw[i].getFunctionFamily()) {
+    switch (model.logicalSw[i].getFunctionFamily()) {
       case LS_FAMILY_VCOMP:
-        source = RawSource(model.customSw[i].val2);
+        source = RawSource(model.logicalSw[i].val2);
         if (source.type == SOURCE_TYPE_STICK)
           source.index = applyStickMode(source.index + 1, mode) - 1;
-        model.customSw[i].val2 = source.toValue();
+        model.logicalSw[i].val2 = source.toValue();
         // no break
       case LS_FAMILY_VOFS:
-        source = RawSource(model.customSw[i].val1);
+        source = RawSource(model.logicalSw[i].val1);
         if (source.type == SOURCE_TYPE_STICK)
           source.index = applyStickMode(source.index + 1, mode) - 1;
-        model.customSw[i].val1 = source.toValue();
+        model.logicalSw[i].val1 = source.toValue();
         break;
       default:
         break;

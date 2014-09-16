@@ -132,24 +132,24 @@ PACK(typedef struct t_Open9xGruvin9xLogicalSwitchData_v209 { // Custom Switches 
   RawSource toSource(int8_t value);
 }) Open9xGruvin9xLogicalSwitchData_v209;
 
-PACK(typedef struct t_Open9xGruvin9xFuncSwData_v203 { // Function Switches data
+PACK(typedef struct t_Open9xGruvin9xCustomFunctionData_v203 { // Function Switches data
   int8_t  swtch; // input
   uint8_t func;
   uint8_t param;
 
-  operator FuncSwData();
-  t_Open9xGruvin9xFuncSwData_v203() { memset(this, 0, sizeof(t_Open9xGruvin9xFuncSwData_v203)); }
-}) Open9xGruvin9xFuncSwData_v203;
+  operator CustomFunctionData();
+  t_Open9xGruvin9xCustomFunctionData_v203() { memset(this, 0, sizeof(t_Open9xGruvin9xCustomFunctionData_v203)); }
+}) Open9xGruvin9xCustomFunctionData_v203;
 
-PACK(typedef struct t_Open9xGruvin9xFuncSwData_v210 { // Function Switches data
+PACK(typedef struct t_Open9xGruvin9xCustomFunctionData_v210 { // Function Switches data
   int8_t  swtch; // input
   uint8_t func:5;
   uint8_t delay:3;
   uint8_t param;
 
-  operator FuncSwData();
-  t_Open9xGruvin9xFuncSwData_v210() { memset(this, 0, sizeof(t_Open9xGruvin9xFuncSwData_v210)); }
-}) Open9xGruvin9xFuncSwData_v210;
+  operator CustomFunctionData();
+  t_Open9xGruvin9xCustomFunctionData_v210() { memset(this, 0, sizeof(t_Open9xGruvin9xCustomFunctionData_v210)); }
+}) Open9xGruvin9xCustomFunctionData_v210;
 
 PACK(typedef struct t_Open9xGruvin9xSwashRingData_v208 { // Swash Ring data
   uint8_t   invertELE:1;
@@ -194,8 +194,8 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v207 {
   Open9xExpoData_v201  expoData[14];
   int8_t    curves5[8][5];
   int8_t    curves9[8][9];
-  Open9xGruvin9xLogicalSwitchData_v207  customSw[12];
-  Open9xFuncSwData_v203 funcSw[16];
+  Open9xGruvin9xLogicalSwitchData_v207  logicalSw[12];
+  Open9xCustomFunctionData_v203 customFn[16];
   Open9xGruvin9xSwashRingData_v208 swashR;
   Open9xGruvin9xFlightModeData_v207 flightModeData[5];
   Open9xFrSkyData_v205 frsky;
@@ -228,8 +228,8 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v208 {
   Open9xExpoData_v201  expoData[14];
   int8_t    curves5[8][5];
   int8_t    curves9[8][9];
-  Open9xGruvin9xLogicalSwitchData_v207  customSw[12];
-  Open9xGruvin9xFuncSwData_v203 funcSw[16];
+  Open9xGruvin9xLogicalSwitchData_v207  logicalSw[12];
+  Open9xGruvin9xCustomFunctionData_v203 customFn[16];
   Open9xGruvin9xSwashRingData_v208 swashR;
   Open9xGruvin9xFlightModeData_v208 flightModeData[5];
   Open9xFrSkyData_v208 frsky;
@@ -267,8 +267,8 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v209 {
   Open9xExpoData_v201  expoData[14];
   int8_t    curves5[8][5];
   int8_t    curves9[8][9];
-  Open9xGruvin9xLogicalSwitchData_v209  customSw[12];
-  Open9xGruvin9xFuncSwData_v203 funcSw[16];
+  Open9xGruvin9xLogicalSwitchData_v209  logicalSw[12];
+  Open9xGruvin9xCustomFunctionData_v203 customFn[16];
   Open9xGruvin9xSwashRingData_v209 swashR;
   Open9xGruvin9xFlightModeData_v208 flightModeData[5];
   Open9xFrSkyData_v208 frsky;
@@ -307,8 +307,8 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v210 {
   Open9xExpoData_v201  expoData[14];
   int8_t    curves[8];
   int8_t    points[112-8];
-  Open9xGruvin9xLogicalSwitchData_v209  customSw[12];
-  Open9xGruvin9xFuncSwData_v210 funcSw[16];
+  Open9xGruvin9xLogicalSwitchData_v209  logicalSw[12];
+  Open9xGruvin9xCustomFunctionData_v210 customFn[16];
   Open9xGruvin9xSwashRingData_v209 swashR;
   Open9xGruvin9xFlightModeData_v208 flightModeData[5];
 
@@ -345,8 +345,8 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v211 {
   Open9xExpoData_v211  expoData[14];
   int8_t    curves[8];
   int8_t    points[112-8];
-  Open9xGruvin9xLogicalSwitchData_v209  customSw[12];
-  Open9xGruvin9xFuncSwData_v210 funcSw[16];
+  Open9xGruvin9xLogicalSwitchData_v209  logicalSw[12];
+  Open9xGruvin9xCustomFunctionData_v210 customFn[16];
   Open9xGruvin9xSwashRingData_v209 swashR;
   Open9xGruvin9xFlightModeData_v208 flightModeData[5];
 

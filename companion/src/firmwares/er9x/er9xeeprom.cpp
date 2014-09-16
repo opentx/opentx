@@ -378,9 +378,9 @@ t_Er9xModelData::operator ModelData ()
   c9x.thrTrim = thrTrim;
   c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
-  c9x.funcSw[0].func = FuncInstantTrim;
+  c9x.customFn[0].func = FuncInstantTrim;
   if (trimSw) {
-    c9x.funcSw[0].swtch = er9xToSwitch(trimSw);
+    c9x.customFn[0].swtch = er9xToSwitch(trimSw);
   }
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppmPulsePol = pulsePol;
@@ -459,7 +459,7 @@ t_Er9xModelData::operator ModelData ()
   }
 
   for (int i=0; i<ER9X_NUM_CSW; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
 
   // for (int i=0; i<ER9X_NUM_CHNOUT; i++)
   //   c9x.safetySw[i] = safetySw[i];

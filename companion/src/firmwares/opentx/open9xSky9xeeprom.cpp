@@ -571,9 +571,9 @@ t_Open9xArmLogicalSwitchData_v210::operator LogicalSwitchData ()
   return c9x;
 }
 
-t_Open9xArmFuncSwData_v208::operator FuncSwData ()
+t_Open9xArmCustomFunctionData_v208::operator CustomFunctionData ()
 {
-  FuncSwData c9x;
+  CustomFunctionData c9x;
   c9x.swtch = open9xArmToSwitch(swtch);
   c9x.func = (AssignFunc)(func);
   if (c9x.func <= FuncOverrideCH32) {
@@ -589,9 +589,9 @@ t_Open9xArmFuncSwData_v208::operator FuncSwData ()
   return c9x;
 }
 
-t_Open9xArmFuncSwData_v210::operator FuncSwData ()
+t_Open9xArmCustomFunctionData_v210::operator CustomFunctionData ()
 {
-  FuncSwData c9x;
+  CustomFunctionData c9x;
   c9x.swtch = open9xArmToSwitch(swtch);
   c9x.func = (AssignFunc)(func);
   uint32_t value = *((uint32_t *)param);
@@ -613,9 +613,9 @@ t_Open9xArmFuncSwData_v210::operator FuncSwData ()
   return c9x;
 }
 
-t_Open9xArmFuncSwData_v211::operator FuncSwData ()
+t_Open9xArmCustomFunctionData_v211::operator CustomFunctionData ()
 {
-  FuncSwData c9x;
+  CustomFunctionData c9x;
   c9x.swtch = open9xArmToSwitch(swtch);
   c9x.func = (AssignFunc)(func);
   uint32_t value = *((uint32_t *)param);
@@ -798,9 +798,9 @@ t_Open9xArmModelData_v208::operator ModelData ()
     }
   }
   for (int i=0; i<32; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<32; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.frsky.varioSource = varioSource;
@@ -887,9 +887,9 @@ t_Open9xArmModelData_v209::operator ModelData ()
     }
   }
   for (int i=0; i<32; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<32; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.frsky.varioSource = varioSource;
@@ -977,9 +977,9 @@ t_Open9xArmModelData_v210::operator ModelData ()
     }
   }
   for (int i=0; i<32; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<32; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.frsky.varioSource = varioSource;
@@ -1064,9 +1064,9 @@ t_Open9xArmModelData_v211::operator ModelData ()
     }
   }
   for (int i=0; i<32; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<32; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.switchWarningStates = switchWarningStates;
@@ -1151,9 +1151,9 @@ t_Open9xArmModelData_v212::operator ModelData ()
     }
   }
   for (int i=0; i<32; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<32; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.switchWarningStates = switchWarningStates;

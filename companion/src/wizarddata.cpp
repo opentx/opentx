@@ -110,11 +110,11 @@ WizMix::operator ModelData()
 
   // Add the Throttle Cut option
   if( options[THROTTLE_CUT_OPTION] && throttleChannel >=0 ){
-    model.funcSw[switchIndex].swtch.type = SWITCH_TYPE_SWITCH;
-    model.funcSw[switchIndex].swtch.index = isTaranis ? SWITCH_SF0 : SWITCH_THR;
-    model.funcSw[switchIndex].enabled = 1;
-    model.funcSw[switchIndex].func = (AssignFunc)throttleChannel;
-    model.funcSw[switchIndex].param = -100;
+    model.customFn[switchIndex].swtch.type = SWITCH_TYPE_SWITCH;
+    model.customFn[switchIndex].swtch.index = isTaranis ? SWITCH_SF0 : SWITCH_THR;
+    model.customFn[switchIndex].enabled = 1;
+    model.customFn[switchIndex].func = (AssignFunc)throttleChannel;
+    model.customFn[switchIndex].param = -100;
   }
 
   // Add the Flight Timer option

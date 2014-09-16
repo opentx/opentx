@@ -60,9 +60,9 @@ Templates::~Templates()
 
 void Templates::setSwitch(unsigned int idx, unsigned int func, int v1, int v2)
 {
-    g_model.customSw[idx-1].func = func;
-    g_model.customSw[idx-1].val1   = v1;
-    g_model.customSw[idx-1].val2   = v2;
+    g_model.logicalSw[idx-1].func = func;
+    g_model.logicalSw[idx-1].val1   = v1;
+    g_model.logicalSw[idx-1].val2   = v2;
 }
 
 void Templates::onDoubleClicked(QModelIndex index)

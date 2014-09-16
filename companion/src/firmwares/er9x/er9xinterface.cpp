@@ -75,12 +75,12 @@ inline void applyStickModeToModel(Er9xModelData & model, unsigned int mode)
   for (int i=0; i<ER9X_MAX_MIXERS; i++)
     model.mixData[i].srcRaw = applyStickMode(model.mixData[i].srcRaw, mode);
   for (int i=0; i<ER9X_NUM_CSW; i++) {
-    switch (LogicalSwitchData(model.customSw[i].func).getFunctionFamily()) {
+    switch (LogicalSwitchData(model.logicalSw[i].func).getFunctionFamily()) {
       case LS_FAMILY_VCOMP:
-        model.customSw[i].v2 = applyStickMode(model.customSw[i].v2, mode);
+        model.logicalSw[i].v2 = applyStickMode(model.logicalSw[i].v2, mode);
         // no break
       case LS_FAMILY_VOFS:
-        model.customSw[i].v1 = applyStickMode(model.customSw[i].v1, mode);
+        model.logicalSw[i].v1 = applyStickMode(model.logicalSw[i].v1, mode);
         break;
       default:
         break;

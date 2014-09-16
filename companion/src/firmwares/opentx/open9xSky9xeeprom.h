@@ -208,34 +208,34 @@ PACK(typedef struct t_Open9xArmLogicalSwitchData_v210 { // Custom Switches data
   t_Open9xArmLogicalSwitchData_v210() { memset(this, 0, sizeof(t_Open9xArmLogicalSwitchData_v210)); }
 }) Open9xArmLogicalSwitchData_v210;
 
-PACK(typedef struct t_Open9xArmFuncSwData_v208 { // Function Switches data
+PACK(typedef struct t_Open9xArmCustomFunctionData_v208 { // Function Switches data
   int8_t  swtch; // input
   uint8_t func;
   uint8_t param;
 
-  operator FuncSwData();
-  t_Open9xArmFuncSwData_v208() { memset(this, 0, sizeof(t_Open9xArmFuncSwData_v208)); }
-}) Open9xArmFuncSwData_v208;
+  operator CustomFunctionData();
+  t_Open9xArmCustomFunctionData_v208() { memset(this, 0, sizeof(t_Open9xArmCustomFunctionData_v208)); }
+}) Open9xArmCustomFunctionData_v208;
 
-PACK(typedef struct t_Open9xArmFuncSwData_v210 { // Function Switches data
+PACK(typedef struct t_Open9xArmCustomFunctionData_v210 { // Function Switches data
   int8_t  swtch; // input
   uint8_t func;
   char    param[6];
 
-  operator FuncSwData();
-  t_Open9xArmFuncSwData_v210() { memset(this, 0, sizeof(t_Open9xArmFuncSwData_v210)); }
-}) Open9xArmFuncSwData_v210;
+  operator CustomFunctionData();
+  t_Open9xArmCustomFunctionData_v210() { memset(this, 0, sizeof(t_Open9xArmCustomFunctionData_v210)); }
+}) Open9xArmCustomFunctionData_v210;
 
-PACK(typedef struct t_Open9xArmFuncSwData_v211 { // Function Switches data
+PACK(typedef struct t_Open9xArmCustomFunctionData_v211 { // Function Switches data
   int8_t  swtch; // input
   uint8_t func;
   char    param[6];
   uint8_t delay;
   uint8_t spare;
 
-  operator FuncSwData();
-  t_Open9xArmFuncSwData_v211() { memset(this, 0, sizeof(t_Open9xArmFuncSwData_v211)); }
-}) Open9xArmFuncSwData_v211;
+  operator CustomFunctionData();
+  t_Open9xArmCustomFunctionData_v211() { memset(this, 0, sizeof(t_Open9xArmCustomFunctionData_v211)); }
+}) Open9xArmCustomFunctionData_v211;
 
 PACK(typedef struct t_Open9xArmSwashRingData_v208 { // Swash Ring data
   uint8_t   invertELE:1;
@@ -332,8 +332,8 @@ PACK(typedef struct t_Open9xArmModelData_v208 {
   Open9xArmExpoData_v208  expoData[32];
   int8_t    curves5[8][5];
   int8_t    curves9[8][9];
-  Open9xArmLogicalSwitchData_v208 customSw[32];
-  Open9xArmFuncSwData_v208 funcSw[32];
+  Open9xArmLogicalSwitchData_v208 logicalSw[32];
+  Open9xArmCustomFunctionData_v208 customFn[32];
   Open9xArmSwashRingData_v208 swashR;
   Open9xArmFlightModeData_v208 flightModeData[9];
   Open9xFrSkyData_v208 frsky;
@@ -371,8 +371,8 @@ PACK(typedef struct t_Open9xArmModelData_v209 {
   Open9xArmExpoData_v208  expoData[32];
   int8_t    curves5[8][5];
   int8_t    curves9[8][9];
-  Open9xArmLogicalSwitchData_v209 customSw[32];
-  Open9xArmFuncSwData_v208 funcSw[32];
+  Open9xArmLogicalSwitchData_v209 logicalSw[32];
+  Open9xArmCustomFunctionData_v208 customFn[32];
   Open9xArmSwashRingData_v209 swashR;
   Open9xArmFlightModeData_v208 flightModeData[9];
   Open9xFrSkyData_v208 frsky;
@@ -411,8 +411,8 @@ PACK(typedef struct t_Open9xArmModelData_v210 {
   Open9xArmExpoData_v210  expoData[32];
   int8_t    curves5[8][5];
   int8_t    curves9[8][9];
-  Open9xArmLogicalSwitchData_v210 customSw[32];
-  Open9xArmFuncSwData_v210 funcSw[32];
+  Open9xArmLogicalSwitchData_v210 logicalSw[32];
+  Open9xArmCustomFunctionData_v210 customFn[32];
   Open9xArmSwashRingData_v209 swashR;
   Open9xArmFlightModeData_v208 flightModeData[9];
   Open9xArmFrSkyData_v210 frsky;
@@ -450,8 +450,8 @@ PACK(typedef struct t_Open9xArmModelData_v211 {
   Open9xArmExpoData_v210  expoData[32];
   int16_t   curves[16];
   int8_t    points[512];
-  Open9xArmLogicalSwitchData_v210 customSw[32];
-  Open9xArmFuncSwData_v211 funcSw[32];
+  Open9xArmLogicalSwitchData_v210 logicalSw[32];
+  Open9xArmCustomFunctionData_v211 customFn[32];
   Open9xArmSwashRingData_v209 swashR;
   Open9xArmFlightModeData_v208 flightModeData[9];
 
@@ -488,8 +488,8 @@ PACK(typedef struct t_Open9xArmModelData_v212 {
   Open9xArmExpoData_v212  expoData[32];
   int16_t   curves[16];
   int8_t    points[512];
-  Open9xArmLogicalSwitchData_v210 customSw[32];
-  Open9xArmFuncSwData_v211 funcSw[32];
+  Open9xArmLogicalSwitchData_v210 logicalSw[32];
+  Open9xArmCustomFunctionData_v211 customFn[32];
   Open9xArmSwashRingData_v210 swashR;
   Open9xArmFlightModeData_v212 flightModeData[9];
 

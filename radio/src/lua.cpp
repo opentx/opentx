@@ -998,7 +998,7 @@ static int luaModelGetCustomFunction(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
   if (idx < NUM_CFN) {
-    CustomFnData * cfn = &g_model.funcSw[idx];
+    CustomFunctionData * cfn = &g_model.customFn[idx];
     lua_newtable(L);
     lua_pushtableinteger(L, "switch", CFN_SWITCH(cfn));
     lua_pushtableinteger(L, "func", CFN_FUNC(cfn));
@@ -1022,8 +1022,8 @@ static int luaModelSetCustomFunction(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
   if (idx < NUM_CFN) {
-    CustomFnData * cfn = &g_model.funcSw[idx];
-    memclear(cfn, sizeof(CustomFnData));
+    CustomFunctionData * cfn = &g_model.customFn[idx];
+    memclear(cfn, sizeof(CustomFunctionData));
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
       luaL_checktype(L, -2, LUA_TSTRING); // key is string
@@ -1668,7 +1668,7 @@ bool luaLoadMixScript(uint8_t index)
 
 bool luaLoadFunctionScript(uint8_t index)
 {
-  CustomFnData & fn = g_model.funcSw[index];
+  CustomFunctionData & fn = g_model.customFn[index];
 
   if (fn.func == FUNC_PLAY_SCRIPT && ZEXIST(fn.play.name)) {
     if (luaScriptsCount < MAX_SCRIPTS) {
@@ -1900,7 +1900,7 @@ void luaDoOneRunPermanentScript(uint8_t evt, int i)
       }
     }
     else if (sid.reference >= SCRIPT_FUNC_FIRST && sid.reference <= SCRIPT_FUNC_LAST) {
-      CustomFnData & fn = g_model.funcSw[sid.reference-SCRIPT_FUNC_FIRST];
+      CustomFunctionData & fn = g_model.customFn[sid.reference-SCRIPT_FUNC_FIRST];
       if (!getSwitch(fn.swtch)) {
         return;
       }

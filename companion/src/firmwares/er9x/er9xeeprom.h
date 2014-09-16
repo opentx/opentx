@@ -241,7 +241,7 @@ PACK(typedef struct t_Er9xModelData {
   int8_t    trim[4];
   int8_t    curves5[ER9X_MAX_CURVE5][5];
   int8_t    curves9[ER9X_MAX_CURVE9][9];
-  Er9xLogicalSwitchData   customSw[ER9X_NUM_CSW];
+  Er9xLogicalSwitchData   logicalSw[ER9X_NUM_CSW];
   uint8_t   frSkyVoltThreshold ;
   int8_t   tmrModeB;
   uint8_t   numVoice;

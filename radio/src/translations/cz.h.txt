@@ -664,6 +664,7 @@
 #define TR_MENURADIOSETUP      "NASTAVENÍ RÁDIA"
 #define TR_MENUDATEANDTIME     "DATUM A čAS"
 #define TR_MENUTRAINER         "TRENÉR"
+#define TR_MENUGLOBALFUNCS     "GLOBAL FUNCTIONS"
 #define TR_MENUVERSION         "VERZE"
 #define TR_MENUDIAG            "DIAG"
 #define TR_MENUANA             "ANALOGY"

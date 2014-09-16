@@ -1879,7 +1879,7 @@ class SwitchesWarningField: public TransformedField {
 
 class ArmCustomFunctionField: public TransformedField {
   public:
-    ArmCustomFunctionField(FuncSwData & fn, BoardEnum board, unsigned int version, unsigned int variant):
+    ArmCustomFunctionField(CustomFunctionData & fn, BoardEnum board, unsigned int version, unsigned int variant):
       TransformedField(internalField),
       internalField("CustomFunction"),
       fn(fn),
@@ -2073,7 +2073,7 @@ class ArmCustomFunctionField: public TransformedField {
 
   protected:
     StructField internalField;
-    FuncSwData & fn;
+    CustomFunctionData & fn;
     BoardEnum board;
     unsigned int version;
     unsigned int variant;
@@ -2086,7 +2086,7 @@ class ArmCustomFunctionField: public TransformedField {
 
 class AvrCustomFunctionField: public TransformedField {
   public:
-    AvrCustomFunctionField(FuncSwData & fn, BoardEnum board, unsigned int version, unsigned int variant):
+    AvrCustomFunctionField(CustomFunctionData & fn, BoardEnum board, unsigned int version, unsigned int variant):
       TransformedField(internalField),
       internalField("CustomFunction"),
       fn(fn),
@@ -2237,7 +2237,7 @@ class AvrCustomFunctionField: public TransformedField {
 
   protected:
     StructField internalField;
-    FuncSwData & fn;
+    CustomFunctionData & fn;
     BoardEnum board;
     unsigned int version;
     unsigned int variant;
@@ -2645,12 +2645,12 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new InputField(modelData.expoData[i], board, version));
   internalField.Append(new CurvesField(modelData.curves, board, version));
   for (int i=0; i<MAX_CUSTOM_SWITCHES(board, version); i++)
-    internalField.Append(new LogicalSwitchField(modelData.customSw[i], board, version, variant, &modelData));
+    internalField.Append(new LogicalSwitchField(modelData.logicalSw[i], board, version, variant, &modelData));
   for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++) {
     if (IS_ARM(board))
-      internalField.Append(new ArmCustomFunctionField(modelData.funcSw[i], board, version, variant));
+      internalField.Append(new ArmCustomFunctionField(modelData.customFn[i], board, version, variant));
     else
-      internalField.Append(new AvrCustomFunctionField(modelData.funcSw[i], board, version, variant));
+      internalField.Append(new AvrCustomFunctionField(modelData.customFn[i], board, version, variant));
   }
   internalField.Append(new HeliField(modelData.swashRingData, board, version, variant));
   for (int i=0; i<MAX_FLIGHT_MODES(board, version); i++)

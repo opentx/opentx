@@ -81,6 +81,7 @@ inline int geteepromsize() {
 #include "radio/src/opentx.cpp"
 #include "radio/src/strhelpers.cpp"
 #include "radio/src/switches.cpp"
+#include "radio/src/functions.cpp"
 #include "radio/src/curves.cpp"
 #include "radio/src/mixer.cpp"
 #include "radio/src/targets/taranis/pulses_driver.cpp"

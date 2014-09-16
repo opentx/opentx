@@ -303,7 +303,7 @@ PACK(typedef struct {
   }) param;
   uint8_t mode:2;
   uint8_t active:6;
-}) CustomFnData_v215;
+}) CustomFunctionData_v215;
 #else
 PACK(typedef struct {
   int8_t  swtch;
@@ -318,7 +318,7 @@ PACK(typedef struct {
   }) param;
   uint8_t mode:2;
   uint8_t active:6;
-}) CustomFnData_v215;
+}) CustomFunctionData_v215;
 #endif
 
 PACK(typedef struct {
@@ -365,7 +365,7 @@ PACK(typedef struct {
   int8_t    points[NUM_POINTS];
 
   LogicalSwitchData_v215 logicalSw[NUM_LOGICAL_SWITCH];
-  CustomFnData_v215 funcSw[32];
+  CustomFunctionData_v215 customFn[32];
   SwashRingData swashR;
   FlightModeData_v215 flightModeData[MAX_FLIGHT_MODES];
 
@@ -407,7 +407,7 @@ PACK(typedef struct {
   int8_t    points[NUM_POINTS];
 
   LogicalSwitchData logicalSw[NUM_LOGICAL_SWITCH];
-  CustomFnData funcSw[NUM_CFN];
+  CustomFunctionData customFn[NUM_CFN];
   SwashRingData swashR;
   FlightModeData flightModeData[MAX_FLIGHT_MODES];
 
@@ -950,9 +950,9 @@ void ConvertModel_215_to_216(ModelData &model)
     }
   }
   for (uint8_t i=0; i<32; i++) {
-    CustomFnData & fn = newModel.funcSw[i];
-    fn.swtch = ConvertSwitch_215_to_216(oldModel.funcSw[i].swtch);
-    fn.func = oldModel.funcSw[i].func;
+    CustomFunctionData & fn = newModel.customFn[i];
+    fn.swtch = ConvertSwitch_215_to_216(oldModel.customFn[i].swtch);
+    fn.func = oldModel.customFn[i].func;
     if (fn.func <= 15) {
       fn.all.param = fn.func;
       fn.func = FUNC_OVERRIDE_CHANNEL;
@@ -1001,20 +1001,20 @@ void ConvertModel_215_to_216(ModelData &model)
     }
     else {
       fn.all.param = fn.func - 32 - IS_PCBSKY9X;
-      fn.all.mode = oldModel.funcSw[i].mode;
+      fn.all.mode = oldModel.customFn[i].mode;
       fn.func = FUNC_ADJUST_GVAR;
     }
 
-    fn.active = oldModel.funcSw[i].active;
+    fn.active = oldModel.customFn[i].active;
     if (HAS_REPEAT_PARAM(fn.func)) {
       fn.active *= 5;
     }
 
     if (fn.func == FUNC_PLAY_TRACK || fn.func == FUNC_BACKGND_MUSIC) {
-      memcpy(fn.play.name, oldModel.funcSw[i].param.name, 8);
+      memcpy(fn.play.name, oldModel.customFn[i].param.name, 8);
     }
     else {
-      fn.all.val = oldModel.funcSw[i].param.composite.val;
+      fn.all.val = oldModel.customFn[i].param.composite.val;
     }
     if (fn.func == FUNC_PLAY_VALUE || fn.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(fn.func) && fn.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
 #if defined(PCBTARANIS)
@@ -1199,8 +1199,8 @@ void ConvertModel_216_to_217(ModelData &model)
     }
   }
   for (int i=0; i<NUM_CFN; i++) {
-    CustomFnData & fn = newModel.funcSw[i];
-    fn = oldModel.funcSw[i];
+    CustomFunctionData & fn = newModel.customFn[i];
+    fn = oldModel.customFn[i];
     if (fn.func == FUNC_PLAY_VALUE || fn.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(fn.func) && fn.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
       fn.all.val = ConvertSource_216_to_217(fn.all.val);
     }

@@ -274,9 +274,9 @@ t_Th9xModelData::operator ModelData ()
   c9x.thrTrim = thrTrim;
   c9x.trimInc = trimInc;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
-  c9x.funcSw[0].func = FuncTrims2Offsets;
+  c9x.customFn[0].func = FuncTrims2Offsets;
   if (trimSw) {
-    c9x.funcSw[0].swtch = trimSw;
+    c9x.customFn[0].swtch = trimSw;
   }
   c9x.beepANACenter = beepANACenter;
   c9x.pulsePol = pulsePol;

@@ -322,9 +322,9 @@ Gruvin9xLogicalSwitchData::operator LogicalSwitchData ()
   return c9x;
 }
 
-Gruvin9xFuncSwData::operator FuncSwData ()
+Gruvin9xCustomFunctionData::operator CustomFunctionData ()
 {
-  FuncSwData c9x;
+  CustomFunctionData c9x;
   c9x.swtch = gruvin9xToSwitch(swtch);
   c9x.func = (AssignFunc)(func + G9X_NUM_CHNOUT);
   return c9x;
@@ -476,7 +476,7 @@ t_Gruvin9xModelData_v102::operator ModelData ()
   }
 
   for (int i=0; i<G9X_NUM_CSW; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   // for (int i=0; i<G9X_NUM_CHNOUT; i++)
   //  c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
@@ -546,7 +546,7 @@ t_Gruvin9xModelData_v103::operator ModelData ()
   }
 
   for (int i=0; i<G9X_NUM_CSW; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   // for (int i=0; i<G9X_NUM_CHNOUT; i++)
   //   c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
@@ -633,9 +633,9 @@ t_Gruvin9xModelData_v105::operator ModelData ()
   }
 
   for (int i=0; i<G9X_NUM_CSW; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<G9X_NUM_FSW; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   // for (int i=0; i<G9X_NUM_CHNOUT; i++)
   //  c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
@@ -716,9 +716,9 @@ t_Gruvin9xModelData_v106::operator ModelData ()
   }
 
   for (int i=0; i<G9X_NUM_CSW; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
   for (int i=0; i<G9X_NUM_FSW; i++)
-    c9x.funcSw[i] = funcSw[i];
+    c9x.customFn[i] = customFn[i];
   // for (int i=0; i<G9X_NUM_CHNOUT; i++)
   //   c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;

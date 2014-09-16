@@ -73,6 +73,7 @@ const LanguagePack * LP_CONST languagePacks[] = {
 enum EnumTabDiag {
   e_Setup,
   CASE_SDCARD(e_Sd)
+  CASE_CPUARM(e_GeneralCustomFunctions)
   e_Trainer,
   e_Vers,
   e_Keys,
@@ -83,6 +84,7 @@ enum EnumTabDiag {
 
 void menuGeneralSetup(uint8_t event);
 void menuGeneralSdManager(uint8_t event);
+void menuGeneralCustomFunctions(uint8_t event);
 void menuGeneralTrainer(uint8_t event);
 void menuGeneralVersion(uint8_t event);
 void menuGeneralDiagKeys(uint8_t event);
@@ -90,9 +92,10 @@ void menuGeneralDiagAna(uint8_t event);
 void menuGeneralHardware(uint8_t event);
 void menuGeneralCalib(uint8_t event);
 
-const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
+const MenuFuncP_PROGMEM menuTabGeneral[] PROGMEM = {
   menuGeneralSetup,
   CASE_SDCARD(menuGeneralSdManager)
+  CASE_CPUARM(menuGeneralCustomFunctions)
   menuGeneralTrainer,
   menuGeneralVersion,
   menuGeneralDiagKeys,
@@ -215,7 +218,7 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, CASE_RTCLOCK(2) CASE_RTCLOCK(2) CASE_BATTGRAPH(1) LABEL(SOUND), CASE_AUDIO(0) CASE_BUZZER(0) CASE_VOICE(0) CASE_CPUARM(0) CASE_CPUARM(0) CASE_CPUARM(0) 0, CASE_AUDIO(0) CASE_VARIO_CPUARM(LABEL(VARIO)) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) 0, LABEL(ALARMS), 0, CASE_PCBSKY9X(0) CASE_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, CASE_CPUARM(0) CASE_REVPLUS(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, CASE_SPLASH_PARAM(0) CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) CASE_CPUARM(0) CASE_CPUARM(0) IF_FAI_CHOICE(0) CASE_MAVLINK(0) CASE_CPUARM(0) 0, COL_TX_MODE, CASE_PCBTARANIS(0) 1/*to force edit mode*/});
+  MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX+1, {0, CASE_RTCLOCK(2) CASE_RTCLOCK(2) CASE_BATTGRAPH(1) LABEL(SOUND), CASE_AUDIO(0) CASE_BUZZER(0) CASE_VOICE(0) CASE_CPUARM(0) CASE_CPUARM(0) CASE_CPUARM(0) 0, CASE_AUDIO(0) CASE_VARIO_CPUARM(LABEL(VARIO)) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) 0, LABEL(ALARMS), 0, CASE_PCBSKY9X(0) CASE_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, CASE_CPUARM(0) CASE_REVPLUS(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, CASE_SPLASH_PARAM(0) CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) CASE_CPUARM(0) CASE_CPUARM(0) IF_FAI_CHOICE(0) CASE_MAVLINK(0) CASE_CPUARM(0) 0, COL_TX_MODE, CASE_PCBTARANIS(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
 
@@ -918,7 +921,7 @@ void menuGeneralSdManager(uint8_t _event)
 #endif
 
   uint8_t event = ((READ_ONLY() && EVT_KEY_MASK(_event) == KEY_ENTER) ? 0 : _event);
-  SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabDiag, e_Sd, 1+reusableBuffer.sdmanager.count);
+  SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabGeneral, e_Sd, 1+reusableBuffer.sdmanager.count);
 
   if (s_editMode > 0)
     s_editMode = 0;
@@ -1128,6 +1131,14 @@ void menuGeneralSdManager(uint8_t _event)
 }
 #endif
 
+#if defined(CPUARM)
+void menuGeneralCustomFunctions(uint8_t event)
+{
+  MENU(STR_MENUGLOBALFUNCS, menuTabGeneral, e_GeneralCustomFunctions, NUM_CFN+1, {0, NAVIGATION_LINE_BY_LINE|4/*repeated*/});
+  return menuCustomFunctions(event, g_eeGeneral.customFn, globalFunctionsContext);
+}
+#endif
+
 #if LCD_W >= 212
   #define TRAINER_CALIB_POS 12
 #else
@@ -1139,7 +1150,7 @@ void menuGeneralTrainer(uint8_t event)
   uint8_t y;
   bool slave = SLAVE_MODE();
 
-  MENU(STR_MENUTRAINER, menuTabDiag, e_Trainer, (slave ? 1 : 7), {0, 2, 2, 2, 2, 0/*, 0*/});
+  MENU(STR_MENUTRAINER, menuTabGeneral, e_Trainer, (slave ? 1 : 7), {0, 2, 2, 2, 2, 0/*, 0*/});
 
   if (slave) {
     lcd_puts(7*FW, 4*FH, STR_SLAVE);
@@ -1211,7 +1222,7 @@ void menuGeneralTrainer(uint8_t event)
 
 void menuGeneralVersion(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUVERSION, menuTabDiag, e_Vers, 1);
+  SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, e_Vers, 1);
 
   lcd_putsLeft(MENU_TITLE_HEIGHT+FH, vers_stamp);
   
@@ -1241,7 +1252,7 @@ void displayKeyState(uint8_t x, uint8_t y, EnumKeys key)
 
 void menuGeneralDiagKeys(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUDIAG, menuTabDiag, e_Keys, 1);
+  SIMPLE_MENU(STR_MENUDIAG, menuTabGeneral, e_Keys, 1);
 
   lcd_puts(14*FW, MENU_TITLE_HEIGHT+2*FH, STR_VTRIM);
 
@@ -1289,7 +1300,7 @@ void menuGeneralDiagAna(uint8_t event)
   #define ANAS_ITEMS_COUNT 2
 #endif
 
-  SIMPLE_MENU(STR_MENUANA, menuTabDiag, e_Ana, ANAS_ITEMS_COUNT);
+  SIMPLE_MENU(STR_MENUANA, menuTabGeneral, e_Ana, ANAS_ITEMS_COUNT);
 
   STICK_SCROLL_DISABLE();
 
@@ -1362,7 +1373,7 @@ enum menuGeneralHwItems {
 
 void menuGeneralHardware(uint8_t event)
 {
-  MENU(STR_HARDWARE, menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0});
+  MENU(STR_HARDWARE, menuTabGeneral, e_Hardware, ITEM_SETUP_HW_MAX+1, {0});
 
   uint8_t sub = m_posVert - 1;
     
@@ -1417,7 +1428,7 @@ enum menuGeneralHwItems {
 #define GENERAL_HW_PARAM_OFS (2+(15*FW))
 void menuGeneralHardware(uint8_t event)
 {
-  MENU(STR_HARDWARE, menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, 0, (uint8_t)-1, 0, 0, 0, IF_ROTARY_ENCODERS(0) CASE_BLUETOOTH(0)});
+  MENU(STR_HARDWARE, menuTabGeneral, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, 0, (uint8_t)-1, 0, 0, 0, IF_ROTARY_ENCODERS(0) CASE_BLUETOOTH(0)});
 
   uint8_t sub = m_posVert - 1;
 
@@ -1636,7 +1647,7 @@ void menuCommonCalib(uint8_t event)
 
 void menuGeneralCalib(uint8_t event)
 {
-  check_simple(event, e_Calib, menuTabDiag, DIM(menuTabDiag), 0);
+  check_simple(event, e_Calib, menuTabGeneral, DIM(menuTabGeneral), 0);
 
   if (menuEvent) {
     calibrationState = 0;

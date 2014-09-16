@@ -510,9 +510,9 @@ t_Ersky9xModelData_v10::operator ModelData ()
   c9x.thrTrim = thrTrim;
   c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
-  c9x.funcSw[0].func = FuncInstantTrim;
+  c9x.customFn[0].func = FuncInstantTrim;
   if (trimSw) {
-    c9x.funcSw[0].swtch = er9xToSwitch(trimSw);
+    c9x.customFn[0].swtch = er9xToSwitch(trimSw);
   }
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppmPulsePol = pulsePol;
@@ -587,7 +587,7 @@ t_Ersky9xModelData_v10::operator ModelData ()
   }
 
   for (int i=0; i<ERSKY9X_NUM_CSW_V10; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
 
   // for (int i=0; i<ERSKY9X_NUM_CHNOUT_V10; i++)
   //   c9x.safetySw[i] = safetySw[i];
@@ -626,9 +626,9 @@ t_Ersky9xModelData_v11::operator ModelData ()
   c9x.thrTrim = thrTrim;
   c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
-  c9x.funcSw[0].func = FuncInstantTrim;
+  c9x.customFn[0].func = FuncInstantTrim;
   if (trimSw) {
-    c9x.funcSw[0].swtch = er9xToSwitch(trimSw);
+    c9x.customFn[0].swtch = er9xToSwitch(trimSw);
   }
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppmPulsePol = pulsePol;
@@ -703,7 +703,7 @@ t_Ersky9xModelData_v11::operator ModelData ()
   }
 
   for (int i=0; i<ERSKY9X_NUM_CSW_V11; i++)
-    c9x.customSw[i] = customSw[i];
+    c9x.logicalSw[i] = logicalSw[i];
 
   // for (int i=0; i<ERSKY9X_NUM_CHNOUT_V11; i++)
   //  c9x.safetySw[i] = safetySw[i];

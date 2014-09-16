@@ -527,7 +527,6 @@ enum PotType {
 #endif
 
 #include "lcd.h"
-#include "gui/menus.h"
 
 #if defined(TEMPLATES)
   #include "templates.h"
@@ -1218,14 +1217,12 @@ void copyTrimsToOffset(uint8_t ch);
 void copySticksToOffset(uint8_t ch);
 void moveTrimsToOffsets();
 
-void evalFunctions();
-
 #if defined(CPUARM)
 #define ACTIVE_PHASES_TYPE uint16_t
 #define DELAY_POS_SHIFT    0
 #define DELAY_POS_MARGIN   3
 #define delayval_t         int16_t
-PACK(typedef struct t_SwOn {
+PACK(typedef struct {
   uint16_t delay;
   int16_t  now;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   int16_t  prev;
@@ -1237,7 +1234,7 @@ PACK(typedef struct t_SwOn {
 #define DELAY_POS_SHIFT    10
 #define DELAY_POS_MARGIN   0
 #define delayval_t         int8_t
-PACK(typedef struct t_SwOn {
+PACK(typedef struct {
   uint16_t delay:10;
   int16_t  now:2;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   int16_t  prev:2;
@@ -1308,14 +1305,41 @@ enum FunctionsActive {
 #define VARIO_REPEAT_ZERO      500/*ms*/
 #define VARIO_REPEAT_MAX       80/*ms*/
 
-extern MASK_FUNC_TYPE activeFunctions;
-extern MASK_CFN_TYPE  activeFnSwitches;
-extern tmr10ms_t lastFunctionTime[NUM_CFN];
+typedef struct {
+  MASK_FUNC_TYPE activeFunctions;
+  MASK_CFN_TYPE  activeSwitches;
+  tmr10ms_t lastFunctionTime[NUM_CFN];
 
+  inline bool isFuunctionActive(uint8_t func)
+  {
+    return activeFunctions & ((MASK_FUNC_TYPE)1 << func);
+  }
+
+  void reset()
+  {
+    memclear(this, sizeof(*this));
+  }
+} CustomFunctionsContext;
+
+#if defined(CPUARM)
+extern CustomFunctionsContext modelFunctionsContext;
+extern CustomFunctionsContext globalFunctionsContext;
 inline bool isFunctionActive(uint8_t func)
 {
-  return activeFunctions & ((uint8_t)1 << func);
+  return globalFunctionsContext.isFuunctionActive(func) || modelFunctionsContext.isFuunctionActive(func);
 }
+void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext & functionsContext);
+inline void customFunctionsReset()
+{
+  globalFunctionsContext.reset();
+  modelFunctionsContext.reset();
+}
+#else
+extern CustomFunctionsContext modelFunctionsContext;
+#define isFunctionActive(func) modelFunctionsContext.isFuunctionActive(func)
+void evalFunctions();
+#define customFunctionsReset() modelFunctionsContext.reset()
+#endif
 
 #if defined(ROTARY_ENCODERS)
   // Global rotary encoder registers
@@ -1323,6 +1347,8 @@ inline bool isFunctionActive(uint8_t func)
 #elif defined(ROTARY_ENCODER_NAVIGATION)
   extern volatile rotenc_t g_rotenc[1];
 #endif
+
+#include "gui/menus.h"
 
 #if defined (FRSKY)
   // FrSky Telemetry

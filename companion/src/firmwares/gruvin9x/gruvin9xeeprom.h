@@ -202,13 +202,13 @@ PACK(typedef struct t_Gruvin9xSafetySwData { // Safety Switches data
   t_Gruvin9xSafetySwData() { memset(this, 0, sizeof(t_Gruvin9xSafetySwData)); }
 }) Gruvin9xSafetySwData;
 
-PACK(typedef struct t_Gruvin9xFuncSwData { // Function Switches data
+PACK(typedef struct t_Gruvin9xCustomFunctionData { // Function Switches data
   int8_t  swtch; // input
   uint8_t func;
 
-  operator FuncSwData();
-  t_Gruvin9xFuncSwData() { memset(this, 0, sizeof(t_Gruvin9xFuncSwData)); }
-}) Gruvin9xFuncSwData;
+  operator CustomFunctionData();
+  t_Gruvin9xCustomFunctionData() { memset(this, 0, sizeof(t_Gruvin9xCustomFunctionData)); }
+}) Gruvin9xCustomFunctionData;
 
 PACK(typedef struct t_Gruvin9xFrSkyChannelData {
   uint16_t  ratio:12;           // (Maximum resistor divider input volts +/- calibration. 0 means channel not used.
@@ -309,7 +309,7 @@ PACK(typedef struct t_Gruvin9xModelData_v102 {
   Gruvin9xExpoData  expoData[G9X_MAX_EXPOS];
   int8_t    curves5[G9X_MAX_CURVE5][5];
   int8_t    curves9[G9X_MAX_CURVE9][9];
-  Gruvin9xLogicalSwitchData  customSw[G9X_NUM_CSW];
+  Gruvin9xLogicalSwitchData  logicalSw[G9X_NUM_CSW];
   Gruvin9xSafetySwData  safetySw[G9X_NUM_CHNOUT];
   Gruvin9xSwashRingData swashR;
   Gruvin9xFlightModeData_v102 flightModeData[G9X_MAX_FLIGHT_MODES];
@@ -341,7 +341,7 @@ PACK(typedef struct t_Gruvin9xModelData_v103 {
   Gruvin9xExpoData  expoData[G9X_MAX_EXPOS];
   int8_t    curves5[G9X_MAX_CURVE5][5];
   int8_t    curves9[G9X_MAX_CURVE9][9];
-  Gruvin9xLogicalSwitchData  customSw[G9X_NUM_CSW];
+  Gruvin9xLogicalSwitchData  logicalSw[G9X_NUM_CSW];
   Gruvin9xSafetySwData  safetySw[G9X_NUM_CHNOUT];
   Gruvin9xSwashRingData swashR;
   Gruvin9xFlightModeData_v102 flightModeData[G9X_MAX_FLIGHT_MODES];
@@ -373,9 +373,9 @@ PACK(typedef struct t_Gruvin9xModelData_v105 {
   Gruvin9xExpoData  expoData[G9X_MAX_EXPOS];
   int8_t    curves5[G9X_MAX_CURVE5][5];
   int8_t    curves9[G9X_MAX_CURVE9][9];
-  Gruvin9xLogicalSwitchData  customSw[G9X_NUM_CSW];
+  Gruvin9xLogicalSwitchData  logicalSw[G9X_NUM_CSW];
   Gruvin9xSafetySwData  safetySw[G9X_NUM_CHNOUT];
-  Gruvin9xFuncSwData    funcSw[G9X_NUM_FSW];
+  Gruvin9xCustomFunctionData    customFn[G9X_NUM_FSW];
   Gruvin9xSwashRingData swashR;
   Gruvin9xFlightModeData_v102 flightModeData[G9X_MAX_FLIGHT_MODES];
   int16_t   subtrim[NUM_STICKS];
@@ -405,9 +405,9 @@ PACK(typedef struct t_Gruvin9xModelData_v106 {
   Gruvin9xExpoData  expoData[G9X_MAX_EXPOS];
   int8_t    curves5[G9X_MAX_CURVE5][5];
   int8_t    curves9[G9X_MAX_CURVE9][9];
-  Gruvin9xLogicalSwitchData  customSw[G9X_NUM_CSW];
+  Gruvin9xLogicalSwitchData  logicalSw[G9X_NUM_CSW];
   Gruvin9xSafetySwData  safetySw[G9X_NUM_CHNOUT];
-  Gruvin9xFuncSwData    funcSw[G9X_NUM_FSW];
+  Gruvin9xCustomFunctionData    customFn[G9X_NUM_FSW];
   Gruvin9xSwashRingData swashR;
   Gruvin9xFlightModeData_v106 flightModeData[G9X_MAX_FLIGHT_MODES];
   Gruvin9xFrSkyData frsky;

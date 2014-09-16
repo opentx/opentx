@@ -246,13 +246,13 @@ PACK(typedef struct t_Ersky9xFlightModeData {
   uint16_t spare ;		// Future expansion
 }) Ersky9xFlightModeData;
 
-PACK(typedef struct t_Ersky9xFuncSwData { // Function Switches data
+PACK(typedef struct t_Ersky9xCustomFunctionData { // Function Switches data
   int8_t  swtch; //input
   uint8_t func;
   char param[6];
   uint8_t delay;
   uint8_t spare;
-}) Ersky9xFuncSwData;
+}) Ersky9xCustomFunctionData;
 
 PACK(typedef struct t_Ersky9xFrSkyChannelData_v10 {
   uint8_t   ratio;                // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
@@ -360,7 +360,7 @@ PACK(typedef struct t_Ersky9xModelData_v10 {
   int8_t    trim[4];
   int8_t    curves5[ERSKY9X_MAX_CURVE5][5];
   int8_t    curves9[ERSKY9X_MAX_CURVE9][9];
-  Ersky9xLogicalSwitchData_v10   customSw[ERSKY9X_NUM_CSW_V10];
+  Ersky9xLogicalSwitchData_v10   logicalSw[ERSKY9X_NUM_CSW_V10];
   uint8_t   frSkyVoltThreshold ;
   uint8_t   res3[2];
   Ersky9xSafetySwData_v10  safetySw[ERSKY9X_NUM_CHNOUT_V10];
@@ -409,7 +409,7 @@ PACK(typedef struct t_Ersky9xModelData_v11 {
   int8_t    curves5[ERSKY9X_MAX_CURVE5][5];
   int8_t    curves9[ERSKY9X_MAX_CURVE9][9];
   int8_t    curvexy[18];
-  Ersky9xLogicalSwitchData_v11   customSw[ERSKY9X_NUM_CSW_V11];
+  Ersky9xLogicalSwitchData_v11   logicalSw[ERSKY9X_NUM_CSW_V11];
   uint8_t   frSkyVoltThreshold ;
   uint8_t   bt_telemetry;
   uint8_t   numVoice;		// 0-16, rest are Safety switches
@@ -420,7 +420,7 @@ PACK(typedef struct t_Ersky9xModelData_v11 {
   Ersky9xFrSkyAlarmData_v11 frskyAlarms ;
 // Add 6 bytes for custom telemetry screen
   uint8_t customDisplayIndex[6] ;
-  Ersky9xFuncSwData   funcSw[ERSKY9X_NUM_FSW];
+  Ersky9xCustomFunctionData   customFn[ERSKY9X_NUM_FSW];
   Ersky9xFlightModeData flightModeData[6] ;
   Ersky9xGvarData gvars[ERSKY9X_MAX_GVARS] ;
 

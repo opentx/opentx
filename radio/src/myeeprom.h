@@ -406,6 +406,192 @@ PACK(typedef struct {
   int16_t spanPos;
 }) CalibData;
 
+
+enum Functions {
+  // first the functions which need a checkbox
+  FUNC_OVERRIDE_CHANNEL,
+  FUNC_TRAINER,
+  FUNC_INSTANT_TRIM,
+  FUNC_RESET,
+#if defined(CPUARM)
+  FUNC_SET_TIMER,
+#endif
+  FUNC_ADJUST_GVAR,
+#if defined(CPUARM)
+  FUNC_VOLUME,
+  FUNC_RESERVE1,
+  FUNC_RESERVE2,
+  FUNC_RESERVE3,
+#endif
+
+  // then the other functions
+  FUNC_FIRST_WITHOUT_ENABLE,
+  FUNC_PLAY_SOUND = FUNC_FIRST_WITHOUT_ENABLE,
+  FUNC_PLAY_TRACK,
+#if !defined(CPUARM)
+  FUNC_PLAY_BOTH,
+#endif
+  FUNC_PLAY_VALUE,
+#if defined(CPUARM)
+  FUNC_PLAY_DIFF,
+  FUNC_PLAY_SCRIPT,
+  FUNC_RESERVE5,
+  FUNC_BACKGND_MUSIC,
+  FUNC_BACKGND_MUSIC_PAUSE,
+#endif
+  FUNC_VARIO,
+  FUNC_HAPTIC,
+#if !defined(PCBSTD)
+  FUNC_LOGS,
+#endif
+  FUNC_BACKLIGHT,
+#if defined(DEBUG)
+  FUNC_TEST, // should remain the last before MAX as not added in companion9x
+#endif
+  FUNC_MAX
+};
+
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
+  #define HAS_ENABLE_PARAM(func)    ((func) < FUNC_FIRST_WITHOUT_ENABLE)
+#else
+  #define HAS_ENABLE_PARAM(func)    ((func) < FUNC_FIRST_WITHOUT_ENABLE && (func) != FUNC_OVERRIDE_CHANNEL)
+#endif
+
+#if defined(VOICE)
+  #define IS_PLAY_FUNC(func)      ((func) >= FUNC_PLAY_SOUND && func <= FUNC_PLAY_VALUE)
+#else
+  #define IS_PLAY_FUNC(func)      ((func) == FUNC_PLAY_SOUND)
+#endif
+
+#if defined(CPUARM)
+  #define IS_PLAY_BOTH_FUNC(func) (0)
+  #define IS_VOLUME_FUNC(func)    ((func) == FUNC_VOLUME)
+#else
+  #define IS_PLAY_BOTH_FUNC(func) ((func) == FUNC_PLAY_BOTH)
+  #define IS_VOLUME_FUNC(func)    (0)
+#endif
+
+#if defined(GVARS)
+  #define IS_ADJUST_GV_FUNC(func) ((func) == FUNC_ADJUST_GVAR)
+#else
+  #define IS_ADJUST_GV_FUNC(func) (0)
+#endif
+
+#if defined(HAPTIC)
+  #define IS_HAPTIC_FUNC(func)    ((func) == FUNC_HAPTIC)
+#else
+  #define IS_HAPTIC_FUNC(func)    (0)
+#endif
+
+#define HAS_REPEAT_PARAM(func)    (IS_PLAY_FUNC(func) || IS_HAPTIC_FUNC(func))
+
+enum ResetFunctionParam {
+  FUNC_RESET_TIMER1,
+  FUNC_RESET_TIMER2,
+#if defined(CPUARM)
+  FUNC_RESET_TIMER3,
+#endif
+  FUNC_RESET_FLIGHT,
+#if defined(FRSKY)
+  FUNC_RESET_TELEMETRY,
+#endif
+#if ROTARY_ENCODERS > 0
+  FUNC_RESET_ROTENC1,
+#endif
+#if ROTARY_ENCODERS > 1
+  FUNC_RESET_ROTENC2,
+#endif
+  FUNC_RESET_PARAMS_COUNT,
+  FUNC_RESET_PARAM_LAST = FUNC_RESET_PARAMS_COUNT-1
+};
+
+enum AdjustGvarFunctionParam {
+  FUNC_ADJUST_GVAR_CONSTANT,
+  FUNC_ADJUST_GVAR_SOURCE,
+  FUNC_ADJUST_GVAR_GVAR,
+  FUNC_ADJUST_GVAR_INC,
+};
+
+#if defined(CPUARM)
+#if defined(PCBTARANIS)
+  #define LEN_CFN_NAME 8
+  #define CFN_SPARE_TYPE int32_t
+#else
+  #define LEN_CFN_NAME 6
+  #define CFN_SPARE_TYPE int16_t
+#endif
+PACK(typedef struct t_CustomFunctionData { // Function Switches data
+  int8_t  swtch;
+  uint8_t func;
+  PACK(union {
+    PACK(struct {
+      char name[LEN_CFN_NAME];
+    }) play;
+
+    PACK(struct {
+      int16_t val;
+      uint8_t mode;
+      uint8_t param;
+      CFN_SPARE_TYPE spare2;
+    }) all;
+
+    PACK(struct {
+      int32_t val1;
+      CFN_SPARE_TYPE val2;
+    }) clear;
+  });
+  uint8_t active;
+}) CustomFunctionData;
+#define CFN_EMPTY(p)            (!(p)->swtch)
+#define CFN_SWITCH(p)           ((p)->swtch)
+#define CFN_FUNC(p)             ((p)->func)
+#define CFN_ACTIVE(p)           ((p)->active)
+#define CFN_CH_INDEX(p)         ((p)->all.param)
+#define CFN_GVAR_INDEX(p)       ((p)->all.param)
+#define CFN_TIMER_INDEX(p)      ((p)->all.param)
+#define CFN_PLAY_REPEAT(p)      ((p)->active)
+#define CFN_PLAY_REPEAT_MUL     1
+#define CFN_PLAY_REPEAT_NOSTART 0xFF
+#define CFN_GVAR_MODE(p)        ((p)->all.mode)
+#define CFN_PARAM(p)            ((p)->all.val)
+#define CFN_RESET(p)            ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)
+#define CFN_GVAR_CST_MAX        GVAR_LIMIT
+#else
+PACK(typedef struct t_CustomFunctionData {
+  PACK(union {
+    PACK(struct {
+      int16_t   swtch:6;
+      uint16_t  func:4;
+      uint16_t  mode:2;
+      uint16_t  param:3;
+      uint16_t  active:1;
+    }) gvar;
+
+    PACK(struct {
+      int16_t   swtch:6;
+      uint16_t  func:4;
+      uint16_t  param:4;
+      uint16_t  spare:1;
+      uint16_t  active:1;
+    }) all;
+  });
+  uint8_t value;
+}) CustomFunctionData;
+#define CFN_SWITCH(p)       ((p)->all.swtch)
+#define CFN_FUNC(p)         ((p)->all.func)
+#define CFN_ACTIVE(p)       ((p)->all.active)
+#define CFN_CH_INDEX(p)     ((p)->all.param)
+#define CFN_TIMER_INDEX(p)  ((p)->all.param)
+#define CFN_GVAR_INDEX(p)   ((p)->gvar.param)
+#define CFN_PLAY_REPEAT(p)  ((p)->all.param)
+#define CFN_PLAY_REPEAT_MUL 10
+#define CFN_GVAR_MODE(p)    ((p)->gvar.mode)
+#define CFN_PARAM(p)        ((p)->value)
+#define CFN_RESET(p)        ((p)->all.active = 0, CFN_PARAM(p) = 0)
+#define CFN_GVAR_CST_MAX    125
+#endif
+
+
 #if defined(PCBSTD)
   #define N_PCBSTD_FIELD(x)
 #else
@@ -465,6 +651,8 @@ PACK(typedef struct t_EEGeneral {
   EXTRA_GENERAL_FIELDS
 
   swstate_t switchUnlockStates;
+
+  ARM_FIELD(CustomFunctionData customFn[NUM_CFN])
 
 }) EEGeneral;
 
@@ -817,190 +1005,6 @@ PACK(typedef struct t_LogicalSwitchData { // Logical Switches data
   uint8_t func:4;
   uint8_t andsw:4;
 }) LogicalSwitchData;
-#endif
-
-enum Functions {
-  // first the functions which need a checkbox
-  FUNC_OVERRIDE_CHANNEL,
-  FUNC_TRAINER,
-  FUNC_INSTANT_TRIM,
-  FUNC_RESET,
-#if defined(CPUARM)
-  FUNC_SET_TIMER,
-#endif
-  FUNC_ADJUST_GVAR,
-#if defined(CPUARM)
-  FUNC_VOLUME,
-  FUNC_RESERVE1,
-  FUNC_RESERVE2,
-  FUNC_RESERVE3,
-#endif
-
-  // then the other functions
-  FUNC_FIRST_WITHOUT_ENABLE,
-  FUNC_PLAY_SOUND = FUNC_FIRST_WITHOUT_ENABLE,
-  FUNC_PLAY_TRACK,
-#if !defined(CPUARM)
-  FUNC_PLAY_BOTH,
-#endif
-  FUNC_PLAY_VALUE,
-#if defined(CPUARM)
-  FUNC_PLAY_DIFF,
-  FUNC_PLAY_SCRIPT,
-  FUNC_RESERVE5,
-  FUNC_BACKGND_MUSIC,
-  FUNC_BACKGND_MUSIC_PAUSE,
-#endif
-  FUNC_VARIO,
-  FUNC_HAPTIC,
-#if !defined(PCBSTD)
-  FUNC_LOGS,
-#endif
-  FUNC_BACKLIGHT,
-#if defined(DEBUG)
-  FUNC_TEST, // should remain the last before MAX as not added in companion9x
-#endif
-  FUNC_MAX
-};
-
-#if defined(OVERRIDE_CHANNEL_FUNCTION)
-  #define HAS_ENABLE_PARAM(func)    ((func) < FUNC_FIRST_WITHOUT_ENABLE)
-#else
-  #define HAS_ENABLE_PARAM(func)    ((func) < FUNC_FIRST_WITHOUT_ENABLE && (func) != FUNC_OVERRIDE_CHANNEL)
-#endif
-
-#if defined(VOICE)
-  #define IS_PLAY_FUNC(func)      ((func) >= FUNC_PLAY_SOUND && func <= FUNC_PLAY_VALUE)
-#else
-  #define IS_PLAY_FUNC(func)      ((func) == FUNC_PLAY_SOUND)
-#endif
-
-#if defined(CPUARM)
-  #define IS_PLAY_BOTH_FUNC(func) (0)
-  #define IS_VOLUME_FUNC(func)    ((func) == FUNC_VOLUME)
-#else
-  #define IS_PLAY_BOTH_FUNC(func) ((func) == FUNC_PLAY_BOTH)
-  #define IS_VOLUME_FUNC(func)    (0)
-#endif
-
-#if defined(GVARS)
-  #define IS_ADJUST_GV_FUNC(func) ((func) == FUNC_ADJUST_GVAR)
-#else
-  #define IS_ADJUST_GV_FUNC(func) (0)
-#endif
-
-#if defined(HAPTIC)
-  #define IS_HAPTIC_FUNC(func)    ((func) == FUNC_HAPTIC)
-#else
-  #define IS_HAPTIC_FUNC(func)    (0)
-#endif
-
-#define HAS_REPEAT_PARAM(func)    (IS_PLAY_FUNC(func) || IS_HAPTIC_FUNC(func))
-
-enum ResetFunctionParam {
-  FUNC_RESET_TIMER1,
-  FUNC_RESET_TIMER2,
-#if defined(CPUARM)
-  FUNC_RESET_TIMER3,
-#endif
-  FUNC_RESET_FLIGHT,
-#if defined(FRSKY)
-  FUNC_RESET_TELEMETRY,
-#endif
-#if ROTARY_ENCODERS > 0
-  FUNC_RESET_ROTENC1,
-#endif
-#if ROTARY_ENCODERS > 1
-  FUNC_RESET_ROTENC2,
-#endif
-  FUNC_RESET_PARAMS_COUNT,
-  FUNC_RESET_PARAM_LAST = FUNC_RESET_PARAMS_COUNT-1
-};
-
-enum AdjustGvarFunctionParam {
-  FUNC_ADJUST_GVAR_CONSTANT,
-  FUNC_ADJUST_GVAR_SOURCE,
-  FUNC_ADJUST_GVAR_GVAR,
-  FUNC_ADJUST_GVAR_INC,
-};
-
-#if defined(CPUARM)
-#if defined(PCBTARANIS)
-  #define LEN_CFN_NAME 8
-  #define CFN_SPARE_TYPE int32_t
-#else
-  #define LEN_CFN_NAME 6
-  #define CFN_SPARE_TYPE int16_t
-#endif
-PACK(typedef struct t_CustomFnData { // Function Switches data
-  int8_t  swtch;
-  uint8_t func;
-  PACK(union {
-    PACK(struct {
-      char name[LEN_CFN_NAME];
-    }) play;
-
-    PACK(struct {
-      int16_t val;
-      uint8_t mode;
-      uint8_t param;
-      CFN_SPARE_TYPE spare2;
-    }) all;
-
-    PACK(struct {
-      int32_t val1;
-      CFN_SPARE_TYPE val2;
-    }) clear;
-  });
-  uint8_t active;
-}) CustomFnData;
-#define CFN_EMPTY(p)            (!(p)->swtch)
-#define CFN_SWITCH(p)           ((p)->swtch)
-#define CFN_FUNC(p)             ((p)->func)
-#define CFN_ACTIVE(p)           ((p)->active)
-#define CFN_CH_INDEX(p)         ((p)->all.param)
-#define CFN_GVAR_INDEX(p)       ((p)->all.param)
-#define CFN_TIMER_INDEX(p)      ((p)->all.param)
-#define CFN_PLAY_REPEAT(p)      ((p)->active)
-#define CFN_PLAY_REPEAT_MUL     1
-#define CFN_PLAY_REPEAT_NOSTART 0xFF
-#define CFN_GVAR_MODE(p)        ((p)->all.mode)
-#define CFN_PARAM(p)            ((p)->all.val)
-#define CFN_RESET(p)            ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)
-#define CFN_GVAR_CST_MAX        GVAR_LIMIT
-#else
-PACK(typedef struct t_CustomFnData {
-  PACK(union {
-    PACK(struct {
-      int16_t   swtch:6;
-      uint16_t  func:4;
-      uint16_t  mode:2;
-      uint16_t  param:3;
-      uint16_t  active:1;
-    }) gvar;
-
-    PACK(struct {
-      int16_t   swtch:6;
-      uint16_t  func:4;
-      uint16_t  param:4;
-      uint16_t  spare:1;
-      uint16_t  active:1;
-    }) all;
-  });
-  uint8_t value;
-}) CustomFnData;
-#define CFN_SWITCH(p)       ((p)->all.swtch)
-#define CFN_FUNC(p)         ((p)->all.func)
-#define CFN_ACTIVE(p)       ((p)->all.active)
-#define CFN_CH_INDEX(p)     ((p)->all.param)
-#define CFN_TIMER_INDEX(p)  ((p)->all.param)
-#define CFN_GVAR_INDEX(p)   ((p)->gvar.param)
-#define CFN_PLAY_REPEAT(p)  ((p)->all.param)
-#define CFN_PLAY_REPEAT_MUL 10
-#define CFN_GVAR_MODE(p)    ((p)->gvar.mode)
-#define CFN_PARAM(p)        ((p)->value)
-#define CFN_RESET(p)        ((p)->all.active = 0, CFN_PARAM(p) = 0)
-#define CFN_GVAR_CST_MAX    125
 #endif
 
 enum TelemetryUnit {
@@ -1832,7 +1836,7 @@ PACK(typedef struct {
   int8_t    points[NUM_POINTS];
   
   LogicalSwitchData logicalSw[NUM_LOGICAL_SWITCH];
-  CustomFnData funcSw[NUM_CFN];
+  CustomFunctionData customFn[NUM_CFN];
   SwashRingData swashR;
   FlightModeData flightModeData[MAX_FLIGHT_MODES];
 

@@ -1015,8 +1015,8 @@ void CompareDialog::printSwitches()
     str.append("<tr><td><table border=1 cellspacing=0 cellpadding=1 width=\"100%\">");
     for (int i=0; i<GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
       GeneralSettings settings;
-      QString sw1 = g_model1->customSw[i].toString(*g_model1, settings);
-      QString sw2 = g_model2->customSw[i].toString(*g_model2, settings);
+      QString sw1 = g_model1->logicalSw[i].toString(*g_model1, settings);
+      QString sw2 = g_model2->logicalSw[i].toString(*g_model2, settings);
       if (!(sw1.isEmpty() && sw2.isEmpty())) {
         str.append("<tr>");
         color=getColor1(sw1,sw2);
@@ -1059,8 +1059,8 @@ void CompareDialog::printFSwitches()
   str.append("</tr>");
   for(int i=0; i<GetCurrentFirmware()->getCapability(CustomFunctions); i++)
   {
-    if (g_model1->funcSw[i].swtch.type || g_model2->funcSw[i].swtch.type) {
-      if ((g_model1->funcSw[i].swtch != g_model2->funcSw[i].swtch) || (g_model1->funcSw[i].func!=g_model2->funcSw[i].func) || (g_model1->funcSw[i].adjustMode!=g_model2->funcSw[i].adjustMode) || (g_model1->funcSw[i].param!=g_model2->funcSw[i].param)) {
+    if (g_model1->customFn[i].swtch.type || g_model2->customFn[i].swtch.type) {
+      if ((g_model1->customFn[i].swtch != g_model2->customFn[i].swtch) || (g_model1->customFn[i].func!=g_model2->customFn[i].func) || (g_model1->customFn[i].adjustMode!=g_model2->customFn[i].adjustMode) || (g_model1->customFn[i].param!=g_model2->customFn[i].param)) {
         color1="green";
         color2="red";
       } else {
@@ -1068,18 +1068,18 @@ void CompareDialog::printFSwitches()
         color2="grey";
       }
       str.append("<tr>");
-      if (g_model1->funcSw[i].swtch.type) {
-        str.append(doTC(g_model1->funcSw[i].swtch.toString(),color1));
-        str.append(doTC(g_model1->funcSw[i].funcToString(),color1));
-        str.append(doTC(g_model1->funcSw[i].paramToString(),color1));
-        int index=g_model1->funcSw[i].func;
+      if (g_model1->customFn[i].swtch.type) {
+        str.append(doTC(g_model1->customFn[i].swtch.toString(),color1));
+        str.append(doTC(g_model1->customFn[i].funcToString(),color1));
+        str.append(doTC(g_model1->customFn[i].paramToString(),color1));
+        int index=g_model1->customFn[i].func;
         if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
-          str.append(doTC(QString("%1").arg(g_model1->funcSw[i].repeatParam),color1));
+          str.append(doTC(QString("%1").arg(g_model1->customFn[i].repeatParam),color1));
         } else {
           str.append(doTC( "---",color1));
         }
         if ((index<=FuncInstantTrim) || (index>FuncBackgroundMusicPause)) {
-          str.append(doTC((g_model1->funcSw[i].enabled ? "ON" : "OFF"),color1));
+          str.append(doTC((g_model1->customFn[i].enabled ? "ON" : "OFF"),color1));
         } else {
           str.append(doTC( "---",color1));
         }
@@ -1087,18 +1087,18 @@ void CompareDialog::printFSwitches()
         str.append("<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>");
       }
       str.append(doTC(tr("SF")+QString("%1").arg(i+1),"",true));
-      if (g_model2->funcSw[i].swtch.type) {
-        str.append(doTC(g_model2->funcSw[i].swtch.toString(),color2));
-        str.append(doTC(g_model2->funcSw[i].funcToString(),color2));
-        str.append(doTC(g_model2->funcSw[i].paramToString(),color2));
-        int index=g_model2->funcSw[i].func;
+      if (g_model2->customFn[i].swtch.type) {
+        str.append(doTC(g_model2->customFn[i].swtch.toString(),color2));
+        str.append(doTC(g_model2->customFn[i].funcToString(),color2));
+        str.append(doTC(g_model2->customFn[i].paramToString(),color2));
+        int index=g_model2->customFn[i].func;
         if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
-          str.append(doTC(QString("%1").arg(g_model2->funcSw[i].repeatParam),color2));
+          str.append(doTC(QString("%1").arg(g_model2->customFn[i].repeatParam),color2));
         } else {
           str.append(doTC( "---",color2));
         }
         if ((index<=FuncInstantTrim) || (index>FuncBackgroundMusicPause)) {
-          str.append(doTC((g_model2->funcSw[i].enabled ? "ON" : "OFF"),color2));
+          str.append(doTC((g_model2->customFn[i].enabled ? "ON" : "OFF"),color2));
         } else {
           str.append(doTC( "---",color2));
         }

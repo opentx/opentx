@@ -713,15 +713,15 @@ QString LogicalSwitchData::toString(const ModelData & model, const GeneralSettin
   return result;
 }
 
-void FuncSwData::clear()
+void CustomFunctionData::clear()
 {
-  memset(this, 0, sizeof(FuncSwData));
+  memset(this, 0, sizeof(CustomFunctionData));
   if (!GetCurrentFirmware()->getCapability(SafetyChannelCustomFunction)) {
     func = FuncTrainer;
   }
 }
 
-QString FuncSwData::funcToString()
+QString CustomFunctionData::funcToString()
 {
   ModelData model;
   if (func >= FuncOverrideCH1 && func <= FuncOverrideCH32)
@@ -771,7 +771,7 @@ QString FuncSwData::funcToString()
   }
 }
 
-QString FuncSwData::paramToString()
+QString CustomFunctionData::paramToString()
 {
   QStringList qs;
   if (func <= FuncInstantTrim) {
@@ -842,7 +842,7 @@ QString FuncSwData::paramToString()
   return "";
 }
 
-QString FuncSwData::repeatToString()
+QString CustomFunctionData::repeatToString()
 {
   if (repeatParam==0) {
     return QObject::tr("No repeat");
@@ -1159,9 +1159,9 @@ void ModelData::clear()
   for (int i=0; i<NUM_STICKS; i++)
     expoData[i].clear();
   for (int i=0; i<C9X_NUM_CSW; i++)
-    customSw[i].clear();
+    logicalSw[i].clear();
   for (int i=0; i<C9X_MAX_CUSTOM_FUNCTIONS; i++)
-    funcSw[i].clear();
+    customFn[i].clear();
   for (int i=0; i<C9X_MAX_CURVES; i++)
     curves[i].clear(5);
   for (int i=0; i<C9X_MAX_TIMERS; i++)
