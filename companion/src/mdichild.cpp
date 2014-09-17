@@ -45,7 +45,7 @@
 #include "hexinterface.h"
 #include "mainwindow.h"
 #include "modeledit/modeledit.h"
-#include "generaledit.h"
+#include "generaledit/generaledit.h"
 #include "avroutputdialog.h"
 #include "burnconfigdialog.h"
 #include "printdialog.h"
@@ -163,8 +163,8 @@ void MdiChild::checkAndInitModel(int row)
 
 void MdiChild::generalEdit()
 {
-  GeneralEdit *t = new GeneralEdit(radioData, this);
-  connect(t, SIGNAL(modelValuesChanged()), this, SLOT(setModified()));
+  GeneralEdit *t = new GeneralEdit(this, radioData, GetCurrentFirmware()/*firmware*/);
+  connect(t, SIGNAL(modified()), this, SLOT(setModified()));
   t->show();
 }
 

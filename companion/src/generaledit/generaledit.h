@@ -1,0 +1,60 @@
+#ifndef GENERALEDIT_H
+#define GENERALEDIT_H
+
+#include <QDialog>
+#include "eeprominterface.h"
+#include "helpers.h"
+
+namespace Ui {
+  class GeneralEdit;
+}
+
+class GeneralPanel : public GenericPanel
+{
+  Q_OBJECT
+
+  public:
+    GeneralPanel(QWidget *parent, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    virtual ~GeneralPanel();
+
+  protected:
+    GeneralSettings & generalSettings;
+    FirmwareInterface * firmware;
+};
+
+class GeneralEdit : public QDialog
+{
+  Q_OBJECT
+
+  public:
+    GeneralEdit(QWidget * parent, RadioData & radioData, FirmwareInterface * firmware);
+    ~GeneralEdit();
+
+  private:
+    Ui::GeneralEdit *ui;
+    GeneralSettings & generalSettings;
+
+    bool switchDefPosEditLock;
+    bool voiceLangEditLock;
+    bool mavbaudEditLock;
+    void getGeneralSwitchDefPos(int i, bool val);
+    void setSwitchDefPos();
+    void updateVarioPitchRange();
+    
+  signals:
+    void modified();
+
+  private slots:
+    void onTabModified();
+    void on_tabWidget_currentChanged(int index);
+    void on_calretrieve_PB_clicked();
+    void on_calstore_PB_clicked();
+
+  private:
+    FirmwareInterface * firmware;
+    QVector<GeneralPanel *> panels;
+    void addTab(GeneralPanel *panel, QString text);
+
+};
+
+#endif // GENERALEDIT_H

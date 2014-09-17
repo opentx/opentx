@@ -105,6 +105,7 @@ include_directories(
 )
 
 add_subdirectory(modeledit)
+add_subdirectory(generaledit)
 add_subdirectory(simulation)
 
 set(common_SRCS
@@ -145,7 +146,6 @@ set(companion_SRCS
   # ${PROJECT_BINARY_DIR}/radio.cxx
   helpers.cpp
   mdichild.cpp
-  generaledit.cpp
   modelslist.cpp
   mountlist.cpp 
   avroutputdialog.cpp
@@ -184,7 +184,6 @@ set(companion_MOC_HDRS
   splashlabel.h
   burndialog.h
   downloaddialog.h
-  generaledit.h
   modelslist.h
   mdichild.h
   mainwindow.h
@@ -205,7 +204,6 @@ set(companion_UIS
   fwpreferencesdialog.ui
   burnconfigdialog.ui
   downloaddialog.ui
-  generaledit.ui
   printdialog.ui
   contributorsdialog.ui
   customizesplashdialog.ui
@@ -283,7 +281,7 @@ ELSE( )
     ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${companion_SRCS} ${companion_QM} )
 ENDIF( )
 
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} modeledit simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} generaledit modeledit simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
 
 ############# Standalone simu ###############
 

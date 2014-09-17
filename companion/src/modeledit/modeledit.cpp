@@ -55,38 +55,6 @@ void ModelEdit::closeEvent(QCloseEvent *event)
   g.modelEditGeo( saveGeometry() );
 }
 
-class VerticalScrollArea : public QScrollArea
-{
-  public:
-    VerticalScrollArea(QWidget * parent, ModelPanel * panel);
-
-  protected:
-    virtual bool eventFilter(QObject *o, QEvent *e);
-
-  private:
-    ModelPanel * panel;
-    QWidget * parent;
-};
-
-VerticalScrollArea::VerticalScrollArea(QWidget * parent, ModelPanel * panel):
-  QScrollArea(parent),
-  panel(panel),
-  parent(parent)
-{
-  setWidgetResizable(true);
-  setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  setWidget(panel);
-  panel->installEventFilter(this);
-}
-
-bool VerticalScrollArea::eventFilter(QObject *o, QEvent *e)
-{
-  if (o == panel && e->type() == QEvent::Resize) {
-    setMinimumWidth(panel->minimumSizeHint().width() + verticalScrollBar()->width());
-  }
-  return false;
-}
-
 void ModelEdit::addTab(ModelPanel *panel, QString text)
 {
   panels << panel;

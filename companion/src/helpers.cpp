@@ -95,31 +95,6 @@ void populateGvSourceCB(QComboBox *b, int value)
   b->setCurrentIndex(value);
 }
 
-void populateVoiceLangCB(QComboBox *b, QString language)
-{
-  QString strings[] = { QObject::tr("English"), QObject::tr("Finnish"), QObject::tr("French"), QObject::tr("Italian"), QObject::tr("German"), QObject::tr("Czech"), QObject::tr("Slovak"), QObject::tr("Spanish"), QObject::tr("Polish"), QObject::tr("Portuguese"), QObject::tr("Swedish"), NULL};
-  QString langcode[] = { "en", "fi","fr", "it", "de", "cz", "sk", "es", "pl", "pt", "se", NULL};
-  
-  b->clear();
-  for (int i=0; strings[i]!=NULL; i++) {
-    b->addItem(strings[i],langcode[i]);
-    if (language==langcode[i]) {
-      b->setCurrentIndex(b->count()-1);
-    }
-  }
-}
-
-void populateRotEncCB(QComboBox *b, int value, int renumber)
-{
-  QString strings[] = { QObject::tr("No"), QObject::tr("RotEnc A"), QObject::tr("Rot Enc B"), QObject::tr("Rot Enc C"), QObject::tr("Rot Enc D"), QObject::tr("Rot Enc E")};
-  
-  b->clear();
-  for (int i=0; i<= renumber; i++) {
-    b->addItem(strings[i]);
-  }
-  b->setCurrentIndex(value);
-}
-
 QString getProtocolStr(const int proto)
 {
   static const char *strings[] = { "OFF",
@@ -381,18 +356,6 @@ void populateGvarUseCB(QComboBox *b, unsigned int phase)
     if (i != (int)phase) {
       b->addItem(QObject::tr("Flight mode %1 value").arg(i));
     }
-  }
-}
-
-void populateBacklightCB(QComboBox *b, const uint8_t value)
-{
-  QString strings[] = { QObject::tr("OFF"), QObject::tr("Keys"), QObject::tr("Sticks"), QObject::tr("Keys + Sticks"), QObject::tr("ON"), NULL };
-
-  b->clear();
-
-  for (int i=0; !strings[i].isNull(); i++) {
-    b->addItem(strings[i], 0);
-    if (value == i) b->setCurrentIndex(b->count()-1);
   }
 }
 
@@ -1033,4 +996,117 @@ QString generateProcessUniqueTempFileName(const QString & fileName)
   QString sanitizedFileName = fileName;
   sanitizedFileName.remove('/');
   return QDir::tempPath() + QString("/%1-").arg(QCoreApplication::applicationPid()) + sanitizedFileName;
+}
+
+GenericPanel::GenericPanel(QWidget * parent):
+  QWidget(parent),
+  lock(false)
+{
+}
+
+GenericPanel::~GenericPanel()
+{
+}
+
+void GenericPanel::update()
+{
+}
+
+void GenericPanel::addLabel(QGridLayout * gridLayout, QString text, int col, bool minimize)
+{
+  QLabel *label = new QLabel(this);
+  label->setFrameShape(QFrame::Panel);
+  label->setFrameShadow(QFrame::Raised);
+  label->setMidLineWidth(0);
+  label->setAlignment(Qt::AlignCenter);
+  label->setMargin(5);
+  label->setText(text);
+  if (!minimize)
+    label->setMinimumWidth(100);
+  gridLayout->addWidget(label, 0, col, 1, 1);
+}
+
+void GenericPanel::addEmptyLabel(QGridLayout * gridLayout, int col)
+{
+  QLabel *label = new QLabel(this);
+  label->setText("");
+  gridLayout->addWidget(label, 0, col, 1, 1);
+}
+
+void GenericPanel::addHSpring(QGridLayout * gridLayout, int col, int row)
+{
+    QSpacerItem * spacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum );
+    gridLayout->addItem(spacer, row, col);
+}
+
+void GenericPanel::addVSpring(QGridLayout * gridLayout, int col, int row)
+{
+    QSpacerItem * spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding );
+    gridLayout->addItem(spacer, row, col);
+}
+
+void GenericPanel::addDoubleSpring(QGridLayout * gridLayout, int col, int row)
+{
+    QSpacerItem * spacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding );
+    gridLayout->addItem(spacer, row, col);
+}
+
+bool GenericPanel::eventFilter(QObject *object, QEvent * event)
+{
+  QWidget * widget = qobject_cast<QWidget*>(object);
+  if (widget) {
+    if (event->type() == QEvent::Wheel) {
+      if (widget->focusPolicy() == Qt::WheelFocus) {
+        event->accept();
+        return false;
+      }
+      else {
+        event->ignore();
+        return true;
+      }
+    }
+    else if (event->type() == QEvent::FocusIn) {
+      widget->setFocusPolicy(Qt::WheelFocus);
+    }
+    else if (event->type() == QEvent::FocusOut) {
+      widget->setFocusPolicy(Qt::StrongFocus);
+    }
+  }
+  return QWidget::eventFilter(object, event);
+}
+
+void GenericPanel::disableMouseScrolling()
+{
+  Q_FOREACH(QComboBox * cb, findChildren<QComboBox*>()) {
+    cb->installEventFilter(this);
+    cb->setFocusPolicy(Qt::StrongFocus);
+  }
+
+  Q_FOREACH(QAbstractSpinBox * sb, findChildren<QAbstractSpinBox*>()) {
+    sb->installEventFilter(this);
+    sb->setFocusPolicy(Qt::StrongFocus);
+  }
+
+  Q_FOREACH(QSlider * slider, findChildren<QSlider*>()) {
+    slider->installEventFilter(this);
+    slider->setFocusPolicy(Qt::StrongFocus);
+  }
+}
+VerticalScrollArea::VerticalScrollArea(QWidget * parent, GenericPanel * panel):
+  QScrollArea(parent),
+  panel(panel),
+  parent(parent)
+{
+  setWidgetResizable(true);
+  setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  setWidget(panel);
+  panel->installEventFilter(this);
+}
+
+bool VerticalScrollArea::eventFilter(QObject *o, QEvent *e)
+{
+  if (o == panel && e->type() == QEvent::Resize) {
+    setMinimumWidth(panel->minimumSizeHint().width() + verticalScrollBar()->width());
+  }
+  return false;
 }

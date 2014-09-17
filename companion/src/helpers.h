@@ -26,9 +26,7 @@ extern const QColor colors[C9X_MAX_CURVES];
 #define TRIM_MODE_NONE  0x1F  // 0b11111
 
 void populateGvSourceCB(QComboBox *b, int value);
-void populateVoiceLangCB(QComboBox *b, QString language);
 void populateRotEncCB(QComboBox *b, int value, int renumber);
-void populateBacklightCB(QComboBox *b, const uint8_t value);
 
 QString getTheme();
 
@@ -151,4 +149,44 @@ int qunlink(const QString & fileName);
 
 QString generateProcessUniqueTempFileName(const QString & fileName);
 
+
+class GenericPanel : public QWidget
+{
+  Q_OBJECT
+
+  friend class QUnsignedAutoComboBox;
+
+  public:
+    GenericPanel(QWidget *parent);
+    virtual ~GenericPanel();
+
+  signals:
+    void modified();
+
+  public slots:
+    virtual void update();
+
+  protected:
+    bool lock;
+    void addLabel(QGridLayout * gridLayout, QString text, int col, bool mimimize=false);
+    void addEmptyLabel(QGridLayout * gridLayout, int col);
+    void addHSpring(QGridLayout *, int col, int row);
+    void addVSpring(QGridLayout *, int col, int row);
+    void addDoubleSpring(QGridLayout *, int col, int row);
+    virtual bool eventFilter(QObject *obj, QEvent *event);
+    void disableMouseScrolling();
+};
+
+class VerticalScrollArea : public QScrollArea
+{
+  public:
+    VerticalScrollArea(QWidget * parent, GenericPanel * panel);
+
+  protected:
+    virtual bool eventFilter(QObject *o, QEvent *e);
+
+  private:
+    GenericPanel * panel;
+    QWidget * parent;
+};
 #endif // HELPERS_H
