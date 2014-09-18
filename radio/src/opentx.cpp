@@ -2114,8 +2114,15 @@ void evalFunctions()
 
 #if defined(HAPTIC) && !defined(CPUARM)
           case FUNC_HAPTIC:
-            haptic.event(AU_FRSKY_LAST+CFN_PARAM(sd));
+          {
+            tmr10ms_t tmr10ms = get_tmr10ms();
+            uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
+            if (!lastFunctionTime[i] || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=1000*repeatParam)) {
+              lastFunctionTime[i] = tmr10ms;
+              haptic.event(AU_FRSKY_LAST+CFN_PARAM(sd));
+            }
             break;
+          }
 #endif
 
 #if defined(SDCARD)
