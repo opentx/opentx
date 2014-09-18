@@ -1,7 +1,7 @@
 #ifndef CHANNELS_H
 #define CHANNELS_H
 
-#include "modelpanel.h"
+#include "modeledit.h"
 #include <QSpinBox>
 
 class GVarGroup;

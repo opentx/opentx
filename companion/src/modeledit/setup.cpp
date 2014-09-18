@@ -223,7 +223,7 @@ void ModulePanel::update()
         break;
     }
   }
-  else if (!IS_TARANIS(firmware->getBoard()) || model.trainerMode != 0) {
+  else if (!IS_TARANIS(firmware->getBoard()) || model->trainerMode != 0) {
     mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
   }
 
@@ -231,7 +231,7 @@ void ModulePanel::update()
   ui->protocol->setVisible(mask & MASK_PROTOCOL);
   ui->label_rxNumber->setVisible(mask & MASK_FAILSAFES);
   ui->rxNumber->setVisible(mask & MASK_FAILSAFES);
-  ui->rxNumber->setValue(model.modelId);
+  ui->rxNumber->setValue(model->modelId);
   ui->label_channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsStart->setValue(module.channelsStart+1);
@@ -250,7 +250,7 @@ void ModulePanel::update()
   ui->ppmDelay->setValue(module.ppmDelay);
   ui->label_ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
-  ui->ppmFrameLength->setMinimum(module.channelsCount*(model.extendedLimits ? 2.250 : 2)+3.5);
+  ui->ppmFrameLength->setMinimum(module.channelsCount*(model->extendedLimits ? 2.250 : 2)+3.5);
   ui->ppmFrameLength->setMaximum(firmware->getCapability(PPMFrameLength));
   ui->ppmFrameLength->setValue(22.5+((double)module.ppmFrameLength)*0.5);
 
@@ -271,7 +271,7 @@ void ModulePanel::update()
 void ModulePanel::on_trainerMode_currentIndexChanged(int index)
 {
   if (!lock) {
-    model.trainerMode = index;
+    model->trainerMode = index;
     update();
     emit modified();
   }
@@ -321,7 +321,7 @@ void ModulePanel::on_ppmDelay_editingFinished()
 
 void ModulePanel::on_rxNumber_editingFinished()
 {
-  model.modelId = ui->rxNumber->value();
+  model->modelId = ui->rxNumber->value();
   emit modified();
 }
 
@@ -522,39 +522,39 @@ SetupPanel::~SetupPanel()
 
 void SetupPanel::on_extendedLimits_toggled(bool checked)
 {
-  model.extendedLimits = checked;
+  model->extendedLimits = checked;
   emit extendedLimitsToggled();
   emit modified();
 }
 
 void SetupPanel::on_throttleWarning_toggled(bool checked)
 {
-  model.disableThrottleWarning = !checked;
+  model->disableThrottleWarning = !checked;
   emit modified();
 }
 
 void SetupPanel::on_throttleReverse_toggled(bool checked)
 {
-  model.throttleReversed = checked;
+  model->throttleReversed = checked;
   emit modified();
 }
 
 void SetupPanel::on_extendedTrims_toggled(bool checked)
 {
-  model.extendedTrims = checked;
+  model->extendedTrims = checked;
   emit modified();
 }
 
 void SetupPanel::on_trimIncrement_currentIndexChanged(int index)
 {
-  model.trimInc = index-2;
+  model->trimInc = index-2;
   emit modified();
 }
 
 void SetupPanel::on_throttleSource_currentIndexChanged(int index)
 {
   if (!lock) {
-    model.thrTraceSrc = ui->throttleSource->itemData(index).toInt();
+    model->thrTraceSrc = ui->throttleSource->itemData(index).toInt();
     emit modified();
   }
 }
@@ -562,25 +562,25 @@ void SetupPanel::on_throttleSource_currentIndexChanged(int index)
 void SetupPanel::on_name_editingFinished()
 {
   int length = ui->name->maxLength();
-  strncpy(model.name, ui->name->text().toAscii(), length);
+  strncpy(model->name, ui->name->text().toAscii(), length);
   emit modified();
 }
 
 void SetupPanel::on_image_currentIndexChanged(int index)
 {
   if (!lock) {
-    strncpy(model.bitmap, ui->image->currentText().toAscii(), 10);
+    strncpy(model->bitmap, ui->image->currentText().toAscii(), 10);
     QString path = g.profile[g.id()].sdPath();
     path.append("/BMP/");
     QDir qd(path);
     if (qd.exists()) {
       QString fileName=path;
-      fileName.append(model.bitmap);
+      fileName.append(model->bitmap);
       fileName.append(".bmp");
       QImage image(fileName);
       if (image.isNull()) {
         fileName=path;
-        fileName.append(model.bitmap);
+        fileName.append(model->bitmap);
         fileName.append(".BMP");
         image.load(fileName);
       }
@@ -618,13 +618,13 @@ void SetupPanel::populateThrottleSourceCB()
     }
   }
 
-  if (model.thrTraceSrc < i)
-    ui->throttleSource->setCurrentIndex(model.thrTraceSrc);
+  if (model->thrTraceSrc < i)
+    ui->throttleSource->setCurrentIndex(model->thrTraceSrc);
 
   int channels = (IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
   for (int i=0; i<channels; i++) {
     ui->throttleSource->addItem(QObject::tr("CH%1").arg(i+1, 2, 10, QChar('0')), THROTTLE_SOURCE_FIRST_CHANNEL+i);
-    if (model.thrTraceSrc == unsigned(THROTTLE_SOURCE_FIRST_CHANNEL+i))
+    if (model->thrTraceSrc == unsigned(THROTTLE_SOURCE_FIRST_CHANNEL+i))
       ui->throttleSource->setCurrentIndex(ui->throttleSource->count()-1);
   }
 
@@ -633,18 +633,18 @@ void SetupPanel::populateThrottleSourceCB()
 
 void SetupPanel::update()
 {
-  ui->name->setText(model.name);
+  ui->name->setText(model->name);
 
-  ui->throttleReverse->setChecked(model.throttleReversed);
+  ui->throttleReverse->setChecked(model->throttleReversed);
   populateThrottleSourceCB();
-  ui->throttleWarning->setChecked(!model.disableThrottleWarning);
+  ui->throttleWarning->setChecked(!model->disableThrottleWarning);
 
   //trim inc, thro trim, thro expo, instatrim
-  ui->trimIncrement->setCurrentIndex(model.trimInc+2);
-  ui->throttleTrim->setChecked(model.thrTrim);
-  ui->extendedLimits->setChecked(model.extendedLimits);
-  ui->extendedTrims->setChecked(model.extendedTrims);
-  ui->displayText->setChecked(model.displayChecklist);
+  ui->trimIncrement->setCurrentIndex(model->trimInc+2);
+  ui->throttleTrim->setChecked(model->thrTrim);
+  ui->extendedLimits->setChecked(model->extendedLimits);
+  ui->extendedTrims->setChecked(model->extendedTrims);
+  ui->displayText->setChecked(model->displayChecklist);
 
   updateBeepCenter();
   updateStartupSwitches();
@@ -664,7 +664,7 @@ void SetupPanel::update()
 void SetupPanel::updateBeepCenter()
 {
   for (int i=0; i<centerBeepCheckboxes.size(); i++) {
-    centerBeepCheckboxes[i]->setChecked(model.beepANACenter & (0x01 << i));
+    centerBeepCheckboxes[i]->setChecked(model->beepANACenter & (0x01 << i));
   }
 }
 
@@ -672,12 +672,12 @@ void SetupPanel::updateStartupSwitches()
 {
   lock = true;
 
-  unsigned int switchStates = model.switchWarningStates;
+  unsigned int switchStates = model->switchWarningStates;
 
   for (int i=0; i<firmware->getCapability(Switches)-1; i++) {
     QSlider * slider = startupSwitchesSliders[i];
     QCheckBox * cb = startupSwitchesCheckboxes[i];
-    bool enabled = !(model.nSwToWarn & (1 << i));
+    bool enabled = !(model->nSwToWarn & (1 << i));
     slider->setEnabled(enabled);
     cb->setChecked(enabled);
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
@@ -721,10 +721,10 @@ void SetupPanel::startupSwitchEdited(int value)
       }
     }
 
-    model.switchWarningStates &= ~mask;
+    model->switchWarningStates &= ~mask;
 
     if (value) {
-      model.switchWarningStates |= (value << shift);
+      model->switchWarningStates |= (value << shift);
     }
 
     updateStartupSwitches();
@@ -738,9 +738,9 @@ void SetupPanel::startupSwitchToggled(bool checked)
     int index = sender()->property("index").toInt()-1;
   
     if (checked)
-      model.nSwToWarn &= ~(1 << index);
+      model->nSwToWarn &= ~(1 << index);
     else
-      model.nSwToWarn |= (1 << index);
+      model->nSwToWarn |= (1 << index);
 
     updateStartupSwitches();
     emit modified();
@@ -750,14 +750,14 @@ void SetupPanel::startupSwitchToggled(bool checked)
 void SetupPanel::updatePotWarnings()
 {
   lock = true;
-  int mode = model.nPotsToWarn >> 6;
+  int mode = model->nPotsToWarn >> 6;
   ui->potWarningMode->setCurrentIndex(mode);
 
   if (mode == 0)
-    model.nPotsToWarn = 0x3F;
+    model->nPotsToWarn = 0x3F;
 
   for (int i=0; i<potWarningCheckboxes.size(); i++) {
-    bool enabled = !(model.nPotsToWarn & (1 << i));
+    bool enabled = !(model->nPotsToWarn & (1 << i));
 
     potWarningCheckboxes[i]->setChecked(enabled);
     potWarningCheckboxes[i]->setDisabled(mode == 0);
@@ -771,9 +771,9 @@ void SetupPanel::potWarningToggled(bool checked)
     int index = sender()->property("index").toInt()-1;
 
     if(checked)
-      model.nPotsToWarn &= ~(1 << index);
+      model->nPotsToWarn &= ~(1 << index);
     else
-      model.nPotsToWarn |= (1 << index);
+      model->nPotsToWarn |= (1 << index);
 
     updatePotWarnings();
     emit modified();
@@ -784,8 +784,8 @@ void SetupPanel::on_potWarningMode_currentIndexChanged(int index)
 {
   if (!lock) {
     int mask = 0xC0;
-    model.nPotsToWarn = model.nPotsToWarn & ~mask;
-    model.nPotsToWarn = model.nPotsToWarn | ((index << 6) & mask);
+    model->nPotsToWarn = model->nPotsToWarn & ~mask;
+    model->nPotsToWarn = model->nPotsToWarn | ((index << 6) & mask);
 
     updatePotWarnings();
     emit modified();
@@ -794,13 +794,13 @@ void SetupPanel::on_potWarningMode_currentIndexChanged(int index)
 
 void SetupPanel::on_displayText_toggled(bool checked)
 {
-  model.displayChecklist = checked;
+  model->displayChecklist = checked;
   emit modified();
 }
 
 void SetupPanel::on_throttleTrim_toggled(bool checked)
 {
-  model.thrTrim = checked;
+  model->thrTrim = checked;
   emit modified();
 }
 
@@ -810,9 +810,9 @@ void SetupPanel::onBeepCenterToggled(bool checked)
     int index = sender()->property("index").toInt();
     unsigned int mask = (0x01 << index);
     if (checked)
-      model.beepANACenter |= mask;
+      model->beepANACenter |= mask;
     else
-      model.beepANACenter &= ~mask;
+      model->beepANACenter &= ~mask;
     emit modified();
   }
 }

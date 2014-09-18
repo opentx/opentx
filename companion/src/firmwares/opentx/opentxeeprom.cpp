@@ -524,7 +524,7 @@ class SourceField: public ConversionField< UnsignedField<N> > {
   public:
     SourceField(RawSource & source, BoardEnum board, unsigned int version, unsigned int variant, unsigned long flags=0):
       ConversionField< UnsignedField<N> >(_source, SourcesConversionTable::getInstance(board, version, variant, flags), 
-            "Source", "Source "+ source.toString(ModelData())+" cannot be exported on this board!"),
+            "Source", "Source "+ source.toString()+" cannot be exported on this board!"),
       source(source),
       _source(0)
     {
@@ -1888,12 +1888,14 @@ class ArmCustomFunctionField: public TransformedField {
       variant(variant),
       functionsConversionTable(board, version),
       sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, version >= 216 ? 0 : FLAG_NONONE)),
-      _active(0)
+      _func(0),
+      _active(0),
+      _mode(0)
     {
       memset(_param, 0, sizeof(_param));
 
       internalField.Append(new SwitchField<8>(fn.swtch, board, version));
-      internalField.Append(new ConversionField< UnsignedField<8> >((unsigned int &)fn.func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
+      internalField.Append(new ConversionField< UnsignedField<8> >(_func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
 
       if (IS_TARANIS(board) && version >= 216)
         internalField.Append(new CharField<8>(_param, false));
@@ -1917,86 +1919,90 @@ class ArmCustomFunctionField: public TransformedField {
 
     virtual void beforeExport()
     {
-      _mode = 0;
+      if (fn.swtch.type != SWITCH_TYPE_NONE) {
+        _func = fn.func;
 
-      if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic)
-        _active = (version >= 216 ? fn.repeatParam : (fn.repeatParam/5));
-      else
-        _active = (fn.enabled ? 1 : 0);
+        if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic)
+          _active = (version >= 216 ? fn.repeatParam : (fn.repeatParam/5));
+        else
+          _active = (fn.enabled ? 1 : 0);
 
-      if (fn.func >= FuncOverrideCH1 && fn.func <= FuncOverrideCH32) {
-        if (version >= 216) {
-          *((uint16_t *)_param) = fn.param;
-          *((uint8_t *)(_param+3)) = fn.func - FuncOverrideCH1;
+        if (fn.func >= FuncOverrideCH1 && fn.func <= FuncOverrideCH32) {
+          if (version >= 216) {
+            *((uint16_t *)_param) = fn.param;
+            *((uint8_t *)(_param+3)) = fn.func - FuncOverrideCH1;
+          }
+          else {
+            *((uint32_t *)_param) = fn.param;
+          }
         }
-        else {
-          *((uint32_t *)_param) = fn.param;
+        else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
+          if (version >= 216)
+            *((uint8_t *)(_param+3)) = fn.func - FuncTrainer;
         }
-      }
-      else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
-        if (version >= 216)
-          *((uint8_t *)(_param+3)) = fn.func - FuncTrainer;
-      }
-      else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer3) {
-        if (version >= 216) {
-          *((uint16_t *)_param) = fn.param;
-          *((uint8_t *)(_param+3)) = fn.func - FuncSetTimer1;
+        else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer3) {
+          if (version >= 216) {
+            *((uint16_t *)_param) = fn.param;
+            *((uint8_t *)(_param+3)) = fn.func - FuncSetTimer1;
+          }
         }
-      }
-      else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic) {
-        memcpy(_param, fn.paramarm, sizeof(_param));
-      }
-      else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
-        if (version >= 216) {
-          *((uint8_t *)(_param+2)) = fn.adjustMode;
-          *((uint8_t *)(_param+3)) = fn.func - FuncAdjustGV1;
-          unsigned int value;
-          if (fn.adjustMode == 1)
+        else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic) {
+          memcpy(_param, fn.paramarm, sizeof(_param));
+        }
+        else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
+          if (version >= 216) {
+            *((uint8_t *)(_param+2)) = fn.adjustMode;
+            *((uint8_t *)(_param+3)) = fn.func - FuncAdjustGV1;
+            unsigned int value;
+            if (fn.adjustMode == 1)
+              sourcesConversionTable->exportValue(fn.param, (int &)value);
+            else if (fn.adjustMode == 2)
+              value = RawSource(fn.param).index;
+            else
+              value = fn.param;
+            *((uint16_t *)_param) = value;
+          }
+          else if (version >= 214) {
+            unsigned int value;
+            _mode = fn.adjustMode;
+            if (fn.adjustMode == 1)
+              sourcesConversionTable->exportValue(fn.param, (int &)value);
+            else if (fn.adjustMode == 2)
+              value = RawSource(fn.param).index;
+            else
+              value = fn.param;
+            *((uint32_t *)_param) = value;
+          }
+          else {
+            unsigned int value;
             sourcesConversionTable->exportValue(fn.param, (int &)value);
-          else if (fn.adjustMode == 2)
-            value = RawSource(fn.param).index;
-          else
-            value = fn.param;
-          *((uint16_t *)_param) = value;
+            *((uint32_t *)_param) = value;
+          }
         }
-        else if (version >= 214) {
-          unsigned int value;
-          _mode = fn.adjustMode;
-          if (fn.adjustMode == 1)
-            sourcesConversionTable->exportValue(fn.param, (int &)value);
-          else if (fn.adjustMode == 2)
-            value = RawSource(fn.param).index;
-          else
-            value = fn.param;
-          *((uint32_t *)_param) = value;
-        }
-        else {
+        else if (fn.func == FuncPlayValue || fn.func == FuncVolume) {
           unsigned int value;
           sourcesConversionTable->exportValue(fn.param, (int &)value);
-          *((uint32_t *)_param) = value;
+          if (version >= 216)
+            *((uint16_t *)_param) = value;
+          else
+            *((uint32_t *)_param) = value;
         }
-      }
-      else if (fn.func == FuncPlayValue || fn.func == FuncVolume) {
-        unsigned int value;
-        sourcesConversionTable->exportValue(fn.param, (int &)value);
-        if (version >= 216)
-          *((uint16_t *)_param) = value;
-        else
-          *((uint32_t *)_param) = value;
-      }
-      else if (fn.func == FuncReset) {
-        if (version >= 217)
+        else if (fn.func == FuncReset) {
+          if (version >= 217)
+            *((uint32_t *)_param) = fn.param;
+          else
+            *((uint32_t *)_param) = (fn.param < 2 ? fn.param : fn.param-1);
+        }
+        else {
           *((uint32_t *)_param) = fn.param;
-        else
-          *((uint32_t *)_param) = (fn.param < 2 ? fn.param : fn.param-1);
-      }
-      else {
-        *((uint32_t *)_param) = fn.param;
+        }
       }
     }
 
     virtual void afterImport()
     {
+      fn.func = (AssignFunc)_func;
+
       if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic)
         fn.repeatParam = (version >= 216 ? _active : (_active*5));
       else
@@ -2079,6 +2085,7 @@ class ArmCustomFunctionField: public TransformedField {
     unsigned int variant;
     CustomFunctionsConversionTable functionsConversionTable;
     SourcesConversionTable * sourcesConversionTable;
+    unsigned int _func;
     char _param[10];
     int _active;
     unsigned int _mode;
@@ -2977,6 +2984,14 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
         internalField.Append(new UnsignedField<2>(potsType[i]));
       }
       internalField.Append(new UnsignedField<8>(generalData.backlightColor));
+    }
+    if (version >= 216) {
+      internalField.Append(new SpareBitsField<16>());
+    }
+    if (version >= 217) {
+      for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++) {
+        internalField.Append(new ArmCustomFunctionField(generalData.customFn[i], board, version, variant));
+      }
     }
   }
 }

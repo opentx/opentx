@@ -65,14 +65,14 @@ QString getPhaseName(int val, const char * phasename)
   }
 }
 
-QString getInputStr(ModelData & model, int index)
+QString getInputStr(ModelData * model, int index)
 {
   QString result;
 
   if (GetCurrentFirmware()->getCapability(VirtualInputs)) {
-    if (strlen(model.inputNames[index]) > 0) {
+    if (strlen(model->inputNames[index]) > 0) {
       result = QObject::tr("[I%1]").arg(index+1);
-      result += QString(model.inputNames[index]);
+      result += QString(model->inputNames[index]);
     }
     else {
       result = QObject::tr("Input%1").arg(index+1, 2, 10, QChar('0'));
@@ -516,7 +516,7 @@ void populateGVCB(QComboBox *b, int value)
   }
 }
 
-void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & model, unsigned int flags)
+void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData * model, unsigned int flags)
 {
   BoardEnum board = GetCurrentFirmware()->getBoard();
   RawSource item;
@@ -539,10 +539,10 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
     }
   }
 
-  if (flags & POPULATE_VIRTUAL_INPUTS) {
+  if (model && (flags & POPULATE_VIRTUAL_INPUTS)) {
     int virtualInputs = GetCurrentFirmware()->getCapability(VirtualInputs);
     for (int i=0; i<virtualInputs; i++) {
-      if (model.isInputValid(i)) {
+      if (model->isInputValid(i)) {
         item = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i);
         b->addItem(item.toString(model), item.toValue());
         if (item == source) b->setCurrentIndex(b->count()-1);
@@ -761,8 +761,7 @@ QString getFrSkyMeasure(int units)
 
 QString getFrSkySrc(int index)
 {
-  ModelData model;
-  return RawSource(SOURCE_TYPE_TELEMETRY, index-1).toString(model);
+  return RawSource(SOURCE_TYPE_TELEMETRY, index-1).toString();
 }
 
 QString getTrimInc(ModelData * g_model)
@@ -808,7 +807,7 @@ QString getProtocol(ModelData * g_model)
   return str;
 }
 
-QString getPhasesStr(unsigned int phases, ModelData & model)
+QString getPhasesStr(unsigned int phases, ModelData * model)
 {
   int numphases = GetCurrentFirmware()->getCapability(FlightModes);
 
@@ -822,7 +821,7 @@ QString getPhasesStr(unsigned int phases, ModelData & model)
       for (int i=0; i<numphases;i++) {
         if (!(phases & (1<<i))) {
           if (count++ > 0) str += QString(", ");
-          str += getPhaseName(i+1, model.flightModeData[i].name);
+          str += getPhaseName(i+1, model->flightModeData[i].name);
         }
       }
     }
@@ -998,8 +997,11 @@ QString generateProcessUniqueTempFileName(const QString & fileName)
   return QDir::tempPath() + QString("/%1-").arg(QCoreApplication::applicationPid()) + sanitizedFileName;
 }
 
-GenericPanel::GenericPanel(QWidget * parent):
+GenericPanel::GenericPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
   QWidget(parent),
+  model(model),
+  generalSettings(generalSettings),
+  firmware(firmware),
   lock(false)
 {
 }

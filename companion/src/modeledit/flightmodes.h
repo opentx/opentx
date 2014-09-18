@@ -1,7 +1,7 @@
 #ifndef FLIGHTMODES_H
 #define FLIGHTMODES_H
 
-#include "modelpanel.h"
+#include "modeledit.h"
 #include <QVector>
 #include <QLabel>
 #include <QTabWidget>

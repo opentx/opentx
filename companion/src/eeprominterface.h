@@ -208,6 +208,9 @@ extern const char rightArrow[];
 extern const char upArrow[];
 extern const char downArrow[];
 
+class ModelData;
+class GeneralSettings;
+
 enum ThrottleSource {
   THROTTLE_SOURCE_THR,
   THROTTLE_SOURCE_P1,
@@ -302,8 +305,6 @@ enum RawSourceType {
   MAX_SOURCE_TYPE
 };
 
-class ModelData;
-
 QString AnalogString(int index);
 QString RotaryEncoderString(int index);
 
@@ -335,7 +336,6 @@ class RawSourceRange
 #define RANGE_DELTA_FUNCTION      2
 #define RANGE_DELTA_ABS_FUNCTION  4
 
-class GeneralSettings;
 class RawSource {
   public:
     RawSource():
@@ -361,9 +361,9 @@ class RawSource {
       return index >= 0 ? (type * 65536 + index) : -(type * 65536 - index);
     }
 
-    QString toString(const ModelData & model);
+    QString toString(const ModelData * model = NULL);
     
-    RawSourceRange getRange(const ModelData & model, const GeneralSettings & settings, unsigned int flags=0) const;
+    RawSourceRange getRange(const ModelData * model, const GeneralSettings & settings, unsigned int flags=0) const;
     
     bool operator == ( const RawSource & other) {
       return (this->type == other.type) && (this->index == other.index);
@@ -432,121 +432,6 @@ class RawSwitch {
 
     RawSwitchType type;
     int index;
-};
-
-class TrainerMix {
-  public:
-    TrainerMix() { clear(); }
-    unsigned int src; // 0-7 = ch1-8
-    RawSwitch swtch;
-    int weight;
-    unsigned int mode;   // off, add-mode, subst-mode
-    void clear() { memset(this, 0, sizeof(TrainerMix)); }
-};
-
-class TrainerData {
-  public:
-    TrainerData() { clear(); }
-    int         calib[4];
-    TrainerMix  mix[4];
-    void clear() { memset(this, 0, sizeof(TrainerData)); }
-};
-
-enum BeeperMode {
-  e_quiet = -2,
-  e_alarms_only = -1,
-  e_no_keys = 0,
-  e_all = 1
-};
-
-class GeneralSettings {
-  public:
-    GeneralSettings();
-
-    int getDefaultStick(unsigned int channel) const;
-    RawSource getDefaultSource(unsigned int channel) const;
-    int getDefaultChannel(unsigned int stick) const;
-
-    unsigned int version;
-    unsigned int variant;
-    int   calibMid[NUM_STICKS+C9X_NUM_POTS];
-    int   calibSpanNeg[NUM_STICKS+C9X_NUM_POTS];
-    int   calibSpanPos[NUM_STICKS+C9X_NUM_POTS];
-    unsigned int  currModel; // 0..15
-    unsigned int   contrast;
-    unsigned int   vBatWarn;
-    int    vBatCalib;
-    int    vBatMin;
-    int    vBatMax;
-    int   backlightMode;
-    TrainerData trainer;
-    unsigned int   view;    // main screen view // TODO enum
-    bool      disableThrottleWarning;
-    bool      fai;
-    int       switchWarning; // -1=down, 0=off, 1=up
-    bool      disableMemoryWarning;
-    BeeperMode beeperMode;
-    bool      disableAlarmWarning;
-    bool      enableTelemetryAlarm;
-    BeeperMode hapticMode;
-    unsigned int   stickMode; // TODO enum
-    int    timezone;
-    bool      optrexDisplay;
-    unsigned int    inactivityTimer;
-    bool      minuteBeep;
-    bool      preBeep;
-    bool      flashBeep;
-    bool      disablePotScroll;
-    bool      frskyinternalalarm;
-    bool      disableBG;
-    unsigned int  splashMode;
-    int splashDuration;
-    unsigned int  backlightDelay;
-    bool   blightinv;
-    bool   stickScroll;
-    unsigned int   templateSetup;  //RETA order according to chout_ar array
-    int    PPM_Multiplier;
-    int    hapticLength;
-    unsigned int   reNavigation;
-    unsigned int stickReverse;
-    bool      hideNameOnSplash;
-    bool      enablePpmsim;
-    unsigned int   speakerPitch;
-    int   hapticStrength;
-    unsigned int   speakerMode;
-    unsigned int   lightOnStickMove; /* er9x / ersky9x only */
-    char      ownerName[10+1];
-    unsigned int   switchWarningStates;
-    int    beeperLength;
-    unsigned int    gpsFormat;
-    int     speakerVolume;
-    unsigned int   backlightBright;
-    int switchesDelay;
-    int    currentCalib;
-    int    temperatureCalib;
-    int    temperatureWarn;
-    unsigned int mAhWarn;
-    unsigned int mAhUsed;
-    unsigned int globalTimer;
-    unsigned int btBaudrate;
-    unsigned int sticksGain;
-    unsigned int rotarySteps;
-    unsigned int countryCode;
-    unsigned int imperial;
-    bool crosstrim;
-    char ttsLanguage[2+1];
-    int beepVolume;
-    int wavVolume;
-    int varioVolume;
-    int varioPitch;
-    int varioRange;
-    int varioRepeat;
-    int backgroundVolume;
-    unsigned int mavbaud;
-    unsigned int switchUnlockStates;
-    unsigned int hw_uartMode;
-    unsigned int potsType[8];
-    unsigned int backlightColor;
 };
 
 class CurveReference {
@@ -1065,6 +950,123 @@ class ModelData {
 
   protected:
     void removeGlobalVar(int & var);
+};
+
+
+class TrainerMix {
+  public:
+    TrainerMix() { clear(); }
+    unsigned int src; // 0-7 = ch1-8
+    RawSwitch swtch;
+    int weight;
+    unsigned int mode;   // off, add-mode, subst-mode
+    void clear() { memset(this, 0, sizeof(TrainerMix)); }
+};
+
+class TrainerData {
+  public:
+    TrainerData() { clear(); }
+    int         calib[4];
+    TrainerMix  mix[4];
+    void clear() { memset(this, 0, sizeof(TrainerData)); }
+};
+
+enum BeeperMode {
+  e_quiet = -2,
+  e_alarms_only = -1,
+  e_no_keys = 0,
+  e_all = 1
+};
+
+class GeneralSettings {
+  public:
+    GeneralSettings();
+
+    int getDefaultStick(unsigned int channel) const;
+    RawSource getDefaultSource(unsigned int channel) const;
+    int getDefaultChannel(unsigned int stick) const;
+
+    unsigned int version;
+    unsigned int variant;
+    int   calibMid[NUM_STICKS+C9X_NUM_POTS];
+    int   calibSpanNeg[NUM_STICKS+C9X_NUM_POTS];
+    int   calibSpanPos[NUM_STICKS+C9X_NUM_POTS];
+    unsigned int  currModel; // 0..15
+    unsigned int   contrast;
+    unsigned int   vBatWarn;
+    int    vBatCalib;
+    int    vBatMin;
+    int    vBatMax;
+    int   backlightMode;
+    TrainerData trainer;
+    unsigned int   view;    // main screen view // TODO enum
+    bool      disableThrottleWarning;
+    bool      fai;
+    int       switchWarning; // -1=down, 0=off, 1=up
+    bool      disableMemoryWarning;
+    BeeperMode beeperMode;
+    bool      disableAlarmWarning;
+    bool      enableTelemetryAlarm;
+    BeeperMode hapticMode;
+    unsigned int   stickMode; // TODO enum
+    int    timezone;
+    bool      optrexDisplay;
+    unsigned int    inactivityTimer;
+    bool      minuteBeep;
+    bool      preBeep;
+    bool      flashBeep;
+    bool      disablePotScroll;
+    bool      frskyinternalalarm;
+    bool      disableBG;
+    unsigned int  splashMode;
+    int splashDuration;
+    unsigned int  backlightDelay;
+    bool   blightinv;
+    bool   stickScroll;
+    unsigned int   templateSetup;  //RETA order according to chout_ar array
+    int    PPM_Multiplier;
+    int    hapticLength;
+    unsigned int   reNavigation;
+    unsigned int stickReverse;
+    bool      hideNameOnSplash;
+    bool      enablePpmsim;
+    unsigned int   speakerPitch;
+    int   hapticStrength;
+    unsigned int   speakerMode;
+    unsigned int   lightOnStickMove; /* er9x / ersky9x only */
+    char      ownerName[10+1];
+    unsigned int   switchWarningStates;
+    int    beeperLength;
+    unsigned int    gpsFormat;
+    int     speakerVolume;
+    unsigned int   backlightBright;
+    int switchesDelay;
+    int    currentCalib;
+    int    temperatureCalib;
+    int    temperatureWarn;
+    unsigned int mAhWarn;
+    unsigned int mAhUsed;
+    unsigned int globalTimer;
+    unsigned int btBaudrate;
+    unsigned int sticksGain;
+    unsigned int rotarySteps;
+    unsigned int countryCode;
+    unsigned int imperial;
+    bool crosstrim;
+    char ttsLanguage[2+1];
+    int beepVolume;
+    int wavVolume;
+    int varioVolume;
+    int varioPitch;
+    int varioRange;
+    int varioRepeat;
+    int backgroundVolume;
+    unsigned int mavbaud;
+    unsigned int switchUnlockStates;
+    unsigned int hw_uartMode;
+    unsigned int potsType[8];
+    unsigned int backlightColor;
+    CustomFunctionData customFn[C9X_MAX_CUSTOM_FUNCTIONS];
 };
 
 class RadioData {

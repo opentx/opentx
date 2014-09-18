@@ -59,7 +59,7 @@ void InputsPanel::update()
   int curDest = -1;
 
   for (int i=0; i<C9X_MAX_EXPOS; i++) {
-    ExpoData *md = &model.expoData[i];
+    ExpoData *md = &model->expoData[i];
 
     if (md->mode==0) break;
 
@@ -104,7 +104,7 @@ bool InputsPanel::AddInputLine(int dest)
   QByteArray qba(1, (quint8)dest);
   if (dest >= 0) {
     //add input data
-    ExpoData *md = &model.expoData[dest];
+    ExpoData *md = &model->expoData[dest];
     qba.append((const char*)md, sizeof(ExpoData));
   }
   itm->setData(Qt::UserRole, qba);  
@@ -139,9 +139,9 @@ QString InputsPanel::getInputText(int dest, bool * new_ch)
     if (new_ch) *new_ch = 1;
   }
   else {
-    ExpoData *md = &model.expoData[dest];
+    ExpoData *md = &model->expoData[dest];
 
-    if ((dest == 0) || (model.expoData[dest-1].chn != md->chn)) {
+    if ((dest == 0) || (model->expoData[dest-1].chn != md->chn)) {
       if (new_ch) *new_ch = 1;
       if (firmware->getCapability(VirtualInputs))
         str = QString("%1").arg(getInputStr(model, md->chn), -10, ' ');
@@ -191,14 +191,14 @@ QString InputsPanel::getInputText(int dest, bool * new_ch)
 
 bool InputsPanel::gm_insertExpo(int idx)
 {
-  if (idx<0 || idx>=C9X_MAX_EXPOS || model.expoData[C9X_MAX_EXPOS-1].mode > 0) {
+  if (idx<0 || idx>=C9X_MAX_EXPOS || model->expoData[C9X_MAX_EXPOS-1].mode > 0) {
     QMessageBox::information(this, "Companion", tr("Not enough available inputs!"));
     return false;
   }
 
-  int chn = model.expoData[idx].chn;
+  int chn = model->expoData[idx].chn;
 
-  ExpoData * newExpo = model.insertInput(idx);
+  ExpoData * newExpo = model->insertInput(idx);
   newExpo->chn = chn;
   newExpo->weight = 100;
   newExpo->mode = INPUT_MODE_BOTH;
@@ -208,26 +208,27 @@ bool InputsPanel::gm_insertExpo(int idx)
 
 void InputsPanel::gm_deleteExpo(int index)
 {
-  model.removeInput(index);
+  model->removeInput(index);
 }
 
 void InputsPanel::gm_openExpo(int index)
 {
     if(index<0 || index>=C9X_MAX_EXPOS) return;
 
-    ExpoData mixd(model.expoData[index]);
+    ExpoData mixd(model->expoData[index]);
     char inputName[4+1];
     emit modified();
     update();
     
-    if (firmware->getCapability(VirtualInputs))
-      strcpy(inputName, model.inputNames[mixd.chn]);
+    if (firmware->getCapability(VirtualInputs)) {
+      strcpy(inputName, model->inputNames[mixd.chn]);
+    }
 
-    ExpoDialog *g = new ExpoDialog(this, model, &mixd, generalSettings, firmware, inputName);
+    ExpoDialog *g = new ExpoDialog(this, *model, &mixd, generalSettings, firmware, inputName);
     if (g->exec())  {
-      model.expoData[index] = mixd;
+      model->expoData[index] = mixd;
       if (firmware->getCapability(VirtualInputs))
-        strcpy(model.inputNames[mixd.chn], inputName);
+        strcpy(model->inputNames[mixd.chn], inputName);
       emit modified();
       update();
     }
@@ -244,7 +245,7 @@ void InputsPanel::gm_openExpo(int index)
 int InputsPanel::getExpoIndex(unsigned int dch)
 {
     unsigned int i = 0;
-    while (model.expoData[i].chn<=dch && model.expoData[i].mode && i<C9X_MAX_EXPOS) i++;
+    while (model->expoData[i].chn<=dch && model->expoData[i].mode && i<C9X_MAX_EXPOS) i++;
     if(i==C9X_MAX_EXPOS) return -1;
     return i;
 }
@@ -302,7 +303,7 @@ void InputsPanel::exposCopy()
 
     QByteArray mxData;
     foreach(int idx, list) {
-      mxData.append((char*)&model.expoData[idx],sizeof(ExpoData));
+      mxData.append((char*)&model->expoData[idx], sizeof(ExpoData));
     }
 
     QMimeData *mimeData = new QMimeData;
@@ -329,7 +330,7 @@ void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
       idx = getExpoIndex(dch) - 1; //get expo index to insert
     } else {
       idx = destIdx;
-      dch = model.expoData[idx].chn;
+      dch = model->expoData[idx].chn;
     }
 
     QByteArray mxData = mimeData->data("application/x-companion-expo");
@@ -339,7 +340,7 @@ void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
       idx++;
       if (!gm_insertExpo(idx))
         break;
-      ExpoData *md = &model.expoData[idx];
+      ExpoData *md = &model->expoData[idx];
       memcpy(md, mxData.mid(i, sizeof(ExpoData)).constData(), sizeof(ExpoData));
       md->chn = dch;
       i += sizeof(ExpoData);
@@ -378,7 +379,7 @@ void InputsPanel::expoOpen(QListWidgetItem *item)
       idx = getExpoIndex(ch); // get expo index to insert
       if (!gm_insertExpo(idx))
         return;
-      model.expoData[idx].chn = ch;
+      model->expoData[idx].chn = ch;
       expoInserted=true;
     } else {
         expoInserted=false;
@@ -396,7 +397,7 @@ void InputsPanel::expoAdd()
       index++;
       if (!gm_insertExpo(index))
         return;
-      model.expoData[index].chn = model.expoData[index-1].chn;
+      model->expoData[index].chn = model->expoData[index-1].chn;
     }
     gm_openExpo(index);
 }
@@ -452,8 +453,8 @@ int InputsPanel::gm_moveExpo(int idx, bool dir) //true=inc=down false=dec=up
     int tdx = dir ? idx+1 : idx-1;
     ExpoData temp;
     temp.clear();
-    ExpoData &src=model.expoData[idx];
-    ExpoData &tgt=model.expoData[tdx];
+    ExpoData &src=model->expoData[idx];
+    ExpoData &tgt=model->expoData[tdx];
     if (!dir && tdx<0 && src.chn>0) {
       src.chn--;
       return idx;
@@ -524,7 +525,7 @@ void InputsPanel::exposDeleteList(QList<int> list)
 void InputsPanel::clearExpos()
 {
   if (QMessageBox::question(this, tr("Clear Inputs?"), tr("Really clear all the inputs?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
-    model.clearInputs();
+    model->clearInputs();
     emit modified();
     update();
   }

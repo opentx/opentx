@@ -15,7 +15,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   QLabel * lb_fp[] = {ui->lb_FP0,ui->lb_FP1,ui->lb_FP2,ui->lb_FP3,ui->lb_FP4,ui->lb_FP5,ui->lb_FP6,ui->lb_FP7,ui->lb_FP8 };
   QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
 
-  setWindowTitle(tr("Edit %1").arg(getInputStr(model, ed->chn)));
+  setWindowTitle(tr("Edit %1").arg(getInputStr(&model, ed->chn)));
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
 
   if (IS_TARANIS(GetEepromInterface()->getBoard())) {
@@ -60,7 +60,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   if (firmware->getCapability(VirtualInputs)) {
     ui->inputName->setMaxLength(4);
-    populateSourceCB(ui->sourceCB, ed->srcRaw, model, POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | POPULATE_TELEMETRY);
+    populateSourceCB(ui->sourceCB, ed->srcRaw, &model, POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | POPULATE_TELEMETRY);
     ui->sourceCB->removeItem(0);
   }
   else {
@@ -122,7 +122,7 @@ ExpoDialog::~ExpoDialog()
 void ExpoDialog::updateScale()
 {
   if (firmware->getCapability(VirtualInputs) && ed->srcRaw.type == SOURCE_TYPE_TELEMETRY) {
-    RawSourceRange range = ed->srcRaw.getRange(model, generalSettings);
+    RawSourceRange range = ed->srcRaw.getRange(&model, generalSettings);
     ui->scaleLabel->show();
     ui->scale->show();
     ui->scale->setDecimals(range.decimals);
@@ -146,7 +146,7 @@ void ExpoDialog::valuesChanged()
       updateScale();
     }
 
-    RawSourceRange range = srcRaw.getRange(model, generalSettings);
+    RawSourceRange range = srcRaw.getRange(&model, generalSettings);
     ed->scale = round(float(ui->scale->value()) / range.step);
     ed->carryTrim = 1 - ui->trimCB->currentIndex();
     ed->swtch  = RawSwitch(ui->switchesCB->itemData(ui->switchesCB->currentIndex()).toInt());

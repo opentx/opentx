@@ -5,20 +5,10 @@
 #include "ui_generaledit.h"
 #include "helpers.h"
 #include "appdata.h"
-#include "setup.h"
+#include "generalsetup.h"
 #include "trainer.h"
 #include "calibration.h"
-
-GeneralPanel::GeneralPanel(QWidget * parent, GeneralSettings & generalSettings, FirmwareInterface * firmware):
-  GenericPanel(parent),
-  generalSettings(generalSettings),
-  firmware(firmware)
-{
-}
-
-GeneralPanel::~GeneralPanel()
-{
-}
+#include "../modeledit/customfunctions.h"
 
 GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, FirmwareInterface * firmware) :
   QDialog(parent),
@@ -48,6 +38,9 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, FirmwareInterf
   }
 
   addTab(new GeneralSetupPanel(this, generalSettings, firmware), tr("Setup"));
+  if (IS_ARM(firmware->getBoard())) {
+    addTab(new CustomFunctionsPanel(this, NULL, generalSettings, firmware), tr("Global Functions"));
+  }
   addTab(new TrainerPanel(this, generalSettings, firmware), tr("Trainer"));
   addTab(new CalibrationPanel(this, generalSettings, firmware), tr("Calibration"));
 }
@@ -57,7 +50,7 @@ GeneralEdit::~GeneralEdit()
   delete ui;
 }
 
-void GeneralEdit::addTab(GeneralPanel *panel, QString text)
+void GeneralEdit::addTab(GenericPanel *panel, QString text)
 {
   panels << panel;
   QWidget * widget = new QWidget(ui->tabWidget);
@@ -75,6 +68,7 @@ void GeneralEdit::onTabModified()
 
 void GeneralEdit::on_tabWidget_currentChanged(int index)
 {
+  panels[index]->update();
   g.generalEditTab(index);
 }
 

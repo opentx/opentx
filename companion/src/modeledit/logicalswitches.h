@@ -1,7 +1,7 @@
 #ifndef CUSTOMSWITCHES_H
 #define CUSTOMSWITCHES_H
 
-#include "modelpanel.h"
+#include "modeledit.h"
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QTimeEdit>

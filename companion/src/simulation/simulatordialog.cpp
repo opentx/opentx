@@ -373,7 +373,7 @@ void SimulatorDialog::initUi(T * ui)
     }
     QLabel * label = new QLabel(tabWidget);
     ModelData model;
-    label->setText(RawSource(SOURCE_TYPE_CH, i).toString(model));
+    label->setText(RawSource(SOURCE_TYPE_CH, i).toString(&model));
     outputTab->addWidget(label, line, column == 0 ? 0 : 5, 1, 1);
 
     QSlider * slider = new QSlider(tabWidget);

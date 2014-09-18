@@ -2,7 +2,7 @@
 #define QAUTOCOMBOBOX_H_
 
 #include <QComboBox>
-#include "modeledit/modelpanel.h"
+#include "modeledit/modeledit.h"
 
 class QUnsignedAutoComboBox: public QComboBox
 {

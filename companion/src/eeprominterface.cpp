@@ -92,7 +92,7 @@ QString getGVarString(int16_t val, bool sign)
   }
 }
 
-RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSettings & settings, unsigned int flags) const
+RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSettings & settings, unsigned int flags) const
 {
   RawSourceRange result;
 
@@ -137,13 +137,13 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
         case TELEMETRY_SOURCE_A2_MIN:
         case TELEMETRY_SOURCE_A3_MIN:
         case TELEMETRY_SOURCE_A4_MIN:
-          result = model.frsky.channels[index-TELEMETRY_SOURCE_A1_MIN].getRange();
+          if (model) result = model->frsky.channels[index-TELEMETRY_SOURCE_A1_MIN].getRange();
           break;
         case TELEMETRY_SOURCE_A1:
         case TELEMETRY_SOURCE_A2:
         case TELEMETRY_SOURCE_A3:
         case TELEMETRY_SOURCE_A4:
-          result = model.frsky.channels[index-TELEMETRY_SOURCE_A1].getRange();
+          if (model) result = model->frsky.channels[index-TELEMETRY_SOURCE_A1].getRange();
           break;
         case TELEMETRY_SOURCE_ALT:
         case TELEMETRY_SOURCE_ALT_MIN:
@@ -302,8 +302,10 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
       break;
 
     default:
-      result.max = model.getChannelsMax(true);
-      result.min = -result.max;
+      if (model) {
+        result.max = model->getChannelsMax(true);
+        result.min = -result.max;
+      }
       break;
   }
 
@@ -332,7 +334,7 @@ QString RotaryEncoderString(int index)
   return CHECK_IN_ARRAY(rotary, index);
 }
 
-QString RawSource::toString(const ModelData & model)
+QString RawSource::toString(const ModelData * model)
 {
   static const QString trims[] = {
     QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA")
@@ -367,8 +369,8 @@ QString RawSource::toString(const ModelData & model)
     case SOURCE_TYPE_VIRTUAL_INPUT:
     {
       QString result = QObject::tr("[I%1]").arg(index+1);
-      if (strlen(model.inputNames[index]) > 0) {
-        result += QString(model.inputNames[index]);
+      if (model && strlen(model->inputNames[index]) > 0) {
+        result += QString(model->inputNames[index]);
       }
       return result;
     }
@@ -618,10 +620,10 @@ QString LogicalSwitchData::toString(const ModelData & model, const GeneralSettin
       break;
     case LS_FAMILY_VOFS: {
       RawSource source = RawSource(val1);
-      RawSourceRange range = source.getRange(model, settings);
+      RawSourceRange range = source.getRange(&model, settings);
       QString res;
       if (val1)
-        res += source.toString(model);
+        res += source.toString(&model);
       else
         res += "0";
       res.remove(" ");
@@ -664,7 +666,7 @@ QString LogicalSwitchData::toString(const ModelData & model, const GeneralSettin
 
     case LS_FAMILY_VCOMP:
       if (val1)
-        result += RawSource(val1).toString(model);
+        result += RawSource(val1).toString(&model);
       else
         result += "0";
       switch (func) {
@@ -692,7 +694,7 @@ QString LogicalSwitchData::toString(const ModelData & model, const GeneralSettin
           break;
       }
       if (val2)
-        result += RawSource(val2).toString(model);
+        result += RawSource(val2).toString(&model);
       else
         result += "0";
       break;
@@ -723,9 +725,8 @@ void CustomFunctionData::clear()
 
 QString CustomFunctionData::funcToString()
 {
-  ModelData model;
   if (func >= FuncOverrideCH1 && func <= FuncOverrideCH32)
-    return QObject::tr("Override %1").arg(RawSource(SOURCE_TYPE_CH, func).toString(model));
+    return QObject::tr("Override %1").arg(RawSource(SOURCE_TYPE_CH, func).toString());
   else if (func == FuncTrainer)
     return QObject::tr("Trainer");
   else if (func == FuncTrainerRUD)
@@ -805,27 +806,26 @@ QString CustomFunctionData::paramToString()
   }
   else if ((func==FuncVolume)|| (func==FuncPlayValue)) {
     RawSource item(param);
-    ModelData model;
-    return item.toString(model);
+    return item.toString();
   }
   else if ((func==FuncPlayPrompt) || (func==FuncPlayBoth)) {
     if ( GetCurrentFirmware()->getCapability(VoicesAsNumbers)) {
       return QString("%1").arg(param);
-    } else {
+    }
+    else {
       return paramarm;
     }
   }
   else if ((func>FuncBackgroundMusicPause) && (func<FuncCount)) {
-    ModelData model;
     switch (adjustMode) {
       case 0:
         return QObject::tr("Value ")+QString("%1").arg(param);
         break;
       case 1:
-        return RawSource(param).toString(model);
+        return RawSource(param).toString();
         break;
       case 2:
-        return RawSource(param).toString(model);
+        return RawSource(param).toString();
         break;
       case 3:
         if (param==0) {
@@ -1184,7 +1184,7 @@ void ModelData::setDefaultInputs(const GeneralSettings & settings)
       expo->mode = INPUT_MODE_BOTH;
       expo->srcRaw = settings.getDefaultSource(i);
       expo->weight = 100;
-      strncpy(inputNames[i], expo->srcRaw.toString(*this).toLatin1().constData(), sizeof(inputNames[i])-1);
+      strncpy(inputNames[i], expo->srcRaw.toString(this).toLatin1().constData(), sizeof(inputNames[i])-1);
     }
   }
 }

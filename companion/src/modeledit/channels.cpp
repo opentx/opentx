@@ -187,7 +187,7 @@ void Channels::symlimitsEdited()
 {
   QCheckBox * ckb = qobject_cast<QCheckBox*>(sender());
   int index = ckb->property("index").toInt();
-  model.limitData[index].symetrical = (ckb->checkState() ? 1 : 0);
+  model->limitData[index].symetrical = (ckb->checkState() ? 1 : 0);
   emit modified();
 }
 
@@ -197,7 +197,7 @@ void Channels::nameEdited()
     lock = true;
     QLineEdit *le = qobject_cast<QLineEdit*>(sender());
     int index = le->property("index").toInt();
-    strcpy(model.limitData[index].name, le->text().toAscii());
+    strcpy(model->limitData[index].name, le->text().toAscii());
     lock = false;
     emit modified();
   }
@@ -205,7 +205,7 @@ void Channels::nameEdited()
 
 void Channels::refreshExtendedLimits()
 {
-  int channelMax = model.getChannelsMax();
+  int channelMax = model->getChannelsMax();
 
   foreach(LimitsGroup *group, limitsGroups) {
     group->updateMinMax(10*channelMax);
@@ -218,7 +218,7 @@ void Channels::invEdited()
 {
   QComboBox *cb = qobject_cast<QComboBox*>(sender());
   int index = cb->property("index").toInt();
-  model.limitData[index].revert = cb->currentIndex();
+  model->limitData[index].revert = cb->currentIndex();
   emit modified();
 }
 
@@ -226,7 +226,7 @@ void Channels::curveEdited()
 {
   QComboBox *cb = qobject_cast<QComboBox*>(sender());
   int index = cb->property("index").toInt();
-  model.limitData[index].curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, cb->itemData(cb->currentIndex()).toInt());
+  model->limitData[index].curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, cb->itemData(cb->currentIndex()).toInt());
   emit modified();
 }
 
@@ -234,7 +234,7 @@ void Channels::ppmcenterEdited()
 {
   QSpinBox *sb = qobject_cast<QSpinBox*>(sender());
   int index = sb->property("index").toInt();
-  model.limitData[index].ppmCenter = sb->value() - 1500;
+  model->limitData[index].ppmCenter = sb->value() - 1500;
   emit modified();
 }
 

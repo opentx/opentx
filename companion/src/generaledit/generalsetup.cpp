@@ -1,10 +1,10 @@
-#include "setup.h"
-#include "ui_setup.h"
+#include "generalsetup.h"
+#include "ui_generalsetup.h"
 #include <QMessageBox>
 
 GeneralSetupPanel::GeneralSetupPanel(QWidget * parent, GeneralSettings & generalSettings, FirmwareInterface * firmware):
   GeneralPanel(parent, generalSettings, firmware),
-  ui(new Ui::Setup)
+  ui(new Ui::GeneralSetup)
 {
   ui->setupUi(this);
 

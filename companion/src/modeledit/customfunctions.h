@@ -1,7 +1,7 @@
 #ifndef CUSTOMFUNCTIONS_H
 #define CUSTOMFUNCTIONS_H
 
-#include "modelpanel.h"
+#include "modeledit.h"
 #include <QLabel>
 #include <QCheckBox>
 #include <QComboBox>
@@ -31,15 +31,18 @@ class RepeatComboBox: public QComboBox
     int & repeatParam;
 };
 
-class CustomFunctionsPanel : public ModelPanel
+class CustomFunctionsPanel : public GenericPanel
 {
     Q_OBJECT
 
   public:
-    CustomFunctionsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    CustomFunctionsPanel(QWidget *parent, ModelData * mode, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     ~CustomFunctionsPanel();
 
     virtual void update();
+
+  protected:
+    CustomFunctionData * functions;
 
   private slots:
     void customFunctionEdited();
@@ -58,7 +61,7 @@ class CustomFunctionsPanel : public ModelPanel
   private:
     void populateFuncCB(QComboBox *b, unsigned int value);
     void populateGVmodeCB(QComboBox *b, unsigned int value);
-    void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode=0);
+    void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode=0);
     void populateFuncParamArmTCB(QComboBox *b, char * value, QStringList & paramsList);
 
     bool initialized;

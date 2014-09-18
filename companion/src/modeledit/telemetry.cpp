@@ -367,12 +367,12 @@ void TelemetryCustomScreen::update()
 
   for (int l=0; l<4; l++) {
     for (int c=0; c<firmware->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
-      populateTelemetrySourceCB(fieldsCB[l][c], screen.body.lines[l].source[c], l==3, model.frsky.usrProto);
+      populateTelemetrySourceCB(fieldsCB[l][c], screen.body.lines[l].source[c], l==3, model->frsky.usrProto);
     }
   }
 
   for (int l=0; l<4; l++) {
-    populateTelemetrySourceCB(barsCB[l], screen.body.bars[l].source, false, model.frsky.usrProto);
+    populateTelemetrySourceCB(barsCB[l], screen.body.bars[l].source, false, model->frsky.usrProto);
   }
 
   if (screen.type == TELEMETRY_SCREEN_BARS) {
@@ -540,7 +540,7 @@ TelemetryPanel::~TelemetryPanel()
 void TelemetryPanel::update()
 {
   if (IS_TARANIS(firmware->getBoard())) {
-    if (model.moduleData[0].protocol == OFF && model.moduleData[1].protocol == PPM) {
+    if (model->moduleData[0].protocol == OFF && model->moduleData[1].protocol == PPM) {
       ui->telemetryProtocol->setEnabled(true);
     }
     else {
@@ -556,11 +556,11 @@ void TelemetryPanel::setup()
 
     lock = true;
 
-    ui->rssiAlarm1SB->setValue(model.frsky.rssiAlarms[0].value);
-    ui->rssiAlarm2SB->setValue(model.frsky.rssiAlarms[1].value);
+    ui->rssiAlarm1SB->setValue(model->frsky.rssiAlarms[0].value);
+    ui->rssiAlarm2SB->setValue(model->frsky.rssiAlarms[1].value);
     if (!IS_TARANIS(firmware->getBoard())) {
-      ui->rssiAlarm1CB->setCurrentIndex(model.frsky.rssiAlarms[0].level);
-      ui->rssiAlarm2CB->setCurrentIndex(model.frsky.rssiAlarms[1].level);
+      ui->rssiAlarm1CB->setCurrentIndex(model->frsky.rssiAlarms[0].level);
+      ui->rssiAlarm2CB->setCurrentIndex(model->frsky.rssiAlarms[1].level);
     }
     else {
       ui->rssiAlarm1CB->hide();
@@ -573,11 +573,11 @@ void TelemetryPanel::setup()
       ui->AltitudeGPS_ChkB->hide();
     }
     else {
-      ui->AltitudeGPS_ChkB->setChecked(model.frsky.FrSkyGpsAlt);
+      ui->AltitudeGPS_ChkB->setChecked(model->frsky.FrSkyGpsAlt);
     }
     
     if (IS_TARANIS(firmware->getBoard())) {
-      ui->AltitudeToolbar_ChkB->setChecked(model.frsky.altitudeDisplayed);
+      ui->AltitudeToolbar_ChkB->setChecked(model->frsky.altitudeDisplayed);
     }
     else {
       ui->AltitudeToolbar_ChkB->hide();
@@ -606,17 +606,17 @@ void TelemetryPanel::setup()
         ui->VarioLabel_1->hide();
         ui->VarioLabel_2->hide();
       }
-      ui->varioLimitMin_DSB->setValue(model.frsky.varioMin-10);
-      ui->varioLimitMax_DSB->setValue(model.frsky.varioMax+10);
-      ui->varioLimitCenterMax_DSB->setValue((model.frsky.varioCenterMax/10.0)+0.5);
-      if (model.frsky.varioCenterMin==-16) {
+      ui->varioLimitMin_DSB->setValue(model->frsky.varioMin-10);
+      ui->varioLimitMax_DSB->setValue(model->frsky.varioMax+10);
+      ui->varioLimitCenterMax_DSB->setValue((model->frsky.varioCenterMax/10.0)+0.5);
+      if (model->frsky.varioCenterMin==-16) {
         ui->varioLimitMinOff_ChkB->setChecked(true);
         ui->varioLimitCenterMin_DSB->setValue(-2.0);
         ui->varioLimitCenterMin_DSB->setDisabled(true);
       }
       else {
         ui->varioLimitMinOff_ChkB->setChecked(false);
-        ui->varioLimitCenterMin_DSB->setValue((model.frsky.varioCenterMin/10.0)-0.5);
+        ui->varioLimitCenterMin_DSB->setValue((model->frsky.varioCenterMin/10.0)-0.5);
       }
     }
 
@@ -636,7 +636,7 @@ void TelemetryPanel::setup()
       ui->fasOffset_DSB->hide();
     }
     else {
-      ui->fasOffset_DSB->setValue(model.frsky.fasOffset/10.0);
+      ui->fasOffset_DSB->setValue(model->frsky.fasOffset/10.0);
       ui->variousGB->show();
     }
 
@@ -646,9 +646,9 @@ void TelemetryPanel::setup()
       ui->mahCount_ChkB->hide();
     }
     else {
-      if (model.frsky.mAhPersistent) {
+      if (model->frsky.mAhPersistent) {
         ui->mahCount_ChkB->setChecked(true);
-        ui->mahCount_SB->setValue(model.frsky.storedMah);
+        ui->mahCount_SB->setValue(model->frsky.storedMah);
       }
       else {
         ui->mahCount_SB->setDisabled(true);
@@ -656,8 +656,8 @@ void TelemetryPanel::setup()
       ui->variousGB->show();
     }
 
-    ui->frskyProtoCB->setCurrentIndex(model.frsky.usrProto);
-    ui->bladesCount->setValue(model.frsky.blades);
+    ui->frskyProtoCB->setCurrentIndex(model->frsky.usrProto);
+    ui->bladesCount->setValue(model->frsky.blades);
 
     populateVoltsSource();
     populateCurrentSource();
@@ -669,7 +669,7 @@ void TelemetryPanel::setup()
 void TelemetryPanel::populateVarioSource()
 {
   QUnsignedAutoComboBox * cb = ui->varioSourceCB;
-  cb->setField(&model.frsky.varioSource, this);
+  cb->setField(&model->frsky.varioSource, this);
   if (!IS_TARANIS(firmware->getBoard())) {
     cb->addItem(tr("Alti"), TELEMETRY_VARIO_SOURCE_ALTI);
     cb->addItem(tr("Alti+"), TELEMETRY_VARIO_SOURCE_ALTI_PLUS);
@@ -685,7 +685,7 @@ void TelemetryPanel::populateVarioSource()
 void TelemetryPanel::populateVoltsSource()
 {
   QUnsignedAutoComboBox * cb = ui->frskyVoltCB;
-  cb->setField(&model.frsky.voltsSource, this);
+  cb->setField(&model->frsky.voltsSource, this);
   cb->addItem(tr("A1"), TELEMETRY_VOLTS_SOURCE_A1);
   cb->addItem(tr("A2"), TELEMETRY_VOLTS_SOURCE_A2);
   if (IS_ARM(firmware->getBoard())) {
@@ -699,7 +699,7 @@ void TelemetryPanel::populateVoltsSource()
 void TelemetryPanel::populateCurrentSource()
 {
   QUnsignedAutoComboBox * cb = ui->frskyCurrentCB;
-  cb->setField(&model.frsky.currentSource, this);
+  cb->setField(&model->frsky.currentSource, this);
   cb->addItem(tr("---"), TELEMETRY_CURRENT_SOURCE_NONE);
   cb->addItem(tr("A1"), TELEMETRY_CURRENT_SOURCE_A1);
   cb->addItem(tr("A2"), TELEMETRY_CURRENT_SOURCE_A2);
@@ -712,7 +712,7 @@ void TelemetryPanel::populateCurrentSource()
 
 void TelemetryPanel::on_telemetryProtocol_currentIndexChanged(int index)
 {
-  model.telemetryProtocol = index;
+  model->telemetryProtocol = index;
   emit modified();
 }
 
@@ -723,13 +723,13 @@ void TelemetryPanel::onAnalogModified()
 
 void TelemetryPanel::on_bladesCount_editingFinished()
 {
-  model.frsky.blades = ui->bladesCount->value();
+  model->frsky.blades = ui->bladesCount->value();
   emit modified();
 }
 
 void TelemetryPanel::on_frskyProtoCB_currentIndexChanged(int index)
 {
-  model.frsky.usrProto = index;
+  model->frsky.usrProto = index;
   for (int i=0; i<firmware->getCapability(TelemetryCustomScreens); i++)
     telemetryCustomScreens[i]->update();
   emit modified();
@@ -737,49 +737,49 @@ void TelemetryPanel::on_frskyProtoCB_currentIndexChanged(int index)
 
 void TelemetryPanel::on_rssiAlarm1CB_currentIndexChanged(int index)
 {
-  model.frsky.rssiAlarms[0].level = index;
+  model->frsky.rssiAlarms[0].level = index;
   emit modified();
 }
 
 void TelemetryPanel::on_rssiAlarm2CB_currentIndexChanged(int index)
 {
-  model.frsky.rssiAlarms[1].level = index;
+  model->frsky.rssiAlarms[1].level = index;
   emit modified();
 }
 
 void TelemetryPanel::on_rssiAlarm1SB_editingFinished()
 {
-  model.frsky.rssiAlarms[0].value = ui->rssiAlarm1SB->value();
+  model->frsky.rssiAlarms[0].value = ui->rssiAlarm1SB->value();
   emit modified();
 }
 
 void TelemetryPanel::on_rssiAlarm2SB_editingFinished()
 {
-  model.frsky.rssiAlarms[1].value = ui->rssiAlarm2SB->value();
+  model->frsky.rssiAlarms[1].value = ui->rssiAlarm2SB->value();
   emit modified();
 }
 
 void TelemetryPanel::on_AltitudeGPS_ChkB_toggled(bool checked)
 {
-  model.frsky.FrSkyGpsAlt = checked;
+  model->frsky.FrSkyGpsAlt = checked;
   emit modified();
 }
 
 void TelemetryPanel::on_AltitudeToolbar_ChkB_toggled(bool checked)
 {
-  model.frsky.altitudeDisplayed = checked;
+  model->frsky.altitudeDisplayed = checked;
   emit modified();
 }
 
 void TelemetryPanel::on_varioLimitMin_DSB_editingFinished()
 {
-  model.frsky.varioMin = round(ui->varioLimitMin_DSB->value()+10);
+  model->frsky.varioMin = round(ui->varioLimitMin_DSB->value()+10);
   emit modified();
 }
 
 void TelemetryPanel::on_varioLimitMax_DSB_editingFinished()
 {
-  model.frsky.varioMax = round(ui->varioLimitMax_DSB->value()-10);
+  model->frsky.varioMax = round(ui->varioLimitMax_DSB->value()-10);
   emit modified();
 }
 
@@ -789,7 +789,7 @@ void TelemetryPanel::on_varioLimitCenterMin_DSB_editingFinished()
     if (ui->varioLimitCenterMin_DSB->value()>ui->varioLimitCenterMax_DSB->value()) {
       ui->varioLimitCenterMax_DSB->setValue(ui->varioLimitCenterMin_DSB->value());
     }
-    model.frsky.varioCenterMin = round((ui->varioLimitCenterMin_DSB->value()+0.5)*10);
+    model->frsky.varioCenterMin = round((ui->varioLimitCenterMin_DSB->value()+0.5)*10);
     emit modified();
   }
 }
@@ -797,7 +797,7 @@ void TelemetryPanel::on_varioLimitCenterMin_DSB_editingFinished()
 void TelemetryPanel::on_varioLimitMinOff_ChkB_toggled(bool checked)
 {
   if (!lock) {
-    model.frsky.varioCenterMin = -16;
+    model->frsky.varioCenterMin = -16;
     if (!checked) {
       lock=true;
       ui->varioLimitCenterMin_DSB->setValue(-2.0);
@@ -818,26 +818,26 @@ void TelemetryPanel::on_varioLimitCenterMax_DSB_editingFinished()
     if (ui->varioLimitCenterMin_DSB->value()>ui->varioLimitCenterMax_DSB->value()) {
       ui->varioLimitCenterMax_DSB->setValue(ui->varioLimitCenterMin_DSB->value());
     }
-    model.frsky.varioCenterMax = round((ui->varioLimitCenterMax_DSB->value()-0.5)*10);
+    model->frsky.varioCenterMax = round((ui->varioLimitCenterMax_DSB->value()-0.5)*10);
     emit modified();
   }
 }
 
 void TelemetryPanel::on_fasOffset_DSB_editingFinished()
 {
-  model.frsky.fasOffset = ui->fasOffset_DSB->value() * 10;
+  model->frsky.fasOffset = ui->fasOffset_DSB->value() * 10;
   emit modified();
 }
 
 void TelemetryPanel::on_mahCount_SB_editingFinished()
 {
-  model.frsky.storedMah = ui->mahCount_SB->value();
+  model->frsky.storedMah = ui->mahCount_SB->value();
   emit modified();
 }
 
 void TelemetryPanel::on_mahCount_ChkB_toggled(bool checked)
 {
-  model.frsky.mAhPersistent = checked;
+  model->frsky.mAhPersistent = checked;
   ui->mahCount_SB->setDisabled(!checked);
   emit modified();
 }

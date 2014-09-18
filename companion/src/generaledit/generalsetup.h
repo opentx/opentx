@@ -1,11 +1,11 @@
-#ifndef SETUP_H
-#define SETUP_H
+#ifndef GENERALSETUP_H
+#define GENERALSETUP_H
 
 #include "generaledit.h"
 #include "eeprominterface.h"
 
 namespace Ui {
-  class Setup;
+  class GeneralSetup;
 }
 
 class GeneralSetupPanel : public GeneralPanel
@@ -63,7 +63,7 @@ class GeneralSetupPanel : public GeneralPanel
 
 
   private:
-    Ui::Setup *ui;
+    Ui::GeneralSetup *ui;
 
     void setValues();
     void populateBacklightCB();
@@ -72,4 +72,4 @@ class GeneralSetupPanel : public GeneralPanel
     void updateVarioPitchRange();
 };
 
-#endif // SETUP_H
+#endif // GENERALSETUP_H

@@ -1,7 +1,7 @@
 #ifndef INPUTS_H
 #define INPUTS_H
 
-#include "modelpanel.h"
+#include "modeledit.h"
 #include "mixerslist.h"
 
 class InputsPanel : public ModelPanel

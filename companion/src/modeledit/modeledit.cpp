@@ -37,8 +37,7 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   addTab(chnPanel, tr("Servos"));
   addTab(new Curves(this, model, generalSettings, firmware), tr("Curves"));
   addTab(new LogicalSwitchesPanel(this, model, generalSettings, firmware), tr("Logical Switches"));
-  if (firmware->getCapability(CustomFunctions))
-    addTab(new CustomFunctionsPanel(this, model, generalSettings, firmware), tr("Special Functions"));
+  addTab(new CustomFunctionsPanel(this, &model, generalSettings, firmware), tr("Special Functions"));
   if (firmware->getCapability(Telemetry) & TM_HASTELEMETRY)
     addTab(new TelemetryPanel(this, model, generalSettings, firmware), tr("Telemetry"));
     
@@ -55,7 +54,7 @@ void ModelEdit::closeEvent(QCloseEvent *event)
   g.modelEditGeo( saveGeometry() );
 }
 
-void ModelEdit::addTab(ModelPanel *panel, QString text)
+void ModelEdit::addTab(GenericPanel *panel, QString text)
 {
   panels << panel;
   QWidget * widget = new QWidget(ui->tabWidget);

@@ -1,7 +1,7 @@
 #ifndef CURVES_H
 #define CURVES_H
 
-#include "modelpanel.h"
+#include "modeledit.h"
 #include <QSpinBox>
 
 namespace Ui {

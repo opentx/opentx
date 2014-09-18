@@ -196,24 +196,24 @@ void FlightModePanel::update()
 
   for (int i=0; i<4; i++) {
     int trimsMax = firmware->getCapability(ExtendedTrims);
-    if (trimsMax == 0 || !model.extendedTrims) {
+    if (trimsMax == 0 || !model->extendedTrims) {
       trimsMax = 125;
     }
     trimsSlider[i]->setRange(-trimsMax, +trimsMax);
     trimsValue[i]->setRange(-trimsMax, +trimsMax);
     int chn = CONVERT_MODE(i+1)-1;
-    if (chn == 2/*TODO constant*/ && model.throttleReversed)
+    if (chn == 2/*TODO constant*/ && model->throttleReversed)
       trimsSlider[i]->setInvertedAppearance(true);
     trimUpdate(i);
   }
 
   if (ui->gvGB->isVisible()) {
     for (int i=0; i<gvCount; i++) {
-      gvNames[i]->setText(model.gvars_names[i]);
-      gvValues[i]->setDisabled(model.isGVarLinked(phaseIdx, i));
-      gvValues[i]->setValue(model.getGVarValue(phaseIdx, i));
+      gvNames[i]->setText(model->gvars_names[i]);
+      gvValues[i]->setDisabled(model->isGVarLinked(phaseIdx, i));
+      gvValues[i]->setValue(model->getGVarValue(phaseIdx, i));
       if (IS_TARANIS(GetEepromInterface()->getBoard()) && phaseIdx == 0) { 
-        gvPopups[i]->setChecked(model.gvars_popups[i]);
+        gvPopups[i]->setChecked(model->gvars_popups[i]);
       }
     }
   }
@@ -224,7 +224,7 @@ void FlightModePanel::update()
     FlightModeData *phasere = &phase;
     while (idx > 1024) {
       idx -= 1025;
-      phasere = &model.flightModeData[idx];
+      phasere = &model->flightModeData[idx];
       idx = phasere->rotaryEncoders[i];
       reValues[i]->setDisabled(true);
     }
@@ -267,7 +267,7 @@ void FlightModePanel::trimUpdate(unsigned int trim)
 {
   lock = true;
   int chn = CONVERT_MODE(trim+1)-1;
-  int value = model.getTrimValue(phaseIdx, chn);
+  int value = model->getTrimValue(phaseIdx, chn);
   trimsSlider[trim]->setValue(value);
   trimsValue[trim]->setValue(value);
   if (phase.trimMode[chn] < 0) {
@@ -302,8 +302,8 @@ void FlightModePanel::GVName_editingFinished()
   if (!lock) {
     QLineEdit *lineedit = qobject_cast<QLineEdit*>(sender());
     int gvar = lineedit->property("index").toInt();
-    memset(&model.gvars_names[gvar], 0, sizeof(model.gvars_names[gvar]));
-    strcpy(model.gvars_names[gvar], lineedit->text().toAscii());
+    memset(&model->gvars_names[gvar], 0, sizeof(model->gvars_names[gvar]));
+    strcpy(model->gvars_names[gvar], lineedit->text().toAscii());
     emit modified();
   }
 }
@@ -330,7 +330,7 @@ void FlightModePanel::phaseGVPopupToggled(bool checked)
 {
   QCheckBox *cb = qobject_cast<QCheckBox*>(sender());
   int gvar = cb->property("index").toInt();
-  model.gvars_popups[gvar] = checked;
+  model->gvars_popups[gvar] = checked;
 }
 
 void FlightModePanel::phaseREValue_editingFinished()
@@ -397,7 +397,7 @@ void FlightModePanel::phaseTrim_valueChanged()
     int trim = spinBox->property("index").toInt();
     int chn = CONVERT_MODE(trim+1)-1;
     int value = spinBox->value();
-    model.setTrimValue(phaseIdx, chn, value);
+    model->setTrimValue(phaseIdx, chn, value);
     lock = true;
     trimsSlider[trim]->setValue(value);
     lock = false;
@@ -412,7 +412,7 @@ void FlightModePanel::phaseTrimSlider_valueChanged()
     int trim = slider->property("index").toInt();
     int chn = CONVERT_MODE(trim+1)-1;
     int value = slider->value();
-    model.setTrimValue(phaseIdx, chn, value);
+    model->setTrimValue(phaseIdx, chn, value);
     lock = true;
     trimsValue[trim]->setValue(value);
     lock = false;
@@ -452,7 +452,7 @@ void FlightModesPanel::onPhaseModified()
 QString FlightModesPanel::getTabName(int index)
 {
   QString result = tr("Flight Mode %1").arg(index);
-  const char *name = model.flightModeData[index].name;
+  const char *name = model->flightModeData[index].name;
   if (firmware->getCapability(FlightModesName) && strlen(name) > 0) {
     result += tr(" (%1)").arg(name);
   }

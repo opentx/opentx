@@ -11,15 +11,11 @@ namespace Ui {
 
 class GeneralPanel : public GenericPanel
 {
-  Q_OBJECT
-
   public:
-    GeneralPanel(QWidget *parent, GeneralSettings & generalSettings, FirmwareInterface * firmware);
-    virtual ~GeneralPanel();
-
-  protected:
-    GeneralSettings & generalSettings;
-    FirmwareInterface * firmware;
+    GeneralPanel(QWidget *parent, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+      GenericPanel(parent, NULL, generalSettings, firmware)
+    {
+    }
 };
 
 class GeneralEdit : public QDialog
@@ -52,8 +48,8 @@ class GeneralEdit : public QDialog
 
   private:
     FirmwareInterface * firmware;
-    QVector<GeneralPanel *> panels;
-    void addTab(GeneralPanel *panel, QString text);
+    QVector<GenericPanel *> panels;
+    void addTab(GenericPanel *panel, QString text);
 
 };
 

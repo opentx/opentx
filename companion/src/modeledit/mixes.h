@@ -1,7 +1,7 @@
 #ifndef MIXES_H
 #define MIXES_H
 
-#include "modelpanel.h"
+#include "modeledit.h"
 #include "mixerslist.h"
 #include "mixerdialog.h"
 

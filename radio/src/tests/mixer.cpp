@@ -389,12 +389,15 @@ TEST(Trims, CopyTrimsToOffset)
   MODEL_RESET();
   modelDefault(0);
   setTrimValue(0, ELE_STICK, -100); // -100 on elevator
+#if defined(CPUARM)
+  evalFunctions(g_model.customFn, modelFunctionsContext); // it disables all safety channels
+  copyTrimsToOffset(1);
+  EXPECT_EQ(getTrimValue(0, ELE_STICK), -100); // unchanged
+  EXPECT_EQ(g_model.limitData[1].offset, -195);
+#else
   evalFunctions(); // it disables all safety channels
   copyTrimsToOffset(1);
   EXPECT_EQ(getTrimValue(0, ELE_STICK), -100); // unchanged
-#if defined(CPUARM)
-  EXPECT_EQ(g_model.limitData[1].offset, -195);
-#else
   EXPECT_EQ(g_model.limitData[1].offset, -200);
 #endif
 }

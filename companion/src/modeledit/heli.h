@@ -1,7 +1,7 @@
 #ifndef HELI_H
 #define HELI_H
 
-#include "modelpanel.h"
+#include "modeledit.h"
 
 namespace Ui {
   class Heli;

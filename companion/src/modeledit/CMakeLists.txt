@@ -11,7 +11,6 @@ set(modeledit_NAMES
 )
 
 set(modeledit_SRCS
-  modelpanel.cpp
   flightmodes.cpp
   inputs.cpp
   mixes.cpp
@@ -25,7 +24,6 @@ set(modeledit_SRCS
 )
 
 set(modeledit_HDRS
-  modelpanel.h
   flightmodes.h
   inputs.h
   mixes.h

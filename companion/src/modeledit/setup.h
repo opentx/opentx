@@ -1,7 +1,7 @@
 #ifndef SETUP_H
 #define SETUP_H
 
-#include "modelpanel.h"
+#include "modeledit.h"
 #include <QVector>
 #include <QCheckBox>
 #include <QSlider>

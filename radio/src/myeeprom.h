@@ -520,7 +520,7 @@ enum AdjustGvarFunctionParam {
   #define LEN_CFN_NAME 6
   #define CFN_SPARE_TYPE int16_t
 #endif
-PACK(typedef struct t_CustomFunctionData { // Function Switches data
+PACK(typedef struct {
   int8_t  swtch;
   uint8_t func;
   PACK(union {
@@ -557,7 +557,7 @@ PACK(typedef struct t_CustomFunctionData { // Function Switches data
 #define CFN_RESET(p)            ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)
 #define CFN_GVAR_CST_MAX        GVAR_LIMIT
 #else
-PACK(typedef struct t_CustomFunctionData {
+PACK(typedef struct {
   PACK(union {
     PACK(struct {
       int16_t   swtch:6;
@@ -650,7 +650,7 @@ PACK(typedef struct t_EEGeneral {
 
   EXTRA_GENERAL_FIELDS
 
-  swstate_t switchUnlockStates;
+  ARM_FIELD(swstate_t switchUnlockStates)
 
   ARM_FIELD(CustomFunctionData customFn[NUM_CFN])
 

@@ -5071,8 +5071,10 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 {
   int8_t  sub = m_posVert - 1;
 
-#if defined(CPUARM) || defined(AUTOSWITCH)
+#if defined(CPUARM)
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
+#elif !defined(CPUM64) || defined(AUTOSWITCH)
+  uint8_t eeFlags = EE_MODEL;
 #endif
 
 #if defined(PCBTARANIS)

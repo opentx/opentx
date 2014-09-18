@@ -2,11 +2,20 @@
 #define MODELEDIT_H
 
 #include <QDialog>
-#include "modelpanel.h"
+#include "helpers.h"
 
 namespace Ui {
-    class ModelEdit;
+  class ModelEdit;
 }
+
+class ModelPanel : public GenericPanel
+{
+  public:
+    ModelPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+      GenericPanel(parent, &model, generalSettings, firmware)
+    {
+    }
+};
 
 class ModelEdit : public QDialog
 {
@@ -33,9 +42,9 @@ class ModelEdit : public QDialog
     ModelData & model;
     GeneralSettings & generalSettings;
     FirmwareInterface * firmware;
-    QVector<ModelPanel *> panels;
+    QVector<GenericPanel *> panels;
 
-    void addTab(ModelPanel *panel, QString text);
+    void addTab(GenericPanel *panel, QString text);
     void launchSimulation();
 
 };

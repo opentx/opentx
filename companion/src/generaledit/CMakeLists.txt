@@ -2,7 +2,7 @@ include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 set(generaledit_NAMES
   generaledit
-  setup
+  generalsetup
   trainer
   calibration
 )

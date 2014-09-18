@@ -204,7 +204,7 @@ void Curves::resetCurve()
   int index = button->property("index").toInt();
   int res = QMessageBox::question(this, "companion", tr("Are you sure you want to reset curve %1 ?").arg(index+1), QMessageBox::Yes | QMessageBox::No);
   if (res == QMessageBox::Yes) {
-    model.curves[index].clear(5);
+    model->curves[index].clear(5);
     update();
     emit modified();
   }
@@ -223,7 +223,7 @@ void Curves::update()
   lock = true;
 
   if (firmware->getCapability(HasCvNames)) {
-    ui->curveName->setText(model.curves[currentCurve].name);
+    ui->curveName->setText(model->curves[currentCurve].name);
   }
 
   updateCurveType();
@@ -245,21 +245,21 @@ void Curves::updateCurveType()
   int index = 0;
 
   if (firmware->getCapability(EnhancedCurves)) {
-    index = model.curves[currentCurve].count - 2;
+    index = model->curves[currentCurve].count - 2;
   }
   else {
     ui->curveSmooth->hide();
-    if (model.curves[currentCurve].count == 5)
+    if (model->curves[currentCurve].count == 5)
       index = 1;
-    else if (model.curves[currentCurve].count == 9)
+    else if (model->curves[currentCurve].count == 9)
       index = 2;
-    else if (model.curves[currentCurve].count == 17)
+    else if (model->curves[currentCurve].count == 17)
       index = 3;
   }
 
   ui->curvePoints->setCurrentIndex(index);
-  ui->curveCustom->setCurrentIndex(model.curves[currentCurve].type);
-  ui->curveSmooth->setCurrentIndex(model.curves[currentCurve].smooth);
+  ui->curveCustom->setCurrentIndex(model->curves[currentCurve].type);
+  ui->curveSmooth->setCurrentIndex(model->curves[currentCurve].smooth);
 
   lock = false;
 }
@@ -295,36 +295,36 @@ void Curves::updateCurve()
   for (int k=0; k<numcurves; k++) {
     pen.setColor(colors[k]);
     if (currentCurve!=k && visibleCurves[k]) {
-      int numpoints = model.curves[k].count;
+      int numpoints = model->curves[k].count;
       for (int i=0; i<numpoints-1; i++) {
-        if (model.curves[k].type == CurveData::CURVE_TYPE_CUSTOM)
-          scene->addLine(centerX + (qreal)model.curves[k].points[i].x*width/200,centerY - (qreal)model.curves[k].points[i].y*height/200,centerX + (qreal)model.curves[k].points[i+1].x*width/200,centerY - (qreal)model.curves[k].points[i+1].y*height/200, pen);
+        if (model->curves[k].type == CurveData::CURVE_TYPE_CUSTOM)
+          scene->addLine(centerX + (qreal)model->curves[k].points[i].x*width/200,centerY - (qreal)model->curves[k].points[i].y*height/200,centerX + (qreal)model->curves[k].points[i+1].x*width/200,centerY - (qreal)model->curves[k].points[i+1].y*height/200, pen);
         else
-          scene->addLine(GFX_MARGIN + i*width/(numpoints-1),centerY - (qreal)model.curves[k].points[i].y*height/200,GFX_MARGIN + (i+1)*width/(numpoints-1),centerY - (qreal)model.curves[k].points[i+1].y*height/200, pen);
+          scene->addLine(GFX_MARGIN + i*width/(numpoints-1),centerY - (qreal)model->curves[k].points[i].y*height/200,GFX_MARGIN + (i+1)*width/(numpoints-1),centerY - (qreal)model->curves[k].points[i+1].y*height/200, pen);
       }
     }
   }
 
-  int numpoints = model.curves[currentCurve].count;
+  int numpoints = model->curves[currentCurve].count;
   for (int i=0; i<numpoints; i++) {
     nodel = nodex;
     nodex = new Node();
     nodex->setProperty("index", i);
     nodex->setColor(colors[currentCurve]);
-    if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
+    if (model->curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
       if (i>0 && i<numpoints-1) {
         nodex->setFixedX(false);
-        nodex->setMinX(model.curves[currentCurve].points[i-1].x);
-        nodex->setMaxX(model.curves[currentCurve].points[i+1].x);
+        nodex->setMinX(model->curves[currentCurve].points[i-1].x);
+        nodex->setMaxX(model->curves[currentCurve].points[i+1].x);
       }
       else {
         nodex->setFixedX(true);
       }
-      nodex->setPos(centerX + (qreal)model.curves[currentCurve].points[i].x*width/200,centerY - (qreal)model.curves[currentCurve].points[i].y*height/200);
+      nodex->setPos(centerX + (qreal)model->curves[currentCurve].points[i].x*width/200,centerY - (qreal)model->curves[currentCurve].points[i].y*height/200);
     }
     else {
       nodex->setFixedX(true);
-      nodex->setPos(GFX_MARGIN + i*width/(numpoints-1), centerY - (qreal)model.curves[currentCurve].points[i].y*height/200);
+      nodex->setPos(GFX_MARGIN + i*width/(numpoints-1), centerY - (qreal)model->curves[currentCurve].points[i].y*height/200);
     }
     connect(nodex, SIGNAL(moved(int, int)), this, SLOT(onNodeMoved(int, int)));
     connect(nodex, SIGNAL(focus()), this, SLOT(onNodeFocus()));
@@ -340,23 +340,23 @@ void Curves::updateCurvePoints()
 {
   lock = true;
 
-  int count = model.curves[currentCurve].count;
+  int count = model->curves[currentCurve].count;
   for (int i=0; i<count; i++) {
     spny[i]->show();
-    spny[i]->setValue(model.curves[currentCurve].points[i].y);
-    if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
+    spny[i]->setValue(model->curves[currentCurve].points[i].y);
+    if (model->curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
       spnx[i]->show();
-      if (i==0 || i==model.curves[currentCurve].count-1) {
+      if (i==0 || i==model->curves[currentCurve].count-1) {
         spnx[i]->setDisabled(true);
         spnx[i]->setMaximum(+100);
         spnx[i]->setMinimum(-100);
       }
       else {
         spnx[i]->setDisabled(false);
-        spnx[i]->setMaximum(model.curves[currentCurve].points[i+1].x);
-        spnx[i]->setMinimum(model.curves[currentCurve].points[i-1].x);
+        spnx[i]->setMaximum(model->curves[currentCurve].points[i+1].x);
+        spnx[i]->setMinimum(model->curves[currentCurve].points[i-1].x);
       }
-      spnx[i]->setValue(model.curves[currentCurve].points[i].x);
+      spnx[i]->setValue(model->curves[currentCurve].points[i].x);
     }
     else {
       spnx[i]->hide();
@@ -374,8 +374,8 @@ void Curves::onPointEdited()
 {
   if (!lock) {
     int index = sender()->property("index").toInt();
-    model.curves[currentCurve].points[index].x = spnx[index]->value();
-    model.curves[currentCurve].points[index].y = spny[index]->value();
+    model->curves[currentCurve].points[index].x = spnx[index]->value();
+    model->curves[currentCurve].points[index].y = spny[index]->value();
     updateCurve();
     emit modified();
   }
@@ -386,13 +386,13 @@ void Curves::onNodeMoved(int x, int y)
   if (!lock) {
     lock = true;
     int index = sender()->property("index").toInt();
-    model.curves[currentCurve].points[index].x = x;
-    model.curves[currentCurve].points[index].y = y;
+    model->curves[currentCurve].points[index].x = x;
+    model->curves[currentCurve].points[index].y = y;
     spnx[index]->setValue(x);
     spny[index]->setValue(y);
     if (index > 0)
       spnx[index-1]->setMaximum(x);
-    if (index < model.curves[currentCurve].count-1)
+    if (index < model->curves[currentCurve].count-1)
       spnx[index+1]->setMinimum(x);
     emit modified();
     lock = false;
@@ -418,8 +418,8 @@ bool Curves::allowCurveType(int points, CurveData::CurveType type)
 
   int totalpoints = 0;
   for (int i=0; i<numcurves; i++) {
-    int cvPoints = (i==currentCurve ? points : model.curves[i].count);
-    CurveData::CurveType cvType = (i==currentCurve ? type : model.curves[i].type);
+    int cvPoints = (i==currentCurve ? points : model->curves[i].count);
+    CurveData::CurveType cvType = (i==currentCurve ? type : model->curves[i].type);
     totalpoints += cvPoints + (cvType==CurveData::CURVE_TYPE_CUSTOM ? cvPoints-2 : 0);
   }
 
@@ -438,13 +438,13 @@ void Curves::on_curvePoints_currentIndexChanged(int index)
   if (!lock) {
     int numpoints = ((QComboBox *)sender())->itemData(index).toInt();
 
-    if (allowCurveType(numpoints, model.curves[currentCurve].type)) {
-      model.curves[currentCurve].count = numpoints;
+    if (allowCurveType(numpoints, model->curves[currentCurve].type)) {
+      model->curves[currentCurve].count = numpoints;
 
       // TODO something better + reuse!
       for (int i=0; i<C9X_MAX_POINTS; i++) {
-        model.curves[currentCurve].points[i].x = (i >= numpoints-1 ? +100 : -100 + (200*i)/(numpoints-1));
-        model.curves[currentCurve].points[i].y = 0;
+        model->curves[currentCurve].points[i].x = (i >= numpoints-1 ? +100 : -100 + (200*i)/(numpoints-1));
+        model->curves[currentCurve].points[i].y = 0;
       }
 
       update();
@@ -461,13 +461,13 @@ void Curves::on_curveCustom_currentIndexChanged(int index)
   if (!lock) {
     CurveData::CurveType type = (CurveData::CurveType)index;
     int numpoints = ui->curvePoints->itemData(ui->curvePoints->currentIndex()).toInt();
-    if (allowCurveType(model.curves[currentCurve].count, type)) {
-      model.curves[currentCurve].type = type;
+    if (allowCurveType(model->curves[currentCurve].count, type)) {
+      model->curves[currentCurve].type = type;
 
       // TODO something better + reuse!
       for (int i=0; i<C9X_MAX_POINTS; i++) {
-        model.curves[currentCurve].points[i].x = (i >= numpoints-1 ? +100 : -100 + (200*i)/(numpoints-1));
-        model.curves[currentCurve].points[i].y = 0;
+        model->curves[currentCurve].points[i].x = (i >= numpoints-1 ? +100 : -100 + (200*i)/(numpoints-1));
+        model->curves[currentCurve].points[i].y = 0;
       }
 
       update();
@@ -481,14 +481,14 @@ void Curves::on_curveCustom_currentIndexChanged(int index)
 
 void Curves::on_curveSmooth_currentIndexChanged(int index)
 {
-  model.curves[currentCurve].smooth = index;
+  model->curves[currentCurve].smooth = index;
   update();
 }
 
 void Curves::on_curveName_editingFinished()
 {
-  memset(model.curves[currentCurve].name, 0, sizeof(model.curves[currentCurve].name));
-  strcpy(model.curves[currentCurve].name, ui->curveName->text().toAscii());
+  memset(model->curves[currentCurve].name, 0, sizeof(model->curves[currentCurve].name));
+  strcpy(model->curves[currentCurve].name, ui->curveName->text().toAscii());
   emit modified();
 }
 
@@ -528,12 +528,12 @@ void Curves::addTemplate(QString name, unsigned int flags, curveFunction functio
 void Curves::on_curveApply_clicked()
 {
   int index = ui->curveType->currentIndex();
-  int numpoints = model.curves[currentCurve].count;
+  int numpoints = model->curves[currentCurve].count;
 
   for (int i=0; i<numpoints; i++) {
     float x;
-    if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM)
-      x = model.curves[currentCurve].points[i].x;
+    if (model->curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM)
+      x = model->curves[currentCurve].points[i].x;
     else
       x = -100.0 + (200.0/(numpoints-1))*i;
 
@@ -553,7 +553,7 @@ void Curves::on_curveApply_clicked()
     }
 
     if (apply) {
-      model.curves[currentCurve].points[i].y = templates[index].function(x, ui->curveCoeff->value(), ui->yMin->value(), ui->yMid->value(), ui->yMax->value());
+      model->curves[currentCurve].points[i].y = templates[index].function(x, ui->curveCoeff->value(), ui->yMin->value(), ui->yMid->value(), ui->yMax->value());
     }
   }
 
@@ -571,12 +571,12 @@ void ModelEdit::clearCurves(bool ask)
     }
     curvesLock=true;
     for (int j=0; j<16; j++) {
-      model.curves[j].count = 5;
-      model.curves[j].custom = false;
-      memset(model.curves[j].name, 0, sizeof(model.curves[j].name));
+      model->curves[j].count = 5;
+      model->curves[j].custom = false;
+      memset(model->curves[j].name, 0, sizeof(model->curves[j].name));
       for (int i=0; i<17; i++) {
-        model.curves[j].points[i].x = 0;
-        model.curves[j].points[i].y = 0;
+        model->curves[j].points[i].x = 0;
+        model->curves[j].points[i].y = 0;
       }
     }
     for (int i=0; i<17; i++) {

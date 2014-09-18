@@ -1,7 +1,7 @@
 #ifndef TELEMETRY_H
 #define TELEMETRY_H
 
-#include "modelpanel.h"
+#include "modeledit.h"
 #include <QGroupBox>
 #include <QComboBox>
 #include <QDoubleSpinBox>

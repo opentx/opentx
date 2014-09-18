@@ -211,7 +211,7 @@ void PrintDialog::printInputs()
       str.append("<tr><td><font size=+1 face='Courier New'>");
       if(lastCHN!=ed->chn) {
         lastCHN=ed->chn;
-        str.append("<b>"+getInputStr(*g_model, ed->chn)+"</b>");
+        str.append("<b>"+getInputStr(g_model, ed->chn)+"</b>");
       }
       str.append("</font></td>");
       str.append("<td><font size=+1 face='Courier New' color=green>");
@@ -231,9 +231,9 @@ void PrintDialog::printInputs()
       str += "&nbsp;" + tr("Weight") + QString("(%1)").arg(getGVarString(ed->weight,true));
   
       if (firmware->getCapability(VirtualInputs)) {
-        str += " " + tr("Source") + QString("(%1)").arg(ed->srcRaw.toString(*g_model));
+        str += " " + tr("Source") + QString("(%1)").arg(ed->srcRaw.toString(g_model));
         if (ed->carryTrim>0) str += " " + tr("NoTrim");
-        else if (ed->carryTrim<0) str += " " + RawSource(SOURCE_TYPE_TRIM, (-(ed->carryTrim)-1)).toString(*g_model);
+        else if (ed->carryTrim<0) str += " " + RawSource(SOURCE_TYPE_TRIM, (-(ed->carryTrim)-1)).toString(g_model);
       }
       if (ed->curve.value) str += " " + Qt::escape(ed->curve.toString());
 
@@ -315,10 +315,10 @@ void PrintDialog::printMixes()
         default:  str += "&nbsp;&nbsp;"; break;
       };
 
-      str += " " + md->srcRaw.toString(*g_model);
+      str += " " + md->srcRaw.toString(g_model);
       str += " " + Qt::escape(tr("Weight(%1)").arg(getGVarString(md->weight, true)));
 
-      QString phasesStr = getPhasesStr(md->phases, *g_model);
+      QString phasesStr = getPhasesStr(md->phases, g_model);
       if (!phasesStr.isEmpty()) str += " " + Qt::escape(phasesStr);
 
       if (md->swtch.type != SWITCH_TYPE_NONE) {
@@ -328,7 +328,7 @@ void PrintDialog::printMixes()
       if (md->carryTrim>0)
         str += " " + Qt::escape(tr("NoTrim"));
       else if (md->carryTrim<0)
-        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString(*g_model);
+        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString(g_model);
 
       if (firmware->getCapability(HasNoExpo) && md->noExpo) str += " " + Qt::escape(tr("No DR/Expo"));
       if (md->sOffset)     str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(md->sOffset)));

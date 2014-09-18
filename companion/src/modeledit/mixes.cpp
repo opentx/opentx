@@ -50,7 +50,7 @@ QString MixesPanel::getChannelLabel(int curDest)
   // TODO not nice, Qt brings a function for that, I don't remember right now
   (str.length() < 4) ? str.append("  ") : str.append(" ");
   if (firmware->getCapability(HasChNames)) {
-    QString name = model.limitData[curDest-1].name;
+    QString name = model->limitData[curDest-1].name;
     if (!name.isEmpty()) {
       name = QString("(") + name + QString(")");
     }
@@ -72,7 +72,7 @@ void MixesPanel::update()
   unsigned int outputs = firmware->getCapability(Outputs);
 
   for (i=0; i<firmware->getCapability(Mixes); i++) {
-    MixData *md = &model.mixData[i];
+    MixData *md = &model->mixData[i];
     // qDebug() << "md->destCh: " << md->destCh;
     if (md->destCh==0 || md->destCh>outputs) continue;
     QString str = "";
@@ -111,7 +111,7 @@ bool MixesPanel::AddMixerLine(int dest)
   QByteArray qba(1, (quint8)dest);
   if (dest >= 0) {
     //add mix data
-    MixData *md = &model.mixData[dest];
+    MixData *md = &model->mixData[dest];
     qba.append((const char*)md, sizeof(MixData));
   }
   itm->setData(Qt::UserRole, qba);  
@@ -149,11 +149,11 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
     if (new_ch) *new_ch = 1;
   }
   else {
-    MixData *md = &model.mixData[dest];
+    MixData *md = &model->mixData[dest];
     //md->destCh from 1 to 32
     str = getChannelLabel(md->destCh);
 
-    if ((dest == 0) || (model.mixData[dest-1].destCh != md->destCh)) {
+    if ((dest == 0) || (model->mixData[dest-1].destCh != md->destCh)) {
       if (new_ch) *new_ch = 1;
       //highlight channell if needed
       if (md->destCh == highlightedSource) {
@@ -187,8 +187,10 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
       str += " " + Qt::escape(tr("Switch(%1)").arg(md->swtch.toString()));
     }
 
-    if (md->carryTrim>0)      str += " " + Qt::escape(tr("NoTrim"));
-    else if (md->carryTrim<0) str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString(model);
+    if (md->carryTrim > 0)
+      str += " " + Qt::escape(tr("NoTrim"));
+    else if (md->carryTrim<0)
+      str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString(model);
 
     if (firmware->getCapability(HasNoExpo) && md->noExpo) str += " " + Qt::escape(tr("No DR/Expo"));
     if (md->sOffset)     str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(md->sOffset)));
@@ -215,39 +217,39 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
 
 bool MixesPanel::gm_insertMix(int idx)
 {
-    if (idx<0 || idx>=firmware->getCapability(Mixes) || model.mixData[firmware->getCapability(Mixes)-1].destCh > 0) {
+    if (idx<0 || idx>=firmware->getCapability(Mixes) || model->mixData[firmware->getCapability(Mixes)-1].destCh > 0) {
       QMessageBox::information(this, "companion", tr("Not enough available mixers!"));
       return false;
     }
 
-    int i = model.mixData[idx].destCh;
-    memmove(&model.mixData[idx+1],&model.mixData[idx],
+    int i = model->mixData[idx].destCh;
+    memmove(&model->mixData[idx+1],&model->mixData[idx],
         (firmware->getCapability(Mixes)-(idx+1))*sizeof(MixData) );
-    memset(&model.mixData[idx],0,sizeof(MixData));
-    model.mixData[idx].srcRaw = RawSource(SOURCE_TYPE_NONE);
-    model.mixData[idx].destCh = i;
-    model.mixData[idx].weight = 100;
+    memset(&model->mixData[idx],0,sizeof(MixData));
+    model->mixData[idx].srcRaw = RawSource(SOURCE_TYPE_NONE);
+    model->mixData[idx].destCh = i;
+    model->mixData[idx].weight = 100;
     return true;
 }
 
 void MixesPanel::gm_deleteMix(int index)
 {
-    memmove(&model.mixData[index],&model.mixData[index+1],
+    memmove(&model->mixData[index],&model->mixData[index+1],
             (firmware->getCapability(Mixes)-(index+1))*sizeof(MixData));
-    memset(&model.mixData[firmware->getCapability(Mixes)-1],0,sizeof(MixData));
+    memset(&model->mixData[firmware->getCapability(Mixes)-1],0,sizeof(MixData));
 }
 
 void MixesPanel::gm_openMix(int index)
 {
     if(index<0 || index>=firmware->getCapability(Mixes)) return;
 
-    MixData mixd(model.mixData[index]);
+    MixData mixd(model->mixData[index]);
     emit modified();
     update();
 
-    MixerDialog *g = new MixerDialog(this, model, &mixd, generalSettings, firmware);
+    MixerDialog *g = new MixerDialog(this, *model, &mixd, generalSettings, firmware);
     if(g->exec()) {
-      model.mixData[index] = mixd;
+      model->mixData[index] = mixd;
       emit modified();
       update();
     } else {
@@ -263,7 +265,7 @@ void MixesPanel::gm_openMix(int index)
 int MixesPanel::getMixerIndex(unsigned int dch)
 {
     int i = 0;
-    while ((model.mixData[i].destCh<=dch) && (model.mixData[i].destCh) && (i<firmware->getCapability(Mixes))) i++;
+    while ((model->mixData[i].destCh<=dch) && (model->mixData[i].destCh) && (i<firmware->getCapability(Mixes))) i++;
     if(i==firmware->getCapability(Mixes)) return -1;
     return i;
 }
@@ -276,7 +278,7 @@ void MixesPanel::mixerlistWidget_doubleClicked(QModelIndex index)
         idx = getMixerIndex(i); //get mixer index to insert
         if (!gm_insertMix(idx))
           return;
-        model.mixData[idx].destCh = i;
+        model->mixData[idx].destCh = i;
         mixInserted=true;
     } else {
       mixInserted=false;
@@ -349,7 +351,7 @@ void MixesPanel::mixersCopy()
 
     QByteArray mxData;
     foreach(int idx, list) {
-      mxData.append((char*)&model.mixData[idx],sizeof(MixData));
+      mxData.append((char*)&model->mixData[idx],sizeof(MixData));
     }
 
     QMimeData *mimeData = new QMimeData;
@@ -368,7 +370,7 @@ void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
       idx = getMixerIndex(dch) - 1; //get mixer index to insert
     } else {
       idx = destIdx;
-      dch = model.mixData[idx].destCh;
+      dch = model->mixData[idx].destCh;
     }
 
     QByteArray mxData = mimeData->data("application/x-companion-mix");
@@ -380,7 +382,7 @@ void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
 
       if (!gm_insertMix(idx))
         break;
-      MixData *md = &model.mixData[idx];
+      MixData *md = &model->mixData[idx];
       memcpy(md,mxData.mid(i,sizeof(MixData)).constData(),sizeof(MixData));
       md->destCh = dch;
       i += sizeof(MixData);
@@ -415,7 +417,7 @@ void MixesPanel::mixerOpen()
       idx = getMixerIndex(i); //get mixer index to insert
       if (!gm_insertMix(idx))
         return;
-      model.mixData[idx].destCh = i;
+      model->mixData[idx].destCh = i;
       mixInserted=true;
     } else {
       mixInserted=false;
@@ -432,7 +434,7 @@ void MixesPanel::mixerHighlight()
     dest = -idx;
   }
   else {
-    dest = model.mixData[idx].destCh;
+    dest = model->mixData[idx].destCh;
   }
   highlightedSource = ( (int)highlightedSource ==  dest) ? 0 : dest;
   // qDebug() << "MixesPanel::mixerHighlight(): " << highlightedSource ;
@@ -453,13 +455,13 @@ void MixesPanel::mixerAdd()
       index = getMixerIndex(i); //get mixer index to insert
       if (!gm_insertMix(index))
         return;
-      model.mixData[index].destCh = i;
+      model->mixData[index].destCh = i;
       mixInserted=true;
     } else {
       index++;
       if (!gm_insertMix(index))
         return;
-      model.mixData[index].destCh = model.mixData[index-1].destCh;
+      model->mixData[index].destCh = model->mixData[index-1].destCh;
       mixInserted=true;
     }
     gm_openMix(index);
@@ -523,7 +525,7 @@ int MixesPanel::gm_moveMix(int idx, bool dir) //true=inc=down false=dec=up
 {
     if(idx>firmware->getCapability(Mixes) || (idx==firmware->getCapability(Mixes) && dir)) return idx;
 
-    MixData &src=model.mixData[idx];
+    MixData &src=model->mixData[idx];
 
     if (idx==0 && !dir) {
         //special case: topmost mixer moving up
@@ -532,7 +534,7 @@ int MixesPanel::gm_moveMix(int idx, bool dir) //true=inc=down false=dec=up
     }
 
     int tdx = dir ? idx+1 : idx-1;
-    MixData &tgt=model.mixData[tdx];
+    MixData &tgt=model->mixData[tdx];
 
     unsigned int outputs = firmware->getCapability(Outputs);
     if((src.destCh==0) || (src.destCh>outputs) || (tgt.destCh>outputs)) return idx;
@@ -578,7 +580,7 @@ void MixesPanel::moveMixDown()
 void MixesPanel::clearMixes()
 {
   if (QMessageBox::question(this, tr("Clear Mixes?"), tr("Really clear all the mixes?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
-    model.clearMixes();
+    model->clearMixes();
     emit modified();
     update();
   }
