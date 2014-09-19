@@ -97,6 +97,9 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(VKEYS)
     ISTR(VSWITCHES)
     ISTR(VSRCRAW)
+#if defined(TRANSLATIONS_CZ) && defined(CPUARM)
+    ISTR(INPUTNAMES)
+#endif
     ISTR(VTMRMODES)
 #if defined(CPUM2560) || defined(CPUARM)
     ISTR(DATETIME)

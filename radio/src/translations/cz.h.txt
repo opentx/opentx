@@ -457,6 +457,9 @@
 
 #define TR_VSRCRAW             "---\0""Směr""Výšk""Plyn""Křid" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" TR_SW_VSRCRAW
 
+#define LEN_INPUTNAMES         "\004"
+#define TR_INPUTNAMES          "Smer""Vysk""Plyn""Krid"
+
 #define LEN_VTMRMODES          "\004"
 #define TR_VTMRMODES           "VYP\0""ABS\0""Pln>""Pln%""Pln*"
 

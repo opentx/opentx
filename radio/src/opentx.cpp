@@ -362,7 +362,11 @@ void defaultInputs()
     expo->weight = 100;
     expo->mode = 3; // TODO constant
     for (int c=0; c<4; c++) {
+#if defined(TRANSLATIONS_CZ) && defined(CPUARM)
+      g_model.inputNames[i][c] = char2idx(STR_INPUTNAMES[1+STR_INPUTNAMES[0]*(stick_index-1)+c]);
+#else
       g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[1+STR_VSRCRAW[0]*stick_index+c]);
+#endif
     }
   }
   eeDirty(EE_MODEL);
@@ -387,7 +391,11 @@ void applyDefaultTemplate()
     expo->weight = 100;
     expo->mode = 3; // TODO constant
     for (int c=0; c<4; c++) {
+#if defined(TRANSLATIONS_CZ) && defined(CPUARM)
+      g_model.inputNames[i][c] = char2idx(STR_INPUTNAMES[1+STR_INPUTNAMES[0]*(stick_index-1)+c]);
+#else
       g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[1+STR_VSRCRAW[0]*stick_index+c]);
+#endif
     }
 #endif
 

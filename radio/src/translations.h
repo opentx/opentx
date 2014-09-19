@@ -153,7 +153,12 @@ extern const pm_char STR_OPEN9X[];
 #endif
 #define OFS_VSWITCHES           (OFS_VKEYS + sizeof(TR_VKEYS))
 #define OFS_VSRCRAW             (OFS_VSWITCHES + sizeof(TR_VSWITCHES))
-#define OFS_VTMRMODES           (OFS_VSRCRAW + sizeof(TR_VSRCRAW))
+#if defined(TRANSLATIONS_CZ) && defined(CPUARM)
+  #define OFS_INPUTNAMES          (OFS_VSRCRAW + sizeof(TR_VSRCRAW))
+  #define OFS_VTMRMODES           (OFS_INPUTNAMES + sizeof(TR_INPUTNAMES))
+#else
+  #define OFS_VTMRMODES           (OFS_VSRCRAW + sizeof(TR_VSRCRAW))
+#endif
 #define OFS_DATETIME            (OFS_VTMRMODES + sizeof(TR_VTMRMODES))
 #if defined(CPUM2560) || defined(CPUARM)
   #define OFS_VPERSISTENT       (OFS_DATETIME + sizeof(TR_DATETIME))
@@ -249,6 +254,9 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VKEYS               (STR_OPEN9X + OFS_VKEYS)
 #define STR_VSWITCHES           (STR_OPEN9X + OFS_VSWITCHES)
 #define STR_VSRCRAW             (STR_OPEN9X + OFS_VSRCRAW)
+#if defined(TRANSLATIONS_CZ) && defined(CPUARM)
+#define STR_INPUTNAMES          (STR_OPEN9X + OFS_INPUTNAMES)
+#endif
 #define STR_VTMRMODES           (STR_OPEN9X + OFS_VTMRMODES)
 
 #if defined(ROTARY_ENCODERS)
