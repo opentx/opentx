@@ -770,6 +770,13 @@ int8_t  getMovedSwitch();
   #define getTrimFlightPhase(phase, idx) (phase)
 #endif
 
+#if defined(GVARS)
+  extern int8_t trimGvar[NUM_STICKS];
+  #define TRIM_REUSED(idx) trimGvar[idx] >= 0
+#else
+  #define TRIM_REUSED(idx) 0
+#endif
+
 trim_t getRawTrimValue(uint8_t phase, uint8_t idx);
 int getTrimValue(uint8_t phase, uint8_t idx);
 

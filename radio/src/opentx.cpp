@@ -1246,10 +1246,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 }
 
 #if defined(GVARS)
-  int8_t trimGvar[NUM_STICKS] = { -1, -1, -1, -1 };
-  #define TRIM_REUSED(idx) trimGvar[idx] >= 0
-#else
-  #define TRIM_REUSED(idx) 0
+int8_t trimGvar[NUM_STICKS] = { -1, -1, -1, -1 };
 #endif
 
 #if defined(CPUARM)
