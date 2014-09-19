@@ -80,11 +80,7 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\017"
-<<<<<<< HEAD
-#define TR_UART3MODES          "VYP\0           ""S-Port Mirror\0 ""Telemetrie\0    ""Trainer\0       ""Debug\0         "
-=======
-#define TR_UART3MODES          "VYP\0           ""S-Port Mirror\0 ""Telemetrie\0    ""Debug\0         "
->>>>>>> 2073a1f... CZ translations - Radio
+#define TR_UART3MODES          "VYP\0           ""S-Port Mirror\0 ""Telemetrie\0    ""SBUS Trenér\0   ""Debug\0         "
 
 #define LEN_POTTYPES           "\017"
 #define TR_POTTYPES            "Není\0          ""Pot s aretací\0 ""Vícepol. přep.\0""Potenciometr\0"
@@ -474,6 +470,9 @@
 #endif
 
 #define TR_VSRCRAW             "---\0""Směr""Výšk""Plyn""Křid" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" TR_SW_VSRCRAW
+
+#define LEN_INPUTNAMES         "\004"
+#define TR_INPUTNAMES          "Smer""Vysk""Plyn""Krid"
 
 #define LEN_VTMRMODES          "\004"
 #define TR_VTMRMODES           "VYP\0""ABS\0""Pln>""Pln%""Pln*"
