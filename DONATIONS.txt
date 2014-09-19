@@ -604,3 +604,4 @@ Patrizio Simoncini (monthly)
 Harald Gabler
 Michael Brown
 Julien Gérard
+Alexandre d'Alton
