@@ -647,7 +647,20 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       if (mixEnabled && md->srcRaw >= MIXSRC_FIRST_TRAINER && md->srcRaw <= MIXSRC_LAST_TRAINER && !ppmInValid) {
         mixEnabled = 0;
+        mixCondition = true;   // without this line a mixer will not be disabled if mixCondition == false !!!
       }
+
+#if defined(PCBTARANIS) && defined(LUA_MODEL_SCRIPTS)
+      //disable mixer if Lua script is used as source and script was killed
+      if (mixEnabled && md->srcRaw >= MIXSRC_FIRST_LUA && md->srcRaw <= MIXSRC_LAST_LUA) {
+        div_t qr = div(md->srcRaw-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
+        if (scriptInternalData[qr.quot].state != SCRIPT_OK) {
+          mixEnabled = 0;
+          mixCondition = true;
+          // TRACE("Mix %d disabled Lua script %d state: %d", i, qr.quot, scriptInternalData[qr.quot].state);
+        }
+      }
+#endif
 
       //========== VALUE ===============
       getvalue_t v = 0;
