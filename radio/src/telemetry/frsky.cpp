@@ -286,7 +286,7 @@ void telemetryWakeup()
 
 #if defined(PCBTARANIS)
   uint8_t data;
-#if defined(DEBUG) && !defined(SIMU)
+#if defined(SPORT_FILE_LOG) && !defined(SIMU)
   static tmr10ms_t lastTime = 0;
   tmr10ms_t newTime = get_tmr10ms();
   struct gtm utm;
