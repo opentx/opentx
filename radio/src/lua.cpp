@@ -113,6 +113,20 @@ static int luaGetTime(lua_State *L)
   return 1;
 }
 
+static int luaGetDateTime(lua_State *L)
+{
+  struct gtm utm;
+  gettime(&utm);
+  lua_newtable(L);
+  lua_pushtableinteger(L, "year", utm.tm_year+1900);
+  lua_pushtableinteger(L, "mon", utm.tm_mon+1);
+  lua_pushtableinteger(L, "day", utm.tm_mday);
+  lua_pushtableinteger(L, "hour", utm.tm_hour);
+  lua_pushtableinteger(L, "min", utm.tm_min);
+  lua_pushtableinteger(L, "sec", utm.tm_sec);
+  return 1;
+}
+
 static void luaGetValueAndPush(int src)
 {
   if (src >= MIXSRC_FIRST_TELEM && src <= MIXSRC_LAST_TELEM) {
@@ -1379,6 +1393,7 @@ int luaGetOutputs(ScriptInputsOutputs & sid)
 
 const luaL_Reg opentxLib[] = {
   { "getTime", luaGetTime },
+  { "getDateTime", luaGetDateTime },
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getValue", luaGetValue },
