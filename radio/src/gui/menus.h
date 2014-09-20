@@ -141,6 +141,9 @@ void menuModelCustomFunctions(uint8_t event);
 void menuStatisticsView(uint8_t event);
 void menuStatisticsDebug(uint8_t event);
 void menuAboutView(uint8_t event);
+#if defined(DEBUG_TRACE_BUFFER)
+void menuTraceBuffer(uint8_t event);
+#endif
 
 #if !defined(CPUM64)
   void displaySlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
