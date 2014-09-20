@@ -342,6 +342,7 @@ static int luaGetGeneralSettings(lua_State *L)
   lua_newtable(L);
   lua_pushtablenumber(L, "battMin", double(90+g_eeGeneral.vBatMin)/10);
   lua_pushtablenumber(L, "battMax", double(120+g_eeGeneral.vBatMax)/10);
+  lua_pushtableinteger(L, "imperial", g_eeGeneral.imperial);
   return 1;
 }
 
