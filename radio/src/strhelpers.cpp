@@ -36,7 +36,13 @@
 
 #include "opentx.h"
 
+#if !defined(BOOT)
 const pm_char s_charTab[] PROGMEM = "_-.,";
+
+char hex2zchar(uint8_t hex)
+{
+  return (hex >= 10 ? hex-9 : 27+hex);
+}
 
 char idx2char(int8_t idx)
 {
@@ -141,6 +147,7 @@ char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultN
 
   return &dest[len];
 }
+#endif
 #endif
 
 #if defined(CPUARM) || defined(SDCARD)
