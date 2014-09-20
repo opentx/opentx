@@ -216,7 +216,12 @@ void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att);
 void putsVBat(coord_t x, coord_t y, LcdFlags att);
-void putsTelemetryChannel(coord_t x, coord_t y, uint8_t channel, lcdint_t val, LcdFlags att=0);
+
+#if !defined(BOOT)
+void putsChannelValue(coord_t x, coord_t y, source_t channel, lcdint_t val, LcdFlags att=0);
+void putsChannel(coord_t x, coord_t y, source_t channel, LcdFlags att=0);
+void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t val, LcdFlags att=0);
+#endif
 
 #if defined(CPUARM)
   #define putstime_t int32_t

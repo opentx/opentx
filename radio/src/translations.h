@@ -498,6 +498,7 @@ extern const pm_char STR_INTERNALRF[];
 extern const pm_char STR_EXTERNALRF[];
 extern const pm_char STR_FAILSAFE[];
 extern const pm_char STR_FAILSAFESET[];
+extern const pm_char STR_MENUSENSOR[];
 extern const pm_char STR_COUNTRYCODE[];
 #endif
 
@@ -702,6 +703,10 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_LOWALARM[];
   extern const pm_char STR_CRITICALALARM[];
   extern const pm_char STR_TELEMETRY_TYPE[];
+  extern const pm_char STR_TELEMETRY_SENSORS[];
+  extern const pm_char STR_TELEMETRY_NEWSENSOR[];
+  extern const pm_char STR_ID[];
+  extern const pm_char STR_PRECISION[];
 #endif
 
 #if defined(PCBTARANIS)
@@ -720,7 +725,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_PTS[];
   extern const pm_char STR_SMOOTH[];
   extern const pm_char STR_COPY_STICKS_TO_OFS[];
-extern const pm_char STR_COPY_TRIMS_TO_OFS[];
+  extern const pm_char STR_COPY_TRIMS_TO_OFS[];
   extern const pm_char STR_TOP_BAR[];
   extern const pm_char STR_ALTITUDE[];
   extern const pm_char STR_SCALE[];

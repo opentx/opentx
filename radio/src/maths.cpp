@@ -154,6 +154,17 @@ getvalue_t div10_and_round(getvalue_t value)
   return value/10;
 }
 
+getvalue_t div100_and_round(getvalue_t value)
+{
+  if (value >= 0 ) {
+    value += 50;
+  }
+  else {
+    value -= 50;
+  }
+  return value/100;
+}
+
 #if defined(PCBTARANIS)
 double gpsToDouble(bool neg, int16_t bp, int16_t ap)
 {

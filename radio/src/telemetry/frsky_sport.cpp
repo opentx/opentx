@@ -322,6 +322,11 @@ void frskySportProcessPacket(uint8_t *packet)
           uint16_t value = HUB_DATA_U16(packet);
           processHubPacket(id, value);
         }
+#if 1
+        else {
+          setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, appId, dataId, SPORT_DATA_S32(packet));
+        }
+#else
         else if (appId >= T1_FIRST_ID && appId <= T1_LAST_ID) {
           frskyData.hub.temperature1 = SPORT_DATA_S32(packet);
           if (frskyData.hub.temperature1 > frskyData.hub.maxTemperature1)
@@ -489,7 +494,97 @@ void frskySportProcessPacket(uint8_t *packet)
             frskySetCellVoltage(battnumber+1, (frskyCellVoltage_t) ((data & 0xFFF00000) >> 20) / 5);
           }
         }
+#endif
       }
       break;
   }
+}
+
+void frskySportSetDefault(int index, uint16_t id, uint8_t instance)
+{
+  TelemetryValue & telemetryValue = g_model.telemetryValues[index];
+
+  telemetryValue.id = id;
+  telemetryValue.instance = instance;
+
+  if (id == RSSI_ID) {
+    setTelemetryLabel(telemetryValue, ZSTR_RSSI);
+    telemetryValue.unit = UNIT_RAW;
+    telemetryValue.flags = TELEM_FLAG_LOG;
+  }
+  else if (id >= T1_FIRST_ID && id <= T2_LAST_ID) {
+    setTelemetryLabel(telemetryValue, ZSTR_TEMP);
+    telemetryValue.unit = UNIT_TEMPERATURE;
+    telemetryValue.flags = TELEM_FLAG_LOG|TELEM_FLAG_LOSS_ALARM;
+  }
+  else if (id >= RPM_FIRST_ID && id <= RPM_LAST_ID) {
+    setTelemetryLabel(telemetryValue, ZSTR_RPM);
+    telemetryValue.unit = UNIT_RPMS;
+    telemetryValue.flags = TELEM_FLAG_LOG;
+  }
+  else if (id >= FUEL_FIRST_ID && id <= FUEL_LAST_ID) {
+    setTelemetryLabel(telemetryValue, ZSTR_FUEL);
+    telemetryValue.unit = UNIT_PERCENT;
+    telemetryValue.flags = TELEM_FLAG_LOG|TELEM_FLAG_LOSS_ALARM;
+  }
+  else if (id >= ALT_FIRST_ID && id <= ALT_LAST_ID) {
+    setTelemetryLabel(telemetryValue, ZSTR_ALT);
+    telemetryValue.unit = UNIT_DIST;
+    telemetryValue.flags = TELEM_FLAG_LOG;
+    telemetryValue.prec = 2;
+    // TODO altitude offset
+  }
+  else if (id >= VARIO_FIRST_ID && id <= VARIO_LAST_ID) {
+    setTelemetryLabel(telemetryValue, ZSTR_VSPD);
+    telemetryValue.unit = UNIT_METERS_PER_SECOND;
+    telemetryValue.flags = TELEM_FLAG_LOG;
+  }
+  else if (id >= ACCX_FIRST_ID && id <= ACCX_LAST_ID) {
+    setTelemetryLabel(telemetryValue, ZSTR_ACCX);
+    telemetryValue.unit = UNIT_G;
+    telemetryValue.flags = TELEM_FLAG_LOG;
+  }
+  else if (id >= ACCY_FIRST_ID && id <= ACCY_LAST_ID) {
+    setTelemetryLabel(telemetryValue, ZSTR_ACCY);
+    telemetryValue.unit = UNIT_G;
+    telemetryValue.flags = TELEM_FLAG_LOG;
+  }
+  else if (id >= ACCZ_FIRST_ID && id <= ACCZ_LAST_ID) {
+    setTelemetryLabel(telemetryValue, ZSTR_ACCZ);
+    telemetryValue.unit = UNIT_G;
+    telemetryValue.flags = TELEM_FLAG_LOG;
+  }
+  else if (id >= CURR_FIRST_ID && id <= CURR_LAST_ID) {
+    setTelemetryLabel(telemetryValue, ZSTR_CURR);
+    telemetryValue.unit = UNIT_AMPS;
+    telemetryValue.flags = TELEM_FLAG_LOG;
+  }
+  else if (id >= VFAS_FIRST_ID && id <= VFAS_LAST_ID) {
+    setTelemetryLabel(telemetryValue, ZSTR_VFAS);
+    telemetryValue.unit = UNIT_VOLTS;
+    telemetryValue.flags = TELEM_FLAG_LOG;
+    telemetryValue.prec = 2;
+  }
+  else if (id >= AIR_SPEED_FIRST_ID && id <= AIR_SPEED_LAST_ID) {
+    setTelemetryLabel(telemetryValue, ZSTR_ASPD);
+    telemetryValue.unit = UNIT_METERS_PER_SECOND;
+    telemetryValue.flags = TELEM_FLAG_LOG;
+  }
+  else if (id >= GPS_SPEED_FIRST_ID && id <= GPS_SPEED_LAST_ID) {
+    setTelemetryLabel(telemetryValue, ZSTR_GSPD);
+    telemetryValue.unit = UNIT_METERS_PER_SECOND;
+    telemetryValue.flags = TELEM_FLAG_LOG;
+  }
+  else {
+    char label[4];
+    label[0] = hex2zchar((id & 0xf000) >> 12);
+    label[1] = hex2zchar((id & 0x0f00) >> 8);
+    label[2] = hex2zchar((id & 0x00f0) >> 4);
+    label[3] = hex2zchar((id & 0x000f) >> 0);
+    setTelemetryLabel(telemetryValue, label);
+    telemetryValue.unit = UNIT_RAW;
+  }
+
+  eeDirty(EE_MODEL);
+
 }

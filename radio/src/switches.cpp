@@ -271,14 +271,14 @@ bool getLogicalSwitch(uint8_t idx)
 #if defined(FRSKY)
       // Telemetry
       if (v1 >= MIXSRC_FIRST_TELEM) {
-        if ((!TELEMETRY_STREAMING() && v1 >= MIXSRC_FIRST_TELEM+TELEM_FIRST_STREAMED_VALUE-1) || IS_FAI_FORBIDDEN(v1-1)) {
+        if (!TELEMETRY_STREAMING() || IS_FAI_FORBIDDEN(v1-1)) {
           result = false;
           goto DurationAndDelayProcessing;
         }
 
         y = convertLswTelemValue(ls);
 
-#if defined(GAUGES)
+#if defined(GAUGES) && !defined(CPUARM)
         // Fill the telemetry bars threshold array
         if (s == LS_FAMILY_OFS) {
           uint8_t idx = v1-MIXSRC_FIRST_TELEM+1-TELEM_ALT;

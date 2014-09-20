@@ -243,7 +243,7 @@
   #define IF_FAI_CHOICE(x)
 #endif
 
-#define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && idx > MIXSRC_FIRST_TELEM-1+TELEM_A2-1)
+#define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && idx >= MIXSRC_FIRST_TELEM)
 
 #if defined(SIMU)
   #ifndef FORCEINLINE
@@ -633,6 +633,7 @@ extern uint8_t pxxFlag[NUM_MODULES];
 #define ZCHAR_MAX (LEN_STD_CHARS + LEN_SPECIAL_CHARS)
 #endif
 
+char hex2zchar(uint8_t hex);
 char idx2char(int8_t idx);
 #if defined(CPUARM) || defined(SIMU)
 int8_t char2idx(char c);
@@ -1357,6 +1358,10 @@ void evalFunctions();
 
 #include "gui/menus.h"
 
+#if defined(CPUARM)
+  #include "telemetry/telemetry.h"
+#endif
+
 #if defined (FRSKY)
   // FrSky Telemetry
   #include "telemetry/frsky.h"
@@ -1688,19 +1693,19 @@ extern bar_threshold_t barsThresholds[THLD_MAX];
 #endif
 
 #if defined(FRSKY)
-  ls_telemetry_value_t minTelemValue(uint8_t channel);
-  ls_telemetry_value_t maxTelemValue(uint8_t channel);
+  ls_telemetry_value_t minTelemValue(source_t channel);
+  ls_telemetry_value_t maxTelemValue(source_t channel);
 #else
   #define minTelemValue(channel) 255
   #define maxTelemValue(channel) 255
 #endif
 
 #if defined(CPUARM)
-getvalue_t convert16bitsTelemValue(uint8_t channel, ls_telemetry_value_t value);
-ls_telemetry_value_t max8bitsTelemValue(uint8_t channel);
+getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value);
+ls_telemetry_value_t max8bitsTelemValue(source_t channel);
 #endif
 
-getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value);
+getvalue_t convert8bitsTelemValue(source_t channel, ls_telemetry_value_t value);
 getvalue_t convertLswTelemValue(LogicalSwitchData * cs);
 
 #if defined(CPUARM)
@@ -1714,12 +1719,12 @@ getvalue_t convertLswTelemValue(LogicalSwitchData * cs);
 #endif
 
 #if defined(FRSKY) || defined(CPUARM)
-lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val);
+lcdint_t applyChannelRatio(source_t channel, lcdint_t val);
 #define ANA_CHANNEL_UNIT(channel) g_model.frsky.channels[channel].type
 #endif
 
 getvalue_t div10_and_round(getvalue_t value);
-
+getvalue_t div100_and_round(getvalue_t value);
 
 #if defined(FRSKY)
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);

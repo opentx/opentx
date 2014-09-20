@@ -56,34 +56,62 @@ void testFunc()
 #endif
 
 #if defined(VOICE)
-PLAY_FUNCTION(playValue, uint8_t idx)
+PLAY_FUNCTION(playValue, source_t idx)
 {
   if (IS_FAI_FORBIDDEN(idx))
     return;
 
   getvalue_t val = getValue(idx);
 
-  switch (idx) {
 #if defined(CPUARM)
-    case MIXSRC_FIRST_TELEM+TELEM_TX_TIME-1:
-      PLAY_DURATION(val*60, PLAY_TIME);
-      break;
-#endif
+  if (idx >= MIXSRC_FIRST_TELEM) {
+    TelemetryValue & telemetryValue = g_model.telemetryValues[(idx-MIXSRC_FIRST_TELEM) / 3];
+    uint8_t attr = 0;
+    if (telemetryValue.prec > 0) {
+      if (telemetryValue.prec == 2) {
+        if (val >= 5000) {
+          val = div100_and_round(val);
+        }
+        else {
+          val = div10_and_round(val);
+          attr = PREC1;
+        }
+      }
+      else {
+        if (val >= 500) {
+          val = div10_and_round(val);
+        }
+        else {
+          attr = PREC1;
+        }
+      }
+    }
+    PLAY_NUMBER(val, 1+telemetryValue.unit, attr);
+  }
+  else if (idx >= MIXSRC_FIRST_TIMER && idx <= MIXSRC_LAST_TIMER) {
+    PLAY_DURATION(val, 0);
+  }
+  else if (idx == MIXSRC_TX_TIME) {
+    PLAY_DURATION(val*60, PLAY_TIME);
+  }
+  else if (idx == MIXSRC_TX_VOLTAGE) {
+    PLAY_NUMBER(val, 1+UNIT_VOLTS, PREC1);
+  }
+  else {
+    if (idx <= MIXSRC_LAST_CH) {
+      val = calcRESXto100(val);
+    }
+    PLAY_NUMBER(val, 0, 0);
+  }
+#else
+  switch (idx) {
     case MIXSRC_FIRST_TELEM+TELEM_TX_VOLTAGE-1:
       PLAY_NUMBER(val, 1+UNIT_VOLTS, PREC1);
       break;
     case MIXSRC_FIRST_TELEM+TELEM_TIMER1-1:
     case MIXSRC_FIRST_TELEM+TELEM_TIMER2-1:
-#if defined(CPUARM)
-    case MIXSRC_FIRST_TELEM+TELEM_TIMER3-1:
-#endif
       PLAY_DURATION(val, 0);
       break;
-#if defined(CPUARM) && defined(FRSKY)
-    case MIXSRC_FIRST_TELEM+TELEM_SWR-1:
-      PLAY_NUMBER(val, 0, 0);
-      break;
-#endif
 #if defined(FRSKY)
     case MIXSRC_FIRST_TELEM+TELEM_RSSI_TX-1:
     case MIXSRC_FIRST_TELEM+TELEM_RSSI_RX-1:
@@ -91,18 +119,10 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       break;
     case MIXSRC_FIRST_TELEM+TELEM_MIN_A1-1:
     case MIXSRC_FIRST_TELEM+TELEM_MIN_A2-1:
-#if defined(CPUARM)
-    case MIXSRC_FIRST_TELEM+TELEM_MIN_A3-1:
-    case MIXSRC_FIRST_TELEM+TELEM_MIN_A4-1:
-#endif
       idx -= TELEM_MIN_A1-TELEM_A1;
       // no break
     case MIXSRC_FIRST_TELEM+TELEM_A1-1:
     case MIXSRC_FIRST_TELEM+TELEM_A2-1:
-#if defined(CPUARM)
-    case MIXSRC_FIRST_TELEM+TELEM_A3-1:
-    case MIXSRC_FIRST_TELEM+TELEM_A4-1:
-#endif
       if (TELEMETRY_STREAMING()) {
         idx -= (MIXSRC_FIRST_TELEM+TELEM_A1-1);
         uint8_t att = 0;
@@ -154,10 +174,6 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_ALT-1:
-#if defined(PCBTARANIS)
-      PLAY_NUMBER(div10_and_round(val), 1+UNIT_DIST, PREC1);
-      break;
-#endif
     case MIXSRC_FIRST_TELEM+TELEM_MIN_ALT-1:
     case MIXSRC_FIRST_TELEM+TELEM_MAX_ALT-1:
 #if defined(WS_HOW_HIGH)
@@ -206,6 +222,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     }
 #endif
   }
+#endif
 }
 #endif
 

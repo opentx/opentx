@@ -125,12 +125,12 @@ void FrskyValueWithMinMax::set(uint8_t value, uint8_t unit)
   }
 }
 
-uint16_t getChannelRatio(uint8_t channel)
+uint16_t getChannelRatio(source_t channel)
 {
   return (uint16_t)g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier;
 }
 
-lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val)
+lcdint_t applyChannelRatio(source_t channel, lcdint_t val)
 {
   return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
 }
@@ -345,6 +345,16 @@ void telemetryWakeup()
   if (int32_t(get_tmr10ms() - alarmsCheckTime) > 0) {
 
     alarmsCheckTime = get_tmr10ms() + 100; /* next check in 1 second */
+
+    uint8_t now = TelemetryItem::now();
+    for (int i=0; i<TELEM_VALUES_MAX; i++) {
+      if (isTelemetryFieldAvailable(i)) {
+        uint8_t lastReceived = telemetryItems[i].lastReceived;
+        if (lastReceived < TELEMETRY_VALUE_TIMER_CYCLE && uint8_t(now - lastReceived) > TELEMETRY_VALUE_OLD_THRESHOLD) {
+          telemetryItems[i].lastReceived = TELEMETRY_VALUE_OLD;
+        }
+      }
+    }
 
     if (alarmsCheckStep == ALARM_SWR_STEP) {
 #if defined(PCBTARANIS) && !defined(REVPLUS)
@@ -587,6 +597,12 @@ void telemetryReset()
 
   frskyData.hub.current = 55;
   frskyData.hub.maxCurrent = 65;
+#endif
+
+#if defined(SIMU) && defined(CPUARM)
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, 0x0400, 0, 100);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, 0x0400, 1, 200);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, 0x0100, 1, 1000);
 #endif
 }
 

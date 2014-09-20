@@ -204,6 +204,12 @@ PACK(typedef struct {
 
 typedef int16_t gvar_t;
 
+#if defined(PCBTARANIS)
+  typedef uint16_t source_t;
+#else
+  typedef uint8_t source_t;
+#endif
+
 #if !defined(PCBSTD)
   #define LEN_GVAR_NAME 6
   #define GVAR_MAX      1024
@@ -679,8 +685,8 @@ PACK(typedef struct {
 
 #if defined(PCBTARANIS)
 PACK(typedef struct {
-  uint8_t  srcRaw;
-  uint16_t scale;
+  source_t srcRaw:10;
+  uint16_t scale:14;
   uint8_t  chn;
   int8_t   swtch;
   uint16_t flightModes;
@@ -763,7 +769,7 @@ PACK(typedef struct t_ExpoData {
 #endif
 
 #if defined(PCBTARANIS)
-PACK(typedef struct t_LimitData {
+PACK(typedef struct {
   int16_t min:11;
   int16_t max:11;
   int16_t offset:11;
@@ -775,7 +781,7 @@ PACK(typedef struct t_LimitData {
   char name[LEN_CHANNEL_NAME];
 }) LimitData;
 #else
-PACK(typedef struct t_LimitData {
+PACK(typedef struct {
   int8_t min;
   int8_t max;
   int8_t  ppmCenter;
@@ -819,8 +825,8 @@ PACK(typedef struct {
   uint8_t  delayDown;
   uint8_t  speedUp;
   uint8_t  speedDown;
-  uint8_t  srcRaw;
-  int16_t  offset;
+  uint16_t srcRaw:10;
+  int16_t  offset:14;
   char     name[LEN_EXPOMIX_NAME];
 }) MixData;
 #else
@@ -874,7 +880,7 @@ PACK( union u_int8int16_t {
 #define SLOW_MAX    15 /* 7.5 seconds */
 
 #if defined(CPUM2560) || defined(CPUM2561)
-PACK(typedef struct t_MixData {
+PACK(typedef struct {
   uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
   uint8_t curveMode:1;       // O=curve, 1=differential
   uint8_t noExpo:1;
@@ -896,7 +902,7 @@ PACK(typedef struct t_MixData {
   int8_t  offset;
 }) MixData;
 #else
-PACK(typedef struct t_MixData {
+PACK(typedef struct {
   uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
   uint8_t curveMode:1;       // O=curve, 1=differential
   uint8_t noExpo:1;
@@ -917,7 +923,7 @@ PACK(typedef struct t_MixData {
   int8_t  offset;
 }) MixData;
 #endif
-PACK( union u_gvarint_t {
+PACK(union u_gvarint_t {
   struct {
     int8_t lo;
     uint8_t hi;
@@ -933,7 +939,7 @@ private:
 }); 
 #define MD_WEIGHT(md) (u_gvarint_t(md->weight,md->weightMode).word)
   
-PACK( union u_int8int16_t {
+PACK(union u_int8int16_t {
   struct {
     int8_t  lo;
     uint8_t hi;
@@ -1054,41 +1060,38 @@ PACK(typedef struct {
 }) FrSkyChannelData;
 #endif
 
+#if defined(CPUARM)
+#define TELEM_VALUES_MAX       32
+#define TELEM_LABEL_LEN        4
+//#define TELEM_FLAG_TIMEOUT     0x01
+#define TELEM_FLAG_LOG         0x02
+//#define TELEM_FLAG_PERSISTENT  0x04
+//#define TELEM_FLAG_SCALE       0x08
+//#define TELEM_FLAG_OFFSET      0x10
+//#define TELEM_FLAG_FILTER      0x20
+#define TELEM_FLAG_LOSS_ALARM  0x40
+PACK(typedef struct {
+  uint16_t id;                     // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
+  uint8_t  instance;               // instance ID to  allow handling multiple instances of same value type, for FrSky can be the physical ID of the sensor
+  char     label[TELEM_LABEL_LEN]; // user defined label
+  uint8_t  unit:6;                 // user can choose what unit to display each value in
+  uint8_t  prec:2;
+  uint8_t  flags;
+  uint16_t ratio;
+  int16_t  offset;
+  // uint8_t  calc;                   // for calculated items, stores what other telemetry item is used and the operation
+}) TelemetryValue;
+#endif
+
+#if !defined(CPUARM)
 enum TelemetrySource {
   TELEM_NONE,
-  TELEM_TX_VOLTAGE,               LUA_EXPORT_TELEMETRY("tx-voltage", "Transmitter battery voltage [volts]")
-#if defined(CPUARM)
-  TELEM_TX_TIME,                  LUA_EXPORT_TELEMETRY("clock", "RTC clock [minutes from midnight]")
-  TELEM_RESERVE1,
-  TELEM_RESERVE2,
-  TELEM_RESERVE3,
-  TELEM_RESERVE4,
-  TELEM_RESERVE5,
-#endif
-  TELEM_TIMER1,                   LUA_EXPORT_TELEMETRY("timer1", "Timer 1 value [seconds]")
-  TELEM_TIMER2,                   LUA_EXPORT_TELEMETRY("timer2", "Timer 2 value [seconds]")
-#if defined(CPUARM)
-  TELEM_TIMER3,                   LUA_EXPORT_TELEMETRY("timer3", "Timer 3 value [seconds]")
-  TELEM_TIMER_MAX = TELEM_TIMER3,
-  TELEM_SWR,                      LUA_EXPORT_TELEMETRY("swr", "Transmitter antenna quality [less is better]")
-#else
-  TELEM_TIMER_MAX = TELEM_TIMER2,
-#endif        
   TELEM_RSSI_TX,        
   TELEM_RSSI_RX,                  LUA_EXPORT_TELEMETRY("rssi", "RSSI [more is better]")
-#if defined(CPUARM)       
-  TELEM_RESERVE0,       
-#endif        
   TELEM_A_FIRST,        
   TELEM_A1=TELEM_A_FIRST,         LUA_EXPORT_TELEMETRY("a1", "A1 analogue value [units as configured]")
   TELEM_A2,                       LUA_EXPORT_TELEMETRY("a2", "A2 analogue value [units as configured]")
-#if !defined(CPUARM)        
   TELEM_A_LAST=TELEM_A2,        
-#else       
-  TELEM_A3,                       LUA_EXPORT_TELEMETRY("a3", "A3 analogue value [units as configured]")
-  TELEM_A4,                       LUA_EXPORT_TELEMETRY("a4", "A4 analogue value [units as configured]")
-  TELEM_A_LAST=TELEM_A4,        
-#endif        
   TELEM_ALT,                      LUA_EXPORT_TELEMETRY("altitude", "Variometer altitude [meters]")
   TELEM_RPM,                      LUA_EXPORT_TELEMETRY("rpm", "Rotational speed [revolutions per minute]")
   TELEM_FUEL,                     LUA_EXPORT_TELEMETRY("fuel", "Fuel level [percent]")
@@ -1110,24 +1113,10 @@ enum TelemetrySource {
   TELEM_VSPEED,                   LUA_EXPORT_TELEMETRY("vertical-speed", "Variometer vertical speed [m/s]")
   TELEM_ASPEED,                   LUA_EXPORT_TELEMETRY("air-speed", "Air speed [knots]")
   TELEM_DTE,                      LUA_EXPORT_TELEMETRY("dte", "Total energy [???]")
-#if defined(CPUARM)
-  TELEM_RESERVE6,
-  TELEM_RESERVE7,
-  TELEM_RESERVE8,
-  TELEM_RESERVE9,
-  TELEM_RESERVE10,
-#endif
   TELEM_MIN_A_FIRST,
   TELEM_MIN_A1=TELEM_MIN_A_FIRST, LUA_EXPORT_TELEMETRY("a1-min", "A1 analogue value minimum [units as configured]")
   TELEM_MIN_A2,                   LUA_EXPORT_TELEMETRY("a2-min", "A2 analogue value minimum [units as configured]")
-#if !defined(CPUARM)
   TELEM_MIN_A_LAST=TELEM_MIN_A2,
-#else
-  TELEM_MIN_A3,                   LUA_EXPORT_TELEMETRY("a3-min", "A3 analogue value minimum [units as configured]")
-  TELEM_MIN_A4,                   LUA_EXPORT_TELEMETRY("a4-min", "A4 analogue value minimum [units as configured]")
-  TELEM_MIN_A_LAST=TELEM_MIN_A4,
-#endif
-  // TODO: add A1-4 MAX
   TELEM_MIN_ALT,                  LUA_EXPORT_TELEMETRY("altitude-min", "Lowest altitude [meters]")
   TELEM_MAX_ALT,                  LUA_EXPORT_TELEMETRY("altitude-max", "Highest altitude [meters]")
   TELEM_MAX_RPM,                  LUA_EXPORT_TELEMETRY("rpm-max", "Highest rotational speed [revolutions per minute] [meters]")
@@ -1141,25 +1130,15 @@ enum TelemetrySource {
   TELEM_MIN_VFAS,                 LUA_EXPORT_TELEMETRY("vfas-min", "Current sensor - lowest voltage [volts]")
   TELEM_MAX_CURRENT,              LUA_EXPORT_TELEMETRY("current-max", "Current sensor - highest current [ampers]")
   TELEM_MAX_POWER,                LUA_EXPORT_TELEMETRY("power-max", "Current sensor - highest power [wats]")
-#if defined(CPUARM)
-  TELEM_RESERVE11,
-  TELEM_RESERVE12,
-  TELEM_RESERVE13,
-  TELEM_RESERVE14,
-  TELEM_RESERVE15,
-#endif
   TELEM_ACC,
   TELEM_GPS_TIME,
   TELEM_CSW_MAX = TELEM_MAX_POWER,
   TELEM_NOUSR_MAX = TELEM_A2,
-#if defined(FRSKY)
   TELEM_DISPLAY_MAX = TELEM_MAX_POWER,
-#else
-  TELEM_DISPLAY_MAX = TELEM_TIMER2, // because used also in PlayValue
-#endif
   TELEM_STATUS_MAX = TELEM_GPS_TIME,
   TELEM_FIRST_STREAMED_VALUE = TELEM_RSSI_TX,
 };
+#endif
 
 enum VarioSource {
 #if !defined(FRSKY_SPORT)
@@ -1188,27 +1167,34 @@ enum VarioSource {
   #define NUM_TELEMETRY      TELEM_TIMER_MAX
 #endif
 
-PACK(typedef struct {
-  uint8_t    source;
-  uint8_t    barMin;           // minimum for bar display
-  uint8_t    barMax;           // ditto for max display (would usually = ratio)
-}) FrSkyBarData;
-
 #if defined(PCBTARANIS)
-  #define NUM_LINE_ITEMS 3
-#else
-  #define NUM_LINE_ITEMS 2
-#endif
+#define NUM_LINE_ITEMS 3
 PACK(typedef struct {
-  uint8_t    sources[NUM_LINE_ITEMS];
+  uint16_t  sources[NUM_LINE_ITEMS];
 }) FrSkyLineData;
 
-#if defined(PCBTARANIS)
-#define MAX_TELEM_SCRIPT_INPUTS  4
 PACK(typedef struct {
-  char   file[LEN_SCRIPT_FILENAME];
-  int8_t inputs[MAX_TELEM_SCRIPT_INPUTS];
+  uint16_t  source;
+  uint16_t  barMin;           // minimum for bar display
+  uint16_t  barMax;           // ditto for max display (would usually = ratio)
+}) FrSkyBarData;
+
+#define MAX_TELEM_SCRIPT_INPUTS  8
+PACK(typedef struct {
+  char      file[LEN_SCRIPT_FILENAME];
+  int16_t   inputs[MAX_TELEM_SCRIPT_INPUTS];
 }) TelemetryScriptData;
+#else
+#define NUM_LINE_ITEMS 2
+PACK(typedef struct {
+  uint8_t   sources[NUM_LINE_ITEMS];
+}) FrSkyLineData;
+
+PACK(typedef struct {
+  uint8_t   source;
+  uint8_t   barMin;           // minimum for bar display
+  uint8_t   barMax;           // ditto for max display (would usually = ratio)
+}) FrSkyBarData;
 #endif
 
 typedef union {
@@ -1629,8 +1615,29 @@ enum MixSources {
   MIXSRC_GVAR1,                             LUA_EXPORT_MULTIPLE("gvar", "Global variable %d", MAX_GVARS)
   MIXSRC_LAST_GVAR = MIXSRC_GVAR1+MAX_GVARS-1,
 
+  MIXSRC_TX_VOLTAGE,                        LUA_EXPORT_TELEMETRY("tx-voltage", "Transmitter battery voltage [volts]")
+
+#if defined(CPUARM)
+  MIXSRC_TX_TIME,                           LUA_EXPORT_TELEMETRY("clock", "RTC clock [minutes from midnight]")
+  MIXSRC_RESERVE1,
+  MIXSRC_RESERVE2,
+  MIXSRC_RESERVE3,
+  MIXSRC_RESERVE4,
+  MIXSRC_RESERVE5,
+#endif
+
+  MIXSRC_FIRST_TIMER,
+  MIXSRC_TIMER1 = MIXSRC_FIRST_TIMER,       LUA_EXPORT_TELEMETRY("timer1", "Timer 1 value [seconds]")
+  MIXSRC_TIMER2,                            LUA_EXPORT_TELEMETRY("timer2", "Timer 2 value [seconds]")
+#if defined(CPUARM)
+  MIXSRC_TIMER3,                            LUA_EXPORT_TELEMETRY("timer3", "Timer 3 value [seconds]")
+  MIXSRC_LAST_TIMER = MIXSRC_TIMER3,
+#else
+  MIXSRC_LAST_TIMER = MIXSRC_TIMER2,
+#endif
+
   MIXSRC_FIRST_TELEM,
-  MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+NUM_TELEMETRY-1
+  MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*TELEM_VALUES_MAX-1,
 };
 
 #if defined(LUA)
@@ -1677,7 +1684,7 @@ enum CountDownModes {
 };
 
 #if defined(CPUARM)
-PACK(typedef struct t_TimerData {
+PACK(typedef struct {
   int8_t   mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint8_t  countdownBeep:2;
   uint8_t  minuteBeep:1;
@@ -1689,7 +1696,7 @@ PACK(typedef struct t_TimerData {
 }) TimerData;
 #define IS_MANUAL_RESET_TIMER(idx) (g_model.timers[idx].persistent == 2)
 #elif defined(CPUM2560)
-PACK(typedef struct t_TimerData {
+PACK(typedef struct {
   int8_t   mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint16_t start;
   uint8_t  countdownBeep:2;
@@ -1700,7 +1707,7 @@ PACK(typedef struct t_TimerData {
 }) TimerData;
 #define IS_MANUAL_RESET_TIMER(idx) (g_model.timers[idx].persistent == 2)
 #else
-PACK(typedef struct t_TimerData {
+PACK(typedef struct {
   int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint16_t  start:12;
   uint16_t  countdownBeep:1;
@@ -1803,7 +1810,7 @@ enum ThrottleSources {
   THROTTLE_SOURCE_CH1,
 };
 
-enum TelemetryProtocol
+enum TelemetryType
 {
   PROTOCOL_TELEMETRY_FIRST,
   PROTOCOL_FRSKY_SPORT = PROTOCOL_TELEMETRY_FIRST,
@@ -1852,7 +1859,7 @@ PACK(typedef struct {
 
   MODELDATA_EXTRA
 
-  ARM_FIELD(uint8_t spare3[230]) // TODO dirty hack for eeprom conversions (we load the model inside the g_model structure)
+  ARM_FIELD(TelemetryValue telemetryValues[TELEM_VALUES_MAX])
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;
@@ -1861,4 +1868,3 @@ extern ModelData g_model;
 #define TOTAL_EEPROM_USAGE (sizeof(ModelData)*MAX_MODELS + sizeof(EEGeneral))
 
 #endif
-/*eof*/

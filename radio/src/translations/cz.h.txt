@@ -790,6 +790,7 @@
 #define TR_EXTERNALRF          "Externí RF modul"
 #define TR_FAILSAFE            "Mód Failsafe"
 #define TR_FAILSAFESET         "NASTAVENÍ FAILSAFE"
+#define TR_MENUSENSOR          "SENSOR"
 #define TR_COUNTRYCODE         "Kód regionu"
 #define TR_VOICELANG           "Jazyk hlasu"
 #define TR_UNITSSYSTEM         "Jednotky"
@@ -822,6 +823,8 @@
 #define TR_MODELIDUSED         TR("ID již použito","ID modelu je již použito")
 #define TR_MODULE              INDENT "Modul"
 #define TR_TELEMETRY_TYPE      TR("Typ", "Typ telemetrie")
+#define TR_TELEMETRY_SENSORS   "Sensors"
+#define TR_TELEMETRY_NEWSENSOR INDENT "Add a new sensor..."
 #define TR_CHANNELRANGE        INDENT "Rozsah kanálů"
 #define TR_LOWALARM            INDENT "Nízký Alarm"
 #define TR_CRITICALALARM       INDENT "Kritický Alarm"
@@ -951,3 +954,5 @@
 #define TR_VIEW_NOTES          "Zobrazit poznámky"
 #define TR_MODS_FORBIDDEN      "Změny nejsou povoleny!"
 #define TR_UNLOCKED            "Odemčeno"
+#define TR_ID                  "ID"
+#define TR_PRECISION           "Precision"

@@ -793,6 +793,7 @@
 #define TR_EXTERNALRF          TR("---Externes HF-Modul---","----Externes HF-Modul----------")  //9XR-Pro
 #define TR_FAILSAFE            "Failsafe-Modus"
 #define TR_FAILSAFESET         "Failsafe Einst."
+#define TR_MENUSENSOR          "SENSOR"
 #define TR_COUNTRYCODE         "Landescode"
 #define TR_VOICELANG           "Sprach-Ansage"
 #define TR_UNITSSYSTEM         "Einheiten"
@@ -825,6 +826,8 @@
 #define TR_MODELIDUSED         TR("ID schon benutzt","Modell-ID schon benutzt")
 #define TR_MODULE              INDENT "Modul-Typ"
 #define TR_TELEMETRY_TYPE      TR("Typ", "Telemetrytyp")
+#define TR_TELEMETRY_SENSORS   "Sensors"
+#define TR_TELEMETRY_NEWSENSOR INDENT "Add a new sensor..."
 #define TR_CHANNELRANGE        TR(INDENT "Kanäle", INDENT "Ausgangs Kanäle")  //wg 9XR-Pro
 #define TR_LOWALARM            INDENT "Vor-Alarm bei"
 #define TR_CRITICALALARM       INDENT "Kritisch-Alarm"
@@ -954,4 +957,6 @@
 #define TR_VIEW_NOTES          "Zeige Notizen"
 #define TR_MODS_FORBIDDEN      "Veränderungen verboten!"
 #define TR_UNLOCKED            "Entsperrt"
+#define TR_ID                  "ID"
+#define TR_PRECISION           "Precision"
 

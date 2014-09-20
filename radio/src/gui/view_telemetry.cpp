@@ -150,9 +150,11 @@ void displayVoltageScreenLine(uint8_t y, uint8_t index)
 {
   putsStrIdx(0, y, STR_A, index+1, 0);
   if (TELEMETRY_STREAMING()) {
-    putsTelemetryChannel(3*FW+6*FW+4, y-FH, index+TELEM_A1-1, frskyData.analog[index].value, DBLSIZE);
-    lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannel(17*FW, y-FH, index+TELEM_A1-1, frskyData.analog[index].min, NO_UNIT);
-    lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, index+TELEM_A1-1, frskyData.analog[index].max, NO_UNIT);
+#if 0
+    putsTelemetryChannelValue(3*FW+6*FW+4, y-FH, index+TELEM_A1-1, frskyData.analog[index].value, DBLSIZE);
+    lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannelValue(17*FW, y-FH, index+TELEM_A1-1, frskyData.analog[index].min, NO_UNIT);
+    lcd_putc(12*FW, y, '>');      putsTelemetryChannelValue(17*FW, y, index+TELEM_A1-1, frskyData.analog[index].max, NO_UNIT);
+#endif
   }
 }
 
@@ -163,6 +165,8 @@ uint8_t barCoord(int16_t value, int16_t min, int16_t max)
 
 void displayVoltagesScreen()
 {
+#if 0
+
   // Volts / Amps / Watts / mAh
   uint8_t analog = 0;
 #if defined(CPUARM)
@@ -182,10 +186,10 @@ void displayVoltagesScreen()
       break;
 #if defined(FRSKY_HUB)
     case FRSKY_VOLTS_SOURCE_FAS:
-      putsTelemetryChannel(3*FW+6*FW+4, FH, TELEM_VFAS-1, frskyData.hub.vfas, DBLSIZE);
+      putsTelemetryChannelValue(3*FW+6*FW+4, FH, TELEM_VFAS-1, frskyData.hub.vfas, DBLSIZE);
       break;
     case FRSKY_VOLTS_SOURCE_CELLS:
-      putsTelemetryChannel(3*FW+6*FW+4, FH, TELEM_CELLS_SUM-1, frskyData.hub.cellsSum, DBLSIZE);
+      putsTelemetryChannelValue(3*FW+6*FW+4, FH, TELEM_CELLS_SUM-1, frskyData.hub.cellsSum, DBLSIZE);
       break;
 #endif
   }
@@ -203,13 +207,13 @@ void displayVoltagesScreen()
         break;
 #if defined(FRSKY_HUB)
       case FRSKY_CURRENT_SOURCE_FAS:
-        putsTelemetryChannel(3*FW+6*FW+4, 3*FH, TELEM_CURRENT-1, frskyData.hub.current, DBLSIZE);
+        putsTelemetryChannelValue(3*FW+6*FW+4, 3*FH, TELEM_CURRENT-1, frskyData.hub.current, DBLSIZE);
         break;
 #endif
     }
 
-    putsTelemetryChannel(4, 5*FH, TELEM_POWER-1, frskyData.hub.power, LEFT|DBLSIZE);
-    putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 5*FH, TELEM_CONSUMPTION-1, frskyData.hub.currentConsumption, DBLSIZE);
+    putsTelemetryChannelValue(4, 5*FH, TELEM_POWER-1, frskyData.hub.power, LEFT|DBLSIZE);
+    putsTelemetryChannelValue(3*FW+4+4*FW+6*FW+FW, 5*FH, TELEM_CONSUMPTION-1, frskyData.hub.currentConsumption, DBLSIZE);
   }
   else {
 #if defined(CPUARM)
@@ -252,6 +256,8 @@ void displayVoltagesScreen()
   }
 #endif
 
+#endif
+
   displayRssiLine();
 }
 
@@ -287,19 +293,23 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
   uint8_t barHeight = 5;
   for (int8_t i=3; i>=0; i--) {
     FrSkyBarData & bar = screen.bars[i];
-    uint8_t source = bar.source;
+    source_t source = bar.source;
     getvalue_t barMin = convertBarTelemValue(source, bar.barMin);
     getvalue_t barMax = convertBarTelemValue(source, 255-bar.barMax);
     if (source && barMax > barMin) {
       uint8_t y = barHeight+6+i*(barHeight+6);
       lcd_putsiAtt(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
       lcd_rect(BAR_LEFT, y, BAR_WIDTH+1, barHeight+2);
-      getvalue_t value = getValue(MIXSRC_FIRST_TELEM+source-1);
+      getvalue_t value = getValue(source);
+
 #if LCD_W >= 212
-      putsTelemetryChannel(BAR_LEFT+2+BAR_WIDTH, y+barHeight-5, source-1, value, LEFT);
+      putsChannel(BAR_LEFT+2+BAR_WIDTH, y+barHeight-5, source, LEFT);
 #endif
-      getvalue_t threshold = 0;
+
       uint8_t thresholdX = 0;
+
+#if !defined(CPUARM)
+      getvalue_t threshold = 0;
       if (source <= TELEM_TIMER_MAX)
         threshold = 0;
       else if (source <= TELEM_RSSI_RX)
@@ -321,13 +331,19 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
         if (thresholdX == 100)
           thresholdX = 0;
       }
+#endif
 
       uint8_t width = barCoord(value, barMin, barMax);
 
+#if defined(CPUARM)
+      uint8_t barShade = SOLID;
+#else
       // reversed barshade for T1/T2
       uint8_t barShade = ((threshold > value) ? DOTTED : SOLID);
-      if (source == TELEM_T1 || source == TELEM_T2)
+      if (source == TELEM_T1 || source == TELEM_T2) {
         barShade = -barShade;
+      }
+#endif
 
       lcd_filled_rect(BAR_LEFT+1, y+1, width, barHeight, barShade);
 
@@ -356,7 +372,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
   uint8_t fields_count = 0;
   for (uint8_t i=0; i<4; i++) {
     for (uint8_t j=0; j<NUM_LINE_ITEMS; j++) {
-      uint8_t field = screen.lines[i].sources[j];
+      source_t field = screen.lines[i].sources[j];
       if (field > 0) {
         fields_count++;
       }
@@ -368,7 +384,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         lcd_vline(63, 8, 48);
 #endif
         if (TELEMETRY_STREAMING()) {
-#if defined(FRSKY_HUB)
+#if 0 // defined(FRSKY_HUB)
           if (field == TELEM_ACC) {
             lcd_putsLeft(STATUS_BAR_Y, STR_ACCEL);
             lcd_outdezNAtt(4*FW, STATUS_BAR_Y, frskyData.hub.accelX, LEFT|PREC2);
@@ -376,7 +392,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
             lcd_outdezNAtt(16*FW, STATUS_BAR_Y, frskyData.hub.accelZ, LEFT|PREC2);
             break;
           }
-#if defined(GPS)
+#if 0 // defined(GPS)
           else if (field == TELEM_GPS_TIME) {
             displayGpsTime();
             break;
@@ -390,28 +406,39 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         }
       }
       if (field) {
-        getvalue_t value = getValue(MIXSRC_FIRST_TELEM+field-1);
-        uint8_t att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
+        LcdFlags att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
 #if LCD_W >= 212
         coord_t pos[] = {0, 71, 143, 214};
 #else
         coord_t pos[] = {0, 65, 130};
 #endif
-        putsTelemetryChannel(pos[j+1]-2, FH+2*FH*i, field-1, value, att);
 
 #if defined(CPUARM)
-        if (field >= TELEM_TIMER1 && field <= TELEM_TIMER_MAX && i!=3) {
+        if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i!=3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
-          putsStrIdx(pos[j], 1+FH+2*FH*i, "T", field-TELEM_TIMER1+1, 0);
+          putsStrIdx(pos[j], 1+FH+2*FH*i, "T", field-MIXSRC_FIRST_TIMER+1, 0);
         }
         else
 #else
-        if (field >= TELEM_TIMER1 && field <= TELEM_TIMER_MAX && i!=3) {
+        if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i!=3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
-          field = field-TELEM_TIMER1+TELEM_T1;
+          field = field-MIXSRC_FIRST_TIMER+TELEM_T1;
         }
 #endif
-        lcd_putsiAtt(pos[j], 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
+        putsMixerSource(pos[j], 1+FH+2*FH*i, field, 0);
+
+        if (field >= MIXSRC_FIRST_TELEM) {
+          TelemetryItem & telemetryItem = telemetryItems[(field-MIXSRC_FIRST_TELEM)/3]; // TODO macro to convert a source to a telemetry index
+          if (!telemetryItem.isAvailable()) {
+            continue;
+          }
+          else if (telemetryItem.isOld()) {
+            att |= INVERS|BLINK;
+          }
+        }
+
+        putsChannel(pos[j+1]-2, (i==3 ? 1+FH+2*FH*i:FH+2*FH*i), field, att);
+
       }
     }
   }

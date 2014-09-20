@@ -128,27 +128,31 @@ if args.language not in translations:
     parser.error(args.language  + ' is not a supported language. Try one of the supported ones: ' + str(translations.keys()))
     system.exit()
 
+if args.reverse:
+    for translation in translations:
+        translations[translation] = [(after, before) for (before, after) in translations[translation]]
+
 # Read the input file into a buffer
 in_file = codecs.open( args.input, "r", "utf-8" )
-text = in_file.read()
-in_file.close()
-
-# Do the replacements
-for before, after in translations[args.language]:
-    if args.reverse:
-        text = text.replace(before, after)
-    else:
-        text = text.replace(after, before)
-
-for before, after in translations["all"]:
-    if args.reverse:
-        text = text.replace(before, after)
-    else:
-        text = text.replace(after, before)
 
 # Write the result to a temporary file
 out_file = codecs.open(args.output, 'w', 'utf-8')
-out_file.write( text )
+
+for line in in_file.readlines():
+    # Do the special chars replacements
+    for after, before in translations[args.language] + translations["all"]:
+        line = line.replace(before, after)
+    if line.startswith("#define ZSTR_"):
+        before = line[32:-2]
+        after = ""
+        for c in before:
+            if ord(c) >= ord('A') and ord(c) <= ord('Z'):
+                c = "\\%03o" % (ord(c) - ord('A') + 1)
+            after = after + c
+        line = line[:32] + after + line[-2:]
+    out_file.write(line)                 
+
 out_file.close()
+in_file.close()
 
 
