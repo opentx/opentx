@@ -1926,8 +1926,8 @@ void luaDoOneRunPermanentScript(uint8_t evt, int i)
       lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
     }
     else {
-      TelemetryScriptData & script = g_model.frsky.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
 #if defined(SIMU) || defined(DEBUG)
+      TelemetryScriptData & script = g_model.frsky.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
       filename = script.file;
 #endif
       if (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view) {
