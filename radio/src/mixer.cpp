@@ -643,11 +643,30 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       //========== PHASE && SWITCH =====
       bool mixCondition = (md->flightModes != 0 || md->swtch);
+      /*
+        WARNING mixEnabled variable name is a bit misleading since it is not used as a simple
+        boolean. It also serves as a calculation value that can change later in this function.
+
+        So, to properly disable current mix it is best to use a macro MIXER_DISABLE()
+      */
       delayval_t mixEnabled = (!(md->flightModes & (1 << mixerCurrentFlightMode)) && getSwitch(md->swtch)) ? DELAY_POS_MARGIN+1 : 0;
 
+# define MIXER_DISABLE()   { mixCondition = true; mixEnabled = 0; }
+
       if (mixEnabled && md->srcRaw >= MIXSRC_FIRST_TRAINER && md->srcRaw <= MIXSRC_LAST_TRAINER && !ppmInValid) {
-        mixEnabled = 0;
+        MIXER_DISABLE();
       }
+
+#if defined(PCBTARANIS) && defined(LUA_MODEL_SCRIPTS)
+      //disable mixer if Lua script is used as source and script was killed
+      if (mixEnabled && md->srcRaw >= MIXSRC_FIRST_LUA && md->srcRaw <= MIXSRC_LAST_LUA) {
+        div_t qr = div(md->srcRaw-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
+        if (scriptInternalData[qr.quot].state != SCRIPT_OK) {
+          MIXER_DISABLE();
+          // TRACE("Mix %d disabled Lua script %d state: %d", i, qr.quot, scriptInternalData[qr.quot].state);
+        }
+      }
+#endif
 
       //========== VALUE ===============
       getvalue_t v = 0;
