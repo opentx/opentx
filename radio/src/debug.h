@@ -148,6 +148,7 @@ enum TraceEvent {
   ff_f_write_disk_read,
   ff_f_write_move_window,
 
+  audio_getNextFilledBuffer_skip = 50,
 };
 
 struct TraceElement {
@@ -158,14 +159,17 @@ struct TraceElement {
 };
 
 void trace_event(enum TraceEvent event, uint32_t data);
+void trace_event_i(enum TraceEvent event, uint32_t data);
 const struct TraceElement * getTraceElement(uint16_t idx);
 void dumpTraceBuffer();
 
-#define TRACE_EVENT(condition, event, data)  if (condition) { trace_event(event, data); }
+#define TRACE_EVENT(condition, event, data)   if (condition) { trace_event(event, data); }
+#define TRACEI_EVENT(condition, event, data)  if (condition) { trace_event_i(event, data); }
 
 #else  // #if defined(DEBUG_TRACE_BUFFER)
 
 #define TRACE_EVENT(condition, event, data)  
+#define TRACEI_EVENT(condition, event, data)  
 
 #endif // #if defined(DEBUG_TRACE_BUFFER)
 
@@ -181,8 +185,10 @@ void dumpTraceBuffer();
 #endif
 #if defined(TRACE_AUDIO)
   #define TRACE_AUDIO_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
+  #define TRACEI_AUDIO_EVENT(condition, event, data) TRACEI_EVENT(condition, event, data)
 #else
   #define TRACE_AUDIO_EVENT(condition, event, data)  
+  #define TRACEI_AUDIO_EVENT(condition, event, data)  
 #endif
 
 

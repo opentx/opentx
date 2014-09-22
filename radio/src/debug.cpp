@@ -235,6 +235,17 @@ void trace_event(enum TraceEvent event, uint32_t data)
   p->data = data;
 }
 
+void trace_event_i(enum TraceEvent event, uint32_t data)
+{
+  if (traceBufferPos >= TRACE_BUFFER_LEN) return;
+  struct TraceElement * p = &traceBuffer[traceBufferPos++];
+  p->time = g_rtcTime;
+  p->time_ms = g_ms100;
+  p->event = event;
+  p->data = data;
+}
+
+
 const struct TraceElement * getTraceElement(uint16_t idx)
 {
   if (idx < TRACE_BUFFER_LEN) return &traceBuffer[idx];
