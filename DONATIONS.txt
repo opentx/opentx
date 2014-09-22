@@ -607,3 +607,4 @@ Julien Gérard
 Alexandre d'Alton
 Peter Mergaerts
 Jan Houwers
+Gordon Stahl
