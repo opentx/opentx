@@ -132,6 +132,9 @@ BYTE CardType;                  /* Card type flags */
 
 enum speed_setting { INTERFACE_SLOW, INTERFACE_FAST };
 
+static OS_MutexID ioMutex;
+
+
 static void interface_speed( enum speed_setting speed )
 {
   DWORD tmp;
@@ -656,49 +659,53 @@ DSTATUS disk_initialize (
         BYTE drv                /* Physical drive number (0) */
 )
 {
-        BYTE n, cmd, ty, ocr[4];
+  BYTE n, cmd, ty, ocr[4];
 
-        if (drv) return STA_NOINIT;                     /* Supports only single drive */
-        if (Stat & STA_NODISK) return Stat;     /* No card in the socket */
+  if (drv) return STA_NOINIT;                     /* Supports only single drive */
+  if (Stat & STA_NODISK) return Stat;     /* No card in the socket */
 
-        power_on();                                                     /* Force socket power on and initialize interface */
-        interface_speed(INTERFACE_SLOW);
-        for (n = 10; n; n--) rcvr_spi();        /* 80 dummy clocks */
+  CoEnterMutexSection(ioMutex);
 
+  power_on();                                                     /* Force socket power on and initialize interface */
+  interface_speed(INTERFACE_SLOW);
+  for (n = 10; n; n--) rcvr_spi();        /* 80 dummy clocks */
+
+  ty = 0;
+  if (send_cmd(CMD0, 0) == 1) {                   /* Enter Idle state */
+    Timer1 = 100;                                           /* Initialization timeout of 1000 milliseconds */
+    if (send_cmd(CMD8, 0x1AA) == 1) {       /* SDHC */
+      for (n = 0; n < 4; n++) ocr[n] = rcvr_spi();            /* Get trailing return value of R7 response */
+      if (ocr[2] == 0x01 && ocr[3] == 0xAA) {                         /* The card can work at VDD range of 2.7-3.6V */
+        while (Timer1 && send_cmd(ACMD41, 1UL << 30));  /* Wait for leaving idle state (ACMD41 with HCS bit) */
+        if (Timer1 && send_cmd(CMD58, 0) == 0) {                /* Check CCS bit in the OCR */
+          for (n = 0; n < 4; n++) ocr[n] = rcvr_spi();
+          ty = (ocr[0] & 0x40) ? CT_SD2 | CT_BLOCK : CT_SD2;
+        }
+      }
+    } else {                                                        /* SDSC or MMC */
+      if (send_cmd(ACMD41, 0) <= 1)   {
+        ty = CT_SD1; cmd = ACMD41;      /* SDSC */
+      } else {
+        ty = CT_MMC; cmd = CMD1;        /* MMC */
+      }
+      while (Timer1 && send_cmd(cmd, 0));                     /* Wait for leaving idle state */
+      if (!Timer1 || send_cmd(CMD16, 512) != 0)       /* Set R/W block length to 512 */
         ty = 0;
-        if (send_cmd(CMD0, 0) == 1) {                   /* Enter Idle state */
-                Timer1 = 100;                                           /* Initialization timeout of 1000 milliseconds */
-                if (send_cmd(CMD8, 0x1AA) == 1) {       /* SDHC */
-                        for (n = 0; n < 4; n++) ocr[n] = rcvr_spi();            /* Get trailing return value of R7 response */
-                        if (ocr[2] == 0x01 && ocr[3] == 0xAA) {                         /* The card can work at VDD range of 2.7-3.6V */
-                                while (Timer1 && send_cmd(ACMD41, 1UL << 30));  /* Wait for leaving idle state (ACMD41 with HCS bit) */
-                                if (Timer1 && send_cmd(CMD58, 0) == 0) {                /* Check CCS bit in the OCR */
-                                        for (n = 0; n < 4; n++) ocr[n] = rcvr_spi();
-                                        ty = (ocr[0] & 0x40) ? CT_SD2 | CT_BLOCK : CT_SD2;
-                                }
-                        }
-                } else {                                                        /* SDSC or MMC */
-                        if (send_cmd(ACMD41, 0) <= 1)   {
-                                ty = CT_SD1; cmd = ACMD41;      /* SDSC */
-                        } else {
-                                ty = CT_MMC; cmd = CMD1;        /* MMC */
-                        }
-                        while (Timer1 && send_cmd(cmd, 0));                     /* Wait for leaving idle state */
-                        if (!Timer1 || send_cmd(CMD16, 512) != 0)       /* Set R/W block length to 512 */
-                                ty = 0;
-                }
-        }
-        CardType = ty;
-        release_spi();
+    }
+  }
+  CardType = ty;
+  release_spi();
 
-        if (ty) {                       /* Initialization succeeded */
-                Stat &= ~STA_NOINIT;            /* Clear STA_NOINIT */
-                interface_speed(INTERFACE_FAST);
-        } else {                        /* Initialization failed */
-                power_off();
-        }
+  if (ty) {                       /* Initialization succeeded */
+    Stat &= ~STA_NOINIT;            /* Clear STA_NOINIT */
+    interface_speed(INTERFACE_FAST);
+  } else {                        /* Initialization failed */
+    power_off();
+  }
 
-        return Stat;
+  CoLeaveMutexSection(ioMutex);
+
+  return Stat;
 }
 
 
@@ -722,6 +729,8 @@ DSTATUS disk_status (
 int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
 {
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
+
+  CoEnterMutexSection(ioMutex);
 
   if (count == 1) {       /* Single block read */
     if (send_cmd(CMD17, sector) == 0)       { /* READ_SINGLE_BLOCK */
@@ -749,6 +758,9 @@ int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
   }
   release_spi();
   TRACE_SD_CARD_EVENT((count != 0), sd_SD_ReadSectors, (count << 24) + ((sector/((CardType & CT_BLOCK) ? 1 : 512)) & 0x00FFFFFF));
+
+  CoLeaveMutexSection(ioMutex);
+
   return count ? -1 : 0;
 }
 
@@ -775,6 +787,9 @@ DRESULT disk_read (
 int8_t SD_WriteSectors(const uint8_t *buff, uint32_t sector, uint32_t count)
 {
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
+
+  CoEnterMutexSection(ioMutex);
+
   if (count == 1) {       /* Single block write */
     if (send_cmd(CMD24, sector) == 0) {     /* WRITE_BLOCK */
       if (xmit_datablock(buff, 0xFE)) {
@@ -801,6 +816,9 @@ int8_t SD_WriteSectors(const uint8_t *buff, uint32_t sector, uint32_t count)
   }
   release_spi();
   TRACE_SD_CARD_EVENT((count != 0), sd_SD_WriteSectors, (count << 24) + ((sector/((CardType & CT_BLOCK) ? 1 : 512)) & 0x00FFFFFF));
+
+  CoLeaveMutexSection(ioMutex);
+
   return count ? -1 : 0;
 }
 
@@ -842,6 +860,8 @@ DRESULT disk_ioctl (
 
   res = RES_ERROR;
 
+  CoEnterMutexSection(ioMutex);
+
   if (ctrl == CTRL_POWER) {
     switch (*ptr) {
     case 0:         /* Sub control code == 0 (POWER_OFF) */
@@ -862,7 +882,10 @@ DRESULT disk_ioctl (
     }
   }
   else {
-    if (Stat & STA_NOINIT) return RES_NOTRDY;
+    if (Stat & STA_NOINIT) {
+      CoLeaveMutexSection(ioMutex);
+      return RES_NOTRDY;
+    }
 
     switch (ctrl) {
     case CTRL_SYNC :                /* Make sure that no pending write process */
@@ -976,6 +999,8 @@ DRESULT disk_ioctl (
     release_spi();
   }
 
+  CoLeaveMutexSection(ioMutex);
+
   return res;
 }
 
@@ -1035,6 +1060,12 @@ void sdInit(void)
 // TODO shouldn't be there!
 void sdInit(void)
 {
+  ioMutex = CoCreateMutex();
+  if (ioMutex >= CFG_MAX_MUTEX ) {
+    //sd error
+    return;
+  }
+
   if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
     referenceSystemAudioFiles();
     
