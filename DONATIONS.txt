@@ -609,3 +609,4 @@ Peter Mergaerts
 Jan Houwers
 Gordon Stahl
 Christian Grandjean
+Roger Bergevin
