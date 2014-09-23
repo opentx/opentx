@@ -558,6 +558,7 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t instance)
     setTelemetryLabel(telemetryValue, ZSTR_CURR);
     telemetryValue.unit = UNIT_AMPS;
     telemetryValue.flags = TELEM_FLAG_LOG;
+    telemetryValue.prec = 1;
   }
   else if (id >= VFAS_FIRST_ID && id <= VFAS_LAST_ID) {
     setTelemetryLabel(telemetryValue, ZSTR_VFAS);
@@ -569,6 +570,7 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t instance)
     setTelemetryLabel(telemetryValue, ZSTR_ASPD);
     telemetryValue.unit = UNIT_METERS_PER_SECOND;
     telemetryValue.flags = TELEM_FLAG_LOG;
+    telemetryValue.prec = 1;
   }
   else if (id >= GPS_SPEED_FIRST_ID && id <= GPS_SPEED_LAST_ID) {
     setTelemetryLabel(telemetryValue, ZSTR_GSPD);
