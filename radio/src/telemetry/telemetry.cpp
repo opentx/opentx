@@ -61,6 +61,7 @@ void delTelemetryIndex(uint8_t index)
 {
   memclear(&g_model.telemetryValues[index], sizeof(TelemetryValue));
   telemetryItems[index].clear();
+  eeDirty(EE_MODEL);
 }
 
 int availableTelemetryIndex()
