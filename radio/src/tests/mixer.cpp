@@ -34,47 +34,31 @@
  *
  */
 
-#include <math.h>
-#include <gtest/gtest.h>
+#include "gtests.h"
 
-#define SWAP_DEFINED
-#include "opentx.h"
+#define CHECK_NO_MOVEMENT(channel, value, duration) \
+    for (int i=1; i<=(duration); i++) { \
+      evalFlightModeMixes(e_perout_mode_normal, 1); \
+      EXPECT_EQ(chans[(channel)], (value)); \
+    }
 
-#define CHANNEL_MAX (1024*256)
+#define CHECK_SLOW_MOVEMENT(channel, sign, duration) \
+    do { \
+    for (int i=1; i<=(duration); i++) { \
+      evalFlightModeMixes(e_perout_mode_normal, 1); \
+      lastAct = lastAct + (sign) * (1<<19)/500; /* 100 on ARM */ \
+      EXPECT_EQ(chans[(channel)], 256 * (lastAct >> 8)); \
+    } \
+    } while (0)
 
-void doMixerCalculations();
-
-#define MODEL_RESET() \
-  memset(&g_model, 0, sizeof(g_model)); \
-  memset(&anaInValues, 0, sizeof(anaInValues)); \
-  extern uint8_t s_mixer_first_run_done; \
-  s_mixer_first_run_done = false; \
-  lastFlightMode = 255;
-
-int32_t lastAct = 0;
-void MIXER_RESET()
-{
-  memset(channelOutputs, 0, sizeof(channelOutputs));
-  memset(ex_chans, 0, sizeof(ex_chans));
-  memset(act, 0, sizeof(act));
-  memset(swOn, 0, sizeof(swOn));
-#if !defined(CPUARM)
-  s_last_switch_used = 0;
-  s_last_switch_value = 0;
-#endif
-  mixerCurrentFlightMode = lastFlightMode = 0;
-  lastAct = 0;
-  logicalSwitchesReset();
-}
-
-uint16_t anaInValues[NUM_STICKS+NUM_POTS] = { 0 };
-uint16_t anaIn(uint8_t chan)
-{
-  if (chan < NUM_STICKS+NUM_POTS)
-    return anaInValues[chan];
-  else
-    return 0;
-}
+#define CHECK_DELAY(channel, duration) \
+    do { \
+      int32_t value = chans[(channel)]; \
+      for (int i=1; i<=(duration); i++) { \
+        evalFlightModeMixes(e_perout_mode_normal, 1); \
+        EXPECT_EQ(chans[(channel)], value); \
+      } \
+    } while (0)
 
 TEST(Trims, throttleTrim)
 {
@@ -643,30 +627,6 @@ TEST(Mixer, RecursiveAddChannelAfterInactivePhase)
   EXPECT_EQ(chans[1], CHANNEL_MAX);
 }
 
-#define CHECK_NO_MOVEMENT(channel, value, duration) \
-    for (int i=1; i<=(duration); i++) { \
-      evalFlightModeMixes(e_perout_mode_normal, 1); \
-      EXPECT_EQ(chans[(channel)], (value)); \
-    }
-
-#define CHECK_SLOW_MOVEMENT(channel, sign, duration) \
-    do { \
-    for (int i=1; i<=(duration); i++) { \
-      evalFlightModeMixes(e_perout_mode_normal, 1); \
-      lastAct = lastAct + (sign) * (1<<19)/500; /* 100 on ARM */ \
-      EXPECT_EQ(chans[(channel)], 256 * (lastAct >> 8)); \
-    } \
-    } while (0)
-
-#define CHECK_DELAY(channel, duration) \
-    do { \
-      int32_t value = chans[(channel)]; \
-      for (int i=1; i<=(duration); i++) { \
-        evalFlightModeMixes(e_perout_mode_normal, 1); \
-        EXPECT_EQ(chans[(channel)], value); \
-      } \
-    } while (0)
-
 #if !defined(CPUARM)
 TEST(Mixer, SlowOnSwitch)
 {
@@ -1009,7 +969,9 @@ TEST(Heli, Mode2Test)
   EXPECT_EQ(chans[1], CHANNEL_MAX/2);
   EXPECT_EQ(chans[2], CHANNEL_MAX/2);
 }
-#elif defined(HELI)
+#endif
+
+#if defined(HELI) && !defined(PCBTARANIS)
 TEST(Heli, SimpleTest)
 {
   MODEL_RESET();
@@ -1021,3 +983,18 @@ TEST(Heli, SimpleTest)
   EXPECT_EQ(chans[1], CHANNEL_MAX/2);
 }
 #endif
+
+TEST(Trainer, UnpluggedTest)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_FIRST_TRAINER;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[0].delayUp = DELAY_STEP*5;
+  g_model.mixData[0].delayDown = DELAY_STEP*5;
+  ppmInValid = 0;
+  g_ppmIns[0] = 1024;
+  CHECK_DELAY(0, 5000);
+}
