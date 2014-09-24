@@ -142,10 +142,10 @@
 #  define OUT_E_TELEM_TX         0    //same as Gruvin9x
   
 // Rotary encoders driver
-#  define INP_D_ROT_ENC_1_A      0    //ko
-#  define INP_D_ROT_ENC_1_B      1    //ko
-#  define INP_D_ROT_ENC_2_A      2    //ok, but recognised as rotary 1
-#  define INP_D_ROT_ENC_2_B      3    //ok, but recognised as rotary 1
+#  define INP_D_ROT_ENC_1_A      0    //ok
+#  define INP_D_ROT_ENC_1_B      1    //ok
+#  define INP_D_ROT_ENC_2_A      2    //ok
+#  define INP_D_ROT_ENC_2_B      3    //ok
 #  define INP_J_ROT_ENC_1_PUSH   0    //ok
 #  define INP_J_ROT_ENC_2_PUSH   1    //ok
 #  define REA_DOWN()    (~PINJ & (1<<INP_J_ROT_ENC_1_PUSH))

@@ -71,14 +71,14 @@ inline void boardInit()
 
   /* Rotary encoder interrupt set-up                 */
   EIMSK = 0; // disable ALL external interrupts.
-  // encoder 1
-  EICRB = (1<<ISC60) | (1<<ISC50); // 01 = interrupt on any edge
-  EIFR = (3<<INTF5); // clear the int. flag in case it got set when changing modes
-  // encoder 2
-  EICRA = (1<<ISC30) | (1<<ISC20); // do the same for encoder 1
+  // encoder 1     //KO, wrong interrupt ?
+  EICRA = (1<<ISC10) | (1<<ISC00); // 01 = interrupt on any edge
+  EIFR = (3<<INTF0); // clear the int. flag in case it got set when changing modes 
+  // encoder 2    //OK
+  EICRA = (1<<ISC30) | (1<<ISC20);
   EIFR = (3<<INTF2);
   EIMSK = (3<<INT5) | (3<<INT2); // enable the two rot. enc. ext. int. pairs.
-}
+}              
 #endif // !SIMU
 
 uint8_t pwrCheck()
@@ -216,27 +216,28 @@ FORCEINLINE void readKeysAndTrims()
   }
 }
 
-
-ISR(INT2_vect)
-{
-  uint8_t input = (PIND & 0x0C);
-  if (input == 0 || input == 0x0C) incRotaryEncoder(0, -1);
-}
-
-ISR(INT3_vect)
-{
-  uint8_t input = (PIND & 0x0C);
-  if (input == 0 || input == 0x0C) incRotaryEncoder(0, +1);
-}
-
-ISR(INT5_vect)
+// Rotary encoders increment/decrement (0 = rotary 1, 1 = rotary 2)
+ISR(INT0_vect)     // Arduino2560 IO21 (portD pin0)    
 {
   uint8_t input = (PIND & 0x03);
-  if (input == 0 || input == 0x03) incRotaryEncoder(1, +1);
+  if (input == 0 || input == 0x03) incRotaryEncoder(0, +1);
 }
-                    
-ISR(INT6_vect)
+                 
+ISR(INT1_vect)     // Arduino2560 IO20 (portD pin1)
 {
   uint8_t input = (PIND & 0x03);
-  if (input == 0 || input == 0x03) incRotaryEncoder(1, -1);
+  if (input == 0 || input == 0x03) incRotaryEncoder(0, -1);
 }
+
+ISR(INT2_vect)     // Arduino2560 IO19 (portD pin2)    //OK
+{
+  uint8_t input = (PIND & 0x0C);
+  if (input == 0 || input == 0x0C) incRotaryEncoder(1, +1);
+}
+
+ISR(INT3_vect)     // Arduino2560 IO18 (portD pin3)    //OK
+{
+  uint8_t input = (PIND & 0x0C);
+  if (input == 0 || input == 0x0C) incRotaryEncoder(1, -1);
+}  
+       
