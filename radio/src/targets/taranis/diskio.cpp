@@ -119,6 +119,16 @@ int ff_del_syncobj (_SYNC_t mutex)
 }
 #endif
 
+
+#if !defined(BOOT)
+static OS_MutexID ioMutex;
+#define IO_MUTEX_ENTER()      CoEnterMutexSection(ioMutex);
+#define IO_MUTEX_LEAVE()      CoLeaveMutexSection(ioMutex);
+#else
+#define IO_MUTEX_ENTER()
+#define IO_MUTEX_LEAVE()
+#endif //#if !defined(BOOT)
+
 static const DWORD socket_state_mask_cp = (1 << 0);
 static const DWORD socket_state_mask_wp = (1 << 1);
 
@@ -132,7 +142,6 @@ BYTE CardType;                  /* Card type flags */
 
 enum speed_setting { INTERFACE_SLOW, INTERFACE_FAST };
 
-static OS_MutexID ioMutex;
 
 
 static void interface_speed( enum speed_setting speed )
@@ -646,7 +655,7 @@ DSTATUS disk_initialize (
   if (drv) return STA_NOINIT;                     /* Supports only single drive */
   if (Stat & STA_NODISK) return Stat;     /* No card in the socket */
 
-  CoEnterMutexSection(ioMutex);
+  IO_MUTEX_ENTER();
 
   power_on();                                                     /* Force socket power on and initialize interface */
   interface_speed(INTERFACE_SLOW);
@@ -685,7 +694,7 @@ DSTATUS disk_initialize (
     power_off();
   }
 
-  CoLeaveMutexSection(ioMutex);
+  IO_MUTEX_LEAVE();
 
   return Stat;
 }
@@ -712,7 +721,7 @@ int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
 {
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
 
-  CoEnterMutexSection(ioMutex);
+  IO_MUTEX_ENTER();
 
   if (count == 1) {       /* Single block read */
     if (send_cmd(CMD17, sector) == 0)       { /* READ_SINGLE_BLOCK */
@@ -741,7 +750,7 @@ int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
   release_spi();
   TRACE_SD_CARD_EVENT((count != 0), sd_SD_ReadSectors, (count << 24) + ((sector/((CardType & CT_BLOCK) ? 1 : 512)) & 0x00FFFFFF));
 
-  CoLeaveMutexSection(ioMutex);
+  IO_MUTEX_LEAVE();
 
   return count ? -1 : 0;
 }
@@ -770,7 +779,7 @@ int8_t SD_WriteSectors(const uint8_t *buff, uint32_t sector, uint32_t count)
 {
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
 
-  CoEnterMutexSection(ioMutex);
+  IO_MUTEX_ENTER();
 
   if (count == 1) {       /* Single block write */
     if (send_cmd(CMD24, sector) == 0) {     /* WRITE_BLOCK */
@@ -799,7 +808,7 @@ int8_t SD_WriteSectors(const uint8_t *buff, uint32_t sector, uint32_t count)
   release_spi();
   TRACE_SD_CARD_EVENT((count != 0), sd_SD_WriteSectors, (count << 24) + ((sector/((CardType & CT_BLOCK) ? 1 : 512)) & 0x00FFFFFF));
 
-  CoLeaveMutexSection(ioMutex);
+  IO_MUTEX_LEAVE();
 
   return count ? -1 : 0;
 }
@@ -842,7 +851,7 @@ DRESULT disk_ioctl (
 
   res = RES_ERROR;
 
-  CoEnterMutexSection(ioMutex);
+  IO_MUTEX_ENTER();
 
   if (ctrl == CTRL_POWER) {
     switch (*ptr) {
@@ -865,7 +874,7 @@ DRESULT disk_ioctl (
   }
   else {
     if (Stat & STA_NOINIT) {
-      CoLeaveMutexSection(ioMutex);
+      IO_MUTEX_LEAVE();
       return RES_NOTRDY;
     }
 
@@ -981,7 +990,7 @@ DRESULT disk_ioctl (
     release_spi();
   }
 
-  CoLeaveMutexSection(ioMutex);
+  IO_MUTEX_LEAVE();
 
   return res;
 }
