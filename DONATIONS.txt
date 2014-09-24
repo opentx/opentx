@@ -611,3 +611,4 @@ Gordon Stahl
 Christian Grandjean
 Roger Bergevin
 NorthSide
+Sigmund Martinsen
