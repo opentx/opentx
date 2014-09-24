@@ -233,28 +233,16 @@ BYTE rcvr_spi (void)
 /*-----------------------------------------------------------------------*/
 /* Wait for card ready                                                   */
 /*-----------------------------------------------------------------------*/
-
-#define WAIT_CONSECUTIVE_IDLE_STATES    5
-
 static BYTE wait_ready (void)
 {
   BYTE res;
-  BYTE n;
 
   Timer2 = 50;    /* Wait for ready in timeout of 500ms */
-  n = 0;
+  rcvr_spi();
   do {
     res = rcvr_spi();
-    n = (res == 0xFF) ? n+1 : 0;
-    if (res == 0xFF) {
-      n++;
-    }
-    else {
-      TRACE_SD_CARD_EVENT((n > 0), sd_wait_ready, ((uint32_t)(n) << 8) + res);
-      n = 0;
-    }
-  } while ((n < WAIT_CONSECUTIVE_IDLE_STATES) && Timer2);
-  TRACE_SD_CARD_EVENT((res != 0xFF), sd_wait_ready, res);
+  } while ((res != 0xFF) && Timer2);
+
   return res;
 }
 
@@ -559,7 +547,6 @@ BOOL xmit_datablock (
     xmit_spi(0xFF);                                 /* CRC (Dummy) */
     xmit_spi(0xFF);
 
-
     /*
     Despite what the SD card standard says, the reality is that (at least for some SD cards)
     the Data Response byte does not come immediately after the last byte of data.
@@ -768,7 +755,7 @@ DRESULT disk_read (
 {
   if (drv || !count) return RES_PARERR;
   if (Stat & STA_NOINIT) return RES_NOTRDY;
-  uint8_t res = SD_ReadSectors(buff, sector, count);
+  int8_t res = SD_ReadSectors(buff, sector, count);
   TRACE_SD_CARD_EVENT((res != 0), sd_disk_read, (count << 24) + (sector & 0x00FFFFFF));
   return (res != 0) ? RES_ERROR : RES_OK;
 }
