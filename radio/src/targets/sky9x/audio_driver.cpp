@@ -108,7 +108,6 @@ bool dacQueue(AudioBuffer *buffer)
 }
 
 #pragma GCC optimize ("O1")
-#pragma GCC optimize ("O2")
 extern "C" void DAC_IRQHandler()
 {
   AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
