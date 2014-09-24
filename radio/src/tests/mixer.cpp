@@ -34,24 +34,8 @@
  *
  */
 
-#include <math.h>
-#include <gtest/gtest.h>
+#include "gtests.h"
 
-#define SWAP_DEFINED
-#include "opentx.h"
-
-#define CHANNEL_MAX (1024*256)
-
-void doMixerCalculations();
-
-#define MODEL_RESET() \
-  memset(&g_model, 0, sizeof(g_model)); \
-  memset(&anaInValues, 0, sizeof(anaInValues)); \
-  extern uint8_t s_mixer_first_run_done; \
-  s_mixer_first_run_done = false; \
-  lastFlightMode = 255;
-
-int32_t lastAct = 0;
 void MIXER_RESET()
 {
   memset(channelOutputs, 0, sizeof(channelOutputs));
@@ -65,15 +49,6 @@ void MIXER_RESET()
   mixerCurrentFlightMode = lastFlightMode = 0;
   lastAct = 0;
   logicalSwitchesReset();
-}
-
-uint16_t anaInValues[NUM_STICKS+NUM_POTS] = { 0 };
-uint16_t anaIn(uint8_t chan)
-{
-  if (chan < NUM_STICKS+NUM_POTS)
-    return anaInValues[chan];
-  else
-    return 0;
 }
 
 TEST(Trims, throttleTrim)
