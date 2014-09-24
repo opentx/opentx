@@ -24,6 +24,21 @@ inline void MODEL_RESET()
   lastFlightMode = 255;
 }
 
+inline void MIXER_RESET()
+{
+  memset(channelOutputs, 0, sizeof(channelOutputs));
+  memset(ex_chans, 0, sizeof(ex_chans));
+  memset(act, 0, sizeof(act));
+  memset(swOn, 0, sizeof(swOn));
+#if !defined(CPUARM)
+  s_last_switch_used = 0;
+  s_last_switch_value = 0;
+#endif
+  mixerCurrentFlightMode = lastFlightMode = 0;
+  lastAct = 0;
+  logicalSwitchesReset();
+}
+
 inline void TELEMETRY_RESET()
 {
   memclear(&frskyData, sizeof(frskyData));
