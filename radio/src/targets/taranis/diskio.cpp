@@ -573,11 +573,6 @@ BOOL xmit_datablock (
         TRACE_SD_CARD_EVENT((Timer2 != DATA_RESPONSE_TIMEOUT), sd_xmit_datablock_rcvr_spi,  ((uint32_t)(Timer2) << 16) + ((uint32_t)(resp) << 8) + token);
         return TRUE;
       }
-      if (resp == 0x00) {
-        // already busy, we missed data response
-        TRACE_SD_CARD_EVENT(1, sd_xmit_datablock_rcvr_spi,  ((uint32_t)(Timer2) << 16) + ((uint32_t)(resp) << 8) + token);
-        return TRUE;
-      }
       if (resp != 0xFF) {
         TRACE_SD_CARD_EVENT(1, sd_xmit_datablock_rcvr_spi,  ((uint32_t)(Timer2) << 16) + ((uint32_t)(resp) << 8) + token);
         spi_reset();
