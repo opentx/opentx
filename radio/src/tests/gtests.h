@@ -27,6 +27,7 @@ inline void MODEL_RESET()
 inline void MIXER_RESET()
 {
   memset(channelOutputs, 0, sizeof(channelOutputs));
+  memset(chans, 0, sizeof(chans));
   memset(ex_chans, 0, sizeof(ex_chans));
   memset(act, 0, sizeof(act));
   memset(swOn, 0, sizeof(swOn));

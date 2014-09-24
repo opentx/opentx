@@ -984,6 +984,7 @@ TEST(Heli, SimpleTest)
 TEST(Trainer, UnpluggedTest)
 {
   MODEL_RESET();
+  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_FIRST_TRAINER;
