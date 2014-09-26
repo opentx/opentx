@@ -43,8 +43,8 @@ inline void boardInit()
   DDRA = 0b11111111;  PORTA = 0b00000000; // LCD data
   DDRB = 0b01000111;  PORTB = 0b00101111; // 7:PPM_IN 6:PPM_OUT, 5:SimCTRL, 4:Buzzer, SDCARD[3:MISO 2:MOSI 1:SCK 0:CS]
   DDRC = 0b11111100;  PORTC = 0b00000011; // 7-3:LCD, 2:BackLight, 1:ID2_SW, 0:ID1_SW
-  DDRD = 0b00000000;  PORTD = 0b11110000; // 7:AilDR_SW, 6:N/A, 5:N/A, 4:N/A, 3:RENC2_B, 2:RENC2_A, 1:RENC1_B, 0:RENC1_A
-  DDRE = 0b00001010;  PORTE = 0b11110100; // 7:N/A, 6:N/A, 5:N/A, 4:N/A, 3:Buzzer(old), 2:N/A, 1:TELEM_TX, 0:TELEM_RX(pull-up off)
+  DDRD = 0b00000000;  PORTD = 0b11110000; // 7:AilDR_SW, 6:N/A, 5:N/A, 4:N/A, 3:RENC2_B, 2:RENC2_A, 1:N/A, 0:N/A
+  DDRE = 0b00001010;  PORTE = 0b11110100; // 7:N/A, 6:N/A, 5:RENC1_B, 4:RENC1_A, 3:Buzzer(old), 2:N/A, 1:TELEM_TX, 0:TELEM_RX(pull-up off)
   DDRF = 0b00000000;  PORTF = 0b11111111; // 7-0:Trim switch inputs
   DDRG = 0b00000000;  PORTG = 0b11111111; // 7:N/A, 6:N/A, 5:N/A, 4:N/A, 3:N/A, 2:TCut_SW, 1:Gear_SW, 0: RudDr_SW
   DDRH = 0b00011000;  PORTH = 0b11010111; // 7:N/A, 6:RFPw, 5:JackPres, 4:HoldPw, 3:Speaker, 2:N/A, 1:N/A, 0:N/A
@@ -71,13 +71,13 @@ inline void boardInit()
 
   /* Rotary encoder interrupt set-up                 */
   EIMSK = 0; // disable ALL external interrupts.
-  // encoder 1     //KO, wrong interrupt ?
-  EICRA = (1<<ISC10) | (1<<ISC00); // 01 = interrupt on any edge
-  EIFR = (3<<INTF0); // clear the int. flag in case it got set when changing modes 
-  // encoder 2    //OK
+  // encoder 1
+  EICRB = (1<<ISC50) | (1<<ISC40); // 01 = interrupt on any edge
+  EIFR = (3<<INTF4); // clear the int. flag in case it got set when changing modes 
+  // encoder 2
   EICRA = (1<<ISC30) | (1<<ISC20);
   EIFR = (3<<INTF2);
-  EIMSK = (3<<INT5) | (3<<INT2); // enable the two rot. enc. ext. int. pairs.
+  EIMSK = (3<<INT4) | (3<<INT2); // enable the two rot. enc. ext. int. pairs.
 }              
 #endif // !SIMU
 
@@ -217,27 +217,27 @@ FORCEINLINE void readKeysAndTrims()
 }
 
 // Rotary encoders increment/decrement (0 = rotary 1, 1 = rotary 2)
-ISR(INT0_vect)     // Arduino2560 IO21 (portD pin0)    
+ISR(INT4_vect)     // Arduino2560 IO02 (portE pin4)    
 {
-  uint8_t input = (PIND & 0x03);
-  if (input == 0 || input == 0x03) incRotaryEncoder(0, +1);
+  uint8_t input = (PINE & 0x30);
+  if (input == 0 || input == 0x30) incRotaryEncoder(0, -1);
 }
                  
-ISR(INT1_vect)     // Arduino2560 IO20 (portD pin1)
+ISR(INT5_vect)     // Arduino2560 IO03 (portE pin5)
 {
-  uint8_t input = (PIND & 0x03);
-  if (input == 0 || input == 0x03) incRotaryEncoder(0, -1);
+  uint8_t input = (PINE & 0x30);
+  if (input == 0 || input == 0x30) incRotaryEncoder(0, +1);
 }
 
-ISR(INT2_vect)     // Arduino2560 IO19 (portD pin2)    //OK
-{
-  uint8_t input = (PIND & 0x0C);
-  if (input == 0 || input == 0x0C) incRotaryEncoder(1, +1);
-}
-
-ISR(INT3_vect)     // Arduino2560 IO18 (portD pin3)    //OK
+ISR(INT2_vect)     // Arduino2560 IO19 (portD pin2)
 {
   uint8_t input = (PIND & 0x0C);
   if (input == 0 || input == 0x0C) incRotaryEncoder(1, -1);
+}
+
+ISR(INT3_vect)     // Arduino2560 IO18 (portD pin3)
+{
+  uint8_t input = (PIND & 0x0C);
+  if (input == 0 || input == 0x0C) incRotaryEncoder(1, +1);
 }  
        
