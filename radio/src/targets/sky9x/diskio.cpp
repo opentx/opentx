@@ -94,6 +94,16 @@ uint32_t Cmd_A41_resp ;
 uint8_t  cardType;
 uint32_t transSpeed;
 
+#if !defined(BOOT)
+static OS_MutexID ioMutex;
+#define IO_MUTEX_ENTER()      CoEnterMutexSection(ioMutex);
+#define IO_MUTEX_LEAVE()      CoLeaveMutexSection(ioMutex);
+#else
+#define IO_MUTEX_ENTER()
+#define IO_MUTEX_LEAVE()
+#endif //#if !defined(BOOT)
+
+
 /*-----------------------------------------------------------------------*/
 /* Lock / unlock functions                                               */
 /*-----------------------------------------------------------------------*/
@@ -1272,33 +1282,38 @@ DRESULT disk_read (
                                    BYTE count                   /* Sector count (1..255) */
                                    )
 {
-        uint32_t result ;
+  uint32_t result ;
 
-        if (drv || !count) return RES_PARERR;
+  if (drv || !count) return RES_PARERR;
 
-        if ( sd_card_ready() == 0 ) return RES_NOTRDY;
+  if ( sd_card_ready() == 0 ) return RES_NOTRDY;
 
-        do {
-          result = sd_read_block(sector, dma_sd_buffer) ;
-          if (result) {
-            memcpy(buff, dma_sd_buffer, 512);
-            sector += 1 ;
-            buff += 512 ;
-            count -= 1 ;
-          }
-          else {
-            count = 1 ;             // Flag error
-            break ;
-          }
-        } while ( count ) ;
+  IO_MUTEX_ENTER();
 
-        if (!count)
-          return RES_OK;
+  do {
+    result = sd_read_block(sector, dma_sd_buffer) ;
+    if (result) {
+      memcpy(buff, dma_sd_buffer, 512);
+      sector += 1 ;
+      buff += 512 ;
+      count -= 1 ;
+    }
+    else {
+      count = 1 ;             // Flag error
+      break ;
+    }
+  } while ( count ) ;
 
-        if (++sdErrorCount > 3)
-          Card_state = SD_ST_ERR;
+  if (!count) {
+    IO_MUTEX_LEAVE();
+    return RES_OK;
+  }
 
-        return RES_ERROR;
+  if (++sdErrorCount > 3)
+    Card_state = SD_ST_ERR;
+
+  IO_MUTEX_LEAVE();
+  return RES_ERROR;
 }
 
 
@@ -1315,49 +1330,54 @@ DRESULT disk_write (
                                         BYTE count                      /* Sector count (1..255) */
                                         )
 {
-        uint32_t result ;
+  uint32_t result ;
 
-        if (drv || !count) return RES_PARERR;
+  if (drv || !count) return RES_PARERR;
 
-        if ( sd_card_ready() == 0 ) return RES_NOTRDY;
+  if ( sd_card_ready() == 0 ) return RES_NOTRDY;
 
-        do {
+  IO_MUTEX_ENTER();
 
-          while  (1) {
+  do {
 
-            memcpy(dma_sd_buffer, buff, 512);
+    while  (1) {
 
-            result = sd_write_block(sector, dma_sd_buffer) ;
+      memcpy(dma_sd_buffer, buff, 512);
 
-            sd_read_block(sector, dma_sd_buffer) ;
+      result = sd_write_block(sector, dma_sd_buffer) ;
 
-            if (!memcmp(dma_sd_buffer, buff, 512))
-              break;
-            else {
-              TRACE_ERROR("Block %d ko SR=%.2X\r\n", sector, HSMCI->HSMCI_SR);
-              // DUMP(buff, 512);
-              // DUMP(copy, 512);
-            }
-          }
+      sd_read_block(sector, dma_sd_buffer) ;
 
-          if (result) {
-            sector += 1 ;
-            buff += 512 ;
-            count -= 1 ;
-          }
-          else {
-            count = 1 ;             // Flag error
-            break ;
-          }
-        } while ( count ) ;
+      if (!memcmp(dma_sd_buffer, buff, 512))
+        break;
+      else {
+        TRACE_ERROR("Block %d ko SR=%.2X\r\n", sector, HSMCI->HSMCI_SR);
+        // DUMP(buff, 512);
+        // DUMP(copy, 512);
+      }
+    }
 
-        if (!count)
-          return RES_OK;
+    if (result) {
+      sector += 1 ;
+      buff += 512 ;
+      count -= 1 ;
+    }
+    else {
+      count = 1 ;             // Flag error
+      break ;
+    }
+  } while ( count ) ;
 
-        if (++sdErrorCount > 3)
-          Card_state = SD_ST_ERR;
+  if (!count) {
+    IO_MUTEX_LEAVE();
+    return RES_OK;
+  }
 
-        return RES_ERROR;
+  if (++sdErrorCount > 3)
+    Card_state = SD_ST_ERR;
+
+  IO_MUTEX_LEAVE();
+  return RES_ERROR;
 }
 
 
@@ -1372,89 +1392,92 @@ DRESULT disk_ioctl (
                         void *buff              /* Buffer to send/receive control data */
                         )
 {
-        DRESULT res;
+  DRESULT res;
 
-        if (drv) return RES_PARERR;
+  if (drv) return RES_PARERR;
 
-        res = RES_ERROR;
+  res = RES_ERROR;
 
-        if (ctrl == CTRL_POWER) {
+  IO_MUTEX_ENTER();
+
+  if (ctrl == CTRL_POWER) {
 #if 0
-                switch (ptr[0]) {
-                        case 0:         /* Sub control code (POWER_OFF) */
-                                power_off();            /* Power off */
-                                res = RES_OK;
-                                break;
-                        case 1:         /* Sub control code (POWER_GET) */
-                                ptr[1] = (BYTE)power_status();
-                                res = RES_OK;
-                                break;
-                        default :
-                                res = RES_PARERR;
-                }
+    switch (ptr[0]) {
+      case 0:         /* Sub control code (POWER_OFF) */
+        power_off();            /* Power off */
+        res = RES_OK;
+        break;
+      case 1:         /* Sub control code (POWER_GET) */
+        ptr[1] = (BYTE)power_status();
+        res = RES_OK;
+        break;
+      default :
+        res = RES_PARERR;
+    }
 #endif
-        }
-        else {
-                switch (ctrl) {
-                        case CTRL_SYNC :                /* Make sure that no pending write process. Do not remove this or written sector might not left updated. */
-                                res = RES_OK;
-                                break;
+  }
+  else {
+    switch (ctrl) {
+      case CTRL_SYNC :                /* Make sure that no pending write process. Do not remove this or written sector might not left updated. */
+              res = RES_OK;
+              break;
 
-                        case GET_SECTOR_COUNT : /* Get number of sectors on the disk (DWORD) */
-                                *(DWORD*)buff = SD_GET_BLOCKNR();
-                                res = RES_OK;
-                                break;
+      case GET_SECTOR_COUNT : /* Get number of sectors on the disk (DWORD) */
+              *(DWORD*)buff = SD_GET_BLOCKNR();
+              res = RES_OK;
+              break;
 
-                        case GET_SECTOR_SIZE :  /* Get R/W sector size (WORD) */
-                                *(WORD*)buff = 512;
-                                res = RES_OK;
-                                break;
+      case GET_SECTOR_SIZE :  /* Get R/W sector size (WORD) */
+              *(WORD*)buff = 512;
+              res = RES_OK;
+              break;
 
-                        case GET_BLOCK_SIZE :   /* Get erase block size in unit of sector (DWORD) */
-                                *(WORD*)buff = 1;
-                                res = RES_OK;
-                                break;
+      case GET_BLOCK_SIZE :   /* Get erase block size in unit of sector (DWORD) */
+              *(WORD*)buff = 1;
+              res = RES_OK;
+              break;
 
 #if 0
-                        case MMC_GET_TYPE :             /* Get card type flags (1 byte) */
-                                *ptr = CardType;
-                                res = RES_OK;
-                                break;
+      case MMC_GET_TYPE :             /* Get card type flags (1 byte) */
+        *ptr = CardType;
+        res = RES_OK;
+        break;
 
-                        case MMC_GET_CSD :              /* Receive CSD as a data block (16 bytes) */
-                                if (send_cmd(CMD9, 0) == 0              /* READ_CSD */
-                                        && rcvr_datablock(ptr, 16))
-                                        res = RES_OK;
-                                break;
+      case MMC_GET_CSD :              /* Receive CSD as a data block (16 bytes) */
+        if (send_cmd(CMD9, 0) == 0              /* READ_CSD */
+                && rcvr_datablock(ptr, 16))
+                res = RES_OK;
+        break;
 
-                        case MMC_GET_CID :              /* Receive CID as a data block (16 bytes) */
-                                if (send_cmd(CMD10, 0) == 0             /* READ_CID */
-                                        && rcvr_datablock(ptr, 16))
-                                        res = RES_OK;
-                                break;
+      case MMC_GET_CID :              /* Receive CID as a data block (16 bytes) */
+        if (send_cmd(CMD10, 0) == 0             /* READ_CID */
+                && rcvr_datablock(ptr, 16))
+                res = RES_OK;
+        break;
 
-                        case MMC_GET_OCR :              /* Receive OCR as an R3 resp (4 bytes) */
-                                if (send_cmd(CMD58, 0) == 0) {  /* READ_OCR */
-                                        for (n = 4; n; n--) *ptr++ = rcvr_spi();
-                                        res = RES_OK;
-                                }
-                                break;
-
-                        case MMC_GET_SDSTAT :   /* Receive SD statsu as a data block (64 bytes) */
-                                if (send_cmd(ACMD13, 0) == 0) { /* SD_STATUS */
-                                        rcvr_spi();
-                                        if (rcvr_datablock(ptr, 64))
-                                                res = RES_OK;
-                                }
-                                break;
-#endif
-                        default:
-                                res = RES_PARERR;
-                                break;
-                }
-
-                // BSS deselect();
+      case MMC_GET_OCR :              /* Receive OCR as an R3 resp (4 bytes) */
+        if (send_cmd(CMD58, 0) == 0) {  /* READ_OCR */
+          for (n = 4; n; n--) *ptr++ = rcvr_spi();
+          res = RES_OK;
         }
+        break;
 
-        return res;
+      case MMC_GET_SDSTAT :   /* Receive SD statsu as a data block (64 bytes) */
+        if (send_cmd(ACMD13, 0) == 0) { /* SD_STATUS */
+          rcvr_spi();
+          if (rcvr_datablock(ptr, 64))
+                  res = RES_OK;
+        }
+        break;
+#endif
+      default:
+        res = RES_PARERR;
+        break;
+    }
+    // BSS deselect();
+  }
+
+  IO_MUTEX_LEAVE();
+
+  return res;
 }
