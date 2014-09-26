@@ -252,6 +252,10 @@ EEPROM_PROGRESS_BAR = NO
 # Values = YES, NO
 DEBUG = NO
 
+# Activate writing of SPORT telemetry received data to sport.log file
+# Values = YES, NO
+SPORT_FILE_LOG = NO
+
 # Flight Modes
 # Values = YES, NO
 FLIGHT_MODES = YES
@@ -293,6 +297,16 @@ CHANNELS_MONITOR_INV_HIDE = NO
 # Values = NO, YES
 NANO = NO
 
+# Enable trace of events into Trace Buffer for debugging purposes
+# Activating any of these options also activates DEBUG and DEBUG_TRACE_BUFFER
+# Values = NO, YES
+#   TRACE_SD_CARD     SD card operations (read, write, etc)
+#   TRACE_FATFS       FatFs file operations
+#   TRACE_AUDIO       Audio processing (not yet implemented)
+TRACE_SD_CARD = NO
+TRACE_FATFS = NO
+TRACE_AUDIO = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -307,6 +321,7 @@ CPPSRC =
 INCDIRS = . translations
 EXTRAINCDIRS = 
 LUADEP =
+DEBUG_TRACE_BUFFER = NO
 
 # MCU name
 ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO TARANIS))
@@ -605,6 +620,9 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
     CPPDEFS += -DROTARY_ENCODERS=1
     CPPSRC += targets/sky9x/rotenc_driver.cpp 
   endif
+  ifeq ($(SPORT_FILE_LOG), YES)
+    CPPDEFS += -DSPORT_FILE_LOG
+  endif
   INCDIRS += targets/sky9x CoOS/kernel CoOS/portable
   BOARDSRC = targets/sky9x/board_sky9x.cpp
   EXTRABOARDSRC = targets/sky9x/lcd_driver.cpp
@@ -638,13 +656,13 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   endif
   
   ifeq ($(BLUETOOTH), YES)
-  	CPPDEFS += -DBLUETOOTH
-  	CPPSRC += targets/sky9x/bluetooth.cpp 
+    CPPDEFS += -DBLUETOOTH
+    CPPSRC += targets/sky9x/bluetooth.cpp 
   endif
   
   ifeq ($(DEBUG), YES)
     CPPSRC += debug.cpp
-  	SRC += targets/sky9x/syscalls.c
+    SRC += targets/sky9x/syscalls.c
   endif
 endif
 
@@ -660,6 +678,27 @@ ifeq ($(PCB), TARANIS)
     HAPTIC = YES
   else
     CPPDEFS = -DREV4
+  endif
+  ifeq ($(SPORT_FILE_LOG), YES)
+    CPPDEFS += -DSPORT_FILE_LOG
+  endif
+  ifeq ($(TRACE_SD_CARD), YES)
+    DEBUG = YES
+    DEBUG_TRACE_BUFFER = YES
+    CPPDEFS += -DTRACE_SD_CARD
+  endif
+  ifeq ($(TRACE_FATFS), YES)
+    DEBUG = YES
+    DEBUG_TRACE_BUFFER = YES
+    CPPDEFS += -DTRACE_FATFS
+  endif
+  ifeq ($(TRACE_AUDIO), YES)
+    DEBUG = YES
+    DEBUG_TRACE_BUFFER = YES
+    CPPDEFS += -DTRACE_AUDIO
+  endif
+  ifeq ($(DEBUG_TRACE_BUFFER), YES)
+    CPPDEFS += -DDEBUG_TRACE_BUFFER 
   endif
   LDSCRIPT = targets/taranis/stm32_flash_bl.ld
   TRGT = arm-none-eabi-
@@ -979,7 +1018,7 @@ endif
 ifeq ($(EXT), $(filter $(EXT), FRSKY FRSKY_SPORT TELEMETREZ))
   CPPDEFS += -DFRSKY
   ifeq ($(EXT), FRSKY_SPORT)
-	CPPSRC += telemetry/frsky.cpp telemetry/frsky_sport.cpp telemetry/frsky_d.cpp
+    CPPSRC += telemetry/frsky.cpp telemetry/frsky_sport.cpp telemetry/frsky_d.cpp
     CPPDEFS += -DFRSKY_SPORT
   else
     CPPSRC += telemetry/frsky.cpp telemetry/frsky_d.cpp
