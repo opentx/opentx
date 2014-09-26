@@ -222,6 +222,7 @@ void debugTask(void* pdata)
 static struct TraceElement traceBuffer[TRACE_BUFFER_LEN];
 static uint8_t traceBufferPos;
 extern Fifo<512> uart3TxFifo;
+gtime_t filltm(gtime_t *t, struct gtm *tp);
 
 void trace_event(enum TraceEvent event, uint32_t data)
 {
