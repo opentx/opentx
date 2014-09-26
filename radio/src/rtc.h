@@ -39,6 +39,9 @@
 
 #include <inttypes.h>
 
+#define SECS_PER_HOUR   3600ul
+#define SECS_PER_DAY    86400ul
+
 typedef long int gtime_t;
 
 struct gtm
