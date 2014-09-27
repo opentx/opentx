@@ -193,6 +193,7 @@
 #define PIN_PER_3                       0x0030
 #define PIN_PER_5                       0x0050
 #define PIN_PER_6			0x0060
+#define PIN_PER_8                       0x0080
 // #define PIN_OS2                         0x0000
 #define PIN_OS25                        0x2000
 #define PIN_OS50                        0x4000

@@ -923,7 +923,7 @@ extern uint16_t maxLuaDuration;
 #endif
 
 #if defined(PCBTARANIS)
-  static inline uint16_t getTmr2MHz() { return TIM3->CNT; }
+  static inline uint16_t getTmr2MHz() { return TIM7->CNT; }
 #elif defined(PCBSKY9X)
   static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
 #else

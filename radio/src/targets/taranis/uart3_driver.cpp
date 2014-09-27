@@ -97,10 +97,6 @@ void uart3Init(unsigned int mode, unsigned int protocol)
         uart3Setup(FRSKY_D_BAUDRATE);
       }
       break;
-    case UART_MODE_SBUS_TRAINER:
-      uart3Setup(100000);
-      USART3->CR1 |= USART_CR1_M | USART_CR1_PCE ;
-      break;
   }
 
   uart3Mode = mode;
@@ -120,6 +116,17 @@ void debugPutc(const char c)
   }
 }
 #endif
+
+void uart3SbusInit()
+{
+  uart3Setup(100000);
+  USART3->CR1 |= USART_CR1_M | USART_CR1_PCE ;
+}
+
+void uart3Stop()
+{
+  USART_DeInit(USART3);
+}
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 

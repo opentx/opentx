@@ -172,10 +172,11 @@ static void disable_pa10_none()
 
 static void init_pa7_none()
 {
-  EXTERNAL_RF_OFF();
+  if (!IS_TRAINER_EXTERNAL_MODULE()) {
+    EXTERNAL_MODULE_OFF();
+  }
 
   // Timer8
-
   GPIO_InitTypeDef GPIO_InitStructure;
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_EXTPPM, ENABLE);
   
@@ -374,7 +375,7 @@ extern "C" void TIM1_UP_TIM10_IRQHandler()
 
 static void init_pa7_pxx()
 {
-  EXTERNAL_RF_ON();
+  EXTERNAL_MODULE_ON();
 
   // Timer8
   setupPulsesPXX(EXTERNAL_MODULE);
@@ -442,13 +443,15 @@ static void disable_pa7_pxx()
   NVIC_DisableIRQ(TIM8_CC_IRQn) ;
   TIM8->DIER &= ~TIM_DIER_CC2IE ;
   TIM8->CR1 &= ~TIM_CR1_CEN ;
-  EXTERNAL_RF_OFF();
+  if (!IS_TRAINER_EXTERNAL_MODULE()) {
+    EXTERNAL_MODULE_OFF();
+  }
 }
 
 #if defined(DSM2)
 static void init_pa7_dsm2()
 {
-  EXTERNAL_RF_ON();
+  EXTERNAL_MODULE_ON();
 
   // Timer8
   setupPulsesDSM2(EXTERNAL_MODULE);
@@ -516,7 +519,9 @@ static void disable_pa7_dsm2()
   NVIC_DisableIRQ(TIM8_CC_IRQn) ;
   TIM8->DIER &= ~TIM_DIER_CC2IE ;
   TIM8->CR1 &= ~TIM_CR1_CEN ;
-  EXTERNAL_RF_OFF();
+  if (!IS_TRAINER_EXTERNAL_MODULE()) {
+    EXTERNAL_MODULE_OFF();
+  }
 }
 #endif
 
@@ -525,7 +530,8 @@ static void disable_pa7_dsm2()
 // Pin is AF1 function for timer 1
 static void init_pa7_ppm()
 {
-  EXTERNAL_RF_ON();
+  EXTERNAL_MODULE_ON();
+
   // Timer1
   setupPulsesPPM(EXTERNAL_MODULE) ;
   ppmStreamPtr[EXTERNAL_MODULE] = ppmStream[EXTERNAL_MODULE];
@@ -573,7 +579,9 @@ static void disable_pa7_ppm()
   NVIC_DisableIRQ(TIM8_UP_TIM13_IRQn) ;
   TIM8->DIER &= ~TIM_DIER_CC2IE & ~TIM_DIER_UIE ;
   TIM8->CR1 &= ~TIM_CR1_CEN ;
-  EXTERNAL_RF_OFF();
+  if (!IS_TRAINER_EXTERNAL_MODULE()) {
+    EXTERNAL_MODULE_OFF();
+  }
 }
 
 extern "C" void TIM8_CC_IRQHandler()

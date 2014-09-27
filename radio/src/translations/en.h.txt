@@ -79,8 +79,8 @@
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
-#define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "OFF\0           ""S-Port Mirror\0 ""Telemetry\0     ""SBUS Trainer\0  ""Debug\0         "
+#define LEN_UART3MODES         "\015"
+#define TR_UART3MODES          "OFF\0         ""S-Port Mirror""Telemetry\0   ""SBUS Trainer\0""Debug\0"
 
 #define LEN_POTTYPES           "\017"
 #define TR_POTTYPES            "None\0          ""Pot with detent""Multipos Switch""Pot\0"
@@ -481,8 +481,8 @@
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "OFF""ON\0""THs""TH%""THt"
 
-#define LEN_VTRAINERMODES      "\006"
-#define TR_VTRAINERMODES       "Master""Slave\0"
+#define LEN_VTRAINERMODES      "\022"
+#define TR_VTRAINERMODES       "Master/Jack\0      ""Slave/Jack\0       ""Master/SBUS Module""Master/CPPM Module""Master/Battery\0"
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Hold\0    ""Custom\0  ""No pulses""Receiver\0"

@@ -87,6 +87,56 @@ uint8_t g_tmr1Latency_min;
 uint16_t lastMixerDuration;
 #endif
 
+#if defined(PCBTARANIS)
+uint8_t currentTrainerMode = 0xff;
+
+void checkTrainerSettings()
+{
+  uint8_t requiredTrainerMode = g_model.trainerMode;
+  if (requiredTrainerMode != currentTrainerMode) {
+    switch (currentTrainerMode) {
+      case TRAINER_MODE_MASTER:
+        stop_trainer_capture();
+        break;
+      case TRAINER_MODE_SLAVE:
+        stop_trainer_ppm();
+        break;
+      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
+        stop_cppm_on_heartbeat_capture() ;
+        break;
+      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
+        stop_sbus_on_heartbeat_capture() ;
+        break;
+      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+        uart3Stop();
+    }
+
+    currentTrainerMode = requiredTrainerMode;
+    switch (requiredTrainerMode) {
+      case TRAINER_MODE_SLAVE:
+        init_trainer_ppm();
+        break;
+      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
+         init_cppm_on_heartbeat_capture() ;
+         break;
+      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
+         init_sbus_on_heartbeat_capture() ;
+         break;
+      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+        if (g_eeGeneral.uart3Mode == UART_MODE_SBUS_TRAINER) {
+          uart3SbusInit();
+          break;
+        }
+        // no break
+      default:
+        // master is default
+        init_trainer_capture();
+        break;
+    }
+  }
+}
+#endif
+
 uint8_t unexpectedShutdown = 0;
 
 /* AVR: mixer duration in 1/16ms */

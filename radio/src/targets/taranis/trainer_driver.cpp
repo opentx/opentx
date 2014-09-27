@@ -36,9 +36,9 @@
 
 #include "../../opentx.h"
 
-uint8_t currentTrainerMode;
 uint16_t * TrainerPulsePtr;
 extern uint16_t ppmStream[NUM_MODULES+1][20];
+extern Fifo<28> sbusFifo;
 
 #define setupTrainerPulses() setupPulsesPPM(TRAINER_MODULE)
 
@@ -79,8 +79,7 @@ void stop_trainer_ppm()
 {
   configure_pins( PIN_TR_PPM_OUT, PIN_INPUT | PIN_PORTC ) ; // Pin as input
   TIM3->CR1 &= ~TIM_CR1_CEN ;                             // Stop counter
-  TIM3->DIER &= ~TIM_DIER_CC2IE ;                      // Stop Interrupt
-  TIM3->DIER &= ~TIM_DIER_UIE ;                        // Stop Interrupt
+  TIM3->DIER = 0 ;                                      // Stop Interrupt
   NVIC_DisableIRQ(TIM3_IRQn) ;                         // Stop Interrupt
 }
 
@@ -99,28 +98,38 @@ void init_trainer_capture()
   TIM3->SR &= ~TIM_SR_CC3IF & ~TIM_SR_CC2IF & ~TIM_SR_UIF ;  // Clear flags
   TIM3->DIER |= TIM_DIER_CC3IE ;
   TIM3->CR1 = TIM_CR1_CEN ;
-  NVIC_EnableIRQ(TIM3_IRQn) ;
   NVIC_SetPriority(TIM3_IRQn, 7);
+  NVIC_EnableIRQ(TIM3_IRQn) ;
 }
 
 void stop_trainer_capture()
 {
   TIM3->CR1 &= ~TIM_CR1_CEN ;                          // Stop counter
-  TIM3->DIER &= ~TIM_DIER_CC3IE ;                      // Stop Interrupt
+  TIM3->DIER = 0;                      // Stop Interrupt
   NVIC_DisableIRQ(TIM3_IRQn) ;                         // Stop Interrupt
 }
 
 extern "C" void TIM3_IRQHandler()
 {
-  uint16_t capture ;
+  uint16_t capture = 0;
   static uint16_t lastCapt ;
   uint16_t val ;
+  bool doCapture = false ;
 
   // What mode? in or out?
   if ( (TIM3->DIER & TIM_DIER_CC3IE ) && ( TIM3->SR & TIM_SR_CC3IF ) ) {
-    // capture mode
+    // capture mode on trainer jack
     capture = TIM3->CCR3 ;
+    doCapture = true;
+  }
 
+  if ( (TIM3->DIER & TIM_DIER_CC2IE ) && ( TIM3->SR & TIM_SR_CC2IF ) ) {
+    // capture mode on heartbeat pin (external module)
+    capture = TIM3->CCR2 ;
+    doCapture = true ;
+  }
+
+  if (doCapture) {
     val = (uint16_t)(capture - lastCapt) / 2 ;
     lastCapt = capture;
 
@@ -168,3 +177,66 @@ extern "C" void TIM3_IRQHandler()
   }
 }
 
+void init_cppm_on_heartbeat_capture(void)
+{
+  EXTERNAL_MODULE_ON();
+
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN ;           // Enable portC clock
+  configure_pins( 0x0080, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_2 ) ;
+  RCC->APB1ENR |= RCC_APB1ENR_TIM3EN ;            // Enable clock
+
+  TIM3->ARR = 0xFFFF ;
+  TIM3->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1 ;               // 0.5uS
+  TIM3->CR2 = 0 ;
+  TIM3->CCMR1 = TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_CC2S_0 ;
+  TIM3->CCER = TIM_CCER_CC2E ;
+  TIM3->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
+  TIM3->DIER |= TIM_DIER_CC2IE ;
+  TIM3->CR1 = TIM_CR1_CEN ;
+  NVIC_SetPriority(TIM3_IRQn, 7);
+  NVIC_EnableIRQ(TIM3_IRQn) ;
+}
+
+void stop_cppm_on_heartbeat_capture(void)
+{
+  TIM3->DIER = 0 ;
+  TIM3->CR1 &= ~TIM_CR1_CEN ;                             // Stop counter
+  NVIC_DisableIRQ(TIM3_IRQn) ;                            // Stop Interrupt
+
+  if (!IS_PULSES_EXTERNAL_MODULE()) {
+    EXTERNAL_MODULE_OFF();
+  }
+}
+
+void init_sbus_on_heartbeat_capture(void)
+{
+  EXTERNAL_MODULE_ON();
+
+  RCC->APB2ENR |= RCC_APB2ENR_USART6EN ;          // Enable clock
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN ;           // Enable portC clock
+  // GPIOC->MODER = (GPIOC->MODER & 0xFFFFBFFF ) | 0x00008000 ;      // Alternate func.
+  // GPIOC->AFR[0] = (GPIOC->AFR[0] & 0x0FFFFFFF ) | 0x80000000 ;    // Alternate func.
+  configure_pins( 0x0080, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_8 ) ;
+  USART6->BRR = PERI2_FREQUENCY / 100000 ;
+  USART6->CR1 = USART_CR1_UE | USART_CR1_RXNEIE | USART_CR1_RE | USART_CR1_M | USART_CR1_PCE ;
+  USART6->CR2 = 0 ;
+  USART6->CR3 = 0 ;
+  (void) USART6->DR ;
+  NVIC_EnableIRQ(USART6_IRQn) ;
+}
+
+void stop_sbus_on_heartbeat_capture(void)
+{
+  configure_pins( 0x0080, PIN_INPUT | PIN_PORTC ) ;
+  NVIC_DisableIRQ(USART6_IRQn) ;
+
+  if (!IS_PULSES_EXTERNAL_MODULE()) {
+    EXTERNAL_MODULE_OFF();
+  }
+}
+
+extern "C" void USART6_IRQHandler()
+{
+  uint8_t data = USART6->DR;
+  sbusFifo.push(data);
+}
