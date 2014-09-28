@@ -281,10 +281,10 @@
                <number>1</number>
               </property>
               <property name="minimum">
-               <double>-2.000000000000000</double>
+               <double>-2.100000000000000</double>
               </property>
               <property name="maximum">
-               <double>0.000000000000000</double>
+               <double>1.000000000000000</double>
               </property>
               <property name="singleStep">
                <double>0.100000000000000</double>
@@ -360,19 +360,6 @@
               </property>
               <property name="value">
                <double>-10.000000000000000</double>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QCheckBox" name="varioLimitMinOff_ChkB">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Off</string>
               </property>
              </widget>
             </item>
