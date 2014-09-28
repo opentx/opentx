@@ -70,7 +70,7 @@ void uart3Setup(unsigned int baudrate)
   USART_Init(UART3, &USART_InitStructure);
   USART_Cmd(UART3, ENABLE);
 
-  USART_ITConfig(UART3, USART_IT_RXNE, DISABLE);
+  USART_ITConfig(UART3, USART_IT_RXNE, ENABLE);
   USART_ITConfig(UART3, USART_IT_TXE, DISABLE);
 
   NVIC_SetPriority(USART3_IRQn, 7);
