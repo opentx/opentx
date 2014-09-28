@@ -2289,20 +2289,7 @@ void perMain()
 #endif
 
 #if defined(PCBTARANIS)
-  uint8_t requiredTrainerMode = g_model.trainerMode;
-  if (requiredTrainerMode != currentTrainerMode) {
-    currentTrainerMode = requiredTrainerMode;
-    if (requiredTrainerMode) {
-      // slave
-      stop_trainer_capture();
-      init_trainer_ppm();
-    }
-    else {
-      // master
-      stop_trainer_ppm();
-      init_trainer_capture();
-    }
-  }
+  checkTrainerSettings();
 #endif
 
 #if defined(PCBTARANIS) && !defined(SIMU)
@@ -2609,7 +2596,7 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
   else {
     if (ppmInState>0 && ppmInState<=8) {
       if (val>800 && val<2200) { // if valid pulse-width range
-        ppmInValid = 100;
+        ppmInValid = PPM_IN_VALID_TIMEOUT;
         g_ppmIns[ppmInState++ - 1] = (int16_t)(val - 1500) * (uint8_t)(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
       }
       else {

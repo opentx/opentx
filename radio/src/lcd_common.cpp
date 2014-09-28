@@ -136,11 +136,11 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
 void lcd_putcAtt(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
 {
   const pm_uchar * q;
-  uint32_t fontsize = FONTSIZE(flags);
 
   lcdNextPos = x-1;
 
 #if !defined(BOOT)
+  uint32_t fontsize = FONTSIZE(flags);
   unsigned char c_remapped = 0;
 
   if (fontsize == DBLSIZE || (flags&BOLD)) {

@@ -36,7 +36,7 @@
 
 #include "opentx.h"
 
-Fifo<28> sbusFifo;
+Fifo<32> sbusFifo;
 uint8_t SbusFrame[28] ;
 uint16_t SbusTimer ;
 uint8_t SbusIndex = 0 ;
@@ -59,6 +59,8 @@ void processSbusFrame(uint8_t *sbus, int16_t *pulses)
     inputbitsavailable -= 11;
     inputbits >>= 11;
   }
+
+  ppmInValid = PPM_IN_VALID_TIMEOUT;
 }
 
 #define SBUS_DELAY 1000 // 500uS

@@ -38,7 +38,7 @@
 
 uint16_t * TrainerPulsePtr;
 extern uint16_t ppmStream[NUM_MODULES+1][20];
-extern Fifo<28> sbusFifo;
+extern Fifo<32> sbusFifo;
 
 #define setupTrainerPulses() setupPulsesPPM(TRAINER_MODULE)
 
@@ -141,7 +141,7 @@ extern "C" void TIM3_IRQHandler()
     else {
       if (ppmInState>0 && ppmInState<=16) {
         if (val>800 && val<2200) {
-          ppmInValid = 100;
+          ppmInValid = PPM_IN_VALID_TIMEOUT;
           g_ppmIns[ppmInState++ - 1] = (int16_t)(val - 1500)*(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
         }
         else {
@@ -208,21 +208,41 @@ void stop_cppm_on_heartbeat_capture(void)
   }
 }
 
-void init_sbus_on_heartbeat_capture(void)
+void init_sbus_on_heartbeat_capture()
 {
   EXTERNAL_MODULE_ON();
 
-  RCC->APB2ENR |= RCC_APB2ENR_USART6EN ;          // Enable clock
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN ;           // Enable portC clock
-  // GPIOC->MODER = (GPIOC->MODER & 0xFFFFBFFF ) | 0x00008000 ;      // Alternate func.
-  // GPIOC->AFR[0] = (GPIOC->AFR[0] & 0x0FFFFFFF ) | 0x80000000 ;    // Alternate func.
-  configure_pins( 0x0080, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_8 ) ;
-  USART6->BRR = PERI2_FREQUENCY / 100000 ;
-  USART6->CR1 = USART_CR1_UE | USART_CR1_RXNEIE | USART_CR1_RE | USART_CR1_M | USART_CR1_PCE ;
-  USART6->CR2 = 0 ;
-  USART6->CR3 = 0 ;
-  (void) USART6->DR ;
-  NVIC_EnableIRQ(USART6_IRQn) ;
+  USART_InitTypeDef USART_InitStructure;
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+
+  GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_USART6);
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART6, ENABLE);
+
+  USART_InitStructure.USART_BaudRate = 100000;
+  USART_InitStructure.USART_WordLength = USART_WordLength_9b;
+  USART_InitStructure.USART_StopBits = USART_StopBits_1;
+  USART_InitStructure.USART_Parity = USART_Parity_Even;
+  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+  USART_InitStructure.USART_Mode = USART_Mode_Rx;
+
+  USART_Init(USART6, &USART_InitStructure);
+
+  USART_Cmd(USART6, ENABLE);
+
+  USART_ITConfig(USART6, USART_IT_RXNE, ENABLE);
+
+  NVIC_SetPriority(USART6_IRQn, 7);
+  NVIC_EnableIRQ(USART6_IRQn);
 }
 
 void stop_sbus_on_heartbeat_capture(void)

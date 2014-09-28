@@ -263,7 +263,10 @@ void hapticOff(void);
 void uart3Init(unsigned int mode, unsigned int protocol);
 void uart3Putc(const char c);
 #define telemetrySecondPortInit(protocol) uart3Init(UART_MODE_TELEMETRY, protocol)
-void uart3SbusInit();
-void uart3Stop();
+void uart3SbusInit(void);
+void uart3Stop(void);
+
+#define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
+
 
 #endif
