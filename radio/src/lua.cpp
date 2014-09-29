@@ -113,6 +113,20 @@ static int luaGetTime(lua_State *L)
   return 1;
 }
 
+static int luaGetDateTime(lua_State *L)
+{
+  struct gtm utm;
+  gettime(&utm);
+  lua_newtable(L);
+  lua_pushtableinteger(L, "year", utm.tm_year+1900);
+  lua_pushtableinteger(L, "mon", utm.tm_mon+1);
+  lua_pushtableinteger(L, "day", utm.tm_mday);
+  lua_pushtableinteger(L, "hour", utm.tm_hour);
+  lua_pushtableinteger(L, "min", utm.tm_min);
+  lua_pushtableinteger(L, "sec", utm.tm_sec);
+  return 1;
+}
+
 static void luaGetValueAndPush(int src)
 {
   if (src >= MIXSRC_FIRST_TELEM && src <= MIXSRC_LAST_TELEM) {
@@ -328,6 +342,7 @@ static int luaGetGeneralSettings(lua_State *L)
   lua_newtable(L);
   lua_pushtablenumber(L, "battMin", double(90+g_eeGeneral.vBatMin)/10);
   lua_pushtablenumber(L, "battMax", double(120+g_eeGeneral.vBatMax)/10);
+  lua_pushtableinteger(L, "imperial", g_eeGeneral.imperial);
   return 1;
 }
 
@@ -1379,6 +1394,7 @@ int luaGetOutputs(ScriptInputsOutputs & sid)
 
 const luaL_Reg opentxLib[] = {
   { "getTime", luaGetTime },
+  { "getDateTime", luaGetDateTime },
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getValue", luaGetValue },
@@ -1910,8 +1926,8 @@ void luaDoOneRunPermanentScript(uint8_t evt, int i)
       lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
     }
     else {
-      TelemetryScriptData & script = g_model.frsky.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
 #if defined(SIMU) || defined(DEBUG)
+      TelemetryScriptData & script = g_model.frsky.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
       filename = script.file;
 #endif
       if (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view) {

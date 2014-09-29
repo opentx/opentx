@@ -99,26 +99,22 @@ typedef const int16_t pm_int16_t;
 typedef const int8_t pm_int8_t;
 
 #if defined(PCBTARANIS)
-extern GPIO_TypeDef gpioa;
+extern GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe;
+extern TIM_TypeDef tim1, tim3, tim4, tim8, tim10;
+extern USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
+extern RCC_TypeDef rcc;
+extern DMA_Stream_TypeDef dma2_stream2, dma2_stream6;
+extern DMA_TypeDef dma2;
 #undef GPIOA
-#define GPIOA (&gpioa)
-extern GPIO_TypeDef gpiob;
 #undef GPIOB
-#define GPIOB (&gpiob)
-extern GPIO_TypeDef gpioc;
 #undef GPIOC
-#define GPIOC (&gpioc)
-extern GPIO_TypeDef gpiod;
 #undef GPIOD
-#define GPIOD (&gpiod)
-extern GPIO_TypeDef gpioe;
 #undef GPIOE
+#define GPIOA (&gpioa)
+#define GPIOB (&gpiob)
+#define GPIOC (&gpioc)
+#define GPIOD (&gpiod)
 #define GPIOE (&gpioe)
-extern TIM_TypeDef tim1;
-extern TIM_TypeDef tim3;
-extern TIM_TypeDef tim4;
-extern TIM_TypeDef tim8;
-extern TIM_TypeDef tim10;
 #undef TIM1
 #undef TIM3
 #undef TIM4
@@ -129,18 +125,22 @@ extern TIM_TypeDef tim10;
 #define TIM4 (&tim4)
 #define TIM8 (&tim8)
 #define TIM10 (&tim10)
-extern RCC_TypeDef rcc;
+#undef USART0
+#undef USART1
+#undef USART2
+#undef USART3
+#define USART0 (&Usart0)
+#define USART1 (&Usart1)
+#define USART2 (&Usart2)
+#define USART3 (&Usart3)
 #undef RCC
 #define RCC (&rcc)
 #undef DMA2_Stream2
 #undef DMA2_Stream6
 #define DMA2_Stream2 (&dma2_stream2)
 #define DMA2_Stream6 (&dma2_stream6)
-extern DMA_Stream_TypeDef dma2_stream2;
-extern DMA_Stream_TypeDef dma2_stream6;
 #undef DMA2
 #define DMA2 (&dma2)
-extern DMA_TypeDef dma2;
 #elif defined(PCBSKY9X)
 extern Pio Pioa, Piob, Pioc;
 extern Twi Twio;
@@ -151,6 +151,12 @@ extern Adc Adc0;
 #define ADC (&Adc0)
 #undef USART0
 #define USART0 (&Usart0)
+#undef USART1
+#define USART1 (&Usart0)
+#undef USART2
+#define USART2 (&Usart0)
+#undef USART3
+#define USART3 (&Usart0)
 #undef PIOA
 #define PIOA (&Pioa)
 #undef PIOB
@@ -400,6 +406,7 @@ inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { 
 #define GPIO_ResetBits(GPIOx, pin) GPIOx->BSRRL &= ~pin
 #define GPIO_ReadInputDataBit(GPIOx, pin) (GPIOx->BSRRL & pin)
 #define RCC_AHB1PeriphClockCmd(...)
+#define RCC_APB2PeriphClockCmd(...)
 #endif
 
 #define configure_pins(...)

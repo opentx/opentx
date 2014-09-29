@@ -586,7 +586,6 @@ void TelemetryPanel::setup()
     int varioCap = firmware->getCapability(HasVario);
     if (!varioCap) {
       ui->varioLimitMax_DSB->hide();
-      ui->varioLimitMinOff_ChkB->hide();
       ui->varioLimitMin_DSB->hide();
       ui->varioLimitCenterMin_DSB->hide();
       ui->varioLimitCenterMax_DSB->hide();
@@ -600,7 +599,6 @@ void TelemetryPanel::setup()
     }
     else {
       if (!firmware->getCapability(HasVarioSink)) {
-        ui->varioLimitMinOff_ChkB->hide();
         ui->varioLimitMin_DSB->hide();
         ui->varioLimitCenterMin_DSB->hide();
         ui->VarioLabel_1->hide();
@@ -609,15 +607,7 @@ void TelemetryPanel::setup()
       ui->varioLimitMin_DSB->setValue(model->frsky.varioMin-10);
       ui->varioLimitMax_DSB->setValue(model->frsky.varioMax+10);
       ui->varioLimitCenterMax_DSB->setValue((model->frsky.varioCenterMax/10.0)+0.5);
-      if (model->frsky.varioCenterMin==-16) {
-        ui->varioLimitMinOff_ChkB->setChecked(true);
-        ui->varioLimitCenterMin_DSB->setValue(-2.0);
-        ui->varioLimitCenterMin_DSB->setDisabled(true);
-      }
-      else {
-        ui->varioLimitMinOff_ChkB->setChecked(false);
-        ui->varioLimitCenterMin_DSB->setValue((model->frsky.varioCenterMin/10.0)-0.5);
-      }
+      ui->varioLimitCenterMin_DSB->setValue((model->frsky.varioCenterMin/10.0)-0.5);
     }
 
     ui->altimetryGB->setVisible(firmware->getCapability(HasAltitudeSel) || firmware->getCapability(HasVario)),
@@ -790,24 +780,6 @@ void TelemetryPanel::on_varioLimitCenterMin_DSB_editingFinished()
       ui->varioLimitCenterMax_DSB->setValue(ui->varioLimitCenterMin_DSB->value());
     }
     model->frsky.varioCenterMin = round((ui->varioLimitCenterMin_DSB->value()+0.5)*10);
-    emit modified();
-  }
-}
-
-void TelemetryPanel::on_varioLimitMinOff_ChkB_toggled(bool checked)
-{
-  if (!lock) {
-    model->frsky.varioCenterMin = -16;
-    if (!checked) {
-      lock=true;
-      ui->varioLimitCenterMin_DSB->setValue(-2.0);
-      ui->varioLimitCenterMin_DSB->setEnabled(true);
-      lock=false;
-    }
-    else {
-      ui->varioLimitCenterMin_DSB->setValue(-2.0);
-      ui->varioLimitCenterMin_DSB->setDisabled(true);
-    }
     emit modified();
   }
 }

@@ -80,7 +80,7 @@
 #define TR_TRNCHN              "KN1KN2KN3KN4"
 
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "Wyłącz\0        ""S-Port Mirror\0 ""Telemetry\0     ""Trainer\0       ""Debug\0         "
+#define TR_UART3MODES          "Wyłącz\0        ""S-Port Mirror\0 ""Telemetry\0     ""SBUS Trainer\0  ""Debug\0"
 
 #define LEN_POTTYPES           "\017"
 #define TR_POTTYPES            "Brak\0          ""Poten z zapadką""Przeł.Wielopoz.""Potencjometr\0"
@@ -474,8 +474,8 @@
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "WYŁ""ABS""THs""TH%""THt"
 
-#define LEN_VTRAINERMODES      "\006"
-#define TR_VTRAINERMODES       "Trener""Uczeń\0"
+#define LEN_VTRAINERMODES      "\022"
+#define TR_VTRAINERMODES       "Trener/Jack\0      ""Uczeń/Jack\0       ""Trener/SBUS Module""Trener/CPPM Module""Trener/Battery\0"
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Utrzymuj\0""Własne\0  ""0 sygnału""Odbiorn.\0"

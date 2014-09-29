@@ -54,22 +54,13 @@ const char *eepromFile = NULL;
 FILE *fp = NULL;
 
 #if defined(PCBTARANIS)
-uint32_t Peri1_frequency ;
-uint32_t Peri2_frequency ;
-GPIO_TypeDef gpioa;
-GPIO_TypeDef gpiob;
-GPIO_TypeDef gpioc;
-GPIO_TypeDef gpiod;
-GPIO_TypeDef gpioe;
-TIM_TypeDef tim1;
-TIM_TypeDef tim3;
-TIM_TypeDef tim4;
-TIM_TypeDef tim8;
-TIM_TypeDef tim10;
+uint32_t Peri1_frequency, Peri2_frequency;
+GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe;
+TIM_TypeDef tim1, tim2, tim3, tim4, tim8, tim10;
 RCC_TypeDef rcc;
-DMA_Stream_TypeDef dma2_stream2;
-DMA_Stream_TypeDef dma2_stream6;
+DMA_Stream_TypeDef dma2_stream2, dma2_stream6;
 DMA_TypeDef dma2;
+USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 #elif defined(PCBSKY9X)
 Pio Pioa, Piob, Pioc;
 Pwm pwm;
@@ -215,11 +206,11 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
 #elif defined(PCBMEGA2560)
     SWITCH_CASE(0, ping, 1<<INP_G_ThrCt)
     SWITCH_CASE(1, ping, 1<<INP_G_RuddDR)
-    SWITCH_CASE(2, pinc, 1<<INP_C_ElevDR)
+    SWITCH_CASE(2, pinc, 1<<INP_L_ElevDR)
     SWITCH_3_CASE(3, pinc, pinc, (1<<INP_C_ID1), (1<<INP_C_ID2))
     SWITCH_CASE(4, pinc, 1<<INP_C_AileDR)
     SWITCH_CASE(5, ping, 1<<INP_G_Gear)
-    SWITCH_CASE(6, pinb, 1<<INP_B_Trainer)
+    SWITCH_CASE(6, pinb, 1<<INP_L_Trainer)
 #else // PCB9X
 #if defined(JETI) || defined(FRSKY) || defined(NMEA) || defined(ARDUPILOT)
     SWITCH_CASE(0, pinc, 1<<INP_C_ThrCt)

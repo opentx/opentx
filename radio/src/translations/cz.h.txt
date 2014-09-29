@@ -79,8 +79,8 @@
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
-#define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "VYP\0           ""S-Port Mirror\0 ""Telemetrie\0    ""SBUS Trenér\0   ""Debug\0         "
+#define LEN_UART3MODES         "\015"
+#define TR_UART3MODES          "VYP\0         ""S-Port Mirror""Telemetrie\0  ""SBUS Trainer\0""Debug\0"
 
 #define LEN_POTTYPES           "\017"
 #define TR_POTTYPES            "Není\0          ""Pot s aretací\0 ""Vícepol. přep.\0""Potenciometr\0"
@@ -477,8 +477,8 @@
 #define LEN_VTMRMODES          "\004"
 #define TR_VTMRMODES           "VYP\0""ABS\0""Pln>""Pln%""Pln*"
 
-#define LEN_VTRAINERMODES      "\006"
-#define TR_VTRAINERMODES       "Učitel""Žák\0  "
+#define LEN_VTRAINERMODES      "\022"
+#define TR_VTRAINERMODES       "Učitel/Jack\0      ""Žák/Jack\0         ""Master/SBUS Module""Master/CPPM Module""Master/Battery\0"
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Držet\0   ""Vlastní\0 ""Bez pulzů""Přijímač"

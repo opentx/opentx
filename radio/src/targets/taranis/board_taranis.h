@@ -108,7 +108,7 @@ void configure_pins( uint32_t pins, uint16_t config );
 
 extern uint16_t sessionTimer;
 
-#define SLAVE_MODE()         (g_model.trainerMode == 1)
+#define SLAVE_MODE()         (g_model.trainerMode == TRAINER_MODE_SLAVE)
 #define TRAINER_CONNECTED()  (GPIO_ReadInputDataBit(GPIOTRNDET, PIN_TRNDET) == Bit_RESET)
 
 void delaysInit(void);
@@ -156,6 +156,10 @@ void init_trainer_ppm(void);
 void stop_trainer_ppm(void);
 void init_trainer_capture(void);
 void stop_trainer_capture(void);
+void init_cppm_on_heartbeat_capture(void);
+void stop_cppm_on_heartbeat_capture(void);
+void init_sbus_on_heartbeat_capture(void);
+void stop_sbus_on_heartbeat_capture(void);
 
 // Keys driver
 void keysInit(void);
@@ -197,8 +201,8 @@ void pwrOff(void);
 #define UNEXPECTED_SHUTDOWN() (g_eeGeneral.unexpectedShutdown)
 #define INTERNAL_RF_ON()      GPIO_SetBits(GPIO_INT_RF_PWR, PIN_INT_RF_PWR)
 #define INTERNAL_RF_OFF()     GPIO_ResetBits(GPIO_INT_RF_PWR, PIN_INT_RF_PWR)
-#define EXTERNAL_RF_ON()      GPIO_SetBits(GPIO_EXT_RF_PWR, PIN_EXT_RF_PWR)
-#define EXTERNAL_RF_OFF()     GPIO_ResetBits(GPIO_EXT_RF_PWR, PIN_EXT_RF_PWR)
+#define EXTERNAL_MODULE_ON()      GPIO_SetBits(GPIO_EXT_RF_PWR, PIN_EXT_RF_PWR)
+#define EXTERNAL_MODULE_OFF()     GPIO_ResetBits(GPIO_EXT_RF_PWR, PIN_EXT_RF_PWR)
 
 // Backlight driver
 #if defined(REVPLUS)
@@ -259,7 +263,10 @@ void hapticOff(void);
 void uart3Init(unsigned int mode, unsigned int protocol);
 void uart3Putc(const char c);
 #define telemetrySecondPortInit(protocol) uart3Init(UART_MODE_TELEMETRY, protocol)
+void uart3SbusInit(void);
+void uart3Stop(void);
 
-extern uint8_t currentTrainerMode;
+#define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
+
 
 #endif

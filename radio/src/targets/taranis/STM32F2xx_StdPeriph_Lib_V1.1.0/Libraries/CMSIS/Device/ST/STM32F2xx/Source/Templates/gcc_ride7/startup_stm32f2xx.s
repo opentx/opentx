@@ -99,7 +99,9 @@ LoopFillZerobss:
   cmp  r2, r3
   bcc  FillZerobss
 /* Call the clock system intitialization function.*/
-  bl  SystemInit   
+  bl  SystemInit
+/* Call C++ constructors for static objects */
+  bl  __libc_init_array
 /* Call the application's entry point.*/
   bl  main
   bx  lr    

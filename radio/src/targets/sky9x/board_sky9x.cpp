@@ -257,7 +257,7 @@ extern "C" void TC3_IRQHandler() //capture ppm in at 2MHz
   else {
     if (ppmInState>0 && ppmInState<=16) {
       if (val>800 && val<2200) { // if valid pulse-width range
-        ppmInValid = 100;
+        ppmInValid = PPM_IN_VALID_TIMEOUT;
         g_ppmIns[ppmInState++ - 1] = (int16_t)(val - 1500)*(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
       }
       else {

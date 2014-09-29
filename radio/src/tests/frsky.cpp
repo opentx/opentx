@@ -34,18 +34,7 @@
  *
  */
 
-#include <QtCore/QString>
-#include <math.h>
-#include <gtest/gtest.h>
-
-#define SWAP_DEFINED
-#include "opentx.h"
-
-#define TELEMETRY_RESET() \
-  memclear(&frskyData, sizeof(frskyData)); \
-  frskyData.rssi[0].value = 100
-
-extern bool checkScreenshot(QString test);
+#include "gtests.h"
 
 #if defined(FRSKY) && !defined(FRSKY_SPORT)
 extern void frskyDProcessPacket(uint8_t *packet);
@@ -181,6 +170,7 @@ TEST(FrSkySPORT, frskySetCellVoltage)
 {
   uint8_t packet[FRSKY_SPORT_PACKET_SIZE];
 
+  MODEL_RESET();
   TELEMETRY_RESET();
 
   // test that simulates 3 cell battery
@@ -290,6 +280,7 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
 {
   uint8_t packet[FRSKY_SPORT_PACKET_SIZE];
 
+  MODEL_RESET();
   TELEMETRY_RESET();
 
   //sensor 1: 3 cell battery
