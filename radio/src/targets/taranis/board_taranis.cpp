@@ -54,6 +54,19 @@ void watchdogInit(unsigned int duration)
   IWDG->KR = 0xCCCC ;      // start
 }
 
+// Start TIMER7 at 2000000Hz
+void init2MhzTimer()
+{
+  // Now for timer 7
+  RCC->APB1ENR |= RCC_APB1ENR_TIM7EN ;            // Enable clock
+
+  TIM7->PSC = 0 ;                                                                                                 // Max speed
+  TIM7->ARR = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1 ;       // 0.5 uS, 2 MHz
+  TIM7->CR2 = 0 ;
+  TIM7->CR2 = 0x20 ;
+  TIM7->CR1 = TIM_CR1_CEN ;
+}
+
 // Starts TIMER at 200Hz, 5mS period
 void init5msTimer()
 {
@@ -108,6 +121,7 @@ void boardInit()
   adcInit();
   delaysInit();
   audioInit();
+  init2MhzTimer();
   init5msTimer();
   __enable_irq();
   eepromInit();

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>717</width>
-    <height>431</height>
+    <width>780</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -837,6 +837,16 @@
      <item>
       <property name="text">
        <string>S-Port Mirror</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Telemetry</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>SBUS Trainer</string>
       </property>
      </item>
      <item>

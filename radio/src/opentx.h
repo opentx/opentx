@@ -923,7 +923,7 @@ extern uint16_t maxLuaDuration;
 #endif
 
 #if defined(PCBTARANIS)
-  static inline uint16_t getTmr2MHz() { return TIM3->CNT; }
+  static inline uint16_t getTmr2MHz() { return TIM7->CNT; }
 #elif defined(PCBSKY9X)
   static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
 #else
@@ -1123,6 +1123,7 @@ extern uint8_t            g_beepVal[5];
 
 extern uint8_t            ppmInState; //0=unsync 1..8= wait for value i-1
 extern uint8_t            ppmInValid;
+#define PPM_IN_VALID_TIMEOUT 100
 extern int16_t            g_ppmIns[NUM_TRAINER];
 extern int32_t            chans[NUM_CHNOUT];
 extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of the last perMain

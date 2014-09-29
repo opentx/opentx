@@ -87,6 +87,56 @@ uint8_t g_tmr1Latency_min;
 uint16_t lastMixerDuration;
 #endif
 
+#if defined(PCBTARANIS)
+uint8_t currentTrainerMode = 0xff;
+
+void checkTrainerSettings()
+{
+  uint8_t requiredTrainerMode = g_model.trainerMode;
+  if (requiredTrainerMode != currentTrainerMode) {
+    switch (currentTrainerMode) {
+      case TRAINER_MODE_MASTER:
+        stop_trainer_capture();
+        break;
+      case TRAINER_MODE_SLAVE:
+        stop_trainer_ppm();
+        break;
+      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
+        stop_cppm_on_heartbeat_capture() ;
+        break;
+      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
+        stop_sbus_on_heartbeat_capture() ;
+        break;
+      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+        uart3Stop();
+    }
+
+    currentTrainerMode = requiredTrainerMode;
+    switch (requiredTrainerMode) {
+      case TRAINER_MODE_SLAVE:
+        init_trainer_ppm();
+        break;
+      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
+         init_cppm_on_heartbeat_capture() ;
+         break;
+      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
+         init_sbus_on_heartbeat_capture() ;
+         break;
+      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+        if (g_eeGeneral.uart3Mode == UART_MODE_SBUS_TRAINER) {
+          uart3SbusInit();
+          break;
+        }
+        // no break
+      default:
+        // master is default
+        init_trainer_capture();
+        break;
+    }
+  }
+}
+#endif
+
 uint8_t unexpectedShutdown = 0;
 
 /* AVR: mixer duration in 1/16ms */
@@ -2239,20 +2289,7 @@ void perMain()
 #endif
 
 #if defined(PCBTARANIS)
-  uint8_t requiredTrainerMode = g_model.trainerMode;
-  if (requiredTrainerMode != currentTrainerMode) {
-    currentTrainerMode = requiredTrainerMode;
-    if (requiredTrainerMode) {
-      // slave
-      stop_trainer_capture();
-      init_trainer_ppm();
-    }
-    else {
-      // master
-      stop_trainer_ppm();
-      init_trainer_capture();
-    }
-  }
+  checkTrainerSettings();
 #endif
 
 #if defined(PCBTARANIS) && !defined(SIMU)
@@ -2559,7 +2596,7 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
   else {
     if (ppmInState>0 && ppmInState<=8) {
       if (val>800 && val<2200) { // if valid pulse-width range
-        ppmInValid = 100;
+        ppmInValid = PPM_IN_VALID_TIMEOUT;
         g_ppmIns[ppmInState++ - 1] = (int16_t)(val - 1500) * (uint8_t)(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
       }
       else {

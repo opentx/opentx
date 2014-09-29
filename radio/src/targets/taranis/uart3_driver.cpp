@@ -39,7 +39,7 @@
 uint8_t uart3Mode = UART_MODE_NONE;
 Fifo<512> uart3TxFifo;
 extern Fifo<512> telemetryFifo;
-extern Fifo<28> sbusFifo;
+extern Fifo<32> sbusFifo;
 
 void uart3Setup(unsigned int baudrate)
 {
@@ -70,11 +70,11 @@ void uart3Setup(unsigned int baudrate)
   USART_Init(UART3, &USART_InitStructure);
   USART_Cmd(UART3, ENABLE);
 
-  USART_ITConfig(UART3, USART_IT_RXNE, DISABLE);
+  USART_ITConfig(UART3, USART_IT_RXNE, ENABLE);
   USART_ITConfig(UART3, USART_IT_TXE, DISABLE);
 
-  NVIC_EnableIRQ(USART3_IRQn);
   NVIC_SetPriority(USART3_IRQn, 7);
+  NVIC_EnableIRQ(USART3_IRQn);
 }
 
 void uart3Init(unsigned int mode, unsigned int protocol)
@@ -97,10 +97,6 @@ void uart3Init(unsigned int mode, unsigned int protocol)
         uart3Setup(FRSKY_D_BAUDRATE);
       }
       break;
-    case UART_MODE_SBUS_TRAINER:
-      uart3Setup(100000);
-      USART3->CR1 |= USART_CR1_M | USART_CR1_PCE ;
-      break;
   }
 
   uart3Mode = mode;
@@ -121,7 +117,16 @@ void debugPutc(const char c)
 }
 #endif
 
-#define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
+void uart3SbusInit()
+{
+  uart3Setup(100000);
+  USART3->CR1 |= USART_CR1_M | USART_CR1_PCE ;
+}
+
+void uart3Stop()
+{
+  USART_DeInit(USART3);
+}
 
 extern "C" void USART3_IRQHandler(void)
 {

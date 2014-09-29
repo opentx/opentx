@@ -309,6 +309,7 @@ enum uartModes {
   UART_MODE_TELEMETRY_MIRROR,
   UART_MODE_TELEMETRY,
   UART_MODE_SBUS_TRAINER,
+  // UART_MODE_CPPM_TRAINER,
 #if defined(DEBUG)
   UART_MODE_DEBUG,
 #endif
@@ -316,6 +317,7 @@ enum uartModes {
   UART_MODE_MAX = UART_MODE_COUNT-1
 };
 
+#define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.uart3Mode==UART_MODE_SBUS_TRAINER/* || g_eeGeneral.uart3Mode==UART_MODE_CPPM_TRAINER*/)
 #define EXTRA_GENERAL_FIELDS \
   EXTRA_GENERAL_FIELDS_ARM \
   uint8_t  uart3Mode; \
@@ -357,6 +359,14 @@ PACK(typedef struct {
     EXTERNAL_MODULE,
     TRAINER_MODULE
   };
+  enum TrainerMode {
+    TRAINER_MODE_MASTER,
+    TRAINER_MODE_SLAVE,
+    TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
+    TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
+    TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
+  };
+  #define IS_TRAINER_EXTERNAL_MODULE() (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
   #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS]; uint8_t spare[2];
   #define swstate_t         uint16_t
@@ -1758,6 +1768,8 @@ enum ModuleTypes {
 #endif
   MODULE_TYPE_COUNT
 };
+
+#define IS_PULSES_EXTERNAL_MODULE() (g_model.externalModule != MODULE_TYPE_NONE)
 
 enum FailsafeModes {
   FAILSAFE_HOLD,
