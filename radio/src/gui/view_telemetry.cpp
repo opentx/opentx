@@ -62,7 +62,7 @@ void displayRssiLine()
 {
   if (TELEMETRY_STREAMING()) {
     lcd_hline(0, 55, 212, 0); // separator
-    uint8_t rssi = min((uint8_t)99, frskyData.rssi[0].value);
+    uint8_t rssi = min((uint8_t)99, TELEMETRY_RSSI());
     lcd_putsn(0, STATUS_BAR_Y, STR_RX, 2); lcd_outdezNAtt(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcd_rect(BAR_LEFT, 57, 78, 7);
     lcd_filled_rect(BAR_LEFT+1, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
@@ -278,7 +278,7 @@ void displayAfterFlightScreen()
   // Rssi
   lcd_putsLeft(line, STR_MINRSSI);
 #if defined(PCBTARANIS)
-  lcd_outdezNAtt(TELEM_2ND_COLUMN, line, frskyData.rssi[0].min, LEFT|LEADING0, 2);
+  lcd_outdezNAtt(TELEM_2ND_COLUMN, line, TELEMETRY_RSSI_MIN(), LEFT|LEADING0, 2);
 #else
   lcd_puts(TELEM_2ND_COLUMN, line, STR_TX);
   lcd_outdezNAtt(TELEM_2ND_COLUMN+3*FW, line, frskyData.rssi[1].min, LEFT|LEADING0, 2);

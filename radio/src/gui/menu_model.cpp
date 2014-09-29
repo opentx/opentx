@@ -1218,14 +1218,14 @@ void menuModelSetup(uint8_t event)
 #endif
 
       case ITEM_MODEL_EXTENDED_LIMITS:
-        g_model.extendedLimits = onoffMenuItem(g_model.extendedLimits, MODEL_SETUP_2ND_COLUMN, y, STR_ELIMITS, attr, event);
+        ON_OFF_MENU_ITEM(g_model.extendedLimits, MODEL_SETUP_2ND_COLUMN, y, STR_ELIMITS, attr, event);
         break;
 
       case ITEM_MODEL_EXTENDED_TRIMS:
 #if defined(CPUM64)
-        g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, attr, event);
+        ON_OFF_MENU_ITEM(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, attr, event);
 #else
-        g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, m_posHorz<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
+        ON_OFF_MENU_ITEM(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, m_posHorz<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
         lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_RESET_BTN, m_posHorz>0  && !s_noHi ? attr : 0);
         if (attr && m_posHorz>0) {
           s_editMode = 0;
@@ -1252,7 +1252,7 @@ void menuModelSetup(uint8_t event)
 #endif
 
       case ITEM_MODEL_THROTTLE_REVERSED:
-        g_model.throttleReversed = onoffMenuItem(g_model.throttleReversed, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEREVERSE, attr, event ) ;
+        ON_OFF_MENU_ITEM(g_model.throttleReversed, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEREVERSE, attr, event ) ;
         break;
 
       case ITEM_MODEL_THROTTLE_TRACE:
@@ -1269,7 +1269,7 @@ void menuModelSetup(uint8_t event)
       }
 
       case ITEM_MODEL_THROTTLE_TRIM:
-        g_model.thrTrim = onoffMenuItem(g_model.thrTrim, MODEL_SETUP_2ND_COLUMN, y, STR_TTRIM, attr, event);
+        ON_OFF_MENU_ITEM(g_model.thrTrim, MODEL_SETUP_2ND_COLUMN, y, STR_TTRIM, attr, event);
         break;
 
 #if defined(CPUARM)
@@ -1278,7 +1278,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_CHECKLIST_DISPLAY:
-        g_model.displayChecklist = onoffMenuItem(g_model.displayChecklist, MODEL_SETUP_2ND_COLUMN, y, STR_CHECKLIST, attr, event);
+        ON_OFF_MENU_ITEM(g_model.displayChecklist, MODEL_SETUP_2ND_COLUMN, y, STR_CHECKLIST, attr, event);
         break;
 #endif
 
@@ -1814,7 +1814,7 @@ void menuModelSetup(uint8_t event)
 #if defined(CPUARM) && defined(PXX)
   if (IS_PXX_RANGE_CHECK_ENABLE()) {
     displayPopup("RSSI: ");
-    lcd_outdezAtt(16+4*FW, 5*FH, frskyData.rssi[0].value, BOLD);
+    lcd_outdezAtt(16+4*FW, 5*FH, TELEMETRY_RSSI(), BOLD);
   }
 #endif
 }
@@ -5769,11 +5769,14 @@ enum menuModelTelemetryItems {
 #if defined(CPUARM)
 enum SensorFields {
   SENSOR_FIELD_NAME,
+  SENSOR_FIELD_TYPE,
   SENSOR_FIELD_ID,
   SENSOR_FIELD_UNIT,
   SENSOR_FIELD_PRECISION,
   SENSOR_FIELD_RATIO,
   SENSOR_FIELD_OFFSET,
+  SENSOR_FIELD_INPUT_FLAGS,
+  SENSOR_FIELD_LOGS,
   SENSOR_FIELD_MAX
 };
 
@@ -5782,46 +5785,75 @@ enum SensorFields {
 
 void menuModelSensor(uint8_t event)
 {
-  SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, {0, 1, 0, 0, 0, 0, 0 });
+  TelemetrySensor * sensor = & g_model.telemetrySensors[s_currIdx];
+
+  SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, {0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, 0, 0, 0, 0, 0, 0 });
   lcd_outdezAtt(PSIZE(TR_MENUSENSOR)*FW+1, 0, s_currIdx+1, INVERS|LEFT);
 
   putsTelemetryChannelValue(SENSOR_2ND_COLUMN, 0, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), 0);
 
-  TelemetryValue * sensor = & g_model.telemetryValues[s_currIdx];
   int8_t sub = m_posVert;
 
-  for (int i=0; i<SENSOR_FIELD_MAX; i++) {
-
+  for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
-    uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+    uint8_t k = i + s_pgOfs;
 
-    switch (i) {
+    /*
+    for (int j=0; j<k; j++) {
+      if (mstate_tab[j+1] == HIDDEN_ROW)
+        k++;
+    } */
+
+    uint8_t attr = (sub==k ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+
+    switch (k) {
 
       case SENSOR_FIELD_NAME:
         editSingleName(SENSOR_2ND_COLUMN, y, STR_NAME, sensor->label, TELEM_LABEL_LEN, event, attr);
         break;
 
-      case SENSOR_FIELD_ID:
-        lcd_putsLeft(y, STR_ID);
-        lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->id, LEFT|(m_posHorz==0 ? attr : 0));
-        lcd_outdezAtt(SENSOR_3RD_COLUMN, y, sensor->instance, LEFT|(m_posHorz==1 ? attr : 0));
-        if (attr) {
-          switch (m_posHorz) {
-            case 0:
-              CHECK_INCDEC_MODELVAR_ZERO(event, sensor->id, 0xffff);
-              break;
+      case SENSOR_FIELD_TYPE:
+        sensor->type = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_TYPE, "\012Custom\0   Calculated", sensor->type, 0, 1, attr, event);
+        if (attr && checkIncDec_Ret) {
+          sensor->instance = 0;
+        }
+        break;
 
-            case 1:
-              CHECK_INCDEC_MODELVAR_ZERO(event, sensor->instance, 0xff);
-              break;
+      case SENSOR_FIELD_ID:
+        if (sensor->type == TELEM_TYPE_CUSTOM) {
+          lcd_putsLeft(y, STR_ID);
+          lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->id, LEFT|(m_posHorz==0 ? attr : 0));
+          lcd_outdezAtt(SENSOR_3RD_COLUMN, y, sensor->instance, LEFT|(m_posHorz==1 ? attr : 0));
+          if (attr) {
+            switch (m_posHorz) {
+              case 0:
+                CHECK_INCDEC_MODELVAR_ZERO(event, sensor->id, 0xffff);
+                break;
+
+              case 1:
+                CHECK_INCDEC_MODELVAR_ZERO(event, sensor->instance, 0xff);
+                break;
+            }
+          }
+        }
+        else {
+          sensor->formula = selectMenuItem(SENSOR_2ND_COLUMN, y, "Formula", "\005Add\0 Mean\0Cell\0", sensor->formula, 0, TELEM_FORMULA_MAX, attr, event);
+          if (attr && checkIncDec_Ret) {
+            sensor->cell = 0;
           }
         }
         break;
 
       case SENSOR_FIELD_UNIT:
-        lcd_putsLeft(y, "Unit");
-        lcd_putsiAtt(SENSOR_2ND_COLUMN, y, STR_VTELEMUNIT, sensor->unit, attr);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, sensor->unit, UNIT_A1A2_MAX);
+        if (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula == TELEM_FORMULA_CELL) {
+          sensor->cell = selectMenuItem(SENSOR_2ND_COLUMN, y, "Cell index", "\007Lowest\0001\0     2\0     3\0     4\0     5\0     6\0     Highest", sensor->cell, 0, 7, attr, event);
+        }
+        else {
+          lcd_putsLeft(y, "Unit");
+          // TODO flash saving with selectMenuItem where I copied those 2 lines?
+          lcd_putsiAtt(SENSOR_2ND_COLUMN, y, STR_VTELEMUNIT, sensor->unit, attr);
+          if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, sensor->unit, UNIT_A1A2_MAX);
+        }
         break;
 
       case SENSOR_FIELD_PRECISION:
@@ -5840,6 +5872,14 @@ void menuModelSensor(uint8_t event)
         if (attr) CHECK_INCDEC_MODELVAR(event, sensor->offset, -30000, +30000);
         if (sensor->prec > 0) attr |= (sensor->prec == 2 ? PREC2 : PREC1);
         lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->offset, LEFT|attr);
+        break;
+
+      case SENSOR_FIELD_INPUT_FLAGS:
+        sensor->inputFlags = selectMenuItem(SENSOR_2ND_COLUMN, y, "Options", "\013None\0      ""Auto Offset""Filter\0", sensor->inputFlags, 0, TELEM_INPUT_FLAGS_MAX, attr, event);
+        break;
+
+      case SENSOR_FIELD_LOGS:
+        ON_OFF_MENU_ITEM(sensor->logs, SENSOR_2ND_COLUMN, y, "Logs", attr, event);
         break;
 
     }
@@ -5924,7 +5964,7 @@ void menuModelTelemetry(uint8_t event)
       int index = k-ITEM_TELEMETRY_SENSOR1;
       lcd_outdezAtt(INDENT_WIDTH, y, index+1, LEFT|attr);
       lcd_putcAtt(lcdLastPos, y, ':', attr);
-      lcd_putsnAtt(3*FW, y, g_model.telemetryValues[index].label, TELEM_LABEL_LEN, ZCHAR);
+      lcd_putsnAtt(3*FW, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
       if (telemetryItems[index].isFresh()) {
         lcd_putc(10*FW, y, '*');
       }

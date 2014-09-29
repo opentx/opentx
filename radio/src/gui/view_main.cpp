@@ -275,7 +275,7 @@ void displayTopBar()
   lcd_rect(batt_icon_x+FW, BAR_Y+1, 13, 7);
   lcd_vline(batt_icon_x+FW+13, BAR_Y+2, 5);
 
-  if (frskyData.rssi[0].value > 0) {
+  if (TELEMETRY_RSSI() > 0) {
     /* RSSI */
     LCD_ICON(batt_icon_x+3*FW+3, BAR_Y, ICON_RSSI);
     lcd_rect(batt_icon_x+5*FW, BAR_Y+1, 13, 7);
@@ -364,8 +364,8 @@ void displayTopBar()
   displayTopBarGauge(batt_icon_x+FW, count, g_vbat100mV <= g_eeGeneral.vBatWarn);
 
   /* The inside of the RSSI gauge */
-  if (frskyData.rssi[0].value > 0) {
-    displayTopBarGauge(batt_icon_x+5*FW, frskyData.rssi[0].value / 10, frskyData.rssi[0].value < getRssiAlarmValue(0));
+  if (TELEMETRY_RSSI() > 0) {
+    displayTopBarGauge(batt_icon_x+5*FW, TELEMETRY_RSSI() / 10, TELEMETRY_RSSI() < getRssiAlarmValue(0));
   }
 }
 #endif

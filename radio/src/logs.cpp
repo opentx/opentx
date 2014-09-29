@@ -109,39 +109,7 @@ const pm_char * openLogs()
   }
 
   if (f_size(&g_oLogFile) == 0) {
-#if defined(RTCLOCK)
-    f_puts("Date,Time,", &g_oLogFile);
-#else
-    f_puts("Time,", &g_oLogFile);
-#endif
-
-#if defined(PCBTARANIS) && defined(REVPLUS)
-    f_puts("RSSI,A1,A2,A3,A4,", &g_oLogFile);
-#elif defined(CPUARM) && defined(FRSKY)
-    f_puts("SWR,RSSI,A1,A2,A3,A4,", &g_oLogFile);
-#elif defined(FRSKY)
-    f_puts("Buffer,RX,TX,A1,A2,", &g_oLogFile);
-#endif
-
-#if defined(FRSKY_HUB)
-    if (IS_USR_PROTO_FRSKY_HUB()) {
-      f_puts("GPS Date,GPS Time,Long,Lat,Course,GPS Speed(kts),GPS Alt,Baro Alt(", &g_oLogFile);
-      f_puts(TELEMETRY_BARO_ALT_UNIT, &g_oLogFile);
-      f_puts("),Vertical Speed,Air Speed(kts),Temp1,Temp2,RPM,Fuel," TELEMETRY_CELLS_LABEL "Current,Consumption,Vfas,AccelX,AccelY,AccelZ,", &g_oLogFile);
-    }
-#endif
-
-#if defined(WS_HOW_HIGH)
-    if (IS_USR_PROTO_WS_HOW_HIGH()) {
-      f_puts("WSHH Alt,", &g_oLogFile);
-    }
-#endif
-
-#if defined(PCBTARANIS)
-    f_puts("Rud,Ele,Thr,Ail,S1,S2,S3,LS,RS,SA,SB,SC,SD,SE,SF,SG,SH\n", &g_oLogFile);
-#else
-    f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,3POS,AIL,GEA,TRN\n", &g_oLogFile);
-#endif
+    writeHeader();
   }
   else {
     result = f_lseek(&g_oLogFile, f_size(&g_oLogFile)); // append
@@ -168,6 +136,54 @@ getvalue_t getConvertedTelemetryValue(getvalue_t val, uint8_t unit)
 {
   convertUnit(val, unit);
   return val;
+}
+
+void writeHeader()
+{
+#if defined(RTCLOCK)
+  f_puts("Date,Time,", &g_oLogFile);
+#else
+  f_puts("Time,", &g_oLogFile);
+#endif
+
+#if defined(PCBTARANIS) && defined(REVPLUS)
+  f_puts("RSSI,", &g_oLogFile);
+#elif defined(CPUARM) && defined(FRSKY)
+  f_puts("SWR,RSSI,", &g_oLogFile);
+#elif defined(FRSKY)
+  f_puts("Buffer,RX,TX,A1,A2,", &g_oLogFile);
+#if defined(FRSKY_HUB)
+  if (IS_USR_PROTO_FRSKY_HUB()) {
+    f_puts("GPS Date,GPS Time,Long,Lat,Course,GPS Speed(kts),GPS Alt,Baro Alt(", &g_oLogFile);
+    f_puts(TELEMETRY_BARO_ALT_UNIT, &g_oLogFile);
+    f_puts("),Vertical Speed,Air Speed(kts),Temp1,Temp2,RPM,Fuel," TELEMETRY_CELLS_LABEL "Current,Consumption,Vfas,AccelX,AccelY,AccelZ,", &g_oLogFile);
+  }
+#endif
+#if defined(WS_HOW_HIGH)
+  if (IS_USR_PROTO_WS_HOW_HIGH()) {
+    f_puts("WSHH Alt,", &g_oLogFile);
+  }
+#endif
+#endif
+
+#if defined(CPUARM)
+  char label[TELEM_LABEL_LEN+2];
+  for (int i=0; i<TELEM_VALUES_MAX; i++) {
+    TelemetrySensor & sensor = g_model.telemetrySensors[i];
+    if (sensor.logs) {
+      memset(label, 0, sizeof(label));
+      strncpy(label, sensor.label, TELEM_LABEL_LEN);
+      strcat(label, ",");
+      f_puts(label, &g_oLogFile);
+    }
+  }
+#endif
+
+#if defined(PCBTARANIS)
+  f_puts("Rud,Ele,Thr,Ail,S1,S2,S3,LS,RS,SA,SB,SC,SD,SE,SF,SG,SH\n", &g_oLogFile);
+#else
+  f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,3POS,AIL,GEA,TRN\n", &g_oLogFile);
+#endif
 }
 
 // TODO test when disk full
@@ -202,25 +218,20 @@ void writeLogs()
         }
         f_printf(&g_oLogFile, "%4d-%02d-%02d,%02d:%02d:%02d.%02d0,", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100);
       }
-#else   // #if defined(RTCLOCK)
-      f_printf(&g_oLogFile, "%d,", tmr10ms);
-#endif  // #if defined(RTCLOCK)
-
-#if defined(FRSKY)
-#if defined(PCBTARANIS) && defined(REVPLUS)
-      f_printf(&g_oLogFile, "%d,", RAW_FRSKY_MINMAX(frskyData.rssi[0]));
-#elif defined(CPUARM)
-      f_printf(&g_oLogFile, "%d,%d,", RAW_FRSKY_MINMAX(frskyData.swr), RAW_FRSKY_MINMAX(frskyData.rssi[0]));
 #else
-      f_printf(&g_oLogFile, "%d,%d,%d,", frskyStreaming, RAW_FRSKY_MINMAX(frskyData.rssi[0]), RAW_FRSKY_MINMAX(frskyData.rssi[1]));
+      f_printf(&g_oLogFile, "%d,", tmr10ms);
 #endif
 
+#if defined(PCBTARANIS) && defined(REVPLUS)
+      f_printf(&g_oLogFile, "%d,", RAW_FRSKY_MINMAX(frskyData.rssi));
+#elif defined(CPUARM) && defined(FRSKY)
+      f_printf(&g_oLogFile, "%d,%d,", RAW_FRSKY_MINMAX(frskyData.swr), RAW_FRSKY_MINMAX(frskyData.rssi));
+#elif defined(FRSKY)
+      f_printf(&g_oLogFile, "%d,%d,%d,", frskyStreaming, RAW_FRSKY_MINMAX(frskyData.rssi[0]), RAW_FRSKY_MINMAX(frskyData.rssi[1]));
       for (uint8_t i=0; i<MAX_FRSKY_A_CHANNELS; i++) {
         int16_t converted_value = applyChannelRatio(i, RAW_FRSKY_MINMAX(frskyData.analog[i]));
         f_printf(&g_oLogFile, "%d.%02d,", converted_value/100, converted_value%100);
       }
-#endif
-
 #if defined(FRSKY_HUB)
       TELEMETRY_BARO_ALT_PREPARE();
 
@@ -262,6 +273,17 @@ void writeLogs()
 #if defined(WS_HOW_HIGH)
       if (IS_USR_PROTO_WS_HOW_HIGH()) {
         f_printf(&g_oLogFile, "%d,", TELEMETRY_RELATIVE_BARO_ALT_BP);
+      }
+#endif
+#endif
+
+#if defined(CPUARM)
+      for (int i=0; i<TELEM_VALUES_MAX; i++) {
+        TelemetrySensor & sensor = g_model.telemetrySensors[i];
+        TelemetryItem & telemetryItem = telemetryItems[i];
+        if (sensor.logs) {
+          f_printf(&g_oLogFile, "%d,", telemetryItem.value); // TODO we can do a lot better !!!
+        }
       }
 #endif
 

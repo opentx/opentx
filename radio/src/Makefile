@@ -1343,8 +1343,8 @@ FOXLIB=-L/usr/local/lib \
        -lFOX-1.6 \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
-simu: $(LUADEP) stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp targets/simu/simpgmspace.cpp *.h tra lbm eeprom.bin
-	g++ $(CPPFLAGS) $(INCFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) $(LUASRC) targets/simu/simpgmspace.cpp -MD -DSIMU -DLUA_USE_APICHECK -O0 -o simu $(FOXINC) $(FOXLIB) -pthread -fexceptions
+simu: $(LUADEP) stamp_header allsimusrc.cpp Makefile simu.cpp targets/simu/simpgmspace.cpp *.h tra lbm eeprom.bin
+	g++ $(CPPFLAGS) $(INCFLAGS) simu.cpp allsimusrc.cpp $(LUASRC) targets/simu/simpgmspace.cpp -MD -DSIMU -DLUA_USE_APICHECK -O0 -o simu $(FOXINC) $(FOXLIB) -pthread -fexceptions
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048
@@ -1390,8 +1390,13 @@ allsrc.cpp: Makefile $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC)
 	@rm -f allsrc.cpp 
 	for f in $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC) ; do echo "# 1 \"$$f\"" >> allsrc.cpp; cat "$$f" >> allsrc.cpp; done
 
+allsimusrc.cpp: Makefile $(BOARDSRC) $(CPPSRC)
+	@rm -f allsimusrc.cpp 
+	for f in $(BOARDSRC) $(CPPSRC) ; do echo "# 1 \"$$f\"" >> allsimusrc.cpp; cat "$$f" >> allsimusrc.cpp; done
+
 remallsrc:
 	$(REMOVE) allsrc.cpp
+	$(REMOVE) allsimusrc.cpp
 
 # Link: create ELF output file from object files.
 ifeq ($(ARCH), AVR)
@@ -1437,6 +1442,7 @@ clean_list :
 	$(REMOVE) *.d
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp
+	$(REMOVE) allsimusrc.cpp
 	$(REMOVE) stamp-opentx.h
 	$(REMOVE) bitmaps/*.lbm 
 	$(REMOVE) fonts/*/*.lbm

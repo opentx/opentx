@@ -65,10 +65,10 @@ PLAY_FUNCTION(playValue, source_t idx)
 
 #if defined(CPUARM)
   if (idx >= MIXSRC_FIRST_TELEM) {
-    TelemetryValue & telemetryValue = g_model.telemetryValues[(idx-MIXSRC_FIRST_TELEM) / 3];
+    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[(idx-MIXSRC_FIRST_TELEM) / 3];
     uint8_t attr = 0;
-    if (telemetryValue.prec > 0) {
-      if (telemetryValue.prec == 2) {
+    if (telemetrySensor.prec > 0) {
+      if (telemetrySensor.prec == 2) {
         if (val >= 5000) {
           val = div100_and_round(val);
         }
@@ -86,7 +86,7 @@ PLAY_FUNCTION(playValue, source_t idx)
         }
       }
     }
-    PLAY_NUMBER(val, 1+telemetryValue.unit, attr);
+    PLAY_NUMBER(val, 1+telemetrySensor.unit, attr);
   }
   else if (idx >= MIXSRC_FIRST_TIMER && idx <= MIXSRC_LAST_TIMER) {
     PLAY_DURATION(val, 0);

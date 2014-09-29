@@ -136,11 +136,11 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
 void lcd_putcAtt(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
 {
   const pm_uchar * q;
-  uint32_t fontsize = FONTSIZE(flags);
 
   lcdNextPos = x-1;
 
 #if !defined(BOOT)
+  uint32_t fontsize = FONTSIZE(flags);
   unsigned char c_remapped = 0;
 
   if (fontsize == DBLSIZE || (flags&BOLD)) {
@@ -755,7 +755,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
   else {
     idx -= MIXSRC_FIRST_TELEM;
     div_t qr = div(idx, 3);
-    lcd_putsnAtt(x, y, g_model.telemetryValues[qr.quot].label, ZLEN(g_model.telemetryValues[qr.quot].label), ZCHAR|att);
+    lcd_putsnAtt(x, y, g_model.telemetrySensors[qr.quot].label, ZLEN(g_model.telemetrySensors[qr.quot].label), ZCHAR|att);
     if (qr.rem) lcd_putcAtt(lcdLastPos, y, qr.rem==2 ? '+' : '-', att);
   }
 #else
@@ -947,14 +947,14 @@ void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlag
 void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t value, LcdFlags att)
 {
   TelemetryItem & telemetryItem = telemetryItems[channel];
-  TelemetryValue & telemetryValue = g_model.telemetryValues[channel];
+  TelemetrySensor & telemetrySensor = g_model.telemetrySensors[channel];
   if (telemetryItem.isAvailable()) {
-    if (telemetryValue.ratio) value *= telemetryValue.ratio;
-    value += telemetryValue.offset;
+    if (telemetrySensor.ratio) value *= telemetrySensor.ratio;
+    value += telemetrySensor.offset;
     LcdFlags flags = att;
-    if (telemetryValue.prec) {
+    if (telemetrySensor.prec) {
       flags |= PREC1;
-      if (telemetryValue.prec == 2) {
+      if (telemetrySensor.prec == 2) {
         if (value >= 10000) {
           value = div10_and_round(value);
         }
@@ -963,7 +963,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
         }
       }
     }
-    putsValueWithUnit(x, y, value, telemetryValue.unit, flags);
+    putsValueWithUnit(x, y, value, telemetrySensor.unit, flags);
   }
   else {
     lcd_putsAtt(x, y, "---", att); // TODO shortcut

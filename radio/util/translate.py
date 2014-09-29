@@ -148,6 +148,8 @@ for line in in_file.readlines():
         for c in before:
             if ord(c) >= ord('A') and ord(c) <= ord('Z'):
                 c = "\\%03o" % (ord(c) - ord('A') + 1)
+            elif ord(c) >= ord('a') and ord(c) <= ord('z'):
+                c = "\\%03o" % (-ord(c) + ord('a') + 255)
             after = after + c
         line = line[:32] + after + line[-2:]
     out_file.write(line)                 

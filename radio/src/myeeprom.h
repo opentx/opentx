@@ -1061,26 +1061,62 @@ PACK(typedef struct {
 #endif
 
 #if defined(CPUARM)
-#define TELEM_VALUES_MAX       32
-#define TELEM_LABEL_LEN        4
-//#define TELEM_FLAG_TIMEOUT     0x01
-#define TELEM_FLAG_LOG         0x02
-//#define TELEM_FLAG_PERSISTENT  0x04
-//#define TELEM_FLAG_SCALE       0x08
-//#define TELEM_FLAG_OFFSET      0x10
-//#define TELEM_FLAG_FILTER      0x20
-#define TELEM_FLAG_LOSS_ALARM  0x40
+#define TELEM_VALUES_MAX          32
+#define TELEM_LABEL_LEN           4
+//#define TELEM_FLAG_TIMEOUT      0x01
+#define TELEM_FLAG_LOG            0x02
+//#define TELEM_FLAG_PERSISTENT   0x04
+//#define TELEM_FLAG_SCALE        0x08
+#define TELEM_FLAG_AUTO_OFFSET    0x10
+#define TELEM_FLAG_FILTER         0x20
+#define TELEM_FLAG_LOSS_ALARM     0x40
+
+enum TelemetrySensorType
+{
+  TELEM_TYPE_CUSTOM,
+  TELEM_TYPE_CALCULATED
+};
+
+enum TelemetrySensorFormula
+{
+  TELEM_FORMULA_ADD,
+  TELEM_FORMULA_MEAN,
+  TELEM_FORMULA_CELL,
+  TELEM_FORMULA_MAX=TELEM_FORMULA_CELL
+};
+
+enum TelemetrySensorInputFlags
+{
+  TELEM_INPUT_FLAGS_NONE,
+  TELEM_INPUT_FLAGS_AUTO_OFFSET,
+  TELEM_INPUT_FLAGS_FILTERING,
+  TELEM_INPUT_FLAGS_MAX=TELEM_INPUT_FLAGS_FILTERING,
+  TELEM_INPUT_FLAGS_HIDDEN,
+  TELEM_INPUT_CELLS,
+};
+
 PACK(typedef struct {
-  uint16_t id;                     // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
-  uint8_t  instance;               // instance ID to  allow handling multiple instances of same value type, for FrSky can be the physical ID of the sensor
+  union {
+    uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
+    int16_t  cell;                 // when formula=Cell
+  };
+  union {
+    uint8_t instance;              // instance ID to allow handling multiple instances of same value type, for FrSky can be the physical ID of the sensor
+    uint8_t formula;
+  };
   char     label[TELEM_LABEL_LEN]; // user defined label
-  uint8_t  unit:6;                 // user can choose what unit to display each value in
+  uint8_t  type:1;                 // 0=custom / 1=calculated
+  uint8_t  unit:5;                 // user can choose what unit to display each value in
   uint8_t  prec:2;
-  uint8_t  flags;
+  uint8_t  inputFlags:2;
+  uint8_t  logs:1;
+  uint8_t  spare:5;
   uint16_t ratio;
   int16_t  offset;
-  // uint8_t  calc;                   // for calculated items, stores what other telemetry item is used and the operation
-}) TelemetryValue;
+
+  void init(const char *label, uint8_t unit=UNIT_RAW, uint8_t inputFlags=0);
+
+}) TelemetrySensor;
 #endif
 
 #if !defined(CPUARM)
@@ -1859,7 +1895,7 @@ PACK(typedef struct {
 
   MODELDATA_EXTRA
 
-  ARM_FIELD(TelemetryValue telemetryValues[TELEM_VALUES_MAX])
+  ARM_FIELD(TelemetrySensor telemetrySensors[TELEM_VALUES_MAX])
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;
