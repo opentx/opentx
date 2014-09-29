@@ -107,12 +107,12 @@ uint8_t switchToMix(uint8_t source)
 int8_t  checkIncDec_Ret;
 
 #if defined(CPUARM)
-int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, uint8_t i_flags, IsValueAvailable isValueAvailable)
+int checkIncDec(uint8_t event, int val, int i_min, int i_max, uint8_t i_flags, IsValueAvailable isValueAvailable)
 #else
 int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, uint8_t i_flags)
 #endif
 {
-  int16_t newval = val;
+  int newval = val;
 
 #if defined(DBLKEYS)
   uint8_t in = KEYS_PRESSED();
@@ -1410,48 +1410,11 @@ bool isSourceAvailable(int source)
     return false;
 #endif
 
+  if (source>=MIXSRC_RESERVE1 && source<=MIXSRC_RESERVE5)
+    return false;
+
   if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM)
-    return isTelemetrySourceAvailable(source-MIXSRC_FIRST_TELEM+1);
-
-  return true;
-}
-
-bool isTelemetrySourceAvailable(int source)
-{
-#if defined(PCBTARANIS)
-  if (source == TELEM_RSSI_TX)
-    return false;
-#endif
-
-#if defined(PCBTARANIS) && defined(REVPLUS)
-  // on Taranis+ we also hide the SWR
-  if (source == TELEM_SWR)
-    return false;
-#endif
-
-  if (source >= TELEM_A1 && source <= TELEM_A4) {
-    return g_model.frsky.channels[source-TELEM_A1].ratio != 0;
-  }
-
-#if !defined(RTCLOCK)
-  if (source == TELEM_TX_TIME)
-    return false;
-#endif
-
-  if (source == TELEM_RESERVE0)
-    return false;
-
-  if (source >= TELEM_RESERVE1 && source <= TELEM_RESERVE5)
-    return false;
-
-  if (source >= TELEM_RESERVE6 && source <= TELEM_RESERVE10)
-    return false;
-
-  if (source >= TELEM_RESERVE11 && source <= TELEM_RESERVE15)
-    return false;
-
-  if (source == TELEM_DTE)
-    return false;
+    return isTelemetryFieldAvailable((source-MIXSRC_FIRST_TELEM)/3);
 
   return true;
 }
@@ -1479,7 +1442,7 @@ bool isInputSourceAvailable(int source)
     return true;
 
   if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM)
-    return isTelemetrySourceAvailable(source-MIXSRC_FIRST_TELEM+1);
+    return isTelemetryFieldAvailable(source-MIXSRC_FIRST_TELEM);
 
   return false;
 }

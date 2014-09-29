@@ -327,23 +327,38 @@ getvalue_t getValue(uint8_t i)
   else if (i<=MIXSRC_LAST_GVAR) return GVAR_VALUE(i-MIXSRC_GVAR1, getGVarFlightPhase(mixerCurrentFlightMode, i-MIXSRC_GVAR1));
 #endif
 
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) return g_vbat100mV;
-#if defined(CPUARM) && defined(RTCLOCK)
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_TX_TIME) return (g_rtcTime % SECS_PER_DAY) / 60; // number of minutes from midnight
-#endif
-  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_TIMER_MAX) return timersStates[i-MIXSRC_FIRST_TELEM+1-TELEM_TIMER1].val;
-#if defined(FRSKY)
+  else if (i==MIXSRC_TX_VOLTAGE) return g_vbat100mV;
+
 #if defined(CPUARM)
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_SWR) return frskyData.swr.value;
+  else if (i<MIXSRC_FIRST_TIMER) // TX_TIME + SPARES
+  #if defined(RTCLOCK)
+     return (g_rtcTime % SECS_PER_DAY) / 60; // number of minutes from midnight
+  #else
+     return 0;
+  #endif
 #endif
+
+  else if (i<=MIXSRC_LAST_TIMER) return timersStates[i-MIXSRC_FIRST_TIMER].val;
+
+#if defined(CPUARM)
+  else if (i<=MIXSRC_LAST_TELEM) {
+    i -= MIXSRC_FIRST_TELEM;
+    div_t qr = div(i, 3);
+    TelemetryItem & telemetryItem = telemetryItems[qr.quot];
+    switch (qr.rem) {
+      case 1:
+        return telemetryItem.min;
+      case 2:
+        return telemetryItem.max;
+      default:
+        return telemetryItem.value;
+    }
+  }
+#elif defined(FRSKY)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_TX) return frskyData.rssi[1].value;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return frskyData.rssi[0].value;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A1) return frskyData.analog[TELEM_ANA_A1].value;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A2) return frskyData.analog[TELEM_ANA_A2].value;
-#if defined(CPUARM)
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A3) return frskyData.analog[TELEM_ANA_A3].value;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A4) return frskyData.analog[TELEM_ANA_A4].value;
-#endif
 #if defined(FRSKY_SPORT)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return frskyData.hub.baroAltitude;
 #elif defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
@@ -372,10 +387,6 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DTE) return frskyData.hub.dTE;
   else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1) return frskyData.analog[TELEM_ANA_A1].min;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2) return frskyData.analog[TELEM_ANA_A2].min;
-#if defined(CPUARM)
-  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_MIN_A3) return frskyData.analog[TELEM_ANA_A3].min;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A4) return frskyData.analog[TELEM_ANA_A4].min;
-#endif
   else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_CSW_MAX) return *(((int16_t*)(&frskyData.hub.minAltitude))+i-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT));
 #endif
 #endif

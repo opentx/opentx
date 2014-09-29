@@ -589,8 +589,8 @@ int ConvertTelemetrySource_215_to_216(int source)
 int ConvertTelemetrySource_216_to_217(int source)
 {
   // TELEM_TIMER3 added
-  if (source >= TELEM_TIMER3)
-    source += 1;
+//  if (source >= TELEM_TIMER3)
+  //  source += 1;
 
   return source;
 }
@@ -1093,16 +1093,16 @@ void ConvertModel_215_to_216(ModelData &model)
     if (newModel.frsky.screensType & (1<<i)) {
       // gauges
       for (int j=0; j<4; j++) {
-        uint8_t & source = newModel.frsky.screens[i].bars[j].source;
-        source = ConvertTelemetrySource_215_to_216(source);
+        // uint8_t & source = newModel.frsky.screens[i].bars[j].source;
+        // source = ConvertTelemetrySource_215_to_216(source);
       }
     }
     else {
       // numbers
       for (int j=0; j<4; j++) {
         for (int k=0; k<NUM_LINE_ITEMS; k++) {
-          uint8_t & source = newModel.frsky.screens[i].lines[j].sources[k];
-          source = ConvertTelemetrySource_215_to_216(source);
+          // uint8_t & source = newModel.frsky.screens[i].lines[j].sources[k];
+          // source = ConvertTelemetrySource_215_to_216(source);
         }
       }
     }

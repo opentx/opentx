@@ -275,7 +275,7 @@ void displayTopBar()
   lcd_rect(batt_icon_x+FW, BAR_Y+1, 13, 7);
   lcd_vline(batt_icon_x+FW+13, BAR_Y+2, 5);
 
-  if (frskyData.rssi[0].value > 0) {
+  if (TELEMETRY_RSSI() > 0) {
     /* RSSI */
     LCD_ICON(batt_icon_x+3*FW+3, BAR_Y, ICON_RSSI);
     lcd_rect(batt_icon_x+5*FW, BAR_Y+1, 13, 7);
@@ -283,6 +283,7 @@ void displayTopBar()
     /* Rx voltage */
     lcdint_t voltage = 0;
     uint8_t channel = 0;
+#if 0
     if (g_model.frsky.voltsSource <= FRSKY_VOLTS_SOURCE_A4) {
       channel = TELEM_A1+g_model.frsky.voltsSource-1;
       voltage = frskyData.analog[g_model.frsky.voltsSource].value;
@@ -295,8 +296,12 @@ void displayTopBar()
       channel = TELEM_CELLS_SUM-1;
       voltage = frskyData.hub.cellsSum;
     }
+#endif
+
     if (voltage > 0) {
-      putsTelemetryChannel(batt_icon_x+7*FW+2, BAR_Y+1, channel, voltage, LEFT);
+#if 0
+      putsTelemetryChannelValue(batt_icon_x+7*FW+2, BAR_Y+1, channel, voltage, LEFT);
+#endif
       altitude_icon_x = lcdLastPos+1;
     }
     else {
@@ -306,7 +311,9 @@ void displayTopBar()
     /* Altitude */
     if (g_model.frsky.altitudeDisplayed && TELEMETRY_BARO_ALT_AVAILABLE()) {
       LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
+#if 0
       putsTelemetryValue(altitude_icon_x+2*FW-1, BAR_Y+1, TELEMETRY_RELATIVE_BARO_ALT_BP, UNIT_DIST, LEFT);
+#endif
     }
   }
 
@@ -357,8 +364,8 @@ void displayTopBar()
   displayTopBarGauge(batt_icon_x+FW, count, g_vbat100mV <= g_eeGeneral.vBatWarn);
 
   /* The inside of the RSSI gauge */
-  if (frskyData.rssi[0].value > 0) {
-    displayTopBarGauge(batt_icon_x+5*FW, frskyData.rssi[0].value / 10, frskyData.rssi[0].value < getRssiAlarmValue(0));
+  if (TELEMETRY_RSSI() > 0) {
+    displayTopBarGauge(batt_icon_x+5*FW, TELEMETRY_RSSI() / 10, TELEMETRY_RSSI() < getRssiAlarmValue(0));
   }
 }
 #endif

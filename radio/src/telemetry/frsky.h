@@ -70,14 +70,15 @@ extern uint8_t telemetryState;
 #endif
 
 #if defined(CPUARM)
-#define TELEMETRY_AVERAGE_COUNT 3     //we actually average one more reading!
+#define TELEMETRY_AVERAGE_COUNT 3     // we actually average one more reading!
 #define RAW_FRSKY_MINMAX(v)     v.values[TELEMETRY_AVERAGE_COUNT-1]
 class FrskyValueWithMin {
   public:
-    uint8_t value;      //fitered value (average of last TELEMETRY_AVERAGE_COUNT+1 values)
+    uint8_t value;      // fitered value (average of last TELEMETRY_AVERAGE_COUNT+1 values)
     uint8_t min;        
     uint8_t values[TELEMETRY_AVERAGE_COUNT];
     void set(uint8_t value);
+    void reset();
 };
 #else
 #define RAW_FRSKY_MINMAX(v)     v.value
@@ -306,14 +307,22 @@ enum TelemAnas {
   TELEM_ANA_COUNT
 };
 
+#if defined(CPUARM)
+struct FrskyData {
+#if !(defined(PCBTARANIS) && defined(REVPLUS))
+  FrskyValueWithMin swr; // TODO Min not needed
+#endif
+  FrskyValueWithMin rssi; // TODO Min not needed
+  FrskyValueWithMinMax analog[TELEM_ANA_COUNT];
+  FrskySerialData hub;
+};
+#else
 struct FrskyData {
   FrskyValueWithMinMax analog[TELEM_ANA_COUNT];
   FrskyValueWithMin    rssi[2];
-#if defined(CPUARM)
-  FrskyValueWithMin    swr;
-#endif
   FrskySerialData hub;
 };
+#endif
 
 enum AlarmLevel {
   alarm_off = 0,
@@ -326,7 +335,9 @@ enum AlarmLevel {
 #define ALARM_LEVEL(channel, alarm)       ((g_model.frsky.channels[channel].alarms_level >> (2*alarm)) & 3)
 
 #if defined(CPUARM)
-  #define TELEMETRY_STREAMING()           (frskyData.rssi[0].value > 0)
+  #define TELEMETRY_STREAMING()           (frskyData.rssi.value > 0)
+  #define TELEMETRY_RSSI()                (frskyData.rssi.value)
+  #define TELEMETRY_RSSI_MIN()            (frskyData.rssi.min)
 
   #define TELEMETRY_CELL_VOLTAGE_MUTLIPLIER  1
 
@@ -371,6 +382,8 @@ enum AlarmLevel {
   #define TELEMETRY_OPENXSENSOR()         (0)
 #else
   #define TELEMETRY_STREAMING()           (frskyStreaming > 0)
+  #define TELEMETRY_RSSI()                (frskyData.rssi[0].value)
+  #define TELEMETRY_RSSI_MIN()            (frskyData.rssi[0].min)
 
   #define TELEMETRY_CELL_VOLTAGE_MUTLIPLIER  2
 

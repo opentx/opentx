@@ -710,6 +710,32 @@ void setGVarValue(uint8_t idx, int16_t value, int8_t phase)
 
 #endif
 
+getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value)
+{
+  return value;
+}
+
+getvalue_t convert8bitsTelemValue(source_t channel, ls_telemetry_value_t value)
+{
+  return value;
+}
+
+ls_telemetry_value_t minTelemValue(source_t channel)
+{
+  return 0;
+}
+
+ls_telemetry_value_t maxTelemValue(source_t channel)
+{
+  return 30000;
+}
+
+ls_telemetry_value_t max8bitsTelemValue(source_t channel)
+{
+  return 30000;
+}
+
+#if 0
 #if defined(CPUARM) && defined(FRSKY)
 ls_telemetry_value_t minTelemValue(uint8_t channel)
 {
@@ -883,6 +909,7 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
   }
   return result;
 }
+#endif
 
 #if defined(FRSKY) || defined(CPUARM)
 FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)

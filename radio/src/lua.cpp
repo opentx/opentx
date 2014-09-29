@@ -131,7 +131,7 @@ static void luaGetValueAndPush(int src)
 {
   if (src >= MIXSRC_FIRST_TELEM && src <= MIXSRC_LAST_TELEM) {
     // telemetry values
-   if ((src != MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) && !TELEMETRY_STREAMING()) {
+   if (!TELEMETRY_STREAMING()) {
       // telemetry not working, return zero for telemetry sources
       // except for "tx voltage"
       lua_pushinteger(L, (int)0);
@@ -141,6 +141,7 @@ static void luaGetValueAndPush(int src)
 
   int idx = src;
   switch (src) {
+#if 0
     case MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE:
     case MIXSRC_FIRST_TELEM-1+TELEM_VFAS:
     case MIXSRC_FIRST_TELEM-1+TELEM_MIN_VFAS:
@@ -179,7 +180,7 @@ static void luaGetValueAndPush(int src)
       // these need to be divided by 100
       lua_pushnumber(L, getValue(src)/100.0);
       break;
-
+#endif
     //TODO: add other values that need special treatment
 
     default:
@@ -432,7 +433,7 @@ static int luaLcdDrawChannel(lua_State *L)
   }
   int att = luaL_checkinteger(L, 4);
   getvalue_t value = getValue(channel);
-  putsTelemetryChannel(x, y, channel-MIXSRC_FIRST_TELEM, value, att);
+  putsTelemetryChannelValue(x, y, channel-MIXSRC_FIRST_TELEM, value, att);
   return 0;
 }
 
@@ -1942,6 +1943,7 @@ void luaDoOneRunPermanentScript(uint8_t evt, int i)
         return;
       }
     }
+
     if (lua_pcall(L, inputsCount, sio ? sio->outputsCount : 0, 0) == 0) {
       if (sio) {
         for (int j=sio->outputsCount-1; j>=0; j--) {
