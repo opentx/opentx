@@ -328,7 +328,7 @@ PACK(typedef struct {
   uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
   uint8_t currentSource;
   uint8_t screensType;
-  FrSkyScreenData screens[MAX_TELEMETRY_SCREENS];
+  FrSkyScreenData screens[3];
   uint8_t varioSource;
   int8_t  varioCenterMax;
   int8_t  varioCenterMin;
@@ -337,7 +337,27 @@ PACK(typedef struct {
   FrSkyRSSIAlarm rssiAlarms[2];
 }) FrSkyData_v215;
 
-PACK(typedef struct t_ScriptData {
+PACK(typedef struct {
+  FrSkyChannelData channels[4];
+  uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
+  uint8_t voltsSource:7;
+  uint8_t altitudeDisplayed:1;
+  int8_t blades;    // How many blades for RPMs, 0=2 blades
+  uint8_t currentSource;
+  uint8_t screensType; // 2bits per screen (None/Gauges/Numbers/Script)
+  FrSkyScreenData screens[3];
+  uint8_t varioSource;
+  int8_t  varioCenterMax;
+  int8_t  varioCenterMin;
+  int8_t  varioMin;
+  int8_t  varioMax;
+  FrSkyRSSIAlarm rssiAlarms[2];
+  uint16_t mAhPersistent:1;
+  uint16_t storedMah:15;
+  int8_t   fasOffset;
+}) FrSkyData_v216;
+
+PACK(typedef struct {
   char    file[10];
   char    name[10];
   int8_t  inputs[10];
@@ -419,7 +439,7 @@ PACK(typedef struct {
 
   global_gvar_t gvars[MAX_GVARS];
 
-  FrSkyData frsky;
+  FrSkyData_v216 frsky;
 
 #if defined(PCBTARANIS)
   uint8_t externalModule;
@@ -1214,7 +1234,9 @@ void ConvertModel_216_to_217(ModelData &model)
   newModel.switchWarningStates = oldModel.switchWarningStates;
   newModel.nSwToWarn = oldModel.nSwToWarn;
   memcpy(newModel.gvars, oldModel.gvars, sizeof(newModel.gvars));
-  newModel.frsky = oldModel.frsky;
+
+  memcpy(&newModel.frsky, &oldModel.frsky, sizeof(newModel.frsky.channels)+5+sizeof(oldModel.frsky.screens));
+  memcpy(&newModel.frsky.varioSource, &oldModel.frsky.varioSource, 5+sizeof(newModel.frsky.rssiAlarms)+3);
   newModel.externalModule = oldModel.externalModule;
   memcpy(newModel.moduleData, oldModel.moduleData, sizeof(newModel.moduleData));
 #if defined(PCBTARANIS)
