@@ -79,8 +79,8 @@
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
-#define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "AUS\0           ""S-Port DataOut\0""Telemetrie\0    ""Trainer\0       ""Debug\0         "
+#define LEN_UART3MODES         "\015"
+#define TR_UART3MODES          "AUS\0         ""S-Port Mirror""Telemetrie\0  ""SBUS Trainer\0""Debug\0"
 
 #define LEN_POTTYPES           "\017" 
 #define TR_POTTYPES            "Kein\0          ""Poti mit Raste ""Stufen-Schalter""Poti ohne Raste\0"
@@ -481,8 +481,8 @@
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "AUS""ABS""GSs""GS%""GSt"
 
-#define LEN_VTRAINERMODES      "\007"
-#define TR_VTRAINERMODES       "Lehrer\0""Schüler\0"  // "Master""Slave\0"
+#define LEN_VTRAINERMODES      "\022"
+#define TR_VTRAINERMODES       "Lehrer/Jack\0      ""Schüler/Jack\0     ""Master/SBUS Module""Master/CPPM Module""Master/Battery\0"
 
 #define LEN_VFAILSAFE          "\013"
 #define TR_VFAILSAFE           "Halte Pos.\0""Angepasst\0 ""Kein Signal""Empfänger\0"

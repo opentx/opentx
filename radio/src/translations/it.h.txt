@@ -78,10 +78,10 @@
                                
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "ch1ch2ch3ch4"
-                               
-#define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "OFF\0           ""Replica Porta-S""Telemetria\0    ""Trainer\0       ""Debug\0         "
-                               
+                
+#define LEN_UART3MODES         "\016"
+#define TR_UART3MODES          "OFF\0          ""Replica S-Port""Telemetria\0   ""SBUS Trainer\0 ""Debug\0"
+
 #define LEN_POTTYPES           "\017"
 #define TR_POTTYPES            "None\0          ""Pot. con centro""Inter. Multipos""Potenziometro\0 "
                                
@@ -474,8 +474,8 @@
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "OFF""ABS""MOs""MO%""MOt"
 
-#define LEN_VTRAINERMODES      "\007"
-#define TR_VTRAINERMODES       "Maestro""Allievo"
+#define LEN_VTRAINERMODES      "\022"
+#define TR_VTRAINERMODES       "Maestro/Jack\0     ""Allievo/Jack\0     ""Master/SBUS Module""Master/CPPM Module""Master/Battery\0"
 
 #define LEN_VFAILSAFE          "\013"
 #define TR_VFAILSAFE           "Mantieni\0  ""Personali\0 ""No impulsi\0""Ricevente\0 "
