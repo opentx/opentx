@@ -174,7 +174,7 @@ QString InputsPanel::getInputText(int dest, bool * new_ch)
       }
     }
 
-    if (md->curve.value) str += " " +  Qt::escape(md->curve.toString());
+    if (md->curve.value) str += " " +  md->curve.toString();
 
     QString phasesStr = getPhasesStr(md->phases, model);
     if (!phasesStr.isEmpty()) str += " " + phasesStr;
