@@ -1427,6 +1427,7 @@ clean_list :
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp
 	$(REMOVE) stamp-opentx.h
+	$(REMOVE) *.lbm 
 	$(REMOVE) bitmaps/*.lbm 
 	$(REMOVE) fonts/*/*.lbm
 	$(REMOVE) lua_exports.txt lua_exports.cpp lua_fields.txt
