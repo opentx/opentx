@@ -3429,7 +3429,7 @@ inline void opentxInit(OPENTX_INIT_ARGS)
   btInit();
 #endif
 
-#if defined(RTCLOCK)
+#if defined(RTCLOCK) && !defined(COPROCESSOR)
   rtcInit();
 #endif
 
