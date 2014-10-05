@@ -276,5 +276,7 @@ void rtcInit()
 {
 #if defined(REVX)
   readRTC();
+#else
+  coprocReadData();
 #endif
 }
