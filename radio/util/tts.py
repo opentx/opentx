@@ -630,7 +630,7 @@ def ttsCz():
                            "vat", "vaty", u"vatů", "vatu",
                            "decibel", "decibely", u"decibelů", "decibelu",
                            "stopa", "stopy", "stop", "stopy",
-                           "uzel", "uzly", u"uzlů", "uzlu",
+                           u"míle za hodinu", u"míle za hodinu", u"mil za hodinu", "míle za hodinu",
                            "hodina", "hodiny", "hodin", "hodiny",
                            "minuta", "minuty", "minut", "minuty",
                            "sekunda", "sekundy", "sekund", "sekundy",
@@ -652,6 +652,10 @@ def ttsCz():
                     (u"A1,kritická", "a1_red", NO_ALTERNATE),
                     (u"A2,nízká", "a2_org", NO_ALTERNATE),
                     (u"A2,kritická", "a2_red", NO_ALTERNATE),
+                    (u"A3,nízká", "a3_org", NO_ALTERNATE),
+                    (u"A3,kritická", "a3_red", NO_ALTERNATE),
+                    (u"A4,nízká", "a4_org", NO_ALTERNATE),
+                    (u"A4,kritická", "a4_red", NO_ALTERNATE),
                     (u"nízký RF signál", "rssi_org", NO_ALTERNATE),
                     (u"kritický RF signál", "rssi_red", NO_ALTERNATE),
                     (u"problém s anténou rádia", "swr_red", NO_ALTERNATE),
@@ -660,8 +664,8 @@ def ttsCz():
                    ]:
         systemSounds.append((s, filename(f, a)))
     for i, (s, f) in enumerate([
-                 (u"podvozek je zasunut", "podvozek0"),
-                 (u"podvozek je vysunut", "podvozek1"),
+                 (u"podvozek je zasunut", "podvoz0"),
+                 (u"podvozek je vysunut", "podvoz1"),
                  (u"klapky jsou zapnuty", "klapky1"),
                  (u"klapky jsou vypnuty", "klapky0"),
                  (u"trenér je zapnut", "trener1"),
@@ -670,7 +674,7 @@ def ttsCz():
                  (u"motor je aktivován", "motor1"),
                  (u"jsi příliš vysoko", "vysoko"),
                  (u"jsi příliš nízko", "nizko"),
-                 (u"baterie modelu je vybitá", "bytvybita"),
+                 (u"baterie modelu je vybitá", "batvybit"),
                  (u"dochází palivo", "palivo"),
                  (u"nízký signál!", "nsignal"),
                  (u"kritický signál!", "ksignal"),
@@ -678,10 +682,10 @@ def ttsCz():
                  (u"termický režim aktivován", "r_termik"),
                  (u"normální režim aktivován", "r_norm"),
                  (u"režim start aktivován", "r_start"),
-                 (u"režim přistání aktivován", "r_pristani"),
+                 (u"režim přistání aktivován", "r_prista"),
                  (u"vario je zapnuto", "vario0"),
                  (u"vario je vypnuto", "vario1"),
-                 (u"start povolen", "stpovolen"),
+                 (u"start povolen", "startok"),
                  ]):
         sounds.append((s, filename(f, PROMPT_CUSTOM_BASE+i)))
     return systemSounds, sounds
