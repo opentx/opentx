@@ -3999,7 +3999,7 @@ void menuModelLimits(uint8_t event)
 
 #if defined(PCBTARANIS)
     putsChn(0, y, k+1, (sub==k && m_posHorz < 0) ? INVERS : 0);
-    if (sub==k && m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER)) {
+    if (sub==k && m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
       killEvents(event);
       MENU_ADD_ITEM(STR_RESET);
       MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
