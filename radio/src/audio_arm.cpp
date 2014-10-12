@@ -494,21 +494,6 @@ void audioTask(void* pdata)
 }
 #endif
 
-void AudioQueue::pushBuffer(AudioBuffer *buffer)
-{
-  buffer->state = AUDIO_BUFFER_FILLED;
-
-  __disable_irq();
-
-  bufferWIdx = nextBufferIdx(bufferWIdx);
-
-  if (dacQueue(buffer)) {
-    buffer->state = AUDIO_BUFFER_PLAYING;
-  }
-
-  __enable_irq();
-}
-
 void mixSample(uint16_t * result, int sample, unsigned int fade)
 {
   *result = limit(0, *result + ((sample >> fade) >> 4), 4095);
@@ -762,8 +747,11 @@ void AudioQueue::wakeup()
 
     // push the buffer if needed
     if (size > 0) {
+      __disable_irq();
+      bufferWIdx = nextBufferIdx(bufferWIdx);
       buffer->size = size;
-      pushBuffer(buffer);
+      buffer->state = dacQueue(buffer) ? AUDIO_BUFFER_PLAYING : AUDIO_BUFFER_FILLED;
+      __enable_irq();
     }
   }
 }

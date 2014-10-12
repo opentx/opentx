@@ -181,7 +181,7 @@ void tasksStart()
 {
   CoInitOS();
 
-#if defined(CPUARM) && defined(DEBUG)
+#if defined(CPUARM) && defined(DEBUG) && !defined(SIMU)
   debugTaskId = CoCreateTaskEx(debugTask, NULL, 10, &debugStack[DEBUG_STACK_SIZE-1], DEBUG_STACK_SIZE, 1, false);
 #endif
 
