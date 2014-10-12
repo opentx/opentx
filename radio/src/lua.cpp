@@ -789,6 +789,13 @@ static int luaModelGetMix(lua_State *L)
     lua_pushtableinteger(L, "curveType", mix->curve.type);
     lua_pushtableinteger(L, "curveValue", mix->curve.value);
     lua_pushtableinteger(L, "multiplex", mix->mltpx);
+    lua_pushtableinteger(L, "flightModes", mix->flightModes);
+    lua_pushtableboolean(L, "carryTrim", mix->carryTrim);
+    lua_pushtableinteger(L, "mixWarn", mix->mixWarn);
+    lua_pushtableinteger(L, "delayUp", mix->delayUp);
+    lua_pushtableinteger(L, "delayDown", mix->delayDown);
+    lua_pushtableinteger(L, "speedUp", mix->speedUp);
+    lua_pushtableinteger(L, "speedDown", mix->speedDown);
   }
   else {
     lua_pushnil(L);
@@ -837,6 +844,27 @@ static int luaModelInsertMix(lua_State *L)
       }
       else if (!strcmp(key, "multiplex")) {
         mix->mltpx = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "flightModes")) {
+        mix->flightModes = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "carryTrim")) {
+        mix->carryTrim = lua_toboolean(L, -1);
+      }
+      else if (!strcmp(key, "mixWarn")) {
+        mix->mixWarn = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "delayUp")) {
+        mix->delayUp = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "delayDown")) {
+        mix->delayDown = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "speedUp")) {
+        mix->speedUp = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "speedDown")) {
+        mix->speedDown = luaL_checkinteger(L, -1);
       }
     }
   }
