@@ -2856,6 +2856,11 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
       }
       internalField.Append(new UnsignedField<8>(generalData.backlightColor));
     }
+#if 1
+    if (IS_TARANIS(board)) {
+      internalField.Append(new UnsignedField<16>(generalData.switchUnlockStates));
+    }
+#endif
   }
 }
 

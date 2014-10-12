@@ -33,7 +33,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
 
     if (IS_TARANIS(eepromInterface->getBoard())) {
       ui->contrastSB->setMinimum(0);
-      if (firmware_id.contains("readonly")) {
+      if (true /*firmware_id.contains("readonly")*/) {
         uint16_t switchstate=(g_eeGeneral.switchUnlockStates);
         ui->chkSA->setValue(switchstate & 0x3);
         switchstate >>= 2;
@@ -364,16 +364,16 @@ void GeneralEdit::on_serialPortMode_currentIndexChanged(int index)
 
 void GeneralEdit::unlockSwitchEdited()
 {
-  int i=0;
-  i|=(((uint16_t)ui->chkSA->value()));
-  i|=(((uint16_t)ui->chkSB->value())<<2);
-  i|=(((uint16_t)ui->chkSC->value())<<4);
-  i|=(((uint16_t)ui->chkSD->value())<<6);
-  i|=(((uint16_t)ui->chkSE->value())<<8);
-  i|=(((uint16_t)ui->chkSF->value())<<10);
-  i|=(((uint16_t)ui->chkSG->value())<<12);
-  i|=(((uint16_t)ui->chkSH->value())<<14);
-  g_eeGeneral.switchUnlockStates=i;
+  unsigned int i=0;
+  i |= (((uint16_t)ui->chkSA->value())<<0);
+  i |= (((uint16_t)ui->chkSB->value())<<2);
+  i |= (((uint16_t)ui->chkSC->value())<<4);
+  i |= (((uint16_t)ui->chkSD->value())<<6);
+  i |= (((uint16_t)ui->chkSE->value())<<8);
+  i |= (((uint16_t)ui->chkSF->value())<<11);
+  i |= (((uint16_t)ui->chkSG->value())<<12);
+  i |= (((uint16_t)ui->chkSH->value())<<15);
+  g_eeGeneral.switchUnlockStates = i;
   updateSettings();
 }
 
