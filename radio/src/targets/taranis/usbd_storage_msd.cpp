@@ -265,7 +265,7 @@ int8_t STORAGE_Read (uint8_t lun,
   * @retval Status
   */
 
-int8_t SD_WriteSectors(uint8_t *buf, uint32_t sector, uint32_t count);
+int8_t SD_WriteSectors(const uint8_t *buf, uint32_t sector, uint32_t count);
 
 int8_t STORAGE_Write (uint8_t lun, 
                   uint8_t *buf, 

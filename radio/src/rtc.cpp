@@ -107,9 +107,6 @@ verify (twos_complement_arithmetic, TYPE_TWOS_COMPLEMENT (int));
 #define TM_YEAR_BASE 1900
 verify (base_year_is_a_multiple_of_100, TM_YEAR_BASE % 100 == 0);
 
-#define SECS_PER_HOUR   3600ul
-#define SECS_PER_DAY    86400ul
-
 /* Return 1 if YEAR + TM_YEAR_BASE is a leap year.  */
 static inline int
 leapyear (long int year)
