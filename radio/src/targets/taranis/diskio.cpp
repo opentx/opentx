@@ -253,10 +253,9 @@ static BYTE wait_ready (void)
   return res;
 }
 
-
 static void spi_reset()
 {
-  for(int n=0; n < 520; ++n) {
+  for (int n=0; n<520; ++n) {
     stm32_spi_rw(0xFF);  
   }
   TRACE_SD_CARD_EVENT(1, sd_spi_reset, 0);

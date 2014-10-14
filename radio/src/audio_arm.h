@@ -199,10 +199,7 @@ class AudioQueue {
         AudioBuffer * buffer = &buffers[idx];
         if (buffer->state == AUDIO_BUFFER_FILLED) {
           buffer->state = AUDIO_BUFFER_PLAYING;
-          if (idx != bufferRIdx) {
-            TRACEI_AUDIO_EVENT(1, audio_getNextFilledBuffer_skip, ((uint32_t)bufferRIdx << 8) +  idx);
-            bufferRIdx = idx;
-          }
+          bufferRIdx = idx;
           return buffer;
         }
         idx = nextBufferIdx(idx);

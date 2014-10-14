@@ -1304,15 +1304,14 @@ DRESULT disk_read (
     }
   } while ( count ) ;
 
-  if (!count) {
-    IO_MUTEX_LEAVE();
+  IO_MUTEX_LEAVE();
+  
+  if (!count)
     return RES_OK;
-  }
 
   if (++sdErrorCount > 3)
     Card_state = SD_ST_ERR;
 
-  IO_MUTEX_LEAVE();
   return RES_ERROR;
 }
 
