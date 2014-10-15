@@ -244,8 +244,14 @@ class AudioQueue {
 
 extern AudioQueue audioQueue;
 
+enum {
+  ID_PLAY_FROM_SD_MANAGER = 254,
+  ID_PLAY_BYE = 255
+};
+
 void codecsInit();
-void audioEvent(uint8_t e, uint16_t f=BEEP_DEFAULT_FREQ);
+void audioEvent(unsigned int index, unsigned int freq=BEEP_DEFAULT_FREQ);
+void audioPlay(unsigned int index, uint8_t id=0);
 void audioStart();
 
 #if defined(AUDIO) && defined(BUZZER)
@@ -264,7 +270,8 @@ void audioStart();
   #define AUDIO_TIMER_MINUTE(t)  audioDefevent(AU_WARNING1)
 #endif
 
-#define AUDIO_TADA()             audioEvent(AU_TADA)
+#define AUDIO_TADA()             audioPlay(AU_TADA)
+#define AUDIO_BYE()              audioPlay(AU_BYE, ID_PLAY_BYE)
 #define AUDIO_KEYPAD_UP()        AUDIO_BUZZER(audioEvent(AU_KEYPAD_UP), beep(0))
 #define AUDIO_KEYPAD_DOWN()      AUDIO_BUZZER(audioEvent(AU_KEYPAD_DOWN), beep(0))
 #define AUDIO_MENUS()            AUDIO_BUZZER(audioEvent(AU_MENUS), beep(0))

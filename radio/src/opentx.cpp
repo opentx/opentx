@@ -2080,6 +2080,8 @@ void opentxStart()
 #if defined(CPUARM) || defined(CPUM2560)
 void opentxClose()
 {
+  AUDIO_BYE();
+
 #if defined(FRSKY)
   // TODO needed? telemetryEnd();
 #endif
@@ -2090,7 +2092,6 @@ void opentxClose()
 
 #if defined(SDCARD)
   closeLogs();
-  sdDone();
 #endif
 
 #if defined(HAPTIC)
@@ -2130,6 +2131,18 @@ void opentxClose()
 
   eeDirty(EE_GENERAL);
   eeCheck(true);
+
+#if defined(CPUARM)
+  while (IS_PLAYING(ID_PLAY_BYE)) {
+    CoTickDelay(10);
+  }
+
+  CoTickDelay(50);
+#endif
+
+#if defined(SDCARD)
+  sdDone();
+#endif
 }
 #endif
 

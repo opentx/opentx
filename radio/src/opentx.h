@@ -1383,6 +1383,9 @@ void evalFunctions();
 /* make sure the defines below always go in numeric order */
 enum AUDIO_SOUNDS {
     AU_TADA,
+#if defined(CPUARM)
+    AU_BYE,
+#endif
 #if defined(VOICE)
     AU_THROTTLE_ALERT,
     AU_SWITCH_ALERT,
@@ -1449,6 +1452,7 @@ enum AUDIO_SOUNDS {
     AU_TIMER_LT10,
     AU_TIMER_20,
     AU_TIMER_30,
+
     AU_FRSKY_FIRST,
     AU_FRSKY_BEEP1 = AU_FRSKY_FIRST,
     AU_FRSKY_BEEP2,
