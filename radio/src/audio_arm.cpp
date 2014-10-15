@@ -149,6 +149,7 @@ const int16_t sineValues[] =
 #if defined(SDCARD)
 const char * audioFilenames[] = {
   "tada",
+  "bye",
   "thralert",
   "swalert",
   "eebad",
@@ -926,31 +927,37 @@ void AudioQueue::flush()
   CoLeaveMutexSection(audioMutex);
 }
 
-void audioEvent(uint8_t e, uint16_t f)
+void audioPlay(unsigned int index, uint8_t id)
 {
-#if defined(HAPTIC)
-  if (e != AU_TADA) {
-    // TODO could be done better, with TADA not part of errors
-    haptic.event(e); //do this before audio to help sync timings
+  if (g_eeGeneral.beepMode >= -1) {
+    char filename[AUDIO_FILENAME_MAXLEN+1];
+    if (isAudioFileReferenced(index, filename)) {
+      audioQueue.playFile(filename, 0, id);
+    }
   }
-#endif
+}
 
-  if (e <= AU_ERROR || (e >= AU_WARNING1 && e < AU_FRSKY_FIRST)) {
+void audioEvent(unsigned int index, unsigned int freq)
+{
+  if (index == AU_NONE)
+    return;
+
+  if (index <= AU_ERROR || (index >= AU_WARNING1 && index < AU_FRSKY_FIRST)) {
     if (g_eeGeneral.alarmsFlash) {
       flashCounter = FLASH_DURATION;
     }
   }
 
-  if (g_eeGeneral.beepMode>0 || (g_eeGeneral.beepMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beepMode>=-1 && e<=AU_ERROR)) {
+  if (g_eeGeneral.beepMode>0 || (g_eeGeneral.beepMode==0 && index>=AU_TRIM_MOVE) || (g_eeGeneral.beepMode>=-1 && index<=AU_ERROR)) {
 #if defined(SDCARD)
     char filename[AUDIO_FILENAME_MAXLEN+1];
-    if (e < AU_FRSKY_FIRST && isAudioFileReferenced(e, filename)) {
+    if (index < AU_FRSKY_FIRST && isAudioFileReferenced(index, filename)) {
       audioQueue.playFile(filename);
     }
     else
 #endif
-    if (e < AU_FRSKY_FIRST || audioQueue.empty()) {
-      switch (e) {
+    if (index < AU_FRSKY_FIRST || audioQueue.empty()) {
+      switch (index) {
         // inactivity timer alert
         case AU_INACTIVITY:
           audioQueue.playTone(2250, 80, 20, PLAY_REPEAT(2));
@@ -993,15 +1000,15 @@ void audioEvent(uint8_t e, uint16_t f)
           break;
         // trim move
         case AU_TRIM_MOVE:
-          audioQueue.playTone(f, 40, 20, PLAY_NOW);
+          audioQueue.playTone(freq, 40, 20, PLAY_NOW);
           break;
         // trim center
         case AU_TRIM_MIDDLE:
-          audioQueue.playTone(f, 80, 20, PLAY_NOW);
+          audioQueue.playTone(freq, 80, 20, PLAY_NOW);
           break;
         // trim center
         case AU_TRIM_END:
-          audioQueue.playTone(f, 80, 20, PLAY_NOW);
+          audioQueue.playTone(freq, 80, 20, PLAY_NOW);
           break;          
         // warning one
         case AU_WARNING1:

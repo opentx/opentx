@@ -854,7 +854,7 @@ void onSdManagerMenu(const char *result)
     strcat(lfn, "/");
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
     audioQueue.stopAll();
-    audioQueue.playFile(lfn, 0, 255);
+    audioQueue.playFile(lfn, 0, ID_PLAY_FROM_SD_MANAGER);
   }
 #endif
 #if defined(PCBTARANIS)

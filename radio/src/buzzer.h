@@ -64,6 +64,7 @@ void beep(uint8_t val);
 #if !defined(AUDIO)
   #if defined(VOICE)
     #define AUDIO_TADA()           PUSH_SYSTEM_PROMPT(AU_TADA)
+    #define AUDIO_BYE()
     #define AUDIO_TX_BATTERY_LOW() PUSH_SYSTEM_PROMPT(AU_TX_BATTERY_LOW)
     #define AUDIO_INACTIVITY()     PUSH_SYSTEM_PROMPT(AU_INACTIVITY)
     #define AUDIO_ERROR_MESSAGE(e) PUSH_SYSTEM_PROMPT((e))
@@ -72,6 +73,7 @@ void beep(uint8_t val);
     #define AUDIO_TIMER_20()       PUSH_SYSTEM_PROMPT(AU_TIMER_20)
   #else
     #define AUDIO_TADA()
+    #define AUDIO_BYE()
     #define AUDIO_TX_BATTERY_LOW() beep(4)
     #define AUDIO_INACTIVITY()     beep(3)
     #define AUDIO_ERROR_MESSAGE(e) beep(4)
