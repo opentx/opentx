@@ -185,7 +185,7 @@ if docFile:
   #prepare fields
   all_exports = [(name, desc) for (id, name, desc) in exports]
   for (id, nameFormat, descriptionFormat, valuesCount) in exports_multiple:
-    for v in range(valuesCount):
+    for v in range(1, valuesCount + 1):
       name = nameFormat + str(v)
       desc = descriptionFormat % v
       all_exports.append( (name, desc) )
