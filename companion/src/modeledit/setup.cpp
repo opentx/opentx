@@ -234,7 +234,7 @@ void ModulePanel::update()
   ui->label_rxNumber->setVisible(mask & MASK_RX_NUMBER);
   ui->rxNumber->setVisible(mask & MASK_RX_NUMBER);
   ui->rxNumber->setMaximum(max_rx_num);
-  ui->rxNumber->setValue(model.modelId);
+  ui->rxNumber->setValue(model->modelId);
   ui->label_channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsStart->setValue(module.channelsStart+1);
