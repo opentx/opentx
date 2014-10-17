@@ -198,6 +198,7 @@ void ModulePanel::update()
 {
   unsigned int mask = 0;
   Protocol protocol = (Protocol)module.protocol;
+  unsigned int max_rx_num = 63;
 
   if (moduleIdx >= 0) {
     mask |= MASK_PROTOCOL;
@@ -214,6 +215,7 @@ void ModulePanel::update()
       case DSMX:
         mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER;
         module.channelsCount = 6;
+        max_rx_num = 20;
         break;
       case PPM:
         mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT;
@@ -229,9 +231,10 @@ void ModulePanel::update()
 
   ui->label_protocol->setVisible(mask & MASK_PROTOCOL);
   ui->protocol->setVisible(mask & MASK_PROTOCOL);
-  ui->label_rxNumber->setVisible(mask & MASK_FAILSAFES);
-  ui->rxNumber->setVisible(mask & MASK_FAILSAFES);
-  ui->rxNumber->setValue(model->modelId);
+  ui->label_rxNumber->setVisible(mask & MASK_RX_NUMBER);
+  ui->rxNumber->setVisible(mask & MASK_RX_NUMBER);
+  ui->rxNumber->setMaximum(max_rx_num);
+  ui->rxNumber->setValue(model.modelId);
   ui->label_channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsStart->setValue(module.channelsStart+1);
