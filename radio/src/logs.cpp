@@ -115,12 +115,14 @@ const pm_char * openLogs()
     f_puts("Time,", &g_oLogFile);
 #endif
 
-#if defined(PCBTARANIS) && defined(REVPLUS)
-    f_puts("RSSI,A1,A2,A3,A4,", &g_oLogFile);
-#elif defined(CPUARM) && defined(FRSKY)
+#if defined(FRSKY)
+#if defined(CPUARM) && defined(SWR)
     f_puts("SWR,RSSI,A1,A2,A3,A4,", &g_oLogFile);
-#elif defined(FRSKY)
+#elif defined(CPUARM)
+    f_puts("RSSI,A1,A2,A3,A4,", &g_oLogFile);
+#else
     f_puts("Buffer,RX,TX,A1,A2,", &g_oLogFile);
+#endif
 #endif
 
 #if defined(FRSKY_HUB)
@@ -207,14 +209,13 @@ void writeLogs()
 #endif  // #if defined(RTCLOCK)
 
 #if defined(FRSKY)
-#if defined(PCBTARANIS) && defined(REVPLUS)
-      f_printf(&g_oLogFile, "%d,", RAW_FRSKY_MINMAX(frskyData.rssi[0]));
-#elif defined(CPUARM)
+#if defined(CPUARM) && defined(SWR)
       f_printf(&g_oLogFile, "%d,%d,", RAW_FRSKY_MINMAX(frskyData.swr), RAW_FRSKY_MINMAX(frskyData.rssi[0]));
+#elif defined(CPUARM)
+      f_printf(&g_oLogFile, "%d,", RAW_FRSKY_MINMAX(frskyData.rssi[0]));
 #else
       f_printf(&g_oLogFile, "%d,%d,%d,", frskyStreaming, RAW_FRSKY_MINMAX(frskyData.rssi[0]), RAW_FRSKY_MINMAX(frskyData.rssi[1]));
 #endif
-
       for (uint8_t i=0; i<MAX_FRSKY_A_CHANNELS; i++) {
         int16_t converted_value = applyChannelRatio(i, RAW_FRSKY_MINMAX(frskyData.analog[i]));
         f_printf(&g_oLogFile, "%d.%02d,", converted_value/100, converted_value%100);
