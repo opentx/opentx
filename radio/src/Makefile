@@ -615,7 +615,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   SDCARD = YES
   BUZZER = NO
   THR_TRACE = YES
-  CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DDSM2 -DDSM2_PPM
+  CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DDSM2 -DDSM2_PPM -DSWR
   ifeq ($(PCB), SKY9X)
     CPPDEFS += -DROTARY_ENCODERS=1
     CPPSRC += targets/sky9x/rotenc_driver.cpp 
@@ -638,28 +638,23 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   CPPSRC += audio_arm.cpp haptic.cpp gui/view_about.cpp gui/view_text.cpp
   CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/second_serial_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
   CPPSRC += loadboot.cpp
-    
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DVOICE
     INCDIRS += FatFs FatFs/option
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/sky9x/diskio.cpp
   endif
-  
   ifeq ($(BUZZER), YES)
     CPPDEFS += -DBUZZER
     CPPSRC += buzzer.cpp
   endif
-
   ifeq ($(RTCLOCK), YES)
     CPPDEFS += -DRTCLOCK
     CPPSRC += rtc.cpp targets/sky9x/rtc_driver.cpp
   endif
-  
   ifeq ($(BLUETOOTH), YES)
     CPPDEFS += -DBLUETOOTH
     CPPSRC += targets/sky9x/bluetooth.cpp 
   endif
-  
   ifeq ($(DEBUG), YES)
     CPPSRC += debug.cpp
     SRC += targets/sky9x/syscalls.c
@@ -671,13 +666,17 @@ ifeq ($(PCB), TARANIS)
   ARCH = ARM
   ifeq ($(PCBREV), REV3)
     CPPDEFS = -DREV3
+    SWR = YES
   else ifeq ($(PCBREV), REV4a)
     CPPDEFS = -DREV4a
+    SWR = YES
   else ifeq ($(PCBREV), REVPLUS)
     CPPDEFS = -DREVPLUS
     HAPTIC = YES
+    SWR = NO
   else
     CPPDEFS = -DREV4
+    SWR = YES
   endif
   ifeq ($(SPORT_FILE_LOG), YES)
     CPPDEFS += -DSPORT_FILE_LOG
@@ -760,13 +759,11 @@ ifeq ($(PCB), TARANIS)
     SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
     EXTRABOARDSRC += targets/taranis/usbd_storage_msd.cpp
   endif
-  
   ifeq ($(NANO), YES)
     # use newlib-nano for linking
     NEWLIB_NANO_FLAGS = --specs=nano.specs -u _printf_float
     CPPDEFS += -DNANO
   endif
-  
   ifneq ($(LUA), NO)
     ifeq ($(LUA), YES)
       CPPDEFS += -DLUA_MODEL_SCRIPTS
@@ -780,42 +777,37 @@ ifeq ($(PCB), TARANIS)
     SRC += $(LUASRC) 
     LUADEP = lua_exports.cpp
   endif           
-
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/taranis/diskio.cpp
     CPPDEFS += -DVOICE
     INCDIRS += FatFs FatFs/option
   endif
-    
   ifeq ($(RTCLOCK), YES)
     CPPDEFS += -DRTCLOCK
     CPPSRC += rtc.cpp targets/taranis/rtc_driver.cpp
   endif
-
   ifeq ($(DEBUG), YES)
     CPPSRC += debug.cpp
   endif
-  
   ifeq ($(DSM2), PPM)
     CPPSRC += pulses/dsm2_arm.cpp
   endif
-  
   ifeq ($(HUBSAN), YES)
     CPPDEFS += -DHUBSAN
     CPPSRC += pulses/hubsan.cpp
     CPPSRC += targets/taranis/a7105_driver.cpp
   endif
-  
   ifeq ($(HAPTIC), YES)
     CPPDEFS += -DHAPTIC
     CPPSRC += haptic.cpp
     CPPSRC += targets/taranis/haptic_driver.cpp
   endif
-
   ifeq ($(CHANNELS_MONITOR_INV_HIDE), YES)
     CPPDEFS += -DCHANNELS_MONITOR_INV_HIDE
   endif
-
+  ifeq ($(SWR), YES)
+    CPPDEFS += -DSWR
+  endif
 endif
 
 CC      = $(TRGT)gcc
