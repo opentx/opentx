@@ -624,3 +624,5 @@ Greg Parker
 Norman Maaß
 Adriano Del Ben
 Justin Poole
+Kenneth Harrison
+Eugene LaFaille
