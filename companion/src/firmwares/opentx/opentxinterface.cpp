@@ -1274,6 +1274,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
   openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
   openTx->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
+  openTx->addOption("SWR", QObject::tr("SWR value will be available for display/audio/alarms - Only available on latest Taranis+ production"));
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
