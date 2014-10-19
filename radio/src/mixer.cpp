@@ -377,7 +377,7 @@ getvalue_t getValue(uint8_t i)
   else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1) return frskyData.analog[TELEM_ANA_A1].min;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2) return frskyData.analog[TELEM_ANA_A2].min;
 #if defined(CPUARM)
-  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_MIN_A3) return frskyData.analog[TELEM_ANA_A3].min;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A3) return frskyData.analog[TELEM_ANA_A3].min;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A4) return frskyData.analog[TELEM_ANA_A4].min;
 #endif
   else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_CSW_MAX) return *(((int16_t*)(&frskyData.hub.minAltitude))+i-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT));
