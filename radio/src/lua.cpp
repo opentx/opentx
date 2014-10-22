@@ -346,12 +346,6 @@ static int luaGetGeneralSettings(lua_State *L)
   return 1;
 }
 
-static int luaLcdLock(lua_State *L)
-{
-  lcd_locked = true;
-  return 0;
-}
-
 static int luaLcdClear(lua_State *L)
 {
   lcd_clear();
@@ -1522,7 +1516,6 @@ const luaL_Reg modelLib[] = {
 };
 
 const luaL_Reg lcdLib[] = {
-  { "lock", luaLcdLock },
   { "clear", luaLcdClear },
   { "getLastPos", luaLcdGetLastPos },
   { "drawPoint", luaLcdDrawPoint },
@@ -2029,8 +2022,6 @@ void luaDoGc()
 
 void luaTask(uint8_t evt)
 {
-  lcd_locked = false;
-
   uint32_t t0 = get_tmr10ms();
   static uint32_t lastLuaTime = 0;
   uint16_t interval = (lastLuaTime == 0 ? 0 : (t0 - lastLuaTime));

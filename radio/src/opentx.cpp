@@ -2420,7 +2420,7 @@ void perMain()
     const char *warn = s_warning;
     uint8_t menu = s_menu_count;
 
-    if (!LCD_LOCKED()) {
+    if (!LUA_STANDALONE_SCRIPT_RUNNING()) {
       lcd_clear();
       if (menuEvent) {
         m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
@@ -2436,7 +2436,7 @@ void perMain()
     luaTask(evt);
 #endif
 
-    if (!LCD_LOCKED()) {
+    if (!LUA_STANDALONE_SCRIPT_RUNNING()) {
       if (warn) DISPLAY_WARNING(evt);
 #if defined(NAVIGATION_MENUS)
       if (menu) {

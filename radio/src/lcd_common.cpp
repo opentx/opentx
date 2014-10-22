@@ -38,10 +38,6 @@
 
 display_t displayBuf[DISPLAY_BUF_SIZE];
 
-#if defined(LUA)
-bool lcd_locked = false;
-#endif
-
 void lcd_clear()
 {
   memset(displayBuf, 0, sizeof(displayBuf));

@@ -298,13 +298,6 @@ void lcdSetContrast();
   extern display_t lcd_buf[DISPLAY_BUF_SIZE];
 #endif
 
-#if defined(LUA)
-  extern bool lcd_locked;
-  #define LCD_LOCKED() lcd_locked
-#else
-  #define LCD_LOCKED() 0
-#endif
-
 char * strAppend(char * dest, const char * source);
 char * strAppendDate(char * str, bool time=false);
 char * strAppendFilename(char * dest, const char * filename, const int size);

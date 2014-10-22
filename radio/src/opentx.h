@@ -1566,7 +1566,7 @@ enum AUDIO_SOUNDS {
   #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
   #define LUA_LOAD_MODEL_SCRIPTS()   luaState |= INTERPRETER_RELOAD_PERMANENT_SCRIPTS
   #define LUA_LOAD_MODEL_SCRIPT(idx) luaState |= INTERPRETER_RELOAD_PERMANENT_SCRIPTS
-
+  #define LUA_STANDALONE_SCRIPT_RUNNING() (luaState == INTERPRETER_RUNNING_STANDALONE_SCRIPT)
   // Lua PROTECT/UNPROTECT
   #include <setjmp.h>
   struct our_longjmp {
@@ -1583,6 +1583,7 @@ enum AUDIO_SOUNDS {
 #else
   #define LUA_LOAD_MODEL_SCRIPTS()
   #define LUA_LOAD_MODEL_SCRIPT(idx)
+  #define LUA_STANDALONE_SCRIPT_RUNNING() (0)
 #endif
 
 #if defined(CPUARM)
