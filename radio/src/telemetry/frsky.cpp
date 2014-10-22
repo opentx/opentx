@@ -121,6 +121,10 @@ void FrskyValueWithMinMax::set(uint8_t value, uint8_t unit)
     this->value = value;
   }
   if (!max || value > max) {
+    if (unit == UNIT_VOLTS) {
+      // we consider that the battery pack was just plugged
+      min = value;
+    }
     max = value;
   }
 }
