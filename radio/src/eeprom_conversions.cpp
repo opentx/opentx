@@ -402,6 +402,26 @@ PACK(typedef struct {
 
 }) ModelData_v215;
 
+#if defined(PCBTARANIS)
+#define MODELDATA_EXTRA_216 \
+  uint8_t externalModule; \
+  uint8_t trainerMode; \
+  ModuleData moduleData[NUM_MODULES+1]; \
+  char curveNames[MAX_CURVES][6]; \
+  ScriptData_v216 scriptsData[MAX_SCRIPTS]; \
+  char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; \
+  uint8_t nPotsToWarn; \
+  int8_t potPosition[NUM_POTS]; \
+  uint8_t spare[2];
+#elif defined(PCBSKY9X)
+#define MODELDATA_EXTRA_216 \
+  uint8_t externalModule; \
+  ModuleData moduleData[NUM_MODULES+1]; \
+  uint8_t nPotsToWarn; \
+  int8_t potPosition[NUM_POTS]; \
+  uint8_t rxBattAlarms[2];
+#endif
+
 PACK(typedef struct {
   ModelHeader header;
   TimerData_v216 timers[2];
@@ -441,23 +461,7 @@ PACK(typedef struct {
 
   FrSkyData_v216 frsky;
 
-#if defined(PCBTARANIS)
-  uint8_t externalModule;
-  uint8_t trainerMode;
-  ModuleData moduleData[NUM_MODULES+1];
-  char curveNames[MAX_CURVES][6];
-  ScriptData_v216 scriptsData[MAX_SCRIPTS];
-  char inputNames[MAX_INPUTS][LEN_INPUT_NAME];
-  uint8_t nPotsToWarn;
-  int8_t potPosition[NUM_POTS];
-  uint8_t spare[2];
-#elif defined(PCBSKY9X)
-  uint8_t externalModule;
-  ModuleData moduleData[NUM_MODULES+1];
-  uint8_t nPotsToWarn;
-  int8_t potPosition[NUM_POTS];
-  uint8_t rxBattAlarms[2];
-#endif
+  MODELDATA_EXTRA_216
 
 }) ModelData_v216;
 

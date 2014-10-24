@@ -382,7 +382,7 @@ extern OS_MutexID audioMutex;
 
 #define CoInitOS(...)
 #define CoStartOS(...)
-#define CoCreateTask(...) sleep(1/*ms*/)
+#define CoCreateTask(...) (0)
 #define CoCreateMutex(...) PTHREAD_MUTEX_INITIALIZER
 #define CoSetFlag(...)
 #define CoClearFlag(...)
