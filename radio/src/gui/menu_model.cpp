@@ -3218,6 +3218,46 @@ void gvarWeightItem(coord_t x, coord_t y, MixData *md, uint8_t attr, uint8_t eve
   MD_UNION_TO_WEIGHT(weight, md);
 }
 
+#if defined(CPUARM)
+#define GAUGE_WIDTH  31
+#define GAUGE_HEIGHT 6
+void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
+{
+  int offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
+  int weight = abs(GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode));
+  int barMin = offset - weight;
+  int barMax = offset + weight;
+  lcd_outdezAtt(x-((barMin >= 0) ? 2 : 3), y-6, barMin, TINSIZE|LEFT);
+  lcd_outdezAtt(x+GAUGE_WIDTH+3, y-6, barMax, TINSIZE);
+  if (barMin < -101)
+    barMin = -101;
+  if (barMax > 101)
+    barMax = 101;
+  lcd_hlineStip(x-2, y, GAUGE_WIDTH+4, DOTTED);
+  lcd_hlineStip(x-2, y+GAUGE_HEIGHT, GAUGE_WIDTH+4, DOTTED);
+  lcd_vline(x-2, y+1, GAUGE_HEIGHT-1);
+  lcd_vline(x+GAUGE_WIDTH+1, y+1, GAUGE_HEIGHT-1);
+  if (barMin < barMax) {
+    int8_t right = (barMax * 32) / 200;
+    int8_t left = (barMin * GAUGE_WIDTH) / 200;
+    lcd_filled_rect(x+GAUGE_WIDTH/2+left, y+2, right-left, GAUGE_HEIGHT-3);
+  }
+  lcd_vline(x+GAUGE_WIDTH/2, y, GAUGE_HEIGHT+1);
+  if (barMin == -101) {
+    for (uint8_t i=0; i<3; ++i) {
+      lcd_plot(x+1+i, y+4-i);
+      lcd_plot(x+4+i, y+4-i);
+    }
+  }
+  if (barMax == 101) {
+    for (uint8_t i=0; i<3; ++i) {
+      lcd_plot(x+GAUGE_WIDTH-8+i, y+4-i);
+      lcd_plot(x+GAUGE_WIDTH-5+i, y+4-i);
+    }
+  }
+}
+#endif
+
 void menuModelMixOne(uint8_t event)
 {
 #if defined(PCBTARANIS)
@@ -3293,6 +3333,9 @@ void menuModelMixOne(uint8_t event)
         MD_OFFSET_TO_UNION(md2, offset);
         offset.word = GVAR_MENU_ITEM(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, attr|LEFT, 0, event);
         MD_UNION_TO_OFFSET(offset, md2);
+#if defined(CPUARM)
+        drawOffsetBar(COLUMN_X+MIXES_2ND_COLUMN+22, y, md2);
+#endif
         break;
       }
 
