@@ -41,13 +41,17 @@ uint8_t SbusFrame[28] ;
 uint16_t SbusTimer ;
 uint8_t SbusIndex = 0 ;
 
-void processSbusFrame(uint8_t *sbus, int16_t *pulses)
+void processSbusFrame(uint8_t *sbus, int16_t *pulses, uint32_t size)
 {
   uint32_t inputbitsavailable = 0;
   uint32_t inputbits = 0;
 
   if (*sbus++ != 0x0F) {
     return; // not a valid SBUS frame
+  }
+
+  if (size < 23) {
+    return;
   }
 
   for (uint32_t i=0; i<NUM_TRAINER; i++) {
@@ -82,7 +86,7 @@ void processSbusInput()
   else {
     if (SbusIndex) {
       if ((uint16_t) (getTmr2MHz() - SbusTimer) > SBUS_DELAY) {
-        processSbusFrame(SbusFrame, g_ppmIns);
+        processSbusFrame(SbusFrame, g_ppmIns, SbusIndex);
         SbusIndex = 0;
       }
     }
