@@ -236,12 +236,10 @@ void init_sbus_on_heartbeat_capture()
   USART_InitStructure.USART_Mode = USART_Mode_Rx;
 
   USART_Init(USART6, &USART_InitStructure);
-
   USART_Cmd(USART6, ENABLE);
-
   USART_ITConfig(USART6, USART_IT_RXNE, ENABLE);
 
-  NVIC_SetPriority(USART6_IRQn, 7);
+  NVIC_SetPriority(USART6_IRQn, 6);
   NVIC_EnableIRQ(USART6_IRQn);
 }
 
@@ -257,6 +255,17 @@ void stop_sbus_on_heartbeat_capture(void)
 
 extern "C" void USART6_IRQHandler()
 {
-  uint8_t data = USART6->DR;
-  sbusFifo.push(data);
+  uint32_t status;
+  uint8_t data;
+
+  status = USART6->SR;
+
+  while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
+    data = USART6->DR;
+
+    if (!(status & USART_FLAG_ERRORS))
+      sbusFifo.push(data);
+
+    status = USART6->SR;
+  }
 }
