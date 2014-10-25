@@ -38,7 +38,10 @@
 
 void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
 {
-  ASSERT_IN_DISPLAY(p);
+  // ASSERT_IN_DISPLAY(p);
+  if ((p) >= DISPLAY_END) {
+    return;
+  }
 
   if (att&FILL_WHITE) {
     // TODO I could remove this, it's used for the top bar
@@ -71,7 +74,12 @@ void lcd_plot(coord_t x, coord_t y, LcdFlags att)
 void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
 {
   if (y >= LCD_H) return;
-  if (x+w > LCD_W) { w = LCD_W - x; }
+  if (x+w > LCD_W) { 
+    if (x >= LCD_W ) {
+      return;
+    }
+    w = LCD_W - x; 
+  }
 
   uint8_t *p  = &displayBuf[ y / 2 * LCD_W + x ];
   uint8_t mask = PIXEL_GREY_MASK(y, att);
