@@ -149,6 +149,9 @@ void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, uint8_t offset, uint8_t 
     width = w;
   }
   if (x+width > LCD_W) {
+    if (x >= LCD_W ) {
+      return;
+    }
     width = LCD_W-x;
   }
   uint8_t rows = (*q++ + 1) / 2;
@@ -157,6 +160,9 @@ void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, uint8_t offset, uint8_t 
     q = img + 2 + row*w + offset;
     uint8_t *p = &displayBuf[(row + (y/2)) * LCD_W + x];
     for (coord_t i=0; i<width; i++) {
+      if ((p) >= DISPLAY_END) {
+        return;
+      }
       uint8_t b = *q++;
       if (y & 1) {
         *p = (*p & 0x0f) + ((b & 0x0f) << 4);
