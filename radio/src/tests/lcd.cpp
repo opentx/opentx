@@ -264,6 +264,8 @@ TEST(Lcd, BMPWrapping)
   bmpLoad(bitmap, "./tests/plane.bmp", 40, 40);
   lcd_bmp(200, 0, bitmap);
   lcd_bmp(200, 60, bitmap);
+  lcd_bmp(240, 60, bitmap);     // x too big
+  lcd_bmp(20, 200, bitmap);     // y too big
   EXPECT_TRUE(checkScreenshot("bmpwrapping"));
 }
 #endif
