@@ -269,3 +269,30 @@ TEST(Lcd, BMPWrapping)
   EXPECT_TRUE(checkScreenshot("bmpwrapping"));
 }
 #endif
+
+#if defined(PCBTARANIS)
+TEST(Lcd, lcd_hlineStip)
+{
+  lcd_clear();
+  lcd_hlineStip(0, 10, LCD_W, DOTTED);
+  lcd_hlineStip(0, 20, LCD_W, SOLID);
+  lcd_hlineStip(50, 30, LCD_W, 0xEE);    //too wide
+  lcd_hlineStip(50, LCD_H + 10, 20, SOLID);    //too low
+  lcd_hlineStip(250, 30, LCD_W, SOLID);    //x outside display
+  EXPECT_TRUE(checkScreenshot("lcd_hlineStip"));
+}
+#endif
+
+#if defined(PCBTARANIS)
+TEST(Lcd, lcd_vlineStip)
+{
+  lcd_clear();
+  lcd_vlineStip(10, 0, LCD_H, DOTTED);
+  lcd_vlineStip(20, 0, LCD_H, SOLID);
+  lcd_vlineStip(30, 30, LCD_H, 0xEE);    //too high
+  lcd_vlineStip(40, LCD_H + 10, 20, SOLID);    //too low
+  lcd_vlineStip(250, LCD_H + 10, LCD_H, SOLID);    //x outside display
+  EXPECT_TRUE(checkScreenshot("lcd_vlineStip"));
+}
+#endif
+
