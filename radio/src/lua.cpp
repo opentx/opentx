@@ -38,6 +38,7 @@
 #include <stdio.h>
 #include "opentx.h"
 #include "stamp-opentx.h"
+#include "bin_allocator.h"
 
 #if !defined(SIMU)
 extern "C" {
@@ -1566,7 +1567,11 @@ void luaInit()
 {
   luaClose();
   if (luaState != INTERPRETER_PANIC) {
-    L = luaL_newstate();
+#if defined(USE_BIN_ALLOCATOR)
+    L = lua_newstate(bin_l_alloc, NULL);   //we use our own allocator!
+#else
+    L = lua_newstate(l_alloc, NULL);   //we use Lua default allocator
+#endif
     if (L) {
       // install our panic handler
       lua_atpanic(L, &custom_lua_atpanic);

@@ -3073,6 +3073,11 @@ FRESULT f_opendir (
 }
 
 
+FRESULT f_closedir (DIR * rep)
+{
+	//apparently nothing to do in FatFS
+	return FR_OK;
+}
 
 
 /*-----------------------------------------------------------------------*/

@@ -47,10 +47,6 @@ class Fifo
     {
     }
 
-    bool empty() {
-      return (ridx == widx);
-    }
-
     void push(uint8_t byte) {
       uint32_t next = (widx+1) & (N-1);
       if (next != ridx) {
@@ -68,6 +64,12 @@ class Fifo
         ridx = (ridx+1) & (N-1);
         return true;
       }
+    }
+    bool empty() {
+      return (ridx == widx);
+    }
+    void flush() {
+      while (!empty()) {};
     }
 
   protected:

@@ -137,6 +137,13 @@ static void dispw_256( register uint32_t address, register uint32_t lines )
 	}
 }
 
+extern Fifo<512> uart3TxFifo;
+
+void debugFlush() 
+{
+  uart3TxFifo.flush();
+}
+
 void debugTask(void* pdata)
 {
   uint8_t rxchar ;
