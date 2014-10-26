@@ -337,6 +337,13 @@ static int luaKillEvents(lua_State *L)
   return 0;
 }
 
+static int luaGrey(lua_State *L)
+{
+  int index = luaL_checkinteger(L, 1);
+  lua_pushunsigned(L, GREY(index));
+  return 1;
+}
+
 static int luaGetGeneralSettings(lua_State *L)
 {
   lua_newtable(L);
@@ -1429,6 +1436,7 @@ const luaL_Reg opentxLib[] = {
   { "defaultStick", luaDefaultStick },
   { "defaultChannel", luaDefaultChannel },
   { "killEvents", luaKillEvents },
+  { "GREY", luaGrey },
   { NULL, NULL }  /* sentinel */
 };
 
@@ -1439,10 +1447,12 @@ const luaR_value_entry opentxConstants[] = {
   { "MIDSIZE", MIDSIZE },
   { "SMLSIZE", SMLSIZE },
   { "INVERS", INVERS },
+  { "BOLD", BOLD },
+  { "BLINK", BLINK },
+  { "FIXEDWIDTH", FIXEDWIDTH },
   { "LEFT", LEFT },
   { "PREC1", PREC1 },
   { "PREC2", PREC2 },
-  { "BLINK", BLINK },
   { "VALUE", 0 },
   { "SOURCE", 1 },
   { "REPLACE", MLTPX_REP },
@@ -1477,6 +1487,9 @@ const luaR_value_entry opentxConstants[] = {
   { "GREY_DEFAULT", GREY_DEFAULT },
   { "SOLID", SOLID },
   { "DOTTED", DOTTED },
+  { "FORCE", FORCE },
+  { "ERASE", ERASE },
+  { "ROUND", ROUND },
   { "LCD_W", LCD_W },
   { "LCD_H", LCD_H },
   { "PLAY_NOW", PLAY_NOW },
