@@ -161,8 +161,50 @@ uint8_t barCoord(int16_t value, int16_t min, int16_t max)
   return limit((uint8_t)0, (uint8_t)(((int32_t)(BAR_WIDTH-1) * (value - min)) / (max - min)), (uint8_t)BAR_WIDTH);
 }
 
+#if defined(LUA)
+
+#define LUA_SCRIPT_ERROR_Y    3*FH
+// TODO more visual appealing implementation and text translations
+void displayLuaScriptError(uint8_t state, const char * name, int index)
+{
+  lcd_putsAtt(0, LUA_SCRIPT_ERROR_Y, name, 0);
+  if (index > 0) {
+    lcd_outdezAtt(lcdLastPos, LUA_SCRIPT_ERROR_Y, index, LEFT); 
+  }
+  lcd_putsAtt(lcdLastPos, LUA_SCRIPT_ERROR_Y, ": ", 0);   
+  switch (state) {
+    case SCRIPT_SYNTAX_ERROR:
+      lcd_putsAtt(lcdLastPos, LUA_SCRIPT_ERROR_Y, "Script syntax error", 0); 
+      break;
+    case SCRIPT_PANIC:
+      lcd_putsAtt(lcdLastPos, LUA_SCRIPT_ERROR_Y, "Script panic", 0); 
+      break;
+    case SCRIPT_KILLED:
+      lcd_putsAtt(lcdLastPos, LUA_SCRIPT_ERROR_Y, "Script killed", 0); 
+      break;
+    default:
+      lcd_putsAtt(lcdLastPos, LUA_SCRIPT_ERROR_Y, "Unknown error", 0); 
+  }
+}
+#endif
+
 void displayVoltagesScreen()
 {
+#if defined(LUA)
+  uint8_t state = isTelemetryScriptAvailable(TELEMETRY_VOLTAGES_SCREEN);
+  switch (state) {
+    case SCRIPT_OK:
+      return;  //contents will be drawed by Lua Task
+    case SCRIPT_NOFILE:
+      break;  //display normal screen 
+    case SCRIPT_SYNTAX_ERROR:
+    case SCRIPT_PANIC:
+    case SCRIPT_KILLED:
+      //display script error
+      displayLuaScriptError(state, "telempw", 0);
+      return;
+  }
+#endif
   // Volts / Amps / Watts / mAh
   uint8_t analog = 0;
 #if defined(CPUARM)
@@ -255,8 +297,25 @@ void displayVoltagesScreen()
   displayRssiLine();
 }
 
+
 void displayAfterFlightScreen()
 {
+#if defined(LUA)
+  uint8_t state = isTelemetryScriptAvailable(TELEMETRY_AFTER_FLIGHT_SCREEN);
+  switch (state) {
+    case SCRIPT_OK:
+      return;  //contents will be drawed by Lua Task
+    case SCRIPT_NOFILE:
+      break;  //display normal screen 
+    case SCRIPT_SYNTAX_ERROR:
+    case SCRIPT_PANIC:
+    case SCRIPT_KILLED:
+      //display script error
+      displayLuaScriptError(state, "telemaf", 0);
+      return;
+  }
+#endif
+
   uint8_t line=1*FH+1;
   if (IS_GPS_AVAILABLE()) {
     // Latitude
@@ -430,7 +489,20 @@ bool displayTelemetryScreen()
 {
 #if defined(LUA)
   if (s_frsky_view < TELEMETRY_CUSTOM_SCREEN_1) {
-    return isTelemetryScriptAvailable(s_frsky_view);
+    uint8_t state = isTelemetryScriptAvailable(s_frsky_view);
+    switch (state) {
+      case SCRIPT_OK:
+        return true;  //contents will be drawed by Lua Task
+      case SCRIPT_NOFILE:
+        return false;  //requested lua telemetry screen not available
+      case SCRIPT_SYNTAX_ERROR:
+      case SCRIPT_PANIC:
+      case SCRIPT_KILLED:
+        //display script error
+        displayLuaScriptError(state, "telem", s_frsky_view+1);
+        return true;
+    }
+    return false;
   }
 #endif
 

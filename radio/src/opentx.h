@@ -1516,7 +1516,7 @@ enum AUDIO_SOUNDS {
   void luaExec(const char *filename);
   int luaGetMemUsed();
   #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
-  bool isTelemetryScriptAvailable(uint8_t index);
+  uint8_t isTelemetryScriptAvailable(uint8_t index);
   #define LUA_LOAD_MODEL_SCRIPTS()   luaState |= INTERPRETER_RELOAD_PERMANENT_SCRIPTS
   #define LUA_LOAD_MODEL_SCRIPT(idx) luaState |= INTERPRETER_RELOAD_PERMANENT_SCRIPTS
 

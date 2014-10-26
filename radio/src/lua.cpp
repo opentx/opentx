@@ -1727,15 +1727,15 @@ bool luaLoadTelemetryScript(uint8_t index)
   return true;
 }
 
-bool isTelemetryScriptAvailable(uint8_t index)
+uint8_t isTelemetryScriptAvailable(uint8_t index)
 {
   for (int i=0; i<luaScriptsCount; i++) {
     ScriptInternalData & sid = scriptInternalData[i];
     if (sid.reference == SCRIPT_TELEMETRY_FIRST+index) {
-      return true;
+      return sid.state;
     }
   }
-  return false;
+  return SCRIPT_NOFILE;
 }
 
 void luaLoadPermanentScripts()
