@@ -119,6 +119,7 @@
 #define ADC2_ID                 0xf103
 #define BATT_ID                 0xf104
 #define SWR_ID                  0xf105
+#define XJT_VERSION_ID          0xf106
 
 // Default sensor data IDs (Physical IDs + CRC)
 #define DATA_ID_VARIO            0x00 // 0
@@ -298,9 +299,27 @@ void frskySportProcessPacket(uint8_t *packet)
         link_counter += 256 / FRSKY_SPORT_AVERAGING;
         frskyData.rssi[0].set(SPORT_DATA_U8(packet));
       }
-      if (appId == SWR_ID) {
+#if defined(PCBTARANIS) && defined(REVPLUS)
+      if (appId == XJT_VERSION_ID) {
+        frskyData.xjtVersion = HUB_DATA_U16(packet);
+        if (frskyData.xjtVersion == 0) {
+          frskyData.swr.set(0xff);
+        }
+      } 
+      else if (appId == SWR_ID) {
+        if (frskyData.xjtVersion == 0)
+          frskyData.swr.set(0xff);
+        else
+          frskyData.swr.set(SPORT_DATA_U8(packet));
+      }
+#else
+      if (appId == XJT_VERSION_ID) {
+        frskyData.xjtVersion = HUB_DATA_U16(packet);
+      }
+      else if (appId == SWR_ID) {
         frskyData.swr.set(SPORT_DATA_U8(packet));
       }
+#endif
       else if (frskyData.rssi[0].value > 0) {
         if (appId == ADC1_ID || appId == ADC2_ID) {
           // A1/A2 of DxR receivers

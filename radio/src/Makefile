@@ -615,7 +615,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   SDCARD = YES
   BUZZER = NO
   THR_TRACE = YES
-  CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DDSM2 -DDSM2_PPM -DSWR
+  CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DDSM2 -DDSM2_PPM
   ifeq ($(PCB), SKY9X)
     CPPDEFS += -DROTARY_ENCODERS=1
     CPPSRC += targets/sky9x/rotenc_driver.cpp 
@@ -666,17 +666,13 @@ ifeq ($(PCB), TARANIS)
   ARCH = ARM
   ifeq ($(PCBREV), REV3)
     CPPDEFS = -DREV3
-    SWR = YES
   else ifeq ($(PCBREV), REV4a)
     CPPDEFS = -DREV4a
-    SWR = YES
   else ifeq ($(PCBREV), REVPLUS)
     CPPDEFS = -DREVPLUS
     HAPTIC = YES
-    SWR = NO
   else
     CPPDEFS = -DREV4
-    SWR = YES
   endif
   ifeq ($(SPORT_FILE_LOG), YES)
     CPPDEFS += -DSPORT_FILE_LOG
@@ -804,9 +800,6 @@ ifeq ($(PCB), TARANIS)
   endif
   ifeq ($(CHANNELS_MONITOR_INV_HIDE), YES)
     CPPDEFS += -DCHANNELS_MONITOR_INV_HIDE
-  endif
-  ifeq ($(SWR), YES)
-    CPPDEFS += -DSWR
   endif
 endif
 

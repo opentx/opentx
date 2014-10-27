@@ -311,8 +311,9 @@ struct FrskyData {
   FrskyValueWithMin    rssi[2];
 #if defined(CPUARM)
   FrskyValueWithMin    swr;
+  uint16_t xjtVersion;
 #endif
-  FrskySerialData hub;
+  FrskySerialData hub;  
 };
 
 enum AlarmLevel {
