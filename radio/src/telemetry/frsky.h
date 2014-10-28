@@ -316,6 +316,8 @@ struct FrskyData {
   FrskySerialData hub;  
 };
 
+#define IS_VALID_XJT_VERSION() (frskyData.xjtVersion != 0 && frskyData.xjtVersion != 0xff)
+
 enum AlarmLevel {
   alarm_off = 0,
   alarm_yellow = 1,
