@@ -199,8 +199,8 @@ void writeLogs()
 
 #if defined(FRSKY)
 #if defined(PCBTARANIS) && defined(REVPLUS)
-      if (frskyData.xjtVersion == 0)
-        f_printf(&g_oLogFile, "-,%s", RAW_FRSKY_MINMAX(frskyData.rssi[0]));
+      if ((frskyData.xjtVersion == 0) || (frskyData.xjtVersion == 0xff))
+        f_printf(&g_oLogFile, "-,%d,", RAW_FRSKY_MINMAX(frskyData.rssi[0]));
       else
         f_printf(&g_oLogFile, "%d,%d,", RAW_FRSKY_MINMAX(frskyData.swr), RAW_FRSKY_MINMAX(frskyData.rssi[0]));
 #elif defined(CPUARM)

@@ -343,7 +343,7 @@ void telemetryWakeup()
 #endif
 
 #if defined(PCBTARANIS) && defined(REVPLUS)
-  #define FRSKY_BAD_ANTENNA() (frskyData.xjtVersion != 0 && frskyData.swr.value > 0x33)
+  #define FRSKY_BAD_ANTENNA() (((frskyData.xjtVersion == 0) || (frskyData.xjtVersion == 0xff)) && frskyData.swr.value > 0x33)
 #else
   #define FRSKY_BAD_ANTENNA() (frskyData.swr.value > 0x33)
 #endif

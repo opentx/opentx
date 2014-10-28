@@ -302,12 +302,12 @@ void frskySportProcessPacket(uint8_t *packet)
 #if defined(PCBTARANIS) && defined(REVPLUS)
       if (appId == XJT_VERSION_ID) {
         frskyData.xjtVersion = HUB_DATA_U16(packet);
-        if (frskyData.xjtVersion == 0) {
+        if ((frskyData.xjtVersion == 0) || (frskyData.xjtVersion == 0xff)) {
           frskyData.swr.set(0xff);
         }
       } 
       else if (appId == SWR_ID) {
-        if (frskyData.xjtVersion == 0)
+        if ((frskyData.xjtVersion == 0) || (frskyData.xjtVersion == 0xff))
           frskyData.swr.set(0xff);
         else
           frskyData.swr.set(SPORT_DATA_U8(packet));
