@@ -73,13 +73,21 @@ volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value = 0;
 
 #if defined(PCBTARANIS)
 tmr10ms_t switchesMidposStart[6] = { 0 };
-uint32_t  switchesPos = 0;
+uint64_t  switchesPos = 0;
 tmr10ms_t potsLastposStart[NUM_XPOTS];
 uint8_t   potsPos[NUM_XPOTS];
 
-uint32_t check2PosSwitchPosition(EnumKeys sw)
+int switchConfig(int idx)
 {
-  uint32_t result;
+  uint32_t config = SWITCH_CONFIG(idx);
+  if (config == SWITCH_DEFAULT)
+    config = SWITCH_DEFAULT_CONFIG(idx);
+  return config;
+}
+
+uint64_t check2PosSwitchPosition(EnumKeys sw)
+{
+  uint64_t result;
   uint32_t index;
 
   if (switchState(sw))
@@ -87,7 +95,7 @@ uint32_t check2PosSwitchPosition(EnumKeys sw)
   else
     index = sw - SW_SA0 + 1;
 
-  result = (1 << index);
+  result = ((int64_t)1 << index);
 
   if (!(switchesPos & result)) {
     PLAY_SWITCH_MOVED(index);
@@ -136,7 +144,7 @@ uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
 
 void getSwitchesPosition(bool startup)
 {
-  uint32_t newPos = 0;
+  uint64_t newPos = 0;
   CHECK_3POS(0, SW_SA);
   CHECK_3POS(1, SW_SB);
   CHECK_3POS(2, SW_SC);
@@ -145,6 +153,19 @@ void getSwitchesPosition(bool startup)
   CHECK_2POS(SW_SF);
   CHECK_3POS(5, SW_SG);
   CHECK_2POS(SW_SH);
+  if (IS_2x2POS(0))
+    CHECK_2POS(SW_SI);
+  if (IS_2x2POS(1))
+    CHECK_2POS(SW_SJ);
+  if (IS_2x2POS(2))
+    CHECK_2POS(SW_SK);
+  if (IS_2x2POS(3))
+    CHECK_2POS(SW_SL);
+  if (IS_2x2POS(4))
+    CHECK_2POS(SW_SM);
+  if (IS_2x2POS(6))
+    CHECK_2POS(SW_SN);
+
   switchesPos = newPos;
 
   for (int i=0; i<NUM_XPOTS; i++) {
@@ -445,13 +466,13 @@ bool getSwitch(int8_t swtch)
     if (startupWarningState < STARTUP_WARNING_DONE) {
       // if throttle or switch warning is currently active, ignore actual stick position and use wanted values
       if (cs_idx <= 3) {
-        if (!(g_model.nSwToWarn&1)) {     // ID1 to ID3 is just one bit in nSwToWarn
-          result = (cs_idx)==((g_model.switchWarningStates&3)+1);  // overwrite result with desired value
+        if (!(g_model.switchWarningEnable&1)) {     // ID1 to ID3 is just one bit in switchWarningEnable
+          result = (cs_idx)==((g_model.switchWarningState&3)+1);  // overwrite result with desired value
         }
       }
-      else if (!(g_model.nSwToWarn & (1<<(cs_idx-3)))) {
+      else if (!(g_model.switchWarningEnable & (1<<(cs_idx-3)))) {
         // current switch should not be ignored for warning
-        result = g_model.switchWarningStates & (1<<(cs_idx-2)); // overwrite result with desired value
+        result = g_model.switchWarningState & (1<<(cs_idx-2)); // overwrite result with desired value
       }
     }
 #endif
@@ -532,7 +553,7 @@ void evalLogicalSwitches(bool isCurrentPhase)
 }
 #endif
 
-swstate_t switches_states = 0;
+swarnstate_t switches_states = 0;
 int8_t getMovedSwitch()
 {
   static tmr10ms_t s_move_last_time = 0;
@@ -540,7 +561,7 @@ int8_t getMovedSwitch()
 
 #if defined(PCBTARANIS)
   for (uint8_t i=0; i<NUM_SWITCHES; i++) {
-    swstate_t mask = (0x03 << (i*2));
+    swarnstate_t mask = (0x03 << (i*2));
     uint8_t prev = (switches_states & mask) >> (i*2);
     uint8_t next = (1024+getValue(MIXSRC_SA+i)) / 1024;
     if (prev != next) {
@@ -560,7 +581,7 @@ int8_t getMovedSwitch()
   // 4..8 for all other switches if changed to true
   // -4..-8 for all other switches if changed to false
   // 9 for Trainer switch if changed to true; Change to false is ignored
-  swstate_t mask = 0x80;
+  swarnstate_t mask = 0x80;
   for (uint8_t i=NUM_PSWITCH; i>1; i--) {
     bool prev;
     prev = (switches_states & mask);
@@ -586,11 +607,11 @@ int8_t getMovedSwitch()
 void checkSwitches()
 {
 #if defined(MODULE_ALWAYS_SEND_PULSES)
-  static swstate_t last_bad_switches = 0xff;
+  static swarnstate_t last_bad_switches = 0xff;
 #else
-  swstate_t last_bad_switches = 0xff;
+  swarnstate_t last_bad_switches = 0xff;
 #endif
-  swstate_t states = g_model.switchWarningStates;
+  swarnstate_t states = g_model.switchWarningState;
   
 #if defined(PCBTARANIS)
   uint8_t bad_pots = 0, last_bad_pots = 0xff;
@@ -608,9 +629,9 @@ void checkSwitches()
   
     bool warn = false;
 #if defined(PCBTARANIS)
-    for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
-      if (!(g_model.nSwToWarn & (1<<i))) {
-        swstate_t mask = (0x03 << (i*2));
+    for (int i=0; i<NUM_SWITCHES; i++) {
+      if (SWITCH_WARNING_ALLOWED(i) && !(g_model.switchWarningEnable & (1<<i))) {
+        swarnstate_t mask = (0x03 << (i*2));
         if (!((states & mask) == (switches_states & mask))) {
           warn = true;
         }
@@ -634,7 +655,7 @@ void checkSwitches()
     }
 #else
     for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
-      if (!(g_model.nSwToWarn & (1<<i))) {
+      if (!(g_model.switchWarningEnable & (1<<i))) {
       	if (i == 0) {
       	  if ((states & 0x03) != (switches_states & 0x03)) {
       	    warn = true;
@@ -659,16 +680,28 @@ void checkSwitches()
 #if defined(PCBTARANIS)
     if ((last_bad_switches != switches_states) || (last_bad_pots != bad_pots)) {
       MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, ((last_bad_switches == 0xff) || (last_bad_pots == 0xff)) ? AU_SWITCH_ALERT : AU_NONE);
-      for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
-        if (!(g_model.nSwToWarn & (1<<i))) {
-          swstate_t mask = (0x03 << (i*2));
+      int x = 60, y = 4*FH+3;
+      for (int i=0; i<NUM_SWITCHES; ++i) {
+        if (SWITCH_WARNING_ALLOWED(i) && !(g_model.switchWarningEnable & (1<<i))) {
+          swarnstate_t mask = (0x03 << (i*2));
           uint8_t attr = ((states & mask) == (switches_states & mask)) ? 0 : INVERS;
-          char c = "\300-\301"[(states & mask) >> (i*2)];
-          lcd_putcAtt(60+i*(2*FW+FW/2), 4*FH+3, 'A'+i, attr);
-          lcd_putcAtt(60+i*(2*FW+FW/2)+FW, 4*FH+3, c, attr);
+          if (attr) {
+            char c = "\300-\301"[(states & mask) >> (i*2)];
+            putsMixerSource(x, y, MIXSRC_FIRST_SWITCH+i, attr);
+            lcd_putcAtt(lcdNextPos, y, c, attr);
+            x = lcdNextPos + 3;
+            if (x >= LCD_W - 4*FW && y == 4*FH+3) {
+              y = 6*FH-2;
+              x = 60;
+            }
+          }
         }
       }
       if (potMode) {
+        if (y == 4*FH+3) {
+          y = 6*FH-2;
+          x = 60;
+        }
         for (uint8_t i=0; i<NUM_POTS; i++) {
 #if !defined(REVPLUS)
           if (i == POT3-POT1) {
@@ -676,22 +709,22 @@ void checkSwitches()
           }
 #endif
           if (!(g_model.nPotsToWarn & (1 << i))) {
-            uint8_t flags = 0;
             if (abs(g_model.potPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1) {
-            	switch (i) {
+              lcd_putsiAtt(x, y, STR_VSRCRAW, NUM_STICKS+1+i, INVERS);
+              switch (i) {
                 case 0:
                 case 1:
                 case 2: 
-                  lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > GET_LOWRES_POT_POSITION(i) ? 126 : 127);
+                  lcd_putcAtt(lcdNextPos, y, g_model.potPosition[i] > GET_LOWRES_POT_POSITION(i) ? 126 : 127, INVERS);
                   break;
                 case 3:
                 case 4:
-                  lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > GET_LOWRES_POT_POSITION(i) ? '\300' : '\301');
+                  lcd_putcAtt(lcdNextPos, y, g_model.potPosition[i] > GET_LOWRES_POT_POSITION(i) ? '\300' : '\301', INVERS);
                   break;
               }
-              flags = INVERS;
+              x = lcdNextPos + 3;
             }
-            lcd_putsiAtt(60+i*(5*FW), 6*FH-2, STR_VSRCRAW, NUM_STICKS+1+i, flags);
+
           }
         }
       }
@@ -706,7 +739,7 @@ void checkSwitches()
           attr = ((states & 0x03) != (switches_states & 0x03)) ? INVERS : 0;
         else
           attr = (states & (1 << (i+1))) == (switches_states & (1 << (i+1))) ? 0 : INVERS;
-        if (!(g_model.nSwToWarn & (1<<i)))
+        if (!(g_model.switchWarningEnable & (1<<i)))
           putsSwitches(x, 5*FH, (i>0?(i+3):(states&0x3)+1), attr);
         x += 3*FW+FW/2;
       }

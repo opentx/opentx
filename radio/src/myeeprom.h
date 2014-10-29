@@ -377,7 +377,8 @@ PACK(typedef struct {
   #define IS_TRAINER_EXTERNAL_MODULE() (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
   #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS];
-  #define swstate_t         uint16_t
+  #define swarnstate_t      uint32_t
+  #define swarnenable_t     uint16_t
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
     EXTERNAL_MODULE,
@@ -386,11 +387,13 @@ PACK(typedef struct {
   };
   #define MODELDATA_BITMAP
   #define MODELDATA_EXTRA   uint8_t externalModule; ModuleData moduleData[NUM_MODULES+1]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
-  #define swstate_t         uint8_t
+  #define swarnstate_t      uint8_t
+  #define swarnenable_t     uint8_t
 #else
   #define MODELDATA_BITMAP
   #define MODELDATA_EXTRA   
-  #define swstate_t         uint8_t
+  #define swarnstate_t      uint8_t
+  #define swarnenable_t     uint8_t
 #endif
 
 enum BacklightMode {
@@ -609,6 +612,16 @@ PACK(typedef struct {
 #define CFN_GVAR_CST_MAX    125
 #endif
 
+enum SwitchConfig {
+  SWITCH_DEFAULT,
+  SWITCH_TOGGLE,
+  SWITCH_2POS,
+  SWITCH_3POS,
+  SWITCH_2x2POS
+};
+
+#define LEN_SWITCH_NAME 3
+#define LEN_ANA_NAME    3
 
 #if defined(PCBSTD)
   #define N_PCBSTD_FIELD(x)
@@ -668,15 +681,42 @@ PACK(typedef struct t_EEGeneral {
 
   EXTRA_GENERAL_FIELDS
 
-  ARM_FIELD(swstate_t switchUnlockStates)
+  ARM_FIELD(swarnstate_t switchUnlockStates)
 
   ARM_FIELD(CustomFunctionData customFn[NUM_CFN])
+
+  ARM_FIELD(uint32_t switchConfig)
+
+  ARM_FIELD(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME])
+
+  ARM_FIELD(char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME])
 
 }) EEGeneral;
 
 #define SWITCHES_DELAY()     uint8_t(15+g_eeGeneral.switchesDelay)
 #define SWITCHES_DELAY_NONE  (-15)
 #define HAPTIC_STRENGTH()    (3+g_eeGeneral.hapticStrength)
+
+#if defined(PCBTARANIS)
+#define SWITCH_CONFIG(x) ((g_eeGeneral.switchConfig >> (4*(x))) & 0x0f)
+#define SWITCH_DEFAULT_CONFIG(x) ((x)==5 ? SWITCH_2POS : ((x)==7 ? SWITCH_TOGGLE : SWITCH_3POS))
+int switchConfig(int idx);
+#define IS_3POS(x) (switchConfig(x) == SWITCH_3POS)
+#define IS_2x2POS(x) (switchConfig(x) == SWITCH_2x2POS)
+#define ONE_2x2POS_DEFINED() (g_eeGeneral.switchConfig & 0x44444444)
+#define IS_TOGGLE(x) (switchConfig(x) == SWITCH_TOGGLE)
+#define SWITCH_WARNING_ALLOWED(x) (x<8 ? !IS_TOGGLE(x) : IS_2x2POS(x-8))
+inline int getSwitchWarningsAllowed()
+{
+  int count = 0;
+  for (int i=0; i<NUM_SWITCHES; ++i) {
+    if (SWITCH_WARNING_ALLOWED(i)) {
+      ++count;
+    }
+  }
+  return count;
+}
+#endif
 
 #if defined(PCBTARANIS)
 enum CurveRefType {
@@ -1528,6 +1568,19 @@ enum SwitchSources {
   SWSRC_SH0,
   SWSRC_SH2,
   SWSRC_TRAINER = SWSRC_SH2,
+  SWSRC_SI0,
+  SWSRC_SI2,
+  SWSRC_SJ0,
+  SWSRC_SJ2,
+  SWSRC_SK0,
+  SWSRC_SK2,
+  SWSRC_SL0,
+  SWSRC_SL2,
+  SWSRC_SM0,
+  SWSRC_SM2,
+  SWSRC_SN0,
+  SWSRC_SN2,
+  SWSRC_LAST_SWITCH = SWSRC_SN2,
 #else
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
   SWSRC_ID1,
@@ -1544,9 +1597,8 @@ enum SwitchSources {
   SWSRC_GEA,
   SWSRC_TRN,
   SWSRC_TRAINER = SWSRC_TRN,
+  SWSRC_LAST_SWITCH = SWSRC_TRN,
 #endif
-
-  SWSRC_LAST_SWITCH = SWSRC_TRAINER,
 
 #if defined(PCBTARANIS)
   SWSRC_FIRST_MULTIPOS_SWITCH,
@@ -1639,13 +1691,9 @@ enum MixSources {
 #else
   MIXSRC_P1 = MIXSRC_FIRST_POT,
   MIXSRC_P2,
-  #if defined(EXTRA_3POS)
-    MIXSRC_LAST_POT = MIXSRC_P2,
-  #else
     MIXSRC_P3,
     MIXSRC_LAST_POT = MIXSRC_P3,
   #endif
-#endif
 
 #if defined(PCBSKY9X)
   MIXSRC_REa,
@@ -1684,11 +1732,15 @@ enum MixSources {
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
+
+  MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
+  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
+  MIXSRC_SK,                        LUA_EXPORT("sk", "Switch K")
+  MIXSRC_SL,                        LUA_EXPORT("sl", "Switch L")
+  MIXSRC_SM,                        LUA_EXPORT("sm", "Switch M")
+  MIXSRC_SN,                        LUA_EXPORT("sn", "Switch N")
 #else
   MIXSRC_3POS = MIXSRC_FIRST_SWITCH,
-  #if defined(EXTRA_3POS)
-    MIXSRC_3POS2,
-  #endif
   MIXSRC_THR,
   MIXSRC_RUD,
   MIXSRC_ELE,
@@ -1946,8 +1998,8 @@ PACK(typedef struct {
   AVR_FIELD(int8_t ppmFrameLength)     // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
   
-  swstate_t switchWarningStates;
-  uint8_t nSwToWarn;
+  swarnstate_t  switchWarningState;
+  swarnenable_t switchWarningEnable;
 
   MODEL_GVARS_DATA
 

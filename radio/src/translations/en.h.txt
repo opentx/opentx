@@ -429,7 +429,7 @@
 
 #if defined(PCBTARANIS)
   #define TR_POTS_VSRCRAW      "S1\0 ""S2\0 ""S3\0 ""LS\0 ""RS\0 "
-  #define TR_SW_VSRCRAW        "SA\0 ""SB\0 ""SC\0 ""SD\0 ""SE\0 ""SF\0 ""SG\0 ""SH\0 "
+  #define TR_SW_VSRCRAW        "SA\0 ""SB\0 ""SC\0 ""SD\0 ""SE\0 ""SF\0 ""SG\0 ""SH\0 ""SI\0 ""SJ\0 ""SK\0 ""SL\0 ""SM\0 ""SN\0 "
 #elif defined(EXTRA_3POS)
   #define TR_POTS_VSRCRAW      "P1\0 ""P2\0 "
   #define TR_SW_VSRCRAW        "3P1\0""3P2\0"
@@ -461,7 +461,7 @@
 
 #if defined(PCBTARANIS)
   #define TR_6POS_POTS         "S11""S12""S13""S14""S15""S16""S21""S22""S23""S24""S25""S26""S31""S32""S33""S34""S35""S36"
-  #define TR_VSWITCHES         "---""SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
+  #define TR_VSWITCHES         "---""SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301""SI\300""SI\301""SJ\300""SJ\301""SK\300""SK\301""SL\300""SL\301""SM\300""SM\301""SN\300""SN\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
 #elif defined(CPUARM)
   #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
 #else
@@ -788,7 +788,7 @@
 #define TR_SD_SPEED            "Speed:"
 #define TR_SD_SECTORS          "Sectors:"
 #define TR_SD_SIZE             "Size:"
-#define TR_TYPE                "Type"
+#define TR_TYPE                INDENT "Type"
 #define TR_GLOBAL_VARS         "Global Variables"
 #define TR_GLOBAL_V            "GLOBAL V."
 #define TR_GLOBAL_VAR          "Global Variable"

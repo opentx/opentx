@@ -36,6 +36,110 @@
 
 #include "opentx.h"
 
+enum Mix216Sources {
+  MIXSRC216_NONE,
+
+#if defined(PCBTARANIS)
+  MIXSRC216_FIRST_INPUT,
+  MIXSRC216_LAST_INPUT = MIXSRC216_FIRST_INPUT+MAX_INPUTS-1,
+
+  MIXSRC216_FIRST_LUA,
+  MIXSRC216_LAST_LUA = MIXSRC216_FIRST_LUA+(MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)-1,
+#endif
+
+  MIXSRC216_Rud,
+  MIXSRC216_Ele,
+  MIXSRC216_Thr,
+  MIXSRC216_Ail,
+
+  MIXSRC216_FIRST_POT,
+#if defined(PCBTARANIS)
+  MIXSRC216_POT1 = MIXSRC216_FIRST_POT,
+  MIXSRC216_POT2,
+  MIXSRC216_POT3,
+  MIXSRC216_SLIDER1,
+  MIXSRC216_SLIDER2,
+  MIXSRC216_LAST_POT = MIXSRC216_SLIDER2,
+#else
+  MIXSRC216_P1 = MIXSRC216_FIRST_POT,
+  MIXSRC216_P2,
+  MIXSRC216_P3,
+  MIXSRC216_LAST_POT = MIXSRC216_P3,
+#endif
+
+#if defined(PCBSKY9X)
+  MIXSRC216_REa,
+  MIXSRC216_LAST_ROTARY_ENCODER = MIXSRC216_REa,
+#endif
+
+  MIXSRC216_MAX,
+
+  MIXSRC216_CYC1,
+  MIXSRC216_CYC2,
+  MIXSRC216_CYC3,
+
+  MIXSRC216_TrimRud,
+  MIXSRC216_TrimEle,
+  MIXSRC216_TrimThr,
+  MIXSRC216_TrimAil,
+
+  MIXSRC216_FIRST_SWITCH,
+
+#if defined(PCBTARANIS)
+  MIXSRC216_SA = MIXSRC216_FIRST_SWITCH,
+  MIXSRC216_SB,
+  MIXSRC216_SC,
+  MIXSRC216_SD,
+  MIXSRC216_SE,
+  MIXSRC216_SF,
+  MIXSRC216_SG,
+  MIXSRC216_SH,
+#else
+  MIXSRC216_3POS = MIXSRC216_FIRST_SWITCH,
+  MIXSRC216_THR,
+  MIXSRC216_RUD,
+  MIXSRC216_ELE,
+  MIXSRC216_AIL,
+  MIXSRC216_GEA,
+  MIXSRC216_TRN,
+#endif
+  MIXSRC216_FIRST_LOGICAL_SWITCH,
+  MIXSRC216_SW1 = MIXSRC216_FIRST_LOGICAL_SWITCH,
+  MIXSRC216_SW9 = MIXSRC216_SW1 + 8,
+  MIXSRC216_SWA,
+  MIXSRC216_SWB,
+  MIXSRC216_SWC,
+  MIXSRC216_LAST_LOGICAL_SWITCH = MIXSRC216_FIRST_LOGICAL_SWITCH+NUM_LOGICAL_SWITCH-1,
+
+  MIXSRC216_FIRST_TRAINER,
+  MIXSRC216_LAST_TRAINER = MIXSRC216_FIRST_TRAINER+NUM_TRAINER-1,
+
+  MIXSRC216_FIRST_CH,
+  MIXSRC216_CH1 = MIXSRC216_FIRST_CH,
+  MIXSRC216_CH2,
+  MIXSRC216_CH3,
+  MIXSRC216_CH4,
+  MIXSRC216_CH5,
+  MIXSRC216_CH6,
+  MIXSRC216_CH7,
+  MIXSRC216_CH8,
+  MIXSRC216_CH9,
+  MIXSRC216_CH10,
+  MIXSRC216_CH11,
+  MIXSRC216_CH12,
+  MIXSRC216_CH13,
+  MIXSRC216_CH14,
+  MIXSRC216_CH15,
+  MIXSRC216_CH16,
+  MIXSRC216_LAST_CH = MIXSRC216_CH1+NUM_CHNOUT-1,
+
+  MIXSRC216_GVAR1,
+  MIXSRC216_LAST_GVAR = MIXSRC216_GVAR1+MAX_GVARS-1,
+
+  MIXSRC216_FIRST_TELEM,
+};
+
+
 enum Telemetry216Source {
   TELEM216_NONE,
   TELEM216_TX_VOLTAGE,
@@ -441,7 +545,7 @@ PACK(typedef struct {
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
 
-  swstate_t switchWarningStates;
+  swarnstate_t switchWarningState;
 
   char gvar_names[5][LEN_GVAR_NAME];
 
@@ -503,8 +607,8 @@ PACK(typedef struct {
   AVR_FIELD(int8_t ppmFrameLength)     // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
 
-  swstate_t switchWarningStates;
-  uint8_t nSwToWarn;
+  swarnstate_t switchWarningState;
+  uint8_t switchWarningEnable;
 
   global_gvar_t gvars[MAX_GVARS];
 
@@ -657,17 +761,17 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
   if (source > 0)
     source += MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
   // S3 added
-  if (source > MIXSRC_POT2)
+  if (source > MIXSRC216_POT2)
     source += 1;
   // PPM9-PPM16 added
-  if (source > MIXSRC_FIRST_TRAINER+7)
+  if (source > MIXSRC216_FIRST_TRAINER+7)
     source += 8;
   // 4 GVARS added
-  if (source > MIXSRC_GVAR1+4)
+  if (source > MIXSRC216_GVAR1+4)
     source += 4;
   // Telemetry conversions
-  if (source >= MIXSRC_FIRST_TELEM)
-    source = MIXSRC_FIRST_TELEM + ConvertTelemetrySource_215_to_216(source-MIXSRC_FIRST_TELEM+1) - 1;
+  if (source >= MIXSRC216_FIRST_TELEM)
+    source = MIXSRC216_FIRST_TELEM + ConvertTelemetrySource_215_to_216(source-MIXSRC216_FIRST_TELEM+1) - 1;
 
   return source;
 }
@@ -695,14 +799,14 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
   if (insertZero)
     source += 1;
   // PPM9-PPM16 added
-  if (source > MIXSRC_FIRST_TRAINER+7)
+  if (source > MIXSRC216_FIRST_TRAINER+7)
     source += 8;
   // 4 GVARS added
-  if (source > MIXSRC_GVAR1+4)
+  if (source > MIXSRC216_GVAR1+4)
     source += 4;
   // Telemetry conversions
-  if (source >= MIXSRC_FIRST_TELEM)
-    source = MIXSRC_FIRST_TELEM + ConvertTelemetrySource_215_to_216(source-MIXSRC_FIRST_TELEM+1) - 1;
+  if (source >= MIXSRC216_FIRST_TELEM)
+    source = MIXSRC216_FIRST_TELEM + ConvertTelemetrySource_215_to_216(source-MIXSRC216_FIRST_TELEM+1) - 1;
 
   return source;
 }
@@ -724,8 +828,31 @@ int ConvertSwitch_215_to_216(int swtch)
 }
 #endif
 
+#if defined(PCBTARANIS)
+int ConvertSwitch_216_to_217(int swtch)
+{
+  if (swtch < 0)
+    return -ConvertSwitch_216_to_217(-swtch);
+
+  if (swtch >= SWSRC_SI0)
+    swtch += 12;
+
+  return swtch;
+}
+#else
+int ConvertSwitch_216_to_217(int swtch)
+{
+  return swtch;
+}
+#endif
+
 int ConvertSource_216_to_217(int source)
 {
+#if defined(PCBTARANIS)
+  // SI to SN switches added
+  if (source >= MIXSRC_SI)
+    source += 6;
+#endif
   // Telemetry conversions
   if (source >= MIXSRC_FIRST_TELEM)
     source = 0;
@@ -882,7 +1009,7 @@ void ConvertModel_215_to_216(ModelData &model)
       for (uint8_t j=chn+1; j<NUM_STICKS; j++) {
         indexes[j] = i+1;
       }
-      expo->srcRaw = MIXSRC_Rud+chn;
+      expo->srcRaw = MIXSRC216_Rud+chn;
       expo->chn = chn;
       expo->mode = oldExpo->mode;
       expo->swtch = ConvertSwitch_215_to_216(oldExpo->swtch);
@@ -925,7 +1052,7 @@ void ConvertModel_215_to_216(ModelData &model)
       ExpoData_v216 * expo = &newModel.expoData[idx];
       memmove(expo+1, expo, (MAX_EXPOS-(idx+1))*sizeof(ExpoData_v216));
       memclear(expo, sizeof(ExpoData_v216));
-      expo->srcRaw = MIXSRC_Rud + i;
+      expo->srcRaw = MIXSRC216_Rud + i;
       expo->chn = i;
       expo->weight = 100;
       expo->curve.type = CURVE_REF_EXPO;
@@ -974,41 +1101,41 @@ void ConvertModel_215_to_216(ModelData &model)
     else if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
       sw.v1 = ConvertSource_215_to_216(sw.v1);
       if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_DIFF) {
-        if ((uint8_t)sw.v1 >= MIXSRC_FIRST_TELEM) {
+        if ((uint8_t)sw.v1 >= MIXSRC216_FIRST_TELEM) {
           switch ((uint8_t)sw.v1) {
-            case MIXSRC_FIRST_TELEM + TELEM216_TIMER1-1:
-            case MIXSRC_FIRST_TELEM + TELEM216_TIMER2-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_TIMER1-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_TIMER2-1:
               sw.v2 = (sw.v2+128) * 3;
               break;
-            case MIXSRC_FIRST_TELEM + TELEM216_ALT-1:
-            case MIXSRC_FIRST_TELEM + TELEM216_GPSALT-1:
-            case MIXSRC_FIRST_TELEM + TELEM216_MIN_ALT-1:
-            case MIXSRC_FIRST_TELEM + TELEM216_MAX_ALT-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_ALT-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_GPSALT-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_MIN_ALT-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_MAX_ALT-1:
               sw.v2 = (sw.v2+128) * 8 - 500;
               break;
-            case MIXSRC_FIRST_TELEM + TELEM216_RPM-1:
-            case MIXSRC_FIRST_TELEM + TELEM216_MAX_RPM-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_RPM-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_MAX_RPM-1:
               sw.v2 = (sw.v2+128) * 50;
               break;
-            case MIXSRC_FIRST_TELEM + TELEM216_T1-1:
-            case MIXSRC_FIRST_TELEM + TELEM216_T2-1:
-            case MIXSRC_FIRST_TELEM + TELEM216_MAX_T1-1:
-            case MIXSRC_FIRST_TELEM + TELEM216_MAX_T2-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_T1-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_T2-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_MAX_T1-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_MAX_T2-1:
               sw.v2 = (sw.v2+128) + 30;
               break;
-            case MIXSRC_FIRST_TELEM + TELEM216_CELL-1:
-            case MIXSRC_FIRST_TELEM + TELEM216_HDG-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_CELL-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_HDG-1:
               sw.v2 = (sw.v2+128) * 2;
               break;
-            case MIXSRC_FIRST_TELEM + TELEM216_DIST-1:
-            case MIXSRC_FIRST_TELEM + TELEM216_MAX_DIST-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_DIST-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_MAX_DIST-1:
               sw.v2 = (sw.v2+128) * 8;
               break;
-            case MIXSRC_FIRST_TELEM + TELEM216_CURRENT-1:
-            case MIXSRC_FIRST_TELEM + TELEM216_POWER-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_CURRENT-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_POWER-1:
               sw.v2 = (sw.v2+128) * 5;
               break;
-            case MIXSRC_FIRST_TELEM + TELEM216_CONSUMPTION-1:
+            case MIXSRC216_FIRST_TELEM + TELEM216_CONSUMPTION-1:
               sw.v2 = (sw.v2+128) * 20;
               break;
             default:
@@ -1127,8 +1254,8 @@ void ConvertModel_215_to_216(ModelData &model)
   if (newModel.thrTraceSrc >= THROTTLE_SOURCE_S3)
     newModel.thrTraceSrc += 1;
 #endif
-  newModel.switchWarningStates = oldModel.switchWarningStates >> 1;
-  newModel.nSwToWarn = (oldModel.switchWarningStates & 0x01) ? 0xFF : 0;
+  newModel.switchWarningState = oldModel.switchWarningState >> 1;
+  newModel.switchWarningEnable = (oldModel.switchWarningState & 0x01) ? 0xFF : 0;
   for (uint8_t i=0; i<5; i++) {
     memcpy(newModel.gvars[i].name, oldModel.gvar_names[i], LEN_GVAR_NAME);
   }
@@ -1223,7 +1350,7 @@ void ConvertModel_216_to_217(ModelData &model)
     newModel.mixData[i].carryTrim = oldModel.mixData[i].carryTrim;
     newModel.mixData[i].mixWarn = oldModel.mixData[i].mixWarn;
     newModel.mixData[i].weight = ConvertGVar_216_to_217(oldModel.mixData[i].weight);
-    newModel.mixData[i].swtch = oldModel.mixData[i].swtch;
+    newModel.mixData[i].swtch = ConvertSwitch_216_to_217(oldModel.mixData[i].swtch);
 #if defined(PCBTARANIS)
     newModel.mixData[i].curve = oldModel.mixData[i].curve;
 #else
@@ -1265,7 +1392,7 @@ void ConvertModel_216_to_217(ModelData &model)
     newModel.expoData[i].curveParam = oldModel.expoData[i].curveParam;
 #endif
     newModel.expoData[i].chn = oldModel.expoData[i].chn;
-    newModel.expoData[i].swtch = oldModel.expoData[i].swtch;
+    newModel.expoData[i].swtch = ConvertSwitch_216_to_217(oldModel.expoData[i].swtch);
     newModel.expoData[i].flightModes = oldModel.expoData[i].flightModes;
     newModel.expoData[i].weight = oldModel.expoData[i].weight;
     newModel.expoData[i].mode = oldModel.expoData[i].mode;
@@ -1302,8 +1429,8 @@ void ConvertModel_216_to_217(ModelData &model)
 
   memcpy(newModel.flightModeData, oldModel.flightModeData, sizeof(newModel.flightModeData));
   newModel.thrTraceSrc = oldModel.thrTraceSrc;
-  newModel.switchWarningStates = oldModel.switchWarningStates;
-  newModel.nSwToWarn = oldModel.nSwToWarn;
+  newModel.switchWarningState = oldModel.switchWarningState;
+  newModel.switchWarningEnable = oldModel.switchWarningEnable;
   memcpy(newModel.gvars, oldModel.gvars, sizeof(newModel.gvars));
 
   memcpy(&newModel.frsky.rssiAlarms, &oldModel.frsky.rssiAlarms, sizeof(newModel.frsky.rssiAlarms));
