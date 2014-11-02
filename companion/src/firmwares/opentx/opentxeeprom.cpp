@@ -1220,23 +1220,39 @@ class LimitField: public StructField {
     template <int shift>
     static int exportLimitValue(int value)
     {
-      if (value > 10000)
-        return 4095 + value - 10000;
-      else if (value < -10000)
-        return -4096 + value + 10000;
-      else
-        return value + shift;
+      const int GV1 = 4096;
+      if (value > 10000) {
+        return -GV1 + value - 10001;
+      }
+      if (value < -10000) {
+        return GV1 + value + 10000;
+      }
+      return value + shift;
     }
 
     template <int shift>
     static int importLimitValue(int value)
     {
-      if (value > 4095)
-        return 10000 + value - 4095;
-      else if (value < -4096)
-        return -10000 + value + 4096;
-      else
-        return value - shift;
+      /* GVARS mapping on radio:
+        GV1 = -4096
+        GV9 = -4088
+        -GV1 = 4095
+        -GV9 = 4087
+      */
+      const int GV1 = 4096;
+      if (value >= GV1) {
+        return 10001 + value - GV1;
+      }
+      if (value >= GV1-9) {
+        return -10000 + value - GV1;
+      }
+      if (value < -GV1) {
+        return -10000 + value + GV1 + 1;
+      }
+      if (value < -GV1+9) {
+        return 10000 + value + GV1 + 1;
+      }
+      return value - shift;
     }
 
     LimitField(LimitData & limit, BoardEnum board, unsigned int version):
