@@ -331,7 +331,7 @@ enum uartModes {
   #define EXTRA_GENERAL_FIELDS
 #endif
 
-PACK(typedef struct t_ModuleData {
+PACK(typedef struct {
   int8_t  rfProtocol;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
@@ -1830,7 +1830,8 @@ PACK(typedef struct {
   ARM_FIELD(uint8_t   telemetryProtocol:3)
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   AVR_FIELD(int8_t    ppmNCH:4)
-  ARM_FIELD(int8_t    spare2:4)
+  ARM_FIELD(uint8_t   noGlobalFunctions:1)
+  ARM_FIELD(int8_t    spare2:3)
   int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
   ARM_FIELD(uint8_t displayChecklist:1)

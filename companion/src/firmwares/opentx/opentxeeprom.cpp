@@ -2630,10 +2630,13 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
 
   internalField.Append(new BoolField<1>(modelData.thrTrim));
 
-  if (IS_TARANIS(board) || (IS_ARM(board) && version >= 216))
+  if (IS_TARANIS(board) || (IS_ARM(board) && version >= 216)) {
+    internalField.Append(new BoolField<1>(modelData.noGlobalFunctions));
     internalField.Append(new SpareBitsField<4>());
-  else
+  }
+  else {
     internalField.Append(new ConversionField< SignedField<4> >(modelData.moduleData[0].channelsCount, &channelsConversionTable, "Channels number", ::QObject::tr("OpenTX doesn't allow this number of channels")));
+  }
 
   if (version >= 216)
     internalField.Append(new SignedField<3>(modelData.trimInc));

@@ -1041,7 +1041,9 @@ void evalMixes(uint8_t tick10ms)
 #endif
 
 #if defined(CPUARM)
-    evalFunctions(g_eeGeneral.customFn, globalFunctionsContext);
+    if (!g_model.noGlobalFunctions) {
+      evalFunctions(g_eeGeneral.customFn, globalFunctionsContext);
+    }
     evalFunctions(g_model.customFn, modelFunctionsContext);
 #else
     evalFunctions();

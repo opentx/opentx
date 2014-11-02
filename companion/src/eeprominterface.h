@@ -887,6 +887,7 @@ class ModelData {
     bool      used;
     char      name[12+1];
     TimerData timers[C9X_MAX_TIMERS];
+    bool      noGlobalFunctions;
     bool      thrTrim;            // Enable Throttle Trim
     int       trimInc;            // Trim Increments
     bool      disableThrottleWarning;
