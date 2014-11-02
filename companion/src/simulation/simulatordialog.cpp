@@ -298,7 +298,7 @@ void SimulatorDialog::initUi(T * ui)
       for (int j=0; j<8; j++){
         int axe = g.joystick[j].stick_axe();
         if (axe>=0 && axe<8) {
-          jsmap[axe]=j;
+          jsmap[axe]=j+1;
           jscal[axe][0] = g.joystick[j].stick_min();
           jscal[axe][1] = g.joystick[j].stick_med();
           jscal[axe][2] = g.joystick[j].stick_max();
@@ -987,37 +987,28 @@ void SimulatorDialog::onjoystickAxisValueChanged(int axis, int value)
     if (jscal[axis][3]==1) {
        stickval*=-1;
     }
-    if (stick==1 || stick==2) {
-      float currX=nodeRight->getX();
-      float currY=nodeRight->getY();
-      if (stick==1 ) {
-         nodeRight->setPos(currX*100-10,-stickval*100/1024-10);
-      } 
-      if (stick==2) {
-        nodeRight->setPos(stickval*100/1024-10,currY*100-10);
-      } 
-    }
-    else if (stick==3 || stick==4) {
-      float currX=nodeLeft->getX();
-      float currY=nodeLeft->getY();
-      if (stick==3) {
-        nodeLeft->setPos(currX*100-10,-stickval*100/1024-10);
-      } 
-      if (stick==4) {
-        nodeLeft->setPos(stickval*100/1024-10,currY*100-10);
-      } 
-    }
-
-    if (stick==5) {
+    if (stick==1 ) {
+       nodeRight->setY(-stickval/1024.0);
+    } 
+    else if (stick==2) {
+      nodeRight->setX(stickval/1024.0);
+    } 
+    else if (stick==3) {
+      nodeLeft->setY(-stickval/1024.0);
+    } 
+    else if (stick==4) {
+      nodeLeft->setX(stickval/1024.0);
+    } 
+    else if (stick==5) {
       dialP_1->setValue(stickval);
     }
-    if (stick==6) {
+    else if (stick==6) {
       dialP_2->setValue(stickval);
     }
-    if (stick==7) {
+    else if (stick==7) {
       dialP_3->setValue(stickval);
     }
-    if (stick==8 && dialP_4) {
+    else if (stick==8 && dialP_4) {
       dialP_4->setValue(stickval);
     }
   }

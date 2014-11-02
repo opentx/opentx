@@ -72,6 +72,8 @@ class Node : public QGraphicsObject
     int  getBallSize() {return ballSize;}
     qreal getX();
     qreal getY();
+    void setX(qreal newX);
+    void setY(qreal newX);
 
     void setCenteringX(bool val) {centerX = val;}
     void setCenteringY(bool val) {centerY = val;}
