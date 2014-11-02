@@ -137,8 +137,9 @@ void joystickDialog::on_okButton_clicked() {
   QCheckBox * ib[]={ui->ChInv_1, ui->ChInv_2, ui->ChInv_3, ui->ChInv_4, ui->ChInv_5, ui->ChInv_6, ui->ChInv_7, ui->ChInv_8};
   foreach(QComboBox *cb, findChildren<QComboBox *>(QRegExp("jsmapCB_[0-9]+"))) {
     int axe=cb->objectName().mid(cb->objectName().lastIndexOf("_")+1).toInt()-1;
-    int stick=cb->currentIndex();
-    if (stick > 0) {
+    int stick=cb->currentIndex() - 1;
+    qDebug() << "joystick mapping " << cb->objectName() <<"axe:" << axe << "stick:" << stick;
+    if (stick >= 0) {
       g.joystick[stick].stick_axe( axe );
       g.joystick[stick].stick_max( jscal[axe][2] );
       g.joystick[stick].stick_med( jscal[axe][1] );
