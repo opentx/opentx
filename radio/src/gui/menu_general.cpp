@@ -1261,7 +1261,7 @@ void menuGeneralDiagKeys(uint8_t event)
 
     if (i<8) {
       y = MENU_TITLE_HEIGHT + FH*3 + FH*(i/2);
-      lcd_img(14*FW, y, sticks, i/2, 0);
+      if (i&1) lcd_img(14*FW, y, sticks, i/2, 0);
       displayKeyState(i&1? 20*FW : 18*FW, y, (EnumKeys)(TRM_BASE+i));
     }
 
