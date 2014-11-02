@@ -122,6 +122,15 @@ qreal Node::getX()
     return 0;
 }
 
+void Node::setX(qreal newX)
+{
+    if(scene())
+    {
+        QRectF rect = scene()->sceneRect();
+        QGraphicsObject::setX(rect.left() + (newX+1) * rect.width()/2);
+    }
+}
+
 qreal Node::getY()
 {
     if(scene())
@@ -130,6 +139,15 @@ qreal Node::getY()
         return 1+((y()-rect.bottom())*2/rect.height());
     }
     return 0;
+}
+
+void Node::setY(qreal newY)
+{
+    if(scene())
+    {
+        QRectF rect = scene()->sceneRect();
+        QGraphicsObject::setY(rect.top() + (newY+1) * rect.height()/2);
+    }
 }
 
 QList<Edge *> Node::edges() const
