@@ -680,7 +680,7 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
     b->setCurrentIndex(value);
   }
   else if (function==FuncVolume) {
-    populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_TRIMS);
+    populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_TRIMS);
   }
   else if (function==FuncPlayValue) {
     populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRYEXT);
