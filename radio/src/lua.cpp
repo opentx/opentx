@@ -616,6 +616,15 @@ static int luaModelSetTimer(lua_State *L)
   return 0;
 }
 
+static int luaModelResetTimer(lua_State *L)
+{
+  int idx = luaL_checkunsigned(L, 1);
+  if (idx < MAX_TIMERS) {
+    timerReset(idx);
+  }
+  return 0;
+}
+
 static int getFirstInput(int chn)
 {
   for (int i=0; i<MAX_INPUTS; i++) {
@@ -1464,6 +1473,7 @@ const luaL_Reg modelLib[] = {
   { "setInfo", luaModelSetInfo },
   { "getTimer", luaModelGetTimer },
   { "setTimer", luaModelSetTimer },
+  { "resetTimer", luaModelResetTimer },
   { "getInputsCount", luaModelGetInputsCount },
   { "getInput", luaModelGetInput },
   { "insertInput", luaModelInsertInput },
