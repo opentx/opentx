@@ -31,7 +31,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
     ui->offsetCB->hide();
   }
 
-  curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve, firmware->getCapability(HasInputDiff) ? 0 : HIDE_DIFF);
+  curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve, firmware->getCapability(HasInputDiff) ? 0 : (HIDE_DIFF | HIDE_NEGATIVE_CURVES));
 
   populateSwitchCB(ui->switchesCB, ed->swtch, generalSettings, MixesContext);
 
