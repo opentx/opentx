@@ -273,11 +273,13 @@ void CurveGroup::update()
         if (lastType != curve.type) {
           lastType = curve.type;
           curveValueCB->clear();
-          for (int i=-numcurves; i<=numcurves; i++) {
-            curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString());
+          for (int i= ((flags & HIDE_NEGATIVE_CURVES) ? 0 : -numcurves); i<=numcurves; i++) {
+            curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString(), i);
+            if (i == curve.value) {
+              curveValueCB->setCurrentIndex(curveValueCB->count() - 1);
+            }
           }
         }
-        curveValueCB->setCurrentIndex(curve.value+numcurves);
         break;
       }
       default:
@@ -344,7 +346,7 @@ void CurveGroup::valuesChanged()
         curve = CurveReference(CurveReference::CURVE_REF_FUNC, curveValueCB->currentIndex());
         break;
       case 3:
-        curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, curveValueCB->currentIndex() - GetCurrentFirmware()->getCapability(NumCurves));
+        curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, curveValueCB->itemData(curveValueCB->currentIndex()).toInt());
         break;
     }
 
