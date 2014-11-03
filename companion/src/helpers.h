@@ -57,6 +57,9 @@ class GVarGroup: public QObject {
     bool lock;
 };
 
+#define HIDE_DIFF  1
+#define HIDE_EXPO  2
+
 class CurveGroup : public QObject {
 
   Q_OBJECT

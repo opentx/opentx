@@ -209,10 +209,10 @@ CurveGroup::CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox
   lock(false),
   lastType(-1)
 {
-  curveTypeCB->addItem(tr("Diff"));
-  curveTypeCB->addItem(tr("Expo"));
-  curveTypeCB->addItem(tr("Func"));
-  curveTypeCB->addItem(tr("Curve"));
+  if (!(flags & HIDE_DIFF)) curveTypeCB->addItem(tr("Diff"), 0);
+  if (!(flags & HIDE_EXPO)) curveTypeCB->addItem(tr("Expo"), 1);
+  curveTypeCB->addItem(tr("Func"), 2);
+  curveTypeCB->addItem(tr("Curve"), 3);
 
   curveValueCB->setMaxVisibleItems(10);
 
@@ -228,7 +228,9 @@ void CurveGroup::update()
 {
   lock = true;
 
-  curveTypeCB->setCurrentIndex(curve.type);
+  int found = curveTypeCB->findData(curve.type);
+  if (found < 0) found = 0;
+  curveTypeCB->setCurrentIndex(found);
 
   if (curve.type == CurveReference::CURVE_REF_DIFF || curve.type == CurveReference::CURVE_REF_EXPO) {
     curveGVarCB->show();
@@ -303,7 +305,8 @@ void CurveGroup::gvarCBChanged(int state)
 void CurveGroup::typeChanged(int value)
 {
   if (!lock) {
-    switch (value) {
+    int type = curveTypeCB->itemData(curveTypeCB->currentIndex()).toInt();
+    switch (type) {
       case 0:
         curve = CurveReference(CurveReference::CURVE_REF_DIFF, 0);
         break;
@@ -325,7 +328,7 @@ void CurveGroup::typeChanged(int value)
 void CurveGroup::valuesChanged()
 {
   if (!lock) {
-    switch (curveTypeCB->currentIndex()) {
+    switch (curveTypeCB->itemData(curveTypeCB->currentIndex()).toInt()) {
       case 0:
       case 1:
       {
@@ -334,7 +337,7 @@ void CurveGroup::valuesChanged()
           value = curveValueCB->itemData(curveValueCB->currentIndex()).toInt();
         else
           value = curveValueSB->value();
-        curve = CurveReference(curveTypeCB->currentIndex() == 0 ? CurveReference::CURVE_REF_DIFF : CurveReference::CURVE_REF_EXPO, value);
+        curve = CurveReference(curveTypeCB->itemData(curveTypeCB->currentIndex()).toInt() == 0 ? CurveReference::CURVE_REF_DIFF : CurveReference::CURVE_REF_EXPO, value);
         break;
       }
       case 2:
