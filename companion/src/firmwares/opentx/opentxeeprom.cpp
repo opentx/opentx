@@ -1030,7 +1030,12 @@ class MixField: public TransformedField {
         _destCh = mix.destCh - 1;
         if (mix.curve.type == CurveReference::CURVE_REF_CUSTOM) {
           _curveMode = true;
-          _curveParam = 6 + mix.curve.value;
+          if (mix.curve.value > 0) {
+            _curveParam = 6 + mix.curve.value;
+          }
+          else {
+            _curveParam = mix.curve.value;
+          }
         }
         else if (mix.curve.type == CurveReference::CURVE_REF_FUNC) {
           _curveMode = true;
