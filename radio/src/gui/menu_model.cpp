@@ -2382,11 +2382,11 @@ void DrawFunction(FnFuncP fn, uint8_t offset=0)
   lcd_vlineStip(X0-offset, 0, LCD_H, 0xee);
   lcd_hlineStip(X0-WCHART-offset, Y0, WCHART*2, 0xee);
 
-  uint8_t prev_yv = 255;
+  coord_t prev_yv = (coord_t)-1;
 
   for (int8_t xv=-WCHART; xv<=WCHART; xv++) {
     coord_t yv = (LCD_H-1) - (((uint16_t)RESX + fn(xv * (RESX/WCHART))) / 2 * (LCD_H-1) / RESX);
-    if (prev_yv != 255) {
+    if (prev_yv != (coord_t)-1) {
       if (abs((int8_t)yv-prev_yv) <= 1) {
         lcd_plot(X0+xv-offset-1, prev_yv, FORCE);
       }
