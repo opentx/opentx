@@ -167,6 +167,8 @@ set(companion_SRCS
   qcustomplot.cpp
   wizarddata.cpp
   wizarddialog.cpp
+  foldersync.cpp
+  hexspinbox.cpp
 )
 
 set(companion_MOC_HDRS
@@ -192,6 +194,7 @@ set(companion_MOC_HDRS
   qautocombobox.h
   helpers.h
   wizarddialog.h
+  hexspinbox.h
 )
      
 set(companion_UIS
