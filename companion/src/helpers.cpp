@@ -258,7 +258,7 @@ void CurveGroup::update()
   curveTypeCB->setCurrentIndex(found);
 
   if (curve.type == CurveReference::CURVE_REF_DIFF || curve.type == CurveReference::CURVE_REF_EXPO) {
-    curveGVarCB->show();
+    curveGVarCB->setVisible(GetCurrentFirmware()->getCapability(Gvars));
     if (curve.value > 100 || curve.value < -100) {
       curveGVarCB->setChecked(true);
       if (lastType != CurveReference::CURVE_REF_DIFF && lastType != CurveReference::CURVE_REF_EXPO) {
