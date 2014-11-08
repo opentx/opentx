@@ -89,7 +89,7 @@ add_custom_command(
 
 add_custom_command(
   OUTPUT ${RADIO_SRC_DIRECTORY}/lua_exports.inc
-  COMMAND make lua_exports.cpp
+  COMMAND make PCB=TARANIS lua_exports.cpp
   DEPENDS ${RADIO_SRC_DIRECTORY}/myeeprom.h
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
