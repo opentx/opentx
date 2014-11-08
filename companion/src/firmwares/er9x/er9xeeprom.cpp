@@ -466,7 +466,6 @@ t_Er9xModelData::operator ModelData ()
 
   c9x.frsky = frsky;
   c9x.frsky.usrProto=FrSkyUsrProto;
-  c9x.frsky.FrSkyGpsAlt=FrSkyGpsAlt;
   return c9x;
 }
 

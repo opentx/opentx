@@ -58,34 +58,6 @@ enum PolishPrompts {
   PL_PROMPT_SECONDS = PL_PROMPT_UNITS_BASE+(UNIT_SECONDS*4),
   PL_PROMPT_RPMS = PL_PROMPT_UNITS_BASE+(UNIT_RPMS*4),
   PL_PROMPT_G = PL_PROMPT_UNITS_BASE+(UNIT_G*4),
- 
-  PL_PROMPT_LABELS_BASE = 250,
-  PL_PROMPT_TIMER1 = PL_PROMPT_LABELS_BASE+TELEM_TIMER1,
-  PL_PROMPT_TIMER2 = PL_PROMPT_LABELS_BASE+TELEM_TIMER2,
-  PL_PROMPT_RSSI_TX = PL_PROMPT_LABELS_BASE+TELEM_RSSI_TX,
-  PL_PROMPT_RSSI_RX = PL_PROMPT_LABELS_BASE+TELEM_RSSI_RX,
-  PL_PROMPT_A1 = PL_PROMPT_LABELS_BASE+TELEM_A1,
-  PL_PROMPT_A2 = PL_PROMPT_LABELS_BASE+TELEM_A2,
-  PL_PROMPT_ALTITUDE = PL_PROMPT_LABELS_BASE+TELEM_ALT,
-  PL_PROMPT_RPM = PL_PROMPT_LABELS_BASE+TELEM_RPM,
-  PL_PROMPT_ESSENCE = PL_PROMPT_LABELS_BASE+TELEM_FUEL,
-  PL_PROMPT_T1 = PL_PROMPT_LABELS_BASE+TELEM_T1,
-  PL_PROMPT_T2 = PL_PROMPT_LABELS_BASE+TELEM_T2,
-  PL_PROMPT_VITESSE = PL_PROMPT_LABELS_BASE+TELEM_SPEED,
-  PL_PROMPT_DISTANCE = PL_PROMPT_LABELS_BASE+TELEM_DIST,
-  PL_PROMPT_GPSALTITUDE = PL_PROMPT_LABELS_BASE+TELEM_GPSALT,
-  PL_PROMPT_ELEMENTS_LIPO = PL_PROMPT_LABELS_BASE+TELEM_CELL,
-  PL_PROMPT_TOTAL_LIPO = PL_PROMPT_LABELS_BASE+TELEM_CELLS_SUM,
-  PL_PROMPT_VFAS = PL_PROMPT_LABELS_BASE+TELEM_VFAS,
-  PL_PROMPT_COURANT = PL_PROMPT_LABELS_BASE+TELEM_CURRENT,
-  PL_PROMPT_CONSOMMATION = PL_PROMPT_LABELS_BASE+TELEM_CONSUMPTION,
-  PL_PROMPT_PUISSANCE = PL_PROMPT_LABELS_BASE+TELEM_POWER,
-  PL_PROMPT_ACCELx = PL_PROMPT_LABELS_BASE+TELEM_ACCx,
-  PL_PROMPT_ACCELy = PL_PROMPT_LABELS_BASE+TELEM_ACCy,
-  PL_PROMPT_ACCELz = PL_PROMPT_LABELS_BASE+TELEM_ACCz,
-  PL_PROMPT_HDG = PL_PROMPT_LABELS_BASE+TELEM_HDG,
-  PL_PROMPT_VARIO = PL_PROMPT_LABELS_BASE+TELEM_VSPEED,
- 
 };
 
 #if defined(VOICE)
@@ -126,6 +98,7 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -number;
   }
 
+#if !defined(CPUARM)
   if (unit) {
     unit--;
     convertUnit(number, unit);
@@ -137,31 +110,33 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     	unit = UNIT_KTS;
       }
     }
-#if defined(CPUARM)
-    if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_DIST && number >= 100))) {
-      number = div10_and_round(number);
-      att -= PREC1;
-    }
-#endif
     unit++;
   }
+#endif
 
   int8_t mode = MODE(att);
   if (mode > 0) {
+#if defined(CPUARM)
+    if (mode == 2) {
+      number /= 10;
+    }
+#else
     // we assume that we are PREC1
+#endif
     div_t qr = div(number, 10);   
-      if (qr.rem) {
-        PLAY_NUMBER(qr.quot, 0, ZENSKI);
-        if (qr.quot == 0)
-          PUSH_NUMBER_PROMPT(PL_PROMPT_CALA);
-        else
-          PL_PUSH_UNIT_PROMPT(qr.quot, PL_PROMPT_CALA);
-        PLAY_NUMBER(qr.rem, 0, ZENSKI);
-        PUSH_NUMBER_PROMPT(PL_PROMPT_UNITS_BASE+((unit-1)*4)+3);
-        return;
-      }
+    if (qr.rem) {
+      PLAY_NUMBER(qr.quot, 0, ZENSKI);
+      if (qr.quot == 0)
+        PUSH_NUMBER_PROMPT(PL_PROMPT_CALA);
       else
-        number = qr.quot;
+        PL_PUSH_UNIT_PROMPT(qr.quot, PL_PROMPT_CALA);
+      PLAY_NUMBER(qr.rem, 0, ZENSKI);
+      PUSH_NUMBER_PROMPT(PL_PROMPT_UNITS_BASE+((unit-1)*4)+3);
+      return;
+    }
+    else {
+      number = qr.quot;
+    }
   }
 
   int16_t tmp = number;

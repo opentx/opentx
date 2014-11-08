@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include "eeprominterface.h"
-#include "helpers.h"
+#include "genericpanel.h"
 
 namespace Ui {
   class GeneralEdit;

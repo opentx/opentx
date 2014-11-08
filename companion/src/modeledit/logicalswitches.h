@@ -2,6 +2,7 @@
 #define CUSTOMSWITCHES_H
 
 #include "modeledit.h"
+#include "eeprominterface.h"
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QTimeEdit>

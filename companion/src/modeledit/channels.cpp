@@ -194,11 +194,9 @@ void Channels::symlimitsEdited()
 void Channels::nameEdited()
 {
   if (!lock) {
-    lock = true;
     QLineEdit *le = qobject_cast<QLineEdit*>(sender());
     int index = le->property("index").toInt();
     strcpy(model->limitData[index].name, le->text().toAscii());
-    lock = false;
     emit modified();
   }
 }

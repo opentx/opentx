@@ -130,61 +130,25 @@ static int luaGetDateTime(lua_State *L)
 
 static void luaGetValueAndPush(int src)
 {
+  getvalue_t value = getValue(src);
+
   if (src >= MIXSRC_FIRST_TELEM && src <= MIXSRC_LAST_TELEM) {
+    src = (src-MIXSRC_FIRST_TELEM) / 3;
     // telemetry values
-   if ((src != MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) && !TELEMETRY_STREAMING()) {
+    if (TELEMETRY_STREAMING() && telemetryItems[src].isAvailable()) {
+      TelemetrySensor & telemetrySensor = g_model.telemetrySensors[src];
+      if (telemetrySensor.prec > 0)
+        lua_pushnumber(L, float(value)/(telemetrySensor.prec == 2 ? 100.0 : 10.0));
+      else
+        lua_pushinteger(L, value);
+    }
+    else {
       // telemetry not working, return zero for telemetry sources
-      // except for "tx voltage"
       lua_pushinteger(L, (int)0);
-      return;
     }
   }
-
-  int idx = src;
-  switch (src) {
-    case MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE:
-    case MIXSRC_FIRST_TELEM-1+TELEM_VFAS:
-    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_VFAS:
-    case MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM:
-    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_CELLS_SUM:
-    case MIXSRC_FIRST_TELEM-1+TELEM_CURRENT:
-    case MIXSRC_FIRST_TELEM-1+TELEM_MAX_CURRENT:
-    case MIXSRC_FIRST_TELEM-1+TELEM_ASPEED:
-    case MIXSRC_FIRST_TELEM-1+TELEM_MAX_ASPEED:
-      // these need to be divided by 10
-      lua_pushnumber(L, getValue(src)/10.0);
-      break;
-
-    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1:
-    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2:
-    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A3:
-    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A4:
-      idx -= TELEM_MIN_A1-TELEM_A1;
-      // no break
-    case MIXSRC_FIRST_TELEM-1+TELEM_A1:
-    case MIXSRC_FIRST_TELEM-1+TELEM_A2:
-    case MIXSRC_FIRST_TELEM-1+TELEM_A3:
-    case MIXSRC_FIRST_TELEM-1+TELEM_A4:
-      // convert raw Ax values to calibrated values
-      idx -= (MIXSRC_FIRST_TELEM+TELEM_A1-1);
-      lua_pushnumber(L, applyChannelRatio(idx, getValue(src))/100.0);
-      break;
-
-    case MIXSRC_FIRST_TELEM-1+TELEM_CELL:
-    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_CELL:
-    case MIXSRC_FIRST_TELEM-1+TELEM_ALT:
-    case MIXSRC_FIRST_TELEM-1+TELEM_ACCx:
-    case MIXSRC_FIRST_TELEM-1+TELEM_ACCy:
-    case MIXSRC_FIRST_TELEM-1+TELEM_ACCz:
-    case MIXSRC_FIRST_TELEM-1+TELEM_VSPEED:
-      // these need to be divided by 100
-      lua_pushnumber(L, getValue(src)/100.0);
-      break;
-
-    //TODO: add other values that need special treatment
-
-    default:
-      lua_pushinteger(L, getValue(src));
+  else {
+    lua_pushinteger(L, value);
   }
 }
 
@@ -244,6 +208,33 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags=
       }
     }
   }
+
+  // search in telemetry
+  field.desc[0] = '\0';
+  for (int i=0; i<TELEM_VALUES_MAX; i++) {
+    if (isTelemetryFieldAvailable(i)) {
+      char sensorName[TELEM_LABEL_LEN+1];
+      int len = zchar2str(sensorName, g_model.telemetrySensors[i].label, TELEM_LABEL_LEN);
+      if (!strncmp(sensorName, name, len)) {
+        if (name[len] == '\0') {
+          field.id = MIXSRC_FIRST_TELEM + 3*i;
+          field.desc[0] = '\0';
+          return true;
+        }
+        else if (name[len] == '-' && name[len+1] == '\0') {
+          field.id = MIXSRC_FIRST_TELEM + 3*i + 1;
+          field.desc[0] = '\0';
+          return true;
+        }
+        else if (name[len] == '+' && name[len+1] == '\0') {
+          field.id = MIXSRC_FIRST_TELEM + 3*i + 2;
+          field.desc[0] = '\0';
+          return true;
+        }
+      }
+    }
+  }
+
   return false;  // not found
 }
 
@@ -277,10 +268,6 @@ static int luaGetValue(lua_State *L)
     if (found) {
       src = field.id;
     }
-  }
-  if (src >= EXTRA_FIRST ) {
-    // one of the extra fields
-    return luaGetExtraValue(src);
   }
   luaGetValueAndPush(src);
   return 1;
@@ -434,7 +421,7 @@ static int luaLcdDrawChannel(lua_State *L)
   }
   int att = luaL_checkinteger(L, 4);
   getvalue_t value = getValue(channel);
-  putsTelemetryChannel(x, y, channel-MIXSRC_FIRST_TELEM, value, att);
+  putsTelemetryChannelValue(x, y, channel-MIXSRC_FIRST_TELEM, value, att);
   return 0;
 }
 
@@ -1202,120 +1189,6 @@ static int luaModelSetGlobalVariable(lua_State *L)
   return 0;
 }
 
-static int luaModelGetTelemetryChannel(lua_State *L)
-{
-  int idx = luaL_checkunsigned(L, 1);
-  if (idx < MAX_FRSKY_A_CHANNELS) {
-    FrSkyChannelData & channel = g_model.frsky.channels[idx];
-    lua_newtable(L);
-    double range = applyChannelRatio(idx, 255-channel.offset);
-    double offset = applyChannelRatio(idx, 0);
-    double alarm1 = applyChannelRatio(idx, channel.alarms_value[0]);
-    double alarm2 = applyChannelRatio(idx, channel.alarms_value[1]);
-    if (ANA_CHANNEL_UNIT(idx) >= UNIT_RAW) {
-      range /= 10;
-      offset /= 10;
-      alarm1 /= 10;
-      alarm2 /= 10;
-    }
-    else {
-      range /= 100;
-      offset /= 100;
-      alarm1 /= 100;
-      alarm2 /= 100;
-    }
-    lua_pushtablenumber(L, "range", range);
-    lua_pushtablenumber(L, "offset", offset);
-    lua_pushtablenumber(L, "alarm1", alarm1);
-    lua_pushtablenumber(L, "alarm2", alarm2);
-    lua_pushtableinteger(L, "unit", channel.type);
-  }
-  else {
-    lua_pushnil(L);
-  }
-  return 1;
-}
-
-int findmult(float value, float base)
-{
-  int vvalue = value*10;
-  int vbase = base*10;
-  vvalue--;
-
-  int mult = 0;
-  for (int i=8; i>=0; i--) {
-    if (vvalue/vbase >= (1<<i)) {
-      mult = i+1;
-      break;
-    }
-  }
-
-  return mult;
-}
-
-static int luaModelSetTelemetryChannel(lua_State *L)
-{
-  int idx = luaL_checkunsigned(L, 1);
-
-  if (idx < MAX_FRSKY_A_CHANNELS) {
-    FrSkyChannelData & channel = g_model.frsky.channels[idx];
-    double range = applyChannelRatio(idx, 255-channel.offset);
-    double offset = applyChannelRatio(idx, 0);
-    double alarm1 = applyChannelRatio(idx, channel.alarms_value[0]);
-    double alarm2 = applyChannelRatio(idx, channel.alarms_value[1]);
-    if (ANA_CHANNEL_UNIT(idx) >= UNIT_RAW) {
-      range /= 10;
-      offset /= 10;
-      alarm1 /= 10;
-      alarm2 /= 10;
-    }
-    else {
-      range /= 100;
-      offset /= 100;
-      alarm1 /= 100;
-      alarm2 /= 100;
-    }
-    luaL_checktype(L, -1, LUA_TTABLE);
-    for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-      luaL_checktype(L, -2, LUA_TSTRING); // key is string
-      const char * key = luaL_checkstring(L, -2);
-      if (!strcmp(key, "unit")) {
-        channel.type = luaL_checkinteger(L, -1);
-      }
-      else if (!strcmp(key, "range")) {
-        range = luaL_checknumber(L, -1);
-        double value = range;
-        if (ANA_CHANNEL_UNIT(idx) < UNIT_RAW) {
-          value *= 10;
-        }
-        channel.multiplier = findmult(value, 255);
-        channel.ratio = (int)(round(value)) / (1<<channel.multiplier);
-      }
-      else if (!strcmp(key, "offset")) {
-        offset = luaL_checknumber(L, -1);
-      }
-      else if (!strcmp(key, "alarm1")) {
-        alarm1 = luaL_checknumber(L, -1);
-      }
-      else if (!strcmp(key, "alarm2")) {
-        alarm2 = luaL_checknumber(L, -1);
-      }
-    }
-    if (range > 0) {
-      channel.offset = round((offset * 255) / range);
-      channel.alarms_value[0] = limit<int>(0, round((alarm1-offset)*255/range), 255);
-      channel.alarms_value[1] = limit<int>(0, round((alarm2-offset)*255/range), 255);
-    }
-    else {
-      channel.offset = 0;;
-      channel.alarms_value[0] = 0;
-      channel.alarms_value[1] = 0;
-    }
-    eeDirty(EE_MODEL);
-  }
-  return 0;
-}
-
 static int luaPopupInput(lua_State *L)
 {
   uint8_t event = luaL_checkinteger(L, 2);
@@ -1534,8 +1407,6 @@ const luaL_Reg modelLib[] = {
   { "setOutput", luaModelSetOutput },
   { "getGlobalVariable", luaModelGetGlobalVariable },
   { "setGlobalVariable", luaModelSetGlobalVariable },
-  { "getTelemetryChannel", luaModelGetTelemetryChannel },
-  { "setTelemetryChannel", luaModelSetTelemetryChannel },
   { NULL, NULL }  /* sentinel */
 };
 
@@ -1991,6 +1862,7 @@ void luaDoOneRunPermanentScript(uint8_t evt, int i)
         return;
       }
     }
+
     if (lua_pcall(L, inputsCount, sio ? sio->outputsCount : 0, 0) == 0) {
       if (sio) {
         for (int j=sio->outputsCount-1; j>=0; j--) {

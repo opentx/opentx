@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>626</width>
+    <width>675</width>
     <height>33</height>
    </rect>
   </property>
@@ -57,7 +57,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QUnsignedAutoComboBox" name="countdownBeep"/>
+    <widget class="AutoComboBox" name="countdownBeep"/>
    </item>
    <item>
     <widget class="QCheckBox" name="minuteBeep">
@@ -67,7 +67,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QUnsignedAutoComboBox" name="persistent"/>
+    <widget class="AutoComboBox" name="persistent"/>
    </item>
    <item>
     <widget class="QLabel" name="persistentValue">
@@ -93,9 +93,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QUnsignedAutoComboBox</class>
+   <class>AutoComboBox</class>
    <extends>QComboBox</extends>
-   <header>qautocombobox.h</header>
+   <header>autocombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -97,6 +97,7 @@ add_custom_command(
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}/../..
+  ${PROJECT_SOURCE_DIR}/shared
   ${SIMU_SRC_DIRECTORY}
   ${RADIO_SRC_DIRECTORY}
   ${RADIO_SRC_DIRECTORY}/fonts/std
@@ -104,6 +105,7 @@ include_directories(
   ${XSD_INCLUDE_DIR}
 )
 
+add_subdirectory(shared)
 add_subdirectory(modeledit)
 add_subdirectory(generaledit)
 add_subdirectory(simulation)
@@ -167,8 +169,6 @@ set(companion_SRCS
   qcustomplot.cpp
   wizarddata.cpp
   wizarddialog.cpp
-  foldersync.cpp
-  hexspinbox.cpp
 )
 
 set(companion_MOC_HDRS
@@ -191,10 +191,8 @@ set(companion_MOC_HDRS
   mainwindow.h
   radionotfound.h
   qcustomplot.h
-  qautocombobox.h
   helpers.h
   wizarddialog.h
-  hexspinbox.h
 )
      
 set(companion_UIS
@@ -284,7 +282,7 @@ ELSE( )
     ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${companion_SRCS} ${companion_QM} )
 ENDIF( )
 
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} generaledit modeledit simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} generaledit modeledit simulation common shared ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
 
 ############# Standalone simu ###############
 

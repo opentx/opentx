@@ -50,6 +50,103 @@
 #define FRSKY_SPORT_AVERAGING     4
 #define FRSKY_D_AVERAGING         8
 
+
+// FrSky PRIM IDs (1 byte)
+#define DATA_FRAME              0x10
+
+// FrSky old DATA IDs (1 byte)
+#define GPS_ALT_BP_ID           0x01
+#define TEMP1_ID                0x02
+#define RPM_ID                  0x03
+#define FUEL_ID                 0x04
+#define TEMP2_ID                0x05
+#define VOLTS_ID                0x06
+#define GPS_ALT_AP_ID           0x09
+#define BARO_ALT_BP_ID          0x10
+#define GPS_SPEED_BP_ID         0x11
+#define GPS_LONG_BP_ID          0x12
+#define GPS_LAT_BP_ID           0x13
+#define GPS_COURS_BP_ID         0x14
+#define GPS_DAY_MONTH_ID        0x15
+#define GPS_YEAR_ID             0x16
+#define GPS_HOUR_MIN_ID         0x17
+#define GPS_SEC_ID              0x18
+#define GPS_SPEED_AP_ID         0x19
+#define GPS_LONG_AP_ID          0x1A
+#define GPS_LAT_AP_ID           0x1B
+#define GPS_COURS_AP_ID         0x1C
+#define BARO_ALT_AP_ID          0x21
+#define GPS_LONG_EW_ID          0x22
+#define GPS_LAT_NS_ID           0x23
+#define ACCEL_X_ID              0x24
+#define ACCEL_Y_ID              0x25
+#define ACCEL_Z_ID              0x26
+#define CURRENT_ID              0x28
+#define VARIO_ID                0x30
+#define VFAS_ID                 0x39
+#define VOLTS_BP_ID             0x3A
+#define VOLTS_AP_ID             0x3B
+#define FRSKY_LAST_ID           0x3F
+#define D_RSSI_ID               0xF0
+#define D_A1_ID                 0xF1
+#define D_A2_ID                 0xF2
+
+// FrSky new DATA IDs (2 bytes)
+#define ALT_FIRST_ID            0x0100
+#define ALT_LAST_ID             0x010f
+#define VARIO_FIRST_ID          0x0110
+#define VARIO_LAST_ID           0x011f
+#define CURR_FIRST_ID           0x0200
+#define CURR_LAST_ID            0x020f
+#define VFAS_FIRST_ID           0x0210
+#define VFAS_LAST_ID            0x021f
+#define CELLS_FIRST_ID          0x0300
+#define CELLS_LAST_ID           0x030f
+#define T1_FIRST_ID             0x0400
+#define T1_LAST_ID              0x040f
+#define T2_FIRST_ID             0x0410
+#define T2_LAST_ID              0x041f
+#define RPM_FIRST_ID            0x0500
+#define RPM_LAST_ID             0x050f
+#define FUEL_FIRST_ID           0x0600
+#define FUEL_LAST_ID            0x060f
+#define ACCX_FIRST_ID           0x0700
+#define ACCX_LAST_ID            0x070f
+#define ACCY_FIRST_ID           0x0710
+#define ACCY_LAST_ID            0x071f
+#define ACCZ_FIRST_ID           0x0720
+#define ACCZ_LAST_ID            0x072f
+#define GPS_LONG_LATI_FIRST_ID  0x0800
+#define GPS_LONG_LATI_LAST_ID   0x080f
+#define GPS_ALT_FIRST_ID        0x0820
+#define GPS_ALT_LAST_ID         0x082f
+#define GPS_SPEED_FIRST_ID      0x0830
+#define GPS_SPEED_LAST_ID       0x083f
+#define GPS_COURS_FIRST_ID      0x0840
+#define GPS_COURS_LAST_ID       0x084f
+#define GPS_TIME_DATE_FIRST_ID  0x0850
+#define GPS_TIME_DATE_LAST_ID   0x085f
+#define A3_FIRST_ID             0x0900
+#define A3_LAST_ID              0x090f
+#define A4_FIRST_ID             0x0910
+#define A4_LAST_ID              0x091f
+#define AIR_SPEED_FIRST_ID      0x0a00
+#define AIR_SPEED_LAST_ID       0x0a0f
+#define RSSI_ID                 0xf101
+#define ADC1_ID                 0xf102
+#define ADC2_ID                 0xf103
+#define BATT_ID                 0xf104
+#define SWR_ID                  0xf105
+
+// Default sensor data IDs (Physical IDs + CRC)
+#define DATA_ID_VARIO            0x00 // 0
+#define DATA_ID_FLVSS            0xA1 // 1
+#define DATA_ID_FAS              0x22 // 2
+#define DATA_ID_GPS              0x83 // 3
+#define DATA_ID_RPM              0xE4 // 4
+#define DATA_ID_SP2UH            0x45 // 5
+#define DATA_ID_SP2UR            0xC6 // 6
+
 // Global Fr-Sky telemetry data variables
 extern uint8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata detected for some time
 
@@ -70,14 +167,15 @@ extern uint8_t telemetryState;
 #endif
 
 #if defined(CPUARM)
-#define TELEMETRY_AVERAGE_COUNT 3     //we actually average one more reading!
+#define TELEMETRY_AVERAGE_COUNT 3     // we actually average one more reading!
 #define RAW_FRSKY_MINMAX(v)     v.values[TELEMETRY_AVERAGE_COUNT-1]
 class FrskyValueWithMin {
   public:
-    uint8_t value;      //fitered value (average of last TELEMETRY_AVERAGE_COUNT+1 values)
+    uint8_t value;      // fitered value (average of last TELEMETRY_AVERAGE_COUNT+1 values)
     uint8_t min;        
     uint8_t values[TELEMETRY_AVERAGE_COUNT];
     void set(uint8_t value);
+    void reset();
 };
 #else
 #define RAW_FRSKY_MINMAX(v)     v.value
@@ -97,97 +195,9 @@ class FrskyValueWithMinMax: public FrskyValueWithMin {
 };
 
 #if defined(CPUARM)
-PACK(struct FrskySerialData {
-    int16_t  spare1;
-    int16_t  gpsAltitude_bp;   // 0x01   before punct
-    int16_t  temperature1;     // 0x02   -20 .. 250 deg. celcius
-    uint16_t rpm;              // 0x03   0..60,000 revs. per minute
-    uint16_t fuelLevel;        // 0x04   0, 25, 50, 75, 100 percent
-    int16_t  temperature2;     // 0x05   -20 .. 250 deg. celcius
-    uint16_t volts;            // 0x06   1/500V increments (0..4.2V)
-    uint32_t distFromEarthAxis;//        2 spares reused
-    int16_t  gpsAltitude_ap;   // 0x01+8 after punct
-    uint16_t spare2[6];
-    int16_t  baroAltitude_bp;  // 0x10   0..9,999 meters
-    uint16_t gpsSpeed_bp;      // 0x11   before punct
-    uint16_t gpsLongitude_bp;  // 0x12   before punct
-    uint16_t gpsLatitude_bp;   // 0x13   before punct
-    uint16_t gpsCourse_bp;     // 0x14   before punct (0..359.99 deg. -- seemingly 2-decimal precision)
-    uint8_t  day;              // 0x15
-    uint8_t  month;            // 0x15
-    uint16_t year;             // 0x16
-    uint8_t  hour;             // 0x17
-    uint8_t  min;              // 0x17
-    uint16_t sec;              // 0x18
-    uint16_t gpsSpeed_ap;      // 0x11+8
-    uint16_t gpsLongitude_ap;  // 0x12+8
-    uint16_t gpsLatitude_ap;   // 0x13+8
-    uint16_t gpsCourse_ap;     // 0x14+8
-    uint32_t pilotLatitude;    //        2 spares reused
-    uint32_t pilotLongitude;   //        2 spares reused
-    uint16_t baroAltitude_ap;  // 0x21   after punct
-    uint16_t gpsLongitudeEW;   // 0x1A+8 East/West
-    uint16_t gpsLatitudeNS;    // 0x1B+8 North/South
-    int16_t  accelX;           // 0x24   1/256th gram (-8g ~ +8g)
-    int16_t  accelY;           // 0x25   1/256th gram (-8g ~ +8g)
-    int16_t  accelZ;           // 0x26   1/256th gram (-8g ~ +8g)
-    int16_t  spare3;
-    uint16_t current;          // 0x28   Current
-    int16_t  spare4[7];
-    int16_t  varioSpeed;       // 0x30  Vertical speed in cm/s
 
-    int32_t  baroAltitudeOffset;
-    int32_t  baroAltitude;
-    int32_t  gpsAltitudeOffset;
-    uint32_t gpsDistance;
-
-    uint16_t vfas;             // 0x39  Added to FrSky protocol for home made sensors with a better precision
-    uint16_t volts_bp;         // 0x3A
-    uint16_t volts_ap;         // 0x3B
-    uint16_t spare5[4];
-    // end of FrSky Hub data
-
-    /* these fields must keep this order! */
-    int16_t  minAltitude;
-    int16_t  maxAltitude;
-    uint16_t maxRpm;
-    int16_t  maxTemperature1;
-    int16_t  maxTemperature2;
-    uint16_t maxGpsSpeed;
-    uint16_t maxGpsDistance;
-    uint16_t maxAirSpeed;
-    int16_t  minCell;
-    int16_t  minCells;
-    int16_t  minVfas;
-    uint16_t maxCurrent;
-    uint16_t maxPower;
-    /* end */
-
-    uint8_t  gpsDistNeeded:1;  //        1bits out of 16bits spare reused
-    int8_t   gpsFix:2;         //        2bits out of 16bits spare reused: -1=never fixed, 0=not fixed now, 1=fixed
-    uint8_t  openXsensor:1;    //        1bits out of 16bits spare reused: we receive data from the openXsensor
-    uint8_t  varioHighPrecision:1;
-    uint8_t  spare6:3;
-
-    int32_t  gpsAltitude;
-
-    uint16_t currentConsumption;
-    uint16_t currentPrescale;
-    uint16_t power;
-
-    uint8_t  cellsCount;
-    uint8_t  sensorCellsCount[2];
-    uint16_t cellVolts[12];
-    int16_t  cellsSum;
-    uint16_t cellsState;
-    uint16_t minCellVolts;
-
-    uint16_t airSpeed;
-    uint16_t dTE;
-});
 
 #elif defined(FRSKY_HUB)
-
 PACK(struct FrskySerialData {
   int16_t  baroAltitudeOffset;//       spare reused
   int16_t  gpsAltitude_bp;   // 0x01   before punct
@@ -306,14 +316,20 @@ enum TelemAnas {
   TELEM_ANA_COUNT
 };
 
+#if defined(CPUARM)
+struct FrskyData {
+#if defined(SWR)
+  FrskyValueWithMin swr; // TODO Min not needed
+#endif
+  FrskyValueWithMin rssi; // TODO Min not needed
+};
+#else
 struct FrskyData {
   FrskyValueWithMinMax analog[TELEM_ANA_COUNT];
   FrskyValueWithMin    rssi[2];
-#if defined(CPUARM)
-  FrskyValueWithMin    swr;
-#endif
   FrskySerialData hub;
 };
+#endif
 
 enum AlarmLevel {
   alarm_off = 0,
@@ -326,12 +342,11 @@ enum AlarmLevel {
 #define ALARM_LEVEL(channel, alarm)       ((g_model.frsky.channels[channel].alarms_level >> (2*alarm)) & 3)
 
 #if defined(CPUARM)
-  #define TELEMETRY_STREAMING()           (frskyData.rssi[0].value > 0)
+  #define TELEMETRY_STREAMING()           (frskyData.rssi.value > 0)
+  #define TELEMETRY_RSSI()                (frskyData.rssi.value)
+  #define TELEMETRY_RSSI_MIN()            (frskyData.rssi.min)
 
   #define TELEMETRY_CELL_VOLTAGE_MUTLIPLIER  1
-
-  #define TELEMETRY_BARO_ALT_AVAILABLE()  SWITCH_SIMU(true, frskyData.hub.baroAltitudeOffset)
-  #define TELEMETRY_BARO_ALT_UNIT         (IS_IMPERIAL_ENABLE() ? LENGTH_UNIT_IMP : LENGTH_UNIT_METR)
 
   #define TELEMETRY_GPS_SPEED_BP          frskyData.hub.gpsSpeed_bp
   #define TELEMETRY_GPS_SPEED_AP          frskyData.hub.gpsSpeed_ap
@@ -371,6 +386,8 @@ enum AlarmLevel {
   #define TELEMETRY_OPENXSENSOR()         (0)
 #else
   #define TELEMETRY_STREAMING()           (frskyStreaming > 0)
+  #define TELEMETRY_RSSI()                (frskyData.rssi[0].value)
+  #define TELEMETRY_RSSI_MIN()            (frskyData.rssi[0].min)
 
   #define TELEMETRY_CELL_VOLTAGE_MUTLIPLIER  2
 
@@ -453,11 +470,12 @@ enum FrSkyDataState {
 #endif
 
 // FrSky D Protocol
+void processHubPacket(uint8_t id, int16_t value);
 void frskyDSendNextAlarm(void);
 void frskyDProcessPacket(uint8_t *packet);
 
 // FrSky S.PORT Protocol
-void frskySportProcessPacket(uint8_t *packet);
+void processSportPacket(uint8_t *packet);
 
 void telemetryWakeup(void);
 void telemetryReset();

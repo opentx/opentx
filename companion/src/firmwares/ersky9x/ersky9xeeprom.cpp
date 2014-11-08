@@ -594,7 +594,6 @@ t_Ersky9xModelData_v10::operator ModelData ()
 
   c9x.frsky = frsky;
   c9x.frsky.usrProto=FrSkyUsrProto;
-  c9x.frsky.FrSkyGpsAlt=FrSkyGpsAlt;
   return c9x;
 }
 
@@ -705,23 +704,10 @@ t_Ersky9xModelData_v11::operator ModelData ()
   for (int i=0; i<ERSKY9X_NUM_CSW_V11; i++)
     c9x.logicalSw[i] = logicalSw[i];
 
-  // for (int i=0; i<ERSKY9X_NUM_CHNOUT_V11; i++)
-  //  c9x.safetySw[i] = safetySw[i];
-
   c9x.frsky = frsky;
   c9x.frsky.usrProto=FrSkyUsrProto;
-  c9x.frsky.FrSkyGpsAlt=FrSkyGpsAlt;
-  // for (int i=0; i<8; i++) {
-  //   c9x.frskyalarms[i].frskyAlarmLimit=frskyAlarms.alarmData[i].frskyAlarmLimit;
-  //   c9x.frskyalarms[i].frskyAlarmSound=frskyAlarms.alarmData[i].frskyAlarmSound;
-  //   c9x.frskyalarms[i].frskyAlarmType=frskyAlarms.alarmData[i].frskyAlarmType;
-  // }
-  // for (int i=0; i<8; i++) {
-  //   c9x.customdisplay[i]=customDisplayIndex[i];
-  // }
   for (int i=0; i<5;i++) {
     c9x.flightModeData[0].gvars[i]=gvars[i].gvar;
-    // c9x.gvsource[i]=gvars[i].gvsource;
   }
   return c9x;
 }

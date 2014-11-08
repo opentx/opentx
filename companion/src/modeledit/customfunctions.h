@@ -2,6 +2,7 @@
 #define CUSTOMFUNCTIONS_H
 
 #include "modeledit.h"
+#include "eeprominterface.h"
 #include <QLabel>
 #include <QCheckBox>
 #include <QComboBox>

@@ -43,7 +43,7 @@ inline void MIXER_RESET()
 inline void TELEMETRY_RESET()
 {
   memclear(&frskyData, sizeof(frskyData));
-  frskyData.rssi[0].value = 100;
+  TELEMETRY_RSSI() = 100;
 }
 
 void MIXER_RESET();

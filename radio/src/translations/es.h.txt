@@ -786,6 +786,7 @@
 #define TR_EXTERNALRF          "Externa RF"
 #define TR_FAILSAFE            INDENT"Modo sgdad."
 #define TR_FAILSAFESET         "AJUSTES SGDAD."
+#define TR_MENUSENSOR          "SENSOR"
 #define TR_COUNTRYCODE         "Codigo Pais"
 #define TR_VOICELANG           "Idioma voces"
 #define TR_UNITSSYSTEM         "Unidades"
@@ -818,6 +819,8 @@
 #define TR_MODELIDUSED         TR("ID en uso", "ID modelo en uso")
 #define TR_MODULE              INDENT "Modulo"
 #define TR_TELEMETRY_TYPE      TR("Type", "Telemetry Type")
+#define TR_TELEMETRY_SENSORS   "Sensors"
+#define TR_TELEMETRY_NEWSENSOR INDENT "Add a new sensor..."
 #define TR_CHANNELRANGE        INDENT "Gama de canales"
 #define TR_LOWALARM            INDENT "Alarma baja"
 #define TR_CRITICALALARM       INDENT "Alarma Critica"
@@ -947,3 +950,5 @@
 #define TR_VIEW_NOTES          "View Notes"
 #define TR_MODS_FORBIDDEN      "Modifications forbidden!"
 #define TR_UNLOCKED            "Unlocked"
+#define TR_ID                  "ID"
+#define TR_PRECISION           "Precision"

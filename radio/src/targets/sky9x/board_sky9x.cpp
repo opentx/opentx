@@ -99,9 +99,8 @@ inline void setup_switches()
 #endif
 }
 
-#ifdef SIMU
+#if defined(SIMU)
 #define stop_trainer_capture()
-#define rotencEnd()
 #define sam_boot()
 #else
 

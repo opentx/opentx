@@ -124,9 +124,8 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VTELEMCHNS         (OFS_FUNCSOUNDS + sizeof(TR_FUNCSOUNDS))
 #if defined(FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
-    #define OFS_VTELEMUNIT_IMP  (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
-    #define OFS_VTELEMUNIT_METR (OFS_VTELEMUNIT_IMP + sizeof(TR_VTELEMUNIT_IMP))
-    #define OFS_VALARM          (OFS_VTELEMUNIT_METR + sizeof(TR_VTELEMUNIT_METR))
+    #define OFS_VTELEMUNIT      (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
+    #define OFS_VALARM          (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
   #else
     #define OFS_VTELEMUNIT      (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
     #define OFS_VALARM          (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
@@ -228,7 +227,7 @@ extern const pm_char STR_OPEN9X[];
 
 #if defined(FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
-    #define STR_VTELEMUNIT      (STR_OPEN9X + (g_eeGeneral.imperial ? OFS_VTELEMUNIT_IMP : OFS_VTELEMUNIT_METR))
+    #define STR_VTELEMUNIT      (STR_OPEN9X + OFS_VTELEMUNIT)
     #define STR_VOLTSRC         (STR_OPEN9X + OFS_VOLTSRC)
   #else
     #define STR_VTELEMUNIT      (STR_OPEN9X + OFS_VTELEMUNIT)
@@ -506,6 +505,7 @@ extern const pm_char STR_INTERNALRF[];
 extern const pm_char STR_EXTERNALRF[];
 extern const pm_char STR_FAILSAFE[];
 extern const pm_char STR_FAILSAFESET[];
+extern const pm_char STR_MENUSENSOR[];
 extern const pm_char STR_COUNTRYCODE[];
 #endif
 
@@ -710,6 +710,10 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_LOWALARM[];
   extern const pm_char STR_CRITICALALARM[];
   extern const pm_char STR_TELEMETRY_TYPE[];
+  extern const pm_char STR_TELEMETRY_SENSORS[];
+  extern const pm_char STR_TELEMETRY_NEWSENSOR[];
+  extern const pm_char STR_ID[];
+  extern const pm_char STR_PRECISION[];
 #endif
 
 #if defined(PCBTARANIS)
@@ -728,7 +732,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_PTS[];
   extern const pm_char STR_SMOOTH[];
   extern const pm_char STR_COPY_STICKS_TO_OFS[];
-extern const pm_char STR_COPY_TRIMS_TO_OFS[];
+  extern const pm_char STR_COPY_TRIMS_TO_OFS[];
   extern const pm_char STR_TOP_BAR[];
   extern const pm_char STR_ALTITUDE[];
   extern const pm_char STR_SCALE[];

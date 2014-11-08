@@ -2,13 +2,17 @@
 #define TELEMETRY_H
 
 #include "modeledit.h"
+#include "eeprominterface.h"
 #include <QGroupBox>
 #include <QComboBox>
 #include <QDoubleSpinBox>
 
+class AutoComboBox;
+
 namespace Ui {
   class TelemetryAnalog;
   class TelemetryCustomScreen;
+  class TelemetrySensor;
   class Telemetry;
 }
 
@@ -74,6 +78,31 @@ class TelemetryCustomScreen: public ModelPanel
     QDoubleSpinBox * maxSB[4];
 };
 
+class TelemetrySensorPanel: public ModelPanel
+{
+    Q_OBJECT
+
+  public:
+    TelemetrySensorPanel(QWidget *parent, SensorData & sensor, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    ~TelemetrySensorPanel();
+    void update();
+
+  protected slots:
+    void on_name_editingFinished();
+    void on_type_currentIndexChanged(int index);
+    void on_formula_currentIndexChanged(int index);
+    void on_unit_currentIndexChanged(int index);
+    void on_prec_editingFinished();
+
+  protected:
+    void updateSourcesComboBox(AutoComboBox * cb);
+
+  private:
+    Ui::TelemetrySensor * ui;
+    SensorData & sensor;
+    bool lock;
+};
+
 class TelemetryPanel : public ModelPanel
 {
     Q_OBJECT
@@ -88,12 +117,10 @@ class TelemetryPanel : public ModelPanel
     void onAnalogModified();
     void on_frskyProtoCB_currentIndexChanged(int index);
     void on_bladesCount_editingFinished();
-    void on_AltitudeToolbar_ChkB_toggled(bool checked);
     void on_rssiAlarm1CB_currentIndexChanged(int index);
     void on_rssiAlarm2CB_currentIndexChanged(int index);
     void on_rssiAlarm1SB_editingFinished();
     void on_rssiAlarm2SB_editingFinished();
-    void on_AltitudeGPS_ChkB_toggled(bool checked);
     void on_varioLimitMin_DSB_editingFinished();
     void on_varioLimitMax_DSB_editingFinished();
     void on_varioLimitCenterMin_DSB_editingFinished();
@@ -106,6 +133,7 @@ class TelemetryPanel : public ModelPanel
     Ui::Telemetry *ui;
     TelemetryAnalog * analogs[4];
     TelemetryCustomScreen * telemetryCustomScreens[4];
+    TelemetrySensorPanel * sensorPanels[C9X_MAX_SENSORS];
 
     void setup();
     void telBarUpdate();

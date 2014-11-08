@@ -45,13 +45,16 @@ void varioWakeup()
     int varioFreq, varioDuration, varioPause=0;
     uint8_t varioFlags;
 
-    int verticalSpeed = frskyData.hub.varioSpeed;
-
-#if 0
-    if (g_model.frsky.varioSource == VARIO_SOURCE_DTE) {
-      #warning "Ele stick for vario tests"
-      verticalSpeed = getValue(MIXSRC_Ele);
+#if defined(CPUARM)
+    int verticalSpeed = 0;
+    if (g_model.frsky.varioSource) {
+      TelemetryItem & varioItem = telemetryItems[g_model.frsky.varioSource-1];
+      verticalSpeed = varioItem.value;
+      TelemetrySensor & sensor = g_model.telemetrySensors[g_model.frsky.varioSource-1];
+      if (sensor.prec != 2) verticalSpeed *= sensor.prec == 0 ? 100 : 10;
     }
+#else
+    int verticalSpeed = frskyData.hub.varioSpeed;
 #endif
 
     int varioCenterMin = (int)g_model.frsky.varioCenterMin * 10 - 50;

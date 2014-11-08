@@ -9,6 +9,7 @@
 #include "trainer.h"
 #include "calibration.h"
 #include "../modeledit/customfunctions.h"
+#include "verticalscrollarea.h"
 
 GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, FirmwareInterface * firmware) :
   QDialog(parent),

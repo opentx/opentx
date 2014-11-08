@@ -119,6 +119,20 @@ PACK(typedef struct {
   uint8_t  spare[2];
   int8_t   curveParam;
 }) ExpoData_v215;
+PACK(typedef struct {
+  uint8_t  srcRaw;
+  uint16_t scale;
+  uint8_t  chn;
+  int8_t   swtch;
+  uint16_t flightModes;
+  int8_t   weight;
+  int8_t   carryTrim:6;
+  uint8_t  mode:2;
+  char     name[LEN_EXPOMIX_NAME];
+  int8_t   offset;
+  CurveRef curve;
+  uint8_t  spare;
+}) ExpoData_v216;
 #else
 PACK(typedef struct {
   uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
@@ -130,6 +144,16 @@ PACK(typedef struct {
   char     name[LEN_EXPOMIX_NAME];
   int8_t   curveParam;
 }) ExpoData_v215;
+PACK(typedef struct {
+  uint8_t  mode:2;         // 0=end, 1=pos, 2=neg, 3=both
+  uint8_t  chn:4;
+  uint8_t  curveMode:2;
+  int8_t   swtch;
+  uint16_t flightModes;
+  int8_t   weight;
+  char     name[LEN_EXPOMIX_NAME];
+  int8_t   curveParam;
+}) ExpoData_v216;
 #endif
 
 #if defined(PCBTARANIS)
@@ -289,6 +313,16 @@ PACK(typedef struct {
   int8_t  andsw;
 }) LogicalSwitchData_v215;
 
+PACK(typedef struct { // Logical Switches data
+  int8_t  v1;
+  int16_t v2;
+  int16_t v3;
+  uint8_t func;
+  uint8_t delay;
+  uint8_t duration;
+  int8_t  andsw;
+}) LogicalSwitchData_v216;
+
 #if defined(PCBTARANIS)
 PACK(typedef struct {
   int8_t  swtch;
@@ -322,13 +356,28 @@ PACK(typedef struct {
 #endif
 
 PACK(typedef struct {
+  uint8_t    source;
+  uint8_t    barMin;           // minimum for bar display
+  uint8_t    barMax;           // ditto for max display (would usually = ratio)
+}) FrSkyBarData_v215;
+
+PACK(typedef struct {
+  uint8_t    sources[NUM_LINE_ITEMS];
+}) FrSkyLineData_v215;
+
+typedef union {
+  FrSkyBarData_v215  bars[4];
+  FrSkyLineData_v215 lines[4];
+} FrSkyScreenData_v215;
+
+PACK(typedef struct {
   FrSkyChannelData channels[2];
   uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t voltsSource;
   uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
   uint8_t currentSource;
   uint8_t screensType;
-  FrSkyScreenData screens[3];
+  FrSkyScreenData_v215 screens[3];
   uint8_t varioSource;
   int8_t  varioCenterMax;
   int8_t  varioCenterMin;
@@ -345,7 +394,7 @@ PACK(typedef struct {
   int8_t blades;    // How many blades for RPMs, 0=2 blades
   uint8_t currentSource;
   uint8_t screensType; // 2bits per screen (None/Gauges/Numbers/Script)
-  FrSkyScreenData screens[3];
+  FrSkyScreenData_v215 screens[3];
   uint8_t varioSource;
   int8_t  varioCenterMax;
   int8_t  varioCenterMin;
@@ -441,12 +490,12 @@ PACK(typedef struct {
   BeepANACenter beepANACenter;        // 1<<0->A1.. 1<<6->A7
   MixData_v216 mixData[MAX_MIXERS];
   LimitData_v216 limitData[NUM_CHNOUT];
-  ExpoData  expoData[MAX_EXPOS];
+  ExpoData_v216  expoData[MAX_EXPOS];
 
   CURVDATA  curves[MAX_CURVES];
   int8_t    points[NUM_POINTS];
 
-  LogicalSwitchData logicalSw[NUM_LOGICAL_SWITCH];
+  LogicalSwitchData_v216 logicalSw[NUM_LOGICAL_SWITCH];
   CustomFunctionData customFn[NUM_CFN];
   SwashRingData swashR;
   FlightModeData flightModeData[MAX_FLIGHT_MODES];
@@ -593,8 +642,8 @@ int ConvertTelemetrySource_215_to_216(int source)
 int ConvertTelemetrySource_216_to_217(int source)
 {
   // TELEM_TIMER3 added
-  if (source >= TELEM_TIMER3)
-    source += 1;
+//  if (source >= TELEM_TIMER3)
+  //  source += 1;
 
   return source;
 }
@@ -679,7 +728,7 @@ int ConvertSource_216_to_217(int source)
 {
   // Telemetry conversions
   if (source >= MIXSRC_FIRST_TELEM)
-    source = MIXSRC_FIRST_TELEM + ConvertTelemetrySource_216_to_217(source-MIXSRC_FIRST_TELEM+1) - 1;
+    source = 0;
 
   return source;
 }
@@ -819,7 +868,7 @@ void ConvertModel_215_to_216(ModelData &model)
   int indexes[NUM_STICKS] = { 0, 0, 0, 0 };
 #endif
   for (uint8_t i=0; i<32; i++) {
-    ExpoData * expo = &newModel.expoData[i];
+    ExpoData_v216 * expo = &newModel.expoData[i];
     ExpoData_v215 * oldExpo = &oldModel.expoData[i];
     if (oldExpo->mode) {
 #if defined(PCBTARANIS)
@@ -873,9 +922,9 @@ void ConvertModel_215_to_216(ModelData &model)
   for (int i=NUM_STICKS-1; i>=0; i--) {
     int idx = indexes[i];
     if (idx >= 0) {
-      ExpoData * expo = expoAddress(idx);
-      memmove(expo+1, expo, (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
-      memclear(expo, sizeof(ExpoData));
+      ExpoData_v216 * expo = &newModel.expoData[idx];
+      memmove(expo+1, expo, (MAX_EXPOS-(idx+1))*sizeof(ExpoData_v216));
+      memclear(expo, sizeof(ExpoData_v216));
       expo->srcRaw = MIXSRC_Rud + i;
       expo->chn = i;
       expo->weight = 100;
@@ -907,7 +956,7 @@ void ConvertModel_215_to_216(ModelData &model)
     newModel.points[i] = oldModel.points[i];
   }
   for (uint8_t i=0; i<32; i++) {
-    LogicalSwitchData & sw = newModel.logicalSw[i];
+    LogicalSwitchData_v216 & sw = newModel.logicalSw[i];
     sw.func = oldModel.logicalSw[i].func;
     if (sw.func >= LS_FUNC_VEQUAL) sw.func += 1;
     if (sw.func >= LS_FUNC_RANGE) sw.func += 1;
@@ -1097,16 +1146,16 @@ void ConvertModel_215_to_216(ModelData &model)
     if (newModel.frsky.screensType & (1<<i)) {
       // gauges
       for (int j=0; j<4; j++) {
-        uint8_t & source = newModel.frsky.screens[i].bars[j].source;
-        source = ConvertTelemetrySource_215_to_216(source);
+        // uint8_t & source = newModel.frsky.screens[i].bars[j].source;
+        // source = ConvertTelemetrySource_215_to_216(source);
       }
     }
     else {
       // numbers
       for (int j=0; j<4; j++) {
         for (int k=0; k<NUM_LINE_ITEMS; k++) {
-          uint8_t & source = newModel.frsky.screens[i].lines[j].sources[k];
-          source = ConvertTelemetrySource_215_to_216(source);
+          // uint8_t & source = newModel.frsky.screens[i].lines[j].sources[k];
+          // source = ConvertTelemetrySource_215_to_216(source);
         }
       }
     }
@@ -1205,20 +1254,38 @@ void ConvertModel_216_to_217(ModelData &model)
 #endif
   }
   for (int i=0; i<MAX_EXPOS; i++) {
-    newModel.expoData[i] = oldModel.expoData[i];
 #if defined(PCBTARANIS)
     newModel.expoData[i].srcRaw = ConvertSource_216_to_217(oldModel.expoData[i].srcRaw);
+    newModel.expoData[i].scale = oldModel.expoData[i].scale;
+    newModel.expoData[i].carryTrim = oldModel.expoData[i].carryTrim;
+    newModel.expoData[i].curve = oldModel.expoData[i].curve;
+    newModel.expoData[i].offset = oldModel.expoData[i].offset;
+#else
+    newModel.expoData[i].curveMode = oldModel.expoData[i].curveMode;
+    newModel.expoData[i].curveParam = oldModel.expoData[i].curveParam;
 #endif
+    newModel.expoData[i].chn = oldModel.expoData[i].chn;
+    newModel.expoData[i].swtch = oldModel.expoData[i].swtch;
+    newModel.expoData[i].flightModes = oldModel.expoData[i].flightModes;
+    newModel.expoData[i].weight = oldModel.expoData[i].weight;
+    newModel.expoData[i].mode = oldModel.expoData[i].mode;
+    memcpy(newModel.expoData[i].name, oldModel.expoData[i].name, sizeof(newModel.expoData[i].name));
   }
   memcpy(newModel.curves, oldModel.curves, sizeof(newModel.curves));
   memcpy(newModel.points, oldModel.points, sizeof(newModel.points));
   for (int i=0; i<NUM_LOGICAL_SWITCH; i++) {
-    newModel.logicalSw[i] = oldModel.logicalSw[i];
+    newModel.logicalSw[i].func = oldModel.logicalSw[i].func;
+    newModel.logicalSw[i].v1 = oldModel.logicalSw[i].v1;
+    newModel.logicalSw[i].v2 = oldModel.logicalSw[i].v2;
+    newModel.logicalSw[i].v3 = oldModel.logicalSw[i].v3;
+    newModel.logicalSw[i].delay = oldModel.logicalSw[i].delay;
+    newModel.logicalSw[i].duration = oldModel.logicalSw[i].duration;
+    newModel.logicalSw[i].andsw = oldModel.logicalSw[i].andsw;
     uint8_t cstate = lswFamily(newModel.logicalSw[i].func);
     if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
-      newModel.logicalSw[i].v1 = ConvertSource_216_to_217(oldModel.logicalSw[i].v1);
+      newModel.logicalSw[i].v1 = ConvertSource_216_to_217((uint8_t)newModel.logicalSw[i].v1);
       if (cstate == LS_FAMILY_COMP) {
-        newModel.logicalSw[i].v2 = ConvertSource_216_to_217(oldModel.logicalSw[i].v2);
+        newModel.logicalSw[i].v2 = ConvertSource_216_to_217((uint8_t)newModel.logicalSw[i].v2);
       }
     }
   }
@@ -1239,8 +1306,7 @@ void ConvertModel_216_to_217(ModelData &model)
   newModel.nSwToWarn = oldModel.nSwToWarn;
   memcpy(newModel.gvars, oldModel.gvars, sizeof(newModel.gvars));
 
-  memcpy(&newModel.frsky, &oldModel.frsky, sizeof(newModel.frsky.channels)+5+sizeof(oldModel.frsky.screens));
-  memcpy(&newModel.frsky.varioSource, &oldModel.frsky.varioSource, 5+sizeof(newModel.frsky.rssiAlarms)+3);
+  memcpy(&newModel.frsky.rssiAlarms, &oldModel.frsky.rssiAlarms, sizeof(newModel.frsky.rssiAlarms));
   newModel.externalModule = oldModel.externalModule;
   memcpy(newModel.moduleData, oldModel.moduleData, sizeof(newModel.moduleData));
 #if defined(PCBTARANIS)

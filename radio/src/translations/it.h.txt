@@ -786,6 +786,7 @@
 #define TR_EXTERNALRF          "Modulo esterno"
 #define TR_FAILSAFE            "Modo failsafe"
 #define TR_FAILSAFESET         TR("FAILSAFE","IMPOSTAZIONI FAILSAFE")
+#define TR_MENUSENSOR          "SENSOR"
 #define TR_COUNTRYCODE         TR("Codice Paese","Standard 2.4Ghz")
 #define TR_VOICELANG           "Lingua Voce"
 #define TR_UNITSSYSTEM         "Unità"
@@ -818,6 +819,8 @@
 #define TR_MODELIDUSED         TR("ID già usato","ID Modello già usato")
 #define TR_MODULE              INDENT "Modulo"
 #define TR_TELEMETRY_TYPE      "Tipo Telemetria"
+#define TR_TELEMETRY_SENSORS   "Sensors"
+#define TR_TELEMETRY_NEWSENSOR INDENT "Add a new sensor..."
 #define TR_CHANNELRANGE        INDENT "Numero Canali"
 #define TR_LOWALARM            INDENT "Allarme Basso"
 #define TR_CRITICALALARM       INDENT "Allarme Critico"
@@ -947,3 +950,5 @@
 #define TR_VIEW_NOTES          "Vedi Note"
 #define TR_MODS_FORBIDDEN      "Modifica proibita!"
 #define TR_UNLOCKED            "Sbloccato"
+#define TR_ID                  "ID"
+#define TR_PRECISION           "Precision"

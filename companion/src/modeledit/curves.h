@@ -2,6 +2,7 @@
 #define CURVES_H
 
 #include "modeledit.h"
+#include "eeprominterface.h"
 #include <QSpinBox>
 
 namespace Ui {

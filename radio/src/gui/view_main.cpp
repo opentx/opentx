@@ -275,38 +275,31 @@ void displayTopBar()
   lcd_rect(batt_icon_x+FW, BAR_Y+1, 13, 7);
   lcd_vline(batt_icon_x+FW+13, BAR_Y+2, 5);
 
-  if (frskyData.rssi[0].value > 0) {
+  if (TELEMETRY_STREAMING()) {
     /* RSSI */
     LCD_ICON(batt_icon_x+3*FW+3, BAR_Y, ICON_RSSI);
     lcd_rect(batt_icon_x+5*FW, BAR_Y+1, 13, 7);
 
     /* Rx voltage */
-    lcdint_t voltage = 0;
-    uint8_t channel = 0;
-    if (g_model.frsky.voltsSource <= FRSKY_VOLTS_SOURCE_A4) {
-      channel = TELEM_A1+g_model.frsky.voltsSource-1;
-      voltage = frskyData.analog[g_model.frsky.voltsSource].value;
-    }
-    else if (g_model.frsky.voltsSource == FRSKY_VOLTS_SOURCE_FAS) {
-      channel = TELEM_VFAS-1;
-      voltage = frskyData.hub.vfas;
-    }
-    else if (g_model.frsky.voltsSource == FRSKY_VOLTS_SOURCE_CELLS) {
-      channel = TELEM_CELLS_SUM-1;
-      voltage = frskyData.hub.cellsSum;
-    }
-    if (voltage > 0) {
-      putsTelemetryChannel(batt_icon_x+7*FW+2, BAR_Y+1, channel, voltage, LEFT);
-      altitude_icon_x = lcdLastPos+1;
-    }
-    else {
-      altitude_icon_x = batt_icon_x+7*FW+3;
+    altitude_icon_x = batt_icon_x+7*FW+3;
+    if (g_model.frsky.voltsSource) {
+      TelemetryItem & voltsItem = telemetryItems[g_model.frsky.voltsSource-1];
+      if (voltsItem.isAvailable()) {
+        putsTelemetryChannelValue(batt_icon_x+7*FW+2, BAR_Y+1, g_model.frsky.voltsSource-1, voltsItem.value, LEFT);
+        altitude_icon_x = lcdLastPos+1;
+      }
     }
 
     /* Altitude */
-    if (g_model.frsky.altitudeDisplayed && TELEMETRY_BARO_ALT_AVAILABLE()) {
-      LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
-      putsTelemetryValue(altitude_icon_x+2*FW-1, BAR_Y+1, TELEMETRY_RELATIVE_BARO_ALT_BP, UNIT_DIST, LEFT);
+    if (g_model.frsky.altitudeSource) {
+      TelemetryItem & altitudeItem = telemetryItems[g_model.frsky.altitudeSource-1];
+      if (altitudeItem.isAvailable()) {
+        LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
+        int32_t value = altitudeItem.value;
+        TelemetrySensor & sensor = g_model.telemetrySensors[g_model.frsky.altitudeSource-1];
+        if (sensor.prec) value /= sensor.prec == 2 ? 100 : 10;
+        putsValueWithUnit(altitude_icon_x+2*FW-1, BAR_Y+1, value, UNIT_METERS, LEFT);
+      }
     }
   }
 
@@ -357,8 +350,8 @@ void displayTopBar()
   displayTopBarGauge(batt_icon_x+FW, count, g_vbat100mV <= g_eeGeneral.vBatWarn);
 
   /* The inside of the RSSI gauge */
-  if (frskyData.rssi[0].value > 0) {
-    displayTopBarGauge(batt_icon_x+5*FW, frskyData.rssi[0].value / 10, frskyData.rssi[0].value < getRssiAlarmValue(0));
+  if (TELEMETRY_RSSI() > 0) {
+    displayTopBarGauge(batt_icon_x+5*FW, TELEMETRY_RSSI() / 10, TELEMETRY_RSSI() < getRssiAlarmValue(0));
   }
 }
 #endif
@@ -446,10 +439,10 @@ void displayBattVoltage()
 void displayVoltageOrAlarm()
 {
   if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
-    putsTelemetryValue(6*FW-1, 2*FH, getTemperature(), UNIT_TEMPERATURE, BLINK|INVERS|DBLSIZE);
+    putsValueWithUnit(6*FW-1, 2*FH, getTemperature(), UNIT_TEMPERATURE, BLINK|INVERS|DBLSIZE);
   }
   else if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
-    putsTelemetryValue(7*FW-1, 2*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.currentCalib)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE);
+    putsValueWithUnit(7*FW-1, 2*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.currentCalib)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE);
   }
   else {
     displayBattVoltage();

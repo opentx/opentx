@@ -2,6 +2,7 @@
 #define FLIGHTMODES_H
 
 #include "modeledit.h"
+#include "eeprominterface.h"
 #include <QVector>
 #include <QLabel>
 #include <QTabWidget>

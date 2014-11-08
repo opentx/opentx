@@ -786,6 +786,7 @@
 #define TR_EXTERNALRF          "Extern Radiomodul"
 #define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Failsafeläge")
 #define TR_FAILSAFESET         "FailsafeInställning"
+#define TR_MENUSENSOR          "SENSOR"
 #define TR_COUNTRYCODE         "Landskod"
 #define TR_VOICELANG           "Röstspråk"
 #define TR_UNITSSYSTEM         "Enheter"
@@ -818,6 +819,8 @@
 #define TR_MODELIDUSED         TR("ID finns redan","ModellID används redan")
 #define TR_MODULE              INDENT "Modul"
 #define TR_TELEMETRY_TYPE      "Telemetrityp"
+#define TR_TELEMETRY_SENSORS   "Sensors"
+#define TR_TELEMETRY_NEWSENSOR INDENT "Add a new sensor..."
 #define TR_CHANNELRANGE        INDENT "Kanalområde"
 #define TR_LOWALARM            INDENT "Låg-alarm"
 #define TR_CRITICALALARM       INDENT "Kritiskt alarm"
@@ -947,3 +950,5 @@
 #define TR_VIEW_NOTES          "Visa Noteringars"
 #define TR_MODS_FORBIDDEN      "Modifikationer förbjudna!"
 #define TR_UNLOCKED            "Olåst"
+#define TR_ID                  "ID"
+#define TR_PRECISION           "Precision"
