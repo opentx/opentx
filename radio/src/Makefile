@@ -297,6 +297,13 @@ CHANNELS_MONITOR_INV_HIDE = NO
 # Values = NO, YES
 NANO = NO
 
+# Use custom bin based allocator for Lua
+# Values = NO, YES
+# YES - use our bin based allocator
+# NO - use default Lua allocator
+USE_BIN_ALLOCATOR = NO
+
+
 # Enable trace of events into Trace Buffer for debugging purposes
 # Activating any of these options also activates DEBUG and DEBUG_TRACE_BUFFER
 # Values = NO, YES
@@ -776,6 +783,10 @@ ifeq ($(PCB), TARANIS)
            lua/src/lbaselib.c lua/src/linit.c lua/src/lmathlib.c lua/src/lbitlib.c lua/src/loadlib.c lua/src/lauxlib.c lua/src/ltablib.c lua/src/lcorolib.c
     SRC += $(LUASRC) 
     LUADEP = lua_exports.cpp
+	ifeq ($(USE_BIN_ALLOCATOR), YES)
+	  CPPDEFS += -DUSE_BIN_ALLOCATOR
+	  CPPSRC += bin_allocator.cpp
+	endif
   endif           
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/taranis/diskio.cpp
