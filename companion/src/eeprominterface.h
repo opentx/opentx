@@ -1158,6 +1158,8 @@ enum Capability {
   MultiposPotsPositions,
   SimulatorVariant,
   MavlinkTelemetry,
+  HasInputDiff,
+  HasMixerExpo,
 };
 
 class SimulatorInterface;

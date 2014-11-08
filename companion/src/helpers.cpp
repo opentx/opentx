@@ -234,10 +234,10 @@ CurveGroup::CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox
   lock(false),
   lastType(-1)
 {
-  curveTypeCB->addItem(tr("Diff"));
-  curveTypeCB->addItem(tr("Expo"));
-  curveTypeCB->addItem(tr("Func"));
-  curveTypeCB->addItem(tr("Curve"));
+  if (!(flags & HIDE_DIFF)) curveTypeCB->addItem(tr("Diff"), 0);
+  if (!(flags & HIDE_EXPO)) curveTypeCB->addItem(tr("Expo"), 1);
+  curveTypeCB->addItem(tr("Func"), 2);
+  curveTypeCB->addItem(tr("Curve"), 3);
 
   curveValueCB->setMaxVisibleItems(10);
 
@@ -253,10 +253,12 @@ void CurveGroup::update()
 {
   lock = true;
 
-  curveTypeCB->setCurrentIndex(curve.type);
+  int found = curveTypeCB->findData(curve.type);
+  if (found < 0) found = 0;
+  curveTypeCB->setCurrentIndex(found);
 
   if (curve.type == CurveReference::CURVE_REF_DIFF || curve.type == CurveReference::CURVE_REF_EXPO) {
-    curveGVarCB->show();
+    curveGVarCB->setVisible(GetCurrentFirmware()->getCapability(Gvars));
     if (curve.value > 100 || curve.value < -100) {
       curveGVarCB->setChecked(true);
       if (lastType != CurveReference::CURVE_REF_DIFF && lastType != CurveReference::CURVE_REF_EXPO) {
@@ -296,11 +298,13 @@ void CurveGroup::update()
         if (lastType != curve.type) {
           lastType = curve.type;
           curveValueCB->clear();
-          for (int i=-numcurves; i<=numcurves; i++) {
-            curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString());
+          for (int i= ((flags & HIDE_NEGATIVE_CURVES) ? 0 : -numcurves); i<=numcurves; i++) {
+            curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString(), i);
+            if (i == curve.value) {
+              curveValueCB->setCurrentIndex(curveValueCB->count() - 1);
+            }
           }
         }
-        curveValueCB->setCurrentIndex(curve.value+numcurves);
         break;
       }
       default:
@@ -328,7 +332,8 @@ void CurveGroup::gvarCBChanged(int state)
 void CurveGroup::typeChanged(int value)
 {
   if (!lock) {
-    switch (value) {
+    int type = curveTypeCB->itemData(curveTypeCB->currentIndex()).toInt();
+    switch (type) {
       case 0:
         curve = CurveReference(CurveReference::CURVE_REF_DIFF, 0);
         break;
@@ -350,7 +355,7 @@ void CurveGroup::typeChanged(int value)
 void CurveGroup::valuesChanged()
 {
   if (!lock) {
-    switch (curveTypeCB->currentIndex()) {
+    switch (curveTypeCB->itemData(curveTypeCB->currentIndex()).toInt()) {
       case 0:
       case 1:
       {
@@ -359,14 +364,14 @@ void CurveGroup::valuesChanged()
           value = curveValueCB->itemData(curveValueCB->currentIndex()).toInt();
         else
           value = curveValueSB->value();
-        curve = CurveReference(curveTypeCB->currentIndex() == 0 ? CurveReference::CURVE_REF_DIFF : CurveReference::CURVE_REF_EXPO, value);
+        curve = CurveReference(curveTypeCB->itemData(curveTypeCB->currentIndex()).toInt() == 0 ? CurveReference::CURVE_REF_DIFF : CurveReference::CURVE_REF_EXPO, value);
         break;
       }
       case 2:
         curve = CurveReference(CurveReference::CURVE_REF_FUNC, curveValueCB->currentIndex());
         break;
       case 3:
-        curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, curveValueCB->currentIndex() - GetCurrentFirmware()->getCapability(NumCurves));
+        curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, curveValueCB->itemData(curveValueCB->currentIndex()).toInt());
         break;
     }
 

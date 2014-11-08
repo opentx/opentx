@@ -732,6 +732,9 @@ int OpenTxFirmware::getCapability(const Capability capability)
         return 0;
     case MavlinkTelemetry:
       return id.contains("mavlink") ? 1 : 0;
+    case HasInputDiff:
+    case HasMixerExpo:
+      return (IS_ARM(board) ? true : false);
     default:
       return 0;
   }
