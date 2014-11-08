@@ -39,7 +39,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t newVal, uin
           return;
         }
       }
-      newVal = sensor.getValue(newVal, UNIT_VOLTS, prec);
+      newVal = sensor.getValue(newVal, UNIT_VOLTS, 2);
     }
     else {
       // we didn't receive all cells values

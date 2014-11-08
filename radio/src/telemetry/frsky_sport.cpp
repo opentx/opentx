@@ -161,8 +161,6 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t instance)
   const FrSkySportSensor * sensor = getFrSkySportSensor(id);
   if (sensor) {
     TelemetryUnit unit = sensor->unit;
-    if (unit == UNIT_CELLS)
-      unit = UNIT_VOLTS;
     uint8_t prec = min<uint8_t>(2, sensor->prec);
     telemetrySensor.init(sensor->name, unit, prec);
     if (id >= ADC1_ID && id <= BATT_ID) {
