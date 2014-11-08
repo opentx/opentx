@@ -34,14 +34,14 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
     ui->persistentValue->hide();
   }
 
-  ui->countdownBeep->setField(&timer.countdownBeep, this);
+  ui->countdownBeep->setField(timer.countdownBeep, this);
   ui->countdownBeep->addItem(tr("Silent"), 0);
   ui->countdownBeep->addItem(tr("Beeps"), 1);
   if (IS_ARM(board) || IS_2560(board)) {
     ui->countdownBeep->addItem(tr("Voice"), 2);
   }
 
-  ui->persistent->setField(&timer.persistent, this);
+  ui->persistent->setField(timer.persistent, this);
   ui->persistent->addItem(tr("Not persistent"), 0);
   ui->persistent->addItem(tr("Persistent (flight)"), 1);
   ui->persistent->addItem(tr("Persistent (manual reset)"), 2);

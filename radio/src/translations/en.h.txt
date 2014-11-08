@@ -352,15 +352,13 @@
 #define LENGTH_UNIT_IMP        "ft\0"
 #define SPEED_UNIT_IMP         "mph"
 #define LENGTH_UNIT_METR       "m\0 "
-#define SPEED_UNIT_METR        "kmh"
-
+#define SPEED_UNIT_METR        "kmh"  
+  
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\010")
   #define TR_VUNITSSYSTEM      TR("Metric""Imper.", "Metric\0 ""Imperial")
-  #define LEN_VTELEMUNIT_METR  "\003"
-  #define TR_VTELEMUNIT_METR   "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT_METR LENGTH_UNIT_METR "@\0 ""%\0 ""mA\0""mAh""W\0 "
-  #define LEN_VTELEMUNIT_IMP   "\003"
-  #define TR_VTELEMUNIT_IMP    "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT_IMP  LENGTH_UNIT_IMP  "@\0 ""%\0 ""mA\0""mAh""W\0 "
+  #define LEN_VTELEMUNIT       "\003"
+  #define TR_VTELEMUNIT        "-\0 ""v\0 ""A\0 ""mA\0""kts""m/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""dBm""rpm""g\0 ""@\0"
 #else
   #if defined(IMPERIAL_UNITS)
     #define LENGTH_UNIT        LENGTH_UNIT_IMP
@@ -476,7 +474,14 @@
   #define TR_CYC_VSRCRAW       "[C1]""[C2]""[C3]"
 #endif
 
-#define TR_VSRCRAW             "---\0""Rud\0""Ele\0""Thr\0""Ail\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" TR_SW_VSRCRAW
+#if defined(CPUARM)
+  #define TR_RESERVE_VSRCRAW   "[--]"
+  #define TR_EXTRA_VSRCRAW     "Batt""Time" TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW "Tmr1""Tmr2""Tmr3"
+#else
+  #define TR_EXTRA_VSRCRAW
+#endif
+
+#define TR_VSRCRAW             "---\0""Rud\0""Ele\0""Thr\0""Ail\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" TR_SW_VSRCRAW TR_EXTRA_VSRCRAW
 
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "OFF""ON\0""THs""TH%""THt"
@@ -801,6 +806,7 @@
 #define TR_EXTERNALRF          "External RF"
 #define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Failsafe mode")
 #define TR_FAILSAFESET         "FAILSAFE SETTINGS"
+#define TR_MENUSENSOR          "SENSOR"
 #define TR_COUNTRYCODE         "Country Code"
 #define TR_VOICELANG           "Voice Language"
 #define TR_UNITSSYSTEM         "Units"
@@ -833,6 +839,8 @@
 #define TR_MODELIDUSED         TR("ID already used","Model ID already used")
 #define TR_MODULE              INDENT "Module"
 #define TR_TELEMETRY_TYPE      TR("Type", "Telemetry Type")
+#define TR_TELEMETRY_SENSORS   "Sensors"
+#define TR_TELEMETRY_NEWSENSOR INDENT "Add a new sensor..."
 #define TR_CHANNELRANGE        TR(INDENT "Ch. Range", INDENT "Channel Range")
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Critical Alarm"
@@ -962,3 +970,27 @@
 #define TR_VIEW_NOTES          "View Notes"
 #define TR_MODS_FORBIDDEN      "Modifications forbidden!"
 #define TR_UNLOCKED            "Unlocked"
+#define TR_ID                  "ID"
+#define TR_PRECISION           "Precision"
+
+#define ZSTR_RSSI              "RSSI"
+#define ZSTR_A1                "A1"
+#define ZSTR_A2                "A2"
+#define ZSTR_BATT              "Batt"
+#define ZSTR_ALT               "Alt"
+#define ZSTR_TEMP              "Temp"
+#define ZSTR_RPM               "RPM"
+#define ZSTR_FUEL              "Fuel"
+#define ZSTR_VSPD              "VSpd"
+#define ZSTR_ACCX              "AccX"
+#define ZSTR_ACCY              "AccY"
+#define ZSTR_ACCZ              "AccZ"
+#define ZSTR_CURR              "Curr"
+#define ZSTR_VFAS              "VFAS"
+#define ZSTR_ASPD              "ASpd"
+#define ZSTR_GSPD              "GSpd"
+#define ZSTR_HDG               "Hdg"
+#define ZSTR_CELLS             "Cels"
+#define ZSTR_GPSALT            "GAlt"
+#define ZSTR_GPSDATETIME       "Date"
+#define ZSTR_GPS               "GPS"

@@ -116,7 +116,7 @@ int8_t calcRESXto100(int16_t x)
 }
 #endif
 
-#if defined(HELI) || defined(FRSKY_HUB)
+#if defined(HELI) || defined(FRSKY_HUB) || defined(CPUARM)
 uint16_t isqrt32(uint32_t n)
 {
   uint16_t c = 0x8000;
@@ -154,6 +154,17 @@ getvalue_t div10_and_round(getvalue_t value)
   return value/10;
 }
 
+getvalue_t div100_and_round(getvalue_t value)
+{
+  if (value >= 0 ) {
+    value += 50;
+  }
+  else {
+    value -= 50;
+  }
+  return value/100;
+}
+
 #if defined(PCBTARANIS)
 double gpsToDouble(bool neg, int16_t bp, int16_t ap)
 {
@@ -166,7 +177,7 @@ double gpsToDouble(bool neg, int16_t bp, int16_t ap)
 }
 #endif
 
-#if defined(FRSKY_HUB)
+#if defined(FRSKY_HUB) && !defined(CPUARM)
 void extractLatitudeLongitude(uint32_t * latitude, uint32_t * longitude)
 {
   div_t qr = div(frskyData.hub.gpsLatitude_bp, 100);
@@ -176,17 +187,8 @@ void extractLatitudeLongitude(uint32_t * latitude, uint32_t * longitude)
   *longitude = ((uint32_t)(qr.quot) * 1000000) + (((uint32_t)(qr.rem) * 10000 + frskyData.hub.gpsLongitude_ap) * 5) / 3;
 }
 
-#if defined(PCBTARANIS)
-double pilotLatitude;
-double pilotLongitude;
-#endif
-
 void getGpsPilotPosition()
 {
-#if defined(PCBTARANIS)
-  pilotLatitude = gpsToDouble(frskyData.hub.gpsLatitudeNS=='S', frskyData.hub.gpsLatitude_bp, frskyData.hub.gpsLatitude_ap);
-  pilotLongitude = gpsToDouble(frskyData.hub.gpsLongitudeEW=='W', frskyData.hub.gpsLongitude_bp, frskyData.hub.gpsLongitude_ap);
-#endif
   extractLatitudeLongitude(&frskyData.hub.pilotLatitude, &frskyData.hub.pilotLongitude);
   uint32_t lat = frskyData.hub.pilotLatitude / 10000;
   uint32_t angle2 = (lat*lat) / 10000;

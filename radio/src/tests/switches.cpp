@@ -78,8 +78,8 @@ TEST(getSwitch, OldTypeStickyCSW)
 {
   MODEL_RESET();
   MIXER_RESET();
-  g_model.logicalSw[0] = { SWSRC_SA0, 0, 0, LS_FUNC_AND };
-  g_model.logicalSw[1] = { SWSRC_SW1, SWSRC_SW2, 0, LS_FUNC_OR };
+  g_model.logicalSw[0] = { LS_FUNC_AND, SWSRC_SA0, 0, 0,  };
+  g_model.logicalSw[1] = { LS_FUNC_OR, SWSRC_SW1, SWSRC_SW2, 0  };
 
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
@@ -111,8 +111,8 @@ TEST(getSwitch, nullSW)
   EXPECT_EQ(getSwitch(0), true);
 }
 
-#if defined(PCBTARANIS) && defined(FRSKY)
-TEST(getSwitch, VfasWithDelay)
+#if 0
+TEST(getSwitch, DISABLED_VfasWithDelay)
 {
   MODEL_RESET();
   MIXER_RESET();
@@ -155,7 +155,7 @@ TEST(getSwitch, VfasWithDelay)
 
   //now turn on telemetry
   EXPECT_EQ(TELEMETRY_STREAMING(), false);
-  frskyData.rssi[0].value = 50;
+  TELEMETRY_RSSI() = 50;
   EXPECT_EQ(TELEMETRY_STREAMING(), true);
 
   //vfas is 15.0V so L1 should still be FALSE
@@ -203,7 +203,7 @@ TEST(getSwitch, VfasWithDelay)
 
 
   //now stop telemetry, L1 should become FALSE immediatelly
-  frskyData.rssi[0].value = 0;
+  TELEMETRY_RSSI() = 0;
   EXPECT_EQ(TELEMETRY_STREAMING(), false);
   evalLogicalSwitches();
 
@@ -216,7 +216,7 @@ TEST(getSwitch, VfasWithDelay)
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
 }
 
-TEST(getSwitch, RssiWithDuration)
+TEST(getSwitch, DISABLED_RssiWithDuration)
 {
   MODEL_RESET();
   MIXER_RESET();
@@ -242,7 +242,7 @@ TEST(getSwitch, RssiWithDuration)
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
 
   //now set RSSI to 5, L1 should still be FALSE
-  frskyData.rssi[0].value = 5;
+  TELEMETRY_RSSI() = 5;
   evalLogicalSwitches();
   EXPECT_EQ(TELEMETRY_STREAMING(), true);
 
@@ -255,7 +255,7 @@ TEST(getSwitch, RssiWithDuration)
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
 
   //now set RSSI to 100, L1 should become TRUE for 0.5s
-  frskyData.rssi[0].value = 100;
+  TELEMETRY_RSSI() = 100;
   evalLogicalSwitches();
   EXPECT_EQ(TELEMETRY_STREAMING(), true);
 
@@ -284,7 +284,7 @@ TEST(getSwitch, RssiWithDuration)
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
 
   //repeat  telemetry streaming OFF and ON to test for duration processing
-  frskyData.rssi[0].value = 0;
+  TELEMETRY_RSSI() = 0;
   evalLogicalSwitches();
   EXPECT_EQ(TELEMETRY_STREAMING(), false);
 
@@ -293,7 +293,7 @@ TEST(getSwitch, RssiWithDuration)
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
 
   //now set RSSI to 100, L1 should become TRUE for 0.5s
-  frskyData.rssi[0].value = 100;
+  TELEMETRY_RSSI() = 100;
   evalLogicalSwitches();
   EXPECT_EQ(TELEMETRY_STREAMING(), true);
 
@@ -349,7 +349,7 @@ TEST(getSwitch, inputWithTrim)
   modelDefault(0);
   MIXER_RESET();
 
-  g_model.logicalSw[0] = { MIXSRC_FIRST_INPUT, 0, 0, LS_FUNC_VPOS };
+  g_model.logicalSw[0] = { LS_FUNC_VPOS, MIXSRC_FIRST_INPUT, 0, 0 };
 
   doMixerCalculations();
   evalLogicalSwitches();

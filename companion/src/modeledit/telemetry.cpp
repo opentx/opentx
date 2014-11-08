@@ -2,6 +2,7 @@
 #include "ui_telemetry.h"
 #include "ui_telemetry_analog.h"
 #include "ui_telemetry_customscreen.h"
+#include "ui_telemetry_sensor.h"
 #include "helpers.h"
 #include "appdata.h"
 
@@ -469,6 +470,169 @@ void TelemetryCustomScreen::barMaxChanged(double value)
   }
 }
 
+TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+  ModelPanel(parent, model, generalSettings, firmware),
+  ui(new Ui::TelemetrySensor),
+  sensor(sensor),
+  lock(false)
+{
+  ui->setupUi(this);
+  ui->id->setField(sensor.id);
+  ui->instance->setField(sensor.instance);
+  ui->ratio->setField(sensor.ratio);
+  ui->offset->setField(sensor.offset);
+  ui->inputFlags->setField(sensor.inputFlags);
+  ui->logs->setField(sensor.logs);
+  ui->persistent->setField(sensor.persistent);
+  ui->gpsSensor->setField(sensor.gps);
+  ui->altSensor->setField(sensor.alt);
+  ui->ampsSensor->setField(sensor.amps);
+  ui->cellsSensor->setField(sensor.source);
+  ui->source1->setField(sensor.sources[0]);
+  ui->source2->setField(sensor.sources[1]);
+  ui->source3->setField(sensor.sources[2]);
+  ui->source4->setField(sensor.sources[3]);
+  update();
+}
+
+TelemetrySensorPanel::~TelemetrySensorPanel()
+{
+  delete ui;
+}
+
+void TelemetrySensorPanel::update()
+{
+  bool precDisplayed = false;
+  bool gpsFieldsDisplayed = false;
+  bool cellsFieldsDisplayed = false;
+  bool consFieldsDisplayed = false;
+  bool ratioFieldsDisplayed = false;
+  bool sources12FieldsDisplayed = false;
+  bool sources34FieldsDisplayed = false;
+
+  lock = true;
+  ui->name->setText(sensor.label);
+  ui->type->setCurrentIndex(sensor.type);
+  ui->unit->setCurrentIndex(sensor.unit);
+  ui->prec->setValue(sensor.prec);
+
+  if (sensor.type == SensorData::TYPE_CALCULATED) {
+    sensor.updateUnit();
+    ui->idLabel->hide();
+    ui->id->hide();
+    ui->instanceLabel->hide();
+    ui->instance->hide();
+    ui->formula->show();
+    ui->formula->setCurrentIndex(sensor.formula);
+    precDisplayed = (sensor.formula < SensorData::FORMULA_CELL);
+    gpsFieldsDisplayed = (sensor.formula == SensorData::FORMULA_DIST);
+    cellsFieldsDisplayed = (sensor.formula == SensorData::FORMULA_CELL);
+    consFieldsDisplayed = (sensor.formula == SensorData::FORMULA_CONSUMPTION);
+    sources12FieldsDisplayed = (sensor.formula <= SensorData::FORMULA_MULTIPLY);
+    sources34FieldsDisplayed = (sensor.formula < SensorData::FORMULA_MULTIPLY);
+    updateSourcesComboBox(ui->source1);
+    updateSourcesComboBox(ui->source2);
+    updateSourcesComboBox(ui->source3);
+    updateSourcesComboBox(ui->source4);
+    updateSourcesComboBox(ui->gpsSensor);
+    updateSourcesComboBox(ui->altSensor);
+    updateSourcesComboBox(ui->ampsSensor);
+  }
+  else {
+    ui->idLabel->show();
+    ui->id->show();
+    ui->instanceLabel->show();
+    ui->instance->show();
+    ui->formula->hide();
+    ratioFieldsDisplayed = (sensor.unit != SensorData::UNIT_GPS && sensor.unit != SensorData::UNIT_DATETIME);
+    ui->offset->setDecimals(sensor.prec);
+    precDisplayed = (sensor.unit != SensorData::UNIT_GPS && sensor.unit != SensorData::UNIT_DATETIME);
+  }
+
+  ui->ratioLabel->setVisible(ratioFieldsDisplayed);
+  ui->ratio->setVisible(ratioFieldsDisplayed);
+  ui->offsetLabel->setVisible(ratioFieldsDisplayed);
+  ui->offset->setVisible(ratioFieldsDisplayed);
+  ui->precLabel->setVisible(precDisplayed);
+  ui->prec->setVisible(precDisplayed);
+  ui->unit->setVisible(precDisplayed);
+  ui->gpsSensorLabel->setVisible(gpsFieldsDisplayed);
+  ui->gpsSensor->setVisible(gpsFieldsDisplayed);
+  ui->altSensorLabel->setVisible(gpsFieldsDisplayed);
+  ui->altSensor->setVisible(gpsFieldsDisplayed);
+  ui->ampsSensorLabel->setVisible(consFieldsDisplayed);
+  ui->ampsSensor->setVisible(consFieldsDisplayed);
+  ui->cellsSensorLabel->setVisible(cellsFieldsDisplayed);
+  ui->cellsSensor->setVisible(cellsFieldsDisplayed);
+  ui->cellsIndex->setVisible(cellsFieldsDisplayed);
+  ui->source1->setVisible(sources12FieldsDisplayed);
+  ui->source2->setVisible(sources12FieldsDisplayed);
+  ui->source3->setVisible(sources34FieldsDisplayed);
+  ui->source4->setVisible(sources34FieldsDisplayed);
+
+  lock = false;
+}
+
+void populateTelemetrySourcesComboBox(AutoComboBox * cb, const ModelData * model)
+{
+  cb->clear();
+  cb->addItem("---", 0);
+  for (int i=0; i<C9X_MAX_SENSORS; ++i) {
+    if (model->sensorData[i].isAvailable())
+      cb->addItem(model->sensorData[i].label, i+1);
+  }
+}
+
+void TelemetrySensorPanel::updateSourcesComboBox(AutoComboBox * cb)
+{
+  populateTelemetrySourcesComboBox(cb, model);
+}
+
+void TelemetrySensorPanel::on_name_editingFinished()
+{
+  if (!lock) {
+    strcpy(sensor.label, ui->name->text().toAscii());
+    update();
+    emit modified();
+  }
+}
+
+void TelemetrySensorPanel::on_type_currentIndexChanged(int index)
+{
+  if (!lock) {
+    sensor.type = index;
+    update();
+    emit modified();
+  }
+}
+
+void TelemetrySensorPanel::on_formula_currentIndexChanged(int index)
+{
+  if (!lock) {
+    sensor.formula = index;
+    update();
+    emit modified();
+  }
+}
+
+void TelemetrySensorPanel::on_unit_currentIndexChanged(int index)
+{
+  if (!lock) {
+    sensor.unit = index;
+    update();
+    emit modified();
+  }
+}
+
+void TelemetrySensorPanel::on_prec_editingFinished()
+{
+  if (!lock) {
+    sensor.prec = ui->prec->value();
+    update();
+    emit modified();
+  }
+}
+
 /******************************************************/
 
 TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
@@ -494,37 +658,37 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     ui->telemetryProtocol->hide();
   }
 
-  analogs[0] = new TelemetryAnalog(this, model.frsky.channels[0], model, generalSettings, firmware);
-  ui->A1Layout->addWidget(analogs[0]);
-  connect(analogs[0], SIGNAL(modified()), this, SLOT(onAnalogModified()));
-
-  analogs[1] = new TelemetryAnalog(this, model.frsky.channels[1], model, generalSettings, firmware);
-  ui->A2Layout->addWidget(analogs[1]);
-  connect(analogs[1], SIGNAL(modified()), this, SLOT(onAnalogModified()));
-
   if (IS_ARM(firmware->getBoard())) {
-    analogs[2] = new TelemetryAnalog(this, model.frsky.channels[2], model, generalSettings, firmware);
-    ui->A3Layout->addWidget(analogs[2]);
-    connect(analogs[2], SIGNAL(modified()), this, SLOT(onAnalogModified()));
-
-    analogs[3] = new TelemetryAnalog(this, model.frsky.channels[3], model, generalSettings, firmware);
-    ui->A4Layout->addWidget(analogs[3]);
-    connect(analogs[3], SIGNAL(modified()), this, SLOT(onAnalogModified()));
+    ui->A1GB->hide();
+    ui->A2GB->hide();
+    for (int i=0; i<C9X_MAX_SENSORS; ++i) {
+      TelemetrySensorPanel * panel = new TelemetrySensorPanel(this, model.sensorData[i], model, generalSettings, firmware);
+      ui->sensorsLayout->addWidget(panel);
+      sensorPanels[i] = panel;
+    }
   }
   else {
-    ui->A3GB->hide();
-    ui->A4GB->hide();
+    ui->sensorsGB->hide();
+    analogs[0] = new TelemetryAnalog(this, model.frsky.channels[0], model, generalSettings, firmware);
+    ui->A1Layout->addWidget(analogs[0]);
+    connect(analogs[0], SIGNAL(modified()), this, SLOT(onAnalogModified()));
+    analogs[1] = new TelemetryAnalog(this, model.frsky.channels[1], model, generalSettings, firmware);
+    ui->A2Layout->addWidget(analogs[1]);
+    connect(analogs[1], SIGNAL(modified()), this, SLOT(onAnalogModified()));
+  }
+
+  if (IS_TARANIS(firmware->getBoard())) {
+    ui->voltsSource->setField(model.frsky.voltsSource);
+    ui->altitudeSource->setField(model.frsky.altitudeSource);
+  }
+  else {
+    ui->topbarGB->hide();
   }
 
   for (int i=0; i<firmware->getCapability(TelemetryCustomScreens); i++) {
     TelemetryCustomScreen * tab = new TelemetryCustomScreen(this, model, model.frsky.screens[i], generalSettings, firmware);
     ui->customScreens->addTab(tab, tr("Telemetry screen %1").arg(i+1));
     telemetryCustomScreens[i] = tab;
-  }
-
-  if (IS_ARM(firmware->getBoard())) {
-    ui->bladesCount->setMinimum(1);
-    ui->bladesCount->setMaximum(128);
   }
 
   disableMouseScrolling();
@@ -546,6 +710,15 @@ void TelemetryPanel::update()
     else {
       ui->telemetryProtocol->setEnabled(false);
       ui->telemetryProtocol->setCurrentIndex(0);
+    }
+
+    populateTelemetrySourcesComboBox(ui->voltsSource, model);
+    populateTelemetrySourcesComboBox(ui->altitudeSource, model);
+  }
+
+  if (IS_ARM(firmware->getBoard())) {
+    for (int i=0; i<C9X_MAX_SENSORS; ++i) {
+      sensorPanels[i]->update();
     }
   }
 }
@@ -569,19 +742,13 @@ void TelemetryPanel::setup()
       ui->rssiAlarm2Label->setText(tr("Critical Alarm"));
     }
 
-    if (!firmware->getCapability(HasAltitudeSel)) {
-      ui->AltitudeGPS_ChkB->hide();
-    }
-    else {
-      ui->AltitudeGPS_ChkB->setChecked(model->frsky.FrSkyGpsAlt);
-    }
-    
-    if (IS_TARANIS(firmware->getBoard())) {
-      ui->AltitudeToolbar_ChkB->setChecked(model->frsky.altitudeDisplayed);
-    }
-    else {
-      ui->AltitudeToolbar_ChkB->hide();
-    }
+    /*if (IS_ARM(firmware->getBoard())) {
+      for (int i=0; i<C9X_MAX_SENSORS; ++i) {
+        TelemetrySensorPanel * panel = new TelemetrySensorPanel(this, model->, model, generalSettings, firmware);
+        ui->sensorsLayout->addWidget(panel);
+        sensorPanels[i] = panel;
+      }
+    }*/
 
     int varioCap = firmware->getCapability(HasVario);
     if (!varioCap) {
@@ -610,7 +777,7 @@ void TelemetryPanel::setup()
       ui->varioLimitCenterMin_DSB->setValue((model->frsky.varioCenterMin/10.0)-0.5);
     }
 
-    ui->altimetryGB->setVisible(firmware->getCapability(HasAltitudeSel) || firmware->getCapability(HasVario)),
+    ui->altimetryGB->setVisible(firmware->getCapability(HasVario)),
     ui->frskyProtoCB->setDisabled(firmware->getCapability(NoTelemetryProtocol));
 
     if (firmware->getCapability(Telemetry) & TM_HASWSHH) {
@@ -621,33 +788,35 @@ void TelemetryPanel::setup()
     }
     
     ui->variousGB->hide();
-    if (!(firmware->getCapability(HasFasOffset)) && !(firmware_id.contains("fasoffset"))) {
-      ui->fasOffset_label->hide();
-      ui->fasOffset_DSB->hide();
-    }
-    else {
-      ui->fasOffset_DSB->setValue(model->frsky.fasOffset/10.0);
-      ui->variousGB->show();
-    }
-
-    if (!(firmware->getCapability(HasMahPersistent))) {
-      ui->mahCount_label->hide();
-      ui->mahCount_SB->hide();
-      ui->mahCount_ChkB->hide();
-    }
-    else {
-      if (model->frsky.mAhPersistent) {
-        ui->mahCount_ChkB->setChecked(true);
-        ui->mahCount_SB->setValue(model->frsky.storedMah);
+    if (!IS_ARM(firmware->getBoard())) {
+      if (!(firmware->getCapability(HasFasOffset)) && !(firmware_id.contains("fasoffset"))) {
+        ui->fasOffset_label->hide();
+        ui->fasOffset_DSB->hide();
       }
       else {
-        ui->mahCount_SB->setDisabled(true);
+        ui->fasOffset_DSB->setValue(model->frsky.fasOffset/10.0);
+        ui->variousGB->show();
       }
-      ui->variousGB->show();
-    }
 
-    ui->frskyProtoCB->setCurrentIndex(model->frsky.usrProto);
-    ui->bladesCount->setValue(model->frsky.blades);
+      if (!(firmware->getCapability(HasMahPersistent))) {
+        ui->mahCount_label->hide();
+        ui->mahCount_SB->hide();
+        ui->mahCount_ChkB->hide();
+      }
+      else {
+        if (model->frsky.mAhPersistent) {
+          ui->mahCount_ChkB->setChecked(true);
+          ui->mahCount_SB->setValue(model->frsky.storedMah);
+        }
+        else {
+          ui->mahCount_SB->setDisabled(true);
+        }
+        ui->variousGB->show();
+      }
+
+      ui->frskyProtoCB->setCurrentIndex(model->frsky.usrProto);
+      ui->bladesCount->setValue(model->frsky.blades);
+    }
 
     populateVoltsSource();
     populateCurrentSource();
@@ -658,8 +827,8 @@ void TelemetryPanel::setup()
 
 void TelemetryPanel::populateVarioSource()
 {
-  QUnsignedAutoComboBox * cb = ui->varioSourceCB;
-  cb->setField(&model->frsky.varioSource, this);
+  AutoComboBox * cb = ui->varioSourceCB;
+  cb->setField(model->frsky.varioSource, this);
   if (!IS_TARANIS(firmware->getBoard())) {
     cb->addItem(tr("Alti"), TELEMETRY_VARIO_SOURCE_ALTI);
     cb->addItem(tr("Alti+"), TELEMETRY_VARIO_SOURCE_ALTI_PLUS);
@@ -674,8 +843,8 @@ void TelemetryPanel::populateVarioSource()
 
 void TelemetryPanel::populateVoltsSource()
 {
-  QUnsignedAutoComboBox * cb = ui->frskyVoltCB;
-  cb->setField(&model->frsky.voltsSource, this);
+  AutoComboBox * cb = ui->frskyVoltCB;
+  cb->setField(model->frsky.voltsSource, this);
   cb->addItem(tr("A1"), TELEMETRY_VOLTS_SOURCE_A1);
   cb->addItem(tr("A2"), TELEMETRY_VOLTS_SOURCE_A2);
   if (IS_ARM(firmware->getBoard())) {
@@ -688,8 +857,8 @@ void TelemetryPanel::populateVoltsSource()
 
 void TelemetryPanel::populateCurrentSource()
 {
-  QUnsignedAutoComboBox * cb = ui->frskyCurrentCB;
-  cb->setField(&model->frsky.currentSource, this);
+  AutoComboBox * cb = ui->frskyCurrentCB;
+  cb->setField(model->frsky.currentSource, this);
   cb->addItem(tr("---"), TELEMETRY_CURRENT_SOURCE_NONE);
   cb->addItem(tr("A1"), TELEMETRY_CURRENT_SOURCE_A1);
   cb->addItem(tr("A2"), TELEMETRY_CURRENT_SOURCE_A2);
@@ -746,18 +915,6 @@ void TelemetryPanel::on_rssiAlarm1SB_editingFinished()
 void TelemetryPanel::on_rssiAlarm2SB_editingFinished()
 {
   model->frsky.rssiAlarms[1].value = ui->rssiAlarm2SB->value();
-  emit modified();
-}
-
-void TelemetryPanel::on_AltitudeGPS_ChkB_toggled(bool checked)
-{
-  model->frsky.FrSkyGpsAlt = checked;
-  emit modified();
-}
-
-void TelemetryPanel::on_AltitudeToolbar_ChkB_toggled(bool checked)
-{
-  model->frsky.altitudeDisplayed = checked;
   emit modified();
 }
 

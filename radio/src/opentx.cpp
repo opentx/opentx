@@ -478,10 +478,6 @@ void modelDefault(uint8_t id)
   }
 #endif
 
-#if defined(PCBTARANIS)
-  g_model.frsky.channels[0].ratio = 132;
-#endif
-
 #if defined(MAVLINK)
   g_model.mavlink.rc_rssi_scale = 15;
   g_model.mavlink.pc_rssi_en = 1;
@@ -768,13 +764,42 @@ void setGVarValue(uint8_t idx, int16_t value, int8_t phase)
 
 #endif
 
-#if defined(CPUARM) && defined(FRSKY)
+#if defined(CPUARM)
+getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value)
+{
+  return value;
+}
+
+getvalue_t convert8bitsTelemValue(source_t channel, ls_telemetry_value_t value)
+{
+  return value;
+}
+
+#if defined(FRSKY)
+ls_telemetry_value_t minTelemValue(source_t channel)
+{
+  return 0;
+}
+
+ls_telemetry_value_t maxTelemValue(source_t channel)
+{
+  return 30000;
+}
+#endif
+
+ls_telemetry_value_t max8bitsTelemValue(source_t channel)
+{
+  return 30000;
+}
+
+#elif defined(FRSKY)
+
+/*
 ls_telemetry_value_t minTelemValue(uint8_t channel)
 {
   switch (channel) {
     case TELEM_TIMER1:
     case TELEM_TIMER2:
-    case TELEM_TIMER3:
       return -3600;
     case TELEM_ALT:
     case TELEM_MIN_ALT:
@@ -796,103 +821,33 @@ ls_telemetry_value_t minTelemValue(uint8_t channel)
       return 0;
   }
 }
-#endif
-
-#if defined(FRSKY)
+*/
 ls_telemetry_value_t maxTelemValue(uint8_t channel)
 {
   switch (channel) {
-#if defined(CPUARM)
-    case TELEM_TX_TIME:
-      return 24*60-1;
-    case TELEM_TIMER1:
-    case TELEM_TIMER2:
-    case TELEM_TIMER3:
-      return 60*60;
-#endif
     case TELEM_FUEL:
-#if defined(CPUARM)
-    case TELEM_SWR:
-#endif
     case TELEM_RSSI_TX:
     case TELEM_RSSI_RX:
       return 100;
     case TELEM_HDG:
       return 180;
-#if defined(CPUARM)
-    case TELEM_SPEED:
-    case TELEM_MAX_SPEED:
-    case TELEM_ASPEED:
-    case TELEM_MAX_ASPEED:
-      return 20000;
-    case TELEM_CELL:
-    case TELEM_MIN_CELL:
-      return 510;
-    case TELEM_CELLS_SUM:
-    case TELEM_MIN_CELLS_SUM:
-    case TELEM_VFAS:
-    case TELEM_MIN_VFAS:
-      return 1000;
-    case TELEM_VSPEED:
-      return 3000;
-    case TELEM_ACCx:
-    case TELEM_ACCy:
-    case TELEM_ACCz:
-      return 1000;
-    default:
-      return 30000;
-#else
     default:
       return 255;
-#endif
   }
 }
 #endif
 
-#if defined(CPUARM)
-getvalue_t convert16bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
-{
-  getvalue_t result;
-  switch (channel) {
-#if defined(FRSKY_SPORT)
-    case TELEM_ALT:
-      result = value * 100;
-      break;
-#endif
-    case TELEM_VSPEED:
-      result = value * 10;
-      break;
-
-    default:
-      result = value;
-      break;
-  }
-  return result;
-}
-
-ls_telemetry_value_t max8bitsTelemValue(uint8_t channel)
-{
-  return min<ls_telemetry_value_t>(255, maxTelemValue(channel));
-}
-#endif
-
+#if !defined(CPUARM)
 getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
 {
   getvalue_t result;
   switch (channel) {
     case TELEM_TIMER1:
     case TELEM_TIMER2:
-#if defined(CPUARM)
-    case TELEM_TIMER3:
-#endif
       result = value * 5;
       break;
 #if defined(FRSKY)
     case TELEM_ALT:
-#if defined(CPUARM)
-      result = 100 * (value * 8 - 500);
-      break;
-#endif
     case TELEM_GPSALT:
     case TELEM_MAX_ALT:
     case TELEM_MIN_ALT:
@@ -941,8 +896,9 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
   }
   return result;
 }
+#endif
 
-#if defined(FRSKY) || defined(CPUARM)
+#if defined(FRSKY)&& !defined(CPUARM)
 FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
 {
   if (IS_IMPERIAL_ENABLE()) {
@@ -2100,14 +2056,19 @@ void opentxClose()
 
   saveTimers();
 
-#if defined(CPUARM) && defined(FRSKY)
-  if (g_model.frsky.mAhPersistent && g_model.frsky.storedMah!=frskyData.hub.currentConsumption) {
-    g_model.frsky.storedMah = frskyData.hub.currentConsumption;
-    eeDirty(EE_MODEL);
-  }
-  else if (!g_model.frsky.mAhPersistent && g_model.frsky.storedMah!=0) {
-    g_model.frsky.storedMah = 0;
-    eeDirty(EE_MODEL);
+#if defined(CPUARM)
+  for (int i=0; i<TELEM_VALUES_MAX; i++) {
+    TelemetrySensor & sensor = g_model.telemetrySensors[i];
+    if (sensor.type == TELEM_TYPE_CALCULATED) {
+      if (sensor.persistent && sensor.persistentValue != telemetryItems[i].value) {
+        sensor.persistentValue = telemetryItems[i].value;
+        eeDirty(EE_MODEL);
+      }
+      else if (!sensor.persistent) {
+        sensor.persistentValue = 0;
+        eeDirty(EE_MODEL);
+      }
+    }
   }
 #endif
 

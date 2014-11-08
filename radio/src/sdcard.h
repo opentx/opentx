@@ -69,6 +69,7 @@ extern FATFS g_FATFS_Obj;
 
 extern uint8_t logDelay;
 extern const pm_char * openLogs();
+void writeHeader();
 extern void closeLogs();
 extern void writeLogs();
 

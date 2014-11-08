@@ -471,7 +471,7 @@ void menuGeneralSetup(uint8_t event)
 #if defined(PCBSKY9X)
       case ITEM_SETUP_CAPACITY_WARNING:
         lcd_putsLeft(y, STR_CAPAWARNING);
-        putsTelemetryValue(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.mAhWarn*50, UNIT_MAH, attr|LEFT) ;
+        putsValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.mAhWarn*50, UNIT_MAH, attr|LEFT) ;
         if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.mAhWarn, 0, 100);
         break;
 #endif
@@ -479,7 +479,7 @@ void menuGeneralSetup(uint8_t event)
 #if defined(PCBSKY9X)
       case ITEM_SETUP_TEMPERATURE_WARNING:
         lcd_putsLeft(y, STR_TEMPWARNING);
-        putsTelemetryValue(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.temperatureWarn, UNIT_TEMPERATURE, attr|LEFT) ;
+        putsValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.temperatureWarn, UNIT_TEMPERATURE, attr|LEFT) ;
         if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureWarn, 0, 120); // 0 means no alarm
         break;
 #endif
@@ -1349,13 +1349,13 @@ void menuGeneralDiagAna(uint8_t event)
 
 #if defined(PCBSKY9X) && !defined(REVA)
   lcd_putsLeft(6*FH+1, STR_CURRENT_CALIB);
-  putsTelemetryValue(LEN_CALIB_FIELDS*FW+4*FW, 6*FH+1, getCurrent(), UNIT_MILLIAMPS, (m_posVert==2 ? INVERS : 0)) ;
+  putsValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, 6*FH+1, getCurrent(), UNIT_MILLIAMPS, (m_posVert==2 ? INVERS : 0)) ;
   if (m_posVert==2) CHECK_INCDEC_GENVAR(event, g_eeGeneral.currentCalib, -49, 49);
 #endif
 
 #if defined(PCBSKY9X)
   lcd_putsLeft(7*FH+1, STR_TEMP_CALIB);
-  putsTelemetryValue(LEN_CALIB_FIELDS*FW+4*FW, 7*FH+1, getTemperature(), UNIT_TEMPERATURE, (m_posVert==3 ? INVERS : 0)) ;
+  putsValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, 7*FH+1, getTemperature(), UNIT_TEMPERATURE, (m_posVert==3 ? INVERS : 0)) ;
   if (m_posVert==3) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
 #endif
 }

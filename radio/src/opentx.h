@@ -243,7 +243,7 @@
   #define IF_FAI_CHOICE(x)
 #endif
 
-#define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && idx > MIXSRC_FIRST_TELEM-1+TELEM_A2-1)
+#define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && idx >= MIXSRC_FIRST_TELEM)
 
 #if defined(SIMU)
   #ifndef FORCEINLINE
@@ -633,11 +633,12 @@ extern uint8_t pxxFlag[NUM_MODULES];
 #define ZCHAR_MAX (LEN_STD_CHARS + LEN_SPECIAL_CHARS)
 #endif
 
+char hex2zchar(uint8_t hex);
 char idx2char(int8_t idx);
 #if defined(CPUARM) || defined(SIMU)
 int8_t char2idx(char c);
 void str2zchar(char *dest, const char *src, int size);
-void zchar2str(char *dest, const char *src, int size);
+int zchar2str(char *dest, const char *src, int size);
 #endif
 
 #include "keys.h"
@@ -1029,9 +1030,7 @@ template<class t> FORCEINLINE t limit(t mi, t x, t ma) { return min(max(mi,x),ma
 template<class t> void swap(t & a, t & b) { t tmp = b; b = a; a = tmp; }
 #endif
 
-#if defined(HELI) || defined(FRSKY_HUB)
 uint16_t isqrt32(uint32_t n);
-#endif
 
 #if defined(CPUARM) && !defined(BOOT)
 #if !defined(SIMU)
@@ -1358,6 +1357,10 @@ void evalFunctions();
 
 #include "gui/menus.h"
 
+#if defined(CPUARM)
+  #include "telemetry/telemetry.h"
+#endif
+
 #if defined (FRSKY)
   // FrSky Telemetry
   #include "telemetry/frsky.h"
@@ -1638,9 +1641,10 @@ extern union ReusableBuffer reusableBuffer;
 
 void checkFlashOnBeep();
 
-#if defined(FRSKY) || defined(CPUARM)
+#if defined(CPUARM)
+void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att);
+#elif defined(FRSKY)
 void convertUnit(getvalue_t & val, uint8_t & unit); // TODO check FORCEINLINE on stock
-void putsTelemetryValue(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att);
 #else
 #define convertUnit(...)
 #endif
@@ -1694,19 +1698,19 @@ extern bar_threshold_t barsThresholds[THLD_MAX];
 #endif
 
 #if defined(FRSKY)
-  ls_telemetry_value_t minTelemValue(uint8_t channel);
-  ls_telemetry_value_t maxTelemValue(uint8_t channel);
+  ls_telemetry_value_t minTelemValue(source_t channel);
+  ls_telemetry_value_t maxTelemValue(source_t channel);
 #else
   #define minTelemValue(channel) 255
   #define maxTelemValue(channel) 255
 #endif
 
 #if defined(CPUARM)
-getvalue_t convert16bitsTelemValue(uint8_t channel, ls_telemetry_value_t value);
-ls_telemetry_value_t max8bitsTelemValue(uint8_t channel);
+getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value);
+ls_telemetry_value_t max8bitsTelemValue(source_t channel);
 #endif
 
-getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value);
+getvalue_t convert8bitsTelemValue(source_t channel, ls_telemetry_value_t value);
 getvalue_t convertLswTelemValue(LogicalSwitchData * cs);
 
 #if defined(CPUARM)
@@ -1720,12 +1724,12 @@ getvalue_t convertLswTelemValue(LogicalSwitchData * cs);
 #endif
 
 #if defined(FRSKY) || defined(CPUARM)
-lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val);
+lcdint_t applyChannelRatio(source_t channel, lcdint_t val);
 #define ANA_CHANNEL_UNIT(channel) g_model.frsky.channels[channel].type
 #endif
 
 getvalue_t div10_and_round(getvalue_t value);
-
+getvalue_t div100_and_round(getvalue_t value);
 
 #if defined(FRSKY)
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);
@@ -1738,27 +1742,19 @@ extern const pm_uint8_t bchunit_ar[];
   #define FRSKY_MULTIPLIER_MAX 3
 #endif
 
-#if defined(PCBTARANIS)
-enum FrskyViews {
+enum TelemetryViews {
   TELEMETRY_CUSTOM_SCREEN_1,
   TELEMETRY_CUSTOM_SCREEN_2,
+#if defined(CPUARM)
   TELEMETRY_CUSTOM_SCREEN_3,
   TELEMETRY_CUSTOM_SCREEN_4,
-  TELEMETRY_VOLTAGES_SCREEN, // TODO NOT IF LUA
-  TELEMETRY_AFTER_FLIGHT_SCREEN, // TODO NOT IF LUA
-  FRSKY_VIEW_MAX = TELEMETRY_AFTER_FLIGHT_SCREEN
-};
+  TELEMETRY_VIEW_MAX = TELEMETRY_CUSTOM_SCREEN_4
 #else
-enum FrskyViews {
-  TELEMETRY_CUSTOM_SCREEN_1,
-  TELEMETRY_CUSTOM_SCREEN_2,
-  CASE_CPUARM(TELEMETRY_CUSTOM_SCREEN_3)
-  CASE_CPUARM(TELEMETRY_CUSTOM_SCREEN_4)
   TELEMETRY_VOLTAGES_SCREEN,
   TELEMETRY_AFTER_FLIGHT_SCREEN,
-  FRSKY_VIEW_MAX = TELEMETRY_AFTER_FLIGHT_SCREEN
-};
+  TELEMETRY_VIEW_MAX = TELEMETRY_AFTER_FLIGHT_SCREEN
 #endif
+};
 
 extern uint8_t s_frsky_view;
 
@@ -1769,8 +1765,6 @@ extern uint8_t s_frsky_view;
 
 #if defined(PCBTARANIS)
 double gpsToDouble(bool neg, int16_t bp, int16_t ap);
-extern double pilotLatitude;
-extern double pilotLongitude;
 #endif
 void getGpsPilotPosition();
 void getGpsDistance();
@@ -1790,10 +1784,7 @@ void varioWakeup();
   #define IS_IMPERIAL_ENABLE() (0)
 #endif
 
-#if defined(PCBTARANIS)
-  #define IS_USR_PROTO_FRSKY_HUB()   (1)
-  #define IS_USR_PROTO_WS_HOW_HIGH() (0)
-#else
+#if !defined(CPUARM)
   #define IS_USR_PROTO_FRSKY_HUB()   (g_model.frsky.usrProto == USR_PROTO_FRSKY)
   #define IS_USR_PROTO_WS_HOW_HIGH() (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
 #endif

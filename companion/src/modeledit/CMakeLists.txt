@@ -41,6 +41,7 @@ set(modeledit_UIS
   flightmode.ui
   telemetry_analog.ui
   telemetry_customscreen.ui
+  telemetry_sensor.ui
 )
 
 foreach(name ${modeledit_NAMES})

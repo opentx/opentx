@@ -17,7 +17,6 @@ dups_name = []
 exports = []
 exports_multiple = []
 exports_script_outputs = []
-exports_extra = []
 
 warning = None
 error = None
@@ -50,13 +49,6 @@ def LEXP_MULTIPLE(nameFormat, descriptionFormat, valuesCount):
     # print name
     checkName(name)
   exports_multiple.append( (CONSTANT_VALUE, nameFormat, descriptionFormat, valuesCount) )
-
-def LEXP_EXTRA(name, description, value, condition = "true"):
-  # print "LEXP_EXTRA %s, %s, %s, %s" % (name, description, value, condition)
-  checkName(name)
-  exports_extra.append( (CONSTANT_VALUE, name, description, value, condition) )
-  # extra also added to normal items to enable searching
-  exports.append( (CONSTANT_VALUE, name, description) )
 
 if len(sys.argv) < 3:
   print "Error: not enough arguments!"
@@ -153,32 +145,6 @@ data = ["  {%s, \"%s\", \"%s\", %d}" % export for export in exports_multiple]
 out.write(",\n".join(data))
 out.write("\n};\n\n")
 print "Generated %d items in luaMultipleFields[]" % len(exports_multiple)
-
-#code generation for extra fields
-case = """    case %s:
-      if (%s) {
-        lua_pushnumber(L, %s);
-        return 1;
-      }
-      break;"""
-case_clauses = [case % (cnst, condition, value) for (cnst, name, description, value, condition) in exports_extra]
-case_body = "\n".join(case_clauses)
-func_body = """
-extern lua_State *L;
-
-// The handling of extra Lua fields that are not
-// accessible by the getValue()
-static int luaGetExtraValue(int src)
-{
-  switch (src) {
-%s
-  }
-  return 0;
-}
-
-""" % case_body
-out.write(func_body)
-print "Generated %d conditions in luaGetExtraValue()" % len(exports_extra)
 out.close()
 
 if docFile:

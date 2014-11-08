@@ -994,8 +994,11 @@ void eeLoadModel(uint8_t id)
 #endif
 
 #if defined(CPUARM)
-    if (g_model.frsky.mAhPersistent) {
-      frskyData.hub.currentConsumption = g_model.frsky.storedMah;
+    for (int i=0; i<TELEM_VALUES_MAX; i++) {
+      TelemetrySensor & sensor = g_model.telemetrySensors[i];
+      if (sensor.type == TELEM_TYPE_CALCULATED && sensor.persistent) {
+        telemetryItems[i].value = sensor.persistentValue;
+      }
     }
 #endif
 

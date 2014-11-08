@@ -301,6 +301,7 @@ enum RawSourceType {
   SOURCE_TYPE_PPM,
   SOURCE_TYPE_CH,
   SOURCE_TYPE_GVAR,
+  SOURCE_TYPE_SPECIAL,
   SOURCE_TYPE_TELEMETRY,
   MAX_SOURCE_TYPE
 };
@@ -373,9 +374,7 @@ class RawSource {
       return (this->type != other.type) || (this->index != other.index);
     }
 
-    bool isTimeBased() const {
-      return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2 || index==TELEMETRY_SOURCE_TIMER3));
-    }
+    bool isTimeBased() const;
 
     RawSourceType type;
     int index;
@@ -788,9 +787,8 @@ class FrSkyData {
     unsigned int usrProto;
     int blades;
     unsigned int voltsSource;
-    bool altitudeDisplayed;
+    unsigned int altitudeSource;
     unsigned int currentSource;
-    unsigned int FrSkyGpsAlt;
     FrSkyScreenData screens[4];
     FrSkyRSSIAlarm rssiAlarms[2];
     unsigned int varioSource;
@@ -873,6 +871,103 @@ class ScriptData {
     void clear() { memset(this, 0, sizeof(ScriptData)); }
 };
 
+#define C9X_MAX_SENSORS       32
+class SensorData {
+
+  public:
+
+    enum
+    {
+      TYPE_CUSTOM,
+      TYPE_CALCULATED
+    };
+
+    enum
+    {
+      FORMULA_ADD,
+      FORMULA_AVERAGE,
+      FORMULA_MIN,
+      FORMULA_MAX,
+      FORMULA_MULTIPLY,
+      FORMULA_CELL,
+      FORMULA_CONSUMPTION,
+      FORMULA_DIST
+    };
+
+    enum {
+      UNIT_RAW,
+      UNIT_VOLTS,
+      UNIT_AMPS,
+      UNIT_MILLIAMPS,
+      UNIT_KTS,
+      UNIT_METERS_PER_SECOND,
+      UNIT_KMH,
+      UNIT_MPH,
+      UNIT_METERS,
+      UNIT_FEET,
+      UNIT_CELSIUS,
+      UNIT_FAHRENHEIT,
+      UNIT_PERCENT,
+      UNIT_MAH,
+      UNIT_WATTS,
+      UNIT_DBM,
+      UNIT_RPMS,
+      UNIT_G,
+      UNIT_DEGREE,
+      UNIT_HOURS,
+      UNIT_MINUTES,
+      UNIT_SECONDS,
+      // FrSky format used for these fields, could be another format in the future
+      UNIT_CELLS,
+      UNIT_DATETIME,
+      UNIT_GPS,
+      UNIT_GPS_LONGITUDE,
+      UNIT_GPS_LATITUDE,
+      UNIT_GPS_LONGITUDE_EW,
+      UNIT_GPS_LATITUDE_NS,
+      UNIT_DATETIME_YEAR,
+      UNIT_DATETIME_DAY_MONTH,
+      UNIT_DATETIME_HOUR_MIN,
+      UNIT_DATETIME_SEC
+    };
+
+    SensorData() { clear(); }
+    unsigned int type; // custom / formula
+    unsigned int id;
+    unsigned int instance;
+    unsigned int persistentValue;
+    unsigned int formula;
+    char label[4+1];
+    unsigned int unit;
+    unsigned int prec;
+    unsigned int inputFlags;
+    bool logs;
+    bool persistent;
+
+    // for custom sensors
+    unsigned int ratio;
+    unsigned int offset;
+
+    // for consumption
+    unsigned int amps;
+
+    // for cell
+    unsigned int source;
+    unsigned int index;
+
+    // for calculations
+    unsigned int sources[4];
+
+    // for GPS dist
+    unsigned int gps;
+    unsigned int alt;
+
+    bool isAvailable() const { return type==TYPE_CALCULATED || id!=0 || instance!=0; }
+    void updateUnit();
+    QString unitString() const;
+    void clear() { memset(this, 0, sizeof(SensorData)); }
+};
+
 class ModelData {
   public:
     ModelData();
@@ -929,6 +1024,8 @@ class ModelData {
     ModuleData moduleData[C9X_NUM_MODULES+1/*trainer*/];
 
     ScriptData scriptData[C9X_MAX_SCRIPTS];
+
+    SensorData sensorData[C9X_MAX_SENSORS];
 
     void clear();
     bool isempty();
@@ -1143,7 +1240,6 @@ enum Capability {
   TelemetryCustomScreensFieldsPerLine,
   TelemetryTimeshift,
   TelemetryMaxMultiplier,
-  HasAltitudeSel,
   HasVario,
   HasVarioSink,
   HasFailsafe,

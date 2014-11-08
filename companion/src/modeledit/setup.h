@@ -2,6 +2,7 @@
 #define SETUP_H
 
 #include "modeledit.h"
+#include "eeprominterface.h"
 #include <QVector>
 #include <QCheckBox>
 #include <QSlider>

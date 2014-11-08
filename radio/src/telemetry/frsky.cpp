@@ -76,6 +76,13 @@ uint8_t telemetryProtocol = 255;
 #define IS_FRSKY_SPORT_PROTOCOL() (false)
 #endif
 
+#if defined(CPUARM)
+void FrskyValueWithMin::reset()
+{
+  memclear(this, sizeof(*this));
+}
+#endif
+
 void FrskyValueWithMin::set(uint8_t value)
 {
 #if defined(CPUARM)
@@ -125,20 +132,15 @@ void FrskyValueWithMinMax::set(uint8_t value, uint8_t unit)
   }
 }
 
-uint16_t getChannelRatio(uint8_t channel)
+#if !defined(CPUARM)
+uint16_t getChannelRatio(source_t channel)
 {
   return (uint16_t)g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier;
 }
 
-lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val)
+lcdint_t applyChannelRatio(source_t channel, lcdint_t val)
 {
   return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
-}
-
-#if defined(CPUARM)
-inline bool alarmRaised(uint8_t channel, uint8_t idx)
-{
-  return g_model.frsky.channels[channel].ratio > 0 && g_model.frsky.channels[channel].alarms_value[idx] > 0 && frskyData.analog[channel].value < g_model.frsky.channels[channel].alarms_value[idx];
 }
 #endif
 
@@ -258,21 +260,11 @@ NOINLINE void processSerialData(uint8_t data)
 
 #if defined(FRSKY_SPORT)
   if (IS_FRSKY_SPORT_PROTOCOL() && frskyRxBufferCount >= FRSKY_SPORT_PACKET_SIZE) {
-    frskySportProcessPacket(frskyRxBuffer);
+    processSportPacket(frskyRxBuffer);
     dataState = STATE_DATA_IDLE;
   }
 #endif
 }
-
-enum AlarmsCheckSteps {
-  ALARM_SWR_STEP,
-  ALARM_RSSI_STEP,
-  ALARM_A1_STEP,
-  ALARM_A2_STEP,
-  ALARM_A3_STEP,
-  ALARM_A4_STEP,
-  ALARM_STEPS_COUNT
-};
 
 void telemetryWakeup()
 {
@@ -331,6 +323,14 @@ void telemetryWakeup()
   }
 #endif
 
+#if defined(CPUARM)
+  for (int i=0; i<TELEM_VALUES_MAX; i++) {
+    const TelemetrySensor & sensor = g_model.telemetrySensors[i];
+    if (sensor.type == TELEM_TYPE_CALCULATED) {
+      telemetryItems[i].eval(sensor);
+    }
+  }
+#endif
 
 #if defined(VARIO)
   if (TELEMETRY_STREAMING() && !IS_FAI_ENABLED()) {
@@ -340,76 +340,38 @@ void telemetryWakeup()
 
 #if defined(CPUARM)
   static tmr10ms_t alarmsCheckTime = 0;
-  static uint8_t alarmsCheckStep = 0;
-
+  #define SCHEDULE_NEXT_ALARMS_CHECK(seconds) alarmsCheckTime = get_tmr10ms() + (100*(seconds))
   if (int32_t(get_tmr10ms() - alarmsCheckTime) > 0) {
 
-    alarmsCheckTime = get_tmr10ms() + 100; /* next check in 1 second */
+    SCHEDULE_NEXT_ALARMS_CHECK(1/*second*/);
 
-    if (alarmsCheckStep == ALARM_SWR_STEP) {
+    uint8_t now = TelemetryItem::now();
+    for (int i=0; i<TELEM_VALUES_MAX; i++) {
+      if (isTelemetryFieldAvailable(i)) {
+        uint8_t lastReceived = telemetryItems[i].lastReceived;
+        if (lastReceived < TELEMETRY_VALUE_TIMER_CYCLE && uint8_t(now - lastReceived) > TELEMETRY_VALUE_OLD_THRESHOLD) {
+          telemetryItems[i].lastReceived = TELEMETRY_VALUE_OLD;
+        }
+      }
+    }
+
 #if defined(PCBTARANIS) && defined(SWR)
-      if (IS_FRSKY_SPORT_PROTOCOL() && frskyData.swr.value > 0x33) {
-        AUDIO_SWR_RED();
-        POPUP_WARNING(STR_ANTENNAPROBLEM);
-        alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
-      }
+    if (IS_FRSKY_SPORT_PROTOCOL() && frskyData.swr.value > 0x33) {
+      AUDIO_SWR_RED();
+      POPUP_WARNING(STR_ANTENNAPROBLEM);
+      SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
+    }
 #endif
-    }
-    else if (TELEMETRY_STREAMING()) {
-      if (alarmsCheckStep == ALARM_RSSI_STEP) {
-        if (getRssiAlarmValue(1) && frskyData.rssi[0].value < getRssiAlarmValue(1)) {
-          AUDIO_RSSI_RED();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
-        }
-        else if (getRssiAlarmValue(0) && frskyData.rssi[0].value < getRssiAlarmValue(0)) {
-          AUDIO_RSSI_ORANGE();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
-        }
-      }
-      else if (alarmsCheckStep == ALARM_A1_STEP) {
-        if (alarmRaised(TELEM_ANA_A1, 1)) {
-          AUDIO_A1_RED();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
-        }
-        else if (alarmRaised(TELEM_ANA_A1, 0)) {
-          AUDIO_A1_ORANGE();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
-        }
-      }
-      else if (alarmsCheckStep == ALARM_A2_STEP) {
-        if (alarmRaised(TELEM_ANA_A2, 1)) {
-          AUDIO_A2_RED();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
-        }
-        else if (alarmRaised(TELEM_ANA_A2, 0)) {
-          AUDIO_A2_ORANGE();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
-        }
-      }
-      else if (alarmsCheckStep == ALARM_A3_STEP) {
-        if (alarmRaised(TELEM_ANA_A3, 1)) {
-          AUDIO_A3_RED();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
-        }
-        else if (alarmRaised(TELEM_ANA_A3, 0)) {
-          AUDIO_A3_ORANGE();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
-        }
-      }
-      else if (alarmsCheckStep == ALARM_A4_STEP) {
-        if (alarmRaised(TELEM_ANA_A4, 1)) {
-          AUDIO_A4_RED();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
-        }
-        else if (alarmRaised(TELEM_ANA_A4, 0)) {
-          AUDIO_A4_ORANGE();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
-        }
-      }
-    }
 
-    if (++alarmsCheckStep == ALARM_STEPS_COUNT) {
-      alarmsCheckStep = 0;
+    if (TELEMETRY_STREAMING()) {
+      if (getRssiAlarmValue(1) && TELEMETRY_RSSI() < getRssiAlarmValue(1)) {
+        AUDIO_RSSI_RED();
+        SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
+      }
+      else if (getRssiAlarmValue(0) && TELEMETRY_RSSI() < getRssiAlarmValue(0)) {
+        AUDIO_RSSI_ORANGE();
+        SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
+      }
     }
   }
 
@@ -429,7 +391,6 @@ void telemetryWakeup()
 void telemetryInterrupt10ms()
 {
 #if defined(CPUARM)
-  uint16_t voltage = frskyData.hub.cellsSum; /* unit: 1/10 volts */
 #elif defined(FRSKY_HUB)
   uint16_t voltage = 0; /* unit: 1/10 volts */
   for (uint8_t i=0; i<frskyData.hub.cellsCount; i++)
@@ -443,17 +404,19 @@ void telemetryInterrupt10ms()
 
   if (TELEMETRY_STREAMING()) {
     if (!TELEMETRY_OPENXSENSOR()) {
-      // power calculation
-      uint8_t channel = g_model.frsky.voltsSource;
 #if defined(CPUARM)
-      if (channel <= FRSKY_VOLTS_SOURCE_A4) {
-        voltage = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
+      for (int i=0; i<TELEM_VALUES_MAX; i++) {
+        const TelemetrySensor & sensor = g_model.telemetrySensors[i];
+        if (sensor.type == TELEM_TYPE_CALCULATED) {
+          telemetryItems[i].per10ms(sensor);
+        }
       }
 #else
+      // power calculation
+      uint8_t channel = g_model.frsky.voltsSource;
       if (channel <= FRSKY_VOLTS_SOURCE_A2) {
         voltage = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
       }
-#endif
 
 #if defined(FRSKY_HUB)
       else if (channel == FRSKY_VOLTS_SOURCE_FAS) {
@@ -472,22 +435,21 @@ void telemetryInterrupt10ms()
         current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
       }
 
-#if defined(CPUARM)
-      frskyData.hub.power = (current * voltage) / 100;
-#else
       frskyData.hub.power = ((current>>1) * (voltage>>1)) / 25;
-#endif
 
       frskyData.hub.currentPrescale += current;
       if (frskyData.hub.currentPrescale >= 3600) {
         frskyData.hub.currentConsumption += 1;
         frskyData.hub.currentPrescale -= 3600;
       }
+#endif
     }
 
+#if !defined(CPUARM)
     if (frskyData.hub.power > frskyData.hub.maxPower) {
       frskyData.hub.maxPower = frskyData.hub.power;
     }
+#endif
   }
 
 #if defined(WS_HOW_HIGH)
@@ -501,8 +463,12 @@ void telemetryInterrupt10ms()
   }
   else {
 #if !defined(SIMU)
+#if defined(CPUARM)
+    frskyData.rssi.reset();
+#else
     frskyData.rssi[0].set(0);
     frskyData.rssi[1].set(0);
+#endif
 #endif
   }
 }
@@ -511,6 +477,12 @@ void telemetryReset()
 {
   memclear(&frskyData, sizeof(frskyData));
 
+#if defined(CPUARM)
+  for (int index=0; index<TELEM_VALUES_MAX; index++) {
+    telemetryItems[index].clear();
+  }
+#endif
+
   frskyStreaming = 0; // reset counter only if valid frsky packets are being detected
   link_counter = 0;
 
@@ -518,7 +490,7 @@ void telemetryReset()
   telemetryState = TELEMETRY_INIT;
 #endif
 
-#if defined(FRSKY_HUB)
+#if defined(FRSKY_HUB) && !defined(CPUARM)
   frskyData.hub.gpsLatitude_bp = 2;
   frskyData.hub.gpsLongitude_bp = 2;
   frskyData.hub.gpsFix = -1;
@@ -527,16 +499,18 @@ void telemetryReset()
 #if defined(SIMU)
 
 #if defined(CPUARM)
+  #if defined(SWR)
   frskyData.swr.value = 30;
-#endif
+  #endif
+  frskyData.rssi.value = 75;
+#else
   frskyData.rssi[0].value = 75;
   frskyData.rssi[1].value = 75;
   frskyData.analog[TELEM_ANA_A1].set(120, UNIT_VOLTS);
   frskyData.analog[TELEM_ANA_A2].set(240, UNIT_VOLTS);
-#if defined(CPUARM)
-  frskyData.analog[TELEM_ANA_A3].set(100, UNIT_VOLTS);
-  frskyData.analog[TELEM_ANA_A4].set(200, UNIT_VOLTS);
 #endif
+
+#if !defined(CPUARM)
   frskyData.hub.fuelLevel = 75;
   frskyData.hub.rpm = 12000;
   frskyData.hub.vfas = 100;
@@ -577,9 +551,6 @@ void telemetryReset()
   frskyData.hub.baroAltitude_bp = 50;
   frskyData.hub.minAltitude = 10;
   frskyData.hub.maxAltitude = 500;
-#if defined(CPUARM)
-  frskyData.hub.baroAltitude = 340*100;  //in cm
-#endif
 
   frskyData.hub.accelY = 100;
   frskyData.hub.temperature1 = -30;
@@ -587,6 +558,17 @@ void telemetryReset()
 
   frskyData.hub.current = 55;
   frskyData.hub.maxCurrent = 65;
+#endif
+#endif
+
+#if 0
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, RSSI_ID, 0, 75, UNIT_RAW, 0);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, T1_FIRST_ID, 0, 100, UNIT_CELSIUS, 0);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, T1_FIRST_ID, 1, 200, UNIT_CELSIUS, 0);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ALT_FIRST_ID, 1, 1000, UNIT_METERS, 2);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, CELLS_FIRST_ID, 1, 0x10010020, UNIT_CELLS, 0);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, CELLS_FIRST_ID, 1, 0x10010020, UNIT_CELLS, 0);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, CURR_FIRST_ID, 1, 100, UNIT_AMPS, 2);
 #endif
 }
 
@@ -611,70 +593,6 @@ void telemetryInit(void)
 }
 
 #if defined(CPUARM)
-void frskySetCellsCount(uint8_t cellscount)
-{
-  if (cellscount <= DIM(frskyData.hub.cellVolts)) {
-    frskyData.hub.cellsCount = cellscount;
-    frskyData.hub.cellsState = 0;
-    frskyData.hub.minCells = 0;
-    frskyData.hub.minCell = 0;
-  }
-}
-
-void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts) 
-{
-  // TRACE("frskySetCellVoltage() %d, %d", battnumber, cellVolts);
-
-  if (battnumber < frskyData.hub.cellsCount) {
-    // set cell voltage
-    if (cellVolts > 50)  // Filter out bogus cell values apparently sent by the FLVSS in some cases
-      frskyData.hub.cellVolts[battnumber] = cellVolts;
-
-    if (cellVolts != 0) {
-      frskyData.hub.cellsState |= (1 << battnumber);
-      if (frskyData.hub.cellsState == (1<<frskyData.hub.cellsCount)-1) {
-        // we received voltage of all cells
-        frskyData.hub.cellsState = 0;
-
-        // calculate Cells, Cells-, Cell and Cell-
-        uint16_t cellsSum = 0; /* unit: 1/10 volts */
-        frskyCellVoltage_t minCellVolts = -1;
-        for (uint8_t i=0; i<frskyData.hub.cellsCount; i++) {
-          frskyCellVoltage_t tmpCellVolts = frskyData.hub.cellVolts[i];
-          cellsSum += tmpCellVolts;
-          if (tmpCellVolts < minCellVolts) {
-            // update minimum cell voltage (Cell)
-            minCellVolts = tmpCellVolts;
-          }
-        }
-
-        frskyData.hub.minCellVolts = minCellVolts;
-        frskyData.hub.cellsSum = cellsSum / (10 / TELEMETRY_CELL_VOLTAGE_MUTLIPLIER);
-
-        // update cells sum minimum (Cells-)
-        if (!frskyData.hub.minCells || frskyData.hub.cellsSum < frskyData.hub.minCells) {
-          frskyData.hub.minCells = frskyData.hub.cellsSum;
-        }
-
-        // update minimum cell voltage (Cell-)
-        if (!frskyData.hub.minCell || frskyData.hub.minCellVolts < frskyData.hub.minCell) {
-          frskyData.hub.minCell = frskyData.hub.minCellVolts;
-        }
-      }
-    }
-  }
-}
-
-void frskyUpdateCells(void) 
-{
-  // Voltage => Cell number + Cell voltage
-  uint8_t battnumber = ((frskyData.hub.volts & 0x00F0) >> 4);
-  if (battnumber >= frskyData.hub.cellsCount) {
-    frskySetCellsCount(battnumber+1);
-  }
-  frskyCellVoltage_t cellVolts = (frskyCellVoltage_t) (((((frskyData.hub.volts & 0xFF00) >> 8) + ((frskyData.hub.volts & 0x000F) << 8))) / (5*TELEMETRY_CELL_VOLTAGE_MUTLIPLIER));
-  frskySetCellVoltage(battnumber, cellVolts);
-}
 #elif defined(FRSKY_HUB)
 void frskyUpdateCells(void)
 {

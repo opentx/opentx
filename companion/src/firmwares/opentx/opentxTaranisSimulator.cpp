@@ -118,6 +118,7 @@ inline int geteepromsize() {
 #define SDCARD
 #include "radio/src/translations.cpp"
 #include "radio/src/fonts.cpp"
+#include "radio/src/telemetry/telemetry.cpp"
 #include "radio/src/telemetry/frsky.cpp"
 #include "radio/src/telemetry/frsky_sport.cpp"
 #include "radio/src/telemetry/frsky_d.cpp"

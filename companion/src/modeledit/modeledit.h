@@ -2,7 +2,9 @@
 #define MODELEDIT_H
 
 #include <QDialog>
-#include "helpers.h"
+#include "genericpanel.h"
+
+class RadioData;
 
 namespace Ui {
   class ModelEdit;

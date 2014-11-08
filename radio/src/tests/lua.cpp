@@ -76,30 +76,6 @@ TEST(Lua, testSetModelInfo)
   EXPECT_ZSTREQ("Model 1", g_model.header.name);
 }
 
-TEST(Lua, testSetTelemetryChannel)
-{
-  // set
-  luaExecStr("channel = model.getTelemetryChannel(0)");
-  luaExecStr("channel.range = 100.0");
-  luaExecStr("channel.offset = -10.0");
-  luaExecStr("channel.alarm1 = 60");
-  luaExecStr("channel.alarm2 = 50");
-  luaExecStr("model.setTelemetryChannel(0, channel)");
-  EXPECT_EQ(g_model.frsky.channels[0].multiplier, 2);
-  EXPECT_EQ(g_model.frsky.channels[0].ratio, 250);
-  EXPECT_EQ(g_model.frsky.channels[0].offset, -26);
-  EXPECT_EQ(g_model.frsky.channels[0].alarms_value[0], 179);
-  EXPECT_EQ(g_model.frsky.channels[0].alarms_value[1], 153);
-
-  //verify in Lua
-  luaExecStr("channel = model.getTelemetryChannel(0)");
-  luaExecStr("if math.abs(channel.range - 100) > 0.5 then error('channel.range is: '..channel.range) end");
-  luaExecStr("if math.abs(channel.offset + 10) > 0.5 then error('channel.offset is: '..channel.offset) end");
-  luaExecStr("if math.abs(channel.alarm1 - 60) > 0.5 then error('channel.alarm1 is: '..channel.alarm1) end");
-  luaExecStr("if math.abs(channel.alarm2 - 50) > 0.5 then error('channel.alarm2 is: '..channel.alarm2) end");
-
-}
-
 TEST(Lua, testPanicProtection)
 {
   bool passed = false;

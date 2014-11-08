@@ -92,6 +92,74 @@ QString getGVarString(int16_t val, bool sign)
   }
 }
 
+void SensorData::updateUnit()
+{
+  if (type == TYPE_CALCULATED) {
+    if (formula == FORMULA_CONSUMPTION)
+      unit = UNIT_MAH;
+  }
+}
+
+QString SensorData::unitString() const
+{
+  switch (unit) {
+    case UNIT_VOLTS:
+      return QObject::tr("V");
+    case UNIT_AMPS:
+      return QObject::tr("A");
+    case UNIT_MILLIAMPS:
+      return QObject::tr("mA");
+    case UNIT_KTS:
+      return QObject::tr("kts");
+    case UNIT_METERS_PER_SECOND:
+      return QObject::tr("m/s");
+    case UNIT_KMH:
+      return QObject::tr("km/h");
+    case UNIT_MPH:
+      return QObject::tr("mph");
+    case UNIT_METERS:
+      return QObject::tr("m");
+    case UNIT_FEET:
+      return QObject::tr("f");
+    case UNIT_CELSIUS:
+      return QObject::tr("°C");
+    case UNIT_FAHRENHEIT:
+      return QObject::tr("%F");
+    case UNIT_PERCENT:
+      return QObject::tr("%");
+    case UNIT_MAH:
+      return QObject::tr("mAh");
+    case UNIT_WATTS:
+      return QObject::tr("W");
+    case UNIT_DBM:
+      return QObject::tr("dB");
+    case UNIT_RPMS:
+      return QObject::tr("rpms");
+    case UNIT_G:
+      return QObject::tr("g");
+    case UNIT_DEGREE:
+      return QObject::tr("°");
+    case UNIT_HOURS:
+      return QObject::tr("hours");
+    case UNIT_MINUTES:
+      return QObject::tr("minutes");
+    case UNIT_SECONDS:
+      return QObject::tr("seconds");
+    case UNIT_CELLS:
+      return QObject::tr("V");
+    default:
+      return "";
+  }
+}
+
+bool RawSource::isTimeBased() const
+{
+  if (IS_ARM(GetCurrentFirmware()->getBoard()))
+    return false;
+  else
+    return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2 || index==TELEMETRY_SOURCE_TIMER3));
+}
+
 RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSettings & settings, unsigned int flags) const
 {
   RawSourceRange result;
@@ -106,192 +174,208 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
 
   switch (type) {
     case SOURCE_TYPE_TELEMETRY:
-      if (singleprec) {
-        result.offset = -DBL_MAX;
-      }
-
-      switch (index) {
-        case TELEMETRY_SOURCE_TX_BATT:
-          result.step = 0.1;
-          result.decimals = 1;
-          result.max = 25.5;
-          result.unit = QObject::tr("V");
-          break;
-        case TELEMETRY_SOURCE_TX_TIME:
-          result.step = 1;
-          result.max = 24*60 - 1;
-          break;
-        case TELEMETRY_SOURCE_TIMER1:
-        case TELEMETRY_SOURCE_TIMER2:
-        case TELEMETRY_SOURCE_TIMER3:
-          result.step = singleprec ? 5 : 1;
-          result.max = singleprec ? 255*5 : 60*60;
-          result.unit = QObject::tr("s");
-          break;
-        case TELEMETRY_SOURCE_RSSI_TX:
-        case TELEMETRY_SOURCE_RSSI_RX:
-          result.max = 100;
-          if (singleprec) result.offset = 128;
-          break;
-        case TELEMETRY_SOURCE_A1_MIN:
-        case TELEMETRY_SOURCE_A2_MIN:
-        case TELEMETRY_SOURCE_A3_MIN:
-        case TELEMETRY_SOURCE_A4_MIN:
-          if (model) result = model->frsky.channels[index-TELEMETRY_SOURCE_A1_MIN].getRange();
-          break;
-        case TELEMETRY_SOURCE_A1:
-        case TELEMETRY_SOURCE_A2:
-        case TELEMETRY_SOURCE_A3:
-        case TELEMETRY_SOURCE_A4:
-          if (model) result = model->frsky.channels[index-TELEMETRY_SOURCE_A1].getRange();
-          break;
-        case TELEMETRY_SOURCE_ALT:
-        case TELEMETRY_SOURCE_ALT_MIN:
-        case TELEMETRY_SOURCE_ALT_MAX:
-        case TELEMETRY_SOURCE_GPS_ALT:
-          result.step = singleprec ? 8 : 1;
-          result.min = -500;
-          result.max = singleprec ? 1540 : 3000;
-          if (firmware->getCapability(Imperial) || settings.imperial) {
-            result.step = (result.step * 105) / 32;
-            result.min = (result.min * 105) / 32;
-            result.max = (result.max * 105) / 32;
-            result.unit = QObject::tr("ft");
-          }
-          else {
-            result.unit = QObject::tr("m");
-          }
-          break;
-        case TELEMETRY_SOURCE_T1:
-        case TELEMETRY_SOURCE_T1_MAX:
-        case TELEMETRY_SOURCE_T2:
-        case TELEMETRY_SOURCE_T2_MAX:
-          result.min = -30;
-          result.max = 225;
-          result.unit = QObject::trUtf8("°C");
-          break;
-        case TELEMETRY_SOURCE_HDG:
-          result.step = singleprec ? 2 : 1;
-          result.max = 360;
-          if (singleprec) result.offset = 256;
-          result.unit = QObject::trUtf8("°");
-          break;
-        case TELEMETRY_SOURCE_RPM:
-        case TELEMETRY_SOURCE_RPM_MAX:
-          result.step = singleprec ? 50 : 1;
-          result.max = singleprec ? 12750 : 30000;
-          break;
-        case TELEMETRY_SOURCE_FUEL:
-          result.max = 100;
-          result.unit = QObject::tr("%");
-          break;
-        case TELEMETRY_SOURCE_ASPEED:
-        case TELEMETRY_SOURCE_ASPEED_MAX:
-          result.decimals = 1;
-          result.step = singleprec ? 2.0 : 0.1;
-          result.max = singleprec ? (2*255) : 2000;
-          if (firmware->getCapability(Imperial) || settings.imperial) {
-            result.step *= 1.150779;
-            result.max *= 1.150779;
-            result.unit = QObject::tr("mph");
-          }
-          else {
-            result.step *= 1.852;
-            result.max *= 1.852;
-            result.unit = QObject::tr("km/h");
-          }
-          break;
-        case TELEMETRY_SOURCE_SPEED:
-        case TELEMETRY_SOURCE_SPEED_MAX:
-          result.step = singleprec ? 2 : 1;
-          result.max = singleprec ? (2*255) : 2000;
-          if (firmware->getCapability(Imperial) || settings.imperial) {
-            result.step *= 1.150779;
-            result.max *= 1.150779;
-            result.unit = QObject::tr("mph");
-          }
-          else {
-            result.step *= 1.852;
-            result.max *= 1.852;
-            result.unit = QObject::tr("km/h");
-          }
-          break;
-        case TELEMETRY_SOURCE_VERTICAL_SPEED:
-          result.step = 0.1;
-          result.min = singleprec ? -12.5 : -300.0;
-          result.max = singleprec ? 13.0 : 300.0;
-          result.decimals = 1;
-          result.unit = QObject::tr("m/s");
-          break;
-        case TELEMETRY_SOURCE_DTE:
-          result.max = 30000;
-          break;
-        case TELEMETRY_SOURCE_DIST:
-        case TELEMETRY_SOURCE_DIST_MAX:
-          result.step = singleprec ? 8 : 1;
-          result.max = singleprec ? 2040 : 10000;
-          result.unit = QObject::tr("m");
-          break;
-        case TELEMETRY_SOURCE_CELL:
-        case TELEMETRY_SOURCE_CELL_MIN:
-          result.step = singleprec ? 0.02 : 0.01;
-          result.max = 5.1;
-          result.decimals = 2;
-          result.unit = QObject::tr("V");
-          break;
-        case TELEMETRY_SOURCE_CELLS_SUM:
-        case TELEMETRY_SOURCE_CELLS_MIN:
-        case TELEMETRY_SOURCE_VFAS:
-        case TELEMETRY_SOURCE_VFAS_MIN:
-          result.step = 0.1;
-          result.max = singleprec ? 25.5 : 100.0;
-          result.decimals = 1;
-          result.unit = QObject::tr("V");
-          break;
-        case TELEMETRY_SOURCE_CURRENT:
-        case TELEMETRY_SOURCE_CURRENT_MAX:
-          result.step = singleprec ? 0.5 : 0.1;
-          result.max = singleprec ? 127.5 : 200.0;
-          result.decimals = 1;
-          result.unit = QObject::tr("A");
-          break;
-        case TELEMETRY_SOURCE_CONSUMPTION:
-          result.step = singleprec ? 100 : 1;
-          result.max = singleprec ? 25500 : 30000;
-          result.unit = QObject::tr("mAh");
-          break;
-        case TELEMETRY_SOURCE_POWER:
-        case TELEMETRY_SOURCE_POWER_MAX:
-          result.step = singleprec ? 5 : 1;
-          result.max = singleprec ? 1275 : 2000;
-          result.unit = QObject::tr("W");
-          break;
-        case TELEMETRY_SOURCE_ACCX:
-        case TELEMETRY_SOURCE_ACCY:
-        case TELEMETRY_SOURCE_ACCZ:
+      if (IS_ARM(board)) {
+        div_t qr = div(index, 3);
+        const SensorData & sensor = model->sensorData[qr.quot];
+        if (sensor.prec == 2)
           result.step = 0.01;
-          result.decimals = 2;
-          result.max = singleprec ? 2.55 : 10.00;
-          result.min = singleprec ? 0 : -10.00;
-          result.unit = QObject::tr("g");
-          break;
-        default:
-          result.max = 125;
-          break;
+        else if (sensor.prec == 1)
+          result.step = 0.1;
+        else
+          result.step = 1;
+        result.min = -30000 * result.step;
+        result.max = +30000 * result.step;
+        result.decimals = sensor.prec;
+        result.unit = sensor.unitString();
       }
-
-      if (singleprec && result.offset==-DBL_MAX) {
-        result.offset = result.max - (127*result.step);
-      }
-
-      if (flags & (RANGE_DELTA_FUNCTION|RANGE_DELTA_ABS_FUNCTION)) {
+      else {
         if (singleprec) {
-          result.offset = 0;
-          result.min = result.step * -127;
-          result.max = result.step * 127;
+          result.offset = -DBL_MAX;
         }
-        else {
-          result.min = -result.max;
+
+        switch (index) {
+          case TELEMETRY_SOURCE_TX_BATT:
+            result.step = 0.1;
+            result.decimals = 1;
+            result.max = 25.5;
+            result.unit = QObject::tr("V");
+            break;
+          case TELEMETRY_SOURCE_TX_TIME:
+            result.step = 1;
+            result.max = 24*60 - 1;
+            break;
+          case TELEMETRY_SOURCE_TIMER1:
+          case TELEMETRY_SOURCE_TIMER2:
+          case TELEMETRY_SOURCE_TIMER3:
+            result.step = singleprec ? 5 : 1;
+            result.max = singleprec ? 255*5 : 60*60;
+            result.unit = QObject::tr("s");
+            break;
+          case TELEMETRY_SOURCE_RSSI_TX:
+          case TELEMETRY_SOURCE_RSSI_RX:
+            result.max = 100;
+            if (singleprec) result.offset = 128;
+            break;
+          case TELEMETRY_SOURCE_A1_MIN:
+          case TELEMETRY_SOURCE_A2_MIN:
+          case TELEMETRY_SOURCE_A3_MIN:
+          case TELEMETRY_SOURCE_A4_MIN:
+            if (model) result = model->frsky.channels[index-TELEMETRY_SOURCE_A1_MIN].getRange();
+            break;
+          case TELEMETRY_SOURCE_A1:
+          case TELEMETRY_SOURCE_A2:
+          case TELEMETRY_SOURCE_A3:
+          case TELEMETRY_SOURCE_A4:
+            if (model) result = model->frsky.channels[index-TELEMETRY_SOURCE_A1].getRange();
+            break;
+          case TELEMETRY_SOURCE_ALT:
+          case TELEMETRY_SOURCE_ALT_MIN:
+          case TELEMETRY_SOURCE_ALT_MAX:
+          case TELEMETRY_SOURCE_GPS_ALT:
+            result.step = singleprec ? 8 : 1;
+            result.min = -500;
+            result.max = singleprec ? 1540 : 3000;
+            if (firmware->getCapability(Imperial) || settings.imperial) {
+              result.step = (result.step * 105) / 32;
+              result.min = (result.min * 105) / 32;
+              result.max = (result.max * 105) / 32;
+              result.unit = QObject::tr("ft");
+            }
+            else {
+              result.unit = QObject::tr("m");
+            }
+            break;
+          case TELEMETRY_SOURCE_T1:
+          case TELEMETRY_SOURCE_T1_MAX:
+          case TELEMETRY_SOURCE_T2:
+          case TELEMETRY_SOURCE_T2_MAX:
+            result.min = -30;
+            result.max = 225;
+            result.unit = QObject::trUtf8("°C");
+            break;
+          case TELEMETRY_SOURCE_HDG:
+            result.step = singleprec ? 2 : 1;
+            result.max = 360;
+            if (singleprec) result.offset = 256;
+            result.unit = QObject::trUtf8("°");
+            break;
+          case TELEMETRY_SOURCE_RPM:
+          case TELEMETRY_SOURCE_RPM_MAX:
+            result.step = singleprec ? 50 : 1;
+            result.max = singleprec ? 12750 : 30000;
+            break;
+          case TELEMETRY_SOURCE_FUEL:
+            result.max = 100;
+            result.unit = QObject::tr("%");
+            break;
+          case TELEMETRY_SOURCE_ASPEED:
+          case TELEMETRY_SOURCE_ASPEED_MAX:
+            result.decimals = 1;
+            result.step = singleprec ? 2.0 : 0.1;
+            result.max = singleprec ? (2*255) : 2000;
+            if (firmware->getCapability(Imperial) || settings.imperial) {
+              result.step *= 1.150779;
+              result.max *= 1.150779;
+              result.unit = QObject::tr("mph");
+            }
+            else {
+              result.step *= 1.852;
+              result.max *= 1.852;
+              result.unit = QObject::tr("km/h");
+            }
+            break;
+          case TELEMETRY_SOURCE_SPEED:
+          case TELEMETRY_SOURCE_SPEED_MAX:
+            result.step = singleprec ? 2 : 1;
+            result.max = singleprec ? (2*255) : 2000;
+            if (firmware->getCapability(Imperial) || settings.imperial) {
+              result.step *= 1.150779;
+              result.max *= 1.150779;
+              result.unit = QObject::tr("mph");
+            }
+            else {
+              result.step *= 1.852;
+              result.max *= 1.852;
+              result.unit = QObject::tr("km/h");
+            }
+            break;
+          case TELEMETRY_SOURCE_VERTICAL_SPEED:
+            result.step = 0.1;
+            result.min = singleprec ? -12.5 : -300.0;
+            result.max = singleprec ? 13.0 : 300.0;
+            result.decimals = 1;
+            result.unit = QObject::tr("m/s");
+            break;
+          case TELEMETRY_SOURCE_DTE:
+            result.max = 30000;
+            break;
+          case TELEMETRY_SOURCE_DIST:
+          case TELEMETRY_SOURCE_DIST_MAX:
+            result.step = singleprec ? 8 : 1;
+            result.max = singleprec ? 2040 : 10000;
+            result.unit = QObject::tr("m");
+            break;
+          case TELEMETRY_SOURCE_CELL:
+          case TELEMETRY_SOURCE_CELL_MIN:
+            result.step = singleprec ? 0.02 : 0.01;
+            result.max = 5.1;
+            result.decimals = 2;
+            result.unit = QObject::tr("V");
+            break;
+          case TELEMETRY_SOURCE_CELLS_SUM:
+          case TELEMETRY_SOURCE_CELLS_MIN:
+          case TELEMETRY_SOURCE_VFAS:
+          case TELEMETRY_SOURCE_VFAS_MIN:
+            result.step = 0.1;
+            result.max = singleprec ? 25.5 : 100.0;
+            result.decimals = 1;
+            result.unit = QObject::tr("V");
+            break;
+          case TELEMETRY_SOURCE_CURRENT:
+          case TELEMETRY_SOURCE_CURRENT_MAX:
+            result.step = singleprec ? 0.5 : 0.1;
+            result.max = singleprec ? 127.5 : 200.0;
+            result.decimals = 1;
+            result.unit = QObject::tr("A");
+            break;
+          case TELEMETRY_SOURCE_CONSUMPTION:
+            result.step = singleprec ? 100 : 1;
+            result.max = singleprec ? 25500 : 30000;
+            result.unit = QObject::tr("mAh");
+            break;
+          case TELEMETRY_SOURCE_POWER:
+          case TELEMETRY_SOURCE_POWER_MAX:
+            result.step = singleprec ? 5 : 1;
+            result.max = singleprec ? 1275 : 2000;
+            result.unit = QObject::tr("W");
+            break;
+          case TELEMETRY_SOURCE_ACCX:
+          case TELEMETRY_SOURCE_ACCY:
+          case TELEMETRY_SOURCE_ACCZ:
+            result.step = 0.01;
+            result.decimals = 2;
+            result.max = singleprec ? 2.55 : 10.00;
+            result.min = singleprec ? 0 : -10.00;
+            result.unit = QObject::tr("g");
+            break;
+          default:
+            result.max = 125;
+            break;
+        }
+
+        if (singleprec && result.offset==-DBL_MAX) {
+          result.offset = result.max - (127*result.step);
+        }
+
+        if (flags & (RANGE_DELTA_FUNCTION|RANGE_DELTA_ABS_FUNCTION)) {
+          if (singleprec) {
+            result.offset = 0;
+            result.min = result.step * -127;
+            result.max = result.step * 127;
+          }
+          else {
+            result.min = -result.max;
+          }
         }
       }
       break;
@@ -340,6 +424,10 @@ QString RawSource::toString(const ModelData * model)
     QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA")
   };
 
+  static const QString special[] = {
+    QObject::tr("Batt"), QObject::tr("Time"), QObject::tr("Timer1"), QObject::tr("Timer2"), QObject::tr("Timer3"),
+  };
+
   static const QString telemetry[] = {
     QObject::tr("Batt"), QObject::tr("Time"), QObject::tr("Timer1"), QObject::tr("Timer2"), QObject::tr("Timer3"),
     QObject::tr("SWR"), QObject::tr("RSSI Tx"), QObject::tr("RSSI Rx"),
@@ -365,6 +453,7 @@ QString RawSource::toString(const ModelData * model)
   if (index<0) {
     return QObject::tr("----");
   }
+
   switch (type) {
     case SOURCE_TYPE_VIRTUAL_INPUT:
     {
@@ -394,8 +483,18 @@ QString RawSource::toString(const ModelData * model)
       return QObject::tr("TR%1").arg(index+1);
     case SOURCE_TYPE_CH:
       return QObject::tr("CH%1").arg(index+1);
+    case SOURCE_TYPE_SPECIAL:
+      return CHECK_IN_ARRAY(special, index);
     case SOURCE_TYPE_TELEMETRY:
-      return CHECK_IN_ARRAY(telemetry, index);
+      if (IS_ARM(GetEepromInterface()->getBoard())) {
+        div_t qr = div(index, 3);
+        QString result = QString(model ? model->sensorData[qr.quot].label : QString("[T%1]").arg(qr.quot+1));
+        if (qr.rem) result += qr.rem == 1 ? "-" : "+";
+        return result;
+      }
+      else {
+        return CHECK_IN_ARRAY(telemetry, index);
+      }
     case SOURCE_TYPE_GVAR:
       return QObject::tr("GV%1").arg(index+1);      
     default:
@@ -1168,6 +1267,8 @@ void ModelData::clear()
     timers[i].clear();
   swashRingData.clear();
   frsky.clear();
+  for (int i=0; i<C9X_MAX_SENSORS; i++)
+    sensorData[i].clear();
 }
 
 bool ModelData::isempty()

@@ -107,10 +107,10 @@
   #define MAX_MODELS           60
   #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
   #define MAX_FLIGHT_MODES     9
-  #define MAX_MIXERS           64
+  #define MAX_MIXERS           60
   #define MAX_EXPOS            32
   #define NUM_LOGICAL_SWITCH   32 // number of custom switches
-  #define NUM_CFN              64      // number of functions assigned to switches
+  #define NUM_CFN              60 // number of functions assigned to switches
   #define NUM_TRAINER          16
   #define NUM_POTS             3
   #define NUM_XPOTS            0
@@ -204,6 +204,12 @@ PACK(typedef struct {
 
 typedef int16_t gvar_t;
 
+#if defined(PCBTARANIS)
+  typedef uint16_t source_t;
+#else
+  typedef uint8_t source_t;
+#endif
+
 #if !defined(PCBSTD)
   #define LEN_GVAR_NAME 6
   #define GVAR_MAX      1024
@@ -238,18 +244,18 @@ typedef int16_t gvar_t;
   #define GVAR_VALUE(x, p) g_model.flightModeData[p].gvars[x]
 #endif
 
-PACK(typedef struct t_TrainerMix {
+PACK(typedef struct {
   uint8_t srcChn:6; // 0-7 = ch1-8
   uint8_t mode:2;   // off,add-mode,subst-mode
   int8_t  studWeight;
 }) TrainerMix;
 
-PACK(typedef struct t_TrainerData {
+PACK(typedef struct {
   int16_t        calib[4];
   TrainerMix     mix[4];
 }) TrainerData;
 
-PACK(typedef struct t_FrSkyRSSIAlarm {
+PACK(typedef struct {
   int8_t    level:2;
   int8_t    value:6;
 }) FrSkyRSSIAlarm;
@@ -368,7 +374,7 @@ PACK(typedef struct {
   };
   #define IS_TRAINER_EXTERNAL_MODULE() (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
-  #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS]; uint8_t spare[2];
+  #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS];
   #define swstate_t         uint16_t
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
@@ -689,9 +695,9 @@ PACK(typedef struct {
 
 #if defined(PCBTARANIS)
 PACK(typedef struct {
-  uint8_t  srcRaw;
-  uint16_t scale;
-  uint8_t  chn;
+  uint32_t srcRaw:10;
+  uint32_t scale:14;
+  uint32_t chn:8;
   int8_t   swtch;
   uint16_t flightModes;
   int8_t   weight;
@@ -700,18 +706,17 @@ PACK(typedef struct {
   char     name[LEN_EXPOMIX_NAME];
   int8_t   offset;
   CurveRef curve;
-  uint8_t  spare;
 }) ExpoData;
 #define MIN_EXPO_WEIGHT         -100
 #define EXPO_VALID(ed)          ((ed)->mode)
 #define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #elif defined(CPUARM)
 PACK(typedef struct {
-  uint8_t  mode:2;         // 0=end, 1=pos, 2=neg, 3=both
-  uint8_t  chn:4;
-  uint8_t  curveMode:2;
+  uint16_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
+  uint16_t chn:3;
+  uint16_t curveMode:2;
+  uint16_t flightModes:9;
   int8_t   swtch;
-  uint16_t flightModes;
   int8_t   weight;
   char     name[LEN_EXPOMIX_NAME];
   int8_t   curveParam;
@@ -720,7 +725,7 @@ PACK(typedef struct {
 #define EXPO_VALID(ed)          ((ed)->mode)
 #define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #elif defined(CPUM2560) || defined(CPUM2561)
-PACK(typedef struct t_ExpoData {
+PACK(typedef struct {
   uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
   uint8_t chn:2;
   uint8_t curveMode:1;
@@ -734,7 +739,7 @@ PACK(typedef struct t_ExpoData {
 #define EXPO_VALID(ed)          ((ed)->mode)
 #define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #else
-PACK(typedef struct t_ExpoData {
+PACK(typedef struct {
   uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
   int8_t  swtch:6;
   uint8_t chn:2;
@@ -773,19 +778,19 @@ PACK(typedef struct t_ExpoData {
 #endif
 
 #if defined(PCBTARANIS)
-PACK(typedef struct t_LimitData {
-  int16_t min:11;
-  int16_t max:11;
+PACK(typedef struct {
+  int32_t min:11;
+  int32_t max:11;
+  int32_t ppmCenter:10;
   int16_t offset:11;
-  int16_t ppmCenter:11;
-  uint8_t symetrical:1;
-  uint8_t revert:1;
-  uint8_t spare:2;
+  uint16_t symetrical:1;
+  uint16_t revert:1;
+  uint16_t spare:3;
   int8_t curve;
   char name[LEN_CHANNEL_NAME];
 }) LimitData;
 #else
-PACK(typedef struct t_LimitData {
+PACK(typedef struct {
   int8_t min;
   int8_t max;
   int8_t  ppmCenter;
@@ -819,18 +824,18 @@ PACK(typedef struct t_LimitData {
 PACK(typedef struct {
   uint8_t  destCh;
   uint16_t flightModes:9;
-  uint8_t  mltpx:2;         // multiplex method: 0 means +=, 1 means *=, 2 means :=
-  uint8_t  carryTrim:1;
-  uint8_t  mixWarn:4;       // mixer warning
+  uint16_t mltpx:2;         // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint16_t carryTrim:1;
+  uint16_t mixWarn:4;       // mixer warning
   int16_t  weight;
-  int8_t   swtch;
+  uint32_t srcRaw:10;
+  int32_t  offset:14;
+  int32_t  swtch:8;
   CurveRef curve;
   uint8_t  delayUp;
   uint8_t  delayDown;
   uint8_t  speedUp;
   uint8_t  speedDown;
-  uint8_t  srcRaw;
-  int16_t  offset;
   char     name[LEN_EXPOMIX_NAME];
 }) MixData;
 #else
@@ -884,7 +889,7 @@ PACK( union u_int8int16_t {
 #define SLOW_MAX    15 /* 7.5 seconds */
 
 #if defined(CPUM2560) || defined(CPUM2561)
-PACK(typedef struct t_MixData {
+PACK(typedef struct {
   uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
   uint8_t curveMode:1;       // O=curve, 1=differential
   uint8_t noExpo:1;
@@ -906,7 +911,7 @@ PACK(typedef struct t_MixData {
   int8_t  offset;
 }) MixData;
 #else
-PACK(typedef struct t_MixData {
+PACK(typedef struct {
   uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
   uint8_t curveMode:1;       // O=curve, 1=differential
   uint8_t noExpo:1;
@@ -927,7 +932,7 @@ PACK(typedef struct t_MixData {
   int8_t  offset;
 }) MixData;
 #endif
-PACK( union u_gvarint_t {
+PACK(union u_gvarint_t {
   struct {
     int8_t lo;
     uint8_t hi;
@@ -943,7 +948,7 @@ private:
 }); 
 #define MD_WEIGHT(md) (u_gvarint_t(md->weight,md->weightMode).word)
   
-PACK( union u_int8int16_t {
+PACK(union u_int8int16_t {
   struct {
     int8_t  lo;
     uint8_t hi;
@@ -997,19 +1002,19 @@ enum LogicalSwitchesFunctions {
 #define MAX_LS_DELAY    250 /*25s*/
 #define MAX_LS_ANDSW    SWSRC_LAST
 typedef int16_t ls_telemetry_value_t;
-PACK(typedef struct t_LogicalSwitchData { // Logical Switches data
-  int8_t  v1;
-  int16_t v2;
-  int16_t v3;
-  uint8_t func;
-  uint8_t delay;
-  uint8_t duration;
-  int8_t  andsw;
+PACK(typedef struct { // Logical Switches data
+  uint16_t func:6;
+  int16_t  v1:10;
+  int16_t  v2;
+  int16_t  v3;
+  uint8_t  delay;
+  uint8_t  duration;
+  int8_t   andsw;
 }) LogicalSwitchData;
 #else
 typedef uint8_t ls_telemetry_value_t;
 #define MAX_LS_ANDSW    15
-PACK(typedef struct t_LogicalSwitchData { // Logical Switches data
+PACK(typedef struct { // Logical Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func:4;
@@ -1017,6 +1022,48 @@ PACK(typedef struct t_LogicalSwitchData { // Logical Switches data
 }) LogicalSwitchData;
 #endif
 
+#if defined(CPUARM)
+enum TelemetryUnit {
+  UNIT_RAW,
+  UNIT_VOLTS,
+  UNIT_AMPS,
+  UNIT_MILLIAMPS,
+  UNIT_KTS,
+  UNIT_METERS_PER_SECOND,
+  UNIT_KMH,
+  UNIT_MPH,
+  UNIT_METERS,
+  UNIT_FEET,
+  UNIT_CELSIUS,
+  UNIT_FAHRENHEIT,
+  UNIT_PERCENT,
+  UNIT_MAH,
+  UNIT_WATTS,
+  UNIT_DBM,
+  UNIT_RPMS,
+  UNIT_G,
+  UNIT_DEGREE,
+  UNIT_HOURS,
+  UNIT_MINUTES,
+  UNIT_SECONDS,
+  // FrSky format used for these fields, could be another format in the future
+  UNIT_CELLS,
+  UNIT_DATETIME,
+  UNIT_GPS,
+  UNIT_GPS_LONGITUDE,
+  UNIT_GPS_LATITUDE,
+  UNIT_GPS_LONGITUDE_EW,
+  UNIT_GPS_LATITUDE_NS,
+  UNIT_DATETIME_YEAR,
+  UNIT_DATETIME_DAY_MONTH,
+  UNIT_DATETIME_HOUR_MIN,
+  UNIT_DATETIME_SEC
+};
+#define UNIT_MAX UNIT_DEGREE
+#define UNIT_DIST UNIT_METERS
+#define UNIT_TEMPERATURE UNIT_CELSIUS
+#define UNIT_SPEED UNIT_KMH
+#else
 enum TelemetryUnit {
   UNIT_VOLTS,
   UNIT_AMPS,
@@ -1040,6 +1087,7 @@ enum TelemetryUnit {
   UNIT_G,
   UNIT_HDG,
 };
+#endif
 
 #if defined(CPUARM)
 PACK(typedef struct {
@@ -1064,41 +1112,108 @@ PACK(typedef struct {
 }) FrSkyChannelData;
 #endif
 
+#if defined(CPUARM)
+#if defined(PCBTARANIS)
+  #define TELEM_VALUES_MAX        32
+#else
+  #define TELEM_VALUES_MAX        16
+#endif
+#define TELEM_LABEL_LEN           4
+//#define TELEM_FLAG_TIMEOUT      0x01
+#define TELEM_FLAG_LOG            0x02
+//#define TELEM_FLAG_PERSISTENT   0x04
+//#define TELEM_FLAG_SCALE        0x08
+#define TELEM_FLAG_AUTO_OFFSET    0x10
+#define TELEM_FLAG_FILTER         0x20
+#define TELEM_FLAG_LOSS_ALARM     0x40
+
+enum TelemetrySensorType
+{
+  TELEM_TYPE_CUSTOM,
+  TELEM_TYPE_CALCULATED
+};
+
+enum TelemetrySensorFormula
+{
+  TELEM_FORMULA_ADD,
+  TELEM_FORMULA_AVERAGE,
+  TELEM_FORMULA_MIN,
+  TELEM_FORMULA_MAX,
+  TELEM_FORMULA_MULTIPLY,
+  TELEM_FORMULA_CELL,
+  TELEM_FORMULA_CONSUMPTION,
+  TELEM_FORMULA_DIST,
+};
+
+enum TelemetrySensorInputFlags
+{
+  TELEM_INPUT_FLAGS_NONE,
+  TELEM_INPUT_FLAGS_AUTO_OFFSET,
+  TELEM_INPUT_FLAGS_FILTERING,
+  TELEM_INPUT_FLAGS_MAX=TELEM_INPUT_FLAGS_FILTERING
+};
+
+PACK(typedef struct {
+  union {
+    uint16_t id;                     // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
+    uint16_t persistentValue;
+  };
+  union {
+    uint8_t instance;              // instance ID to allow handling multiple instances of same value type, for FrSky can be the physical ID of the sensor
+    uint8_t formula;
+  };
+  char     label[TELEM_LABEL_LEN]; // user defined label
+  uint8_t  type:1;                 // 0=custom / 1=calculated
+  uint8_t  unit:5;                 // user can choose what unit to display each value in
+  uint8_t  prec:2;
+  uint8_t  inputFlags:2;
+  uint8_t  logs:1;
+  uint8_t  persistent:1;
+  uint8_t  spare:4;
+  union {
+    PACK(struct {
+      uint16_t ratio;
+      int16_t  offset;
+    }) custom;
+    PACK(struct {
+      uint8_t source;
+      uint8_t index;
+      uint16_t spare;
+    }) cell;
+    PACK(struct {
+      uint8_t sources[4];
+    }) calc;
+    PACK(struct {
+      uint8_t source;
+      uint8_t spare[3];
+    }) consumption;
+    PACK(struct {
+      uint8_t gps;
+      uint8_t alt;
+      uint16_t spare;
+    }) dist;
+    uint32_t param;
+  };
+  void init(const char *label, uint8_t unit=UNIT_RAW, uint8_t prec=0);
+  void init(uint16_t id);
+  int32_t getValue(int32_t value, uint8_t unit, uint8_t prec) const;
+
+}) TelemetrySensor;
+#endif
+
+#if !defined(CPUARM)
 enum TelemetrySource {
   TELEM_NONE,
-  TELEM_TX_VOLTAGE,               LUA_EXPORT_TELEMETRY("tx-voltage", "Transmitter battery voltage [volts]")
-#if defined(CPUARM)
-  TELEM_TX_TIME,                  LUA_EXPORT_TELEMETRY("clock", "RTC clock [minutes from midnight]")
-  TELEM_RESERVE1,
-  TELEM_RESERVE2,
-  TELEM_RESERVE3,
-  TELEM_RESERVE4,
-  TELEM_RESERVE5,
-#endif
-  TELEM_TIMER1,                   LUA_EXPORT_TELEMETRY("timer1", "Timer 1 value [seconds]")
-  TELEM_TIMER2,                   LUA_EXPORT_TELEMETRY("timer2", "Timer 2 value [seconds]")
-#if defined(CPUARM)
-  TELEM_TIMER3,                   LUA_EXPORT_TELEMETRY("timer3", "Timer 3 value [seconds]")
-  TELEM_TIMER_MAX = TELEM_TIMER3,
-  TELEM_SWR,                      LUA_EXPORT_TELEMETRY("swr", "Transmitter antenna quality [less is better]")
-#else
-  TELEM_TIMER_MAX = TELEM_TIMER2,
-#endif        
+  TELEM_TX_VOLTAGE,
+  TELEM_TIMER1,
+  TELEM_TIMER2,
+  TELEM_TIMER_MAX=TELEM_TIMER2,
   TELEM_RSSI_TX,        
   TELEM_RSSI_RX,                  LUA_EXPORT_TELEMETRY("rssi", "RSSI [more is better]")
-#if defined(CPUARM)       
-  TELEM_RESERVE0,       
-#endif        
   TELEM_A_FIRST,        
   TELEM_A1=TELEM_A_FIRST,         LUA_EXPORT_TELEMETRY("a1", "A1 analogue value [units as configured]")
   TELEM_A2,                       LUA_EXPORT_TELEMETRY("a2", "A2 analogue value [units as configured]")
-#if !defined(CPUARM)        
   TELEM_A_LAST=TELEM_A2,        
-#else       
-  TELEM_A3,                       LUA_EXPORT_TELEMETRY("a3", "A3 analogue value [units as configured]")
-  TELEM_A4,                       LUA_EXPORT_TELEMETRY("a4", "A4 analogue value [units as configured]")
-  TELEM_A_LAST=TELEM_A4,        
-#endif        
   TELEM_ALT,                      LUA_EXPORT_TELEMETRY("altitude", "Variometer altitude [meters]")
   TELEM_RPM,                      LUA_EXPORT_TELEMETRY("rpm", "Rotational speed [revolutions per minute]")
   TELEM_FUEL,                     LUA_EXPORT_TELEMETRY("fuel", "Fuel level [percent]")
@@ -1120,24 +1235,10 @@ enum TelemetrySource {
   TELEM_VSPEED,                   LUA_EXPORT_TELEMETRY("vertical-speed", "Variometer vertical speed [m/s]")
   TELEM_ASPEED,                   LUA_EXPORT_TELEMETRY("air-speed", "Air speed [knots]")
   TELEM_DTE,                      LUA_EXPORT_TELEMETRY("dte", "Total energy [???]")
-#if defined(CPUARM)
-  TELEM_RESERVE6,
-  TELEM_RESERVE7,
-  TELEM_RESERVE8,
-  TELEM_RESERVE9,
-  TELEM_RESERVE10,
-#endif
   TELEM_MIN_A_FIRST,
   TELEM_MIN_A1=TELEM_MIN_A_FIRST, LUA_EXPORT_TELEMETRY("a1-min", "A1 analogue value minimum [units as configured]")
   TELEM_MIN_A2,                   LUA_EXPORT_TELEMETRY("a2-min", "A2 analogue value minimum [units as configured]")
-#if !defined(CPUARM)
   TELEM_MIN_A_LAST=TELEM_MIN_A2,
-#else
-  TELEM_MIN_A3,                   LUA_EXPORT_TELEMETRY("a3-min", "A3 analogue value minimum [units as configured]")
-  TELEM_MIN_A4,                   LUA_EXPORT_TELEMETRY("a4-min", "A4 analogue value minimum [units as configured]")
-  TELEM_MIN_A_LAST=TELEM_MIN_A4,
-#endif
-  // TODO: add A1-4 MAX
   TELEM_MIN_ALT,                  LUA_EXPORT_TELEMETRY("altitude-min", "Lowest altitude [meters]")
   TELEM_MAX_ALT,                  LUA_EXPORT_TELEMETRY("altitude-max", "Highest altitude [meters]")
   TELEM_MAX_RPM,                  LUA_EXPORT_TELEMETRY("rpm-max", "Highest rotational speed [revolutions per minute] [meters]")
@@ -1151,13 +1252,6 @@ enum TelemetrySource {
   TELEM_MIN_VFAS,                 LUA_EXPORT_TELEMETRY("vfas-min", "Current sensor - lowest voltage [volts]")
   TELEM_MAX_CURRENT,              LUA_EXPORT_TELEMETRY("current-max", "Current sensor - highest current [ampers]")
   TELEM_MAX_POWER,                LUA_EXPORT_TELEMETRY("power-max", "Current sensor - highest power [wats]")
-#if defined(CPUARM)
-  TELEM_RESERVE11,
-  TELEM_RESERVE12,
-  TELEM_RESERVE13,
-  TELEM_RESERVE14,
-  TELEM_RESERVE15,
-#endif
   TELEM_ACC,
   TELEM_GPS_TIME,
   TELEM_CSW_MAX = TELEM_MAX_POWER,
@@ -1170,6 +1264,7 @@ enum TelemetrySource {
   TELEM_STATUS_MAX = TELEM_GPS_TIME,
   TELEM_FIRST_STREAMED_VALUE = TELEM_RSSI_TX,
 };
+#endif
 
 enum VarioSource {
 #if !defined(FRSKY_SPORT)
@@ -1195,13 +1290,13 @@ enum VarioSource {
 #elif defined(MAVLINK)
   #define NUM_TELEMETRY      4
 #else
-  #define NUM_TELEMETRY      TELEM_TIMER_MAX
+  #define NUM_TELEMETRY      TELEM_TIMER2
 #endif
 
 PACK(typedef struct {
-  uint8_t    source;
-  uint8_t    barMin;           // minimum for bar display
-  uint8_t    barMax;           // ditto for max display (would usually = ratio)
+  source_t source;
+  ls_telemetry_value_t barMin;           // minimum for bar display
+  ls_telemetry_value_t barMax;           // ditto for max display (would usually = ratio)
 }) FrSkyBarData;
 
 #if defined(PCBTARANIS)
@@ -1209,15 +1304,16 @@ PACK(typedef struct {
 #else
   #define NUM_LINE_ITEMS 2
 #endif
+
 PACK(typedef struct {
-  uint8_t    sources[NUM_LINE_ITEMS];
+  source_t sources[NUM_LINE_ITEMS];
 }) FrSkyLineData;
 
 #if defined(PCBTARANIS)
-#define MAX_TELEM_SCRIPT_INPUTS  4
+#define MAX_TELEM_SCRIPT_INPUTS  8
 PACK(typedef struct {
-  char   file[LEN_SCRIPT_FILENAME];
-  int8_t inputs[MAX_TELEM_SCRIPT_INPUTS];
+  char    file[LEN_SCRIPT_FILENAME];
+  int16_t inputs[MAX_TELEM_SCRIPT_INPUTS];
 }) TelemetryScriptData;
 #endif
 
@@ -1272,17 +1368,12 @@ enum TelemetryScreenType {
   TELEMETRY_SCREEN_TYPE_MAX = TELEMETRY_SCREEN_TYPE_GAUGES
 #endif
 };
-#define MAX_FRSKY_A_CHANNELS 4
 #define MAX_TELEMETRY_SCREENS 4
 #define TELEMETRY_SCREEN_TYPE(screenIndex) TelemetryScreenType((g_model.frsky.screensType >> (2*(screenIndex))) & 0x03)
 #define IS_BARS_SCREEN(screenIndex)        (TELEMETRY_SCREEN_TYPE(screenIndex) == TELEMETRY_SCREEN_TYPE_GAUGES)
 PACK(typedef struct {
-  FrSkyChannelData channels[MAX_FRSKY_A_CHANNELS];
-  uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
-  uint8_t voltsSource:7;
-  uint8_t altitudeDisplayed:1;
-  int8_t blades;    // How many blades for RPMs, 0=2 blades
-  uint8_t currentSource;
+  uint8_t voltsSource;
+  uint8_t altitudeSource;
   uint8_t screensType; // 2bits per screen (None/Gauges/Numbers/Script)
   FrSkyScreenData screens[MAX_TELEMETRY_SCREENS];
   uint8_t varioSource;
@@ -1291,9 +1382,6 @@ PACK(typedef struct {
   int8_t  varioMin;
   int8_t  varioMax;
   FrSkyRSSIAlarm rssiAlarms[2];
-  uint16_t mAhPersistent:1;
-  uint16_t storedMah:15;
-  int8_t   fasOffset;
 }) FrSkyData;
 #define MIN_BLADES -1   // 1 blade
 #define MAX_BLADES 126  // 128 blades
@@ -1301,7 +1389,7 @@ PACK(typedef struct {
 #define MAX_FRSKY_A_CHANNELS 2
 #define MAX_TELEMETRY_SCREENS 2
 #define IS_BARS_SCREEN(screenIndex) (g_model.frsky.screensType & (1<<(screenIndex)))
-PACK(typedef struct t_FrSkyData {
+PACK(typedef struct {
   FrSkyChannelData channels[MAX_FRSKY_A_CHANNELS];
   uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t blades:2;   // How many blades for RPMs, 0=2 blades
@@ -1388,7 +1476,7 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #endif
 
 #if defined(CPUARM)
-PACK(typedef struct t_FlightModeData {
+PACK(typedef struct {
   TRIMS_ARRAY;
   int8_t swtch;       // swtch of phase[0] is not used
   char name[LEN_FLIGHT_MODE_NAME];
@@ -1398,7 +1486,7 @@ PACK(typedef struct t_FlightModeData {
   PHASE_GVARS_DATA;
 }) FlightModeData;
 #else
-PACK(typedef struct t_FlightModeData {
+PACK(typedef struct {
   TRIMS_ARRAY;
   int8_t swtch;       // swtch of phase[0] is not used
   char name[LEN_FLIGHT_MODE_NAME];
@@ -1636,32 +1724,32 @@ enum MixSources {
   MIXSRC_CH16,
   MIXSRC_LAST_CH = MIXSRC_CH1+NUM_CHNOUT-1,
 
-  MIXSRC_GVAR1,                             LUA_EXPORT_MULTIPLE("gvar", "Global variable %d", MAX_GVARS)
-  MIXSRC_LAST_GVAR = MIXSRC_GVAR1+MAX_GVARS-1,
+  MIXSRC_FIRST_GVAR,
+  MIXSRC_GVAR1 = MIXSRC_FIRST_GVAR,         LUA_EXPORT_MULTIPLE("gvar", "Global variable %d", MAX_GVARS)
+  MIXSRC_LAST_GVAR = MIXSRC_FIRST_GVAR+MAX_GVARS-1,
+
+#if defined(CPUARM)
+  MIXSRC_TX_VOLTAGE,                        LUA_EXPORT_TELEMETRY("tx-voltage", "Transmitter battery voltage [volts]")
+  MIXSRC_TX_TIME,                           LUA_EXPORT_TELEMETRY("clock", "RTC clock [minutes from midnight]")
+  MIXSRC_RESERVE1,
+  MIXSRC_RESERVE2,
+  MIXSRC_RESERVE3,
+  MIXSRC_RESERVE4,
+  MIXSRC_RESERVE5,
+  MIXSRC_FIRST_TIMER,
+  MIXSRC_TIMER1 = MIXSRC_FIRST_TIMER,       LUA_EXPORT_TELEMETRY("timer1", "Timer 1 value [seconds]")
+  MIXSRC_TIMER2,                            LUA_EXPORT_TELEMETRY("timer2", "Timer 2 value [seconds]")
+  MIXSRC_TIMER3,                            LUA_EXPORT_TELEMETRY("timer3", "Timer 3 value [seconds]")
+  MIXSRC_LAST_TIMER = MIXSRC_TIMER3,
+#endif
 
   MIXSRC_FIRST_TELEM,
+#if defined(CPUARM)
+  MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*TELEM_VALUES_MAX-1
+#else
   MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+NUM_TELEMETRY-1
+#endif
 };
-
-#if defined(LUA)
-#define EXTRA_FIRST 1000
-enum LuaExtraFields {
-  EXTRA_LATITUDE = EXTRA_FIRST, LUA_EXPORT_EXTRA("latitude", "GPS latitude [degrees, North is positive]", \
-                                                 "gpsToDouble(frskyData.hub.gpsLatitudeNS=='S', frskyData.hub.gpsLatitude_bp, frskyData.hub.gpsLatitude_ap)", \
-                                                 "frskyData.hub.gpsFix")
-  EXTRA_LONGITUDE,              LUA_EXPORT_EXTRA("longitude", "GPS longitude [degrees, East is positive]", \
-                                                 "gpsToDouble(frskyData.hub.gpsLongitudeEW=='W', frskyData.hub.gpsLongitude_bp, frskyData.hub.gpsLongitude_ap)", \
-                                                 "frskyData.hub.gpsFix")
-  EXTRA_PILOT_LATITUDE,         LUA_EXPORT_EXTRA("pilot-latitude", "Latitude of frist GPS position [degrees, North is positive]", \
-                                                 "pilotLatitude", "frskyData.hub.gpsFix")
-  EXTRA_PILOT_LONGITUDE,        LUA_EXPORT_EXTRA("pilot-longitude", "Longitude of frist GPS position [degrees, East is positive]", \
-                                                 "pilotLongitude", "frskyData.hub.gpsFix")
-  EXTRA_GPS_CLOCK,              LUA_EXPORT_EXTRA("gps-clock", "GPS clock [seconds from midnight]", \
-                                                 "(int)(frskyData.hub.hour)*3600 + frskyData.hub.min*60 + frskyData.hub.sec", "frskyData.hub.gpsFix")
-  EXTRA_FLIGHT_MODE             LUA_EXPORT_EXTRA("flight-mode", "Current flight mode number [number]", \
-                                                 "getFlightMode()", "true")     
-};
-#endif // #if defined(LUA)
 
 #define MIXSRC_FIRST   (MIXSRC_NONE+1)
 #define MIXSRC_LAST    MIXSRC_LAST_CH
@@ -1687,19 +1775,19 @@ enum CountDownModes {
 };
 
 #if defined(CPUARM)
-PACK(typedef struct t_TimerData {
-  int8_t   mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
-  uint8_t  countdownBeep:2;
-  uint8_t  minuteBeep:1;
-  uint8_t  persistent:2;
-  uint8_t  spare:3;
+PACK(typedef struct {
+  int32_t  mode:8;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint32_t start:24;
   int32_t  value:24;
+  uint32_t countdownBeep:2;
+  uint32_t minuteBeep:1;
+  uint32_t persistent:2;
+  uint32_t spare:3;
   char     name[LEN_TIMER_NAME];
 }) TimerData;
 #define IS_MANUAL_RESET_TIMER(idx) (g_model.timers[idx].persistent == 2)
 #elif defined(CPUM2560)
-PACK(typedef struct t_TimerData {
+PACK(typedef struct {
   int8_t   mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint16_t start;
   uint8_t  countdownBeep:2;
@@ -1710,7 +1798,7 @@ PACK(typedef struct t_TimerData {
 }) TimerData;
 #define IS_MANUAL_RESET_TIMER(idx) (g_model.timers[idx].persistent == 2)
 #else
-PACK(typedef struct t_TimerData {
+PACK(typedef struct {
   int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint16_t  start:12;
   uint16_t  countdownBeep:1;
@@ -1815,7 +1903,7 @@ enum ThrottleSources {
   THROTTLE_SOURCE_CH1,
 };
 
-enum TelemetryProtocol
+enum TelemetryType
 {
   PROTOCOL_TELEMETRY_FIRST,
   PROTOCOL_FRSKY_SPORT = PROTOCOL_TELEMETRY_FIRST,
@@ -1865,7 +1953,7 @@ PACK(typedef struct {
 
   MODELDATA_EXTRA
 
-  ARM_FIELD(uint8_t spare3[230]) // TODO dirty hack for eeprom conversions (we load the model inside the g_model structure)
+  ARM_FIELD(TelemetrySensor telemetrySensors[TELEM_VALUES_MAX])
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;
@@ -1874,4 +1962,3 @@ extern ModelData g_model;
 #define TOTAL_EEPROM_USAGE (sizeof(ModelData)*MAX_MODELS + sizeof(EEGeneral))
 
 #endif
-/*eof*/

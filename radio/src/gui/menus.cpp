@@ -107,12 +107,12 @@ uint8_t switchToMix(uint8_t source)
 int8_t  checkIncDec_Ret;
 
 #if defined(CPUARM)
-int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, uint8_t i_flags, IsValueAvailable isValueAvailable)
+int checkIncDec(uint8_t event, int val, int i_min, int i_max, uint8_t i_flags, IsValueAvailable isValueAvailable)
 #else
 int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, uint8_t i_flags)
 #endif
 {
-  int16_t newval = val;
+  int newval = val;
 
 #if defined(DBLKEYS)
   uint8_t in = KEYS_PRESSED();
@@ -591,8 +591,9 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   if (l_posVert == 0 || (l_posVert==2 && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW) || (l_posVert==3 && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW && MAXCOL(vertpos_t(2)) >= HIDDEN_ROW)) {
     s_pgOfs = 0;
   }
-  else if (menuTab && horTab) {
-    if (maxrow > LCD_LINES-1) {
+  else if (horTab) {
+    uint8_t max = menuTab ? LCD_LINES-1 : LCD_LINES-2;
+    if (maxrow > max) {
       while (1) {
         vertpos_t firstLine = 0;
         for (int numLines=0; firstLine<=maxrow && numLines<s_pgOfs; firstLine++) {
@@ -605,7 +606,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
         }
         else {
           vertpos_t lastLine = firstLine;
-          for (int numLines=0; lastLine<=maxrow && numLines<LCD_LINES-1; lastLine++) {
+          for (int numLines=0; lastLine<=maxrow && numLines<max; lastLine++) {
             if (horTab[lastLine+1] != HIDDEN_ROW) {
               numLines++;
             }
@@ -1410,50 +1411,30 @@ bool isSourceAvailable(int source)
     return false;
 #endif
 
-  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM)
-    return isTelemetrySourceAvailable(source-MIXSRC_FIRST_TELEM+1);
+  if (source>=MIXSRC_RESERVE1 && source<=MIXSRC_RESERVE5)
+    return false;
+
+  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
+    div_t qr = div(source-MIXSRC_FIRST_TELEM, 3);
+    if (qr.rem == 0)
+      return isTelemetryFieldAvailable(qr.quot);
+    else
+      return isTelemetryFieldComparisonAvailable(qr.quot);
+  }
 
   return true;
 }
 
-bool isTelemetrySourceAvailable(int source)
+bool isSourceAvailableInCustomSwitches(int source)
 {
-#if defined(PCBTARANIS)
-  if (source == TELEM_RSSI_TX)
-    return false;
-#endif
+  bool result = isSourceAvailable(source);
 
-#if !defined(SWR)
-  // on Taranis+ we also hide the SWR
-  if (source == TELEM_SWR)
-    return false;
-#endif
-
-  if (source >= TELEM_A1 && source <= TELEM_A4) {
-    return g_model.frsky.channels[source-TELEM_A1].ratio != 0;
+  if (result && source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
+    div_t qr = div(source-MIXSRC_FIRST_TELEM, 3);
+    result = isTelemetryFieldComparisonAvailable(qr.quot);
   }
 
-#if !defined(RTCLOCK)
-  if (source == TELEM_TX_TIME)
-    return false;
-#endif
-
-  if (source == TELEM_RESERVE0)
-    return false;
-
-  if (source >= TELEM_RESERVE1 && source <= TELEM_RESERVE5)
-    return false;
-
-  if (source >= TELEM_RESERVE6 && source <= TELEM_RESERVE10)
-    return false;
-
-  if (source >= TELEM_RESERVE11 && source <= TELEM_RESERVE15)
-    return false;
-
-  if (source == TELEM_DTE)
-    return false;
-
-  return true;
+  return result;
 }
 
 bool isInputSourceAvailable(int source)
@@ -1479,7 +1460,7 @@ bool isInputSourceAvailable(int source)
     return true;
 
   if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM)
-    return isTelemetrySourceAvailable(source-MIXSRC_FIRST_TELEM+1);
+    return isTelemetryFieldAvailable(source-MIXSRC_FIRST_TELEM);
 
   return false;
 }
@@ -1557,7 +1538,7 @@ bool isSwitchAvailableInLogicalSwitches(int swtch)
 
 bool isSwitchAvailableInCustomFunctions(int swtch)
 {
-  if (g_menuStack[0] == menuModelCustomFunctions)
+  if (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions)
     return isSwitchAvailable(swtch, ModelCustomFunctionsContext);
   else
     return isSwitchAvailable(swtch, GeneralCustomFunctionsContext);
@@ -1596,7 +1577,7 @@ bool isLogicalSwitchFunctionAvailable(int function)
 
 bool isAssignableFunctionAvailable(int function)
 {
-  bool modelFunctions = (g_menuStack[0] == menuModelCustomFunctions);
+  bool modelFunctions = (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions);
 
   switch (function) {
     case FUNC_OVERRIDE_CHANNEL:

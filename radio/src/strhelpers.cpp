@@ -84,7 +84,7 @@ void str2zchar(char *dest, const char *src, int size)
   }
 }
 
-void zchar2str(char *dest, const char *src, int size)
+int zchar2str(char *dest, const char *src, int size)
 {
   for (int c=0; c<size; c++) {
     dest[c] = idx2char(src[c]);
@@ -92,6 +92,7 @@ void zchar2str(char *dest, const char *src, int size)
   do {
     dest[size--] = '\0';
   } while (size >= 0 && dest[size] == ' ');
+  return size+1;
 }
 #endif
 

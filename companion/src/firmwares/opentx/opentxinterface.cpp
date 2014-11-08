@@ -556,7 +556,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case GvarsFlightModes:
       return ((IS_ARM(board) || board==BOARD_GRUVIN9X) ? 1 : 0);
     case Mixes:
-      return (IS_ARM(board) ? 64 : 32);
+      return (IS_TARANIS(board) ? 64 : (IS_ARM(board) ? 60 : 32));
     case OffsetWeight:
       return (IS_ARM(board) ? 500 : 245);
     case Timers:
@@ -575,8 +575,10 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case SwitchesPositions:
       return (IS_TARANIS(board) ? 22 : 9);
     case CustomFunctions:
-      if (IS_ARM(board))
+      if (IS_TARANIS(board))
         return 64;
+      else if (IS_ARM(board))
+        return 60;
       else if (board==BOARD_GRUVIN9X||board==BOARD_M128)
         return 24;
       else
