@@ -42,7 +42,7 @@ luaR_result luaR_findglobal(const char *name, lu_byte *ptype) {
       return i+1;
     }
     if (!strncmp(lua_rotable[i].name, "__", 2)) {
-      int result = luaR_findentry((void *)(size_t)(i+1), name, ptype);
+      luaR_result result = luaR_findentry((void *)(size_t)(i+1), name, ptype);
       if (result != 0) {
     	return result;
       }
