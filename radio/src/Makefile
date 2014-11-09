@@ -1310,7 +1310,7 @@ bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_
 	$(IMG2LBM) bitmaps/asterisk_4bits.png bitmaps/asterisk_4bits.lbm bmp
 
 ifeq ($(OS),Windows_NT)
-  PARSER = $(CPP) 
+  PARSER = avr-cpp 
 else
   PARSER = gcc -E -x c++
 endif
