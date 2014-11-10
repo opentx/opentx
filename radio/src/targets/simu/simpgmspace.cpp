@@ -495,7 +495,7 @@ FRESULT f_stat (const TCHAR * name, FILINFO *)
   return stat(path, &tmp) ? FR_INVALID_NAME : FR_OK;
 }
 
-FRESULT f_mount (BYTE, FATFS*)
+FRESULT f_mount (FATFS* ,const TCHAR*, BYTE opt)
 {
   return FR_OK;
 }
