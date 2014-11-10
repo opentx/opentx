@@ -497,7 +497,7 @@ FRESULT f_stat (const TCHAR * name, FILINFO *)
   return stat(path, &tmp) ? FR_INVALID_NAME : FR_OK;
 }
 
-FRESULT f_mount (BYTE, FATFS*)
+FRESULT f_mount (FATFS* ,const TCHAR*, BYTE opt)
 {
   return FR_OK;
 }
@@ -598,7 +598,7 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   return FR_OK;
 }
 
-FRESULT f_mkfs (unsigned char, unsigned char, unsigned int)
+FRESULT f_mkfs (const TCHAR *path, BYTE, UINT)
 {
   printf("Format SD...\n"); fflush(stdout);
   return FR_OK;

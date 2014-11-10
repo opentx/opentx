@@ -436,7 +436,7 @@ DRESULT disk_read (
 				   BYTE drv,			/* Physical drive nmuber (0) */
 				   BYTE *buff,			/* Pointer to the data buffer to store read data */
 				   DWORD sector,		/* Start sector number (LBA) */
-				   BYTE count			/* Sector count (1..255) */
+				   UINT count			/* Sector count (1..255) */
 				   )
 {
 	if (drv || !count) return RES_PARERR;
@@ -473,7 +473,7 @@ DRESULT disk_write (
 					BYTE drv,			/* Physical drive nmuber (0) */
 					const BYTE *buff,	/* Pointer to the data to be written */
 					DWORD sector,		/* Start sector number (LBA) */
-					BYTE count			/* Sector count (1..255) */
+					UINT count			/* Sector count (1..255) */
 					)
 {
 	if (drv || !count) return RES_PARERR;
@@ -682,7 +682,7 @@ void sdMountPoll()
   if (mountTimer-- == 0) {
     mountTimer = 100;
     if (!sdMounted()) {
-      f_mount(0, &g_FATFS_Obj);
+      f_mount(&g_FATFS_Obj, "", 1);
       f_chdir(ROOT_PATH);
     }
   }

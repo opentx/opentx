@@ -1091,7 +1091,7 @@ void sdInit()
   // Should check the card can do this ****
   Card_state = SD_ST_DATA;
 
-  if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
+  if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
     referenceSystemAudioFiles();
     Card_state = SD_ST_MOUNTED;
   }
@@ -1103,7 +1103,7 @@ void sdDone()
 {
   if (sdMounted()) {
     audioQueue.stopSD();
-    f_mount(0, 0); // unmount SD
+    f_mount(NULL, "", 0); // unmount SD
   }
 }
 
@@ -1279,7 +1279,7 @@ DRESULT disk_read (
                                    BYTE drv,                    /* Physical drive nmuber (0) */
                                    BYTE *buff,                  /* Pointer to the data buffer to store read data */
                                    DWORD sector,                /* Start sector number (LBA) */
-                                   BYTE count                   /* Sector count (1..255) */
+                                   UINT count                   /* Sector count (1..255) */
                                    )
 {
   uint32_t result ;
@@ -1326,7 +1326,7 @@ DRESULT disk_write (
                                         BYTE drv,                       /* Physical drive nmuber (0) */
                                         const BYTE *buff,       /* Pointer to the data to be written */
                                         DWORD sector,           /* Start sector number (LBA) */
-                                        BYTE count                      /* Sector count (1..255) */
+                                        UINT count                      /* Sector count (1..255) */
                                         )
 {
   uint32_t result ;
