@@ -756,7 +756,7 @@ DRESULT disk_read (
         BYTE drv,                       /* Physical drive number (0) */
         BYTE *buff,                     /* Pointer to the data buffer to store read data */
         DWORD sector,           /* Start sector number (LBA) */
-        BYTE count                      /* Sector count (1..255) */
+        UINT count                      /* Sector count (1..255) */
 )
 {
   if (drv || !count) return RES_PARERR;
@@ -816,7 +816,7 @@ DRESULT disk_write (
         BYTE drv,                       /* Physical drive number (0) */
         const BYTE *buff,       /* Pointer to the data to be written */
         DWORD sector,           /* Start sector number (LBA) */
-        BYTE count                      /* Sector count (1..255) */
+        UINT count                      /* Sector count (1..255) */
 )
 {
   if (drv || !count) return RES_PARERR;
@@ -1040,7 +1040,7 @@ FIL g_telemetryFile = {0};
 #if defined(BOOT)
 void sdInit(void)
 {
-  if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
+  if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
     f_chdir("/");
   }
 }
@@ -1054,7 +1054,7 @@ void sdInit(void)
     return;
   }
 
-  if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
+  if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
     referenceSystemAudioFiles();
     
 #if defined(SPORT_FILE_LOG)
@@ -1073,7 +1073,7 @@ void sdDone()
 #if defined(SPORT_FILE_LOG)
     f_close(&g_telemetryFile);
 #endif
-    f_mount(0, 0); // unmount SD
+    f_mount(NULL, "", 0); // unmount SD
   }
 }
 #endif

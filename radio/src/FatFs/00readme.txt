@@ -1,4 +1,4 @@
-FatFs Module Source Files R0.09b                       (C)ChaN, 2013
+FatFs Module Source Files R0.10c                      (C)ChaN, 2014
 
 
 FILES
@@ -24,7 +24,7 @@ AGREEMENTS
  small embedded systems. This is a free software and is opened for education,
  research and commercial developments under license policy of following trems.
 
-  Copyright (C) 2012, ChaN, all right reserved.
+  Copyright (C) 2014, ChaN, all right reserved.
 
  * The FatFs module is a free software and there is NO WARRANTY.
  * No restriction on use. You can use, modify and redistribute it for
@@ -134,5 +134,30 @@ REVISION HISTORY
                        Changed f_open() and f_opendir() reject null object pointer to avoid crash.
                        Changed option name _FS_SHARE to _FS_LOCK.
 
-  Jan 23,'13 R0.09b    Added f_getlabel() and f_setlabel(). (_USE_LABEL == 1)
+  Jan 23,'13 R0.09b    Added f_getlabel() and f_setlabel(). (_USE_LABEL)
 
+  Oct 02,'13 R0.10     Added selection of character encoding on the file. (_STRF_ENCODE)
+                       Added f_closedir().
+                       Added forced full FAT scan for f_getfree(). (_FS_NOFSINFO)
+                       Added forced mount feature with changes of f_mount().
+                       Improved behavior of volume auto detection.
+                       Improved write throughput of f_puts() and f_printf().
+                       Changed argument of f_chdrive(), f_mkfs(), disk_read() and disk_write().
+                       Fixed f_write() can be truncated when the file size is close to 4GB.
+                       Fixed f_open(), f_mkdir() and f_setlabel() can return incorrect error code.
+
+  Jan 15,'14 R0.10a    Added arbitrary strings as drive number in the path name. (_STR_VOLUME_ID)
+                       Added a configuration option of minimum sector size. (_MIN_SS)
+                       2nd argument of f_rename() can have a drive number and it will be ignored.
+                       Fixed f_mount() with forced mount fails when drive number is >= 1.
+                       Fixed f_close() invalidates the file object without volume lock.
+                       Fixed f_closedir() returns but the volume lock is left acquired.
+                       Fixed creation of an entry with LFN fails on too many SFN collisions.
+
+  Mar 19,'14 R0.10b    Fixed a hard error in the disk I/O layer can collapse the directory entry.
+                       Fixed LFN entry is not deleted on delete/rename an object with lossy converted SFN.
+
+  Nov 09,'14 R0.10c    Added a configuration option for the platforms without RTC. (_FS_NORTC)
+                       Fixed volume label created by Mac OS X cannot be retrieved with f_getlabel().
+                       Fixed a potential problem of FAT access that can appear on disk error.
+                       Fixed null pointer dereference on attempting to delete the root direcotry.

@@ -193,7 +193,7 @@ void usbMassStorage()
       Card_state = SD_ST_DATA;
       audioQueue.stopSD();
       closeLogs();
-      f_mount(0, 0); // unmount SD
+      f_mount(NULL, "", 0); // unmount SD
     }
 
     if (!initialized) {

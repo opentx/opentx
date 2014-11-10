@@ -586,7 +586,7 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   return FR_OK;
 }
 
-FRESULT f_mkfs (unsigned char, unsigned char, unsigned int)
+FRESULT f_mkfs (const TCHAR *path, BYTE, UINT)
 {
   printf("Format SD...\n"); fflush(stdout);
   return FR_OK;
