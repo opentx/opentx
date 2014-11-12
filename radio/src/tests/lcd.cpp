@@ -296,3 +296,74 @@ TEST(Lcd, lcd_vlineStip)
 }
 #endif
 
+template <int padding> class TestBuffer
+{
+private:
+  uint8_t * buf;
+  uint32_t size;
+public:
+  TestBuffer(uint32_t size) : buf(0), size(size) {
+    buf = new uint8_t[size + padding * 2];
+    memset(buf, 0xA5, padding);
+    memset(buf+padding, 0x00, size);
+    memset(buf+padding+size, 0x5A, padding);
+  };
+  ~TestBuffer() { if (buf) delete[] buf; };
+  uint8_t * buffer() { return buf + padding; };
+  void leakCheck() const { 
+    uint8_t paddingCompareBuf[padding];
+    memset(paddingCompareBuf, 0xA5, padding);
+    if (memcmp(buf, paddingCompareBuf, padding) != 0) {
+      ADD_FAILURE() << "buffer leaked low";  
+    };
+    memset(paddingCompareBuf, 0x5A, padding);
+    if (memcmp(buf+padding+size, paddingCompareBuf, padding) != 0) {
+      ADD_FAILURE() << "buffer leaked high";
+    }
+  };
+};
+
+#if defined(PCBTARANIS)
+TEST(Lcd, lcd_bmpLoadAndDisplay)
+{
+  lcd_clear();
+  // Test proper BMP files, they should display correctly
+  {
+    TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(7, 32));
+    EXPECT_EQ(bmpLoad(bitmap.buffer(), "./tests/4b_7x32.bmp", 7, 32), (char *)0);
+    bitmap.leakCheck();
+    lcd_bmp(10, 2, bitmap.buffer());
+  }
+  {
+    TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(6, 32));
+    EXPECT_EQ(bmpLoad(bitmap.buffer(), "./tests/1b_6x32.bmp", 6, 32), (char *)0);
+    bitmap.leakCheck();
+    lcd_bmp(20, 2, bitmap.buffer());
+  }
+  {
+    TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(31, 31));
+    EXPECT_EQ(bmpLoad(bitmap.buffer(), "./tests/4b_31x31.bmp", 31, 31), (char *)0);
+    bitmap.leakCheck();
+    lcd_bmp(30, 2, bitmap.buffer());
+  }
+  {
+    TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(39, 32));
+    EXPECT_EQ(bmpLoad(bitmap.buffer(), "./tests/1b_39x32.bmp", 39, 32), (char *)0);
+    bitmap.leakCheck();
+    lcd_bmp(70, 2, bitmap.buffer());
+  }
+  EXPECT_TRUE(checkScreenshot("lcd_bmpLoadAndDisplay"));
+
+  // Test various bad BMP files, they should not display
+  {
+    TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(LCD_W+1, 32));
+    EXPECT_EQ(bmpLoad(bitmap.buffer(), "", LCD_W+1, 32), STR_INCOMPATIBLE) << "to wide";
+    bitmap.leakCheck();
+  }
+  {
+    TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(10, 10));
+    EXPECT_EQ(bmpLoad(bitmap.buffer(), "./tests/1b_39x32.bmp", 10, 10), STR_INCOMPATIBLE) << "to small buffer";
+    bitmap.leakCheck();
+  }
+}
+#endif
