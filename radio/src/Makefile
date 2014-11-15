@@ -698,7 +698,7 @@ ifeq ($(PCB), TARANIS)
   LDSCRIPT = targets/taranis/stm32_flash_bl.ld
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
-  OPT = 2
+  OPT = s
   CPPDEFS += -DHSE_VALUE=12000000
   SDCARD = YES
   THR_TRACE = YES
