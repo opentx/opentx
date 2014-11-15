@@ -488,6 +488,12 @@ TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor,
   ui->altSensor->setField(sensor.alt);
   ui->ampsSensor->setField(sensor.amps);
   ui->cellsSensor->setField(sensor.source);
+  ui->cellsIndex->addItem(tr("Lowest"), 0);
+  for (int i=1; i<=6; ++i)
+    ui->cellsIndex->addItem(tr("Cell %1").arg(i), i);
+  ui->cellsIndex->addItem(tr("Highest"), 0);
+  ui->cellsIndex->addItem(tr("Delta"), 0);
+  ui->cellsIndex->setField(sensor.index);
   ui->source1->setField(sensor.sources[0]);
   ui->source2->setField(sensor.sources[1]);
   ui->source3->setField(sensor.sources[2]);
@@ -530,13 +536,14 @@ void TelemetrySensorPanel::update()
     consFieldsDisplayed = (sensor.formula == SensorData::FORMULA_CONSUMPTION);
     sources12FieldsDisplayed = (sensor.formula <= SensorData::FORMULA_MULTIPLY);
     sources34FieldsDisplayed = (sensor.formula < SensorData::FORMULA_MULTIPLY);
-    updateSourcesComboBox(ui->source1);
-    updateSourcesComboBox(ui->source2);
-    updateSourcesComboBox(ui->source3);
-    updateSourcesComboBox(ui->source4);
-    updateSourcesComboBox(ui->gpsSensor);
-    updateSourcesComboBox(ui->altSensor);
-    updateSourcesComboBox(ui->ampsSensor);
+    updateSourcesComboBox(ui->source1, true);
+    updateSourcesComboBox(ui->source2, true);
+    updateSourcesComboBox(ui->source3, true);
+    updateSourcesComboBox(ui->source4, true);
+    updateSourcesComboBox(ui->gpsSensor, false);
+    updateSourcesComboBox(ui->altSensor, false);
+    updateSourcesComboBox(ui->ampsSensor, false);
+    updateSourcesComboBox(ui->cellsSensor, false);
   }
   else {
     ui->idLabel->show();
@@ -573,19 +580,25 @@ void TelemetrySensorPanel::update()
   lock = false;
 }
 
-void populateTelemetrySourcesComboBox(AutoComboBox * cb, const ModelData * model)
+void populateTelemetrySourcesComboBox(AutoComboBox * cb, const ModelData * model, bool negative)
 {
   cb->clear();
+  if (negative) {
+    for (int i=-C9X_MAX_SENSORS; i<0; ++i) {
+      if (model->sensorData[-i-1].isAvailable())
+        cb->addItem(QObject::tr("-%1").arg(model->sensorData[-i-1].label), i);
+    }
+  }
   cb->addItem("---", 0);
-  for (int i=0; i<C9X_MAX_SENSORS; ++i) {
-    if (model->sensorData[i].isAvailable())
-      cb->addItem(model->sensorData[i].label, i+1);
+  for (int i=1; i<=C9X_MAX_SENSORS; ++i) {
+    if (model->sensorData[i-1].isAvailable())
+      cb->addItem(model->sensorData[i-1].label, i);
   }
 }
 
-void TelemetrySensorPanel::updateSourcesComboBox(AutoComboBox * cb)
+void TelemetrySensorPanel::updateSourcesComboBox(AutoComboBox * cb, bool negative)
 {
-  populateTelemetrySourcesComboBox(cb, model);
+  populateTelemetrySourcesComboBox(cb, model, negative);
 }
 
 void TelemetrySensorPanel::on_name_editingFinished()
@@ -712,8 +725,8 @@ void TelemetryPanel::update()
       ui->telemetryProtocol->setCurrentIndex(0);
     }
 
-    populateTelemetrySourcesComboBox(ui->voltsSource, model);
-    populateTelemetrySourcesComboBox(ui->altitudeSource, model);
+    populateTelemetrySourcesComboBox(ui->voltsSource, model, false);
+    populateTelemetrySourcesComboBox(ui->altitudeSource, model, false);
   }
 
   if (IS_ARM(firmware->getBoard())) {

@@ -242,25 +242,39 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
           lastReceived = TELEMETRY_VALUE_OLD;
         }
         else {
-          uint8_t index = sensor.cell.index;
-          if (index == 0 || index == 7) {
-            bool lowest = (index == 0);
-            index = 0;
+          unsigned int index = sensor.cell.index;
+          if (index == TELEM_CELL_INDEX_LOWEST || index == TELEM_CELL_INDEX_HIGHEST || index == TELEM_CELL_INDEX_DELTA) {
+            unsigned int lowest=0, highest=0;
             for (int i=0; i<cellsItem.cells.count; i++) {
               if (cellsItem.cells.values[i].state) {
-                if (index == 0 || (lowest && cellsItem.cells.values[i].value < cellsItem.cells.values[index-1].value) || (!lowest && cellsItem.cells.values[i].value > cellsItem.cells.values[index-1].value)) {
-                  index = i+1;
-                }
+                if (!lowest || cellsItem.cells.values[i].value < cellsItem.cells.values[lowest-1].value)
+                  lowest = i+1;
+                if (!highest || cellsItem.cells.values[i].value > cellsItem.cells.values[highest-1].value)
+                  highest = i+1;
               }
               else {
-                index = 0;
-                break;
+                lowest = highest = 0;
+              }
+            }
+            if (lowest) {
+              switch (index) {
+                case TELEM_CELL_INDEX_LOWEST:
+                  setValue(sensor, cellsItem.cells.values[lowest-1].value, UNIT_VOLTS, 2);
+                  break;
+                case TELEM_CELL_INDEX_HIGHEST:
+                  setValue(sensor, cellsItem.cells.values[highest-1].value, UNIT_VOLTS, 2);
+                  break;
+                case TELEM_CELL_INDEX_DELTA:
+                  setValue(sensor, cellsItem.cells.values[highest-1].value - cellsItem.cells.values[lowest-1].value, UNIT_VOLTS, 2);
+                  break;
               }
             }
           }
-          index -= 1;
-          if (index < cellsItem.cells.count && cellsItem.cells.values[index].state) {
-            setValue(sensor, cellsItem.cells.values[index].value, UNIT_VOLTS, 2);
+          else {
+            index -= 1;
+            if (index < cellsItem.cells.count && cellsItem.cells.values[index].state) {
+              setValue(sensor, cellsItem.cells.values[index].value, UNIT_VOLTS, 2);
+            }
           }
         }
       }
@@ -322,10 +336,11 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
         value = 1;
       }
       for (int i=0; i<maxitems; i++) {
-        uint8_t source = sensor.calc.sources[i];
+        int8_t source = sensor.calc.sources[i];
         if (source) {
-          TelemetrySensor & telemetrySensor = g_model.telemetrySensors[source-1];
-          TelemetryItem & telemetryItem = telemetryItems[source-1];
+          unsigned int index = abs(source)-1;
+          TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
+          TelemetryItem & telemetryItem = telemetryItems[index];
           if (sensor.formula == TELEM_FORMULA_AVERAGE) {
             if (telemetryItem.isAvailable())
               available = 1;
@@ -343,13 +358,16 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
               return;
             }
           }
+          int32_t sensorValue = telemetryItem.value;
+          if (source < 0)
+            sensorValue = -sensorValue;
           count += 1;
           if (sensor.formula == TELEM_FORMULA_MULTIPLY) {
             mulprec += telemetrySensor.prec;
-            value *= convertTelemetryValue(telemetryItem.value, telemetrySensor.unit, 0, sensor.unit, 0);
+            value *= convertTelemetryValue(sensorValue, telemetrySensor.unit, 0, sensor.unit, 0);
           }
           else {
-            int32_t sensorValue = convertTelemetryValue(telemetryItem.value, telemetrySensor.unit, telemetrySensor.prec, sensor.unit, sensor.prec);
+            sensorValue = convertTelemetryValue(sensorValue, telemetrySensor.unit, telemetrySensor.prec, sensor.unit, sensor.prec);
             if (sensor.formula == TELEM_FORMULA_MIN)
               value = (count==1 ? sensorValue : min<int32_t>(value, sensorValue));
             else if (sensor.formula == TELEM_FORMULA_MAX)

@@ -5886,10 +5886,8 @@ bool isSensorAvailable(int sensor)
 {
   if (sensor == 0)
     return true;
-
-  sensor -= 1;
-
-  return isTelemetryFieldAvailable(sensor);
+  else
+    return isTelemetryFieldAvailable(abs(sensor) - 1);
 }
 
 #define SENSOR_2ND_COLUMN (12*FW)
@@ -6038,7 +6036,7 @@ void menuModelSensor(uint8_t event)
       case SENSOR_FIELD_PARAM2:
         if (sensor->type == TELEM_TYPE_CALCULATED) {
           if (sensor->formula == TELEM_FORMULA_CELL) {
-            sensor->cell.index = selectMenuItem(SENSOR_2ND_COLUMN, y, "Cell index", "\007Lowest\0001\0     2\0     3\0     4\0     5\0     6\0     Highest", sensor->cell.index, 0, 7, attr, event);
+            sensor->cell.index = selectMenuItem(SENSOR_2ND_COLUMN, y, "Cell index", "\007Lowest\0001\0     2\0     3\0     4\0     5\0     6\0     HighestDelta\0", sensor->cell.index, 0, 8, attr, event);
             break;
           }
           else if (sensor->formula == TELEM_FORMULA_DIST) {
@@ -6065,10 +6063,16 @@ void menuModelSensor(uint8_t event)
       case SENSOR_FIELD_PARAM4:
       {
         putsStrIdx(0, y, "Source", k-SENSOR_FIELD_PARAM1+1);
-        uint8_t & source = sensor->calc.sources[k-SENSOR_FIELD_PARAM1];
-        putsMixerSource(SENSOR_2ND_COLUMN, y, source ? MIXSRC_FIRST_TELEM+3*(source-1) : 0, attr);
+        int8_t & source = sensor->calc.sources[k-SENSOR_FIELD_PARAM1];
         if (attr) {
-          source = checkIncDec(event, source, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
+          source = checkIncDec(event, source, -TELEM_VALUES_MAX, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
+        }
+        if (source < 0) {
+          lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
+          putsMixerSource(lcdNextPos, y, MIXSRC_FIRST_TELEM+3*(-1-source), attr);
+        }
+        else {
+          putsMixerSource(SENSOR_2ND_COLUMN, y, source ? MIXSRC_FIRST_TELEM+3*(source-1) : 0, attr);
         }
         break;
       }

@@ -95,7 +95,7 @@ class TelemetrySensorPanel: public ModelPanel
     void on_prec_editingFinished();
 
   protected:
-    void updateSourcesComboBox(AutoComboBox * cb);
+    void updateSourcesComboBox(AutoComboBox * cb, bool negative);
 
   private:
     Ui::TelemetrySensor * ui;

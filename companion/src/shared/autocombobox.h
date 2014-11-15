@@ -25,7 +25,7 @@ class AutoComboBox: public QComboBox
       lock = false;
     }
 
-    void addItem(const QString & item, unsigned int value)
+    void addItem(const QString & item, int value)
     {
       lock = true;
       QComboBox::addItem(item, value);
@@ -36,6 +36,17 @@ class AutoComboBox: public QComboBox
     }
 
     void setField(unsigned int & field, ModelPanel * panel=NULL)
+    {
+      this->field = (int *)&field;
+      this->panel = panel;
+      for (int i=0; i<count(); ++i) {
+        setItemData(i, i);
+        if ((int)field == i)
+          setCurrentIndex(i);
+      }
+    }
+
+    void setField(int & field, ModelPanel * panel=NULL)
     {
       this->field = &field;
       this->panel = panel;
@@ -58,7 +69,7 @@ class AutoComboBox: public QComboBox
     }
 
   protected:
-    unsigned int * field;
+    int * field;
     ModelPanel * panel;
     bool lock;
 };

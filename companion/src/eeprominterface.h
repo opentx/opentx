@@ -956,7 +956,7 @@ class SensorData {
     unsigned int index;
 
     // for calculations
-    unsigned int sources[4];
+    int sources[4];
 
     // for GPS dist
     unsigned int gps;

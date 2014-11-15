@@ -1181,7 +1181,7 @@ PACK(typedef struct {
       uint16_t spare;
     }) cell;
     PACK(struct {
-      uint8_t sources[4];
+      int8_t sources[4];
     }) calc;
     PACK(struct {
       uint8_t source;

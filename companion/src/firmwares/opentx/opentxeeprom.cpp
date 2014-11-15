@@ -2671,7 +2671,7 @@ class SensorField: public TransformedField {
         if (sensor.formula == SensorData::FORMULA_CELL)
           _param = (sensor.source) + (sensor.index << 8);
         else if (sensor.formula == SensorData::FORMULA_ADD || sensor.formula == SensorData::FORMULA_MULTIPLY || sensor.formula == SensorData::FORMULA_MIN || sensor.formula == SensorData::FORMULA_MAX)
-          _param = (sensor.sources[0]) + (sensor.sources[1] << 8) + (sensor.sources[2] << 16) + (sensor.sources[3] << 24);
+          _param = ((uint8_t)sensor.sources[0]) + ((uint8_t)sensor.sources[1] << 8) + ((uint8_t)sensor.sources[2] << 16) + ((uint8_t)sensor.sources[3] << 24);
         else if (sensor.formula == SensorData::FORMULA_DIST)
           _param = (sensor.gps) + (sensor.alt << 8);
         else if (sensor.formula == SensorData::FORMULA_CONSUMPTION)
