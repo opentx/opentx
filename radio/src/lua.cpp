@@ -1820,7 +1820,11 @@ void luaDoOneRunPermanentScript(uint8_t evt, int i)
     const char *filename;
 #endif
     ScriptInputsOutputs * sio = NULL;
+#if SCRIPT_MIX_FIRST > 0
     if (sid.reference >= SCRIPT_MIX_FIRST && sid.reference <= SCRIPT_MIX_LAST) {
+#else
+    if (sid.reference <= SCRIPT_MIX_LAST) {
+#endif
       ScriptData & sd = g_model.scriptsData[sid.reference-SCRIPT_MIX_FIRST];
       sio = &scriptInputsOutputs[sid.reference-SCRIPT_MIX_FIRST];
       inputsCount = sio->inputsCount;

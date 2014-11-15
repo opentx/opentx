@@ -1155,6 +1155,7 @@ CPPFLAGS += $(CPPDEFS)
 CPPFLAGS += -Wall
 CPPFLAGS += -fno-exceptions
 CPPFLAGS += -Wno-strict-aliasing
+CPPFLAGS += -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits
 INCFLAGS = $(patsubst %,-I%,$(INCDIRS))
 EXTRAINCFLAGS = $(patsubst %,-I%,$(EXTRAINCDIRS))
 
@@ -1443,7 +1444,7 @@ ifeq ($(ARCH), AVR)
 	$(CC) $(AVRCPPFLAGS) $< --output $@ $(LDFLAGS)
 else
 %.o: %.c
-	$(CC) $(ARMCPPFLAGS) $< -o $@
+	$(CC) $(ARMCPPFLAGS) -Wimplicit $< -o $@
 %.o: %.s
 	$(AS) $< -o $@
 TMP = $(SRC:.c=.o)
