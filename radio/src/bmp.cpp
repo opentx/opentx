@@ -44,7 +44,9 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
   uint8_t bmpBuf[LCD_W]; /* maximum with LCD_W */
   uint8_t *buf = &bmpBuf[0];
 
-  if(width > LCD_W) return STR_INCOMPATIBLE;
+  if (width > LCD_W) {
+    return STR_INCOMPATIBLE;
+  }
 
   FRESULT result = f_open(&bmpFile, filename, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
@@ -69,8 +71,6 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
 
   uint32_t fsize  = *((uint32_t *)&buf[2]);
   uint32_t hsize  = *((uint32_t *)&buf[10]); /* header size */
-  // TRACE("fsize: %u", fsize);
-  // TRACE("hsize: %u", hsize);
 
   uint32_t len = limit((uint32_t)4, (uint32_t)(hsize-14), (uint32_t)32);
   result = f_read(&bmpFile, buf, len, &read);
@@ -80,7 +80,6 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
   }
 
   uint32_t ihsize = *((uint32_t *)&buf[0]); /* more header size */
-  // TRACE("ihsize: %u", ihsize);
 
   /* invalid header size */
   if (ihsize + 14 > hsize) {
@@ -131,7 +130,6 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
   }
 
   uint16_t depth = *((uint16_t *)&buf[2]);
-  // TRACE("depth: %u", depth);
 
   buf = &bmpBuf[0];
 
@@ -155,16 +153,14 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
 
   *dest++ = w;
   *dest++ = h;
-  // TRACE("bitmap width: %u, height: %u", w, h);
 
-  memset(dest, 0, BITMAP_BUFFER_SIZE(w,h) - 2);
+  memset(dest, 0, BITMAP_BUFFER_SIZE(w, h) - 2);
 
   uint32_t rowSize;
 
   switch (depth) {
     case 1:
       rowSize = ((w+31)/32)*4;
-      // TRACE("1 bit palete, rowSize:%u", rowSize);
       for (uint32_t i=0; i<h; i+=2) {
         result = f_read(&bmpFile, buf, rowSize*2, &read);
         if (result != FR_OK || read != rowSize*2) {
@@ -184,7 +180,6 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
 
     case 4:
       rowSize = ((4*w+31)/32)*4;
-      // TRACE("4 bit palete, rowSize:%u", rowSize);
       for (int32_t i=h-1; i>=0; i--) {
         result = f_read(&bmpFile, buf, rowSize, &read);
         if (result != FR_OK || read != rowSize) {
@@ -196,20 +191,16 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
           if (i & 1) {
             uint8_t val = palette[(buf[j] >> 4) & 0x0F] << 4;
             *dst |= val ^ 0xF0;
-            // TRACE("dest1: %ld = %u", dst - dest , val ^ 0xF0);
             if ((j+1)*2 >= w) break;
             val = palette[buf[j] & 0x0F] << 4;
             *(dst+1) |= val ^ 0xF0;
-            // TRACE("dest1: %ld =   %u", dst - dest + 1, val ^ 0xF0);
           }
           else {
             uint8_t val = palette[(buf[j] >> 4) & 0x0F];
             *dst |= val ^ 0x0F;
-            // TRACE("dest0: %ld = %u", dst - dest , val ^ 0x0F);
             if ((j+1)*2 >= w) break;
             val = palette[buf[j] & 0x0F];
             *(dst+1) |= val ^ 0x0F;
-            // TRACE("dest0: %ld =   %u", dst - dest + 1, val ^ 0x0F);
           }
         }
       }
