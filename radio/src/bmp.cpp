@@ -44,7 +44,9 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
   uint8_t bmpBuf[LCD_W]; /* maximum with LCD_W */
   uint8_t *buf = &bmpBuf[0];
 
-  assert(width <= LCD_W);
+  if (width > LCD_W) {
+    return STR_INCOMPATIBLE;
+  }
 
   FRESULT result = f_open(&bmpFile, filename, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
@@ -70,7 +72,7 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
   uint32_t fsize  = *((uint32_t *)&buf[2]);
   uint32_t hsize  = *((uint32_t *)&buf[10]); /* header size */
 
-  uint32_t len = limit((uint32_t)0, (uint32_t)(hsize-14), (uint32_t)32);
+  uint32_t len = limit((uint32_t)4, (uint32_t)(hsize-14), (uint32_t)32);
   result = f_read(&bmpFile, buf, len, &read);
   if (result != FR_OK || read != len) {
     f_close(&bmpFile);
@@ -152,16 +154,16 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
   *dest++ = w;
   *dest++ = h;
 
-  memset(dest, 0, w*((h+7)/8)*4);
+  memset(dest, 0, BITMAP_BUFFER_SIZE(w, h) - 2);
 
-  uint32_t n;
+  uint32_t rowSize;
 
   switch (depth) {
     case 1:
-      n = w/8;
+      rowSize = ((w+31)/32)*4;
       for (uint32_t i=0; i<h; i+=2) {
-        result = f_read(&bmpFile, buf, n*2, &read);
-        if (result != FR_OK || read != n*2) {
+        result = f_read(&bmpFile, buf, rowSize*2, &read);
+        if (result != FR_OK || read != rowSize*2) {
           f_close(&bmpFile);
           return SDCARD_ERROR(result);
         }
@@ -170,30 +172,33 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
           uint8_t * dst = dest + (h-i-2)/2 * w + j;
           if (!(buf[j/8] & (1<<(7-(j%8)))))
             *dst |= 0xF0;
-          if (!(buf[n+j/8] & (1<<(7-(j%8)))))
+          if (!(buf[rowSize+j/8] & (1<<(7-(j%8)))))
             *dst |= 0x0F;
         }
       }
       break;
 
     case 4:
+      rowSize = ((4*w+31)/32)*4;
       for (int32_t i=h-1; i>=0; i--) {
-        result = f_read(&bmpFile, buf, ((w+7)/8)*4, &read);
-        if (result != FR_OK || read != ((w+7)/8)*4) {
+        result = f_read(&bmpFile, buf, rowSize, &read);
+        if (result != FR_OK || read != rowSize) {
           f_close(&bmpFile);
           return SDCARD_ERROR(result);
         }
-        for (uint32_t j=0; j<(w+1)/2; j++) {
+        for (uint32_t j=0; j<rowSize; j++) {
           uint8_t * dst = dest + (i/2)*w + j*2;
           if (i & 1) {
             uint8_t val = palette[(buf[j] >> 4) & 0x0F] << 4;
             *dst |= val ^ 0xF0;
+            if ((j+1)*2 >= w) break;
             val = palette[buf[j] & 0x0F] << 4;
             *(dst+1) |= val ^ 0xF0;
           }
           else {
             uint8_t val = palette[(buf[j] >> 4) & 0x0F];
             *dst |= val ^ 0x0F;
+            if ((j+1)*2 >= w) break;
             val = palette[buf[j] & 0x0F];
             *(dst+1) |= val ^ 0x0F;
           }
