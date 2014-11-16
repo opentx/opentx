@@ -439,9 +439,10 @@ enum PotType {
 #endif
 
 #if defined(PCBTARANIS)
+  #define BITMAP_BUFFER_SIZE(width, height)   (2 + width * ((height+7)/8)*4)
   #define MODEL_BITMAP_WIDTH  64
   #define MODEL_BITMAP_HEIGHT 32
-  #define MODEL_BITMAP_SIZE   (2+4*(MODEL_BITMAP_WIDTH*MODEL_BITMAP_HEIGHT/8))
+  #define MODEL_BITMAP_SIZE   BITMAP_BUFFER_SIZE(MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)
   extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
   void loadModelBitmap(char *name, uint8_t *bitmap);
   #define LOAD_MODEL_BITMAP() loadModelBitmap(g_model.header.bitmap, modelBitmap)

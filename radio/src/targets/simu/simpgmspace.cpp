@@ -520,7 +520,10 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 
 FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)
 {
-  if (fil && fil->fs) *read = fread(data, 1, size, (FILE*)fil->fs);
+  if (fil && fil->fs) {
+    *read = fread(data, 1, size, (FILE*)fil->fs);
+    // TRACE("fread(%p) %u, %u", fil->fs, size, *read);
+  }
   return FR_OK;
 }
 
