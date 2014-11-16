@@ -263,7 +263,7 @@ int16_t applyLimits(uint8_t channel, int32_t value)
 
 // TODO same naming convention than the putsMixerSource
 
-getvalue_t getValue(uint8_t i)
+getvalue_t getValue(mixsrc_t i)
 {
   if (i==MIXSRC_NONE) return 0;
 

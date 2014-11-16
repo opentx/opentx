@@ -399,6 +399,7 @@ enum PotType {
   #define get_tmr10ms() g_tmr10ms
   typedef int32_t rotenc_t;
   typedef int32_t getvalue_t;
+  typedef uint32_t mixsrc_t;
 #else
   #define tmr10ms_t uint16_t
   extern volatile tmr10ms_t g_tmr10ms;
@@ -412,6 +413,7 @@ enum PotType {
   }
   typedef int8_t rotenc_t;
   typedef int16_t getvalue_t;
+  typedef uint8_t mixsrc_t;
   void watchdogSetTimeout(uint32_t timeout);
 #endif
 
@@ -717,7 +719,7 @@ void doMixerCalculations();
 void perMain();
 NOINLINE void per10ms();
 
-getvalue_t getValue(uint8_t i);
+getvalue_t getValue(mixsrc_t i);
 
 #if defined(CPUARM)
 #define GETSWITCH_MIDPOS_DELAY   1
