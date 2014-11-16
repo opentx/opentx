@@ -4170,7 +4170,7 @@ void menuModelLimits(uint8_t event)
 
         case ITEM_LIMITS_MIN:
 #if defined(PCBTARANIS)
-          if (GV_IS_GV_VALUE(ld->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
+          if (GV_IS_GV_VALUE(ld->min, -GV_RANGELARGE, GV_RANGELARGE) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
             ld->min = GVAR_MENU_ITEM(LIMITS_MIN_POS, y, ld->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, MIN_MAX_ATTR, DBLKEYS_1000, event);
             break;
           }
@@ -4181,7 +4181,7 @@ void menuModelLimits(uint8_t event)
 
         case ITEM_LIMITS_MAX:
 #if defined(PCBTARANIS)
-          if (GV_IS_GV_VALUE(ld->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
+          if (GV_IS_GV_VALUE(ld->max, -GV_RANGELARGE, GV_RANGELARGE) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
             ld->max = GVAR_MENU_ITEM(LIMITS_MAX_POS, y, ld->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, MIN_MAX_ATTR, DBLKEYS_1000, event);
             break;
           }
