@@ -85,13 +85,13 @@ Er9xGeneral::operator GeneralSettings ()
 
   switch (beeperVal) {
     case 0:
-      result.beeperMode = e_quiet;
+      result.beeperMode = GeneralSettings::BEEPER_QUIET;
       break;
     case 1:
-      result.beeperMode = e_no_keys;
+      result.beeperMode = GeneralSettings::BEEPER_NOKEYS;
       break;
     default:
-      result.beeperMode = e_all;
+      result.beeperMode = GeneralSettings::BEEPER_ALL;
       result.beeperLength = beeperVal - 4;
       break;
   }

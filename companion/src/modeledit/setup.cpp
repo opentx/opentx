@@ -453,15 +453,22 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
     centerBeepCheckboxes << checkbox;
     if (!IS_TARANIS_PLUS(board) && i==6) {
-        checkbox->hide();
+      checkbox->hide();
     }
   }
 
   // Startup switches warnings
-  for (int i=0; i<firmware->getCapability(Switches)-1; i++) {
+  for (int i=0; i<firmware->getCapability(Switches); i++) {
+    if (!IS_TARANIS(firmware->getBoard()) && i==firmware->getCapability(Switches)-1)
+      continue;
     QLabel * label = new QLabel(this);
     QSlider * slider = new QSlider(this);
     QCheckBox * cb = new QCheckBox(this);
+    if (IS_TARANIS(firmware->getBoard()) && !generalSettings.isSwitchWarningAllowedTaranis(i)) {
+      label->hide();
+      slider->hide();
+      cb->hide();
+    }
     slider->setProperty("index", i+1);
     slider->setOrientation(Qt::Vertical);
     slider->setMinimum(0);
@@ -474,7 +481,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     slider->setMaximumSize(QSize(50, 50));
     if (IS_TARANIS(board)) {
       label->setText(switchesX9D[i]);
-      slider->setMaximum(i==5 ? 1 : 2);
+      slider->setMaximum((i==5 || i>=7) ? 1 : 2);
     }
     else {
       label->setText(switches9X[i]);
@@ -677,17 +684,21 @@ void SetupPanel::updateStartupSwitches()
 
   unsigned int switchStates = model->switchWarningStates;
 
-  for (int i=0; i<firmware->getCapability(Switches)-1; i++) {
+  for (int i=0; i<firmware->getCapability(Switches); i++) {
     QSlider * slider = startupSwitchesSliders[i];
     QCheckBox * cb = startupSwitchesCheckboxes[i];
-    bool enabled = !(model->nSwToWarn & (1 << i));
+    bool enabled = !(model->switchWarningEnable & (1 << i));
     slider->setEnabled(enabled);
     cb->setChecked(enabled);
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-      slider->setValue(i==5 ? (switchStates & 0x3)/2 : switchStates & 0x3);
+      slider->setValue((i==5 || i>=7) ? (switchStates & 0x3)/2 : switchStates & 0x3);
       switchStates >>= 2;
     }
     else {
+      if (i == firmware->getCapability(Switches)-1) {
+        // Trainer switch, no switch warning
+        continue;
+      }
       slider->setValue(i==0 ? switchStates & 0x3 : switchStates & 0x1);
       switchStates >>= (i==0 ? 2 : 1);
     }
@@ -704,7 +715,7 @@ void SetupPanel::startupSwitchEdited(int value)
     int index = sender()->property("index").toInt();
 
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-      if (index == 6) {
+      if (index == 6 || index >= 8) {
         shift = (index - 1) * 2;
         mask = 0x02 << shift;
         shift++;
@@ -741,9 +752,9 @@ void SetupPanel::startupSwitchToggled(bool checked)
     int index = sender()->property("index").toInt()-1;
   
     if (checked)
-      model->nSwToWarn &= ~(1 << index);
+      model->switchWarningEnable &= ~(1 << index);
     else
-      model->nSwToWarn |= (1 << index);
+      model->switchWarningEnable |= (1 << index);
 
     updateStartupSwitches();
     emit modified();

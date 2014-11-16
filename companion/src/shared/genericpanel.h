@@ -17,6 +17,7 @@ class GenericPanel : public QWidget
   friend class AutoDoubleSpinBox;
   friend class AutoCheckBox;
   friend class AutoHexSpinBox;
+  friend class AutoLineEdit;
 
   public:
     GenericPanel(QWidget *parent, ModelData * model, GeneralSettings & generalSettings, FirmwareInterface * firmware);

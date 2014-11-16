@@ -126,7 +126,14 @@ enum Switches {
   SWITCH_SG1,
   SWITCH_SG2,
   SWITCH_SH0,
-  SWITCH_SH1
+  SWITCH_SH2,
+  SWITCH_SI0,
+  SWITCH_SI2,
+  SWITCH_SJ0,
+  SWITCH_SJ2,
+  SWITCH_SK0,
+  SWITCH_SK2,
+
 };
 
 enum TimerModes {
@@ -1007,7 +1014,7 @@ class ModelData {
     unsigned int thrTraceSrc;
     unsigned int modelId;
     unsigned int switchWarningStates;
-    unsigned int nSwToWarn;
+    unsigned int switchWarningEnable;
     unsigned int nPotsToWarn;
     int          potPosition[C9X_NUM_POTS];
     bool         displayChecklist;
@@ -1070,15 +1077,24 @@ class TrainerData {
     void clear() { memset(this, 0, sizeof(TrainerData)); }
 };
 
-enum BeeperMode {
-  e_quiet = -2,
-  e_alarms_only = -1,
-  e_no_keys = 0,
-  e_all = 1
-};
-
 class GeneralSettings {
   public:
+
+    enum BeeperMode {
+      BEEPER_QUIET = -2,
+      BEEPER_ALARMS_ONLY = -1,
+      BEEPER_NOKEYS = 0,
+      BEEPER_ALL = 1
+    };
+
+    enum SwitchConfig {
+      SWITCH_DEFAULT,
+      SWITCH_TOGGLE,
+      SWITCH_2POS,
+      SWITCH_3POS,
+      SWITCH_2x2POS
+    };
+
     GeneralSettings();
 
     int getDefaultStick(unsigned int channel) const;
@@ -1166,6 +1182,49 @@ class GeneralSettings {
     unsigned int potsType[8];
     unsigned int backlightColor;
     CustomFunctionData customFn[C9X_MAX_CUSTOM_FUNCTIONS];
+    unsigned int switchConfig[8];
+    char switchNames[32][3+1];
+    char anaNames[32][3+1];
+
+    struct SwitchInfo {
+      SwitchInfo(unsigned int index, unsigned int position):
+        index(index),
+        position(position)
+      {
+      }
+      unsigned int index;
+      unsigned int position;
+    };
+    
+    static SwitchInfo switchInfoFromSwitchPositionTaranis(unsigned int index);
+    bool switchPositionAllowedTaranis(int index) const;
+
+    static unsigned int switchDefaultConfigTaranis(unsigned int index)
+    {
+      if (index == 5)
+        return SWITCH_2POS;
+      else if (index == 7)
+        return SWITCH_TOGGLE;
+      else
+        return SWITCH_3POS;
+    }
+
+    unsigned int switchConfigTaranis(unsigned int index) const
+    {
+      unsigned int result = switchConfig[index];
+      if (result == SWITCH_DEFAULT)
+        result = switchDefaultConfigTaranis(index);
+      return result;
+    }
+
+    bool isSwitchWarningAllowedTaranis(unsigned int index) const
+    {
+      if (index < 8)
+        return switchConfigTaranis(index) != SWITCH_TOGGLE;
+      else
+        return switchConfig[index-8] == SWITCH_2x2POS;
+    }
+
 };
 
 class RadioData {

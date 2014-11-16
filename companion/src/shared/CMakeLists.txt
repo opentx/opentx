@@ -12,6 +12,7 @@ set(shared_HDRS
   autocombobox.h
   autodoublespinbox.h
   autohexspinbox.h
+  autolineedit.h
   genericpanel.h
   hexspinbox.h
   verticalscrollarea.h

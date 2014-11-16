@@ -20,6 +20,93 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
     ui->pot2TypeLabel->hide();
     ui->pot3Type->hide();
     ui->pot3TypeLabel->hide();
+    ui->pot4Label->hide();
+    ui->pot5Label->hide();
+  }
+
+  if (IS_TARANIS(firmware->getBoard())) {
+    ui->rudName->setField(generalSettings.anaNames[0], 3, this);
+    ui->eleName->setField(generalSettings.anaNames[1], 3, this);
+    ui->thrName->setField(generalSettings.anaNames[2], 3, this);
+    ui->ailName->setField(generalSettings.anaNames[3], 3, this);
+    ui->pot1Name->setField(generalSettings.anaNames[4], 3, this);
+    ui->pot2Name->setField(generalSettings.anaNames[5], 3, this);
+    ui->pot3Name->setField(generalSettings.anaNames[6], 3, this);
+    ui->pot4Name->setField(generalSettings.anaNames[7], 3, this);
+    ui->pot5Name->setField(generalSettings.anaNames[8], 3, this);
+    ui->saName->setField(generalSettings.switchNames[0], 3, this);
+    ui->saType->setField(generalSettings.switchConfig[0], this);
+    ui->sbName->setField(generalSettings.switchNames[1], 3, this);
+    ui->sbType->setField(generalSettings.switchConfig[1], this);
+    ui->scName->setField(generalSettings.switchNames[2], 3, this);
+    ui->scType->setField(generalSettings.switchConfig[2], this);
+    ui->sdName->setField(generalSettings.switchNames[3], 3, this);
+    ui->sdType->setField(generalSettings.switchConfig[3], this);
+    ui->seName->setField(generalSettings.switchNames[4], 3, this);
+    ui->seType->setField(generalSettings.switchConfig[4], this);
+    ui->sfName->setField(generalSettings.switchNames[5], 3, this);
+    ui->sfType->setField(generalSettings.switchConfig[5], this);
+    ui->sgName->setField(generalSettings.switchNames[6], 3, this);
+    ui->sgType->setField(generalSettings.switchConfig[6], this);
+    ui->shName->setField(generalSettings.switchNames[7], 3, this);
+    ui->shType->setField(generalSettings.switchConfig[7], this);
+    ui->siName->setField(generalSettings.switchNames[8], 3, this);
+    ui->sjName->setField(generalSettings.switchNames[9], 3, this);
+    ui->skName->setField(generalSettings.switchNames[10], 3, this);
+    ui->slName->setField(generalSettings.switchNames[11], 3, this);
+    ui->smName->setField(generalSettings.switchNames[12], 3, this);
+    ui->snName->setField(generalSettings.switchNames[13], 3, this);
+    connect(ui->saType, SIGNAL(currentIndexChanged(int)), this, SLOT(update()));
+    connect(ui->sbType, SIGNAL(currentIndexChanged(int)), this, SLOT(update()));
+    connect(ui->scType, SIGNAL(currentIndexChanged(int)), this, SLOT(update()));
+    connect(ui->sdType, SIGNAL(currentIndexChanged(int)), this, SLOT(update()));
+    connect(ui->seType, SIGNAL(currentIndexChanged(int)), this, SLOT(update()));
+    connect(ui->sgType, SIGNAL(currentIndexChanged(int)), this, SLOT(update()));
+  }
+  else {
+    ui->rudLabel->hide();
+    ui->rudName->hide();
+    ui->eleLabel->hide();
+    ui->eleName->hide();
+    ui->thrLabel->hide();
+    ui->thrName->hide();
+    ui->ailLabel->hide();
+    ui->ailName->hide();
+    ui->pot1Name->hide();
+    ui->pot2Name->hide();
+    ui->pot3Name->hide();
+    ui->pot4Name->hide();
+    ui->pot5Name->hide();
+    ui->saLabel->hide();
+    ui->saName->hide();
+    ui->saType->hide();
+    ui->sbLabel->hide();
+    ui->sbName->hide();
+    ui->sbType->hide();
+    ui->scLabel->hide();
+    ui->scName->hide();
+    ui->scType->hide();
+    ui->sdLabel->hide();
+    ui->sdName->hide();
+    ui->sdType->hide();
+    ui->seLabel->hide();
+    ui->seName->hide();
+    ui->seType->hide();
+    ui->sfLabel->hide();
+    ui->sfName->hide();
+    ui->sfType->hide();
+    ui->sgLabel->hide();
+    ui->sgName->hide();
+    ui->sgType->hide();
+    ui->shLabel->hide();
+    ui->shName->hide();
+    ui->shType->hide();
+    ui->siName->hide();
+    ui->sjName->hide();
+    ui->skName->hide();
+    ui->slName->hide();
+    ui->smName->hide();
+    ui->snName->hide();
   }
 
   int potsCount = GetCurrentFirmware()->getCapability(Pots);
@@ -44,6 +131,22 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
 CalibrationPanel::~CalibrationPanel()
 {
   delete ui;
+}
+
+void CalibrationPanel::update()
+{
+  ui->siLabel->setVisible(generalSettings.switchConfig[0] == GeneralSettings::SWITCH_2x2POS);
+  ui->siName->setVisible(generalSettings.switchConfig[0] == GeneralSettings::SWITCH_2x2POS);
+  ui->sjLabel->setVisible(generalSettings.switchConfig[1] == GeneralSettings::SWITCH_2x2POS);
+  ui->sjName->setVisible(generalSettings.switchConfig[1] == GeneralSettings::SWITCH_2x2POS);
+  ui->skLabel->setVisible(generalSettings.switchConfig[2] == GeneralSettings::SWITCH_2x2POS);
+  ui->skName->setVisible(generalSettings.switchConfig[2] == GeneralSettings::SWITCH_2x2POS);
+  ui->slLabel->setVisible(generalSettings.switchConfig[3] == GeneralSettings::SWITCH_2x2POS);
+  ui->slName->setVisible(generalSettings.switchConfig[3] == GeneralSettings::SWITCH_2x2POS);
+  ui->smLabel->setVisible(generalSettings.switchConfig[4] == GeneralSettings::SWITCH_2x2POS);
+  ui->smName->setVisible(generalSettings.switchConfig[4] == GeneralSettings::SWITCH_2x2POS);
+  ui->snLabel->setVisible(generalSettings.switchConfig[6] == GeneralSettings::SWITCH_2x2POS);
+  ui->snName->setVisible(generalSettings.switchConfig[6] == GeneralSettings::SWITCH_2x2POS);
 }
 
 void CalibrationPanel::on_PPM_MultiplierDSB_editingFinished()

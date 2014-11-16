@@ -142,13 +142,13 @@ void GeneralEdit::on_calretrieve_PB_clicked()
         generalSettings.backlightBright=byte8u;
       byte8=(int8_t)BeeperSet.mid(0,2).toUInt(&ok,16);
       if (ok)
-        generalSettings.beeperMode=(BeeperMode)byte8;
+        generalSettings.beeperMode = (GeneralSettings::BeeperMode)byte8;
       byte8=(int8_t)BeeperSet.mid(2,2).toInt(&ok,16);
       if (ok)
         generalSettings.beeperLength=byte8;
       byte8=(int8_t)HapticSet.mid(0,2).toUInt(&ok,16);
       if (ok)
-        generalSettings.hapticMode=(BeeperMode)byte8;
+        generalSettings.hapticMode=(GeneralSettings::BeeperMode)byte8;
       byte8=(int8_t)HapticSet.mid(2,2).toInt(&ok,16);
       if (ok)
         generalSettings.hapticStrength=byte8;

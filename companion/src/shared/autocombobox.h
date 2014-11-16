@@ -2,7 +2,7 @@
 #define AUTOCOMBOBOX_H_
 
 #include <QComboBox>
-#include "modeledit/modeledit.h"
+#include "genericpanel.h"
 
 class AutoComboBox: public QComboBox
 {
@@ -35,7 +35,7 @@ class AutoComboBox: public QComboBox
       lock = false;
     }
 
-    void setField(unsigned int & field, ModelPanel * panel=NULL)
+    void setField(unsigned int & field, GenericPanel * panel=NULL)
     {
       this->field = (int *)&field;
       this->panel = panel;
@@ -46,7 +46,7 @@ class AutoComboBox: public QComboBox
       }
     }
 
-    void setField(int & field, ModelPanel * panel=NULL)
+    void setField(int & field, GenericPanel * panel=NULL)
     {
       this->field = &field;
       this->panel = panel;
@@ -70,7 +70,7 @@ class AutoComboBox: public QComboBox
 
   protected:
     int * field;
-    ModelPanel * panel;
+    GenericPanel * panel;
     bool lock;
 };
 

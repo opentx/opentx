@@ -90,6 +90,20 @@
   #define AVR_FIELD(x) x;
 #endif
 
+#if defined(PCBSTD)
+  #define N_PCBSTD_FIELD(x)
+#else
+  #define N_PCBSTD_FIELD(x) x;
+#endif
+
+#if defined(PCBTARANIS)
+  #define N_TARANIS_FIELD(x)
+  #define TARANIS_FIELD(x) x;
+#else
+  #define N_TARANIS_FIELD(x) x;
+  #define TARANIS_FIELD(x)
+#endif
+
 #define NUM_STICKS             4
 
 #if defined(PCBTARANIS)
@@ -623,18 +637,6 @@ enum SwitchConfig {
 #define LEN_SWITCH_NAME 3
 #define LEN_ANA_NAME    3
 
-#if defined(PCBSTD)
-  #define N_PCBSTD_FIELD(x)
-#else
-  #define N_PCBSTD_FIELD(x) x;
-#endif
-
-#if defined(PCBTARANIS)
-  #define N_TARANIS_FIELD(x)
-#else
-  #define N_TARANIS_FIELD(x) x;
-#endif
-
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
   uint8_t   version;
@@ -681,15 +683,15 @@ PACK(typedef struct t_EEGeneral {
 
   EXTRA_GENERAL_FIELDS
 
-  ARM_FIELD(swarnstate_t switchUnlockStates)
+  TARANIS_FIELD(swarnstate_t switchUnlockStates)
 
   ARM_FIELD(CustomFunctionData customFn[NUM_CFN])
 
-  ARM_FIELD(uint32_t switchConfig)
+  TARANIS_FIELD(uint32_t switchConfig)
 
-  ARM_FIELD(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME])
+  TARANIS_FIELD(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME])
 
-  ARM_FIELD(char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME])
+  TARANIS_FIELD(char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME])
 
 }) EEGeneral;
 
