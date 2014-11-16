@@ -6220,8 +6220,9 @@ void menuModelTelemetry(uint8_t event)
         lcd_putsAtt(0, y, STR_TELEMETRY_NEWSENSOR, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
-          s_currIdx = availableTelemetryIndex();
-          if (s_currIdx >= 0) {
+          int res = availableTelemetryIndex();
+          if (res >= 0) {
+            s_currIdx = res;
             pushMenu(menuModelSensor);
           }
         }
