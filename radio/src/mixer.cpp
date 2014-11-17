@@ -170,6 +170,10 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
   }
 }
 
+#if !defined(CPUM64) && !defined(PREVENT_ARITHMETIC_OVERFLOW)
+  #define PREVENT_ARITHMETIC_OVERFLOW
+#endif
+
 // #define PREVENT_ARITHMETIC_OVERFLOW
 // because of optimizations the reserves before overruns occurs is only the half
 // this defines enables some checks the greatly improves this situation
@@ -189,6 +193,7 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
 // value = outputvalue with 100 mulitplied usual range -102400 to 102400; output -1024 to 1024
 // changed rescaling from *100 to *256 to optimize performance
 // rescaled from -262144 to 262144
+
 int16_t applyLimits(uint8_t channel, int32_t value)
 {
   LimitData * lim = limitAddress(channel);
@@ -907,19 +912,22 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         default: // MLTPX_ADD
           *ptr += dv; //Mixer output add up to the line (dv + (dv>0 ? 100/2 : -100/2))/(100);
           break;
-      } //endswitch md->mltpx
-#ifdef PREVENT_ARITHMETIC_OVERFLOW
-/*
+      }
+
+#if defined(CPUARM)
+      *ptr = limit(int32_t(-1)<<23, *ptr, int32_t(1)<<23);
+#elif defined(PREVENT_ARITHMETIC_OVERFLOW)
+
+#if 0
       // a lot of assumptions must be true, for this kind of check; not really worth for only 4 bytes flash savings
-      // this solution would save again 4 bytes flash
       int8_t testVar=(*ptr<<1)>>24;
       if ( (testVar!=-1) && (testVar!=0 ) ) {
         // this devices by 64 which should give a good balance between still over 100% but lower then 32x100%; should be OK
         *ptr >>= 6;  // this is quite tricky, reduces the value a lot but should be still over 100% and reduces flash need
-      } */
+      }
+#endif
 
-
-      PACK( union u_int16int32_t {
+      PACK(union u_int16int32_t {
         struct {
           int16_t lo;
           int16_t hi;
@@ -927,29 +935,19 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         int32_t dword;
       });
 
-      u_int16int32_t tmp;
-      tmp.dword=*ptr;
+      u_int16int32_t * tmp = (u_int16int32_t *)ptr;
 
-      if (tmp.dword<0) {
-        if ((tmp.words_t.hi&0xFF80)!=0xFF80) tmp.words_t.hi=0xFF86; // set to min nearly
+      if (tmp->dword < 0) {
+        if ((tmp->words_t.hi & 0xFF80) != 0xFF80)
+          tmp->words_t.hi = 0xFF86; // set to min nearly
       }
       else {
-        if ((tmp.words_t.hi|0x007F)!=0x007F) tmp.words_t.hi=0x0079; // set to max nearly
+        if ((tmp->words_t.hi | 0x007F) != 0x007F)
+          tmp->words_t.hi = 0x0079; // set to max nearly
       }
-      *ptr = tmp.dword;
-      // this implementation saves 18bytes flash
-
-/*      dv=*ptr>>8;
-      if (dv>(32767-RESXl)) {
-        *ptr=(32767-RESXl)<<8;
-      } else if (dv<(-32767+RESXl)) {
-        *ptr=(-32767+RESXl)<<8;
-      }*/
-      // *ptr=limit( int32_t(int32_t(-1)<<23), *ptr, int32_t(int32_t(1)<<23));  // limit code cost 72 bytes
-      // *ptr=limit( int32_t((-32767+RESXl)<<8), *ptr, int32_t((32767-RESXl)<<8));  // limit code cost 80 bytes
 #endif
 
-    } //endfor mixers
+    }
 
     tick10ms = 0;
     dirtyChannels &= passDirtyChannels;

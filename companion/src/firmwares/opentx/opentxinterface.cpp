@@ -1085,6 +1085,10 @@ void registerOpenTxFirmwares()
   openTx->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
   openTx->addOption("haptic", QObject::tr("Used if you have modified your radio with haptic mode"));
   // NOT TESTED openTx->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
+  openTx->addOption("turnigyfix", QObject::tr("Latest deliveries for Turnigy 9x transmitters (starting 2011) do not stop sending during Throttle Warning.\n"\
+     "This fact breaks the throttle and switch warning concept.\n"\
+     "If you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this option.\n"\
+     "This include doesn't break older transmitters, just causes a slight code increase."));
   openTx->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
@@ -1098,7 +1102,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   openTx->addOption("thrtrace", QObject::tr("Enable the throttle trace in Statistics"));
-  openTx->addOption("pgbar", QObject::tr("EEprom write progress bar"));
+  openTx->addOption("pgbar", QObject::tr("EEprom write progress bar visible in upper screen part"));
   openTx->addOption("imperial", QObject::tr("Imperial units"));
   openTx->addOption("nowshh", QObject::tr("No Winged Shadow How High support"));
   openTx->addOption("novario", QObject::tr("No vario support"));
@@ -1107,6 +1111,13 @@ void registerOpenTxFirmwares()
   openTx->addOption("fasoffset", QObject::tr("Allow compensating for offset errors in FrSky FAS current sensors"));
   openTx->addOption("stickrev", QObject::tr("Add support for reversing stick inputs (e.g. needed for FrSky gimbals)"));
   addOpenTxCommonOptions(openTx);
+  openTx->addOption("arithOvfl", QObject::tr("Adds additional code to prevent arithmetic overflows.\n"\
+                    "MAX or MIN values stays. Not yet guaranteed!! Just improved"));
+  openTx->addOption("acurStats", QObject::tr("Increases resolution for throttle statistics and throttle counting, in very rare cases.\n"\
+                    "This will be only true if an output channel is used for throttle calculation, and this chanenel has changed limits,\n"\
+                    "e.g. -90% to +80%. If you use standard limits for throttle you do not need this option."));
+  openTx->addOption("pwmbl", QObject::tr("Smoothly increases or reduces backlight.\n"\
+                    "Allows you to adjust backlight level in several steps."));
   firmwares.push_back(openTx);
 
   /* 9x board with M128 chip */
@@ -1121,6 +1132,10 @@ void registerOpenTxFirmwares()
   openTx->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
   openTx->addOption("haptic", QObject::tr("Used if you have modified your radio with haptic mode"));
   // NOT TESTED openTx->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
+  openTx->addOption("turnigyfix", QObject::tr("Latest deliveries for Turnigy 9x transmitters (starting 2011) do not stop sending during Throttle Warning.\n"\
+     "This fact breaks the throttle and switch warning concept.\n"\
+     "If you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch.\n"\
+     "This include doesn't break older transmitters, just causes a slight code increase."));
   openTx->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
@@ -1134,9 +1149,11 @@ void registerOpenTxFirmwares()
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   openTx->addOption("thrtrace", QObject::tr("Enable the throttle trace in Statistics"));
-  openTx->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
+  openTx->addOption("pgbar", QObject::tr("EEprom write progress bar visible in upper screen part"));
   openTx->addOption("imperial", QObject::tr("Imperial units"));
   addOpenTxCommonOptions(openTx);
+  openTx->addOption("pwmbl", QObject::tr("Smoothly increases or reduces backlight.\n"\
+                    "Allows you to adjust backlight level in several steps."));
   firmwares.push_back(openTx);
 
   /* 9XR board */
@@ -1151,6 +1168,10 @@ void registerOpenTxFirmwares()
   openTx->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
   openTx->addOption("haptic", QObject::tr("Used if you have modified your radio with haptic mode"));
   // NOT TESTED openTx->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
+  openTx->addOption("turnigyfix", QObject::tr("Latest deliveries for Turnigy 9x transmitters (starting 2011) do not stop sending during Throttle Warning.\n"\
+     "This fact breaks the throttle and switch warning concept.\n"\
+     "If you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch.\n"\
+     "This include doesn't break older transmitters, just causes a slight code increase."));
   openTx->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
@@ -1162,7 +1183,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   openTx->addOption("thrtrace", QObject::tr("Enable the throttle trace in Statistics"));
-  openTx->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
+  openTx->addOption("pgbar", QObject::tr("EEprom write progress bar visible in upper screen part"));
   openTx->addOption("imperial", QObject::tr("Imperial units"));
   openTx->addOption("nowshh", QObject::tr("No Winged Shadow How High support"));
   openTx->addOption("novario", QObject::tr("No vario support"));
@@ -1170,6 +1191,13 @@ void registerOpenTxFirmwares()
   openTx->addOption("nogauges", QObject::tr("No gauges in the custom telemetry screen"));
   openTx->addOption("stickrev", QObject::tr("Add support for reversing stick inputs (e.g. needed for FrSky gimbals)"));
   addOpenTxCommonOptions(openTx);
+  openTx->addOption("arithOvfl", QObject::tr("Adds additional code to prevent arithmetic overflows.\n"\
+                    "MAX or MIN values stays. Not yet guaranteed!! Just improved"));
+  openTx->addOption("acurStats", QObject::tr("Increases resolution for throttle statistics and throttle counting, in very rare cases.\n"\
+                    "This will be only true if an output channel is used for throttle calculation, and this chanenel has changed limits,\n"\
+                    "e.g. -90% to +80%. If you use standard limits for throttle you do not need this option."));
+  openTx->addOption("pwmbl", QObject::tr("Smoothly increases or reduces backlight.\n"\
+                    "Allows you to adjust backlight level in several steps."));
   firmwares.push_back(openTx);
 
   /* 9XR board with M128 chip */
@@ -1184,6 +1212,10 @@ void registerOpenTxFirmwares()
   openTx->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
   openTx->addOption("haptic", QObject::tr("Used if you have modified your radio with haptic mode"));
   // NOT TESTED openTx->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
+  openTx->addOption("turnigyfix", QObject::tr("Latest deliveries for Turnigy 9x transmitters (starting 2011) do not stop sending during Throttle Warning.\n"\
+     "This fact breaks the throttle and switch warning concept.\n"\
+     "If you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch.\n"\
+     "This include doesn't break older transmitters, just causes a slight code increase."));
   openTx->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
@@ -1195,9 +1227,11 @@ void registerOpenTxFirmwares()
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   openTx->addOption("thrtrace", QObject::tr("Enable the throttle trace in Statistics"));
-  openTx->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
+  openTx->addOption("pgbar", QObject::tr("EEprom write progress bar visible in upper screen part"));
   openTx->addOption("imperial", QObject::tr("Imperial units"));
   addOpenTxCommonOptions(openTx);
+  openTx->addOption("pwmbl", QObject::tr("Smoothly increases or reduces backlight.\n"\
+                    "Allows you to adjust backlight level in several steps."));
   firmwares.push_back(openTx);
 
   /* Gruvin9x board */
@@ -1221,7 +1255,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
-  openTx->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
+  openTx->addOption("pgbar", QObject::tr("EEprom write progress bar visible in upper screen part"));
   openTx->addOption("imperial", QObject::tr("Imperial units"));
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
