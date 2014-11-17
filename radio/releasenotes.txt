@@ -2,15 +2,32 @@
 [Taranis]
 <ul>
 <li>Compilation with -Os instead of -O2 because of a strange bug on LS1 (AND condition changed by itself on SD error)</li>
+<li>Lua getTimer and setTimer parameters fixed (persistent and minuteBeep)</li>
 <li>Lua resetTimer function added</li>
 <li>SWR shown on newer Taranis+</li>
 <li>BOLD, CONDENSED, FIXED constants exported to Lua</li>
+<li>Disable mixer line that uses a Lua source if the Lua script is not running</li>
+<li>Additional parameters for Lua model.getMix/insertMix</li>
+<li>Fixed occasional SD card error</li>
+<li>Fixed bitmap loading</li>
 </ul>
 
 [9XR-PRO]
 <ul>
 <li>Coprocessor interface bugfix</li>
 </ul>
+
+[Stock]
+<ul>
+<li>Fixed never ending haptic repeat</li>
+<li>Fixed curves display</li>
+</ul>
+
+[All]
+<ul>
+<li>Stick icons missing next to trim key states on switch diag page</li>
+</ul>
+
 
 <h2>Version 2.0.12 / 2014-09-16</h2>
 [Taranis]

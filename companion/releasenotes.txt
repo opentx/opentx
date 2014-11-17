@@ -1,6 +1,16 @@
 <h2>Version 2.0.13 / 2014-11-18</h2>
 <ul>
 <li>Too many curves shown on non ARM boards</li>
+<li>Fixed vario limits</li>
+<li>Fixes in compare dialog</li>
+<li>Fixed receiver number range</li>
+<li>Virtual inputs not selectable in SF Volume and heli Collective Source</li>
+<li>Joystick calibration crash after channel assignment</li>
+<li>Gvar import error for limits</li>
+<li>Companion shows too many curve types in input/mixer for 9x</li>
+<li>NOT curves removed from inputs (for non ARM platforms)</li>
+<li>Companion again builds on OS X (Mac)</li>
+<li>Companion simulator Lua crash on OS X 64bit (Mac)</li>
 </ul>
 
 <h2>Version 2.0.12 / 2014-09-15</h2>
