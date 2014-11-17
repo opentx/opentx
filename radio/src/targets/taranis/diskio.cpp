@@ -122,8 +122,8 @@ int ff_del_syncobj (_SYNC_t mutex)
 
 #if !defined(BOOT)
 static OS_MutexID ioMutex;
-#define IO_MUTEX_ENTER()      CoEnterMutexSection(ioMutex);
-#define IO_MUTEX_LEAVE()      CoLeaveMutexSection(ioMutex);
+#define IO_MUTEX_ENTER()      CoEnterMutexSection(ioMutex)
+#define IO_MUTEX_LEAVE()      CoLeaveMutexSection(ioMutex)
 #else
 #define IO_MUTEX_ENTER()
 #define IO_MUTEX_LEAVE()
