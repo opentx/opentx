@@ -1,3 +1,17 @@
+<h2>Version 2.0.13 / 2014-11-18</h2>
+[Taranis]
+<ul>
+<li>Compilation with -Os instead of -O2 because of a strange bug on LS1 (AND condition changed by itself on SD error)</li>
+<li>Lua resetTimer function added</li>
+<li>SWR shown on newer Taranis+</li>
+<li>BOLD, CONDENSED, FIXED constants exported to Lua</li>
+</ul>
+
+[9XR-PRO]
+<ul>
+<li>Coprocessor interface bugfix</li>
+</ul>
+
 <h2>Version 2.0.12 / 2014-09-16</h2>
 [Taranis]
 <ul>

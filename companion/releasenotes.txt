@@ -1,3 +1,8 @@
+<h2>Version 2.0.13 / 2014-11-18</h2>
+<ul>
+<li>Too many curves shown on non ARM boards</li>
+</ul>
+
 <h2>Version 2.0.12 / 2014-09-15</h2>
 <ul>
 <li>Typos & Translations updated</li>
