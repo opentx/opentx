@@ -108,23 +108,16 @@ int ff_cre_syncobj (BYTE vol, _SYNC_t *mutex)
 int ff_req_grant (_SYNC_t mutex)
 {
   CoEnterMutexSection(mutex);
-  if (mutexCheck++ != 0 || mutex != ioMutex) {
-    unexpectedShutdown = true;
-  }
   return 1;
 }
 
 void ff_rel_grant (_SYNC_t mutex)
 {
-  if (--mutexCheck != 0 || mutex != ioMutex) {
-    unexpectedShutdown = true;
-  }
   CoLeaveMutexSection(mutex);
 }
 
 int ff_del_syncobj (_SYNC_t mutex)
 {
-  unexpectedShutdown = true;
   return 1;
 }
 #endif
