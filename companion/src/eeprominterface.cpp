@@ -753,6 +753,8 @@ QString FuncSwData::funcToString()
     return QObject::tr("Play Both");
   else if (func == FuncPlayValue)
     return QObject::tr("Play Value");
+  else if (func == FuncPlayScript)
+    return QObject::tr("Play Script");
   else if (func == FuncLogs)
     return QObject::tr("Start Logs");
   else if (func == FuncVolume)

@@ -1767,7 +1767,10 @@ class CustomFunctionsConversionTable: public ConversionTable {
         addConversion(FuncPlayValue, val++);
         if (IS_ARM(board)) {
           addConversion(FuncReserve, val++);
-          addConversion(FuncReserve, val++);
+          if (IS_TARANIS(board))
+            addConversion(FuncPlayScript, val++);
+          else
+            addConversion(FuncReserve, val++);
           addConversion(FuncReserve, val++);
           addConversion(FuncBackgroundMusic, val++);
           addConversion(FuncBackgroundMusicPause, val++);
@@ -1908,7 +1911,7 @@ class ArmCustomFunctionField: public TransformedField {
           *((uint8_t *)(_param+3)) = fn.func - FuncSetTimer1;
         }
       }
-      else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic) {
+      else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic || fn.func == FuncPlayScript) {
         memcpy(_param, fn.paramarm, sizeof(_param));
       }
       else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
@@ -1983,7 +1986,7 @@ class ArmCustomFunctionField: public TransformedField {
         fn.func = AssignFunc(fn.func + index);
         fn.param = value;
       }
-      else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic) {
+      else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic || fn.func == FuncPlayScript) {
         memcpy(fn.paramarm, _param, sizeof(fn.paramarm));
       }
       else if (fn.func == FuncVolume) {
