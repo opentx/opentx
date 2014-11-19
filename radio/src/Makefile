@@ -404,7 +404,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   ARCH = AVR
   TRGT = avr-
   MCU = atmega128
-  OPT = 2
+  OPT = s
   SDCARD = NO
   THR_TRACE = NO
   EEPROM_VARIANT += ${M128_VARIANT}
@@ -464,7 +464,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   ARCH = AVR
   TRGT = avr-
   MCU = atmega2561
-  OPT = 2
+  OPT = s
   SDCARD = NO
   THR_TRACE = YES
   EEPROM_VARIANT += ${M2561_VARIANT}
@@ -525,7 +525,7 @@ ifeq ($(PCB), GRUVIN9X)
   endif
   TRGT = avr-
   MCU = atmega2560
-  OPT = 2
+  OPT = s
   CPPDEFS += -DF_CPU=$(F_CPU)UL -DPCBGRUVIN9X -DCPUM2560 -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC
   SDCARD = NO
   BUZZER = NO
@@ -565,7 +565,7 @@ ifeq ($(PCB), MEGA2560)
   ARCH = AVR
   TRGT = avr-
   MCU = atmega2560
-  OPT = 2
+  OPT = s
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBMEGA2560 -DCPUM2560 -DEEPROM_VARIANT=0 -DAUDIO -DRTCLOCK
   SDCARD = YES
   THR_TRACE = YES
@@ -611,7 +611,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   endif
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
-  OPT = 2
+  OPT = s
   SDCARD = YES
   BUZZER = NO
   THR_TRACE = YES
