@@ -107,8 +107,7 @@ int ff_cre_syncobj (BYTE vol, _SYNC_t *mutex)
 
 int ff_req_grant (_SYNC_t mutex)
 {
-  CoEnterMutexSection(mutex);
-  return 1;
+  return CoEnterMutexSection(mutex) == E_OK;
 }
 
 void ff_rel_grant (_SYNC_t mutex)
