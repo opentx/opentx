@@ -1,4 +1,4 @@
-<h2>Version 2.0.13 / 2014-11-18</h2>
+<h2>Version 2.0.13 / 2014-11-20</h2>
 <ul>
 <li>Too many curves shown on non ARM boards</li>
 <li>Fixed vario limits</li>
@@ -11,6 +11,7 @@
 <li>NOT curves removed from inputs (for non ARM platforms)</li>
 <li>Companion again builds on OS X (Mac)</li>
 <li>Companion simulator Lua crash on OS X 64bit (Mac)</li>
+<li>Companion didn't take care of PlayScript functions</li>
 </ul>
 
 <h2>Version 2.0.12 / 2014-09-15</h2>

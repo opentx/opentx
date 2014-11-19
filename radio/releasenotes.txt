@@ -1,4 +1,4 @@
-<h2>Version 2.0.13 / 2014-11-18</h2>
+<h2>Version 2.0.13 / 2014-11-20</h2>
 [Taranis]
 <ul>
 <li>Compilation with -Os instead of -O2 because of a strange bug on LS1 (AND condition changed by itself on SD error)</li>
