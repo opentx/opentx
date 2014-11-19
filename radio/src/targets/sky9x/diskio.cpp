@@ -94,22 +94,16 @@ uint32_t Cmd_A41_resp ;
 uint8_t  cardType;
 uint32_t transSpeed;
 
-#if !defined(BOOT)
-static OS_MutexID ioMutex;
-#define IO_MUTEX_ENTER()      CoEnterMutexSection(ioMutex);
-#define IO_MUTEX_LEAVE()      CoLeaveMutexSection(ioMutex);
-#else
-#define IO_MUTEX_ENTER()
-#define IO_MUTEX_LEAVE()
-#endif //#if !defined(BOOT)
-
-
 /*-----------------------------------------------------------------------*/
 /* Lock / unlock functions                                               */
 /*-----------------------------------------------------------------------*/
+
+#if !defined(BOOT)
+static OS_MutexID ioMutex;
+volatile int mutexCheck = 0;
 int ff_cre_syncobj (BYTE vol, _SYNC_t *mutex)
 {
-  *mutex = CoCreateMutex();
+  *mutex = ioMutex;
   return 1;
 }
 
@@ -128,6 +122,7 @@ int ff_del_syncobj (_SYNC_t mutex)
 {
   return 1;
 }
+#endif
 
 //------------------------------------------------------------------------------
 /// Get Trans Speed Value (Kbit/s)
@@ -1288,8 +1283,6 @@ DRESULT disk_read (
 
   if ( sd_card_ready() == 0 ) return RES_NOTRDY;
 
-  IO_MUTEX_ENTER();
-
   do {
     result = sd_read_block(sector, dma_sd_buffer) ;
     if (result) {
@@ -1304,8 +1297,6 @@ DRESULT disk_read (
     }
   } while ( count ) ;
 
-  IO_MUTEX_LEAVE();
-  
   if (!count)
     return RES_OK;
 
@@ -1334,8 +1325,6 @@ DRESULT disk_write (
   if (drv || !count) return RES_PARERR;
 
   if ( sd_card_ready() == 0 ) return RES_NOTRDY;
-
-  IO_MUTEX_ENTER();
 
   do {
 
@@ -1368,14 +1357,12 @@ DRESULT disk_write (
   } while ( count ) ;
 
   if (!count) {
-    IO_MUTEX_LEAVE();
     return RES_OK;
   }
 
   if (++sdErrorCount > 3)
     Card_state = SD_ST_ERR;
 
-  IO_MUTEX_LEAVE();
   return RES_ERROR;
 }
 
@@ -1396,8 +1383,6 @@ DRESULT disk_ioctl (
   if (drv) return RES_PARERR;
 
   res = RES_ERROR;
-
-  IO_MUTEX_ENTER();
 
   if (ctrl == CTRL_POWER) {
 #if 0
@@ -1475,8 +1460,6 @@ DRESULT disk_ioctl (
     }
     // BSS deselect();
   }
-
-  IO_MUTEX_LEAVE();
 
   return res;
 }

@@ -96,9 +96,12 @@ uint32_t transSpeed; */
 /* Lock / unlock functions                                               */
 /*-----------------------------------------------------------------------*/
 #if !defined(BOOT)
+static OS_MutexID ioMutex;
+volatile int mutexCheck = 0;
+
 int ff_cre_syncobj (BYTE vol, _SYNC_t *mutex)
 {
-  *mutex = CoCreateMutex();
+  *mutex = ioMutex;
   return 1;
 }
 
@@ -118,16 +121,6 @@ int ff_del_syncobj (_SYNC_t mutex)
   return 1;
 }
 #endif
-
-
-#if !defined(BOOT)
-static OS_MutexID ioMutex;
-#define IO_MUTEX_ENTER()      CoEnterMutexSection(ioMutex);
-#define IO_MUTEX_LEAVE()      CoLeaveMutexSection(ioMutex);
-#else
-#define IO_MUTEX_ENTER()
-#define IO_MUTEX_LEAVE()
-#endif //#if !defined(BOOT)
 
 static const DWORD socket_state_mask_cp = (1 << 0);
 static const DWORD socket_state_mask_wp = (1 << 1);
@@ -652,8 +645,6 @@ DSTATUS disk_initialize (
   if (drv) return STA_NOINIT;                     /* Supports only single drive */
   if (Stat & STA_NODISK) return Stat;     /* No card in the socket */
 
-  IO_MUTEX_ENTER();
-
   power_on();                                                     /* Force socket power on and initialize interface */
   interface_speed(INTERFACE_SLOW);
   for (n = 10; n; n--) rcvr_spi();        /* 80 dummy clocks */
@@ -687,11 +678,10 @@ DSTATUS disk_initialize (
   if (ty) {                       /* Initialization succeeded */
     Stat &= ~STA_NOINIT;            /* Clear STA_NOINIT */
     interface_speed(INTERFACE_FAST);
-  } else {                        /* Initialization failed */
+  }
+  else {                        /* Initialization failed */
     power_off();
   }
-
-  IO_MUTEX_LEAVE();
 
   return Stat;
 }
@@ -717,8 +707,6 @@ DSTATUS disk_status (
 int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
 {
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
-
-  IO_MUTEX_ENTER();
 
   if (count == 1) {       /* Single block read */
     if (send_cmd(CMD17, sector) == 0)       { /* READ_SINGLE_BLOCK */
@@ -747,8 +735,6 @@ int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
   release_spi();
   TRACE_SD_CARD_EVENT((count != 0), sd_SD_ReadSectors, (count << 24) + ((sector/((CardType & CT_BLOCK) ? 1 : 512)) & 0x00FFFFFF));
 
-  IO_MUTEX_LEAVE();
-
   return count ? -1 : 0;
 }
 
@@ -776,8 +762,6 @@ int8_t SD_WriteSectors(const uint8_t *buff, uint32_t sector, uint32_t count)
 {
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
 
-  IO_MUTEX_ENTER();
-
   if (count == 1) {       /* Single block write */
     if (send_cmd(CMD24, sector) == 0) {     /* WRITE_BLOCK */
       if (xmit_datablock(buff, 0xFE)) {
@@ -804,8 +788,6 @@ int8_t SD_WriteSectors(const uint8_t *buff, uint32_t sector, uint32_t count)
   }
   release_spi();
   TRACE_SD_CARD_EVENT((count != 0), sd_SD_WriteSectors, (count << 24) + ((sector/((CardType & CT_BLOCK) ? 1 : 512)) & 0x00FFFFFF));
-
-  IO_MUTEX_LEAVE();
 
   return count ? -1 : 0;
 }
@@ -848,8 +830,6 @@ DRESULT disk_ioctl (
 
   res = RES_ERROR;
 
-  IO_MUTEX_ENTER();
-
   if (ctrl == CTRL_POWER) {
     switch (*ptr) {
     case 0:         /* Sub control code == 0 (POWER_OFF) */
@@ -871,7 +851,6 @@ DRESULT disk_ioctl (
   }
   else {
     if (Stat & STA_NOINIT) {
-      IO_MUTEX_LEAVE();
       return RES_NOTRDY;
     }
 
@@ -986,8 +965,6 @@ DRESULT disk_ioctl (
 
     release_spi();
   }
-
-  IO_MUTEX_LEAVE();
 
   return res;
 }
