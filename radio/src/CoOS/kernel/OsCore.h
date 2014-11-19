@@ -20,7 +20,7 @@
 #include <CoOS.h>
 
 
-#define  OsSchedLock()  OSSchedLock++;      /*!< Lock schedule                */
+#define  OsSchedLock()  { OSSchedLock++; asm volatile ("" : : : "memory"); }      /*!< Lock schedule                */
 extern   void OsSchedUnlock(void);
 
 #endif
