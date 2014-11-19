@@ -1021,11 +1021,7 @@ void CompareDialog::printSwitches()
         str.append("<tr>");
         color=getColor1(sw1,sw2);
         str.append(QString("<td  width=\"45%\"><font color=%1>").arg(color)+sw1+"</font></td>");
-        if (i<9) {
-          str.append("<td align=\"center\" width=\"10%\"><b>"+tr("LS")+QString("%1</b></td>").arg(i+1));
-        } else {
-          str.append("<td align=\"center\" width=\"10%\"><b>"+tr("LS")+('A'+(i-9))+"</b></td>");
-        }
+        str.append("<td align=\"center\" width=\"10%\"><b>"+tr("L%1").arg(i+1)+QString("</b></td>"));
         color=getColor2(sw1,sw2);
         str.append(QString("<td  width=\"45%\"><font color=%1>").arg(color)+sw2+"</font></td>");
         str.append("</tr>");
