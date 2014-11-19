@@ -629,6 +629,7 @@ enum AssignFunc {
   FuncPlayPrompt,
   FuncPlayBoth,
   FuncPlayValue,
+  FuncPlayScript,
   FuncLogs,
   FuncVolume,
   FuncBacklight,

@@ -475,6 +475,18 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
       }
     }
+    else if (func==FuncPlayScript) {
+      widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
+      if (modified) {
+        memset(cfn.paramarm, 0, sizeof(cfn.paramarm));
+        int vml = 8/*TODO*/;
+        if (fswtchParamArmT[i]->currentText() != "----") {
+          for (int j=0; j<std::min(fswtchParamArmT[i]->currentText().length(), vml); j++) {
+            cfn.paramarm[j] = fswtchParamArmT[i]->currentText().toAscii().at(j);
+          }
+        }
+      }
+    }
     else if (func==FuncBacklight && IS_TARANIS_PLUS(GetEepromInterface()->getBoard())) {
       if (modified) cfn.param = (uint8_t)fswtchBLcolor[i]->value();
       fswtchBLcolor[i]->setValue(cfn.param);
@@ -597,6 +609,7 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
   for (unsigned int i=0; i<FuncCount; i++) {
     if (((i>=FuncOverrideCH1 && i<=FuncOverrideCH32) && (!model || !firmware->getCapability(SafetyChannelCustomFunction))) ||
         ((i==FuncVolume || i==FuncBackgroundMusic || i==FuncBackgroundMusicPause) && !firmware->getCapability(HasVolume)) ||
+        ((i==FuncPlayScript && !IS_TARANIS(firmware->getBoard()))) ||
         ((i==FuncPlayHaptic) && !firmware->getCapability(Haptic)) ||
         ((i==FuncPlayBoth) && !firmware->getCapability(HasBeeper)) ||
         ((i==FuncLogs) && !firmware->getCapability(HasSDLogs)) ||
