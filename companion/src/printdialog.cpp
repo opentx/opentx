@@ -130,7 +130,7 @@ void PrintDialog::printSetup()
 
 QString PrintDialog::printFlightModes()
 {      
-    QString str="";
+    QString str = "";
     str.append(QString("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td colspan=%1><h2>").arg(!gvars ? 8+firmware->getCapability(RotaryEncoders) : 8+gvars+firmware->getCapability(RotaryEncoders)));
     str.append(tr("Flight modes"));
     str.append("</h2></td></tr><tr><td style=\"border-style:none;\">&nbsp;</td><td colspan=2 align=center><b>");
@@ -147,7 +147,7 @@ QString PrintDialog::printFlightModes()
     QString labels[] = { tr("Rud"), tr("Ele"), tr("Thr"), tr("Ail") }; // TODO is elsewhere for sure
     for (int i=0; i<4; i++) {
       GeneralSettings generalSettings = *g_eeGeneral;
-      str.append(QString("<td  align=\"center\" nowrap><b>%1</b></td>").arg(labels[CONVERT_MODE(i+1)-1]));
+      str.append(QString("<td  align=\"center\" nowrap><b>%1</b></td>").arg((QString)labels[CONVERT_MODE(i+1)-1]));
     }
     for (unsigned int i=0; i<gvars; i++) {
       str.append(QString("<td  align=\"center\" nowrap><b>GV%1</b><br>%2</td>").arg(i+1).arg(g_model->gvars_names[i]));
