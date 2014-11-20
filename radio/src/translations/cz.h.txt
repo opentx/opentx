@@ -238,7 +238,7 @@
   #define TR_PLAY_VALUE        "[\221\222TTS]\0   "
 #endif
 
-#define TR_CFN_BG_MUSIC        "BgHudba\0   ""BgHudba ||\0"
+#define TR_SF_BG_MUSIC        "BgHudba\0   ""BgHudba ||\0"
 
 #if defined(SDCARD)
   #define TR_SDCLOGS           "Log na SD\0 "
@@ -253,31 +253,31 @@
 #endif
 
 #if defined(LUA)
-  #define TR_CFN_PLAY_SCRIPT   "Lua Skript\0"
+  #define TR_SF_PLAY_SCRIPT   "Lua Skript\0"
 #else
-  #define TR_CFN_PLAY_SCRIPT   "[Lua]\0     "
+  #define TR_SF_PLAY_SCRIPT   "[Lua]\0     "
 #endif
 
 #if defined(DEBUG)
-  #define TR_CFN_TEST          "Test\0      "
+  #define TR_SF_TEST          "Test\0      "
 #else
-  #define TR_CFN_TEST
+  #define TR_SF_TEST
 #endif
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
-  #define TR_CFN_SAFETY        "Zámek \0    "
+  #define TR_SF_SAFETY        "Zámek \0    "
 #else
-  #define TR_CFN_SAFETY        "---\0       "
+  #define TR_SF_SAFETY        "---\0       "
 #endif
 
-#define TR_CFN_RESERVE         "[rezerva]\0 "
+#define TR_SF_RESERVE         "[rezerva]\0 "
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          TR_CFN_SAFETY "Trenér \0   ""Insta-Trim\0""Reset\0     ""Set \0      " TR_ADJUST_GVAR "Hlasitost\0 " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_PLAY_SCRIPT TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_CFN_TEST
+  #define TR_VFSWFUNC          TR_SF_SAFETY "Trenér \0   ""Insta-Trim\0""Reset\0     ""Set \0      " TR_ADJUST_GVAR "Hlasitost\0 " TR_SF_RESERVE TR_SF_RESERVE TR_SF_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_SF_TEST
 #elif defined(PCBGRUVIN9X)
-  #define TR_VFSWFUNC          TR_CFN_SAFETY "Trenér \0   ""Insta-Trim\0""Reset\0     " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_CFN_TEST
+  #define TR_VFSWFUNC          TR_SF_SAFETY "Trenér \0   ""Insta-Trim\0""Reset\0     " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_SF_TEST
 #else
-  #define TR_VFSWFUNC          TR_CFN_SAFETY "Trenér \0   ""Insta-Trim\0""Reset\0     " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Podsvětlení" TR_CFN_TEST
+  #define TR_VFSWFUNC          TR_SF_SAFETY "Trenér \0   ""Insta-Trim\0""Reset\0     " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Podsvětlení" TR_SF_TEST
 #endif
 
 #define LEN_VFSWRESET          TR("\004", "\012")
@@ -809,7 +809,8 @@
 #define TR_STATISTICS          "Statistika"
 #define TR_ABOUT_US            "O nás"
 #define TR_AND_SWITCH          "AND Spínač"
-#define TR_CF                  "SF"
+#define TR_SF                  "SF"
+#define TR_GF                  "GF"
 #define TR_SPEAKER             INDENT"Repro"
 #define TR_BUZZER              INDENT"Pípák"
 #define TR_BYTES               "[B]"

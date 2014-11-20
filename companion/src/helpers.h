@@ -88,7 +88,8 @@ class CurveGroup : public QObject {
 enum SwitchContext
 {
   LogicalSwitchesContext,
-  CustomFunctionsContext,
+  SpecialFunctionsContext,
+  GlobalFunctionsContext,
   TimersContext,
   MixesContext
 };

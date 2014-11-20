@@ -489,7 +489,8 @@ extern const pm_char STR_MENUDEBUG[];
 extern const pm_char STR_MENUGLOBALVARS[];
 extern const pm_char STR_INVERT_THR[];
 extern const pm_char STR_AND_SWITCH[];
-extern const pm_char STR_CF[];
+extern const pm_char STR_SF[];
+extern const pm_char STR_GF[];
 
 #if defined(FAS_OFFSET) || !defined(CPUM64)
 extern const pm_char STR_FAS_OFFSET[];

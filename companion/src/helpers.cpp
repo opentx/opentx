@@ -370,7 +370,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
 
   b->clear();
 
-  if (context != MixesContext) {
+  if (context != MixesContext && context != GlobalFunctionsContext) {
     // !FMx
     if (IS_ARM(GetCurrentFirmware()->getBoard())) {
       for (int i=-GetCurrentFirmware()->getCapability(FlightModes); i<0; i++) {
@@ -381,10 +381,12 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
     }
   }
 
-  for (int i=-GetCurrentFirmware()->getCapability(LogicalSwitches); i<0; i++) {
-    item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
-    b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
+  if (context != GlobalFunctionsContext) {
+    for (int i=-GetCurrentFirmware()->getCapability(LogicalSwitches); i<0; i++) {
+      item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
+      b->addItem(item.toString(), item.toValue());
+      if (item == value) b->setCurrentIndex(b->count()-1);
+    }
   }
 
   for (int i=-GetCurrentFirmware()->getCapability(RotaryEncoders); i<0; i++) {
@@ -460,13 +462,15 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=1; i<=GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
-    item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
-    b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
+  if (context != GlobalFunctionsContext) {
+    for (int i=1; i<=GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
+      item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
+      b->addItem(item.toString(), item.toValue());
+      if (item == value) b->setCurrentIndex(b->count()-1);
+    }
   }
 
-  if (context == CustomFunctionsContext) {
+  if (context == SpecialFunctionsContext || context == GlobalFunctionsContext) {
     // ON
     item = RawSwitch(SWITCH_TYPE_ON);
     b->addItem(item.toString(), item.toValue());
@@ -478,7 +482,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
   }
 
   // FMx
-  if (context != MixesContext) {
+  if (context != MixesContext && context != GlobalFunctionsContext) {
     if (IS_ARM(GetCurrentFirmware()->getBoard())) {
       for (int i=1; i<=GetCurrentFirmware()->getCapability(FlightModes); i++) {
         item = RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i);

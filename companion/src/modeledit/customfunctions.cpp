@@ -110,7 +110,10 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     label->setContextMenuPolicy(Qt::CustomContextMenu);
     label->setMouseTracking(true);
     label->setProperty("index", i);
-    label->setText(tr("SF%1").arg(i+1));
+    if (model)
+      label->setText(tr("SF%1").arg(i+1));
+    else
+      label->setText(tr("GF%1").arg(i+1));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(fsw_customContextMenuRequested(QPoint)));
     gridLayout->addWidget(label, i+1, 0);
@@ -524,7 +527,7 @@ void CustomFunctionsPanel::update()
   lock = true;
   for (int i=0; i<firmware->getCapability(CustomFunctions); i++) {
     if (!initialized) {
-      populateSwitchCB(fswtchSwtch[i], functions[i].swtch, generalSettings, CustomFunctionsContext);
+      populateSwitchCB(fswtchSwtch[i], functions[i].swtch, generalSettings, model ? SpecialFunctionsContext : GlobalFunctionsContext);
       populateFuncCB(fswtchFunc[i], functions[i].func);
       populateGVmodeCB(fswtchGVmode[i], functions[i].adjustMode);
       populateFuncParamCB(fswtchParamT[i], functions[i].func, functions[i].param, functions[i].adjustMode);
@@ -545,7 +548,7 @@ void CustomFunctionsPanel::fswPaste()
     CustomFunctionData *fsw = &functions[selectedFunction];
     memcpy(fsw, fswData.mid(0, sizeof(CustomFunctionData)).constData(), sizeof(CustomFunctionData));
     lock = true;
-    populateSwitchCB(fswtchSwtch[selectedFunction], functions[selectedFunction].swtch, generalSettings, CustomFunctionsContext);
+    populateSwitchCB(fswtchSwtch[selectedFunction], functions[selectedFunction].swtch, generalSettings, model ? SpecialFunctionsContext : GlobalFunctionsContext);
     populateFuncCB(fswtchFunc[selectedFunction], functions[selectedFunction].func);
     populateGVmodeCB(fswtchGVmode[selectedFunction], functions[selectedFunction].adjustMode);
     populateFuncParamCB(fswtchParamT[selectedFunction], functions[selectedFunction].func, functions[selectedFunction].param, functions[selectedFunction].adjustMode);
@@ -561,7 +564,7 @@ void CustomFunctionsPanel::fswDelete()
   functions[selectedFunction].clear();
   // TODO update switch and func
   lock = true;
-  populateSwitchCB(fswtchSwtch[selectedFunction], functions[selectedFunction].swtch, generalSettings, CustomFunctionsContext);
+  populateSwitchCB(fswtchSwtch[selectedFunction], functions[selectedFunction].swtch, generalSettings, model ? SpecialFunctionsContext : GlobalFunctionsContext);
   populateFuncCB(fswtchFunc[selectedFunction], functions[selectedFunction].func);
   refreshCustomFunction(selectedFunction);
   lock = false;

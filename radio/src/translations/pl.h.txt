@@ -238,7 +238,7 @@
   #define TR_PLAY_VALUE        "[Graj War]"
 #endif
 
-#define TR_CFN_BG_MUSIC        "Muz. tła\0 ""Muz.tła ||"
+#define TR_SF_BG_MUSIC        "Muz. tła\0 ""Muz.tła ||"
 
 #if defined(SDCARD)
   #define TR_SDCLOGS           "Logi->SD\0 "
@@ -253,31 +253,31 @@
 #endif
 
 #if defined(LUA)
-  #define TR_CFN_PLAY_SCRIPT   "Skrypty Lua"
+  #define TR_SF_PLAY_SCRIPT   "Skrypty Lua"
 #else
-  #define TR_CFN_PLAY_SCRIPT   "[Lua]\0    "
+  #define TR_SF_PLAY_SCRIPT   "[Lua]\0    "
 #endif
 
 #if defined(DEBUG)
-  #define TR_CFN_TEST          "Test\0"
+  #define TR_SF_TEST          "Test\0"
 #else
-  #define TR_CFN_TEST
+  #define TR_SF_TEST
 #endif
           
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
-  #define TR_CFN_SAFETY        "Bezp.\0    "
+  #define TR_SF_SAFETY        "Bezp.\0    "
 #else
-  #define TR_CFN_SAFETY        "---\0      "
+  #define TR_SF_SAFETY        "---\0      "
 #endif
 
-#define TR_CFN_RESERVE         "[rezerwa]\0"
+#define TR_SF_RESERVE         "[rezerwa]\0"
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          TR_CFN_SAFETY "Trener \0  ""Inst-Trim ""Resetuj\0  ""Ustaw\0    " TR_ADJUST_GVAR "Głośność\0 " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_PLAY_SCRIPT TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl\0" TR_CFN_TEST
+  #define TR_VFSWFUNC          TR_SF_SAFETY "Trener \0  ""Inst-Trim ""Resetuj\0  ""Ustaw\0    " TR_ADJUST_GVAR "Głośność\0 " TR_SF_RESERVE TR_SF_RESERVE TR_SF_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl\0" TR_SF_TEST
 #elif defined(PCBGRUVIN9X)
-  #define TR_VFSWFUNC          TR_CFN_SAFETY "Trener \0  ""Inst-Trim ""Resetuj\0  " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl\0" TR_CFN_TEST
+  #define TR_VFSWFUNC          TR_SF_SAFETY "Trener \0  ""Inst-Trim ""Resetuj\0  " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl\0" TR_SF_TEST
 #else
-  #define TR_VFSWFUNC          TR_CFN_SAFETY "Trener \0  ""Inst-Trim ""Resetuj\0  " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Podświetl\0" TR_CFN_TEST
+  #define TR_VFSWFUNC          TR_SF_SAFETY "Trener \0  ""Inst-Trim ""Resetuj\0  " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Podświetl\0" TR_SF_TEST
 #endif
 
 #define LEN_VFSWRESET          TR("\004", "\011")
@@ -806,7 +806,8 @@
 #define TR_STATISTICS          "Statystyki"
 #define TR_ABOUT_US            "O nas"
 #define TR_AND_SWITCH          "Przełącznik AND"
-#define TR_CF                  "FS"
+#define TR_SF                  "FS"
+#define TR_GF                  "GF"
 #define TR_SPEAKER             INDENT"Głośnik"
 #define TR_BUZZER              INDENT"Brzęczyk"
 #define TR_BYTES               "bajty"

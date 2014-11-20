@@ -350,7 +350,8 @@ const pm_char STR_MENUSENSOR[] PROGMEM = TR_MENUSENSOR;
 
 const pm_char STR_INVERT_THR[] PROGMEM = TR_INVERT_THR;
 const pm_char STR_AND_SWITCH[] PROGMEM = TR_AND_SWITCH;
-extern const pm_char STR_CF[] PROGMEM = TR_CF;
+const pm_char STR_SF[] PROGMEM = TR_SF;
+const pm_char STR_GF[] PROGMEM = TR_GF;
 
 #if defined(FRSKY_HUB)
 const pm_char STR_MINRSSI[] PROGMEM = TR_MINRSSI;

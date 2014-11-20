@@ -5165,7 +5165,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
     uint8_t k = i+s_pgOfs;
 
 #if LCD_W >= 212
-    putsStrIdx(0, y, STR_CF, k+1, (sub==k && m_posHorz<0) ? INVERS : 0);
+    putsStrIdx(0, y, functions == g_model.customFn ? STR_SF : STR_GF, k+1, (sub==k && m_posHorz<0) ? INVERS : 0);
 #endif
 
     CustomFunctionData *cfn = &functions[k];
