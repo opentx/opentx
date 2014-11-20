@@ -90,6 +90,8 @@
   #define AVR_FIELD(x) x;
 #endif
 
+#define NUM_STICKS             4
+
 #if defined(PCBTARANIS)
   #define MAX_MODELS           60
   #define NUM_CHNOUT           32 // number of real output channels CH1-CH32

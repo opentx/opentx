@@ -315,9 +315,6 @@ extern void boardInit();
 #include <avr/wdt.h>
 #endif
 
-#define NUM_STICKS    4
-
-
 #if defined(PCBTARANIS)
   #define NUM_SWITCHES  8
   #define IS_3POS(sw)   ((sw) != 5 && (sw) != 7)
@@ -394,7 +391,7 @@ enum PotType {
 #if defined(CPUARM)
   #include "fifo.h"
   // This doesn't need protection on this processor
-  #define tmr10ms_t uint32_t
+  typedef uint32_t tmr10ms_t;
   extern volatile tmr10ms_t g_tmr10ms;
   #define get_tmr10ms() g_tmr10ms
   typedef int32_t rotenc_t;

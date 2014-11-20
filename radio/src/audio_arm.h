@@ -37,6 +37,7 @@
 #ifndef audio_h
 #define audio_h
 
+#include <stddef.h>
 #include "FatFs/ff.h"
 
 #define AUDIO_FILENAME_MAXLEN (40)
