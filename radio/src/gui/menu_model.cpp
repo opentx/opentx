@@ -425,7 +425,7 @@ void menuModelSelect(uint8_t event)
             m_posVert = g_eeGeneral.currModel;
             s_pgOfs = 0;
           }
-          else {
+          else if (event != EVT_KEY_LONG(KEY_EXIT)) {
             popMenu();
           }
         }
