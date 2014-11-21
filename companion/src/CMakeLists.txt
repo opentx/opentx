@@ -364,7 +364,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     INSTALL( FILES images/linuxicons/256x256/companion.png  DESTINATION /usr/share/icons/hicolor/256x256/apps )
     INSTALL( FILES images/linuxicons/512x512/companion.png  DESTINATION /usr/share/icons/hicolor/512x512/apps )
     INSTALL( FILES images/linuxicons/scalable/companion.svg DESTINATION /usr/share/icons/hicolor/scalable/apps )
-    INSTALL( FILES ../targets/linux/45-taranis.rules DESTINATION /etc/udev/rules.d/ )
+    INSTALL( FILES ../targets/linux/45-companion-taranis.rules DESTINATION /etc/udev/rules.d/ )
     # Linux specific code
     SET(OperatingSystem "Linux")
 ELSE (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
