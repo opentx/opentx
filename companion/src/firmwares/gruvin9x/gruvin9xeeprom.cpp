@@ -88,13 +88,13 @@ Gruvin9xGeneral_v103::operator GeneralSettings ()
 
   switch (beeperVal) {
     case 0:
-      result.beeperMode = e_quiet;
+      result.beeperMode = GeneralSettings::BEEPER_QUIET;
       break;
     case 1:
-      result.beeperMode = e_no_keys;
+      result.beeperMode = GeneralSettings::BEEPER_NOKEYS;
       break;
     default:
-      result.beeperMode = e_all;
+      result.beeperMode = GeneralSettings::BEEPER_ALL;
       result.beeperLength = beeperVal - 4;
       break;
   }
@@ -142,7 +142,7 @@ Gruvin9xGeneral_v104::operator GeneralSettings ()
   result.view = view;
   result.disableThrottleWarning = disableThrottleWarning;
   result.switchWarning = switchWarning;
-  result.beeperMode = (BeeperMode)beeperVal;
+  result.beeperMode = (GeneralSettings::BeeperMode)beeperVal;
   result.disableMemoryWarning = disableMemoryWarning;
   result.disableAlarmWarning = disableAlarmWarning;
   result.stickMode = stickMode;

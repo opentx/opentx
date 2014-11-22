@@ -14,6 +14,7 @@ class CalibrationPanel : public GeneralPanel
   public:
     CalibrationPanel(QWidget *parent, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~CalibrationPanel();
+    virtual void update();
 
   private slots:
     void on_battCalibDSB_editingFinished();
@@ -52,10 +53,10 @@ class CalibrationPanel : public GeneralPanel
     void on_ana7Pos_editingFinished();
     void on_ana8Pos_editingFinished();
 
-
     void on_pot1Type_currentIndexChanged(int index);
     void on_pot2Type_currentIndexChanged(int index);
     void on_pot3Type_currentIndexChanged(int index);
+
     void on_serialPortMode_currentIndexChanged(int index);
 
   private:

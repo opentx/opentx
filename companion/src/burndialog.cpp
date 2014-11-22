@@ -519,7 +519,7 @@ void burnDialog::on_BurnFlashButton_clicked()
 
         byte8u=(uint8_t)BeeperSet.mid(0,2).toUInt(&ok,16);
         if (ok)
-          radioData.generalSettings.beeperMode=(BeeperMode)byte8u;
+          radioData.generalSettings.beeperMode=(GeneralSettings::BeeperMode)byte8u;
 
         byte8=(int8_t)BeeperSet.mid(2,2).toInt(&ok,16);
         if (ok)
@@ -527,7 +527,7 @@ void burnDialog::on_BurnFlashButton_clicked()
 
         byte8u=(uint8_t)HapticSet.mid(0,2).toUInt(&ok,16);
         if (ok)
-          radioData.generalSettings.hapticMode=(BeeperMode)byte8u;
+          radioData.generalSettings.hapticMode=(GeneralSettings::BeeperMode)byte8u;
 
         byte8u=(uint8_t)HapticSet.mid(2,2).toUInt(&ok,16);
         if (ok)

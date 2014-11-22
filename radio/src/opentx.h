@@ -316,8 +316,7 @@ extern void boardInit();
 #endif
 
 #if defined(PCBTARANIS)
-  #define NUM_SWITCHES  8
-  #define IS_3POS(sw)   ((sw) != 5 && (sw) != 7)
+  #define NUM_SWITCHES  14 // 8 physical switches + 6 possible from 3POS
   #define NUM_SW_SRCRAW 8
   #define SWSRC_THR     SWSRC_SF2
   #define SWSRC_GEA     SWSRC_SG2
@@ -746,7 +745,7 @@ extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
   #define getSwitchesPosition(...)
 #endif
 
-extern swstate_t switches_states;
+extern swarnstate_t switches_states;
 int8_t  getMovedSwitch();
 
 #if defined(PCBTARANIS)

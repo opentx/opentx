@@ -367,6 +367,8 @@ int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, uint8_t
   #define displayGVar(x, y, v, min, max) lcd_outdez8(x, y, v)
 #endif
 
+void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uint8_t active);
+
 #define WARNING_TYPE_ASTERISK  0
 #define WARNING_TYPE_CONFIRM   1
 #define WARNING_TYPE_INPUT     2

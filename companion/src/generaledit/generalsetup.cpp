@@ -553,7 +553,7 @@ void GeneralSetupPanel::on_alarmwarnChkB_stateChanged(int )
 
 void GeneralSetupPanel::on_beeperCB_currentIndexChanged(int index)
 {
-  generalSettings.beeperMode = (BeeperMode)(index-2);
+  generalSettings.beeperMode = (GeneralSettings::BeeperMode)(index-2);
   emit modified();
 }
 
@@ -565,7 +565,7 @@ void GeneralSetupPanel::on_displayTypeCB_currentIndexChanged(int index)
 
 void GeneralSetupPanel::on_hapticmodeCB_currentIndexChanged(int index)
 {
-  generalSettings.hapticMode = (BeeperMode)(index-2);
+  generalSettings.hapticMode = (GeneralSettings::BeeperMode)(index-2);
   emit modified();
 }
 

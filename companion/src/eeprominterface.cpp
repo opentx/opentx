@@ -15,7 +15,7 @@
 std::list<QString> EEPROMWarnings;
 
 const char * switches9X[] = { "3POS", "THR", "RUD", "ELE", "AIL", "GEA", "TRN" };
-const char * switchesX9D[] = { "SA", "SB", "SC", "SD", "SE", "SF", "SG", "SH" };
+const char * switchesX9D[] = { "SA", "SB", "SC", "SD", "SE", "SF", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN" };
 const char leftArrow[] = {(char)0xE2, (char)0x86, (char)0x90, 0};
 const char rightArrow[] = {(char)0xE2, (char)0x86, (char)0x92, 0};
 const char upArrow[] = {(char)0xE2, (char)0x86, (char)0x91, 0};
@@ -531,6 +531,12 @@ QString RawSwitch::toString()
     SwitchUp('F'), SwitchDn('F'),
     SwitchUp('G'), QString::fromUtf8("SG-"), SwitchDn('G'),
     SwitchUp('H'), SwitchDn('H'),
+    SwitchUp('I'), SwitchDn('I'),
+    SwitchUp('J'), SwitchDn('J'),
+    SwitchUp('K'), SwitchDn('K'),
+    SwitchUp('L'), SwitchDn('L'),
+    SwitchUp('M'), SwitchDn('M'),
+    SwitchUp('N'), SwitchDn('N'),
   };
 
   static const QString logicalSwitches[] = {
@@ -974,6 +980,33 @@ void LimitData::clear()
   memset(this, 0, sizeof(LimitData));
   min = -1000;
   max = +1000;
+}
+
+GeneralSettings::SwitchInfo GeneralSettings::switchInfoFromSwitchPositionTaranis(unsigned int index)
+{
+  if (index <= 3*5)
+    return SwitchInfo((index-1)/3, (index-1)%3);
+  else if (index <= 17)
+    return SwitchInfo(5, index==17 ? 2 : 0);
+  else if (index <= 20)
+    return SwitchInfo(6, index-18);
+  else
+    return SwitchInfo(7+(index-21)/2, 2*((index-21)%2));
+}
+
+bool GeneralSettings::switchPositionAllowedTaranis(int index) const
+{
+  if (index == 0)
+    return true;
+  SwitchInfo info = switchInfoFromSwitchPositionTaranis(abs(index));
+  if (index < 0 && switchConfigTaranis(info.index) != SWITCH_3POS)
+    return false;
+  else if (info.index >= 8)
+    return switchConfigTaranis(info.index-8) == SWITCH_2x2POS;
+  else if (info.position == 1)
+    return switchConfigTaranis(info.index) == SWITCH_3POS;
+  else
+    return true;
 }
 
 GeneralSettings::GeneralSettings()

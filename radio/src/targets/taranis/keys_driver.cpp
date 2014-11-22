@@ -131,7 +131,10 @@ bool switchState(EnumKeys enuk)
 
   switch ((uint8_t) enuk) {
     case SW_SA0:
-      xxx = (GPIO_PIN_SW_A_H & PIN_SW_A_H) && (~GPIO_PIN_SW_A_L & PIN_SW_A_L);
+      xxx = (GPIO_PIN_SW_A_H & PIN_SW_A_H);
+      if (IS_3POS(0)) {
+        xxx = xxx && (~GPIO_PIN_SW_A_L & PIN_SW_A_L);
+      }
       break;
     case SW_SA1:
 #if defined(REV3)
@@ -141,21 +144,47 @@ bool switchState(EnumKeys enuk)
 #endif
       break;
     case SW_SA2:
-      xxx = (~GPIO_PIN_SW_A_H & PIN_SW_A_H) && (GPIO_PIN_SW_A_L & PIN_SW_A_L);
+      xxx = (~GPIO_PIN_SW_A_H & PIN_SW_A_H);
+      if (IS_3POS(0)) {
+        xxx = xxx && (GPIO_PIN_SW_A_L & PIN_SW_A_L);
+      }
+      break;
+
+    case SW_SI0:
+      xxx = GPIO_PIN_SW_A_L & PIN_SW_A_L;
+      break;
+    case SW_SI2:
+      xxx = ~GPIO_PIN_SW_A_L & PIN_SW_A_L;
       break;
 
     case SW_SB0:
-      xxx = (GPIO_PIN_SW_B_H & PIN_SW_B_H) && (~GPIO_PIN_SW_B_L & PIN_SW_B_L);
+      xxx = (GPIO_PIN_SW_B_H & PIN_SW_B_H);
+      if (IS_3POS(1)) {
+        xxx = xxx && (~GPIO_PIN_SW_B_L & PIN_SW_B_L);
+      }
       break;
     case SW_SB1:
       xxx = (GPIO_PIN_SW_B_H & PIN_SW_B_H) && (GPIO_PIN_SW_B_L & PIN_SW_B_L);
       break;
     case SW_SB2:
-      xxx = (~GPIO_PIN_SW_B_H & PIN_SW_B_H) && (GPIO_PIN_SW_B_L & PIN_SW_B_L);
+      xxx = (~GPIO_PIN_SW_B_H & PIN_SW_B_H);
+      if (IS_3POS(1)) {
+        xxx = xxx && (GPIO_PIN_SW_B_L & PIN_SW_B_L);
+      }
+      break;
+
+    case SW_SJ0:
+      xxx = GPIO_PIN_SW_B_L & PIN_SW_B_L;
+      break;
+    case SW_SJ2:
+      xxx = ~GPIO_PIN_SW_B_L & PIN_SW_B_L;
       break;
 
     case SW_SC0:
-      xxx = (GPIO_PIN_SW_C_H & PIN_SW_C_H) && (~GPIO_PIN_SW_C_L & PIN_SW_C_L);
+      xxx = (GPIO_PIN_SW_C_H & PIN_SW_C_H);
+      if (IS_3POS(2)) {
+        xxx = xxx && (~GPIO_PIN_SW_C_L & PIN_SW_C_L);
+      }
       break;
     case SW_SC1:
 #if defined(REV3)
@@ -165,11 +194,24 @@ bool switchState(EnumKeys enuk)
 #endif
       break;
     case SW_SC2:
-      xxx = (~GPIO_PIN_SW_C_H & PIN_SW_C_H) && (GPIO_PIN_SW_C_L & PIN_SW_C_L);
+      xxx = (~GPIO_PIN_SW_C_H & PIN_SW_C_H);
+      if (IS_3POS(2)) {
+        xxx = xxx && (GPIO_PIN_SW_C_L & PIN_SW_C_L);
+      }
+      break;
+
+    case SW_SK0:
+      xxx = GPIO_PIN_SW_C_L & PIN_SW_C_L;
+      break;
+    case SW_SK2:
+      xxx = ~GPIO_PIN_SW_C_L & PIN_SW_C_L;
       break;
 
     case SW_SD0:
-      xxx = (GPIO_PIN_SW_D_H & PIN_SW_D_H) && (~GPIO_PIN_SW_D_L & PIN_SW_D_L);
+      xxx = (GPIO_PIN_SW_D_H & PIN_SW_D_H);
+      if (IS_3POS(3)) {
+        xxx = xxx && (~GPIO_PIN_SW_D_L & PIN_SW_D_L);
+      }
       break;
     case SW_SD1:
 #if defined(REV3)
@@ -179,17 +221,40 @@ bool switchState(EnumKeys enuk)
 #endif
       break;
     case SW_SD2:
-      xxx = (~GPIO_PIN_SW_D_H & PIN_SW_D_H) && (GPIO_PIN_SW_D_L & PIN_SW_D_L);
+      xxx = (~GPIO_PIN_SW_D_H & PIN_SW_D_H);
+      if (IS_3POS(3)) {
+        xxx = xxx && (GPIO_PIN_SW_D_L & PIN_SW_D_L);
+      }
+      break;
+
+    case SW_SL0:
+      xxx = GPIO_PIN_SW_D_L & PIN_SW_D_L;
+      break;
+    case SW_SL2:
+      xxx = ~GPIO_PIN_SW_D_L & PIN_SW_D_L;
       break;
 
     case SW_SE0:
-      xxx = (~GPIO_PIN_SW_E_H & PIN_SW_E_H) && (GPIO_PIN_SW_E_L & PIN_SW_E_L);
+      xxx = (~GPIO_PIN_SW_E_H & PIN_SW_E_H);
+      if (IS_3POS(4)) {
+        xxx = xxx && (GPIO_PIN_SW_E_L & PIN_SW_E_L);
+      }
       break;
     case SW_SE1:
       xxx = (GPIO_PIN_SW_E_H & PIN_SW_E_H) && (GPIO_PIN_SW_E_L & PIN_SW_E_L);
       break;
     case SW_SE2:
-      xxx = (GPIO_PIN_SW_E_H & PIN_SW_E_H) && (~GPIO_PIN_SW_E_L & PIN_SW_E_L);
+      xxx = (GPIO_PIN_SW_E_H & PIN_SW_E_H);
+      if (IS_3POS(4)) {
+        xxx = xxx && (~GPIO_PIN_SW_E_L & PIN_SW_E_L);
+      }
+      break;
+
+    case SW_SM0:
+      xxx = GPIO_PIN_SW_E_L & PIN_SW_E_L;
+      break;
+    case SW_SM2:
+      xxx = ~GPIO_PIN_SW_E_L & PIN_SW_E_L;
       break;
 
     case SW_SF0:
@@ -200,7 +265,10 @@ bool switchState(EnumKeys enuk)
       break;
 
     case SW_SG0:
-      xxx = (GPIO_PIN_SW_G_H & PIN_SW_G_H) && (~GPIO_PIN_SW_G_L & PIN_SW_G_L);
+      xxx = (GPIO_PIN_SW_G_H & PIN_SW_G_H);
+      if (IS_3POS(6)) {
+        xxx = xxx && (~GPIO_PIN_SW_G_L & PIN_SW_G_L);
+      }
       break;
     case SW_SG1:
 #if defined(REV3)
@@ -210,7 +278,17 @@ bool switchState(EnumKeys enuk)
 #endif
       break;
     case SW_SG2:
-      xxx = (~GPIO_PIN_SW_G_H & PIN_SW_G_H) && (GPIO_PIN_SW_G_L & PIN_SW_G_L);
+      xxx = (~GPIO_PIN_SW_G_H & PIN_SW_G_H);
+      if (IS_3POS(6)) {
+        xxx = xxx && (GPIO_PIN_SW_G_L & PIN_SW_G_L);
+      }
+      break;
+
+    case SW_SN0:
+      xxx = GPIO_PIN_SW_G_L & PIN_SW_G_L;
+      break;
+    case SW_SN2:
+      xxx = ~GPIO_PIN_SW_G_L & PIN_SW_G_L;
       break;
 
     case SW_SH0:

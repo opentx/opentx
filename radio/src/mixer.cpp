@@ -310,6 +310,12 @@ getvalue_t getValue(mixsrc_t i)
   else if (i==MIXSRC_SF) return (switchState(SW_SF0) ? -1024 : 1024);
   else if (i==MIXSRC_SG) return (switchState(SW_SG0) ? -1024 : (switchState(SW_SG1) ? 0 : 1024));
   else if (i==MIXSRC_SH) return (switchState(SW_SH0) ? -1024 : 1024);
+  else if (i==MIXSRC_SI) return (switchState(SW_SI0) ? -1024 : 1024);
+  else if (i==MIXSRC_SJ) return (switchState(SW_SJ0) ? -1024 : 1024);
+  else if (i==MIXSRC_SK) return (switchState(SW_SK0) ? -1024 : 1024);
+  else if (i==MIXSRC_SL) return (switchState(SW_SL0) ? -1024 : 1024);
+  else if (i==MIXSRC_SM) return (switchState(SW_SM0) ? -1024 : 1024);
+  else if (i==MIXSRC_SN) return (switchState(SW_SN0) ? -1024 : 1024);
 #else
   else if (i==MIXSRC_3POS) return (getSwitch(SW_ID0-SW_BASE+1) ? -1024 : (getSwitch(SW_ID1-SW_BASE+1) ? 0 : 1024));
   // don't use switchState directly to give getSwitch possibility to hack values if needed for switch warning

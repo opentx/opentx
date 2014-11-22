@@ -12,8 +12,8 @@
 #define HAS_LARGE_LCD(board)                 IS_TARANIS(board)
 #define MAX_VIEWS(board)                     (HAS_LARGE_LCD(board) ? 2 : 256)
 #define MAX_POTS(board)                      (IS_TARANIS(board) ? 5 : 3)
-#define MAX_SWITCHES(board)                  (IS_TARANIS(board) ? 8 : 7)
-#define MAX_SWITCHES_POSITION(board)         (IS_TARANIS(board) ? 22 : 9)
+#define MAX_SWITCHES(board, version)         (version >= 217 ? (IS_TARANIS(board) ? 8+6 : 7) : (IS_TARANIS(board) ? 8 : 7))
+#define MAX_SWITCHES_POSITION(board, version) (IS_TARANIS(board) ? (version >= 217 ? 22+12 : 22) : 9)
 #define MAX_ROTARY_ENCODERS(board)           (board==BOARD_GRUVIN9X ? 2 : (IS_SKY9X(board) ? 1 : 0))
 #define MAX_FLIGHT_MODES(board, version)     (IS_ARM(board) ? 9 :  (IS_DBLRAM(board, version) ? 6 :  5))
 #define MAX_TIMERS(board, version)           ((IS_ARM(board) && version >= 217) ? 3 : 2)
@@ -56,7 +56,7 @@ class SwitchesConversionTable: public ConversionTable {
         addConversion(RawSwitch(SWITCH_TYPE_NONE), val++);
       }
 
-      for (int i=1; i<=MAX_SWITCHES_POSITION(board); i++) {
+      for (int i=1; i<=MAX_SWITCHES_POSITION(board, version); i++) {
         int s = switchIndex(i, board, version);
         addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val);
         if (IS_TARANIS(board) && s>=21/*SHup/SHdown*/) {
@@ -110,7 +110,7 @@ class SwitchesConversionTable: public ConversionTable {
 
       if (version < 216) {
         // previous "moment" switches
-        for (int i=1; i<=MAX_SWITCHES_POSITION(board); i++) {
+        for (int i=1; i<=MAX_SWITCHES_POSITION(board, version); i++) {
           int s = switchIndex(i, board, version);
           addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
         }
@@ -241,7 +241,7 @@ class SourcesConversionTable: public ConversionTable {
 
       if (!(flags & FLAG_NOSWITCHES)) {
         if (afterrelease21March2013) {
-          for (int i=1; i<MAX_SWITCHES(board); i++)
+          for (int i=1; i<MAX_SWITCHES(board, version); i++)
             addConversion(RawSource(SOURCE_TYPE_SWITCH, i), val++);
         }
         else {
@@ -1548,7 +1548,7 @@ class AndSwitchesConversionTable: public ConversionTable {
       addConversion(RawSwitch(SWITCH_TYPE_NONE), val++);
       
       if (IS_TARANIS(board)) {
-        for (int i=1; i<=MAX_SWITCHES_POSITION(board); i++) {
+        for (int i=1; i<=MAX_SWITCHES_POSITION(board, version); i++) {
           int s = switchIndex(i, board, version);
           addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val);
           addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
@@ -2856,14 +2856,18 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new UnsignedField<8>(modelData.modelId));
   }
 
-  if (IS_TARANIS(board))
+  if (IS_TARANIS(board) && version >= 217)
+    internalField.Append(new SwitchesWarningField<32>(modelData.switchWarningStates, board, version));
+  else if (IS_TARANIS(board))
     internalField.Append(new SwitchesWarningField<16>(modelData.switchWarningStates, board, version));
   else
     internalField.Append(new SwitchesWarningField<8>(modelData.switchWarningStates, board, version));
 
-  if (version >= 216) {
-    internalField.Append(new UnsignedField<8>(modelData.nSwToWarn));
-  }
+
+  if (IS_TARANIS(board) && version >= 217)
+    internalField.Append(new UnsignedField<16>(modelData.switchWarningEnable));
+  else if (version >= 216)
+    internalField.Append(new UnsignedField<8>(modelData.switchWarningEnable));
 
   if ((board == BOARD_STOCK || (board == BOARD_M128 && version >= 215)) && (variant & GVARS_VARIANT)) {
     for (int i=0; i<MAX_GVARS(board, version); i++) {
@@ -3174,12 +3178,29 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
       }
       internalField.Append(new UnsignedField<8>(generalData.backlightColor));
     }
-    if (version >= 216) {
-      internalField.Append(new SpareBitsField<16>());
+
+    if (IS_TARANIS(board)) {
+      if (version >= 217)
+        internalField.Append(new SpareBitsField<32>());
+      else
+        internalField.Append(new SpareBitsField<16>());
     }
+
     if (version >= 217) {
       for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++) {
         internalField.Append(new ArmCustomFunctionField(generalData.customFn[i], board, version, variant));
+      }
+    }
+
+    if (IS_TARANIS(board) && version >= 217) {
+      for (int i=0; i<8; i++) {
+        internalField.Append(new UnsignedField<4>(generalData.switchConfig[i]));
+      }
+      for (int i=0; i<MAX_SWITCHES(board, version); ++i) {
+        internalField.Append(new ZCharField<3>(generalData.switchNames[i]));
+      }
+      for (int i=0; i<NUM_STICKS+MAX_POTS(board); ++i) {
+        internalField.Append(new ZCharField<3>(generalData.anaNames[i]));
       }
     }
   }

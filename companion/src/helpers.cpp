@@ -412,11 +412,9 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
   }
 
   for (int i=-GetCurrentFirmware()->getCapability(SwitchesPositions); i<0; i++) {
+    if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchPositionAllowedTaranis(i))
+      continue;
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
-    if (IS_TARANIS(GetCurrentFirmware()->getBoard())) {
-      //hide up and down for !SH and !SF, because they are redundant (!SFup == SFdown)
-      if (item.toString().contains("H") || item.toString().contains("F")) continue;
-    }
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
@@ -435,6 +433,8 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
   }
 
   for (int i=1; i<=GetCurrentFirmware()->getCapability(SwitchesPositions); i++) {
+    if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchPositionAllowedTaranis(i))
+      continue;
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);

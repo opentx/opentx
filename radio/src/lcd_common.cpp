@@ -730,6 +730,20 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 #endif
 
 #if defined(PCBTARANIS)
+  else if (idx < MIXSRC_LAST_POT) {
+    idx = idx-MIXSRC_Rud;
+    if (ZEXIST(g_eeGeneral.anaNames[idx]))
+      lcd_putsnAtt(x, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, ZCHAR|att);
+    else
+      lcd_putsiAtt(x, y, STR_VSRCRAW, idx+1, att);
+  }
+  else if (idx >= MIXSRC_FIRST_SWITCH && idx < MIXSRC_FIRST_LOGICAL_SWITCH) {
+    idx = idx-MIXSRC_FIRST_SWITCH;
+    if (ZEXIST(g_eeGeneral.switchNames[idx]))
+      lcd_putsnAtt(x, y, g_eeGeneral.switchNames[idx], LEN_SWITCH_NAME, ZCHAR|att);
+    else
+      lcd_putsiAtt(x, y, STR_VSRCRAW, idx+MIXSRC_FIRST_SWITCH-MIXSRC_Rud+1, att);
+  }
   else if (idx < MIXSRC_SW1)
     lcd_putsiAtt(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1, att);
 #else
@@ -794,6 +808,28 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
   }
 }
 
+#if defined(PCBTARANIS)
+div_t switchInfo(int switchPosition)
+{
+  if (switchPosition <= SWSRC_SE2) {
+    return div(switchPosition-SWSRC_SA0, 3);
+  }
+  else if (switchPosition <= SWSRC_SF2) {
+    div_t qr = { 5, switchPosition == SWSRC_SF2 ? 2 : 0 };
+    return qr;
+  }
+  else if (switchPosition <= SWSRC_SG2) {
+    div_t qr = { 6, switchPosition-SWSRC_SG0 };
+    return qr;
+  }
+  else {
+    div_t qr = div(2*7+switchPosition-SWSRC_SH0, 2);
+    qr.rem *= 2;
+    return qr;
+  }
+}
+#endif
+
 void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 {
   if (idx == SWSRC_OFF)
@@ -803,11 +839,22 @@ void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
     idx = -idx;
   }
 #if defined(CPUARM) && defined(FLIGHT_MODES)
-  if (idx >= SWSRC_FIRST_FLIGHT_MODE)
-    putsStrIdx(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
-  else
+  if (idx >= SWSRC_FIRST_FLIGHT_MODE) {
+    return putsStrIdx(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
+  }
 #endif
-  lcd_putsiAtt(x, y, STR_VSWITCHES, idx, att);
+#if defined(PCBTARANIS)
+  if (idx >= SWSRC_SA0 && idx <= SWSRC_SN2) {
+    div_t swinfo = switchInfo(idx);
+    if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
+      lcd_putsnAtt(x, y, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME, ZCHAR|att);
+      char c = "\300-\301"[swinfo.rem];
+      lcd_putcAtt(lcdNextPos, y, c, att);
+      return;
+    }
+  }
+#endif
+  return lcd_putsiAtt(x, y, STR_VSWITCHES, idx, att);
 }
 
 #if defined(FLIGHT_MODES)
