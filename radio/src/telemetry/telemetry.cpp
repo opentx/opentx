@@ -445,7 +445,7 @@ int availableTelemetryIndex()
 {
   for (int index=0; index<TELEM_VALUES_MAX; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-    if (telemetrySensor.id == 0 && telemetrySensor.type == 0) {
+    if (!telemetrySensor.isAvailable()) {
       return index;
     }
   }
@@ -481,6 +481,11 @@ void TelemetrySensor::init(uint16_t id)
   label[2] = hex2zchar((id & 0x00f0) >> 4);
   label[3] = hex2zchar((id & 0x000f) >> 0);
   init(label);
+}
+
+bool TelemetrySensor::isAvailable()
+{
+  return ZLEN(label) > 0;
 }
 
 int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t destUnit, uint8_t destPrec)

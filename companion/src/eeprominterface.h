@@ -970,7 +970,7 @@ class SensorData {
     unsigned int gps;
     unsigned int alt;
 
-    bool isAvailable() const { return type==TYPE_CALCULATED || id!=0 || instance!=0; }
+    bool isAvailable() const { return strlen(label) > 0; }
     void updateUnit();
     QString unitString() const;
     void clear() { memset(this, 0, sizeof(SensorData)); }

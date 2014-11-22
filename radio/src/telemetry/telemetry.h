@@ -167,7 +167,7 @@ extern TelemetryItem telemetryItems[TELEM_VALUES_MAX];
 inline bool isTelemetryFieldAvailable(int index)
 {
   TelemetrySensor & sensor = g_model.telemetrySensors[index];
-  return sensor.type == TELEM_TYPE_CALCULATED || sensor.id != 0;
+  return sensor.isAvailable();
 }
 
 inline bool isTelemetryFieldComparisonAvailable(int index)

@@ -337,20 +337,25 @@ void TelemetryCustomScreen::populateTelemetrySourceCB(QComboBox *b, unsigned int
 {
   b->clear();
 
-  b->addItem(RawSource(SOURCE_TYPE_NONE, 0).toString(model));
-
-  for (unsigned int i = 0; i < (last ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_DISPLAY_COUNT); i++) {
-    b->addItem(RawSource(SOURCE_TYPE_TELEMETRY, i).toString(model));
-    if (!firmware->isTelemetrySourceAvailable(i)) {
-      // disable item
-      QModelIndex index = b->model()->index(i+1, 0);
-      QVariant v(0);
-      b->model()->setData(index, v, Qt::UserRole - 1);
-    }
+  if (IS_ARM(firmware->getBoard())) {
+    // TODO
   }
+  else {
+    b->addItem(RawSource(SOURCE_TYPE_NONE, 0).toString(model));
 
-  b->setCurrentIndex(value);
-  b->setMaxVisibleItems(10);
+    for (unsigned int i = 0; i < (last ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_DISPLAY_COUNT); i++) {
+      b->addItem(RawSource(SOURCE_TYPE_TELEMETRY, i).toString(model));
+      if (!firmware->isTelemetrySourceAvailable(i)) {
+        // disable item
+        QModelIndex index = b->model()->index(i+1, 0);
+        QVariant v(0);
+        b->model()->setData(index, v, Qt::UserRole - 1);
+      }
+    }
+
+    b->setCurrentIndex(value);
+    b->setMaxVisibleItems(10);
+  }
 }
 
 TelemetryCustomScreen::~TelemetryCustomScreen()
@@ -605,7 +610,7 @@ void TelemetrySensorPanel::on_name_editingFinished()
 {
   if (!lock) {
     strcpy(sensor.label, ui->name->text().toAscii());
-    update();
+    emit nameModified();
     emit modified();
   }
 }
@@ -678,6 +683,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
       TelemetrySensorPanel * panel = new TelemetrySensorPanel(this, model.sensorData[i], model, generalSettings, firmware);
       ui->sensorsLayout->addWidget(panel);
       sensorPanels[i] = panel;
+      connect(panel, SIGNAL(nameModified()), this, SLOT(update()));
     }
   }
   else {
