@@ -213,7 +213,6 @@ void LogicalSwitchesPanel::edited()
         model.customSw[i].val1 = 0;
         model.customSw[i].val2 = 0;
       }
-      model.customSw[i].andsw = 0;
       setSwitchWidgetVisibility(i);
     }
 
