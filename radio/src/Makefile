@@ -356,6 +356,12 @@ SIMU_DISKIO = NO
 # Values = NO, YES
 SIMU_AUDIO = NO
 
+# Enable timers that time various parts of opentx code
+# Values = NO, YES
+# YES - timers active
+# NO - timers disabled
+DEBUG_TIMERS = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -1331,6 +1337,10 @@ endif
 
 ifeq ($(IRPROTOS), YES)
   CPPDEFS += -DIRPROTOS
+endif
+
+ifeq ($(DEBUG_TIMERS), YES)
+  CPPDEFS += -DDEBUG_TIMERS
 endif
 
 #---------------- Compiler Options C++ ----------------

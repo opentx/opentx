@@ -216,3 +216,84 @@ void menuTraceBuffer(uint8_t event)
 
 }
 #endif //#if defined(DEBUG_TRACE_BUFFER)
+
+
+#if defined(DEBUG_TIMERS)
+
+#include "debug_timers.h"
+
+/*extern*/ DebugTimer debugTimer1;
+/*extern*/ DebugTimer debugTimer2;
+/*extern*/ DebugTimer debugTimer3;
+/*extern*/ DebugTimer debugTimer4;
+
+void displayDuration(int x, int y, debug_timer_t duration) 
+{
+  if (duration >= 100000) {
+    lcd_putsAtt(x, y, "^", 0);
+  }
+  else if (duration >= 300) {
+    lcd_outdezAtt(x, y, duration/10, LEFT);  
+  }
+  else {
+    lcd_outdezAtt(x, y, duration, LEFT|PREC1);  
+  }
+}
+
+void displayTimer(int y, const char * title, const DebugTimer * Duration, const DebugTimer * Period) 
+{
+  lcd_putsAtt(0, y+1, title, SMLSIZE);
+  if (Duration) {
+    lcd_putsAtt(MENU_DEBUG_COL1_OFS, y+1, "Dur", SMLSIZE);
+    displayDuration(lcdLastPos, y, Duration->getMin());
+    // displayDuration(lcdLastPos, y, Duration->getLast());
+    lcd_putsAtt(lcdLastPos, y+1, "_", SMLSIZE);
+    displayDuration(lcdLastPos, y, Duration->getMax());
+  }
+  if (Period) {
+    lcd_putsAtt(lcdLastPos+2, y+1, "Int", SMLSIZE);
+    displayDuration(lcdLastPos, y, Period->getMin());
+    lcd_putsAtt(lcdLastPos, y+1, "_", SMLSIZE);
+    displayDuration(lcdLastPos, y, Period->getMax());
+  }
+}
+
+void menuDebugTimers(uint8_t event)
+{
+  // TITLE(STR_MENUDEBUG);
+  TITLE("DEBUG TIMERS");
+
+  switch(event)
+  {
+    case EVT_KEY_FIRST(KEY_ENTER):
+      //reset timers
+      // debugTimerAudioPeriod.reset();
+      // debugTimerAudioDuration.reset();
+      // debugTimerMixerPeriod.reset();
+      // debugTimerMixerDuration.reset();
+      AUDIO_KEYPAD_UP();
+      break;
+
+#if defined(DEBUG_TRACE_BUFFER)
+    case EVT_KEY_FIRST(KEY_UP):
+      pushMenu(menuTraceBuffer);
+      return;
+#endif
+
+    case EVT_KEY_FIRST(KEY_DOWN):
+      chainMenu(menuStatisticsView);
+      return;
+    case EVT_KEY_FIRST(KEY_EXIT):
+      chainMenu(menuMainView);
+      return;
+  }
+
+  int y = 2*FH-5; 
+  displayTimer(y, "1 and 2", &debugTimer1, &debugTimer2); y += FH;
+  displayTimer(y, "2 and 4", &debugTimer3, &debugTimer4); y += FH;
+
+  lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);
+  lcd_status_line();
+}
+
+#endif  //#if defined(DEBUG_TIMERS)

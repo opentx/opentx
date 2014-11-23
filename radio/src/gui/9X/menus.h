@@ -112,6 +112,9 @@ void menuAboutView(uint8_t event);
 #if defined(DEBUG_TRACE_BUFFER)
 void menuTraceBuffer(uint8_t event);
 #endif
+#if defined(DEBUG_TIMERS)
+void menuDebugTimers(uint8_t event);
+#endif
 
 #if !defined(CPUM64)
   void displaySlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
