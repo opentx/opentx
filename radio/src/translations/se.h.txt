@@ -304,7 +304,7 @@
   #define TR_FSW_RESET_TIMERS  "Tmr1""Tmr2"
 #endif
 
-#define TR_VFSWRESET           TR(TR_FSW_RESET_TIMERS "All\0" TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC, TR_FSW_RESET_TIMERS "All\0     " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC)
+#define TR_VFSWRESET           TR(TR_FSW_RESET_TIMERS "All\0" TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC, TR_FSW_RESET_TIMERS "Alla\0    " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC)
 
 #define LEN_FUNCSOUNDS         TR("\004", "\006")
 #define TR_FUNCSOUNDS          TR("Bp1\0""Bp2\0""Bp3\0""Wrn1""Wrn2""Chee""Rata""Tick""Sirn""Ring""SciF""Robt""Chrp""Tada""Crck""Alrm", "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ratata""Tick  ""Siren ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""AlmClk")
@@ -475,7 +475,7 @@
 #define TR_VTMRMODES           "Av\0""ABS""GAs""GA%""GAt"
 
 #define LEN_VTRAINERMODES      "\022"
-#define TR_VTRAINERMODES       "Lärare/Jack\0      ""Elev./Jack\0       ""Lärare/SBUS Module""Lärare/CPPM Module""Lärare/Battery\0"
+#define TR_VTRAINERMODES       "Lärare/Uttag\0     ""Elev./Uttag\0      ""Lärare/SBUS-Modul\0""Lärare/CPPM-Modul\0""Lärare/Batteri\0"
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Lås Servo""Anpassat\0""Pulsfritt""Mottagare"
@@ -598,7 +598,7 @@
 #define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLE_LABEL      "Gas"
 #define TR_THROTTLEREVERSE     TR("Inv.Gas", INDENT "Inverterad Gas")
-#define TR_TIMER_NAME          INDENT "Name"
+#define TR_TIMER_NAME          INDENT "Namn"
 #define TR_MINUTEBEEP          INDENT "Minutpip"
 #define TR_BEEPCOUNTDOWN       INDENT "Nedräkning"
 #define TR_PERSISTENT          TR("Jämt på ", INDENT"Alltid På")
@@ -660,7 +660,7 @@
 #define TR_MENURADIOSETUP      "INSTÄLLNINGAR"
 #define TR_MENUDATEANDTIME     "DAG OCH TID"
 #define TR_MENUTRAINER         "TRAINER (PPM IN)"
-#define TR_MENUGLOBALFUNCS     "GLOBAL FUNCTIONS"
+#define TR_MENUGLOBALFUNCS     "GLOBALA FUNKTIONER"
 #define TR_MENUVERSION         "VERSION"
 #define TR_MENUDIAG            TR("BRYTARE","TEST AV BRYTARE")
 #define TR_MENUANA             "ANALOGA VÄRDEN"
@@ -820,8 +820,8 @@
 #define TR_MODELIDUSED         TR("ID finns redan","ModellID används redan")
 #define TR_MODULE              INDENT "Modul"
 #define TR_TELEMETRY_TYPE      "Telemetrityp"
-#define TR_TELEMETRY_SENSORS   "Sensors"
-#define TR_TELEMETRY_NEWSENSOR INDENT "Add a new sensor..."
+#define TR_TELEMETRY_SENSORS   "Sensorer"
+#define TR_TELEMETRY_NEWSENSOR INDENT "Lägg till sensor..."
 #define TR_CHANNELRANGE        INDENT "Kanalområde"
 #define TR_LOWALARM            INDENT "Låg-alarm"
 #define TR_CRITICALALARM       INDENT "Kritiskt alarm"
