@@ -42,10 +42,18 @@ uint32_t readKeys()
 {
   register uint32_t d = GPIOD->IDR;
   register uint32_t e = GPIOE->IDR;
+#if defined(REV9E)
+  register uint32_t f = GPIOF->IDR;
+#endif
   register uint32_t result = 0;
 
+#if defined(REV9E)
+  if (f & PIN_BUTTON_ENTER)
+    result |= 0x02 << KEY_ENTER;
+#else
   if (e & PIN_BUTTON_ENTER)
     result |= 0x02 << KEY_ENTER;
+#endif
   if (e & PIN_BUTTON_PLUS)
     result |= 0x02 << KEY_PLUS;
   if (e & PIN_BUTTON_MINUS)
@@ -317,6 +325,10 @@ void keysInit()
     GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_ENTER | PIN_BUTTON_MINUS | PIN_TRIM_LH_R | PIN_TRIM_LH_L
                                   | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP
                                   | PIN_SW_A_L | PIN_SW_D_L | PIN_SW_F | PIN_SW_C_L | PIN_SW_D_H | PIN_SW_H;
+#elif defined(REV9E)
+    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_MINUS | PIN_TRIM_LH_R | PIN_TRIM_LH_L
+                                  | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP
+                                  | PIN_SW_F | PIN_SW_A_L | PIN_SW_B_H | PIN_SW_B_L | PIN_SW_C_H | PIN_SW_D_H | PIN_SW_D_L | PIN_SW_G_H | PIN_SW_G_L;
 #elif defined(REVPLUS)
     GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_ENTER | PIN_BUTTON_MINUS | PIN_TRIM_LH_R | PIN_TRIM_LH_L
                                   | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP
@@ -331,6 +343,11 @@ void keysInit()
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
     GPIO_Init(GPIOE, &GPIO_InitStructure);
+
+#if defined(REV9E)
+    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_ENTER;
+    GPIO_Init(GPIOF, &GPIO_InitStructure);
+#endif
 
 #if defined(REVPLUS)
     GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_MENU | PIN_BUTTON_EXIT | PIN_BUTTON_PAGE | PIN_SW_H;

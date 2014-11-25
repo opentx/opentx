@@ -681,6 +681,10 @@ ifeq ($(PCB), TARANIS)
     CPPDEFS = -DREVPLUS
     HAPTIC = YES
     SWR = NO
+  else ifeq ($(PCBREV), REV9E)
+    CPPDEFS = -DREVPLUS -DREV9E
+    HAPTIC = YES
+    SWR = YES
   else
     CPPDEFS = -DREV4
     SWR = YES
