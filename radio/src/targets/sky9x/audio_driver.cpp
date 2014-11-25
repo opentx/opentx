@@ -107,7 +107,7 @@ bool dacQueue(AudioBuffer *buffer)
   return false;
 }
 
-extern "C" void __attribute__((optimize("O1"))) DAC_IRQHandler()
+extern "C" void DAC_IRQHandler()
 {
   AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
   if (nextBuffer) {
