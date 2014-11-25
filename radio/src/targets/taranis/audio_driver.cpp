@@ -86,10 +86,9 @@ void dacInit()
   DAC->DHR12R1 = 2010 ;
   DAC->SR = DAC_SR_DMAUDR1 ;              // Write 1 to clear flag
   DAC->CR = DAC_CR_TEN1 | DAC_CR_EN1 ;                    // Enable DAC
-  NVIC_SetPriority(DMA1_Stream5_IRQn, 2) ; // High priority interrupt
-  NVIC_EnableIRQ(TIM6_DAC_IRQn) ; // TODO needed?
+  NVIC_EnableIRQ(TIM6_DAC_IRQn); // TODO needed?
   NVIC_SetPriority(TIM6_DAC_IRQn, 7);
-  NVIC_EnableIRQ(DMA1_Stream5_IRQn) ;
+  NVIC_EnableIRQ(DMA1_Stream5_IRQn);
   NVIC_SetPriority(DMA1_Stream5_IRQn, 7);
 }
 
