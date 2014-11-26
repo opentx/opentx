@@ -263,9 +263,16 @@ void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags 
 void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t offset=0, uint8_t width=0);
 #define LCD_ICON(x, y, icon) lcd_bmp(x, y, icons, icon)
 void lcdSetRefVolt(unsigned char val);
-void lcdInit();
 void lcd_clear();
 void lcdSetContrast();
+#if defined(PCBTARANIS)
+  void lcdInitStart();
+  void lcdInitFinish();
+  void lcdOff();
+#else
+  void lcdInit();
+  #define lcdOff()
+#endif
 
 #if defined(PCBTARANIS) && defined(REVPLUS) && !defined(SIMU)
   void lcdRefresh(bool wait=true);

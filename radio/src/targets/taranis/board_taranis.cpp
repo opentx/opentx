@@ -107,6 +107,7 @@ void boardInit()
   keysInit();
   adcInit();
   delaysInit();
+  lcdInitStart();
   audioInit();
   init5msTimer();
   __enable_irq();

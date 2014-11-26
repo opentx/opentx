@@ -20,14 +20,22 @@
   #define CONTRAST_OFS 5
 #endif
 
-//275us
-void Delay(volatile unsigned int ms)
+#if defined(BOOT)
+  extern void hw_delay(uint16_t time);
+#endif
+
+/*
+  In boot-loader: init_hw_timer() must be called before the first call to this function!
+  In opentx: delaysInit() must be called before the first call to this function!
+*/
+static void Delay(uint32_t ms)
 {
-  volatile u8 i;
-  while(ms != 0) {
-    for(i=0;i<250;i++) {}
-    for(i=0;i<75;i++) {}
-    ms--;
+  while(ms--) {
+#if !defined(BOOT)
+    delay_01us(10000);
+#else
+    hw_delay(10000);
+#endif
   }
 }
 
@@ -110,6 +118,7 @@ static void LCD_Init()
 static void LCD_Init()
 {	
   AspiCmd(0x2B);   //Panel loading set ,Internal VLCD.
+  Delay(20);
   AspiCmd(0x25);   //Temperature compensation curve definition: 0x25 = -0.05%/oC
   AspiCmd(0xEA);	//set bias=1/10 :Command table NO.27
   AspiCmd(0x81);	//Set Vop
@@ -157,7 +166,9 @@ void Set_Address(u8 x, u8 y)
   else \
     LCD_MOSI_LOW(); \
   LCD_CLK_LOW(); \
-  __no_operation(); \
+  LCD_CLK_LOW(); \
+  LCD_CLK_LOW(); \
+  LCD_CLK_HIGH(); \
   LCD_CLK_HIGH();
 
 #if defined(REVPLUS)
@@ -298,35 +309,65 @@ static void LCD_Hardware_Init()
   GPIO_Init(GPIO_LCD_RST, &GPIO_InitStructure);
 }
 
-void LCD_OFF()
+/*
+  Proper method for turning of LCD module. It must be used,
+  otherwise we might damage LCD crystals in the long run!
+*/
+void lcdOff()
 {
-  AspiCmd(0xE2);
-  Delay(20);	
+  AspiCmd(0xE2);    //system reset
+  Delay(3);	        //wait for caps to drain
 }
 
-void lcdInit()
+/*
+  Starts LCD initialization routine. It should be called as
+  soon as possible after the reset because LCD takes a lot of
+  time to properly power-on.
+
+  Make sure that Delay() is functional before calling this function!
+*/
+void lcdInitStart()
 {
   LCD_BL_Config();
   LCD_Hardware_Init();
+
+  if (WAS_RESET_BY_WATCHDOG()|WAS_RESET_BY_SOFTWARE()) return;    //no need to reset LCD module
+
+  //reset LCD module
+  LCD_RST_LOW();
+  Delay(1);       // only 3 us needed according to data-sheet, we use 1 ms
+  LCD_RST_HIGH();
+}
+
+/*
+  Finishes LCD initialization. Must be called after the lcdInitStart().
+*/
+void lcdInitFinish()
+{
 #if defined(REVPLUS)
-  initLcdSpi() ;
+  initLcdSpi();
 #endif
   
-  LCD_RST_HIGH();
-  Delay(5);
+  if (WAS_RESET_BY_WATCHDOG()|WAS_RESET_BY_SOFTWARE()) return;    //no need to initialize LCD module
 
-  LCD_RST_LOW();
-  Delay(120); //11ms
+  /*
+    LCD needs longer time to initialize in low temperatures. The data-sheet 
+    mentions a time of at least 150 ms. The delay of 1300 ms was obtained 
+    experimentally. It was tested down to -10 deg Celsius.
+    
+    If radio is reset by watchdog or boot-loader LCD initialization is skipped,
+    because it was already initialized in previous run.
+  */
 
-  LCD_RST_HIGH();
-  Delay(2500);
- 
-  AspiCmd(0xE2);
-  Delay(2500);
+#if !defined(BOOT)
+  while(g_tmr10ms < 130) {};    //wait for 1300 ms from the power-on
+#else
+  Delay(1300);
+#endif
+
   LCD_Init();
-  Delay(120);
-
   AspiCmd(0xAF);	//dc2=1, IC into exit SLEEP MODE, dc3=1 gray=ON, dc4=1 Green Enhanc mode disabled
+  Delay(20);      //needed for internal DC-DC converter startup
 }
 
 void lcdSetRefVolt(uint8_t val)
