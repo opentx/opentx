@@ -607,8 +607,8 @@ PACK(typedef struct {
   AVR_FIELD(int8_t ppmFrameLength)     // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
 
-  swarnstate_t switchWarningState;
-  uint8_t switchWarningEnable;
+  uint16_t switchWarningState;
+  uint8_t  switchWarningEnable;
 
   global_gvar_t gvars[MAX_GVARS];
 
