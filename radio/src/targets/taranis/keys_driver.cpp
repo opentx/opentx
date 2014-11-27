@@ -142,6 +142,90 @@ void readKeysAndTrims()
 }
 
 #if !defined(BOOT)
+
+#if defined(REV9E)
+#define ADD_3POS_CASE(x, i) \
+    case SW_S ## x ## 0: \
+      xxx = (GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H) && (~GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      break; \
+    case SW_S ## x ## 1: \
+      xxx = (GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H) && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      break; \
+    case SW_S ## x ## 2: \
+      xxx = (~GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H) && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      break
+#define ADD_3POS_INVERTED_CASE(x, i) ADD_3POS_CASE(x, i)
+#define ADD_XTRA_2POS_CASE(...)
+#else
+#define ADD_2POS_CASE(x) \
+    case SW_S ## x ## 0: \
+      xxx = GPIO_PIN_SW_ ## x  & PIN_SW_ ## x ; \
+      break; \
+    case SW_S ## x ## 2: \
+      xxx = ~GPIO_PIN_SW_ ## x  & PIN_SW_ ## x ; \
+      break
+#define ADD_3POS_CASE(x, i) \
+    case SW_S ## x ## 0: \
+      xxx = (GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H); \
+      if (IS_3POS(i)) { \
+        xxx = xxx && (~GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      } \
+      break; \
+    case SW_S ## x ## 1: \
+      xxx = (GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H) && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      break; \
+    case SW_S ## x ## 2: \
+      xxx = (~GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H); \
+      if (IS_3POS(i)) { \
+        xxx = xxx && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      } \
+      break
+#define ADD_3POS_INVERTED_CASE(x, i) \
+    case SW_S ## x ## 0: \
+      xxx = (~GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H); \
+      if (IS_3POS(i)) { \
+        xxx = xxx && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      } \
+      break; \
+    case SW_S ## x ## 1: \
+      xxx = (GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H) && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      break; \
+    case SW_S ## x ## 2: \
+      xxx = (GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H); \
+      if (IS_3POS(i)) { \
+        xxx = xxx && (~GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      } \
+      break
+#define ADD_XTRA_2POS_CASE(x, y) \
+    case SW_S ## y ## 0: \
+      xxx = GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L; \
+      break; \
+    case SW_S ## y ## 2: \
+      xxx = ~GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L; \
+      break
+#endif
+
+#if defined(REV3)
+#define ADD_3POS_INVERTED_REV3_CASE(x, i) \
+    case SW_S ## x ## 0: \
+      xxx = (GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H); \
+      if (IS_3POS(i)) { \
+        xxx = xxx && (~GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      } \
+      break; \
+    case SW_S ## x ## 1: \
+      xxx = (~GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H) && (~GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      break; \
+    case SW_S ## x ## 2: \
+      xxx = (~GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H); \
+      if (IS_3POS(i)) { \
+        xxx = xxx && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      } \
+      break
+#else
+#define ADD_3POS_INVERTED_REV3_CASE(x, i) ADD_3POS_CASE(x, i)
+#endif
+
 bool switchState(EnumKeys enuk)
 {
   register uint32_t xxx = 0;
@@ -149,173 +233,48 @@ bool switchState(EnumKeys enuk)
   if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
 
   switch ((uint8_t) enuk) {
-    case SW_SA0:
-      xxx = (GPIO_PIN_SW_A_H & PIN_SW_A_H);
-      if (IS_3POS(0)) {
-        xxx = xxx && (~GPIO_PIN_SW_A_L & PIN_SW_A_L);
-      }
-      break;
-    case SW_SA1:
-#if defined(REV3)
-      xxx = (~GPIO_PIN_SW_A_H & PIN_SW_A_H) && (~GPIO_PIN_SW_A_L & PIN_SW_A_L);
+    ADD_3POS_INVERTED_REV3_CASE(A, 0);
+    ADD_XTRA_2POS_CASE(A, I);
+
+    ADD_3POS_CASE(B, 1);
+    ADD_XTRA_2POS_CASE(B, J);
+
+    ADD_3POS_INVERTED_REV3_CASE(C, 2);
+    ADD_XTRA_2POS_CASE(C, K);
+
+    ADD_3POS_INVERTED_REV3_CASE(D, 3);
+    ADD_XTRA_2POS_CASE(D, L);
+
+    ADD_3POS_INVERTED_CASE(E, 4);
+    ADD_XTRA_2POS_CASE(E, M);
+
+#if defined(REV9E)
+    ADD_3POS_CASE(F, 5);
 #else
-      xxx = (GPIO_PIN_SW_A_H & PIN_SW_A_H) && (GPIO_PIN_SW_A_L & PIN_SW_A_L);
+    ADD_2POS_CASE(F);
 #endif
-      break;
-    case SW_SA2:
-      xxx = (~GPIO_PIN_SW_A_H & PIN_SW_A_H);
-      if (IS_3POS(0)) {
-        xxx = xxx && (GPIO_PIN_SW_A_L & PIN_SW_A_L);
-      }
-      break;
 
-    case SW_SI0:
-      xxx = GPIO_PIN_SW_A_L & PIN_SW_A_L;
-      break;
-    case SW_SI2:
-      xxx = ~GPIO_PIN_SW_A_L & PIN_SW_A_L;
-      break;
+    ADD_3POS_INVERTED_REV3_CASE(G, 6);
+    ADD_XTRA_2POS_CASE(G, N);
 
-    case SW_SB0:
-      xxx = (GPIO_PIN_SW_B_H & PIN_SW_B_H);
-      if (IS_3POS(1)) {
-        xxx = xxx && (~GPIO_PIN_SW_B_L & PIN_SW_B_L);
-      }
-      break;
-    case SW_SB1:
-      xxx = (GPIO_PIN_SW_B_H & PIN_SW_B_H) && (GPIO_PIN_SW_B_L & PIN_SW_B_L);
-      break;
-    case SW_SB2:
-      xxx = (~GPIO_PIN_SW_B_H & PIN_SW_B_H);
-      if (IS_3POS(1)) {
-        xxx = xxx && (GPIO_PIN_SW_B_L & PIN_SW_B_L);
-      }
-      break;
-
-    case SW_SJ0:
-      xxx = GPIO_PIN_SW_B_L & PIN_SW_B_L;
-      break;
-    case SW_SJ2:
-      xxx = ~GPIO_PIN_SW_B_L & PIN_SW_B_L;
-      break;
-
-    case SW_SC0:
-      xxx = (GPIO_PIN_SW_C_H & PIN_SW_C_H);
-      if (IS_3POS(2)) {
-        xxx = xxx && (~GPIO_PIN_SW_C_L & PIN_SW_C_L);
-      }
-      break;
-    case SW_SC1:
-#if defined(REV3)
-      xxx = (~GPIO_PIN_SW_C_H & PIN_SW_C_H) && (~GPIO_PIN_SW_C_L & PIN_SW_C_L);
+#if defined(REV9E)
+    ADD_3POS_CASE(H, 7);
 #else
-      xxx = (GPIO_PIN_SW_C_H & PIN_SW_C_H) && (GPIO_PIN_SW_C_L & PIN_SW_C_L);
+    ADD_2POS_CASE(H);
 #endif
-      break;
-    case SW_SC2:
-      xxx = (~GPIO_PIN_SW_C_H & PIN_SW_C_H);
-      if (IS_3POS(2)) {
-        xxx = xxx && (GPIO_PIN_SW_C_L & PIN_SW_C_L);
-      }
-      break;
 
-    case SW_SK0:
-      xxx = GPIO_PIN_SW_C_L & PIN_SW_C_L;
-      break;
-    case SW_SK2:
-      xxx = ~GPIO_PIN_SW_C_L & PIN_SW_C_L;
-      break;
-
-    case SW_SD0:
-      xxx = (GPIO_PIN_SW_D_H & PIN_SW_D_H);
-      if (IS_3POS(3)) {
-        xxx = xxx && (~GPIO_PIN_SW_D_L & PIN_SW_D_L);
-      }
-      break;
-    case SW_SD1:
-#if defined(REV3)
-      xxx = (~GPIO_PIN_SW_D_H & PIN_SW_D_H) && (~GPIO_PIN_SW_D_L & PIN_SW_D_L);
-#else
-      xxx = (GPIO_PIN_SW_D_H & PIN_SW_D_H) && (GPIO_PIN_SW_D_L & PIN_SW_D_L);
+#if defined(REV9E)
+    ADD_3POS_CASE(I, 8);
+    ADD_3POS_CASE(J, 9);
+    ADD_3POS_CASE(K, 10);
+    ADD_3POS_CASE(L, 11);
+    ADD_3POS_CASE(M, 12);
+    ADD_3POS_CASE(N, 13);
+    ADD_3POS_CASE(O, 14);
+    ADD_3POS_CASE(P, 15);
+    ADD_3POS_CASE(Q, 16);
+    ADD_3POS_CASE(R, 17);
 #endif
-      break;
-    case SW_SD2:
-      xxx = (~GPIO_PIN_SW_D_H & PIN_SW_D_H);
-      if (IS_3POS(3)) {
-        xxx = xxx && (GPIO_PIN_SW_D_L & PIN_SW_D_L);
-      }
-      break;
-
-    case SW_SL0:
-      xxx = GPIO_PIN_SW_D_L & PIN_SW_D_L;
-      break;
-    case SW_SL2:
-      xxx = ~GPIO_PIN_SW_D_L & PIN_SW_D_L;
-      break;
-
-    case SW_SE0:
-      xxx = (~GPIO_PIN_SW_E_H & PIN_SW_E_H);
-      if (IS_3POS(4)) {
-        xxx = xxx && (GPIO_PIN_SW_E_L & PIN_SW_E_L);
-      }
-      break;
-    case SW_SE1:
-      xxx = (GPIO_PIN_SW_E_H & PIN_SW_E_H) && (GPIO_PIN_SW_E_L & PIN_SW_E_L);
-      break;
-    case SW_SE2:
-      xxx = (GPIO_PIN_SW_E_H & PIN_SW_E_H);
-      if (IS_3POS(4)) {
-        xxx = xxx && (~GPIO_PIN_SW_E_L & PIN_SW_E_L);
-      }
-      break;
-
-    case SW_SM0:
-      xxx = GPIO_PIN_SW_E_L & PIN_SW_E_L;
-      break;
-    case SW_SM2:
-      xxx = ~GPIO_PIN_SW_E_L & PIN_SW_E_L;
-      break;
-
-    case SW_SF0:
-      xxx = GPIO_PIN_SW_F & PIN_SW_F;
-      break;
-    case SW_SF2:
-      xxx = ~GPIO_PIN_SW_F & PIN_SW_F;
-      break;
-
-    case SW_SG0:
-      xxx = (GPIO_PIN_SW_G_H & PIN_SW_G_H);
-      if (IS_3POS(6)) {
-        xxx = xxx && (~GPIO_PIN_SW_G_L & PIN_SW_G_L);
-      }
-      break;
-    case SW_SG1:
-#if defined(REV3)
-      xxx = (~GPIO_PIN_SW_G_H & PIN_SW_G_H) && (~GPIO_PIN_SW_G_L & PIN_SW_G_L);
-#else
-      xxx = (GPIO_PIN_SW_G_H & PIN_SW_G_H) && (GPIO_PIN_SW_G_L & PIN_SW_G_L);
-#endif
-      break;
-    case SW_SG2:
-      xxx = (~GPIO_PIN_SW_G_H & PIN_SW_G_H);
-      if (IS_3POS(6)) {
-        xxx = xxx && (GPIO_PIN_SW_G_L & PIN_SW_G_L);
-      }
-      break;
-
-    case SW_SN0:
-      xxx = GPIO_PIN_SW_G_L & PIN_SW_G_L;
-      break;
-    case SW_SN2:
-      xxx = ~GPIO_PIN_SW_G_L & PIN_SW_G_L;
-      break;
-
-    case SW_SH0:
-      xxx = GPIO_PIN_SW_H & PIN_SW_H;
-      break;
-    case SW_SH2:
-      xxx = ~GPIO_PIN_SW_H & PIN_SW_H;
-      break;
 
     default:
       break;
@@ -338,7 +297,7 @@ void keysInit()
                                   | PIN_SW_A_L | PIN_SW_D_L | PIN_SW_F | PIN_SW_C_L | PIN_SW_D_H | PIN_SW_H;
 #elif defined(REV9E)
     GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_MINUS | PIN_TRIM_LH_R | PIN_TRIM_LH_L
-                                  | PIN_SW_F | PIN_SW_A_L | PIN_SW_B_H | PIN_SW_B_L | PIN_SW_C_H | PIN_SW_D_H | PIN_SW_D_L | PIN_SW_G_H | PIN_SW_G_L;
+                                  | PIN_SW_F_H | PIN_SW_A_L | PIN_SW_B_H | PIN_SW_B_L | PIN_SW_C_H | PIN_SW_D_H | PIN_SW_D_L | PIN_SW_G_H | PIN_SW_G_L | PIN_SW_L_L | PIN_SW_Q_H | PIN_SW_Q_L;
 #elif defined(REVPLUS)
     GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_ENTER | PIN_BUTTON_MINUS | PIN_TRIM_LH_R | PIN_TRIM_LH_L
                                   | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP
@@ -355,14 +314,16 @@ void keysInit()
     GPIO_Init(GPIOE, &GPIO_InitStructure);
 
 #if defined(REV9E)
-    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_ENTER;
+    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_ENTER | PIN_SW_F_L | PIN_SW_I_H | PIN_SW_I_L | PIN_SW_J_H | PIN_SW_J_L | PIN_SW_K_H | PIN_SW_K_L | PIN_SW_L_H | PIN_SW_M_H | PIN_SW_M_L | PIN_SW_N_H | PIN_SW_N_L;
     GPIO_Init(GPIOF, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin = PIN_TRIM_LV_DN | PIN_TRIM_LV_UP;
+    GPIO_InitStructure.GPIO_Pin = PIN_TRIM_LV_DN | PIN_TRIM_LV_UP | PIN_SW_O_H | PIN_SW_O_L | PIN_SW_P_H | PIN_SW_P_L | PIN_SW_R_H | PIN_SW_R_L;
     GPIO_Init(GPIOG, &GPIO_InitStructure);
 #endif
 
-#if defined(REVPLUS)
+#if defined(REV9E)
+    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_MENU | PIN_BUTTON_EXIT | PIN_BUTTON_PAGE | PIN_SW_H_H | PIN_SW_H_L;
+#elif defined(REVPLUS)
     GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_MENU | PIN_BUTTON_EXIT | PIN_BUTTON_PAGE | PIN_SW_H;
 #else
     GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_MENU | PIN_BUTTON_EXIT | PIN_BUTTON_PAGE;

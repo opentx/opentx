@@ -85,6 +85,33 @@ int switchConfig(int idx)
   return config;
 }
 
+#if defined(REV9E)
+div_t switchInfo(int switchPosition)
+{
+  return div(switchPosition-SWSRC_FIRST_SWITCH, 3);
+}
+#else
+div_t switchInfo(int switchPosition)
+{
+  if (switchPosition <= SWSRC_SE2) {
+    return div(switchPosition-SWSRC_SA0, 3);
+  }
+  else if (switchPosition <= SWSRC_SF2) {
+    div_t qr = { 5, switchPosition == SWSRC_SF2 ? 2 : 0 };
+    return qr;
+  }
+  else if (switchPosition <= SWSRC_SG2) {
+    div_t qr = { 6, switchPosition-SWSRC_SG0 };
+    return qr;
+  }
+  else {
+    div_t qr = div(2*7+switchPosition-SWSRC_SH0, 2);
+    qr.rem *= 2;
+    return qr;
+  }
+}
+#endif
+
 uint64_t check2PosSwitchPosition(EnumKeys sw)
 {
   uint64_t result;

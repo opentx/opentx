@@ -808,28 +808,6 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
   }
 }
 
-#if defined(PCBTARANIS)
-div_t switchInfo(int switchPosition)
-{
-  if (switchPosition <= SWSRC_SE2) {
-    return div(switchPosition-SWSRC_SA0, 3);
-  }
-  else if (switchPosition <= SWSRC_SF2) {
-    div_t qr = { 5, switchPosition == SWSRC_SF2 ? 2 : 0 };
-    return qr;
-  }
-  else if (switchPosition <= SWSRC_SG2) {
-    div_t qr = { 6, switchPosition-SWSRC_SG0 };
-    return qr;
-  }
-  else {
-    div_t qr = div(2*7+switchPosition-SWSRC_SH0, 2);
-    qr.rem *= 2;
-    return qr;
-  }
-}
-#endif
-
 void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 {
   if (idx == SWSRC_OFF)
@@ -844,7 +822,7 @@ void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
   }
 #endif
 #if defined(PCBTARANIS)
-  if (idx >= SWSRC_SA0 && idx <= SWSRC_SN2) {
+  if (idx >= SWSRC_FIRST_SWITCH && idx <= SWSRC_LAST_SWITCH) {
     div_t swinfo = switchInfo(idx);
     if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
       lcd_putsnAtt(x, y, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME, ZCHAR|att);

@@ -3056,7 +3056,7 @@ enum ExposFields {
   CASE_PCBTARANIS(EXPO_FIELD_OFFSET)
   CASE_9X(EXPO_FIELD_EXPO)
   CASE_CURVES(EXPO_FIELD_CURVE)
-  CASE_FLIGHT_MODES(EXPO_FIELD_FLIGHT_PHASE)
+  CASE_FLIGHT_MODES(EXPO_FIELD_FLIGHT_MODES)
   EXPO_FIELD_SWITCH,
   EXPO_FIELD_SIDE,
   CASE_PCBTARANIS(EXPO_FIELD_TRIM)
@@ -3094,11 +3094,12 @@ void menuModelExpoOne(uint8_t event)
   coord_t y = MENU_TITLE_HEIGHT + 1;
 
 #if defined(PCBTARANIS)
-  for (uint8_t k=0; k<LCD_LINES-1; k++) {
-    int8_t i = k + s_pgOfs;
-    for (int j=0; j<=i; j++) {
-      if (mstate_tab[j] == HIDDEN_ROW)
-        i++;
+  for (unsigned int k=0; k<LCD_LINES-1; k++) {
+    int i = k + s_pgOfs;
+    for (int j=0; j<=i; ++j) {
+      if (j<(int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {
+        ++i;
+      }
     }
 #else
   for (uint8_t i=0; i<EXPO_FIELD_MAX+1; i++) {
@@ -3182,7 +3183,7 @@ void menuModelExpoOne(uint8_t event)
 #endif
 
 #if defined(FLIGHT_MODES)
-      case EXPO_FIELD_FLIGHT_PHASE:
+      case EXPO_FIELD_FLIGHT_MODES:
         ed->flightModes = editFlightModes(EXPO_ONE_2ND_COLUMN-IF_9X(EXPO_ONE_FP_WIDTH), y, event, ed->flightModes, attr);
         break;
 #endif

@@ -1484,9 +1484,13 @@ enum SwitchContext
 
 bool isSwitchAvailable(int swtch, SwitchContext context)
 {
+#if defined(PCBTARANIS)
+  uint32_t index = switchInfo(abs(swtch)).quot;
+#endif
+
   if (swtch < 0) {
 #if defined(PCBTARANIS)
-    if (swtch == -SWSRC_SF0 || swtch == -SWSRC_SF2 || swtch == -SWSRC_SH0 || swtch == -SWSRC_SH2)
+    if (!IS_3POS(index))
       return false;
 #endif
     if (swtch == -SWSRC_ON || swtch == -SWSRC_One) {
@@ -1495,9 +1499,13 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
     swtch = -swtch;
   }
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && defined(REV9E)
+  if (swtch >= SWSRC_SA1 && swtch <= SWSRC_SR1 && (swtch-SWSRC_SA1)%3 == 0) {
+    return IS_3POS(index);
+  }
+#elif defined(PCBTARANIS)
   if (swtch == SWSRC_SA1 || swtch == SWSRC_SB1 || swtch == SWSRC_SC1 || swtch == SWSRC_SD1 || swtch == SWSRC_SE1 || swtch == SWSRC_SG1) {
-    return IS_3POS((swtch-SWSRC_SA0)/3);
+    return IS_3POS(index);
   }
   if (swtch >= SWSRC_SI0 && swtch <= SWSRC_SM2) {
     return IS_2x2POS((swtch-SWSRC_SI0)/2);

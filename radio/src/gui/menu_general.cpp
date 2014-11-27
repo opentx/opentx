@@ -1388,6 +1388,10 @@ enum menuGeneralHwItems {
   ITEM_SETUP_HW_SL,
   ITEM_SETUP_HW_SM,
   ITEM_SETUP_HW_SN,
+  CASE_REV9E(ITEM_SETUP_HW_SO)
+  CASE_REV9E(ITEM_SETUP_HW_SP)
+  CASE_REV9E(ITEM_SETUP_HW_SQ)
+  CASE_REV9E(ITEM_SETUP_HW_SR)
   ITEM_SETUP_HW_UART3_MODE,
   ITEM_SETUP_HW_MAX
 };
@@ -1400,11 +1404,16 @@ enum menuGeneralHwItems {
   #define POTS_ROWS NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, 0, 0
 #endif
 
-#define SWITCH_ROWS(x) uint8_t(IS_2x2POS(x) ? 0 : HIDDEN_ROW)
+#if defined(REV9E)
+  #define SWITCHES_ROWS  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#else
+  #define SWITCH_ROWS(x) uint8_t(IS_2x2POS(x) ? 0 : HIDDEN_ROW)
+  #define SWITCHES_ROWS  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, SWITCH_ROWS(0), SWITCH_ROWS(1), SWITCH_ROWS(2), SWITCH_ROWS(3), SWITCH_ROWS(4), SWITCH_ROWS(6)
+#endif
 
 void menuGeneralHardware(uint8_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, SWITCH_ROWS(0), SWITCH_ROWS(1), SWITCH_ROWS(2), SWITCH_ROWS(3), SWITCH_ROWS(4), SWITCH_ROWS(6), 0});
+  MENU(STR_HARDWARE, menuTabGeneral, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, 0});
 
   uint8_t sub = m_posVert - 1;
 
@@ -1480,23 +1489,39 @@ void menuGeneralHardware(uint8_t event)
       case ITEM_SETUP_HW_SL:
       case ITEM_SETUP_HW_SM:
       case ITEM_SETUP_HW_SN:
+#if defined(REV9E)
+      case ITEM_SETUP_HW_SO:
+      case ITEM_SETUP_HW_SP:
+      case ITEM_SETUP_HW_SQ:
+      case ITEM_SETUP_HW_SR:
+#endif
       {      
         int index = k-ITEM_SETUP_HW_SA;
         char label[] = INDENT "S*";
         label[2] = 'A' + index;
-        uint32_t config = SWITCH_CONFIG(index);
+        int config = SWITCH_CONFIG(index);
         lcd_putsAtt(0, y, label, m_posHorz < 0 ? attr : 0);
         if (ZEXIST(g_eeGeneral.switchNames[index]) || (attr && m_posHorz == 0))
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.switchNames[index], LEN_SWITCH_NAME, event, m_posHorz == 0 ? attr : 0);
         else
           lcd_putsiAtt(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
+#if defined(REV9E)
+        config = selectMenuItem(HW_SETTINGS_COLUMN+5*FW, y, "", "\007None\0  DefaultToggle\0""2POS\0  3POS\0", config, SWITCH_NONE, SWITCH_3POS, m_posHorz == 1 ? attr : 0, event);
+        if (attr && checkIncDec_Ret) {
+          uint32_t mask = 0x0f << (4*index);
+          TRACE("avant %x", g_eeGeneral.switchConfig);
+          g_eeGeneral.switchConfig = (g_eeGeneral.switchConfig & ~mask) | ((uint32_t(config)&0xf) << (4*index));
+          TRACE("apres %x", g_eeGeneral.switchConfig);
+        }
+#else
         if (k <= ITEM_SETUP_HW_SH) {
-          config = selectMenuItem(HW_SETTINGS_COLUMN+5*FW, y, "", "\007DefaultToggle\0""2POS\0  3POS\0  2x2POS\0", config, 0, 4, m_posHorz == 1 ? attr : 0, event);
+          config = selectMenuItem(HW_SETTINGS_COLUMN+5*FW, y, "", "\007DefaultToggle\0""2POS\0  3POS\0  2x2POS\0", config, SWITCH_NONE, SWITCH_2x2POS, m_posHorz == 1 ? attr : 0, event);
           if (attr && checkIncDec_Ret) {
             uint32_t mask = 0x0f << (4*index);
-            g_eeGeneral.switchConfig = (g_eeGeneral.switchConfig & ~mask) | (config << (4*index));
+            g_eeGeneral.switchConfig = (g_eeGeneral.switchConfig & ~mask) | (((uint32_t)(config)&0xf) << (4*index));
           }
         }
+#endif
         break;
       }
       case ITEM_SETUP_HW_UART3_MODE:

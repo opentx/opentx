@@ -717,6 +717,15 @@ void menuMainView(uint8_t event)
   lcd_bmp(BITMAP_X, BITMAP_Y, modelBitmap);
 
   // Switches
+#if defined(REV9E)
+  for (uint8_t i=0; i<8; i++) {
+    getvalue_t sw;
+    getvalue_t val;
+    val = getValue(MIXSRC_SA+i);
+    sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
+    putsSwitches((g_eeGeneral.view == VIEW_INPUTS) ? (i<4 ? 8*FW+3 : 24*FW+1) : (i<4 ? 3*FW+2 : 8*FW-1), (i%4)*FH+3*FH, sw, 0);
+  }
+#else
   for (uint8_t i=0; i<8; i++) {
     getvalue_t sw;
     getvalue_t val;
@@ -741,6 +750,7 @@ void menuMainView(uint8_t event)
     }
     putsSwitches((g_eeGeneral.view == VIEW_INPUTS) ? (i<4 ? 8*FW+3 : 24*FW+1) : (i<4 ? 3*FW+2 : 8*FW-1), (i%4)*FH+3*FH, sw, 0);
   }
+#endif
 
   if (g_eeGeneral.view == VIEW_TIMERS) {
     displayTimers();

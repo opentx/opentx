@@ -55,7 +55,7 @@ FILE *fp = NULL;
 
 #if defined(PCBTARANIS)
 uint32_t Peri1_frequency, Peri2_frequency;
-GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe;
+GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog;
 TIM_TypeDef tim1, tim2, tim3, tim4, tim8, tim10;
 RCC_TypeDef rcc;
 DMA_Stream_TypeDef dma2_stream2, dma2_stream6;
@@ -178,7 +178,16 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
 {
   // printf("swtch=%d state=%d\n", swtch, state); fflush(stdout);
   switch (swtch) {
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && defined(REV9E)
+    SWITCH_3_CASE(0, GPIO_PIN_SW_A_L, GPIO_PIN_SW_A_H, PIN_SW_A_L, PIN_SW_A_H)
+    SWITCH_3_CASE(1, GPIO_PIN_SW_B_L, GPIO_PIN_SW_B_H, PIN_SW_B_L, PIN_SW_B_H)
+    SWITCH_3_CASE(2, GPIO_PIN_SW_C_L, GPIO_PIN_SW_C_H, PIN_SW_C_L, PIN_SW_C_H)
+    SWITCH_3_CASE(3, GPIO_PIN_SW_D_L, GPIO_PIN_SW_D_H, PIN_SW_D_L, PIN_SW_D_H)
+    SWITCH_3_CASE(4, GPIO_PIN_SW_E_H, GPIO_PIN_SW_E_L, PIN_SW_E_H, PIN_SW_E_L)
+    SWITCH_3_CASE(5, GPIO_PIN_SW_F_H, GPIO_PIN_SW_F_L, PIN_SW_F_H, PIN_SW_F_L)
+    SWITCH_3_CASE(6, GPIO_PIN_SW_G_L, GPIO_PIN_SW_G_H, PIN_SW_G_L, PIN_SW_G_H)
+    SWITCH_3_CASE(7, GPIO_PIN_SW_H_L, GPIO_PIN_SW_H_H, PIN_SW_H_H, PIN_SW_H_L)
+#elif defined(PCBTARANIS)
     SWITCH_3_CASE(0, GPIO_PIN_SW_A_L, GPIO_PIN_SW_A_H, PIN_SW_A_L, PIN_SW_A_H)
     SWITCH_3_CASE(1, GPIO_PIN_SW_B_L, GPIO_PIN_SW_B_H, PIN_SW_B_L, PIN_SW_B_H)
     SWITCH_3_CASE(2, GPIO_PIN_SW_C_L, GPIO_PIN_SW_C_H, PIN_SW_C_L, PIN_SW_C_H)

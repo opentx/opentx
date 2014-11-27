@@ -627,11 +627,14 @@ PACK(typedef struct {
 #endif
 
 enum SwitchConfig {
+  SWITCH_NONE = -1,
   SWITCH_DEFAULT,
   SWITCH_TOGGLE,
   SWITCH_2POS,
   SWITCH_3POS,
+#if !defined(REV9E)
   SWITCH_2x2POS
+#endif
 };
 
 #define LEN_SWITCH_NAME 3
@@ -695,19 +698,37 @@ PACK(typedef struct t_EEGeneral {
 
 }) EEGeneral;
 
-#define SWITCHES_DELAY()     uint8_t(15+g_eeGeneral.switchesDelay)
-#define SWITCHES_DELAY_NONE  (-15)
-#define HAPTIC_STRENGTH()    (3+g_eeGeneral.hapticStrength)
+#define SWITCHES_DELAY()            uint8_t(15+g_eeGeneral.switchesDelay)
+#define SWITCHES_DELAY_NONE         (-15)
+#define HAPTIC_STRENGTH()           (3+g_eeGeneral.hapticStrength)
 
 #if defined(PCBTARANIS)
-#define SWITCH_CONFIG(x) ((g_eeGeneral.switchConfig >> (4*(x))) & 0x0f)
-#define SWITCH_DEFAULT_CONFIG(x) ((x)==5 ? SWITCH_2POS : ((x)==7 ? SWITCH_TOGGLE : SWITCH_3POS))
+PACK(union SwitchConfig4bits {
+  SwitchConfig4bits(uint8_t val):
+    word(val)
+  {
+  }
+  struct {
+    int8_t val:4;
+    int8_t spare:4;
+  };
+  uint8_t word;
+});
+#define SWITCH_CONFIG(x)            SwitchConfig4bits((g_eeGeneral.switchConfig >> (4*(x))) & 0x0f).val
 int switchConfig(int idx);
-#define IS_3POS(x) (switchConfig(x) == SWITCH_3POS)
-#define IS_2x2POS(x) (switchConfig(x) == SWITCH_2x2POS)
-#define ONE_2x2POS_DEFINED() (g_eeGeneral.switchConfig & 0x44444444)
-#define IS_TOGGLE(x) (switchConfig(x) == SWITCH_TOGGLE)
-#define SWITCH_WARNING_ALLOWED(x) (x<8 ? !IS_TOGGLE(x) : IS_2x2POS(x-8))
+#define IS_3POS(x)                  (switchConfig(x) == SWITCH_3POS)
+#define IS_TOGGLE(x)                (switchConfig(x) == SWITCH_TOGGLE)
+#if defined(REV9E)
+  #define SWITCH_DEFAULT_CONFIG(x)  (SWITCH_3POS)
+  #define IS_2x2POS(x)              (false)
+  #define ONE_2x2POS_DEFINED()      (false)
+  #define SWITCH_WARNING_ALLOWED(x) (!IS_TOGGLE(x))
+#else
+  #define SWITCH_DEFAULT_CONFIG(x)  ((x)==5 ? SWITCH_2POS : ((x)==7 ? SWITCH_TOGGLE : SWITCH_3POS))
+  #define IS_2x2POS(x)              (switchConfig(x) == SWITCH_2x2POS)
+  #define ONE_2x2POS_DEFINED()      (g_eeGeneral.switchConfig & 0x44444444)
+  #define SWITCH_WARNING_ALLOWED(x) (x<8 ? !IS_TOGGLE(x) : IS_2x2POS(x-8))
+#endif
 inline int getSwitchWarningsAllowed()
 {
   int count = 0;
@@ -1563,13 +1584,52 @@ enum SwitchSources {
   SWSRC_SE1,
   SWSRC_SE2,
   SWSRC_SF0,
+#if defined(REV9E)
+  SWSRC_SF1,
+#endif
   SWSRC_SF2,
   SWSRC_SG0,
   SWSRC_SG1,
   SWSRC_SG2,
   SWSRC_SH0,
+#if defined(REV9E)
+  SWSRC_SH1,
+#endif
   SWSRC_SH2,
   SWSRC_TRAINER = SWSRC_SH2,
+#if defined(REV9E)
+  SWSRC_SI0,
+  SWSRC_SI1,
+  SWSRC_SI2,
+  SWSRC_SJ0,
+  SWSRC_SJ1,
+  SWSRC_SJ2,
+  SWSRC_SK0,
+  SWSRC_SK1,
+  SWSRC_SK2,
+  SWSRC_SL0,
+  SWSRC_SL1,
+  SWSRC_SL2,
+  SWSRC_SM0,
+  SWSRC_SM1,
+  SWSRC_SM2,
+  SWSRC_SN0,
+  SWSRC_SN1,
+  SWSRC_SN2,
+  SWSRC_SO0,
+  SWSRC_SO1,
+  SWSRC_SO2,
+  SWSRC_SP0,
+  SWSRC_SP1,
+  SWSRC_SP2,
+  SWSRC_SQ0,
+  SWSRC_SQ1,
+  SWSRC_SQ2,
+  SWSRC_SR0,
+  SWSRC_SR1,
+  SWSRC_SR2,
+  SWSRC_LAST_SWITCH = SWSRC_SR2,
+#else
   SWSRC_SI0,
   SWSRC_SI2,
   SWSRC_SJ0,
@@ -1583,6 +1643,7 @@ enum SwitchSources {
   SWSRC_SN0,
   SWSRC_SN2,
   SWSRC_LAST_SWITCH = SWSRC_SN2,
+#endif
 #else
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
   SWSRC_ID1,
@@ -1741,6 +1802,12 @@ enum MixSources {
   MIXSRC_SL,                        LUA_EXPORT("sl", "Switch L")
   MIXSRC_SM,                        LUA_EXPORT("sm", "Switch M")
   MIXSRC_SN,                        LUA_EXPORT("sn", "Switch N")
+#if defined(REV9E)
+  MIXSRC_SO,                        LUA_EXPORT("so", "Switch O")
+  MIXSRC_SP,                        LUA_EXPORT("sp", "Switch P")
+  MIXSRC_SQ,                        LUA_EXPORT("sq", "Switch Q")
+  MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R")
+#endif
 #else
   MIXSRC_3POS = MIXSRC_FIRST_SWITCH,
   MIXSRC_THR,

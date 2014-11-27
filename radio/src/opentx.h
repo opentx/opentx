@@ -222,6 +222,12 @@
   #define CASE_REVPLUS(x)
 #endif
 
+#if defined(PCBTARANIS) && defined(REV9E)
+  #define CASE_REV9E(x) x,
+#else
+  #define CASE_REV9E(x)
+#endif
+
 #if ROTARY_ENCODERS > 0
   #define ROTARY_ENCODER_NAVIGATION
 #endif
@@ -316,7 +322,11 @@ extern void boardInit();
 #endif
 
 #if defined(PCBTARANIS)
-  #define NUM_SWITCHES  14 // 8 physical switches + 6 possible from 3POS
+  #if defined(REV9E)
+    #define NUM_SWITCHES  18 // yes, it's a lot!
+  #else
+    #define NUM_SWITCHES  14 // 8 physical switches + 6 possible from 3POS
+  #endif
   #define NUM_SW_SRCRAW 8
   #define SWSRC_THR     SWSRC_SF2
   #define SWSRC_GEA     SWSRC_SG2
@@ -642,6 +652,10 @@ int zchar2str(char *dest, const char *src, int size);
 
 #include "keys.h"
 #include "pwr.h"
+
+#if defined(PCBTARANIS)
+div_t switchInfo(int switchPosition);
+#endif
 
 bool switchState(EnumKeys enuk);
 uint8_t trimDown(uint8_t idx);

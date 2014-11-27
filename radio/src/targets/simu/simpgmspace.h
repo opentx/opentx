@@ -56,14 +56,14 @@ extern char * main_thread_error;
 #include <execinfo.h>
 inline void write_backtrace(char *output)
 {
-
   void *buf[16];
   char **s;
-  int n = backtrace(buf,16);
+  int n = backtrace(buf, 16);
   s = backtrace_symbols(buf, n);
   if (s) {
-    for(int i=0; i<n; i++)
-      sprintf(output+strlen(output), "%02i: %s\n",i,s[i]);
+    for (int i=0; i<n; ++i) {
+      sprintf(output+strlen(output), "%02i: %s\n", i, s[i]);
+    }
   }
 }
 #endif
@@ -99,7 +99,7 @@ typedef const int16_t pm_int16_t;
 typedef const int8_t pm_int8_t;
 
 #if defined(PCBTARANIS)
-extern GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe;
+extern GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog;
 extern TIM_TypeDef tim1, tim3, tim4, tim8, tim10;
 extern USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 extern RCC_TypeDef rcc;
@@ -110,11 +110,15 @@ extern DMA_TypeDef dma2;
 #undef GPIOC
 #undef GPIOD
 #undef GPIOE
+#undef GPIOF
+#undef GPIOG
 #define GPIOA (&gpioa)
 #define GPIOB (&gpiob)
 #define GPIOC (&gpioc)
 #define GPIOD (&gpiod)
 #define GPIOE (&gpioe)
+#define GPIOF (&gpiof)
+#define GPIOG (&gpiog)
 #undef TIM1
 #undef TIM3
 #undef TIM4
