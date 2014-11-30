@@ -260,7 +260,7 @@ FORCEINLINE void readKeysAndTrims()
   uint8_t in = ~PINB;
   for (int i=1; i<7; i++) {
     // INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
-    keys[enuk].input(in & (1<<i), (EnumKeys)enuk);
+    keys[enuk].input(in & (1<<i));
     ++enuk;
   }
 
@@ -268,12 +268,12 @@ FORCEINLINE void readKeysAndTrims()
   in = ~PIND;
   for (int i=0; i<8; i++) {
     // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
-    keys[enuk].input(in & pgm_read_byte(crossTrim+i), (EnumKeys)enuk);
+    keys[enuk].input(in & pgm_read_byte(crossTrim+i));
     ++enuk;
   }
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-  keys[enuk].input(ROTENC_DOWN(), (EnumKeys)enuk); // Rotary Enc. Switch
+  keys[enuk].input(ROTENC_DOWN()); // Rotary Enc. Switch
 #endif
 
 #if defined(NAVIGATION_STICKS)

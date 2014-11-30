@@ -125,20 +125,20 @@ void readKeysAndTrims()
   register uint32_t i;
 
 #if ROTARY_ENCODERS > 0
-  keys[BTN_REa].input(REA_DOWN(), BTN_REa);
+  keys[BTN_REa].input(REA_DOWN());
 #endif
 
   uint8_t enuk = KEY_MENU;
   uint8_t in = ~readKeys();
   for (i = 1; i < 7; i++) {
-    keys[enuk].input(in & (1 << i), (EnumKeys) enuk);
+    keys[enuk].input(in & (1 << i));
     ++enuk;
   }
 
   in = readTrims();
 
   for (i = 1; i < 256; i <<= 1) {
-    keys[enuk].input(in & i, (EnumKeys) enuk);
+    keys[enuk].input(in & i);
     ++enuk;
   }
 }
