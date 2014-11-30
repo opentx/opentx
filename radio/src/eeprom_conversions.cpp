@@ -1401,24 +1401,30 @@ void ConvertModel_216_to_217(ModelData &model)
   memcpy(newModel.curves, oldModel.curves, sizeof(newModel.curves));
   memcpy(newModel.points, oldModel.points, sizeof(newModel.points));
   for (int i=0; i<NUM_LOGICAL_SWITCH; i++) {
-    newModel.logicalSw[i].func = oldModel.logicalSw[i].func;
-    newModel.logicalSw[i].v1 = oldModel.logicalSw[i].v1;
-    newModel.logicalSw[i].v2 = oldModel.logicalSw[i].v2;
-    newModel.logicalSw[i].v3 = oldModel.logicalSw[i].v3;
-    newModel.logicalSw[i].delay = oldModel.logicalSw[i].delay;
-    newModel.logicalSw[i].duration = oldModel.logicalSw[i].duration;
-    newModel.logicalSw[i].andsw = oldModel.logicalSw[i].andsw;
-    uint8_t cstate = lswFamily(newModel.logicalSw[i].func);
+    LogicalSwitchData & sw = newModel.logicalSw[i];
+    sw.func = oldModel.logicalSw[i].func;
+    sw.v1 = oldModel.logicalSw[i].v1;
+    sw.v2 = oldModel.logicalSw[i].v2;
+    sw.v3 = oldModel.logicalSw[i].v3;
+    sw.delay = oldModel.logicalSw[i].delay;
+    sw.duration = oldModel.logicalSw[i].duration;
+    sw.andsw = oldModel.logicalSw[i].andsw;
+    uint8_t cstate = lswFamily(sw.func);
     if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
-      newModel.logicalSw[i].v1 = ConvertSource_216_to_217((uint8_t)newModel.logicalSw[i].v1);
+      sw.v1 = ConvertSource_216_to_217((uint8_t)sw.v1);
       if (cstate == LS_FAMILY_COMP) {
-        newModel.logicalSw[i].v2 = ConvertSource_216_to_217((uint8_t)newModel.logicalSw[i].v2);
+        sw.v2 = ConvertSource_216_to_217((uint8_t)sw.v2);
       }
+    }
+    else if (cstate == LS_FAMILY_BOOL) {
+      sw.v1 = ConvertSwitch_216_to_217(sw.v1);
+      sw.v2 = ConvertSwitch_216_to_217(sw.v2);
     }
   }
   for (int i=0; i<NUM_CFN; i++) {
     CustomFunctionData & fn = newModel.customFn[i];
     fn = oldModel.customFn[i];
+    fn.swtch = ConvertSwitch_216_to_217(fn.swtch);
     if (fn.func == FUNC_PLAY_VALUE || fn.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(fn.func) && fn.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
       fn.all.val = ConvertSource_216_to_217(fn.all.val);
     }
@@ -1427,7 +1433,11 @@ void ConvertModel_216_to_217(ModelData &model)
   newModel.swashR = oldModel.swashR;
   newModel.swashR.collectiveSource = ConvertSource_216_to_217(newModel.swashR.collectiveSource);
 
-  memcpy(newModel.flightModeData, oldModel.flightModeData, sizeof(newModel.flightModeData));
+  for (int i=0; i<MAX_FLIGHT_MODES; i++) {
+    newModel.flightModeData[i] = oldModel.flightModeData[i];
+    newModel.flightModeData[i].swtch = ConvertSwitch_216_to_217(oldModel.flightModeData[i].swtch);
+  }
+
   newModel.thrTraceSrc = oldModel.thrTraceSrc;
   newModel.switchWarningState = oldModel.switchWarningState;
   newModel.switchWarningEnable = oldModel.switchWarningEnable;
