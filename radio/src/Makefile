@@ -823,6 +823,9 @@ ifeq ($(PCB), TARANIS)
   ifeq ($(SWR), YES)
     CPPDEFS += -DSWR
   endif
+  ifeq ($(PCBREV), REV9E)
+    CPPSRC += targets/taranis/rotenc_driver.cpp
+  endif
 endif
 
 CC      = $(TRGT)gcc

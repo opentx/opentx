@@ -256,10 +256,11 @@ class Key
     uint8_t m_cnt;
     uint8_t m_state;
   public:
-    void input(bool val, EnumKeys enuk);
+    void input(bool val);
     bool state()       { return m_vals > 0; }
     void pauseEvents() { m_state = KSTATE_PAUSE; m_cnt = 0; }
     void killEvents()  { m_state = KSTATE_KILLED; }
+    EnumKeys key() const;
 };
 
 extern Key keys[NUM_KEYS];
