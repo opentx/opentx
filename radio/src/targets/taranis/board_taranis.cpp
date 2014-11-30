@@ -105,6 +105,10 @@ void interrupt5ms()
     pre_scale = 0 ;
     per10ms();
   }
+
+#if defined(REV9E)
+  checkRotaryEncoder();
+#endif
 }
 
 extern "C" void TIM8_TRG_COM_TIM14_IRQHandler()
@@ -129,6 +133,10 @@ void boardInit()
   
 #if defined(HAPTIC)  
   hapticInit();
+#endif
+
+#if defined(REV9E)
+  rotencInit();
 #endif
 
 #if defined(DEBUG)

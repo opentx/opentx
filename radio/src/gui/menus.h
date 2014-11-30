@@ -462,8 +462,13 @@ void displayWarning(uint8_t event);
 #if defined(PCBTARANIS)
   #define KEY_MOVE_UP    KEY_PLUS
   #define KEY_MOVE_DOWN  KEY_MINUS
+#if defined(REV9E)
+  #define CURSOR_MOVED_LEFT(event)  (EVT_KEY_MASK(event) == KEY_MINUS)
+  #define CURSOR_MOVED_RIGHT(event) (EVT_KEY_MASK(event) == KEY_PLUS)
+#else
   #define CURSOR_MOVED_LEFT(event)  (EVT_KEY_MASK(event) == KEY_PLUS)
   #define CURSOR_MOVED_RIGHT(event) (EVT_KEY_MASK(event) == KEY_MINUS)
+#endif
   #define CASE_EVT_ROTARY_MOVE_RIGHT CASE_EVT_ROTARY_LEFT
   #define CASE_EVT_ROTARY_MOVE_LEFT  CASE_EVT_ROTARY_RIGHT
   #define IS_ROTARY_MOVE_RIGHT       IS_ROTARY_LEFT

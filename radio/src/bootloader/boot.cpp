@@ -198,7 +198,7 @@ void interrupt10ms(void)
 
   for (int i = 1; i < 7; i++) {
     uint8_t value = in & (1 << i);
-    keys[enuk].input(value, (EnumKeys) enuk);
+    keys[enuk].input(value);
     ++enuk;
   }
 }

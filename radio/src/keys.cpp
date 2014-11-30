@@ -66,7 +66,7 @@ uint8_t getEvent()
 #define KEY_LONG_DELAY 32
 
 Key keys[NUM_KEYS];
-void Key::input(bool val, EnumKeys enuk)
+void Key::input(bool val)
 {
   uint8_t t_vals = m_vals ;
   t_vals <<= 1 ;
@@ -77,7 +77,7 @@ void Key::input(bool val, EnumKeys enuk)
 
   if (m_state && m_vals==0) {  //gerade eben sprung auf 0
     if (m_state != KSTATE_KILLED) {
-      putEvent(EVT_KEY_BREAK(enuk));
+      putEvent(EVT_KEY_BREAK(key()));
     }
     m_cnt   = 0;
     m_state = KSTATE_OFF;
@@ -91,7 +91,7 @@ void Key::input(bool val, EnumKeys enuk)
       break;
       //fallthrough
     case KSTATE_START:
-      putEvent(EVT_KEY_FIRST(enuk));
+      putEvent(EVT_KEY_FIRST(key()));
       inactivity.counter = 0;
       m_state   = KSTATE_RPTDELAY;
       m_cnt     = 0;
@@ -99,7 +99,7 @@ void Key::input(bool val, EnumKeys enuk)
 
     case KSTATE_RPTDELAY: // gruvin: delay state before first key repeat
       if (m_cnt == KEY_LONG_DELAY) {
-        putEvent(EVT_KEY_LONG(enuk));
+        putEvent(EVT_KEY_LONG(key()));
       }
       if (m_cnt == 40) {
         m_state = 16;
@@ -118,7 +118,7 @@ void Key::input(bool val, EnumKeys enuk)
       // no break
     case 1:
       if ((m_cnt & (m_state-1)) == 0) {
-        putEvent(EVT_KEY_REPT(enuk));
+        putEvent(EVT_KEY_REPT(key()));
       }
       break;
 
@@ -132,6 +132,11 @@ void Key::input(bool val, EnumKeys enuk)
     case KSTATE_KILLED: //killed
       break;
   }
+}
+
+EnumKeys Key::key() const 
+{ 
+  return static_cast<EnumKeys>(this - keys);
 }
 
 void pauseEvents(uint8_t event)

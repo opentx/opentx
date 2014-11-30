@@ -258,7 +258,8 @@
 #define PIN_PORTA                       0x0000
 #define PIN_PORTB                       0x0100
 #define PIN_PORTC                       0x0200
-#define PIN_PORTD			0x0300
+#define PIN_PORTD			            0x0300
+#define PIN_PORTE                       0x0400
 #define PIN_PER_1                       0x0010
 #define PIN_PER_2                       0x0020
 #define PIN_PER_3                       0x0030

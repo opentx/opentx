@@ -41,23 +41,29 @@
 uint32_t readKeys()
 {
   register uint32_t d = GPIOD->IDR;
+#if !defined(REV9E)
   register uint32_t e = GPIOE->IDR;
-#if defined(REV9E)
+#else
   register uint32_t f = GPIOF->IDR;
 #endif
   register uint32_t result = 0;
 
 #if defined(REV9E)
   if (f & PIN_BUTTON_ENTER)
-    result |= 0x02 << KEY_ENTER;
 #else
   if (e & PIN_BUTTON_ENTER)
-    result |= 0x02 << KEY_ENTER;
 #endif
+    result |= 0x02 << KEY_ENTER;
+
+#if !defined(REV9E)
   if (e & PIN_BUTTON_PLUS)
     result |= 0x02 << KEY_PLUS;
   if (e & PIN_BUTTON_MINUS)
     result |= 0x02 << KEY_MINUS;
+#else
+  result |= 0x02 << KEY_PLUS;
+  result |= 0x02 << KEY_MINUS;
+#endif
 
   if (d & PIN_BUTTON_MENU)
     result |= 0x02 << KEY_MENU;
@@ -121,6 +127,10 @@ uint8_t keyDown()
   return ~readKeys() & 0x7E ;
 }
 
+#if defined(REV9E)
+extern rotenc_t x9de_rotenc; 
+#endif
+
 /* TODO common to ARM */
 void readKeysAndTrims()
 {
@@ -128,15 +138,30 @@ void readKeysAndTrims()
 
   uint8_t enuk = KEY_MENU;
   uint32_t in = ~readKeys();
-  for (i = 1; i < 7; i++) {
-    keys[enuk].input(in & (1 << i), (EnumKeys) enuk);
+  for (i = 1; i <= TRM_BASE; i++) {
+    keys[enuk].input(in & (1 << i));
     ++enuk;
   }
+
+#if defined(REV9E)
+  static rotenc_t rePreviousValue;
+  rotenc_t reNewValue = (x9de_rotenc / ROTARY_ENCODER_GRANULARITY);
+  int8_t scrollRE = reNewValue - rePreviousValue;
+  if (scrollRE) {
+    rePreviousValue = reNewValue;
+    if (scrollRE < 0) {
+      putEvent(EVT_KEY_FIRST(KEY_MINUS));
+    }
+    else {
+      putEvent(EVT_KEY_FIRST(KEY_PLUS)); 
+    }
+  }
+#endif
 
   in = readTrims();
 
   for (i = 1; i < 256; i <<= 1) {
-    keys[enuk].input(in & i, (EnumKeys)enuk);
+    keys[enuk].input(in & i);
     ++enuk;
   }
 }

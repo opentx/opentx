@@ -172,6 +172,13 @@ uint32_t readTrims(void);
 #define DBLKEYS_PRESSED_RGT_UP(i)  ((in & ((2<<KEY_ENTER) + (2<<KEY_MINUS))) == ((2<<KEY_ENTER) + (2<<KEY_MINUS)))
 #define DBLKEYS_PRESSED_LFT_DWN(i) ((in & ((2<<KEY_PAGE) + (2<<KEY_EXIT))) == ((2<<KEY_PAGE) + (2<<KEY_EXIT)))
 
+#if defined(REV9E)
+// Rotary Encoder driver
+void rotencInit();
+void rotencEnd();
+void checkRotaryEncoder();
+#endif
+
 // WDT driver
 #if !defined(SIMU)
 #define wdt_disable()

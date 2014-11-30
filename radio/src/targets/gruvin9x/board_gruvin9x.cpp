@@ -147,7 +147,7 @@ ISR(USART1_RX_vect)
   resh = (resh >> 1) & 0x01;
   res = ((resh << 8) | resl);  
   if((res == 0x180) | (res == 0x1C0)){         //button REb filter
-    keys[BTN_REa].input((res & 0x1C0) == 0x1C0, BTN_REa);
+    keys[BTN_REa].input((res & 0x1C0) == 0x1C0);
   } else if((res & 0x100) == 0x100){  //rotary filter
     vpotToChange = res & 0xEF;
     vpot_mod_state = 1;
@@ -283,7 +283,7 @@ FORCEINLINE void readKeysAndTrims()
   in |= (tin & 0x30) >> 3;
   for (int i=1; i<7; i++) {
     // INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
-    keys[enuk].input(in & (1<<i), (EnumKeys)enuk);
+    keys[enuk].input(in & (1<<i));
     ++enuk;
   }
 
@@ -291,13 +291,13 @@ FORCEINLINE void readKeysAndTrims()
   in = ~PINJ;
   for (int i=0; i<8; i++) {
     // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
-    keys[enuk].input(in & pgm_read_byte(crossTrim+i), (EnumKeys)enuk);
+    keys[enuk].input(in & pgm_read_byte(crossTrim+i));
     ++enuk;
   }
 
 #if defined(ROTARY_ENCODERS)
-  keys[BTN_REa].input(REA_DOWN(), BTN_REa);
-  keys[BTN_REb].input(REB_DOWN(), BTN_REb);
+  keys[BTN_REa].input(REA_DOWN());
+  keys[BTN_REb].input(REB_DOWN());
 #endif
 }
 

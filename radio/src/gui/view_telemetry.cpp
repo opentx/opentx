@@ -579,14 +579,14 @@ void menuTelemetryFrsky(uint8_t event)
       killEvents(event);
       // no break;
 #endif
-    case EVT_KEY_BREAK(KEY_UP):
+    case EVT_KEY_FIRST(KEY_UP):
       decrTelemetryScreen();
       break;
 
 #if defined(PCBTARANIS)
     case EVT_KEY_BREAK(KEY_PAGE):
 #endif
-    case EVT_KEY_BREAK(KEY_DOWN):
+    case EVT_KEY_FIRST(KEY_DOWN):
       incrTelemetryScreen();
       break;
 
@@ -627,7 +627,7 @@ void menuTelemetryFrsky(uint8_t event)
   displayRssiLine();
 #else
   if (!displayTelemetryScreen()) {
-    putEvent(event == EVT_KEY_BREAK(KEY_UP) ? event : EVT_KEY_BREAK(KEY_DOWN));
+    putEvent(event == EVT_KEY_FIRST(KEY_UP) ? event : EVT_KEY_FIRST(KEY_DOWN));
   }
 #endif
 }
