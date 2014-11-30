@@ -36,36 +36,6 @@
 
 #include "../opentx.h"
 
-#if LCD_W >= 212
-#define BIGSIZE       MIDSIZE
-#define BOX_WIDTH     31
-#define BOX_CENTERY   (LCD_H-BOX_WIDTH/2-10)
-#define LBOX_CENTERX  (BOX_WIDTH/2 + 17)
-#define RBOX_CENTERX  (LCD_W-LBOX_CENTERX)
-#define MODELNAME_X   (15)
-#define MODELNAME_Y   (11)
-#define VBATT_X       (MODELNAME_X+26)
-#define VBATT_Y       (FH+3)
-#define VBATTUNIT_X   (VBATT_X-2)
-#define VBATTUNIT_Y   VBATT_Y
-#define BITMAP_X      ((LCD_W-64)/2)
-#define BITMAP_Y      (LCD_H/2)
-#define PHASE_X       BITMAP_X
-#define PHASE_Y       (3*FH)
-#define PHASE_FLAGS   (0)
-#define TIMERS_X      145
-#define TIMERS_Y      20
-#define TIMERS_H      25
-#define TIMERS_R      193
-#define REBOOT_X      (LCD_W-FW)
-#define VSWITCH_X(i)  (((i>=NUM_LOGICAL_SWITCH*3/4) ? BITMAP_X+28 : ((i>=NUM_LOGICAL_SWITCH/2) ? BITMAP_X+25 : ((i>=NUM_LOGICAL_SWITCH/4) ? 21 : 18))) + 3*i)
-#define VSWITCH_Y     (LCD_H-9)
-#define BAR_HEIGHT    (31-9)
-#define TRIM_LH_X     (32+9)
-#define TRIM_LV_X     10
-#define TRIM_RV_X     (LCD_W-11)
-#define TRIM_RH_X     (LCD_W-32-9)
-#else
 #define BIGSIZE       DBLSIZE
 #define BOX_WIDTH     23
 #define BOX_CENTERY   (LCD_H-9-BOX_WIDTH/2)
@@ -88,34 +58,10 @@
 #define TRIM_LV_X     3
 #define TRIM_RV_X     (LCD_W-4)
 #define TRIM_RH_X     (LCD_W*3/4-2)
-#endif
 
 #define TRIM_LEN 27
 #define MARKER_WIDTH  5
 #define BOX_LIMIT     (BOX_WIDTH-MARKER_WIDTH)
-
-#if defined(PCBTARANIS)
-  const pm_uchar logo_taranis[] PROGMEM = {
-  #include "../bitmaps/logo_taranis.lbm"
-  };
-
-  const pm_uchar icons[] PROGMEM = {
-  #include "../bitmaps/icons.lbm"
-  };
-
-  #define ICON_RSSI     0, 9
-  #define ICON_SPEAKER0 9, 8
-  #define ICON_SPEAKER1 17, 8
-  #define ICON_SPEAKER2 25, 8
-  #define ICON_SPEAKER3 33, 8
-  #define ICON_SD       41, 11
-  #define ICON_LOGS     51, 11
-  #define ICON_TRAINER  61, 11
-  #define ICON_TRAINEE  71, 11
-  #define ICON_USB      81, 11
-  #define ICON_REBOOT   91, 11
-  #define ICON_ALTITUDE 102, 9
-#endif
 
 void drawPotsBars()
 {
@@ -148,9 +94,7 @@ void doMainScreenGraphics()
     calibStickVert = -calibStickVert;
   drawStick(RBOX_CENTERX, calibratedStick[CONVERT_MODE(3)], calibStickVert);
 
-#if !defined(PCBTARANIS)
   drawPotsBars();
-#endif
 }
 
 void displayTrims(uint8_t phase)
@@ -225,165 +169,7 @@ void displayTrims(uint8_t phase)
   }
 }
 
-#if defined(PCBTARANIS)
-void displaySliders()
-{
-  for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; i++) {
-    if (i == POT3) {
-      continue;
-    }
-    coord_t x = ((i==POT1 || i==SLIDER1) ? 3 : LCD_W-5);
-    int8_t y = (i>=SLIDER1 ? LCD_H/2+1 : 1);
-    lcd_vline(x, y, LCD_H/2-2);
-    lcd_vline(x+1, y, LCD_H/2-2);
-    y += LCD_H/2-4;
-    y -= ((calibratedStick[i]+RESX)*(LCD_H/2-4)/(RESX*2));  // calculate once per loop
-    lcd_vline(x-1, y, 2);
-    lcd_vline(x+2, y, 2);
-  }
-}
 
-#define BAR_X        14
-#define BAR_Y        1
-#define BAR_W        184
-#define BAR_H        9
-#define BAR_NOTIFS_X BAR_X+133
-#define BAR_VOLUME_X BAR_X+147
-#define BAR_TIME_X   BAR_X+159
-
-void displayTopBarGauge(coord_t x, int count, bool blinking=false)
-{
-  if (!blinking || BLINK_ON_PHASE)
-    lcd_filled_rect(x+1, BAR_Y+2, 11, 5, SOLID, ERASE);
-  count = min(10, count);
-  for (int i=0; i<count; i+=2)
-    lcd_vline(x+2+i, BAR_Y+3, 3);
-}
-
-#define LCD_NOTIF_ICON(x, icon) \
- lcd_bmp(x, BAR_Y, icons, icon); \
- lcd_hline(x, BAR_Y+8, 11)
-
-void displayTopBar()
-{
-  uint8_t batt_icon_x;
-  uint8_t altitude_icon_x;
-
-  /* Tx voltage */
-  putsVBat(BAR_X+2, BAR_Y+1, LEFT);
-  batt_icon_x = lcdLastPos;
-  lcd_rect(batt_icon_x+FW, BAR_Y+1, 13, 7);
-  lcd_vline(batt_icon_x+FW+13, BAR_Y+2, 5);
-
-  if (TELEMETRY_STREAMING()) {
-    /* RSSI */
-    LCD_ICON(batt_icon_x+3*FW+3, BAR_Y, ICON_RSSI);
-    lcd_rect(batt_icon_x+5*FW, BAR_Y+1, 13, 7);
-
-    /* Rx voltage */
-    altitude_icon_x = batt_icon_x+7*FW+3;
-    if (g_model.frsky.voltsSource) {
-      TelemetryItem & voltsItem = telemetryItems[g_model.frsky.voltsSource-1];
-      if (voltsItem.isAvailable()) {
-        putsTelemetryChannelValue(batt_icon_x+7*FW+2, BAR_Y+1, g_model.frsky.voltsSource-1, voltsItem.value, LEFT);
-        altitude_icon_x = lcdLastPos+1;
-      }
-    }
-
-    /* Altitude */
-    if (g_model.frsky.altitudeSource) {
-      TelemetryItem & altitudeItem = telemetryItems[g_model.frsky.altitudeSource-1];
-      if (altitudeItem.isAvailable()) {
-        LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
-        int32_t value = altitudeItem.value;
-        TelemetrySensor & sensor = g_model.telemetrySensors[g_model.frsky.altitudeSource-1];
-        if (sensor.prec) value /= sensor.prec == 2 ? 100 : 10;
-        putsValueWithUnit(altitude_icon_x+2*FW-1, BAR_Y+1, value, UNIT_METERS, LEFT);
-      }
-    }
-  }
-
-  /* Notifs icons */
-  coord_t x = BAR_NOTIFS_X;
-  if (unexpectedShutdown) {
-    LCD_NOTIF_ICON(x, ICON_REBOOT);
-    x -= 12;
-  }
-
-  if (usbPlugged()) {
-    LCD_NOTIF_ICON(x, ICON_USB);
-    x -= 12;
-  }
-
-  if (TRAINER_CONNECTED() && SLAVE_MODE()) {
-    LCD_NOTIF_ICON(x, ICON_TRAINEE);
-    x -= 12;
-  }
-  else if (TRAINER_CONNECTED() && !SLAVE_MODE()) {
-    LCD_NOTIF_ICON(x, ICON_TRAINER);
-    x -= 12;
-  }
-
-  if (isFunctionActive(FUNCTION_LOGS)) {
-    LCD_NOTIF_ICON(x, ICON_LOGS);
-    x -= 12;
-  }
-
-  /* Audio volume */
-  if (requiredSpeakerVolume == 0 || g_eeGeneral.beepMode == e_mode_quiet)
-    LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER0);
-  else if (requiredSpeakerVolume < 10)
-    LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER1);
-  else if (requiredSpeakerVolume < 20)
-    LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER2);
-  else
-    LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER3);
-
-  /* RTC time */
-  putsRtcTime(BAR_TIME_X, BAR_Y+1, LEFT|TIMEBLINK);
-
-  /* The background */
-  lcd_filled_rect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY(12)|ROUND);
-
-  /* The inside of the Batt gauge */
-  int count = 10 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin);
-  displayTopBarGauge(batt_icon_x+FW, count, g_vbat100mV <= g_eeGeneral.vBatWarn);
-
-  /* The inside of the RSSI gauge */
-  if (TELEMETRY_RSSI() > 0) {
-    displayTopBarGauge(batt_icon_x+5*FW, TELEMETRY_RSSI() / 10, TELEMETRY_RSSI() < getRssiAlarmValue(0));
-  }
-}
-#endif
-
-#if LCD_W >= 212
-void displayTimers()
-{
-  // Main and Second timer
-  for (unsigned int i=0; i<2; i++) {
-    if (g_model.timers[i].mode) {
-      TimerState & timerState = timersStates[i];
-      TimerData & timerData = g_model.timers[i];
-      uint8_t y = TIMERS_Y + i*TIMERS_H;
-      if (zlen(timerData.name, LEN_TIMER_NAME) > 0) {
-        lcd_putsnAtt(TIMERS_X, y-7, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE);
-      }
-      else {
-        putsTimerMode(TIMERS_X, y-7, timerData.mode, SMLSIZE);
-      }
-      putsTimer(TIMERS_X, y, timerState.val, TIMEHOUR|MIDSIZE|LEFT, TIMEHOUR|MIDSIZE|LEFT);
-      if (timerData.persistent) {
-        lcd_putcAtt(TIMERS_R, y+1, 'P', SMLSIZE);
-      }
-      if (timerState.val < 0) {
-        if (BLINK_ON_PHASE) {
-          lcd_filled_rect(TIMERS_X-7, y-8, 60, 20);
-        }
-      }
-    }
-  }
-}
-#else
 void displayTimers()
 {
 #if defined(TRANSLATIONS_CZ)
@@ -411,7 +197,6 @@ void displayTimers()
 #endif
   }
 }
-#endif
 
 void displayBattVoltage()
 {
@@ -427,11 +212,7 @@ void displayBattVoltage()
 #else
   LcdFlags att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | BIGSIZE;
   putsVBat(VBATT_X-1, VBATT_Y, att|NO_UNIT);
-#if LCD_W >= 212
-  lcd_putcAtt(VBATTUNIT_X, VBATTUNIT_Y, 'v', MIDSIZE);
-#else
   lcd_putc(VBATT_X, VBATTUNIT_Y, 'V');
-#endif
 #endif
 }
 
@@ -452,33 +233,11 @@ void displayVoltageOrAlarm()
   #define displayVoltageOrAlarm() displayBattVoltage()
 #endif
 
-#if defined(PCBTARANIS)
-  #define EVT_KEY_MODEL_MENU   EVT_KEY_BREAK(KEY_MENU)
-  #define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_MENU)
-  #define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_PAGE)
-  #define EVT_KEY_CONTEXT_MENU EVT_KEY_LONG(KEY_ENTER)
-#else
-  #define EVT_KEY_MODEL_MENU   EVT_KEY_LONG(KEY_RIGHT)
-  #define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_LEFT)
-  #define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_DOWN)
-  #define EVT_KEY_STATISTICS   EVT_KEY_LONG(KEY_UP)
-  #define EVT_KEY_CONTEXT_MENU EVT_KEY_BREAK(KEY_MENU)
-#endif
-
-#if defined(PCBTARANIS)
-void menuMainViewChannelsMonitor(uint8_t event)
-{
-  switch(event) {
-    case EVT_KEY_BREAK(KEY_PAGE):
-    case EVT_KEY_BREAK(KEY_EXIT):
-      chainMenu(menuMainView);
-      event = 0;
-      break;
-  }
-
-  return menuChannelsView(event);
-}
-#endif
+#define EVT_KEY_MODEL_MENU   EVT_KEY_LONG(KEY_RIGHT)
+#define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_LEFT)
+#define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_DOWN)
+#define EVT_KEY_STATISTICS   EVT_KEY_LONG(KEY_UP)
+#define EVT_KEY_CONTEXT_MENU EVT_KEY_BREAK(KEY_MENU)
 
 #if defined(NAVIGATION_MENUS)
 void onMainViewMenu(const char *result)
@@ -529,10 +288,8 @@ void menuMainView(uint8_t event)
 {
   STICK_SCROLL_DISABLE();
 
-#if !defined(PCBTARANIS)
   uint8_t view = g_eeGeneral.view;
   uint8_t view_base = view & 0x0f;
-#endif
 
   switch(event) {
 
@@ -542,7 +299,6 @@ void menuMainView(uint8_t event)
       killEvents(KEY_DOWN);
       break;
 
-#if !defined(PCBTARANIS)
     /* TODO if timer2 is OFF, it's possible to use this timer2 as in er9x...
     case EVT_KEY_BREAK(KEY_MENU):
       if (view_base == VIEW_TIMER2) {
@@ -567,7 +323,6 @@ void menuMainView(uint8_t event)
         AUDIO_KEYPAD_UP();
       }
       break;
-#endif
 
 #if defined(NAVIGATION_MENUS)
     case EVT_KEY_CONTEXT_MENU:
@@ -599,12 +354,10 @@ void menuMainView(uint8_t event)
 #endif
 
 #if MENUS_LOCK != 2/*no menus*/
-#if !defined(PCBTARANIS)
     case EVT_KEY_LONG(KEY_MENU):// go to last menu
       pushMenu(lastPopMenu());
       killEvents(event);
       break;
-#endif
 
     CASE_EVT_ROTARY_BREAK
     case EVT_KEY_MODEL_MENU:
@@ -619,30 +372,17 @@ void menuMainView(uint8_t event)
       break;
 #endif
 
-#if defined(PCBTARANIS)
-    case EVT_KEY_BREAK(KEY_PAGE):
-      eeDirty(EE_GENERAL);
-      g_eeGeneral.view += 1;
-      if (g_eeGeneral.view >= VIEW_COUNT) {
-        g_eeGeneral.view = 0;
-        chainMenu(menuMainViewChannelsMonitor);
-      }
-      break;
-#else
     case EVT_KEY_BREAK(KEY_UP):
     case EVT_KEY_BREAK(KEY_DOWN):
       g_eeGeneral.view = (event == EVT_KEY_BREAK(KEY_UP) ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
       eeDirty(EE_GENERAL);
       AUDIO_KEYPAD_UP();
       break;
-#endif
 
-#if !defined(PCBTARANIS)
     case EVT_KEY_STATISTICS:
       chainMenu(menuStatisticsView);
       killEvents(event);
       break;
-#endif
 
     case EVT_KEY_TELEMETRY:
 #if defined(FRSKY)
@@ -671,11 +411,9 @@ void menuMainView(uint8_t event)
         s_gvar_timer = 0;
       }
 #endif
-#if !defined(PCBTARANIS)
       if (view == VIEW_TIMER2) {
         timerReset(1);
       }
-#endif
       AUDIO_KEYPAD_UP();
       break;
 
@@ -695,91 +433,16 @@ void menuMainView(uint8_t event)
     // Model Name
     putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
 
-#if !defined(PCBTARANIS)
     // Main Voltage (or alarm if any)
     displayVoltageOrAlarm();
 
     // Timers
     displayTimers();
-#endif
 
     // Trims sliders
     displayTrims(phase);
   }
 
-#if defined(PCBTARANIS)
-  // Top bar
-  displayTopBar();
-
-  // Sliders (Pots / Sliders)
-  displaySliders();
-
-  lcd_bmp(BITMAP_X, BITMAP_Y, modelBitmap);
-
-  // Switches
-#if defined(REV9E)
-  for (uint8_t i=0; i<8; i++) {
-    getvalue_t sw;
-    getvalue_t val;
-    val = getValue(MIXSRC_SA+i);
-    sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-    putsSwitches((g_eeGeneral.view == VIEW_INPUTS) ? (i<4 ? 8*FW+3 : 24*FW+1) : (i<4 ? 3*FW+2 : 8*FW-1), (i%4)*FH+3*FH, sw, 0);
-  }
-#else
-  for (uint8_t i=0; i<8; i++) {
-    getvalue_t sw;
-    getvalue_t val;
-    // TODO simplify this + reuse code in checkSwitches() + Menu MODELSETUP
-    switch(i) {
-      case 5:
-        sw = getValue(MIXSRC_SF) > 0 ? 3*i+2 : 3*i+1;
-        break;
-      case 6:
-        val = getValue(MIXSRC_SG);
-        sw = ((val < 0) ? 3*i : ((val == 0) ? 3*i+1 : 3*i+2));
-        break;     
-      case 7:
-        sw = getValue(MIXSRC_SH) > 0 ? 3*i+1 : 3*i;
-        break;
-      default:
-      {
-        val = getValue(MIXSRC_SA+i);
-        sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-        break;
-      }
-    }
-    putsSwitches((g_eeGeneral.view == VIEW_INPUTS) ? (i<4 ? 8*FW+3 : 24*FW+1) : (i<4 ? 3*FW+2 : 8*FW-1), (i%4)*FH+3*FH, sw, 0);
-  }
-#endif
-
-  if (g_eeGeneral.view == VIEW_TIMERS) {
-    displayTimers();
-  }
-  else if (g_eeGeneral.view == VIEW_INPUTS) {
-    // Sticks
-    doMainScreenGraphics();
-  }
-  else {
-    // Logical Switches
-    lcd_puts(TRIM_RH_X - TRIM_LEN/2 + 5, 6*FH-1, "LS 1-32");
-    for (uint8_t sw=0; sw<NUM_LOGICAL_SWITCH; sw++) {
-      div_t qr = div(sw, 10);
-      uint8_t y = 13 + 11 * qr.quot;
-      uint8_t x = TRIM_RH_X - TRIM_LEN + qr.rem*5 + (qr.rem >= 5 ? 3 : 0);
-      LogicalSwitchData * cs = lswAddress(sw);
-      if (cs->func == LS_FUNC_NONE) {
-        lcd_hline(x, y+6, 4);
-        lcd_hline(x, y+7, 4);
-      }
-      else if (getSwitch(SWSRC_SW1+sw)) {
-        lcd_filled_rect(x, y, 4, 8);
-      }
-      else {
-        lcd_rect(x, y, 4, 8);
-      }
-    }
-  }
-#else // PCBTARANIS
   if (view_base < VIEW_INPUTS) {
     // scroll bar
     lcd_hlineStip(38, 34, 54, DOTTED);
@@ -895,33 +558,21 @@ void menuMainView(uint8_t event)
     putsTimerMode(timersStates[1].val >= 0 ? TMR2_LBL_COL : TMR2_LBL_COL-7, FH*6, g_model.timers[1].mode);
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
-#endif // PCBTARANIS
 
-#if !defined(PCBTARANIS)
   // And ! in case of unexpected shutdown
   if (unexpectedShutdown) {
     lcd_putcAtt(REBOOT_X, 0*FH, '!', INVERS);
   }
-#endif
 
 #if defined(GVARS) && !defined(PCBSTD)
   if (s_gvar_timer > 0) {
     s_gvar_timer--;
-#if LCD_W >= 212
-    lcd_filled_rect(BITMAP_X, BITMAP_Y, 64, 32, SOLID, ERASE);
-    lcd_rect(BITMAP_X, BITMAP_Y, 64, 32);
-    putsStrIdx(BITMAP_X+FW, BITMAP_Y+FH-1, STR_GV, s_gvar_last+1);
-    lcd_putsnAtt(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
-    lcd_putsAtt(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("[\010]"), BOLD);
-    lcd_outdezAtt(BITMAP_X+5*FW+FW/2, BITMAP_Y+2*FH+3, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), BOLD);
-#else
     s_warning = STR_GLOBAL_VAR;
     displayBox();
     lcd_putsnAtt(16, 5*FH, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
     lcd_putsAtt(16+7*FW, 5*FH, PSTR("[\010]"), BOLD);
     lcd_outdezAtt(16+7*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), BOLD);
     s_warning = NULL;
-#endif
   }
 #endif
 
@@ -930,4 +581,3 @@ void menuMainView(uint8_t event)
     lcd_putsAtt(15*FW, 0, PSTR("BIND"), 0);
 #endif
 }
-

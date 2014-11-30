@@ -96,7 +96,7 @@ inline int geteepromsize() {
 #include "radio/src/gui/menus.cpp"
 #include "radio/src/gui/menu_model.cpp"
 #include "radio/src/gui/menu_general.cpp"
-#include "radio/src/gui/view_main.cpp"
+#include "radio/src/gui/Taranis/view_main.cpp"
 #include "radio/src/gui/view_statistics.cpp"
 #include "radio/src/gui/view_channels.cpp"
 #include "radio/src/gui/view_telemetry.cpp"
