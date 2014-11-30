@@ -397,6 +397,34 @@ void onMainViewMenu(const char *result)
   }
 }
 
+void displaySwitch(coord_t x, coord_t y, int width, unsigned int index)
+{
+  int val = getValue(MIXSRC_FIRST_SWITCH+index);
+
+  if (val >= 0) {
+    lcd_hline(x, y, width);
+    lcd_hline(x, y+2, width);
+    y += 4;
+    if (val > 0) {
+      lcd_hline(x, y, width);
+      lcd_hline(x, y+2, width);
+      y += 4;
+    }
+  }
+
+  lcd_putcAtt(width==5 ? x+1 : x, y, 'A'+index, TINSIZE);
+  y += 6;
+
+  if (val <= 0) {
+    lcd_hline(x, y, width);
+    lcd_hline(x, y+2, width);
+    if (val < 0) {
+      lcd_hline(x, y+4, width);
+      lcd_hline(x, y+6, width);
+    }
+  }
+}
+
 void menuMainView(uint8_t event)
 {
   STICK_SCROLL_DISABLE();
@@ -483,12 +511,18 @@ void menuMainView(uint8_t event)
 
   // Switches
 #if defined(REV9E)
-  for (uint8_t i=0; i<8; i++) {
-    getvalue_t sw;
-    getvalue_t val;
-    val = getValue(MIXSRC_SA+i);
-    sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-    putsSwitches((g_eeGeneral.view == VIEW_INPUTS) ? (i<4 ? 8*FW+3 : 24*FW+1) : (i<4 ? 3*FW+2 : 8*FW-1), (i%4)*FH+3*FH, sw, 0);
+  for (unsigned i=0; i<18; i++) {
+    div_t qr = div(i, 9);
+    if (g_eeGeneral.view == VIEW_INPUTS) {
+      div_t qr2 = div(qr.rem, 5);
+      if (i >= 14) qr2.rem += 1;
+      const coord_t x[4] = { 50, 144 };
+      const coord_t y[4] = { 25, 42, 25, 42 };
+      displaySwitch(x[qr.quot]+qr2.rem*4, y[qr2.quot], 3, i);
+    }
+    else {
+      displaySwitch(15+qr.rem*6, 25+qr.quot*17, 5, i);
+    }
   }
 #else
   for (uint8_t i=0; i<8; i++) {
