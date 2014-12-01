@@ -4913,7 +4913,7 @@ void menuModelLogicalSwitches(uint8_t event)
         INCDEC_ENABLE_CHECK(NULL);
       }
 #if defined(CPUARM)
-      putsChannelValue(CSW_3RD_COLUMN, y, v1_val, cs->v2, LEFT|attr2);
+      putsChannelValue(CSW_3RD_COLUMN, y, v1_val, calc100toRESX(cs->v2), LEFT|attr2);
       v2_min = -30000;
       v2_max = 30000;
 #elif defined(FRSKY)
@@ -5041,6 +5041,7 @@ void menuModelLogicalSwitches(uint8_t event)
           break;
         case LS_FIELD_V2:
           cs->v2 = CHECK_INCDEC_PARAM(event, cs->v2, v2_min, v2_max);
+          if (checkIncDec_Ret) TRACE("v2=%d", cs->v2);
 #if defined(PCBTARANIS)
           if (cstate==LS_FAMILY_OFS && cs->v1!=0 && event==EVT_KEY_LONG(KEY_ENTER)) {
             killEvents(event);
