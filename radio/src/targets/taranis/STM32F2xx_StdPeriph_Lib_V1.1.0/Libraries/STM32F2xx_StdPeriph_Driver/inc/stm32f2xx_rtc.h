@@ -30,7 +30,7 @@
 #ifndef __STM32F2xx_RTC_H
 #define __STM32F2xx_RTC_H
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
  extern "C" {
 #endif
 
@@ -633,7 +633,7 @@ void RTC_ClearFlag(uint32_t RTC_FLAG);
 ITStatus RTC_GetITStatus(uint32_t RTC_IT);
 void RTC_ClearITPendingBit(uint32_t RTC_IT);
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
 }
 #endif
 

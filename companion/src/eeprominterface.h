@@ -49,7 +49,8 @@ enum BoardEnum {
   BOARD_SKY9X,
   BOARD_9XRPRO,
   BOARD_TARANIS,
-  BOARD_TARANIS_PLUS
+  BOARD_TARANIS_PLUS,
+  BOARD_TARANIS_X9E
 };
 
 QString getBoardName(BoardEnum board);
@@ -59,8 +60,8 @@ QString getBoardName(BoardEnum board);
 #define IS_2560(board)         (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
 #define IS_SKY9X(board)        (board==BOARD_SKY9X || board==BOARD_9XRPRO)
 #define IS_9XRPRO(board)       (board==BOARD_9XRPRO)
-#define IS_TARANIS(board)      (board==BOARD_TARANIS  || board==BOARD_TARANIS_PLUS)
-#define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_PLUS)
+#define IS_TARANIS(board)      (board==BOARD_TARANIS  || board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)
+#define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)
 #define IS_ARM(board)          (IS_TARANIS(board) || IS_SKY9X(board))
 
 const uint8_t modn12x3[4][4]= {

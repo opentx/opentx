@@ -109,6 +109,7 @@ void stop_trainer_capture()
   NVIC_DisableIRQ(TIM3_IRQn) ;                         // Stop Interrupt
 }
 
+#if !defined(SIMU)
 extern "C" void TIM3_IRQHandler()
 {
   uint16_t capture = 0;
@@ -176,6 +177,7 @@ extern "C" void TIM3_IRQHandler()
     }
   }
 }
+#endif
 
 void init_cppm_on_heartbeat_capture(void)
 {
@@ -253,6 +255,7 @@ void stop_sbus_on_heartbeat_capture(void)
   }
 }
 
+#if !defined(SIMU)
 extern "C" void USART6_IRQHandler()
 {
   uint32_t status;
@@ -269,3 +272,4 @@ extern "C" void USART6_IRQHandler()
     status = USART6->SR;
   }
 }
+#endif

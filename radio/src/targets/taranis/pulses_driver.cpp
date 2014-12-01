@@ -335,6 +335,7 @@ static void disable_pa10_ppm()
   INTERNAL_RF_OFF();
 }
 
+#if !defined(SIMU)
 extern "C" void TIM1_CC_IRQHandler()
 {
   TIM1->DIER &= ~TIM_DIER_CC2IE ;         // stop this interrupt
@@ -372,8 +373,9 @@ extern "C" void TIM1_UP_TIM10_IRQHandler()
     TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
 }
+#endif
 
-static void init_pa7_pxx()
+void init_pa7_pxx()
 {
   EXTERNAL_MODULE_ON();
 
@@ -584,6 +586,7 @@ static void disable_pa7_ppm()
   }
 }
 
+#if !defined(SIMU)
 extern "C" void TIM8_CC_IRQHandler()
 {
   TIM8->DIER &= ~TIM_DIER_CC2IE ;         // stop this interrupt
@@ -630,4 +633,4 @@ extern "C" void TIM8_UP_TIM13_IRQHandler()
     TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
 }
-
+#endif

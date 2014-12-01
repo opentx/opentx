@@ -30,7 +30,9 @@
 #include "../../FatFs/diskio.h"
 #include "board_taranis.h"
 
+#if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
+#endif
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/misc.h"
 #include "usbd_msc_mem.h"
 #include "usb_conf.h"
@@ -118,7 +120,10 @@ USBD_STORAGE_cb_TypeDef USBD_MICRO_SDIO_fops =
 USBD_STORAGE_cb_TypeDef  *USBD_STORAGE_fops = &USBD_MICRO_SDIO_fops;
 
 __IO uint32_t count = 0;
+
+#if defined(__cplusplus) && !defined(SIMU)
 }
+#endif
 
 int8_t STORAGE_Init (uint8_t lun)
 {

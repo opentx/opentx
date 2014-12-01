@@ -30,7 +30,7 @@
 #ifndef __STM32F2xx_USART_H
 #define __STM32F2xx_USART_H
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
  extern "C" {
 #endif
 
@@ -412,7 +412,7 @@ void USART_ClearFlag(USART_TypeDef* USARTx, uint16_t USART_FLAG);
 ITStatus USART_GetITStatus(USART_TypeDef* USARTx, uint16_t USART_IT);
 void USART_ClearITPendingBit(USART_TypeDef* USARTx, uint16_t USART_IT);
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
 }
 #endif
 

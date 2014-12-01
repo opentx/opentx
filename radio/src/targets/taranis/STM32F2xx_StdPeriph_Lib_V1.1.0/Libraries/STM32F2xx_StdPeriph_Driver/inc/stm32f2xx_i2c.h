@@ -30,7 +30,7 @@
 #ifndef __STM32F2xx_I2C_H
 #define __STM32F2xx_I2C_H
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
  extern "C" {
 #endif
 
@@ -681,7 +681,7 @@ void I2C_ClearFlag(I2C_TypeDef* I2Cx, uint32_t I2C_FLAG);
 ITStatus I2C_GetITStatus(I2C_TypeDef* I2Cx, uint32_t I2C_IT);
 void I2C_ClearITPendingBit(I2C_TypeDef* I2Cx, uint32_t I2C_IT);
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
 }
 #endif
 

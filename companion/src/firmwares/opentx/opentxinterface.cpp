@@ -25,6 +25,7 @@
 #include "opentxGruvin9xsimulator.h"
 #include "opentxSky9xsimulator.h"
 #include "opentxTaranisSimulator.h"
+#include "opentxTaranisX9ESimulator.h"
 #include "file.h"
 #include "appdata.h"
 
@@ -67,6 +68,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis";
     case BOARD_TARANIS_PLUS:
       return "OpenTX for FrSky Taranis Plus";
+    case BOARD_TARANIS_X9E:
+      return "OpenTX for FrSky Taranis X9E";
     case BOARD_SKY9X:
       return "OpenTX for Sky9x board / 9X";
     case BOARD_9XRPRO:
@@ -91,6 +94,7 @@ const int OpenTxEepromInterface::getEEpromSize()
       return EESIZE_9XRPRO;
     case BOARD_TARANIS:
     case BOARD_TARANIS_PLUS:
+    case BOARD_TARANIS_X9E:
       return EESIZE_TARANIS;
     default:
       return 0;
@@ -375,6 +379,7 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
     switch(board) {
       case BOARD_TARANIS:
       case BOARD_TARANIS_PLUS:
+      case BOARD_TARANIS_X9E:
       case BOARD_SKY9X:
       case BOARD_9XRPRO:
         version = 217;
@@ -617,7 +622,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case SoundPitch:
       return 1;
     case Haptic:
-      return (board == BOARD_GRUVIN9X || IS_SKY9X(board) || board == BOARD_TARANIS_PLUS || id.contains("haptic"));
+      return (board == BOARD_GRUVIN9X || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || id.contains("haptic"));
     case ModelTrainerEnable:
       if (IS_ARM(board))
         return 1;
@@ -1013,6 +1018,7 @@ QString OpenTxFirmware::getFirmwareUrl()
     case BOARD_9XRPRO:
     case BOARD_TARANIS:
     case BOARD_TARANIS_PLUS:
+    case BOARD_TARANIS_X9E:
       url.append(QString("/getfw.php?fw=%1.bin").arg(id));
       break;
     default:
@@ -1051,6 +1057,8 @@ SimulatorInterface * OpenTxFirmware::getSimulator()
     case BOARD_TARANIS:
     case BOARD_TARANIS_PLUS:
       return new OpentxTaranisSimulator();
+    case BOARD_TARANIS_X9E:
+      return new OpentxTaranisX9ESimulator();
     default:
       return NULL;
   }
@@ -1281,11 +1289,19 @@ void registerOpenTxFirmwares()
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
   openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
   openTx->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
-  openTx->addOption("SWR", QObject::tr("SWR value will be available for display/audio/alarms - Only available on latest Taranis+ production"));
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
-  default_firmware_variant = GetFirmware("opentx-taranis-en");
+  /* Taranis X9E board */
+  openTx = new OpenTxFirmware("opentx-taranisx9e", QObject::tr("OpenTX for FrSky Taranis X9E"), BOARD_TARANIS_X9E);
+  openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
+  openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
+  openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
+  openTx->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
+  addOpenTxCommonOptions(openTx);
+  firmwares.push_back(openTx);
+
+  default_firmware_variant = GetFirmware("opentx-taranisplus-en");
   current_firmware_variant = default_firmware_variant;
 }
 

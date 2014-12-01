@@ -33,7 +33,7 @@
 #define WP_H          do{I2C_EE_WP_GPIO->BSRRL = I2C_EE_WP;}while(0)
 #define WP_L          do{I2C_EE_WP_GPIO->BSRRH = I2C_EE_WP;}while(0)
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
 #endif
 
@@ -48,7 +48,7 @@ void I2C_EE_WaitEepromStandbyState(void);
 void I2C_set_volume(register uint8_t volume);
 uint8_t I2C_read_volume(void);
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
 }
 #endif
 

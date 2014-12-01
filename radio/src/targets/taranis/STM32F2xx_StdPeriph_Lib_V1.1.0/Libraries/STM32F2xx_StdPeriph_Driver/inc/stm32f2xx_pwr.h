@@ -30,7 +30,7 @@
 #ifndef __STM32F2xx_PWR_H
 #define __STM32F2xx_PWR_H
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
  extern "C" {
 #endif
 
@@ -149,7 +149,7 @@ void PWR_EnterSTANDBYMode(void);
 FlagStatus PWR_GetFlagStatus(uint32_t PWR_FLAG);
 void PWR_ClearFlag(uint32_t PWR_FLAG);
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
 }
 #endif
 

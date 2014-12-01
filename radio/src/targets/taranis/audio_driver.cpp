@@ -139,7 +139,7 @@ void audioEnd()
   NVIC_DisableIRQ(DMA1_Stream5_IRQn) ;
 }
 
-#ifndef SIMU
+#if !defined(SIMU)
 extern "C" void TIM6_DAC_IRQHandler()
 {
   DAC->CR &= ~DAC_CR_DMAEN1 ;                     // Stop DMA requests

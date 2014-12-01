@@ -47,6 +47,10 @@ if (inputs.rotenc) pind |= 0x20;
 #ifdef PCBSKY9X
 if (inputs.rotenc) PIOB->PIO_PDSR &= ~0x40; else PIOB->PIO_PDSR |= 0x40;
 #endif
+
+#if defined(PCBTARANIS) && defined(REV9E)
+if (inputs.rotenc) simuSetKey(KEY_ENTER, true);
+#endif
 #endif
 
 #ifdef GETVALUES_IMPORT

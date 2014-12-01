@@ -39,7 +39,7 @@
 
 #include "stddef.h"
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
 #endif
 
@@ -65,7 +65,7 @@ extern "C" {
 #include "aspi.h"
 #include "i2c.h"
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
 }
 #endif
 
@@ -197,7 +197,7 @@ extern volatile uint16_t Analog_values[];
   #define BATT_SCALE    150
 #endif
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
 #endif
 
@@ -234,7 +234,7 @@ void usbStart(void);
 void usbStop(void);
 #endif
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
 }
 #endif
 

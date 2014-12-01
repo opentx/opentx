@@ -29,7 +29,7 @@
 #ifndef __STM32F2xx_RCC_H
 #define __STM32F2xx_RCC_H
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
  extern "C" {
 #endif
 
@@ -498,7 +498,7 @@ void RCC_ClearFlag(void);
 ITStatus RCC_GetITStatus(uint8_t RCC_IT);
 void RCC_ClearITPendingBit(uint8_t RCC_IT);
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
 }
 #endif
 

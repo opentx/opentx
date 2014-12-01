@@ -129,6 +129,7 @@ set(common_SRCS
   firmwares/opentx/open9xSky9xeeprom.cpp
   firmwares/opentx/opentxinterface.cpp
   firmwares/opentx/opentxTaranisSimulator.cpp
+  firmwares/opentx/opentxTaranisX9ESimulator.cpp
   firmwares/opentx/opentxSky9xsimulator.cpp
   firmwares/opentx/opentxGruvin9xsimulator.cpp
   firmwares/opentx/opentxM128simulator.cpp

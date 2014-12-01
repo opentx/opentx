@@ -290,16 +290,16 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
     SWITCH_KEY(F, 5, 3);
     SWITCH_KEY(G, 6, 3);
     SWITCH_KEY(H, 7, 3);
-    SWITCH_KEY(I, 8, 3);
-    SWITCH_KEY(J, 9, 3);
-    SWITCH_KEY(K, 10, 3);
-    SWITCH_KEY(L, 11, 3);
-    SWITCH_KEY(M, 12, 3);
-    SWITCH_KEY(N, 13, 3);
-    SWITCH_KEY(O, 14, 3);
-    SWITCH_KEY(P, 15, 3);
-    SWITCH_KEY(Q, 16, 3);
-    SWITCH_KEY(R, 17, 3);
+    // SWITCH_KEY(I, 8, 3);
+    // SWITCH_KEY(J, 9, 3);
+    // SWITCH_KEY(K, 10, 3);
+    // SWITCH_KEY(L, 11, 3);
+    // SWITCH_KEY(M, 12, 3);
+    // SWITCH_KEY(N, 13, 3);
+    // SWITCH_KEY(O, 14, 3);
+    // SWITCH_KEY(P, 15, 3);
+    // SWITCH_KEY(Q, 16, 3);
+    // SWITCH_KEY(R, 17, 3);
 #elif defined(PCBTARANIS)
     SWITCH_KEY(A, 0, 3);
     SWITCH_KEY(B, 1, 3);

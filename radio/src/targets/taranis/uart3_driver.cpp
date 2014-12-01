@@ -128,6 +128,7 @@ void uart3Stop()
   USART_DeInit(USART3);
 }
 
+#if !defined(SIMU)
 extern "C" void USART3_IRQHandler(void)
 {
   // Send
@@ -161,4 +162,5 @@ extern "C" void USART3_IRQHandler(void)
     status = USART3->SR;
   }
 }
+#endif
 

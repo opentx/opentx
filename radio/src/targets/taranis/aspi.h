@@ -11,7 +11,7 @@
 #ifndef _ASPI_H_
 #define _ASPI_H_
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
 #endif
 
@@ -37,7 +37,7 @@ extern "C" {
 void AspiCmd(u8 Command_Byte);
 void AspiData(u8 Para_data);
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(SIMU)
 }
 #endif
 
