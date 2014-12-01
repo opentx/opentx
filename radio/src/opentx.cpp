@@ -2088,6 +2088,10 @@ void opentxClose()
   }
 #endif
 
+  if (s_eeDirtyMsk & EE_MODEL) {
+    displayPopup(STR_SAVEMODEL);
+  } 
+
   g_eeGeneral.unexpectedShutdown = 0;
 
   eeDirty(EE_GENERAL);

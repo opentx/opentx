@@ -522,6 +522,7 @@ extern const pm_char STR_LONGITUDE[];
 
 #if defined(CPUARM) || defined(CPUM2560)
 extern const pm_char STR_SHUTDOWN[];
+extern const pm_char STR_SAVEMODEL[];
 #endif
 
 extern const pm_char STR_BATT_CALIB[];

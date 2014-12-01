@@ -361,6 +361,7 @@ const pm_char STR_LONGITUDE[] PROGMEM = TR_LONGITUDE;
 
 #if defined(CPUARM) || defined(CPUM2560)
 const pm_char STR_SHUTDOWN[] PROGMEM = TR_SHUTDOWN;
+const pm_char STR_SAVEMODEL[] PROGMEM = TR_SAVEMODEL;
 #endif
 
 const pm_char STR_BATT_CALIB[] PROGMEM = TR_BATT_CALIB;
