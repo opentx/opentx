@@ -834,8 +834,13 @@ int ConvertSwitch_216_to_217(int swtch)
   if (swtch < 0)
     return -ConvertSwitch_216_to_217(-swtch);
 
+#if defined(REV9E)
   if (swtch >= SWSRC_SI0)
-    swtch += 12;
+    swtch += 10*2;
+#else
+  if (swtch >= SWSRC_SI0)
+    swtch += 6*2;
+#endif
 
   return swtch;
 }
@@ -848,7 +853,11 @@ int ConvertSwitch_216_to_217(int swtch)
 
 int ConvertSource_216_to_217(int source)
 {
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && defined(REV9E)
+  // SI to SR switches added
+  if (source >= MIXSRC_SI)
+    source += 10;
+#elif defined(PCBTARANIS)
   // SI to SN switches added
   if (source >= MIXSRC_SI)
     source += 6;
@@ -1327,12 +1336,16 @@ void ConvertModel_216_to_217(ModelData &model)
 
   memcpy(&newModel.header, &oldModel.header, sizeof(newModel.header));
   for (uint8_t i=0; i<2; i++) {
-    newModel.timers[i].mode = oldModel.timers[i].mode;
-    newModel.timers[i].start = oldModel.timers[i].start;
-    newModel.timers[i].countdownBeep = oldModel.timers[i].countdownBeep;
-    newModel.timers[i].minuteBeep = oldModel.timers[i].minuteBeep;
-    newModel.timers[i].persistent = oldModel.timers[i].persistent;
-    newModel.timers[i].value = oldModel.timers[i].value;
+    TimerData & timer = newModel.timers[i];
+    if (oldModel.timers[i].mode >= TMRMODE_COUNT)
+      timer.mode = TMRMODE_COUNT + ConvertSwitch_216_to_217(oldModel.timers[i].mode - TMRMODE_COUNT + 1) - 1;
+    else
+      timer.mode = oldModel.timers[i].mode;
+    timer.start = oldModel.timers[i].start;
+    timer.countdownBeep = oldModel.timers[i].countdownBeep;
+    timer.minuteBeep = oldModel.timers[i].minuteBeep;
+    timer.persistent = oldModel.timers[i].persistent;
+    timer.value = oldModel.timers[i].value;
   }
   newModel.telemetryProtocol = oldModel.telemetryProtocol;
   newModel.thrTrim = oldModel.thrTrim;
