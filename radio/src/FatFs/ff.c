@@ -2865,6 +2865,11 @@ FRESULT f_close (
 			unlock_fs(fs, FR_OK);		/* Unlock volume */
 #endif
 		}
+#if _FS_REENTRANT
+		else if (res == FR_NOT_READY) {
+			unlock_fs(fp->fs, res);	
+		}
+#endif
 	}
 	return res;
 }
@@ -3247,6 +3252,11 @@ FRESULT f_closedir (
 		unlock_fs(fs, FR_OK);		/* Unlock volume */
 #endif
 	}
+#if _FS_REENTRANT
+	else if (res == FR_NOT_READY) {
+		unlock_fs(dp->fs, res);	
+	}
+#endif
 	return res;
 }
 
