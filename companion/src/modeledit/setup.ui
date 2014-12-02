@@ -66,6 +66,36 @@
      </item>
      <item row="5" column="1">
       <layout class="QGridLayout" name="gridLayout_2">
+       <item row="1" column="2">
+        <widget class="QCheckBox" name="extendedTrims">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Extended Trims</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QCheckBox" name="displayText">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Display Checklist</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QCheckBox" name="extendedLimits">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Extended Limits</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="3">
         <widget class="QCheckBox" name="throttleReverse">
          <property name="whatsThis">
@@ -82,16 +112,6 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QCheckBox" name="extendedLimits">
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="text">
-          <string>Extended Limits</string>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QComboBox" name="throttleSource">
          <property name="sizePolicy">
@@ -99,16 +119,6 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QCheckBox" name="extendedTrims">
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="text">
-          <string>Extended Trims</string>
          </property>
         </widget>
        </item>
@@ -180,14 +190,29 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
          </item>
         </widget>
        </item>
-       <item row="1" column="3">
-        <widget class="QCheckBox" name="displayText">
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
+       <item row="2" column="0">
+        <widget class="AutoComboBox" name="trimsDisplay">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="text">
-          <string>Display Checklist</string>
-         </property>
+         <item>
+          <property name="text">
+           <string>Never</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>On change</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Always</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -220,6 +245,22 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
          </property>
          <property name="text">
           <string>Trim Step</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelTrimsDisplay">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Trims Display</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -548,6 +589,13 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AutoComboBox</class>
+   <extends>QComboBox</extends>
+   <header>autocombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

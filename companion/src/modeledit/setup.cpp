@@ -520,6 +520,15 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     ui->potWarningMode->hide();
   }
 
+  if (IS_ARM(board)) {
+    ui->trimsDisplay->setField(model.trimsDisplay, this);
+  }
+  else {
+    ui->labelTrimsDisplay->hide();
+    ui->trimsDisplay->hide();
+  }
+
+
   disableMouseScrolling();
 
   lock = false;
