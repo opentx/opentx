@@ -124,16 +124,16 @@ void doMainScreenGraphics()
 
 void displayTrims(uint8_t phase)
 {
-  for (uint8_t i=0; i<4; i++) {
-    static coord_t x[4] = {TRIM_LH_X, TRIM_LV_X, TRIM_RV_X, TRIM_RH_X};
-    static uint8_t vert[4] = {0,1,1,0};
+  for (unsigned int i=0; i<NUM_STICKS; ++i) {
+    coord_t x[4] = { TRIM_LH_X, TRIM_LV_X, TRIM_RV_X, TRIM_RH_X };
+    uint8_t vert[4] = { 0, 1, 1, 0 };
     coord_t xm, ym;
-    xm = x[CONVERT_MODE(i)];
+    unsigned int stickIndex = CONVERT_MODE(i);
+    xm = x[stickIndex];
 
-    uint8_t att = ROUND;
-    int16_t val = getTrimValue(phase, i);
-
-    int16_t dir = val;
+    uint32_t att = ROUND;
+    int32_t val = getTrimValue(phase, i);
+    int32_t dir = val;
     bool exttrim = false;
     if (val < TRIM_MIN || val > TRIM_MAX) {
       exttrim = true;
@@ -166,6 +166,11 @@ void displayTrims(uint8_t phase)
       if (exttrim) {
         lcd_hline(xm-1, ym,  3);
       }
+      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER) {
+        if ((g_model.displayTrims == DISPLAY_TRIMS_ALWAYS && dir != 0) || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<stickIndex)))) {
+          lcd_outdezAtt(dir>0 ? 25 : 57, xm-2, -abs(dir), TINSIZE|VERTICAL);
+        }
+      }
     }
     else {
       ym = 60;
@@ -182,6 +187,11 @@ void displayTrims(uint8_t phase)
       }
       if (exttrim) {
         lcd_vline(xm, ym-1,  3);
+      }
+      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
+        if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<stickIndex)))) {
+          lcd_outdezAtt((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(dir>0 ? -9 : 22), ym-2, -abs(dir), TINSIZE);
+        }
       }
     }
     lcd_square(xm-3, ym-3, 7, att);

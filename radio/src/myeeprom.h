@@ -2034,6 +2034,13 @@ enum TelemetryType
   PROTOCOL_FRSKY_D_SECONDARY
 };
 
+enum DisplayTrims
+{
+  DISPLAY_TRIMS_NEVER,
+  DISPLAY_TRIMS_CHANGE,
+  DISPLAY_TRIMS_ALWAYS
+};
+
 PACK(typedef struct {
   ModelHeader header;
   TimerData timers[MAX_TIMERS];
@@ -2042,7 +2049,8 @@ PACK(typedef struct {
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   AVR_FIELD(int8_t    ppmNCH:4)
   ARM_FIELD(uint8_t   noGlobalFunctions:1)
-  ARM_FIELD(int8_t    spare2:3)
+  ARM_FIELD(uint8_t   displayTrims:2)
+  ARM_FIELD(uint8_t   spare2:1)
   int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
   ARM_FIELD(uint8_t displayChecklist:1)

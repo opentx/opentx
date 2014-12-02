@@ -218,6 +218,13 @@ void per10ms()
   if (trimsCheckTimer) trimsCheckTimer--;
   if (ppmInValid) ppmInValid--;
 
+#if defined(CPUARM)
+  if (trimsDisplayTimer)
+    trimsDisplayTimer--;
+  else
+    trimsDisplayMask = 0;
+#endif
+
 #if defined(RTCLOCK)
   /* Update global Date/Time every 100 per10ms cycles */
   if (++g_ms100 == 100) {
@@ -1281,6 +1288,11 @@ uint8_t checkTrim(uint8_t event)
     int before;
     bool thro;
 
+#if defined(CPUARM)
+    trimsDisplayTimer = 200; // 2 seconds
+    trimsDisplayMask |= (1<<idx);
+#endif
+
 #if defined(GVARS)
     if (TRIM_REUSED(idx)) {
 #if defined(PCBSTD)
@@ -1613,6 +1625,11 @@ uint16_t s_timeCumThr;    // THR in 1/16 sec
 uint16_t s_timeCum16ThrP; // THR% in 1/16 sec
 
 uint8_t  trimsCheckTimer = 0;
+
+#if defined(CPUARM)
+uint8_t trimsDisplayTimer = 0;
+uint8_t trimsDisplayMask = 0;
+#endif
 
 void timerReset(uint8_t idx)
 {

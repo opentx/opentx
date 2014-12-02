@@ -115,13 +115,14 @@
 #define NO_UNIT         0x40
 
 #if defined(CPUARM)
-  #define FONTSIZE(x)   ((x) & 0x0F00)
+  #define FONTSIZE(x)   ((x) & 0x0700)
   #define TINSIZE       0x0100
   #define SMLSIZE       0x0200
   #define MIDSIZE       0x0300
   #define DBLSIZE       0x0400
   #define XXLSIZE       0x0500
   #define ERASEBG       0x8000
+  #define VERTICAL      0x0800
 #else
   #define DBLSIZE       0x04
   #define MIDSIZE       DBLSIZE

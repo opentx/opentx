@@ -895,6 +895,11 @@ extern safetych_t safetyCh[NUM_CHNOUT];
 
 extern uint8_t trimsCheckTimer;
 
+#if defined(CPUARM)
+extern uint8_t trimsDisplayTimer;
+extern uint8_t trimsDisplayMask;
+#endif
+
 #define TMR_OFF      0
 #define TMR_RUNNING  1
 #define TMR_NEGATIVE 2

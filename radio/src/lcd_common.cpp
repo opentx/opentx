@@ -119,7 +119,10 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
         }
         if (inv) plot = !plot;
         if (!blink) {
-          lcd_plot(x, y+j, plot ? FORCE : ERASE);
+          if (flags & VERTICAL)
+            lcd_plot(y+j, LCD_H-x, plot ? FORCE : ERASE);
+          else
+            lcd_plot(x, y+j, plot ? FORCE : ERASE);
         }
       }
     }
