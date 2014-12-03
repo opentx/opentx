@@ -16,20 +16,7 @@ else:
             what = s
             break
 
-if what == "largimg":
-    rows = 1
-    if len(sys.argv) > 4:
-        rows = int(sys.argv[4])
-    f.write("255,%d, %d,\n" % (width-255, height/rows))
-    for y in range(0, height, 8):
-        for x in range(width):
-            value = 0
-            for z in range(8):
-                if y+z < height and image.pixel(x, y+z) == Qt.qRgb(0, 0, 0):
-                    value += 1 << z            
-            f.write("0x%02x," % value)
-        f.write("\n")
-elif what == "img":
+if what == "1bit":
     rows = 1
     if len(sys.argv) > 4:
         rows = int(sys.argv[4])
@@ -42,7 +29,7 @@ elif what == "img":
                     value += 1 << z            
             f.write("0x%02x," % value)
         f.write("\n")
-elif what == "bmp":
+elif what == "4bits":
     colors = []
     f.write("%d,%d,\n" % (width, height))
     for y in range(0, height, 2):

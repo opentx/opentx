@@ -142,6 +142,7 @@
 
 #if defined(PCBTARANIS)
   #define GREY(x)              ((x) * 0x010000)
+  #define WHITE                GREY(0xf)
   #define GREY_DEFAULT         GREY(11)
   #define COLOUR_MASK(x)       ((x) & 0x0F0000)
 #endif
@@ -276,8 +277,8 @@ void lcdDrawTelemetryTopBar();
 void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 
 #if defined(PCBTARANIS)
-void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, uint8_t offset=0, uint8_t width=0);
-#define LCD_ICON(x, y, icon) lcd_bmp(x, y, icons, icon)
+  void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_t width=0);
+  #define LCD_ICON(x, y, icon) lcd_bmp(x, y, icons, icon)
 #endif
 
 void lcdSetRefVolt(unsigned char val);

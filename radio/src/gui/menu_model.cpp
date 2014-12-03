@@ -3321,6 +3321,8 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
     }
   }
 }
+#undef GAUGE_WIDTH
+#undef GAUGE_HEIGHT
 #endif
 
 void menuModelMixOne(uint8_t event)

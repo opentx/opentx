@@ -70,11 +70,11 @@
 #define BOX_LIMIT     (BOX_WIDTH-MARKER_WIDTH)
 
 const pm_uchar logo_taranis[] PROGMEM = {
-#include "../../bitmaps/logo_taranis.lbm"
+#include "../../bitmaps/Taranis/logo.lbm"
 };
 
 const pm_uchar icons[] PROGMEM = {
-#include "../../bitmaps/icons.lbm"
+#include "../../bitmaps/Taranis/icons.lbm"
 };
 
 #define ICON_RSSI     0, 9

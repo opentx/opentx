@@ -38,11 +38,11 @@
 
 #if defined(PCBTARANIS)
   const pm_uchar about_bmp[] PROGMEM = {
-  #include "../bitmaps/about_taranis.lbm"
+  #include "../bitmaps/Taranis/about.lbm"
   };
 #else
   const pm_uchar about_bmp[] PROGMEM = {
-  #include "../bitmaps/about_9x.lbm"
+  #include "../bitmaps/9X/about.lbm"
   };
 #endif
 

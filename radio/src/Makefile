@@ -907,7 +907,7 @@ endif
 
 ifeq ($(TURNIGY_TRANSMITTER_FIX), YES)
   ifeq ($(PCB), TARANIS)
-    $(warning TURNIGY_TRANSMITTER_FIX is not available on Taranis)
+    $(warning TURNIGY_TRANSMITTER_FIX is not available on this radio)
   else
     CPPDEFS += -DMODULE_ALWAYS_SEND_PULSES
   endif
@@ -1328,18 +1328,18 @@ fonts: $(patsubst %.png,%.lbm,$(wildcard fonts/*/*.png))
 fonts/%.lbm: fonts/%.png
 	$(IMG2LBM) $^ $@
 
-bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_taranis.png bitmaps/logo_taranis.bmp bitmaps/icons.png bitmaps/asterisk.xbm bitmaps/about_9x.png bitmaps/about_taranis.png bitmaps/asterisk_4bits.png
+bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/9X/splash.xbm bitmaps/Taranis/splash.png bitmaps/Taranis/logo.bmp bitmaps/Taranis/icons.png bitmaps/9X/asterisk.xbm bitmaps/9X/about.png bitmaps/Taranis/about.png bitmaps/Taranis/asterisk.png
 	@echo
 	@echo "Convert bitmaps from xbm to lbm:"
-	$(IMG2LBM) bitmaps/sticks_4x1.xbm bitmaps/sticks.lbm img 4
-	$(IMG2LBM) bitmaps/splash_9x.xbm bitmaps/splash_9x.lbm img
-	$(IMG2LBM) bitmaps/splash_taranis.png bitmaps/splash_taranis.lbm bmp
-	$(IMG2LBM) bitmaps/logo_taranis.bmp bitmaps/logo_taranis.lbm bmp
-	$(IMG2LBM) bitmaps/icons.png bitmaps/icons.lbm bmp
-	$(IMG2LBM) bitmaps/asterisk.xbm bitmaps/asterisk.lbm img
-	$(IMG2LBM) bitmaps/about_taranis.png bitmaps/about_taranis.lbm bmp
-	$(IMG2LBM) bitmaps/about_9x.png bitmaps/about_9x.lbm img
-	$(IMG2LBM) bitmaps/asterisk_4bits.png bitmaps/asterisk_4bits.lbm bmp
+	$(IMG2LBM) bitmaps/sticks_4x1.xbm bitmaps/sticks.lbm 1bit 4
+	$(IMG2LBM) bitmaps/9X/asterisk.xbm bitmaps/9X/asterisk.lbm 1bit
+	$(IMG2LBM) bitmaps/9X/splash.xbm bitmaps/9X/splash.lbm 1bit
+	$(IMG2LBM) bitmaps/9X/about.png bitmaps/9X/about.lbm 1bit
+	$(IMG2LBM) bitmaps/Taranis/splash.png bitmaps/Taranis/splash.lbm 4bits
+	$(IMG2LBM) bitmaps/Taranis/logo.bmp bitmaps/Taranis/logo.lbm 4bits
+	$(IMG2LBM) bitmaps/Taranis/icons.png bitmaps/Taranis/icons.lbm 4bits
+	$(IMG2LBM) bitmaps/Taranis/about.png bitmaps/Taranis/about.lbm 4bits
+	$(IMG2LBM) bitmaps/Taranis/asterisk.png bitmaps/Taranis/asterisk.lbm 4bits
 
 ifeq ($(OS),Windows_NT)
   PARSER = avr-cpp 

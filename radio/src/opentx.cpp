@@ -39,21 +39,21 @@
 #if defined(SPLASH)
 const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
 #if defined(PCBTARANIS)
-#include "bitmaps/splash_taranis.lbm"
+#include "bitmaps/Taranis/splash.lbm"
 #else
-#include "bitmaps/splash_9x.lbm"
+#include "bitmaps/9X/splash.lbm"
 #endif
 	'S','P','E',0};
 const pm_uchar * const splash_lbm = splashdata+4;
 #endif
 
-#if LCD_W >= 212
+#if defined(PCBTARANIS)
   const pm_uchar asterisk_lbm[] PROGMEM = {
-    #include "bitmaps/asterisk_4bits.lbm"
+    #include "bitmaps/Taranis/asterisk.lbm"
   };
 #else
   const pm_uchar asterisk_lbm[] PROGMEM = {
-    #include "bitmaps/asterisk.lbm"
+    #include "bitmaps/9X/asterisk.lbm"
   };
 #endif
 
