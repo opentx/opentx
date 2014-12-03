@@ -128,6 +128,7 @@ void boardInit()
   keysInit();
   adcInit();
   delaysInit();
+  lcdInitStart();
   audioInit();
   init2MhzTimer();
   init5msTimer();
