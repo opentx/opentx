@@ -677,10 +677,11 @@ void lcdSetRefVolt(uint8_t val)
 {
 }
 
+#if defined(PCBTARANIS)
 void lcdOff()
 {
-  
 }
+#endif
 
 void lcdRefresh()
 {
