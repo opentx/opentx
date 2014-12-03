@@ -64,6 +64,8 @@ void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
 
 void lcd_plot(coord_t x, coord_t y, LcdFlags att)
 {
+  if (x<0 || x>=LCD_W || y<0 || y>=LCD_H)
+    return;
   uint8_t *p = &displayBuf[ y / 2 * LCD_W + x ];
   uint8_t mask = PIXEL_GREY_MASK(y, att);
   if (p<DISPLAY_END) {
