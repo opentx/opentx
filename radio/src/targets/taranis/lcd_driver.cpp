@@ -16,8 +16,10 @@
 
 #if defined(REVPLUS)
   #define CONTRAST_OFS 160
+  #define RESET_WAIT_DELAY_MS      300        //wait time after LCD reset before first command
 #else
   #define CONTRAST_OFS 5
+  #define RESET_WAIT_DELAY_MS     1300        //wait time after LCD reset before first command
 #endif
 
 #if defined(BOOT)
@@ -354,15 +356,19 @@ void lcdInitFinish()
     LCD needs longer time to initialize in low temperatures. The data-sheet 
     mentions a time of at least 150 ms. The delay of 1300 ms was obtained 
     experimentally. It was tested down to -10 deg Celsius.
+
+    The longer initialization time seems to only be needed for regular Taranis, 
+    the Taranis Plus has been reported by users to work without any problems.
+    Therefore the delay for T+ is lower.
     
     If radio is reset by watchdog or boot-loader LCD initialization is skipped,
     because it was already initialized in previous run.
   */
 
 #if !defined(BOOT)
-  while(g_tmr10ms < 130) {};    //wait for 1300 ms from the power-on
+  while(g_tmr10ms < (RESET_WAIT_DELAY_MS/10)) {};    //wait measured from the power-on
 #else
-  Delay(1300);
+  Delay(RESET_WAIT_DELAY_MS);
 #endif
 
   LCD_Init();
