@@ -886,6 +886,7 @@
     <file>themes/yerico/16/contributors.png</file>
     <file>themes/yerico/16/stop.png</file>
     <file>themes/yerico/16/write_eeprom.png</file>
+    <file>themes/yerico/16/sdsync.png</file>
     <file>themes/yerico/24/paintbrush.png</file>
     <file>themes/yerico/24/open.png</file>
     <file>themes/yerico/24/edit.png</file>
@@ -929,6 +930,7 @@
     <file>themes/yerico/24/contributors.png</file>
     <file>themes/yerico/24/stop.png</file>
     <file>themes/yerico/24/write_eeprom.png</file>
+    <file>themes/yerico/24/sdsync.png</file>
     <file>themes/yerico/32/paintbrush.png</file>
     <file>themes/yerico/32/open.png</file>
     <file>themes/yerico/32/edit.png</file>
@@ -972,6 +974,7 @@
     <file>themes/yerico/32/contributors.png</file>
     <file>themes/yerico/32/stop.png</file>
     <file>themes/yerico/32/write_eeprom.png</file>
+    <file>themes/yerico/32/sdsync.png</file>
     <file>themes/yerico/48/paintbrush.png</file>
     <file>themes/yerico/48/open.png</file>
     <file>themes/yerico/48/edit.png</file>
@@ -1015,5 +1018,6 @@
     <file>themes/yerico/48/contributors.png</file>
     <file>themes/yerico/48/stop.png</file>
     <file>themes/yerico/48/write_eeprom.png</file>
+    <file>themes/yerico/48/sdsync.png</file>    
   </qresource>
 </RCC>

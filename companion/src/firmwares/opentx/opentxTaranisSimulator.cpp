@@ -198,7 +198,7 @@ using namespace Open9xX9D;
 OpentxTaranisSimulator::OpentxTaranisSimulator()
 {
   taranisSimulatorBoard = GetEepromInterface()->getBoard();
-  QString path=g.profile[g.id()].sdPath()+"/";
+  QString path = g.profile[g.id()].sdPath()+"/";
   int i=0;
   for (i=0; i< std::min(path.length(),1022); i++) {
     simuSdDirectory[i]=path.at(i).toAscii();

@@ -146,6 +146,7 @@ class MainWindow : public QMainWindow
     void burnFuses();
     void simulate();
     void contributors();
+    void sdsync();
     void changelog();
     void fwchangelog();
     void customizeSplash();
@@ -237,6 +238,7 @@ class MainWindow : public QMainWindow
     QAction *fwPrefsAct;
     QAction *checkForUpdatesAct;
     QAction *contributorsAct;
+    QAction *sdsyncAct;
     QAction *changelogAct;
     QAction *fwchangelogAct;
     QAction *compareAct;

@@ -13,9 +13,17 @@ FoldersSyncTask::FoldersSyncTask(const QString &folder1, const QString &folder2)
 
 void FoldersSyncTask::run()
 {
+  if (!QFile::exists(folders[0])) {
+    QMessageBox::warning(NULL, QObject::tr("Synchronization error"), QObject::tr("The directory '%1' doesn't exist!").arg(folders[0]));
+    return;
+  }
+  if (!QFile::exists(folders[1])) {
+    QMessageBox::warning(NULL, QObject::tr("Synchronization error"), QObject::tr("The directory '%1' doesn't exist!").arg(folders[1]));
+    return;
+  }
   QStringList errors = updateDir(folders[0], folders[1]) + updateDir(folders[1], folders[0]);
   if (errors.count() > 0) {
-    QMessageBox::warning(NULL, QObject::tr("Copy errors"), errors.join("\n"));
+    QMessageBox::warning(NULL, QObject::tr("Synchronization error"), errors.join("\n"));
   }
 }
 
@@ -25,6 +33,7 @@ QStringList FoldersSyncTask::updateDir(const QDir &source, const QDir &destinati
   QDirIterator it(source, QDirIterator::Subdirectories);
   while (it.hasNext()) {
     QString path = it.next();
+    // qDebug() << path;
     QFileInfo sourceInfo(path);
     QString relativePath = source.relativeFilePath(path);
     QString destinationPath = destination.absoluteFilePath(relativePath);
@@ -39,7 +48,7 @@ QStringList FoldersSyncTask::updateDir(const QDir &source, const QDir &destinati
     }
     else {
       if (!destinationInfo.exists()) {
-        // qDebug() << "Copy" << path << "to" << destinationPath;
+        qDebug() << "Copy" << path << "to" << destinationPath;
         if (!QFile::copy(path, destinationPath)) {
           errors << QObject::tr("Copy '%1' to '%2' failed").arg(path).arg(destinationPath);
           continue;
@@ -68,7 +77,7 @@ QStringList FoldersSyncTask::updateDir(const QDir &source, const QDir &destinati
           errors << QObject::tr("Write '%1' failed").arg(destinationPath);
           continue;
         }
-        // qDebug() << "Write" << destinationPath;
+        qDebug() << "Write" << destinationPath;
         QTextStream destinationStream(&destinationFile);
         destinationStream << sourceContents;
         destinationFile.close();

@@ -64,6 +64,7 @@
 #include "helpers.h"
 #include "appdata.h"
 #include "radionotfound.h"
+#include "foldersync.h"
 
 #define OPENTX_COMPANION_DOWNLOADS   "http://downloads-20.open-tx.org/companion"
 #define DONATE_STR      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
@@ -665,6 +666,15 @@ void MainWindow::contributors()
 {
     contributorsDialog *cd = new contributorsDialog(this,0);
     cd->exec();
+}
+
+void MainWindow::sdsync()
+{
+  QString massstoragePath = FindMassstoragePath("SOUNDS");
+  if (!massstoragePath.isEmpty())
+    massstoragePath += "/..";
+  FoldersSyncTask syncTask(massstoragePath, g.profile[g.id()].sdPath());
+  syncTask.run();
 }
 
 void MainWindow::changelog()
@@ -1462,8 +1472,11 @@ void MainWindow::updateMenus()
     updateLanguageActions();
     updateIconSizeActions();
     updateIconThemeActions();
+    sdsyncAct->setEnabled(!FindMassstoragePath("SOUNDS").isEmpty());
 
     setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->getName()).arg( g.profile[g.id()].name() ));
+
+    qDebug() << "updateMenus";
 }
 
 MdiChild *MainWindow::createMdiChild()
@@ -1600,6 +1613,7 @@ void MainWindow::createActions()
     writeBackupToRadioAct = addAct("write_eeprom_file.png", tr("Write Backup to Radio"), tr("Write Backup from file to Radio"), SLOT(writeBackup()));
     readBackupToFileAct = addAct("read_eeprom_file.png", tr("Backup Radio to File"), tr("Save a complete backup file of all settings and model data in the Radio"), SLOT(readBackup()));
     contributorsAct =    addAct("contributors.png",  tr("Contributors..."), tr("A tribute to those who have contributed to OpenTX and Companion"), SLOT(contributors()));
+    sdsyncAct =          addAct("sdsync.png",        tr("SD Synchro"),              tr("SD card synchronization"), SLOT(sdsync()));
     
     compareAct->setEnabled(false);
     simulateAct->setEnabled(false);
@@ -1629,6 +1643,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(simulateAct);
     fileMenu->addAction(printAct);
     fileMenu->addAction(compareAct);
+    fileMenu->addAction(sdsyncAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
@@ -1778,6 +1793,7 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(simulateAct);
     fileToolBar->addAction(printAct);
     fileToolBar->addAction(compareAct);
+    fileToolBar->addAction(sdsyncAct);
 
     editToolBar = addToolBar(tr("Edit"));
     editToolBar->setIconSize(size);
