@@ -2880,7 +2880,9 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif
 
 #if defined(PCBTARANIS)
+#if !defined(SIMU)
   lcdInitFinish();
+#endif
   BACKLIGHT_ON();
   Splash();
 #endif

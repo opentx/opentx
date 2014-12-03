@@ -677,6 +677,11 @@ void lcdSetRefVolt(uint8_t val)
 {
 }
 
+void lcdOff()
+{
+  
+}
+
 void lcdRefresh()
 {
   memcpy(lcd_buf, displayBuf, sizeof(lcd_buf));
