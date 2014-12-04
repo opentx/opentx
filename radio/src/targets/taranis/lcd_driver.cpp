@@ -17,9 +17,11 @@
 #if defined(REVPLUS)
   #define CONTRAST_OFS 160
   #define RESET_WAIT_DELAY_MS      300        //wait time after LCD reset before first command
+  #define WAIT_FOR_DMA_END()       { while(lcd_busy) {}; }
 #else
   #define CONTRAST_OFS 5
   #define RESET_WAIT_DELAY_MS     1300        //wait time after LCD reset before first command
+  #define WAIT_FOR_DMA_END()
 #endif
 
 #if defined(BOOT)
@@ -64,23 +66,24 @@ void initLcdSpi()
   configure_pins( PIN_LCD_RST, PIN_OUTPUT | PIN_PORTD | PIN_PUSHPULL | PIN_OS25 | PIN_NO_PULLUP ) ;
   configure_pins( PIN_LCD_A0,  PIN_OUTPUT | PIN_PORTC | PIN_PUSHPULL | PIN_OS50 | PIN_NO_PULLUP ) ;
   configure_pins( PIN_LCD_MOSI|PIN_LCD_CLK, PIN_PORTC | PIN_PUSHPULL | PIN_OS50 | PIN_NO_PULLUP | PIN_PER_6 | PIN_PERIPHERAL ) ;
-}
 
-void setupSPIdma()
-{
-  RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN ;			// Enable DMA1 clock
-  // Chan 0, 8-bit wide, Medium priority, memory increments
-  DMA1_Stream7->CR &= ~DMA_SxCR_EN ;		// Disable DMA
+
+  // NVIC_SetPriority( DMA1_Stream7_IRQn, 8 ) ;
+  NVIC_EnableIRQ(DMA1_Stream7_IRQn) ;
+  DMA1->HIFCR |= DMA_HIFCR_CTCIF7; //clear interrupt flag
+  DMA1->LISR |= DMA_HISR_TCIF7;    //enable DMA TX end interrupt
+
+  RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN ;      // Enable DMA1 clock
+
+  DMA1_Stream7->CR &= ~DMA_SxCR_EN ;    // Disable DMA
   DMA1->HIFCR = DMA_HIFCR_CTCIF7 | DMA_HIFCR_CHTIF7 | DMA_HIFCR_CTEIF7 | DMA_HIFCR_CDMEIF7 | DMA_HIFCR_CFEIF7 ; // Write ones to clear bits
   DMA1_Stream7->CR =  DMA_SxCR_PL_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 ;
   DMA1_Stream7->PAR = (uint32_t) &SPI3->DR ;
   DMA1_Stream7->M0AR = (uint32_t)displayBuf;
   DMA1_Stream7->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
   DMA1_Stream7->NDTR = LCD_W*LCD_H/8*4 ;
-
-//	NVIC_SetPriority( DMA1_Stream7_IRQn, 2 ) ; // Lower priority interrupt
-//	NVIC_EnableIRQ(DMA1_Stream7_IRQn) ;
 }
+
 
 static void LCD_Init()
 {
@@ -174,35 +177,47 @@ void Set_Address(u8 x, u8 y)
   LCD_CLK_HIGH();
 
 #if defined(REVPLUS)
+
+volatile bool lcd_busy;
+
 void lcdRefresh(bool wait)
 {
+  //wait if previous DMA transfer still active
+  WAIT_FOR_DMA_END();
+  lcd_busy = true;
+
   Set_Address(0, 0);
 	
   LCD_NCS_LOW();
   LCD_A0_HIGH();
 
-  setupSPIdma() ;
-  DMA1_Stream7->CR |= DMA_SxCR_EN ;		// Enable DMA
+  DMA1_Stream7->CR &= ~DMA_SxCR_EN ;    // Disable DMA
+  DMA1->HIFCR = DMA_HIFCR_CTCIF7 | DMA_HIFCR_CHTIF7 | DMA_HIFCR_CTEIF7 | DMA_HIFCR_CDMEIF7 | DMA_HIFCR_CFEIF7 ; // Write ones to clear bits
+  DMA1_Stream7->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE;		// Enable DMA & tXe interrupt
   SPI3->CR2 |= SPI_CR2_TXDMAEN ;
+}
 
-  while ( ( DMA1->HISR & DMA_HISR_TCIF7 ) == 0 ) {
-    // wait
-  }
-
+// #if !defined(SIMU)
+extern "C" void DMA1_Stream7_IRQHandler()
+{
+  //clear interrupt flag
+  DMA1_Stream7->CR &= ~DMA_SxCR_TCIE ;  // Stop interrupt
+  DMA1->HIFCR |= DMA_HIFCR_CTCIF7;      // Clear interrupt flag
   SPI3->CR2 &= ~SPI_CR2_TXDMAEN ;
-  DMA1_Stream7->CR &= ~DMA_SxCR_EN ;		// Disable DMA
-
-  while ( ( SPI3->SR & SPI_SR_TXE ) == 0 ) {
-    // wait
-  } // Last byte being sent
+  DMA1_Stream7->CR &= ~DMA_SxCR_EN ;    // Disable DMA
 
   while ( SPI3->SR & SPI_SR_BSY ) {
-    // wait
+    /* Wait for SPI to finis sending data 
+    The DMA Tx End interrupt comes two bytes before the end of SPI transmission,
+    therefore we have to wait here.
+    */
   }
-  
   LCD_NCS_HIGH();
+  lcd_busy = false;
 }
-#else
+// #endif    // #if !defined(SIMU)
+
+#else     // #if defined(REVPLUS)
 void lcdRefresh()
 {  
   for (uint32_t y=0; y<LCD_H; y++) {
@@ -280,7 +295,7 @@ static void LCD_BL_Config()
 #endif
 }
 
-/** Init the anolog spi gpio
+/** Init the analog SPI GPIO
 */
 static void LCD_Hardware_Init()
 {
@@ -288,7 +303,7 @@ static void LCD_Hardware_Init()
 
   GPIO_InitTypeDef GPIO_InitStructure;
   
-  /*!< Configure lcd CLK\ MOSI\ A0pin in output pushpull mode *************/
+  /*!< Configure lcd CLK\ MOSI\ A0pin in output push-pull mode *************/
   GPIO_InitStructure.GPIO_Pin = PIN_LCD_MOSI | PIN_LCD_CLK | PIN_LCD_A0;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -298,7 +313,7 @@ static void LCD_Hardware_Init()
   
   LCD_NCS_HIGH();
   
-  /*!< Configure lcd NCS pin in output pushpull mode ,PULLUP *************/
+  /*!< Configure lcd NCS pin in output push-pull mode ,PULLUP *************/
   GPIO_InitStructure.GPIO_Pin = PIN_LCD_NCS; 
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -317,6 +332,7 @@ static void LCD_Hardware_Init()
 */
 void lcdOff()
 {
+  WAIT_FOR_DMA_END();
   AspiCmd(0xE2);    //system reset
   Delay(3);	        //wait for caps to drain
 }
@@ -378,6 +394,7 @@ void lcdInitFinish()
 
 void lcdSetRefVolt(uint8_t val)
 {
+  WAIT_FOR_DMA_END();
   AspiCmd(0x81);	//Set Vop
   AspiCmd(val+CONTRAST_OFS);		//0--255
 }

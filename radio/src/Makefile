@@ -1217,6 +1217,8 @@ endif
 MAJ_VER = ${shell sh -c "grep \"MAJ_VERS\" opentx.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
 MIN_VER = ${shell sh -c "grep \"MIN_VERS\" opentx.h | cut -d\  -f3"}
 
+.SECONDARY:
+	
 # Default target.
 all: begin gccversion sizebefore build sizeafter end
 
