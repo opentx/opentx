@@ -41,10 +41,8 @@
 display_t displayBuf1[DISPLAY_BUF_SIZE];
 display_t displayBuf2[DISPLAY_BUF_SIZE];
 display_t * displayBuf = displayBuf1;
-#define DISPLAY_BUFER_SIZE  sizeof(displayBuf1)
 #else
 display_t displayBuf[DISPLAY_BUF_SIZE];
-#define DISPLAY_BUFER_SIZE  sizeof(displayBuf)
 #endif
 
 void lcd_clear()

@@ -117,6 +117,8 @@ uint32_t stack_free(uint32_t tid)
   return i*4;
 }
 
+#if !defined(SIMU)
+
 void mixerTask(void * pdata)
 {
   s_pulses_paused = true;
@@ -209,3 +211,5 @@ void tasksStart()
 
   CoStartOS();
 }
+
+#endif // #if !defined(SIMU)
