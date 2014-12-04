@@ -147,6 +147,8 @@ void mixerTask(void * pdata)
   }
 }
 
+#define MENU_TASK_PERIOD_TICKS      10    // 20ms
+
 extern void opentxClose();
 extern void opentxInit();
 void menusTask(void * pdata)
@@ -154,9 +156,16 @@ void menusTask(void * pdata)
   opentxInit();
 
   while (pwrCheck() != e_power_off) {
+    U64 start = CoGetOSTime();
     perMain();
     // TODO remove completely massstorage from sky9x firmware
-    CoTickDelay(5);  // 5*2ms for now
+    U32 runtime = (U32)(CoGetOSTime() - start);
+    if (runtime >= MENU_TASK_PERIOD_TICKS) {
+      //no delay
+    }
+    else {
+      CoTickDelay(MENU_TASK_PERIOD_TICKS - runtime);  // 5*2ms for now
+    }
   }
 
   lcd_clear();
