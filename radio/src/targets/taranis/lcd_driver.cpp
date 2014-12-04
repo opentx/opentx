@@ -193,11 +193,17 @@ void lcdRefresh(bool wait)
 
   DMA1_Stream7->CR &= ~DMA_SxCR_EN ;    // Disable DMA
   DMA1->HIFCR = DMA_HIFCR_CTCIF7 | DMA_HIFCR_CHTIF7 | DMA_HIFCR_CTEIF7 | DMA_HIFCR_CDMEIF7 | DMA_HIFCR_CFEIF7 ; // Write ones to clear bits
+
+#if defined(LCD_DUAL_BUFFER)
+  //switch LCD buffer
+  DMA1_Stream7->M0AR = (uint32_t)displayBuf;
+  displayBuf = (displayBuf == displayBuf1) ? displayBuf2 : displayBuf1;
+#endif
+
   DMA1_Stream7->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE;		// Enable DMA & tXe interrupt
   SPI3->CR2 |= SPI_CR2_TXDMAEN ;
 }
 
-// #if !defined(SIMU)
 extern "C" void DMA1_Stream7_IRQHandler()
 {
   //clear interrupt flag
@@ -207,15 +213,14 @@ extern "C" void DMA1_Stream7_IRQHandler()
   DMA1_Stream7->CR &= ~DMA_SxCR_EN ;    // Disable DMA
 
   while ( SPI3->SR & SPI_SR_BSY ) {
-    /* Wait for SPI to finis sending data 
-    The DMA Tx End interrupt comes two bytes before the end of SPI transmission,
+    /* Wait for SPI to finish sending data 
+    The DMA TX End interrupt comes two bytes before the end of SPI transmission,
     therefore we have to wait here.
     */
   }
   LCD_NCS_HIGH();
   lcd_busy = false;
 }
-// #endif    // #if !defined(SIMU)
 
 #else     // #if defined(REVPLUS)
 void lcdRefresh()
