@@ -115,9 +115,7 @@ const pm_char * openLogs()
     f_puts("Time,", &g_oLogFile);
 #endif
 
-#if defined(PCBTARANIS) && defined(REVPLUS)
-    f_puts("RSSI,A1,A2,A3,A4,", &g_oLogFile);
-#elif defined(CPUARM) && defined(FRSKY)
+#if defined(CPUARM) && defined(FRSKY)
     f_puts("SWR,RSSI,A1,A2,A3,A4,", &g_oLogFile);
 #elif defined(FRSKY)
     f_puts("Buffer,RX,TX,A1,A2,", &g_oLogFile);
@@ -132,7 +130,6 @@ const pm_char * openLogs()
       f_puts("),Vertical Speed,Air Speed(kts),Temp1,Temp2,RPM,Fuel," TELEMETRY_CELLS_LABEL "Current,Consumption,Vfas,AccelX,AccelY,AccelZ,", &g_oLogFile);
     }
 #elif defined(CPUARM) && defined(MAVLINK)
-		//	  fix   lat        lon          alt    eph    course  v			sat_vis
       f_puts("fix,  lat,        lon,        alt,   eph,   course, v,		sat_vis, ", &g_oLogFile);
 #endif
 
