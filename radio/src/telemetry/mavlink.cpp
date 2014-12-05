@@ -42,8 +42,6 @@
 
 #include "telemetry/mavlink.h"
 
-//#define DUMP_RX_TX
-
 // this might need to move to the flight software
 //static
 mavlink_system_t mavlink_system = { 7, MAV_COMP_ID_MISSIONPLANNER, 0, 0, 0, 0 };
@@ -69,20 +67,22 @@ Telemetry_Data_t telemetry_data;
 // *****************************************************
 static void MAVLINK_parse_char(uint8_t c);
 
+//extern void SERIAL_Init(void);
 #ifdef DUMP_RX_TX
 #define MAX_RX_BUFFER 16
 uint8_t mavlinkRxBufferCount = 0;
 uint8_t mavlinkRxBuffer[MAX_RX_BUFFER];
 uint8_t mav_dump_rx = 0;
+
 void MAVLINK_rxhandler(uint8_t byte) {
 	if (mav_dump_rx) {
 		if (byte == MAVLINK_STX) {
 			mavlinkRxBufferCount = 0;
-		}
+			}
 		if (mavlinkRxBufferCount < MAX_RX_BUFFER) {
 			mavlinkRxBuffer[mavlinkRxBufferCount++] = byte;
+			}
 		}
-	}
 	MAVLINK_parse_char(byte);
 
 }
@@ -92,9 +92,15 @@ void MAVLINK_rxhandler(uint8_t byte) {
 }
 #endif
 
-SerialFuncP RXHandler = MAVLINK_rxhandler;
+#include "serial.h"
 
-/*!	\brief Reset basic Mavlink varables
+#if defined(CPUARM)
+// 
+#else
+#include "serial.cpp"
+SerialFuncP RXHandler = MAVLINK_rxhandler;
+#endif
+/*!	\brief Reset basic Mavlink variables
  *	\todo Figure out exact function
  *
  */
@@ -123,16 +129,58 @@ void MAVLINK_reset(uint8_t warm_reset) {
 	data_stream_start_stop = 0;
 }
 
-//! \brief initalize mavlink extension
+//! \brief initialize mavlink extension (see opentx.cpp)
 void MAVLINK_Init(void) {
 	mav_statustext[0] = 0;
 	MAVLINK_reset(0);
+	#if defined(CPUARM)
+	telemetryPortInit(g_eeGeneral.mavbaud);
+	#else
 	SERIAL_Init();
+	#endif
 }
+
+/*!	\brief Telemetry monitoring, calls \link MAVLINK10mspoll.
+ *	\todo Reimplement \link MAVLINK10mspoll
+ *
+ */
+void telemetryWakeup() {
+	uint16_t tmr10ms = get_tmr10ms();
+	uint8_t count = tmr10ms & 0x0f; // 15*10ms
+	if (!count) {
+		if (mav_heartbeat > -30) {
+			// TODO mavlink_system.sysid = g_eeGeneral.mavTargetSystem;
+			mav_heartbeat--;
+
+			if (mav_heartbeat == -30) {
+				MAVLINK_reset(1);
+				#if defined(CPUARM)
+				telemetryPortInit(g_eeGeneral.mavbaud);
+				#else
+				SERIAL_Init();
+				#endif
+				}
+//			SERIAL_startTX();
+			}
+		
+		}
+
+	#if defined(CPUARM)
+	// Receive serial data here
+	rxPdcUsart(MAVLINK_rxhandler);
+	#endif
+	
+	
+	if (mav_heartbeat_recv && !IS_TX_BUSY) {
+//		MAVLINK10mspoll(count);
+	  }
+}
+
+
 
 /*!	\brief Status log message
  *	\details Processes the mavlink status messages. This message contains a
- *	severity and a message. The severity is an enum difined by MAV_SEVERITY also
+ *	severity and a message. The severity is an enum defined by MAV_SEVERITY also
  *	see RFC-5424 for the severity levels.
  *	The original message is maximum 50 characters and is without termination
  *	character. For readablity on the 9x the only the first 15 (LEN_STATUSTEXT)
@@ -145,12 +193,12 @@ static inline void REC_MAVLINK_MSG_ID_STATUSTEXT(const mavlink_message_t* msg) {
 }
 
 /*!	\brief System status including cpu load, battery status and communication status.
- *	\details From this message we use use only the batery infomation. The rest
+ *	\details From this message we use use only the battery information. The rest
  *	is not realy of use while flying. The complete message can be decoded in to
  *	a struct with the first two commented lines.
- *  The batery votage is in mV. We devide by 100 to display tenths of volts.'
+ *  The battery votage is in mV. We devide by 100 to display tenths of volts.'
  *	\todo Add battery remaining variable in telemetry_data struct for estimated
- *	remaining battery. Decoding funtion allready in place.
+ *	remaining battery. Decoding function already in place.
  */
 
 static inline void REC_MAVLINK_MSG_ID_SYS_STATUS(const mavlink_message_t* msg) {
@@ -166,7 +214,7 @@ static inline void REC_MAVLINK_MSG_ID_SYS_STATUS(const mavlink_message_t* msg) {
 #endif
 }
 
-/*!	\brief Recive rc channels
+/*!	\brief Receive rc channels
  *
  */
 static inline void REC_MAVLINK_MSG_ID_RC_CHANNELS_RAW(const mavlink_message_t* msg) {
@@ -179,7 +227,7 @@ static inline void REC_MAVLINK_MSG_ID_RC_CHANNELS_RAW(const mavlink_message_t* m
  *
  */
 static inline void REC_MAVLINK_MSG_ID_RADIO(const mavlink_message_t* msg) {
-	if (msg->sysid != 51)
+	if (msg->sysid != 51)		// ArduPilot/Arducopter customization
 		return;
 	telemetry_data.pc_rssi =  (mavlink_msg_radio_get_rssi(msg) * 100) / 255;
 	telemetry_data.packet_drop = mavlink_msg_radio_get_rxerrors(msg);
@@ -191,7 +239,7 @@ static inline void REC_MAVLINK_MSG_ID_RADIO_STATUS(const mavlink_message_t* msg)
 	REC_MAVLINK_MSG_ID_RADIO(msg);
 }
 
-//! \brief Navigaion output message
+//! \brief Navigation output message
 static inline void REC_MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT(const mavlink_message_t* msg) {
 	telemetry_data.bearing = mavlink_msg_nav_controller_output_get_target_bearing(msg);
 }
@@ -246,7 +294,7 @@ static inline void REC_MAVLINK_MSG_ID_HIL_CONTROLS(const mavlink_message_t* msg)
 	telemetry_data.nav_mode = mavlink_msg_hil_controls_get_mode(msg);
 }
 
-/*!	\brief Process GPS raw intger message
+/*!	\brief Process GPS raw integer message
  *	\details This message contains the following data:
  *		- fix type: 0-1: no fix, 2: 2D fix, 3: 3D fix.
  *		- Latitude, longitude in 1E7 * degrees
@@ -451,8 +499,8 @@ static inline void handleMessage(mavlink_message_t* p_rxmsg) {
 
 
 /*!	\brief Mavlink message parser
- *	\details Parses the characters in to a mavlink message.
- *	Case statement parses each character as it is recieved.
+ *	\details Parses the characters in a mavlink message.
+ *	Case statement parses each character as it is received.
  *	\attention One big change form the 0.9 to 1.0 version is the
  *	MAVLINK_CRC_EXTRA. This requires the mavlink_message_crcs array of 256 bytes.
  *	\todo create dot for the statemachine
@@ -636,9 +684,9 @@ static inline void MAVLINK_msg_set_mode_send(uint8_t mode) {
 	mavlink_msg_set_mode_send(chan, mavlink_system.sysid, mode, 0);
 }
 
-/*!	\brief Looks like som kind of task switcher on a timer
+/*!	\brief Looks like some kind of task switcher on a timer
  *	\todo Figure out where this was used for and intergrate in current
- *	implemnetation. Funcion dissabled without any side affects.
+ *	implemnetation. Function disabled without any side affects.
  */
 #if 0
  void MAVLINK10mspoll(uint8_t count) {
@@ -712,27 +760,3 @@ static inline void MAVLINK_msg_set_mode_send(uint8_t mode) {
 	}
 }
 #endif
-/*!	\brief Telemetry monitoring, calls \link MAVLINK10mspoll.
- *	\todo Reimplemnt \link MAVLINK10mspoll
- *
- */
-void telemetryWakeup() {
-	uint16_t tmr10ms = get_tmr10ms();
-	uint8_t count = tmr10ms & 0x0f; // 15*10ms
-	if (!count) {
-		if (mav_heartbeat > -30) {
-			// TODO mavlink_system.sysid = g_eeGeneral.mavTargetSystem;
-			mav_heartbeat--;
-
-			if (mav_heartbeat == -30) {
-				MAVLINK_reset(1);
-				SERIAL_Init();
-			}
-//			SERIAL_startTX();
-		}
-	}
-	if (mav_heartbeat_recv && !IS_TX_BUSY) {
-//		MAVLINK10mspoll(count);
-	}
-}
-
