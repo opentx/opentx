@@ -23,10 +23,10 @@
 DATA_DIR = /tmp
 
 # Backup the old flash (YES, NO)
-BACKUP_FLASH = NO
+BACKUP_FLASH = YES
 
 # Backup the old EEPROM (YES, NO)
-BACKUP_EEPROM = NO
+BACKUP_EEPROM = YES
 
 # Restore EEPROM to 9x (YES, NO) (will set BACKUP_EEPROM to YES).
 RESTORE_EEPROM = NO
@@ -42,49 +42,26 @@ DOUBLE_WRITE_OK = NO
 AVRDUDE = /usr/local/bin/avrdude
 
 # Device options for AVRDUDE Command. 
-AVRDEVICE = -c usbasp -p m128 -B 11
+AVRDEVICE = -c usbasp -p m64
 
 # Delay to start second AVRDUDE command (required by some).
-DELAY = 2
+DELAY = 5
 
 #----------- BUILD OPTIONS ---------------------------
-
-# Activates the DEBUG Mode (all boards)
-# On G9X V4 board, when VOICE=NO:
-#  PORTH:7 --> Transition LOW to HIGH = start of setupPulses(). Transition HIGH to LOW = end of setupPulses().
-#  PORTH:6 --> LOW->HIGH = start of mixer calcs. HIGH->LOW, end of mixer calcs.
-# Values = YES, NO
-DEBUG = NO
-#DEBUG = YES
 
 # PCB version
 # Values: 9X, 9X128, 9X2561, 9XR, 9XR128, 9XR2561, GRUVIN9X, MEGA2560, SKY9X, 9XRPRO, TARANIS 
 # Old values STD and STD128 are mapped to 9X and 9X128 for compatibility
-#PCB = 9XR128
-#PCB = SKY9X
-PCB = 9XRPRO
+PCB = 9X
 
 # PCB revision
-#PCBREV = REVA
-ifeq ($(PCB), SKY9X)
-PCBREV = REVB
-endif
+PCBREV =
 
 # Enable JETI-Telemetry or FrSky Telemetry reception on UART0
 # For this option you need to modify your hardware!
 # More information at [insertURLhere]
 # Values = STD, FRSKY, FRSKY_SPORT, JETI, NMEA, ARDUPILOT, MAVLINK, TELEMETREZ
-#EXT = STD
-#EXT = FRSKY
-#EXT = ARDUPILOT
-EXT = MAVLINK
-
-# BLUETOOTH
-# Values = YES, NO
-BLUETOOTH = YES
-ifeq ($(DEBUG), YES)
-BLUETOOTH = NO
-endif
+EXT = STD
 
 # FAI mode
 # Values = YES, NO, CHOICE
@@ -104,7 +81,7 @@ HELI = NO
 
 # Enable templates menu
 # Values = YES, NO
-TEMPLATES = NO
+TEMPLATES = YES
 
 # Enable navigation with Pots / Sticks / Rotary encoders
 # Values = NO
@@ -134,11 +111,11 @@ DBLKEYS = NO
 
 # AUDIO Mods
 # Values = YES, NO 
-AUDIO = YES
+AUDIO = NO
 
 # VOICE Mods
 # Values = YES, NO 
-VOICE = YES
+VOICE = NO
 
 # corrects different rounding for negative values. So instead of -99.9 you will see again -100.0
 # Values = YES, NO
@@ -157,11 +134,7 @@ ACCURAT_THROTTLE_STATS = NO
 
 # HAPTIC Mods
 # Values = YES, NO 
-ifeq ($(PCB), 9XRPRO)
-HAPTIC = YES
-else
 HAPTIC = NO
-endif
 
 # SmartieParts 2.2 Backlight support (inverted)
 # Values = YES, NO 
@@ -173,7 +146,7 @@ PWM_BACKLIGHT = NO
 
 # SPLASH on START
 # Values = YES, NO, FIXED
-SPLASH = NO
+SPLASH = YES
 
 # GRAPHICS (sliders / checkboxes / bold / batt graph)
 GRAPHICS = YES
@@ -182,7 +155,7 @@ BATTGRAPH = NO
 
 # FONT TYPE
 # Values = STD, SQT5
-FONT = SQT5
+FONT = STD
 
 # PPM center adjustable
 # Values = YES, NO
@@ -202,11 +175,7 @@ OVERRIDE_CHANNEL_FUNCTION = YES
 
 # FrSky Hub 
 # Values = YES, NO
-ifeq ($(EXT), FRSKY)
 FRSKY_HUB = YES
-else
-FRSKY_HUB = NO
-endif
 
 # FrSky FAS current sensor offset compensation
 # Values = YES, NO
@@ -214,7 +183,7 @@ FAS_OFFSET = NO
 
 # WS HowHigh 
 # Values = YES, NO
-WS_HOW_HIGH = NO
+WS_HOW_HIGH = YES
 
 # Gauges in Telemetry screen
 # Values = YES, NO
@@ -222,16 +191,20 @@ GAUGES = YES
 
 # GPS 
 # Values = YES, NO
-GPS = NO
+GPS = YES
 
 # Vario 
 # Values = YES, NO
-VARIO = NO
+VARIO = YES
 
 # RTCLOCK
 # Values = YES, NO
 # default = YES (means enabled when available)
 RTCLOCK = YES
+
+# BLUETOOTH
+# Values = YES, NO
+BLUETOOTH = NO
 
 # PXX (FrSky PCM) protocol
 PXX = NO
@@ -266,15 +239,26 @@ UNITS = METRIC
 
 # Default Tx Mode
 # Values = NO / 1 / 2 / 3 / 4
-DEFAULT_MODE = 2
+DEFAULT_MODE = NO
 
 # EEPROM_PROGRESS_BAR
 # Values = YES, NO
-EEPROM_PROGRESS_BAR = YES
+EEPROM_PROGRESS_BAR = NO
+
+# Activates the DEBUG Mode (all boards)
+# On G9X V4 board, when VOICE=NO:
+#  PORTH:7 --> Transition LOW to HIGH = start of setupPulses(). Transition HIGH to LOW = end of setupPulses().
+#  PORTH:6 --> LOW->HIGH = start of mixer calcs. HIGH->LOW, end of mixer calcs.
+# Values = YES, NO
+DEBUG = NO
+
+# Activate writing of SPORT telemetry received data to sport.log file
+# Values = YES, NO
+SPORT_FILE_LOG = NO
 
 # Flight Modes
 # Values = YES, NO
-FLIGHT_MODES = NO
+FLIGHT_MODES = YES
 
 # Curves
 # Values = YES, NO
@@ -282,7 +266,7 @@ CURVES = YES
 
 # Global Vars
 # Values = YES, NO
-GVARS = YES
+GVARS = NO
 
 # Enable another 3 positions switch to replace a pot
 # Values = NO, POT1, POT2, POT3,
@@ -290,7 +274,7 @@ GVARS = YES
 
 # Lua interpreter embedded
 # Values = NO, NO_MODEL_SCRIPTS, YES 
-LUA = YES
+LUA = NO
 
 # Menu Lock modes
 # Values = NO, READONLY, NOMENUS 
@@ -300,7 +284,7 @@ MENUS_LOCK = NO
 # Values = JOYSTICK, MASSSTORAGE
 # JOYSTICK: The TX will appear as a joystick
 # MASSSTORAGE: The TX will appear as a drive
-USB = MASSSTORAGE
+USB = JOYSTICK
 
 # Channel monitor display behavior
 # Values = NO, YES
@@ -313,6 +297,16 @@ CHANNELS_MONITOR_INV_HIDE = NO
 # Values = NO, YES
 NANO = NO
 
+# Enable trace of events into Trace Buffer for debugging purposes
+# Activating any of these options also activates DEBUG and DEBUG_TRACE_BUFFER
+# Values = NO, YES
+#   TRACE_SD_CARD     SD card operations (read, write, etc)
+#   TRACE_FATFS       FatFs file operations
+#   TRACE_AUDIO       Audio processing (not yet implemented)
+TRACE_SD_CARD = NO
+TRACE_FATFS = NO
+TRACE_AUDIO = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -320,13 +314,14 @@ SHELL = sh
 IMG2LBM = -python ../util/img2lbm.py
 BIN2LBM = -python ../util/bin2lbm.py
 TRANSLATE = -python ../util/translate.py
-VERSION = 2.0.13a
+VERSION = 2.0.13
 
 SRC =
 CPPSRC =
 INCDIRS = . translations
 EXTRAINCDIRS = 
 LUADEP =
+DEBUG_TRACE_BUFFER = NO
 
 # MCU name
 ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO TARANIS))
@@ -409,7 +404,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   ARCH = AVR
   TRGT = avr-
   MCU = atmega128
-  OPT = 2
+  OPT = s
   SDCARD = NO
   THR_TRACE = NO
   EEPROM_VARIANT += ${M128_VARIANT}
@@ -469,7 +464,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   ARCH = AVR
   TRGT = avr-
   MCU = atmega2561
-  OPT = 2
+  OPT = s
   SDCARD = NO
   THR_TRACE = YES
   EEPROM_VARIANT += ${M2561_VARIANT}
@@ -530,7 +525,7 @@ ifeq ($(PCB), GRUVIN9X)
   endif
   TRGT = avr-
   MCU = atmega2560
-  OPT = 2
+  OPT = s
   CPPDEFS += -DF_CPU=$(F_CPU)UL -DPCBGRUVIN9X -DCPUM2560 -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC
   SDCARD = NO
   BUZZER = NO
@@ -570,7 +565,7 @@ ifeq ($(PCB), MEGA2560)
   ARCH = AVR
   TRGT = avr-
   MCU = atmega2560
-  OPT = 2
+  OPT = s
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBMEGA2560 -DCPUM2560 -DEEPROM_VARIANT=0 -DAUDIO -DRTCLOCK
   SDCARD = YES
   THR_TRACE = YES
@@ -616,7 +611,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   endif
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
-  OPT = 2
+  OPT = s
   SDCARD = YES
   BUZZER = NO
   THR_TRACE = YES
@@ -624,6 +619,9 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   ifeq ($(PCB), SKY9X)
     CPPDEFS += -DROTARY_ENCODERS=1
     CPPSRC += targets/sky9x/rotenc_driver.cpp 
+  endif
+  ifeq ($(SPORT_FILE_LOG), YES)
+    CPPDEFS += -DSPORT_FILE_LOG
   endif
   INCDIRS += targets/sky9x CoOS/kernel CoOS/portable
   BOARDSRC = targets/sky9x/board_sky9x.cpp
@@ -640,31 +638,26 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   CPPSRC += audio_arm.cpp haptic.cpp gui/view_about.cpp gui/view_text.cpp
   CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/second_serial_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
   CPPSRC += loadboot.cpp
-    
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DVOICE
     INCDIRS += FatFs FatFs/option
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/sky9x/diskio.cpp
   endif
-  
   ifeq ($(BUZZER), YES)
     CPPDEFS += -DBUZZER
     CPPSRC += buzzer.cpp
   endif
-
   ifeq ($(RTCLOCK), YES)
     CPPDEFS += -DRTCLOCK
     CPPSRC += rtc.cpp targets/sky9x/rtc_driver.cpp
   endif
-  
   ifeq ($(BLUETOOTH), YES)
-  	CPPDEFS += -DBLUETOOTH
-  	CPPSRC += targets/sky9x/bluetooth.cpp 
+    CPPDEFS += -DBLUETOOTH
+    CPPSRC += targets/sky9x/bluetooth.cpp 
   endif
-  
   ifeq ($(DEBUG), YES)
     CPPSRC += debug.cpp
-  	SRC += targets/sky9x/syscalls.c
+    SRC += targets/sky9x/syscalls.c
   endif
 endif
 
@@ -681,10 +674,31 @@ ifeq ($(PCB), TARANIS)
   else
     CPPDEFS = -DREV4
   endif
+  ifeq ($(SPORT_FILE_LOG), YES)
+    CPPDEFS += -DSPORT_FILE_LOG
+  endif
+  ifeq ($(TRACE_SD_CARD), YES)
+    DEBUG = YES
+    DEBUG_TRACE_BUFFER = YES
+    CPPDEFS += -DTRACE_SD_CARD
+  endif
+  ifeq ($(TRACE_FATFS), YES)
+    DEBUG = YES
+    DEBUG_TRACE_BUFFER = YES
+    CPPDEFS += -DTRACE_FATFS
+  endif
+  ifeq ($(TRACE_AUDIO), YES)
+    DEBUG = YES
+    DEBUG_TRACE_BUFFER = YES
+    CPPDEFS += -DTRACE_AUDIO
+  endif
+  ifeq ($(DEBUG_TRACE_BUFFER), YES)
+    CPPDEFS += -DDEBUG_TRACE_BUFFER 
+  endif
   LDSCRIPT = targets/taranis/stm32_flash_bl.ld
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
-  OPT = 2
+  OPT = s
   CPPDEFS += -DHSE_VALUE=12000000
   SDCARD = YES
   THR_TRACE = YES
@@ -741,13 +755,11 @@ ifeq ($(PCB), TARANIS)
     SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
     EXTRABOARDSRC += targets/taranis/usbd_storage_msd.cpp
   endif
-  
   ifeq ($(NANO), YES)
     # use newlib-nano for linking
     NEWLIB_NANO_FLAGS = --specs=nano.specs -u _printf_float
     CPPDEFS += -DNANO
   endif
-  
   ifneq ($(LUA), NO)
     ifeq ($(LUA), YES)
       CPPDEFS += -DLUA_MODEL_SCRIPTS
@@ -761,42 +773,34 @@ ifeq ($(PCB), TARANIS)
     SRC += $(LUASRC) 
     LUADEP = lua_exports.cpp
   endif           
-
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/taranis/diskio.cpp
     CPPDEFS += -DVOICE
     INCDIRS += FatFs FatFs/option
   endif
-    
   ifeq ($(RTCLOCK), YES)
     CPPDEFS += -DRTCLOCK
     CPPSRC += rtc.cpp targets/taranis/rtc_driver.cpp
   endif
-
   ifeq ($(DEBUG), YES)
     CPPSRC += debug.cpp
   endif
-  
   ifeq ($(DSM2), PPM)
     CPPSRC += pulses/dsm2_arm.cpp
   endif
-  
   ifeq ($(HUBSAN), YES)
     CPPDEFS += -DHUBSAN
     CPPSRC += pulses/hubsan.cpp
     CPPSRC += targets/taranis/a7105_driver.cpp
   endif
-  
   ifeq ($(HAPTIC), YES)
     CPPDEFS += -DHAPTIC
     CPPSRC += haptic.cpp
     CPPSRC += targets/taranis/haptic_driver.cpp
   endif
-
   ifeq ($(CHANNELS_MONITOR_INV_HIDE), YES)
     CPPDEFS += -DCHANNELS_MONITOR_INV_HIDE
   endif
-
 endif
 
 CC      = $(TRGT)gcc
@@ -999,7 +1003,7 @@ endif
 ifeq ($(EXT), $(filter $(EXT), FRSKY FRSKY_SPORT TELEMETREZ))
   CPPDEFS += -DFRSKY
   ifeq ($(EXT), FRSKY_SPORT)
-	CPPSRC += telemetry/frsky.cpp telemetry/frsky_sport.cpp telemetry/frsky_d.cpp
+    CPPSRC += telemetry/frsky.cpp telemetry/frsky_sport.cpp telemetry/frsky_d.cpp
     CPPDEFS += -DFRSKY_SPORT
   else
     CPPSRC += telemetry/frsky.cpp telemetry/frsky_d.cpp
@@ -1133,6 +1137,7 @@ CPPFLAGS += $(CPPDEFS)
 CPPFLAGS += -Wall
 CPPFLAGS += -fno-exceptions
 CPPFLAGS += -Wno-strict-aliasing
+CPPFLAGS += -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits
 INCFLAGS = $(patsubst %,-I%,$(INCDIRS))
 EXTRAINCFLAGS = $(patsubst %,-I%,$(EXTRAINCDIRS))
 
@@ -1212,7 +1217,6 @@ bootloader.lbm:
 	wget http://ersky9x.googlecode.com/svn/trunk/src/bootloader/bootflash4.lbm
 	mv bootflash4.lbm $@
 endif
-	$(REMOVE) $(TARGET).hex
 
 tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
 lbm: fonts bitmaps/sticks.lbm
@@ -1306,9 +1310,15 @@ bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_
 	$(IMG2LBM) bitmaps/about_9x.png bitmaps/about_9x.lbm img
 	$(IMG2LBM) bitmaps/asterisk_4bits.png bitmaps/asterisk_4bits.lbm bmp
 
+ifeq ($(OS),Windows_NT)
+  PARSER = avr-cpp 
+else
+  PARSER = gcc -E -x c++
+endif
+
 lua_exports.cpp: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua_exports.txt" 
-	@$(CPP) -DPCBTARANIS -DCPUARM -DLUA -DEXPORT myeeprom.h | grep LEXP > lua_exports.txt
+	@$(PARSER) -DPCBTARANIS -DCPUARM -DLUA -DEXPORT myeeprom.h | grep LEXP > lua_exports.txt
 	@echo "Parsing and generating C Lua exports in lua_exports.cpp"
 	@python ../util/luaexport.py $(VERSION) lua_exports.txt lua_exports.cpp lua_fields.txt
 	@rm lua_exports.txt
@@ -1411,7 +1421,7 @@ ifeq ($(ARCH), AVR)
 	$(CC) $(AVRCPPFLAGS) $< --output $@ $(LDFLAGS)
 else
 %.o: %.c
-	$(CC) $(ARMCPPFLAGS) $< -o $@
+	$(CC) $(ARMCPPFLAGS) -Wimplicit $< -o $@
 %.o: %.s
 	$(AS) $< -o $@
 TMP = $(SRC:.c=.o)
@@ -1475,8 +1485,6 @@ endif
 ifeq ($(BACKUP_EEPROM), YES)
   BACKUP_ARGS += -U flash:r:$(DATA_DIR)/opentx-$(DATE).hex:i
 endif
-
-upload: install
 
 install: all
 ifdef BACKUP_ARGS

@@ -28,10 +28,23 @@
 #define TEMPLATES
 #define SPLASH
 #define FLIGHT_MODES
-#define FRSKY
+
+// FIXME !
+//#define FRSKY
+#define MAVLINK
+
+#if defined(FRSKY)
 #define FRSKY_HUB
+#define FRSKY_STICKS
 #define WS_HOW_HIGH
 #define VARIO
+#define HELI
+#define TEMPLATES
+#endif
+
+
+//#define WS_HOW_HIGH
+//#define VARIO
 #define PPM_UNIT_PERCENT_PREC1
 #define BUZZER
 #define AUDIO
@@ -53,7 +66,7 @@
 #define GAUGES
 #define GPS
 #define FAI_CHOICE
-#define FRSKY_STICKS
+//#define FRSKY_STICKS
 #define OVERRIDE_CHANNEL_FUNCTION
 
 #define NUM_POTS  3
