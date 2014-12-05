@@ -269,7 +269,7 @@ extern uint8_t s_evt;
 
 #define putEvent(evt) s_evt = evt
 
-void clearKeyEvents();
+bool clearKeyEvents();
 void pauseEvents(uint8_t enuk);
 void killEvents(uint8_t enuk);
 

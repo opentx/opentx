@@ -727,6 +727,7 @@
 #define TR_THROTTLEWARN        "GAS"
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "BRYTARE"
+#define TR_KEYSTUCK            "Key stuck"
 #define TR_INVERT_THR          TR("Invert.Gas?", "Invertera Gasen?")
 #define TR_SPEAKER_VOLUME      INDENT "Volym"
 #define TR_LCD                 "LCD"

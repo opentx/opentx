@@ -727,6 +727,7 @@
 #define TR_THROTTLEWARN        "ACELERAD"
 #define TR_ALARMSWARN          "ALARMES"
 #define TR_SWITCHWARN          "CHAVES"
+#define TR_KEYSTUCK            "Key stuck"
 #define TR_INVERT_THR          "Inverte Acel?"
 #define TR_SPEAKER_VOLUME      INDENT "Volume"
 #define TR_LCD                 "LCD"

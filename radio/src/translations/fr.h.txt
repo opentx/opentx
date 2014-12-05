@@ -727,6 +727,7 @@
 #define TR_THROTTLEWARN        "GAZ"
 #define TR_ALARMSWARN          "SON"
 #define TR_SWITCHWARN          TR("INTERS","CONTROLES")
+#define TR_KEYSTUCK            "Key stuck"
 #define TR_INVERT_THR          "Inverser Gaz?"
 #define TR_SPEAKER_VOLUME      INDENT "Volume"
 #define TR_LCD                 "Afficheur"
