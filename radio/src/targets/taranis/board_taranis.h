@@ -277,5 +277,10 @@ void uart3Stop(void);
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
+#if defined(USB_JOYSTICK) && !defined(SIMU)
+void usbJoystickUpdate(void);
+#endif
+
+void checkTrainerSettings();
 
 #endif

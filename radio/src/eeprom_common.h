@@ -46,6 +46,8 @@
   #define WRITE_DELAY_10MS 200
 #endif
 
+#define TIME_TO_WRITE() (s_eeDirtyMsk && (tmr10ms_t)(get_tmr10ms() - s_eeDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
+
 extern uint8_t   s_eeDirtyMsk;
 extern tmr10ms_t s_eeDirtyTime10ms;
 

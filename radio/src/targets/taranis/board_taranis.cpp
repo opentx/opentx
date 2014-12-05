@@ -46,8 +46,6 @@ extern "C" {
 }
 #endif
 
-volatile uint32_t Tenms ; // TODO to remove everywhere / use a #define
-
 void watchdogInit(unsigned int duration)
 {
   IWDG->KR = 0x5555 ;      // Unlock registers
@@ -150,3 +148,90 @@ void boardInit()
 
 }
 #endif
+
+
+#if defined(USB_JOYSTICK) && !defined(SIMU)
+extern USB_OTG_CORE_HANDLE USB_OTG_dev;
+
+/*
+  Prepare and send new USB data packet
+
+  The format of HID_Buffer is defined by
+  USB endpoint description can be found in 
+  file usb_hid_joystick.c, variable HID_JOYSTICK_ReportDesc
+*/
+void usbJoystickUpdate(void)
+{
+  static uint8_t HID_Buffer[HID_IN_PACKET];
+  
+  //buttons
+  HID_Buffer[0] = 0; //buttons
+  for (int i = 0; i < 8; ++i) {
+    if ( channelOutputs[i+8] > 0 ) {
+      HID_Buffer[0] |= (1 << i);
+    } 
+  }
+
+  //analog values
+  //uint8_t * p = HID_Buffer + 1;
+  for (int i = 0; i < 8; ++i) {
+    int16_t value = channelOutputs[i] / 8;
+    if ( value > 127 ) value = 127;
+    else if ( value < -127 ) value = -127;
+    HID_Buffer[i+1] = static_cast<int8_t>(value);  
+  }
+
+  USBD_HID_SendReport (&USB_OTG_dev, HID_Buffer, HID_IN_PACKET );
+}
+
+#endif //#if defined(USB_JOYSTICK) && defined(PCBTARANIS) && !defined(SIMU)
+
+
+uint8_t currentTrainerMode = 0xff;
+
+void checkTrainerSettings()
+{
+  uint8_t requiredTrainerMode = g_model.trainerMode;
+  if (requiredTrainerMode != currentTrainerMode) {
+    switch (currentTrainerMode) {
+      case TRAINER_MODE_MASTER:
+        stop_trainer_capture();
+        break;
+      case TRAINER_MODE_SLAVE:
+        stop_trainer_ppm();
+        break;
+      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
+        stop_cppm_on_heartbeat_capture() ;
+        break;
+      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
+        stop_sbus_on_heartbeat_capture() ;
+        break;
+      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+        uart3Stop();
+    }
+
+    currentTrainerMode = requiredTrainerMode;
+    switch (requiredTrainerMode) {
+      case TRAINER_MODE_SLAVE:
+        init_trainer_ppm();
+        break;
+      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
+         init_cppm_on_heartbeat_capture() ;
+         break;
+      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
+         init_sbus_on_heartbeat_capture() ;
+         break;
+      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+        if (g_eeGeneral.uart3Mode == UART_MODE_SBUS_TRAINER) {
+          uart3SbusInit();
+          break;
+        }
+        // no break
+      default:
+        // master is default
+        init_trainer_capture();
+        break;
+    }
+  }
+}
+

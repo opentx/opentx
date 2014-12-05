@@ -726,7 +726,12 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms);
 void evalMixes(uint8_t tick10ms);
 void doMixerCalculations();
 
+#if defined(CPUARM)
+void perMainArm();
+void checkTrims();
+#else
 void perMain();
+#endif
 NOINLINE void per10ms();
 
 getvalue_t getValue(mixsrc_t i);

@@ -336,7 +336,6 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define asm(x)
 
 #if defined(CPUARM)
-extern volatile uint32_t Tenms;
 extern uint32_t Master_frequency;
 #define NVIC_EnableIRQ(x)
 #define NVIC_DisableIRQ(x)

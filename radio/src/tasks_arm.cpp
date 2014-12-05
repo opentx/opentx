@@ -36,6 +36,140 @@
 
 #include "opentx.h"
 
+
+static uint8_t currentSpeakerVolume = 255;
+uint8_t requiredSpeakerVolume;
+
+extern void batteryCheck();
+
+void perMainArm()
+{
+#if defined(PCBSKY9X)
+  Current_accumulator += Current_analogue ;
+  static uint32_t OneSecTimer;
+  if (++OneSecTimer >= 100) {
+    OneSecTimer -= 100 ;
+    Current_used += Current_accumulator / 100 ;                     // milliAmpSeconds (but scaled)
+    Current_accumulator = 0 ;
+  }
+#endif
+
+  if (currentSpeakerVolume != requiredSpeakerVolume) {
+    currentSpeakerVolume = requiredSpeakerVolume;
+    setVolume(currentSpeakerVolume);
+  }
+
+  if (!usbPlugged()) {
+    // TODO merge these 2 branches
+#if defined(PCBSKY9X)
+    if (Eeprom32_process_state != E32_IDLE)
+      ee32_process();
+    else if (TIME_TO_WRITE())
+      eeCheck(false);
+#else
+    if (theFile.isWriting())
+      theFile.nextWriteStep();
+    else if (TIME_TO_WRITE())
+      eeCheck(false);
+#endif
+  }
+
+  sdMountPoll();
+  writeLogs();
+
+  uint8_t evt = getEvent(false);
+  if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
+  checkBacklight();
+
+#if defined(PCBTARANIS)
+  checkTrainerSettings();
+#endif
+
+#if defined(PCBTARANIS) && !defined(SIMU)
+  static bool usbStarted = false;
+  if (!usbStarted && usbPlugged()) {
+#if defined(USB_MASS_STORAGE)
+    opentxClose();
+#endif
+    usbStart();
+#if defined(USB_MASS_STORAGE)
+    usbPluggedIn();
+#endif
+    usbStarted = true;
+  }
+  
+#if defined(USB_JOYSTICK)
+  if (usbStarted) {
+    if (!usbPlugged()) {
+      //disable USB
+      usbStop();
+      usbStarted = false;
+    }
+    else {
+      usbJoystickUpdate();
+    }
+  }
+#endif
+#endif //#if defined(PCBTARANIS) && !defined(SIMU)
+
+#if defined(NAVIGATION_STICKS)
+  uint8_t sticks_evt = getSticksNavigationEvent();
+  if (sticks_evt) evt = sticks_evt;
+#endif
+
+#if defined(USB_MASS_STORAGE)
+  if (usbPlugged()) {
+    lcd_clear();
+    menuMainView(0);
+  }
+  else 
+#endif
+  {
+    const char *warn = s_warning;
+    uint8_t menu = s_menu_count;
+
+    if (!LUA_STANDALONE_SCRIPT_RUNNING()) {
+      lcd_clear();
+      if (menuEvent) {
+        m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
+        m_posHorz = 0;
+        evt = menuEvent;
+        menuEvent = 0;
+        AUDIO_MENUS();
+      }
+      g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+    }
+
+#if defined(LUA)
+    luaTask(evt);
+#endif
+
+    if (!LUA_STANDALONE_SCRIPT_RUNNING()) {
+      if (warn) DISPLAY_WARNING(evt);
+      if (menu) {
+        const char * result = displayMenu(evt);
+        if (result) {
+          menuHandler(result);
+          putEvent(EVT_MENU_UP);
+        }
+      }
+    }
+  }
+
+  drawStatusLine();
+
+  lcdRefresh();
+
+  if (SLAVE_MODE()) {
+    JACK_PPM_OUT();
+  }
+  else {
+    JACK_PPM_IN();
+  }
+
+  batteryCheck();
+}
+
 #define MENUS_STACK_SIZE    2000
 #define MIXER_STACK_SIZE    500
 #define AUDIO_STACK_SIZE    500
@@ -153,13 +287,14 @@ void mixerTask(void * pdata)
 
 extern void opentxClose();
 extern void opentxInit();
+
 void menusTask(void * pdata)
 {
   opentxInit();
 
   while (pwrCheck() != e_power_off) {
     U64 start = CoGetOSTime();
-    perMain();
+    perMainArm();
     // TODO remove completely massstorage from sky9x firmware
     U32 runtime = (U32)(CoGetOSTime() - start);
     if (runtime >= MENU_TASK_PERIOD_TICKS) {
