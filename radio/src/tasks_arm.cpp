@@ -42,49 +42,8 @@ uint8_t requiredSpeakerVolume;
 
 extern void batteryCheck();
 
-void perMainArm()
+void handleUsbConnection()
 {
-#if defined(PCBSKY9X)
-  Current_accumulator += Current_analogue ;
-  static uint32_t OneSecTimer;
-  if (++OneSecTimer >= 100) {
-    OneSecTimer -= 100 ;
-    Current_used += Current_accumulator / 100 ;                     // milliAmpSeconds (but scaled)
-    Current_accumulator = 0 ;
-  }
-#endif
-
-  if (currentSpeakerVolume != requiredSpeakerVolume) {
-    currentSpeakerVolume = requiredSpeakerVolume;
-    setVolume(currentSpeakerVolume);
-  }
-
-  if (!usbPlugged()) {
-    // TODO merge these 2 branches
-#if defined(PCBSKY9X)
-    if (Eeprom32_process_state != E32_IDLE)
-      ee32_process();
-    else if (TIME_TO_WRITE())
-      eeCheck(false);
-#else
-    if (theFile.isWriting())
-      theFile.nextWriteStep();
-    else if (TIME_TO_WRITE())
-      eeCheck(false);
-#endif
-  }
-
-  sdMountPoll();
-  writeLogs();
-
-  uint8_t evt = getEvent(false);
-  if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
-  checkBacklight();
-
-#if defined(PCBTARANIS)
-  checkTrainerSettings();
-#endif
-
 #if defined(PCBTARANIS) && !defined(SIMU)
   static bool usbStarted = false;
   if (!usbStarted && usbPlugged()) {
@@ -111,11 +70,54 @@ void perMainArm()
   }
 #endif
 #endif //#if defined(PCBTARANIS) && !defined(SIMU)
+}
 
+void checkSpeakerVolume()
+{
+  if (currentSpeakerVolume != requiredSpeakerVolume) {
+    currentSpeakerVolume = requiredSpeakerVolume;
+    setVolume(currentSpeakerVolume);
+  }
+}
+
+void checkEeprom()
+{
+  if (!usbPlugged()) {
+    // TODO merge these 2 branches
+#if defined(PCBSKY9X)
+    if (Eeprom32_process_state != E32_IDLE)
+      ee32_process();
+    else if (TIME_TO_WRITE())
+      eeCheck(false);
+#else
+    if (theFile.isWriting())
+      theFile.nextWriteStep();
+    else if (TIME_TO_WRITE())
+      eeCheck(false);
+#endif
+  }
+}
+
+void perMainArm()
+{
+#if defined(PCBSKY9X) && !defined(REVA)
+  calcConsumption();
+#endif
+  checkSpeakerVolume();
+  checkEeprom();
+  sdMountPoll();
+  writeLogs();
+  handleUsbConnection();
+  checkTrainerSettings();
+
+  uint8_t evt = getEvent(false);
+  if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
+  checkBacklight();
 #if defined(NAVIGATION_STICKS)
   uint8_t sticks_evt = getSticksNavigationEvent();
   if (sticks_evt) evt = sticks_evt;
 #endif
+
 
 #if defined(USB_MASS_STORAGE)
   if (usbPlugged()) {
@@ -157,16 +159,7 @@ void perMainArm()
   }
 
   drawStatusLine();
-
   lcdRefresh();
-
-  if (SLAVE_MODE()) {
-    JACK_PPM_OUT();
-  }
-  else {
-    JACK_PPM_IN();
-  }
-
   batteryCheck();
 }
 

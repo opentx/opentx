@@ -42,6 +42,13 @@ volatile uint32_t Tenms ;
 volatile uint8_t lcdLock;
 volatile uint32_t lcdInputs;
 
+#if !defined(REVA)
+uint16_t Current_analogue;
+uint16_t Current_max;
+uint32_t Current_accumulator;
+uint32_t Current_used;
+#endif
+
 extern "C" void sam_boot( void ) ;
 
 // Prototype
@@ -672,3 +679,28 @@ void setSticksGain(uint8_t gains)
   padc->ADC_CGR = gain;
   padc->ADC_COR = offset;
 }
+
+
+#if !defined(REVA)
+void calcConsumption()
+{
+  Current_accumulator += Current_analogue ;
+  static uint32_t OneSecTimer;
+  if (++OneSecTimer >= 100) {
+    OneSecTimer -= 100 ;
+    Current_used += Current_accumulator / 100 ;                     // milliAmpSeconds (but scaled)
+    Current_accumulator = 0 ;
+  }
+}
+#endif
+
+void checkTrainerSettings()
+{
+  if (SLAVE_MODE()) {
+    PIOC->PIO_PDR = PIO_PC22;
+  }
+  else {
+    PIOC->PIO_PER = PIO_PC22;
+  }
+}
+

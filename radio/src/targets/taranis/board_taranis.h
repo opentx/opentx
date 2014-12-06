@@ -82,8 +82,8 @@ extern "C" {
 #define TIMER_MULT_APB1    2
 #define TIMER_MULT_APB2    2
 
-#define JACK_PPM_OUT()
-#define JACK_PPM_IN()
+// #define JACK_PPM_OUT()
+// #define JACK_PPM_IN()
 
 #define PIN_MODE_MASK      0x0003
 #define PIN_INPUT          0x0000

@@ -168,11 +168,14 @@ extern uint16_t Current_max;
 extern uint32_t Current_accumulator;
 extern uint32_t Current_used;
 extern uint16_t sessionTimer;
+void calcConsumption();
 #endif
 
 #define SLAVE_MODE() (pwrCheck() == e_power_trainer)
-#define JACK_PPM_OUT() PIOC->PIO_PDR = PIO_PC22
-#define JACK_PPM_IN() PIOC->PIO_PER = PIO_PC22
+// #define JACK_PPM_OUT() PIOC->PIO_PDR = PIO_PC22
+// #define JACK_PPM_IN() PIOC->PIO_PER = PIO_PC22
+void checkTrainerSettings();
+
 
 void setSticksGain(uint8_t gains);
 

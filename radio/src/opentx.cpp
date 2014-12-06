@@ -1352,13 +1352,6 @@ uint8_t checkTrim(uint8_t event)
 #endif
 }
 
-#if defined(PCBSKY9X) && !defined(REVA)
-uint16_t Current_analogue;
-uint16_t Current_max;
-uint32_t Current_accumulator;
-uint32_t Current_used;
-#endif
-
 #if !defined(SIMU)
 static uint16_t s_anaFilt[NUMBER_ANALOG];
 #endif
