@@ -136,7 +136,7 @@ inline int geteepromsize() {
 #include "radio/src/translations/tts_sk.cpp"
 #include "radio/src/translations/tts_pl.cpp"
 #include "radio/src/translations/tts_hu.cpp"
-#include "radio/src/lua.cpp"
+#include "radio/src/lua_api.cpp"
 #include "radio/src/lua/src/lapi.c"
 #include "radio/src/lua/src/lcode.c"
 #include "radio/src/lua/src/lctype.c"

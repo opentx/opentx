@@ -37,7 +37,7 @@
 #include "opentx.h"
 
 static uint8_t currentSpeakerVolume = 255;
-uint8_t requiredSpeakerVolume;
+uint8_t requiredSpeakerVolume = 255;
 
 extern void checkBattery();
 

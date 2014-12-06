@@ -45,6 +45,9 @@ uint32_t readKeys()
   register uint32_t f = GPIOF->IDR;
   register uint32_t result = 0;
 
+  (void)e;
+  (void)f;
+
 #if defined(REV9E)
   if (f & PIN_BUTTON_ENTER)
 #else
