@@ -174,9 +174,9 @@ uint32_t readTrims(void);
 
 #if defined(REV9E)
 // Rotary Encoder driver
-void rotencInit();
-void rotencEnd();
-void checkRotaryEncoder();
+void rotencInit(void);
+void rotencEnd(void);
+void checkRotaryEncoder(void);
 #endif
 
 // WDT driver

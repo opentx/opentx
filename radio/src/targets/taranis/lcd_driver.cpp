@@ -44,7 +44,6 @@ static void Delay(uint32_t ms)
 }
 
 #if defined(REVPLUS)
-static void LCD_Hardware_Init() ;
 
 // New hardware SPI driver for LCD
 void initLcdSpi()

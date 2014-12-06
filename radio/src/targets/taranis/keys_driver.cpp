@@ -145,7 +145,7 @@ void readKeysAndTrims()
 
 #if defined(REV9E)
   static rotenc_t rePreviousValue;
-  rotenc_t reNewValue = (x9de_rotenc / ROTARY_ENCODER_GRANULARITY);
+  rotenc_t reNewValue = (x9de_rotenc / 2);
   int8_t scrollRE = reNewValue - rePreviousValue;
   if (scrollRE) {
     rePreviousValue = reNewValue;
