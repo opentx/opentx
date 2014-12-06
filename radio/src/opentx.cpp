@@ -2136,7 +2136,7 @@ uint8_t getSticksNavigationEvent()
 }
 #endif
 
-void batteryCheck()
+void checkBattery()
 {
   static uint8_t counter = 0;
   if (g_menuStack[g_menuStackPtr] == menuGeneralDiagAna) {
@@ -2327,7 +2327,7 @@ void perMain()
     JACK_PPM_IN();
   }
 
-  batteryCheck();
+  checkBattery();
 }
 #endif   // #if !defined(CPUARM)
 

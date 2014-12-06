@@ -36,11 +36,10 @@
 
 #include "opentx.h"
 
-
 static uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume;
 
-extern void batteryCheck();
+extern void checkBattery();
 
 void handleUsbConnection()
 {
@@ -109,6 +108,7 @@ void perMainArm()
   writeLogs();
   handleUsbConnection();
   checkTrainerSettings();
+  checkBattery();
 
   uint8_t evt = getEvent(false);
   if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
@@ -118,49 +118,47 @@ void perMainArm()
   if (sticks_evt) evt = sticks_evt;
 #endif
 
-
 #if defined(USB_MASS_STORAGE)
   if (usbPlugged()) {
+    // disable access to menus
     lcd_clear();
     menuMainView(0);
+    lcdRefresh();
+    return;
   }
-  else 
 #endif
-  {
+
+  // run Lua scripts that don't use LCD (to use CPU time while LCD DMA is running)
+  luaRunNonGuiScripts();
+
+  // draw LCD from menus or from Lua script
+  if (luaRunGuiScripts(evt)) {   // either stand-alone or telemetry scripts
+    // let Lua manage LCD fully
+  }
+  else {
+    // normal GUI from menus
     const char *warn = s_warning;
     uint8_t menu = s_menu_count;
-
-    if (!LUA_STANDALONE_SCRIPT_RUNNING()) {
-      lcd_clear();
-      if (menuEvent) {
-        m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
-        m_posHorz = 0;
-        evt = menuEvent;
-        menuEvent = 0;
-        AUDIO_MENUS();
-      }
-      g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+    lcd_clear();
+    if (menuEvent) {
+      m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
+      m_posHorz = 0;
+      evt = menuEvent;
+      menuEvent = 0;
+      AUDIO_MENUS();
     }
-
-#if defined(LUA)
-    luaTask(evt);
-#endif
-
-    if (!LUA_STANDALONE_SCRIPT_RUNNING()) {
-      if (warn) DISPLAY_WARNING(evt);
-      if (menu) {
-        const char * result = displayMenu(evt);
-        if (result) {
-          menuHandler(result);
-          putEvent(EVT_MENU_UP);
-        }
+    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+    if (warn) DISPLAY_WARNING(evt);
+    if (menu) {
+      const char * result = displayMenu(evt);
+      if (result) {
+        menuHandler(result);
+        putEvent(EVT_MENU_UP);
       }
     }
+    drawStatusLine();
   }
-
-  drawStatusLine();
   lcdRefresh();
-  batteryCheck();
 }
 
 #define MENUS_STACK_SIZE    2000

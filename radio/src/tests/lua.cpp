@@ -48,6 +48,7 @@
 
 extern const char * zchar2string(const char * zstring, int size);
 #define EXPECT_ZSTREQ(c_string, z_string)   EXPECT_STREQ(c_string, zchar2string(z_string, sizeof(z_string)))
+extern void luaInit();
 
 void luaExecStr(const char * str)
 {

@@ -391,7 +391,11 @@ TEST(Trims, CopySticksToOffset)
   MODEL_RESET();
   modelDefault(0);
   anaInValues[ELE_STICK] = -100;
+#if defined(CPUARM)
+  doMixerCalculations();
+#else
   perMain();
+#endif
   copySticksToOffset(1);
   EXPECT_EQ(g_model.limitData[1].offset, -97);
 }
@@ -618,11 +622,19 @@ TEST(Mixer, RecursiveAddChannelAfterInactivePhase)
   g_model.mixData[2].srcRaw = MIXSRC_MAX;
   g_model.mixData[2].weight = 100;
   simuSetSwitch(3, -1);
+#if defined(CPUARM)
+  doMixerCalculations();
+#else
   perMain();
+#endif
   EXPECT_EQ(chans[0], CHANNEL_MAX/2);
   EXPECT_EQ(chans[1], CHANNEL_MAX);
   simuSetSwitch(3, 0);
+#if defined(CPUARM)
+  doMixerCalculations();
+#else
   perMain();
+#endif
   EXPECT_EQ(chans[0], CHANNEL_MAX/2);
   EXPECT_EQ(chans[1], CHANNEL_MAX);
 }
