@@ -37,7 +37,7 @@
 #include "opentx.h"
 
 
-#if defined(LCD_DUAL_BUFFER)
+#if defined(PCBTARANIS) && defined(REVPLUS) && defined(LCD_DUAL_BUFFER)
 display_t displayBuf1[DISPLAY_BUF_SIZE];
 display_t displayBuf2[DISPLAY_BUF_SIZE];
 display_t * displayBuf = displayBuf1;
@@ -47,6 +47,7 @@ display_t displayBuf[DISPLAY_BUF_SIZE];
 
 void lcd_clear()
 {
+  lcdWaitDmaEnd();
   memset(displayBuf, 0, DISPLAY_BUFER_SIZE);
 }
 

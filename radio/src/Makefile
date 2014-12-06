@@ -314,6 +314,15 @@ TRACE_SD_CARD = NO
 TRACE_FATFS = NO
 TRACE_AUDIO = NO
 
+# Enable double buffering for LCD. Only for TARANIS PLUS and 9XE targets.
+# Activating requires about 6kB of RAM, but it enables menus task to
+# immediately start to compose a new LCD image while the current one is 
+# being written to LCD by DMA.
+# If this option is NO, then first function that affects LCD buffer is 
+# delayed until DMA transfer is finished.
+# Values = NO, YES
+LCD_DUAL_BUFFER = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -678,11 +687,17 @@ ifeq ($(PCB), TARANIS)
     CPPDEFS = -DREV4a
     SWR = YES
   else ifeq ($(PCBREV), REVPLUS)
-    CPPDEFS = -DREVPLUS -DLCD_DUAL_BUFFER
+    CPPDEFS = -DREVPLUS
+    ifeq ($(LCD_DUAL_BUFFER), YES)
+    	CPPDEFS += -DLCD_DUAL_BUFFER
+    endif
     HAPTIC = YES
     SWR = NO
   else ifeq ($(PCBREV), REV9E)
-    CPPDEFS = -DREVPLUS -DREV9E -DLCD_DUAL_BUFFER
+    CPPDEFS = -DREVPLUS -DREV9E
+    ifeq ($(LCD_DUAL_BUFFER), YES)
+    	CPPDEFS += -DLCD_DUAL_BUFFER
+    endif
     HAPTIC = YES
     SWR = YES
   else
