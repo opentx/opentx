@@ -169,7 +169,7 @@
   extern display_t displayBuf[DISPLAY_BUF_SIZE];
 #endif
 
-#if defined(PCBTARANIS) && defined(REVPLUS) && !defined(LCD_DUAL_BUFFER)
+#if defined(PCBTARANIS) && defined(REVPLUS) && !defined(LCD_DUAL_BUFFER) && !defined(SIMU)
   void lcdWaitDmaEnd();
 #else
   #define lcdWaitDmaEnd()
