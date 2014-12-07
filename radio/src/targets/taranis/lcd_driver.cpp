@@ -180,7 +180,7 @@ void Set_Address(u8 x, u8 y)
 volatile bool lcd_busy;
 
 #if !defined(LCD_DUAL_BUFFER)
-void lcdWaitDmaEnd() 
+void lcdRefreshWait() 
 {
   WAIT_FOR_DMA_END();
 }

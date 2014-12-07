@@ -121,7 +121,6 @@
   #define LUA_LOAD_MODEL_SCRIPTS()
   #define LUA_LOAD_MODEL_SCRIPT(idx)
   #define LUA_STANDALONE_SCRIPT_RUNNING() (0)
-  #define luaTask(evt, scriptType, allowLcdUsage)   (false)
 #endif
 
 #endif // #ifndef luaapi_h

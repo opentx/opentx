@@ -128,23 +128,40 @@ void perMain()
   }
 #endif
 
+#if defined(LUA)
+
+  uint32_t t0 = get_tmr10ms();
+  static uint32_t lastLuaTime = 0;
+  uint16_t interval = (lastLuaTime == 0 ? 0 : (t0 - lastLuaTime));
+  lastLuaTime = t0;
+  if (interval > maxLuaInterval) {
+    maxLuaInterval = interval;
+  }
+
   // run Lua scripts that don't use LCD (to use CPU time while LCD DMA is running)
-  (void)luaTask(0, RUN_MIX_SCRIPT | RUN_FUNC_SCRIPT | RUN_TELEM_BG_SCRIPT, false);
+  luaTask(0, RUN_MIX_SCRIPT | RUN_FUNC_SCRIPT | RUN_TELEM_BG_SCRIPT, false);
 
   // wait for LCD DMA to finish before continuing, because code from this point 
   // is allowed to change the contents of LCD buffer
   // 
   // WARNING: make sure no code above this line does any change to the LCD display buffer!
   //
-  lcdWaitDmaEnd();
+  lcdRefreshWait();
 
   // draw LCD from menus or from Lua script
   // run Lua scripts that use LCD 
   bool scriptWasRun = luaTask(evt, RUN_TELEM_FG_SCRIPT | RUN_STNDAL_SCRIPT, true);
 
-  // TODO luaTask timing must be done here
+  t0 = get_tmr10ms() - t0;
+  if (t0 > maxLuaDuration) {
+    maxLuaDuration = t0;
+  }
 
   if (!scriptWasRun) {
+#else
+  lcdRefreshWait();   // WARNING: make sure no code above this line does any change to the LCD display buffer!
+  {
+#endif
     // normal GUI from menus
     const char *warn = s_warning;
     uint8_t menu = s_menu_count;

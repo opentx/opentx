@@ -170,9 +170,9 @@
 #endif
 
 #if defined(PCBTARANIS) && defined(REVPLUS) && !defined(LCD_DUAL_BUFFER) && !defined(SIMU)
-  void lcdWaitDmaEnd();
+  void lcdRefreshWait();
 #else
-  #define lcdWaitDmaEnd()
+  #define lcdRefreshWait()
 #endif
 
 extern coord_t lcdLastPos;
