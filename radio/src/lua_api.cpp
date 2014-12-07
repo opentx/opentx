@@ -355,7 +355,7 @@ static int luaLcdClear(lua_State *L)
 
 static int luaLcdDrawPoint(lua_State *L)
 {
-  if (! luaLcdAllowed) return 0;
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   lcd_plot(x, y);
@@ -364,7 +364,7 @@ static int luaLcdDrawPoint(lua_State *L)
 
 static int luaLcdDrawLine(lua_State *L)
 {
-  if (! luaLcdAllowed) return 0;
+  if (!luaLcdAllowed) return 0;
   int x1 = luaL_checkinteger(L, 1);
   int y1 = luaL_checkinteger(L, 2);
   int x2 = luaL_checkinteger(L, 3);
@@ -383,7 +383,7 @@ static int luaLcdGetLastPos(lua_State *L)
 
 static int luaLcdDrawText(lua_State *L)
 {
-  if (! luaLcdAllowed) return 0;
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   const char * s = luaL_checkstring(L, 3);
@@ -394,7 +394,7 @@ static int luaLcdDrawText(lua_State *L)
 
 static int luaLcdDrawTimer(lua_State *L)
 {
-  if (! luaLcdAllowed) return 0;
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int seconds = luaL_checkinteger(L, 3);
@@ -405,7 +405,7 @@ static int luaLcdDrawTimer(lua_State *L)
 
 static int luaLcdDrawNumber(lua_State *L)
 {
-  if (! luaLcdAllowed) return 0;
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int n = luaL_checkinteger(L, 3);
@@ -416,7 +416,7 @@ static int luaLcdDrawNumber(lua_State *L)
 
 static int luaLcdDrawChannel(lua_State *L)
 {
-  if (! luaLcdAllowed) return 0;
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int channel = -1;
@@ -439,7 +439,7 @@ static int luaLcdDrawChannel(lua_State *L)
 
 static int luaLcdDrawSwitch(lua_State *L)
 {
-  if (! luaLcdAllowed) return 0;
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int s = luaL_checkinteger(L, 3);
@@ -450,7 +450,7 @@ static int luaLcdDrawSwitch(lua_State *L)
 
 static int luaLcdDrawSource(lua_State *L)
 {
-  if (! luaLcdAllowed) return 0;
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int s = luaL_checkinteger(L, 3);
@@ -461,7 +461,7 @@ static int luaLcdDrawSource(lua_State *L)
 
 static int luaLcdDrawPixmap(lua_State *L)
 {
-  if (! luaLcdAllowed) return 0;
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   const char * filename = luaL_checkstring(L, 3);
@@ -475,7 +475,7 @@ static int luaLcdDrawPixmap(lua_State *L)
 
 static int luaLcdDrawRectangle(lua_State *L)
 {
-  if (! luaLcdAllowed) return 0;
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int w = luaL_checkinteger(L, 3);
@@ -486,7 +486,7 @@ static int luaLcdDrawRectangle(lua_State *L)
 
 static int luaLcdDrawFilledRectangle(lua_State *L)
 {
-  if (! luaLcdAllowed) return 0;
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int w = luaL_checkinteger(L, 3);
@@ -498,7 +498,7 @@ static int luaLcdDrawFilledRectangle(lua_State *L)
 
 static int luaLcdDrawGauge(lua_State *L)
 {
-  if (! luaLcdAllowed) return 0;
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int w = luaL_checkinteger(L, 3);
@@ -516,7 +516,7 @@ static int luaLcdDrawGauge(lua_State *L)
 
 static int luaLcdDrawScreenTitle(lua_State *L)
 {
-  if (! luaLcdAllowed) return 0;
+  if (!luaLcdAllowed) return 0;
   const char * str = luaL_checkstring(L, 1);
   int idx = luaL_checkinteger(L, 2);
   int cnt = luaL_checkinteger(L, 3);
@@ -530,7 +530,7 @@ static int luaLcdDrawScreenTitle(lua_State *L)
 
 static int luaLcdDrawCombobox(lua_State *L)
 {
-  if (! luaLcdAllowed) return 0;
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int w = luaL_checkinteger(L, 3);
@@ -1990,7 +1990,8 @@ void luaRunNonGuiScripts()
   lastRunTime = get_tmr10ms() - t0;
 }
 
-bool luaRunGuiScripts(uint8_t evt){
+bool luaRunGuiScripts(uint8_t evt)
+{
   //execute one cycle of Lua scripts that use LCD
   //either stand-alone or other (telemetry scripts)
 

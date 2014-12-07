@@ -288,11 +288,10 @@ void menusTask(void * pdata)
     perMainArm();
     // TODO remove completely massstorage from sky9x firmware
     U32 runtime = (U32)(CoGetOSTime() - start);
-    if (runtime >= MENU_TASK_PERIOD_TICKS) {
-      //no delay
-    }
-    else {
-      CoTickDelay(MENU_TASK_PERIOD_TICKS - runtime);  // 5*2ms for now
+    // deduct the thread run-time from the wait, if run-time was more than 
+    // desired period, then skip the wait all together
+    if (runtime < MENU_TASK_PERIOD_TICKS) {
+      CoTickDelay(MENU_TASK_PERIOD_TICKS - runtime);
     }
   }
 
