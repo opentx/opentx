@@ -41,7 +41,6 @@
 #if !defined(CPUARM)
 void lcd_putcAtt(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 {
-  lcdWaitDmaEnd();
   uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
   const pm_uchar *q = &font_5x7[(c-0x20)*5];
 
@@ -205,7 +204,6 @@ void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
 
 void lcd_plot(coord_t x, coord_t y, LcdFlags att)
 {
-  lcdWaitDmaEnd();
   uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
   if (p<DISPLAY_END)
     lcd_mask(p, BITMASK(y%8), att);
@@ -216,7 +214,6 @@ void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
   if (y >= LCD_H) return;
   if (x+w > LCD_W) { w = LCD_W - x; }
 
-  lcdWaitDmaEnd();
   uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
   uint8_t msk = BITMASK(y%8);
   while (w--) {
@@ -242,7 +239,6 @@ void lcd_vlineStip(coord_t x, int8_t y, int8_t h, uint8_t pat)
   if (pat==DOTTED && !(y%2))
     pat = ~pat;
 
-  lcdWaitDmaEnd();
   uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
   y = (y & 0x07);
   if (y) {
@@ -281,7 +277,6 @@ void lcd_vlineStip(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att)
   if (pat==DOTTED && !(y%2))
     pat = ~pat;
 
-  lcdWaitDmaEnd();
   uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
   y = (y & 0x07);
   if (y) {
@@ -308,7 +303,6 @@ void lcd_vlineStip(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att)
 
 void lcd_invert_line(int8_t y)
 {
-  lcdWaitDmaEnd();
   uint8_t *p  = &displayBuf[y * LCD_W];
   for (coord_t x=0; x<LCD_W; x++) {
     ASSERT_IN_DISPLAY(p);
@@ -329,7 +323,6 @@ void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags a
   uint8_t hb   = (pgm_read_byte(q++)+7)/8;
   bool    inv  = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);
   q += idx*w*hb;
-  lcdWaitDmaEnd();
   for (uint8_t yb = 0; yb < hb; yb++) {
     uint8_t *p = &displayBuf[ (y / 8 + yb) * LCD_W + x ];
     for (coord_t i=0; i<w; i++){

@@ -47,7 +47,6 @@
 
 void lcd_clear()
 {
-  lcdWaitDmaEnd();
   memset(displayBuf, 0, DISPLAY_BUFER_SIZE);
 }
 

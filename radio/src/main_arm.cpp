@@ -131,6 +131,13 @@ void perMain()
   // run Lua scripts that don't use LCD (to use CPU time while LCD DMA is running)
   luaRunNonGuiScripts();
 
+  // wait for LCD DMA to finish before continuing, because code from this point 
+  // is allowed to change the contents of LCD buffer
+  // 
+  // WARNING: make sure no code above this line does any change to the LCD display buffer!
+  //
+  lcdWaitDmaEnd();
+
   // draw LCD from menus or from Lua script
   if (luaRunGuiScripts(evt)) {   // either stand-alone or telemetry scripts
     // let Lua manage LCD fully

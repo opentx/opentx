@@ -65,7 +65,6 @@ void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
 void lcd_plot(coord_t x, coord_t y, LcdFlags att)
 {
   if (x<0 || x>=LCD_W || y<0 || y>=LCD_H) return;
-  lcdWaitDmaEnd();
   uint8_t *p = &displayBuf[ y / 2 * LCD_W + x ];
   uint8_t mask = PIXEL_GREY_MASK(y, att);
   if (p<DISPLAY_END) {
@@ -81,7 +80,6 @@ void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
     w = LCD_W - x; 
   }
 
-  lcdWaitDmaEnd();
   uint8_t *p  = &displayBuf[ y / 2 * LCD_W + x ];
   uint8_t mask = PIXEL_GREY_MASK(y, att);
   while (w--) {
@@ -122,7 +120,6 @@ void lcd_vlineStip(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att)
 
 void lcd_invert_line(int8_t line)
 {
-  lcdWaitDmaEnd();
   uint8_t *p  = &displayBuf[line * 4 * LCD_W];
   for (coord_t x=0; x<LCD_W*4; x++) {
     ASSERT_IN_DISPLAY(p);
@@ -164,7 +161,6 @@ void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, coord_t offset, coord_t 
   }
   uint8_t rows = (*q++ + 1) / 2;
 
-  lcdWaitDmaEnd();
   for (uint8_t row=0; row<rows; row++) {
     q = img + 2 + row*w + offset;
     uint8_t *p = &displayBuf[(row + (y/2)) * LCD_W + x];
