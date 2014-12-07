@@ -159,6 +159,7 @@ void killEvents(uint8_t event)
   }
 }
 
+#if defined(CPUARM)
 bool clearKeyEvents()
 {
 #if defined(PCBSKY9X)
@@ -167,7 +168,7 @@ bool clearKeyEvents()
 
   // loop until all keys are up
 #if !defined(BOOT)
-  tmr10ms_t deadline = get_tmr10ms() + 300;   // wait no more than 3 seconds
+  tmr10ms_t start = get_tmr10ms();
 #endif
 
   while (keyDown()) {
@@ -178,12 +179,8 @@ bool clearKeyEvents()
     wdt_reset();
 #endif
 
-#if defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION) && !defined(TELEMETREZ)
-    rotencPoll();
-#endif
-
 #if !defined(BOOT)
-    if (get_tmr10ms() >= deadline) {
+    if ((get_tmr10ms() - start) >= 300) {  // wait no more than 3 seconds
       //timeout expired, at least one key stuck
       return false;
     }
@@ -194,3 +191,26 @@ bool clearKeyEvents()
   putEvent(0);
   return true;
 }
+#else    // #if defined(CPUARM)
+void clearKeyEvents()
+{
+  // loop until all keys are up
+  while (keyDown()) {
+
+#if defined(SIMU)
+    SIMU_SLEEP(1/*ms*/);
+#else
+    wdt_reset();
+#endif
+
+#if defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION) && !defined(TELEMETREZ)
+    rotencPoll();
+#endif
+  }
+
+  memclear(keys, sizeof(keys));
+  putEvent(0);
+}
+#endif   // #if defined(CPUARM)
+
+

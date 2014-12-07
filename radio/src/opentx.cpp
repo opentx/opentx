@@ -1116,6 +1116,7 @@ void checkAll()
   }
 #endif
 
+#if defined(CPUARM)
   if (!clearKeyEvents()) {
     displayPopup(STR_KEYSTUCK);
     tmr10ms_t tgtime = get_tmr10ms() + 500;
@@ -1128,6 +1129,9 @@ void checkAll()
       wdt_reset();
     }
   }
+#else    // #if defined(CPUARM)
+  clearKeyEvents();
+#endif   // #if defined(CPUARM)
 
   START_SILENCE_PERIOD();
 }

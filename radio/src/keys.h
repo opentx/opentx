@@ -269,13 +269,14 @@ extern uint8_t s_evt;
 
 #define putEvent(evt) s_evt = evt
 
-bool clearKeyEvents();
 void pauseEvents(uint8_t enuk);
 void killEvents(uint8_t enuk);
 
 #if defined(CPUARM)
+  bool clearKeyEvents();
   uint8_t getEvent(bool trim=false);
 #else
+  void clearKeyEvents();
   uint8_t getEvent();
 #endif
 
