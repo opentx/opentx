@@ -192,8 +192,8 @@ FORCEINLINE void readKeysAndTrims()
 {
   uint8_t enuk = KEY_MENU;
 
-  keys[BTN_REa].input(~PINJ & 0b00000001, BTN_REa);
-  keys[BTN_REb].input(~PINJ & 0b00000010, BTN_REb);
+  keys[BTN_REa].input(~PINJ & 0b00000001);
+  keys[BTN_REb].input(~PINJ & 0b00000010);
 
   uint8_t tin = ~PINL;
   uint8_t in;
@@ -202,7 +202,7 @@ FORCEINLINE void readKeysAndTrims()
 
   for (int i=1; i<7; i++) {
     //INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
-    keys[enuk].input(in & (1<<i),(EnumKeys)enuk);
+    keys[enuk].input(in & (1<<i));
     ++enuk;
   }
 
@@ -210,7 +210,7 @@ FORCEINLINE void readKeysAndTrims()
   in = ~PINF;
   for (int i=0; i<8; i++) {
     // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
-    keys[enuk].input(in & pgm_read_byte(crossTrim+i),(EnumKeys)enuk);
+    keys[enuk].input(in & pgm_read_byte(crossTrim+i));
     ++enuk;
   }
 }
