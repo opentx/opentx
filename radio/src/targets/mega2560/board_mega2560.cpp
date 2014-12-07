@@ -1,5 +1,6 @@
 /*
  * Authors (alphabetical order)
+ * - Aguerre Franck 
  * - Andre Bernet <bernet.andre@gmail.com>
  * - Andreas Weitl
  * - Bertrand Songis <bsongis@gmail.com>
@@ -41,18 +42,18 @@ inline void boardInit()
 {
   // Set up I/O port data directions and initial states (unused pin setting : input, pull-up on)
   DDRA = 0b11111111;  PORTA = 0b00000000; // LCD data
-  DDRB = 0b01000111;  PORTB = 0b00101111; // 7:PPM_IN 6:PPM_OUT, 5:SimCTRL, 4:Buzzer, SDCARD[3:MISO 2:MOSI 1:SCK 0:CS]
+  DDRB = 0b01110111;  PORTB = 0b00001111; // 7:PPM_IN 6:PPM_OUT, 5:SimCTRL, 4:Buzzer, SDCARD[3:MISO 2:MOSI 1:SCK 0:CS]
   DDRC = 0b11111100;  PORTC = 0b00000011; // 7-3:LCD, 2:BackLight, 1:ID2_SW, 0:ID1_SW
-  DDRD = 0b00000000;  PORTD = 0b11110000; // 7:AilDR_SW, 6:N/A, 5:N/A, 4:N/A, 3:RENC2_B, 2:RENC2_A, 1:N/A, 0:N/A
-  DDRE = 0b00001010;  PORTE = 0b11110100; // 7:N/A, 6:N/A, 5:RENC1_B, 4:RENC1_A, 3:Buzzer(old), 2:N/A, 1:TELEM_TX, 0:TELEM_RX(pull-up off)
+  DDRD = 0b00000000;  PORTD = 0b11111111; // 7:AilDR_SW, 6:N/A, 5:N/A, 4:N/A, 3:RENC2_B, 2:RENC2_A, 1:N/A, 0:N/A
+  DDRE = 0b00000010;  PORTE = 0b11111100; // 7:N/A, 6:N/A, 5:RENC1_B, 4:RENC1_A, 3:N/A, 2:N/A, 1:TELEM_TX, 0:TELEM_RX
   DDRF = 0b00000000;  PORTF = 0b11111111; // 7-0:Trim switch inputs
   DDRG = 0b00000000;  PORTG = 0b11111111; // 7:N/A, 6:N/A, 5:N/A, 4:N/A, 3:N/A, 2:TCut_SW, 1:Gear_SW, 0: RudDr_SW
-  DDRH = 0b00011000;  PORTH = 0b11010111; // 7:N/A, 6:RFPw, 5:JackPres, 4:HoldPw, 3:Speaker, 2:N/A, 1:N/A, 0:N/A
+  DDRH = 0b00011000;  PORTH = 0b10010111; // 7:N/A, 6:RFPw, 5:JackPres, 4:HoldPw, 3:Speaker, 2:N/A, 1:N/A, 0:N/A
   DDRJ = 0b00000000;  PORTJ = 0b11111111; // 7:N/A, 6:N/A, 5:N/A, 4:N/A, 3:N/A, 2:N/A, 1:RENC2_push, 0:RENC1_push
   DDRK = 0b00000000;  PORTK = 0b00000000; // Analogic input (no pull-ups)
   DDRL = 0b00000000;  PORTL = 0b11111111; // 7:TRN_SW 6:EleDR_SW, 5:ESC, 4:MENU 3:Keyb_Left, 2:Keyb_Right, 1:Keyb_Up, 0:Keyb_Down
- 
-  ADMUX=ADC_VREF_TYPE;   // need to be set to internal reference
+  
+  ADMUX=ADC_VREF_TYPE;
   ADCSRA=0x85; // ADC enabled, pre-scaler division=32 (no interrupt, no auto-triggering)
   ADCSRB=(1<<MUX5);
 
@@ -83,18 +84,16 @@ inline void boardInit()
 
 uint8_t pwrCheck()
 {
-#if !defined(SIMU) //&& !defined(REV0)
-  //if ((PING & 0b00000010) && (~PINL & 0b01000000))     //temporary disabled
-  //return e_power_off;
-#endif
-  return e_power_on;
-}
+/*#if !defined(SIMU) //&& !defined(REV0)
+  if ((PINH & 0b01000000) && (~PINH & 0b00100000))
+  return e_power_off;
+#endif */  
+  return e_power_on;  
+}      
 
 void pwrOff()
 {
-#ifndef REV0
-  PORTL = 0b11111111;   //to check !
-#endif
+  //PORTH = 0b11101111;   //Hold_PWR pin (PortH4) set to 0
 }
 
 FORCEINLINE uint8_t keyDown()
@@ -193,8 +192,8 @@ FORCEINLINE void readKeysAndTrims()
 {
   uint8_t enuk = KEY_MENU;
 
-  keys[BTN_REa].input(~PINJ & 0b00000001);
-  keys[BTN_REb].input(~PINJ & 0b00000010);
+  keys[BTN_REa].input(~PINJ & 0b00000001, BTN_REa);
+  keys[BTN_REb].input(~PINJ & 0b00000010, BTN_REb);
 
   uint8_t tin = ~PINL;
   uint8_t in;
@@ -203,7 +202,7 @@ FORCEINLINE void readKeysAndTrims()
 
   for (int i=1; i<7; i++) {
     //INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
-    keys[enuk].input(in & (1<<i));
+    keys[enuk].input(in & (1<<i),(EnumKeys)enuk);
     ++enuk;
   }
 
@@ -211,7 +210,7 @@ FORCEINLINE void readKeysAndTrims()
   in = ~PINF;
   for (int i=0; i<8; i++) {
     // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
-    keys[enuk].input(in & pgm_read_byte(crossTrim+i));
+    keys[enuk].input(in & pgm_read_byte(crossTrim+i),(EnumKeys)enuk);
     ++enuk;
   }
 }

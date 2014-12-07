@@ -1,5 +1,6 @@
 /*
  * Authors (alphabetical order)
+ * - Aguerre Franck  
  * - Andre Bernet <bernet.andre@gmail.com>
  * - Andreas Weitl
  * - Bertrand Songis <bsongis@gmail.com>
@@ -78,11 +79,11 @@
 #define PAUSE_PPMIN_INTERRUPT()  TIMSK3 &= ~(1<<ICIE3)
 #define RESUME_PPMIN_INTERRUPT() TIMSK3 |= (1<<ICIE3)
 
-#define SLAVE_MODE()             (PINH & (1<<INP_H_RF_POW))
-#define JACK_PPM_OUT()           PORTB |= (1<<OUT_B_SIM_CTL)
-#define JACK_PPM_IN()            PORTB &= ~(1<<OUT_B_SIM_CTL)
-#define SPEAKER_ON               TCCR0A |=  (1 << COM0A0)
-#define SPEAKER_OFF              TCCR0A &= ~(1 << COM0A0)
+#define SLAVE_MODE()             (PINH & (1<<INP_H_RF_POW))     //not tested
+#define JACK_PPM_OUT()           PORTB |= (1<<OUT_B_SIM_CTL)    //not tested
+#define JACK_PPM_IN()            PORTB &= ~(1<<OUT_B_SIM_CTL)   //not tested
+#define SPEAKER_ON               TCCR0A |=  (1 << COM0A0)       //not tested
+#define SPEAKER_OFF              TCCR0A &= ~(1 << COM0A0)       //not tested
 
 #define __BACKLIGHT_ON           PORTC |=  (1 << OUT_C_LIGHT)   //ok
 #define __BACKLIGHT_OFF          PORTC &= ~(1 << OUT_C_LIGHT)   //ok
@@ -130,14 +131,14 @@
 #  define INP_L_Trainer          7    //ok
 
 // Servitudes driver
-#  define INP_B_PPM_IN           7    //to verify
+#  define INP_B_PPM_IN           7    //not tested
 #  define OUT_B_PPM              6    //to verify
-#  define OUT_B_SIM_CTL          5    //to verify
+#  define OUT_B_SIM_CTL          5    //not tested
 #  define OUT_B_BUZZER           4    //to verify
-#  define INP_H_RF_POW           6    //to verify
-#  define INP_H_SPARE5           5    //hold power    OUT_H_xx   4    ?????
-#  define INP_H_SPARE6           4    //jack presence INP_H_xx   5    ?????
-#  define OUT_H_Speaker          3    //to verify
+#  define INP_H_RF_POW           6    //not tested
+//#define INP_H_                 5    //reserved JACKPRES                                                                          
+//#define INP_H_                 4    //reserved HOLDPWR
+#  define OUT_H_Speaker          3    //not tested
 #  define INP_E_TELEM_RX         1    //same as Gruvin9x
 #  define OUT_E_TELEM_TX         0    //same as Gruvin9x
   
@@ -148,13 +149,13 @@
 #  define INP_D_ROT_ENC_2_B      3    //ok
 #  define INP_J_ROT_ENC_1_PUSH   0    //ok
 #  define INP_J_ROT_ENC_2_PUSH   1    //ok
-#  define REA_DOWN()    (~PINJ & (1<<INP_J_ROT_ENC_1_PUSH))
-#  define REB_DOWN()    (~PINJ & (1<<INP_J_ROT_ENC_2_PUSH))
-#  define ROTENC_DOWN() (REA_DOWN() || REB_DOWN())
+#  define REA_DOWN()    (~PINJ & (1<<INP_J_ROT_ENC_1_PUSH))   //ok
+#  define REB_DOWN()    (~PINJ & (1<<INP_J_ROT_ENC_2_PUSH))   //ok
+#  define ROTENC_DOWN() (REA_DOWN() || REB_DOWN())            //ok
 
 // Old #define from Gruvin9x
-#  define OUT_E_BUZZER           3    //PB : temporary used, crash otherwise at compilation!!!!!!
 /*
+#  define OUT_E_BUZZER           3    //to erase
 #  define INP_E_USB_D_PLS        4    //to erase
 #  define INP_E_USB_D_NEG        2    //to erase
 #  define OUT_D_HAPTIC           7    //to erase
