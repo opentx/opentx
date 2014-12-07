@@ -342,10 +342,8 @@ void *main_thread(void *)
 #if defined(CPUARM)
       doMixerCalculations();
       checkTrims();
-      perMainArm();
-#else
-      perMain();
 #endif
+      perMain();
       sleep(10/*ms*/);
     }
 

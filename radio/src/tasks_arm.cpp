@@ -160,7 +160,7 @@ void menusTask(void * pdata)
 
   while (pwrCheck() != e_power_off) {
     U64 start = CoGetOSTime();
-    perMainArm();
+    perMain();
     // TODO remove completely massstorage from sky9x firmware
     U32 runtime = (U32)(CoGetOSTime() - start);
     // deduct the thread run-time from the wait, if run-time was more than 

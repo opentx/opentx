@@ -97,7 +97,7 @@ void checkEeprom()
   }
 }
 
-void perMainArm()
+void perMain()
 {
 #if defined(PCBSKY9X) && !defined(REVA)
   calcConsumption();
