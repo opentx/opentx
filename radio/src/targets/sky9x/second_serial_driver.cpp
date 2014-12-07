@@ -122,7 +122,17 @@ void telemetrySecondPortInit(unsigned int /*protocol*/)
   SECOND_UART_Configure(FRSKY_D_BAUDRATE, Master_frequency);
   // startPdcUsartReceive();
 }
+bool telemetrySecondPortReceive(uint8_t & data)
+{
+  return serial2RxFifo.pop(data);
+}
+#endif
 
+#if defined(MAVLINK)
+void telemetrySecondPortInit(unsigned int baudrate)
+{
+  SECOND_UART_Configure((uint32_t)baudrate, Master_frequency);
+}
 bool telemetrySecondPortReceive(uint8_t & data)
 {
   return serial2RxFifo.pop(data);
