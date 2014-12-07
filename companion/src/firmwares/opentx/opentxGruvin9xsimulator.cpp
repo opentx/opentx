@@ -63,6 +63,7 @@ namespace Open9xGruvin9x {
 #include "radio/src/eeprom_common.cpp"
 #include "radio/src/eeprom_rlc.cpp"
 #include "radio/src/opentx.cpp"
+#include "radio/src/main_avr.cpp"
 #include "radio/src/strhelpers.cpp"
 #include "radio/src/switches.cpp"
 #include "radio/src/functions.cpp"
