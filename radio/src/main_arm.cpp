@@ -129,7 +129,7 @@ void perMain()
 #endif
 
   // run Lua scripts that don't use LCD (to use CPU time while LCD DMA is running)
-  luaTask(0, RUN_MIX_SCRIPT | RUN_FUNC_SCRIPT | RUN_TELEM_BG_SCRIPT, false);
+  (void)luaTask(0, RUN_MIX_SCRIPT | RUN_FUNC_SCRIPT | RUN_TELEM_BG_SCRIPT, false);
 
   // wait for LCD DMA to finish before continuing, because code from this point 
   // is allowed to change the contents of LCD buffer
