@@ -1831,7 +1831,7 @@ void luaDoOneRunStandalone(uint8_t evt)
   }
 }
   
-bool luaDoOneRunPermanentScript(uint8_t evt, int i, bool runGuiScripts)
+bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint8_t scriptType)
 {
   ScriptInternalData & sid = scriptInternalData[i];
   if (sid.state != SCRIPT_OK) return false;
@@ -1843,11 +1843,10 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, bool runGuiScripts)
 #endif
   ScriptInputsOutputs * sio = NULL;
 #if SCRIPT_MIX_FIRST > 0
-  if (sid.reference >= SCRIPT_MIX_FIRST && sid.reference <= SCRIPT_MIX_LAST) {
+  if ((scriptType & RUN_MIX_SCRIPT) && (sid.reference >= SCRIPT_MIX_FIRST && sid.reference <= SCRIPT_MIX_LAST)) {
 #else
-  if (sid.reference <= SCRIPT_MIX_LAST) {
+  if ((scriptType & RUN_MIX_SCRIPT) && (sid.reference <= SCRIPT_MIX_LAST)) {
 #endif
-    if (runGuiScripts) return false;    //mixer script is not gui script
     ScriptData & sd = g_model.scriptsData[sid.reference-SCRIPT_MIX_FIRST];
     sio = &scriptInputsOutputs[sid.reference-SCRIPT_MIX_FIRST];
     inputsCount = sio->inputsCount;
@@ -1862,9 +1861,8 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, bool runGuiScripts)
         lua_pushinteger(L, sd.inputs[j] + sio->inputs[j].def);
     }
   }
-  else if (sid.reference >= SCRIPT_FUNC_FIRST && sid.reference <= SCRIPT_FUNC_LAST) {
+  else if ((scriptType & RUN_FUNC_SCRIPT) && (sid.reference >= SCRIPT_FUNC_FIRST && sid.reference <= SCRIPT_FUNC_LAST)) {
     CustomFunctionData & fn = g_model.customFn[sid.reference-SCRIPT_FUNC_FIRST];
-    if (runGuiScripts) return false;    //function script is not gui script
     if (!getSwitch(fn.swtch)) return false;
 #if defined(SIMU) || defined(DEBUG)
     filename = fn.play.name;
@@ -1876,14 +1874,13 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, bool runGuiScripts)
     TelemetryScriptData & script = g_model.frsky.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
     filename = script.file;
 #endif
-    if (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view) {
-      if (!runGuiScripts) return false;    //telemetry script gui part, do not run this time
+    if ((scriptType & RUN_TELEM_FG_SCRIPT) && 
+        (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {
       lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
       lua_pushinteger(L, evt);
       inputsCount = 1;
     }
-    else if (sid.background) {
-      if (runGuiScripts) return false;    //telemetry script non-gui part, do not run this time
+    else if ((scriptType & RUN_TELEM_BG_SCRIPT) && (sid.background)) {
       lua_rawgeti(L, LUA_REGISTRYINDEX, sid.background);
     }
     else {
@@ -1948,61 +1945,16 @@ void luaDoGc()
   }
 }
 
-
-uint32_t lastRunTime;
-
-void luaRunNonGuiScripts()
+bool luaTask(uint8_t evt, uint8_t scriptType, bool allowLcdUsage)
 {
-  //execute one cycle of all Lua cripts that don't use LCD (model scripts, function scripts)
-
-  uint32_t t0 = get_tmr10ms();
-  static uint32_t lastLuaTime = 0;
-  uint16_t interval = (lastLuaTime == 0 ? 0 : (t0 - lastLuaTime));
-  lastLuaTime = t0;
-  if (interval > maxLuaInterval) {
-    maxLuaInterval = interval;
-  }
-
-  luaLcdAllowed = false;
-  if (luaState == INTERPRETER_PANIC) return;
-  if (luaState & INTERPRETER_RUNNING_STANDALONE_SCRIPT) return;
-
-  if (luaState & INTERPRETER_RELOAD_PERMANENT_SCRIPTS) {
-    luaState = 0;
-    luaInit();
-    if (luaState == INTERPRETER_PANIC) return;
-    luaLoadPermanentScripts();
-    if (luaState == INTERPRETER_PANIC) return;
-  }
-  for (int i=0; i<luaScriptsCount; i++) {
-    PROTECT_LUA() {
-      luaDoOneRunPermanentScript(0, i, false);
-    }
-    else {
-      luaDisable();
-      return;
-    }
-    UNPROTECT_LUA();
-    //todo gc step between scripts
-  }
-  luaDoGc();
-
-  lastRunTime = get_tmr10ms() - t0;
-}
-
-bool luaRunGuiScripts(uint8_t evt)
-{
-  //execute one cycle of Lua scripts that use LCD
-  //either stand-alone or other (telemetry scripts)
-
-  uint32_t t0 = get_tmr10ms();
-
-
-  luaLcdAllowed = true;
   if (luaState == INTERPRETER_PANIC) return false;
-
+  luaLcdAllowed = allowLcdUsage;
   bool scriptWasRun = false;
+
+  // we run either standalone script or permanent scripts
   if (luaState & INTERPRETER_RUNNING_STANDALONE_SCRIPT) {
+    // run standalone script
+    if ((scriptType & RUN_STNDAL_SCRIPT) == 0) return false;
     PROTECT_LUA() {
       luaDoOneRunStandalone(evt);
       scriptWasRun = true;
@@ -2014,7 +1966,7 @@ bool luaRunGuiScripts(uint8_t evt)
     UNPROTECT_LUA();
   }
   else {
-    // model scripts
+    // run permanent scripts
     if (luaState & INTERPRETER_RELOAD_PERMANENT_SCRIPTS) {
       luaState = 0;
       luaInit();
@@ -2025,81 +1977,19 @@ bool luaRunGuiScripts(uint8_t evt)
 
     for (int i=0; i<luaScriptsCount; i++) {
       PROTECT_LUA() {
-        scriptWasRun |= luaDoOneRunPermanentScript(evt, i, true);
+        scriptWasRun |= luaDoOneRunPermanentScript(evt, i, scriptType);
       }
       else {
         luaDisable();
-        return false;
+        break;
       }
       UNPROTECT_LUA();
       //todo gc step between scripts
     }
   }
   luaDoGc();
-
-  lastRunTime += get_tmr10ms() - t0;
-  if (lastRunTime > maxLuaDuration) {
-    maxLuaDuration = lastRunTime;
-  }
-
   return scriptWasRun;
 }
-
-#if 0
-void luaTask(uint8_t evt)
-{
-  uint32_t t0 = get_tmr10ms();
-  static uint32_t lastLuaTime = 0;
-  uint16_t interval = (lastLuaTime == 0 ? 0 : (t0 - lastLuaTime));
-  lastLuaTime = t0;
-  if (interval > maxLuaInterval) {
-    maxLuaInterval = interval;
-  }
-
-  if (luaState == INTERPRETER_PANIC) {
-    return;
-  }
-
-  if (luaState & INTERPRETER_RUNNING_STANDALONE_SCRIPT) {
-    PROTECT_LUA() {
-      luaDoOneRunStandalone(evt);
-    }
-    else {
-      luaDisable();
-      return;
-    }
-    UNPROTECT_LUA();
-  }
-  else {
-    // model scripts
-    if (luaState & INTERPRETER_RELOAD_PERMANENT_SCRIPTS) {
-      luaState = 0;
-      luaInit();
-      if (luaState == INTERPRETER_PANIC) return;
-      luaLoadPermanentScripts();
-      if (luaState == INTERPRETER_PANIC) return;
-    }
-
-    for (int i=0; i<luaScriptsCount; i++) {
-      PROTECT_LUA() {
-        luaDoOneRunPermanentScript(evt, i);
-      }
-      else {
-        luaDisable();
-        return;
-      }
-      UNPROTECT_LUA();
-    }
-  }
-
-  luaDoGc();
-
-  t0 = get_tmr10ms() - t0;
-  if (t0 > maxLuaDuration) {
-    maxLuaDuration = t0;
-  }
-}
-#endif
 
 int luaGetMemUsed()
 {

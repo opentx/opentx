@@ -38,6 +38,12 @@
 #define luaapi_h
 
 
+#define RUN_MIX_SCRIPT        (1 << 0)
+#define RUN_FUNC_SCRIPT       (1 << 1)
+#define RUN_TELEM_BG_SCRIPT   (1 << 2)
+#define RUN_TELEM_FG_SCRIPT   (1 << 3)
+#define RUN_STNDAL_SCRIPT     (1 << 4)
+
 
 #if defined(LUA)
   struct ScriptInput {
@@ -88,8 +94,7 @@
   extern ScriptInternalData scriptInternalData[MAX_SCRIPTS];
   extern ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS];
   void luaClose();
-  // void luaInit();
-  // void luaTask(uint8_t evt);
+  bool luaTask(uint8_t evt, uint8_t scriptType, bool allowLcdUsage);
   void luaExec(const char *filename);
   int luaGetMemUsed();
   #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
@@ -110,19 +115,15 @@
                           if (setjmp(lj.b) == 0)
   #define UNPROTECT_LUA() global_lj = lj.previous; }   /* restore old error handler */
 
-  void luaRunNonGuiScripts();
-  bool luaRunGuiScripts(uint8_t evt);
-
   extern uint16_t maxLuaInterval;
   extern uint16_t maxLuaDuration;
-
-
 #else  // #if defined(LUA)
   #define LUA_LOAD_MODEL_SCRIPTS()
   #define LUA_LOAD_MODEL_SCRIPT(idx)
   #define LUA_STANDALONE_SCRIPT_RUNNING() (0)
   #define luaRunNonGuiScripts()
   #define luaRunGuiScripts(evt)   (false)
+  #define luaAllowLcdUsage(allow) 
 #endif
 
 #endif // #ifndef luaapi_h
