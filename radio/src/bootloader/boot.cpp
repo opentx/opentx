@@ -150,6 +150,11 @@ extern void init_spi(void);
 extern void writeBlock(void);
 extern void usbPluggedIn();
 
+#if defined(REV9E)
+typedef int32_t rotenc_t;
+extern rotenc_t x9de_rotenc;
+#endif
+
 /*----------------------------------------------------------------------------
  *         Global functions
  *----------------------------------------------------------------------------*/
@@ -201,6 +206,22 @@ void interrupt10ms(void)
     keys[enuk].input(value);
     ++enuk;
   }
+
+#if defined(REV9E)
+  checkRotaryEncoder();
+  static rotenc_t rePreviousValue;
+  rotenc_t reNewValue = (x9de_rotenc / 2);
+  int8_t scrollRE = reNewValue - rePreviousValue;
+  if (scrollRE) {
+    rePreviousValue = reNewValue;
+    if (scrollRE < 0) {
+      putEvent(EVT_KEY_FIRST(KEY_MINUS));
+    }
+    else {
+      putEvent(EVT_KEY_FIRST(KEY_PLUS)); 
+    }
+  }
+#endif
 }
 
 #if defined(PCBSKY9X)
@@ -552,6 +573,7 @@ int main()
 
       Tenms = 0;
 
+      lcdRefreshWait();
       lcd_clear();
       lcd_putsLeft(0, BOOTLOADER_TITLE);
       lcd_invert_line(0);
@@ -807,6 +829,7 @@ int main()
       if ((~readKeys() & 0x7E) == 0) {
         lcd_clear();
         lcdRefresh();
+        lcdRefreshWait();
         RCC->CSR |= RCC_CSR_RMVF;   //clear the reset flags in RCC clock control & status register
         NVIC_SystemReset();
       }
