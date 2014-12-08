@@ -344,6 +344,8 @@ static int luaGetGeneralSettings(lua_State *L)
 
 static int luaLcdLock(lua_State *L)
 {
+  // disabled in opentx 2.1
+  // TODO: remove this function completely in opentx 2.2
   return 0;
 }
 
@@ -1831,7 +1833,7 @@ void luaDoOneRunStandalone(uint8_t evt)
   }
 }
   
-bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint8_t scriptType)
+bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
 {
   ScriptInternalData & sid = scriptInternalData[i];
   if (sid.state != SCRIPT_OK) return false;
