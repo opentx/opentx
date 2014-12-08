@@ -1475,8 +1475,6 @@ void MainWindow::updateMenus()
     sdsyncAct->setEnabled(!FindMassstoragePath("SOUNDS").isEmpty());
 
     setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->getName()).arg( g.profile[g.id()].name() ));
-
-    qDebug() << "updateMenus";
 }
 
 MdiChild *MainWindow::createMdiChild()
