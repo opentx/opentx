@@ -97,14 +97,6 @@ uint16_t maxMixerDuration;
 audioQueue  audio;
 #endif
 
-#if defined(DSM2)
-// TODO move elsewhere
-uint8_t dsm2Flag = 0;
-#if !defined(PCBTARANIS)
-uint8_t s_bind_allowed = 255;
-#endif
-#endif
-
 uint8_t heartbeat;
 
 uint8_t stickMode;
@@ -1903,23 +1895,13 @@ void doMixerCalculations()
       }
     }
 
-#if defined(DSM2)
-    static uint8_t count_dsm_range = 0;
-    if (dsm2Flag & (DSM2_BIND_FLAG | DSM2_RANGECHECK_FLAG)) {
-      if (++count_dsm_range >= 200) {
-        AUDIO_PLAY(AU_FRSKY_CHEEP);
-        count_dsm_range = 0;
-      }
-    }
-#endif
-
-#if defined(PXX)
-    static uint8_t count_pxx = 0;
-    for (uint8_t i = 0; i < NUM_MODULES; i++) {
-      if (pxxFlag[i] & (PXX_SEND_RANGECHECK | PXX_SEND_RXNUM)) {
-        if (++count_pxx >= 250) {
+#if defined(PXX) || defined(DSM2)
+    static uint8_t countRangecheck = 0;
+    for (uint8_t i=0; i<NUM_MODULES; ++i) {
+      if (moduleFlag[i] != MODULE_NORMAL_MODE) {
+        if (++countRangecheck >= 250) {
+          countRangecheck = 0;
           AUDIO_PLAY(AU_FRSKY_CHEEP);
-          count_pxx = 0;
         }
       }
     }

@@ -36,6 +36,9 @@
 
 #include "../opentx.h"
 
+#define DSM2_SEND_BIND                     (1 << 7)
+#define DSM2_SEND_RANGECHECK               (1 << 5)
+
 #if defined(PCBTARANIS)
 uint16_t dsm2Stream[400];                         // Likely more than we need
 uint16_t *dsm2StreamPtr;
@@ -45,6 +48,8 @@ uint8_t  dsm2Stream[64];                          // Likely more than we need
 uint8_t *dsm2StreamPtr;
 uint8_t  dsm2SerialByte ;
 uint8_t  dsm2SerialBitCount;
+uint8_t  dsm2BindEnable = 0;
+uint8_t  dsm2BindTimer = DSM2_BIND_TIMEOUT;
 #endif
 
 // DSM2 control bits
@@ -72,21 +77,21 @@ void _send_1(uint8_t v)
 
 void sendByteDsm2(uint8_t b) //max 10 changes 0 10 10 10 10 1
 {
-    bool    lev = 0;
-    uint8_t len = BITLEN_DSM2; //max val: 9*16 < 256
-    for (uint8_t i=0; i<=8; i++) { //8Bits + Stop=1
-        bool nlev = b & 1; //lsb first
-        if (lev == nlev) {
-          len += BITLEN_DSM2;
-        }
-        else {
-          _send_1(len); // _send_1(nlev ? len-5 : len+3);
-          len  = BITLEN_DSM2;
-          lev  = nlev;
-        }
-        b = (b>>1) | 0x80; //shift in stop bit
+  bool    lev = 0;
+  uint8_t len = BITLEN_DSM2; //max val: 9*16 < 256
+  for (uint8_t i=0; i<=8; i++) { //8Bits + Stop=1
+    bool nlev = b & 1; //lsb first
+    if (lev == nlev) {
+      len += BITLEN_DSM2;
     }
-    _send_1(len+BITLEN_DSM2); // _send_1(len+BITLEN_DSM2+3); // 2 stop bits
+    else {
+      _send_1(len); // _send_1(nlev ? len-5 : len+3);
+      len  = BITLEN_DSM2;
+      lev  = nlev;
+    }
+    b = (b>>1) | 0x80; //shift in stop bit
+  }
+  _send_1(len+BITLEN_DSM2); // _send_1(len+BITLEN_DSM2+3); // 2 stop bits
 }
 void putDsm2Flush()
 {
@@ -159,15 +164,22 @@ void setupPulsesDSM2(unsigned int port)
       break;
   }
 
-#if !defined(PCBTARANIS)
-  if (s_bind_allowed) s_bind_allowed--;
-  if (s_bind_allowed && switchState(SW_DSM2_BIND))
-    dsm2Flag = DSM2_BIND_FLAG;
-  else
-    dsm2Flag &= ~DSM2_BIND_FLAG;
+#if defined(PCBTARANIS)
+  if (moduleFlag[port] == MODULE_BIND)
+    dsmDat[0] |= DSM2_SEND_BIND;
+  else if (moduleFlag[port] == MODULE_RANGECHECK)
+    dsmDat[0] |= DSM2_SEND_RANGECHECK;
+#else
+  dsm2BindEnable = 0;
+  if (dsm2BindTimer > 0) {
+    dsm2BindTimer--;
+    if (switchState(SW_DSM2_BIND)) {
+      dsm2BindEnable = DSM2_SEND_BIND;
+      dsmDat[0] |= DSM2_SEND_BIND;
+    }
+  }
 #endif
 
-  dsmDat[0] |= dsm2Flag;
   dsmDat[1] = g_model.header.modelId; // DSM2 Header second byte for model match
 
   for (int i=0; i<DSM2_CHANS; i++) {

@@ -233,7 +233,7 @@ uint8_t PcmByte ;
 uint8_t PcmBitCount ;
 uint16_t PcmCrc ;
 uint8_t PcmOnesCount ;
-uint8_t pxxFlag[NUM_MODULES] = { 0 };
+uint8_t moduleFlag[NUM_MODULES] = { 0 };
 
 void crc( uint8_t data )
 {

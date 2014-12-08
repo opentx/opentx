@@ -36,7 +36,9 @@
 
 #include "../opentx.h"
 
-uint8_t pxxFlag[NUM_MODULES] = { MODULES_INIT(0) };
+#define PXX_SEND_BIND                      0x01
+#define PXX_SEND_FAILSAFE                  (1 << 4)
+#define PXX_SEND_RANGECHECK                (1 << 5)
 
 #if defined(PCBTARANIS)
 uint16_t pxxStream[NUM_MODULES][400];
@@ -205,20 +207,20 @@ void setupPulsesPXX(unsigned int port)
   putPcmByte(g_model.header.modelId, port);
 
   /* FLAG1 */
-  uint8_t flag1;
-  if (pxxFlag[port] & PXX_SEND_RXNUM) {
-    flag1 = (g_model.moduleData[port].rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag[port];
+  uint8_t flag1 = (g_model.moduleData[port].rfProtocol << 6);
+  if (moduleFlag[port] == MODULE_BIND) {
+    flag1 |= (g_eeGeneral.countryCode << 1) | PXX_SEND_BIND;
   }
-  else {
-    flag1 = (g_model.moduleData[port].rfProtocol << 6) | pxxFlag[port];
-    if (g_model.moduleData[port].failsafeMode != FAILSAFE_RECEIVER) {
-      if (failsafeCounter[port]-- == 0) {
-        failsafeCounter[port] = 1000;
-        flag1 |= PXX_SEND_FAILSAFE;
-      }
-      if (failsafeCounter[port] == 0 && g_model.moduleData[port].channelsCount > 0) {
-        flag1 |= PXX_SEND_FAILSAFE;
-      }
+  else if (moduleFlag[port] == MODULE_RANGECHECK) {
+    flag1 |= PXX_SEND_RANGECHECK;
+  }
+  else if (g_model.moduleData[port].failsafeMode != FAILSAFE_RECEIVER) {
+    if (failsafeCounter[port]-- == 0) {
+      failsafeCounter[port] = 1000;
+      flag1 |= PXX_SEND_FAILSAFE;
+    }
+    if (failsafeCounter[port] == 0 && g_model.moduleData[port].channelsCount > 0) {
+      flag1 |= PXX_SEND_FAILSAFE;
     }
   }
 

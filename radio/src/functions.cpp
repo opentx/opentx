@@ -364,6 +364,19 @@ void evalFunctions()
           }
 #endif
 
+#if defined(DANGEROUS_MODULE_FUNCTIONS)
+          case FUNC_RANGECHECK:
+          case FUNC_BIND:
+          case FUNC_MODULE_OFF:
+          {
+            unsigned int moduleIndex = CFN_PARAM(cfn);
+            if (moduleIndex < NUM_MODULES) {
+              moduleFlag[moduleIndex] = 1 + CFN_FUNC(cfn) - FUNC_RANGECHECK;
+            }
+            break;
+          }
+#endif
+
 #if defined(GVARS)
           case FUNC_ADJUST_GVAR:
             if (CFN_GVAR_MODE(cfn) == 0) {

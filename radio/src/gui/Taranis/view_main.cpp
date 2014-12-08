@@ -601,9 +601,4 @@ void menuMainView(uint8_t event)
     lcd_outdezAtt(BITMAP_X+5*FW+FW/2, BITMAP_Y+2*FH+3, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), BOLD);
   }
 #endif
-
-#if defined(DSM2)
-  if (dsm2Flag == DSM2_BIND_FLAG) // Issue 98
-    lcd_putsAtt(15*FW, 0, PSTR("BIND"), 0);
-#endif
 }

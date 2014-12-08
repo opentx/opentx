@@ -1048,17 +1048,14 @@ void menuModelSetup(uint8_t event)
 
   MENU_CHECK(menuTabModel, e_ModelSetup, MODEL_SETUP_MAX_LINES);
 
+#if defined(DSM2) || defined(PXX)
   if (menuEvent) {
-#if defined(DSM2)
-    dsm2Flag = 0;
-#endif
-#if defined(PCBTARANIS)
-    pxxFlag[INTERNAL_MODULE] = 0;
-#endif
-#if defined(CPUARM) && defined(PXX)
-    pxxFlag[EXTERNAL_MODULE] = 0;
+    moduleFlag[0] = 0;
+#if NUM_MODULES > 1
+    moduleFlag[1] = 0;
 #endif
   }
+#endif
 
   TITLE(STR_MENUSETUP);
 
@@ -1671,32 +1668,15 @@ void menuModelSetup(uint8_t event)
             }
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
-            if (IS_MODULE_XJT(moduleIdx)) {
-#if defined(PXX)
-              uint8_t newFlag = 0;
-              if (attr && l_posHorz>0 && s_editMode>0) {
-                if (l_posHorz == 1)
-                  newFlag = PXX_SEND_RXNUM;
-                else if (l_posHorz == 2) {
-                  newFlag = PXX_SEND_RANGECHECK;
-                }
+            uint8_t newFlag = 0;
+            if (attr && l_posHorz>0 && s_editMode>0) {
+              if (l_posHorz == 1)
+                newFlag = MODULE_BIND;
+              else if (l_posHorz == 2) {
+                newFlag = MODULE_RANGECHECK;
               }
-              pxxFlag[moduleIdx] = newFlag;
-#endif
             }
-#if defined(DSM2)
-            else {
-              uint8_t newFlag = 0;
-              if (attr && l_posHorz>0 && s_editMode>0) {
-                if (l_posHorz == 1)
-                  newFlag = DSM2_BIND_FLAG;
-                else if (l_posHorz == 2) {
-                  newFlag = DSM2_RANGECHECK_FLAG;
-                }
-              }
-              dsm2Flag = newFlag;
-            }
-#endif
+            moduleFlag[moduleIdx] = newFlag;
           }
         }
         break;
@@ -1851,7 +1831,7 @@ void menuModelSetup(uint8_t event)
               // send reset code
               newFlag = PXX_SEND_RXNUM;
             }
-            pxxFlag[0] = newFlag;
+            moduleFlag[0] = newFlag;
           }
 #endif
 #if defined(DSM2)
@@ -1868,7 +1848,7 @@ void menuModelSetup(uint8_t event)
   }
 
 #if defined(CPUARM) && defined(PXX)
-  if (IS_PXX_RANGE_CHECK_ENABLE()) {
+  if (IS_RANGECHECK_ENABLE()) {
     displayPopup("RSSI: ");
     lcd_outdezAtt(16+4*FW, 5*FH, TELEMETRY_RSSI(), BOLD);
   }
@@ -5321,6 +5301,12 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 #endif
             val_min = -LIMIT_EXT_PERCENT; val_max = +LIMIT_EXT_PERCENT;
             lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
+          }
+#endif
+#if defined(DANGEROUS_MODULE_FUNCTIONS)
+          else if (func >= FUNC_RANGECHECK && func <= FUNC_MODULE_OFF) {
+            val_max = NUM_MODULES-1;
+            lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, "\004Int.Ext.", CFN_PARAM(cfn), attr);
           }
 #endif
 #if defined(CPUARM)

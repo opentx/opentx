@@ -39,6 +39,7 @@
 uint8_t s_pulses_paused = 0;
 uint8_t s_current_protocol[NUM_MODULES] = { MODULES_INIT(255) };
 uint32_t failsafeCounter[NUM_MODULES] = { MODULES_INIT(100) };
+uint8_t moduleFlag[NUM_MODULES] = { 0 };
 
 void setupPulses(unsigned int port)
 {
@@ -62,13 +63,13 @@ void setupPulses(unsigned int port)
         case MODULE_TYPE_XJT:
           required_protocol = PROTO_PXX;
           break;
-#if defined(DSM2)
+#if defined(PCBTARANIS) && defined(DSM2)
         case MODULE_TYPE_DSM2:
           required_protocol = limit<uint8_t>(PROTO_DSM2_LP45, PROTO_DSM2_LP45+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, PROTO_DSM2_DSMX);
           // The module is set to OFF during one second before BIND start
           {
             static tmr10ms_t bindStartTime = 0;
-            if (dsm2Flag == DSM2_BIND_FLAG) {
+            if (moduleFlag[EXTERNAL_MODULE] == MODULE_BIND) {
               if (bindStartTime == 0) bindStartTime = get_tmr10ms();
               if ((tmr10ms_t)(get_tmr10ms() - bindStartTime) < 100) {
                 required_protocol = PROTO_NONE;
@@ -89,6 +90,10 @@ void setupPulses(unsigned int port)
   }
 
   if (s_pulses_paused) {
+    required_protocol = PROTO_NONE;
+  }
+
+  if (moduleFlag[port] == MODULE_OFF) {
     required_protocol = PROTO_NONE;
   }
 

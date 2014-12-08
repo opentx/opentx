@@ -440,11 +440,7 @@ enum PotType {
   #include "eeprom_rlc.h"
 #endif
 
-#if defined(CPUARM)
-  #include "pulses/pulses_arm.h"
-#else
-  #include "pulses/pulses_avr.h"
-#endif
+#include "pulses/pulses.h"
 
 #if defined(PCBTARANIS)
   #define BITMAP_BUFFER_SIZE(width, height)   (2 + width * ((height+7)/8)*4)
@@ -465,40 +461,6 @@ enum PotType {
   #define LOAD_MODEL_CURVES()
 #endif
 
-// TODO elsewhere ...
-#if defined(DSM2)
-  #define DSM2_BIND_FLAG       0x80
-  #define DSM2_RANGECHECK_FLAG 0x20
-  extern uint8_t dsm2Flag;
-#if !defined(PCBTARANIS)
-  extern uint8_t s_bind_allowed;
-#endif
-#endif
-
-#if defined(CPUARM)
-  #define IS_PPM_PROTOCOL(protocol)     (protocol==PROTO_PPM)
-#else
-  #define IS_PPM_PROTOCOL(protocol)     (protocol<=PROTO_PPMSIM)
-#endif
-
-#if defined(PXX)
-  #define IS_PXX_PROTOCOL(protocol)  (protocol==PROTO_PXX)
-#else
-  #define IS_PXX_PROTOCOL(protocol)  (0)
-#endif
-
-#if defined(DSM2)
-  #define IS_DSM2_PROTOCOL(protocol) (protocol>=PROTO_DSM2_LP45 && protocol<=PROTO_DSM2_DSMX)
-#else
-  #define IS_DSM2_PROTOCOL(protocol) (0)
-#endif
-
-#if defined(DSM2_SERIAL)
-  #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (IS_DSM2_PROTOCOL(protocol))
-#else
-  #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (0)
-#endif
-
 #if defined(CPUARM)
   static const int8_t maxChannelsModules[] = { 0, 8, 8, -2 }; // relative to 8!
   static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
@@ -517,7 +479,6 @@ enum PotType {
   #define MAX_INTERNAL_MODULE_CHANNELS()    (maxChannelsXJT[1+g_model.moduleData[INTERNAL_MODULE].rfProtocol])
   #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.externalModule])
   #define MAX_CHANNELS(idx)                 (idx==INTERNAL_MODULE ? MAX_INTERNAL_MODULE_CHANNELS() : (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS()))
-  #define IS_PXX_RANGE_CHECK_ENABLE()       (pxxFlag[INTERNAL_MODULE] == PXX_SEND_RANGECHECK || pxxFlag[EXTERNAL_MODULE] == PXX_SEND_RANGECHECK)
 #elif defined(PCBSKY9X) && !defined(REVA) && !defined(REVX)
   #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || idx==EXTRA_MODULE || (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_PPM))
   #define IS_MODULE_XJT(idx)                (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_XJT)
@@ -525,14 +486,12 @@ enum PotType {
   #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[0].rfProtocol] : maxChannelsModules[g_model.externalModule])
   #define MAX_EXTRA_MODULE_CHANNELS()       (0) // Only PPM
   #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : (idx==EXTRA_MODULE ? MAX_EXTRA_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS()))
-  #define IS_PXX_RANGE_CHECK_ENABLE()       (pxxFlag[EXTERNAL_MODULE] == PXX_SEND_RANGECHECK)
 #else
   #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_PPM))
   #define IS_MODULE_XJT(idx)                (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_XJT)
   #define IS_MODULE_DSM2(idx)               (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_DSM2)
   #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol] : maxChannelsModules[g_model.externalModule])
   #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS())
-  #define IS_PXX_RANGE_CHECK_ENABLE()       (pxxFlag[EXTERNAL_MODULE] == PXX_SEND_RANGECHECK)
 #endif
 
 #include "lcd.h"
@@ -625,14 +584,6 @@ struct t_inactivity
 };
 
 extern struct t_inactivity inactivity;
-
-#if defined(PXX)
-extern uint8_t pxxFlag[NUM_MODULES];
-#endif
-
-#define PXX_SEND_RXNUM       0x01
-#define PXX_SEND_FAILSAFE    (1 << 4)
-#define PXX_SEND_RANGECHECK  (1 << 5)
 
 #define LEN_STD_CHARS 40
 
