@@ -210,21 +210,21 @@ void backlightFade();
 #define INP_G_RuddDR   0
 
 // Keys driver
-#define TRIMS_PRESSED() (~PIND)
-#define KEYS_PRESSED()  (~PINB)
+#define TRIMS_PRESSED()            (~PIND)
+#define KEYS_PRESSED()             (~PINB)
 #define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_LFT))) == ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_LFT)))
 #define DBLKEYS_PRESSED_UP_DWN(i)  ((in & ((1<<INP_B_KEY_UP)  + (1<<INP_B_KEY_DWN))) == ((1<<INP_B_KEY_UP)  + (1<<INP_B_KEY_DWN)))
 #define DBLKEYS_PRESSED_RGT_UP(i)  ((in & ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_UP)))  == ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_UP)))
 #define DBLKEYS_PRESSED_LFT_DWN(i) ((in & ((1<<INP_B_KEY_LFT) + (1<<INP_B_KEY_DWN))) == ((1<<INP_B_KEY_LFT) + (1<<INP_B_KEY_DWN)))
 
 // LCD driver
-#define PORTA_LCD_DAT  PORTA
-#define PORTC_LCD_CTRL PORTC
-#define OUT_C_LCD_E     5
-#define OUT_C_LCD_RnW   4
-#define OUT_C_LCD_A0    3
-#define OUT_C_LCD_RES   2
-#define OUT_C_LCD_CS1   1
+#define PORTA_LCD_DAT              PORTA
+#define PORTC_LCD_CTRL             PORTC
+#define OUT_C_LCD_E                5
+#define OUT_C_LCD_RnW              4
+#define OUT_C_LCD_A0               3
+#define OUT_C_LCD_RES              2
+#define OUT_C_LCD_CS1              1
 
 // Rotary encoder driver
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -233,10 +233,14 @@ void rotencPoll();
 #endif
 
 // Haptic
-#define HAPTIC_ON()   PORTG |=  (1 << OUT_G_HAPTIC)
-#define HAPTIC_OFF()  PORTG &= ~(1 << OUT_G_HAPTIC)
+#define HAPTIC_ON()                PORTG |=  (1 << OUT_G_HAPTIC)
+#define HAPTIC_OFF()               PORTG &= ~(1 << OUT_G_HAPTIC)
 
 // USB fake driver
-#define usbPlugged()    false
+#define usbPlugged()               false
+
+// Buzzer driver
+#define buzzerOn()                 PORTE |=  (1 << OUT_E_BUZZER)
+#define buzzerOff()                PORTE &= ~(1 << OUT_E_BUZZER)
 
 #endif

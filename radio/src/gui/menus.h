@@ -274,7 +274,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 
 #if defined(PCBTARANIS)
   #define NAVIGATION_LINE_BY_LINE  0x40
-  #define CURSOR_ON_LINE()         m_posHorz<0
+  #define CURSOR_ON_LINE()         (m_posHorz<0)
 #else
   #define NAVIGATION_LINE_BY_LINE  0
   #define CURSOR_ON_LINE()         (0)

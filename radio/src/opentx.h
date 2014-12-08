@@ -977,9 +977,6 @@ void checkBacklight();
   #define BACKLIGHT_OFF()   __BACKLIGHT_OFF
 #endif
 
-#define BUZZER_ON     PORTE |=  (1 << OUT_E_BUZZER)
-#define BUZZER_OFF    PORTE &= ~(1 << OUT_E_BUZZER)
-
 #define BITMASK(bit) (1<<(bit))
 
 /// liefert Dimension eines Arrays

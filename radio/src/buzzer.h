@@ -114,37 +114,36 @@ void beep(uint8_t val);
 #if !defined(CPUARM)
 inline void BUZZER_HEARTBEAT()
 {
-    if(g_beepCnt) {
-        if(!beepAgainOrig) {
-            beepAgainOrig = g_beepCnt;
-            beepOn = true;
-        }
-        g_beepCnt--;
+  if (g_beepCnt) {
+    if (!beepAgainOrig) {
+      beepAgainOrig = g_beepCnt;
+      beepOn = true;
     }
-    else
-    {
-        if(beepAgain && beepAgainOrig) {
-            beepOn = !beepOn;
-            g_beepCnt = beepOn ? beepAgainOrig : 8;
-            if(beepOn) beepAgain--;
-        }
-        else {
-            beepAgainOrig = 0;
-            beepOn = false;
-            warble = false;
-        }
-    }
-
-    if (beepOn) {
-      warbleC = warble && !warbleC;
-      if (warbleC)
-        BUZZER_OFF;
-      else
-        BUZZER_ON;
+    g_beepCnt--;
+  }
+  else {
+    if (beepAgain && beepAgainOrig) {
+      beepOn = !beepOn;
+      g_beepCnt = beepOn ? beepAgainOrig : 8;
+      if (beepOn) beepAgain--;
     }
     else {
-      BUZZER_OFF;
+      beepAgainOrig = 0;
+      beepOn = false;
+      warble = false;
     }
+  }
+
+  if (beepOn) {
+    warbleC = warble && !warbleC;
+    if (warbleC)
+      buzzerOff();
+    else
+      buzzerOn();
+  }
+  else {
+    buzzerOff();
+  }
 }
 #endif
 

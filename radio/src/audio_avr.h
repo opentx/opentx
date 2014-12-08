@@ -38,8 +38,8 @@
 #define audio_h
 
 #if defined(PCBSTD)
-  #define SPEAKER_ON   BUZZER_ON
-  #define SPEAKER_OFF  toneFreq=0; BUZZER_OFF
+  #define speakerOn()      buzzerOn()
+  #define speakerOff()     toneFreq=0; buzzerOff()
 #endif
 
 //audio
@@ -66,9 +66,9 @@ class audioQueue
       if (toneFreq) {
         toneCounter += toneFreq;
         if ((toneCounter & 0x80) == 0x80)
-          BUZZER_ON;
+          buzzerOn();
         else
-          BUZZER_OFF;
+          buzzerOff();
       }
     }
 

@@ -4830,7 +4830,7 @@ void menuModelLogicalSwitches(uint8_t event)
 
     // CSW name
     uint8_t sw = SWSRC_SW1+k;
-    putsSwitches(0, y, sw, (getSwitch(sw) ? BOLD : 0) | ((sub==k && horz<0) ? INVERS : 0));
+    putsSwitches(0, y, sw, (getSwitch(sw) ? BOLD : 0) | ((sub==k && CURSOR_ON_LINE()) ? INVERS : 0));
 
     // CSW func
     lcd_putsiAtt(CSW_1ST_COLUMN, y, STR_VCSWFUNC, cs->func, horz==0 ? attr : 0);

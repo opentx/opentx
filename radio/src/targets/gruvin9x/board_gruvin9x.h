@@ -94,8 +94,8 @@ void sdPoll10ms();
 #define SD_GET_SPEED()           (0)
 #endif
 
-#define SPEAKER_ON               TCCR0A |=  (1 << COM0A0)
-#define SPEAKER_OFF              TCCR0A &= ~(1 << COM0A0)
+#define speakerOn()              TCCR0A |=  (1 << COM0A0)
+#define speakerOff()             TCCR0A &= ~(1 << COM0A0)
 #define __BACKLIGHT_ON           PORTC |=  (1 << OUT_C_LIGHT)
 #define __BACKLIGHT_OFF          PORTC &= ~(1 << OUT_C_LIGHT)
 #define IS_BACKLIGHT_ON()        (PORTC & (1<<OUT_C_LIGHT))
@@ -169,30 +169,34 @@ void sdPoll10ms();
 #define DBLKEYS_PRESSED_LFT_DWN(i) ((in & ((1<<INP_L_KEY_LFT) + (1<<INP_L_KEY_DWN))) == ((1<<INP_L_KEY_LFT) + (1<<INP_L_KEY_DWN)))
 
 // LCD driver
-#define PORTA_LCD_DAT  PORTA
-#define PORTC_LCD_CTRL PORTC
-#define OUT_C_LCD_E     5
-#define OUT_C_LCD_RnW   4
-#define OUT_C_LCD_A0    3
-#define OUT_C_LCD_RES   2
-#define OUT_C_LCD_CS1   1
+#define PORTA_LCD_DAT              PORTA
+#define PORTC_LCD_CTRL             PORTC
+#define OUT_C_LCD_E                5
+#define OUT_C_LCD_RnW              4
+#define OUT_C_LCD_A0               3
+#define OUT_C_LCD_RES              2
+#define OUT_C_LCD_CS1              1
 
 // Power driver
 uint8_t pwrCheck();
 void pwrOff();
-#define UNEXPECTED_SHUTDOWN() ((mcusr & (1 << WDRF)) || g_eeGeneral.unexpectedShutdown)
+#define UNEXPECTED_SHUTDOWN()      ((mcusr & (1 << WDRF)) || g_eeGeneral.unexpectedShutdown)
 
 // USB fake driver
-#define usbPlugged()    false
+#define usbPlugged()               false
 
 // Haptic driver
-#define hapticOff() // TODO hapticOn() cleaner ...
-#define HAPTIC_ON()     PORTD &= ~(1 << OUT_D_HAPTIC)
-#define HAPTIC_OFF()    PORTD |=  (1 << OUT_D_HAPTIC)
+#define hapticOff()                // TODO hapticOn() cleaner ...
+#define HAPTIC_ON()                PORTD &= ~(1 << OUT_D_HAPTIC)
+#define HAPTIC_OFF()               PORTD |=  (1 << OUT_D_HAPTIC)
 
 // Rotary encoder driver
-#define REA_DOWN()    (~PIND & 0x20)
-#define REB_DOWN()    (~PIND & 0x10)
-#define ROTENC_DOWN() (REA_DOWN() || REB_DOWN())
+#define REA_DOWN()                 (~PIND & 0x20)
+#define REB_DOWN()                 (~PIND & 0x10)
+#define ROTENC_DOWN()              (REA_DOWN() || REB_DOWN())
+
+// Buzzer driver
+#define buzzerOn()                 PORTE |=  (1 << OUT_E_BUZZER)
+#define buzzerOff()                PORTE &= ~(1 << OUT_E_BUZZER)
 
 #endif

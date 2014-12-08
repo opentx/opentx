@@ -57,13 +57,13 @@ void audioQueue::heartbeat()
 #else
   if (toneTimeLeft > 0) {
     if (toneFreq == 0) {  //pause only events
-      SPEAKER_OFF;
+      speakerOff();
     }
     else {
 #if defined(PCBGRUVIN9X)
       if (toneFreq) {
         OCR0A = (5000 / toneFreq); // sticking with old values approx 20(abs. min) to 90, 60 being the default tone(?).
-        SPEAKER_ON;
+        speakerOn();
       }
 #endif
       toneFreq += toneFreqIncr;
@@ -72,7 +72,7 @@ void audioQueue::heartbeat()
   }
   else {
     if (tonePause > 0) {
-      SPEAKER_OFF;
+      speakerOff();
       tonePause--; //time gets counted down
     }
     else if (t_queueRidx != t_queueWidx) {
@@ -89,7 +89,7 @@ void audioQueue::heartbeat()
 #if defined(PCBGRUVIN9X)
         if (tone2Freq) {
           OCR0A = (5000 / tone2Freq); // sticking with old values approx 20(abs. min) to 90, 60 being the default tone(?).
-          SPEAKER_ON;
+          speakerOn();
         }
 #else
         toneFreq = tone2Freq;
@@ -97,7 +97,7 @@ void audioQueue::heartbeat()
         tone2TimeLeft--; //time gets counted down
       } 
       else {
-        SPEAKER_OFF;
+        speakerOff();
       }
     }
   }

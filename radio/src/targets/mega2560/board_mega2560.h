@@ -82,8 +82,8 @@
 #define SLAVE_MODE()             (PINH & (1<<INP_H_RF_POW))     //not tested
 #define JACK_PPM_OUT()           PORTB |= (1<<OUT_B_SIM_CTL)    //not tested
 #define JACK_PPM_IN()            PORTB &= ~(1<<OUT_B_SIM_CTL)   //not tested
-#define SPEAKER_ON               TCCR0A |=  (1 << COM0A0)       //not tested
-#define SPEAKER_OFF              TCCR0A &= ~(1 << COM0A0)       //not tested
+#define speakerOn()              TCCR0A |=  (1 << COM0A0)       //not tested
+#define speakerOff()             TCCR0A &= ~(1 << COM0A0)       //not tested
 
 #define __BACKLIGHT_ON           PORTC |=  (1 << OUT_C_LIGHT)   //ok
 #define __BACKLIGHT_OFF          PORTC &= ~(1 << OUT_C_LIGHT)   //ok
@@ -191,5 +191,9 @@ void pwrOff();
 
 // Haptic driver
 #define hapticOff() // TODO hapticOn() cleaner ...
+
+// Buzzer driver
+#define buzzerOn()               PORTB |=  (1 << OUT_B_BUZZER)
+#define buzzerOff()              PORTB &= ~(1 << OUT_B_BUZZER)
 
 #endif
