@@ -577,7 +577,7 @@ void menuMainView(uint8_t event)
 #endif
 
 #if defined(DSM2)
-  if (dsm2BindEnable) {
+  if (moduleFlag[0] == MODULE_BIND) {
     // Issue 98
     lcd_putsAtt(15*FW, 0, PSTR("BIND"), 0);
   }

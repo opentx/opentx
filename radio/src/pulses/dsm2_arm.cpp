@@ -48,7 +48,6 @@ uint8_t  dsm2Stream[64];                          // Likely more than we need
 uint8_t *dsm2StreamPtr;
 uint8_t  dsm2SerialByte ;
 uint8_t  dsm2SerialBitCount;
-uint8_t  dsm2BindEnable = 0;
 uint8_t  dsm2BindTimer = DSM2_BIND_TIMEOUT;
 #endif
 
@@ -170,13 +169,18 @@ void setupPulsesDSM2(unsigned int port)
   else if (moduleFlag[port] == MODULE_RANGECHECK)
     dsmDat[0] |= DSM2_SEND_RANGECHECK;
 #else
-  dsm2BindEnable = 0;
   if (dsm2BindTimer > 0) {
     dsm2BindTimer--;
     if (switchState(SW_DSM2_BIND)) {
-      dsm2BindEnable = DSM2_SEND_BIND;
+      moduleFlag[port] = MODULE_BIND;
       dsmDat[0] |= DSM2_SEND_BIND;
     }
+  }
+  else if (moduleFlag[port] == MODULE_RANGECHECK) {
+    dsmDat[0] |= DSM2_SEND_RANGECHECK;
+  }
+  else {
+    moduleFlag[port] = 0;
   }
 #endif
 

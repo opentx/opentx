@@ -640,7 +640,7 @@ enum SwitchConfig {
 #define LEN_ANA_NAME    3
 
 #define ALTERNATE_VIEW 0x10
-PACK(typedef struct t_EEGeneral {
+PACK(typedef struct {
   uint8_t   version;
   uint16_t  variant;
   CalibData calib[NUM_STICKS+NUM_POTS];

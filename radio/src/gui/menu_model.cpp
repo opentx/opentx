@@ -1048,7 +1048,7 @@ void menuModelSetup(uint8_t event)
 
   MENU_CHECK(menuTabModel, e_ModelSetup, MODEL_SETUP_MAX_LINES);
 
-#if defined(DSM2) || defined(PXX)
+#if defined(CPUARM) && (defined(DSM2) || defined(PXX))
   if (menuEvent) {
     moduleFlag[0] = 0;
 #if NUM_MODULES > 1
@@ -1829,7 +1829,7 @@ void menuModelSetup(uint8_t event)
             uint8_t newFlag = 0;
             if (attr && m_posHorz>0 && editMode>0) {
               // send reset code
-              newFlag = PXX_SEND_RXNUM;
+              newFlag = MODULE_BIND;
             }
             moduleFlag[0] = newFlag;
           }
@@ -1837,7 +1837,7 @@ void menuModelSetup(uint8_t event)
 #if defined(DSM2)
           if (IS_DSM2_PROTOCOL(protocol)) {
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+4*FW, y, STR_MODULE_RANGE, m_posHorz!=0 ? attr : 0);
-            dsm2Flag = (attr && m_posHorz>0 && editMode>0) ? DSM2_RANGECHECK_FLAG : 0; // [MENU] key toggles range check mode
+            moduleFlag[0] = (attr && m_posHorz>0 && editMode>0) ? MODULE_RANGECHECK : 0; // [MENU] key toggles range check mode
           }
 #endif
         }

@@ -40,11 +40,24 @@ uint16_t nextMixerEndTime = 0;
 #define SCHEDULE_MIXER_END(delay) nextMixerEndTime = getTmr16KHz() + (delay) - 2*16/*2ms*/
 
 #if defined(DSM2)
-// DSM2 control bits
-#define DSM2_CHANS     6
-#define FRANCE_BIT     0x10
-#define DSMX_BIT       0x08
-#define BAD_DATA       0x47
+  // DSM2 control bits
+  #define DSM2_CHANS                         6
+  #define FRANCE_BIT                         0x10
+  #define DSMX_BIT                           0x08
+  #define BAD_DATA                           0x47
+  #define DSM2_SEND_BIND                     (1 << 7)
+  #define DSM2_SEND_RANGECHECK               (1 << 5)
+  uint8_t  dsm2BindTimer = DSM2_BIND_TIMEOUT;
+#endif
+
+#if defined(PXX)
+  #define PXX_SEND_BIND                      0x01
+  #define PXX_SEND_FAILSAFE                  (1 << 4)
+  #define PXX_SEND_RANGECHECK                (1 << 5)
+#endif
+
+#if defined(DSM2) || defined(PXX)
+uint8_t moduleFlag[NUM_MODULES] = { 0 };
 #endif
 
 uint8_t s_current_protocol[1] = { 255 };
@@ -233,7 +246,6 @@ uint8_t PcmByte ;
 uint8_t PcmBitCount ;
 uint16_t PcmCrc ;
 uint8_t PcmOnesCount ;
-uint8_t moduleFlag[NUM_MODULES] = { 0 };
 
 void crc( uint8_t data )
 {
@@ -316,7 +328,6 @@ uint16_t scaleForPXX( uint8_t i )
 
 void setupPulsesPXX()
 {
-    uint8_t i ;
     uint16_t chan ;
     uint16_t chan_1 ;
 
@@ -328,16 +339,19 @@ void setupPulsesPXX()
     PcmOnesCount = 0 ;
     putPcmHead() ;
     putPcmByte( g_model.header.modelId ) ;     // putPcmByte( g_model.rxnum ) ;  //
-    putPcmByte( pxxFlag[0] ) ;     // First byte of flags
+    uint8_t flag1 = 0;
+    if (moduleFlag[0] == MODULE_BIND)
+      flag1 |= (g_eeGeneral.countryCode << 1) | PXX_SEND_BIND;
+    else if (moduleFlag[0] == MODULE_RANGECHECK)
+      flag1 |= PXX_SEND_RANGECHECK;
+    putPcmByte(flag1) ;     // First byte of flags
     putPcmByte( 0 ) ;     // Second byte of flags
-    pxxFlag[0] = 0;          // reset flag after send
-    for ( i = 0 ; i < 8 ; i += 2 )              // First 8 channels only
-    {
-        chan = scaleForPXX(i);
-        chan_1 = scaleForPXX(i+1);
-        putPcmByte( chan ) ; // Low byte of channel
-        putPcmByte( ( ( chan >> 8 ) & 0x0F ) | ( chan_1 << 4) ) ;  // 4 bits each from 2 channels
-        putPcmByte( chan_1 >> 4 ) ;  // High byte of channel
+    for (uint8_t i=0; i<8; i+=2) {              // First 8 channels only
+      chan = scaleForPXX(i);
+      chan_1 = scaleForPXX(i+1);
+      putPcmByte( chan ) ; // Low byte of channel
+      putPcmByte( ( ( chan >> 8 ) & 0x0F ) | ( chan_1 << 4) ) ;  // 4 bits each from 2 channels
+      putPcmByte( chan_1 >> 4 ) ;  // High byte of channel
     }
     putPcmByte(0);
     chan = PcmCrc ;                     // get the crc
@@ -398,13 +412,21 @@ FORCEINLINE void setupPulsesDSM2()
       break;
   }
 
-  if (s_bind_allowed) s_bind_allowed--;
-  if (s_bind_allowed && switchState(SW_DSM2_BIND))
-    dsm2Flag = DSM2_BIND_FLAG;
-  else
-    dsm2Flag &= ~DSM2_BIND_FLAG;
+  if (dsm2BindTimer > 0) {
+    dsm2BindTimer--;
+    if (switchState(SW_DSM2_BIND)) {
+      moduleFlag[0] = MODULE_BIND;
+      *ptr |= DSM2_SEND_BIND;
+    }
+  }
+  else if (moduleFlag[0] == MODULE_RANGECHECK) {
+    *ptr |= DSM2_SEND_RANGECHECK;
+  }
+  else {
+    moduleFlag[0] = 0;
+  }
 
-  *ptr++ |= dsm2Flag;
+  ptr++;
   *ptr++ = g_model.header.modelId;
 
   for (uint8_t i=0; i<DSM2_CHANS; i++) {
@@ -502,7 +524,6 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
 void setupPulsesDSM2()
 {
   static uint8_t dsmDat[2+6*2] = {0xFF,0x00, 0x00,0xAA, 0x05,0xFF, 0x09,0xFF, 0x0D,0xFF, 0x13,0x54, 0x14,0xAA};
-  uint8_t counter;
 
   pulses2MHzWPtr = pulses2MHz;
 
@@ -519,13 +540,20 @@ void setupPulsesDSM2()
       break;
   }
 
-  if (s_bind_allowed) s_bind_allowed--;
-  if (s_bind_allowed && switchState(SW_DSM2_BIND))
-    dsm2Flag = DSM2_BIND_FLAG;
-  else
-    dsm2Flag &= ~DSM2_BIND_FLAG;
+  if (dsm2BindTimer > 0) {
+    dsm2BindTimer--;
+    if (switchState(SW_DSM2_BIND)) {
+      moduleFlag[0] = MODULE_BIND;
+      dsmDat[0] |= DSM2_SEND_BIND;
+    }
+  }
+  else if (moduleFlag[0] == MODULE_RANGECHECK) {
+    dsmDat[0] |= DSM2_SEND_RANGECHECK;
+  }
+  else {
+    moduleFlag[0] = 0;
+  }
 
-  dsmDat[0] |= dsm2Flag;
   dsmDat[1] = g_model.header.modelId; // DSM2 Header second byte for model match
 
   for (uint8_t i=0; i<DSM2_CHANS; i++) {
@@ -534,7 +562,7 @@ void setupPulsesDSM2()
     dsmDat[3+2*i] = pulse & 0xff; // low byte
   }
 
-  for (counter=0; counter<14; counter++) {
+  for (uint8_t counter=0; counter<14; counter++) {
     sendByteDsm2(dsmDat[counter]);
   }
 
