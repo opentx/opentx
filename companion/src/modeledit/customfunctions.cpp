@@ -70,36 +70,29 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   int num_fsw = firmware->getCapability(CustomFunctions);
 
   if (!firmware->getCapability(VoicesAsNumbers)) {
+    tracksSet = getFilesSet(getSoundsPath(generalSettings), QStringList() << "*.wav" << "*.WAV", firmware->getCapability(VoicesMaxLength));
     for (int i=0; i<num_fsw; i++) {
       if (functions[i].func==FuncPlayPrompt || functions[i].func==FuncBackgroundMusic) {
         QString temp = functions[i].paramarm;
         if (!temp.isEmpty()) {
-          if (!paramarmList.contains(temp)) {
-            paramarmList.append(temp);
-          }
+          tracksSet.insert(temp);
         }
       }
     }
+    qDebug() << tracksSet;
+  }
 
-    QString path = g.profile[g.id()].sdPath();
-    path.append("/SOUNDS/");
-    QString lang = generalSettings.ttsLanguage;
-    if (lang.isEmpty())
-      lang="en";
-    path.append(lang);
-    QDir qd(path);
-    int vml= firmware->getCapability(VoicesMaxLength);
-    if (qd.exists()) {
-      QStringList filters;
-      filters << "*.wav" << "*.WAV";
-      foreach ( QString file, qd.entryList(filters, QDir::Files) ) {
-        QFileInfo fi(file);
-        QString temp=fi.completeBaseName();
-        if (!paramarmList.contains(temp) && temp.length()<=vml) {
-          paramarmList.append(temp);
+  if (IS_TARANIS(firmware->getBoard())) {
+    scriptsSet = getFilesSet(g.profile[g.id()].sdPath() + "/SCRIPTS", QStringList() << "*.lua", firmware->getCapability(VoicesMaxLength));
+    for (int i=0; i<num_fsw; i++) {
+      if (functions[i].func==FuncPlayScript) {
+        QString temp = functions[i].paramarm;
+        if (!temp.isEmpty()) {
+          scriptsSet.insert(temp);
         }
       }
     }
+    qDebug() << scriptsSet;
   }
 
   CompanionIcon playIcon("play.png");
@@ -129,7 +122,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     // The function
     fswtchFunc[i] = new QComboBox(this);
     fswtchFunc[i]->setProperty("index", i);
-    connect(fswtchFunc[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
+    connect(fswtchFunc[i], SIGNAL(currentIndexChanged(int)), this, SLOT(functionEdited()));
     gridLayout->addWidget(fswtchFunc[i], i+1, 2);
 
     QHBoxLayout *paramLayout = new QHBoxLayout();
@@ -297,10 +290,20 @@ void CustomFunctionsPanel::customFunctionEdited()
 {
   if (!lock) {
     lock = true;
-
     int index = sender()->property("index").toInt();
     refreshCustomFunction(index, true);
+    emit modified();
+    lock = false;
+  }
+}
 
+void CustomFunctionsPanel::functionEdited()
+{
+  if (!lock) {
+    lock = true;
+    int index = sender()->property("index").toInt();
+    fswtchParamArmT[index]->setCurrentIndex(0);
+    refreshCustomFunction(index, true);
     emit modified();
     lock = false;
   }
@@ -446,11 +449,9 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
               }
             }
           }
-          else {
-            populateFuncParamArmTCB(fswtchParamArmT[i], cfn.paramarm, paramarmList);
-            if (fswtchParamArmT[i]->currentText() != "----") {
-              widgetsMask |= CUSTOM_FUNCTION_PLAY;
-            }
+          populateFuncParamArmTCB(fswtchParamArmT[i], cfn.paramarm, tracksSet);
+          if (fswtchParamArmT[i]->currentText() != "----") {
+            widgetsMask |= CUSTOM_FUNCTION_PLAY;
           }
         }
       }
@@ -466,6 +467,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             }
           }
         }
+        populateFuncParamArmTCB(fswtchParamArmT[i], cfn.paramarm, tracksSet);
       }
       else if (func==FuncPlaySound) {
         if (modified) cfn.param = (uint8_t)fswtchParamT[i]->currentIndex();
@@ -477,6 +479,19 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         populateFuncParamCB(fswtchParamT[i], func, cfn.param);
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
       }
+    }
+    else if (func==FuncPlayScript) {
+      widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
+      if (modified) {
+        memset(cfn.paramarm, 0, sizeof(cfn.paramarm));
+        int vml = 8/*TODO*/;
+        if (fswtchParamArmT[i]->currentText() != "----") {
+          for (int j=0; j<std::min(fswtchParamArmT[i]->currentText().length(), vml); j++) {
+            cfn.paramarm[j] = fswtchParamArmT[i]->currentText().toAscii().at(j);
+          }
+        }
+      }
+      populateFuncParamArmTCB(fswtchParamArmT[i], cfn.paramarm, scriptsSet);
     }
     else if (func==FuncPlayScript) {
       widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
@@ -531,7 +546,6 @@ void CustomFunctionsPanel::update()
       populateFuncCB(fswtchFunc[i], functions[i].func);
       populateGVmodeCB(fswtchGVmode[i], functions[i].adjustMode);
       populateFuncParamCB(fswtchParamT[i], functions[i].func, functions[i].param, functions[i].adjustMode);
-      populateFuncParamArmTCB(fswtchParamArmT[i], functions[i].paramarm, paramarmList);
     }
     refreshCustomFunction(i);
   }
@@ -552,7 +566,6 @@ void CustomFunctionsPanel::fswPaste()
     populateFuncCB(fswtchFunc[selectedFunction], functions[selectedFunction].func);
     populateGVmodeCB(fswtchGVmode[selectedFunction], functions[selectedFunction].adjustMode);
     populateFuncParamCB(fswtchParamT[selectedFunction], functions[selectedFunction].func, functions[selectedFunction].param, functions[selectedFunction].adjustMode);
-    populateFuncParamArmTCB(fswtchParamArmT[selectedFunction], functions[selectedFunction].paramarm, paramarmList);
     refreshCustomFunction(selectedFunction);
     lock = false;
     emit modified();
@@ -643,14 +656,14 @@ void CustomFunctionsPanel::populateGVmodeCB(QComboBox *b, unsigned int value)
   b->setCurrentIndex(value);
 }
 
-void CustomFunctionsPanel::populateFuncParamArmTCB(QComboBox *b, char * value, QStringList & paramsList)
+void CustomFunctionsPanel::populateFuncParamArmTCB(QComboBox *b, char * value, const QSet<QString> &paramsList)
 {
   b->clear();
   b->addItem("----");
 
   bool added = false;
   QString currentvalue(value);
-  foreach ( QString entry, paramsList ) {
+  foreach (QString entry, paramsList) {
     b->addItem(entry);
     if (entry==currentvalue) {
       b->setCurrentIndex(b->count()-1);

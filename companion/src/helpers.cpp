@@ -1023,3 +1023,29 @@ QString generateProcessUniqueTempFileName(const QString & fileName)
   sanitizedFileName.remove('/');
   return QDir::tempPath() + QString("/%1-").arg(QCoreApplication::applicationPid()) + sanitizedFileName;
 }
+
+QString getSoundsPath(const GeneralSettings &generalSettings)
+{
+  QString path = g.profile[g.id()].sdPath() + "/SOUNDS/";
+  QString lang = generalSettings.ttsLanguage;
+  if (lang.isEmpty())
+    lang = "en";
+  path.append(lang);
+  return path;
+}
+
+QSet<QString> getFilesSet(const QString &path, const QStringList &filter, int maxLen)
+{
+  QSet<QString> result;
+  QDir dir(path);
+  if (dir.exists()) {
+    foreach (QString filename, dir.entryList(filter, QDir::Files)) {
+      QFileInfo file(filename);
+      QString name = file.completeBaseName();
+      if (name.length() <= maxLen) {
+        result.insert(name);
+      }
+    }
+  }
+  return result;
+}

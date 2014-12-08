@@ -47,6 +47,7 @@ class CustomFunctionsPanel : public GenericPanel
 
   private slots:
     void customFunctionEdited();
+    void functionEdited();
     void fsw_customContextMenuRequested(QPoint pos);
     void refreshCustomFunction(int index, bool modified=false);
     void onChildModified();
@@ -63,10 +64,11 @@ class CustomFunctionsPanel : public GenericPanel
     void populateFuncCB(QComboBox *b, unsigned int value);
     void populateGVmodeCB(QComboBox *b, unsigned int value);
     void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode=0);
-    void populateFuncParamArmTCB(QComboBox *b, char * value, QStringList & paramsList);
+    void populateFuncParamArmTCB(QComboBox *b, char * value, const QSet<QString> & paramsList);
 
     bool initialized;
-    QStringList paramarmList;
+    QSet<QString> tracksSet;
+    QSet<QString> scriptsSet;
     int phononCurrent;
     QComboBox * fswtchSwtch[C9X_MAX_CUSTOM_FUNCTIONS];
     QComboBox * fswtchFunc[C9X_MAX_CUSTOM_FUNCTIONS];

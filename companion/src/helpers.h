@@ -154,4 +154,7 @@ int qunlink(const QString & fileName);
 
 QString generateProcessUniqueTempFileName(const QString & fileName);
 
+QString getSoundsPath(const GeneralSettings &generalSettings);
+QSet<QString> getFilesSet(const QString &path, const QStringList &filter, int maxLen);
+
 #endif // HELPERS_H
