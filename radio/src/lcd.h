@@ -161,10 +161,24 @@
   #define DISPLAY_BUF_SIZE     (LCD_W*((LCD_H+7)/8))
 #endif
 
-extern display_t displayBuf[DISPLAY_BUF_SIZE];
+#if defined(PCBTARANIS) && defined(REVPLUS) && defined(LCD_DUAL_BUFFER)
+  extern display_t displayBuf1[DISPLAY_BUF_SIZE];
+  extern display_t displayBuf2[DISPLAY_BUF_SIZE];
+  extern display_t * displayBuf;
+#else
+  extern display_t displayBuf[DISPLAY_BUF_SIZE];
+#endif
+
+#if defined(PCBTARANIS) && defined(REVPLUS) && !defined(LCD_DUAL_BUFFER) && !defined(SIMU)
+  void lcdRefreshWait();
+#else
+  #define lcdRefreshWait()
+#endif
+
 extern coord_t lcdLastPos;
 extern coord_t lcdNextPos;
 
+#define DISPLAY_BUFER_SIZE     (sizeof(display_t)*DISPLAY_BUF_SIZE)
 #define DISPLAY_END            (displayBuf + DISPLAY_BUF_SIZE)
 #define ASSERT_IN_DISPLAY(p)   assert((p) >= displayBuf && (p) < DISPLAY_END)
 

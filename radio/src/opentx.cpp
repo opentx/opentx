@@ -87,56 +87,6 @@ uint8_t g_tmr1Latency_min;
 uint16_t lastMixerDuration;
 #endif
 
-#if defined(PCBTARANIS)
-uint8_t currentTrainerMode = 0xff;
-
-void checkTrainerSettings()
-{
-  uint8_t requiredTrainerMode = g_model.trainerMode;
-  if (requiredTrainerMode != currentTrainerMode) {
-    switch (currentTrainerMode) {
-      case TRAINER_MODE_MASTER:
-        stop_trainer_capture();
-        break;
-      case TRAINER_MODE_SLAVE:
-        stop_trainer_ppm();
-        break;
-      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
-        stop_cppm_on_heartbeat_capture() ;
-        break;
-      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-        stop_sbus_on_heartbeat_capture() ;
-        break;
-      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        uart3Stop();
-    }
-
-    currentTrainerMode = requiredTrainerMode;
-    switch (requiredTrainerMode) {
-      case TRAINER_MODE_SLAVE:
-        init_trainer_ppm();
-        break;
-      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
-         init_cppm_on_heartbeat_capture() ;
-         break;
-      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-         init_sbus_on_heartbeat_capture() ;
-         break;
-      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        if (g_eeGeneral.uart3Mode == UART_MODE_SBUS_TRAINER) {
-          uart3SbusInit();
-          break;
-        }
-        // no break
-      default:
-        // master is default
-        init_trainer_capture();
-        break;
-    }
-  }
-}
-#endif
-
 uint8_t unexpectedShutdown = 0;
 
 /* AVR: mixer duration in 1/16ms */
@@ -209,7 +159,6 @@ void per10ms()
     watchdogTimeout -= 1;
     wdt_reset();  // Retrigger hardware watchdog
   }
-  Tenms |= 1 ;                    // 10 mS has passed
 #endif
 
   if (lightOffCounter) lightOffCounter--;
@@ -1403,13 +1352,6 @@ uint8_t checkTrim(uint8_t event)
 #endif
 }
 
-#if defined(PCBSKY9X) && !defined(REVA)
-uint16_t Current_analogue;
-uint16_t Current_max;
-uint32_t Current_accumulator;
-uint32_t Current_used;
-#endif
-
 #if !defined(SIMU)
 static uint16_t s_anaFilt[NUMBER_ANALOG];
 #endif
@@ -1699,10 +1641,6 @@ uint8_t mSwitchDuration[1+NUM_ROTARY_ENCODERS] = { 0 };
 #define CFN_PRESSLONG_DURATION   100
 #endif
 
-#if defined(CPUARM)
-uint8_t currentSpeakerVolume = 255;
-uint8_t requiredSpeakerVolume;
-#endif
 
 uint8_t s_mixer_first_run_done = false;
 
@@ -1995,7 +1933,6 @@ void doMixerCalculations()
   s_mixer_first_run_done = true;
 }
 
-#define TIME_TO_WRITE() (s_eeDirtyMsk && (tmr10ms_t)(get_tmr10ms() - s_eeDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
 
 
 #if defined(NAVIGATION_STICKS)
@@ -2129,205 +2066,11 @@ void opentxClose()
 #endif
 
 
-#if defined(USB_JOYSTICK) && defined(PCBTARANIS) && !defined(SIMU)
-extern USB_OTG_CORE_HANDLE USB_OTG_dev;
-
-/*
-  Prepare and send new USB data packet
-
-  The format of HID_Buffer is defined by
-  USB endpoint description can be found in 
-  file usb_hid_joystick.c, variable HID_JOYSTICK_ReportDesc
-*/
-void usbJoystickUpdate(void)
-{
-  static uint8_t HID_Buffer[HID_IN_PACKET];
-  
-  //buttons
-  HID_Buffer[0] = 0; //buttons
-  for (int i = 0; i < 8; ++i) {
-    if ( channelOutputs[i+8] > 0 ) {
-      HID_Buffer[0] |= (1 << i);
-    } 
-  }
-
-  //analog values
-  //uint8_t * p = HID_Buffer + 1;
-  for (int i = 0; i < 8; ++i) {
-    int16_t value = channelOutputs[i] / 8;
-    if ( value > 127 ) value = 127;
-    else if ( value < -127 ) value = -127;
-    HID_Buffer[i+1] = static_cast<int8_t>(value);  
-  }
-
-  USBD_HID_SendReport (&USB_OTG_dev, HID_Buffer, HID_IN_PACKET );
-}
-
-#endif //#if defined(USB_JOYSTICK) && defined(PCBTARANIS) && !defined(SIMU)
-
-
-void perMain()
-{
-#if defined(SIMU)
-  doMixerCalculations();
-#elif !defined(CPUARM)
-  uint16_t t0 = getTmr16KHz();
-  int16_t delta = (nextMixerEndTime - lastMixerDuration) - t0;
-  if (delta > 0 && delta < MAX_MIXER_DELTA) {
-#if defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION)
-    rotencPoll();
-#endif
-
-    // @@@ open.20.fsguruh
-    // SLEEP();   // wouldn't that make sense? should save a lot of battery power!!!
-/*  for future use; currently very very beta...  */
-#if defined(POWER_SAVE)
-    ADCSRA&=0x7F;   // disable ADC for power saving
-    ACSR&=0xF7;   // disable ACIE Interrupts
-    ACSR|=0x80;   // disable Analog Comparator
-    // maybe we disable here a lot more hardware components in future to save even more power
-
-
-
-    MCUCR|=0x20;  // enable Sleep (bit5)
-    // MCUCR|=0x28;  // enable Sleep (bit5) enable ADC Noise Reduction (bit3)
-    // first tests showed: simple sleep would reduce cpu current from 40.5mA to 32.0mA
-    //                     noise reduction sleep would reduce it down to 28.5mA; However this would break pulses in theory
-    // however with standard module, it will need about 95mA. Therefore the drop to 88mA is not much noticable
-    do {
-      asm volatile(" sleep        \n\t");  // if _SLEEP() is not defined use this
-      t0=getTmr16KHz();
-      delta= (nextMixerEndTime - lastMixerDuration) - t0;
-    } while ((delta>0) && (delta<MAX_MIXER_DELTA));
-    
-    // reenabling of the hardware components needed here
-    MCUCR&=0x00;  // disable sleep
-    ADCSRA|=0x80;  // enable ADC
-#endif
-    return;
-  }  
-
-  nextMixerEndTime = t0 + MAX_MIXER_DELTA;
-  // this is a very tricky implementation; lastMixerEndTime is just like a default value not to stop mixcalculations totally;
-  // the real value for lastMixerEndTime is calculated inside pulses_XXX.cpp which aligns the timestamp to the pulses generated
-  // nextMixerEndTime is actually defined inside pulses_XXX.h  
-
-  doMixerCalculations();
-
-  t0 = getTmr16KHz() - t0;
-  lastMixerDuration = t0;
-  if (t0 > maxMixerDuration) maxMixerDuration = t0;
-#endif
-
-// TODO same code here + integrate the timer which could be common
-#if defined(CPUARM)
-  if (!Tenms) return;
-  Tenms = 0 ;
-#endif
-
-#if defined(PCBSKY9X)
-  Current_accumulator += Current_analogue ;
-  static uint32_t OneSecTimer;
-  if (++OneSecTimer >= 100) {
-    OneSecTimer -= 100 ;
-    Current_used += Current_accumulator / 100 ;                     // milliAmpSeconds (but scaled)
-    Current_accumulator = 0 ;
-  }
-#endif
-
-#if defined(CPUARM)
-  if (currentSpeakerVolume != requiredSpeakerVolume) {
-    currentSpeakerVolume = requiredSpeakerVolume;
-    setVolume(currentSpeakerVolume);
-  }
-#endif
-
-#if defined(MODULE_ALWAYS_SEND_PULSES)
-  if (startupWarningState < STARTUP_WARNING_DONE) {
-    // don't do menu's until throttle and switch warnings are handled
-    return;
-  }
-#endif
-
-  if (!usbPlugged()) {
-    // TODO merge these 2 branches
-#if defined(PCBSKY9X)
-    if (Eeprom32_process_state != E32_IDLE)
-      ee32_process();
-    else if (TIME_TO_WRITE())
-      eeCheck(false);
-#elif defined(CPUARM)
-    if (theFile.isWriting())
-      theFile.nextWriteStep();
-    else if (TIME_TO_WRITE())
-      eeCheck(false);
-#else
-    if (!eeprom_buffer_size) {
-      if (theFile.isWriting())
-        theFile.nextWriteStep();
-      else if (TIME_TO_WRITE())
-        eeCheck(false);
-    }
-#endif
-  }
-
-#if defined(SDCARD)
-  sdMountPoll();
-  writeLogs();
-#endif
-
-#if defined(CPUARM) && defined(SIMU)
-  checkTrims();
-#endif
-
-#if defined(CPUARM)
-  uint8_t evt = getEvent(false);
-#else
-  uint8_t evt = getEvent();
-  evt = checkTrim(evt);
-#endif
-
-  if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
-
-  checkBacklight();
-
-#if !defined(CPUARM) && (defined(FRSKY) || defined(MAVLINK))
-  telemetryWakeup();
-#endif
-
-#if defined(PCBTARANIS)
-  checkTrainerSettings();
-#endif
-
-#if defined(PCBTARANIS) && !defined(SIMU)
-  static bool usbStarted = false;
-  if (!usbStarted && usbPlugged()) {
-#if defined(USB_MASS_STORAGE)
-    opentxClose();
-#endif
-    usbStart();
-#if defined(USB_MASS_STORAGE)
-    usbPluggedIn();
-#endif
-    usbStarted = true;
-  }
-  
-#if defined(USB_JOYSTICK)
-  if (usbStarted) {
-    if (!usbPlugged()) {
-      //disable USB
-      usbStop();
-      usbStarted = false;
-    }
-    else {
-      usbJoystickUpdate();
-    }
-  }
-#endif
-
-#endif //#if defined(PCBTARANIS) && !defined(SIMU)
 
 #if defined(NAVIGATION_STICKS)
+uint8_t getSticksNavigationEvent() 
+{
+  uint8_t evt = 0;
   if (StickScrollAllowed) {
     if ( StickScrollTimer ) {
       static uint8_t repeater;
@@ -2389,60 +2132,12 @@ void perMain()
     StickScrollTimer = 0;          // Seconds
   }
   StickScrollAllowed = 1 ;
+  return evt;
+}
 #endif
 
-#if defined(USB_MASS_STORAGE)
-  if (usbPlugged()) {
-    lcd_clear();
-    menuMainView(0);
-  }
-  else 
-#endif
-  {
-    const char *warn = s_warning;
-    uint8_t menu = s_menu_count;
-
-    if (!LUA_STANDALONE_SCRIPT_RUNNING()) {
-      lcd_clear();
-      if (menuEvent) {
-        m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
-        m_posHorz = 0;
-        evt = menuEvent;
-        menuEvent = 0;
-        AUDIO_MENUS();
-      }
-      g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
-    }
-
-#if defined(LUA)
-    luaTask(evt);
-#endif
-
-    if (!LUA_STANDALONE_SCRIPT_RUNNING()) {
-      if (warn) DISPLAY_WARNING(evt);
-#if defined(NAVIGATION_MENUS)
-      if (menu) {
-        const char * result = displayMenu(evt);
-        if (result) {
-          menuHandler(result);
-          putEvent(EVT_MENU_UP);
-        }
-      }
-#endif
-    }
-  }
-
-  drawStatusLine();
-
-  lcdRefresh(LCD_REFRESH_DONT_WAIT);
-
-  if (SLAVE_MODE()) {
-    JACK_PPM_OUT();
-  }
-  else {
-    JACK_PPM_IN();
-  }
-
+void checkBattery()
+{
   static uint8_t counter = 0;
   if (g_menuStack[g_menuStackPtr] == menuGeneralDiagAna) {
     g_vbat100mV = 0;
@@ -2506,6 +2201,7 @@ void perMain()
 #endif
     }
   }
+
 }
 
 int16_t g_ppmIns[NUM_TRAINER];
@@ -2895,9 +2591,6 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif
 
 #if defined(VOICE)
-#if defined(CPUARM)
-  currentSpeakerVolume = requiredSpeakerVolume = g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF;
-#endif
   setVolume(g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF);
 #endif
 

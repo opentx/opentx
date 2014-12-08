@@ -41,12 +41,12 @@
 uint32_t readKeys()
 {
   register uint32_t d = GPIOD->IDR;
-#if !defined(REV9E)
   register uint32_t e = GPIOE->IDR;
-#else
   register uint32_t f = GPIOF->IDR;
-#endif
   register uint32_t result = 0;
+
+  (void)e;
+  (void)f;
 
 #if defined(REV9E)
   if (f & PIN_BUTTON_ENTER)
@@ -55,7 +55,7 @@ uint32_t readKeys()
 #endif
     result |= 0x02 << KEY_ENTER;
 
-#if !defined(REV9E)
+#if !defined(REV9E) || defined(SIMU)
   if (e & PIN_BUTTON_PLUS)
     result |= 0x02 << KEY_PLUS;
   if (e & PIN_BUTTON_MINUS)
@@ -145,7 +145,7 @@ void readKeysAndTrims()
 
 #if defined(REV9E)
   static rotenc_t rePreviousValue;
-  rotenc_t reNewValue = (x9de_rotenc / ROTARY_ENCODER_GRANULARITY);
+  rotenc_t reNewValue = (x9de_rotenc / 2);
   int8_t scrollRE = reNewValue - rePreviousValue;
   if (scrollRE) {
     rePreviousValue = reNewValue;

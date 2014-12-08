@@ -314,6 +314,15 @@ TRACE_SD_CARD = NO
 TRACE_FATFS = NO
 TRACE_AUDIO = NO
 
+# Enable double buffering for LCD. Only for TARANIS PLUS and 9XE targets.
+# Activating requires about 6kB of RAM, but it enables menus task to
+# immediately start to compose a new LCD image while the current one is 
+# being written to LCD by DMA.
+# If this option is NO, then first function that affects LCD buffer is 
+# delayed until DMA transfer is finished.
+# Values = NO, YES
+LCD_DUAL_BUFFER = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -353,7 +362,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   THR_TRACE = NO
   INCDIRS += targets/stock
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
-  BOARDSRC = targets/stock/board_stock.cpp
+  BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
   EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
@@ -417,7 +426,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   EEPROM_VARIANT += ${M128_VARIANT}
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM128 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   INCDIRS += targets/stock
-  BOARDSRC = targets/stock/board_stock.cpp
+  BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
   EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
@@ -477,7 +486,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   EEPROM_VARIANT += ${M2561_VARIANT}
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM2561 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   INCDIRS += targets/stock
-  BOARDSRC = targets/stock/board_stock.cpp
+  BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
   EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
@@ -538,7 +547,7 @@ ifeq ($(PCB), GRUVIN9X)
   BUZZER = NO
   THR_TRACE = YES
   INCDIRS += targets/gruvin9x targets/stock FatFs FatFs/option
-  BOARDSRC = targets/gruvin9x/board_gruvin9x.cpp
+  BOARDSRC = main_avr.cpp targets/gruvin9x/board_gruvin9x.cpp
   EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
@@ -577,7 +586,7 @@ ifeq ($(PCB), MEGA2560)
   SDCARD = YES
   THR_TRACE = YES
   INCDIRS += targets/mega2560 targets/stock FatFs FatFs/option
-  BOARDSRC = targets/mega2560/board_mega2560.cpp
+  BOARDSRC = main_avr.cpp targets/mega2560/board_mega2560.cpp
   EXTRABOARDSRC = targets/mega2560/lcd_driver_ST7565R.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
@@ -631,7 +640,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
     CPPDEFS += -DSPORT_FILE_LOG
   endif
   INCDIRS += targets/sky9x CoOS/kernel CoOS/portable
-  BOARDSRC = targets/sky9x/board_sky9x.cpp
+  BOARDSRC = main_arm.cpp targets/sky9x/board_sky9x.cpp
   EXTRABOARDSRC = targets/sky9x/lcd_driver.cpp
   SRC += targets/sky9x/core_cm3.c targets/sky9x/board_lowlevel.c targets/sky9x/crt.c targets/sky9x/vectors_sam3s.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
@@ -679,10 +688,16 @@ ifeq ($(PCB), TARANIS)
     SWR = YES
   else ifeq ($(PCBREV), REVPLUS)
     CPPDEFS = -DREVPLUS
+    ifeq ($(LCD_DUAL_BUFFER), YES)
+    	CPPDEFS += -DLCD_DUAL_BUFFER
+    endif
     HAPTIC = YES
     SWR = NO
   else ifeq ($(PCBREV), REV9E)
     CPPDEFS = -DREVPLUS -DREV9E
+    ifeq ($(LCD_DUAL_BUFFER), YES)
+    	CPPDEFS += -DLCD_DUAL_BUFFER
+    endif
     HAPTIC = YES
     SWR = YES
   else
@@ -729,7 +744,7 @@ ifeq ($(PCB), TARANIS)
   EXTRAINCDIRS += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/include
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc 
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc 
-  BOARDSRC = targets/taranis/board_taranis.cpp
+  BOARDSRC = main_arm.cpp targets/taranis/board_taranis.cpp
   EXTRABOARDSRC += targets/taranis/configure_pins.cpp targets/taranis/lcd_driver.cpp targets/taranis/flash_driver.cpp targets/taranis/aspi.c targets/taranis/i2c.c targets/taranis/delays.c 
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   SRC += targets/taranis/pwr_driver.c targets/taranis/usb_driver.c
@@ -781,7 +796,7 @@ ifeq ($(PCB), TARANIS)
     endif
     CPPDEFS += -DLUA
     INCDIRS += lua/src
-    CPPSRC += lua.cpp
+    CPPSRC += lua_api.cpp
     LUASRC = lua/src/lapi.c lua/src/lcode.c lua/src/lctype.c lua/src/ldebug.c lua/src/ldo.c lua/src/ldump.c lua/src/lfunc.c lua/src/lgc.c lua/src/llex.c lua/src/lmem.c \
            lua/src/lobject.c lua/src/lopcodes.c lua/src/lparser.c lua/src/lstate.c lua/src/lstring.c lua/src/ltable.c lua/src/lrotable.c lua/src/ltm.c lua/src/lundump.c lua/src/lvm.c lua/src/lzio.c \
            lua/src/lbaselib.c lua/src/linit.c lua/src/lmathlib.c lua/src/lbitlib.c lua/src/loadlib.c lua/src/lauxlib.c lua/src/ltablib.c lua/src/lcorolib.c
@@ -1217,6 +1232,8 @@ endif
 MAJ_VER = ${shell sh -c "grep \"MAJ_VERS\" opentx.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
 MIN_VER = ${shell sh -c "grep \"MIN_VERS\" opentx.h | cut -d\  -f3"}
 
+.SECONDARY:
+	
 # Default target.
 all: begin gccversion sizebefore build sizeafter end
 

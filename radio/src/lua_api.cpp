@@ -72,6 +72,7 @@ ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS] = { {0} };
 ScriptInternalData standaloneScript = { SCRIPT_NOFILE, 0 };
 uint16_t maxLuaInterval = 0;
 uint16_t maxLuaDuration = 0;
+bool luaLcdAllowed;
 
 #define PERMANENT_SCRIPTS_MAX_INSTRUCTIONS (10000/100)
 #define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (20000/100)
@@ -341,14 +342,22 @@ static int luaGetGeneralSettings(lua_State *L)
   return 1;
 }
 
+static int luaLcdLock(lua_State *L)
+{
+  // disabled in opentx 2.1
+  // TODO: remove this function completely in opentx 2.2
+  return 0;
+}
+
 static int luaLcdClear(lua_State *L)
 {
-  lcd_clear();
+  if (luaLcdAllowed) lcd_clear();
   return 0;
 }
 
 static int luaLcdDrawPoint(lua_State *L)
 {
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   lcd_plot(x, y);
@@ -357,6 +366,7 @@ static int luaLcdDrawPoint(lua_State *L)
 
 static int luaLcdDrawLine(lua_State *L)
 {
+  if (!luaLcdAllowed) return 0;
   int x1 = luaL_checkinteger(L, 1);
   int y1 = luaL_checkinteger(L, 2);
   int x2 = luaL_checkinteger(L, 3);
@@ -375,6 +385,7 @@ static int luaLcdGetLastPos(lua_State *L)
 
 static int luaLcdDrawText(lua_State *L)
 {
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   const char * s = luaL_checkstring(L, 3);
@@ -385,6 +396,7 @@ static int luaLcdDrawText(lua_State *L)
 
 static int luaLcdDrawTimer(lua_State *L)
 {
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int seconds = luaL_checkinteger(L, 3);
@@ -395,6 +407,7 @@ static int luaLcdDrawTimer(lua_State *L)
 
 static int luaLcdDrawNumber(lua_State *L)
 {
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int n = luaL_checkinteger(L, 3);
@@ -405,6 +418,7 @@ static int luaLcdDrawNumber(lua_State *L)
 
 static int luaLcdDrawChannel(lua_State *L)
 {
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int channel = -1;
@@ -427,6 +441,7 @@ static int luaLcdDrawChannel(lua_State *L)
 
 static int luaLcdDrawSwitch(lua_State *L)
 {
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int s = luaL_checkinteger(L, 3);
@@ -437,6 +452,7 @@ static int luaLcdDrawSwitch(lua_State *L)
 
 static int luaLcdDrawSource(lua_State *L)
 {
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int s = luaL_checkinteger(L, 3);
@@ -447,6 +463,7 @@ static int luaLcdDrawSource(lua_State *L)
 
 static int luaLcdDrawPixmap(lua_State *L)
 {
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   const char * filename = luaL_checkstring(L, 3);
@@ -460,6 +477,7 @@ static int luaLcdDrawPixmap(lua_State *L)
 
 static int luaLcdDrawRectangle(lua_State *L)
 {
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int w = luaL_checkinteger(L, 3);
@@ -470,6 +488,7 @@ static int luaLcdDrawRectangle(lua_State *L)
 
 static int luaLcdDrawFilledRectangle(lua_State *L)
 {
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int w = luaL_checkinteger(L, 3);
@@ -481,6 +500,7 @@ static int luaLcdDrawFilledRectangle(lua_State *L)
 
 static int luaLcdDrawGauge(lua_State *L)
 {
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int w = luaL_checkinteger(L, 3);
@@ -498,6 +518,7 @@ static int luaLcdDrawGauge(lua_State *L)
 
 static int luaLcdDrawScreenTitle(lua_State *L)
 {
+  if (!luaLcdAllowed) return 0;
   const char * str = luaL_checkstring(L, 1);
   int idx = luaL_checkinteger(L, 2);
   int cnt = luaL_checkinteger(L, 3);
@@ -511,6 +532,7 @@ static int luaLcdDrawScreenTitle(lua_State *L)
 
 static int luaLcdDrawCombobox(lua_State *L)
 {
+  if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int w = luaL_checkinteger(L, 3);
@@ -1411,6 +1433,7 @@ const luaL_Reg modelLib[] = {
 };
 
 const luaL_Reg lcdLib[] = {
+  { "lock", luaLcdLock },
   { "clear", luaLcdClear },
   { "getLastPos", luaLcdGetLastPos },
   { "drawPoint", luaLcdDrawPoint },
@@ -1810,96 +1833,96 @@ void luaDoOneRunStandalone(uint8_t evt)
   }
 }
   
-void luaDoOneRunPermanentScript(uint8_t evt, int i)
+bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
 {
   ScriptInternalData & sid = scriptInternalData[i];
-  if (sid.state == SCRIPT_OK) {
-    SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
-    int inputsCount = 0;
+  if (sid.state != SCRIPT_OK) return false;
+
+  SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
+  int inputsCount = 0;
 #if defined(SIMU) || defined(DEBUG)
-    const char *filename;
+  const char *filename;
 #endif
-    ScriptInputsOutputs * sio = NULL;
+  ScriptInputsOutputs * sio = NULL;
 #if SCRIPT_MIX_FIRST > 0
-    if (sid.reference >= SCRIPT_MIX_FIRST && sid.reference <= SCRIPT_MIX_LAST) {
+  if ((scriptType & RUN_MIX_SCRIPT) && (sid.reference >= SCRIPT_MIX_FIRST && sid.reference <= SCRIPT_MIX_LAST)) {
 #else
-    if (sid.reference <= SCRIPT_MIX_LAST) {
+  if ((scriptType & RUN_MIX_SCRIPT) && (sid.reference <= SCRIPT_MIX_LAST)) {
 #endif
-      ScriptData & sd = g_model.scriptsData[sid.reference-SCRIPT_MIX_FIRST];
-      sio = &scriptInputsOutputs[sid.reference-SCRIPT_MIX_FIRST];
-      inputsCount = sio->inputsCount;
+    ScriptData & sd = g_model.scriptsData[sid.reference-SCRIPT_MIX_FIRST];
+    sio = &scriptInputsOutputs[sid.reference-SCRIPT_MIX_FIRST];
+    inputsCount = sio->inputsCount;
 #if defined(SIMU) || defined(DEBUG)
-      filename = sd.file;
+    filename = sd.file;
 #endif
-      lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
-      for (int j=0; j<sio->inputsCount; j++) {
-        if (sio->inputs[j].type == 1)
-          luaGetValueAndPush((uint8_t)sd.inputs[j]);
-        else
-          lua_pushinteger(L, sd.inputs[j] + sio->inputs[j].def);
-      }
+    lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
+    for (int j=0; j<sio->inputsCount; j++) {
+      if (sio->inputs[j].type == 1)
+        luaGetValueAndPush((uint8_t)sd.inputs[j]);
+      else
+        lua_pushinteger(L, sd.inputs[j] + sio->inputs[j].def);
     }
-    else if (sid.reference >= SCRIPT_FUNC_FIRST && sid.reference <= SCRIPT_FUNC_LAST) {
-      CustomFunctionData & fn = g_model.customFn[sid.reference-SCRIPT_FUNC_FIRST];
-      if (!getSwitch(fn.swtch)) {
-        return;
-      }
+  }
+  else if ((scriptType & RUN_FUNC_SCRIPT) && (sid.reference >= SCRIPT_FUNC_FIRST && sid.reference <= SCRIPT_FUNC_LAST)) {
+    CustomFunctionData & fn = g_model.customFn[sid.reference-SCRIPT_FUNC_FIRST];
+    if (!getSwitch(fn.swtch)) return false;
 #if defined(SIMU) || defined(DEBUG)
-      filename = fn.play.name;
+    filename = fn.play.name;
 #endif
+    lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
+  }
+  else {
+#if defined(SIMU) || defined(DEBUG)
+    TelemetryScriptData & script = g_model.frsky.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
+    filename = script.file;
+#endif
+    if ((scriptType & RUN_TELEM_FG_SCRIPT) && 
+        (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {
       lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
+      lua_pushinteger(L, evt);
+      inputsCount = 1;
+    }
+    else if ((scriptType & RUN_TELEM_BG_SCRIPT) && (sid.background)) {
+      lua_rawgeti(L, LUA_REGISTRYINDEX, sid.background);
     }
     else {
-#if defined(SIMU) || defined(DEBUG)
-      TelemetryScriptData & script = g_model.frsky.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
-      filename = script.file;
-#endif
-      if (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view) {
-        lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
-        lua_pushinteger(L, evt);
-        inputsCount = 1;
-      }
-      else if (sid.background) {
-        lua_rawgeti(L, LUA_REGISTRYINDEX, sid.background);
-      }
-      else {
-        return;
-      }
+      return false;
     }
+  }
 
-    if (lua_pcall(L, inputsCount, sio ? sio->outputsCount : 0, 0) == 0) {
-      if (sio) {
-        for (int j=sio->outputsCount-1; j>=0; j--) {
-          if (!lua_isnumber(L, -1)) {
-            sid.state = (instructionsPercent > 100 ? SCRIPT_KILLED : SCRIPT_SYNTAX_ERROR);
-            TRACE("Script %8s disabled", filename);
-            break;
-          }
-          sio->outputs[j].value = lua_tointeger(L, -1);
-          lua_pop(L, 1);
+  if (lua_pcall(L, inputsCount, sio ? sio->outputsCount : 0, 0) == 0) {
+    if (sio) {
+      for (int j=sio->outputsCount-1; j>=0; j--) {
+        if (!lua_isnumber(L, -1)) {
+          sid.state = (instructionsPercent > 100 ? SCRIPT_KILLED : SCRIPT_SYNTAX_ERROR);
+          TRACE("Script %8s disabled", filename);
+          break;
         }
-      }
-    }
-    else {
-      if (instructionsPercent > 100) {
-        TRACE("Script %8s killed", filename);
-        sid.state = SCRIPT_KILLED;
-      }
-      else {
-        TRACE("Script %8s error: %s", filename, lua_tostring(L, -1));
-        sid.state = SCRIPT_SYNTAX_ERROR;
-      }
-    }
-
-    if (sid.state != SCRIPT_OK) {
-      luaFree(sid);
-    }
-    else {
-      if (instructionsPercent > sid.instructions) {
-        sid.instructions = instructionsPercent;
+        sio->outputs[j].value = lua_tointeger(L, -1);
+        lua_pop(L, 1);
       }
     }
   }
+  else {
+    if (instructionsPercent > 100) {
+      TRACE("Script %8s killed", filename);
+      sid.state = SCRIPT_KILLED;
+    }
+    else {
+      TRACE("Script %8s error: %s", filename, lua_tostring(L, -1));
+      sid.state = SCRIPT_SYNTAX_ERROR;
+    }
+  }
+
+  if (sid.state != SCRIPT_OK) {
+    luaFree(sid);
+  }
+  else {
+    if (instructionsPercent > sid.instructions) {
+      sid.instructions = instructionsPercent;
+    }
+  }
+  return true;
 }
 
 void luaDoGc()
@@ -1924,58 +1947,50 @@ void luaDoGc()
   }
 }
 
-void luaTask(uint8_t evt)
+bool luaTask(uint8_t evt, uint8_t scriptType, bool allowLcdUsage)
 {
-  uint32_t t0 = get_tmr10ms();
-  static uint32_t lastLuaTime = 0;
-  uint16_t interval = (lastLuaTime == 0 ? 0 : (t0 - lastLuaTime));
-  lastLuaTime = t0;
-  if (interval > maxLuaInterval) {
-    maxLuaInterval = interval;
-  }
+  if (luaState == INTERPRETER_PANIC) return false;
+  luaLcdAllowed = allowLcdUsage;
+  bool scriptWasRun = false;
 
-  if (luaState == INTERPRETER_PANIC) {
-    return;
-  }
-
+  // we run either standalone script or permanent scripts
   if (luaState & INTERPRETER_RUNNING_STANDALONE_SCRIPT) {
+    // run standalone script
+    if ((scriptType & RUN_STNDAL_SCRIPT) == 0) return false;
     PROTECT_LUA() {
       luaDoOneRunStandalone(evt);
+      scriptWasRun = true;
     }
     else {
       luaDisable();
-      return;
+      return false;
     }
     UNPROTECT_LUA();
   }
   else {
-    // model scripts
+    // run permanent scripts
     if (luaState & INTERPRETER_RELOAD_PERMANENT_SCRIPTS) {
       luaState = 0;
       luaInit();
-      if (luaState == INTERPRETER_PANIC) return;
+      if (luaState == INTERPRETER_PANIC) return false;
       luaLoadPermanentScripts();
-      if (luaState == INTERPRETER_PANIC) return;
+      if (luaState == INTERPRETER_PANIC) return false;
     }
 
     for (int i=0; i<luaScriptsCount; i++) {
       PROTECT_LUA() {
-        luaDoOneRunPermanentScript(evt, i);
+        scriptWasRun |= luaDoOneRunPermanentScript(evt, i, scriptType);
       }
       else {
         luaDisable();
-        return;
+        break;
       }
       UNPROTECT_LUA();
+      //todo gc step between scripts
     }
   }
-
   luaDoGc();
-
-  t0 = get_tmr10ms() - t0;
-  if (t0 > maxLuaDuration) {
-    maxLuaDuration = t0;
-  }
+  return scriptWasRun;
 }
 
 int luaGetMemUsed()

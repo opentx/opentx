@@ -339,6 +339,10 @@ void *main_thread(void *)
     s_current_protocol[0] = 0;
 
     while (main_thread_running) {
+#if defined(CPUARM)
+      doMixerCalculations();
+      checkTrims();
+#endif
       perMain();
       sleep(10/*ms*/);
     }

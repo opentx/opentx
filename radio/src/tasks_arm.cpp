@@ -117,6 +117,8 @@ uint32_t stack_free(uint32_t tid)
   return i*4;
 }
 
+#if !defined(SIMU)
+
 void mixerTask(void * pdata)
 {
   s_pulses_paused = true;
@@ -147,16 +149,25 @@ void mixerTask(void * pdata)
   }
 }
 
+#define MENU_TASK_PERIOD_TICKS      10    // 20ms
+
 extern void opentxClose();
 extern void opentxInit();
+
 void menusTask(void * pdata)
 {
   opentxInit();
 
   while (pwrCheck() != e_power_off) {
+    U64 start = CoGetOSTime();
     perMain();
     // TODO remove completely massstorage from sky9x firmware
-    CoTickDelay(5);  // 5*2ms for now
+    U32 runtime = (U32)(CoGetOSTime() - start);
+    // deduct the thread run-time from the wait, if run-time was more than 
+    // desired period, then skip the wait all together
+    if (runtime < MENU_TASK_PERIOD_TICKS) {
+      CoTickDelay(MENU_TASK_PERIOD_TICKS - runtime);
+    }
   }
 
   lcd_clear();
@@ -200,3 +211,5 @@ void tasksStart()
 
   CoStartOS();
 }
+
+#endif // #if !defined(SIMU)

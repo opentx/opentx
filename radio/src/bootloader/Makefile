@@ -124,6 +124,10 @@ else
     CPPDEFS += -DREV4a
   else ifeq ($(PCBREV), REVPLUS)
     CPPDEFS += -DREVPLUS
+    HAPTIC = YES
+  else ifeq ($(PCBREV), REV9E)
+    CPPDEFS += -DREVPLUS -DREV9E
+    HAPTIC = YES
   else
     CPPDEFS += -DREV4
   endif
@@ -177,6 +181,10 @@ CPPSRC = ../targets/taranis/lcd_driver.cpp \
 	../fonts.cpp \
 	../strhelpers.cpp \
 	boot.cpp
+
+ifeq ($(PCBREV), REV9E)
+  CPPSRC += ../targets/taranis/rotenc_driver.cpp
+endif
 
 # List ASM source files here
 ASRC = ../targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s

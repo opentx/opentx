@@ -42,8 +42,10 @@ inline void MIXER_RESET()
 
 inline void TELEMETRY_RESET()
 {
+#if defined(FRSKY)
   memclear(&frskyData, sizeof(frskyData));
   TELEMETRY_RSSI() = 100;
+#endif
 }
 
 void MIXER_RESET();
