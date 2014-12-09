@@ -43,9 +43,7 @@
 #define MAVLINK_COMM_NUM_BUFFERS 1
 
 #include "GCS_MAVLink/include_v1.0/mavlink_types.h"
-#include "serial.h"
 #include "opentx.h"
-#include "serial.h"
 //#include "include/mavlink_helpers.h"
 
 extern mavlink_system_t mavlink_system;
@@ -65,7 +63,8 @@ extern void SERIAL_send_uart_bytes(const uint8_t * buf, uint16_t len);
 #include "../GCS_MAVLink/include_v1.0/ardupilotmega/mavlink.h"
 
 //#define MAVLINK_PARAMS
-//#define DUMP_RX_TX
+#define DUMP_RX_TX
+//#undef DUMP_RX_TX
 #define ERROR_NUM_MODES 99
 #define ERROR_MAV_ACTION_NB 99
 
@@ -178,7 +177,7 @@ typedef struct Telemetry_Data_ {
 	uint8_t mav_compid;
 	uint8_t mode;
 	uint32_t custom_mode;
-	bool active;
+	bool 	active;
 	uint8_t nav_mode;
 	uint8_t rcv_control_mode; ///< System mode, see MAV_MODE ENUM in mavlink/include/mavlink_types.h
 	uint16_t load; ///< Maximum usage in percent of the mainloop time, (0%: 0, 100%: 1000) should be always below 1000
@@ -222,9 +221,6 @@ extern Telemetry_Data_t telemetry_data;
  */
 
 
-
-
-
 extern inline uint8_t MAVLINK_CtrlMode2Action(uint8_t mode) {
 	uint8_t action;
 	
@@ -239,10 +235,14 @@ extern inline uint8_t MAVLINK_Action2CtrlMode(uint8_t action) {
 	}
 }
 #endif
-void telemetryWakeup();
 void MAVLINK_Init(void);
-void menuTelemetryMavlink(uint8_t event);
-void MAVLINK10mspoll(uint16_t time);
+void telemetryWakeup();
+void telemetryInterrupt10ms(void);
+void menuTelemetryMavlink(uint8_t);
+NOINLINE void processSerialData(uint8_t);
+uint32_t Index2Baud(uint8_t);
+
+static inline void handleMessage(mavlink_message_t*);
 
 #ifdef MAVLINK_PARAMS
 

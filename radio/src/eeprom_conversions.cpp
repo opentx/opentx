@@ -835,6 +835,7 @@ void ConvertModel_215_to_216(ModelData &model)
     memcpy(g_model.gvars[i].name, oldModel.gvar_names[i], LEN_GVAR_NAME);
   }
 
+#if defined(FRSKY)
   memcpy(&g_model.frsky, &oldModel.frsky, 2*sizeof(FrSkyChannelData));
   // gap for A3-A4
   memcpy(((uint8_t *)&g_model.frsky) + 4*sizeof(FrSkyChannelData), ((uint8_t *)&oldModel.frsky) + 2*sizeof(FrSkyChannelData), sizeof(oldModel.frsky) - 2*sizeof(FrSkyChannelData));
@@ -862,6 +863,7 @@ void ConvertModel_215_to_216(ModelData &model)
       }
     }
   }
+#endif
 
 #if defined(PCBTARANIS)
   g_model.externalModule = oldModel.externalModule;

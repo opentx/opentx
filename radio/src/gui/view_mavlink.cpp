@@ -99,8 +99,8 @@ void menuTelemetryMavlink(uint8_t event) {
 		menuTelemetryMavlinkGPS();
 		break;
 #ifdef DUMP_RX_TX
-	case MENU_DUMP_TX:
 	case MENU_DUMP_RX:
+	case MENU_DUMP_DIAG:
 		menuTelemetryMavlinkDump(event);
 		break;
 #endif
@@ -206,9 +206,8 @@ void mav_title(const pm_char * s, uint8_t index)
   lcd_putsAtt(0, 0, PSTR("MAVLINK"), INVERS);
   lcd_puts(10 * FW, 0, s);
   displayScreenIndex(index, MAX_MAVLINK_MENU, INVERS);
-  lcd_putc(7 * FW, 0, (mav_heartbeat > 0) ? '*' : ' ');
-  if (telemetry_data.active)
-  	  lcd_putcAtt(8 * FW, 0, 'A', BLINK);
+  lcd_putc(7 * FW, 0, mav_heartbeat+'0');	/* ok til 9 :-) */
+  lcd_putc(8 * FW, 0, telemetry_data.active ? 'A' : 'N');
 }
 
 /*!	\brief Global info menu
@@ -249,13 +248,12 @@ void menuTelemetryMavlinkInfos(void) {
 		y += FH;
 		lcd_puts(x1, y, PSTR("BATT"));
 		lcd_outdezNAtt(xnum, y, telemetry_data.vbat, PREC1, 5);
-
 		y += FH;
-		lcd_puts(x1, y, PSTR("DROP"));
+		lcd_puts(x1, y, PSTR("PKT DROP"));
 		lcd_outdezAtt(xnum, y, telemetry_data.packet_drop, 0);
-/*		y += FH;
-		lcd_puts(x1, y, PSTR("FIX"));
-		lcd_outdezAtt(xnum, y, telemetry_data.packet_fixed, 0);
+		y += FH;
+		lcd_puts(x1, y, PSTR("PKT REC"));
+		lcd_outdezAtt(xnum, y, telemetry_data.packet_fixed, 0);		/* TODO use correct var */
 		y += FH;
 		lcd_puts(x1, y, PSTR("MAV Comp"));
 		lcd_outdezAtt(xnum, y, telemetry_data.mav_compid, 0);
@@ -268,7 +266,6 @@ void menuTelemetryMavlinkInfos(void) {
 		y += FH;
 		lcd_puts(x1, y, PSTR("Rad Sys"));
 		lcd_outdezAtt(xnum, y, telemetry_data.radio_sysid, 0);
-*/
 		
 	}
 }
@@ -463,19 +460,20 @@ void menuTelemetryMavlinkDump(uint8_t event) {
 	uint8_t *ptr = NULL;
 	switch (MAVLINK_menu) {
 		case MENU_DUMP_RX:
-		mav_dump_rx = 1;
-		mav_title(PSTR("RX"), MAVLINK_menu);
-		bufferLen = mavlinkRxBufferCount;
-		ptr = mavlinkRxBuffer;
-		break;
+			mav_dump_rx = 1;
+			mav_title(PSTR("RX"), MAVLINK_menu);
+			bufferLen = mavlinkRxBufferCount;
+			ptr = mavlinkRxBuffer;
+			break;
 
-		case MENU_DUMP_TX:
-		mav_title(PSTR("TX"), MAVLINK_menu);
-		bufferLen = serialTxBufferCount;
-		ptr = ptrTxISR;
-		break;
+		case MENU_DUMP_DIAG:
+			mav_title(PSTR("Diag"), MAVLINK_menu);
+		//	bufferLen = serialTxBufferCount;
+		//	ptr = ptrTxISR;
+			break;
+		
 		default:
-		break;
+			break;
 	}
 	for (uint16_t var = 0; var < bufferLen; var++) {
 		uint8_t byte = *ptr++;

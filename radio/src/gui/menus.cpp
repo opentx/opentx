@@ -1433,9 +1433,11 @@ bool isTelemetrySourceAvailable(int source)
     return false;
 #endif
 
+#if defined(FRSKY)
   if (source >= TELEM_A1 && source <= TELEM_A4) {
     return g_model.frsky.channels[source-TELEM_A1].ratio != 0;
   }
+#endif
 
 #if !defined(RTCLOCK)
   if (source == TELEM_TX_TIME)
