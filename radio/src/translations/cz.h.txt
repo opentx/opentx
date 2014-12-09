@@ -730,6 +730,7 @@
 #define TR_THROTTLEWARN        "PLYNU"
 #define TR_ALARMSWARN          "ALARMU"
 #define TR_SWITCHWARN          "POZICE"
+#define TR_KEYSTUCK            "Key stuck"
 #define TR_INVERT_THR          "Invertovat plyn?"
 #define TR_SPEAKER_VOLUME      INDENT "Hlasitost"
 #define TR_LCD                 "LCD"

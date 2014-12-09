@@ -1057,7 +1057,22 @@ void checkAll()
   }
 #endif
 
+#if defined(CPUARM)
+  if (!clearKeyEvents()) {
+    displayPopup(STR_KEYSTUCK);
+    tmr10ms_t tgtime = get_tmr10ms() + 500;
+    while (tgtime != get_tmr10ms()) {
+#if defined(SIMU)
+      SIMU_SLEEP(1);
+#elif defined(CPUARM)
+      CoTickDelay(1);
+#endif
+      wdt_reset();
+    }
+  }
+#else    // #if defined(CPUARM)
   clearKeyEvents();
+#endif   // #if defined(CPUARM)
 
   START_SILENCE_PERIOD();
 }

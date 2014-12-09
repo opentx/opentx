@@ -353,6 +353,7 @@ extern uint8_t main_thread_running;
 #define getADC_bandgap()
 
 #define SIMU_SLEEP(x) do { if (!main_thread_running) return; sleep(x/*ms*/); } while (0)
+#define SIMU_SLEEP_NORET(x) do { sleep(x/*ms*/); } while (0)
 
 void simuSetKey(uint8_t key, bool state);
 void simuSetTrim(uint8_t trim, bool state);
