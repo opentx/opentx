@@ -77,7 +77,7 @@ enum mavlink_menu_ {
 	MENU_GPS, //
 #ifdef DUMP_RX_TX
 	MENU_DUMP_RX, //
-	MENU_DUMP_TX, //
+	MENU_DUMP_DIAG, //
 #endif
 	MAX_MAVLINK_MENU
 };

@@ -1360,7 +1360,7 @@ void menuModelSetup(uint8_t event)
             x -= FW;
           }
 #endif
-          lcd_putsiAtt(x, y, STR_RETA123, i, ((m_posHorz==i) && attr) ? BLINK|INVERS : (((g_model.beepANACenter & ((BeepANACenter)1<<i)) || (attr && m_posHorz<0)) ? INVERS : 0 ) );
+          lcd_putsiAtt(x, y, STR_RETA123, i, ((m_posHorz==i) && attr) ? BLINK|INVERS : (((g_model.beepANACenter & ((BeepANACenter)1<<i)) || (attr && CURSOR_ON_LINE())) ? INVERS : 0 ) );
         }
         if (attr && CURSOR_ON_CELL) {
           if (event==EVT_KEY_BREAK(KEY_ENTER) || p1valdiff) {
@@ -1928,7 +1928,7 @@ void menuModelFlightModesAll(uint8_t event)
 
     FlightModeData *p = flightModeAddress(k);
 
-    putsFlightMode(0, y, k+1, (getFlightMode()==k ? BOLD : 0) | ((sub==k && m_posHorz<0) ? INVERS : 0));
+    putsFlightMode(0, y, k+1, (getFlightMode()==k ? BOLD : 0) | ((sub==k && CURSOR_ON_LINE()) ? INVERS : 0));
 
     for (uint8_t j=0; j<ITEM_FLIGHT_MODES_COUNT; j++) {
       uint8_t attr = ((sub==k && posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
@@ -4251,7 +4251,7 @@ void menuModelGVars(uint8_t event)
 #endif
 
     if (g_model.gvars[i].popup) lcd_putc(3*FW, y, '!');
-    putsStrIdx(0, y, STR_GV, i+1, (sub==i && m_posHorz<0) ? INVERS : 0);
+    putsStrIdx(0, y, STR_GV, i+1, (sub==i && CURSOR_ON_LINE()) ? INVERS : 0);
 
     for (uint8_t j=0; j<1+MAX_FLIGHT_MODES; j++) {
       LcdFlags attr = ((sub==i && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
@@ -5002,7 +5002,7 @@ void menuModelCustomFunctions(uint8_t event)
   int8_t  sub = m_posVert - 1;
 
 #if defined(PCBTARANIS)
-   if (sub>=0 && m_posHorz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+   if (sub>=0 && CURSOR_ON_LINE() && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
      killEvents(event);
      CustomFnData *sd = &g_model.funcSw[sub];
      if (!CFN_EMPTY(sd))
@@ -5028,7 +5028,7 @@ void menuModelCustomFunctions(uint8_t event)
     k = i+s_pgOfs;
 
 #if LCD_W >= 212
-    putsStrIdx(0, y, STR_CF, k+1, (sub==k && m_posHorz<0) ? INVERS : 0);
+    putsStrIdx(0, y, STR_CF, k+1, (sub==k && CURSOR_ON_LINE()) ? INVERS : 0);
 #endif
 
     CustomFnData *sd = &g_model.funcSw[k];
@@ -5749,8 +5749,8 @@ void menuModelTelemetry(uint8_t event)
 #else
         lcd_putsLeft(y, STR_ALARM);
         lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ALARM_LEVEL(ch, alarm), m_posHorz<=0 ? attr : 0);
-        lcd_putsiAtt(TELEM_COL2+4*FW, y, STR_VALARMFN, ALARM_GREATER(ch, alarm), (m_posHorz<0 || m_posHorz==1) ? attr : 0);
-        putsTelemetryChannel(TELEM_COL2+6*FW, y, dest, channel.alarms_value[alarm], ((m_posHorz<0 || m_posHorz==2) ? attr : 0) | LEFT);
+        lcd_putsiAtt(TELEM_COL2+4*FW, y, STR_VALARMFN, ALARM_GREATER(ch, alarm), (CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0);
+        putsTelemetryChannel(TELEM_COL2+6*FW, y, dest, channel.alarms_value[alarm], ((CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0) | LEFT);
 
         if (attr && (s_editMode>0 || p1valdiff)) {
           uint8_t t;
@@ -5893,9 +5893,9 @@ void menuModelTelemetry(uint8_t event)
         }
 #else
         lcd_outdezAtt(TELEM_COL2, y, -10+g_model.frsky.varioMin, (m_posHorz<=0 ? attr : 0)|LEFT);
-        lcd_outdezAtt(TELEM_COL2+7*FW-2, y, -5+g_model.frsky.varioCenterMin, ((m_posHorz<0 || m_posHorz==1) ? attr : 0)|PREC1);
-        lcd_outdezAtt(TELEM_COL2+10*FW, y, 5+g_model.frsky.varioCenterMax, ((m_posHorz<0 || m_posHorz==2) ? attr : 0)|PREC1);
-        lcd_outdezAtt(TELEM_COL2+13*FW+2, y, 10+g_model.frsky.varioMax, ((m_posHorz<0 || m_posHorz==3) ? attr : 0));
+        lcd_outdezAtt(TELEM_COL2+7*FW-2, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0)|PREC1);
+        lcd_outdezAtt(TELEM_COL2+10*FW, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0)|PREC1);
+        lcd_outdezAtt(TELEM_COL2+13*FW+2, y, 10+g_model.frsky.varioMax, ((CURSOR_ON_LINE() || m_posHorz==3) ? attr : 0));
         if (attr && (s_editMode>0 || p1valdiff)) {
           switch (m_posHorz) {
             case 0:

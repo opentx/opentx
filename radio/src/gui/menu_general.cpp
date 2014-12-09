@@ -1156,7 +1156,7 @@ void menuGeneralTrainer(uint8_t event)
       uint8_t chan = channel_order(i);
       volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
 
-      putsMixerSource(0, y, MIXSRC_Rud-1+chan, (m_posVert==i && m_posHorz<0) ? INVERS : 0);
+      putsMixerSource(0, y, MIXSRC_Rud-1+chan, (m_posVert==i && CURSOR_ON_LINE()) ? INVERS : 0);
 
       for (uint8_t j=0; j<3; j++) {
 

@@ -119,6 +119,8 @@ const pm_char * openLogs()
     f_puts("SWR,RSSI,A1,A2,A3,A4,", &g_oLogFile);
 #elif defined(FRSKY)
     f_puts("Buffer,RX,TX,A1,A2,", &g_oLogFile);
+#elif defined(CPUARM) && defined(MAVLINK)
+    f_puts("SWR,RSSI,A1,A2,A3,A4,", &g_oLogFile);
 #endif
 
 #if defined(FRSKY_HUB)
@@ -127,6 +129,8 @@ const pm_char * openLogs()
       f_puts(TELEMETRY_BARO_ALT_UNIT, &g_oLogFile);
       f_puts("),Vertical Speed,Air Speed(kts),Temp1,Temp2,RPM,Fuel," TELEMETRY_CELLS_LABEL "Current,Consumption,Vfas,AccelX,AccelY,AccelZ,", &g_oLogFile);
     }
+#elif defined(CPUARM) && defined(MAVLINK)
+      f_puts("fix,  lat,        lon,        alt,   eph,   course, v,		sat_vis, ", &g_oLogFile);
 #endif
 
 #if defined(WS_HOW_HIGH)
@@ -208,6 +212,7 @@ void writeLogs()
 #else
       f_printf(&g_oLogFile, "%d,%d,%d,", frskyStreaming, RAW_FRSKY_MINMAX(frskyData.rssi[0]), RAW_FRSKY_MINMAX(frskyData.rssi[1]));
 #endif
+
       for (uint8_t i=0; i<MAX_FRSKY_A_CHANNELS; i++) {
         int16_t converted_value = applyChannelRatio(i, RAW_FRSKY_MINMAX(frskyData.analog[i]));
         f_printf(&g_oLogFile, "%d.%02d,", converted_value/100, converted_value%100);
@@ -250,6 +255,18 @@ void writeLogs()
             frskyData.hub.accelY,
             frskyData.hub.accelZ);
       }
+#elif defined(CPUARM) && defined(MAVLINK)
+	  //						fix  lat        lon        alt   eph   course v		sat_vis
+        f_printf(&g_oLogFile, "%02d, %03d.%04d, %03d.%04d, %03d, %03d, %03d, %03d, %02d,",
+		  telemetry_data.fix_type,
+		  telemetry_data.loc_current.lat,
+		  telemetry_data.loc_current.lon,
+		  telemetry_data.loc_current.gps_alt,
+		  telemetry_data.eph,
+		  telemetry_data.course,
+		  telemetry_data.v,		// speed
+		  telemetry_data.satellites_visible			 
+		);
 #endif
 
 #if defined(WS_HOW_HIGH)
