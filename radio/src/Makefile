@@ -588,6 +588,7 @@ ifeq ($(PCB), MEGA2560)
   OPT = s
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBMEGA2560 -DCPUM2560 -DEEPROM_VARIANT=0 -DAUDIO -DRTCLOCK
   SDCARD = YES
+  BUZZER = YES
   THR_TRACE = YES
   INCDIRS += targets/mega2560 targets/stock FatFs FatFs/option
   BOARDSRC = main_avr.cpp targets/mega2560/board_mega2560.cpp
@@ -600,10 +601,20 @@ ifeq ($(PCB), MEGA2560)
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/gruvin9x/diskio.cpp 
     CPPDEFS += -DRTCLOCK
-    CPPSRC += rtc.cpp targets/mega2560/rtc_driver.cpp 
+    CPPSRC += rtc.cpp targets/gruvin9x/rtc_driver.cpp 
+  endif
+  
+  ifeq ($(BUZZER), YES)
+    CPPDEFS += -DBUZZER
+    CPPSRC += buzzer.cpp
+  endif
+  
+  ifeq ($(VOICE), YES)
+    CPPDEFS += -DVOICE
+    CPPSRC += targets/gruvin9x/somo14d.cpp
   endif
 
-  # Enable extra rotary encoders (Gruvin9x board only)
+  # Enable extra rotary encoders
   # Values = YES, NO
   ROTARY_ENCODERS = 2
   CPPDEFS += -DROTARY_ENCODERS=${ROTARY_ENCODERS}

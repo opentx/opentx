@@ -78,7 +78,7 @@ void set_timer3_ppm( void ) ;
 
 void startPulses()
 {
-#if defined(PCBGRUVIN9X)
+#if defined(CPUM2560)
 #if defined(DSM2_SERIAL)
   if (!IS_DSM2_PROTOCOL(g_model.protocol))
 #endif
@@ -129,7 +129,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
     return;
   }
 
-#if !defined(PCBGRUVIN9X)
+#if !defined(CPUM2560)
   // Original bitbang for PPM
   if (s_current_protocol[0] != PROTO_NONE) {
     if (g_ppmPulsePolarity) {
@@ -141,8 +141,8 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
       g_ppmPulsePolarity = 1;
     }
   }
-#else // defined(PCBGRUVIN9X)
-  // PCBGRUVIN9X zero jitter hardware toggled PPM_out
+#else // defined(CPUM2560)
+  // CPUM2560 zero jitter hardware toggled PPM_out
   OCR1B = *((uint16_t*)pulses2MHzRPtr); // duplicate capture (Timer1 in CTC mode, so restricted to OCR1A for int vector)
     
   // Toggle bit: Can't read PPM_OUT I/O pin when OC1B is connected (on the ATmega2560 -- can on ATmega64A!)
@@ -501,7 +501,7 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
           len += BITLEN_DSM2;
         }
         else {
-#if defined(PCBGRUVIN9X)
+#if defined(CPUM2560)
           // G: Compensate for main clock synchronisation -- to get accurate 8us bit length
           // NOTE: This has now been tested as NOT required on the stock board, with the ATmega64A chip.
           _send_1(nlev ? len-5 : len+3);
@@ -513,7 +513,7 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
         }
         b = (b>>1) | 0x80; //shift in stop bit
     }
-#if defined (PCBGRUVIN9X)
+#if defined (CPUM2560)
     _send_1(len+BITLEN_DSM2+3); // 2 stop bits
 #else
     _send_1(len+BITLEN_DSM2-1); // 2 stop bits
@@ -568,7 +568,7 @@ void setupPulsesDSM2()
 
   pulses2MHzWPtr -= 1; //remove last stopbits and
 
-#if !defined(PCBGRUVIN9X)
+#if !defined(CPUM2560)
 //G: Removed to get waveform correct on analyser. Leave in for stock board until tests can be done.
   _send_1(255); // prolong them
 #endif
@@ -757,7 +757,7 @@ void setupPulses()
   if (s_pulses_paused)
     required_protocol = PROTO_NONE;
 
-#if defined(PCBGRUVIN9X) && defined(DSM2_PPM) && defined(TX_CADDY)
+#if defined(CPUM2560) && defined(DSM2_PPM) && defined(TX_CADDY)
 // This should be here, executed on every loop, to ensure re-setting of the 
 // TX moudle power control output register, in case of electrical glitch.
 // (Following advice of Atmel for MCU's used  in industrial / mission cricital 
@@ -911,7 +911,7 @@ void setupPulses()
       sei();
 #endif
       setupPulsesDSM2(); // Different versions for DSM2=SERIAL vs. DSM2=PPM
-#if defined(PCBGRUVIN9X) && defined(DSM2_PPM)
+#if defined(CPUM2560) && defined(DSM2_PPM)
       // Ensure each DSM2=PPM serial packet starts out with the correct bit polarity
       TCCR1A = (0 << WGM10) | (3<<COM1B1);  // Make Waveform Generator 'SET' OCR1B pin on next compare event and ...
       TCCR1C = (1<<FOC1B);                  // ... force compare event, to set OCR1B pin high.
@@ -950,7 +950,7 @@ void setupPulses()
 #if defined(DSM2_PPM) || defined(PXX)
 ISR(TIMER1_CAPT_vect) // 2MHz pulse generation
 {
-#if defined (PCBGRUVIN9X)
+#if defined (CPUM2560)
 
   /*** G9X V4 hardware toggled PPM_out avoids any chance of output timing jitter ***/
 
