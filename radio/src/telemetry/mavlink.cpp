@@ -116,7 +116,7 @@ void MAVLINK_Init(void) {
 			telemetrySecondPortInit(Index2Baud(g_eeGeneral.mavbaud));			
 			//telemetrySecondPortInit(19200);		// ok
 		#else
-			telemetryPortInit(g_eeGeneral.mavbaud);
+			telemetryPortInit(Index2Baud(g_eeGeneral.mavbaud));
 		#endif
 	#else
 	SERIAL_Init();
