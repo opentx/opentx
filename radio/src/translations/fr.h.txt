@@ -231,11 +231,11 @@
     #define TR_PLAY_TRACK      "Jouer fich\0  "
   #endif
   #define TR_PLAY_BOTH         "Jouer les 2\0 "
-  #define TR_PLAY_VALUE        "Dire valeur\0 "
+  #define TR_PLAY_VALUE        "Lire valeur\0 "
 #else
   #define TR_PLAY_TRACK        "[Jouer fich.]"
   #define TR_PLAY_BOTH         "[Jouer les 2]"
-  #define TR_PLAY_VALUE        "[Dire valeur]"
+  #define TR_PLAY_VALUE        "[Lire valeur]"
 #endif
 
 #define TR_SF_BG_MUSIC        "Musique\0     ""Pause Musique"
