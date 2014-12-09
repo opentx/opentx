@@ -3400,16 +3400,18 @@ uint16_t stack_free()
 
 inline void opentxInit(OPENTX_INIT_ARGS)
 {
-#if defined(PCBTARANIS)
-  CoTickDelay(100);   //200ms
-  lcdInit();
-  lcdSetRefVolt(g_eeGeneral.contrast);
-  BACKLIGHT_ON();
-  CoTickDelay(20);  //20ms
-  Splash();
+  eeReadAll();
+
+#if defined(CPUARM)
+  if (UNEXPECTED_SHUTDOWN())
+    unexpectedShutdown = 1;
 #endif
 
-  eeReadAll();
+#if defined(PCBTARANIS)
+  lcdInitFinish();
+  BACKLIGHT_ON();
+  Splash();
+#endif
 
 #if MENUS_LOCK == 1
   getMovedSwitch();
@@ -3418,12 +3420,10 @@ inline void opentxInit(OPENTX_INIT_ARGS)
   }
 #endif
 
-#if defined(CPUARM)
-  if (UNEXPECTED_SHUTDOWN())
-    unexpectedShutdown = 1;
-#endif
-
 #if defined(VOICE)
+#if defined(CPUARM)
+  currentSpeakerVolume = requiredSpeakerVolume = g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF;
+#endif
   setVolume(g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF);
 #endif
 
@@ -3535,7 +3535,7 @@ void menusTask(void * pdata)
 
   lcd_clear();
   lcdRefresh();
-  lcdSetRefVolt(0);
+  lcdOff();
 
   SysTick->CTRL = 0; // turn off systick
 

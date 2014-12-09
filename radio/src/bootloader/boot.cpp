@@ -485,7 +485,15 @@ int main()
   start_timer0();
 #endif
 
+#if defined(PCBTARANIS)
+  init_hw_timer();            //needed for lcdInitxxx()
+  lcdInitStart();
+  //nothing to do here
+  lcdInitFinish();
+#else
   lcdInit();
+#endif 
+
 #if defined(PCBSKY9X)
   extern uint8_t OptrexDisplay;
   OptrexDisplay = 1;
@@ -505,7 +513,6 @@ int main()
 #endif
   keysInit();
   I2C_EE_Init();
-  init_hw_timer();
 #endif
 
   __enable_irq();
@@ -789,6 +796,7 @@ int main()
     }
 
     if (pwrCheck() == e_power_off && state != ST_FLASHING && state != ST_USB) {
+      lcdOff();    // this drains LCD caps
       pwrOff();
       for (;;) {
         // Wait for power to go off
@@ -797,6 +805,9 @@ int main()
 
     if (state == ST_REBOOT) {
       if ((~readKeys() & 0x7E) == 0) {
+        lcd_clear();
+        lcdRefresh();
+        RCC->CSR |= RCC_CSR_RMVF;   //clear the reset flags in RCC clock control & status register
         NVIC_SystemReset();
       }
     }
