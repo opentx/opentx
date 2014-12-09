@@ -1513,7 +1513,7 @@ void getADC()
 #if !defined(CPUARM)
 void getADC_bandgap()
 {
-#if defined(CPUM2560)
+#if defined(PCBGRUVIN9X)
   static uint8_t s_bgCheck = 0;
   static uint16_t s_bgSum = 0;
   ADCSRA|=0x40; // request sample
@@ -1527,6 +1527,8 @@ void getADC_bandgap()
     s_bgSum += ADC;
   }
   ADCSRB |= (1<<MUX5);
+#elif defined(PCBMEGA2560)
+  BandGap = 2000;  
 #else
   // TODO is the next line needed (because it has been called before perMain)?
   ADMUX = 0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.22V reference
@@ -1666,7 +1668,7 @@ void doMixerCalculations()
   Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
   if (Current_analogue > Current_max)
     Current_max = Current_analogue ;
-#elif defined(CPUM2560) && !defined(SIMU)
+#elif defined(PCBGRUVIN9X) && !defined(SIMU)
   // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
   ADCSRB &= ~(1<<MUX5);
   ADMUX = 0x03|ADC_VREF_TYPE; // Switch MUX to internal reference
