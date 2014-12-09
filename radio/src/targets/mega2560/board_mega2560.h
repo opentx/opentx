@@ -107,14 +107,14 @@
 #  define INP_L_KEY_DWN          0    
 
 // Trims driver
-#  define INP_F_TRM_RH_UP        7    
-#  define INP_F_TRM_RH_DWN       6    
-#  define INP_F_TRM_RV_UP        5    
-#  define INP_F_TRM_RV_DWN       4    
-#  define INP_F_TRM_LV_UP        3    
-#  define INP_F_TRM_LV_DWN       2    
-#  define INP_F_TRM_LH_UP        1    
-#  define INP_F_TRM_LH_DWN       0    
+#  define INP_F_TRM_LH_DWN       7
+#  define INP_F_TRM_LH_UP        6
+#  define INP_F_TRM_LV_DWN       5
+#  define INP_F_TRM_LV_UP        4
+#  define INP_F_TRM_RV_DWN       3
+#  define INP_F_TRM_RV_UP        2
+#  define INP_F_TRM_RH_DWN       1 
+#  define INP_F_TRM_RH_UP        0    
 
 // Switchs driver
 #  define INP_C_ID2              1    
