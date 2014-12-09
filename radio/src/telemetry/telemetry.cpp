@@ -422,10 +422,11 @@ int getTelemetryIndex(TelemetryProtocol protocol, uint16_t id, uint8_t instance)
         frskySportSetDefault(available, id, instance);
         break;
 #endif
+#if defined(FRSKY)
       case TELEM_PROTO_FRSKY_D:
         frskyDSetDefault(available, id);
         break;
-
+#endif
       default:
         break;
     }

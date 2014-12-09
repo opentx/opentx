@@ -1426,7 +1426,7 @@ void fit_lfn (
 /*-----------------------------------------------------------------------*/
 /* Create numbered name                                                  */
 /*-----------------------------------------------------------------------*/
-#if _USE_LFN
+#if _USE_LFN && !_FS_READONLY
 static
 void gen_numname (
 	BYTE* dst,			/* Pointer to the buffer to store numbered SFN */

@@ -5715,6 +5715,7 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_SENSOR14,
   ITEM_TELEMETRY_SENSOR15,
   ITEM_TELEMETRY_SENSOR16,
+#if defined(PCBTARANIS)
   ITEM_TELEMETRY_SENSOR17,
   ITEM_TELEMETRY_SENSOR18,
   ITEM_TELEMETRY_SENSOR19,
@@ -5731,6 +5732,7 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_SENSOR30,
   ITEM_TELEMETRY_SENSOR31,
   ITEM_TELEMETRY_SENSOR32,
+#endif
   ITEM_TELEMETRY_NEWSENSOR,
 #endif
 #if !defined(CPUARM)
@@ -5802,10 +5804,14 @@ enum menuModelTelemetryItems {
 
 #define IS_RANGE_DEFINED(k) (g_model.frsky.channels[k].ratio > 0)
 
-#if defined(CPUARM)
+#if defined(PCBTARANIS)
   #define CHANNELS_ROWS
   #define SENSOR_ROWS(x)    (isTelemetryFieldAvailable(x) ? (uint8_t)0 : HIDDEN_ROW)
   #define SENSORS_ROWS      LABEL(Sensors), SENSOR_ROWS(0), SENSOR_ROWS(1), SENSOR_ROWS(2), SENSOR_ROWS(3), SENSOR_ROWS(4), SENSOR_ROWS(5), SENSOR_ROWS(6), SENSOR_ROWS(7), SENSOR_ROWS(8), SENSOR_ROWS(9), SENSOR_ROWS(10), SENSOR_ROWS(11), SENSOR_ROWS(12), SENSOR_ROWS(13), SENSOR_ROWS(14), SENSOR_ROWS(15), SENSOR_ROWS(16), SENSOR_ROWS(17), SENSOR_ROWS(18), SENSOR_ROWS(19), SENSOR_ROWS(20), SENSOR_ROWS(21), SENSOR_ROWS(22), SENSOR_ROWS(23), SENSOR_ROWS(24), SENSOR_ROWS(25), SENSOR_ROWS(26), SENSOR_ROWS(27), SENSOR_ROWS(28), SENSOR_ROWS(29), SENSOR_ROWS(30), SENSOR_ROWS(31), 0,
+#elif defined(CPUARM)
+  #define CHANNELS_ROWS
+  #define SENSOR_ROWS(x)    (isTelemetryFieldAvailable(x) ? (uint8_t)0 : HIDDEN_ROW)
+  #define SENSORS_ROWS      LABEL(Sensors), SENSOR_ROWS(0), SENSOR_ROWS(1), SENSOR_ROWS(2), SENSOR_ROWS(3), SENSOR_ROWS(4), SENSOR_ROWS(5), SENSOR_ROWS(6), SENSOR_ROWS(7), SENSOR_ROWS(8), SENSOR_ROWS(9), SENSOR_ROWS(10), SENSOR_ROWS(11), SENSOR_ROWS(12), SENSOR_ROWS(13), SENSOR_ROWS(14), SENSOR_ROWS(15), 0,
 #else
   #define CHANNEL_ROWS(x)   LABEL(CHANNEL), 1, 0, 2, 2
   #define CHANNELS_ROWS     CHANNEL_ROWS(0), CHANNEL_ROWS(1),
@@ -6315,8 +6321,8 @@ void menuModelTelemetry(uint8_t event)
         uint8_t alarm = ((k==ITEM_TELEMETRY_A1_ALARM1 || k==ITEM_TELEMETRY_A2_ALARM1) ? 0 : 1);
         lcd_putsLeft(y, STR_ALARM);
         lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ALARM_LEVEL(ch, alarm), m_posHorz<=0 ? attr : 0);
-        lcd_putsiAtt(TELEM_COL2+4*FW, y, STR_VALARMFN, ALARM_GREATER(ch, alarm), (m_posHorz<0 || m_posHorz==1) ? attr : 0);
-        putsTelemetryChannelValue(TELEM_COL2+6*FW, y, dest, channel.alarms_value[alarm], ((m_posHorz<0 || m_posHorz==2) ? attr : 0) | LEFT);
+        lcd_putsiAtt(TELEM_COL2+4*FW, y, STR_VALARMFN, ALARM_GREATER(ch, alarm), (CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0);
+        putsTelemetryChannelValue(TELEM_COL2+6*FW, y, dest, channel.alarms_value[alarm], ((CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0) | LEFT);
 
         if (attr && (s_editMode>0 || p1valdiff)) {
           uint8_t t;

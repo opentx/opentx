@@ -281,6 +281,6 @@ void uart3Stop(void);
 void usbJoystickUpdate(void);
 #endif
 
-void checkTrainerSettings();
+void checkTrainerSettings(void);
 
 #endif
