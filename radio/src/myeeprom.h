@@ -1680,7 +1680,7 @@ enum SwitchSources {
 
 #if defined(PCBSKY9X)
   SWSRC_REa,
-#elif defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
+#elif defined(CPUM2560)
   SWSRC_REa,
   SWSRC_REb,
 #endif
@@ -1760,7 +1760,7 @@ enum MixSources {
 #if defined(PCBSKY9X)
   MIXSRC_REa,
   MIXSRC_LAST_ROTARY_ENCODER = MIXSRC_REa,
-#elif defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
+#elif defined(CPUM2560)
   MIXSRC_REa,
   MIXSRC_REb,
   #if ROTARY_ENCODERS > 2
@@ -1997,7 +1997,7 @@ enum FailsafeModes {
   #define TELEMETRY_DATA
 #endif
 
-#if defined(CPUARM) || defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
+#if defined(CPUARM) || defined(CPUM2560)
   #define BeepANACenter uint16_t
 #else
   #define BeepANACenter uint8_t

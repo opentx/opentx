@@ -62,6 +62,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for 9X board";
     case BOARD_M128:
       return "OpenTX for M128 / 9X board";
+    case BOARD_MEGA2560:
+      return "OpenTX for MEGA2560 board";
     case BOARD_GRUVIN9X:
       return "OpenTX for Gruvin9x board / 9X";
     case BOARD_TARANIS:
@@ -86,6 +88,7 @@ const int OpenTxEepromInterface::getEEpromSize()
       return EESIZE_STOCK;
     case BOARD_M128:
       return EESIZE_M128;
+    case BOARD_MEGA2560:
     case BOARD_GRUVIN9X:
       return EESIZE_GRUVIN9X;
     case BOARD_SKY9X:
@@ -107,7 +110,7 @@ const int OpenTxEepromInterface::getMaxModels()
     return 60;
   else if (board == BOARD_M128)
     return 30;
-  else if (board == BOARD_GRUVIN9X)
+  else if (IS_2560(board))
     return 30;
   else
     return 16;
@@ -530,7 +533,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case FlightModes:
       if (IS_ARM(board))
         return 9;
-      else if (board==BOARD_GRUVIN9X)
+      else if (IS_2560(board))
         return 6;
       else
         return 5;
@@ -559,7 +562,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return 1;
     case GvarsAreNamed:
     case GvarsFlightModes:
-      return ((IS_ARM(board) || board==BOARD_GRUVIN9X) ? 1 : 0);
+      return ((IS_ARM(board) || IS_2560(board)) ? 1 : 0);
     case Mixes:
       return (IS_TARANIS(board) ? 64 : (IS_ARM(board) ? 60 : 32));
     case OffsetWeight:
@@ -569,7 +572,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case TimersName:
       return (IS_TARANIS(board) ? 8 : (IS_ARM(board) ? 3 : 0));
     case PermTimers:
-      if (board == BOARD_GRUVIN9X || IS_ARM(board))
+      if (IS_2560(board) || IS_ARM(board))
         return 1;
       else
         return 0;
@@ -584,7 +587,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
         return 64;
       else if (IS_ARM(board))
         return 60;
-      else if (board==BOARD_GRUVIN9X||board==BOARD_M128)
+      else if (IS_2560(board) || board==BOARD_M128)
         return 24;
       else
         return 16;
@@ -622,7 +625,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case SoundPitch:
       return 1;
     case Haptic:
-      return (board == BOARD_GRUVIN9X || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || id.contains("haptic"));
+      return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || id.contains("haptic"));
     case ModelTrainerEnable:
       if (IS_ARM(board))
         return 1;
@@ -653,7 +656,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case HasCvNames:
       return (IS_TARANIS(board) ? 1 : 0);
     case Telemetry:
-      if (board == BOARD_GRUVIN9X || IS_ARM(board) || id.contains("frsky") || id.contains("telemetrez"))
+      if (IS_2560(board) || IS_ARM(board) || id.contains("frsky") || id.contains("telemetrez"))
         return TM_HASTELEMETRY|TM_HASOFFSET|TM_HASWSHH;
       else
         return 0;
@@ -682,7 +685,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case HasVario:
       return 1;
     case HasVarioSink:
-      return ((board == BOARD_GRUVIN9X || IS_ARM(board)) ? true : false);
+      return ((IS_2560(board) || IS_ARM(board)) ? true : false);
     case HasFailsafe:
       return (IS_ARM(board) ? 32 : 0);
     case NumModules:
@@ -704,7 +707,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case CSFunc:
       return 18;
     case HasSDLogs:
-      return ((board == BOARD_GRUVIN9X || IS_ARM(board)) ? true : false);
+      return ((IS_2560(board) || IS_ARM(board)) ? true : false);
     case LCDWidth:
       return (IS_TARANIS(board) ? 212 : 128) ;
     case GetThrSwitch:
@@ -1012,6 +1015,7 @@ QString OpenTxFirmware::getFirmwareUrl()
     case BOARD_STOCK:
     case BOARD_M128:
     case BOARD_GRUVIN9X:
+    case BOARD_MEGA2560:
       url.append(QString("/getfw.php?fw=%1.hex").arg(id));
       break;
     case BOARD_SKY9X:
@@ -1050,6 +1054,7 @@ SimulatorInterface * OpenTxFirmware::getSimulator()
     case BOARD_M128:
       return new OpenTxM128Simulator();
     case BOARD_GRUVIN9X:
+    case BOARD_MEGA2560:
       return new Open9xGruvin9xSimulator();
     case BOARD_SKY9X:
     case BOARD_9XRPRO:
@@ -1231,6 +1236,11 @@ void registerOpenTxFirmwares()
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   openTx->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
   openTx->addOption("imperial", QObject::tr("Imperial units"));
+  addOpenTxCommonOptions(openTx);
+  firmwares.push_back(openTx);
+
+  /* MEGA2560 board */
+  openTx = new OpenTxFirmware("opentx-mega2560", QObject::tr("OpenTX for MEGA2560 board"), BOARD_MEGA2560);
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
