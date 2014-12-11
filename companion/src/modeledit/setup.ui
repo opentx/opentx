@@ -532,6 +532,19 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>name</tabstop>
+  <tabstop>image</tabstop>
+  <tabstop>throttleSource</tabstop>
+  <tabstop>throttleTrim</tabstop>
+  <tabstop>throttleWarning</tabstop>
+  <tabstop>throttleReverse</tabstop>
+  <tabstop>trimIncrement</tabstop>
+  <tabstop>extendedLimits</tabstop>
+  <tabstop>extendedTrims</tabstop>
+  <tabstop>displayText</tabstop>
+  <tabstop>potWarningMode</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

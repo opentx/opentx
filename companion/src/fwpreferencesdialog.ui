@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>416</width>
-    <height>153</height>
+    <height>154</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -177,6 +177,10 @@ May be different from firmware language</string>
   </layout>
  </widget>
  <tabstops>
+  <tabstop>checkFWUpdates</tabstop>
+  <tabstop>fw_dnld</tabstop>
+  <tabstop>voiceCombo</tabstop>
+  <tabstop>voice_dnld</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>

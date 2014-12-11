@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>364</width>
-    <height>434</height>
+    <width>412</width>
+    <height>541</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -611,6 +611,39 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mixerName</tabstop>
+  <tabstop>sourceCB</tabstop>
+  <tabstop>weightGV</tabstop>
+  <tabstop>weightCB</tabstop>
+  <tabstop>weightSB</tabstop>
+  <tabstop>offsetGV</tabstop>
+  <tabstop>offsetCB</tabstop>
+  <tabstop>offsetSB</tabstop>
+  <tabstop>curveTypeCB</tabstop>
+  <tabstop>curveGVarCB</tabstop>
+  <tabstop>curveValueCB</tabstop>
+  <tabstop>curveValueSB</tabstop>
+  <tabstop>trimCB</tabstop>
+  <tabstop>MixDR_CB</tabstop>
+  <tabstop>cb_FP0</tabstop>
+  <tabstop>cb_FP1</tabstop>
+  <tabstop>cb_FP2</tabstop>
+  <tabstop>cb_FP3</tabstop>
+  <tabstop>cb_FP4</tabstop>
+  <tabstop>cb_FP5</tabstop>
+  <tabstop>cb_FP6</tabstop>
+  <tabstop>cb_FP7</tabstop>
+  <tabstop>cb_FP8</tabstop>
+  <tabstop>switchesCB</tabstop>
+  <tabstop>warningCB</tabstop>
+  <tabstop>mltpxCB</tabstop>
+  <tabstop>delayUpSB</tabstop>
+  <tabstop>slowUpSB</tabstop>
+  <tabstop>delayDownSB</tabstop>
+  <tabstop>slowDownSB</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../companion.qrc"/>
  </resources>
