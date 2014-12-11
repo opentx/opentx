@@ -541,6 +541,17 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>trainerMode</tabstop>
+  <tabstop>protocol</tabstop>
+  <tabstop>channelsStart</tabstop>
+  <tabstop>channelsCount</tabstop>
+  <tabstop>ppmFrameLength</tabstop>
+  <tabstop>ppmPolarity</tabstop>
+  <tabstop>ppmDelay</tabstop>
+  <tabstop>failsafeMode</tabstop>
+  <tabstop>rxNumber</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

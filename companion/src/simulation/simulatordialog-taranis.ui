@@ -1694,6 +1694,43 @@ QPushButton:checked {
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>switchF</tabstop>
+  <tabstop>dialP_3</tabstop>
+  <tabstop>switchE</tabstop>
+  <tabstop>switchA</tabstop>
+  <tabstop>switchB</tabstop>
+  <tabstop>dialP_1</tabstop>
+  <tabstop>dialP_2</tabstop>
+  <tabstop>switchC</tabstop>
+  <tabstop>switchD</tabstop>
+  <tabstop>switchG</tabstop>
+  <tabstop>dialP_4</tabstop>
+  <tabstop>switchH</tabstop>
+  <tabstop>holdLeftY</tabstop>
+  <tabstop>FixLeftY</tabstop>
+  <tabstop>FixLeftX</tabstop>
+  <tabstop>holdLeftX</tabstop>
+  <tabstop>leftStick</tabstop>
+  <tabstop>trimHL_L</tabstop>
+  <tabstop>trimHLeft</tabstop>
+  <tabstop>trimHL_R</tabstop>
+  <tabstop>trimVL_D</tabstop>
+  <tabstop>trimVLeft</tabstop>
+  <tabstop>trimVL_U</tabstop>
+  <tabstop>trimVR_U</tabstop>
+  <tabstop>trimVRight</tabstop>
+  <tabstop>trimVR_D</tabstop>
+  <tabstop>trimHR_L</tabstop>
+  <tabstop>trimHRight</tabstop>
+  <tabstop>trimHR_R</tabstop>
+  <tabstop>rightStick</tabstop>
+  <tabstop>holdRightY</tabstop>
+  <tabstop>FixRightY</tabstop>
+  <tabstop>FixRightX</tabstop>
+  <tabstop>holdRightX</tabstop>
+ </tabstops>
  <resources>
   <include location="../companion.qrc"/>
  </resources>

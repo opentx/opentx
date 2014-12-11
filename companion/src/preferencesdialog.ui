@@ -1625,22 +1625,91 @@ May be different from firmware language</string>
   </layout>
  </widget>
  <tabstops>
-  <tabstop>InvertPixels</tabstop>
-  <tabstop>clearImageButton</tabstop>
+  <tabstop>showSplash</tabstop>
+  <tabstop>startupCheck_companion9x</tabstop>
+  <tabstop>startupCheck_fw</tabstop>
+  <tabstop>historySize</tabstop>
+  <tabstop>wizardEnable_ChkB</tabstop>
+  <tabstop>backupPath</tabstop>
+  <tabstop>backupPathButton</tabstop>
+  <tabstop>backupEnable</tabstop>
+  <tabstop>ge_lineedit</tabstop>
+  <tabstop>ge_pathButton</tabstop>
   <tabstop>SplashFileName</tabstop>
   <tabstop>splashLibraryButton</tabstop>
   <tabstop>SplashSelect</tabstop>
+  <tabstop>splashincludeCB</tabstop>
   <tabstop>libraryPath</tabstop>
   <tabstop>libraryPathButton</tabstop>
-  <tabstop>downloadVerCB</tabstop>
-  <tabstop>fw_dnld</tabstop>
-  <tabstop>optionCheckBox_1</tabstop>
-  <tabstop>optionCheckBox_2</tabstop>
-  <tabstop>checkFWUpdates</tabstop>
-  <tabstop>channelorderCB</tabstop>
+  <tabstop>InvertPixels</tabstop>
+  <tabstop>clearImageButton</tabstop>
+  <tabstop>backLightColor</tabstop>
+  <tabstop>simuSW</tabstop>
   <tabstop>joystickChkB</tabstop>
   <tabstop>joystickCB</tabstop>
   <tabstop>joystickcalButton</tabstop>
+  <tabstop>snapshotClipboardCKB</tabstop>
+  <tabstop>snapshotPath</tabstop>
+  <tabstop>snapshotPathButton</tabstop>
+  <tabstop>downloadVerCB</tabstop>
+  <tabstop>langCombo</tabstop>
+  <tabstop>fw_dnld</tabstop>
+  <tabstop>sdPath</tabstop>
+  <tabstop>sdPathButton</tabstop>
+  <tabstop>voiceCombo</tabstop>
+  <tabstop>voice_dnld</tabstop>
+  <tabstop>optionCheckBox_1</tabstop>
+  <tabstop>optionCheckBox_2</tabstop>
+  <tabstop>optionCheckBox_3</tabstop>
+  <tabstop>optionCheckBox_4</tabstop>
+  <tabstop>optionCheckBox_5</tabstop>
+  <tabstop>optionCheckBox_6</tabstop>
+  <tabstop>optionCheckBox_7</tabstop>
+  <tabstop>optionCheckBox_8</tabstop>
+  <tabstop>optionCheckBox_9</tabstop>
+  <tabstop>optionCheckBox_10</tabstop>
+  <tabstop>optionCheckBox_11</tabstop>
+  <tabstop>optionCheckBox_12</tabstop>
+  <tabstop>optionCheckBox_13</tabstop>
+  <tabstop>optionCheckBox_14</tabstop>
+  <tabstop>optionCheckBox_15</tabstop>
+  <tabstop>optionCheckBox_16</tabstop>
+  <tabstop>optionCheckBox_17</tabstop>
+  <tabstop>optionCheckBox_18</tabstop>
+  <tabstop>optionCheckBox_19</tabstop>
+  <tabstop>optionCheckBox_20</tabstop>
+  <tabstop>optionCheckBox_21</tabstop>
+  <tabstop>optionCheckBox_22</tabstop>
+  <tabstop>optionCheckBox_23</tabstop>
+  <tabstop>optionCheckBox_24</tabstop>
+  <tabstop>optionCheckBox_25</tabstop>
+  <tabstop>optionCheckBox_26</tabstop>
+  <tabstop>optionCheckBox_27</tabstop>
+  <tabstop>optionCheckBox_28</tabstop>
+  <tabstop>optionCheckBox_29</tabstop>
+  <tabstop>optionCheckBox_30</tabstop>
+  <tabstop>optionCheckBox_31</tabstop>
+  <tabstop>optionCheckBox_32</tabstop>
+  <tabstop>optionCheckBox_33</tabstop>
+  <tabstop>optionCheckBox_34</tabstop>
+  <tabstop>optionCheckBox_35</tabstop>
+  <tabstop>optionCheckBox_36</tabstop>
+  <tabstop>optionCheckBox_37</tabstop>
+  <tabstop>optionCheckBox_38</tabstop>
+  <tabstop>optionCheckBox_39</tabstop>
+  <tabstop>optionCheckBox_40</tabstop>
+  <tabstop>optionCheckBox_41</tabstop>
+  <tabstop>optionCheckBox_42</tabstop>
+  <tabstop>checkFWUpdates</tabstop>
+  <tabstop>renameFirmware</tabstop>
+  <tabstop>burnFirmware</tabstop>
+  <tabstop>stickmodeCB</tabstop>
+  <tabstop>channelorderCB</tabstop>
+  <tabstop>ProfSlot_SB</tabstop>
+  <tabstop>ProfName_LE</tabstop>
+  <tabstop>ProfSave_PB</tabstop>
+  <tabstop>import_PB</tabstop>
+  <tabstop>export_PB</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>

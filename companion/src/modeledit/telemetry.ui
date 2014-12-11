@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>850</width>
-    <height>457</height>
+    <height>521</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1005,6 +1005,28 @@
    <header>qautocombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>telemetryProtocol</tabstop>
+  <tabstop>rssiAlarm1CB</tabstop>
+  <tabstop>rssiAlarm1SB</tabstop>
+  <tabstop>rssiAlarm2CB</tabstop>
+  <tabstop>rssiAlarm2SB</tabstop>
+  <tabstop>varioSourceCB</tabstop>
+  <tabstop>varioLimitMin_DSB</tabstop>
+  <tabstop>varioLimitCenterMin_DSB</tabstop>
+  <tabstop>varioLimitCenterMax_DSB</tabstop>
+  <tabstop>varioLimitMax_DSB</tabstop>
+  <tabstop>AltitudeGPS_ChkB</tabstop>
+  <tabstop>AltitudeToolbar_ChkB</tabstop>
+  <tabstop>frskyProtoCB</tabstop>
+  <tabstop>fasOffset_DSB</tabstop>
+  <tabstop>mahCount_SB</tabstop>
+  <tabstop>mahCount_ChkB</tabstop>
+  <tabstop>frskyVoltCB</tabstop>
+  <tabstop>frskyCurrentCB</tabstop>
+  <tabstop>bladesCount</tabstop>
+  <tabstop>customScreens</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -457,6 +457,24 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>name</tabstop>
+  <tabstop>fadeIn</tabstop>
+  <tabstop>swtch</tabstop>
+  <tabstop>fadeOut</tabstop>
+  <tabstop>trim2Use</tabstop>
+  <tabstop>trim2Value</tabstop>
+  <tabstop>trim1Use</tabstop>
+  <tabstop>trim1Value</tabstop>
+  <tabstop>trim3Use</tabstop>
+  <tabstop>trim3Value</tabstop>
+  <tabstop>trim4Use</tabstop>
+  <tabstop>trim4Value</tabstop>
+  <tabstop>trim2Slider</tabstop>
+  <tabstop>trim3Slider</tabstop>
+  <tabstop>trim1Slider</tabstop>
+  <tabstop>trim4Slider</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

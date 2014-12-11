@@ -287,6 +287,17 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>FileName_LE</tabstop>
+  <tabstop>fileOpen_BT</tabstop>
+  <tabstop>FieldsTW</tabstop>
+  <tabstop>ZoomX_ChkB</tabstop>
+  <tabstop>ZoomY_ChkB</tabstop>
+  <tabstop>Reset_PB</tabstop>
+  <tabstop>sessions_CB</tabstop>
+  <tabstop>logTable</tabstop>
+  <tabstop>mapsButton</tabstop>
+ </tabstops>
  <resources>
   <include location="companion.qrc"/>
  </resources>

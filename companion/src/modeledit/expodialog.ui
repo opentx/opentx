@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>381</width>
-    <height>414</height>
+    <width>389</width>
+    <height>488</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -481,6 +481,9 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</string
   <tabstop>weightGV</tabstop>
   <tabstop>weightSB</tabstop>
   <tabstop>weightCB</tabstop>
+  <tabstop>offsetGV</tabstop>
+  <tabstop>offsetSB</tabstop>
+  <tabstop>offsetCB</tabstop>
   <tabstop>curveTypeCB</tabstop>
   <tabstop>curveGVarCB</tabstop>
   <tabstop>curveValueCB</tabstop>

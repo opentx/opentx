@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>418</width>
-    <height>301</height>
+    <width>505</width>
+    <height>398</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -908,6 +908,35 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>Ch_1</tabstop>
+  <tabstop>ChInv_1</tabstop>
+  <tabstop>jsmapCB_1</tabstop>
+  <tabstop>Ch_2</tabstop>
+  <tabstop>ChInv_2</tabstop>
+  <tabstop>jsmapCB_2</tabstop>
+  <tabstop>Ch_3</tabstop>
+  <tabstop>ChInv_3</tabstop>
+  <tabstop>jsmapCB_3</tabstop>
+  <tabstop>Ch_4</tabstop>
+  <tabstop>ChInv_4</tabstop>
+  <tabstop>jsmapCB_4</tabstop>
+  <tabstop>Ch_5</tabstop>
+  <tabstop>ChInv_5</tabstop>
+  <tabstop>jsmapCB_5</tabstop>
+  <tabstop>Ch_6</tabstop>
+  <tabstop>ChInv_6</tabstop>
+  <tabstop>jsmapCB_6</tabstop>
+  <tabstop>Ch_7</tabstop>
+  <tabstop>ChInv_7</tabstop>
+  <tabstop>jsmapCB_7</tabstop>
+  <tabstop>Ch_8</tabstop>
+  <tabstop>ChInv_8</tabstop>
+  <tabstop>jsmapCB_8</tabstop>
+  <tabstop>cancelButton</tabstop>
+  <tabstop>nextButton</tabstop>
+  <tabstop>okButton</tabstop>
+ </tabstops>
  <resources>
   <include location="companion.qrc"/>
  </resources>

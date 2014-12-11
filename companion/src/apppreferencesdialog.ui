@@ -1049,10 +1049,26 @@ Mode 4:
   </layout>
  </widget>
  <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>profileNameLE</tabstop>
+  <tabstop>removeProfileButton</tabstop>
+  <tabstop>downloadVerCB</tabstop>
+  <tabstop>langCombo</tabstop>
+  <tabstop>voiceCombo</tabstop>
+  <tabstop>SplashFileName</tabstop>
+  <tabstop>SplashSelect</tabstop>
+  <tabstop>clearImageButton</tabstop>
+  <tabstop>sdPath</tabstop>
+  <tabstop>sdPathButton</tabstop>
+  <tabstop>stickmodeCB</tabstop>
+  <tabstop>channelorderCB</tabstop>
+  <tabstop>renameFirmware</tabstop>
+  <tabstop>burnFirmware</tabstop>
   <tabstop>ge_lineedit</tabstop>
   <tabstop>ge_pathButton</tabstop>
   <tabstop>historySize</tabstop>
   <tabstop>showSplash</tabstop>
+  <tabstop>modelWizard_CB</tabstop>
   <tabstop>startupCheck_fw</tabstop>
   <tabstop>startupCheck_companion9x</tabstop>
   <tabstop>backupPath</tabstop>
@@ -1061,7 +1077,6 @@ Mode 4:
   <tabstop>splashincludeCB</tabstop>
   <tabstop>libraryPath</tabstop>
   <tabstop>libraryPathButton</tabstop>
-  <tabstop>buttonBox</tabstop>
   <tabstop>snapshotPath</tabstop>
   <tabstop>snapshotPathButton</tabstop>
   <tabstop>snapshotClipboardCKB</tabstop>
@@ -1070,11 +1085,7 @@ Mode 4:
   <tabstop>joystickCB</tabstop>
   <tabstop>joystickChkB</tabstop>
   <tabstop>joystickcalButton</tabstop>
-  <tabstop>SplashFileName</tabstop>
-  <tabstop>stickmodeCB</tabstop>
-  <tabstop>channelorderCB</tabstop>
-  <tabstop>renameFirmware</tabstop>
-  <tabstop>burnFirmware</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
   <include location="companion.qrc"/>

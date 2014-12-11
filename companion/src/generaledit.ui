@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>804</width>
+    <width>879</width>
     <height>912</height>
    </rect>
   </property>
@@ -106,7 +106,7 @@
 These will be relevant for all models in the same EEPROM.</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabSetup">
       <attribute name="title">
@@ -3348,6 +3348,58 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>beeperCB</tabstop>
+  <tabstop>beeperlenCB</tabstop>
+  <tabstop>hapticmodeCB</tabstop>
+  <tabstop>hapticLengthCB</tabstop>
+  <tabstop>hapticStrength</tabstop>
+  <tabstop>battwarningDSB</tabstop>
+  <tabstop>contrastSB</tabstop>
+  <tabstop>displayTypeCB</tabstop>
+  <tabstop>inactimerSB</tabstop>
+  <tabstop>splashScreenChkB</tabstop>
+  <tabstop>splashScreenDuration</tabstop>
+  <tabstop>alarmwarnChkB</tabstop>
+  <tabstop>memwarnChkB</tabstop>
+  <tabstop>mavbaud_CB</tabstop>
+  <tabstop>chkSA</tabstop>
+  <tabstop>chkSB</tabstop>
+  <tabstop>chkSC</tabstop>
+  <tabstop>chkSD</tabstop>
+  <tabstop>chkSE</tabstop>
+  <tabstop>chkSF</tabstop>
+  <tabstop>chkSG</tabstop>
+  <tabstop>chkSH</tabstop>
+  <tabstop>stickmodeCB</tabstop>
+  <tabstop>stickReverse1</tabstop>
+  <tabstop>stickReverse2</tabstop>
+  <tabstop>stickReverse3</tabstop>
+  <tabstop>stickReverse4</tabstop>
+  <tabstop>channelorderCB</tabstop>
+  <tabstop>faimode_CB</tabstop>
+  <tabstop>switchesDelay</tabstop>
+  <tabstop>soundModeCB</tabstop>
+  <tabstop>speakerPitchSB</tabstop>
+  <tabstop>volume_SB</tabstop>
+  <tabstop>beepVolume_SL</tabstop>
+  <tabstop>wavVolume_SL</tabstop>
+  <tabstop>varioVolume_SL</tabstop>
+  <tabstop>bgVolume_SL</tabstop>
+  <tabstop>varioP0_SB</tabstop>
+  <tabstop>varioPMax_SB</tabstop>
+  <tabstop>varioR0_SB</tabstop>
+  <tabstop>backlightswCB</tabstop>
+  <tabstop>backlightautoSB</tabstop>
+  <tabstop>blAlarm_ChkB</tabstop>
+  <tabstop>BLBright_SB</tabstop>
+  <tabstop>backlightColor_SL</tabstop>
+  <tabstop>re_CB</tabstop>
+  <tabstop>countrycode_CB</tabstop>
+  <tabstop>units_CB</tabstop>
+  <tabstop>gpsFormatCB</tabstop>
+  <tabstop>timezoneSB</tabstop>
+  <tabstop>voiceLang_CB</tabstop>
   <tabstop>trnMode_1</tabstop>
   <tabstop>trnChn_1</tabstop>
   <tabstop>trnWeight_1</tabstop>
@@ -3372,12 +3424,32 @@ p, li { white-space: pre-wrap; }
   <tabstop>ana4Neg</tabstop>
   <tabstop>ana4Mid</tabstop>
   <tabstop>ana4Pos</tabstop>
+  <tabstop>pot1Type</tabstop>
+  <tabstop>pot2Type</tabstop>
+  <tabstop>pot3Type</tabstop>
+  <tabstop>serialPortMode</tabstop>
   <tabstop>battCalibDSB</tabstop>
+  <tabstop>CurrentCalib_SB</tabstop>
   <tabstop>PPM1</tabstop>
   <tabstop>PPM2</tabstop>
   <tabstop>PPM3</tabstop>
   <tabstop>PPM4</tabstop>
   <tabstop>PPM_MultiplierDSB</tabstop>
+  <tabstop>ana5Neg</tabstop>
+  <tabstop>ana5Mid</tabstop>
+  <tabstop>ana5Pos</tabstop>
+  <tabstop>ana6Neg</tabstop>
+  <tabstop>ana6Mid</tabstop>
+  <tabstop>ana6Pos</tabstop>
+  <tabstop>ana7Neg</tabstop>
+  <tabstop>ana7Mid</tabstop>
+  <tabstop>ana7Pos</tabstop>
+  <tabstop>ana8Neg</tabstop>
+  <tabstop>ana8Mid</tabstop>
+  <tabstop>ana8Pos</tabstop>
+  <tabstop>profile_CB</tabstop>
+  <tabstop>calretrieve_PB</tabstop>
+  <tabstop>calstore_PB</tabstop>
  </tabstops>
  <resources>
   <include location="companion.qrc"/>
