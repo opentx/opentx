@@ -238,7 +238,7 @@
   #define TR_PLAY_VALUE        "[Play Val]"
 #endif
 
-#define TR_SF_BG_MUSIC        "BgMusic\0  ""BgMusic ||"
+#define TR_SF_BG_MUSIC         "BgMusic\0  ""BgMusic ||"
 
 #if defined(SDCARD)
   #define TR_SDCLOGS           "SD Logs\0  "
