@@ -331,9 +331,17 @@ LCD_DUAL_BUFFER = NO
 
 # Define programs and commands.
 SHELL = sh
-IMG2LBM = -python ../util/img2lbm.py
-BIN2LBM = -python ../util/bin2lbm.py
-TRANSLATE = -python ../util/translate.py
+
+# Make sure python is Python 2
+ifeq ($(findstring Python 2,$(shell python --version 2>&1)), Python 2)
+  PYTHON := python
+else
+  PYTHON := python2
+endif
+
+IMG2LBM = -$(PYTHON) ../util/img2lbm.py
+BIN2LBM = -$(PYTHON) ../util/bin2lbm.py
+TRANSLATE = -$(PYTHON) ../util/translate.py
 VERSION = 2.0.99
 
 SRC =
@@ -1387,7 +1395,7 @@ lua_exports.cpp: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua_exports.txt" 
 	@$(PARSER) -DPCBTARANIS -DCPUARM -DLUA -DEXPORT myeeprom.h | grep LEXP > lua_exports.txt
 	@echo "Parsing and generating C Lua exports in lua_exports.cpp"
-	@python ../util/luaexport.py $(VERSION) lua_exports.txt lua_exports.cpp lua_fields.txt
+	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports.txt lua_exports.cpp lua_fields.txt
 	@rm lua_exports.txt
 	 
 # Eye candy.
