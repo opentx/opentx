@@ -48,7 +48,7 @@ inline void boardInit()
   DDRE = 0b00000010;  PORTE = 0b11111100; // 7:N/A, 6:N/A, 5:RENC1_B, 4:RENC1_A, 3:N/A, 2:N/A, 1:TELEM_TX, 0:TELEM_RX
   DDRF = 0b00000000;  PORTF = 0b11111111; // 7-0:Trim switch inputs
   DDRG = 0b00000000;  PORTG = 0b11111111; // 7:N/A, 6:N/A, 5:N/A, 4:N/A, 3:N/A, 2:TCut_SW, 1:Gear_SW, 0: RudDr_SW
-  DDRH = 0b00011000;  PORTH = 0b11100111; // 7:N/A, 6:RFPw, 5:JackPres, 4:HoldPw, 3:Speaker, 2:N/A, 1:N/A, 0:N/A
+  DDRH = 0b00011000;  PORTH = 0b11110111; // 7:N/A, 6:RFPw, 5:JackPres, 4:HoldPw, 3:Speaker, 2:N/A, 1:N/A, 0:N/A
   DDRJ = 0b00000000;  PORTJ = 0b11111111; // 7:N/A, 6:N/A, 5:N/A, 4:N/A, 3:N/A, 2:N/A, 1:RENC2_push, 0:RENC1_push
   DDRK = 0b00000000;  PORTK = 0b00000000; // Analogic input (no pull-ups)
   DDRL = 0b00000000;  PORTL = 0b11111111; // 7:TRN_SW 6:EleDR_SW, 5:ESC, 4:MENU 3:Keyb_Left, 2:Keyb_Right, 1:Keyb_Up, 0:Keyb_Down
@@ -69,6 +69,13 @@ inline void boardInit()
   // Used for audio tone generation
   TCCR0B  = (1<<WGM02) | (0b011 << CS00);
   TCCR0A  = (0b01<<WGM00);
+  
+  #if defined (VOICE)
+  // SOMO set-up
+  OCR4A = 0x1F4; //2ms
+  TCCR4B = (1 << WGM42) | (0b011 << CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
+  TIMSK4 |= (1<<OCIE4A); // Start the interrupt so the unit reset can occur
+  #endif
 
   /* Rotary encoder interrupt set-up                 */
   EIMSK = 0; // disable ALL external interrupts.
@@ -84,16 +91,16 @@ inline void boardInit()
 
 uint8_t pwrCheck()
 {
-/*#if !defined(SIMU) //&& !defined(REV0)
-  if ((PINH & 0b01000000) && (~PINH & 0b00100000))
+#if !defined(SIMU)
+  if ((~PINH & 0b00100000) && (~PINH & 0b01000000))
   return e_power_off;
-#endif */  
+#endif          
   return e_power_on;  
 }      
 
 void pwrOff()
 {
-  //PORTH = 0b11101111;   //Hold_PWR pin (PortH4) set to 0
+  PORTH = 0b11101111;   // PortH-4 set to 0
 }
 
 FORCEINLINE uint8_t keyDown()
