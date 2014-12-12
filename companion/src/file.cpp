@@ -62,7 +62,7 @@ void RleFile::EeFsCreate(uint8_t *eeprom, int size, BoardEnum board)
   }
   else {
     eeFs = (EeFs *)eeprom;
-    eeFsVersion = (board==BOARD_GRUVIN9X || board==BOARD_M128) ? 5 : 4;
+    eeFsVersion = (IS_2560(board) || board==BOARD_M128) ? 5 : 4;
     eeFsBlockSize = 16;
     eeFsLinkSize = 1;
 
