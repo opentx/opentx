@@ -210,6 +210,13 @@ TEST(Lcd, Smlsize)
   lcd_putsAtt(10, 22, "TESTgy,", SMLSIZE|INVERS);
   lcd_filled_rect(8, 40, 100, 20);
   lcd_putsAtt(10, 42, "TESTgy,", SMLSIZE);
+
+  bool invert = false;
+  for(int i=0; i<3; i++) {
+    lcd_putsAtt(40+(4*i), 0+(4*i), "ABC", SMLSIZE|(invert?INVERS:0));  
+    invert = !invert;
+  }
+
   EXPECT_TRUE(checkScreenshot("smlsize"));
 }
 
@@ -220,6 +227,13 @@ TEST(Lcd, Stdsize)
   lcd_putsAtt(10, 22, "TEST", INVERS);
   lcd_filled_rect(8, 40, 100, 20);
   lcd_putsAtt(10, 42, "TEST", 0);
+
+  bool invert = false;
+  for(int i=0; i<3; i++) {
+    lcd_putsAtt(40+(4*i), 0+(4*i), "ABC", (invert?INVERS:0));  
+    invert = !invert;
+  }
+
   EXPECT_TRUE(checkScreenshot("stdsize"));
 }
 
@@ -230,6 +244,13 @@ TEST(Lcd, Midsize)
   lcd_putsAtt(10, 22, "TEST", MIDSIZE|INVERS);
   lcd_filled_rect(8, 40, 100, 20);
   lcd_putsAtt(10, 42, "TEST", MIDSIZE);
+
+  bool invert = false;
+  for(int i=0; i<3; i++) {
+    lcd_putsAtt(40+(4*i), 0+(4*i), "ABC", MIDSIZE|(invert?INVERS:0));  
+    invert = !invert;
+  }
+
   EXPECT_TRUE(checkScreenshot("midsize"));
 }
 
@@ -240,6 +261,13 @@ TEST(Lcd, Dblsize)
   lcd_putsAtt(42, 10, "TST", DBLSIZE|INVERS);
   lcd_filled_rect(80, 8, 46, 24);
   lcd_putsAtt(82, 10, "TST", DBLSIZE);
+
+  bool invert = false;
+  for(int i=0; i<3; i++) {
+    lcd_putsAtt(10+(4*i), 30+(4*i), "ABC", DBLSIZE|(invert?INVERS:0));  
+    invert = !invert;
+  }
+
   EXPECT_TRUE(checkScreenshot("dblsize"));
 }
 #endif
