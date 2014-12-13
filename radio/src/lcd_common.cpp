@@ -185,7 +185,7 @@ void lcd_putcAtt(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
   }
   else if (fontsize == SMLSIZE) {
     q = (c < 0xc0 ? &font_4x6[(c-0x20)*5] : &font_4x6_extra[(c-0xc0)*5]);
-    lcdPutPattern(x, y, q, 5, 7, flags);
+    lcdPutPattern(x, y, q, 5, 6, flags);
   }
   else if (fontsize == TINSIZE) {
     q = &font_3x5[((uint16_t)c-0x2d)*3];
