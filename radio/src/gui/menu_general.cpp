@@ -1255,9 +1255,9 @@ void menuGeneralDiagKeys(uint8_t event)
     }
 
     if (i<6) {
-      y = (5-i)*FH+2*FH;
-      lcd_putsiAtt(0, y, STR_VKEYS, i, 0);
-      displayKeyState(5*FW+2, y, (EnumKeys)(KEY_MENU+i));
+      y = i*FH+2*FH;
+      lcd_putsiAtt(0, y, STR_VKEYS, (5-i), 0);
+      displayKeyState(5*FW+2, y, (EnumKeys)(KEY_MENU+(5-i)));
     }
 
 #if !defined(PCBTARANIS)
