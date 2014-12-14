@@ -102,6 +102,7 @@ inline int geteepromsize() {
 #include "radio/src/gui/menu_model_logical_switches.cpp"
 #include "radio/src/gui/menu_model_custom_functions.cpp"
 #include "radio/src/gui/menu_model_custom_scripts.cpp"
+#include "radio/src/gui/menu_model_gvars.cpp"
 #include "radio/src/gui/menu_model_limits.cpp"
 #include "radio/src/gui/menu_model_telemetry.cpp"
 #include "radio/src/gui/menu_general.cpp"

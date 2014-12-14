@@ -1021,6 +1021,7 @@ endif
 
 ifeq ($(GVARS), YES)
   CPPDEFS += -DGVARS
+  GUIMODELSRC += gui/menu_model_gvars.cpp
   EEPROM_VARIANT += ${GVARS_VARIANT}
 endif
 
