@@ -263,5 +263,3 @@ void editSingleName(coord_t x, coord_t y, const pm_char *label, char *name, uint
 #endif
 
 static uint8_t s_currIdx;
-
-

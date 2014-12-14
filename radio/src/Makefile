@@ -366,6 +366,7 @@ M2561_VARIANT   = +16384
 EEPROM_VARIANT  = 0
 
 GUIMODELSRC = gui/menu_model.cpp gui/menu_model_select.cpp gui/menu_model_setup.cpp gui/menu_model_inputs_mixes.cpp gui/menu_model_limits.cpp gui/menu_model_logical_switches.cpp gui/menu_model_custom_functions.cpp gui/menu_model_telemetry.cpp
+GUIGENERALSRC = gui/menu_general.cpp gui/menu_general_setup.cpp
 
 ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   # 9x/9xr radio
@@ -672,6 +673,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
     CPPDEFS += -DSPORT_FILE_LOG
   endif
   INCDIRS += targets/sky9x CoOS/kernel CoOS/portable
+  GUIGENERALSRC += gui/menu_general_hardware.cpp
   BOARDSRC = main_arm.cpp targets/sky9x/board_sky9x.cpp
   EXTRABOARDSRC = targets/sky9x/lcd_driver.cpp
   SRC += targets/sky9x/core_cm3.c targets/sky9x/board_lowlevel.c targets/sky9x/crt.c targets/sky9x/vectors_sam3s.c
@@ -777,6 +779,7 @@ ifeq ($(PCB), TARANIS)
   EXTRAINCDIRS += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/include
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc 
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc 
+  GUIGENERALSRC += gui/menu_general_hardware.cpp
   BOARDSRC = main_arm.cpp targets/taranis/board_taranis.cpp
   EXTRABOARDSRC += targets/taranis/configure_pins.cpp targets/taranis/lcd_driver.cpp targets/taranis/flash_driver.cpp targets/taranis/aspi.c targets/taranis/i2c.c targets/taranis/delays.c 
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
@@ -905,9 +908,9 @@ else
 endif
 
 ifeq ($(PCB), TARANIS)
-  GUISRC = gui/menus.cpp $(GUIMODELSRC) gui/menu_general.cpp gui/Taranis/view_main.cpp gui/view_statistics.cpp
+  GUISRC = gui/menus.cpp $(GUIMODELSRC) $(GUIGENERALSRC) gui/Taranis/view_main.cpp gui/view_statistics.cpp
 else
-  GUISRC = gui/menus.cpp $(GUIMODELSRC) gui/menu_general.cpp gui/view_main.cpp gui/view_statistics.cpp
+  GUISRC = gui/menus.cpp $(GUIMODELSRC) $(GUIGENERALSRC) gui/view_main.cpp gui/view_statistics.cpp
 endif
 
 CPPSRC += opentx.cpp functions.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp $(GUISRC) $(EEPROMSRC) $(LCDSRC) keys.cpp maths.cpp translations.cpp fonts.cpp $(TTS_SRC)
