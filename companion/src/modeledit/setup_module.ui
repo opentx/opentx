@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>628</width>
+    <width>692</width>
     <height>300</height>
    </rect>
   </property>
@@ -67,11 +67,11 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
      <layout class="QGridLayout" name="gridLayout_69" rowstretch="0,0,0,0,0,0,0,0,0" columnstretch="0,0,0,0,0,0,0">
-      <property name="verticalSpacing">
-       <number>6</number>
-      </property>
       <property name="margin">
        <number>0</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>6</number>
       </property>
       <item row="2" column="3" alignment="Qt::AlignLeft">
        <widget class="QSpinBox" name="channelsStart">
@@ -550,6 +550,17 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>trainerMode</tabstop>
+  <tabstop>protocol</tabstop>
+  <tabstop>channelsStart</tabstop>
+  <tabstop>channelsCount</tabstop>
+  <tabstop>ppmFrameLength</tabstop>
+  <tabstop>ppmPolarity</tabstop>
+  <tabstop>ppmDelay</tabstop>
+  <tabstop>failsafeMode</tabstop>
+  <tabstop>rxNumber</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

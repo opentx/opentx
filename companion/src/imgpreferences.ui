@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>685</width>
-    <height>418</height>
+    <height>432</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -441,6 +441,25 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>backLightColor</tabstop>
+  <tabstop>joystickCB</tabstop>
+  <tabstop>joystickChkB</tabstop>
+  <tabstop>joystickcalButton</tabstop>
+  <tabstop>simuSW</tabstop>
+  <tabstop>snapshotPath</tabstop>
+  <tabstop>snapshotPathButton</tabstop>
+  <tabstop>snapshotClipboardCKB</tabstop>
+  <tabstop>libraryPath</tabstop>
+  <tabstop>libraryPathButton</tabstop>
+  <tabstop>splashincludeCB</tabstop>
+  <tabstop>SplashFileName</tabstop>
+  <tabstop>SplashSelect</tabstop>
+  <tabstop>splashLibraryButton</tabstop>
+  <tabstop>clearImageButton</tabstop>
+  <tabstop>InvertPixels</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
   <include location="companion.qrc"/>
  </resources>

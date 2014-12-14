@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>276</width>
-    <height>118</height>
+    <height>138</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -325,6 +325,17 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>UnitCB</tabstop>
+  <tabstop>RatioSB</tabstop>
+  <tabstop>CalibSB</tabstop>
+  <tabstop>alarm1LevelCB</tabstop>
+  <tabstop>alarm1GreaterCB</tabstop>
+  <tabstop>alarm1ValueSB</tabstop>
+  <tabstop>alarm2LevelCB</tabstop>
+  <tabstop>alarm2GreaterCB</tabstop>
+  <tabstop>alarm2ValueSB</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
