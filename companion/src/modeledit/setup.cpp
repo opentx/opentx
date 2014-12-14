@@ -5,7 +5,7 @@
 #include "helpers.h"
 #include "appdata.h"
 
-TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, FirmwareInterface * firmware, QWidget *prevFocus):
   ModelPanel(parent, model, generalSettings, firmware),
   timer(timer),
   ui(new Ui::Timer)
@@ -47,6 +47,12 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   ui->persistent->addItem(tr("Persistent (manual reset)"), 2);
 
   disableMouseScrolling();
+  QWidget::setTabOrder(prevFocus, ui->name);
+  QWidget::setTabOrder(ui->name, ui->value);
+  QWidget::setTabOrder(ui->value, ui->mode);
+  QWidget::setTabOrder(ui->mode, ui->countdownBeep);
+  QWidget::setTabOrder(ui->countdownBeep, ui->minuteBeep);
+  QWidget::setTabOrder(ui->minuteBeep, ui->persistent);
 
   lock = false;
 }
@@ -77,6 +83,11 @@ void TimerPanel::update()
   }
 
   ui->minuteBeep->setChecked(timer.minuteBeep);
+}
+
+QWidget * TimerPanel::getLastFocus()
+{
+  return ui->persistent;
 }
 
 void TimerPanel::on_value_editingFinished()
@@ -368,30 +379,6 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
 
   ui->name->setMaxLength(IS_TARANIS(board) ? 12 : 10);
 
-  for (int i=0; i<C9X_MAX_TIMERS; i++) {
-    if (i<firmware->getCapability(Timers)) {
-      timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware);
-      ui->gridLayout->addWidget(timers[i], 1+i, 1);
-      connect(timers[i], SIGNAL(modified()), this, SLOT(onChildModified()));
-    }
-    else {
-      foreach(QLabel *label, findChildren<QLabel *>(QRegExp(QString("label_timer%1").arg(i+1)))) {
-        label->hide();
-      }
-    }
-  }
-
-  for (int i=0; i<firmware->getCapability(NumModules); i++) {
-    modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);
-    ui->modulesLayout->addWidget(modules[i]);
-    connect(modules[i], SIGNAL(modified()), this, SLOT(onChildModified()));
-  }
-
-  if (firmware->getCapability(ModelTrainerEnable)) {
-    modules[C9X_NUM_MODULES] = new ModulePanel(this, model, model.moduleData[C9X_NUM_MODULES], generalSettings, firmware, -1);
-    ui->modulesLayout->addWidget(modules[C9X_NUM_MODULES]);
-  }
-
   if (firmware->getCapability(ModelImage)) {
     QStringList items;
     items.append("");
@@ -438,12 +425,28 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     ui->modelImage_label->hide();
     ui->imagePreview->hide();
   }
+
+  QWidget *prevFocus = ui->image;
+  for (int i=0; i<C9X_MAX_TIMERS; i++) {
+    if (i<firmware->getCapability(Timers)) {
+      timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware, prevFocus);
+      ui->gridLayout->addWidget(timers[i], 1+i, 1);
+      connect(timers[i], SIGNAL(modified()), this, SLOT(onChildModified()));
+      prevFocus = timers[i]->getLastFocus();
+    }
+    else {
+      foreach(QLabel *label, findChildren<QLabel *>(QRegExp(QString("label_timer%1").arg(i+1)))) {
+        label->hide();
+      }
+    }
+  }
   
   if (!firmware->getCapability(HasDisplayText)) {
     ui->displayText->hide();
   }
 
   // Beep Center checkboxes
+  prevFocus = ui->trimsDisplay;
   int analogs = 4 + firmware->getCapability(Pots);
   for (int i=0; i<analogs+firmware->getCapability(RotaryEncoders); i++) {
     QCheckBox * checkbox = new QCheckBox(this);
@@ -455,6 +458,8 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     if (!IS_TARANIS_PLUS(board) && i==6) {
       checkbox->hide();
     }
+    QWidget::setTabOrder(prevFocus, checkbox);
+    prevFocus = checkbox;
   }
 
   // Startup switches warnings
@@ -498,10 +503,14 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     connect(cb, SIGNAL(toggled(bool)), this, SLOT(startupSwitchToggled(bool)));
     startupSwitchesSliders << slider;
     startupSwitchesCheckboxes << cb;
+    QWidget::setTabOrder(prevFocus, slider);
+    QWidget::setTabOrder(slider, cb);
+    prevFocus = cb;
   }
   ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, firmware->getCapability(Switches));
 
   // Pot warnings
+  prevFocus = ui->potWarningMode;
   if (IS_TARANIS(board)) {
     for (int i=0; i<firmware->getCapability(Pots); i++) {
       QCheckBox * cb = new QCheckBox(this);
@@ -513,6 +522,8 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
       if (!IS_TARANIS_PLUS(board) && i==2) {
         cb->hide();
       }
+      QWidget::setTabOrder(prevFocus, cb);
+      prevFocus = cb;
     }
   }
   else {
@@ -528,6 +539,16 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     ui->trimsDisplay->hide();
   }
 
+  for (int i=0; i<firmware->getCapability(NumModules); i++) {
+    modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);
+    ui->modulesLayout->addWidget(modules[i]);
+    connect(modules[i], SIGNAL(modified()), this, SLOT(onChildModified()));
+  }
+
+  if (firmware->getCapability(ModelTrainerEnable)) {
+    modules[C9X_NUM_MODULES] = new ModulePanel(this, model, model.moduleData[C9X_NUM_MODULES], generalSettings, firmware, -1);
+    ui->modulesLayout->addWidget(modules[C9X_NUM_MODULES]);
+  }
 
   disableMouseScrolling();
 
