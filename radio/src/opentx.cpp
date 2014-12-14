@@ -1618,8 +1618,13 @@ TimerState timersStates[MAX_TIMERS] = { { 0 }, { 0 } };
 
 #if defined(THRTRACE)
 uint8_t  s_traceBuf[MAXTRACE];
-uint8_t  s_traceWr;
-int      s_traceCnt;
+#if LCD_W >= 255
+  int16_t  s_traceWr;
+  int16_t  s_traceCnt;
+#else
+  uint8_t  s_traceWr;
+  int16_t  s_traceCnt;
+#endif
 uint8_t  s_cnt_10s;
 uint16_t s_cnt_samples_thr_10s;
 uint16_t s_sum_samples_thr_10s;

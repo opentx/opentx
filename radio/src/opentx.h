@@ -880,8 +880,13 @@ extern uint16_t lastMixerDuration;
 #if defined(THRTRACE)
   #define MAXTRACE (LCD_W - 8)
   extern uint8_t  s_traceBuf[MAXTRACE];
-  extern uint8_t  s_traceWr;
-  extern int      s_traceCnt;
+  #if LCD_W >= 255
+    extern int16_t  s_traceWr;
+    extern int16_t  s_traceCnt;
+  #else
+    extern uint8_t  s_traceWr;
+    extern int16_t  s_traceCnt;
+  #endif
   extern uint8_t  s_cnt_10s;
   extern uint16_t s_cnt_samples_thr_10s;
   extern uint16_t s_sum_samples_thr_10s;

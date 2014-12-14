@@ -90,8 +90,6 @@ FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModes
   #define displayFlightModes(...)
 #endif
 
-typedef int16_t (*FnFuncP) (int16_t x);
-
 int16_t expoFn(int16_t x)
 {
   ExpoData *ed = expoAddress(s_currIdx);
@@ -105,7 +103,7 @@ int16_t expoFn(int16_t x)
   return anas[ed->chn];
 }
 
-void DrawFunction(FnFuncP fn, uint8_t offset=0)
+void DrawFunction(FnFuncP fn, uint8_t offset)
 {
   lcd_vlineStip(X0-offset, 0, LCD_H, 0xee);
   lcd_hlineStip(X0-WCHART-offset, Y0, WCHART*2, 0xee);
