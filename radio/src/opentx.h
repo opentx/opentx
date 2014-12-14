@@ -820,7 +820,7 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim);
 
 #define GV_INDEX_CALC_DELTA(x,delta) ((x&(delta*2-1)) - delta)
 
-#define GV_CALC_VALUE_IDX_POS(idx,delta) (-delta+idx)
+#define GV_CALC_VALUE_IDX_POS(idx,delta) (-delta+idx-1)
 #define GV_CALC_VALUE_IDX_NEG(idx,delta) (delta+idx)
 
 #define GV_RANGESMALL      (GV1_SMALL - (RESERVE_RANGE_FOR_GVARS+1))
