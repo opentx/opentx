@@ -365,7 +365,7 @@ M128_VARIANT    = +32768
 M2561_VARIANT   = +16384
 EEPROM_VARIANT  = 0
 
-GUIMODELSRC = gui/menu_model.cpp gui/menu_model_limits.cpp gui/menu_model_logical_switches.cpp gui/menu_model_custom_functions.cpp gui/menu_model_telemetry.cpp
+GUIMODELSRC = gui/menu_model.cpp gui/menu_model_select.cpp gui/menu_model_setup.cpp gui/menu_model_inputs_mixes.cpp gui/menu_model_limits.cpp gui/menu_model_logical_switches.cpp gui/menu_model_custom_functions.cpp gui/menu_model_telemetry.cpp
 
 ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   # 9x/9xr radio
@@ -1012,6 +1012,7 @@ endif
 
 ifeq ($(FLIGHT_MODES), YES)
   CPPDEFS += -DFLIGHT_MODES
+  GUIMODELSRC += gui/menu_model_flightmodes.cpp
 endif
 
 ifeq ($(CURVES), YES)
@@ -1166,6 +1167,7 @@ endif
 
 ifeq ($(HELI), YES)
   CPPDEFS += -DHELI
+  GUIMODELSRC += gui/menu_model_heli.cpp
 endif
 
 ifeq ($(TEMPLATES), YES)
