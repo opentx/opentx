@@ -113,7 +113,7 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
 
       for (int8_t j=-1; j<=height; j++) {
         bool plot;
-        if (j < 0 || j == height) {
+        if (j < 0 || ((j == height) && !(FONTSIZE(flags) == SMLSIZE))) {
           plot = false;
           if (height >= 12) continue;
           if (j<0 && !inv) continue;
