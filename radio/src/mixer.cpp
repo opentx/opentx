@@ -64,7 +64,7 @@ int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMa
   int16_t cyc_anas[3] = {0};
   #if defined(PCBTARANIS)
     int16_t heliAnas[4] = {0};
-    uint8_t heliTrims[4] = {0};
+    int8_t heliTrims[4] = {0};
   #endif
 #endif
 
