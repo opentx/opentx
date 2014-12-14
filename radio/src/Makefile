@@ -365,7 +365,7 @@ M128_VARIANT    = +32768
 M2561_VARIANT   = +16384
 EEPROM_VARIANT  = 0
 
-GUIMODELSRC = gui/menu_model.cpp gui/menu_model_limits.cpp gui/menu_model_telemetry.cpp
+GUIMODELSRC = gui/menu_model.cpp gui/menu_model_limits.cpp gui/menu_model_custom_functions.cpp gui/menu_model_telemetry.cpp
 
 ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   # 9x/9xr radio
