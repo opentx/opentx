@@ -137,10 +137,6 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     else
       dblkey = false;
 
-#if defined(CPUARM)
-
-#endif
-
     if (dblkey) {
       killEvents(KEY_UP);
       killEvents(KEY_DOWN);
@@ -1163,18 +1159,18 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
 #endif
 
     int8_t idx = (int16_t) GV_INDEX_CALC_DELTA(value, delta);
+    if (idx >= 0) idx++;
     if (invers) {
-      CHECK_INCDEC_MODELVAR(event, idx, -MAX_GVARS, MAX_GVARS-1);
+      CHECK_INCDEC_MODELVAR(event, idx, -MAX_GVARS, MAX_GVARS);
+      if (idx == 0) CHECK_INCDEC_MODELVAR(event, idx, -MAX_GVARS, MAX_GVARS);
     }
-
-    if (idx < 0) { 
+    if (idx < 0) {
       value = (int16_t) GV_CALC_VALUE_IDX_NEG(idx, delta);
       idx = -idx;
       lcd_putcAtt(x-6, y, '-', attr);
     }
     else {
       value = (int16_t) GV_CALC_VALUE_IDX_POS(idx, delta);
-      idx++;
     }
     putsStrIdx(x, y, STR_GV, idx, attr);
   }
