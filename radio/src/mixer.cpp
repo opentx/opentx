@@ -534,7 +534,7 @@ void evalInputs(uint8_t mode)
 
 #if defined(PCBTARANIS)
   #define HELI_ANAS_ARRAY(x)  heliAnas[x]
-  #define HELI_TRIMS_ARRAY(x) trims[heliTrims[x]]
+  #define HELI_TRIMS_ARRAY(x) ((heliTrims[x]>=0) ? trims[heliTrims[x]] : 0)
 #else
   #define HELI_ANAS_ARRAY(x)  anas[x]
   #define HELI_TRIMS_ARRAY(x) trims[x]
