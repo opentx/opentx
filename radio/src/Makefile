@@ -365,6 +365,8 @@ M128_VARIANT    = +32768
 M2561_VARIANT   = +16384
 EEPROM_VARIANT  = 0
 
+GUIMODELSRC = gui/menu_model.cpp gui/menu_model_limits.cpp gui/menu_model_telemetry.cpp
+
 ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   # 9x/9xr radio
   ARCH = AVR
@@ -824,6 +826,7 @@ ifeq ($(PCB), TARANIS)
   ifneq ($(LUA), NO)
     ifeq ($(LUA), YES)
       CPPDEFS += -DLUA_MODEL_SCRIPTS
+      GUIMODELSRC += gui/menu_model_custom_scripts.cpp
     endif
     CPPDEFS += -DLUA
     INCDIRS += lua/src
@@ -900,8 +903,6 @@ else
   STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
   TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
 endif
-
-GUIMODELSRC = gui/menu_model.cpp gui/menu_model_limits.cpp gui/menu_model_telemetry.cpp
 
 ifeq ($(PCB), TARANIS)
   GUISRC = gui/menus.cpp $(GUIMODELSRC) gui/menu_general.cpp gui/Taranis/view_main.cpp gui/view_statistics.cpp

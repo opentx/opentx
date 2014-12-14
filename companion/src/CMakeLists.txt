@@ -76,7 +76,7 @@ set(COMPANION_SRC_DIRECTORY ${PROJECT_SOURCE_DIR})
 add_custom_command(
   OUTPUT ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
   COMMAND make lbm
-  DEPENDS ${RADIO_SRC_DIRECTORY}/bitmaps/sticks_4x1.xbm
+  DEPENDS ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.xbm
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
