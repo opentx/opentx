@@ -1016,6 +1016,7 @@ endif
 
 ifeq ($(CURVES), YES)
   CPPDEFS += -DCURVES
+  GUIMODELSRC += gui/menu_model_curves.cpp
 endif
 
 ifeq ($(GVARS), YES)

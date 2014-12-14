@@ -90,6 +90,7 @@ namespace Open9xSky9x {
 #include "radio/src/vario.cpp"
 #include "radio/src/gui/menus.cpp"
 #include "radio/src/gui/menu_model.cpp"
+#include "radio/src/gui/menu_model_curves.cpp"
 #include "radio/src/gui/menu_model_limits.cpp"
 #include "radio/src/gui/menu_model_telemetry.cpp"
 #include "radio/src/gui/menu_general.cpp"
