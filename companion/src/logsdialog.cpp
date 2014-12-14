@@ -184,46 +184,33 @@ void logsDialog::on_mapsButton_clicked() {
   int latcol=0, longcol=0, altcol=0, speedcol=0;
   int itemSelected=0.;
   bool rangeSelected=false;
-  enum fieldtype {
-    T_F,
-    I_F,
-    F_F,
-    G_F
-  };
   ui->FieldsTW->setDisabled(true);
   ui->logTable->setDisabled(true);
-  QString fields[]={"SWR","RSSI","A1","A2","GPS Date"\
-        ,"GPS Time","Long","Lat","Course","GPS Speed","GPS Alt","Baro Alt"\
-        ,"Vertical Speed","Temp1","Temp2","RPM","Fuel","Cell volts","Cell 1"\
-        ,"Cell 2","Cell 3","Cell 4","Cell 5","Cell 6","Current","Consumption"\
-        ,"Vfas","AccelX","AccelY","AccelZ","Rud","Ele","Thr","Ail"\
-        ,"S1","S2","LS","RS","SA","SB","SC","SD","SE","SF","SG","SH"};
-  int fieldstype[]={I_F,I_F,F_F,F_F,T_F\
-        ,T_F,G_F,G_F,F_F,G_F,G_F,F_F\
-        ,F_F,F_F,F_F,I_F,I_F,F_F,F_F\
-        ,F_F,F_F,F_F,F_F,F_F,F_F,F_F\
-        ,F_F,F_F,F_F,F_F,I_F,I_F,I_F,I_F\
-        ,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F};
-    
+     
   QString gePath=g.gePath();
   if (gePath.isEmpty() || !QFile(gePath).exists()) {
     ui->FieldsTW->setDisabled(false);
     ui->logTable->setDisabled(false);
     return;
   }  
+  QSet<int> nondataCols;
   for (int i=1; i<csvlog.at(0).count(); i++) {
     //Long,Lat,Course,GPS Speed,GPS Alt
     if (csvlog.at(0).at(i).contains("Long")) {
       longcol=i;
+      nondataCols << i;
     }
     if (csvlog.at(0).at(i).contains("Lat")) {
       latcol=i;
+      nondataCols << i;
     }
     if (csvlog.at(0).at(i).contains("GPS Alt")) {
       altcol=i;
+      nondataCols << i;
     }
     if (csvlog.at(0).at(i).contains("GPS Speed")) {
       speedcol=i;
+      nondataCols << i;
     }
   }
   if (longcol==0 || latcol==0 || altcol==0) {
@@ -270,23 +257,15 @@ void logsDialog::on_mapsButton_clicked() {
   outputStream << "\t\t<Style id=\"lineStyle\">\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
   outputStream << "\t\t<Schema id=\"schema\">\n";
   outputStream << "\t\t\t<gx:SimpleArrayField name=\"GPSSpeed\" type=\"float\">\n\t\t\t\t<displayName>GPS Speed</displayName>\n\t\t\t</gx:SimpleArrayField>\n";
+  // declare additional fields
   for (int i=0; i<csvlog.at(0).count()-2; i++) {
-    if (ui->FieldsTW->item(0,i)->isSelected() && fieldstype[i]!=G_F ) {
-      outputStream << "\t\t\t<gx:SimpleArrayField name=\""<< fields[i].replace(" ","_") <<"\" ";
-      switch (fieldstype[i]) {
-        case T_F:
-          outputStream << "type=\"string\"";
-          break;
-        case I_F:
-          outputStream << "type=\"int\"";
-          break;
-        case F_F:
-          outputStream << "type=\"float\"";
-          break;
-        default:
-          break;
-      }
-      outputStream << ">\n\t\t\t\t<displayName>" << fields[i] << "</displayName>\n\t\t\t</gx:SimpleArrayField>\n";
+    if (ui->FieldsTW->item(0,i)->isSelected() && !nondataCols.contains(i+2)) {
+      QString origName = csvlog.at(0).at(i+2);
+      QString safeName = origName;
+      safeName.replace(" ","_");
+      outputStream << "\t\t\t<gx:SimpleArrayField name=\""<< safeName <<"\" ";
+      outputStream << "type=\"string\"";   // additional fields have fixed type: string
+      outputStream << ">\n\t\t\t\t<displayName>" << origName << "</displayName>\n\t\t\t</gx:SimpleArrayField>\n";
     }
   }
   outputStream << "\t\t</Schema>\n";
@@ -335,9 +314,12 @@ void logsDialog::on_mapsButton_clicked() {
     }
   }
   outputStream << "\t\t\t\t\t\t\t</gx:SimpleArrayData>\n";
+  // add values for additional fields
   for (int i=0; i<csvlog.at(0).count()-2; i++) {
-    if (ui->FieldsTW->item(0,i)->isSelected() && fieldstype[i]!= G_F ) {
-      outputStream << "\t\t\t\t\t\t\t<gx:SimpleArrayData name=\""<< fields[i].replace(" ","_") <<"\">\n";
+    if (ui->FieldsTW->item(0,i)->isSelected() && !nondataCols.contains(i+2)) {
+      QString safeName = csvlog.at(0).at(i+2);;
+      safeName.replace(" ","_");
+      outputStream << "\t\t\t\t\t\t\t<gx:SimpleArrayData name=\""<< safeName <<"\">\n";
       for (int j=1; j<n; j++) {
         if ((ui->logTable->item(j-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
           outputStream << "\t\t\t\t\t\t\t\t<gx:value>"<< csvlog.at(j).at(i+2) <<"</gx:value>\n";
