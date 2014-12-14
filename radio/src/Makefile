@@ -341,6 +341,7 @@ endif
 
 IMG2LBM = -$(PYTHON) ../util/img2lbm.py
 BIN2LBM = -$(PYTHON) ../util/bin2lbm.py
+FONT2PNG = -$(PYTHON) ../util/font2png.py
 TRANSLATE = -$(PYTHON) ../util/translate.py
 VERSION = 2.0.99
 
@@ -367,6 +368,7 @@ EEPROM_VARIANT  = 0
 ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   # 9x/9xr radio
   ARCH = AVR
+  LCDSIZE = 128
   TRGT = avr-
   MCU = atmega64
   OPT = s
@@ -430,6 +432,7 @@ endif
 ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   # 9X/9XR radio with ATmega64 replaced by ATmega128
   ARCH = AVR
+  LCDSIZE = 128
   TRGT = avr-
   MCU = atmega128
   OPT = s
@@ -490,6 +493,7 @@ endif
 ifeq ($(PCB), $(filter $(PCB), 9X2561))
   # 9X/9XR radio with ATmega64 replaced by ATmega2561
   ARCH = AVR
+  LCDSIZE = 128
   TRGT = avr-
   MCU = atmega2561
   OPT = s
@@ -546,6 +550,7 @@ endif
 ifeq ($(PCB), GRUVIN9X)
   # 9x radio with a gruvin9x replacement board
   ARCH = AVR
+  LCDSIZE = 128
   ifeq ($(PCBREV), REV0)
     CPPDEFS = -DREV0
   else
@@ -591,6 +596,7 @@ endif
 ifeq ($(PCB), MEGA2560)
   # ARDUINO2560 DIY RADIO
   ARCH = AVR
+  LCDSIZE = 128
   TRGT = avr-
   MCU = atmega2560
   OPT = s
@@ -631,6 +637,7 @@ endif
 ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   # 9x/9XR radio with a sky9x replacement board
   ARCH = ARM
+  LCDSIZE = 128
   CPPDEFS = -Dat91sam3s4
   ifeq ($(PCB), 9XRPRO)
     CPPDEFS += -DREVX
@@ -703,6 +710,7 @@ endif
 ifeq ($(PCB), TARANIS)
   # TARANIS radio
   ARCH = ARM
+  LCDSIZE = 212
   ifeq ($(PCBREV), REV3)
     CPPDEFS = -DREV3
     SWR = YES
@@ -858,9 +866,6 @@ ifeq ($(PCB), TARANIS)
   ifeq ($(CHANNELS_MONITOR_INV_HIDE), YES)
     CPPDEFS += -DCHANNELS_MONITOR_INV_HIDE
   endif
-  ifeq ($(SWR), YES)
-    CPPDEFS += -DSWR
-  endif
   ifeq ($(PCBREV), REV9E)
     CPPSRC += targets/taranis/rotenc_driver.cpp
   endif
@@ -896,7 +901,7 @@ else
   TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
 endif
 
-ifeq ($(PCB), $(filter $(PCB), TARANIS))
+ifeq ($(PCB), TARANIS)
   GUISRC = gui/menus.cpp gui/menu_model.cpp gui/menu_general.cpp gui/Taranis/view_main.cpp gui/view_statistics.cpp
 else
   GUISRC = gui/menus.cpp gui/menu_model.cpp gui/menu_general.cpp gui/view_main.cpp gui/view_statistics.cpp
@@ -944,7 +949,7 @@ ifeq ($(NAVIGATION), ROTENC)
 endif
 
 ifeq ($(TURNIGY_TRANSMITTER_FIX), YES)
-  ifeq ($(PCB), TARANIS)
+  ifeq ($(PCB), $(filter $(PCB), TARANIS))
     $(warning TURNIGY_TRANSMITTER_FIX is not available on this radio)
   else
     CPPDEFS += -DMODULE_ALWAYS_SEND_PULSES
@@ -987,7 +992,7 @@ ifeq ($(BOLD), YES)
   CPPDEFS += -DBOLD_FONT
 endif
 
-ifneq ($(PCB), TARANIS)
+ifneq ($(PCB), $(filter $(PCB), TARANIS))
   ifeq ($(BATTGRAPH), YES)
     CPPDEFS += -DBATTGRAPH
   endif
@@ -1159,7 +1164,7 @@ ifeq ($(HELI), YES)
 endif
 
 ifeq ($(TEMPLATES), YES)
-  ifneq ($(PCB), TARANIS) 
+  ifneq ($(PCB), $(filter $(PCB), TARANIS)) 
     CPPDEFS += -DTEMPLATES
     CPPSRC += templates.cpp
   endif
@@ -1274,7 +1279,7 @@ else
 endif
 
 # build bootloader
-ifeq ($(PCB), TARANIS)
+ifeq ($(PCB), $(filter $(PCB), TARANIS))
 bootloader.lbm: bootloader/bootloader_ramBoot.bin
 	$(BIN2LBM) $^ $@
 
@@ -1367,23 +1372,23 @@ translations/se.h: translations/se.h.txt
 	$(TRANSLATE) translations/se.h.txt translations/se.h se
 
 .PHONY: fonts
-fonts: $(patsubst %.png,%.lbm,$(wildcard fonts/*/*.png)) 
+fonts: $(patsubst %.png,%.lbm,$(wildcard fonts/*/*.png))
 
 fonts/%.lbm: fonts/%.png
-	$(IMG2LBM) $^ $@
+	$(IMG2LBM) $^ $@ $(LCDSIZE)
 
-bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/9X/splash.xbm bitmaps/Taranis/splash.png bitmaps/Taranis/logo.bmp bitmaps/Taranis/icons.png bitmaps/9X/asterisk.xbm bitmaps/9X/about.png bitmaps/Taranis/about.png bitmaps/Taranis/asterisk.png
+bitmaps/sticks.lbm: bitmaps/sticks.xbm bitmaps/9X/splash.xbm bitmaps/Taranis/splash.png bitmaps/Taranis/logo.bmp bitmaps/Taranis/icons.png bitmaps/9X/asterisk.xbm bitmaps/9X/about.png bitmaps/Taranis/about.png bitmaps/Taranis/asterisk.png
 	@echo
 	@echo "Convert bitmaps from xbm to lbm:"
-	$(IMG2LBM) bitmaps/sticks_4x1.xbm bitmaps/sticks.lbm 1bit 4
-	$(IMG2LBM) bitmaps/9X/asterisk.xbm bitmaps/9X/asterisk.lbm 1bit
-	$(IMG2LBM) bitmaps/9X/splash.xbm bitmaps/9X/splash.lbm 1bit
-	$(IMG2LBM) bitmaps/9X/about.png bitmaps/9X/about.lbm 1bit
-	$(IMG2LBM) bitmaps/Taranis/splash.png bitmaps/Taranis/splash.lbm 4bits
-	$(IMG2LBM) bitmaps/Taranis/logo.bmp bitmaps/Taranis/logo.lbm 4bits
-	$(IMG2LBM) bitmaps/Taranis/icons.png bitmaps/Taranis/icons.lbm 4bits
-	$(IMG2LBM) bitmaps/Taranis/about.png bitmaps/Taranis/about.lbm 4bits
-	$(IMG2LBM) bitmaps/Taranis/asterisk.png bitmaps/Taranis/asterisk.lbm 4bits
+	$(IMG2LBM) bitmaps/sticks.xbm bitmaps/sticks.lbm $(LCDSIZE) 1bit 4
+	$(IMG2LBM) bitmaps/9X/asterisk.xbm bitmaps/9X/asterisk.lbm $(LCDSIZE) 1bit
+	$(IMG2LBM) bitmaps/9X/splash.xbm bitmaps/9X/splash.lbm $(LCDSIZE) 1bit
+	$(IMG2LBM) bitmaps/9X/about.png bitmaps/9X/about.lbm $(LCDSIZE) 1bit
+	$(IMG2LBM) bitmaps/Taranis/splash.png bitmaps/Taranis/splash.lbm $(LCDSIZE) 4bits
+	$(IMG2LBM) bitmaps/Taranis/logo.bmp bitmaps/Taranis/logo.lbm $(LCDSIZE) 4bits
+	$(IMG2LBM) bitmaps/Taranis/icons.png bitmaps/Taranis/icons.lbm $(LCDSIZE) 4bits
+	$(IMG2LBM) bitmaps/Taranis/about.png bitmaps/Taranis/about.lbm $(LCDSIZE) 4bits
+	$(IMG2LBM) bitmaps/Taranis/asterisk.png bitmaps/Taranis/asterisk.lbm $(LCDSIZE) 4bits
 
 ifeq ($(OS),Windows_NT)
   PARSER = avr-cpp 
