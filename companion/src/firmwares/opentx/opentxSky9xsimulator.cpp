@@ -100,6 +100,7 @@ namespace Open9xSky9x {
 #include "radio/src/gui/menu_model_custom_functions.cpp"
 #include "radio/src/gui/menu_model_limits.cpp"
 #include "radio/src/gui/menu_model_telemetry.cpp"
+#include "radio/src/gui/menu_model_templates.cpp"
 #include "radio/src/gui/menu_general.cpp"
 #include "radio/src/gui/view_main.cpp"
 #include "radio/src/gui/view_statistics.cpp"

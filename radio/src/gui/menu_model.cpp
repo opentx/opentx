@@ -264,33 +264,4 @@ void editSingleName(coord_t x, coord_t y, const pm_char *label, char *name, uint
 
 static uint8_t s_currIdx;
 
-#if defined(TEMPLATES)
-void menuModelTemplates(uint8_t event)
-{
-  SIMPLE_MENU(STR_MENUTEMPLATES, menuTabModel, e_Templates, 1+TMPL_COUNT);
-
-  uint8_t sub = m_posVert - 1;
-
-  if (sub < TMPL_COUNT) {
-    if (s_warning_result) {
-      s_warning_result = 0;
-      applyTemplate(sub);
-      AUDIO_WARNING2();
-    }
-    if (event==EVT_KEY_BREAK(KEY_ENTER)) {
-      POPUP_CONFIRMATION(STR_VTEMPLATES+1 + (sub * LEN2_VTEMPLATES));
-      s_editMode = 0;
-    }
-  }
-
-  coord_t y = MENU_TITLE_HEIGHT + 1;
-  uint8_t k = 0;
-  for (uint8_t i=0; i<LCD_LINES-1 && k<TMPL_COUNT; i++) {
-    k = i+s_pgOfs;
-    lcd_outdezNAtt(3*FW, y, k, (sub==k ? INVERS : 0)|LEADING0, 2);
-    lcd_putsiAtt(4*FW, y, STR_VTEMPLATES, k, (sub==k ? INVERS  : 0));
-    y+=FH;
-  }
-}
-#endif
 

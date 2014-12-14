@@ -1174,6 +1174,7 @@ ifeq ($(TEMPLATES), YES)
   ifneq ($(PCB), $(filter $(PCB), TARANIS)) 
     CPPDEFS += -DTEMPLATES
     CPPSRC += templates.cpp
+    GUIMODELSRC += gui/menu_model_templates.cpp 
   endif
 endif
 
