@@ -901,10 +901,12 @@ else
   TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
 endif
 
+GUIMODELSRC = gui/menu_model.cpp gui/menu_model_limits.cpp gui/menu_model_telemetry.cpp
+
 ifeq ($(PCB), TARANIS)
-  GUISRC = gui/menus.cpp gui/menu_model.cpp gui/menu_general.cpp gui/Taranis/view_main.cpp gui/view_statistics.cpp
+  GUISRC = gui/menus.cpp $(GUIMODELSRC) gui/menu_general.cpp gui/Taranis/view_main.cpp gui/view_statistics.cpp
 else
-  GUISRC = gui/menus.cpp gui/menu_model.cpp gui/menu_general.cpp gui/view_main.cpp gui/view_statistics.cpp
+  GUISRC = gui/menus.cpp $(GUIMODELSRC) gui/menu_general.cpp gui/view_main.cpp gui/view_statistics.cpp
 endif
 
 CPPSRC += opentx.cpp functions.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp $(GUISRC) $(EEPROMSRC) $(LCDSRC) keys.cpp maths.cpp translations.cpp fonts.cpp $(TTS_SRC)
