@@ -116,7 +116,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 
 #if defined(DBLKEYS)
   uint8_t in = KEYS_PRESSED();
-  if (EVT_KEY_MASK(event)) {
+  if (!(i_flags & NO_DBLKEYS) && (EVT_KEY_MASK(event))) {
     bool dblkey = true;
     if (DBLKEYS_PRESSED_RGT_LFT(in))
       newval = -val;
@@ -1172,10 +1172,16 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
 #endif
 
     int8_t idx = (int16_t) GV_INDEX_CALC_DELTA(value, delta);
-    if (idx >= 0) ++idx;
+#if defined(CPUARM)
+    if (idx >= 0) ++idx;    // transform form idx=0=GV1 to idx=1=GV1 in order to handle double keys invert 
+#endif
     if (invers) {
+#if defined(CPUARM)
       CHECK_INCDEC_MODELVAR_CHECK(event, idx, -MAX_GVARS, MAX_GVARS, noZero);
-      if (idx == 0) idx = 1;    // handle reset to zero
+      if (idx == 0) idx = 1;    // handle reset to zero, map to GV1
+#else
+      idx = checkIncDec(event, idx, -MAX_GVARS, MAX_GVARS-1, EE_MODEL|NO_DBLKEYS);   // disable double keys
+#endif
     }
     if (idx < 0) {
       value = (int16_t) GV_CALC_VALUE_IDX_NEG(idx, delta);
@@ -1183,7 +1189,12 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
       lcd_putcAtt(x-6, y, '-', attr);
     }
     else {
+#if defined(CPUARM)
       value = (int16_t) GV_CALC_VALUE_IDX_POS(idx-1, delta);
+#else
+      value = (int16_t) GV_CALC_VALUE_IDX_POS(idx, delta);
+      idx++;
+#endif
     }
     putsStrIdx(x, y, STR_GV, idx, attr);
   }
