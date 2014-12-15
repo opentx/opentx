@@ -137,10 +137,6 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     else
       dblkey = false;
 
-#if defined(CPUARM)
-
-#endif
-
     if (dblkey) {
       killEvents(KEY_UP);
       killEvents(KEY_DOWN);
@@ -1137,6 +1133,10 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
   }
 #endif
 
+bool noZero(int val) {
+  return val != 0;
+}
+
 #if defined(GVARS)
 #if defined(CPUARM)
 int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event) 
@@ -1172,18 +1172,18 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
 #endif
 
     int8_t idx = (int16_t) GV_INDEX_CALC_DELTA(value, delta);
+    if (idx >= 0) ++idx;
     if (invers) {
-      CHECK_INCDEC_MODELVAR(event, idx, -MAX_GVARS, MAX_GVARS-1);
+      CHECK_INCDEC_MODELVAR_CHECK(event, idx, -MAX_GVARS, MAX_GVARS, noZero);
+      if (idx == 0) idx = 1;    // handle reset to zero
     }
-
-    if (idx < 0) { 
+    if (idx < 0) {
       value = (int16_t) GV_CALC_VALUE_IDX_NEG(idx, delta);
       idx = -idx;
       lcd_putcAtt(x-6, y, '-', attr);
     }
     else {
-      value = (int16_t) GV_CALC_VALUE_IDX_POS(idx, delta);
-      idx++;
+      value = (int16_t) GV_CALC_VALUE_IDX_POS(idx-1, delta);
     }
     putsStrIdx(x, y, STR_GV, idx, attr);
   }
