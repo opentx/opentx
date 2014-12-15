@@ -357,11 +357,11 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>BurnFlashButton</tabstop>
   <tabstop>FWFileName</tabstop>
   <tabstop>FlashLoadButton</tabstop>
   <tabstop>versionField</tabstop>
   <tabstop>ModField</tabstop>
-  <tabstop>DateField</tabstop>
   <tabstop>useProfileImageCB</tabstop>
   <tabstop>useFwImageCB</tabstop>
   <tabstop>useLibraryImageCB</tabstop>
@@ -371,7 +371,6 @@
   <tabstop>patchhw_CB</tabstop>
   <tabstop>EEpromCB</tabstop>
   <tabstop>cancelButton</tabstop>
-  <tabstop>BurnFlashButton</tabstop>
  </tabstops>
  <resources>
   <include location="companion.qrc"/>
