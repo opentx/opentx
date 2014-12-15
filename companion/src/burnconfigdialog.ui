@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>531</width>
-    <height>335</height>
+    <height>422</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -817,6 +817,14 @@ Please only use this if you know what you are doing.  There are no error checks 
   <tabstop>avrdude_port</tabstop>
   <tabstop>avrArgs</tabstop>
   <tabstop>pushButton_4</tabstop>
+  <tabstop>samba_location</tabstop>
+  <tabstop>sb_browse</tabstop>
+  <tabstop>arm_mcu</tabstop>
+  <tabstop>samba_port</tabstop>
+  <tabstop>dfu_location</tabstop>
+  <tabstop>dfu_browse</tabstop>
+  <tabstop>dfuArgs</tabstop>
+  <tabstop>advCtrChkB</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>

@@ -339,6 +339,20 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>curvePreview</tabstop>
+  <tabstop>curvePoints</tabstop>
+  <tabstop>curveCustom</tabstop>
+  <tabstop>curveSmooth</tabstop>
+  <tabstop>curveName</tabstop>
+  <tabstop>curveType</tabstop>
+  <tabstop>curveCoeff</tabstop>
+  <tabstop>yMin</tabstop>
+  <tabstop>yMid</tabstop>
+  <tabstop>yMax</tabstop>
+  <tabstop>curveSide</tabstop>
+  <tabstop>curveApply</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

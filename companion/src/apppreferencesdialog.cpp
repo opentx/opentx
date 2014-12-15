@@ -434,6 +434,7 @@ void AppPreferencesDialog::populateFirmwareOptions(const FirmwareInterface * fir
   voice = NULL; // we will search for a voice checkbox
 
   int index = 0;
+  QWidget * prevFocus = ui->voiceCombo;
   foreach(QList<Option> opts, parent->opts) {
     foreach(Option opt, opts) {
       if (index >= optionsCheckBoxes.size()) {
@@ -441,6 +442,9 @@ void AppPreferencesDialog::populateFirmwareOptions(const FirmwareInterface * fir
         ui->optionsLayout->addWidget(checkbox, optionsCheckBoxes.count()/5, optionsCheckBoxes.count()%5, 1, 1);
         optionsCheckBoxes.push_back(checkbox);
         connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(firmwareOptionChanged(bool)));
+        if (prevFocus) {
+          QWidget::setTabOrder(prevFocus, checkbox);
+        }
       }
 
       QCheckBox *cb = optionsCheckBoxes.at(index++);
@@ -452,6 +456,7 @@ void AppPreferencesDialog::populateFirmwareOptions(const FirmwareInterface * fir
         if (opt.name == QString("voice")) {
           voice = cb;
         }
+        prevFocus = cb;
       }
     }
   }

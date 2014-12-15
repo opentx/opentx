@@ -21,10 +21,11 @@ class TimerPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, FirmwareInterface * firmware, QWidget *prevFocus);
     virtual ~TimerPanel();
 
     virtual void update();
+    QWidget * getLastFocus();
 
   private slots:
     void on_mode_currentIndexChanged(int index);
