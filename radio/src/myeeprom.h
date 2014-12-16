@@ -721,12 +721,14 @@ int switchConfig(int idx);
   #define SWITCH_DEFAULT_CONFIG(x)  (SWITCH_3POS)
   #define IS_2x2POS(x)              (false)
   #define ONE_2x2POS_DEFINED()      (false)
+  #define SWITCH_EXISTS(x)          (switchConfig(x) != SWITCH_NONE)
   #define SWITCH_WARNING_ALLOWED(x) (!IS_TOGGLE(x))
 #else
   #define SWITCH_DEFAULT_CONFIG(x)  ((x)==5 ? SWITCH_2POS : ((x)==7 ? SWITCH_TOGGLE : SWITCH_3POS))
   #define IS_2x2POS(x)              (switchConfig(x) == SWITCH_2x2POS)
   #define ONE_2x2POS_DEFINED()      (g_eeGeneral.switchConfig & 0x44444444)
-  #define SWITCH_WARNING_ALLOWED(x) (x<8 ? !IS_TOGGLE(x) : IS_2x2POS(x-8))
+  #define SWITCH_EXISTS(x)          ((x)<8 ? (switchConfig(x) != SWITCH_NONE) : (IS_2x2POS(x-8)))
+  #define SWITCH_WARNING_ALLOWED(x) ((x)<8 ? !IS_TOGGLE(x) : IS_2x2POS(x-8))
 #endif
 inline int getSwitchWarningsAllowed()
 {

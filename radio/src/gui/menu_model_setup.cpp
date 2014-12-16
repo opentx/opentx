@@ -285,6 +285,14 @@ void menuModelSetup(uint8_t event)
           switch (m_posHorz) {
             case 0:
               CHECK_INCDEC_MODELVAR_CHECK(event, timer->mode, SWSRC_FIRST, TMRMODE_COUNT+SWSRC_LAST-1/*SWSRC_None removed*/, isSwitchAvailableInTimers);
+              if (s_editMode>0) {
+                int8_t val = timer->mode - (TMRMODE_COUNT-1);
+                int8_t switchVal = checkIncDecMovedSwitch(val);
+                if (val != switchVal) {
+                  timer->mode = switchVal + (TMRMODE_COUNT-1);
+                  eeDirty(EE_MODEL);
+                }
+              }
               break;
             case 1:
               CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 59);

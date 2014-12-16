@@ -587,20 +587,22 @@ int8_t getMovedSwitch()
   int8_t result = 0;
 
 #if defined(PCBTARANIS)
-  for (uint8_t i=0; i<NUM_SWITCHES; i++) {
-    swarnstate_t mask = (0x03 << (i*2));
-    uint8_t prev = (switches_states & mask) >> (i*2);
-    uint8_t next = (1024+getValue(MIXSRC_SA+i)) / 1024;
-    if (prev != next) {
-      switches_states = (switches_states & (~mask)) | (next << (i*2));
-      if (i<5)
-        result = 1+(3*i)+next;
-      else if (i==5)
-        result = 1+(3*5)+(next!=0);
-      else if (i==6)
-        result = 1+(3*5)+2+next;
-      else
-        result = 1+(3*5)+2+3+(next!=0);
+  for (int i=0; i<NUM_SWITCHES; i++) {
+    if (SWITCH_EXISTS(i)) {
+      swarnstate_t mask = (0x03 << (i*2));
+      uint8_t prev = (switches_states & mask) >> (i*2);
+      uint8_t next = (1024+getValue(MIXSRC_SA+i)) / 1024;
+      if (prev != next) {
+        switches_states = (switches_states & (~mask)) | (next << (i*2));
+        if (i<5)
+          result = 1+(3*i)+next;
+        else if (i==5)
+          result = 1+(3*5)+(next!=0);
+        else if (i==6)
+          result = 1+(3*5)+2+next;
+        else
+          result = 1+(3*5)+2+3+(next!=0);
+      }
     }
   }
 #else

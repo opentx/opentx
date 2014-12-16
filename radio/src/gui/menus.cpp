@@ -104,6 +104,34 @@ uint8_t switchToMix(uint8_t source)
 #endif
 }
 
+#if defined(AUTOSWITCH)
+int8_t checkIncDecMovedSwitch(int8_t val)
+{
+  if (s_editMode>0) {
+    int8_t swtch = getMovedSwitch();
+    if (swtch) {
+#if defined(PCBTARANIS)
+      div_t info = switchInfo(swtch);
+      if (IS_TOGGLE(info.quot)) {
+        if (info.rem != 0) {
+          val = (val == swtch ? swtch+2 : swtch);
+        }
+      }
+      else {
+        val = swtch;
+      }
+#else
+      if (IS_MOMENTARY(val) && swtch==val)
+        val = -val;
+      else
+        val = swtch;
+#endif
+    }
+  }
+  return val;
+}
+#endif
+
 int8_t  checkIncDec_Ret;
 
 #if defined(CPUARM)
@@ -217,22 +245,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 
 #if defined(AUTOSWITCH)
   if (i_flags & INCDEC_SWITCH) {
-    if (s_editMode>0) {
-      int8_t swtch = getMovedSwitch();
-      if (swtch) {
-#if defined(PCBTARANIS)
-        if(swtch == SWSRC_SH2)
-          newval = (newval == SWSRC_SH2 ? SWSRC_SH0 : SWSRC_SH2);
-        else if(swtch != SWSRC_SH0)
-          newval = swtch;
-#else
-        if (IS_MOMENTARY(newval) && IS_MOMENTARY(swtch))
-          newval = -newval;
-        else
-          newval = swtch;
-#endif
-      }
-    }
+    newval = checkIncDecMovedSwitch(newval);
   }
 #endif
 
