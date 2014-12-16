@@ -6,7 +6,7 @@
 #include "helpers.h"
 #include "appdata.h"
 
-TelemetryAnalog::TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+TelemetryAnalog::TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::TelemetryAnalog),
   analog(analog),
@@ -287,7 +287,7 @@ TelemetryAnalog::~TelemetryAnalog()
 
 /******************************************************/
 
-TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::TelemetryCustomScreen),
   screen(screen)
@@ -475,7 +475,7 @@ void TelemetryCustomScreen::barMaxChanged(double value)
   }
 }
 
-TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::TelemetrySensor),
   sensor(sensor),
@@ -653,7 +653,7 @@ void TelemetrySensorPanel::on_prec_editingFinished()
 
 /******************************************************/
 
-TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Telemetry)
 {

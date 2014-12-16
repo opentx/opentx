@@ -92,7 +92,7 @@ float curveSymmetricalX(float x, float coeff, float yMin, float yMid, float yMax
   return y;
 }
 
-Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Curves),
   currentCurve(0)

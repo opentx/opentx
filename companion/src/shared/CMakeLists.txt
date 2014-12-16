@@ -1,7 +1,6 @@
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 set(shared_SRCS
-  foldersync.cpp
   genericpanel.cpp
   hexspinbox.cpp
   verticalscrollarea.cpp

@@ -23,7 +23,7 @@ class TelemetryAnalog: public ModelPanel
     friend class TelemetryPanel;
 
   public:
-    TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     virtual ~TelemetryAnalog();
 
   signals:
@@ -54,7 +54,7 @@ class TelemetryCustomScreen: public ModelPanel
     Q_OBJECT
 
   public:
-    TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, Firmware * firmware);
     ~TelemetryCustomScreen();
     void update();
 
@@ -83,7 +83,7 @@ class TelemetrySensorPanel: public ModelPanel
     Q_OBJECT
 
   public:
-    TelemetrySensorPanel(QWidget *parent, SensorData & sensor, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    TelemetrySensorPanel(QWidget *parent, SensorData & sensor, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     ~TelemetrySensorPanel();
     void update();
 
@@ -111,7 +111,7 @@ class TelemetryPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     virtual ~TelemetryPanel();
     virtual void update();
 

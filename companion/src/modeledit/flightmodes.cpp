@@ -5,7 +5,7 @@
 #include <QComboBox>
 #include <QGridLayout>
 
-FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::FlightMode),
   phaseIdx(phaseIdx),
@@ -422,7 +422,7 @@ void FlightModePanel::phaseTrimSlider_valueChanged()
 
 /**********************************************************/
 
-FlightModesPanel::FlightModesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+FlightModesPanel::FlightModesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   modesCount(firmware->getCapability(FlightModes))
 {

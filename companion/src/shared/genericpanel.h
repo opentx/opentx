@@ -5,7 +5,7 @@
 
 class ModelData;
 class GeneralSettings;
-class FirmwareInterface;
+class Firmware;
 class QGridLayout;
 class QString;
 
@@ -20,7 +20,7 @@ class GenericPanel : public QWidget
   friend class AutoLineEdit;
 
   public:
-    GenericPanel(QWidget *parent, ModelData * model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    GenericPanel(QWidget *parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware);
     virtual ~GenericPanel();
 
   signals:
@@ -32,7 +32,7 @@ class GenericPanel : public QWidget
   protected:
     ModelData * model;
     GeneralSettings & generalSettings;
-    FirmwareInterface * firmware;
+    Firmware * firmware;
     bool lock;
     void addLabel(QGridLayout * gridLayout, const QString &text, int col, bool mimimize=false);
     void addEmptyLabel(QGridLayout * gridLayout, int col);

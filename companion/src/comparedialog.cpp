@@ -1,6 +1,7 @@
 #include "comparedialog.h"
 #include "ui_comparedialog.h"
 #include "helpers.h"
+#include "helpers_html.h"
 #include "eeprominterface.h"
 #include <QtGui>
 #include <QImage>
@@ -164,37 +165,6 @@ CompareDialog::~CompareDialog()
   qunlink(curvefile9);
   delete ui;
 }
-
-QString CompareDialog::doTC(const QString s, const QString color="", bool bold=false)
-{
-  QString str = s;
-  if(bold) str = "<b>" + str + "</b>";
-  if(!color.isEmpty()) str = "<font color=" + color + ">" + str + "</font>";
-  return "<td align=center>" + str + "</td>";
-}
-
-QString CompareDialog::doTR(const QString s, const QString color="", bool bold=false)
-{
-  QString str = s;
-  if(bold) str = "<b>" + str + "</b>";
-  if(!color.isEmpty()) str = "<font color=" + color + ">" + str + "</font>";
-  return "<td align=right>" + str + "</td>";
-}
-
-QString CompareDialog::doTL(const QString s, const QString color="", bool bold=false)
-{
-  QString str = s;
-  if(bold) str = "<b>" + str + "</b>";
-  if(!color.isEmpty()) str = "<font color=" + color + ">" + str + "</font>";
-  return "<td align=left>" + str + "</td>";
-}
-
-QString CompareDialog::fv(const QString name, const QString value, const QString color="green")
-{
-    return "<b>" + name + ": </b><font color=" +color + ">" + value + "</font><br>";
-}
-
-
 
 int CompareDialog::ModelHasExpo(ExpoData * ExpoArray, ExpoData expo, bool * expoused)
 {

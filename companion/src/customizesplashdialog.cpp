@@ -1,12 +1,10 @@
 #include "customizesplashdialog.h"
 #include "ui_customizesplashdialog.h"
-
-#include <QtGui>
+#include "flashfirmwaredialog.h"
 #include "appdata.h"
 #include "helpers.h"
-#include "burndialog.h"
 #include "splashlibrary.h"
-#include "flashinterface.h"
+#include "firmwareinterface.h"
 
 //*** Side Class ***
 
@@ -44,12 +42,12 @@ bool Side::displayImage( QString fileName, Source pictSource )
 
   // Determine which picture format to use
   if (pictSource == FW ){
-    FlashInterface flash(fileName);
-    if (!flash.hasSplash())
+    FirmwareInterface firmware(fileName);
+    if (!firmware.hasSplash())
       return false;
     else
-      image = flash.getSplash();
-    *format = (flash.getSplashWidth()==WIDTH_TARANIS ? LCDTARANIS : LCD9X);
+      image = firmware.getSplash();
+    *format = (firmware.getSplashWidth()==WIDTH_TARANIS ? LCDTARANIS : LCD9X);
   }
   else {
     image.load(fileName);
@@ -105,12 +103,12 @@ bool Side::saveImage()
 {
   if (*source == FW )
   {
-    FlashInterface flash(*saveToFileName);
-    if (!flash.hasSplash()) {
+    FirmwareInterface firmware(*saveToFileName);
+    if (!firmware.hasSplash()) {
       return false;
     }
-    QImage image = imageLabel->pixmap()->toImage().scaled(flash.getSplashWidth(), flash.getSplashHeight());
-    if (flash.setSplash(image) && (flash.saveFlash(*saveToFileName) > 0)) {
+    QImage image = imageLabel->pixmap()->toImage().scaled(firmware.getSplashWidth(), firmware.getSplashHeight());
+    if (firmware.setSplash(image) && (firmware.save(*saveToFileName) > 0)) {
       g.flashDir( QFileInfo(*saveToFileName).dir().absolutePath() );
     }
     else {

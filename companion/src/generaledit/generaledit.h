@@ -12,7 +12,7 @@ namespace Ui {
 class GeneralPanel : public GenericPanel
 {
   public:
-    GeneralPanel(QWidget *parent, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+    GeneralPanel(QWidget *parent, GeneralSettings & generalSettings, Firmware * firmware):
       GenericPanel(parent, NULL, generalSettings, firmware)
     {
     }
@@ -23,7 +23,7 @@ class GeneralEdit : public QDialog
   Q_OBJECT
 
   public:
-    GeneralEdit(QWidget * parent, RadioData & radioData, FirmwareInterface * firmware);
+    GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * firmware);
     ~GeneralEdit();
 
   private:
@@ -47,7 +47,7 @@ class GeneralEdit : public QDialog
     void on_calstore_PB_clicked();
 
   private:
-    FirmwareInterface * firmware;
+    Firmware * firmware;
     QVector<GenericPanel *> panels;
     void addTab(GenericPanel *panel, QString text);
 

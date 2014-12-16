@@ -1,10 +1,10 @@
 #include "burnconfigdialog.h"
 #include "ui_burnconfigdialog.h"
-#include "avroutputdialog.h"
 #include "eeprominterface.h"
 #include "helpers.h"
 #include "appdata.h"
-#include <QtGui>
+#include "progressdialog.h"
+#include "process_flash.h"
 
 #if !defined WIN32 && defined __GNUC__
 #include <unistd.h>
@@ -123,7 +123,7 @@ void burnConfigDialog::getSettings()
     sambaPort = g.sambaPort();
 
     ui->avrdude_location->setText(getAVRDUDE());
-    ui->avrArgs->setText(getAVRArgs().join(" "));
+    ui->avrArgs->setText(avrArgs.join(" "));
 
     ui->samba_location->setText(getSAMBA());
     ui->samba_port->setText(getSambaPort());
@@ -285,118 +285,25 @@ void burnConfigDialog::on_dfuArgs_editingFinished()
     dfuArgs = ui->dfuArgs->text().split(" ", QString::SkipEmptyParts);
 }
 
-void burnConfigDialog::listProgrammers()
+void burnConfigDialog::listAvrdudeProgrammers()
 {
-    QStringList arguments;
-    arguments << "-c?";
-    avrOutputDialog *ad = new avrOutputDialog(this, ui->avrdude_location->text(), arguments, "List available programmers", AVR_DIALOG_KEEP_OPEN, TRUE);
-    ad->setWindowIcon(CompanionIcon("list.png"));
-    ad->show();
-    delete ad;
+  ProgressDialog progressDialog(this, tr("List available programmers"), CompanionIcon("list.png"), true);
+  FlashProcess flashProcess(ui->avrdude_location->text(), QStringList() << "-c?", progressDialog.progress());
+  flashProcess.run();
 }
 
+// TODO choose better name when no merge in progress....
 void burnConfigDialog::on_pushButton_3_clicked()
 {
-    listProgrammers();
+  listAvrdudeProgrammers();
 }
 
-
-
+// TODO choose better name when no merge in progress....
 void burnConfigDialog::on_pushButton_4_clicked()
 {
-    QStringList arguments;
-    arguments << "-?";
-
-    avrOutputDialog *ad = new avrOutputDialog(this, ui->avrdude_location->text(), arguments, "Show help", AVR_DIALOG_KEEP_OPEN,TRUE);
-    ad->setWindowIcon(CompanionIcon("configure.png"));
-    ad->show();
-    delete ad;
-}
-
-
-void burnConfigDialog::readFuses()
-{
-    QStringList args   = avrArgs;
-    if(!avrPort.isEmpty()) args << "-P" << avrPort;
-
-    QStringList str;
-    str << "-U" << "lfuse:r:-:i" << "-U" << "hfuse:r:-:i" << "-U" << "efuse:r:-:i";
-
-    QStringList arguments;
-    arguments << "-c" << avrProgrammer << "-p" << avrMCU << args << str;
-
-    avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, arguments, "Read Fuses",AVR_DIALOG_KEEP_OPEN,TRUE);
-    ad->setWindowIcon(CompanionIcon("fuses.png"));
-    ad->show();
-    delete ad;
-}
-
-void burnConfigDialog::restFuses(bool eeProtect)
-{
-    //fuses
-    //avrdude -c usbasp -p m64 -U lfuse:w:<0x0E>:m
-    //avrdude -c usbasp -p m64 -U hfuse:w:<0x89>:m  0x81 for eeprom protection
-    //avrdude -c usbasp -p m64 -U efuse:w:<0xFF>:m
-
-    QMessageBox::StandardButton ret = QMessageBox::No;
-    ret = QMessageBox::warning(this, tr("Companion"),
-                               tr("<b><u>WARNING!</u></b><br>This will reset the fuses of  %1 to the factory settings.<br>Writing fuses can mess up your radio.<br>Do this only if you are sure they are wrong!<br>Are you sure you want to continue?").arg(avrMCU),
-                               QMessageBox::Yes | QMessageBox::No);
-    if (ret == QMessageBox::Yes)
-    {
-        QStringList args   = avrArgs;
-        if(!avrPort.isEmpty()) args << "-P" << avrPort;
-        QStringList str;
-        if (avrMCU=="m2560") {
-          args << "-B8";
-          QString erStr = eeProtect ? "hfuse:w:0x11:m" : "hfuse:w:0x19:m";
-          str << "-U" << "lfuse:w:0xD7:m" << "-U" << erStr << "-U" << "efuse:w:0xFC:m";
-          //use hfuse = 0x81 to prevent eeprom being erased with every flashing          
-        }
-        else {
-          QString lfuses;
-          QString tempFile = generateProcessUniqueTempFileName("ftemp.bin");
-          QStringList argread;
-          argread << "-c" << avrProgrammer << "-p" << avrMCU << args  <<"-U" << "lfuse:r:"+tempFile+":r" ;
-          avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, argread, "Reset Fuses",AVR_DIALOG_CLOSE_IF_SUCCESSFUL,FALSE);
-          ad->setWindowIcon(CompanionIcon("fuses.png"));
-          ad->exec();
-          delete ad;
-          QFile file(tempFile);
-          if (file.exists() && file.size()==1) {
-            file.open(QIODevice::ReadOnly);
-            char bin_flash[1];
-            file.read(bin_flash, 1);
-            if (bin_flash[0]==0x0E) {
-              lfuses="lfuse:w:0x0E:m";
-            }
-            else {
-              lfuses="lfuse:w:0x3F:m";
-            } 
-            file.close();
-            qunlink(tempFile);
-          }
-          else {
-            lfuses="lfuse:w:0x3F:m";
-          }
-          
-          QString erStr = eeProtect ? "hfuse:w:0x81:m" : "hfuse:w:0x89:m";
-          str << "-U" << lfuses << "-U" << erStr << "-U" << "efuse:w:0xFF:m";
-          //use hfuse = 0x81 to prevent eeprom being erased with every flashing
-        }
-        QStringList arguments;
-        if (avrMCU=="m2560") {
-          arguments << "-c" << avrProgrammer << "-p" << avrMCU << args << "-u" << str;
-        }
-        else {
-          arguments << "-c" << avrProgrammer << "-p" << avrMCU << args << "-B" << "100" << "-u" << str;          
-        }
-        avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, arguments, "Reset Fuses",AVR_DIALOG_KEEP_OPEN,TRUE);
-        ad->setWindowIcon(CompanionIcon("fuses.png"));
-        ad->show();
-        delete ad;
-    }
-
+  ProgressDialog progressDialog(this, tr("Avrdude help"), CompanionIcon("configure.png"), true);
+  FlashProcess flashProcess(ui->avrdude_location->text(), QStringList() << "-?", progressDialog.progress());
+  flashProcess.run();
 }
 
 void burnConfigDialog::on_advCtrChkB_toggled(bool checked)

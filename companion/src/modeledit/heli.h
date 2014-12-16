@@ -12,7 +12,7 @@ class HeliPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     ~HeliPanel();
     void update();
 

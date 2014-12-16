@@ -1,7 +1,7 @@
 #include "trainer.h"
 #include "ui_trainer.h"
 
-TrainerPanel::TrainerPanel(QWidget * parent, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+TrainerPanel::TrainerPanel(QWidget * parent, GeneralSettings & generalSettings, Firmware * firmware):
   GeneralPanel(parent, generalSettings, firmware),
   ui(new Ui::Trainer)
 {

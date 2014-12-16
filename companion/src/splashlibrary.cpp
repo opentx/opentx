@@ -3,7 +3,7 @@
 #include "appdata.h"
 #include <QtGui>
 #include "helpers.h"
-#include "flashinterface.h"
+#include "firmwareinterface.h"
 #include "helpers.h"
 
 splashLibrary::splashLibrary(QWidget *parent, QString * fileName) : QDialog(parent), ui(new Ui::splashLibrary) {

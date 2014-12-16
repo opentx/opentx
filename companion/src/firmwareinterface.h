@@ -12,13 +12,12 @@
  *
  */
 
-#ifndef FLASHINTERFACE_H
-#define FLASHINTERFACE_H
+#ifndef FIRMWAREINTERFACE_H_
+#define FIRMWAREINTERFACE_H_
 
-#include <QDialog>
-#include <QtGui>
-#include <inttypes.h>
-#include "file.h"
+#include <QString>
+#include <QImage>
+#include <QByteArray>
 
 #define MAX_FSIZE (512*1024)
 #define SPLASH_WIDTH (128)
@@ -40,10 +39,10 @@
 
 int getFileType(const QString &fullFileName);
 
-class FlashInterface
+class FirmwareInterface
 {
   public:
-    FlashInterface(QString filename);
+    FirmwareInterface(const QString &filename);
     inline QString getDate() { return date; }
     inline QString getTime() { return time; }
     int getSize() { return flash_size; }
@@ -58,7 +57,7 @@ class FlashInterface
     int getSplashWidth();
     uint getSplashHeight();
     QImage::Format getSplashFormat();
-    uint saveFlash(QString fileName);
+    unsigned int save(QString fileName);
     bool isValid();
 
   private:
@@ -86,5 +85,4 @@ class FlashInterface
     bool isValidFlag;
 };
 
-#endif /* FLASHINTERFACE_H */
-
+#endif /* FIRMWAREINTERFACE_H_ */

@@ -29,10 +29,6 @@ class CompareDialog : public QDialog
   private:
     void  closeEvent(QCloseEvent *event);
     Ui::CompareDialog *ui;
-    QString doTC(const QString s, const QString color, bool bold);
-    QString doTR(const QString s, const QString color, bool bold);
-    QString doTL(const QString s, const QString color, bool bold);
-    QString fv(const QString name, const QString value,const QString color);
     template<class T> QString getColor1(T val1, T val2) {
       if (val1!=val2)
         return "green";

@@ -9,13 +9,13 @@ class GVarGroup;
 class LimitsGroup
 {
   public:
-    LimitsGroup(FirmwareInterface * firmware, QGridLayout *gridLayout, int row, int col, int & value, int min, int max, int deflt);
+    LimitsGroup(Firmware * firmware, QGridLayout *gridLayout, int row, int col, int & value, int min, int max, int deflt);
     ~LimitsGroup();
 
     void updateMinMax(int max);
 
   protected:
-    FirmwareInterface * firmware;
+    Firmware * firmware;
     QDoubleSpinBox * spinbox;
     GVarGroup * gvarGroup;
     int & value;
@@ -27,7 +27,7 @@ class Channels : public ModelPanel
     Q_OBJECT
 
   public:
-    Channels(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    Channels(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     ~Channels();
     
   private:

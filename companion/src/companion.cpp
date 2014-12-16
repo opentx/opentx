@@ -96,8 +96,8 @@ int main(int argc, char *argv[])
 
   QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
   
-    RegisterEepromInterfaces();
-    registerOpenTxFirmwares();
+  registerEEpromInterfaces();
+  registerOpenTxFirmwares();
 
   if (g.profile[g.id()].fwType().isEmpty()){
     g.profile[g.id()].fwType(default_firmware_variant->getId());
@@ -130,8 +130,8 @@ int main(int argc, char *argv[])
   delete splash;
   delete mainWin;
 
-  UnregisterFirmwares();
-  UnregisterEepromInterfaces();
+  unregisterFirmwares();
+  unregisterEEpromInterfaces();
 
   return result;
 }

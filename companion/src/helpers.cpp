@@ -10,7 +10,7 @@
 #include "helpers.h"
 #include "simulatordialog.h"
 #include "simulatorinterface.h"
-#include "flashinterface.h"
+#include "firmwareinterface.h"
 
 const QColor colors[C9X_MAX_CURVES] = {
   QColor(0,0,127),
@@ -686,40 +686,6 @@ QString image2qstring(QImage image)
     return ImageStr;
 }
 
-// TODO KKERNEN 20140222
-// I am sure that this code has had some kind of function, but now it only seems to cause
-// problems. I think it is an attempt to open an image file from a double byte string which
-// is first converted to a single byte string. Only used in burndialog.cpp
-// It doesn't work for me in 2.0. I do not know why. I doubt it has ever worked for files or 
-// file paths containing non-english characters.
-// Code can be removed ,when 2.0 is tested.
-
-QImage qstring2image(QString imagestr)
-{
-  bool ok;
-  bool failed=false;
-  QImage Image;
-  int len = imagestr.length();
-  char b=0;
-  QBuffer buffer;
-  buffer.open(QIODevice::ReadWrite);
-  buffer.seek(0);
-  for (int i = 0; i < len/2; i++) {
-    QString Byte;
-    Byte = imagestr.mid((i * 2), 2);
-    b = Byte.toUInt(&ok, 16);
-    if (!ok) {
-      failed = true;
-    }
-    buffer.putChar(b);
-  }
-  buffer.seek(0);
-  if (!failed) {
-    Image.load(&buffer,"PNG");
-  }  
-  return Image;
-}
-
 int findmult(float value, float base)
 {
   int vvalue = value*10;
@@ -920,7 +886,7 @@ QString getTheme()
   return Theme;
 }
 
-CompanionIcon::CompanionIcon(QString baseimage)
+CompanionIcon::CompanionIcon(const QString &baseimage)
 {
   static QString theme = getTheme();
   addFile(":/themes/"+theme+"/16/"+baseimage, QSize(16,16));
@@ -1017,7 +983,7 @@ int qunlink(const QString & fileName)
   return unlink(ba.constData());
 }
 
-QString generateProcessUniqueTempFileName(const QString & fileName)
+QString generateProcessUniqueTempFileName(const QString &fileName)
 {
   QString sanitizedFileName = fileName;
   sanitizedFileName.remove('/');

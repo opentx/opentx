@@ -13,7 +13,7 @@ class TrainerPanel : public GeneralPanel
     Q_OBJECT
 
   public:
-    TrainerPanel(QWidget *parent, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    TrainerPanel(QWidget *parent, GeneralSettings & generalSettings, Firmware * firmware);
     virtual ~TrainerPanel();
 
   private slots:

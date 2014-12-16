@@ -47,7 +47,7 @@ void RepeatComboBox::update()
   setCurrentIndex(value);
 }
 
-CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware):
   GenericPanel(parent, model, generalSettings, firmware),
   functions(model ? model->customFn : generalSettings.customFn),
   initialized(false)

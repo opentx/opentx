@@ -1,6 +1,7 @@
 #include "printdialog.h"
 #include "ui_printdialog.h"
 #include "helpers.h"
+#include "helpers_html.h"
 #include "eeprominterface.h"
 #include <QtGui>
 #include <QImage>
@@ -14,7 +15,7 @@
 #define ISIZE 200 // curve image size
 #define ISIZEW 400 // curve image size
 
-PrintDialog::PrintDialog(QWidget *parent, FirmwareInterface * firmware, GeneralSettings *gg, ModelData *gm, QString filename) :
+PrintDialog::PrintDialog(QWidget *parent, Firmware * firmware, GeneralSettings *gg, ModelData *gm, QString filename) :
   QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
   firmware(firmware),
   g_eeGeneral(gg),
@@ -24,7 +25,7 @@ PrintDialog::PrintDialog(QWidget *parent, FirmwareInterface * firmware, GeneralS
   gvars(firmware->getCapability(Gvars))
 {
   ui->setupUi(this);
-  this->setWindowIcon(CompanionIcon("print.png"));
+  setWindowIcon(CompanionIcon("print.png"));
   te = ui->textEdit;
 
   setWindowTitle(tr("Setup for: ") + g_model->name);
@@ -68,35 +69,6 @@ PrintDialog::~PrintDialog()
   qunlink(curvefile5);
   qunlink(curvefile9);
   delete ui;
-}
-
-QString doTC(const QString s, const QString color="", bool bold=false)
-{
-    QString str = s;
-    if(bold) str = "<b>" + str + "</b>";
-    if(!color.isEmpty()) str = "<font color=" + color + ">" + str + "</font>";
-    return "<td align=center>" + str + "</td>";
-}
-
-QString doTR(const QString s, const QString color="", bool bold=false)
-{
-    QString str = s;
-    if(bold) str = "<b>" + str + "</b>";
-    if(!color.isEmpty()) str = "<font color=" + color + ">" + str + "</font>";
-    return "<td align=right>" + str + "</td>";
-}
-
-QString doTL(const QString s, const QString color="", bool bold=false)
-{
-    QString str = s;
-    if(bold) str = "<b>" + str + "</b>";
-    if(!color.isEmpty()) str = "<font color=" + color + ">" + str + "</font>";
-    return "<td align=left>" + str + "</td>";
-}
-
-QString PrintDialog::fv(const QString name, const QString value)
-{
-    return "<b>" + name + ": </b><font color=green>" + value + "</font><br>";
 }
 
 void PrintDialog::printSetup()

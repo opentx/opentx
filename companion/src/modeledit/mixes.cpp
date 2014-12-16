@@ -3,7 +3,7 @@
 // #include <QMessageBox>
 // #include "expodialog.h"
 
-MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   mixInserted(false), 
   highlightedSource(0)

@@ -484,10 +484,10 @@ int OpenTxEepromInterface::getSize(GeneralSettings &settings)
   return efile->size(0);
 }
 
-FirmwareInterface * OpenTxFirmware::getFirmwareVariant(const QString & id)
+Firmware * OpenTxFirmware::getFirmwareVariant(const QString & id)
 {
   if (id.contains(getId()+"-") || (!id.contains("-") && id.contains(getId()))) {
-    FirmwareInterface * result = new OpenTxFirmware(id, this);
+    Firmware * result = new OpenTxFirmware(id, this);
     // TODO result.variant = firmware->getVariant(id);
     return result;
   }

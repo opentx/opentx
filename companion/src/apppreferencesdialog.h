@@ -27,8 +27,8 @@ class AppPreferencesDialog : public QDialog
     void showVoice();
     void hideVoice();
     void populateLocale();
-    void populateFirmwareOptions(const FirmwareInterface *);
-    FirmwareInterface * getFirmwareVariant();
+    void populateFirmwareOptions(const Firmware *);
+    Firmware * getFirmwareVariant();
     QCheckBox * voice;
 
     Ui::AppPreferencesDialog *ui;

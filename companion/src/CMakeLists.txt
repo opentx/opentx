@@ -144,21 +144,29 @@ add_library(common ${common_SRCS})
 
 set(companion_SRCS
   hexinterface.cpp
-  flashinterface.cpp
+  firmwareinterface.cpp
+  converteeprom.cpp
   # xmlinterface.cpp
   # ${PROJECT_BINARY_DIR}/radio.cxx
   helpers.cpp
+  helpers_html.cpp
   mdichild.cpp
   modelslist.cpp
   mountlist.cpp 
-  avroutputdialog.cpp
   apppreferencesdialog.cpp
   fwpreferencesdialog.cpp
   burnconfigdialog.cpp
   comparedialog.cpp
   contributorsdialog.cpp
   customizesplashdialog.cpp
-  burndialog.cpp
+  radiointerface.cpp
+  progresswidget.cpp
+  progressdialog.cpp
+  process_copy.cpp
+  process_flash.cpp
+  process_sync.cpp
+  flashfirmwaredialog.cpp
+  flasheepromdialog.cpp
   printdialog.cpp
   fusesdialog.cpp
   logsdialog.cpp
@@ -173,7 +181,6 @@ set(companion_SRCS
 )
 
 set(companion_MOC_HDRS
-  avroutputdialog.h
   apppreferencesdialog.h
   fwpreferencesdialog.h
   burnconfigdialog.h
@@ -185,7 +192,13 @@ set(companion_MOC_HDRS
   customizesplashdialog.h
   splashlibrary.h
   splashlabel.h
-  burndialog.h
+  progresswidget.h
+  progressdialog.h
+  process_copy.h
+  process_flash.h
+  process_sync.h
+  flashfirmwaredialog.h
+  flasheepromdialog.h
   downloaddialog.h
   modelslist.h
   mdichild.h
@@ -198,7 +211,6 @@ set(companion_MOC_HDRS
      
 set(companion_UIS
   mdichild.ui
-  avroutputdialog.ui
   comparedialog.ui
   fusesdialog.ui
   logsdialog.ui
@@ -210,7 +222,10 @@ set(companion_UIS
   contributorsdialog.ui
   customizesplashdialog.ui
   splashlibrary.ui
-  burndialog.ui
+  progresswidget.ui
+  progressdialog.ui
+  flashfirmwaredialog.ui
+  flasheepromdialog.ui
   radionotfound.ui
 )
 

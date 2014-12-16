@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>avrOutputDialog</class>
- <widget class="QDialog" name="avrOutputDialog">
+ <class>ProgressWidget</class>
+ <widget class="QWidget" name="ProgressWidget">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>700</width>
-    <height>348</height>
+    <height>244</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,33 +25,42 @@
     <height>0</height>
    </size>
   </property>
-  <property name="maximumSize">
-   <size>
-    <width>16777215</width>
-    <height>16777215</height>
-   </size>
-  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Form</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="companion.qrc">
-    <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
-  </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>5</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="info">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
      <item>
       <widget class="QProgressBar" name="progressBar">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="minimumSize">
         <size>
-         <width>480</width>
+         <width>0</width>
          <height>0</height>
         </size>
        </property>
@@ -66,21 +78,21 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <widget class="QPlainTextEdit" name="plainTextEdit">
+   <item>
+    <widget class="QPlainTextEdit" name="textEdit">
      <property name="enabled">
       <bool>true</bool>
      </property>
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="minimumSize">
       <size>
-       <width>0</width>
-       <height>312</height>
+       <width>600</width>
+       <height>100</height>
       </size>
      </property>
      <property name="font">
@@ -89,11 +101,20 @@
        <pointsize>10</pointsize>
       </font>
      </property>
+     <property name="lineWidth">
+      <number>80</number>
+     </property>
+     <property name="midLineWidth">
+      <number>80</number>
+     </property>
      <property name="verticalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOn</enum>
      </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAsNeeded</enum>
+     </property>
      <property name="lineWrapMode">
-      <enum>QPlainTextEdit::WidgetWidth</enum>
+      <enum>QPlainTextEdit::NoWrap</enum>
      </property>
      <property name="readOnly">
       <bool>true</bool>
@@ -108,8 +129,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="companion.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

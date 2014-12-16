@@ -3,7 +3,7 @@
 #include "mainwindow.h"
 #include "appdata.h"
 #include "helpers.h"
-#include "flashinterface.h"
+#include "firmwareinterface.h"
 #ifdef JOYSTICKS
 #include "joystick.h"
 #include "joystickdialog.h"
@@ -182,9 +182,9 @@ void AppPreferencesDialog::initSettings()
   }
   ui->lblGeneralSettings->setText(hwSettings);
 
-  FirmwareInterface * current_firmware = GetCurrentFirmware();
+  Firmware * current_firmware = GetCurrentFirmware();
 
-  foreach(FirmwareInterface * firmware, firmwares) {
+  foreach(Firmware * firmware, firmwares) {
     ui->downloadVerCB->addItem(firmware->getName(), firmware->getId());
     if (current_firmware->getFirmwareBase() == firmware) {
       ui->downloadVerCB->setCurrentIndex(ui->downloadVerCB->count() - 1);
@@ -347,7 +347,7 @@ void AppPreferencesDialog::baseFirmwareChanged()
 {
   QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
 
-  foreach(FirmwareInterface * firmware, firmwares) {
+  foreach(Firmware * firmware, firmwares) {
     if (firmware->getId() == selected_firmware) {
       populateFirmwareOptions(firmware);
       break;
@@ -355,11 +355,11 @@ void AppPreferencesDialog::baseFirmwareChanged()
   }
 }
 
-FirmwareInterface * AppPreferencesDialog::getFirmwareVariant()
+Firmware * AppPreferencesDialog::getFirmwareVariant()
 {
   QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
 
-  foreach(FirmwareInterface * firmware, firmwares) {
+  foreach(Firmware * firmware, firmwares) {
     QString id = firmware->getId();
     if (id == selected_firmware) {
       foreach(QCheckBox *cb, optionsCheckBoxes) {
@@ -390,7 +390,7 @@ void AppPreferencesDialog::firmwareOptionChanged(bool state)
   if (cb == voice) {
     showVoice(voice->isChecked());
   }
-  FirmwareInterface * firmware=NULL;
+  Firmware * firmware=NULL;
   if (cb && state) {
     QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
     foreach(firmware, firmwares) {
@@ -416,9 +416,9 @@ void AppPreferencesDialog::firmwareOptionChanged(bool state)
   } 
 }
 
-void AppPreferencesDialog::populateFirmwareOptions(const FirmwareInterface * firmware)
+void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
 {
-  const FirmwareInterface * parent = firmware->getFirmwareBase();
+  const Firmware * parent = firmware->getFirmwareBase();
 
   updateLock = true;
 

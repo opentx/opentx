@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 
   QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
-  RegisterEepromInterfaces();
+  registerEEpromInterfaces();
   registerOpenTxFirmwares();
 
   SimulatorDialog *dialog;

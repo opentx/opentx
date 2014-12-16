@@ -11,6 +11,7 @@
 #include "appdata.h"
 #include "helpers.h"
 #include "wizarddata.h"
+#include "firmwareinterface.h"
 
 std::list<QString> EEPROMWarnings;
 
@@ -164,7 +165,7 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
 {
   RawSourceRange result;
 
-  FirmwareInterface * firmware = GetCurrentFirmware();
+  Firmware * firmware = GetCurrentFirmware();
   int board = firmware->getBoard();
   bool singleprec = (flags & RANGE_SINGLE_PRECISION);
 
@@ -863,7 +864,7 @@ QString CustomFunctionData::funcToString()
   else if (func == FuncPlayScript)
     return QObject::tr("Play Script");
   else if (func == FuncLogs)
-    return QObject::tr("SD Logs");
+    return QObject::tr("Start Logs");
   else if (func == FuncVolume)
     return QObject::tr("Volume");
   else if (func == FuncBacklight)
@@ -1456,7 +1457,7 @@ int ModelData::getChannelsMax(bool forceExtendedLimits) const
 }
 
 QList<EEPROMInterface *> eepromInterfaces;
-void RegisterEepromInterfaces()
+void registerEEpromInterfaces()
 {
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_M128));
@@ -1472,7 +1473,7 @@ void RegisterEepromInterfaces()
   eepromInterfaces.push_back(new Er9xInterface());
 }
 
-void UnregisterEepromInterfaces()
+void unregisterEEpromInterfaces()
 {
   foreach(EEPROMInterface * intf, eepromInterfaces) {
     // qDebug() << "UnregisterEepromInterfaces(): deleting " <<  QString::number( reinterpret_cast<uint64_t>(intf), 16 );
@@ -1481,18 +1482,18 @@ void UnregisterEepromInterfaces()
   OpenTxEepromCleanup();
 }
 
-QList<FirmwareInterface *> firmwares;
-FirmwareInterface * default_firmware_variant;
-FirmwareInterface * current_firmware_variant;
+QList<Firmware *> firmwares;
+Firmware * default_firmware_variant;
+Firmware * current_firmware_variant;
 
-void UnregisterFirmwares() 
+void unregisterFirmwares()
 {
-  foreach (FirmwareInterface * f, firmwares) {
+  foreach (Firmware * f, firmwares) {
     delete f;
   }
 }
 
-bool LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int size)
+bool loadEEprom(RadioData &radioData, const uint8_t *eeprom, const int size)
 {
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
     if (eepromInterface->load(radioData, eeprom, size))
@@ -1502,7 +1503,7 @@ bool LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int size)
   return false;
 }
 
-bool LoadBackup(RadioData &radioData, uint8_t *eeprom, int size, int index)
+bool loadBackup(RadioData &radioData, uint8_t *eeprom, int size, int index)
 {
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
     if (eepromInterface->loadBackup(radioData, eeprom, size, index))
@@ -1513,7 +1514,7 @@ bool LoadBackup(RadioData &radioData, uint8_t *eeprom, int size, int index)
 }
 
 
-bool LoadEepromXml(RadioData &radioData, QDomDocument &doc)
+bool loadEEpromXml(RadioData &radioData, QDomDocument &doc)
 {
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
     if (eepromInterface->loadxml(radioData, doc))
@@ -1547,10 +1548,10 @@ QString getBoardName(BoardEnum board)
   }
 }
 
-FirmwareInterface * GetFirmware(QString id)
+Firmware * GetFirmware(QString id)
 {
-  foreach(FirmwareInterface * firmware, firmwares) {
-    FirmwareInterface * result = firmware->getFirmwareVariant(id);
+  foreach(Firmware * firmware, firmwares) {
+    Firmware * result = firmware->getFirmwareVariant(id);
     if (result) {
       return result;
     }
@@ -1559,16 +1560,16 @@ FirmwareInterface * GetFirmware(QString id)
   return default_firmware_variant;
 }
 
-void FirmwareInterface::addOption(const char *option, QString tooltip, uint32_t variant)
+void Firmware::addOption(const char *option, QString tooltip, uint32_t variant)
 {
   Option options[] = { { option, tooltip, variant }, { NULL } };
   addOptions(options);
 }
 
-unsigned int FirmwareInterface::getVariantNumber()
+unsigned int Firmware::getVariantNumber()
 {
   unsigned int result = 0;
-  const FirmwareInterface * base = getFirmwareBase();
+  const Firmware * base = getFirmwareBase();
   QStringList options = id.mid(base->getId().length()+1).split("-", QString::SkipEmptyParts);
   foreach(QString option, options) {
     foreach(QList<Option> group, base->opts) {
@@ -1582,17 +1583,17 @@ unsigned int FirmwareInterface::getVariantNumber()
   return result;
 }
 
-void FirmwareInterface::addLanguage(const char *lang)
+void Firmware::addLanguage(const char *lang)
 {
   languages.push_back(lang);
 }
 
-void FirmwareInterface::addTTSLanguage(const char *lang)
+void Firmware::addTTSLanguage(const char *lang)
 {
   ttslanguages.push_back(lang);
 }
 
-void FirmwareInterface::addOptions(Option options[])
+void Firmware::addOptions(Option options[])
 {
   QList<Option> opts;
   for (int i=0; options[i].name; i++) {

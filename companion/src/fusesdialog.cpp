@@ -1,35 +1,36 @@
 #include "fusesdialog.h"
 #include "ui_fusesdialog.h"
-#include "burnconfigdialog.h"
 #include "helpers.h"
+#include "progressdialog.h"
+#include "radiointerface.h"
 
-fusesDialog::fusesDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::fusesDialog)
+FusesDialog::FusesDialog(QWidget *parent) :
+QDialog(parent),
+ui(new Ui::FusesDialog)
 {
-    ui->setupUi(this);
-    this->setWindowIcon(CompanionIcon("fuses.png"));
+  ui->setupUi(this);
+  setWindowIcon(CompanionIcon("fuses.png"));
 }
 
-fusesDialog::~fusesDialog()
+FusesDialog::~FusesDialog()
 {
-    delete ui;
+  delete ui;
 }
 
-void fusesDialog::on_resetFuses_EEprotect_clicked()
+void FusesDialog::on_resetFuses_EEprotect_clicked()
 {
-    burnConfigDialog *bcd = new burnConfigDialog(this);
-    bcd->restFuses(true);
+  ProgressDialog progressDialog(this, tr("Reset Radio Fuses"), CompanionIcon("fuses.png"), true);
+  return resetAvrdudeFuses(true, progressDialog.progress());
 }
 
-void fusesDialog::on_resetFuses_EEdelete_clicked()
+void FusesDialog::on_resetFuses_EEdelete_clicked()
 {
-    burnConfigDialog *bcd = new burnConfigDialog(this);
-    bcd->restFuses(false);
+  ProgressDialog progressDialog(this, tr("Reset Radio Fuses"), CompanionIcon("fuses.png"), true);
+  return resetAvrdudeFuses(false, progressDialog.progress());
 }
 
-void fusesDialog::on_readFuses_clicked()
+void FusesDialog::on_readFuses_clicked()
 {
-    burnConfigDialog *bcd = new burnConfigDialog(this);
-    bcd->readFuses();
+  ProgressDialog progressDialog(this, tr("Read Fuses from Radio"), CompanionIcon("fuses.png"), true);
+  return readAvrdudeFuses(progressDialog.progress());
 }

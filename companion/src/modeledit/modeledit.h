@@ -13,7 +13,7 @@ namespace Ui {
 class ModelPanel : public GenericPanel
 {
   public:
-    ModelPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+    ModelPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
       GenericPanel(parent, &model, generalSettings, firmware)
     {
     }
@@ -24,7 +24,7 @@ class ModelEdit : public QDialog
     Q_OBJECT
 
   public:
-    ModelEdit(QWidget * parent, RadioData & radioData, int modelId, FirmwareInterface * firmware);
+    ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmware * firmware);
     ~ModelEdit();
   
   protected:
@@ -43,7 +43,7 @@ class ModelEdit : public QDialog
     int modelId;
     ModelData & model;
     GeneralSettings & generalSettings;
-    FirmwareInterface * firmware;
+    Firmware * firmware;
     QVector<GenericPanel *> panels;
 
     void addTab(GenericPanel *panel, QString text);

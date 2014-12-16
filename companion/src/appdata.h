@@ -188,8 +188,19 @@ class Profile: protected CompStoreObj
     void flush();
 };
 
+#define BOOL_PROPERTY(name, dflt)                                   \
+    public:                                                         \
+      inline bool name() { return _ ## name; }                      \
+      void name(const bool val) { store(val, _ ## name, # name); }  \
+    private:                                                        \
+      bool _ ## name;
+
 class AppData: protected CompStoreObj
 {
+  BOOL_PROPERTY(enableBackup, false)
+  BOOL_PROPERTY(outputDisplayDetails, false)
+  BOOL_PROPERTY(backupOnFlash, true)
+
   // All the global variables
   public:
     Profile    profile[MAX_PROFILES];
@@ -224,8 +235,6 @@ class AppData: protected CompStoreObj
     QString _snapshotDir;
     QString _updatesDir;
 
-    bool _enableBackup;
-    bool _backupOnFlash;
     bool _maximized;
     bool _jsSupport;
     bool _showSplash;
@@ -276,8 +285,6 @@ class AppData: protected CompStoreObj
     QString snapshotDir();
     QString updatesDir();
 
-    bool enableBackup();
-    bool backupOnFlash();
     bool jsSupport();
     bool maximized();
     bool showSplash();
@@ -327,8 +334,6 @@ class AppData: protected CompStoreObj
     void snapshotDir     (const QString);
     void updatesDir      (const QString);
 
-    void enableBackup    (const bool);
-    void backupOnFlash   (const bool);
     void maximized       (const bool);
     void jsSupport       (const bool);
     void showSplash      (const bool);

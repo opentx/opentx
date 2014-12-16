@@ -17,7 +17,7 @@
 #include <QtGui>
 #include "hexinterface.h"
 #include "splash.h"
-#include "flashinterface.h"
+#include "firmwareinterface.h"
 #include "helpers.h"
 
 #define VERS_MARK   "VERS"
@@ -42,7 +42,7 @@ int getFileType(const QString &fullFileName)
     return 0;
 }
 
-FlashInterface::FlashInterface(QString fileName):
+FirmwareInterface::FirmwareInterface(const QString &filename):
   flash(MAX_FSIZE, 0),
   flash_size(0),
   versionId(0),
@@ -52,8 +52,8 @@ FlashInterface::FlashInterface(QString fileName):
   splash_height(0),
   isValidFlag(false)
 {
-  if (!fileName.isEmpty()) {
-    QFile file(fileName);
+  if (!filename.isEmpty()) {
+    QFile file(filename);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) { // reading HEX TEXT file
       QTextStream inputStream(&file);
       flash_size = HexInterface(inputStream).load((uint8_t *)flash.data(), MAX_FSIZE);
@@ -82,11 +82,11 @@ FlashInterface::FlashInterface(QString fileName):
 
     versionId = version2index(version);
     SeekSplash();
-    isValidFlag = true;
+    isValidFlag = !version.isEmpty();
   }
 }
 
-QString FlashInterface::seekString(const QString & string)
+QString FirmwareInterface::seekString(const QString & string)
 {
   QString result = "";
 
@@ -109,7 +109,7 @@ QString FlashInterface::seekString(const QString & string)
   return result;
 }
 
-QString FlashInterface::seekLabel(const QString & label)
+QString FirmwareInterface::seekLabel(const QString & label)
 {
   QString result = seekString(label + "\037\033:");
   if (!result.isEmpty())
@@ -118,7 +118,7 @@ QString FlashInterface::seekLabel(const QString & label)
   return seekString(label + ":");
 }
 
-bool FlashInterface::SeekSplash(QByteArray splash)
+bool FirmwareInterface::SeekSplash(QByteArray splash)
 {
   int start = flash.indexOf(splash);
   if (start>0) {
@@ -131,7 +131,7 @@ bool FlashInterface::SeekSplash(QByteArray splash)
   }
 }
 
-bool FlashInterface::SeekSplash(QByteArray sps, QByteArray spe, int size)
+bool FirmwareInterface::SeekSplash(QByteArray sps, QByteArray spe, int size)
 {
   int start = 0;
   while (start>=0) {
@@ -157,7 +157,7 @@ bool FlashInterface::SeekSplash(QByteArray sps, QByteArray spe, int size)
 #define OTX_SPE         "SPE"
 #define OTX_SPE_SIZE    4
 
-void FlashInterface::SeekSplash(void) 
+void FirmwareInterface::SeekSplash(void) 
 {
   splash_size = 0;
   splash_offset = 0;
@@ -209,7 +209,7 @@ void FlashInterface::SeekSplash(void)
   }
 }
 
-bool FlashInterface::setSplash(const QImage & newsplash)
+bool FirmwareInterface::setSplash(const QImage & newsplash)
 {
   if (splash_offset == 0 || splash_size == 0) {
     return false;
@@ -245,22 +245,22 @@ bool FlashInterface::setSplash(const QImage & newsplash)
   return true;
 }
 
-int FlashInterface::getSplashWidth()
+int FirmwareInterface::getSplashWidth()
 {
   return splash_width;
 }
 
-uint FlashInterface::getSplashHeight()
+uint FirmwareInterface::getSplashHeight()
 {
   return splash_height;
 }
 
-QImage::Format FlashInterface::getSplashFormat()
+QImage::Format FirmwareInterface::getSplashFormat()
 {
   return splash_format;
 }
 
-QImage FlashInterface::getSplash()
+QImage FirmwareInterface::getSplash()
 {
   if (splash_offset == 0 || splash_size == 0) {
     return QImage(); // empty image
@@ -295,17 +295,17 @@ QImage FlashInterface::getSplash()
   }
 }
 
-bool FlashInterface::hasSplash()
+bool FirmwareInterface::hasSplash()
 {
   return (splash_offset > 0 ? true : false);
 }
 
-bool FlashInterface::isValid()
+bool FirmwareInterface::isValid()
 {
   return isValidFlag;
 }
 
-uint FlashInterface::saveFlash(QString fileName)
+unsigned int FirmwareInterface::save(QString fileName)
 {
   uint8_t binflash[MAX_FSIZE];
   memcpy(&binflash, flash.constData(), flash_size);

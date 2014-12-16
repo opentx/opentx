@@ -32,7 +32,7 @@ QString getTheme();
 
 class CompanionIcon: public QIcon {
   public:
-    CompanionIcon(QString baseimage);
+    CompanionIcon(const QString &baseimage);
 };
 
 class GVarGroup: public QObject {
@@ -119,7 +119,6 @@ void populateSourceCB(QComboBox *b, const RawSource &source, const ModelData * m
 QString getPhaseName(int val, const char * phasename=NULL);
 QString getInputStr(ModelData * model, int index);
 QString image2qstring(QImage image);
-QImage qstring2image(QString imagestr);
 int findmult(float value, float base);
 
 QString getTrimInc(ModelData * g_model);

@@ -1,7 +1,7 @@
 #include "calibration.h"
 #include "ui_calibration.h"
 
-CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSettings, Firmware * firmware):
   GeneralPanel(parent, generalSettings, firmware),
   ui(new Ui::Calibration)
 {

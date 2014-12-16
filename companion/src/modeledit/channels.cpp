@@ -7,7 +7,7 @@
 #include <QCheckBox>
 #include <QDoubleSpinBox>
 
-LimitsGroup::LimitsGroup(FirmwareInterface * firmware, QGridLayout *gridLayout, int row, int col, int & value, int min, int max, int deflt):
+LimitsGroup::LimitsGroup(Firmware * firmware, QGridLayout *gridLayout, int row, int col, int & value, int min, int max, int deflt):
   firmware(firmware),
   spinbox(new QDoubleSpinBox()),
   value(value),
@@ -71,7 +71,7 @@ void LimitsGroup::updateMinMax(int max)
   }
 }
 
-Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware)
 {
   QGridLayout * gridLayout = new QGridLayout(this);

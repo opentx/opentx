@@ -13,7 +13,7 @@ class GeneralSetupPanel : public GeneralPanel
     Q_OBJECT
 
   public:
-    GeneralSetupPanel(QWidget *parent, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    GeneralSetupPanel(QWidget *parent, GeneralSettings & generalSettings, Firmware * firmware);
     virtual ~GeneralSetupPanel();
 
   private slots:

@@ -1,5 +1,5 @@
-#ifndef BURNCONFIGDIALOG_H
-#define BURNCONFIGDIALOG_H
+#ifndef BURNCONFIGDIALOG_H_
+#define BURNCONFIGDIALOG_H_
 
 #include <QDialog>
 #include <QtGui>
@@ -23,7 +23,7 @@ public:
     QString getAVRDUDE() {return avrLoc;}
     QString getSAMBA() {return sambaLoc;}
     QString getDFU() {return dfuLoc;}
-    QStringList getAVRArgs() {return avrArgs;}
+    QStringList getAvrdudeArgs() { QStringList args = avrArgs; if (!avrPort.isEmpty()) args << "-P" << avrPort; return args; }
     QStringList getDFUArgs() {return dfuArgs;}
     QString getProgrammer() {return avrProgrammer;}
     QString getMCU() {return avrMCU;}
@@ -31,9 +31,7 @@ public:
     QString getPort() {return avrPort;}
     QString getSambaPort() {return sambaPort;}
 
-    void listProgrammers();
-    void restFuses(bool eeProtect);
-    void readFuses();
+    void listAvrdudeProgrammers();
 
 private:
     Ui::burnConfigDialog *ui;
@@ -73,4 +71,4 @@ private slots:
     void putSettings();
 };
 
-#endif // BURNCONFIGDIALOG_H
+#endif // BURNCONFIGDIALOG_H_

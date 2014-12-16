@@ -11,7 +11,7 @@
 #include "../modeledit/customfunctions.h"
 #include "verticalscrollarea.h"
 
-GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, FirmwareInterface * firmware) :
+GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * firmware) :
   QDialog(parent),
   ui(new Ui::GeneralEdit),
   generalSettings(radioData.generalSettings),

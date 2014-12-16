@@ -116,7 +116,7 @@ class MdiChild : public QWidget
 
     QString curFile;
 
-    FirmwareInterface * firmware;
+    Firmware * firmware;
     RadioData radioData;
 
     bool isUntitled;

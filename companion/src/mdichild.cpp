@@ -46,13 +46,13 @@
 #include "mainwindow.h"
 #include "modeledit/modeledit.h"
 #include "generaledit/generaledit.h"
-#include "avroutputdialog.h"
 #include "burnconfigdialog.h"
 #include "printdialog.h"
-#include "burndialog.h"
+#include "flasheepromdialog.h"
 #include "helpers.h"
 #include "appdata.h"
 #include "wizarddialog.h"
+#include "flashfirmwaredialog.h"
 #include <QFileInfo>
 
 #if defined WIN32 || !defined __GNUC__
@@ -264,7 +264,7 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
       QDomDocument doc(ER9X_EEPROM_FILE_TYPE);
       bool xmlOK = doc.setContent(&file);
       if(xmlOK) {
-        if (LoadEepromXml(radioData, doc)){
+        if (loadEEpromXml(radioData, doc)){
           ui->modelsList->refreshList();
           if(resetCurrentFile) setCurrentFile(fileName);
           return true;
@@ -294,7 +294,7 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
 
       file.close();
 
-      if (!LoadEeprom(radioData, eeprom, eeprom_size)) {
+      if (!loadEEprom(radioData, eeprom, eeprom_size)) {
         QMessageBox::critical(this, tr("Error"),
             tr("Invalid EEPROM File %1")
             .arg(fileName));
@@ -330,7 +330,7 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
           return false;
       }
 
-      if (!LoadEeprom(radioData, eeprom, eeprom_size) && !LoadBackup(radioData, eeprom, eeprom_size, 0)) {
+      if (!loadEEprom(radioData, eeprom, eeprom_size) && !::loadBackup(radioData, eeprom, eeprom_size, 0)) {
         QMessageBox::critical(this, tr("Error"),
             tr("Invalid binary EEPROM File %1")
             .arg(fileName));
@@ -516,73 +516,15 @@ QString MdiChild::strippedName(const QString &fullFileName)
 
 void MdiChild::writeEeprom()  // write to Tx
 {
-  bool backupEnable=g.enableBackup();
-  QString backupPath=g.backupDir();
-  if (!backupPath.isEmpty()) {
-    if (!QDir(backupPath).exists()) {
-      if (backupEnable) {
-        QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
-      }
-      backupEnable=false;
-    }
-  }
-  else {
-    backupEnable=false;
-  }
-  QString stickCal=g.profile[g.id()].stickPotCalib();
-  burnConfigDialog bcd;
   QString tempFile = generateProcessUniqueTempFileName("temp.bin");
   saveFile(tempFile, false);
   if(!QFileInfo(tempFile).exists()) {
-    QMessageBox::critical(this,tr("Error"), tr("Cannot write temporary file!"));
+    QMessageBox::critical(this, tr("Error"), tr("Cannot write temporary file!"));
     return;
   }
 
-  bool backup=false;
-  burnDialog *cd = new burnDialog(this, 1, &tempFile, &backup,strippedName(curFile));
+  FlashEEpromDialog *cd = new FlashEEpromDialog(this, tempFile);
   cd->exec();
-  if (!tempFile.isEmpty()) {
-    if (backup) {
-      if (backupEnable) {
-        QString backupFile=backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-HHmmss")+".bin";
-        if (!((MainWindow *)this->parent())->readEepromFromRadio(backupFile, tr("Backup EEPROM From Radio")))
-          return;
-      }
-      int oldrev=((MainWindow *)this->parent())->getEpromVersion(tempFile);
-      QString tempFlash = generateProcessUniqueTempFileName("flash.bin");
-
-      if (!((MainWindow *)this->parent())->readFirmwareFromRadio(tempFlash))
-        return;
-
-      QString restoreFile = generateProcessUniqueTempFileName("compat.bin");
-      if (!((MainWindow *)this->parent())->convertEEPROM(tempFile, restoreFile, tempFlash)) {
-        int ret = QMessageBox::question(this, tr("Error"), tr("Cannot check eeprom compatibility! Continue anyway?"), QMessageBox::Yes | QMessageBox::No);
-        if (ret == QMessageBox::No)
-          return;
-      }
-      else {
-        int rev=((MainWindow *)this->parent())->getEpromVersion(restoreFile);
-        if ((rev/100)!=(oldrev/100)) {
-          QMessageBox::warning(this,tr("Warning"), tr("Firmware in radio is of a different family of eeprom written, check file and preferences!"));
-        }
-        if (rev<oldrev) {
-          QMessageBox::warning(this,tr("Warning"), tr("Firmware in flash is outdated, please upgrade!"));
-        }
-        tempFile=restoreFile;
-      }
-      qunlink(tempFlash);
-    }
-    else {
-      if (backupEnable) {
-        QString backupFile=backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
-        if (!((MainWindow *)this->parent())->readEepromFromRadio(backupFile, tr("Backup EEPROM From Radio")))
-          return;
-      }
-    }
-
-    if (!((MainWindow *)this->parent())->writeEepromToRadio(tempFile, tr("Write EEPROM To Radio")))
-      return;
-  }
 }
 
 void MdiChild::simulate()
@@ -654,7 +596,7 @@ bool MdiChild::loadBackup()
         return false;
     }
 
-    if (!LoadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index)) {
+    if (!::loadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index)) {
       QMessageBox::critical(this, tr("Error"),
           tr("Invalid binary backup File %1")
           .arg(fileName));

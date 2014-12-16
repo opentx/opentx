@@ -3,7 +3,7 @@
 #include "eeprominterface.h"
 #include "helpers.h"
 
-MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings, FirmwareInterface * firmware) :
+MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings, Firmware * firmware) :
   QDialog(parent),
   ui(new Ui::MixerDialog),
   model(model),

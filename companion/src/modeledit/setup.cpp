@@ -5,7 +5,7 @@
 #include "helpers.h"
 #include "appdata.h"
 
-TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, FirmwareInterface * firmware, QWidget *prevFocus):
+TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget *prevFocus):
   ModelPanel(parent, model, generalSettings, firmware),
   timer(timer),
   ui(new Ui::Timer)
@@ -119,7 +119,7 @@ void TimerPanel::on_name_editingFinished()
 
 /******************************************************************************/
 
-ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, FirmwareInterface * firmware, int moduleIdx):
+ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx):
   ModelPanel(parent, model, generalSettings, firmware),
   module(module),
   moduleIdx(moduleIdx),
@@ -365,7 +365,7 @@ void ModulePanel::onFailsafeSpinChanged(double value)
 
 /******************************************************************************/
 
-SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Setup)
 {
@@ -715,8 +715,6 @@ void SetupPanel::updateStartupSwitches()
   unsigned int switchStates = model->switchWarningStates;
 
   for (int i=0; i<firmware->getCapability(Switches); i++) {
-    if (!IS_TARANIS(firmware->getBoard()) && i==firmware->getCapability(Switches)-1)
-      continue;
     QSlider * slider = startupSwitchesSliders[i];
     QCheckBox * cb = startupSwitchesCheckboxes[i];
     bool enabled = !(model->switchWarningEnable & (1 << i));
@@ -727,6 +725,10 @@ void SetupPanel::updateStartupSwitches()
       switchStates >>= 2;
     }
     else {
+      if (i == firmware->getCapability(Switches)-1) {
+        // Trainer switch, no switch warning
+        continue;
+      }
       slider->setValue(i==0 ? switchStates & 0x3 : switchStates & 0x1);
       switchStates >>= (i==0 ? 2 : 1);
     }

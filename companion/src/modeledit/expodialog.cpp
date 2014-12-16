@@ -2,7 +2,7 @@
 #include "ui_expodialog.h"
 #include "helpers.h"
 
-ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings, FirmwareInterface * firmware, char * inputName) :
+ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings, Firmware * firmware, char * inputName) :
   QDialog(parent),
   ui(new Ui::ExpoDialog),
   model(model),

@@ -46,25 +46,27 @@
 #include "mainwindow.h"
 #include "mdichild.h"
 #include "burnconfigdialog.h"
-#include "avroutputdialog.h"
 #include "comparedialog.h"
 #include "logsdialog.h"
 #include "apppreferencesdialog.h"
 #include "fwpreferencesdialog.h"
-#include "flashinterface.h"
+#include "firmwareinterface.h"
 #include "fusesdialog.h"
 #include "downloaddialog.h"
 #include "printdialog.h"
 #include "version.h"
 #include "contributorsdialog.h"
 #include "customizesplashdialog.h"
-#include "burndialog.h"
+#include "flasheepromdialog.h"
+#include "flashfirmwaredialog.h"
 #include "hexinterface.h"
 #include "warnings.h"
 #include "helpers.h"
 #include "appdata.h"
 #include "radionotfound.h"
-#include "foldersync.h"
+#include "process_sync.h"
+#include "radiointerface.h"
+#include "progressdialog.h"
 
 #define OPENTX_COMPANION_DOWNLOADS   "http://downloads-20.open-tx.org/companion"
 #define DONATE_STR      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
@@ -82,7 +84,6 @@
   #define sleep(x) Sleep(x*1000)
 #else
   #include <unistd.h>
-  #include "mountlist.h"
 #endif
 
 MainWindow::MainWindow():
@@ -670,11 +671,16 @@ void MainWindow::contributors()
 
 void MainWindow::sdsync()
 {
-  QString massstoragePath = FindMassstoragePath("SOUNDS");
-  if (!massstoragePath.isEmpty())
-    massstoragePath += "/..";
-  FoldersSyncTask syncTask(massstoragePath, g.profile[g.id()].sdPath());
-  syncTask.run();
+  QString massstoragePath = findMassstoragePath("SOUNDS");
+  if (massstoragePath.isEmpty()) {
+    QMessageBox::warning(this, QObject::tr("Synchronization error"), QObject::tr("No Radio connected!"));
+    return;
+  }
+  massstoragePath += "/..";
+  ProgressDialog progressDialog(this, tr("Synchronize SD"), CompanionIcon("sdsync.png"));
+  SyncProcess syncProcess(massstoragePath, g.profile[g.id()].sdPath(), progressDialog.progress());
+  syncProcess.run();
+  progressDialog.exec();
 }
 
 void MainWindow::changelog()
@@ -685,7 +691,7 @@ void MainWindow::changelog()
 
 void MainWindow::fwchangelog()
 {
-    FirmwareInterface *currfirm = GetCurrentFirmware();
+    Firmware *currfirm = GetCurrentFirmware();
     QString rn=currfirm->getReleaseNotesUrl();
     if (rn.isEmpty()) {
       QMessageBox::information(this, tr("Firmware updates"), tr("Current firmware does not provide release notes informations."));
@@ -749,211 +755,6 @@ void MainWindow::loadBackup()
       activeMdiChild()->loadBackup();
 }
 
-QString MainWindow::GetAvrdudeLocation()
-{
-    burnConfigDialog bcd;
-    EEPROMInterface *eepromInterface = GetEepromInterface();
-    if (IS_TARANIS(eepromInterface->getBoard())) {
-      return bcd.getDFU();
-    } else if (IS_SKY9X(GetEepromInterface()->getBoard())) {
-      return bcd.getSAMBA();
-    } else {
-      return bcd.getAVRDUDE();
-    }
-}
-
-QStringList MainWindow::GetAvrdudeArguments(const QString &cmd, const QString &filename)
-{
-    QStringList arguments;
-
-    burnConfigDialog bcd;
-    QString programmer = bcd.getProgrammer();
-    QStringList args   = bcd.getAVRArgs();
-    QString mcu   = bcd.getMCU();
-
-    if(!bcd.getPort().isEmpty()) args << "-P" << bcd.getPort();
-
-    arguments << "-c" << programmer << "-p";
-    if (GetEepromInterface()->getBoard() == BOARD_GRUVIN9X)
-      arguments << "m2560";
-    else if (GetEepromInterface()->getBoard() == BOARD_M128)
-      arguments << "m128";
-    else
-      arguments << mcu;
-
-    arguments << args;
-
-    QString fullcmd = cmd + filename;
-    if(QFileInfo(filename).suffix().toUpper()=="HEX") fullcmd += ":i";
-    else if(QFileInfo(filename).suffix().toUpper()=="BIN") fullcmd += ":r";
-    else fullcmd += ":a";
-
-    arguments << "-U" << fullcmd;
-
-    return arguments;
-}
-
-QStringList MainWindow::GetDFUUtilArguments(const QString &cmd, const QString &filename)
-{
-    QStringList arguments;
-    burnConfigDialog bcd;
-    QStringList args   = bcd.getDFUArgs();
-    QString memory="0x08000000";
-    if (cmd=="-U") {
-      memory.append(QString(":%1").arg(MAX_FSIZE));
-    }
-    arguments << args << "--dfuse-address" << memory << "-d" << "0483:df11";
-    QString fullcmd = cmd + filename;
-
-    arguments << "" << fullcmd;
-
-    return arguments;
-}
-
-QStringList MainWindow::GetSambaArguments(const QString &tcl)
-{
-    QStringList result;
-
-    QString tclFilename = generateProcessUniqueTempFileName("temp.tcl");
-    if (QFile::exists(tclFilename)) {
-      qunlink(tclFilename);
-    }
-    QFile tclFile(tclFilename);
-    if (!tclFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-      QMessageBox::warning(this, tr("Error"),
-          tr("Cannot write file %1:\n%2.")
-          .arg(tclFilename)
-          .arg(tclFile.errorString()));
-      return result;
-    }
-
-    QTextStream outputStream(&tclFile);
-    outputStream << tcl;
-
-    burnConfigDialog bcd;
-    result << bcd.getSambaPort() << bcd.getArmMCU() << tclFilename ;
-    return result;
-
-}
-
-QStringList MainWindow::GetReceiveEEpromCommand(const QString &filename)
-{
-    QStringList ret;
-    EEPROMInterface *eepromInterface = GetEepromInterface();
-    if (IS_TARANIS(eepromInterface->getBoard())) {
-      // impossible
-    }
-    else if (IS_SKY9X(eepromInterface->getBoard())) {
-      ret=GetSambaArguments(QString("SERIALFLASH::Init 0\n") + "receive_file {SerialFlash AT25} \"" + filename + "\" 0x0 0x80000 0\n");
-    }
-    else {
-      ret=GetAvrdudeArguments("eeprom:r:", filename);
-    }
-    return ret;
-}
-
-QStringList MainWindow::GetSendEEpromCommand(const QString &filename)
-{
-    QStringList ret;
-    EEPROMInterface *eepromInterface = GetEepromInterface();
-    if (IS_TARANIS(eepromInterface->getBoard())) {
-      // impossible
-    }
-    else if (IS_SKY9X(eepromInterface->getBoard())) {
-      ret=GetSambaArguments(QString("SERIALFLASH::Init 0\n") + "send_file {SerialFlash AT25} \"" + filename + "\" 0x0 0\n");
-    }
-    else {
-      ret=GetAvrdudeArguments("eeprom:w:", filename);
-    }
-    return ret;
-}
-
-QStringList MainWindow::GetSendFlashCommand(const QString &filename)
-{
-    QStringList ret;
-    EEPROMInterface *eepromInterface = GetEepromInterface();
-    if (IS_TARANIS(eepromInterface->getBoard())) {
-      ret=GetDFUUtilArguments("-D", filename);    
-    }
-    else if (eepromInterface->getBoard() == BOARD_SKY9X) {
-      ret=GetSambaArguments(QString("send_file {Flash} \"") + filename + "\" 0x400000 0\n" + "FLASH::ScriptGPNMV 2\n");
-    }
-    else if (eepromInterface->getBoard() == BOARD_9XRPRO) {
-      ret=GetSambaArguments(QString("send_file {Flash} \"") + filename + "\" 0x400000 0\n" + "FLASH::ScriptGPNMV 2\n");
-    }
-    else {
-      ret=GetAvrdudeArguments("flash:w:", filename);
-    }
-    return ret;
-}
-
-QStringList MainWindow::GetReceiveFlashCommand(const QString &filename)
-{
-    EEPROMInterface *eepromInterface = GetEepromInterface();
-    if (IS_TARANIS(eepromInterface->getBoard())) {
-      return GetDFUUtilArguments("-U", filename);    
-    }
-    else if (eepromInterface->getBoard() == BOARD_SKY9X) {
-      return GetSambaArguments(QString("receive_file {Flash} \"") + filename + "\" 0x400000 0x40000 0\n");
-    }
-    else if (eepromInterface->getBoard() == BOARD_9XRPRO) {
-      return GetSambaArguments(QString("receive_file {Flash} \"") + filename + "\" 0x400000 0x80000 0\n");
-    }
-    else {
-      return GetAvrdudeArguments("flash:r:", filename);
-    }
-}
-
-QString MainWindow::FindMassstoragePath(QString filename)
-{
-    QString temppath;
-    QStringList drives;
-    QString eepromfile;
-    QString fsname;
-#if defined WIN32 || !defined __GNUC__
-    foreach( QFileInfo drive, QDir::drives() ) {
-      WCHAR szVolumeName[256] ;
-      WCHAR szFileSystemName[256];
-      DWORD dwSerialNumber = 0;
-      DWORD dwMaxFileNameLength=256;
-      DWORD dwFileSystemFlags=0;
-      bool ret = GetVolumeInformationW( (WCHAR *) drive.absolutePath().utf16(),szVolumeName,256,&dwSerialNumber,&dwMaxFileNameLength,&dwFileSystemFlags,szFileSystemName,256);
-      if (ret) {
-        QString vName = QString::fromUtf16 ( (const ushort *) szVolumeName) ;
-        temppath = drive.absolutePath();
-        eepromfile = temppath;
-        eepromfile.append("/" + filename);
-        if (QFile::exists(eepromfile)) {
-          return eepromfile;
-        }
-      }
-    }
-#else
-    struct mount_entry *entry;
-    entry = read_file_system_list(true);
-    while (entry != NULL) {
-      if (!drives.contains(entry->me_devname)) {
-        drives.append(entry->me_devname);
-        temppath = entry->me_mountdir;
-        eepromfile = temppath;
-        eepromfile.append("/" + filename);
-#if !defined __APPLE__
-        QString fstype = entry->me_type;
-        if (QFile::exists(eepromfile) && fstype.contains("fat") ) {
-#else
-        if (QFile::exists(eepromfile)) {
-#endif
-          return eepromfile;
-        }
-      }
-      entry = entry->me_next;
-    }
-#endif
-
-    return QString();
-}
-
-
 void MainWindow::readEeprom()
 {
     QString tempFile;
@@ -967,7 +768,7 @@ void MainWindow::readEeprom()
 
     qDebug() << "MainWindow::readEeprom(): using temp file: " << tempFile;
 
-    if (readEepromFromRadio(tempFile, tr("Read Models and Settings From Radio"))) {
+    if (readEepromFromRadio(tempFile)) {
       MdiChild *child = createMdiChild();
       child->newFile();
       child->loadFile(tempFile, false);
@@ -976,244 +777,34 @@ void MainWindow::readEeprom()
     }
 }
 
-bool MainWindow::readFirmwareFromRadio(const QString filename)
+bool MainWindow::readFirmwareFromRadio(const QString &filename)
 {
-  bool result = false;
-
-  QString message = tr("Read Firmware From Radio");
-
-  QFile file(filename);
-  if (file.exists()) {
-    file.remove();
-  }
-
-  g.flashDir(QFileInfo(filename).dir().absolutePath());
-
-  if (IS_ARM(GetCurrentFirmware()->getBoard())) {
-    QString path = FindMassstoragePath("FIRMWARE.BIN");
-    if (!path.isEmpty()) {
-      QStringList str;
-      str << path << filename;
-      avrOutputDialog *ad = new avrOutputDialog(this, "", str, message);
-      ad->setWindowIcon(CompanionIcon("read_flash.png"));
-      ad->exec();
-      delete ad;
-      result = true;
-    }
-  }
-
-  if (result == false) {
-    QStringList str = GetReceiveFlashCommand(filename);
-    avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, message);
-    ad->setWindowIcon(CompanionIcon("read_flash.png"));
-    ad->exec();
-    delete ad;
-    result = true;
-  }
-
-  if (!QFileInfo(filename).exists())
-    result = false;
-
-  return result;
+  ProgressDialog progressDialog(this, tr("Read Firmware from Radio"), CompanionIcon("read_flash.png"));
+  return readFirmware(filename, progressDialog.progress());
 }
 
-bool MainWindow::writeFirmwareToRadio(const QString filename)
+bool MainWindow::writeFirmwareToRadio(const QString &filename)
 {
-  bool result = false;
-
-  QString message = tr("Write Firmware To Radio");
-
-  if (IS_ARM(GetCurrentFirmware()->getBoard())) {
-    QString path = FindMassstoragePath("FIRMWARE.BIN");
-    if (!path.isEmpty()) {
-      QStringList str;
-      str << filename << path;
-      avrOutputDialog *ad = new avrOutputDialog(this, "", str, message);
-      ad->setWindowIcon(CompanionIcon("write_flash.png"));
-      ad->exec();
-      delete ad;
-      result = true;
-    }
-  }
-
-  if (result == false) {
-    QStringList str = GetSendFlashCommand(filename);
-    avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, message, AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
-    CompanionIcon iconw("write_flash.png");
-    ad->setWindowIcon(iconw);
-    result = ad->exec();
-    delete ad;
-  }
-
-  return result;
+  ProgressDialog progressDialog(this, tr("Write Firmware to Radio"), CompanionIcon("write_flash.png"));
+  return writeFirmware(filename, progressDialog.progress());
 }
 
-bool MainWindow::readEepromFromRadio(const QString filename, const QString message)
+bool MainWindow::readEepromFromRadio(const QString &filename)
 {
-  bool result = false;
-
-  QFile file(filename);
-  if (file.exists()) {
-    if (!file.remove()) {
-      QMessageBox::warning(this, tr("Error"), tr("Could not delete temporary file: %1").arg(filename));
-      return false;
-    }
-  }
-
-  if (IS_ARM(GetCurrentFirmware()->getBoard())) {
-    QString path = FindMassstoragePath("EEPROM.BIN");
-    if (path.isEmpty()) {
-      // On previous OpenTX we called the EEPROM file "TARANIS.BIN" :(
-      path = FindMassstoragePath("TARANIS.BIN");
-    }
-    if (path.isEmpty()) {
-      // Mike's bootloader calls the EEPROM file "ERSKY9X.BIN" :(
-      path = FindMassstoragePath("ERSKY9X.BIN");
-    }
-    if (!path.isEmpty()) {
-      QStringList str;
-      str << path << filename;
-      avrOutputDialog *ad = new avrOutputDialog(this, "", str, message);
-      ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
-      ad->exec();
-      delete ad;
-      result = true;
-    }
-  }
-
-  if (result == false && !IS_TARANIS(GetCurrentFirmware()->getBoard())) {
-    QStringList str = GetReceiveEEpromCommand(filename);
-    avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, message);
-    ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
-    ad->exec();
-    delete ad;
-    result = true;
-  }
-
-  if (result == false && IS_ARM(GetCurrentFirmware()->getBoard())) {
-    RadioNotFoundDialog *dialog = new RadioNotFoundDialog(this);
-    dialog->exec();
-    delete dialog;
-  }
-
-  if (!QFileInfo(filename).exists()) {
-    result = false;
-  }
-
-  return result;
+  ProgressDialog progressDialog(this, tr("Read Models and Settings from Radio"), CompanionIcon("read_eeprom.png"));
+  return ::readEeprom(filename, progressDialog.progress());
 }
 
-bool MainWindow::writeEepromToRadio(const QString filename, const QString message)
+bool MainWindow::writeEepromToRadio(const QString &filename)
 {
-  bool result = false;
-
-  if (IS_ARM(GetCurrentFirmware()->getBoard())) {
-    QString path = FindMassstoragePath("EEPROM.BIN");
-    if (path.isEmpty()) {
-      // On previous OpenTX we called the EEPROM file "TARANIS.BIN" :(
-      path = FindMassstoragePath("TARANIS.BIN");
-    }
-    if (path.isEmpty()) {
-      // Mike's bootloader calls the EEPROM file "ERSKY9X.BIN" :(
-      path = FindMassstoragePath("ERSKY9X.BIN");
-    }
-    if (!path.isEmpty()) {
-      QStringList str;
-      str << filename << path;
-      avrOutputDialog *ad = new avrOutputDialog(this, "", str, message, AVR_DIALOG_SHOW_DONE);
-      ad->setWindowIcon(CompanionIcon("write_eeprom.png"));
-      ad->exec();
-      delete ad;
-      result = true;
-    }
-  }
-
-  if (result == false && !IS_TARANIS(GetCurrentFirmware()->getBoard())) {
-    QStringList str = GetSendEEpromCommand(filename);
-    avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Write EEPROM To Radio", AVR_DIALOG_SHOW_DONE);
-    ad->setWindowIcon(CompanionIcon("write_eeprom.png"));
-    ad->exec();
-    delete ad;
-    result = true;
-  }
-
-  if (result == false && IS_ARM(GetCurrentFirmware()->getBoard())) {
-    RadioNotFoundDialog *dialog = new RadioNotFoundDialog(this);
-    dialog->exec();
-    delete dialog;
-  }
-
-  return result;
+  ProgressDialog progressDialog(this, tr("Write Models and Settings to Radio"), CompanionIcon("write_eeprom.png"));
+  return ::writeEeprom(filename, progressDialog.progress());
 }
 
 void MainWindow::writeBackup()
 {
-    QString fileName;
-    bool backup = false;
-    burnDialog *cd = new burnDialog(this, 1, &fileName, &backup);
-    cd->exec();
-    if (!fileName.isEmpty()) {
-      g.eepromDir(QFileInfo(fileName).dir().absolutePath());
-      int ret = QMessageBox::question(this, "Companion", tr("Write Radio Backup from %1 to the radio?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
-      if (ret != QMessageBox::Yes) return;
-      if (!isValidEEPROM(fileName))
-        ret = QMessageBox::question(this, "Companion", tr("The file %1\nhas not been recognized as a valid Models and Settings file\nWrite anyway ?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
-      if (ret != QMessageBox::Yes) return;
-      bool backupEnable = g.enableBackup();
-      QString backupPath = g.backupDir();
-      if (!backupPath.isEmpty()) {
-        if (!QDir(backupPath).exists()) {
-          if (backupEnable) {
-            QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
-          }
-          backupEnable = false;
-        }
-      }
-      else {
-        backupEnable = false;
-      }
-
-      if (backup) {
-        if (backupEnable) {
-          QString backupFile = backupPath + "/backup-" + QDateTime().currentDateTime().toString("yyyy-MM-dd-HHmmss") + ".bin";
-          if (!readEepromFromRadio(backupFile, tr("Backup Models and Settings From Radio")))
-            return;
-        }
-        int oldrev = getEpromVersion(fileName);
-        QString tempFlash = generateProcessUniqueTempFileName("flash.bin");
-
-        if (!readFirmwareFromRadio(tempFlash))
-          return;
-
-        QString restoreFile = generateProcessUniqueTempFileName("compat.bin");
-        if (!convertEEPROM(fileName, restoreFile, tempFlash)) {
-         int ret = QMessageBox::question(this, "Error", tr("Cannot check Models and Settings compatibility! Continue anyway?") ,
-                                              QMessageBox::Yes | QMessageBox::No);
-         if (ret==QMessageBox::No)
-           return;
-        }
-        else {
-          int rev = getEpromVersion(restoreFile);
-          if ((rev / 100) != (oldrev / 100)) {
-            QMessageBox::warning(this, tr("Warning"), tr("The radio firmware belongs to another product family, check file and preferences!"));
-          }
-          else if (rev < oldrev) {
-            QMessageBox::warning(this, tr("Warning"), tr("The radio firmware is outdated, please upgrade!"));
-          }
-          fileName = restoreFile;
-        }
-        qunlink(tempFlash);
-      }
-      else {
-        if (backupEnable) {
-          QString backupFile = backupPath + "/backup-" + QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss") + ".bin";
-          if (!readEepromFromRadio(backupFile, tr("Backup Models and Settings From Radio")))
-            return;
-        }
-      }
-      if (!writeEepromToRadio(fileName, tr("Write Backup To Radio")))
-        return;
-    }
+  FlashEEpromDialog *cd = new FlashEEpromDialog(this);
+  cd->exec();
 }
 
 int MainWindow::getFileType(const QString &fullFileName)
@@ -1226,165 +817,17 @@ int MainWindow::getFileType(const QString &fullFileName)
     return 0;
 }
 
-bool MainWindow::isValidEEPROM(QString eepromfile)
-{  
-    int eeprom_size;
-    QFile file(eepromfile);
-    int fileType = getFileType(eepromfile);
-    if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) {
-      if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return false;
-      eeprom_size = file.size();
-      QByteArray eeprom(eeprom_size, 0);
-      QTextStream inputStream(&file);
-      eeprom_size = HexInterface(inputStream).load((uint8_t *)eeprom.data(), eeprom_size);
-      if (!eeprom_size) {
-        return false;
-      }
-      file.close();
-      RadioData * radioData = new RadioData();
-      bool result = LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size);
-      delete radioData;
-      return result;
-    }
-    else if (fileType==FILE_TYPE_BIN) { //read binary
-      if (!file.open(QFile::ReadOnly))
-        return false;
-      eeprom_size = file.size();
-      QByteArray eeprom(eeprom_size, 0);
-      long read = file.read(eeprom.data(), eeprom_size);
-      file.close();
-      if (read != eeprom_size) {
-        return false;
-      }
-      RadioData * radioData = new RadioData();
-      bool result = LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size);
-      delete radioData;
-      return result;
-    }
-    return false;
-}
-
-bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString flashFile)
-{
-    FirmwareInterface *firmware = GetCurrentFirmware();
-    FlashInterface flash(flashFile);
-    if (!flash.isValid())
-      return false;
-
-    unsigned int version = flash.getEEpromVersion();
-    unsigned int variant = flash.getEEpromVariant();
-
-    QFile file(backupFile);
-    int eeprom_size = file.size();
-    if (!eeprom_size)
-      return false;
-
-    if (!file.open(QIODevice::ReadOnly))
-      return false;
-
-    QByteArray eeprom(eeprom_size, 0);
-    long result = file.read(eeprom.data(), eeprom_size);
-    file.close();
-
-    QSharedPointer<RadioData> radioData = QSharedPointer<RadioData>(new RadioData());
-    if (!LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size) || !firmware->saveEEPROM((uint8_t *)eeprom.data(), *radioData, variant, version))
-      return false;
-
-    QFile file2(restoreFile);
-    if (!file2.open(QIODevice::WriteOnly))
-      return false;
-
-    result = file2.write(eeprom.constData(), eeprom_size);
-    file2.close();
-    if (result != eeprom_size)
-      return false;
-
-    return true;
-}
-
 void MainWindow::writeFlash(QString fileToFlash)
 {
-    QString fileName;
-    bool backup = g.backupOnFlash();
-    if(!fileToFlash.isEmpty())
-      fileName = fileToFlash;
-    burnDialog *cd = new burnDialog(this, 2, &fileName, &backup);
+    FlashFirmwareDialog *cd = new FlashFirmwareDialog(this);
     cd->exec();
-    if (IS_TARANIS(GetEepromInterface()->getBoard()))
-      backup=false;
-    if (!fileName.isEmpty()) {
-      g.backupOnFlash(backup);
-      if (backup) {
-        QString backupFile = generateProcessUniqueTempFileName("backup.bin");
-        bool backupEnable=g.enableBackup();
-        QString backupPath=g.backupDir();
-        if (!backupPath.isEmpty() && !IS_TARANIS(GetEepromInterface()->getBoard())) {
-          if (!QDir(backupPath).exists()) {
-            if (backupEnable) {
-              QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
-            }
-            backupEnable=false;
-          }
-        }
-        else {
-          backupEnable=false;
-        }
-
-        if (backupEnable) {
-          QDateTime datetime;
-          backupFile.clear();
-          backupFile = backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
-        }
-
-        if (readEepromFromRadio(backupFile, tr("Backup Models and Settings From Radio"))) {
-          sleep(2);
-          int res = writeFirmwareToRadio(fileName);
-          if (res) {
-            QString restoreFile = generateProcessUniqueTempFileName("restore.bin");
-            if (!convertEEPROM(backupFile, restoreFile, fileName)) {
-              QMessageBox::warning(this, tr("Conversion failed"), tr("Cannot convert Models and Settings for use with this firmware, original data will be used"));
-              restoreFile = backupFile;
-            }
-            sleep(2);
-            if (!writeEepromToRadio(restoreFile, tr("Restore Models and Settings To Radio"))) {
-              QMessageBox::warning(this, tr("Restore failed"), tr("Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1").arg(backupFile));
-            }
-          }
-          else {
-            QMessageBox::warning(this, tr("Firmware write failed"), tr("Could not write firmware to radio. The models and settings data file can be found at: %1").arg(backupFile));
-          }
-        }
-        else {
-          QMessageBox::warning(this, tr("Backup failed"), tr("Cannot backup existing Models and Settings from Radio. Firmware write process aborted"));
-        }
-      }
-      else {
-        bool backupEnable=g.enableBackup();
-        QString backupPath=g.backupDir();
-        if (!QDir(backupPath).exists()) {
-          if (backupEnable) {
-            QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
-          }
-          backupEnable=false;
-        }
-        if (backupEnable && !IS_TARANIS(GetEepromInterface()->getBoard())) {
-          QDateTime datetime;
-          QString backupFile = backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
-          readEepromFromRadio(backupFile, tr("Backup Models and Settings From Radio"));
-          sleep(2);
-        }
-
-        writeFirmwareToRadio(fileName);
-      }
-    }
 }
 
 void MainWindow::readBackup()
 {
   QString fileName = QFileDialog::getSaveFileName(this, tr("Save Radio Backup to File"), g.eepromDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
   if (!fileName.isEmpty()) {
-    if (!readEepromFromRadio(fileName, tr("Read Radio Backup")))
+    if (!readEepromFromRadio(fileName))
       return;
   }
 }
@@ -1406,13 +849,13 @@ void MainWindow::burnConfig()
 
 void MainWindow::burnList()
 {
-  burnConfigDialog *bcd = new burnConfigDialog(this);
-  bcd->listProgrammers();
+  burnConfigDialog bcd(this);
+  bcd.listAvrdudeProgrammers();
 }
 
 void MainWindow::burnFuses()
 {
-  fusesDialog *fd = new fusesDialog(this);
+  FusesDialog *fd = new FusesDialog(this);
   fd->exec();
   delete fd;
 }
@@ -1451,6 +894,12 @@ void MainWindow::about()
     msgBox.exec();
 }
 
+void MainWindow::updateSdsyncAction()
+{
+  QTimer::singleShot(1000, this, SLOT(updateSdsyncAction()));
+  sdsyncAct->setEnabled(!findMassstoragePath("SOUNDS").isEmpty());
+}
+
 void MainWindow::updateMenus()
 {
     bool hasMdiChild = (activeMdiChild() != 0);
@@ -1467,13 +916,12 @@ void MainWindow::updateMenus()
     printAct->setEnabled(hasSelection);
     loadbackupAct->setEnabled(hasMdiChild);
     compareAct->setEnabled(activeMdiChild());
+    updateSdsyncAction();
     updateRecentFileActions();
     updateProfilesActions();
     updateLanguageActions();
     updateIconSizeActions();
     updateIconThemeActions();
-    sdsyncAct->setEnabled(!FindMassstoragePath("SOUNDS").isEmpty());
-
     setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->getName()).arg( g.profile[g.id()].name() ));
 }
 
@@ -1611,7 +1059,7 @@ void MainWindow::createActions()
     writeBackupToRadioAct = addAct("write_eeprom_file.png", tr("Write Backup to Radio"), tr("Write Backup from file to Radio"), SLOT(writeBackup()));
     readBackupToFileAct = addAct("read_eeprom_file.png", tr("Backup Radio to File"), tr("Save a complete backup file of all settings and model data in the Radio"), SLOT(readBackup()));
     contributorsAct =    addAct("contributors.png",  tr("Contributors..."), tr("A tribute to those who have contributed to OpenTX and Companion"), SLOT(contributors()));
-    sdsyncAct =          addAct("sdsync.png",        tr("SD Synchro"),              tr("SD card synchronization"), SLOT(sdsync()));
+    sdsyncAct =          addAct("sdsync.png",        tr("Synchronize SD"),          tr("SD card synchronization"),            SLOT(sdsync()));
     
     compareAct->setEnabled(false);
     simulateAct->setEnabled(false);
@@ -1972,85 +1420,6 @@ QString MainWindow::strippedName(const QString &fullFileName)
   return QFileInfo(fullFileName).fileName();
 }
 
-int MainWindow::getEpromVersion(QString fileName)
-{
-  RadioData testData;
-  if (fileName.isEmpty()) {
-    return -1;
-  }
-  QFile file(fileName);
-  if (!file.exists()) {
-    QMessageBox::critical(this, tr("Error"), tr("Unable to find file %1!").arg(fileName));
-    return -1;
-  }
-  int fileType = getFileType(fileName);
-#if 0
-  if (fileType==FILE_TYPE_XML) {
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
-      QMessageBox::critical(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(fileName).arg(file.errorString()));
-      return -1;
-    }
-    QTextStream inputStream(&file);
-    XmlInterface(inputStream).load(testData);
-  }
-  else
-#endif
-  if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) { //read HEX file
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
-        QMessageBox::critical(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(fileName).arg(file.errorString()));
-        return -1;
-    }        
-    QDomDocument doc(ER9X_EEPROM_FILE_TYPE);
-    bool xmlOK = doc.setContent(&file);
-    if(xmlOK) {
-      if (!LoadEepromXml(testData, doc)){
-        return -1;
-      }
-    }
-    file.reset();
-      
-    QTextStream inputStream(&file);
-    if (fileType==FILE_TYPE_EEPE) {  // read EEPE file header
-      QString hline = inputStream.readLine();
-      if (hline!=EEPE_EEPROM_FILE_HEADER) {
-        file.close();
-        return -1;
-      }
-    }
-    uint8_t eeprom[EESIZE_RLC_MAX];
-    int eeprom_size = HexInterface(inputStream).load(eeprom, EESIZE_RLC_MAX);
-    if (!eeprom_size) {
-      QMessageBox::critical(this, tr("Error"), tr("Invalid Models and Settings File %1").arg(fileName));
-      file.close();
-      return -1;
-    }
-    file.close();
-    if (!LoadEeprom(testData, eeprom, eeprom_size)) {
-      QMessageBox::critical(this, tr("Error"),tr("Invalid Models and Settings File %1").arg(fileName));
-      return -1;
-    }
-  }
-  else if (fileType==FILE_TYPE_BIN) { //read binary
-    int eeprom_size = file.size();
-    if (!file.open(QFile::ReadOnly)) {  //reading binary file   - TODO HEX support
-      QMessageBox::critical(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(fileName).arg(file.errorString()));
-      return -1;
-    }
-    QByteArray eeprom(eeprom_size, 0);
-    long result = file.read(eeprom.data(), eeprom_size);
-    file.close();
-    if (result != eeprom_size) {
-      QMessageBox::critical(this, tr("Error"),tr("Error reading file %1:\n%2.").arg(fileName).arg(file.errorString()));
-      return -1;
-    }
-    if (!LoadEeprom(testData, (uint8_t *)eeprom.data(), eeprom_size)) {
-      QMessageBox::critical(this, tr("Error"),tr("Invalid binary Models and Settings File %1").arg(fileName));
-      return -1;
-    }
-  }
-  return testData.generalSettings.version;
-}
-
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasFormat("text/uri-list"))
@@ -2085,5 +1454,3 @@ void MainWindow::autoClose()
 {
     this->close();
 }
-
-

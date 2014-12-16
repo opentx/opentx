@@ -498,8 +498,6 @@ QString AppData::libDir()          { return _libDir;          }
 QString AppData::snapshotDir()     { return _snapshotDir;     }
 QString AppData::updatesDir()      { return _updatesDir;      }
 
-bool AppData::enableBackup()       { return _enableBackup;    }
-bool AppData::backupOnFlash()      { return _backupOnFlash;   }
 bool AppData::jsSupport()          { return _jsSupport;       }
 bool AppData::maximized()          { return _maximized;       }
 bool AppData::showSplash()         { return _showSplash;      }
@@ -548,8 +546,6 @@ void AppData::libDir          (const QString     x) { store(x, _libDir,         
 void AppData::snapshotDir     (const QString     x) { store(x, _snapshotDir,     "snapshotpath"            );}
 void AppData::updatesDir      (const QString     x) { store(x, _updatesDir,      "lastUpdatesDir"          );}
 
-void AppData::enableBackup    (const bool        x) { store(x, _enableBackup,    "backupEnable"            );}
-void AppData::backupOnFlash   (const bool        x) { store(x, _backupOnFlash,   "backupOnFlash"           );}
 void AppData::maximized       (const bool        x) { store(x, _maximized,       "maximized"               );}
 void AppData::jsSupport       (const bool        x) { store(x, _jsSupport,       "js_support"              );}
 void AppData::showSplash      (const bool        x) { store(x, _showSplash,      "show_splash"             );}
@@ -674,6 +670,7 @@ AppData::AppData()
     getset( _snapshotDir,     "snapshotpath"            ,"" );
     getset( _updatesDir,      "lastUpdatesDir"          ,"" );
 
+    getset( _outputDisplayDetails,  "outputDisplayDetails"     ,false );
     getset( _enableBackup,    "backupEnable"            ,false );
     getset( _backupOnFlash,   "backupOnFlash"           ,true  );
     getset( _jsSupport,       "js_support"              ,false );

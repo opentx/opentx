@@ -53,8 +53,7 @@ const int Gruvin9xInterface::getEEpromSize()
       return EESIZE_STOCK*2;
     }
     return EESIZE_STOCK;
-  }
-  else {
+  } else {
     return EESIZE_GRUVIN9X;
   }
 }

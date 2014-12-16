@@ -1475,13 +1475,14 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
     model.swashRingData.collectiveSource.index = applyStickMode(model.swashRingData.collectiveSource.index + 1, mode) - 1;
 }
 
-void RegisterEepromInterfaces();
-void UnregisterFirmwares();
+void registerEEpromInterfaces();
+void unregisterEEpromInterfaces();
 void registerOpenTxFirmwares();
+void unregisterFirmwares();
 
-bool LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
-bool LoadEeprom(RadioData &radioData, const uint8_t *eeprom, int size);
-bool LoadEepromXml(RadioData &radioData, QDomDocument &doc);
+bool loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
+bool loadEEprom(RadioData &radioData, const uint8_t *eeprom, int size);
+bool loadEEpromXml(RadioData &radioData, QDomDocument &doc);
 
 struct Option {
   const char * name;
@@ -1489,10 +1490,10 @@ struct Option {
   uint32_t variant;
 };
 
-class FirmwareInterface {
+class Firmware {
 
   public:
-    FirmwareInterface(const QString & id, const QString & name, const BoardEnum board, EEPROMInterface * eepromInterface):
+    Firmware(const QString & id, const QString & name, const BoardEnum board, EEPROMInterface * eepromInterface):
       id(id),
       name(name),
       board(board),
@@ -1502,7 +1503,7 @@ class FirmwareInterface {
     {
     }
 
-    FirmwareInterface(FirmwareInterface * base, const QString & id, const QString & name, const BoardEnum board, EEPROMInterface * eepromInterface):
+    Firmware(Firmware * base, const QString & id, const QString & name, const BoardEnum board, EEPROMInterface * eepromInterface):
       id(id),
       name(name),
       board(board),
@@ -1512,12 +1513,12 @@ class FirmwareInterface {
     {
     }
 
-    virtual ~FirmwareInterface()
+    virtual ~Firmware()
     {
       delete eepromInterface;
     }
 
-    inline const FirmwareInterface * getFirmwareBase() const
+    inline const Firmware * getFirmwareBase() const
     {
       return base ? base : this;
     }
@@ -1528,7 +1529,7 @@ class FirmwareInterface {
       variantBase = variant;
     }
 
-    virtual FirmwareInterface * getFirmwareVariant(const QString & id) { return NULL; }
+    virtual Firmware * getFirmwareVariant(const QString & id) { return NULL; }
 
     unsigned int getVariantNumber();
 
@@ -1591,20 +1592,20 @@ class FirmwareInterface {
     BoardEnum board;
     EEPROMInterface * eepromInterface;
     unsigned int variantBase;
-    FirmwareInterface * base;
+    Firmware * base;
 
   private:
-    FirmwareInterface();
+    Firmware();
 
 };
 
-extern QList<FirmwareInterface *> firmwares;
-extern FirmwareInterface * default_firmware_variant;
-extern FirmwareInterface * current_firmware_variant;
+extern QList<Firmware *> firmwares;
+extern Firmware * default_firmware_variant;
+extern Firmware * current_firmware_variant;
 
-FirmwareInterface * GetFirmware(QString id);
+Firmware * GetFirmware(QString id);
 
-inline FirmwareInterface * GetCurrentFirmware()
+inline Firmware * GetCurrentFirmware()
 {
   return current_firmware_variant;
 }
@@ -1613,8 +1614,6 @@ inline EEPROMInterface * GetEepromInterface()
 {
   return GetCurrentFirmware()->getEepromInterface();
 }
-
-void UnregisterEepromInterfaces();
 
 inline int divRoundClosest(const int n, const int d)
 {

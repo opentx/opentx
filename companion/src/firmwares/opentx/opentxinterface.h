@@ -77,15 +77,15 @@ class OpenTxEepromInterface : public EEPROMInterface
 
 };
 
-class OpenTxFirmware: public FirmwareInterface {
+class OpenTxFirmware: public Firmware {
   public:
     OpenTxFirmware(const QString & id, OpenTxFirmware * parent):
-      FirmwareInterface(parent, id, parent->getName(), parent->getBoard(), parent->eepromInterface)
+      Firmware(parent, id, parent->getName(), parent->getBoard(), parent->eepromInterface)
     {
     }
 
     OpenTxFirmware(const QString & id, const QString & name, const BoardEnum board):
-      FirmwareInterface(id, name, board, new OpenTxEepromInterface(board))
+      Firmware(id, name, board, new OpenTxEepromInterface(board))
     {
       addLanguage("en");
       addLanguage("fr");
@@ -110,7 +110,7 @@ class OpenTxFirmware: public FirmwareInterface {
       addTTSLanguage("hu");
     }
 
-    virtual FirmwareInterface * getFirmwareVariant(const QString & id);
+    virtual Firmware * getFirmwareVariant(const QString & id);
     
     virtual QString getStampUrl();
 

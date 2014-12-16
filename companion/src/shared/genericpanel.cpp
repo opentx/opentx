@@ -5,7 +5,7 @@
 #include <QGridLayout>
 #include <QSpacerItem>
 
-GenericPanel::GenericPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+GenericPanel::GenericPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware):
   QWidget(parent),
   model(model),
   generalSettings(generalSettings),

@@ -3,7 +3,7 @@
 
 #include <QtGui>
 #include <QDialog>
-#include "flashinterface.h"
+#include "firmwareinterface.h"
 
 namespace Ui
 {

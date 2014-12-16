@@ -3,7 +3,7 @@
 #include "expodialog.h"
 #include "helpers.h"
 
-InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   expoInserted(false)
 {

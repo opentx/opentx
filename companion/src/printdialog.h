@@ -15,12 +15,12 @@ class PrintDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit PrintDialog(QWidget *parent, FirmwareInterface * firmware, GeneralSettings *gg, ModelData *gm, QString filename="");
+    explicit PrintDialog(QWidget *parent, Firmware * firmware, GeneralSettings *gg, ModelData *gm, QString filename="");
     
     ~PrintDialog();
     void  closeEvent(QCloseEvent *event);
     
-    FirmwareInterface * firmware;
+    Firmware * firmware;
     GeneralSettings * g_eeGeneral;
     ModelData * g_model;
 
@@ -42,8 +42,6 @@ private:
     void printFSwitches();
     void printFrSky();
     void printToFile();
-    
-    QString fv(const QString name, const QString value);
     
     QTextEdit * te;
     QString curvefile5;

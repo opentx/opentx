@@ -10,7 +10,7 @@ class MixesPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     virtual ~MixesPanel();
 
     virtual void update();

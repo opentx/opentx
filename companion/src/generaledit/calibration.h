@@ -12,7 +12,7 @@ class CalibrationPanel : public GeneralPanel
     Q_OBJECT
 
   public:
-    CalibrationPanel(QWidget *parent, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    CalibrationPanel(QWidget *parent, GeneralSettings & generalSettings, Firmware * firmware);
     virtual ~CalibrationPanel();
     virtual void update();
 

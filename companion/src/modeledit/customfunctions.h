@@ -37,7 +37,7 @@ class CustomFunctionsPanel : public GenericPanel
     Q_OBJECT
 
   public:
-    CustomFunctionsPanel(QWidget *parent, ModelData * mode, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    CustomFunctionsPanel(QWidget *parent, ModelData * mode, GeneralSettings & generalSettings, Firmware * firmware);
     ~CustomFunctionsPanel();
 
     virtual void update();

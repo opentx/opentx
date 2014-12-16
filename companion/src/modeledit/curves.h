@@ -22,7 +22,7 @@ class Curves : public ModelPanel
     Q_OBJECT
 
   public:
-    Curves(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    Curves(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     virtual ~Curves();
 
     virtual void update();

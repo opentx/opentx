@@ -21,7 +21,7 @@ class TimerPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, FirmwareInterface * firmware, QWidget *prevFocus);
+    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget *prevFocus);
     virtual ~TimerPanel();
 
     virtual void update();
@@ -43,7 +43,7 @@ class ModulePanel : public ModelPanel
     Q_OBJECT
 
   public:
-    ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, FirmwareInterface * firmware, int moduleIdx);
+    ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx);
     virtual ~ModulePanel();
 
     virtual void update();
@@ -72,7 +72,7 @@ class SetupPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     virtual ~SetupPanel();
 
     virtual void update();

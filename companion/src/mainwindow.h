@@ -69,7 +69,6 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     friend class FirmwarePreferencesDialog;
-    friend class MdiChild; // TODO GetAvrdudeArgs could be external to this class
 
     Q_OBJECT
 
@@ -156,6 +155,7 @@ class MainWindow : public QMainWindow
     void loadBackup();
     void appPrefs();
     void fwPrefs();
+    void updateSdsyncAction();
     void updateMenus();
     void createProfile();
     MdiChild *createMdiChild();
@@ -184,30 +184,18 @@ class MainWindow : public QMainWindow
     void updateIconThemeActions();
 
     int getFileType(const QString &fullFileName);
-    QString FindMassstoragePath(QString filename);
     QString Theme;
     QString ISize;
     QString strippedName(const QString &fullFileName);
 
     MdiChild *activeMdiChild();
     QMdiSubWindow *findMdiChild(const QString &fileName);
-    QString GetAvrdudeLocation();
-    QStringList GetAvrdudeArguments(const QString &cmd, const QString &filename);
-    QStringList GetSambaArguments(const QString &tcl);
-    QStringList GetDFUUtilArguments(const QString &cmd, const QString &filename);
-    QStringList GetReceiveEEpromCommand(const QString &filename);
-    QStringList GetSendEEpromCommand(const QString &filename);
-    QStringList GetReceiveFlashCommand(const QString &filename);
-    QStringList GetSendFlashCommand(const QString &filename);
     int getEpromVersion(QString fileName);
 
-    bool convertEEPROM(QString backupFile, QString restoreFile, QString flashFile);
-    bool isValidEEPROM(QString eepromfile);
-
-    bool readEepromFromRadio(const QString filename, const QString message);
-    bool writeEepromToRadio(const QString filename, const QString message);
-    bool readFirmwareFromRadio(const QString filename);
-    bool writeFirmwareToRadio(const QString filename);
+    bool readEepromFromRadio(const QString &filename);
+    bool writeEepromToRadio(const QString &filename);
+    bool readFirmwareFromRadio(const QString &filename);
+    bool writeFirmwareToRadio(const QString &filename);
 
     QMdiArea *mdiArea;
     QSignalMapper *windowMapper;

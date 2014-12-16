@@ -15,7 +15,7 @@
 #include "appdata.h"
 #include <QScrollArea>
 
-ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, FirmwareInterface * firmware) :
+ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmware * firmware) :
   QDialog(parent),
   ui(new Ui::ModelEdit),
   modelId(modelId),
