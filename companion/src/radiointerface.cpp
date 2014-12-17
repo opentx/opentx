@@ -11,6 +11,10 @@
 #include <QFile>
 #include <QMessageBox>
 
+#if defined WIN32 || !defined __GNUC__
+  #include <windows.h>
+#endif
+
 QString getRadioInterfaceCmd()
 {
   burnConfigDialog bcd;
