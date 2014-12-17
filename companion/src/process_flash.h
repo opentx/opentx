@@ -7,6 +7,7 @@
 
 class ProgressWidget;
 class QProcess;
+class QTimer;
 
 class FlashProcess : public QObject
 {
@@ -25,6 +26,7 @@ protected slots:
   void onReadyReadStandardOutput();
   void onReadyReadStandardError();
   void onFinished(int);
+  void onKillTimerElapsed();
 
 protected:
   void analyseStandardOutput(const QString &text);
@@ -43,6 +45,9 @@ protected:
   unsigned int efuse;
   enum FlashPhase { READING, WRITING, VERIFYING };
   FlashPhase flashPhase;
+#if !__GNUC__
+  QTimer *killTimer;
+#endif
 };
 
 #endif // FLASHPROCESS_H_

@@ -28,9 +28,7 @@
 #ifndef MOUNTLIST_H_
 # define MOUNTLIST_H_
 
-#if defined WIN32 || !defined __GNUC__
-    #define bool char
-#else
+#if defined __GNUC__
 # include <stdbool.h>
 #endif
 

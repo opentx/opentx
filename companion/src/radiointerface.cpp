@@ -30,55 +30,6 @@ QString getRadioInterfaceCmd()
   }
 }
 
-QString findMassstoragePath(const QString &filename)
-{
-  QString temppath;
-  QStringList drives;
-  QString eepromfile;
-  QString fsname;
-#if defined WIN32 || !defined __GNUC__
-  foreach( QFileInfo drive, QDir::drives() ) {
-    WCHAR szVolumeName[256] ;
-    WCHAR szFileSystemName[256];
-    DWORD dwSerialNumber = 0;
-    DWORD dwMaxFileNameLength=256;
-    DWORD dwFileSystemFlags=0;
-    bool ret = GetVolumeInformationW( (WCHAR *) drive.absolutePath().utf16(),szVolumeName,256,&dwSerialNumber,&dwMaxFileNameLength,&dwFileSystemFlags,szFileSystemName,256);
-    if (ret) {
-      QString vName = QString::fromUtf16 ( (const ushort *) szVolumeName) ;
-      temppath = drive.absolutePath();
-      eepromfile = temppath;
-      eepromfile.append("/" + filename);
-      if (QFile::exists(eepromfile)) {
-        return eepromfile;
-      }
-    }
-  }
-#else
-  struct mount_entry *entry;
-  entry = read_file_system_list(true);
-  while (entry != NULL) {
-    if (!drives.contains(entry->me_devname)) {
-      drives.append(entry->me_devname);
-      temppath = entry->me_mountdir;
-      eepromfile = temppath;
-      eepromfile.append("/" + filename);
-#if !defined __APPLE__
-      QString fstype = entry->me_type;
-      if (QFile::exists(eepromfile) && fstype.contains("fat") ) {
-#else
-      if (QFile::exists(eepromfile)) {
-#endif
-        return eepromfile;
-      }
-    }
-    entry = entry->me_next;
-  }
-#endif
-
-  return QString();
-}
-
 QStringList getAvrdudeArgs(const QString &cmd, const QString &filename)
 {
   QStringList args;
@@ -406,4 +357,53 @@ bool writeEeprom(const QString &filename, ProgressWidget *progress)
   }
 
   return false;
+}
+
+QString findMassstoragePath(const QString &filename)
+{
+  QString temppath;
+  QStringList drives;
+  QString eepromfile;
+  QString fsname;
+#if defined WIN32 || !defined __GNUC__
+  foreach(QFileInfo drive, QDir::drives()) {
+    WCHAR szVolumeName[256] ;
+    WCHAR szFileSystemName[256];
+    DWORD dwSerialNumber = 0;
+    DWORD dwMaxFileNameLength=256;
+    DWORD dwFileSystemFlags=0;
+    bool ret = GetVolumeInformationW( (WCHAR *) drive.absolutePath().utf16(),szVolumeName,256,&dwSerialNumber,&dwMaxFileNameLength,&dwFileSystemFlags,szFileSystemName,256);
+    if (ret) {
+      QString vName = QString::fromUtf16 ( (const ushort *) szVolumeName) ;
+      temppath = drive.absolutePath();
+      eepromfile = temppath;
+      eepromfile.append("/" + filename);
+      if (QFile::exists(eepromfile)) {
+        return eepromfile;
+      }
+    }
+  }
+#else
+  struct mount_entry *entry;
+  entry = read_file_system_list(true);
+  while (entry != NULL) {
+    if (!drives.contains(entry->me_devname)) {
+      drives.append(entry->me_devname);
+      temppath = entry->me_mountdir;
+      eepromfile = temppath;
+      eepromfile.append("/" + filename);
+#if !defined __APPLE__
+      QString fstype = entry->me_type;
+      if (QFile::exists(eepromfile) && fstype.contains("fat") ) {
+#else
+      if (QFile::exists(eepromfile)) {
+#endif
+        return eepromfile;
+      }
+    }
+    entry = entry->me_next;
+  }
+#endif
+
+  return QString();
 }

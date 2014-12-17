@@ -74,7 +74,7 @@ void FlashProcess::onStarted()
 }
 
 # if !__GNUC__
-bool KillProcessByName(const char *szProcessToKill)
+bool killProcessByName(const char *szProcessToKill)
 {
   HANDLE hProcessSnap;
   HANDLE hProcess;
@@ -107,13 +107,13 @@ bool KillProcessByName(const char *szProcessToKill)
 }
 #endif
 
-# if !__GNUC__
 void FlashProcess::onKillTimerElapsed()
 {
+# if !__GNUC__
   // trick to accelerate SAM-BA startup
-  KillProcessByName("tasklist.exe");
-}
+  killProcessByName("tasklist.exe");
 #endif
+}
 
 void FlashProcess::analyseStandardOutput(const QString &text)
 {
