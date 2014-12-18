@@ -28,6 +28,10 @@
   extern void hw_delay(uint16_t time);
 #endif
 
+#if !defined(BOOT)
+  bool lcdInitFinished = false;
+#endif
+
 /*
   In boot-loader: init_hw_timer() must be called before the first call to this function!
   In opentx: delaysInit() must be called before the first call to this function!
@@ -188,6 +192,12 @@ void lcdRefreshWait()
 
 void lcdRefresh(bool wait)
 {
+#if !defined(BOOT)
+  if (!lcdInitFinished) {
+    lcdInitFinish();
+  }
+#endif
+
   //wait if previous DMA transfer still active
   WAIT_FOR_DMA_END();
   lcd_busy = true;
@@ -231,6 +241,12 @@ extern "C" void DMA1_Stream7_IRQHandler()
 #else     // #if defined(REVPLUS)
 void lcdRefresh()
 {  
+#if !defined(BOOT)
+  if (!lcdInitFinished) {
+    lcdInitFinish();
+  }
+#endif
+
   for (uint32_t y=0; y<LCD_H; y++) {
     uint8_t *p = &displayBuf[y/2 * LCD_W];
 
@@ -373,6 +389,10 @@ void lcdInitStart()
 */
 void lcdInitFinish()
 {
+#if !defined(BOOT)
+  lcdInitFinished = true;
+#endif
+
 #if defined(REVPLUS)
   initLcdSpi();
 #endif

@@ -2575,16 +2575,13 @@ void opentxInit(OPENTX_INIT_ARGS)
   eeReadAll();
 
 #if defined(CPUARM)
-  if (UNEXPECTED_SHUTDOWN())
+  if (UNEXPECTED_SHUTDOWN()) {
     unexpectedShutdown = 1;
+  }
 #endif
 
 #if defined(PCBTARANIS)
-#if !defined(SIMU)
-  lcdInitFinish();
-#endif
   BACKLIGHT_ON();
-  Splash();
 #endif
 
 #if MENUS_LOCK == 1
