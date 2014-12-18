@@ -26,6 +26,10 @@
   extern void hw_delay(uint16_t time);
 #endif
 
+#if !defined(BOOT)
+  bool lcdInitFinished = false;
+#endif
+
 /*
   In boot-loader: init_hw_timer() must be called before the first call to this function!
   In opentx: delaysInit() must be called before the first call to this function!
@@ -176,6 +180,12 @@ void Set_Address(u8 x, u8 y)
 #if defined(REVPLUS)
 void lcdRefresh(bool wait)
 {
+#if !defined(BOOT)
+  if (!lcdInitFinished) {
+    lcdInitFinish();
+  }
+#endif
+
   Set_Address(0, 0);
 	
   LCD_NCS_LOW();
@@ -205,6 +215,12 @@ void lcdRefresh(bool wait)
 #else
 void lcdRefresh()
 {  
+#if !defined(BOOT)
+  if (!lcdInitFinished) {
+    lcdInitFinish();
+  }
+#endif
+
   for (uint32_t y=0; y<LCD_H; y++) {
     uint8_t *p = &displayBuf[y/2 * LCD_W];
 
@@ -344,8 +360,13 @@ void lcdInitStart()
 /*
   Finishes LCD initialization. Must be called after the lcdInitStart().
 */
+
 void lcdInitFinish()
 {
+#if !defined(BOOT)
+  lcdInitFinished = true;
+#endif
+
 #if defined(REVPLUS)
   initLcdSpi();
 #endif

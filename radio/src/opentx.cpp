@@ -2525,7 +2525,7 @@ void opentxStart()
   doSplash();
 
 #if defined(DEBUG_TRACE_BUFFER)
-    trace_event(trace_start, 0x12345678); 
+  trace_event(trace_start, 0x12345678);
 #endif 
 
 #if defined(PCBSKY9X) && defined(SDCARD) && !defined(SIMU)
@@ -3403,14 +3403,13 @@ inline void opentxInit(OPENTX_INIT_ARGS)
   eeReadAll();
 
 #if defined(CPUARM)
-  if (UNEXPECTED_SHUTDOWN())
+  if (UNEXPECTED_SHUTDOWN()) {
     unexpectedShutdown = 1;
+  }
 #endif
 
 #if defined(PCBTARANIS)
-  lcdInitFinish();
   BACKLIGHT_ON();
-  Splash();
 #endif
 
 #if MENUS_LOCK == 1
