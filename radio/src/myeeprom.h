@@ -117,8 +117,13 @@
   #define MAX_SCRIPTS          7
   #define MAX_INPUTS           32
   #define NUM_TRAINER          16
-  #define NUM_POTS             5
-  #define NUM_XPOTS            3
+  #if defined(REV9E)
+    #define NUM_POTS             8
+    #define NUM_XPOTS            4
+  #else
+    #define NUM_POTS             5
+    #define NUM_XPOTS            3
+  #endif
 #elif defined(CPUARM)
   #define MAX_MODELS           60
   #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
@@ -343,7 +348,7 @@ enum uartModes {
 #define EXTRA_GENERAL_FIELDS \
   EXTRA_GENERAL_FIELDS_ARM \
   uint8_t  uart3Mode; \
-  uint8_t  potsType; \
+  uint8_t  potsType; /*two bits for every pot*/\
   uint8_t  backlightColor;
 #elif defined(CPUARM)
   #define EXTRA_GENERAL_FIELDS EXTRA_GENERAL_FIELDS_ARM
@@ -391,7 +396,11 @@ PACK(typedef struct {
   #define IS_TRAINER_EXTERNAL_MODULE() (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
   #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS];
-  #define swarnstate_t      uint32_t
+  #if defined(REV9E)
+    #define swarnstate_t      uint64_t
+  #else
+    #define swarnstate_t      uint32_t
+  #endif
   #define swarnenable_t     uint16_t
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
@@ -1749,9 +1758,18 @@ enum MixSources {
   MIXSRC_POT1 = MIXSRC_FIRST_POT, LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                    LUA_EXPORT("s2", "Potentiometer 2")
   MIXSRC_POT3,                    LUA_EXPORT("s3", "Potentiometer 3")
+  #if defined(REV9E)
+    MIXSRC_POT4,                  LUA_EXPORT("s4", "Potentiometer 4")
+  #endif
   MIXSRC_SLIDER1,                 LUA_EXPORT("ls", "Left slider")
   MIXSRC_SLIDER2,                 LUA_EXPORT("rs", "Right slider")
-  MIXSRC_LAST_POT = MIXSRC_SLIDER2,
+  #if defined(REV9E)
+    MIXSRC_SLIDER3,               LUA_EXPORT("ls2", "Left center slider")
+    MIXSRC_SLIDER4,               LUA_EXPORT("rs2", "Right center slider")
+    MIXSRC_LAST_POT = MIXSRC_SLIDER4,
+  #else
+    MIXSRC_LAST_POT = MIXSRC_SLIDER2,
+  #endif
 #else
   MIXSRC_P1 = MIXSRC_FIRST_POT,
   MIXSRC_P2,

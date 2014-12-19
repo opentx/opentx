@@ -1410,7 +1410,7 @@ void getADC()
   for (uint32_t i=0; i<4; i++) {
     adcRead();
     for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
-      temp[x] += Analog_values[x];
+      temp[x] += getAnalogValue(x);
     }
 #if defined(PCBTARANIS)
     if (calibrationState) break;

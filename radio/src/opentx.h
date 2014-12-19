@@ -953,17 +953,26 @@ enum Analogs {
   STICK3,
   STICK4,
 #if defined(PCBTARANIS)
-  POT1,
-  POT2,
-  POT3,
-  POT_LAST = POT3,
-  SLIDER1,
-  SLIDER2,
+    POT1,
+    POT2,
+    POT3,
+    #if defined(REV9E)
+      POT4,
+      POT_LAST = POT4,
+    #else
+      POT_LAST = POT3,
+    #endif
+    SLIDER1,
+    SLIDER2,
+    #if defined(REV9E)
+      SLIDER3,
+      SLIDER4,
+    #endif
 #else
-  POT1,
-  POT2,
-  POT3,
-  POT_LAST = POT3,
+    POT1,
+    POT2,
+    POT3,
+    POT_LAST = POT3,
 #endif
   TX_VOLTAGE,
 #if defined(PCBSKY9X) && !defined(REVA)
