@@ -355,10 +355,8 @@
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\010")
   #define TR_VUNITSSYSTEM      TR("Metr. ""Imper.", "Metryczn""Imperial")
-  #define LEN_VTELEMUNIT_METR  "\003"
-  #define TR_VTELEMUNIT_METR   "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT_METR LENGTH_UNIT_METR "@\0 ""%\0 ""mA\0""mAh""W\0 "
-  #define LEN_VTELEMUNIT_IMP   "\003"
-  #define TR_VTELEMUNIT_IMP    "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT_IMP  LENGTH_UNIT_IMP  "@\0 ""%\0 ""mA\0""mAh""W\0 "
+  #define LEN_VTELEMUNIT       "\003"
+  #define TR_VTELEMUNIT        "-\0 ""v\0 ""A\0 ""mA\0""kts""m/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""dBm""rpm""g\0 ""@\0"
 #else
   #if defined(IMPERIAL_UNITS)
     #define LENGTH_UNIT        LENGTH_UNIT_IMP
@@ -706,7 +704,7 @@
 #define TR_PITCH_AT_MAX        INDENT "Ton przy Max"
 #define TR_REPEAT_AT_ZERO      INDENT "Powtórz przy Zerze"
 #define TR_SHUTDOWN            "Wyłączanie.."
-#define TR_SAVEMODEL           "Saving model settings"
+#define TR_SAVEMODEL           "Zapisz ustwienia modelu"
 #define TR_BATT_CALIB          "Kalib:Baterii"
 #define TR_CURRENT_CALIB       " +=\006Kalibracja prądu"
 #define TR_VOLTAGE             TR (INDENT"Napięcie",INDENT"Źródło Napięcia")
@@ -727,7 +725,7 @@
 #define TR_THROTTLEWARN        "GAZ"
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          TR("Przełą","Kontrola")
-#define TR_KEYSTUCK            "Key stuck"
+#define TR_KEYSTUCK            "Blokada klucza"
 #define TR_INVERT_THR          TR("Odw.Gaz?","Odwróć gaz?")
 #define TR_SPEAKER_VOLUME      INDENT "Głośność"
 #define TR_LCD                 "LCD"
@@ -788,7 +786,7 @@
 #define TR_EXTERNALRF          "Zewn.Moduł RF"
 #define TR_FAILSAFE            TR(INDENT"Failsafe",INDENT"Tryb Failsafe")
 #define TR_FAILSAFESET         "USTAWIENIE FAILSAFE"
-#define TR_MENUSENSOR          "SENSOR"
+#define TR_MENUSENSOR          "CZUJNIK"
 #define TR_COUNTRYCODE         "Kod regionu"
 #define TR_VOICELANG           "Język głosu"
 #define TR_UNITSSYSTEM         "Jednostki"
@@ -809,7 +807,7 @@
 #define TR_ABOUT_US            "O nas"
 #define TR_AND_SWITCH          "Przełącznik AND"
 #define TR_SF                  "FS"
-#define TR_GF                  "GF"
+#define TR_GF                  "FG"
 #define TR_SPEAKER             INDENT"Głośnik"
 #define TR_BUZZER              INDENT"Brzęczyk"
 #define TR_BYTES               "bajty"
@@ -822,8 +820,8 @@
 #define TR_MODELIDUSED         TR("ID zajęte","ID modelu zajęte")
 #define TR_MODULE              INDENT "Moduł"
 #define TR_TELEMETRY_TYPE      "Typ Telemetri"
-#define TR_TELEMETRY_SENSORS   "Sensors"
-#define TR_TELEMETRY_NEWSENSOR INDENT "Add a new sensor..."
+#define TR_TELEMETRY_SENSORS   "Czujniki"
+#define TR_TELEMETRY_NEWSENSOR INDENT "Dodaj nowy czujnik..."
 #define TR_CHANNELRANGE        TR(INDENT "ZakrKn",INDENT "Zakres kanału")
 #define TR_LOWALARM            INDENT "Alarm niski"
 #define TR_CRITICALALARM       INDENT "Alarm krytyczny"
@@ -954,4 +952,26 @@
 #define TR_MODS_FORBIDDEN      "Modyfikacje zabronione!"
 #define TR_UNLOCKED            "Odblokowane"
 #define TR_ID                  "ID"
-#define TR_PRECISION           "Precision"
+#define TR_PRECISION           "Precyzja "
+
+#define ZSTR_RSSI              "RSSI"
+#define ZSTR_A1                "A1"
+#define ZSTR_A2                "A2"
+#define ZSTR_BATT              "Bat."
+#define ZSTR_ALT               "Wysok."
+#define ZSTR_TEMP              "Temp"
+#define ZSTR_RPM               "RPM"
+#define ZSTR_FUEL              "Paliwo"
+#define ZSTR_VSPD              "VSpd"
+#define ZSTR_ACCX              "AccX"
+#define ZSTR_ACCY              "AccY"
+#define ZSTR_ACCZ              "AccZ"
+#define ZSTR_CURR              "Natęż"
+#define ZSTR_VFAS              "VFAS"
+#define ZSTR_ASPD              "ASpd"
+#define ZSTR_GSPD              "GSpd"
+#define ZSTR_HDG               "Kurs"
+#define ZSTR_CELLS             "Cele"
+#define ZSTR_GPSALT            "GAlt"
+#define ZSTR_GPSDATETIME       "Data"
+#define ZSTR_GPS               "GPS"
