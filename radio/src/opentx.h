@@ -860,6 +860,7 @@ extern uint8_t trimsDisplayMask;
 #define TMR_RUNNING  1
 #define TMR_NEGATIVE 2
 #define TMR_STOPPED  3
+#define TMR_TRIGGED  4
 void timerReset(uint8_t idx);
 void flightReset();
 
