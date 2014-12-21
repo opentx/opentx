@@ -380,6 +380,8 @@ enum PotType {
   #define IS_POT_WITHOUT_DETENT(x)  (true)
 #endif
 
+#define IS_POT(x)                   ((x)>=POT1 && (x)<=POT_LAST)
+
 #define GET_LOWRES_POT_POSITION(i)  (getValue(MIXSRC_FIRST_POT+(i)) >> 4)
 #define SAVE_POT_POSITION(i)        g_model.potPosition[i] = GET_LOWRES_POT_POSITION(i)
 

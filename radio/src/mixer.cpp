@@ -495,7 +495,9 @@ void evalInputs(uint8_t mode)
         if (tmp==0 || (tmp==1 && (bpanaCenter & mask))) {
           anaCenter |= mask;
           if ((g_model.beepANACenter & mask) && !(bpanaCenter & mask) && !calibrationState) {
-            AUDIO_POT_MIDDLE(i);
+            if (!IS_POT(i) || IS_POT_AVAILABLE(i)) {
+              AUDIO_POT_MIDDLE(i);
+            }
           }
         }
       }
