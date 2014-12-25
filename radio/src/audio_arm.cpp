@@ -496,10 +496,14 @@ void audioTask(void* pdata)
 
 void mixSample(uint16_t * result, int sample, unsigned int fade)
 {
+#if defined(SIMU)
+  *result = limit(0, *result + ((sample >> fade) ), 0xFFFF);
+#else
   *result = limit(0, *result + ((sample >> fade) >> 4), 4095);
+#endif
 }
 
-#if defined(SDCARD) && !defined(SIMU)
+#if defined(SDCARD)
 
 #define RIFF_CHUNK_SIZE 12
 uint8_t wavBuffer[AUDIO_BUFFER_SIZE*2];
@@ -692,7 +696,11 @@ void AudioQueue::wakeup()
 
     // write silence in the buffer
     for (uint32_t i=0; i<AUDIO_BUFFER_SIZE; i++) {
+#if defined(SIMU)
+      buffer->data[i] = 0x8000; /* silence */
+#else
       buffer->data[i] = 0x8000 >> 4; /* silence */
+#endif
     }
 
     // mix the priority context (only tones)
@@ -748,6 +756,7 @@ void AudioQueue::wakeup()
     // push the buffer if needed
     if (size > 0) {
       __disable_irq();
+      // TRACE("pushing buffer %d\n", bufferWIdx);
       bufferWIdx = nextBufferIdx(bufferWIdx);
       buffer->size = size;
       buffer->state = dacQueue(buffer) ? AUDIO_BUFFER_PLAYING : AUDIO_BUFFER_FILLED;
@@ -790,6 +799,10 @@ bool AudioQueue::isPlaying(uint8_t id)
 
 void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t flags, int8_t freqIncr)
 {
+#if !defined(SIMUAUDIO)
+  return;
+#endif
+
   CoEnterMutexSection(audioMutex);
 
   if (freq && freq < BEEP_MIN_FREQ) {
@@ -845,7 +858,11 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 #if defined(SIMU)
   printf("playFile(\"%s\", flags=%x, id=%d)\n", filename, flags, id);
   fflush(stdout);
-#else
+#endif
+
+#if !defined(SIMUAUDIO)
+  return;
+#endif
 
   if (!sdMounted())
     return;
@@ -881,13 +898,16 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   }
 
   CoLeaveMutexSection(audioMutex);
-#endif
 }
 
 void AudioQueue::stopPlay(uint8_t id)
 {
 #if defined(SIMU)
   printf("stopPlay(id=%d)\n", id); fflush(stdout);
+#endif
+
+#if !defined(SIMUAUDIO)
+  return;
 #endif
 
   // For the moment it's only needed to stop the background music

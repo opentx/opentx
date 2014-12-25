@@ -47,6 +47,10 @@
   #include <direct.h>
 #endif
 
+#if defined(SIMUAUDIO) && defined(CPUARM)
+  #include "portaudio.h"
+#endif
+
 volatile uint8_t pina=0xff, pinb=0xff, pinc=0xff, pind, pine=0xff, pinf=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
 uint16_t dummyport16;
@@ -94,7 +98,7 @@ Adc Adc0;
   #define EESIZE_SIMU EESIZE
 #endif
 
-#if defined(SDCARD)
+#if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION)
 char simuSdDirectory[1024] = "";
 #endif
 
@@ -375,6 +379,111 @@ void StopMainThread()
   pthread_join(main_thread_pid, NULL);
 }
 
+#if defined(CPUARM)
+int Volume = volumeScale[VOLUME_LEVEL_DEF];
+bool dacQueue(AudioBuffer *buffer)
+{
+  return false;
+}
+
+void setVolume(uint8_t volume)
+{
+  Volume = volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)];
+}
+#endif
+
+#if defined(SIMUAUDIO) && defined(CPUARM)
+static int audioCallback( const void *inputBuffer, void *outputBuffer,
+                           unsigned long framesPerBuffer,
+                           const PaStreamCallbackTimeInfo* timeInfo,
+                           PaStreamCallbackFlags statusFlags,
+                           void *userData )
+{
+  (void)userData;
+  (void) inputBuffer; /* Prevent unused variable warning. */
+  int16_t *out = (int16_t*)outputBuffer;
+  AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
+  if (nextBuffer) {
+    for(unsigned int i=0; i<framesPerBuffer; i++) {
+      int sample = ((int32_t)(uint32_t)(nextBuffer->data[i]) - 0x8000);  // conversion from uint16_t 
+      *out++ = (int16_t)((sample * Volume)/127);
+    }
+    // printf(".");
+  }
+  else {
+    for(unsigned int i=0; i<framesPerBuffer; i++) {
+      *out++ = 0;  /* silence */
+    }
+    // printf("#");
+  }
+  return paContinue;
+}
+
+PaStream *stream;
+
+
+bool audio_thread_running = false;
+
+void *audio_thread(void *)
+{
+  PaError err = Pa_Initialize();
+  if( err != paNoError ) goto error;
+  /* Open an audio I/O stream. */
+  err = Pa_OpenDefaultStream( &stream,
+                              0,          /* no input channels */
+                              1,          /* stereo output */
+                              paInt16,  /* 16 bit  output */
+                              AUDIO_SAMPLE_RATE,
+                              AUDIO_BUFFER_SIZE,        /* frames per buffer */
+                              audioCallback,
+                              0);
+  if( err != paNoError ) goto error;
+  err = Pa_StartStream( stream );
+  if( err != paNoError ) goto error;
+
+  while (audio_thread_running) {
+    audioQueue.wakeup();
+    sleep(1);
+  }
+
+  err = Pa_StopStream( stream );
+  if( err != paNoError ) goto error;
+  err = Pa_CloseStream( stream );
+  if( err != paNoError ) goto error;
+  Pa_Terminate();
+  return 0;
+
+error:
+  Pa_Terminate();
+  fprintf( stderr, "An error occured while using the portaudio stream\n" );
+  fprintf( stderr, "Error number: %d\n", err );
+  fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
+  return 0;
+}
+
+pthread_t audio_thread_pid;
+void StartAudioThread()
+{ 
+  pthread_attr_t attr;
+  pthread_attr_init(&attr);
+  struct sched_param sp;
+  sp.sched_priority = SCHED_RR;
+  pthread_attr_setschedparam(&attr, &sp);
+  pthread_create(&audio_thread_pid, &attr, &audio_thread, NULL);
+  audio_thread_running = true;
+  return;
+}
+
+void StopAudioThread()
+{
+  audio_thread_running = false;
+  pthread_join(audio_thread_pid, NULL);
+}
+#endif // #if defined(CPUARM)
+
+
+
+
 pthread_t eeprom_thread_pid;
 void StartEepromThread(const char *filename)
 {
@@ -462,7 +571,7 @@ static void EeFsDump(){
 }
 #endif
 
-#if defined(SDCARD)
+#if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION)
 namespace simu {
 #include <dirent.h>
 }
@@ -504,15 +613,17 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 {
   char *path = convertSimuPath(name);
 
-  TRACE("f_open(%s)", path);
-
   if (!(flag & FA_WRITE)) {
     struct stat tmp;
-    if (stat(path, &tmp))
+    if (stat(path, &tmp)) {
+      TRACE("f_open(%s) = FR_INVALID_NAME", path);
       return FR_INVALID_NAME;
+    }
     fil->fsize = tmp.st_size;
   }
   fil->fs = (FATFS*)fopen(path, (flag & FA_WRITE) ? "wb+" : "rb+");
+  fil->fptr = 0;
+  TRACE("f_open(%s) = %p", path, (FILE*)fil->fs);
   return FR_OK;
 }
 
@@ -520,6 +631,7 @@ FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)
 {
   if (fil && fil->fs) {
     *read = fread(data, 1, size, (FILE*)fil->fs);
+    fil->fptr += *read;
     // TRACE("fread(%p) %u, %u", fil->fs, size, *read);
   }
   return FR_OK;
@@ -528,18 +640,21 @@ FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)
 FRESULT f_write (FIL* fil, const void* data, UINT size, UINT* written)
 {
   if (fil && fil->fs) *written = fwrite(data, 1, size, (FILE*)fil->fs);
+  fil->fptr += size;
   return FR_OK;
 }
 
 FRESULT f_lseek (FIL* fil, DWORD offset)
 {
   if (fil && fil->fs) fseek((FILE*)fil->fs, offset, SEEK_SET);
+  fil->fptr = offset;
   return FR_OK;
 }
 
 FRESULT f_close (FIL * fil)
 {
   if (fil && fil->fs) {
+    TRACE("f_close(%p)", (FILE*)fil->fs);
     fclose((FILE*)fil->fs);
     fil->fs = NULL;
   }
@@ -640,7 +755,7 @@ int32_t Card_state = SD_ST_MOUNTED;
 uint32_t Card_CSD[4]; // TODO elsewhere
 #endif
 
-#endif
+#endif  // #if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION)
 
 bool lcd_refresh = true;
 uint8_t lcd_buf[DISPLAY_BUF_SIZE];
