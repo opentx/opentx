@@ -364,7 +364,7 @@ void StartMainThread(bool tests)
   pthread_mutex_init(&audioMutex, NULL);
 #endif
 
-  g_tmr10ms = 0;
+  g_tmr10ms = 1;      // must be non-zero otherwise some SF functions (that use this timer as a marker when it was last executed) will be executed twice on startup
 #if defined(RTCLOCK)
   g_rtcTime = time(0);
 #endif
