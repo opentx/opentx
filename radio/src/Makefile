@@ -299,7 +299,7 @@ CHANNELS_MONITOR_INV_HIDE = NO
 
 # Use newlib-nano 
 # Values = NO, YES
-NANO = NO
+NANO = YES
 
 # Use custom bin based allocator for Lua
 # Values = NO, YES
