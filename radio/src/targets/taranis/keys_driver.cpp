@@ -143,7 +143,7 @@ void readKeysAndTrims()
     ++enuk;
   }
 
-#if defined(REV9E)
+#if defined(REV9E) && !defined(SIMU)
   static rotenc_t rePreviousValue;
   rotenc_t reNewValue = (x9de_rotenc / 2);
   int8_t scrollRE = reNewValue - rePreviousValue;
@@ -321,7 +321,7 @@ void keysInit()
                                   | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP
                                   | PIN_SW_A_L | PIN_SW_D_L | PIN_SW_F | PIN_SW_C_L | PIN_SW_D_H | PIN_SW_H;
 #elif defined(REV9E)
-    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_MINUS | PIN_TRIM_LH_R | PIN_TRIM_LH_L
+    GPIO_InitStructure.GPIO_Pin = PIN_TRIM_LH_R | PIN_TRIM_LH_L
                                   | PIN_SW_F_H | PIN_SW_A_L | PIN_SW_B_H | PIN_SW_B_L | PIN_SW_C_H | PIN_SW_D_H | PIN_SW_D_L | PIN_SW_G_H | PIN_SW_G_L | PIN_SW_L_L | PIN_SW_Q_H | PIN_SW_Q_L;
 #elif defined(REVPLUS)
     GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_ENTER | PIN_BUTTON_MINUS | PIN_TRIM_LH_R | PIN_TRIM_LH_L

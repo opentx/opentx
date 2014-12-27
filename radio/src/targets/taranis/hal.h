@@ -17,12 +17,16 @@
 #define GPIO_BUTTON_MENU                GPIOD->IDR
 #define GPIO_BUTTON_EXIT                GPIOD->IDR
 #define GPIO_BUTTON_PAGE                GPIOD->IDR
-#define PIN_BUTTON_PLUS                 GPIO_Pin_10 // PE.10
-#define PIN_BUTTON_MINUS                GPIO_Pin_11 // PE.11
 #if defined(REV9E)
+  #if defined(SIMU)
+    #define PIN_BUTTON_PLUS             GPIO_Pin_5  // This is for SIMU: reuse rotary encoder pins to map UP and DOWN keyboard keys
+    #define PIN_BUTTON_MINUS            GPIO_Pin_6  // This is for SIMU: reuse rotary encoder pins to map UP and DOWN keyboard keys
+  #endif
   #define GPIO_BUTTON_ENTER             GPIOF->IDR
   #define PIN_BUTTON_ENTER              GPIO_Pin_0  // PF.00
 #else
+  #define PIN_BUTTON_PLUS               GPIO_Pin_10 // PE.10
+  #define PIN_BUTTON_MINUS              GPIO_Pin_11 // PE.11
   #define GPIO_BUTTON_ENTER             GPIOE->IDR
   #define PIN_BUTTON_ENTER              GPIO_Pin_12 // PE.12
 #endif
@@ -258,13 +262,13 @@
 #define PIN_PORTA                       0x0000
 #define PIN_PORTB                       0x0100
 #define PIN_PORTC                       0x0200
-#define PIN_PORTD			            0x0300
+#define PIN_PORTD                       0x0300
 #define PIN_PORTE                       0x0400
 #define PIN_PER_1                       0x0010
 #define PIN_PER_2                       0x0020
 #define PIN_PER_3                       0x0030
 #define PIN_PER_5                       0x0050
-#define PIN_PER_6			0x0060
+#define PIN_PER_6                       0x0060
 #define PIN_PER_8                       0x0080
 // #define PIN_OS2                         0x0000
 #define PIN_OS25                        0x2000

@@ -589,11 +589,11 @@ int8_t getMovedSwitch()
 #if defined(PCBTARANIS)
   for (int i=0; i<NUM_SWITCHES; i++) {
     if (SWITCH_EXISTS(i)) {
-      swarnstate_t mask = (0x03 << (i*2));
+      swarnstate_t mask = ((swarnstate_t)0x03 << (i*2));
       uint8_t prev = (switches_states & mask) >> (i*2);
       uint8_t next = (1024+getValue(MIXSRC_SA+i)) / 1024;
       if (prev != next) {
-        switches_states = (switches_states & (~mask)) | (next << (i*2));
+        switches_states = (switches_states & (~mask)) | ((swarnstate_t)next << (i*2));
         if (i<5)
           result = 1+(3*i)+next;
         else if (i==5)
@@ -660,7 +660,7 @@ void checkSwitches()
 #if defined(PCBTARANIS)
     for (int i=0; i<NUM_SWITCHES; i++) {
       if (SWITCH_WARNING_ALLOWED(i) && !(g_model.switchWarningEnable & (1<<i))) {
-        swarnstate_t mask = (0x03 << (i*2));
+        swarnstate_t mask = ((swarnstate_t)0x03 << (i*2));
         if (!((states & mask) == (switches_states & mask))) {
           warn = true;
         }
@@ -710,18 +710,20 @@ void checkSwitches()
     if ((last_bad_switches != switches_states) || (last_bad_pots != bad_pots)) {
       MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, ((last_bad_switches == 0xff) || (last_bad_pots == 0xff)) ? AU_SWITCH_ALERT : AU_NONE);
       int x = 60, y = 4*FH+3;
+      int numWarnings = 0;
       for (int i=0; i<NUM_SWITCHES; ++i) {
         if (SWITCH_WARNING_ALLOWED(i) && !(g_model.switchWarningEnable & (1<<i))) {
-          swarnstate_t mask = (0x03 << (i*2));
+          swarnstate_t mask = ((swarnstate_t)0x03 << (i*2));
           uint8_t attr = ((states & mask) == (switches_states & mask)) ? 0 : INVERS;
           if (attr) {
-            char c = "\300-\301"[(states & mask) >> (i*2)];
-            putsMixerSource(x, y, MIXSRC_FIRST_SWITCH+i, attr);
-            lcd_putcAtt(lcdNextPos, y, c, attr);
-            x = lcdNextPos + 3;
-            if (x >= LCD_W - 4*FW && y == 4*FH+3) {
-              y = 6*FH-2;
-              x = 60;
+            if (++numWarnings < 7) {
+              char c = "\300-\301"[(states & mask) >> (i*2)];
+              putsMixerSource(x, y, MIXSRC_FIRST_SWITCH+i, attr);
+              lcd_putcAtt(lcdNextPos, y, c, attr);
+              x = lcdNextPos + 3;
+            }
+            else if (numWarnings == 7) {
+              lcd_putsAtt(x, y, "...", 0);
             }
           }
         }
