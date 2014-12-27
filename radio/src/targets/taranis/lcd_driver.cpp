@@ -299,7 +299,7 @@ static void LCD_BL_Config()
   TIM4->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 ; // PWM
   TIM4->CCER = TIM_CCER_CC4E | TIM_CCER_CC2E ;
   TIM4->CCR2 = 0 ;
-  TIM4->CCR4 = 0 ;
+  TIM4->CCR4 = 80 ;
   TIM4->EGR = 0 ;
   TIM4->CR1 = TIM_CR1_CEN ;            // Counter enable
 #else

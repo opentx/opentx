@@ -1811,7 +1811,10 @@ void doMixerCalculations()
             timerState->cnt=0;
           }
           else if (tm == TMRMODE_THR_TRG) {
-            if (val || newTimerVal > 0) {
+            if (val) {
+              timerState->state = TMR_TRIGGED;
+            }
+            if (timerState->state == TMR_TRIGGED) {
               newTimerVal++;
             }
           }

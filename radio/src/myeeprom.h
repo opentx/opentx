@@ -396,11 +396,11 @@ PACK(typedef struct {
   #define IS_TRAINER_EXTERNAL_MODULE() (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
   #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS];
-  #if defined(REV9E)
-    #define swarnstate_t      uint64_t
-  #else
-    #define swarnstate_t      uint32_t
-  #endif
+#if defined(REV9E)
+  #define swarnstate_t      uint64_t
+#else
+  #define swarnstate_t      uint32_t
+#endif
   #define swarnenable_t     uint16_t
 #elif defined(PCBSKY9X)
   enum ModuleIndex {

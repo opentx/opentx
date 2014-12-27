@@ -299,7 +299,7 @@ CHANNELS_MONITOR_INV_HIDE = NO
 
 # Use newlib-nano 
 # Values = NO, YES
-NANO = NO
+NANO = YES
 
 # Use custom bin based allocator for Lua
 # Values = NO, YES
@@ -610,11 +610,16 @@ ifeq ($(PCB), MEGA2560)
   THR_TRACE = YES
   INCDIRS += targets/mega2560 targets/stock FatFs FatFs/option
   BOARDSRC = main_avr.cpp targets/mega2560/board_mega2560.cpp
-  EXTRABOARDSRC = targets/mega2560/lcd_driver_ST7565R.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp  
   CPPSRC += audio_avr.cpp
+
+  ifeq ($(PCBREV), ST7565P)
+    EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  else
+    EXTRABOARDSRC = targets/mega2560/lcd_driver_ST7565R.cpp targets/common_avr/telemetry_driver.cpp 
+  endif
 
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/gruvin9x/diskio.cpp 

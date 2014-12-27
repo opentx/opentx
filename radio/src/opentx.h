@@ -380,6 +380,8 @@ enum PotType {
   #define IS_POT_WITHOUT_DETENT(x)  (true)
 #endif
 
+#define IS_POT(x)                   ((x)>=POT1 && (x)<=POT_LAST)
+
 #define GET_LOWRES_POT_POSITION(i)  (getValue(MIXSRC_FIRST_POT+(i)) >> 4)
 #define SAVE_POT_POSITION(i)        g_model.potPosition[i] = GET_LOWRES_POT_POSITION(i)
 
@@ -858,6 +860,7 @@ extern uint8_t trimsDisplayMask;
 #define TMR_RUNNING  1
 #define TMR_NEGATIVE 2
 #define TMR_STOPPED  3
+#define TMR_TRIGGED  4
 void timerReset(uint8_t idx);
 void flightReset();
 
