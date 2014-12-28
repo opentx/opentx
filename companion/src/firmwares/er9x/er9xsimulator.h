@@ -56,6 +56,8 @@ class Er9xSimulator : public SimulatorInterface {
 
     virtual void sendTelemetry(uint8_t * data, unsigned int len) {};
 
+    virtual void setTrainerInput(unsigned int inputNumber, int16_t value) {};
+
   protected:
 
     Er9xInterface * er9xInterface;

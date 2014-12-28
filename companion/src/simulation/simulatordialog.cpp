@@ -26,6 +26,7 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, unsigned int flags):
   //shorcut for telemetry simulator
   // new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_T), this, SLOT(openTelemetrySimulator()));
   new QShortcut(QKeySequence(Qt::Key_F4), this, SLOT(openTelemetrySimulator()));
+  new QShortcut(QKeySequence(Qt::Key_F5), this, SLOT(openTrainerSimulator()));
 }
 
 uint32_t SimulatorDialog9X::switchstatus = 0;
@@ -224,6 +225,11 @@ void SimulatorDialog::openTelemetrySimulator()
   TelemetrySimu->show();
 }
 
+void SimulatorDialog::openTrainerSimulator()
+{
+  TrainerSimu = new TrainerSimulator(this, simulator);
+  TrainerSimu->show();
+}
 
 void SimulatorDialog::keyPressEvent (QKeyEvent *event)
 {

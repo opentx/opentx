@@ -81,6 +81,9 @@ class SimulatorInterface {
     virtual const char * getError() = 0;
 
     virtual void sendTelemetry(uint8_t * data, unsigned int len) = 0;
+
+    virtual void setTrainerInput(unsigned int inputNumber, int16_t value) = 0;
+
 };
 
 #endif

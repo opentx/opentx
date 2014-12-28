@@ -302,3 +302,9 @@ void OpentxTaranisSimulator::sendTelemetry(uint8_t * data, unsigned int len)
 {
   frskySportProcessPacket(data);
 }
+
+void OpentxTaranisSimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
+{
+#define SETTRAINER_IMPORT
+#include "simulatorimport.h"
+}

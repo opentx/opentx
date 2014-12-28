@@ -5,6 +5,7 @@
 #include "modeledit/node.h"
 #include "eeprominterface.h"
 #include "telemetrysimu.h"
+#include "trainersimu.h"
 
 #ifdef JOYSTICKS
 #include "joystick.h"
@@ -97,6 +98,7 @@ class SimulatorDialog : public QDialog
     int lcdWidth;
     int lcdDepth;
     TelemetrySimulator * TelemetrySimu;
+    TrainerSimulator * TrainerSimu;
 
   protected:
     virtual void closeEvent(QCloseEvent *);
@@ -128,6 +130,7 @@ class SimulatorDialog : public QDialog
     void onTrimPressed();
     void onTrimReleased();
     void openTelemetrySimulator();
+    void openTrainerSimulator();
 
 #ifdef JOYSTICKS
     void onjoystickAxisValueChanged(int axis, int value);

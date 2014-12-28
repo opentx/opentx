@@ -3,7 +3,6 @@
 #include "ui_telemetrysimu.h"
 #include "radio/src/telemetry/frsky.h"
 
-
 TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * simulator):
   QDialog(parent),
   ui(new Ui::TelemetrySimulator),
@@ -18,6 +17,7 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
 
 TelemetrySimulator::~TelemetrySimulator()
 {
+  timer->stop();
   delete ui;
 }
 
@@ -51,24 +51,14 @@ void generateSportPacket(uint8_t * packet, uint8_t dataId, uint8_t prim, uint16_
   setSportPacketCrc(packet);
 }
 
-template<class t> t abs(t a) { return a>0?a:-a; }
-/// liefert das Minimum der Argumente
-template<class t> t min(t a, t b) { return a<b?a:b; }
-/// liefert das Maximum der Argumente
-template<class t> t max(t a, t b) { return a>b?a:b; }
-template<class t> t sgn(t a) { return a>0 ? 1 : (a < 0 ? -1 : 0); }
-template<class t> t limit(t mi, t x, t ma) { return min(max(mi,x),ma); }
-
 void TelemetrySimulator::generateTelemetryFrame()
 {
   static int item = 0;
-  int value;
   uint8_t buffer[FRSKY_SPORT_PACKET_SIZE];
-
 
   switch(item++) {
     case 0:
-      generateSportPacket(buffer, 1, DATA_FRAME, RSSI_ID, limit(0, ui->Rssi->text().toInt(), 0xFF));
+      generateSportPacket(buffer, 1, DATA_FRAME, RSSI_ID, LIMIT<uint32_t>(0, ui->Rssi->text().toInt(), 0xFF));
       break;
 
     case 1:
@@ -76,15 +66,15 @@ void TelemetrySimulator::generateTelemetryFrame()
       break;
 
     case 2:
-      generateSportPacket(buffer, 1, DATA_FRAME, SWR_ID, limit(0, ui->Swr->text().toInt(), 0xFF));
+      generateSportPacket(buffer, 1, DATA_FRAME, SWR_ID, LIMIT<uint32_t>(0, ui->Swr->text().toInt(), 0xFF));
       break;
 
     case 3:
-      generateSportPacket(buffer, 1, DATA_FRAME, ADC1_ID, limit(0, ui->A1->text().toInt(), 0xFF));
+      generateSportPacket(buffer, 1, DATA_FRAME, ADC1_ID, LIMIT<uint32_t>(0, ui->A1->text().toInt(), 0xFF));
       break;
 
     case 4:
-      generateSportPacket(buffer, 1, DATA_FRAME, ADC2_ID, limit(0, ui->A2->text().toInt(), 0xFF));
+      generateSportPacket(buffer, 1, DATA_FRAME, ADC2_ID, LIMIT<uint32_t>(0, ui->A2->text().toInt(), 0xFF));
       break;
 
     default:
