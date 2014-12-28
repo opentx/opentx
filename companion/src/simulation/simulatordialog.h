@@ -4,6 +4,7 @@
 #include <QDialog>
 #include "modeledit/node.h"
 #include "eeprominterface.h"
+#include "telemetrysimu.h"
 
 #ifdef JOYSTICKS
 #include "joystick.h"
@@ -173,10 +174,12 @@ class SimulatorDialogTaranis: public SimulatorDialog
   private:
     Ui::SimulatorDialogTaranis * ui;
     static uint32_t switchstatus;
+    TelemetrySimulator * TelemetrySimu;
 
   private slots:
     void resetSH();
     void on_switchH_sliderReleased();
+    void openTelemetrySimulator();
 };
 
 #endif // SIMULATORDIALOG_H

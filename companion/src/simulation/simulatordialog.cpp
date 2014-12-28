@@ -144,6 +144,10 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, unsigned int fl
   connect(ui->trimHL_L, SIGNAL(released()), this, SLOT(onTrimReleased()));
   connect(ui->trimVL_U, SIGNAL(released()), this, SLOT(onTrimReleased()));
   connect(ui->trimVL_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
+
+  //shorcut for telemetry simulator
+  // new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_T), this, SLOT(openTelemetrySimulator()));
+  new QShortcut(QKeySequence(Qt::Key_F4), this, SLOT(openTelemetrySimulator()));
 }
 
 SimulatorDialogTaranis::~SimulatorDialogTaranis()
@@ -707,6 +711,12 @@ void SimulatorDialogTaranis::resetSH()
 void SimulatorDialogTaranis::on_switchH_sliderReleased()
 {
   QTimer::singleShot(400, this, SLOT(resetSH()));
+}
+
+void SimulatorDialogTaranis::openTelemetrySimulator()
+{
+  TelemetrySimu = new TelemetrySimulator(this, simulator);
+  TelemetrySimu->show();
 }
 
 void SimulatorDialogTaranis::getValues()

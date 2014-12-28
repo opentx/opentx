@@ -1,10 +1,12 @@
 set(simulation_SRCS
   simulatordialog.cpp
+  telemetrysimu.cpp
 )
 
 set(simulation_UIS
   simulatordialog-9x.ui
   simulatordialog-taranis.ui
+  telemetrysimu.ui
 )
 
 set(simulation_HDRS
@@ -14,6 +16,7 @@ set(simulation_HDRS
   xcursorwidget.h
   xmenuwidget.h
   myslider.h
+  telemetrysimu.h
 )
 
 if(SDL_FOUND)

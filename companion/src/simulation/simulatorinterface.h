@@ -80,6 +80,7 @@ class SimulatorInterface {
 
     virtual const char * getError() = 0;
 
+    virtual void sendTelemetry(uint8_t * data, unsigned int len) = 0;
 };
 
 #endif

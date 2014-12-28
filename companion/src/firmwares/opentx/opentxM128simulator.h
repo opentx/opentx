@@ -56,6 +56,7 @@ class OpenTxM128Simulator : public SimulatorInterface {
 
     virtual const char * getError();
 
+    virtual void sendTelemetry(uint8_t * data, unsigned int len) {};
 };
 
 #endif

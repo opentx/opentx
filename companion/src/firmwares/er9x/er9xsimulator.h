@@ -54,6 +54,8 @@ class Er9xSimulator : public SimulatorInterface {
 
     virtual const char * getError();
 
+    virtual void sendTelemetry(uint8_t * data, unsigned int len) {};
+
   protected:
 
     Er9xInterface * er9xInterface;

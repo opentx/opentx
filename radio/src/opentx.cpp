@@ -2768,7 +2768,7 @@ void perMain()
 
   checkBacklight();
 
-#if !defined(CPUARM) && (defined(FRSKY) || defined(MAVLINK))
+#if (!defined(CPUARM) || defined(SIMU)) && (defined(FRSKY) || defined(MAVLINK))
   telemetryWakeup();
 #endif
 

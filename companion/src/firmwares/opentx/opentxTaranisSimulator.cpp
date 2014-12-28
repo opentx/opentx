@@ -297,3 +297,8 @@ const char * OpentxTaranisSimulator::getError()
 #define GETERROR_IMPORT
 #include "simulatorimport.h"
 }
+
+void OpentxTaranisSimulator::sendTelemetry(uint8_t * data, unsigned int len) 
+{
+  frskySportProcessPacket(data);
+}
