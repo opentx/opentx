@@ -96,6 +96,7 @@ class SimulatorDialog : public QDialog
 
     int lcdWidth;
     int lcdDepth;
+    TelemetrySimulator * TelemetrySimu;
 
   protected:
     virtual void closeEvent(QCloseEvent *);
@@ -126,6 +127,7 @@ class SimulatorDialog : public QDialog
     void onTimerEvent();
     void onTrimPressed();
     void onTrimReleased();
+    void openTelemetrySimulator();
 
 #ifdef JOYSTICKS
     void onjoystickAxisValueChanged(int axis, int value);
@@ -174,12 +176,10 @@ class SimulatorDialogTaranis: public SimulatorDialog
   private:
     Ui::SimulatorDialogTaranis * ui;
     static uint32_t switchstatus;
-    TelemetrySimulator * TelemetrySimu;
 
   private slots:
     void resetSH();
     void on_switchH_sliderReleased();
-    void openTelemetrySimulator();
 };
 
 #endif // SIMULATORDIALOG_H
