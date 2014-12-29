@@ -1365,7 +1365,6 @@ FOXLIB=-L/usr/local/lib \
 
 SIMUDEFS = -DSIMU -DLUA_USE_APICHECK
 ifeq ($(SIMUAUDIO), YES)
-  # AUDIOLIB = -lportaudio
   AUDIOLIB = -L/usr/lib/x86_64-linux-gnu/ -lSDLmain -lSDL
   AUDIOINC = -I/usr/include/SDL
   SIMUDEFS += -DSIMUAUDIO
