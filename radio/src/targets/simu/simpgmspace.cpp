@@ -47,6 +47,10 @@
   #include <direct.h>
 #endif
 
+#if defined(SIMUAUDIO) && defined(CPUARM)
+  #include <SDL.h>
+#endif
+
 volatile uint8_t pina=0xff, pinb=0xff, pinc=0xff, pind, pine=0xff, pinf=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
 uint16_t dummyport16;
@@ -94,7 +98,7 @@ Adc Adc0;
   #define EESIZE_SIMU EESIZE
 #endif
 
-#if defined(SDCARD)
+#if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION)
 char simuSdDirectory[1024] = "";
 #endif
 
@@ -360,7 +364,7 @@ void StartMainThread(bool tests)
   pthread_mutex_init(&audioMutex, NULL);
 #endif
 
-  g_tmr10ms = 0;
+  g_tmr10ms = 1;      // must be non-zero otherwise some SF functions (that use this timer as a marker when it was last executed) will be executed twice on startup
 #if defined(RTCLOCK)
   g_rtcTime = time(0);
 #endif
@@ -374,6 +378,214 @@ void StopMainThread()
   main_thread_running = 0;
   pthread_join(main_thread_pid, NULL);
 }
+
+#if defined(CPUARM)
+int Volume = volumeScale[VOLUME_LEVEL_DEF];
+bool dacQueue(AudioBuffer *buffer)
+{
+  return false;
+}
+
+void setVolume(uint8_t volume)
+{
+  Volume = volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)];
+}
+#endif
+
+#if defined(SIMUAUDIO) && defined(CPUARM)
+
+#if 0
+static int audioCallback( const void *inputBuffer, void *outputBuffer,
+                           unsigned long framesPerBuffer,
+                           const PaStreamCallbackTimeInfo* timeInfo,
+                           PaStreamCallbackFlags statusFlags,
+                           void *userData )
+{
+  (void)userData;
+  (void) inputBuffer; /* Prevent unused variable warning. */
+  int16_t *out = (int16_t*)outputBuffer;
+  AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
+  if (nextBuffer) {
+    for(unsigned int i=0; i<framesPerBuffer; i++) {
+      int sample = ((int32_t)(uint32_t)(nextBuffer->data[i]) - 0x8000);  // conversion from uint16_t 
+      *out++ = (int16_t)((sample * Volume)/127);
+    }
+    // printf(".");
+  }
+  else {
+    for(unsigned int i=0; i<framesPerBuffer; i++) {
+      *out++ = 0;  /* silence */
+    }
+    // printf("#");
+  }
+  return paContinue;
+}
+
+PaStream *stream;
+
+
+bool audio_thread_running = false;
+
+void *audio_thread(void *)
+{
+  PaError err = Pa_Initialize();
+  if( err != paNoError ) goto error;
+  /* Open an audio I/O stream. */
+  err = Pa_OpenDefaultStream( &stream,
+                              0,          /* no input channels */
+                              1,          /* stereo output */
+                              paInt16,  /* 16 bit  output */
+                              AUDIO_SAMPLE_RATE,
+                              AUDIO_BUFFER_SIZE,        /* frames per buffer */
+                              audioCallback,
+                              0);
+  if( err != paNoError ) goto error;
+  err = Pa_StartStream( stream );
+  if( err != paNoError ) goto error;
+
+  while (audio_thread_running) {
+    audioQueue.wakeup();
+    sleep(1);
+  }
+
+  err = Pa_StopStream( stream );
+  if( err != paNoError ) goto error;
+  err = Pa_CloseStream( stream );
+  if( err != paNoError ) goto error;
+  Pa_Terminate();
+  return 0;
+
+error:
+  Pa_Terminate();
+  fprintf( stderr, "An error occured while using the portaudio stream\n" );
+  fprintf( stderr, "Error number: %d\n", err );
+  fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
+  return 0;
+}
+#endif
+
+/* The audio function callback takes the following parameters:
+   stream:  A pointer to the audio buffer to be filled
+   len:     The length (in bytes) of the audio buffer
+*/
+
+int leftover_len = 0;
+uint16_t leftover_data[AUDIO_BUFFER_SIZE];
+
+void copyBuffer(uint8_t * dest, uint16_t * buff, unsigned int samples) 
+{
+  for(unsigned int i=0; i<samples; i++) {
+    int sample = ((int32_t)(uint32_t)(buff[i]) - 0x8000);  // conversion from uint16_t 
+    *((uint16_t*)dest) = (int16_t)((sample * Volume)/127);
+    dest += 2;
+  }
+}
+
+void fill_audio(void *udata, Uint8 *stream, int len)
+{
+  // if (len != AUDIO_BUFFER_SIZE) {
+  //   TRACE("len: %d, AUDIO_BUFFER_SIZE: %d", len, AUDIO_BUFFER_SIZE);
+  // }
+
+  SDL_memset(stream, 0, len);
+
+  //if leftover
+  if (leftover_len){
+    // memcpy(stream, leftover_data, leftover_len);
+    copyBuffer(stream, leftover_data, leftover_len);
+    len -= leftover_len*2;
+    stream += leftover_len*2;
+    leftover_len = 0;
+    putchar('l');
+  }
+
+  if (audioQueue.filledAtleast(len/(AUDIO_BUFFER_SIZE*2)+1) ) {
+
+    while(true) {
+      AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
+      if (nextBuffer) {
+        if (len >= nextBuffer->size*2) {
+          // memcpy(stream, nextBuffer->data, nextBuffer->size*2);
+          copyBuffer(stream, nextBuffer->data, nextBuffer->size);
+          stream += nextBuffer->size*2;
+          len -= nextBuffer->size*2;
+          putchar('+');
+        }
+        else {
+          //partial
+          // memcpy(stream, nextBuffer->data, len);
+          copyBuffer(stream, nextBuffer->data, len/2);
+          leftover_len = (nextBuffer->size-len/2);
+          memcpy(leftover_data, &nextBuffer->data[len/2], leftover_len*2);
+          len = 0;
+          putchar('p');
+          break;
+        }
+      }
+      else {
+        break;
+      }
+    }
+  }
+
+  //fill the rest of buffer with silence
+  if (len > 0) {
+    SDL_memset(stream, 0x8000, len);  // make sure this is silence.
+    putchar('.');
+  }
+}
+
+bool audio_thread_running = false;
+
+void *audio_thread(void *)
+{
+   SDL_AudioSpec wanted, have;
+
+    /* Set the audio format */
+    wanted.freq = AUDIO_SAMPLE_RATE;
+    wanted.format = AUDIO_S16SYS;
+    wanted.channels = 1;    /* 1 = mono, 2 = stereo */
+    wanted.samples = AUDIO_BUFFER_SIZE*2;  /* Good low-latency value for callback */
+    wanted.callback = fill_audio;
+    wanted.userdata = NULL;
+
+    /* Open the audio device, forcing the desired format */
+    if ( SDL_OpenAudio(&wanted, &have) < 0 ) {
+        fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
+        return 0;
+    }
+  SDL_PauseAudio(0);
+
+  while (audio_thread_running) {
+    audioQueue.wakeup();
+    sleep(1);
+  }
+  SDL_CloseAudio();
+  return 0;
+}
+
+pthread_t audio_thread_pid;
+void StartAudioThread()
+{ 
+  pthread_attr_t attr;
+  pthread_attr_init(&attr);
+  struct sched_param sp;
+  sp.sched_priority = SCHED_RR;
+  pthread_attr_setschedparam(&attr, &sp);
+  pthread_create(&audio_thread_pid, &attr, &audio_thread, NULL);
+  audio_thread_running = true;
+  return;
+}
+
+void StopAudioThread()
+{
+  audio_thread_running = false;
+  pthread_join(audio_thread_pid, NULL);
+}
+#endif // #if defined(CPUARM)
+
+
+
 
 pthread_t eeprom_thread_pid;
 void StartEepromThread(const char *filename)
@@ -462,7 +674,7 @@ static void EeFsDump(){
 }
 #endif
 
-#if defined(SDCARD)
+#if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION)
 namespace simu {
 #include <dirent.h>
 }
@@ -504,15 +716,17 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 {
   char *path = convertSimuPath(name);
 
-  TRACE("f_open(%s)", path);
-
   if (!(flag & FA_WRITE)) {
     struct stat tmp;
-    if (stat(path, &tmp))
+    if (stat(path, &tmp)) {
+      TRACE("f_open(%s) = FR_INVALID_NAME", path);
       return FR_INVALID_NAME;
+    }
     fil->fsize = tmp.st_size;
   }
   fil->fs = (FATFS*)fopen(path, (flag & FA_WRITE) ? "wb+" : "rb+");
+  fil->fptr = 0;
+  TRACE("f_open(%s) = %p", path, (FILE*)fil->fs);
   return FR_OK;
 }
 
@@ -520,6 +734,7 @@ FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)
 {
   if (fil && fil->fs) {
     *read = fread(data, 1, size, (FILE*)fil->fs);
+    fil->fptr += *read;
     // TRACE("fread(%p) %u, %u", fil->fs, size, *read);
   }
   return FR_OK;
@@ -528,18 +743,21 @@ FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)
 FRESULT f_write (FIL* fil, const void* data, UINT size, UINT* written)
 {
   if (fil && fil->fs) *written = fwrite(data, 1, size, (FILE*)fil->fs);
+  fil->fptr += size;
   return FR_OK;
 }
 
 FRESULT f_lseek (FIL* fil, DWORD offset)
 {
   if (fil && fil->fs) fseek((FILE*)fil->fs, offset, SEEK_SET);
+  fil->fptr = offset;
   return FR_OK;
 }
 
 FRESULT f_close (FIL * fil)
 {
   if (fil && fil->fs) {
+    TRACE("f_close(%p)", (FILE*)fil->fs);
     fclose((FILE*)fil->fs);
     fil->fs = NULL;
   }
@@ -640,7 +858,7 @@ int32_t Card_state = SD_ST_MOUNTED;
 uint32_t Card_CSD[4]; // TODO elsewhere
 #endif
 
-#endif
+#endif  // #if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION)
 
 bool lcd_refresh = true;
 uint8_t lcd_buf[DISPLAY_BUF_SIZE];

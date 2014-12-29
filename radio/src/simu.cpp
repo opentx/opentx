@@ -389,6 +389,7 @@ int main(int argc,char **argv)
   printf("Model size = %d\n", (int)sizeof(g_model));
 
   StartEepromThread(argc >= 2 ? argv[1] : "eeprom.bin");
+  StartAudioThread();
   StartMainThread();
 
 #if defined(PCBTARANIS)
