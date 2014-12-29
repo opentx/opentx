@@ -235,7 +235,7 @@ void disable_dsm2(uint32_t port);
 // ADC driver
 void adcInit();
 void adcRead(void);
-//extern uint16_t Analog_values[];
+inline uint16_t getAnalogValue(uint32_t value);
 
 // Buzzer driver
 void buzzerSound(uint8_t duration);

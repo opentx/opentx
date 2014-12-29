@@ -36,7 +36,7 @@
 
 #include "../opentx.h"
 
-volatile uint16_t Analog_values[NUMBER_ANALOG];
+uint16_t Analog_values[NUMBER_ANALOG];
 
 #if defined(FRSKY_STICKS)
 const char ana_direction[NUMBER_ANALOG] = {1, 1, 0, 1 ,0 ,1 ,0, 0, 0};
@@ -126,4 +126,9 @@ void adcRead()
     }
   }  
 #endif
+}
+
+uint16_t getAnalogValue(uint32_t value)
+{
+  return Analog_values[value];
 }

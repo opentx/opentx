@@ -47,8 +47,11 @@ enum menuGeneralHwItems {
   ITEM_SETUP_HW_POT1,
   ITEM_SETUP_HW_POT2,
   CASE_REVPLUS(ITEM_SETUP_HW_POT3)
+  CASE_REV9E(ITEM_SETUP_HW_POT4)
   ITEM_SETUP_HW_LS,
   ITEM_SETUP_HW_RS,
+  CASE_REV9E(ITEM_SETUP_HW_LS2)
+  CASE_REV9E(ITEM_SETUP_HW_RS2)
   ITEM_SETUP_HW_LABEL_SWITCHES,
   ITEM_SETUP_HW_SA,
   ITEM_SETUP_HW_SB,
@@ -111,6 +114,10 @@ void menuGeneralHardware(uint8_t event)
       case ITEM_SETUP_HW_STICK4:
       case ITEM_SETUP_HW_LS:
       case ITEM_SETUP_HW_RS:
+#if defined(REV9E)
+      case ITEM_SETUP_HW_LS2:
+      case ITEM_SETUP_HW_RS2:
+#endif
       {
         int idx = (k<=ITEM_SETUP_HW_STICK4 ? k-ITEM_SETUP_HW_STICK1 : k-ITEM_SETUP_HW_LS+7);
         lcd_putsiAtt(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
@@ -127,6 +134,9 @@ void menuGeneralHardware(uint8_t event)
       case ITEM_SETUP_HW_POT2:
 #if defined(REVPLUS)
       case ITEM_SETUP_HW_POT3:
+#endif
+#if defined(REV9E)
+      case ITEM_SETUP_HW_POT4:
 #endif
       {
         int idx = k - ITEM_SETUP_HW_POT1;

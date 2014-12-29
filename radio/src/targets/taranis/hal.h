@@ -222,7 +222,12 @@
 #else
   #define PIN_FLP_J2                    GPIO_Pin_0  // PB.00
 #endif
-#if defined(REVPLUS)
+#if defined(REV9E)
+  #define PIN_FLP_J3                    GPIO_Pin_10 // PF.10
+  #define PIN_FLP_J4                    GPIO_Pin_9  // PF.09
+  #define PIN_FLP_J5                    GPIO_Pin_8  // PF.08
+  #define PIN_FLP_J6                    GPIO_Pin_1  // PB.01
+#elif defined(REVPLUS)
   #define PIN_FLP_J3                    GPIO_Pin_1  // PB.01
 #endif
 #define PIN_MVOLT                       GPIO_Pin_0  // PC.00
@@ -264,6 +269,7 @@
 #define PIN_PORTC                       0x0200
 #define PIN_PORTD                       0x0300
 #define PIN_PORTE                       0x0400
+#define PIN_PORTF                       0x0500
 #define PIN_PER_1                       0x0010
 #define PIN_PER_2                       0x0020
 #define PIN_PER_3                       0x0030

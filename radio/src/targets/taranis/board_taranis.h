@@ -192,7 +192,8 @@ void watchdogInit(unsigned int duration);
 // ADC driver
 void adcInit(void);
 void adcRead(void);
-extern volatile uint16_t Analog_values[];
+inline uint16_t getAnalogValue(uint32_t value);
+
 #if defined(REV3)
   #define BATT_SCALE    120
 #else

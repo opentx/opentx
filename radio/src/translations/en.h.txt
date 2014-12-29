@@ -428,7 +428,7 @@
 #define LEN_VSRCRAW            "\004"
 
 #if defined(PCBTARANIS) && defined(REV9E)
-  #define TR_POTS_VSRCRAW      "S1\0 ""S2\0 ""S3\0 ""LS\0 ""RS\0 "
+  #define TR_POTS_VSRCRAW      "S1\0 ""S2\0 ""S3\0 ""S4\0 ""LS\0 ""RS\0 ""LS2\0""RS2\0"
   #define TR_SW_VSRCRAW        "SA\0 ""SB\0 ""SC\0 ""SD\0 ""SE\0 ""SF\0 ""SG\0 ""SH\0 ""SI\0 ""SJ\0 ""SK\0 ""SL\0 ""SM\0 ""SN\0 ""SO\0 ""SP\0 ""SQ\0 ""SR\0 "
 #elif defined(PCBTARANIS)
   #define TR_POTS_VSRCRAW      "S1\0 ""S2\0 ""S3\0 ""LS\0 ""RS\0 "
@@ -471,7 +471,7 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_6POS_POTS         "S11""S12""S13""S14""S15""S16""S21""S22""S23""S24""S25""S26""S31""S32""S33""S34""S35""S36"
+  #define TR_6POS_POTS         "S11""S12""S13""S14""S15""S16""S21""S22""S23""S24""S25""S26""S31""S32""S33""S34""S35""S36""S41""S42""S43""S44""S45""S46"
   #define TR_VSWITCHES         "---" TR_PHYS_SWITCHES TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
 #else
   #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES TR_PHYS_SWITCHES TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
