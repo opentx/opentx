@@ -298,12 +298,10 @@ void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags a
 void lcdSetRefVolt(unsigned char val);
 void lcd_clear();
 void lcdSetContrast();
+void lcdInit();
 #if defined(PCBTARANIS)
-  void lcdInitStart();
-  void lcdInitFinish();
   void lcdOff();
 #else
-  void lcdInit();
   #define lcdOff()
 #endif
 

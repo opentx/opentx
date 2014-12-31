@@ -28,22 +28,16 @@
   extern void hw_delay(uint16_t time);
 #endif
 
-#if !defined(BOOT)
-  bool lcdInitFinished = false;
-#endif
+bool lcdInitFinished = false;
+void lcdInitFinish();
 
 /*
-  In boot-loader: init_hw_timer() must be called before the first call to this function!
-  In opentx: delaysInit() must be called before the first call to this function!
+  delaysInit() must be called before the first call to this function!
 */
 static void Delay(uint32_t ms)
 {
   while(ms--) {
-#if !defined(BOOT)
     delay_01us(10000);
-#else
-    hw_delay(10000);
-#endif
   }
 }
 
@@ -192,11 +186,9 @@ void lcdRefreshWait()
 
 void lcdRefresh(bool wait)
 {
-#if !defined(BOOT)
   if (!lcdInitFinished) {
     lcdInitFinish();
   }
-#endif
 
   //wait if previous DMA transfer still active
   WAIT_FOR_DMA_END();
@@ -241,11 +233,9 @@ extern "C" void DMA1_Stream7_IRQHandler()
 #else     // #if defined(REVPLUS)
 void lcdRefresh()
 {  
-#if !defined(BOOT)
   if (!lcdInitFinished) {
     lcdInitFinish();
   }
-#endif
 
   for (uint32_t y=0; y<LCD_H; y++) {
     uint8_t *p = &displayBuf[y/2 * LCD_W];
@@ -371,7 +361,7 @@ void lcdOff()
 
   Make sure that Delay() is functional before calling this function!
 */
-void lcdInitStart()
+void lcdInit()
 {
   LCD_BL_Config();
   LCD_Hardware_Init();
@@ -385,13 +375,12 @@ void lcdInitStart()
 }
 
 /*
-  Finishes LCD initialization. Must be called after the lcdInitStart().
+  Finishes LCD initialization. It is called auto-magically when first LCD command is 
+  issued by the other parts of the code.
 */
 void lcdInitFinish()
 {
-#if !defined(BOOT)
   lcdInitFinished = true;
-#endif
 
 #if defined(REVPLUS)
   initLcdSpi();
@@ -425,6 +414,9 @@ void lcdInitFinish()
 
 void lcdSetRefVolt(uint8_t val)
 {
+  if (!lcdInitFinished) {
+    lcdInitFinish();
+  }
   WAIT_FOR_DMA_END();
   AspiCmd(0x81);	//Set Vop
   AspiCmd(val+CONTRAST_OFS);		//0--255

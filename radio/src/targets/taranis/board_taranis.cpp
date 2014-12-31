@@ -125,7 +125,7 @@ void boardInit()
   keysInit();
   adcInit();
   delaysInit();
-  lcdInitStart();
+  lcdInit();    // delaysInit() must be called before
   audioInit();
   init2MhzTimer();
   init5msTimer();
