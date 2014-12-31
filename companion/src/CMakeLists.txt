@@ -52,6 +52,17 @@ ELSE()
     MESSAGE( "PHONON not found!" )
 ENDIF()
 
+MESSAGE( STATUS "Looking for PortAudio " )
+FIND_PACKAGE(PortAudio)
+IF ( PORTAUDIO_FOUND AND (PORTAUDIO_VERSION EQUAL 19))
+  INCLUDE_DIRECTORIES( ${PORTAUDIO_INCLUDE_DIR} )
+  MESSAGE("PortAudio Include Path: " ${PORTAUDIO_INCLUDE_DIR} )
+  MESSAGE("PortAudio library: " ${PORTAUDIO_LIBRARY} )
+  ADD_DEFINITIONS( -DSIMUAUDIO )
+ELSE()
+    MESSAGE( "PortAudio not found! Sumulator audio will not work!" )
+ENDIF()
+
 ADD_CUSTOM_COMMAND(
   COMMAND ${XSDCXX_EXECUTABLE} cxx-tree --root-element-all --generate-serialization --output-dir ${PROJECT_BINARY_DIR}/ ${PROJECT_SOURCE_DIR}/radio.xsd
   OUTPUT ${PROJECT_BINARY_DIR}/radio.hxx ${PROJECT_BINARY_DIR}/radio.cxx
@@ -283,7 +294,7 @@ ELSE( )
     ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${companion_SRCS} ${companion_QM} )
 ENDIF( )
 
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} modeledit simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} modeledit simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} ${PORTAUDIO_LIBRARIES} )
 
 ############# Standalone simu ###############
 
@@ -345,9 +356,9 @@ else()
 endif()
 
 if(SDL_FOUND)
-  target_link_libraries(simulator simulation common ${QT_LIBRARIES} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+  target_link_libraries(simulator simulation common ${QT_LIBRARIES} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} ${PORTAUDIO_LIBRARIES})
 else()
-  target_link_libraries(simulator simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+  target_link_libraries(simulator simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} ${PORTAUDIO_LIBRARIES})
 endif()
 
 ############# Packaging ####################

@@ -109,10 +109,9 @@ inline int geteepromsize() {
 #include "radio/src/bmp.cpp"
 #include "radio/src/haptic.cpp"
 #include "radio/src/targets/taranis/haptic_driver.cpp"
-// TODO Because FatFS in not C++ there cannot be namespaces there and the functions are defined several times!
-#undef SDCARD
+// Because FatFS in not C++ there cannot be namespaces there and the functions are defined several times!
+#define SKIP_FATFS_DECLARATION
 #include "radio/src/targets/simu/simpgmspace.cpp"
-#define SDCARD
 #include "radio/src/translations.cpp"
 #include "radio/src/fonts.cpp"
 #include "radio/src/telemetry/frsky.cpp"
@@ -224,18 +223,21 @@ void OpentxTaranisSimulator::start(QByteArray & eeprom, bool tests)
 {
   memcpy(Open9xX9D::eeprom, eeprom.data(), std::min<int>(sizeof(Open9xX9D::eeprom), eeprom.size()));
   StartEepromThread(NULL);
+  StartAudioThread();
   StartMainThread(tests);
 }
 
 void OpentxTaranisSimulator::start(const char * filename, bool tests)
 {
   StartEepromThread(filename);
+  StartAudioThread();
   StartMainThread(tests);
 }
 
 void OpentxTaranisSimulator::stop()
 {
   StopMainThread();
+  StopAudioThread();
   StopEepromThread();
 }
 
