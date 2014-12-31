@@ -353,8 +353,10 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   PULSESSRC = pulses/pulses_avr.cpp
 
   ifeq ($(PCB), 9XR)
+    FLAVOUR = 9xr
     CPPDEFS += -DPCB9XR
   else
+    FLAVOUR = 9x
     CPPDEFS += -DPCB9X
   endif
   
@@ -417,8 +419,10 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   PULSESSRC = pulses/pulses_avr.cpp
   
   ifeq ($(PCB), 9XR128)
+    FLAVOUR = 9xr128
     CPPDEFS += -DPCB9XR128
   else
+    FLAVOUR = 9x128
     CPPDEFS += -DPCB9X128
   endif
   
@@ -477,8 +481,10 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   PULSESSRC = pulses/pulses_avr.cpp
 
   ifeq ($(PCB), 9XR2561)
+    FLAVOUR = 9xr2561
     CPPDEFS += -DPCB9XR2561
   else
+    FLAVOUR = 9x2561
     CPPDEFS += -DPCB9X2561
   endif
     
@@ -517,6 +523,7 @@ endif
 
 ifeq ($(PCB), GRUVIN9X)
   # 9x radio with a gruvin9x replacement board
+  FLAVOUR = gruvin9x
   ARCH = AVR
   ifeq ($(PCBREV), REV0)
     CPPDEFS = -DREV0
@@ -562,6 +569,7 @@ endif
 
 ifeq ($(PCB), MEGA2560)
   # ARDUINO2560 DIY RADIO
+  FLAVOUR = mega2560
   ARCH = AVR
   TRGT = avr-
   MCU = atmega2560
@@ -594,17 +602,21 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   ARCH = ARM
   CPPDEFS = -Dat91sam3s4
   ifeq ($(PCB), 9XRPRO)
+    FLAVOUR = 9xrpro
     CPPDEFS += -DREVX
     LDSCRIPT = targets/sky9x/sam3s8c_flash.ld
   else ifeq ($(PCBREV), REVA)
+    FLAVOUR = sky9x
     CPPDEFS += -DREVA
     LDSCRIPT = targets/sky9x/sam3s2c_flash.ld
     CPPSRC += targets/sky9x/coproc_driver.cpp 
   else ifeq ($(PCBREV), REVB)
+    FLAVOUR = sky9x
     CPPDEFS += -DREVB -DCOPROCESSOR
     LDSCRIPT = targets/sky9x/sam3s4c_flash.ld
     CPPSRC += targets/sky9x/coproc_driver.cpp
   else
+    FLAVOUR = sky9x
     CPPDEFS += -DREVC -DCOPROCESSOR
     LDSCRIPT = targets/sky9x/sam3s4c_flash.ld
     CPPSRC += targets/sky9x/coproc_driver.cpp
@@ -664,14 +676,18 @@ endif
 ifeq ($(PCB), TARANIS)
   # TARANIS radio
   ARCH = ARM
-  ifeq ($(PCBREV), REV3)
-    CPPDEFS = -DREV3
-  else ifeq ($(PCBREV), REV4a)
-    CPPDEFS = -DREV4a
-  else ifeq ($(PCBREV), REVPLUS)
+  ifeq ($(PCBREV), REVPLUS)
+    FLAVOUR = taranis-plus
     CPPDEFS = -DREVPLUS
     HAPTIC = YES
+  else ifeq ($(PCBREV), REV3)
+    FLAVOUR = taranis
+    CPPDEFS = -DREV3
+  else ifeq ($(PCBREV), REV4a)
+    FLAVOUR = taranis
+    CPPDEFS = -DREV4a
   else
+    FLAVOUR = taranis
     CPPDEFS = -DREV4
   endif
   ifeq ($(SPORT_FILE_LOG), YES)
@@ -1166,6 +1182,7 @@ MSG_CLEANING = Cleaning project:
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
 
+CPPFLAGS += -DFLAVOUR=\"$(FLAVOUR)\"
 ARMCPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=opentx.lst -DRUN_FROM_FLASH=1 -O$(OPT) $(CPPFLAGS) -fdata-sections -ffunction-sections $(INCFLAGS) $(EXTRAINCFLAGS) $(GENDEPFLAGS) 
 AVRCPPFLAGS = -mmcu=$(MCU) -I. -x c++ -O$(OPT) $(CPPFLAGS) $(INCFLAGS) $(EXTRAINCFLAGS) $(GENDEPFLAGS) -fwhole-program
 

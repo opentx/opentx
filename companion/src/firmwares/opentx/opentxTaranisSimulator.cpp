@@ -55,8 +55,8 @@
 #define HAPTIC
 #define REVPLUS
 #define OVERRIDE_CHANNEL_FUNCTION
-
 #define NUM_POTS  5
+#define FLAVOUR "taranis-plus"
 
 #undef min
 #undef max

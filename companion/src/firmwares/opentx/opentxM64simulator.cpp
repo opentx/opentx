@@ -52,10 +52,9 @@
 #define FRSKY_STICKS
 #define OVERRIDE_CHANNEL_FUNCTION
 #define FAS_OFFSET
-
 #define EEPROM_VARIANT SIMU_STOCK_VARIANTS
 #define GAUGES
-
+#define FLAVOUR "9x"
 #define NUM_POTS  3
 
 #undef min
