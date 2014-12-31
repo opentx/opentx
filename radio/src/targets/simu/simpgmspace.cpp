@@ -394,81 +394,6 @@ void setVolume(uint8_t volume)
 
 #if defined(SIMUAUDIO) && defined(CPUARM)
 
-#if 0
-static int audioCallback( const void *inputBuffer, void *outputBuffer,
-                           unsigned long framesPerBuffer,
-                           const PaStreamCallbackTimeInfo* timeInfo,
-                           PaStreamCallbackFlags statusFlags,
-                           void *userData )
-{
-  (void)userData;
-  (void) inputBuffer; /* Prevent unused variable warning. */
-  int16_t *out = (int16_t*)outputBuffer;
-  AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
-  if (nextBuffer) {
-    for(unsigned int i=0; i<framesPerBuffer; i++) {
-      int sample = ((int32_t)(uint32_t)(nextBuffer->data[i]) - 0x8000);  // conversion from uint16_t 
-      *out++ = (int16_t)((sample * Volume)/127);
-    }
-    // printf(".");
-  }
-  else {
-    for(unsigned int i=0; i<framesPerBuffer; i++) {
-      *out++ = 0;  /* silence */
-    }
-    // printf("#");
-  }
-  return paContinue;
-}
-
-PaStream *stream;
-
-
-bool audio_thread_running = false;
-
-void *audio_thread(void *)
-{
-  PaError err = Pa_Initialize();
-  if( err != paNoError ) goto error;
-  /* Open an audio I/O stream. */
-  err = Pa_OpenDefaultStream( &stream,
-                              0,          /* no input channels */
-                              1,          /* stereo output */
-                              paInt16,  /* 16 bit  output */
-                              AUDIO_SAMPLE_RATE,
-                              AUDIO_BUFFER_SIZE,        /* frames per buffer */
-                              audioCallback,
-                              0);
-  if( err != paNoError ) goto error;
-  err = Pa_StartStream( stream );
-  if( err != paNoError ) goto error;
-
-  while (audio_thread_running) {
-    audioQueue.wakeup();
-    sleep(1);
-  }
-
-  err = Pa_StopStream( stream );
-  if( err != paNoError ) goto error;
-  err = Pa_CloseStream( stream );
-  if( err != paNoError ) goto error;
-  Pa_Terminate();
-  return 0;
-
-error:
-  Pa_Terminate();
-  fprintf( stderr, "An error occured while using the portaudio stream\n" );
-  fprintf( stderr, "Error number: %d\n", err );
-  fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
-  return 0;
-}
-#endif
-
-/* The audio function callback takes the following parameters:
-   stream:  A pointer to the audio buffer to be filled
-   len:     The length (in bytes) of the audio buffer
-*/
-
 int leftover_len = 0;
 uint16_t leftover_data[AUDIO_BUFFER_SIZE];
 
@@ -531,7 +456,7 @@ void fill_audio(void *udata, Uint8 *stream, int len)
   //fill the rest of buffer with silence
   if (len > 0) {
     SDL_memset(stream, 0x8000, len);  // make sure this is silence.
-    putchar('.');
+    // putchar('.');
   }
 }
 
@@ -677,12 +602,16 @@ static void EeFsDump(){
 #if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION)
 namespace simu {
 #include <dirent.h>
+#include <libgen.h>
 }
 #include "FatFs/ff.h"
 
 #if defined WIN32 || !defined __GNUC__
 #include <direct.h>
 #endif
+
+#include <map>
+#include <string>
 
 #if defined(CPUARM)
 FATFS g_FATFS_Obj;
@@ -699,12 +628,59 @@ char *convertSimuPath(const char *path)
   return result;
 }
 
+typedef std::map<std::string, std::string> filemap_t;
+
+filemap_t fileMap;
+
+char *findTrueFileName(const char *path)
+{
+  TRACE("findTrueFileName(%s)", path);
+  static char result[1024];
+  filemap_t::iterator i = fileMap.find(path);
+  if (i != fileMap.end()) {
+    strcpy(result, i->second.c_str());
+    TRACE("\tfound in map: %s", result);
+    return result;
+  }
+  else {
+    //find file
+    //add to map
+    strcpy(result, path);
+    std::string fileName = simu::basename(result);
+    strcpy(result, path);
+    std::string dirName = simu::dirname(result);
+    simu::DIR * dir = simu::opendir(dirName.c_str());
+    if (dir) {
+      TRACE("\tsearching for: %s", fileName.c_str());
+      for (;;) {
+        struct simu::dirent * res = simu::readdir(dir);
+        if (res == 0) break;
+        if ((res->d_type == simu::DT_REG) || (res->d_type == simu::DT_LNK)) {
+          // TRACE("comparing with: %s", res->d_name);
+          if (!strcasecmp(fileName.c_str(), res->d_name)) {
+            strcpy(result, dirName.c_str());
+            strcat(result, "/");
+            strcat(result, res->d_name);
+            TRACE("\tfound: %s", res->d_name);
+            fileMap.insert(filemap_t:: value_type(path, result));
+            return result;  
+          }
+        }
+      }
+    }
+  }
+  TRACE("\tnot found");
+  strcpy(result, path);
+  return result;
+}
+
 FRESULT f_stat (const TCHAR * name, FILINFO *)
 {
   char *path = convertSimuPath(name);
+  char * realPath = findTrueFileName(path);
   struct stat tmp;
   TRACE("f_stat(%s)", path);
-  return stat(path, &tmp) ? FR_INVALID_NAME : FR_OK;
+  return stat(realPath, &tmp) ? FR_INVALID_NAME : FR_OK;
 }
 
 FRESULT f_mount (FATFS* ,const TCHAR*, BYTE opt)
@@ -715,19 +691,25 @@ FRESULT f_mount (FATFS* ,const TCHAR*, BYTE opt)
 FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 {
   char *path = convertSimuPath(name);
-
+  char * realPath = findTrueFileName(path);
   if (!(flag & FA_WRITE)) {
     struct stat tmp;
-    if (stat(path, &tmp)) {
+    if (stat(realPath, &tmp)) {
       TRACE("f_open(%s) = FR_INVALID_NAME", path);
       return FR_INVALID_NAME;
     }
     fil->fsize = tmp.st_size;
   }
-  fil->fs = (FATFS*)fopen(path, (flag & FA_WRITE) ? "wb+" : "rb+");
+  fil->fs = (FATFS*)fopen(realPath, (flag & FA_WRITE) ? "wb+" : "rb+");
   fil->fptr = 0;
-  TRACE("f_open(%s) = %p", path, (FILE*)fil->fs);
-  return FR_OK;
+  if (fil->fs) {
+    TRACE("f_open(%s) = %p", path, (FILE*)fil->fs);
+    return (fil->fs) ? FR_OK : FR_INVALID_NAME;
+  }
+  else {
+    TRACE("f_open(%s) error: %d (%s)", path, errno, strerror(errno));
+    return FR_INVALID_NAME;
+  }
 }
 
 FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)

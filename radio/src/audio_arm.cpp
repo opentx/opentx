@@ -365,10 +365,12 @@ void referenceModelAudioFiles()
       for (int i=0; i<MAX_FLIGHT_MODES && !found; i++) {
         for (int event=0; event<2; event++) {
           getPhaseAudioFile(path, i, event);
+          TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fn);
           if (!strcasecmp(filename, fn)) {
             sdAvailablePhaseAudioFiles |= MASK_PHASE_AUDIO_FILE(i, event);
             found = true;
-            break;
+            TRACE("referenceModelAudioFiles():FOUND %s", fn);
+            break; // TODO possible bug
           }
         }
       }
@@ -376,9 +378,11 @@ void referenceModelAudioFiles()
       // Switches Audio Files <switchname>-[up|mid|down].wav
       for (int i=0; i<SWSRC_LAST_SWITCH+NUM_XPOTS*XPOTS_MULTIPOS_COUNT && !found; i++) {
         getSwitchAudioFile(path, i);
+        TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fn);
         if (!strcasecmp(filename, fn)) {
           sdAvailableSwitchAudioFiles |= MASK_SWITCH_AUDIO_FILE(i);
           found = true;
+          TRACE("referenceModelAudioFiles():FOUND %s", fn);
         }
       }
 
@@ -386,10 +390,12 @@ void referenceModelAudioFiles()
       for (int i=0; i<NUM_LOGICAL_SWITCH && !found; i++) {
         for (int event=0; event<2; event++) {
           getLogicalSwitchAudioFile(path, i, event);
+          TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fn);
           if (!strcasecmp(filename, fn)) {
             sdAvailableLogicalSwitchAudioFiles |= MASK_LOGICAL_SWITCH_AUDIO_FILE(i, event);
             found = true;
-            break;
+            TRACE("referenceModelAudioFiles():FOUND %s", fn);
+            break; // TODO possible bug
           }
         }
       }
