@@ -26,27 +26,20 @@
   extern void hw_delay(uint16_t time);
 #endif
 
-#if !defined(BOOT)
-  bool lcdInitFinished = false;
-#endif
+bool lcdInitFinished = false;
+void lcdInitFinish();
 
 /*
-  In boot-loader: init_hw_timer() must be called before the first call to this function!
-  In opentx: delaysInit() must be called before the first call to this function!
+  delaysInit() must be called before the first call to this function!
 */
 static void Delay(uint32_t ms)
 {
   while(ms--) {
-#if !defined(BOOT)
     delay_01us(10000);
-#else
-    hw_delay(10000);
-#endif
   }
 }
 
 #if defined(REVPLUS)
-static void LCD_Hardware_Init() ;
 
 // New hardware SPI driver for LCD
 void initLcdSpi()
@@ -81,9 +74,6 @@ void setupSPIdma()
   DMA1_Stream7->M0AR = (uint32_t)displayBuf;
   DMA1_Stream7->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
   DMA1_Stream7->NDTR = LCD_W*LCD_H/8*4 ;
-
-//	NVIC_SetPriority( DMA1_Stream7_IRQn, 2 ) ; // Lower priority interrupt
-//	NVIC_EnableIRQ(DMA1_Stream7_IRQn) ;
 }
 
 static void LCD_Init()
@@ -180,11 +170,9 @@ void Set_Address(u8 x, u8 y)
 #if defined(REVPLUS)
 void lcdRefresh(bool wait)
 {
-#if !defined(BOOT)
   if (!lcdInitFinished) {
     lcdInitFinish();
   }
-#endif
 
   Set_Address(0, 0);
 	
@@ -215,11 +203,9 @@ void lcdRefresh(bool wait)
 #else
 void lcdRefresh()
 {  
-#if !defined(BOOT)
   if (!lcdInitFinished) {
     lcdInitFinish();
   }
-#endif
 
   for (uint32_t y=0; y<LCD_H; y++) {
     uint8_t *p = &displayBuf[y/2 * LCD_W];
@@ -296,7 +282,7 @@ static void LCD_BL_Config()
 #endif
 }
 
-/** Init the anolog spi gpio
+/** Init the analog SPI GPIO
 */
 static void LCD_Hardware_Init()
 {
@@ -344,7 +330,7 @@ void lcdOff()
 
   Make sure that Delay() is functional before calling this function!
 */
-void lcdInitStart()
+void lcdInit()
 {
   LCD_BL_Config();
   LCD_Hardware_Init();
@@ -358,14 +344,12 @@ void lcdInitStart()
 }
 
 /*
-  Finishes LCD initialization. Must be called after the lcdInitStart().
+  Finishes LCD initialization. It is called auto-magically when first LCD command is 
+  issued by the other parts of the code.
 */
-
 void lcdInitFinish()
 {
-#if !defined(BOOT)
   lcdInitFinished = true;
-#endif
 
 #if defined(REVPLUS)
   initLcdSpi();
@@ -399,6 +383,9 @@ void lcdInitFinish()
 
 void lcdSetRefVolt(uint8_t val)
 {
+  if (!lcdInitFinished) {
+    lcdInitFinish();
+  }
   AspiCmd(0x81);	//Set Vop
   AspiCmd(val+CONTRAST_OFS);		//0--255
 }

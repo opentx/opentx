@@ -265,12 +265,10 @@ void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t offset=0, uint
 void lcdSetRefVolt(unsigned char val);
 void lcd_clear();
 void lcdSetContrast();
+void lcdInit();
 #if defined(PCBTARANIS)
-  void lcdInitStart();
-  void lcdInitFinish();
   void lcdOff();
 #else
-  void lcdInit();
   #define lcdOff()
 #endif
 

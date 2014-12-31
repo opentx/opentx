@@ -107,7 +107,7 @@ void boardInit()
   keysInit();
   adcInit();
   delaysInit();
-  lcdInitStart();
+  lcdInit();    // delaysInit() must be called before
   audioInit();
   init5msTimer();
   __enable_irq();

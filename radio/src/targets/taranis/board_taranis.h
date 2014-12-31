@@ -111,10 +111,14 @@ extern uint16_t sessionTimer;
 #define SLAVE_MODE()         (g_model.trainerMode == 1)
 #define TRAINER_CONNECTED()  (GPIO_ReadInputDataBit(GPIOTRNDET, PIN_TRNDET) == Bit_RESET)
 
-void delaysInit(void);
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 void delaysInit(void);
 void delay_01us(uint16_t nb);
+#ifdef __cplusplus
+}
+#endif
 
 // SD driver
 #if defined(SIMU)
