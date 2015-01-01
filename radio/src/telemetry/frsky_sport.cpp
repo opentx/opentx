@@ -265,12 +265,10 @@ void processHubPacket(uint8_t id, uint16_t value)
 bool checkSportPacket(uint8_t *packet)
 {
   short crc = 0;
-  for (int i=1; i<FRSKY_SPORT_PACKET_SIZE; i++) {
-    crc += packet[i]; //0-1FF
-    crc += crc >> 8; //0-100
-    crc &= 0x00ff;
-    crc += crc >> 8; //0-0FF
-    crc &= 0x00ff;
+  for (int i=1; i<FRSKY_SPORT_PACKET_SIZE; ++i) {
+    crc += packet[i]; // 0-1FE
+    crc += crc >> 8;  // 0-1FF
+    crc &= 0x00ff;    // 0-FF
   }
   return (crc == 0x00ff);
 }
