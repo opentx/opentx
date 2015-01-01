@@ -351,6 +351,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp
+  CPPSRC += debug.cpp
 
   ifeq ($(PCB), 9XR)
     FLAVOUR = 9xr
@@ -417,6 +418,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp
+  CPPSRC += debug.cpp
   
   ifeq ($(PCB), 9XR128)
     FLAVOUR = 9xr128
@@ -479,6 +481,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp
+  CPPSRC += debug.cpp
 
   ifeq ($(PCB), 9XR2561)
     FLAVOUR = 9xr2561
@@ -543,7 +546,7 @@ ifeq ($(PCB), GRUVIN9X)
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp  
-  CPPSRC += audio_avr.cpp haptic.cpp
+  CPPSRC += audio_avr.cpp haptic.cpp debug.cpp
   
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DRTCLOCK
@@ -583,7 +586,7 @@ ifeq ($(PCB), MEGA2560)
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp  
-  CPPSRC += audio_avr.cpp
+  CPPSRC += audio_avr.cpp debug.cpp
 
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/gruvin9x/diskio.cpp 
@@ -649,7 +652,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp pulses/dsm2_arm.cpp
   CPPSRC += audio_arm.cpp haptic.cpp gui/view_about.cpp gui/view_text.cpp
   CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/second_serial_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
-  CPPSRC += loadboot.cpp
+  CPPSRC += loadboot.cpp debug.cpp
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DVOICE
     INCDIRS += FatFs FatFs/option
@@ -668,7 +671,6 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
     CPPSRC += targets/sky9x/bluetooth.cpp 
   endif
   ifeq ($(DEBUG), YES)
-    CPPSRC += debug.cpp
     SRC += targets/sky9x/syscalls.c
   endif
 endif
@@ -739,7 +741,7 @@ ifeq ($(PCB), TARANIS)
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
   CPPSRC += audio_arm.cpp
   CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/uart3_driver.cpp targets/taranis/telemetry_driver.cpp
-  CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp gui/view_text.cpp loadboot.cpp
+  CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp gui/view_text.cpp loadboot.cpp debug.cpp
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
@@ -797,9 +799,6 @@ ifeq ($(PCB), TARANIS)
   ifeq ($(RTCLOCK), YES)
     CPPDEFS += -DRTCLOCK
     CPPSRC += rtc.cpp targets/taranis/rtc_driver.cpp
-  endif
-  ifeq ($(DEBUG), YES)
-    CPPSRC += debug.cpp
   endif
   ifeq ($(DSM2), PPM)
     CPPSRC += pulses/dsm2_arm.cpp

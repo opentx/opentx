@@ -168,7 +168,7 @@ void simuSetKey(uint8_t key, bool state)
 
 void simuSetTrim(uint8_t trim, bool state)
 {
-  // printf("trim=%d state=%d\n", trim, state); fflush(stdout);
+  // TRACE("trim=%d state=%d", trim, state);
 
   switch (trim) {
     TRIM_CASE(0, GPIO_TRIM_LH_L, PIN_TRIM_LH_L)
@@ -185,7 +185,7 @@ void simuSetTrim(uint8_t trim, bool state)
 // TODO use a better numbering to allow google tests to work on Taranis
 void simuSetSwitch(uint8_t swtch, int8_t state)
 {
-  // printf("swtch=%d state=%d\n", swtch, state); fflush(stdout);
+  // TRACE("swtch=%d state=%d", swtch, state);
   switch (swtch) {
 #if defined(PCBTARANIS)
     SWITCH_3_CASE(0, GPIO_PIN_SW_A_L, GPIO_PIN_SW_A_H, PIN_SW_A_L, PIN_SW_A_H)
@@ -416,7 +416,7 @@ void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t si
   assert(size);
 
   if (fp) {
-    // printf("EEPROM read (pos=%d, size=%d)\n", pointer_eeprom, size); fflush(stdout);
+    // TRACE("EEPROM read (pos=%d, size=%d)", pointer_eeprom, size);
     if (fseek(fp, (long)pointer_eeprom, SEEK_SET)==-1) perror("error in fseek");
     if (fread(pointer_ram, size, 1, fp) <= 0) perror("error in fread");
   }
@@ -431,7 +431,7 @@ void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t si
   assert(size);
 
   if (fp) {
-    // printf("EEPROM write (pos=%d, size=%d)\n", pointer_eeprom, size); fflush(stdout);
+    // TRACE("EEPROM write (pos=%d, size=%d)", pointer_eeprom, size);
     if (fseek(fp, (long)pointer_eeprom, SEEK_SET)==-1) perror("error in fseek");
     if (fwrite(pointer_ram, size, 1, fp) <= 0) perror("error in fwrite");
   }
@@ -591,7 +591,7 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
 
 FRESULT f_mkfs (const TCHAR *path, BYTE, UINT)
 {
-  printf("Format SD...\n"); fflush(stdout);
+  TRACE("Format SD...");
   return FR_OK;
 }
 

@@ -293,12 +293,10 @@ inline bool EeFsOpen()
 
 #ifdef SIMU
   if (eeFs.version != EEFS_VERS) {
-    printf("bad eeFs.version (%d instead of %d)\n", eeFs.version, EEFS_VERS);
-    fflush(stdout);
+    TRACE("bad eeFs.version (%d instead of %d)", eeFs.version, EEFS_VERS);
   }
   if (eeFs.mySize != sizeof(eeFs)) {
-    printf("bad eeFs.mySize (%d instead of %d)\n", (int)eeFs.mySize, (int)sizeof(eeFs));
-    fflush(stdout);
+    TRACE("bad eeFs.mySize (%d instead of %d)", (int)eeFs.mySize, (int)sizeof(eeFs));
   }
 #endif  
 
@@ -605,7 +603,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   strcpy_P(&buf[len], STR_MODELS_EXT);
 
 #ifdef SIMU
-  printf("SD-card backup filename=%s\n", buf); fflush(stdout);
+  TRACE("SD-card backup filename=%s", buf);
 #endif
 
   result = f_open(&g_oLogFile, buf, FA_CREATE_ALWAYS | FA_WRITE);

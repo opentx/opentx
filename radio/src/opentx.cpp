@@ -1716,7 +1716,7 @@ FORCEINLINE void evalTrims()
 void testFunc()
 {
 #ifdef SIMU
-  printf("testFunc\n"); fflush(stdout);
+  TRACE("testFunc");
 #endif
 }
 #endif

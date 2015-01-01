@@ -41,7 +41,7 @@ struct t_voice Voice ;
 void pushPrompt(uint16_t value)
 {
 #ifdef SIMU
-  printf("playFile(\"%04d.ad4\")\n", value); fflush(stdout);
+  TRACE("playFile(\"%04d.ad4\")", value);
 #endif
 
   struct t_voice *vptr;

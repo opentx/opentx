@@ -34,28 +34,44 @@
  *
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 #include <stdio.h>
 #include <stdarg.h>
 
-#if !defined(SIMU) && defined(DEBUG)
+#if (defined(DEBUG) && defined(CPUARM)) || defined(SIMU)
 
-Fifo<512> debugRxFifo;
+#if defined(SIMU)
+traceCallbackFunc traceCallback = 0;
+#endif
+
+#if defined(SIMU)
+  #define PRINTF_BUFFER_SIZE    1024
+#else
+  #define PRINTF_BUFFER_SIZE    256
+#endif
 
 // Outputs a string to the UART
 void debugPuts(const char *format, ...)
 {
   va_list arglist;
-  char tmp[256];
+  char tmp[PRINTF_BUFFER_SIZE];
 
   va_start(arglist, format);
-  vsnprintf(tmp, 256, format, arglist);
+  vsnprintf(tmp, PRINTF_BUFFER_SIZE, format, arglist);
   va_end(arglist);
 
+#if defined(SIMU)
+  fputs(tmp, stdout);
+  fflush(stdout);
+  if (traceCallback) {
+    traceCallback(tmp);
+  }
+#else
   const char *t = tmp;
   while (*t) {
     debugPutc(*t++);
   }
+#endif
 }
 
 void dump(unsigned char *data, unsigned int size)
@@ -73,9 +89,13 @@ void dump(unsigned char *data, unsigned int size)
   debugPuts("\n\r");
 }
 
+
+#if !defined(SIMU)
+
 uint32_t Mem_address ;
 uint32_t Next_mem_address ;
 uint32_t Memaddmode ;
+Fifo<512> debugRxFifo;
 
 void crlf()
 {
@@ -86,55 +106,55 @@ void crlf()
 // Send a single 4 bit value to the RS232 port as a hex digit
 void hex_digit_send( unsigned char c )
 {
-	c &= 0x0F ;
-	if ( c > 9 )
-	{
-		c += 7 ;
-	}
-	c += '0' ;
-	debugPutc( c ) ;
+  c &= 0x0F ;
+  if ( c > 9 )
+  {
+    c += 7 ;
+  }
+  c += '0' ;
+  debugPutc( c ) ;
 }
 
 // Send the 8 bit value to the RS232 port as 2 hex digits
 void p2hex( unsigned char c )
 {
-//	asm("swap %c") ;
-	hex_digit_send( c >> 4 ) ;
-//	asm("swap %c") ;
-	hex_digit_send( c ) ;
+//  asm("swap %c") ;
+  hex_digit_send( c >> 4 ) ;
+//  asm("swap %c") ;
+  hex_digit_send( c ) ;
 }
 
 // Send the 16 bit value to the RS232 port as 4 hex digits
 void p4hex( uint16_t value )
 {
-	p2hex( value >> 8 ) ;
-	p2hex( value ) ;
+  p2hex( value >> 8 ) ;
+  p2hex( value ) ;
 }
 
 // Send the 32 bit value to the RS232 port as 8 hex digits
 void p8hex( uint32_t value )
 {
-	p4hex( value >> 16 ) ;
-	p4hex( value ) ;
+  p4hex( value >> 16 ) ;
+  p4hex( value ) ;
 }
 
 
 static void dispw_256( register uint32_t address, register uint32_t lines )
 {
-	register uint32_t i ;
-	register uint32_t j ;
-	address &= 0xFFFFFFFC ;
-	for ( i = 0 ; i < lines ; i += 1 )
-	{
-		p8hex( address ) ;
-		for ( j = 0 ; j < 4 ; j += 1 )
-		{
-			debugPutc(' ') ;
-			p8hex( *( (uint32_t *)address ) ) ;
-			address += 4 ;
-		}
-		crlf() ;
-	}
+  register uint32_t i ;
+  register uint32_t j ;
+  address &= 0xFFFFFFFC ;
+  for ( i = 0 ; i < lines ; i += 1 )
+  {
+    p8hex( address ) ;
+    for ( j = 0 ; j < 4 ; j += 1 )
+    {
+      debugPutc(' ') ;
+      p8hex( *( (uint32_t *)address ) ) ;
+      address += 4 ;
+    }
+    crlf() ;
+  }
 }
 
 void debugTask(void* pdata)
@@ -214,7 +234,8 @@ void debugTask(void* pdata)
 
   }
 }
-#endif
+#endif  // #if !defined(SIMU)
+#endif  // #if (defined(DEBUG) && defined(CPUARM)) || defined(SIMU)
 
 
 #if defined(DEBUG_TRACE_BUFFER)

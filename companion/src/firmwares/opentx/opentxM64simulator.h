@@ -59,6 +59,7 @@ class OpenTxM64Simulator : public SimulatorInterface {
 
     virtual void setTrainerInput(unsigned int inputNumber, int16_t value) {};
 
+    virtual void installTraceHook(traceCallbackFunc hook) {};
 };
 
 #endif
