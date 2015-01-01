@@ -421,7 +421,7 @@ void fill_audio(void *udata, Uint8 *stream, int len)
     len -= leftover_len*2;
     stream += leftover_len*2;
     leftover_len = 0;
-    putchar('l');
+    // putchar('l');
   }
 
   if (audioQueue.filledAtleast(len/(AUDIO_BUFFER_SIZE*2)+1) ) {
@@ -434,7 +434,7 @@ void fill_audio(void *udata, Uint8 *stream, int len)
           copyBuffer(stream, nextBuffer->data, nextBuffer->size);
           stream += nextBuffer->size*2;
           len -= nextBuffer->size*2;
-          putchar('+');
+          // putchar('+');
         }
         else {
           //partial
@@ -443,7 +443,7 @@ void fill_audio(void *udata, Uint8 *stream, int len)
           leftover_len = (nextBuffer->size-len/2);
           memcpy(leftover_data, &nextBuffer->data[len/2], leftover_len*2);
           len = 0;
-          putchar('p');
+          // putchar('p');
           break;
         }
       }
