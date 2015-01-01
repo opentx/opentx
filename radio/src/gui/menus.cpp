@@ -130,35 +130,41 @@ int8_t checkIncDecMovedSwitch(int8_t val)
 int8_t  checkIncDec_Ret;
 
 #if defined(CPUARM)
-int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, uint8_t i_flags, IsValueAvailable isValueAvailable)
-#else
-int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, uint8_t i_flags)
-#endif
+const CheckIncDecStops &stops100  = (const CheckIncDecStops&) (const int[]) { 3, -100, 0, 100 };
+const CheckIncDecStops &stops1000 = (const CheckIncDecStops&) (const int[]) { 3, -1000, 0, 1000 };
+
+int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
-  int16_t newval = val;
+  int newval = val;
 
 #if defined(DBLKEYS)
-  uint8_t in = KEYS_PRESSED();
+  unsigned int in = KEYS_PRESSED();
   if (!(i_flags & NO_DBLKEYS) && (EVT_KEY_MASK(event))) {
     bool dblkey = true;
-    if (DBLKEYS_PRESSED_RGT_LFT(in))
-      newval = -val;
+    if (DBLKEYS_PRESSED_RGT_LFT(in)) {
+      if (isValueAvailable && isValueAvailable(-val))
+        newval = -val;
+      else
+        event = 0;
+    }
     else if (DBLKEYS_PRESSED_RGT_UP(in)) {
-      newval = (i_max > 100 ? 100 : i_max);
-#if defined(CPUARM)
-      if (i_flags & DBLKEYS_1000) newval *= 10;
-#endif
+      newval = (i_max > stops.max() ? stops.max() : i_max);
+      while (isValueAvailable && !isValueAvailable(newval) && newval>i_min) {
+        --newval;
+      }
     }
     else if (DBLKEYS_PRESSED_LFT_DWN(in)) {
-      newval = (i_min < -100 ? -100 : i_min);
-#if defined(CPUARM)
-      if (i_flags & DBLKEYS_1000) newval *= 10;
-#endif
+      newval = (i_min < stops.min() ? stops.min() : i_min);
+      while (isValueAvailable && !isValueAvailable(newval) && newval<i_max) {
+        ++newval;
+      }
     }
-    else if (DBLKEYS_PRESSED_UP_DWN(in))
+    else if (DBLKEYS_PRESSED_UP_DWN(in)) {
       newval = 0;
-    else
+    }
+    else {
       dblkey = false;
+    }
 
     if (dblkey) {
       killEvents(KEY_UP);
@@ -181,7 +187,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #else
   if (event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_RIGHT) || (s_editMode>0 && (IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP)))) {
 #endif
-#if defined(CPUARM)
+
     do {
       if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
         newval += min(10, i_max-val);
@@ -190,23 +196,22 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
         newval++;
       }
     } while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
+
     if (newval > i_max) {
       newval = val;
       killEvents(event);
       AUDIO_WARNING2();
     }
-    else
-#else
-    newval++;
-#endif
-    AUDIO_KEYPAD_UP();
+    else {
+      AUDIO_KEYPAD_UP();
+    }
   }
 #if defined(PCBTARANIS)
   else if (s_editMode>0 && (IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN))) {
 #else
   else if (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_REPT(KEY_LEFT) || (s_editMode>0 && (IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN)))) {
 #endif
-#if defined(CPUARM)
+
     do {
       if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
         newval -= min(10, val-i_min);
@@ -215,15 +220,115 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
         newval--;
       }
     } while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
+
     if (newval < i_min) {
       newval = val;
       killEvents(event);
       AUDIO_WARNING2();
     }
-    else
-#else
-    newval--;
+    else {
+      AUDIO_KEYPAD_DOWN();
+    }
+  }
+
+  if (!READ_ONLY() && i_min==0 && i_max==1 && (event==EVT_KEY_BREAK(KEY_ENTER) || IS_ROTARY_BREAK(event))) {
+    s_editMode = 0;
+    newval = !val;
+  }
+
+#if defined(NAVIGATION_POT1)
+  // change values based on P1
+  newval -= p1valdiff;
+  p1valdiff = 0;
 #endif
+
+#if defined(AUTOSWITCH)
+  if (i_flags & INCDEC_SWITCH) {
+    newval = checkIncDecMovedSwitch(newval);
+  }
+#endif
+
+#if defined(AUTOSOURCE)
+  if (i_flags & INCDEC_SOURCE) {
+    if (s_editMode>0) {
+      int source = GET_MOVED_SOURCE(i_min, i_max);
+      if (source) {
+        newval = source;
+      }
+#if defined(AUTOSWITCH)
+      else {
+        unsigned int swtch = abs(getMovedSwitch());
+        if (swtch) {
+          newval = switchToMix(swtch);
+        }
+      }
+#endif
+    }
+  }
+#endif
+
+  if (newval > i_max || newval < i_min) {
+    newval = (newval > i_max ? i_max : i_min);
+    killEvents(event);
+    AUDIO_WARNING2();
+  }
+
+  if (newval != val) {
+    if (!(i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && stops.contains(newval) && !IS_ROTARY_EVENT(event)) {
+      pauseEvents(event); // delay before auto-repeat continues
+      if (newval>val) // without AUDIO it's optimized, because the 2 sounds are the same
+        AUDIO_KEYPAD_UP();
+      else
+        AUDIO_KEYPAD_DOWN();
+    }
+    eeDirty(i_flags & (EE_GENERAL|EE_MODEL));
+    checkIncDec_Ret = (newval > val ? 1 : -1);
+  }
+  else {
+    checkIncDec_Ret = 0;
+  }
+  return newval;
+}
+#else
+int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, uint8_t i_flags)
+{
+  int16_t newval = val;
+
+#if defined(DBLKEYS)
+  uint8_t in = KEYS_PRESSED();
+  if (!(i_flags & NO_DBLKEYS) && (EVT_KEY_MASK(event))) {
+    bool dblkey = true;
+    if (DBLKEYS_PRESSED_RGT_LFT(in))
+      newval = -val;
+    else if (DBLKEYS_PRESSED_RGT_UP(in)) {
+      newval = (i_max > 100 ? 100 : i_max);
+    }
+    else if (DBLKEYS_PRESSED_LFT_DWN(in)) {
+      newval = (i_min < -100 ? -100 : i_min);
+    }
+    else if (DBLKEYS_PRESSED_UP_DWN(in)) {
+      newval = 0;
+    }
+    else {
+      dblkey = false;
+    }
+
+    if (dblkey) {
+      killEvents(KEY_UP);
+      killEvents(KEY_DOWN);
+      killEvents(KEY_RIGHT);
+      killEvents(KEY_LEFT);
+      event = 0;
+    }
+  }
+#endif
+
+  if (event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_RIGHT) || (s_editMode>0 && (IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP)))) {
+    newval++;
+    AUDIO_KEYPAD_UP();
+  }
+  else if (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_REPT(KEY_LEFT) || (s_editMode>0 && (IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN)))) {
+    newval--;
     AUDIO_KEYPAD_DOWN();
   }
 
@@ -285,6 +390,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   }
   return newval;
 }
+#endif
 
 #if defined(CPUM64)
 int8_t checkIncDecModel(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max)
@@ -1587,10 +1693,16 @@ bool isSwitchAvailableInMixes(int swtch)
 bool isSwitchAvailableInTimers(int swtch)
 {
   if (swtch >= 0) {
-    if (swtch < TMRMODE_COUNT) {
+    if (swtch < TMRMODE_COUNT)
       return true;
-    }
-    swtch -= TMRMODE_COUNT-1;
+    else
+      swtch -= TMRMODE_COUNT-1;
+  }
+  else {
+    if (swtch > -TMRMODE_COUNT)
+      return false;
+    else
+      swtch += TMRMODE_COUNT-1;
   }
 
   return isSwitchAvailable(swtch, TimersContext);
