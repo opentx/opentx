@@ -664,19 +664,6 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
   }
 
   if (IS_ARM(firmware->getBoard())) {
-    ui->telemetryProtocol->addItem(tr("FrSky S.PORT"), 0);
-    ui->telemetryProtocol->addItem(tr("FrSky D"), 1);
-    if (IS_9XRPRO(firmware->getBoard())) {
-      ui->telemetryProtocol->addItem(tr("FrSky D (cable)"), 2);
-    }
-    ui->telemetryProtocol->setCurrentIndex(model.telemetryProtocol);
-  }
-  else {
-    ui->telemetryProtocolLabel->hide();
-    ui->telemetryProtocol->hide();
-  }
-
-  if (IS_ARM(firmware->getBoard())) {
     ui->A1GB->hide();
     ui->A2GB->hide();
     for (int i=0; i<C9X_MAX_SENSORS; ++i) {
@@ -747,6 +734,19 @@ void TelemetryPanel::setup()
     QString firmware_id = g.profile[g.id()].fwType();
 
     lock = true;
+
+    if (IS_ARM(firmware->getBoard())) {
+      ui->telemetryProtocol->addItem(tr("FrSky S.PORT"), 0);
+      ui->telemetryProtocol->addItem(tr("FrSky D"), 1);
+      if (IS_9XRPRO(firmware->getBoard())) {
+        ui->telemetryProtocol->addItem(tr("FrSky D (cable)"), 2);
+      }
+      ui->telemetryProtocol->setCurrentIndex(model->telemetryProtocol);
+    }
+    else {
+      ui->telemetryProtocolLabel->hide();
+      ui->telemetryProtocol->hide();
+    }
 
     ui->rssiAlarm1SB->setValue(model->frsky.rssiAlarms[0].value);
     ui->rssiAlarm2SB->setValue(model->frsky.rssiAlarms[1].value);
@@ -890,8 +890,10 @@ void TelemetryPanel::populateCurrentSource()
 
 void TelemetryPanel::on_telemetryProtocol_currentIndexChanged(int index)
 {
-  model->telemetryProtocol = index;
-  emit modified();
+  if (!lock) {
+    model->telemetryProtocol = index;
+    emit modified();
+  }
 }
 
 void TelemetryPanel::onAnalogModified()
@@ -901,16 +903,20 @@ void TelemetryPanel::onAnalogModified()
 
 void TelemetryPanel::on_bladesCount_editingFinished()
 {
-  model->frsky.blades = ui->bladesCount->value();
-  emit modified();
+  if (!lock) {
+    model->frsky.blades = ui->bladesCount->value();
+    emit modified();
+  }
 }
 
 void TelemetryPanel::on_frskyProtoCB_currentIndexChanged(int index)
 {
-  model->frsky.usrProto = index;
-  for (int i=0; i<firmware->getCapability(TelemetryCustomScreens); i++)
-    telemetryCustomScreens[i]->update();
-  emit modified();
+  if (!lock) {
+    model->frsky.usrProto = index;
+    for (int i=0; i<firmware->getCapability(TelemetryCustomScreens); i++)
+      telemetryCustomScreens[i]->update();
+    emit modified();
+  }
 }
 
 void TelemetryPanel::on_rssiAlarm1CB_currentIndexChanged(int index)
