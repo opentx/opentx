@@ -67,6 +67,11 @@ FirmwareInterface::FirmwareInterface(const QString &filename):
 
   if (flash_size > 0) {
     version = seekLabel(VERS_MARK);
+    if (version.startsWith("opentx-")) {
+      int index = version.lastIndexOf('-');
+      flavour = version.mid(0, index);
+      version = version.mid(index+1);
+    }
     date = seekLabel(DATE_MARK);
     time = seekLabel(TIME_MARK);
     eepromId = seekLabel(EEPR_MARK);
@@ -94,7 +99,7 @@ QString FirmwareInterface::seekString(const QString & string)
   if (start > 0) {
     start += string.length();
     int end = -1;
-    for (int i=start; i<start+20; i++) {
+    for (int i=start; i<start+50; i++) {
       char c = flash.at(i);
       if (c == '\0' || c == '\036') {
         end = i;
