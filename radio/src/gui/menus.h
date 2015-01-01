@@ -185,7 +185,6 @@ extern int8_t s_editMode;       // global editmode
 #define NO_INCDEC_MARKS 0x04
 #define INCDEC_SWITCH   0x08
 #define INCDEC_SOURCE   0x10
-#define DBLKEYS_1000    0x20
 #define INCDEC_REP10    0x40
 #define NO_DBLKEYS      0x80
 
@@ -195,9 +194,31 @@ extern int8_t s_editMode;       // global editmode
 
 #if defined(CPUARM)
 typedef bool (*IsValueAvailable)(int);
-int checkIncDec(uint8_t event, int val, int i_min, int i_max, uint8_t i_flags=0, IsValueAvailable isValueAvailable=NULL);
+struct CheckIncDecStops {
+  const int count;
+  const int stops[];
+  int min() const
+  {
+    return stops[0];
+  }
+  int max() const
+  {
+    return stops[count-1];
+  }
+  bool contains(int value) const
+  {
+    for (int i=0; i<count; ++i) {
+      if (value == stops[i])
+        return true;
+    }
+    return false;
+  }
+};
+extern const CheckIncDecStops &stops100;
+extern const CheckIncDecStops &stops1000;
+int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=NULL, const CheckIncDecStops &stops=stops100);
 #else
-int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, uint8_t i_flags=0);
+int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags=0);
 #endif
 
 int8_t checkIncDecMovedSwitch(int8_t val);

@@ -176,7 +176,7 @@ void menuModelSetup(uint8_t event)
   #define FAILSAFE_ROWS(x)                  ((g_model.moduleData[x].rfProtocol==RF_PROTO_X16 || g_model.moduleData[x].rfProtocol==RF_PROTO_LR12) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW)
   #define MODEL_SETUP_MAX_LINES             (1+ITEM_MODEL_SETUP_MAX)
   #define POT_WARN_ITEMS()                  ((g_model.nPotsToWarn >> 6) ? (uint8_t)NUM_POTS : (uint8_t)0)
-  #define TIMER_ROWS                        2, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
+  #define TIMER_ROWS                        2|NAVIGATION_LINE_BY_LINE, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
   MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, CASE_PCBTARANIS(LABEL(Throttle)) 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsAllowed()), ONE_2x2POS_DEFINED() ? TITLE_ROW : HIDDEN_ROW, POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0, LABEL(InternalModule), 0, IF_INTERNAL_MODULE_ON(1), IF_INTERNAL_MODULE_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), LABEL(ExternalModule), (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, EXTERNAL_MODULE_CHANNELS_ROWS(), (IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW, IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
 #elif defined(CPUARM)
@@ -278,13 +278,22 @@ void menuModelSetup(uint8_t event)
         putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, m_posHorz==0 ? attr : 0);
         putsTimer(MODEL_SETUP_2ND_COLUMN+5*FW-2+5*FWNUM+1, y, timer->start, m_posHorz==1 ? attr : 0, m_posHorz==2 ? attr : 0);
 #if defined(PCBTARANIS)
-        if (attr && m_posHorz < 0) lcd_filled_rect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
+        if (attr && m_posHorz < 0) lcd_filled_rect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);
 #endif
         if (attr && (editMode>0 || p1valdiff)) {
           div_t qr = div(timer->start, 60);
           switch (m_posHorz) {
             case 0:
-              CHECK_INCDEC_MODELVAR_CHECK(event, timer->mode, SWSRC_FIRST, TMRMODE_COUNT+SWSRC_LAST-1/*SWSRC_None removed*/, isSwitchAvailableInTimers);
+            {
+#if defined(CPUARM)
+              int8_t timerMode = timer->mode;
+              if (timerMode < 0) timerMode -= TMRMODE_COUNT-1;
+              CHECK_INCDEC_MODELVAR_CHECK(event, timerMode, -TMRMODE_COUNT-SWSRC_LAST+1, TMRMODE_COUNT+SWSRC_LAST-1, isSwitchAvailableInTimers);
+              if (timerMode < 0) timerMode += TMRMODE_COUNT-1;
+              timer->mode = timerMode;
+#else
+              CHECK_INCDEC_MODELVAR(event, timer->mode, SWSRC_FIRST, TMRMODE_COUNT+SWSRC_LAST-1/*SWSRC_None removed*/);
+#endif
 #if defined(AUTOSWITCH)
               if (s_editMode>0) {
                 int8_t val = timer->mode - (TMRMODE_COUNT-1);
@@ -296,6 +305,7 @@ void menuModelSetup(uint8_t event)
               }
 #endif
               break;
+            }
             case 1:
               CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 59);
               timer->start = qr.rem + qr.quot*60;
