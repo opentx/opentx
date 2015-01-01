@@ -1139,7 +1139,6 @@ void menuModelSetup(uint8_t event)
               case 2:
                 qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
                 timer->start -= qr.rem ;
-                if ((int16_t)timer->start < 0) timer->start=0;
                 break;
             }
           }
@@ -1700,8 +1699,8 @@ void menuModelSetup(uint8_t event)
           lcd_puts(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);
           lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, (int16_t)g_model.ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT);
           lcd_putc(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, 'u');
-          lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (g_model.ppmDelay*50)+300, (m_posHorz < 0 || m_posHorz==1) ? attr : 0);
-          lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, g_model.pulsePol ? '+' : '-', (m_posHorz < 0 || m_posHorz==2) ? attr : 0);
+          lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (g_model.ppmDelay*50)+300, m_posHorz==1 ? attr : 0);
+          lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, g_model.pulsePol ? '+' : '-', m_posHorz==2 ? attr : 0);
           if (attr && (editMode>0 || p1valdiff)) {
             switch (m_posHorz) {
               case 0:
@@ -4687,7 +4686,11 @@ void menuModelLogicalSwitches(uint8_t event)
 
     // CSW name
     uint8_t sw = SWSRC_SW1+k;
+#if defined(PCBTARANIS)
     putsSwitches(0, y, sw, (getSwitch(sw) ? BOLD : 0) | ((sub==k && horz<0) ? INVERS : 0));
+#else
+    putsSwitches(0, y, sw, getSwitch(sw) ? BOLD : 0);
+#endif
 
     // CSW func
     lcd_putsiAtt(CSW_1ST_COLUMN, y, STR_VCSWFUNC, cs->func, horz==0 ? attr : 0);
