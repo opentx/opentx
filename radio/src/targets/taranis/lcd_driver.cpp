@@ -350,7 +350,11 @@ static void LCD_Hardware_Init()
 void lcdOff()
 {
   WAIT_FOR_DMA_END();
-  AspiCmd(0xE2);    //system reset
+  /* 
+  LCD Sleep mode is also good for draining capacitors and enables us
+  to re-init LCD without any delay
+  */
+  AspiCmd(0xAE);    //LCD sleep
   Delay(3);	        //wait for caps to drain
 }
 
@@ -386,27 +390,31 @@ void lcdInitFinish()
   initLcdSpi();
 #endif
   
-  if (WAS_RESET_BY_WATCHDOG()|WAS_RESET_BY_SOFTWARE()) return;    //no need to initialize LCD module
-
   /*
     LCD needs longer time to initialize in low temperatures. The data-sheet 
     mentions a time of at least 150 ms. The delay of 1300 ms was obtained 
     experimentally. It was tested down to -10 deg Celsius.
 
     The longer initialization time seems to only be needed for regular Taranis, 
-    the Taranis Plus has been reported by users to work without any problems.
+    the Taranis Plus (9XE) has been tested to work without any problems at -18 deg Celsius.
     Therefore the delay for T+ is lower.
     
-    If radio is reset by watchdog or boot-loader LCD initialization is skipped,
-    because it was already initialized in previous run.
+    If radio is reset by watchdog or boot-loader the wait is skipped, but the LCD
+    is initialized in any case. 
+
+    This initialization is needed in case the user moved power switch to OFF and 
+    then immediately to ON position, because lcdOff() was called. In any case the LCD 
+    initialization (without reset) is also recommended by the data sheet.
   */
 
+  if (!WAS_RESET_BY_WATCHDOG() && !WAS_RESET_BY_SOFTWARE()) {
 #if !defined(BOOT)
-  while(g_tmr10ms < (RESET_WAIT_DELAY_MS/10)) {};    //wait measured from the power-on
+    while(g_tmr10ms < (RESET_WAIT_DELAY_MS/10)) {};    //wait measured from the power-on
 #else
-  Delay(RESET_WAIT_DELAY_MS);
+    Delay(RESET_WAIT_DELAY_MS);
 #endif
-
+  }
+  
   LCD_Init();
   AspiCmd(0xAF);	//dc2=1, IC into exit SLEEP MODE, dc3=1 gray=ON, dc4=1 Green Enhanc mode disabled
   Delay(20);      //needed for internal DC-DC converter startup
