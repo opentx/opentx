@@ -271,18 +271,21 @@ void SimulatorDialog::onTrimReleased()
 void SimulatorDialog::openTelemetrySimulator()
 {
   TelemetrySimu = new TelemetrySimulator(this, simulator);
+  TelemetrySimu->setAttribute(Qt::WA_DeleteOnClose, true);
   TelemetrySimu->show();
 }
 
 void SimulatorDialog::openTrainerSimulator()
 {
   TrainerSimu = new TrainerSimulator(this, simulator);
+  TrainerSimu->setAttribute(Qt::WA_DeleteOnClose, true);
   TrainerSimu->show();
 }
 
 void SimulatorDialog::openDebugOutput()
 {
   DebugOut = new DebugOutput(this);
+  DebugOut->setAttribute(Qt::WA_DeleteOnClose, true);
   DebugOut->traceCallback(traceBuffer);
   DebugOut->show();
 }
