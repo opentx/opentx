@@ -351,6 +351,13 @@ void simuSetSwitch(uint8_t swtch, int8_t state);
 
 void StartMainThread(bool tests=true);
 void StartEepromThread(const char *filename="eeprom.bin");
+#if defined(SIMUAUDIO) && defined(CPUARM)
+  void StartAudioThread(void);
+  void StopAudioThread(void);
+#else
+  #define StartAudioThread()
+  #define StopAudioThread()
+#endif
 
 extern const char *eepromFile;
 #if defined(PCBTARANIS) || defined(PCBACT)

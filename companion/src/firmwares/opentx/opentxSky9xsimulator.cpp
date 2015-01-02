@@ -182,6 +182,7 @@ void Open9xSky9xSimulator::start(QByteArray & eeprom, bool tests)
   g_rotenc[0] = 0;
   memcpy(Open9xSky9x::eeprom, eeprom.data(), std::min<int>(sizeof(Open9xSky9x::eeprom), eeprom.size()));
   StartEepromThread(NULL);
+  StartAudioThread();
   StartMainThread(tests);
 }
 
@@ -189,12 +190,14 @@ void Open9xSky9xSimulator::start(const char * filename, bool tests)
 {
   g_rotenc[0] = 0;
   StartEepromThread(filename);
+  StartAudioThread();
   StartMainThread(tests);
 }
 
 void Open9xSky9xSimulator::stop()
 {
   StopMainThread();
+  StopAudioThread();
   StopEepromThread();
 }
 
