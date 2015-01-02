@@ -181,8 +181,10 @@ uint32_t telemetryTransmitPending()
 
 void telemetryPortInit(uint32_t baudrate)
 {
+#if !defined(SIMU)
   UART2_Configure(baudrate, Master_frequency);
   startPdcUsartReceive();
+#endif
 }
 
 void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size)

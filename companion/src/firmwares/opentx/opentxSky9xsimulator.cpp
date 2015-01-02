@@ -260,6 +260,12 @@ const char * Open9xSky9xSimulator::getError()
 #include "simulatorimport.h"
 }
 
+void Open9xSky9xSimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
+{
+#define SETTRAINER_IMPORT
+#include "simulatorimport.h"
+}
+
 void Open9xSky9xSimulator::installTraceHook(traceCallbackFunc hook) {
   ::traceCallback = hook;
 }
