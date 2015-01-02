@@ -202,7 +202,7 @@ void menuModelLogicalSwitches(uint8_t event)
         INCDEC_SET_FLAG(EE_MODEL);
         INCDEC_ENABLE_CHECK(NULL);
       }
-      putsChannelValue(CSW_3RD_COLUMN, y, v1_val, calc100toRESX(cs->v2), LEFT|attr2);
+      putsChannelValue(CSW_3RD_COLUMN, y, v1_val, v1_val <= MIXSRC_LAST_CH ? calc100toRESX(cs->v2) : cs->v2, LEFT|attr2);
       v2_min = -30000;
       v2_max = 30000;
     }
