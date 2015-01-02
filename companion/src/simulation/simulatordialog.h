@@ -4,6 +4,9 @@
 #include <QDialog>
 #include "modeledit/node.h"
 #include "eeprominterface.h"
+#include "telemetrysimu.h"
+#include "trainersimu.h"
+#include "debugoutput.h"
 
 #ifdef JOYSTICKS
 #include "joystick.h"
@@ -38,6 +41,7 @@ class SimulatorDialog : public QDialog
 
     void start(const char * filename);
     void start(QByteArray & eeprom);
+    virtual void traceCallback(const char * text);
 
   protected:
     template <class T> void initUi(T * ui);
@@ -95,6 +99,14 @@ class SimulatorDialog : public QDialog
 
     int lcdWidth;
     int lcdDepth;
+    TelemetrySimulator * TelemetrySimu;
+    TrainerSimulator * TrainerSimu;
+    DebugOutput * DebugOut;
+
+    QString traceBuffer;
+    QMutex traceMutex;
+    QList<QString> traceList;
+    void updateDebugOutput();
 
   protected:
     virtual void closeEvent(QCloseEvent *);
@@ -125,6 +137,9 @@ class SimulatorDialog : public QDialog
     void onTimerEvent();
     void onTrimPressed();
     void onTrimReleased();
+    void openTelemetrySimulator();
+    void openTrainerSimulator();
+    void openDebugOutput();
 
 #ifdef JOYSTICKS
     void onjoystickAxisValueChanged(int axis, int value);

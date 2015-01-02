@@ -97,4 +97,9 @@ return lcd_buf;
 return main_thread_error;
 #endif
 
+#ifdef SETTRAINER_IMPORT
+#undef SETTRAINER_IMPORT
+  ppmInValid = 100;
+  g_ppmIns[inputNumber] = LIMIT<int16_t>(-512, value, 512);
+#endif
 

@@ -79,6 +79,7 @@ inline int geteepromsize() {
 #include "radio/src/eeprom_conversions.cpp"
 #include "radio/src/eeprom_rlc.cpp"
 #include "radio/src/opentx.cpp"
+#include "radio/src/debug.cpp"
 #include "radio/src/strhelpers.cpp"
 #include "radio/src/switches.cpp"
 #include "radio/src/curves.cpp"
@@ -296,4 +297,19 @@ const char * OpentxTaranisSimulator::getError()
 {
 #define GETERROR_IMPORT
 #include "simulatorimport.h"
+}
+
+void OpentxTaranisSimulator::sendTelemetry(uint8_t * data, unsigned int len) 
+{
+  frskySportProcessPacket(data);
+}
+
+void OpentxTaranisSimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
+{
+#define SETTRAINER_IMPORT
+#include "simulatorimport.h"
+}
+
+void OpentxTaranisSimulator::installTraceHook(traceCallbackFunc hook) {
+  ::traceCallback = hook;
 }

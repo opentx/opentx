@@ -58,7 +58,7 @@ uint32_t readKeys()
   if (d & PIN_BUTTON_EXIT)
     result |= 0x02 << KEY_EXIT;
 
-  // printf("readKeys(): %x %x => %x\n", d, e, result); fflush(stdout);
+  // TRACE("readKeys(): %x %x => %x", d, e, result);
 
   return result;
 }
@@ -87,7 +87,7 @@ uint32_t readTrims()
   if (~c & PIN_TRIM_RH_R)
     result |= 0x80;         // RH_R
 
-  // printf("readTrims(): %x %x => %x\n", c, e, result); fflush(stdout);
+  // TRACE("readTrims(): %x %x => %x", c, e, result);
 
   return result;
 }

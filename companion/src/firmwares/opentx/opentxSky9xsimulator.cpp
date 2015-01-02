@@ -76,6 +76,7 @@ namespace Open9xSky9x {
 #include "radio/src/eeprom_raw.cpp"
 #include "radio/src/eeprom_conversions.cpp"
 #include "radio/src/opentx.cpp"
+// #include "radio/src/debug.cpp"     // only included once in Taranis simulator because functions are exported as C and don't support namespaces
 #include "radio/src/strhelpers.cpp"
 #include "radio/src/switches.cpp"
 #include "radio/src/mixer.cpp"
@@ -257,4 +258,14 @@ const char * Open9xSky9xSimulator::getError()
 {
 #define GETERROR_IMPORT
 #include "simulatorimport.h"
+}
+
+void Open9xSky9xSimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
+{
+#define SETTRAINER_IMPORT
+#include "simulatorimport.h"
+}
+
+void Open9xSky9xSimulator::installTraceHook(traceCallbackFunc hook) {
+  ::traceCallback = hook;
 }

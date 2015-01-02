@@ -1716,7 +1716,7 @@ FORCEINLINE void evalTrims()
 void testFunc()
 {
 #ifdef SIMU
-  printf("testFunc\n"); fflush(stdout);
+  TRACE("testFunc");
 #endif
 }
 #endif
@@ -2768,7 +2768,7 @@ void perMain()
 
   checkBacklight();
 
-#if !defined(CPUARM) && (defined(FRSKY) || defined(MAVLINK))
+#if (!defined(CPUARM) || defined(SIMU)) && (defined(FRSKY) || defined(MAVLINK))
   telemetryWakeup();
 #endif
 
