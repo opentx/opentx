@@ -39,9 +39,6 @@ enum LogicalSwitchFields {
   LS_FIELD_FUNCTION,
   LS_FIELD_V1,
   LS_FIELD_V2,
-#if defined(PCBTARANIS)
-  LS_FIELD_V3,
-#endif
   LS_FIELD_ANDSW,
 #if defined(CPUARM)
   LS_FIELD_DURATION,
@@ -51,19 +48,10 @@ enum LogicalSwitchFields {
   LS_FIELD_LAST = LS_FIELD_COUNT-1
 };
 
-#if LCD_W >= 212
-  #define CSW_1ST_COLUMN  (4*FW-3)
-  #define CSW_2ND_COLUMN  (8*FW+2+FW/2)
-  #define CSW_3RD_COLUMN  (14*FW+1+FW/2)
-  #define CSW_4TH_COLUMN  (22*FW)
-  #define CSW_5TH_COLUMN  (26*FW+3)
-  #define CSW_6TH_COLUMN  (31*FW+1)
-#else
-  #define CSW_1ST_COLUMN  (4*FW-3)
-  #define CSW_2ND_COLUMN  (8*FW-3)
-  #define CSW_3RD_COLUMN  (13*FW-6)
-  #define CSW_4TH_COLUMN  (18*FW+2)
-#endif
+#define CSW_1ST_COLUMN  (4*FW-3)
+#define CSW_2ND_COLUMN  (8*FW-3)
+#define CSW_3RD_COLUMN  (13*FW-6)
+#define CSW_4TH_COLUMN  (18*FW+2)
 
 #if defined(CPUARM)
   #define INCDEC_DECLARE_VARS(f)  uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
@@ -98,7 +86,7 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lat
 }
 #endif
 
-#if defined(CPUARM) && LCD_W < 212
+#if defined(CPUARM)
 
 #define CSWONE_2ND_COLUMN (11*FW)
 
@@ -320,43 +308,6 @@ void menuModelLogicalSwitches(uint8_t event)
 
 #else
 
-#if defined(PCBTARANIS)
-enum ClipboardType {
-  CLIPBOARD_TYPE_NONE,
-  CLIPBOARD_TYPE_CUSTOM_SWITCH,
-  CLIPBOARD_TYPE_CUSTOM_FUNCTION,
-};
-
-struct Clipboard {
-  ClipboardType type;
-  union {
-    LogicalSwitchData csw;
-    CustomFunctionData cfn;
-  } data;
-};
-
-Clipboard clipboard;
-
-void onLogicalSwitchesMenu(const char *result)
-{
-  int8_t sub = m_posVert-1;
-  LogicalSwitchData * cs = lswAddress(sub);
-
-  if (result == STR_COPY) {
-    clipboard.type = CLIPBOARD_TYPE_CUSTOM_SWITCH;
-    clipboard.data.csw = *cs;
-  }
-  else if (result == STR_PASTE) {
-    *cs = clipboard.data.csw;
-    eeDirty(EE_MODEL);
-  }
-  else if (result == STR_CLEAR) {
-    memset(cs, 0, sizeof(LogicalSwitchData));
-    eeDirty(EE_MODEL);
-  }
-}
-#endif
-
 void menuModelLogicalSwitches(uint8_t event)
 {
   INCDEC_DECLARE_VARS(EE_MODEL);
@@ -366,26 +317,6 @@ void menuModelLogicalSwitches(uint8_t event)
   uint8_t   k = 0;
   int8_t    sub = m_posVert - 1;
   horzpos_t horz = m_posHorz;
-
-#if LCD_W >= 212
-  if (horz>=0) {
-    displayColumnHeader(STR_CSW_HEADERS, horz);
-  }
-#endif
-
-#if defined(PCBTARANIS)
-  if (sub>=0 && horz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
-    killEvents(event);
-    LogicalSwitchData * cs = lswAddress(sub);
-    if (cs->func)
-      MENU_ADD_ITEM(STR_COPY);
-    if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
-      MENU_ADD_ITEM(STR_PASTE);
-    if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw)
-      MENU_ADD_ITEM(STR_CLEAR);
-    menuHandler = onLogicalSwitchesMenu;
-  }
-#endif
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
@@ -597,15 +528,6 @@ void menuModelLogicalSwitches(uint8_t event)
         case LS_FIELD_V2:
           cs->v2 = CHECK_INCDEC_PARAM(event, cs->v2, v2_min, v2_max);
           if (checkIncDec_Ret) TRACE("v2=%d", cs->v2);
-#if defined(PCBTARANIS)
-          if (cstate==LS_FAMILY_OFS && cs->v1!=0 && event==EVT_KEY_LONG(KEY_ENTER)) {
-            killEvents(event);
-            getvalue_t x = getValue(v1_val);
-            if (v1_val < MIXSRC_GVAR1)
-              cs->v2 = calcRESXto100(x);
-            eeDirty(EE_MODEL);
-          }
-#endif
           break;
 #if defined(CPUARM)
         case LS_FIELD_V3:
