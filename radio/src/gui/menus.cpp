@@ -144,10 +144,8 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
   if (!(i_flags & NO_DBLKEYS) && (EVT_KEY_MASK(event))) {
     bool dblkey = true;
     if (DBLKEYS_PRESSED_RGT_LFT(in)) {
-      if (isValueAvailable && isValueAvailable(-val))
+      if (!isValueAvailable || isValueAvailable(-val))
         newval = -val;
-      else
-        event = 0;
     }
     else if (DBLKEYS_PRESSED_RGT_UP(in)) {
       newval = (i_max > stops.max() ? stops.max() : i_max);
