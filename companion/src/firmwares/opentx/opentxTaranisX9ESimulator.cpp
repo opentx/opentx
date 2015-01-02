@@ -56,8 +56,8 @@
 #define REVPLUS
 #define REV9E
 #define OVERRIDE_CHANNEL_FUNCTION
-
 #define NUM_POTS  5
+#define FLAVOUR "taranis-x9e"
 
 #undef min
 #undef max
