@@ -130,8 +130,10 @@ int8_t checkIncDecMovedSwitch(int8_t val)
 int8_t  checkIncDec_Ret;
 
 #if defined(CPUARM)
-const CheckIncDecStops &stops100  = (const CheckIncDecStops&) (const int[]) { 3, -100, 0, 100 };
-const CheckIncDecStops &stops1000 = (const CheckIncDecStops&) (const int[]) { 3, -1000, 0, 1000 };
+const int _stops100[] = { 3, -100, 0, 100 };
+const CheckIncDecStops &stops100  = (const CheckIncDecStops&)_stops100;
+const int _stops1000[] = { 3, -1000, 0, 1000 };
+const CheckIncDecStops &stops1000 = (const CheckIncDecStops&)_stops1000;
 
 int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
