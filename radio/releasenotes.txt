@@ -1,3 +1,38 @@
+<h2>Version 2.0.14 / todo</h2>
+
+[Taranis]
+<ul>
+<li>Fixed blank LCD screen at very low temperatures</li>
+<li>Shortened radio reboot time in case of watchdog reset</li>
+<li>Fixed issue with heli swash plate mixing when using <i>notrim</i></li>
+<li>Various fixes for double-keys</li>
+<li>Added switch auto detection in Timer source</li>
+<li>Totally removed splash screen display if duration is set to ---</li>
+<li>Back-light turned on sooner at startup (Taranis +)</li>
+<li>Fixed reverse polarity on external CPPM output</li>
+<li>Suppressed center beep for non-existing pots</li>
+<li>Fixed THt persistent timer running after model load (with Throttle at -100%)</li>
+<li>Minor display corrections</li>
+</ul>
+
+[9XR-PRO]
+<ul>
+<li>MAVLINK adaptation</li>
+</ul>
+
+[Bootloader]
+<ul>
+<li>Fixed blank LCD screen at very low temperatures</li>
+<li>Fixed timer problem which could prevent radio from powering off</li>
+</ul>
+
+[All]
+<ul>
+<li>Various texts and translations corrections</li>
+<li>Various small bug-fixes</li>
+</ul>
+
+
 <h2>Version 2.0.13 / 2014-11-20</h2>
 [Taranis]
 <ul>
