@@ -266,6 +266,6 @@ void Open9xSky9xSimulator::setTrainerInput(unsigned int inputNumber, int16_t val
 #include "simulatorimport.h"
 }
 
-void Open9xSky9xSimulator::installTraceHook(traceCallbackFunc hook) {
-  ::traceCallback = hook;
+void Open9xSky9xSimulator::installTraceHook(void (*callback)(const char *)) {
+  ::traceCallback = callback;
 }

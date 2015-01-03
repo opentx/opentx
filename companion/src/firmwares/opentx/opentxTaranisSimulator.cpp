@@ -310,6 +310,6 @@ void OpentxTaranisSimulator::setTrainerInput(unsigned int inputNumber, int16_t v
 #include "simulatorimport.h"
 }
 
-void OpentxTaranisSimulator::installTraceHook(traceCallbackFunc hook) {
-  ::traceCallback = hook;
+void OpentxTaranisSimulator::installTraceHook(void (*callback)(const char *)) {
+  ::traceCallback = callback;
 }

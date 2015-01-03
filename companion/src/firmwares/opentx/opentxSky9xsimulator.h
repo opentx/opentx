@@ -60,7 +60,7 @@ class Open9xSky9xSimulator : public SimulatorInterface {
 
     virtual void setTrainerInput(unsigned int inputNumber, int16_t value);
 
-    virtual void installTraceHook(traceCallbackFunc hook);
+    virtual void installTraceHook(void (*callback)(const char *));
 };
 
 #endif

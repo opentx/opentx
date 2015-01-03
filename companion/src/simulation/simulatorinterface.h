@@ -46,8 +46,6 @@ struct Trims {
     bool extended;
 };
 
-typedef void (*traceCallbackFunc)(const char * text);
-
 class SimulatorInterface {
 
   public:
@@ -86,7 +84,7 @@ class SimulatorInterface {
 
     virtual void setTrainerInput(unsigned int inputNumber, int16_t value) = 0;
 
-    virtual void installTraceHook(traceCallbackFunc hook) = 0;
+    virtual void installTraceHook(void (*callback)(const char *)) = 0;
 };
 
 #endif
