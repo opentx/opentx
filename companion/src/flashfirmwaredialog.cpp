@@ -245,7 +245,7 @@ void FlashFirmwareDialog::startFlash(const QString &filename)
 
   close();
 
-  ProgressDialog progressDialog(this, tr("Write Models and Settings to Radio"), CompanionIcon("write_eeprom.png"));
+  ProgressDialog progressDialog(this, tr("Write Firmware to Radio"), CompanionIcon("write_flash.png"));
 
   // backup if requested
   bool result = true;
