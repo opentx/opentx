@@ -68,7 +68,9 @@ void TelemetrySimulator::generateTelemetryFrame()
       break;
 
     case 1:
+#if defined(XJT_VERSION_ID)
       generateSportPacket(buffer, 1, DATA_FRAME, XJT_VERSION_ID, 11);
+#endif
       break;
 
     case 2:
