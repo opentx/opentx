@@ -11,6 +11,8 @@ ui(new Ui::ProgressWidget)
 {
   ui->setupUi(this);
   ui->info->hide();
+  ui->checkBox->hide();
+  ui->textEdit->hide();
 
 #ifdef __APPLE__
   QFont newFont("Courier", 13);
@@ -20,11 +22,6 @@ ui(new Ui::ProgressWidget)
   QFont newFont("Courier", 9);
   ui->textEdit->setFont(newFont);
 #endif
-
-  if (g.outputDisplayDetails())
-    ui->checkBox->setChecked(true);
-  else
-    ui->textEdit->setVisible(false);
 }
 
 ProgressWidget::~ProgressWidget()
@@ -56,6 +53,13 @@ void ProgressWidget::setValue(int value)
 
 void ProgressWidget::addText(const QString &text)
 {
+  ui->checkBox->setVisible(true);
+
+  if (g.outputDisplayDetails()) {
+    ui->checkBox->setChecked(true);
+    ui->textEdit->setVisible(true);
+  }
+
   QTextCursor cursor(ui->textEdit->textCursor());
 
   // is the scrollbar at the end?
