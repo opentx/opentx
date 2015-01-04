@@ -81,7 +81,7 @@ uint32_t readKeys()
     result |= 0x02 << KEY_MENU;
 #endif
 
-  // printf("readKeys(): %x => %x\n", x, result); fflush(stdout);
+  // TRACE("readKeys(): %x => %x", x, result);
 
   return result;
 }

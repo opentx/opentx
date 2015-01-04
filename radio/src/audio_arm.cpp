@@ -407,7 +407,7 @@ bool isAudioFileReferenced(uint32_t i, char * filename)
   uint8_t event = i & 0xFF;
 
 #if 0
-  printf("isAudioFileReferenced(%08x)\n", i); fflush(stdout);
+  TRACE("isAudioFileReferenced(%08x)", i);
 #endif
 
   if (category == SYSTEM_AUDIO_CATEGORY) {
@@ -846,7 +846,7 @@ void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t f
 void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 {
 #if defined(SIMU)
-  printf("playFile(\"%s\", flags=%x, id=%d)\n", filename, flags, id);
+  TRACE("playFile(\"%s\", flags=%x, id=%d)", filename, flags, id);
   if (strlen(filename) > AUDIO_FILENAME_MAXLEN) {
     TRACE("file name too long! maximum length is %d characters", AUDIO_FILENAME_MAXLEN);
   }
@@ -893,7 +893,7 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 void AudioQueue::stopPlay(uint8_t id)
 {
 #if defined(SIMU)
-  printf("stopPlay(id=%d)\n", id); fflush(stdout);
+  TRACE("stopPlay(id=%d)", id);
 #endif
 
   // For the moment it's only needed to stop the background music

@@ -40,42 +40,15 @@
 #include <inttypes.h>
 #include "rtc.h"
 
-#if defined(SIMU)
-
-#include <stdio.h>
-
-#define TRACE(...)            do { printf(__VA_ARGS__); printf("\n"); fflush(stdout); } while(0)
-#define TRACE_DEBUG(...)      do { printf("-D- " __VA_ARGS__); fflush(stdout); } while(0)
-#define TRACE_DEBUG_WP(...)   do { printf(__VA_ARGS__); fflush(stdout); } while(0)
-#define TRACE_INFO(...)       do { printf("-I- " __VA_ARGS__); fflush(stdout); } while(0)
-#define TRACE_INFO_WP(...)    do { printf(__VA_ARGS__); fflush(stdout); } while(0)
-#define TRACE_WARNING(...)    do { printf("-W- " __VA_ARGS__); fflush(stdout); } while(0)
-#define TRACE_WARNING_WP(...) do { printf(__VA_ARGS__); fflush(stdout); } while(0)
-#define TRACE_ERROR(...)      do { printf("-E- " __VA_ARGS__); fflush(stdout); } while(0)
-#define FLUSH()
-
-inline void dump(void * data, unsigned int size)
-{
-  unsigned char *uchar_data = (unsigned char *)data;
-
-  printf("DUMP %d bytes ...\n\r", size);
-  unsigned int i = 0, j=0;
-  while (i*32+j < size) {
-    printf("%.2X ", uchar_data[i*32+j]);
-    j++;
-    if (j==32) {
-      i++; j=0;
-      printf("\n\r");
-    }
-  }
-  printf("\n\r");
-}
-#define DUMP(data, size) dump(data, size)
-
-#elif defined(DEBUG) && defined(CPUARM)
+#if (defined(DEBUG) && defined(CPUARM)) || defined(SIMU)
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+#if defined(SIMU)
+typedef void (*traceCallbackFunc)(const char * text);
+extern traceCallbackFunc traceCallback;
 #endif
 
 void debugPuts(const char *string, ...);
@@ -95,8 +68,13 @@ void debugFlush();
 #define TRACE_WARNING(...)    debugPuts("-W- " __VA_ARGS__)
 #define TRACE_WARNING_WP(...) debugPuts(__VA_ARGS__)
 #define TRACE_ERROR(...)      debugPuts("-E- " __VA_ARGS__)
+
+#if !defined(SIMU)
 #define FLUSH()               debugFlush();
 void debugTask(void* pdata);
+#else
+#define FLUSH()
+#endif
 
 #else
 

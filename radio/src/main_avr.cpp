@@ -116,7 +116,7 @@ void perMain()
   if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
   checkBacklight();
 
-#if (defined(FRSKY) || defined(MAVLINK))
+#if defined(FRSKY) || defined(MAVLINK) || defined(SIMU)
   telemetryWakeup();
 #endif
 

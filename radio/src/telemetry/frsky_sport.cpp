@@ -88,6 +88,7 @@ bool checkSportPacket(uint8_t *packet)
     crc += crc >> 8;  // 0-1FF
     crc &= 0x00ff;    // 0-FF
   }
+  // TRACE("crc: 0x%02x", crc);
   return (crc == 0x00ff);
 }
 
@@ -103,6 +104,8 @@ void processSportPacket(uint8_t *packet)
   uint16_t appId  = *((uint16_t *)(packet+2));
 
   if (!checkSportPacket(packet)) {
+    TRACE("processSportPacket(): checksumm error ");
+    DUMP(packet, FRSKY_SPORT_PACKET_SIZE);
     return;
   }
 

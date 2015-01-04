@@ -132,7 +132,7 @@ void mixerTask(void * pdata)
       doMixerCalculations();
       CoLeaveMutexSection(mixerMutex);
 
-#if defined(FRSKY) || defined(MAVLINK)
+#if defined(FRSKY) || defined(MAVLINK) || defined(SIMU)
       telemetryWakeup();
 #endif
 
