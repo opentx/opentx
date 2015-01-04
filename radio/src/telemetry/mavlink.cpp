@@ -73,6 +73,10 @@ uint8_t mav_dump_rx = 0;
 #if defined(CPUARM)
 #else
 #include "serial.cpp"
+void MAVLINK_rxhandler(uint8_t byte) {
+	processSerialData(byte);
+}
+
 SerialFuncP RXHandler = MAVLINK_rxhandler;
 #endif
 
