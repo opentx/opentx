@@ -118,11 +118,11 @@
   #define MAX_INPUTS           32
   #define NUM_TRAINER          16
   #if defined(REV9E)
-    #define NUM_POTS             8
-    #define NUM_XPOTS            4
+    #define NUM_POTS           8
+    #define NUM_XPOTS          4
   #else
-    #define NUM_POTS             5
-    #define NUM_XPOTS            3
+    #define NUM_POTS           5
+    #define NUM_XPOTS          3
   #endif
 #elif defined(CPUARM)
   #define MAX_MODELS           60

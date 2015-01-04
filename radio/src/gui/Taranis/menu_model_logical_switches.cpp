@@ -33,7 +33,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 enum LogicalSwitchFields {
   LS_FIELD_FUNCTION,

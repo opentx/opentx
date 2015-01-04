@@ -56,7 +56,6 @@
 #define REVPLUS
 #define REV9E
 #define OVERRIDE_CHANNEL_FUNCTION
-#define NUM_POTS  5
 #define FLAVOUR "taranis-x9e"
 
 #undef min
@@ -105,7 +104,7 @@ inline int geteepromsize() {
 #include "radio/src/gui/menu_model_inputs_mixes.cpp"
 #include "radio/src/gui/menu_model_limits.cpp"
 #include "radio/src/gui/menu_model_curves.cpp"
-#include "radio/src/gui/menu_model_logical_switches.cpp"
+#include "radio/src/gui/Taranis/menu_model_logical_switches.cpp"
 #include "radio/src/gui/menu_model_custom_functions.cpp"
 #include "radio/src/gui/menu_model_custom_scripts.cpp"
 #include "radio/src/gui/menu_model_gvars.cpp"
