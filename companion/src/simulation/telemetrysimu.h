@@ -2,6 +2,7 @@
 #define telemetrysimu_h
 
 
+#include <QCloseEvent>
 #include <QDialog>
 #include <QTimer>
 #include "simulatorinterface.h"
@@ -21,6 +22,7 @@ class TelemetrySimulator : public QDialog
 
 
   protected:
+    virtual void closeEvent(QCloseEvent *event);
 
   private:
     Ui::TelemetrySimulator * ui;

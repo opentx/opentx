@@ -140,6 +140,7 @@ class SimulatorDialog : public QDialog
     void openTelemetrySimulator();
     void openTrainerSimulator();
     void openDebugOutput();
+    void onDebugOutputClose();
 
 #ifdef JOYSTICKS
     void onjoystickAxisValueChanged(int axis, int value);

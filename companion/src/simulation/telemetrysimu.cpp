@@ -28,6 +28,12 @@ void TelemetrySimulator::onTimerEvent()
   }
 }
 
+void TelemetrySimulator::closeEvent(QCloseEvent *event)
+{
+  ui->Simulate->setChecked(false);
+  event->accept();
+}
+
 void setSportPacketCrc(uint8_t * packet)
 {
   short crc = 0;

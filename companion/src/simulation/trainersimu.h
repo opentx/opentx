@@ -2,6 +2,8 @@
 #define trainersimu_h
 
 
+#include <QShowEvent>
+#include <QCloseEvent>
 #include <QDialog>
 #include <QTimer>
 #include "modeledit/node.h"
@@ -22,6 +24,8 @@ class TrainerSimulator : public QDialog
 
 
   protected:
+    virtual void showEvent(QShowEvent *event);
+    virtual void closeEvent(QCloseEvent *event);
 
   private:
     Ui::TrainerSimulator * ui;
