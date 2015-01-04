@@ -193,11 +193,11 @@ void interrupt10ms(void)
 {
   Tenms |= 1;			// 10 mS has passed
 
-  uint8_t enuk = KEY_MENU;
-  uint8_t in = ~readKeys();
+  uint32_t enuk = KEY_MENU;
+  uint32_t in = ~readKeys();
 
-  for (int i = 1; i < 7; i++) {
-    uint8_t value = in & (1 << i);
+  for (int i=1; i<7; ++i) {
+    uint32_t value = in & (1 << i);
     keys[enuk].input(value, (EnumKeys) enuk);
     ++enuk;
   }
@@ -438,8 +438,8 @@ void writeEepromBlock()
 
 int main()
 {
-  uint8_t index = 0;
-  uint8_t maxhsize = DISPLAY_CHAR_WIDTH;
+  uint32_t index = 0;
+  uint32_t maxhsize = DISPLAY_CHAR_WIDTH;
   FRESULT fr;
   uint32_t state = ST_START;
   uint32_t nameCount = 0;
