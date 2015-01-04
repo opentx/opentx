@@ -18,6 +18,7 @@ class ProgressWidget : public QWidget
     void addText(const QString &text);
     void setInfo(const QString &text);
     void setMaximum(int value);
+    int maximum();
     void setValue(int value);
     void setProgressColor(const QColor &color);
     void addSeparator();

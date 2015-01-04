@@ -278,11 +278,10 @@ void FlashProcess::onFinished(int code=0)
     progress->setInfo(tr("Flashing done with errors"));
   else
     progress->setInfo(tr("Flashing done"));
-  progress->addSeparator();
-
   if(lfuse || hfuse || efuse) {
     addReadFuses();
   }
+  progress->setValue(progress->maximum());
   progress->lock(false);
   emit finished();
 }

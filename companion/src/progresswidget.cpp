@@ -46,6 +46,11 @@ void ProgressWidget::setMaximum(int value)
   ui->progressBar->setMaximum(value);
 }
 
+int ProgressWidget::maximum()
+{
+  return ui->progressBar->maximum();
+}
+
 void ProgressWidget::setValue(int value)
 {
   ui->progressBar->setValue(value);
