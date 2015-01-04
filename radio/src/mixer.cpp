@@ -526,8 +526,14 @@ void evalInputs(uint8_t mode)
           vStud *= td->studWeight;
           vStud /= 50;
           switch (td->mode) {
-            case 1: v += vStud;   break; // add-mode
-            case 2: v  = vStud;   break; // subst-mode
+            case 1:
+              // add-mode
+              v = limit<int16_t>(-RESX, v+vStud, RESX);
+              break;
+            case 2:
+              // subst-mode
+              v = vStud;
+              break;
           }
 #if defined(PCBTARANIS)
           calibratedStick[ch] = v;
