@@ -38,7 +38,7 @@ void CopyProcess::onTimer()
 
   if (sourceFile.open(QIODevice::ReadOnly)) {
     QFile destinationFile(destination);
-    if (destinationFile.open(QIODevice::WriteOnly)) {
+    if (destinationFile.open(QIODevice::ReadWrite)) {
       progress->addText(tr("Writing file: "));
       for (int i=0; i<blocks; i++) {
         int read = sourceFile.read(buf, BLKSIZE);
