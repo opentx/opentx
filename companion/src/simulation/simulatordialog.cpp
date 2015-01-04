@@ -270,24 +270,45 @@ void SimulatorDialog::onTrimReleased()
 
 void SimulatorDialog::openTelemetrySimulator()
 {
-  TelemetrySimu = new TelemetrySimulator(this, simulator);
-  TelemetrySimu->setAttribute(Qt::WA_DeleteOnClose, true);
-  TelemetrySimu->show();
+  // allow only one instance
+  if (TelemetrySimu == 0) {
+    TelemetrySimu = new TelemetrySimulator(this, simulator);
+    TelemetrySimu->show();
+  }
+  else if (!TelemetrySimu->isVisible()) {
+    TelemetrySimu->show();
+  }
 }
 
 void SimulatorDialog::openTrainerSimulator()
 {
-  TrainerSimu = new TrainerSimulator(this, simulator);
-  TrainerSimu->setAttribute(Qt::WA_DeleteOnClose, true);
-  TrainerSimu->show();
+  // allow only one instance
+  if (TrainerSimu == 0) {
+    TrainerSimu = new TrainerSimulator(this, simulator);
+    TrainerSimu->show();
+  }
+  else if (!TrainerSimu->isVisible()) {
+    TrainerSimu->show();
+  }
 }
 
 void SimulatorDialog::openDebugOutput()
 {
-  DebugOut = new DebugOutput(this);
-  DebugOut->setAttribute(Qt::WA_DeleteOnClose, true);
-  DebugOut->traceCallback(traceBuffer);
-  DebugOut->show();
+  // allow only one instance, but install signal handler to catch dialog destruction just in case
+  if (DebugOut == 0) {
+    DebugOut = new DebugOutput(this);
+    QObject::connect(DebugOut, SIGNAL(destroyed()), this, SLOT(onDebugOutputClose()));
+    DebugOut->traceCallback(traceBuffer);
+    DebugOut->show();
+  }
+  else if (!DebugOut->isVisible()) {
+    DebugOut->show();
+  }
+}
+
+void SimulatorDialog::onDebugOutputClose()
+{
+  DebugOut = 0;
 }
 
 void SimulatorDialog::keyPressEvent (QKeyEvent *event)

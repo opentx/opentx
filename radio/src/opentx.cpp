@@ -246,7 +246,7 @@ void per10ms()
   }
 #endif
 
-#if defined(FRSKY) || defined(JETI)
+#if defined(FRSKY) || defined(JETI) || defined(SIMU)
   if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0]))
     telemetryInterrupt10ms();
 #endif

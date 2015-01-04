@@ -22,13 +22,24 @@ TrainerSimulator::TrainerSimulator(QWidget * parent, SimulatorInterface * simula
 
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
-  timer->start(10);
 }
 
 TrainerSimulator::~TrainerSimulator()
 {
   timer->stop();
   delete ui;
+}
+
+void TrainerSimulator::showEvent(QShowEvent *event)
+{
+  timer->start(10);
+  event->accept();
+}
+
+void TrainerSimulator::closeEvent(QCloseEvent *event)
+{
+  timer->stop();
+  event->accept();
 }
 
 void TrainerSimulator::centerSticks()

@@ -41,5 +41,3 @@ void DebugOutput::traceCallback(const QString & text)
     ui->Output->verticalScrollBar()->triggerAction(QAbstractSlider::SliderToMaximum);
   }
 }
-
-
