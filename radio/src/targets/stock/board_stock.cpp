@@ -130,10 +130,14 @@ inline void boardInit()
   #endif
 #elif defined(PWM_BACKLIGHT)
   /** Smartieparts LED Backlight is connected to PORTB/pin7, which can be used as pwm output of timer2 **/
-  #if defined(SP22)
-    TCCR2  = (0b011 << CS20)|(1<<WGM20)|(1<<COM21)|(1<<COM20); // inv. pwm mode, clk/64
+  #if defined(CPUM2561)
+    TCCR0A = (1<<WGM00)|(1<<COM0A0);
+    TCCR0B = (0b111<<CS00);
+    DDRB |= (1<<DDB7);
+  #elif defined(SP22)
+    TCCR2  = (0b011<<CS20)|(1<<WGM20)|(1<<COM21)|(1<<COM20); // inv. pwm mode, clk/64
   #else
-    TCCR2  = (0b011 << CS20)|(1<<WGM20)|(1<<COM21); // pwm mode, clk/64
+    TCCR2  = (0b011<<CS20)|(1<<WGM20)|(1<<COM21); // pwm mode, clk/64
   #endif
   #if !defined(CPUM2561)
     TIMSK |= (1<<OCIE0) | (1<<TOIE0); // Enable Output-Compare and Overflow interrrupts
@@ -326,13 +330,20 @@ bool getBackLightState()
   return (bl_target==g_eeGeneral.blOnBright);
 }
 
-void backlightFade() //called from per10ms()
+void backlightFade() // called from per10ms()
 {
   if (bl_target != bl_current) {
+#if defined(CPUM2561)
+    if (bl_target > bl_current)
+      OCR0A = pgm_read_byte(&pwmtable[++bl_current]);
+    else
+      OCR0A = pgm_read_byte(&pwmtable[--bl_current]);
+#else
     if (bl_target > bl_current)
       OCR2 = pgm_read_byte(&pwmtable[++bl_current]);
     else
       OCR2 = pgm_read_byte(&pwmtable[--bl_current]);
+#endif
   }
 }
 
