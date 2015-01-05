@@ -1161,6 +1161,7 @@ enum Capability {
   MavlinkTelemetry,
   HasInputDiff,
   HasMixerExpo,
+  MixersMonitor
 };
 
 class SimulatorInterface;
