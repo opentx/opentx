@@ -33,7 +33,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 uint8_t g_moduleIdx;
 void menuModelFailsafe(uint8_t event);

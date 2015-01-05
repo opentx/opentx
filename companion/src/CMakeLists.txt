@@ -75,7 +75,8 @@ set(COMPANION_SRC_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 add_custom_command(
   OUTPUT ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
-  COMMAND make lbm
+  COMMAND make lbm PCB=9X
+  COMMAND make lbm PCB=TARANIS
   DEPENDS ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.xbm
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
