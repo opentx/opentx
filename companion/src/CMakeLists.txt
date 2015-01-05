@@ -74,10 +74,16 @@ set(SIMU_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/simulation)
 set(COMPANION_SRC_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 add_custom_command(
-  OUTPUT ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
+  OUTPUT ${RADIO_SRC_DIRECTORY}/bitmaps/9X/about.lbm
   COMMAND make lbm PCB=9X
+  DEPENDS ${RADIO_SRC_DIRECTORY}/bitmaps/9X/about.png
+  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+)
+
+add_custom_command(
+  OUTPUT ${RADIO_SRC_DIRECTORY}/bitmaps/Taranis/about.lbm 
   COMMAND make lbm PCB=TARANIS
-  DEPENDS ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.xbm
+  DEPENDS ${RADIO_SRC_DIRECTORY}/bitmaps/Taranis/about.png
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
@@ -121,7 +127,8 @@ set(common_SRCS
   firmwares/gruvin9x/gruvin9xinterface.cpp  
   firmwares/ersky9x/ersky9xeeprom.cpp
   firmwares/ersky9x/ersky9xinterface.cpp
-  ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
+  ${RADIO_SRC_DIRECTORY}/bitmaps/9X/about.lbm
+  ${RADIO_SRC_DIRECTORY}/bitmaps/Taranis/about.lbm
   ${RADIO_SRC_DIRECTORY}/translations/en.h
   ${RADIO_SRC_DIRECTORY}/lua_exports.inc
   firmwares/opentx/opentxeeprom.cpp
