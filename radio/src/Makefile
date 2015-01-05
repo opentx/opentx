@@ -366,7 +366,7 @@ M2561_VARIANT   = +16384
 EEPROM_VARIANT  = 0
 
 ifeq ($(PCB), TARANIS)
-  GUIMODELSRC = gui/menu_model.cpp gui/menu_model_select.cpp gui/menu_model_setup.cpp gui/menu_model_inputs_mixes.cpp gui/menu_model_limits.cpp gui/Taranis/menu_model_logical_switches.cpp gui/menu_model_custom_functions.cpp gui/menu_model_telemetry.cpp
+  GUIMODELSRC = gui/menu_model.cpp gui/menu_model_select.cpp gui/Taranis/menu_model_setup.cpp gui/menu_model_inputs_mixes.cpp gui/Taranis/menu_model_limits.cpp gui/Taranis/menu_model_logical_switches.cpp gui/menu_model_custom_functions.cpp gui/menu_model_telemetry.cpp
 else
   GUIMODELSRC = gui/menu_model.cpp gui/menu_model_select.cpp gui/menu_model_setup.cpp gui/menu_model_inputs_mixes.cpp gui/menu_model_limits.cpp gui/menu_model_logical_switches.cpp gui/menu_model_custom_functions.cpp gui/menu_model_telemetry.cpp
 endif
@@ -1054,7 +1054,11 @@ endif
 
 ifeq ($(FLIGHT_MODES), YES)
   CPPDEFS += -DFLIGHT_MODES
-  GUIMODELSRC += gui/menu_model_flightmodes.cpp
+  ifeq ($(PCB), TARANIS)
+    GUIMODELSRC += gui/Taranis/menu_model_flightmodes.cpp
+  else
+    GUIMODELSRC += gui/menu_model_flightmodes.cpp
+  endif
 endif
 
 ifeq ($(CURVES), YES)

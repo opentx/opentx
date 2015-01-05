@@ -332,4 +332,9 @@ char * strAppend(char * dest, const char * source);
 char * strAppendDate(char * str, bool time=false);
 char * strAppendFilename(char * dest, const char * filename, const int size);
 
+#define NUM_BODY_LINES     LCD_LINES-1
+#define HEIGHT_BODY_LINE   FH
+#define MENU_TITLE_HEIGHT  FH
+#define MENU_NAVIG_HEIGHT  0
+
 #endif

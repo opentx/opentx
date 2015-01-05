@@ -46,10 +46,14 @@ bool isThrottleOutput(uint8_t ch)
 }
 
 enum LimitsItems {
+  ITEM_LIMITS_CH_NAME,
   ITEM_LIMITS_OFFSET,
   ITEM_LIMITS_MIN,
   ITEM_LIMITS_MAX,
   ITEM_LIMITS_DIRECTION,
+#if defined(CURVES)
+  ITEM_LIMITS_CURVE,
+#endif
 #if defined(PPM_CENTER_ADJUSTABLE)
   ITEM_LIMITS_PPM_CENTER,
 #endif
@@ -60,47 +64,54 @@ enum LimitsItems {
   ITEM_LIMITS_MAXROW = ITEM_LIMITS_COUNT-1
 };
 
-#if defined(PPM_UNIT_US)
-  #define LIMITS_MIN_POS          12*FW+1
-#else
-  #define LIMITS_MIN_POS          12*FW
-#endif
-#define LIMITS_OFFSET_POS         8*FW
-#if defined(PPM_LIMITS_SYMETRICAL)
+  #define LIMITS_NAME_POS           4*FW
+  #define LIMITS_OFFSET_POS         14*FW+4
+  #define LIMITS_MIN_POS            20*FW-3
   #if defined(PPM_CENTER_ADJUSTABLE)
-    #define LIMITS_MAX_POS        15*FW
-    #define LIMITS_REVERT_POS     16*FW-3
-    #define LIMITS_PPM_CENTER_POS 20*FW+1
+    #define LIMITS_DIRECTION_POS    20*FW-3
+    #define LIMITS_MAX_POS          24*FW+2
+    #define LIMITS_REVERT_POS       25*FW-1
+    #define LIMITS_CURVE_POS        27*FW-1
+    #define LIMITS_PPM_CENTER_POS   34*FW
   #else
-    #define LIMITS_DIRECTION_POS  12*FW+4
-    #define LIMITS_MAX_POS        16*FW+4
-    #define LIMITS_REVERT_POS     17*FW
+    #define LIMITS_DIRECTION_POS    21*FW
+    #define LIMITS_MAX_POS          26*FW
+    #define LIMITS_REVERT_POS       27*FW
+    #define LIMITS_CURVE_POS        32*FW-3
   #endif
-#else
-  #if defined(PPM_CENTER_ADJUSTABLE)
-    #define LIMITS_MAX_POS        16*FW
-    #define LIMITS_REVERT_POS     17*FW-2
-    #define LIMITS_PPM_CENTER_POS 21*FW+2
-  #else
-    #define LIMITS_MAX_POS        17*FW
-    #define LIMITS_REVERT_POS     18*FW
-    #define LIMITS_DIRECTION_POS  12*FW+5
-  #endif
-#endif
 
-#define LIMITS_MIN_MAX_OFFSET 100
-#define CONVERT_US_MIN_MAX(x) ((int16_t(x)*128)/25)
-#define MIN_MAX_ATTR          attr
+  #define LIMITS_MIN_MAX_OFFSET 1000
+  #define CONVERT_US_MIN_MAX(x) (((x)*1280)/250)
+  #define MIN_MAX_ATTR          attr|PREC1
 
 #if defined(PPM_UNIT_US)
   #define SET_MIN_MAX(x, val)   x = ((val)*250)/128
   #define MIN_MAX_DISPLAY(x)    CONVERT_US_MIN_MAX(x)
-#elif defined(CPUARM)
+#else
   #define MIN_MAX_DISPLAY(x)    (x)
   #define SET_MIN_MAX(x, val)   x = (val)
-#else
-  #define MIN_MAX_DISPLAY(x)    ((int8_t)(x))
 #endif
+
+void onLimitsMenu(const char *result)
+{
+  uint8_t ch = m_posVert - 1;
+
+  if (result == STR_RESET) {
+    LimitData *ld = limitAddress(ch);
+    ld->min = 0;
+    ld->max = 0;
+    ld->offset = 0;
+    ld->ppmCenter = 0;
+    ld->revert = false;
+    ld->curve = 0;
+  }
+  else if (result == STR_COPY_STICKS_TO_OFS) {
+    copySticksToOffset(ch);
+  }
+  else if (result == STR_COPY_TRIMS_TO_OFS) {
+    copyTrimsToOffset(ch);
+  }
+}
 
 void menuModelLimits(uint8_t event)
 {
@@ -115,11 +126,11 @@ void menuModelLimits(uint8_t event)
 #endif
   }
 
-#if defined(CPUARM)
   MENU(STR_MENULIMITS, menuTabModel, e_Limits, 1+NUM_CHNOUT+1, {0, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, 0});
-#else
-  MENU(STR_MENULIMITS, menuTabModel, e_Limits, 1+NUM_CHNOUT+1, {0, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, 0});
-#endif
+
+  if (sub<NUM_CHNOUT && m_posHorz>=0) {
+    displayColumnHeader(STR_LIMITS_HEADERS, m_posHorz);
+  }
 
   if (s_warning_result) {
     s_warning_result = 0;
@@ -149,18 +160,22 @@ void menuModelLimits(uint8_t event)
 
     LimitData *ld = limitAddress(k);
 
-#if !defined(PPM_CENTER_ADJUSTABLE)
     int16_t v = (ld->revert) ? -LIMIT_OFS(ld) : LIMIT_OFS(ld);
     char swVal = '-';  // '-', '<', '>'
     if ((channelOutputs[k] - v) > 50) swVal = (ld->revert ? 127 : 126); // Switch to raw inputs?  - remove trim!
     if ((channelOutputs[k] - v) < -50) swVal = (ld->revert ? 126 : 127);
-    putsChn(0, y, k+1, 0);
     lcd_putc(LIMITS_DIRECTION_POS, y, swVal);
-#endif
 
-    int8_t limit = (g_model.extendedLimits ? LIMIT_EXT_MAX : 100);
+    int limit = (g_model.extendedLimits ? LIMIT_EXT_MAX : 1000);
 
-    putsChn(0, y, k+1, 0);
+    putsChn(0, y, k+1, (sub==k && m_posHorz < 0) ? INVERS : 0);
+    if (sub==k && m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+      killEvents(event);
+      MENU_ADD_ITEM(STR_RESET);
+      MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
+      MENU_ADD_ITEM(STR_COPY_STICKS_TO_OFS);
+      menuHandler = onLimitsMenu;
+    }
 
     for (uint8_t j=0; j<ITEM_LIMITS_COUNT; j++) {
       uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
@@ -168,18 +183,23 @@ void menuModelLimits(uint8_t event)
       if (active) STICK_SCROLL_DISABLE();
       switch(j)
       {
+        case ITEM_LIMITS_CH_NAME:
+          editName(LIMITS_NAME_POS, y, ld->name, sizeof(ld->name), event, attr);
+          break;
+
         case ITEM_LIMITS_OFFSET:
+          if (GV_IS_GV_VALUE(ld->offset, -1000, 1000) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
+            ld->offset = GVAR_MENU_ITEM(LIMITS_OFFSET_POS, y, ld->offset, -1000, 1000, attr|PREC1, 0, event);
+            break;
+          }
+
 #if defined(PPM_UNIT_US)
           lcd_outdezAtt(LIMITS_OFFSET_POS, y, ((int32_t)ld->offset*128) / 25, attr|PREC1);
 #else
           lcd_outdezAtt(LIMITS_OFFSET_POS, y, ld->offset, attr|PREC1);
 #endif
           if (active) {
-#if defined(CPUARM)
             ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL, NULL, stops1000);
-#else
-            ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL|NO_INCDEC_MARKS);
-#endif
           }
           else if (attr && event==EVT_KEY_LONG(KEY_MENU)) {
             copySticksToOffset(k);
@@ -188,21 +208,21 @@ void menuModelLimits(uint8_t event)
           break;
 
         case ITEM_LIMITS_MIN:
+          if (GV_IS_GV_VALUE(ld->min, -GV_RANGELARGE, GV_RANGELARGE) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
+            ld->min = GVAR_MENU_ITEM(LIMITS_MIN_POS, y, ld->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, MIN_MAX_ATTR, 0, event);
+            break;
+          }
           lcd_outdezAtt(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);
-#if defined(CPUARM)
           if (active) ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0, EE_MODEL, NULL, stops1000);
-#else
-          if (active) ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0, EE_MODEL);
-#endif
           break;
 
         case ITEM_LIMITS_MAX:
+          if (GV_IS_GV_VALUE(ld->max, -GV_RANGELARGE, GV_RANGELARGE) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
+            ld->max = GVAR_MENU_ITEM(LIMITS_MAX_POS, y, ld->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, MIN_MAX_ATTR, 0, event);
+            break;
+          }
           lcd_outdezAtt(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);
-#if defined(CPUARM)
           if (active) ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->max+LIMITS_MIN_MAX_OFFSET, 0, +limit, EE_MODEL, NULL, stops1000);
-#else
-          if (active) ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->max+LIMITS_MIN_MAX_OFFSET, 0, +limit, EE_MODEL);
-#endif
           break;
 
         case ITEM_LIMITS_DIRECTION:
@@ -225,6 +245,19 @@ void menuModelLimits(uint8_t event)
           break;
         }
 
+#if defined(CURVES)
+        case ITEM_LIMITS_CURVE:
+          putsCurve(LIMITS_CURVE_POS, y, ld->curve, attr);
+          if (attr && event==EVT_KEY_LONG(KEY_ENTER) && ld->curve>0) {
+            s_curveChan = (ld->curve<0 ? -ld->curve-1 : ld->curve-1);
+            pushMenu(menuModelCurveOne);
+          }
+          if (active) {
+            CHECK_INCDEC_MODELVAR(event, ld->curve, -MAX_CURVES, +MAX_CURVES);
+          }
+          break;
+#endif
+
 #if defined(PPM_CENTER_ADJUSTABLE)
         case ITEM_LIMITS_PPM_CENTER:
           lcd_outdezAtt(LIMITS_PPM_CENTER_POS, y, PPM_CENTER+ld->ppmCenter, attr);
@@ -236,11 +269,7 @@ void menuModelLimits(uint8_t event)
 
 #if defined(PPM_LIMITS_SYMETRICAL)
         case ITEM_LIMITS_SYMETRICAL:
-#if defined(CPUARM)
           lcd_putcAtt(LCD_W-FW-MENUS_SCROLLBAR_WIDTH, y, ld->symetrical ? '=' : '\306', attr);
-#else
-          lcd_putcAtt(LCD_W-FW-MENUS_SCROLLBAR_WIDTH, y, ld->symetrical ? '=' : '^', attr);
-#endif
           if (active) {
             CHECK_INCDEC_MODELVAR_ZERO(event, ld->symetrical, 1);
           }
