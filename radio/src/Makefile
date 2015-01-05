@@ -373,6 +373,10 @@ endif
 
 GUIGENERALSRC = gui/menu_general.cpp gui/menu_general_setup.cpp gui/menu_general_trainer.cpp gui/menu_general_version.cpp gui/menu_general_diagkeys.cpp gui/menu_general_diaganas.cpp gui/menu_general_calib.cpp
 
+BITMAPS = bitmaps/sticks.lbm
+
+FONTS = $(patsubst %.png,%.lbm,$(wildcard fonts/std/*.png)) 
+
 ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   # 9x/9xr radio
   ARCH = AVR
@@ -390,7 +394,8 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
-
+  BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
+  
   ifeq ($(PCB), 9XR)
     FLAVOUR = 9xr
     CPPDEFS += -DPCB9XR
@@ -458,6 +463,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
+  BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
   
   ifeq ($(PCB), 9XR128)
     FLAVOUR = 9xr128
@@ -522,6 +528,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
+  BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
 
   ifeq ($(PCB), 9XR2561)
     FLAVOUR = 9xr2561
@@ -588,6 +595,7 @@ ifeq ($(PCB), GRUVIN9X)
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp  
   CPPSRC += audio_avr.cpp haptic.cpp debug.cpp
+  BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
   
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DRTCLOCK
@@ -630,6 +638,7 @@ ifeq ($(PCB), MEGA2560)
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp  
   CPPSRC += audio_avr.cpp debug.cpp
+  BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
 
   ifeq ($(PCBREV), ST7565P)
     EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
@@ -715,6 +724,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   CPPSRC += tasks_arm.cpp audio_arm.cpp haptic.cpp gui/view_about.cpp gui/view_text.cpp telemetry/telemetry.cpp
   CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/second_serial_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
   CPPSRC += loadboot.cpp debug.cpp
+  BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DVOICE
     INCDIRS += FatFs FatFs/option
@@ -792,6 +802,7 @@ ifeq ($(PCB), TARANIS)
   MCU  = cortex-m3
   OPT = s
   CPPDEFS += -DHSE_VALUE=12000000
+  BITMAPS += $(patsubst %.png,%.lbm,$(wildcard bitmaps/Taranis/*.png) $(wildcard bitmaps/Taranis/std/*.png))
   SDCARD = YES
   THR_TRACE = YES
   EXT = FRSKY_SPORT
@@ -1030,8 +1041,11 @@ ifneq ($(PCB), $(filter $(PCB), TARANIS))
 endif
 
 ifneq ($(FONT), STD)
-  INCDIRS += fonts/$(shell sh -c "echo $(FONT) | tr '[:upper:]' '[:lower:]'")
+  FONTDIR = $(shell sh -c "echo $(FONT) | tr '[:upper:]' '[:lower:]'")
+  FONTS += $(patsubst %.png,%.lbm,$(wildcard fonts/$(FONTDIR)/*.png)) 
+  INCDIRS += fonts/$(FONTDIR)
 endif
+
 INCDIRS += fonts/std
   
 ifeq ($(THR_TRACE), YES)
@@ -1336,7 +1350,7 @@ bootloader.lbm:
 endif
 
 tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
-lbm: fonts bitmaps/sticks.lbm
+lbm: fonts bitmaps
   
 elf: $(TARGET).elf
 bin: $(TARGET).bin
@@ -1408,24 +1422,37 @@ translations/se.h: translations/se.h.txt
 	@echo "Create Swedish language specific header files"
 	$(TRANSLATE) translations/se.h.txt translations/se.h se
 
+FONTNAME = Roboto
+
 .PHONY: fonts
-fonts: $(patsubst %.png,%.lbm,$(wildcard fonts/*/*.png))
+fonts: $(FONTS)
 
 fonts/%.lbm: fonts/%.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE)
+	
+fonts/font_stdsize.lbm:
+	$(FONT2PNG) $(FONTNAME) 8 fonts/font_stdsize.png
+	$(IMG2LBM) fonts/font_stdsize.png $@ $(LCDSIZE) 4bits
 
-bitmaps/sticks.lbm: bitmaps/sticks.xbm bitmaps/9X/splash.xbm bitmaps/Taranis/splash.png bitmaps/Taranis/logo.bmp bitmaps/Taranis/icons.png bitmaps/9X/asterisk.xbm bitmaps/9X/about.png bitmaps/Taranis/about.png bitmaps/Taranis/asterisk.png
-	@echo
-	@echo "Convert bitmaps from xbm to lbm:"
-	$(IMG2LBM) bitmaps/sticks.xbm bitmaps/sticks.lbm $(LCDSIZE) 1bit 4
-	$(IMG2LBM) bitmaps/9X/asterisk.xbm bitmaps/9X/asterisk.lbm $(LCDSIZE) 1bit
-	$(IMG2LBM) bitmaps/9X/splash.xbm bitmaps/9X/splash.lbm $(LCDSIZE) 1bit
-	$(IMG2LBM) bitmaps/9X/about.png bitmaps/9X/about.lbm $(LCDSIZE) 1bit
-	$(IMG2LBM) bitmaps/Taranis/splash.png bitmaps/Taranis/splash.lbm $(LCDSIZE) 4bits
-	$(IMG2LBM) bitmaps/Taranis/logo.bmp bitmaps/Taranis/logo.lbm $(LCDSIZE) 4bits
-	$(IMG2LBM) bitmaps/Taranis/icons.png bitmaps/Taranis/icons.lbm $(LCDSIZE) 4bits
-	$(IMG2LBM) bitmaps/Taranis/about.png bitmaps/Taranis/about.lbm $(LCDSIZE) 4bits
-	$(IMG2LBM) bitmaps/Taranis/asterisk.png bitmaps/Taranis/asterisk.lbm $(LCDSIZE) 4bits
+fonts/font_midsize.lbm:
+	$(FONT2PNG) $(FONTNAME) 10 fonts/font_midsize.png
+	$(IMG2LBM) fonts/font_midsize.png $@ $(LCDSIZE) 4bits
+
+fonts/font_dblsize.lbm:
+	$(FONT2PNG) $(FONTNAME) 14 fonts/font_dblsize.png
+	$(IMG2LBM) fonts/font_dblsize.png $@ $(LCDSIZE) 4bits
+
+.PHONY: bitmaps
+bitmaps: $(BITMAPS) 
+
+bitmaps/sticks.lbm: bitmaps/sticks.xbm
+	$(IMG2LBM) $^ $@ $(LCDSIZE) 1bit 4
+	
+bitmaps/9X/%.lbm: bitmaps/9X/%.png
+	$(IMG2LBM) $^ $@ $(LCDSIZE) 1bit
+
+bitmaps/Taranis/%.lbm: bitmaps/Taranis/%.png
+	$(IMG2LBM) $^ $@ $(LCDSIZE) 4bits
 
 ifeq ($(OS),Windows_NT)
   PARSER = avr-cpp 
@@ -1583,6 +1610,8 @@ clean_list :
 	$(REMOVE) stamp-opentx.h
 	$(REMOVE) *.lbm 
 	$(REMOVE) bitmaps/*.lbm 
+	$(REMOVE) bitmaps/*/*.lbm 
+	$(REMOVE) fonts/*.lbm
 	$(REMOVE) fonts/*/*.lbm
 	$(REMOVE) lua_exports.txt lua_exports.cpp lua_fields.txt
 	$(MAKE) -C bootloader clean
