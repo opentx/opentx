@@ -32,7 +32,8 @@ enum SERIAL_BAUDS {
 	BAUD_19200,
 	BAUD_38400,
 	BAUD_57600,
-	BAUD_76800
+	BAUD_76800,
+	BAUD_115200
 };
 
 //! \brief Definition of baudrate settings item choices.

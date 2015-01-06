@@ -206,7 +206,11 @@ void mav_title(const pm_char * s, uint8_t index)
   lcd_putsAtt(0, 0, PSTR("MAVLINK"), INVERS);
   lcd_puts(10 * FW, 0, s);
   displayScreenIndex(index, MAX_MAVLINK_MENU, INVERS);
+  #if defined(PCBSKY9X)
   lcd_putc(7 * FW, 0, mav_heartbeat+'0');	/* ok til 9 :-) */
+  #else
+  lcd_putc(7 * FW, 0, (mav_heartbeat > 0) ? '*' : ' ');  
+  #endif
   lcd_putc(8 * FW, 0, telemetry_data.active ? 'A' : 'N');
 }
 
@@ -344,7 +348,7 @@ void menuTelemetryMavlinkBattery(void) {
     
 }
 
-/*!	\brief Navigation dislplay
+/*!	\brief Navigation display
  *	\details Shows Navigation telemetry.
  *	Altitude in this menu is the relative (to the home location) altitude. This
  *	is the same altitude used by the waypoints.
