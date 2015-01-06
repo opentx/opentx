@@ -1000,7 +1000,7 @@ uint8_t   flightModeTransitionLast = 255;
 
 void evalMixes(uint8_t tick10ms)
 {
-#if defined(PCBGRUVIN9X) && defined(DEBUG) && !defined(VOICE)
+#if defined(PCBMEGA2560) && defined(DEBUG) && !defined(VOICE)
   PORTH |= 0x40; // PORTH:6 LOW->HIGH signals start of mixer interrupt
 #endif
 

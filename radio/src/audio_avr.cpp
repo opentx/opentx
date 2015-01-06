@@ -60,7 +60,7 @@ void audioQueue::heartbeat()
       speakerOff();
     }
     else {
-#if defined(PCBGRUVIN9X)
+#if defined(CPUM2560)
       if (toneFreq) {
         OCR0A = (5000 / toneFreq); // sticking with old values approx 20(abs. min) to 90, 60 being the default tone(?).
         speakerOn();
@@ -86,7 +86,7 @@ void audioQueue::heartbeat()
     }
     else {
       if (tone2TimeLeft > 0) {
-#if defined(PCBGRUVIN9X)
+#if defined(CPUM2560)
         if (tone2Freq) {
           OCR0A = (5000 / tone2Freq); // sticking with old values approx 20(abs. min) to 90, 60 being the default tone(?).
           speakerOn();

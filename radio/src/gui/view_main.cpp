@@ -514,7 +514,7 @@ void menuMainView(uint8_t event)
       }
     }
     else {
-#if defined(PCBGRUVIN9X) && defined(ROTARY_ENCODERS)
+#if defined(PCBMEGA2560) && defined(ROTARY_ENCODERS)
       for (uint8_t i=0; i<NUM_ROTARY_ENCODERS; i++) {
         int16_t val = getRotaryEncoder(i);
         int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
@@ -536,7 +536,7 @@ void menuMainView(uint8_t event)
         lcd_vline(x-1, VSWITCH_Y-len, len);
         lcd_vline(x,   VSWITCH_Y-len, len);
       }
-#elif defined(PCBGRUVIN9X)
+#elif defined(CPUM2560)
       for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
         putsSwitches(2*FW-3 + (i/3)*(i/3>2 ? 3*FW+2 : (3*FW-1)) + (i/3>2 ? 2*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #elif !defined(PCBSTD)

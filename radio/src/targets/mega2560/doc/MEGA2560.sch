@@ -29,13 +29,14 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
+LIBS:MEGA2560-cache
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "OpenTX board based on Arduino MEGA2560"
-Date "28 dec 2014"
+Date "3 jan 2015"
 Rev "0"
 Comp "Copyright 2015 F. Aguerre"
 Comment1 ""
@@ -46,7 +47,7 @@ $EndDescr
 Wire Wire Line
 	9050 2900 8050 2900
 Wire Wire Line
-	9050 2700 8050 2700
+	8050 2700 9050 2700
 Wire Wire Line
 	8100 5250 7800 5250
 Wire Wire Line
@@ -127,7 +128,7 @@ Wire Notes Line
 Wire Wire Line
 	10750 2400 10750 2250
 Wire Wire Line
-	7600 1400 7600 1500
+	8100 1400 8100 1500
 Wire Wire Line
 	6900 1500 6900 1000
 Wire Wire Line
@@ -526,7 +527,7 @@ Wire Wire Line
 Wire Notes Line
 	8450 4700 8000 4700
 Wire Wire Line
-	9050 2800 7600 2800
+	7600 2800 9050 2800
 $Comp
 L SW_PUSH .
 U 1 1 5499AF9B
@@ -1153,23 +1154,23 @@ $EndComp
 $Comp
 L GND #PWR?
 U 1 1 54992E9C
-P 7600 1500
-F 0 "#PWR?" H 7600 1500 30  0001 C CNN
-F 1 "GND" H 7600 1430 30  0001 C CNN
-F 2 "" H 7600 1500 60  0001 C CNN
-F 3 "" H 7600 1500 60  0001 C CNN
-	1    7600 1500
+P 8100 1500
+F 0 "#PWR?" H 8100 1500 30  0001 C CNN
+F 1 "GND" H 8100 1430 30  0001 C CNN
+F 2 "" H 8100 1500 60  0001 C CNN
+F 3 "" H 8100 1500 60  0001 C CNN
+	1    8100 1500
 	1    0    0    -1  
 $EndComp
 $Comp
 L C C1
 U 1 1 54992E49
-P 7600 1200
-F 0 "C1" V 7550 1050 50  0000 L CNN
-F 1 "100n" V 7650 1050 50  0000 L CNN
-F 2 "" H 7600 1200 60  0001 C CNN
-F 3 "" H 7600 1200 60  0001 C CNN
-	1    7600 1200
+P 8100 1200
+F 0 "C1" V 8050 1050 50  0000 L CNN
+F 1 "100n" V 8150 1050 50  0000 L CNN
+F 2 "" H 8100 1200 60  0001 C CNN
+F 3 "" H 8100 1200 60  0001 C CNN
+	1    8100 1200
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -41571,4 +41572,16 @@ F 3 "" H 10450 3850 60  0001 C CNN
 	1    10450 3850
 	-1   0    0    -1  
 $EndComp
+Wire Wire Line
+	6050 7150 6500 7150
+Wire Wire Line
+	5100 7150 5250 7150
+Text Label 6500 7150 2    42   ~ 0
+OpenTX  I/O
+Text GLabel 5250 7150 2    42   Output ~ 0
+port pin (initial state) 
+Text Notes 5500 7050 0    60   ~ 0
+Caption
+Text Label 5550 2550 2    42   ~ 0
+Gain = 1 + R3/R6
 $EndSCHEMATC
