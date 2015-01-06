@@ -15,6 +15,8 @@
 \usepackage{enumitem}
 \usepackage[parfill]{parskip}
 \usepackage{fancyhdr}
+\usepackage{calc}
+\usepackage{ifthen}
 
 \setlength{\parskip}{\baselineskip}
 
@@ -299,6 +301,40 @@ The \textbf{run} function is the function that is periodically called for the en
 & values & (comma separated list of values) list of output values, their order and meaning is defined by the output table \\
 \bottomrule
 \end{longtable}
+
+\subsubsection{Macro Test}
+
+\newcounter{parameters}
+\newcounter{returns}
+
+\newenvironment{funcdef}[0]
+{\setcounter{parameters}{0}\setcounter{returns}{0}
+\newcommand{\prototype}[1]{\textbf{Prototype} & \multicolumn{2}{l} {\texttt{##1}}}
+\newcommand{\parameter}[2]{\ifthenelse{\value{parameters}=0}{\\\midrule\textbf{Parameters}}{\\}\stepcounter{parameters}& \texttt{##1} & ##2}
+\newcommand{\return}[2]{\ifthenelse{\value{returns}=0}{\\\midrule\textbf{Returns}}{\\}\stepcounter{returns}& ##1 & ##2}
+\begin{longtable}{p{3cm}p{3cm}p{\dimexpr\columnwidth-6cm-6\tabcolsep\relax}}
+\toprule}
+{\\\bottomrule
+\end{longtable}}
+
+\begin{funcdef}
+\prototype{local <run\_function\_name>([first input, [second input], ...])}
+\parameter{<>}{zero or more input values, their names are arbitrary, their meaning and order is defined by the input table}
+\parameter{none}{test}
+\parameter{none}{test}
+\return{none}{[text...]}
+\return{none}{[text...]}
+\return{none}{[text...]}
+\return{none}
+\end{funcdef}
+
+\begin{funcdef}
+\prototype{playNumber(number, unit, att)}
+\parameter{number}{(integer)}
+\parameter{unit}{(integer)}
+\parameter{att}{(integer)}
+\return{nil}
+\end{funcdef}
 
 \end{document}
 
