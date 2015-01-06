@@ -130,9 +130,29 @@ void MAVLINK_Init(void) {
 void telemetryWakeup() {
 	/* RESET protocol activity status (* symbol) on display */
 	uint16_t tmr10ms = get_tmr10ms();
+	#if defined(PCBSKY9X)
 	uint16_t count = tmr10ms & 0x02BC; // 700*10ms ==  7 SEC
+	#else
+	uint8_t count = tmr10ms & 0x0f; // 15*10ms
+	#endif	  
+
 	if (!count) {
-	  mav_heartbeat=0;	/* reset counter */
+	#if defined(PCBSKY9X)
+		mav_heartbeat=0;	/* reset counter */
+	#else
+		if (mav_heartbeat > -30) {
+			// TODO mavlink_system.sysid = g_eeGeneral.mavTargetSystem;
+			mav_heartbeat--;
+
+			if (mav_heartbeat == -30) {
+				MAVLINK_reset(1);
+				SERIAL_Init();
+			}
+//			SERIAL_startTX();
+		}
+	#endif	  
+	  
+	  
 	  }
 	/* --------------------------------- */
 	
@@ -147,14 +167,9 @@ void telemetryWakeup() {
 			  processSerialData(data);
 			}	
 		#else
-			//#error scemo REVB
 			rxPdcUsart(processSerialData);
 		#endif
 	#endif
-}
-
-void telemetryInterrupt10ms()
-{
 }
 
 uint32_t Index2Baud(uint8_t mavbaudIdx)
@@ -188,8 +203,7 @@ uint32_t Index2Baud(uint8_t mavbaudIdx)
  *	MAVLINK_CRC_EXTRA. This requires the mavlink_message_crcs array of 256 bytes.
  *	\todo create dot for the statemachine
  */
-NOINLINE void processSerialData(uint8_t c) {
-
+static void processSerialData(uint8_t c) {
 	static mavlink_message_t m_mavlink_message;
 	//! The currently decoded message
 	static mavlink_message_t* p_rxmsg = &m_mavlink_message;

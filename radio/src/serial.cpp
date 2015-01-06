@@ -243,6 +243,23 @@ static void uart_76800(void) {
 #endif
 }
 
+static void uart_115200(void) {
+#ifndef SIMU
+#undef BAUD  // avoid compiler warning
+//#define USE_2X 1			// not useful
+//#define BAUD 115200		// compiler warning
+#define BAUD 115400			// compiles ok -> TODO check BAUD_TOL
+#include <util/setbaud.h>
+  UBRR0H = UBRRH_VALUE;
+  UBRR0L = UBRRL_VALUE;
+#if USE_2X
+  UCSR0A |= (1 << U2X0);
+#else
+	UCSR0A &= ~(1 << U2X0);
+#endif
+#endif
+}
+
 inline void SERIAL_EnableTXD(void) {
 	//UCSR0B |= (1 << TXEN0); // enable TX
 	UCSR0B |= (1 << TXEN0) | (1 << UDRIE0); // enable TX and TX interrupt
@@ -280,6 +297,12 @@ void SERIAL_Init(void) {
 		break;
 	case BAUD_76800:
 		uart_76800();
+		break;
+	case BAUD_115200:
+		uart_115200();
+		break;
+	default:
+		uart_9600();
 		break;
 	}
 

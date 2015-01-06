@@ -63,8 +63,8 @@ extern void SERIAL_send_uart_bytes(const uint8_t * buf, uint16_t len);
 #include "../GCS_MAVLink/include_v1.0/ardupilotmega/mavlink.h"
 
 //#define MAVLINK_PARAMS
-#define DUMP_RX_TX
-//#undef DUMP_RX_TX
+//#define DUMP_RX_TX
+#undef DUMP_RX_TX
 #define ERROR_NUM_MODES 99
 #define ERROR_MAV_ACTION_NB 99
 
@@ -239,7 +239,8 @@ void MAVLINK_Init(void);
 void telemetryWakeup();
 void telemetryInterrupt10ms(void);
 void menuTelemetryMavlink(uint8_t);
-NOINLINE void processSerialData(uint8_t);
+static void processSerialData(uint8_t c);
+
 uint32_t Index2Baud(uint8_t);
 
 static inline void handleMessage(mavlink_message_t*);
