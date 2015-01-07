@@ -341,7 +341,8 @@ set(simu_SRCS
   ${TH9X_CHECKOUT_DIRECTORY}/th9xsimulator.cpp
   ${ER9X_CHECKOUT_DIRECTORY}/er9xsimulator.cpp
   ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
-  ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
+  ${RADIO_SRC_DIRECTORY}/bitmaps/9X/about.lbm
+  ${RADIO_SRC_DIRECTORY}/bitmaps/Taranis/about.lbm
   ${RADIO_SRC_DIRECTORY}/translations/en.h
   ${RADIO_SRC_DIRECTORY}/lua_exports.inc
   modeledit/node.cpp
