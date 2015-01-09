@@ -310,6 +310,29 @@ bool FlashInterface::isValid()
   return isValidFlag;
 }
 
+QString FlashInterface::getFlavour()
+{
+  if (flavour == "opentx-x9dp")
+    return "opentx-taranis-plus";
+  else if (flavour == "opentx-x9d")
+    return "opentx-taranis";
+  else
+    return flavour;
+}
+
+bool FlashInterface::isHardwareCompatible(FlashInterface &previousFirmware)
+{
+  QString newFlavour = getFlavour();
+  if (newFlavour.isEmpty())
+    return true;
+
+  QString previousFlavour = previousFirmware.getFlavour();
+  if (previousFlavour.isEmpty())
+    return true;
+
+  return (newFlavour == previousFlavour);
+}
+
 uint FlashInterface::saveFlash(QString fileName)
 {
   uint8_t binflash[MAX_FSIZE];

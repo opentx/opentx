@@ -47,7 +47,7 @@ class FlashInterface
     inline QString getDate() { return date; }
     inline QString getTime() { return time; }
     int getSize() { return flash_size; }
-    inline QString getFlavour() { return flavour; }
+    QString getFlavour();
     inline QString getVersion() { return version; }
     unsigned int getVersionId() { return versionId; }
     inline int getEEpromVersion() { return eepromVersion; }
@@ -61,6 +61,7 @@ class FlashInterface
     QImage::Format getSplashFormat();
     uint saveFlash(QString fileName);
     bool isValid();
+    bool isHardwareCompatible(FlashInterface &previousFirmware);
 
   private:
     QByteArray flash;

@@ -499,6 +499,7 @@ QString AppData::snapshotDir()     { return _snapshotDir;     }
 QString AppData::updatesDir()      { return _updatesDir;      }
 
 bool AppData::enableBackup()       { return _enableBackup;    }
+bool AppData::checkHardwareCompatibility() { return _checkHardwareCompatibility; }
 bool AppData::backupOnFlash()      { return _backupOnFlash;   }
 bool AppData::jsSupport()          { return _jsSupport;       }
 bool AppData::maximized()          { return _maximized;       }
@@ -550,6 +551,7 @@ void AppData::updatesDir      (const QString     x) { store(x, _updatesDir,     
 
 void AppData::enableBackup    (const bool        x) { store(x, _enableBackup,    "backupEnable"            );}
 void AppData::backupOnFlash   (const bool        x) { store(x, _backupOnFlash,   "backupOnFlash"           );}
+void AppData::checkHardwareCompatibility(const bool x) { store(x, _checkHardwareCompatibility,   "checkHardwareCompatibility");}
 void AppData::maximized       (const bool        x) { store(x, _maximized,       "maximized"               );}
 void AppData::jsSupport       (const bool        x) { store(x, _jsSupport,       "js_support"              );}
 void AppData::showSplash      (const bool        x) { store(x, _showSplash,      "show_splash"             );}
@@ -675,6 +677,7 @@ AppData::AppData()
     getset( _updatesDir,      "lastUpdatesDir"          ,"" );
 
     getset( _enableBackup,    "backupEnable"            ,false );
+    getset( _checkHardwareCompatibility,    "checkHardwareCompatibility", true );
     getset( _backupOnFlash,   "backupOnFlash"           ,true  );
     getset( _jsSupport,       "js_support"              ,false );
     getset( _maximized,       "maximized"               ,false );

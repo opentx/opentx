@@ -42,6 +42,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       ui->EEbackupCB->hide();
     }
+    ui->checkFirmwareCB->setChecked(g.checkHardwareCompatibility());
   }
   else {
     ui->FlashLoadButton->setText(tr("Browse for file"));
@@ -49,6 +50,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     ui->patchcalib_CB->hide();
     ui->patchhw_CB->hide();
     ui->EEpromCB->hide();
+    ui->checkFirmwareCB->hide();
     ui->BurnFlashButton->setDisabled(true);
     ui->FWFileName->clear();
     ui->DateField->clear();
@@ -408,6 +410,7 @@ void burnDialog::on_useLibraryImageCB_clicked()
 void burnDialog::on_BurnFlashButton_clicked()
 {
   if (hexType==FLASH_FILE_TYPE) {
+    g.checkHardwareCompatibility(ui->checkFirmwareCB->isChecked());
     QString fileName=ui->FWFileName->text();
     if (!fileName.isEmpty()) {
       g.flashDir( QFileInfo(fileName).dir().absolutePath() );

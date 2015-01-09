@@ -977,7 +977,7 @@ bool MainWindow::readFirmwareFromRadio(const QString filename)
     file.remove();
   }
 
-  g.flashDir(QFileInfo(filename).dir().absolutePath());
+  // g.flashDir(QFileInfo(filename).dir().absolutePath());
 
   if (IS_ARM(GetCurrentFirmware()->getBoard())) {
     QString path = FindMassstoragePath("FIRMWARE.BIN");
@@ -1171,7 +1171,6 @@ void MainWindow::writeBackup()
         }
         int oldrev = getEpromVersion(fileName);
         QString tempFlash = generateProcessUniqueTempFileName("flash.bin");
-
         if (!readFirmwareFromRadio(tempFlash))
           return;
 
@@ -1304,6 +1303,19 @@ void MainWindow::writeFlash(QString fileToFlash)
     if (IS_TARANIS(GetEepromInterface()->getBoard()))
       backup=false;
     if (!fileName.isEmpty()) {
+      if (g.checkHardwareCompatibility()) {
+        QString tempFlash = generateProcessUniqueTempFileName("flash.bin");
+        if (!readFirmwareFromRadio(tempFlash)) {
+          QMessageBox::warning(this, tr("Firmware check failed"), tr("Could not check firmware from radio"));
+          return;
+        }
+        FlashInterface previousFlash(tempFlash);
+        FlashInterface newFlash(fileName);
+        if (!newFlash.isHardwareCompatible(previousFlash)) {
+          QMessageBox::warning(this, tr("Firmware check failed"), tr("New firmware is not compatible with the one currently installed!"));
+          return;
+        }
+      }
       g.backupOnFlash(backup);
       if (backup) {
         QString backupFile = generateProcessUniqueTempFileName("backup.bin");
