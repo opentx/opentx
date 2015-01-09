@@ -12,6 +12,10 @@
 <li>Fixed reverse polarity on external CPPM output</li>
 <li>Suppressed center beep for non-existing pots</li>
 <li>Fixed THt persistent timer running after model load (with Throttle at -100%)</li>
+<li>Fixed buffer overflow for automatic flight mode change audio announcements (if very long model and flight mode names were used)</li>
+<li>Limited stick throws to 100% when using trainer in add mode</li>
+<li>Fixed Lua lcd.drawLine(), first pixel was not drawn</li>
+<li>Fixed missing last column for some bitmap sizes</li>
 <li>Minor display corrections</li>
 </ul>
 
@@ -20,11 +24,20 @@
 <li>MAVLINK adaptation</li>
 </ul>
 
+[9XR]
+<ul>
+<li>Added 115200 bps speed to MAVLINK</li>
+</ul>
+
 [Bootloader]
 <ul>
 <li>Fixed blank LCD screen at very low temperatures</li>
-<li>Fixed timer problem which could prevent radio from powering off</li>
+<li>Fixed timer problem which prevented radio from powering off after being connected to USB</li>
 </ul>
+
+
+[9X2561]
+<li>PWM backlight fixed</li>
 
 [All]
 <ul>

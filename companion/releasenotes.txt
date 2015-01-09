@@ -5,13 +5,16 @@
 <li>Special Function <i>Start Logs</i> renamed to more appropriate <i>SD Logs</i></li>
 <li>Improvements for MAC build</li>
 <li>Fixes to Google Earth logs export</li>
-<li>Radio type auto-discovery/warning added (work in progress)</li>
+<li>Firmware compatibility warning check added when flashing new firmware to radio</li>
 <li>Fixed issue with Telemetry Type setting on 9XR-PRO</li>
 <li>Added Telemetry simulator</li>
 <li>Added Trainer simulator</li>
 <li>Added Debug Output window</li>
 <li>Various texts and translations corrections</li>
 <li>Various small bug-fixes</li>
+<li>More reliable method of writing EEPROM.BIN and FRIMWARE.BIN to radio</li>
+<li>Fixed issue with Edge function INSTANT for V1>2s</li>
+<li>Fixed buffer overflow in Joystick code</li>
 </ul>
 
 <h2>Version 2.0.13 / 2014-11-20</h2>
