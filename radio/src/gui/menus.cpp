@@ -135,10 +135,9 @@ int8_t checkIncDecMovedSwitch(int8_t val)
 int8_t  checkIncDec_Ret;
 
 #if defined(CPUARM)
-const int _stops100[] = { 3, -100, 0, 100 };
-const CheckIncDecStops &stops100  = (const CheckIncDecStops&)_stops100;
-const int _stops1000[] = { 3, -1000, 0, 1000 };
-const CheckIncDecStops &stops1000 = (const CheckIncDecStops&)_stops1000;
+INIT_STOPS(stops100, 3, -100, 0, 100)
+INIT_STOPS(stops1000, 3, -1000, 0, 1000)
+INIT_STOPS(stopsSwitch, 13, CATEGORY_END(-SWSRC_FIRST_LOGICAL_SWITCH), CATEGORY_END(-SWSRC_FIRST_TRIM), CATEGORY_END(-SWSRC_LAST_SWITCH+1), 0, CATEGORY_END(SWSRC_LAST_SWITCH), CATEGORY_END(SWSRC_FIRST_TRIM-1), CATEGORY_END(SWSRC_FIRST_LOGICAL_SWITCH-1))
 
 int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
@@ -280,11 +279,14 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
 
   if (newval != val) {
     if (!(i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && stops.contains(newval) && !IS_ROTARY_EVENT(event)) {
-      pauseEvents(event); // delay before auto-repeat continues
-      if (newval>val) // without AUDIO it's optimized, because the 2 sounds are the same
-        AUDIO_KEYPAD_UP();
-      else
-        AUDIO_KEYPAD_DOWN();
+      bool pause = (newval > val ? !stops.contains(newval-1) : !stops.contains(newval+1));
+      if (pause) {
+        pauseEvents(event); // delay before auto-repeat continues
+        if (newval>val) // without AUDIO it's optimized, because the 2 sounds are the same
+          AUDIO_KEYPAD_UP();
+        else
+          AUDIO_KEYPAD_DOWN();
+      }
     }
     eeDirty(i_flags & (EE_GENERAL|EE_MODEL));
     checkIncDec_Ret = (newval > val ? 1 : -1);
