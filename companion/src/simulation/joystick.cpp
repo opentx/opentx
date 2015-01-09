@@ -62,8 +62,7 @@ void Joystick::processEvents()
 
   SDL_JoystickUpdate();
 
-  int i;
-  for (i = 0; i < numAxes; i++) {
+  for (int i = 0; i < numAxes; i++) {
     Sint16 moved = SDL_JoystickGetAxis(joystick, i);
     if ( abs(moved) >= deadzones[i] ) {
       if ( (moved != axes[i]) ) {
@@ -72,46 +71,55 @@ void Joystick::processEvents()
           emit axisValueChanged(i, moved);
         axes[i] = moved;
         axisRepeatTimers[i].restart();
-      } else if (autoRepeat && moved != 0) {
+      }
+      else if (autoRepeat && moved != 0) {
         if ( axisRepeatTimers[i].elapsed() >= autoRepeatDelay ) {
           emit axisValueChanged(i, moved);
           axes[i] = moved;
         }
-      } else
+      }
+      else
         axisRepeatTimers[i].restart();
-    } else
+    }
+    else {
       emit axisValueChanged(i, 0);
+    }
   }
-  for (i = 0; i < numButtons; i++) {
+  for (int i = 0; i < numButtons; i++) {
     Uint8 changed = SDL_JoystickGetButton(joystick, i);
     if ( (changed != buttons[i]) ) {
       emit buttonValueChanged(i, (bool) changed);
       buttons[i] = changed;
       buttonRepeatTimers[i].restart();
-    } else if (autoRepeat && changed != 0) {
+    }
+    else if (autoRepeat && changed != 0) {
       if ( buttonRepeatTimers[i].elapsed() >= autoRepeatDelay ) {
         emit buttonValueChanged(i, (bool) changed);
         buttons[i] = changed;
       }
-    } else
+    }
+    else {
       buttonRepeatTimers[i].restart();
+    }
   }
-  for (i = 0; i < numHats; i++) {
+  for (int i = 0; i < numHats; i++) {
     Uint8 changed = SDL_JoystickGetHat(joystick, i);
     if ( (changed != hats[i]) ) {
       emit hatValueChanged(i, changed);
       hats[i] = changed;
       hatRepeatTimers[i].restart();
-    } else if (autoRepeat && changed != 0) {
+    }
+    else if (autoRepeat && changed != 0) {
       if ( hatRepeatTimers[i].elapsed() >= autoRepeatDelay ) {
         emit hatValueChanged(i, changed);
         hats[i] = changed;
       }
-    } else
+    }
+    else {
       hatRepeatTimers[i].restart();
+    }
   }
-
-  for (i = 0; i < numTrackballs; i++) {
+  for (int i = 0; i < numTrackballs; i++) {
     int dx, dy;
     SDL_JoystickGetBall(joystick, i, &dx, &dy);
     if ( dx != 0 || dy != 0 )

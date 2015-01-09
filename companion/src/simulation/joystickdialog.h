@@ -5,23 +5,23 @@
 #include <QDialog>
 
 namespace Ui {
-    class joystickDialog;
+    class JoystickDialog;
 }
 
-class joystickDialog : public QDialog
+class JoystickDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit joystickDialog(QWidget *parent = 0, int stick=-1);
-    ~joystickDialog();
+    explicit JoystickDialog(QWidget *parent = 0, int stick=-1);
+    ~JoystickDialog();
     Joystick *joystick;
 
 public slots:
     void onjoystickAxisValueChanged(int axis, int value);
     
 private:
-    Ui::joystickDialog *ui;
+    Ui::JoystickDialog *ui;
     void joystickOpen(int stick);
     int jscal[8][3];
     int step;

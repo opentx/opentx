@@ -263,8 +263,9 @@ void AppPreferencesDialog::on_joystickChkB_clicked() {
   }
 }
 
-void AppPreferencesDialog::on_joystickcalButton_clicked() {
-   joystickDialog * jd=new joystickDialog(this, ui->joystickCB->currentIndex());
+void AppPreferencesDialog::on_joystickcalButton_clicked()
+{
+   JoystickDialog *jd = new JoystickDialog(this, ui->joystickCB->currentIndex());
    jd->exec();
 }
 #endif

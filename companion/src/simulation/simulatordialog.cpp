@@ -1069,8 +1069,8 @@ void SimulatorDialog::on_FixRightY_clicked(bool checked)
 void SimulatorDialog::onjoystickAxisValueChanged(int axis, int value)
 {
   int stick;
-  if (axis>=0 && axis<=8) {
-    stick=jsmap[axis];
+  if (axis>=0 && axis<8) {
+    stick = jsmap[axis];
     int stickval;
     if (value>jscal[axis][1]) {
       if ((jscal[axis][2]-jscal[axis][1])==0)
