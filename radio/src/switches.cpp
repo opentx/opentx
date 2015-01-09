@@ -74,7 +74,7 @@ volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value = 0;
 #if defined(PCBTARANIS)
 tmr10ms_t switchesMidposStart[6] = { 0 };
 uint64_t  switchesPos = 0;
-tmr10ms_t potsLastposStart[NUM_XPOTS];
+tmr10ms_t potsLastposStart[NUM_XPOTS] = { 0 };
 uint8_t   potsPos[NUM_XPOTS];
 
 int switchConfig(int idx)
@@ -202,11 +202,14 @@ void getSwitchesPosition(bool startup)
         uint8_t pos = anaIn(POT1+i) / (2*RESX/calib->count);
         uint8_t previousPos = potsPos[i] >> 4;
         uint8_t previousStoredPos = potsPos[i] & 0x0F;
-        if (pos != previousPos) {
+        if (startup) {
+          potsPos[i] = (pos << 4) | pos;
+        }
+        else if (pos != previousPos) {
           potsLastposStart[i] = get_tmr10ms();
           potsPos[i] = (pos << 4) | previousStoredPos;
         }
-        else if (startup || g_eeGeneral.switchesDelay==SWITCHES_DELAY_NONE || (tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > SWITCHES_DELAY()) {
+        else if (g_eeGeneral.switchesDelay==SWITCHES_DELAY_NONE || (tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > SWITCHES_DELAY()) {
           potsLastposStart[i] = 0;
           potsPos[i] = (pos << 4) | pos;
           if (previousStoredPos != pos) {
