@@ -1340,7 +1340,7 @@ bootloader.lbm: bootloader/bootloader_ramBoot.bin
 
 .PHONY bootloader/bootloader_ramBoot.bin:
 	@echo "Building bootloader..."
-	$(MAKE) -C bootloader PCB=$(PCB) PCBREV=$(PCBREV)
+	$(MAKE) -C bootloader PCB=$(PCB) PCBREV=$(PCBREV) NANO=$(NANO)
 else ifeq ($(PCB), 9XRPRO)
 bootloader.lbm:
 	@echo "Fetching Mike's bootloader..."
