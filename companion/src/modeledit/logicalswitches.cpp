@@ -248,7 +248,7 @@ void LogicalSwitchesPanel::edited()
         else {
           model->logicalSw[i].val3 = TimToVal(cswitchOffset2[i]->value()) - model->logicalSw[i].val2;
         }
-        updateTimerParam(cswitchOffset2[i], model->logicalSw[i].val2+model->logicalSw[i].val3, cswitchOffset[i]->value()-0.1);
+        updateTimerParam(cswitchOffset2[i], model->logicalSw[i].val2+model->logicalSw[i].val3, ValToTim(TimToVal(cswitchOffset[i]->value())-1));
         if (model->logicalSw[i].val3 == 0) {
           cswitchOffset2[i]->setSuffix("(infinite)");
         }
@@ -334,7 +334,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       mask &= ~DELAY_ENABLED;
       populateSwitchCB(cswitchSource1[i], RawSwitch(model->logicalSw[i].val1), generalSettings, LogicalSwitchesContext);
       updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.0);
-      updateTimerParam(cswitchOffset2[i], model->logicalSw[i].val2+model->logicalSw[i].val3, cswitchOffset[i]->value()-0.1);
+      updateTimerParam(cswitchOffset2[i], model->logicalSw[i].val2+model->logicalSw[i].val3, ValToTim(TimToVal(cswitchOffset[i]->value())-1));
       cswitchOffset2[i]->setSpecialValueText(tr("(no release)"));
       if (model->logicalSw[i].val3 == 0) {
         cswitchOffset2[i]->setSuffix(tr("(infinite)"));
