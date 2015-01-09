@@ -4,6 +4,7 @@
 <ul>
 <li>Fixed blank LCD screen at very low temperatures</li>
 <li>Shortened radio reboot time in case of watchdog reset</li>
+<li>Fixed timer problem in bootloader, which prevented radio from powering off after being connected to USB</li>
 <li>Fixed issue with heli swash plate mixing when using <i>notrim</i></li>
 <li>Various fixes for double-keys</li>
 <li>Added switch auto detection in Timer source</li>
@@ -28,13 +29,6 @@
 <ul>
 <li>Added 115200 bps speed to MAVLINK</li>
 </ul>
-
-[Bootloader]
-<ul>
-<li>Fixed blank LCD screen at very low temperatures</li>
-<li>Fixed timer problem which prevented radio from powering off after being connected to USB</li>
-</ul>
-
 
 [9X2561]
 <li>PWM backlight fixed</li>
