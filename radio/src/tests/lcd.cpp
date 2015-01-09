@@ -380,6 +380,12 @@ TEST(Lcd, lcd_bmpLoadAndDisplay)
     bitmap.leakCheck();
     lcd_bmp(70, 2, bitmap.buffer());
   }
+  {
+    TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(20, 20));
+    EXPECT_EQ(bmpLoad(bitmap.buffer(), "./tests/4b_20x20.bmp", 20, 20), (char *)0);
+    bitmap.leakCheck();
+    lcd_bmp(120, 2, bitmap.buffer());
+  }
   EXPECT_TRUE(checkScreenshot("lcd_bmpLoadAndDisplay"));
 
   // Test various bad BMP files, they should not display
