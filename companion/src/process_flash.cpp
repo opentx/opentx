@@ -274,11 +274,10 @@ void FlashProcess::onFinished(int code=0)
       errorWizard();
     }
   }
-  else if (hasErrors)
+  else if (hasErrors) {
     progress->setInfo(tr("Flashing done with errors"));
-  else
-    progress->setInfo(tr("Flashing done"));
-  if(lfuse || hfuse || efuse) {
+  }
+  if (lfuse || hfuse || efuse) {
     addReadFuses();
   }
   progress->setValue(progress->maximum());

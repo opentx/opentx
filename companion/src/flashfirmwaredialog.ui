@@ -217,6 +217,22 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="checkHardwareCompatibility">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Allows Companion to write to older version of the firmware</string>
+     </property>
+     <property name="text">
+      <string>Check Hardware compatibility</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QCheckBox" name="backupEEprom">
      <property name="enabled">
       <bool>true</bool>

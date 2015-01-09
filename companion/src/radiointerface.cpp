@@ -248,8 +248,6 @@ bool readFirmware(const QString &filename, ProgressWidget *progress)
     return false;
   }
 
-  g.flashDir(QFileInfo(filename).dir().absolutePath());
-
   if (IS_ARM(GetCurrentFirmware()->getBoard())) {
     QString path = findMassstoragePath("FIRMWARE.BIN");
     if (!path.isEmpty()) {

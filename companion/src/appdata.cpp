@@ -673,6 +673,8 @@ AppData::AppData()
     getset( _outputDisplayDetails,  "outputDisplayDetails"     ,false );
     getset( _enableBackup,    "backupEnable"            ,false );
     getset( _backupOnFlash,   "backupOnFlash"           ,true  );
+    getset( _checkHardwareCompatibility,   "checkHardwareCompatibility"           ,true  );
+
     getset( _jsSupport,       "js_support"              ,false );
     getset( _maximized,       "maximized"               ,false );
     getset( _showSplash,      "show_splash"             ,true  );

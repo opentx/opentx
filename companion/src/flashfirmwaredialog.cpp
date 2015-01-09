@@ -10,6 +10,7 @@
 #include "progressdialog.h"
 #include "radiointerface.h"
 #include "splashlibrary.h"
+#include "progresswidget.h"
 
 #if defined WIN32 || !defined __GNUC__
   #include <windows.h>
@@ -49,6 +50,8 @@ fwName(g.profile[g.id()].fwName())
   if (backupPath.isEmpty() || !QDir(backupPath).exists()) {
     ui->backupEEprom->setEnabled(false);
   }
+
+  ui->checkHardwareCompatibility->setChecked(g.checkHardwareCompatibility());
 
   updateUI();
 
@@ -197,6 +200,8 @@ void FlashFirmwareDialog::on_useLibrarySplash_clicked()
 void FlashFirmwareDialog::on_burnButton_clicked()
 {
   g.flashDir(QFileInfo(fwName).dir().absolutePath());
+  g.checkHardwareCompatibility(ui->checkHardwareCompatibility->isChecked());
+  g.backupOnFlash(ui->backupEEprom->isChecked());
 
   if (imageSource != FIRMWARE) {
     // load the splash image
@@ -240,12 +245,26 @@ void FlashFirmwareDialog::shrink()
 
 void FlashFirmwareDialog::startFlash(const QString &filename)
 {
-  bool backup = ui->backupEEprom->checkState() == Qt::Checked;
-  g.backupOnFlash(backup);
+  bool backup = g.backupOnFlash();
 
   close();
 
   ProgressDialog progressDialog(this, tr("Write Firmware to Radio"), CompanionIcon("write_flash.png"));
+
+  // check hardware compatibility if requested
+  if (g.checkHardwareCompatibility()) {
+    QString tempFirmware = generateProcessUniqueTempFileName("flash.bin");
+    if (!readFirmware(tempFirmware, progressDialog.progress())) {
+      QMessageBox::warning(this, tr("Firmware check failed"), tr("Could not check firmware from radio"));
+      return;
+    }
+    FirmwareInterface previousFirmware(tempFirmware);
+    FirmwareInterface newFirmware(filename);
+    if (!newFirmware.isHardwareCompatible(previousFirmware)) {
+      QMessageBox::warning(this, tr("Firmware check failed"), tr("New firmware is not compatible with the one currently installed!"));
+      return;
+    }
+  }
 
   // backup if requested
   bool result = true;
@@ -272,5 +291,6 @@ void FlashFirmwareDialog::startFlash(const QString &filename)
     }
   }
 
+  progressDialog.progress()->setInfo(tr("Flashing done"));
   progressDialog.exec();
 }

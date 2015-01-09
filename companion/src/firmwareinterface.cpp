@@ -123,6 +123,29 @@ QString FirmwareInterface::seekLabel(const QString & label)
   return seekString(label + ":");
 }
 
+QString FirmwareInterface::getFlavour() const
+{
+  if (flavour == "opentx-x9dp")
+    return "opentx-taranis-plus";
+  else if (flavour == "opentx-x9d")
+    return "opentx-taranis";
+  else
+    return flavour;
+}
+
+bool FirmwareInterface::isHardwareCompatible(const FirmwareInterface &previousFirmware) const
+{
+  QString newFlavour = getFlavour();
+  if (newFlavour.isEmpty())
+    return true;
+
+  QString previousFlavour = previousFirmware.getFlavour();
+  if (previousFlavour.isEmpty())
+    return true;
+
+  return (newFlavour == previousFlavour);
+}
+
 bool FirmwareInterface::SeekSplash(QByteArray splash)
 {
   int start = flash.indexOf(splash);

@@ -46,7 +46,8 @@ class FirmwareInterface
     inline QString getDate() { return date; }
     inline QString getTime() { return time; }
     int getSize() { return flash_size; }
-    inline QString getFlavour() { return flavour; }
+    QString getFlavour() const;
+    bool isHardwareCompatible(const FirmwareInterface &previousFirmware) const;
     inline QString getVersion() { return version; }
     unsigned int getVersionId() { return versionId; }
     inline int getEEpromVersion() { return eepromVersion; }
