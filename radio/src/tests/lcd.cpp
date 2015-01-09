@@ -401,3 +401,43 @@ TEST(Lcd, lcd_bmpLoadAndDisplay)
   }
 }
 #endif
+
+#if defined(PCBTARANIS)
+TEST(Lcd, lcd_line)
+{
+  int start, length, xOffset;
+  uint8_t pattern; 
+
+  lcd_clear();
+
+  start = 5;
+  pattern = SOLID; 
+  length = 40;
+  xOffset = 0;
+  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+
+  start = 10;
+  pattern = DOTTED; 
+  length = 40;
+  xOffset = 0;
+  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+
+  start = 55;
+  pattern = SOLID; 
+  length = -40;
+  xOffset = 80;
+  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+
+  start = 50;
+  pattern = DOTTED; 
+  length = -40;
+  xOffset = 80;
+  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+
+  EXPECT_TRUE(checkScreenshot("lcd_line"));
+}
+#endif
