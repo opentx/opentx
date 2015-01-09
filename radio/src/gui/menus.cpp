@@ -274,7 +274,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
 
   if (newval != val) {
     if (!(i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && stops.contains(newval) && !IS_ROTARY_EVENT(event)) {
-      bool pause = (newval > val ? !stops.contains(newval-1) : !stops.contains(newval+1));
+      bool pause = (newval > val ? !stops.contains(newval+1) : !stops.contains(newval-1));
       if (pause) {
         pauseEvents(event); // delay before auto-repeat continues
         if (newval>val) // without AUDIO it's optimized, because the 2 sounds are the same
