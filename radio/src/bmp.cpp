@@ -186,22 +186,11 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const unsigned int w
           f_close(&bmpFile);
           return SDCARD_ERROR(result);
         }
-        for (uint32_t j=0; j<rowSize; j++) {
-          uint8_t * dst = dest + (i/2)*w + j*2;
-          if (i & 1) {
-            uint8_t val = palette[(buf[j] >> 4) & 0x0F] << 4;
-            *dst |= val ^ 0xF0;
-            if ((j+1)*2 >= w) break;
-            val = palette[buf[j] & 0x0F] << 4;
-            *(dst+1) |= val ^ 0xF0;
-          }
-          else {
-            uint8_t val = palette[(buf[j] >> 4) & 0x0F];
-            *dst |= val ^ 0x0F;
-            if ((j+1)*2 >= w) break;
-            val = palette[buf[j] & 0x0F];
-            *(dst+1) |= val ^ 0x0F;
-          }
+        uint8_t * dst = dest + (i/2)*w;
+        for (uint32_t j=0; j<w; j++) {
+          uint8_t index = (buf[j/2] >> ((j & 1) ? 0 : 4)) & 0x0F;
+          uint8_t val = palette[index] << ((i & 1) ? 4 : 0);
+          *dst++ |= val ^ ((i & 1) ? 0xF0 : 0x0F);
         }
       }
       break;

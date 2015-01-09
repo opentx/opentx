@@ -380,6 +380,12 @@ TEST(Lcd, lcd_bmpLoadAndDisplay)
     bitmap.leakCheck();
     lcd_bmp(70, 2, bitmap.buffer());
   }
+  {
+    TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(20, 20));
+    EXPECT_EQ(bmpLoad(bitmap.buffer(), "./tests/4b_20x20.bmp", 20, 20), (char *)0);
+    bitmap.leakCheck();
+    lcd_bmp(120, 2, bitmap.buffer());
+  }
   EXPECT_TRUE(checkScreenshot("lcd_bmpLoadAndDisplay"));
 
   // Test various bad BMP files, they should not display
@@ -393,5 +399,45 @@ TEST(Lcd, lcd_bmpLoadAndDisplay)
     EXPECT_EQ(bmpLoad(bitmap.buffer(), "./tests/1b_39x32.bmp", 10, 10), STR_INCOMPATIBLE) << "to small buffer";
     bitmap.leakCheck();
   }
+}
+#endif
+
+#if defined(PCBTARANIS)
+TEST(Lcd, lcd_line)
+{
+  int start, length, xOffset;
+  uint8_t pattern; 
+
+  lcd_clear();
+
+  start = 5;
+  pattern = SOLID; 
+  length = 40;
+  xOffset = 0;
+  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+
+  start = 10;
+  pattern = DOTTED; 
+  length = 40;
+  xOffset = 0;
+  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+
+  start = 55;
+  pattern = SOLID; 
+  length = -40;
+  xOffset = 80;
+  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+
+  start = 50;
+  pattern = DOTTED; 
+  length = -40;
+  xOffset = 80;
+  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+
+  EXPECT_TRUE(checkScreenshot("lcd_line"));
 }
 #endif

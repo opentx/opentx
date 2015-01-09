@@ -537,28 +537,30 @@ void lcd_line(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, LcdFl
 
   if (dxabs >= dyabs) {
     /* the line is more horizontal than vertical */
-    for (int i=0; i<dxabs; i++) {
+    for (int i=0; i<=dxabs; i++) {
       y += dyabs;
       if (y>=dxabs) {
         y -= dxabs;
         py += sdy;
       }
-      px += sdx;
-      if ((1<<(px%8)) & pat)
+      if ((1<<(px%8)) & pat) {
         lcd_plot(px, py, att);
+      }
+      px += sdx;
     }
   }
   else {
     /* the line is more vertical than horizontal */
-    for (int i=0; i<dyabs; i++) {
+    for (int i=0; i<=dyabs; i++) {
       x += dxabs;
       if (x >= dyabs) {
         x -= dyabs;
         px += sdx;
       }
-      py += sdy;
-      if ((1<<(py%8)) & pat)
+      if ((1<<(py%8)) & pat) {
         lcd_plot(px, py, att);
+      }
+      py += sdy;
     }
   }
 }
