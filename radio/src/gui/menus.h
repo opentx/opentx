@@ -204,14 +204,24 @@ struct CheckIncDecStops {
   bool contains(int value) const
   {
     for (int i=0; i<count; ++i) {
-      if (value == stops[i])
+      int stop = stops[i];
+      if (value == stop)
         return true;
+      else if (value < stop)
+        return false;
     }
     return false;
   }
 };
 extern const CheckIncDecStops &stops100;
 extern const CheckIncDecStops &stops1000;
+extern const CheckIncDecStops &stopsSwitch;
+#define INIT_STOPS(var, ...)                                        \
+  const int _ ## var[] = { __VA_ARGS__ };                           \
+  const CheckIncDecStops &var  = (const CheckIncDecStops&)_ ## var;
+#define CATEGORY_END(val)                                          \
+  (val), (val+1)
+
 int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=NULL, const CheckIncDecStops &stops=stops100);
 #else
 int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags=0);
@@ -258,7 +268,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   bool isModuleAvailable(int module);
   #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
   #define CHECK_INCDEC_MODELSWITCH(event, var, min, max, available) \
-    var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH|NO_INCDEC_MARKS, available)
+    var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH, available, stopsSwitch)
 #elif defined(AUTOSWITCH)
   #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
   #define CHECK_INCDEC_MODELSWITCH(event, var, min, max, available) \
