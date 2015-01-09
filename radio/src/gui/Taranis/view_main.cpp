@@ -158,7 +158,7 @@ void displayTrims(uint8_t phase)
         lcd_vline(xm+1, ym-1,  3);
       }
       ym -= val;
-      lcd_filled_rect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
+      drawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
       if (dir >= 0) {
         lcd_hline(xm-1, ym-1,  3);
       }
@@ -180,7 +180,7 @@ void displayTrims(uint8_t phase)
       lcd_hline(xm-1, ym-1,  3);
       lcd_hline(xm-1, ym+1,  3);
       xm += val;
-      lcd_filled_rect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
+      drawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
       if (dir >= 0) {
         lcd_vline(xm+1, ym-1,  3);
       }
@@ -232,7 +232,7 @@ void displaySliders()
 void displayTopBarGauge(coord_t x, int count, bool blinking=false)
 {
   if (!blinking || BLINK_ON_PHASE)
-    lcd_filled_rect(x+1, BAR_Y+2, 11, 5, SOLID, ERASE);
+    drawFilledRect(x+1, BAR_Y+2, 11, 5, SOLID, ERASE);
   count = min(10, count);
   for (int i=0; i<count; i+=2)
     lcd_vline(x+2+i, BAR_Y+3, 3);
@@ -321,7 +321,7 @@ void displayTopBar()
   putsRtcTime(BAR_TIME_X, BAR_Y+1, LEFT|TIMEBLINK);
 
   /* The background */
-  lcd_filled_rect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY(12)|ROUND);
+  drawFilledRect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY(12)|ROUND);
 
   /* The inside of the Batt gauge */
   int count = 10 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin);
@@ -353,7 +353,7 @@ void displayTimers()
       }
       if (timerState.val < 0) {
         if (BLINK_ON_PHASE) {
-          lcd_filled_rect(TIMERS_X-7, y-8, 60, 20);
+          drawFilledRect(TIMERS_X-7, y-8, 60, 20);
         }
       }
     }
@@ -587,7 +587,7 @@ void menuMainView(uint8_t event)
         lcd_hline(x, y+7, 4);
       }
       else if (getSwitch(SWSRC_SW1+sw)) {
-        lcd_filled_rect(x, y, 4, 8);
+        drawFilledRect(x, y, 4, 8);
       }
       else {
         lcd_rect(x, y, 4, 8);
@@ -599,7 +599,7 @@ void menuMainView(uint8_t event)
 #if defined(GVARS)
   if (s_gvar_timer > 0) {
     s_gvar_timer--;
-    lcd_filled_rect(BITMAP_X, BITMAP_Y, 64, 32, SOLID, ERASE);
+    drawFilledRect(BITMAP_X, BITMAP_Y, 64, 32, SOLID, ERASE);
     lcd_rect(BITMAP_X, BITMAP_Y, 64, 32);
     putsStrIdx(BITMAP_X+FW, BITMAP_Y+FH-1, STR_GV, s_gvar_last+1);
     lcd_putsnAtt(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);

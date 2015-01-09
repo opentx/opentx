@@ -33,24 +33,16 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
-#if LCD_W >= 212
-  #define MODEL_CUSTOM_FUNC_1ST_COLUMN          (4*FW+2)
-  #define MODEL_CUSTOM_FUNC_2ND_COLUMN          (8*FW+2)
-  #define MODEL_CUSTOM_FUNC_3RD_COLUMN          (21*FW)
-  #define MODEL_CUSTOM_FUNC_4TH_COLUMN          (33*FW-3)
-  #define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF    (34*FW-3)
+#define MODEL_CUSTOM_FUNC_1ST_COLUMN          (3)
+#define MODEL_CUSTOM_FUNC_2ND_COLUMN          (5*FW-2)
+#define MODEL_CUSTOM_FUNC_3RD_COLUMN          (15*FW+2)
+#define MODEL_CUSTOM_FUNC_4TH_COLUMN          (20*FW)
+#if defined(GRAPHICS)
+  #define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF  (20*FW)
 #else
-  #define MODEL_CUSTOM_FUNC_1ST_COLUMN          (3)
-  #define MODEL_CUSTOM_FUNC_2ND_COLUMN          (5*FW-2)
-  #define MODEL_CUSTOM_FUNC_3RD_COLUMN          (15*FW+2)
-  #define MODEL_CUSTOM_FUNC_4TH_COLUMN          (20*FW)
-  #if defined(GRAPHICS)
-    #define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF  (20*FW)
-  #else
-    #define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF  (18*FW+2)
-  #endif
+  #define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF  (18*FW+2)
 #endif
 
 #if defined(CPUARM) && defined(SDCARD)
@@ -78,50 +70,6 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
     // The user choosed a file in the list
     memcpy(cf->play.name, result, sizeof(cf->play.name));
     eeDirty(EE_MODEL);
-    if (func == FUNC_PLAY_SCRIPT) {
-      LUA_LOAD_MODEL_SCRIPTS();
-    }
-  }
-}
-#endif
-
-#if defined(PCBTARANIS)
-void onCustomFunctionsMenu(const char *result)
-{
-  int8_t sub = m_posVert-1;
-  CustomFunctionData * cfn;
-  uint8_t eeFlags;
-
-  if (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions) {
-    cfn = &g_model.customFn[sub];
-    eeFlags = EE_MODEL;
-  }
-  else {
-    cfn = &g_eeGeneral.customFn[sub];
-    eeFlags = EE_GENERAL;
-  }
-
-  if (result == STR_COPY) {
-    clipboard.type = CLIPBOARD_TYPE_CUSTOM_FUNCTION;
-    clipboard.data.cfn = *cfn;
-  }
-  else if (result == STR_PASTE) {
-    *cfn = clipboard.data.cfn;
-    eeDirty(eeFlags);
-  }
-  else if (result == STR_CLEAR) {
-    memset(cfn, 0, sizeof(CustomFunctionData));
-    eeDirty(eeFlags);
-  }
-  else if (result == STR_INSERT) {
-    memmove(cfn+1, cfn, (NUM_CFN-sub-1)*sizeof(CustomFunctionData));
-    memset(cfn, 0, sizeof(CustomFunctionData));
-    eeDirty(eeFlags);
-  }
-  else if (result == STR_DELETE) {
-    memmove(cfn, cfn+1, (NUM_CFN-sub-1)*sizeof(CustomFunctionData));
-    memset(&g_model.customFn[NUM_CFN-1], 0, sizeof(CustomFunctionData));
-    eeDirty(eeFlags);
   }
 }
 #endif
@@ -136,35 +84,9 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
   uint8_t eeFlags = EE_MODEL;
 #endif
 
-#if defined(PCBTARANIS)
-   if (sub>=0 && m_posHorz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
-     killEvents(event);
-     CustomFunctionData *cfn = &functions[sub];
-     if (!CFN_EMPTY(cfn))
-       MENU_ADD_ITEM(STR_COPY);
-     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_FUNCTION)
-       MENU_ADD_ITEM(STR_PASTE);
-     if (!CFN_EMPTY(cfn) && CFN_EMPTY(&functions[NUM_CFN-1]))
-       MENU_ADD_ITEM(STR_INSERT);
-     if (!CFN_EMPTY(cfn))
-       MENU_ADD_ITEM(STR_CLEAR);
-     for (int i=sub+1; i<NUM_CFN; i++) {
-       if (!CFN_EMPTY(&functions[i])) {
-         MENU_ADD_ITEM(STR_DELETE);
-         break;
-       }
-     }
-     menuHandler = onCustomFunctionsMenu;
-   }
-#endif
-
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
     uint8_t k = i+s_pgOfs;
-
-#if LCD_W >= 212
-    putsStrIdx(0, y, functions == g_model.customFn ? STR_SF : STR_GF, k+1, (sub==k && m_posHorz<0) ? INVERS : 0);
-#endif
 
     CustomFunctionData *cfn = &functions[k];
     uint8_t func = CFN_FUNC(cfn);
@@ -296,11 +218,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 #endif
 #if defined(CPUARM) && defined(SDCARD)
           else if (func == FUNC_PLAY_TRACK || func == FUNC_BACKGND_MUSIC || func == FUNC_PLAY_SCRIPT) {
-#if LCD_W >= 212
-            coord_t x = MODEL_CUSTOM_FUNC_3RD_COLUMN;
-#else
             coord_t x = (func == FUNC_PLAY_TRACK ? MODEL_CUSTOM_FUNC_2ND_COLUMN + FW + FW*strlen(TR_PLAY_TRACK) : MODEL_CUSTOM_FUNC_3RD_COLUMN);
-#endif
             if (ZEXIST(cfn->play.name))
               lcd_putsnAtt(x, y, cfn->play.name, sizeof(cfn->play.name), attr);
             else
@@ -379,14 +297,6 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
             }
           }
 #endif
-#if defined(PCBTARANIS) && defined(REVPLUS)
-          else if (func == FUNC_BACKLIGHT) {
-            displaySlider(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, CFN_PARAM(cfn), 100, attr);
-            INCDEC_SET_FLAG(eeFlags | NO_INCDEC_MARKS);
-            val_min = 0;
-            val_max = 100;
-          }
-#endif
 #if defined(GVARS)
           else if (func == FUNC_ADJUST_GVAR) {
             switch (CFN_GVAR_MODE(cfn)) {
@@ -444,27 +354,15 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           }
           else if (HAS_REPEAT_PARAM(func)) {
             if (CFN_PLAY_REPEAT(cfn) == 0) {
-#if LCD_W >= 212
-              lcd_putsAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2, y, "1x", attr);
-#else
               lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF+3, y, '-', attr);
-#endif
             }
 #if defined(CPUARM)
             else if (CFN_PLAY_REPEAT(cfn) == CFN_PLAY_REPEAT_NOSTART) {
-#if LCD_W >= 212
-              lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN-1, y, '!', attr);
-              lcd_putsAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2, y, "1x", attr);
-#else
               lcd_putsAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF, y, "!-", attr);
-#endif
             }
 #endif
             else {
               lcd_outdezAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr);
-#if LCD_W >= 212
-              lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, 's', attr);
-#endif
             }
 #if defined(CPUARM)
             if (active) CFN_PLAY_REPEAT(cfn) = checkIncDec(event, CFN_PLAY_REPEAT(cfn)==CFN_PLAY_REPEAT_NOSTART?-1:CFN_PLAY_REPEAT(cfn), -1, 60/CFN_PLAY_REPEAT_MUL, eeFlags);

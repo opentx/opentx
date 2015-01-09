@@ -200,7 +200,7 @@ void menuModelSetup(uint8_t event)
         putsStrIdx(0*FW, y, STR_TIMER, timerIdx+1);
         putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, m_posHorz==0 ? attr : 0);
         putsTimer(MODEL_SETUP_2ND_COLUMN+5*FW-2+5*FWNUM+1, y, timer->start, m_posHorz==1 ? attr : 0, m_posHorz==2 ? attr : 0);
-        if (attr && m_posHorz < 0) lcd_filled_rect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);
+        if (attr && m_posHorz < 0) drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);
         if (attr && (editMode>0 || p1valdiff)) {
           div_t qr = div(timer->start, 60);
           switch (m_posHorz) {
@@ -393,7 +393,7 @@ void menuModelSetup(uint8_t event)
           states >>= 2;
         }
         if (attr && m_posHorz < 0) {
-          lcd_filled_rect(MODEL_SETUP_2ND_COLUMN-1, y-1, 8*(2*FW+1), ONE_2x2POS_DEFINED() ? 2*FH+1 : FH+1);
+          drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 8*(2*FW+1), ONE_2x2POS_DEFINED() ? 2*FH+1 : FH+1);
         }
         break;
       }
@@ -663,7 +663,7 @@ void menuModelSetup(uint8_t event)
               }
             }
             else {
-              lcd_filled_rect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
+              drawFilledRect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
             }
           }
         }

@@ -189,7 +189,7 @@ void menuGeneralSetup(uint8_t event)
           }
         }
 #if defined(PCBTARANIS)
-        if (attr && m_posHorz < 0) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
+        if (attr && m_posHorz < 0) drawFilledRect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
 #endif
         if (attr && checkIncDec_Ret) {
           g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
@@ -217,7 +217,7 @@ void menuGeneralSetup(uint8_t event)
           }
         }
 #if defined(PCBTARANIS)
-        if (attr && m_posHorz < 0) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
+        if (attr && m_posHorz < 0) drawFilledRect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
 #endif
         if (attr && checkIncDec_Ret)
           g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
@@ -231,7 +231,7 @@ void menuGeneralSetup(uint8_t event)
         lcd_putc(lcdLastPos, y, '-');
         putsVolts(lcdLastPos+FW, y, 120+g_eeGeneral.vBatMax, (m_posHorz>0 ? attr : 0)|LEFT|NO_UNIT);
 #if defined(PCBTARANIS)
-        if (attr && m_posHorz < 0) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
+        if (attr && m_posHorz < 0) drawFilledRect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
 #endif
         if (attr && s_editMode>0) {
           if (m_posHorz==0)
@@ -583,7 +583,7 @@ void menuGeneralSetup(uint8_t event)
           lcd_img((6+4*i)*FW, y, sticks, i, 0);
 #if defined(FRSKY_STICKS)
           if (g_eeGeneral.stickReverse & (1<<i)) {
-            lcd_filled_rect((6+4*i)*FW, y, 3*FW, FH-1);
+            drawFilledRect((6+4*i)*FW, y, 3*FW, FH-1);
           }
 #endif
         }

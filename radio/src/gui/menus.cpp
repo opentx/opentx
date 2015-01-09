@@ -47,7 +47,7 @@ void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
   if (value)
     lcd_putc(x+1, y, '#');
   if (attr)
-    lcd_filled_rect(x, y, 7, 7);
+    drawFilledRect(x, y, 7, 7);
   else
     lcd_square(x, y, 7);
 #else
@@ -542,7 +542,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       displayScreenIndex(curr, menuTabSize, 0);
     }
 
-    lcd_filled_rect(0, 0, LCD_W, MENU_TITLE_HEIGHT, SOLID, FILL_WHITE|GREY_DEFAULT);
+    drawFilledRect(0, 0, LCD_W, MENU_TITLE_HEIGHT, SOLID, FILL_WHITE|GREY_DEFAULT);
   }
 
   DISPLAY_PROGRESS_BAR(menuTab ? lcdLastPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);
@@ -1149,7 +1149,7 @@ int16_t s_warning_input_max;
 
 void displayBox()
 {
-  lcd_filled_rect(10, 16, LCD_W-20, 40, SOLID, ERASE);
+  drawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
   lcd_rect(10, 16, LCD_W-20, 40);
 #if defined(CPUARM)
   lcd_putsn(WARNING_LINE_X, WARNING_LINE_Y, s_warning, WARNING_LINE_LEN);
@@ -1234,14 +1234,14 @@ void displaySlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t att
 {
   lcd_putc(x+(value*4*FW)/max, y, '$');
   lcd_hline(x, y+3, 5*FW-1, FORCE);
-  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(x, y, 5*FW-1, FH-1);
+  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) drawFilledRect(x, y, 5*FW-1, FH-1);
 }
 #elif defined(GRAPHICS)
 void display5posSlider(coord_t x, coord_t y, uint8_t value, uint8_t attr)
 {
   lcd_putc(x+2*FW+(value*FW), y, '$');
   lcd_hline(x, y+3, 5*FW-1, SOLID);
-  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(x, y, 5*FW-1, FH-1);
+  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) drawFilledRect(x, y, 5*FW-1, FH-1);
 }
 #endif
 
@@ -1366,12 +1366,12 @@ const char * displayMenu(uint8_t event)
 
   uint8_t display_count = min(s_menu_count, (uint16_t)MENU_MAX_LINES);
   uint8_t y = (display_count >= 5 ? MENU_Y - FH - 1 : MENU_Y);
-  lcd_filled_rect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
+  drawFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
   lcd_rect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
     lcd_putsAtt(MENU_X+6, i*(FH+1) + y + 2, s_menu[i], s_menu_flags);
-    if (i == s_menu_item) lcd_filled_rect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
+    if (i == s_menu_item) drawFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
   }
 
   if (s_menu_count > display_count) {
@@ -1472,9 +1472,9 @@ void drawStatusLine()
       statusLineTime = 0;
     }
 
-    lcd_filled_rect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID, ERASE);
+    drawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID, ERASE);
     lcd_putsAtt(5, LCD_H+1-statusLineHeight, statusLineMsg, BSS);
-    lcd_filled_rect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID);
+    drawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID);
   }
 }
 #endif

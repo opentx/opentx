@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 #define BIGSIZE       DBLSIZE
 #define BOX_WIDTH     23
@@ -134,7 +134,7 @@ void displayTrims(uint8_t phase)
       }
       ym -= val;
 #if !defined(CPUM64) || !defined(FRSKY)
-      lcd_filled_rect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
+      drawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
       if (dir >= 0) {
         lcd_hline(xm-1, ym-1,  3);
       }
@@ -153,7 +153,7 @@ void displayTrims(uint8_t phase)
       lcd_hline(xm-1, ym+1,  3);
       xm += val;
 #if !defined(CPUM64) || !defined(FRSKY)
-      lcd_filled_rect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
+      drawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
       if (dir >= 0) {
         lcd_vline(xm+1, ym-1,  3);
       }
@@ -202,13 +202,13 @@ void displayBattVoltage()
 {
 #if defined(BATTGRAPH)
   putsVBat(VBATT_X-8, VBATT_Y+1, 0);
-  lcd_filled_rect(VBATT_X-25, VBATT_Y+9, 22, 5);
+  drawFilledRect(VBATT_X-25, VBATT_Y+9, 22, 5);
   lcd_vline(VBATT_X-3, VBATT_Y+10, 3);
   uint8_t count = limit<uint8_t>(2, 20 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 20);
   for (uint8_t i=0; i<count; i+=2)
     lcd_vline(VBATT_X-24+i, VBATT_Y+10, 3);
   if (g_vbat100mV > g_eeGeneral.vBatWarn || BLINK_ON_PHASE)
-    lcd_filled_rect(VBATT_X-26, VBATT_Y, 25, 15);
+    drawFilledRect(VBATT_X-26, VBATT_Y, 25, 15);
 #else
   LcdFlags att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | BIGSIZE;
   putsVBat(VBATT_X-1, VBATT_Y, att|NO_UNIT);

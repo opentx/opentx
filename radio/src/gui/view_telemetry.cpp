@@ -65,7 +65,7 @@ void displayRssiLine()
     uint8_t rssi = min((uint8_t)99, TELEMETRY_RSSI());
     lcd_putsn(0, STATUS_BAR_Y, STR_RX, 2); lcd_outdezNAtt(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcd_rect(BAR_LEFT, 57, 78, 7);
-    lcd_filled_rect(BAR_LEFT+1, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+    drawFilledRect(BAR_LEFT+1, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
     lcd_putsAtt(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
@@ -82,13 +82,13 @@ void displayRssiLine()
     rssi = min((uint8_t)99, frskyData.rssi[1].value);
     lcd_putsLeft(STATUS_BAR_Y, STR_TX); lcd_outdezNAtt(4*FW+1, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcd_rect(BAR_LEFT+1, 57, 38, 7);
-    lcd_filled_rect(BAR_LEFT+1, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+    drawFilledRect(BAR_LEFT+1, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
 #endif
     rssi = min((uint8_t)99, TELEMETRY_RSSI());
     lcd_puts(104, STATUS_BAR_Y, STR_RX); lcd_outdezNAtt(105+4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcd_rect(65, 57, 38, 7);
     uint8_t v = 4*rssi/11;
-    lcd_filled_rect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+    drawFilledRect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
     lcd_putsAtt(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
@@ -330,7 +330,7 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
       }
 #endif
 
-      lcd_filled_rect(BAR_LEFT+1, y+1, width, barHeight, barShade);
+      drawFilledRect(BAR_LEFT+1, y+1, width, barHeight, barShade);
 
       for (uint8_t j=24; j<99; j+=25) {
         if (j>thresholdX || j>width) {

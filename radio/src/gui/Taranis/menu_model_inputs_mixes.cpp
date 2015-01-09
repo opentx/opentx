@@ -33,15 +33,10 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
-#if LCD_W >= 212
-  #define EXPO_ONE_2ND_COLUMN (LCD_W-8*FW-90)
-  #define EXPO_ONE_FM_WIDTH   (9*FW)
-#else
-  #define EXPO_ONE_2ND_COLUMN (7*FW+3*FW+2)
-  #define EXPO_ONE_FM_WIDTH   (5*FW)
-#endif
+#define EXPO_ONE_2ND_COLUMN (LCD_W-8*FW-90)
+#define EXPO_ONE_FM_WIDTH   (9*FW)
 
 #if defined(FLIGHT_MODES)
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value);
@@ -51,16 +46,7 @@ FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModes
 
   uint8_t posHorz = m_posHorz;
 
-#if defined(CPUARM) && LCD_W < 212
-  bool expoMenu = (x==EXPO_ONE_2ND_COLUMN-5*FW);
-#endif
-
   for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
-#if defined(CPUARM) && LCD_W < 212
-    if (expoMenu && ((attr && p < posHorz-4) || (x > EXPO_ONE_2ND_COLUMN-FW)))
-      continue;
-#endif
-#if defined(PCBTARANIS)
     LcdFlags flags = 0;
     if (attr) {
       flags |= INVERS;
@@ -70,9 +56,6 @@ FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModes
       lcd_putcAtt(x, y, ' ', flags|FIXEDWIDTH);
     else
       lcd_putcAtt(x, y, '0'+p, flags);
-#else
-    lcd_putcAtt(x, y, '0'+p, ((posHorz==p) && attr) ? BLINK|INVERS : ((value & (1<<p)) ? 0 : INVERS));
-#endif
     x += FW;
   }
 
@@ -94,18 +77,13 @@ int16_t expoFn(int16_t x)
 {
   ExpoData *ed = expoAddress(s_currIdx);
   int16_t anas[NUM_INPUTS] = {0};
-#if defined(PCBTARANIS)
   applyExpos(anas, e_perout_mode_inactive_flight_mode, ed->srcRaw, x);
-#else
-  anas[ed->chn] = x;
-  applyExpos(anas, e_perout_mode_inactive_flight_mode);
-#endif
   return anas[ed->chn];
 }
 
 void DrawFunction(FnFuncP fn, uint8_t offset)
 {
-  lcd_vlineStip(X0-offset, 0, LCD_H, 0xee);
+  lcd_vlineStip(X0-offset, 0/*TODO Y0-WCHART*/, WCHART*2, 0xee);
   lcd_hlineStip(X0-WCHART-offset, Y0, WCHART*2, 0xee);
 
   coord_t prev_yv = (coord_t)-1;
@@ -124,7 +102,6 @@ void DrawFunction(FnFuncP fn, uint8_t offset)
     prev_yv = yv;
   }
 }
-
 
 uint8_t getExpoMixCount(uint8_t expo)
 {
@@ -155,16 +132,12 @@ void deleteExpoMix(uint8_t expo, uint8_t idx)
   pauseMixerCalculations();
   if (expo) {
     ExpoData *expo = expoAddress(idx);
-#if defined(PCBTARANIS)
     int input = expo->chn;
-#endif
     memmove(expo, expo+1, (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
     memclear(&g_model.expoData[MAX_EXPOS-1], sizeof(ExpoData));
-#if defined(PCBTARANIS)
     if (!isInputAvailable(input)) {
       memclear(&g_model.inputNames[input], LEN_INPUT_NAME);
     }
-#endif
   }
   else {
     MixData *mix = mixAddress(idx);
@@ -184,10 +157,8 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
     ExpoData *expo = expoAddress(idx);
     memmove(expo+1, expo, (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
     memclear(expo, sizeof(ExpoData));
-#if defined(PCBTARANIS)
     expo->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
     expo->curve.type = CURVE_REF_EXPO;
-#endif
     expo->mode = 3; // pos&neg
     expo->chn = s_currCh - 1;
     expo->weight = 100;
@@ -197,13 +168,9 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
     memmove(mix+1, mix, (MAX_MIXERS-(idx+1))*sizeof(MixData));
     memclear(mix, sizeof(MixData));
     mix->destCh = s_currCh-1;
-#if defined(PCBTARANIS)
     mix->srcRaw = s_currCh;
     if (!isSourceAvailable(mix->srcRaw))
       mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
-#else
-    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
-#endif
     mix->weight = 100;
   }
   resumeMixerCalculations();
@@ -319,44 +286,33 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
 }
 
 enum ExposFields {
-  CASE_PCBTARANIS(EXPO_FIELD_INPUT_NAME)
-  CASE_CPUARM(EXPO_FIELD_NAME)
-  CASE_PCBTARANIS(EXPO_FIELD_SOURCE)
-  CASE_PCBTARANIS(EXPO_FIELD_SCALE)
+  EXPO_FIELD_INPUT_NAME,
+  EXPO_FIELD_NAME,
+  EXPO_FIELD_SOURCE,
+  EXPO_FIELD_SCALE,
   EXPO_FIELD_WEIGHT,
-  CASE_PCBTARANIS(EXPO_FIELD_OFFSET)
-  CASE_9X(EXPO_FIELD_EXPO)
+  EXPO_FIELD_OFFSET,
   CASE_CURVES(EXPO_FIELD_CURVE)
   CASE_FLIGHT_MODES(EXPO_FIELD_FLIGHT_MODES)
   EXPO_FIELD_SWITCH,
   EXPO_FIELD_SIDE,
-  CASE_PCBTARANIS(EXPO_FIELD_TRIM)
+  EXPO_FIELD_TRIM,
   EXPO_FIELD_MAX
 };
 
-#if defined(PCBTARANIS)
-  #define CURVE_ROWS 1
-#else
-  #define CURVE_ROWS 0
-#endif
+#define CURVE_ROWS 1
 
 void menuModelExpoOne(uint8_t event)
 {
-#if defined(PCBTARANIS)
   if (event == EVT_KEY_LONG(KEY_MENU)) {
     pushMenu(menuChannelsView);
     killEvents(event);
   }
-#endif
 
   ExpoData *ed = expoAddress(s_currIdx);
-#if defined(PCBTARANIS)
   putsMixerSource(7*FW+FW/2, 0, MIXSRC_FIRST_INPUT+ed->chn, 0);
-#else
-  putsMixerSource(7*FW+FW/2, 0, MIXSRC_Rud+ed->chn, 0);
-#endif
 
-  SUBMENU(STR_MENUINPUTS, EXPO_FIELD_MAX, {CASE_PCBTARANIS(0) CASE_CPUARM(0) CASE_PCBTARANIS(0) CASE_PCBTARANIS((ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)0 : (uint8_t)HIDDEN_ROW)) 0, CASE_PCBTARANIS(0) CASE_9X(0) CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
+  SUBMENU(STR_MENUINPUTS, EXPO_FIELD_MAX, {0, 0, 0, ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)0 : (uint8_t)HIDDEN_ROW, 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
 
   SET_SCROLLBAR_X(EXPO_ONE_2ND_COLUMN+10*FW);
 
@@ -364,7 +320,6 @@ void menuModelExpoOne(uint8_t event)
 
   coord_t y = MENU_TITLE_HEIGHT + 1;
 
-#if defined(PCBTARANIS)
   for (unsigned int k=0; k<LCD_LINES-1; k++) {
     int i = k + s_pgOfs;
     for (int j=0; j<=i; ++j) {
@@ -372,25 +327,17 @@ void menuModelExpoOne(uint8_t event)
         ++i;
       }
     }
-#else
-  for (uint8_t i=0; i<EXPO_FIELD_MAX+1; i++) {
-#endif
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     switch(i)
     {
-#if defined(PCBTARANIS)
       case EXPO_FIELD_INPUT_NAME:
         editSingleName(EXPO_ONE_2ND_COLUMN, y, STR_INPUTNAME, g_model.inputNames[ed->chn], sizeof(g_model.inputNames[ed->chn]), event, attr);
         break;
-#endif
 
-#if defined(CPUARM)
       case EXPO_FIELD_NAME:
         editSingleName(EXPO_ONE_2ND_COLUMN-IF_9X(sizeof(ed->name)*FW), y, STR_EXPONAME, ed->name, sizeof(ed->name), event, attr);
         break;
-#endif
 
-#if defined(PCBTARANIS)
       case EXPO_FIELD_SOURCE:
         lcd_putsLeft(y, NO_INDENT(STR_SOURCE));
         putsMixerSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, STREXPANDED|attr);
@@ -402,54 +349,21 @@ void menuModelExpoOne(uint8_t event)
         putsTelemetryChannelValue(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw - MIXSRC_FIRST_TELEM, convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale), LEFT|attr);
         if (attr) ed->scale = checkIncDec(event, ed->scale, 0, maxTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1), EE_MODEL);
         break;
-#endif
 
       case EXPO_FIELD_WEIGHT:
         lcd_putsLeft(y, STR_WEIGHT);
-        ed->weight = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->weight, MIN_EXPO_WEIGHT, 100, IF_PCBTARANIS(LEFT)|attr, 0, event);
+        ed->weight = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->weight, MIN_EXPO_WEIGHT, 100, LEFT|attr, 0, event);
         break;
 
-#if defined(PCBTARANIS)
       case EXPO_FIELD_OFFSET:
         lcd_putsLeft(y, NO_INDENT(STR_OFFSET));
         ed->offset = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->offset, -100, 100, LEFT|attr, 0, event);
         break;
-#endif
-
-#if !defined(PCBTARANIS)
-      case EXPO_FIELD_EXPO:
-        lcd_putsLeft(y, STR_EXPO);
-        if (ed->curveMode==MODE_EXPO || ed->curveParam==0) {
-          ed->curveMode = MODE_EXPO;
-          ed->curveParam = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->curveParam, -100, 100, attr, 0, event);
-        }
-        else {
-          lcd_putsAtt(EXPO_ONE_2ND_COLUMN-3*FW, y, STR_NA, attr);
-        }
-        break;
-#endif
 
 #if defined(CURVES)
       case EXPO_FIELD_CURVE:
         lcd_putsLeft(y, STR_CURVE);
-#if defined(PCBTARANIS)
         editCurveRef(EXPO_ONE_2ND_COLUMN, y, ed->curve, event, attr);
-#else
-        if (ed->curveMode!=MODE_EXPO || ed->curveParam==0) {
-          putsCurve(EXPO_ONE_2ND_COLUMN-3*FW, y, ed->curveParam, attr);
-          if (attr) {
-            CHECK_INCDEC_MODELVAR_ZERO(event, ed->curveParam, CURVE_BASE+MAX_CURVES-1);
-            if (ed->curveParam) ed->curveMode = MODE_CURVE;
-            if (ed->curveParam>=CURVE_BASE && event==EVT_KEY_LONG(KEY_ENTER)) {
-              s_curveChan = ed->curveParam - CURVE_BASE;
-              pushMenu(menuModelCurveOne);
-            }
-          }
-        }
-        else {
-          lcd_putsAtt(EXPO_ONE_2ND_COLUMN-3*FW, y, STR_NA, attr);
-        }
-#endif
         break;
 #endif
 
@@ -467,7 +381,6 @@ void menuModelExpoOne(uint8_t event)
         ed->mode = 4 - selectMenuItem(EXPO_ONE_2ND_COLUMN-IF_9X(3*FW), y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
         break;
 
-#if defined(PCBTARANIS)
       case EXPO_FIELD_TRIM:
         uint8_t not_stick = (ed->srcRaw > MIXSRC_Ail);
         int8_t carryTrim = -ed->carryTrim;
@@ -475,14 +388,12 @@ void menuModelExpoOne(uint8_t event)
         lcd_putsiAtt(EXPO_ONE_2ND_COLUMN, y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, m_posHorz==0 ? attr : 0);
         if (attr) ed->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_AIL);
         break;
-#endif
     }
     y += FH;
   }
 
   DrawFunction(expoFn);
 
-#if defined(PCBTARANIS)
   int x512 = getValue(ed->srcRaw);
   if (ed->srcRaw >= MIXSRC_FIRST_TELEM) {
     putsTelemetryChannelValue(LCD_W-8, 6*FH, ed->srcRaw - MIXSRC_FIRST_TELEM, x512, 0);
@@ -495,27 +406,16 @@ void menuModelExpoOne(uint8_t event)
   int y512 = expoFn(x512);
   y512 = limit(-1024, y512, 1024);
   lcd_outdezAtt(LCD_W-8-6*FW, 1*FH, calcRESXto1000(y512), PREC1);
-#else
-  int16_t x512 = calibratedStick[ed->chn];
-  lcd_outdezAtt(LCD_W-8, 6*FH, calcRESXto100(x512), 0);
-  int16_t y512 = expoFn(x512);
-  lcd_outdezAtt(LCD_W-8-6*FW, 1*FH, calcRESXto100(y512), 0);
-#endif
 
-#if defined(CPUARM)
   x512 = X0+x512/(RESX/WCHART);
   y512 = (LCD_H-1) - ((y512+RESX)/2) * (LCD_H-1) / RESX;
-#else
-  x512 = X0+x512/(RESXu/WCHART);
-  y512 = (LCD_H-1) - (uint16_t)((y512+RESX)/2) * (LCD_H-1) / RESX;
-#endif
 
   lcd_vline(x512, y512-3, 3*2+1);
   lcd_hline(x512-3, y512, 3*2+1);
 }
 
 enum MixFields {
-  CASE_CPUARM(MIX_FIELD_NAME)
+  MIX_FIELD_NAME,
   MIX_FIELD_SOURCE,
   MIX_FIELD_WEIGHT,
   MIX_FIELD_OFFSET,
@@ -540,7 +440,6 @@ void gvarWeightItem(coord_t x, coord_t y, MixData *md, uint8_t attr, uint8_t eve
   MD_UNION_TO_WEIGHT(weight, md);
 }
 
-#if !defined(CPUM64) || !defined(FRSKY)
 #define GAUGE_WIDTH  33
 #define GAUGE_HEIGHT 6
 void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
@@ -550,13 +449,8 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
   int barMin = offset - weight;
   int barMax = offset + weight;
   if (y > 15) {
-#if defined(CPUARM)
     lcd_outdezAtt(x-((barMin >= 0) ? 2 : 3), y-6, barMin, TINSIZE|LEFT);
     lcd_outdezAtt(x+GAUGE_WIDTH+1, y-6, barMax, TINSIZE);
-#else
-    lcd_outdezAtt(x-((barMin >= 0) ? 2 : 3), y-8, barMin, LEFT);
-    lcd_outdezAtt(x+GAUGE_WIDTH+1, y-8, barMax);
-#endif
   }
   if (barMin < -101)
     barMin = -101;
@@ -569,7 +463,7 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
   if (barMin <= barMax) {
     int8_t right = (barMax * GAUGE_WIDTH) / 200;
     int8_t left = ((barMin * GAUGE_WIDTH) / 200)-1;
-    lcd_filled_rect(x+GAUGE_WIDTH/2+left, y+2, right-left, GAUGE_HEIGHT-3);
+    drawFilledRect(x+GAUGE_WIDTH/2+left, y+2, right-left, GAUGE_HEIGHT-3);
   }
   lcd_vline(x+GAUGE_WIDTH/2-1, y, GAUGE_HEIGHT+1);
   if (barMin == -101) {
@@ -587,44 +481,26 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 }
 #undef GAUGE_WIDTH
 #undef GAUGE_HEIGHT
-#endif
 
 void menuModelMixOne(uint8_t event)
 {
-#if defined(PCBTARANIS)
   if (event == EVT_KEY_LONG(KEY_MENU)) {
     pushMenu(menuChannelsView);
     killEvents(event);
   }
-#endif
 
   TITLE(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
   MixData *md2 = mixAddress(s_currIdx) ;
   putsChn(lcdLastPos+1*FW, 0, md2->destCh+1,0);
 
-#if defined(ROTARY_ENCODERS)
-#if defined(CURVES)
-  if ((m_posVert == MIX_FIELD_TRIM && md2->srcRaw > NUM_STICKS) || (m_posVert == MIX_FIELD_CURVE && md2->curveMode == MODE_CURVE))
-#else
-  if (m_posVert == MIX_FIELD_TRIM && md2->srcRaw > NUM_STICKS)
-#endif
-    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {CASE_CPUARM(0) 0, 0, 0, CASE_9X(0) CASE_CURVES(0) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/})
-  else
-    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {CASE_CPUARM(0) 0, 0, 0, CASE_9X(1) CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
-#else
-  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {CASE_CPUARM(0) 0, 0, 0, CASE_9X(1) CASE_PCBTARANIS(0) CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
-#endif
+  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {0, 0, 0, 0, 0, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
 
-#if MENU_COLUMNS > 1
   lcd_vline(MENU_COLUMN2_X-4, FH+1, LCD_H-FH-1);
-#endif
 
   int8_t sub = m_posVert;
   int8_t editMode = s_editMode;
 
   for (uint8_t k=0; k<MENU_COLUMNS*(LCD_LINES-1); k++) {
-
-#if MENU_COLUMNS > 1
     coord_t y;
     coord_t COLUMN_X;
     if (k >= LCD_LINES-1) {
@@ -636,18 +512,12 @@ void menuModelMixOne(uint8_t event)
       COLUMN_X = 0;
     }
     int8_t i = k;
-#else
-    coord_t y = MENU_TITLE_HEIGHT + 1 + k*FH;
-    int8_t i = k + s_pgOfs;
-#endif
 
     uint8_t attr = (sub==i ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
     switch(i) {
-#if defined(CPUARM)
       case MIX_FIELD_NAME:
         editSingleName(COLUMN_X+MIXES_2ND_COLUMN, y, STR_MIXNAME, md2->name, sizeof(md2->name), event, attr);
         break;
-#endif
       case MIX_FIELD_SOURCE:
         lcd_putsColumnLeft(COLUMN_X, y, NO_INDENT(STR_SOURCE));
         putsMixerSource(COLUMN_X+MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
@@ -664,78 +534,21 @@ void menuModelMixOne(uint8_t event)
         MD_OFFSET_TO_UNION(md2, offset);
         offset.word = GVAR_MENU_ITEM(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, attr|LEFT, 0, event);
         MD_UNION_TO_OFFSET(offset, md2);
-#if !defined(CPUM64) || !defined(FRSKY)
         drawOffsetBar(COLUMN_X+MIXES_2ND_COLUMN+22, y, md2);
-#endif
         break;
       }
 
-#if defined(PCBTARANIS)
       case MIX_FIELD_TRIM:
         lcd_putsColumnLeft(COLUMN_X, y, STR_TRIM);
         menu_lcd_onoff(COLUMN_X+MIXES_2ND_COLUMN, y, !md2->carryTrim, attr);
         if (attr) md2->carryTrim = !checkIncDecModel(event, !md2->carryTrim, 0, 1);
         break;
-#else
-      case MIX_FIELD_TRIM:
-      {
-        uint8_t not_stick = (md2->srcRaw > NUM_STICKS);
-        int8_t carryTrim = -md2->carryTrim;
-        lcd_putsColumnLeft(COLUMN_X, y, STR_TRIM);
-        lcd_putsiAtt((not_stick ? COLUMN_X+MIXES_2ND_COLUMN : COLUMN_X+6*FW-3), y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, m_posHorz==0 ? attr : 0);
-        if (attr && m_posHorz==0 && (not_stick || editMode>0)) md2->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_AIL);
-        if (!not_stick) {
-          lcd_puts(COLUMN_X+MIXES_2ND_COLUMN, y, STR_DREX);
-          menu_lcd_onoff(COLUMN_X+MIXES_2ND_COLUMN+DREX_CHBOX_OFFSET, y, !md2->noExpo, m_posHorz==1 ? attr : 0);
-          if (attr && m_posHorz==1 && editMode>0) md2->noExpo = !checkIncDecModel(event, !md2->noExpo, 0, 1);
-        }
-        else if (attr) {
-          REPEAT_LAST_CURSOR_MOVE();
-        }
-        break;
-      }
-#endif
 
 #if defined(CURVES)
       case MIX_FIELD_CURVE:
       {
         lcd_putsColumnLeft(COLUMN_X, y, STR_CURVE);
-#if defined(PCBTARANIS)
         editCurveRef(COLUMN_X+MIXES_2ND_COLUMN, y, md2->curve, event, attr);
-#else
-        int8_t curveParam = md2->curveParam;
-        if (md2->curveMode == MODE_CURVE) {
-          putsCurve(COLUMN_X+MIXES_2ND_COLUMN, y, curveParam, attr);
-          if (attr) {
-            if (event==EVT_KEY_LONG(KEY_ENTER) && (curveParam<0 || curveParam>=CURVE_BASE)){
-              s_curveChan = (curveParam<0 ? -curveParam-1 : curveParam-CURVE_BASE);
-              pushMenu(menuModelCurveOne);
-            }
-            else {
-              CHECK_INCDEC_MODELVAR(event, md2->curveParam, -MAX_CURVES, CURVE_BASE+MAX_CURVES-1);
-              if (md2->curveParam == 0)
-                md2->curveMode = MODE_DIFFERENTIAL;
-#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBTARANIS)
-              MOVE_CURSOR_FROM_HERE();
-#else
-              m_posHorz = 0;
-#endif
-            }
-          }
-        }
-        else {
-          lcd_putsAtt(COLUMN_X+MIXES_2ND_COLUMN, y, PSTR("Diff"), m_posHorz==0 ? attr : 0);
-          md2->curveParam = GVAR_MENU_ITEM(COLUMN_X+MIXES_2ND_COLUMN+5*FW, y, curveParam, -100, 100, LEFT|(m_posHorz==1 ? attr : 0), 0, editMode>0 ? event : 0);
-          if (attr && editMode>0 && m_posHorz==0) {
-            int8_t tmp = 0;
-            CHECK_INCDEC_MODELVAR(event, tmp, -1, 1);
-            if (tmp != 0) {
-              md2->curveMode = MODE_CURVE;
-              md2->curveParam = tmp;
-            }
-          }
-        }
-#endif
         break;
       }
 #endif
@@ -781,54 +594,22 @@ static uint8_t s_copySrcCh;
 #define _STR_MAX(x) PSTR("/" #x)
 #define STR_MAX(x) _STR_MAX(x)
 
-#if LCD_W >= 212
-  #define EXPO_LINE_WEIGHT_POS 8*FW+8
-  #define EXPO_LINE_SRC_POS    9*FW+3
-  #define EXPO_LINE_CURVE_POS  12*FW+11
-  #define EXPO_LINE_TRIM_POS   19*FW-4
-  #define EXPO_LINE_SWITCH_POS 20*FW-1
-  #define EXPO_LINE_SIDE_POS   25*FW
-  #define EXPO_LINE_FM_POS     12*FW+11
-  #define EXPO_LINE_SELECT_POS 5*FW+2
-  #define EXPO_LINE_NAME_POS   LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH
-  #define MIX_LINE_WEIGHT_POS  6*FW+8
-  #define MIX_LINE_SRC_POS     7*FW+3
-  #define MIX_LINE_CURVE_POS   13*FW+3
-  #define MIX_LINE_SWITCH_POS  19*FW+1
-  #define MIX_LINE_FM_POS      13*FW+3
-  #define MIX_LINE_DELAY_POS   24*FW+3
-#elif defined(CPUARM)
-  #define EXPO_LINE_WEIGHT_POS 7*FW+1
-  #define EXPO_LINE_EXPO_POS   10*FW+5
-  #define EXPO_LINE_SWITCH_POS 11*FW+2
-  #define EXPO_LINE_SIDE_POS   14*FW+2
-  #define EXPO_LINE_SELECT_POS 24
-  #define EXPO_LINE_FM_POS
-  #define EXPO_LINE_NAME_POS   LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH
-  #define MIX_LINE_SRC_POS     4*FW-1
-  #define MIX_LINE_WEIGHT_POS  11*FW+3
-  #define MIX_LINE_CURVE_POS   12*FW+2
-  #define MIX_LINE_SWITCH_POS  16*FW
-  #define MIX_LINE_DELAY_POS   19*FW+7
-#else
-  #define EXPO_LINE_WEIGHT_POS 7*FW+1
-  #define EXPO_LINE_EXPO_POS   11*FW
-  #define EXPO_LINE_SWITCH_POS 11*FW+4
-  #if MAX_FLIGHT_MODES == 6
-    #define EXPO_LINE_SIDE_POS 15*FW
-  #else
-    #define EXPO_LINE_SIDE_POS 15*FW+2
-  #endif
-  #define EXPO_LINE_FM_POS     LCD_W-FW-MENUS_SCROLLBAR_WIDTH
-  #define EXPO_LINE_SELECT_POS 24
-  #define MIX_LINE_SRC_POS     4*FW-1
-  #define MIX_LINE_WEIGHT_POS  11*FW+3
-  #define MIX_LINE_CURVE_POS   12*FW+2
-  #define MIX_LINE_SWITCH_POS  16*FW
-  #define MIX_LINE_DELAY_POS   19*FW+7
-#endif
+#define EXPO_LINE_WEIGHT_POS 8*FW+8
+#define EXPO_LINE_SRC_POS    9*FW+3
+#define EXPO_LINE_CURVE_POS  12*FW+11
+#define EXPO_LINE_TRIM_POS   19*FW-4
+#define EXPO_LINE_SWITCH_POS 20*FW-1
+#define EXPO_LINE_SIDE_POS   25*FW
+#define EXPO_LINE_FM_POS     12*FW+11
+#define EXPO_LINE_SELECT_POS 5*FW+2
+#define EXPO_LINE_NAME_POS   LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH
+#define MIX_LINE_WEIGHT_POS  6*FW+8
+#define MIX_LINE_SRC_POS     7*FW+3
+#define MIX_LINE_CURVE_POS   13*FW+3
+#define MIX_LINE_SWITCH_POS  19*FW+1
+#define MIX_LINE_FM_POS      13*FW+3
+#define MIX_LINE_DELAY_POS   24*FW+3
 
-#if defined(NAVIGATION_MENUS)
 void onExpoMixMenu(const char *result)
 {
   bool expo = (g_menuStack[g_menuStackPtr] == menuModelExposAll);
@@ -855,9 +636,7 @@ void onExpoMixMenu(const char *result)
     deleteExpoMix(expo, s_currIdx);
   }
 }
-#endif
 
-#if LCD_W >= 212
 void displayHeaderChannelName(uint8_t ch)
 {
   uint8_t len = zlen(g_model.limitData[ch-1].name, sizeof(g_model.limitData[ch-1].name));
@@ -867,67 +646,32 @@ void displayHeaderChannelName(uint8_t ch)
     lcd_putc(lcdNextPos, 0, ' ');
   }
 }
-#endif
 
 void displayMixInfos(coord_t y, MixData *md)
 {
-#if defined(PCBTARANIS)
   putsCurveRef(MIX_LINE_CURVE_POS, y, md->curve, 0);
-#else
-  if (md->curveParam) {
-    if (md->curveMode == MODE_CURVE)
-      putsCurve(MIX_LINE_CURVE_POS, y, md->curveParam);
-    else
-      displayGVar(MIX_LINE_CURVE_POS+3*FW, y, md->curveParam, -100, 100);
-  }
-#endif
 
   if (md->swtch) {
     putsSwitches(MIX_LINE_SWITCH_POS, y, md->swtch);
   }
 }
 
-#if defined(PCBTARANIS)
 void displayMixLine(coord_t y, MixData *md)
 {
-  if (md->name[0]) {
+  if (md->name[0])
     lcd_putsnAtt(EXPO_LINE_NAME_POS, y, md->name, sizeof(md->name), ZCHAR);
-  }
-
   if (!md->flightModes || ((md->curve.value || md->swtch) && ((get_tmr10ms() / 200) & 1)))
     displayMixInfos(y, md);
   else
     displayFlightModes(MIX_LINE_FM_POS, y, md->flightModes);
 }
-#elif defined(CPUARM)
-void displayMixLine(coord_t y, MixData *md)
-{
-  if (md->name[0]) {
-    lcd_putsnAtt(EXPO_LINE_NAME_POS, y, md->name, sizeof(md->name), ZCHAR);
-  }
-  else {
-    displayMixInfos(y, md);
-  }
-}
-#else
-#define displayMixLine(y, md) displayMixInfos(y, md)
-#endif
 
 void displayExpoInfos(coord_t y, ExpoData *ed)
 {
-#if defined(PCBTARANIS)
   putsCurveRef(EXPO_LINE_CURVE_POS, y, ed->curve, 0);
-#else
-  if (ed->curveMode == MODE_CURVE)
-    putsCurve(EXPO_LINE_EXPO_POS-3*FW, y, ed->curveParam);
-  else
-    displayGVar(EXPO_LINE_EXPO_POS, y, ed->curveParam, -100, 100);
-#endif
-
   putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0);
 }
 
-#if defined(PCBHORUS)
 void displayExpoLine(coord_t y, ExpoData *ed)
 {
   putsMixerSource(EXPO_LINE_SRC_POS, y, ed->srcRaw, 0);
@@ -945,38 +689,6 @@ void displayExpoLine(coord_t y, ExpoData *ed)
     lcd_putsnAtt(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR);
   }
 }
-#elif defined(PCBTARANIS)
-void displayExpoLine(coord_t y, ExpoData *ed)
-{
-  putsMixerSource(EXPO_LINE_SRC_POS, y, ed->srcRaw, 0);
-
-  if (ed->carryTrim != TRIM_ON) {
-    lcd_putc(EXPO_LINE_TRIM_POS, y, ed->carryTrim > 0 ? '-' : STR_RETA123[-ed->carryTrim]);
-  }
-
-  if (!ed->flightModes || ((ed->curve.value || ed->swtch) && ((get_tmr10ms() / 200) & 1)))
-    displayExpoInfos(y, ed);
-  else
-    displayFlightModes(EXPO_LINE_FM_POS, y, ed->flightModes);
-
-  if (ed->name[0]) {
-    lcd_putsnAtt(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR);
-  }
-}
-#elif defined(CPUARM)
-void displayExpoLine(coord_t y, ExpoData *ed)
-{
-  displayExpoInfos(y, ed);
-
-  if (ed->name[0]) {
-    lcd_putsnAtt(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR);
-  }
-}
-#else
-#define displayExpoLine(y, ed) \
-  displayExpoInfos(y, ed); \
-  displayFlightModes(EXPO_LINE_FM_POS, y, ed->flightModes)
-#endif
 
 void menuModelExpoMix(uint8_t expo, uint8_t event)
 {
@@ -1001,12 +713,6 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         event = 0;
       }
       // no break
-#if defined(ROTARY_ENCODER_NAVIGATION)
-    case EVT_ROTARY_LONG:
-      if (s_copyMode) {
-        killEvents(event);
-      }
-#endif
     case EVT_KEY_BREAK(KEY_EXIT):
       if (s_copyMode) {
         if (s_copyTgtOfs) {
@@ -1053,7 +759,6 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         }
         else {
           if (s_copyMode) s_currCh = 0;
-#if defined(NAVIGATION_MENUS)
           if (s_currCh) {
             if (reachExpoMixCountLimit(expo)) break;
             insertExpoMix(expo, s_currIdx);
@@ -1071,14 +776,6 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             MENU_ADD_ITEM(STR_DELETE);
             menuHandler = onExpoMixMenu;
           }
-#else
-          if (s_currCh) {
-            if (reachExpoMixCountLimit(expo)) break;
-            insertExpoMix(expo, s_currIdx);
-          }
-          pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
-          s_copyMode = 0;
-#endif
         }
       }
       break;
@@ -1094,10 +791,6 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         killEvents(event);
       }
       break;
-#if defined(ROTARY_ENCODER_NAVIGATION)
-    case EVT_ROTARY_LEFT:
-    case EVT_ROTARY_RIGHT:
-#endif
     case EVT_KEY_FIRST(KEY_MOVE_UP):
     case EVT_KEY_REPT(KEY_MOVE_UP):
     case EVT_KEY_FIRST(KEY_MOVE_DOWN):
@@ -1129,17 +822,10 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
       break;
   }
 
-#if !defined(PCBHORUS)
   lcd_outdezAtt(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXER))+FW+FW/2, 0, getExpoMixCount(expo));
   lcd_puts(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXER))+FW+FW/2, 0, expo ? STR_MAX(MAX_EXPOS) : STR_MAX(MAX_MIXERS));
-#endif
 
   SIMPLE_MENU(expo ? STR_MENUINPUTS : STR_MIXER, menuTabModel, expo ? e_InputsAll : e_MixAll, s_maxLines);
-
-#if defined(PCBHORUS)
-  lcd_outdezAtt(15+10*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXER)), 6, getExpoMixCount(expo), MIDSIZE|WHITE);
-  lcd_putsAtt(15+10*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXER)), 6, expo ? STR_MAX(MAX_EXPOS) : STR_MAX(MAX_MIXERS), MIDSIZE|WHITE);
-#endif
 
   sub = m_posVert;
   s_currCh = 0;
@@ -1152,11 +838,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
     if (expo ? (i<MAX_EXPOS && (ed=expoAddress(i))->chn+1 == ch && EXPO_VALID(ed)) : (i<MAX_MIXERS && (md=mixAddress(i))->srcRaw && md->destCh+1 == ch)) {
       if (s_pgOfs < cur && cur-s_pgOfs < LCD_LINES) {
         if (expo) {
-#if defined(PCBTARANIS)
           putsMixerSource(0, y, ch, 0);
-#else
-          putsMixerSource(0, y, MIXSRC_Rud+ch-1, 0);
-#endif
         }
         else {
           putsChn(0, y, ch, 0); // show CHx
@@ -1187,11 +869,9 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             }
           }
           else {
-#if LCD_W >= 212
             if (attr) {
               displayHeaderChannelName(ch);
             }
-#endif
 
             if (mixCnt > 0) lcd_putsiAtt(FW, y, STR_VMLTPX2, md->mltpx, 0);
 
@@ -1215,7 +895,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             }
             if (cur == sub) {
               /* invert the raw when it's the current one */
-              lcd_filled_rect(expo ? EXPO_LINE_SELECT_POS+1 : 23, y, expo ? (LCD_W-EXPO_LINE_SELECT_POS-2) : (LCD_W-24), 7);
+              drawFilledRect(expo ? EXPO_LINE_SELECT_POS+1 : 23, y, expo ? (LCD_W-EXPO_LINE_SELECT_POS-2) : (LCD_W-24), 7);
             }
           }
         }
@@ -1237,19 +917,13 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
       }
       if (s_pgOfs < cur && cur-s_pgOfs < LCD_LINES) {
         if (expo) {
-#if defined(PCBTARANIS)
           putsMixerSource(0, y, ch, attr);
-#else
-          putsMixerSource(0, y, MIXSRC_Rud+ch-1, attr);
-#endif
         }
         else {
           putsChn(0, y, ch, attr); // show CHx
-#if LCD_W >= 212
           if (attr) {
             displayHeaderChannelName(ch);
           }
-#endif
         }
         if (s_copyMode == MOVE_MODE && s_copySrcCh == ch) {
           lcd_rect(expo ? EXPO_LINE_SELECT_POS : 22, y-1, expo ? (LCD_W-EXPO_LINE_SELECT_POS) : (LCD_W-22), 9, DOTTED);

@@ -33,7 +33,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 #if defined(CPUARM)
 uint8_t g_moduleIdx;
@@ -651,7 +651,7 @@ void menuModelSetup(uint8_t event)
               }
             }
             else {
-              lcd_filled_rect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
+              drawFilledRect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
             }
           }
         }

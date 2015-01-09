@@ -494,7 +494,7 @@ static int luaLcdDrawFilledRectangle(lua_State *L)
   int w = luaL_checkinteger(L, 3);
   int h = luaL_checkinteger(L, 4);
   int flags = luaL_checkinteger(L, 5);
-  lcd_filled_rect(x, y, w, h, SOLID, flags);
+  drawFilledRect(x, y, w, h, SOLID, flags);
   return 0;
 }
 
@@ -524,7 +524,7 @@ static int luaLcdDrawScreenTitle(lua_State *L)
   int cnt = luaL_checkinteger(L, 3);
 
   if (cnt) displayScreenIndex(idx-1, cnt, 0);
-  lcd_filled_rect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
+  drawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
   title(str);
 
   return 0;
@@ -544,28 +544,28 @@ static int luaLcdDrawCombobox(lua_State *L)
     // TODO error
   }
   if (flags & BLINK) {
-    lcd_filled_rect(x, y, w-9, count*9+2, SOLID, ERASE);
+    drawFilledRect(x, y, w-9, count*9+2, SOLID, ERASE);
     lcd_rect(x, y, w-9, count*9+2);
     for (int i=0; i<count; i++) {
       lua_rawgeti(L, 4, i+1);
       const char * item = luaL_checkstring(L, -1);
       lcd_putsAtt(x+2, y+2+9*i, item, 0);
     }
-    lcd_filled_rect(x+1, y+1+9*idx, w-11, 9);
-    lcd_filled_rect(x+w-10, y, 10, 11, SOLID, ERASE);
+    drawFilledRect(x+1, y+1+9*idx, w-11, 9);
+    drawFilledRect(x+w-10, y, 10, 11, SOLID, ERASE);
     lcd_rect(x+w-10, y, 10, 11);
   }
   else if (flags & INVERS) {
-    lcd_filled_rect(x, y, w, 11);
-    lcd_filled_rect(x+w-9, y+1, 8, 9, SOLID, ERASE);
+    drawFilledRect(x, y, w, 11);
+    drawFilledRect(x+w-9, y+1, 8, 9, SOLID, ERASE);
     lua_rawgeti(L, 4, idx+1);
     const char * item = luaL_checkstring(L, -1);
     lcd_putsAtt(x+2, y+2, item, INVERS);
   }
   else {
-    lcd_filled_rect(x, y, w, 11, SOLID, ERASE);
+    drawFilledRect(x, y, w, 11, SOLID, ERASE);
     lcd_rect(x, y, w, 11);
-    lcd_filled_rect(x+w-10, y+1, 9, 9, SOLID);
+    drawFilledRect(x+w-10, y+1, 9, 9, SOLID);
     lua_rawgeti(L, 4, idx+1);
     const char * item = luaL_checkstring(L, -1);
     lcd_putsAtt(x+2, y+2, item, 0);

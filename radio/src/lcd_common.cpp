@@ -509,7 +509,7 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
     }
     else {
       // TODO needed on CPUAVR? y &= ~0x07;
-      lcd_filled_rect(xn, y+2*FH-3, ln, 2);
+      drawFilledRect(xn, y+2*FH-3, ln, 2);
     }
   }
   if (neg) lcd_putcAtt(x, y, '-', flags);
@@ -581,7 +581,7 @@ void lcd_rect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags 
 }
 
 #if !defined(BOOT)
-void lcd_filled_rect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
+void drawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
 #if defined(CPUM64)
   for (scoord_t i=y; i<y+h; i++) {
@@ -715,7 +715,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
   }
   else if (idx <= MIXSRC_LAST_INPUT) {
     lcd_putcAtt(x+2, y+1, CHR_INPUT, TINSIZE);
-    lcd_filled_rect(x, y, 7, 7);
+    drawFilledRect(x, y, 7, 7);
     if (ZEXIST(g_model.inputNames[idx-MIXSRC_FIRST_INPUT]))
       lcd_putsnAtt(x+8, y, g_model.inputNames[idx-MIXSRC_FIRST_INPUT], LEN_INPUT_NAME, ZCHAR|att);
     else
@@ -729,7 +729,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 #if defined(LUA_MODEL_SCRIPTS)
     if (qr.quot < MAX_SCRIPTS && qr.rem < scriptInputsOutputs[qr.quot].outputsCount) {
       lcd_putcAtt(x+2, y+1, '1'+qr.quot, TINSIZE);
-      lcd_filled_rect(x, y, 7, 7);
+      drawFilledRect(x, y, 7, 7);
       lcd_putsnAtt(x+8, y, scriptInputsOutputs[qr.quot].outputs[qr.rem].name, att & STREXPANDED ? 9 : 4, att);
     }
     else

@@ -365,12 +365,7 @@ M128_VARIANT    = +32768
 M2561_VARIANT   = +16384
 EEPROM_VARIANT  = 0
 
-ifeq ($(PCB), TARANIS)
-  GUIMODELSRC = gui/menu_model.cpp gui/menu_model_select.cpp gui/Taranis/menu_model_setup.cpp gui/menu_model_inputs_mixes.cpp gui/Taranis/menu_model_limits.cpp gui/Taranis/menu_model_logical_switches.cpp gui/menu_model_custom_functions.cpp gui/menu_model_telemetry.cpp
-else
-  GUIMODELSRC = gui/menu_model.cpp gui/menu_model_select.cpp gui/menu_model_setup.cpp gui/menu_model_inputs_mixes.cpp gui/menu_model_limits.cpp gui/menu_model_logical_switches.cpp gui/menu_model_custom_functions.cpp gui/menu_model_telemetry.cpp
-endif
-
+GUIMODELSRC = gui/menu_model.cpp gui/$(GUIDIRECTORY)/menu_model_select.cpp gui/$(GUIDIRECTORY)/menu_model_setup.cpp gui/$(GUIDIRECTORY)/menu_model_inputs_mixes.cpp gui/$(GUIDIRECTORY)/menu_model_limits.cpp gui/$(GUIDIRECTORY)/menu_model_logical_switches.cpp gui/$(GUIDIRECTORY)/menu_model_custom_functions.cpp gui/$(GUIDIRECTORY)/menu_model_telemetry.cpp
 GUIGENERALSRC = gui/menu_general.cpp gui/menu_general_setup.cpp gui/menu_general_trainer.cpp gui/menu_general_version.cpp gui/menu_general_diagkeys.cpp gui/menu_general_diaganas.cpp gui/menu_general_calib.cpp
 
 BITMAPS = bitmaps/sticks.lbm
@@ -379,6 +374,7 @@ FONTS = $(patsubst %.png,%.lbm,$(wildcard fonts/std/*.png))
 
 ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   # 9x/9xr radio
+  GUIDIRECTORY = 9X
   ARCH = AVR
   LCDSIZE = 128
   TRGT = avr-
@@ -447,6 +443,7 @@ endif
 
 ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   # 9X/9XR radio with ATmega64 replaced by ATmega128
+  GUIDIRECTORY = 9X
   ARCH = AVR
   LCDSIZE = 128
   TRGT = avr-
@@ -512,6 +509,7 @@ endif
 
 ifeq ($(PCB), $(filter $(PCB), 9X2561))
   # 9X/9XR radio with ATmega64 replaced by ATmega2561
+  GUIDIRECTORY = 9X
   ARCH = AVR
   LCDSIZE = 128
   TRGT = avr-
@@ -573,6 +571,7 @@ endif
 
 ifeq ($(PCB), GRUVIN9X)
   # 9x radio with a gruvin9x replacement board
+  GUIDIRECTORY = 9X
   FLAVOUR = gruvin9x
   ARCH = AVR
   LCDSIZE = 128
@@ -598,8 +597,8 @@ ifeq ($(PCB), GRUVIN9X)
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
   
   ifeq ($(SDCARD), YES)
-    CPPDEFS += -DRTCLOCK
-    CPPSRC += rtc.cpp targets/gruvin9x/rtc_driver.cpp 
+    CPPDEFS += -DRTCLOCK -DSDCARD
+    CPPSRC += rtc.cpp sdcard.cpp logs.cpp targets/gruvin9x/rtc_driver.cpp 
     GUIGENERALSRC += gui/menu_general_sdmanager.cpp
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/gruvin9x/diskio.cpp
   endif
@@ -622,6 +621,7 @@ endif
 
 ifeq ($(PCB), MEGA2560)
   # ARDUINO2560 DIY RADIO
+  GUIDIRECTORY = 9X
   FLAVOUR = mega2560
   ARCH = AVR
   LCDSIZE = 128
@@ -648,9 +648,9 @@ ifeq ($(PCB), MEGA2560)
 
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/gruvin9x/diskio.cpp 
-    CPPDEFS += -DRTCLOCK
+    CPPDEFS += -DSDCARD -DRTCLOCK
     GUIGENERALSRC += gui/menu_general_sdmanager.cpp
-    CPPSRC += rtc.cpp targets/gruvin9x/rtc_driver.cpp 
+    CPPSRC += rtc.cpp sdcard.cpp logs.cpp targets/gruvin9x/rtc_driver.cpp 
   endif
   
   ifeq ($(BUZZER), YES)
@@ -671,6 +671,7 @@ endif
 
 ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   # 9x/9XR radio with a sky9x replacement board
+  GUIDIRECTORY = 9X
   ARCH = ARM
   LCDSIZE = 128
   CPPDEFS = -Dat91sam3s4
@@ -726,8 +727,9 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   CPPSRC += loadboot.cpp debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
   ifeq ($(SDCARD), YES)
-    CPPDEFS += -DVOICE
+    CPPDEFS += -DSDCARD -DVOICE
     INCDIRS += FatFs FatFs/option
+    CPPSRC += sdcard.cpp logs.cpp
     GUIGENERALSRC += gui/menu_general_sdmanager.cpp
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/sky9x/diskio.cpp
   endif
@@ -752,6 +754,7 @@ ifeq ($(PCB), TARANIS)
   # TARANIS radio
   ARCH = ARM
   LCDSIZE = 212
+  GUIDIRECTORY = Taranis
   ifeq ($(PCBREV), REV9E)
     FLAVOUR = taranis-x9e
     CPPDEFS = -DREVPLUS -DREV9E
@@ -882,16 +885,11 @@ ifeq ($(PCB), TARANIS)
 	  CPPSRC += bin_allocator.cpp
 	endif
   endif           
-  ifeq ($(SDCARD), YES)
-    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/taranis/diskio.cpp
-    GUIGENERALSRC += gui/menu_general_sdmanager.cpp
-    CPPDEFS += -DVOICE
-    INCDIRS += FatFs FatFs/option
-  endif
-  ifeq ($(RTCLOCK), YES)
-    CPPDEFS += -DRTCLOCK
-    CPPSRC += rtc.cpp targets/taranis/rtc_driver.cpp
-  endif
+  EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/taranis/diskio.cpp
+  CPPSRC += sdcard.cpp logs.cpp rtc.cpp targets/taranis/rtc_driver.cpp
+  GUIGENERALSRC += gui/menu_general_sdmanager.cpp
+  CPPDEFS += -DSDCARD -DVOICE -DRTCLOCK
+  INCDIRS += FatFs FatFs/option
   ifeq ($(DSM2), PPM)
     CPPSRC += pulses/dsm2_arm.cpp
   endif
@@ -943,11 +941,7 @@ else
   TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
 endif
 
-ifeq ($(PCB), TARANIS)
-  GUISRC = gui/menus.cpp $(GUIMODELSRC) $(GUIGENERALSRC) gui/Taranis/view_main.cpp gui/view_statistics.cpp
-else
-  GUISRC = gui/menus.cpp $(GUIMODELSRC) $(GUIGENERALSRC) gui/view_main.cpp gui/view_statistics.cpp
-endif
+GUISRC = gui/menus.cpp $(GUIMODELSRC) $(GUIGENERALSRC) gui/$(GUIDIRECTORY)/view_main.cpp gui/view_statistics.cpp
 
 CPPSRC += opentx.cpp functions.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp $(GUISRC) $(EEPROMSRC) $(LCDSRC) keys.cpp maths.cpp translations.cpp fonts.cpp $(TTS_SRC)
 
@@ -1054,16 +1048,12 @@ endif
 
 ifeq ($(FLIGHT_MODES), YES)
   CPPDEFS += -DFLIGHT_MODES
-  ifeq ($(PCB), TARANIS)
-    GUIMODELSRC += gui/Taranis/menu_model_flightmodes.cpp
-  else
-    GUIMODELSRC += gui/menu_model_flightmodes.cpp
-  endif
+  GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_flightmodes.cpp
 endif
 
 ifeq ($(CURVES), YES)
   CPPDEFS += -DCURVES
-  GUIMODELSRC += gui/menu_model_curves.cpp
+  GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_curves.cpp
 endif
 
 ifeq ($(GVARS), YES)
@@ -1167,11 +1157,6 @@ ifeq ($(EEPROM_PROGRESS_BAR), YES)
   CPPDEFS += -DEEPROM_PROGRESS_BAR
 endif
 
-ifeq ($(SDCARD), YES)
-  CPPDEFS += -DSDCARD
-  CPPSRC += logs.cpp  
-endif
-
 RUN_FROM_FLASH = 1
 
 ### Global Build-Option Directives ###
@@ -1220,7 +1205,7 @@ ifeq ($(TEMPLATES), YES)
   ifneq ($(PCB), $(filter $(PCB), TARANIS)) 
     CPPDEFS += -DTEMPLATES
     CPPSRC += templates.cpp
-    GUIMODELSRC += gui/menu_model_templates.cpp 
+    GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_templates.cpp 
   endif
 endif
 

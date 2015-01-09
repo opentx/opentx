@@ -33,7 +33,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 bool isThrottleOutput(uint8_t ch)
 {

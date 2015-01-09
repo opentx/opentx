@@ -967,7 +967,7 @@ inline void Splash()
 
 #if MENUS_LOCK == 1
   if (readonly == false) {
-    lcd_filled_rect((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 - 9, 50, (sizeof(TR_UNLOCKED)-1)*FW+16, 11, SOLID, ERASE|ROUND);
+    drawFilledRect((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 - 9, 50, (sizeof(TR_UNLOCKED)-1)*FW+16, 11, SOLID, ERASE|ROUND);
     lcd_puts((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 , 53, STR_UNLOCKED);
   }
 #endif
@@ -1202,14 +1202,14 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 #endif
 
 #if LCD_W >= 212
-  lcd_filled_rect(MESSAGE_LCD_OFFSET, 0, LCD_W-MESSAGE_LCD_OFFSET, 32);
+  drawFilledRect(MESSAGE_LCD_OFFSET, 0, LCD_W-MESSAGE_LCD_OFFSET, 32);
   if (t) lcd_puts(MESSAGE_LCD_OFFSET, 5*FH, t);
   if (last) {
     lcd_puts(MESSAGE_LCD_OFFSET, 7*FH, last);
     AUDIO_ERROR_MESSAGE(sound);
   }
 #else
-  lcd_filled_rect(0, 0, LCD_W, 32);
+  drawFilledRect(0, 0, LCD_W, 32);
   if (t) lcd_putsLeft(5*FH, t);
   if (last) {
     lcd_putsLeft(7*FH, last);
