@@ -31,7 +31,9 @@
 </ul>
 
 [9X2561]
+<ul>
 <li>PWM backlight fixed</li>
+</ul>
 
 [All]
 <ul>
