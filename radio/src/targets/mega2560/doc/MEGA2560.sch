@@ -36,7 +36,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "OpenTX board based on Arduino MEGA2560"
-Date "7 jan 2015"
+Date "10 jan 2015"
 Rev "0"
 Comp "Copyright 2015 F. Aguerre"
 Comment1 ""
@@ -1163,37 +1163,37 @@ Text GLabel 5800 4950 2    42   Output ~ 0
 port A 3 (0)
 Text GLabel 5800 4850 2    42   Output ~ 0
 port A 1 (0)
-Text Label 3150 7650 1    42   ~ 0
+Text Label 3250 7650 1    42   ~ 0
 Trim_LV-►
 Text GLabel 3150 6800 3    42   Input ~ 0
 port F 3 (1)
 Text GLabel 3050 6800 3    42   Input ~ 0
 port F 2 (1)
-Text Label 3050 7650 1    42   ~ 0
-Trim_LV◄-
 Text Label 3350 7650 1    42   ~ 0
+Trim_LV◄-
+Text Label 3050 7650 1    42   ~ 0
 Trim_RV-►
 Text GLabel 3350 6800 3    42   Input ~ 0
 port F 5 (1)
 Text GLabel 3250 6800 3    42   Input ~ 0
 port F 4 (1)
-Text Label 3250 7650 1    42   ~ 0
+Text Label 3150 7650 1    42   ~ 0
 Trim_RV◄-
-Text Label 3450 7650 1    42   ~ 0
+Text Label 2950 7650 1    42   ~ 0
 Trim_RH◄-
 Text GLabel 3450 6800 3    42   Input ~ 0
 port F 6 (1)
 Text GLabel 3550 6800 3    42   Input ~ 0
 port F 7 (1)
-Text Label 3550 7650 1    42   ~ 0
-Trim_RH-►
 Text Label 2850 7650 1    42   ~ 0
+Trim_RH-►
+Text Label 3550 7650 1    42   ~ 0
 Trim_LH◄-
 Text GLabel 2850 6800 3    42   Input ~ 0
 port F 0 (1)
 Text GLabel 2950 6800 3    42   Input ~ 0
 port F 1 (1)
-Text Label 2950 7650 1    42   ~ 0
+Text Label 3450 7650 1    42   ~ 0
 Trim_LH-►
 Text Label 3850 7650 1    42   ~ 0
 Stick_LV
@@ -41145,7 +41145,7 @@ CA 3B B1 B4 D6 FB 76 3A 4D 11 32 4D 1E A1 3D 78 1C 8B 1E 14 74 10 57 46 8C 97 FB
 33 B3 93 2C A5 90 EC 7D 2B A5 BC 7A F5 EA E1 E1 5E 44 C8 BD 2E 90 84 08 60 87 C2 BB D7 FD 40 85 
 4A 52 6F 3D D0 6D 9E 6E 41 36 CA 77 04 97 99 83 92 6E D1 7C 20 6D 2C 33 D2 7F 5B 16 F2 83 51 39 
 A0 3F CF F3 A7 9F 7E FA CB 5F FE F5 EB D7 AF 45 64 59 96 6D DB F6 23 3E B3 52 CA B3 1B C5 00 F7 
-08 C0 CC FE 1F 15 4F 30 6D 3D C2 80 DE 00 00 00 00 49 45 4E 44 AE 42 60 82 01 $EndBitmap
+08 C0 CC FE 1F 15 4F 30 6D 3D C2 80 DE 00 00 00 00 49 45 4E 44 AE 42 60 82 00 $EndBitmap
 EndData
 $EndBitmap
 $Comp
@@ -41301,11 +41301,11 @@ Wire Wire Line
 Wire Wire Line
 	3750 7250 3750 7650
 Wire Wire Line
-	3450 7250 3450 7650
-Wire Wire Line
-	3150 7250 3150 7650
-Wire Wire Line
 	2950 7250 2950 7650
+Wire Wire Line
+	3250 7250 3250 7650
+Wire Wire Line
+	3450 7250 3450 7650
 Wire Wire Line
 	6250 5050 6600 5050
 Wire Wire Line
@@ -41496,13 +41496,13 @@ Wire Wire Line
 Wire Wire Line
 	6250 5150 6600 5150
 Wire Wire Line
-	2850 7650 2850 7250
-Wire Wire Line
-	3050 7250 3050 7650
-Wire Wire Line
-	3250 7250 3250 7650
+	3550 7650 3550 7250
 Wire Wire Line
 	3350 7250 3350 7650
+Wire Wire Line
+	3150 7250 3150 7650
+Wire Wire Line
+	3050 7250 3050 7650
 Wire Wire Line
 	3850 7250 3850 7650
 Wire Wire Line
@@ -41510,7 +41510,7 @@ Wire Wire Line
 Wire Wire Line
 	4350 7250 4350 7650
 Wire Wire Line
-	3550 7250 3550 7650
+	2850 7250 2850 7650
 Wire Wire Line
 	2650 1300 2500 1300
 Connection ~ 1650 1300

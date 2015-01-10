@@ -117,15 +117,15 @@ bool switchState(EnumKeys enuk)
 
   switch(enuk){
     case SW_ELE:
-      result = PINL & (1<<INP_L_ElevDR);
+      result = !(PINL & (1<<INP_L_ElevDR));
       break;
 
     case SW_AIL:
-      result = PIND & (1<<INP_D_AileDR);
+      result = !(PIND & (1<<INP_D_AileDR));
       break;
 
     case SW_RUD:
-      result = PING & (1<<INP_G_RuddDR);
+      result = !(PING & (1<<INP_G_RuddDR));
       break;
 
     //       INP_C_ID1  INP_C_ID2
@@ -159,15 +159,15 @@ bool switchState(EnumKeys enuk)
 #endif
 
     case SW_GEA:
-      result = PING & (1<<INP_G_Gear);
+      result = !(PING & (1<<INP_G_Gear));
       break;
 
     case SW_THR:
-      result = PING & (1<<INP_G_ThrCt);
+      result = !(PING & (1<<INP_G_ThrCt));
       break;
 
     case SW_TRN:
-      result = PINL & (1<<INP_L_Trainer);
+      result = !(PINL & (1<<INP_L_Trainer));
       break;
 
     default:
