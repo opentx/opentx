@@ -1440,82 +1440,83 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../modeledit/templates.cpp" line="39"/>
         <source>Simple 4-CH</source>
-        <translation type="unfinished"></translation>
+        <translation>4 CH semplice</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="40"/>
         <source>T-Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Taglio motore</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="41"/>
         <source>Sticky T-Cut</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Da verficare</translatorcomment>
+        <translation>Taglio motore bloccato</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="42"/>
         <source>V-Tail</source>
-        <translation type="unfinished">Coda a V</translation>
+        <translation>Coda a V</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="43"/>
         <source>Elevon\Delta</source>
-        <translation type="unfinished"></translation>
+        <translation>Elevoni\Delta</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="44"/>
         <source>Heli Setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni elicottero</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="45"/>
         <source>Heli Setup with gyro gain control</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni elicottero con controllo guadagno giroscopio</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="46"/>
         <source>Gyro gain control</source>
-        <translation type="unfinished"></translation>
+        <translation>Controllo guadagno giroscopio</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="47"/>
         <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
+        <translation>ipostazioni elicottero (assegna canali modalità Futaba)</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="48"/>
         <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni elicottero con controllo guadagno giroscopio (assegna canali modalità Futaba)</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="49"/>
         <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
+        <translation>Controllo guadagno giroscopio (assegna canali modalità Futaba)</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="50"/>
         <source>Servo Test</source>
-        <translation type="unfinished"></translation>
+        <translation>Test servocomandi</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="51"/>
         <source>MultiCopter</source>
-        <translation type="unfinished"></translation>
+        <translation>Multirotore</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="52"/>
         <source>Use Model Config Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa assistente configurazione modello</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="81"/>
         <source>Apply Template?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Applica modello?</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="81"/>
         <source>Apply template &quot;%1&quot;?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Applica modello &quot;%1&quot;?</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="169"/>
@@ -1526,7 +1527,7 @@ Può essere differente dalla lingua del firmware</translation>
         <location filename="../modeledit/templates.cpp" line="358"/>
         <location filename="../modeledit/templates.cpp" line="487"/>
         <source>RUD</source>
-        <translation type="unfinished">RUD</translation>
+        <translation>DIR</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="171"/>
@@ -1540,14 +1541,14 @@ Può essere differente dalla lingua del firmware</translation>
         <location filename="../modeledit/templates.cpp" line="478"/>
         <location filename="../modeledit/templates.cpp" line="479"/>
         <source>ELE</source>
-        <translation type="unfinished">ELE</translation>
+        <translation>ELE</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="181"/>
         <location filename="../modeledit/templates.cpp" line="352"/>
         <location filename="../modeledit/templates.cpp" line="474"/>
         <source>THR</source>
-        <translation type="unfinished"></translation>
+        <translation>MOT</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="197"/>
@@ -1559,7 +1560,7 @@ Può essere differente dalla lingua del firmware</translation>
         <location filename="../modeledit/templates.cpp" line="482"/>
         <location filename="../modeledit/templates.cpp" line="483"/>
         <source>AIL</source>
-        <translation type="unfinished">AIL</translation>
+        <translation>ALE</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="204"/>
@@ -1567,7 +1568,7 @@ Può essere differente dalla lingua del firmware</translation>
         <location filename="../modeledit/templates.cpp" line="395"/>
         <location filename="../modeledit/templates.cpp" line="401"/>
         <source>AIL2</source>
-        <translation type="unfinished"></translation>
+        <translation>ALE2</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="217"/>
@@ -1575,7 +1576,7 @@ Può essere differente dalla lingua del firmware</translation>
         <location filename="../modeledit/templates.cpp" line="408"/>
         <location filename="../modeledit/templates.cpp" line="414"/>
         <source>ELE2</source>
-        <translation type="unfinished"></translation>
+        <translation>ELE2</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="227"/>
@@ -1585,7 +1586,7 @@ Può essere differente dalla lingua del firmware</translation>
         <location filename="../modeledit/templates.cpp" line="513"/>
         <location filename="../modeledit/templates.cpp" line="514"/>
         <source>FLAPS</source>
-        <translation type="unfinished"></translation>
+        <translation>PLAPS</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="242"/>
@@ -1595,7 +1596,7 @@ Può essere differente dalla lingua del firmware</translation>
         <location filename="../modeledit/templates.cpp" line="528"/>
         <location filename="../modeledit/templates.cpp" line="534"/>
         <source>FLAP%1</source>
-        <translation type="unfinished"></translation>
+        <translation>FLAPS%1</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="282"/>
@@ -1603,7 +1604,7 @@ Può essere differente dalla lingua del firmware</translation>
         <location filename="../modeledit/templates.cpp" line="307"/>
         <location filename="../modeledit/templates.cpp" line="311"/>
         <source>PITCH</source>
-        <translation type="unfinished"></translation>
+        <translation>Beccheggio</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="295"/>
@@ -1615,41 +1616,41 @@ Può essere differente dalla lingua del firmware</translation>
         <location filename="../modeledit/templates.cpp" line="324"/>
         <location filename="../modeledit/templates.cpp" line="325"/>
         <source>GYRO</source>
-        <translation type="unfinished"></translation>
+        <translation>GIRO</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="443"/>
         <location filename="../modeledit/templates.cpp" line="444"/>
         <source>SPOIL</source>
-        <translation type="unfinished"></translation>
+        <translation>FRENO</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="458"/>
         <location filename="../modeledit/templates.cpp" line="464"/>
         <source>SPOIL%1</source>
-        <translation type="unfinished"></translation>
+        <translation>FRENO%1</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="503"/>
         <location filename="../modeledit/templates.cpp" line="509"/>
         <source>RUD2</source>
-        <translation type="unfinished"></translation>
+        <translation>DIR2</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="712"/>
         <location filename="../modeledit/templates.cpp" line="824"/>
         <source>Clear Mixes?</source>
-        <translation type="unfinished">Cancellare le miscelazioni ?</translation>
+        <translation>Cancellare le miscelazioni ?</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="712"/>
         <source>Really clear existing mixes on CH6?</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancellare mixer esistente su CH6?</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="824"/>
         <source>Really clear existing mixes on CH5?</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancellare mixer esistente su CH5?</translation>
     </message>
 </context>
 <context>
@@ -1671,12 +1672,12 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../modeledit/expodialog.ui" line="435"/>
         <source>Offset</source>
-        <translation type="unfinished">Spostamento</translation>
+        <translation>Spostamento</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="454"/>
         <source>The source for the mixer</source>
-        <translation type="unfinished">Sorgente da miscelare</translation>
+        <translation>Sorgente da miscelare</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="43"/>
@@ -2859,12 +2860,12 @@ Mode 4:
     <message>
         <location filename="../generaledit.ui" line="1980"/>
         <source>Play Delay (switch mid position)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ritardo voce( interruttore posizione media)</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2020"/>
         <source>Backlight flash on alarm</source>
-        <translation type="unfinished"></translation>
+        <translation>Retroilluminazione su allarme</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2515"/>
@@ -3406,7 +3407,7 @@ Siete sicuri ?</translation>
     <message>
         <location filename="../modeledit/inputs.cpp" line="165"/>
         <source>Offset(%1)</source>
-        <translation type="unfinished">Spostamento(%1)</translation>
+        <translation>Spostamento(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="170"/>
@@ -3565,7 +3566,7 @@ Siete sicuri ?</translation>
         <location filename="../modeledit/logicalswitches.cpp" line="241"/>
         <location filename="../modeledit/logicalswitches.cpp" line="323"/>
         <source>(infinite)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Infinito)</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="490"/>
@@ -6299,12 +6300,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="342"/>
         <source>RSSI Tx</source>
-        <translation></translation>
+        <translation>RSSI Tx</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="342"/>
         <source>RSSI Rx</source>
-        <translation></translation>
+        <translation>RSSI Rx</translation>
     </message>
     <message>
         <source>Rx Batt</source>
@@ -6328,17 +6329,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="348"/>
         <source>dTE</source>
-        <translation></translation>
+        <translation>dTE</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="348"/>
         <source>Hdg </source>
-        <translation></translation>
+        <translation>Hdg</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="348"/>
         <source>AirSpeed</source>
-        <translation></translation>
+        <translation>Velocità aria</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="349"/>
@@ -6358,12 +6359,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="350"/>
         <source>Dist+</source>
-        <translation></translation>
+        <translation>Dist+</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="350"/>
         <source>AirSpeed+</source>
-        <translation></translation>
+        <translation>Velocità aria+</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="351"/>
@@ -6373,22 +6374,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="351"/>
         <source>Cells-</source>
-        <translation></translation>
+        <translation>Cells-</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="351"/>
         <source>Vfas-</source>
-        <translation></translation>
+        <translation>Vfas-</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="351"/>
         <source>Curr+</source>
-        <translation>Corr-</translation>
+        <translation>Corr+</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="351"/>
         <source>Powr+</source>
-        <translation></translation>
+        <translation>Powr+</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="352"/>
@@ -6404,7 +6405,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../eeprominterface.cpp" line="356"/>
         <location filename="../eeprominterface.cpp" line="435"/>
         <source>L1</source>
-        <translation></translation>
+        <translation>L1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="356"/>
@@ -6601,12 +6602,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="375"/>
         <source>LUA%1%2</source>
-        <translation type="unfinished"></translation>
+        <translation>LUA%1%2</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="391"/>
         <source>TR%1</source>
-        <translation></translation>
+        <translation>TR%1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="442"/>
@@ -6716,12 +6717,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="564"/>
         <source>OR</source>
-        <translation></translation>
+        <translation>OR</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="566"/>
         <source>XOR</source>
-        <translation></translation>
+        <translation>XOR</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="568"/>
@@ -6756,7 +6757,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="580"/>
         <source>d&gt;=x</source>
-        <translation></translation>
+        <translation>d&gt;=x</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="582"/>
@@ -6791,7 +6792,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="727"/>
         <source>Override %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Blocca %1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="745"/>
@@ -6914,7 +6915,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="753"/>
         <source>Play Both</source>
-        <translation>Suana Entrambi</translation>
+        <translation>Suona Entrambi</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="610"/>
@@ -6975,7 +6976,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../eeprominterface.cpp" line="797"/>
         <location filename="../modeledit/customfunctions.cpp" line="658"/>
         <source>All</source>
-        <translation></translation>
+        <translation>Tutti</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="798"/>
@@ -7269,27 +7270,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="344"/>
         <source>Rpm</source>
-        <translation></translation>
+        <translation>Rpm</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="344"/>
         <source>Fuel</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="345"/>
         <source>Speed</source>
-        <translation></translation>
+        <translation>Velocità</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="345"/>
         <source>Dist</source>
-        <translation></translation>
+        <translation>Dist</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="345"/>
         <source>GPS Alt</source>
-        <translation></translation>
+        <translation>GPS Alt</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="346"/>
@@ -7299,19 +7300,19 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="383"/>
         <source>MAX</source>
-        <translation></translation>
+        <translation>MAX</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="318"/>
         <location filename="../helpers.cpp" line="83"/>
         <source>Rud</source>
-        <translation></translation>
+        <translation>Dir</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="318"/>
         <location filename="../helpers.cpp" line="83"/>
         <source>Ele</source>
-        <translation></translation>
+        <translation>Ele</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="318"/>
@@ -7323,21 +7324,21 @@ p, li { white-space: pre-wrap; }
         <location filename="../eeprominterface.cpp" line="318"/>
         <location filename="../helpers.cpp" line="83"/>
         <source>Ail</source>
-        <translation></translation>
+        <translation>Ale</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="341"/>
         <location filename="../eeprominterface.cpp" line="795"/>
         <location filename="../modeledit/customfunctions.cpp" line="656"/>
         <source>Timer1</source>
-        <translation></translation>
+        <translation>Temporizzatore1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="341"/>
         <location filename="../eeprominterface.cpp" line="796"/>
         <location filename="../modeledit/customfunctions.cpp" line="657"/>
         <source>Timer2</source>
-        <translation></translation>
+        <translation>Temporizzatore2</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="343"/>
@@ -7373,7 +7374,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1268"/>
         <source>OpenTx only accepts %1 points in all curves</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTx accetta solo %1 punti in tutte le curve</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1774"/>
@@ -7386,13 +7387,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2433"/>
         <source>OpenTX doesn&apos;t accept this telemetry protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTx non accetta questo protocollo telemetrico</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2537"/>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2542"/>
         <source>OpenTX doesn&apos;t accept this radio protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTx non accetta questo protocollo radio</translation>
     </message>
     <message>
         <source>OpenTX doesn&apos;t accept this protocol</source>
@@ -7455,7 +7456,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="425"/>
         <source>(displaying only first 10 warnings)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Mostrati solo i primi 10 avvisi)</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1055"/>
@@ -7592,7 +7593,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1054"/>
         <source>No OverrideCH functions available</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessuna funzione di forzatura CH disponibile</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1091"/>
@@ -7868,28 +7869,28 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="337"/>
         <source>TrmR</source>
-        <translation></translation>
+        <translation>TrmD</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="337"/>
         <source>TrmE</source>
-        <translation></translation>
+        <translation>TrmE</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="337"/>
         <source>TrmT</source>
-        <translation></translation>
+        <translation>TrmM</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="337"/>
         <source>TrmA</source>
-        <translation></translation>
+        <translation>TrmA</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="320"/>
         <location filename="../modeledit/setup.cpp" line="576"/>
         <source>S1</source>
-        <translation></translation>
+        <translation>S1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="118"/>
@@ -7897,75 +7898,75 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
         <location filename="../eeprominterface.cpp" line="248"/>
         <location filename="../eeprominterface.cpp" line="1025"/>
         <source>V</source>
-        <translation type="unfinished"></translation>
+        <translation>V</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="128"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation>s</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="158"/>
         <source>ft</source>
-        <translation type="unfinished"></translation>
+        <translation>ft</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="161"/>
         <location filename="../eeprominterface.cpp" line="232"/>
         <source>m</source>
-        <translation type="unfinished"></translation>
+        <translation>m</translation>
     </message>
     <message utf8="true">
         <location filename="../eeprominterface.cpp" line="170"/>
         <source>°C</source>
-        <translation type="unfinished"></translation>
+        <translation>°C</translation>
     </message>
     <message utf8="true">
         <location filename="../eeprominterface.cpp" line="176"/>
         <source>°</source>
-        <translation type="unfinished"></translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="185"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="195"/>
         <location filename="../eeprominterface.cpp" line="210"/>
         <source>mph</source>
-        <translation type="unfinished"></translation>
+        <translation>mph</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="200"/>
         <location filename="../eeprominterface.cpp" line="215"/>
         <source>km/h</source>
-        <translation type="unfinished"></translation>
+        <translation>km/h</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="223"/>
         <source>m/s</source>
-        <translation type="unfinished"></translation>
+        <translation>m/s</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="255"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="260"/>
         <source>mAh</source>
-        <translation type="unfinished"></translation>
+        <translation>mAh</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="266"/>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation>W</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="275"/>
         <source>g</source>
-        <translation type="unfinished"></translation>
+        <translation>g</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="320"/>
@@ -7983,7 +7984,7 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
         <location filename="../eeprominterface.cpp" line="320"/>
         <location filename="../modeledit/setup.cpp" line="576"/>
         <source>RS</source>
-        <translation></translation>
+        <translation>RS</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="341"/>
@@ -7993,22 +7994,22 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="346"/>
         <source>Vfas</source>
-        <translation></translation>
+        <translation>Vfas</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="346"/>
         <source>Curr</source>
-        <translation></translation>
+        <translation>Corr</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="346"/>
         <source>Cnsp</source>
-        <translation></translation>
+        <translation>Cnsp</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="346"/>
         <source>Powr</source>
-        <translation></translation>
+        <translation>Powr</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="347"/>
@@ -8028,7 +8029,7 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="348"/>
         <source>VSpd</source>
-        <translation></translation>
+        <translation>VSpd</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="349"/>
@@ -8043,17 +8044,17 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="350"/>
         <source>Alt-</source>
-        <translation></translation>
+        <translation>Alt-</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="350"/>
         <source>Alt+</source>
-        <translation></translation>
+        <translation>Alt+</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="350"/>
         <source>Rpm+</source>
-        <translation></translation>
+        <translation>Rpm+</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="350"/>
@@ -8073,7 +8074,7 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="389"/>
         <source>CYC%1</source>
-        <translation></translation>
+        <translation>CYC%1</translation>
     </message>
     <message>
         <source>CH%1%2</source>
@@ -8082,17 +8083,17 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="446"/>
         <source>S11</source>
-        <translation></translation>
+        <translation>S11</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="446"/>
         <source>S12</source>
-        <translation></translation>
+        <translation>S12</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="446"/>
         <source>S13</source>
-        <translation></translation>
+        <translation>S13</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="446"/>
@@ -8202,7 +8203,7 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="498"/>
         <source>???</source>
-        <translation></translation>
+        <translation>???</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="511"/>
@@ -8232,20 +8233,20 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="342"/>
         <source>SWR</source>
-        <translation></translation>
+        <translation>SWR</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="486"/>
         <location filename="../helpers.cpp" line="342"/>
         <source>ON</source>
-        <translation></translation>
+        <translation>ON</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="463"/>
         <location filename="../eeprominterface.cpp" line="488"/>
         <location filename="../helpers.cpp" line="342"/>
         <source>OFF</source>
-        <translation></translation>
+        <translation>OFF</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="429"/>
@@ -8320,12 +8321,12 @@ Il Team di OpenTX.</translation>
     <message>
         <location filename="../eeprominterface.h" line="957"/>
         <source>Positive</source>
-        <translation type="unfinished">Positivo</translation>
+        <translation>Positivo</translation>
     </message>
     <message>
         <location filename="../eeprominterface.h" line="957"/>
         <source>Negative</source>
-        <translation type="unfinished">Negativo</translation>
+        <translation>Negativo</translation>
     </message>
 </context>
 <context>
@@ -8545,7 +8546,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
         <location filename="../simulation/simulatordialog.cpp" line="362"/>
         <location filename="../simulation/simulatordialog.cpp" line="363"/>
         <source>Outputs</source>
-        <translation type="unfinished">Uscite</translation>
+        <translation>Uscite</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="516"/>
@@ -8611,7 +8612,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1445"/>
         <source>Outputs2</source>
-        <translation type="unfinished"></translation>
+        <translation>Uscite2</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1458"/>
@@ -8680,7 +8681,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="245"/>
         <source>Outputs2</source>
-        <translation type="unfinished"></translation>
+        <translation>Uscite2</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="258"/>
@@ -9170,17 +9171,17 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/telemetry.cpp" line="490"/>
         <source>FrSky S.PORT</source>
-        <translation type="unfinished">FrSky S.PORT</translation>
+        <translation>FrSky S.PORT</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="491"/>
         <source>FrSky D</source>
-        <translation type="unfinished">FrSky D</translation>
+        <translation>FrSky D</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="493"/>
         <source>FrSky D (cable)</source>
-        <translation type="unfinished"></translation>
+        <translation>FrSky (cavo)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="526"/>
@@ -9210,12 +9211,12 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/telemetry.cpp" line="679"/>
         <source>Alti</source>
-        <translation></translation>
+        <translation>Alti</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="680"/>
         <source>Alti+</source>
-        <translation></translation>
+        <translation>Alti+</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="682"/>
@@ -9239,7 +9240,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/telemetry.cpp" line="686"/>
         <source>dTE</source>
-        <translation></translation>
+        <translation>dTE</translation>
     </message>
     <message>
         <source>RxBatt</source>
@@ -9333,17 +9334,17 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/setup.cpp" line="33"/>
         <source>Not persistent</source>
-        <translation type="unfinished"></translation>
+        <translation>Non persistente</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="34"/>
         <source>Persistent (flight)</source>
-        <translation type="unfinished"></translation>
+        <translation>Persistente (volo)</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="35"/>
         <source>Persistent (manual reset)</source>
-        <translation type="unfinished"></translation>
+        <translation>Persistente (reset manuale)</translation>
     </message>
 </context>
 <context>
@@ -9585,7 +9586,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="82"/>
         <source>Models use one or two channels to control the ailerons.&lt;br&gt;A so called Y-cable can be used to connect a single receiver channel to two separate aileron servos. If your servos are connected by a Y-cable you should select the single-servo option.&lt;br&gt;&lt;br&gt;Aileron - Spektrum: CH2, Futaba: CH1</source>
-        <translation></translation>
+        <translation type="unfinished">Modello usa uno o due canali per controllare gli alettoni.&lt;br&gt;Un cavo a Y può essere usato per connettere due servi degli alettoni a un singolo canale. Se i vostri servocomandi sono collegati per mezzo di un cavo a Y dovete selezionare l&apos;opzione servo singolo&lt;br&gt;&lt;br&gt;Alettoni - Spektrum: CH2, Futaba: CH1</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="88"/>
@@ -9873,24 +9874,24 @@ Utilizzato dai Modelli per stabilire quale uscita viene assegnata ai canali.</tr
         <location filename="../avroutputdialog.cpp" line="63"/>
         <source>executable not found</source>
         <oldsource> executable not found</oldsource>
-        <translation>eseguibile non trovato</translation>
+        <translation>Eseguibile non trovato</translation>
     </message>
     <message>
         <location filename="../avroutputdialog.cpp" line="152"/>
         <location filename="../avroutputdialog.cpp" line="159"/>
         <location filename="../avroutputdialog.cpp" line="163"/>
         <source>Error</source>
-        <translation>Errore</translation>
+        <translation type="unfinished">Errore</translation>
     </message>
     <message>
         <location filename="../avroutputdialog.cpp" line="163"/>
         <source>Cannot open source file</source>
-        <translation>Non posso aprire l&apos;origine</translation>
+        <translation type="unfinished">Non posso aprire il file di origine</translation>
     </message>
     <message>
         <location filename="../avroutputdialog.cpp" line="159"/>
         <source>Cannot write destination</source>
-        <translation>Non posso aprire la destinazione</translation>
+        <translation type="unfinished">Non posso scrivere sul file di destinazione</translation>
     </message>
     <message>
         <location filename="../avroutputdialog.cpp" line="142"/>
@@ -10170,7 +10171,7 @@ utilizzatelo solo se sapete cosa state facendo.  Non viene fatto alcun controllo
     <message>
         <location filename="../burnconfigdialog.ui" line="707"/>
         <source>ARM MCU</source>
-        <translation></translation>
+        <translation>Processore ARM</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="727"/>
