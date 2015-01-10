@@ -33,7 +33,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 enum menuModelHeliItems {
   ITEM_HELI_SWASHTYPE,
@@ -44,11 +44,7 @@ enum menuModelHeliItems {
   ITEM_HELI_COLDIRECTION
 };
 
-#if LCD_W >= 212
-  #define HELI_PARAM_OFS (23*FW)
-#else
-  #define HELI_PARAM_OFS (14*FW)
-#endif
+#define HELI_PARAM_OFS (14*FW)
 
 void menuModelHeli(uint8_t event)
 {
@@ -65,12 +61,7 @@ void menuModelHeli(uint8_t event)
         break;
 
       case ITEM_HELI_COLLECTIVE:
-#if defined(PCBTARANIS)
-        lcd_putsLeft(y, STR_COLLECTIVE);
-        if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH);
-#else
         g_model.swashR.collectiveSource = selectMenuItem(HELI_PARAM_OFS, y, STR_COLLECTIVE, NULL, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH, attr, event);
-#endif
         putsMixerSource(HELI_PARAM_OFS, y, g_model.swashR.collectiveSource, attr);
         break;
 

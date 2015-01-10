@@ -33,9 +33,7 @@
  *
  */
 
-#include "../opentx.h"
-
-#if LCD_W >= 212 && defined(FLIGHT_MODES)
+#include "../../opentx.h"
 
 void onGVARSMenu(const char *result)
 {
@@ -153,4 +151,3 @@ void menuModelGVars(uint8_t event)
     menuHandler = onGVARSMenu;
   }
 }
-#endif

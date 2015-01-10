@@ -33,7 +33,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 void onModelCustomScriptMenu(const char *result)
 {
@@ -145,12 +145,6 @@ void menuModelCustomScripts(uint8_t event)
   int8_t  sub = m_posVert - 1;
 
   switch (event) {
-#if defined(ROTARY_ENCODER_NAVIGATION)
-    case EVT_ROTARY_BREAK:
-#endif
-#if !defined(PCBTARANIS)
-    case EVT_KEY_FIRST(KEY_RIGHT):
-#endif
     case EVT_KEY_FIRST(KEY_ENTER):
       if (sub >= 0) {
         s_currIdx = sub;

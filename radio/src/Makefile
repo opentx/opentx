@@ -867,10 +867,13 @@ ifeq ($(PCB), TARANIS)
     NEWLIB_NANO_FLAGS = --specs=nano.specs -u _printf_float
     CPPDEFS += -DNANO
   endif
+  ifeq ($(GVARS), YES)
+    GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_gvars.cpp
+  endif
   ifneq ($(LUA), NO)
     ifeq ($(LUA), YES)
       CPPDEFS += -DLUA_MODEL_SCRIPTS
-      GUIMODELSRC += gui/menu_model_custom_scripts.cpp
+      GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_custom_scripts.cpp
     endif
     CPPDEFS += -DLUA
     INCDIRS += lua/src
@@ -1058,7 +1061,6 @@ endif
 
 ifeq ($(GVARS), YES)
   CPPDEFS += -DGVARS
-  GUIMODELSRC += gui/menu_model_gvars.cpp
   EEPROM_VARIANT += ${GVARS_VARIANT}
 endif
 
@@ -1198,7 +1200,7 @@ endif
 
 ifeq ($(HELI), YES)
   CPPDEFS += -DHELI
-  GUIMODELSRC += gui/menu_model_heli.cpp
+  GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_heli.cpp
 endif
 
 ifeq ($(TEMPLATES), YES)

@@ -82,7 +82,7 @@ namespace OpenTxM64 {
 #include "radio/src/gui/menu_model.cpp"
 #include "radio/src/gui/9X/menu_model_select.cpp"
 #include "radio/src/gui/9X/menu_model_setup.cpp"
-#include "radio/src/gui/menu_model_heli.cpp"
+#include "radio/src/gui/9X/menu_model_heli.cpp"
 #include "radio/src/gui/9X/menu_model_flightmodes.cpp"
 #include "radio/src/gui/9X/menu_model_inputs_mixes.cpp"
 #include "radio/src/gui/9X/menu_model_curves.cpp"
