@@ -546,27 +546,27 @@ Může být jiná než verze firmwaru</translation>
         <translation>Zvolit spustitelnou binárku aplikace Google Earth</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="276"/>
+        <location filename="../apppreferencesdialog.cpp" line="277"/>
         <source>Select the folder replicating your SD structure</source>
         <translation>Vyberat složku která představuje obsah SD karty rádia</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="285"/>
+        <location filename="../apppreferencesdialog.cpp" line="286"/>
         <source>Not possible to remove profile</source>
         <translation>Není možné odebrat profil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="285"/>
+        <location filename="../apppreferencesdialog.cpp" line="286"/>
         <source>The default profile can not be removed.</source>
         <translation>Výchozí profil nemůže být odstraněn.</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="322"/>
+        <location filename="../apppreferencesdialog.cpp" line="323"/>
         <source>Open Image to load</source>
         <translation>Otevřít soubor s logem</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="322"/>
+        <location filename="../apppreferencesdialog.cpp" line="323"/>
         <source>Images (%1)</source>
         <translation>Obrázky (%1)</translation>
     </message>
@@ -2692,7 +2692,12 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Play Delay&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Values can be 0ms-300ms&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Odložení aktivace střední polohy přepínače při přechodu mezi krajními polohami.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Hodnoty mohou být 0ms-300ms&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2023"/>
@@ -3271,6 +3276,233 @@ Opravdu to takto chcete ?</translation>
     </message>
 </context>
 <context>
+    <name>JoystickDialog</name>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="20"/>
+        <source>Configure Joystick</source>
+        <translation type="unfinished">Nastavte joystick</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="43"/>
+        <source>Ch2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="82"/>
+        <location filename="../simulation/joystickdialog.ui" line="144"/>
+        <location filename="../simulation/joystickdialog.ui" line="224"/>
+        <location filename="../simulation/joystickdialog.ui" line="325"/>
+        <location filename="../simulation/joystickdialog.ui" line="405"/>
+        <location filename="../simulation/joystickdialog.ui" line="485"/>
+        <location filename="../simulation/joystickdialog.ui" line="579"/>
+        <location filename="../simulation/joystickdialog.ui" line="666"/>
+        <source>Not  Assigned</source>
+        <translation type="unfinished">Nepřiřazeno</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="87"/>
+        <location filename="../simulation/joystickdialog.ui" line="149"/>
+        <location filename="../simulation/joystickdialog.ui" line="229"/>
+        <location filename="../simulation/joystickdialog.ui" line="330"/>
+        <location filename="../simulation/joystickdialog.ui" line="410"/>
+        <location filename="../simulation/joystickdialog.ui" line="490"/>
+        <location filename="../simulation/joystickdialog.ui" line="584"/>
+        <location filename="../simulation/joystickdialog.ui" line="671"/>
+        <source>Right Vertical</source>
+        <translation type="unfinished">Pravá vertikální</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="92"/>
+        <location filename="../simulation/joystickdialog.ui" line="154"/>
+        <location filename="../simulation/joystickdialog.ui" line="234"/>
+        <location filename="../simulation/joystickdialog.ui" line="335"/>
+        <location filename="../simulation/joystickdialog.ui" line="415"/>
+        <location filename="../simulation/joystickdialog.ui" line="495"/>
+        <location filename="../simulation/joystickdialog.ui" line="589"/>
+        <location filename="../simulation/joystickdialog.ui" line="676"/>
+        <source>Right Horizontal</source>
+        <translation type="unfinished">Pravá horizontální</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="97"/>
+        <location filename="../simulation/joystickdialog.ui" line="159"/>
+        <location filename="../simulation/joystickdialog.ui" line="239"/>
+        <location filename="../simulation/joystickdialog.ui" line="340"/>
+        <location filename="../simulation/joystickdialog.ui" line="420"/>
+        <location filename="../simulation/joystickdialog.ui" line="500"/>
+        <location filename="../simulation/joystickdialog.ui" line="594"/>
+        <location filename="../simulation/joystickdialog.ui" line="681"/>
+        <source>Left Vertical</source>
+        <translation type="unfinished">Levá vertikální</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="102"/>
+        <location filename="../simulation/joystickdialog.ui" line="164"/>
+        <location filename="../simulation/joystickdialog.ui" line="244"/>
+        <location filename="../simulation/joystickdialog.ui" line="345"/>
+        <location filename="../simulation/joystickdialog.ui" line="425"/>
+        <location filename="../simulation/joystickdialog.ui" line="505"/>
+        <location filename="../simulation/joystickdialog.ui" line="599"/>
+        <location filename="../simulation/joystickdialog.ui" line="686"/>
+        <source>Left Horizontal</source>
+        <translation type="unfinished">Levá horizontální</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="107"/>
+        <location filename="../simulation/joystickdialog.ui" line="169"/>
+        <location filename="../simulation/joystickdialog.ui" line="249"/>
+        <location filename="../simulation/joystickdialog.ui" line="350"/>
+        <location filename="../simulation/joystickdialog.ui" line="430"/>
+        <location filename="../simulation/joystickdialog.ui" line="510"/>
+        <location filename="../simulation/joystickdialog.ui" line="604"/>
+        <location filename="../simulation/joystickdialog.ui" line="691"/>
+        <source>P1</source>
+        <translation type="unfinished">Potenciometr 1</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="112"/>
+        <location filename="../simulation/joystickdialog.ui" line="174"/>
+        <location filename="../simulation/joystickdialog.ui" line="254"/>
+        <location filename="../simulation/joystickdialog.ui" line="355"/>
+        <location filename="../simulation/joystickdialog.ui" line="435"/>
+        <location filename="../simulation/joystickdialog.ui" line="515"/>
+        <location filename="../simulation/joystickdialog.ui" line="609"/>
+        <location filename="../simulation/joystickdialog.ui" line="696"/>
+        <source>P2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="117"/>
+        <location filename="../simulation/joystickdialog.ui" line="179"/>
+        <location filename="../simulation/joystickdialog.ui" line="259"/>
+        <location filename="../simulation/joystickdialog.ui" line="360"/>
+        <location filename="../simulation/joystickdialog.ui" line="440"/>
+        <location filename="../simulation/joystickdialog.ui" line="520"/>
+        <location filename="../simulation/joystickdialog.ui" line="614"/>
+        <location filename="../simulation/joystickdialog.ui" line="701"/>
+        <source>P3/LS</source>
+        <translation type="unfinished">Potenciometr 3 /LS</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="122"/>
+        <location filename="../simulation/joystickdialog.ui" line="184"/>
+        <location filename="../simulation/joystickdialog.ui" line="264"/>
+        <location filename="../simulation/joystickdialog.ui" line="365"/>
+        <location filename="../simulation/joystickdialog.ui" line="445"/>
+        <location filename="../simulation/joystickdialog.ui" line="525"/>
+        <location filename="../simulation/joystickdialog.ui" line="619"/>
+        <location filename="../simulation/joystickdialog.ui" line="706"/>
+        <source>RS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="130"/>
+        <source>Ch1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="272"/>
+        <source>Ch4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="304"/>
+        <source>Ch6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="311"/>
+        <source>Ch3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="533"/>
+        <source>Ch5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="540"/>
+        <source>Ch7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="627"/>
+        <source>Ch8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="818"/>
+        <source>Instructions</source>
+        <translation type="unfinished">Instrukce</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="836"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Zrušit</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="862"/>
+        <source>Next</source>
+        <translation type="unfinished">Další</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.ui" line="875"/>
+        <source>Ok</source>
+        <translation type="unfinished">OK</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="17"/>
+        <source>Move sticks and pots in every direction making full movement
+Press next when finished</source>
+        <translation type="unfinished">Hýbejte pákami a potenciometry ve všech směrech až do krajních poloh.
+Potom stiskněte tlačítko Další</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="51"/>
+        <location filename="../simulation/joystickdialog.cpp" line="126"/>
+        <source>Error</source>
+        <translation type="unfinished">Chyba</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="51"/>
+        <source>Cannot open joystick.</source>
+        <translation type="unfinished">Nemohu otevřít joystick.</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="77"/>
+        <source>Place sticks and pots in middle position.
+Press next when done</source>
+        <translation type="unfinished">Umístěte páky a potenciometry do střední polohy.
+Potom stiskněte tlačítko Další</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="88"/>
+        <source>Map joystick channels to controls using comboboxes.
+Press next when done</source>
+        <translation type="unfinished">Přiřaďte kanály joysticku k ovládání funkcí.
+Potom stiskněte tlačítko Další</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="95"/>
+        <source>Check inversion checkbox to get maximum at top-right position.
+Press next when done</source>
+        <translation type="unfinished">Zkontroluj invertovací políčka k nastavení maxima v pravé horní pozici.
+Potom stiskněte tlačítko Další</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="102"/>
+        <source>Press ok to save configuration
+Press cancel to abort joystick calibration</source>
+        <translation type="unfinished">Stiskem tlačítka OK uložíte konfiguraci.
+Tlačítkem Zrušit přerušíte kalibraci</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="126"/>
+        <source>Duplicated stick assignement</source>
+        <translation type="unfinished">Duplicitní přiřazení páky</translation>
+    </message>
+</context>
+<context>
     <name>LogicalSwitchesPanel</name>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="20"/>
@@ -3365,7 +3597,7 @@ Opravdu to takto chcete ?</translation>
         <location filename="../mainwindow.cpp" line="152"/>
         <location filename="../mainwindow.cpp" line="588"/>
         <location filename="../mainwindow.cpp" line="619"/>
-        <location filename="../mainwindow.cpp" line="2065"/>
+        <location filename="../mainwindow.cpp" line="2077"/>
         <source>File loaded</source>
         <translation>Soubor byl načten</translation>
     </message>
@@ -3417,22 +3649,22 @@ Opravdu to takto chcete ?</translation>
         <location filename="../mainwindow.cpp" line="361"/>
         <location filename="../mainwindow.cpp" line="813"/>
         <location filename="../mainwindow.cpp" line="1048"/>
-        <location filename="../mainwindow.cpp" line="1969"/>
-        <location filename="../mainwindow.cpp" line="1976"/>
-        <location filename="../mainwindow.cpp" line="1986"/>
-        <location filename="../mainwindow.cpp" line="2009"/>
-        <location filename="../mainwindow.cpp" line="2015"/>
-        <location filename="../mainwindow.cpp" line="2022"/>
-        <location filename="../mainwindow.cpp" line="2029"/>
-        <location filename="../mainwindow.cpp" line="2033"/>
+        <location filename="../mainwindow.cpp" line="1981"/>
+        <location filename="../mainwindow.cpp" line="1988"/>
+        <location filename="../mainwindow.cpp" line="1998"/>
+        <location filename="../mainwindow.cpp" line="2021"/>
+        <location filename="../mainwindow.cpp" line="2027"/>
+        <location filename="../mainwindow.cpp" line="2034"/>
+        <location filename="../mainwindow.cpp" line="2041"/>
+        <location filename="../mainwindow.cpp" line="2045"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="333"/>
-        <location filename="../mainwindow.cpp" line="1976"/>
-        <location filename="../mainwindow.cpp" line="1986"/>
-        <location filename="../mainwindow.cpp" line="2022"/>
+        <location filename="../mainwindow.cpp" line="1988"/>
+        <location filename="../mainwindow.cpp" line="1998"/>
+        <location filename="../mainwindow.cpp" line="2034"/>
         <source>Error opening file %1:
 %2.</source>
         <translation>Chyba při otevírání souboru %1:
@@ -3556,36 +3788,36 @@ Chcete ji stáhnout nyní ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1157"/>
-        <location filename="../mainwindow.cpp" line="1315"/>
-        <location filename="../mainwindow.cpp" line="1357"/>
+        <location filename="../mainwindow.cpp" line="1327"/>
+        <location filename="../mainwindow.cpp" line="1369"/>
         <source>Backup is impossible</source>
         <translation>Není možné zálohovat</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1157"/>
-        <location filename="../mainwindow.cpp" line="1315"/>
-        <location filename="../mainwindow.cpp" line="1357"/>
+        <location filename="../mainwindow.cpp" line="1327"/>
+        <location filename="../mainwindow.cpp" line="1369"/>
         <source>The backup dir set in preferences does not exist</source>
         <translation>Složka pro zálohování zvolená v předvolbách neexistuje</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1188"/>
-        <location filename="../mainwindow.cpp" line="1191"/>
+        <location filename="../mainwindow.cpp" line="1187"/>
+        <location filename="../mainwindow.cpp" line="1190"/>
         <source>Warning</source>
         <translation>Varování</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1336"/>
+        <location filename="../mainwindow.cpp" line="1348"/>
         <source>Conversion failed</source>
         <translation>Porovnání selhalo</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1341"/>
+        <location filename="../mainwindow.cpp" line="1353"/>
         <source>Restore failed</source>
         <translation>Zápis selhal</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1349"/>
+        <location filename="../mainwindow.cpp" line="1361"/>
         <source>Backup failed</source>
         <translation>Zálohování selhalo</translation>
     </message>
@@ -3667,27 +3899,43 @@ neobsahuje platná data modelů a nastavení
 Chcete ho přesto zapsat ?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1180"/>
+        <location filename="../mainwindow.cpp" line="1179"/>
         <source>Cannot check Models and Settings compatibility! Continue anyway?</source>
         <translation>Nelze ověřit kompatibilitu dat modelů a nastavení! Chcete přesto pokračovat?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1336"/>
+        <location filename="../mainwindow.cpp" line="1309"/>
+        <location filename="../mainwindow.cpp" line="1315"/>
+        <source>Firmware check failed</source>
+        <translation>Kontrola firmware se nezdařila</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1309"/>
+        <source>Could not check firmware from radio</source>
+        <translation>Nelze provést kontrolu firmware v rádiu</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1315"/>
+        <source>New firmware is not compatible with the one currently installed!</source>
+        <translation>Nový firmware neodpovídá typu, který je nyní nainstalován!</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1348"/>
         <source>Cannot convert Models and Settings for use with this firmware, original data will be used</source>
         <translation>Nemohu konvertovat modely a nastavení pro použití s tímto firmwarem, budou použita původní data</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1345"/>
+        <location filename="../mainwindow.cpp" line="1357"/>
         <source>Firmware write failed</source>
         <translation>Zápis firmware selhal</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1430"/>
+        <location filename="../mainwindow.cpp" line="1442"/>
         <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</source>
         <translation>Projekt OpenTX Companion vznikl oddělením z &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1582"/>
+        <location filename="../mainwindow.cpp" line="1594"/>
         <source>Load backup from file</source>
         <translation>Načíst zálohu ze souboru</translation>
     </message>
@@ -3697,13 +3945,13 @@ Chcete ho přesto zapsat ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="576"/>
-        <location filename="../mainwindow.cpp" line="1543"/>
+        <location filename="../mainwindow.cpp" line="1555"/>
         <source>Open Models and Settings file</source>
         <translation>Otevřít soubor modelů a nastavení</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="960"/>
-        <location filename="../mainwindow.cpp" line="1598"/>
+        <location filename="../mainwindow.cpp" line="1610"/>
         <source>Read Models and Settings From Radio</source>
         <translation>Načíst modely a nastavení z rádia</translation>
     </message>
@@ -3714,24 +3962,24 @@ Chcete ho přesto zapsat ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1169"/>
-        <location filename="../mainwindow.cpp" line="1200"/>
-        <location filename="../mainwindow.cpp" line="1330"/>
-        <location filename="../mainwindow.cpp" line="1364"/>
+        <location filename="../mainwindow.cpp" line="1199"/>
+        <location filename="../mainwindow.cpp" line="1342"/>
+        <location filename="../mainwindow.cpp" line="1376"/>
         <source>Backup Models and Settings From Radio</source>
         <translation>Zálohovat modely a nastavení z rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1188"/>
+        <location filename="../mainwindow.cpp" line="1187"/>
         <source>The radio firmware belongs to another product family, check file and preferences!</source>
         <translation>Firmware rádia je z jiné rodiny produktů , zkontrolujte nastavení předvoleb!</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1191"/>
+        <location filename="../mainwindow.cpp" line="1190"/>
         <source>The radio firmware is outdated, please upgrade!</source>
         <translation>Firmware rádia je zastaralý, aktualizujte ho prosím!</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1204"/>
+        <location filename="../mainwindow.cpp" line="1203"/>
         <source>Write Backup To Radio</source>
         <translation>Zapsat zálohu do rádia</translation>
     </message>
@@ -3746,42 +3994,42 @@ Chcete ho přesto zapsat ?</translation>
         <translation>Načíst firmware z rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1340"/>
+        <location filename="../mainwindow.cpp" line="1352"/>
         <source>Restore Models and Settings To Radio</source>
         <translation>Obnovit modely a nastavení rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1341"/>
+        <location filename="../mainwindow.cpp" line="1353"/>
         <source>Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1</source>
         <translation>Nelze obnovit modely a nastavení rádia. Data modelů a nastavení naleznete v %1</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1345"/>
+        <location filename="../mainwindow.cpp" line="1357"/>
         <source>Could not write firmware to radio. The models and settings data file can be found at: %1</source>
         <translation>Nelze zapsat firmware do rádia. Data modelů a nastavení naleznete v %1</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1349"/>
+        <location filename="../mainwindow.cpp" line="1361"/>
         <source>Cannot backup existing Models and Settings from Radio. Firmware write process aborted</source>
         <translation>Nelze zálohovat stávající modely a nastavení z rádia. Zápis firmware byl přerušen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1375"/>
+        <location filename="../mainwindow.cpp" line="1387"/>
         <source>Save Radio Backup to File</source>
         <translation>Uložit zálohu rádia do souboru</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1377"/>
+        <location filename="../mainwindow.cpp" line="1389"/>
         <source>Read Radio Backup</source>
         <translation>Načíst zálohu rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1384"/>
+        <location filename="../mainwindow.cpp" line="1396"/>
         <source>Read Radio Firmware to File</source>
         <translation>Načíst firmware rádia do souboru</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1428"/>
+        <location filename="../mainwindow.cpp" line="1440"/>
         <source>OpenTX Home Page: &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</source>
         <translation>Internetová stránka OpenTX : &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</translation>
     </message>
@@ -3790,7 +4038,7 @@ Chcete ho přesto zapsat ?</translation>
         <translation type="obsolete">Projekt OpenTX Companion vznikl oddělením z &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1432"/>
+        <location filename="../mainwindow.cpp" line="1444"/>
         <source>If you&apos;ve found this program useful, please support by &lt;a href=&apos;%1&apos;&gt;donating&lt;/a&gt;</source>
         <translation>Pokud vám byl tento program užitečný, podpořte jej &lt;a href=&apos;%1&apos;&gt;darem&lt;/a&gt;</translation>
     </message>
@@ -3799,112 +4047,112 @@ Chcete ho přesto zapsat ?</translation>
         <translation type="obsolete">Verze %1, %3</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1436"/>
+        <location filename="../mainwindow.cpp" line="1448"/>
         <source>Copyright OpenTX Team</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1439"/>
+        <location filename="../mainwindow.cpp" line="1451"/>
         <source>About Companion</source>
         <translation>O aplikaci Companion</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1542"/>
+        <location filename="../mainwindow.cpp" line="1554"/>
         <source>New</source>
         <translation>Nový</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1543"/>
+        <location filename="../mainwindow.cpp" line="1555"/>
         <source>Open...</source>
         <translation type="unfinished">Otevřít</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1544"/>
+        <location filename="../mainwindow.cpp" line="1556"/>
         <source>Save</source>
         <translation>Uložit</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1545"/>
+        <location filename="../mainwindow.cpp" line="1557"/>
         <source>Save As...</source>
         <translation>Uložit jako...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1548"/>
+        <location filename="../mainwindow.cpp" line="1560"/>
         <source>Copy Model</source>
         <translation>Kopírovat model</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1549"/>
+        <location filename="../mainwindow.cpp" line="1561"/>
         <source>Paste Model</source>
         <translation>Vložit model</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1589"/>
+        <location filename="../mainwindow.cpp" line="1601"/>
         <source>Compare models</source>
         <translation>Porovnat modely</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1546"/>
+        <location filename="../mainwindow.cpp" line="1558"/>
         <source>Exit the application</source>
         <translation>Ukončit aplikaci</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1554"/>
+        <location filename="../mainwindow.cpp" line="1566"/>
         <source>A monochrome black icon theme</source>
         <translation>Černé mono téma</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1555"/>
+        <location filename="../mainwindow.cpp" line="1567"/>
         <source>A monochrome white icon theme</source>
         <translation>Bílé mono téma</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1556"/>
+        <location filename="../mainwindow.cpp" line="1568"/>
         <source>A monochrome blue icon theme</source>
         <translation>Modré mono téma</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1559"/>
+        <location filename="../mainwindow.cpp" line="1571"/>
         <source>Small</source>
         <translation>Malá</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1559"/>
+        <location filename="../mainwindow.cpp" line="1571"/>
         <source>Use small toolbar icons</source>
         <translation>Použít malé ikony nástrojové lišty</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1560"/>
+        <location filename="../mainwindow.cpp" line="1572"/>
         <source>Use normal size toolbar icons</source>
         <translation>Použít normální velikost ikon nástrojové lišty</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1560"/>
+        <location filename="../mainwindow.cpp" line="1572"/>
         <source>Normal</source>
         <translation>Normální</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1561"/>
+        <location filename="../mainwindow.cpp" line="1573"/>
         <source>Use big toolbar icons</source>
         <translation>Použít velké ikony nástrojové lišty</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1561"/>
+        <location filename="../mainwindow.cpp" line="1573"/>
         <source>Big</source>
         <translation>Velká</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1562"/>
+        <location filename="../mainwindow.cpp" line="1574"/>
         <source>Use huge toolbar icons</source>
         <translation>Použít největší ikony nástrojové lišty</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1562"/>
+        <location filename="../mainwindow.cpp" line="1574"/>
         <source>Huge</source>
         <translation>Největší</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1466"/>
+        <location filename="../mainwindow.cpp" line="1478"/>
         <source>OpenTX Companion - FW: %1 - Profile: %2</source>
         <translation>OpenTX Companion - FW: %1 - Profil: %2</translation>
     </message>
@@ -3913,7 +4161,7 @@ Chcete ho přesto zapsat ?</translation>
         <translation type="obsolete">Nový</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1542"/>
+        <location filename="../mainwindow.cpp" line="1554"/>
         <source>Create a new Models and Settings file</source>
         <translation>Vytvořit nový soubor modelů a nastavení</translation>
     </message>
@@ -3926,8 +4174,8 @@ Chcete ho přesto zapsat ?</translation>
         <translation type="obsolete">Uložit</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1544"/>
-        <location filename="../mainwindow.cpp" line="1545"/>
+        <location filename="../mainwindow.cpp" line="1556"/>
+        <location filename="../mainwindow.cpp" line="1557"/>
         <source>Save Models and Settings file</source>
         <translation>Uložit soubor modelů a nastavení</translation>
     </message>
@@ -3936,17 +4184,17 @@ Chcete ho přesto zapsat ?</translation>
         <translation type="obsolete">Uložit jako ...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1546"/>
+        <location filename="../mainwindow.cpp" line="1558"/>
         <source>Exit</source>
         <translation>Ukončit</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1547"/>
+        <location filename="../mainwindow.cpp" line="1559"/>
         <source>Cut Model</source>
         <translation>Vyjmout model</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1547"/>
+        <location filename="../mainwindow.cpp" line="1559"/>
         <source>Cut current model to the clipboard</source>
         <translation>Vyjmout aktuální model a uložit do schránky</translation>
     </message>
@@ -3955,7 +4203,7 @@ Chcete ho přesto zapsat ?</translation>
         <translation type="obsolete">Kopírovat</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1548"/>
+        <location filename="../mainwindow.cpp" line="1560"/>
         <source>Copy current model to the clipboard</source>
         <translation>Kopírovat aktuální model do schránky</translation>
     </message>
@@ -3964,452 +4212,452 @@ Chcete ho přesto zapsat ?</translation>
         <translation type="obsolete">Vložit</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1549"/>
+        <location filename="../mainwindow.cpp" line="1561"/>
         <source>Paste model from clipboard</source>
         <translation>Vložit obsah schránky na aktuální pozici</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1552"/>
+        <location filename="../mainwindow.cpp" line="1564"/>
         <source>Classical</source>
         <translation>Klasik9x</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1552"/>
+        <location filename="../mainwindow.cpp" line="1564"/>
         <source>The classic companion9x icon theme</source>
         <translation>Původní téma companion9x</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1553"/>
+        <location filename="../mainwindow.cpp" line="1565"/>
         <source>Yerico</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1553"/>
+        <location filename="../mainwindow.cpp" line="1565"/>
         <source>Yellow round honey sweet icon theme</source>
         <translation>Žluté medové téma</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1554"/>
+        <location filename="../mainwindow.cpp" line="1566"/>
         <source>Monochrome</source>
         <translation>Mono</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1555"/>
+        <location filename="../mainwindow.cpp" line="1567"/>
         <source>MonoWhite</source>
         <translation>Mono-bílé</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1556"/>
+        <location filename="../mainwindow.cpp" line="1568"/>
         <source>MonoBlue</source>
         <translation>Mono-modré</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1565"/>
+        <location filename="../mainwindow.cpp" line="1577"/>
         <source>System language</source>
         <translation>Výchozí jazyk prostředí</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1565"/>
+        <location filename="../mainwindow.cpp" line="1577"/>
         <source>Use system language in menus</source>
         <translation>Použít systémový jazyk</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1566"/>
+        <location filename="../mainwindow.cpp" line="1578"/>
         <source>Czech</source>
         <translation>Čeština</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1566"/>
+        <location filename="../mainwindow.cpp" line="1578"/>
         <source>Use Czech in menus</source>
         <translation>Aplikace v českém jazyce</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1567"/>
+        <location filename="../mainwindow.cpp" line="1579"/>
         <source>German</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1567"/>
+        <location filename="../mainwindow.cpp" line="1579"/>
         <source>Use German in menus</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1568"/>
+        <location filename="../mainwindow.cpp" line="1580"/>
         <source>English</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1568"/>
+        <location filename="../mainwindow.cpp" line="1580"/>
         <source>Use English in menus</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1569"/>
+        <location filename="../mainwindow.cpp" line="1581"/>
         <source>Finnish</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1569"/>
+        <location filename="../mainwindow.cpp" line="1581"/>
         <source>Use Finnish in menus</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1570"/>
+        <location filename="../mainwindow.cpp" line="1582"/>
         <source>French</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1570"/>
+        <location filename="../mainwindow.cpp" line="1582"/>
         <source>Use French in menus</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1571"/>
+        <location filename="../mainwindow.cpp" line="1583"/>
         <source>Italian</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1571"/>
+        <location filename="../mainwindow.cpp" line="1583"/>
         <source>Use Italian in menus</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1573"/>
+        <location filename="../mainwindow.cpp" line="1585"/>
         <source>Polish</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1573"/>
+        <location filename="../mainwindow.cpp" line="1585"/>
         <source>Use Polish in menus</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1575"/>
+        <location filename="../mainwindow.cpp" line="1587"/>
         <source>Swedish</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1575"/>
+        <location filename="../mainwindow.cpp" line="1587"/>
         <source>Use Swedish in menus</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1579"/>
+        <location filename="../mainwindow.cpp" line="1591"/>
         <source>About...</source>
         <translation type="unfinished">O aplikaci</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1580"/>
+        <location filename="../mainwindow.cpp" line="1592"/>
         <source>Print...</source>
         <translation type="unfinished">Tisk</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1580"/>
+        <location filename="../mainwindow.cpp" line="1592"/>
         <source>Print current model</source>
         <translation>Vytisknout zvolený model</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1581"/>
+        <location filename="../mainwindow.cpp" line="1593"/>
         <source>Simulate...</source>
         <translation type="unfinished">Simulace</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1581"/>
+        <location filename="../mainwindow.cpp" line="1593"/>
         <source>Simulate current model</source>
         <translation>Simulace vybraného modelu</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1581"/>
+        <location filename="../mainwindow.cpp" line="1593"/>
         <source>Alt+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1582"/>
+        <location filename="../mainwindow.cpp" line="1594"/>
         <source>Load Backup...</source>
         <translation>Načíst zálohu...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1583"/>
+        <location filename="../mainwindow.cpp" line="1595"/>
         <source>View Log File...</source>
         <translation type="unfinished">Zobrazit Log</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1583"/>
+        <location filename="../mainwindow.cpp" line="1595"/>
         <source>Open and view log file</source>
         <translation>Otevře a zobrazí soubor logu rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1584"/>
+        <location filename="../mainwindow.cpp" line="1596"/>
         <source>Settings...</source>
         <translation>Předvolby...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1584"/>
+        <location filename="../mainwindow.cpp" line="1596"/>
         <source>Edit Settings</source>
         <translation>Upravit nastavení předvoleb</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1585"/>
+        <location filename="../mainwindow.cpp" line="1597"/>
         <source>Download...</source>
         <translation type="unfinished">Stáhnout</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1585"/>
+        <location filename="../mainwindow.cpp" line="1597"/>
         <source>Download firmware and voice files</source>
         <translation>Stáhnout firmware a hlasové soubory</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1586"/>
+        <location filename="../mainwindow.cpp" line="1598"/>
         <source>Check for Updates...</source>
         <translation type="unfinished">Zkontrolovat aktualizace</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1586"/>
+        <location filename="../mainwindow.cpp" line="1598"/>
         <source>Check OpenTX and Companion updates</source>
         <translation>Zkontrolovat aktualizace OpenTX a Companion</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1587"/>
+        <location filename="../mainwindow.cpp" line="1599"/>
         <source>Companion Changes...</source>
         <translation type="unfinished">Změny Companion</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1587"/>
+        <location filename="../mainwindow.cpp" line="1599"/>
         <source>Show Companion change log</source>
         <translation>Zobrazí seznam změn jednotlivých vydání Companion</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1588"/>
+        <location filename="../mainwindow.cpp" line="1600"/>
         <source>Firmware Changes...</source>
         <translation type="unfinished">Změny Firmwaru</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1588"/>
+        <location filename="../mainwindow.cpp" line="1600"/>
         <source>Show firmware change log</source>
         <translation>Zobrazí seznam změn jednotlivých vydání Firmware</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1589"/>
+        <location filename="../mainwindow.cpp" line="1601"/>
         <source>Compare Models...</source>
         <translation>Porovnat modely...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1590"/>
+        <location filename="../mainwindow.cpp" line="1602"/>
         <source>Edit Radio Splash Image...</source>
         <translation>Upravit úvodní logo rádia...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1590"/>
+        <location filename="../mainwindow.cpp" line="1602"/>
         <source>Edit the splash image of your Radio</source>
         <translation>Upravit úvodní grafické logo rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1591"/>
+        <location filename="../mainwindow.cpp" line="1603"/>
         <source>List programmers...</source>
         <translation>Seznam programátorů...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1592"/>
+        <location filename="../mainwindow.cpp" line="1604"/>
         <source>Fuses...</source>
         <translation>Pojistky mikrokontroléru...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1593"/>
+        <location filename="../mainwindow.cpp" line="1605"/>
         <source>Read Firmware from Radio</source>
         <translation>Načíst firmware z rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1593"/>
+        <location filename="../mainwindow.cpp" line="1605"/>
         <source>Read firmware from Radio</source>
         <translation>Načíst firmware z rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1594"/>
+        <location filename="../mainwindow.cpp" line="1606"/>
         <source>Write Firmware to Radio</source>
         <translation>Zapsat firmware do rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1594"/>
+        <location filename="../mainwindow.cpp" line="1606"/>
         <source>Write firmware to Radio</source>
         <translation>Zapsat firmware do rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1595"/>
+        <location filename="../mainwindow.cpp" line="1607"/>
         <source>Add Radio Profile</source>
         <translation>Nový profil rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1595"/>
+        <location filename="../mainwindow.cpp" line="1607"/>
         <source>Create a new Radio Setting Profile</source>
         <translation>Vytvořit nový profil nastavení rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1596"/>
+        <location filename="../mainwindow.cpp" line="1608"/>
         <source>Manuals and other Documents</source>
         <translation>Manuály a jiné dokumenty</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1596"/>
+        <location filename="../mainwindow.cpp" line="1608"/>
         <source>Open the OpenTX document page in a web browser</source>
         <translation>Otevřít stránku s dokumenty OpenTX v prohlížeči</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1597"/>
+        <location filename="../mainwindow.cpp" line="1609"/>
         <source>Write Models and Settings To Radio</source>
         <translation>Zapsat modely a nastavení do rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1597"/>
+        <location filename="../mainwindow.cpp" line="1609"/>
         <source>Write Models and Settings to Radio</source>
         <translation>Zapsat modely a nastavení do rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1598"/>
+        <location filename="../mainwindow.cpp" line="1610"/>
         <source>Read Models and Settings from Radio</source>
         <translation>Načíst modely a nastavení z rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1599"/>
+        <location filename="../mainwindow.cpp" line="1611"/>
         <source>Configure Communications...</source>
         <translation type="unfinished">Nastavení propojení</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1599"/>
+        <location filename="../mainwindow.cpp" line="1611"/>
         <source>Configure software for communicating with the Radio</source>
         <translation>Nastavení softwaru pro komunikaci s rádiem</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1600"/>
+        <location filename="../mainwindow.cpp" line="1612"/>
         <source>Write Backup to Radio</source>
         <translation>Zapsat zálohu do rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1600"/>
+        <location filename="../mainwindow.cpp" line="1612"/>
         <source>Write Backup from file to Radio</source>
         <translation>Zapsat zálohu ze souboru do rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1601"/>
+        <location filename="../mainwindow.cpp" line="1613"/>
         <source>Backup Radio to File</source>
         <translation>Zálohovat rádio do souboru</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1601"/>
+        <location filename="../mainwindow.cpp" line="1613"/>
         <source>Save a complete backup file of all settings and model data in the Radio</source>
         <translation>Uložit kompletní zálohu modelů a nastavení rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1602"/>
+        <location filename="../mainwindow.cpp" line="1614"/>
         <source>Contributors...</source>
         <translation type="unfinished">Přispěvatelé</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1602"/>
+        <location filename="../mainwindow.cpp" line="1614"/>
         <source>A tribute to those who have contributed to OpenTX and Companion</source>
         <translation>Hold těm, kteří přispěli k OpenTX a Companion</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1611"/>
+        <location filename="../mainwindow.cpp" line="1623"/>
         <source>Recent Files</source>
         <translation>Nedávné soubory</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1756"/>
+        <location filename="../mainwindow.cpp" line="1768"/>
         <source>Recent Models+Settings</source>
         <translation>Nedávné modely a nastavení</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1613"/>
+        <location filename="../mainwindow.cpp" line="1625"/>
         <source>Set Icon Theme</source>
         <translation>Téma ikon</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1614"/>
+        <location filename="../mainwindow.cpp" line="1626"/>
         <source>Set Icon Size</source>
         <translation>Velikost ikon</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1773"/>
+        <location filename="../mainwindow.cpp" line="1785"/>
         <source>Show the list of radio profiles</source>
         <translation>Výběr profilů rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1789"/>
+        <location filename="../mainwindow.cpp" line="1801"/>
         <source>Write</source>
         <translation>Zápis</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1950"/>
+        <location filename="../mainwindow.cpp" line="1962"/>
         <source>New Radio</source>
         <translation>Nové rádio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2009"/>
-        <location filename="../mainwindow.cpp" line="2015"/>
+        <location filename="../mainwindow.cpp" line="2021"/>
+        <location filename="../mainwindow.cpp" line="2027"/>
         <source>Invalid Models and Settings File %1</source>
         <translation>Neplatný soubor modelů a nastavení %1</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2033"/>
+        <location filename="../mainwindow.cpp" line="2045"/>
         <source>Invalid binary Models and Settings File %1</source>
         <translation>Neplatný binární soubor modelů a nastavení %1</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1591"/>
+        <location filename="../mainwindow.cpp" line="1603"/>
         <source>List available programmers</source>
         <translation>Seznam použitelných programátorů</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1592"/>
+        <location filename="../mainwindow.cpp" line="1604"/>
         <source>Show fuses dialog</source>
         <translation>Zobrazit dialog nastavení pojistek mikrokontroléru</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1579"/>
+        <location filename="../mainwindow.cpp" line="1591"/>
         <source>Show the application&apos;s About box</source>
         <translation>O aplikaci Companion</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1612"/>
+        <location filename="../mainwindow.cpp" line="1624"/>
         <source>Set Menu Language</source>
         <translation>Nastavení jazyka</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1616"/>
-        <location filename="../mainwindow.cpp" line="1745"/>
+        <location filename="../mainwindow.cpp" line="1628"/>
+        <location filename="../mainwindow.cpp" line="1757"/>
         <source>File</source>
         <translation>Soubor</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1635"/>
-        <location filename="../mainwindow.cpp" line="1782"/>
+        <location filename="../mainwindow.cpp" line="1647"/>
+        <location filename="../mainwindow.cpp" line="1794"/>
         <source>Edit</source>
         <translation>Úpravy</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1640"/>
+        <location filename="../mainwindow.cpp" line="1652"/>
         <source>Settings</source>
         <translation>Nastavení</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1673"/>
+        <location filename="../mainwindow.cpp" line="1685"/>
         <source>Read/Write</source>
         <translation>Čtení/Zápis</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1690"/>
-        <location filename="../mainwindow.cpp" line="1804"/>
+        <location filename="../mainwindow.cpp" line="1702"/>
+        <location filename="../mainwindow.cpp" line="1816"/>
         <source>Help</source>
         <translation>Nápověda</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1713"/>
-        <location filename="../mainwindow.cpp" line="1772"/>
+        <location filename="../mainwindow.cpp" line="1725"/>
+        <location filename="../mainwindow.cpp" line="1784"/>
         <source>Radio Profile</source>
         <translation>Profil rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1757"/>
+        <location filename="../mainwindow.cpp" line="1769"/>
         <source>Show recent Models+Settings documents</source>
         <translation>Nedávné dokumenty modelů a nastavení rádia</translation>
     </message>
@@ -4418,22 +4666,22 @@ Chcete ho přesto zapsat ?</translation>
         <translation type="obsolete">Výběr profilů rádia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1813"/>
+        <location filename="../mainwindow.cpp" line="1825"/>
         <source>Ready</source>
         <translation>Připraven</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1926"/>
+        <location filename="../mainwindow.cpp" line="1938"/>
         <source>%2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1969"/>
+        <location filename="../mainwindow.cpp" line="1981"/>
         <source>Unable to find file %1!</source>
         <translation>Nemohu nalézt soubor %1!</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2029"/>
+        <location filename="../mainwindow.cpp" line="2041"/>
         <source>Error reading file %1:
 %2.</source>
         <translation>Chyba při otevírání souboru %1:
@@ -6953,7 +7201,7 @@ Nastavení hodnoty se provádí přímo v seznamu proměnných, nebo pomocí Fun
     <message>
         <location filename="../helpers.cpp" line="828"/>
         <source>%1:%2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="831"/>
@@ -6996,75 +7244,75 @@ Nastavení hodnoty se provádí přímo v seznamu proměnných, nebo pomocí Fun
         <location filename="../eeprominterface.cpp" line="248"/>
         <location filename="../eeprominterface.cpp" line="1049"/>
         <source>V</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="128"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="158"/>
         <source>ft</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="161"/>
         <location filename="../eeprominterface.cpp" line="232"/>
         <source>m</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message utf8="true">
         <location filename="../eeprominterface.cpp" line="170"/>
         <source>°C</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message utf8="true">
         <location filename="../eeprominterface.cpp" line="176"/>
         <source>°</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="185"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="195"/>
         <location filename="../eeprominterface.cpp" line="210"/>
         <source>mph</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="200"/>
         <location filename="../eeprominterface.cpp" line="215"/>
         <source>km/h</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="223"/>
         <source>m/s</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="255"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="260"/>
         <source>mAh</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="266"/>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="275"/>
         <source>g</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="320"/>
@@ -7373,7 +7621,7 @@ Nastavení hodnoty se provádí přímo v seznamu proměnných, nebo pomocí Fun
     <message>
         <location filename="../eeprominterface.cpp" line="375"/>
         <source>LUA%1%2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="391"/>
@@ -10163,83 +10411,85 @@ m2560 pro V4 desky</translation>
         <translation>Zapsat do rádia</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="84"/>
+        <location filename="../burndialog.ui" line="97"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify calibration parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upraví hodnoty kalibrace parametry ze současného profilu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="87"/>
+        <location filename="../burndialog.ui" line="100"/>
         <source>Patch calibration setting from profile</source>
         <translation>Zaměnit hodnoty kalibrace hodnotami z profilu</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="94"/>
+        <location filename="../burndialog.ui" line="107"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify HW parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upraví HW parametery pomocí nastavení současného profilu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="97"/>
+        <location filename="../burndialog.ui" line="110"/>
         <source>Patch HW setting from profile</source>
         <translation>Zaměnit hodnoty HW nastavení hodnotami z profilu</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="119"/>
+        <location filename="../burndialog.ui" line="132"/>
         <source>Date &amp; Time</source>
         <translation>Datum a čas</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="147"/>
+        <location filename="../burndialog.ui" line="160"/>
         <source>Version</source>
         <translation>Verze</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="306"/>
+        <location filename="../burndialog.ui" line="319"/>
         <source>Use firmware start screen</source>
         <translation>Použít logo z firmwaru</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="313"/>
+        <location filename="../burndialog.ui" line="326"/>
         <source>Use another start screen</source>
         <translation>Použít jiné logo</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="326"/>
+        <location filename="../burndialog.ui" line="339"/>
         <source>Use profile start screen</source>
         <translation>Použít logo z nastavení profilu</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="333"/>
+        <location filename="../burndialog.ui" line="346"/>
         <source>Use library start screen</source>
         <translation>Použít logo z knihovny</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="133"/>
+        <location filename="../burndialog.ui" line="146"/>
         <source>Variant</source>
         <translation>Varianta</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="194"/>
-        <location filename="../burndialog.cpp" line="47"/>
+        <location filename="../burndialog.ui" line="207"/>
+        <location filename="../burndialog.cpp" line="48"/>
         <source>Browse for file</source>
         <translation type="unfinished">Procházet ...</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="209"/>
+        <location filename="../burndialog.ui" line="222"/>
+        <location filename="../burndialog.ui" line="366"/>
         <source>Allows Companion to write to older version of the firmware</source>
         <translation>Umožní Companion zapisovat do starší verze firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="222"/>
+        <location filename="../burndialog.ui" line="235"/>
         <source>Backup and restore Models and Settings</source>
         <translation>Zálohovat a obnovit data modelů a nastavení</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="212"/>
+        <location filename="../burndialog.ui" line="225"/>
+        <location filename="../burndialog.ui" line="369"/>
         <source>Check Firmware compatibility</source>
         <translation>Zkontrolovat kompatibilitu firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="238"/>
+        <location filename="../burndialog.ui" line="251"/>
         <source>Current Profile</source>
         <translation>Současný profil</translation>
     </message>
@@ -10249,72 +10499,72 @@ m2560 pro V4 desky</translation>
         <translation>Zrušit</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="67"/>
+        <location filename="../burndialog.cpp" line="69"/>
         <source>Current profile</source>
         <translation>Současný profil</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="205"/>
-        <location filename="../burndialog.cpp" line="434"/>
-        <location filename="../burndialog.cpp" line="439"/>
-        <location filename="../burndialog.cpp" line="448"/>
-        <location filename="../burndialog.cpp" line="499"/>
-        <location filename="../burndialog.cpp" line="554"/>
+        <location filename="../burndialog.cpp" line="207"/>
+        <location filename="../burndialog.cpp" line="437"/>
+        <location filename="../burndialog.cpp" line="442"/>
+        <location filename="../burndialog.cpp" line="451"/>
+        <location filename="../burndialog.cpp" line="502"/>
+        <location filename="../burndialog.cpp" line="557"/>
         <source>Warning</source>
         <translation>Varování</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="219"/>
-        <location filename="../burndialog.cpp" line="227"/>
-        <location filename="../burndialog.cpp" line="237"/>
-        <location filename="../burndialog.cpp" line="282"/>
-        <location filename="../burndialog.cpp" line="290"/>
-        <location filename="../burndialog.cpp" line="339"/>
-        <location filename="../burndialog.cpp" line="343"/>
-        <location filename="../burndialog.cpp" line="359"/>
-        <location filename="../burndialog.cpp" line="380"/>
-        <location filename="../burndialog.cpp" line="398"/>
-        <location filename="../burndialog.cpp" line="564"/>
-        <location filename="../burndialog.cpp" line="569"/>
-        <location filename="../burndialog.cpp" line="577"/>
+        <location filename="../burndialog.cpp" line="221"/>
+        <location filename="../burndialog.cpp" line="229"/>
+        <location filename="../burndialog.cpp" line="239"/>
+        <location filename="../burndialog.cpp" line="284"/>
+        <location filename="../burndialog.cpp" line="292"/>
+        <location filename="../burndialog.cpp" line="341"/>
+        <location filename="../burndialog.cpp" line="345"/>
+        <location filename="../burndialog.cpp" line="361"/>
+        <location filename="../burndialog.cpp" line="382"/>
+        <location filename="../burndialog.cpp" line="400"/>
+        <location filename="../burndialog.cpp" line="567"/>
+        <location filename="../burndialog.cpp" line="572"/>
+        <location filename="../burndialog.cpp" line="580"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="219"/>
+        <location filename="../burndialog.cpp" line="221"/>
         <source>Unable to find file %1!</source>
         <translation>Nemohu nalézt soubor %1!</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="227"/>
-        <location filename="../burndialog.cpp" line="237"/>
-        <location filename="../burndialog.cpp" line="282"/>
+        <location filename="../burndialog.cpp" line="229"/>
+        <location filename="../burndialog.cpp" line="239"/>
+        <location filename="../burndialog.cpp" line="284"/>
         <source>Error opening file %1:
 %2.</source>
         <translation>Chyba při otevírání souboru %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="260"/>
-        <location filename="../burndialog.cpp" line="270"/>
-        <location filename="../burndialog.cpp" line="294"/>
+        <location filename="../burndialog.cpp" line="262"/>
+        <location filename="../burndialog.cpp" line="272"/>
+        <location filename="../burndialog.cpp" line="296"/>
         <source>Invalid binary Models and Settings File %1, Proceed anyway ?</source>
         <translation>Neplatný soubor s binárními daty modelů a nastavení %1, Přesto pokračovat ?</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="290"/>
+        <location filename="../burndialog.cpp" line="292"/>
         <source>Error reading file %1:
 %2.</source>
         <translation>Chyba při otevírání souboru %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="359"/>
+        <location filename="../burndialog.cpp" line="361"/>
         <source>Profile image %1 is invalid.</source>
         <translation>Obrázek profilu %1 není platný.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="375"/>
+        <location filename="../burndialog.cpp" line="377"/>
         <source>Images (%1)</source>
         <translation>obrázky (%1)</translation>
     </message>
@@ -10324,90 +10574,90 @@ m2560 pro V4 desky</translation>
         <translation>Zapsat firmware do rádia</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="62"/>
+        <location filename="../burndialog.cpp" line="64"/>
         <source>Write Backup to Radio</source>
         <translation>Zapsat zálohu do rádia</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="65"/>
+        <location filename="../burndialog.cpp" line="67"/>
         <source>Write Backup from %1 to Radio</source>
         <translation>Zapsat zálohu ze souboru %1 do rádia</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="143"/>
+        <location filename="../burndialog.cpp" line="145"/>
         <source>Open Firmware File</source>
         <translation>Otevřít soubor firmwaru</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="149"/>
+        <location filename="../burndialog.cpp" line="151"/>
         <source>Choose Radio Backup file</source>
         <translation>vyberte soubor zálohy rádia</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="205"/>
+        <location filename="../burndialog.cpp" line="207"/>
         <source>%1 may not be a valid firmware file</source>
         <translation>%1 nemusí být platný soubor firmwaru</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="339"/>
+        <location filename="../burndialog.cpp" line="341"/>
         <source>The firmware file is not valid.</source>
         <translation>Soubor firmwaru není platný.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="343"/>
+        <location filename="../burndialog.cpp" line="345"/>
         <source>There is no start screen image in the firmware file.</source>
         <translation>Soubor firmware neobsahuje žádné logo.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="375"/>
+        <location filename="../burndialog.cpp" line="377"/>
         <source>Open image file to use as radio start screen</source>
         <translation>Otevřít soubor obrázku pro použití jako úvodní logo</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="380"/>
+        <location filename="../burndialog.cpp" line="382"/>
         <source>Image could not be loaded from %1</source>
         <translation>Nelze načíst obrázek z %1</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="398"/>
+        <location filename="../burndialog.cpp" line="400"/>
         <source>The library image could not be loaded</source>
         <translation>Nelze načíst obrázek z knihovny</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="434"/>
+        <location filename="../burndialog.cpp" line="437"/>
         <source>Cannot save customized firmware</source>
         <translation>Nelze uložit upravený firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="439"/>
+        <location filename="../burndialog.cpp" line="442"/>
         <source>Custom image not found</source>
         <translation>Vlastní obrázek nebyl nalezen</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="448"/>
+        <location filename="../burndialog.cpp" line="451"/>
         <source>No firmware selected</source>
         <translation>nebyl vybrán firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="499"/>
+        <location filename="../burndialog.cpp" line="502"/>
         <source>Wrong radio calibration data in profile, Settings not patched</source>
         <translation>Profil neobsahuje platná kalibrační data, nastavení nebyla upravena</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="554"/>
+        <location filename="../burndialog.cpp" line="557"/>
         <source>Wrong radio setting data in profile, Settings not patched</source>
         <translation>Profil neobsahuje platná data nastavení rádia, nastavení nebyla upravena</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="564"/>
-        <location filename="../burndialog.cpp" line="569"/>
+        <location filename="../burndialog.cpp" line="567"/>
+        <location filename="../burndialog.cpp" line="572"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Nelze zapsat soubor %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="577"/>
+        <location filename="../burndialog.cpp" line="580"/>
         <source>Error writing file %1:
 %2.</source>
         <translation>Chyba při zápisuí souboru %1:
@@ -10987,228 +11237,98 @@ Může být jiná než verze firmwaru</translation>
 <context>
     <name>joystickDialog</name>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="20"/>
         <source>Configure Joystick</source>
-        <translation>Nastavte joystick</translation>
+        <translation type="obsolete">Nastavte joystick</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="43"/>
-        <source>Ch2</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.ui" line="82"/>
-        <location filename="../simulation/joystickdialog.ui" line="144"/>
-        <location filename="../simulation/joystickdialog.ui" line="224"/>
-        <location filename="../simulation/joystickdialog.ui" line="325"/>
-        <location filename="../simulation/joystickdialog.ui" line="405"/>
-        <location filename="../simulation/joystickdialog.ui" line="485"/>
-        <location filename="../simulation/joystickdialog.ui" line="579"/>
-        <location filename="../simulation/joystickdialog.ui" line="666"/>
         <source>Not  Assigned</source>
-        <translation>Nepřiřazeno</translation>
+        <translation type="obsolete">Nepřiřazeno</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="87"/>
-        <location filename="../simulation/joystickdialog.ui" line="149"/>
-        <location filename="../simulation/joystickdialog.ui" line="229"/>
-        <location filename="../simulation/joystickdialog.ui" line="330"/>
-        <location filename="../simulation/joystickdialog.ui" line="410"/>
-        <location filename="../simulation/joystickdialog.ui" line="490"/>
-        <location filename="../simulation/joystickdialog.ui" line="584"/>
-        <location filename="../simulation/joystickdialog.ui" line="671"/>
         <source>Right Vertical</source>
-        <translation>Pravá vertikální</translation>
+        <translation type="obsolete">Pravá vertikální</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="92"/>
-        <location filename="../simulation/joystickdialog.ui" line="154"/>
-        <location filename="../simulation/joystickdialog.ui" line="234"/>
-        <location filename="../simulation/joystickdialog.ui" line="335"/>
-        <location filename="../simulation/joystickdialog.ui" line="415"/>
-        <location filename="../simulation/joystickdialog.ui" line="495"/>
-        <location filename="../simulation/joystickdialog.ui" line="589"/>
-        <location filename="../simulation/joystickdialog.ui" line="676"/>
         <source>Right Horizontal</source>
-        <translation>Pravá horizontální</translation>
+        <translation type="obsolete">Pravá horizontální</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="97"/>
-        <location filename="../simulation/joystickdialog.ui" line="159"/>
-        <location filename="../simulation/joystickdialog.ui" line="239"/>
-        <location filename="../simulation/joystickdialog.ui" line="340"/>
-        <location filename="../simulation/joystickdialog.ui" line="420"/>
-        <location filename="../simulation/joystickdialog.ui" line="500"/>
-        <location filename="../simulation/joystickdialog.ui" line="594"/>
-        <location filename="../simulation/joystickdialog.ui" line="681"/>
         <source>Left Vertical</source>
-        <translation>Levá vertikální</translation>
+        <translation type="obsolete">Levá vertikální</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="102"/>
-        <location filename="../simulation/joystickdialog.ui" line="164"/>
-        <location filename="../simulation/joystickdialog.ui" line="244"/>
-        <location filename="../simulation/joystickdialog.ui" line="345"/>
-        <location filename="../simulation/joystickdialog.ui" line="425"/>
-        <location filename="../simulation/joystickdialog.ui" line="505"/>
-        <location filename="../simulation/joystickdialog.ui" line="599"/>
-        <location filename="../simulation/joystickdialog.ui" line="686"/>
         <source>Left Horizontal</source>
-        <translation>Levá horizontální</translation>
+        <translation type="obsolete">Levá horizontální</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="107"/>
-        <location filename="../simulation/joystickdialog.ui" line="169"/>
-        <location filename="../simulation/joystickdialog.ui" line="249"/>
-        <location filename="../simulation/joystickdialog.ui" line="350"/>
-        <location filename="../simulation/joystickdialog.ui" line="430"/>
-        <location filename="../simulation/joystickdialog.ui" line="510"/>
-        <location filename="../simulation/joystickdialog.ui" line="604"/>
-        <location filename="../simulation/joystickdialog.ui" line="691"/>
         <source>P1</source>
-        <translation>Potenciometr 1</translation>
+        <translation type="obsolete">Potenciometr 1</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="112"/>
-        <location filename="../simulation/joystickdialog.ui" line="174"/>
-        <location filename="../simulation/joystickdialog.ui" line="254"/>
-        <location filename="../simulation/joystickdialog.ui" line="355"/>
-        <location filename="../simulation/joystickdialog.ui" line="435"/>
-        <location filename="../simulation/joystickdialog.ui" line="515"/>
-        <location filename="../simulation/joystickdialog.ui" line="609"/>
-        <location filename="../simulation/joystickdialog.ui" line="696"/>
         <source>P2</source>
-        <translation>Potenciometr 2</translation>
+        <translation type="obsolete">Potenciometr 2</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="117"/>
-        <location filename="../simulation/joystickdialog.ui" line="179"/>
-        <location filename="../simulation/joystickdialog.ui" line="259"/>
-        <location filename="../simulation/joystickdialog.ui" line="360"/>
-        <location filename="../simulation/joystickdialog.ui" line="440"/>
-        <location filename="../simulation/joystickdialog.ui" line="520"/>
-        <location filename="../simulation/joystickdialog.ui" line="614"/>
-        <location filename="../simulation/joystickdialog.ui" line="701"/>
         <source>P3/LS</source>
-        <translation>Potenciometr 3 /LS</translation>
+        <translation type="obsolete">Potenciometr 3 /LS</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="122"/>
-        <location filename="../simulation/joystickdialog.ui" line="184"/>
-        <location filename="../simulation/joystickdialog.ui" line="264"/>
-        <location filename="../simulation/joystickdialog.ui" line="365"/>
-        <location filename="../simulation/joystickdialog.ui" line="445"/>
-        <location filename="../simulation/joystickdialog.ui" line="525"/>
-        <location filename="../simulation/joystickdialog.ui" line="619"/>
-        <location filename="../simulation/joystickdialog.ui" line="706"/>
-        <source>RS</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.ui" line="130"/>
-        <source>Ch1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.ui" line="272"/>
-        <source>Ch4</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.ui" line="304"/>
-        <source>Ch6</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.ui" line="311"/>
-        <source>Ch3</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.ui" line="533"/>
-        <source>Ch5</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.ui" line="540"/>
-        <source>Ch7</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.ui" line="627"/>
-        <source>Ch8</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.ui" line="818"/>
         <source>Instructions</source>
-        <translation>Instrukce</translation>
+        <translation type="obsolete">Instrukce</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="836"/>
         <source>Cancel</source>
-        <translation>Zrušit</translation>
+        <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="862"/>
         <source>Next</source>
-        <translation>Další</translation>
+        <translation type="obsolete">Další</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="875"/>
         <source>Ok</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="22"/>
         <source>Move sticks and pots in every direction making full movement
 Press next when finished</source>
-        <translation>Hýbejte pákami a potenciometry ve všech směrech až do krajních poloh.
+        <translation type="obsolete">Hýbejte pákami a potenciometry ve všech směrech až do krajních poloh.
 Potom stiskněte tlačítko Další</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="55"/>
-        <location filename="../simulation/joystickdialog.cpp" line="130"/>
         <source>Error</source>
-        <translation>Chyba</translation>
+        <translation type="obsolete">Chyba</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="55"/>
         <source>Cannot open joystick.</source>
-        <translation>Nemohu otevřít joystick.</translation>
+        <translation type="obsolete">Nemohu otevřít joystick.</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="83"/>
         <source>Place sticks and pots in middle position.
 Press next when done</source>
-        <translation>Umístěte páky a potenciometry do střední polohy.
+        <translation type="obsolete">Umístěte páky a potenciometry do střední polohy.
 Potom stiskněte tlačítko Další</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="94"/>
         <source>Map joystick channels to controls using comboboxes.
 Press next when done</source>
-        <translation>Přiřaďte kanály joysticku k ovládání funkcí.
+        <translation type="obsolete">Přiřaďte kanály joysticku k ovládání funkcí.
 Potom stiskněte tlačítko Další</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="101"/>
         <source>Check inversion checkbox to get maximum at top-right position.
 Press next when done</source>
-        <translation>Zkontroluj invertovací políčka k nastavení maxima v pravé horní pozici.
+        <translation type="obsolete">Zkontroluj invertovací políčka k nastavení maxima v pravé horní pozici.
 Potom stiskněte tlačítko Další</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="108"/>
         <source>Press ok to save configuration
 Press cancel to abort joystick calibration</source>
-        <translation>Stiskem tlačítka OK uložíte konfiguraci.
+        <translation type="obsolete">Stiskem tlačítka OK uložíte konfiguraci.
 Tlačítkem Zrušit přerušíte kalibraci</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="130"/>
         <source>Duplicated stick assignement</source>
-        <translation>Duplicitní přiřazení páky</translation>
+        <translation type="obsolete">Duplicitní přiřazení páky</translation>
     </message>
 </context>
 <context>
