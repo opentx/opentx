@@ -62,7 +62,7 @@
     <message>
         <location filename="../apppreferencesdialog.ui" line="26"/>
         <source>Edit Settings</source>
-        <translation type="unfinished">Modifica Impostazioni</translation>
+        <translation>Modifica Impostazioni</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="52"/>
@@ -1481,7 +1481,7 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../modeledit/templates.cpp" line="47"/>
         <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
-        <translation>ipostazioni elicottero (assegna canali modalità Futaba)</translation>
+        <translation type="unfinished">Impostazioni elicottero (assegna canali modalità Futaba)</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="48"/>
@@ -7113,7 +7113,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../helpers.cpp" line="739"/>
         <source>FrSky Sensor Hub</source>
-        <translation type="unfinished">Sensor Hub FrSky</translation>
+        <translation>Sensor Hub FrSky</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="741"/>
@@ -9221,7 +9221,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/telemetry.cpp" line="682"/>
         <source>VSpeed</source>
-        <translation type="unfinished">VSpeed</translation>
+        <translation>VSpeed</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="683"/>
