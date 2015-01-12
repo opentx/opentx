@@ -1,4 +1,4 @@
-<h2>Version 2.0.14 / todo</h2>
+<h2>Version 2.0.14 / 2015-01-12</h2>
 
 [Taranis]
 <ul>
