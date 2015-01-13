@@ -1,10 +1,4 @@
 #include "customfunctions.h"
-#include <QLabel>
-#include <QLineEdit>
-#include <QSpinBox>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QDoubleSpinBox>
 #include "helpers.h"
 #include "appdata.h"
 
@@ -142,6 +136,13 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     connect(fswtchParam[i], SIGNAL(editingFinished()), this, SLOT(customFunctionEdited()));
     paramLayout->addWidget(fswtchParam[i]);
 
+    fswtchParamTime[i] = new QTimeEdit(this);
+    fswtchParamTime[i]->setProperty("index", i);
+    fswtchParamTime[i]->setAccelerated(true);
+    fswtchParamTime[i]->setDisplayFormat("hh:mm:ss");
+    connect(fswtchParamTime[i], SIGNAL(editingFinished()), this, SLOT(customFunctionEdited()));
+    paramLayout->addWidget(fswtchParamTime[i]);
+
     fswtchParamT[i] = new QComboBox(this);
     fswtchParamT[i]->setProperty("index", i);
     paramLayout->addWidget(fswtchParamT[i]);
@@ -154,7 +155,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
 
     connect(fswtchParamArmT[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     connect(fswtchParamArmT[i], SIGNAL(editTextChanged ( const QString)), this, SLOT(customFunctionEdited()));
-    
+
     fswtchBLcolor[i] = new QSlider(this);
     fswtchBLcolor[i]->setProperty("index", i);
     fswtchBLcolor[i]->setMinimum(0);
@@ -190,7 +191,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
   addDoubleSpring(gridLayout, 5, num_fsw+1);
 
   disableMouseScrolling();
-  
+
   lock = false;
 }
 
@@ -274,12 +275,13 @@ void CustomFunctionsPanel::playMusic()
 #define CUSTOM_FUNCTION_NUMERIC_PARAM  (1<<0)
 #define CUSTOM_FUNCTION_SOURCE_PARAM   (1<<1)
 #define CUSTOM_FUNCTION_FILE_PARAM     (1<<2)
-#define CUSTOM_FUNCTION_GV_MODE        (1<<3)
-#define CUSTOM_FUNCTION_GV_TOOGLE      (1<<4)
-#define CUSTOM_FUNCTION_ENABLE         (1<<5)
-#define CUSTOM_FUNCTION_REPEAT         (1<<6)
-#define CUSTOM_FUNCTION_PLAY           (1<<7)
-#define CUSTOM_FUNCTION_BL_COLOR       (1<<8)
+#define CUSTOM_FUNCTION_TIME_PARAM     (1<<3)
+#define CUSTOM_FUNCTION_GV_MODE        (1<<4)
+#define CUSTOM_FUNCTION_GV_TOOGLE      (1<<5)
+#define CUSTOM_FUNCTION_ENABLE         (1<<6)
+#define CUSTOM_FUNCTION_REPEAT         (1<<7)
+#define CUSTOM_FUNCTION_PLAY           (1<<8)
+#define CUSTOM_FUNCTION_BL_COLOR       (1<<9)
 
 void CustomFunctionsPanel::customFunctionEdited()
 {
@@ -372,13 +374,11 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM | CUSTOM_FUNCTION_ENABLE;
     }
     else if (index>=FuncSetTimer1 && index<=FuncSetTimer2) {
-      if (modified) model.funcSw[i].param = fswtchParam[i]->value();
-      fswtchParam[i]->setDecimals(0);
-      fswtchParam[i]->setSingleStep(1);
-      fswtchParam[i]->setMinimum(0);
-      fswtchParam[i]->setMaximum(59*60+59);
-      fswtchParam[i]->setValue(model.funcSw[i].param);
-      widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_ENABLE;
+      if (modified) model.funcSw[i].param = QTimeS(fswtchParamTime[i]->time()).seconds();
+      fswtchParamTime[i]->setMinimumTime(QTime(0, 0, 0));
+      fswtchParamTime[i]->setMaximumTime(QTime(0, 59, 59));
+      fswtchParamTime[i]->setTime(QTimeS(model.funcSw[i].param));
+      widgetsMask |= CUSTOM_FUNCTION_TIME_PARAM + CUSTOM_FUNCTION_ENABLE;
     }
     else if (index==FuncVolume) {
       if (modified) model.funcSw[i].param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
@@ -501,6 +501,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     }
 
     fswtchParam[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_NUMERIC_PARAM);
+    fswtchParamTime[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_TIME_PARAM);
     fswtchParamGV[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_GV_TOOGLE);
     fswtchParamT[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_SOURCE_PARAM);
     fswtchParamArmT[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_FILE_PARAM);
