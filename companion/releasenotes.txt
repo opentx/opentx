@@ -1,5 +1,6 @@
-<h2>Version 2.0.15 / 2015-TODO</h2>
+<h2>Version 2.0.15 / 2015-01-13</h2>
 <ul>
+<li>Firmware was not written correctly on radio when compatibility warning check enabled</li>
 <li>Time format for Special Functions Set Timers</li>
 </ul>
 
@@ -17,7 +18,7 @@
 <li>Added Debug Output window</li>
 <li>Various texts and translations corrections</li>
 <li>Various small bug-fixes</li>
-<li>More reliable method of writing EEPROM.BIN and FRIMWARE.BIN to radio</li>
+<li>More reliable method of writing EEPROM.BIN and FIRMWARE.BIN to radio</li>
 <li>Fixed issue with Edge function INSTANT for V1>2s</li>
 <li>Fixed buffer overflow in Joystick code</li>
 </ul>
