@@ -982,6 +982,7 @@ bool MainWindow::readFirmwareFromRadio(const QString filename)
   if (IS_ARM(GetCurrentFirmware()->getBoard())) {
     QString path = FindMassstoragePath("FIRMWARE.BIN");
     if (!path.isEmpty()) {
+      qDebug() << "MainWindow::readFirmwareFromRadio(): reading" << path << "into" << filename;
       QStringList str;
       str << path << filename;
       avrOutputDialog *ad = new avrOutputDialog(this, "", str, message);
@@ -994,6 +995,7 @@ bool MainWindow::readFirmwareFromRadio(const QString filename)
 
   if (result == false) {
     QStringList str = GetReceiveFlashCommand(filename);
+    qDebug() << "MainWindow::readFirmwareFromRadio(): reading" << filename << "with avrdude:" << str;
     avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, message);
     ad->setWindowIcon(CompanionIcon("read_flash.png"));
     ad->exec();
@@ -1016,6 +1018,7 @@ bool MainWindow::writeFirmwareToRadio(const QString filename)
   if (IS_ARM(GetCurrentFirmware()->getBoard())) {
     QString path = FindMassstoragePath("FIRMWARE.BIN");
     if (!path.isEmpty()) {
+      qDebug() << "MainWindow::writeFirmwareToRadio(): writing" << path << "from" << filename;
       QStringList str;
       str << filename << path;
       avrOutputDialog *ad = new avrOutputDialog(this, "", str, message);
@@ -1028,6 +1031,7 @@ bool MainWindow::writeFirmwareToRadio(const QString filename)
 
   if (result == false) {
     QStringList str = GetSendFlashCommand(filename);
+    qDebug() << "MainWindow::writeFirmwareToRadio(): writing" << filename << "with avrdude:" << str;
     avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, message, AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
     CompanionIcon iconw("write_flash.png");
     ad->setWindowIcon(iconw);
@@ -1294,92 +1298,109 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
 
 void MainWindow::writeFlash(QString fileToFlash)
 {
-    QString fileName;
-    bool backup = g.backupOnFlash();
-    if(!fileToFlash.isEmpty())
-      fileName = fileToFlash;
-    burnDialog *cd = new burnDialog(this, 2, &fileName, &backup);
-    cd->exec();
-    if (IS_TARANIS(GetEepromInterface()->getBoard()))
-      backup=false;
-    if (!fileName.isEmpty()) {
-      if (g.checkHardwareCompatibility()) {
-        QString tempFlash = generateProcessUniqueTempFileName("flash.bin");
-        if (!readFirmwareFromRadio(tempFlash)) {
-          QMessageBox::warning(this, tr("Firmware check failed"), tr("Could not check firmware from radio"));
-          return;
-        }
-        FlashInterface previousFlash(tempFlash);
-        FlashInterface newFlash(fileName);
-        if (!newFlash.isHardwareCompatible(previousFlash)) {
-          QMessageBox::warning(this, tr("Firmware check failed"), tr("New firmware is not compatible with the one currently installed!"));
-          return;
-        }
-      }
-      g.backupOnFlash(backup);
-      if (backup) {
-        QString backupFile = generateProcessUniqueTempFileName("backup.bin");
-        bool backupEnable=g.enableBackup();
-        QString backupPath=g.backupDir();
-        if (!backupPath.isEmpty() && !IS_TARANIS(GetEepromInterface()->getBoard())) {
-          if (!QDir(backupPath).exists()) {
-            if (backupEnable) {
-              QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
-            }
-            backupEnable=false;
-          }
-        }
-        else {
-          backupEnable=false;
-        }
+  qDebug() << "MainWindow::writeFlash(): started with" << fileToFlash;
+  QString fileName;
+  bool backup = g.backupOnFlash();
+  if(!fileToFlash.isEmpty()) {
+    fileName = fileToFlash;
+  }
 
-        if (backupEnable) {
-          QDateTime datetime;
-          backupFile.clear();
-          backupFile = backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
-        }
+  burnDialog *cd = new burnDialog(this, 2, &fileName, &backup);
+  cd->exec();
+  qDebug() << "MainWindow::writeFlash(): flashing " << fileName;
+  
+  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    backup=false;
+  }
 
-        if (readEepromFromRadio(backupFile, tr("Backup Models and Settings From Radio"))) {
-          sleep(2);
-          int res = writeFirmwareToRadio(fileName);
-          if (res) {
-            QString restoreFile = generateProcessUniqueTempFileName("restore.bin");
-            if (!convertEEPROM(backupFile, restoreFile, fileName)) {
-              QMessageBox::warning(this, tr("Conversion failed"), tr("Cannot convert Models and Settings for use with this firmware, original data will be used"));
-              restoreFile = backupFile;
-            }
-            sleep(2);
-            if (!writeEepromToRadio(restoreFile, tr("Restore Models and Settings To Radio"))) {
-              QMessageBox::warning(this, tr("Restore failed"), tr("Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1").arg(backupFile));
-            }
-          }
-          else {
-            QMessageBox::warning(this, tr("Firmware write failed"), tr("Could not write firmware to radio. The models and settings data file can be found at: %1").arg(backupFile));
-          }
-        }
-        else {
-          QMessageBox::warning(this, tr("Backup failed"), tr("Cannot backup existing Models and Settings from Radio. Firmware write process aborted"));
-        }
+  if (!fileName.isEmpty()) {
+    if (g.checkHardwareCompatibility()) {
+      QString tempFlash = generateProcessUniqueTempFileName("flash-check.bin");
+      if (!readFirmwareFromRadio(tempFlash)) {
+        QMessageBox::warning(this, tr("Firmware check failed"), tr("Could not check firmware from radio"));
+        return;
       }
-      else {
-        bool backupEnable=g.enableBackup();
-        QString backupPath=g.backupDir();
+      FlashInterface previousFlash(tempFlash);
+      qunlink(tempFlash);
+      FlashInterface newFlash(fileName);
+      qDebug() << "MainWindow::writeFlash(): checking firmware compatibility between " << tempFlash << "and" << fileName;
+      if (!newFlash.isHardwareCompatible(previousFlash)) {
+        QMessageBox::warning(this, tr("Firmware check failed"), tr("New firmware is not compatible with the one currently installed!"));
+        if (isTempFileName(fileName)) {
+          qDebug() << "MainWindow::writeFlash(): removing temporary file" << fileName;
+          qunlink(fileName);
+        }
+        return;
+      }
+    }
+    g.backupOnFlash(backup);
+    if (backup) {
+      QString backupFile = generateProcessUniqueTempFileName("backup.bin");
+      bool backupEnable=g.enableBackup();
+      QString backupPath=g.backupDir();
+      if (!backupPath.isEmpty() && !IS_TARANIS(GetEepromInterface()->getBoard())) {
         if (!QDir(backupPath).exists()) {
           if (backupEnable) {
             QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
           }
           backupEnable=false;
         }
-        if (backupEnable && !IS_TARANIS(GetEepromInterface()->getBoard())) {
-          QDateTime datetime;
-          QString backupFile = backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
-          readEepromFromRadio(backupFile, tr("Backup Models and Settings From Radio"));
-          sleep(2);
-        }
+      }
+      else {
+        backupEnable=false;
+      }
 
-        writeFirmwareToRadio(fileName);
+      if (backupEnable) {
+        QDateTime datetime;
+        backupFile.clear();
+        backupFile = backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
+      }
+
+      if (readEepromFromRadio(backupFile, tr("Backup Models and Settings From Radio"))) {
+        sleep(2);
+        int res = writeFirmwareToRadio(fileName);
+        if (res) {
+          QString restoreFile = generateProcessUniqueTempFileName("restore.bin");
+          if (!convertEEPROM(backupFile, restoreFile, fileName)) {
+            QMessageBox::warning(this, tr("Conversion failed"), tr("Cannot convert Models and Settings for use with this firmware, original data will be used"));
+            restoreFile = backupFile;
+          }
+          sleep(2);
+          if (!writeEepromToRadio(restoreFile, tr("Restore Models and Settings To Radio"))) {
+            QMessageBox::warning(this, tr("Restore failed"), tr("Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1").arg(backupFile));
+          }
+        }
+        else {
+          QMessageBox::warning(this, tr("Firmware write failed"), tr("Could not write firmware to radio. The models and settings data file can be found at: %1").arg(backupFile));
+        }
+      }
+      else {
+        QMessageBox::warning(this, tr("Backup failed"), tr("Cannot backup existing Models and Settings from Radio. Firmware write process aborted"));
       }
     }
+    else {
+      bool backupEnable=g.enableBackup();
+      QString backupPath=g.backupDir();
+      if (!QDir(backupPath).exists()) {
+        if (backupEnable) {
+          QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
+        }
+        backupEnable=false;
+      }
+      if (backupEnable && !IS_TARANIS(GetEepromInterface()->getBoard())) {
+        QDateTime datetime;
+        QString backupFile = backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
+        readEepromFromRadio(backupFile, tr("Backup Models and Settings From Radio"));
+        sleep(2);
+      }
+
+      writeFirmwareToRadio(fileName);
+    }
+    if (isTempFileName(fileName)) {
+      qDebug() << "MainWindow::writeFlash(): removing temporary file" << fileName;
+      qunlink(fileName);
+    }
+  }
 }
 
 void MainWindow::readBackup()

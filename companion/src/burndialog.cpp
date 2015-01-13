@@ -426,6 +426,7 @@ void burnDialog::on_BurnFlashButton_clicked()
             tempFile = generateProcessUniqueTempFileName("flash.hex");
           else
             tempFile = generateProcessUniqueTempFileName("flash.bin");
+          qDebug() << "burnDialog::on_BurnFlashButton_clicked(): patching" << fileName << "with custom splash screen and saving to" << tempFile;
           FlashInterface flash(fileName);
           flash.setSplash(image);
           if (flash.saveFlash(tempFile) > 0) {
