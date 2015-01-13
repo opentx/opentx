@@ -354,6 +354,7 @@ endif()
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     INSTALL( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
+    INSTALL( TARGETS simulator DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
     INSTALL( FILES companion.desktop DESTINATION share/applications )
     INSTALL( FILES images/linuxicons/16x16/companion.png    DESTINATION /usr/share/icons/hicolor/16x16/apps )
     INSTALL( FILES images/linuxicons/22x22/companion.png    DESTINATION /usr/share/icons/hicolor/22x22/apps )
