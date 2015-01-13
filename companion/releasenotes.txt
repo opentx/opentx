@@ -1,3 +1,8 @@
+<h2>Version 2.0.15 / 2015-TODO</h2>
+<ul>
+<li>Time format for Special Functions Set Timers</li>
+</ul>
+
 <h2>Version 2.0.14 / 2015-01-12</h2>
 <ul>
 <li>OpenTX Companion and Companion9x can now be installed side by side on Linux</li>
@@ -87,13 +92,13 @@
 <ul>
 <li>Sound should be ok on all platforms</li>
 <li>Min/Max reviewed in Logical switches (for the whole telemetry)</li>
-<li>Various bug fixes</li> 
+<li>Various bug fixes</li>
 </ul>
 
 <h2>Version 2.0.3</h2>
 <ul>
 <li>EEPROM import bug on AdjustGVAR function</li>
-<li>Timers correctly displayed in logical switches tab</li> 
+<li>Timers correctly displayed in logical switches tab</li>
 </ul>
 
 <h2>Version 2.0.2</h2>
