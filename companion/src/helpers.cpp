@@ -990,6 +990,11 @@ QString generateProcessUniqueTempFileName(const QString &fileName)
   return QDir::tempPath() + QString("/%1-").arg(QCoreApplication::applicationPid()) + sanitizedFileName;
 }
 
+bool isTempFileName(const QString & fileName)
+{
+  return fileName.startsWith(QDir::tempPath());
+}
+
 QString getSoundsPath(const GeneralSettings &generalSettings)
 {
   QString path = g.profile[g.id()].sdPath() + "/SOUNDS/";

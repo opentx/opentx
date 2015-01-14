@@ -251,12 +251,14 @@ bool readFirmware(const QString &filename, ProgressWidget *progress)
   if (IS_ARM(GetCurrentFirmware()->getBoard())) {
     QString path = findMassstoragePath("FIRMWARE.BIN");
     if (!path.isEmpty()) {
+      qDebug() << "readFirmware: reading" << path << "into" << filename;
       CopyProcess copyProcess(path, filename, progress);
       result = copyProcess.run();
     }
   }
 
   if (result == false) {
+    qDebug() << "readFirmware: reading" << filename << "with" << getRadioInterfaceCmd() << getReadFirmwareArgs(filename);
     FlashProcess flashProcess(getRadioInterfaceCmd(), getReadFirmwareArgs(filename), progress);
     result = flashProcess.run();
   }
@@ -273,11 +275,13 @@ bool writeFirmware(const QString &filename, ProgressWidget *progress)
   if (IS_ARM(GetCurrentFirmware()->getBoard())) {
     QString path = findMassstoragePath("FIRMWARE.BIN");
     if (!path.isEmpty()) {
+      qDebug() << "writeFirmware: writing" << path << "from" << filename;
       CopyProcess copyProcess(filename, path, progress);
       return copyProcess.run();
     }
   }
 
+  qDebug() << "writeFirmware: writing" << filename << "with" << getRadioInterfaceCmd() << getWriteFirmwareArgs(filename);
   FlashProcess flashProcess(getRadioInterfaceCmd(), getWriteFirmwareArgs(filename), progress);
   return flashProcess.run();
 }

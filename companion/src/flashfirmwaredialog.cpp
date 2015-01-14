@@ -203,6 +203,8 @@ void FlashFirmwareDialog::on_burnButton_clicked()
   g.checkHardwareCompatibility(ui->checkHardwareCompatibility->isChecked());
   g.backupOnFlash(ui->backupEEprom->isChecked());
 
+  qDebug() << "FlashFirmwareDialog: flashing" << fwName;
+
   if (imageSource != FIRMWARE) {
     // load the splash image
     const QPixmap * pixmap = ui->splash->pixmap();
@@ -220,6 +222,7 @@ void FlashFirmwareDialog::on_burnButton_clicked()
       tempFile = generateProcessUniqueTempFileName("flash.hex");
     else
       tempFile = generateProcessUniqueTempFileName("flash.bin");
+    qDebug() << "FlashFirmwareDialog: patching" << fwName << "with custom splash screen and saving to" << tempFile;
     FirmwareInterface firmware(fwName);
     firmware.setSplash(image);
     if (firmware.save(tempFile) <= 0) {
@@ -253,15 +256,21 @@ void FlashFirmwareDialog::startFlash(const QString &filename)
 
   // check hardware compatibility if requested
   if (g.checkHardwareCompatibility()) {
-    QString tempFirmware = generateProcessUniqueTempFileName("flash.bin");
+    QString tempFirmware = generateProcessUniqueTempFileName("flash-check.bin");
     if (!readFirmware(tempFirmware, progressDialog.progress())) {
       QMessageBox::warning(this, tr("Firmware check failed"), tr("Could not check firmware from radio"));
       return;
     }
     FirmwareInterface previousFirmware(tempFirmware);
+    qunlink(tempFirmware);
     FirmwareInterface newFirmware(filename);
+    qDebug() << "startFlash: checking firmware compatibility between " << tempFirmware << "and" << filename;
     if (!newFirmware.isHardwareCompatible(previousFirmware)) {
       QMessageBox::warning(this, tr("Firmware check failed"), tr("New firmware is not compatible with the one currently installed!"));
+      if (isTempFileName(filename)) {
+        qDebug() << "startFlash: removing temporary file" << filename;
+        qunlink(filename);
+      }
       return;
     }
   }
@@ -293,4 +302,9 @@ void FlashFirmwareDialog::startFlash(const QString &filename)
 
   progressDialog.progress()->setInfo(tr("Flashing done"));
   progressDialog.exec();
+
+  if (isTempFileName(filename)) {
+    qDebug() << "startFlash: removing temporary file" << filename;
+    qunlink(filename);
+  }
 }
