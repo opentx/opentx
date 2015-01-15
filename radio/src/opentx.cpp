@@ -2384,7 +2384,7 @@ void doMixerCalculations()
 
           if (newTimerVal != timerState->val) {
             timerState->val = newTimerVal;
-            if (timerState->state == TMR_RUNNING) {
+            if ((timerState->state == TMR_RUNNING) || (timerState->state == TMR_TRIGGED)) {
               if (g_model.timers[i].countdownBeep && g_model.timers[i].start) {
                 if (newTimerVal==30) AUDIO_TIMER_30();
                 if (newTimerVal==20) AUDIO_TIMER_20();
