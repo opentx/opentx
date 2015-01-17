@@ -8,6 +8,7 @@
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QPushButton>
+#include <QTimeEdit>
 #ifdef PHONON
 #include <phonon/audiooutput.h>
 #include <phonon/mediaobject.h>
@@ -74,6 +75,7 @@ class CustomFunctionsPanel : public GenericPanel
     QComboBox * fswtchFunc[C9X_MAX_CUSTOM_FUNCTIONS];
     QCheckBox * fswtchParamGV[C9X_MAX_CUSTOM_FUNCTIONS];
     QDoubleSpinBox * fswtchParam[C9X_MAX_CUSTOM_FUNCTIONS];
+    QTimeEdit * fswtchParamTime[C9X_MAX_CUSTOM_FUNCTIONS];
     QPushButton * playBT[C9X_MAX_CUSTOM_FUNCTIONS];
     QComboBox * fswtchParamT[C9X_MAX_CUSTOM_FUNCTIONS];
     QComboBox * fswtchParamArmT[C9X_MAX_CUSTOM_FUNCTIONS];
