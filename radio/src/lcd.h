@@ -205,7 +205,7 @@ void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s,unsigned char len, Lcd
 void lcd_puts(coord_t x, coord_t y, const pm_char * s);
 void lcd_putsn(coord_t x, coord_t y, const pm_char * s, unsigned char len);
 void lcd_putsLeft(coord_t y, const pm_char * s);
-#define lcd_putsCenter(y, s) lcd_puts((LCD_W-sizeof(TR_##s)*FW+FW-2)/2, y, STR_##s)
+#define lcd_putsCenter(y, s) lcd_puts((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
 
 #if defined(CPUARM)
 void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
