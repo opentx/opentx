@@ -36,6 +36,11 @@
 
 #include "opentx.h"
 
+#if defined(COLORLCD)
+const pm_uchar font_5x7[] PROGMEM = {
+#include "fonts/font_stdsize.lbm"
+};
+#else
 const pm_uchar font_5x7[] PROGMEM = {
 #if defined (CPUARM)
 #include "font_05x07.lbm"
@@ -62,6 +67,7 @@ const pm_uchar font_5x7[] PROGMEM = {
 #include "font_se_05x07.lbm"
 #endif
 };
+#endif
 
 #if defined(BOLD_FONT) && (!defined(CPUM64) || defined(EXTSTD))
 const pm_uchar font_5x7_B[] PROGMEM = {
@@ -70,6 +76,11 @@ const pm_uchar font_5x7_B[] PROGMEM = {
 #endif
 
 #if !defined(BOOT)
+#if defined(COLORLCD)
+const pm_uchar font_10x14[] PROGMEM = {
+#include "fonts/font_dblsize.lbm"
+};
+#else
 const pm_uchar font_10x14[] PROGMEM = {
 #include "font_10x14_compressed.lbm"
 #if defined(CPUARM)
@@ -94,6 +105,7 @@ const pm_uchar font_10x14[] PROGMEM = {
   #endif
 #endif
 };
+#endif
 #endif
 
 #if defined(CPUARM) && !defined(BOOT)
@@ -124,6 +136,11 @@ const pm_uchar font_4x6[] PROGMEM = {
 #endif
 };
 
+#if defined(COLORLCD)
+const pm_uchar font_8x10[] PROGMEM = {
+#include "fonts/font_midsize.lbm"
+};
+#else
 const pm_uchar font_8x10[] PROGMEM = {
 #include "font_08x10.lbm"
 #if defined(TRANSLATIONS_DE)
@@ -146,6 +163,7 @@ const pm_uchar font_8x10[] PROGMEM = {
 #include "font_se_08x10.lbm"
 #endif
 };
+#endif
 
 const pm_uchar font_22x38_num[] PROGMEM = {
 #include "font_22x38_num.lbm"

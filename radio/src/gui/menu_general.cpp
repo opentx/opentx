@@ -36,10 +36,6 @@
 
 #include "../opentx.h"
 
-const pm_uchar sticks[] PROGMEM = {
-#include "../bitmaps/sticks.lbm"
-};
-
 #if defined(CPUARM)
 extern LP_CONST LanguagePack czLanguagePack;
 extern LP_CONST LanguagePack enLanguagePack;
@@ -70,6 +66,16 @@ const LanguagePack * LP_CONST languagePacks[] = {
 };
 #endif
 
+void menuGeneralSetup(uint8_t event);
+void menuGeneralSdManager(uint8_t event);
+void menuGeneralCustomFunctions(uint8_t event);
+void menuGeneralTrainer(uint8_t event);
+void menuGeneralVersion(uint8_t event);
+void menuGeneralDiagKeys(uint8_t event);
+void menuGeneralDiagAna(uint8_t event);
+void menuGeneralHardware(uint8_t event);
+void menuGeneralCalib(uint8_t event);
+
 enum EnumTabDiag {
   e_Setup,
   CASE_SDCARD(e_Sd)
@@ -81,16 +87,6 @@ enum EnumTabDiag {
   CASE_CPUARM(e_Hardware)
   e_Calib
 };
-
-void menuGeneralSetup(uint8_t event);
-void menuGeneralSdManager(uint8_t event);
-void menuGeneralCustomFunctions(uint8_t event);
-void menuGeneralTrainer(uint8_t event);
-void menuGeneralVersion(uint8_t event);
-void menuGeneralDiagKeys(uint8_t event);
-void menuGeneralDiagAna(uint8_t event);
-void menuGeneralHardware(uint8_t event);
-void menuGeneralCalib(uint8_t event);
 
 const MenuFuncP_PROGMEM menuTabGeneral[] PROGMEM = {
   menuGeneralSetup,

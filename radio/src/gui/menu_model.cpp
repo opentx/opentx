@@ -241,9 +241,6 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
       }
 
       lcd_putcAtt(x+editNameCursorPos*FW, y, idx2char(v), ERASEBG|INVERS|FIXEDWIDTH);
-#if defined(PCBHORUS)
-      lcd_putcAtt(x+editNameCursorPos*FW, y, idx2char(v), FIXEDWIDTH|WHITE);
-#endif
     }
     else {
       cur = 0;

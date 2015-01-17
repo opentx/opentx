@@ -444,9 +444,9 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_LOGICALSW          "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12""L13""L14""L15""L16""L17""L18""L19""L20""L21""L22""L23""L24""L25""L26""L27""L28""L29""L30""L31""L32"
+  #define TR_LOGICALSW         "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12""L13""L14""L15""L16""L17""L18""L19""L20""L21""L22""L23""L24""L25""L26""L27""L28""L29""L30""L31""L32"
 #else
-  #define TR_LOGICALSW          "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12"
+  #define TR_LOGICALSW         "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12"
 #endif
 
 #define TR_TRIMS_SWITCHES      "tRl""tRr""tEd""tEu""tTd""tTu""tAl""tAr"
@@ -515,9 +515,15 @@
 #endif
 
 // ZERO TERMINATED STRINGS
-#define INDENT                 "\001"
-#define LEN_INDENT             1
-#define INDENT_WIDTH           (FW/2)
+#if defined(COLORLCD)
+  #define INDENT               "\007"
+  #define LEN_INDENT           1
+  #define INDENT_WIDTH         12
+#else
+  #define INDENT               "\001"
+  #define LEN_INDENT           1
+  #define INDENT_WIDTH         (FW/2)
+#endif
 
 #if defined(PCBTARANIS)
   #define TR_ENTER             "[ENTER]"
@@ -649,9 +655,15 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER "\010" TR_ENTER " TO START"
-#define TR_SETMIDPOINT         TR(CENTER "\004SET STICKS MIDPOINT",CENTER "\004CENTER STICKS/SLIDERS")
-#define TR_MOVESTICKSPOTS      CENTER "\006MOVE STICKS/POTS"
+#if defined(COLORLCD)
+  #define TR_MENUTOSTART       TR_ENTER " TO START"
+  #define TR_SETMIDPOINT       "CENTER STICKS/SLIDERS"
+  #define TR_MOVESTICKSPOTS    "MOVE STICKS/POTS"
+#else
+  #define TR_MENUTOSTART       CENTER "\010" TR_ENTER " TO START"
+  #define TR_SETMIDPOINT       TR(CENTER "\004SET STICKS MIDPOINT", CENTER "\004CENTER STICKS/SLIDERS")
+  #define TR_MOVESTICKSPOTS    CENTER "\006MOVE STICKS/POTS"
+#endif
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
@@ -694,11 +706,21 @@
 #define TR_MENUDIAG            TR("SWITCHES","SWITCH TEST")
 #define TR_MENUANA             TR("ANAS","ANALOG INPUTS")
 #define TR_MENUCALIBRATION     "CALIBRATION"
-#define TR_TRIMS2OFFSETS       "\006Trims => Subtrims"
-#define TR_MENUMODELSEL        TR("MODELSEL","MODEL SELECTION")
-#define TR_MENUSETUP           TR("SETUP","MODEL SETUP")
+#if defined(COLORLCD)
+  #define TR_TRIMS2OFFSETS     "Trims >> Subtrims"
+#else
+  #define TR_TRIMS2OFFSETS     "\006Trims => Subtrims"
+#endif
+#if defined(COLORLCD)
+  #define TR_MENUMODELSEL      "Model Selection"
+  #define TR_MENUSETUP         "Model Setup"
+  #define TR_MENUFLIGHTPHASES  "Flight Modes"
+#else
+  #define TR_MENUMODELSEL      TR("MODELSEL", "MODEL SELECTION")
+  #define TR_MENUSETUP         TR("SETUP", "MODEL SETUP")
+  #define TR_MENUFLIGHTPHASES  "FLIGHT MODES"
+#endif
 #define TR_MENUFLIGHTPHASE     "FLIGHT MODE"
-#define TR_MENUFLIGHTPHASES    "FLIGHT MODES"
 #define TR_MENUHELISETUP       "HELI SETUP"
 
 #if defined(PCBTARANIS)

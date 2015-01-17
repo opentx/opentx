@@ -396,7 +396,9 @@ QString findMassstoragePath(const QString &filename)
       eepromfile.append("/" + filename);
 #if !defined __APPLE__
       QString fstype = entry->me_type;
-      if (QFile::exists(eepromfile) && fstype.contains("fat") ) {
+      // qDebug() << eepromfile;
+      
+      if (fstype.contains("fat") && QFile::exists(eepromfile)) {
 #else
       if (QFile::exists(eepromfile)) {
 #endif

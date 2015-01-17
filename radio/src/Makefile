@@ -366,7 +366,7 @@ M2561_VARIANT   = +16384
 EEPROM_VARIANT  = 0
 
 GUIMODELSRC = gui/menu_model.cpp gui/$(GUIDIRECTORY)/menu_model_select.cpp gui/$(GUIDIRECTORY)/menu_model_setup.cpp gui/$(GUIDIRECTORY)/menu_model_inputs_mixes.cpp gui/$(GUIDIRECTORY)/menu_model_limits.cpp gui/$(GUIDIRECTORY)/menu_model_logical_switches.cpp gui/$(GUIDIRECTORY)/menu_model_custom_functions.cpp gui/$(GUIDIRECTORY)/menu_model_telemetry.cpp
-GUIGENERALSRC = gui/menu_general.cpp gui/menu_general_setup.cpp gui/menu_general_trainer.cpp gui/menu_general_version.cpp gui/menu_general_diagkeys.cpp gui/menu_general_diaganas.cpp gui/menu_general_calib.cpp
+GUIGENERALSRC = gui/menu_general.cpp gui/$(GUIDIRECTORY)/menu_general_setup.cpp gui/$(GUIDIRECTORY)/menu_general_trainer.cpp gui/$(GUIDIRECTORY)/menu_general_version.cpp gui/$(GUIDIRECTORY)/menu_general_calib.cpp
 
 BITMAPS = bitmaps/sticks.lbm
 
@@ -391,6 +391,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
+  GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
   
   ifeq ($(PCB), 9XR)
     FLAVOUR = 9xr
@@ -461,6 +462,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
+  GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
   
   ifeq ($(PCB), 9XR128)
     FLAVOUR = 9xr128
@@ -527,6 +529,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
+  GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
   ifeq ($(PCB), 9XR2561)
     FLAVOUR = 9xr2561
@@ -595,11 +598,12 @@ ifeq ($(PCB), GRUVIN9X)
   PULSESSRC = pulses/pulses_avr.cpp  
   CPPSRC += audio_avr.cpp haptic.cpp debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
+  GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
   
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DRTCLOCK -DSDCARD
     CPPSRC += rtc.cpp sdcard.cpp logs.cpp targets/gruvin9x/rtc_driver.cpp 
-    GUIGENERALSRC += gui/menu_general_sdmanager.cpp
+    GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_sdmanager.cpp
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/gruvin9x/diskio.cpp
   endif
     
@@ -639,6 +643,7 @@ ifeq ($(PCB), MEGA2560)
   PULSESSRC = pulses/pulses_avr.cpp  
   CPPSRC += audio_avr.cpp debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
+  GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
   ifeq ($(PCBREV), ST7565P)
     EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
@@ -649,7 +654,7 @@ ifeq ($(PCB), MEGA2560)
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/gruvin9x/diskio.cpp 
     CPPDEFS += -DSDCARD -DRTCLOCK
-    GUIGENERALSRC += gui/menu_general_sdmanager.cpp
+    GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_sdmanager.cpp
     CPPSRC += rtc.cpp sdcard.cpp logs.cpp targets/gruvin9x/rtc_driver.cpp 
   endif
   
@@ -710,7 +715,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
     CPPDEFS += -DSPORT_FILE_LOG
   endif
   INCDIRS += targets/sky9x CoOS/kernel CoOS/portable
-  GUIGENERALSRC += gui/menu_general_hardware.cpp
+  GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_hardware.cpp gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
   BOARDSRC = main_arm.cpp targets/sky9x/board_sky9x.cpp
   EXTRABOARDSRC = targets/sky9x/lcd_driver.cpp
   SRC += targets/sky9x/core_cm3.c targets/sky9x/board_lowlevel.c targets/sky9x/crt.c targets/sky9x/vectors_sam3s.c
@@ -722,7 +727,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   EEPROMSRC = eeprom_common.cpp eeprom_raw.cpp eeprom_conversions.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp pulses/dsm2_arm.cpp
-  CPPSRC += tasks_arm.cpp audio_arm.cpp haptic.cpp gui/view_about.cpp gui/view_text.cpp telemetry/telemetry.cpp
+  CPPSRC += tasks_arm.cpp audio_arm.cpp haptic.cpp gui/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp telemetry/telemetry.cpp
   CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/second_serial_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
   CPPSRC += loadboot.cpp debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
@@ -730,7 +735,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
     CPPDEFS += -DSDCARD -DVOICE
     INCDIRS += FatFs FatFs/option
     CPPSRC += sdcard.cpp logs.cpp
-    GUIGENERALSRC += gui/menu_general_sdmanager.cpp
+    GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_sdmanager.cpp
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/sky9x/diskio.cpp
   endif
   ifeq ($(BUZZER), YES)
@@ -820,7 +825,7 @@ ifeq ($(PCB), TARANIS)
   EXTRAINCDIRS += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/include
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc 
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc 
-  GUIGENERALSRC += gui/menu_general_hardware.cpp
+  GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_hardware.cpp
   BOARDSRC = main_arm.cpp targets/taranis/board_taranis.cpp
   EXTRABOARDSRC += targets/taranis/configure_pins.cpp targets/taranis/lcd_driver.cpp targets/taranis/flash_driver.cpp targets/taranis/aspi.c targets/taranis/i2c.c targets/taranis/delays.c 
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
@@ -830,7 +835,7 @@ ifeq ($(PCB), TARANIS)
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp sbus.cpp telemetry/telemetry.cpp
   CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/uart3_driver.cpp targets/taranis/telemetry_driver.cpp
-  CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp gui/view_text.cpp loadboot.cpp debug.cpp
+  CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp loadboot.cpp debug.cpp
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
@@ -890,7 +895,7 @@ ifeq ($(PCB), TARANIS)
   endif           
   EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/taranis/diskio.cpp
   CPPSRC += sdcard.cpp logs.cpp rtc.cpp targets/taranis/rtc_driver.cpp
-  GUIGENERALSRC += gui/menu_general_sdmanager.cpp
+  GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_sdmanager.cpp gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
   CPPDEFS += -DSDCARD -DVOICE -DRTCLOCK
   INCDIRS += FatFs FatFs/option
   ifeq ($(DSM2), PPM)
@@ -944,7 +949,7 @@ else
   TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
 endif
 
-GUISRC = gui/menus.cpp $(GUIMODELSRC) $(GUIGENERALSRC) gui/$(GUIDIRECTORY)/view_main.cpp gui/view_statistics.cpp
+GUISRC = gui/$(GUIDIRECTORY)/helpers.cpp gui/$(GUIDIRECTORY)/navigation.cpp gui/$(GUIDIRECTORY)/popups.cpp gui/$(GUIDIRECTORY)/widgets.cpp gui/menus.cpp $(GUIMODELSRC) $(GUIGENERALSRC) gui/$(GUIDIRECTORY)/view_main.cpp gui/$(GUIDIRECTORY)/view_statistics.cpp
 
 CPPSRC += opentx.cpp functions.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp $(GUISRC) $(EEPROMSRC) $(LCDSRC) keys.cpp maths.cpp translations.cpp fonts.cpp $(TTS_SRC)
 
@@ -1043,6 +1048,7 @@ ifneq ($(FONT), STD)
   INCDIRS += fonts/$(FONTDIR)
 endif
 
+INCDIRS += gui
 INCDIRS += fonts/std
   
 ifeq ($(THR_TRACE), YES)
@@ -1126,7 +1132,8 @@ ifeq ($(EXT), $(filter $(EXT), FRSKY FRSKY_SPORT TELEMETREZ))
   else
     CPPSRC += telemetry/frsky.cpp telemetry/frsky_d.cpp
   endif
-  CPPSRC += gui/view_telemetry.cpp
+  
+  CPPSRC += gui/$(GUIDIRECTORY)/view_telemetry.cpp
   
   ifeq ($(FRSKY_HUB), YES)
     CPPDEFS += -DFRSKY_HUB

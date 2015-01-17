@@ -43,8 +43,10 @@
 #include <time.h>
 #include <ctype.h>
 
-#define W2 LCD_W*2
-#define H2 LCD_H*2
+#define LCD_ZOOM 2
+
+#define W2 LCD_W*LCD_ZOOM
+#define H2 LCD_H*LCD_ZOOM
 
 int g_snapshot_idx = 0;
 
@@ -61,6 +63,7 @@ class Open9xSim: public FXMainWindow
     void makeSnapshot(const FXDrawable* drawable);
     void doEvents();
     void refreshDisplay();
+    void setPixel(int x, int y, FXColor color);
 
   private:
     FXImage       *bmp;
@@ -192,7 +195,7 @@ long Open9xSim::onKeypress(FXObject*,FXSelector,void*v)
 {
   FXEvent *evt=(FXEvent*)v;
   // printf("keypress %x\n", evt->code);
-  if (evt->code=='s'){
+  if (evt->code=='s') {
     makeSnapshot(bmf);
   }
   return 0;
@@ -332,6 +335,15 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
 #define BL_COLOR FXRGB(150,200,152)
 #endif
 
+void Open9xSim::setPixel(int x, int y, FXColor color)
+{
+  for (int i=0; i<LCD_ZOOM; ++i) {
+    for (int j=0; j<LCD_ZOOM; ++j) {
+      bmp->setPixel(LCD_ZOOM*x+i, LCD_ZOOM*y+j, color);
+    }
+  }
+}
+
 void Open9xSim::refreshDisplay()
 {
   if (lcd_refresh) {
@@ -351,24 +363,15 @@ void Open9xSim::refreshDisplay()
             color = FXRGB(47-(z*47)/15, 123-(z*123)/15, 227-(z*227)/15);
           else
             color = FXRGB(200-(z*200)/15, 200-(z*200)/15, 200-(z*200)/15);
-          bmp->setPixel(2*x, 2*y, color);
-          bmp->setPixel(2*x+1, 2*y, color);
-          bmp->setPixel(2*x, 2*y+1, color);
-          bmp->setPixel(2*x+1, 2*y+1, color);
+          setPixel(x, y, color);
         }
 #else
         if (lcd_buf[x+(y/8)*LCD_W] & (1<<(y%8))) {
-          bmp->setPixel(2*x, 2*y, onColor);
-          bmp->setPixel(2*x+1, 2*y, onColor);
-          bmp->setPixel(2*x, 2*y+1, onColor);
-          bmp->setPixel(2*x+1, 2*y+1, onColor);
+          setPixel(x, y, onColor);
         }
 #endif
         else {
-          bmp->setPixel(2*x, 2*y, offColor);
-          bmp->setPixel(2*x+1, 2*y, offColor);
-          bmp->setPixel(2*x, 2*y+1, offColor);
-          bmp->setPixel(2*x+1, 2*y+1, offColor);
+          setPixel(x, y, offColor);
         }
       }
     }

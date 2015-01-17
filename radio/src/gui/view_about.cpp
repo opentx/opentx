@@ -36,7 +36,8 @@
 
 #include "../opentx.h"
 
-#if defined(PCBTARANIS)
+#if defined(COLORLCD)
+#elif defined(PCBTARANIS)
   const pm_uchar about_bmp[] PROGMEM = {
   #include "../bitmaps/Taranis/about.lbm"
   };
@@ -93,7 +94,9 @@ void menuAboutView(uint8_t event)
       break;
   }
 
-#if defined(PCBTARANIS)
+#if defined(COLORLCD)
+  LcdFlags att = GREY(max(0, 15-greyIndex/2));
+#elif defined(PCBTARANIS)
   lcd_bmp(0, 0, about_bmp);
   lcd_putsAtt(64, 0, STR_ABOUTUS, DBLSIZE);
   lcd_hline(ABOUT_X, 18, 120);

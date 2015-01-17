@@ -59,7 +59,10 @@ void menuChannelsView(uint8_t event)
   else
     ch = 0;
 
+#if !defined(COLORLCD)
   lcd_putsCenter(0*FH, CHANNELS_MONITOR);
+#endif
+
   lcd_invert_line(0);
 
   // Column separator

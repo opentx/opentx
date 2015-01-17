@@ -34,27 +34,10 @@
  *
  */
 
-#ifndef menus_h
-#define menus_h
+#ifndef _MENUS_H_
+#define _MENUS_H_
 
 #define NO_HI_LEN  25
-
-void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
-inline void displayColumnHeader(const char * const *headers, uint8_t index)
-{
-  lcd_putsAtt(17*FW, 0, headers[index], 0);
-}
-
-#if !defined(CPUM64)
-  void displayScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
-#endif
-
-#if LCD_W >= 212
-  extern coord_t scrollbar_X;
-  #define SET_SCROLLBAR_X(x) scrollbar_X = (x);
-#else
-  #define SET_SCROLLBAR_X(x)
-#endif
 
 #if LCD_W >= 212
   #if defined(TRANSLATIONS_FR)
@@ -414,13 +397,21 @@ extern uint8_t         s_warning_info_len;
 extern uint8_t         s_warning_result;
 extern uint8_t         s_warning_type;
 
-#define WARNING_LINE_X 16
-#define WARNING_LINE_Y 3*FH
 #if LCD_W >= 212
+  #define MENU_X           30
+  #define MENU_Y           16
   #define WARNING_LINE_LEN 32
+  #define WARNING_LINE_X   16
+  #define WARNING_LINE_Y   3*FH
 #else
+  #define MENU_X           10
+  #define MENU_Y           16
   #define WARNING_LINE_LEN 20
+  #define WARNING_LINE_X   16
+  #define WARNING_LINE_Y   3*FH
 #endif
+
+#define MENU_W   LCD_W-(2*MENU_X)
 
 void displayBox();
 void displayPopup(const pm_char * pstr);
@@ -545,4 +536,4 @@ void displayWarning(uint8_t event);
 typedef int16_t (*FnFuncP) (int16_t x);
 void DrawFunction(FnFuncP fn, uint8_t offset=0);
 
-#endif
+#endif // _MENUS_H_

@@ -38,7 +38,8 @@
 
 #if defined(SPLASH)
 const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
-#if defined(PCBTARANIS)
+#if defined(COLORLCD)
+#elif defined(PCBTARANIS)
 #include "bitmaps/Taranis/splash.lbm"
 #else
 #include "bitmaps/9X/splash.lbm"
@@ -47,7 +48,8 @@ const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
 const pm_uchar * const splash_lbm = splashdata+4;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(COLORLCD)
+#elif defined(PCBTARANIS)
   const pm_uchar asterisk_lbm[] PROGMEM = {
     #include "bitmaps/Taranis/asterisk.lbm"
   };
@@ -76,8 +78,10 @@ void loadModelBitmap(char *name, uint8_t *bitmap)
     }
   }
 
+#if !defined(COLORLCD)
   // In all error cases, we set the default logo
   memcpy(bitmap, logo_taranis, MODEL_BITMAP_SIZE);
+#endif
 }
 #endif
 
@@ -206,7 +210,7 @@ void per10ms()
   }
 #endif
 
-#if defined(FRSKY) || defined(JETI) || defined(SIMU)
+#if defined(FRSKY) || defined(JETI)
   if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0]))
     telemetryInterrupt10ms();
 #endif
@@ -959,7 +963,8 @@ bool readonlyUnlocked()
 inline void Splash()
 {
   lcd_clear();
-#if defined(PCBTARANIS)
+#if defined(COLORLCD)
+#elif defined(PCBTARANIS)
   lcd_bmp(0, 0, splash_lbm);
 #else
   lcd_img(0, 0, splash_lbm, 0, 0);
@@ -1185,7 +1190,10 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 {
   lcd_clear();
 
-#if LCD_W >= 212
+#if defined(COLORLCD)
+  #define MESSAGE_LCD_OFFSET   60
+  drawFilledRect(30, 20, 252, 100, SOLID, BLACK);
+#elif defined(PCBTARANIS)
   lcd_bmp(0, 0, asterisk_lbm);
   #define MESSAGE_LCD_OFFSET   60
 #else
@@ -1193,7 +1201,10 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
   #define MESSAGE_LCD_OFFSET   6*FW
 #endif
 
-#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
+#if defined(COLORLCD)
+  lcd_putsAtt(MESSAGE_LCD_OFFSET, 30, STR_WARNING, WHITE|DBLSIZE);
+  lcd_putsAtt(MESSAGE_LCD_OFFSET, 46, title, WHITE|DBLSIZE);
+#elif defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
   lcd_putsAtt(MESSAGE_LCD_OFFSET, 0, STR_WARNING, DBLSIZE);
   lcd_putsAtt(MESSAGE_LCD_OFFSET, 2*FH, title, DBLSIZE);
 #else
@@ -1201,7 +1212,13 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
   lcd_putsAtt(MESSAGE_LCD_OFFSET, 2*FH, STR_WARNING, DBLSIZE);
 #endif
 
-#if LCD_W >= 212
+#if defined(COLORLCD)
+  if (t) lcd_putsAtt(MESSAGE_LCD_OFFSET, 80, t, WHITE);
+  if (last) {
+    lcd_putsAtt(MESSAGE_LCD_OFFSET, 92, last, WHITE);
+    AUDIO_ERROR_MESSAGE(sound);
+  }
+#elif LCD_W >= 212
   drawFilledRect(MESSAGE_LCD_OFFSET, 0, LCD_W-MESSAGE_LCD_OFFSET, 32);
   if (t) lcd_puts(MESSAGE_LCD_OFFSET, 5*FH, t);
   if (last) {
@@ -2146,10 +2163,13 @@ uint8_t getSticksNavigationEvent()
 void checkBattery()
 {
   static uint8_t counter = 0;
+#if !defined(COLORLCD)
+  // TODO not the right menu I think ...
   if (g_menuStack[g_menuStackPtr] == menuGeneralDiagAna) {
     g_vbat100mV = 0;
     counter = 0;
   }
+#endif
   if (counter-- == 0) {
     counter = 10;
     int32_t instant_vbat = anaIn(TX_VOLTAGE);

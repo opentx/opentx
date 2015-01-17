@@ -667,7 +667,9 @@ extern uint8_t flightModeTransitionLast;
   #define bitfield_channels_t uint16_t
 #endif
 
-#if defined(CPUARM) && !defined(SIMU)
+#if defined(SIMU)
+  inline int getAvailableMemory() { return 1000; }
+#elif defined(CPUARM) && !defined(SIMU)
   extern unsigned char *heap;
   extern int _end;
   extern int _estack;
@@ -1094,7 +1096,14 @@ extern int16_t calcRESXto1000(int16_t x);
 extern int8_t  calcRESXto100(int16_t x);
 #endif
 
+#if defined(COLORLCD)
 extern const char vers_stamp[];
+extern const char date_stamp[];
+extern const char time_stamp[];
+extern const char eeprom_stamp[];
+#else
+extern const char vers_stamp[];
+#endif
 
 extern uint8_t            g_vbat100mV;
 #define g_blinkTmr10ms (*(uint8_t*)&g_tmr10ms)
@@ -1336,6 +1345,7 @@ void evalFunctions();
   extern volatile rotenc_t g_rotenc[1];
 #endif
 
+#include "gui/gui.h"
 #include "gui/menus.h"
 
 #if defined(CPUARM)
@@ -1557,7 +1567,7 @@ void convertUnit(getvalue_t & val, uint8_t & unit); // TODO check FORCEINLINE on
 #if defined(CPUARM)
 uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
-char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx);
+char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defaultName=NULL, uint8_t defaultNameSize=0, uint8_t defaultIdx=0);
 #define strcat_modelname(dest, idx) strcat_zchar(dest, modelHeaders[idx].name, LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
 #define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.flightModeData[idx].name, LEN_FLIGHT_MODE_NAME, STR_FP, PSIZE(TR_FP), idx+1)
 #define ZLEN(s) zlen(s, sizeof(s))

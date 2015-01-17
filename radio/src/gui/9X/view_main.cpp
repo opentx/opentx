@@ -37,8 +37,6 @@
 #include "../../opentx.h"
 
 #define BIGSIZE       DBLSIZE
-#define BOX_WIDTH     23
-#define BOX_CENTERY   (LCD_H-9-BOX_WIDTH/2)
 #define LBOX_CENTERX  (LCD_W/4 + 10)
 #define RBOX_CENTERX  (3*LCD_W/4 - 10)
 #define MODELNAME_X   (2*FW-2)
@@ -60,8 +58,6 @@
 #define TRIM_RH_X     (LCD_W*3/4-2)
 
 #define TRIM_LEN 27
-#define MARKER_WIDTH  5
-#define BOX_LIMIT     (BOX_WIDTH-MARKER_WIDTH)
 
 void drawPotsBars()
 {
@@ -73,13 +69,6 @@ void drawPotsBars()
       V_BAR(x, LCD_H-8, len)
     }
   }
-}
-
-void drawStick(coord_t centrex, int16_t xval, int16_t yval)
-{
-  lcd_square(centrex-BOX_WIDTH/2, BOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
-  DO_CROSS(centrex, BOX_CENTERY, 3);
-  lcd_square(centrex + (xval/((2*RESX)/BOX_LIMIT)) - MARKER_WIDTH/2, BOX_CENTERY - (yval/((2*RESX)/BOX_LIMIT)) - MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
 }
 
 void doMainScreenGraphics()

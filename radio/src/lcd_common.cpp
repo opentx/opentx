@@ -36,7 +36,6 @@
 
 #include "opentx.h"
 
-
 #if defined(PCBTARANIS) && defined(REVPLUS) && defined(LCD_DUAL_BUFFER)
   display_t displayBuf1[DISPLAY_BUF_SIZE];
   display_t displayBuf2[DISPLAY_BUF_SIZE];
@@ -249,10 +248,6 @@ void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags
     else if (c >= 0x20) {
       lcd_putcAtt(x, y, c, flags);
       x = lcdNextPos;
-    }
-    else if (setx) {
-      x = c;
-      setx = false;
     }
     else if (c == 0x1F) {  //X-coord prefix
       setx = true;

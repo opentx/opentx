@@ -155,7 +155,7 @@ void menuModelSetup(uint8_t event)
   int8_t editMode = s_editMode;
 
   for (uint8_t i=0; i<NUM_BODY_LINES; ++i) {
-    coord_t y = MENU_TITLE_HEIGHT + 1 + i*HEIGHT_BODY_LINE;
+    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
     uint8_t k = i+s_pgOfs;
 #if defined(CPUARM)
     for (int j=0; j<=k; j++) {

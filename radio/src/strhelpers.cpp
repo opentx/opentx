@@ -116,7 +116,7 @@ uint8_t zlen(const char *str, uint8_t size)
   return size;
 }
 
-char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx)
+char *strcat_zchar(char * dest, const char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx)
 {
   int8_t len = 0;
 
@@ -151,12 +151,34 @@ char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultN
 #endif
 #endif
 
-#if defined(CPUARM) || defined(SDCARD)
-char * strAppend(char * dest, const char * source)
+#if defined(COLORLCD)
+char *strAppendDigits(char *dest, int value)
 {
-  while ((*dest++ = *source++))
-    ;
+  div_t qr = div(value, 10);
+  *dest++ = '0' + qr.quot;
+  *dest++ = '0' + qr.rem;
+  *dest = '\0';
+  return dest;
+}
+#endif
+
+#if defined(CPUARM) || defined(SDCARD)
+char *strAppend(char *dest, const char *source, int len)
+{
+  while ((*dest++ = *source++)) {
+    if (--len == 0) {
+      *dest++ = '\0';
+    }
+  }
   return dest - 1;
+}
+
+char *strSetCursor(char *dest, int position)
+{
+  *dest++ = 0x1F;
+  *dest++ = position;
+  *dest = '\0';
+  return dest;
 }
 
 char * strAppendFilename(char * dest, const char * filename, const int size)

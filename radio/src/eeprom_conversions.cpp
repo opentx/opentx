@@ -1530,7 +1530,8 @@ bool eeConvert()
   s_eeDirtyMsk = EE_GENERAL;
   eeCheck(true);
 
-#if LCD_W >= 212
+#if defined(COLORLCD)
+#elif LCD_W >= 212
   lcd_rect(60, 6*FH+4, 132, 3);
 #else
   lcd_rect(10, 6*FH+4, 102, 3);
@@ -1538,7 +1539,8 @@ bool eeConvert()
 
   // Models conversion
   for (uint8_t id=0; id<MAX_MODELS; id++) {
-#if LCD_W >= 212
+#if defined(COLORLCD)
+#elif LCD_W >= 212
     lcd_hline(61, 6*FH+5, 10+id*2, FORCE);
 #else
     lcd_hline(11, 6*FH+5, 10+(id*3)/2, FORCE);

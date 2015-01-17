@@ -40,6 +40,7 @@
 #if defined(PCBTARANIS)
   #define LCD_W         212
   #define LCD_H         64
+  #define BOX_WIDTH     31
   #define coord_t       int
   #define scoord_t      int
   #define CENTER        "\015"
@@ -49,6 +50,7 @@
 #else
   #define LCD_W         128
   #define LCD_H         64
+  #define BOX_WIDTH     23
   #define coord_t       uint8_t
   #define scoord_t      int8_t
   #define CENTER
@@ -80,19 +82,23 @@
 
 /* lcd text flags */
 #define INVERS          0x02
-#ifdef BOLD_FONT
+#if defined(BOLD_FONT)
   #define BOLD          0x40
 #else
   #define BOLD          0x00
 #endif
 
 /* lcd putc flags */
-#define CONDENSED       0x08
+#define CONDENSED       0x08 // TODO remove on TARANIS
 #define FIXEDWIDTH      0x10
 /* lcd puts flags */
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */
-#define BSS             0x20
+#if defined(CPUARM)
+  #define BSS           0x00
+#else
+  #define BSS           0x20
+#endif
 #define ZCHAR           0x80
 
 /* lcd outdez flags */
@@ -157,7 +163,7 @@
   #define display_t            uint8_t
   #define DISPLAY_BUF_SIZE     (LCD_W*LCD_H*4/8)
 #else
-  #define display_t uint8_t
+  #define display_t            uint8_t
   #define DISPLAY_BUF_SIZE     (LCD_W*((LCD_H+7)/8))
 #endif
 
@@ -205,15 +211,21 @@ void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s,unsigned char len, Lcd
 void lcd_puts(coord_t x, coord_t y, const pm_char * s);
 void lcd_putsn(coord_t x, coord_t y, const pm_char * s, unsigned char len);
 void lcd_putsLeft(coord_t y, const pm_char * s);
-#define lcd_putsCenter(y, s) lcd_puts((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
+
+#if defined(COLORLCD)
+  void lcd_putsCenter(coord_t y, const pm_char * s, LcdFlags attr=0);
+#else
+  #define lcd_putsCenter(y, s) lcd_puts((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
+#endif
 
 #if defined(CPUARM)
-void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
+  void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 #else
-void lcd_outhex4(coord_t x, coord_t y, uint16_t val);
+  void lcd_outhex4(coord_t x, coord_t y, uint16_t val);
 #endif
-void lcd_outdezAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0);
+
 void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0, uint8_t len=0);
+void lcd_outdezAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0);
 void lcd_outdez8(coord_t x, coord_t y, int8_t val);
 
 void putsStrIdx(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags att=0);
@@ -279,14 +291,10 @@ inline void lcd_square(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcd_re
 
 void lcdDrawTelemetryTopBar();
 
-#define DO_CROSS(xx,yy,ww)          \
-    lcd_vline(xx,yy-ww/2,ww);  \
-    lcd_hline(xx-ww/2,yy,ww);
-
-#define V_BAR(xx,yy,ll)       \
-    lcd_vline(xx-1,yy-ll,ll); \
-    lcd_vline(xx  ,yy-ll,ll); \
-    lcd_vline(xx+1,yy-ll,ll);
+#define V_BAR(xx, yy, ll)    \
+  lcd_vline(xx-1,yy-ll,ll);  \
+  lcd_vline(xx  ,yy-ll,ll);  \
+  lcd_vline(xx+1,yy-ll,ll);
 
 void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 
@@ -328,12 +336,11 @@ void lcdInit();
   extern display_t lcd_buf[DISPLAY_BUF_SIZE];
 #endif
 
-char * strAppend(char * dest, const char * source);
-char * strAppendDate(char * str, bool time=false);
-char * strAppendFilename(char * dest, const char * filename, const int size);
+char *strAppend(char * dest, const char * source, int len=0);
+char *strSetCursor(char *dest, int position);
+char *strAppendDate(char * str, bool time=false);
+char *strAppendFilename(char * dest, const char * filename, const int size);
 
-#define NUM_BODY_LINES     LCD_LINES-1
-#define HEIGHT_BODY_LINE   FH
 #define MENU_TITLE_HEIGHT  FH
 #define MENU_NAVIG_HEIGHT  0
 

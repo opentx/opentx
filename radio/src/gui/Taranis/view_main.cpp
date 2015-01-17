@@ -37,8 +37,6 @@
 #include "../../opentx.h"
 
 #define BIGSIZE       MIDSIZE
-#define BOX_WIDTH     31
-#define BOX_CENTERY   (LCD_H-BOX_WIDTH/2-10)
 #define LBOX_CENTERX  (BOX_WIDTH/2 + 17)
 #define RBOX_CENTERX  (LCD_W-LBOX_CENTERX)
 #define MODELNAME_X   (15)
@@ -67,7 +65,6 @@
 
 #define TRIM_LEN 27
 #define MARKER_WIDTH  5
-#define BOX_LIMIT     (BOX_WIDTH-MARKER_WIDTH)
 
 const pm_uchar logo_taranis[] PROGMEM = {
 #include "../../bitmaps/Taranis/logo.lbm"
@@ -102,13 +99,6 @@ void drawPotsBars()
       V_BAR(x, LCD_H-8, len)
     }
   }
-}
-
-void drawStick(coord_t centrex, int16_t xval, int16_t yval)
-{
-  lcd_square(centrex-BOX_WIDTH/2, BOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
-  DO_CROSS(centrex, BOX_CENTERY, 3);
-  lcd_square(centrex + (xval/((2*RESX)/BOX_LIMIT)) - MARKER_WIDTH/2, BOX_CENTERY - (yval/((2*RESX)/BOX_LIMIT)) - MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
 }
 
 void doMainScreenGraphics()
