@@ -35,6 +35,7 @@
  */
 
 #include "../opentx.h"
+#include "../timers.h"
 
 #if LCD_W >= 212
 #define BIGSIZE       MIDSIZE
