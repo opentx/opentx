@@ -34,18 +34,11 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
-#if defined(COLORLCD)
-#elif defined(PCBTARANIS)
-  const pm_uchar about_bmp[] PROGMEM = {
-  #include "../bitmaps/Taranis/about.lbm"
-  };
-#else
-  const pm_uchar about_bmp[] PROGMEM = {
-  #include "../bitmaps/9X/about.lbm"
-  };
-#endif
+const pm_uchar about_bmp[] PROGMEM = {
+#include "../../bitmaps/9X/about.lbm"
+};
 
 enum AboutScreens {
   ABOUT_OPENTX,
@@ -62,13 +55,8 @@ enum AboutScreens {
   ABOUT_COUNT,
 };
 
-#if defined(PCBTARANIS)
-  #define ABOUT_X      62
-  #define ABOUT_INDENT 6
-#else
-  #define ABOUT_X      2
-  #define ABOUT_INDENT 4
-#endif
+#define ABOUT_X      2
+#define ABOUT_INDENT 4
 
 void menuAboutView(uint8_t event)
 {
@@ -94,20 +82,10 @@ void menuAboutView(uint8_t event)
       break;
   }
 
-#if defined(COLORLCD)
-  LcdFlags att = GREY(max(0, 15-greyIndex/2));
-#elif defined(PCBTARANIS)
-  lcd_bmp(0, 0, about_bmp);
-  lcd_putsAtt(64, 0, STR_ABOUTUS, DBLSIZE);
-  lcd_hline(ABOUT_X, 18, 120);
-  lcd_hline(ABOUT_X, 19, 130, GREY_DEFAULT);
-  LcdFlags att = GREY(max(0, 15-greyIndex/2));
-#else
   lcd_putsAtt(17, 0, STR_ABOUTUS, DBLSIZE|INVERS);
   lcd_hline(17, 16, LCD_W-17);
   lcd_img(8, 0, about_bmp, 0);
   LcdFlags att = 0;
-#endif
 
   uint8_t screenDuration = 150;
 

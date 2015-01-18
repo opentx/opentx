@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 MenuFuncP g_menuStack[5];
 uint8_t menuEvent = 0;
@@ -76,7 +76,6 @@ void pushMenu(MenuFuncP newMenu)
   menuEvent = EVT_ENTRY;
 }
 
-#if defined(CPUARM)
 void pushModelNotes()
 {
   char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
@@ -84,4 +83,3 @@ void pushModelNotes()
   strcpy(buf, TEXT_EXT);
   pushMenuTextView(filename);
 }
-#endif

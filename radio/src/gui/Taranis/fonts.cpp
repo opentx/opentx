@@ -34,19 +34,10 @@
  *
  */
 
-#include "opentx.h"
+#include "../../opentx.h"
 
-#if defined(COLORLCD)
 const pm_uchar font_5x7[] PROGMEM = {
-#include "fonts/font_stdsize.lbm"
-};
-#else
-const pm_uchar font_5x7[] PROGMEM = {
-#if defined (CPUARM)
 #include "font_05x07.lbm"
-#else
-#include "font_05x07_avr.lbm"
-#endif
 #if defined(TRANSLATIONS_DE)
 #include "font_de_05x07.lbm"
 #elif defined(TRANSLATIONS_CZ)
@@ -67,48 +58,37 @@ const pm_uchar font_5x7[] PROGMEM = {
 #include "font_se_05x07.lbm"
 #endif
 };
-#endif
 
-#if defined(BOLD_FONT) && (!defined(CPUM64) || defined(EXTSTD))
+#if defined(BOLD_FONT)
 const pm_uchar font_5x7_B[] PROGMEM = {
 #include "font_05x07_B_compressed.lbm"
 };
 #endif
 
 #if !defined(BOOT)
-#if defined(COLORLCD)
-const pm_uchar font_10x14[] PROGMEM = {
-#include "fonts/font_dblsize.lbm"
-};
-#else
 const pm_uchar font_10x14[] PROGMEM = {
 #include "font_10x14_compressed.lbm"
-#if defined(CPUARM)
-  #if defined(TRANSLATIONS_DE)
-  #include "font_de_10x14.lbm"
-  #elif defined(TRANSLATIONS_CZ)
-  #include "font_cz_10x14.lbm"
-  #elif defined(TRANSLATIONS_ES)
-  #include "font_es_10x14.lbm"
-  #elif defined(TRANSLATIONS_FI)
-  #include "font_fi_10x14.lbm"
-  #elif defined(TRANSLATIONS_FR)
-  #include "font_fr_10x14.lbm"
-  #elif defined(TRANSLATIONS_IT)
-  #include "font_it_10x14.lbm"
-  #elif defined(TRANSLATIONS_PL)
-  #include "font_pl_10x14.lbm"
-  #elif defined(TRANSLATIONS_PT)
-  #include "font_pt_10x14.lbm"
-  #elif defined(TRANSLATIONS_SE)
-  #include "font_se_10x14.lbm"
-  #endif
+#if defined(TRANSLATIONS_DE)
+#include "font_de_10x14.lbm"
+#elif defined(TRANSLATIONS_CZ)
+#include "font_cz_10x14.lbm"
+#elif defined(TRANSLATIONS_ES)
+#include "font_es_10x14.lbm"
+#elif defined(TRANSLATIONS_FI)
+#include "font_fi_10x14.lbm"
+#elif defined(TRANSLATIONS_FR)
+#include "font_fr_10x14.lbm"
+#elif defined(TRANSLATIONS_IT)
+#include "font_it_10x14.lbm"
+#elif defined(TRANSLATIONS_PL)
+#include "font_pl_10x14.lbm"
+#elif defined(TRANSLATIONS_PT)
+#include "font_pt_10x14.lbm"
+#elif defined(TRANSLATIONS_SE)
+#include "font_se_10x14.lbm"
 #endif
 };
-#endif
-#endif
 
-#if defined(CPUARM) && !defined(BOOT)
 const pm_uchar font_3x5[] PROGMEM = {
 #include "font_03x05.lbm"
 };
@@ -136,11 +116,6 @@ const pm_uchar font_4x6[] PROGMEM = {
 #endif
 };
 
-#if defined(COLORLCD)
-const pm_uchar font_8x10[] PROGMEM = {
-#include "fonts/font_midsize.lbm"
-};
-#else
 const pm_uchar font_8x10[] PROGMEM = {
 #include "font_08x10.lbm"
 #if defined(TRANSLATIONS_DE)
@@ -163,7 +138,6 @@ const pm_uchar font_8x10[] PROGMEM = {
 #include "font_se_08x10.lbm"
 #endif
 };
-#endif
 
 const pm_uchar font_22x38_num[] PROGMEM = {
 #include "font_22x38_num.lbm"
@@ -181,5 +155,4 @@ const pm_uchar font_10x14_extra[] PROGMEM = {
 #include "font_10x14_extra.lbm"
 };
 
-#endif
-
+#endif // !defined(BOOT)

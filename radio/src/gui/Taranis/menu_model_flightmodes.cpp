@@ -113,7 +113,7 @@ void menuModelFlightModesAll(uint8_t event)
 
     for (uint8_t j=0; j<ITEM_FLIGHT_MODES_COUNT; j++) {
       uint8_t attr = ((sub==k && posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
-      uint8_t active = (attr && (s_editMode>0 || p1valdiff)) ;
+      uint8_t active = (attr && s_editMode>0) ;
       switch (j) {
         case ITEM_FLIGHT_MODES_NAME:
           editName(4*FW-1, y, p->name, sizeof(p->name), event, attr);

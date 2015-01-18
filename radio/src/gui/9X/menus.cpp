@@ -34,17 +34,54 @@
  *
  */
 
-#include "menus.h"
+#include "../../opentx.h"
 
-#define NUM_BODY_LINES     LCD_LINES-1
-#define MENU_TITLE_HEIGHT  FH
-#define MENU_NAVIG_HEIGHT  0
+MenuFuncP g_menuStack[5];
+uint8_t menuEvent = 0;
+uint8_t g_menuPos[4];
+uint8_t g_menuStackPtr = 0;
 
-void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
+void popMenu()
+{
+  assert(g_menuStackPtr>0);
+  g_menuStackPtr = g_menuStackPtr-1;
+  menuEvent = EVT_ENTRY_UP;
+}
 
-#if !defined(CPUM64)
-  #define DEFAULT_SCROLLBAR_X (LCD_W-1)
-  void displayScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
+void chainMenu(MenuFuncP newMenu)
+{
+  g_menuStack[g_menuStackPtr] = newMenu;
+  menuEvent = EVT_ENTRY;
+}
+
+void pushMenu(MenuFuncP newMenu)
+{
+  killEvents(KEY_ENTER);
+
+  if (g_menuStackPtr == 0) {
+    if (newMenu == menuGeneralSetup)
+      g_menuPos[0] = 1;
+    if (newMenu == menuModelSelect)
+      g_menuPos[0] = 0;
+  }
+  else {
+    g_menuPos[g_menuStackPtr] = m_posVert;
+  }
+
+  g_menuStackPtr++;
+
+  assert(g_menuStackPtr < DIM(g_menuStack));
+
+  g_menuStack[g_menuStackPtr] = newMenu;
+  menuEvent = EVT_ENTRY;
+}
+
+#if defined(CPUARM)
+void pushModelNotes()
+{
+  char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
+  char *buf = strcat_modelname(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
+  strcpy(buf, TEXT_EXT);
+  pushMenuTextView(filename);
+}
 #endif
-
-#define SET_SCROLLBAR_X(x)

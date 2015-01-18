@@ -34,9 +34,8 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
-#if defined(CPUARM)
 extern LP_CONST LanguagePack czLanguagePack;
 extern LP_CONST LanguagePack enLanguagePack;
 extern LP_CONST LanguagePack esLanguagePack;
@@ -64,7 +63,6 @@ const LanguagePack * LP_CONST languagePacks[] = {
   &skLanguagePack,
   NULL
 };
-#endif
 
 void menuGeneralSetup(uint8_t event);
 void menuGeneralSdManager(uint8_t event);
@@ -78,32 +76,30 @@ void menuGeneralCalib(uint8_t event);
 
 enum EnumTabDiag {
   e_Setup,
-  CASE_SDCARD(e_Sd)
-  CASE_CPUARM(e_GeneralCustomFunctions)
+  e_Sd,
+  e_GeneralCustomFunctions,
   e_Trainer,
   e_Vers,
   e_Keys,
   e_Ana,
-  CASE_CPUARM(e_Hardware)
+  e_Hardware,
   e_Calib
 };
 
 const MenuFuncP_PROGMEM menuTabGeneral[] PROGMEM = {
   menuGeneralSetup,
-  CASE_SDCARD(menuGeneralSdManager)
-  CASE_CPUARM(menuGeneralCustomFunctions)
+  menuGeneralSdManager,
+  menuGeneralCustomFunctions,
   menuGeneralTrainer,
   menuGeneralVersion,
   menuGeneralDiagKeys,
   menuGeneralDiagAna,
-  CASE_CPUARM(menuGeneralHardware)
+  menuGeneralHardware,
   menuGeneralCalib
 };
 
-#if defined(CPUARM)
 void menuGeneralCustomFunctions(uint8_t event)
 {
   MENU(STR_MENUGLOBALFUNCS, menuTabGeneral, e_GeneralCustomFunctions, NUM_CFN+1, {0, NAVIGATION_LINE_BY_LINE|4/*repeated*/});
   return menuCustomFunctions(event, g_eeGeneral.customFn, globalFunctionsContext);
 }
-#endif

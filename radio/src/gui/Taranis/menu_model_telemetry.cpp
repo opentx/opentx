@@ -516,7 +516,7 @@ void menuModelTelemetry(uint8_t event)
         uint8_t alarm = k-ITEM_TELEMETRY_RSSI_ALARM1;
         lcd_putsLeft(y, (alarm==0 ? STR_LOWALARM : STR_CRITICALALARM));
         lcd_outdezNAtt(TELEM_COL2, y, getRssiAlarmValue(alarm), LEFT|attr, 3);
-        if (attr && (s_editMode>0 || p1valdiff)) {
+        if (attr && s_editMode>0) {
           CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[alarm].value, -30, 30);
         }
         break;
@@ -541,7 +541,7 @@ void menuModelTelemetry(uint8_t event)
         lcd_outdezAtt(TELEM_COL2+7*FW-2, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0)|PREC1);
         lcd_outdezAtt(TELEM_COL2+10*FW, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0)|PREC1);
         lcd_outdezAtt(TELEM_COL2+13*FW+2, y, 10+g_model.frsky.varioMax, ((CURSOR_ON_LINE() || m_posHorz==3) ? attr : 0));
-        if (attr && (s_editMode>0 || p1valdiff)) {
+        if (attr && s_editMode>0) {
           switch (m_posHorz) {
             case 0:
               CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioMin, -7, 7);
@@ -669,7 +669,7 @@ void menuModelTelemetry(uint8_t event)
           else if (attr) {
             MOVE_CURSOR_FROM_HERE();
           }
-          if (attr && (s_editMode>0 || p1valdiff)) {
+          if (attr && s_editMode>0) {
             switch (m_posHorz) {
               case 0:
                 bar.source = CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, barSource, MIXSRC_LAST_TELEM, isSourceAvailable);
@@ -695,7 +695,7 @@ void menuModelTelemetry(uint8_t event)
             source_t & value = g_model.frsky.screens[screenIndex].lines[lineIndex].sources[c];
             uint8_t pos[] = {TELEM_COL1, TELEM_COL2, TELEM_COL3};
             putsMixerSource(pos[c], y, value, cellAttr);
-            if (cellAttr && (s_editMode>0 || p1valdiff)) {
+            if (cellAttr && s_editMode>0) {
               CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, value, MIXSRC_LAST_TELEM, isSourceAvailable);
             }
           }

@@ -41,7 +41,7 @@
  *	Contains the menu specific code for Mavlink support.
  */
 
-#include "gui/view_mavlink.h"
+#include "view_mavlink.h"
 
 // Globals declaration
 

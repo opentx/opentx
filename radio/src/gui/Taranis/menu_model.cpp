@@ -33,14 +33,12 @@
  *
  */
 
-#include "../opentx.h"
-#ifdef MAVLINK
-#include "gui/view_mavlink.h"
-#endif
+#include "../../opentx.h"
 
-#define WCHART 32
+// TODO elsewhere!
+#define WCHART (LCD_H/2)
 #define X0     (LCD_W-WCHART-2)
-#define Y0     32
+#define Y0     (LCD_H/2)
 
 enum EnumTabModel {
   e_ModelSelect,
@@ -51,9 +49,7 @@ enum EnumTabModel {
   e_MixAll,
   e_Limits,
   CASE_CURVES(e_CurvesAll)
-#if LCD_W >= 212
   CASE_GVARS(e_GVars)
-#endif
   e_LogicalSwitches,
   e_CustomFunctions,
 #if defined(LUA_MODEL_SCRIPTS)
@@ -78,27 +74,16 @@ void menuModelLogicalSwitches(uint8_t event);
 void menuModelCustomFunctions(uint8_t event);
 void menuModelCustomScripts(uint8_t event);
 void menuModelTelemetry(uint8_t event);
-void menuModelTemplates(uint8_t event);
 void menuModelExpoOne(uint8_t event);
 
 extern uint8_t s_curveChan;
 
-#if defined(CPUARM)
-  #define FlightModesType uint16_t
-#else
-  #define FlightModesType uint8_t
-#endif
+#define FlightModesType uint16_t
 
-#if defined(PCBTARANIS)
-  void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, uint8_t attr);
-#endif
+void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, uint8_t attr);
 
 #if MENU_COLUMNS < 2
-  #if LCD_W >= 212
-    #define MIXES_2ND_COLUMN  (18*FW)
-  #else
-    #define MIXES_2ND_COLUMN  (12*FW)
-  #endif
+  #define MIXES_2ND_COLUMN  (18*FW)
 #else
   #define MIXES_2ND_COLUMN    (9*FW)
 #endif
@@ -132,7 +117,7 @@ const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
   menuModelMixAll,
   menuModelLimits,
   CASE_CURVES(menuModelCurvesAll)
-#if LCD_W >= 212 && defined(GVARS) && defined(FLIGHT_MODES)
+#if defined(GVARS) && defined(FLIGHT_MODES)
   CASE_GVARS(menuModelGVars)
 #endif
   menuModelLogicalSwitches,
@@ -151,19 +136,10 @@ static uint8_t s_copyMode = 0;
 static int8_t s_copySrcRow;
 static int8_t s_copyTgtOfs;
 
-#if defined(CPUM64)
-  #define editNameCursorPos m_posHorz
-#else
-  static uint8_t editNameCursorPos = 0;
-#endif
+static uint8_t editNameCursorPos = 0;
 
 void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uint8_t active)
 {
-#if defined(CPUM64)
-  // in order to save flash
-  lcd_putsLeft(y, STR_NAME);
-#endif
-
   uint8_t mode = 0;
   if (active) {
     if (s_editMode <= 0)
@@ -180,14 +156,13 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
       int8_t c = name[cur];
       int8_t v = c;
 
-      if (p1valdiff || IS_ROTARY_RIGHT(event) || IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP)
+      if (IS_ROTARY_RIGHT(event) || IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP)
           || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP)) {
          v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
          if (c <= 0) v = -v;
       }
 
       switch (event) {
-#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBTARANIS)
         case EVT_ROTARY_BREAK:
           if (s_editMode == EDIT_MODIFY_FIELD) {
             s_editMode = EDIT_MODIFY_STRING;
@@ -198,31 +173,13 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
           else
             s_editMode = 0;
           break;
-#endif
 
-#if !defined(PCBTARANIS)
-        case EVT_KEY_BREAK(KEY_LEFT):
-          if (cur>0) cur--;
-          break;
-        case EVT_KEY_BREAK(KEY_RIGHT):
-          if (cur<size-1) cur++;
-          break;
-#endif
-
-#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBTARANIS)
         case EVT_ROTARY_LONG:
           if (v==0) {
             s_editMode = 0;
             killEvents(event);
             break;
           }
-          // no break
-#endif
-
-#if !defined(PCBTARANIS)
-        case EVT_KEY_LONG(KEY_LEFT):
-        case EVT_KEY_LONG(KEY_RIGHT):
-#endif
           if (v>=-26 && v<=26) {
             v = -v; // toggle case
             if (event==EVT_KEY_LONG(KEY_LEFT))
@@ -233,11 +190,7 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
 
       if (c != v) {
         name[cur] = v;
-#if defined(PCBTARANIS)
         eeDirty(g_menuPos[0] == 0 ? EE_MODEL : EE_GENERAL);
-#else
-        eeDirty(EE_MODEL);
-#endif
       }
 
       lcd_putcAtt(x+editNameCursorPos*FW, y, idx2char(v), ERASEBG|INVERS|FIXEDWIDTH);
@@ -249,14 +202,10 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
   }
 }
 
-#if defined(CPUM64)
-#define editSingleName(x, y, label, name, size, event, active) editName(x, y, name, size, event, active)
-#else
 void editSingleName(coord_t x, coord_t y, const pm_char *label, char *name, uint8_t size, uint8_t event, uint8_t active)
 {
   lcd_putsLeft(y, label);
   editName(x, y, name, size, event, active);
 }
-#endif
 
 static uint8_t s_currIdx;

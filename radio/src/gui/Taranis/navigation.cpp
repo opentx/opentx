@@ -238,8 +238,6 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
   uint8_t maxcol = MAXCOL(l_posVert);
 
-  if (p2valdiff || 0 || p1valdiff) backlightOn(); // on keypress turn the light on
-
   if (menuTab) {
     int8_t cc = curr;
     switch (event) {
@@ -285,17 +283,6 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   }
 
   DISPLAY_PROGRESS_BAR(menuTab ? lcdLastPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);
-
-  if (s_editMode<=0) {
-    if (0) {
-      l_posVert = limit((int8_t)0, (int8_t)(l_posVert - 0), (int8_t)maxrow);
-      l_posHorz = min((uint8_t)l_posHorz, MAXCOL(l_posVert));
-    }
-
-    if (p2valdiff && l_posVert>0) {
-      l_posHorz = limit((int8_t)0, (int8_t)((uint8_t)l_posHorz - p2valdiff), (int8_t)maxcol);
-    }
-  }
 
   switch(event)
   {

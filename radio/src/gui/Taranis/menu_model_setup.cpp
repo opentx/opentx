@@ -201,7 +201,7 @@ void menuModelSetup(uint8_t event)
         putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, m_posHorz==0 ? attr : 0);
         putsTimer(MODEL_SETUP_2ND_COLUMN+5*FW-2+5*FWNUM+1, y, timer->start, m_posHorz==1 ? attr : 0, m_posHorz==2 ? attr : 0);
         if (attr && m_posHorz < 0) drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);
-        if (attr && (editMode>0 || p1valdiff)) {
+        if (attr && editMode>0) {
           div_t qr = div(timer->start, 60);
           switch (m_posHorz) {
             case 0:
@@ -463,7 +463,7 @@ void menuModelSetup(uint8_t event)
           lcd_putsiAtt(x, y, STR_RETA123, i, ((m_posHorz==i) && attr) ? BLINK|INVERS : (((g_model.beepANACenter & ((BeepANACenter)1<<i)) || (attr && CURSOR_ON_LINE())) ? INVERS : 0 ) );
         }
         if (attr && CURSOR_ON_CELL) {
-          if (event==EVT_KEY_BREAK(KEY_ENTER) || p1valdiff) {
+          if (event==EVT_KEY_BREAK(KEY_ENTER)) {
             if (READ_ONLY_UNLOCKED()) {
               s_editMode = 0;
               g_model.beepANACenter ^= ((BeepANACenter)1<<m_posHorz);
@@ -510,7 +510,7 @@ void menuModelSetup(uint8_t event)
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
         else if (IS_MODULE_DSM2(EXTERNAL_MODULE))
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
-        if (attr && (editMode>0 || p1valdiff)) {
+        if (attr && editMode>0) {
           switch (m_posHorz) {
             case 0:
               g_model.externalModule = checkIncDec(event, g_model.externalModule, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-1, EE_MODEL, isModuleAvailable);
@@ -552,7 +552,7 @@ void menuModelSetup(uint8_t event)
           lcd_outdezAtt(lcdLastPos, y, moduleData.channelsStart+1, LEFT | (m_posHorz==0 ? attr : 0));
           lcd_putc(lcdLastPos, y, '-');
           lcd_outdezAtt(lcdLastPos + FW+1, y, moduleData.channelsStart+NUM_CHANNELS(moduleIdx), LEFT | (m_posHorz==1 ? attr : 0));
-          if (attr && (editMode>0 || p1valdiff)) {
+          if (attr && editMode>0) {
             switch (m_posHorz) {
               case 0:
                 CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.channelsStart, 32-8-moduleData.channelsCount);
@@ -583,7 +583,7 @@ void menuModelSetup(uint8_t event)
           lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0);
           lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, moduleData.ppmPulsePol ? '+' : '-', (CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0);
 
-          if (attr && (editMode>0 || p1valdiff)) {
+          if (attr && editMode>0) {
             switch (m_posHorz) {
               case 0:
                 CHECK_INCDEC_MODELVAR(event, moduleData.ppmFrameLength, -20, 35);
@@ -611,7 +611,7 @@ void menuModelSetup(uint8_t event)
           if (IS_MODULE_XJT(moduleIdx) || IS_MODULE_DSM2(moduleIdx)) {
             if (xOffsetBind) lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId, (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
             if (attr && l_posHorz==0) {
-              if (editMode>0 || p1valdiff) {
+              if (editMode>0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId, IS_MODULE_DSM2(moduleIdx) ? 20 : 63);
                 if (checkIncDec_Ret) {
                   modelHeaders[g_eeGeneral.currModel].modelId = g_model.header.modelId;
@@ -650,7 +650,7 @@ void menuModelSetup(uint8_t event)
             if (moduleData.failsafeMode != FAILSAFE_CUSTOM)
               m_posHorz = 0;
             if (m_posHorz==0) {
-              if (editMode>0 || p1valdiff) {
+              if (editMode>0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.failsafeMode, FAILSAFE_LAST);
                 if (checkIncDec_Ret) SEND_FAILSAFE_NOW(moduleIdx);
               }

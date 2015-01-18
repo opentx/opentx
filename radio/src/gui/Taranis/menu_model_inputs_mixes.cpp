@@ -60,7 +60,7 @@ FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModes
   }
 
   if (attr) {
-    if (s_editMode && ((event==EVT_KEY_BREAK(KEY_ENTER) || p1valdiff))) {
+    if (s_editMode && event==EVT_KEY_BREAK(KEY_ENTER)) {
       s_editMode = 0;
       value ^= (1<<posHorz);
       eeDirty(EE_MODEL);

@@ -59,8 +59,6 @@ const pm_uchar * const splash_lbm = splashdata+4;
   };
 #endif
 
-#include "gui/menus.h"
-
 EEGeneral  g_eeGeneral;
 ModelData  g_model;
 

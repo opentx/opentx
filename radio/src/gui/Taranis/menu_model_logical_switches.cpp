@@ -234,7 +234,7 @@ void menuModelLogicalSwitches(uint8_t event)
       REPEAT_LAST_CURSOR_MOVE();
     }
 
-    if ((s_editMode>0 || p1valdiff) && attr) {
+    if (s_editMode>0 && attr) {
       switch (horz) {
         case LS_FIELD_FUNCTION:
         {

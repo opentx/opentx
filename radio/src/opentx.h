@@ -1346,7 +1346,6 @@ void evalFunctions();
 #endif
 
 #include "gui/gui.h"
-#include "gui/menus.h"
 
 #if defined(CPUARM)
   #include "telemetry/telemetry.h"

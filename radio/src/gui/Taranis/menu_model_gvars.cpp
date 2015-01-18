@@ -131,7 +131,7 @@ void menuModelGVars(uint8_t event)
               v = (v > GVAR_MAX ? 0 : GVAR_MAX+1);
               eeDirty(EE_MODEL);
             }
-            else if (s_editMode>0 || p1valdiff) {
+            else if (s_editMode>0) {
               v = checkIncDec(event, v, vmin, vmax, EE_MODEL);
             }
           }
