@@ -1,6 +1,6 @@
 /*
  * Author - Bertrand Songis <bsongis@gmail.com>
- * 
+ *
  * Based on th9x -> http://code.google.com/p/th9x/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -113,7 +113,7 @@ template <class T>
 bool OpenTxEepromInterface::loadModel(ModelData &model, uint8_t *data, int index, unsigned int stickMode)
 {
   T _model;
-  
+
   if (!data) {
     // load from EEPROM
     efile->openRd(FILE_MODEL(index));
@@ -309,7 +309,7 @@ bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, in
 {
   std::cout << "trying " << getName() << " import...";
 
-  if (size != getEEpromSize()) {    
+  if (size != getEEpromSize()) {
     if (size==4096) {
       int notnull=false;
       for (int i=2048; i<4096; i++) {
@@ -337,7 +337,7 @@ bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, in
   }
 
   efile->openRd(FILE_GENERAL);
-  
+
   uint8_t version;
   if (efile->readRlc2(&version, 1) != 1) {
     std::cout << " no\n";
@@ -355,7 +355,7 @@ bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, in
     std::cout << " ko\n";
     return false;
   }
-  
+
   std::cout << " variant " << radioData.generalSettings.variant;
   for (int i=0; i<getMaxModels(); i++) {
     if (!loadModel(version, radioData.models[i], NULL, i, radioData.generalSettings.variant, radioData.generalSettings.stickMode+1)) {
@@ -399,7 +399,7 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
   if (board == BOARD_M128) {
     variant |= M128_VARIANT;
   }
-  
+
   int result = saveGeneral<OpenTxGeneralData>(radioData.generalSettings, board, version, variant);
   if (!result) {
     return 0;
@@ -580,7 +580,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
       else
         return 16;
     case SafetyChannelCustomFunction:
-      return id.contains("noovveridech") ? 0 : 1;
+      return id.contains("nooverridech") ? 0 : 1;
     case LogicalSwitches:
       if (IS_ARM(board))
         return 32;
@@ -820,7 +820,7 @@ int OpenTxEepromInterface::isAvailable(Protocol proto, int port)
         break;
       default:
         return 0;
-    }   
+    }
   }
   else {
     switch (proto) {
@@ -1241,7 +1241,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("bluetooth", QObject::tr("Bluetooth interface"));
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
-  
+
   /* 9XR-Pro */
   openTx = new OpenTxFirmware("opentx-9xrpro", QObject::tr("OpenTX for 9XR-PRO"), BOARD_9XRPRO);
   openTx->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
@@ -1260,7 +1260,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("bluetooth", QObject::tr("Bluetooth interface"));
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
-  
+
   /* Taranis board */
   openTx = new OpenTxFirmware("opentx-taranis", QObject::tr("OpenTX for FrSky Taranis"), BOARD_TARANIS);
   openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
@@ -1270,7 +1270,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
-  
+
   /* Taranis Plus board */
   openTx = new OpenTxFirmware("opentx-taranisplus", QObject::tr("OpenTX for FrSky Taranis Plus"), BOARD_TARANIS_PLUS);
   openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
