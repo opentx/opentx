@@ -703,6 +703,7 @@
 #define TR_RESTORE_MODEL       "Restaurer Modèle"
 #define TR_SDCARD_ERROR        "Erreur carte SD"
 #define TR_NO_SDCARD           "Carte SD indisponible"
+#define TR_SDCARD_FULL         "SD Card Full"
 #define TR_INCOMPATIBLE        "Incompatible"
 #define TR_WARNING             "ALERTE"
 #define TR_EEPROMWARN          "EEPROM"

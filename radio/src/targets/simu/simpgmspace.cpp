@@ -491,8 +491,14 @@ FRESULT f_stat (const TCHAR * name, FILINFO *)
 {
   char *path = convertSimuPath(name);
   struct stat tmp;
-  TRACE("f_stat(%s)", path);
-  return stat(path, &tmp) ? FR_INVALID_NAME : FR_OK;
+  if (stat(path, &tmp)) {
+    TRACE("f_stat(%s) = error %d (%s)", path, errno, strerror(errno));
+    return FR_INVALID_NAME;
+  }
+  else {
+    TRACE("f_stat(%s) = OK", path);
+    return FR_OK;
+  }
 }
 
 FRESULT f_mount (FATFS* ,const TCHAR*, BYTE opt)
@@ -503,17 +509,21 @@ FRESULT f_mount (FATFS* ,const TCHAR*, BYTE opt)
 FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 {
   char *path = convertSimuPath(name);
-
-  TRACE("f_open(%s)", path);
-
   if (!(flag & FA_WRITE)) {
     struct stat tmp;
-    if (stat(path, &tmp))
+    if (stat(path, &tmp)) {
+      TRACE("f_open(%s) = INVALID_NAME", path);
       return FR_INVALID_NAME;
+    }
     fil->fsize = tmp.st_size;
   }
   fil->fs = (FATFS*)fopen(path, (flag & FA_WRITE) ? "wb+" : "rb+");
-  return FR_OK;
+  if ( fil->fs ) {
+    TRACE("f_open(%s) = OK", path);
+    return FR_OK;
+  }
+  TRACE("f_open(%s) = error %d (%s)", path, errno, strerror(errno));
+  return FR_INVALID_NAME;
 }
 
 FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)
@@ -555,9 +565,13 @@ FRESULT f_chdir (const TCHAR *name)
 FRESULT f_opendir (DIR * rep, const TCHAR * name)
 {
   char *path = convertSimuPath(name);
-  TRACE("f_opendir(%s)", path);
   rep->fs = (FATFS *)simu::opendir(path);
-  return FR_OK;
+  if ( rep->fs ) {
+    TRACE("f_opendir(%s) = OK", path);
+    return FR_OK;
+  }
+  TRACE("f_opendir(%s) = error %d (%s)", path, errno, strerror(errno));
+  return FR_INVALID_NAME;
 }
 
 FRESULT f_readdir (DIR * rep, FILINFO * fil)
@@ -633,6 +647,13 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
 {
   strcpy(path, ".");
   return FR_OK;
+}
+
+FRESULT f_getfree (const TCHAR* path, DWORD* nclst, FATFS** fatfs)
+{
+  // just fake that we always have some clusters free
+  *nclst = 10;
+  return FR_OK;  
 }
 
 #if defined(PCBSKY9X)
