@@ -103,6 +103,7 @@ namespace OpenTxM128 {
 #include "radio/src/gui/9X/view_statistics.cpp"
 #include "radio/src/gui/9X/view_telemetry.cpp"
 #include "radio/src/gui/9X/lcd.cpp"
+#include "radio/src/gui/9X/splash.cpp"
 #include "radio/src/keys.cpp"
 #include "radio/src/targets/simu/simpgmspace.cpp"
 #include "radio/src/templates.cpp"

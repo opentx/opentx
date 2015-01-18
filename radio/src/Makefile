@@ -944,7 +944,7 @@ endif
 
 GUISRC = gui/$(GUIDIRECTORY)/helpers.cpp gui/$(GUIDIRECTORY)/navigation.cpp gui/$(GUIDIRECTORY)/popups.cpp gui/$(GUIDIRECTORY)/widgets.cpp gui/$(GUIDIRECTORY)/menus.cpp $(GUIMODELSRC) $(GUIGENERALSRC) gui/$(GUIDIRECTORY)/view_main.cpp gui/$(GUIDIRECTORY)/view_statistics.cpp
 
-CPPSRC += opentx.cpp functions.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp $(GUISRC) $(EEPROMSRC) gui/$(GUIDIRECTORY)/lcd.cpp keys.cpp maths.cpp translations.cpp gui/$(GUIDIRECTORY)/fonts.cpp $(TTS_SRC)
+CPPSRC += opentx.cpp functions.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp $(GUISRC) $(EEPROMSRC) gui/$(GUIDIRECTORY)/lcd.cpp gui/$(GUIDIRECTORY)/splash.cpp keys.cpp maths.cpp translations.cpp gui/$(GUIDIRECTORY)/fonts.cpp $(TTS_SRC)
 
 # Debugging format.
 #     Native formats for AVR-GCC's -g are dwarf-2 [default] or stabs.

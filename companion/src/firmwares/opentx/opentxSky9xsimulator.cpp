@@ -122,6 +122,7 @@ namespace Open9xSky9x {
 #include "radio/src/gui/9X/view_about.cpp"
 #include "radio/src/gui/9X/view_text.cpp"
 #include "radio/src/gui/9X/lcd.cpp"
+#include "radio/src/gui/9X/splash.cpp"
 #include "radio/src/logs.cpp"
 #include "radio/src/targets/sky9x/keys_driver.cpp"
 #include "radio/src/keys.cpp"

@@ -42,6 +42,7 @@
 #define MENU_TITLE_HEIGHT    FH
 #define MENU_NAVIG_HEIGHT    0
 
+void displaySplash();
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 void displayScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 

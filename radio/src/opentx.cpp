@@ -36,18 +36,6 @@
 
 #include "opentx.h"
 
-#if defined(SPLASH)
-const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
-#if defined(COLORLCD)
-#elif defined(PCBTARANIS)
-#include "bitmaps/Taranis/splash.lbm"
-#else
-#include "bitmaps/9X/splash.lbm"
-#endif
-	'S','P','E',0};
-const pm_uchar * const splash_lbm = splashdata+4;
-#endif
-
 #if defined(COLORLCD)
 #elif defined(PCBTARANIS)
   const pm_uchar asterisk_lbm[] PROGMEM = {
@@ -957,31 +945,10 @@ bool readonlyUnlocked()
 #endif
 
 #if defined(SPLASH)
-
-inline void Splash()
-{
-  lcd_clear();
-#if defined(COLORLCD)
-#elif defined(PCBTARANIS)
-  lcd_bmp(0, 0, splash_lbm);
-#else
-  lcd_img(0, 0, splash_lbm, 0, 0);
-#endif
-
-#if MENUS_LOCK == 1
-  if (readonly == false) {
-    drawFilledRect((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 - 9, 50, (sizeof(TR_UNLOCKED)-1)*FW+16, 11, SOLID, ERASE|ROUND);
-    lcd_puts((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 , 53, STR_UNLOCKED);
-  }
-#endif
-
-  lcdRefresh();
-}
-
 void doSplash()
 {
   if (SPLASH_NEEDED()) {
-    Splash();
+    displaySplash();
 
 #if !defined(CPUARM)
     AUDIO_TADA();

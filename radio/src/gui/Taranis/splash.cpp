@@ -34,19 +34,27 @@
  *
  */
 
-#include "lcd.h"
-#include "menus.h"
+#include "../../opentx.h"
 
-#define NUM_BODY_LINES     LCD_LINES-1
-#define MENU_TITLE_HEIGHT  FH
-#define MENU_NAVIG_HEIGHT  0
+#if defined(SPLASH)
+const pm_uchar splashdata[] PROGMEM = {
+  'S','P','S',0,
+  #include "bitmaps/Taranis/splash.lbm"
+  'S','P','E',0 };
+const pm_uchar * const splash_lbm = splashdata+4;
 
-void displaySplash();
-void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
+void displaySplash()
+{
+  lcd_clear();
+  lcd_bmp(0, 0, splash_lbm);
 
-#if !defined(CPUM64)
-  #define DEFAULT_SCROLLBAR_X (LCD_W-1)
-  void displayScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
+#if MENUS_LOCK == 1
+  if (readonly == false) {
+    drawFilledRect((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 - 9, 50, (sizeof(TR_UNLOCKED)-1)*FW+16, 11, SOLID, ERASE|ROUND);
+    lcd_puts((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 , 53, STR_UNLOCKED);
+  }
 #endif
 
-#define SET_SCROLLBAR_X(x)
+  lcdRefresh();
+}
+#endif
