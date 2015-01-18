@@ -56,7 +56,7 @@
 #include "board_taranis.h"
 #include "../eeprom_rlc.h"
 #include "../pwr.h"
-#include "../lcd.h"
+#include "../gui/Taranis/lcd.h"
 #include "../keys.h"
 #include "../sdcard.h"
 #include "../FatFs/ff.h"

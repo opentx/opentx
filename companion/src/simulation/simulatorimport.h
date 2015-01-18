@@ -65,11 +65,13 @@ for (int i=0; i<NUM_LOGICAL_SWITCH; i++)
 #endif
 #ifdef GVAR_VALUE // defined(GVARS)
 /* TODO it could be a good idea instead of getPhase() / getPhaseName() outputs.phase = getFlightMode(); */
+#if defined(GVARS)
 for (int fm=0; fm<MAX_FLIGHT_MODES; fm++) {
   for (int gv=0; gv<MAX_GVARS; gv++) {
     outputs.gvars[fm][gv] = GVAR_VALUE(gv, getGVarFlightPhase(fm, gv));
   }
 }
+#endif
 #endif
 #endif   //GETVALUES_IMPORT
 
@@ -93,7 +95,7 @@ return true;
 
 #ifdef GETLCD_IMPORT
 #undef GETLCD_IMPORT
-return lcd_buf;
+return (uint8_t *)lcd_buf;
 #endif
 
 #ifdef GETERROR_IMPORT

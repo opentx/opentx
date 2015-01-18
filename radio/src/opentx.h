@@ -358,6 +358,12 @@ extern void boardInit();
 
 #include "myeeprom.h"
 
+#if defined(CPUM64)
+  void memclear(void *ptr, uint8_t size);
+#else
+  #define memclear(p, s) memset(p, 0, s)
+#endif
+
 enum PotType {
   POT_TYPE_NONE,
   POT_TYPE_DETENT,
@@ -496,7 +502,34 @@ enum PotType {
   #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS())
 #endif
 
-#include "lcd.h"
+#if defined(CPUARM)
+  #define MASK_CFN_TYPE  uint64_t  // current max = 64 function switches
+  #define MASK_FUNC_TYPE uint32_t  // current max = 32 functions
+#elif defined(CPUM64)
+  #define MASK_CFN_TYPE  uint16_t  // current max = 16 function switches
+  #define MASK_FUNC_TYPE uint8_t   // current max = 8  functions
+#else
+  #define MASK_CFN_TYPE  uint32_t  // current max = 32 function switches
+  #define MASK_FUNC_TYPE uint8_t   // current max = 8 functions
+#endif
+
+typedef struct {
+  MASK_FUNC_TYPE activeFunctions;
+  MASK_CFN_TYPE  activeSwitches;
+  tmr10ms_t lastFunctionTime[NUM_CFN];
+
+  inline bool isFuunctionActive(uint8_t func)
+  {
+    return activeFunctions & ((MASK_FUNC_TYPE)1 << func);
+  }
+
+  void reset()
+  {
+    memclear(this, sizeof(*this));
+  }
+} CustomFunctionsContext;
+
+#include "gui/gui.h"
 
 #if defined(TEMPLATES)
   #include "templates.h"
@@ -914,12 +947,6 @@ extern uint16_t lastMixerDuration;
   uint16_t stack_free();
 #endif
 
-#if defined(CPUM64)
-  void memclear(void *ptr, uint8_t size);
-#else
-  #define memclear(p, s) memset(p, 0, s)
-#endif
-
 #if defined(SPLASH)
   void doSplash();
 #endif
@@ -1272,17 +1299,6 @@ enum CswFunctionFamilies {
 uint8_t lswFamily(uint8_t func);
 int16_t lswTimerValue(delayval_t val);
 
-#if defined(CPUARM)
-  #define MASK_CFN_TYPE  uint64_t  // current max = 64 function switches
-  #define MASK_FUNC_TYPE uint32_t  // current max = 32 functions
-#elif defined(CPUM64)
-  #define MASK_CFN_TYPE  uint16_t  // current max = 16 function switches
-  #define MASK_FUNC_TYPE uint8_t   // current max = 8  functions
-#else
-  #define MASK_CFN_TYPE  uint32_t  // current max = 32 function switches
-  #define MASK_FUNC_TYPE uint8_t   // current max = 8 functions
-#endif
-
 enum FunctionsActive {
   FUNCTION_TRAINER,
   FUNCTION_INSTANT_TRIM = FUNCTION_TRAINER+4,
@@ -1301,22 +1317,6 @@ enum FunctionsActive {
 #define VARIO_FREQUENCY_RANGE  1000/*Hz*/
 #define VARIO_REPEAT_ZERO      500/*ms*/
 #define VARIO_REPEAT_MAX       80/*ms*/
-
-typedef struct {
-  MASK_FUNC_TYPE activeFunctions;
-  MASK_CFN_TYPE  activeSwitches;
-  tmr10ms_t lastFunctionTime[NUM_CFN];
-
-  inline bool isFuunctionActive(uint8_t func)
-  {
-    return activeFunctions & ((MASK_FUNC_TYPE)1 << func);
-  }
-
-  void reset()
-  {
-    memclear(this, sizeof(*this));
-  }
-} CustomFunctionsContext;
 
 #if defined(CPUARM)
 extern CustomFunctionsContext modelFunctionsContext;
@@ -1344,8 +1344,6 @@ void evalFunctions();
 #elif defined(ROTARY_ENCODER_NAVIGATION)
   extern volatile rotenc_t g_rotenc[1];
 #endif
-
-#include "gui/gui.h"
 
 #if defined(CPUARM)
   #include "telemetry/telemetry.h"

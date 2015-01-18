@@ -34,38 +34,21 @@
  *
  */
 
-#ifndef lcd_h
-#define lcd_h
+#ifndef _LCD_H_
+#define _LCD_H_
 
-#if defined(PCBTARANIS)
-  #define LCD_W         212
-  #define LCD_H         64
-  #define BOX_WIDTH     31
-  #define coord_t       int
-  #define scoord_t      int
-  #define CENTER        "\015"
-  #define CENTER_OFS    (7*FW-FW/2)
-  #define CONTRAST_MIN  0
-  #define CONTRAST_MAX  45
-#else
-  #define LCD_W         128
-  #define LCD_H         64
-  #define BOX_WIDTH     23
-  #define coord_t       uint8_t
-  #define scoord_t      int8_t
-  #define CENTER
-  #define CENTER_OFS    0
-  #define CONTRAST_MIN  10
-  #define CONTRAST_MAX  45
-#endif
+#define LCD_W         212
+#define LCD_H         64
+#define BOX_WIDTH     31
+#define coord_t       int
+#define scoord_t      int
+#define CENTER        "\015"
+#define CENTER_OFS    (7*FW-FW/2)
+#define CONTRAST_MIN  0
+#define CONTRAST_MAX  45
 
-#if defined(CPUARM)
-  #define lcdint_t      int32_t
-  #define lcduint_t     uint32_t
-#else
-  #define lcdint_t      int16_t
-  #define lcduint_t     uint16_t
-#endif
+#define lcdint_t      int32_t
+#define lcduint_t     uint32_t
 
 #define FW              6
 #define FWNUM           5
@@ -113,61 +96,35 @@
 #define FORCE           0x02
 #define ERASE           0x04
 #define ROUND           0x08
-#if defined(PCBTARANIS)
-  #define FILL_WHITE    0x10
-#endif
+#define FILL_WHITE    0x10
 
 /* telemetry flags */
 #define NO_UNIT         0x40
 
-#if defined(CPUARM)
-  #define FONTSIZE(x)   ((x) & 0x0700)
-  #define TINSIZE       0x0100
-  #define SMLSIZE       0x0200
-  #define MIDSIZE       0x0300
-  #define DBLSIZE       0x0400
-  #define XXLSIZE       0x0500
-  #define ERASEBG       0x8000
-  #define VERTICAL      0x0800
-#else
-  #define DBLSIZE       0x04
-  #define MIDSIZE       DBLSIZE
-  #define SMLSIZE       0x00
-  #define TINSIZE       0x00
-  #define XXLSIZE       0x00
-  #define ERASEBG       0x00
-#endif
+#define FONTSIZE(x)   ((x) & 0x0700)
+#define TINSIZE       0x0100
+#define SMLSIZE       0x0200
+#define MIDSIZE       0x0300
+#define DBLSIZE       0x0400
+#define XXLSIZE       0x0500
+#define ERASEBG       0x8000
+#define VERTICAL      0x0800
 
-#if defined(CPUARM)
-  #define TIMEBLINK     0x1000
-  #define TIMEHOUR      0x2000
-  #define STREXPANDED   0x4000
-#else
-  #define STREXPANDED   0x00
-#endif
+#define TIMEBLINK     0x1000
+#define TIMEHOUR      0x2000
+#define STREXPANDED   0x4000
 
-#if defined(PCBTARANIS)
-  #define GREY(x)              ((x) * 0x010000)
-  #define WHITE                GREY(0xf)
-  #define GREY_DEFAULT         GREY(11)
-  #define COLOUR_MASK(x)       ((x) & 0x0F0000)
-#endif
+#define GREY(x)              ((x) * 0x010000)
+#define WHITE                GREY(0xf)
+#define GREY_DEFAULT         GREY(11)
+#define COLOUR_MASK(x)       ((x) & 0x0F0000)
 
-#if defined(CPUARM)
-  #define LcdFlags             uint32_t
-#else
-  #define LcdFlags             uint8_t
-#endif
+#define LcdFlags             uint32_t
 
-#if defined(PCBTARANIS)
-  #define display_t            uint8_t
-  #define DISPLAY_BUF_SIZE     (LCD_W*LCD_H*4/8)
-#else
-  #define display_t            uint8_t
-  #define DISPLAY_BUF_SIZE     (LCD_W*((LCD_H+7)/8))
-#endif
+#define display_t            uint8_t
+#define DISPLAY_BUF_SIZE     (LCD_W*LCD_H*4/8)
 
-#if defined(PCBTARANIS) && defined(REVPLUS) && defined(LCD_DUAL_BUFFER)
+#if defined(REVPLUS) && defined(LCD_DUAL_BUFFER)
   extern display_t displayBuf1[DISPLAY_BUF_SIZE];
   extern display_t displayBuf2[DISPLAY_BUF_SIZE];
   extern display_t * displayBuf;
@@ -175,7 +132,7 @@
   extern display_t displayBuf[DISPLAY_BUF_SIZE];
 #endif
 
-#if defined(PCBTARANIS) && defined(REVPLUS) && !defined(LCD_DUAL_BUFFER) && !defined(SIMU)
+#if defined(REVPLUS) && !defined(LCD_DUAL_BUFFER) && !defined(SIMU)
   void lcdRefreshWait();
 #else
   #define lcdRefreshWait()
@@ -187,15 +144,6 @@ extern coord_t lcdNextPos;
 #define DISPLAY_BUFER_SIZE     (sizeof(display_t)*DISPLAY_BUF_SIZE)
 #define DISPLAY_END            (displayBuf + DISPLAY_BUF_SIZE)
 #define ASSERT_IN_DISPLAY(p)   assert((p) >= displayBuf && (p) < DISPLAY_END)
-
-#if defined(PCBSTD) && defined(VOICE)
-  extern volatile uint8_t LcdLock ;
-#endif
-
-#if defined(PCBSKY9X)
-  extern volatile uint8_t lcdLock ;
-  extern volatile uint32_t lcdInputs ;
-#endif
 
 #if defined(BOOT)
 // TODO quick & dirty :(
@@ -212,17 +160,9 @@ void lcd_puts(coord_t x, coord_t y, const pm_char * s);
 void lcd_putsn(coord_t x, coord_t y, const pm_char * s, unsigned char len);
 void lcd_putsLeft(coord_t y, const pm_char * s);
 
-#if defined(COLORLCD)
-  void lcd_putsCenter(coord_t y, const pm_char * s, LcdFlags attr=0);
-#else
-  #define lcd_putsCenter(y, s) lcd_puts((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
-#endif
+#define lcd_putsCenter(y, s) lcd_puts((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
 
-#if defined(CPUARM)
-  void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
-#else
-  void lcd_outhex4(coord_t x, coord_t y, uint16_t val);
-#endif
+void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 
 void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0, uint8_t len=0);
 void lcd_outdezAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0);
@@ -233,15 +173,12 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void putsSwitches(coord_t x, coord_t y, int8_t swtch, LcdFlags att=0);
 void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
 void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
-#if defined(PCBTARANIS) && !defined(BOOT)
+#if !defined(BOOT)
 void putsCurveRef(coord_t x, coord_t y, CurveRef &curve, LcdFlags att);
 #endif
 void putsCurve(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att=0);
 void putsTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
-#if defined(ROTARY_ENCODERS)
-  void putsRotaryEncoderMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
-#endif
 
 #define putsChn(x, y, idx, att) putsMixerSource(x, y, MIXSRC_CH1+idx-1, att)
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
@@ -255,11 +192,7 @@ void putsChannel(coord_t x, coord_t y, source_t channel, LcdFlags att=0);
 void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t val, LcdFlags att=0);
 #endif
 
-#if defined(CPUARM)
-  #define putstime_t int32_t
-#else
-  #define putstime_t int16_t
-#endif
+#define putstime_t int32_t
 
 void putsRtcTime(coord_t x, coord_t y, LcdFlags att);
 void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2);
@@ -272,15 +205,8 @@ void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att=0);
 void lcd_hline(coord_t x, coord_t y, coord_t w, LcdFlags att=0);
 void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
 void lcd_vline(coord_t x, scoord_t y, scoord_t h);
-#if defined(CPUM64)
-  void lcd_vlineStip(coord_t x, scoord_t y, int8_t h, uint8_t pat);
-#else
-  void lcd_vlineStip(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
-#endif
-
-#if defined(CPUARM)
-  void lcd_line(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
-#endif
+void lcd_vlineStip(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
+void lcd_line(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
 
 void drawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
 void lcd_rect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
@@ -298,22 +224,16 @@ void lcdDrawTelemetryTopBar();
 
 void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 
-#if defined(PCBTARANIS)
-  void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_t width=0);
-  #define LCD_ICON(x, y, icon) lcd_bmp(x, y, icons, icon)
-#endif
+void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_t width=0);
+#define LCD_ICON(x, y, icon) lcd_bmp(x, y, icons, icon)
 
 void lcdSetRefVolt(unsigned char val);
 void lcd_clear();
 void lcdSetContrast();
 void lcdInit();
-#if defined(PCBTARANIS)
-  void lcdOff();
-#else
-  #define lcdOff()
-#endif
+void lcdOff();
 
-#if defined(PCBTARANIS) && defined(REVPLUS) && !defined(SIMU)
+#if defined(REVPLUS) && !defined(SIMU)
   void lcdRefresh(bool wait=true);
   #define LCD_REFRESH_DONT_WAIT false
 #else
@@ -321,9 +241,7 @@ void lcdInit();
   #define LCD_REFRESH_DONT_WAIT
 #endif
 
-#if defined(PCBTARANIS)
-  const pm_char * bmpLoad(uint8_t *dest, const char *filename, const unsigned int width, const unsigned int height);
-#endif
+const pm_char * bmpLoad(uint8_t *dest, const char *filename, const unsigned int width, const unsigned int height);
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE (0)
@@ -331,7 +249,7 @@ void lcdInit();
   #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
 #endif
 
-#ifdef SIMU
+#if defined(SIMU)
   extern bool lcd_refresh;
   extern display_t lcd_buf[DISPLAY_BUF_SIZE];
 #endif
@@ -344,4 +262,4 @@ char *strAppendFilename(char * dest, const char * filename, const int size);
 #define MENU_TITLE_HEIGHT  FH
 #define MENU_NAVIG_HEIGHT  0
 
-#endif
+#endif // _LCD_H_

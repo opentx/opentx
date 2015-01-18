@@ -34,6 +34,7 @@
  *
  */
 
+#include "lcd.h"
 #include "menus.h"
 
 #define DEFAULT_SCROLLBAR_X  (LCD_W-1)

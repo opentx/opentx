@@ -36,13 +36,7 @@
 
 #include "opentx.h"
 
-#if defined(PCBTARANIS) && defined(REVPLUS) && defined(LCD_DUAL_BUFFER)
-  display_t displayBuf1[DISPLAY_BUF_SIZE];
-  display_t displayBuf2[DISPLAY_BUF_SIZE];
-  display_t * displayBuf = displayBuf1;
-#else
-  display_t displayBuf[DISPLAY_BUF_SIZE];
-#endif
+display_t displayBuf[DISPLAY_BUF_SIZE];
 
 void lcd_clear()
 {
@@ -432,12 +426,10 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
     div_t qr = div((lcduint_t)val, 10);
     char c = qr.rem + '0';
     LcdFlags f = flags;
-#if !defined(PCBTARANIS)
     if (dblsize) {
       if (c=='1' && i==len && xn>x+10) { x+=1; }
       if ((lcduint_t)val >= 1000) { x+=FWNUM; f &= ~DBLSIZE; }
     }
-#endif
     lcd_putcAtt(x, y, c, f);
     if (mode == i) {
       flags &= ~PREC2; // TODO not needed but removes 20bytes, could be improved for sure, check asm
@@ -483,9 +475,7 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
         lcd_putcAtt(x, y, '.', f);
       }
     }
-#if !defined(PCBTARANIS)
     if (dblsize && (lcduint_t)val >= 1000 && (lcduint_t)val < 10000) x-=2;
-#endif
     val = qr.quot;
     x -= fw;
 #if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
@@ -594,25 +584,6 @@ void drawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, Lc
 #endif
 }
 
-#if defined(PCBTARANIS)
-void lcdDrawTelemetryTopBar()
-{
-  putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
-  uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
-  putsVBat(16*FW+1,0,att);
-  if (g_model.timers[0].mode) {
-    att = (timersStates[0].val<0 ? BLINK : 0);
-    putsTimer(22*FW+5*FWNUM+3, 0, timersStates[0].val, att, att);
-    putsMixerSource(18*FW+2, 1, MIXSRC_TIMER1, SMLSIZE);
-  }
-  if (g_model.timers[1].mode) {
-    att = (timersStates[1].val<0 ? BLINK : 0);
-    putsTimer(31*FW+5*FWNUM+3, 0, timersStates[1].val, att, att);
-    putsMixerSource(27*FW+2, 1, MIXSRC_TIMER2, SMLSIZE);
-  }
-  lcd_invert_line(0);
-}
-#else
 void lcdDrawTelemetryTopBar()
 {
   putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
@@ -624,7 +595,6 @@ void lcdDrawTelemetryTopBar()
   }
   lcd_invert_line(0);
 }
-#endif
 
 #if defined(CPUARM) && defined(RTCLOCK)
 void putsRtcTime(coord_t x, coord_t y, LcdFlags att)
@@ -653,19 +623,7 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 
   qr = div(tme, 60);
 
-#if defined(PCBTARANIS)
-#define separator ':'
-  if (att & TIMEHOUR) {
-    div_t qr2 = div(qr.quot, 60);
-    lcd_outdezNAtt(x, y, qr2.quot, att|LEADING0|LEFT, 2);
-    lcd_putcAtt(lcdLastPos, y, separator, att&att2);
-    qr.quot = qr2.rem;
-    if (att & MIDSIZE)
-      x += 17;
-    else
-      x += 13;
-  }
-#elif defined(CPUARM)
+#if defined(CPUARM)
   char separator = ':';
   if (tme >= 3600 && (~att & DBLSIZE)) {
     qr = div(qr.quot, 60);
@@ -704,87 +662,24 @@ void putsStrIdx(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags 
 
 void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {
-#if defined(PCBTARANIS)
-  if (idx == 0) {
-    lcd_putsiAtt(x, y, STR_VSRCRAW, 0, att); // TODO macro
-  }
-  else if (idx <= MIXSRC_LAST_INPUT) {
-    lcd_putcAtt(x+2, y+1, CHR_INPUT, TINSIZE);
-    drawFilledRect(x, y, 7, 7);
-    if (ZEXIST(g_model.inputNames[idx-MIXSRC_FIRST_INPUT]))
-      lcd_putsnAtt(x+8, y, g_model.inputNames[idx-MIXSRC_FIRST_INPUT], LEN_INPUT_NAME, ZCHAR|att);
-    else
-      lcd_outdezNAtt(x+8, y, idx, att|LEADING0|LEFT, 2);
-  }
-#endif
-
-#if defined(PCBTARANIS)
-  else if (idx <= MIXSRC_LAST_LUA) {
-    div_t qr = div(idx-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
-#if defined(LUA_MODEL_SCRIPTS)
-    if (qr.quot < MAX_SCRIPTS && qr.rem < scriptInputsOutputs[qr.quot].outputsCount) {
-      lcd_putcAtt(x+2, y+1, '1'+qr.quot, TINSIZE);
-      drawFilledRect(x, y, 7, 7);
-      lcd_putsnAtt(x+8, y, scriptInputsOutputs[qr.quot].outputs[qr.rem].name, att & STREXPANDED ? 9 : 4, att);
-    }
-    else
-#endif
-    {
-      putsStrIdx(x, y, "LUA", qr.quot+1, att);
-      lcd_putcAtt(lcdLastPos, y, 'a'+qr.rem, att);
-    }
-  }
-#endif
-
-#if defined(PCBTARANIS)
-  else if (idx < MIXSRC_LAST_POT) {
-    idx = idx-MIXSRC_Rud;
-    if (ZEXIST(g_eeGeneral.anaNames[idx]))
-      lcd_putsnAtt(x, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, ZCHAR|att);
-    else
-      lcd_putsiAtt(x, y, STR_VSRCRAW, idx+1, att);
-  }
-  else if (idx >= MIXSRC_FIRST_SWITCH && idx < MIXSRC_FIRST_LOGICAL_SWITCH) {
-    idx = idx-MIXSRC_FIRST_SWITCH;
-    if (ZEXIST(g_eeGeneral.switchNames[idx]))
-      lcd_putsnAtt(x, y, g_eeGeneral.switchNames[idx], LEN_SWITCH_NAME, ZCHAR|att);
-    else
-      lcd_putsiAtt(x, y, STR_VSRCRAW, idx+MIXSRC_FIRST_SWITCH-MIXSRC_Rud+1, att);
-  }
-  else if (idx < MIXSRC_SW1)
-    lcd_putsiAtt(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1, att);
-#else
   if (idx < MIXSRC_THR)
     lcd_putsiAtt(x, y, STR_VSRCRAW, idx, att);
   else if (idx < MIXSRC_SW1)
     putsSwitches(x, y, idx-MIXSRC_THR+1+3*(1/*+EXTRA_3POS*/), att);
-#endif
   else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH)
     putsSwitches(x, y, SWSRC_SW1+idx-MIXSRC_SW1, att);
   else if (idx < MIXSRC_CH1)
     putsStrIdx(x, y, STR_PPM_TRAINER, idx-MIXSRC_FIRST_TRAINER+1, att);
   else if (idx <= MIXSRC_LAST_CH) {
     putsStrIdx(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
-#if defined(PCBTARANIS)
-    if (ZEXIST(g_model.limitData[idx-MIXSRC_CH1].name) && (att & STREXPANDED)) {
-      lcd_putcAtt(lcdLastPos, y, ' ', att);
-      lcd_putsnAtt(lcdLastPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att);
-    }
-#endif
   }
 #if defined(GVARS) || !defined(PCBSTD)
   else if (idx <= MIXSRC_LAST_GVAR)
     putsStrIdx(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
 #endif
-
   else if (idx < MIXSRC_FIRST_TELEM) {
-#if defined(PCBTARANIS)
-    lcd_putsiAtt(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-NUM_LOGICAL_SWITCH-NUM_TRAINER-NUM_CHNOUT-MAX_GVARS, att);
-#else
     lcd_putsiAtt(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-(MIXSRC_SW1-MIXSRC_THR)-NUM_LOGICAL_SWITCH-NUM_TRAINER-NUM_CHNOUT-MAX_GVARS, att);
-#endif
   }
-
 #if defined(CPUARM)
   else {
     idx -= MIXSRC_FIRST_TELEM;
@@ -828,17 +723,6 @@ void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
     return putsStrIdx(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
   }
 #endif
-#if defined(PCBTARANIS)
-  if (idx >= SWSRC_FIRST_SWITCH && idx <= SWSRC_LAST_SWITCH) {
-    div_t swinfo = switchInfo(idx);
-    if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
-      lcd_putsnAtt(x, y, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME, ZCHAR|att);
-      char c = "\300-\301"[swinfo.rem];
-      lcd_putcAtt(lcdNextPos, y, c, att);
-      return;
-    }
-  }
-#endif
   return lcd_putsiAtt(x, y, STR_VSWITCHES, idx, att);
 }
 
@@ -854,46 +738,6 @@ void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 }
 #endif
 
-#if defined(PCBTARANIS)
-void putsCurveRef(coord_t x, coord_t y, CurveRef &curve, LcdFlags att)
-{
-  if (curve.value != 0) {
-    switch (curve.type) {
-      case CURVE_REF_DIFF:
-        lcd_putcAtt(x, y, 'D', att);
-        GVAR_MENU_ITEM(x+FW, y, curve.value, -100, 100, LEFT|att, 0, 0);
-        break;
-
-      case CURVE_REF_EXPO:
-        lcd_putcAtt(x, y, 'E', att);
-        GVAR_MENU_ITEM(x+FW, y, curve.value, -100, 100, LEFT|att, 0, 0);
-        break;
-
-      case CURVE_REF_FUNC:
-        lcd_putsiAtt(x, y, STR_VCURVEFUNC, curve.value, att);
-        break;
-
-      case CURVE_REF_CUSTOM:
-        putsCurve(x, y, curve.value, att);
-        break;
-    }
-  }
-}
-
-void putsCurve(coord_t x, coord_t y, int8_t idx, LcdFlags att)
-{
-  if (idx == 0) {
-    return lcd_putsiAtt(x, y, STR_MMMINV, 0, att);
-  }
-
-  if (idx < 0) {
-    lcd_putcAtt(x-3, y, '!', att);
-    idx = -idx;
-  }
-
-  putsStrIdx(x, y, STR_CV, idx, att);
-}
-#else
 void putsCurve(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 {
   if (idx < 0) {
@@ -905,7 +749,6 @@ void putsCurve(coord_t x, coord_t y, int8_t idx, LcdFlags att)
   else
     putsStrIdx(x, y, STR_CV, idx-CURVE_BASE+1, att);
 }
-#endif
 
 void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
 {
@@ -918,25 +761,6 @@ void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
   putsSwitches(x, y, mode, att);
 }
 
-#if defined(PCBTARANIS)
-void putsTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att)
-{
-  trim_t v = getRawTrimValue(phase, idx);
-  unsigned int mode = v.mode;
-  unsigned int p = mode >> 1;
-
-  if (mode == TRIM_MODE_NONE) {
-    lcd_putsAtt(x, y, "--", att);
-  }
-  else {
-    if (mode % 2 == 0)
-      lcd_putcAtt(x, y, ':', att|FIXEDWIDTH);
-    else
-      lcd_putcAtt(x, y, '+', att|FIXEDWIDTH);
-    lcd_putcAtt(lcdNextPos, y, '0'+p, att);
-  }
-}
-#else
 void putsTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att)
 {
   trim_t v = getRawTrimValue(phase, idx);
@@ -950,7 +774,6 @@ void putsTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att
     putsChnLetter(x, y, idx+1, att);
   }
 }
-#endif
 
 #if ROTARY_ENCODERS > 0
 void putsRotaryEncoderMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att)
@@ -1164,9 +987,6 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
         converted_value = div10_and_round(converted_value);
       }
       else {
-#if LCD_W >= 212
-        att |= PREC2;
-#else
         if (abs(converted_value) < 1000) {
           att |= PREC2;
         }
@@ -1174,7 +994,6 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
           converted_value = div10_and_round(converted_value);
           att |= PREC1;
         }
-#endif
       }
       putsValueWithUnit(x, y, converted_value, g_model.frsky.channels[channel].type, att);
       break;
@@ -1287,5 +1106,299 @@ void lcdSetContrast()
 {
   lcdSetRefVolt(g_eeGeneral.contrast);
 }
+
+#define LCD_BYTE_FILTER(p, keep, add) *(p) = (*(p) & (keep)) | (add)
+
+#if !defined(CPUARM)
+void lcd_putcAtt(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
+{
+  uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
+  const pm_uchar *q = &font_5x7[(c-0x20)*5];
+
+  lcdNextPos = x-1;
+  p--;
+
+  bool inv = false;
+  if (flags & BLINK) {
+    if (BLINK_ON_PHASE) {
+      if (flags & INVERS)
+        inv = true;
+      else {
+        return;
+      }
+    }
+  }
+  else if (flags & INVERS) {
+    inv = true;
+  }
+
+  unsigned char c_remapped = 0;
+
+#if defined(BOLD_SPECIFIC_FONT)
+  if (flags & (DBLSIZE+BOLD)) {
+#else
+  if (flags & DBLSIZE) {
+#endif
+    // To save space only some DBLSIZE and BOLD chars are available
+    // c has to be remapped. All non existing chars mapped to 0 (space)
+
+    if (c>=',' && c<=':')
+      c_remapped = c - ',' + 1;
+    else if (c>='A' && c<='Z')
+      c_remapped = c - 'A' + 16;
+    else if (c>='a' && c<='z')
+      c_remapped = c - 'a' + 42;
+    else if (c=='_')
+      c_remapped = 4;
+#if defined(BOLD_SPECIFIC_FONT)
+    else if (c!=' ')
+      flags &= ~BOLD;
+#endif
+
+#if defined(BOLD_SPECIFIC_FONT)
+  }
+  if (flags & DBLSIZE) {
+#endif
+
+    /* each letter consists of ten top bytes followed by
+     * by ten bottom bytes (20 bytes per * char) */
+    q = &font_10x14[((uint16_t)c_remapped)*20];
+    for (int8_t i=0; i<=11; i++) {
+      uint8_t b1=0, b2=0;
+      if (!i) {
+        if (!x || !inv) {
+          lcdNextPos++;
+          p++;
+          continue;
+        }
+      }
+      else if (i <= 10) {
+        b1 = pgm_read_byte(q++); /*top byte*/
+        b2 = pgm_read_byte(q++);
+      }
+      if ((b1 & b2) == 0xff) continue;
+      if (inv) {
+        b1 = ~b1;
+        b2 = ~b2;
+      }
+      if(&p[LCD_W+1] < DISPLAY_END) {
+        ASSERT_IN_DISPLAY(p);
+        ASSERT_IN_DISPLAY(p+LCD_W);
+        LCD_BYTE_FILTER(p, 0, b1);
+        LCD_BYTE_FILTER(p+LCD_W, 0, b2);
+        p++;
+        lcdNextPos++;
+      }
+    }
+  }
+  else {
+    const uint8_t ym8 = (y & 0x07);
+#if defined(BOLD_FONT)
+  #if defined(BOLD_SPECIFIC_FONT)
+    if (flags & BOLD) {
+      q = &font_5x7_B[(c_remapped)*5];
+    }
+  #else
+    uint8_t bb = 0;
+    if (inv) bb = 0xff;
+  #endif
+#endif
+
+    uint8_t *lineEnd = &displayBuf[ y / 8 * LCD_W + LCD_W ];
+
+    for (int8_t i=0; i<=6; i++) {
+      uint8_t b = 0;
+      if (i==0) {
+        if (!x || !inv) {
+          lcdNextPos++;
+          p++;
+          continue;
+        }
+      }
+      else if (i <= 5) {
+        b = pgm_read_byte(q++);
+      }
+      if (b == 0xff) {
+        if (flags & FIXEDWIDTH)
+          b = 0;
+        else
+          continue;
+      }
+      if (inv) b = ~b;
+      if ((flags & CONDENSED) && i==2) {
+        /*condense the letter by skipping column 3 */
+        continue;
+      }
+
+#if defined(BOLD_FONT) && !defined(BOLD_SPECIFIC_FONT)
+      if (flags & BOLD) {
+        uint8_t a;
+        if (inv)
+          a = b & bb;
+        else
+          a = b | bb;
+        bb = b;
+        b = a;
+      }
+#endif
+
+      if (p<DISPLAY_END && p<lineEnd) {
+        ASSERT_IN_DISPLAY(p);
+        uint8_t mask = ~(0xff << ym8);
+        LCD_BYTE_FILTER(p, mask, b << ym8);
+        if (ym8) {
+          uint8_t *r = p + LCD_W;
+          if (r<DISPLAY_END)
+            LCD_BYTE_FILTER(r, ~mask, b >> (8-ym8));
+        }
+
+        if (inv && (ym8 == 1)) *p |= 0x01;
+      }
+      p++;
+      lcdNextPos++;
+    }
+  }
+}
+#endif
+
+void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
+{
+  ASSERT_IN_DISPLAY(p);
+
+  if (att & FORCE)
+    *p |= mask;
+  else if (att & ERASE)
+    *p &= ~mask;
+  else
+    *p ^= mask;
+}
+
+void lcd_plot(coord_t x, coord_t y, LcdFlags att)
+{
+  uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
+  if (p<DISPLAY_END)
+    lcd_mask(p, BITMASK(y%8), att);
+}
+
+void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
+{
+  if (y >= LCD_H) return;
+  if (x+w > LCD_W) { w = LCD_W - x; }
+
+  uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
+  uint8_t msk = BITMASK(y%8);
+  while (w--) {
+    if(pat&1) {
+      lcd_mask(p, msk, att);
+      pat = (pat >> 1) | 0x80;
+    }
+    else {
+      pat = pat >> 1;
+    }
+    p++;
+  }
+}
+
+#if defined(CPUM64)
+void lcd_vlineStip(coord_t x, int8_t y, int8_t h, uint8_t pat)
+{
+  if (x >= LCD_W) return;
+  if (h<0) { y+=h; h=-h; }
+  if (y<0) { h+=y; y=0; }
+  if (y+h > LCD_H) { h = LCD_H - y; }
+
+  if (pat==DOTTED && !(y%2))
+    pat = ~pat;
+
+  uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
+  y = (y & 0x07);
+  if (y) {
+    ASSERT_IN_DISPLAY(p);
+    *p ^= ~(BITMASK(y)-1) & pat;
+    p += LCD_W;
+    h -= 8-y;
+  }
+  while (h>0) {
+    ASSERT_IN_DISPLAY(p);
+    *p ^= pat;
+    p += LCD_W;
+    h -= 8;
+  }
+  if (h < 0) h += 8;
+  if (h) {
+    p -= LCD_W;
+    ASSERT_IN_DISPLAY(p);
+    *p ^= ~(BITMASK(h)-1) & pat;
+  }
+}
+#else
+// allows the att parameter...
+void lcd_vlineStip(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att)
+{
+  if (x >= LCD_W) return;
+#if defined(CPUARM)
+  // should never happen on 9X
+  if (y >= LCD_H) return;
+#endif
+
+  if (h<0) { y+=h; h=-h; }
+  if (y<0) { h+=y; y=0; }
+  if (y+h > LCD_H) { h = LCD_H - y; }
+
+  if (pat==DOTTED && !(y%2))
+    pat = ~pat;
+
+  uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
+  y = (y & 0x07);
+  if (y) {
+    ASSERT_IN_DISPLAY(p);
+    uint8_t msk = ~(BITMASK(y)-1);
+    h -= 8-y;
+    if (h < 0)
+      msk -= ~(BITMASK(8+h)-1);
+    lcd_mask(p, msk & pat, att);
+    p += LCD_W;
+  }
+  while (h>=8) {
+    ASSERT_IN_DISPLAY(p);
+    lcd_mask(p, pat, att);
+    p += LCD_W;
+    h -= 8;
+  }
+  if (h>0) {
+    ASSERT_IN_DISPLAY(p);
+    lcd_mask(p, (BITMASK(h)-1) & pat, att);
+  }
+}
+#endif
+
+void lcd_invert_line(int8_t y)
+{
+  uint8_t *p  = &displayBuf[y * LCD_W];
+  for (coord_t x=0; x<LCD_W; x++) {
+    ASSERT_IN_DISPLAY(p);
+    *p++ ^= 0xff;
+  }
+}
+
+#if !defined(BOOT)
+void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
+{
+  const pm_uchar *q = img;
+  uint8_t w    = pgm_read_byte(q++);
+  uint8_t hb   = (pgm_read_byte(q++)+7)/8;
+  bool    inv  = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);
+  q += idx*w*hb;
+  for (uint8_t yb = 0; yb < hb; yb++) {
+    uint8_t *p = &displayBuf[ (y / 8 + yb) * LCD_W + x ];
+    for (coord_t i=0; i<w; i++){
+      uint8_t b = pgm_read_byte(q);
+      q++;
+      ASSERT_IN_DISPLAY(p);
+      *p++ = inv ? ~b : b;
+    }
+  }
+}
+#endif
 
 #endif

@@ -34,6 +34,7 @@
  *
  */
 
+#include "lcd.h"
 #include "menus.h"
 
 #define NUM_BODY_LINES     LCD_LINES-1

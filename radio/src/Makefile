@@ -387,7 +387,6 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
   EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
-  LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
@@ -458,7 +457,6 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
   EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
-  LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
@@ -525,7 +523,6 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
   EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
-  LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
@@ -594,7 +591,6 @@ ifeq ($(PCB), GRUVIN9X)
   BOARDSRC = main_avr.cpp targets/gruvin9x/board_gruvin9x.cpp
   EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
-  LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp  
   CPPSRC += audio_avr.cpp haptic.cpp debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
@@ -639,7 +635,6 @@ ifeq ($(PCB), MEGA2560)
   INCDIRS += targets/mega2560 targets/stock FatFs FatFs/option
   BOARDSRC = main_avr.cpp targets/mega2560/board_mega2560.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
-  LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp  
   CPPSRC += audio_avr.cpp debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
@@ -725,7 +720,6 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   SRC += targets/sky9x/usb/common/core/USBEndpointDescriptor.c targets/sky9x/usb/common/core/USBGenericRequest.c targets/sky9x/usb/common/core/USBFeatureRequest.c targets/sky9x/usb/common/core/USBInterfaceRequest.c targets/sky9x/usb/common/core/USBGetDescriptorRequest.c targets/sky9x/usb/common/core/USBSetAddressRequest.c targets/sky9x/usb/common/core/USBSetConfigurationRequest.c targets/sky9x/usb/common/core/USBConfigurationDescriptor.c targets/sky9x/usb/common/core/USBGenericDescriptor.c 
   SRC += targets/sky9x/MEDSdcard.c
   EEPROMSRC = eeprom_common.cpp eeprom_raw.cpp eeprom_conversions.cpp
-  LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp pulses/dsm2_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp haptic.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp telemetry/telemetry.cpp
   CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/second_serial_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
@@ -831,7 +825,6 @@ ifeq ($(PCB), TARANIS)
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   SRC += targets/taranis/pwr_driver.c targets/taranis/usb_driver.c
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp eeprom_conversions.cpp
-  LCDSRC = lcd_common.cpp lcd_taranis.cpp
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp sbus.cpp telemetry/telemetry.cpp
   CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/uart3_driver.cpp targets/taranis/telemetry_driver.cpp
@@ -951,7 +944,7 @@ endif
 
 GUISRC = gui/$(GUIDIRECTORY)/helpers.cpp gui/$(GUIDIRECTORY)/navigation.cpp gui/$(GUIDIRECTORY)/popups.cpp gui/$(GUIDIRECTORY)/widgets.cpp gui/$(GUIDIRECTORY)/menus.cpp $(GUIMODELSRC) $(GUIGENERALSRC) gui/$(GUIDIRECTORY)/view_main.cpp gui/$(GUIDIRECTORY)/view_statistics.cpp
 
-CPPSRC += opentx.cpp functions.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp $(GUISRC) $(EEPROMSRC) $(LCDSRC) keys.cpp maths.cpp translations.cpp gui/$(GUIDIRECTORY)/fonts.cpp $(TTS_SRC)
+CPPSRC += opentx.cpp functions.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp $(GUISRC) $(EEPROMSRC) gui/$(GUIDIRECTORY)/lcd.cpp keys.cpp maths.cpp translations.cpp gui/$(GUIDIRECTORY)/fonts.cpp $(TTS_SRC)
 
 # Debugging format.
 #     Native formats for AVR-GCC's -g are dwarf-2 [default] or stabs.
