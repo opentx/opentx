@@ -398,13 +398,16 @@ ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 IF( WIN32 )
   IF( MSVC )
-    SET( NSI_IN_FILE companion-vs.nsi.in )  
+    SET(COMPANION_NSI_IN_FILE companion-vs.nsi.in)  
+    SET(SIMULATOR_NSI_IN_FILE simulator-vs.nsi.in)  
   ELSE( )
-    SET( NSI_IN_FILE companion-msys.nsi.in )
+    SET(COMPANION_NSI_IN_FILE companion-msys.nsi.in)  
+    SET(SIMULATOR_NSI_IN_FILE simulator-msys.nsi.in)  
   ENDIF( )
 
   SET( SYSDIR "$ENV{windir}/system32" )  
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${NSI_IN_FILE} ${CMAKE_CURRENT_BINARY_DIR}/companion.nsi @ONLY)     
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${COMPANION_NSI_IN_FILE} ${CMAKE_CURRENT_BINARY_DIR}/companion.nsi @ONLY)     
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${SIMULATOR_NSI_IN_FILE} ${CMAKE_CURRENT_BINARY_DIR}/simulator.nsi @ONLY)     
 
   FIND_PROGRAM(NSIS_EXE makensis.exe PATHS
     "C:/Program Files/NSIS"
@@ -414,12 +417,19 @@ IF( WIN32 )
   
   ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/companionInstall.exe
                      COMMAND "${NSIS_EXE}" ARGS companion.nsi
-                     DEPENDS ${PROJECT_NAME} simulator ${PROJECT_BINARY_DIR}/companion.nsi
-                     COMMENT "Windows NSIS Installer")
+                     DEPENDS companion simulator ${PROJECT_BINARY_DIR}/companion.nsi
+                     COMMENT "Companion Windows NSIS Installer")
+
+  ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/simulatorInstall.exe
+                     COMMAND "${NSIS_EXE}" ARGS simulator.nsi
+                     DEPENDS simulator ${PROJECT_BINARY_DIR}/simulator.nsi
+                     COMMENT "Simulator Windows NSIS Installer")
 
   ADD_CUSTOM_TARGET( installer
     DEPENDS ${PROJECT_BINARY_DIR}/companionInstall.exe
+    DEPENDS ${PROJECT_BINARY_DIR}/simulatorInstall.exe
     SOURCES ${PROJECT_BINARY_DIR}/companion.nsi
+    SOURCES ${PROJECT_BINARY_DIR}/simulator.nsi
   )
 ENDIF( )
 

@@ -6,14 +6,13 @@
 ;Include Modern UI
 
   !include "MUI2.nsh"
-  !include "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\FileAssociation.nsh"
 
 ;--------------------------------
 ;General
 
   ;Name and file
-  Name "OpenTX Companion"
-  OutFile "companionInstall_@C9X_VERSION@.exe"
+  Name "OpenTX Simulator"
+  OutFile "simulatorInstall_@C9X_VERSION@.exe"
 
   ;Default installation folder
   InstallDir "$PROGRAMFILES\OpenTX"
@@ -77,10 +76,8 @@
     !define MUI_FINISHPAGE_NOAUTOCLOSE
     !define MUI_FINISHPAGE_RUN
     !define MUI_FINISHPAGE_RUN_CHECKED
-    !define MUI_FINISHPAGE_RUN_TEXT "Launch OpenTX Companion"
+    !define MUI_FINISHPAGE_RUN_TEXT "Launch OpenTX Simulator"
     !define MUI_FINISHPAGE_RUN_FUNCTION "LaunchLink"
-  #  !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
-  #  !define MUI_FINISHPAGE_SHOWREADME $INSTDIR\readme.txt
   !insertmacro MUI_PAGE_FINISH
   
   !insertmacro MUI_UNPAGE_CONFIRM
@@ -95,12 +92,11 @@
 ;--------------------------------
 ;Installer Sections
 
-Section "OpenTX Companion" SecDummy
+Section "OpenTX Simulator" SecDummy
 
   SetOutPath "$INSTDIR"
   
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\license.txt"
-  File "Release\companion.exe"
   File "Release\simulator.exe"
   ${!defineifexist} PTHREAD_WINDIR "C:\Programs\pthreads\Pre-built.2\lib\pthreadVC2.dll"
   !ifdef PTHREAD_WINDIR
@@ -117,11 +113,6 @@ Section "OpenTX Companion" SecDummy
   File "@QT_BINARY_DIR@\QtNetwork4.dll"
   File "@QT_BINARY_DIR@\Phonon4.dll"
   File "@QT_BINARY_DIR@\QtXml4.dll"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\avrdude.exe"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\avrdude.conf"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\libusb0.dll"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\dfu-util.exe"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\libusb-1.0.dll"
   
   CreateDirectory "$INSTDIR\phonon_backend"
   SetOutPath "$INSTDIR\phonon_backend"
@@ -135,20 +126,13 @@ Section "OpenTX Companion" SecDummy
   ;Store installation folder
   WriteRegStr HKCU "Software\OpenTX" "" $INSTDIR
   
-  ;Associate with extentions ,bin and .hex
-  ${registerExtension} "$INSTDIR\companion.exe" ".bin" "BIN_File"
-  ${registerExtension} "$INSTDIR\companion.exe" ".hex" "HEX_File"
-  ${registerExtension} "$INSTDIR\companion.exe" ".companion" "EEPE_File"
-  ${registerExtension} "$INSTDIR\companion.exe" ".eepm" "EEPM_File"
-
-  
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
   
   ;Registry information for add/remove programs
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "DisplayName" "OpenTX Companion"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "DisplayName" "OpenTX Simulator"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "UninstallString" "$\"$INSTDIR\Uninstall.exe$\""
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "DisplayIcon" "$\"$INSTDIR\companion.exe$\""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "DisplayIcon" "$\"$INSTDIR\simulator.exe$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "Publisher" "OpenTX"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "URLInfoAbout" "http://www.open-tx.org"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ImageMaker" "QuietUninstallString" "$\"$INSTDIR\Uninstall.exe$\" /S"
@@ -157,7 +141,6 @@ Section "OpenTX Companion" SecDummy
     
   ;Create shortcuts
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
-  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\companion.lnk" "$INSTDIR\companion.exe"
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\simulator.lnk" "$INSTDIR\simulator.exe"
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
   
@@ -169,8 +152,8 @@ SectionEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_SecDummy ${LANG_ENGLISH} "Models and settings editor for OpenTX"
-  LangString DESC_SecDummy ${LANG_FRENCH} "Editeur de r�glages et mod�les pour OpenTX"
+  LangString DESC_SecDummy ${LANG_ENGLISH} "Simulator for OpenTX"
+  LangString DESC_SecDummy ${LANG_FRENCH}  "Simulateur pour OpenTX"
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -185,7 +168,6 @@ Section "Uninstall"
   ;ADD YOUR OWN FILES HERE...  
   
   Delete "$INSTDIR\license.txt"
-  Delete "$INSTDIR\companion.exe"
   Delete "$INSTDIR\simulator.exe"
   Delete "$INSTDIR\pthreadVC2.dll"
   Delete "$INSTDIR\xerces-c_3_1.dll"
@@ -197,26 +179,14 @@ Section "Uninstall"
   Delete "$INSTDIR\QtXml4.dll"
   Delete "$INSTDIR\QtNetwork4.dll"
   Delete "$INSTDIR\Phonon4.dll"
-  Delete "$INSTDIR\avrdude.exe"
-  Delete "$INSTDIR\avrdude.conf"
-  Delete "$INSTDIR\libusb0.dll"
-  Delete "$INSTDIR\dfu-util.exe"
-  Delete "$INSTDIR\libusb-1.0.dll"
   Delete "$INSTDIR\Uninstall.exe"
-  
   Delete "$INSTDIR\lang\*.*"
 
   RMDir "$INSTDIR\lang"
   RMDir "$INSTDIR"
-  
-  ${unregisterExtension} ".bin" "BIN File"
-  ${unregisterExtension} ".hex" "HEX File"
-  ${unregisterExtension} ".eepm" "EEPE File"
-  ${unregisterExtension} ".companion" "EEPM File"
-  
+    
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
     
-  Delete "$SMPROGRAMS\$StartMenuFolder\companion.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\simulator.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
@@ -227,5 +197,5 @@ Section "Uninstall"
 SectionEnd
 
 Function LaunchLink
-  ExecShell "" "$INSTDIR\companion.exe"
+  ExecShell "" "$INSTDIR\simulator.exe"
 FunctionEnd
