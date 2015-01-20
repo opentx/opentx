@@ -1509,6 +1509,7 @@ extern uint8_t requiredSpeakerVolume;
 #define SD_SCREEN_FILE_LENGTH (32)
 union ReusableBuffer
 {
+    // 263 bytes on Taranis
     struct
     {
         char listnames[LCD_LINES-1][LEN_MODEL_NAME];
@@ -1522,6 +1523,7 @@ union ReusableBuffer
 
     } modelsel;
 
+    // 103 bytes on Taranis
     struct
     {
         int16_t midVals[NUM_STICKS+NUM_POTS];
@@ -1539,6 +1541,7 @@ union ReusableBuffer
     } calib;
 
 #if defined(SDCARD)
+    // 246 bytes on Taranis
     struct
     {
         char lines[LCD_LINES-1][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line

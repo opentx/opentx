@@ -83,3 +83,5 @@ void pushModelNotes()
   strcpy(buf, TEXT_EXT);
   pushMenuTextView(filename);
 }
+
+Clipboard clipboard;

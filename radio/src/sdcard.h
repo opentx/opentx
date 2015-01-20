@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef sdcard_h
-#define sdcard_h
+#ifndef _SDCARD_H_
+#define _SDCARD_H_
 
 #include "FatFs/ff.h"
 
@@ -68,10 +68,10 @@
 extern FATFS g_FATFS_Obj;
 
 extern uint8_t logDelay;
-extern const pm_char * openLogs();
+const pm_char *openLogs();
 void writeHeader();
-extern void closeLogs();
-extern void writeLogs();
+void closeLogs();
+void writeLogs();
 
 #if !defined(BOOT)
 inline const pm_char *SDCARD_ERROR(FRESULT result)
@@ -90,6 +90,8 @@ inline const pm_char *SDCARD_ERROR(FRESULT result)
 #else
   #define O9X_FOURCC 0x3178396F // o9x for gruvin9x/MEGA2560
 #endif
+
+const char *fileCopy(const char *filename, const char *srcDir, const char *destDir);
 
 #endif
 

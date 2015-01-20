@@ -116,39 +116,54 @@ void onSdManagerMenu(const char *result)
 {
   TCHAR lfn[_MAX_LFN+1];
 
+  // TODO possible buffer overflows here!
+
   uint8_t index = m_posVert-1-s_pgOfs;
+  char *line = reusableBuffer.sdmanager.lines[index];
+
   if (result == STR_SD_INFO) {
     pushMenu(menuGeneralSdManagerInfo);
   }
   else if (result == STR_SD_FORMAT) {
     POPUP_CONFIRMATION(STR_CONFIRM_FORMAT);
   }
+  else if (result == STR_COPY_FILE) {
+    clipboard.type = CLIPBOARD_TYPE_SD_FILE;
+    f_getcwd(clipboard.data.sd.directory, CLIPBOARD_PATH_LEN);
+    strncpy(clipboard.data.sd.filename, line, CLIPBOARD_PATH_LEN-1);
+  }
+  else if (result == STR_PASTE) {
+    f_getcwd(lfn, _MAX_LFN);
+    POPUP_WARNING(fileCopy(clipboard.data.sd.filename, clipboard.data.sd.directory, lfn));
+    reusableBuffer.sdmanager.offset = -1;
+  }
   else if (result == STR_DELETE_FILE) {
     f_getcwd(lfn, _MAX_LFN);
-    strcat_P(lfn, PSTR("/"));
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    strcat(lfn, PSTR("/"));
+    strcat(lfn, line);
     f_unlink(lfn);
-    strncpy(statusLineMsg, reusableBuffer.sdmanager.lines[index], 13);
+    strncpy(statusLineMsg, line, 13);
     strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), STR_REMOVED);
     showStatusLine();
-    if ((uint16_t)m_posVert == reusableBuffer.sdmanager.count) m_posVert--;
-    reusableBuffer.sdmanager.offset = s_pgOfs-1;
+    reusableBuffer.sdmanager.offset = -1;
+    if (m_posVert == reusableBuffer.sdmanager.count) 
+      m_posVert--;
   }
   /* TODO else if (result == STR_LOAD_FILE) {
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    strcat(lfn, line);
     POPUP_WARNING(eeLoadModelSD(lfn));
   } */
   else if (result == STR_PLAY_FILE) {
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    strcat(lfn, line);
     audioQueue.stopAll();
     audioQueue.playFile(lfn, 0, ID_PLAY_FROM_SD_MANAGER);
   }
   else if (result == STR_ASSIGN_BITMAP) {
-    strAppendFilename(g_model.header.bitmap, reusableBuffer.sdmanager.lines[index], sizeof(g_model.header.bitmap));
+    strAppendFilename(g_model.header.bitmap, line, sizeof(g_model.header.bitmap));
     LOAD_MODEL_BITMAP();
     memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
     eeDirty(EE_MODEL);
@@ -156,20 +171,20 @@ void onSdManagerMenu(const char *result)
   else if (result == STR_VIEW_TEXT) {
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    strcat(lfn, line);
     pushMenuTextView(lfn);
   }
   else if (result == STR_FLASH_BOOTLOADER) {
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    strcat(lfn, line);
     flashBootloader(lfn);
   }
 #if defined(LUA)
   else if (result == STR_EXECUTE_FILE) {
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    strcat(lfn, line);
     luaExec(lfn);
   }
 #endif
@@ -242,9 +257,9 @@ void menuGeneralSdManager(uint8_t _event)
       {
         uint8_t index = m_posVert-1-s_pgOfs;
         // TODO duplicated code for finding extension
-        char * ext = reusableBuffer.sdmanager.lines[index];
-        int len = strlen(ext) - 4;
-        ext += len;
+        char *line = reusableBuffer.sdmanager.lines[index];
+        int len = strlen(line) - 4;
+        char *ext = line+len;
         /* TODO if (!strcasecmp(ext, MODELS_EXT)) {
           s_menu[s_menu_count++] = STR_LOAD_FILE;
         }
@@ -266,9 +281,12 @@ void menuGeneralSdManager(uint8_t _event)
         }
 #endif
         if (!READ_ONLY()) {
-          MENU_ADD_ITEM(STR_DELETE_FILE);
+          if (line[SD_SCREEN_FILE_LENGTH+1]) // it's a file
+            MENU_ADD_ITEM(STR_COPY_FILE);
+          if (clipboard.type == CLIPBOARD_TYPE_SD_FILE)
+            MENU_ADD_ITEM(STR_PASTE);
           // MENU_ADD_ITEM(STR_RENAME_FILE);  TODO: Implement
-          // MENU_ADD_ITEM(STR_COPY_FILE);    TODO: Implement
+          MENU_ADD_ITEM(STR_DELETE_FILE);
         }
       }
       menuHandler = onSdManagerMenu;
