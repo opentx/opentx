@@ -143,9 +143,12 @@ void per10ms()
   }
 #endif
 
+#if defined(GUI)
   if (lightOffCounter) lightOffCounter--;
   if (flashCounter) flashCounter--;
   if (s_noHi) s_noHi--;
+#endif
+
   if (trimsCheckTimer) trimsCheckTimer--;
   if (ppmInValid) ppmInValid--;
 
@@ -1971,9 +1974,12 @@ void opentxStart()
   checkAlarm();
   checkAll();
 
+#if defined(GUI)
   if (g_eeGeneral.chkSum != evalChkSum()) {
     chainMenu(menuFirstCalib);
   }
+#endif
+
 }
 
 #if defined(CPUARM) || defined(CPUM2560)
@@ -2128,7 +2134,7 @@ uint8_t getSticksNavigationEvent()
 void checkBattery()
 {
   static uint8_t counter = 0;
-#if !defined(COLORLCD)
+#if defined(GUI) && !defined(COLORLCD)
   // TODO not the right menu I think ...
   if (g_menuStack[g_menuStackPtr] == menuGeneralDiagAna) {
     g_vbat100mV = 0;
@@ -2670,9 +2676,11 @@ int main(void)
 
   stack_paint();
 
+#if defined(GUI)
   g_menuStack[0] = menuMainView;
-#if MENUS_LOCK != 2/*no menus*/
-  g_menuStack[1] = menuModelSelect;
+  #if MENUS_LOCK != 2/*no menus*/
+    g_menuStack[1] = menuModelSelect;
+  #endif
 #endif
 
 #if !defined(PCBTARANIS)

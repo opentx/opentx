@@ -385,7 +385,14 @@ void displayWarning(uint8_t event);
   extern uint8_t s_warning_info_flags;
 #endif
 
-#if defined(CPUARM)
+#if !defined(GUI)
+  #define DISPLAY_WARNING(...)
+  #define POPUP_WARNING(...)
+  #define POPUP_CONFIRMATION(...)
+  #define POPUP_INPUT(...)
+  #define WARNING_INFO_FLAGS    0
+  #define SET_WARNING_INFO(...)
+#elif defined(CPUARM)
   #define DISPLAY_WARNING       (*popupFunc)
   #define POPUP_WARNING(s)      (s_warning = s, s_warning_info = 0, popupFunc = displayWarning)
   #define POPUP_CONFIRMATION(s) (s_warning = s, s_warning_type = WARNING_TYPE_CONFIRM, s_warning_info = 0, popupFunc = displayWarning)
