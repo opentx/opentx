@@ -150,7 +150,7 @@ PWM_BACKLIGHT = NO
 
 # SPLASH on START
 # Values = YES, NO, FIXED
-SPLASH = YES
+SPLASH = $(GUI)
 
 # GRAPHICS (sliders / checkboxes / bold / batt graph)
 GRAPHICS = YES
@@ -389,7 +389,10 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   INCDIRS += targets/stock
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
-  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  EXTRABOARDSRC = targets/common_avr/telemetry_driver.cpp
+  ifeq ($(GUI), YES)
+    EXTRABOARDSRC += targets/stock/lcd_driver.cpp
+  endif
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
@@ -950,7 +953,13 @@ ifeq ($(GUI), YES)
   GUISRC = gui/$(GUIDIRECTORY)/helpers.cpp gui/$(GUIDIRECTORY)/navigation.cpp gui/$(GUIDIRECTORY)/popups.cpp gui/$(GUIDIRECTORY)/widgets.cpp gui/$(GUIDIRECTORY)/menus.cpp $(GUIMODELSRC) $(GUIGENERALSRC) gui/$(GUIDIRECTORY)/view_main.cpp gui/$(GUIDIRECTORY)/view_statistics.cpp
 endif
 
-CPPSRC += opentx.cpp functions.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp $(GUISRC) $(EEPROMSRC) gui/$(GUIDIRECTORY)/lcd.cpp gui/$(GUIDIRECTORY)/splash.cpp keys.cpp maths.cpp translations.cpp gui/$(GUIDIRECTORY)/fonts.cpp $(TTS_SRC)
+CPPSRC += opentx.cpp functions.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp $(GUISRC) $(EEPROMSRC) 
+
+ifeq ($(GUI), YES)
+  GUISRC += gui/$(GUIDIRECTORY)/lcd.cpp gui/$(GUIDIRECTORY)/splash.cpp gui/$(GUIDIRECTORY)/fonts.cpp 
+endif
+
+GUISRC += keys.cpp maths.cpp translations.cpp $(TTS_SRC)
 
 # Debugging format.
 #     Native formats for AVR-GCC's -g are dwarf-2 [default] or stabs.

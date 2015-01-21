@@ -649,7 +649,11 @@ void readKeysAndTrims();
 
 uint16_t evalChkSum();
 
-#if defined(VOICE)
+#if !defined(GUI)
+  #define MESSAGE_SOUND_ARG
+  #define MESSAGE(...)
+  #define ALERT(...)
+#elif defined(VOICE)
   #define MESSAGE_SOUND_ARG , uint8_t sound
   #define MESSAGE(title, msg, info, sound) message(title, msg, info, sound)
   #define ALERT(title, msg, sound) alert(title, msg, sound)

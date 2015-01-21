@@ -1011,6 +1011,7 @@ void doSplash()
 #define doSplash()
 #endif
 
+#if defined(GUI)
 void checkAll()
 {
 #if !defined(PCBSKY9X)
@@ -1049,6 +1050,7 @@ void checkAll()
 
   START_SILENCE_PERIOD();
 }
+#endif // GUI
 
 #if defined(MODULE_ALWAYS_SEND_PULSES)
 void checkStartupWarnings()
@@ -1154,6 +1156,7 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
   }
 }
 
+#if defined(GUI)
 void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SOUND_ARG)
 {
   lcd_clear();
@@ -1206,6 +1209,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
   lcdSetContrast();
   clearKeyEvents();
 }
+#endif
 
 #if defined(GVARS)
 int8_t trimGvar[NUM_STICKS] = { -1, -1, -1, -1 };
@@ -1971,8 +1975,10 @@ void opentxStart()
   eeLoadModel(g_eeGeneral.currModel);
 #endif
 
+#if defined(GUI)
   checkAlarm();
   checkAll();
+#endif
 
 #if defined(GUI)
   if (g_eeGeneral.chkSum != evalChkSum()) {
@@ -2628,8 +2634,10 @@ void opentxInit(OPENTX_INIT_ARGS)
     eeDirty(EE_GENERAL);
   }
 #endif
-  
+
+#if defined(GUI)
   lcdSetContrast();
+#endif
   backlightOn();
 
 #if defined(PCBTARANIS)
@@ -2670,7 +2678,7 @@ int main(void)
 
   boardInit();
   
-#if !defined(PCBTARANIS)
+#if defined(GUI) && !defined(PCBTARANIS)
   lcdInit();
 #endif
 
@@ -2683,7 +2691,7 @@ int main(void)
   #endif
 #endif
 
-#if !defined(PCBTARANIS)
+#if defined(GUI) && !defined(PCBTARANIS)
   lcdSetRefVolt(25);
 #endif
 

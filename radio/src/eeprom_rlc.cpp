@@ -975,9 +975,11 @@ void eeLoadModel(uint8_t id)
     logicalSwitchesReset();
 
     if (pulsesStarted()) {
+#if defined(GUI)
       if (!newModel) {
         checkAll();
       }
+#endif
       resumePulses();
     }
 

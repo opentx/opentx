@@ -636,6 +636,7 @@ int8_t getMovedSwitch()
   return result;
 }
 
+#if defined(GUI)
 void checkSwitches()
 {
 #if defined(MODULE_ALWAYS_SEND_PULSES)
@@ -798,6 +799,7 @@ void checkSwitches()
   }
 #endif    
 }
+#endif // GUI
 
 void logicalSwitchesTimerTick()
 {
