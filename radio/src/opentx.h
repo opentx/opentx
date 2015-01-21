@@ -1721,4 +1721,33 @@ void varioWakeup();
 
 #include "lua_api.h"
 
+#if defined(SDCARD)
+enum ClipboardType {
+  CLIPBOARD_TYPE_NONE,
+  CLIPBOARD_TYPE_CUSTOM_SWITCH,
+  CLIPBOARD_TYPE_CUSTOM_FUNCTION,
+  CLIPBOARD_TYPE_SD_FILE,
+};
+
+#if defined(SIMU)
+  #define CLIPBOARD_PATH_LEN 1024
+#else
+  #define CLIPBOARD_PATH_LEN 32
+#endif
+
+struct Clipboard {
+  ClipboardType type;
+  union {
+    LogicalSwitchData csw;
+    CustomFunctionData cfn;
+    struct {
+      char directory[CLIPBOARD_PATH_LEN];
+      char filename[CLIPBOARD_PATH_LEN];
+    } sd;
+  } data;
+};
+
+extern Clipboard clipboard;
+#endif
+
 #endif
