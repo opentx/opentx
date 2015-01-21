@@ -640,6 +640,11 @@ FRESULT f_unlink (const TCHAR*)
   return FR_OK;
 }
 
+FRESULT f_rename(const TCHAR*, const TCHAR*)
+{
+  return FR_OK;
+}
+
 int f_putc (TCHAR c, FIL * fil)
 {
   if (fil && fil->fs) fwrite(&c, 1, 1, (FILE*)fil->fs);

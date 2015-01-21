@@ -115,7 +115,6 @@ void onModelSetupBitmapMenu(const char *result)
   else {
     // The user choosed a bmp file in the list
     copySelection(g_model.header.bitmap, result, sizeof(g_model.header.bitmap));
-    LOAD_MODEL_BITMAP();
     memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
     eeDirty(EE_MODEL);
   }

@@ -138,7 +138,7 @@ static int8_t s_copyTgtOfs;
 
 static uint8_t editNameCursorPos = 0;
 
-void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uint8_t active)
+void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uint8_t active, uint8_t attr)
 {
   uint8_t mode = 0;
   if (active) {
@@ -148,7 +148,7 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
       mode = FIXEDWIDTH;
   }
 
-  lcd_putsnAtt(x, y, name, size, ZCHAR | mode);
+  lcd_putsnAtt(x, y, name, size, attr | mode);
 
   if (active) {
     uint8_t cur = editNameCursorPos;
@@ -158,8 +158,14 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
 
       if (IS_ROTARY_RIGHT(event) || IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP)
           || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP)) {
-         v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
-         if (c <= 0) v = -v;
+         if (attr == ZCHAR) {
+           v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
+           if (c <= 0) v = -v;
+         }
+         else {
+           v = checkIncDec(event, abs(v), '0', 'z', 0);
+         }
+
       }
 
       switch (event) {
@@ -175,7 +181,7 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
           break;
 
         case EVT_ROTARY_LONG:
-          if (v==0) {
+          if ((attr == ZCHAR && v==0) || (attr == 0 && v==' ')) {
             s_editMode = 0;
             killEvents(event);
             break;
@@ -193,7 +199,12 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
         eeDirty(g_menuPos[0] == 0 ? EE_MODEL : EE_GENERAL);
       }
 
-      lcd_putcAtt(x+editNameCursorPos*FW, y, idx2char(v), ERASEBG|INVERS|FIXEDWIDTH);
+      if (attr == ZCHAR) {
+        lcd_putcAtt(x+editNameCursorPos*FW, y, idx2char(v), ERASEBG|INVERS|FIXEDWIDTH);
+      }
+      else {
+        lcd_putcAtt(x+editNameCursorPos*FW, y, v, ERASEBG|INVERS|FIXEDWIDTH);
+      }
     }
     else {
       cur = 0;

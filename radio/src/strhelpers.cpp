@@ -97,6 +97,16 @@ int zchar2str(char *dest, const char *src, int size)
 #endif
 
 #if defined(CPUARM)
+unsigned int effectiveLen(const char *str, unsigned int size)
+{
+  while (size > 0) {
+    if (str[size-1] != ' ')
+      return size;
+    size--;
+  }
+  return 0;
+}
+
 bool zexist(const char *str, uint8_t size)
 {
   for (int i=0; i<size; i++) {
@@ -113,7 +123,7 @@ uint8_t zlen(const char *str, uint8_t size)
       return size;
     size--;
   }
-  return size;
+  return 0;
 }
 
 char *strcat_zchar(char * dest, const char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx)
@@ -181,7 +191,7 @@ char *strSetCursor(char *dest, int position)
   return dest;
 }
 
-char * strAppendFilename(char * dest, const char * filename, const int size)
+char *strAppendFilename(char *dest, const char *filename, const int size)
 {
   memset(dest, 0, size);
   for (int i=0; i<size; i++) {
@@ -191,6 +201,21 @@ char * strAppendFilename(char * dest, const char * filename, const int size)
     *dest++ = c;
   }
   return dest;
+}
+
+#define LEN_FILE_EXTENSION 4
+char *getFileExtension(char *filename, int size)
+{
+  for (int i=0; i<size-LEN_FILE_EXTENSION; ++i) {
+    if (filename[i] == '.') {
+      for (int j=i+1; j<size; ++j) {
+        if (filename[j] == '\0') {
+          return &filename[i];
+        }
+      }
+    }
+  }
+  return NULL;
 }
 
 #if defined(RTCLOCK)

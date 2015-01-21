@@ -441,6 +441,10 @@ void menuMainView(uint8_t event)
       killEvents(KEY_EXIT);
       killEvents(KEY_UP);
       killEvents(KEY_DOWN);
+      // no break
+
+    case EVT_ENTRY_UP:
+      LOAD_MODEL_BITMAP();
       break;
 
     case EVT_KEY_CONTEXT_MENU:
