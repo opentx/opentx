@@ -125,6 +125,7 @@ void perMain()
   if (sticks_evt) evt = sticks_evt;
 #endif
 
+#if defined(GUI)
   const char *warn = s_warning;
   uint8_t menu = s_menu_count;
 
@@ -153,6 +154,7 @@ void perMain()
   drawStatusLine();
 
   lcdRefresh();
+#endif
 
   if (SLAVE_MODE()) {
     JACK_PPM_OUT();
