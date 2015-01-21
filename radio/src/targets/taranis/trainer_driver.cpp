@@ -45,21 +45,21 @@ extern uint16_t ppmStream[NUM_MODULES+1][20];
 // Trainer PPM oputput PC9, Timer 3 channel 4, (Alternate Function 2)
 void init_trainer_ppm()
 {
-  setupTrainerPulses() ;
   TrainerPulsePtr = ppmStream[TRAINER_MODULE];
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN ;           // Enable portC clock
   configure_pins( PIN_TR_PPM_OUT, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_2 | PIN_OS25 | PIN_PUSHPULL ) ;
   configure_pins( PIN_TR_PPM_IN, PIN_PORTA | PIN_INPUT ) ;
   RCC->APB1ENR |= RCC_APB1ENR_TIM3EN ;            // Enable clock
+  TIM3->CR1 &= ~TIM_CR1_CEN ;
+
+  // setupTrainerPulses() is also configuring registers,
+  // so it has to be called after the peripheral is enabled
+  setupTrainerPulses() ;
 
   TIM3->ARR = *TrainerPulsePtr++ ;
   TIM3->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1 ;               // 0.5uS
-  TIM3->CCER = TIM_CCER_CC4E ;
-  if(!g_model.moduleData[TRAINER_MODULE].ppmPulsePol)
-    TIM3->CCER |= TIM_CCER_CC4P;
   TIM3->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4PE ;                   // PWM mode 1
-  TIM3->CCR4 = (g_model.moduleData[TRAINER_MODULE].ppmDelay*50+300)*2;
   TIM3->BDTR = TIM_BDTR_MOE ;
   TIM3->EGR = 1 ;
   // TIM3->DIER = TIM_DIER_UDE ;
@@ -82,6 +82,13 @@ void stop_trainer_ppm()
   TIM3->DIER &= ~TIM_DIER_CC2IE ;                      // Stop Interrupt
   TIM3->DIER &= ~TIM_DIER_UIE ;                        // Stop Interrupt
   NVIC_DisableIRQ(TIM3_IRQn) ;                         // Stop Interrupt
+}
+
+void set_trainer_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive)
+{
+  TIM3->CCR2 = idleTime;
+  TIM3->CCR4 = delay;
+  TIM3->CCER = TIM_CCER_CC4E | (positive ? TIM_CCER_CC4P : 0);
 }
 
 // Trainer capture, PC8, Timer 3 channel 3

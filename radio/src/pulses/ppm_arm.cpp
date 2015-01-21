@@ -55,6 +55,7 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
   uint32_t lastCh = min<unsigned int>(NUM_CHNOUT, firstCh + 8 + g_model.moduleData[port].channelsCount);
 
 #if defined(PCBSKY9X)
+  // TODO move register stuff to driver
   register Pwm *pwmptr = PWM;
   uint32_t pwmCh = (port == EXTERNAL_MODULE ? 3 : 1);
   pwmptr->PWM_CH_NUM[pwmCh].PWM_CDTYUPD = (g_model.moduleData[port].ppmDelay * 50 + 300) * 2; //Stoplen *2
@@ -78,25 +79,14 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
   *(ptr + 1) = 0;
 
 #if defined(PCBTARANIS)
+  rest -= 1000;
+  uint32_t ppmDelay = (g_model.moduleData[port].ppmDelay * 50 + 300) * 2;
+  // set idle time, ppm delay and ppm polarity
   if (port == TRAINER_MODULE) {
-    TIM3->CCR2 = rest - 1000 ;             // Update time
-    TIM3->CCR4 = (g_model.moduleData[port].ppmDelay*50+300)*2;
-    if (!g_model.moduleData[TRAINER_MODULE].ppmPulsePol)
-      TIM3->CCER |= TIM_CCER_CC4P;
-    else
-      TIM3->CCER &= ~TIM_CCER_CC4P;
+    set_trainer_ppm_parameters(rest, ppmDelay, !g_model.moduleData[TRAINER_MODULE].ppmPulsePol); // ppmPulsePol: 0 - positive, 1 - negative
   }
   else if (port == EXTERNAL_MODULE) {
-    TIM8->CCR2 = rest - 1000;             // Update time
-    TIM8->CCR1 = (g_model.moduleData[port].ppmDelay*50+300)*2;
-    if(!g_model.moduleData[EXTERNAL_MODULE].ppmPulsePol)
-      TIM8->CCER |= TIM_CCER_CC1NP;
-    else
-      TIM8->CCER &= ~TIM_CCER_CC1NP;
-  }
-  else {
-    TIM1->CCR2 = rest - 1000;             // Update time
-    TIM1->CCR3 = (g_model.moduleData[port].ppmDelay*50+300)*2;
+    set_external_ppm_parameters(rest, ppmDelay, !g_model.moduleData[EXTERNAL_MODULE].ppmPulsePol);
   }
 #endif
 }
