@@ -22,6 +22,7 @@
 #define SIMU_EXCEPTIONS
 #define PCBGRUVIN9X
 #define CPUM2560
+#define GUI
 #define ROTARY_ENCODERS 2
 #define HELI
 #define TEMPLATES

@@ -22,6 +22,7 @@
 #define SIMU_EXCEPTIONS
 #define PCBSKY9X
 #define CPUARM
+#define GUI
 #define REVB
 #define ROTARY_ENCODERS 1
 #define HELI

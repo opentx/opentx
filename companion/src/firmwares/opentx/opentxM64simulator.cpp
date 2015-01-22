@@ -23,6 +23,7 @@
 #define SIMU_EXCEPTIONS
 #define PCBSTD
 #define CPUM64
+#define GUI
 #define SPLASH
 #define FLIGHT_MODES
 #define PPM_UNIT_PERCENT_PREC1

@@ -22,6 +22,7 @@
 #define SIMU_EXCEPTIONS
 #define PCBSTD
 #define CPUM128
+#define GUI
 #define HELI
 #define TEMPLATES
 #define SPLASH

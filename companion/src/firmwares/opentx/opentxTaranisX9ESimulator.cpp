@@ -22,6 +22,7 @@
 #define SIMU_EXCEPTIONS
 #define PCBTARANIS
 #define CPUARM
+#define GUI
 #define HELI
 #define SPLASH
 #define FLIGHT_MODES
