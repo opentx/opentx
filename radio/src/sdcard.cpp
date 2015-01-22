@@ -141,3 +141,48 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
 
   return s_menu_count;
 }
+
+const char *fileCopy(const char *filename, const char *srcDir, const char *destDir)
+{
+  FIL srcFile;
+  FIL dstFile;
+  char buf[256];
+  UINT read = sizeof(buf);
+  UINT written = sizeof(buf);
+
+  char path[2*CLIPBOARD_PATH_LEN+1];
+  char *tmp = strAppend(path, srcDir, CLIPBOARD_PATH_LEN);
+  *tmp++ = '/';
+  strAppend(tmp, filename, CLIPBOARD_PATH_LEN);
+
+  FRESULT result = f_open(&srcFile, path, FA_OPEN_EXISTING | FA_READ);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  tmp = strAppend(path, destDir, CLIPBOARD_PATH_LEN);
+  *tmp++ = '/';
+  strAppend(tmp, filename, CLIPBOARD_PATH_LEN);
+
+  result = f_open(&dstFile, path, FA_CREATE_ALWAYS | FA_WRITE);
+  if (result != FR_OK) {
+    f_close(&srcFile);
+    return SDCARD_ERROR(result);
+  }
+
+  while (result==FR_OK && read==sizeof(buf) && written==sizeof(buf)) {
+    result = f_read(&srcFile, buf, sizeof(buf), &read);
+    if (result == FR_OK) {
+      result = f_write(&dstFile, buf, read, &written);
+    }
+  }
+
+  f_close(&dstFile);
+  f_close(&srcFile);
+
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  return NULL;
+}

@@ -73,22 +73,6 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lat
   lcd_putc(lcdLastPos, y, ']');
 }
 
-enum ClipboardType {
-  CLIPBOARD_TYPE_NONE,
-  CLIPBOARD_TYPE_CUSTOM_SWITCH,
-  CLIPBOARD_TYPE_CUSTOM_FUNCTION,
-};
-
-struct Clipboard {
-  ClipboardType type;
-  union {
-    LogicalSwitchData csw;
-    CustomFunctionData cfn;
-  } data;
-};
-
-Clipboard clipboard;
-
 void onLogicalSwitchesMenu(const char *result)
 {
   int8_t sub = m_posVert-1;

@@ -50,6 +50,10 @@
 EEGeneral  g_eeGeneral;
 ModelData  g_model;
 
+#if defined(SDCARD)
+Clipboard clipboard;
+#endif
+
 #if defined(PCBTARANIS) && defined(SDCARD)
 uint8_t modelBitmap[MODEL_BITMAP_SIZE];
 void loadModelBitmap(char *name, uint8_t *bitmap)

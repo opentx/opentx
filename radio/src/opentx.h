@@ -1513,6 +1513,7 @@ extern uint8_t requiredSpeakerVolume;
 #define SD_SCREEN_FILE_LENGTH (32)
 union ReusableBuffer
 {
+    // 275 bytes
     struct
     {
         char listnames[LCD_LINES-1][LEN_MODEL_NAME];
@@ -1526,6 +1527,7 @@ union ReusableBuffer
 
     } modelsel;
 
+    // 103 bytes
     struct
     {
         int16_t midVals[NUM_STICKS+NUM_POTS];
@@ -1543,12 +1545,14 @@ union ReusableBuffer
     } calib;
 
 #if defined(SDCARD)
+    // 274 bytes
     struct
     {
         char lines[LCD_LINES-1][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
         uint32_t available;
         uint16_t offset;
         uint16_t count;
+        char originalName[SD_SCREEN_FILE_LENGTH+1];
     } sdmanager;
 #endif
 };
@@ -1720,5 +1724,34 @@ void varioWakeup();
 #endif
 
 #include "lua_api.h"
+
+#if defined(SDCARD)
+enum ClipboardType {
+  CLIPBOARD_TYPE_NONE,
+  CLIPBOARD_TYPE_CUSTOM_SWITCH,
+  CLIPBOARD_TYPE_CUSTOM_FUNCTION,
+  CLIPBOARD_TYPE_SD_FILE,
+};
+
+#if defined(SIMU)
+  #define CLIPBOARD_PATH_LEN 1024
+#else
+  #define CLIPBOARD_PATH_LEN 32
+#endif
+
+struct Clipboard {
+  ClipboardType type;
+  union {
+    LogicalSwitchData csw;
+    CustomFunctionData cfn;
+    struct {
+      char directory[CLIPBOARD_PATH_LEN];
+      char filename[CLIPBOARD_PATH_LEN];
+    } sd;
+  } data;
+};
+
+extern Clipboard clipboard;
+#endif
 
 #endif

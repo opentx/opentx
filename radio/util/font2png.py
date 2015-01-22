@@ -37,9 +37,10 @@ def createFontBitmap(filename, foreground, background):
         if i == 0:
             rect.setWidth(4)
         elif i == 14:
-            rect.setLeft(rect.left()+1)
             rect.setWidth(1)
-        painter.drawText(width*i-rect.left(), size+1, c)
+            painter.drawPoint(width*i, size);
+        else:
+            painter.drawText(width*i-rect.left(), size+1, c)
         for j in range(rect.width(), width):
             painter.drawLine(width*i+j, 0, width*i+j, size+4)
     painter.end()

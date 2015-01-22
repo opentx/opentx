@@ -37,10 +37,7 @@
 
 #define MODELSIZE_POS_X 170
 
-static int8_t modelselBitmapIdx;
-static uint8_t modelselBitmap[MODEL_BITMAP_SIZE];
 #define MODELSEL_W 133
-#define BMP_DIRTY()  modelselBitmapIdx = -1
 
 void onModelSelectMenu(const char *result)
 {
@@ -76,7 +73,6 @@ void onModelSelectMenu(const char *result)
   else {
     // The user choosed a file on SD to restore
     POPUP_WARNING(eeRestoreModel(sub, (char *)result));
-    BMP_DIRTY();
     if (!s_warning && g_eeGeneral.currModel == sub)
       eeLoadModel(sub);
   }
@@ -89,7 +85,6 @@ void menuModelSelect(uint8_t event)
     eeDeleteModel(m_posVert); // delete file
     s_copyMode = 0;
     event = EVT_ENTRY_UP;
-    BMP_DIRTY();
   }
 
   uint8_t _event_ = (IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event) ? 0 : event);
@@ -112,9 +107,9 @@ void menuModelSelect(uint8_t event)
         if (sub >= NUM_BODY_LINES) s_pgOfs = sub-(NUM_BODY_LINES-1);
         s_copyMode = 0;
         s_editMode = EDIT_MODE_INIT;
-        BMP_DIRTY();
         eeCheck(true);
         break;
+
       case EVT_KEY_LONG(KEY_EXIT):
         if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && eeModelExists(sub)) {
           POPUP_CONFIRMATION(STR_DELETEMODEL);
@@ -130,7 +125,7 @@ void menuModelSelect(uint8_t event)
         }
         else {
           if (m_posVert != g_eeGeneral.currModel) {
-            m_posVert = g_eeGeneral.currModel;
+            sub = m_posVert = g_eeGeneral.currModel;
             s_pgOfs = 0;
           }
           else if (event != EVT_KEY_LONG(KEY_EXIT)) {
@@ -153,9 +148,7 @@ void menuModelSelect(uint8_t event)
           uint8_t cur = (MAX_MODELS + sub + s_copyTgtOfs) % MAX_MODELS;
 
           if (s_copyMode == COPY_MODE) {
-            if (eeCopyModel(cur, s_copySrcRow))
-              BMP_DIRTY();
-            else
+            if (!eeCopyModel(cur, s_copySrcRow))
               cur = sub;
           }
 
@@ -164,7 +157,6 @@ void menuModelSelect(uint8_t event)
             uint8_t src = cur;
             cur = (s_copyTgtOfs > 0 ? cur+MAX_MODELS-1 : cur+1) % MAX_MODELS;
             eeSwapModels(src, cur);
-            BMP_DIRTY();
             if (src == s_copySrcRow)
               s_copySrcRow = cur;
             else if (cur == s_copySrcRow)
@@ -289,12 +281,9 @@ void menuModelSelect(uint8_t event)
     }
   }
 
-  if (modelselBitmapIdx != m_posVert) {
-    modelselBitmapIdx = m_posVert;
-    if (modelselBitmapIdx == g_eeGeneral.currModel)
-      memcpy(modelselBitmap, modelBitmap, MODEL_BITMAP_SIZE);
-    else
-      loadModelBitmap(modelHeaders[sub].bitmap, modelselBitmap);
+  if (event == EVT_ENTRY || sub != oldSub) {
+    loadModelBitmap(modelHeaders[sub].bitmap, modelBitmap);
   }
-  lcd_bmp(22*FW+2, 2*FH+FH/2, modelselBitmap);
+
+  lcd_bmp(22*FW+2, 2*FH+FH/2, modelBitmap);
 }

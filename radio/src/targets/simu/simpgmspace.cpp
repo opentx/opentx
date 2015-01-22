@@ -552,7 +552,10 @@ FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)
 
 FRESULT f_write (FIL* fil, const void* data, UINT size, UINT* written)
 {
-  if (fil && fil->fs) *written = fwrite(data, 1, size, (FILE*)fil->fs);
+  if (fil && fil->fs) {
+    *written = fwrite(data, 1, size, (FILE*)fil->fs);
+    // TRACE("fwrite(%p) %u, %u", fil->fs, size, *written);
+  }
   return FR_OK;
 }
 
@@ -633,6 +636,11 @@ FRESULT f_mkdir (const TCHAR*)
 }
 
 FRESULT f_unlink (const TCHAR*)
+{
+  return FR_OK;
+}
+
+FRESULT f_rename(const TCHAR*, const TCHAR*)
 {
   return FR_OK;
 }

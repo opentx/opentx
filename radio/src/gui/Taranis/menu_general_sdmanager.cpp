@@ -36,6 +36,8 @@
 
 #include "../../opentx.h"
 
+#define REFRESH_FILES() reusableBuffer.sdmanager.offset = 65535
+
 void menuGeneralSdManagerInfo(uint8_t event)
 {
   SIMPLE_SUBMENU(STR_SD_INFO_TITLE, 1);
@@ -116,60 +118,85 @@ void onSdManagerMenu(const char *result)
 {
   TCHAR lfn[_MAX_LFN+1];
 
+  // TODO possible buffer overflows here!
+
   uint8_t index = m_posVert-1-s_pgOfs;
+  char *line = reusableBuffer.sdmanager.lines[index];
+
   if (result == STR_SD_INFO) {
     pushMenu(menuGeneralSdManagerInfo);
   }
   else if (result == STR_SD_FORMAT) {
     POPUP_CONFIRMATION(STR_CONFIRM_FORMAT);
   }
+  else if (result == STR_COPY_FILE) {
+    clipboard.type = CLIPBOARD_TYPE_SD_FILE;
+    f_getcwd(clipboard.data.sd.directory, CLIPBOARD_PATH_LEN);
+    strncpy(clipboard.data.sd.filename, line, CLIPBOARD_PATH_LEN-1);
+  }
+  else if (result == STR_PASTE) {
+    f_getcwd(lfn, _MAX_LFN);
+    POPUP_WARNING(fileCopy(clipboard.data.sd.filename, clipboard.data.sd.directory, lfn));
+    REFRESH_FILES();
+  }
+  else if (result == STR_RENAME_FILE) {
+    char *ext = getFileExtension(line, SD_SCREEN_FILE_LENGTH+1);
+    if (ext) {
+      memcpy(reusableBuffer.sdmanager.originalName, line, sizeof(reusableBuffer.sdmanager.originalName));
+      // write spaces to allow a longer filename
+      memset(ext, ' ', SD_SCREEN_FILE_LENGTH-LEN_FILE_EXTENSION-(ext-line));
+      line[SD_SCREEN_FILE_LENGTH-LEN_FILE_EXTENSION] = '\0';
+      s_editMode = EDIT_MODIFY_STRING;
+      editNameCursorPos = 0;
+    }
+  }
   else if (result == STR_DELETE_FILE) {
     f_getcwd(lfn, _MAX_LFN);
-    strcat_P(lfn, PSTR("/"));
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    strcat(lfn, PSTR("/"));
+    strcat(lfn, line);
     f_unlink(lfn);
-    strncpy(statusLineMsg, reusableBuffer.sdmanager.lines[index], 13);
+    strncpy(statusLineMsg, line, 13);
     strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), STR_REMOVED);
     showStatusLine();
-    if ((uint16_t)m_posVert == reusableBuffer.sdmanager.count) m_posVert--;
-    reusableBuffer.sdmanager.offset = s_pgOfs-1;
+    REFRESH_FILES();
+    if (m_posVert == reusableBuffer.sdmanager.count) 
+      m_posVert--;
   }
   /* TODO else if (result == STR_LOAD_FILE) {
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    strcat(lfn, line);
     POPUP_WARNING(eeLoadModelSD(lfn));
   } */
   else if (result == STR_PLAY_FILE) {
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    strcat(lfn, line);
     audioQueue.stopAll();
     audioQueue.playFile(lfn, 0, ID_PLAY_FROM_SD_MANAGER);
   }
   else if (result == STR_ASSIGN_BITMAP) {
-    strAppendFilename(g_model.header.bitmap, reusableBuffer.sdmanager.lines[index], sizeof(g_model.header.bitmap));
-    LOAD_MODEL_BITMAP();
+    strAppendFilename(g_model.header.bitmap, line, sizeof(g_model.header.bitmap));
     memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
     eeDirty(EE_MODEL);
   }
   else if (result == STR_VIEW_TEXT) {
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    strcat(lfn, line);
     pushMenuTextView(lfn);
   }
   else if (result == STR_FLASH_BOOTLOADER) {
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    strcat(lfn, line);
     flashBootloader(lfn);
   }
 #if defined(LUA)
   else if (result == STR_EXECUTE_FILE) {
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    strcat(lfn, line);
     luaExec(lfn);
   }
 #endif
@@ -191,27 +218,28 @@ void menuGeneralSdManager(uint8_t _event)
     audioQueue.stopSD();
     if (f_mkfs(0, 1, 0) == FR_OK) {
       f_chdir("/");
-      reusableBuffer.sdmanager.offset = -1;
+      REFRESH_FILES();
     }
     else {
       POPUP_WARNING(STR_SDCARD_ERROR);
     }
   }
 
-  uint8_t event = ((READ_ONLY() && EVT_KEY_MASK(_event) == KEY_ENTER) ? 0 : _event);
+  int lastPos = m_posVert;
+
+  uint8_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabGeneral, e_Sd, 1+reusableBuffer.sdmanager.count);
 
-  if (s_editMode > 0)
-    s_editMode = 0;
+  int index = m_posVert-1-s_pgOfs;
 
   switch(_event) {
     case EVT_ENTRY:
       f_chdir(ROOT_PATH);
-      reusableBuffer.sdmanager.offset = 65535;
+      REFRESH_FILES();
       break;
 
     case EVT_KEY_LONG(KEY_MENU):
-      if (!READ_ONLY()) {
+      if (!READ_ONLY() && s_editMode == 0) {
         killEvents(_event);
         // MENU_ADD_ITEM(STR_SD_INFO);  TODO: Implement
         MENU_ADD_ITEM(STR_SD_FORMAT);
@@ -219,32 +247,35 @@ void menuGeneralSdManager(uint8_t _event)
       }
       break;
 
+    case EVT_KEY_BREAK(KEY_EXIT):
+      REFRESH_FILES();
+      break;
+
     case EVT_KEY_BREAK(KEY_ENTER):
-    {
-      if (m_posVert > 0) {
-        vertpos_t index = m_posVert-1-s_pgOfs;
-        if (!reusableBuffer.sdmanager.lines[index][SD_SCREEN_FILE_LENGTH+1]) {
-          f_chdir(reusableBuffer.sdmanager.lines[index]);
-          s_pgOfs = 0;
-          m_posVert = 1;
-          reusableBuffer.sdmanager.offset = 65535;
-          killEvents(_event);
-          break;
+      if (s_editMode > 0) {
+        break;
+      }
+      else {
+        if (m_posVert > 0) {
+          if (!reusableBuffer.sdmanager.lines[index][SD_SCREEN_FILE_LENGTH+1]) {
+            f_chdir(reusableBuffer.sdmanager.lines[index]);
+            s_pgOfs = 0;
+            m_posVert = 1;
+            index = 1;
+            REFRESH_FILES();
+            killEvents(_event);
+            return;
+          }
         }
       }
-      if (!IS_ROTARY_BREAK(_event) || m_posVert==0)
-        break;
-      // no break;
-    }
+      // no break
 
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(_event);
-      {
-        uint8_t index = m_posVert-1-s_pgOfs;
-        // TODO duplicated code for finding extension
-        char * ext = reusableBuffer.sdmanager.lines[index];
-        int len = strlen(ext) - 4;
-        ext += len;
+      if (s_editMode == 0) {
+        char *line = reusableBuffer.sdmanager.lines[index];
+        char *ext = getFileExtension(line, SD_SCREEN_FILE_LENGTH+1);
+        int len = ext - line;
         /* TODO if (!strcasecmp(ext, MODELS_EXT)) {
           s_menu[s_menu_count++] = STR_LOAD_FILE;
         }
@@ -266,9 +297,12 @@ void menuGeneralSdManager(uint8_t _event)
         }
 #endif
         if (!READ_ONLY()) {
+          if (line[SD_SCREEN_FILE_LENGTH+1]) // it's a file
+            MENU_ADD_ITEM(STR_COPY_FILE);
+          if (clipboard.type == CLIPBOARD_TYPE_SD_FILE)
+            MENU_ADD_ITEM(STR_PASTE);
+          MENU_ADD_ITEM(STR_RENAME_FILE);
           MENU_ADD_ITEM(STR_DELETE_FILE);
-          // MENU_ADD_ITEM(STR_RENAME_FILE);  TODO: Implement
-          // MENU_ADD_ITEM(STR_COPY_FILE);    TODO: Implement
         }
       }
       menuHandler = onSdManagerMenu;
@@ -360,29 +394,32 @@ void menuGeneralSdManager(uint8_t _event)
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
     lcdNextPos = 0;
-    uint8_t attr = (m_posVert-1-s_pgOfs == i ? BSS|INVERS : BSS);
+    uint8_t attr = (index == i ? BSS|INVERS : BSS);
     if (reusableBuffer.sdmanager.lines[i][0]) {
       if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(0, y, '[', attr); }
-      lcd_putsAtt(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], attr);
+      if (s_editMode == EDIT_MODIFY_STRING && attr) {
+        editName(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH-4, _event, attr, 0);
+        if (s_editMode == 0) {
+          unsigned int len = effectiveLen(reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH-LEN_FILE_EXTENSION);
+          strAppend(&reusableBuffer.sdmanager.lines[i][len], getFileExtension(reusableBuffer.sdmanager.originalName, sizeof(reusableBuffer.sdmanager.originalName)));
+          f_rename(reusableBuffer.sdmanager.originalName, reusableBuffer.sdmanager.lines[i]);
+          REFRESH_FILES();
+        }
+      }
+      else {
+        lcd_putsAtt(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], attr);
+      }
       if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(lcdNextPos, y, ']', attr); }
     }
   }
 
-  static vertpos_t sdBitmapIdx = 0xFFFF;
-  static uint8_t sdBitmap[MODEL_BITMAP_SIZE];
-  vertpos_t index = m_posVert-1-s_pgOfs;
-  if (m_posVert > 0) {
-    char * ext = reusableBuffer.sdmanager.lines[index];
-    ext += strlen(ext) - 4;
-    if (!strcasecmp(ext, BITMAPS_EXT)) {
-      if (sdBitmapIdx != m_posVert) {
-        sdBitmapIdx = m_posVert;
-        uint8_t *dest = sdBitmap;
-        if (bmpLoad(dest, reusableBuffer.sdmanager.lines[index], MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
-          memcpy(sdBitmap, logo_taranis, MODEL_BITMAP_SIZE);
-        }
+  char *ext = getFileExtension(reusableBuffer.sdmanager.lines[index], SD_SCREEN_FILE_LENGTH+1);
+  if (ext && !strcasecmp(ext, BITMAPS_EXT)) {
+    if (lastPos != m_posVert) {
+      if (bmpLoad(modelBitmap, reusableBuffer.sdmanager.lines[index], MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
+        memcpy(modelBitmap, logo_taranis, MODEL_BITMAP_SIZE);
       }
-      lcd_bmp(22*FW+2, 2*FH+FH/2, sdBitmap);
     }
+    lcd_bmp(22*FW+2, 2*FH+FH/2, modelBitmap);
   }
 }
