@@ -711,15 +711,9 @@
 #else
   #define TR_TRIMS2OFFSETS     "\006Trims => Subtrims"
 #endif
-#if defined(COLORLCD)
-  #define TR_MENUMODELSEL      "Model Selection"
-  #define TR_MENUSETUP         "Model Setup"
-  #define TR_MENUFLIGHTPHASES  "Flight Modes"
-#else
-  #define TR_MENUMODELSEL      TR("MODELSEL", "MODEL SELECTION")
-  #define TR_MENUSETUP         TR("SETUP", "MODEL SETUP")
-  #define TR_MENUFLIGHTPHASES  "FLIGHT MODES"
-#endif
+#define TR_MENUMODELSEL        TR("MODELSEL", "MODEL SELECTION")
+#define TR_MENUSETUP           TR("SETUP", "MODEL SETUP")
+#define TR_MENUFLIGHTPHASES    "FLIGHT MODES"
 #define TR_MENUFLIGHTPHASE     "FLIGHT MODE"
 #define TR_MENUHELISETUP       "HELI SETUP"
 

@@ -120,15 +120,14 @@ void menuTextView(uint8_t event)
         break;
       else
         s_pgOfs--;
-        // no break;
+      readTextFile(lines_count);
+      break;
 
     case EVT_KEY_FIRST(KEY_DOWN):
-      // if (event == EVT_KEY_BREAK(KEY_DOWN)) {
-        if (s_pgOfs+LCD_LINES-1 >= lines_count)
-          break;
-        else
-          ++s_pgOfs;
-      // }
+      if (s_pgOfs+LCD_LINES-1 >= lines_count)
+        break;
+      else
+        ++s_pgOfs;
       readTextFile(lines_count);
       break;
 

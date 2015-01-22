@@ -255,10 +255,8 @@ bool isAssignableFunctionAvailable(int function)
 
 bool isModuleAvailable(int module)
 {
-#if defined(PCBSKY9X)
   if (module == MODULE_TYPE_NONE)
     return false;
-#endif
 
 #if !defined(PXX)
   if (module == MODULE_TYPE_XJT)
