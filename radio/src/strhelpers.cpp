@@ -177,7 +177,8 @@ char *strAppend(char *dest, const char *source, int len)
 {
   while ((*dest++ = *source++)) {
     if (--len == 0) {
-      *dest++ = '\0';
+      *dest = '\0';
+      return dest;
     }
   }
   return dest - 1;

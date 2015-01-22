@@ -166,6 +166,7 @@ const char *fileCopy(const char *filename, const char *srcDir, const char *destD
 
   result = f_open(&dstFile, path, FA_CREATE_ALWAYS | FA_WRITE);
   if (result != FR_OK) {
+    f_close(&srcFile);
     return SDCARD_ERROR(result);
   }
 
