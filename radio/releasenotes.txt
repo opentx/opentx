@@ -1,3 +1,11 @@
+<h2>Version 2.0.16 / todo</h2>
+
+[Taranis]
+<ul>
+<li>Fixed reverse polarity on external PPM output. <b>Users with external module in PPM mode should check and update PPM polarity setting.</b></li>
+</ul>
+
+
 <h2>Version 2.0.15 / 2015-01-13</h2>
 
 Nothing new (only Companion fixes)
@@ -14,7 +22,7 @@ Nothing new (only Companion fixes)
 <li>Added switch auto detection in Timer source</li>
 <li>Totally removed splash screen display if duration is set to ---</li>
 <li>Back-light turned on sooner at startup (Taranis +)</li>
-<li>Fixed reverse polarity on external CPPM output</li>
+<li><strike>Fixed reverse polarity on external CPPM output</strike> (update: this was not fixed in 2.0.14)</li>
 <li>Suppressed center beep for non-existing pots</li>
 <li>Fixed THt persistent timer running after model load (with Throttle at -100%)</li>
 <li>Fixed buffer overflow for automatic flight mode change audio announcements (if very long model and flight mode names were used)</li>

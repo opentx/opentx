@@ -307,6 +307,12 @@ TRACE_SD_CARD = NO
 TRACE_FATFS = NO
 TRACE_AUDIO = NO
 
+# Enable internal module PPM mode for Taranis 
+# Notice: enabling this only enable code in the driver, 
+# the menu selection is still not possible.
+# Values = NO, YES
+TARANIS_INTERNAL_PPM = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -712,6 +718,9 @@ ifeq ($(PCB), TARANIS)
   endif
   ifeq ($(DEBUG_TRACE_BUFFER), YES)
     CPPDEFS += -DDEBUG_TRACE_BUFFER 
+  endif
+  ifeq ($(TARANIS_INTERNAL_PPM), YES)
+    CPPDEFS += -DTARANIS_INTERNAL_PPM
   endif
   LDSCRIPT = targets/taranis/stm32_flash_bl.ld
   TRGT = arm-none-eabi-

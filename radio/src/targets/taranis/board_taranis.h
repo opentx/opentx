@@ -151,6 +151,9 @@ void disable_no_pulses(uint32_t port);
 void init_ppm( uint32_t module_index );
 void disable_ppm( uint32_t module_index );
 void set_external_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive);
+#if defined(TARANIS_INTERNAL_PPM)
+  void set_internal_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive);
+#endif
 void init_pxx( uint32_t module_index );
 void disable_pxx( uint32_t module_index );
 void init_dsm2( uint32_t module_index );

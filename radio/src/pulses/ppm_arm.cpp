@@ -88,5 +88,10 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
   else if (port == EXTERNAL_MODULE) {
     set_external_ppm_parameters(rest, ppmDelay, !g_model.moduleData[EXTERNAL_MODULE].ppmPulsePol);
   }
+#if defined(TARANIS_INTERNAL_PPM)
+  else if (port == INTERNAL_MODULE) {
+    set_internal_ppm_parameters(rest, ppmDelay, !g_model.moduleData[INTERNAL_MODULE].ppmPulsePol);
+  }
+#endif   // #if defined(TARANIS_INTERNAL_PPM)
 #endif
 }

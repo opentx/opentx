@@ -47,8 +47,10 @@ extern uint16_t dsm2Stream[400];
 
 static void init_pa10_pxx( void ) ;
 static void disable_pa10_pxx( void ) ;
-// static void init_pa10_ppm( void ) ;
-// static void disable_pa10_ppm( void ) ;
+#if defined(TARANIS_INTERNAL_PPM)
+  static void init_pa10_ppm( void ) ;
+  static void disable_pa10_ppm( void ) ;
+#endif
 static void init_pa7_pxx( void ) ;
 static void disable_pa7_pxx( void ) ;
 #if defined(DSM2)
@@ -99,6 +101,11 @@ void init_ppm(uint32_t port)
   if (port == EXTERNAL_MODULE) {
     init_pa7_ppm();
   }
+#if defined(TARANIS_INTERNAL_PPM)
+  else if (port == INTERNAL_MODULE) {
+    init_pa10_ppm(); 
+  }
+#endif
 }
 
 void disable_ppm(uint32_t port)
@@ -106,23 +113,29 @@ void disable_ppm(uint32_t port)
   if (port == EXTERNAL_MODULE) {
     disable_pa7_ppm();
   }
+#if defined(TARANIS_INTERNAL_PPM)
+  else if (port == INTERNAL_MODULE) {
+    disable_pa10_ppm(); 
+  }
+#endif
 }
 
 void set_external_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive)
 {
   TIM8->CCR2 = idleTime;
   TIM8->CCR1 = delay;
-#if defined(REV3)
-  TIM8->CCER = TIM_CCER_CC1E ;
-  // TODO this looks like a bug, I think we should set
-  // TIM_CCER_CC1P bit here to change polarity like this:
-  // TIM8->CCER = TIM_CCER_CC1E | ((positive) ? TIM_CCER_CC1P : 0);
-  // on the other hand I guess nobody has this hw variant (except developers)
-#else
   // we are using complementary output so logic has to be reversed here
   TIM8->CCER = TIM_CCER_CC1NE | (positive ? 0 : TIM_CCER_CC1NP);
-#endif
 }
+
+#if defined(TARANIS_INTERNAL_PPM)
+void set_internal_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive)
+{
+  TIM1->CCR2 = idleTime;
+  TIM1->CCR3 = delay;
+  TIM1->CCER = TIM_CCER_CC3E | (positive ? TIM_CCER_CC3P : 0);
+}
+#endif
 
 void init_no_pulses(uint32_t port)
 {
@@ -296,7 +309,7 @@ static void disable_pa10_pxx()
   INTERNAL_RF_OFF();
 }
 
-#if 0   // disabled: internal module on Taranis does not support PPM
+#if defined(TARANIS_INTERNAL_PPM)
 // PPM output
 // Timer 1, channel 1 on PA8 for prototype
 // Pin is AF1 function for timer 1
@@ -350,7 +363,7 @@ static void disable_pa10_ppm()
 
   INTERNAL_RF_OFF();
 }
-#endif
+#endif  // #if defined(TARANIS_INTERNAL_PPM)
 
 extern "C" void TIM1_CC_IRQHandler()
 {
