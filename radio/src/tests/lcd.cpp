@@ -438,6 +438,33 @@ TEST(Lcd, lcd_line)
   lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
   lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
+  // 45 deg lines
+  lcd_line( 35, 40, 45, 40, SOLID, FORCE );
+  lcd_line( 40, 35, 40, 45, SOLID, FORCE );
+
+  lcd_line( 20, 40, 40, 20, SOLID, FORCE );
+  lcd_line( 40, 20, 60, 40, SOLID, FORCE );
+  lcd_line( 60, 40, 40, 60, SOLID, FORCE );
+  lcd_line( 40, 60, 20, 40, SOLID, FORCE );
+
+  lcd_line( 31, 39, 39, 31, SOLID, FORCE );
+  lcd_line( 41, 31, 49, 39, SOLID, FORCE );
+  lcd_line( 49, 41, 41, 49, SOLID, FORCE );
+  lcd_line( 39, 49, 31, 41, SOLID, FORCE );
+
+  // slanted lines
+  lcd_line( 150, 10, 190, 10, SOLID, FORCE );
+  lcd_line( 150, 10, 190, 20, SOLID, FORCE );
+  lcd_line( 150, 10, 190, 30, SOLID, FORCE );
+  lcd_line( 150, 10, 190, 40, SOLID, FORCE );
+  lcd_line( 150, 10, 190, 50, SOLID, FORCE );
+
+  lcd_line( 150, 10, 190, 50, SOLID, FORCE );
+  lcd_line( 150, 10, 180, 50, SOLID, FORCE );
+  lcd_line( 150, 10, 170, 50, SOLID, FORCE );
+  lcd_line( 150, 10, 160, 50, SOLID, FORCE );
+  lcd_line( 150, 10, 150, 50, SOLID, FORCE );
+
   EXPECT_TRUE(checkScreenshot("lcd_line"));
 }
 #endif
