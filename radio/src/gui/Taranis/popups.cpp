@@ -53,26 +53,53 @@ uint8_t     s_menu_flags = 0;
 uint16_t    s_menu_offset = 0;
 void        (*menuHandler)(const char *result);
 
-void displayBox()
+void displayBox(const char *title)
 {
   drawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
   lcd_rect(10, 16, LCD_W-20, 40);
-  lcd_putsn(WARNING_LINE_X, WARNING_LINE_Y, s_warning, WARNING_LINE_LEN);
+  lcd_putsn(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN);
   // could be a place for a s_warning_info
 }
 
-void displayPopup(const pm_char * pstr)
+void displayPopup(const char *title)
 {
-  s_warning = pstr;
-  displayBox();
-  s_warning = NULL;
+  displayBox(title);
   lcdRefresh();
+}
+
+void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SOUND_ARG)
+{
+  lcd_clear();
+  lcd_bmp(0, 0, asterisk_lbm);
+
+#define MESSAGE_LCD_OFFSET   60
+
+#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
+  lcd_putsAtt(MESSAGE_LCD_OFFSET, 0, STR_WARNING, DBLSIZE);
+  lcd_putsAtt(MESSAGE_LCD_OFFSET, 2*FH, title, DBLSIZE);
+#else
+  lcd_putsAtt(MESSAGE_LCD_OFFSET, 0, title, DBLSIZE);
+  lcd_putsAtt(MESSAGE_LCD_OFFSET, 2*FH, STR_WARNING, DBLSIZE);
+#endif
+
+  drawFilledRect(MESSAGE_LCD_OFFSET, 0, LCD_W-MESSAGE_LCD_OFFSET, 32);
+  if (t) lcd_puts(MESSAGE_LCD_OFFSET, 5*FH, t);
+  if (last) {
+    lcd_puts(MESSAGE_LCD_OFFSET, 7*FH, last);
+    AUDIO_ERROR_MESSAGE(sound);
+  }
+
+#undef MESSAGE_LCD_OFFSET
+
+  lcdRefresh();
+  lcdSetContrast();
+  clearKeyEvents();
 }
 
 void displayWarning(uint8_t event)
 {
   s_warning_result = false;
-  displayBox();
+  displayBox(s_warning);
   if (s_warning_info) {
     lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
   }

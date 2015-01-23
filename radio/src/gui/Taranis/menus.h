@@ -309,8 +309,8 @@ extern uint8_t         s_warning_type;
 #define WARNING_LINE_X    16
 #define WARNING_LINE_Y    3*FH
 
-void displayBox();
-void displayPopup(const pm_char * pstr);
+void displayBox(const char *title);
+void displayPopup(const char *title);
 void displayWarning(uint8_t event);
 
 extern void (*popupFunc)(uint8_t event);

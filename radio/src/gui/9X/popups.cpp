@@ -69,6 +69,35 @@ void displayPopup(const pm_char * pstr)
   lcdRefresh();
 }
 
+void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SOUND_ARG)
+{
+  lcd_clear();
+  lcd_img(2, 0, asterisk_lbm, 0, 0);
+
+#define MESSAGE_LCD_OFFSET   6*FW
+
+#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
+  lcd_putsAtt(MESSAGE_LCD_OFFSET, 0, STR_WARNING, DBLSIZE);
+  lcd_putsAtt(MESSAGE_LCD_OFFSET, 2*FH, title, DBLSIZE);
+#else
+  lcd_putsAtt(MESSAGE_LCD_OFFSET, 0, title, DBLSIZE);
+  lcd_putsAtt(MESSAGE_LCD_OFFSET, 2*FH, STR_WARNING, DBLSIZE);
+#endif
+
+  drawFilledRect(0, 0, LCD_W, 32);
+  if (t) lcd_putsLeft(5*FH, t);
+  if (last) {
+    lcd_putsLeft(7*FH, last);
+    AUDIO_ERROR_MESSAGE(sound);
+  }
+
+#undef MESSAGE_LCD_OFFSET
+
+  lcdRefresh();
+  lcdSetContrast();
+  clearKeyEvents();
+}
+
 void displayWarning(uint8_t event)
 {
   s_warning_result = false;

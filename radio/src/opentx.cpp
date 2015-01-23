@@ -1160,61 +1160,6 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
   }
 }
 
-#if defined(GUI)
-void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SOUND_ARG)
-{
-  lcd_clear();
-
-#if defined(COLORLCD)
-  #define MESSAGE_LCD_OFFSET   60
-  drawFilledRect(30, 20, 252, 100, SOLID, BLACK);
-#elif defined(PCBTARANIS)
-  lcd_bmp(0, 0, asterisk_lbm);
-  #define MESSAGE_LCD_OFFSET   60
-#else
-  lcd_img(2, 0, asterisk_lbm, 0, 0);
-  #define MESSAGE_LCD_OFFSET   6*FW
-#endif
-
-#if defined(COLORLCD)
-  lcd_putsAtt(MESSAGE_LCD_OFFSET, 30, STR_WARNING, WHITE|DBLSIZE);
-  lcd_putsAtt(MESSAGE_LCD_OFFSET, 46, title, WHITE|DBLSIZE);
-#elif defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
-  lcd_putsAtt(MESSAGE_LCD_OFFSET, 0, STR_WARNING, DBLSIZE);
-  lcd_putsAtt(MESSAGE_LCD_OFFSET, 2*FH, title, DBLSIZE);
-#else
-  lcd_putsAtt(MESSAGE_LCD_OFFSET, 0, title, DBLSIZE);
-  lcd_putsAtt(MESSAGE_LCD_OFFSET, 2*FH, STR_WARNING, DBLSIZE);
-#endif
-
-#if defined(COLORLCD)
-  if (t) lcd_putsAtt(MESSAGE_LCD_OFFSET, 80, t, WHITE);
-  if (last) {
-    lcd_putsAtt(MESSAGE_LCD_OFFSET, 92, last, WHITE);
-    AUDIO_ERROR_MESSAGE(sound);
-  }
-#elif LCD_W >= 212
-  drawFilledRect(MESSAGE_LCD_OFFSET, 0, LCD_W-MESSAGE_LCD_OFFSET, 32);
-  if (t) lcd_puts(MESSAGE_LCD_OFFSET, 5*FH, t);
-  if (last) {
-    lcd_puts(MESSAGE_LCD_OFFSET, 7*FH, last);
-    AUDIO_ERROR_MESSAGE(sound);
-  }
-#else
-  drawFilledRect(0, 0, LCD_W, 32);
-  if (t) lcd_putsLeft(5*FH, t);
-  if (last) {
-    lcd_putsLeft(7*FH, last);
-    AUDIO_ERROR_MESSAGE(sound);
-  }
-#endif
-
-  lcdRefresh();
-  lcdSetContrast();
-  clearKeyEvents();
-}
-#endif
-
 #if defined(GVARS)
 int8_t trimGvar[NUM_STICKS] = { -1, -1, -1, -1 };
 #endif

@@ -61,7 +61,9 @@ uint8_t eeFindEmptyModel(uint8_t id, bool down)
 
 void selectModel(uint8_t sub)
 {
+#if !defined(COLORLCD)
   displayPopup(STR_LOADINGMODEL);
+#endif
   saveTimers();
   eeCheck(true); // force writing of current model data before this is changed
   g_eeGeneral.currModel = sub;

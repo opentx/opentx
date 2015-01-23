@@ -275,27 +275,27 @@ void menuGeneralSdManager(uint8_t _event)
       if (s_editMode == 0) {
         char *line = reusableBuffer.sdmanager.lines[index];
         char *ext = getFileExtension(line, SD_SCREEN_FILE_LENGTH+1);
-        int len = ext - line;
-        /* TODO if (!strcasecmp(ext, MODELS_EXT)) {
-          s_menu[s_menu_count++] = STR_LOAD_FILE;
-        }
-        else */ if (!strcasecmp(ext, SOUNDS_EXT)) {
-          MENU_ADD_ITEM(STR_PLAY_FILE);
-        }
-        else if (!strcasecmp(ext, BITMAPS_EXT) && !READ_ONLY() && len <= (int)sizeof(g_model.header.bitmap)) {
-          MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
-        }
-        else if (!strcasecmp(ext, TEXT_EXT)) {
-          MENU_ADD_ITEM(STR_VIEW_TEXT);
-        }
-        else if (!strcasecmp(ext, FIRMWARE_EXT) && !READ_ONLY()) {
-          MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);
-        }
+        if (ext) {
+          if (!strcasecmp(ext, SOUNDS_EXT)) {
+            MENU_ADD_ITEM(STR_PLAY_FILE);
+          }
+          else if (!strcasecmp(ext, BITMAPS_EXT)) {
+            if (!READ_ONLY() && (ext-line) <= (int)sizeof(g_model.header.bitmap)) {
+              MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
+            }
+          }
+          else if (!strcasecmp(ext, TEXT_EXT)) {
+            MENU_ADD_ITEM(STR_VIEW_TEXT);
+          }
+          else if (!strcasecmp(ext, FIRMWARE_EXT) && !READ_ONLY()) {
+            MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);
+          }
 #if defined(LUA)
-        else if (!strcasecmp(ext, SCRIPTS_EXT)) {
-          MENU_ADD_ITEM(STR_EXECUTE_FILE);
-        }
+          else if (!strcasecmp(ext, SCRIPTS_EXT)) {
+            MENU_ADD_ITEM(STR_EXECUTE_FILE);
+          }
 #endif
+        }
         if (!READ_ONLY()) {
           if (line[SD_SCREEN_FILE_LENGTH+1]) // it's a file
             MENU_ADD_ITEM(STR_COPY_FILE);
