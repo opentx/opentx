@@ -3,6 +3,8 @@
 [Taranis]
 <ul>
 <li>Fixed reverse polarity on external PPM output. <b>Users with external module in PPM mode should check and update PPM polarity setting.</b></li>
+<li>File deletion in SD manager did not free used clusters (all radios with SD card)</li>
+<li>Fixed Lua <i>lcd.drawLine()</i> problem with slanted lines</li>
 </ul>
 
 
