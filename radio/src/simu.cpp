@@ -396,7 +396,12 @@ int main(int argc,char **argv)
   simuSetSwitch(1, 0);
 #endif
 
-  return application.run();
+  int result = application.run();
+
+  StopMainThread();
+  StopEepromThread();
+  
+  return result;
 }
 
 uint16_t anaIn(uint8_t chan)

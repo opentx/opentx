@@ -1031,6 +1031,9 @@ void sdInit(void)
   }
 
   if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
+    // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
+    sdGetFreeSectors();
+
     referenceSystemAudioFiles();
     
 #if defined(SPORT_FILE_LOG)
@@ -1059,4 +1062,12 @@ uint32_t sdMounted()
   return g_FATFS_Obj.fs_type != 0;
 }
 
+uint32_t sdIsHC()
+{
+  return (CardType & CT_BLOCK);
+}
 
+uint32_t sdGetSpeed()
+{
+  return 330000;
+}

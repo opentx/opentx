@@ -47,6 +47,10 @@
   #include <direct.h>
 #endif
 
+#if defined(DISKIO_SIMU)
+  FILE * diskImage = 0;
+#endif
+
 volatile uint8_t pina=0xff, pinb=0xff, pinc=0xff, pind, pine=0xff, pinf=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
 uint16_t dummyport16;
@@ -311,6 +315,12 @@ void *main_thread(void *)
 
     eeReadAll(); // load general setup and selected model
 
+#if defined(DISKIO_SIMU)
+    f_mount(&g_FATFS_Obj, "", 1);
+    // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
+    sdGetFreeSectors();
+#endif
+
 #if defined(CPUARM) && defined(SDCARD)
     referenceSystemAudioFiles();
 #endif
@@ -336,6 +346,12 @@ void *main_thread(void *)
   }
   catch (...) {
     main_thread_running = 0;
+  }
+#endif
+
+#if defined(DISKIO_SIMU)
+  if (diskImage) {
+    fclose(diskImage);
   }
 #endif
 
@@ -462,7 +478,7 @@ static void EeFsDump(){
 }
 #endif
 
-#if defined(SDCARD)
+#if defined(SDCARD) && !defined(DISKIO_SIMU)
 namespace simu {
 #include <dirent.h>
 }
@@ -661,7 +677,193 @@ int32_t Card_state = SD_ST_MOUNTED;
 uint32_t Card_CSD[4]; // TODO elsewhere
 #endif
 
+#endif  // #if defined(SDCARD) && !defined(DISKIO_SIMU)
+
+
+#if defined(DISKIO_SIMU)
+#include "FatFs/diskio.h"
+#include <time.h>
+#include <stdio.h>
+
+#if defined(CPUARM)
+FATFS g_FATFS_Obj = { 0};
 #endif
+
+int ff_cre_syncobj (BYTE vol, _SYNC_t* sobj) /* Create a sync object */
+{
+  return 1;
+}
+
+int ff_req_grant (_SYNC_t sobj)        /* Lock sync object */
+{
+  return 1;
+}
+
+void ff_rel_grant (_SYNC_t sobj)        /* Unlock sync object */
+{
+
+}
+
+int ff_del_syncobj (_SYNC_t sobj)        /* Delete a sync object */
+{
+  return 1;
+}
+
+DWORD get_fattime (void)
+{
+  time_t tim = time(0);
+  const struct tm * t = gmtime(&tim);
+
+  /* Pack date and time into a DWORD variable */
+  return ((DWORD)(t->tm_year - 80) << 25)
+    | ((uint32_t)(t->tm_mon+1) << 21)
+    | ((uint32_t)t->tm_mday << 16)
+    | ((uint32_t)t->tm_hour << 11)
+    | ((uint32_t)t->tm_min << 5)
+    | ((uint32_t)t->tm_sec >> 1);
+}
+
+unsigned int noDiskStatus = 0;
+
+void traceDiskStatus()
+{
+  if (noDiskStatus > 0) {
+    TRACE("disk_status() called %d times", noDiskStatus);
+    noDiskStatus = 0;  
+  }
+}
+
+DSTATUS disk_initialize (BYTE pdrv)
+{
+  traceDiskStatus();
+  TRACE("disk_initialize(%u)", pdrv);
+  diskImage = fopen("sdcard.image", "r+");
+  return diskImage ? (DSTATUS)0 : (DSTATUS)STA_NODISK;
+}
+
+DSTATUS disk_status (BYTE pdrv)
+{
+  ++noDiskStatus;
+  // TRACE("disk_status(%u)", pdrv);
+  return (DSTATUS)0;
+}
+
+DRESULT disk_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
+{
+  if (diskImage == 0) return RES_NOTRDY;
+  traceDiskStatus();
+  TRACE("disk_read(%u, %p, %u, %u)", pdrv, buff, sector, count);
+  fseek(diskImage, sector*512, SEEK_SET);
+  fread(buff, count, 512, diskImage);
+  return RES_OK;
+}
+
+DRESULT disk_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count)
+{
+  if (diskImage == 0) return RES_NOTRDY;
+  traceDiskStatus();
+  TRACE("disk_write(%u, %p, %u, %u)", pdrv, buff, sector, count);
+  fseek(diskImage, sector*512, SEEK_SET);
+  fwrite(buff, count, 512, diskImage);
+  return RES_OK;
+}
+
+DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff)
+{
+  if (diskImage == 0) return RES_NOTRDY;
+  traceDiskStatus();
+  TRACE("disk_ioctl(%u, %u, %p)", pdrv, cmd, buff);
+  if (pdrv) return RES_PARERR;
+
+  DRESULT res;
+  BYTE *ptr = (BYTE *)buff;
+
+  if (cmd == CTRL_POWER) {
+    switch (*ptr) {
+      case 0:         /* Sub control code == 0 (POWER_OFF) */
+        res = RES_OK;
+        break;
+      case 1:         /* Sub control code == 1 (POWER_ON) */
+        res = RES_OK;
+        break;
+      case 2:         /* Sub control code == 2 (POWER_GET) */
+        *(ptr+1) = (BYTE)1;  /* fake powered */
+        res = RES_OK;
+        break;
+      default :
+        res = RES_PARERR;
+    }
+    return res;
+  }
+
+  switch(cmd) {
+/* Generic command (Used by FatFs) */
+    case CTRL_SYNC :     /* Complete pending write process (needed at _FS_READONLY == 0) */
+      break;
+
+    case GET_SECTOR_COUNT: /* Get media size (needed at _USE_MKFS == 1) */
+      {
+        struct stat buf;
+        if (stat("sdcard.image", &buf) == 0) {
+          DWORD noSectors  = buf.st_size / 512;
+          *(DWORD*)buff = noSectors;
+          TRACE("disk_ioctl(GET_SECTOR_COUNT) = %u", noSectors);
+          return RES_OK; 
+        }
+        return RES_ERROR;
+      }
+
+    case GET_SECTOR_SIZE: /* Get sector size (needed at _MAX_SS != _MIN_SS) */
+      TRACE("disk_ioctl(GET_SECTOR_SIZE) = 512");
+      *(WORD*)buff = 512;
+      res = RES_OK;
+      break;
+
+    case GET_BLOCK_SIZE : /* Get erase block size (needed at _USE_MKFS == 1) */
+      *(WORD*)buff = 512 * 4;
+      res = RES_OK;
+      break;
+
+    case CTRL_TRIM : /* Inform device that the data on the block of sectors is no longer used (needed at _USE_TRIM == 1) */
+      break;
+
+/* Generic command (Not used by FatFs) */
+    case CTRL_LOCK : /* Lock/Unlock media removal */
+    case CTRL_EJECT: /* Eject media */
+    case CTRL_FORMAT: /* Create physical format on the media */
+      return RES_PARERR;
+
+
+/* MMC/SDC specific ioctl command */
+    // case MMC_GET_TYPE    10  /* Get card type */
+    // case MMC_GET_CSD     11  /* Get CSD */
+    // case MMC_GET_CID     12  /* Get CID */
+    // case MMC_GET_OCR     13  /* Get OCR */
+    // case MMC_GET_SDSTAT    14  /* Get SD status */
+
+/* ATA/CF specific ioctl command */
+    // case ATA_GET_REV     20  /* Get F/W revision */
+    // case ATA_GET_MODEL   21  /* Get model name */
+    // case ATA_GET_SN      22  /* Get serial number */
+    default:
+      return RES_PARERR;
+  }
+  return RES_OK;
+}
+
+uint32_t sdIsHC()
+{
+  return sdGetSize() > 2000000;
+}
+
+uint32_t sdGetSpeed()
+{
+  return 330000;
+}
+
+#endif // #if defined(DISKIO_SIMU)
+
+
 
 bool lcd_refresh = true;
 uint8_t lcd_buf[DISPLAY_BUF_SIZE];
@@ -728,5 +930,5 @@ void turnBacklightOff(void)
 }
 #endif
 
-#endif
+#endif  // #if defined(PCBTARANIS)
 

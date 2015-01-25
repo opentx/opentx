@@ -54,17 +54,12 @@ const pm_char * openLogs()
   // Determine and set log file filename
   FRESULT result;
   DIR folder;
-  DWORD nofree;
-  FATFS * fat;
   char filename[34]; // /LOGS/modelnamexxx-2013-01-01.log
 
   if (!sdMounted())
     return STR_NO_SDCARD;
 
-  result = f_getfree("", &nofree, &fat);
-  if (result != FR_OK)
-    return SDCARD_ERROR(result);
-  if (nofree == 0)
+  if (sdGetFreeSectors() == 0)
     return STR_SDCARD_FULL;
 
   strcpy_P(filename, STR_LOGS_PATH);
@@ -180,7 +175,6 @@ getvalue_t getConvertedTelemetryValue(getvalue_t val, uint8_t unit)
   return val;
 }
 
-// TODO test when disk full
 void writeLogs()
 {
   static const pm_char * error_displayed = NULL;

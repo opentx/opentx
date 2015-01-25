@@ -153,8 +153,6 @@
 #define PIN_SD_SCK                      GPIO_Pin_1
 #define PIN_SD_CS                       GPIO_Pin_0
   #define SD_IS_HC()       (0)   // ?
-  #define SD_GET_BLOCKNR() (0)   // ?
-  #define SD_GET_SIZE_MB() (0)   // ?
   #define SD_GET_SPEED()   (0)   // ?
 
 #endif

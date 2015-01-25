@@ -99,6 +99,7 @@ namespace Open9xSky9x {
 #include "radio/src/logs.cpp"
 #include "radio/src/targets/sky9x/keys_driver.cpp"
 #include "radio/src/keys.cpp"
+#include "radio/src/sdcard.cpp"
 #include "radio/src/targets/simu/simpgmspace.cpp"
 #include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"

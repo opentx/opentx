@@ -313,6 +313,13 @@ TRACE_AUDIO = NO
 # Values = NO, YES
 TARANIS_INTERNAL_PPM = NO
 
+# Enable disk IO simulation in simulator
+# Simulator will use FatFs module and simulated IO layer that 
+# uses "./sdcard.image" file as image of SD card.
+# This file must contain whole SD card from first to last sector
+# Values = NO, YES
+DISKIO_SIMU = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -556,7 +563,7 @@ ifeq ($(PCB), GRUVIN9X)
   
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DRTCLOCK
-    CPPSRC += rtc.cpp targets/gruvin9x/rtc_driver.cpp 
+    CPPSRC += rtc.cpp targets/gruvin9x/rtc_driver.cpp sdcard.cpp
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/gruvin9x/diskio.cpp
   endif
     
@@ -595,9 +602,9 @@ ifeq ($(PCB), MEGA2560)
   CPPSRC += audio_avr.cpp debug.cpp
 
   ifeq ($(SDCARD), YES)
-    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/gruvin9x/diskio.cpp 
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/gruvin9x/diskio.cpp
     CPPDEFS += -DRTCLOCK
-    CPPSRC += rtc.cpp targets/mega2560/rtc_driver.cpp 
+    CPPSRC += rtc.cpp targets/mega2560/rtc_driver.cpp sdcard.cpp
   endif
 
   # Enable extra rotary encoders (Gruvin9x board only)
@@ -663,6 +670,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
     CPPDEFS += -DVOICE
     INCDIRS += FatFs FatFs/option
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/sky9x/diskio.cpp
+    CPPSRC += sdcard.cpp
   endif
   ifeq ($(BUZZER), YES)
     CPPDEFS += -DBUZZER
@@ -801,7 +809,8 @@ ifeq ($(PCB), TARANIS)
     LUADEP = lua_exports.cpp
   endif           
   ifeq ($(SDCARD), YES)
-    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/taranis/diskio.cpp
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/taranis/diskio.cpp 
+    CPPSRC += sdcard.cpp
     CPPDEFS += -DVOICE
     INCDIRS += FatFs FatFs/option
   endif
@@ -1387,6 +1396,11 @@ FOXLIB=-L/usr/local/lib \
        -L/opt/local/lib \
        -lFOX-1.6 \
        -Wl,-rpath,$(FOXPATH)/src/.libs
+
+ifeq ($(DISKIO_SIMU), YES)
+  CPPDEFS += -DDISKIO_SIMU
+  CPPSRC += FatFs/ff.c FatFs/option/ccsbcs.c
+endif
 
 simu: $(LUADEP) stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp targets/simu/simpgmspace.cpp *.h tra lbm eeprom.bin
 	g++ $(CPPFLAGS) $(INCFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) $(LUASRC) targets/simu/simpgmspace.cpp -MD -DSIMU -DLUA_USE_APICHECK -O0 -o simu $(FOXINC) $(FOXLIB) -pthread -fexceptions

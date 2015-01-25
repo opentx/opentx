@@ -697,7 +697,13 @@ void menuGeneralSdManagerInfo(uint8_t event)
   lcd_putc(lcdLastPos, 3*FH, 'M');
 
   lcd_putsLeft(4*FH, STR_SD_SECTORS);
+#if defined(SD_GET_FREE_BLOCKNR)
+  lcd_outdezAtt(10*FW, 4*FH,  SD_GET_FREE_BLOCKNR()/1000, LEFT);
+  lcd_putc(lcdLastPos, 4*FH, '/');
+  lcd_outdezAtt(lcdLastPos+FW, 4*FH, SD_GET_BLOCKNR()/1000, LEFT);
+#else
   lcd_outdezAtt(10*FW, 4*FH, SD_GET_BLOCKNR()/1000, LEFT);
+#endif
   lcd_putc(lcdLastPos, 4*FH, 'k');
 
   lcd_putsLeft(5*FH, STR_SD_SPEED);
@@ -933,7 +939,7 @@ void menuGeneralSdManager(uint8_t _event)
     case EVT_KEY_LONG(KEY_MENU):
       if (!READ_ONLY()) {
         killEvents(_event);
-        // MENU_ADD_ITEM(STR_SD_INFO);  TODO: Implement
+        MENU_ADD_ITEM(STR_SD_INFO);
         MENU_ADD_ITEM(STR_SD_FORMAT);
         menuHandler = onSdManagerMenu;
       }
