@@ -36,7 +36,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "OpenTX board based on Arduino MEGA2560"
-Date "10 jan 2015"
+Date "20 jan 2015"
 Rev "0"
 Comp "Copyright 2015 F. Aguerre"
 Comment1 ""
@@ -539,11 +539,11 @@ F 3 "" H 5350 1450 60  0001 C CNN
 	1    5350 1450
 	1    0    0    -1  
 $EndComp
-Text Label 9050 2900 2    42   ~ 0
+Text Label 9250 2950 2    42   ~ 0
 Rot_x_Push
-Text Label 9050 2800 2    42   ~ 0
+Text Label 9250 2800 2    42   ~ 0
 Rot_x_B
-Text Label 9050 2700 2    42   ~ 0
+Text Label 9250 2700 2    42   ~ 0
 Rot_x_A
 $Comp
 L DIODESCH D1
@@ -629,7 +629,7 @@ $EndComp
 Text Notes 9500 750  0    60   ~ 0
 LCD 3.3V input (x13)
 Text Notes 6850 750  0    60   ~ 0
-Switches, trims & keybs deboucing (x14)
+Switches, trims & keybs deboucing (x22)
 Text GLabel 10450 1000 2    42   Output ~ 0
 LCD_xxxx
 $Comp
@@ -41161,10 +41161,25 @@ F 3 "" H 4850 4400 60  0001 C CNN
 $EndComp
 Text Notes 7100 4750 0    50   ~ 0
 GND
+$Comp
+L GND #PWR?
+U 1 1 54AD7062
+P 1750 4400
+F 0 "#PWR?" H 1750 4400 30  0001 C CNN
+F 1 "GND" H 1750 4330 30  0001 C CNN
+F 2 "" H 1750 4400 60  0001 C CNN
+F 3 "" H 1750 4400 60  0001 C CNN
+	1    1750 4400
+	1    0    0    -1  
+$EndComp
+Text Notes 800  7150 0    50   ~ 0
+GND
+Text Label 9250 3050 2    42   ~ 0
+or key ESC / MENU
 Wire Wire Line
-	9050 2900 8050 2900
+	8050 2950 9250 2950
 Wire Wire Line
-	8050 2700 9050 2700
+	8050 2700 9250 2700
 Wire Wire Line
 	8100 5250 7800 5250
 Wire Wire Line
@@ -41218,8 +41233,6 @@ Wire Wire Line
 Connection ~ 8550 2700
 Wire Wire Line
 	8550 3000 8550 2700
-Wire Wire Line
-	8050 2900 8050 3000
 Wire Wire Line
 	8050 3400 8050 3500
 Wire Wire Line
@@ -41636,7 +41649,7 @@ Wire Wire Line
 Wire Notes Line
 	8450 4700 8000 4700
 Wire Wire Line
-	7600 2800 9050 2800
+	7600 2800 9250 2800
 Wire Wire Line
 	2950 950  3000 950 
 Wire Wire Line
@@ -41696,23 +41709,12 @@ Wire Wire Line
 Wire Wire Line
 	2450 6800 2550 6800
 Connection ~ 2550 6800
-$Comp
-L GND #PWR?
-U 1 1 54AD7062
-P 1750 4400
-F 0 "#PWR?" H 1750 4400 30  0001 C CNN
-F 1 "GND" H 1750 4330 30  0001 C CNN
-F 2 "" H 1750 4400 60  0001 C CNN
-F 3 "" H 1750 4400 60  0001 C CNN
-	1    1750 4400
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	1750 4300 1750 4400
 Wire Wire Line
 	1900 4750 1900 4300
 Wire Wire Line
 	1900 4300 1750 4300
-Text Notes 800  7150 0    50   ~ 0
-GND
+Wire Wire Line
+	8050 2950 8050 3000
 $EndSCHEMATC
