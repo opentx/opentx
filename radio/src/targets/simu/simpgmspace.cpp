@@ -341,6 +341,9 @@ void *main_thread(void *)
     while (main_thread_running) {
 #if defined(CPUARM)
       doMixerCalculations();
+#if defined(FRSKY) || defined(MAVLINK)
+      telemetryWakeup();
+#endif
       checkTrims();
 #endif
       perMain();
