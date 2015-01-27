@@ -178,7 +178,7 @@ Tila 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="230"/>
         <source>Radio Type</source>
-        <translation type="unfinished">Radio tyyppi</translation>
+        <translation>Radio tyyppi</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="443"/>
@@ -360,7 +360,8 @@ Voi olla eri kun firmwaren kieli</translation>
         <location filename="../apppreferencesdialog.ui" line="334"/>
         <source>Set voice language.
 May be different from firmware language</source>
-        <translation type="unfinished"></translation>
+        <translation>Aseta äänen kieli.
+Voi olla eri kun firmwaren kieli</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="611"/>
@@ -1522,12 +1523,12 @@ May be different from firmware language</source>
     <message>
         <location filename="../wizarddialog.cpp" line="615"/>
         <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation type="unfinished">&lt;br&gt;1. korkeusper kanava:</translation>
+        <translation>&lt;br&gt;1. korkeusper kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="617"/>
         <source>Second Elevon Channel:</source>
-        <translation type="unfinished">2. korkeusper kanava:</translation>
+        <translation>2. korkeusper kanava:</translation>
     </message>
 </context>
 <context>
@@ -1535,82 +1536,82 @@ May be different from firmware language</source>
     <message>
         <location filename="../modeledit/templates.cpp" line="39"/>
         <source>Simple 4-CH</source>
-        <translation type="unfinished"></translation>
+        <translation>Yksinkertainen 4-CH</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="40"/>
         <source>T-Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>t-Cut</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="41"/>
         <source>Sticky T-Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Tahmea T-Cut</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="42"/>
         <source>V-Tail</source>
-        <translation type="unfinished">V-Peräsin</translation>
+        <translation>V-Peräsin</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="43"/>
         <source>Elevon\Delta</source>
-        <translation type="unfinished"></translation>
+        <translation>Elevoni \ Delta</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="44"/>
         <source>Heli Setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopteri asetukset</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="45"/>
         <source>Heli Setup with gyro gain control</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopteri asetukset Gyron kanssa</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="46"/>
         <source>Gyro gain control</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyron asetukset</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="47"/>
         <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopterin asetukset ( futaba tyylinen kanavien asettelu)</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="48"/>
         <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopterin asetukset + Gyro ( futaba tyylinen kanavien asettelu)</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="49"/>
         <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyron asetukset ( Futaba tyylinen kanavien asettelu)</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="50"/>
         <source>Servo Test</source>
-        <translation type="unfinished"></translation>
+        <translation>Servo testi</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="51"/>
         <source>MultiCopter</source>
-        <translation type="unfinished"></translation>
+        <translation>Multikopteri</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="52"/>
         <source>Use Model Config Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytä mallien teko apuria</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="81"/>
         <source>Apply Template?</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytä tätä mallia ?</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="81"/>
         <source>Apply template &quot;%1&quot;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytä mallia &quot;%1&quot;?</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="169"/>
@@ -1621,7 +1622,7 @@ May be different from firmware language</source>
         <location filename="../modeledit/templates.cpp" line="358"/>
         <location filename="../modeledit/templates.cpp" line="487"/>
         <source>RUD</source>
-        <translation type="unfinished">PER</translation>
+        <translation>PER</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="171"/>
@@ -1635,14 +1636,14 @@ May be different from firmware language</source>
         <location filename="../modeledit/templates.cpp" line="478"/>
         <location filename="../modeledit/templates.cpp" line="479"/>
         <source>ELE</source>
-        <translation type="unfinished">KOR</translation>
+        <translation>KOR</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="181"/>
         <location filename="../modeledit/templates.cpp" line="352"/>
         <location filename="../modeledit/templates.cpp" line="474"/>
         <source>THR</source>
-        <translation type="unfinished">KAA</translation>
+        <translation>KAA</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="197"/>
@@ -1654,7 +1655,7 @@ May be different from firmware language</source>
         <location filename="../modeledit/templates.cpp" line="482"/>
         <location filename="../modeledit/templates.cpp" line="483"/>
         <source>AIL</source>
-        <translation type="unfinished">SII</translation>
+        <translation>SII</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="204"/>
@@ -1662,7 +1663,7 @@ May be different from firmware language</source>
         <location filename="../modeledit/templates.cpp" line="395"/>
         <location filename="../modeledit/templates.cpp" line="401"/>
         <source>AIL2</source>
-        <translation type="unfinished"></translation>
+        <translation>SII2</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="217"/>
@@ -1670,7 +1671,7 @@ May be different from firmware language</source>
         <location filename="../modeledit/templates.cpp" line="408"/>
         <location filename="../modeledit/templates.cpp" line="414"/>
         <source>ELE2</source>
-        <translation type="unfinished"></translation>
+        <translation>KOR2</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="227"/>
@@ -1680,7 +1681,7 @@ May be different from firmware language</source>
         <location filename="../modeledit/templates.cpp" line="513"/>
         <location filename="../modeledit/templates.cpp" line="514"/>
         <source>FLAPS</source>
-        <translation type="unfinished"></translation>
+        <translation>LAIPAT</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="242"/>
@@ -1690,7 +1691,7 @@ May be different from firmware language</source>
         <location filename="../modeledit/templates.cpp" line="528"/>
         <location filename="../modeledit/templates.cpp" line="534"/>
         <source>FLAP%1</source>
-        <translation type="unfinished"></translation>
+        <translation>LAIPAT%1</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="282"/>
@@ -1698,7 +1699,7 @@ May be different from firmware language</source>
         <location filename="../modeledit/templates.cpp" line="307"/>
         <location filename="../modeledit/templates.cpp" line="311"/>
         <source>PITCH</source>
-        <translation type="unfinished"></translation>
+        <translation>PITCH</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="295"/>
@@ -1710,41 +1711,41 @@ May be different from firmware language</source>
         <location filename="../modeledit/templates.cpp" line="324"/>
         <location filename="../modeledit/templates.cpp" line="325"/>
         <source>GYRO</source>
-        <translation type="unfinished"></translation>
+        <translation>GYRO</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="443"/>
         <location filename="../modeledit/templates.cpp" line="444"/>
         <source>SPOIL</source>
-        <translation type="unfinished"></translation>
+        <translation>SPOIL</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="458"/>
         <location filename="../modeledit/templates.cpp" line="464"/>
         <source>SPOIL%1</source>
-        <translation type="unfinished"></translation>
+        <translation>SPOIL%1</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="503"/>
         <location filename="../modeledit/templates.cpp" line="509"/>
         <source>RUD2</source>
-        <translation type="unfinished"></translation>
+        <translation>PER2</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="712"/>
         <location filename="../modeledit/templates.cpp" line="824"/>
         <source>Clear Mixes?</source>
-        <translation type="unfinished">Tyhjennä mikserit?</translation>
+        <translation>Tyhjennä mikserit?</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="712"/>
         <source>Really clear existing mixes on CH6?</source>
-        <translation type="unfinished"></translation>
+        <translation>Varmasti tyhjennä mikseri 6CH ?</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="824"/>
         <source>Really clear existing mixes on CH5?</source>
-        <translation type="unfinished"></translation>
+        <translation>Varmasti tyhjennä mikseri CH5 ?</translation>
     </message>
 </context>
 <context>
@@ -1752,7 +1753,7 @@ May be different from firmware language</source>
     <message>
         <location filename="../modeledit/expodialog.ui" line="454"/>
         <source>The source for the mixer</source>
-        <translation type="unfinished">Lähde miksereille</translation>
+        <translation>Lähde miksereille</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="43"/>
@@ -1916,7 +1917,7 @@ Jos on tyhjä, katsotaan tulon olen ON tilassa kokoajan.</translation>
     <message>
         <location filename="../modeledit/expodialog.ui" line="435"/>
         <source>Offset</source>
-        <translation type="unfinished">Tasoitus</translation>
+        <translation>Tasoitus</translation>
     </message>
     <message>
         <source>The curve used by the input</source>
@@ -2006,7 +2007,8 @@ Jos on tyhjä, katsotaan tulon olen ON tilassa kokoajan.</translation>
         <location filename="../fwpreferencesdialog.ui" line="81"/>
         <source>Set voice language.
 May be different from firmware language</source>
-        <translation type="unfinished"></translation>
+        <translation>Aseta äänen kieli.
+Voi olla eri kun firmwaren kieli</translation>
     </message>
     <message>
         <source>Set language of voice.
@@ -2179,37 +2181,37 @@ Voi olla eri kun firmwaren kieli</translation>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="59"/>
         <source>Rud</source>
-        <translation type="unfinished">PER</translation>
+        <translation>PER</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="59"/>
         <source>Ele</source>
-        <translation type="unfinished">KOR</translation>
+        <translation>KOR</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="59"/>
         <source>Thr</source>
-        <translation type="unfinished">KAA</translation>
+        <translation>KAA</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="59"/>
         <source>Ail</source>
-        <translation type="unfinished">SII</translation>
+        <translation>SII</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="102"/>
         <source>Rotary Encoder %1</source>
-        <translation type="unfinished">Rotary Encoder?? %1</translation>
+        <translation>??Rotary Encoder?? %1</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="135"/>
         <source>GVAR%1</source>
-        <translation type="unfinished">GVAR %1</translation>
+        <translation>GVAR%1</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="169"/>
         <source>Popup enabled</source>
-        <translation type="unfinished">Popupit sallittu</translation>
+        <translation>Popupit sallittu</translation>
     </message>
 </context>
 <context>
@@ -2232,17 +2234,17 @@ Voi olla eri kun firmwaren kieli</translation>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="454"/>
         <source>Flight Mode %1</source>
-        <translation type="unfinished">Lentotila %1</translation>
+        <translation>Lentotila %1</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="457"/>
         <source> (%1)</source>
-        <translation type="unfinished">(%1)</translation>
+        <translation> (%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="460"/>
         <source> (default)</source>
-        <translation type="unfinished">(oletus)</translation>
+        <translation> (oletus)</translation>
     </message>
 </context>
 <context>
@@ -2459,7 +2461,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit.ui" line="1457"/>
         <source>Haptic Length</source>
-        <translation>Haptikin pituus</translation>
+        <translation>Värinän pituus</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1748"/>
@@ -2820,7 +2822,7 @@ Tätä käytetään pohjana kanava määrityksille, mikä kanava menee mihinkä 
     <message>
         <location filename="../generaledit.ui" line="1599"/>
         <source>Haptic Strength</source>
-        <translation>Haptikin voimakkuus</translation>
+        <translation>Värinän voimakkuus</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="482"/>
@@ -2869,7 +2871,7 @@ Tätä käytetään pohjana kanava määrityksille, mikä kanava menee mihinkä 
     <message>
         <location filename="../generaledit.ui" line="445"/>
         <source>Haptic Mode</source>
-        <translation>Haptik tila</translation>
+        <translation>Värinä tila</translation>
     </message>
     <message>
         <source>Owner Name</source>
@@ -3229,12 +3231,12 @@ Hyväksytty arvo: 5v - 10v</translation>
     <message>
         <location filename="../generaledit.ui" line="271"/>
         <source>Color 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Väri 1</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="288"/>
         <source>Color 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Väri 2</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1186"/>
@@ -3245,7 +3247,7 @@ Hyväksytty arvo: 5v - 10v</translation>
     <message>
         <location filename="../generaledit.ui" line="1205"/>
         <source>Backlight Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Taustavalon kirkkaus</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1212"/>
@@ -3255,32 +3257,32 @@ Hyväksytty arvo: 5v - 10v</translation>
     <message>
         <location filename="../generaledit.ui" line="1219"/>
         <source>Backlight  Auto OFF after</source>
-        <translation type="unfinished"></translation>
+        <translation>Taustavalo pois automaattisesti</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1236"/>
         <source>Backlight color</source>
-        <translation type="unfinished"></translation>
+        <translation>Taustavalon väri</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1322"/>
         <source>Backlight Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Taustavalon kytkin</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1715"/>
         <source>Stick reverse (order as above)</source>
-        <translation type="unfinished"></translation>
+        <translation>Käännetty tikku (järjestys yllä)</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1980"/>
         <source>Play Delay (switch mid position)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toista viive (kytkin keskiasennossa)</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2020"/>
         <source>Backlight flash on alarm</source>
-        <translation type="unfinished"></translation>
+        <translation>Taustavalo vilkkuu hälytyksenä</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2087"/>
@@ -3768,12 +3770,12 @@ Oletko varma ?</translation>
     <message>
         <location filename="../modeledit/inputs.cpp" line="165"/>
         <source>Offset(%1)</source>
-        <translation type="unfinished">Tasoitus(%1)</translation>
+        <translation>Tasoitus(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="170"/>
         <source>NoTrim</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei trimmiä</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="182"/>
@@ -3939,7 +3941,7 @@ Oletko varma ?</translation>
         <location filename="../modeledit/logicalswitches.cpp" line="241"/>
         <location filename="../modeledit/logicalswitches.cpp" line="323"/>
         <source>(infinite)</source>
-        <translation type="unfinished"></translation>
+        <translation>(ääretön)</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="490"/>
@@ -4440,7 +4442,9 @@ Kirjoita se silti lähettimeen ?</translation>
         <source>Firmware %1 does not seem to have ever been downloaded.
 Release %2 is available.
 Do you want to download it now?</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware %1 ei ole koskaan ladattu.
+Versio %2 firmwaresta on saatavilla.
+Haluatko ladata sen nyt ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="441"/>
@@ -4449,12 +4453,16 @@ Do you want to download it now?</source>
   - newer is %3
 
 Do you want to download it now ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Uusi versio %1 firmwaresta on saatavilla:
+  - Nykyinen %2
+  - Uudempi %3)
+
+Haluatko ladata sen nyt ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="477"/>
         <source>Ignore this release %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohita tämä versio (r%1)?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="576"/>
@@ -4471,7 +4479,7 @@ Do you want to download it now ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="971"/>
         <source>Read Firmware From Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Lue firmware lähettimestä</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1142"/>
@@ -4759,7 +4767,7 @@ Do you want to download it now ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1580"/>
         <source>Alt+S</source>
-        <translation type="unfinished">Alt+S</translation>
+        <translation>Alt+S</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1772"/>
@@ -4769,7 +4777,7 @@ Do you want to download it now ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1949"/>
         <source>New Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Uusi Radio</translation>
     </message>
     <message>
         <source>Hebrew</source>
@@ -5002,12 +5010,12 @@ Do you want to download it now ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1429"/>
         <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</source>
-        <translation type="unfinished">OpenTX Companion projektin on aloittanut alunperin: &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt; {1&apos;?}</translation>
+        <translation>OpenTX Companion projektin on aloittanut alunperin: &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt; {1&apos;?}</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1435"/>
         <source>Copyright OpenTX Team</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekijänoikeus: OpenTX tiimi</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1543"/>
@@ -5870,7 +5878,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../modeledit/mixes.cpp" line="190"/>
         <source>NoTrim</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei trimmiä</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="193"/>
@@ -6191,7 +6199,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../modelslist.cpp" line="100"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -6410,7 +6418,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../modeledit/setup.cpp" line="125"/>
         <source>Extra Radio System</source>
-        <translation type="unfinished"></translation>
+        <translation>Extra Radio järjestelmä</translation>
     </message>
 </context>
 <context>
@@ -6445,17 +6453,17 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="919"/>
         <source>Throttle Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaasu pakko pois</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="920"/>
         <source>Throttle Timer</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaasu ajastin</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="921"/>
         <source>Flight Timer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lento ajastin</translation>
     </message>
 </context>
 <context>
@@ -6605,22 +6613,22 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../printdialog.cpp" line="154"/>
         <source>Rud</source>
-        <translation type="unfinished">PER</translation>
+        <translation>PER</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="154"/>
         <source>Ele</source>
-        <translation type="unfinished">KOR</translation>
+        <translation>KOR</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="154"/>
         <source>Thr</source>
-        <translation type="unfinished">KAA</translation>
+        <translation>KAA</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="154"/>
         <source>Ail</source>
-        <translation type="unfinished">SII</translation>
+        <translation>SII</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="168"/>
@@ -6817,73 +6825,73 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../printdialog.cpp" line="209"/>
         <source>Inputs</source>
-        <translation type="unfinished">Tulot</translation>
+        <translation>Tulot</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="242"/>
         <location filename="../printdialog.cpp" line="336"/>
         <source>NoTrim</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei trimmiä</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="326"/>
         <source>Weight(%1)</source>
-        <translation type="unfinished">Paino(%1)</translation>
+        <translation>Paino(%1)</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="332"/>
         <source>Switch(%1)</source>
-        <translation type="unfinished">Kytkin(%1)</translation>
+        <translation>Kytkin(%1)</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="340"/>
         <source>No DR/Expo</source>
-        <translation type="unfinished">Ei DR / Expoja</translation>
+        <translation>Ei DR / Expoja</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="341"/>
         <source>Offset(%1)</source>
-        <translation type="unfinished">Tasoitus(%1)</translation>
+        <translation>Tasoitus(%1)</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="353"/>
         <source> Warn(%1)</source>
-        <translation type="unfinished"> Välys(%1)</translation>
+        <translation> Välys(%1)</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="590"/>
         <source>L</source>
-        <translation type="unfinished"></translation>
+        <translation>L</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="643"/>
         <source>SF%1</source>
-        <translation type="unfinished">SF%1</translation>
+        <translation>SF%1</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="678"/>
         <source>Range</source>
-        <translation type="unfinished">Matka</translation>
+        <translation>Matka</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="698"/>
         <source>Alarms</source>
-        <translation type="unfinished"></translation>
+        <translation>Hälytykset</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="699"/>
         <source>Low Alarm</source>
-        <translation type="unfinished">Ala hälytys</translation>
+        <translation>Ala hälytys</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="700"/>
         <source>Critical Alarm</source>
-        <translation type="unfinished">Kriittinen hälytys</translation>
+        <translation>Kriittinen hälytys</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="703"/>
         <source>RSSI</source>
-        <translation type="unfinished">RSSI</translation>
+        <translation>RSSI</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="729"/>
@@ -7592,7 +7600,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="352"/>
         <source>GPS Time</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS aika</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="356"/>
@@ -7795,7 +7803,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="375"/>
         <source>LUA%1%2</source>
-        <translation type="unfinished"></translation>
+        <translation>LUA%1%2</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="391"/>
@@ -7805,47 +7813,47 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="442"/>
         <source>FM0</source>
-        <translation type="unfinished"></translation>
+        <translation>FM0</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="442"/>
         <source>FM1</source>
-        <translation type="unfinished"></translation>
+        <translation>FM1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="442"/>
         <source>FM2</source>
-        <translation type="unfinished"></translation>
+        <translation>FM2</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="442"/>
         <source>FM3</source>
-        <translation type="unfinished"></translation>
+        <translation>FM3</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="442"/>
         <source>FM4</source>
-        <translation type="unfinished"></translation>
+        <translation>FM4</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="442"/>
         <source>FM5</source>
-        <translation type="unfinished"></translation>
+        <translation>FM5</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="442"/>
         <source>FM6</source>
-        <translation type="unfinished"></translation>
+        <translation>FM6</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="442"/>
         <source>FM7</source>
-        <translation type="unfinished"></translation>
+        <translation>FM7</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="442"/>
         <source>FM8</source>
-        <translation type="unfinished"></translation>
+        <translation>FM8</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="446"/>
@@ -8013,7 +8021,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="490"/>
         <source>One</source>
-        <translation type="unfinished">Yksi</translation>
+        <translation>Yksi</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="498"/>
@@ -8225,105 +8233,105 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <location filename="../eeprominterface.cpp" line="248"/>
         <location filename="../eeprominterface.cpp" line="1025"/>
         <source>V</source>
-        <translation type="unfinished"></translation>
+        <translation>V</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="128"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation>s</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="158"/>
         <source>ft</source>
-        <translation type="unfinished"></translation>
+        <translation>jalka</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="161"/>
         <location filename="../eeprominterface.cpp" line="232"/>
         <source>m</source>
-        <translation type="unfinished"></translation>
+        <translation>metri</translation>
     </message>
     <message utf8="true">
         <location filename="../eeprominterface.cpp" line="170"/>
         <source>°C</source>
-        <translation type="unfinished"></translation>
+        <translation>°C</translation>
     </message>
     <message utf8="true">
         <location filename="../eeprominterface.cpp" line="176"/>
         <source>°</source>
-        <translation type="unfinished"></translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="185"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="195"/>
         <location filename="../eeprominterface.cpp" line="210"/>
         <source>mph</source>
-        <translation type="unfinished"></translation>
+        <translation>mph</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="200"/>
         <location filename="../eeprominterface.cpp" line="215"/>
         <source>km/h</source>
-        <translation type="unfinished"></translation>
+        <translation>km/h</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="223"/>
         <source>m/s</source>
-        <translation type="unfinished"></translation>
+        <translation>m/s</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="255"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="260"/>
         <source>mAh</source>
-        <translation type="unfinished"></translation>
+        <translation>mAh</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="266"/>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation>W</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="275"/>
         <source>g</source>
-        <translation type="unfinished"></translation>
+        <translation>g</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="610"/>
         <source>Edge(%1, [%2:%3])</source>
-        <translation type="unfinished"></translation>
+        <translation>reuna(%1, [%2:%3])</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="613"/>
         <source>Sticky(%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Jähmeä(%1, %2)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="616"/>
         <source>Timer(%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajastin(%1, %2)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="707"/>
         <source> Duration (%1s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesto (%1 sek)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="709"/>
         <source> Delay (%1s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Viive (%1 sek)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="727"/>
         <source>Override %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohitus %1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="729"/>
@@ -8363,7 +8371,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="743"/>
         <source>Play Haptic</source>
-        <translation>Toista haptik</translation>
+        <translation>Toista värinä</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="745"/>
@@ -8470,7 +8478,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1268"/>
         <source>OpenTx only accepts %1 points in all curves</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX vastaanottaa vain %1 pistettä kaikkiin käyriin</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1774"/>
@@ -8483,13 +8491,13 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2433"/>
         <source>OpenTX doesn&apos;t accept this telemetry protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX ei hyväksy tätä telemetria protokollaa</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2537"/>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2542"/>
         <source>OpenTX doesn&apos;t accept this radio protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX ei hyväksy tätä radio protokollaa</translation>
     </message>
     <message>
         <source>OpenTX doesn&apos;t accept this protocol</source>
@@ -8576,7 +8584,7 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1054"/>
         <source>No OverrideCH functions available</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei ohituskanava funkitoita saatavissa</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1055"/>
@@ -8661,7 +8669,7 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1143"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1176"/>
         <source>Used if you have modified your radio with haptic mode</source>
-        <translation>Käytetään jos radioon on viritetty haptik moduuli</translation>
+        <translation>Käytetään jos radioon on viritetty värinä moduuli</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1079"/>
@@ -8799,7 +8807,7 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="425"/>
         <source>(displaying only first 10 warnings)</source>
-        <translation type="unfinished"></translation>
+        <translation>(näytetään vain ensimmäiset10 varoitusta)</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1091"/>
@@ -8856,7 +8864,7 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1099"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1162"/>
         <source>Add support for reversing stick inputs (e.g. needed for FrSky gimbals)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää tuki käänteisille tikkujen tuloille ( esim taraniksen gimbaalit)</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1104"/>
@@ -8915,18 +8923,18 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1263"/>
         <source>Haptic module installed</source>
-        <translation type="unfinished"></translation>
+        <translation>Värinä moduli asennettu</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1264"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1272"/>
         <source>Support for Lua model scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuki LUA mallien skripteille</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1269"/>
         <source>OpenTX for FrSky Taranis Plus</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX FrSky Taranis Plus</translation>
     </message>
     <message>
         <source>Use FrSky Taranis sticks in a 9X/9XR</source>
@@ -8941,7 +8949,7 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1241"/>
         <source>OpenTX for 9XR-PRO</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX 9XR-PRO</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1260"/>
@@ -9363,12 +9371,12 @@ OpenTX Tiimi.</translation>
     <message>
         <location filename="../eeprominterface.h" line="957"/>
         <source>Positive</source>
-        <translation type="unfinished">Positiivinen</translation>
+        <translation>Positiivinen</translation>
     </message>
     <message>
         <location filename="../eeprominterface.h" line="957"/>
         <source>Negative</source>
-        <translation type="unfinished">Negatiivinen</translation>
+        <translation>Negatiivinen</translation>
     </message>
 </context>
 <context>
@@ -9376,17 +9384,17 @@ OpenTX Tiimi.</translation>
     <message>
         <location filename="../radionotfound.ui" line="32"/>
         <source>No Radio Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Lähetintä ei löydy</translation>
     </message>
     <message>
         <location filename="../radionotfound.ui" line="40"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Lähetintä ei löydy!&lt;/p&gt;&lt;p&gt;Muista pitää molemmat ala trimmi napit keskustaa kohden kun käynnistät lähettimen.&lt;/p&gt;&lt;p&gt;Liitä sitten USB johto lähettimeen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../radionotfound.ui" line="92"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>
@@ -9433,7 +9441,7 @@ OpenTX Tiimi.</translation>
     <message>
         <location filename="../modeledit/setup.ui" line="190"/>
         <source>Throttle Source</source>
-        <translation type="unfinished">Kaasun lähde</translation>
+        <translation>Kaasun lähde</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="402"/>
@@ -9603,7 +9611,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../simulation/simulatordialog.cpp" line="362"/>
         <location filename="../simulation/simulatordialog.cpp" line="363"/>
         <source>Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Lähdöt</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="516"/>
@@ -9661,12 +9669,12 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1445"/>
         <source>Outputs2</source>
-        <translation type="unfinished"></translation>
+        <translation>Lähdöt2</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1458"/>
         <source>Gvars</source>
-        <translation type="unfinished">Gvarit</translation>
+        <translation>Gvarit</translation>
     </message>
     <message>
         <source>TextLabel</source>
@@ -9752,12 +9760,12 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="245"/>
         <source>Outputs2</source>
-        <translation type="unfinished"></translation>
+        <translation>Lähdöt2</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="258"/>
         <source>Gvars</source>
-        <translation type="unfinished">Gvarit</translation>
+        <translation>Gvarit</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="347"/>
@@ -9917,12 +9925,12 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../modeledit/telemetry.ui" line="128"/>
         <source>A4</source>
-        <translation type="unfinished">A4</translation>
+        <translation>A4</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="174"/>
         <source>A3</source>
-        <translation type="unfinished">A3</translation>
+        <translation>A3</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="817"/>
@@ -10304,17 +10312,17 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../modeledit/telemetry.cpp" line="490"/>
         <source>FrSky S.PORT</source>
-        <translation type="unfinished"></translation>
+        <translation>FrSky S.PORT</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="491"/>
         <source>FrSky D</source>
-        <translation type="unfinished"></translation>
+        <translation>FrSky D</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="493"/>
         <source>FrSky D (cable)</source>
-        <translation type="unfinished"></translation>
+        <translation>FrSky D (kaapeli)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="526"/>
@@ -10344,64 +10352,64 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../modeledit/telemetry.cpp" line="679"/>
         <source>Alti</source>
-        <translation type="unfinished">Alti</translation>
+        <translation>Kork</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="680"/>
         <source>Alti+</source>
-        <translation type="unfinished">Kork+</translation>
+        <translation>Kork+</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="682"/>
         <source>VSpeed</source>
-        <translation type="unfinished"></translation>
+        <translation>Vnopeus</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="683"/>
         <location filename="../modeledit/telemetry.cpp" line="694"/>
         <location filename="../modeledit/telemetry.cpp" line="709"/>
         <source>A1</source>
-        <translation type="unfinished">A1</translation>
+        <translation>A1</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="684"/>
         <location filename="../modeledit/telemetry.cpp" line="695"/>
         <location filename="../modeledit/telemetry.cpp" line="710"/>
         <source>A2</source>
-        <translation type="unfinished">A2</translation>
+        <translation>A2</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="686"/>
         <source>dTE</source>
-        <translation type="unfinished">dTE</translation>
+        <translation>dTE</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="697"/>
         <location filename="../modeledit/telemetry.cpp" line="712"/>
         <source>A3</source>
-        <translation type="unfinished">A3</translation>
+        <translation>A3</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="698"/>
         <location filename="../modeledit/telemetry.cpp" line="713"/>
         <source>A4</source>
-        <translation type="unfinished">A4</translation>
+        <translation>A4</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="700"/>
         <location filename="../modeledit/telemetry.cpp" line="715"/>
         <source>FAS</source>
-        <translation type="unfinished">FAS</translation>
+        <translation>FAS</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="701"/>
         <source>Cells</source>
-        <translation type="unfinished">Kennoja</translation>
+        <translation>Kennoja</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="708"/>
         <source>---</source>
-        <translation type="unfinished">---</translation>
+        <translation>---</translation>
     </message>
 </context>
 <context>
@@ -10440,7 +10448,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../modeledit/setup_timer.ui" line="49"/>
         <source>Minute Call</source>
-        <translation>Minuutti kohta</translation>
+        <translation>Minuutti merkki</translation>
     </message>
     <message>
         <source>MinuteBeep</source>
@@ -10479,17 +10487,17 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../modeledit/setup.cpp" line="33"/>
         <source>Not persistent</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei yhtämittainen</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="34"/>
         <source>Persistent (flight)</source>
-        <translation type="unfinished"></translation>
+        <translation>Jatkuva (lento)</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="35"/>
         <source>Persistent (manual reset)</source>
-        <translation type="unfinished"></translation>
+        <translation>Jatkuva (manuaalinen nollaus)</translation>
     </message>
     <message>
         <source>Countdown</source>
@@ -10601,7 +10609,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
         <source>Select the elevons channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse elevonien kanavat</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
@@ -10700,12 +10708,12 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
         <source>Model Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Mallin valinnat</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
         <source>Select additional options</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaitse lisävalinnat</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="47"/>
@@ -10740,7 +10748,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../wizarddialog.cpp" line="96"/>
         <source>Models use two channels to control the elevons.&lt;br&gt;Select these two channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Malli käyttää kahta kanavaa elevonien käyttämiseen. &lt;br&gt;Valitse nämä kaksi kanavaa</translation>
     </message>
     <message>
         <source>Models use one or two channels to control the elevons.&lt;br&gt;A so called Y-cable can be used to connect single a receiver channel to two separate elevon servos. If your servos are connected by a Y-cable you should select the single-servo option.</source>
@@ -10821,17 +10829,17 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../wizarddialog.cpp" line="990"/>
         <source>Plane</source>
-        <translation type="unfinished">Lentokone</translation>
+        <translation>Lentokone</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="992"/>
         <source>Multicopter</source>
-        <translation type="unfinished"></translation>
+        <translation>Multikopteri</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="994"/>
         <source>Helicopter</source>
-        <translation type="unfinished">Helikopteri</translation>
+        <translation>Helikopteri</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1016"/>
@@ -10846,7 +10854,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../wizarddialog.cpp" line="1019"/>
         <source>Options: </source>
-        <translation type="unfinished"></translation>
+        <translation>Valinnat: </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1031"/>
@@ -11347,7 +11355,7 @@ Tätä käytetään pohjana kanava määrityksille, mikä kanava menee mihinkä 
     <message>
         <location filename="../avroutputdialog.cpp" line="152"/>
         <source>Write error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kirjoitus virhe</translation>
     </message>
     <message>
         <location filename="../avroutputdialog.cpp" line="304"/>
@@ -11605,7 +11613,7 @@ m2560 joka on v4.1 lähettimessä</translation>
     <message>
         <location filename="../burnconfigdialog.ui" line="676"/>
         <source>at91sam3s8-9xr</source>
-        <translation type="unfinished"></translation>
+        <translation>at91sam3s8-9xr</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="684"/>
