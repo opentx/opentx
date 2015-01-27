@@ -746,7 +746,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return id.contains("mavlink") ? 1 : 0;
     case HasInputDiff:
     case HasMixerExpo:
-      return (IS_ARM(board) ? true : false);
+      return (IS_TARANIS(board) ? true : false);
     default:
       return 0;
   }
