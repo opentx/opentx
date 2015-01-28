@@ -213,14 +213,14 @@ void frskySportProcessPacket(uint8_t *packet)
       if (appId == XJT_VERSION_ID) {
         frskyData.xjtVersion = HUB_DATA_U16(packet);
         if (!IS_VALID_XJT_VERSION()) {
-          frskyData.swr.set(0xff);
+          frskyData.swr.set(0x00);
         }
       } 
       else if (appId == SWR_ID) {
         if (IS_VALID_XJT_VERSION())
           frskyData.swr.set(SPORT_DATA_U8(packet));
         else
-          frskyData.swr.set(0xff);
+          frskyData.swr.set(0x00);
       }
 #else
       if (appId == XJT_VERSION_ID) {
