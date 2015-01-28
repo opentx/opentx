@@ -665,12 +665,9 @@
 #if defined(PCBTARANIS)
   #define TR_MENUINPUTS        "INPUTS"
   #define TR_MENULIMITS        "SERVOS"
-#elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
+#else
   #define TR_MENUINPUTS        "STICKS"
   #define TR_MENULIMITS        "SERVOS"
-#else
-  #define TR_MENUINPUTS        "DR/EXPO"
-  #define TR_MENULIMITS        "LIMITS"
 #endif
 
 #define TR_MENUCURVES          "CURVES"
