@@ -47,8 +47,10 @@ extern uint16_t dsm2Stream[400];
 
 static void init_pa10_pxx( void ) ;
 static void disable_pa10_pxx( void ) ;
-static void init_pa10_ppm( void ) ;
-static void disable_pa10_ppm( void ) ;
+#if defined(TARANIS_INTERNAL_PPM)
+  static void init_pa10_ppm( void ) ;
+  static void disable_pa10_ppm( void ) ;
+#endif
 static void init_pa7_pxx( void ) ;
 static void disable_pa7_pxx( void ) ;
 #if defined(DSM2)
@@ -96,19 +98,44 @@ void disable_dsm2(uint32_t port)
 
 void init_ppm(uint32_t port)
 {
-  if (port == INTERNAL_MODULE)
-    init_pa10_ppm(); // TODO needed?
-  else
+  if (port == EXTERNAL_MODULE) {
     init_pa7_ppm();
+  }
+#if defined(TARANIS_INTERNAL_PPM)
+  else if (port == INTERNAL_MODULE) {
+    init_pa10_ppm(); 
+  }
+#endif
 }
 
 void disable_ppm(uint32_t port)
 {
-  if (port == INTERNAL_MODULE)
-    disable_pa10_ppm(); // TODO needed?
-  else
+  if (port == EXTERNAL_MODULE) {
     disable_pa7_ppm();
+  }
+#if defined(TARANIS_INTERNAL_PPM)
+  else if (port == INTERNAL_MODULE) {
+    disable_pa10_ppm(); 
+  }
+#endif
 }
+
+void set_external_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive)
+{
+  TIM8->CCR2 = idleTime;
+  TIM8->CCR1 = delay;
+  // we are using complementary output so logic has to be reversed here
+  TIM8->CCER = TIM_CCER_CC1NE | (positive ? 0 : TIM_CCER_CC1NP);
+}
+
+#if defined(TARANIS_INTERNAL_PPM)
+void set_internal_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive)
+{
+  TIM1->CCR2 = idleTime;
+  TIM1->CCR3 = delay;
+  TIM1->CCER = TIM_CCER_CC3E | (positive ? TIM_CCER_CC3P : 0);
+}
+#endif
 
 void init_no_pulses(uint32_t port)
 {
@@ -283,6 +310,7 @@ static void disable_pa10_pxx()
   INTERNAL_RF_OFF();
 }
 
+#if defined(TARANIS_INTERNAL_PPM)
 // PPM output
 // Timer 1, channel 1 on PA8 for prototype
 // Pin is AF1 function for timer 1
@@ -290,7 +318,6 @@ static void init_pa10_ppm()
 {
   INTERNAL_RF_ON();
   // Timer1
-  setupPulsesPPM(INTERNAL_MODULE) ;
   ppmStreamPtr[INTERNAL_MODULE] = ppmStream[INTERNAL_MODULE];
 
   //RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
@@ -299,8 +326,12 @@ static void init_pa10_ppm()
   configure_pins( PIN_INTPPM_OUT, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_1 | PIN_OS25 | PIN_PUSHPULL ) ;
   
   RCC->APB2ENR |= RCC_APB2ENR_TIM1EN ;            // Enable clock
-
   TIM1->CR1 &= ~TIM_CR1_CEN ;
+
+  // setupPulsesPPM() is also configuring registers,
+  // so it has to be called after the peripheral is enabled
+  setupPulsesPPM(INTERNAL_MODULE) ;
+
   TIM1->ARR = *ppmStreamPtr[INTERNAL_MODULE]++ ;
   TIM1->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1 ;               // 0.5uS from 30MHz
   
@@ -308,7 +339,6 @@ static void init_pa10_ppm()
   
   TIM1->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2 ;     // PWM mode 1
   TIM1->CCMR1 = TIM_CCMR1_OC2PE ;                   			// PWM mode 1
-  TIM1->CCR3 = (g_model.moduleData[INTERNAL_MODULE].ppmDelay*50+300)*2;
   TIM1->BDTR = TIM_BDTR_MOE ;
   TIM1->EGR = 1 ;
   TIM1->DIER = TIM_DIER_UDE ;
@@ -334,6 +364,7 @@ static void disable_pa10_ppm()
 
   INTERNAL_RF_OFF();
 }
+#endif  // #if defined(TARANIS_INTERNAL_PPM)
 
 #if !defined(SIMU)
 extern "C" void TIM1_CC_IRQHandler()
@@ -535,7 +566,6 @@ static void init_pa7_ppm()
   EXTERNAL_MODULE_ON();
 
   // Timer1
-  setupPulsesPPM(EXTERNAL_MODULE) ;
   ppmStreamPtr[EXTERNAL_MODULE] = ppmStream[EXTERNAL_MODULE];
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
@@ -545,20 +575,16 @@ static void init_pa7_ppm()
   configure_pins( PIN_EXTPPM_OUT, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_3 | PIN_OS25 | PIN_PUSHPULL ) ;
 #endif
   RCC->APB2ENR |= RCC_APB2ENR_TIM8EN ;            // Enable clock
-
   TIM8->CR1 &= ~TIM_CR1_CEN ;
-  
+
+  // setupPulsesPPM() is also configuring registers,
+  // so it has to be called after the peripheral is enabled
+  setupPulsesPPM(EXTERNAL_MODULE) ;
+
   TIM8->ARR = *ppmStreamPtr[EXTERNAL_MODULE]++ ;
   TIM8->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1 ;               // 0.5uS from 30MHz
-#if defined(REV3)
-  TIM8->CCER = TIM_CCER_CC1E ;
-#else
-  TIM8->CCER = TIM_CCER_CC1NE;
-  if(g_model.moduleData[EXTERNAL_MODULE].ppmPulsePol)
-    TIM8->CCER |= TIM_CCER_CC1NP;
-#endif
+
   TIM8->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC2PE ;                   // PWM mode 1
-  TIM8->CCR1 = (g_model.moduleData[EXTERNAL_MODULE].ppmDelay*50+300)*2;
   TIM8->BDTR = TIM_BDTR_MOE ;
   TIM8->EGR = 1 ;
   TIM8->DIER = TIM_DIER_UDE ;

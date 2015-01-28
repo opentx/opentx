@@ -2593,7 +2593,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   uart3Init(g_eeGeneral.uart3Mode, MODEL_TELEMETRY_PROTOCOL());
 #endif
 
-#if defined(CPUARM) && !defined(SIMU)
+#if defined(PCBSKY9X) && !defined(SIMU)
   init_trainer_capture();
 #endif
 
