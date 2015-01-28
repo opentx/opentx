@@ -857,7 +857,9 @@ else
   TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
 endif
 
-CPPSRC += opentx.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp gui/menus.cpp gui/menu_model.cpp gui/menu_general.cpp gui/view_main.cpp gui/view_statistics.cpp $(EEPROMSRC) $(LCDSRC) keys.cpp maths.cpp translations.cpp fonts.cpp $(TTS_SRC)
+CPPSRC += opentx.cpp strhelpers.cpp stamp.cpp translations.cpp fonts.cpp $(TTS_SRC) 
+CPPSRC += switches.cpp curves.cpp mixer.cpp timers.cpp $(PULSESSRC) $(EEPROMSRC) $(LCDSRC) keys.cpp maths.cpp
+CPPSRC +=	gui/menus.cpp gui/menu_model.cpp gui/menu_general.cpp gui/view_main.cpp gui/view_statistics.cpp
 
 # Debugging format.
 #     Native formats for AVR-GCC's -g are dwarf-2 [default] or stabs.

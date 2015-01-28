@@ -35,6 +35,7 @@
  */
 
 #include "opentx.h"
+#include "timers.h"
 
 uint8_t displayBuf[DISPLAY_BUF_SIZE];
 

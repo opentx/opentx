@@ -35,6 +35,7 @@
  */
 
 #include "opentx.h"
+#include "timers.h"
 
 #if defined(PCBTARANIS)
   int8_t  virtualInputsTrims[NUM_INPUTS];

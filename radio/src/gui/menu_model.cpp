@@ -34,6 +34,7 @@
  */
 
 #include "../opentx.h"
+#include "../timers.h"
 #ifdef MAVLINK
 #include "gui/view_mavlink.h"
 #endif
