@@ -36,7 +36,6 @@
 #include "../../opentx.h"
 
 #define MODELSIZE_POS_X 170
-
 #define MODELSEL_W 133
 
 void onModelSelectMenu(const char *result)
@@ -94,11 +93,11 @@ void menuModelSelect(uint8_t event)
 
   int8_t oldSub = m_posVert;
 
-  check_submenu_simple(_event_, MAX_MODELS-1);
+  check_submenu_simple(_event_, MAX_MODELS);
 
   if (s_editMode > 0) s_editMode = 0;
 
-  int8_t sub = m_posVert;
+  int sub = m_posVert;
 
   switch (event)
   {

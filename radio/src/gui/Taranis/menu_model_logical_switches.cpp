@@ -75,7 +75,7 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lat
 
 void onLogicalSwitchesMenu(const char *result)
 {
-  int8_t sub = m_posVert-1;
+  int8_t sub = m_posVert;
   LogicalSwitchData * cs = lswAddress(sub);
 
   if (result == STR_COPY) {
@@ -96,17 +96,17 @@ void menuModelLogicalSwitches(uint8_t event)
 {
   INCDEC_DECLARE_VARS(EE_MODEL);
 
-  MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_LOGICAL_SWITCH+1, {0, NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/});
+  MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_LOGICAL_SWITCH, { NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/ });
 
   int k = 0;
-  int sub = m_posVert - 1;
+  int sub = m_posVert;
   horzpos_t horz = m_posHorz;
 
   if (horz>=0) {
     displayColumnHeader(STR_CSW_HEADERS, horz);
   }
 
-  if (sub>=0 && horz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+  if (horz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
     killEvents(event);
     LogicalSwitchData * cs = lswAddress(sub);
     if (cs->func)
@@ -118,7 +118,7 @@ void menuModelLogicalSwitches(uint8_t event)
     menuHandler = onLogicalSwitchesMenu;
   }
 
-  for (int i=0; i<LCD_LINES-1; i++) {
+  for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
     k = i+s_pgOfs;
     LcdFlags attr = (sub==k ? ((s_editMode>0) ? BLINK|INVERS : INVERS)  : 0);

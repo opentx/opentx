@@ -43,72 +43,73 @@ void menuGeneralTrainer(uint8_t event)
   uint8_t y;
   bool slave = SLAVE_MODE();
 
-  MENU(STR_MENUTRAINER, menuTabGeneral, e_Trainer, (slave ? 1 : 7), {0, 2, 2, 2, 2, 0/*, 0*/});
+  MENU(STR_MENUTRAINER, menuTabGeneral, e_Trainer, (slave ? 0 : 6), { 2, 2, 2, 2, 0/*, 0*/ });
 
   if (slave) {
     lcd_puts(7*FW, 4*FH, STR_SLAVE);
+    return;
   }
-  else {
-    uint8_t attr;
-    uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
 
-    lcd_puts(3*FW, MENU_TITLE_HEIGHT+1, STR_MODESRC);
+  LcdFlags attr;
+  LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
 
-    y = MENU_TITLE_HEIGHT + 1 + FH;
+  lcd_puts(3*FW, MENU_TITLE_HEIGHT+1, STR_MODESRC);
 
-    for (uint8_t i=1; i<=NUM_STICKS; i++) {
-      uint8_t chan = channel_order(i);
-      volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
+  y = MENU_TITLE_HEIGHT + 1 + FH;
+  int sub = m_posVert + 1;
 
-      putsMixerSource(0, y, MIXSRC_Rud-1+chan, (m_posVert==i && CURSOR_ON_LINE()) ? INVERS : 0);
+  for (int i=1; i<=NUM_STICKS; i++) {
+    uint8_t chan = channel_order(i);
+    volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
 
-      for (uint8_t j=0; j<3; j++) {
+    putsMixerSource(0, y, MIXSRC_Rud-1+chan, (sub==i && CURSOR_ON_LINE()) ? INVERS : 0);
 
-        attr = ((m_posVert==i && m_posHorz==j) ? blink : 0);
+    for (int j=0; j<3; j++) {
 
-        switch(j) {
-          case 0:
-            lcd_putsiAtt(4*FW, y, STR_TRNMODE, td->mode, attr);
-            if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
-            break;
+      attr = ((sub==i && m_posHorz==j) ? blink : 0);
 
-          case 1:
-            lcd_outdezAtt(11*FW, y, td->studWeight, attr);
-            if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->studWeight, -125, 125);
-            break;
+      switch(j) {
+        case 0:
+          lcd_putsiAtt(4*FW, y, STR_TRNMODE, td->mode, attr);
+          if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
+          break;
 
-          case 2:
-            lcd_putsiAtt(12*FW, y, STR_TRNCHN, td->srcChn, attr);
-            if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->srcChn, 0, 3);
-            break;
-        }
+        case 1:
+          lcd_outdezAtt(11*FW, y, td->studWeight, attr);
+          if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->studWeight, -125, 125);
+          break;
+
+        case 2:
+          lcd_putsiAtt(12*FW, y, STR_TRNCHN, td->srcChn, attr);
+          if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->srcChn, 0, 3);
+          break;
       }
-      y += FH;
     }
+    y += FH;
+  }
 
-    attr = (m_posVert==5) ? blink : 0;
-    lcd_putsLeft(MENU_TITLE_HEIGHT+1+5*FH, STR_MULTIPLIER);
-    lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, MENU_TITLE_HEIGHT+1+5*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
-    if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
+  attr = (sub==5) ? blink : 0;
+  lcd_putsLeft(MENU_TITLE_HEIGHT+1+5*FH, STR_MULTIPLIER);
+  lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, MENU_TITLE_HEIGHT+1+5*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
+  if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
-    attr = (m_posVert==6) ? INVERS : 0;
-    if (attr) s_editMode = 0;
-    lcd_putsAtt(0*FW, MENU_TITLE_HEIGHT+1+6*FH, STR_CAL, attr);
-    for (uint8_t i=0; i<4; i++) {
-      uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
+  attr = (sub==6) ? INVERS : 0;
+  if (attr) s_editMode = 0;
+  lcd_putsAtt(0*FW, MENU_TITLE_HEIGHT+1+6*FH, STR_CAL, attr);
+  for (int i=0; i<4; i++) {
+    uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
 #if defined (PPM_UNIT_PERCENT_PREC1)
-      lcd_outdezAtt(x, MENU_TITLE_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
+    lcd_outdezAtt(x, MENU_TITLE_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
 #else
-      lcd_outdezAtt(x, MENU_TITLE_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])/5, 0);
+    lcd_outdezAtt(x, MENU_TITLE_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])/5, 0);
 #endif
-    }
+  }
 
-    if (attr) {
-      if (event==EVT_KEY_LONG(KEY_ENTER)){
-        memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
-        eeDirty(EE_GENERAL);
-        AUDIO_WARNING1();
-      }
+  if (attr) {
+    if (event==EVT_KEY_LONG(KEY_ENTER)){
+      memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
+      eeDirty(EE_GENERAL);
+      AUDIO_WARNING1();
     }
   }
 }

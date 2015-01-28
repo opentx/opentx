@@ -38,11 +38,11 @@
 
 void menuGeneralDiagAna(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUANA, menuTabGeneral, e_Ana, 2);
+  SIMPLE_MENU(STR_MENUANA, menuTabGeneral, e_Ana, 1);
 
   STICK_SCROLL_DISABLE();
 
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
+  for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
 #if (NUM_STICKS+NUM_POTS) > 9
     coord_t y = MENU_TITLE_HEIGHT + 1 + (i/3)*FH;
     const uint8_t x_coord[] = {0, 70, 154};
@@ -65,7 +65,6 @@ void menuGeneralDiagAna(uint8_t event)
   uint32_t batCalV = (adcBatt + (adcBatt*g_eeGeneral.vBatCalib)/128) * BATT_SCALE;
   batCalV >>= 11;
   batCalV += 2; // because of the diode
-  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_TITLE_HEIGHT+1+5*FH, batCalV, (m_posVert==1 ? INVERS : 0));
-
-  if (m_posVert==1) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatCalib, -127, 127);
+  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_TITLE_HEIGHT+1+5*FH, batCalV, s_editMode > 0 ? BLINK|INVERS : INVERS);
+  if (s_editMode > 0) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatCalib, -127, 127);
 }

@@ -231,7 +231,7 @@ void onLongMenuPress(const char *result)
 
 tmr10ms_t menuEntryTime;
 
-void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags)
+void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
 {
   vertpos_t l_posVert = m_posVert;
   horzpos_t l_posHorz = m_posHorz;
@@ -239,7 +239,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   uint8_t maxcol = MAXCOL(l_posVert);
 
   if (menuTab) {
-    int8_t cc = curr;
+    int cc = curr;
     switch (event) {
       case EVT_KEY_LONG(KEY_MENU):
         if (menuTab == menuTabModel) {
@@ -307,10 +307,8 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
         l_posHorz = 0;
         break;
       }
-      if (!menuTab || l_posVert>0) {
-        if (READ_ONLY_UNLOCKED()) {
-          s_editMode = (s_editMode<=0);
-        }
+      if (READ_ONLY_UNLOCKED()) {
+        s_editMode = (s_editMode<=0);
       }
       break;
 
@@ -363,7 +361,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       }
 
       do {
-        INC(l_posVert, POS_VERT_INIT, maxrow);
+        INC(l_posVert, POS_VERT_INIT, rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
 
       s_editMode = 0; // if we go down, we must be in this mode
@@ -394,7 +392,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       }
 
       do {
-        DEC(l_posVert, POS_VERT_INIT, maxrow);
+        DEC(l_posVert, POS_VERT_INIT, rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
 
       s_editMode = 0; // if we go up, we must be in this mode
@@ -407,33 +405,48 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       break;
   }
 
-  if (l_posVert == 0 || (l_posVert==2 && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW) || (l_posVert==3 && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW && MAXCOL(vertpos_t(2)) >= HIDDEN_ROW)) {
+  int linesCount = rowcount;
+
+  if (l_posVert == 0 || (l_posVert==1 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW) || (l_posVert==2 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW)) {
     s_pgOfs = 0;
+    if (horTab) {
+      linesCount = 0;
+      for (int i=0; i<rowcount; i++) {
+        if (horTab[i] != HIDDEN_ROW) {
+          linesCount++;
+        }
+      }
+    }
   }
   else if (horTab) {
-    uint8_t max = menuTab ? NUM_BODY_LINES : NUM_BODY_LINES-1;
-    if (maxrow > max) {
+    if (rowcount > NUM_BODY_LINES) {
       while (1) {
         vertpos_t firstLine = 0;
-        for (int numLines=0; firstLine<=maxrow && numLines<s_pgOfs; firstLine++) {
-          if (horTab[firstLine+1] != HIDDEN_ROW) {
+        for (int numLines=0; firstLine<rowcount && numLines<s_pgOfs; firstLine++) {
+          if (horTab[firstLine] != HIDDEN_ROW) {
             numLines++;
           }
         }
-        if (l_posVert <= firstLine) {
+        if (l_posVert < firstLine) {
           s_pgOfs--;
         }
         else {
           vertpos_t lastLine = firstLine;
-          for (int numLines=0; lastLine<=maxrow && numLines<max; lastLine++) {
-            if (horTab[lastLine+1] != HIDDEN_ROW) {
+          for (int numLines=0; lastLine<rowcount && numLines<NUM_BODY_LINES; lastLine++) {
+            if (horTab[lastLine] != HIDDEN_ROW) {
               numLines++;
             }
           }
-          if (l_posVert > lastLine) {
+          if (l_posVert >= lastLine) {
             s_pgOfs++;
           }
           else {
+            linesCount = s_pgOfs + NUM_BODY_LINES;
+            for (int i=lastLine; i<rowcount; i++) {
+              if (horTab[i] != HIDDEN_ROW) {
+                linesCount++;
+              }
+            }
             break;
           }
         }
@@ -441,17 +454,16 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     }
   }
   else {
-    uint8_t max = menuTab ? NUM_BODY_LINES : NUM_BODY_LINES-1;
-    if (l_posVert>max+s_pgOfs) {
-      s_pgOfs = l_posVert-max;
+    if (l_posVert>=NUM_BODY_LINES+s_pgOfs) {
+      s_pgOfs = l_posVert-NUM_BODY_LINES+1;
     }
-    else if (l_posVert<1+s_pgOfs) {
-      s_pgOfs = l_posVert-1;
+    else if (l_posVert<s_pgOfs) {
+      s_pgOfs = l_posVert;
     }
   }
 
-  if (maxrow > NUM_BODY_LINES && scrollbar_X) {
-    displayScrollbar(scrollbar_X, MENU_TITLE_HEIGHT, LCD_H-MENU_TITLE_HEIGHT-MENU_NAVIG_HEIGHT, s_pgOfs, menuTab ? maxrow : maxrow+1, NUM_BODY_LINES);
+  if (scrollbar_X && linesCount > NUM_BODY_LINES) {
+    displayScrollbar(scrollbar_X, MENU_TITLE_HEIGHT, LCD_H-MENU_TITLE_HEIGHT-MENU_NAVIG_HEIGHT, s_pgOfs, linesCount, NUM_BODY_LINES);
   }
 
   m_posVert = l_posVert;
@@ -459,14 +471,14 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 }
 
 
-void check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow)
+void check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
 {
-  check(event, curr, menuTab, menuTabSize, 0, 0, maxrow);
+  check(event, curr, menuTab, menuTabSize, 0, 0, rowcount);
 }
 
-void check_submenu_simple(check_event_t event, uint8_t maxrow)
+void check_submenu_simple(check_event_t event, uint8_t rowcount)
 {
-  check_simple(event, 0, 0, 0, maxrow);
+  check_simple(event, 0, 0, 0, rowcount);
 }
 
 void repeatLastCursorMove(uint8_t event)

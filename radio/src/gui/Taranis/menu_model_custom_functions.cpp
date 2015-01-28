@@ -43,7 +43,7 @@
 
 void onCustomFunctionsFileSelectionMenu(const char *result)
 {
-  int8_t  sub = m_posVert - 1;
+  int  sub = m_posVert;
   CustomFunctionData * cf = &g_model.customFn[sub];
   uint8_t func = CFN_FUNC(cf);
 
@@ -73,7 +73,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
 
 void onCustomFunctionsMenu(const char *result)
 {
-  int8_t sub = m_posVert-1;
+  int sub = m_posVert;
   CustomFunctionData * cfn;
   uint8_t eeFlags;
 
@@ -112,33 +112,31 @@ void onCustomFunctionsMenu(const char *result)
 
 void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext)
 {
-  int8_t  sub = m_posVert - 1;
-
+  int sub = m_posVert;
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
+  if (m_posHorz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+    killEvents(event);
+    CustomFunctionData *cfn = &functions[sub];
+    if (!CFN_EMPTY(cfn))
+      MENU_ADD_ITEM(STR_COPY);
+    if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_FUNCTION)
+      MENU_ADD_ITEM(STR_PASTE);
+    if (!CFN_EMPTY(cfn) && CFN_EMPTY(&functions[NUM_CFN-1]))
+      MENU_ADD_ITEM(STR_INSERT);
+    if (!CFN_EMPTY(cfn))
+      MENU_ADD_ITEM(STR_CLEAR);
+    for (int i=sub+1; i<NUM_CFN; i++) {
+      if (!CFN_EMPTY(&functions[i])) {
+        MENU_ADD_ITEM(STR_DELETE);
+        break;
+      }
+    }
+    menuHandler = onCustomFunctionsMenu;
+  }
 
-   if (sub>=0 && m_posHorz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
-     killEvents(event);
-     CustomFunctionData *cfn = &functions[sub];
-     if (!CFN_EMPTY(cfn))
-       MENU_ADD_ITEM(STR_COPY);
-     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_FUNCTION)
-       MENU_ADD_ITEM(STR_PASTE);
-     if (!CFN_EMPTY(cfn) && CFN_EMPTY(&functions[NUM_CFN-1]))
-       MENU_ADD_ITEM(STR_INSERT);
-     if (!CFN_EMPTY(cfn))
-       MENU_ADD_ITEM(STR_CLEAR);
-     for (int i=sub+1; i<NUM_CFN; i++) {
-       if (!CFN_EMPTY(&functions[i])) {
-         MENU_ADD_ITEM(STR_DELETE);
-         break;
-       }
-     }
-     menuHandler = onCustomFunctionsMenu;
-   }
-
-  for (uint8_t i=0; i<LCD_LINES-1; i++) {
+  for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
-    uint8_t k = i+s_pgOfs;
+    int k = i+s_pgOfs;
 
     putsStrIdx(0, y, functions == g_model.customFn ? STR_SF : STR_GF, k+1, (sub==k && m_posHorz<0) ? INVERS : 0);
 
@@ -372,6 +370,6 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 
 void menuModelCustomFunctions(uint8_t event)
 {
-  MENU(STR_MENUCUSTOMFUNC, menuTabModel, e_CustomFunctions, NUM_CFN+1, {0, NAVIGATION_LINE_BY_LINE|4/*repeated*/});
+  MENU(STR_MENUCUSTOMFUNC, menuTabModel, e_CustomFunctions, NUM_CFN, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
   return menuCustomFunctions(event, g_model.customFn, modelFunctionsContext);
 }

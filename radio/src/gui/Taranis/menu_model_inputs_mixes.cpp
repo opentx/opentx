@@ -44,9 +44,9 @@ FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModes
 {
   lcd_putsColumnLeft(x, y, STR_FLMODE);
 
-  uint8_t posHorz = m_posHorz;
+  int posHorz = m_posHorz;
 
-  for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
+  for (int p=0; p<MAX_FLIGHT_MODES; p++) {
     LcdFlags flags = 0;
     if (attr) {
       flags |= INVERS;
@@ -320,14 +320,14 @@ void menuModelExpoOne(uint8_t event)
 
   coord_t y = MENU_TITLE_HEIGHT + 1;
 
-  for (unsigned int k=0; k<LCD_LINES-1; k++) {
+  for (unsigned int k=0; k<NUM_BODY_LINES; k++) {
     int i = k + s_pgOfs;
     for (int j=0; j<=i; ++j) {
       if (j<(int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {
         ++i;
       }
     }
-    uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+    LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     switch(i)
     {
       case EXPO_FIELD_INPUT_NAME:
@@ -500,7 +500,7 @@ void menuModelMixOne(uint8_t event)
   int8_t sub = m_posVert;
   int8_t editMode = s_editMode;
 
-  for (uint8_t k=0; k<MENU_COLUMNS*(LCD_LINES-1); k++) {
+  for (int k=0; k<MENU_COLUMNS*(LCD_LINES-1); k++) {
     coord_t y;
     coord_t COLUMN_X;
     if (k >= LCD_LINES-1) {
@@ -513,7 +513,7 @@ void menuModelMixOne(uint8_t event)
     }
     int8_t i = k;
 
-    uint8_t attr = (sub==i ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
+    LcdFlags attr = (sub==i ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
     switch(i) {
       case MIX_FIELD_NAME:
         editSingleName(COLUMN_X+MIXES_2ND_COLUMN, y, STR_MIXNAME, md2->name, sizeof(md2->name), event, attr);
@@ -735,7 +735,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
       }
       break;
     case EVT_KEY_BREAK(KEY_ENTER):
-      if (sub != 0 && (!s_currCh || (s_copyMode && !s_copyTgtOfs)) && !READ_ONLY()) {
+      if ((!s_currCh || (s_copyMode && !s_copyTgtOfs)) && !READ_ONLY()) {
         s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
         s_copySrcIdx = s_currIdx;
         s_copySrcCh = chn;
@@ -751,7 +751,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         s_copyMode = 0;
         s_copyTgtOfs = 0;
       }
-      else if (sub != 0) {
+      else {
         if (READ_ONLY()) {
           if (!s_currCh) {
             pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
@@ -829,14 +829,14 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
   sub = m_posVert;
   s_currCh = 0;
-  uint8_t cur = 1;
-  uint8_t i = 0;
+  int cur = 0;
+  int i = 0;
 
-  for (uint8_t ch=1; ch<=(expo ? NUM_INPUTS : NUM_CHNOUT); ch++) {
+  for (int ch=1; ch<=(expo ? NUM_INPUTS : NUM_CHNOUT); ch++) {
     void *pointer = NULL; MixData * &md = (MixData * &)pointer; ExpoData * &ed = (ExpoData * &)pointer;
-    coord_t y = MENU_TITLE_HEIGHT-FH+1+(cur-s_pgOfs)*FH;
+    coord_t y = MENU_TITLE_HEIGHT+1+(cur-s_pgOfs)*FH;
     if (expo ? (i<MAX_EXPOS && (ed=expoAddress(i))->chn+1 == ch && EXPO_VALID(ed)) : (i<MAX_MIXERS && (md=mixAddress(i))->srcRaw && md->destCh+1 == ch)) {
-      if (s_pgOfs < cur && cur-s_pgOfs < LCD_LINES) {
+      if (cur-s_pgOfs >= 0 && cur-s_pgOfs < NUM_BODY_LINES) {
         if (expo) {
           putsMixerSource(0, y, ch, 0);
         }
@@ -847,7 +847,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
       uint8_t mixCnt = 0;
       do {
         if (s_copyMode) {
-          if (s_copyMode == MOVE_MODE && s_pgOfs < cur && cur-s_pgOfs < 8 && s_copySrcCh == ch && s_copyTgtOfs != 0 && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
+          if (s_copyMode == MOVE_MODE && cur-s_pgOfs >= 0 && cur-s_pgOfs < NUM_BODY_LINES && s_copySrcCh == ch && s_copyTgtOfs != 0 && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
             lcd_rect(expo ? 18 : 22, y-1, expo ? LCD_W-18 : LCD_W-22, 9, DOTTED);
             cur++; y+=FH;
           }
@@ -859,7 +859,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         else if (sub == cur) {
           s_currIdx = i;
         }
-        if (s_pgOfs < cur && cur-s_pgOfs < 8) {
+        if (cur-s_pgOfs >= 0 && cur-s_pgOfs < NUM_BODY_LINES) {
           uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
           if (expo) {
             ed->weight = GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr | (isExpoActive(i) ? BOLD : 0), 0, event);
@@ -901,7 +901,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         }
         cur++; y+=FH; mixCnt++; i++; if (expo) ed++; else md++;
       } while (expo ? (i<MAX_EXPOS && ed->chn+1 == ch && EXPO_VALID(ed)) : (i<MAX_MIXERS && md->srcRaw && md->destCh+1 == ch));
-      if (s_copyMode == MOVE_MODE && s_pgOfs < cur && cur-s_pgOfs < LCD_LINES && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
+      if (s_copyMode == MOVE_MODE && cur-s_pgOfs >= 0 && cur-s_pgOfs < NUM_BODY_LINES && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
         lcd_rect(expo ? EXPO_LINE_SELECT_POS : 22, y-1, expo ? LCD_W-EXPO_LINE_SELECT_POS : LCD_W-22, 9, DOTTED);
         cur++; y+=FH;
       }
@@ -915,7 +915,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
           attr = INVERS;
         }
       }
-      if (s_pgOfs < cur && cur-s_pgOfs < LCD_LINES) {
+      if (cur-s_pgOfs >= 0 && cur-s_pgOfs < NUM_BODY_LINES) {
         if (expo) {
           putsMixerSource(0, y, ch, attr);
         }

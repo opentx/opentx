@@ -229,10 +229,10 @@ void title(const pm_char * s);
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
 #define MENU_CHECK(tab, menu, lines_count) \
-  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, (lines_count)-1)
+  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
 
 #define MENU_CHECK_FLAGS(tab, menu, flags, lines_count) \
-  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, (lines_count)-1, flags)
+  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count, flags)
 
 #define MENU(title, tab, menu, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
@@ -245,7 +245,7 @@ void title(const pm_char * s);
   TITLE(title)
 
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
-  check_simple(event, menu, tab, DIM(tab), (lines_count)-1);
+  check_simple(event, menu, tab, DIM(tab), lines_count);
 
 #define SIMPLE_MENU(title, tab, menu, lines_count) \
   SIMPLE_MENU_NOTITLE(tab, menu, lines_count); \
@@ -253,16 +253,16 @@ void title(const pm_char * s);
 
 #define SUBMENU_NOTITLE(lines_count, ...) { \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-1); \
+  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
   }
 
 #define SUBMENU(title, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-1); \
+  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
   TITLE(title)
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  check_submenu_simple(event, (lines_count)-1);
+  check_submenu_simple(event, lines_count);
 
 #define SIMPLE_SUBMENU(title, lines_count) \
   SIMPLE_SUBMENU_NOTITLE(lines_count); \
@@ -368,7 +368,7 @@ void menuChannelsView(uint8_t event);
 #define REPEAT_LAST_CURSOR_MOVE() { if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) putEvent(event); else m_posHorz = 0; }
 #define MOVE_CURSOR_FROM_HERE()   if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
 
-#define POS_VERT_INIT            (menuTab ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? (MAXCOL((uint16_t)2) >= HIDDEN_ROW ? 3 : 2) : 1) : 0)
+#define POS_VERT_INIT            (menuTab ? (MAXCOL((uint16_t)0) >= HIDDEN_ROW ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? 2 : 1) : 0) : 0)
 #define POS_HORZ_INIT(posVert)   ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
 #define EDIT_MODE_INIT           0 // TODO enum
 

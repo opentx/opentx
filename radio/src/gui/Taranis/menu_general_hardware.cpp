@@ -91,18 +91,18 @@ enum menuGeneralHwItems {
 
 void menuGeneralHardware(uint8_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, 0});
+  MENU(STR_HARDWARE, menuTabGeneral, e_Hardware, ITEM_SETUP_HW_MAX, { LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, 0 });
 
-  uint8_t sub = m_posVert - 1;
+  uint8_t sub = m_posVert;
 
-  for (uint8_t i=0; i<LCD_LINES-1; ++i) {
+  for (int i=0; i<NUM_BODY_LINES; ++i) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
-    uint8_t k = i + s_pgOfs;
+    int k = i + s_pgOfs;
     for (int j=0; j<=k; j++) {
-      if (mstate_tab[j+1] == HIDDEN_ROW)
+      if (mstate_tab[j] == HIDDEN_ROW)
         k++;
     }
-    uint8_t attr = (sub == k ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+    LcdFlags attr = (sub == k ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
     switch (k) {
       case ITEM_SETUP_HW_LABEL_STICKS:
         lcd_putsLeft(y, "Sticks");

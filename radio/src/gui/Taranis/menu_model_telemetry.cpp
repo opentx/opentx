@@ -179,7 +179,7 @@ bool isAltSensor(int sensor)
 
 bool isVoltsSensor(int sensor)
 {
-  return isSensorUnit(sensor, UNIT_VOLTS);
+  return isSensorUnit(sensor, UNIT_VOLTS) || isSensorUnit(sensor, UNIT_CELLS);
 }
 
 bool isCurrentSensor(int sensor)
@@ -214,18 +214,18 @@ void menuModelSensor(uint8_t event)
 
   putsTelemetryChannelValue(SENSOR_2ND_COLUMN, 0, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), LEFT);
 
-  int8_t sub = m_posVert;
+  int sub = m_posVert;
 
-  for (uint8_t i=0; i<LCD_LINES-1; i++) {
+  for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
-    uint8_t k = i + s_pgOfs;
+    int k = i + s_pgOfs;
 
     for (int j=0; j<k; j++) {
-      if (mstate_tab[j+1] == HIDDEN_ROW)
+      if (mstate_tab[j] == HIDDEN_ROW)
         k++;
     }
 
-    uint8_t attr = (sub==k ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+    LcdFlags attr = (sub==k ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
     switch (k) {
 
@@ -396,7 +396,7 @@ void menuModelSensor(uint8_t event)
 
 void onSensorMenu(const char *result)
 {
-  uint8_t index = m_posVert - 1 - ITEM_TELEMETRY_SENSOR1;
+  int index = m_posVert - ITEM_TELEMETRY_SENSOR1;
 
   if (index < TELEM_VALUES_MAX) {
     if (result == STR_EDIT) {
@@ -408,7 +408,7 @@ void onSensorMenu(const char *result)
       if (index<TELEM_VALUES_MAX && isTelemetryFieldAvailable(index))
         m_posVert += 1;
       else
-        m_posVert = 1+ITEM_TELEMETRY_NEWSENSOR;
+        m_posVert = ITEM_TELEMETRY_NEWSENSOR;
     }
   }
 }
@@ -416,8 +416,8 @@ void onSensorMenu(const char *result)
 #if defined(LUA)
 void onTelemetryScriptFileSelectionMenu(const char *result)
 {
-  int8_t  sub = m_posVert - 1;
-  uint8_t screenIndex = TELEMETRY_CURRENT_EDIT_SCREEN(sub);
+  int sub = m_posVert;
+  int screenIndex = TELEMETRY_CURRENT_EDIT_SCREEN(sub);
 
   if (result == STR_UPDATE_LIST) {
     if (!listSdFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), NULL)) {
@@ -436,15 +436,15 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
 
 void menuModelTelemetry(uint8_t event)
 {
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, TELEMETRY_TYPE_ROWS CHANNELS_ROWS RSSI_ROWS SENSORS_ROWS USRDATA_ROWS CASE_VARIO(LABEL(Vario)) CASE_VARIO(0) CASE_VARIO(VARIO_RANGE_ROWS) LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), CASE_CPUARM(TELEMETRY_SCREEN_ROWS(2)) CASE_CPUARM(TELEMETRY_SCREEN_ROWS(3))});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS CHANNELS_ROWS RSSI_ROWS SENSORS_ROWS USRDATA_ROWS CASE_VARIO(LABEL(Vario)) CASE_VARIO(0) CASE_VARIO(VARIO_RANGE_ROWS) LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), CASE_CPUARM(TELEMETRY_SCREEN_ROWS(2)) CASE_CPUARM(TELEMETRY_SCREEN_ROWS(3)) });
 
-  uint8_t sub = m_posVert - 1;
+  int sub = m_posVert;
 
-  for (uint8_t i=0; i<LCD_LINES-1; i++) {
+  for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
     uint8_t k = i + s_pgOfs;
     for (int j=0; j<=k; j++) {
-      if (mstate_tab[j+1] == HIDDEN_ROW)
+      if (mstate_tab[j] == HIDDEN_ROW)
         k++;
     }
 

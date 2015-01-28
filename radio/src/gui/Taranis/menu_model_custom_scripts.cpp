@@ -75,10 +75,10 @@ void menuModelCustomScriptOne(uint8_t event)
 
   int8_t sub = m_posVert;
 
-  for (uint8_t k=0; k<LCD_LINES-1; k++) {
+  for (int k=0; k<LCD_LINES-1; k++) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + k*FH;
-    uint8_t i = k + s_pgOfs;
-    uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+    int i = k + s_pgOfs;
+    LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
     if (i == ITEM_MODEL_CUSTOMSCRIPT_FILE) {
       lcd_putsLeft(y, STR_SCRIPT);
@@ -139,18 +139,14 @@ void menuModelCustomScripts(uint8_t event)
   lcd_outdezAtt(19*FW, 0, luaGetMemUsed(), 0);
   lcd_puts(19*FW+1, 0, STR_BYTES);
 
-  MENU(STR_MENUCUSTOMSCRIPTS, menuTabModel, e_CustomScripts, MAX_SCRIPTS+1, {0, NAVIGATION_LINE_BY_LINE|3/*repeated*/});
+  MENU(STR_MENUCUSTOMSCRIPTS, menuTabModel, e_CustomScripts, MAX_SCRIPTS, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });
 
   coord_t y;
-  int8_t  sub = m_posVert - 1;
+  int8_t  sub = m_posVert;
 
-  switch (event) {
-    case EVT_KEY_FIRST(KEY_ENTER):
-      if (sub >= 0) {
-        s_currIdx = sub;
-        pushMenu(menuModelCustomScriptOne);
-      }
-      break;
+  if (event == EVT_KEY_FIRST(KEY_ENTER)) {
+    s_currIdx = sub;
+    pushMenu(menuModelCustomScriptOne);
   }
 
   for (int i=0, scriptIndex=0; i<MAX_SCRIPTS; i++) {

@@ -289,32 +289,25 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, uint8_t
   }
 }
 
-#if defined(GVARS)
-  #define CURVE_SELECTED() (sub >= 0 && sub < MAX_CURVES)
-  #define GVAR_SELECTED()  (sub >= MAX_CURVES)
-#else
-  #define CURVE_SELECTED() (sub >= 0)
-#endif
-
 void menuModelCurvesAll(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVES);
+  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, MAX_CURVES);
 
-  int8_t  sub = m_posVert - 1;
+  int  sub = m_posVert;
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
-      if (CURVE_SELECTED() && !READ_ONLY()) {
+      if (!READ_ONLY()) {
         s_curveChan = sub;
         pushMenu(menuModelCurveOne);
       }
       break;
   }
 
-  for (uint8_t i=0; i<LCD_LINES-1; i++) {
+  for (int i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
-    uint8_t k = i + s_pgOfs;
-    uint8_t attr = (sub == k ? INVERS : 0);
+    int k = i + s_pgOfs;
+    LcdFlags attr = (sub == k ? INVERS : 0);
     {
       putsStrIdx(0, y, STR_CV, k+1, attr);
       editName(4*FW, y, g_model.curveNames[k], sizeof(g_model.curveNames[k]), 0, 0);
@@ -324,8 +317,6 @@ void menuModelCurvesAll(uint8_t event)
     }
   }
 
-  if (CURVE_SELECTED()) {
-    s_curveChan = sub;
-    DrawCurve(23);
-  }
+  s_curveChan = sub;
+  DrawCurve(23);
 }

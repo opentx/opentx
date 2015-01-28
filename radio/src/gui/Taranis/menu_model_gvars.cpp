@@ -37,7 +37,7 @@
 
 void onGVARSMenu(const char *result)
 {
-  int8_t sub = m_posVert - 1;
+  int sub = m_posVert;
 
   if (result == STR_ENABLE_POPUP) {
     g_model.gvars[sub].popup = true;
@@ -73,34 +73,20 @@ void menuModelGVars(uint8_t event)
     menuTitle = STR_MENUGLOBALVARS;
   }
 
-  MENU_FLAGS(menuTitle, menuTabModel, e_GVars, first2seconds ? CHECK_FLAG_NO_SCREEN_INDEX : 0, 1+MAX_GVARS, {0, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES});
+  MENU_FLAGS(menuTitle, menuTabModel, e_GVars, first2seconds ? CHECK_FLAG_NO_SCREEN_INDEX : 0, MAX_GVARS, { NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES });
 
-  uint8_t sub = m_posVert - 1;
+  int sub = m_posVert;
 
-#if MAX_GVARS > 6
-  for (uint8_t l=0; l<LCD_LINES-1; l++) {
-    uint8_t i = l+s_pgOfs;
+  for (int l=0; l<LCD_LINES-1; l++) {
+    int i = l+s_pgOfs;
     coord_t y = MENU_TITLE_HEIGHT + 1 + l*FH;
-#elif MAX_GVARS == 6
-  for (uint8_t i=0; i<MAX_GVARS; i++) {
-    coord_t y = MENU_TITLE_HEIGHT + FH + 1 + i*FH;
-#else
-  for (uint8_t i=0; i<MAX_GVARS; i++) {
-    coord_t y = MENU_TITLE_HEIGHT + 2*FH + 1 + i*FH;
-#endif
 
     if (g_model.gvars[i].popup) lcd_putc(3*FW, y, '!');
     putsStrIdx(0, y, STR_GV, i+1, (sub==i && m_posHorz<0) ? INVERS : 0);
 
-    for (uint8_t j=0; j<1+MAX_FLIGHT_MODES; j++) {
+    for (int j=0; j<1+MAX_FLIGHT_MODES; j++) {
       LcdFlags attr = ((sub==i && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       coord_t x = GVARS_FM_COLUMN(j-1);
-
-#if MAX_GVARS == 6
-      if (i==0 && j!=9) putsStrIdx(x+2, FH+1, STR_FP, j, SMLSIZE);
-#elif MAX_GVARS <= 5
-      if (i==0 && j!=9) putsStrIdx(x+2, 2*FH, STR_FP, j, SMLSIZE);
-#endif
 
       switch(j)
       {
@@ -141,7 +127,7 @@ void menuModelGVars(uint8_t event)
     }
   }
 
-  if (m_posVert > 0 && m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER)) {
+  if (m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER)) {
     killEvents(event);
     if (g_model.gvars[sub].popup)
       MENU_ADD_ITEM(STR_DISABLE_POPUP);
