@@ -137,6 +137,7 @@
 #define ADC2_ID                 0xf103
 #define BATT_ID                 0xf104
 #define SWR_ID                  0xf105
+#define XJT_VERSION_ID          0xf106
 
 // Default sensor data IDs (Physical IDs + CRC)
 #define DATA_ID_VARIO            0x00 // 0
@@ -318,10 +319,9 @@ enum TelemAnas {
 
 #if defined(CPUARM)
 struct FrskyData {
-#if defined(SWR)
   FrskyValueWithMin swr; // TODO Min not needed
-#endif
   FrskyValueWithMin rssi; // TODO Min not needed
+  uint16_t xjtVersion;
 };
 #else
 struct FrskyData {
@@ -330,6 +330,8 @@ struct FrskyData {
   FrskySerialData hub;
 };
 #endif
+
+#define IS_VALID_XJT_VERSION() (frskyData.xjtVersion != 0 && frskyData.xjtVersion != 0xff)
 
 enum AlarmLevel {
   alarm_off = 0,

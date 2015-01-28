@@ -149,10 +149,8 @@ void writeHeader()
 #endif
 
 #if defined(FRSKY)
-#if defined(CPUARM) && defined(SWR)
+#if defined(CPUARM)
   f_puts("SWR,RSSI,", &g_oLogFile);
-#elif defined(CPUARM)
-  f_puts("RSSI,", &g_oLogFile);
 #else
   f_puts("Buffer,RX,TX,A1,A2,", &g_oLogFile);
 #if defined(FRSKY_HUB)
@@ -232,7 +230,7 @@ void writeLogs()
 #endif
 
 #if defined(FRSKY)
-#if defined(CPUARM) && defined(SWR)
+#if defined(CPUARM)
       f_printf(&g_oLogFile, "%d,%d,", RAW_FRSKY_MINMAX(frskyData.swr), RAW_FRSKY_MINMAX(frskyData.rssi));
 #elif defined(CPUARM)
       f_printf(&g_oLogFile, "%d,", RAW_FRSKY_MINMAX(frskyData.rssi));

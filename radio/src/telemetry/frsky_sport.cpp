@@ -117,16 +117,27 @@ void processSportPacket(uint8_t *packet)
       data = SPORT_DATA_U8(packet);
       frskyData.rssi.set(data);
     }
-
-    else if (appId == SWR_ID) {
-#if defined(SWR)
-      data = SPORT_DATA_U8(packet);
-      frskyData.swr.set(data);
-#else
-      // SWR skipped (not reliable on Taranis+)
-      return;
-#endif
+#if defined(PCBTARANIS) && defined(REVPLUS)
+    else if (appId == XJT_VERSION_ID) {
+      frskyData.xjtVersion = HUB_DATA_U16(packet);
+      if (!IS_VALID_XJT_VERSION()) {
+        frskyData.swr.set(0x00);
+      }
     }
+    else if (appId == SWR_ID) {
+      if (IS_VALID_XJT_VERSION())
+        frskyData.swr.set(SPORT_DATA_U8(packet));
+      else
+        frskyData.swr.set(0x00);
+    }
+#else
+    else if (appId == XJT_VERSION_ID) {
+      frskyData.xjtVersion = HUB_DATA_U16(packet);
+    }
+    else if (appId == SWR_ID) {
+      frskyData.swr.set(SPORT_DATA_U8(packet));
+    }
+#endif
 
     if (TELEMETRY_STREAMING()/* because when Rx is OFF it happens that some old A1/A2 values are sent from the XJT module*/) {
       if ((appId >> 8) == 0) {

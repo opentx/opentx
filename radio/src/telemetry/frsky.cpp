@@ -338,6 +338,12 @@ void telemetryWakeup()
   }
 #endif
 
+#if defined(PCBTARANIS) && defined(REVPLUS)
+  #define FRSKY_BAD_ANTENNA() (IS_VALID_XJT_VERSION() && frskyData.swr.value > 0x33)
+#else
+  #define FRSKY_BAD_ANTENNA() (frskyData.swr.value > 0x33)
+#endif
+
 #if defined(CPUARM)
   static tmr10ms_t alarmsCheckTime = 0;
   #define SCHEDULE_NEXT_ALARMS_CHECK(seconds) alarmsCheckTime = get_tmr10ms() + (100*(seconds))
@@ -355,8 +361,8 @@ void telemetryWakeup()
       }
     }
 
-#if defined(PCBTARANIS) && defined(SWR)
-    if (IS_FRSKY_SPORT_PROTOCOL() && frskyData.swr.value > 0x33) {
+#if defined(PCBTARANIS)
+    if (IS_FRSKY_SPORT_PROTOCOL() && FRSKY_BAD_ANTENNA()) {
       AUDIO_SWR_RED();
       POPUP_WARNING(STR_ANTENNAPROBLEM);
       SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
@@ -499,9 +505,7 @@ void telemetryReset()
 #if defined(SIMU)
 
 #if defined(CPUARM)
-  #if defined(SWR)
   frskyData.swr.value = 30;
-  #endif
   frskyData.rssi.value = 75;
 #else
   frskyData.rssi[0].value = 75;
