@@ -49,6 +49,11 @@ void loadCurves()
       case CURVE_TYPE_CUSTOM:
         tmp += 8+2*g_model.curves[i].points;
         break;
+      default:
+        TRACE("Wrong curve type! Fixing...");
+        g_model.curves[i].type = CURVE_TYPE_STANDARD;
+        tmp += 5+g_model.curves[i].points;
+        break;
     }
     curveEnd[i] = tmp;
   }
@@ -299,6 +304,9 @@ int applyCurve(int x, CurveRef & curve)
 
 int applyCustomCurve(int x, uint8_t idx)
 {
+  if (idx >= MAX_CURVES)
+    return 0;
+
   CurveInfo &crv = g_model.curves[idx];
   if (crv.smooth)
     return hermite_spline(x, idx);
