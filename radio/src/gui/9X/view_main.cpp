@@ -35,6 +35,7 @@
  */
 
 #include "../../opentx.h"
+#include "../../timers.h"
 
 #define BIGSIZE       DBLSIZE
 #define LBOX_CENTERX  (LCD_W/4 + 10)

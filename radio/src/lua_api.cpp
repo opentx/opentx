@@ -39,6 +39,7 @@
 #include "opentx.h"
 #include "stamp-opentx.h"
 #include "bin_allocator.h"
+#include "timers.h"
 
 #if !defined(SIMU)
 extern "C" {

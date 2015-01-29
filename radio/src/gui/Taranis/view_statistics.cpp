@@ -35,6 +35,7 @@
  */
 
 #include "../../opentx.h"
+#include "../../timers.h"
 
 void menuStatisticsView(uint8_t event)
 {

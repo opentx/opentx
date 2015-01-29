@@ -954,7 +954,7 @@ ifeq ($(GUI), YES)
   CPPDEFS += -DGUI
 endif
 
-CPPSRC += opentx.cpp functions.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp $(GUISRC) $(EEPROMSRC) 
+CPPSRC += opentx.cpp functions.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp $(GUISRC) $(EEPROMSRC) timers.cpp
 
 ifeq ($(GUI), YES)
   GUISRC += gui/$(GUIDIRECTORY)/lcd.cpp gui/$(GUIDIRECTORY)/splash.cpp gui/$(GUIDIRECTORY)/fonts.cpp 

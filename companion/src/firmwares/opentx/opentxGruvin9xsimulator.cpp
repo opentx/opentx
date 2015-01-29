@@ -70,6 +70,7 @@ namespace Open9xGruvin9x {
 #include "radio/src/functions.cpp"
 #include "radio/src/curves.cpp"
 #include "radio/src/mixer.cpp"
+#include "radio/src/timers.cpp"
 #include "radio/src/pulses/pulses_avr.cpp"
 #include "radio/src/stamp.cpp"
 #include "radio/src/maths.cpp"

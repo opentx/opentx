@@ -15,13 +15,13 @@
  */
 
 
-#include "stdio.h"
-#include "inttypes.h"
-#include "string.h"
-#include "file.h"
+#include <stdio.h>
+#include <inttypes.h>
+#include <string.h>
 #include <assert.h>
 #include <algorithm>
 #include "eeprominterface.h"
+#include "file.h"
 
 RleFile::RleFile():
 eeprom(NULL),

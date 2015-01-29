@@ -35,6 +35,7 @@
  */
 
 #include "../../opentx.h"
+#include "../../timers.h"
 
 #define BIGSIZE       MIDSIZE
 #define LBOX_CENTERX  (BOX_WIDTH/2 + 17)

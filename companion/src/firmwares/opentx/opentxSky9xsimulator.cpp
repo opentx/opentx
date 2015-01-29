@@ -82,6 +82,7 @@ namespace Open9xSky9x {
 #include "radio/src/switches.cpp"
 #include "radio/src/functions.cpp"
 #include "radio/src/mixer.cpp"
+#include "radio/src/timers.cpp"
 #include "radio/src/curves.cpp"
 #include "radio/src/targets/sky9x/pulses_driver.cpp"
 #include "radio/src/pulses/pulses_arm.cpp"
