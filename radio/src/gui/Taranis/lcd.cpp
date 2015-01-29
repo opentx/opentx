@@ -525,11 +525,11 @@ void lcd_vline(coord_t x, scoord_t y, scoord_t h)
 
 void lcd_rect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
-  lcd_vlineStip(x, y, h, pat);
-  lcd_vlineStip(x+w-1, y, h, pat);
+  lcd_vlineStip(x, y, h, pat, att);
+  lcd_vlineStip(x+w-1, y, h, pat, att);
   if (~att & ROUND) { x+=1; w-=2; }
-  lcd_hlineStip(x, y+h-1, w, pat);
-  lcd_hlineStip(x, y, w, pat);
+  lcd_hlineStip(x, y+h-1, w, pat, att);
+  lcd_hlineStip(x, y, w, pat, att);
 }
 
 #if !defined(BOOT)
@@ -936,10 +936,17 @@ void putsChannelValue(coord_t x, coord_t y, source_t channel, lcdint_t value, Lc
   else if (channel == MIXSRC_TX_VOLTAGE) {
     lcd_outdezAtt(x, y, value, att|PREC1);
   }
+  else if (channel < MIXSRC_FIRST_CH) {
+    lcd_outdezAtt(x, y, calcRESXto100(value), att);
+  }
+  else if (channel <= MIXSRC_LAST_CH) {
+#if defined(PPM_UNIT_PERCENT_PREC1)
+    lcd_outdezAtt(x, y, calcRESXto1000(value), att|PREC1);
+#else
+    lcd_outdezAtt(x, y, calcRESXto100(value), att);
+#endif
+  }
   else {
-    if (channel <= MIXSRC_LAST_CH) {
-      value = calcRESXto100(value);
-    }
     lcd_outdezAtt(x, y, value, att);
   }
 }

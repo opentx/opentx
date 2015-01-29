@@ -48,6 +48,20 @@ uint8_t switchToMix(uint8_t source)
     return MIXSRC_SH;
 }
 
+int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable)
+{
+  do {
+    current += inc;
+    if (current < min)
+      current = max;
+    else if (current > max)
+      current = min;
+    if (!isValueAvailable || isValueAvailable(current))
+      return current;
+  } while(1);
+  return 0;
+}
+
 bool isInputAvailable(int input)
 {
   for (int i=0; i<MAX_EXPOS; i++) {

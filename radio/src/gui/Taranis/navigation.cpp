@@ -231,7 +231,7 @@ void onLongMenuPress(const char *result)
 
 tmr10ms_t menuEntryTime;
 
-void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
+void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
 {
   vertpos_t l_posVert = m_posVert;
   horzpos_t l_posHorz = m_posHorz;
@@ -466,19 +466,23 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     displayScrollbar(scrollbar_X, MENU_TITLE_HEIGHT, LCD_H-MENU_TITLE_HEIGHT-MENU_NAVIG_HEIGHT, s_pgOfs, linesCount, NUM_BODY_LINES);
   }
 
+  if (name) {
+    title(name);
+  }
+
   m_posVert = l_posVert;
   m_posHorz = l_posHorz;
 }
 
 
-void check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
+void check_simple(const char *name, check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
 {
-  check(event, curr, menuTab, menuTabSize, 0, 0, rowcount);
+  check(name, event, curr, menuTab, menuTabSize, 0, 0, rowcount);
 }
 
-void check_submenu_simple(check_event_t event, uint8_t rowcount)
+void check_submenu_simple(const char *name, check_event_t event, uint8_t rowcount)
 {
-  check_simple(event, 0, 0, 0, rowcount);
+  check_simple(name, event, 0, 0, 0, rowcount);
 }
 
 void repeatLastCursorMove(uint8_t event)

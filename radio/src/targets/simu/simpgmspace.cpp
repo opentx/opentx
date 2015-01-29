@@ -53,7 +53,7 @@ uint16_t dummyport16;
 const char *eepromFile = NULL;
 FILE *fp = NULL;
 
-#if defined(PCBTARANIS)
+#if defined(CPUSTM32)
 uint32_t Peri1_frequency, Peri2_frequency;
 GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog;
 TIM_TypeDef tim1, tim2, tim3, tim4, tim8, tim10;
@@ -61,7 +61,7 @@ RCC_TypeDef rcc;
 DMA_Stream_TypeDef dma2_stream2, dma2_stream6;
 DMA_TypeDef dma2;
 USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
-#elif defined(PCBSKY9X)
+#elif defined(CPUARM)
 Pio Pioa, Piob, Pioc;
 Pwm pwm;
 Twi Twio;

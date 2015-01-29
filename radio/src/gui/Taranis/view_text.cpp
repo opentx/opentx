@@ -36,7 +36,6 @@
 
 #include "../../opentx.h"
 
-#define TEXT_FILENAME_MAXLEN  40
 #define TEXT_FILE_MAXSIZE     2048
 
 char s_text_file[TEXT_FILENAME_MAXLEN];

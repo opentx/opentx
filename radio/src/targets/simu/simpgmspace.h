@@ -98,7 +98,7 @@ typedef const uint8_t pm_uint8_t;
 typedef const int16_t pm_int16_t;
 typedef const int8_t pm_int8_t;
 
-#if defined(PCBTARANIS)
+#if defined(CPUSTM32)
 extern GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog;
 extern TIM_TypeDef tim1, tim3, tim4, tim8, tim10;
 extern USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;

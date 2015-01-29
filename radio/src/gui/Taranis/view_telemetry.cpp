@@ -46,7 +46,7 @@ bar_threshold_t barsThresholds[THLD_MAX];
 uint8_t s_frsky_view = 0;
 
 #define BAR_LEFT    26
-#define BAR_WIDTH   157
+#define BAR_WIDTH   156
 
 void displayRssiLine()
 {
@@ -68,33 +68,37 @@ NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
   return (45 - 3*alarm + g_model.frsky.rssiAlarms[alarm].value);
 }
 
-uint8_t barCoord(int16_t value, int16_t min, int16_t max)
+int barCoord(int value, int min, int max)
 {
   if (value <= min)
     return 0;
   else if (value >= max)
     return BAR_WIDTH-1;
   else
-    return ((int32_t)(BAR_WIDTH-1) * (value - min)) / (max - min);
+    return ((BAR_WIDTH-1) * (value - min)) / (max - min);
 }
 
 bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
 {
   // Custom Screen with gauges
-  uint8_t barHeight = 5;
-  for (int8_t i=3; i>=0; i--) {
+  int barHeight = 5;
+  for (int i=3; i>=0; i--) {
     FrSkyBarData & bar = screen.bars[i];
     source_t source = bar.source;
     getvalue_t barMin = bar.barMin;
     getvalue_t barMax = bar.barMax;
+    if (source <= MIXSRC_LAST_CH) {
+      barMin = calc100toRESX(barMin);
+      barMax = calc100toRESX(barMax);
+    }
     if (source && barMax > barMin) {
-      uint8_t y = barHeight+6+i*(barHeight+6);
+      int y = barHeight+6+i*(barHeight+6);
       putsMixerSource(0, y+barHeight-5, source, 0);
       lcd_rect(BAR_LEFT, y, BAR_WIDTH+1, barHeight+2);
       getvalue_t value = getValue(source);
       putsChannel(BAR_LEFT+2+BAR_WIDTH, y+barHeight-5, source, LEFT);
       uint8_t thresholdX = 0;
-      uint8_t width = barCoord(value, barMin, barMax);
+      int width = barCoord(value, barMin, barMax);
       uint8_t barShade = SOLID;
       drawFilledRect(BAR_LEFT+1, y+1, width, barHeight, barShade);
       for (uint8_t j=24; j<99; j+=25) {

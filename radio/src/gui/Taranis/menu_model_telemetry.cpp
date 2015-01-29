@@ -115,7 +115,6 @@ enum menuModelTelemetryItems {
 #define IF_FAS_OFFSET(x)  x,
 #define IS_RANGE_DEFINED(k) (g_model.frsky.channels[k].ratio > 0)
 
-#define CHANNELS_ROWS
 #define SENSOR_ROWS(x)    (isTelemetryFieldAvailable(x) ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSORS_ROWS      LABEL(Sensors), SENSOR_ROWS(0), SENSOR_ROWS(1), SENSOR_ROWS(2), SENSOR_ROWS(3), SENSOR_ROWS(4), SENSOR_ROWS(5), SENSOR_ROWS(6), SENSOR_ROWS(7), SENSOR_ROWS(8), SENSOR_ROWS(9), SENSOR_ROWS(10), SENSOR_ROWS(11), SENSOR_ROWS(12), SENSOR_ROWS(13), SENSOR_ROWS(14), SENSOR_ROWS(15), SENSOR_ROWS(16), SENSOR_ROWS(17), SENSOR_ROWS(18), SENSOR_ROWS(19), SENSOR_ROWS(20), SENSOR_ROWS(21), SENSOR_ROWS(22), SENSOR_ROWS(23), SENSOR_ROWS(24), SENSOR_ROWS(25), SENSOR_ROWS(26), SENSOR_ROWS(27), SENSOR_ROWS(28), SENSOR_ROWS(29), SENSOR_ROWS(30), SENSOR_ROWS(31), 0,
 #define USRDATA_ROWS
@@ -436,20 +435,20 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
 
 void menuModelTelemetry(uint8_t event)
 {
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS CHANNELS_ROWS RSSI_ROWS SENSORS_ROWS USRDATA_ROWS CASE_VARIO(LABEL(Vario)) CASE_VARIO(0) CASE_VARIO(VARIO_RANGE_ROWS) LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), CASE_CPUARM(TELEMETRY_SCREEN_ROWS(2)) CASE_CPUARM(TELEMETRY_SCREEN_ROWS(3)) });
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS USRDATA_ROWS CASE_VARIO(LABEL(Vario)) CASE_VARIO(0) CASE_VARIO(VARIO_RANGE_ROWS) LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), CASE_CPUARM(TELEMETRY_SCREEN_ROWS(2)) CASE_CPUARM(TELEMETRY_SCREEN_ROWS(3)) });
 
   int sub = m_posVert;
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
-    uint8_t k = i + s_pgOfs;
+    int k = i + s_pgOfs;
     for (int j=0; j<=k; j++) {
       if (mstate_tab[j] == HIDDEN_ROW)
         k++;
     }
 
-    uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
-    uint8_t attr = (sub == k ? blink : 0);
+    LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
+    LcdFlags attr = (sub == k ? blink : 0);
 
     if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+TELEM_VALUES_MAX) {
       int index = k-ITEM_TELEMETRY_SENSOR1;
@@ -662,9 +661,17 @@ void menuModelTelemetry(uint8_t event)
           FrSkyBarData & bar = g_model.frsky.screens[screenIndex].bars[lineIndex];
           source_t barSource = bar.source;
           putsMixerSource(TELEM_COL1, y, barSource, m_posHorz==0 ? attr : 0);
+          int barMax = getMaximumValue(barSource);
+          int barMin = -barMax;
           if (barSource) {
-            putsChannelValue(TELEM_BARS_COLMIN, y, barSource, bar.barMin, (m_posHorz==1 ? attr : 0) | LEFT);
-            putsChannelValue(TELEM_BARS_COLMAX, y, barSource, bar.barMax, (m_posHorz==2 ? attr : 0) | LEFT);
+            if (barSource <= MIXSRC_LAST_CH) {
+              putsChannelValue(TELEM_BARS_COLMIN, y, barSource, calc100toRESX(bar.barMin), (m_posHorz==1 ? attr : 0) | LEFT);
+              putsChannelValue(TELEM_BARS_COLMAX, y, barSource, calc100toRESX(bar.barMax), (m_posHorz==2 ? attr : 0) | LEFT);
+            }
+            else {
+              putsChannelValue(TELEM_BARS_COLMIN, y, barSource, bar.barMin, (m_posHorz==1 ? attr : 0) | LEFT);
+              putsChannelValue(TELEM_BARS_COLMAX, y, barSource, bar.barMax, (m_posHorz==2 ? attr : 0) | LEFT);
+            }
           }
           else if (attr) {
             MOVE_CURSOR_FROM_HERE();
@@ -674,15 +681,21 @@ void menuModelTelemetry(uint8_t event)
               case 0:
                 bar.source = CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, barSource, MIXSRC_LAST_TELEM, isSourceAvailable);
                 if (checkIncDec_Ret) {
-                  bar.barMin = 0;
-                  bar.barMax = 0;
+                  if (barSource <= MIXSRC_LAST_CH) {
+                    bar.barMin = -100;
+                    bar.barMax = 100;
+                  }
+                  else {
+                    bar.barMin = 0;
+                    bar.barMax = 0;
+                  }
                 }
                 break;
               case 1:
-                bar.barMin = checkIncDec(event, bar.barMin, -30000, bar.barMax, EE_MODEL|NO_INCDEC_MARKS);
+                bar.barMin = checkIncDec(event, bar.barMin, barMin, bar.barMax, EE_MODEL|NO_INCDEC_MARKS);
                 break;
               case 2:
-                bar.barMax = checkIncDec(event, bar.barMax, bar.barMin, 30000, EE_MODEL|NO_INCDEC_MARKS);
+                bar.barMax = checkIncDec(event, bar.barMax, bar.barMin, barMax, EE_MODEL|NO_INCDEC_MARKS);
                 break;
             }
           }
@@ -690,10 +703,10 @@ void menuModelTelemetry(uint8_t event)
         else
 #endif
         {
-          for (uint8_t c=0; c<NUM_LINE_ITEMS; c++) {
-            uint8_t cellAttr = (m_posHorz==c ? attr : 0);
+          for (int c=0; c<NUM_LINE_ITEMS; c++) {
+            LcdFlags cellAttr = (m_posHorz==c ? attr : 0);
             source_t & value = g_model.frsky.screens[screenIndex].lines[lineIndex].sources[c];
-            uint8_t pos[] = {TELEM_COL1, TELEM_COL2, TELEM_COL3};
+            const coord_t pos[] = {TELEM_COL1, TELEM_COL2, TELEM_COL3};
             putsMixerSource(pos[c], y, value, cellAttr);
             if (cellAttr && s_editMode>0) {
               CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, value, MIXSRC_LAST_TELEM, isSourceAvailable);

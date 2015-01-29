@@ -437,6 +437,9 @@ void displayWarning(uint8_t event);
 #endif
 
 #if defined(CPUARM)
+  #define TEXT_FILENAME_MAXLEN  40
+  extern char s_text_file[TEXT_FILENAME_MAXLEN];
+  void menuTextView(uint8_t event);
   void pushMenuTextView(const char *filename);
   bool modelHasNotes();
   void pushModelNotes();

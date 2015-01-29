@@ -81,6 +81,20 @@ void displayScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t
   lcd_vlineStip(x, y + yofs, yhgt, SOLID, FORCE);
 }
 
+const pm_uchar MAINMENU_LBM[] PROGMEM = {
+  #include "bitmaps/Taranis/mainmenu.lbm"
+};
+
+void displayMenuBar(const MenuItem *menu, int index)
+{
+  drawFilledRect(0, 0, LCD_W, 32, SOLID, ERASE);
+  drawFilledRect(0, 24, LCD_W, 7, SOLID, GREY_DEFAULT);
+  lcd_bmp(1, 0, MAINMENU_LBM);
+  lcd_putsAtt(0, 24, menu[index].name, INVERS);
+  lcd_rect(index*24, 0, 26, 24, SOLID, FORCE);
+  lcd_hlineStip(0, 31, LCD_W, SOLID, FORCE);
+}
+
 void title(const pm_char * s)
 {
   lcd_putsAtt(0, 0, s, INVERS);

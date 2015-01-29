@@ -790,9 +790,9 @@ trim_t getRawTrimValue(uint8_t phase, uint8_t idx);
 int getTrimValue(uint8_t phase, uint8_t idx);
 
 #if defined(PCBTARANIS)
-bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
+  bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 #else
-void setTrimValue(uint8_t phase, uint8_t idx, int trim);
+  void setTrimValue(uint8_t phase, uint8_t idx, int trim);
 #endif
 
 #if defined(ROTARY_ENCODERS)
@@ -937,9 +937,9 @@ extern uint16_t lastMixerDuration;
   #define RESET_THR_TRACE() s_timeCum16ThrP = s_timeCumThr = 0
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(CPUSTM32)
   static inline uint16_t getTmr2MHz() { return TIM7->CNT; }
-#elif defined(PCBSKY9X)
+#elif defined(CPUARM)
   static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
 #else
   uint16_t getTmr16KHz();
@@ -1150,7 +1150,7 @@ extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of th
 extern int16_t            channelOutputs[NUM_CHNOUT];
 extern uint16_t           BandGap;
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
   #define NUM_INPUTS      (MAX_INPUTS)
 #else
   #define NUM_INPUTS      (NUM_STICKS)
@@ -1159,23 +1159,35 @@ extern uint16_t           BandGap;
 int intpol(int x, uint8_t idx);
 int expo(int x, int k);
 
-#if defined(CURVES)
-  #if defined(PCBTARANIS)
-    int applyCurve(int x, CurveRef & curve);
-  #else
-    int applyCurve(int x, int8_t idx);
-  #endif
+#if defined(CURVES) && defined(XCURVES)
+  int applyCurve(int x, CurveRef & curve);
+#elif defined(CURVES)
+  int applyCurve(int x, int8_t idx);
 #else
   #define applyCurve(x, idx) (x)
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
+  inline int getMaximumValue(int source)
+  {
+    if (source < MIXSRC_FIRST_CH)
+      return 100;
+    else if (source <= MIXSRC_LAST_CH)
+      return g_model.extendedLimits ? 150 : 100;
+    else if (source >= MIXSRC_FIRST_TIMER && source <= MIXSRC_LAST_TIMER)
+      return (23*60)+59;
+    else
+      return 30000;
+  }
+#endif
+
+#if defined(XCURVES)
   int applyCustomCurve(int x, uint8_t idx);
 #else
   #define applyCustomCurve(x, idx) intpol(x, idx)
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(XCURVES)
   #define APPLY_EXPOS_EXTRA_PARAMS_INC , uint8_t ovwrIdx=0, int16_t ovwrValue=0
   #define APPLY_EXPOS_EXTRA_PARAMS     , uint8_t ovwrIdx, int16_t ovwrValue
 #else
@@ -1183,7 +1195,7 @@ int expo(int x, int k);
   #define APPLY_EXPOS_EXTRA_PARAMS
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
 void clearInputs();
 void defaultInputs();
 #endif
@@ -1209,7 +1221,7 @@ LimitData *limitAddress(uint8_t idx);
 int8_t *curveAddress(uint8_t idx);
 LogicalSwitchData *lswAddress(uint8_t idx);
 
-#if !defined(PCBTARANIS)
+#if !defined(XCURVES)
 struct CurveInfo {
   int8_t *crv;
   uint8_t points;
@@ -1220,7 +1232,7 @@ extern CurveInfo curveInfo(uint8_t idx);
 
 // static variables used in evalFlightModeMixes - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
   extern int8_t  virtualInputsTrims[NUM_INPUTS];
 #else
   extern int16_t rawAnas[NUM_INPUTS];

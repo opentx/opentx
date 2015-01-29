@@ -350,11 +350,6 @@ void displayTimers()
   }
 }
 
-#define EVT_KEY_MODEL_MENU   EVT_KEY_BREAK(KEY_MENU)
-#define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_MENU)
-#define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_PAGE)
-#define EVT_KEY_CONTEXT_MENU EVT_KEY_LONG(KEY_ENTER)
-
 void menuMainViewChannelsMonitor(uint8_t event)
 {
   switch(event) {
@@ -431,13 +426,49 @@ void displaySwitch(coord_t x, coord_t y, int width, unsigned int index)
   }
 }
 
+const MenuItem MAIN_MENU[] = {
+  { "RADIO SETTINGS", menuGeneralSetup },
+  { "MODEL SELECT", menuModelSelect },
+  { "MODEL SETTINGS", menuModelSetup },
+  { "CHECKLIST", menuModelNotes },
+  { "SD MANAGER", menuGeneralSdManager },
+  { "VERSION", menuGeneralVersion }
+};
+
+bool isMenuAvailable(int index)
+{
+  if (index == 4) {
+    return modelHasNotes();
+  }
+  else {
+    return true;
+  }
+}
+
+#define GRAPHICAL_MENUS 1
+
+#if GRAPHICAL_MENUS == 1
+  #define DECLARE_MAIN_MENU()       static int currentMenuIndex = -1
+  #define INIT_MAIN_MENU()          currentMenuIndex = -1
+  #define IS_MAIN_MENU_DISPLAYED()  currentMenuIndex > 0
+  #define TOGGLE_MAIN_MENU()        currentMenuIndex = -currentMenuIndex
+#else
+  #define DECLARE_MAIN_MENU()
+  #define INIT_MAIN_MENU()
+  #define IS_MAIN_MENU_DISPLAYED()  0
+  #define TOGGLE_MAIN_MENU()
+#endif
+
 void menuMainView(uint8_t event)
 {
+  DECLARE_MAIN_MENU();
+
   STICK_SCROLL_DISABLE();
 
   switch(event) {
 
     case EVT_ENTRY:
+      INIT_MAIN_MENU();
       killEvents(KEY_EXIT);
       killEvents(KEY_UP);
       killEvents(KEY_DOWN);
@@ -447,13 +478,11 @@ void menuMainView(uint8_t event)
       LOAD_MODEL_BITMAP();
       break;
 
-    case EVT_KEY_CONTEXT_MENU:
+    case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
-
       if (modelHasNotes()) {
         MENU_ADD_ITEM(STR_VIEW_NOTES);
       }
-
       MENU_ADD_ITEM(STR_RESET_SUBMENU);
       MENU_ADD_ITEM(STR_STATISTICS);
       MENU_ADD_ITEM(STR_ABOUT_US);
@@ -461,16 +490,21 @@ void menuMainView(uint8_t event)
       break;
 
 #if MENUS_LOCK != 2/*no menus*/
-    CASE_EVT_ROTARY_BREAK
-    case EVT_KEY_MODEL_MENU:
+    case EVT_KEY_BREAK(KEY_MENU):
+#if GRAPHICAL_MENUS == 1
+      TOGGLE_MAIN_MENU();
+#else
       pushMenu(menuModelSelect);
-      killEvents(event);
+#endif
       break;
 
-    CASE_EVT_ROTARY_LONG
-    case EVT_KEY_GENERAL_MENU:
+    case EVT_KEY_LONG(KEY_MENU):
+#if GRAPHICAL_MENUS == 1
+      pushMenu(lastPopMenu());
+#else
       pushMenu(menuGeneralSetup);
       killEvents(event);
+#endif
       break;
 #endif
 
@@ -483,15 +517,18 @@ void menuMainView(uint8_t event)
       }
       break;
 
-    case EVT_KEY_TELEMETRY:
+    case EVT_KEY_LONG(KEY_PAGE):
       if (!IS_FAI_ENABLED())
         chainMenu(menuTelemetryFrsky);
       killEvents(event);
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
+      if (IS_MAIN_MENU_DISPLAYED()) {
+        TOGGLE_MAIN_MENU();
+      }
 #if defined(GVARS)
-      if (s_gvar_timer > 0) {
+      else if (s_gvar_timer > 0) {
         s_gvar_timer = 0;
       }
 #endif
@@ -499,17 +536,15 @@ void menuMainView(uint8_t event)
       break;
   }
 
-  {
-    // Flight Phase Name
-    uint8_t phase = mixerCurrentFlightMode;
-    lcd_putsnAtt(PHASE_X, PHASE_Y, g_model.flightModeData[phase].name, sizeof(g_model.flightModeData[phase].name), ZCHAR|PHASE_FLAGS);
+  // Flight Mode Name
+  int mode = mixerCurrentFlightMode;
+  lcd_putsnAtt(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|PHASE_FLAGS);
 
-    // Model Name
-    putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
+  // Model Name
+  putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
 
-    // Trims sliders
-    displayTrims(phase);
-  }
+  // Trims sliders
+  displayTrims(mode);
 
   // Top bar
   displayTopBar();
@@ -521,7 +556,7 @@ void menuMainView(uint8_t event)
 
   // Switches
 #if defined(REV9E)
-  for (unsigned i=0; i<18; i++) {
+  for (int i=0; i<18; ++i) {
     div_t qr = div(i, 9);
     if (g_eeGeneral.view == VIEW_INPUTS) {
       div_t qr2 = div(qr.rem, 5);
@@ -535,7 +570,7 @@ void menuMainView(uint8_t event)
     }
   }
 #else
-  for (uint8_t i=0; i<8; i++) {
+  for (int i=0; i<8; ++i) {
     getvalue_t sw;
     getvalue_t val;
     // TODO simplify this + reuse code in checkSwitches() + Menu MODELSETUP
@@ -571,7 +606,7 @@ void menuMainView(uint8_t event)
   else {
     // Logical Switches
     lcd_puts(TRIM_RH_X - TRIM_LEN/2 + 5, 6*FH-1, "LS 1-32");
-    for (uint8_t sw=0; sw<NUM_LOGICAL_SWITCH; sw++) {
+    for (int sw=0; sw<NUM_LOGICAL_SWITCH; ++sw) {
       div_t qr = div(sw, 10);
       uint8_t y = 13 + 11 * qr.quot;
       uint8_t x = TRIM_RH_X - TRIM_LEN + qr.rem*5 + (qr.rem >= 5 ? 3 : 0);
@@ -589,7 +624,6 @@ void menuMainView(uint8_t event)
     }
   }
 
-
 #if defined(GVARS)
   if (s_gvar_timer > 0) {
     s_gvar_timer--;
@@ -599,6 +633,27 @@ void menuMainView(uint8_t event)
     lcd_putsnAtt(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
     lcd_putsAtt(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("[\010]"), BOLD);
     lcd_outdezAtt(BITMAP_X+5*FW+FW/2, BITMAP_Y+2*FH+3, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), BOLD);
+  }
+#endif
+
+#if GRAPHICAL_MENUS > 0
+  if (IS_MAIN_MENU_DISPLAYED()) {
+    displayMenuBar(MAIN_MENU, currentMenuIndex-1);
+    switch (event) {
+      case EVT_KEY_FIRST(KEY_MINUS):
+        currentMenuIndex = circularIncDec(currentMenuIndex, +1, 1, DIM(MAIN_MENU), isMenuAvailable);
+        break;
+
+      case EVT_KEY_FIRST(KEY_PLUS):
+        currentMenuIndex = circularIncDec(currentMenuIndex, -1, 1, DIM(MAIN_MENU), isMenuAvailable);
+        break;
+
+      case EVT_KEY_FIRST(KEY_ENTER):
+        killEvents(event);
+        pushMenu(MAIN_MENU[currentMenuIndex-1].action);
+        TOGGLE_MAIN_MENU();
+        break;
+    }
   }
 #endif
 }

@@ -118,7 +118,7 @@ void menuModelLogicalSwitches(uint8_t event)
     menuHandler = onLogicalSwitchesMenu;
   }
 
-  for (int i=0; i<NUM_BODY_LINES; i++) {
+  for (int i=0; i<NUM_BODY_LINES; ++i) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
     k = i+s_pgOfs;
     LcdFlags attr = (sub==k ? ((s_editMode>0) ? BLINK|INVERS : INVERS)  : 0);
@@ -135,7 +135,9 @@ void menuModelLogicalSwitches(uint8_t event)
 
     // CSW params
     unsigned int cstate = lswFamily(cs->func);
-    int v1_val=cs->v1, v1_min=0, v1_max=MIXSRC_LAST_TELEM, v2_min=0, v2_max=MIXSRC_LAST_TELEM, v3_min=-1, v3_max=100;
+    int v1_val=cs->v1, v1_min=0, v1_max=MIXSRC_LAST_TELEM;
+    int v2_min=0, v2_max=MIXSRC_LAST_TELEM;
+    int v3_min=-1, v3_max=100;
 
     if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
       putsSwitches(CSW_2ND_COLUMN, y, cs->v1, attr1);
@@ -186,9 +188,14 @@ void menuModelLogicalSwitches(uint8_t event)
         INCDEC_SET_FLAG(EE_MODEL);
         INCDEC_ENABLE_CHECK(NULL);
       }
-      putsChannelValue(CSW_3RD_COLUMN, y, v1_val, v1_val <= MIXSRC_LAST_CH ? calc100toRESX(cs->v2) : cs->v2, LEFT|attr2);
-      v2_min = -30000;
-      v2_max = 30000;
+      v2_max = getMaximumValue(v1_val);
+      v2_min = - v2_min;
+      if (v1_val <= MIXSRC_LAST_CH) {
+        putsChannelValue(CSW_3RD_COLUMN, y, v1_val, calc100toRESX(cs->v2), LEFT|attr2);
+      }
+      else {
+        putsChannelValue(CSW_3RD_COLUMN, y, v1_val, cs->v2, LEFT|attr2);
+      }
     }
 
     // CSW AND switch
@@ -245,7 +252,7 @@ void menuModelLogicalSwitches(uint8_t event)
           if (cstate==LS_FAMILY_OFS && cs->v1!=0 && event==EVT_KEY_LONG(KEY_ENTER)) {
             killEvents(event);
             getvalue_t x = getValue(v1_val);
-            if (v1_val < MIXSRC_GVAR1)
+            if (v1_val <= MIXSRC_LAST_CH)
               cs->v2 = calcRESXto100(x);
             eeDirty(EE_MODEL);
           }

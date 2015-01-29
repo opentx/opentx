@@ -100,8 +100,12 @@ void menuGeneralDiagAna(uint8_t event);
 #if defined(FRSKY)
 void menuTelemetryFrsky(uint8_t event);
 #endif
+void menuModelSetup(uint8_t event);
+void menuModelNotes(uint8_t event);
 void menuGeneralSetup(uint8_t event);
+void menuGeneralSdManager(uint8_t event);
 void menuGeneralCalib(uint8_t event);
+void menuGeneralVersion(uint8_t event);
 void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext);
 
 void menuModelSelect(uint8_t event);
@@ -219,54 +223,49 @@ bool isInputSourceAvailable(int source);
 #define CURSOR_ON_LINE()         (m_posHorz<0)
 
 #define CHECK_FLAG_NO_SCREEN_INDEX   1
-void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
-void check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
-void check_submenu_simple(check_event_t event, uint8_t maxrow);
+void check(const char *title, check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
+void check_simple(const char *title, check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
+void check_submenu_simple(const char *title, check_event_t event, uint8_t maxrow);
 
 void title(const pm_char * s);
 #define TITLE(str) title(str)
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
-#define MENU_CHECK(tab, menu, lines_count) \
-  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
+#define MENU_CHECK(title, tab, menu, lines_count) \
+  check(title, event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
 
-#define MENU_CHECK_FLAGS(tab, menu, flags, lines_count) \
-  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count, flags)
+#define MENU_CHECK_FLAGS(title, tab, menu, flags, lines_count) \
+  check(title, event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count, flags)
 
 #define MENU(title, tab, menu, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  MENU_CHECK(tab, menu, lines_count); \
-  TITLE(title)
+  MENU_CHECK(title, tab, menu, lines_count)
 
 #define MENU_FLAGS(title, tab, menu, flags, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  MENU_CHECK_FLAGS(tab, menu, flags, lines_count); \
-  TITLE(title)
+  MENU_CHECK_FLAGS(title, tab, menu, flags, lines_count)
 
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
-  check_simple(event, menu, tab, DIM(tab), lines_count);
+  check_simple(NULL, event, menu, tab, DIM(tab), lines_count);
 
 #define SIMPLE_MENU(title, tab, menu, lines_count) \
-  SIMPLE_MENU_NOTITLE(tab, menu, lines_count); \
-  TITLE(title)
+  check_simple(title, event, menu, tab, DIM(tab), lines_count)
 
 #define SUBMENU_NOTITLE(lines_count, ...) { \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
+  check(NULL, event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
   }
 
 #define SUBMENU(title, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
-  TITLE(title)
+  check(title, event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  check_submenu_simple(event, lines_count);
+  check_submenu_simple(NULL, event, lines_count);
 
 #define SIMPLE_SUBMENU(title, lines_count) \
-  SIMPLE_SUBMENU_NOTITLE(lines_count); \
-  TITLE(title)
+  check_submenu_simple(title, event, lines_count)
 
 typedef int select_menu_value_t;
 
@@ -343,6 +342,9 @@ extern char statusLineMsg[STATUS_LINE_LENGTH];
 void showStatusLine();
 void drawStatusLine();
 
+#define TEXT_FILENAME_MAXLEN  40
+extern char s_text_file[TEXT_FILENAME_MAXLEN];
+void menuTextView(uint8_t event);
 void pushMenuTextView(const char *filename);
 bool modelHasNotes();
 void pushModelNotes();

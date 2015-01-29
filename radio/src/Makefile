@@ -811,7 +811,7 @@ ifeq ($(PCB), TARANIS)
   MCU  = cortex-m3
   OPT = s
   CPPDEFS += -DHSE_VALUE=12000000
-  BITMAPS += $(patsubst %.png,%.lbm,$(wildcard bitmaps/Taranis/*.png) $(wildcard bitmaps/Taranis/std/*.png))
+  BITMAPS += $(patsubst %.png,%.lbm,$(wildcard bitmaps/Taranis/*.png)) bitmaps/Taranis/mainmenu.lbm
   SDCARD = YES
   THR_TRACE = YES
   EXT = FRSKY_SPORT
@@ -821,7 +821,7 @@ ifeq ($(PCB), TARANIS)
   PPM_LIMITS_SYMETRICAL = YES
   PPM_CENTER_ADJUSTABLE = YES
   DSM2 = PPM
-  CPPDEFS += -DPCBTARANIS -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX
+  CPPDEFS += -DPCBTARANIS -DCPUARM -DCPUSTM32 -DVIRTUALINPUTS -DXCURVES -DEEPROM_VARIANT=0 -DAUDIO -DPXX
   INCDIRS += targets/taranis CoOS/kernel CoOS/portable
   EXTRAINCDIRS += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/include
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc 
@@ -1437,6 +1437,10 @@ fonts: $(FONTS)
 fonts/%.lbm: fonts/%.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE)
 	
+fonts/font_tinsize.lbm:
+	$(FONT2PNG) $(FONTNAME) 5 fonts/font_tinsize.png
+	$(IMG2LBM) fonts/font_tinsize.png $@ $(LCDSIZE) 4bits
+
 fonts/font_stdsize.lbm:
 	$(FONT2PNG) $(FONTNAME) 8 fonts/font_stdsize.png
 	$(IMG2LBM) fonts/font_stdsize.png $@ $(LCDSIZE) 4bits
@@ -1461,6 +1465,9 @@ bitmaps/9X/%.lbm: bitmaps/9X/%.png
 bitmaps/Taranis/%.lbm: bitmaps/Taranis/%.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE) 4bits
 
+bitmaps/Taranis/mainmenu.png: ../util/taranisicons.py $(wildcard bitmaps/Taranis/std/*.png)
+	@$(PYTHON) ../util/taranisicons.py
+	
 ifeq ($(OS),Windows_NT)
   PARSER = avr-cpp 
 else

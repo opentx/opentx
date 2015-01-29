@@ -22,6 +22,7 @@
 #define SIMU_EXCEPTIONS
 #define PCBTARANIS
 #define CPUARM
+#define CPUSTM32
 #define GUI
 #define HELI
 #define SPLASH
@@ -43,6 +44,7 @@
 #define GRAPHICS
 #define SDCARD
 #define RTCLOCK
+#define VIRTUALINPUTS
 #define CURVES
 #define XCURVES
 #define GVARS

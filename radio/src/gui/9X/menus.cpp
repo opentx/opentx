@@ -77,11 +77,19 @@ void pushMenu(MenuFuncP newMenu)
 }
 
 #if defined(CPUARM)
+void menuModelNotes(uint8_t event)
+{
+  if (event == EVT_ENTRY) {
+    strcpy(s_text_file, MODELS_PATH "/");
+    char *buf = strcat_modelname(&s_text_file[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
+    strcpy(buf, TEXT_EXT);
+  }
+
+  menuTextView(event);
+}
+
 void pushModelNotes()
 {
-  char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
-  char *buf = strcat_modelname(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
-  strcpy(buf, TEXT_EXT);
-  pushMenuTextView(filename);
+  pushMenu(menuModelNotes);
 }
 #endif
