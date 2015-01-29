@@ -342,7 +342,7 @@ void menuMainView(uint8_t event)
       break;
 #endif
 
-#if MENUS_LOCK != 2/*no menus*/
+#if MENUS_LOCK != 2 /*no menus*/
     case EVT_KEY_LONG(KEY_MENU):// go to last menu
       pushMenu(lastPopMenu());
       killEvents(event);
@@ -415,9 +415,9 @@ void menuMainView(uint8_t event)
   }
 
   {
-    // Flight Phase Name
-    uint8_t phase = mixerCurrentFlightMode;
-    lcd_putsnAtt(PHASE_X, PHASE_Y, g_model.flightModeData[phase].name, sizeof(g_model.flightModeData[phase].name), ZCHAR|PHASE_FLAGS);
+    // Flight Mode Name
+    uint8_t mode = mixerCurrentFlightMode;
+    lcd_putsnAtt(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|PHASE_FLAGS);
 
     // Model Name
     putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
@@ -429,7 +429,7 @@ void menuMainView(uint8_t event)
     displayTimers();
 
     // Trims sliders
-    displayTrims(phase);
+    displayTrims(mode);
   }
 
   if (view_base < VIEW_INPUTS) {
