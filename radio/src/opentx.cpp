@@ -35,6 +35,7 @@
  */
 
 #include "opentx.h"
+#include "timers.h"
 
 #if defined(COLORLCD)
 #elif defined(PCBTARANIS)
@@ -1520,14 +1521,6 @@ uint8_t trimsDisplayTimer = 0;
 uint8_t trimsDisplayMask = 0;
 #endif
 
-void timerReset(uint8_t idx)
-{
-  TimerState & timerState = timersStates[idx];
-  timerState.state = TMR_OFF; // is changed to RUNNING dep from mode
-  timerState.val = g_model.timers[idx].start;
-  timerState.val_10ms = 0 ;
-}
-
 void flightReset()
 {
   // we don't reset the whole audio here (the tada.wav would be cut, if a prompt is queued before FlightReset, it should be played)
@@ -1551,8 +1544,6 @@ void flightReset()
 
   RESET_THR_TRACE();
 }
-
-TimerState timersStates[MAX_TIMERS] = { { 0 }, { 0 } };
 
 #if defined(THRTRACE)
 uint8_t  s_traceBuf[MAXTRACE];
@@ -1703,95 +1694,7 @@ void doMixerCalculations()
     val >>= (RESX_SHIFT-4); // calibrate it
 #endif
 
-    // Timers start
-    for (uint8_t i=0; i<MAX_TIMERS; i++) {
-      int8_t tm = g_model.timers[i].mode;
-      uint16_t tv = g_model.timers[i].start;
-      TimerState * timerState = &timersStates[i];
-
-      if (tm) {
-        if (timerState->state == TMR_OFF) {
-          timerState->state = TMR_RUNNING;
-          timerState->cnt = 0;
-          timerState->sum = 0;
-        }
-
-        if (tm == TMRMODE_THR_REL) {
-          timerState->cnt++;
-          timerState->sum+=val;
-        }
-
-        if ((timerState->val_10ms += tick10ms) >= 100) {
-          timerState->val_10ms -= 100 ;
-          int16_t newTimerVal = timerState->val;
-          if (tv) newTimerVal = tv - newTimerVal;
-
-          if (tm == TMRMODE_ABS) {
-            newTimerVal++;
-          }
-          else if (tm == TMRMODE_THR) {
-            if (val) newTimerVal++;
-          }
-          else if (tm == TMRMODE_THR_REL) {
-            // @@@ open.20.fsguruh: why so complicated? we have already a s_sum field; use it for the half seconds (not showable) as well
-            // check for s_cnt[i]==0 is not needed because we are shure it is at least 1
-#if defined(ACCURAT_THROTTLE_TIMER)
-            if ((timerState->sum/timerState->cnt) >= 128) {  // throttle was normalized to 0 to 128 value (throttle/64*2 (because - range is added as well)
-              newTimerVal++;  // add second used of throttle
-              timerState->sum -= 128*timerState->cnt;
-            }
-#else
-            if ((timerState->sum/timerState->cnt) >= 32) {  // throttle was normalized to 0 to 32 value (throttle/16*2 (because - range is added as well)
-              newTimerVal++;  // add second used of throttle
-              timerState->sum -= 32*timerState->cnt;
-            }
-#endif
-            timerState->cnt=0;
-          }
-          else if (tm == TMRMODE_THR_TRG) {
-            if (val) {
-              timerState->state = TMR_TRIGGED;
-            }
-            if (timerState->state == TMR_TRIGGED) {
-              newTimerVal++;
-            }
-          }
-          else {
-            if (tm > 0) tm -= (TMRMODE_COUNT-1);
-            if (getSwitch(tm))
-              newTimerVal++;
-          }
-
-          switch (timerState->state) {
-            case TMR_RUNNING:
-              if (tv && newTimerVal>=(int16_t)tv) {
-                AUDIO_TIMER_00(g_model.timers[i].countdownBeep);
-                timerState->state = TMR_NEGATIVE;
-              }
-              break;
-            case TMR_NEGATIVE:
-              if (newTimerVal >= (int16_t)tv + MAX_ALERT_TIME) timerState->state = TMR_STOPPED;
-              break;
-          }
-
-          if (tv) newTimerVal = tv - newTimerVal; // if counting backwards - display backwards
-
-          if (newTimerVal != timerState->val) {
-            timerState->val = newTimerVal;
-            if (timerState->state == TMR_RUNNING) {
-              if (g_model.timers[i].countdownBeep && g_model.timers[i].start) {
-                if (newTimerVal==30) AUDIO_TIMER_30();
-                if (newTimerVal==20) AUDIO_TIMER_20();
-                if (newTimerVal<=10) AUDIO_TIMER_LT10(g_model.timers[i].countdownBeep, newTimerVal);
-              }
-              if (g_model.timers[i].minuteBeep && (newTimerVal % 60)==0) {
-                AUDIO_TIMER_MINUTE(newTimerVal);
-              }
-            }
-          }
-        }
-      }
-    } //endfor timer loop (only two)
+    evalTimers(val, tick10ms);
 
     static uint8_t  s_cnt_100ms;
     static uint8_t  s_cnt_1s;
@@ -2454,29 +2357,6 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   eeDirty(EE_MODEL);
   AUDIO_WARNING2();
 }
-
-#if defined(CPUARM) || defined(CPUM2560)
-void saveTimers()
-{
-  for (uint8_t i=0; i<MAX_TIMERS; i++) {
-    if (g_model.timers[i].persistent) {
-      TimerState *timerState = &timersStates[i];
-      if (g_model.timers[i].value != (uint16_t)timerState->val) {
-        g_model.timers[i].value = timerState->val;
-        eeDirty(EE_MODEL);
-      }
-    }
-  }
-
-#if defined(CPUARM) && !defined(REVA)
-  if (sessionTimer > 0) {
-    g_eeGeneral.globalTimer += sessionTimer;
-    eeDirty(EE_GENERAL);
-    sessionTimer = 0;
-  }
-#endif
-}
-#endif
 
 #if defined(ROTARY_ENCODERS)
   volatile rotenc_t g_rotenc[ROTARY_ENCODERS] = {0};

@@ -35,6 +35,7 @@
  */
 
 #include "opentx.h"
+#include "timers.h"
 
 CustomFunctionsContext modelFunctionsContext = { 0 };
 
@@ -359,10 +360,7 @@ void evalFunctions()
 #if defined(CPUARM)
           case FUNC_SET_TIMER:
           {
-            TimerState & timerState = timersStates[CFN_TIMER_INDEX(cfn)];
-            timerState.state = TMR_OFF; // is changed to RUNNING dep from mode
-            timerState.val = CFN_PARAM(cfn);
-            timerState.val_10ms = 0 ;
+            timerSet(CFN_TIMER_INDEX(cfn), CFN_PARAM(cfn));
             break;
           }
 #endif

@@ -270,6 +270,15 @@
   #define convertSimuPath(x) (x)
 #endif
 
+#if !defined(CPUM64) && !defined(ACCURAT_THROTTLE_TIMER)
+    //  code cost is about 16 bytes for higher throttle accuracy for timer
+    //  would not be noticable anyway, because all version up to this change had only 16 steps;
+    //  now it has already 32  steps; this define would increase to 128 steps
+  #if !defined(ACCURAT_THROTTLE_TIMER)
+    #define ACCURAT_THROTTLE_TIMER
+  #endif
+#endif
+
 // RESX range is used for internal calculation; The menu says -100.0 to 100.0; internally it is -1024 to 1024 to allow some optimizations
 #define RESX_SHIFT 10
 #define RESX       1024
@@ -867,16 +876,6 @@ extern uint16_t sessionTimer;
 extern uint16_t s_timeCumThr;
 extern uint16_t s_timeCum16ThrP;
 
-struct TimerState {
-  uint16_t cnt;
-  uint16_t sum;
-  uint8_t  state;
-  int16_t  val;
-  uint8_t  val_10ms;
-};
-
-extern TimerState timersStates[MAX_TIMERS];
-
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
 #if defined(CPUARM)
   typedef int16_t safetych_t;
@@ -895,12 +894,6 @@ extern uint8_t trimsDisplayTimer;
 extern uint8_t trimsDisplayMask;
 #endif
 
-#define TMR_OFF      0
-#define TMR_RUNNING  1
-#define TMR_NEGATIVE 2
-#define TMR_STOPPED  3
-#define TMR_TRIGGED  4
-void timerReset(uint8_t idx);
 void flightReset();
 
 extern uint8_t unexpectedShutdown;
@@ -1066,12 +1059,6 @@ inline void resumeMixerCalculations()
 #else
 #define pauseMixerCalculations()
 #define resumeMixerCalculations()
-#endif
-
-#if defined(CPUARM) || defined(CPUM2560)
-void saveTimers();
-#else
-#define saveTimers()
 #endif
 
 void generalDefault();

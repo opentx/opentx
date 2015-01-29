@@ -34,9 +34,10 @@
  *
  */
 
+#include <inttypes.h>
+#include <string.h>
 #include "opentx.h"
-#include "inttypes.h"
-#include "string.h"
+#include "timers.h"
 
 uint8_t   s_write_err = 0;    // error reasons
 RlcFile   theFile;  //used for any file operation
@@ -985,13 +986,7 @@ void eeLoadModel(uint8_t id)
 
     customFunctionsReset();
 
-#if !defined(PCBSTD)
-    for (uint8_t i=0; i<MAX_TIMERS; i++) {
-      if (g_model.timers[i].persistent) {
-        timersStates[i].val = g_model.timers[i].value;
-      }
-    }
-#endif
+    restoreTimers();
 
 #if defined(CPUARM)
     for (int i=0; i<TELEM_VALUES_MAX; i++) {

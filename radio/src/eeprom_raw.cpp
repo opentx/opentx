@@ -35,9 +35,10 @@
  */
 
 #include <stdint.h>
+#include <inttypes.h>
+#include <string.h>
 #include "opentx.h"
-#include "inttypes.h"
-#include "string.h"
+#include "timers.h"
 
 volatile  uint32_t Spi_complete; // TODO in the driver ?
 
@@ -396,11 +397,7 @@ void eeLoadModel(uint8_t id)
 
     customFunctionsReset();
 
-    for (uint8_t i=0; i<MAX_TIMERS; i++) {
-      if (g_model.timers[i].persistent) {
-        timersStates[i].val = g_model.timers[i].value;
-      }
-    }
+    restoreTimers();
 
     resumeMixerCalculations();
     // TODO pulses should be started after mixer calculations ...

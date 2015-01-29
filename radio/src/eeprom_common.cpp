@@ -35,9 +35,10 @@
  */
 
 #include <stdint.h>
+#include <inttypes.h>
+#include <string.h>
 #include "opentx.h"
-#include "inttypes.h"
-#include "string.h"
+#include "timers.h"
 
 uint8_t   s_eeDirtyMsk;
 tmr10ms_t s_eeDirtyTime10ms;
