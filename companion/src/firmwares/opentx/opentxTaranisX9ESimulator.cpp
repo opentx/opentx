@@ -54,11 +54,13 @@
 #define FAI_CHOICE
 #define LUA
 #define LUA_MODEL_SCRIPTS
-#define EEPROM_VARIANT 3
 #define HAPTIC
 #define REVPLUS
 #define REV9E
 #define OVERRIDE_CHANNEL_FUNCTION
+#define TIMERS 3
+
+#define EEPROM_VARIANT 3
 #define FLAVOUR "taranis-x9e"
 
 #undef min

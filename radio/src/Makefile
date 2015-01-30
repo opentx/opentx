@@ -264,6 +264,10 @@ DEBUG = NO
 # Values = YES, NO
 SPORT_FILE_LOG = NO
 
+# Timers Count
+# Values = 1, 2, 3 (on ARM boards)
+TIMERS = 2
+
 # Flight Modes
 # Values = YES, NO
 FLIGHT_MODES = YES
@@ -1063,6 +1067,8 @@ INCDIRS += fonts/std
 ifeq ($(THR_TRACE), YES)
   CPPDEFS += -DTHRTRACE
 endif
+
+CPPDEFS += -DTIMERS=$(TIMERS)
 
 ifeq ($(FLIGHT_MODES), YES)
   CPPDEFS += -DFLIGHT_MODES

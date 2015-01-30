@@ -46,16 +46,20 @@ enum menuModelSetupItems {
   CASE_PERSISTENT_TIMERS(ITEM_MODEL_TIMER1_PERSISTENT)
   ITEM_MODEL_TIMER1_MINUTE_BEEP,
   ITEM_MODEL_TIMER1_COUNTDOWN_BEEP,
+#if TIMERS > 1
   ITEM_MODEL_TIMER2,
   ITEM_MODEL_TIMER2_NAME,
   CASE_PERSISTENT_TIMERS(ITEM_MODEL_TIMER2_PERSISTENT)
   ITEM_MODEL_TIMER2_MINUTE_BEEP,
   ITEM_MODEL_TIMER2_COUNTDOWN_BEEP,
+#endif
+#if TIMERS > 2
   ITEM_MODEL_TIMER3,
   ITEM_MODEL_TIMER3_NAME,
   ITEM_MODEL_TIMER3_PERSISTENT,
   ITEM_MODEL_TIMER3_MINUTE_BEEP,
   ITEM_MODEL_TIMER3_COUNTDOWN_BEEP,
+#endif
   ITEM_MODEL_EXTENDED_LIMITS,
   ITEM_MODEL_EXTENDED_TRIMS,
   ITEM_MODEL_DISPLAY_TRIMS,
@@ -120,6 +124,48 @@ void onModelSetupBitmapMenu(const char *result)
   }
 }
 
+void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
+{
+  TimerData * timer = &g_model.timers[timerIdx];
+  putsStrIdx(0*FW, y, STR_TIMER, timerIdx+1);
+  putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, m_posHorz==0 ? attr : 0);
+  putsTimer(MODEL_SETUP_2ND_COLUMN+5*FW-2+5*FWNUM+1, y, timer->start, m_posHorz==1 ? attr : 0, m_posHorz==2 ? attr : 0);
+  if (attr && m_posHorz < 0) drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);
+  if (attr && s_editMode>0) {
+    div_t qr = div(timer->start, 60);
+    switch (m_posHorz) {
+      case 0:
+      {
+        int8_t timerMode = timer->mode;
+        if (timerMode < 0) timerMode -= TMRMODE_COUNT-1;
+        CHECK_INCDEC_MODELVAR_CHECK(event, timerMode, -TMRMODE_COUNT-SWSRC_LAST+1, TMRMODE_COUNT+SWSRC_LAST-1, isSwitchAvailableInTimers);
+        if (timerMode < 0) timerMode += TMRMODE_COUNT-1;
+        timer->mode = timerMode;
+#if defined(AUTOSWITCH)
+        if (s_editMode>0) {
+          int8_t val = timer->mode - (TMRMODE_COUNT-1);
+          int8_t switchVal = checkIncDecMovedSwitch(val);
+          if (val != switchVal) {
+            timer->mode = switchVal + (TMRMODE_COUNT-1);
+            eeDirty(EE_MODEL);
+          }
+        }
+#endif
+        break;
+      }
+      case 1:
+        CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 59);
+        timer->start = qr.rem + qr.quot*60;
+        break;
+      case 2:
+        qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
+        timer->start -= qr.rem ;
+        if ((int16_t)timer->start < 0) timer->start=0;
+        break;
+    }
+  }
+}
+
 #define CURRENT_MODULE_EDITED(k)         (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE))
 
 void menuModelSetup(uint8_t event)
@@ -137,8 +183,15 @@ void menuModelSetup(uint8_t event)
   #define FAILSAFE_ROWS(x)                  ((g_model.moduleData[x].rfProtocol==RF_PROTO_X16 || g_model.moduleData[x].rfProtocol==RF_PROTO_LR12) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW)
   #define POT_WARN_ITEMS()                  ((g_model.nPotsToWarn >> 6) ? (uint8_t)NUM_POTS : (uint8_t)0)
   #define TIMER_ROWS                        2|NAVIGATION_LINE_BY_LINE, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
+  #if TIMERS == 1
+    #define TIMERS_ROWS TIMER_ROWS
+  #elif TIMERS == 2
+    #define TIMERS_ROWS TIMER_ROWS, TIMER_ROWS
+  #elif TIMERS == 3
+    #define TIMERS_ROWS TIMER_ROWS, TIMER_ROWS, TIMER_ROWS
+  #endif
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
-  MENU_TAB({ 0, 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsAllowed()), ONE_2x2POS_DEFINED() ? TITLE_ROW : HIDDEN_ROW, POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0, LABEL(InternalModule), 0, IF_INTERNAL_MODULE_ON(1), IF_INTERNAL_MODULE_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), LABEL(ExternalModule), (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, EXTERNAL_MODULE_CHANNELS_ROWS(), (IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW, IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
+  MENU_TAB({ 0, 0, TIMERS_ROWS, 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsAllowed()), ONE_2x2POS_DEFINED() ? TITLE_ROW : HIDDEN_ROW, POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0, LABEL(InternalModule), 0, IF_INTERNAL_MODULE_ON(1), IF_INTERNAL_MODULE_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), LABEL(ExternalModule), (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, EXTERNAL_MODULE_CHANNELS_ROWS(), (IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW, IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
 
   MENU_CHECK(STR_MENUSETUP, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX);
 
@@ -149,8 +202,7 @@ void menuModelSetup(uint8_t event)
   }
 #endif
 
-  uint8_t sub = m_posVert;
-  int8_t editMode = s_editMode;
+  int sub = m_posVert;
 
   for (uint8_t i=0; i<NUM_BODY_LINES; ++i) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
@@ -160,7 +212,7 @@ void menuModelSetup(uint8_t event)
         k++;
     }
 
-    LcdFlags blink = ((editMode>0) ? BLINK|INVERS : INVERS);
+    LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);
 
     switch(k) {
@@ -188,86 +240,68 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TIMER1:
-      case ITEM_MODEL_TIMER2:
-      case ITEM_MODEL_TIMER3:
-      {
-        unsigned int timerIdx = (k>=ITEM_MODEL_TIMER3 ? 2 : (k>=ITEM_MODEL_TIMER2 ? 1 : 0));
-        TimerData * timer = &g_model.timers[timerIdx];
-        putsStrIdx(0*FW, y, STR_TIMER, timerIdx+1);
-        putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, m_posHorz==0 ? attr : 0);
-        putsTimer(MODEL_SETUP_2ND_COLUMN+5*FW-2+5*FWNUM+1, y, timer->start, m_posHorz==1 ? attr : 0, m_posHorz==2 ? attr : 0);
-        if (attr && m_posHorz < 0) drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);
-        if (attr && editMode>0) {
-          div_t qr = div(timer->start, 60);
-          switch (m_posHorz) {
-            case 0:
-            {
-              int8_t timerMode = timer->mode;
-              if (timerMode < 0) timerMode -= TMRMODE_COUNT-1;
-              CHECK_INCDEC_MODELVAR_CHECK(event, timerMode, -TMRMODE_COUNT-SWSRC_LAST+1, TMRMODE_COUNT+SWSRC_LAST-1, isSwitchAvailableInTimers);
-              if (timerMode < 0) timerMode += TMRMODE_COUNT-1;
-              timer->mode = timerMode;
-#if defined(AUTOSWITCH)
-              if (s_editMode>0) {
-                int8_t val = timer->mode - (TMRMODE_COUNT-1);
-                int8_t switchVal = checkIncDecMovedSwitch(val);
-                if (val != switchVal) {
-                  timer->mode = switchVal + (TMRMODE_COUNT-1);
-                  eeDirty(EE_MODEL);
-                }
-              }
-#endif
-              break;
-            }
-            case 1:
-              CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 59);
-              timer->start = qr.rem + qr.quot*60;
-              break;
-            case 2:
-              qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
-              timer->start -= qr.rem ;
-              if ((int16_t)timer->start < 0) timer->start=0;
-              break;
-          }
-        }
+        editTimerMode(0, y, attr, event);
         break;
-      }
 
       case ITEM_MODEL_TIMER1_NAME:
-      case ITEM_MODEL_TIMER2_NAME:
-      case ITEM_MODEL_TIMER3_NAME:
-      {
-        TimerData * timer = &g_model.timers[k>=ITEM_MODEL_TIMER3 ? 2 : (k>=ITEM_MODEL_TIMER2 ? 1 : 0)];
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER_NAME, timer->name, sizeof(timer->name), event, attr);
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER_NAME, g_model.timers[0].name, LEN_TIMER_NAME, event, attr);
         break;
-      }
 
       case ITEM_MODEL_TIMER1_MINUTE_BEEP:
-      case ITEM_MODEL_TIMER2_MINUTE_BEEP:
-      case ITEM_MODEL_TIMER3_MINUTE_BEEP:
-      {
-        TimerData * timer = &g_model.timers[k>=ITEM_MODEL_TIMER3 ? 2 : (k>=ITEM_MODEL_TIMER2 ? 1 : 0)];
-        timer->minuteBeep = onoffMenuItem(timer->minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
+        g_model.timers[0].minuteBeep = onoffMenuItem(g_model.timers[0].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
         break;
-      }
 
       case ITEM_MODEL_TIMER1_COUNTDOWN_BEEP:
-      case ITEM_MODEL_TIMER2_COUNTDOWN_BEEP:
-      case ITEM_MODEL_TIMER3_COUNTDOWN_BEEP:
-      {
-        TimerData * timer = &g_model.timers[k>=ITEM_MODEL_TIMER3 ? 2 : (k>=ITEM_MODEL_TIMER2 ? 1 : 0)];
-        timer->countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, timer->countdownBeep, 0, 2, attr, event);
+        g_model.timers[0].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[0].countdownBeep, 0, 2, attr, event);
         break;
-      }
 
       case ITEM_MODEL_TIMER1_PERSISTENT:
-      case ITEM_MODEL_TIMER2_PERSISTENT:
-      case ITEM_MODEL_TIMER3_PERSISTENT:
-      {
-        TimerData * timer = &g_model.timers[k>=ITEM_MODEL_TIMER3 ? 2 : (k>=ITEM_MODEL_TIMER2 ? 1 : 0)];
-        timer->persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, timer->persistent, 0, 2, attr, event);
+        g_model.timers[0].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, g_model.timers[0].persistent, 0, 2, attr, event);
         break;
-      }
+
+#if TIMERS > 1
+      case ITEM_MODEL_TIMER2:
+        editTimerMode(1, y, attr, event);
+        break;
+
+      case ITEM_MODEL_TIMER2_NAME:
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER_NAME, g_model.timers[1].name, LEN_TIMER_NAME, event, attr);
+        break;
+
+      case ITEM_MODEL_TIMER2_MINUTE_BEEP:
+        g_model.timers[1].minuteBeep = onoffMenuItem(g_model.timers[1].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
+        break;
+
+      case ITEM_MODEL_TIMER2_COUNTDOWN_BEEP:
+        g_model.timers[1].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[1].countdownBeep, 0, 2, attr, event);
+        break;
+
+      case ITEM_MODEL_TIMER2_PERSISTENT:
+        g_model.timers[1].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, g_model.timers[1].persistent, 0, 2, attr, event);
+        break;
+#endif
+
+#if TIMERS > 2
+      case ITEM_MODEL_TIMER3:
+        editTimerMode(2, y, attr, event);
+        break;
+
+      case ITEM_MODEL_TIMER3_NAME:
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER_NAME, g_model.timers[2].name, LEN_TIMER_NAME, event, attr);
+        break;
+
+      case ITEM_MODEL_TIMER3_MINUTE_BEEP:
+        g_model.timers[2].minuteBeep = onoffMenuItem(g_model.timers[2].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
+        break;
+
+      case ITEM_MODEL_TIMER3_COUNTDOWN_BEEP:
+        g_model.timers[2].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[2].countdownBeep, 0, 2, attr, event);
+        break;
+
+      case ITEM_MODEL_TIMER3_PERSISTENT:
+        g_model.timers[2].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, g_model.timers[2].persistent, 0, 2, attr, event);
+        break;
+#endif
 
       case ITEM_MODEL_EXTENDED_LIMITS:
         ON_OFF_MENU_ITEM(g_model.extendedLimits, MODEL_SETUP_2ND_COLUMN, y, STR_ELIMITS, attr, event);
@@ -506,7 +540,7 @@ void menuModelSetup(uint8_t event)
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
         else if (IS_MODULE_DSM2(EXTERNAL_MODULE))
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
-        if (attr && editMode>0) {
+        if (attr && s_editMode>0) {
           switch (m_posHorz) {
             case 0:
               g_model.externalModule = checkIncDec(event, g_model.externalModule, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-1, EE_MODEL, isModuleAvailable);
@@ -548,7 +582,7 @@ void menuModelSetup(uint8_t event)
           lcd_outdezAtt(lcdLastPos, y, moduleData.channelsStart+1, LEFT | (m_posHorz==0 ? attr : 0));
           lcd_putc(lcdLastPos, y, '-');
           lcd_outdezAtt(lcdLastPos + FW+1, y, moduleData.channelsStart+NUM_CHANNELS(moduleIdx), LEFT | (m_posHorz==1 ? attr : 0));
-          if (attr && editMode>0) {
+          if (attr && s_editMode>0) {
             switch (m_posHorz) {
               case 0:
                 CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.channelsStart, 32-8-moduleData.channelsCount);
@@ -579,7 +613,7 @@ void menuModelSetup(uint8_t event)
           lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0);
           lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, moduleData.ppmPulsePol ? '+' : '-', (CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0);
 
-          if (attr && editMode>0) {
+          if (attr && s_editMode>0) {
             switch (m_posHorz) {
               case 0:
                 CHECK_INCDEC_MODELVAR(event, moduleData.ppmFrameLength, -20, 35);
@@ -607,13 +641,13 @@ void menuModelSetup(uint8_t event)
           if (IS_MODULE_XJT(moduleIdx) || IS_MODULE_DSM2(moduleIdx)) {
             if (xOffsetBind) lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId, (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
             if (attr && l_posHorz==0) {
-              if (editMode>0) {
+              if (s_editMode>0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId, IS_MODULE_DSM2(moduleIdx) ? 20 : 63);
                 if (checkIncDec_Ret) {
                   modelHeaders[g_eeGeneral.currModel].modelId = g_model.header.modelId;
                 }
               }
-              if (editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
+              if (s_editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
                 checkModelIdUnique(g_eeGeneral.currModel);
               }
             }
@@ -646,7 +680,7 @@ void menuModelSetup(uint8_t event)
             if (moduleData.failsafeMode != FAILSAFE_CUSTOM)
               m_posHorz = 0;
             if (m_posHorz==0) {
-              if (editMode>0) {
+              if (s_editMode>0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.failsafeMode, FAILSAFE_LAST);
                 if (checkIncDec_Ret) SEND_FAILSAFE_NOW(moduleIdx);
               }

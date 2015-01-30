@@ -37,8 +37,11 @@
 #include "opentx.h"
 #include "timers.h"
 
-TimerState timersStates[MAX_TIMERS] = { 0 };
+#if TIMERS > MAX_TIMERS
+#error "Timers cannot exceed " .. MAX_TIMERS
+#endif
 
+TimerState timersStates[TIMERS] = { { 0 } };
 
 void timerReset(uint8_t idx)
 {
@@ -61,7 +64,7 @@ void timerSet(int idx, int16_t val)
 #if defined(CPUARM) || defined(CPUM2560)
 void restoreTimers()
 {
-  for (uint8_t i=0; i<MAX_TIMERS; i++) {
+  for (uint8_t i=0; i<TIMERS; i++) {
     if (g_model.timers[i].persistent) {
       timersStates[i].val = g_model.timers[i].value;
     }
@@ -70,7 +73,7 @@ void restoreTimers()
 
 void saveTimers()
 {
-  for (uint8_t i=0; i<MAX_TIMERS; i++) {
+  for (uint8_t i=0; i<TIMERS; i++) {
     if (g_model.timers[i].persistent) {
       TimerState *timerState = &timersStates[i];
       if (g_model.timers[i].value != (uint16_t)timerState->val) {
@@ -98,7 +101,7 @@ void saveTimers()
 
 void evalTimers(int16_t throttle, uint8_t tick10ms)
 {
-  for (uint8_t i=0; i<MAX_TIMERS; i++) {
+  for (uint8_t i=0; i<TIMERS; i++) {
     int8_t tm = g_model.timers[i].mode;
     uint16_t tv = g_model.timers[i].start;
     TimerState * timerState = &timersStates[i];

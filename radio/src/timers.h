@@ -53,7 +53,7 @@ struct TimerState {
   uint8_t  val_10ms;
 };
 
-extern TimerState timersStates[MAX_TIMERS];
+extern TimerState timersStates[TIMERS];
 
 void timerReset(uint8_t idx);
 
