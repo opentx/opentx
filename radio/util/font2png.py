@@ -6,8 +6,6 @@ from PyQt4 import Qt, QtGui
 
 chars = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz~ ≥→←↑↓    △Ⓘ"""
 
-app = QtGui.QApplication(sys.argv)
-
 def getCharWidth(metrics):
     width = 0
     for c in chars:

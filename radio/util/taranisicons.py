@@ -6,8 +6,6 @@ from PyQt4 import Qt, QtGui
 
 menu = [ "radio_setup", "model_select", "model_settings", "model_checklist", "files", "version" ]
 
-app = QtGui.QApplication(sys.argv)
-
 image = QtGui.QImage(24*8, 24, QtGui.QImage.Format_RGB32)
 image.fill(QtGui.QColor(255, 255, 255))
 painter = QtGui.QPainter()
