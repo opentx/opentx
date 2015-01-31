@@ -13,7 +13,6 @@
 #include "../../fifo.h"
 
 #define BT_UART                     USART6
-#define BT_UART_CLK	            RCC_APB2Periph_USART6
 #define BT_UART_AF                  GPIO_AF_USART6
 #define BT_UART_IRQn                USART6_IRQn
 
@@ -31,7 +30,8 @@ int bt_open()
   GPIO_InitTypeDef GPIO_InitStructure;
   USART_InitTypeDef USART_InitStructure;
 
-  RCC_APB2PeriphClockCmd(BT_UART_CLK, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOG, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART6, ENABLE);
 
   GPIO_PinAFConfig(BT_UART_GPIO_PORT, BT_UART_GPIO_TX_PinSource, BT_UART_AF);
   GPIO_PinAFConfig(BT_UART_GPIO_PORT, BT_UART_GPIO_RX_PinSource, BT_UART_AF);
@@ -54,8 +54,7 @@ int bt_open()
   USART_InitStructure.USART_Parity = USART_Parity_No;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-  USART_InitStructure.USART_HardwareFlowControl =
-  USART_HardwareFlowControl_None;
+  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
   USART_Init(BT_UART, &USART_InitStructure);
 
@@ -72,7 +71,7 @@ int bt_open()
   return 0;
 }
 
-extern "C" void USART1_IRQHandler(void)
+extern "C" void USART6_IRQHandler(void)
 {
 #if 1
   if (USART_GetITStatus(BT_UART, USART_IT_RXNE) != RESET) {
@@ -96,7 +95,7 @@ extern "C" void USART1_IRQHandler(void)
 #endif
 }
 
-int bt_write(void *buffer, int len)
+int bt_write(const void *buffer, int len)
 {
   uint8_t *data = (uint8_t *)buffer;
   for (int i=0; i<len; ++i) {

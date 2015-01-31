@@ -260,7 +260,7 @@ void stop_sbus_on_heartbeat_capture(void)
   }
 }
 
-#if !defined(SIMU)
+#if !defined(SIMU) && !defined(REV9E)
 extern "C" void USART6_IRQHandler()
 {
   uint32_t status;

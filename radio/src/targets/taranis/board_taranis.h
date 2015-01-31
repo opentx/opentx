@@ -286,6 +286,11 @@ void uart3Putc(const char c);
 void uart3SbusInit(void);
 void uart3Stop(void);
 
+// BT driver
+int bt_open();
+int bt_write(const void *buffer, int len);
+int bt_read(void *buffer, int len);
+
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 #if defined(USB_JOYSTICK) && !defined(SIMU)
