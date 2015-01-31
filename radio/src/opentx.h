@@ -1208,7 +1208,7 @@ LimitData *limitAddress(uint8_t idx);
 int8_t *curveAddress(uint8_t idx);
 LogicalSwitchData *lswAddress(uint8_t idx);
 
-#if !defined(XCURVES)
+#if !defined(BOOT) && !defined(XCURVES)
 struct CurveInfo {
   int8_t *crv;
   uint8_t points;

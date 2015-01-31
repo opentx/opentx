@@ -284,6 +284,12 @@ DIRS = $(sort $(dir $(AXOBJS) $(CXOBJS) $(CPPXOBJS) ) )
 
 CPPDEFS += -DCPUARM
 
+ifeq ($(PCB), TARANIS)
+  CPPDEFS += -DCPUSTM32
+endif
+
+CPPDEFS += -DTIMERS=0
+
 # If serial Debug required
 ifeq ($(DEBUG), 1)
  CPPDEFS += -DDEBUG

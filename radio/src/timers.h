@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef timers_h
-#define timers_h
+#ifndef _TIMERS_H_
+#define _TIMERS_H_
 
 #define TMR_OFF      0
 #define TMR_RUNNING  1
