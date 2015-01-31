@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef fifo_h
-#define fifo_h
+#ifndef _FIFO_H_
+#define _FIFO_H_
 
 template <int N>
 class Fifo
@@ -65,9 +65,11 @@ class Fifo
         return true;
       }
     }
+
     bool empty() {
       return (ridx == widx);
     }
+
     void flush() {
       while (!empty()) {};
     }

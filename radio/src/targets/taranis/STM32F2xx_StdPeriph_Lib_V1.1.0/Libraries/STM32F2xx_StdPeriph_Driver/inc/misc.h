@@ -35,7 +35,7 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f2xx.h"
+#include "../../CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
 
 /** @addtogroup STM32F2xx_StdPeriph_Driver
   * @{

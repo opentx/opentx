@@ -772,6 +772,7 @@ ifeq ($(PCB), TARANIS)
       CPPDEFS += -DLCD_DUAL_BUFFER
     endif
     HAPTIC = YES
+    EXTRABOARDSRC += targets/taranis/bluetooth_driver.cpp
   else ifeq ($(PCBREV), REVPLUS)
     FLAVOUR = taranis-plus
     CPPDEFS = -DREVPLUS
