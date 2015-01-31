@@ -49,8 +49,9 @@
 #define FAI_CHOICE
 #define FRSKY_STICKS
 #define OVERRIDE_CHANNEL_FUNCTION
-#define FLAVOUR "gruvin9x"
+#define TIMERS 2
 
+#define FLAVOUR "gruvin9x"
 #define EEPROM_VARIANT 3
 
 #undef min

@@ -49,10 +49,11 @@
 #define DSM2
 #define DSM2_PPM
 #define OVERRIDE_CHANNEL_FUNCTION
-#define FLAVOUR "9x128"
-
-#define EEPROM_VARIANT SIMU_M128_VARIANTS
+#define TIMERS 2
 #define GAUGES
+
+#define FLAVOUR "9x128"
+#define EEPROM_VARIANT SIMU_M128_VARIANTS
 
 #undef min
 #undef max
