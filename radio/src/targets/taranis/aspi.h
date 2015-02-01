@@ -15,12 +15,6 @@
 extern "C" {
 #endif
 
-#if defined(REV9E)
-#include "stm32f4xx.h"
-#else
-#include "stm32f2xx.h"
-#endif
-
 #define __no_operation     __NOP
 
 #define LCD_NCS_HIGH()    GPIO_LCD_NCS->BSRRL = PIN_LCD_NCS
