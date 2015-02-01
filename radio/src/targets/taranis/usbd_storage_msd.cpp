@@ -33,7 +33,7 @@
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
 #endif
-#include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/misc.h"
+
 #include "usbd_msc_mem.h"
 #include "usb_conf.h"
 

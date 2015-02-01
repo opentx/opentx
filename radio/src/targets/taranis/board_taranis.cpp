@@ -39,9 +39,14 @@
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
 #endif
+#if defined(REV9E)
+#include "stm32f4xx_dbgmcu.h"
+#else
+#include "stm32f2xx_dbgmcu.h"
+#endif
+
 #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_dcd_int.h"
 #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_bsp.h"
-#include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_dbgmcu.h"
 #if defined(__cplusplus) && !defined(SIMU)
 }
 #endif

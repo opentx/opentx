@@ -43,15 +43,31 @@
 extern "C" {
 #endif
 
-#include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_rcc.h"
-#include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_gpio.h"
-#include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_spi.h"
-#include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_rtc.h"
-#include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_pwr.h"
-#include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_dma.h"
-#include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_usart.h"
-#include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
-#include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/misc.h"
+#if defined(REV9E)
+  #include "stm32f4xx.h"
+  #include "stm32f4xx_rcc.h"
+  #include "stm32f4xx_gpio.h"
+  #include "stm32f4xx_spi.h"
+  #include "stm32f4xx_rtc.h"
+  #include "stm32f4xx_pwr.h"
+  #include "stm32f4xx_dma.h"
+  #include "stm32f4xx_usart.h"
+  #include "stm32f4xx_flash.h"
+  #include "stm32f4xx_dbgmcu.h"
+  #include "misc.h"
+#else
+  #include "stm32f2xx.h"
+  #include "stm32f2xx_rcc.h"
+  #include "stm32f2xx_gpio.h"
+  #include "stm32f2xx_spi.h"
+  #include "stm32f2xx_rtc.h"
+  #include "stm32f2xx_pwr.h"
+  #include "stm32f2xx_dma.h"
+  #include "stm32f2xx_usart.h"
+  #include "stm32f2xx_flash.h"
+  #include "stm32f2xx_dbgmcu.h"
+  #include "misc.h"
+#endif
 
 #if !defined(SIMU)
   #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc/usbd_msc_core.h"
@@ -151,10 +167,6 @@ void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
 void init_ppm( uint32_t module_index );
 void disable_ppm( uint32_t module_index );
-void set_external_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive);
-#if defined(TARANIS_INTERNAL_PPM)
-  void set_internal_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive);
-#endif
 void init_pxx( uint32_t module_index );
 void disable_pxx( uint32_t module_index );
 void init_dsm2( uint32_t module_index );
@@ -163,7 +175,6 @@ void disable_dsm2( uint32_t module_index );
 // Trainer driver
 void init_trainer_ppm(void);
 void stop_trainer_ppm(void);
-void set_trainer_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive);
 void init_trainer_capture(void);
 void stop_trainer_capture(void);
 void init_cppm_on_heartbeat_capture(void);
@@ -287,7 +298,7 @@ void uart3SbusInit(void);
 void uart3Stop(void);
 
 // BT driver
-int bt_open();
+int bt_open(void);
 int bt_write(const void *buffer, int len);
 int bt_read(void *buffer, int len);
 

@@ -142,9 +142,11 @@ void audioEnd()
 #if !defined(SIMU)
 extern "C" void TIM6_DAC_IRQHandler()
 {
-  DAC->CR &= ~DAC_CR_DMAEN1 ;                     // Stop DMA requests
+  DAC->CR &= ~DAC_CR_DMAEN1 ;     // Stop DMA requests
+#if !defined(REV9E)
   DAC->CR &= ~DAC_CR_DMAUDRIE1 ;  // Stop underrun interrupt
-  DAC->SR = DAC_SR_DMAUDR1 ;                      // Write 1 to clear flag
+#endif
+  DAC->SR = DAC_SR_DMAUDR1 ;      // Write 1 to clear flag
 }
 
 extern "C" void DMA1_Stream5_IRQHandler()
