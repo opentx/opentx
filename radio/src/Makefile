@@ -726,7 +726,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   ifeq ($(SPORT_FILE_LOG), YES)
     CPPDEFS += -DSPORT_FILE_LOG
   endif
-  INCDIRS += targets/sky9x CoOS/kernel CoOS/portable
+  INCDIRS += targets/sky9x CoOS CoOS/kernel CoOS/portable
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_hardware.cpp gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
   BOARDSRC = main_arm.cpp targets/sky9x/board_sky9x.cpp
   EXTRABOARDSRC = targets/sky9x/lcd_driver.cpp
@@ -840,7 +840,7 @@ ifeq ($(PCB), TARANIS)
   PPM_CENTER_ADJUSTABLE = YES
   DSM2 = PPM
   CPPDEFS += -DPCBTARANIS -DCPUARM -DCPUSTM32 -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DEEPROM_VARIANT=0 -DAUDIO -DPXX
-  INCDIRS += targets/taranis CoOS/kernel CoOS/portable
+  INCDIRS += targets/taranis CoOS CoOS/kernel CoOS/portable
   ifeq ($(PCBREV), REV9E)
     CPPDEFS += -DSTM32F40_41xxx
     EXTRAINCDIRS += targets/taranis/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include targets/taranis/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Include targets/taranis/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc
