@@ -544,7 +544,9 @@
 #define TR_CHECKTRIMS          CENTER "\006Kolla\012Trimmar"
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           "Swashtyp"
-#define TR_COLLECTIVE          "Kollektiv"
+#define TR_COLLECTIVE_SOURCE   "Kollektiv"
+#define TR_AILERON_SOURCE      "Aileron Source"
+#define TR_ELEVATOR_SOURCE     "Elevator Source"
 #define TR_SWASHRING           "Swashring"
 #define TR_ELEDIRECTION        "HöJD Riktning"
 #define TR_AILDIRECTION        "SKEV Riktning"

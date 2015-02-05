@@ -61,7 +61,7 @@ void menuModelHeli(uint8_t event)
         break;
 
       case ITEM_HELI_COLLECTIVE:
-        g_model.swashR.collectiveSource = selectMenuItem(HELI_PARAM_OFS, y, STR_COLLECTIVE, NULL, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH, attr, event);
+        g_model.swashR.collectiveSource = selectMenuItem(HELI_PARAM_OFS, y, STR_COLLECTIVE_SOURCE, NULL, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH, attr, event);
         putsMixerSource(HELI_PARAM_OFS, y, g_model.swashR.collectiveSource, attr);
         break;
 

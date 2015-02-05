@@ -689,6 +689,8 @@ class SwashRingData { // Swash Ring data
     bool      invertCOL;
     unsigned int  type;
     RawSource collectiveSource;
+    RawSource aileronSource;
+    RawSource elevatorSource;
     unsigned int  value;
     void clear() { memset(this, 0, sizeof(SwashRingData)); }
 };

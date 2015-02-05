@@ -446,7 +446,7 @@ bool isMenuAvailable(int index)
   }
 }
 
-#define GRAPHICAL_MENUS 1
+#define GRAPHICAL_MENUS 0
 
 #if GRAPHICAL_MENUS == 1
   #define DECLARE_MAIN_MENU()       static int currentMenuIndex = -1

@@ -1,4 +1,4 @@
-﻿/*
+﻿﻿/*
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -544,7 +544,9 @@
 #define TR_CHECKTRIMS          CENTER "\006Check\012Trims"
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           "Swash Type"
-#define TR_COLLECTIVE          TR("Collective","Collective source")
+#define TR_COLLECTIVE_SOURCE   TR("Collective","Collective source")
+#define TR_AILERON_SOURCE      "Aileron Source"
+#define TR_ELEVATOR_SOURCE     "Elevator Source"
 #define TR_SWASHRING           "Swash Ring"
 #define TR_ELEDIRECTION        TR("ELE Direction","Long. cyc. direction")
 #define TR_AILDIRECTION        TR("AIL Direction","Lateral cyc. direction")

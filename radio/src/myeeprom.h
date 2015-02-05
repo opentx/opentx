@@ -1502,7 +1502,19 @@ enum SwashType {
   SWASH_TYPE_MAX = SWASH_TYPE_90
 };
 
-PACK(typedef struct t_SwashRingData { // Swash Ring data
+#if defined(PCBTARANIS)
+PACK(typedef struct {
+  uint8_t   invertELE:1;
+  uint8_t   invertAIL:1;
+  uint8_t   invertCOL:1;
+  uint8_t   type:5;
+  uint8_t   collectiveSource;
+  uint8_t   aileronSource;
+  uint8_t   elevatorSource;
+  uint8_t   value;
+}) SwashRingData;
+#else
+PACK(typedef struct {
   uint8_t   invertELE:1;
   uint8_t   invertAIL:1;
   uint8_t   invertCOL:1;
@@ -1510,6 +1522,7 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
   uint8_t   collectiveSource;
   uint8_t   value;
 }) SwashRingData;
+#endif
 
 #define TRIM_EXTENDED_MAX 500
 #define TRIM_EXTENDED_MIN (-TRIM_EXTENDED_MAX)
@@ -1673,7 +1686,7 @@ enum SwitchSources {
   SWSRC_LAST_SWITCH = SWSRC_TRN,
 #endif
 
-#if defined(PCBTARANIS)
+#if NUM_XPOTS > 0
   SWSRC_FIRST_MULTIPOS_SWITCH,
   SWSRC_LAST_MULTIPOS_SWITCH = SWSRC_FIRST_MULTIPOS_SWITCH + (NUM_XPOTS*XPOTS_MULTIPOS_COUNT) - 1,
 #endif

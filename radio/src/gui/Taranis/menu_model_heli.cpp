@@ -37,31 +37,49 @@
 
 enum menuModelHeliItems {
   ITEM_HELI_SWASHTYPE,
-  ITEM_HELI_COLLECTIVE,
+  ITEM_HELI_ELESOURCE,
+  ITEM_HELI_AILSOURCE,
+  ITEM_HELI_COLSOURCE,
   ITEM_HELI_SWASHRING,
   ITEM_HELI_ELEDIRECTION,
   ITEM_HELI_AILDIRECTION,
-  ITEM_HELI_COLDIRECTION
+  ITEM_HELI_COLDIRECTION,
+  ITEM_HELI_MAX
 };
 
 #define HELI_PARAM_OFS (23*FW)
 
 void menuModelHeli(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUHELISETUP, menuTabModel, e_Heli, 7);
+  SIMPLE_MENU(STR_MENUHELISETUP, menuTabModel, e_Heli, ITEM_HELI_MAX);
 
-  uint8_t sub = m_posVert - 1;
+  int sub = m_posVert;
 
-  for (uint8_t i=0; i<6; i++) {
+  for (unsigned int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
-    uint8_t attr = (sub == i ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
-    switch(i) {
+    int k = i+s_pgOfs;
+    LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
+    LcdFlags attr = (sub == k ? blink : 0);
+
+    switch(k) {
       case ITEM_HELI_SWASHTYPE:
         g_model.swashR.type = selectMenuItem(HELI_PARAM_OFS, y, STR_SWASHTYPE, STR_VSWASHTYPE, g_model.swashR.type, 0, SWASH_TYPE_MAX, attr, event);
         break;
 
-      case ITEM_HELI_COLLECTIVE:
-        lcd_putsLeft(y, STR_COLLECTIVE);
+      case ITEM_HELI_ELESOURCE:
+        lcd_putsLeft(y, STR_ELEVATOR_SOURCE);
+        if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.elevatorSource, 0, MIXSRC_LAST_CH);
+        putsMixerSource(HELI_PARAM_OFS, y, g_model.swashR.elevatorSource, attr);
+        break;
+
+      case ITEM_HELI_AILSOURCE:
+        lcd_putsLeft(y, STR_AILERON_SOURCE);
+        if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.aileronSource, 0, MIXSRC_LAST_CH);
+        putsMixerSource(HELI_PARAM_OFS, y, g_model.swashR.aileronSource, attr);
+        break;
+
+      case ITEM_HELI_COLSOURCE:
+        lcd_putsLeft(y, STR_COLLECTIVE_SOURCE);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH);
         putsMixerSource(HELI_PARAM_OFS, y, g_model.swashR.collectiveSource, attr);
         break;

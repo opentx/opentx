@@ -547,7 +547,9 @@
 #define TR_CHECKTRIMS          "\011Kont.\010Trimy"
 #define OFS_CHECKTRIMS         (9*FW)
 #define TR_SWASHTYPE           "Typ cykliky"
-#define TR_COLLECTIVE          "Kolektiv"
+#define TR_COLLECTIVE_SOURCE   "Kolektiv"
+#define TR_AILERON_SOURCE      "Aileron Source"
+#define TR_ELEVATOR_SOURCE     "Elevator Source"
 #define TR_SWASHRING           "Cyklika"
 #define TR_ELEDIRECTION        "Směr:Výškovka"
 #define TR_AILDIRECTION        "\012Křidélka"
