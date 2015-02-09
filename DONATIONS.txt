@@ -693,3 +693,6 @@ Gilles Dando
 Patrick Richard
 Justin Altemeier
 Constant Dupuis
+Tony Kenward
+Pierre Rondel
+Ernest Luguera Sanchez
