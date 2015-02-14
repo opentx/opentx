@@ -543,6 +543,14 @@ void evalFunctions()
             newActiveFunctions |= (1 << FUNCTION_BACKLIGHT);
             break;
 
+#if defined(PCBTARANIS)
+          case FUNC_SCREENSHOT:
+            if (!(functionsContext.activeSwitches & switch_mask)) {
+              writeScreenshot("screenshot.bmp");
+            }
+            break;
+#endif
+
 #if defined(DEBUG)
           case FUNC_TEST:
             testFunc();

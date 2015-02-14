@@ -869,6 +869,8 @@ QString CustomFunctionData::funcToString()
     return QObject::tr("Volume");
   else if (func == FuncBacklight)
     return QObject::tr("Backlight");
+  else if (func == FuncScreenshot)
+    return QObject::tr("Screenshot");
   else if (func == FuncBackgroundMusic)
     return QObject::tr("Background Music");
   else if (func == FuncBackgroundMusicPause)
