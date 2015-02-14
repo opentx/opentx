@@ -517,9 +517,9 @@ t_Ersky9xModelData_v10::operator ModelData ()
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
-  c9x.swashRingData.invertELE = swashInvertELE;
-  c9x.swashRingData.invertAIL = swashInvertAIL;
-  c9x.swashRingData.invertCOL = swashInvertCOL;
+  c9x.swashRingData.elevatorWeight = swashInvertELE ? -100 : 100;
+  c9x.swashRingData.aileronWeight = swashInvertAIL ? -100 : 100;
+  c9x.swashRingData.collectiveWeight = swashInvertCOL ? -100 : 100;
   c9x.swashRingData.type = swashType;
   c9x.swashRingData.collectiveSource = ersky9xToSource_v10(swashCollectiveSource);
   c9x.swashRingData.value = swashRingValue;
@@ -632,9 +632,9 @@ t_Ersky9xModelData_v11::operator ModelData ()
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
-  c9x.swashRingData.invertELE = swashInvertELE;
-  c9x.swashRingData.invertAIL = swashInvertAIL;
-  c9x.swashRingData.invertCOL = swashInvertCOL;
+  c9x.swashRingData.elevatorWeight = swashInvertELE ? -100 : 100;
+  c9x.swashRingData.aileronWeight = swashInvertAIL ? -100 : 100;
+  c9x.swashRingData.collectiveWeight = swashInvertCOL ? -100 : 100;
   c9x.swashRingData.type = swashType;
   c9x.swashRingData.collectiveSource = ersky9xToSource_v11(swashCollectiveSource);
   c9x.swashRingData.value = swashRingValue;

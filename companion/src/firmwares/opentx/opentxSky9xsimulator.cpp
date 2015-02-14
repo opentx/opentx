@@ -57,6 +57,7 @@
 #define OVERRIDE_CHANNEL_FUNCTION
 #define NUM_POTS  3
 #define TIMERS 2
+#define THRTRACE
 
 #define EEPROM_VARIANT 3
 #define FLAVOUR "sky9x"

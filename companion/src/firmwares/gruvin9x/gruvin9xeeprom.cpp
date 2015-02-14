@@ -338,9 +338,9 @@ t_Gruvin9xSwashRingData::t_Gruvin9xSwashRingData()
 t_Gruvin9xSwashRingData::operator SwashRingData ()
 {
   SwashRingData c9x;
-  c9x.invertELE = invertELE;
-  c9x.invertAIL = invertAIL;
-  c9x.invertCOL = invertCOL;
+  c9x.elevatorWeight = invertELE ? -100 : 100;
+  c9x.aileronWeight = invertAIL ? -100 : 100;
+  c9x.collectiveWeight = invertCOL ? -100 : 100;
   c9x.type = type;
   c9x.collectiveSource = gruvin9xToSource(collectiveSource);
   c9x.value = value;

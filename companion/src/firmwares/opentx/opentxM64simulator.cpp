@@ -55,6 +55,7 @@
 #define GAUGES
 #define TIMERS 2
 #define NUM_POTS  3
+#define THRTRACE
 
 #define FLAVOUR "9x"
 #define EEPROM_VARIANT SIMU_STOCK_VARIANTS

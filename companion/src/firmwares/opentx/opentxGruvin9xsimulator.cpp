@@ -50,6 +50,7 @@
 #define FRSKY_STICKS
 #define OVERRIDE_CHANNEL_FUNCTION
 #define TIMERS 2
+#define THRTRACE
 
 #define FLAVOUR "gruvin9x"
 #define EEPROM_VARIANT 3

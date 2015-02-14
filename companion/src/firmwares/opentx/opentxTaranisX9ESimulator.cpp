@@ -59,6 +59,7 @@
 #define REV9E
 #define OVERRIDE_CHANNEL_FUNCTION
 #define TIMERS 3
+#define THRTRACE
 
 #define EEPROM_VARIANT 3
 #define FLAVOUR "taranis-x9e"
