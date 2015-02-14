@@ -8,12 +8,32 @@ HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & gener
 {
   ui->setupUi(this);
 
-  connect(ui->swashTypeCB, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
-  connect(ui->swashCollectiveCB, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
-  connect(ui->swashRingValSB, SIGNAL(editingFinished()), this, SLOT(edited()));
-  connect(ui->swashInvertELE, SIGNAL(stateChanged(int)), this, SLOT(edited()));
-  connect(ui->swashInvertAIL, SIGNAL(stateChanged(int)), this, SLOT(edited()));
-  connect(ui->swashInvertCOL, SIGNAL(stateChanged(int)), this, SLOT(edited()));
+  connect(ui->swashType, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
+  connect(ui->swashRingVal, SIGNAL(editingFinished()), this, SLOT(edited()));
+  connect(ui->swashCollectiveSource, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
+  if (firmware->getCapability(VirtualInputs)) {
+    connect(ui->swashAileronSource, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
+    connect(ui->swashElevatorSource, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
+    connect(ui->swashAileronWeight, SIGNAL(editingFinished()), this, SLOT(edited()));
+    connect(ui->swashElevatorWeight, SIGNAL(editingFinished()), this, SLOT(edited()));
+    connect(ui->swashCollectiveWeight, SIGNAL(editingFinished()), this, SLOT(edited()));
+    ui->invertLabel->hide();
+    ui->swashElevatorInvert->hide();
+    ui->swashAileronInvert->hide();
+    ui->swashCollectiveInvert->hide();
+  }
+  else {
+    connect(ui->swashElevatorInvert, SIGNAL(stateChanged(int)), this, SLOT(edited()));
+    connect(ui->swashAileronInvert, SIGNAL(stateChanged(int)), this, SLOT(edited()));
+    connect(ui->swashCollectiveInvert, SIGNAL(stateChanged(int)), this, SLOT(edited()));
+    ui->aileronLabel->hide();
+    ui->elevatorLabel->hide();
+    ui->swashAileronSource->hide();
+    ui->swashElevatorSource->hide();
+    ui->swashAileronWeight->hide();
+    ui->swashElevatorWeight->hide();
+    ui->swashCollectiveWeight->hide();
+  }
 
   disableMouseScrolling();
 }
@@ -27,12 +47,21 @@ void HeliPanel::update()
 {
   lock = true;
 
-  ui->swashTypeCB->setCurrentIndex(model->swashRingData.type);
-  populateSourceCB(ui->swashCollectiveCB, model->swashRingData.collectiveSource, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
-  ui->swashRingValSB->setValue(model->swashRingData.value);
-  ui->swashInvertELE->setChecked(model->swashRingData.invertELE);
-  ui->swashInvertAIL->setChecked(model->swashRingData.invertAIL);
-  ui->swashInvertCOL->setChecked(model->swashRingData.invertCOL);
+  ui->swashType->setCurrentIndex(model->swashRingData.type);
+  populateSourceCB(ui->swashCollectiveSource, model->swashRingData.collectiveSource, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
+  ui->swashRingVal->setValue(model->swashRingData.value);
+  if (firmware->getCapability(VirtualInputs)) {
+    populateSourceCB(ui->swashElevatorSource, model->swashRingData.elevatorSource, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
+    populateSourceCB(ui->swashAileronSource, model->swashRingData.aileronSource, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
+    ui->swashElevatorWeight->setValue(model->swashRingData.elevatorWeight);
+    ui->swashAileronWeight->setValue(model->swashRingData.aileronWeight);
+    ui->swashCollectiveWeight->setValue(model->swashRingData.collectiveWeight);
+  }
+  else {
+    ui->swashElevatorInvert->setChecked(model->swashRingData.elevatorWeight < 0);
+    ui->swashAileronInvert->setChecked(model->swashRingData.aileronWeight < 0);
+    ui->swashCollectiveInvert->setChecked(model->swashRingData.collectiveWeight < 0);
+  }
 
   lock = false;
 }
@@ -40,12 +69,21 @@ void HeliPanel::update()
 void HeliPanel::edited()
 {
   if (!lock) {
-    model->swashRingData.type  = ui->swashTypeCB->currentIndex();
-    model->swashRingData.collectiveSource = ui->swashCollectiveCB->itemData(ui->swashCollectiveCB->currentIndex()).toInt();
-    model->swashRingData.value = ui->swashRingValSB->value();
-    model->swashRingData.invertELE = ui->swashInvertELE->isChecked();
-    model->swashRingData.invertAIL = ui->swashInvertAIL->isChecked();
-    model->swashRingData.invertCOL = ui->swashInvertCOL->isChecked();
+    model->swashRingData.type  = ui->swashType->currentIndex();
+    model->swashRingData.collectiveSource = ui->swashCollectiveSource->itemData(ui->swashCollectiveSource->currentIndex()).toInt();
+    model->swashRingData.value = ui->swashRingVal->value();
+    if (firmware->getCapability(VirtualInputs)) {
+      model->swashRingData.elevatorSource = ui->swashElevatorSource->itemData(ui->swashElevatorSource->currentIndex()).toInt();
+      model->swashRingData.aileronSource = ui->swashAileronSource->itemData(ui->swashAileronSource->currentIndex()).toInt();
+      model->swashRingData.elevatorWeight = ui->swashElevatorWeight->value();
+      model->swashRingData.aileronWeight = ui->swashAileronWeight->value();
+      model->swashRingData.collectiveWeight = ui->swashCollectiveWeight->value();
+    }
+    else {
+      model->swashRingData.elevatorWeight = (ui->swashElevatorInvert->isChecked() ? -100 : 100);
+      model->swashRingData.aileronWeight = (ui->swashAileronInvert->isChecked() ? -100 : 100);
+      model->swashRingData.collectiveWeight = (ui->swashCollectiveInvert->isChecked() ? -100 : 100);
+    }
     emit modified();
   }
 }

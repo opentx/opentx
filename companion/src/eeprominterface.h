@@ -684,9 +684,9 @@ class FlightModeData {
 class SwashRingData { // Swash Ring data
   public:
     SwashRingData() { clear(); }
-    bool      invertELE;
-    bool      invertAIL;
-    bool      invertCOL;
+    int elevatorWeight;
+    int aileronWeight;
+    int collectiveWeight;
     unsigned int  type;
     RawSource collectiveSource;
     RawSource aileronSource;

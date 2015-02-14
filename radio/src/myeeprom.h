@@ -1502,16 +1502,16 @@ enum SwashType {
   SWASH_TYPE_MAX = SWASH_TYPE_90
 };
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
 PACK(typedef struct {
-  uint8_t   invertELE:1;
-  uint8_t   invertAIL:1;
-  uint8_t   invertCOL:1;
-  uint8_t   type:5;
+  uint8_t   type;
+  uint8_t   value;
   uint8_t   collectiveSource;
   uint8_t   aileronSource;
   uint8_t   elevatorSource;
-  uint8_t   value;
+  int8_t    collectiveWeight;
+  int8_t    aileronWeight;
+  int8_t    elevatorWeight;
 }) SwashRingData;
 #else
 PACK(typedef struct {
