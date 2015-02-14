@@ -144,7 +144,7 @@ bool switchState(EnumKeys enuk)
       result = !(PINC & (1<<INP_C_ID2));
       break;
 
-#if 0
+/*#if 0
     case SW_ID3:
       result = (calibratedStick[POT1+EXTRA_3POS-1] < 0);
       break;
@@ -156,7 +156,7 @@ bool switchState(EnumKeys enuk)
     case SW_ID5:
       result = (calibratedStick[POT1+EXTRA_3POS-1] > 0);
       break;
-#endif
+#endif  */
 
     case SW_GEA:
       result = !(PING & (1<<INP_G_Gear));
