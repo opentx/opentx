@@ -551,14 +551,13 @@ void evalInputs(uint8_t mode)
 }
 
 #if defined(VIRTUALINPUTS)
-int getStickTrimValue(int stick)
+int getStickTrimValue(int stick, int value)
 {
   int trim = trims[stick];
   if (stick == THR_STICK) {
     if (g_model.thrTrim) {
       int trimMin = g_model.extendedTrims ? 2*TRIM_EXTENDED_MIN : 2*TRIM_MIN;
-      int v = calibratedStick[THR_STICK];
-      trim = (((g_model.throttleReversed)?(trim+trimMin):(trim-v)) * (RESX-v)) >> (RESX_SHIFT+1);
+      trim = ((g_model.throttleReversed ? (trim+trimMin) : (trim-trimMin)) * (RESX-value)) >> (RESX_SHIFT+1);
     }
     if (g_model.throttleReversed) {
       trim = -trim;
@@ -567,12 +566,12 @@ int getStickTrimValue(int stick)
   return trim;
 }
 
-int getSourceTrimValue(int source)
+int getSourceTrimValue(int source, int value=0)
 {
   if (source >= MIXSRC_Rud && source <= MIXSRC_Ail)
-    return getStickTrimValue(source - MIXSRC_Rud);
+    return getStickTrimValue(source - MIXSRC_Rud, value);
   else if (source >= MIXSRC_FIRST_INPUT && source <= MIXSRC_LAST_INPUT)
-    return getStickTrimValue(virtualInputsTrims[source - MIXSRC_FIRST_INPUT]);
+    return getStickTrimValue(virtualInputsTrims[source - MIXSRC_FIRST_INPUT], value);
   else
     return 0;
 }
@@ -812,7 +811,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         if (!(mode & e_perout_mode_notrims)) {
 #if defined(VIRTUALINPUTS)
           if (md->carryTrim == 0) {
-            v += getSourceTrimValue(md->srcRaw);
+            v += getSourceTrimValue(md->srcRaw, v);
           }
 #else
           int8_t mix_trim = md->carryTrim;
