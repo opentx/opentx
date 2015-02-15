@@ -40,11 +40,12 @@
 #include "FatFs/ff.h"
 
 #define ROOT_PATH           "/"
-#define MODELS_PATH         ROOT_PATH "MODELS"
-#define LOGS_PATH           ROOT_PATH "LOGS"   // no trailing slash = important
-#define SOUNDS_PATH         ROOT_PATH "SOUNDS/en" // no trailing slash = important
+#define MODELS_PATH         ROOT_PATH "MODELS"      // no trailing slash = important
+#define LOGS_PATH           ROOT_PATH "LOGS"
+#define SCREENSHOTS_PATH    ROOT_PATH "SCREENSHOTS"
+#define SOUNDS_PATH         ROOT_PATH "SOUNDS/en"
 #define SOUNDS_PATH_LNG_OFS (sizeof(SOUNDS_PATH)-3)
-#define SYSTEM_SUBDIR       "SYSTEM" // no trailing slash = important
+#define SYSTEM_SUBDIR       "SYSTEM"
 #define BITMAPS_PATH        ROOT_PATH "BMP"
 #define FIRMWARES_PATH      ROOT_PATH "FIRMWARES"
 #define EEPROMS_PATH        ROOT_PATH "EEPROMS"

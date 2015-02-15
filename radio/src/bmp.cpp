@@ -223,12 +223,28 @@ inline display_t getPixel(unsigned int x, unsigned int y)
   return (y & 1) ? (*p >> 4) : (*p & 0x0F);
 }
 
-const char *writeScreenshot(const char *filename)
+const char *writeScreenshot()
 {
   FIL bmpFile;
   UINT written;
+  char filename[48]; // /SCREENSHOTS/screenshot-2013-01-01-12-35-40.bmp
+  DIR folder;
 
-  FRESULT result = f_open(&bmpFile, filename, FA_CREATE_ALWAYS | FA_WRITE);
+  // check and create folder here
+  strcpy_P(filename, SCREENSHOTS_PATH);
+  FRESULT result = f_opendir(&folder, filename);
+  if (result != FR_OK) {
+    if (result == FR_NO_PATH)
+      result = f_mkdir(filename);
+    if (result != FR_OK)
+      return SDCARD_ERROR(result);
+  }
+
+  char *tmp = strAppend(&filename[sizeof(SCREENSHOTS_PATH)-1], "/screenshot");
+  tmp = strAppendDate(tmp, true);
+  strcpy(tmp, BITMAPS_EXT);
+
+  result = f_open(&bmpFile, filename, FA_CREATE_ALWAYS | FA_WRITE);
   if (result != FR_OK) {
     return SDCARD_ERROR(result);
   }

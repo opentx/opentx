@@ -239,7 +239,7 @@ void lcdOff();
 #endif
 
 const char *bmpLoad(uint8_t *dest, const char *filename, const unsigned int width, const unsigned int height);
-const char *writeScreenshot(const char *filename);
+const char *writeScreenshot();
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE (0)

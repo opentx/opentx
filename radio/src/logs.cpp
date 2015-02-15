@@ -49,7 +49,7 @@ uint8_t logDelay;
 
 #define get3PosState(sw) (switchState(SW_ ## sw ## 0) ? -1 : (switchState(SW_ ## sw ## 2) ? 1 : 0))
 
-const pm_char * openLogs()
+const pm_char *openLogs()
 {
   // Determine and set log file filename
   FRESULT result;
@@ -59,8 +59,8 @@ const pm_char * openLogs()
   if (!sdMounted())
     return STR_NO_SDCARD;
 
+  // check and create folder here
   strcpy_P(filename, STR_LOGS_PATH);
-
   result = f_opendir(&folder, filename);
   if (result != FR_OK) {
     if (result == FR_NO_PATH)
