@@ -335,7 +335,7 @@ void menuModelExpoOne(uint8_t event)
         break;
 
       case EXPO_FIELD_NAME:
-        editSingleName(EXPO_ONE_2ND_COLUMN-IF_9X(sizeof(ed->name)*FW), y, STR_EXPONAME, ed->name, sizeof(ed->name), event, attr);
+        editSingleName(EXPO_ONE_2ND_COLUMN, y, STR_EXPONAME, ed->name, sizeof(ed->name), event, attr);
         break;
 
       case EXPO_FIELD_SOURCE:
@@ -369,16 +369,16 @@ void menuModelExpoOne(uint8_t event)
 
 #if defined(FLIGHT_MODES)
       case EXPO_FIELD_FLIGHT_MODES:
-        ed->flightModes = editFlightModes(EXPO_ONE_2ND_COLUMN-IF_9X(EXPO_ONE_FM_WIDTH), y, event, ed->flightModes, attr);
+        ed->flightModes = editFlightModes(EXPO_ONE_2ND_COLUMN, y, event, ed->flightModes, attr);
         break;
 #endif
 
       case EXPO_FIELD_SWITCH:
-        ed->swtch = switchMenuItem(EXPO_ONE_2ND_COLUMN-IF_9X(3*FW), y, ed->swtch, attr, event);
+        ed->swtch = switchMenuItem(EXPO_ONE_2ND_COLUMN, y, ed->swtch, attr, event);
         break;
 
       case EXPO_FIELD_SIDE:
-        ed->mode = 4 - selectMenuItem(EXPO_ONE_2ND_COLUMN-IF_9X(3*FW), y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
+        ed->mode = 4 - selectMenuItem(EXPO_ONE_2ND_COLUMN, y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
         break;
 
       case EXPO_FIELD_TRIM:

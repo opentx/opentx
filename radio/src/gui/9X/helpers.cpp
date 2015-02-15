@@ -208,11 +208,6 @@ bool isSwitchAvailableInTimers(int swtch)
   return isSwitchAvailable(swtch, TimersContext);
 }
 
-bool isThrottleSourceAvailable(int source)
-{
-  return true;
-}
-
 bool isLogicalSwitchFunctionAvailable(int function)
 {
   return function != LS_FUNC_RANGE;

@@ -725,14 +725,33 @@ class HeliField: public StructField {
   public:
     HeliField(SwashRingData & heli, BoardEnum board, unsigned int version, unsigned int variant)
     {
-      Append(new BoolField<1>(heli.invertELE));
-      Append(new BoolField<1>(heli.invertAIL));
-      Append(new BoolField<1>(heli.invertCOL));
-      Append(new UnsignedField<5>(heli.type));
-      Append(new SourceField<8>(heli.collectiveSource, board, version, variant));
-      //, FLAG_NOSWITCHES)); Fix shift in collective
-      Append(new UnsignedField<8>(heli.value));
+      if (IS_TARANIS(board) && version >= 217) {
+        Append(new UnsignedField<8>(heli.type));
+        Append(new UnsignedField<8>(heli.value));
+        Append(new SourceField<8>(heli.collectiveSource, board, version, variant));
+        Append(new SourceField<8>(heli.aileronSource, board, version, variant));
+        Append(new SourceField<8>(heli.elevatorSource, board, version, variant));
+        Append(new SignedField<8>(heli.collectiveWeight));
+        Append(new SignedField<8>(heli.aileronWeight));
+        Append(new SignedField<8>(heli.elevatorWeight));
+      }
+      else {
+        Append(new BoolField<1>(invertELE));
+        Append(new BoolField<1>(invertAIL));
+        Append(new BoolField<1>(invertCOL));
+        Append(new UnsignedField<5>(heli.type));
+        Append(new SourceField<8>(heli.collectiveSource, board, version, variant));
+        //, FLAG_NOSWITCHES)); Fix shift in collective
+        Append(new UnsignedField<8>(heli.value));
+      }
     }
+
+  // TODO before + after
+
+  protected:
+    bool invertELE;
+    bool invertAIL;
+    bool invertCOL;
 };
 
 class FlightModeField: public TransformedField {

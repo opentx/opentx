@@ -282,7 +282,7 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
 enum ExposFields {
   CASE_CPUARM(EXPO_FIELD_NAME)
   EXPO_FIELD_WEIGHT,
-  CASE_9X(EXPO_FIELD_EXPO)
+  EXPO_FIELD_EXPO,
   CASE_CURVES(EXPO_FIELD_CURVE)
   CASE_FLIGHT_MODES(EXPO_FIELD_FLIGHT_MODES)
   EXPO_FIELD_SWITCH,
@@ -311,7 +311,7 @@ void menuModelExpoOne(uint8_t event)
     {
 #if defined(CPUARM)
       case EXPO_FIELD_NAME:
-        editSingleName(EXPO_ONE_2ND_COLUMN-IF_9X(sizeof(ed->name)*FW), y, STR_EXPONAME, ed->name, sizeof(ed->name), event, attr);
+        editSingleName(EXPO_ONE_2ND_COLUMN-sizeof(ed->name)*FW, y, STR_EXPONAME, ed->name, sizeof(ed->name), event, attr);
         break;
 #endif
 
@@ -353,16 +353,16 @@ void menuModelExpoOne(uint8_t event)
 
 #if defined(FLIGHT_MODES)
       case EXPO_FIELD_FLIGHT_MODES:
-        ed->flightModes = editFlightModes(EXPO_ONE_2ND_COLUMN-IF_9X(EXPO_ONE_FM_WIDTH), y, event, ed->flightModes, attr);
+        ed->flightModes = editFlightModes(EXPO_ONE_2ND_COLUMN-EXPO_ONE_FM_WIDTH, y, event, ed->flightModes, attr);
         break;
 #endif
 
       case EXPO_FIELD_SWITCH:
-        ed->swtch = switchMenuItem(EXPO_ONE_2ND_COLUMN-IF_9X(3*FW), y, ed->swtch, attr, event);
+        ed->swtch = switchMenuItem(EXPO_ONE_2ND_COLUMN-3*FW, y, ed->swtch, attr, event);
         break;
 
       case EXPO_FIELD_SIDE:
-        ed->mode = 4 - selectMenuItem(EXPO_ONE_2ND_COLUMN-IF_9X(3*FW), y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
+        ed->mode = 4 - selectMenuItem(EXPO_ONE_2ND_COLUMN-3*FW, y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
         break;
     }
     y += FH;
@@ -474,11 +474,11 @@ void menuModelMixOne(uint8_t event)
 #else
   if (m_posVert == MIX_FIELD_TRIM && md2->srcRaw > NUM_STICKS)
 #endif
-    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {CASE_CPUARM(0) 0, 0, 0, CASE_9X(0) CASE_CURVES(0) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/})
+    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {CASE_CPUARM(0) 0, 0, 0, 0, CASE_CURVES(0) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/})
   else
-    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {CASE_CPUARM(0) 0, 0, 0, CASE_9X(1) CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
+    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {CASE_CPUARM(0) 0, 0, 0, 1, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
 #else
-  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {CASE_CPUARM(0) 0, 0, 0, CASE_9X(1) CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
+  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {CASE_CPUARM(0) 0, 0, 0, 1, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
 #endif
 
 #if MENU_COLUMNS > 1

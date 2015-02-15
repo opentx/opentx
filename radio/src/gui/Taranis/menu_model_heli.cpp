@@ -37,52 +37,77 @@
 
 enum menuModelHeliItems {
   ITEM_HELI_SWASHTYPE,
-  ITEM_HELI_COLLECTIVE,
   ITEM_HELI_SWASHRING,
-  ITEM_HELI_ELEDIRECTION,
-  ITEM_HELI_AILDIRECTION,
-  ITEM_HELI_COLDIRECTION
+  ITEM_HELI_ELE,
+  ITEM_HELI_ELE_WEIGHT,
+  ITEM_HELI_AIL,
+  ITEM_HELI_AIL_WEIGHT,
+  ITEM_HELI_COL,
+  ITEM_HELI_COL_WEIGHT,
+  ITEM_HELI_MAX
 };
 
-#define HELI_PARAM_OFS (23*FW)
+#define MODEL_HELI_2ND_COLUMN        (LCD_W-17*FW-MENUS_SCROLLBAR_WIDTH)
 
 void menuModelHeli(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUHELISETUP, menuTabModel, e_Heli, 7);
+  SIMPLE_MENU(STR_MENUHELISETUP, menuTabModel, e_Heli, ITEM_HELI_MAX);
 
-  uint8_t sub = m_posVert - 1;
+  int sub = m_posVert;
 
-  for (uint8_t i=0; i<6; i++) {
-    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
-    uint8_t attr = (sub == i ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
-    switch(i) {
+  for (unsigned int i=0; i<NUM_BODY_LINES; i++) {
+    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
+    int k = i+s_pgOfs;
+    LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
+    LcdFlags attr = (sub == k ? blink : 0);
+
+    switch(k) {
       case ITEM_HELI_SWASHTYPE:
-        g_model.swashR.type = selectMenuItem(HELI_PARAM_OFS, y, STR_SWASHTYPE, STR_VSWASHTYPE, g_model.swashR.type, 0, SWASH_TYPE_MAX, attr, event);
-        break;
-
-      case ITEM_HELI_COLLECTIVE:
-        lcd_putsLeft(y, STR_COLLECTIVE);
-        if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH);
-        putsMixerSource(HELI_PARAM_OFS, y, g_model.swashR.collectiveSource, attr);
+        g_model.swashR.type = selectMenuItem(MODEL_HELI_2ND_COLUMN, y, STR_SWASHTYPE, STR_VSWASHTYPE, g_model.swashR.type, 0, SWASH_TYPE_MAX, attr, event);
         break;
 
       case ITEM_HELI_SWASHRING:
         lcd_putsLeft(y, STR_SWASHRING);
-        lcd_outdezAtt(HELI_PARAM_OFS, y, g_model.swashR.value,  LEFT|attr);
+        lcd_outdezAtt(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.value, LEFT|attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.swashR.value, 100);
         break;
 
-      case ITEM_HELI_ELEDIRECTION:
-        g_model.swashR.invertELE = selectMenuItem(HELI_PARAM_OFS, y, STR_ELEDIRECTION, STR_MMMINV, g_model.swashR.invertELE, 0, 1, attr, event);
+      case ITEM_HELI_ELE:
+        lcd_putsLeft(y, "Elevator" /*STR_ELEVATOR_SOURCE*/);
+        putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.elevatorSource, attr);
+        if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.elevatorSource, 0, MIXSRC_LAST_CH);
         break;
 
-      case ITEM_HELI_AILDIRECTION:
-        g_model.swashR.invertAIL = selectMenuItem(HELI_PARAM_OFS, y, STR_AILDIRECTION, STR_MMMINV, g_model.swashR.invertAIL, 0, 1, attr, event);
+      case ITEM_HELI_ELE_WEIGHT:
+        lcd_puts(INDENT_WIDTH, y, STR_WEIGHT);
+        lcd_outdezAtt(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.elevatorWeight,  LEFT|attr);
+        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.swashR.elevatorWeight, -100, 100);
         break;
 
-      case ITEM_HELI_COLDIRECTION:
-        g_model.swashR.invertCOL = selectMenuItem(HELI_PARAM_OFS, y, STR_COLDIRECTION, STR_MMMINV, g_model.swashR.invertCOL, 0, 1, attr, event);
+      case ITEM_HELI_AIL:
+        lcd_putsLeft(y, "Aileron" /*STR_ELEVATOR_SOURCE*/);
+        putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.aileronSource, attr);
+        if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.aileronSource, 0, MIXSRC_LAST_CH);
         break;
+
+      case ITEM_HELI_AIL_WEIGHT:
+        lcd_puts(INDENT_WIDTH, y, STR_WEIGHT);
+        lcd_outdezAtt(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.aileronWeight,  LEFT|attr);
+        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.swashR.aileronWeight, -100, 100);
+        break;
+
+      case ITEM_HELI_COL:
+        lcd_putsLeft(y, "Collective" /*STR_ELEVATOR_SOURCE*/);
+        putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveSource, attr);
+        if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH);
+        break;
+
+      case ITEM_HELI_COL_WEIGHT:
+        lcd_puts(INDENT_WIDTH, y, STR_WEIGHT);
+        lcd_outdezAtt(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveWeight,  LEFT|attr);
+        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.swashR.collectiveWeight, -100, 100);
+        break;
+
     }
   }
 }

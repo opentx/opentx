@@ -37,7 +37,7 @@
 #include "opentx.h"
 #include "timers.h"
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
   int8_t  virtualInputsTrims[NUM_INPUTS];
 #else
   int16_t rawAnas[NUM_INPUTS] = {0};
@@ -63,20 +63,11 @@ int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMa
 
 #if defined(HELI)
   int16_t cyc_anas[3] = {0};
-  #if defined(PCBTARANIS)
-    int16_t heliAnas[4] = {0};
-    int8_t heliTrims[4] = {0};
-  #endif
 #endif
 
 void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
 {
-#if defined(PCBTARANIS)
-#if defined(HELI)
-  int16_t heliAnasCopy[4];
-  memcpy(heliAnasCopy, heliAnas, sizeof(heliAnasCopy));
-#endif
-#else
+#if !defined(VIRTUALINPUTS)
   int16_t anas2[NUM_INPUTS]; // values before expo, to ensure same expo base when multiple expo lines are used
   memcpy(anas2, anas, sizeof(anas2));
 #endif
@@ -94,16 +85,11 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
     if (ed->flightModes & (1<<mixerCurrentFlightMode))
       continue;
     if (getSwitch(ed->swtch)) {
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
       int v;
-      if (ed->srcRaw == ovwrIdx)
+      if (ed->srcRaw == ovwrIdx) {
         v = ovwrValue;
-#if defined(HELI)
-      else if (ed->srcRaw == MIXSRC_Ele)
-        v = heliAnasCopy[ELE_STICK];
-      else if (ed->srcRaw == MIXSRC_Ail)
-        v = heliAnasCopy[AIL_STICK];
-#endif
+      }
       else {
         v = getValue(ed->srcRaw);
         if (ed->srcRaw >= MIXSRC_FIRST_TELEM && ed->scale > 0) {
@@ -121,7 +107,7 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
         cur_chn = ed->chn;
 
         //========== CURVE=================
-#if defined(PCBTARANIS)
+#if defined(XCURVES)
         if (ed->curve.value) {
           v = applyCurve(v, ed->curve);
         }
@@ -140,7 +126,7 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
         weight = calc100to256(weight);
         v = ((int32_t)v * weight) >> 8;
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
         //========== OFFSET ===============
         int16_t offset = GET_GVAR(ed->offset, -100, 100, mixerCurrentFlightMode);
         if (offset) v += calc100toRESX(offset);
@@ -152,17 +138,6 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
           virtualInputsTrims[cur_chn] = ed->srcRaw - MIXSRC_Rud;
         else
           virtualInputsTrims[cur_chn] = -1;
-
-#if defined(HELI)
-        if (ed->srcRaw == MIXSRC_Ele) {
-          heliAnas[ELE_STICK] = v;
-          heliTrims[ELE_STICK] = virtualInputsTrims[cur_chn];
-        }
-        else if (ed->srcRaw == MIXSRC_Ail) {
-          heliAnas[AIL_STICK] = v;
-          heliTrims[AIL_STICK] = virtualInputsTrims[cur_chn];
-        }
-#endif
 #endif
 
         anas[cur_chn] = v;
@@ -268,13 +243,13 @@ getvalue_t getValue(mixsrc_t i)
 {
   if (i==MIXSRC_NONE) return 0;
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
   else if (i <= MIXSRC_LAST_INPUT) {
     return anas[i-MIXSRC_FIRST_INPUT];
   }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(LUAINPUTS)
   else if (i<MIXSRC_LAST_LUA) {
 #if defined(LUA_MODEL_SCRIPTS)
     div_t qr = div(i-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
@@ -426,7 +401,13 @@ void evalInputs(uint8_t mode)
 #if defined(HELI)
   uint16_t d = 0;
   if (g_model.swashR.value) {
+#if defined(VIRTUALINPUTS)
+    int ele = (int16_t)anaIn(ELE_STICK);
+    int ail = (int16_t)anaIn(AIL_STICK);
+    uint32_t v = (ele*ele) + (ail*ail);
+#else
     uint32_t v = (int32_t(calibratedStick[ELE_STICK])*calibratedStick[ELE_STICK] + int32_t(calibratedStick[AIL_STICK])*calibratedStick[AIL_STICK]);
+#endif
     uint32_t q = calc100toRESX(g_model.swashR.value);
     q *= q;
     if (v > q) {
@@ -512,9 +493,9 @@ void evalInputs(uint8_t mode)
     }
 
     if (ch < NUM_STICKS) { //only do this for sticks
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
       if (mode & e_perout_mode_nosticks) {
-        v = calibratedStick[ch] = 0;
+        v = 0;
       }
 #endif
 
@@ -536,9 +517,6 @@ void evalInputs(uint8_t mode)
               v = vStud;
               break;
           }
-#if defined(PCBTARANIS)
-          calibratedStick[ch] = v;
-#endif
         }
       }
 
@@ -546,12 +524,11 @@ void evalInputs(uint8_t mode)
       if (d && (ch==ELE_STICK || ch==AIL_STICK)) {
         v = (int32_t(v) * calc100toRESX(g_model.swashR.value)) / int32_t(d);
       }
-#if defined(PCBTARANIS)
-      heliAnas[ch] = v;
-#endif
 #endif
 
-#if !defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
+      calibratedStick[ch] = v;
+#else
       rawAnas[ch] = v;
       anas[ch] = v; // set values for mixer
 #endif
@@ -567,18 +544,38 @@ void evalInputs(uint8_t mode)
   if (mode == e_perout_mode_normal) {
 #if !defined(CPUARM)
     anaCenter &= g_model.beepANACenter;
-    if(((bpanaCenter ^ anaCenter) & anaCenter)) AUDIO_POT_MIDDLE();
+    if (((bpanaCenter ^ anaCenter) & anaCenter)) AUDIO_POT_MIDDLE();
 #endif
     bpanaCenter = anaCenter;
   }
 }
 
-#if defined(PCBTARANIS)
-  #define HELI_ANAS_ARRAY(x)  heliAnas[x]
-  #define HELI_TRIMS_ARRAY(x) ((heliTrims[x]>=0) ? trims[heliTrims[x]] : 0)
-#else
-  #define HELI_ANAS_ARRAY(x)  anas[x]
-  #define HELI_TRIMS_ARRAY(x) trims[x]
+#if defined(VIRTUALINPUTS)
+int getStickTrimValue(int stick)
+{
+  int trim = trims[stick];
+  if (stick == THR_STICK) {
+    if (g_model.thrTrim) {
+      int trimMin = g_model.extendedTrims ? 2*TRIM_EXTENDED_MIN : 2*TRIM_MIN;
+      int v = calibratedStick[THR_STICK];
+      trim = (((g_model.throttleReversed)?(trim+trimMin):(trim-v)) * (RESX-v)) >> (RESX_SHIFT+1);
+    }
+    if (g_model.throttleReversed) {
+      trim = -trim;
+    }
+  }
+  return trim;
+}
+
+int getSourceTrimValue(int source)
+{
+  if (source >= MIXSRC_Rud && source <= MIXSRC_Ail)
+    return getStickTrimValue(source - MIXSRC_Rud);
+  else if (source >= MIXSRC_FIRST_INPUT && source <= MIXSRC_LAST_INPUT)
+    return getStickTrimValue(virtualInputsTrims[source - MIXSRC_FIRST_INPUT]);
+  else
+    return 0;
+}
 #endif
 
 uint8_t mixerCurrentFlightMode;
@@ -593,15 +590,22 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #endif
 
 #if defined(HELI)
+#if defined(VIRTUALINPUTS)
+  int heliEleValue = getValue(g_model.swashR.elevatorSource);
+  int heliAilValue = getValue(g_model.swashR.aileronSource);
+#else
+  int16_t heliEleValue = anas[ELE_STICK];
+  int16_t heliAilValue = anas[AIL_STICK];
+#endif
   if (g_model.swashR.value) {
-    uint32_t v = ((int32_t)HELI_ANAS_ARRAY(ELE_STICK)*HELI_ANAS_ARRAY(ELE_STICK) + (int32_t)HELI_ANAS_ARRAY(AIL_STICK)*HELI_ANAS_ARRAY(AIL_STICK));
+    uint32_t v = ((int32_t)heliEleValue*heliEleValue + (int32_t)heliAilValue*heliAilValue);
     uint32_t q = calc100toRESX(g_model.swashR.value);
     q *= q;
     if (v>q) {
       uint16_t d = isqrt32(v);
       int16_t tmp = calc100toRESX(g_model.swashR.value);
-      HELI_ANAS_ARRAY(ELE_STICK) = (int32_t) HELI_ANAS_ARRAY(ELE_STICK)*tmp/d;
-      HELI_ANAS_ARRAY(AIL_STICK) = (int32_t) HELI_ANAS_ARRAY(AIL_STICK)*tmp/d;
+      heliEleValue = (int32_t) heliEleValue*tmp/d;
+      heliAilValue = (int32_t) heliAilValue*tmp/d;
     }
   }
 
@@ -609,15 +613,26 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #define REZ_SWASH_Y(x)  ((x))   //  1024 => 1024
 
   if (g_model.swashR.type) {
-    getvalue_t vp = HELI_ANAS_ARRAY(ELE_STICK) + HELI_TRIMS_ARRAY(ELE_STICK);
-    getvalue_t vr = HELI_ANAS_ARRAY(AIL_STICK) + HELI_TRIMS_ARRAY(AIL_STICK);
+#if defined(VIRTUALINPUTS)
+    getvalue_t vp = heliEleValue + getSourceTrimValue(g_model.swashR.elevatorSource);
+    getvalue_t vr = heliAilValue + getSourceTrimValue(g_model.swashR.aileronSource);
+#else
+    getvalue_t vp = heliEleValue + trims[ELE_STICK];
+    getvalue_t vr = heliAilValue + trims[AIL_STICK];
+#endif
     getvalue_t vc = 0;
     if (g_model.swashR.collectiveSource)
       vc = getValue(g_model.swashR.collectiveSource);
 
+#if defined(VIRTUALINPUTS)
+    vp = (vp * g_model.swashR.elevatorWeight) / 100;
+    vr = (vr * g_model.swashR.aileronWeight) / 100;
+    vc = (vc * g_model.swashR.collectiveWeight) / 100;
+#else
     if (g_model.swashR.invertELE) vp = -vp;
     if (g_model.swashR.invertAIL) vr = -vr;
     if (g_model.swashR.invertCOL) vc = -vc;
+#endif
 
     switch (g_model.swashR.type) {
       case SWASH_TYPE_120:
@@ -696,7 +711,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         MIXER_LINE_DISABLE();
       }
 
-#if defined(PCBTARANIS) && defined(LUA_MODEL_SCRIPTS)
+#if defined(LUA_MODEL_SCRIPTS)
       // disable mixer if Lua script is used as source and script was killed
       if (mixEnabled && md->srcRaw >= MIXSRC_FIRST_LUA && md->srcRaw <= MIXSRC_LAST_LUA) {
         div_t qr = div(md->srcRaw-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
@@ -709,7 +724,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       //========== VALUE ===============
       getvalue_t v = 0;
       if (mode > e_perout_mode_inactive_flight_mode) {
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
         if (!mixEnabled) {
           continue;
         }
@@ -726,7 +741,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #endif
       }
       else {
-#if !defined(PCBTARANIS)
+#if !defined(VIRTUALINPUTS)
         if (stickIndex < NUM_STICKS) {
           v = md->noExpo ? rawAnas[stickIndex] : anas[stickIndex];
         }
@@ -795,28 +810,9 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
         //========== TRIMS ================
         if (!(mode & e_perout_mode_notrims)) {
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
           if (md->carryTrim == 0) {
-            int8_t mix_trim;
-            if (stickIndex < NUM_STICKS)
-              mix_trim = stickIndex;
-            else if (md->srcRaw <= MIXSRC_LAST_INPUT)
-              mix_trim = virtualInputsTrims[md->srcRaw-1];
-            else
-              mix_trim = -1;
-            if (mix_trim >= 0) {
-              int32_t trim = trims[mix_trim];
-              if (mix_trim == THR_STICK) {
-                if (g_model.thrTrim) {
-                  int16_t trimMin = g_model.extendedTrims ? 2*TRIM_EXTENDED_MIN : 2*TRIM_MIN;
-                  trim = (((g_model.throttleReversed)?(trim+trimMin):(trim-trimMin)) * (RESX-v)) >> (RESX_SHIFT+1);
-                }
-                if (g_model.throttleReversed) {
-                  trim = -trim;
-                }
-              }
-              v += trim;
-            }
+            v += getSourceTrimValue(md->srcRaw);
           }
 #else
           int8_t mix_trim = md->carryTrim;
@@ -883,7 +879,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 
       //========== CURVES ===============
-#if defined(PCBTARANIS)
+#if defined(XCURVES)
       if (apply_offset_and_curve && md->curve.value) {
         v = applyCurve(v, md->curve);
       }
@@ -903,7 +899,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 
       //========== DIFFERENTIAL =========
-#if !defined(PCBTARANIS)
+#if !defined(XCURVES)
       if (md->curveMode == MODE_DIFFERENTIAL) {
         // @@@2 also recalculate curveParam to a 256 basis which ease the calculation later a lot
         int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));

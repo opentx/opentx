@@ -410,9 +410,9 @@ t_Open9xGruvin9xCustomFunctionData_v210::operator CustomFunctionData ()
 t_Open9xGruvin9xSwashRingData_v208::operator SwashRingData ()
 {
   SwashRingData c9x;
-  c9x.invertELE = invertELE;
-  c9x.invertAIL = invertAIL;
-  c9x.invertCOL = invertCOL;
+  c9x.elevatorWeight = invertELE ? -100 : 100;
+  c9x.aileronWeight = invertAIL ? -100 : 100;
+  c9x.collectiveWeight = invertCOL ? -100 : 100;
   c9x.type = type;
   c9x.collectiveSource = open9xV4207ToSource(collectiveSource);
   c9x.value = value;
@@ -422,9 +422,9 @@ t_Open9xGruvin9xSwashRingData_v208::operator SwashRingData ()
 t_Open9xGruvin9xSwashRingData_v209::operator SwashRingData ()
 {
   SwashRingData c9x;
-  c9x.invertELE = invertELE;
-  c9x.invertAIL = invertAIL;
-  c9x.invertCOL = invertCOL;
+  c9x.elevatorWeight = invertELE ? -100 : 100;
+  c9x.aileronWeight = invertAIL ? -100 : 100;
+  c9x.collectiveWeight = invertCOL ? -100 : 100;
   c9x.type = type;
   c9x.collectiveSource = open9xV4209ToSource(collectiveSource);
   c9x.value = value;
