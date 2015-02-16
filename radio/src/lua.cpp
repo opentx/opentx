@@ -625,35 +625,31 @@ static int luaModelResetTimer(lua_State *L)
   return 0;
 }
 
-static int getFirstInput(int chn)
+static unsigned int getFirstInput(unsigned int chn)
 {
-  for (int i=0; i<MAX_INPUTS; i++) {
+  for (unsigned int i=0; i<MAX_INPUTS; i++) {
     ExpoData * expo = expoAddress(i);
-    if (!expo->srcRaw || expo->chn>chn) break;
-    if (expo->chn == chn) {
+    if (!expo->srcRaw || expo->chn >= chn) {
       return i;
     }
   }
-  return -1;
+  return 0;
 }
 
-static unsigned int getInputsCountFromFirst(int chn, int first)
+static unsigned int getInputsCountFromFirst(unsigned int chn, unsigned int first)
 {
   unsigned int count = 0;
-  if (first >= 0) {
-    for (int i=first; i<MAX_INPUTS; i++) {
-      ExpoData * expo = expoAddress(i);
-      if (!expo->srcRaw || expo->chn!=chn) break;
-      count++;
-    }
+  for (unsigned int i=first; i<MAX_INPUTS; i++) {
+    ExpoData * expo = expoAddress(i);
+    if (!expo->srcRaw || expo->chn!=chn) break;
+    count++;
   }
   return count;
 }
 
-static unsigned int getInputsCount(int chn)
+static unsigned int getInputsCount(unsigned int chn)
 {
-  int first = getFirstInput(chn);
-  return getInputsCountFromFirst(chn, first);
+  return getInputsCountFromFirst(chn, getFirstInput(chn));
 }
 
 static int luaModelGetInputsCount(lua_State *L)
@@ -668,15 +664,16 @@ static int luaModelGetInput(lua_State *L)
 {
   unsigned int chn = luaL_checkunsigned(L, 1);
   unsigned int idx = luaL_checkunsigned(L, 2);
-  int first = getFirstInput(chn);
+  unsigned int first = getFirstInput(chn);
   unsigned int count = getInputsCountFromFirst(chn, first);
-  if (first>=0 && idx<count) {
+  if (idx < count) {
     ExpoData * expo = expoAddress(first+idx);
     lua_newtable(L);
     lua_pushtablezstring(L, "name", expo->name);
     lua_pushtableinteger(L, "source", expo->srcRaw);
     lua_pushtableinteger(L, "weight", expo->weight);
     lua_pushtableinteger(L, "offset", expo->offset);
+    lua_pushtableinteger(L, "switch", expo->swtch);
   }
   else {
     lua_pushnil(L);
@@ -689,12 +686,12 @@ static int luaModelInsertInput(lua_State *L)
   unsigned int chn = luaL_checkunsigned(L, 1);
   unsigned int idx = luaL_checkunsigned(L, 2);
 
-  int first = getFirstInput(chn);
+  unsigned int first = getFirstInput(chn);
   unsigned int count = getInputsCountFromFirst(chn, first);
 
   if (chn<MAX_INPUTS && getExpoMixCount(1)<MAX_INPUTS && idx<=count) {
-    idx = first+idx;
-    s_currCh = chn+1;
+    idx = first + idx;
+    s_currCh = chn + 1;
     insertExpoMix(1, idx);
     ExpoData * expo = expoAddress(idx);
     luaL_checktype(L, -1, LUA_TTABLE);
@@ -731,7 +728,7 @@ static int luaModelDeleteInput(lua_State *L)
   int first = getFirstInput(chn);
   unsigned int count = getInputsCountFromFirst(chn, first);
 
-  if (first>=0 && idx<count) {
+  if (idx < count) {
     deleteExpoMix(1, first+idx);
   }
 
@@ -750,9 +747,9 @@ static int luaModelDefaultInputs(lua_State *L)
   return 0;
 }
 
-static int getFirstMix(int chn)
+static unsigned int getFirstMix(unsigned int chn)
 {
-  for (int i=0; i<MAX_MIXERS; i++) {
+  for (unsigned int i=0; i<MAX_MIXERS; i++) {
     MixData * mix = mixAddress(i);
     if (!mix->srcRaw || mix->destCh>=chn) {
       return i;
@@ -761,29 +758,26 @@ static int getFirstMix(int chn)
   return 0;
 }
 
-static int getMixesCountFromFirst(int chn, int first)
+static unsigned int getMixesCountFromFirst(unsigned int chn, unsigned int first)
 {
-  int count = 0;
-  if (first >= 0) {
-    for (int i=first; i<MAX_MIXERS; i++) {
-      MixData * mix = mixAddress(i);
-      if (!mix->srcRaw || mix->destCh!=chn) break;
-      count++;
-    }
+  unsigned int count = 0;
+  for (unsigned int i=first; i<MAX_MIXERS; i++) {
+    MixData * mix = mixAddress(i);
+    if (!mix->srcRaw || mix->destCh!=chn) break;
+    count++;
   }
   return count;
 }
 
-static int getMixesCount(int chn)
+static unsigned int getMixesCount(unsigned int chn)
 {
-  int first = getFirstMix(chn);
-  return getMixesCountFromFirst(chn, first);
+  return getMixesCountFromFirst(chn, getFirstMix(chn));
 }
 
 static int luaModelGetMixesCount(lua_State *L)
 {
   unsigned int chn = luaL_checkunsigned(L, 1);
-  int count = getMixesCount(chn);
+  unsigned int count = getMixesCount(chn);
   lua_pushinteger(L, count);
   return 1;
 }
@@ -792,7 +786,7 @@ static int luaModelGetMix(lua_State *L)
 {
   unsigned int chn = luaL_checkunsigned(L, 1);
   unsigned int idx = luaL_checkunsigned(L, 2);
-  int first = getFirstMix(chn);
+  unsigned int first = getFirstMix(chn);
   unsigned int count = getMixesCountFromFirst(chn, first);
   if (idx < count) {
     MixData * mix = mixAddress(first+idx);
@@ -824,7 +818,7 @@ static int luaModelInsertMix(lua_State *L)
   unsigned int chn = luaL_checkunsigned(L, 1);
   unsigned int idx = luaL_checkunsigned(L, 2);
 
-  int first = getFirstMix(chn);
+  unsigned int first = getFirstMix(chn);
   unsigned int count = getMixesCountFromFirst(chn, first);
 
   if (chn<NUM_CHNOUT && getExpoMixCount(0)<MAX_MIXERS && idx<=count) {
@@ -893,7 +887,7 @@ static int luaModelDeleteMix(lua_State *L)
   unsigned int chn = luaL_checkunsigned(L, 1);
   unsigned int idx = luaL_checkunsigned(L, 2);
 
-  int first = getFirstMix(chn);
+  unsigned int first = getFirstMix(chn);
   unsigned int count = getMixesCountFromFirst(chn, first);
 
   if (idx < count) {
