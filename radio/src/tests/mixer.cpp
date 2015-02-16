@@ -930,12 +930,17 @@ TEST(Mixer, SlowOnMultiply)
 }
 
 
-#if defined(HELI) && defined(PCBTARANIS)
+#if defined(HELI) && defined(VIRTUALINPUTS)
 TEST(Heli, BasicTest)
 {
   MODEL_RESET();
   applyDefaultTemplate();
   g_model.swashR.collectiveSource = MIXSRC_Thr;
+  g_model.swashR.elevatorSource = MIXSRC_Ele;
+  g_model.swashR.aileronSource = MIXSRC_Ail;
+  g_model.swashR.collectiveWeight = 100;
+  g_model.swashR.elevatorWeight = 100;
+  g_model.swashR.aileronWeight = 100;
   g_model.swashR.type = SWASH_TYPE_120;
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
@@ -962,6 +967,11 @@ TEST(Heli, Mode2Test)
   g_eeGeneral.templateSetup = 2;
   applyDefaultTemplate();
   g_model.swashR.collectiveSource = MIXSRC_Thr;
+  g_model.swashR.elevatorSource = MIXSRC_Ele;
+  g_model.swashR.aileronSource = MIXSRC_Ail;
+  g_model.swashR.collectiveWeight = 100;
+  g_model.swashR.elevatorWeight = 100;
+  g_model.swashR.aileronWeight = 100;
   g_model.swashR.type = SWASH_TYPE_120;
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
