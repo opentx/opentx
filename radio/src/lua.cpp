@@ -673,6 +673,7 @@ static int luaModelGetInput(lua_State *L)
     lua_pushtableinteger(L, "source", expo->srcRaw);
     lua_pushtableinteger(L, "weight", expo->weight);
     lua_pushtableinteger(L, "offset", expo->offset);
+    lua_pushtableinteger(L, "switch", expo->swtch);
   }
   else {
     lua_pushnil(L);
