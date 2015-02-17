@@ -122,10 +122,9 @@
 #include "ff.h"			/* Declarations of FatFs API */
 #include "diskio.h"		/* Declarations of disk I/O functions */
 
-#include "debug.h"
-#if defined(SIMU)
-	#include "string.h"
-#endif
+
+
+
 /*--------------------------------------------------------------------------
 
    Module Private Definitions
@@ -1194,7 +1193,6 @@ FRESULT dir_next (	/* FR_OK:Succeeded, FR_NO_FILE:End of table, FR_DENIED:Could 
 	DWORD clst;
 	UINT i;
 
-	// TRACE("dir_next()");
 
 	i = dp->index + 1;
 	if (!(i & 0xFFFF) || !dp->sect)	/* Report EOT when index has reached 65535 */
@@ -1520,13 +1518,6 @@ FRESULT dir_find (
 	BYTE c, *dir;
 #if _USE_LFN
 	BYTE a, ord, sum;
-#endif
-
-#if defined(SIMU)
-	char tname[12];
-	memcpy(tname, dp->fn, 11);
-	tname[11] = 0;
-	TRACE("dir_find(%u, %s)", dp->sect, tname);
 #endif
 
 	res = dir_sdi(dp, 0);			/* Rewind directory object */
@@ -2065,8 +2056,6 @@ FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 	dp->sclust = 0;							/* Always start from the root directory */
 #endif
 
-	TRACE("follow_path(%p, %s) clust: %u", dp, path, dp->sclust);
-
 	if ((UINT)*path < ' ') {				/* Null path name is the origin directory itself */
 		res = dir_sdi(dp, 0);
 		dp->dir = 0;
@@ -2457,7 +2446,6 @@ FRESULT f_open (
 	BYTE *dir;
 	DEF_NAMEBUF;
 
-	TRACE("f_open(%s)", path);
 
 	if (!fp) return FR_INVALID_OBJECT;
 	fp->fs = 0;			/* Clear file object */
@@ -2594,7 +2582,6 @@ FRESULT f_read (
 	UINT rcnt, cc;
 	BYTE csect, *rbuff = (BYTE*)buff;
 
-	// TRACE("f_read(%p, %p, %u)", fp, buff, btr);
 
 	*br = 0;	/* Clear read byte counter */
 
@@ -2697,7 +2684,6 @@ FRESULT f_write (
 	const BYTE *wbuff = (const BYTE*)buff;
 	BYTE csect;
 
-	// TRACE("f_write(%p, %u)", fp, btw);
 
 	*bw = 0;	/* Clear write byte counter */
 
@@ -3406,7 +3392,6 @@ FRESULT f_getfree (
 			fs->free_clust = n;
 			fs->fsi_flag |= 1;
 			*nclst = n;
-			TRACE("f_getfree() = %u", n);
 		}
 	}
 	LEAVE_FF(fs, res);
