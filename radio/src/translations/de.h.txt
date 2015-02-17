@@ -551,9 +551,9 @@
 #define TR_CHECKTRIMS          CENTER"\006Trims\012Prüfen"
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           TR("Typ Taumelsch","Typ Taumelscheibe")
-#define TR_COLLECTIVE_SOURCE   TR("Kollekt. Pitch","Kollekt. Pitch Kanal")
-#define TR_AILERON_SOURCE      "Aileron Source"
-#define TR_ELEVATOR_SOURCE     "Elevator Source"
+#define TR_COLLECTIVE          TR("Kollekt. Pitch","Kollekt. Pitch Kanal")
+#define TR_AILERON             "Aileron Source"
+#define TR_ELEVATOR            "Elevator Source"
 #define TR_SWASHRING           TR("Ring   Begrenz","Ring   Taumelscheibe")
 #define TR_ELEDIRECTION        TR("Nick   Richtung","Nick   Servo Richtung")
 #define TR_AILDIRECTION        TR("Roll   Richtung","Roll   Servo Richtung") 

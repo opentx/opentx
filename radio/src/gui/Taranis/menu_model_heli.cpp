@@ -73,7 +73,7 @@ void menuModelHeli(uint8_t event)
         break;
 
       case ITEM_HELI_ELE:
-        lcd_putsLeft(y, "Elevator" /*STR_ELEVATOR_SOURCE*/);
+        lcd_putsLeft(y, STR_ELEVATOR);
         putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.elevatorSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.elevatorSource, 0, MIXSRC_LAST_CH);
         break;
@@ -85,7 +85,7 @@ void menuModelHeli(uint8_t event)
         break;
 
       case ITEM_HELI_AIL:
-        lcd_putsLeft(y, "Aileron" /*STR_ELEVATOR_SOURCE*/);
+        lcd_putsLeft(y, STR_AILERON);
         putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.aileronSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.aileronSource, 0, MIXSRC_LAST_CH);
         break;
@@ -97,7 +97,7 @@ void menuModelHeli(uint8_t event)
         break;
 
       case ITEM_HELI_COL:
-        lcd_putsLeft(y, "Collective" /*STR_ELEVATOR_SOURCE*/);
+        lcd_putsLeft(y, STR_COLLECTIVE);
         putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH);
         break;

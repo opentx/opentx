@@ -544,9 +544,9 @@
 #define TR_CHECKTRIMS          "\006Vérif\012Trims"
 #define OFS_CHECKTRIMS         (9*FW)
 #define TR_SWASHTYPE           TR("Type de Plat.", "Type de plateau")
-#define TR_COLLECTIVE_SOURCE   TR("Collectif", "Voie du pas collectif")
-#define TR_AILERON_SOURCE      "Aileron Source"
-#define TR_ELEVATOR_SOURCE     "Elevator Source"
+#define TR_COLLECTIVE          TR("Collectif", "Voie du pas collectif")
+#define TR_AILERON             "Aileron Source"
+#define TR_ELEVATOR            "Elevator Source"
 #define TR_SWASHRING           TR("Limite Cycl.", "Limite du cyclique")
 #define TR_ELEDIRECTION        TR("Inv. longitud.", "Inversion longitudinal")
 #define TR_AILDIRECTION        TR("Inv. latéral", "Inversion latéral")
