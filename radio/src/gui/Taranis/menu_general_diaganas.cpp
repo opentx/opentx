@@ -44,13 +44,13 @@ void menuGeneralDiagAna(uint8_t event)
 
   for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
 #if (NUM_STICKS+NUM_POTS) > 9
-    coord_t y = MENU_TITLE_HEIGHT + 1 + (i/3)*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + (i/3)*FH;
     const uint8_t x_coord[] = {0, 70, 154};
     uint8_t x = x_coord[i%3];
     lcd_outdezNAtt(x, y, i+1, LEADING0|LEFT, 2);
     lcd_putc(x+2*FW-2, y, ':');
 #else
-    coord_t y = MENU_TITLE_HEIGHT + 1 + (i/2)*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + (i/2)*FH;
     uint8_t x = i&1 ? 64+5 : 0;
     putsStrIdx(x, y, PSTR("A"), i+1);
     lcd_putc(lcdNextPos, y, ':');
@@ -59,12 +59,12 @@ void menuGeneralDiagAna(uint8_t event)
     lcd_outdez8(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
   }
 
-  lcd_putsLeft(MENU_TITLE_HEIGHT+1+5*FH, STR_BATT_CALIB);
+  lcd_putsLeft(MENU_HEADER_HEIGHT+1+5*FH, STR_BATT_CALIB);
   static int32_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8;
   uint32_t batCalV = (adcBatt + (adcBatt*g_eeGeneral.vBatCalib)/128) * BATT_SCALE;
   batCalV >>= 11;
   batCalV += 2; // because of the diode
-  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_TITLE_HEIGHT+1+5*FH, batCalV, s_editMode > 0 ? BLINK|INVERS : INVERS);
+  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT+1+5*FH, batCalV, s_editMode > 0 ? BLINK|INVERS : INVERS);
   if (s_editMode > 0) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatCalib, -127, 127);
 }

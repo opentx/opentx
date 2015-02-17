@@ -76,7 +76,7 @@ void menuModelCustomScriptOne(uint8_t event)
   int8_t sub = m_posVert;
 
   for (int k=0; k<LCD_LINES-1; k++) {
-    coord_t y = MENU_TITLE_HEIGHT + 1 + k*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
     int i = k + s_pgOfs;
     LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 

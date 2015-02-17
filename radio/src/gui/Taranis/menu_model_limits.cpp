@@ -140,7 +140,7 @@ void menuModelLimits(uint8_t event)
   }
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
-    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i+s_pgOfs;
 
     if (k==NUM_CHNOUT) {

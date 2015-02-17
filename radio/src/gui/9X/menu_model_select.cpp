@@ -316,7 +316,7 @@ void menuModelSelect(uint8_t event)
   TITLE(STR_MENUMODELSEL);
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
-    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i+s_pgOfs;
 
     lcd_outdezNAtt(3*FW+2, y, k+1, LEADING0+((!s_copyMode && sub==k) ? INVERS : 0), 2);

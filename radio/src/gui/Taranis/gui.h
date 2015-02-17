@@ -39,7 +39,7 @@
 
 #define DEFAULT_SCROLLBAR_X  (LCD_W-1)
 #define NUM_BODY_LINES       (LCD_LINES-1)
-#define MENU_HEADER_HEIGHT    FH
+#define MENU_HEADER_HEIGHT   FH
 
 struct MenuItem {
   const char *name;

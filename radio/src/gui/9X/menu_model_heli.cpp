@@ -53,7 +53,7 @@ void menuModelHeli(uint8_t event)
   uint8_t sub = m_posVert - 1;
 
   for (uint8_t i=0; i<6; i++) {
-    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t attr = (sub == i ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
     switch(i) {
       case ITEM_HELI_SWASHTYPE:

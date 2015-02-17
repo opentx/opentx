@@ -52,13 +52,13 @@ void menuGeneralDiagAna(uint8_t event)
 
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
 #if (NUM_STICKS+NUM_POTS) > 9
-    coord_t y = MENU_TITLE_HEIGHT + 1 + (i/3)*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + (i/3)*FH;
     const uint8_t x_coord[] = {0, 70, 154};
     uint8_t x = x_coord[i%3];
     lcd_outdezNAtt(x, y, i+1, LEADING0|LEFT, 2);
     lcd_putc(x+2*FW-2, y, ':');
 #else
-    coord_t y = MENU_TITLE_HEIGHT + 1 + (i/2)*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + (i/2)*FH;
     uint8_t x = i&1 ? 64+5 : 0;
     putsStrIdx(x, y, PSTR("A"), i+1);
     lcd_putc(lcdNextPos, y, ':');
@@ -69,17 +69,17 @@ void menuGeneralDiagAna(uint8_t event)
 
 #if !defined(CPUARM)
   // Display raw BandGap result (debug)
-  lcd_puts(64+5, MENU_TITLE_HEIGHT+1+3*FH, STR_BG);
+  lcd_puts(64+5, MENU_HEADER_HEIGHT+1+3*FH, STR_BG);
   lcd_outdezAtt(64+5+6*FW-3, 1+4*FH, BandGap, 0);
 #endif
 
 #if defined(PCBSKY9X)
-  lcd_putsLeft(MENU_TITLE_HEIGHT+1+4*FH, STR_BATT_CALIB);
+  lcd_putsLeft(MENU_HEADER_HEIGHT+1+4*FH, STR_BATT_CALIB);
   static int32_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8;
   uint32_t batCalV = (adcBatt + adcBatt*(g_eeGeneral.vBatCalib)/128) * 4191;
   batCalV /= 55296;
-  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_TITLE_HEIGHT+1+4*FH, batCalV, (m_posVert==1 ? INVERS : 0));
+  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT+1+4*FH, batCalV, (m_posVert==1 ? INVERS : 0));
 #elif defined(PCBGRUVIN9X)
   lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
   // Gruvin wants 2 decimal places and instant update of volts calib field when button pressed

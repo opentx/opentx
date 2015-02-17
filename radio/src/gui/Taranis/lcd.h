@@ -54,9 +54,6 @@
 #define FWNUM           5
 #define FH              8
 
-#define MENU_TITLE_HEIGHT    FH
-#define MENU_NAVIG_HEIGHT    0
-
 #define LCD_LINES       (LCD_H/FH)
 #define LCD_COLS        (LCD_W/FW)
 
@@ -258,8 +255,5 @@ char *strAppend(char * dest, const char * source, int len=0);
 char *strSetCursor(char *dest, int position);
 char *strAppendDate(char * str, bool time=false);
 char *strAppendFilename(char * dest, const char * filename, const int size);
-
-#define MENU_TITLE_HEIGHT  FH
-#define MENU_NAVIG_HEIGHT  0
 
 #endif // _LCD_H_

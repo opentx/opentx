@@ -54,7 +54,7 @@ void menuModelTemplates(uint8_t event)
     }
   }
 
-  coord_t y = MENU_TITLE_HEIGHT + 1;
+  coord_t y = MENU_HEADER_HEIGHT + 1;
   uint8_t k = 0;
   for (uint8_t i=0; i<LCD_LINES-1 && k<TMPL_COUNT; i++) {
     k = i+s_pgOfs;

@@ -152,7 +152,7 @@ void menuGeneralSetup(uint8_t event)
   uint8_t sub = m_posVert - 1;
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
-    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i+s_pgOfs;
     uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     uint8_t attr = (sub == k ? blink : 0);

@@ -391,7 +391,7 @@ void menuGeneralSdManager(uint8_t _event)
   reusableBuffer.sdmanager.offset = s_pgOfs;
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
-    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     lcdNextPos = 0;
     LcdFlags attr = (index == i ? BSS|INVERS : BSS);
     if (reusableBuffer.sdmanager.lines[i][0]) {

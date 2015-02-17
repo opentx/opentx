@@ -97,7 +97,7 @@ void menuModelPhaseOne(uint8_t event)
   if (s_currIdx == 0 && sub>=ITEM_MODEL_PHASE_SWITCH) sub += ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH;
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
-    coord_t y = MENU_TITLE_HEIGHT + 1 + k*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
     int8_t i = k + s_pgOfs;
     if (s_currIdx == 0 && i>=ITEM_MODEL_PHASE_SWITCH) i += ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH;
     uint8_t attr = (sub==i ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
@@ -244,10 +244,10 @@ void menuModelFlightModesAll(uint8_t event)
   uint8_t att;
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
 #if defined(CPUARM)
-    coord_t y = MENU_TITLE_HEIGHT + 1 + (i-s_pgOfs)*FH;
-    if (y<MENU_TITLE_HEIGHT+1 || y>(LCD_LINES-1)*FH+MENU_TITLE_HEIGHT-FH) continue;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + (i-s_pgOfs)*FH;
+    if (y<MENU_HEADER_HEIGHT+1 || y>(LCD_LINES-1)*FH+MENU_HEADER_HEIGHT-FH) continue;
 #else
-    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
 #endif
     att = (i==sub ? INVERS : 0);
     FlightModeData *p = flightModeAddress(i);

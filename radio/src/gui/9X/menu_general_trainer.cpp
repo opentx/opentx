@@ -52,9 +52,9 @@ void menuGeneralTrainer(uint8_t event)
     uint8_t attr;
     uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
 
-    lcd_puts(3*FW, MENU_TITLE_HEIGHT+1, STR_MODESRC);
+    lcd_puts(3*FW, MENU_HEADER_HEIGHT+1, STR_MODESRC);
 
-    y = MENU_TITLE_HEIGHT + 1 + FH;
+    y = MENU_HEADER_HEIGHT + 1 + FH;
 
     for (uint8_t i=1; i<=NUM_STICKS; i++) {
       uint8_t chan = channel_order(i);
@@ -87,19 +87,19 @@ void menuGeneralTrainer(uint8_t event)
     }
 
     attr = (m_posVert==5) ? blink : 0;
-    lcd_putsLeft(MENU_TITLE_HEIGHT+1+5*FH, STR_MULTIPLIER);
-    lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, MENU_TITLE_HEIGHT+1+5*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
+    lcd_putsLeft(MENU_HEADER_HEIGHT+1+5*FH, STR_MULTIPLIER);
+    lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, MENU_HEADER_HEIGHT+1+5*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
     if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
     attr = (m_posVert==6) ? INVERS : 0;
     if (attr) s_editMode = 0;
-    lcd_putsAtt(0*FW, MENU_TITLE_HEIGHT+1+6*FH, STR_CAL, attr);
+    lcd_putsAtt(0*FW, MENU_HEADER_HEIGHT+1+6*FH, STR_CAL, attr);
     for (uint8_t i=0; i<4; i++) {
       uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
 #if defined (PPM_UNIT_PERCENT_PREC1)
-      lcd_outdezAtt(x, MENU_TITLE_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
+      lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
 #else
-      lcd_outdezAtt(x, MENU_TITLE_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])/5, 0);
+      lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])/5, 0);
 #endif
     }
 

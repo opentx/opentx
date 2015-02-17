@@ -279,7 +279,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
       displayScreenIndex(curr, menuTabSize, 0);
     }
 
-    drawFilledRect(0, 0, LCD_W, MENU_TITLE_HEIGHT, SOLID, FILL_WHITE|GREY_DEFAULT);
+    drawFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, SOLID, FILL_WHITE|GREY_DEFAULT);
   }
 
   DISPLAY_PROGRESS_BAR(menuTab ? lcdLastPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);
@@ -463,7 +463,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
   }
 
   if (scrollbar_X && linesCount > NUM_BODY_LINES) {
-    displayScrollbar(scrollbar_X, MENU_TITLE_HEIGHT, LCD_H-MENU_TITLE_HEIGHT-MENU_NAVIG_HEIGHT, s_pgOfs, linesCount, NUM_BODY_LINES);
+    displayScrollbar(scrollbar_X, MENU_HEADER_HEIGHT, LCD_H-MENU_HEADER_HEIGHT, s_pgOfs, linesCount, NUM_BODY_LINES);
   }
 
   if (name) {

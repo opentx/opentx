@@ -69,14 +69,14 @@ void menuCommonCalib(uint8_t event)
     case 0:
       // START CALIBRATION
       if (!READ_ONLY()) {
-        lcd_putsLeft(MENU_TITLE_HEIGHT+2*FH, STR_MENUTOSTART);
+        lcd_putsLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUTOSTART);
       }
       break;
 
     case 1:
       // SET MIDPOINT
-      lcd_putsAtt(0*FW, MENU_TITLE_HEIGHT+FH, STR_SETMIDPOINT, INVERS);
-      lcd_putsLeft(MENU_TITLE_HEIGHT+2*FH, STR_MENUWHENDONE);
+      lcd_putsAtt(0*FW, MENU_HEADER_HEIGHT+FH, STR_SETMIDPOINT, INVERS);
+      lcd_putsLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
@@ -88,8 +88,8 @@ void menuCommonCalib(uint8_t event)
     case 2:
       // MOVE STICKS/POTS
       STICK_SCROLL_DISABLE();
-      lcd_putsAtt(0*FW, MENU_TITLE_HEIGHT+FH, STR_MOVESTICKSPOTS, INVERS);
-      lcd_putsLeft(MENU_TITLE_HEIGHT+2*FH, STR_MENUWHENDONE);
+      lcd_putsAtt(0*FW, MENU_HEADER_HEIGHT+FH, STR_MOVESTICKSPOTS, INVERS);
+      lcd_putsLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i]) > 50) {

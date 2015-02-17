@@ -46,19 +46,19 @@ void menuGeneralDiagKeys(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUDIAG, menuTabGeneral, e_Keys, 1);
 
-  lcd_puts(14*FW, MENU_TITLE_HEIGHT+2*FH, STR_VTRIM);
+  lcd_puts(14*FW, MENU_HEADER_HEIGHT+2*FH, STR_VTRIM);
 
   for(uint8_t i=0; i<9; i++) {
     coord_t y;
 
     if (i<8) {
-      y = MENU_TITLE_HEIGHT + FH*3 + FH*(i/2);
+      y = MENU_HEADER_HEIGHT + FH*3 + FH*(i/2);
       if (i&1) lcd_img(14*FW, y, sticks, i/2, 0);
       displayKeyState(i&1? 20*FW : 18*FW, y, (EnumKeys)(TRM_BASE+i));
     }
 
     if (i<6) {
-      y = i*FH+MENU_TITLE_HEIGHT+FH;
+      y = i*FH+MENU_HEADER_HEIGHT+FH;
       lcd_putsiAtt(0, y, STR_VKEYS, (5-i), 0);
       displayKeyState(5*FW+2, y, (EnumKeys)(KEY_MENU+(5-i)));
     }

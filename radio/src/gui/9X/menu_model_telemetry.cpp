@@ -262,7 +262,7 @@ void menuModelSensor(uint8_t event)
   int8_t sub = m_posVert;
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
-    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i + s_pgOfs;
 
     for (int j=0; j<k; j++) {
@@ -476,7 +476,7 @@ void menuModelTelemetry(uint8_t event)
   }
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
-    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i + s_pgOfs;
 #if defined(CPUARM)
     for (int j=0; j<=k; j++) {

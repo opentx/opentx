@@ -37,9 +37,8 @@
 #include "lcd.h"
 #include "menus.h"
 
-#define NUM_BODY_LINES     LCD_LINES-1
-#define MENU_TITLE_HEIGHT  FH
-#define MENU_NAVIG_HEIGHT  0
+#define NUM_BODY_LINES      (LCD_LINES-1)
+#define MENU_HEADER_HEIGHT  FH
 
 void displaySplash();
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);

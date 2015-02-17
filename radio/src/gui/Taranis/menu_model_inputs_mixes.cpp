@@ -318,7 +318,7 @@ void menuModelExpoOne(uint8_t event)
 
   int8_t sub = m_posVert;
 
-  coord_t y = MENU_TITLE_HEIGHT + 1;
+  coord_t y = MENU_HEADER_HEIGHT + 1;
 
   for (unsigned int k=0; k<NUM_BODY_LINES; k++) {
     int i = k + s_pgOfs;
@@ -834,7 +834,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
   for (int ch=1; ch<=(expo ? NUM_INPUTS : NUM_CHNOUT); ch++) {
     void *pointer = NULL; MixData * &md = (MixData * &)pointer; ExpoData * &ed = (ExpoData * &)pointer;
-    coord_t y = MENU_TITLE_HEIGHT+1+(cur-s_pgOfs)*FH;
+    coord_t y = MENU_HEADER_HEIGHT+1+(cur-s_pgOfs)*FH;
     if (expo ? (i<MAX_EXPOS && (ed=expoAddress(i))->chn+1 == ch && EXPO_VALID(ed)) : (i<MAX_MIXERS && (md=mixAddress(i))->srcRaw && md->destCh+1 == ch)) {
       if (cur-s_pgOfs >= 0 && cur-s_pgOfs < NUM_BODY_LINES) {
         if (expo) {

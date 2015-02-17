@@ -303,7 +303,7 @@ void menuModelExpoOne(uint8_t event)
 
   int8_t sub = m_posVert;
 
-  coord_t y = MENU_TITLE_HEIGHT + 1;
+  coord_t y = MENU_HEADER_HEIGHT + 1;
 
   for (uint8_t i=0; i<EXPO_FIELD_MAX+1; i++) {
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
@@ -503,7 +503,7 @@ void menuModelMixOne(uint8_t event)
     }
     int8_t i = k;
 #else
-    coord_t y = MENU_TITLE_HEIGHT + 1 + k*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
     int8_t i = k + s_pgOfs;
 #endif
 
@@ -906,7 +906,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
   for (uint8_t ch=1; ch<=(expo ? NUM_INPUTS : NUM_CHNOUT); ch++) {
     void *pointer = NULL; MixData * &md = (MixData * &)pointer; ExpoData * &ed = (ExpoData * &)pointer;
-    coord_t y = MENU_TITLE_HEIGHT-FH+1+(cur-s_pgOfs)*FH;
+    coord_t y = MENU_HEADER_HEIGHT-FH+1+(cur-s_pgOfs)*FH;
     if (expo ? (i<MAX_EXPOS && (ed=expoAddress(i))->chn+1 == ch && EXPO_VALID(ed)) : (i<MAX_MIXERS && (md=mixAddress(i))->srcRaw && md->destCh+1 == ch)) {
       if (s_pgOfs < cur && cur-s_pgOfs < LCD_LINES) {
         if (expo) {

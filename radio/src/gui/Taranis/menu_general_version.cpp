@@ -95,9 +95,9 @@ void menuGeneralVersion(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, e_Vers, 1);
 
-  lcd_putsLeft(MENU_TITLE_HEIGHT+FH, vers_stamp);
+  lcd_putsLeft(MENU_HEADER_HEIGHT+FH, vers_stamp);
 
-  lcd_putsLeft(MENU_TITLE_HEIGHT+6*FH, STR_EEBACKUP);
+  lcd_putsLeft(MENU_HEADER_HEIGHT+6*FH, STR_EEBACKUP);
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
     backupEeprom();
   }

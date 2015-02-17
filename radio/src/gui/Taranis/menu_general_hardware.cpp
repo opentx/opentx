@@ -96,7 +96,7 @@ void menuGeneralHardware(uint8_t event)
   uint8_t sub = m_posVert;
 
   for (int i=0; i<NUM_BODY_LINES; ++i) {
-    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
+    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     int k = i + s_pgOfs;
     for (int j=0; j<=k; j++) {
       if (mstate_tab[j] == HIDDEN_ROW)
