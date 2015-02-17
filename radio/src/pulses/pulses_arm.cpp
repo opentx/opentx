@@ -40,6 +40,11 @@ uint8_t s_pulses_paused = 0;
 uint8_t s_current_protocol[NUM_MODULES] = { MODULES_INIT(255) };
 uint16_t failsafeCounter[NUM_MODULES] = { MODULES_INIT(100) };
 uint8_t moduleFlag[NUM_MODULES] = { 0 };
+uint32_t nextMixerTime[NUM_MODULES] = { 0 };
+#define SCHEDULE_MIXER_START(module, delay) nextMixerTime[module] = (CoGetOSTime() + (delay)/2 - 1/*2ms*/)
+
+ModulePulsesData modulePulsesData[NUM_MODULES];
+TrainerPulsesData trainerPulsesData;
 
 void setupPulses(unsigned int port)
 {
@@ -144,18 +149,22 @@ void setupPulses(unsigned int port)
   switch (required_protocol) {
     case PROTO_PXX:
       setupPulsesPXX(port);
+      SCHEDULE_MIXER_START(port, 9);
       break;
 #if defined(DSM2)
     case PROTO_DSM2_LP45:
     case PROTO_DSM2_DSM2:
     case PROTO_DSM2_DSMX:
       setupPulsesDSM2(port);
+      SCHEDULE_MIXER_START(port, 11);
       break;
 #endif
     case PROTO_PPM:
       setupPulsesPPM(port);
+      SCHEDULE_MIXER_START(port, (45+g_model.moduleData[port].ppmFrameLength)/2);
       break ;
     default:
+      SCHEDULE_MIXER_START(port, 20);
       break;
   }
 }

@@ -40,11 +40,6 @@ void setupPulses(unsigned int port);
 void setupPulsesPPM(unsigned int port);
 void setupPulsesPXX(unsigned int port);
 
-uint16_t *ppmStreamPtr[NUM_MODULES];
-extern uint16_t ppmStream[NUM_MODULES+1][20];
-extern uint16_t pxxStream[NUM_MODULES][400];
-extern uint16_t dsm2Stream[400];
-
 static void init_pa10_pxx( void ) ;
 static void disable_pa10_pxx( void ) ;
 #if defined(TARANIS_INTERNAL_PPM)
@@ -272,7 +267,7 @@ static void init_pa10_pxx()
   
   TIM1->CR2 = TIM_CR2_OIS3 ;              // O/P idle high
   TIM1->BDTR = TIM_BDTR_MOE ;             // Enable outputs
-  TIM1->CCR3 = pxxStream[INTERNAL_MODULE][0];
+  TIM1->CCR3 = modulePulsesData[INTERNAL_MODULE].pxx.pulses[0];
   TIM1->CCMR2 = TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3M_0 ;                     // Force O/P high
   TIM1->EGR = 1 ;                                                         // Restart
 
@@ -288,7 +283,7 @@ static void init_pa10_pxx()
   DMA2_Stream6->CR = DMA_SxCR_CHSEL_1 | DMA_SxCR_CHSEL_2 | DMA_SxCR_PL_0 | DMA_SxCR_MSIZE_0
                                                          | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_PFCTRL ;
   DMA2_Stream6->PAR = CONVERT_PTR_UINT(&TIM1->DMAR);
-  DMA2_Stream6->M0AR = CONVERT_PTR_UINT(&pxxStream[INTERNAL_MODULE][1]);
+  DMA2_Stream6->M0AR = CONVERT_PTR_UINT(&modulePulsesData[INTERNAL_MODULE].pxx.pulses[1]);
 //      DMA2_Stream2->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 //      DMA2_Stream2->NDTR = 100 ;
   DMA2_Stream6->CR |= DMA_SxCR_EN ;               // Enable DMA
@@ -318,7 +313,7 @@ static void init_pa10_ppm()
 {
   INTERNAL_MODULE_ON();
   // Timer1
-  ppmStreamPtr[INTERNAL_MODULE] = ppmStream[INTERNAL_MODULE];
+  modulePulsesData[INTERNAL_MODULE].ppm.ptr = modulePulsesData[INTERNAL_MODULE].ppm.pulses;
 
   //RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_INTPPM, ENABLE);
@@ -332,7 +327,7 @@ static void init_pa10_ppm()
   // so it has to be called after the peripheral is enabled
   setupPulsesPPM(INTERNAL_MODULE) ;
 
-  TIM1->ARR = *ppmStreamPtr[INTERNAL_MODULE]++ ;
+  TIM1->ARR = *modulePulsesData[INTERNAL_MODULE].ppm.ptr++ ;
   TIM1->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1 ;               // 0.5uS from 30MHz
   
   TIM1->CCER = TIM_CCER_CC3E ;
@@ -377,13 +372,13 @@ extern "C" void TIM1_CC_IRQHandler()
   if (s_current_protocol[INTERNAL_MODULE] == PROTO_PXX) {
     DMA2_Stream6->CR &= ~DMA_SxCR_EN ;              // Disable DMA
     DMA2->HIFCR = DMA_HIFCR_CTCIF6 | DMA_HIFCR_CHTIF6 | DMA_HIFCR_CTEIF6 | DMA_HIFCR_CDMEIF6 | DMA_HIFCR_CFEIF6 ; // Write ones to clear bits
-    DMA2_Stream6->M0AR = CONVERT_PTR_UINT(&pxxStream[INTERNAL_MODULE][1]);
+    DMA2_Stream6->M0AR = CONVERT_PTR_UINT(&modulePulsesData[INTERNAL_MODULE].pxx.pulses[1]);
     DMA2_Stream6->CR |= DMA_SxCR_EN ;               // Enable DMA
-    TIM1->CCR3 = pxxStream[INTERNAL_MODULE][0];
+    TIM1->CCR3 = modulePulsesData[INTERNAL_MODULE].pxx.pulses[0];
     TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
   else if (s_current_protocol[INTERNAL_MODULE] == PROTO_PPM) {
-    ppmStreamPtr[INTERNAL_MODULE] = ppmStream[INTERNAL_MODULE];
+    modulePulsesData[INTERNAL_MODULE].ppm.ptr = modulePulsesData[INTERNAL_MODULE].ppm.pulses;
     TIM1->DIER |= TIM_DIER_UDE ;
     TIM1->SR &= ~TIM_SR_UIF ;                                       // Clear this flag
     TIM1->DIER |= TIM_DIER_UIE ;                            // Enable this interrupt
@@ -397,8 +392,8 @@ extern "C" void TIM1_UP_TIM10_IRQHandler()
 {
   TIM1->SR &= ~TIM_SR_UIF ;                               // Clear flag
 
-  TIM1->ARR = *ppmStreamPtr[INTERNAL_MODULE]++ ;
-  if ( *ppmStreamPtr[INTERNAL_MODULE] == 0 )
+  TIM1->ARR = *modulePulsesData[INTERNAL_MODULE].ppm.ptr++ ;
+  if ( *modulePulsesData[INTERNAL_MODULE].ppm.ptr == 0 )
   {
     TIM1->SR &= ~TIM_SR_CC2IF ;                     // Clear this flag
     TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
@@ -433,7 +428,7 @@ void init_pa7_pxx()
   TIM8->CCER = TIM_CCER_CC1NE ;
   TIM8->CR2 = TIM_CR2_OIS1 ;                      // O/P idle high
   TIM8->BDTR = TIM_BDTR_MOE ;             // Enable outputs
-  TIM8->CCR1 = pxxStream[EXTERNAL_MODULE][0] ;
+  TIM8->CCR1 = modulePulsesData[EXTERNAL_MODULE].pxx.pulses[0];
   TIM8->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0 ;                     // Force O/P high
   TIM8->EGR = 1 ;                                                         // Restart
 
@@ -449,7 +444,7 @@ void init_pa7_pxx()
   DMA2_Stream2->CR = DMA_SxCR_CHSEL_0 | DMA_SxCR_CHSEL_1 | DMA_SxCR_CHSEL_2 | DMA_SxCR_PL_0 | DMA_SxCR_MSIZE_0
                                                          | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_PFCTRL ;
   DMA2_Stream2->PAR = CONVERT_PTR_UINT(&TIM8->DMAR);
-  DMA2_Stream2->M0AR = CONVERT_PTR_UINT(&pxxStream[EXTERNAL_MODULE][1]);
+  DMA2_Stream2->M0AR = CONVERT_PTR_UINT(&modulePulsesData[EXTERNAL_MODULE].pxx.pulses[1]);
 //      DMA2_Stream2->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 //      DMA2_Stream2->NDTR = 100 ;
   DMA2_Stream2->CR |= DMA_SxCR_EN ;               // Enable DMA
@@ -501,7 +496,7 @@ static void init_pa7_dsm2()
   TIM8->CCER = TIM_CCER_CC1NE  | TIM_CCER_CC1NP ;
   TIM8->CR2 = TIM_CR2_OIS1 ;                      // O/P idle high
   TIM8->BDTR = TIM_BDTR_MOE ;             // Enable outputs
-  TIM8->CCR1 = dsm2Stream[0] ;
+  TIM8->CCR1 = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses[0];
   TIM8->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0 ;                     // Force O/P high
   TIM8->EGR = 1 ;                                                         // Restart
 
@@ -517,7 +512,7 @@ static void init_pa7_dsm2()
   DMA2_Stream2->CR = DMA_SxCR_CHSEL_0 | DMA_SxCR_CHSEL_1 | DMA_SxCR_CHSEL_2 | DMA_SxCR_PL_0 | DMA_SxCR_MSIZE_0
                                                          | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_PFCTRL ;
   DMA2_Stream2->PAR = CONVERT_PTR_UINT(&TIM8->DMAR);
-  DMA2_Stream2->M0AR = CONVERT_PTR_UINT(&dsm2Stream[1]);
+  DMA2_Stream2->M0AR = CONVERT_PTR_UINT(&modulePulsesData[EXTERNAL_MODULE].dsm2.pulses[1]);
 //      DMA2_Stream2->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 //      DMA2_Stream2->NDTR = 100 ;
   DMA2_Stream2->CR |= DMA_SxCR_EN ;               // Enable DMA
@@ -550,7 +545,7 @@ static void init_pa7_ppm()
   EXTERNAL_MODULE_ON();
 
   // Timer1
-  ppmStreamPtr[EXTERNAL_MODULE] = ppmStream[EXTERNAL_MODULE];
+  modulePulsesData[EXTERNAL_MODULE].ppm.ptr = modulePulsesData[EXTERNAL_MODULE].ppm.pulses;
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
   configure_pins( PIN_EXTPPM_OUT, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_3 | PIN_OS25) ;
@@ -561,7 +556,7 @@ static void init_pa7_ppm()
   // so it has to be called after the peripheral is enabled
   setupPulsesPPM(EXTERNAL_MODULE) ;
 
-  TIM8->ARR = *ppmStreamPtr[EXTERNAL_MODULE]++ ;
+  TIM8->ARR = *modulePulsesData[EXTERNAL_MODULE].ppm.ptr++ ;
   TIM8->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1 ;               // 0.5uS from 30MHz
 
   TIM8->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC2PE ;                   // PWM mode 1
@@ -603,23 +598,23 @@ extern "C" void TIM8_CC_IRQHandler()
   if (s_current_protocol[EXTERNAL_MODULE] == PROTO_PXX) {
     DMA2_Stream2->CR &= ~DMA_SxCR_EN ;              // Disable DMA
     DMA2->LIFCR = DMA_LIFCR_CTCIF2 | DMA_LIFCR_CHTIF2 | DMA_LIFCR_CTEIF2 | DMA_LIFCR_CDMEIF2 | DMA_LIFCR_CFEIF2 ; // Write ones to clear bits
-    DMA2_Stream2->M0AR = CONVERT_PTR_UINT(&pxxStream[EXTERNAL_MODULE][1]);
+    DMA2_Stream2->M0AR = CONVERT_PTR_UINT(&modulePulsesData[EXTERNAL_MODULE].pxx.pulses[1]);
     DMA2_Stream2->CR |= DMA_SxCR_EN ;               // Enable DMA
-    TIM8->CCR1 = pxxStream[EXTERNAL_MODULE][0];
+    TIM8->CCR1 = modulePulsesData[EXTERNAL_MODULE].pxx.pulses[0];
     TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
 #if defined(DSM2)
   else if (s_current_protocol[EXTERNAL_MODULE] >= PROTO_DSM2_LP45 && s_current_protocol[EXTERNAL_MODULE] <= PROTO_DSM2_DSMX) {
     DMA2_Stream2->CR &= ~DMA_SxCR_EN ;              // Disable DMA
     DMA2->LIFCR = DMA_LIFCR_CTCIF2 | DMA_LIFCR_CHTIF2 | DMA_LIFCR_CTEIF2 | DMA_LIFCR_CDMEIF2 | DMA_LIFCR_CFEIF2 ; // Write ones to clear bits
-    DMA2_Stream2->M0AR = CONVERT_PTR_UINT(&dsm2Stream[1]);
+    DMA2_Stream2->M0AR = CONVERT_PTR_UINT(&modulePulsesData[EXTERNAL_MODULE].dsm2.pulses[1]);
     DMA2_Stream2->CR |= DMA_SxCR_EN ;               // Enable DMA
-    TIM8->CCR1 = dsm2Stream[0];
+    TIM8->CCR1 = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses[0];
     TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
 #endif
   else if (s_current_protocol[EXTERNAL_MODULE] == PROTO_PPM) {
-    ppmStreamPtr[EXTERNAL_MODULE] = ppmStream[EXTERNAL_MODULE];
+    modulePulsesData[EXTERNAL_MODULE].ppm.ptr = modulePulsesData[EXTERNAL_MODULE].ppm.pulses;
     TIM8->DIER |= TIM_DIER_UDE ;
     TIM8->SR &= ~TIM_SR_UIF ;                                       // Clear this flag
     TIM8->DIER |= TIM_DIER_UIE ;                            // Enable this interrupt
@@ -633,8 +628,8 @@ extern "C" void TIM8_UP_TIM13_IRQHandler()
 {
   TIM8->SR &= ~TIM_SR_UIF ;                               // Clear flag
 
-  TIM8->ARR = *ppmStreamPtr[EXTERNAL_MODULE]++ ;
-  if (*ppmStreamPtr[EXTERNAL_MODULE] == 0) {
+  TIM8->ARR = *modulePulsesData[EXTERNAL_MODULE].ppm.ptr++ ;
+  if (*modulePulsesData[EXTERNAL_MODULE].ppm.ptr == 0) {
     TIM8->SR &= ~TIM_SR_CC2IF ;                     // Clear this flag
     TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }

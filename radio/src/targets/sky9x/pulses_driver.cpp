@@ -36,13 +36,6 @@
 
 #include "../../opentx.h"
 
-extern uint16_t ppmStream[NUM_MODULES][20];
-volatile uint32_t ppmStreamIndex[NUM_MODULES] = { MODULES_INIT(0) };  // Modified in interrupt routine
-extern uint8_t pxxStream[NUM_MODULES][64]; // TODO not here, duplicated
-extern uint8_t *pxxStreamPtr[NUM_MODULES];  // TODO not here, duplicated
-extern uint8_t dsm2Stream[64];  // Likely more than we need
-extern uint8_t *dsm2StreamPtr;
-
 void module_output_active()
 {
   register Pio *pioptr = PIOA ;
@@ -54,7 +47,6 @@ void module_output_active()
   pioptr->PIO_PUER = PIO_PA17 ;                   // With pull up
 #endif
 }
-
 
 void init_main_ppm(uint32_t period, uint32_t out_enable)
 {
@@ -245,8 +237,8 @@ extern "C" void PWM_IRQHandler(void)
         else {
           // Kick off serial output here
           sscptr = SSC;
-          sscptr->SSC_TPR = CONVERT_PTR_UINT(pxxStream[EXTERNAL_MODULE]);
-          sscptr->SSC_TCR = (uint8_t *)pxxStreamPtr[EXTERNAL_MODULE] - (uint8_t *)pxxStream[EXTERNAL_MODULE];
+          sscptr->SSC_TPR = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].pxx.pulses);
+          sscptr->SSC_TCR = (uint8_t *)modulePulsesData[EXTERNAL_MODULE].pxx.ptr - (uint8_t *)modulePulsesData[EXTERNAL_MODULE].pxx.pulses;
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
         }
         break;
@@ -269,16 +261,16 @@ extern "C" void PWM_IRQHandler(void)
         else {
           // Kick off serial output here
           sscptr = SSC;
-          sscptr->SSC_TPR = CONVERT_PTR_UINT(dsm2Stream);
-          sscptr->SSC_TCR = (uint8_t *)dsm2StreamPtr - (uint8_t *)dsm2Stream;
+          sscptr->SSC_TPR = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].dsm2.pulses);
+          sscptr->SSC_TCR = (uint8_t *)modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - (uint8_t *)modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
         }
         break;
 
       default:
-        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = ppmStream[EXTERNAL_MODULE][ppmStreamIndex[EXTERNAL_MODULE]++]; // Period in half uS
-        if (ppmStream[EXTERNAL_MODULE][ppmStreamIndex[EXTERNAL_MODULE]] == 0) {
-          ppmStreamIndex[EXTERNAL_MODULE] = 0;
+        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = modulePulsesData[EXTERNAL_MODULE].ppm.pulses[modulePulsesData[EXTERNAL_MODULE].ppm.index++]; // Period in half uS
+        if (modulePulsesData[EXTERNAL_MODULE].ppm.pulses[modulePulsesData[EXTERNAL_MODULE].ppm.index] == 0) {
+          modulePulsesData[EXTERNAL_MODULE].ppm.index = 0;
           setupPulses(EXTERNAL_MODULE);
         }
         break;
@@ -287,9 +279,9 @@ extern "C" void PWM_IRQHandler(void)
   }
 
   if (reason & PWM_ISR1_CHID1) {
-    pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = ppmStream[EXTRA_MODULE][ppmStreamIndex[EXTRA_MODULE]++] ;  // Period in half uS
-    if (ppmStream[EXTRA_MODULE][ppmStreamIndex[EXTRA_MODULE]] == 0) {
-      ppmStreamIndex[EXTRA_MODULE] = 0;
+    pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = modulePulsesData[EXTRA_MODULE].ppm.pulses[modulePulsesData[EXTRA_MODULE].ppm.index++] ;  // Period in half uS
+    if (modulePulsesData[EXTRA_MODULE].ppm.pulses[modulePulsesData[EXTRA_MODULE].ppm.index] == 0) {
+      modulePulsesData[EXTRA_MODULE].ppm.index = 0;
       setupPulsesPPM(EXTRA_MODULE);
     }
   }

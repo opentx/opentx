@@ -36,13 +36,6 @@
 
 #include "../opentx.h"
 
-#define PPM_STREAM_INIT  { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-#if defined(PCBTARANIS)
-  uint16_t ppmStream[NUM_MODULES+1][20]  = { PPM_STREAM_INIT, PPM_STREAM_INIT, PPM_STREAM_INIT };
-#else
-  uint16_t ppmStream[NUM_MODULES][20]  = { MODULES_INIT(PPM_STREAM_INIT) };
-#endif
-
 void setupPulsesPPM(unsigned int port)                   // Don't enable interrupts through here
 {
   int16_t PPM_range = g_model.extendedLimits ? (512*LIMIT_EXT_PERCENT/100) * 2 : 512 * 2; //range of 0.7..1.7msec
@@ -65,7 +58,7 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
     pwmptr->PWM_CH_NUM[pwmCh].PWM_CMR |= 0x00000200 ;   // CPOL
 #endif
 
-  uint16_t * ptr = ppmStream[port];
+  uint16_t * ptr = (port == TRAINER_MODULE ? trainerPulsesData.ppm.pulses : modulePulsesData[port].ppm.pulses);
   int32_t rest = 22500u * 2;
   rest += (int32_t(g_model.moduleData[port].ppmFrameLength)) * 1000;
   for (uint32_t i=firstCh; i<lastCh; i++) {

@@ -123,6 +123,9 @@ uint32_t stack_free(uint32_t tid)
 
 #if !defined(SIMU)
 
+extern uint32_t nextMixerTime[NUM_MODULES];
+#define GET_MIXER_DELAY(module) int(nextMixerTime[module] - CoGetOSTime())
+
 void mixerTask(void * pdata)
 {
   s_pulses_paused = true;
@@ -149,7 +152,14 @@ void mixerTask(void * pdata)
       if (t0 > maxMixerDuration) maxMixerDuration = t0 ;
     }
 
-    CoTickDelay(1);  // 2ms for now
+    int delay = 10; // 20ms default
+    if (GET_MIXER_DELAY(0) >= 0)
+      delay = min(delay, GET_MIXER_DELAY(0));
+#if NUM_MODULES >= 2
+    if (GET_MIXER_DELAY(1) >= 0)
+      delay = min(delay, GET_MIXER_DELAY(1));
+#endif
+    CoTickDelay(delay);
   }
 }
 
