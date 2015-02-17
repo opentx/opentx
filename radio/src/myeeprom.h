@@ -742,7 +742,7 @@ PACK(typedef struct {
   uint8_t   disableAlarmWarning:1;
   uint8_t   stickMode:2;
   int8_t    timezone:5;
-  uint8_t   spare1:1;
+  uint8_t   adjustRTC:1;
   uint8_t   inactivityTimer;
   uint8_t   mavbaud:3;
   SPLASH_MODE; /* 3bits */

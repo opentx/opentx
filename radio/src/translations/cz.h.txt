@@ -621,6 +621,8 @@
 #define TR_SWITCHWARNING       TR("* Spínače", INDENT "Polohy Spínačů")
 #define TR_POTWARNING          TR("* Potenc.", INDENT "Nastavení Pot.")
 #define TR_TIMEZONE            "časové pásmo"
+#define TR_ADJUST_RTC          INDENT "Adjust RTC"
+#define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        TR("Pořadí kanálů", "Výchozí pořadí kanálů")
 #define TR_STICKS              "Sticks"
 #define TR_POTS                "Pots"

@@ -53,12 +53,28 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t newVal, uin
       datetime.month = (uint8_t) ((data & 0x00ff0000) >> 16);
       datetime.day = (uint8_t) ((data & 0x0000ff00) >> 8);
       datetime.datestate = 1;
+      if (g_eeGeneral.adjustRTC) {
+        struct gtm t;
+        gettime(&t);
+        t.tm_year = datetime.year-1900;
+        t.tm_mon = datetime.month;
+        t.tm_mday = datetime.day;
+        rtcSetTime(&t);
+      }
     }
     else {
       datetime.hour = ((uint8_t) ((data & 0xff000000) >> 24) + g_eeGeneral.timezone + 24) % 24;
       datetime.min = (uint8_t) ((data & 0x00ff0000) >> 16);
       datetime.sec = (uint16_t) ((data & 0x0000ff00) >> 8);
       datetime.timestate = 1;
+      if (g_eeGeneral.adjustRTC) {
+        struct gtm t;
+        gettime(&t);
+        t.tm_hour = datetime.hour;
+        t.tm_min = datetime.min;
+        t.tm_sec = datetime.sec;
+        rtcSetTime(&t);
+      }
     }
     if (datetime.year == 0) {
       return;
