@@ -706,6 +706,7 @@
 #define TR_RESTORE_MODEL       "Obnov model z SD"
 #define TR_SDCARD_ERROR        "Chyba SD karty"
 #define TR_NO_SDCARD           "Není SD karta"
+#define TR_SDCARD_FULL         "SD Card Full"
 #define TR_INCOMPATIBLE        "Nekompatibilní"
 #define TR_WARNING             "KONTROLA"
 #define TR_EEPROMWARN          "EEPROM"

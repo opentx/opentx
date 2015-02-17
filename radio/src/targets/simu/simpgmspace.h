@@ -350,7 +350,9 @@ void simuSetTrim(uint8_t trim, bool state);
 void simuSetSwitch(uint8_t swtch, int8_t state);
 
 void StartMainThread(bool tests=true);
+void StopMainThread();
 void StartEepromThread(const char *filename="eeprom.bin");
+void StopEepromThread();
 
 extern const char *eepromFile;
 #if defined(PCBTARANIS) || defined(PCBACT)
@@ -405,10 +407,5 @@ extern char simuSdDirectory[1024];
 #define sdPoll10ms()
 #define sd_card_ready()  (true)
 #define sdMounted()      (true)
-#define SD_IS_HC()       (0)
-#define SD_GET_BLOCKNR() (0)
-#define SD_GET_SIZE_MB() (0)
-#define SD_GET_SPEED()   (0)
-
 
 #endif

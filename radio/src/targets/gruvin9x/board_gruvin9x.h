@@ -84,14 +84,12 @@
 
 // SD driver
 #define sdDone()
+#define SD_IS_HC()               (0)
+#define SD_GET_SPEED()           (0)
 #if !defined(SIMU)
 bool sdMounted();
 void sdMountPoll();
 void sdPoll10ms();
-#define SD_IS_HC()               (0)
-#define SD_GET_BLOCKNR()         (0)
-#define SD_GET_SIZE_MB()         (0)
-#define SD_GET_SPEED()           (0)
 #endif
 
 #define SPEAKER_ON               TCCR0A |=  (1 << COM0A0)

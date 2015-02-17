@@ -59,6 +59,9 @@ const pm_char * openLogs()
   if (!sdMounted())
     return STR_NO_SDCARD;
 
+  if (sdGetFreeSectors() == 0)
+    return STR_SDCARD_FULL;
+
   strcpy_P(filename, STR_LOGS_PATH);
 
   result = f_opendir(&folder, filename);
@@ -172,7 +175,6 @@ getvalue_t getConvertedTelemetryValue(getvalue_t val, uint8_t unit)
   return val;
 }
 
-// TODO test when disk full
 void writeLogs()
 {
   static const pm_char * error_displayed = NULL;

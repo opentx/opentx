@@ -111,6 +111,7 @@ inline int geteepromsize() {
 #include "radio/src/bmp.cpp"
 #include "radio/src/haptic.cpp"
 #include "radio/src/targets/taranis/haptic_driver.cpp"
+#include "radio/src/sdcard.cpp"
 // TODO Because FatFS in not C++ there cannot be namespaces there and the functions are defined several times!
 #undef SDCARD
 #include "radio/src/targets/simu/simpgmspace.cpp"
