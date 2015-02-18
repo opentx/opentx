@@ -5,6 +5,10 @@
 <li>Fixed reverse polarity on external PPM output. <b>Users with external module in PPM mode should check and update PPM polarity setting.</b></li>
 <li>File deletion in SD manager did not free used clusters (all radios with SD card)</li>
 <li>Fixed Lua <i>lcd.drawLine()</i> problem with slanted lines</li>
+<li>Fixed bad SWR after flight or telemetry reset (<a href=https://github.com/opentx/opentx/issues/2015>#2015</a>)</li>
+<li>Fixed missing timer voice minute call when triggered by THt (<a href=https://github.com/opentx/opentx/issues/2009>#2009</a>)</li>
+<li>Lua model.insertInput() could not add a line to an empty input or at the end of the existing input lines (<a href=https://github.com/opentx/opentx/issues/2084>#2084</a>)</li>
+<li>Fixed radio slowdown when SD card was full (<a href=https://github.com/opentx/opentx/issues/2007>#2007</a>)</li>
 </ul>
 
 

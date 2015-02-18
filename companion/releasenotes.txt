@@ -1,3 +1,10 @@
+<h2>Version 2.0.16 / todo</h2>
+<ul>
+<li><i>nooverridech</i> firmware option was not working</li>
+<li>Fixed setting Expo from gvars for 9XR-Pro (<a href=https://github.com/opentx/opentx/issues/2040>#2040</a>)</li>
+</ul>
+
+
 <h2>Version 2.0.15 / 2015-01-13</h2>
 <ul>
 <li>Firmware was not written correctly on radio when compatibility warning check enabled</li>
