@@ -46,8 +46,6 @@ inline void TELEMETRY_RESET()
   frskyData.rssi[0].value = 100;
 }
 
-void MIXER_RESET();
-
 bool checkScreenshot(QString test);
 
 #endif
