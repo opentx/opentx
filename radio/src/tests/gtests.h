@@ -48,8 +48,6 @@ inline void TELEMETRY_RESET()
 #endif
 }
 
-void MIXER_RESET();
-
 bool checkScreenshot(QString test);
 
 #endif
