@@ -728,6 +728,7 @@
 #define TR_RESTORE_MODEL       "återställ Modell"
 #define TR_SDCARD_ERROR        "SDCARD-fel"
 #define TR_NO_SDCARD           "SDCARD saknas"
+#define TR_SDCARD_FULL         "SD Card Full"
 #define TR_INCOMPATIBLE        "Inkompatibel"
 #define TR_WARNING             "VARNING"
 #define TR_EEPROMWARN          "EEPROM"
