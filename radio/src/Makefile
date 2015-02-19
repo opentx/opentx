@@ -286,12 +286,12 @@ MENUS_LOCK = NO
 # MASSSTORAGE: The TX will appear as a drive
 USB = JOYSTICK
 
-# Channel monitor display behavior
+# Mixers monitor view added to Channels monitor one
 # Values = NO, YES
-# YES - hide the fact that channel is inverted in limits tab 
-#       and show inverted channel value with opposite sign
-# NO - normal behavior, show real channel values
-CHANNELS_MONITOR_INV_HIDE = NO
+# YES - Adds mixers output view to Channels monitor screen,
+#       pressing [ENT] switches between views.
+# NO - classic Channels monitor
+MIXERS_MONITOR = NO
 
 # Use newlib-nano 
 # Values = NO, YES
@@ -831,8 +831,8 @@ ifeq ($(PCB), TARANIS)
     CPPSRC += haptic.cpp
     CPPSRC += targets/taranis/haptic_driver.cpp
   endif
-  ifeq ($(CHANNELS_MONITOR_INV_HIDE), YES)
-    CPPDEFS += -DCHANNELS_MONITOR_INV_HIDE
+  ifeq ($(MIXERS_MONITOR), YES)
+    CPPDEFS += -DMIXERS_MONITOR
   endif
 endif
 
