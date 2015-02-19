@@ -238,7 +238,8 @@ void lcdOff();
   #define LCD_REFRESH_DONT_WAIT
 #endif
 
-const pm_char * bmpLoad(uint8_t *dest, const char *filename, const unsigned int width, const unsigned int height);
+const char *bmpLoad(uint8_t *dest, const char *filename, const unsigned int width, const unsigned int height);
+const char *writeScreenshot();
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE (0)

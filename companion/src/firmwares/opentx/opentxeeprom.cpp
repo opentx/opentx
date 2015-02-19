@@ -1911,6 +1911,8 @@ class CustomFunctionsConversionTable: public ConversionTable {
         if (board == BOARD_GRUVIN9X || IS_ARM(board) )
           addConversion(FuncLogs, val++);
         addConversion(FuncBacklight, val++);
+        if (IS_TARANIS(board))
+          addConversion(FuncScreenshot, val++);
       }
       else {
         addConversion(FuncPlaySound, val++);
