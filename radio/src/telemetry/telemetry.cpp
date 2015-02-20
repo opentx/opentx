@@ -70,10 +70,14 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t newVal, uin
       if (g_eeGeneral.adjustRTC) {
         struct gtm t;
         gettime(&t);
-        t.tm_hour = datetime.hour;
-        t.tm_min = datetime.min;
-        t.tm_sec = datetime.sec;
-        rtcSetTime(&t);
+        if (abs((t.tm_hour-datetime.hour)*3600 + (t.tm_min-datetime.min)*60 + (t.tm_sec-datetime.sec)) > 20) {
+          // we adjust RTC only if difference is > 20 seconds
+          t.tm_hour = datetime.hour;
+          t.tm_min = datetime.min;
+          t.tm_sec = datetime.sec;
+          g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
+          rtcSetTime(&t);
+        }
       }
     }
     if (datetime.year == 0) {
