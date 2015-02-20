@@ -1087,6 +1087,9 @@ void sdInit()
   Card_state = SD_ST_DATA;
 
   if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
+    // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
+    sdGetFreeSectors();
+
     referenceSystemAudioFiles();
     Card_state = SD_ST_MOUNTED;
   }

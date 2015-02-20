@@ -74,6 +74,10 @@ void writeHeader();
 void closeLogs();
 void writeLogs();
 
+uint32_t sdGetNoSectors();
+uint32_t sdGetSize();
+uint32_t sdGetFreeSectors();
+
 #if !defined(BOOT)
 inline const pm_char *SDCARD_ERROR(FRESULT result)
 {

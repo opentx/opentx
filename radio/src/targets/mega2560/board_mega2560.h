@@ -86,16 +86,14 @@
 #define __BACKLIGHT_OFF          PORTC &= ~(1<<OUT_C_LIGHT)   
 #define IS_BACKLIGHT_ON()        PORTC &= (1<<OUT_C_LIGHT)    
 
-// SD driver 
-#define sdDone() 
+// SD driver
+#define sdDone()
+#define SD_IS_HC()               (0)
+#define SD_GET_SPEED()           (0)
 #if !defined(SIMU)
-  bool sdMounted();
-  void sdMountPoll();
-  void sdPoll10ms();
-  #define SD_IS_HC()             (0)
-  #define SD_GET_BLOCKNR()       (0)
-  #define SD_GET_SIZE_MB()       (0)
-  #define SD_GET_SPEED()         (0)
+bool sdMounted();
+void sdMountPoll();
+void sdPoll10ms();
 #endif
 
 // Keyboard driver

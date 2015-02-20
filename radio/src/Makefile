@@ -341,6 +341,13 @@ LCD_DUAL_BUFFER = NO
 # Values = NO, YES
 TARANIS_INTERNAL_PPM = NO
 
+# Enable disk IO simulation in simulator
+# Simulator will use FatFs module and simulated IO layer that 
+# uses "./sdcard.image" file as image of SD card.
+# This file must contain whole SD card from first to last sector
+# Values = NO, YES
+DISKIO_SIMU = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -1536,6 +1543,11 @@ FOXLIB=-L/usr/local/lib \
        -L/opt/local/lib \
        -lFOX-1.6 \
        -Wl,-rpath,$(FOXPATH)/src/.libs
+
+ifeq ($(DISKIO_SIMU), YES)
+  CPPDEFS += -DDISKIO_SIMU
+  CPPSRC += FatFs/ff.c FatFs/option/ccsbcs.c
+endif
 
 simu: $(LUADEP) stamp_header allsimusrc.cpp Makefile simu.cpp targets/simu/simpgmspace.cpp *.h tra lbm eeprom.bin
 	g++ $(CPPFLAGS) $(INCFLAGS) simu.cpp allsimusrc.cpp $(LUASRC) targets/simu/simpgmspace.cpp -MD -DSIMU -DLUA_USE_APICHECK -O0 -o simu $(FOXINC) $(FOXLIB) -pthread -fexceptions
