@@ -38,7 +38,7 @@
 
 uint8_t s_pulses_paused = 0;
 uint8_t s_current_protocol[NUM_MODULES] = { MODULES_INIT(255) };
-uint32_t failsafeCounter[NUM_MODULES] = { MODULES_INIT(100) };
+uint16_t failsafeCounter[NUM_MODULES] = { MODULES_INIT(100) };
 uint8_t moduleFlag[NUM_MODULES] = { 0 };
 
 void setupPulses(unsigned int port)

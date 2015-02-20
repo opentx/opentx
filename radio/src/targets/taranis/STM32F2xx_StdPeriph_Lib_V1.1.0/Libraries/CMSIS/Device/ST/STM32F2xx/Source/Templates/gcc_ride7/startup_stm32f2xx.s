@@ -98,10 +98,23 @@ LoopFillZerobss:
   ldr  r3, = _ebss
   cmp  r2, r3
   bcc  FillZerobss
+
+/*Paint Main Stack */
+  ldr  r2, = _main_stack_start
+PaintMainStack:
+  movs r3, #0x55555555
+  str  r3, [r2], #4
+LoopPaintMainStack:
+  ldr  r3, = _estack
+  cmp  r2, r3
+  bcc  PaintMainStack
+
 /* Call the clock system intitialization function.*/
   bl  SystemInit
+
 /* Call C++ constructors for static objects */
   bl  __libc_init_array
+
 /* Call the application's entry point.*/
   bl  main
   bx  lr    

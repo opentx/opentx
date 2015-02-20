@@ -45,7 +45,7 @@
 
 extern uint8_t s_current_protocol[NUM_MODULES];
 extern uint8_t s_pulses_paused;
-extern uint32_t failsafeCounter[NUM_MODULES];
+extern uint16_t failsafeCounter[NUM_MODULES];
 
 void setupPulses(unsigned int port);
 void setupPulsesDSM2(unsigned int port);

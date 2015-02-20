@@ -99,11 +99,15 @@ uint32_t stack_free(uint32_t tid)
       stack = audioStack;
       size = AUDIO_STACK_SIZE;
       break;
-#if 0 // defined(PCBTARANIS) && !defined(SIMU)
+#if defined(PCBTARANIS)
     case 255:
+  #if defined(SIMU)
+      return 1024;
+  #else
       // main stack
       stack = (OS_STK *)&_main_stack_start;
       size = ((unsigned char *)&_estack - (unsigned char *)&_main_stack_start) / 4;
+  #endif
       break;
 #endif
     default:

@@ -149,12 +149,14 @@ void menuStatisticsDebug(uint8_t event)
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
 
   lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
-  lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[Main]", SMLSIZE);
+  lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[M]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(0), UNSIGN|LEFT);
-  lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[Mix]", SMLSIZE);
+  lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[X]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(1), UNSIGN|LEFT);
-  lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[Audio]", SMLSIZE);
+  lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[A]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(2), UNSIGN|LEFT);
+  lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[I]", SMLSIZE);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(255), UNSIGN|LEFT);
 
   lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);
   lcd_status_line();
