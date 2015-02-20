@@ -37,6 +37,15 @@
 #include "board_taranis.h"
 #include "../../pwr.h"
 
+#ifdef REV9E
+  #define POWER_STATE_OFF            0
+  #define POWER_STATE_START         1
+  #define POWER_STATE_RUNNING      2
+  #define POWER_STATE_STOPPING   3
+  #define POWER_STATE_STOPPED      4
+  uint8_t PowerState = POWER_STATE_OFF ;
+#endif
+
 void pwrInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -104,6 +113,36 @@ uint32_t pwrCheck()
 {
 #if defined(SIMU)
   return e_power_on;
+#elif defined(REV9E)
+  uint32_t switchValue = GPIO_ReadInputDataBit(GPIOPWR, PIN_PWR_STATUS) == Bit_RESET;
+  switch ( PowerState )
+  {
+    case POWER_STATE_OFF :
+      PowerState = POWER_STATE_START ;
+      return e_power_on ;
+         
+    case POWER_STATE_START :
+      if ( !switchValue ) {
+        PowerState = POWER_STATE_RUNNING ;
+      }
+      return e_power_on ;
+
+    case POWER_STATE_RUNNING :
+      if ( switchValue ) {
+        PowerState = POWER_STATE_STOPPING ;
+//        return e_power_on;
+      }
+      return e_power_on ;
+
+    case POWER_STATE_STOPPING :
+      if ( !switchValue ) {
+        PowerState = POWER_STATE_STOPPED ;
+      }
+      return e_power_off ;
+
+    case POWER_STATE_STOPPED :
+      return e_power_off ;
+  }
 #else
   if (GPIO_ReadInputDataBit(GPIOPWR, PIN_PWR_STATUS) == Bit_RESET)
     return e_power_on;
