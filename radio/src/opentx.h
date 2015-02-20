@@ -720,7 +720,7 @@ extern uint8_t flightModeTransitionLast;
   extern int _end;
   extern int _estack;
   extern int _main_stack_start;
-  #define getAvailableMemory() ((unsigned int)((unsigned char *)&_estack - heap))
+  #define getAvailableMemory() ((unsigned int)((unsigned char *)&_main_stack_start - heap))
 #endif
 
 void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms);
@@ -940,6 +940,7 @@ extern uint16_t lastMixerDuration;
 
 #if defined(CPUARM)
   uint32_t stack_free(uint32_t tid);
+  void stack_paint();
 #else
   uint16_t stack_free();
 #endif

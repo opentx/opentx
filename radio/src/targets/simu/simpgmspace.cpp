@@ -313,6 +313,8 @@ void *main_thread(void *)
   try {
 #endif
 
+    stack_paint();
+
     s_current_protocol[0] = 255;
 
     g_menuStackPtr = 0;

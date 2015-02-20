@@ -24,7 +24,10 @@ _estack = 0x20020000;    /* end of 128K SRAM */
 
 /* Generate a link error if heap and stack don't fit into RAM */
 _Min_Heap_Size = 0;      /* required amount of heap  */
-_Min_Stack_Size = 0x200; /* required amount of stack */
+_Main_Stack_Size = 1024; /* required amount of stack for interrupt stack (Main stack) */
+
+/*Main stack end*/
+_main_stack_start = _estack - _Main_Stack_Size;
 
 /* Specify the memory areas */
 MEMORY
@@ -129,7 +132,7 @@ SECTIONS
   {
     . = ALIGN(4);
     . = . + _Min_Heap_Size;
-    . = . + _Min_Stack_Size;
+    . = . + _Main_Stack_Size;
     . = ALIGN(4);
   } >RAM
 
