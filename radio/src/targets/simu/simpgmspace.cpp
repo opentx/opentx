@@ -313,8 +313,10 @@ void *main_thread(void *)
   try {
 #endif
 
+#if defined(CPUARM)
     stack_paint();
-
+#endif
+    
     s_current_protocol[0] = 255;
 
     g_menuStackPtr = 0;
