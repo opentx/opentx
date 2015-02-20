@@ -39,7 +39,7 @@
 
 #ifndef _CCRTOS_H
 #define _CCRTOS_H
-#include "OsConfig.h"
+#include "../OsConfig.h"
 /*---------------------------- Type Define  ----------------------------------*/
 typedef signed   char      S8;              
 typedef unsigned char      U8;	
