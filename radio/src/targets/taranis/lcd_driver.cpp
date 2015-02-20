@@ -271,8 +271,26 @@ static void LCD_BL_Config()
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOBL, ENABLE);
   GPIO_InitTypeDef GPIO_InitStructure;
   
-#if defined(REVPLUS)
-//  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+#if defined(REV9E)
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_BL|GPIO_Pin_BLW;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOBL, &GPIO_InitStructure);
+  GPIO_PinAFConfig(GPIOBL, GPIO_PinSource_BL, Pin_BL_AF);
+  GPIO_PinAFConfig(GPIOBL, GPIO_PinSource_BLW, Pin_BL_AF);
+  RCC->APB2ENR |= RCC_APB2ENR_TIM9EN ;        // Enable clock
+  TIM9->ARR = 100 ;
+  TIM9->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 50000 - 1;  // 20us * 100 = 2ms => 500Hz
+  TIM9->CCMR1 = TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 ; // PWM
+  TIM9->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 ; // PWM
+  TIM9->CCER = TIM_CCER_CC4E | TIM_CCER_CC2E ;
+  TIM9->CCR2 = 0 ;
+  TIM9->CCR4 = 80 ;
+  TIM9->EGR = 0 ;
+  TIM9->CR1 = TIM_CR1_CEN ;            // Counter enable
+#elif defined(REVPLUS)
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_BL|GPIO_Pin_BLW;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -430,16 +448,16 @@ void lcdSetRefVolt(uint8_t val)
   AspiCmd(val+CONTRAST_OFS);		//0--255
 }
 
-#if defined(REVPLUS)
+#if defined(REV9E) || defined(REVPLUS)
 void turnBacklightOn(uint8_t level, uint8_t color)
 {
-  TIM4->CCR4 = ((100-level)*(20-color))/20;
-  TIM4->CCR2 = ((100-level)*color)/20;
+  TIM_BL->CCR4 = ((100-level)*(20-color))/20;
+  TIM_BL->CCR2 = ((100-level)*color)/20;
 }
 
 void turnBacklightOff(void)
 {
-  TIM4->CCR4 = 0;
-  TIM4->CCR2 = 0;
+  TIM_BL->CCR4 = 0;
+  TIM_BL->CCR2 = 0;
 }
 #endif

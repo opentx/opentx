@@ -324,14 +324,25 @@
 #define PIN_FS_DP                       GPIO_Pin_12 // PA.12
 
 // BackLight
-#if defined (REVPLUS)
-  #define RCC_AHB1Periph_GPIOBL         RCC_AHB1Periph_GPIOD
-  #define GPIO_Pin_BL                   GPIO_Pin_15 // PD.15
-  #define Pin_BL_AF                     GPIO_AF_TIM4
+#if defined(REV9E)
+  #define TIM_BL                        TIM9
+  #define GPIOBL                        GPIOE
+  #define RCC_AHB1Periph_GPIOBL         RCC_AHB1Periph_GPIOE
+  #define Pin_BL_AF                     GPIO_AF_TIM9
+  #define GPIO_Pin_BL                   GPIO_Pin_6 // PE.06
+  #define GPIO_PinSource_BL             GPIO_PinSource6
+  #define Pin_BLW_AF                    GPIO_AF_TIM9
+  #define GPIO_Pin_BLW                  GPIO_Pin_5 // PE.05
+  #define GPIO_PinSource_BLW            GPIO_PinSource5
+#elif defined (REVPLUS)
+  #define TIM_BL                        TIM4
   #define GPIOBL                        GPIOD
+  #define RCC_AHB1Periph_GPIOBL         RCC_AHB1Periph_GPIOD
+  #define Pin_BL_AF                     GPIO_AF_TIM4
+  #define GPIO_Pin_BL                   GPIO_Pin_15 // PD.15
   #define GPIO_PinSource_BL             GPIO_PinSource15
-  #define GPIO_Pin_BLW                  GPIO_Pin_13 // PD.13
   #define Pin_BLW_AF                    GPIO_AF_TIM4
+  #define GPIO_Pin_BLW                  GPIO_Pin_13 // PD.13
   #define GPIO_PinSource_BLW            GPIO_PinSource13
 #else
   #define RCC_AHB1Periph_GPIOBL         RCC_AHB1Periph_GPIOB
@@ -353,7 +364,7 @@
   #define PIN_LCD_CLK                   GPIO_Pin_10 // PC.10
   #define PIN_LCD_NCS                   GPIO_Pin_15 // PA.15
   #define PIN_LCD_A0                    GPIO_Pin_11 // PC.11
-  #define PIN_LCD_RST                   GPIO_Pin_12 // PD.12
+  #define PIN_LCD_RST                   GPIO_Pin_15 // TOTO PD.12
 #else
   #define RCC_AHB1Periph_LCD            RCC_AHB1Periph_GPIOD
   #define GPIO_LCD_SPI                  GPIOD

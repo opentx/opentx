@@ -38,7 +38,7 @@
 
 void rotencInit()
 {
-   configure_pins( 0x0060, PIN_INPUT | PIN_PULLUP | PIN_PORTE ) ;
+   configure_pins( GPIO_Pin_12|GPIO_Pin_13, PIN_INPUT | PIN_PULLUP | PIN_PORTD ) ;
 }
 
 void rotencEnd()
@@ -51,18 +51,18 @@ void checkRotaryEncoder()
 {
   register uint32_t dummy ;
    
-   dummy = GPIOE->IDR ;   // Read Rotary encoder ( PE6, PE5 )
-   dummy >>= 5 ;
+   dummy = GPIOD->IDR ;   // Read Rotary encoder ( PE6, PE5 )
+   dummy >>= 12 ;
    dummy &= 0x03 ;         // pick out the two bits
    if ( dummy != ( Rotary_position & 0x03 ) )
    {
       if ( ( Rotary_position & 0x01 ) ^ ( ( dummy & 0x02) >> 1 ) )
       {
-         ++x9de_rotenc;
+         --x9de_rotenc;
       }
       else
       {
-         --x9de_rotenc;
+         ++x9de_rotenc;
       }
       Rotary_position &= ~0x03 ;
       Rotary_position |= dummy ;

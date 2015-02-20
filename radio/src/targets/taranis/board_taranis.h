@@ -244,7 +244,7 @@ void turnBacklightOff(void);
   #define setBacklight(xx)      turnBacklightOn(xx, g_eeGeneral.backlightColor)
   #define __BACKLIGHT_ON        turnBacklightOn(g_eeGeneral.backlightBright, g_eeGeneral.backlightColor)
   #define __BACKLIGHT_OFF       turnBacklightOff()
-  #define IS_BACKLIGHT_ON()     (TIM4->CCR4 != 0) || (TIM4->CCR2 != 0)
+  #define IS_BACKLIGHT_ON()     (TIM_BL->CCR4 != 0) || (TIM_BL->CCR2 != 0)
 #else
   #define setBacklight(xx)      TIM10->CCR1 = 100-xx
   #define __BACKLIGHT_ON        TIM10->CCR1 = 100-g_eeGeneral.backlightBright
