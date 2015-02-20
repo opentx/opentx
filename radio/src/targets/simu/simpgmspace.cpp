@@ -622,7 +622,7 @@ FRESULT f_opendir (DIR * rep, const TCHAR * name)
     return FR_OK;
   }
   TRACE("f_opendir(%s) = error %d (%s)", path, errno, strerror(errno));
-  return FR_INVALID_NAME;
+  return FR_NO_PATH;
 }
 
 FRESULT f_closedir (DIR * rep)
