@@ -1095,7 +1095,8 @@ class GeneralSettings {
     bool      enableTelemetryAlarm;
     BeeperMode hapticMode;
     unsigned int   stickMode; // TODO enum
-    int    timezone;
+    int       timezone;
+    bool      adjustRTC;
     bool      optrexDisplay;
     unsigned int    inactivityTimer;
     bool      minuteBeep;
@@ -1246,7 +1247,6 @@ enum Capability {
   NoTelemetryProtocol,
   TelemetryCustomScreens,
   TelemetryCustomScreensFieldsPerLine,
-  TelemetryTimeshift,
   TelemetryMaxMultiplier,
   HasVario,
   HasVarioSink,

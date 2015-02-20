@@ -3157,7 +3157,12 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
 
   internalField.Append(new UnsignedField<2>(generalData.stickMode));
   internalField.Append(new SignedField<5>(generalData.timezone));
-  internalField.Append(new SpareBitsField<1>());
+  if (version >= 217 && IS_TARANIS(board)) {
+    internalField.Append(new BoolField<1>(generalData.adjustRTC));
+  }
+  else {
+    internalField.Append(new SpareBitsField<1>());
+  }
 
   internalField.Append(new UnsignedField<8>(generalData.inactivityTimer));
   if (IS_9X(board) && version >= 215) {
