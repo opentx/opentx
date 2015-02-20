@@ -40,7 +40,7 @@ uint8_t s_pulses_paused = 0;
 uint8_t s_current_protocol[NUM_MODULES] = { MODULES_INIT(255) };
 uint16_t failsafeCounter[NUM_MODULES] = { MODULES_INIT(100) };
 uint8_t moduleFlag[NUM_MODULES] = { 0 };
-uint32_t nextMixerTime[NUM_MODULES] = { 0 };
+U64 nextMixerTime[NUM_MODULES] = { 0 };
 #define SCHEDULE_MIXER_START(module, delay) nextMixerTime[module] = (CoGetOSTime() + (delay)/2 - 1/*2ms*/)
 
 ModulePulsesData modulePulsesData[NUM_MODULES];
