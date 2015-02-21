@@ -283,11 +283,10 @@ static void LCD_BL_Config()
   RCC->APB2ENR |= RCC_APB2ENR_TIM9EN ;        // Enable clock
   TIM9->ARR = 100 ;
   TIM9->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 50000 - 1;  // 20us * 100 = 2ms => 500Hz
-  TIM9->CCMR1 = TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 ; // PWM
-  TIM9->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 ; // PWM
-  TIM9->CCER = TIM_CCER_CC4E | TIM_CCER_CC2E ;
-  TIM9->CCR2 = 0 ;
-  TIM9->CCR4 = 80 ;
+  TIM9->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 ; // PWM
+  TIM9->CCER = TIM_CCER_CC1E | TIM_CCER_CC2E ;
+  TIM9->CCR1 = 0 ;
+  TIM9->CCR2 = 80 ;
   TIM9->EGR = 0 ;
   TIM9->CR1 = TIM_CR1_CEN ;            // Counter enable
 #elif defined(REVPLUS)
@@ -448,7 +447,19 @@ void lcdSetRefVolt(uint8_t val)
   AspiCmd(val+CONTRAST_OFS);		//0--255
 }
 
-#if defined(REV9E) || defined(REVPLUS)
+#if defined(REV9E)
+void turnBacklightOn(uint8_t level, uint8_t color)
+{
+  TIM_BL->CCR1 = ((100-level)*(20-color))/20;
+  TIM_BL->CCR2 = ((100-level)*color)/20;
+}
+
+void turnBacklightOff(void)
+{
+  TIM_BL->CCR1 = 0;
+  TIM_BL->CCR2 = 0;
+}
+#elif defined(REVPLUS)
 void turnBacklightOn(uint8_t level, uint8_t color)
 {
   TIM_BL->CCR4 = ((100-level)*(20-color))/20;
