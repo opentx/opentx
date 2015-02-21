@@ -168,7 +168,7 @@ bool Open9xSky9xSimulator::timer10ms()
 #include "simulatorimport.h"
 }
 
-uint8_t * Open9xSky9xSimulator::getLcd()
+::uint8_t * Open9xSky9xSimulator::getLcd()
 {
 #define GETLCD_IMPORT
 #include "simulatorimport.h"
@@ -185,6 +185,7 @@ void Open9xSky9xSimulator::start(QByteArray & eeprom, bool tests)
   g_rotenc[0] = 0;
   memcpy(Open9xSky9x::eeprom, eeprom.data(), std::min<int>(sizeof(Open9xSky9x::eeprom), eeprom.size()));
   StartEepromThread(NULL);
+  StartAudioThread();
   StartMainThread(tests);
 }
 
@@ -192,12 +193,14 @@ void Open9xSky9xSimulator::start(const char * filename, bool tests)
 {
   g_rotenc[0] = 0;
   StartEepromThread(filename);
+  StartAudioThread();
   StartMainThread(tests);
 }
 
 void Open9xSky9xSimulator::stop()
 {
   StopMainThread();
+  StopAudioThread();
   StopEepromThread();
 }
 
@@ -219,27 +222,27 @@ void Open9xSky9xSimulator::setValues(TxInputs &inputs)
 void Open9xSky9xSimulator::setTrim(unsigned int idx, int value)
 {
   idx = Open9xSky9x::modn12x3[4*getStickMode() + idx];
-  uint8_t phase = getTrimFlightPhase(getFlightMode(), idx);
+  ::uint8_t phase = getTrimFlightPhase(getFlightMode(), idx);
   setTrimValue(phase, idx, value);
 }
 
 void Open9xSky9xSimulator::getTrims(Trims & trims)
 {
-  uint8_t phase = getFlightMode();
+  ::uint8_t phase = getFlightMode();
   trims.extended = hasExtendedTrims();
-  for (uint8_t idx=0; idx<4; idx++) {
+  for (::uint8_t idx=0; idx<4; idx++) {
     trims.values[idx] = getTrimValue(getTrimFlightPhase(phase, idx), idx);
   }
 
   for (int i=0; i<2; i++) {
-    uint8_t idx = Open9xSky9x::modn12x3[4*getStickMode() + i];
-    int16_t tmp = trims.values[i];
+    ::uint8_t idx = Open9xSky9x::modn12x3[4*getStickMode() + i];
+    ::int16_t tmp = trims.values[i];
     trims.values[i] = trims.values[idx];
     trims.values[idx] = tmp;
   }
 }
 
-void Open9xSky9xSimulator::wheelEvent(uint8_t steps)
+void Open9xSky9xSimulator::wheelEvent(::uint8_t steps)
 {
   g_rotenc[0] += steps*4;
 }
@@ -262,7 +265,7 @@ const char * Open9xSky9xSimulator::getError()
 #include "simulatorimport.h"
 }
 
-void Open9xSky9xSimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
+void Open9xSky9xSimulator::setTrainerInput(unsigned int inputNumber, ::int16_t value)
 {
 #define SETTRAINER_IMPORT
 #include "simulatorimport.h"

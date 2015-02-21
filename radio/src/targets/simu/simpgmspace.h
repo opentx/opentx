@@ -353,6 +353,13 @@ void StartMainThread(bool tests=true);
 void StopMainThread();
 void StartEepromThread(const char *filename="eeprom.bin");
 void StopEepromThread();
+#if defined(SIMU_AUDIO) && defined(CPUARM)
+  void StartAudioThread(void);
+  void StopAudioThread(void);
+#else
+  #define StartAudioThread()
+  #define StopAudioThread()
+#endif
 
 extern const char *eepromFile;
 #if defined(PCBTARANIS) || defined(PCBACT)
