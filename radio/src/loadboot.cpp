@@ -51,6 +51,9 @@
 
 #if defined(PCBSKY9X)
   #include "AT91SAM3S4.h"
+#elif defined(PCBTARANIS) && defined(REV9E)
+  #include "stm32f4xx.h"
+  #include "stm32f4xx_gpio.h"
 #elif defined(PCBTARANIS)
   #include "stm32f2xx.h"
   #include "stm32f2xx_gpio.h"

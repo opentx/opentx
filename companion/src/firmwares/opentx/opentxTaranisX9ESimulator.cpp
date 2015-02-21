@@ -23,6 +23,7 @@
 #define PCBTARANIS
 #define CPUARM
 #define CPUSTM32
+#define STM32F40_41xxx
 #define GUI
 #define HELI
 #define SPLASH

@@ -1,5 +1,4 @@
 #include "../../opentx.h"
-#include "stm32f2xx_flash.h"
 
 //After reset, write is not allowed in the Flash control register (FLASH_CR) to protect the
 //Flash memory against possible unwanted operations due, for example, to electric

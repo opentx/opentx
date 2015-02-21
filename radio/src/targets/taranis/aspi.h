@@ -15,8 +15,6 @@
 extern "C" {
 #endif
 
-#include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
-
 #define __no_operation     __NOP
 
 #define LCD_NCS_HIGH()    GPIO_LCD_NCS->BSRRL = PIN_LCD_NCS

@@ -1,15 +1,38 @@
 /**
  *******************************************************************************
  * @file       event.c
- * @version   V1.1.4    
- * @date      2011.04.20
+ * @version    V1.1.6    
+ * @date       2014.05.23
  * @brief      event management implementation code of CooCox CoOS kernel.	
  *******************************************************************************
  * @copy
  *
- * INTERNAL FILE,DON'T PUBLIC.
+ *  Redistribution and use in source and binary forms, with or without 
+ *  modification, are permitted provided that the following conditions 
+ *  are met: 
+ *  
+ *      * Redistributions of source code must retain the above copyright 
+ *  notice, this list of conditions and the following disclaimer. 
+ *      * Redistributions in binary form must reproduce the above copyright
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution. 
+ *      * Neither the name of the <ORGANIZATION> nor the names of its 
+ *  contributors may be used to endorse or promote products derived 
+ *  from this software without specific prior written permission. 
+ *  
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ *  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ *  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+ *  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ *  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ *  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+ *  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ *  THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * <h2><center>&copy; COPYRIGHT 2009 CooCox </center></h2>
+ * <h2><center>&copy; COPYRIGHT 2014 CooCox </center></h2>
  *******************************************************************************
  */ 
 
@@ -323,30 +346,32 @@ void EventTaskToRdy(P_ECB pecb)
     {
         RemoveDelayList(ptcb);            /* Yes,remove task from DELAY list  */
     }
+#if CFG_MAILBOX_EN >0
     if(pecb->eventType == EVENT_TYPE_MBOX)/* Is it a mailbox event?           */
     {
         ptcb->pmail    = pecb->eventPtr;  /* Yes,send mail to task            */
         pecb->eventPtr = Co_NULL;            /* Clear event sign                 */
-        pecb->eventCounter--;
+        //pecb->eventCounter--;
     }
+#endif
 #if CFG_QUEUE_EN >0
     else if(pecb->eventType == EVENT_TYPE_QUEUE)  /* Is it a queue event?     */
     {										   
         pqcb        = (P_QCB)pecb->eventPtr;      /* Yes,get queue pointer    */
         ptcb->pmail = *(pqcb->qStart + pqcb->head);   /* Send mail to task    */
-        pqcb->head++;                             /* Clear event sign         */
-        pqcb->qSize--;
-        if(pqcb->head == pqcb->qMaxSize)
-        {
-            pqcb->head = 0;	
-        }
+        //pqcb->head++;                             /* Clear event sign         */
+        //pqcb->qSize--;
+        //if(pqcb->head == pqcb->qMaxSize)
+        //{
+        //    pqcb->head = 0;	
+        //}
     }
 #endif
 
-#if CFG_MAILBOX_EN >0
+#if CFG_SEM_EN >0
     else if(pecb->eventType == EVENT_TYPE_SEM)/* Is it a semaphore event?     */
     {
-        pecb->eventCounter--;                 /* Yes,clear event sign         */
+        //pecb->eventCounter--;                 /* Yes,clear event sign         */
         ptcb->pmail = (void*)0xffffffff;      /* Indicate task woke by event  */
     }
 #endif

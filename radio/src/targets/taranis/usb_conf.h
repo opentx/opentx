@@ -29,8 +29,11 @@
 #ifndef __USB_CONF__H__
 #define __USB_CONF__H__
 
-#include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
-
+#if defined(REV9E)
+  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
+#else
+  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
+#endif
 
 /* USB Core and PHY interface configuration.
    Tip: To avoid modifying these defines each time you need to change the USB
