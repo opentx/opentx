@@ -123,7 +123,7 @@ uint32_t stack_free(uint32_t tid)
 
 #if !defined(SIMU)
 
-extern U64 nextMixerTime[NUM_MODULES];
+extern uint64_t nextMixerTime[NUM_MODULES];
 #define GET_MIXER_DELAY(module) int(nextMixerTime[module] - CoGetOSTime())
 
 void mixerTask(void * pdata)
