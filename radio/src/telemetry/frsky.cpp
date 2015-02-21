@@ -362,7 +362,7 @@ void telemetryWakeup()
     }
 
 #if defined(PCBTARANIS)
-    if (IS_FRSKY_SPORT_PROTOCOL() && FRSKY_BAD_ANTENNA()) {
+    if ((g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF || g_model.externalModule == MODULE_TYPE_XJT) && FRSKY_BAD_ANTENNA()) {
       AUDIO_SWR_RED();
       POPUP_WARNING(STR_ANTENNAPROBLEM);
       SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
