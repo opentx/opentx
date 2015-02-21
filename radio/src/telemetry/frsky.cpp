@@ -358,7 +358,7 @@ void telemetryWakeup()
 
     if (alarmsCheckStep == ALARM_SWR_STEP) {
 #if defined(PCBTARANIS)
-      if (IS_FRSKY_SPORT_PROTOCOL() && FRSKY_BAD_ANTENNA()) {
+      if ((g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF || g_model.externalModule == MODULE_TYPE_XJT) && FRSKY_BAD_ANTENNA()) {
         AUDIO_SWR_RED();
         POPUP_WARNING(STR_ANTENNAPROBLEM);
         alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
