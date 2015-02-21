@@ -39,7 +39,7 @@
 #include "../../FatFs/ff.h"
 
 
-#if !defined(SIMU) || defined(DISKIO_SIMU)
+#if !defined(SIMU) || defined(SIMU_DISKIO)
 uint32_t sdGetNoSectors()
 {
   static DWORD noSectors = 0;

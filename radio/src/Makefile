@@ -318,7 +318,7 @@ TARANIS_INTERNAL_PPM = NO
 # uses "./sdcard.image" file as image of SD card.
 # This file must contain whole SD card from first to last sector
 # Values = NO, YES
-DISKIO_SIMU = NO
+SIMU_DISKIO = NO
 
 #------- END BUILD OPTIONS ---------------------------
 
@@ -1399,8 +1399,8 @@ FOXLIB=-L/usr/local/lib \
        -lFOX-1.6 \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
-ifeq ($(DISKIO_SIMU), YES)
-  CPPDEFS += -DDISKIO_SIMU
+ifeq ($(SIMU_DISKIO), YES)
+  CPPDEFS += -DSIMU_DISKIO
   CPPSRC += FatFs/ff.c FatFs/option/ccsbcs.c
 endif
 

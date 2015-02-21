@@ -47,7 +47,7 @@
   #include <direct.h>
 #endif
 
-#if defined(DISKIO_SIMU)
+#if defined(SIMU_DISKIO)
   FILE * diskImage = 0;
 #endif
 
@@ -315,7 +315,7 @@ void *main_thread(void *)
 
     eeReadAll(); // load general setup and selected model
 
-#if defined(DISKIO_SIMU)
+#if defined(SIMU_DISKIO)
     f_mount(&g_FATFS_Obj, "", 1);
     // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
     sdGetFreeSectors();
@@ -349,7 +349,7 @@ void *main_thread(void *)
   }
 #endif
 
-#if defined(DISKIO_SIMU)
+#if defined(SIMU_DISKIO)
   if (diskImage) {
     fclose(diskImage);
   }
@@ -478,7 +478,7 @@ static void EeFsDump(){
 }
 #endif
 
-#if defined(SDCARD) && !defined(DISKIO_SIMU)
+#if defined(SDCARD) && !defined(SIMU_DISKIO)
 namespace simu {
 #include <dirent.h>
 }
@@ -677,10 +677,10 @@ int32_t Card_state = SD_ST_MOUNTED;
 uint32_t Card_CSD[4]; // TODO elsewhere
 #endif
 
-#endif  // #if defined(SDCARD) && !defined(DISKIO_SIMU)
+#endif  // #if defined(SDCARD) && !defined(SIMU_DISKIO)
 
 
-#if defined(DISKIO_SIMU)
+#if defined(SIMU_DISKIO)
 #include "FatFs/diskio.h"
 #include <time.h>
 #include <stdio.h>
@@ -861,7 +861,7 @@ uint32_t sdGetSpeed()
   return 330000;
 }
 
-#endif // #if defined(DISKIO_SIMU)
+#endif // #if defined(SIMU_DISKIO)
 
 
 
