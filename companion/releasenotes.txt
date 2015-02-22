@@ -2,6 +2,8 @@
 <ul>
 <li><i>nooverridech</i> firmware option was not working</li>
 <li>Fixed setting Expo from gvars for 9XR-Pro (<a href=https://github.com/opentx/opentx/issues/2040>#2040</a>)</li>
+<li>Added Mixers Monitor screen option <i>mixersmon</i> (<a href=https://github.com/opentx/opentx/issues/1945>#1945</a>)</li>
+<li>Added audio playing in simulator (<a href=https://github.com/opentx/opentx/issues/457>#457</a>)</li>
 </ul>
 
 
