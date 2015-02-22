@@ -112,10 +112,9 @@ inline int geteepromsize() {
 #include "radio/src/haptic.cpp"
 #include "radio/src/targets/taranis/haptic_driver.cpp"
 #include "radio/src/sdcard.cpp"
-// TODO Because FatFS in not C++ there cannot be namespaces there and the functions are defined several times!
-#undef SDCARD
+// Because FatFS in not C++ there cannot be namespaces there and the functions are defined several times!
+#define SKIP_FATFS_DECLARATION
 #include "radio/src/targets/simu/simpgmspace.cpp"
-#define SDCARD
 #include "radio/src/translations.cpp"
 #include "radio/src/fonts.cpp"
 #include "radio/src/telemetry/frsky.cpp"
@@ -211,7 +210,7 @@ bool OpentxTaranisSimulator::timer10ms()
 #include "simulatorimport.h"
 }
 
-uint8_t * OpentxTaranisSimulator::getLcd()
+::uint8_t * OpentxTaranisSimulator::getLcd()
 {
 #define GETLCD_IMPORT
 #include "simulatorimport.h"
@@ -227,18 +226,21 @@ void OpentxTaranisSimulator::start(QByteArray & eeprom, bool tests)
 {
   memcpy(Open9xX9D::eeprom, eeprom.data(), std::min<int>(sizeof(Open9xX9D::eeprom), eeprom.size()));
   StartEepromThread(NULL);
+  StartAudioThread();
   StartMainThread(tests);
 }
 
 void OpentxTaranisSimulator::start(const char * filename, bool tests)
 {
   StartEepromThread(filename);
+  StartAudioThread();
   StartMainThread(tests);
 }
 
 void OpentxTaranisSimulator::stop()
 {
   StopMainThread();
+  StopAudioThread();
   StopEepromThread();
 }
 
@@ -258,27 +260,27 @@ void OpentxTaranisSimulator::setValues(TxInputs &inputs)
 void OpentxTaranisSimulator::setTrim(unsigned int idx, int value)
 {
   idx = Open9xX9D::modn12x3[4*getStickMode() + idx];
-  uint8_t phase = getTrimFlightPhase(getFlightMode(), idx);
+  ::uint8_t phase = getTrimFlightPhase(getFlightMode(), idx);
   setTrimValue(phase, idx, value);
 }
 
 void OpentxTaranisSimulator::getTrims(Trims & trims)
 {
-  uint8_t phase = getFlightMode();
+  ::uint8_t phase = getFlightMode();
   trims.extended = hasExtendedTrims();
-  for (uint8_t idx=0; idx<4; idx++) {
+  for (::uint8_t idx=0; idx<4; idx++) {
     trims.values[idx] = getTrimValue(getTrimFlightPhase(phase, idx), idx);
   }
 
   for (int i=0; i<2; i++) {
-    uint8_t idx = Open9xX9D::modn12x3[4*getStickMode() + i];
-    int16_t tmp = trims.values[i];
+    ::uint8_t idx = Open9xX9D::modn12x3[4*getStickMode() + i];
+    ::int16_t tmp = trims.values[i];
     trims.values[i] = trims.values[idx];
     trims.values[idx] = tmp;
   }
 }
 
-void OpentxTaranisSimulator::wheelEvent(uint8_t steps)
+void OpentxTaranisSimulator::wheelEvent(::uint8_t steps)
 {
   // g_rotenc[0] += steps*4;
 }
@@ -301,12 +303,12 @@ const char * OpentxTaranisSimulator::getError()
 #include "simulatorimport.h"
 }
 
-void OpentxTaranisSimulator::sendTelemetry(uint8_t * data, unsigned int len) 
+void OpentxTaranisSimulator::sendTelemetry(::uint8_t * data, unsigned int len) 
 {
   frskySportProcessPacket(data);
 }
 
-void OpentxTaranisSimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
+void OpentxTaranisSimulator::setTrainerInput(unsigned int inputNumber, ::int16_t value)
 {
 #define SETTRAINER_IMPORT
 #include "simulatorimport.h"

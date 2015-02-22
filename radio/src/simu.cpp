@@ -43,8 +43,10 @@
 #include <time.h>
 #include <ctype.h>
 
-#define W2 LCD_W*2
-#define H2 LCD_H*2
+#define LCD_ZOOM 2
+
+#define W2 LCD_W*LCD_ZOOM
+#define H2 LCD_H*LCD_ZOOM
 
 int g_snapshot_idx = 0;
 
@@ -55,6 +57,7 @@ class Open9xSim: public FXMainWindow
   public:
     Open9xSim(){};
     Open9xSim(FXApp* a);
+    ~Open9xSim();
     long onKeypress(FXObject*,FXSelector,void*);
     long onTimeout(FXObject*,FXSelector,void*);
     void makeSnapshot(const FXDrawable* drawable);
@@ -67,7 +70,7 @@ class Open9xSim: public FXMainWindow
     bool           firstTime;
 
   public:
-    FXSlider      *sliders[8];
+    FXSlider      *sliders[NUM_STICKS];
     FXKnob        *knobs[NUM_POTS];
 };
 // Message Map
@@ -83,7 +86,7 @@ FXIMPLEMENT(Open9xSim,FXMainWindow,Open9xSimMap,ARRAYNUMBER(Open9xSimMap))
 Open9xSim::Open9xSim(FXApp* a):
   FXMainWindow(a, "OpenTX Simu", NULL, NULL, DECOR_ALL, 20, 90, 0, 0)
 {
-  firstTime=true;
+  firstTime = true;
   for(int i=0; i<(LCD_W*LCD_H/8); i++) displayBuf[i]=0;//rand();
   bmp = new FXPPMImage(getApp(),NULL,IMAGE_OWNED|IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP, W2, H2);
 
@@ -91,9 +94,8 @@ Open9xSim::Open9xSim(FXApp* a):
   FXHorizontalFrame *hf1=new FXHorizontalFrame(this,LAYOUT_FILL_X);
 
   //rh lv rv lh
-  for(int i=0; i<4; i++){
-    switch(i)
-    {
+  for (int i=0; i<4; i++) {
+    switch (i) {
 #define L LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|LAYOUT_FIX_X|LAYOUT_FIX_Y
 #undef X0
 #define X0 10
@@ -126,6 +128,25 @@ Open9xSim::Open9xSim(FXApp* a):
   bmf = new FXImageFrame(this,bmp);
 
   getApp()->addTimeout(this,2,100);
+}
+
+Open9xSim::~Open9xSim()
+{
+  StopMainThread();
+  StopAudioThread();
+  StopEepromThread();
+  
+  delete bmp;
+  delete sliders[0];
+  delete sliders[1];
+  delete sliders[2];
+  delete sliders[3];
+
+  for(int i=0; i<NUM_POTS; i++){
+    delete knobs[i];
+  }
+
+  delete bmf;
 }
 
 void Open9xSim::makeSnapshot(const FXDrawable* drawable)
@@ -164,6 +185,7 @@ void Open9xSim::makeSnapshot(const FXDrawable* drawable)
        printf("Cannot create snapshot %s\n", buf);
      }
 }
+
 void Open9xSim::doEvents()
 {
   getApp()->runOneEvent(false);
@@ -173,7 +195,7 @@ long Open9xSim::onKeypress(FXObject*,FXSelector,void*v)
 {
   FXEvent *evt=(FXEvent*)v;
   // printf("keypress %x\n", evt->code);
-  if (evt->code=='s'){
+  if (evt->code=='s') {
     makeSnapshot(bmf);
   }
   return 0;
@@ -302,7 +324,7 @@ void Open9xSim::refreshDisplay()
 #if !defined(PCBTARANIS)
     FXColor onColor = FXRGB(0,0,0);
 #endif
-    for (int x=0;x<LCD_W;x++) {
+    for (int x=0; x<LCD_W; x++) {
       for (int y=0; y<LCD_H; y++) {
 #if defined(PCBTARANIS)
         uint8_t * p = & lcd_buf[y / 2 * LCD_W + x];
@@ -389,6 +411,7 @@ int main(int argc,char **argv)
   printf("Model size = %d\n", (int)sizeof(g_model));
 
   StartEepromThread(argc >= 2 ? argv[1] : "eeprom.bin");
+  StartAudioThread();
   StartMainThread();
 
 #if defined(PCBTARANIS)
@@ -396,12 +419,7 @@ int main(int argc,char **argv)
   simuSetSwitch(1, 0);
 #endif
 
-  int result = application.run();
-
-  StopMainThread();
-  StopEepromThread();
-  
-  return result;
+  return application.run();
 }
 
 uint16_t anaIn(uint8_t chan)

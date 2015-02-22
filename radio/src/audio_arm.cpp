@@ -360,14 +360,17 @@ void referenceModelAudioFiles()
 
       // Eliminates directories / non wav files
       if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
+      TRACE("referenceModelAudioFiles(): using file: %s", fn);
 
       // Phases Audio Files <phasename>-[on|off].wav
       for (int i=0; i<MAX_FLIGHT_MODES && !found; i++) {
         for (int event=0; event<2; event++) {
           getPhaseAudioFile(path, i, event);
+          // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fn);
           if (!strcasecmp(filename, fn)) {
             sdAvailablePhaseAudioFiles |= MASK_PHASE_AUDIO_FILE(i, event);
             found = true;
+            TRACE("\tfound: %s", filename);
             break;
           }
         }
@@ -376,9 +379,11 @@ void referenceModelAudioFiles()
       // Switches Audio Files <switchname>-[up|mid|down].wav
       for (int i=0; i<SWSRC_LAST_SWITCH+NUM_XPOTS*XPOTS_MULTIPOS_COUNT && !found; i++) {
         getSwitchAudioFile(path, i);
+        // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fn);
         if (!strcasecmp(filename, fn)) {
           sdAvailableSwitchAudioFiles |= MASK_SWITCH_AUDIO_FILE(i);
           found = true;
+          TRACE("\tfound: %s", filename);
         }
       }
 
@@ -386,9 +391,11 @@ void referenceModelAudioFiles()
       for (int i=0; i<NUM_LOGICAL_SWITCH && !found; i++) {
         for (int event=0; event<2; event++) {
           getLogicalSwitchAudioFile(path, i, event);
+          // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fn);
           if (!strcasecmp(filename, fn)) {
             sdAvailableLogicalSwitchAudioFiles |= MASK_LOGICAL_SWITCH_AUDIO_FILE(i, event);
             found = true;
+            TRACE("\tfound: %s", filename);
             break;
           }
         }
@@ -496,10 +503,14 @@ void audioTask(void* pdata)
 
 void mixSample(uint16_t * result, int sample, unsigned int fade)
 {
+#if defined(SIMU)
+  *result = limit(0, *result + ((sample >> fade) ), 0xFFFF);
+#else
   *result = limit(0, *result + ((sample >> fade) >> 4), 4095);
+#endif
 }
 
-#if defined(SDCARD) && !defined(SIMU)
+#if defined(SDCARD)
 
 #define RIFF_CHUNK_SIZE 12
 uint8_t wavBuffer[AUDIO_BUFFER_SIZE*2];
@@ -692,7 +703,11 @@ void AudioQueue::wakeup()
 
     // write silence in the buffer
     for (uint32_t i=0; i<AUDIO_BUFFER_SIZE; i++) {
+#if defined(SIMU)
+      buffer->data[i] = 0x8000; /* silence */
+#else
       buffer->data[i] = 0x8000 >> 4; /* silence */
+#endif
     }
 
     // mix the priority context (only tones)
@@ -748,6 +763,7 @@ void AudioQueue::wakeup()
     // push the buffer if needed
     if (size > 0) {
       __disable_irq();
+      // TRACE("pushing buffer %d\n", bufferWIdx);
       bufferWIdx = nextBufferIdx(bufferWIdx);
       buffer->size = size;
       buffer->state = dacQueue(buffer) ? AUDIO_BUFFER_PLAYING : AUDIO_BUFFER_FILLED;
@@ -790,6 +806,10 @@ bool AudioQueue::isPlaying(uint8_t id)
 
 void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t flags, int8_t freqIncr)
 {
+#if !defined(SIMU_AUDIO)
+  return;
+#endif
+
   CoEnterMutexSection(audioMutex);
 
   if (freq && freq < BEEP_MIN_FREQ) {
@@ -844,7 +864,11 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 {
 #if defined(SIMU)
   TRACE("playFile(\"%s\", flags=%x, id=%d)", filename, flags, id);
-#else
+#endif
+
+#if !defined(SIMU_AUDIO)
+  return;
+#endif
 
   if (!sdMounted())
     return;
@@ -880,13 +904,16 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   }
 
   CoLeaveMutexSection(audioMutex);
-#endif
 }
 
 void AudioQueue::stopPlay(uint8_t id)
 {
 #if defined(SIMU)
   TRACE("stopPlay(id=%d)", id);
+#endif
+
+#if !defined(SIMU_AUDIO)
+  return;
 #endif
 
   // For the moment it's only needed to stop the background music
