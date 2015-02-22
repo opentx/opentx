@@ -231,7 +231,7 @@ const char *fileCopy(const char *filename, const char *srcDir, const char *destD
 #endif // #if defined(PCBTARANIS)
 
 
-#if !defined(SIMU) || defined(DISKIO_SIMU)
+#if !defined(SIMU) || defined(SIMU_DISKIO)
 uint32_t sdGetNoSectors()
 {
   static DWORD noSectors = 0;
@@ -256,7 +256,7 @@ uint32_t sdGetFreeSectors()
   return nofree * fat->csize;
 }
 
-#else  // #if !defined(SIMU) || defined(DISKIO_SIMU)
+#else  // #if !defined(SIMU) || defined(SIMU_DISKIO)
 
 uint32_t sdGetNoSectors()
 {
@@ -273,4 +273,4 @@ uint32_t sdGetFreeSectors()
   return 10;
 }
 
-#endif  // #if !defined(SIMU) || defined(DISKIO_SIMU)
+#endif  // #if !defined(SIMU) || defined(SIMU_DISKIO)

@@ -138,7 +138,7 @@ void delay_01us(uint16_t nb);
 #endif
 
 // SD driver
-#if !defined(SIMU) || defined(DISKIO_SIMU)
+#if !defined(SIMU) || defined(SIMU_DISKIO)
   uint32_t sdIsHC();
   uint32_t sdGetSpeed();
   #define SD_IS_HC()              (sdIsHC())
