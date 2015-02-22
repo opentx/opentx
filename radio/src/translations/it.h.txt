@@ -28,10 +28,10 @@
  *
  * In order to make translations easier it.h.txt is parsed and national
  * characters are replaced by bitmap codes. The result is it.h.
- * 
- * See translate.py in the util folder for the list of character codes  
  *
- * !!!!! DO NOT EDIT it.h - EDIT it.h.txt INSTEAD !!!!!!!   
+ * See translate.py in the util folder for the list of character codes
+ *
+ * !!!!! DO NOT EDIT it.h - EDIT it.h.txt INSTEAD !!!!!!!
  */
  /* Formatting octal codes available in TR_ strings:
  *  \037\x           -sets LCD x-coord (x value in octal)
@@ -54,50 +54,50 @@
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
 #define TR_OFFON               "OFF""ON\0"
-                               
+
 #define LEN_MMMINV             "\003"
 #define TR_MMMINV              "---""INV"
-                               
+
 #define LEN_NCHANNELS          "\004"
 #define TR_NCHANNELS           "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
-                               
+
 #define LEN_VBEEPMODE          TR("\005", "\010")
 #define TR_VBEEPMODE           TR("Silen""Avvis""Notst""Tutti","Silente ""Avvisi\0 ""No Tasti""Tutti\0  ")
-                               
+
 #define LEN_VBEEPLEN           "\005"
 #define TR_VBEEPLEN            "+Cort""Corta""Media""Lunga""+Lung"
-                               
+
 #define LEN_VRENAVIG           "\003"
 #define TR_VRENAVIG            "No REaREb"
-                               
+
 #define LEN_VBLMODE            TR("\005", "\006")
 #define TR_VBLMODE             TR("OFF\0 ""Tasti""Stks\0""Tutti""ON\0  ", "Spenta""Tasti\0""Sticks""Tutti\0""Accesa")
-                               
+
 #define LEN_TRNMODE            "\003"
 #define TR_TRNMODE             "off"" +="" :="
-                               
+
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "ch1ch2ch3ch4"
-                
+
 #define LEN_UART3MODES         "\016"
 #define TR_UART3MODES          "OFF\0          ""Replica S-Port""Telemetria\0   ""SBUS Trainer\0 ""Debug\0"
 
 #define LEN_POTTYPES           "\017"
 #define TR_POTTYPES            "None\0          ""Pot. con centro""Inter. Multipos""Potenziometro\0 "
-                               
+
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATA:""ORA :"
-                               
+
 #define LEN_VLCD               "\006"
 #define TR_VLCD                "NormalOptrex"
-                               
+
 #define LEN_VPERSISTENT        "\015"
 #define TR_VPERSISTENT         "NO\0          ""Volo\0        ""Reset Manuale"
 
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japan\0 ""Europa\0")
 
-#define LEN_TARANIS_PROTOCOLS  "\004"          
+#define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2"
 
 #define LEN_XJT_PROTOCOLS      "\004"
@@ -119,11 +119,11 @@
 
 #if defined(PCBTARANIS) || defined(REVX)
   #define TR_RETA123           "DEMA123SD"
-#elif defined(PCBSKY9X)        
+#elif defined(PCBSKY9X)
   #define TR_RETA123           "DEMA123a"
-#elif defined(CPUM2560)        
+#elif defined(CPUM2560)
   #define TR_RETA123           "DEMA123ab"
-#else                          
+#else
   #define TR_RETA123           "DEMA123"
 #endif
 
@@ -139,13 +139,13 @@
 
 #if defined(DSM2)
   #define TR_DSM2              "LP45\0 ""DSM2\0 ""DSMX\0 "
-#elif defined(IRPROTOS)        
+#elif defined(IRPROTOS)
   #define TR_DSM2              "[LP45]""[DSM2]""[DSMX]"
-#else                          
-  #define TR_DSM2              
-#endif                         
-                               
-#if defined(IRPROTOS)          
+#else
+  #define TR_DSM2
+#endif
+
+#if defined(IRPROTOS)
   #define TR_IRPROTOS          "SILV  TRAC09PICZ  SWIFT\0"
 #else
   #define TR_IRPROTOS
@@ -161,16 +161,16 @@
 
 #define LEN_POSNEG             "\003"
 #define TR_POSNEG              "POS""NEG"
-                               
+
 #define LEN_VCURVEFUNC         "\003"
 #define TR_VCURVEFUNC          "---""x>0""x<0""|x|""f>0""f<0""|f|"
-                               
+
 #define LEN_VMLTPX             "\005"
 #define TR_VMLTPX              "Add. ""Molt.""Sost."
-                               
+
 #define LEN_VMLTPX2            "\002"
 #define TR_VMLTPX2             "+=""*="":="
-                               
+
 #define LEN_VMIXTRIMS          "\003"
 #define TR_VMIXTRIMS           "OFF""ON ""Dir""Ele""Mot""Ale"
 
@@ -198,60 +198,60 @@
 #endif
 
 #define LEN_VCSWFUNC           "\005"
-#if defined(CPUARM)            
+#if defined(CPUARM)
 #define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a~x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""Δ}x\0 ""|Δ|}x" TR_CSWTIMER TR_CSWSTICKY
-#else                          
+#else
 #define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a~x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""^}x\0 ""|^|}x" TR_CSWTIMER TR_CSWSTICKY
-#endif                         
-                               
+#endif
+
 #define LEN_VFSWFUNC           "\015"
 
 #if defined(VARIO)
   #define TR_VVARIO            "Vario\0       "
-#else                          
+#else
   #define TR_VVARIO            "[Vario]\0     "
-#endif                         
-                               
-#if defined(AUDIO)             
+#endif
+
+#if defined(AUDIO)
   #define TR_SOUND             "Suona\0       "
-#else                          
+#else
   #define TR_SOUND             "Beep\0        "
-#endif                         
-                               
-#if defined(HAPTIC)            
+#endif
+
+#if defined(HAPTIC)
   #define TR_HAPTIC            "Vibrazione\0  "
-#else                          
+#else
   #define TR_HAPTIC            "[Vibrazione]\0"
-#endif                         
-                               
-#if defined(VOICE)             
-  #if defined(PCBSKY9X)        
+#endif
+
+#if defined(VOICE)
+  #if defined(PCBSKY9X)
     #define TR_PLAY_TRACK      "Suona\0       "
-  #else                        
+  #else
     #define TR_PLAY_TRACK      "SuonaTraccia\0"
-  #endif                       
+  #endif
   #define TR_PLAY_BOTH         "Play Both\0   "
   #define TR_PLAY_VALUE        "LeggiValore\0 "
-#else                          
+#else
   #define TR_PLAY_TRACK        "[Brano]\0     "
   #define TR_PLAY_BOTH         "[Play Both]\0 "
   #define TR_PLAY_VALUE        "[LeggiValore]"
 #endif
 
 #define TR_SF_BG_MUSIC        "Musica Sf\0   ""Musica Sf ||\0"
-                               
-#if defined(SDCARD)            
+
+#if defined(SDCARD)
   #define TR_SDCLOGS           "SDCARD Logs\0 "
-#else                          
+#else
   #define TR_SDCLOGS           "[SDCARD Logs]\0"
-#endif                         
-                               
-#ifdef GVARS                   
+#endif
+
+#ifdef GVARS
   #define TR_ADJUST_GVAR       "Regola \0     "
-#else                          
+#else
   #define TR_ADJUST_GVAR       "[RegolaVG]\0  "
-#endif                         
-                               
+#endif
+
 #if defined(LUA)
   #define TR_SF_PLAY_SCRIPT   "Script Lua\0  "
 #else
@@ -260,10 +260,10 @@
 
 #if defined(DEBUG)
   #define TR_SF_TEST          "Test\0        "
-#else                          
-  #define TR_SF_TEST          
-#endif                         
-          
+#else
+  #define TR_SF_TEST
+#endif
+
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
   #define TR_SF_SAFETY        "Blocco\0      "
 #else
@@ -275,14 +275,14 @@
 #else
   #define TR_SF_SCREENSHOT
 #endif
-                          
+
 #define TR_SF_RESERVE         "[riserva]   \0"
-                               
-#if defined(CPUARM)            
+
+#if defined(CPUARM)
   #define TR_VFSWFUNC          TR_SF_SAFETY "Maestro \0    ""Trim Instant.""Azzera\0      ""Set \0        " TR_ADJUST_GVAR "Volume\0      " TR_SF_RESERVE TR_SF_RESERVE TR_SF_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Retroillum.\0 " TR_SF_SCREENSHOT TR_SF_TEST
-#elif defined(PCBGRUVIN9X)     
+#elif defined(PCBGRUVIN9X)
   #define TR_VFSWFUNC          TR_SF_SAFETY "Maestro \0    ""Trim Instant.""Azzera\0      " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Retroillum.\0 " TR_SF_TEST
-#else                          
+#else
   #define TR_VFSWFUNC          TR_SF_SAFETY "Maestro \0    ""Trim Instant.""Azzera\0      " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Retroillum.\0 " TR_SF_TEST
 #endif
 
@@ -322,7 +322,7 @@
   #define TR_TELEM_TIME        TR("Ora\0", "Ora\0 ")
   #define TR_SWR               TR("SWR\0", "SWR\0 ")
   #define TR_RX_BATT           TR("RxBt", "BatRx")
-  #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ") 
+  #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ")
   #define TR_A3_A4_MIN         TR("A3-\0""A4-\0", "A3-\0 ""A4-\0 ")
 #else
   #define TR_TELEM_RESERVE
@@ -379,13 +379,13 @@
 
 #define STR_V                  (STR_VTELEMUNIT+1)
 #define STR_A                  (STR_VTELEMUNIT+4)
-                               
+
 #define LEN_VALARM             "\003"
 #define TR_VALARM              "---""Gia""Ara""Ros"
-                               
+
 #define LEN_VALARMFN           "\001"
 #define TR_VALARMFN            "<>"
-                               
+
 #define LEN_VTELPROTO          "\007"
 #define TR_VTELPROTO           "---\0   ""Hub\0   ""WSHHigh"
 
@@ -408,10 +408,10 @@
 
 #define LEN_VTELEMSCREENTYPE   "\006"
 #define TR_VTELEMSCREENTYPE    "Valori""Barre "
-                               
+
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "HMS NMEA"
-                               
+
 #define LEN2_VTEMPLATES        13
 #define LEN_VTEMPLATES         "\015"
 #define TR_VTEMPLATES          "Canc. Mixes\0 ""Semplice 4CH\0""Sticky-T-Cut\0""Coda-V      \0""Elevoni\0     ""Delta\0       ""eCCPM\0       ""Setup Heli\0  ""Test Servo\0  "
@@ -744,7 +744,7 @@
 #define TR_CPU_TEMP            "Temp CPU \016>"
 #define TR_CPU_CURRENT         "Corrente\022>"
 #define TR_CPU_MAH             "Consumo"
-#define TR_COPROC              "CoProc."  
+#define TR_COPROC              "CoProc."
 #define TR_COPROC_TEMP         "Temp. MB \016>"
 #define TR_CAPAWARNING         INDENT "CapacitàLow"
 #define TR_TEMPWARNING         INDENT "Temp. Alta"
@@ -788,6 +788,7 @@
 #define TR_DATE                "Data"
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "MONITOR CANALI"
+#define TR_MIXERS_MONITOR      "MIXERS MONITOR"
 #define TR_PATH_TOO_LONG       "Path troppo lungo"
 #define TR_VIEW_TEXT           "Vedi testo"
 #define TR_FLASH_BOOTLOADER    "Flash BootLoader"
@@ -909,7 +910,7 @@
 #define TR_ABOUT_MIKE_2        "Guru codice e driver"
 #define TR_ABOUT_MIKE_3        "esperto a basso livello"
 #define TR_ABOUT_MIKE_4        "Ispiratore"
-       
+
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
 #define TR_ABOUT_ROMOLO_2      "Autore Companion9x"
 #define TR_ABOUT_ROMOLO_3      ""

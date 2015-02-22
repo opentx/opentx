@@ -28,10 +28,10 @@
  *
  * In order to make translations easier se.h.txt is parsed and national
  * characters are replaced by bitmap codes. The result is se.h.
- * 
- * See translate.py in the util folder for the list of character codes  
  *
- * !!!!! DO NOT EDIT se.h - EDIT se.h.txt INSTEAD !!!!!!!   
+ * See translate.py in the util folder for the list of character codes
+ *
+ * !!!!! DO NOT EDIT se.h - EDIT se.h.txt INSTEAD !!!!!!!
  */
  /* Formatting octal codes available in TR_ strings:
  *  \037\x           -sets LCD x-coord (x value in octal)
@@ -40,17 +40,17 @@
  *  \001 to \034     -extended spacing (value * FW/2)
  *  \0               -ends current string
  */
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+
+
+
+
+
+
+
+
+
+
+
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
 #define TR_OFFON               "Av ""På\0"
@@ -97,7 +97,7 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
-#define LEN_TARANIS_PROTOCOLS  "\004"          
+#define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "Av\0 ""PPM\0""XJT\0""DSM2"
 
 #define LEN_XJT_PROTOCOLS      "\004"
@@ -245,7 +245,7 @@
 #else
   #define TR_SDCLOGS           "[SD Logg]\0"
 #endif
- 
+
 #ifdef GVARS
   #define TR_ADJUST_GVAR       "Justera\0  "
 #else
@@ -322,7 +322,7 @@
   #define TR_TELEM_TIME        TR("Tid\0", "Tid\0 ")
   #define TR_SWR               TR("SWR\0", "SWR\0 ")
   #define TR_RX_BATT           TR("[NA]", "[NA]\0")
-  #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ") 
+  #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ")
   #define TR_A3_A4_MIN         TR("A3-\0""A4-\0", "A3-\0 ""A4-\0 ")
 #else
   #define TR_TELEM_RESERVE
@@ -684,7 +684,7 @@
   #define TR_MENUINPUTS        "INPUT"
   #define TR_MENULIMITS        "SERVON"
 #elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
-  #define TR_MENUINPUTS        "SPAKAR" 
+  #define TR_MENUINPUTS        "SPAKAR"
   #define TR_MENULIMITS        "SERVON"
 #else
   #define TR_MENUINPUTS        TR("DR/EXPO","DUALRATES/EXPO")
@@ -788,6 +788,7 @@
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Enks"
 #define TR_CHANNELS_MONITOR    "Kanalöversikt"
+#define TR_MIXERS_MONITOR      "MIXERS MONITOR"
 #define TR_PATH_TOO_LONG       "För lång sökväg"
 #define TR_VIEW_TEXT           "Visa Text"
 #define TR_FLASH_BOOTLOADER    "Skriv BootLoader"
@@ -909,7 +910,7 @@
 #define TR_ABOUT_MIKE_2        "Kod och drivrutins-guru"
 #define TR_ABOUT_MIKE_3        "Stor inspirationskälla"
 #define TR_ABOUT_MIKE_4        ""
-       
+
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
 #define TR_ABOUT_ROMOLO_2      "Chefsutvecklare av Companion9x"
 #define TR_ABOUT_ROMOLO_3      ""

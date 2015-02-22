@@ -747,6 +747,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case HasInputDiff:
     case HasMixerExpo:
       return (IS_TARANIS(board) ? true : false);
+    case MixersMonitor:
+      return id.contains("mixersmon") ? 1 : 0;
     default:
       return 0;
   }
@@ -1290,6 +1292,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("haptic", QObject::tr("Haptic module installed"));
   openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
   openTx->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
+  openTx->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
@@ -1299,6 +1302,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
   openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
   openTx->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
+  openTx->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
@@ -1308,6 +1312,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
   openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
   openTx->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
+  openTx->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 

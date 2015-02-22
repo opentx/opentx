@@ -29,7 +29,7 @@
  * In order to make translations easier es.h.txt is parsed and national
  * characters are replaced by bitmap codes. The result is es.h.
  *
- * See translate.py in the util folder for the list of character codes  
+ * See translate.py in the util folder for the list of character codes
  *
  * !!!!! DO NOT EDIT es.h - EDIT es.h.txt INSTEAD !!!!!!!
  */
@@ -97,7 +97,7 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japon\0 ""Europa\0")
 
-#define LEN_TARANIS_PROTOCOLS  "\004"          
+#define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2"
 
 #define LEN_XJT_PROTOCOLS      "\004"
@@ -237,7 +237,7 @@
   #define TR_PLAY_BOTH         "[OirAmbos]"
   #define TR_PLAY_VALUE        "[OirValor]"
 #endif
-       
+
 #define TR_SF_BG_MUSIC        "BgMusica\0 ""BgMusica||"
 
 #if defined(SDCARD)
@@ -322,7 +322,7 @@
   #define TR_TELEM_TIME        TR("Time", "Time\0")
   #define TR_SWR               TR("SWR\0", "SWR\0 ")
   #define TR_RX_BATT           TR("[NA]", "[NA]\0")
-  #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ") 
+  #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ")
   #define TR_A3_A4_MIN         TR("A3-\0""A4-\0", "A3-\0 ""A4-\0 ")
 #else
   #define TR_TELEM_RESERVE
@@ -788,6 +788,7 @@
 #define TR_DATE                "Fecha"
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "MONITOR CANALES"
+#define TR_MIXERS_MONITOR      "MIXERS MONITOR"
 #define TR_PATH_TOO_LONG       "Path too long"
 #define TR_VIEW_TEXT           "View text"
 #define TR_FLASH_BOOTLOADER    "Flash BootLoader"
@@ -909,9 +910,9 @@
 #define TR_ABOUT_MIKE_2        "Guru de codigo y drivers"
 #define TR_ABOUT_MIKE_3        "Seguramente uno de los"
 #define TR_ABOUT_MIKE_4        "mejores inspiradores"
-       
+
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
-#define TR_ABOUT_ROMOLO_2      "Desarrollador principal" 
+#define TR_ABOUT_ROMOLO_2      "Desarrollador principal"
 #define TR_ABOUT_ROMOLO_3      "Companion9x"
 
 #define TR_ABOUT_ANDRE_1       "Andre Bernet"

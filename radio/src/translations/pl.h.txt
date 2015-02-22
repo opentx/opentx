@@ -37,9 +37,9 @@
  *
  * In order to make translations easier pl.h.txt is parsed and national
  * characters are replaced by bitmap codes. The result is pl.h.
- * See translate.py in the util folder for the list of character codes  
+ * See translate.py in the util folder for the list of character codes
  *
- * !!!!! DO NOT EDIT pl.h - EDIT pl.h.txt INSTEAD !!!!!!!   
+ * !!!!! DO NOT EDIT pl.h - EDIT pl.h.txt INSTEAD !!!!!!!
  *
  */
  /* Formatting octal codes available in TR_ strings:
@@ -97,7 +97,7 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Ameryka""Japonia""Europa\0")
 
-#define LEN_TARANIS_PROTOCOLS  "\004"          
+#define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2"
 
 #define LEN_XJT_PROTOCOLS      "\004"
@@ -263,7 +263,7 @@
 #else
   #define TR_SF_TEST
 #endif
-          
+
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
   #define TR_SF_SAFETY        "Bezp.\0    "
 #else
@@ -322,7 +322,7 @@
   #define TR_TELEM_TIME        TR("Time", "Time\0")
   #define TR_SWR               TR("SWR\0", "SWR\0 ")
   #define TR_RX_BATT           TR("[NA]", "[NA]\0")
-  #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ") 
+  #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ")
   #define TR_A3_A4_MIN         TR("A3-\0""A4-\0", "A3-\0 ""A4-\0 ")
 #else
   #define TR_TELEM_RESERVE
@@ -333,7 +333,7 @@
   #define TR_A3_A4_MIN
 #endif
 
-#define TR_ASPD_MAX            TR("ASp+", "ASpd+") 
+#define TR_ASPD_MAX            TR("ASp+", "ASpd+")
 
 #if defined(PCBTARANIS)
   #define TR_TELEM_RSSI_RX     "RSSI\0"
@@ -786,6 +786,7 @@
 #define TR_DATE                "Data"
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "MONITOR KANAŁÓW"
+#define TR_MIXERS_MONITOR      "MIXERS MONITOR"
 #define TR_PATH_TOO_LONG       "Ścieżka za długa"
 #define TR_VIEW_TEXT           "Pokaż tekst"
 #define TR_FLASH_BOOTLOADER    "Flash BootLoader"
