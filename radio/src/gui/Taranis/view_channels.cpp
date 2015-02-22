@@ -41,6 +41,9 @@ void menuChannelsView(uint8_t event)
   static bool longNames = false;
   bool newLongNames = false;
   static bool secondPage = false;
+#ifdef MIXERS_MONITOR
+  static bool mixersView = false;
+#endif
   uint8_t ch;
 
   switch(event)
@@ -52,13 +55,23 @@ void menuChannelsView(uint8_t event)
     case EVT_KEY_FIRST(KEY_LEFT):
       secondPage = !secondPage;
       break;
+#ifdef MIXERS_MONITOR
+    case EVT_KEY_FIRST(KEY_ENTER):
+      mixersView = !mixersView;
+      break;
+#endif
   }
-  
+
   if (secondPage)
     ch = 16;
   else
     ch = 0;
 
+#ifdef MIXERS_MONITOR
+  if (mixersView)
+  lcd_putsCenter(0*FH, MIXERS_MONITOR);
+  else
+#endif
   lcd_putsCenter(0*FH, CHANNELS_MONITOR);
 
   lcd_invert_line(0);
@@ -73,13 +86,12 @@ void menuChannelsView(uint8_t event)
     // Channels
     for (uint8_t line=0; line<8; line++) {
       uint8_t y = 9+line*7;
+#ifdef MIXERS_MONITOR
+      int32_t val = (mixersView) ? ex_chans[ch] : channelOutputs[ch];
+#else
       int32_t val = channelOutputs[ch];
-      uint8_t ofs = (col ? 0 : 1);
-
-#if defined(CHANNELS_MONITOR_INV_HIDE)
-      //if channel output is inverted, show it with oposite sign
-      if (g_model.limitData[ch].revert) val = -val;
 #endif
+      uint8_t ofs = (col ? 0 : 1);
 
       // Channel name if present, number if not
       uint8_t lenLabel = ZLEN(g_model.limitData[ch].name);
@@ -106,7 +118,11 @@ void menuChannelsView(uint8_t event)
 
       // Gauge
       lcd_rect(x+LCD_W/2-3-wbar-ofs, y, wbar+1, 6);
+#ifdef MIXERS_MONITOR
+      uint16_t lim = mixersView ? 512*2*2 : (g_model.extendedLimits ? 640*2 : 512*2);
+#else
       uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
+#endif
       uint8_t len = limit((uint8_t)1, uint8_t((abs(val) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
       uint8_t x0 = (val>0) ? x+LCD_W/2-ofs-3-wbar/2 : x+LCD_W/2-ofs-2-wbar/2-len;
       lcd_hline(x0, y+1, len);

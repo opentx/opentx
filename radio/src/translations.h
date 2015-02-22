@@ -295,7 +295,7 @@ extern const pm_char STR_OPEN9X[];
   #define STR_MAVLINK_AC_MODES	(STR_OPEN9X + OFS_MAVLINK_AC_MODES)
   #define STR_MAVLINK_AP_MODES	(STR_OPEN9X + OFS_MAVLINK_AP_MODES)
 #endif
-  
+
 // The 0-terminated-strings
 #define NO_INDENT(x) (x)+LEN_INDENT
 
@@ -645,6 +645,7 @@ extern const pm_char STR_OWN[];
 extern const pm_char STR_ROTARY_ENCODER[];
 extern const pm_char STR_DATE[];
 extern const pm_char STR_CHANNELS_MONITOR[];
+extern const pm_char STR_MIXERS_MONITOR[];
 extern const pm_char STR_PATH_TOO_LONG[];
 extern const pm_char STR_VIEW_TEXT[];
 extern const pm_char STR_FLASH_BOOTLOADER[];
@@ -748,7 +749,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_THROTTLE_LABEL[];
   extern const pm_char STR_SCRIPT[];
   extern const pm_char STR_INPUTS[];
-  extern const pm_char STR_OUTPUTS[]; 
+  extern const pm_char STR_OUTPUTS[];
 #endif
 
 #if MENUS_LOCK == 1
@@ -793,30 +794,30 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_ABOUT_OPENTX_3[];
   extern const pm_char STR_ABOUT_OPENTX_4[];
   extern const pm_char STR_ABOUT_OPENTX_5[];
-  
+
   extern const pm_char STR_ABOUT_BERTRAND_1[];
   extern const pm_char STR_ABOUT_BERTRAND_2[];
   extern const pm_char STR_ABOUT_BERTRAND_3[];
-  
+
   extern const pm_char STR_ABOUT_MIKE_1[];
   extern const pm_char STR_ABOUT_MIKE_2[];
   extern const pm_char STR_ABOUT_MIKE_3[];
   extern const pm_char STR_ABOUT_MIKE_4[];
-  
+
   extern const pm_char STR_ABOUT_ROMOLO_1[];
   extern const pm_char STR_ABOUT_ROMOLO_2[];
   extern const pm_char STR_ABOUT_ROMOLO_3[];
-  
+
   extern const pm_char STR_ABOUT_ANDRE_1[];
   extern const pm_char STR_ABOUT_ANDRE_2[];
   extern const pm_char STR_ABOUT_ANDRE_3[];
-  
+
   extern const pm_char STR_ABOUT_ROB_1[];
   extern const pm_char STR_ABOUT_ROB_2[];
-  
+
   extern const pm_char STR_ABOUT_MARTIN_1[];
   extern const pm_char STR_ABOUT_MARTIN_2[];
-  
+
   extern const pm_char STR_ABOUT_KJELL_1[];
   extern const pm_char STR_ABOUT_KJELL_2[];
   extern const pm_char STR_ABOUT_KJELL_3[];
@@ -825,7 +826,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_ABOUT_HARDWARE_1[];
   extern const pm_char STR_ABOUT_HARDWARE_2[];
   extern const pm_char STR_ABOUT_HARDWARE_3[];
-  
+
   extern const pm_char STR_ABOUT_PARENTS_1[];
   extern const pm_char STR_ABOUT_PARENTS_2[];
   extern const pm_char STR_ABOUT_PARENTS_3[];

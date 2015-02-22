@@ -28,10 +28,10 @@
  *
  * In order to make translations easier fi.h.txt is parsed and national
  * characters are replaced by bitmap codes. The result is fi.h.
- * 
- * See translate.py in the util folder for the list of character codes  
  *
- * !!!!! DO NOT EDIT fi.h - EDIT fi.h.txt INSTEAD !!!!!!!   
+ * See translate.py in the util folder for the list of character codes
+ *
+ * !!!!! DO NOT EDIT fi.h - EDIT fi.h.txt INSTEAD !!!!!!!
  */
  /* Formatting octal codes available in TR_ strings:
  *  \037\x           -sets LCD x-coord (x value in octal)
@@ -40,17 +40,17 @@
  *  \001 to \034     -extended spacing (value * FW/2)
  *  \0               -ends current string
  */
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+
+
+
+
+
+
+
+
+
+
+
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
 #define TR_OFFON               "POI""PÄÄ"
@@ -97,7 +97,7 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerikk""Japani\0""Euroopp")
 
-#define LEN_TARANIS_PROTOCOLS  "\004"          
+#define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2"
 
 #define LEN_XJT_PROTOCOLS      "\004"
@@ -322,7 +322,7 @@
   #define TR_TELEM_TIME        TR("Time", "Time\0")
   #define TR_SWR               TR("SWR\0", "SWR\0 ")
   #define TR_RX_BATT           TR("[NA]", "[NA]\0")
-  #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ") 
+  #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ")
   #define TR_A3_A4_MIN         TR("A3-\0""A4-\0", "A3-\0 ""A4-\0 ")
 #else
   #define TR_TELEM_RESERVE
@@ -787,7 +787,8 @@
 #define TR_OWN                 "Own"
 #define TR_DATE                "Date"
 #define TR_ROTARY_ENCODER      "R.Encs"
-#define TR_CHANNELS_MONITOR    "CHANNEL MONITOR"
+#define TR_CHANNELS_MONITOR    "CHANNELS MONITOR"
+#define TR_MIXERS_MONITOR      "MIXERS MONITOR"
 #define TR_PATH_TOO_LONG       "Path too long"
 #define TR_VIEW_TEXT           "View text"
 #define TR_FLASH_BOOTLOADER    "Flash BootLoader"
@@ -909,7 +910,7 @@
 #define TR_ABOUT_MIKE_2        "Code and drivers guru"
 #define TR_ABOUT_MIKE_3        TR("Arguably,\001one\001of\001the\001best", "Arguably, one of the best")
 #define TR_ABOUT_MIKE_4        "Inspirational"
-       
+
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
 #define TR_ABOUT_ROMOLO_2      "Companion9x co-author"
 #define TR_ABOUT_ROMOLO_3      ""

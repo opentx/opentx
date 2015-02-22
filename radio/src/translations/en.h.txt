@@ -36,13 +36,13 @@
  *
  * In order to make translations easier en.h.txt is parsed and national
  * characters are replaced by bitmap codes. The result is en.h.
- * See translate.py in the util folder for the list of character codes  
+ * See translate.py in the util folder for the list of character codes
  *
- * !!!!! DO NOT EDIT en.h - EDIT en.h.txt INSTEAD !!!!!!!   
+ * !!!!! DO NOT EDIT en.h - EDIT en.h.txt INSTEAD !!!!!!!
  */
- 
- 
- 
+
+
+
 /* Formatting octal codes available in TR_ strings:
  *  \037\x           -sets LCD x-coord (x value in octal)
  *  \n               -newline
@@ -97,7 +97,7 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japan\0 ""Europe\0")
 
-#define LEN_TARANIS_PROTOCOLS  "\004"          
+#define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2"
 
 #define LEN_XJT_PROTOCOLS      "\004"
@@ -311,7 +311,7 @@
 #else
   #define TR_FSW_RESET_TIMERS  "Tmr1""Tmr2"
 #endif
-  
+
 #define TR_VFSWRESET           TR(TR_FSW_RESET_TIMERS "All\0" TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC, TR_FSW_RESET_TIMERS "Flight\0  " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC)
 
 #define LEN_FUNCSOUNDS         TR("\004", "\006")
@@ -324,7 +324,7 @@
   #define TR_TELEM_TIME        TR("Time", "Time\0")
   #define TR_SWR               TR("SWR\0", "SWR\0 ")
   #define TR_RX_BATT           TR("[NA]", "[NA]\0")
-  #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ") 
+  #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ")
   #define TR_A3_A4_MIN         TR("A3-\0""A4-\0", "A3-\0 ""A4-\0 ")
 #else
   #define TR_TELEM_RESERVE
@@ -358,8 +358,8 @@
 #define LENGTH_UNIT_IMP        "ft\0"
 #define SPEED_UNIT_IMP         "mph"
 #define LENGTH_UNIT_METR       "m\0 "
-#define SPEED_UNIT_METR        "kmh"  
-  
+#define SPEED_UNIT_METR        "kmh"
+
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\010")
   #define TR_VUNITSSYSTEM      TR("Metric""Imper.", "Metric\0 ""Imperial")
@@ -410,7 +410,7 @@
   #define LEN_VTELEMSCREENTYPE "\006"
   #define TR_VTELEMSCREENTYPE  "None\0 ""Nums\0 ""Bars\0 ""Script"
 #else
-  #define LEN_VTELEMSCREENTYPE "\004" 
+  #define LEN_VTELEMSCREENTYPE "\004"
   #define TR_VTELEMSCREENTYPE  "Nums""Bars"
 #endif
 
@@ -835,7 +835,8 @@
 #define TR_OWN                 "Own"
 #define TR_DATE                "Date"
 #define TR_ROTARY_ENCODER      "R.Encs"
-#define TR_CHANNELS_MONITOR    "CHANNEL MONITOR"
+#define TR_CHANNELS_MONITOR    "CHANNELS MONITOR"
+#define TR_MIXERS_MONITOR      "MIXERS MONITOR"
 #define TR_PATH_TOO_LONG       "Path too long"
 #define TR_VIEW_TEXT           "View text"
 #define TR_FLASH_BOOTLOADER    "Flash BootLoader"
@@ -957,7 +958,7 @@
 #define TR_ABOUT_MIKE_2        "Code and drivers guru"
 #define TR_ABOUT_MIKE_3        TR("Arguably,\001one\001of\001the\001best", "Arguably, one of the best")
 #define TR_ABOUT_MIKE_4        "Inspirational"
-       
+
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
 #define TR_ABOUT_ROMOLO_2      "Companion co-author"
 #define TR_ABOUT_ROMOLO_3      ""
