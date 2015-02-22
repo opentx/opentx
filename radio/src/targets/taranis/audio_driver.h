@@ -46,16 +46,12 @@ extern void setSampleRate(uint32_t frequency);
 
 #define VOLUME_LEVEL_MAX  23
 #define VOLUME_LEVEL_DEF  12
-static const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
-{
-    0,  1,  2,  3,  5,  9,  13,  17,  22,  27,  33,  40,
-    64, 82, 96, 105, 112, 117, 120, 122, 124, 125, 126, 127
-} ;
+extern const int8_t volumeScale[];
 
 #if !defined(SIMU)
 #define setVolume(v) I2C_set_volume(volumeScale[min<uint8_t>(v, VOLUME_LEVEL_MAX)])
 #else
-#define setVolume(v)
+void setVolume(uint8_t volume);
 #endif
 
 #endif

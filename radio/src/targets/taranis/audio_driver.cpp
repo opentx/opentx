@@ -36,6 +36,13 @@
 
 #include "../../opentx.h"
 
+const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
+{
+    0,  1,  2,  3,  5,  9,  13,  17,  22,  27,  33,  40,
+    64, 82, 96, 105, 112, 117, 120, 122, 124, 125, 126, 127
+};
+
+#if !defined(SIMU)
 bool dacIdle = true;
 
 void setSampleRate(uint32_t frequency)
@@ -139,7 +146,6 @@ void audioEnd()
   NVIC_DisableIRQ(DMA1_Stream5_IRQn) ;
 }
 
-#if !defined(SIMU)
 extern "C" void TIM6_DAC_IRQHandler()
 {
   DAC->CR &= ~DAC_CR_DMAEN1 ;     // Stop DMA requests
@@ -167,7 +173,7 @@ extern "C" void DMA1_Stream5_IRQHandler()
     dacIdle = true;
   }
 }
-#endif
+#endif  // #if !defined(SIMU)
 
 #if 0
 static void Audio_GPIO_Init()

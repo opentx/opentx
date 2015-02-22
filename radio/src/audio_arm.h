@@ -46,7 +46,11 @@
 #define AUDIO_SAMPLE_RATE     (32000)
 #define AUDIO_BUFFER_DURATION (10)
 #define AUDIO_BUFFER_SIZE     (AUDIO_SAMPLE_RATE*AUDIO_BUFFER_DURATION/1000)
-#define AUDIO_BUFFER_COUNT    (3)
+#if defined(SIMU_AUDIO)
+  #define AUDIO_BUFFER_COUNT  (10)      // simulator needs more buffers for smooth audio
+#else
+  #define AUDIO_BUFFER_COUNT  (3)
+#endif
 
 #define BEEP_MIN_FREQ         (150)
 #define BEEP_DEFAULT_FREQ     (2250)
@@ -155,6 +159,9 @@ bool dacQueue(AudioBuffer *buffer);
 class AudioQueue {
 
   friend void audioTask(void* pdata);
+#if defined(SIMU_AUDIO)
+  friend void *audio_thread(void *);
+#endif
 
   public:
 
@@ -196,7 +203,7 @@ class AudioQueue {
       }
 
       uint8_t idx = bufferRIdx;
-      while (idx != bufferWIdx) {
+      do {
         AudioBuffer * buffer = &buffers[idx];
         if (buffer->state == AUDIO_BUFFER_FILLED) {
           buffer->state = AUDIO_BUFFER_PLAYING;
@@ -204,9 +211,21 @@ class AudioQueue {
           return buffer;
         }
         idx = nextBufferIdx(idx);
-      }
+      } while (idx != bufferWIdx);   //this fixes a bug if all buffers are filled
 
       return NULL;
+    }
+
+    bool filledAtleast(int noBuffers) {
+      int count = 0;
+      for(int n= 0; n<AUDIO_BUFFER_COUNT; ++n) {
+        if (buffers[n].state == AUDIO_BUFFER_FILLED) {
+          if (++count >= noBuffers) {
+            return true;
+          }
+        }
+      }
+      return false;
     }
 
   protected:
