@@ -806,7 +806,7 @@ bool AudioQueue::isPlaying(uint8_t id)
 
 void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t flags, int8_t freqIncr)
 {
-#if !defined(SIMU_AUDIO)
+#if defined(SIMU) && !defined(SIMU_AUDIO)
   return;
 #endif
 
@@ -866,7 +866,7 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   TRACE("playFile(\"%s\", flags=%x, id=%d)", filename, flags, id);
 #endif
 
-#if !defined(SIMU_AUDIO)
+#if defined(SIMU) && !defined(SIMU_AUDIO)
   return;
 #endif
 
@@ -912,7 +912,7 @@ void AudioQueue::stopPlay(uint8_t id)
   TRACE("stopPlay(id=%d)", id);
 #endif
 
-#if !defined(SIMU_AUDIO)
+#if defined(SIMU) && !defined(SIMU_AUDIO)
   return;
 #endif
 
