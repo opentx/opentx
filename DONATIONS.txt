@@ -704,3 +704,6 @@ Chris Monk
 Stan von Miller
 Christian Krebs
 Michel Motte
+Graziano Rampinelli
+Joe Baker
+Jean-Philippe Laurent
