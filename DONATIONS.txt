@@ -702,3 +702,5 @@ Joe Baker
 Ben Fay
 Chris Monk
 Stan von Miller
+Christian Krebs
+Michel Motte
