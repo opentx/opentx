@@ -708,3 +708,6 @@ Graziano Rampinelli
 Joe Baker
 Jean-Philippe Laurent
 Romain Rouzaud
+Michel Garbarino
+Henri Mirra
+Otto Fröhlich
