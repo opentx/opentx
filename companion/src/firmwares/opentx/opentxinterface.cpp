@@ -1243,6 +1243,29 @@ void registerOpenTxFirmwares()
 
   /* MEGA2560 board */
   openTx = new OpenTxFirmware("opentx-mega2560", QObject::tr("OpenTX for MEGA2560 board"), BOARD_MEGA2560);
+  Option LCD_options[] = { { "ST7565P LCD", QObject::tr("ST7565P LCD or compatible"), 0 }, { "ST7565R LCD", QObject::tr("ST7565R LCD or compatible"), 0 }, { NULL } };
+  openTx->addOptions(LCD_options);
+  openTx->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
+  openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
+  openTx->addOption("nofp", QObject::tr("No flight modes"));
+  openTx->addOption("nocurves", QObject::tr("Disable curves menus"));
+  openTx->addOption("sdcard", QObject::tr("Support for SD memory card"));
+  openTx->addOption("voice", QObject::tr("Used if you have voice module"));
+  openTx->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
+  Option dsm2_options[] = { { "DSM2", QObject::tr("Support for DSM2 modules"), 0 }, { "DSM2PPM", QObject::tr("Support for DSM2 modules using ppm instead of true serial"), 0 }, { NULL } };
+  openTx->addOptions(dsm2_options);
+  openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
+  openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
+  openTx->addOption("symlimits", QObject::tr("Symetrical Limits"));
+  openTx->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
+  openTx->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
+  openTx->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
+  openTx->addOption("dblkeys", QObject::tr("Enable resetting values by pressing up and down at the same time"));
+  openTx->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
+  openTx->addOption("battgraph", QObject::tr("Battery graph"));
+  openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
+  openTx->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
+  openTx->addOption("imperial", QObject::tr("Imperial units"));
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 

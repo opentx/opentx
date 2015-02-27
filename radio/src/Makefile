@@ -657,7 +657,7 @@ ifeq ($(PCB), MEGA2560)
   MCU = atmega2560
   OPT = s
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBMEGA2560 -DCPUM2560 -DEEPROM_VARIANT=0 -DAUDIO
-  SDCARD = YES
+  SDCARD = NO
   BUZZER = YES
   THR_TRACE = YES
   INCDIRS += targets/mega2560 targets/stock FatFs FatFs/option
@@ -668,10 +668,10 @@ ifeq ($(PCB), MEGA2560)
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
-  ifeq ($(PCBREV), ST7565P)
-    EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  ifeq ($(PCBREV), ST7565R)
+    EXTRABOARDSRC = targets/mega2560/lcd_driver_ST7565R.cpp targets/common_avr/telemetry_driver.cpp 
   else
-    EXTRABOARDSRC = targets/mega2560/lcd_driver_ST7565R.cpp targets/common_avr/telemetry_driver.cpp
+    EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   endif
 
   ifeq ($(SDCARD), YES)
@@ -692,7 +692,6 @@ ifeq ($(PCB), MEGA2560)
   endif
 
   # Enable extra rotary encoders
-  # Values = YES, NO
   ROTARY_ENCODERS = 2
   CPPDEFS += -DROTARY_ENCODERS=${ROTARY_ENCODERS}
 endif
