@@ -639,7 +639,10 @@ void CustomFunctionsPanel::populateFuncParamArmTCB(QComboBox *b, char * value, c
 
   bool added = false;
   QString currentvalue(value);
-  foreach (QString entry, paramsList) {
+  // Convert set into list and sort it alphabetically case insensitive
+  QStringList list = QStringList::fromSet(paramsList);
+  qSort(list.begin(), list.end(), caseInsensitiveLessThan);
+  foreach (QString entry, list) {
     b->addItem(entry);
     if (entry==currentvalue) {
       b->setCurrentIndex(b->count()-1);

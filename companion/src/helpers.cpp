@@ -1068,3 +1068,8 @@ QSet<QString> getFilesSet(const QString &path, const QStringList &filter, int ma
   }
   return result;
 }
+
+bool caseInsensitiveLessThan(const QString &s1, const QString &s2)
+{
+  return s1.toLower() < s2.toLower();
+}

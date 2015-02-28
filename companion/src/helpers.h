@@ -159,4 +159,6 @@ bool isTempFileName(const QString & fileName);
 QString getSoundsPath(const GeneralSettings &generalSettings);
 QSet<QString> getFilesSet(const QString &path, const QStringList &filter, int maxLen);
 
+bool caseInsensitiveLessThan(const QString &s1, const QString &s2);
+
 #endif // HELPERS_H
