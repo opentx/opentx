@@ -1087,6 +1087,7 @@ void registerOpenTxFirmwares()
   Option ext_options[] = { { "frsky", QObject::tr("Support for frsky telemetry mod"), FRSKY_VARIANT }, { "telemetrez", QObject::tr("Support for telemetry easy board"), FRSKY_VARIANT }, { "jeti", QObject::tr("Support for jeti telemetry mod"), 0 }, { "ardupilot", QObject::tr("Support for receiving ardupilot data"), 0 }, { "nmea", QObject::tr("Support for receiving NMEA data"), 0 }, { "mavlink", QObject::tr("Support for MAVLINK devices"), MAVLINK_VARIANT }, { NULL } };
   Option nav_options[] = { { "rotenc", QObject::tr("Rotary Encoder use in menus navigation") }, { "potscroll", QObject::tr("Pots use in menus navigation") }, { NULL } };
   Option extr_options[] = { { "frsky", QObject::tr("Support for frsky telemetry mod"), FRSKY_VARIANT }, { "jeti", QObject::tr("Support for jeti telemetry mod"), 0 }, { "ardupilot", QObject::tr("Support for receiving ardupilot data"), 0 }, { "nmea", QObject::tr("Support for receiving NMEA data"), 0 }, { "mavlink", QObject::tr("Support for MAVLINK devices"), MAVLINK_VARIANT }, { NULL } };
+  Option dsm2_options[] = { { "DSM2", QObject::tr("Support for DSM2 modules"), 0 }, { "DSM2PPM", QObject::tr("Support for DSM2 modules using ppm instead of true serial"), 0 }, { NULL } };
 
   /* 9x board */
   openTx = new OpenTxFirmware("opentx-9x", QObject::tr("OpenTX for 9X board"), BOARD_STOCK);
@@ -1224,7 +1225,6 @@ void registerOpenTxFirmwares()
   openTx->addOption("sdcard", QObject::tr("Support for SD memory card"));
   openTx->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
   openTx->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
-  Option dsm2_options[] = { { "DSM2", QObject::tr("Support for DSM2 modules"), 0 }, { "DSM2PPM", QObject::tr("Support for DSM2 modules using ppm instead of true serial"), 0 }, { NULL } };
   openTx->addOptions(dsm2_options);
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
@@ -1252,7 +1252,6 @@ void registerOpenTxFirmwares()
   openTx->addOption("sdcard", QObject::tr("Support for SD memory card"));
   openTx->addOption("voice", QObject::tr("Used if you have voice module"));
   openTx->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
-  Option dsm2_options[] = { { "DSM2", QObject::tr("Support for DSM2 modules"), 0 }, { "DSM2PPM", QObject::tr("Support for DSM2 modules using ppm instead of true serial"), 0 }, { NULL } };
   openTx->addOptions(dsm2_options);
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
