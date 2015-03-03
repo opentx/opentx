@@ -84,7 +84,7 @@
 #define JACK_PPM_IN()            PORTB &= ~(1<<OUT_B_SIM_CTL)
 #define __BACKLIGHT_ON           PORTC |= (1<<OUT_C_LIGHT)   
 #define __BACKLIGHT_OFF          PORTC &= ~(1<<OUT_C_LIGHT)   
-#define IS_BACKLIGHT_ON()        PORTC &= (1<<OUT_C_LIGHT)    
+#define IS_BACKLIGHT_ON()        PORTC & (1<<OUT_C_LIGHT)
 
 // SD driver
 #define sdDone()
