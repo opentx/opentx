@@ -43,7 +43,11 @@
 #include <time.h>
 #include <ctype.h>
 
-#define LCD_ZOOM 2
+#if LCD_W > 212
+  #define LCD_ZOOM 1
+#else
+  #define LCD_ZOOM 2
+#endif
 
 #define W2 LCD_W*LCD_ZOOM
 #define H2 LCD_H*LCD_ZOOM
@@ -331,9 +335,9 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
 }
 
 #if defined(PCBTARANIS)
-#define BL_COLOR FXRGB(47,123,227)
+  #define BL_COLOR FXRGB(47, 123, 227)
 #else
-#define BL_COLOR FXRGB(150,200,152)
+  #define BL_COLOR FXRGB(150, 200, 152)
 #endif
 
 void Open9xSim::setPixel(int x, int y, FXColor color)
@@ -349,9 +353,9 @@ void Open9xSim::refreshDisplay()
 {
   if (lcd_refresh) {
     lcd_refresh = false;
-    FXColor offColor = IS_BACKLIGHT_ON() ? BL_COLOR : FXRGB(200,200,200);
-#if !defined(PCBTARANIS)
-    FXColor onColor = FXRGB(0,0,0);
+    FXColor offColor = IS_BACKLIGHT_ON() ? BL_COLOR : FXRGB(200, 200, 200);
+#if LCD_W == 128
+    FXColor onColor = FXRGB(0, 0, 0);
 #endif
     for (int x=0; x<LCD_W; x++) {
       for (int y=0; y<LCD_H; y++) {

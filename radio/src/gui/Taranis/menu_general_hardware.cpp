@@ -76,7 +76,9 @@ enum menuGeneralHwItems {
 
 #define HW_SETTINGS_COLUMN 15*FW
 
-#if defined(REVPLUS)
+#if defined(REV9E)
+  #define POTS_ROWS NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, 0, 0, 0, 0
+#elif defined(REVPLUS)
   #define POTS_ROWS NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, 0, 0
 #else
   #define POTS_ROWS NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, 0, 0
@@ -118,7 +120,7 @@ void menuGeneralHardware(uint8_t event)
       case ITEM_SETUP_HW_RS2:
 #endif
       {
-        int idx = (k<=ITEM_SETUP_HW_STICK4 ? k-ITEM_SETUP_HW_STICK1 : k-ITEM_SETUP_HW_LS+7);
+        int idx = (k<=ITEM_SETUP_HW_STICK4 ? k-ITEM_SETUP_HW_STICK1 : k-ITEM_SETUP_HW_LS+MIXSRC_SLIDER1-MIXSRC_Rud);
         lcd_putsiAtt(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
         if (ZEXIST(g_eeGeneral.anaNames[idx]) || attr)
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, event, attr);

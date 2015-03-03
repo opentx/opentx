@@ -94,13 +94,16 @@ extern "C" {
 #define BOOTLOADER_SIZE    0x8000
 #define FIRMWARE_ADDRESS   0x08000000
 
-#define PERI1_FREQUENCY    30000000
-#define PERI2_FREQUENCY    60000000
+#if defined(REV9E)
+  #define PERI1_FREQUENCY  42000000
+  #define PERI2_FREQUENCY  84000000
+#else
+  #define PERI1_FREQUENCY  30000000
+  #define PERI2_FREQUENCY  60000000
+#endif
+
 #define TIMER_MULT_APB1    2
 #define TIMER_MULT_APB2    2
-
-// #define JACK_PPM_OUT()
-// #define JACK_PPM_IN()
 
 #define PIN_MODE_MASK      0x0003
 #define PIN_INPUT          0x0000

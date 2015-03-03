@@ -56,20 +56,6 @@
   #define CASE_PCBSKY9X(x)
 #endif
 
-#if defined(PCBTARANIS)
-  #define IS_PCBTARANIS()    true
-  #define IF_PCBTARANIS(x)   (x)
-  #define CASE_PCBTARANIS(x) x,
-  #define IF_9X(x)           (0)
-  #define CASE_9X(x)
-#else
-  #define IS_PCBTARANIS()    false
-  #define IF_PCBTARANIS(x)   (0)
-  #define CASE_PCBTARANIS(x)
-  #define IF_9X(x)           (x)
-  #define CASE_9X(x)         x,
-#endif
-
 #if defined(CPUARM)
   #define CASE_CPUARM(x)     x,
   #define IF_CPUARM(x)       x
@@ -88,12 +74,6 @@
   #define CASE_LUA(x) x,
 #else
   #define CASE_LUA(x)
-#endif
-
-#if defined(BATTGRAPH) || defined(PCBTARANIS)
-  #define CASE_BATTGRAPH(x) x,
-#else
-  #define CASE_BATTGRAPH(x)
 #endif
 
 #if defined(CPUARM) || defined(CPUM2560)
@@ -381,7 +361,11 @@ enum PotType {
   POT_TYPE_MAX=POT_TYPE_NO_DETENT
 };
 
-#if defined(PCBTARANIS) && defined(REVPLUS)
+#if defined(PCBTARANIS) && defined(REV9E)
+  #define IS_POT_AVAILABLE(x)       (((x)!=POT3 && (x)!=POT4) || (g_eeGeneral.potsType & (0x03 << (2*((x)-POT1))))!=POT_TYPE_NONE)
+  #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsType>>(2*((x)-POT1)))&0x03)==POT_TYPE_MULTIPOS)
+  #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsType>>(2*((x)-POT1)))&0x03)==POT_TYPE_NO_DETENT)
+#elif defined(PCBTARANIS) && defined(REVPLUS)
   #define IS_POT_AVAILABLE(x)       ((x)!=POT3 || (g_eeGeneral.potsType & (0x03 << (2*((x)-POT1))))!=POT_TYPE_NONE)
   #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsType>>(2*((x)-POT1)))&0x03)==POT_TYPE_MULTIPOS)
   #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsType>>(2*((x)-POT1)))&0x03)==POT_TYPE_NO_DETENT)
@@ -471,7 +455,7 @@ enum PotType {
   #define LOAD_MODEL_BITMAP()
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(XCURVES)
   void loadCurves();
   #define LOAD_MODEL_CURVES() loadCurves()
 #else

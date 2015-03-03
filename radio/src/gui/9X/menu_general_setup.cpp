@@ -66,6 +66,12 @@ const pm_uchar sticks[] PROGMEM = {
   #define CASE_SPLASH_PARAM(x)
 #endif
 
+#if defined(BATTGRAPH)
+  #define CASE_BATTGRAPH(x) x,
+#else
+  #define CASE_BATTGRAPH(x)
+#endif
+
 enum menuGeneralSetupItems {
   CASE_RTCLOCK(ITEM_SETUP_DATE)
   CASE_RTCLOCK(ITEM_SETUP_TIME)

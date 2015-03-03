@@ -838,7 +838,6 @@ ifeq ($(PCB), TARANIS)
   LDSCRIPT = targets/taranis/stm32_flash_bl.ld
   TRGT = arm-none-eabi-
   OPT = s
-  CPPDEFS += -DHSE_VALUE=12000000
   BITMAPS += $(patsubst %.png,%.lbm,$(wildcard bitmaps/Taranis/*.png)) bitmaps/Taranis/mainmenu.lbm
   SDCARD = YES
   THR_TRACE = YES
@@ -852,9 +851,11 @@ ifeq ($(PCB), TARANIS)
   CPPDEFS += -DPCBTARANIS -DCPUARM -DCPUSTM32 -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DEEPROM_VARIANT=0 -DAUDIO -DPXX
   INCDIRS += targets/taranis CoOS CoOS/kernel CoOS/portable
   ifeq ($(PCBREV), REV9E)
+    CPPDEFS += -DHSE_VALUE=16800000
     CPPDEFS += -DSTM32F40_41xxx
     EXTRAINCDIRS += targets/taranis/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include targets/taranis/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Include targets/taranis/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc
   else
+    CPPDEFS += -DHSE_VALUE=12000000
     EXTRAINCDIRS += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/include
   endif
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc
