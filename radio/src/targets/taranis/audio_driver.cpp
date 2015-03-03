@@ -47,6 +47,10 @@ bool dacIdle = true;
 
 void setSampleRate(uint32_t frequency)
 {
+#if defined(REV9E)
+  frequency *= 2;
+#endif
+
   register uint32_t timer = (PERI1_FREQUENCY * TIMER_MULT_APB1) / frequency - 1 ;         // MCK/8 and 100 000 Hz
 
   TIM6->CR1 &= ~TIM_CR1_CEN ;
