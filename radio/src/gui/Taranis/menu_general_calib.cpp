@@ -169,8 +169,8 @@ void menuCommonCalib(uint8_t event)
   }
 
   doMainScreenGraphics();
-
   drawPotsBars();
+
   for (int i=POT1; i<=POT_LAST; i++) {
     uint8_t steps = 0;
     if (reusableBuffer.calib.state == 2) {
