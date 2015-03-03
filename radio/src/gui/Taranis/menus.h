@@ -353,10 +353,9 @@ void menuChannelsView(uint8_t event);
 
 #define LABEL(...) (uint8_t)-1
 
-#define KEY_MOVE_UP    KEY_PLUS
-#define KEY_MOVE_DOWN  KEY_MINUS
-
 #if defined(REV9E)
+  #define KEY_MOVE_UP                KEY_MINUS
+  #define KEY_MOVE_DOWN              KEY_PLUS
   #define CURSOR_MOVED_LEFT(event)   (EVT_KEY_MASK(event) == KEY_MINUS)
   #define CURSOR_MOVED_RIGHT(event)  (EVT_KEY_MASK(event) == KEY_PLUS)
   #define CASE_EVT_ROTARY_MOVE_RIGHT CASE_EVT_ROTARY_RIGHT
@@ -364,6 +363,8 @@ void menuChannelsView(uint8_t event);
   #define IS_ROTARY_MOVE_RIGHT       IS_ROTARY_RIGHT
   #define IS_ROTARY_MOVE_LEFT        IS_ROTARY_LEFT
 #else
+  #define KEY_MOVE_UP                KEY_PLUS
+  #define KEY_MOVE_DOWN              KEY_MINUS
   #define CURSOR_MOVED_LEFT(event)   (EVT_KEY_MASK(event) == KEY_PLUS)
   #define CURSOR_MOVED_RIGHT(event)  (EVT_KEY_MASK(event) == KEY_MINUS)
   #define CASE_EVT_ROTARY_MOVE_RIGHT CASE_EVT_ROTARY_LEFT
