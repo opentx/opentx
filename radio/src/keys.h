@@ -150,12 +150,6 @@ enum EnumKeys {
   SW_ID0=SW_BASE,
   SW_ID1,
   SW_ID2,
-#if defined(EXTRA_3POS)
-  SW_ID3,
-  SW_ID4,
-  SW_ID5,
-#endif
-
   SW_THR,
   SW_RUD,
   SW_ELE,

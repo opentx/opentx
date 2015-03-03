@@ -208,20 +208,6 @@ bool switchState(EnumKeys enuk)
       result = !(PINE & (1<<INP_E_ID2));
       break;
 
-#if defined(EXTRA_3POS)
-    case SW_ID3:
-      result = (calibratedStick[POT1+EXTRA_3POS-1] < 0);
-      break;
-
-    case SW_ID4:
-      result = (calibratedStick[POT1+EXTRA_3POS-1] == 0);
-      break;
-
-    case SW_ID5:
-      result = (calibratedStick[POT1+EXTRA_3POS-1] > 0);
-      break;
-#endif
-
     case SW_GEA:
       result = PINE & (1<<INP_E_Gear);
       break;

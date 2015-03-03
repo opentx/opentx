@@ -665,7 +665,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
   if (idx < MIXSRC_THR)
     lcd_putsiAtt(x, y, STR_VSRCRAW, idx, att);
   else if (idx < MIXSRC_SW1)
-    putsSwitches(x, y, idx-MIXSRC_THR+1+3*(1/*+EXTRA_3POS*/), att);
+    putsSwitches(x, y, idx-MIXSRC_THR+1+3*(1), att);
   else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH)
     putsSwitches(x, y, SWSRC_SW1+idx-MIXSRC_SW1, att);
   else if (idx < MIXSRC_CH1)

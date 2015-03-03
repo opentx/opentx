@@ -4,17 +4,17 @@
 #include "opentxeeprom.h"
 #include <QObject>
 
-#define IS_DBLEEPROM(board, version)         ((board==BOARD_GRUVIN9X || board==BOARD_M128) && version >= 213)
+#define IS_DBLEEPROM(board, version)         ((IS_2560(board) || board==BOARD_M128) && version >= 213)
 // Macro used for Gruvin9x board and M128 board between versions 213 and 214 (when there were stack overflows!)
-#define IS_DBLRAM(board, version)            ((board==BOARD_GRUVIN9X && version >= 213) || (board==BOARD_M128 && version >= 213 && version <= 214))
+#define IS_DBLRAM(board, version)            ((IS_2560(board) && version >= 213) || (board==BOARD_M128 && version >= 213 && version <= 214))
 
-#define HAS_PERSISTENT_TIMERS(board)         (IS_ARM(board) || board == BOARD_GRUVIN9X)
+#define HAS_PERSISTENT_TIMERS(board)         (IS_ARM(board) || IS_2560(board))
 #define HAS_LARGE_LCD(board)                 IS_TARANIS(board)
 #define MAX_VIEWS(board)                     (HAS_LARGE_LCD(board) ? 2 : 256)
 #define MAX_POTS(board)                      (IS_TARANIS(board) ? 5 : 3)
 #define MAX_SWITCHES(board, version)         (version >= 217 ? (IS_TARANIS(board) ? 8+6 : 7) : (IS_TARANIS(board) ? 8 : 7))
 #define MAX_SWITCHES_POSITION(board, version) (IS_TARANIS(board) ? (version >= 217 ? 22+12 : 22) : 9)
-#define MAX_ROTARY_ENCODERS(board)           (board==BOARD_GRUVIN9X ? 2 : (IS_SKY9X(board) ? 1 : 0))
+#define MAX_ROTARY_ENCODERS(board)           (IS_2560(board) ? 2 : (IS_SKY9X(board) ? 1 : 0))
 #define MAX_FLIGHT_MODES(board, version)     (IS_ARM(board) ? 9 :  (IS_DBLRAM(board, version) ? 6 :  5))
 #define MAX_TIMERS(board, version)           ((IS_ARM(board) && version >= 217) ? 3 : 2)
 #define MAX_MIXERS(board, version)           (IS_ARM(board) ? 64 : 32)
@@ -763,7 +763,7 @@ class FlightModeField: public TransformedField {
       index(index),
       board(board),
       version(version),
-      rotencCount(IS_ARM(board) ? 1 : (board == BOARD_GRUVIN9X ? 2 : 0))
+      rotencCount(IS_ARM(board) ? 1 : (IS_2560(board) ? 2 : 0))
     {
       if (board == BOARD_STOCK || (board==BOARD_M128 && version>=215)) {
         // On stock we use 10bits per trim
@@ -1908,7 +1908,7 @@ class CustomFunctionsConversionTable: public ConversionTable {
         }
         addConversion(FuncVario, val++);
         addConversion(FuncPlayHaptic, val++);
-        if (board == BOARD_GRUVIN9X || IS_ARM(board) )
+        if (IS_2560(board) || IS_ARM(board) )
           addConversion(FuncLogs, val++);
         addConversion(FuncBacklight, val++);
         if (IS_TARANIS(board))
@@ -1924,7 +1924,7 @@ class CustomFunctionsConversionTable: public ConversionTable {
         if (version >= 213 && !IS_ARM(board))
           addConversion(FuncPlayBoth, val++);
         addConversion(FuncPlayValue, val++);
-        if (board == BOARD_GRUVIN9X || IS_ARM(board) )
+        if (IS_2560(board) || IS_ARM(board) )
           addConversion(FuncLogs, val++);
         if (IS_ARM(board))
           addConversion(FuncVolume, val++);
@@ -2207,7 +2207,15 @@ class AvrCustomFunctionField: public TransformedField {
       _union_param(0),
       _active(0)
     {
-      if (version >= 216) {
+      if (version >= 217 && IS_2560(board)) {
+        internalField.Append(new SwitchField<8>(fn.swtch, board, version));
+        internalField.Append(new ConversionField< UnsignedField<8> >((unsigned int &)fn.func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
+        internalField.Append(new UnsignedField<2>(fn.adjustMode));
+        internalField.Append(new UnsignedField<4>(_union_param));
+        internalField.Append(new UnsignedField<1>(_active));
+        internalField.Append(new SpareBitsField<1>());
+      }
+      else if (version >= 216) {
         internalField.Append(new SwitchField<6>(fn.swtch, board, version));
         internalField.Append(new ConversionField< UnsignedField<4> >((unsigned int &)fn.func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
         internalField.Append(new UnsignedField<5>(_union_param));
@@ -2242,7 +2250,14 @@ class AvrCustomFunctionField: public TransformedField {
           _union_param = fn.func - FuncTrainer;
       }
       else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
-        if (version >= 216) {
+        if (version >= 217 && IS_2560(board)) {
+          _union_param = (fn.func - FuncAdjustGV1);
+          if (fn.adjustMode == 1)
+            sourcesConversionTable->exportValue(fn.param, (int &)_param);
+          else if (fn.adjustMode == 2)
+            _param = RawSource(fn.param).index;
+        }
+        else if (version >= 216) {
           _union_param = fn.adjustMode;
           _union_param += (fn.func - FuncAdjustGV1) << 2;
           if (fn.adjustMode == 1)
@@ -2303,7 +2318,14 @@ class AvrCustomFunctionField: public TransformedField {
           fn.func = AssignFunc(fn.func + _union_param);
       }
       else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
-        if (version >= 216) {
+        if (version >= 217 && IS_2560(board)) {
+          fn.func = AssignFunc(fn.func + _union_param);
+          if (fn.adjustMode == 1)
+            sourcesConversionTable->importValue(_param, (int &)fn.param);
+          else if (fn.adjustMode == 2)
+            fn.param = RawSource(SOURCE_TYPE_GVAR, _param).toValue();
+        }
+        else if (version >= 216) {
           fn.func = AssignFunc(fn.func + (_union_param >> 2));
           fn.adjustMode = (_union_param & 0x03);
           if (fn.adjustMode == 1)
@@ -2847,7 +2869,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[0].ppmDelay, exportPpmDelay, importPpmDelay));
   }
 
-  if (IS_ARM(board) || board==BOARD_GRUVIN9X)
+  if (IS_ARM(board) || IS_2560(board))
     internalField.Append(new UnsignedField<16>(modelData.beepANACenter));
   else
     internalField.Append(new UnsignedField<8>(modelData.beepANACenter));

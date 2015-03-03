@@ -1297,19 +1297,6 @@ ifeq ($(IRPROTOS), YES)
   CPPDEFS += -DIRPROTOS
 endif
 
-ifeq ($(3POS), POT1)
-  CPPDEFS += -DEXTRA_3POS=1
-  # EEPROM_VARIANT += ${3POS_VARIANT}
-endif
-ifeq ($(3POS), POT2)
-  CPPDEFS += -DEXTRA_3POS=2
-  # EEPROM_VARIANT += ${3POS_VARIANT}
-endif
-ifeq ($(3POS), POT3)
-  CPPDEFS += -DEXTRA_3POS=3
-  # EEPROM_VARIANT += ${3POS_VARIANT}
-endif
-
 #---------------- Compiler Options C++ ----------------
 #  -g*:          generate debugging information
 #  -O*:          optimization level

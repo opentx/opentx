@@ -313,10 +313,6 @@ getvalue_t getValue(mixsrc_t i)
 #else
   else if (i==MIXSRC_3POS) return (getSwitch(SW_ID0-SW_BASE+1) ? -1024 : (getSwitch(SW_ID1-SW_BASE+1) ? 0 : 1024));
   // don't use switchState directly to give getSwitch possibility to hack values if needed for switch warning
-#if defined(EXTRA_3POS)
-  else if (i==MIXSRC_3POS2) return (getSwitch(SW_ID3-SW_BASE+1) ? -1024 : (getSwitch(SW_ID4-SW_BASE+1) ? 0 : 1024));
-  // don't use switchState directly to give getSwitch possibility to hack values if needed for switch warning
-#endif
   else if (i<MIXSRC_SW1) return getSwitch(SWSRC_THR+i-MIXSRC_THR) ? 1024 : -1024;
 #endif
   else if (i<=MIXSRC_LAST_LOGICAL_SWITCH) return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH+i-MIXSRC_FIRST_LOGICAL_SWITCH) ? 1024 : -1024;
@@ -452,17 +448,6 @@ void evalInputs(uint8_t mode)
     if (g_model.throttleReversed && ch==THR_STICK) {
       v = -v;
     }
-
-#if defined(EXTRA_3POS)
-    if (i == POT1+EXTRA_3POS-1) {
-      if (v < -RESX/2)
-        v = -RESX;
-      else if (v > +RESX/2)
-        v = +RESX;
-      else
-        v = 0;
-    }
-#endif
 
     BeepANACenter mask = (BeepANACenter)1 << ch;
 

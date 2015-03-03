@@ -82,7 +82,7 @@
 #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
 #endif
 
-#if defined (CPUARM)
+#if defined(CPUARM)
   #define ARM_FIELD(x) x;
   #define AVR_FIELD(x)
 #else
@@ -602,6 +602,28 @@ PACK(typedef struct {
 #define CFN_PARAM(p)            ((p)->all.val)
 #define CFN_RESET(p)            ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)
 #define CFN_GVAR_CST_MAX        GVAR_LIMIT
+#elif defined(CPUM2560)
+PACK(typedef struct {
+  int8_t  swtch;
+  uint8_t func;
+  uint8_t mode:2;
+  uint8_t param:4;
+  uint8_t active:1;
+  uint8_t spare:1;
+  uint8_t value;
+}) CustomFunctionData;
+#define CFN_SWITCH(p)       ((p)->swtch)
+#define CFN_FUNC(p)         ((p)->func)
+#define CFN_ACTIVE(p)       ((p)->active)
+#define CFN_CH_INDEX(p)     ((p)->param)
+#define CFN_TIMER_INDEX(p)  ((p)->param)
+#define CFN_GVAR_INDEX(p)   ((p)->param)
+#define CFN_PLAY_REPEAT(p)  ((p)->param)
+#define CFN_PLAY_REPEAT_MUL 10
+#define CFN_GVAR_MODE(p)    ((p)->mode)
+#define CFN_PARAM(p)        ((p)->value)
+#define CFN_RESET(p)        ((p)->active = 0, CFN_PARAM(p) = 0)
+#define CFN_GVAR_CST_MAX    125
 #else
 PACK(typedef struct {
   PACK(union {
@@ -1674,11 +1696,6 @@ enum SwitchSources {
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
   SWSRC_ID1,
   SWSRC_ID2,
-#if defined(EXTRA_3POS)
-  SWSRC_ID3,
-  SWSRC_ID4,
-  SWSRC_ID5,
-#endif
   SWSRC_THR,
   SWSRC_RUD,
   SWSRC_ELE,
