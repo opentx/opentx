@@ -713,3 +713,5 @@ Henri Mirra
 Otto Fröhlich
 Thomas Cramer
 Anthony Trombetta
+Fernando Rimoldi
+Dietmar Drees
