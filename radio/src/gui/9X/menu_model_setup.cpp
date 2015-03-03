@@ -190,15 +190,11 @@ void menuModelSetup(uint8_t event)
           switch (m_posHorz) {
             case 0:
             {
-#if defined(CPUARM)
               int8_t timerMode = timer->mode;
               if (timerMode < 0) timerMode -= TMRMODE_COUNT-1;
               CHECK_INCDEC_MODELVAR_CHECK(event, timerMode, -TMRMODE_COUNT-SWSRC_LAST+1, TMRMODE_COUNT+SWSRC_LAST-1, isSwitchAvailableInTimers);
               if (timerMode < 0) timerMode += TMRMODE_COUNT-1;
               timer->mode = timerMode;
-#else
-              CHECK_INCDEC_MODELVAR(event, timer->mode, SWSRC_FIRST, TMRMODE_COUNT+SWSRC_LAST-1/*SWSRC_None removed*/);
-#endif
 #if defined(AUTOSWITCH)
               if (s_editMode>0) {
                 int8_t val = timer->mode - (TMRMODE_COUNT-1);
@@ -299,7 +295,7 @@ void menuModelSetup(uint8_t event)
         break;
       }
 
-#if defined(PCBGRUVIN9X)
+#if defined(CPUM2560)
       case ITEM_MODEL_TIMER1_PERSISTENT:
       case ITEM_MODEL_TIMER2_PERSISTENT:
       {
