@@ -64,7 +64,7 @@ FILE *fp = NULL;
 #if defined(CPUSTM32)
 uint32_t Peri1_frequency, Peri2_frequency;
 GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog;
-TIM_TypeDef tim1, tim2, tim3, tim4, tim8, tim10;
+TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
 RCC_TypeDef rcc;
 DMA_Stream_TypeDef dma2_stream2, dma2_stream6;
 DMA_TypeDef dma2;

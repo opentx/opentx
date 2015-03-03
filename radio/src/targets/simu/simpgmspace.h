@@ -100,7 +100,7 @@ typedef const int8_t pm_int8_t;
 
 #if defined(CPUSTM32)
 extern GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog;
-extern TIM_TypeDef tim1, tim3, tim4, tim8, tim10;
+extern TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
 extern USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 extern RCC_TypeDef rcc;
 extern DMA_Stream_TypeDef dma2_stream2, dma2_stream6;
@@ -120,14 +120,24 @@ extern DMA_TypeDef dma2;
 #define GPIOF (&gpiof)
 #define GPIOG (&gpiog)
 #undef TIM1
+#undef TIM2
 #undef TIM3
 #undef TIM4
+#undef TIM5
+#undef TIM6
+#undef TIM7
 #undef TIM8
+#undef TIM9
 #undef TIM10
 #define TIM1 (&tim1)
+#define TIM2 (&tim2)
 #define TIM3 (&tim3)
 #define TIM4 (&tim4)
+#define TIM5 (&tim4)
+#define TIM6 (&tim4)
+#define TIM7 (&tim4)
 #define TIM8 (&tim8)
+#define TIM9 (&tim9)
 #define TIM10 (&tim10)
 #undef USART0
 #undef USART1
