@@ -200,7 +200,7 @@ inline int geteepromsize() {
 #include "radio/src/lua/src/lcorolib.c"
 
   
-int16_t g_anas[NUM_STICKS+5];
+int16_t g_anas[NUM_STICKS+NUM_POTS];
 
 uint16_t anaIn(uint8_t chan)
 {
