@@ -14,6 +14,8 @@
  *
  */
 
+#include <stdint.h>
+
 #if !defined(NUM_LOGICAL_SWITCH) && defined(NUM_CSW)
 #define NUM_LOGICAL_SWITCH NUM_CSW
 #endif
