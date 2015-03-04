@@ -97,7 +97,7 @@ return true;
 
 #ifdef GETLCD_IMPORT
 #undef GETLCD_IMPORT
-return (uint8_t *)lcd_buf;
+return (::uint8_t *)lcd_buf;
 #endif
 
 #ifdef GETERROR_IMPORT

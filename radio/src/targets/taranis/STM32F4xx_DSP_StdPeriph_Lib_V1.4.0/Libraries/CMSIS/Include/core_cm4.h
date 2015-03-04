@@ -100,6 +100,11 @@
   #define __INLINE         inline                                     /*!< inline keyword for TASKING Compiler   */
   #define __STATIC_INLINE  static inline
 
+#else
+  #define __ASM            __asm                                      /*!< asm keyword for TASKING Compiler      */
+  #define __INLINE         inline                                     /*!< inline keyword for TASKING Compiler   */
+  #define __STATIC_INLINE  static inline
+  #define __DSB()
 #endif
 
 /** __FPU_USED indicates whether an FPU is used or not. For this, __FPU_PRESENT has to be checked prior to making use of FPU specific registers and functions.

@@ -86,6 +86,7 @@ inline int geteepromsize() {
 #include "radio/src/eeprom_conversions.cpp"
 #include "radio/src/eeprom_rlc.cpp"
 #include "radio/src/opentx.cpp"
+
 // #include "radio/src/debug.cpp"     // only included once in Taranis simulator because functions are exported as C and don't support namespaces
 #include "radio/src/main_arm.cpp"
 #include "radio/src/strhelpers.cpp"
@@ -160,6 +161,7 @@ inline int geteepromsize() {
 #include "radio/src/telemetry/frsky_d.cpp"
 #include "radio/src/targets/taranis/audio_driver.cpp"
 #include "radio/src/targets/taranis/telemetry_driver.cpp"
+#include "radio/src/targets/taranis/top_lcd_driver.cpp"
 #include "radio/src/audio_arm.cpp"
 #include "radio/src/translations/tts_cz.cpp"
 #include "radio/src/translations/tts_de.cpp"
@@ -226,6 +228,10 @@ void resetTrims()
   GPIOC->IDR |= PIN_TRIM_RV_DN | PIN_TRIM_RV_UP | PIN_TRIM_RH_L | PIN_TRIM_RH_R;
 }
 
+void delay_01us(::uint16_t nb)
+{
+}
+
 }
 
 using namespace Open9xX9E;
@@ -247,7 +253,7 @@ bool OpentxTaranisX9ESimulator::timer10ms()
 #include "simulatorimport.h"
 }
 
-uint8_t * OpentxTaranisX9ESimulator::getLcd()
+::uint8_t * OpentxTaranisX9ESimulator::getLcd()
 {
 #define GETLCD_IMPORT
 #include "simulatorimport.h"
@@ -294,27 +300,27 @@ void OpentxTaranisX9ESimulator::setValues(TxInputs &inputs)
 void OpentxTaranisX9ESimulator::setTrim(unsigned int idx, int value)
 {
   idx = Open9xX9E::modn12x3[4*getStickMode() + idx];
-  uint8_t phase = getTrimFlightPhase(getFlightMode(), idx);
+  ::uint8_t phase = getTrimFlightPhase(getFlightMode(), idx);
   setTrimValue(phase, idx, value);
 }
 
 void OpentxTaranisX9ESimulator::getTrims(Trims & trims)
 {
-  uint8_t phase = getFlightMode();
+  ::uint8_t phase = getFlightMode();
   trims.extended = hasExtendedTrims();
-  for (uint8_t idx=0; idx<4; idx++) {
+  for (::uint8_t idx=0; idx<4; idx++) {
     trims.values[idx] = getTrimValue(getTrimFlightPhase(phase, idx), idx);
   }
 
   for (int i=0; i<2; i++) {
-    uint8_t idx = Open9xX9E::modn12x3[4*getStickMode() + i];
-    int16_t tmp = trims.values[i];
+    ::uint8_t idx = Open9xX9E::modn12x3[4*getStickMode() + i];
+    ::int16_t tmp = trims.values[i];
     trims.values[i] = trims.values[idx];
     trims.values[idx] = tmp;
   }
 }
 
-void OpentxTaranisX9ESimulator::wheelEvent(uint8_t steps)
+void OpentxTaranisX9ESimulator::wheelEvent(::uint8_t steps)
 {
   if (steps == 255)
     x9de_rotenc -= 2;
@@ -340,12 +346,12 @@ const char * OpentxTaranisX9ESimulator::getError()
 #include "simulatorimport.h"
 }
 
-void OpentxTaranisX9ESimulator::sendTelemetry(uint8_t * data, unsigned int len) 
+void OpentxTaranisX9ESimulator::sendTelemetry(::uint8_t * data, unsigned int len) 
 {
   processSportPacket(data);
 }
 
-void OpentxTaranisX9ESimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
+void OpentxTaranisX9ESimulator::setTrainerInput(unsigned int inputNumber, ::int16_t value)
 {
 #define SETTRAINER_IMPORT
 #include "simulatorimport.h"
