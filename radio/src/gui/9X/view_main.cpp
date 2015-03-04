@@ -238,10 +238,12 @@ void onMainViewMenu(const char *result)
   else if (result == STR_RESET_TIMER2) {
     timerReset(1);
   }
-#if defined(CPUARM)
+#if TIMERS > 2
   else if (result == STR_RESET_TIMER3) {
     timerReset(2);
   }
+#endif
+#if defined(CPUARM)
   else if (result == STR_VIEW_NOTES) {
     pushModelNotes();
   }

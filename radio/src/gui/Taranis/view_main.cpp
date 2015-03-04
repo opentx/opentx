@@ -372,9 +372,11 @@ void onMainViewMenu(const char *result)
   else if (result == STR_RESET_TIMER2) {
     timerReset(1);
   }
+#if TIMERS > 2
   else if (result == STR_RESET_TIMER3) {
     timerReset(2);
   }
+#endif
   else if (result == STR_VIEW_NOTES) {
     pushModelNotes();
   }
