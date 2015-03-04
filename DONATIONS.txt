@@ -715,3 +715,4 @@ Thomas Cramer
 Anthony Trombetta
 Fernando Rimoldi
 Dietmar Drees
+Michal Kowalski
