@@ -871,6 +871,7 @@ ifeq ($(PCB), TARANIS)
   CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/uart3_driver.cpp targets/taranis/telemetry_driver.cpp
   CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp loadboot.cpp debug.cpp
   ifeq ($(PCBREV), REV9E)
+    EXTRABOARDSRC += targets/taranis/top_lcd_driver.cpp
 	SRC += targets/taranis/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c
 	SRC += targets/taranis/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/src/misc.c
 	SRC += targets/taranis/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c

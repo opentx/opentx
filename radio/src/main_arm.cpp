@@ -129,7 +129,6 @@ void perMain()
 #endif
 
 #if defined(LUA)
-
   uint32_t t0 = get_tmr10ms();
   static uint32_t lastLuaTime = 0;
   uint16_t interval = (lastLuaTime == 0 ? 0 : (t0 - lastLuaTime));
@@ -157,7 +156,8 @@ void perMain()
     maxLuaDuration = t0;
   }
 
-  if (!scriptWasRun) {
+  if (!scriptWasRun)
+  {
 #else
   lcdRefreshWait();   // WARNING: make sure no code above this line does any change to the LCD display buffer!
   {
@@ -184,5 +184,11 @@ void perMain()
     }
     drawStatusLine();
   }
+
   lcdRefresh();
+
+#if defined(REV9E)
+  topLcdRefresh();
+#endif
+
 }

@@ -125,6 +125,11 @@ void boardInit()
   adcInit();
   delaysInit();
   lcdInit();    // delaysInit() must be called before
+
+#if defined(REV9E)
+  topLcdInit();
+#endif
+
   audioInit();
   init2MhzTimer();
   init5msTimer();

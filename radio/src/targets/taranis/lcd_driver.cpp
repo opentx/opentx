@@ -24,10 +24,6 @@
   #define WAIT_FOR_DMA_END()
 #endif
 
-#if defined(BOOT)
-  extern void hw_delay(uint16_t time);
-#endif
-
 bool lcdInitFinished = false;
 void lcdInitFinish();
 

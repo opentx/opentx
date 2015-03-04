@@ -314,6 +314,12 @@ int bt_open(void);
 int bt_write(const void *buffer, int len);
 int bt_read(void *buffer, int len);
 
+// Top LCD driver
+#if defined(REV9E)
+void topLcdInit(void);
+void topLcdRefresh(void);
+#endif
+
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 #if defined(USB_JOYSTICK) && !defined(SIMU)

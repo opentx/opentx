@@ -488,4 +488,24 @@
   #define PIN_HAPTIC                    GPIO_Pin_12
 #endif
 
+// Top LCD on X9E
+#if defined(REV9E)
+  #define GPIO_VA                       GPIOG
+  #define PIN_VA_DATA                   GPIO_Pin_5
+  #define PIN_VA_WR                     GPIO_Pin_4
+  #define PIN_VA_CS                     GPIO_Pin_3
+  #define PIN_VA_CS2                    GPIO_Pin_15
+  #define PIN_VA_BL                     GPIO_Pin_2
+  #define RCC_AHB1Periph_VA             RCC_AHB1Periph_GPIOG
+  #define CS1_HIGH                      GPIO_VA->BSRRL = PIN_VA_CS
+  #define CS1_LOW                       GPIO_VA->BSRRH = PIN_VA_CS
+  #define CS2_HIGH                      GPIO_VA->BSRRL = PIN_VA_CS2
+  #define CS2_LOW                       GPIO_VA->BSRRH = PIN_VA_CS2
+  #define WR_HIGH                       GPIO_VA->BSRRL = PIN_VA_WR
+  #define WR_LOW                        GPIO_VA->BSRRH = PIN_VA_WR
+  #define DATA_HIGH                     GPIO_VA->BSRRL = PIN_VA_DATA
+  #define DATA_LOW                      GPIO_VA->BSRRH = PIN_VA_DATA
+  #define VA_BL_ON                      GPIO_VA->BSRRL = PIN_VA_BL
+#endif
+
 #endif
