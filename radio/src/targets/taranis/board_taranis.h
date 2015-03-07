@@ -317,7 +317,13 @@ int bt_read(void *buffer, int len);
 // Top LCD driver
 #if defined(REV9E)
 void topLcdInit(void);
-void topLcdRefresh(void);
+void topLcdRefreshStart(void);
+void topLcdRefreshEnd(void);
+void setTopFirstTimer(uint32_t value);
+void setTopSecondTimer(uint32_t value);
+void setTopRssi(uint32_t rssi);
+void setTopBatteryState(uint32_t state);
+void setTopBatteryValue(uint32_t volts);
 #endif
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)

@@ -2137,6 +2137,10 @@ PACK(typedef struct {
   MODELDATA_EXTRA
 
   ARM_FIELD(TelemetrySensor telemetrySensors[TELEM_VALUES_MAX])
+  
+#if defined(PCBTARANIS) && defined(REV9E)
+  uint8_t topLcdTimer;
+#endif
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

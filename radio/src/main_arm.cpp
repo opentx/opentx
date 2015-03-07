@@ -187,8 +187,15 @@ void perMain()
 
   lcdRefresh();
 
-#if defined(REV9E)
-  topLcdRefresh();
+#if defined(REV9E) && !defined(SIMU)
+  topLcdRefreshStart();
+  setTopFirstTimer(getValue(MIXSRC_FIRST_TIMER+g_model.topLcdTimer));
+  setTopSecondTimer(g_eeGeneral.globalTimer + sessionTimer);
+  setTopRssi(TELEMETRY_RSSI());
+  setTopBatteryValue(g_vbat100mV);
+  int state = 5 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin);
+  setTopBatteryState(state);
+  topLcdRefreshEnd();
 #endif
 
 }
