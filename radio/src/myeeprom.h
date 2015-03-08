@@ -104,6 +104,12 @@
   #define TARANIS_FIELD(x)
 #endif
 
+#if defined(PCBTARANIS) && defined(REV9E)
+  #define TARANIS_REV9E_FIELD(x) x;
+#else
+  #define TARANIS_REV9E_FIELD(x)
+#endif
+
 #define NUM_STICKS             4
 
 #if defined(PCBTARANIS)
@@ -2138,9 +2144,7 @@ PACK(typedef struct {
 
   ARM_FIELD(TelemetrySensor telemetrySensors[TELEM_VALUES_MAX])
   
-#if defined(PCBTARANIS) && defined(REV9E)
-  uint8_t topLcdTimer;
-#endif
+  TARANIS_REV9E_FIELD(uint8_t topLcdTimer)
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;
