@@ -113,6 +113,7 @@ int main(int argc, char *argv[])
   msgBox.setText("Which radio type do you want to simulate?");
   msgBox.setIcon(QMessageBox::Question);
   QAbstractButton *taranisButton = msgBox.addButton("Taranis", QMessageBox::ActionRole);
+  QAbstractButton *x9eButton = msgBox.addButton("Taranis X9E", QMessageBox::ActionRole);
   QAbstractButton *sky9xButton = msgBox.addButton("9X-Sky9X", QMessageBox::ActionRole);
   QAbstractButton *gruvinButton = msgBox.addButton("9X-Gruvin9X", QMessageBox::ActionRole);
   QAbstractButton *proButton = msgBox.addButton("9XR-Pro", QMessageBox::ActionRole);
@@ -130,8 +131,15 @@ int main(int argc, char *argv[])
   if (msgBox.clickedButton() == exitButton)
     return 0;
   else if (msgBox.clickedButton() == taranisButton) {
-    current_firmware_variant = GetFirmware("opentx-taranis-haptic-en");
+    current_firmware_variant = GetFirmware("opentx-taranis-haptic-lua-en");
     fileName = eedir.filePath("eeprom-taranis.bin");
+    path = fileName.toAscii();
+    eepromFileName = path.data();
+    dialog = new SimulatorDialogTaranis();
+  }
+  else if (msgBox.clickedButton() == x9eButton) {
+    current_firmware_variant = GetFirmware("opentx-taranisx9e-mixersmon-lua-haptic-en");
+    fileName = eedir.filePath("eeprom-x9e.bin");
     path = fileName.toAscii();
     eepromFileName = path.data();
     dialog = new SimulatorDialogTaranis();
