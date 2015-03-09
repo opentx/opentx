@@ -60,10 +60,10 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(SWTYPES)
     ISTR(POTTYPES)
 #endif
+    ISTR(VTRIMINC)
 #if defined(CPUARM)
     ISTR(VDISPLAYTRIMS)
 #endif
-    ISTR(VTRIMINC)
     ISTR(RETA123)
     ISTR(VPROTOS)
     ISTR(POSNEG)

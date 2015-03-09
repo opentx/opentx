@@ -336,7 +336,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_DISPLAY_TRIMS:
-        g_model.displayTrims = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_DISPLAY_TRIMS, "\006No\0   ChangeYes", g_model.displayTrims, 0, 2, attr, event);
+        g_model.displayTrims = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_DISPLAY_TRIMS, STR_VDISPLAYTRIMS, g_model.displayTrims, 0, 2, attr, event);
         break;
 
       case ITEM_MODEL_TRIM_INC:
