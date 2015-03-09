@@ -499,25 +499,25 @@ void menuModelSetup(uint8_t event)
           for (int i=0; i<NUM_POTS; ++i) {
             if (i<NUM_XPOTS && !IS_POT_AVAILABLE(POT1+i)) {
               if (attr && (m_posHorz==i+1)) REPEAT_LAST_CURSOR_MOVE();
-              continue;
-            }
-            LcdFlags flags = ((m_posHorz==i+1) && attr) ? BLINK : 0;
-            if ((!attr || m_posHorz >= 0) && !(g_model.potsWarnEnabled & (1 << i))) {
-              flags |= INVERS;
-            }
-            lcd_putsiAtt(x, y, STR_VSRCRAW, NUM_STICKS+1+i, flags);
-
-#if defined(REV9E)
-            if (i == NUM_XPOTS-1) {
-              y += FH;
-              x = MODEL_SETUP_2ND_COLUMN+27;
             }
             else {
-              x += (2*FW+7);
-            }
-#else
-            x += (2*FW+3);
+#if defined(REV9E)
+              if (i == NUM_XPOTS) {
+                y += FH;
+                x = MODEL_SETUP_2ND_COLUMN+27;
+              }
 #endif
+              LcdFlags flags = ((m_posHorz==i+1) && attr) ? BLINK : 0;
+              if ((!attr || m_posHorz >= 0) && !(g_model.potsWarnEnabled & (1 << i))) {
+                flags |= INVERS;
+              }
+              lcd_putsiAtt(x, y, STR_VSRCRAW, NUM_STICKS+1+i, flags);
+#if defined(REV9E)
+              x += (2*FW+7);
+#else
+              x += (2*FW+3);
+#endif
+            }
           }
         }
         if (attr && m_posHorz < 0) {
