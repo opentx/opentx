@@ -168,6 +168,7 @@ void lcd_outdez8(coord_t x, coord_t y, int8_t val);
 void putsStrIdx(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags att=0);
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void putsSwitches(coord_t x, coord_t y, int8_t swtch, LcdFlags att=0);
+void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
 void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
 void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 #if !defined(BOOT)

@@ -299,8 +299,7 @@ void lcd_putsLeft(coord_t y, const pm_char * s)
 #if !defined(BOOT)
 void lcd_putsiAtt(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags flags)
 {
-  uint8_t length;
-  length = pgm_read_byte(s++);
+  uint8_t length = pgm_read_byte(s++);
   lcd_putsnAtt(x, y, s+length*idx, length, flags & ~(BSS|ZCHAR));
 }
 
@@ -624,6 +623,14 @@ void putsStrIdx(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags 
   lcd_putsAtt(x, y, str, att & ~LEADING0);
   lcd_outdezNAtt(lcdNextPos, y, idx, att|LEFT, 2);
 }
+
+#if defined(PCBTARANIS)
+void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
+{
+  uint8_t length = STR_VSRCRAW[0];
+  lcd_putsnAtt(x, y, STR_VSRCRAW+2+length*(idx+1), length-1, att);
+}
+#endif
 
 void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {

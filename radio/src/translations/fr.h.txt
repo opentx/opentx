@@ -445,11 +445,13 @@
 #define LEN_VSWITCHES          "\003"
 #define LEN_VSRCRAW            "\004"
 
+#define TR_STICKS_VSRCRAW      TR("Dir\0""Prf\0""Gaz\0""Ail\0", "\307Dir""\307Prf""\307Gaz""\307Ail")
+
 #if defined(PCBTARANIS) && defined(REV9E)
-  #define TR_POTS_VSRCRAW      "S1\0 ""S2\0 ""S3\0 ""S4\0 ""LS\0 ""RS\0 ""LS2\0""RS2\0"
+  #define TR_POTS_VSRCRAW      "\310S1\0""\310S2\0""\310S3\0""\310S4\0""\311LS\0""\311RS\0""\311LS2""\311RS2"
   #define TR_SW_VSRCRAW        "SA\0 ""SB\0 ""SC\0 ""SD\0 ""SE\0 ""SF\0 ""SG\0 ""SH\0 ""SI\0 ""SJ\0 ""SK\0 ""SL\0 ""SM\0 ""SN\0 ""SO\0 ""SP\0 ""SQ\0 ""SR\0 "
 #elif defined(PCBTARANIS)
-  #define TR_POTS_VSRCRAW      "S1\0 ""S2\0 ""S3\0 ""LS\0 ""RS\0 "
+  #define TR_POTS_VSRCRAW      "\310S1\0""\310S2\0""\310S3\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW        "SA\0 ""SB\0 ""SC\0 ""SD\0 ""SE\0 ""SF\0 ""SG\0 ""SH\0 "
 #else
   #define TR_POTS_VSRCRAW      "P1\0 ""P2\0 ""P3\0 "
@@ -508,7 +510,7 @@
   #define TR_EXTRA_VSRCRAW
 #endif
 
-#define TR_VSRCRAW             "---\0""Dir\0""Prf\0""Gaz\0""Ail\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmD" "TrmP" "TrmG" "TrmA" TR_SW_VSRCRAW TR_EXTRA_VSRCRAW
+#define TR_VSRCRAW             "---\0" TR_STICKS_VSRCRAW TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmD" "TrmP" "TrmG" "TrmA" TR_SW_VSRCRAW TR_EXTRA_VSRCRAW
 
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "OFF""ON\0""GZs""GZ%""GZt"

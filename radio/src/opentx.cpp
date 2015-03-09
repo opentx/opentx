@@ -319,13 +319,16 @@ void defaultInputs()
     expo->chn = i;
     expo->weight = 100;
     expo->mode = 3; // TODO constant
+#if defined(TRANSLATIONS_CZ)
     for (int c=0; c<4; c++) {
-#if defined(TRANSLATIONS_CZ) && defined(CPUARM)
       g_model.inputNames[i][c] = char2idx(STR_INPUTNAMES[1+STR_INPUTNAMES[0]*(stick_index-1)+c]);
+    }
 #else
-      g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[1+STR_VSRCRAW[0]*stick_index+c]);
+    for (int c=0; c<3; c++) {
+      g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[2+4*stick_index+c]);
 #endif
     }
+    g_model.inputNames[i][3] = '\0';
   }
   eeDirty(EE_MODEL);
 }
@@ -339,35 +342,20 @@ inline void applyDefaultTemplate()
 #else
 void applyDefaultTemplate()
 {
-  for (int i=0; i<NUM_STICKS; i++) {
 #if defined(PCBTARANIS)
-    uint8_t stick_index = channel_order(i+1);
-    ExpoData *expo = expoAddress(i);
-    expo->srcRaw = MIXSRC_Rud - 1 + stick_index;
-    expo->curve.type = CURVE_REF_EXPO;
-    expo->chn = i;
-    expo->weight = 100;
-    expo->mode = 3; // TODO constant
-    for (int c=0; c<4; c++) {
-#if defined(TRANSLATIONS_CZ) && defined(CPUARM)
-      g_model.inputNames[i][c] = char2idx(STR_INPUTNAMES[1+STR_INPUTNAMES[0]*(stick_index-1)+c]);
-#else
-      g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[1+STR_VSRCRAW[0]*stick_index+c]);
-#endif
-    }
+  defaultInputs();
 #endif
 
+  for (int i=0; i<NUM_STICKS; i++) {
     MixData *mix = mixAddress(i);
     mix->destCh = i;
     mix->weight = 100;
-
 #if defined(PCBTARANIS)
     mix->srcRaw = i+1;
 #else
     mix->srcRaw = MIXSRC_Rud - 1 + channel_order(i+1);
 #endif
   }
-  eeDirty(EE_MODEL);
 }
 #endif
 
