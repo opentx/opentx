@@ -414,9 +414,6 @@ void init_pa7_pxx()
   setupPulsesPXX(EXTERNAL_MODULE);
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
-#if defined(REV3)
-  configure_pins( PIN_INTPPM_OUT, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_1 | PIN_OS25 | PIN_PUSHPULL ) ;
-#else
   GPIO_InitTypeDef GPIO_InitStructure;
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_EXTPPM, ENABLE);
   GPIO_PinAFConfig(GPIO_EXTPPM, GPIO_PinSource_EXTPPM, GPIO_AF_TIM8);
@@ -426,7 +423,6 @@ void init_pa7_pxx()
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(GPIO_EXTPPM, &GPIO_InitStructure);
-#endif
   RCC->APB2ENR |= RCC_APB2ENR_TIM8EN ;            // Enable clock
   RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN ;            // Enable DMA2 clock
 
@@ -434,11 +430,7 @@ void init_pa7_pxx()
   TIM8->ARR = 18000 ;                     // 9mS
   TIM8->CCR2 = 15000 ;            // Update time
   TIM8->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1 ;               // 0.5uS from 30MHz
-#if defined(REV3)
-  TIM8->CCER = TIM_CCER_CC1E | TIM_CCER_CC1P ;
-#else
   TIM8->CCER = TIM_CCER_CC1NE ;
-#endif
   TIM8->CR2 = TIM_CR2_OIS1 ;                      // O/P idle high
   TIM8->BDTR = TIM_BDTR_MOE ;             // Enable outputs
   TIM8->CCR1 = pxxStream[EXTERNAL_MODULE][0] ;
@@ -490,9 +482,6 @@ static void init_pa7_dsm2()
   setupPulsesDSM2(EXTERNAL_MODULE);
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
-#if defined(REV3)
-  configure_pins( PIN_INTPPM_OUT, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_1 | PIN_OS25 | PIN_PUSHPULL ) ;
-#else
   GPIO_InitTypeDef GPIO_InitStructure;
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_EXTPPM, ENABLE);
   GPIO_PinAFConfig(GPIO_EXTPPM, GPIO_PinSource_EXTPPM, GPIO_AF_TIM8);
@@ -502,7 +491,6 @@ static void init_pa7_dsm2()
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(GPIO_EXTPPM, &GPIO_InitStructure);
-#endif
   RCC->APB2ENR |= RCC_APB2ENR_TIM8EN ;            // Enable clock
   RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN ;            // Enable DMA2 clock
 
@@ -510,11 +498,7 @@ static void init_pa7_dsm2()
   TIM8->ARR = 44000 ;                     // 22mS
   TIM8->CCR2 = 40000 ;            // Update time
   TIM8->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1 ;               // 0.5uS from 30MHz
-#if defined(REV3)
-  TIM8->CCER = TIM_CCER_CC1E | TIM_CCER_CC1P ;
-#else
   TIM8->CCER = TIM_CCER_CC1NE  | TIM_CCER_CC1NP ;
-#endif
   TIM8->CR2 = TIM_CR2_OIS1 ;                      // O/P idle high
   TIM8->BDTR = TIM_BDTR_MOE ;             // Enable outputs
   TIM8->CCR1 = dsm2Stream[0] ;
@@ -569,11 +553,7 @@ static void init_pa7_ppm()
   ppmStreamPtr[EXTERNAL_MODULE] = ppmStream[EXTERNAL_MODULE];
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
-#if defined(REV3)
-  configure_pins( 0x0100, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_1 | PIN_OS25 | PIN_PUSHPULL ) ;
-#else
   configure_pins( PIN_EXTPPM_OUT, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_3 | PIN_OS25 | PIN_PUSHPULL ) ;
-#endif
   RCC->APB2ENR |= RCC_APB2ENR_TIM8EN ;            // Enable clock
   TIM8->CR1 &= ~TIM_CR1_CEN ;
 

@@ -798,10 +798,6 @@ ifeq ($(PCB), TARANIS)
       CPPDEFS += -DLCD_DUAL_BUFFER
     endif
     HAPTIC = YES
-  else ifeq ($(PCBREV), REV3)
-    MCU = cortex-m3
-    FLAVOUR = taranis
-    CPPDEFS = -DREV3
   else ifeq ($(PCBREV), REV4a)
     MCU = cortex-m3
     FLAVOUR = taranis

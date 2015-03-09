@@ -74,7 +74,6 @@ void pwrInit()
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOPWRLED, &GPIO_InitStructure);
 
-#if !defined(REV3)  
   GPIO_ResetBits(GPIO_INT_RF_PWR, PIN_INT_RF_PWR);
   GPIO_InitStructure.GPIO_Pin = PIN_INT_RF_PWR;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
@@ -97,7 +96,6 @@ void pwrInit()
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOTRNDET, &GPIO_InitStructure);
-#endif
 
   // Soft power ON
   GPIO_SetBits(GPIOPWR, PIN_MCU_PWR);

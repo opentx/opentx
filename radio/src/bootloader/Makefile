@@ -130,9 +130,7 @@ else
   EXTRAINCDIRS += ../fonts/std
   EXTRAINCDIRS += ../
   
-  ifeq ($(PCBREV), REV3)
-    CPPDEFS += -DREV3
-  else ifeq ($(PCBREV), REV4a)
+  ifeq ($(PCBREV), REV4a)
     CPPDEFS += -DREV4a
   else ifeq ($(PCBREV), REVPLUS)
     CPPDEFS += -DREVPLUS

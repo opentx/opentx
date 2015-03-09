@@ -227,11 +227,7 @@ void adcInit(void);
 void adcRead(void);
 inline uint16_t getAnalogValue(uint32_t value);
 
-#if defined(REV3)
-  #define BATT_SCALE    120
-#else
-  #define BATT_SCALE    150
-#endif
+#define BATT_SCALE    150
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {

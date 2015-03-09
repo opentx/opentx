@@ -46,11 +46,7 @@
 #define STICK_RV    0
 #define STICK_RH    1
 #define POT_L       6
-#if defined(REV3)
-  #define POT_R     7
-#else
-  #define POT_R     8
-#endif
+#define POT_R       8
 #define POT_XTRA    9
 #define SLIDE_L     14
 #define SLIDE_R     15
@@ -73,7 +69,7 @@ uint16_t Analog_values[NUMBER_ANALOG];
   const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,1,  1};
 #elif defined(REV4a)
   const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,0,  -1,1,  1};
-#elif !defined(REV3)
+#else
   const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,0,   -1,1,  1};
 #endif
 
@@ -101,19 +97,14 @@ void adcInit()
   RCC->AHB1ENR |= RCC_AHB1Periph_GPIOADC;        // Enable ports A&C clocks
   RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;            // Enable DMA2 clock
 
-#if defined(REV3)
-  configure_pins(PIN_STK_J1 | PIN_STK_J2 | PIN_STK_J3 | PIN_STK_J4 |
-                 PIN_FLP_J1 | PIN_FLP_J2, PIN_ANALOG | PIN_PORTA);
-#else
   configure_pins(PIN_STK_J1 | PIN_STK_J2 | PIN_STK_J3 | PIN_STK_J4 |
                  PIN_FLP_J1, PIN_ANALOG | PIN_PORTA);
-#endif
 
 #if defined(REV9E)
   configure_pins(PIN_FLP_J2 | PIN_FLP_J6, PIN_ANALOG|PIN_PORTB);
 #elif defined(REVPLUS)
   configure_pins(PIN_FLP_J2 | PIN_FLP_J3, PIN_ANALOG|PIN_PORTB);
-#elif !defined(REV3)
+#else
   configure_pins(PIN_FLP_J2, PIN_ANALOG|PIN_PORTB);
 #endif
 
@@ -189,7 +180,6 @@ void adcRead()
   DMA2_Stream0->CR &= ~DMA_SxCR_EN ;              // Disable DMA
 #endif
 
-#if !defined(REV3)
   // adc direction correct
   for (uint32_t i=0; i<NUMBER_ANALOG; i++) {
     if (ana_direction[i] < 0) {
@@ -201,7 +191,6 @@ void adcRead()
     }
 #endif
   }
-#endif
 }
 
 // TODO

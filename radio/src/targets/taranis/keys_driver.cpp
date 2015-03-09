@@ -180,7 +180,6 @@ void readKeysAndTrims()
       xxx = (~GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H) && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
       break
 #define ADD_3POS_INVERTED_CASE(x, i) ADD_3POS_CASE(x, i)
-#define ADD_XTRA_2POS_CASE(...)
 #else
 #define ADD_2POS_CASE(x) \
     case SW_S ## x ## 0: \
@@ -221,34 +220,6 @@ void readKeysAndTrims()
         xxx = xxx && (~GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
       } \
       break
-#define ADD_XTRA_2POS_CASE(x, y) \
-    case SW_S ## y ## 0: \
-      xxx = GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L; \
-      break; \
-    case SW_S ## y ## 2: \
-      xxx = ~GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L; \
-      break
-#endif
-
-#if defined(REV3)
-#define ADD_3POS_INVERTED_REV3_CASE(x, i) \
-    case SW_S ## x ## 0: \
-      xxx = (GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H); \
-      if (IS_3POS(i)) { \
-        xxx = xxx && (~GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
-      } \
-      break; \
-    case SW_S ## x ## 1: \
-      xxx = (~GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H) && (~GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
-      break; \
-    case SW_S ## x ## 2: \
-      xxx = (~GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H); \
-      if (IS_3POS(i)) { \
-        xxx = xxx && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
-      } \
-      break
-#else
-#define ADD_3POS_INVERTED_REV3_CASE(x, i) ADD_3POS_CASE(x, i)
 #endif
 
 bool switchState(EnumKeys enuk)
@@ -258,30 +229,17 @@ bool switchState(EnumKeys enuk)
   if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
 
   switch ((uint8_t) enuk) {
-    ADD_3POS_INVERTED_REV3_CASE(A, 0);
-    ADD_XTRA_2POS_CASE(A, I);
-
+    ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
-    ADD_XTRA_2POS_CASE(B, J);
-
-    ADD_3POS_INVERTED_REV3_CASE(C, 2);
-    ADD_XTRA_2POS_CASE(C, K);
-
-    ADD_3POS_INVERTED_REV3_CASE(D, 3);
-    ADD_XTRA_2POS_CASE(D, L);
-
+    ADD_3POS_CASE(C, 2);
+    ADD_3POS_CASE(D, 3);
     ADD_3POS_INVERTED_CASE(E, 4);
-    ADD_XTRA_2POS_CASE(E, M);
-
 #if defined(REV9E)
     ADD_3POS_CASE(F, 5);
 #else
     ADD_2POS_CASE(F);
 #endif
-
-    ADD_3POS_INVERTED_REV3_CASE(G, 6);
-    ADD_XTRA_2POS_CASE(G, N);
-
+    ADD_3POS_CASE(G, 6);
 #if defined(REV9E)
     ADD_3POS_CASE(H, 7);
 #else
@@ -305,6 +263,7 @@ bool switchState(EnumKeys enuk)
       break;
   }
 
+  // TRACE("switch %d => %d", enuk, xxx);
   return xxx;
 }
 #endif
@@ -316,11 +275,7 @@ void keysInit()
 
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOBUTTON, ENABLE);
 
-#if defined(REV3)
-    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_ENTER | PIN_BUTTON_MINUS | PIN_TRIM_LH_R | PIN_TRIM_LH_L
-                                  | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP
-                                  | PIN_SW_A_L | PIN_SW_D_L | PIN_SW_F | PIN_SW_C_L | PIN_SW_D_H | PIN_SW_H;
-#elif defined(REV9E)
+#if defined(REV9E)
     GPIO_InitStructure.GPIO_Pin = PIN_TRIM_LH_R | PIN_TRIM_LH_L
                                   | PIN_SW_F_H | PIN_SW_A_L | PIN_SW_B_H | PIN_SW_B_L | PIN_SW_C_H | PIN_SW_D_H | PIN_SW_D_L | PIN_SW_G_H | PIN_SW_G_L | PIN_SW_L_L | PIN_SW_Q_H | PIN_SW_Q_L;
 #elif defined(REVPLUS)
@@ -358,20 +313,14 @@ void keysInit()
     GPIO_InitStructure.GPIO_Pin = PIN_TRIM_RV_DN | PIN_TRIM_RV_UP | PIN_TRIM_RH_L | PIN_TRIM_RH_R;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-#if defined(REV3)
-    GPIO_InitStructure.GPIO_Pin = PIN_SW_B_H | PIN_SW_B_L | PIN_SW_C_H | PIN_SW_E_L | PIN_SW_E_H | PIN_SW_A_H | PIN_SW_G_L;
-#elif defined(REVPLUS)
+#if defined(REVPLUS)
     GPIO_InitStructure.GPIO_Pin =  PIN_SW_E_L | PIN_SW_E_H | PIN_SW_A_H;
 #else
     GPIO_InitStructure.GPIO_Pin =  PIN_SW_E_L | PIN_SW_E_H | PIN_SW_A_H | PIN_SW_D_L;
 #endif
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-#if defined(REV3)
-    GPIO_InitStructure.GPIO_Pin = PIN_SW_G_H;
-#else
     GPIO_InitStructure.GPIO_Pin = PIN_SW_C_L;
-#endif
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 #endif
