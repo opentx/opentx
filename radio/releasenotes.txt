@@ -10,6 +10,7 @@
 <li>Lua model.insertInput() could not add a line to an empty input or at the end of the existing input lines (<a href=https://github.com/opentx/opentx/issues/2084>#2084</a>)</li>
 <li>Fixed radio slowdown when SD card was full (<a href=https://github.com/opentx/opentx/issues/2007>#2007</a>)</li>
 <li>Added Mixers Monitor screen (<a href=https://github.com/opentx/opentx/issues/1945>#1945</a>)</li>
+<li>Fixed Lua <i>lcd.drawPixmap()</i> that could write outside the LCD buffer (<a href=https://github.com/opentx/opentx/issues/2123>#2123</a>)</li>
 </ul>
 
 
