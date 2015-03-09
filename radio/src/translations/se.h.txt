@@ -271,7 +271,7 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_SF_SCREENSHOT    "Screenshot"
+  #define TR_SF_SCREENSHOT    "Skärmbild"
 #else
   #define TR_SF_SCREENSHOT
 #endif
@@ -547,8 +547,8 @@
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           "Swashtyp"
 #define TR_COLLECTIVE          "Kollektiv"
-#define TR_AILERON             "Aileron Source"
-#define TR_ELEVATOR            "Elevator Source"
+#define TR_AILERON             "Skevroder-källa"
+#define TR_ELEVATOR            "Höjdroder-källa"
 #define TR_SWASHRING           "Swashring"
 #define TR_ELEDIRECTION        "HöJD Riktning"
 #define TR_AILDIRECTION        "SKEV Riktning"
@@ -710,7 +710,7 @@
 #define TR_PITCH_AT_MAX        INDENT "Ton vid Max"
 #define TR_REPEAT_AT_ZERO      INDENT "Repetera vid Noll"
 #define TR_SHUTDOWN            "STÄNGER AV"
-#define TR_SAVEMODEL           "Saving model settings"
+#define TR_SAVEMODEL           "Spara modellinställn."
 #define TR_BATT_CALIB          "Kalib. Batteri"
 #define TR_CURRENT_CALIB       "Kalib. Ström"
 #define TR_VOLTAGE             INDENT"Volt"
@@ -724,7 +724,7 @@
 #define TR_RESTORE_MODEL       "återställ Modell"
 #define TR_SDCARD_ERROR        "SDCARD-fel"
 #define TR_NO_SDCARD           "SDCARD saknas"
-#define TR_SDCARD_FULL         "SD Card Full"
+#define TR_SDCARD_FULL         "SD-kort Fullt"
 #define TR_INCOMPATIBLE        "Inkompatibel"
 #define TR_WARNING             "VARNING"
 #define TR_EEPROMWARN          "EEPROM"
@@ -732,7 +732,7 @@
 #define TR_THROTTLEWARN        "GAS"
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "BRYTARE"
-#define TR_KEYSTUCK            "Key stuck"
+#define TR_KEYSTUCK            "Knapp-fel"
 #define TR_INVERT_THR          TR("Invert.Gas?", "Invertera Gasen?")
 #define TR_SPEAKER_VOLUME      INDENT "Volym"
 #define TR_LCD                 "LCD"
@@ -784,7 +784,7 @@
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Enks"
 #define TR_CHANNELS_MONITOR    "Kanalöversikt"
-#define TR_MIXERS_MONITOR      "MIXERS MONITOR"
+#define TR_MIXERS_MONITOR      "MIXER-SKÄRM"
 #define TR_PATH_TOO_LONG       "För lång sökväg"
 #define TR_VIEW_TEXT           "Visa Text"
 #define TR_FLASH_BOOTLOADER    "Skriv BootLoader"
