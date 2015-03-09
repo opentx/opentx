@@ -382,7 +382,7 @@ void StopEepromThread();
 #endif
 
 extern const char *eepromFile;
-#if defined(PCBTARANIS) || defined(PCBACT)
+#if defined(PCBTARANIS)
 void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size);
 #else
 void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t size);
