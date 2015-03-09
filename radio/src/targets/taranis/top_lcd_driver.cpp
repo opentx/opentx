@@ -266,6 +266,14 @@ void setTopFirstTimer(uint32_t value)
   div_t qr = div(value, 60);
   uint32_t r = qr.rem;
   qr = div(qr.quot, 10) ;
+  
+  // Limit to 99 min 99 sec to avoid breaking display
+  if (qr.quot > 9) {
+    qr.quot = 9;
+    qr.rem = 9;
+    r = 99;
+  }
+  
   Ht1621Data1[0] |= TimeLCDsegs[qr.quot] ;
   Ht1621Data1[1] |= TimeLCDsegs[qr.rem] ;
   qr = div(r, 10) ;
