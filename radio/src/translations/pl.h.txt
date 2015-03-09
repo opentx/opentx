@@ -530,9 +530,11 @@
 #define TR_ELIMITS             TR("Limi+25%", "Kanał +/- 125% ")
 #define TR_ETRIMS              TR("E.Trym ", "Poszer Trymery")
 #define TR_TRIMINC             "Krok Trym"
+#define TR_DISPLAY_TRIMS       "Display Trims"
 #define TR_TTRACE              TR("Źród gaz", INDENT "Źródło gazu ")
 #define TR_TTRIM               TR("TryGaz", INDENT "TrymWolnObrotó")
 #define TR_BEEPCTR             TR("ŚrodBeep", "Pikn.Środka")
+#define TR_USE_GLOBAL_FUNCS    "Use Global Funcs"
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protokół")
 #define TR_PPMFRAME            TR(INDENT "Ramka PPM", INDENT "Ramka PPM")
 #define TR_MS                  "ms"
@@ -615,6 +617,9 @@
 #define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Ostrz.Poten.", INDENT "PozycjaPotencj.")
 #define TR_TIMEZONE            TR("Strefa czasowa" ,"Strefa czasowa GPS")
 #define TR_RXCHANNELORD        TR("KolejnKan.RX", "Bazowa kolejność kanałów")
+#define TR_STICKS              "Sticks"
+#define TR_POTS                "Pots"
+#define TR_SWITCHES            "Switches"
 #define TR_SWITCHES_DELAY      "Opóźn.Przeł."
 #define TR_SLAVE               "Uczeń"
 #define TR_MODESRC             " Tryb\006% Źródło"

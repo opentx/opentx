@@ -208,12 +208,8 @@ char *strAppendFilename(char *dest, const char *filename, const int size)
 char *getFileExtension(char *filename, int size)
 {
   for (int i=0; i<size-LEN_FILE_EXTENSION; ++i) {
-    if (filename[i] == '.') {
-      for (int j=i+1; j<size; ++j) {
-        if (filename[j] == '\0') {
-          return &filename[i];
-        }
-      }
+    if (filename[i] == '.' || filename[i] == '\0') {
+      return &filename[i];
     }
   }
   return NULL;

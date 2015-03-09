@@ -149,6 +149,7 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
   }
 
   lcd_putsnAtt(x, y, name, size, attr | mode);
+  coord_t backupNextPos = lcdNextPos;
 
   if (active) {
     uint8_t cur = editNameCursorPos;
@@ -181,15 +182,27 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
           break;
 
         case EVT_ROTARY_LONG:
-          if ((attr == ZCHAR && v==0) || (attr == 0 && v==' ')) {
-            s_editMode = 0;
-            killEvents(event);
-            break;
+          if (attr & ZCHAR) {
+            if (v == 0) {
+              s_editMode = 0;
+              killEvents(event);
+            }
+            else if (v>=-26 && v<=26) {
+              v = -v; // toggle case
+            }
           }
-          if (v>=-26 && v<=26) {
-            v = -v; // toggle case
-            if (event==EVT_KEY_LONG(KEY_LEFT))
-              killEvents(KEY_LEFT);
+          else {
+            if (v == ' ') {
+              s_editMode = 0;
+              killEvents(event);
+              break;
+            }
+            else if (v>='A' && v<='Z') {
+              v = 'a'+v-'A'; // toggle case
+            }
+            else if (v>='a' && v<='z') {
+              v = 'A'+v-'a'; // toggle case
+            }
           }
           break;
       }
@@ -210,6 +223,7 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
       cur = 0;
     }
     editNameCursorPos = cur;
+    lcdNextPos = backupNextPos;
   }
 }
 

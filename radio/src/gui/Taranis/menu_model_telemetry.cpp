@@ -504,7 +504,7 @@ void menuModelTelemetry(uint8_t event)
         break;
 
       case ITEM_TELEMETRY_NEWSENSOR:
-        lcd_putsAtt(INDENT_WIDTH, y, STR_TELEMETRY_NEWSENSOR, attr);
+        lcd_putsAtt(0, y, STR_TELEMETRY_NEWSENSOR, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
           int res = availableTelemetryIndex();

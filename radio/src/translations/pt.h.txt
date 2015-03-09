@@ -532,9 +532,11 @@
 #define TR_ELIMITS             "E.Limits"
 #define TR_ETRIMS              "E.Trims"
 #define TR_TRIMINC             "Trim Step"
+#define TR_DISPLAY_TRIMS       "Display Trims"
 #define TR_TTRACE              TR("T-Trace", INDENT "T-Trace")
 #define TR_TTRIM               TR("T-Trim", INDENT "T-Trim")
 #define TR_BEEPCTR             "Ctr Beep"
+#define TR_USE_GLOBAL_FUNCS    "Use Global Funcs"
 #define TR_PROTO               INDENT"Proto"
 #define TR_PPMFRAME            "PPM frame"
 #define TR_MS                  "ms"
@@ -617,6 +619,9 @@
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Warning")
 #define TR_TIMEZONE            "Time Zone"
 #define TR_RXCHANNELORD        "Ordem Canal RX"
+#define TR_STICKS              "Sticks"
+#define TR_POTS                "Pots"
+#define TR_SWITCHES            "Switches"
 #define TR_SWITCHES_DELAY      "Switches Delay"
 #define TR_SLAVE               "Escravo"
 #define TR_MODESRC             "Modo\006% Fonte"

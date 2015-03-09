@@ -539,9 +539,11 @@
 #define TR_ELIMITS             TR("Erw. Limit","Erw. Wege auf 150%")
 #define TR_ETRIMS              TR("Erw. Trims","Erw. Trim  auf 100%")
 #define TR_TRIMINC             TR("Trim Schr.","Trimmschritte")
+#define TR_DISPLAY_TRIMS       "Display Trims"
 #define TR_TTRACE              TR("Gasquelle", INDENT "Gas-Timerquelle")
 #define TR_TTRIM               TR("Gastrim", INDENT "Gas-Leerlauftrim")
 #define TR_BEEPCTR             TR("Mitt.Piep","Mittelst.-Pieps")
+#define TR_USE_GLOBAL_FUNCS    "Use Global Funcs"
 #define TR_PROTO               TR(INDENT"Protok.",INDENT"Protokoll")
 #define TR_PPMFRAME            " PPM Einst."
 #define TR_MS                  "ms"
@@ -624,6 +626,9 @@
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Poti-Warnung")
 #define TR_TIMEZONE            TR("Zeitzone", "GPS-Zeitzone")
 #define TR_RXCHANNELORD        TR("Kanalanordnung", "Kanalvoreinstellung")
+#define TR_STICKS              "Sticks"
+#define TR_POTS                "Pots"
+#define TR_SWITCHES            "Switches"
 #define TR_SWITCHES_DELAY      TR("Sw. Mitte Delay", "Schaltermitte Verz.")   //Schalter Mitten verzögern Anpassung
 #define TR_SLAVE               TR("Schüler PPM1-16", "Schüler PPM1-16 als Ausgang")
 #define TR_MODESRC             " Modus\003%  Quelle"

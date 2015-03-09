@@ -41,7 +41,6 @@
 
 #if defined(TRANSLATIONS_FR)
   #define MENU_COLUMNS         1
-  #define COLUMN_X             0
 #else
   #define MENU_COLUMNS         2
 #endif

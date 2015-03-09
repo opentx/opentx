@@ -165,8 +165,9 @@ void onSdManagerMenu(const char *result)
     strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), STR_REMOVED);
     showStatusLine();
     REFRESH_FILES();
-    if (m_posVert == reusableBuffer.sdmanager.count-1)
+    if (m_posVert == reusableBuffer.sdmanager.count-1) {
       m_posVert--;
+    }
   }
   /* TODO else if (result == STR_LOAD_FILE) {
     f_getcwd(lfn, _MAX_LFN);
@@ -276,8 +277,8 @@ void menuGeneralSdManager(uint8_t _event)
       // no break
 
     case EVT_KEY_LONG(KEY_ENTER):
-      killEvents(_event);
       if (s_editMode == 0) {
+        killEvents(_event);
         char *line = reusableBuffer.sdmanager.lines[index];
         char *ext = getFileExtension(line, SD_SCREEN_FILE_LENGTH+1);
         if (ext) {
@@ -309,8 +310,8 @@ void menuGeneralSdManager(uint8_t _event)
           MENU_ADD_ITEM(STR_RENAME_FILE);
           MENU_ADD_ITEM(STR_DELETE_FILE);
         }
+        menuHandler = onSdManagerMenu;
       }
-      menuHandler = onSdManagerMenu;
       break;
   }
 
@@ -401,7 +402,7 @@ void menuGeneralSdManager(uint8_t _event)
     lcdNextPos = 0;
     LcdFlags attr = (index == i ? BSS|INVERS : BSS);
     if (reusableBuffer.sdmanager.lines[i][0]) {
-      if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(0, y, '[', attr); }
+      if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(0, y, '[', s_editMode == EDIT_MODIFY_STRING ? 0 : attr); }
       if (s_editMode == EDIT_MODIFY_STRING && attr) {
         editName(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH-4, _event, attr, 0);
         if (s_editMode == 0) {
@@ -414,7 +415,7 @@ void menuGeneralSdManager(uint8_t _event)
       else {
         lcd_putsAtt(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], attr);
       }
-      if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(lcdNextPos, y, ']', attr); }
+      if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(lcdNextPos, y, ']', s_editMode == EDIT_MODIFY_STRING ? 0 : attr); }
     }
   }
 

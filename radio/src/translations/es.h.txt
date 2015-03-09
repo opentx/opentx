@@ -532,9 +532,11 @@
 #define TR_ELIMITS             TR("E.Limite","Ampliar Limites")
 #define TR_ETRIMS              TR("E.Trims","Ampliar Trims")
 #define TR_TRIMINC             "Paso Trim"
+#define TR_DISPLAY_TRIMS       "Display Trims"
 #define TR_TTRACE              TR("Fuente-A", INDENT "Fuente Acelerad")
 #define TR_TTRIM               TR("Trim-A", INDENT "Trim Acelerad")
 #define TR_BEEPCTR             TR("Ctr Beep","Center Beep")
+#define TR_USE_GLOBAL_FUNCS    "Use Global Funcs"
 #define TR_PROTO               TR(INDENT"Proto",INDENT"Protocol")
 #define TR_PPMFRAME            "Trama PPM"
 #define TR_MS                  "ms"
@@ -617,6 +619,9 @@
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Warning")
 #define TR_TIMEZONE            TR("Zona Hora", "GPS Zona Hora")
 #define TR_RXCHANNELORD        TR("Rx Orden canal", "Orden habitual canales")
+#define TR_STICKS              "Sticks"
+#define TR_POTS                "Pots"
+#define TR_SWITCHES            "Switches"
 #define TR_SWITCHES_DELAY      "Switches Delay"
 #define TR_SLAVE               "Esclavo"
 #define TR_MODESRC             "Modo\006% Fuente"

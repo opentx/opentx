@@ -532,9 +532,11 @@
 #define TR_ELIMITS             TR("Gränser++","Utökade Gränser")
 #define TR_ETRIMS              TR("Trimmar++","Utökade Trimmar")
 #define TR_TRIMINC             TR("Trimning","Trimökning")
+#define TR_DISPLAY_TRIMS       "Display Trims"
 #define TR_TTRACE              TR("Följ Gas", INDENT "Följ Gas")
 #define TR_TTRIM               TR("Gastrim", INDENT "Gastrim")
 #define TR_BEEPCTR             TR("Cent.pip", "Centerpip")
+#define TR_USE_GLOBAL_FUNCS    "Use Global Funcs"
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protokoll")
 #define TR_PPMFRAME            TR(INDENT "PPM-paket", INDENT "PPM-paket")
 #define TR_MS                  "ms"
@@ -617,6 +619,9 @@
 #define TR_POTWARNING          TR("Rattvarn.", INDENT "Rattvarning")
 #define TR_TIMEZONE            TR("Tidszon", "GPS Tidszon")
 #define TR_RXCHANNELORD        "Kanaler i RX"
+#define TR_STICKS              "Sticks"
+#define TR_POTS                "Pots"
+#define TR_SWITCHES            "Switches"
 #define TR_SWITCHES_DELAY      "Brytarfördröjning"
 #define TR_SLAVE               "Elev"
 #define TR_MODESRC             " Läge\004% Källa"
