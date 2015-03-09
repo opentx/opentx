@@ -329,7 +329,7 @@ void SimulatorDialog::keyPressEvent (QKeyEvent *event)
     case Qt::Key_Minus:
     case Qt::Key_Plus:
     case Qt::Key_PageDown:
-    case Qt::Key_Menu:    
+    case Qt::Key_PageUp:    
       buttonPressed = event->key();
       break;
   }
@@ -349,7 +349,7 @@ void SimulatorDialog::keyReleaseEvent(QKeyEvent * event)
     case Qt::Key_Plus:
     case Qt::Key_Minus:
     case Qt::Key_PageDown:
-    case Qt::Key_Menu:
+    case Qt::Key_PageUp:
       buttonPressed = 0;
       break;
   }
@@ -837,7 +837,7 @@ void SimulatorDialogTaranis::getValues()
     },
 
     {
-      buttonPressed == Qt::Key_Menu,
+      buttonPressed == Qt::Key_PageUp,
       buttonPressed == Qt::Key_Escape,
       buttonPressed == Qt::Key_Enter,
       buttonPressed == Qt::Key_PageDown,

@@ -47,7 +47,7 @@ class xcursorWidget : public QWidget {
         if (event->button()==Qt::LeftButton) {
           if (pnpoly(6,p1x,p1y,(float)x,(float)y)==1) {
             setStyleSheet("background:url(:/images/x9l1.png);");
-            emit buttonPressed(Qt::Key_Menu);
+            emit buttonPressed(Qt::Key_PageUp);
           }
           else if (pnpoly(6,p2x,p2y,(float)x,(float)y)==1) {
             setStyleSheet("background:url(:/images/x9l2.png);");
