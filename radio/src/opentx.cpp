@@ -1887,10 +1887,12 @@ void opentxClose()
 #endif
 
 #if defined(PCBTARANIS)
-  if ((g_model.nPotsToWarn >> 6) == 2) {
-    for (uint8_t i=0; i<NUM_POTS; i++)
-      if (!(g_model.nPotsToWarn & (1 << i)))
+  if (g_model.potsWarnMode == POTS_WARN_AUTO) {
+    for (int i=0; i<NUM_POTS; i++) {
+      if (!(g_model.potsWarnEnabled & (1 << i))) {
         SAVE_POT_POSITION(i);
+      }
+    }
     eeDirty(EE_MODEL);
   }
 #endif

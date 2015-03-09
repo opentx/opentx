@@ -72,8 +72,14 @@ enum menuModelSetupItems {
   ITEM_MODEL_CHECKLIST_DISPLAY,
   ITEM_MODEL_THROTTLE_WARNING,
   ITEM_MODEL_SWITCHES_WARNING,
+#if defined(REV9E)
   ITEM_MODEL_SWITCHES_WARNING2,
-  ITEM_MODEL_POT_WARNING,
+  ITEM_MODEL_SWITCHES_WARNING3,
+#endif
+  ITEM_MODEL_POTS_WARNING,
+#if defined(REV9E)
+  ITEM_MODEL_POTS_WARNING2,
+#endif
   ITEM_MODEL_BEEP_CENTER,
   ITEM_MODEL_USE_GLOBAL_FUNCTIONS,
   ITEM_MODEL_INTERNAL_MODULE_LABEL,
@@ -95,7 +101,7 @@ enum menuModelSetupItems {
 
 #define FIELD_PROTOCOL_MAX 1
 
-#define MODEL_SETUP_2ND_COLUMN        (LCD_W-17*FW-MENUS_SCROLLBAR_WIDTH)
+#define MODEL_SETUP_2ND_COLUMN        (LCD_W-17*FW-MENUS_SCROLLBAR_WIDTH-1)
 #define MODEL_SETUP_BIND_OFS          3*FW-2
 #define MODEL_SETUP_RANGE_OFS         7*FW
 #define MODEL_SETUP_SET_FAILSAFE_OFS  10*FW
@@ -181,17 +187,23 @@ void menuModelSetup(uint8_t event)
   #define TRAINER_CHANNELS_ROWS()           IF_TRAINER_ON(1)
   #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS() : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS() : TRAINER_CHANNELS_ROWS()))
   #define FAILSAFE_ROWS(x)                  ((g_model.moduleData[x].rfProtocol==RF_PROTO_X16 || g_model.moduleData[x].rfProtocol==RF_PROTO_LR12) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW)
-  #define POT_WARN_ITEMS()                  ((g_model.nPotsToWarn >> 6) ? (uint8_t)NUM_POTS : (uint8_t)0)
   #define TIMER_ROWS                        2|NAVIGATION_LINE_BY_LINE, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
   #if TIMERS == 1
-    #define TIMERS_ROWS TIMER_ROWS
+    #define TIMERS_ROWS                     TIMER_ROWS
   #elif TIMERS == 2
-    #define TIMERS_ROWS TIMER_ROWS, TIMER_ROWS
+    #define TIMERS_ROWS                     TIMER_ROWS, TIMER_ROWS
   #elif TIMERS == 3
-    #define TIMERS_ROWS TIMER_ROWS, TIMER_ROWS, TIMER_ROWS
+    #define TIMERS_ROWS                     TIMER_ROWS, TIMER_ROWS, TIMER_ROWS
+  #endif
+  #if defined(REV9E)
+    #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsAllowed()), uint8_t(getSwitchWarningsAllowed() > 8 ? TITLE_ROW : HIDDEN_ROW), uint8_t(getSwitchWarningsAllowed() > 16 ? TITLE_ROW : HIDDEN_ROW)
+    #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|NUM_POTS : 0), uint8_t(g_model.potsWarnMode ? TITLE_ROW : HIDDEN_ROW)
+  #else
+    #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsAllowed())
+    #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|NUM_POTS : 0)
   #endif
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
-  MENU_TAB({ 0, 0, TIMERS_ROWS, 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsAllowed()), ONE_2x2POS_DEFINED() ? TITLE_ROW : HIDDEN_ROW, POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0, LABEL(InternalModule), 0, IF_INTERNAL_MODULE_ON(1), IF_INTERNAL_MODULE_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), LABEL(ExternalModule), (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, EXTERNAL_MODULE_CHANNELS_ROWS(), (IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW, IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
+  MENU_TAB({ 0, 0, TIMERS_ROWS, 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0, LABEL(InternalModule), 0, IF_INTERNAL_MODULE_ON(1), IF_INTERNAL_MODULE_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), LABEL(ExternalModule), (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, EXTERNAL_MODULE_CHANNELS_ROWS(), (IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW, IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
 
   MENU_CHECK(STR_MENUSETUP, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX);
 
@@ -204,7 +216,7 @@ void menuModelSetup(uint8_t event)
 
   int sub = m_posVert;
 
-  for (uint8_t i=0; i<NUM_BODY_LINES; ++i) {
+  for (int i=0; i<NUM_BODY_LINES; ++i) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i+s_pgOfs;
     for (int j=0; j<=k; j++) {
@@ -324,7 +336,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_DISPLAY_TRIMS:
-        g_model.displayTrims = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, "Display Trims", "\006No\0   ChangeYes", g_model.displayTrims, 0, 2, attr, event);
+        g_model.displayTrims = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_DISPLAY_TRIMS, "\006No\0   ChangeYes", g_model.displayTrims, 0, 2, attr, event);
         break;
 
       case ITEM_MODEL_TRIM_INC:
@@ -368,18 +380,30 @@ void menuModelSetup(uint8_t event)
         g_model.disableThrottleWarning = !onoffMenuItem(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEWARNING, attr, event);
         break;
 
-      // TODO something more generic
+#if defined(REV9E)
       case ITEM_MODEL_SWITCHES_WARNING2:
-        if (i==0) s_pgOfs++;
+      case ITEM_MODEL_SWITCHES_WARNING3:
+      case ITEM_MODEL_POTS_WARNING2:
+        if (i==0) {
+          if (CURSOR_MOVED_LEFT(event))
+            s_pgOfs--;
+          else
+            s_pgOfs++;
+        }
         break;
+#endif
 
       case ITEM_MODEL_SWITCHES_WARNING:
-        // TODO something more generic
-        if (i==LCD_LINES-2) {
-          s_pgOfs++;
+      {
+#if defined(REV9E)
+        if (i>=NUM_BODY_LINES-2 && getSwitchWarningsAllowed() > 8*(NUM_BODY_LINES-i)) {
+          if (CURSOR_MOVED_LEFT(event))
+            s_pgOfs--;
+          else
+            s_pgOfs++;
           break;
         }
-      {
+#endif
         lcd_putsLeft(y, STR_SWITCHWARNING);
         swarnstate_t states = g_model.switchWarningState;
         char c;
@@ -407,9 +431,10 @@ void menuModelSetup(uint8_t event)
 
         LcdFlags line = attr;
 
-        for (int i=0, current=0; i<NUM_SWITCHES; i++) {
-          div_t qr = div(i, 8);
+        int current = 0;
+        for (int i=0; i<NUM_SWITCHES; i++) {
           if (SWITCH_WARNING_ALLOWED(i)) {
+            div_t qr = div(current, 8);
             if (!READ_ONLY() && event==EVT_KEY_BREAK(KEY_ENTER) && line && l_posHorz==current) {
               g_model.switchWarningEnable ^= (1 << i);
               eeDirty(EE_MODEL);
@@ -423,74 +448,98 @@ void menuModelSetup(uint8_t event)
           states >>= 2;
         }
         if (attr && m_posHorz < 0) {
-          drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 8*(2*FW+1), ONE_2x2POS_DEFINED() ? 2*FH+1 : FH+1);
+#if defined(REV9E)
+          drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 8*(2*FW+1), 1+FH*((current+7)/8));
+#else
+          drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, current*(2*FW+1), FH+1);
+#endif
         }
         break;
       }
 
-      case ITEM_MODEL_POT_WARNING:
-      {
+      case ITEM_MODEL_POTS_WARNING:
+#if defined(REV9E)
+        if (i==NUM_BODY_LINES-1 && g_model.potsWarnMode) {
+          if (CURSOR_MOVED_LEFT(event))
+            s_pgOfs--;
+          else
+            s_pgOfs++;
+          break;
+        }
+#endif
+
         lcd_putsLeft(y, STR_POTWARNING);
-        uint8_t potMode = g_model.nPotsToWarn >> 6;
+        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""Man\0""Auto"), g_model.potsWarnMode, (m_posHorz == 0) ? attr : 0);
+        if (attr && (m_posHorz == 0)) {
+          CHECK_INCDEC_MODELVAR(event, g_model.potsWarnMode, POTS_WARN_OFF, POTS_WARN_AUTO);
+          eeDirty(EE_MODEL);
+        }
+
         if (attr) {
-          if (m_posHorz) s_editMode = 0;
-          if (!READ_ONLY() && m_posHorz) {
+          if (m_posHorz > 0) s_editMode = 0;
+          if (!READ_ONLY() && m_posHorz > 0) {
             switch (event) {
               case EVT_KEY_LONG(KEY_ENTER):
                 killEvents(event);
-                if (potMode == 1) {
+                if (g_model.potsWarnMode == POTS_WARN_MANUAL) {
                   SAVE_POT_POSITION(m_posHorz-1);
                   AUDIO_WARNING1();
                   eeDirty(EE_MODEL);
                 }
                 break;
               case EVT_KEY_BREAK(KEY_ENTER):
-                g_model.nPotsToWarn ^= (1 << (m_posHorz-1));
+                g_model.potsWarnEnabled ^= (1 << (m_posHorz-1));
                 eeDirty(EE_MODEL);
                 break;
             }
           }
         }
-        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""Man\0""Auto"), potMode, (m_posHorz == 0) ? attr : 0);
-        if (potMode) {
-          coord_t x = MODEL_SETUP_2ND_COLUMN+5*FW;
+        if (g_model.potsWarnMode) {
+          coord_t x = MODEL_SETUP_2ND_COLUMN+27;
           for (int i=0; i<NUM_POTS; ++i) {
-#if !defined(REVPLUS)
-            if (i == POT3-POT1) {
+            if (i<NUM_XPOTS && !IS_POT_AVAILABLE(POT1+i)) {
               if (attr && (m_posHorz==i+1)) REPEAT_LAST_CURSOR_MOVE();
               continue;
             }
-#endif
             LcdFlags flags = ((m_posHorz==i+1) && attr) ? BLINK : 0;
-            flags |= (!(g_model.nPotsToWarn & (1 << i))) ? INVERS : 0;
+            if ((!attr || m_posHorz >= 0) && !(g_model.potsWarnEnabled & (1 << i))) {
+              flags |= INVERS;
+            }
             lcd_putsiAtt(x, y, STR_VSRCRAW, NUM_STICKS+1+i, flags);
+
+#if defined(REV9E)
+            if (i == NUM_XPOTS-1) {
+              y += FH;
+              x = MODEL_SETUP_2ND_COLUMN+27;
+            }
+            else {
+              x += (2*FW+7);
+            }
+#else
             x += (2*FW+3);
+#endif
           }
         }
-
-        if (attr && (m_posHorz == 0)) {
-          CHECK_INCDEC_MODELVAR(event, potMode, 0, 2);
-          g_model.nPotsToWarn = (g_model.nPotsToWarn & 0x3F) | ((potMode << 6) & 0xC0);
-          eeDirty(EE_MODEL);
+        if (attr && m_posHorz < 0) {
+#if defined(REV9E)
+          drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-FH-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, 2*FH+1);
+#else
+          drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);
+#endif
         }
         break;
-      }
 
       case ITEM_MODEL_BEEP_CENTER:
+      {
         lcd_putsLeft(y, STR_BEEPCTR);
-        for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS; i++) {
-          // TODO flash saving, \001 not needed in STR_RETA123
-          coord_t x = MODEL_SETUP_2ND_COLUMN+i*FW;
-#if !defined(REVPLUS)
-          if (i == POT3) {
-            if (attr && m_posHorz == POT3) REPEAT_LAST_CURSOR_MOVE();
+        coord_t x = MODEL_SETUP_2ND_COLUMN;
+        for (int i=0; i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS; i++) {
+          if (i>=POT1 && i<POT1+NUM_XPOTS && !IS_POT_AVAILABLE(i)) {
+            if (attr && m_posHorz == i) REPEAT_LAST_CURSOR_MOVE();
             continue;
           }
-          else if (i > POT3) {
-            x -= FW;
-          }
-#endif
           lcd_putsiAtt(x, y, STR_RETA123, i, ((m_posHorz==i) && attr) ? BLINK|INVERS : (((g_model.beepANACenter & ((BeepANACenter)1<<i)) || (attr && CURSOR_ON_LINE())) ? INVERS : 0 ) );
+          x += FW;
         }
         if (attr && CURSOR_ON_CELL) {
           if (event==EVT_KEY_BREAK(KEY_ENTER)) {
@@ -502,9 +551,10 @@ void menuModelSetup(uint8_t event)
           }
         }
         break;
+      }
 
       case ITEM_MODEL_USE_GLOBAL_FUNCTIONS:
-        lcd_putsLeft(y, "Use Global Funcs");
+        lcd_putsLeft(y, STR_USE_GLOBAL_FUNCS);
         menu_lcd_onoff(MODEL_SETUP_2ND_COLUMN, y, !g_model.noGlobalFunctions, attr);
         if (attr) g_model.noGlobalFunctions = !checkIncDecModel(event, !g_model.noGlobalFunctions, 0, 1);
         break;

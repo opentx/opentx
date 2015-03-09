@@ -82,6 +82,13 @@
 #define LEN_UART3MODES         "\015"
 #define TR_UART3MODES          "OFF\0         ""S-Port Mirror""Telemetry\0   ""SBUS Trainer\0""Debug\0"
 
+#define LEN_SWTYPES            "\007"
+#if defined(REV9E)
+  #define TR_SWTYPES           "None\0  ""Default""Toggle\0""2POS\0  ""3POS\0"
+#else
+  #define TR_SWTYPES           "Default""Toggle\0""2POS\0  ""3POS\0"
+#endif
+
 #define LEN_POTTYPES           "\017"
 #define TR_POTTYPES            "None\0          ""Pot with detent""Multipos Switch""Pot\0"
 
@@ -109,6 +116,9 @@
 #define LEN_VTRIMINC           TR("\006", "\013")
 #define TR_VTRIMINC            TR("Expo\0 ""ExFine""Fine\0 ""Medium""Coarse", "Exponential""Extra Fine\0""Fine\0      ""Medium\0    ""Coarse\0    ")
 
+#define LEN_VDISPLAYTRIMS      "\006"
+#define TR_VDISPLAYTRIMS       "No\0   ""Change""Yes\0"
+
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "SilentBeeps\0Voice\0"
 
@@ -117,7 +127,9 @@
 
 #define LEN_RETA123            "\001"
 
-#if defined(PCBTARANIS) || defined(REVX)
+#if defined(PCBTARANIS) && defined(REV9E)
+  #define TR_RETA123           "RETA1234LRLR"
+#elif defined(PCBTARANIS) || defined(REVX)
   #define TR_RETA123           "RETA123LR"
 #elif defined(PCBSKY9X)
   #define TR_RETA123           "RETA123a"
@@ -467,7 +479,7 @@
 #if defined(PCBTARANIS) && defined(REV9E)
   #define TR_PHYS_SWITCHES     "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF-""SF\301""SG\300""SG-""SG\301""SH\300""SH-""SH\301""SI\300""SI-""SI\301""SJ\300""SJ-""SJ\301""SK\300""SK-""SK\301""SL\300""SL-""SL\301""SM\300""SM-""SM\301""SN\300""SN-""SN\301""SO\300""SO-""SO\301""SP\300""SP-""SP\301""SQ\300""SQ-""SQ\301""SR\300""SR-""SR\301"
 #elif defined(PCBTARANIS)
-  #define TR_PHYS_SWITCHES     "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301""SI\300""SI\301""SJ\300""SJ\301""SK\300""SK\301""SL\300""SL\301""SM\300""SM\301""SN\300""SN\301"
+  #define TR_PHYS_SWITCHES     "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301"
 #else
   #define TR_PHYS_SWITCHES     "THR""RUD""ELE""AIL""GEA""TRN"
 #endif
@@ -565,9 +577,11 @@
 #define TR_ELIMITS             TR("E.Limits", "Extended Limits")
 #define TR_ETRIMS              TR("E.Trims", "Extended Trims")
 #define TR_TRIMINC             "Trim Step"
+#define TR_DISPLAY_TRIMS       "Display Trims"
 #define TR_TTRACE              TR("T-Source", INDENT "Source")
 #define TR_TTRIM               TR("T-Trim", INDENT "Trim Idle Only")
 #define TR_BEEPCTR             TR("Ctr Beep", "Center Beep")
+#define TR_USE_GLOBAL_FUNCS    "Use Global Funcs"
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protocol")
 #if defined(CPUARM)
   #define TR_PPMFRAME          INDENT "PPM frame"
@@ -597,7 +611,7 @@
 #define TR_EDITMIX             "EDIT MIX "
 #define TR_SOURCE              INDENT "Source"
 #define TR_WEIGHT              "Weight"
-#define TR_EXPO                TR("Expo","Exponential")
+#define TR_EXPO                TR("Expo", "Exponential")
 #define TR_SIDE                "Side"
 #define TR_DIFFERENTIAL        "Differ"
 #define TR_OFFSET              INDENT "Offset"
@@ -605,7 +619,7 @@
 #define TR_DREX                "DRex"
 #define DREX_CHBOX_OFFSET      30
 #define TR_CURVE               "Curve"
-#define TR_FLMODE              TR("Mode","Modes")
+#define TR_FLMODE              TR("Mode", "Modes")
 #define TR_MIXWARNING          "Warning"
 #define TR_OFF                 "OFF"
 #define TR_MULTPX              "Multpx"
@@ -640,9 +654,9 @@
 #define TR_THROTTLE_LABEL      "Throttle"
 #define TR_THROTTLEREVERSE     TR("T-Reverse", INDENT "Reverse")
 #define TR_TIMER_NAME          INDENT "Name"
-#define TR_MINUTEBEEP          TR(INDENT "Minute",INDENT "Minute call")
+#define TR_MINUTEBEEP          TR(INDENT "Minute", INDENT "Minute call")
 #define TR_BEEPCOUNTDOWN       INDENT "Countdown"
-#define TR_PERSISTENT          TR(INDENT "Persist.",INDENT "Persistent")
+#define TR_PERSISTENT          TR(INDENT "Persist.", INDENT "Persistent")
 #define TR_BACKLIGHT_LABEL     "Backlight"
 #define TR_BLDELAY             INDENT "Duration"
 #define TR_BLONBRIGHTNESS      INDENT "ON Brightness"
@@ -654,7 +668,10 @@
 #define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Pot Warn.", INDENT "Pot Positions")
 #define TR_TIMEZONE            TR("Time Zone", "GPS Time zone")
 #define TR_RXCHANNELORD        TR("Rx Channel Ord", "Default channel order")
-#define TR_SWITCHES_DELAY      TR("Play delay","Play Delay (sw. mid pos)")
+#define TR_STICKS              "Sticks"
+#define TR_POTS                "Pots"
+#define TR_SWITCHES            "Switches"
+#define TR_SWITCHES_DELAY      TR("Play delay", "Play Delay (sw. mid pos)")
 #define TR_SLAVE               CENTER "Slave"
 #define TR_MODESRC             "Mode\006% Source"
 #define TR_MULTIPLIER          "Multiplier"
@@ -709,8 +726,8 @@
 #define TR_MENUTRAINER         "TRAINER"
 #define TR_MENUGLOBALFUNCS     "GLOBAL FUNCTIONS"
 #define TR_MENUVERSION         "VERSION"
-#define TR_MENUDIAG            TR("SWITCHES","SWITCH TEST")
-#define TR_MENUANA             TR("ANAS","ANALOG INPUTS")
+#define TR_MENUDIAG            TR("SWITCHES", "SWITCH TEST")
+#define TR_MENUANA             TR("ANAS", "ANALOG INPUTS")
 #define TR_MENUCALIBRATION     "CALIBRATION"
 #if defined(COLORLCD)
   #define TR_TRIMS2OFFSETS     "Trims >> Subtrims"
@@ -723,9 +740,9 @@
 #define TR_MENUFLIGHTPHASE     "FLIGHT MODE"
 #define TR_MENUHELISETUP       "HELI SETUP"
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
   #define TR_MENUINPUTS        "INPUTS"
-  #define TR_MENULIMITS        "SERVOS"
+  #define TR_MENULIMITS        "OUTPUTS"
 #else
   #define TR_MENUINPUTS        "STICKS"
   #define TR_MENULIMITS        "SERVOS"

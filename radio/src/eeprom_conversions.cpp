@@ -837,9 +837,6 @@ int ConvertSwitch_216_to_217(int swtch)
 #if defined(REV9E)
   if (swtch >= SWSRC_SI0)
     swtch += 10*2;
-#else
-  if (swtch >= SWSRC_SI0)
-    swtch += 6*2;
 #endif
 
   return swtch;
@@ -857,10 +854,6 @@ int ConvertSource_216_to_217(int source)
   // SI to SR switches added
   if (source >= MIXSRC_SI)
     source += 10;
-#elif defined(PCBTARANIS)
-  // SI to SN switches added
-  if (source >= MIXSRC_SI)
-    source += 6;
 #endif
   // Telemetry conversions
   if (source >= MIXSRC_FIRST_TELEM)
@@ -1465,8 +1458,9 @@ void ConvertModel_216_to_217(ModelData &model)
   memcpy(newModel.curveNames, oldModel.curveNames, sizeof(newModel.curveNames));
   memcpy(newModel.inputNames, oldModel.inputNames, sizeof(newModel.inputNames));
 #endif
-  newModel.nPotsToWarn = oldModel.nPotsToWarn;
-  memcpy(newModel.potPosition, oldModel.potPosition, sizeof(newModel.potPosition));
+  newModel.potsWarnMode = oldModel.nPotsToWarn >> 6;
+  newModel.potsWarnEnabled = oldModel.nPotsToWarn & 0x1f;
+  memcpy(newModel.potsWarnPosition, oldModel.potPosition, sizeof(newModel.potsWarnPosition));
 }
 
 void ConvertModel(int id, int version)

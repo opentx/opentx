@@ -109,12 +109,6 @@ bool isSourceAvailable(int source)
     return false;
   }
 
-  if (source>=MIXSRC_SI && source<=MIXSRC_SN) {
-    if (!IS_2x2POS(source-MIXSRC_SI)) {
-      return false;
-    }
-  }
-
   if (source>=MIXSRC_SW1 && source<=MIXSRC_LAST_LOGICAL_SWITCH) {
     LogicalSwitchData * cs = lswAddress(source-MIXSRC_SW1);
     return (cs->func != LS_FUNC_NONE);
@@ -204,18 +198,15 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
   }
 
 #if defined(REV9E)
-  if (swtch >= SWSRC_SA1 && swtch <= SWSRC_SR1 && (swtch-SWSRC_SA1)%3 == 0) {
-    return IS_3POS(index);
+  if (swtch >= SWSRC_SA0 && swtch <= SWSRC_SR2) {
+    if (!SWITCH_EXISTS(index))
+      return false;
+    if ((swtch-SWSRC_SA1)%3 == 0)
+      return IS_3POS(index);
   }
 #else
   if (swtch == SWSRC_SA1 || swtch == SWSRC_SB1 || swtch == SWSRC_SC1 || swtch == SWSRC_SD1 || swtch == SWSRC_SE1 || swtch == SWSRC_SG1) {
     return IS_3POS(index);
-  }
-  if (swtch >= SWSRC_SI0 && swtch <= SWSRC_SM2) {
-    return IS_2x2POS((swtch-SWSRC_SI0)/2);
-  }
-  if (swtch >= SWSRC_SN0 && swtch <= SWSRC_SN2) {
-    return IS_2x2POS(6);
   }
 #endif
 

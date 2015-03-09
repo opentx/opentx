@@ -403,28 +403,30 @@ void onMainViewMenu(const char *result)
 
 void displaySwitch(coord_t x, coord_t y, int width, unsigned int index)
 {
-  int val = getValue(MIXSRC_FIRST_SWITCH+index);
+  if (SWITCH_EXISTS(index)) {
+    int val = getValue(MIXSRC_FIRST_SWITCH+index);
 
-  if (val >= 0) {
-    lcd_hline(x, y, width);
-    lcd_hline(x, y+2, width);
-    y += 4;
-    if (val > 0) {
+    if (val >= 0) {
       lcd_hline(x, y, width);
       lcd_hline(x, y+2, width);
       y += 4;
+      if (val > 0) {
+        lcd_hline(x, y, width);
+        lcd_hline(x, y+2, width);
+        y += 4;
+      }
     }
-  }
 
-  lcd_putcAtt(width==5 ? x+1 : x, y, 'A'+index, TINSIZE);
-  y += 6;
+    lcd_putcAtt(width==5 ? x+1 : x, y, 'A'+index, TINSIZE);
+    y += 6;
 
-  if (val <= 0) {
-    lcd_hline(x, y, width);
-    lcd_hline(x, y+2, width);
-    if (val < 0) {
-      lcd_hline(x, y+4, width);
-      lcd_hline(x, y+6, width);
+    if (val <= 0) {
+      lcd_hline(x, y, width);
+      lcd_hline(x, y+2, width);
+      if (val < 0) {
+        lcd_hline(x, y+4, width);
+        lcd_hline(x, y+6, width);
+      }
     }
   }
 }

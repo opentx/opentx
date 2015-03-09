@@ -180,18 +180,6 @@ void getSwitchesPosition(bool startup)
   CHECK_2POS(SW_SF);
   CHECK_3POS(5, SW_SG);
   CHECK_2POS(SW_SH);
-  if (IS_2x2POS(0))
-    CHECK_2POS(SW_SI);
-  if (IS_2x2POS(1))
-    CHECK_2POS(SW_SJ);
-  if (IS_2x2POS(2))
-    CHECK_2POS(SW_SK);
-  if (IS_2x2POS(3))
-    CHECK_2POS(SW_SL);
-  if (IS_2x2POS(4))
-    CHECK_2POS(SW_SM);
-  if (IS_2x2POS(6))
-    CHECK_2POS(SW_SN);
 
   switchesPos = newPos;
 
@@ -670,24 +658,21 @@ void checkSwitches()
         }
       }
     }
-    uint8_t potMode = g_model.nPotsToWarn >> 6;
-    if (potMode) {
+    if (g_model.potsWarnMode) {
       evalFlightModeMixes(e_perout_mode_normal, 0);
       bad_pots = 0;
-      for (uint8_t i=0; i<NUM_POTS; i++) {
-#if !defined(REVPLUS)
-        if (i == POT3-POT1) {
+      for (int i=0; i<NUM_POTS; i++) {
+        if (!IS_POT_AVAILABLE(i)) {
           continue;
         }
-#endif
-        if (!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1)) {
+        if (!(g_model.potsWarnEnabled & (1 << i)) && (abs(g_model.potsWarnPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1)) {
           warn = true;
           bad_pots |= (1<<i);
         }
       }
     }
 #else
-    for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
+    for (int i=0; i<NUM_SWITCHES-1; i++) {
       if (!(g_model.switchWarningEnable & (1<<i))) {
       	if (i == 0) {
       	  if ((states & 0x03) != (switches_states & 0x03)) {
@@ -732,29 +717,28 @@ void checkSwitches()
           }
         }
       }
-      if (potMode) {
+      if (g_model.potsWarnMode) {
         if (y == 4*FH+3) {
           y = 6*FH-2;
           x = 60;
         }
-        for (uint8_t i=0; i<NUM_POTS; i++) {
-#if !defined(REVPLUS)
-          if (i == POT3-POT1) {
+        for (int i=0; i<NUM_POTS; i++) {
+          if (!IS_POT_AVAILABLE(i)) {
             continue;
           }
-#endif
-          if (!(g_model.nPotsToWarn & (1 << i))) {
-            if (abs(g_model.potPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1) {
+          if (!(g_model.potsWarnEnabled & (1 << i))) {
+            if (abs(g_model.potsWarnPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1) {
+              TRACE("POS %d vs %d", g_model.potsWarnPosition[i], GET_LOWRES_POT_POSITION(i));
               lcd_putsiAtt(x, y, STR_VSRCRAW, NUM_STICKS+1+i, INVERS);
               switch (i) {
                 case 0:
                 case 1:
                 case 2: 
-                  lcd_putcAtt(lcdNextPos, y, g_model.potPosition[i] > GET_LOWRES_POT_POSITION(i) ? 126 : 127, INVERS);
+                  lcd_putcAtt(lcdNextPos, y, g_model.potsWarnPosition[i] > GET_LOWRES_POT_POSITION(i) ? 126 : 127, INVERS);
                   break;
                 case 3:
                 case 4:
-                  lcd_putcAtt(lcdNextPos, y, g_model.potPosition[i] > GET_LOWRES_POT_POSITION(i) ? '\300' : '\301', INVERS);
+                  lcd_putcAtt(lcdNextPos, y, g_model.potsWarnPosition[i] > GET_LOWRES_POT_POSITION(i) ? '\300' : '\301', INVERS);
                   break;
               }
               x = lcdNextPos + 3;

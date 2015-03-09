@@ -104,12 +104,18 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_TRNCHN             (OFS_TRNMODE + sizeof(TR_TRNMODE))
 #if defined(PCBTARANIS)
   #define OFS_UART3MODES       (OFS_TRNCHN + sizeof(TR_TRNCHN))
-  #define OFS_POTTYPES         (OFS_UART3MODES + sizeof(TR_UART3MODES))
+  #define OFS_SWTYPES          (OFS_UART3MODES + sizeof(TR_UART3MODES))
+  #define OFS_POTTYPES         (OFS_SWTYPES + sizeof(TR_SWTYPES))
   #define OFS_VTRIMINC         (OFS_POTTYPES + sizeof(TR_POTTYPES))
 #else
   #define OFS_VTRIMINC         (OFS_TRNCHN + sizeof(TR_TRNCHN))
 #endif
-#define OFS_RETA123            (OFS_VTRIMINC + sizeof(TR_VTRIMINC))
+#if defined(CPUARM)
+  #define OFS_VDISPLAYTRIMS    (OFS_VTRIMINC + sizeof(TR_VTRIMINC))
+  #define OFS_RETA123          (OFS_VDISPLAYTRIMS + sizeof(TR_VDISPLAYTRIMS))
+#else
+  #define OFS_RETA123          (OFS_VTRIMINC + sizeof(TR_VTRIMINC))
+#endif
 #define OFS_VPROTOS            (OFS_RETA123 + sizeof(TR_RETA123))
 #define OFS_POSNEG             (OFS_VPROTOS + sizeof(TR_VPROTOS))
 #define OFS_VBLMODE            (OFS_POSNEG + sizeof(TR_POSNEG))
@@ -207,8 +213,10 @@ extern const pm_char STR_OPEN9X[];
 #define STR_TRNMODE             (STR_OPEN9X + OFS_TRNMODE)
 #define STR_TRNCHN              (STR_OPEN9X + OFS_TRNCHN)
 #define STR_UART3MODES          (STR_OPEN9X + OFS_UART3MODES)
+#define STR_SWTYPES             (STR_OPEN9X + OFS_SWTYPES)
 #define STR_POTTYPES            (STR_OPEN9X + OFS_POTTYPES)
 #define STR_VTRIMINC            (STR_OPEN9X + OFS_VTRIMINC)
+#define STR_VDISPLAYTRIMS       (STR_OPEN9X + OFS_VDISPLAYTRIMS)
 #define STR_RETA123             (STR_OPEN9X + OFS_RETA123)
 #define STR_VPROTOS             (STR_OPEN9X + OFS_VPROTOS)
 #define STR_POSNEG              (STR_OPEN9X + OFS_POSNEG)
@@ -320,9 +328,11 @@ extern const pm_char STR_TIMER[];
 extern const pm_char STR_ELIMITS[];
 extern const pm_char STR_ETRIMS[];
 extern const pm_char STR_TRIMINC[];
+extern const pm_char STR_DISPLAY_TRIMS[];
 extern const pm_char STR_TTRACE[];
 extern const pm_char STR_TTRIM[];
 extern const pm_char STR_BEEPCTR[];
+extern const pm_char STR_USE_GLOBAL_FUNCS[];
 extern const pm_char STR_PROTO[];
 extern const pm_char STR_PPMFRAME[];
 extern const pm_char STR_MS[];
@@ -421,6 +431,9 @@ extern const pm_char STR_PITCH_AT_ZERO[];
 extern const pm_char STR_PITCH_AT_MAX[];
 extern const pm_char STR_REPEAT_AT_ZERO[];
 extern const pm_char STR_RXCHANNELORD[];
+extern const pm_char STR_STICKS[];
+extern const pm_char STR_POTS[];
+extern const pm_char STR_SWITCHES[];
 extern const pm_char STR_SWITCHES_DELAY[];
 extern const pm_char STR_SLAVE[];
 extern const pm_char STR_MODESRC[];
