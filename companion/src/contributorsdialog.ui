@@ -15,7 +15,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QTextEdit" name="textEditor">
+    <widget class="QTextBrowser" name="textEditor">
      <property name="readOnly">
       <bool>true</bool>
      </property>
