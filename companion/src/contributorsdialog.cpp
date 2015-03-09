@@ -85,6 +85,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
         QFile file(":/releasenotes.txt");
         if(file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
           ui->textEditor->setHtml(file.readAll());
+          ui->textEditor->setOpenExternalLinks(true);
         }
         ui->textEditor->scroll(0,0);
         setWindowTitle(tr("Companion Release Notes"));
@@ -124,6 +125,7 @@ contributorsDialog::~contributorsDialog()
 void contributorsDialog::replyFinished(QNetworkReply * reply)
 {
     ui->textEditor->setHtml(reply->readAll());
+    ui->textEditor->setOpenExternalLinks(true);
 }
 
 void contributorsDialog::forceClose()
