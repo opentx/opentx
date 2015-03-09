@@ -149,10 +149,9 @@ bool isSourceAvailableInCustomSwitches(int source)
 
 bool isInputSourceAvailable(int source)
 {
-#if !defined(REVPLUS)
-  if (source == MIXSRC_POT3)
-    return false;
-#endif
+  if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
+    return IS_POT_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
+  }
 
   if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
     return true;
