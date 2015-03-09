@@ -420,7 +420,7 @@ PACK(typedef struct {
     TRAINER_MODULE
   };
   #define MODELDATA_BITMAP
-  #define MODELDATA_EXTRA   uint8_t externalModule; ModuleData moduleData[NUM_MODULES+1]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
+  #define MODELDATA_EXTRA   uint8_t externalModule; ModuleData moduleData[NUM_MODULES+1]; uint8_t potsWarnMode:2; uint8_t potsWarnEnabled:6; int8_t potsWarnPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
   #define swarnstate_t      uint8_t
   #define swarnenable_t     uint8_t
 #else
