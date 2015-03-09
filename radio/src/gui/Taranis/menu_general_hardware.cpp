@@ -187,10 +187,8 @@ void menuGeneralHardware(uint8_t event)
 #endif
       {
         int index = k-ITEM_SETUP_HW_SA;
-        char label[] = INDENT "S*";
-        label[2] = 'A' + index;
         int config = SWITCH_CONFIG(index);
-        lcd_putsAtt(0, y, label, m_posHorz < 0 ? attr : 0);
+        lcd_putsiAtt(INDENT_WIDTH, y, STR_VSRCRAW, MIXSRC_FIRST_SWITCH-MIXSRC_Rud+index+1, m_posHorz < 0 ? attr : 0);
         if (ZEXIST(g_eeGeneral.switchNames[index]) || (attr && m_posHorz == 0))
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.switchNames[index], LEN_SWITCH_NAME, event, m_posHorz == 0 ? attr : 0);
         else
