@@ -966,7 +966,6 @@ void lcdSetContrast()
 
 void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
 {
-  // ASSERT_IN_DISPLAY(p);
   if ((p) >= DISPLAY_END) {
     return;
   }
@@ -995,9 +994,7 @@ void lcd_plot(coord_t x, coord_t y, LcdFlags att)
   if (x<0 || x>=LCD_W || y<0 || y>=LCD_H) return;
   uint8_t *p = &displayBuf[ y / 2 * LCD_W + x ];
   uint8_t mask = PIXEL_GREY_MASK(y, att);
-  if (p<DISPLAY_END) {
-    lcd_mask(p, mask, att);
-  }
+  lcd_mask(p, mask, att);
 }
 
 void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
@@ -1093,11 +1090,13 @@ void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, coord_t offset, coord_t 
     q = img + 2 + row*w + offset;
     uint8_t *p = &displayBuf[(row + (y/2)) * LCD_W + x];
     for (coord_t i=0; i<width; i++) {
-      if ((p) >= DISPLAY_END) return;
+      if (p >= DISPLAY_END) return;
       uint8_t b = *q++;
       if (y & 1) {
         *p = (*p & 0x0f) + ((b & 0x0f) << 4);
-        *(p+LCD_W) = (*(p+LCD_W) & 0xf0) + ((b & 0xf0) >> 4);
+        if ((p+LCD_W) < DISPLAY_END) {
+          *(p+LCD_W) = (*(p+LCD_W) & 0xf0) + ((b & 0xf0) >> 4);
+        }
       }
       else {
         *p = b;
