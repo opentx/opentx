@@ -196,7 +196,7 @@ void menuModelSetup(uint8_t event)
     #define TIMERS_ROWS                     TIMER_ROWS, TIMER_ROWS, TIMER_ROWS
   #endif
   #if defined(REV9E)
-    #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsAllowed()), uint8_t(getSwitchWarningsAllowed() > 8 ? TITLE_ROW : HIDDEN_ROW), uint8_t(getSwitchWarningsAllowed() > 16 ? TITLE_ROW : HIDDEN_ROW)
+    #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsAllowed()-1), uint8_t(getSwitchWarningsAllowed() > 8 ? TITLE_ROW : HIDDEN_ROW), uint8_t(getSwitchWarningsAllowed() > 16 ? TITLE_ROW : HIDDEN_ROW)
     #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|NUM_POTS : 0), uint8_t(g_model.potsWarnMode ? TITLE_ROW : HIDDEN_ROW)
   #else
     #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsAllowed())
