@@ -456,7 +456,7 @@ Behöver inte vara samma som menyspråk</translation>
     <name>Calibration</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished">Form</translation>
+        <translation>Form</translation>
     </message>
     <message>
         <source>Beeper volume
@@ -508,19 +508,19 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
     <message>
         <source>2POS Toggle</source>
-        <translation type="unfinished"></translation>
+        <translation>2-Läges-brytare</translation>
     </message>
     <message>
         <source>2POS</source>
-        <translation type="unfinished"></translation>
+        <translation>2-Läges</translation>
     </message>
     <message>
         <source>3POS</source>
-        <translation type="unfinished"></translation>
+        <translation>3-Läges</translation>
     </message>
     <message>
         <source>2x2POS</source>
-        <translation type="unfinished"></translation>
+        <translation>2x2-Läges</translation>
     </message>
     <message>
         <source>OFF</source>
@@ -1077,6 +1077,25 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
 </context>
 <context>
+    <name>CopyProcess</name>
+    <message>
+        <source>Error</source>
+        <translation>Fel</translation>
+    </message>
+    <message>
+        <source>Write error</source>
+        <translation>Skrivfel</translation>
+    </message>
+    <message>
+        <source>Cannot write %1 (reason: %2)</source>
+        <translation>Kan ej skriva %1 (orsak: %2)</translation>
+    </message>
+    <message>
+        <source>Cannot open %1 (reason: %2)</source>
+        <translation>Kan ej öppna %1 (orsak: %2)</translation>
+    </message>
+</context>
+<context>
     <name>CurveGroup</name>
     <message>
         <source>Diff</source>
@@ -1289,6 +1308,13 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
 </context>
 <context>
+    <name>DebugOutput</name>
+    <message>
+        <source>Debug Output</source>
+        <translation>Debugutgång</translation>
+    </message>
+</context>
+<context>
     <name>ElevonsPage</name>
     <message>
         <source>&lt;br&gt;First Elevon Channel:</source>
@@ -1488,6 +1514,343 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
 </context>
 <context>
+    <name>FlashEEpromDialog</name>
+    <message>
+        <source>Write Models and Settings to Radio</source>
+        <translation>Skriv Modeller och Inställningar till radion</translation>
+    </message>
+    <message>
+        <source>Load...</source>
+        <translation>Ladda...</translation>
+    </message>
+    <message>
+        <source>Current Profile</source>
+        <translation>Nuvarande Profil</translation>
+    </message>
+    <message>
+        <source>Allows Companion to write to older version of the firmware</source>
+        <translation>Tillåter Companon att skriva till äldre firmware-versioner</translation>
+    </message>
+    <message>
+        <source>Check Firmware compatibility</source>
+        <translation>Kontrollera att firmware-filen är kompatibel</translation>
+    </message>
+    <message>
+        <source>Backup before Write</source>
+        <translation>Säkerhetskopiera före skrivning</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify calibration parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Uppdatera kalibrerings-parametrarna med data från nuvarande profil&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Patch calibration setting from profile</source>
+        <translation>Uppdatera med kalibreringsdata från profilen</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify HW parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Uppdatera hårdvaruinställningarna med data från nuvarande profil&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Patch HW settings from profile</source>
+        <translation>Uppdatera med HW-inställningar från profilen</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Avbryt</translation>
+    </message>
+    <message>
+        <source>Write to TX</source>
+        <translation>Skriv till sändaren</translation>
+    </message>
+    <message>
+        <source>Current profile: %1</source>
+        <translation>Nuvarande profil: %1</translation>
+    </message>
+    <message>
+        <source>Choose Radio Backup file</source>
+        <translation>Välj Backup-fil</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fel</translation>
+    </message>
+    <message>
+        <source>Unable to find file %1!</source>
+        <translation>Kan inte hitta filen %1 !</translation>
+    </message>
+    <message>
+        <source>Error opening file %1:
+%2.</source>
+        <translation>Fel vid öppning av filen %1:
+%2.</translation>
+    </message>
+    <message>
+        <source>Invalid Models and Settings File %1</source>
+        <translation>Filen innehåller inte Modeller och Inställningar: %1</translation>
+    </message>
+    <message>
+        <source>Error reading file %1:
+%2.</source>
+        <translation>Fel vid inläsning från filen %1:
+%2.</translation>
+    </message>
+    <message>
+        <source>Invalid binary Models and Settings File %1</source>
+        <translation>Den binära filen innehåller inte Modeller och Inställningar: %1</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Varning</translation>
+    </message>
+    <message>
+        <source>Wrong radio calibration data in profile, Settings not patched</source>
+        <translation>Felaktig information i profilen, sändarens-kalibrering kunde inte läsas in</translation>
+    </message>
+    <message>
+        <source>Wrong radio setting data in profile, Settings not patched</source>
+        <translation>Felaktig information i profilen, sändarens inställningar kunde inte läsas in</translation>
+    </message>
+    <message>
+        <source>Cannot write file %1:
+%2.</source>
+        <translation>Filen %1 kunde inte skrivas:
+%2.</translation>
+    </message>
+    <message>
+        <source>Error writing file %1:
+%2.</source>
+        <translation>Fel vid skrivning av filen  %1:
+%2.</translation>
+    </message>
+    <message>
+        <source>The radio firmware belongs to another product family, check file and preferences!</source>
+        <translation>Sändarens firmware är av en annan typ än den aktuella. Kontrollera konfigurationen!</translation>
+    </message>
+    <message>
+        <source>The radio firmware is outdated, please upgrade!</source>
+        <translation>Firmware i radion är föråldrad. Var god uppgradera!</translation>
+    </message>
+    <message>
+        <source>Cannot check Models and Settings compatibility! Continue anyway?</source>
+        <translation>Det går inte att verifiera att Modeller och Inställningar är kompatibla. Fortsätt i alla fall?</translation>
+    </message>
+</context>
+<context>
+    <name>FlashFirmwareDialog</name>
+    <message>
+        <source>Flash Firmware</source>
+        <translation>Flasha Firmware</translation>
+    </message>
+    <message>
+        <source>Load...</source>
+        <translation>Ladda...</translation>
+    </message>
+    <message>
+        <source>Date &amp; Time</source>
+        <translation>Dag &amp; Tid</translation>
+    </message>
+    <message>
+        <source>Variant</source>
+        <translation>Variant</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>Version</translation>
+    </message>
+    <message>
+        <source>Use profile start screen</source>
+        <translation>Använd profilens startskärm</translation>
+    </message>
+    <message>
+        <source>Use firmware start screen</source>
+        <translation>Använd firmware-startskärmen</translation>
+    </message>
+    <message>
+        <source>Use library start screen</source>
+        <translation>Använd biblioteks-startskärm</translation>
+    </message>
+    <message>
+        <source>Use another start screen</source>
+        <translation>Använd en annan startskärm</translation>
+    </message>
+    <message>
+        <source>Allows Companion to write to older version of the firmware</source>
+        <translation>Tillåter Companon att skriva till äldre firmware-versioner</translation>
+    </message>
+    <message>
+        <source>Check Hardware compatibility</source>
+        <translation>Kontrollera att firmware-filen är kompatibel</translation>
+    </message>
+    <message>
+        <source>Backup and restore Models and Settings</source>
+        <translation>Säkerhetskopiera Modeller och Inställningar</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Avbryt</translation>
+    </message>
+    <message>
+        <source>Write to TX</source>
+        <translation>Skriv till sändaren</translation>
+    </message>
+    <message>
+        <source>Open Firmware File</source>
+        <translation>Öppna firmware-fil</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Varning</translation>
+    </message>
+    <message>
+        <source>%1 may not be a valid firmware file</source>
+        <translation>%1 är kanske inte en giltig firmware-fil</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fel</translation>
+    </message>
+    <message>
+        <source>The firmware file is not valid.</source>
+        <translation>Firmware-filen är inte giltig.</translation>
+    </message>
+    <message>
+        <source>There is no start screen image in the firmware file.</source>
+        <translation>Firmware-filen innehåller inte någon startbild.</translation>
+    </message>
+    <message>
+        <source>Profile image %1 is invalid.</source>
+        <translation>Profilbilden %1 är ogiltig.</translation>
+    </message>
+    <message>
+        <source>Open image file to use as radio start screen</source>
+        <translation>Öppna bildfil för användning som startbild i radion</translation>
+    </message>
+    <message>
+        <source>Images (%1)</source>
+        <translation>Bilder (%1)</translation>
+    </message>
+    <message>
+        <source>Image could not be loaded from %1</source>
+        <translation>Det gick inte att ladda en bild från %1</translation>
+    </message>
+    <message>
+        <source>The library image could not be loaded</source>
+        <translation>Bild-biblioteket kunde inte öppnas</translation>
+    </message>
+    <message>
+        <source>Splash image not found</source>
+        <translation>Bildfilen hittades inte</translation>
+    </message>
+    <message>
+        <source>Cannot save customized firmware</source>
+        <translation>Det gick inte att spara den modifierade firmware-filen</translation>
+    </message>
+    <message>
+        <source>Write Firmware to Radio</source>
+        <translation>Skriv firmware till radion</translation>
+    </message>
+    <message>
+        <source>Firmware check failed</source>
+        <translation>Verifieringen av firmware-filen misslyckades</translation>
+    </message>
+    <message>
+        <source>Could not check firmware from radio</source>
+        <translation>Kunde ej verifiera firmware från fradion</translation>
+    </message>
+    <message>
+        <source>New firmware is not compatible with the one currently installed!</source>
+        <translation>Den nya firmware-filen är inte kompatibel med den installerade!</translation>
+    </message>
+    <message>
+        <source>Conversion failed</source>
+        <translation>Konverteringen misslyckades</translation>
+    </message>
+    <message>
+        <source>Cannot convert Models and Settings for use with this firmware, original data will be used</source>
+        <translation>Modeller och Inställningar kan inte översättas till denna firmware. Ingen information uppdateras</translation>
+    </message>
+    <message>
+        <source>Restore failed</source>
+        <translation>Återställningen misslyckade</translation>
+    </message>
+    <message>
+        <source>Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1</source>
+        <translation>Det gick inte att återställa Backupen till radion. Filen kan hittas här: %1</translation>
+    </message>
+    <message>
+        <source>Flashing done</source>
+        <translation>Flashingen är genomförd</translation>
+    </message>
+</context>
+<context>
+    <name>FlashProcess</name>
+    <message>
+        <source>Executable %1 not found</source>
+        <translation>Programmet %1 hittades ej</translation>
+    </message>
+    <message>
+        <source>Writing...</source>
+        <translation>Skriver...</translation>
+    </message>
+    <message>
+        <source>Reading...</source>
+        <translation>Läser...</translation>
+    </message>
+    <message>
+        <source>Verifying...</source>
+        <translation>Verifierar...</translation>
+    </message>
+    <message>
+        <source>ie: OpenTX for 9X board or OpenTX for 9XR board</source>
+        <translation>dvs: OpenTX för 9X eller OpenTX för 9XR</translation>
+    </message>
+    <message>
+        <source>ie: OpenTX for M128 / 9X board or OpenTX for 9XR board with M128 chip</source>
+        <translation>dvs: OpenTX för 9X eller 9XR med M128-processor</translation>
+    </message>
+    <message>
+        <source>ie: OpenTX for Gruvin9X  board</source>
+        <translation>dvs: OpenTX för 9X med Gruvin9X-kort</translation>
+    </message>
+    <message>
+        <source>Your radio uses a %1 CPU!!!
+
+Please check advanced burn options to set the correct cpu type.</source>
+        <translation>Din sändare använder en %1 CPU!!!
+
+Välj rätt CPU-typ i de avancerade inställningarna i Brännar-menyn.</translation>
+    </message>
+    <message>
+        <source>Your radio uses a %1 CPU!!!
+
+Please select an appropriate firmware type to program it.</source>
+        <translation>Din sändare använder en %1 CPU!!!
+
+Välj rätt programvara att bränna till den.</translation>
+    </message>
+    <message>
+        <source>
+You are currently using:
+ %1</source>
+        <translation>
+Du använder för närvarande:
+ %1</translation>
+    </message>
+    <message>
+        <source>Flashing done (exit code = %1)</source>
+        <translation>Flashingen genomförd (svarskod = %1)</translation>
+    </message>
+    <message>
+        <source>Flashing done with errors</source>
+        <translation>Flashingen genomfördes med fel</translation>
+    </message>
+    <message>
+        <source>FUSES: Low=%1 High=%2 Ext=%3</source>
+        <translation>SÄKRINGAR: Låg=%1 Hög=%2 Ext=%3</translation>
+    </message>
+</context>
+<context>
     <name>FlightMode</name>
     <message>
         <source>Fade In</source>
@@ -1565,6 +1928,147 @@ Behöver inte vara samma som menyspråk</translation>
     <message>
         <source>Flybar:</source>
         <translation>Flybar:</translation>
+    </message>
+</context>
+<context>
+    <name>FusesDialog</name>
+    <message>
+        <source>Fuses</source>
+        <translation>Säkringar</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Reads the current fuses in the AVR controller.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Proper states for &lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;AtMega 64 &lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM erase fuse not set: 0E, 81, FF&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM erase fuse set: 0E, 89, FF&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Proper states for AtMega 2560 :&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM erase fuse not set: D7, 11, FC&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM erase fuse set: D7, 19, FC&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Läser säkringarna i AVR-kontrollern.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Giltiga lägen för &lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;AtMega 64 &lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM tömningssäkring ej tillslagen: 0E, 81, FF&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM tömningssäkring tillslagen: 0E, 89, FF&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Giltiga lägen för AtMega 2560 :&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM tömningssäkring ej tillslagen: D7, 11, FC&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM tömningssäkring tillslagen: D7, 19, FC&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Read Fuses</source>
+        <translation>Läs in säkringarna</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Reset Fuses&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Fuses in the AVR tell it how to behave.  Pressing this button sets the fuses to the default parameters needed in the FW. These parameters are different for stock and 4.1 MB, please verify you selected the appropriate processor type in preferences.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;This button also sets the &amp;quot;EEPROM protect&amp;quot; Fuse.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;This prevents erasing of the EEPROM when the flash memory is written.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;WARNING&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Setting fuses can lead to problems and even a total lockout from your controller.  Do this only if you know what you are doing.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When in doubt consult either the project&apos;s page or the 9xforum (http://9xforums.com/forum/)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;If you do get locked out - google lookup for &amp;quot;dealing with Fuse Bricks&amp;quot;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Återställ Säkringarna&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;AVR-processorns säkringar kontrollerar hur den fungerar.  Om du trycker på den här knappen så återställs säkringarna till de standardlägen som firmware behöver. Parameterinställningarna skiljer mellan original och 4.1 MB. Kontrollera därför att du valt rätt processortyp i inställningarna.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Knappen ställer också in &amp;quot;EEPROM protect&amp;quot;-säkringen.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Denna säkring förhindrar att innehållet i EEPROMet nollställs när flash-minnet skrivs.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;VARNING&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Att ändra på säkringarna kan leda till att sändaren blir permanent obrukbar.  Ändra därför bara om du vet vad du håller på med.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Om du är tveksam bör du söka hjälp via projektets hemsida eller 9xforums (http://9xforums.com/forum/)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Om du ändå råkar låsa sändaren så googla på &amp;quot;dealing with Fuse Bricks&amp;quot;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Reset Fuses
+EEPROM - PROTECT</source>
+        <translation>Nollställ säkringarna
+MODELLDATA - SKYDDA</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Reset Fuses&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Fuses in the AVR tell it how to behave.  Pressing this button sets the fuses to the default parameters needed in the &lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;FW. These parameters are different for stock and 4.1 MB, please verify you selected the appropriate processor type in preferences.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;This button also clears the &amp;quot;EEPROM protect&amp;quot; Fuse.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;This causes erasing of the EEPROM when the flash memory is written.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;WARNING&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Setting fuses can lead to problems and even a total lockout from your controller.  Do this only if you know what you are doing.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When in doubt consult either the project&apos;s page or the 9xforum (http://9xforums.com/forum/)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;If you do get locked out - google lookup for &amp;quot;dealing with Fuse Bricks&amp;quot;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Återställ Säkringarna&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;AVR-processorns säkringar kontrollerar hur den fungerar.  Om du trycker på den här knappen så återställs säkringarna till de standardlägen som &lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;firmware behöver. Parameterinställningarna skiljer mellan original och 4.1 MB. Kontrollera därför att du valt rätt processortyp i inställningarna.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Knappen ställer också in &amp;quot;EEPROM protect&amp;quot;-säkringen.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Denna säkring förhindrar att innehållet i EEPROMet nollställs när flash-minnet skrivs.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;VARNING&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Att ändra på säkringarna kan leda till att sändaren blir permanent obrukbar.  Ändra därför bara om du vet vad du håller på med.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Om du är tveksam bör du söka hjälp via projektets hemsida eller 9xforums (http://9xforums.com/forum/)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Om du ändå råkar låsa sändaren så googla på &amp;quot;dealing with Fuse Bricks&amp;quot;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Reset Fuses
+EEPROM - DELETE</source>
+        <translation>Återställ Säkringarna
+MODELLDATA - RADERA</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;WARNING&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Changing the fuses can mess up your radio.&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Proceed only if you know what you are doing.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;VARNING&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Att ändra säkringarna kan leda till att din sändare slutar fungera.&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Fortsätt bara om du verkligen vet vad du håller på med.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Reset Radio Fuses</source>
+        <translation>Nollställ radions säkringar</translation>
+    </message>
+    <message>
+        <source>Read Fuses from Radio</source>
+        <translation>Läs in radions säkringar</translation>
     </message>
 </context>
 <context>
@@ -2324,6 +2828,14 @@ FAI-funktionen kan inte slås av i sändaren.
         <source>Swash Ring</source>
         <translation>Swashring</translation>
     </message>
+    <message>
+        <source>Elevator</source>
+        <translation>Höjdroder</translation>
+    </message>
+    <message>
+        <source>Aileron</source>
+        <translation>Skevroder</translation>
+    </message>
 </context>
 <context>
     <name>HeliPage</name>
@@ -2610,15 +3122,15 @@ FAI-funktionen kan inte slås av i sändaren.
     </message>
     <message>
         <source>Conversion failed</source>
-        <translation>Konverteringen misslyckades</translation>
+        <translation type="obsolete">Konverteringen misslyckades</translation>
     </message>
     <message>
         <source>Restore failed</source>
-        <translation>Återställningen misslyckade</translation>
+        <translation type="obsolete">Återställningen misslyckade</translation>
     </message>
     <message>
         <source>Backup failed</source>
-        <translation>Säkerhetskopieringen misslyckades</translation>
+        <translation type="obsolete">Säkerhetskopieringen misslyckades</translation>
     </message>
     <message>
         <source>OpenTX Companion - FW: %1 - Profile: %2</source>
@@ -2731,7 +3243,7 @@ FAI-funktionen kan inte slås av i sändaren.
     <message>
         <source>Cannot write file %1:
 %2.</source>
-        <translation>Filen %1 kunde inte skrivas:
+        <translation type="obsolete">Filen %1 kunde inte skrivas:
 %2.</translation>
     </message>
     <message>
@@ -2762,7 +3274,7 @@ FAI-funktionen kan inte slås av i sändaren.
     </message>
     <message>
         <source>Backup is impossible</source>
-        <translation>Säkerhetskopiering kan inte utföras</translation>
+        <translation type="obsolete">Säkerhetskopiering kan inte utföras</translation>
     </message>
     <message>
         <source>A new release of Companion is available, please check the OpenTX website!</source>
@@ -2774,11 +3286,11 @@ FAI-funktionen kan inte slås av i sändaren.
     </message>
     <message>
         <source>The backup dir set in preferences does not exist</source>
-        <translation>Foldern för säkerhetskopior existerar inte</translation>
+        <translation type="obsolete">Foldern för säkerhetskopior existerar inte</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation>Varning</translation>
+        <translation type="obsolete">Varning</translation>
     </message>
     <message>
         <source>Alt+S</source>
@@ -2863,12 +3375,12 @@ FAI-funktionen kan inte slås av i sändaren.
     </message>
     <message>
         <source>Unable to find file %1!</source>
-        <translation>Kan inte hitta filen %1 !</translation>
+        <translation type="obsolete">Kan inte hitta filen %1 !</translation>
     </message>
     <message>
         <source>Error reading file %1:
 %2.</source>
-        <translation>Fel vid inläsning från filen %1:
+        <translation type="obsolete">Fel vid inläsning från filen %1:
 %2.</translation>
     </message>
     <message>
@@ -2931,21 +3443,21 @@ FAI-funktionen kan inte slås av i sändaren.
         <source>The file %1
 has not been recognized as a valid Models and Settings file
 Write anyway ?</source>
-        <translation>Innehållet i filen %1
+        <translation type="obsolete">Innehållet i filen %1
 kunde inte verifieras som giltiga data för Modeller och Inställningar
 Starta skrivningen i alla fall ?</translation>
     </message>
     <message>
         <source>Cannot check Models and Settings compatibility! Continue anyway?</source>
-        <translation>Det går inte att verifiera att Modeller och Inställningar är kompatibla. Fortsätt i alla fall?</translation>
+        <translation type="obsolete">Det går inte att verifiera att Modeller och Inställningar är kompatibla. Fortsätt i alla fall?</translation>
     </message>
     <message>
         <source>Cannot convert Models and Settings for use with this firmware, original data will be used</source>
-        <translation>Modeller och Inställningar kan inte översättas till denna firmware. Ingen information uppdateras</translation>
+        <translation type="obsolete">Modeller och Inställningar kan inte översättas till denna firmware. Ingen information uppdateras</translation>
     </message>
     <message>
         <source>Firmware write failed</source>
-        <translation>Skrivningen av firware misslyckades</translation>
+        <translation type="obsolete">Skrivningen av firware misslyckades</translation>
     </message>
     <message>
         <source>About Companion</source>
@@ -2993,47 +3505,47 @@ Vill du ladda ned den nya versionen nu ?</translation>
     </message>
     <message>
         <source>Write Radio Backup from %1 to the radio?</source>
-        <translation>Skriv Backup från %1 till radion?</translation>
+        <translation type="obsolete">Skriv Backup från %1 till radion?</translation>
     </message>
     <message>
         <source>Backup Models and Settings From Radio</source>
-        <translation>Gör Backup av radiodata</translation>
+        <translation type="obsolete">Gör Backup av radiodata</translation>
     </message>
     <message>
         <source>The radio firmware belongs to another product family, check file and preferences!</source>
-        <translation>Sändarens firmware är av en annan typ än den aktuella. Kontrollera konfigurationen!</translation>
+        <translation type="obsolete">Sändarens firmware är av en annan typ än den aktuella. Kontrollera konfigurationen!</translation>
     </message>
     <message>
         <source>The radio firmware is outdated, please upgrade!</source>
-        <translation>Firmware i radion är föråldrad. Var god uppgradera!</translation>
+        <translation type="obsolete">Firmware i radion är föråldrad. Var god uppgradera!</translation>
     </message>
     <message>
         <source>Write Backup To Radio</source>
-        <translation>Skriv Backup till radion</translation>
+        <translation type="obsolete">Skriv Backup till radion</translation>
     </message>
     <message>
         <source>Write Firmware To Radio</source>
-        <translation>Skriv firmware till radion</translation>
+        <translation type="obsolete">Skriv firmware till radion</translation>
     </message>
     <message>
         <source>Read Firmware From Radio</source>
-        <translation>Läs firmware från radion</translation>
+        <translation type="obsolete">Läs firmware från radion</translation>
     </message>
     <message>
         <source>Restore Models and Settings To Radio</source>
-        <translation>Återställ Backup till radion</translation>
+        <translation type="obsolete">Återställ Backup till radion</translation>
     </message>
     <message>
         <source>Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1</source>
-        <translation>Det gick inte att återställa Backupen till radion. Filen kan hittas här: %1</translation>
+        <translation type="obsolete">Det gick inte att återställa Backupen till radion. Filen kan hittas här: %1</translation>
     </message>
     <message>
         <source>Could not write firmware to radio. The models and settings data file can be found at: %1</source>
-        <translation>Det gick inte att skriva firmware till radion. Filen med Modeller och Inställningar finns här: %1</translation>
+        <translation type="obsolete">Det gick inte att skriva firmware till radion. Filen med Modeller och Inställningar finns här: %1</translation>
     </message>
     <message>
         <source>Cannot backup existing Models and Settings from Radio. Firmware write process aborted</source>
-        <translation>Skrivningen av firmware avbröts därför att det inte gick att göra en Backup av radion</translation>
+        <translation type="obsolete">Skrivningen av firmware avbröts därför att det inte gick att göra en Backup av radion</translation>
     </message>
     <message>
         <source>Save Radio Backup to File</source>
@@ -3041,7 +3553,7 @@ Vill du ladda ned den nya versionen nu ?</translation>
     </message>
     <message>
         <source>Read Radio Backup</source>
-        <translation>Spara radiobackup</translation>
+        <translation type="obsolete">Spara radiobackup</translation>
     </message>
     <message>
         <source>Read Radio Firmware to File</source>
@@ -3289,15 +3801,23 @@ Vill du ladda ned den nya versionen nu ?</translation>
     </message>
     <message>
         <source>Invalid Models and Settings File %1</source>
-        <translation>Filen innehåller inte Modeller och Inställningar: %1</translation>
+        <translation type="obsolete">Filen innehåller inte Modeller och Inställningar: %1</translation>
     </message>
     <message>
         <source>Invalid binary Models and Settings File %1</source>
-        <translation>Den binära filen innehåller inte Modeller och Inställningar: %1</translation>
+        <translation type="obsolete">Den binära filen innehåller inte Modeller och Inställningar: %1</translation>
     </message>
     <message>
         <source>Could not delete temporary file: %1</source>
-        <translation>Det gick inte att ta bort temporärfilen: %1</translation>
+        <translation type="obsolete">Det gick inte att ta bort temporärfilen: %1</translation>
+    </message>
+    <message>
+        <source>Synchronize SD</source>
+        <translation>Synkronisera SD-kort</translation>
+    </message>
+    <message>
+        <source>SD card synchronization</source>
+        <translation>Synkronisering av SD-kort</translation>
     </message>
 </context>
 <context>
@@ -3366,7 +3886,7 @@ Vill du spara förändringarna?</translation>
     </message>
     <message>
         <source>Backup is impossible</source>
-        <translation>Säkerhetskopierin kan ej utföras</translation>
+        <translation type="obsolete">Säkerhetskopierin kan ej utföras</translation>
     </message>
     <message>
         <source>Companion</source>
@@ -3374,31 +3894,31 @@ Vill du spara förändringarna?</translation>
     </message>
     <message>
         <source>The backup dir set in preferences does not exist</source>
-        <translation>Den katalog som konfigurerats för säkerhetskopiering existerar inte</translation>
+        <translation type="obsolete">Den katalog som konfigurerats för säkerhetskopiering existerar inte</translation>
     </message>
     <message>
         <source>Backup EEPROM From Radio</source>
-        <translation>Gör Backup av radions innehåll</translation>
+        <translation type="obsolete">Gör Backup av radions innehåll</translation>
     </message>
     <message>
         <source>Cannot check eeprom compatibility! Continue anyway?</source>
-        <translation>Det går inte att veriifiera att modelldata är kompatibla. Fortsätt i alla fall?</translation>
+        <translation type="obsolete">Det går inte att veriifiera att modelldata är kompatibla. Fortsätt i alla fall?</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation>Varning</translation>
+        <translation type="obsolete">Varning</translation>
     </message>
     <message>
         <source>Firmware in radio is of a different family of eeprom written, check file and preferences!</source>
-        <translation>sändarens firmware är av en annan typ än den aktuella. Kontrollera konfigurationen!</translation>
+        <translation type="obsolete">sändarens firmware är av en annan typ än den aktuella. Kontrollera konfigurationen!</translation>
     </message>
     <message>
         <source>Firmware in flash is outdated, please upgrade!</source>
-        <translation>Firmware i flashminnet är föråldrat. Var god uppgradera!</translation>
+        <translation type="obsolete">Firmware i flashminnet är föråldrat. Var god uppgradera!</translation>
     </message>
     <message>
         <source>Write EEPROM To Radio</source>
-        <translation>Skriv EEPROM till radion</translation>
+        <translation type="obsolete">Skriv EEPROM till radion</translation>
     </message>
     <message>
         <source>Open backup Models and Settings file</source>
@@ -3536,7 +4056,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Delay is not zero the actuation of the mix will be delayed by the specified amount of seconds.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Slow is not zero then the speed of the mix will be set by the value specified -&amp;gt; the value states the number of seconds it takes to transit from -100 to 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -3595,6 +4115,30 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>GV</source>
         <translation>GV</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Delay ans Slow&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These values control the speed and delay of the output of the mix.  &lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Delay is not zero the actuation of the mix will be delayed by the specified amount of seconds.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Slow is not zero then the speed of the mix will be set by the value specified -&amp;gt; the value states the number of seconds it takes to transit from -100 to 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Fördröjning och Tröghet&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Dessa värden kontrollerar fördröjning och tröghet i utdata till mixern.  &lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Om Fördröjningen inte är noll kommer påverkan på mixen att fördröjas med det angivna antelet sekunder.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Om Tröghet inte är noll kommer hastigheten i förändringar att begränsas av det angivna värdet -&amp;gt; värdet specificerar det antal sekunder det tar att gå från fullt negativt utslag (-100) till fullt positivt utslag(100).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -4427,6 +4971,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>ODF files (*.odt);;PDF Files(*.pdf);;HTML-Files (*.htm *.html);;All Files (*)</source>
         <translation>ODF filer (*.odt);;PDF Filer(*.pdf);;HTML-Filer (*.htm *.html);;Alla Filer (*)</translation>
+    </message>
+</context>
+<context>
+    <name>ProgressDialog</name>
+    <message>
+        <source>Flash Firmware</source>
+        <translation>Flasha Firmware</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Stäng</translation>
+    </message>
+</context>
+<context>
+    <name>ProgressWidget</name>
+    <message>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <source>Show Details</source>
+        <translation>Visa Detaljer</translation>
     </message>
 </context>
 <context>
@@ -5971,7 +6537,7 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>SWR value will be available for display/audio/alarms - Only available on latest Taranis+ production</source>
-        <translation>SWR-värdet kan visas och styra ljud/alarm (Fungerar ej med första omgången av Taranis+ pga hårdavrufel i dessa sändarel)</translation>
+        <translation type="obsolete">SWR-värdet kan visas och styra ljud/alarm (Fungerar ej med första omgången av Taranis+ pga hårdavrufel i dessa sändarel)</translation>
     </message>
     <message>
         <source>%1:%2</source>
@@ -6003,7 +6569,7 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>Copy errors</source>
-        <translation>Kopieringsfel</translation>
+        <translation type="obsolete">Kopieringsfel</translation>
     </message>
     <message>
         <source>Create &apos;%1&apos; failed</source>
@@ -6020,6 +6586,68 @@ OpenTX-gruppen.</translation>
     <message>
         <source>Write &apos;%1&apos; failed</source>
         <translation>Skrivning &apos;%1&apos; misslyckades</translation>
+    </message>
+    <message>
+        <source>Screenshot</source>
+        <translation>Skärmbild</translation>
+    </message>
+    <message>
+        <source>OpenTX for MEGA2560 board</source>
+        <translation>OpenTX för MEGA2560-kort</translation>
+    </message>
+    <message>
+        <source>ST7565P LCD or compatible</source>
+        <translation>ST7565P LCD eller kompatibel</translation>
+    </message>
+    <message>
+        <source>ST7565R LCD or compatible</source>
+        <translation>ST7565R LCD eller kompatibel</translation>
+    </message>
+    <message>
+        <source>Used if you have voice module</source>
+        <translation>Används om en röstmodul monterats i sändaren</translation>
+    </message>
+    <message>
+        <source>Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views</source>
+        <translation>Lägger till mixerutdata-vy till KANALER-skärmen, tryck [ENT] för at växla mellan vyerna</translation>
+    </message>
+    <message>
+        <source>OpenTX for FrSky Taranis X9E</source>
+        <translation>OpenTX för FrSky Taranis X9E</translation>
+    </message>
+    <message>
+        <source>Synchronization error</source>
+        <translation>Synkroniseringsfel</translation>
+    </message>
+    <message>
+        <source>No Radio connected!</source>
+        <translation>Ingen radio har anslutits!</translation>
+    </message>
+    <message>
+        <source>The directory &apos;%1&apos; doesn&apos;t exist!</source>
+        <translation>Foldern &apos;%1&apos; existerar inte!</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fel</translation>
+    </message>
+    <message>
+        <source>Cannot write file %1:
+%2.</source>
+        <translation>Filen %1 kunde inte skrivas:
+%2.</translation>
+    </message>
+    <message>
+        <source>Companion</source>
+        <translation>Companion</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;&lt;u&gt;WARNING!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;This will reset the fuses of  %1 to the factory settings.&lt;br&gt;Writing fuses can mess up your radio.&lt;br&gt;Do this only if you are sure they are wrong!&lt;br&gt;Are you sure you want to continue?</source>
+        <translation>&lt;b&gt;&lt;u&gt;VARNING!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Detta åerställer säkringarna för %1 till deras ursprungliga värden.&lt;br&gt;Att ändra dessa värden kan skapa allvarliga problem med din sändare.&lt;br&gt;Ändra säkringarna  bara om du är helt säker på att de har fel värde!&lt;br&gt;Är du säker på att du vill fortsätta?</translation>
+    </message>
+    <message>
+        <source>Could not delete temporary file: %1</source>
+        <translation>Det gick inte att ta bort temporärfilen: %1</translation>
     </message>
 </context>
 <context>
@@ -6164,6 +6792,22 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <source>Timer 3</source>
         <translation>Timer 3</translation>
     </message>
+    <message>
+        <source>Never</source>
+        <translation>Aldrig</translation>
+    </message>
+    <message>
+        <source>On change</source>
+        <translation>Vid ändring</translation>
+    </message>
+    <message>
+        <source>Always</source>
+        <translation>Alltid</translation>
+    </message>
+    <message>
+        <source>Trims Display</source>
+        <translation>Trim-visning</translation>
+    </message>
 </context>
 <context>
     <name>SimpleTailPage</name>
@@ -6294,6 +6938,33 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <source>Channel %1</source>
         <translation>Kanal %1</translation>
+    </message>
+</context>
+<context>
+    <name>SyncProcess</name>
+    <message>
+        <source>Create directory %1
+</source>
+        <translation>Skapa folder %1
+</translation>
+    </message>
+    <message>
+        <source>Copy %1 to %2
+</source>
+        <translation>Kopiera %1 till %2
+</translation>
+    </message>
+    <message>
+        <source>Read %1
+</source>
+        <translation>Läs %1
+</translation>
+    </message>
+    <message>
+        <source>Write %1
+</source>
+        <translation>Skriv %1
+</translation>
     </message>
 </context>
 <context>
@@ -6592,7 +7263,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     </message>
     <message>
         <source>Script</source>
-        <translation type="unfinished"></translation>
+        <translation>Skript</translation>
     </message>
 </context>
 <context>
@@ -6678,7 +7349,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <name>TelemetrySensor</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished">Form</translation>
+        <translation>Form</translation>
     </message>
     <message>
         <source>Custom</source>
@@ -6849,6 +7520,33 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     </message>
 </context>
 <context>
+    <name>TelemetrySimulator</name>
+    <message>
+        <source>Telemetry Simulator</source>
+        <translation>Telemetri-simulator</translation>
+    </message>
+    <message>
+        <source>RSSI</source>
+        <translation>RSSI</translation>
+    </message>
+    <message>
+        <source>A1</source>
+        <translation>A1</translation>
+    </message>
+    <message>
+        <source>SWR</source>
+        <translation>SWR</translation>
+    </message>
+    <message>
+        <source>simulate</source>
+        <translation>simulera</translation>
+    </message>
+    <message>
+        <source>A2</source>
+        <translation>A2</translation>
+    </message>
+</context>
+<context>
     <name>ThrottlePage</name>
     <message>
         <source>Yes</source>
@@ -6905,7 +7603,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <name>Trainer</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished">Form</translation>
+        <translation>Form</translation>
     </message>
     <message>
         <source>Mode</source>
@@ -6978,6 +7676,13 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <source>Ail</source>
         <translation>Ske</translation>
+    </message>
+</context>
+<context>
+    <name>TrainerSimulator</name>
+    <message>
+        <source>Trainer simulator</source>
+        <translation>Trainer-simulator</translation>
     </message>
 </context>
 <context>
@@ -7256,97 +7961,97 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     </message>
     <message>
         <source>Writing</source>
-        <translation>Skriver</translation>
+        <translation type="obsolete">Skriver</translation>
     </message>
     <message>
         <source>Reading</source>
-        <translation>Läser</translation>
+        <translation type="obsolete">Läser</translation>
     </message>
     <message>
         <source>Verifying</source>
-        <translation>Verifierar</translation>
+        <translation type="obsolete">Verifierar</translation>
     </message>
     <message>
         <source>FUSES: Low=%1 High=%2 Ext=%3</source>
-        <translation>SÄKRINGAR: Låg=%1 Hög=%2 Ext=%3</translation>
+        <translation type="obsolete">SÄKRINGAR: Låg=%1 Hög=%2 Ext=%3</translation>
     </message>
     <message>
         <source>result</source>
         <oldsource> result</oldsource>
-        <translation>resultat</translation>
+        <translation type="obsolete">resultat</translation>
     </message>
     <message>
         <source>executable not found</source>
         <oldsource> executable not found</oldsource>
-        <translation>program hittades ej</translation>
+        <translation type="obsolete">program hittades ej</translation>
     </message>
     <message>
         <source>done - exit code %1</source>
         <oldsource> done - exit code %1</oldsource>
-        <translation>klar - returkod %1</translation>
+        <translation type="obsolete">klar - returkod %1</translation>
     </message>
     <message>
         <source>done with errors</source>
         <oldsource> done with errors</oldsource>
-        <translation>klar, men med fel</translation>
+        <translation type="obsolete">klar, men med fel</translation>
     </message>
     <message>
         <source>done - SUCCESSFUL</source>
         <oldsource> done - SUCCESSFUL</oldsource>
-        <translation>klar - FRAMGÅNG</translation>
+        <translation type="obsolete">klar - FRAMGÅNG</translation>
     </message>
     <message>
         <source>did not finish correctly</source>
         <oldsource> did not finish correctly</oldsource>
-        <translation>avslutade inte korrekt</translation>
+        <translation type="obsolete">avslutade inte korrekt</translation>
     </message>
     <message>
         <source>finished correctly</source>
         <oldsource> finished correctly</oldsource>
-        <translation>avslutade korrekt</translation>
+        <translation type="obsolete">avslutade korrekt</translation>
     </message>
     <message>
         <source>Started</source>
         <oldsource>Started </oldsource>
-        <translation>Startade</translation>
+        <translation type="obsolete">Startade</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Fel</translation>
+        <translation type="obsolete">Fel</translation>
     </message>
     <message>
         <source>Cannot open source file</source>
-        <translation>Kan inte öppna ursprungsfilen</translation>
+        <translation type="obsolete">Kan inte öppna ursprungsfilen</translation>
     </message>
     <message>
         <source>Cannot write destination</source>
-        <translation>Det gick inte att skriva till målet</translation>
+        <translation type="obsolete">Det gick inte att skriva till målet</translation>
     </message>
     <message>
         <source>Writing file: </source>
-        <translation>Skriver till fi: </translation>
+        <translation type="obsolete">Skriver till fi: </translation>
     </message>
     <message>
         <source>Write error</source>
-        <translation>Skrivfel</translation>
+        <translation type="obsolete">Skrivfel</translation>
     </message>
     <message>
         <source>ie: OpenTX for 9X board or OpenTX for 9XR board</source>
-        <translation>dvs: OpenTX för 9X eller OpenTX för 9XR</translation>
+        <translation type="obsolete">dvs: OpenTX för 9X eller OpenTX för 9XR</translation>
     </message>
     <message>
         <source>ie: OpenTX for M128 / 9X board or OpenTX for 9XR board with M128 chip</source>
-        <translation>dvs: OpenTX för 9X eller 9XR med M128-processor</translation>
+        <translation type="obsolete">dvs: OpenTX för 9X eller 9XR med M128-processor</translation>
     </message>
     <message>
         <source>ie: OpenTX for Gruvin9X  board</source>
-        <translation>dvs: OpenTX för 9X med Gruvin9X-kort</translation>
+        <translation type="obsolete">dvs: OpenTX för 9X med Gruvin9X-kort</translation>
     </message>
     <message>
         <source>Your radio uses a %1 CPU!!!
 
 Please check advanced burn options to set the correct cpu type.</source>
-        <translation>Din sändare använder en %1 CPU!!!
+        <translation type="obsolete">Din sändare använder en %1 CPU!!!
 
 Välj rätt CPU-typ i de avancerade inställningarna i Brännar-menyn.</translation>
     </message>
@@ -7354,7 +8059,7 @@ Välj rätt CPU-typ i de avancerade inställningarna i Brännar-menyn.</translat
         <source>Your radio uses a %1 CPU!!!
 
 Please select an appropriate firmware type to program it.</source>
-        <translation>Din sändare använder en %1 CPU!!!
+        <translation type="obsolete">Din sändare använder en %1 CPU!!!
 
 Välj rätt programvara att bränna till den.</translation>
     </message>
@@ -7362,7 +8067,7 @@ Välj rätt programvara att bränna till den.</translation>
         <source>
 You are currently using:
  %1</source>
-        <translation>
+        <translation type="obsolete">
 Du använder för närvarande:
  %1</translation>
     </message>
@@ -7371,20 +8076,20 @@ Du använder för närvarande:
 Do you want some help ?</source>
         <oldsource> did not finish correctly!
 Do you want some help ?</oldsource>
-        <translation>avslutades inte korrekt!
+        <translation type="obsolete">avslutades inte korrekt!
 Vill du ha hjälp ?</translation>
     </message>
     <message>
         <source>Copy did not finish correctly</source>
-        <translation>Kopieringen gick inte bra</translation>
+        <translation type="obsolete">Kopieringen gick inte bra</translation>
     </message>
     <message>
         <source>Copy finished correctly</source>
-        <translation>Kopieringen gick bra</translation>
+        <translation type="obsolete">Kopieringen gick bra</translation>
     </message>
     <message>
         <source>reason</source>
-        <translation>anledning</translation>
+        <translation type="obsolete">anledning</translation>
     </message>
 </context>
 <context>
@@ -7478,7 +8183,7 @@ m2560 för v4.1-kort</translation>
     </message>
     <message>
         <source>&lt;b&gt;&lt;u&gt;WARNING!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;This will reset the fuses of  %1 to the factory settings.&lt;br&gt;Writing fuses can mess up your radio.&lt;br&gt;Do this only if you are sure they are wrong!&lt;br&gt;Are you sure you want to continue?</source>
-        <translation>&lt;b&gt;&lt;u&gt;VARNING!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Detta åerställer säkringarna för %1 till deras ursprungliga värden.&lt;br&gt;Att ändra dessa värden kan skapa allvarliga problem med din sändare.&lt;br&gt;Ändra säkringarna  bara om du är helt säker på att de har fel värde!&lt;br&gt;Är du säker på att du vill fortsätta?</translation>
+        <translation type="obsolete">&lt;b&gt;&lt;u&gt;VARNING!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Detta åerställer säkringarna för %1 till deras ursprungliga värden.&lt;br&gt;Att ändra dessa värden kan skapa allvarliga problem med din sändare.&lt;br&gt;Ändra säkringarna  bara om du är helt säker på att de har fel värde!&lt;br&gt;Är du säker på att du vill fortsätta?</translation>
     </message>
     <message>
         <source>Use this button to browse and look for the AVRDUDE executable file.</source>
@@ -7544,6 +8249,14 @@ m2560 för v4.1-kort</translation>
         <source>Companion</source>
         <translation>Companion</translation>
     </message>
+    <message>
+        <source>List available programmers</source>
+        <translation>Lista upp tillgängliga prorammerare</translation>
+    </message>
+    <message>
+        <source>Avrdude help</source>
+        <translation>Hjälp för Avrdude</translation>
+    </message>
 </context>
 <context>
     <name>burnDialog</name>
@@ -7573,47 +8286,47 @@ m2560 för v4.1-kort</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation>Varning</translation>
+        <translation type="obsolete">Varning</translation>
     </message>
     <message>
         <source>Images (%1)</source>
-        <translation>Bilder (%1)</translation>
+        <translation type="obsolete">Bilder (%1)</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Fel</translation>
+        <translation type="obsolete">Fel</translation>
     </message>
     <message>
         <source>Invalid binary Models and Settings File %1, Proceed anyway ?</source>
-        <translation>Ogiltig binärfil med Modeller och Inställningar: %1. Fortsätt i alla fall ?</translation>
+        <translation type="obsolete">Ogiltig binärfil med Modeller och Inställningar: %1. Fortsätt i alla fall ?</translation>
     </message>
     <message>
         <source>Profile image %1 is invalid.</source>
-        <translation>Profilbilden %1 är ogiltig.</translation>
+        <translation type="obsolete">Profilbilden %1 är ogiltig.</translation>
     </message>
     <message>
         <source>Open image file to use as radio start screen</source>
-        <translation>Öppna bildfil för användning som startbild i radion</translation>
+        <translation type="obsolete">Öppna bildfil för användning som startbild i radion</translation>
     </message>
     <message>
         <source>Cannot save customized firmware</source>
-        <translation>Det gick inte att spara den modifierade firmware-filen</translation>
+        <translation type="obsolete">Det gick inte att spara den modifierade firmware-filen</translation>
     </message>
     <message>
         <source>Custom image not found</source>
-        <translation>Bildfilen hittades inte</translation>
+        <translation type="obsolete">Bildfilen hittades inte</translation>
     </message>
     <message>
         <source>No firmware selected</source>
-        <translation>Ingen firmware har valts</translation>
+        <translation type="obsolete">Ingen firmware har valts</translation>
     </message>
     <message>
         <source>Wrong radio calibration data in profile, Settings not patched</source>
-        <translation>Felaktig information i profilen, sändarens-kalibrering kunde inte läsas in</translation>
+        <translation type="obsolete">Felaktig information i profilen, sändarens-kalibrering kunde inte läsas in</translation>
     </message>
     <message>
         <source>Wrong radio setting data in profile, Settings not patched</source>
-        <translation>Felaktig information i profilen, sändarens inställningar kunde inte läsas in</translation>
+        <translation type="obsolete">Felaktig information i profilen, sändarens inställningar kunde inte läsas in</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify calibration parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -7665,74 +8378,74 @@ m2560 för v4.1-kort</translation>
     </message>
     <message>
         <source>Write firmware to Radio</source>
-        <translation>Skriv firmware till radion</translation>
+        <translation type="obsolete">Skriv firmware till radion</translation>
     </message>
     <message>
         <source>Write Backup to Radio</source>
-        <translation>Skriv Backup till radion</translation>
+        <translation type="obsolete">Skriv Backup till radion</translation>
     </message>
     <message>
         <source>Write Backup from %1 to Radio</source>
-        <translation>Skriv Backup från %1 till radion</translation>
+        <translation type="obsolete">Skriv Backup från %1 till radion</translation>
     </message>
     <message>
         <source>Current profile</source>
-        <translation>Nuvarande profil</translation>
+        <translation type="obsolete">Nuvarande profil</translation>
     </message>
     <message>
         <source>Open Firmware File</source>
-        <translation>Öppna firmware-fil</translation>
+        <translation type="obsolete">Öppna firmware-fil</translation>
     </message>
     <message>
         <source>Choose Radio Backup file</source>
-        <translation>Välj Backup-fil</translation>
+        <translation type="obsolete">Välj Backup-fil</translation>
     </message>
     <message>
         <source>%1 may not be a valid firmware file</source>
-        <translation>%1 är kanske inte en giltig firmware-fil</translation>
+        <translation type="obsolete">%1 är kanske inte en giltig firmware-fil</translation>
     </message>
     <message>
         <source>Unable to find file %1!</source>
-        <translation>Kan inte hitta filen %1 !</translation>
+        <translation type="obsolete">Kan inte hitta filen %1 !</translation>
     </message>
     <message>
         <source>Error opening file %1:
 %2.</source>
-        <translation>Fel vid öppning av filen %1:
+        <translation type="obsolete">Fel vid öppning av filen %1:
 %2.</translation>
     </message>
     <message>
         <source>Error reading file %1:
 %2.</source>
-        <translation>Fel vid inläsning från filen %1:
+        <translation type="obsolete">Fel vid inläsning från filen %1:
 %2.</translation>
     </message>
     <message>
         <source>The firmware file is not valid.</source>
-        <translation>Firmware-filen är inte giltig.</translation>
+        <translation type="obsolete">Firmware-filen är inte giltig.</translation>
     </message>
     <message>
         <source>There is no start screen image in the firmware file.</source>
-        <translation>Firmware-filen innehåller inte någon startbild.</translation>
+        <translation type="obsolete">Firmware-filen innehåller inte någon startbild.</translation>
     </message>
     <message>
         <source>Image could not be loaded from %1</source>
-        <translation>Det gick inte att ladda en bild från %1</translation>
+        <translation type="obsolete">Det gick inte att ladda en bild från %1</translation>
     </message>
     <message>
         <source>The library image could not be loaded</source>
-        <translation>Bild-biblioteket kunde inte öppnas</translation>
+        <translation type="obsolete">Bild-biblioteket kunde inte öppnas</translation>
     </message>
     <message>
         <source>Cannot write file %1:
 %2.</source>
-        <translation>Filen %1 kunde inte skrivas:
+        <translation type="obsolete">Filen %1 kunde inte skrivas:
 %2.</translation>
     </message>
     <message>
         <source>Error writing file %1:
 %2.</source>
-        <translation>Fel vid skrivning av filen  %1:
+        <translation type="obsolete">Fel vid skrivning av filen  %1:
 %2.</translation>
     </message>
     <message>
@@ -8227,31 +8940,31 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
     </message>
     <message>
         <source>Recent History Size</source>
-        <translation>Loggstorlek</translation>
+        <translation type="obsolete">Loggstorlek</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation>Nedladdning</translation>
+        <translation type="obsolete">Nedladdning</translation>
     </message>
     <message>
         <source>Default Channel Order</source>
-        <translation>Kanalordning</translation>
+        <translation type="obsolete">Kanalordning</translation>
     </message>
     <message>
         <source>Channel order
 
 This is used by the templated to determine which channel goes to what number output.</source>
-        <translation>Kanalordning
+        <translation type="obsolete">Kanalordning
 
 Detta används av mallen för att koppla kanal till output-nummer.</translation>
     </message>
     <message>
         <source>Show Splash At Start</source>
-        <translation>Visa Startbild</translation>
+        <translation type="obsolete">Visa Startbild</translation>
     </message>
     <message>
         <source>Default Stick Mode</source>
-        <translation>Spaktilldelning</translation>
+        <translation type="obsolete">Spaktilldelning</translation>
     </message>
     <message>
         <source>Mode selection:
@@ -8273,7 +8986,7 @@ Mode 4:
   Right stick:  Elevator, Rudder
 
 </source>
-        <translation>Välj Mode:
+        <translation type="obsolete">Välj Mode:
 
 Mode 1:
   Vänster spak:  Höjdroder, Sidroder
@@ -8295,135 +9008,135 @@ Mode 4:
     </message>
     <message>
         <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation>Mode 1 (ROD HÖJ GAS SKE)</translation>
+        <translation type="obsolete">Mode 1 (ROD HÖJ GAS SKE)</translation>
     </message>
     <message>
         <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation>Mode 2 (ROD GAS HÖJ SKE)</translation>
+        <translation type="obsolete">Mode 2 (ROD GAS HÖJ SKE)</translation>
     </message>
     <message>
         <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation>Mode 3 (SKE HÖJ GAS ROD)</translation>
+        <translation type="obsolete">Mode 3 (SKE HÖJ GAS ROD)</translation>
     </message>
     <message>
         <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation>Mode 4 (SKE GAS HÖJ ROD)</translation>
+        <translation type="obsolete">Mode 4 (SKE GAS HÖJ ROD)</translation>
     </message>
     <message>
         <source>Automatic Backup Folder</source>
-        <translation>Säkerhetskopiera till folder</translation>
+        <translation type="obsolete">Säkerhetskopiera till folder</translation>
     </message>
     <message>
         <source>R E T A</source>
-        <translation>R H G S</translation>
+        <translation type="obsolete">R H G S</translation>
     </message>
     <message>
         <source>R E A T</source>
-        <translation>R H S G</translation>
+        <translation type="obsolete">R H S G</translation>
     </message>
     <message>
         <source>R T E A</source>
-        <translation>R G H S</translation>
+        <translation type="obsolete">R G H S</translation>
     </message>
     <message>
         <source>R T A E</source>
-        <translation>R G S H</translation>
+        <translation type="obsolete">R G S H</translation>
     </message>
     <message>
         <source>R A E T</source>
-        <translation>R S H G</translation>
+        <translation type="obsolete">R S H G</translation>
     </message>
     <message>
         <source>R A T E</source>
-        <translation>R S G H</translation>
+        <translation type="obsolete">R S G H</translation>
     </message>
     <message>
         <source>E R T A</source>
-        <translation>H R G S</translation>
+        <translation type="obsolete">H R G S</translation>
     </message>
     <message>
         <source>E R A T</source>
-        <translation>H R S G</translation>
+        <translation type="obsolete">H R S G</translation>
     </message>
     <message>
         <source>E T R A</source>
-        <translation>H G R S</translation>
+        <translation type="obsolete">H G R S</translation>
     </message>
     <message>
         <source>E T A R</source>
-        <translation>H G S R</translation>
+        <translation type="obsolete">H G S R</translation>
     </message>
     <message>
         <source>E A R T</source>
-        <translation>H S R G</translation>
+        <translation type="obsolete">H S R G</translation>
     </message>
     <message>
         <source>E A T R</source>
-        <translation>H S G R</translation>
+        <translation type="obsolete">H S G R</translation>
     </message>
     <message>
         <source>T R E A</source>
-        <translation>G R H S</translation>
+        <translation type="obsolete">G R H S</translation>
     </message>
     <message>
         <source>T R A E</source>
-        <translation>G R S H</translation>
+        <translation type="obsolete">G R S H</translation>
     </message>
     <message>
         <source>T E R A</source>
-        <translation>G H R S</translation>
+        <translation type="obsolete">G H R S</translation>
     </message>
     <message>
         <source>T E A R</source>
-        <translation>G H S R</translation>
+        <translation type="obsolete">G H S R</translation>
     </message>
     <message>
         <source>T A R E</source>
-        <translation>G S R H</translation>
+        <translation type="obsolete">G S R H</translation>
     </message>
     <message>
         <source>T A E R</source>
-        <translation>G S H R</translation>
+        <translation type="obsolete">G S H R</translation>
     </message>
     <message>
         <source>A R E T</source>
-        <translation>S R H G</translation>
+        <translation type="obsolete">S R H G</translation>
     </message>
     <message>
         <source>A R T E</source>
-        <translation>S R G H</translation>
+        <translation type="obsolete">S R G H</translation>
     </message>
     <message>
         <source>A E R T</source>
-        <translation>S H R G</translation>
+        <translation type="obsolete">S H R G</translation>
     </message>
     <message>
         <source>A E T R</source>
-        <translation>S H G R</translation>
+        <translation type="obsolete">S H G R</translation>
     </message>
     <message>
         <source>A T R E</source>
-        <translation>S G R H</translation>
+        <translation type="obsolete">S G R H</translation>
     </message>
     <message>
         <source>A T E R</source>
-        <translation>S G H R</translation>
+        <translation type="obsolete">S G H R</translation>
     </message>
     <message>
         <source>Firmware</source>
-        <translation>Firmware</translation>
+        <translation type="obsolete">Firmware</translation>
     </message>
     <message>
         <source>Find Executable</source>
-        <translation>Sök Program</translation>
+        <translation type="obsolete">Sök Program</translation>
     </message>
     <message>
         <source>Google Earth Executable</source>
-        <translation>Sökväg till Google Earth</translation>
+        <translation type="obsolete">Sökväg till Google Earth</translation>
     </message>
     <message>
         <source>Check for updates on startup</source>
-        <translation>Sök efter uppdateringar vid start</translation>
+        <translation type="obsolete">Sök efter uppdateringar vid start</translation>
     </message>
     <message>
         <source>...</source>
@@ -8447,7 +9160,7 @@ Mode 4:
     </message>
     <message>
         <source>Check for updates</source>
-        <translation>Sök efter uppdateringar</translation>
+        <translation type="obsolete">Sök efter uppdateringar</translation>
     </message>
     <message>
         <source>Blue</source>
@@ -8492,7 +9205,7 @@ Mode 4:
     </message>
     <message>
         <source>FwInfo</source>
-        <translation>Firmware-info</translation>
+        <translation type="obsolete">Firmware-info</translation>
     </message>
     <message>
         <source>Include companion splashes</source>
@@ -8508,48 +9221,48 @@ Mode 4:
     </message>
     <message>
         <source>Ask for flashing after Download</source>
-        <translation>Fråga om skrivning efter Nedladdning</translation>
+        <translation type="obsolete">Fråga om skrivning efter Nedladdning</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation>Språk</translation>
+        <translation type="obsolete">Språk</translation>
     </message>
     <message>
         <source>Profile Name</source>
-        <translation>Profilnamn</translation>
+        <translation type="obsolete">Profilnamn</translation>
     </message>
     <message>
         <source>Save Profile</source>
-        <translation>Spara Profil</translation>
+        <translation type="obsolete">Spara Profil</translation>
     </message>
     <message>
         <source>Profile slot</source>
-        <translation>Profilplats</translation>
+        <translation type="obsolete">Profilplats</translation>
     </message>
     <message>
         <source>auto backup before write</source>
-        <translation>säkerhetskopiera innan skrivning</translation>
+        <translation type="obsolete">säkerhetskopiera innan skrivning</translation>
     </message>
     <message>
         <source>Export Profile</source>
-        <translation>Exportera Profil</translation>
+        <translation type="obsolete">Exportera Profil</translation>
     </message>
     <message>
         <source>Import Profile</source>
-        <translation>Importera Profil</translation>
+        <translation type="obsolete">Importera Profil</translation>
     </message>
     <message>
         <source>Automatically add version number to the filename after download</source>
-        <translation>Lägg automatiskt till ett versionsnummer till filnamnet</translation>
+        <translation type="obsolete">Lägg automatiskt till ett versionsnummer till filnamnet</translation>
     </message>
     <message>
         <source>Voice</source>
-        <translation>Röst</translation>
+        <translation type="obsolete">Röst</translation>
     </message>
     <message>
         <source>Set language of voice.
 May be different from firmware language</source>
-        <translation>Välj språk för röstfunktioner.
+        <translation type="obsolete">Välj språk för röstfunktioner.
 Får skilja från språket för mjukvaran</translation>
     </message>
     <message>
@@ -8558,7 +9271,7 @@ Får skilja från språket för mjukvaran</translation>
     </message>
     <message>
         <source>Processor ID</source>
-        <translation>Processortyp</translation>
+        <translation type="obsolete">Processortyp</translation>
     </message>
     <message>
         <source>Simulator capture folder</source>
@@ -8570,19 +9283,19 @@ Får skilja från språket för mjukvaran</translation>
     </message>
     <message>
         <source>Check for selected Fw updates</source>
-        <translation>Sök efter updatering av vald FW</translation>
+        <translation type="obsolete">Sök efter updatering av vald FW</translation>
     </message>
     <message>
         <source>Ask use of wizard for new models</source>
-        <translation>Använd modellguiden för nya modeller</translation>
+        <translation type="obsolete">Använd modellguiden för nya modeller</translation>
     </message>
     <message>
         <source>Remember switches in simulator</source>
-        <translation>Minns brytare i simulator</translation>
+        <translation type="obsolete">Minns brytare i simulator</translation>
     </message>
     <message>
         <source>SD Structure path</source>
-        <translation>Sökväg till SD-struktur</translation>
+        <translation type="obsolete">Sökväg till SD-struktur</translation>
     </message>
 </context>
 <context>
