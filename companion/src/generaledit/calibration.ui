@@ -6,51 +6,115 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>802</width>
-    <height>1036</height>
+    <width>805</width>
+    <height>1188</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0,0,0,0,0,0,0">
-   <item row="11" column="2">
-    <widget class="QComboBox" name="pot2Type">
-     <property name="toolTip">
-      <string/>
+  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0,0,0,0,0,0,0">
+   <item row="35" column="0">
+    <widget class="QLabel" name="sqLabel">
+     <property name="text">
+      <string>SQ</string>
      </property>
+    </widget>
+   </item>
+   <item row="13" column="1">
+    <widget class="AutoLineEdit" name="pot4Name">
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+   </item>
+   <item row="36" column="0">
+    <widget class="QLabel" name="srLabel">
+     <property name="text">
+      <string>SR</string>
+     </property>
+    </widget>
+   </item>
+   <item row="33" column="1">
+    <widget class="AutoLineEdit" name="soName">
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="6">
+    <widget class="QSpinBox" name="ana7Neg">
      <property name="statusTip">
       <string/>
      </property>
-     <property name="whatsThis">
-      <string>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</string>
+     <property name="minimum">
+      <number>-9999</number>
      </property>
-     <item>
-      <property name="text">
-       <string>None</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Pot with detent (normal)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Multipos Switch</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Pot without detent</string>
-      </property>
-     </item>
+     <property name="maximum">
+      <number>9999</number>
+     </property>
+    </widget>
+   </item>
+   <item row="35" column="1">
+    <widget class="AutoLineEdit" name="sqName">
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+   </item>
+   <item row="16" column="0">
+    <widget class="QLabel" name="ls2Label">
+     <property name="text">
+      <string>LS2</string>
+     </property>
+    </widget>
+   </item>
+   <item row="34" column="1">
+    <widget class="AutoLineEdit" name="spName">
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+   </item>
+   <item row="34" column="0">
+    <widget class="QLabel" name="spLabel">
+     <property name="text">
+      <string>SP</string>
+     </property>
+    </widget>
+   </item>
+   <item row="36" column="1">
+    <widget class="AutoLineEdit" name="srName">
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+   </item>
+   <item row="33" column="0">
+    <widget class="QLabel" name="soLabel">
+     <property name="text">
+      <string>SO</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="0">
+    <widget class="QLabel" name="pot4Label">
+     <property name="text">
+      <string>S4</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QSpinBox" name="ana1Pos">
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="minimum">
+      <number>-9999</number>
+     </property>
+     <property name="maximum">
+      <number>9999</number>
+     </property>
     </widget>
    </item>
    <item row="12" column="1">
@@ -60,21 +124,21 @@
      </property>
     </widget>
    </item>
-   <item row="14" column="0">
-    <widget class="QLabel" name="pot5Label">
+   <item row="15" column="0">
+    <widget class="QLabel" name="rsLabel">
      <property name="text">
       <string>RS</string>
      </property>
     </widget>
    </item>
-   <item row="17" column="0">
+   <item row="20" column="0">
     <widget class="QLabel" name="sbLabel">
      <property name="text">
       <string>SB</string>
      </property>
     </widget>
    </item>
-   <item row="31" column="0" alignment="Qt::AlignLeft">
+   <item row="38" column="0" alignment="Qt::AlignLeft">
     <widget class="QLabel" name="serialPortLabel">
      <property name="text">
       <string>Serial Port</string>
@@ -91,7 +155,7 @@
      </property>
     </widget>
    </item>
-   <item row="17" column="2">
+   <item row="20" column="2">
     <widget class="AutoComboBox" name="sbType">
      <property name="toolTip">
       <string/>
@@ -108,34 +172,9 @@
 3 - Loud.
 4 - Extra loud.</string>
      </property>
-     <item>
-      <property name="text">
-       <string>Default</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS Toggle</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>3POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2x2POS</string>
-      </property>
-     </item>
     </widget>
    </item>
-   <item row="15" column="0" colspan="5">
+   <item row="18" column="0" colspan="5">
     <widget class="Line" name="potsTypeSeparator_2">
      <property name="minimumSize">
       <size>
@@ -148,46 +187,7 @@
      </property>
     </widget>
    </item>
-   <item row="10" column="2">
-    <widget class="QComboBox" name="pot1Type">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="statusTip">
-      <string/>
-     </property>
-     <property name="whatsThis">
-      <string>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</string>
-     </property>
-     <item>
-      <property name="text">
-       <string>None</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Pot with detent (normal)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Multipos Switch</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Pot without detent</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="16" column="2">
+   <item row="19" column="2">
     <widget class="AutoComboBox" name="saType">
      <property name="toolTip">
       <string/>
@@ -204,34 +204,9 @@
 3 - Loud.
 4 - Extra loud.</string>
      </property>
-     <item>
-      <property name="text">
-       <string>Default</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS Toggle</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>3POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2x2POS</string>
-      </property>
-     </item>
     </widget>
    </item>
-   <item row="31" column="1">
+   <item row="38" column="1">
     <widget class="QComboBox" name="serialPortMode">
      <item>
       <property name="text">
@@ -260,46 +235,7 @@
      </item>
     </widget>
    </item>
-   <item row="12" column="2">
-    <widget class="QComboBox" name="pot3Type">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="statusTip">
-      <string/>
-     </property>
-     <property name="whatsThis">
-      <string>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</string>
-     </property>
-     <item>
-      <property name="text">
-       <string>None</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Pot with detent (normal)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Multipos Switch</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Pot without detent</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="17" column="1">
+   <item row="20" column="1">
     <widget class="AutoLineEdit" name="sbName">
      <property name="maxLength">
       <number>3</number>
@@ -313,7 +249,7 @@
      </property>
     </widget>
    </item>
-   <item row="16" column="1">
+   <item row="19" column="1">
     <widget class="AutoLineEdit" name="saName">
      <property name="maxLength">
       <number>3</number>
@@ -327,8 +263,18 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="3">
-    <widget class="QSpinBox" name="ana1Pos">
+   <item row="0" column="7">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>Mid value</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QSpinBox" name="ana2Pos">
      <property name="statusTip">
       <string/>
      </property>
@@ -401,7 +347,7 @@
      </property>
     </widget>
    </item>
-   <item row="36" column="0">
+   <item row="43" column="0">
     <widget class="QLabel" name="label_23">
      <property name="text">
       <string>PPM 1</string>
@@ -481,7 +427,7 @@
      </property>
     </widget>
    </item>
-   <item row="38" column="0">
+   <item row="45" column="0">
     <widget class="QLabel" name="label_33">
      <property name="text">
       <string>PPM 2</string>
@@ -510,19 +456,6 @@
    </item>
    <item row="2" column="2">
     <widget class="QSpinBox" name="ana2Mid">
-     <property name="statusTip">
-      <string/>
-     </property>
-     <property name="minimum">
-      <number>-9999</number>
-     </property>
-     <property name="maximum">
-      <number>9999</number>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3">
-    <widget class="QSpinBox" name="ana2Pos">
      <property name="statusTip">
       <string/>
      </property>
@@ -622,14 +555,14 @@
      </property>
     </widget>
    </item>
-   <item row="33" column="0">
+   <item row="40" column="0">
     <widget class="QLabel" name="label_22">
      <property name="text">
       <string>Battery</string>
      </property>
     </widget>
    </item>
-   <item row="33" column="1">
+   <item row="40" column="1">
     <widget class="QDoubleSpinBox" name="battCalibDSB">
      <property name="statusTip">
       <string/>
@@ -651,14 +584,14 @@
      </property>
     </widget>
    </item>
-   <item row="41" column="0">
+   <item row="48" column="0">
     <widget class="QLabel" name="label_30">
      <property name="text">
       <string>PPM Multiplier</string>
      </property>
     </widget>
    </item>
-   <item row="38" column="1">
+   <item row="45" column="1">
     <widget class="QSpinBox" name="PPM2">
      <property name="toolTip">
       <string/>
@@ -677,7 +610,7 @@
      </property>
     </widget>
    </item>
-   <item row="39" column="1">
+   <item row="46" column="1">
     <widget class="QSpinBox" name="PPM3">
      <property name="toolTip">
       <string/>
@@ -696,7 +629,7 @@
      </property>
     </widget>
    </item>
-   <item row="40" column="1">
+   <item row="47" column="1">
     <widget class="QSpinBox" name="PPM4">
      <property name="toolTip">
       <string/>
@@ -715,7 +648,7 @@
      </property>
     </widget>
    </item>
-   <item row="36" column="1">
+   <item row="43" column="1">
     <widget class="QSpinBox" name="PPM1">
      <property name="toolTip">
       <string/>
@@ -734,21 +667,21 @@
      </property>
     </widget>
    </item>
-   <item row="39" column="0">
+   <item row="46" column="0">
     <widget class="QLabel" name="label_34">
      <property name="text">
       <string>PPM 3</string>
      </property>
     </widget>
    </item>
-   <item row="40" column="0">
+   <item row="47" column="0">
     <widget class="QLabel" name="label_35">
      <property name="text">
       <string>PPM 4</string>
      </property>
     </widget>
    </item>
-   <item row="34" column="1">
+   <item row="41" column="1">
     <widget class="QSpinBox" name="CurrentCalib_SB">
      <property name="minimum">
       <number>-49</number>
@@ -758,7 +691,7 @@
      </property>
     </widget>
    </item>
-   <item row="34" column="0">
+   <item row="41" column="0">
     <widget class="QLabel" name="label_CurrentCalib">
      <property name="text">
       <string>Current</string>
@@ -817,47 +750,8 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="6">
-    <widget class="QSpinBox" name="ana7Neg">
-     <property name="statusTip">
-      <string/>
-     </property>
-     <property name="minimum">
-      <number>-9999</number>
-     </property>
-     <property name="maximum">
-      <number>9999</number>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="7">
     <widget class="QSpinBox" name="ana7Mid">
-     <property name="statusTip">
-      <string/>
-     </property>
-     <property name="minimum">
-      <number>-9999</number>
-     </property>
-     <property name="maximum">
-      <number>9999</number>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="8">
-    <widget class="QSpinBox" name="ana7Pos">
-     <property name="statusTip">
-      <string/>
-     </property>
-     <property name="minimum">
-      <number>-9999</number>
-     </property>
-     <property name="maximum">
-      <number>9999</number>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="6">
-    <widget class="QSpinBox" name="ana8Neg">
      <property name="statusTip">
       <string/>
      </property>
@@ -882,8 +776,34 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="8">
+    <widget class="QSpinBox" name="ana7Pos">
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="minimum">
+      <number>-9999</number>
+     </property>
+     <property name="maximum">
+      <number>9999</number>
+     </property>
+    </widget>
+   </item>
    <item row="4" column="8">
     <widget class="QSpinBox" name="ana8Pos">
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="minimum">
+      <number>-9999</number>
+     </property>
+     <property name="maximum">
+      <number>9999</number>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="6">
+    <widget class="QSpinBox" name="ana8Neg">
      <property name="statusTip">
       <string/>
      </property>
@@ -905,26 +825,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="7">
-    <widget class="QLabel" name="label_7">
-     <property name="text">
-      <string>Mid value</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="8">
-    <widget class="QLabel" name="label_8">
-     <property name="text">
-      <string>Positive span</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
    <item row="5" column="0" colspan="4">
     <widget class="Line" name="potsTypeSeparator">
      <property name="minimumSize">
@@ -938,24 +838,20 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="8">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Positive span</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
    <item row="10" column="0">
-    <widget class="QLabel" name="pot1TypeLabel">
+    <widget class="QLabel" name="pot1Label">
      <property name="text">
       <string>S1</string>
-     </property>
-    </widget>
-   </item>
-   <item row="11" column="0">
-    <widget class="QLabel" name="pot2TypeLabel">
-     <property name="text">
-      <string>S2</string>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="0">
-    <widget class="QLabel" name="pot3TypeLabel">
-     <property name="text">
-      <string>S3</string>
      </property>
     </widget>
    </item>
@@ -966,7 +862,21 @@
      </property>
     </widget>
    </item>
-   <item row="16" column="0">
+   <item row="11" column="0">
+    <widget class="QLabel" name="pot2Label">
+     <property name="text">
+      <string>S2</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0">
+    <widget class="QLabel" name="pot3Label">
+     <property name="text">
+      <string>S3</string>
+     </property>
+    </widget>
+   </item>
+   <item row="19" column="0">
     <widget class="QLabel" name="saLabel">
      <property name="text">
       <string>SA</string>
@@ -980,24 +890,17 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="ailLabel">
-     <property name="text">
-      <string>Ail</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="thrLabel">
-     <property name="text">
-      <string>Thr</string>
-     </property>
-    </widget>
-   </item>
    <item row="7" column="1">
     <widget class="AutoLineEdit" name="eleName">
      <property name="maxLength">
       <number>3</number>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="ailLabel">
+     <property name="text">
+      <string>Ail</string>
      </property>
     </widget>
    </item>
@@ -1008,6 +911,13 @@
      </property>
     </widget>
    </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="thrLabel">
+     <property name="text">
+      <string>Thr</string>
+     </property>
+    </widget>
+   </item>
    <item row="8" column="1">
     <widget class="AutoLineEdit" name="thrName">
      <property name="maxLength">
@@ -1015,35 +925,42 @@
      </property>
     </widget>
    </item>
-   <item row="18" column="0">
+   <item row="14" column="1">
+    <widget class="AutoLineEdit" name="lsName">
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+   </item>
+   <item row="21" column="0">
     <widget class="QLabel" name="scLabel">
      <property name="text">
       <string>SC</string>
      </property>
     </widget>
    </item>
-   <item row="13" column="0">
-    <widget class="QLabel" name="pot4Label">
+   <item row="15" column="1">
+    <widget class="AutoLineEdit" name="rsName">
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="0">
+    <widget class="QLabel" name="lsLabel">
      <property name="text">
       <string>LS</string>
      </property>
     </widget>
    </item>
-   <item row="13" column="1">
-    <widget class="AutoLineEdit" name="pot4Name">
+   <item row="21" column="1">
+    <widget class="AutoLineEdit" name="scName">
      <property name="maxLength">
       <number>3</number>
      </property>
     </widget>
    </item>
-   <item row="14" column="1">
-    <widget class="AutoLineEdit" name="pot5Name">
-     <property name="maxLength">
-      <number>3</number>
-     </property>
-    </widget>
-   </item>
-   <item row="18" column="2">
+   <item row="21" column="2">
     <widget class="AutoComboBox" name="scType">
      <property name="toolTip">
       <string/>
@@ -1054,48 +971,23 @@
      <property name="whatsThis">
       <string/>
      </property>
-     <item>
-      <property name="text">
-       <string>Default</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS Toggle</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>3POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2x2POS</string>
-      </property>
-     </item>
     </widget>
    </item>
-   <item row="18" column="1">
-    <widget class="AutoLineEdit" name="scName">
+   <item row="22" column="1">
+    <widget class="AutoLineEdit" name="sdName">
      <property name="maxLength">
       <number>3</number>
      </property>
     </widget>
    </item>
-   <item row="19" column="0">
+   <item row="22" column="0">
     <widget class="QLabel" name="sdLabel">
      <property name="text">
       <string>SD</string>
      </property>
     </widget>
    </item>
-   <item row="19" column="2">
+   <item row="22" column="2">
     <widget class="AutoComboBox" name="sdType">
      <property name="toolTip">
       <string/>
@@ -1106,48 +998,23 @@
      <property name="whatsThis">
       <string/>
      </property>
-     <item>
-      <property name="text">
-       <string>Default</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS Toggle</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>3POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2x2POS</string>
-      </property>
-     </item>
     </widget>
    </item>
-   <item row="19" column="1">
-    <widget class="AutoLineEdit" name="sdName">
+   <item row="23" column="1">
+    <widget class="AutoLineEdit" name="seName">
      <property name="maxLength">
       <number>3</number>
      </property>
     </widget>
    </item>
-   <item row="20" column="0">
+   <item row="23" column="0">
     <widget class="QLabel" name="seLabel">
      <property name="text">
       <string>SE</string>
      </property>
     </widget>
    </item>
-   <item row="20" column="2">
+   <item row="23" column="2">
     <widget class="AutoComboBox" name="seType">
      <property name="toolTip">
       <string/>
@@ -1158,48 +1025,23 @@
      <property name="whatsThis">
       <string/>
      </property>
-     <item>
-      <property name="text">
-       <string>Default</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS Toggle</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>3POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2x2POS</string>
-      </property>
-     </item>
     </widget>
    </item>
-   <item row="20" column="1">
-    <widget class="AutoLineEdit" name="seName">
+   <item row="24" column="1">
+    <widget class="AutoLineEdit" name="sfName">
      <property name="maxLength">
       <number>3</number>
      </property>
     </widget>
    </item>
-   <item row="21" column="0">
+   <item row="24" column="0">
     <widget class="QLabel" name="sfLabel">
      <property name="text">
       <string>SF</string>
      </property>
     </widget>
    </item>
-   <item row="21" column="2">
+   <item row="24" column="2">
     <widget class="AutoComboBox" name="sfType">
      <property name="toolTip">
       <string/>
@@ -1210,48 +1052,23 @@
      <property name="whatsThis">
       <string/>
      </property>
-     <item>
-      <property name="text">
-       <string>Default</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS Toggle</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>3POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2x2POS</string>
-      </property>
-     </item>
     </widget>
    </item>
-   <item row="21" column="1">
-    <widget class="AutoLineEdit" name="sfName">
+   <item row="25" column="1">
+    <widget class="AutoLineEdit" name="sgName">
      <property name="maxLength">
       <number>3</number>
      </property>
     </widget>
    </item>
-   <item row="22" column="0">
+   <item row="25" column="0">
     <widget class="QLabel" name="sgLabel">
      <property name="text">
       <string>SG</string>
      </property>
     </widget>
    </item>
-   <item row="22" column="2">
+   <item row="25" column="2">
     <widget class="AutoComboBox" name="sgType">
      <property name="toolTip">
       <string/>
@@ -1262,190 +1079,107 @@
      <property name="whatsThis">
       <string/>
      </property>
-     <item>
-      <property name="text">
-       <string>Default</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS Toggle</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>3POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2x2POS</string>
-      </property>
-     </item>
     </widget>
    </item>
-   <item row="22" column="1">
-    <widget class="AutoLineEdit" name="sgName">
-     <property name="maxLength">
-      <number>3</number>
-     </property>
-    </widget>
-   </item>
-   <item row="23" column="0">
-    <widget class="QLabel" name="shLabel">
-     <property name="text">
-      <string>SH</string>
-     </property>
-    </widget>
-   </item>
-   <item row="23" column="2">
-    <widget class="AutoComboBox" name="shType">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="statusTip">
-      <string/>
-     </property>
-     <property name="whatsThis">
-      <string/>
-     </property>
-     <item>
-      <property name="text">
-       <string>Default</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS Toggle</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>3POS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2x2POS</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="23" column="1">
+   <item row="26" column="1">
     <widget class="AutoLineEdit" name="shName">
      <property name="maxLength">
       <number>3</number>
      </property>
     </widget>
    </item>
-   <item row="24" column="0">
-    <widget class="QLabel" name="siLabel">
+   <item row="26" column="0">
+    <widget class="QLabel" name="shLabel">
      <property name="text">
-      <string>SI</string>
+      <string>SH</string>
      </property>
     </widget>
    </item>
-   <item row="24" column="1">
+   <item row="27" column="1">
     <widget class="AutoLineEdit" name="siName">
      <property name="maxLength">
       <number>3</number>
      </property>
     </widget>
    </item>
-   <item row="25" column="0">
-    <widget class="QLabel" name="sjLabel">
+   <item row="27" column="0">
+    <widget class="QLabel" name="siLabel">
      <property name="text">
-      <string>SJ</string>
+      <string>SI</string>
      </property>
     </widget>
    </item>
-   <item row="25" column="1">
+   <item row="28" column="1">
     <widget class="AutoLineEdit" name="sjName">
      <property name="maxLength">
       <number>3</number>
      </property>
     </widget>
    </item>
-   <item row="26" column="0">
-    <widget class="QLabel" name="skLabel">
+   <item row="28" column="0">
+    <widget class="QLabel" name="sjLabel">
      <property name="text">
-      <string>SK</string>
+      <string>SJ</string>
      </property>
     </widget>
    </item>
-   <item row="26" column="1">
+   <item row="29" column="1">
     <widget class="AutoLineEdit" name="skName">
      <property name="maxLength">
       <number>3</number>
      </property>
     </widget>
    </item>
-   <item row="27" column="0">
-    <widget class="QLabel" name="slLabel">
+   <item row="29" column="0">
+    <widget class="QLabel" name="skLabel">
      <property name="text">
-      <string>SL</string>
+      <string>SK</string>
      </property>
     </widget>
    </item>
-   <item row="27" column="1">
+   <item row="30" column="1">
     <widget class="AutoLineEdit" name="slName">
      <property name="maxLength">
       <number>3</number>
      </property>
     </widget>
    </item>
-   <item row="28" column="0">
-    <widget class="QLabel" name="smLabel">
+   <item row="30" column="0">
+    <widget class="QLabel" name="slLabel">
      <property name="text">
-      <string>SM</string>
+      <string>SL</string>
      </property>
     </widget>
    </item>
-   <item row="28" column="1">
+   <item row="31" column="1">
     <widget class="AutoLineEdit" name="smName">
      <property name="maxLength">
       <number>3</number>
      </property>
     </widget>
    </item>
-   <item row="29" column="0">
-    <widget class="QLabel" name="snLabel">
+   <item row="31" column="0">
+    <widget class="QLabel" name="smLabel">
      <property name="text">
-      <string>SN</string>
+      <string>SM</string>
      </property>
     </widget>
    </item>
-   <item row="29" column="1">
+   <item row="32" column="1">
     <widget class="AutoLineEdit" name="snName">
      <property name="maxLength">
       <number>3</number>
      </property>
     </widget>
    </item>
-   <item row="41" column="1">
-    <widget class="QDoubleSpinBox" name="PPM_MultiplierDSB">
-     <property name="decimals">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <double>5.000000000000000</double>
-     </property>
-     <property name="value">
-      <double>1.000000000000000</double>
+   <item row="32" column="0">
+    <widget class="QLabel" name="snLabel">
+     <property name="text">
+      <string>SN</string>
      </property>
     </widget>
    </item>
-   <item row="30" column="0" colspan="4">
+   <item row="37" column="0" colspan="4">
     <widget class="Line" name="potsTypeSeparator_3">
      <property name="minimumSize">
       <size>
@@ -1458,7 +1192,7 @@
      </property>
     </widget>
    </item>
-   <item row="35" column="0" colspan="4">
+   <item row="42" column="0" colspan="4">
     <widget class="Line" name="potsTypeSeparator_4">
      <property name="minimumSize">
       <size>
@@ -1468,6 +1202,335 @@
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="48" column="1">
+    <widget class="QDoubleSpinBox" name="PPM_MultiplierDSB">
+     <property name="decimals">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <double>5.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>1.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="17" column="0">
+    <widget class="QLabel" name="rs2Label">
+     <property name="text">
+      <string>RS2</string>
+     </property>
+    </widget>
+   </item>
+   <item row="16" column="1">
+    <widget class="AutoLineEdit" name="ls2Name">
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+   </item>
+   <item row="17" column="1">
+    <widget class="AutoLineEdit" name="rs2Name">
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+   </item>
+   <item row="26" column="2">
+    <widget class="AutoComboBox" name="shType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="27" column="2">
+    <widget class="AutoComboBox" name="siType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="28" column="2">
+    <widget class="AutoComboBox" name="sjType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="29" column="2">
+    <widget class="AutoComboBox" name="skType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="30" column="2">
+    <widget class="AutoComboBox" name="slType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="31" column="2">
+    <widget class="AutoComboBox" name="smType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="32" column="2">
+    <widget class="AutoComboBox" name="snType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="33" column="2">
+    <widget class="AutoComboBox" name="soType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="34" column="2">
+    <widget class="AutoComboBox" name="spType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="35" column="2">
+    <widget class="AutoComboBox" name="sqType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="36" column="2">
+    <widget class="AutoComboBox" name="srType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="17" column="2">
+    <widget class="AutoComboBox" name="rs2Type">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string>Beeper volume
+
+0 - Quiet.  No beeps at all.
+1 - No Keys.  Normal beeps but menu keys do not beep.
+2 - Normal.
+3 - Loud.
+4 - Extra loud.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="16" column="2">
+    <widget class="AutoComboBox" name="ls2Type">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string>Beeper volume
+
+0 - Quiet.  No beeps at all.
+1 - No Keys.  Normal beeps but menu keys do not beep.
+2 - Normal.
+3 - Loud.
+4 - Extra loud.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="2">
+    <widget class="AutoComboBox" name="rsType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string>Beeper volume
+
+0 - Quiet.  No beeps at all.
+1 - No Keys.  Normal beeps but menu keys do not beep.
+2 - Normal.
+3 - Loud.
+4 - Extra loud.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="2">
+    <widget class="AutoComboBox" name="lsType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string>Beeper volume
+
+0 - Quiet.  No beeps at all.
+1 - No Keys.  Normal beeps but menu keys do not beep.
+2 - Normal.
+3 - Loud.
+4 - Extra loud.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="2">
+    <widget class="AutoComboBox" name="pot4Type">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string>Beeper volume
+
+0 - Quiet.  No beeps at all.
+1 - No Keys.  Normal beeps but menu keys do not beep.
+2 - Normal.
+3 - Loud.
+4 - Extra loud.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="2">
+    <widget class="AutoComboBox" name="pot3Type">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string>Beeper volume
+
+0 - Quiet.  No beeps at all.
+1 - No Keys.  Normal beeps but menu keys do not beep.
+2 - Normal.
+3 - Loud.
+4 - Extra loud.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="2">
+    <widget class="AutoComboBox" name="pot2Type">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string>Beeper volume
+
+0 - Quiet.  No beeps at all.
+1 - No Keys.  Normal beeps but menu keys do not beep.
+2 - Normal.
+3 - Loud.
+4 - Extra loud.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="2">
+    <widget class="AutoComboBox" name="pot1Type">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string>Beeper volume
+
+0 - Quiet.  No beeps at all.
+1 - No Keys.  Normal beeps but menu keys do not beep.
+2 - Normal.
+3 - Loud.
+4 - Extra loud.</string>
      </property>
     </widget>
    </item>

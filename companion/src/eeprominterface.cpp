@@ -16,7 +16,7 @@
 std::list<QString> EEPROMWarnings;
 
 const char * switches9X[] = { "3POS", "THR", "RUD", "ELE", "AIL", "GEA", "TRN" };
-const char * switchesX9D[] = { "SA", "SB", "SC", "SD", "SE", "SF", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN" };
+const char * switchesX9D[] = { "SA", "SB", "SC", "SD", "SE", "SF", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SP", "SQ", "SR" };
 const char leftArrow[] = {(char)0xE2, (char)0x86, (char)0x90, 0};
 const char rightArrow[] = {(char)0xE2, (char)0x86, (char)0x92, 0};
 const char upArrow[] = {(char)0xE2, (char)0x86, (char)0x91, 0};
@@ -405,12 +405,16 @@ QString AnalogString(int index)
 {
   static const QString sticks[]  = { QObject::tr("Rud"), QObject::tr("Ele"), QObject::tr("Thr"), QObject::tr("Ail") };
   static const QString pots9X[]  = { QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3") };
+  static const QString potsTaranisX9E[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("S4"), QObject::tr("LS"), QObject::tr("RS"), QObject::tr("LS2"), QObject::tr("RS2") };
   static const QString potsTaranis[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("LS"), QObject::tr("RS") };
-
   if (index < 4)
     return CHECK_IN_ARRAY(sticks, index);
+  else if (IS_TARANIS_X9E(GetEepromInterface()->getBoard()))
+    return CHECK_IN_ARRAY(potsTaranisX9E, index-4);
+  else if (IS_TARANIS(GetEepromInterface()->getBoard()))
+    return CHECK_IN_ARRAY(potsTaranis, index-4);
   else
-    return (IS_TARANIS(GetEepromInterface()->getBoard()) ? CHECK_IN_ARRAY(potsTaranis, index-4) : CHECK_IN_ARRAY(pots9X, index-4));
+    return CHECK_IN_ARRAY(pots9X, index-4);
 }
 
 QString RotaryEncoderString(int index)
@@ -1002,12 +1006,10 @@ bool GeneralSettings::switchPositionAllowedTaranis(int index) const
   if (index == 0)
     return true;
   SwitchInfo info = switchInfoFromSwitchPositionTaranis(abs(index));
-  if (index < 0 && switchConfigTaranis(info.index) != SWITCH_3POS)
+  if (index < 0 && switchConfig[info.index] != SWITCH_3POS)
     return false;
-  else if (info.index >= 8)
-    return switchConfigTaranis(info.index-8) == SWITCH_2x2POS;
   else if (info.position == 1)
-    return switchConfigTaranis(info.index) == SWITCH_3POS;
+    return switchConfig[info.index] == SWITCH_3POS;
   else
     return true;
 }
@@ -1027,8 +1029,18 @@ GeneralSettings::GeneralSettings()
 
   BoardEnum board = GetEepromInterface()->getBoard();
   if (IS_TARANIS(board)) {
-    potsType[0] = 1;
-    potsType[1] = 1;
+    potConfig[0] = POT_WITH_DETENT;
+    potConfig[1] = POT_WITH_DETENT;
+    sliderConfig[0] = SLIDER_WITH_DETENT;
+    sliderConfig[1] = SLIDER_WITH_DETENT;
+    switchConfig[0] = SWITCH_3POS;
+    switchConfig[1] = SWITCH_3POS;
+    switchConfig[2] = SWITCH_3POS;
+    switchConfig[3] = SWITCH_3POS;
+    switchConfig[4] = SWITCH_3POS;
+    switchConfig[5] = SWITCH_2POS;
+    switchConfig[6] = SWITCH_3POS;
+    switchConfig[7] = SWITCH_TOGGLE;
   }
 
   if (IS_ARM(board)) {

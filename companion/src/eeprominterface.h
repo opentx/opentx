@@ -62,6 +62,7 @@ QString getBoardName(BoardEnum board);
 #define IS_9XRPRO(board)       (board==BOARD_9XRPRO)
 #define IS_TARANIS(board)      (board==BOARD_TARANIS  || board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)
 #define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)
+#define IS_TARANIS_X9E(board)  (board==BOARD_TARANIS_X9E)
 #define IS_ARM(board)          (IS_TARANIS(board) || IS_SKY9X(board))
 
 const uint8_t modn12x3[4][4]= {
@@ -198,7 +199,7 @@ enum HeliSwashTypes {
 
 #define NUM_STICKS          4
 #define BOARD_9X_NUM_POTS   3
-#define C9X_NUM_POTS        5
+#define C9X_NUM_POTS        8
 #define NUM_CAL_PPM         4
 #define NUM_CYC             3
 #define C9X_NUM_SWITCHES    10
@@ -1013,9 +1014,10 @@ class ModelData {
     SwashRingData swashRingData;
     unsigned int thrTraceSrc;
     unsigned int modelId;
-    unsigned int switchWarningStates;
+    uint64_t switchWarningStates;
     unsigned int switchWarningEnable;
-    unsigned int nPotsToWarn;
+    unsigned int potsWarningMode;
+    bool potsWarningEnabled[C9X_NUM_POTS];
     int          potPosition[C9X_NUM_POTS];
     bool         displayChecklist;
     // TODO structure
@@ -1087,12 +1089,23 @@ class GeneralSettings {
       BEEPER_ALL = 1
     };
 
+    enum PotConfig {
+      POT_NONE,
+      POT_WITH_DETENT,
+      POT_MULTIPOS_SWITCH,
+      POT_WITHOUT_DETENT
+    };
+
+    enum SliderConfig {
+      SLIDER_NONE,
+      SLIDER_WITH_DETENT
+    };
+
     enum SwitchConfig {
-      SWITCH_DEFAULT,
+      SWITCH_NONE,
       SWITCH_TOGGLE,
       SWITCH_2POS,
       SWITCH_3POS,
-      SWITCH_2x2POS
     };
 
     GeneralSettings();
@@ -1179,12 +1192,15 @@ class GeneralSettings {
     unsigned int mavbaud;
     unsigned int switchUnlockStates;
     unsigned int hw_uartMode;
-    unsigned int potsType[8];
     unsigned int backlightColor;
     CustomFunctionData customFn[C9X_MAX_CUSTOM_FUNCTIONS];
-    unsigned int switchConfig[8];
-    char switchNames[32][3+1];
-    char anaNames[32][3+1];
+    char switchName[18][3+1];
+    unsigned int switchConfig[18];
+    char stickName[4][3+1];
+    char potName[4][3+1];
+    unsigned int potConfig[4];
+    char sliderName[4][3+1];
+    unsigned int sliderConfig[4];
 
     struct SwitchInfo {
       SwitchInfo(unsigned int index, unsigned int position):
@@ -1198,33 +1214,6 @@ class GeneralSettings {
     
     static SwitchInfo switchInfoFromSwitchPositionTaranis(unsigned int index);
     bool switchPositionAllowedTaranis(int index) const;
-
-    static unsigned int switchDefaultConfigTaranis(unsigned int index)
-    {
-      if (index == 5)
-        return SWITCH_2POS;
-      else if (index == 7)
-        return SWITCH_TOGGLE;
-      else
-        return SWITCH_3POS;
-    }
-
-    unsigned int switchConfigTaranis(unsigned int index) const
-    {
-      unsigned int result = switchConfig[index];
-      if (result == SWITCH_DEFAULT)
-        result = switchDefaultConfigTaranis(index);
-      return result;
-    }
-
-    bool isSwitchWarningAllowedTaranis(unsigned int index) const
-    {
-      if (index < 8)
-        return switchConfigTaranis(index) != SWITCH_TOGGLE;
-      else
-        return switchConfig[index-8] == SWITCH_2x2POS;
-    }
-
 };
 
 class RadioData {
@@ -1250,6 +1239,7 @@ enum Capability {
   MultiLangVoice,
   ModelImage,
   Pots,
+  Sliders,
   Switches,
   SwitchesPositions,
   LogicalSwitches,

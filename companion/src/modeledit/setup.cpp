@@ -447,7 +447,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
 
   // Beep Center checkboxes
   prevFocus = ui->trimsDisplay;
-  int analogs = 4 + firmware->getCapability(Pots);
+  int analogs = NUM_STICKS + firmware->getCapability(Pots) + firmware->getCapability(Sliders);
   for (int i=0; i<analogs+firmware->getCapability(RotaryEncoders); i++) {
     QCheckBox * checkbox = new QCheckBox(this);
     checkbox->setProperty("index", i);
@@ -455,8 +455,17 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     ui->centerBeepLayout->addWidget(checkbox, 0, i+1);
     connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
     centerBeepCheckboxes << checkbox;
-    if (!IS_TARANIS_PLUS(board) && i==6) {
-      checkbox->hide();
+    if (IS_TARANIS(board)) {
+      if (i >= NUM_STICKS  && i < NUM_STICKS + firmware->getCapability(Pots)) {
+        if (generalSettings.potConfig[i-NUM_STICKS] == GeneralSettings::POT_NONE) {
+          checkbox->hide();
+        }
+      }
+      else if (i >= NUM_STICKS + firmware->getCapability(Pots) && i < analogs) {
+        if (generalSettings.sliderConfig[i-NUM_STICKS-firmware->getCapability(Pots)] == GeneralSettings::SLIDER_NONE) {
+          checkbox->hide();
+        }
+      }
     }
     QWidget::setTabOrder(prevFocus, checkbox);
     prevFocus = checkbox;
@@ -464,35 +473,41 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
 
   // Startup switches warnings
   for (int i=0; i<firmware->getCapability(Switches); i++) {
-    if (!IS_TARANIS(firmware->getBoard()) && i==firmware->getCapability(Switches)-1)
-      continue;
+    if (IS_TARANIS(firmware->getBoard())) {
+      if (generalSettings.switchConfig[i] == GeneralSettings::SWITCH_NONE || generalSettings.switchConfig[i] == GeneralSettings::SWITCH_TOGGLE) {
+        continue;
+      }
+    }
+    else {
+      if (i==firmware->getCapability(Switches)-1) {
+        continue;
+      }
+    }
     QLabel * label = new QLabel(this);
     QSlider * slider = new QSlider(this);
     QCheckBox * cb = new QCheckBox(this);
-    if (IS_TARANIS(firmware->getBoard()) && !generalSettings.isSwitchWarningAllowedTaranis(i)) {
-      label->hide();
-      slider->hide();
-      cb->hide();
-    }
-    slider->setProperty("index", i+1);
+    slider->setProperty("index", i);
     slider->setOrientation(Qt::Vertical);
     slider->setMinimum(0);
-    slider->setSingleStep(1);
-    slider->setPageStep(1);
     slider->setInvertedAppearance(true);
     slider->setTickPosition(QSlider::TicksBothSides);
-    slider->setTickInterval(1);
     slider->setMinimumSize(QSize(30, 50));
     slider->setMaximumSize(QSize(50, 50));
     if (IS_TARANIS(board)) {
       label->setText(switchesX9D[i]);
-      slider->setMaximum((i==5 || i>=7) ? 1 : 2);
+      slider->setMaximum(2);
+      slider->setSingleStep(generalSettings.switchConfig[i] == GeneralSettings::SWITCH_3POS ? 1 : 2);
+      slider->setPageStep(slider->singleStep());
+      slider->setTickInterval(slider->singleStep());
     }
     else {
       label->setText(switches9X[i]);
       slider->setMaximum(i==0 ? 2 : 1);
+      slider->setSingleStep(1);
+      slider->setPageStep(1);
+      slider->setTickInterval(1);
     }
-    cb->setProperty("index", i+1);
+    cb->setProperty("index", i);
     ui->switchesStartupLayout->addWidget(label, 0, i+1);
     ui->switchesStartupLayout->setAlignment(label, Qt::AlignCenter);
     ui->switchesStartupLayout->addWidget(slider, 1, i+1);
@@ -512,15 +527,22 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   // Pot warnings
   prevFocus = ui->potWarningMode;
   if (IS_TARANIS(board)) {
-    for (int i=0; i<firmware->getCapability(Pots); i++) {
+    for (int i=0; i<firmware->getCapability(Pots)+firmware->getCapability(Sliders); i++) {
       QCheckBox * cb = new QCheckBox(this);
-      cb->setProperty("index", i+1);
+      cb->setProperty("index", i);
       cb->setText(AnalogString(i+4));
       ui->potWarningLayout->addWidget(cb, 0, i+1);
       connect(cb, SIGNAL(toggled(bool)), this, SLOT(potWarningToggled(bool)));
       potWarningCheckboxes << cb;
-      if (!IS_TARANIS_PLUS(board) && i==2) {
-        cb->hide();
+      if (i < firmware->getCapability(Pots)) {
+        if (generalSettings.potConfig[i] == GeneralSettings::POT_NONE) {
+          cb->hide();
+        }
+      }
+      else {
+        if (generalSettings.sliderConfig[i-firmware->getCapability(Pots)] == GeneralSettings::SLIDER_NONE) {
+          cb->hide();
+        }
       }
       QWidget::setTabOrder(prevFocus, cb);
       prevFocus = cb;
@@ -712,24 +734,13 @@ void SetupPanel::updateStartupSwitches()
 {
   lock = true;
 
-  unsigned int switchStates = model->switchWarningStates;
-
-  for (int i=0; i<firmware->getCapability(Switches); i++) {
-    if (!IS_TARANIS(firmware->getBoard()) && i==firmware->getCapability(Switches)-1)
-      continue;
-    QSlider * slider = startupSwitchesSliders[i];
+  for (int i=0; i<startupSwitchesSliders.size(); i++) {
+    QSlider *slider = startupSwitchesSliders[i];
     QCheckBox * cb = startupSwitchesCheckboxes[i];
-    bool enabled = !(model->switchWarningEnable & (1 << i));
+    int index = slider->property("index").toInt();
+    bool enabled = !(model->switchWarningEnable & (1 << index));
     slider->setEnabled(enabled);
     cb->setChecked(enabled);
-    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-      slider->setValue((i==5 || i>=7) ? (switchStates & 0x3)/2 : switchStates & 0x3);
-      switchStates >>= 2;
-    }
-    else {
-      slider->setValue(i==0 ? switchStates & 0x3 : switchStates & 0x1);
-      switchStates >>= (i==0 ? 2 : 1);
-    }
   }
 
   lock = false;
@@ -743,15 +754,8 @@ void SetupPanel::startupSwitchEdited(int value)
     int index = sender()->property("index").toInt();
 
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-      if (index == 6 || index >= 8) {
-        shift = (index - 1) * 2;
-        mask = 0x02 << shift;
-        shift++;
-      }
-      else {
-        shift = (index - 1) * 2;
-        mask = 0x03 << shift;
-      }
+      shift = index * 2;
+      mask = 0x03 << shift;
     }
     else {
       if (index == 1) {
@@ -777,7 +781,7 @@ void SetupPanel::startupSwitchEdited(int value)
 void SetupPanel::startupSwitchToggled(bool checked)
 {
   if (!lock) {
-    int index = sender()->property("index").toInt()-1;
+    int index = sender()->property("index").toInt();
   
     if (checked)
       model->switchWarningEnable &= ~(1 << index);
@@ -792,17 +796,12 @@ void SetupPanel::startupSwitchToggled(bool checked)
 void SetupPanel::updatePotWarnings()
 {
   lock = true;
-  int mode = model->nPotsToWarn >> 6;
-  ui->potWarningMode->setCurrentIndex(mode);
-
-  if (mode == 0)
-    model->nPotsToWarn = 0x3F;
-
+  ui->potWarningMode->setCurrentIndex(model->potsWarningMode);
   for (int i=0; i<potWarningCheckboxes.size(); i++) {
-    bool enabled = !(model->nPotsToWarn & (1 << i));
-
-    potWarningCheckboxes[i]->setChecked(enabled);
-    potWarningCheckboxes[i]->setDisabled(mode == 0);
+    QCheckBox *checkbox = potWarningCheckboxes[i];
+    int index = checkbox->property("index").toInt();
+    checkbox->setChecked(!model->potsWarningEnabled[index]);
+    checkbox->setDisabled(model->potsWarningMode == 0);
   }
   lock = false;
 }
@@ -810,13 +809,8 @@ void SetupPanel::updatePotWarnings()
 void SetupPanel::potWarningToggled(bool checked)
 {
   if (!lock) {
-    int index = sender()->property("index").toInt()-1;
-
-    if(checked)
-      model->nPotsToWarn &= ~(1 << index);
-    else
-      model->nPotsToWarn |= (1 << index);
-
+    int index = sender()->property("index").toInt();
+    model->potsWarningEnabled[index] = !checked;
     updatePotWarnings();
     emit modified();
   }
@@ -825,10 +819,7 @@ void SetupPanel::potWarningToggled(bool checked)
 void SetupPanel::on_potWarningMode_currentIndexChanged(int index)
 {
   if (!lock) {
-    int mask = 0xC0;
-    model->nPotsToWarn = model->nPotsToWarn & ~mask;
-    model->nPotsToWarn = model->nPotsToWarn | ((index << 6) & mask);
-
+    model->potsWarningMode = index;
     updatePotWarnings();
     emit modified();
   }

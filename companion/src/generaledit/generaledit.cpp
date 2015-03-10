@@ -43,7 +43,7 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * fir
     addTab(new CustomFunctionsPanel(this, NULL, generalSettings, firmware), tr("Global Functions"));
   }
   addTab(new TrainerPanel(this, generalSettings, firmware), tr("Trainer"));
-  addTab(new CalibrationPanel(this, generalSettings, firmware), tr("Calibration"));
+  addTab(new CalibrationPanel(this, generalSettings, firmware), tr("Hardware / Calibration"));
 }
 
 GeneralEdit::~GeneralEdit()

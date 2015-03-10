@@ -7,6 +7,10 @@ namespace Ui {
   class Calibration;
 }
 
+class QLabel;
+class AutoLineEdit;
+class AutoComboBox;
+
 class CalibrationPanel : public GeneralPanel
 {
     Q_OBJECT
@@ -14,7 +18,7 @@ class CalibrationPanel : public GeneralPanel
   public:
     CalibrationPanel(QWidget *parent, GeneralSettings & generalSettings, Firmware * firmware);
     virtual ~CalibrationPanel();
-    virtual void update();
+    // virtual void update();
 
   private slots:
     void on_battCalibDSB_editingFinished();
@@ -53,11 +57,12 @@ class CalibrationPanel : public GeneralPanel
     void on_ana7Pos_editingFinished();
     void on_ana8Pos_editingFinished();
 
-    void on_pot1Type_currentIndexChanged(int index);
-    void on_pot2Type_currentIndexChanged(int index);
-    void on_pot3Type_currentIndexChanged(int index);
-
     void on_serialPortMode_currentIndexChanged(int index);
+
+  protected:
+    void setupPotConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type);
+    void setupSliderConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type);
+    void setupSwitchConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type);
 
   private:
     Ui::Calibration *ui;

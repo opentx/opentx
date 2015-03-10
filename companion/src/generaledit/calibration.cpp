@@ -1,67 +1,103 @@
 #include "calibration.h"
 #include "ui_calibration.h"
 
+void CalibrationPanel::setupSwitchConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type)
+{
+  bool enabled = false;
+
+  if (IS_TARANIS(firmware->getBoard())) {
+    if (IS_TARANIS_X9E(firmware->getBoard())) {
+      enabled = true;
+      type->addItem(tr("None"), GeneralSettings::SWITCH_NONE);
+    }
+    else if (index < 8) {
+      enabled = true;
+    }
+  }
+
+  if (enabled) {
+    type->addItem(tr("2 Positions Toggle"), GeneralSettings::SWITCH_TOGGLE);
+    type->addItem(tr("2 Positions"), GeneralSettings::SWITCH_2POS);
+    type->addItem(tr("3 Positions"), GeneralSettings::SWITCH_3POS);
+    name->setField(generalSettings.switchName[index], 3, this);
+    type->setField(generalSettings.switchConfig[index], this);
+  }
+  else {
+    label->hide();
+    name->hide();
+    type->hide();
+  }
+}
+
+void CalibrationPanel::setupPotConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type)
+{
+  bool enabled = false;
+
+  if (IS_TARANIS_X9E(firmware->getBoard()) && index < 4) {
+    enabled = true;
+  }
+  else if (IS_TARANIS_PLUS(firmware->getBoard()) && index < 3) {
+    enabled = true;
+  }
+  else if (IS_TARANIS(firmware->getBoard()) && index < 2) {
+    enabled = true;
+  }
+
+  if (enabled) {
+    type->addItem(tr("None"), GeneralSettings::POT_NONE);
+    type->addItem(tr("Pot with detent"), GeneralSettings::POT_WITH_DETENT);
+    type->addItem(tr("Multipos switch"), GeneralSettings::POT_MULTIPOS_SWITCH);
+    type->addItem(tr("Pot without detent"), GeneralSettings::POT_WITHOUT_DETENT);
+    name->setField(generalSettings.potName[index], 3, this);
+    type->setField(generalSettings.potConfig[index], this);
+  }
+  else {
+    label->hide();
+    name->hide();
+    type->hide();
+  }
+}
+
+void CalibrationPanel::setupSliderConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type)
+{
+  bool enabled = false;
+
+  if (IS_TARANIS(firmware->getBoard()) && index < 2) {
+    type->setEnabled(false);
+    enabled = true;
+  }
+  else if (IS_TARANIS_X9E(firmware->getBoard()) && index < 4) {
+    enabled = true;
+  }
+
+  if (enabled) {
+    type->addItem(tr("None"), GeneralSettings::SLIDER_NONE);
+    type->addItem(tr("Slider with detent"), GeneralSettings::SLIDER_WITH_DETENT);
+    name->setField(generalSettings.sliderName[index], 3, this);
+    type->setField(generalSettings.sliderConfig[index], this);
+  }
+  else {
+    label->hide();
+    name->hide();
+    type->hide();
+  }
+}
+
 CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSettings, Firmware * firmware):
   GeneralPanel(parent, generalSettings, firmware),
   ui(new Ui::Calibration)
 {
   ui->setupUi(this);
 
-  if (firmware->getCapability(MultiposPots)) {
-    ui->pot1Type->setCurrentIndex(generalSettings.potsType[0]);
-    ui->pot2Type->setCurrentIndex(generalSettings.potsType[1]);
-    ui->pot3Type->setCurrentIndex(generalSettings.potsType[2]);
-  }
-  else {
+  if (!firmware->getCapability(MultiposPots)) {
     ui->potsTypeSeparator->hide();
-    ui->pot1Type->hide();
-    ui->pot1TypeLabel->hide();
-    ui->pot2Type->hide();
-    ui->pot2TypeLabel->hide();
-    ui->pot3Type->hide();
-    ui->pot3TypeLabel->hide();
-    ui->pot4Label->hide();
-    ui->pot5Label->hide();
   }
 
   if (IS_TARANIS(firmware->getBoard())) {
-    ui->rudName->setField(generalSettings.anaNames[0], 3, this);
-    ui->eleName->setField(generalSettings.anaNames[1], 3, this);
-    ui->thrName->setField(generalSettings.anaNames[2], 3, this);
-    ui->ailName->setField(generalSettings.anaNames[3], 3, this);
-    ui->pot1Name->setField(generalSettings.anaNames[4], 3, this);
-    ui->pot2Name->setField(generalSettings.anaNames[5], 3, this);
-    ui->pot3Name->setField(generalSettings.anaNames[6], 3, this);
-    ui->pot4Name->setField(generalSettings.anaNames[7], 3, this);
-    ui->pot5Name->setField(generalSettings.anaNames[8], 3, this);
-    ui->saName->setField(generalSettings.switchNames[0], 3, this);
-    ui->saType->setField(generalSettings.switchConfig[0], this);
-    ui->sbName->setField(generalSettings.switchNames[1], 3, this);
-    ui->sbType->setField(generalSettings.switchConfig[1], this);
-    ui->scName->setField(generalSettings.switchNames[2], 3, this);
-    ui->scType->setField(generalSettings.switchConfig[2], this);
-    ui->sdName->setField(generalSettings.switchNames[3], 3, this);
-    ui->sdType->setField(generalSettings.switchConfig[3], this);
-    ui->seName->setField(generalSettings.switchNames[4], 3, this);
-    ui->seType->setField(generalSettings.switchConfig[4], this);
-    ui->sfName->setField(generalSettings.switchNames[5], 3, this);
-    ui->sfType->setField(generalSettings.switchConfig[5], this);
-    ui->sgName->setField(generalSettings.switchNames[6], 3, this);
-    ui->sgType->setField(generalSettings.switchConfig[6], this);
-    ui->shName->setField(generalSettings.switchNames[7], 3, this);
-    ui->shType->setField(generalSettings.switchConfig[7], this);
-    ui->siName->setField(generalSettings.switchNames[8], 3, this);
-    ui->sjName->setField(generalSettings.switchNames[9], 3, this);
-    ui->skName->setField(generalSettings.switchNames[10], 3, this);
-    ui->slName->setField(generalSettings.switchNames[11], 3, this);
-    ui->smName->setField(generalSettings.switchNames[12], 3, this);
-    ui->snName->setField(generalSettings.switchNames[13], 3, this);
-    connect(ui->saType, SIGNAL(currentIndexChanged(int)), this, SLOT(update()));
-    connect(ui->sbType, SIGNAL(currentIndexChanged(int)), this, SLOT(update()));
-    connect(ui->scType, SIGNAL(currentIndexChanged(int)), this, SLOT(update()));
-    connect(ui->sdType, SIGNAL(currentIndexChanged(int)), this, SLOT(update()));
-    connect(ui->seType, SIGNAL(currentIndexChanged(int)), this, SLOT(update()));
-    connect(ui->sgType, SIGNAL(currentIndexChanged(int)), this, SLOT(update()));
+    ui->rudName->setField(generalSettings.stickName[0], 3, this);
+    ui->eleName->setField(generalSettings.stickName[1], 3, this);
+    ui->thrName->setField(generalSettings.stickName[2], 3, this);
+    ui->ailName->setField(generalSettings.stickName[3], 3, this);
   }
   else {
     ui->rudLabel->hide();
@@ -72,46 +108,39 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
     ui->thrName->hide();
     ui->ailLabel->hide();
     ui->ailName->hide();
-    ui->pot1Name->hide();
-    ui->pot2Name->hide();
-    ui->pot3Name->hide();
-    ui->pot4Name->hide();
-    ui->pot5Name->hide();
-    ui->saLabel->hide();
-    ui->saName->hide();
-    ui->saType->hide();
-    ui->sbLabel->hide();
-    ui->sbName->hide();
-    ui->sbType->hide();
-    ui->scLabel->hide();
-    ui->scName->hide();
-    ui->scType->hide();
-    ui->sdLabel->hide();
-    ui->sdName->hide();
-    ui->sdType->hide();
-    ui->seLabel->hide();
-    ui->seName->hide();
-    ui->seType->hide();
-    ui->sfLabel->hide();
-    ui->sfName->hide();
-    ui->sfType->hide();
-    ui->sgLabel->hide();
-    ui->sgName->hide();
-    ui->sgType->hide();
-    ui->shLabel->hide();
-    ui->shName->hide();
-    ui->shType->hide();
-    ui->siName->hide();
-    ui->sjName->hide();
-    ui->skName->hide();
-    ui->slName->hide();
-    ui->smName->hide();
-    ui->snName->hide();
   }
+
+  setupPotConfig(0, ui->pot1Label, ui->pot1Name, ui->pot1Type);
+  setupPotConfig(1, ui->pot2Label, ui->pot2Name, ui->pot2Type);
+  setupPotConfig(2, ui->pot3Label, ui->pot3Name, ui->pot3Type);
+  setupPotConfig(3, ui->pot4Label, ui->pot4Name, ui->pot4Type);
+
+  setupSliderConfig(0, ui->lsLabel, ui->lsName, ui->lsType);
+  setupSliderConfig(1, ui->rsLabel, ui->rsName, ui->rsType);
+  setupSliderConfig(2, ui->ls2Label, ui->ls2Name, ui->ls2Type);
+  setupSliderConfig(3, ui->rs2Label, ui->rs2Name, ui->rs2Type);
+
+  setupSwitchConfig(0, ui->saLabel, ui->saName, ui->saType);
+  setupSwitchConfig(1, ui->sbLabel, ui->sbName, ui->sbType);
+  setupSwitchConfig(2, ui->scLabel, ui->scName, ui->scType);
+  setupSwitchConfig(3, ui->sdLabel, ui->sdName, ui->sdType);
+  setupSwitchConfig(4, ui->seLabel, ui->seName, ui->seType);
+  setupSwitchConfig(5, ui->sfLabel, ui->sfName, ui->sfType);
+  setupSwitchConfig(6, ui->sgLabel, ui->sgName, ui->sgType);
+  setupSwitchConfig(7, ui->shLabel, ui->shName, ui->shType);
+  setupSwitchConfig(8, ui->siLabel, ui->siName, ui->siType);
+  setupSwitchConfig(9, ui->sjLabel, ui->sjName, ui->sjType);
+  setupSwitchConfig(10, ui->skLabel, ui->skName, ui->skType);
+  setupSwitchConfig(11, ui->slLabel, ui->slName, ui->slType);
+  setupSwitchConfig(12, ui->smLabel, ui->smName, ui->smType);
+  setupSwitchConfig(13, ui->snLabel, ui->snName, ui->snType);
+  setupSwitchConfig(14, ui->soLabel, ui->soName, ui->soType);
+  setupSwitchConfig(15, ui->spLabel, ui->spName, ui->spType);
+  setupSwitchConfig(16, ui->sqLabel, ui->sqName, ui->sqType);
+  setupSwitchConfig(17, ui->srLabel, ui->srName, ui->srType);
 
   int potsCount = GetCurrentFirmware()->getCapability(Pots);
   if (potsCount == 3) {
-    ui->label_pot4->hide();
     ui->ana8Neg->hide();
     ui->ana8Mid->hide();
     ui->ana8Pos->hide();
@@ -133,22 +162,10 @@ CalibrationPanel::~CalibrationPanel()
   delete ui;
 }
 
-void CalibrationPanel::update()
+/*void CalibrationPanel::update()
 {
-  ui->siLabel->setVisible(generalSettings.switchConfig[0] == GeneralSettings::SWITCH_2x2POS);
-  ui->siName->setVisible(generalSettings.switchConfig[0] == GeneralSettings::SWITCH_2x2POS);
-  ui->sjLabel->setVisible(generalSettings.switchConfig[1] == GeneralSettings::SWITCH_2x2POS);
-  ui->sjName->setVisible(generalSettings.switchConfig[1] == GeneralSettings::SWITCH_2x2POS);
-  ui->skLabel->setVisible(generalSettings.switchConfig[2] == GeneralSettings::SWITCH_2x2POS);
-  ui->skName->setVisible(generalSettings.switchConfig[2] == GeneralSettings::SWITCH_2x2POS);
-  ui->slLabel->setVisible(generalSettings.switchConfig[3] == GeneralSettings::SWITCH_2x2POS);
-  ui->slName->setVisible(generalSettings.switchConfig[3] == GeneralSettings::SWITCH_2x2POS);
-  ui->smLabel->setVisible(generalSettings.switchConfig[4] == GeneralSettings::SWITCH_2x2POS);
-  ui->smName->setVisible(generalSettings.switchConfig[4] == GeneralSettings::SWITCH_2x2POS);
-  ui->snLabel->setVisible(generalSettings.switchConfig[6] == GeneralSettings::SWITCH_2x2POS);
-  ui->snName->setVisible(generalSettings.switchConfig[6] == GeneralSettings::SWITCH_2x2POS);
 }
-
+*/
 void CalibrationPanel::on_PPM_MultiplierDSB_editingFinished()
 {
   generalSettings.PPM_Multiplier = (int)(ui->PPM_MultiplierDSB->value()*10)-10;
@@ -374,24 +391,6 @@ void CalibrationPanel::on_ana7Pos_editingFinished()
 void CalibrationPanel::on_ana8Pos_editingFinished()
 {
   generalSettings.calibSpanPos[7] = ui->ana8Pos->value();
-  emit modified();
-}
-
-void CalibrationPanel::on_pot1Type_currentIndexChanged(int index)
-{
-  generalSettings.potsType[0] = index;
-  emit modified();
-}
-
-void CalibrationPanel::on_pot2Type_currentIndexChanged(int index)
-{
-  generalSettings.potsType[1] = index;
-  emit modified();
-}
-
-void CalibrationPanel::on_pot3Type_currentIndexChanged(int index)
-{
-  generalSettings.potsType[2] = index;
   emit modified();
 }
 

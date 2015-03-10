@@ -40,8 +40,7 @@ class AutoComboBox: public QComboBox
       this->field = (int *)&field;
       this->panel = panel;
       for (int i=0; i<count(); ++i) {
-        setItemData(i, i);
-        if ((int)field == i)
+        if ((int)field == itemData(i))
           setCurrentIndex(i);
       }
     }
@@ -51,8 +50,16 @@ class AutoComboBox: public QComboBox
       this->field = &field;
       this->panel = panel;
       for (int i=0; i<count(); ++i) {
+        if ((int)field == itemData(i))
+          setCurrentIndex(i);
+      }
+    }
+
+    void setAutoIndexes()
+    {
+      for (int i=0; i<count(); ++i) {
         setItemData(i, i);
-        if ((int)field == i)
+        if (*this->field == i)
           setCurrentIndex(i);
       }
     }

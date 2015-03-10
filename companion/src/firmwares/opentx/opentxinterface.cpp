@@ -577,11 +577,33 @@ int OpenTxFirmware::getCapability(const Capability capability)
       else
         return 0;
     case Pots:
-      return (IS_TARANIS(board) ? 5 : 3);
+      if (IS_TARANIS_X9E(board))
+        return 4;
+      else if (IS_TARANIS(board))
+        return 3;
+      else
+        return 3;
+    case Sliders:
+      if (IS_TARANIS_X9E(board))
+        return 4;
+      else if (IS_TARANIS(board))
+        return 2;
+      else
+        return 0;
     case Switches:
-      return (IS_TARANIS(board) ? 8+6 : 7);
+      if (IS_TARANIS_X9E(board))
+        return 18;
+      else if (IS_TARANIS(board))
+        return 8;
+      else
+        return 7;
     case SwitchesPositions:
-      return (IS_TARANIS(board) ? 22+12 : 9);
+      if (IS_TARANIS_X9E(board))
+        return 18*3;
+      else if (IS_TARANIS(board))
+        return 22;
+      else
+        return 9;
     case CustomFunctions:
       if (IS_TARANIS(board))
         return 64;

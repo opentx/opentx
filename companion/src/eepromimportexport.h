@@ -104,10 +104,10 @@ class ProxyField: public DataField {
 
 };
 
-template<int N>
-class UnsignedField: public DataField {
+template<class container, int N>
+class BaseUnsignedField: public DataField {
   public:
-    explicit UnsignedField(unsigned int & field):
+    explicit BaseUnsignedField(container & field):
       DataField("Unsigned"),
       field(field),
       min(0),
@@ -115,7 +115,7 @@ class UnsignedField: public DataField {
     {
     }
 
-    UnsignedField(unsigned int & field, const char *name):
+    BaseUnsignedField(container & field, const char *name):
       DataField(name),
       field(field),
       min(0),
@@ -123,7 +123,7 @@ class UnsignedField: public DataField {
     {
     }
 
-    UnsignedField(unsigned int & field, unsigned int min, unsigned int max, const char *name="Unsigned"):
+    BaseUnsignedField(container & field, unsigned int min, unsigned int max, const char *name="Unsigned"):
       DataField(name),
       field(field),
       min(min),
@@ -133,7 +133,7 @@ class UnsignedField: public DataField {
 
     virtual void ExportBits(QBitArray & output)
     {
-      unsigned int value = field;
+      container value = field;
       if (value > max) value = max;
       if (value < min) value = min;
 
@@ -159,12 +159,32 @@ class UnsignedField: public DataField {
     }
 
   protected:
-    unsigned int & field;
-    unsigned int min;
-    unsigned int max;
+    container & field;
+    container min;
+    container max;
 
   private:
-    UnsignedField();
+    BaseUnsignedField();
+};
+
+template <int N>
+class UnsignedField : public BaseUnsignedField<unsigned int, N>
+{
+  public:
+    explicit UnsignedField(unsigned int & field):
+      BaseUnsignedField<unsigned int, N>(field)
+    {
+    }
+
+    UnsignedField(unsigned int & field, const char *name):
+      BaseUnsignedField<unsigned int, N>(field, name)
+    {
+    }
+
+    UnsignedField(unsigned int & field, unsigned int min, unsigned int max, const char *name="Unsigned"):
+      BaseUnsignedField<unsigned int, N>(field, min, max, name)
+    {
+    }
 };
 
 template<int N>
