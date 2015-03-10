@@ -174,6 +174,19 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
 
 #define CURRENT_MODULE_EDITED(k)         (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE))
 
+#if defined(PCBTARANIS)
+int getSwitchWarningsCount()
+{
+  int count = 0;
+  for (int i=0; i<NUM_SWITCHES; ++i) {
+    if (SWITCH_WARNING_ALLOWED(i)) {
+      ++count;
+    }
+  }
+  return count;
+}
+#endif
+
 void menuModelSetup(uint8_t event)
 {
   horzpos_t l_posHorz = m_posHorz;
@@ -196,10 +209,10 @@ void menuModelSetup(uint8_t event)
     #define TIMERS_ROWS                     TIMER_ROWS, TIMER_ROWS, TIMER_ROWS
   #endif
   #if defined(REV9E)
-    #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsAllowed()-1)), uint8_t(getSwitchWarningsAllowed() > 8 ? TITLE_ROW : HIDDEN_ROW), uint8_t(getSwitchWarningsAllowed() > 16 ? TITLE_ROW : HIDDEN_ROW)
+    #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > 8 ? TITLE_ROW : HIDDEN_ROW), uint8_t(getSwitchWarningsCount() > 16 ? TITLE_ROW : HIDDEN_ROW)
     #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|NUM_POTS : 0), uint8_t(g_model.potsWarnMode ? TITLE_ROW : HIDDEN_ROW)
   #else
-    #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsAllowed())
+    #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsCount())
     #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|NUM_POTS : 0)
   #endif
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
@@ -396,7 +409,7 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_SWITCHES_WARNING:
       {
 #if defined(REV9E)
-        if (i>=NUM_BODY_LINES-2 && getSwitchWarningsAllowed() > 8*(NUM_BODY_LINES-i)) {
+        if (i>=NUM_BODY_LINES-2 && getSwitchWarningsCount() > 8*(NUM_BODY_LINES-i)) {
           if (CURSOR_MOVED_LEFT(event))
             s_pgOfs--;
           else

@@ -106,7 +106,8 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_UART3MODES       (OFS_TRNCHN + sizeof(TR_TRNCHN))
   #define OFS_SWTYPES          (OFS_UART3MODES + sizeof(TR_UART3MODES))
   #define OFS_POTTYPES         (OFS_SWTYPES + sizeof(TR_SWTYPES))
-  #define OFS_VTRIMINC         (OFS_POTTYPES + sizeof(TR_POTTYPES))
+  #define OFS_SLIDERTYPES      (OFS_POTTYPES + sizeof(TR_POTTYPES))
+  #define OFS_VTRIMINC         (OFS_SLIDERTYPES + sizeof(TR_SLIDERTYPES))
 #else
   #define OFS_VTRIMINC         (OFS_TRNCHN + sizeof(TR_TRNCHN))
 #endif
@@ -215,6 +216,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_UART3MODES          (STR_OPEN9X + OFS_UART3MODES)
 #define STR_SWTYPES             (STR_OPEN9X + OFS_SWTYPES)
 #define STR_POTTYPES            (STR_OPEN9X + OFS_POTTYPES)
+#define STR_SLIDERTYPES         (STR_OPEN9X + OFS_SLIDERTYPES)
 #define STR_VTRIMINC            (STR_OPEN9X + OFS_VTRIMINC)
 #define STR_VDISPLAYTRIMS       (STR_OPEN9X + OFS_VDISPLAYTRIMS)
 #define STR_RETA123             (STR_OPEN9X + OFS_RETA123)

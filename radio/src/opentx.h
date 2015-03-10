@@ -353,26 +353,18 @@ extern void boardInit();
   #define memclear(p, s) memset(p, 0, s)
 #endif
 
-enum PotType {
-  POT_TYPE_NONE,
-  POT_TYPE_DETENT,
-  POT_TYPE_MULTIPOS,
-  POT_TYPE_NO_DETENT,
-  POT_TYPE_MAX=POT_TYPE_NO_DETENT
-};
-
 #if defined(PCBTARANIS) && defined(REV9E)
-  #define IS_POT_AVAILABLE(x)       ((x)<POT1 || (x)>POT_LAST || ((g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=POT_TYPE_NONE))
-  #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_TYPE_MULTIPOS)
-  #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_TYPE_NO_DETENT)
+  #define IS_POT_AVAILABLE(x)       ((x)<POT1 || (x)>POT_LAST || ((g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=POT_NONE))
+  #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
+  #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
 #elif defined(PCBTARANIS) && defined(REVPLUS)
-  #define IS_POT_AVAILABLE(x)       ((x)!=POT3 || (g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=POT_TYPE_NONE)
-  #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_TYPE_MULTIPOS)
-  #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_TYPE_NO_DETENT)
+  #define IS_POT_AVAILABLE(x)       ((x)!=POT3 || (g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=POT_NONE)
+  #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
+  #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
 #elif defined(PCBTARANIS)
   #define IS_POT_AVAILABLE(x)       ((x)!=POT3)
-  #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_TYPE_MULTIPOS)
-  #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_TYPE_NO_DETENT)
+  #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
+  #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
 #else
   #define IS_POT_AVAILABLE(x)       (true)
   #define IS_POT_MULTIPOS(x)        (false)

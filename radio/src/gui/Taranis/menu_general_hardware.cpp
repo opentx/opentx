@@ -77,11 +77,11 @@ enum menuGeneralHwItems {
 #define HW_SETTINGS_COLUMN 15*FW
 
 #if defined(REV9E)
-  #define POTS_ROWS NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, 0, 0, 0, 0
+  #define POTS_ROWS      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, 0, 0, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #elif defined(REVPLUS)
-  #define POTS_ROWS NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, 0, 0
+  #define POTS_ROWS      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, 0, 0
 #else
-  #define POTS_ROWS NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, 0, 0
+  #define POTS_ROWS      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, 0, 0
 #endif
 
 #if defined(REV9E)
@@ -114,10 +114,6 @@ void menuGeneralHardware(uint8_t event)
       case ITEM_SETUP_HW_STICK4:
       case ITEM_SETUP_HW_LS:
       case ITEM_SETUP_HW_RS:
-#if defined(REV9E)
-      case ITEM_SETUP_HW_LS2:
-      case ITEM_SETUP_HW_RS2:
-#endif
       {
         int idx = (k<=ITEM_SETUP_HW_STICK4 ? k-ITEM_SETUP_HW_STICK1 : k-ITEM_SETUP_HW_LS+MIXSRC_SLIDER1-MIXSRC_Rud);
         lcd_putsiAtt(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
@@ -127,6 +123,24 @@ void menuGeneralHardware(uint8_t event)
           lcd_putsiAtt(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
         break;
       }
+#if defined(REV9E)
+      case ITEM_SETUP_HW_LS2:
+      case ITEM_SETUP_HW_RS2:
+      {
+        int idx = k - ITEM_SETUP_HW_LS2;
+        uint8_t mask = (0x01 << idx);
+        lcd_putsiAtt(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+NUM_XPOTS+2+idx+1, m_posHorz < 0 ? attr : 0);
+        if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+NUM_XPOTS+2+idx]) || (attr && m_posHorz == 0))
+          editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+NUM_XPOTS+2+idx], LEN_ANA_NAME, event, attr && m_posHorz == 0);
+        else
+          lcd_putsiAtt(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
+        uint8_t potType = (g_eeGeneral.slidersConfig & mask) >> idx;
+        potType = selectMenuItem(HW_SETTINGS_COLUMN+5*FW, y, "", STR_SLIDERTYPES, potType, SLIDER_NONE, SLIDER_WITH_DETENT, m_posHorz == 1 ? attr : 0, event);
+        g_eeGeneral.slidersConfig &= ~mask;
+        g_eeGeneral.slidersConfig |= (potType << idx);
+        break;
+      }
+#endif
       case ITEM_SETUP_HW_LABEL_POTS:
         lcd_putsLeft(y, STR_POTS);
         break;
@@ -147,17 +161,8 @@ void menuGeneralHardware(uint8_t event)
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+idx], LEN_ANA_NAME, event, attr && m_posHorz == 0);
         else
           lcd_putsiAtt(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
-
         uint8_t potType = (g_eeGeneral.potsConfig & mask) >> shift;
-#if !defined(REV9E)
-        if (potType == POT_TYPE_NONE && k <= ITEM_SETUP_HW_POT2)
-          potType = POT_TYPE_DETENT;
-#endif
-        potType = selectMenuItem(HW_SETTINGS_COLUMN+5*FW, y, "", STR_POTTYPES, potType, 0, POT_TYPE_MAX, m_posHorz == 1 ? attr : 0, event);
-#if !defined(REV9E)
-        if (potType == POT_TYPE_DETENT && k <= ITEM_SETUP_HW_POT2)
-          potType = POT_TYPE_NONE;
-#endif
+        potType = selectMenuItem(HW_SETTINGS_COLUMN+5*FW, y, "", STR_POTTYPES, potType, POT_NONE, POT_WITHOUT_DETENT, m_posHorz == 1 ? attr : 0, event);
         g_eeGeneral.potsConfig &= ~mask;
         g_eeGeneral.potsConfig |= (potType << shift);
         break;
@@ -193,19 +198,11 @@ void menuGeneralHardware(uint8_t event)
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.switchNames[index], LEN_SWITCH_NAME, event, m_posHorz == 0 ? attr : 0);
         else
           lcd_putsiAtt(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
-#if defined(REV9E)
         config = selectMenuItem(HW_SETTINGS_COLUMN+5*FW, y, "", STR_SWTYPES, config, SWITCH_NONE, SWITCH_3POS, m_posHorz == 1 ? attr : 0, event);
         if (attr && checkIncDec_Ret) {
-          uint64_t mask = (uint64_t)0x07 << (3*index);
-          g_eeGeneral.switchConfig = (g_eeGeneral.switchConfig & ~mask) | ((uint64_t(config) & 0x07) << (3*index));
+          swconfig_t mask = (swconfig_t)0x03 << (2*index);
+          g_eeGeneral.switchConfig = (g_eeGeneral.switchConfig & ~mask) | ((swconfig_t(config) & 0x03) << (2*index));
         }
-#else
-        config = selectMenuItem(HW_SETTINGS_COLUMN+5*FW, y, "", STR_SWTYPES, config, SWITCH_DEFAULT, SWITCH_3POS, m_posHorz == 1 ? attr : 0, event);
-        if (attr && checkIncDec_Ret) {
-          uint32_t mask = 0x03 << (2*index);
-          g_eeGeneral.switchConfig = (g_eeGeneral.switchConfig & ~mask) | (((uint32_t)(config) & 0x03) << (2*index));
-        }
-#endif
         break;
       }
       case ITEM_SETUP_HW_UART3_MODE:

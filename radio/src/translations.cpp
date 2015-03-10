@@ -59,6 +59,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(UART3MODES)
     ISTR(SWTYPES)
     ISTR(POTTYPES)
+    ISTR(SLIDERTYPES)
 #endif
     ISTR(VTRIMINC)
 #if defined(CPUARM)

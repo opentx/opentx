@@ -92,6 +92,9 @@
 #define LEN_POTTYPES           "\017"
 #define TR_POTTYPES            "Rien\0          ""Pot avec centre""Inter multi-pos""Potentiomètre\0"
 
+#define LEN_SLIDERTYPES        "\006"
+#define TR_SLIDERTYPES         "Rien\0 ""Slider"
+
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATE:""HEURE"
 

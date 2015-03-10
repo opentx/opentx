@@ -263,6 +263,11 @@ void generalDefault()
   g_eeGeneral.contrast = 25;
 
 #if defined(PCBTARANIS)
+  g_eeGeneral.potsConfig = 0x05; // S1 and S2 = pots with detent
+  g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
+#endif
+
+#if defined(PCBTARANIS)
   g_eeGeneral.vBatWarn = 65;
   g_eeGeneral.vBatMin = -30;
   g_eeGeneral.vBatMax = -40;

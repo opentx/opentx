@@ -353,7 +353,8 @@ enum uartModes {
 #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.uart3Mode==UART_MODE_SBUS_TRAINER/* || g_eeGeneral.uart3Mode==UART_MODE_CPPM_TRAINER*/)
 #define EXTRA_GENERAL_FIELDS \
   EXTRA_GENERAL_FIELDS_ARM \
-  uint8_t  uart3Mode; \
+  uint8_t  uart3Mode:6; \
+  uint8_t  slidersConfig:2; \
   uint8_t  potsConfig; /*two bits for every pot*/\
   uint8_t  backlightColor;
 #elif defined(CPUARM)
@@ -408,11 +409,13 @@ PACK(typedef struct {
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
   #define MODELDATA_EXTRA   uint8_t externalModule:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
 #if defined(REV9E)
+  #define swconfig_t        uint64_t
   #define swarnstate_t      uint64_t
   #define swarnenable_t     uint32_t
 #else
-  #define swarnstate_t      uint32_t
-  #define swarnenable_t     uint16_t
+  #define swconfig_t        uint16_t
+  #define swarnstate_t      uint16_t
+  #define swarnenable_t     uint8_t
 #endif
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
@@ -672,38 +675,8 @@ PACK(typedef struct {
 #endif
 
 #if defined(PCBTARANIS)
-  int switchConfig(int idx);
-  #define IS_3POS(x)                  (switchConfig(x) == SWITCH_3POS)
-  #define IS_TOGGLE(x)                (switchConfig(x) == SWITCH_TOGGLE)
-#endif
-
-#if defined(PCBTARANIS) && defined(REV9E)
-  PACK(union SwitchConfig3bits {
-    SwitchConfig3bits(uint8_t val):
-      word(val)
-    {
-    }
-    struct {
-      int8_t val:3;
-      int8_t spare:5;
-    };
-    uint8_t word;
-  });
   enum SwitchConfig {
-    SWITCH_NONE = -1,
-    SWITCH_DEFAULT,
-    SWITCH_TOGGLE,
-    SWITCH_2POS,
-    SWITCH_3POS,
-  };
-  #define GENERAL_FIELD_SWITCH_CONFIG uint64_t switchConfig;
-  #define SWITCH_CONFIG(x)            SwitchConfig3bits((g_eeGeneral.switchConfig >> (3*(x))) & 0x07).val
-  #define SWITCH_DEFAULT_CONFIG(x)    (SWITCH_3POS)
-  #define SWITCH_EXISTS(x)            (switchConfig(x) != SWITCH_NONE)
-  #define SWITCH_WARNING_ALLOWED(x)   (SWITCH_EXISTS(x) && !IS_TOGGLE(x))
-#elif defined(PCBTARANIS)
-  enum SwitchConfig {
-    SWITCH_DEFAULT,
+    SWITCH_NONE,
     SWITCH_TOGGLE,
     SWITCH_2POS,
     SWITCH_3POS,
@@ -714,12 +687,16 @@ PACK(typedef struct {
     POT_MULTIPOS_SWITCH,
     POT_WITHOUT_DETENT
   };
-  #define GENERAL_FIELD_SWITCH_CONFIG uint16_t switchConfig;
+  enum SliderConfig {
+    SLIDER_NONE,
+    SLIDER_WITH_DETENT,
+  };
+  #define GENERAL_FIELD_SWITCH_CONFIG swconfig_t switchConfig;
   #define SWITCH_CONFIG(x)            ((g_eeGeneral.switchConfig >> (2*(x))) & 0x03)
-  #define SWITCH_DEFAULT_CONFIG(x)    ((x)==5 ? SWITCH_2POS : ((x)==7 ? SWITCH_TOGGLE : SWITCH_3POS))
-  #define SWITCH_EXISTS(x)            (true)
-  #define SWITCH_WARNING_ALLOWED(x)   (!IS_TOGGLE(x))
-  #define POT_CONFIG(x)               ((g_eeGeneral.potsConfig >> (2*(x))) & 0x03)
+  #define SWITCH_EXISTS(x)            (SWITCH_CONFIG(x) != SWITCH_NONE)
+  #define IS_3POS(x)                  (SWITCH_CONFIG(x) == SWITCH_3POS)
+  #define IS_TOGGLE(x)                (SWITCH_CONFIG(x) == SWITCH_TOGGLE)
+  #define SWITCH_WARNING_ALLOWED(x)   (SWITCH_EXISTS(x) && !IS_TOGGLE(x))
 #else
   #define GENERAL_FIELD_SWITCH_CONFIG
 #endif
@@ -788,19 +765,6 @@ PACK(typedef struct {
 #define SWITCHES_DELAY()            uint8_t(15+g_eeGeneral.switchesDelay)
 #define SWITCHES_DELAY_NONE         (-15)
 #define HAPTIC_STRENGTH()           (3+g_eeGeneral.hapticStrength)
-
-#if defined(PCBTARANIS)
-inline int getSwitchWarningsAllowed()
-{
-  int count = 0;
-  for (int i=0; i<NUM_SWITCHES; ++i) {
-    if (SWITCH_WARNING_ALLOWED(i)) {
-      ++count;
-    }
-  }
-  return count;
-}
-#endif
 
 #if defined(PCBTARANIS)
 enum CurveRefType {

@@ -464,6 +464,17 @@ bool isMenuAvailable(int index)
   #define TOGGLE_MAIN_MENU()
 #endif
 
+int getSwitchCount()
+{
+  int count = 0;
+  for (int i=0; i<NUM_SWITCHES; ++i) {
+    if (SWITCH_EXISTS(i)) {
+      ++count;
+    }
+  }
+  return count;
+}
+
 void menuMainView(uint8_t event)
 {
   DECLARE_MAIN_MENU();
@@ -561,17 +572,30 @@ void menuMainView(uint8_t event)
 
   // Switches
 #if defined(REV9E)
-  for (int i=0; i<18; ++i) {
-    div_t qr = div(i, 9);
-    if (g_eeGeneral.view == VIEW_INPUTS) {
-      div_t qr2 = div(qr.rem, 5);
-      if (i >= 14) qr2.rem += 1;
-      const coord_t x[4] = { 50, 144 };
-      const coord_t y[4] = { 25, 42, 25, 42 };
-      displaySwitch(x[qr.quot]+qr2.rem*4, y[qr2.quot], 3, i);
+  if (getSwitchCount() > 8) {
+    for (int i=0; i<NUM_SWITCHES; ++i) {
+      div_t qr = div(i, 9);
+      if (g_eeGeneral.view == VIEW_INPUTS) {
+        div_t qr2 = div(qr.rem, 5);
+        if (i >= 14) qr2.rem += 1;
+        const coord_t x[4] = { 50, 144 };
+        const coord_t y[4] = { 25, 42, 25, 42 };
+        displaySwitch(x[qr.quot]+qr2.rem*4, y[qr2.quot], 3, i);
+      }
+      else {
+        displaySwitch(15+qr.rem*6, 25+qr.quot*17, 5, i);
+      }
     }
-    else {
-      displaySwitch(15+qr.rem*6, 25+qr.quot*17, 5, i);
+  }
+  else {
+    int index = 0;
+    for (int i=0; i<NUM_SWITCHES; ++i) {
+      if (SWITCH_EXISTS(i)) {
+        getvalue_t val = getValue(MIXSRC_SA+i);
+        getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
+        putsSwitches((g_eeGeneral.view == VIEW_INPUTS) ? (index<4 ? 8*FW+3 : 24*FW+1) : (index<4 ? 3*FW+2 : 8*FW-1), (index%4)*FH+3*FH, sw, 0);
+        index++;
+      }
     }
   }
 #else

@@ -77,14 +77,6 @@ uint64_t  switchesPos = 0;
 tmr10ms_t potsLastposStart[NUM_XPOTS] = { 0 };
 uint8_t   potsPos[NUM_XPOTS];
 
-int switchConfig(int idx)
-{
-  uint32_t config = SWITCH_CONFIG(idx);
-  if (config == SWITCH_DEFAULT)
-    config = SWITCH_DEFAULT_CONFIG(idx);
-  return config;
-}
-
 #if defined(REV9E)
 div_t switchInfo(int switchPosition)
 {
