@@ -85,6 +85,7 @@ void menuCommonCalib(uint8_t event)
   switch (event)
   {
     case EVT_ENTRY:
+    case EVT_KEY_BREAK(KEY_EXIT):
       reusableBuffer.calib.state = 0;
       break;
 
@@ -189,12 +190,10 @@ void menuCommonCalib(uint8_t event)
 void menuGeneralCalib(uint8_t event)
 {
   check_simple(STR_MENUCALIBRATION, event, e_Calib, menuTabGeneral, DIM(menuTabGeneral), 0);
-
+  menuCommonCalib(READ_ONLY() ? 0 : event);
   if (menuEvent) {
     calibrationState = 0;
   }
-
-  menuCommonCalib(READ_ONLY() ? 0 : event);
 }
 
 void menuFirstCalib(uint8_t event)
