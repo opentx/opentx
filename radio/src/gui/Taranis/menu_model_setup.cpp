@@ -508,7 +508,7 @@ void menuModelSetup(uint8_t event)
           }
         }
         if (g_model.potsWarnMode) {
-          coord_t x = MODEL_SETUP_2ND_COLUMN+25;
+          coord_t x = MODEL_SETUP_2ND_COLUMN+28;
           for (int i=0; i<NUM_POTS; ++i) {
             if (i<NUM_XPOTS && !IS_POT_AVAILABLE(POT1+i)) {
               if (attr && (m_posHorz==i+1)) REPEAT_LAST_CURSOR_MOVE();
@@ -524,7 +524,9 @@ void menuModelSetup(uint8_t event)
               if ((!attr || m_posHorz >= 0) && !(g_model.potsWarnEnabled & (1 << i))) {
                 flags |= INVERS;
               }
-              lcd_putsiAtt(x, y, STR_VSRCRAW, NUM_STICKS+1+i, flags);
+
+              // TODO add a new function
+              lcd_putsnAtt(x, y, STR_VSRCRAW+2+STR_VSRCRAW[0]*(NUM_STICKS+1+i), STR_VSRCRAW[0]-1, flags & ~(BSS|ZCHAR));
               x = lcdNextPos+3;
             }
           }
