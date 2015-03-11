@@ -34,19 +34,7 @@
  *
  */
 
-#include <math.h>
-#include <gtest/gtest.h>
-
-#define SWAP_DEFINED
-#include "opentx.h"
-
-#define MODEL_RESET() \
-  memset(&g_model, 0, sizeof(g_model)); \
-  extern uint8_t s_mixer_first_run_done; \
-  s_mixer_first_run_done = false; \
-  lastFlightMode = 255;
-
-extern void MIXER_RESET();
+#include "gtests.h"
 
 #if !defined(PCBTARANIS)
 TEST(getSwitch, undefCSW)
@@ -76,6 +64,7 @@ TEST(getSwitch, circularCSW)
 #if defined(PCBTARANIS)
 TEST(getSwitch, OldTypeStickyCSW)
 {
+  RADIO_RESET();
   MODEL_RESET();
   MIXER_RESET();
   g_model.logicalSw[0] = { LS_FUNC_AND, SWSRC_SA0, 0, 0,  };
