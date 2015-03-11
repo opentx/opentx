@@ -515,6 +515,10 @@ void menuModelMixOne(uint8_t event)
       COLUMN_X = 0;
     }
     int8_t i = k;
+    
+#if MENU_COLUMNS < 2
+    i = i + s_pgOfs;
+#endif
 
     LcdFlags attr = (sub==i ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
     switch(i) {
