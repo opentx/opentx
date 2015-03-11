@@ -495,7 +495,10 @@ void menuModelMixOne(uint8_t event)
 
   SUBMENU_NOTITLE(MIX_FIELD_COUNT, {0, 0, 0, 0, 0, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
 
+#if MENU_COLUMNS > 1
   lcd_vline(MENU_COLUMN2_X-4, FH+1, LCD_H-FH-1);
+  SET_SCROLLBAR_X(0);
+#endif
 
   int8_t sub = m_posVert;
   int8_t editMode = s_editMode;
