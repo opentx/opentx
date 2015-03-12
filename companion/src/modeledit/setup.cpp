@@ -355,6 +355,8 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
 
   ui->setupUi(this);
 
+  QRegExp rx(CHAR_FOR_NAMES_REGEX);
+  ui->name->setValidator(new QRegExpValidator(rx, this));
   ui->name->setMaxLength(IS_TARANIS(firmware->getBoard()) ? 12 : 10);
 
   if (firmware->getCapability(ModelImage)) {
