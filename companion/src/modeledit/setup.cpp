@@ -277,7 +277,7 @@ void ModulePanel::update()
   else {
     mask = 0;
   }
-  
+
   ui->failsafesLayoutLabel->setVisible(mask & MASK_FAILSAFES);
   ui->failsafesFrame->setVisible(mask & MASK_FAILSAFES);
 }
@@ -377,6 +377,8 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
 
   ui->setupUi(this);
 
+  QRegExp rx(CHAR_FOR_NAMES_REGEX);
+  ui->name->setValidator(new QRegExpValidator(rx, this));
   ui->name->setMaxLength(IS_TARANIS(board) ? 12 : 10);
 
   if (firmware->getCapability(ModelImage)) {
@@ -440,7 +442,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
       }
     }
   }
-  
+
   if (!firmware->getCapability(HasDisplayText)) {
     ui->displayText->hide();
   }
@@ -710,7 +712,7 @@ void SetupPanel::update()
 
   updateBeepCenter();
   updateStartupSwitches();
-  
+
   if(IS_TARANIS(GetEepromInterface()->getBoard())) {
     updatePotWarnings();
   }
@@ -782,7 +784,7 @@ void SetupPanel::startupSwitchToggled(bool checked)
 {
   if (!lock) {
     int index = sender()->property("index").toInt();
-  
+
     if (checked)
       model->switchWarningEnable &= ~(1 << index);
     else
