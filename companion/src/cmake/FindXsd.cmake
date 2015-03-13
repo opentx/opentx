@@ -14,7 +14,8 @@ FIND_PATH( XSD_INCLUDE_DIR xsd/cxx/parser/elements.hxx
   "C:/mingw/xsd-3.3.0-i686-windows/libxsd"
   $ENV{XSDDIR}/include
   $ENV{CODESYNTH}/include
-  /usr/local/include /usr/include  
+  /usr/local/include /usr/include
+  $ENV{XSDDIR}/libxsd
 )
 
 IF( WIN32 )
@@ -30,15 +31,16 @@ FIND_PROGRAM( XSDCXX_EXECUTABLE
   PATHS
     "/opt/local/xsd-3.3.0-i686-macosx/bin"
     "C:/Programs/xsd-3.3.0/bin"
-    "C:/mingw/xsd-3.3.0-i686-windows/bin"  
+    "C:/mingw/xsd-3.3.0-i686-windows/bin"
     "C:/Program Files/CodeSynthesis XSD 3.2/bin"
     $ENV{XSDDIR}/bin
     /usr/local/bin
     /usr/bin
+    $ENV{XSDDIR}/xsd
 )
 
 MESSAGE(STATUS ${XSDCXX_EXECUTABLE})
-      
+
 # if the include and the program are found then we have it
 IF( XSD_INCLUDE_DIR )
   IF( XSDCXX_EXECUTABLE )
