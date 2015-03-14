@@ -181,6 +181,16 @@ int StandardPage::nextFreeChannel(int channel)
   return -1;
 }
 
+int StandardPage::totalChannelsAvailable()
+{
+  int c = 0;
+  for(int i=0; i<WIZ_MAX_CHANNELS; i++)
+    if (wizDlg->mix.channel[i].page == Page_None)
+      c++;
+
+  return c;
+}
+
 void StandardPage::populateCB(QComboBox *cb, int preferred)
 {
   cb->clear();
@@ -708,11 +718,13 @@ TailPage::TailPage(WizardDialog *dlg, QString image, QString title, QString text
   elevatorCB = new QComboBox();
   rudderCB = new QComboBox();
 
-  QLayout *l = layout();
+  l = layout();
   l->addWidget(new QLabel(tr("Rudder Channel:")));
   l->addWidget(rudderCB);
   l->addWidget(new QLabel(tr("Elevator Channel:")));
   l->addWidget(elevatorCB);
+
+  errorMessage = NULL;
 }
 
 void TailPage::initializePage()
@@ -720,6 +732,13 @@ void TailPage::initializePage()
   populateCB(elevatorCB, getDefaultChannel(ELEVATOR_INPUT));
   populateCB(rudderCB, getDefaultChannel(RUDDER_INPUT));
   StandardPage::initializePage();
+
+  if (totalChannelsAvailable() < 2) {
+    errorMessage = new QLabel(tr("Only one channel still available!<br>"
+      "You probably should configure your model without using the wizard."));
+    errorMessage->setStyleSheet("QLabel { color : red; }");
+    l->addWidget(errorMessage);
+  }
 }
 
 bool TailPage::validatePage()
@@ -727,6 +746,17 @@ bool TailPage::validatePage()
   releaseBookings();
   return( bookChannel(elevatorCB, ELEVATOR_INPUT, 100) &&
     bookChannel(rudderCB, RUDDER_INPUT,   100));
+}
+
+void TailPage::cleanupPage()
+{
+  if (errorMessage)
+  {
+    l->removeWidget(errorMessage);
+    delete errorMessage;
+    errorMessage = NULL;
+  }
+  StandardPage::cleanupPage();
 }
 
 SimpleTailPage::SimpleTailPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)

@@ -55,6 +55,7 @@ class  StandardPage: public QWizardPage
     int nextFreeChannel(int channel = 0);
     void populateCB(QComboBox * cb, int preferred=-1);
     bool bookChannel(QComboBox * cb, Input input1, int weight1, Input input2=NO_INPUT, int weight2=0);
+    int totalChannelsAvailable();
 
   private:
     QLabel *topLabel;
@@ -231,10 +232,13 @@ class TailPage: public StandardPage
 public:
   TailPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);
   void initializePage();
+  void cleanupPage();
   bool validatePage();
 private:
   QComboBox *elevatorCB;
   QComboBox *rudderCB;
+  QLayout *l;
+  QLabel *errorMessage;
 };
 
 class VTailPage: public StandardPage
