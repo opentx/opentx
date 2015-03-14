@@ -285,6 +285,7 @@ void debugPutc(const char c);
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate);
+void sportSendBuffer(uint8_t *buffer, uint32_t count);
 
 // Haptic driver
 void hapticInit(void);

@@ -262,7 +262,9 @@
 #define GPIO_PinSource_SPORT_TX         GPIO_PinSource5
 #define GPIO_PinSource_SPORT_RX         GPIO_PinSource6
 #define GPIO_AF_SPORT                   GPIO_AF_USART2
-#define SPORT                           USART2 
+#define SPORT_USART                     USART2
+#define SPORT_IRQHandler                USART2_IRQHandler
+#define SPORT_IRQn                      USART2_IRQn
 
 // USB_OTG
 #define PIN_FS_VBUS                     GPIO_Pin_9  // PA.09

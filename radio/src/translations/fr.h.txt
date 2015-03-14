@@ -851,6 +851,8 @@
 #define TR_PATH_TOO_LONG       "Chemin trop long"
 #define TR_VIEW_TEXT           "Voir texte"
 #define TR_FLASH_BOOTLOADER    "Flasher BootLoader"
+#define TR_FLASH_EXTERNAL_DEVICE "Flash External Device"
+#define TR_FLASH_INTERNAL_MODULE "Flash Module Interne"
 #define TR_WRITING             "\032Ecriture..."
 #define TR_CONFIRM_FORMAT      "Confirmer Formatage?"
 #define TR_INTERNALRF          "HF interne"
