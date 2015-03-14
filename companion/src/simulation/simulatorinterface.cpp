@@ -37,7 +37,7 @@ void registerSimulators()
   filters << "*-simulator.so";
 #endif
   foreach(QString filename, dir.entryList(filters, QDir::Files)) {
-    registerSimulator(filename);
+    registerSimulator(filename.prepend("./"));
   }
 }
 
