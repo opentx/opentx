@@ -52,7 +52,7 @@ extern "C" {
 }
 #endif
 
-#include "lua_exports.cpp"   // this line must be after lua headers
+#include "lua_exports.inc"   // this line must be after lua headers
 
 #define lua_registernumber(L, n, i)    (lua_pushnumber(L, (i)), lua_setglobal(L, (n)))
 #define lua_registerint(L, n, i)       (lua_pushinteger(L, (i)), lua_setglobal(L, (n)))

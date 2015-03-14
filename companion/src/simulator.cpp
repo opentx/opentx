@@ -98,26 +98,26 @@ int main(int argc, char *argv[])
 
   QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
-  registerEEpromInterfaces();
-  registerOpenTxFirmwares();
-
   SimulatorDialog *dialog;
-  const char * eepromFileName;
-  QString fileName;
-  QByteArray path;
+  QString eepromFileName;
   QDir eedir;
   QFile file;
+
+  registerSimulators();
+  registerOpenTxFirmwares();
 
   QMessageBox msgBox;
   msgBox.setWindowTitle("Radio type");
   msgBox.setText("Which radio type do you want to simulate?");
   msgBox.setIcon(QMessageBox::Question);
-  QAbstractButton *taranisButton = msgBox.addButton("Taranis", QMessageBox::ActionRole);
-  QAbstractButton *x9eButton = msgBox.addButton("Taranis X9E", QMessageBox::ActionRole);
-  QAbstractButton *sky9xButton = msgBox.addButton("9X-Sky9X", QMessageBox::ActionRole);
-  QAbstractButton *gruvinButton = msgBox.addButton("9X-Gruvin9X", QMessageBox::ActionRole);
-  QAbstractButton *proButton = msgBox.addButton("9XR-Pro", QMessageBox::ActionRole);
-  msgBox.addButton("9X-M128", QMessageBox::ActionRole);
+
+  foreach(SimulatorFactory *factory, registered_simulators) {
+    QPushButton *button = msgBox.addButton(factory->name(), QMessageBox::ActionRole);
+    button->adjustSize();
+    button->setProperty("name", factory->name());
+  }
+  msgBox.adjustSize();
+
   QPushButton *exitButton = msgBox.addButton(QMessageBox::Close);
 
   eedir = QDir(QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation));
@@ -128,53 +128,32 @@ int main(int argc, char *argv[])
 
   msgBox.exec();
   
-  if (msgBox.clickedButton() == exitButton)
+  QAbstractButton *button = msgBox.clickedButton();
+  if (button == exitButton) {
     return 0;
-  else if (msgBox.clickedButton() == taranisButton) {
-    current_firmware_variant = GetFirmware("opentx-taranis-haptic-lua-en");
-    fileName = eedir.filePath("eeprom-taranis.bin");
-    path = fileName.toAscii();
-    eepromFileName = path.data();
-    dialog = new SimulatorDialogTaranis();
-  }
-  else if (msgBox.clickedButton() == x9eButton) {
-    current_firmware_variant = GetFirmware("opentx-taranisx9e-mixersmon-lua-haptic-en");
-    fileName = eedir.filePath("eeprom-x9e.bin");
-    path = fileName.toAscii();
-    eepromFileName = path.data();
-    dialog = new SimulatorDialogTaranis();
-  }
-  else if (msgBox.clickedButton() == sky9xButton) {
-    current_firmware_variant = GetFirmware("opentx-sky9x-heli-templates-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-bluetooth-en");
-    fileName = eedir.filePath("eeprom-sky9x.bin");
-    path = fileName.toAscii();
-    eepromFileName = path.data();
-    dialog = new SimulatorDialog9X();
-  }
-  else if (msgBox.clickedButton() == gruvinButton) {
-    current_firmware_variant = GetFirmware("opentx-gruvin9x-heli-templates-sdcard-voice-DSM2PPM-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-ttsen-en");
-    fileName = eedir.filePath("eeprom-gruvin9x.bin");
-    path = fileName.toAscii();
-    eepromFileName = path.data();
-    dialog = new SimulatorDialog9X();
-  }
-  else if (msgBox.clickedButton() == proButton) {
-    current_firmware_variant = GetFirmware("opentx-9xrpro-heli-templates-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-en");
-    fileName = eedir.filePath("eeprom-9xrpro.bin");
-    path = fileName.toAscii();
-    eepromFileName = path.data();
-    dialog = new SimulatorDialog9X();
   }
   else {
-    current_firmware_variant = GetFirmware("opentx-9x128-frsky-heli-templates-audio-voice-haptic-DSM2-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-thrtrace-en");
-    fileName = eedir.filePath("eeprom-9x128.bin");
-    path = fileName.toAscii();
-    eepromFileName = path.data();
-    dialog = new SimulatorDialog9X();
+    QString firmwareId = button->property("name").toString();
+    QString radioId;
+    int pos = firmwareId.indexOf("-");
+    if (pos > 0) {
+      radioId = firmwareId.mid(pos+1);
+      pos = radioId.lastIndexOf("-");
+      if (pos > 0) {
+        radioId = radioId.mid(0, pos);
+      }
+    }
+    current_firmware_variant = GetFirmware(firmwareId);
+    eepromFileName = QString("eeprom-%1.bin").arg(radioId);
+    SimulatorFactory *factory = getSimulatorFactory(firmwareId);
+    if (factory->type() == BOARD_TARANIS)
+      dialog = new SimulatorDialogTaranis(NULL, factory->create());
+    else
+      dialog = new SimulatorDialog9X(NULL, factory->create());
   }
 
   dialog->show();
-  dialog->start(eepromFileName);
+  dialog->start(eepromFileName.toAscii().constData());
 
   int result = app.exec();
 

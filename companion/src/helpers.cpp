@@ -897,9 +897,8 @@ CompanionIcon::CompanionIcon(const QString &baseimage)
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
 {
-  SimulatorInterface * si = GetCurrentFirmware()->getSimulator();
+  SimulatorInterface * si = GetCurrentFirmwareSimulator();
   if (si) {
-    delete si;
     RadioData * simuData = new RadioData(radioData);
     unsigned int flags = 0;
     if (modelIdx >= 0) {
@@ -912,9 +911,9 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     BoardEnum board = GetCurrentFirmware()->getBoard();
     SimulatorDialog * sd;
     if (IS_TARANIS(board))
-      sd = new SimulatorDialogTaranis(parent, flags);
+      sd = new SimulatorDialogTaranis(parent, si, flags);
     else
-      sd = new SimulatorDialog9X(parent, flags);
+      sd = new SimulatorDialog9X(parent, si, flags);
     QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
     GetEepromInterface()->save((uint8_t *)eeprom.data(), *simuData, GetCurrentFirmware()->getCapability(SimulatorVariant));
     delete simuData;

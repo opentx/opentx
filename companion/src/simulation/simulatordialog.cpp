@@ -11,10 +11,11 @@
 int SimulatorDialog::screenshotIdx = 0;
 SimulatorDialog * traceCallbackInstance = 0;
 
-void traceCb(const char * text) {
+void traceCb(const char * text)
+{
   // divert C callback into simulator instance
   if (traceCallbackInstance) {
-      traceCallbackInstance->traceCallback(text);
+    traceCallbackInstance->traceCallback(text);
   }
 }
 
@@ -46,13 +47,13 @@ void SimulatorDialog::updateDebugOutput()
   traceMutex.unlock();
 }
 
-SimulatorDialog::SimulatorDialog(QWidget * parent, unsigned int flags):
+SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, unsigned int flags):
   QDialog(parent),
   flags(flags),
   dialP_4(NULL),
   timer(NULL),
   lightOn(false),
-  simulator(NULL),
+  simulator(simulator),
   lastPhase(-1),
   beepVal(0),
   TelemetrySimu(0),
@@ -72,8 +73,8 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, unsigned int flags):
 
 uint32_t SimulatorDialog9X::switchstatus = 0;
 
-SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, unsigned int flags):
-  SimulatorDialog(parent, flags),
+SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, SimulatorInterface *simulator, unsigned int flags):
+  SimulatorDialog(parent, simulator, flags),
   ui(new Ui::SimulatorDialog9X),
   beepShow(0)
 {
@@ -149,8 +150,8 @@ SimulatorDialog9X::~SimulatorDialog9X()
 
 uint32_t SimulatorDialogTaranis::switchstatus = 0;
 
-SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, unsigned int flags):
-  SimulatorDialog(parent, flags),
+SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterface *simulator, unsigned int flags):
+  SimulatorDialog(parent, simulator, flags),
   ui(new Ui::SimulatorDialogTaranis)
 {
   lcdWidth = 212;
@@ -435,7 +436,7 @@ void SimulatorDialog::initUi(T * ui)
   windowName = tr("Simulating Radio (%1)").arg(GetCurrentFirmware()->getName());
   setWindowTitle(windowName);
 
-  simulator = GetCurrentFirmware()->getSimulator();
+  simulator->setSdPath(g.profile[g.id()].sdPath());
   lcd->setData(simulator->getLcd(), lcdWidth, 64, lcdDepth);
 
   if (flags & SIMULATOR_FLAGS_STICK_MODE_LEFT) {
@@ -449,7 +450,7 @@ void SimulatorDialog::initUi(T * ui)
 
   setTrims();
 
-  int outputs = std::min(32,GetCurrentFirmware()->getCapability(Outputs));
+  int outputs = std::min(32, GetCurrentFirmware()->getCapability(Outputs));
   if (outputs <= 16) {
     // hide second Outputs tab
     tabWidget->removeTab(tabWidget->indexOf(ui->outputs2));

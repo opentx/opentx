@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "telemetrysimu.h"
 #include "ui_telemetrysimu.h"
+#include "simulatorinterface.h"
 #include "radio/src/telemetry/frsky.h"
 
 TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * simulator):

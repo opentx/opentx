@@ -98,6 +98,7 @@ int main(int argc, char *argv[])
   
   registerEEpromInterfaces();
   registerOpenTxFirmwares();
+  registerSimulators();
 
   if (g.profile[g.id()].fwType().isEmpty()){
     g.profile[g.id()].fwType(default_firmware_variant->getId());

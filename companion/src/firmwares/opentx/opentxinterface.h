@@ -121,8 +121,6 @@ class OpenTxFirmware: public Firmware {
     virtual int getCapability(const Capability);
 
     virtual bool isTelemetrySourceAvailable(int source);
-
-    virtual SimulatorInterface * getSimulator();
     
 };
 

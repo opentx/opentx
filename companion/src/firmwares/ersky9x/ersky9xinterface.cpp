@@ -18,7 +18,7 @@
 #include <QMessageBox>
 #include "ersky9xinterface.h"
 #include "ersky9xeeprom.h"
-#include "ersky9xsimulator.h"
+#include "simulator/ersky9xsimulator.h"
 #include "file.h"
 
 #define FILE_TYP_GENERAL 1

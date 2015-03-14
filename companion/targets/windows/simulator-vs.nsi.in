@@ -98,6 +98,8 @@ Section "OpenTX Simulator" SecDummy
   
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\license.txt"
   File "Release\simulator.exe"
+  File "Release\opentx-*-simulator.dll"
+  
   ${!defineifexist} PTHREAD_WINDIR "C:\Programs\pthreads\Pre-built.2\lib\pthreadVC2.dll"
   !ifdef PTHREAD_WINDIR
   File "C:\Programs\pthreads\Pre-built.2\lib\pthreadVC2.dll"
@@ -181,6 +183,7 @@ Section "Uninstall"
   Delete "$INSTDIR\Phonon4.dll"
   Delete "$INSTDIR\Uninstall.exe"
   Delete "$INSTDIR\lang\*.*"
+  Delete "$INSTDIR\opentx-*-simulator.dll"
 
   RMDir "$INSTDIR\lang"
   RMDir "$INSTDIR"

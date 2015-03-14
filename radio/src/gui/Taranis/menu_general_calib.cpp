@@ -144,7 +144,7 @@ void menuCommonCalib(uint8_t event)
             for (int j=0; j<count; j++) {
               for (int k=j+1; k<count; k++) {
                 if (reusableBuffer.calib.xpotsCalib[idx].steps[k] < reusableBuffer.calib.xpotsCalib[idx].steps[j]) {
-                  swap(reusableBuffer.calib.xpotsCalib[idx].steps[j], reusableBuffer.calib.xpotsCalib[idx].steps[k]);
+                  SWAP(reusableBuffer.calib.xpotsCalib[idx].steps[j], reusableBuffer.calib.xpotsCalib[idx].steps[k]);
                 }
               }
             }

@@ -3,6 +3,7 @@ set(simulation_SRCS
   telemetrysimu.cpp
   trainersimu.cpp
   debugoutput.cpp
+  simulatorinterface.cpp
 )
 
 set(simulation_UIS

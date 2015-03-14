@@ -3,7 +3,6 @@
 
 #include <QDialog>
 #include "modeledit/node.h"
-#include "eeprominterface.h"
 #include "telemetrysimu.h"
 #include "trainersimu.h"
 #include "debugoutput.h"
@@ -36,7 +35,7 @@ class SimulatorDialog : public QDialog
   Q_OBJECT
 
   public:
-    explicit SimulatorDialog(QWidget * parent = NULL, unsigned int flags=0);
+    explicit SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, unsigned int flags=0);
     virtual ~SimulatorDialog();
 
     void start(const char * filename);
@@ -87,9 +86,7 @@ class SimulatorDialog : public QDialog
     virtual void getValues() = 0;
     void setValues();
     void centerSticks();
-    // void timerTick();
 
-    bool keyState(EnumKeys key);
     int getValue(qint8 i);
     bool getSwitch(int swtch, bool nc, qint8 level=0);
     void setTrims();
@@ -153,7 +150,7 @@ class SimulatorDialog9X: public SimulatorDialog
   Q_OBJECT
 
   public:
-    explicit SimulatorDialog9X(QWidget * parent = NULL, unsigned int flags=0);
+    explicit SimulatorDialog9X(QWidget * parent, SimulatorInterface *simulator, unsigned int flags=0);
     virtual ~SimulatorDialog9X();
 
   protected:
@@ -178,7 +175,7 @@ class SimulatorDialogTaranis: public SimulatorDialog
   Q_OBJECT
 
   public:
-    explicit SimulatorDialogTaranis(QWidget * parent = NULL, unsigned int flags=0);
+    explicit SimulatorDialogTaranis(QWidget * parent, SimulatorInterface *simulator, unsigned int flags=0);
     virtual ~SimulatorDialogTaranis();
 
   protected:

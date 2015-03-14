@@ -337,6 +337,8 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 
 #define WGM10   0
 #define WGM12   0
+#define COM1B1  0
+#define FOC1B   0
 #define CS10    0
 #define DOR0    0
 #define UPE0    0
@@ -434,9 +436,10 @@ inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { 
 
 #define configure_pins(...)
 
-extern "C" {
+#if defined(SDCARD)
 extern char simuSdDirectory[1024];
-}
+#endif
+
 #define sdMountPoll()
 #define sdPoll10ms()
 #define sd_card_ready()  (true)

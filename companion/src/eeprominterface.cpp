@@ -1615,3 +1615,13 @@ void Firmware::addOptions(Option options[])
   }
   this->opts.push_back(opts);
 }
+
+SimulatorInterface *GetCurrentFirmwareSimulator()
+{
+  QString firmwareId = GetCurrentFirmware()->getId();
+  SimulatorFactory *factory = getSimulatorFactory(firmwareId);
+  if (factory)
+    return factory->create();
+  else
+    return NULL;
+}

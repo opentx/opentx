@@ -58,7 +58,8 @@ if (inputs.rotenc) simuSetKey(KEY_ENTER, true);
 #ifdef GETVALUES_IMPORT
 #undef GETVALUES_IMPORT
 memset(outputs.chans, 0, sizeof(outputs.chans));
-memcpy(outputs.chans, g_chans512, sizeof(g_chans512));
+for (unsigned int i=0; i<DIM(g_chans512); i++)
+  outputs.chans[i] = g_chans512[i];
 for (int i=0; i<NUM_LOGICAL_SWITCH; i++)
 #if defined(BOLD_FONT)
   outputs.vsw[i] = getSwitch(SWSRC_SW1+i);

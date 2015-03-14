@@ -34,8 +34,8 @@
  *
  */
 
-#include "opentx.h"
-#include "timers.h"
+#include "../../opentx.h"
+#include "../../timers.h"
 
 #if defined(REVPLUS) && defined(LCD_DUAL_BUFFER)
   display_t displayBuf1[DISPLAY_BUF_SIZE];

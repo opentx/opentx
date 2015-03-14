@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "../../opentx.h"
-#include "../../FatFs/diskio.h"
+#include "../../thirdparty/FatFs/diskio.h"
 #include "board_taranis.h"
 
 #if defined(__cplusplus) && !defined(SIMU)

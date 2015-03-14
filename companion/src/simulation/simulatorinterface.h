@@ -17,9 +17,23 @@
 #ifndef simulator_interface_h
 #define simulator_interface_h
 
-#include "eeprominterface.h"
+#include "constants.h"
+#include <inttypes.h>
+#include <QString>
+#include <QByteArray>
+#include <QMap>
+#include <algorithm>
 
-struct TxInputs {
+#if __GNUC__
+  #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
+#else
+  #include "../targets/windows/winbuild.h"
+#endif
+
+template<class t> t LIMIT(t mi, t x, t ma) { return std::min(std::max(mi, x), ma); }
+
+struct TxInputs
+{
     int  sticks[NUM_STICKS]; /* lh lv rv rh */
     int  pots[C9X_NUM_POTS];
     int  switches[C9X_NUM_SWITCHES];
@@ -28,33 +42,34 @@ struct TxInputs {
     bool trims[8];
 };
 
-class TxOutputs {
+class TxOutputs
+{
   public:
-    TxOutputs() {
-      memset(this, 0, sizeof(TxOutputs));
-    }
-
-    int16_t chans[C9X_NUM_CHNOUT];
+    TxOutputs() { memset(this, 0, sizeof(TxOutputs)); }
+    int chans[C9X_NUM_CHNOUT];
     bool vsw[C9X_NUM_CSW];
-    int16_t gvars[C9X_MAX_FLIGHT_MODES][C9X_MAX_GVARS];
+    int gvars[C9X_MAX_FLIGHT_MODES][C9X_MAX_GVARS];
     unsigned int beep;
     // uint8_t phase;
 };
 
-struct Trims {
-    int16_t values[NUM_STICKS]; /* lh lv rv rh */
-    bool extended;
+struct Trims
+{
+  int values[NUM_STICKS]; /* lh lv rv rh */
+  bool extended;
 };
 
-class SimulatorInterface {
-
+class SimulatorInterface
+{
   public:
 
     virtual ~SimulatorInterface() {};
 
-    virtual void start(QByteArray & eeprom, bool tests=true) = 0;
+    virtual void setSdPath(const QString &sdPath) { };
 
-    virtual void start(const char * filename, bool tests=true) = 0;
+    virtual void start(QByteArray &eeprom, bool tests=true) = 0;
+
+    virtual void start(const char *filename, bool tests=true) = 0;
 
     virtual void stop() = 0;
 
@@ -62,7 +77,7 @@ class SimulatorInterface {
 
     virtual uint8_t * getLcd() = 0;
 
-    virtual bool lcdChanged(bool & lightEnable) = 0;
+    virtual bool lcdChanged(bool &lightEnable) = 0;
 
     virtual void setValues(TxInputs &inputs) = 0;
 
@@ -70,13 +85,13 @@ class SimulatorInterface {
 
     virtual void setTrim(unsigned int idx, int value) = 0;
 
-    virtual void getTrims(Trims & trims) = 0;
+    virtual void getTrims(Trims &trims) = 0;
 
     virtual unsigned int getPhase() = 0;
     
     virtual const char * getPhaseName(unsigned int phase) = 0;
 
-    virtual void wheelEvent(uint8_t steps) = 0;
+    virtual void wheelEvent(int steps) { };
 
     virtual const char * getError() = 0;
 
@@ -86,5 +101,22 @@ class SimulatorInterface {
 
     virtual void installTraceHook(void (*callback)(const char *)) = 0;
 };
+
+class SimulatorFactory {
+
+  public:
+
+    virtual ~SimulatorFactory() { }
+
+    virtual QString name() = 0;
+
+    virtual BoardEnum type() = 0;
+
+    virtual SimulatorInterface *create() = 0;
+};
+
+void registerSimulators();
+SimulatorFactory *getSimulatorFactory(const QString &name);
+extern QMap<QString, SimulatorFactory *> registered_simulators;
 
 #endif

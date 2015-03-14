@@ -20,12 +20,6 @@
 #include "opentxeeprom.h"
 #include "open9xGruvin9xeeprom.h"
 #include "open9xSky9xeeprom.h"
-#include "opentxM64simulator.h"
-#include "opentxM128simulator.h"
-#include "opentxGruvin9xsimulator.h"
-#include "opentxSky9xsimulator.h"
-#include "opentxTaranisSimulator.h"
-#include "opentxTaranisX9ESimulator.h"
 #include "file.h"
 #include "appdata.h"
 
@@ -486,7 +480,10 @@ int OpenTxEepromInterface::getSize(GeneralSettings &settings)
 
 Firmware * OpenTxFirmware::getFirmwareVariant(const QString & id)
 {
-  if (id.contains(getId()+"-") || (!id.contains("-") && id.contains(getId()))) {
+  if (id == getId()) {
+    return this;
+  }
+  else if (id.contains(getId()+"-") || (!id.contains("-") && id.contains(getId()))) {
     Firmware * result = new OpenTxFirmware(id, this);
     // TODO result.variant = firmware->getVariant(id);
     return result;
@@ -1068,29 +1065,6 @@ QString OpenTxFirmware::getStampUrl()
    QString url = OPENTX_FIRMWARE_DOWNLOADS;
    url.append("/stamp-opentx.txt");
    return url;
-}
-
-SimulatorInterface * OpenTxFirmware::getSimulator()
-{
-  switch (board) {
-    case BOARD_STOCK:
-      return new OpenTxM64Simulator();
-    case BOARD_M128:
-      return new OpenTxM128Simulator();
-    case BOARD_GRUVIN9X:
-    case BOARD_MEGA2560:
-      return new Open9xGruvin9xSimulator();
-    case BOARD_SKY9X:
-    case BOARD_9XRPRO:
-      return new Open9xSky9xSimulator();
-    case BOARD_TARANIS:
-    case BOARD_TARANIS_PLUS:
-      return new OpentxTaranisSimulator();
-    case BOARD_TARANIS_X9E:
-      return new OpentxTaranisX9ESimulator();
-    default:
-      return NULL;
-  }
 }
 
 void addOpenTxCommonOptions(OpenTxFirmware * firmware)

@@ -36,11 +36,11 @@
 
 #include <string.h>
 #include "board_taranis.h"
-#include "../../FatFs/diskio.h"
-#include "../../FatFs/ff.h"
-#include "../../CoOS/kernel/CoOS.h"
+#include "../../thirdparty/FatFs/diskio.h"
+#include "../../thirdparty/FatFs/ff.h"
+#include "../../thirdparty/CoOS/kernel/CoOS.h"
 #include "hal.h"
-#include "debug.h"
+#include "../../debug.h"
 
 /* Definitions for MMC/SDC command */
 #define CMD0    (0x40+0)        /* GO_IDLE_STATE */

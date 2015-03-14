@@ -17,19 +17,14 @@
 #ifndef eeprom_interface_h
 #define eeprom_interface_h
 
-#include <inttypes.h>
 #include <string.h>
 #include <QString>
 #include <QStringList>
 #include <QList>
 #include <QtXml>
 #include <iostream>
-
-#if __GNUC__
-  #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
-#else
-  #include "../targets/windows/winbuild.h"
-#endif
+#include "constants.h"
+#include "simulatorinterface.h"
 
 #define EESIZE_STOCK          2048
 #define EESIZE_M128           4096
@@ -38,20 +33,6 @@
 #define EESIZE_SKY9X          (128*4096)
 #define EESIZE_9XRPRO         (128*4096)
 #define EESIZE_RLC_MAX        EESIZE_TARANIS
-
-template<class t> t LIMIT(t mi, t x, t ma) { return std::min(std::max(mi, x), ma); }
-
-enum BoardEnum {
-  BOARD_STOCK,
-  BOARD_M128,
-  BOARD_MEGA2560,
-  BOARD_GRUVIN9X,
-  BOARD_SKY9X,
-  BOARD_9XRPRO,
-  BOARD_TARANIS,
-  BOARD_TARANIS_PLUS,
-  BOARD_TARANIS_X9E
-};
 
 QString getBoardName(BoardEnum board);
 
@@ -70,21 +51,6 @@ const uint8_t modn12x3[4][4]= {
   {1, 3, 2, 4},
   {4, 2, 3, 1},
   {4, 3, 2, 1} };
-
-#define C9X_MAX_MODELS            60
-#define C9X_MAX_TIMERS            3
-#define C9X_MAX_FLIGHT_MODES      9
-#define C9X_MAX_MIXERS            64
-#define C9X_MAX_INPUTS            32
-#define C9X_MAX_EXPOS             64
-#define C9X_MAX_CURVES            32
-#define C9X_MAX_POINTS            17
-#define C9X_MAX_GVARS             9
-#define C9X_MAX_ENCODERS          2
-#define C9X_NUM_CHNOUT            32 // number of real output channels
-#define C9X_NUM_CSW               32 // number of custom switches
-#define C9X_MAX_CUSTOM_FUNCTIONS  64 // number of functions assigned to switches
-#define C9X_NUM_MODULES           2
 
 #define STK_RUD  1
 #define STK_ELE  2
@@ -196,14 +162,6 @@ enum HeliSwashTypes {
  HELI_SWASH_TYPE_140,
  HELI_SWASH_TYPE_90
 };
-
-#define NUM_STICKS          4
-#define BOARD_9X_NUM_POTS   3
-#define C9X_NUM_POTS        8
-#define NUM_CAL_PPM         4
-#define NUM_CYC             3
-#define C9X_NUM_SWITCHES    10
-#define C9X_NUM_KEYS        6
 
 extern const char * switches9X[];
 extern const char * switchesX9D[];
@@ -1565,11 +1523,6 @@ class Firmware {
 
     virtual bool isTelemetrySourceAvailable(int source) = 0;
 
-    virtual SimulatorInterface * getSimulator()
-    {
-      return NULL;
-    }
-
   public:
     QList<const char *> languages;
     QList<const char *> ttslanguages;
@@ -1599,6 +1552,8 @@ inline Firmware * GetCurrentFirmware()
   return current_firmware_variant;
 }
 
+SimulatorInterface *getCurrentFirmwareSimulator();
+
 inline EEPROMInterface * GetEepromInterface()
 {
   return GetCurrentFirmware()->getEepromInterface();
@@ -1610,5 +1565,7 @@ inline int divRoundClosest(const int n, const int d)
 }
 
 #define CHECK_IN_ARRAY(T, index) ((unsigned int)index < (unsigned int)(sizeof(T)/sizeof(T[0])) ? T[(unsigned int)index] : "???")
+
+SimulatorInterface * GetCurrentFirmwareSimulator();
 
 #endif

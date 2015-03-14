@@ -34,9 +34,12 @@
  *
  */
 
-#include "opentx.h"
+extern "C" {
 #include <stdio.h>
 #include <stdarg.h>
+}
+
+#include "opentx.h"
 
 #if (defined(DEBUG) && defined(CPUARM)) || defined(SIMU)
 
