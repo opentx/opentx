@@ -294,6 +294,14 @@ void generalDefault()
   g_eeGeneral.backgroundVolume = 1;
 #endif
 
+#if defined(CPUARM)
+  for (int i=0; i<NUM_STICKS; ++i) {
+    g_eeGeneral.trainer.mix[i].mode = 2;
+    g_eeGeneral.trainer.mix[i].srcChn = channel_order(i+1) - 1;
+    g_eeGeneral.trainer.mix[i].studWeight = 100;
+  }
+#endif
+
   g_eeGeneral.chkSum = 0xFFFF;
 }
 
