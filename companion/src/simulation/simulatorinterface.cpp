@@ -46,15 +46,16 @@ SimulatorFactory *getSimulatorFactory(const QString &name)
   QString simuName = name;
   while(1) {
     qDebug() << "searching" << simuName << "simulator";
-    if (registered_simulators.contains(simuName)) {
-      return registered_simulators[simuName];
+    foreach (QString name, registered_simulators.keys()) {
+      if (name.contains(simuName)) {
+        simuName = name;
+        return registered_simulators[simuName];
+      }
     }
-    else {
-      int pos = simuName.lastIndexOf('-');
-      if (pos <= 0)
-        break;
-      simuName = simuName.mid(0, pos);
-    }
+    int pos = simuName.lastIndexOf('-');
+    if (pos <= 0)
+      break;
+    simuName = simuName.mid(0, pos);
   }
   return NULL;
 }
