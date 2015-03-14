@@ -348,6 +348,21 @@ enum BeeperMode {
 #endif
 
 #if defined(PCBTARANIS)
+  #if defined(REV9E)
+    #define swconfig_t        uint64_t
+    #define swarnstate_t      uint64_t
+    #define swarnenable_t     uint32_t
+  #else
+    #define swconfig_t        uint16_t
+    #define swarnstate_t      uint16_t
+    #define swarnenable_t     uint8_t
+  #endif
+#else
+  #define swarnstate_t      uint8_t
+  #define swarnenable_t     uint8_t
+#endif
+
+#if defined(PCBTARANIS)
   enum UartModes {
     UART_MODE_NONE,
     UART_MODE_TELEMETRY_MIRROR,
@@ -370,7 +385,7 @@ enum BeeperMode {
     uint8_t  uart3Mode:6; \
     uint8_t  slidersConfig:2; \
     uint8_t  potsConfig; /*two bits for every pot*/\
-    uint8_t  backlightColor;
+    uint8_t  backlightColor; \
     swarnstate_t switchUnlockStates; \
     CustomFunctionData customFn[NUM_CFN]; \
     swconfig_t switchConfig; \
@@ -379,7 +394,7 @@ enum BeeperMode {
 #elif defined(CPUARM)
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
-    CustomFunctionData customFn[NUM_CFN]
+    CustomFunctionData customFn[NUM_CFN];
 #elif defined(PXX)
   #define EXTRA_GENERAL_FIELDS uint8_t  countryCode;
 #else
@@ -429,15 +444,6 @@ PACK(typedef struct {
   #define IS_TRAINER_EXTERNAL_MODULE() (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
   #define MODELDATA_EXTRA   uint8_t externalModule:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
-#if defined(REV9E)
-  #define swconfig_t        uint64_t
-  #define swarnstate_t      uint64_t
-  #define swarnenable_t     uint32_t
-#else
-  #define swconfig_t        uint16_t
-  #define swarnstate_t      uint16_t
-  #define swarnenable_t     uint8_t
-#endif
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
     EXTERNAL_MODULE,
@@ -446,13 +452,9 @@ PACK(typedef struct {
   };
   #define MODELDATA_BITMAP
   #define MODELDATA_EXTRA   uint8_t externalModule; ModuleData moduleData[NUM_MODULES+1]; uint8_t potsWarnMode:2; uint8_t potsWarnEnabled:6; int8_t potsWarnPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
-  #define swarnstate_t      uint8_t
-  #define swarnenable_t     uint8_t
 #else
   #define MODELDATA_BITMAP
   #define MODELDATA_EXTRA   
-  #define swarnstate_t      uint8_t
-  #define swarnenable_t     uint8_t
 #endif
 
 enum BacklightMode {
