@@ -13,7 +13,7 @@ def addLine(filename, newline, after):
 
 def modifyTranslations(constant, translation, after):
   for filename in glob.glob('translations/*.h.txt'):
-    newline = "#define " + constant + " "*(23-len(constant)) + '"' + translation + '"'
+    newline = "#define " + constant + " "*max(1, 23-len(constant)) + '"' + translation + '"'
     addLine(filename, newline, after+" ") 
 
 def modifyDeclaration(constant, after):
