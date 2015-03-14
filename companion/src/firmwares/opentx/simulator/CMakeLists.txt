@@ -3,39 +3,27 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 
 set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/../../radio/src)
 
-add_custom_command(
-  OUTPUT ${RADIO_SRC_DIRECTORY}/bitmaps/9X/about.lbm
-  COMMAND make lbm PCB=9X
-  DEPENDS ${RADIO_SRC_DIRECTORY}/bitmaps/9X/about.png
+add_custom_target( about_lbm_9x 
+  make lbm PCB=9X
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
-add_custom_command(
-  OUTPUT ${RADIO_SRC_DIRECTORY}/bitmaps/Taranis/about.lbm
-  COMMAND make lbm PCB=TARANIS
-  DEPENDS ${RADIO_SRC_DIRECTORY}/bitmaps/Taranis/about.png
+add_custom_target( about_lbm_taranis 
+  make lbm PCB=TARANIS
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
-add_custom_command(
-  OUTPUT ${RADIO_SRC_DIRECTORY}/translations/en.h
-  COMMAND make tra
-  DEPENDS ${RADIO_SRC_DIRECTORY}/translations/en.h.txt
+add_custom_target( trans
+  make tra
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
-add_custom_command(
-  OUTPUT ${RADIO_SRC_DIRECTORY}/lua_exports.inc
-  COMMAND make PCB=TARANIS lua_exports.inc
-  DEPENDS ${RADIO_SRC_DIRECTORY}/myeeprom.h
+add_custom_target( lua_exports 
+  make PCB=TARANIS lua_exports.inc
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
 set(OPENTX_SRC_FILES 
-  ${RADIO_SRC_DIRECTORY}/bitmaps/9X/about.lbm
-  ${RADIO_SRC_DIRECTORY}/bitmaps/Taranis/about.lbm
-  ${RADIO_SRC_DIRECTORY}/translations/en.h
-  ${RADIO_SRC_DIRECTORY}/lua_exports.inc
   opentxsimulator.cpp
 )
 
@@ -85,6 +73,16 @@ add_library(opentx-sky9x${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranis${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranisplus${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranisx9e${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
+
+add_dependencies(opentx-9x${SUFFIX}-simulator about_lbm_9x trans)
+add_dependencies(opentx-9xr${SUFFIX}-simulator about_lbm_9x trans)
+add_dependencies(opentx-9x128${SUFFIX}-simulator about_lbm_9x trans)
+add_dependencies(opentx-9xr128${SUFFIX}-simulator about_lbm_9x trans)
+add_dependencies(opentx-gruvin9x${SUFFIX}-simulator about_lbm_9x trans)
+add_dependencies(opentx-sky9x${SUFFIX}-simulator about_lbm_9x trans)
+add_dependencies(opentx-taranis${SUFFIX}-simulator about_lbm_taranis trans lua_exports)
+add_dependencies(opentx-taranisplus${SUFFIX}-simulator about_lbm_taranis trans lua_exports)
+add_dependencies(opentx-taranisx9e${SUFFIX}-simulator about_lbm_taranis trans lua_exports)
 
 set(OPENTX_LIBRARIES
   opentx-9x${SUFFIX}-simulator
