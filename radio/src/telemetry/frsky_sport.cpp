@@ -265,6 +265,10 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t instance)
 #if defined(PCBTARANIS)
 bool sportWaitState(SportUpdateState state, int timeout)
 {
+#if defined(SIMU)
+    SIMU_SLEEP_NORET(1);
+    return true;
+#else
   for (int i=timeout/2; i>=0; i--) {
     uint8_t data ;
     while (telemetryFifo.pop(data)) {
@@ -276,13 +280,10 @@ bool sportWaitState(SportUpdateState state, int timeout)
     else if (sportUpdateState == SPORT_FAIL) {
       return false;
     }
-#if defined(SIMU)
-    SIMU_SLEEP_NORET(1);
-    return true;
-#endif
     CoTickDelay(1);
   }
   return false;
+#endif
 }
 
 void blankPacket(uint8_t *packet)
