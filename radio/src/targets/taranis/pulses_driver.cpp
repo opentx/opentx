@@ -155,7 +155,7 @@ void disable_no_pulses(uint32_t port)
 
 static void init_pa10_none()
 {
-  INTERNAL_RF_OFF();
+  INTERNAL_MODULE_OFF();
 
   // Timer1, channel 3
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -243,7 +243,7 @@ static void disable_pa7_none()
 
 static void init_pa10_pxx()
 {
-  INTERNAL_RF_ON();
+  INTERNAL_MODULE_ON();
 
   // Timer1, channel 3
   setupPulsesPXX(INTERNAL_MODULE) ; // TODO not here!
@@ -307,7 +307,7 @@ static void disable_pa10_pxx()
   NVIC_DisableIRQ(TIM1_CC_IRQn) ;
   TIM1->DIER &= ~TIM_DIER_CC2IE ;
   TIM1->CR1 &= ~TIM_CR1_CEN ;
-  INTERNAL_RF_OFF();
+  INTERNAL_MODULE_OFF();
 }
 
 #if defined(TARANIS_INTERNAL_PPM)
@@ -316,7 +316,7 @@ static void disable_pa10_pxx()
 // Pin is AF1 function for timer 1
 static void init_pa10_ppm()
 {
-  INTERNAL_RF_ON();
+  INTERNAL_MODULE_ON();
   // Timer1
   ppmStreamPtr[INTERNAL_MODULE] = ppmStream[INTERNAL_MODULE];
 
@@ -362,7 +362,7 @@ static void disable_pa10_ppm()
   TIM1->DIER &= ~TIM_DIER_CC2IE & ~TIM_DIER_UIE ;
   TIM1->CR1 &= ~TIM_CR1_CEN ;
 
-  INTERNAL_RF_OFF();
+  INTERNAL_MODULE_OFF();
 }
 #endif  // #if defined(TARANIS_INTERNAL_PPM)
 
