@@ -148,6 +148,7 @@ void processSportUpdatePacket(uint8_t *packet)
       case PRIM_REQ_DATA_ADDR :
         if (sportUpdateState == SPORT_DATA_TRANSFER) {
           sportUpdateAddr = *((uint32_t *)(&packet[3]));
+          sportUpdateState = SPORT_DATA_REQ;
         }
         break;
 
