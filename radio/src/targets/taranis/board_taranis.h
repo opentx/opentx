@@ -177,8 +177,8 @@ uint32_t isBootloaderStart(const void * buffer);
 #define INTERNAL_MODULE_OFF()     GPIO_ResetBits(GPIO_INT_RF_PWR, PIN_INT_RF_PWR)
 #define EXTERNAL_MODULE_ON()      GPIO_SetBits(GPIO_EXT_RF_PWR, PIN_EXT_RF_PWR)
 #define EXTERNAL_MODULE_OFF()     GPIO_ResetBits(GPIO_EXT_RF_PWR, PIN_EXT_RF_PWR)
-#define IS_INTERNAL_MODULE_ON()      (GPIO_ReadInputDataBit(GPIO_INT_RF_PWR, PIN_INT_RF_PWR) == Bit_SET)
-#define IS_EXTERNAL_MODULE_ON()     (GPIO_ReadInputDataBit(GPIO_EXT_RF_PWR, PIN_EXT_RF_PWR) == Bit_SET)
+#define IS_INTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(GPIO_INT_RF_PWR, PIN_INT_RF_PWR) == Bit_SET)
+#define IS_EXTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(GPIO_EXT_RF_PWR, PIN_EXT_RF_PWR) == Bit_SET)
 void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
 void init_ppm( uint32_t module_index );
