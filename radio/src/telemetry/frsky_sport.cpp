@@ -363,8 +363,8 @@ bool sportUpdatePowerOn(ModuleIndex module)
   sportUpdateState = SPORT_POWERUP_REQ;
 
 #if defined(PCBTARANIS)
-  intPwr = INERNAL_MODULE_PWR();
-  extPwr = EXTERNAL_MODULE_PWR();
+  intPwr = IS_INTERNAL_MODULE_ON();
+  extPwr = IS_EXTERNAL_MODULE_ON();
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();
 #endif
