@@ -16,6 +16,7 @@
 /SOUNDS
 /LOGS
 /allsrc.cpp
+/allsimusrc.cpp
 /BMP
 /traces
 /MODELS
@@ -24,7 +25,6 @@
 /gtests
 /gtest_main.a
 /gtests.d
-/lua_exports.cpp
-/lua_exports.txt
-/lua_fields.txt
-/allsimusrc.cpp
+/lua_exports*
+/lua_fields*
+
