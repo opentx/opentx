@@ -1185,15 +1185,6 @@ LimitData *limitAddress(uint8_t idx);
 int8_t *curveAddress(uint8_t idx);
 LogicalSwitchData *lswAddress(uint8_t idx);
 
-#if !defined(BOOT) && !defined(XCURVES)
-struct CurveInfo {
-  int8_t *crv;
-  uint8_t points;
-  bool custom;
-};
-extern CurveInfo curveInfo(uint8_t idx);
-#endif
-
 // static variables used in evalFlightModeMixes - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
 #if defined(VIRTUALINPUTS)
