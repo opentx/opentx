@@ -123,6 +123,7 @@ enum SportUpdateState {
 
 uint8_t  sportUpdateState = SPORT_IDLE;
 uint32_t sportUpdateAddr = 0;
+bool intPwr, extPwr;
 
 void processSportUpdatePacket(uint8_t *packet)
 {
@@ -362,6 +363,8 @@ bool sportUpdatePowerOn(ModuleIndex module)
   sportUpdateState = SPORT_POWERUP_REQ;
 
 #if defined(PCBTARANIS)
+  intPwr = INERNAL_MODULE_PWR();
+  extPwr = EXTERNAL_MODULE_PWR();
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();
 #endif
@@ -484,12 +487,19 @@ void sportFirmwareUpdate(ModuleIndex module, const char *filename)
   if (result == false) {
     POPUP_WARNING("Firmware Update Error");
   }
-  sportUpdateState = SPORT_IDLE;
   
 #if defined(PCBTARANIS)
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();
+  
+  sportWaitState(SPORT_IDLE, 1000);
+
+  if (intPwr) 
+    INTERNAL_MODULE_ON();
+  if (extPwr)
+    EXTERNAL_MODULE_ON();
 #endif
+  sportUpdateState = SPORT_IDLE;
 }
 
 #endif
