@@ -224,7 +224,6 @@ int8_t checkIncDecMovedSwitch(int8_t val);
 #endif
 
 #if defined(CPUARM)
-  bool isThrottleSourceAvailable(int source);
   bool isLogicalSwitchFunctionAvailable(int function);
   bool isAssignableFunctionAvailable(int function);
   bool isSwitchAvailableInLogicalSwitches(int swtch);
