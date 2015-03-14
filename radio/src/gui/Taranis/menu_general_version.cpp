@@ -43,11 +43,9 @@ void backupEeprom()
   FIL file;
 
   lcd_clear();
-  lcd_putsLeft(4*FH, STR_WRITING);
-  lcd_rect(3, 6*FH+4, 204, 7);
-  lcdRefresh();
+  displayProgressBar(STR_WRITING);
 
-  //reset unexpectedShutdown to prevent warning when user restores EEPROM backup
+  // reset unexpectedShutdown to prevent warning when user restores EEPROM backup
   g_eeGeneral.unexpectedShutdown = 0;
   eeDirty(EE_GENERAL);
   eeCheck(true);
@@ -76,10 +74,7 @@ void backupEeprom()
     UINT count;
     eeprom_read_block(buffer, i, 1024);
     f_write(&file, buffer, 1024, &count);
-    lcd_hline(5, 6*FH+6, (200*i)/EESIZE, FORCE);
-    lcd_hline(5, 6*FH+7, (200*i)/EESIZE, FORCE);
-    lcd_hline(5, 6*FH+8, (200*i)/EESIZE, FORCE);
-    lcdRefresh();
+    updateProgressBar(i, EESIZE);
     SIMU_SLEEP(100/*ms*/);
   }
 

@@ -82,9 +82,7 @@ void flashBootloader(const char * filename)
   UINT count;
 
   lcd_clear();
-  lcd_putsLeft(4*FH, STR_WRITING);
-  lcd_rect(3, 6*FH+4, 204, 7);
-  lcdRefresh();
+  displayProgressBar(STR_WRITING);
 
   static uint8_t unlocked = 0;
   if (!unlocked) {
@@ -104,12 +102,9 @@ void flashBootloader(const char * filename)
     }
     for (int j=0; j<1024; j+=FLASH_PAGESIZE) {
       writeFlash(CONVERT_UINT_PTR(FIRMWARE_ADDRESS+i+j), (uint32_t *)(buffer+j));
-      lcd_hline(5, 6*FH+6, (200*i)/BOOTLOADER_SIZE, FORCE);
-      lcd_hline(5, 6*FH+7, (200*i)/BOOTLOADER_SIZE, FORCE);
-      lcd_hline(5, 6*FH+8, (200*i)/BOOTLOADER_SIZE, FORCE);
-      lcdRefresh();
-      SIMU_SLEEP(30/*ms*/);
     }
+    updateProgressBar(i, BOOTLOADER_SIZE);
+    SIMU_SLEEP(30/*ms*/);
   }
 
   if (unlocked) {
@@ -118,6 +113,13 @@ void flashBootloader(const char * filename)
   }
 
   f_close(&file);
+}
+
+void getSelectionFullPath(char *lfn)
+{
+  f_getcwd(lfn, _MAX_LFN);
+  strcat(lfn, PSTR("/"));
+  strcat(lfn, reusableBuffer.sdmanager.lines[m_posVert - s_pgOfs]);
 }
 
 void onSdManagerMenu(const char *result)
@@ -157,9 +159,7 @@ void onSdManagerMenu(const char *result)
     }
   }
   else if (result == STR_DELETE_FILE) {
-    f_getcwd(lfn, _MAX_LFN);
-    strcat(lfn, PSTR("/"));
-    strcat(lfn, line);
+    getSelectionFullPath(lfn);
     f_unlink(lfn);
     strncpy(statusLineMsg, line, 13);
     strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), STR_REMOVED);
@@ -169,16 +169,8 @@ void onSdManagerMenu(const char *result)
       m_posVert--;
     }
   }
-  /* TODO else if (result == STR_LOAD_FILE) {
-    f_getcwd(lfn, _MAX_LFN);
-    strcat(lfn, "/");
-    strcat(lfn, line);
-    POPUP_WARNING(eeLoadModelSD(lfn));
-  } */
   else if (result == STR_PLAY_FILE) {
-    f_getcwd(lfn, _MAX_LFN);
-    strcat(lfn, "/");
-    strcat(lfn, line);
+    getSelectionFullPath(lfn);
     audioQueue.stopAll();
     audioQueue.playFile(lfn, 0, ID_PLAY_FROM_SD_MANAGER);
   }
@@ -188,22 +180,16 @@ void onSdManagerMenu(const char *result)
     eeDirty(EE_MODEL);
   }
   else if (result == STR_VIEW_TEXT) {
-    f_getcwd(lfn, _MAX_LFN);
-    strcat(lfn, "/");
-    strcat(lfn, line);
+    getSelectionFullPath(lfn);
     pushMenuTextView(lfn);
   }
   else if (result == STR_FLASH_BOOTLOADER) {
-    f_getcwd(lfn, _MAX_LFN);
-    strcat(lfn, "/");
-    strcat(lfn, line);
+    getSelectionFullPath(lfn);
     flashBootloader(lfn);
   }
 #if defined(LUA)
   else if (result == STR_EXECUTE_FILE) {
-    f_getcwd(lfn, _MAX_LFN);
-    strcat(lfn, "/");
-    strcat(lfn, line);
+    getSelectionFullPath(lfn);
     luaExec(lfn);
   }
 #endif
@@ -211,13 +197,6 @@ void onSdManagerMenu(const char *result)
 
 void menuGeneralSdManager(uint8_t _event)
 {
-  FILINFO fno;
-  DIR dir;
-  char *fn;   /* This function is assuming non-Unicode cfg. */
-  TCHAR lfn[_MAX_LFN + 1];
-  fno.lfname = lfn;
-  fno.lfsize = sizeof(lfn);
-
   if (s_warning_result) {
     s_warning_result = 0;
     displayPopup(STR_FORMATTING);
@@ -316,6 +295,13 @@ void menuGeneralSdManager(uint8_t _event)
   }
 
   if (reusableBuffer.sdmanager.offset != s_pgOfs) {
+    FILINFO fno;
+    DIR dir;
+    char *fn;   /* This function is assuming non-Unicode cfg. */
+    TCHAR lfn[_MAX_LFN + 1];
+    fno.lfname = lfn;
+    fno.lfsize = sizeof(lfn);
+    
     if (s_pgOfs == 0) {
       reusableBuffer.sdmanager.offset = 0;
       memset(reusableBuffer.sdmanager.lines, 0, sizeof(reusableBuffer.sdmanager.lines));

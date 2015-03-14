@@ -51,6 +51,8 @@ void displaySplash();
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 void displayScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 void displayMenuBar(const MenuItem *menu, int index);
+void displayProgressBar(const char *label);
+void updateProgressBar(int num, int den);
 
 extern coord_t scrollbar_X;
 #define SET_SCROLLBAR_X(x) scrollbar_X = (x);

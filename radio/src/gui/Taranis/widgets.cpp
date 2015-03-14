@@ -95,6 +95,24 @@ void displayMenuBar(const MenuItem *menu, int index)
   lcd_hlineStip(0, 31, LCD_W, SOLID, FORCE);
 }
 
+void displayProgressBar(const char *label)
+{
+  lcd_putsLeft(4*FH, label);
+  lcd_rect(3, 6*FH+4, 204, 7);
+  lcdRefresh();
+}
+
+void updateProgressBar(int num, int den)
+{
+  if (num > 0 && den > 0) {
+    int width = (200*num)/den;
+    lcd_hline(5, 6*FH+6, width, FORCE);
+    lcd_hline(5, 6*FH+7, width, FORCE);
+    lcd_hline(5, 6*FH+8, width, FORCE);
+    lcdRefresh();
+  }
+}
+
 void title(const pm_char * s)
 {
   lcd_putsAtt(0, 0, s, INVERS);
