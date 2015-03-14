@@ -145,6 +145,7 @@ int main(int argc, char *argv[])
     }
     current_firmware_variant = GetFirmware(firmwareId);
     eepromFileName = QString("eeprom-%1.bin").arg(radioId);
+    eepromFileName = eedir.filePath(eepromFileName.toAscii());
     SimulatorFactory *factory = getSimulatorFactory(firmwareId);
     if (factory->type() == BOARD_TARANIS)
       dialog = new SimulatorDialogTaranis(NULL, factory->create());
