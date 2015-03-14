@@ -184,9 +184,11 @@ int StandardPage::nextFreeChannel(int channel)
 int StandardPage::totalChannelsAvailable()
 {
   int c = 0;
-  for(int i=0; i<WIZ_MAX_CHANNELS; i++)
-    if (wizDlg->mix.channel[i].page == Page_None)
+  for(int i=0; i<WIZ_MAX_CHANNELS; i++) {
+    if (wizDlg->mix.channel[i].page == Page_None) {
       c++;
+    }
+  }
 
   return c;
 }
