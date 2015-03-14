@@ -100,7 +100,7 @@ uint8_t pwrCheck()
 
 void pwrOff()
 {
-  PORTH = 0b11101111;   // PortH-4 set to 0
+  PORTH = 0x1F;   // PortH-4 set to 0
 }
 
 FORCEINLINE uint8_t keyDown()
@@ -185,8 +185,8 @@ FORCEINLINE void readKeysAndTrims()
 {
   uint8_t enuk = KEY_MENU;
 
-  keys[BTN_REa].input(~PINJ & 0b00000001);
-  keys[BTN_REb].input(~PINJ & 0b00000010);
+  keys[BTN_REa].input(~PINJ & 0x01);
+  keys[BTN_REb].input(~PINJ & 0x02);
 
   uint8_t tin = ~PINL;
   uint8_t in;
