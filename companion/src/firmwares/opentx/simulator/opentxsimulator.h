@@ -39,6 +39,10 @@
   #define FLAVOUR "gruvin9x"
   #define NAMESPACE Gruvin9X
   #define EEPROM_VARIANT 0
+#elif defined(PCBMEGA2560)
+  #define FLAVOUR "mega2560"
+  #define NAMESPACE Mega2560
+  #define EEPROM_VARIANT 0
 #elif defined(PCB9XR) && defined(CPUM128)
   #define FLAVOUR "9xr128"
   #define NAMESPACE M128XR

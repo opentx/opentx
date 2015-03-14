@@ -240,6 +240,8 @@ namespace NAMESPACE {
 #elif defined(PCBGRUVIN9X)
 #include "radio/src/targets/gruvin9x/board_gruvin9x.cpp"
 #include "radio/src/targets/gruvin9x/somo14d.cpp"
+#elif defined(PCBMEGA2560)
+#include "radio/src/targets/mega2560/board_mega2560.cpp"
 #else
 #include "radio/src/targets/stock/board_stock.cpp"
 #endif

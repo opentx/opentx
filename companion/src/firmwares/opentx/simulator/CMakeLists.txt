@@ -3,22 +3,22 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 
 set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/../../radio/src)
 
-add_custom_target( about_lbm_9x 
+add_custom_target(about_lbm_9x 
   make lbm PCB=9X
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
-add_custom_target( about_lbm_taranis 
+add_custom_target(about_lbm_taranis 
   make lbm PCB=TARANIS
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
-add_custom_target( trans
+add_custom_target(trans
   make tra
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
-add_custom_target( lua_exports 
+add_custom_target(lua_exports 
   make PCB=TARANIS lua_exports.inc
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
@@ -69,6 +69,7 @@ add_library(opentx-9xr${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-9x128${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-9xr128${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-gruvin9x${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
+add_library(opentx-mega2560${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-sky9x${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranis${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranisplus${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
@@ -79,6 +80,7 @@ add_dependencies(opentx-9xr${SUFFIX}-simulator about_lbm_9x trans)
 add_dependencies(opentx-9x128${SUFFIX}-simulator about_lbm_9x trans)
 add_dependencies(opentx-9xr128${SUFFIX}-simulator about_lbm_9x trans)
 add_dependencies(opentx-gruvin9x${SUFFIX}-simulator about_lbm_9x trans)
+add_dependencies(opentx-mega2560${SUFFIX}-simulator about_lbm_9x trans)
 add_dependencies(opentx-sky9x${SUFFIX}-simulator about_lbm_9x trans)
 add_dependencies(opentx-taranis${SUFFIX}-simulator about_lbm_taranis trans lua_exports)
 add_dependencies(opentx-taranisplus${SUFFIX}-simulator about_lbm_taranis trans lua_exports)
@@ -90,6 +92,7 @@ set(OPENTX_LIBRARIES
   opentx-9x128${SUFFIX}-simulator
   opentx-9xr128${SUFFIX}-simulator
   opentx-gruvin9x${SUFFIX}-simulator
+  opentx-mega2560${SUFFIX}-simulator
   opentx-sky9x${SUFFIX}-simulator
   opentx-taranis${SUFFIX}-simulator
   opentx-taranisplus${SUFFIX}-simulator
@@ -120,6 +123,11 @@ target_link_libraries(opentx-9xr128${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIE
 target_include_directories(opentx-gruvin9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/gruvin9x)
 target_compile_definitions(opentx-gruvin9x${SUFFIX}-simulator PRIVATE PCBGRUVIN9X CPUM2560 VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-gruvin9x${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
+
+# Mega2560
+target_include_directories(opentx-mega2560${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/mega2560)
+target_compile_definitions(opentx-mega2560${SUFFIX}-simulator PRIVATE PCBMEGA2560 CPUM2560 SDCARD ROTARY_ENCODERS=2 ${COMMON_DEFINITIONS})
+target_link_libraries(opentx-mega2560${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Sky9x
 target_include_directories(opentx-sky9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/sky9x)

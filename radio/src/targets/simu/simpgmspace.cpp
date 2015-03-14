@@ -55,7 +55,7 @@
   #include <SDL.h>
 #endif
 
-volatile uint8_t pina=0xff, pinb=0xff, pinc=0xff, pind, pine=0xff, pinf=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
+volatile uint8_t pina=0xff, pinb=0xff, pinc=0xff, pind, pine=0xff, pinf=0xff, ping=0xff, pinh=0xff, pinj=0, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
 uint16_t dummyport16;
 const char *eepromFile = NULL;
@@ -141,6 +141,7 @@ sem_t *eeprom_write_sem;
 
 void simuSetKey(uint8_t key, bool state)
 {
+  // TRACE("simuSetKey(%d, %d)", key, state);
   switch (key) {
     KEY_CASE(KEY_MENU, GPIO_BUTTON_MENU, PIN_BUTTON_MENU)
     KEY_CASE(KEY_EXIT, GPIO_BUTTON_EXIT, PIN_BUTTON_EXIT)
@@ -184,7 +185,7 @@ void simuSetTrim(uint8_t trim, bool state)
 // TODO use a better numbering to allow google tests to work on Taranis
 void simuSetSwitch(uint8_t swtch, int8_t state)
 {
-  // TRACE("swtch=%d state=%d", swtch, state);
+  // TRACE("simuSetSwitch(%d, %d)", swtch, state);
   switch (swtch) {
 #if defined(PCBTARANIS) && defined(REV9E)
     SWITCH_3_CASE(0, GPIO_PIN_SW_A_L, GPIO_PIN_SW_A_H, PIN_SW_A_L, PIN_SW_A_H)
