@@ -97,6 +97,7 @@ void sportSendBuffer(uint8_t *buffer, uint32_t count)
   sportTxBuffer.ptr = buffer ;
   sportTxBuffer.count = count ;
   GPIO_PIN_SPORT_ON->BSRRL = PIN_SPORT_ON ;     // output enable
+  SPORT_USART->CR1 &= ~USART_CR1_RE ;           // turn off receiver
   SPORT_USART->CR1 |= USART_CR1_TXEIE ;
 }
 
@@ -114,23 +115,27 @@ extern "C" void SPORT_IRQHandler()
     if (sportTxBuffer.count) {
       SPORT_USART->DR = *sportTxBuffer.ptr++;
       if (--sportTxBuffer.count == 0) {
-        SPORT_USART->CR1 &= ~USART_CR1_TXEIE;   // Stop Tx interrupt
-        SPORT_USART->CR1 |= USART_CR1_TCIE;     // Enable complete interrupt
+        SPORT_USART->CR1 &= ~USART_CR1_TXEIE;   // stop Tx interrupt
+        SPORT_USART->CR1 |= USART_CR1_TCIE;     // enable complete interrupt
       }
     }
   }
 	
-  if (SPORT_USART->SR & USART_SR_TC)	{
-    SPORT_USART->CR1 &= ~USART_CR1_TCIE ;	// Stop Complete interrupt
+  if ((status & USART_SR_TC) && (SPORT_USART->CR1 & USART_CR1_TCIE))
+    SPORT_USART->CR1 &= ~USART_CR1_TCIE ;	// stop Complete interrupt
     GPIO_PIN_SPORT_ON->BSRRH = PIN_SPORT_ON ;	// output disable
+    SPORT_USART->CR1 |= USART_CR1_RE ;
+    while (status & (USART_FLAG_RXNE)) {
+      status = SPORT_USART->DR;
+      status = SPORT_USART->SR ;
+    }
   }
 	
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     data = SPORT_USART->DR;
-
-    if (!(status & USART_FLAG_ERRORS))
+    if (!(status & USART_FLAG_ERRORS)) {
       telemetryFifo.push(data);
-
+    }
     status = SPORT_USART->SR;
   }
 }
