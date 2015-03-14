@@ -514,7 +514,7 @@ class OpenTxSimulatorFactory: public SimulatorFactory
 
 }
 
-extern "C" __declspec(dllexport) SimulatorFactory *registerSimu()
+extern "C" DLLEXPORT SimulatorFactory *registerSimu()
 {
   return new NAMESPACE::OpenTxSimulatorFactory();
 }

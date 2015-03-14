@@ -35,8 +35,8 @@
  */
 
 #include <stdint.h>
-#include "FatFs/diskio.h"
-#include "FatFs/ff.h"
+#include "diskio.h"
+#include "ff.h"
 
 #define LIST_NONE_SD_FILE  1
 

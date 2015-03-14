@@ -47,6 +47,9 @@ include_directories(
   ${RADIO_SRC_DIRECTORY}/fonts/std
   ${RADIO_SRC_DIRECTORY}/lua/src
   ${RADIO_SRC_DIRECTORY}/thirdparty
+  ${RADIO_SRC_DIRECTORY}/thirdparty/FatFs
+  ${RADIO_SRC_DIRECTORY}/thirdparty/FatFs/option
+  ${RADIO_SRC_DIRECTORY}/thirdparty/CoOS
 )
 
 if(DEFINED TRANSLATIONS)
@@ -82,6 +85,18 @@ add_library(opentx-sky9x${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranis${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranisplus${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranisx9e${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
+
+set(OPENTX_LIBRARIES
+  opentx-9x${SUFFIX}-simulator
+  opentx-9xr${SUFFIX}-simulator
+  opentx-9x128${SUFFIX}-simulator
+  opentx-9xr128${SUFFIX}-simulator
+  opentx-gruvin9x${SUFFIX}-simulator
+  opentx-sky9x${SUFFIX}-simulator
+  opentx-taranis${SUFFIX}-simulator
+  opentx-taranisplus${SUFFIX}-simulator
+  opentx-taranisx9e${SUFFIX}-simulator
+)
 
 # 9X with ATmega64
 target_include_directories(opentx-9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/stock)
@@ -127,3 +142,7 @@ target_link_libraries(opentx-taranisplus${SUFFIX}-simulator PRIVATE ${COMMON_LIB
 target_include_directories(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/taranis)
 target_compile_definitions(opentx-taranisx9e${SUFFIX}-simulator PRIVATE PCBTARANIS REVPLUS REV9E CPUARM CPUSTM32 STM32F40_41xxx VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
+
+ADD_CUSTOM_TARGET(opentx-simulators
+  DEPENDS ${OPENTX_LIBRARIES}
+)

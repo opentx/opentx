@@ -644,7 +644,7 @@ namespace simu {
   #include <libgen.h>
 #endif
 }
-#include "FatFs/ff.h"
+#include "ff.h"
 
 #if defined WIN32 || !defined __GNUC__
 #include <direct.h>

@@ -28,6 +28,7 @@ BINX = $(CP) -O binary
 OBJDIR = .
 
 THIRDPARTY = ../../../thirdparty
+FATFSDIR = $(THIRDPARTY)/FatFs
 
 ifeq ($(PCBREV), REV9E)
   MCU = cortex-m4
@@ -81,7 +82,7 @@ endif
 # PCB revision
 PCBREV =
 
-EXTRAINCDIRS = $(THIRDPARTY)
+EXTRAINCDIRS = $(THIRDPARTY) $(FATFSDIR) $(FATFSDIR)/option
 
 STM32USBPATH = ../../../thirdparty/STM32_USB-Host-Device_Lib_V2.1.0/Libraries
 

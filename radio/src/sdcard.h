@@ -37,7 +37,7 @@
 #ifndef _SDCARD_H_
 #define _SDCARD_H_
 
-#include "FatFs/ff.h"
+#include "ff.h"
 
 #define ROOT_PATH           "/"
 #define MODELS_PATH         ROOT_PATH "MODELS"      // no trailing slash = important

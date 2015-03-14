@@ -59,9 +59,15 @@
 #error "Unknown board"
 #endif
 
+#if defined __GNUC__
+  #define DLLEXPORT
+#else
+  #define DLLEXPORT __declspec(dllexport)
+#endif
+
 namespace NAMESPACE {
 
-class __declspec(dllexport) OpenTxSimulator : public SimulatorInterface {
+class DLLEXPORT OpenTxSimulator : public SimulatorInterface {
 
   public:
 

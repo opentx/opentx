@@ -38,7 +38,7 @@
 #define audio_h
 
 #include <stddef.h>
-#include "FatFs/ff.h"
+#include "ff.h"
 
 #define AUDIO_FILENAME_MAXLEN (42)      //max length example: /SOUNDS/fr/123456789012/1234567890-off.wav
 #define AUDIO_QUEUE_LENGTH    (20)
