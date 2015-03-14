@@ -65,6 +65,7 @@
 #define TEXT_EXT            ".txt"
 #define FIRMWARE_EXT        ".bin"
 #define EEPROM_EXT          ".bin"
+#define SPORT_FIRMWARE_EXT  ".frk"
 
 extern FATFS g_FATFS_Obj;
 

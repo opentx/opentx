@@ -74,6 +74,20 @@ inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
   return (!isfile && line[SD_SCREEN_FILE_LENGTH+1]) || (isfile==(bool)line[SD_SCREEN_FILE_LENGTH+1] && strcasecmp(fn, line) < 0);
 }
 
+bool isBootloader(const char *filename)
+{
+  FIL file;
+  f_open(&file, filename, FA_READ);
+  uint8_t buffer[1024];
+  UINT count;
+
+  if (f_read(&file, buffer, 1024, &count) != FR_OK || count != 1024) {
+    return false;
+  }
+
+  return isBootloaderStart((uint32_t *)buffer);
+}
+
 void flashBootloader(const char * filename)
 {
   FIL file;
@@ -113,6 +127,20 @@ void flashBootloader(const char * filename)
   }
 
   f_close(&file);
+}
+
+void flashSportDevice(ModuleIndex module, const char *filename)
+{
+  pausePulses();
+  watchdogSetTimeout(60*60*100/*1h*/);
+
+  lcd_clear();
+  displayProgressBar(STR_WRITING);
+
+  sportFirmwareUpdate(module, filename);
+
+  watchdogSetTimeout(100/*1s*/);
+  resumePulses();
 }
 
 void getSelectionFullPath(char *lfn)
@@ -186,6 +214,14 @@ void onSdManagerMenu(const char *result)
   else if (result == STR_FLASH_BOOTLOADER) {
     getSelectionFullPath(lfn);
     flashBootloader(lfn);
+  }
+  else if (result == STR_FLASH_INTERNAL_MODULE) {
+    getSelectionFullPath(lfn);
+    flashSportDevice(INTERNAL_MODULE, lfn);
+  }
+  else if (result == STR_FLASH_EXTERNAL_DEVICE) {
+    getSelectionFullPath(lfn);
+    flashSportDevice(EXTERNAL_MODULE, lfn);
   }
 #if defined(LUA)
   else if (result == STR_EXECUTE_FILE) {
@@ -272,14 +308,22 @@ void menuGeneralSdManager(uint8_t _event)
           else if (!strcasecmp(ext, TEXT_EXT)) {
             MENU_ADD_ITEM(STR_VIEW_TEXT);
           }
-          else if (!strcasecmp(ext, FIRMWARE_EXT) && !READ_ONLY()) {
-            MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);
-          }
 #if defined(LUA)
           else if (!strcasecmp(ext, SCRIPTS_EXT)) {
             MENU_ADD_ITEM(STR_EXECUTE_FILE);
           }
 #endif
+          else if (!READ_ONLY() && !strcasecmp(ext, FIRMWARE_EXT)) {
+            TCHAR lfn[_MAX_LFN + 1];
+            getSelectionFullPath(lfn);
+            if (isBootloader(lfn)) {
+              MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);
+            }
+          }
+          else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
+            MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
+            MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+          }
         }
         if (!READ_ONLY()) {
           if (line[SD_SCREEN_FILE_LENGTH+1]) // it's a file

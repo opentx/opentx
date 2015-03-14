@@ -478,7 +478,9 @@ void frskyDProcessPacket(uint8_t *packet);
 
 // FrSky S.PORT Protocol
 void processSportPacket(uint8_t *packet);
-
+#if defined(PCBTARANIS)
+void sportFirmwareUpdate(ModuleIndex module, const char *filename);
+#endif
 void telemetryWakeup(void);
 void telemetryReset();
 void telemetryInit(void);

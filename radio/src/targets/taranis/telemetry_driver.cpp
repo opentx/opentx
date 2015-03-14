@@ -41,7 +41,7 @@ extern Fifo<512> telemetryFifo;
 void telemetryPortInit(uint32_t baudrate)
 {
   if (baudrate == 0) {
-    USART_DeInit(USART2);
+    USART_DeInit(SPORT_USART);
     return;
   }
 
@@ -78,40 +78,65 @@ void telemetryPortInit(uint32_t baudrate)
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   
-  USART_Init(SPORT, &USART_InitStructure);
-  USART_Cmd(SPORT, ENABLE);
-  USART_ITConfig(SPORT, USART_IT_RXNE, ENABLE);
+  USART_Init(SPORT_USART, &USART_InitStructure);
+  USART_Cmd(SPORT_USART, ENABLE);
+  USART_ITConfig(SPORT_USART, USART_IT_RXNE, ENABLE);
 
-  NVIC_SetPriority(USART2_IRQn, 6);
-  NVIC_EnableIRQ(USART2_IRQn);
+  NVIC_SetPriority(SPORT_IRQn, 6);
+  NVIC_EnableIRQ(SPORT_IRQn);
 }
 
-void telemetryPutc(const char c)
+struct SportTxBuffer
 {
-  GPIO_SetBits(GPIO_PIN_SPORT_ON, PIN_SPORT_ON);
-  USART_SendData(SPORT, c);
-  GPIO_ResetBits(GPIO_PIN_SPORT_ON, PIN_SPORT_ON);
+  uint8_t *ptr;
+  uint32_t count;
+} sportTxBuffer;
+
+void sportSendBuffer(uint8_t *buffer, uint32_t count)
+{
+  sportTxBuffer.ptr = buffer ;
+  sportTxBuffer.count = count ;
+  GPIO_PIN_SPORT_ON->BSRRL = PIN_SPORT_ON ;     // output enable
+  SPORT_USART->CR1 &= ~USART_CR1_RE ;           // turn off receiver
+  SPORT_USART->CR1 |= USART_CR1_TXEIE ;
 }
 
 #if !defined(SIMU)
-
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
-extern "C" void USART2_IRQHandler()
+extern "C" void SPORT_IRQHandler()
 {
   uint32_t status;
   uint8_t data;
 
-  status = SPORT->SR;
+  status = SPORT_USART->SR;
 
+  if (status & USART_SR_TXE) {
+    if (sportTxBuffer.count) {
+      SPORT_USART->DR = *sportTxBuffer.ptr++;
+      if (--sportTxBuffer.count == 0) {
+        SPORT_USART->CR1 &= ~USART_CR1_TXEIE;   // stop Tx interrupt
+        SPORT_USART->CR1 |= USART_CR1_TCIE;     // enable complete interrupt
+      }
+    }
+  }
+	
+  if ((status & USART_SR_TC) && (SPORT_USART->CR1 & USART_CR1_TCIE)) {
+    SPORT_USART->CR1 &= ~USART_CR1_TCIE ;	// stop Complete interrupt
+    GPIO_PIN_SPORT_ON->BSRRH = PIN_SPORT_ON ;	// output disable
+    SPORT_USART->CR1 |= USART_CR1_RE ;
+    while (status & (USART_FLAG_RXNE)) {
+      status = SPORT_USART->DR;
+      status = SPORT_USART->SR ;
+    }
+  }
+	
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
-    data = SPORT->DR;
-
-    if (!(status & USART_FLAG_ERRORS))
+    data = SPORT_USART->DR;
+    if (!(status & USART_FLAG_ERRORS)) {
       telemetryFifo.push(data);
-
-    status = SPORT->SR;
+    }
+    status = SPORT_USART->SR;
   }
 }
-
 #endif
