@@ -121,7 +121,7 @@ extern "C" void SPORT_IRQHandler()
     }
   }
 	
-  if ((status & USART_SR_TC) && (SPORT_USART->CR1 & USART_CR1_TCIE))
+  if ((status & USART_SR_TC) && (SPORT_USART->CR1 & USART_CR1_TCIE)) {
     SPORT_USART->CR1 &= ~USART_CR1_TCIE ;	// stop Complete interrupt
     GPIO_PIN_SPORT_ON->BSRRH = PIN_SPORT_ON ;	// output disable
     SPORT_USART->CR1 |= USART_CR1_RE ;
