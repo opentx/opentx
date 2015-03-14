@@ -185,6 +185,28 @@
 #define NUM_CYC                3
 #define NUM_CAL_PPM            4
 
+enum CurveType {
+  CURVE_TYPE_STANDARD,
+  CURVE_TYPE_CUSTOM,
+  CURVE_TYPE_LAST = CURVE_TYPE_CUSTOM
+};
+
+#if defined(XCURVES)
+PACK(typedef struct {
+  uint8_t type:3;
+  uint8_t smooth:1;
+  uint8_t spare:4;
+  int8_t  points;
+}) CurveInfo;
+#else
+struct CurveInfo {
+  int8_t *crv;
+  uint8_t points;
+  bool custom;
+};
+extern CurveInfo curveInfo(uint8_t idx);
+#endif
+
 #if defined(PCBTARANIS)
   #define LEN_MODEL_NAME       12
   #define LEN_TIMER_NAME       8
@@ -193,17 +215,6 @@
   #define LEN_EXPOMIX_NAME     8
   #define LEN_CHANNEL_NAME     6
   #define LEN_INPUT_NAME       4
-  enum CurveType {
-    CURVE_TYPE_STANDARD,
-    CURVE_TYPE_CUSTOM,
-    CURVE_TYPE_LAST = CURVE_TYPE_CUSTOM
-  };
-PACK(typedef struct {
-  uint8_t type:3;
-  uint8_t smooth:1;
-  uint8_t spare:4;
-  int8_t  points;
-}) CurveInfo;
   #define MAX_CURVES           32
   #define NUM_POINTS           512
   #define CURVDATA             CurveInfo
@@ -337,28 +348,38 @@ enum BeeperMode {
 #endif
 
 #if defined(PCBTARANIS)
-enum uartModes {
-  UART_MODE_NONE,
-  UART_MODE_TELEMETRY_MIRROR,
-  UART_MODE_TELEMETRY,
-  UART_MODE_SBUS_TRAINER,
-  // UART_MODE_CPPM_TRAINER,
-#if defined(DEBUG)
-  UART_MODE_DEBUG,
-#endif
-  UART_MODE_COUNT,
-  UART_MODE_MAX = UART_MODE_COUNT-1
-};
+  enum UartModes {
+    UART_MODE_NONE,
+    UART_MODE_TELEMETRY_MIRROR,
+    UART_MODE_TELEMETRY,
+    UART_MODE_SBUS_TRAINER,
+    // UART_MODE_CPPM_TRAINER,
+  #if defined(DEBUG)
+    UART_MODE_DEBUG,
+  #endif
+    UART_MODE_COUNT,
+    UART_MODE_MAX = UART_MODE_COUNT-1
+  };
 
-#define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.uart3Mode==UART_MODE_SBUS_TRAINER/* || g_eeGeneral.uart3Mode==UART_MODE_CPPM_TRAINER*/)
-#define EXTRA_GENERAL_FIELDS \
-  EXTRA_GENERAL_FIELDS_ARM \
-  uint8_t  uart3Mode:6; \
-  uint8_t  slidersConfig:2; \
-  uint8_t  potsConfig; /*two bits for every pot*/\
-  uint8_t  backlightColor;
+  #define LEN_SWITCH_NAME  3
+  #define LEN_ANA_NAME     3
+
+  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.uart3Mode==UART_MODE_SBUS_TRAINER/* || g_eeGeneral.uart3Mode==UART_MODE_CPPM_TRAINER*/)
+  #define EXTRA_GENERAL_FIELDS \
+    EXTRA_GENERAL_FIELDS_ARM \
+    uint8_t  uart3Mode:6; \
+    uint8_t  slidersConfig:2; \
+    uint8_t  potsConfig; /*two bits for every pot*/\
+    uint8_t  backlightColor;
+    swarnstate_t switchUnlockStates; \
+    CustomFunctionData customFn[NUM_CFN]; \
+    swconfig_t switchConfig; \
+    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
+    char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME];
 #elif defined(CPUARM)
-  #define EXTRA_GENERAL_FIELDS EXTRA_GENERAL_FIELDS_ARM
+  #define EXTRA_GENERAL_FIELDS \
+    EXTRA_GENERAL_FIELDS_ARM \
+    CustomFunctionData customFn[NUM_CFN]
 #elif defined(PXX)
   #define EXTRA_GENERAL_FIELDS uint8_t  countryCode;
 #else
@@ -691,18 +712,12 @@ PACK(typedef struct {
     SLIDER_NONE,
     SLIDER_WITH_DETENT,
   };
-  #define GENERAL_FIELD_SWITCH_CONFIG swconfig_t switchConfig;
   #define SWITCH_CONFIG(x)            ((g_eeGeneral.switchConfig >> (2*(x))) & 0x03)
   #define SWITCH_EXISTS(x)            (SWITCH_CONFIG(x) != SWITCH_NONE)
   #define IS_3POS(x)                  (SWITCH_CONFIG(x) == SWITCH_3POS)
   #define IS_TOGGLE(x)                (SWITCH_CONFIG(x) == SWITCH_TOGGLE)
   #define SWITCH_WARNING_ALLOWED(x)   (SWITCH_EXISTS(x) && !IS_TOGGLE(x))
-#else
-  #define GENERAL_FIELD_SWITCH_CONFIG
 #endif
-
-#define LEN_SWITCH_NAME 3
-#define LEN_ANA_NAME    3
 
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct {
@@ -750,34 +765,25 @@ PACK(typedef struct {
 
   EXTRA_GENERAL_FIELDS
 
-  TARANIS_FIELD(swarnstate_t switchUnlockStates)
-
-  ARM_FIELD(CustomFunctionData customFn[NUM_CFN])
-
-  GENERAL_FIELD_SWITCH_CONFIG
-
-  TARANIS_FIELD(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME])
-
-  TARANIS_FIELD(char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME])
-
 }) EEGeneral;
 
 #define SWITCHES_DELAY()            uint8_t(15+g_eeGeneral.switchesDelay)
 #define SWITCHES_DELAY_NONE         (-15)
 #define HAPTIC_STRENGTH()           (3+g_eeGeneral.hapticStrength)
 
-#if defined(PCBTARANIS)
 enum CurveRefType {
   CURVE_REF_DIFF,
   CURVE_REF_EXPO,
   CURVE_REF_FUNC,
   CURVE_REF_CUSTOM
 };
+
 PACK(typedef struct {
   uint8_t type;
   int8_t  value;
 }) CurveRef;
-#else
+
+#if !defined(XCURVES)
   #define MODE_DIFFERENTIAL  0
   #define MODE_EXPO          0
   #define MODE_CURVE         1
@@ -1451,7 +1457,7 @@ enum TelemetryScreenType {
   TELEMETRY_SCREEN_TYPE_NONE,
   TELEMETRY_SCREEN_TYPE_VALUES,
   TELEMETRY_SCREEN_TYPE_GAUGES,
-#if defined(PCBTARANIS) && defined(LUA)
+#if defined(LUA)
   TELEMETRY_SCREEN_TYPE_SCRIPT,
   TELEMETRY_SCREEN_TYPE_MAX = TELEMETRY_SCREEN_TYPE_SCRIPT
 #else
@@ -1751,7 +1757,7 @@ enum SwitchSources {
 enum MixSources {
   MIXSRC_NONE,
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
   MIXSRC_FIRST_INPUT,             LUA_EXPORT_MULTIPLE("input", "Input [I%d]", MAX_INPUTS)
   MIXSRC_LAST_INPUT = MIXSRC_FIRST_INPUT+MAX_INPUTS-1,
 
