@@ -118,9 +118,9 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
       lcd_outdezNAtt(lcdLastPos+FW+FW+1, y, mn, LEFT|LEADING0, 2); // mm before '.'
       lcd_vline(lcdLastPos, y, 2);
       uint16_t ss = ap * 6;
-      lcd_outdezAtt(lcdLastPos+3, y, ss / 1000, LEFT); // ''
+      lcd_outdezNAtt(lcdLastPos+3, y, ss / 1000, LEFT|LEADING0, 2); // ''
       lcd_plot(lcdLastPos, y+FH-2, 0); // small decimal point
-      lcd_outdezAtt(lcdLastPos+2, y, ss % 1000, LEFT); // ''
+      lcd_outdezNAtt(lcdLastPos+2, y, ss % 1000, LEFT|LEADING0, 3); // ''
       lcd_vline(lcdLastPos, y, 2);
       lcd_vline(lcdLastPos+2, y, 2);
     }
