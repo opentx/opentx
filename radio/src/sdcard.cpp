@@ -182,7 +182,7 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
   return s_menu_count;
 }
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM) && defined(SDCARD)
 const char *fileCopy(const char *filename, const char *srcDir, const char *destDir)
 {
   FIL srcFile;
