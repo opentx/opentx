@@ -119,6 +119,7 @@ void luaV_gettable (lua_State *L, const TValue *t, TValue *key, StkId val) {
   int loop;
   if (ttisrotable(t)) {
     setnilvalue(val);
+    TRACE("luaV_gettable(key=%s)", key);
     if (ttisstring(key)) {
       char keyname[LUA_MAX_ROTABLE_NAME + 1];
       lu_byte keytype;
@@ -143,8 +144,10 @@ void luaV_gettable (lua_State *L, const TValue *t, TValue *key, StkId val) {
       }
       /* else will try the tag method */
     }
-    else if (ttisnil(tm = luaT_gettmbyobj(L, t, TM_INDEX)))
+    else if (ttisnil(tm = luaT_gettmbyobj(L, t, TM_INDEX))) {
+      TRACE("ERREUR ICI");
       luaG_typeerror(L, t, "index");
+    }
     if (ttisfunction(tm) || ttislightfunction(tm)) {
       callTM(L, tm, t, key, val, 1);
       return;
