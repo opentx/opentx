@@ -126,6 +126,7 @@ elif what == "22x38":
                     if image.pixel(x, y+l+z) == Qt.qRgb(0, 0, 0):
                         value += 1 << z
                 f.write("0x%02x," % value)
-        f.write("\n")        
+        f.write("\n")
 else:
-    print("wrong argument", sys.argv[3])
+    print("wrong argument", sys.argv[4])
+    
