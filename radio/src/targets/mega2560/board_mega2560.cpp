@@ -100,7 +100,7 @@ uint8_t pwrCheck()
 
 void pwrOff()
 {
-  PORTH = 0x1F;   // PortH-4 set to 0
+  PORTH = 0xEF;   // PortH-4 set to 0
 }
 
 FORCEINLINE uint8_t keyDown()
