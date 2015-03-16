@@ -1,5 +1,3 @@
 /*/*.lbm
-/font_dblsize.png
-/font_midsize.png
-/font_stdsize.png
-/font_tinsize.png
+/font_*.png
+/font_*.specs
