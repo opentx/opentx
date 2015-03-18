@@ -551,7 +551,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case FlightModesName:
       return (IS_TARANIS(board) ? 10 : 6);
     case GvarsName:
-      return 6;
+      return (IS_9X(board) ? 0 : 6);
     case HasChNames:
       return (IS_TARANIS(board) ? 1 : 0);
     case GvarsInCS:
