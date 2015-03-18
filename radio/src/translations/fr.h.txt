@@ -1028,6 +1028,7 @@
 #define TR_PRECISION           "Precision"
 
 #define ZSTR_RSSI              "RSSI"
+#define ZSTR_SWR               "SWR"
 #define ZSTR_A1                "A1"
 #define ZSTR_A2                "A2"
 #define ZSTR_BATT              "Batt"
