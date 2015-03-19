@@ -669,6 +669,8 @@ extern const pm_char STR_FLASH_INTERNAL_MODULE[];
 extern const pm_char STR_WRITING[];
 extern const pm_char STR_CONFIRM_FORMAT[];
 extern const pm_char STR_EEBACKUP[];
+extern const pm_char STR_FACTORYRESET[];
+extern const pm_char STR_CONFIRMRESET[];
 extern const pm_char STR_TOO_MANY_LUA_SCRIPTS[];
 extern const pm_char STR_BLCOLOR[];
 

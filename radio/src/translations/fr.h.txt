@@ -921,6 +921,8 @@
 #define TR_INPUTS              "Entrées"
 #define TR_OUTPUTS             "Sorties"
 #define TR_EEBACKUP            "\004[ENTER Long]: Sauvegarder l'EEPROM"
+#define TR_FACTORYRESET        "\016[MENU Long]: RAZ d'usine"
+#define TR_CONFIRMRESET        "Effacer TOUS modèles/réglages?"
 #define TR_TO_MANY_LUA_SCRIPTS "Too many Lua scripts!"
 
 #if defined(MAVLINK)
