@@ -92,7 +92,11 @@ void menuGeneralVersion(uint8_t event)
     s_warning_result = 0;
     displayPopup(STR_EEPROMFORMATTING);
     eeErase(false);
+#if !defined(SIMU)
     NVIC_SystemReset();
+#else
+    exit(0);
+#endif
   }
   
   SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, e_Vers, 1);
