@@ -478,6 +478,8 @@ void menuModelTelemetry(uint8_t event)
       else {
         lcd_putsAtt(TELEM_COL2, y, "---", 0); // TODO shortcut
       }
+      TelemetrySensor * sensor = & g_model.telemetrySensors[index];
+      lcd_outdezAtt(TELEM_COL2+10*FW, y, sensor->instance, 0);
       if (attr) {
         s_editMode = 0;
         s_currIdx = index;

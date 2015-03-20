@@ -167,7 +167,7 @@ void processSportUpdatePacket(uint8_t *packet)
 
 void processSportPacket(uint8_t *packet)
 {
-  uint8_t  dataId = packet[0];
+  uint8_t  dataId = (packet[0] & 0x1F) + 1;
   uint8_t  prim   = packet[1];
   uint16_t appId  = *((uint16_t *)(packet+2));
 
