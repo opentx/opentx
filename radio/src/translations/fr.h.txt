@@ -1034,7 +1034,7 @@
 #define ZSTR_SWR               "SWR"
 #define ZSTR_A1                "A1"
 #define ZSTR_A2                "A2"
-#define ZSTR_BATT              "Batt"
+#define ZSTR_BATT              "BtRx"
 #define ZSTR_ALT               "Alt"
 #define ZSTR_TEMP              "Temp"
 #define ZSTR_RPM               "RPM"
