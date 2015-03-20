@@ -331,7 +331,8 @@ struct FrskyData {
 };
 #endif
 
-#define IS_VALID_XJT_VERSION() (frskyData.xjtVersion != 0 && frskyData.xjtVersion != 0xff)
+#define IS_VALID_XJT_VERSION()      (frskyData.xjtVersion != 0 && frskyData.xjtVersion != 0xff)
+#define IS_HIDDEN_TELEMETRY_VALUE() ((appId == XJT_VERSION_ID) || ((appId == SWR_ID) && !IS_VALID_XJT_VERSION()))
 
 enum AlarmLevel {
   alarm_off = 0,

@@ -221,8 +221,8 @@ void processSportPacket(uint8_t *packet)
         uint16_t value = HUB_DATA_U16(packet);
         processHubPacket(id, value);
       }
-      else {
-        if (appId == ADC1_ID || appId == ADC2_ID || appId == BATT_ID) {
+      else if (!IS_HIDDEN_TELEMETRY_VALUE()) {
+        if (appId == ADC1_ID || appId == ADC2_ID || appId == BATT_ID || appId == SWR_ID) {
           data = SPORT_DATA_U8(packet);
         }
         const FrSkySportSensor * sensor = getFrSkySportSensor(appId);
