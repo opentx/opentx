@@ -261,6 +261,7 @@ void LogicalSwitchesPanel::edited()
     }
     emit modified();
     lock = false;
+    updateLine(i);
   }
 }
 
