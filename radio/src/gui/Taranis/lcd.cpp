@@ -632,7 +632,7 @@ void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 }
 #endif
 
-void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
+void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
 {
   if (idx == 0) {
     lcd_putsiAtt(x, y, STR_VSRCRAW, 0, att); // TODO macro
