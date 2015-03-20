@@ -319,7 +319,7 @@
   #define TR_FSW_RESET_ROTENC
 #endif
 
-#if LCD >= 212
+#if LCD_W >= 212
   #define TR_FSW_RESET_TIMERS  "Chrono 1\0 ""Chrono 2\0 ""Chrono 3\0 "
 #elif defined(CPUARM)
   #define TR_FSW_RESET_TIMERS  "Chr1""Chr2""Chr3"
@@ -860,7 +860,7 @@
 #define TR_EXTERNALRF          "HF externe"
 #define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Type failsafe")
 #define TR_FAILSAFESET         "REGLAGES FAILSAFE"
-#define TR_MENUSENSOR          "SENSOR"
+#define TR_MENUSENSOR          "CAPTEUR"
 #define TR_COUNTRYCODE         TR("Zone géo.","Zone géographique")
 #define TR_VOICELANG           TR("Langue voix", "Langue annonces vocales")
 #define TR_UNITSSYSTEM         "Unités"
@@ -895,6 +895,9 @@
 #define TR_MODULE              INDENT "Type de module"
 #define TR_TELEMETRY_TYPE      "Type télémesure"
 #define TR_TELEMETRY_SENSORS   "Capteurs"
+#define TR_VALUE               "Valeur"
+#define TR_TOPLCDTIMER         "Timer LCD haut"
+#define TR_UNIT                "Unité"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Ajout d'un nouveau capteur..."
 #define TR_CHANNELRANGE        TR(INDENT "Canaux", INDENT "Plage de canaux")
 #define TR_LOWALARM            INDENT "Alarme basse"
@@ -1028,12 +1031,24 @@
 #define TR_MODS_FORBIDDEN      "Modifications désactivées!"
 #define TR_UNLOCKED            "Déverrouillé"
 #define TR_ID                  "ID"
-#define TR_PRECISION           "Precision"
+#define TR_PRECISION           "Précision"
+#define TR_RATIO               "Ratio"
+#define TR_FORMULA             "Formule"
+#define TR_CELLINDEX           "Index élem."
+#define TR_LOGS                "Logs"
+#define TR_OPTIONS             "Options"
+
+#define TR_ALTSENSOR           "Capteur Alt"
+#define TR_CELLSENSOR          "Capteur Elém"
+#define TR_GPSSENSOR           "Capteur GPS"
+#define TR_CURRENTSENSOR       "Capteur cour."
 
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_SWR               "SWR"
 #define ZSTR_A1                "A1"
 #define ZSTR_A2                "A2"
+#define ZSTR_A3                "A3"
+#define ZSTR_A4                "A4"
 #define ZSTR_BATT              "BtRx"
 #define ZSTR_ALT               "Alt"
 #define ZSTR_TEMP              "Temp"

@@ -264,7 +264,7 @@ void menuModelSensor(uint8_t event)
           }
         }
         else {
-          sensor->formula = selectMenuItem(SENSOR_2ND_COLUMN, y, "Formula", "\010Add\0    Average\0Min\0    Max\0    MultiplyCell\0   ConsumptDistance", sensor->formula, 0, TELEM_FORMULA_DIST, attr, event);
+          sensor->formula = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_FORMULA, "\010Add\0    Average\0Min\0    Max\0    MultiplyCell\0   ConsumptDistance", sensor->formula, 0, TELEM_FORMULA_DIST, attr, event);
           if (attr && checkIncDec_Ret) {
             sensor->param = 0;
             if (sensor->formula == TELEM_FORMULA_CELL) {
@@ -284,7 +284,7 @@ void menuModelSensor(uint8_t event)
         break;
 
       case SENSOR_FIELD_UNIT:
-        lcd_putsLeft(y, "Unit");
+        lcd_putsLeft(y, STR_UNIT);
         // TODO flash saving with selectMenuItem where I copied those 2 lines?
         lcd_putsiAtt(SENSOR_2ND_COLUMN, y, STR_VTELEMUNIT, sensor->unit, attr);
         if (attr) {
@@ -305,7 +305,7 @@ void menuModelSensor(uint8_t event)
       case SENSOR_FIELD_PARAM1:
         if (sensor->type == TELEM_TYPE_CALCULATED) {
           if (sensor->formula == TELEM_FORMULA_CELL) {
-            lcd_putsLeft(y, "Cells sensor");
+            lcd_putsLeft(y, STR_CELLSENSOR);
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->cell.source ? MIXSRC_FIRST_TELEM+3*(sensor->cell.source-1) : 0, attr);
             if (attr) {
               sensor->cell.source = checkIncDec(event, sensor->cell.source, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isCellsSensor);
@@ -313,7 +313,7 @@ void menuModelSensor(uint8_t event)
             break;
           }
           else if (sensor->formula == TELEM_FORMULA_DIST) {
-            lcd_putsLeft(y, "GPS sensor");
+            lcd_putsLeft(y, STR_GPSSENSOR);
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->dist.gps ? MIXSRC_FIRST_TELEM+3*(sensor->dist.gps-1) : 0, attr);
             if (attr) {
               sensor->dist.gps = checkIncDec(event, sensor->dist.gps, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isGPSSensor);
@@ -321,7 +321,7 @@ void menuModelSensor(uint8_t event)
             break;
           }
           else if (sensor->formula == TELEM_FORMULA_CONSUMPTION) {
-            lcd_putsLeft(y, "Amps sensor");
+            lcd_putsLeft(y, STR_CURRENTSENSOR);
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->consumption.source ? MIXSRC_FIRST_TELEM+3*(sensor->consumption.source-1) : 0, attr);
             if (attr) {
               sensor->consumption.source = checkIncDec(event, sensor->consumption.source, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isCurrentSensor);
@@ -330,7 +330,7 @@ void menuModelSensor(uint8_t event)
           }
         }
         else {
-          lcd_putsLeft(y, "Ratio");
+          lcd_putsLeft(y, STR_RATIO);
           if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.ratio, 0, 30000);
           if (sensor->custom.ratio == 0)
             lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
@@ -343,11 +343,11 @@ void menuModelSensor(uint8_t event)
       case SENSOR_FIELD_PARAM2:
         if (sensor->type == TELEM_TYPE_CALCULATED) {
           if (sensor->formula == TELEM_FORMULA_CELL) {
-            sensor->cell.index = selectMenuItem(SENSOR_2ND_COLUMN, y, "Cell index", "\007Lowest\0001\0     2\0     3\0     4\0     5\0     6\0     HighestDelta\0", sensor->cell.index, 0, 8, attr, event);
+            sensor->cell.index = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_CELLINDEX, "\007Lowest\0001\0     2\0     3\0     4\0     5\0     6\0     HighestDelta\0", sensor->cell.index, 0, 8, attr, event);
             break;
           }
           else if (sensor->formula == TELEM_FORMULA_DIST) {
-            lcd_putsLeft(y, "Alt sensor");
+            lcd_putsLeft(y, STR_ALTSENSOR);
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->dist.alt ? MIXSRC_FIRST_TELEM+3*(sensor->dist.alt-1) : 0, attr);
             if (attr) {
               sensor->dist.alt = checkIncDec(event, sensor->dist.alt, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isAltSensor);
@@ -369,7 +369,7 @@ void menuModelSensor(uint8_t event)
 
       case SENSOR_FIELD_PARAM4:
       {
-        putsStrIdx(0, y, "Source", k-SENSOR_FIELD_PARAM1+1);
+        putsStrIdx(0, y, NO_INDENT(STR_SOURCE), k-SENSOR_FIELD_PARAM1+1);
         int8_t & source = sensor->calc.sources[k-SENSOR_FIELD_PARAM1];
         if (attr) {
           source = checkIncDec(event, source, -TELEM_VALUES_MAX, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
@@ -385,11 +385,11 @@ void menuModelSensor(uint8_t event)
       }
 
       case SENSOR_FIELD_INPUT_FLAGS:
-        sensor->inputFlags = selectMenuItem(SENSOR_2ND_COLUMN, y, "Options", "\013None\0      ""Auto Offset""Filter\0", sensor->inputFlags, 0, TELEM_INPUT_FLAGS_MAX, attr, event);
+        sensor->inputFlags = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_OPTIONS, "\013None\0      ""Auto Offset""Filter\0", sensor->inputFlags, 0, TELEM_INPUT_FLAGS_MAX, attr, event);
         break;
 
       case SENSOR_FIELD_LOGS:
-        ON_OFF_MENU_ITEM(sensor->logs, SENSOR_2ND_COLUMN, y, "Logs", attr, event);
+        ON_OFF_MENU_ITEM(sensor->logs, SENSOR_2ND_COLUMN, y, STR_LOGS, attr, event);
         break;
 
     }
@@ -479,7 +479,7 @@ void menuModelTelemetry(uint8_t event)
         lcd_putsAtt(TELEM_COL2, y, "---", 0); // TODO shortcut
       }
       TelemetrySensor * sensor = & g_model.telemetrySensors[index];
-      lcd_outdezAtt(TELEM_COL2+10*FW, y, sensor->instance, 0);
+      lcd_outdezAtt(TELEM_COL3+1*FW, y, sensor->instance, LEFT);
       if (attr) {
         s_editMode = 0;
         s_currIdx = index;
@@ -503,6 +503,8 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_SENSORS_LABEL:
         lcd_putsLeft(y, STR_TELEMETRY_SENSORS);
+        lcd_putsAtt(TELEM_COL2, y, STR_VALUE, 0);
+        lcd_putsAtt(TELEM_COL3+1*FW, y, STR_ID, 0);
         break;
 
       case ITEM_TELEMETRY_NEWSENSOR:
@@ -592,8 +594,8 @@ void menuModelTelemetry(uint8_t event)
 
 #if defined(REV9E)
       case ITEM_TELEMETRY_TOP_LCD_TIMER:
-        lcd_putsLeft(y, "Top LCD Timer");
-        putsStrIdx(TELEM_COL2, y, "Timer", g_model.topLcdTimer+1, attr);
+        lcd_putsLeft(y, STR_TOPLCDTIMER);
+        putsStrIdx(TELEM_COL2, y, STR_TIMER, g_model.topLcdTimer+1, attr);
         if (attr) {
           g_model.topLcdTimer = checkIncDec(event, g_model.topLcdTimer, 0, MAX_TIMERS-1, EE_MODEL);
         }

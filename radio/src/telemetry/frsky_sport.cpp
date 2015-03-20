@@ -59,9 +59,11 @@ struct FrSkySportSensor {
 const FrSkySportSensor sportSensors[] = {
   { RSSI_ID, RSSI_ID, ZSTR_RSSI, UNIT_RAW, 0 },
   { SWR_ID, SWR_ID, ZSTR_SWR, UNIT_RAW, 0 },
-  { ADC1_ID, ADC1_ID, ZSTR_A1, UNIT_VOLTS, 0 },
-  { ADC2_ID, ADC2_ID, ZSTR_A2, UNIT_VOLTS, 0 },
-  { BATT_ID, BATT_ID, ZSTR_BATT, UNIT_VOLTS, 0 },
+  { ADC1_ID, ADC1_ID, ZSTR_A1, UNIT_VOLTS, 1 },
+  { ADC2_ID, ADC2_ID, ZSTR_A2, UNIT_VOLTS, 1 },
+  { ADC3_ID, ADC3_ID, ZSTR_A3, UNIT_VOLTS, 2 },
+  { ADC4_ID, ADC4_ID, ZSTR_A4, UNIT_VOLTS, 2 },  
+  { BATT_ID, BATT_ID, ZSTR_BATT, UNIT_VOLTS, 1 },
   { T1_FIRST_ID, T2_LAST_ID, ZSTR_TEMP, UNIT_CELSIUS, 0 },
   { RPM_FIRST_ID, RPM_LAST_ID, ZSTR_RPM, UNIT_RPMS, 0 },
   { FUEL_FIRST_ID, FUEL_LAST_ID, ZSTR_FUEL, UNIT_PERCENT, 0 },
@@ -251,7 +253,6 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t instance)
     uint8_t prec = min<uint8_t>(2, sensor->prec);
     telemetrySensor.init(sensor->name, unit, prec);
     if (id >= ADC1_ID && id <= BATT_ID) {
-      telemetrySensor.prec = 1;
       telemetrySensor.custom.ratio = 132;
       telemetrySensor.inputFlags = TELEM_INPUT_FLAGS_FILTERING;
     }
