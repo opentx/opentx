@@ -376,6 +376,10 @@ const pm_char STR_SHUTDOWN[] PROGMEM = TR_SHUTDOWN;
 const pm_char STR_SAVEMODEL[] PROGMEM = TR_SAVEMODEL;
 #endif
 
+#if defined(PCBTARANIS) && defined(REV9E)
+const pm_char STR_POWEROFF[] PROGMEM = TR_POWEROFF;
+#endif
+
 const pm_char STR_BATT_CALIB[] PROGMEM = TR_BATT_CALIB;
 
 #if defined(CPUARM) || defined(FRSKY)

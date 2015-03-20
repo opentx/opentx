@@ -65,6 +65,8 @@ void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
 
 void displayShutdownProgress(uint32_t progress)
 {
+  lcd_clear();
+  lcd_putsLeft(LCD_H/2-20, STR_POWEROFF);
   drawFilledRect((LCD_W-44)/2, LCD_H/2-5, 28, 10, SOLID, ERASE);
   lcd_rect((LCD_W-44)/2, LCD_H/2-5, 28, 10);
   for (int i=(progress/100); i>=0; i--) {
