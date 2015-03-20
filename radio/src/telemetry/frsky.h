@@ -135,8 +135,6 @@
 #define RSSI_ID                 0xf101
 #define ADC1_ID                 0xf102
 #define ADC2_ID                 0xf103
-#define ADC3_ID                 0x0901
-#define ADC4_ID                 0x0911
 #define SP2UART_A_ID            0xfd00
 #define SP2UART_B_ID            0xfd01
 #define BATT_ID                 0xf104
