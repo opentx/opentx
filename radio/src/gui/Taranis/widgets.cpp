@@ -63,6 +63,15 @@ void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
     lcd_square(x, y, 7);
 }
 
+void displayShutdownProgress(uint32_t progress)
+{
+  drawFilledRect((LCD_W-44)/2, LCD_H/2-5, 28, 10, SOLID, ERASE);
+  lcd_rect((LCD_W-44)/2, LCD_H/2-5, 28, 10);
+  for (int i=(progress/100); i>=0; i--) {
+    drawFilledRect((LCD_W-44)/2+3+i*8, LCD_H/2-3, 6, 6, SOLID);
+  }
+}
+
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 {
   lcd_outdezAtt(LCD_W, 0, count, attr);

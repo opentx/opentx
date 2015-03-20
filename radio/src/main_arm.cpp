@@ -185,6 +185,13 @@ void perMain()
     drawStatusLine();
   }
 
+#if defined(REV9E) && !defined(SIMU)
+  uint32_t pwr_pressed_duration = pwrPressedDuration();
+  if (pwr_pressed_duration > 0) {
+    displayShutdownProgress(pwr_pressed_duration);
+  }
+#endif
+
   lcdRefresh();
 
 #if defined(REV9E) && !defined(SIMU)

@@ -37,14 +37,8 @@
 #include "board_taranis.h"
 #include "../../pwr.h"
 
-#ifdef REV9E
-  #define POWER_STATE_OFF            0
-  #define POWER_STATE_START         1
-  #define POWER_STATE_RUNNING      2
-  #define POWER_STATE_STOPPING   3
-  #define POWER_STATE_STOPPED      4
-  uint8_t PowerState = POWER_STATE_OFF ;
-#endif
+extern volatile uint32_t g_tmr10ms;
+#define get_tmr10ms() g_tmr10ms
 
 void pwrInit()
 {
@@ -99,6 +93,10 @@ void pwrInit()
 
   // Soft power ON
   GPIO_SetBits(GPIOPWR, PIN_MCU_PWR);
+
+#if defined(REV9E)
+  while (pwrPressed()) ;
+#endif
 }
 
 void pwrOff()
@@ -106,41 +104,45 @@ void pwrOff()
   GPIO_ResetBits(GPIOPWR, PIN_MCU_PWR);
 }
 
-// TODO enums should be UPPERCASE
+#if defined(REV9E)
+uint32_t pwrPressed()
+{
+  return GPIO_ReadInputDataBit(GPIOPWR, PIN_PWR_STATUS) == Bit_RESET;
+}
+#if !defined(BOOT)
+uint32_t pwrPressTime = 0;
+uint32_t pwrPressedDuration()
+{
+  if (pwrPressTime == 0) {
+    return 0;
+  }
+  else {
+    return get_tmr10ms() - pwrPressTime;
+  }
+}
+uint32_t pwrCheck()
+{
+  if (pwrPressed()) {
+    if (pwrPressTime == 0) {
+      pwrPressTime = get_tmr10ms();
+    }
+    else {
+      if (get_tmr10ms() - pwrPressTime > 250) {
+        return e_power_off;
+      }
+    }
+  }
+  else {
+    pwrPressTime = 0;
+  }
+  return e_power_on;
+}
+#endif
+#else
 uint32_t pwrCheck()
 {
 #if defined(SIMU)
   return e_power_on;
-#elif defined(REV9E)
-  uint32_t switchValue = GPIO_ReadInputDataBit(GPIOPWR, PIN_PWR_STATUS) == Bit_RESET;
-  switch ( PowerState )
-  {
-    case POWER_STATE_OFF :
-      PowerState = POWER_STATE_START ;
-      return e_power_on ;
-         
-    case POWER_STATE_START :
-      if ( !switchValue ) {
-        PowerState = POWER_STATE_RUNNING ;
-      }
-      return e_power_on ;
-
-    case POWER_STATE_RUNNING :
-      if ( switchValue ) {
-        PowerState = POWER_STATE_STOPPING ;
-//        return e_power_on;
-      }
-      return e_power_on ;
-
-    case POWER_STATE_STOPPING :
-      if ( !switchValue ) {
-        PowerState = POWER_STATE_STOPPED ;
-      }
-      return e_power_off ;
-
-    case POWER_STATE_STOPPED :
-      return e_power_off ;
-  }
 #else
   if (GPIO_ReadInputDataBit(GPIOPWR, PIN_PWR_STATUS) == Bit_RESET)
     return e_power_on;
@@ -150,3 +152,4 @@ uint32_t pwrCheck()
     return e_power_off;
 #endif
 }
+#endif

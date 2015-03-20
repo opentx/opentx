@@ -243,6 +243,10 @@ extern "C" {
 void pwrInit(void);
 uint32_t pwrCheck(void);
 void pwrOff(void);
+#if defined(REV9E)
+uint32_t pwrPressed(void);
+uint32_t pwrPressedDuration(void);
+#endif
 #define UNEXPECTED_SHUTDOWN() (g_eeGeneral.unexpectedShutdown)
 
 // Backlight driver
