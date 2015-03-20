@@ -39,8 +39,6 @@
 static uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
 
-extern void checkBattery();
-
 void handleUsbConnection()
 {
 #if defined(PCBTARANIS) && !defined(SIMU)
