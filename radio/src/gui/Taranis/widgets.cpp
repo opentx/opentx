@@ -63,6 +63,7 @@ void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
     lcd_square(x, y, 7);
 }
 
+#if defined(REV9E)
 void displayShutdownProgress(uint32_t progress)
 {
   lcd_clear();
@@ -73,6 +74,7 @@ void displayShutdownProgress(uint32_t progress)
     drawFilledRect((LCD_W-44)/2+3+i*8, LCD_H/2-3, 6, 6, SOLID);
   }
 }
+#endif
 
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 {
