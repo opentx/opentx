@@ -5,6 +5,25 @@
 #include <QtGui>
 #include "qcustomplot.h"
 
+struct coords {
+  QVector<double> x, y;
+  double min_y;
+  double max_y;
+  bool secondRange;
+  QString name;
+};
+
+struct plotsCollection {
+  QVarLengthArray<struct coords> coords;
+  double min_x;
+  double max_x;
+  bool twoRanges;
+  double rangeOneMin;
+  double rangeOneMax;
+  double rangeTwoMin;
+  double rangeTwoMax;
+};
+
 namespace Ui {
     class logsDialog;
 }
@@ -12,12 +31,11 @@ namespace Ui {
 class logsDialog : public QDialog
 {
     Q_OBJECT
-  
-  
+
 public:
   explicit logsDialog(QWidget *parent = 0);
   ~logsDialog();
-  
+
 private slots:
   void titleDoubleClick();
   void axisLabelDoubleClick(QCPAxis* axis, QCPAxis::SelectablePart part);
@@ -35,7 +53,8 @@ private slots:
   void on_fileOpen_BT_clicked();
   void on_sessions_CB_currentIndexChanged(int index);
   void on_mapsButton_clicked();
-  
+  void setRangeyAxis2(QCPRange range);
+
 private:
   QList<QStringList> csvlog;
   Ui::logsDialog *ui;
@@ -44,6 +63,13 @@ private:
   QList<QColor> palette;
   bool plotLock;
   QString logFilename;
+
+  double rangeRatio;
+  double rangeyAxisMin;
+  double rangeyAxisMax;
+  double rangeyAxis2Min;
+  double rangeyAxis2Max;
+  bool newPlotLogs();
 };
 
 #endif // LOGSDIALOG_H

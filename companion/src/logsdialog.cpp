@@ -19,7 +19,7 @@ logsDialog::logsDialog(QWidget *parent) :
   this->setWindowIcon(CompanionIcon("logs.png"));
   palette.clear();
   plotLock=false;
-  for (int i=0; i< 60; i++) 
+  for (int i=0; i< 60; i++)
         palette << QColor(rand()%245+10, rand()%245+10, rand()%245+10);
   ui->customPlot->setInteractions(QCustomPlot::iRangeDrag | QCustomPlot::iRangeZoom | QCustomPlot::iSelectAxes |
                                   QCustomPlot::iSelectLegend | QCustomPlot::iSelectPlottables | QCustomPlot::iSelectTitle | QCustomPlot::iSelectItems);
@@ -44,18 +44,20 @@ logsDialog::logsDialog(QWidget *parent) :
   QString Path=g.gePath();
   if (Path.isEmpty() || !QFile(Path).exists()) {
     ui->mapsButton->hide();
-  }  
-  
+  }
+
   // connect slot that ties some axis selections together (especially opposite axes):
   connect(ui->customPlot, SIGNAL(selectionChangedByUser()), this, SLOT(selectionChanged()));
   // connect slots that takes care that when an axis is selected, only that direction can be dragged and zoomed:
   connect(ui->customPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
   connect(ui->customPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
- 
+
   // make bottom and left axes transfer their ranges to top and right axes:
   connect(ui->customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->customPlot->xAxis2, SLOT(setRange(QCPRange)));
-  connect(ui->customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->customPlot->yAxis2, SLOT(setRange(QCPRange)));
-  
+  // connect(ui->customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->customPlot->yAxis2, SLOT(setRange(QCPRange)));
+  connect(ui->customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), this,
+    SLOT(setRangeyAxis2(QCPRange)));
+
   // connect some interaction slots:
   connect(ui->customPlot, SIGNAL(titleDoubleClick(QMouseEvent*)), this, SLOT(titleDoubleClick()));
   connect(ui->customPlot, SIGNAL(axisDoubleClick(QCPAxis*,QCPAxis::SelectablePart,QMouseEvent*)), this, SLOT(axisLabelDoubleClick(QCPAxis*,QCPAxis::SelectablePart)));
@@ -86,7 +88,7 @@ double logsDialog::GetScale(QString channel) {
 void logsDialog::titleDoubleClick()
 {
   // Set the plot title by double clicking on it
-  
+
   bool ok;
   QString newTitle = QInputDialog::getText(this, "QCustomPlot example", "New plot title:", QLineEdit::Normal, ui->customPlot->title(), &ok);
   if (ok)
@@ -99,7 +101,7 @@ void logsDialog::titleDoubleClick()
 void logsDialog::axisLabelDoubleClick(QCPAxis *axis, QCPAxis::SelectablePart part)
 {
   // Set an axis label by double clicking on it
-  
+
   if (part == QCPAxis::spAxisLabel) // only react when the actual axis label is clicked, not tick label or axis backbone
   {
     bool ok;
@@ -115,7 +117,7 @@ void logsDialog::axisLabelDoubleClick(QCPAxis *axis, QCPAxis::SelectablePart par
 void logsDialog::legendDoubleClick(QCPLegend *legend, QCPAbstractLegendItem *item)
 {
   // Rename a graph by double clicking on its legend item
-  
+
   Q_UNUSED(legend)
   if (item) // only react if item was clicked (user could have clicked on border padding of legend where there is no item, then item is 0)
   {
@@ -140,10 +142,10 @@ void logsDialog::selectionChanged()
    normally, axis base line, axis tick labels and axis labels are selectable separately, but we want
    the user only to be able to select the axis as a whole, so we tie the selected states of the tick labels
    and the axis base line together. However, the axis label shall be selectable individually.
-   
+
    The selection state of the left and right axes shall be synchronized as well as the state of the
    bottom and top axes.
-   
+
    Further, we want to synchronize the selection of the graphs with the selection state of the respective
    legend item belonging to that graph. So the user can select a graph by either clicking on the graph itself
    or on its legend item.
@@ -164,7 +166,7 @@ void logsDialog::selectionChanged()
     ui->customPlot->yAxis2->setSelected(QCPAxis::spAxis|QCPAxis::spTickLabels);
     ui->customPlot->yAxis->setSelected(QCPAxis::spAxis|QCPAxis::spTickLabels);
   }
-  
+
   // synchronize selection of graphs with selection of corresponding legend items:
   for (int i=0; i<ui->customPlot->graphCount(); ++i)
   {
@@ -186,13 +188,13 @@ void logsDialog::on_mapsButton_clicked() {
   bool rangeSelected=false;
   ui->FieldsTW->setDisabled(true);
   ui->logTable->setDisabled(true);
-     
+
   QString gePath=g.gePath();
   if (gePath.isEmpty() || !QFile(gePath).exists()) {
     ui->FieldsTW->setDisabled(false);
     ui->logTable->setDisabled(false);
     return;
-  }  
+  }
   QSet<int> nondataCols;
   for (int i=1; i<csvlog.at(0).count(); i++) {
     //Long,Lat,Course,GPS Speed,GPS Alt
@@ -225,7 +227,7 @@ void logsDialog::on_mapsButton_clicked() {
   if (itemSelected==0) {
     itemSelected=n-1;
   }
-  
+
   QString geIconFilename = generateProcessUniqueTempFileName("track0.png");
   if (QFile::exists(geIconFilename)) {
     QFile::remove(geIconFilename);
@@ -247,7 +249,7 @@ void logsDialog::on_mapsButton_clicked() {
     return;
   }
   QString latitude,longitude;
-  double flatitude, flongitude,temp; 
+  double flatitude, flongitude,temp;
   QTextStream outputStream(&geFile);
   outputStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n";
   outputStream << "\t<Document>\n\t\t<name>" << logFilename << "</name>\n";
@@ -269,7 +271,7 @@ void logsDialog::on_mapsButton_clicked() {
     }
   }
   outputStream << "\t\t</Schema>\n";
-  
+
   QString planeName;
   if (logFilename.indexOf("-")>0) {
     planeName=logFilename.left(logFilename.indexOf("-"));
@@ -286,7 +288,7 @@ void logsDialog::on_mapsButton_clicked() {
       outputStream << "\t\t\t\t\t<when>"<< tstamp <<"</when>\n";
     }
   }
-          
+
   for (int i=1; i<n; i++) {
     if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
       latitude=csvlog.at(i).at(latcol).trimmed();
@@ -348,7 +350,7 @@ void logsDialog::mousePress()
 {
   // if an axis is selected, only allow the direction of that axis to be dragged
   // if no axis is selected, both directions may be dragged
-  
+
   if (ui->customPlot->xAxis->selected().testFlag(QCPAxis::spAxis))
     ui->customPlot->setRangeDrag(ui->customPlot->xAxis->orientation());
   else if (ui->customPlot->yAxis->selected().testFlag(QCPAxis::spAxis))
@@ -602,7 +604,7 @@ void logsDialog::on_fileOpen_BT_clicked()
           }
           ui->logTable->setItem(i-1,j,item );
         }
-      }     
+      }
       ui->logTable->resizeColumnsToContents();
       ui->logTable->resizeRowsToContents();
       // Hack - add some pixel of space to columns as Qt resize them too small
@@ -614,7 +616,7 @@ void logsDialog::on_fileOpen_BT_clicked()
   }
 }
 
-bool logsDialog::cvsFileParse() 
+bool logsDialog::cvsFileParse()
 {
   QFile file(ui->FileName_LE->text());
   int errors=0;
@@ -676,7 +678,7 @@ bool logsDialog::cvsFileParse()
     }
     logFilename=QFileInfo(file.fileName()).baseName();
   }
-  
+
   file.close();
   if (errors>1) {
     QMessageBox::warning(this, "Companion", tr("The selected logfile contains %1 invalid lines out of  %2 total lines").arg(errors).arg(lines));
@@ -716,7 +718,7 @@ void logsDialog::on_sessions_CB_currentIndexChanged(int index)
      return;
   plotLock=true;
   int start=0;
-  int stop=-1;  
+  int stop=-1;
   if (index!=0) {
     start=ui->sessions_CB->itemData(index,Qt::UserRole).toInt();
     if (index<(ui->sessions_CB->count()-1)) {
@@ -750,7 +752,7 @@ void logsDialog::on_sessions_CB_currentIndexChanged(int index)
           ui->logTable->selectionModel()->select(ui->logTable->model()->index(i-1,0), QItemSelectionModel::Select|QItemSelectionModel::Rows);
         }
       }
-    }    
+    }
   }
   plotLock=false;
   plotLogs();
@@ -758,24 +760,196 @@ void logsDialog::on_sessions_CB_currentIndexChanged(int index)
 
 void logsDialog::plotLogs()
 {
-  if (plotLock)
-    return;
-  int n = csvlog.at(0).count(); // number of points in graph
-  removeAllGraphs();
-  int numplots=0;
-  int plots=0;
-  for (int i=0; i<n-2; i++) {
-    if (ui->FieldsTW->item(0,i)->isSelected()) {
-      numplots++;
+  if (plotLock) return;
+
+  if (!newPlotLogs()) {
+    int n = csvlog.at(0).count(); // number of points in graph
+    int numplots = 0;
+    int plots = 0;
+
+    removeAllGraphs();
+    ui->customPlot->xAxis->setTickLabelType(QCPAxis::ltNumber);
+
+    for (int i=0; i<n-2; i++) {
+      if (ui->FieldsTW->item(0,i)->isSelected()) {
+        numplots++;
+      }
     }
-  }
-  for (int i=0; i<n-2; i++) {
-    if (ui->FieldsTW->item(0,i)->isSelected()) {
-      plots++;
-      plotValue(i+2,plots, numplots);
+    for (int i=0; i<n-2; i++) {
+      if (ui->FieldsTW->item(0,i)->isSelected()) {
+        plots++;
+        plotValue(i+2,plots, numplots);
+      }
     }
+    ui->customPlot->legend->setVisible((numplots>2));
+
+    ui->customPlot->replot();
   }
-  ui->customPlot->legend->setVisible((numplots>2));
-  ui->customPlot->replot();  
 }
 
+void logsDialog::setRangeyAxis2(QCPRange range)
+{
+  double lowerChange = (range.lower - rangeyAxisMin) * rangeRatio;
+  double upperChange = (range.upper - rangeyAxisMax) * rangeRatio;
+  rangeyAxisMin = range.lower;
+  rangeyAxisMax = range.upper;
+  rangeyAxis2Min += lowerChange;
+  rangeyAxis2Max += upperChange;
+
+  ui->customPlot->yAxis2->setRange(rangeyAxis2Min, rangeyAxis2Max);
+}
+
+bool logsDialog::newPlotLogs()
+{
+  plotsCollection plots;
+  QVarLengthArray<Qt::GlobalColor> colors;
+  QPen pen;
+  bool hasLogSelection = ui->logTable->selectedItems().length();
+
+  colors.append(Qt::blue);
+  colors.append(Qt::green);
+  colors.append(Qt::red);
+  colors.append(Qt::yellow);
+  colors.append(Qt::magenta);
+  colors.append(Qt::cyan);
+  colors.append(Qt::darkBlue);
+  colors.append(Qt::darkGreen);
+  colors.append(Qt::darkRed);
+  colors.append(Qt::darkYellow);
+  colors.append(Qt::darkMagenta);
+  colors.append(Qt::darkCyan);
+  pen.setWidthF(1.5);
+
+  plots.min_x = QDateTime::currentDateTime().toTime_t();
+  plots.max_x = 0;
+
+  foreach (QTableWidgetItem *plot, ui->FieldsTW->selectedItems()) {
+    coords plotCoords;
+    int plotColumn = plot->row() + 2; // Date and Time first
+
+    plotCoords.min_y = 999999;
+    plotCoords.max_y = -999999;
+    plotCoords.secondRange = false;
+    plotCoords.name = plot->text();
+
+    for (int row = 0; row < ui->logTable->rowCount(); row++) {
+      QTableWidgetItem *logValue = ui->logTable->item(row, plotColumn);
+
+      if (!hasLogSelection || logValue->isSelected()) {
+        double y;
+        double time;
+        QString time_str;
+
+        y = logValue->text().toDouble();
+        plotCoords.y.push_back(y);
+
+        if (plotCoords.min_y > y) {
+          plotCoords.min_y = y;
+        } else if (plotCoords.max_y < y) {
+          plotCoords.max_y = y;
+        }
+
+        time_str = ui->logTable->item(row, 0)->text() + QString(" ")
+          + ui->logTable->item(row, 1)->text();
+        if (time_str.contains('.')) {
+          time = QDateTime::fromString(time_str, "yyyy-MM-dd HH:mm:ss.zzz")
+            .toTime_t();
+          time += time_str.mid(time_str.indexOf('.')).toDouble();
+        } else {
+          time = QDateTime::fromString(time_str, "yyyy-MM-dd HH:mm:ss")
+            .toTime_t();
+        }
+        plotCoords.x.push_back(time);
+
+        if (plots.min_x > time) {
+          plots.min_x = time;
+        } else if (plots.max_x < time) {
+          plots.max_x = time;
+        }
+      }
+    }
+    plots.coords.append(plotCoords);
+  }
+
+  plots.rangeOneMin = plots.coords.at(0).min_y;
+  plots.rangeOneMax = plots.coords.at(0).max_y;
+  plots.twoRanges = false;
+
+  for (int i = 1; i < plots.coords.size(); i++) {
+    double actualRange = plots.rangeOneMax - plots.rangeOneMin;
+    double thisRange = plots.coords.at(i).max_y - plots.coords.at(i).min_y;
+
+    if (thisRange >= actualRange * 1.3 || thisRange * 1.3 <= actualRange ||
+        plots.coords.at(i).min_y > plots.rangeOneMax ||
+        plots.coords.at(i).max_y < plots.rangeOneMin) {
+      plots.coords[i].secondRange = true;
+      if (plots.twoRanges) {
+        actualRange = plots.rangeTwoMax - plots.rangeTwoMin;
+        if (thisRange >= actualRange * 1.3 || thisRange * 1.3 <= actualRange ||
+            plots.coords.at(i).min_y > plots.rangeTwoMax ||
+            plots.coords.at(i).max_y < plots.rangeTwoMin) {
+          return false;
+        } else {
+          if (plots.coords.at(i).min_y < plots.rangeTwoMin) {
+            plots.rangeTwoMin = plots.coords.at(i).min_y;
+          }
+          if (plots.coords.at(i).max_y > plots.rangeTwoMax) {
+            plots.rangeTwoMax = plots.coords.at(i).max_y;
+          }
+        }
+      } else {
+        plots.twoRanges = true;
+        plots.rangeTwoMax = plots.coords.at(i).max_y;
+        plots.rangeTwoMin = plots.coords.at(i).min_y;
+      }
+    } else {
+      if (plots.coords.at(i).min_y < plots.rangeOneMin) {
+        plots.rangeOneMin = plots.coords.at(i).min_y;
+      }
+      if (plots.coords.at(i).max_y > plots.rangeOneMax) {
+        plots.rangeOneMax = plots.coords.at(i).max_y;
+      }
+    }
+  }
+  rangeRatio = (plots.rangeTwoMax - plots.rangeTwoMin) /
+    (plots.rangeOneMax - plots.rangeOneMin);
+  rangeyAxisMin = plots.rangeOneMin;
+  rangeyAxisMax = plots.rangeOneMax;
+  rangeyAxis2Min = plots.rangeTwoMin;
+  rangeyAxis2Max = plots.rangeTwoMax;
+
+  removeAllGraphs();
+
+  ui->customPlot->xAxis->setRange(plots.min_x, plots.max_x);
+  ui->customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
+  ui->customPlot->xAxis->setDateTimeFormat("hh:mm:ss");
+
+  ui->customPlot->yAxis->setRange(plots.rangeOneMin, plots.rangeOneMax);
+  ui->customPlot->yAxis->setTickLabels(true);
+  ui->customPlot->yAxis->setVisible(true);
+  if (plots.twoRanges) {
+    ui->customPlot->yAxis2->setRange(plots.rangeTwoMin, plots.rangeTwoMax);
+    ui->customPlot->yAxis2->setTickLabels(true);
+    ui->customPlot->yAxis2->setVisible(true);
+  }
+  ui->customPlot->yAxis2->setVisible(plots.twoRanges);
+
+  for (int i = 0; i < plots.coords.size(); i++) {
+    if (plots.coords.at(i).secondRange) {
+      ui->customPlot->addGraph(ui->customPlot->xAxis, ui->customPlot->yAxis2);
+    } else {
+      ui->customPlot->addGraph();
+    }
+    ui->customPlot->graph(i)->setData(plots.coords.at(i).x,
+      plots.coords.at(i).y);
+    pen.setColor(colors.at(i));
+    ui->customPlot->graph(i)->setPen(pen);
+    // ui->customPlot->graph(i)->rescaleAxes();
+    ui->customPlot->graph(i)->setName(plots.coords.at(i).name);
+  }
+
+  ui->customPlot->legend->setVisible(true);
+  ui->customPlot->replot();
+
+  return true;
+}
