@@ -544,6 +544,10 @@ extern const pm_char STR_SHUTDOWN[];
 extern const pm_char STR_SAVEMODEL[];
 #endif
 
+#if defined(PCBTARANIS) && defined(REV9E)
+extern const pm_char STR_POWEROFF[];
+#endif
+
 extern const pm_char STR_BATT_CALIB[];
 
 #if defined(CPUARM) || defined(FRSKY)
@@ -671,6 +675,8 @@ extern const pm_char STR_FLASH_INTERNAL_MODULE[];
 extern const pm_char STR_WRITING[];
 extern const pm_char STR_CONFIRM_FORMAT[];
 extern const pm_char STR_EEBACKUP[];
+extern const pm_char STR_FACTORYRESET[];
+extern const pm_char STR_CONFIRMRESET[];
 extern const pm_char STR_TOO_MANY_LUA_SCRIPTS[];
 extern const pm_char STR_BLCOLOR[];
 
@@ -737,9 +743,21 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_CRITICALALARM[];
   extern const pm_char STR_TELEMETRY_TYPE[];
   extern const pm_char STR_TELEMETRY_SENSORS[];
+  extern const pm_char STR_VALUE[];
+  extern const pm_char STR_TOPLCDTIMER[];
+  extern const pm_char STR_UNIT[] PROGMEM;
   extern const pm_char STR_TELEMETRY_NEWSENSOR[];
   extern const pm_char STR_ID[];
   extern const pm_char STR_PRECISION[];
+  extern const pm_char STR_RATIO[];
+  extern const pm_char STR_FORMULA[];
+  extern const pm_char STR_CELLINDEX[];
+  extern const pm_char STR_LOGS[];
+  extern const pm_char STR_OPTIONS[];
+  extern const pm_char STR_ALTSENSOR[];
+  extern const pm_char STR_CELLSENSOR[];
+  extern const pm_char STR_GPSSENSOR[];
+  extern const pm_char STR_CURRENTSENSOR[];
 #endif
 
 #if defined(PCBTARANIS)

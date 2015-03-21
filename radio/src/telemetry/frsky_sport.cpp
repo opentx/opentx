@@ -58,9 +58,12 @@ struct FrSkySportSensor {
 
 const FrSkySportSensor sportSensors[] = {
   { RSSI_ID, RSSI_ID, ZSTR_RSSI, UNIT_RAW, 0 },
-  { ADC1_ID, ADC1_ID, ZSTR_A1, UNIT_VOLTS, 0 },
-  { ADC2_ID, ADC2_ID, ZSTR_A2, UNIT_VOLTS, 0 },
-  { BATT_ID, BATT_ID, ZSTR_BATT, UNIT_VOLTS, 0 },
+  { SWR_ID, SWR_ID, ZSTR_SWR, UNIT_RAW, 0 },
+  { ADC1_ID, ADC1_ID, ZSTR_A1, UNIT_VOLTS, 1 },
+  { ADC2_ID, ADC2_ID, ZSTR_A2, UNIT_VOLTS, 1 },
+  { A3_FIRST_ID, A3_LAST_ID, ZSTR_A3, UNIT_VOLTS, 2 },
+  { A4_FIRST_ID, A4_LAST_ID, ZSTR_A4, UNIT_VOLTS, 2 },  
+  { BATT_ID, BATT_ID, ZSTR_BATT, UNIT_VOLTS, 1 },
   { T1_FIRST_ID, T2_LAST_ID, ZSTR_TEMP, UNIT_CELSIUS, 0 },
   { RPM_FIRST_ID, RPM_LAST_ID, ZSTR_RPM, UNIT_RPMS, 0 },
   { FUEL_FIRST_ID, FUEL_LAST_ID, ZSTR_FUEL, UNIT_PERCENT, 0 },
@@ -166,7 +169,7 @@ void processSportUpdatePacket(uint8_t *packet)
 
 void processSportPacket(uint8_t *packet)
 {
-  uint8_t  dataId = packet[0];
+  uint8_t  dataId = (packet[0] & 0x1F) + 1;
   uint8_t  prim   = packet[1];
   uint16_t appId  = *((uint16_t *)(packet+2));
 
@@ -220,8 +223,8 @@ void processSportPacket(uint8_t *packet)
         uint16_t value = HUB_DATA_U16(packet);
         processHubPacket(id, value);
       }
-      else {
-        if (appId == ADC1_ID || appId == ADC2_ID || appId == BATT_ID) {
+      else if (!IS_HIDDEN_TELEMETRY_VALUE()) {
+        if (appId == ADC1_ID || appId == ADC2_ID || appId == BATT_ID || appId == SWR_ID) {
           data = SPORT_DATA_U8(packet);
         }
         const FrSkySportSensor * sensor = getFrSkySportSensor(appId);
@@ -250,7 +253,6 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t instance)
     uint8_t prec = min<uint8_t>(2, sensor->prec);
     telemetrySensor.init(sensor->name, unit, prec);
     if (id >= ADC1_ID && id <= BATT_ID) {
-      telemetrySensor.prec = 1;
       telemetrySensor.custom.ratio = 132;
       telemetrySensor.inputFlags = TELEM_INPUT_FLAGS_FILTERING;
     }

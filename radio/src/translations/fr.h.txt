@@ -319,7 +319,7 @@
   #define TR_FSW_RESET_ROTENC
 #endif
 
-#if LCD >= 212
+#if LCD_W >= 212
   #define TR_FSW_RESET_TIMERS  "Chrono 1\0 ""Chrono 2\0 ""Chrono 3\0 "
 #elif defined(CPUARM)
   #define TR_FSW_RESET_TIMERS  "Chr1""Chr2""Chr3"
@@ -774,6 +774,7 @@
 #define TR_PITCH_AT_ZERO       INDENT "Tonalité au zéro"
 #define TR_PITCH_AT_MAX        INDENT "Tonalité au max"
 #define TR_REPEAT_AT_ZERO      INDENT "Intervalle au zéro"
+#define TR_POWEROFF            "\037\120ARRET..."
 #define TR_SHUTDOWN            "ARRET EN COURS"
 #define TR_SAVEMODEL           "Saving model settings"
 #define TR_BATT_CALIB          "Calib. Batterie"
@@ -853,15 +854,15 @@
 #define TR_PATH_TOO_LONG       "Chemin trop long"
 #define TR_VIEW_TEXT           "Voir texte"
 #define TR_FLASH_BOOTLOADER    "Flasher BootLoader"
-#define TR_FLASH_EXTERNAL_DEVICE "Flash External Device"
-#define TR_FLASH_INTERNAL_MODULE "Flash Module Interne"
+#define TR_FLASH_EXTERNAL_DEVICE "Flasher module externe"
+#define TR_FLASH_INTERNAL_MODULE "Flasher module interne"
 #define TR_WRITING             "\032Ecriture..."
 #define TR_CONFIRM_FORMAT      "Confirmer Formatage?"
 #define TR_INTERNALRF          "HF interne"
 #define TR_EXTERNALRF          "HF externe"
 #define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Type failsafe")
 #define TR_FAILSAFESET         "REGLAGES FAILSAFE"
-#define TR_MENUSENSOR          "SENSOR"
+#define TR_MENUSENSOR          "CAPTEUR"
 #define TR_COUNTRYCODE         TR("Zone géo.","Zone géographique")
 #define TR_VOICELANG           TR("Langue voix", "Langue annonces vocales")
 #define TR_UNITSSYSTEM         "Unités"
@@ -896,6 +897,9 @@
 #define TR_MODULE              INDENT "Type de module"
 #define TR_TELEMETRY_TYPE      "Type télémesure"
 #define TR_TELEMETRY_SENSORS   "Capteurs"
+#define TR_VALUE               "Valeur"
+#define TR_TOPLCDTIMER         "Timer LCD haut"
+#define TR_UNIT                "Unité"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Ajout d'un nouveau capteur..."
 #define TR_CHANNELRANGE        TR(INDENT "Canaux", INDENT "Plage de canaux")
 #define TR_LOWALARM            INDENT "Alarme basse"
@@ -923,6 +927,8 @@
 #define TR_INPUTS              "Entrées"
 #define TR_OUTPUTS             "Sorties"
 #define TR_EEBACKUP            "\004[ENTER Long]: Sauvegarder l'EEPROM"
+#define TR_FACTORYRESET        "\016[MENU Long]: RAZ d'usine"
+#define TR_CONFIRMRESET        "Effacer TOUS modèles/réglages?"
 #define TR_TO_MANY_LUA_SCRIPTS "Too many Lua scripts!"
 
 #if defined(MAVLINK)
@@ -1027,12 +1033,25 @@
 #define TR_MODS_FORBIDDEN      "Modifications désactivées!"
 #define TR_UNLOCKED            "Déverrouillé"
 #define TR_ID                  "ID"
-#define TR_PRECISION           "Precision"
+#define TR_PRECISION           "Précision"
+#define TR_RATIO               "Ratio"
+#define TR_FORMULA             "Formule"
+#define TR_CELLINDEX           "Index élem."
+#define TR_LOGS                "Logs"
+#define TR_OPTIONS             "Options"
+
+#define TR_ALTSENSOR           "Capteur Alt"
+#define TR_CELLSENSOR          "Capteur Elém"
+#define TR_GPSSENSOR           "Capteur GPS"
+#define TR_CURRENTSENSOR       "Capteur cour."
 
 #define ZSTR_RSSI              "RSSI"
+#define ZSTR_SWR               "SWR"
 #define ZSTR_A1                "A1"
 #define ZSTR_A2                "A2"
-#define ZSTR_BATT              "Batt"
+#define ZSTR_A3                "A3"
+#define ZSTR_A4                "A4"
+#define ZSTR_BATT              "BtRx"
 #define ZSTR_ALT               "Alt"
 #define ZSTR_TEMP              "Temp"
 #define ZSTR_RPM               "RPM"

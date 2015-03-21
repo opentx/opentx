@@ -155,9 +155,6 @@ void mixerTask(void * pdata)
 
 #define MENU_TASK_PERIOD_TICKS      10    // 20ms
 
-extern void opentxClose();
-extern void opentxInit();
-
 void menusTask(void * pdata)
 {
   opentxInit();
