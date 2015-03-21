@@ -890,7 +890,12 @@ void displayDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags a
     lcd_outdezNAtt(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
   }
   else {
-    lcd_outdezNAtt(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
+    lcd_outdezNAtt(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
+    lcd_putcAtt(lcdLastPos-1, y, '-', att);
+    lcd_outdezNAtt(lcdNextPos, y, telemetryItem.datetime.month, att|LEFT, 2);
+    lcd_putcAtt(lcdLastPos-1, y, '-', att);
+    lcd_outdezAtt(lcdNextPos, y, telemetryItem.datetime.year, att|LEFT);
+    lcd_outdezNAtt(lcdNextPos+FW+1, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
     lcd_putcAtt(lcdLastPos, y, ':', att);
     lcd_outdezNAtt(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
     lcd_putcAtt(lcdLastPos, y, ':', att);
