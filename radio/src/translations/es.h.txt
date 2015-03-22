@@ -630,6 +630,8 @@
 #define TR_SWITCHWARNING       TR("Aviso-I", INDENT "Aviso Intrptor")
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Warning")
 #define TR_TIMEZONE            TR("Zona Hora", "GPS Zona Hora")
+#define TR_ADJUST_RTC          INDENT "Adjust RTC"
+#define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        TR("Rx Orden canal", "Orden habitual canales")
 #define TR_STICKS              "Sticks"
 #define TR_POTS                "Pots"

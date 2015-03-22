@@ -630,6 +630,8 @@
 #define TR_SWITCHWARNING       TR("Bryt.varn.", INDENT "Brytarvarning")
 #define TR_POTWARNING          TR("Rattvarn.", INDENT "Rattvarning")
 #define TR_TIMEZONE            TR("Tidszon", "GPS Tidszon")
+#define TR_ADJUST_RTC          INDENT "Adjust RTC"
+#define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        "Kanaler i RX"
 #define TR_STICKS              "Sticks"
 #define TR_POTS                "Pots"

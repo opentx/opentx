@@ -316,6 +316,7 @@ void uart3Stop(void);
 int bt_open(void);
 int bt_write(const void *buffer, int len);
 int bt_read(void *buffer, int len);
+void bt_wakeup(void);
 
 // Top LCD driver
 #if defined(REV9E)

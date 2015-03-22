@@ -680,7 +680,9 @@
 #define TR_THROTTLEWARNING     TR(IF_CPUARM(INDENT) "T-Warning", INDENT "Throttle State")
 #define TR_SWITCHWARNING       TR(IF_CPUARM(INDENT) "S-Warning", INDENT "Switch Positions")
 #define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Pot Warn.", INDENT "Pot Positions")
-#define TR_TIMEZONE            TR("Time Zone", "GPS Time zone")
+#define TR_TIMEZONE            TR("Time Zone", INDENT "Time zone")
+#define TR_ADJUST_RTC          INDENT "Adjust RTC"
+#define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        TR("Rx Channel Ord", "Default channel order")
 #define TR_STICKS              "Sticks"
 #define TR_POTS                "Pots"
@@ -783,7 +785,7 @@
 #define TR_MINRSSI             "Min Rssi"
 #define TR_LATITUDE            "Latitude"
 #define TR_LONGITUDE           "Longitude"
-#define TR_GPSCOORD            TR("GPS Coords", "GPS coordinate format")
+#define TR_GPSCOORD            TR("GPS Coords", INDENT "Coordinate format")
 #define TR_VARIO               TR("Vario", "Variometer")
 #define TR_PITCH_AT_ZERO       INDENT "Pitch at Zero"
 #define TR_PITCH_AT_MAX        INDENT "Pitch at Max"

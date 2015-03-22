@@ -52,13 +52,41 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t newVal, uin
       datetime.year = (uint16_t) ((data & 0xff000000) >> 24);
       datetime.month = (uint8_t) ((data & 0x00ff0000) >> 16);
       datetime.day = (uint8_t) ((data & 0x0000ff00) >> 8);
-      datetime.datestate = 1;
+      if (datetime.year != 0) {
+        datetime.datestate = 1;
+      }
+#if defined(RTCLOCK)
+      if (g_eeGeneral.adjustRTC && (datetime.datestate == 1)) {
+        struct gtm t;
+        gettime(&t);
+        t.tm_year = datetime.year+4;
+        t.tm_mon = datetime.month-1;
+        t.tm_mday = datetime.day;
+        rtcSetTime(&t);
+      }
+#endif
     }
     else {
       datetime.hour = ((uint8_t) ((data & 0xff000000) >> 24) + g_eeGeneral.timezone + 24) % 24;
       datetime.min = (uint8_t) ((data & 0x00ff0000) >> 16);
       datetime.sec = (uint16_t) ((data & 0x0000ff00) >> 8);
-      datetime.timestate = 1;
+      if (datetime.datestate == 1) {
+        datetime.timestate = 1;
+      }
+#if defined(RTCLOCK)
+      if (g_eeGeneral.adjustRTC && (datetime.datestate == 1)) {
+        struct gtm t;
+        gettime(&t);
+        if (abs((t.tm_hour-datetime.hour)*3600 + (t.tm_min-datetime.min)*60 + (t.tm_sec-datetime.sec)) > 20) {
+          // we adjust RTC only if difference is > 20 seconds
+          t.tm_hour = datetime.hour;
+          t.tm_min = datetime.min;
+          t.tm_sec = datetime.sec;
+          g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
+          rtcSetTime(&t);
+        }
+      }
+#endif
     }
     if (datetime.year == 0) {
       return;

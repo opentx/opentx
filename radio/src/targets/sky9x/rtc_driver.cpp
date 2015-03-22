@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 #if defined(REVX)
 // TODO change this, not the right place

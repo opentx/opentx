@@ -435,6 +435,8 @@ extern const pm_char STR_SPLASHSCREEN[];
 extern const pm_char STR_THROTTLEWARNING[];
 extern const pm_char STR_SWITCHWARNING[];
 extern const pm_char STR_TIMEZONE[];
+extern const pm_char STR_ADJUST_RTC[];
+extern const pm_char STR_GPS[];
 extern const pm_char STR_GPSCOORD[];
 extern const pm_char STR_VARIO[];
 extern const pm_char STR_PITCH_AT_ZERO[];

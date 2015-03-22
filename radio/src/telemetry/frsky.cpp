@@ -357,6 +357,11 @@ void telemetryWakeup()
         uint8_t lastReceived = telemetryItems[i].lastReceived;
         if (lastReceived < TELEMETRY_VALUE_TIMER_CYCLE && uint8_t(now - lastReceived) > TELEMETRY_VALUE_OLD_THRESHOLD) {
           telemetryItems[i].lastReceived = TELEMETRY_VALUE_OLD;
+          TelemetrySensor * sensor = & g_model.telemetrySensors[i];
+          if (sensor->unit == UNIT_DATETIME) {
+            telemetryItems[i].datetime.datestate = 0;
+            telemetryItems[i].datetime.timestate = 0;
+          }
         }
       }
     }

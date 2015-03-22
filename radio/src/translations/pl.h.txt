@@ -628,6 +628,8 @@
 #define TR_SWITCHWARNING       TR(IF_CPUARM(INDENT) "OstrzPrzeł", INDENT "PozycjaPrzeł")
 #define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Ostrz.Poten.", INDENT "PozycjaPotencj.")
 #define TR_TIMEZONE            TR("Strefa czasowa" ,"Strefa czasowa GPS")
+#define TR_ADJUST_RTC          INDENT "Adjust RTC"
+#define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        TR("KolejnKan.RX", "Bazowa kolejność kanałów")
 #define TR_STICKS              "Sticks"
 #define TR_POTS                "Pots"
