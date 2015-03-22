@@ -55,6 +55,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t newVal, uin
       if (datetime.year != 0) {
         datetime.datestate = 1;
       }
+#if defined(RTCLOCK)
       if (g_eeGeneral.adjustRTC && (datetime.datestate == 1)) {
         struct gtm t;
         gettime(&t);
@@ -63,6 +64,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t newVal, uin
         t.tm_mday = datetime.day;
         rtcSetTime(&t);
       }
+#endif
     }
     else {
       datetime.hour = ((uint8_t) ((data & 0xff000000) >> 24) + g_eeGeneral.timezone + 24) % 24;
@@ -71,6 +73,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t newVal, uin
       if (datetime.datestate == 1) {
         datetime.timestate = 1;
       }
+#if defined(RTCLOCK)
       if (g_eeGeneral.adjustRTC && (datetime.datestate == 1)) {
         struct gtm t;
         gettime(&t);
@@ -83,6 +86,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t newVal, uin
           rtcSetTime(&t);
         }
       }
+#endif
     }
     if (datetime.year == 0) {
       return;
