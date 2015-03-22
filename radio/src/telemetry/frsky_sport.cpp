@@ -254,7 +254,10 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t instance)
     telemetrySensor.init(sensor->name, unit, prec);
     if (id >= ADC1_ID && id <= BATT_ID) {
       telemetrySensor.custom.ratio = 132;
-      telemetrySensor.inputFlags = TELEM_INPUT_FLAGS_FILTERING;
+      telemetrySensor.filter = 1;
+    }
+    if (unit == UNIT_RPMS) {
+      telemetrySensor.custom.ratio = 1;
     }
   }
   else {

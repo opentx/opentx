@@ -169,30 +169,33 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t newVal, uin
     datetime.timestate = 1;
     newVal = 0;
   }
+  else if (unit == UNIT_RPMS) {
+    newVal = newVal / sensor.custom.ratio;
+  }
   else {
     newVal = sensor.getValue(newVal, unit, prec);
-    if (sensor.inputFlags == TELEM_INPUT_FLAGS_AUTO_OFFSET) {
+    if (sensor.autoOffset) {
       if (!isAvailable()) {
-        offsetAuto = -newVal;
+        std.offsetAuto = -newVal;
       }
-      newVal += offsetAuto;
+      newVal += std.offsetAuto;
     }
-    else if (sensor.inputFlags == TELEM_INPUT_FLAGS_FILTERING) {
+    else if (sensor.filter) {
       if (!isAvailable()) {
         for (int i=0; i<TELEMETRY_AVERAGE_COUNT; i++) {
-          filterValues[i] = newVal;
+          std.filterValues[i] = newVal;
         }
       }
       else {
         // calculate the average from values[] and value
         // also shift readings in values [] array
-        unsigned int sum = filterValues[0];
+        unsigned int sum = std.filterValues[0];
         for (int i=0; i<TELEMETRY_AVERAGE_COUNT-1; i++) {
-          int32_t tmp = filterValues[i+1];
-          filterValues[i] = tmp;
+          int32_t tmp = std.filterValues[i+1];
+          std.filterValues[i] = tmp;
           sum += tmp;
         }
-        filterValues[TELEMETRY_AVERAGE_COUNT-1] = newVal;
+        std.filterValues[TELEMETRY_AVERAGE_COUNT-1] = newVal;
         sum += newVal;
         newVal = sum/(TELEMETRY_AVERAGE_COUNT+1);
       }
@@ -429,40 +432,6 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
   }
 }
 
-int getTelemetryIndex(TelemetryProtocol protocol, uint16_t id, uint8_t instance)
-{
-  int available = -1;
-
-  for (int index=0; index<TELEM_VALUES_MAX; index++) {
-    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-    if (telemetrySensor.id == id && telemetrySensor.instance == instance) {
-      return index;
-    }
-    else if (available < 0 && telemetrySensor.id == 0) {
-      available = index;
-    }
-  }
-
-  if (available >= 0) {
-    switch (protocol) {
-#if defined(FRSKY_SPORT)
-      case TELEM_PROTO_FRSKY_SPORT:
-        frskySportSetDefault(available, id, instance);
-        break;
-#endif
-#if defined(FRSKY)
-      case TELEM_PROTO_FRSKY_D:
-        frskyDSetDefault(available, id);
-        break;
-#endif
-      default:
-        break;
-    }
-  }
-
-  return available;
-}
-
 void delTelemetryIndex(uint8_t index)
 {
   memclear(&g_model.telemetrySensors[index], sizeof(TelemetrySensor));
@@ -481,15 +450,56 @@ int availableTelemetryIndex()
   return -1;
 }
 
+int lastUsedTelemetryIndex()
+{
+  for (int index=TELEM_VALUES_MAX-1; index>=0; index--) {
+    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
+    if (telemetrySensor.isAvailable()) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+bool isSensorAvailableInResetSpecialFunction(int index)
+{
+  TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index-FUNC_RESET_PARAM_FIRST_TELEM];
+    return telemetrySensor.isAvailable();
+}
+
 void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
 {
-  int index = getTelemetryIndex(protocol, id, instance);
-
-  if (index >= 0) {
-    telemetryItems[index].setValue(g_model.telemetrySensors[index], value, unit, prec);
+  bool available = false;
+  
+  for (int index=0; index<TELEM_VALUES_MAX; index++) {
+    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
+    if (telemetrySensor.id == id && telemetrySensor.instance == instance) {
+      telemetryItems[index].setValue(g_model.telemetrySensors[index], value, unit, prec);
+      available = true;
+    }
   }
-  else {
-    // TODO error too many sensors
+  
+  if (!available) {
+    int index = availableTelemetryIndex();
+    if (index >= 0) {
+      switch (protocol) {
+#if defined(FRSKY_SPORT)
+        case TELEM_PROTO_FRSKY_SPORT:
+          frskySportSetDefault(index, id, instance);
+          break;
+#endif
+#if defined(FRSKY)
+        case TELEM_PROTO_FRSKY_D:
+          frskyDSetDefault(index, id);
+          break;
+#endif
+        default:
+          break;
+      }
+    }
+    else {
+      POPUP_WARNING(STR_TELEMETRYFULL);
+    }
   }
 }
 

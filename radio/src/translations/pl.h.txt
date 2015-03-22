@@ -489,6 +489,18 @@
   #define TR_MAVLINK_AP_MODES  "Ręczny       ""Koło         ""Stabilizacja ""Trening      ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Sterowany    ""Inicjalizacja""BŁĘDNY       "
 #endif
 
+#define LEN_VSENSORTYPES        "\012"
+#define TR_VSENSORTYPES        "Custom\0   ""Calculated"
+
+#define LEN_VFORMULAS          "\010"
+#define TR_VFORMULAS           "Add\0    ""Average\0""Min\0    ""Max\0    ""Multiply""Cell\0   ""Consumpt""Distance"
+
+#define LEN_VPREC              "\005"
+#define TR_VPREC               "PREC0""PREC1""PREC2"
+
+#define LEN_VCELLINDEX         "\007"
+#define TR_VCELLINDEX          "Lowest\0""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Highest""Delta\0"
+
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
 #define LEN_INDENT             1
@@ -982,6 +994,9 @@
 #define TR_CELLSENSOR          "Cell sensor"
 #define TR_GPSSENSOR           "GPS sensor"
 #define TR_CURRENTSENSOR       "Current sensor"
+#define TR_AUTOOFFSET          "Auto Offset"
+#define TR_FILTER              "Filter"
+#define TR_TELEMETRYFULL       "All telemetry slots full!"
 
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_SWR               "SWR"

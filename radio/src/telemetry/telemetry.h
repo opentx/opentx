@@ -97,8 +97,10 @@ class TelemetryItem
     uint8_t lastReceived;    // for detection of sensor loss
 
     union {
-      int32_t  offsetAuto;
-      int32_t  filterValues[TELEMETRY_AVERAGE_COUNT];
+      struct {
+        int32_t  offsetAuto;
+        int32_t  filterValues[TELEMETRY_AVERAGE_COUNT];
+      } std;
       struct {
         uint16_t prescale;
       } consumption;
@@ -182,9 +184,13 @@ inline bool isTelemetryFieldComparisonAvailable(int index)
   return (sensor.id != 0);
 }
 
+extern TelemetryItem telemetryItems[];
+
 void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec);
 void delTelemetryIndex(uint8_t index);
 int availableTelemetryIndex();
+int lastUsedTelemetryIndex();
+bool isSensorAvailableInResetSpecialFunction(int index);
 int32_t getTelemetryValue(uint8_t index, uint8_t & prec);
 int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t destUnit, uint8_t destPrec);
 
