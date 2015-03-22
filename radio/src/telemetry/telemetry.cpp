@@ -453,6 +453,23 @@ int availableTelemetryIndex()
   return -1;
 }
 
+int lastUsedTelemetryIndex()
+{
+  for (int index=TELEM_VALUES_MAX-1; index>=0; index--) {
+    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
+    if (telemetrySensor.isAvailable()) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+bool isSensorAvailableInResetSpecialFunction(int index)
+{
+  TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index-FUNC_RESET_PARAM_FIRST_TELEM];
+    return telemetrySensor.isAvailable();
+}
+
 void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
 {
   int index = getTelemetryIndex(protocol, id, instance);

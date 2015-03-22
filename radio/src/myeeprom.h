@@ -130,6 +130,7 @@
     #define NUM_POTS           5
     #define NUM_XPOTS          3
   #endif
+  #define TELEM_VALUES_MAX     32
 #elif defined(CPUARM)
   #define MAX_MODELS           60
   #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
@@ -141,6 +142,7 @@
   #define NUM_TRAINER          16
   #define NUM_POTS             3
   #define NUM_XPOTS            0
+  #define TELEM_VALUES_MAX     16
 #elif defined(CPUM2560) || defined(CPUM2561)
   #define MAX_MODELS           30
   #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
@@ -152,6 +154,7 @@
   #define NUM_TRAINER          8
   #define NUM_POTS             3
   #define NUM_XPOTS            0
+  #define TELEM_VALUES_MAX     0
 #elif defined(CPUM128)
   #define MAX_MODELS           30
   #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
@@ -163,6 +166,7 @@
   #define NUM_TRAINER          8
   #define NUM_POTS             3
   #define NUM_XPOTS            0
+  #define TELEM_VALUES_MAX     0
 #else
   #define MAX_MODELS           16
   #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
@@ -174,6 +178,7 @@
   #define NUM_TRAINER          8
   #define NUM_POTS             3
   #define NUM_XPOTS            0
+  #define TELEM_VALUES_MAX     0
 #endif
 
 #if defined(CPUARM)
@@ -585,8 +590,12 @@ enum ResetFunctionParam {
 #if ROTARY_ENCODERS > 1
   FUNC_RESET_ROTENC2,
 #endif
+#if defined(CPUARM)
+  FUNC_RESET_PARAM_FIRST_TELEM,
+  FUNC_RESET_PARAM_LAST_TELEM = FUNC_RESET_PARAM_FIRST_TELEM + TELEM_VALUES_MAX,
+#endif
   FUNC_RESET_PARAMS_COUNT,
-  FUNC_RESET_PARAM_LAST = FUNC_RESET_PARAMS_COUNT-1
+  FUNC_RESET_PARAM_LAST = FUNC_RESET_PARAMS_COUNT-1,
 };
 
 enum AdjustGvarFunctionParam {
@@ -1211,11 +1220,6 @@ PACK(typedef struct {
 #endif
 
 #if defined(CPUARM)
-#if defined(PCBTARANIS)
-  #define TELEM_VALUES_MAX        32
-#else
-  #define TELEM_VALUES_MAX        16
-#endif
 #define TELEM_LABEL_LEN           4
 //#define TELEM_FLAG_TIMEOUT      0x01
 #define TELEM_FLAG_LOG            0x02
