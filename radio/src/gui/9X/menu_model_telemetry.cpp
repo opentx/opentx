@@ -245,15 +245,15 @@ bool isSensorAvailable(int sensor)
 #define SENSOR_2ND_COLUMN (12*FW)
 #define SENSOR_3RD_COLUMN (18*FW)
 
-#define SENSOR_UNIT_ROWS   (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula >= TELEM_FORMULA_CELL) ? HIDDEN_ROW : ((sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS) ? HIDDEN_ROW : (uint8_t)0)
-#define SENSOR_PREC_ROWS   (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula >= TELEM_FORMULA_CELL) ? HIDDEN_ROW : ((sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME) ? HIDDEN_ROW : (uint8_t)0)
+#define SENSOR_UNIT_ROWS   (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula >= TELEM_FORMULA_CELL) ? HIDDEN_ROW : ((sensor->unit == UNIT_RPMS || sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS) ? HIDDEN_ROW : (uint8_t)0)
+#define SENSOR_PREC_ROWS   (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula >= TELEM_FORMULA_CELL) ? HIDDEN_ROW : ((sensor->unit == UNIT_RPMS || sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME) ? HIDDEN_ROW : (uint8_t)0)
 #define SENSOR_PARAM1_ROWS (sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS) ? HIDDEN_ROW : (uint8_t)0
-#define SENSOR_PARAM2_ROWS (sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS || (sensor->type==TELEM_TYPE_CALCULATED && sensor->formula==TELEM_FORMULA_CONSUMPTION)) ? HIDDEN_ROW : (uint8_t)0
+#define SENSOR_PARAM2_ROWS (sensor->unit == UNIT_RPMS || sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS || (sensor->type==TELEM_TYPE_CALCULATED && sensor->formula==TELEM_FORMULA_CONSUMPTION)) ? HIDDEN_ROW : (uint8_t)0
 #define SENSOR_PARAM3_ROWS (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula < TELEM_FORMULA_MULTIPLY) ? (uint8_t)0 : HIDDEN_ROW
 #define SENSOR_PARAM4_ROWS (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula < TELEM_FORMULA_MULTIPLY) ? (uint8_t)0 : HIDDEN_ROW
-#define SENSOR_AUTOOFFSET_ROWS (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula >= TELEM_FORMULA_CELL) ? HIDDEN_ROW : ((sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS) ? HIDDEN_ROW : (uint8_t)0)
+#define SENSOR_AUTOOFFSET_ROWS (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula >= TELEM_FORMULA_CELL) ? HIDDEN_ROW : ((sensor->unit == UNIT_RPMS || sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS) ? HIDDEN_ROW : (uint8_t)0)
 #define SENSOR_FILTER_ROWS     (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula >= TELEM_FORMULA_CELL) ? HIDDEN_ROW : ((sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS) ? HIDDEN_ROW : (uint8_t)0)
-#define SENSOR_PERSISTENT_ROWS (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula >= TELEM_FORMULA_CELL) ? HIDDEN_ROW : ((sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS) ? HIDDEN_ROW : (uint8_t)0)
+#define SENSOR_PERSISTENT_ROWS (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula >= TELEM_FORMULA_CELL) ? HIDDEN_ROW : ((sensor->unit == UNIT_RPMS || sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS) ? HIDDEN_ROW : (uint8_t)0)
 
 void menuModelSensor(uint8_t event)
 {
@@ -379,13 +379,21 @@ void menuModelSensor(uint8_t event)
           }
         }
         else {
-          lcd_putsLeft(y, STR_RATIO);
-          if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.ratio, 0, 30000);
-          if (sensor->custom.ratio == 0)
-            lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
-          else
-            lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.ratio, LEFT|attr|PREC1);
-          break;
+          if (sensor->unit == UNIT_RPMS) {
+            lcd_putsLeft(y, NO_INDENT(STR_BLADES));
+            if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.ratio, 1, 30000);
+            lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.ratio, LEFT|attr);
+            break;
+          }
+          else {
+            lcd_putsLeft(y, STR_RATIO);
+            if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.ratio, 0, 30000);
+            if (sensor->custom.ratio == 0)
+              lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
+            else
+              lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.ratio, LEFT|attr|PREC1);
+            break;
+          }
         }
         // no break
 

@@ -256,6 +256,9 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t instance)
       telemetrySensor.custom.ratio = 132;
       telemetrySensor.filter = 1;
     }
+    if (unit == UNIT_RPMS) {
+      telemetrySensor.custom.ratio = 1;
+    }
   }
   else {
     telemetrySensor.init(id);
