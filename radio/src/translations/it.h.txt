@@ -230,7 +230,7 @@
   #else                        
     #define TR_PLAY_TRACK      "SuonaTraccia\0"
   #endif                       
-  #define TR_PLAY_BOTH         "Play Both\0   "
+  #define TR_PLAY_BOTH         "SuonaEntrambi"
   #define TR_PLAY_VALUE        "LeggiValore\0 "
 #else                          
   #define TR_PLAY_TRACK        "[Brano]\0     "
@@ -381,9 +381,9 @@
 
 #define LEN_VARIOSRC           "\005"
 #if defined(FRSKY_SPORT)
-  #define TR_VARIOSRC          "Vario""A1\0  ""A2\0"
+  #define TR_VARIOSRC          "Vario""A1\0  ""A2\0  "
 #else
-  #define TR_VARIOSRC          "Alti\0""Alti+""Vario""A1\0  ""A2\0"
+  #define TR_VARIOSRC          "Alti\0""Alti+""Vario""A1\0  ""A2\0  "
 #endif
 
 #define LEN_VSCREEN            "\006"
@@ -394,7 +394,7 @@
                                
 #define LEN2_VTEMPLATES        13
 #define LEN_VTEMPLATES         "\015"
-#define TR_VTEMPLATES          "Canc. Mixes\0 ""Semplice 4CH\0""Sticky-T-Cut\0""Coda-V      \0""Elevoni\0     ""Delta\0       ""eCCPM\0       ""Setup Heli\0  ""Test Servo\0  "
+#define TR_VTEMPLATES          "Canc. Mixer\0 ""Semplice 4CH\0""Sticky-T-Cut\0""Coda-V      \0""Elevoni\0     ""Delta\0       ""eCCPM\0       ""Setup Heli\0  ""Test Servo\0  "
 
 #define LEN_VSWASHTYPE         "\004"
 #define TR_VSWASHTYPE          "---\0""120\0""120X""140\0""90\0"
@@ -762,7 +762,7 @@
 #define TR_DATE                "Data"
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "MONITOR CANALI"
-#define TR_MIXERS_MONITOR      "MIXERS MONITOR"
+#define TR_MIXERS_MONITOR      "MONITOR MIXER "
 #define TR_PATH_TOO_LONG       "Path troppo lungo"
 #define TR_VIEW_TEXT           "Vedi testo"
 #define TR_FLASH_BOOTLOADER    "Flash BootLoader"
