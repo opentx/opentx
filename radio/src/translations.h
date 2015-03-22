@@ -192,7 +192,11 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_DSM_PROTOCOLS     (OFS_XJT_PROTOCOLS + sizeof(TR_XJT_PROTOCOLS))
   #define OFS_VOLTSRC           (OFS_DSM_PROTOCOLS + sizeof(TR_DSM_PROTOCOLS))
   #define OFS_CURVE_TYPES       (OFS_VOLTSRC + sizeof(TR_VOLTSRC))
-  #define OFS_MAVLINK_BAUDS     (OFS_CURVE_TYPES + sizeof(TR_CURVE_TYPES))
+  #define OFS_VSENSORTYPES      (OFS_CURVE_TYPES + sizeof(TR_CURVE_TYPES))
+  #define OFS_VFORMULAS         (OFS_VSENSORTYPES + sizeof(TR_VSENSORTYPES))
+  #define OFS_VPREC             (OFS_VFORMULAS + sizeof(TR_VFORMULAS))
+  #define OFS_VCELLINDEX        (OFS_VPREC + sizeof(TR_VPREC))
+  #define OFS_MAVLINK_BAUDS     (OFS_VCELLINDEX + sizeof(TR_VCELLINDEX))
 #else
   #define OFS_MAVLINK_BAUDS	(OFS_VTRAINERMODES)
 #endif
@@ -298,6 +302,10 @@ extern const pm_char STR_OPEN9X[];
   #define STR_XJT_PROTOCOLS     (STR_OPEN9X + OFS_XJT_PROTOCOLS)
   #define STR_DSM_PROTOCOLS     (STR_OPEN9X + OFS_DSM_PROTOCOLS)
   #define STR_CURVE_TYPES       (STR_OPEN9X + OFS_CURVE_TYPES)
+  #define STR_VSENSORTYPES      (STR_OPEN9X + OFS_VSENSORTYPES)
+  #define STR_VFORMULAS         (STR_OPEN9X + OFS_VFORMULAS)
+  #define STR_VPREC             (STR_OPEN9X + OFS_VPREC)
+  #define STR_VCELLINDEX        (STR_OPEN9X + OFS_VCELLINDEX)
 #endif
 
 #if defined(MAVLINK)
