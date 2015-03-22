@@ -858,7 +858,7 @@
 #define TR_SD_SPEED            "Rychlost:"
 #define TR_SD_SECTORS          "Sektorů :"
 #define TR_SD_SIZE             "Velikost:"
-#define TR_TYPE                TR_SD_TYPE
+#define TR_TYPE                INDENT TR_SD_TYPE
 #define TR_GLOBAL_VARS         "Globální proměnné"
 #define TR_GLOBAL_V            "GLOB.PROM."
 #define TR_GLOBAL_VAR          "Globální proměnná"

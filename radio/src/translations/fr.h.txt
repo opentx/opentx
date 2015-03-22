@@ -853,7 +853,7 @@
 #define TR_SD_SPEED            "Vitesse:"
 #define TR_SD_SECTORS          "Secteurs:"
 #define TR_SD_SIZE             "Taille:"
-#define TR_TYPE                "Type"
+#define TR_TYPE                INDENT "Type"
 #define TR_GLOBAL_VARS         "Variables Globales"
 #define TR_GLOBAL_V            "V. GLOBALES"
 #define TR_GLOBAL_VAR          "Variable globale"
