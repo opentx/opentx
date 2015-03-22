@@ -97,8 +97,10 @@ class TelemetryItem
     uint8_t lastReceived;    // for detection of sensor loss
 
     union {
-      int32_t  offsetAuto;
-      int32_t  filterValues[TELEMETRY_AVERAGE_COUNT];
+      struct {
+        int32_t  offsetAuto;
+        int32_t  filterValues[TELEMETRY_AVERAGE_COUNT];
+      } std;
       struct {
         uint16_t prescale;
       } consumption;

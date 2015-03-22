@@ -1247,14 +1247,6 @@ enum TelemetrySensorFormula
   TELEM_FORMULA_DIST,
 };
 
-enum TelemetrySensorInputFlags
-{
-  TELEM_INPUT_FLAGS_NONE,
-  TELEM_INPUT_FLAGS_AUTO_OFFSET,
-  TELEM_INPUT_FLAGS_FILTERING,
-  TELEM_INPUT_FLAGS_MAX=TELEM_INPUT_FLAGS_FILTERING
-};
-
 PACK(typedef struct {
   union {
     uint16_t id;                     // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
@@ -1268,7 +1260,8 @@ PACK(typedef struct {
   uint8_t  type:1;                 // 0=custom / 1=calculated
   uint8_t  unit:5;                 // user can choose what unit to display each value in
   uint8_t  prec:2;
-  uint8_t  inputFlags:2;
+  uint8_t  autoOffset:1;
+  uint8_t  filter:1;
   uint8_t  logs:1;
   uint8_t  persistent:1;
   uint8_t  spare:4;

@@ -756,6 +756,8 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_CELLSENSOR[];
   extern const pm_char STR_GPSSENSOR[];
   extern const pm_char STR_CURRENTSENSOR[];
+  extern const pm_char STR_AUTOOFFSET[];
+  extern const pm_char STR_FILTER[];
 #endif
 
 #if defined(PCBTARANIS)

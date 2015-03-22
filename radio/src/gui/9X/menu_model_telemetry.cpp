@@ -192,7 +192,9 @@ enum SensorFields {
   SENSOR_FIELD_PARAM2,
   SENSOR_FIELD_PARAM3,
   SENSOR_FIELD_PARAM4,
-  SENSOR_FIELD_INPUT_FLAGS,
+  SENSOR_FIELD_AUTOOFFSET,
+  SENSOR_FIELD_FILTER,
+  SENSOR_FIELD_PERSISTENT,
   SENSOR_FIELD_LOGS,
   SENSOR_FIELD_MAX
 };
@@ -249,12 +251,15 @@ bool isSensorAvailable(int sensor)
 #define SENSOR_PARAM2_ROWS (sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS || (sensor->type==TELEM_TYPE_CALCULATED && sensor->formula==TELEM_FORMULA_CONSUMPTION)) ? HIDDEN_ROW : (uint8_t)0
 #define SENSOR_PARAM3_ROWS (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula < TELEM_FORMULA_MULTIPLY) ? (uint8_t)0 : HIDDEN_ROW
 #define SENSOR_PARAM4_ROWS (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula < TELEM_FORMULA_MULTIPLY) ? (uint8_t)0 : HIDDEN_ROW
+#define SENSOR_AUTOOFFSET_ROWS (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula >= TELEM_FORMULA_CELL) ? HIDDEN_ROW : ((sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS) ? HIDDEN_ROW : (uint8_t)0)
+#define SENSOR_FILTER_ROWS     (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula >= TELEM_FORMULA_CELL) ? HIDDEN_ROW : ((sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS) ? HIDDEN_ROW : (uint8_t)0)
+#define SENSOR_PERSISTENT_ROWS (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula >= TELEM_FORMULA_CELL) ? HIDDEN_ROW : ((sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS) ? HIDDEN_ROW : (uint8_t)0)
 
 void menuModelSensor(uint8_t event)
 {
   TelemetrySensor * sensor = & g_model.telemetrySensors[s_currIdx];
 
-  SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, {0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, 0 });
+  SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, {0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, SENSOR_AUTOOFFSET_ROWS, SENSOR_FILTER_ROWS, SENSOR_PERSISTENT_ROWS, 0 });
   lcd_outdezAtt(PSIZE(TR_MENUSENSOR)*FW+1, 0, s_currIdx+1, INVERS|LEFT);
 
   putsTelemetryChannelValue(SENSOR_2ND_COLUMN, 0, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), LEFT);
@@ -284,7 +289,8 @@ void menuModelSensor(uint8_t event)
           sensor->instance = 0;
           if (sensor->type == TELEM_TYPE_CALCULATED) {
             sensor->param = 0;
-            sensor->inputFlags = 0;
+            sensor->autoOffset = 0;
+            sensor->filter = 0;
           }
         }
         break;
@@ -348,7 +354,7 @@ void menuModelSensor(uint8_t event)
       case SENSOR_FIELD_PARAM1:
         if (sensor->type == TELEM_TYPE_CALCULATED) {
           if (sensor->formula == TELEM_FORMULA_CELL) {
-            lcd_putsLeft(y, "Cells sensor");
+            lcd_putsLeft(y, STR_CELLSENSOR);
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->cell.source ? MIXSRC_FIRST_TELEM+3*(sensor->cell.source-1) : 0, attr);
             if (attr) {
               sensor->cell.source = checkIncDec(event, sensor->cell.source, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isCellsSensor);
@@ -356,7 +362,7 @@ void menuModelSensor(uint8_t event)
             break;
           }
           else if (sensor->formula == TELEM_FORMULA_DIST) {
-            lcd_putsLeft(y, "GPS sensor");
+            lcd_putsLeft(y, STR_GPSSENSOR);
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->dist.gps ? MIXSRC_FIRST_TELEM+3*(sensor->dist.gps-1) : 0, attr);
             if (attr) {
               sensor->dist.gps = checkIncDec(event, sensor->dist.gps, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isGPSSensor);
@@ -364,7 +370,7 @@ void menuModelSensor(uint8_t event)
             break;
           }
           else if (sensor->formula == TELEM_FORMULA_CONSUMPTION) {
-            lcd_putsLeft(y, "Amps sensor");
+            lcd_putsLeft(y, STR_CURRENTSENSOR);
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->consumption.source ? MIXSRC_FIRST_TELEM+3*(sensor->consumption.source-1) : 0, attr);
             if (attr) {
               sensor->consumption.source = checkIncDec(event, sensor->consumption.source, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isCurrentSensor);
@@ -373,7 +379,7 @@ void menuModelSensor(uint8_t event)
           }
         }
         else {
-          lcd_putsLeft(y, "Ratio");
+          lcd_putsLeft(y, STR_RATIO);
           if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.ratio, 0, 30000);
           if (sensor->custom.ratio == 0)
             lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
@@ -386,11 +392,11 @@ void menuModelSensor(uint8_t event)
       case SENSOR_FIELD_PARAM2:
         if (sensor->type == TELEM_TYPE_CALCULATED) {
           if (sensor->formula == TELEM_FORMULA_CELL) {
-            sensor->cell.index = selectMenuItem(SENSOR_2ND_COLUMN, y, "Cell index", "\007Lowest\0001\0     2\0     3\0     4\0     5\0     6\0     HighestDelta\0", sensor->cell.index, 0, 8, attr, event);
+            sensor->cell.index = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_CELLINDEX, "\007Lowest\0001\0     2\0     3\0     4\0     5\0     6\0     HighestDelta\0", sensor->cell.index, 0, 8, attr, event);
             break;
           }
           else if (sensor->formula == TELEM_FORMULA_DIST) {
-            lcd_putsLeft(y, "Alt sensor");
+            lcd_putsLeft(y, STR_ALTSENSOR);
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->dist.alt ? MIXSRC_FIRST_TELEM+3*(sensor->dist.alt-1) : 0, attr);
             if (attr) {
               sensor->dist.alt = checkIncDec(event, sensor->dist.alt, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isAltSensor);
@@ -412,7 +418,7 @@ void menuModelSensor(uint8_t event)
 
       case SENSOR_FIELD_PARAM4:
       {
-        putsStrIdx(0, y, "Source", k-SENSOR_FIELD_PARAM1+1);
+        putsStrIdx(0, y, NO_INDENT(STR_SOURCE), k-SENSOR_FIELD_PARAM1+1);
         int8_t & source = sensor->calc.sources[k-SENSOR_FIELD_PARAM1];
         if (attr) {
           source = checkIncDec(event, source, -TELEM_VALUES_MAX, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
@@ -427,12 +433,20 @@ void menuModelSensor(uint8_t event)
         break;
       }
 
-      case SENSOR_FIELD_INPUT_FLAGS:
-        sensor->inputFlags = selectMenuItem(SENSOR_2ND_COLUMN, y, "Options", "\013None\0      ""Auto Offset""Filter\0", sensor->inputFlags, 0, TELEM_INPUT_FLAGS_MAX, attr, event);
+      case SENSOR_FIELD_AUTOOFFSET:
+        ON_OFF_MENU_ITEM(sensor->autoOffset, SENSOR_2ND_COLUMN, y, STR_AUTOOFFSET, attr, event);
+        break;
+        
+      case SENSOR_FIELD_FILTER:
+        ON_OFF_MENU_ITEM(sensor->filter, SENSOR_2ND_COLUMN, y, STR_FILTER, attr, event);
+        break;
+        
+      case SENSOR_FIELD_PERSISTENT:
+        ON_OFF_MENU_ITEM(sensor->persistent, SENSOR_2ND_COLUMN, y, NO_INDENT(STR_PERSISTENT), attr, event);
         break;
 
       case SENSOR_FIELD_LOGS:
-        ON_OFF_MENU_ITEM(sensor->logs, SENSOR_2ND_COLUMN, y, "Logs", attr, event);
+        ON_OFF_MENU_ITEM(sensor->logs, SENSOR_2ND_COLUMN, y, STR_LOGS, attr, event);
         break;
 
     }

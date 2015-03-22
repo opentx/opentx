@@ -143,28 +143,28 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t newVal, uin
   }
   else {
     newVal = sensor.getValue(newVal, unit, prec);
-    if (sensor.inputFlags == TELEM_INPUT_FLAGS_AUTO_OFFSET) {
+    if (sensor.autoOffset) {
       if (!isAvailable()) {
-        offsetAuto = -newVal;
+        std.offsetAuto = -newVal;
       }
-      newVal += offsetAuto;
+      newVal += std.offsetAuto;
     }
-    else if (sensor.inputFlags == TELEM_INPUT_FLAGS_FILTERING) {
+    else if (sensor.filter) {
       if (!isAvailable()) {
         for (int i=0; i<TELEMETRY_AVERAGE_COUNT; i++) {
-          filterValues[i] = newVal;
+          std.filterValues[i] = newVal;
         }
       }
       else {
         // calculate the average from values[] and value
         // also shift readings in values [] array
-        unsigned int sum = filterValues[0];
+        unsigned int sum = std.filterValues[0];
         for (int i=0; i<TELEMETRY_AVERAGE_COUNT-1; i++) {
-          int32_t tmp = filterValues[i+1];
-          filterValues[i] = tmp;
+          int32_t tmp = std.filterValues[i+1];
+          std.filterValues[i] = tmp;
           sum += tmp;
         }
-        filterValues[TELEMETRY_AVERAGE_COUNT-1] = newVal;
+        std.filterValues[TELEMETRY_AVERAGE_COUNT-1] = newVal;
         sum += newVal;
         newVal = sum/(TELEMETRY_AVERAGE_COUNT+1);
       }
