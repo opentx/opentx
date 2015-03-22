@@ -123,16 +123,15 @@ GeneralSetupPanel::GeneralSetupPanel(QWidget * parent, GeneralSettings & general
     ui->units_CB->setCurrentIndex(generalSettings.imperial);
   }
 
-  if (!firmware->getCapability(TelemetryTimeshift)) {
-    ui->label_timezone->hide();
-    ui->timezoneSB->hide();
-    ui->timezoneSB->setDisabled(true);
-    ui->gpsFormatCB->hide();
-    ui->gpsFormatLabel->hide();
-  }
-
   ui->gpsFormatCB->setCurrentIndex(generalSettings.gpsFormat);
   ui->timezoneSB->setValue(generalSettings.timezone);
+
+  if (IS_TARANIS(firmware->getBoard())) {
+    ui->adjustRTC->setChecked(generalSettings.adjustRTC);
+  }
+  else {
+    ui->adjustRTC->hide();
+  }
 
   if (!firmware->getCapability(OptrexDisplay)) {
     ui->label_displayType->hide();
@@ -532,6 +531,13 @@ void GeneralSetupPanel::on_timezoneSB_editingFinished()
   generalSettings.timezone = ui->timezoneSB->value();
   emit modified();
 }
+
+void GeneralSetupPanel::on_adjustRTC_stateChanged(int)
+{
+  generalSettings.adjustRTC = ui->adjustRTC->isChecked();
+  emit modified();
+}
+
 
 void GeneralSetupPanel::on_inactimerSB_editingFinished()
 {
