@@ -2696,7 +2696,8 @@ class SensorField: public TransformedField {
       internalField.Append(new UnsignedField<1>(sensor.type, "type"));
       internalField.Append(new UnsignedField<5>(sensor.unit, "unit"));
       internalField.Append(new UnsignedField<2>(sensor.prec, "prec"));
-      internalField.Append(new UnsignedField<2>(sensor.inputFlags, "inputFlags"));
+      internalField.Append(new BoolField<1>(sensor.autoOffset));
+      internalField.Append(new BoolField<1>(sensor.filter));
       internalField.Append(new BoolField<1>(sensor.logs));
       internalField.Append(new BoolField<1>(sensor.persistent));
       internalField.Append(new SpareBitsField<4>());

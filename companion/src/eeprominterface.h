@@ -906,7 +906,8 @@ class SensorData {
     char label[4+1];
     unsigned int unit;
     unsigned int prec;
-    unsigned int inputFlags;
+    bool autoOffset;
+    bool filter;
     bool logs;
     bool persistent;
 
