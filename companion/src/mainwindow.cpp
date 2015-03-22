@@ -68,7 +68,7 @@
 #include "radiointerface.h"
 #include "progressdialog.h"
 
-#define OPENTX_COMPANION_DOWNLOADS   "http://downloads-20.open-tx.org/companion"
+#define OPENTX_COMPANION_DOWNLOADS   "http://downloads-21.open-tx.org/companion"
 #define DONATE_STR      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
 
 #ifdef __APPLE__
