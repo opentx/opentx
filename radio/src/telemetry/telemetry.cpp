@@ -401,40 +401,6 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
   }
 }
 
-int getTelemetryIndex(TelemetryProtocol protocol, uint16_t id, uint8_t instance)
-{
-  int available = -1;
-
-  for (int index=0; index<TELEM_VALUES_MAX; index++) {
-    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-    if (telemetrySensor.id == id && telemetrySensor.instance == instance) {
-      return index;
-    }
-    else if (available < 0 && telemetrySensor.id == 0) {
-      available = index;
-    }
-  }
-
-  if (available >= 0) {
-    switch (protocol) {
-#if defined(FRSKY_SPORT)
-      case TELEM_PROTO_FRSKY_SPORT:
-        frskySportSetDefault(available, id, instance);
-        break;
-#endif
-#if defined(FRSKY)
-      case TELEM_PROTO_FRSKY_D:
-        frskyDSetDefault(available, id);
-        break;
-#endif
-      default:
-        break;
-    }
-  }
-
-  return available;
-}
-
 void delTelemetryIndex(uint8_t index)
 {
   memclear(&g_model.telemetrySensors[index], sizeof(TelemetrySensor));
@@ -472,13 +438,37 @@ bool isSensorAvailableInResetSpecialFunction(int index)
 
 void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
 {
-  int index = getTelemetryIndex(protocol, id, instance);
-
-  if (index >= 0) {
-    telemetryItems[index].setValue(g_model.telemetrySensors[index], value, unit, prec);
+  bool available = false;
+  
+  for (int index=0; index<TELEM_VALUES_MAX; index++) {
+    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
+    if (telemetrySensor.id == id && telemetrySensor.instance == instance) {
+      telemetryItems[index].setValue(g_model.telemetrySensors[index], value, unit, prec);
+      available = true;
+    }
   }
-  else {
-    // TODO error too many sensors
+  
+  if (!available) {
+    int index = availableTelemetryIndex();
+    if (index >= 0) {
+      switch (protocol) {
+#if defined(FRSKY_SPORT)
+        case TELEM_PROTO_FRSKY_SPORT:
+          frskySportSetDefault(index, id, instance);
+          break;
+#endif
+#if defined(FRSKY)
+        case TELEM_PROTO_FRSKY_D:
+          frskyDSetDefault(index, id);
+          break;
+#endif
+        default:
+          break;
+      }
+    }
+    else {
+      // TODO error too many sensors
+    }
   }
 }
 
