@@ -203,4 +203,8 @@ void perMain()
   topLcdRefreshEnd();
 #endif
 
+#if defined(REV9E) && !defined(SIMU)
+  bt_wakeup();
+#endif
+
 }
