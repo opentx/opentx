@@ -1045,7 +1045,7 @@
 #define TR_ALTSENSOR           "Alt sensor"
 #define TR_CELLSENSOR          "Cell sensor"
 #define TR_GPSSENSOR           "GPS sensor"
-#define TR_CURRENTSENSOR       "Current sensor"
+#define TR_CURRENTSENSOR       "Curr. sensor"
 
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_SWR               "SWR"

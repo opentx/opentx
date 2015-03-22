@@ -223,7 +223,7 @@ void menuModelSensor(uint8_t event)
     int k = i + s_pgOfs;
 
     for (int j=0; j<k; j++) {
-      if (mstate_tab[j] == HIDDEN_ROW)
+      if (mstate_tab[j+1] == HIDDEN_ROW)
         k++;
     }
 
