@@ -583,3 +583,17 @@ int32_t TelemetrySensor::getValue(int32_t value, uint8_t unit, uint8_t prec) con
   return value;
 }
 
+bool TelemetrySensor::isConfigurable()
+{
+  if (type == TELEM_TYPE_CALCULATED) {
+    if (formula >= TELEM_FORMULA_CELL) {
+      return false;
+    }
+  }
+  else {
+    if (unit >= UNIT_FIRST_VIRTUAL)  {
+      return false;
+    }
+  }
+  return true;
+}

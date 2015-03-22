@@ -1154,7 +1154,8 @@ enum TelemetryUnit {
   UNIT_MINUTES,
   UNIT_SECONDS,
   // FrSky format used for these fields, could be another format in the future
-  UNIT_CELLS,
+  UNIT_FIRST_VIRTUAL,
+  UNIT_CELLS = UNIT_FIRST_VIRTUAL,
   UNIT_DATETIME,
   UNIT_GPS,
   UNIT_GPS_LONGITUDE,
@@ -1293,6 +1294,7 @@ PACK(typedef struct {
   void init(uint16_t id);
   bool isAvailable();
   int32_t getValue(int32_t value, uint8_t unit, uint8_t prec) const;
+  bool isConfigurable();
 }) TelemetrySensor;
 #endif
 
