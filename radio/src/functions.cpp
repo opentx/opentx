@@ -41,7 +41,6 @@ CustomFunctionsContext modelFunctionsContext = { 0 };
 
 #if defined(CPUARM)
 CustomFunctionsContext globalFunctionsContext = { 0 };
-extern TelemetryItem telemetryItems[];
 #endif
 
 
