@@ -470,7 +470,7 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance
       }
     }
     else {
-      // TODO error too many sensors
+      POPUP_WARNING(STR_TELEMETRYFULL);
     }
   }
 }

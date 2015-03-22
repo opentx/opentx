@@ -1060,6 +1060,7 @@
 #define TR_CURRENTSENSOR       "Current sensor"
 #define TR_AUTOOFFSET          "Auto Offset"
 #define TR_FILTER              "Filter"
+#define TR_TELEMETRYFULL       "All telemetry slots full!"
 
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_SWR               "SWR"

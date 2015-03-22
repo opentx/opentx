@@ -538,6 +538,9 @@ void menuModelTelemetry(uint8_t event)
             s_currIdx = res;
             pushMenu(menuModelSensor);
           }
+          else {
+            POPUP_WARNING(STR_TELEMETRYFULL);
+          }
         }
         break;
 

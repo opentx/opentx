@@ -1056,6 +1056,7 @@
 #define TR_CURRENTSENSOR       "Capt courant"
 #define TR_AUTOOFFSET          "Offset auto"
 #define TR_FILTER              "Filtrage"
+#define TR_TELEMETRYFULL       "Plus de capteurs libres!"
 
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_SWR               "SWR"
