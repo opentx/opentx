@@ -3032,7 +3032,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
 
   if (IS_ARM(board) && version >= 216) {
-    for (int i=0; i < GetCurrentFirmware()->getCapability(Pots); i++) {
+    for (int i=0; i < MAX_POTS(board)+MAX_SLIDERS(board); i++) {
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
     }    
   }
