@@ -73,23 +73,11 @@ INIT_STOPS(stopsSwitch, 15, SWSRC_FIRST, CATEGORY_END(-SWSRC_FIRST_LOGICAL_SWITC
 
 void onLongEnterPress(const char *result)
 {
-  if (result == STR_MENU_INPUTS) {
-    for (int i = MIXSRC_FIRST_INPUT; i <= MIXSRC_LAST_INPUT; i++) {
-      if (isInputAvailable(i)) {
-        s_source = i;
-        break;
-      }
-    }
-  }
+  if (result == STR_MENU_INPUTS)
+    s_source = getFirstAvailableSource(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable)+1;
 #if defined(LUA_MODEL_SCRIPTS)
-  if (result == STR_MENU_LUA) {
-    for (int i = MIXSRC_FIRST_LUA; i <= MIXSRC_LAST_LUA; i++) {
-      if (isSourceAvailable(i)) {
-        s_source = i;
-        break;
-      }
-    }
-  }
+  if (result == STR_MENU_LUA)
+    s_source = getFirstAvailableSource(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable);
 #endif
   if (result == STR_MENU_STICKS)
     s_source = MIXSRC_FIRST_STICK;
@@ -105,15 +93,8 @@ void onLongEnterPress(const char *result)
     s_source = MIXSRC_FIRST_SWITCH;
   if (result == STR_MENU_TRAINER)
     s_source = MIXSRC_FIRST_TRAINER;
-    
-  if (result == STR_MENU_CHANNELS) {
-    for (int i = MIXSRC_FIRST_CH; i <= MIXSRC_LAST_CH; i++) {
-      if (isSourceAvailable(i)) {
-        s_source = i;
-        break;
-      }
-    }
-  }
+  if (result == STR_MENU_CHANNELS)
+    s_source = getFirstAvailableSource(MIXSRC_FIRST_CH, MIXSRC_LAST_CH, isSourceAvailable);
   
   if (result == STR_MENU_TELEMETRY) {
     for (int i = 0; i < TELEM_VALUES_MAX; i++) {
@@ -270,26 +251,12 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       s_source = MIXSRC_NONE;
       
       if (i_min <= MIXSRC_FIRST_INPUT && i_max >= MIXSRC_FIRST_INPUT) {
-        bool available = false;
-        for (int i = MIXSRC_FIRST_INPUT; i <= MIXSRC_LAST_INPUT; i++) {
-          if (isInputAvailable(i)) {
-            available = true;
-            break;
-          }
-        }
-        if (available)
+        if (getFirstAvailableSource(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable) != MIXSRC_NONE)
           MENU_ADD_ITEM(STR_MENU_INPUTS);
       }
 #if defined(LUA_MODEL_SCRIPTS)
       if (i_min <= MIXSRC_FIRST_LUA && i_max >= MIXSRC_FIRST_LUA) {
-        bool available = false;
-        for (int i = MIXSRC_FIRST_LUA; i <= MIXSRC_LAST_LUA; i++) {
-          if (isSourceAvailable(i)) {
-            available = true;
-            break;
-          }
-        }
-        if (available)
+        if (getFirstAvailableSource(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable) != MIXSRC_NONE)
           MENU_ADD_ITEM(STR_MENU_LUA);
       }
 #endif
