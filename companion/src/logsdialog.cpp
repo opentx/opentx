@@ -28,7 +28,7 @@ logsDialog::logsDialog(QWidget *parent) :
   ui->customPlot->yAxis->setRange(-1100, 1100);
   ui->customPlot->setupFullAxesBox();
   ui->customPlot->setTitle(tr("Telemetry logs"));
-  ui->customPlot->xAxis->setLabel(tr("Time"));
+  ui->customPlot->xAxis->setLabel(tr("Time (hh:mm:ss)"));
   ui->customPlot->legend->setVisible(true);
   ui->customPlot->yAxis->setTickLabels(false);
   ui->customPlot->yAxis->setAutoTickCount(10);

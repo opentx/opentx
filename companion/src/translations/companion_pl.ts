@@ -5889,7 +5889,7 @@ Pozostałe
     Kajakarstwo
     Łucznictwo
 
-     
+
     MTB
     Pięciobój nowoczesny
     Podnoszenie ciężarów
@@ -10378,7 +10378,7 @@ Anuluj w celu przerwania kalibracji joysticka</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="31"/>
-        <source>Time</source>
+        <source>Time (hh:mm:ss)</source>
         <translation>Czas</translation>
     </message>
     <message>

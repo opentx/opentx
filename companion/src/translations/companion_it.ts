@@ -11452,7 +11452,7 @@ Premere annulla per cancellare l&apos;operazione</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="31"/>
-        <source>Time</source>
+        <source>Time (hh:mm:ss)</source>
         <translation>Tempo</translation>
     </message>
     <message>
