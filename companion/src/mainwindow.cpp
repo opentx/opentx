@@ -121,6 +121,7 @@ MainWindow::MainWindow():
     }
     QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
     QTimer::singleShot(updateDelay, this, SLOT(displayWarnings()));
+    updateSdsyncAction();
 
     QStringList strl = QApplication::arguments();
     QString str;
@@ -916,7 +917,6 @@ void MainWindow::updateMenus()
     printAct->setEnabled(hasSelection);
     loadbackupAct->setEnabled(hasMdiChild);
     compareAct->setEnabled(activeMdiChild());
-    updateSdsyncAction();
     updateRecentFileActions();
     updateProfilesActions();
     updateLanguageActions();
