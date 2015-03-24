@@ -618,7 +618,6 @@ static int f_setvbuf (lua_State *L) {
 }
 
 
-#if !defined(USE_FATFS)
 static int io_flush (lua_State *L) {
   return luaL_fileresult(L, fflush(getiofile(L, IO_OUTPUT)) == 0, NULL);
 }
@@ -627,7 +626,15 @@ static int io_flush (lua_State *L) {
 static int f_flush (lua_State *L) {
   return luaL_fileresult(L, fflush(tofile(L)) == 0, NULL);
 }
-#endif
+
+#else
+
+static int io_seek (lua_State *L) {
+  FILE *f = tofile(L);
+  lua_Unsigned offset = luaL_checkunsigned(L, 2);
+  lua_pushinteger(L, f_lseek(f, offset));
+  return 1;
+}
 
 #endif
 
@@ -639,6 +646,7 @@ const luaL_Reg iolib[] = {
   // {"flush", io_flush},
   // {"input", io_input},
   // {"lines", io_lines},
+  {"seek", io_seek},
   {"open", io_open},
   // {"output", io_output},
   // {"popen", io_popen},

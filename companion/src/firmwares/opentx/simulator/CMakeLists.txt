@@ -38,6 +38,7 @@ include_directories(
   ${RADIO_SRC_DIRECTORY}/thirdparty/FatFs
   ${RADIO_SRC_DIRECTORY}/thirdparty/FatFs/option
   ${RADIO_SRC_DIRECTORY}/thirdparty/CoOS
+  ${RADIO_SRC_DIRECTORY}/thirdparty/Lua/src
 )
 
 if(DEFINED TRANSLATIONS)
