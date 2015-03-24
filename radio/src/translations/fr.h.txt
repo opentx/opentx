@@ -788,7 +788,7 @@
 #define TR_REPEAT_AT_ZERO      INDENT "Intervalle au zéro"
 #define TR_POWEROFF            "\037\120ARRET..."
 #define TR_SHUTDOWN            "ARRET EN COURS"
-#define TR_SAVEMODEL           "Saving model settings"
+#define TR_SAVEMODEL           "Sauvegarde modèle..."
 #define TR_BATT_CALIB          "Calib. Batterie"
 #define TR_CURRENT_CALIB       "Calib. Courant"
 #define TR_VOLTAGE             TR(INDENT "Tension",INDENT "Source Tension")
