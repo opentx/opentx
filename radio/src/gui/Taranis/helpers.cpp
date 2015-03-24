@@ -167,7 +167,9 @@ bool isInputSourceAvailable(int source)
 
   if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
     div_t qr = div(source-MIXSRC_FIRST_TELEM, 3);
-    if (qr.rem == 0)
+    if (g_model.telemetrySensors[qr.quot].unit >= UNIT_DATETIME)
+      return false;
+    else if (qr.rem == 0)
       return isTelemetryFieldAvailable(qr.quot);
     else
       return isTelemetryFieldComparisonAvailable(qr.quot);
