@@ -437,7 +437,10 @@ void menuGeneralSdManager(uint8_t _event)
         editName(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH-4, _event, attr, 0);
         if (s_editMode == 0) {
           unsigned int len = effectiveLen(reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH-LEN_FILE_EXTENSION);
-          strAppend(&reusableBuffer.sdmanager.lines[i][len], getFileExtension(reusableBuffer.sdmanager.originalName, sizeof(reusableBuffer.sdmanager.originalName)));
+          char * ext = getFileExtension(reusableBuffer.sdmanager.originalName, sizeof(reusableBuffer.sdmanager.originalName));
+          if (ext) {
+            strAppend(&reusableBuffer.sdmanager.lines[i][len], ext);
+          }
           f_rename(reusableBuffer.sdmanager.originalName, reusableBuffer.sdmanager.lines[i]);
           REFRESH_FILES();
         }
