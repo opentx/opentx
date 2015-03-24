@@ -207,8 +207,9 @@ char *strAppendFilename(char *dest, const char *filename, const int size)
 #define LEN_FILE_EXTENSION 4
 char *getFileExtension(char *filename, int size)
 {
-  for (int i=0; i<size-LEN_FILE_EXTENSION; ++i) {
-    if (filename[i] == '.' || filename[i] == '\0') {
+  int len = min<int>(size, strlen(filename));
+  for (int i=len; i>=len-LEN_FILE_EXTENSION; --i) {
+    if (filename[i] == '.') {
       return &filename[i];
     }
   }

@@ -321,8 +321,8 @@ void menuGeneralSdManager(uint8_t _event)
             }
           }
           else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
-            MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
             MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+            MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
           }
         }
         if (!READ_ONLY()) {
