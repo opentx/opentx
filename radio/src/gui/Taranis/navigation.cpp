@@ -76,27 +76,27 @@ void onLongEnterPress(const char *result)
   if (result == STR_MENU_INPUTS)
     s_source = getFirstAvailableSource(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable)+1;
 #if defined(LUA_MODEL_SCRIPTS)
-  if (result == STR_MENU_LUA)
+  else if (result == STR_MENU_LUA)
     s_source = getFirstAvailableSource(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable);
 #endif
-  if (result == STR_MENU_STICKS)
+  else if (result == STR_MENU_STICKS)
     s_source = MIXSRC_FIRST_STICK;
-  if (result == STR_MENU_POTS)
+  else if (result == STR_MENU_POTS)
     s_source = MIXSRC_FIRST_POT;
-  if (result == STR_MENU_MAX)
+  else if (result == STR_MENU_MAX)
     s_source = MIXSRC_MAX;
-  if (result == STR_MENU_HELI)
+  else if (result == STR_MENU_HELI)
     s_source = MIXSRC_FIRST_HELI;
-  if (result == STR_MENU_TRIMS)
+  else if (result == STR_MENU_TRIMS)
     s_source = MIXSRC_FIRST_TRIM;
-  if (result == STR_MENU_SWITCHES)
+  else if (result == STR_MENU_SWITCHES)
     s_source = MIXSRC_FIRST_SWITCH;
-  if (result == STR_MENU_TRAINER)
+  else if (result == STR_MENU_TRAINER)
     s_source = MIXSRC_FIRST_TRAINER;
-  if (result == STR_MENU_CHANNELS)
+  else if (result == STR_MENU_CHANNELS)
     s_source = getFirstAvailableSource(MIXSRC_FIRST_CH, MIXSRC_LAST_CH, isSourceAvailable);
   
-  if (result == STR_MENU_TELEMETRY) {
+  else if (result == STR_MENU_TELEMETRY) {
     for (int i = 0; i < TELEM_VALUES_MAX; i++) {
       TelemetrySensor * sensor = & g_model.telemetrySensors[i];
       if (sensor->isAvailable()) {

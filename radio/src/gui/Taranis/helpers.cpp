@@ -354,7 +354,7 @@ int getFirstAvailableSource(int min, int max, bool (*func)(int))
     if ((*func)(i)) {
       retval = i;
       break;
-      }
     }
+  }
   return retval;
 }
