@@ -165,8 +165,13 @@ bool isInputSourceAvailable(int source)
   if (source>=MIXSRC_FIRST_TRAINER && source<=MIXSRC_LAST_TRAINER)
     return true;
 
-  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM)
-    return isTelemetryFieldAvailable(source-MIXSRC_FIRST_TELEM);
+  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
+    div_t qr = div(source-MIXSRC_FIRST_TELEM, 3);
+    if (qr.rem == 0)
+      return isTelemetryFieldAvailable(qr.quot);
+    else
+      return isTelemetryFieldComparisonAvailable(qr.quot);
+  }
 
   return false;
 }
