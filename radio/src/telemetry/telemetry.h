@@ -177,9 +177,7 @@ inline bool isTelemetryFieldComparisonAvailable(int index)
   TelemetrySensor & sensor = g_model.telemetrySensors[index];
   if (sensor.type == TELEM_TYPE_CALCULATED)
     return true;
-  if (sensor.unit == UNIT_GPS)
-    return false;
-  if (sensor.unit == UNIT_DATETIME)
+  if (sensor.unit >= UNIT_DATETIME)
     return false;
   return (sensor.id != 0);
 }
