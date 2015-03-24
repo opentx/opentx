@@ -347,3 +347,14 @@ bool modelHasNotes()
   return isFileAvailable(filename);
 }
 
+int getFirstAvailableSource(int min, int max, bool (*func)(int))
+{
+  int retval = MIXSRC_NONE;
+  for (int i = min; i <= max; i++) {
+    if ((*func)(i)) {
+      retval = i;
+      break;
+    }
+  }
+  return retval;
+}

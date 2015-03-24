@@ -798,6 +798,17 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_SCRIPT[];
   extern const pm_char STR_INPUTS[];
   extern const pm_char STR_OUTPUTS[];
+  extern const pm_char STR_MENU_INPUTS[];
+  extern const pm_char STR_MENU_LUA[];
+  extern const pm_char STR_MENU_STICKS[];
+  extern const pm_char STR_MENU_POTS[];
+  extern const pm_char STR_MENU_MAX[];
+  extern const pm_char STR_MENU_HELI[];
+  extern const pm_char STR_MENU_TRIMS[];
+  extern const pm_char STR_MENU_SWITCHES[];
+  extern const pm_char STR_MENU_TRAINER[];
+  extern const pm_char STR_MENU_CHANNELS[];
+  extern const pm_char STR_MENU_TELEMETRY[];
 #endif
 
 #if MENUS_LOCK == 1

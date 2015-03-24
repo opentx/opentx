@@ -1766,10 +1766,11 @@ enum MixSources {
   MIXSRC_LAST_LUA = MIXSRC_FIRST_LUA+(MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)-1,
 #endif
 
-  MIXSRC_Rud,                     LUA_EXPORT("rud", "Rudder")
-  MIXSRC_Ele,                     LUA_EXPORT("ele", "Elevator")
-  MIXSRC_Thr,                     LUA_EXPORT("thr", "Throttle")
-  MIXSRC_Ail,                     LUA_EXPORT("ail", "Aileron")
+  MIXSRC_FIRST_STICK,
+  MIXSRC_Rud = MIXSRC_FIRST_STICK, LUA_EXPORT("rud", "Rudder")
+  MIXSRC_Ele,                      LUA_EXPORT("ele", "Elevator")
+  MIXSRC_Thr,                      LUA_EXPORT("thr", "Throttle")
+  MIXSRC_Ail,                      LUA_EXPORT("ail", "Aileron")
 
   MIXSRC_FIRST_POT,
 #if defined(PCBTARANIS)
@@ -1812,14 +1813,16 @@ enum MixSources {
 
   MIXSRC_MAX,
 
-  MIXSRC_CYC1,                  LUA_EXPORT("cyc1", "Cyclic 1")
-  MIXSRC_CYC2,                  LUA_EXPORT("cyc2", "Cyclic 2")
-  MIXSRC_CYC3,                  LUA_EXPORT("cyc3", "Cyclic 3")
+  MIXSRC_FIRST_HELI,
+  MIXSRC_CYC1 = MIXSRC_FIRST_HELI,   LUA_EXPORT("cyc1", "Cyclic 1")
+  MIXSRC_CYC2,                       LUA_EXPORT("cyc2", "Cyclic 2")
+  MIXSRC_CYC3,                       LUA_EXPORT("cyc3", "Cyclic 3")
 
-  MIXSRC_TrimRud,               LUA_EXPORT("trim-rud", "Rudder trim")
-  MIXSRC_TrimEle,               LUA_EXPORT("trim-ele", "Elevator trim")
-  MIXSRC_TrimThr,               LUA_EXPORT("trim-thr", "Throttle trim")
-  MIXSRC_TrimAil,               LUA_EXPORT("trim-ail", "Aileron trim")
+  MIXSRC_FIRST_TRIM,
+  MIXSRC_TrimRud = MIXSRC_FIRST_TRIM,  LUA_EXPORT("trim-rud", "Rudder trim")
+  MIXSRC_TrimEle,                      LUA_EXPORT("trim-ele", "Elevator trim")
+  MIXSRC_TrimThr,                      LUA_EXPORT("trim-thr", "Throttle trim")
+  MIXSRC_TrimAil,                      LUA_EXPORT("trim-ail", "Aileron trim")
 
   MIXSRC_FIRST_SWITCH,
 

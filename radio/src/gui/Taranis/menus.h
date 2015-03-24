@@ -202,6 +202,7 @@ bool isSwitchAvailableInCustomFunctions(int swtch);
 bool isSwitchAvailableInMixes(int swtch);
 bool isSwitchAvailableInTimers(int swtch);
 bool isModuleAvailable(int module);
+int getFirstAvailableSource(int min, int max, bool (*func)(int));
 #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
 #define CHECK_INCDEC_SWITCH(event, var, min, max, flags, available) \
   var = checkIncDec(event, var, min, max, (flags)|INCDEC_SWITCH, available)
@@ -326,7 +327,8 @@ extern uint8_t s_warning_info_flags;
 
 #define NAVIGATION_MENUS
 #define MENU_ADD_ITEM(s) s_menu[s_menu_count++] = s
-#define MENU_MAX_LINES 6
+#define MENU_MAX_LINES 11
+#define MENU_MAX_DISPLAY_LINES 6
 #define MENU_ADD_SD_ITEM(s) MENU_ADD_ITEM(s)
 #define MENU_LINE_LENGTH (LEN_MODEL_NAME+12)
 extern const char *s_menu[MENU_MAX_LINES];
