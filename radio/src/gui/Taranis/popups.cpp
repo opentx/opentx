@@ -138,7 +138,7 @@ const char * displayMenu(uint8_t event)
   }
 
   if (s_menu_count > display_count) {
-    displayScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, display_count);
+    displayScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), s_menu_offset, s_menu_count, display_count);
   }
 
   switch(event) {
