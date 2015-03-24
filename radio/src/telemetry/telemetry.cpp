@@ -14,8 +14,10 @@ void TelemetryItem::gpsReceived()
   lastReceived = now();
 }
 
-void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t newVal, uint32_t unit, uint32_t prec)
+void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32_t unit, uint32_t prec)
 {
+  int32_t newVal = val;
+
   if (unit == UNIT_CELLS) {
     uint32_t data = uint32_t(newVal);
     uint8_t cellIndex = data & 0xF;
@@ -213,6 +215,15 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t newVal, uin
     valueMax = newVal;
     if (sensor.unit == UNIT_VOLTS) {
       valueMin = newVal;
+    }
+  }
+
+  for (int i=0; i<TELEM_VALUES_MAX; i++) {
+    TelemetrySensor & it = g_model.telemetrySensors[i];
+    if (it.type == TELEM_TYPE_CALCULATED && it.formula == TELEM_FORMULA_TOTALIZE && &g_model.telemetrySensors[it.consumption.source-1] == &sensor) {
+      TelemetryItem & item = telemetryItems[i];
+      int32_t increment = it.getValue(val, unit, prec);
+      item.setValue(it, item.value+increment, it.unit, it.prec);
     }
   }
 
