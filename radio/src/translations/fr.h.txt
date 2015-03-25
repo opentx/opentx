@@ -538,7 +538,7 @@
 #define TR_VSENSORTYPES        "Perso\0    ""Calculé\0  "
 
 #define LEN_VFORMULAS          "\010"
-#define TR_VFORMULAS           "Addition""Moyenne\0""Min\0    ""Max\0    ""Multipl.""Elément\0""Consomm.""Distance"
+#define TR_VFORMULAS           "Addition""Moyenne\0""Min\0    ""Max\0    ""Multipl.""Totalise""Elément\0""Consomm.""Distance"
 
 #define LEN_VPREC              "\005"
 #define TR_VPREC               "PREC0""PREC1""PREC2"
