@@ -565,7 +565,12 @@ int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t
       value = 32 + (value*18)/10;
     }
   }
-
+  else if (unit == UNIT_MILLILITERS) {
+    if (destUnit == UNIT_FLOZ) {
+      value = (value * 100) / 2957;
+    }
+  }
+  
   for (int i=destPrec; i<prec; i++)
     value /= 10;
 
