@@ -419,6 +419,46 @@
        <string>Percentage (%)</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>Energy (mAh)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Power (W)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>RF Power (dBm)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>RPM</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Acceleration (g)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Heading (°)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Volume (mL)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Volume (US fl.Oz.)</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item>

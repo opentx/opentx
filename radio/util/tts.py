@@ -151,7 +151,9 @@ def ttsEn():
                            "minute", "minutes",
                            "second", "seconds",
                            "r p m", "r p m",
-                           "g", "g"]):
+                           "g", "g"
+                           "milliliter", "milliliters"
+                           "fluid ounce", "fluid ounces"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+115+i)))
     for i, s in enumerate(["point zero", "point one", "point two", "point three",
                            "point four", "point five", "point six",
@@ -246,7 +248,7 @@ def ttsFr():
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+110+i)))
     for i, s in enumerate(["virgule", "et", "moins", "minuit", "midi"]): 
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+119+i)))
-    for i, s in enumerate(["volts", u"ampères", u"mètres seconde", "", u"kilomètre heure", u"mètres", u"degrés", "pourcents", u"milli ampères", u"milli ampères / heure", "watt", "db", "pieds", "miles par heure", "heure", "minute", "seconde", "tours minute", "g"]):
+    for i, s in enumerate(["volts", u"ampères", u"mètres seconde", "", u"kilomètre heure", u"mètres", u"degrés", "pourcents", u"milli ampères", u"milli ampères / heure", "watt", "db", "pieds", "miles par heure", "heure", "minute", "seconde", "tours minute", "g", "millilitres", "onces"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+125+i)))
     for i, s in enumerate(["timer", "", "tension", "tension", u"émission", u"réception", "altitude", "moteur",
                            "essence", u"température", u"température", "vitesse", "distance", "altitude", u"élément lipo",
@@ -306,7 +308,7 @@ def ttsIt():
     systemSounds.append(("mille", filename(PROMPT_SYSTEM_BASE+102)))
     for i, s in enumerate(["virgola", "un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+103+i)))
-    for i, s in enumerate(["volt", "ampere", "metri per secondo", "", "chilometri/ora", "metri", "gradi", "percento", "milliampere", "milliampere/ora", "watt", "db", "piedi", "nodi", "ore", "minuti", "secondi", "R P M", "g"]):
+    for i, s in enumerate(["volt", "ampere", "metri per secondo", "", "chilometri/ora", "metri", "gradi", "percento", "milliampere", "milliampere/ora", "watt", "db", "piedi", "nodi", "ore", "minuti", "secondi", "R P M", "g", "millilitri", "once"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+113+i)))            
     for s, f, a in [(u"radio inattiva controllare", "inactiv", 486),
                     (u"batteria della radio scarica", "lowbatt", 485),
@@ -388,7 +390,7 @@ def ttsPt():
     systemSounds.append(("mil", filename(PROMPT_SYSTEM_BASE+110)))
     for i, s in enumerate(["virgula", "uma", "duas", "e", "menos", "hora", "horas", "minuto", "minutos", "segundo", "segundos"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+111+i)))
-    for i, s in enumerate([u"Volt", u"ampére", u"metros por segundo", u"", u"quilômetros por hora", u"metros", u"graus", u"cento", u"miliamperes", u"miliamperes por hora", u"watt", u"db", u"pés", u"nós", u"horas", u"minutos", u"segundos", u"RPM", u"g"]):
+    for i, s in enumerate([u"Volt", u"ampére", u"metros por segundo", u"", u"quilômetros por hora", u"metros", u"graus", u"cento", u"miliamperes", u"miliamperes por hora", u"watt", u"db", u"pés", u"nós", u"horas", u"minutos", u"segundos", u"RPM", u"g", u"mililitri", u"onças"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+122+i)))            
     for s, f, a in [(u"atenção, o rádio foi esquecido ligado, por favor desligue-o", "inactiv", 486),
                     (u"bateria do rádio fraca", "lowbatt", 485),
@@ -468,7 +470,7 @@ def ttsEs():
     systemSounds.append(("mil", filename(PROMPT_SYSTEM_BASE+110)))
     for i, s in enumerate(["coma", "un", "una", "y", "meno", "hora", "horas", "minuto", "minutos", "segundo", "segundos"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+111+i)))
-    for i, s in enumerate([u"Voltio", u"ampério", u"metros por segundo", u"", u"kilómetro por hora", u"metros", u"grados", u"por ciento", u"miliamperios", u"miliamperios por hora", u"vatio", u"db", u"pés", u"nós", u"horas", u"minutos", u"segundos", u"RPM", u"g"]):
+    for i, s in enumerate([u"Voltio", u"ampério", u"metros por segundo", u"", u"kilómetro por hora", u"metros", u"grados", u"por ciento", u"miliamperios", u"miliamperios por hora", u"vatio", u"db", u"pés", u"nós", u"horas", u"minutos", u"segundos", u"RPM", u"g", u"mililitro", u"onzas"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+122+i)))            
     for s, f, a in [(u"me tienes abandonada", "inactiv", 486),
                     (u"batería del transmisor baja", "lowbatt", 485),
@@ -541,7 +543,7 @@ def ttsDe():
     systemSounds.append(("tausend", filename(PROMPT_SYSTEM_BASE+101)))
     for i, s in enumerate(["comma", "und", "minus", "uhr", "minute", "minuten", "sekunde", "sekunden"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+102+i)))
-    for i, s in enumerate(["Volt", "Ampere", "Meter pro sekunde", "", "kilometer pro stunde", "Meter", "Grad", "Prozent", "Milliampere", "Milliampere pro stunde", "Watt", "db", "Fuesse", "Knoten", "Uhr", "Minuten", "Secunden", "R P M", "g"]):
+    for i, s in enumerate(["Volt", "Ampere", "Meter pro sekunde", "", "kilometer pro stunde", "Meter", "Grad", "Prozent", "Milliampere", "Milliampere pro stunde", "Watt", "db", "Fuesse", "Knoten", "Uhr", "Minuten", "Secunden", "R P M", "g", "Milliliter", "Unze"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+110+i)))            
     for s, f, a in [(u"Sender ist inaktiv,bitte Ueberpruefen Sie", "inactiv", 486),
                     (u"Senderakku niedrig", "lowbatt", 485),

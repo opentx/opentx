@@ -140,6 +140,8 @@
 #define BATT_ID                 0xf104
 #define SWR_ID                  0xf105
 #define XJT_VERSION_ID          0xf106
+#define FUEL_QTY_FIRST_ID       0x0a10
+#define FUEL_QTY_LAST_ID        0x0a1f
 
 // Default sensor data IDs (Physical IDs + CRC)
 #define DATA_ID_VARIO            0x00 // 0
