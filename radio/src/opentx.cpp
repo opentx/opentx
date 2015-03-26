@@ -2528,6 +2528,10 @@ int main(void)
   lcdSetRefVolt(25);
 #endif
 
+#if defined(PCBTARANIS)
+  displaySplash();
+#endif
+
   sei(); // interrupts needed for telemetryInit and eeReadAll.
 
 #if defined(FRSKY) && !defined(DSM2_SERIAL)
