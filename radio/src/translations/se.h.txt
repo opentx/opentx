@@ -82,6 +82,9 @@
 #define LEN_UART3MODES         "\022"
 #define TR_UART3MODES          "Av\0               ""Spegling av S-Port""Telemetri\0        ""SBUS Trainer\0     ""Debug\0"
 
+#define LEN_SWTYPES            "\006"
+#define TR_SWTYPES             "None\0 ""Toggle""2POS\0 ""3POS\0"
+
 #define LEN_POTTYPES           "\020"
 #define TR_POTTYPES            "Ingen\0          ""Mittläges-pot\0  ""Flerlägesväljare""Potentiometer\0"
 
