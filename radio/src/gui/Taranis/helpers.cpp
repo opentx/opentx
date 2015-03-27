@@ -38,14 +38,8 @@
 
 uint8_t switchToMix(uint8_t source)
 {
-  if (source <= 5*3)
-    return MIXSRC_FIRST_SWITCH + (source-1) / 3;
-  else if (source <= 17)
-    return MIXSRC_SF;
-  else if (source <= 20)
-    return MIXSRC_SG;
-  else
-    return MIXSRC_SH;
+  div_t qr = div(source-1, 3);
+  return qr.quot+MIXSRC_FIRST_SWITCH;
 }
 
 int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable)
@@ -94,6 +88,10 @@ bool isSourceAvailable(int source)
     return IS_POT_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
   }
 
+  if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH) {
+     return SWITCH_EXISTS(source-MIXSRC_FIRST_SWITCH);
+  }
+    
 #if !defined(HELI)
   if (source>=MIXSRC_CYC1 && source<=MIXSRC_CYC3)
     return false;
@@ -109,7 +107,7 @@ bool isSourceAvailable(int source)
     return false;
   }
 
-  if (source>=MIXSRC_SW1 && source<=MIXSRC_LAST_LOGICAL_SWITCH) {
+  if (source>=MIXSRC_FIRST_LOGICAL_SWITCH && source<=MIXSRC_LAST_LOGICAL_SWITCH) {
     LogicalSwitchData * cs = lswAddress(source-MIXSRC_SW1);
     return (cs->func != LS_FUNC_NONE);
   }
@@ -156,9 +154,12 @@ bool isInputSourceAvailable(int source)
   if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
     return true;
 
-  if (source>=MIXSRC_TrimRud && source<MIXSRC_SW1)
+  if (source>=MIXSRC_FIRST_TRIM && source<=MIXSRC_LAST_TRIM)
     return true;
 
+  if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH)
+     return SWITCH_EXISTS(source-MIXSRC_FIRST_SWITCH);
+  
   if (source>=MIXSRC_FIRST_CH && source<=MIXSRC_LAST_CH)
     return true;
 

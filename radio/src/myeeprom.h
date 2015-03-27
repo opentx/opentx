@@ -1633,17 +1633,13 @@ enum SwitchSources {
   SWSRC_SE1,
   SWSRC_SE2,
   SWSRC_SF0,
-#if defined(REV9E)
   SWSRC_SF1,
-#endif
   SWSRC_SF2,
   SWSRC_SG0,
   SWSRC_SG1,
   SWSRC_SG2,
   SWSRC_SH0,
-#if defined(REV9E)
   SWSRC_SH1,
-#endif
   SWSRC_SH2,
   SWSRC_TRAINER = SWSRC_SH2,
 #if defined(REV9E)
@@ -1827,6 +1823,7 @@ enum MixSources {
   MIXSRC_TrimEle,                      LUA_EXPORT("trim-ele", "Elevator trim")
   MIXSRC_TrimThr,                      LUA_EXPORT("trim-thr", "Throttle trim")
   MIXSRC_TrimAil,                      LUA_EXPORT("trim-ail", "Aileron trim")
+  MIXSRC_LAST_TRIM = MIXSRC_TrimAil,
 
   MIXSRC_FIRST_SWITCH,
 
@@ -1850,6 +1847,9 @@ enum MixSources {
   MIXSRC_SP,                        LUA_EXPORT("sp", "Switch P")
   MIXSRC_SQ,                        LUA_EXPORT("sq", "Switch Q")
   MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R")
+  MIXSRC_LAST_SWITCH = MIXSRC_SR,
+#else
+  MIXSRC_LAST_SWITCH = MIXSRC_SH,
 #endif
 #else
   MIXSRC_3POS = MIXSRC_FIRST_SWITCH,
@@ -1859,6 +1859,7 @@ enum MixSources {
   MIXSRC_AIL,
   MIXSRC_GEA,
   MIXSRC_TRN,
+  MIXSRC_LAST_SWITCH = MIXSRC_TRN,
 #endif
   MIXSRC_FIRST_LOGICAL_SWITCH,
   MIXSRC_SW1 = MIXSRC_FIRST_LOGICAL_SWITCH, LUA_EXPORT_MULTIPLE("ls", "Logical switch L%d", NUM_LOGICAL_SWITCH)

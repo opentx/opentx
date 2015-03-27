@@ -89,17 +89,13 @@ enum EnumKeys {
   SW_SE1,
   SW_SE2,
   SW_SF0,
-#if defined(REV9E)
   SW_SF1,
-#endif
   SW_SF2,
   SW_SG0,
   SW_SG1,
   SW_SG2,
   SW_SH0,
-#if defined(REV9E)
   SW_SH1,
-#endif
   SW_SH2,
 #if defined(REV9E)
   SW_SI0,
