@@ -195,18 +195,12 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
     swtch = -swtch;
   }
 
-#if defined(REV9E)
-  if (swtch >= SWSRC_SA0 && swtch <= SWSRC_SR2) {
+  if (swtch >= SWSRC_SA0 && swtch <= SWSRC_LAST_SWITCH) {
     if (!SWITCH_EXISTS(index))
       return false;
     if ((swtch-SWSRC_SA1)%3 == 0)
       return IS_3POS(index);
   }
-#else
-  if (swtch == SWSRC_SA1 || swtch == SWSRC_SB1 || swtch == SWSRC_SC1 || swtch == SWSRC_SD1 || swtch == SWSRC_SE1 || swtch == SWSRC_SG1) {
-    return IS_3POS(index);
-  }
-#endif
 
   if (swtch >= SWSRC_FIRST_MULTIPOS_SWITCH && swtch <= SWSRC_LAST_MULTIPOS_SWITCH) {
     int index = (swtch - SWSRC_FIRST_MULTIPOS_SWITCH) / XPOTS_MULTIPOS_COUNT;
