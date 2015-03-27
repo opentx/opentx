@@ -727,3 +727,5 @@ Till von Reumont
 Paul Pereira Brunner 
 Donald L Singer
 Junsun Lee
+Guy Lamaison
+Erwin Dulken
