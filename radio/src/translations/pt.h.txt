@@ -563,9 +563,9 @@
 #define TR_CHECKTRIMS          "\006Check\012Trims"
 #define OFS_CHECKTRIMS         (9*FW)
 #define TR_SWASHTYPE           "Ciclico Tipo"
-#define TR_COLLECTIVE           "Coletivo"
-#define TR_AILERON              "Aileron Source"
-#define TR_ELEVATOR             "Elevator Source"
+#define TR_COLLECTIVE          "Coletivo"
+#define TR_AILERON             "Lateral cyc. source"
+#define TR_ELEVATOR            "Long. cyc. source"
 #define TR_SWASHRING           "Anel Coletivo"
 #define TR_ELEDIRECTION        "PFD Sentido"
 #define TR_AILDIRECTION        "AIL Sentido"

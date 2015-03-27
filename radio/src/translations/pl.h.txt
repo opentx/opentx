@@ -562,8 +562,8 @@
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           "Typ tarczy"
 #define TR_COLLECTIVE          TR("Kolektyw", "Źródło Kolektywu")
-#define TR_AILERON             "Aileron Source"
-#define TR_ELEVATOR            "Elevator Source"
+#define TR_AILERON             "Lateral cyc. source"
+#define TR_ELEVATOR            "Long. cyc. source"
 #define TR_SWASHRING           "Tarcza    "
 #define TR_ELEDIRECTION        TR("Ster Wysokośc","Dług. Kierunku cyklu")
 #define TR_AILDIRECTION        TR("Kierunek Lotk","Lateral cyc. direction")

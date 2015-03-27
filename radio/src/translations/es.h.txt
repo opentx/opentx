@@ -564,8 +564,8 @@
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           "Tipo ciclico"
 #define TR_COLLECTIVE          TR("Colectivo", "Fuente Colectivo")
-#define TR_AILERON             "Aileron Source"
-#define TR_ELEVATOR            "Elevator Source"
+#define TR_AILERON             "Lateral cyc. source"
+#define TR_ELEVATOR            "Long. cyc. source"
 #define TR_SWASHRING           "Ciclico"
 #define TR_ELEDIRECTION        TR("ELE Direccion","Largo cyc. direccion")
 #define TR_AILDIRECTION        TR("AIL Direccion","Lateral cyc. direccion")

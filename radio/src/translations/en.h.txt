@@ -611,9 +611,9 @@
 #define TR_CHECKTRIMS          CENTER "\006Check\012Trims"
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           "Swash Type"
-#define TR_COLLECTIVE          TR("Collective", "Coll. pitch")
-#define TR_AILERON             "Lateral cyc."
-#define TR_ELEVATOR            "Long. cyc."
+#define TR_COLLECTIVE          TR("Collective", "Coll. pitch source")
+#define TR_AILERON             "Lateral cyc. source"
+#define TR_ELEVATOR            "Long. cyc. source"
 #define TR_SWASHRING           "Swash Ring"
 #define TR_ELEDIRECTION        "ELE Direction"
 #define TR_AILDIRECTION        "AIL Direction"
