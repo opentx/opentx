@@ -761,6 +761,9 @@ TEST(Mixer, SlowOnSwitchSource)
   g_model.mixData[0].weight = 100;
   g_model.mixData[0].speedUp = SLOW_STEP*5;
   g_model.mixData[0].speedDown = SLOW_STEP*5;
+#if defined(CPUARM)
+  g_eeGeneral.switchConfig = 0x03;
+#endif
 
   s_mixer_first_run_done = true;
 
