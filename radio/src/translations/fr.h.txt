@@ -1066,6 +1066,7 @@
 #define TR_MENU_SWITCHES       "\312Inters"
 #define TR_MENU_TRAINER        "\317Ecolage"
 #define TR_MENU_CHANNELS       "\320Canaux"
+#define TR_MENU_GVARS          "\311Vars. glob."
 #define TR_MENU_TELEMETRY      "\321Télémesure"
 
 #define ZSTR_RSSI              "RSSI"

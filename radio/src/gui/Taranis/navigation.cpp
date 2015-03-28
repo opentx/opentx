@@ -95,6 +95,8 @@ void onLongEnterPress(const char *result)
     s_source = MIXSRC_FIRST_TRAINER;
   else if (result == STR_MENU_CHANNELS)
     s_source = getFirstAvailableSource(MIXSRC_FIRST_CH, MIXSRC_LAST_CH, isSourceAvailable);
+  else if (result == STR_MENU_GVARS)
+    s_source = MIXSRC_FIRST_GVAR;
   
   else if (result == STR_MENU_TELEMETRY) {
     for (int i = 0; i < TELEM_VALUES_MAX; i++) {
@@ -270,6 +272,8 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       if (i_min <= MIXSRC_FIRST_SWITCH && i_max >= MIXSRC_FIRST_SWITCH)    MENU_ADD_ITEM(STR_MENU_SWITCHES);
       if (i_min <= MIXSRC_FIRST_TRAINER && i_max >= MIXSRC_FIRST_TRAINER)  MENU_ADD_ITEM(STR_MENU_TRAINER);
       if (i_min <= MIXSRC_FIRST_CH && i_max >= MIXSRC_FIRST_CH)            MENU_ADD_ITEM(STR_MENU_CHANNELS);
+      if (i_min <= MIXSRC_FIRST_GVAR && i_max >= MIXSRC_FIRST_GVAR && isValueAvailable(MIXSRC_FIRST_GVAR))
+        MENU_ADD_ITEM(STR_MENU_GVARS);
       
       if (i_min <= MIXSRC_FIRST_TELEM && i_max >= MIXSRC_FIRST_TELEM) {
         bool available = false;

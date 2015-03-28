@@ -327,7 +327,7 @@ extern uint8_t s_warning_info_flags;
 
 #define NAVIGATION_MENUS
 #define MENU_ADD_ITEM(s) s_menu[s_menu_count++] = s
-#define MENU_MAX_LINES 11
+#define MENU_MAX_LINES 12
 #define MENU_MAX_DISPLAY_LINES 6
 #define MENU_ADD_SD_ITEM(s) MENU_ADD_ITEM(s)
 #define MENU_LINE_LENGTH (LEN_MODEL_NAME+12)

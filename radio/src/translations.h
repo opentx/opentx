@@ -808,6 +808,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_MENU_SWITCHES[];
   extern const pm_char STR_MENU_TRAINER[];
   extern const pm_char STR_MENU_CHANNELS[];
+  extern const pm_char STR_MENU_GVARS[];
   extern const pm_char STR_MENU_TELEMETRY[];
 #endif
 
