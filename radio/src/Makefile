@@ -307,7 +307,7 @@ MIXERS_MONITOR = NO
 
 # Use newlib-nano
 # Values = NO, YES
-NANO = YES
+NANO = NO
 
 # Use custom bin based allocator for Lua
 # Values = NO, YES
