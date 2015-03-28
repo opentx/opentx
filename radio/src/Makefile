@@ -295,7 +295,7 @@ MIXERS_MONITOR = NO
 
 # Use newlib-nano 
 # Values = NO, YES
-NANO = YES
+NANO = NO
 
 # Enable trace of events into Trace Buffer for debugging purposes
 # Activating any of these options also activates DEBUG and DEBUG_TRACE_BUFFER
