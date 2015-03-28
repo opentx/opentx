@@ -495,19 +495,16 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     slider->setTickPosition(QSlider::TicksBothSides);
     slider->setMinimumSize(QSize(30, 50));
     slider->setMaximumSize(QSize(50, 50));
+    slider->setSingleStep(1);
+    slider->setPageStep(1);
+    slider->setTickInterval(1);
     if (IS_TARANIS(board)) {
       label->setText(switchesX9D[i]);
-      slider->setMaximum(2);
-      slider->setSingleStep(generalSettings.switchConfig[i] == GeneralSettings::SWITCH_3POS ? 1 : 2);
-      slider->setPageStep(slider->singleStep());
-      slider->setTickInterval(slider->singleStep());
+      slider->setMaximum(generalSettings.switchConfig[i] == GeneralSettings::SWITCH_3POS ? 2 : 1);
     }
     else {
       label->setText(switches9X[i]);
       slider->setMaximum(i==0 ? 2 : 1);
-      slider->setSingleStep(1);
-      slider->setPageStep(1);
-      slider->setTickInterval(1);
     }
     cb->setProperty("index", i);
     ui->switchesStartupLayout->addWidget(label, 0, i+1);
@@ -735,12 +732,25 @@ void SetupPanel::updateBeepCenter()
 void SetupPanel::updateStartupSwitches()
 {
   lock = true;
+  
+  unsigned int switchStates = model->switchWarningStates;
+  unsigned int value;
 
   for (int i=0; i<startupSwitchesSliders.size(); i++) {
     QSlider *slider = startupSwitchesSliders[i];
     QCheckBox * cb = startupSwitchesCheckboxes[i];
     int index = slider->property("index").toInt();
     bool enabled = !(model->switchWarningEnable & (1 << index));
+    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      value = (switchStates >> 2*index) & 0x03;
+      if (generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS && value == 2)
+        value = 1;
+    }
+    else {
+      value = (i==0 ? switchStates & 0x3 : switchStates & 0x1);
+      switchStates >>= (i==0 ? 2 : 1);
+    }
+    slider->setValue(value);
     slider->setEnabled(enabled);
     cb->setChecked(enabled);
   }
@@ -760,16 +770,20 @@ void SetupPanel::startupSwitchEdited(int value)
       mask = 0x03 << shift;
     }
     else {
-      if (index == 1) {
+      if (index == 0) {
         mask = 0x03;
       }
       else {
-        shift = index;
+        shift = index+1;
         mask = 0x01 << shift;
       }
     }
 
     model->switchWarningStates &= ~mask;
+    
+    if (IS_TARANIS(GetEepromInterface()->getBoard()) && generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS) {
+      if (value == 1) value = 2;
+    }
 
     if (value) {
       model->switchWarningStates |= (value << shift);
