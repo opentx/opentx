@@ -995,14 +995,7 @@ void LimitData::clear()
 
 GeneralSettings::SwitchInfo GeneralSettings::switchInfoFromSwitchPositionTaranis(unsigned int index)
 {
-  if (index <= 3*5)
-    return SwitchInfo((index-1)/3, (index-1)%3);
-  else if (index <= 17)
-    return SwitchInfo(5, index==17 ? 2 : 0);
-  else if (index <= 20)
-    return SwitchInfo(6, index-18);
-  else
-    return SwitchInfo(7+(index-21)/2, 2*((index-21)%2));
+  return SwitchInfo((index-1)/3, (index-1)%3);
 }
 
 bool GeneralSettings::switchPositionAllowedTaranis(int index) const
@@ -1015,7 +1008,12 @@ bool GeneralSettings::switchPositionAllowedTaranis(int index) const
   else if (info.position == 1)
     return switchConfig[info.index] == SWITCH_3POS;
   else
-    return true;
+    return switchConfig[info.index] != SWITCH_NONE;
+}
+
+bool GeneralSettings::switchSourceAllowedTaranis(int index) const
+{
+  return switchConfig[index] != SWITCH_NONE;
 }
 
 GeneralSettings::GeneralSettings()

@@ -1174,6 +1174,7 @@ class GeneralSettings {
     
     static SwitchInfo switchInfoFromSwitchPositionTaranis(unsigned int index);
     bool switchPositionAllowedTaranis(int index) const;
+    bool switchSourceAllowedTaranis(int index) const;
 };
 
 class RadioData {
