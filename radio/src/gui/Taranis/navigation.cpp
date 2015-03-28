@@ -53,7 +53,7 @@ int8_t checkIncDecMovedSwitch(int8_t val)
       div_t info = switchInfo(swtch);
       if (IS_TOGGLE(info.quot)) {
         if (info.rem != 0) {
-          val = (val == swtch ? swtch+2 : swtch);
+          val = (val == swtch ? swtch-2 : swtch);
         }
       }
       else {

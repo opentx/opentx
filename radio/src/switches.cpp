@@ -77,32 +77,10 @@ uint64_t  switchesPos = 0;
 tmr10ms_t potsLastposStart[NUM_XPOTS] = { 0 };
 uint8_t   potsPos[NUM_XPOTS];
 
-#if defined(REV9E)
 div_t switchInfo(int switchPosition)
 {
   return div(switchPosition-SWSRC_FIRST_SWITCH, 3);
 }
-#else
-div_t switchInfo(int switchPosition)
-{
-  if (switchPosition <= SWSRC_SE2) {
-    return div(switchPosition-SWSRC_SA0, 3);
-  }
-  else if (switchPosition <= SWSRC_SF2) {
-    div_t qr = { 5, switchPosition == SWSRC_SF2 ? 2 : 0 };
-    return qr;
-  }
-  else if (switchPosition <= SWSRC_SG2) {
-    div_t qr = { 6, switchPosition-SWSRC_SG0 };
-    return qr;
-  }
-  else {
-    div_t qr = div(2*7+switchPosition-SWSRC_SH0, 2);
-    qr.rem *= 2;
-    return qr;
-  }
-}
-#endif
 
 uint64_t check2PosSwitchPosition(EnumKeys sw)
 {
@@ -577,14 +555,7 @@ int8_t getMovedSwitch()
       uint8_t next = (1024+getValue(MIXSRC_SA+i)) / 1024;
       if (prev != next) {
         switches_states = (switches_states & (~mask)) | ((swarnstate_t)next << (i*2));
-        if (i<5)
-          result = 1+(3*i)+next;
-        else if (i==5)
-          result = 1+(3*5)+(next!=0);
-        else if (i==6)
-          result = 1+(3*5)+2+next;
-        else
-          result = 1+(3*5)+2+3+(next!=0);
+        result = 1+(3*i)+next;
       }
     }
   }

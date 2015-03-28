@@ -48,11 +48,11 @@ void HeliPanel::update()
   lock = true;
 
   ui->swashType->setCurrentIndex(model->swashRingData.type);
-  populateSourceCB(ui->swashCollectiveSource, model->swashRingData.collectiveSource, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
+  populateSourceCB(ui->swashCollectiveSource, model->swashRingData.collectiveSource, generalSettings, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
   ui->swashRingVal->setValue(model->swashRingData.value);
   if (firmware->getCapability(VirtualInputs)) {
-    populateSourceCB(ui->swashElevatorSource, model->swashRingData.elevatorSource, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
-    populateSourceCB(ui->swashAileronSource, model->swashRingData.aileronSource, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
+    populateSourceCB(ui->swashElevatorSource, model->swashRingData.elevatorSource, generalSettings, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
+    populateSourceCB(ui->swashAileronSource, model->swashRingData.aileronSource, generalSettings, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
     ui->swashElevatorWeight->setValue(model->swashRingData.elevatorWeight);
     ui->swashAileronWeight->setValue(model->swashRingData.aileronWeight);
     ui->swashCollectiveWeight->setValue(model->swashRingData.collectiveWeight);

@@ -533,15 +533,19 @@ QString RawSwitch::toString()
     SwitchUp('C'), QString::fromUtf8("SC-"), SwitchDn('C'),
     SwitchUp('D'), QString::fromUtf8("SD-"), SwitchDn('D'),
     SwitchUp('E'), QString::fromUtf8("SE-"), SwitchDn('E'),
-    SwitchUp('F'), SwitchDn('F'),
+    SwitchUp('F'), QString::fromUtf8("SF-"), SwitchDn('F'),
     SwitchUp('G'), QString::fromUtf8("SG-"), SwitchDn('G'),
-    SwitchUp('H'), SwitchDn('H'),
-    SwitchUp('I'), SwitchDn('I'),
-    SwitchUp('J'), SwitchDn('J'),
-    SwitchUp('K'), SwitchDn('K'),
-    SwitchUp('L'), SwitchDn('L'),
-    SwitchUp('M'), SwitchDn('M'),
-    SwitchUp('N'), SwitchDn('N'),
+    SwitchUp('H'), QString::fromUtf8("SH-"), SwitchDn('H'),
+    SwitchUp('I'), QString::fromUtf8("SI-"), SwitchDn('I'),
+    SwitchUp('J'), QString::fromUtf8("SJ-"), SwitchDn('J'),
+    SwitchUp('K'), QString::fromUtf8("SK-"), SwitchDn('K'),
+    SwitchUp('L'), QString::fromUtf8("SL-"), SwitchDn('L'),
+    SwitchUp('M'), QString::fromUtf8("SM-"), SwitchDn('M'),
+    SwitchUp('N'), QString::fromUtf8("SN-"), SwitchDn('N'),
+    SwitchUp('O'), QString::fromUtf8("SO-"), SwitchDn('O'),
+    SwitchUp('P'), QString::fromUtf8("SP-"), SwitchDn('P'),
+    SwitchUp('Q'), QString::fromUtf8("SQ-"), SwitchDn('Q'),
+    SwitchUp('R'), QString::fromUtf8("SR-"), SwitchDn('R'),
   };
 
   static const QString logicalSwitches[] = {
@@ -991,14 +995,7 @@ void LimitData::clear()
 
 GeneralSettings::SwitchInfo GeneralSettings::switchInfoFromSwitchPositionTaranis(unsigned int index)
 {
-  if (index <= 3*5)
-    return SwitchInfo((index-1)/3, (index-1)%3);
-  else if (index <= 17)
-    return SwitchInfo(5, index==17 ? 2 : 0);
-  else if (index <= 20)
-    return SwitchInfo(6, index-18);
-  else
-    return SwitchInfo(7+(index-21)/2, 2*((index-21)%2));
+  return SwitchInfo((index-1)/3, (index-1)%3);
 }
 
 bool GeneralSettings::switchPositionAllowedTaranis(int index) const
@@ -1011,7 +1008,12 @@ bool GeneralSettings::switchPositionAllowedTaranis(int index) const
   else if (info.position == 1)
     return switchConfig[info.index] == SWITCH_3POS;
   else
-    return true;
+    return switchConfig[info.index] != SWITCH_NONE;
+}
+
+bool GeneralSettings::switchSourceAllowedTaranis(int index) const
+{
+  return switchConfig[index] != SWITCH_NONE;
 }
 
 GeneralSettings::GeneralSettings()

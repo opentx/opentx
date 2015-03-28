@@ -412,10 +412,13 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
   }
 
   for (int i=-GetCurrentFirmware()->getCapability(SwitchesPositions); i<0; i++) {
-    if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchPositionAllowedTaranis(i))
-      continue;
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
     b->addItem(item.toString(), item.toValue());
+    if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchPositionAllowedTaranis(i)){
+      QModelIndex index = b->model()->index(b->count()-1, 0);
+      QVariant v(0);
+      b->model()->setData(index, v, Qt::UserRole - 1);
+    }
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
@@ -433,10 +436,13 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
   }
 
   for (int i=1; i<=GetCurrentFirmware()->getCapability(SwitchesPositions); i++) {
-    if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchPositionAllowedTaranis(i))
-      continue;
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
     b->addItem(item.toString(), item.toValue());
+    if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchPositionAllowedTaranis(i)){
+      QModelIndex index = b->model()->index(b->count()-1, 0);
+      QVariant v(0);
+      b->model()->setData(index, v, Qt::UserRole - 1);
+    }
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
@@ -525,7 +531,7 @@ void populateGVCB(QComboBox *b, int value)
   }
 }
 
-void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData * model, unsigned int flags)
+void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSettings generalSettings, const ModelData * model, unsigned int flags)
 {
   BoardEnum board = GetCurrentFirmware()->getBoard();
   RawSource item;
@@ -590,6 +596,11 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData * 
     for (int i=0; i<GetCurrentFirmware()->getCapability(Switches); i++) {
       item = RawSource(SOURCE_TYPE_SWITCH, i);
       b->addItem(item.toString(model), item.toValue());
+      if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchSourceAllowedTaranis(i)) {
+        QModelIndex index = b->model()->index(b->count()-1, 0);
+        QVariant v(0);
+        b->model()->setData(index, v, Qt::UserRole - 1);
+      }
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
 
