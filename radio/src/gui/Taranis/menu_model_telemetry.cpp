@@ -767,7 +767,7 @@ void menuModelTelemetry(uint8_t event)
             const coord_t pos[] = {TELEM_COL1, TELEM_COL2, TELEM_COL3};
             putsMixerSource(pos[c], y, value, cellAttr);
             if (cellAttr && s_editMode>0) {
-              CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, value, MIXSRC_LAST_TELEM, isSourceAvailable);
+              value = checkIncDec(event, value, 0, MIXSRC_LAST_TELEM, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable);
             }
           }
           if (attr && m_posHorz == NUM_LINE_ITEMS) {
