@@ -229,6 +229,9 @@
   #define TR_SOUND             "Beep\0     "
 #endif
 
+#define LEN_BUZZBEEPS         "\004"
+#define TR_BUZZBEEPS          "Once""Cont"
+
 #if defined(HAPTIC)
   #define TR_HAPTIC            "Haptic\0   "
 #else

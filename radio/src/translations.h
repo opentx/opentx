@@ -127,7 +127,8 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VCSWFUNC           (OFS_VMIXTRIMS + sizeof(TR_VMIXTRIMS))
 #define OFS_VFSWFUNC           (OFS_VCSWFUNC + sizeof(TR_VCSWFUNC))
 #define OFS_VFSWRESET          (OFS_VFSWFUNC + sizeof(TR_VFSWFUNC))
-#define OFS_FUNCSOUNDS         (OFS_VFSWRESET + sizeof(TR_VFSWRESET))
+#define OFS_BUZZBEEPS          (OFS_VFSWRESET + sizeof(TR_VFSWRESET))
+#define OFS_FUNCSOUNDS         (OFS_BUZZBEEPS + sizeof(TR_BUZZBEEPS))
 #define OFS_VTELEMCHNS         (OFS_FUNCSOUNDS + sizeof(TR_FUNCSOUNDS))
 #if defined(FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
@@ -236,6 +237,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VCSWFUNC            (STR_OPEN9X + OFS_VCSWFUNC)
 #define STR_VFSWFUNC            (STR_OPEN9X + OFS_VFSWFUNC)
 #define STR_VFSWRESET           (STR_OPEN9X + OFS_VFSWRESET)
+#define STR_BUZZBEEPS           (STR_OPEN9X + OFS_BUZZBEEPS)
 #define STR_FUNCSOUNDS          (STR_OPEN9X + OFS_FUNCSOUNDS)
 #define STR_VTELEMCHNS          (STR_OPEN9X + OFS_VTELEMCHNS)
 

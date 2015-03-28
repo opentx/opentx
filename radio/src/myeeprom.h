@@ -470,6 +470,11 @@ enum BacklightMode {
   e_backlight_mode_on
 };
 
+enum BuzzerTunes {
+  BUZZER_SOUND_ONCE,
+  BUZZER_SOUND_CONT
+};
+
 #if defined(FSPLASH)
   #define SPLASH_MODE uint8_t splashMode:3
 #elif defined(PCBTARANIS)
@@ -698,8 +703,11 @@ PACK(typedef struct {
 #define CFN_CH_INDEX(p)     ((p)->all.param)
 #define CFN_TIMER_INDEX(p)  ((p)->all.param)
 #define CFN_GVAR_INDEX(p)   ((p)->gvar.param)
+#define CFN_BEEP_INDEX(p)   ((p)->all.param)
 #define CFN_PLAY_REPEAT(p)  ((p)->all.param)
+
 #define CFN_PLAY_REPEAT_MUL 10
+
 #define CFN_GVAR_MODE(p)    ((p)->gvar.mode)
 #define CFN_PARAM(p)        ((p)->value)
 #define CFN_RESET(p)        ((p)->all.active = 0, CFN_PARAM(p) = 0)
