@@ -974,6 +974,12 @@ void audioEvent(unsigned int index, unsigned int freq)
   if (index == AU_NONE)
     return;
 
+#if defined(HAPTIC)
+  if (index >= AU_THROTTLE_ALERT) {
+    haptic.event(index); //do this before audio to help sync timings
+  }
+#endif
+
   if (index <= AU_ERROR || (index >= AU_WARNING1 && index < AU_FRSKY_FIRST)) {
     if (g_eeGeneral.alarmsFlash) {
       flashCounter = FLASH_DURATION;
