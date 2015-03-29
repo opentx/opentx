@@ -375,173 +375,6 @@ void logsDialog::mouseWheel()
   }
 }
 
-void logsDialog::plotValue(int index, int plot, int numplots)
-{
-  if (plotLock)
-    return;
-  int n = csvlog.count(); // number of points in graph
-  bool rangeSelected=false;
-  uint minx;
-  uint maxx;
-  uint itemSelected=0;
-  uint itemCount=0;
-  double miny=9999;
-  double maxy=-9999;
-  minx=-1;
-  maxx=0;
-  double tmpval,yscale;
-  for (int i=1; i<n; i++) {
-    if (ui->logTable->item(i-1,1)->isSelected()) {
-      rangeSelected=true;
-      itemSelected++;
-    }
-  }
-  if (itemSelected==0) {
-    itemSelected=n-1;
-  }
-  QVector<double> x(itemSelected), y(itemSelected);
-  if (numplots<3) {
-    for (int i=1; i<n; i++) {
-      if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
-        double tmp;
-        QString tstamp=csvlog.at(i).at(0)+QString(" ")+csvlog.at(i).at(1);
-        if (csvlog.at(i).at(1).contains(".")) {
-          tmp=QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss.zzz").toTime_t();
-          tmp+=csvlog.at(i).at(1).mid(csvlog.at(i).at(1).indexOf(".")).toDouble();
-        } else {
-          tmp=QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss").toTime_t();
-        }
-        if (minx>tmp) {
-          minx=tmp;
-        }
-        if (maxx<tmp) {
-          maxx=tmp;
-        }
-        tmpval = csvlog.at(i).at(index).toDouble();
-        if (tmpval>maxy) {
-          maxy=tmpval;
-        }
-        if (tmpval<miny) {
-          miny=tmpval;
-        }
-      }
-    }
-    yscale=1;
-  } else {
-    yscale=GetScale(csvlog.at(0).at(index));
-    for (int i=1; i<n; i++)
-    {
-      if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
-        double tmp;
-        QString tstamp=csvlog.at(i).at(0)+QString(" ")+csvlog.at(i).at(1);
-        if (csvlog.at(i).at(1).contains(".")) {
-          tmp=QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss.zzz").toTime_t();
-          tmp+=csvlog.at(i).at(1).mid(csvlog.at(i).at(1).indexOf(".")).toDouble();
-        } else {
-          tmp=QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss").toTime_t();
-        }
-        if (minx>tmp) {
-          minx=tmp;
-        }
-        if (maxx<tmp) {
-          maxx=tmp;
-        }
-        if (yscale<0) {
-          tmpval = csvlog.at(i).at(index).toDouble();
-          if (tmpval>maxy) {
-            maxy=tmpval;
-          }
-          if (tmpval<miny) {
-            miny=tmpval;
-          }
-        }
-      }
-    }
-    if (yscale<0) {
-      if (miny<0) {
-        miny=-miny;
-      }
-      if (maxy<0) {
-        maxy=-maxy;
-      }
-      if (miny>maxy) {
-        yscale=miny/1000.0;
-      } else {
-        yscale=maxy/1000.0;
-      }
-      if (yscale==0) {
-        yscale=1;
-      }
-    }
-  }
-  for (int i=1; i<n; i++) {
-    if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
-      double tmp;
-      QString tstamp=csvlog.at(i).at(0)+QString(" ")+csvlog.at(i).at(1);
-      if (csvlog.at(i).at(1).contains(".")) {
-        tmp=QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss.zzz").toTime_t();
-        tmp+=csvlog.at(i).at(1).mid(csvlog.at(i).at(1).indexOf(".")).toDouble();
-      } else {
-        tmp=QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss").toTime_t();
-      }
-      x[itemCount] = tmp-minx;
-      y[itemCount] = csvlog.at(i).at(index).toDouble()/yscale;
-      itemCount++;
-    }
-  }
-  QPen graphPen;
-  QColor color=palette.at(index % 60);
-  graphPen.setColor(color);
-  graphPen.setWidthF(1.5);
-  if (numplots<3) {
-    if (plot==1) {
-      ui->customPlot->xAxis->setRange(0, maxx-minx);
-      ui->customPlot->yAxis->setRange(miny,maxy);
-      ui->customPlot->yAxis->setLabelColor(color);
-      ui->customPlot->yAxis->setLabel(csvlog.at(0).at(index));
-      ui->customPlot->yAxis->setTickLabels(true);
-      ui->customPlot->yAxis->setVisible(true);
-      ui->customPlot->yAxis2->setVisible(false);
-      ui->customPlot->addGraph(ui->customPlot->xAxis, ui->customPlot->yAxis);
-      ui->customPlot->graph(0)->setName(csvlog.at(0).at(index));
-      ui->customPlot->graph(0)->setData(x, y);
-      ui->customPlot->graph(0)->setLineStyle(QCPGraph::lsLine);
-      ui->customPlot->graph(0)->setScatterStyle(QCP::ssNone);
-      //ui->customPlot->graph()->setLineStyle((QCPGraph::LineStyle)(rand()%5+1));
-      ui->customPlot->graph(0)->setPen(graphPen);
-    }
-    else {
-      ui->customPlot->xAxis2->setRange(0, maxx-minx);
-      ui->customPlot->yAxis2->setTickLabels(true);
-      ui->customPlot->yAxis2->setRange(miny,maxy);
-      ui->customPlot->yAxis2->setVisible(true);
-      ui->customPlot->yAxis2->setLabelColor(color);
-      ui->customPlot->yAxis2->setLabel(csvlog.at(0).at(index));
-      ui->customPlot->addGraph(ui->customPlot->xAxis2, ui->customPlot->yAxis2);
-      ui->customPlot->graph(1)->setName(csvlog.at(0).at(index));
-      ui->customPlot->graph(1)->setData(x, y);
-      ui->customPlot->graph(1)->setLineStyle(QCPGraph::lsLine);
-      ui->customPlot->graph(1)->setScatterStyle(QCP::ssNone);
-      //ui->customPlot->graph()->setLineStyle((QCPGraph::LineStyle)(rand()%5+1));
-      ui->customPlot->graph(1)->setPen(graphPen);
-    }
-  }
-  else {
-      ui->customPlot->yAxis->setTickLabels(false);
-      ui->customPlot->yAxis2->setTickLabels(false);
-      ui->customPlot->yAxis->setRange(-1100, 1100);
-      ui->customPlot->yAxis->setVisible(false);
-      ui->customPlot->yAxis2->setVisible(false);
-      ui->customPlot->addGraph();
-      ui->customPlot->graph()->setName(csvlog.at(0).at(index));
-      ui->customPlot->graph()->setData(x, y);
-      ui->customPlot->graph()->setLineStyle(QCPGraph::lsLine);
-      ui->customPlot->graph()->setScatterStyle(QCP::ssNone);
-      //ui->customPlot->graph()->setLineStyle((QCPGraph::LineStyle)(rand()%5+1));
-      ui->customPlot->graph()->setPen(graphPen);
-  }
-}
-
 void logsDialog::removeSelectedGraph()
 {
   if (ui->customPlot->selectedGraphs().size() > 0)
@@ -578,6 +411,9 @@ void logsDialog::on_fileOpen_BT_clicked()
     g.logDir( fileName );
     ui->FileName_LE->setText(fileName);
     if (cvsFileParse()) {
+      // QElapsedTimer timer;
+      // timer.start();
+
       ui->FieldsTW->clear();
       ui->logTable->clear();
       ui->FieldsTW->setShowGrid(false);
@@ -590,7 +426,7 @@ void logsDialog::on_fileOpen_BT_clicked()
         QTableWidgetItem* item= new QTableWidgetItem(csvlog.at(0).at(i));
         ui->FieldsTW->setItem(0,i-2,item);
       }
-      ui->FieldsTW->resizeRowsToContents();
+      // ui->FieldsTW->resizeRowsToContents();
       ui->logTable->setColumnCount(csvlog.at(0).count());
       ui->logTable->setRowCount(csvlog.count()-1);
       ui->logTable->setHorizontalHeaderLabels(csvlog.at(0));
@@ -605,19 +441,24 @@ void logsDialog::on_fileOpen_BT_clicked()
           ui->logTable->setItem(i-1,j,item );
         }
       }
-      ui->logTable->resizeColumnsToContents();
-      ui->logTable->resizeRowsToContents();
+      // ui->logTable->resizeColumnsToContents();
+      // ui->logTable->resizeRowsToContents();
       // Hack - add some pixel of space to columns as Qt resize them too small
-      for (int j=0; j<csvlog.at(0).count(); j++) {
-        int width=ui->logTable->columnWidth(j);
-        ui->logTable->setColumnWidth(j,width+5);
-      }
+      // for (int j=0; j<csvlog.at(0).count(); j++) {
+      //   int width=ui->logTable->columnWidth(j);
+      //   ui->logTable->setColumnWidth(j,width+5);
+      // }
+
+      // qDebug() << timer.elapsed();
     }
   }
 }
 
 bool logsDialog::cvsFileParse()
 {
+  // QElapsedTimer timer;
+  // timer.start();
+
   QFile file(ui->FileName_LE->text());
   int errors=0;
   int lines=-1;
@@ -708,6 +549,9 @@ bool logsDialog::cvsFileParse()
     }
   }
   plotLock=false;
+
+  // qDebug() << timer.elapsed();
+
   return true;
 }
 
@@ -762,45 +606,9 @@ void logsDialog::plotLogs()
 {
   if (plotLock) return;
 
-  if (!newPlotLogs()) {
-    int n = csvlog.at(0).count(); // number of points in graph
-    int numplots = 0;
-    int plots = 0;
+  // QElapsedTimer timer;
+  // timer.start();
 
-    removeAllGraphs();
-    ui->customPlot->xAxis->setTickLabelType(QCPAxis::ltNumber);
-
-    for (int i=0; i<n-2; i++) {
-      if (ui->FieldsTW->item(0,i)->isSelected()) {
-        numplots++;
-      }
-    }
-    for (int i=0; i<n-2; i++) {
-      if (ui->FieldsTW->item(0,i)->isSelected()) {
-        plots++;
-        plotValue(i+2,plots, numplots);
-      }
-    }
-    ui->customPlot->legend->setVisible((numplots>2));
-
-    ui->customPlot->replot();
-  }
-}
-
-void logsDialog::setRangeyAxis2(QCPRange range)
-{
-  double lowerChange = (range.lower - rangeyAxisMin) * rangeRatio;
-  double upperChange = (range.upper - rangeyAxisMax) * rangeRatio;
-  rangeyAxisMin = range.lower;
-  rangeyAxisMax = range.upper;
-  rangeyAxis2Min += lowerChange;
-  rangeyAxis2Max += upperChange;
-
-  ui->customPlot->yAxis2->setRange(rangeyAxis2Min, rangeyAxis2Max);
-}
-
-bool logsDialog::newPlotLogs()
-{
   plotsCollection plots;
   QVarLengthArray<Qt::GlobalColor> colors;
   QPen pen;
@@ -874,21 +682,46 @@ bool logsDialog::newPlotLogs()
   plots.rangeOneMin = plots.coords.at(0).min_y;
   plots.rangeOneMax = plots.coords.at(0).max_y;
   plots.twoRanges = false;
+  plots.tooManyRanges = false;
 
   for (int i = 1; i < plots.coords.size(); i++) {
+    if (plots.tooManyRanges) {
+      if (plots.coords.at(i).min_y < plots.rangeOneMin) {
+        plots.rangeOneMin = plots.coords.at(i).min_y;
+      }
+      if (plots.coords.at(i).max_y > plots.rangeOneMax) {
+        plots.rangeOneMax = plots.coords.at(i).max_y;
+      }
+
+      continue;
+    }
+
     double actualRange = plots.rangeOneMax - plots.rangeOneMin;
     double thisRange = plots.coords.at(i).max_y - plots.coords.at(i).min_y;
 
-    if (thisRange >= actualRange * 1.3 || thisRange * 1.3 <= actualRange ||
+    if (thisRange > actualRange * 1.3 || thisRange * 1.3 < actualRange ||
         plots.coords.at(i).min_y > plots.rangeOneMax ||
         plots.coords.at(i).max_y < plots.rangeOneMin) {
       plots.coords[i].secondRange = true;
       if (plots.twoRanges) {
         actualRange = plots.rangeTwoMax - plots.rangeTwoMin;
-        if (thisRange >= actualRange * 1.3 || thisRange * 1.3 <= actualRange ||
+        if (thisRange > actualRange * 1.3 || thisRange * 1.3 < actualRange ||
             plots.coords.at(i).min_y > plots.rangeTwoMax ||
             plots.coords.at(i).max_y < plots.rangeTwoMin) {
-          return false;
+          plots.tooManyRanges = true;
+          plots.twoRanges = false;
+          if (plots.rangeTwoMin < plots.rangeOneMin) {
+            plots.rangeOneMin = plots.rangeTwoMin;
+          }
+          if (plots.rangeTwoMax > plots.rangeOneMax) {
+            plots.rangeOneMax = plots.rangeTwoMax;
+          }
+          if (plots.coords.at(i).min_y < plots.rangeOneMin) {
+            plots.rangeOneMin = plots.coords.at(i).min_y;
+          }
+          if (plots.coords.at(i).max_y > plots.rangeOneMax) {
+            plots.rangeOneMax = plots.coords.at(i).max_y;
+          }
         } else {
           if (plots.coords.at(i).min_y < plots.rangeTwoMin) {
             plots.rangeTwoMin = plots.coords.at(i).min_y;
@@ -911,12 +744,19 @@ bool logsDialog::newPlotLogs()
       }
     }
   }
-  rangeRatio = (plots.rangeTwoMax - plots.rangeTwoMin) /
-    (plots.rangeOneMax - plots.rangeOneMin);
-  rangeyAxisMin = plots.rangeOneMin;
-  rangeyAxisMax = plots.rangeOneMax;
-  rangeyAxis2Min = plots.rangeTwoMin;
-  rangeyAxis2Max = plots.rangeTwoMax;
+
+  if (plots.twoRanges) {
+    rangeRatio = (plots.rangeTwoMax - plots.rangeTwoMin) /
+      (plots.rangeOneMax - plots.rangeOneMin);
+    rangeyAxisMin = plots.rangeOneMin;
+    rangeyAxisMax = plots.rangeOneMax;
+    rangeyAxis2Min = plots.rangeTwoMin;
+    rangeyAxis2Max = plots.rangeTwoMax;
+
+    hasyAxis = true;
+  } else {
+    hasyAxis = false;
+  }
 
   removeAllGraphs();
 
@@ -930,12 +770,12 @@ bool logsDialog::newPlotLogs()
   if (plots.twoRanges) {
     ui->customPlot->yAxis2->setRange(plots.rangeTwoMin, plots.rangeTwoMax);
     ui->customPlot->yAxis2->setTickLabels(true);
-    ui->customPlot->yAxis2->setVisible(true);
+    // ui->customPlot->yAxis2->setVisible(true);
   }
   ui->customPlot->yAxis2->setVisible(plots.twoRanges);
 
   for (int i = 0; i < plots.coords.size(); i++) {
-    if (plots.coords.at(i).secondRange) {
+    if (plots.coords.at(i).secondRange && plots.twoRanges) {
       ui->customPlot->addGraph(ui->customPlot->xAxis, ui->customPlot->yAxis2);
     } else {
       ui->customPlot->addGraph();
@@ -946,10 +786,25 @@ bool logsDialog::newPlotLogs()
     ui->customPlot->graph(i)->setPen(pen);
     // ui->customPlot->graph(i)->rescaleAxes();
     ui->customPlot->graph(i)->setName(plots.coords.at(i).name);
+    ui->customPlot->graph(i)->setAntialiased(false);
   }
 
   ui->customPlot->legend->setVisible(true);
   ui->customPlot->replot();
 
-  return true;
+  // qDebug() << timer.elapsed();
+}
+
+void logsDialog::setRangeyAxis2(QCPRange range)
+{
+  if (hasyAxis) {
+    double lowerChange = (range.lower - rangeyAxisMin) * rangeRatio;
+    double upperChange = (range.upper - rangeyAxisMax) * rangeRatio;
+    rangeyAxisMin = range.lower;
+    rangeyAxisMax = range.upper;
+    rangeyAxis2Min += lowerChange;
+    rangeyAxis2Max += upperChange;
+
+    ui->customPlot->yAxis2->setRange(rangeyAxis2Min, rangeyAxis2Max);
+  }
 }

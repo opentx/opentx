@@ -18,6 +18,7 @@ struct plotsCollection {
   double min_x;
   double max_x;
   bool twoRanges;
+  bool tooManyRanges;
   double rangeOneMin;
   double rangeOneMax;
   double rangeTwoMin;
@@ -47,7 +48,6 @@ private slots:
   void removeAllGraphs();
   void moveLegend();
   void plotLogs();
-  void plotValue(int index, int plot, int numplots);
   void plottableItemDoubleClick(QCPAbstractPlottable *  plottable, QMouseEvent * event);
   // void graphClicked(QCPAbstractPlottable *plottable);
   void on_fileOpen_BT_clicked();
@@ -64,12 +64,12 @@ private:
   bool plotLock;
   QString logFilename;
 
+  bool hasyAxis;
   double rangeRatio;
   double rangeyAxisMin;
   double rangeyAxisMax;
   double rangeyAxis2Min;
   double rangeyAxis2Max;
-  bool newPlotLogs();
 };
 
 #endif // LOGSDIALOG_H
