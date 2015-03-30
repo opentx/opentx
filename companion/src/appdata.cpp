@@ -20,7 +20,7 @@ AppData g;
 // ** CompStoreObj class********************
 void CompStoreObj::clear (const QString tag1, const QString tag2, const QString tag3)
 {
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     if (tag2.isEmpty())
     {
         settings.remove(tag1);
@@ -43,7 +43,7 @@ void CompStoreObj::clear (const QString tag1, const QString tag2, const QString 
 
 void CompStoreObj::store(const QByteArray newArray, QByteArray &array, const QString tag, const QString group1, const QString group2 )
 {
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     if (!group1.isEmpty()) settings.beginGroup(group1);
     if (!group2.isEmpty()) settings.beginGroup(group2);
 
@@ -56,7 +56,7 @@ void CompStoreObj::store(const QByteArray newArray, QByteArray &array, const QSt
 
 void CompStoreObj::store(const QStringList newSList, QStringList &stringList, const QString tag, const QString group1, const QString group2 )
 {
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     if (!group1.isEmpty()) settings.beginGroup(group1);
     if (!group2.isEmpty()) settings.beginGroup(group2);
 
@@ -69,7 +69,7 @@ void CompStoreObj::store(const QStringList newSList, QStringList &stringList, co
 
 void CompStoreObj::store(const QString newString, QString &string, const QString tag, const QString group1, const QString group2 )
 {
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     if (!group1.isEmpty()) settings.beginGroup(group1);
     if (!group2.isEmpty()) settings.beginGroup(group2);
 
@@ -82,7 +82,7 @@ void CompStoreObj::store(const QString newString, QString &string, const QString
 
 void CompStoreObj::store(const bool newTruth, bool &truth, const QString tag, const QString group1, const QString group2 )
 {
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     if (!group1.isEmpty()) settings.beginGroup(group1);
     if (!group2.isEmpty()) settings.beginGroup(group2);
 
@@ -95,7 +95,7 @@ void CompStoreObj::store(const bool newTruth, bool &truth, const QString tag, co
 
 void CompStoreObj::store(const int newNumber, int &number, const QString tag, const QString group1, const QString group2 )
 {
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     if (!group1.isEmpty()) settings.beginGroup(group1);
     if (!group2.isEmpty()) settings.beginGroup(group2);
 
@@ -109,7 +109,7 @@ void CompStoreObj::store(const int newNumber, int &number, const QString tag, co
 // Retrieval functions
 void CompStoreObj::retrieve( QByteArray &array, const QString tag, const QString def, const QString group1, const QString group2 )
 {
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     if (!group1.isEmpty()) settings.beginGroup(group1);
     if (!group2.isEmpty()) settings.beginGroup(group2);
 
@@ -121,7 +121,7 @@ void CompStoreObj::retrieve( QByteArray &array, const QString tag, const QString
 
 void CompStoreObj::retrieve( QStringList &stringList, const QString tag, const QString def, const QString group1, const QString group2 )
 {
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     if (!group1.isEmpty()) settings.beginGroup(group1);
     if (!group2.isEmpty()) settings.beginGroup(group2);
 
@@ -133,7 +133,7 @@ void CompStoreObj::retrieve( QStringList &stringList, const QString tag, const Q
 
 void CompStoreObj::retrieve( QString &string, const QString tag, const QString def, const QString group1, const QString group2 )
 {
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     if (!group1.isEmpty()) settings.beginGroup(group1);
     if (!group2.isEmpty()) settings.beginGroup(group2);
 
@@ -145,7 +145,7 @@ void CompStoreObj::retrieve( QString &string, const QString tag, const QString d
 
 void CompStoreObj::retrieve( bool &truth, const QString tag, const bool def, const QString group1, const QString group2 )
 {
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     if (!group1.isEmpty()) settings.beginGroup(group1);
     if (!group2.isEmpty()) settings.beginGroup(group2);
 
@@ -157,7 +157,7 @@ void CompStoreObj::retrieve( bool &truth, const QString tag, const bool def, con
 
 void CompStoreObj::retrieve( int &number, const QString tag, const int def, const QString group1, const QString group2 )
 {
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     if (!group1.isEmpty()) settings.beginGroup(group1);
     if (!group2.isEmpty()) settings.beginGroup(group2);
 
@@ -241,7 +241,7 @@ JStickData::JStickData()
 void JStickData::remove()
 {
     // Remove all JStickData values from settings file
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     settings.beginGroup( "JsCalibration" );
     settings.remove( QString( "stick%1_axe").arg(index) );
     settings.remove( QString( "stick%1_min").arg(index) );
@@ -256,7 +256,7 @@ void JStickData::remove()
 
 bool JStickData::existsOnDisk()
 {
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     settings.beginGroup("JsCalibration");
     int axe = settings.value( QString("stick%1_axe").arg(index), -1 ).toInt();
     settings.endGroup();
@@ -377,7 +377,7 @@ Profile& Profile::operator=(const Profile& rhs)
 void Profile::remove()
 {
     // Remove all profile values from settings file
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     settings.beginGroup("Profiles");
     settings.remove(QString("profile%1").arg(index));
     settings.endGroup();
@@ -388,7 +388,7 @@ void Profile::remove()
 
 bool Profile::existsOnDisk()
 {
-    QSettings settings(PRODUCT, COMPANY);
+    QSettings settings(COMPANY, PRODUCT);
     settings.beginGroup("Profiles");
     settings.beginGroup(QString("profile%1").arg(index));
     QStringList keyList = settings.allKeys();
@@ -583,11 +583,29 @@ AppData::AppData()
     for (int i=0; i<MAX_JOYSTICKS; i++)
         joystick[i].init( i );
 
-    // Import settings from companion9x, but only do it one time.
-    QSettings c9x_settings("companion9x", "companion9x");
-    QSettings settings(PRODUCT, COMPANY);
-    if (profile[0].name().isEmpty() )
+    // Move existing 2.0 settings if present   
+    QSettings settings(COMPANY, PRODUCT);
+    if (profile[0].name().isEmpty())
     {
+        QSettings pre2016settings("OpenTX", "OpenTX Companion"); 
+
+        QStringList keys = pre2016settings.allKeys();
+        for (QStringList::iterator i=keys.begin(); i!=keys.end(); i++)
+        {
+            settings.setValue(*i, pre2016settings.value(*i));
+        }
+        
+        //Reload profiles
+        for (int i=0; i<MAX_PROFILES; i++)
+            profile[i].init( i );
+            
+        pre2016settings.clear();
+    }
+    
+    // Else import settings from companion9x if present
+    if (profile[0].name().isEmpty())
+    {
+        QSettings c9x_settings("companion9x", "companion9x");
         // Copy all settings from companion9x to companion
         QStringList keys = c9x_settings.allKeys();
         for (QStringList::iterator i=keys.begin(); i!=keys.end(); i++)
