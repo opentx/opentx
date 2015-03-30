@@ -922,7 +922,7 @@ void MainWindow::updateMenus()
     updateLanguageActions();
     updateIconSizeActions();
     updateIconThemeActions();
-    setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->getName()).arg( g.profile[g.id()].name() ));
+    setWindowTitle(tr("OpenTX Companion 2.1 - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->getName()).arg( g.profile[g.id()].name() ));
 }
 
 MdiChild *MainWindow::createMdiChild()
