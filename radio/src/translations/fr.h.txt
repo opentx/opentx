@@ -465,7 +465,7 @@
   #define TR_LOGICALSW         "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12"
 #endif
 
-#define TR_TRIMS_SWITCHES      "\313Dg""\313Dd""\313Pb""\313Ph""\313Gb""\313Gh""\313Ag""\313Ad"
+#define TR_TRIMS_SWITCHES      TR("tDg""tDd""tPb""tPh""tGb""tGh""tAg""tAd", "\313Dg""\313Dd""\313Pb""\313Ph""\313Gb""\313Gh""\313Ag""\313Ad")
 
 #if defined(PCBSKY9X)
   #define TR_ROTARY_ENCODERS   "REa\0"
