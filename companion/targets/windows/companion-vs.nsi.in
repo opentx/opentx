@@ -12,14 +12,14 @@
 ;General
 
   ;Name and file
-  Name "OpenTX Companion"
+  Name "OpenTX Companion 2.1"
   OutFile "companionInstall_@C9X_VERSION@.exe"
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\OpenTX"
+  InstallDir "$PROGRAMFILES\OpenTX\Companion 2.1"
   
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\OpenTX" ""
+  InstallDirRegKey HKCU "Software\OpenTX\Companion 2.1" ""
   
   ;Compressor options
   SetCompressor /FINAL /SOLID lzma
@@ -66,7 +66,7 @@
   
   ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
-  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\OpenTX" 
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\OpenTX\Companion 2.1" 
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
   
   !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
@@ -77,7 +77,7 @@
     !define MUI_FINISHPAGE_NOAUTOCLOSE
     !define MUI_FINISHPAGE_RUN
     !define MUI_FINISHPAGE_RUN_CHECKED
-    !define MUI_FINISHPAGE_RUN_TEXT "Launch OpenTX Companion"
+    !define MUI_FINISHPAGE_RUN_TEXT "Launch OpenTX Companion 2.1"
     !define MUI_FINISHPAGE_RUN_FUNCTION "LaunchLink"
   #  !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
   #  !define MUI_FINISHPAGE_SHOWREADME $INSTDIR\readme.txt
@@ -134,7 +134,7 @@ Section "OpenTX Companion" SecDummy
   
   SetOutPath "$INSTDIR"
   ;Store installation folder
-  WriteRegStr HKCU "Software\OpenTX" "" $INSTDIR
+  WriteRegStr HKCU "Software\OpenTX\Companion 2.1" "" $INSTDIR
   
   ;Associate with extentions ,bin and .hex
   ${registerExtension} "$INSTDIR\companion.exe" ".bin" "BIN_File"
@@ -147,20 +147,20 @@ Section "OpenTX Companion" SecDummy
   WriteUninstaller "$INSTDIR\Uninstall.exe"
   
   ;Registry information for add/remove programs
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "DisplayName" "OpenTX Companion"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "UninstallString" "$\"$INSTDIR\Uninstall.exe$\""
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "DisplayIcon" "$\"$INSTDIR\companion.exe$\""
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "Publisher" "OpenTX"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "URLInfoAbout" "http://www.open-tx.org"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "QuietUninstallString" "$\"$INSTDIR\Uninstall.exe$\" /S"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion 2.1" "DisplayName" "OpenTX Companion 2.1"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion 2.1" "UninstallString" "$\"$INSTDIR\Uninstall.exe$\""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion 2.1" "DisplayIcon" "$\"$INSTDIR\companion.exe$\""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion 2.1" "Publisher" "OpenTX"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion 2.1" "URLInfoAbout" "http://www.open-tx.org"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion 2.1" "QuietUninstallString" "$\"$INSTDIR\Uninstall.exe$\" /S"
   
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     
   ;Create shortcuts
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
-  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\companion.lnk" "$INSTDIR\companion.exe"
-  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\simulator.lnk" "$INSTDIR\simulator.exe"
-  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Companion 2.1.lnk" "$INSTDIR\companion.exe"
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Firmware Simulator 2.1.lnk" "$INSTDIR\simulator.exe"
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall Companion 2.1.lnk" "$INSTDIR\Uninstall.exe"
   
   !insertmacro MUI_STARTMENU_WRITE_END
 
@@ -207,8 +207,10 @@ Section "Uninstall"
   Delete "$INSTDIR\Uninstall.exe"
   
   Delete "$INSTDIR\lang\*.*"
+  Delete "$INSTDIR\phonon_backend\*.*"
 
   RMDir "$INSTDIR\lang"
+  RMDir "$INSTDIR\phonon_backend"
   RMDir "$INSTDIR"
   
   ${unregisterExtension} ".bin" "BIN File"
@@ -218,13 +220,13 @@ Section "Uninstall"
   
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
     
-  Delete "$SMPROGRAMS\$StartMenuFolder\companion.lnk"
-  Delete "$SMPROGRAMS\$StartMenuFolder\simulator.lnk"
-  Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Companion 2.1.lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Firmware Simulator 2.1.lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall Companion 2.1.lnk"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
   
-  DeleteRegKey /ifempty HKCU "Software\OpenTX"
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX"
+  DeleteRegKey /ifempty HKCU "Software\OpenTX Companion 2.1"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion 2.1"
 
 SectionEnd
 
