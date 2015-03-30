@@ -372,6 +372,8 @@ void logsDialog::mouseWheel()
   }
   if (orientation) {
     ui->customPlot->setRangeZoom((Qt::Orientation)orientation);
+  } else {
+    ui->customPlot->setRangeZoom(Qt::Horizontal|Qt::Vertical);
   }
 }
 
@@ -411,8 +413,6 @@ void logsDialog::on_fileOpen_BT_clicked()
     g.logDir( fileName );
     ui->FileName_LE->setText(fileName);
     if (cvsFileParse()) {
-      // QElapsedTimer timer;
-      // timer.start();
 
       ui->FieldsTW->clear();
       ui->logTable->clear();
@@ -426,7 +426,7 @@ void logsDialog::on_fileOpen_BT_clicked()
         QTableWidgetItem* item= new QTableWidgetItem(csvlog.at(0).at(i));
         ui->FieldsTW->setItem(0,i-2,item);
       }
-      // ui->FieldsTW->resizeRowsToContents();
+      ui->FieldsTW->resizeRowsToContents();
       ui->logTable->setColumnCount(csvlog.at(0).count());
       ui->logTable->setRowCount(csvlog.count()-1);
       ui->logTable->setHorizontalHeaderLabels(csvlog.at(0));
@@ -441,24 +441,19 @@ void logsDialog::on_fileOpen_BT_clicked()
           ui->logTable->setItem(i-1,j,item );
         }
       }
-      // ui->logTable->resizeColumnsToContents();
-      // ui->logTable->resizeRowsToContents();
+      ui->logTable->resizeColumnsToContents();
+      ui->logTable->resizeRowsToContents();
       // Hack - add some pixel of space to columns as Qt resize them too small
-      // for (int j=0; j<csvlog.at(0).count(); j++) {
-      //   int width=ui->logTable->columnWidth(j);
-      //   ui->logTable->setColumnWidth(j,width+5);
-      // }
-
-      // qDebug() << timer.elapsed();
+      for (int j=0; j<csvlog.at(0).count(); j++) {
+        int width=ui->logTable->columnWidth(j);
+        ui->logTable->setColumnWidth(j,width+5);
+      }
     }
   }
 }
 
 bool logsDialog::cvsFileParse()
 {
-  // QElapsedTimer timer;
-  // timer.start();
-
   QFile file(ui->FileName_LE->text());
   int errors=0;
   int lines=-1;
@@ -550,8 +545,6 @@ bool logsDialog::cvsFileParse()
   }
   plotLock=false;
 
-  // qDebug() << timer.elapsed();
-
   return true;
 }
 
@@ -605,9 +598,6 @@ void logsDialog::on_sessions_CB_currentIndexChanged(int index)
 void logsDialog::plotLogs()
 {
   if (plotLock) return;
-
-  // QElapsedTimer timer;
-  // timer.start();
 
   plotsCollection plots;
   QVarLengthArray<Qt::GlobalColor> colors;
@@ -753,9 +743,9 @@ void logsDialog::plotLogs()
     rangeyAxis2Min = plots.rangeTwoMin;
     rangeyAxis2Max = plots.rangeTwoMax;
 
-    hasyAxis = true;
+    hasyAxis2 = true;
   } else {
-    hasyAxis = false;
+    hasyAxis2 = false;
   }
 
   removeAllGraphs();
@@ -770,7 +760,6 @@ void logsDialog::plotLogs()
   if (plots.twoRanges) {
     ui->customPlot->yAxis2->setRange(plots.rangeTwoMin, plots.rangeTwoMax);
     ui->customPlot->yAxis2->setTickLabels(true);
-    // ui->customPlot->yAxis2->setVisible(true);
   }
   ui->customPlot->yAxis2->setVisible(plots.twoRanges);
 
@@ -784,20 +773,16 @@ void logsDialog::plotLogs()
       plots.coords.at(i).y);
     pen.setColor(colors.at(i));
     ui->customPlot->graph(i)->setPen(pen);
-    // ui->customPlot->graph(i)->rescaleAxes();
     ui->customPlot->graph(i)->setName(plots.coords.at(i).name);
-    ui->customPlot->graph(i)->setAntialiased(false);
   }
 
   ui->customPlot->legend->setVisible(true);
   ui->customPlot->replot();
-
-  // qDebug() << timer.elapsed();
 }
 
 void logsDialog::setRangeyAxis2(QCPRange range)
 {
-  if (hasyAxis) {
+  if (hasyAxis2) {
     double lowerChange = (range.lower - rangeyAxisMin) * rangeRatio;
     double upperChange = (range.upper - rangeyAxisMax) * rangeRatio;
     rangeyAxisMin = range.lower;

@@ -64,7 +64,7 @@ private:
   bool plotLock;
   QString logFilename;
 
-  bool hasyAxis;
+  bool hasyAxis2;
   double rangeRatio;
   double rangeyAxisMin;
   double rangeyAxisMax;
