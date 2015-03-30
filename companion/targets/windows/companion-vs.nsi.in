@@ -204,8 +204,10 @@ Section "Uninstall"
   Delete "$INSTDIR\Uninstall.exe"
   
   Delete "$INSTDIR\lang\*.*"
+  Delete "$INSTDIR\phonon_backend\*.*"
 
   RMDir "$INSTDIR\lang"
+  RMDir "$INSTDIR\phonon_backend"
   RMDir "$INSTDIR"
   
   ${unregisterExtension} ".bin" "BIN File"
