@@ -413,12 +413,10 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
 
   for (int i=-GetCurrentFirmware()->getCapability(SwitchesPositions); i<0; i++) {
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
-    b->addItem(item.toString(), item.toValue());
     if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchPositionAllowedTaranis(i)){
-      QModelIndex index = b->model()->index(b->count()-1, 0);
-      QVariant v(0);
-      b->model()->setData(index, v, Qt::UserRole - 1);
+      continue;
     }
+    b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
@@ -437,12 +435,10 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
 
   for (int i=1; i<=GetCurrentFirmware()->getCapability(SwitchesPositions); i++) {
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
-    b->addItem(item.toString(), item.toValue());
     if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchPositionAllowedTaranis(i)){
-      QModelIndex index = b->model()->index(b->count()-1, 0);
-      QVariant v(0);
-      b->model()->setData(index, v, Qt::UserRole - 1);
+      continue;
     }
+    b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
