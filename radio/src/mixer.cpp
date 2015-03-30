@@ -653,7 +653,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       if (md->srcRaw == 0) break;
 
-      uint8_t stickIndex = md->srcRaw - MIXSRC_Rud;
+      mixsrc_t stickIndex = md->srcRaw - MIXSRC_Rud;
 
       if (!(dirtyChannels & ((bitfield_channels_t)1 << md->destCh))) continue;
 
@@ -709,10 +709,10 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         else
 #endif
         {
-          int8_t srcRaw = MIXSRC_Rud + stickIndex;
+          mixsrc_t srcRaw = MIXSRC_Rud + stickIndex;
           v = getValue(srcRaw);
           srcRaw -= MIXSRC_CH1;
-          if (srcRaw>=0 && srcRaw<=MIXSRC_LAST_CH-MIXSRC_CH1 && md->destCh != srcRaw) {
+          if (srcRaw<=MIXSRC_LAST_CH-MIXSRC_CH1 && md->destCh != srcRaw) {
             if (dirtyChannels & ((bitfield_channels_t)1 << srcRaw) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
             if (srcRaw < md->destCh || pass > 0)
