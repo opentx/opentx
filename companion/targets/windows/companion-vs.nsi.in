@@ -151,7 +151,7 @@ Section "OpenTX Companion" SecDummy
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "DisplayIcon" "$\"$INSTDIR\companion.exe$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "Publisher" "OpenTX"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "URLInfoAbout" "http://www.open-tx.org"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ImageMaker" "QuietUninstallString" "$\"$INSTDIR\Uninstall.exe$\" /S"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "QuietUninstallString" "$\"$INSTDIR\Uninstall.exe$\" /S"
   
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     
