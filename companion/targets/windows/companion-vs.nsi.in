@@ -271,6 +271,9 @@ uninst:
     Delete "$R1\phonon_backend\*.*"
     RMDir "$R1\phonon_backend"
     Delete "$R1\Uninstall.exe"
+    RMDir "$R1"
+    DeleteRegValue HKCU "Software\OpenTX" ""
+    DeleteRegValue HKCU "Software\OpenTX" "Start Menu Folder"
      
 done:
  
