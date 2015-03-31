@@ -2730,6 +2730,8 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TYPE_CUSTOM) {
         sensor.id = _id;
         sensor.instance = _instance;
+        sensor.ratio = _param & 0xFF;
+        sensor.offset = (_param >> 16) & 0xFF;
       }
       else {
         sensor.persistentValue = _id;

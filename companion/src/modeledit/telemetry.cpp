@@ -643,7 +643,7 @@ void TelemetrySensorPanel::on_unit_currentIndexChanged(int index)
   }
 }
 
-void TelemetrySensorPanel::on_prec_editingFinished()
+void TelemetrySensorPanel::on_prec_valueChanged()
 {
   if (!lock) {
     sensor.prec = ui->prec->value();
