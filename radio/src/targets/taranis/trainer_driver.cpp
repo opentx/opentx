@@ -36,8 +36,6 @@
 
 #include "../../opentx.h"
 
-uint16_t * TrainerPulsePtr;
-extern uint16_t ppmStream[NUM_MODULES+1][20];
 extern Fifo<32> sbusFifo;
 
 #define setupTrainerPulses() setupPulsesPPM(TRAINER_MODULE)
@@ -45,7 +43,7 @@ extern Fifo<32> sbusFifo;
 // Trainer PPM oputput PC9, Timer 3 channel 4, (Alternate Function 2)
 void init_trainer_ppm()
 {
-  TrainerPulsePtr = ppmStream[TRAINER_MODULE];
+  trainerPulsesData.ppm.ptr = trainerPulsesData.ppm.pulses;
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN ;           // Enable portC clock
   configure_pins( PIN_TR_PPM_OUT, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_2 | PIN_OS25) ;
@@ -57,7 +55,7 @@ void init_trainer_ppm()
   // so it has to be called after the peripheral is enabled
   setupTrainerPulses() ;
 
-  TIM3->ARR = *TrainerPulsePtr++ ;
+  TIM3->ARR = *trainerPulsesData.ppm.ptr++ ;
   TIM3->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1 ;               // 0.5uS
   TIM3->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4PE ;                   // PWM mode 1
   TIM3->BDTR = TIM_BDTR_MOE ;
@@ -174,7 +172,7 @@ extern "C" void TIM3_IRQHandler()
 
     setupTrainerPulses() ;
 
-    TrainerPulsePtr = ppmStream[TRAINER_MODULE];
+    trainerPulsesData.ppm.ptr = trainerPulsesData.ppm.pulses;
     TIM3->DIER |= TIM_DIER_UDE ;
     TIM3->SR &= ~TIM_SR_UIF ;                                       // Clear this flag
     TIM3->DIER |= TIM_DIER_UIE ;                            // Enable this interrupt
@@ -183,8 +181,8 @@ extern "C" void TIM3_IRQHandler()
   // PPM out update interrupt
   if ( (TIM3->DIER & TIM_DIER_UIE) && ( TIM3->SR & TIM_SR_UIF ) ) {
     TIM3->SR &= ~TIM_SR_UIF ;                               // Clear flag
-    TIM3->ARR = *TrainerPulsePtr++ ;
-    if ( *TrainerPulsePtr == 0 ) {
+    TIM3->ARR = *trainerPulsesData.ppm.ptr++ ;
+    if ( *trainerPulsesData.ppm.ptr == 0 ) {
       TIM3->SR &= ~TIM_SR_CC1IF ;                     // Clear this flag
       TIM3->DIER |= TIM_DIER_CC1IE ;  // Enable this interrupt
     }

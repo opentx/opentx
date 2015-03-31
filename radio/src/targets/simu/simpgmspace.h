@@ -420,6 +420,7 @@ extern OS_MutexID audioMutex;
 #define CoLeaveMutexSection(m) pthread_mutex_unlock(&(m))
 #define CoTickDelay(...)
 #define CoCreateFlag(...) 0
+#define CoGetOSTime(...) 0
 inline void UART3_Configure(uint32_t baudrate, uint32_t masterClock) { }
 #define UART_Stop(...)
 #define UART3_Stop(...)

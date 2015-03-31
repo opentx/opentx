@@ -40,18 +40,6 @@
 #define PXX_SEND_FAILSAFE                  (1 << 4)
 #define PXX_SEND_RANGECHECK                (1 << 5)
 
-#if defined(PCBTARANIS)
-uint16_t pxxStream[NUM_MODULES][400];
-uint16_t *pxxStreamPtr[NUM_MODULES];
-#else
-uint8_t  pxxStream[NUM_MODULES][64];
-uint8_t  *pxxStreamPtr[NUM_MODULES];
-#endif
-
-uint16_t PxxValue[NUM_MODULES];
-uint16_t PcmCrc[NUM_MODULES];
-uint8_t  PcmOnesCount[NUM_MODULES];
-
 const uint16_t CRCTable[]=
 {
   0x0000,0x1189,0x2312,0x329b,0x4624,0x57ad,0x6536,0x74bf,
@@ -90,40 +78,38 @@ const uint16_t CRCTable[]=
 
 void crc(uint8_t data, unsigned int port)
 {
-  PcmCrc[port]=(PcmCrc[port]<<8)^(CRCTable[((PcmCrc[port]>>8)^data) & 0xFF]);
+  modulePulsesData[port].pxx.pcmCrc = (modulePulsesData[port].pxx.pcmCrc<<8) ^ (CRCTable[((modulePulsesData[port].pxx.pcmCrc>>8)^data) & 0xFF]);
 }
 
 #if defined(PCBTARANIS)
 
 void putPcmPart(uint8_t value, unsigned int port)
 {
-  PxxValue[port] += 18 ;                                        // Output 1 for this time
-  *pxxStreamPtr[port]++ = PxxValue[port] ;
-  PxxValue[port] += 14 ;
+  modulePulsesData[port].pxx.pcmValue += 18 ;                                        // Output 1 for this time
+  *modulePulsesData[port].pxx.ptr++ = modulePulsesData[port].pxx.pcmValue ;
+  modulePulsesData[port].pxx.pcmValue += 14 ;
   if (value) {
-    PxxValue[port] += 16 ;
+    modulePulsesData[port].pxx.pcmValue += 16 ;
   }
-  *pxxStreamPtr[port]++ = PxxValue[port] ;  // Output 0 for this time
+  *modulePulsesData[port].pxx.ptr++ = modulePulsesData[port].pxx.pcmValue ;  // Output 0 for this time
 }
 
 void putPcmFlush(unsigned int port)
 {
-  *pxxStreamPtr[port]++ = 18010 ;             // Past the 18000 of the ARR
+  *modulePulsesData[port].pxx.ptr++ = 18010 ;             // Past the 18000 of the ARR
 }
 
 #else
 
-uint8_t pcmSerialByte[NUM_MODULES];
-uint8_t pcmSerialBitCount[NUM_MODULES];
 void putPcmSerialBit(uint8_t bit, unsigned int port)
 {
-  pcmSerialByte[port] >>= 1;
+  modulePulsesData[port].pxx.serialByte >>= 1;
   if (bit & 1) {
-    pcmSerialByte[port] |= 0x80;
+    modulePulsesData[port].pxx.serialByte |= 0x80;
   }
-  if (++pcmSerialBitCount[port] >= 8) {
-    *pxxStreamPtr[port]++ = pcmSerialByte[port];
-    pcmSerialBitCount[port] = 0;
+  if (++modulePulsesData[port].pxx.serialBitCount >= 8) {
+    *modulePulsesData[port].pxx.ptr++ = modulePulsesData[port].pxx.serialByte;
+    modulePulsesData[port].pxx.serialBitCount = 0;
   }
 }
 
@@ -139,7 +125,7 @@ void putPcmPart(uint8_t value, unsigned int port)
 
 void putPcmFlush(unsigned int port)
 {
-  while (pcmSerialBitCount[port] != 0) {
+  while (modulePulsesData[port].pxx.serialBitCount != 0) {
     putPcmSerialBit(1, port);
   }
 }
@@ -149,14 +135,14 @@ void putPcmFlush(unsigned int port)
 void putPcmBit(uint8_t bit, unsigned int port)
 {
   if (bit) {
-    PcmOnesCount[port] += 1;
+    modulePulsesData[port].pxx.pcmOnesCount += 1;
     putPcmPart(1, port);
   }
   else {
-    PcmOnesCount[port] = 0;
+    modulePulsesData[port].pxx.pcmOnesCount = 0;
     putPcmPart(0, port);
   }
-  if (PcmOnesCount[port] >= 5) {
+  if (modulePulsesData[port].pxx.pcmOnesCount >= 5) {
     putPcmBit(0, port);                                // Stuff a 0 bit in
   }
 }
@@ -189,10 +175,10 @@ void setupPulsesPXX(unsigned int port)
 {
   uint16_t chan=0, chan_low=0;
 
-  pxxStreamPtr[port] = pxxStream[port];
-  PxxValue[port] = 0 ;
-  PcmCrc[port] = 0;
-  PcmOnesCount[port] = 0;
+  modulePulsesData[port].pxx.ptr = modulePulsesData[port].pxx.pulses;
+  modulePulsesData[port].pxx.pcmValue = 0 ;
+  modulePulsesData[port].pxx.pcmCrc = 0;
+  modulePulsesData[port].pxx.pcmOnesCount = 0;
 
   /* Preamble */
   putPcmPart(0, port);
@@ -271,7 +257,7 @@ void setupPulsesPXX(unsigned int port)
 
   /* CRC16 */
   putPcmByte(0, port);
-  chan = PcmCrc[port];
+  chan = modulePulsesData[port].pxx.pcmCrc;
   putPcmByte(chan>>8, port);
   putPcmByte(chan, port);
 
