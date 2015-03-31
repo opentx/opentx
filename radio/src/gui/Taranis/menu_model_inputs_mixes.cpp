@@ -346,7 +346,7 @@ void menuModelExpoOne(uint8_t event)
 
       case EXPO_FIELD_SCALE:
         lcd_putsLeft(y, STR_SCALE);
-        putsTelemetryChannelValue(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw - MIXSRC_FIRST_TELEM, convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale), LEFT|attr);
+        putsTelemetryChannelValue(EXPO_ONE_2ND_COLUMN, y, (ed->srcRaw - MIXSRC_FIRST_TELEM)/3, convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale), LEFT|attr);
         if (attr) ed->scale = checkIncDec(event, ed->scale, 0, maxTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1), EE_MODEL);
         break;
 
@@ -396,7 +396,7 @@ void menuModelExpoOne(uint8_t event)
 
   int x512 = getValue(ed->srcRaw);
   if (ed->srcRaw >= MIXSRC_FIRST_TELEM) {
-    putsTelemetryChannelValue(LCD_W-8, 6*FH, ed->srcRaw - MIXSRC_FIRST_TELEM, x512, 0);
+    putsTelemetryChannelValue(LCD_W-8, 6*FH, (ed->srcRaw - MIXSRC_FIRST_TELEM) / 3, x512, 0);
     if (ed->scale > 0) x512 = (x512 * 1024) / convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale);
   }
   else {
@@ -869,7 +869,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         if (cur-s_pgOfs >= 0 && cur-s_pgOfs < NUM_BODY_LINES) {
           uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
           if (expo) {
-            ed->weight = GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr | (isExpoActive(i) ? BOLD : 0), 0, event);
+            GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr | (isExpoActive(i) ? BOLD : 0), 0, 0);
             displayExpoLine(y, ed);
             if (ed->mode!=3) {
               lcd_putc(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
@@ -884,7 +884,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
             putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
 
-            gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, attr | (isMixActive(i) ? BOLD : 0), event);
+            gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, attr | (isMixActive(i) ? BOLD : 0), 0);
 
             displayMixLine(y, md);
 

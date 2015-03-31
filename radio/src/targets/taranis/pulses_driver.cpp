@@ -323,7 +323,7 @@ static void init_pa10_ppm()
   //RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_INTPPM, ENABLE);
 
-  configure_pins( PIN_INTPPM_OUT, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_1 | PIN_OS25 | PIN_PUSHPULL ) ;
+  configure_pins( PIN_INTPPM_OUT, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_1 | PIN_OS25) ;
   
   RCC->APB2ENR |= RCC_APB2ENR_TIM1EN ;            // Enable clock
   TIM1->CR1 &= ~TIM_CR1_CEN ;
@@ -553,7 +553,7 @@ static void init_pa7_ppm()
   ppmStreamPtr[EXTERNAL_MODULE] = ppmStream[EXTERNAL_MODULE];
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
-  configure_pins( PIN_EXTPPM_OUT, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_3 | PIN_OS25 | PIN_PUSHPULL ) ;
+  configure_pins( PIN_EXTPPM_OUT, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_3 | PIN_OS25) ;
   RCC->APB2ENR |= RCC_APB2ENR_TIM8EN ;            // Enable clock
   TIM8->CR1 &= ~TIM_CR1_CEN ;
 

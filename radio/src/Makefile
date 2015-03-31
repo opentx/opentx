@@ -307,7 +307,7 @@ MIXERS_MONITOR = NO
 
 # Use newlib-nano
 # Values = NO, YES
-NANO = YES
+NANO = NO
 
 # Use custom bin based allocator for Lua
 # Values = NO, YES
@@ -853,7 +853,7 @@ ifeq ($(PCB), TARANIS)
   INCDIRS += targets/taranis $(THIRDPARTY) $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
   ifeq ($(PCBREV), REV9E)
     STM32LIBPATH = $(THIRDPARTY)/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries
-    CPPDEFS += -DHSE_VALUE=16800000
+    CPPDEFS += -DHSE_VALUE=12000000
     CPPDEFS += -DSTM32F40_41xxx
     EXTRAINCDIRS += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Include $(STM32LIBPATH)/CMSIS/Include $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/inc
   else

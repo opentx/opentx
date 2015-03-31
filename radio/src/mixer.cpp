@@ -278,32 +278,15 @@ getvalue_t getValue(mixsrc_t i)
   else if (i<=MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(mixerCurrentFlightMode, i-MIXSRC_TrimRud));
 
 #if defined(PCBTARANIS)
-  else if (i==MIXSRC_SA) return (switchState(SW_SA0) ? -1024 : (switchState(SW_SA1) ? 0 : 1024));
-  else if (i==MIXSRC_SB) return (switchState(SW_SB0) ? -1024 : (switchState(SW_SB1) ? 0 : 1024));
-  else if (i==MIXSRC_SC) return (switchState(SW_SC0) ? -1024 : (switchState(SW_SC1) ? 0 : 1024));
-  else if (i==MIXSRC_SD) return (switchState(SW_SD0) ? -1024 : (switchState(SW_SD1) ? 0 : 1024));
-  else if (i==MIXSRC_SE) return (switchState(SW_SE0) ? -1024 : (switchState(SW_SE1) ? 0 : 1024));
-#if defined(REV9E)
-  else if (i==MIXSRC_SF) return (switchState(SW_SF0) ? -1024 : (switchState(SW_SF1) ? 0 : 1024));
-#else
-  else if (i==MIXSRC_SF) return (switchState(SW_SF0) ? -1024 : 1024);
-#endif
-  else if (i==MIXSRC_SG) return (switchState(SW_SG0) ? -1024 : (switchState(SW_SG1) ? 0 : 1024));
-#if defined(REV9E)
-  else if (i==MIXSRC_SH) return (switchState(SW_SH0) ? -1024 : (switchState(SW_SH1) ? 0 : 1024));
-  else if (i==MIXSRC_SI) return (switchState(SW_SI0) ? -1024 : (switchState(SW_SI1) ? 0 : 1024));
-  else if (i==MIXSRC_SJ) return (switchState(SW_SJ0) ? -1024 : (switchState(SW_SJ1) ? 0 : 1024));
-  else if (i==MIXSRC_SK) return (switchState(SW_SK0) ? -1024 : (switchState(SW_SK1) ? 0 : 1024));
-  else if (i==MIXSRC_SL) return (switchState(SW_SL0) ? -1024 : (switchState(SW_SL1) ? 0 : 1024));
-  else if (i==MIXSRC_SM) return (switchState(SW_SM0) ? -1024 : (switchState(SW_SM1) ? 0 : 1024));
-  else if (i==MIXSRC_SN) return (switchState(SW_SN0) ? -1024 : (switchState(SW_SN1) ? 0 : 1024));
-  else if (i==MIXSRC_SO) return (switchState(SW_SO0) ? -1024 : (switchState(SW_SO1) ? 0 : 1024));
-  else if (i==MIXSRC_SP) return (switchState(SW_SP0) ? -1024 : (switchState(SW_SP1) ? 0 : 1024));
-  else if (i==MIXSRC_SQ) return (switchState(SW_SQ0) ? -1024 : (switchState(SW_SQ1) ? 0 : 1024));
-  else if (i==MIXSRC_SR) return (switchState(SW_SR0) ? -1024 : (switchState(SW_SR1) ? 0 : 1024));
-#else
-  else if (i==MIXSRC_SH) return (switchState(SW_SH0) ? -1024 : 1024);
-#endif
+  else if ((i >= MIXSRC_FIRST_SWITCH) && (i <= MIXSRC_LAST_SWITCH)) {
+    mixsrc_t sw = i-MIXSRC_FIRST_SWITCH;
+    if (SWITCH_EXISTS(sw)) {
+      return (switchState((EnumKeys)(SW_BASE+(3*sw))) ? -1024 : (switchState((EnumKeys)(SW_BASE+(3*sw)+1)) ? 0 : 1024));
+    }
+    else {
+      return 0;
+    }
+  }
 #else
   else if (i==MIXSRC_3POS) return (getSwitch(SW_ID0-SW_BASE+1) ? -1024 : (getSwitch(SW_ID1-SW_BASE+1) ? 0 : 1024));
   // don't use switchState directly to give getSwitch possibility to hack values if needed for switch warning
@@ -670,7 +653,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       if (md->srcRaw == 0) break;
 
-      uint8_t stickIndex = md->srcRaw - MIXSRC_Rud;
+      mixsrc_t stickIndex = md->srcRaw - MIXSRC_Rud;
 
       if (!(dirtyChannels & ((bitfield_channels_t)1 << md->destCh))) continue;
 
@@ -726,10 +709,10 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         else
 #endif
         {
-          int8_t srcRaw = MIXSRC_Rud + stickIndex;
+          mixsrc_t srcRaw = MIXSRC_Rud + stickIndex;
           v = getValue(srcRaw);
           srcRaw -= MIXSRC_CH1;
-          if (srcRaw>=0 && srcRaw<=MIXSRC_LAST_CH-MIXSRC_CH1 && md->destCh != srcRaw) {
+          if (srcRaw<=MIXSRC_LAST_CH-MIXSRC_CH1 && md->destCh != srcRaw) {
             if (dirtyChannels & ((bitfield_channels_t)1 << srcRaw) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
             if (srcRaw < md->destCh || pass > 0)

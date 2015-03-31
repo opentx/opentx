@@ -192,7 +192,11 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_DSM_PROTOCOLS     (OFS_XJT_PROTOCOLS + sizeof(TR_XJT_PROTOCOLS))
   #define OFS_VOLTSRC           (OFS_DSM_PROTOCOLS + sizeof(TR_DSM_PROTOCOLS))
   #define OFS_CURVE_TYPES       (OFS_VOLTSRC + sizeof(TR_VOLTSRC))
-  #define OFS_MAVLINK_BAUDS     (OFS_CURVE_TYPES + sizeof(TR_CURVE_TYPES))
+  #define OFS_VSENSORTYPES      (OFS_CURVE_TYPES + sizeof(TR_CURVE_TYPES))
+  #define OFS_VFORMULAS         (OFS_VSENSORTYPES + sizeof(TR_VSENSORTYPES))
+  #define OFS_VPREC             (OFS_VFORMULAS + sizeof(TR_VFORMULAS))
+  #define OFS_VCELLINDEX        (OFS_VPREC + sizeof(TR_VPREC))
+  #define OFS_MAVLINK_BAUDS     (OFS_VCELLINDEX + sizeof(TR_VCELLINDEX))
 #else
   #define OFS_MAVLINK_BAUDS	(OFS_VTRAINERMODES)
 #endif
@@ -298,6 +302,10 @@ extern const pm_char STR_OPEN9X[];
   #define STR_XJT_PROTOCOLS     (STR_OPEN9X + OFS_XJT_PROTOCOLS)
   #define STR_DSM_PROTOCOLS     (STR_OPEN9X + OFS_DSM_PROTOCOLS)
   #define STR_CURVE_TYPES       (STR_OPEN9X + OFS_CURVE_TYPES)
+  #define STR_VSENSORTYPES      (STR_OPEN9X + OFS_VSENSORTYPES)
+  #define STR_VFORMULAS         (STR_OPEN9X + OFS_VFORMULAS)
+  #define STR_VPREC             (STR_OPEN9X + OFS_VPREC)
+  #define STR_VCELLINDEX        (STR_OPEN9X + OFS_VCELLINDEX)
 #endif
 
 #if defined(MAVLINK)
@@ -427,6 +435,8 @@ extern const pm_char STR_SPLASHSCREEN[];
 extern const pm_char STR_THROTTLEWARNING[];
 extern const pm_char STR_SWITCHWARNING[];
 extern const pm_char STR_TIMEZONE[];
+extern const pm_char STR_ADJUST_RTC[];
+extern const pm_char STR_GPS[];
 extern const pm_char STR_GPSCOORD[];
 extern const pm_char STR_VARIO[];
 extern const pm_char STR_PITCH_AT_ZERO[];
@@ -540,6 +550,10 @@ extern const pm_char STR_LONGITUDE[];
 #if defined(CPUARM) || defined(CPUM2560)
 extern const pm_char STR_SHUTDOWN[];
 extern const pm_char STR_SAVEMODEL[];
+#endif
+
+#if defined(PCBTARANIS) && defined(REV9E)
+extern const pm_char STR_POWEROFF[];
 #endif
 
 extern const pm_char STR_BATT_CALIB[];
@@ -669,6 +683,8 @@ extern const pm_char STR_FLASH_INTERNAL_MODULE[];
 extern const pm_char STR_WRITING[];
 extern const pm_char STR_CONFIRM_FORMAT[];
 extern const pm_char STR_EEBACKUP[];
+extern const pm_char STR_FACTORYRESET[];
+extern const pm_char STR_CONFIRMRESET[];
 extern const pm_char STR_TOO_MANY_LUA_SCRIPTS[];
 extern const pm_char STR_BLCOLOR[];
 
@@ -735,9 +751,24 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_CRITICALALARM[];
   extern const pm_char STR_TELEMETRY_TYPE[];
   extern const pm_char STR_TELEMETRY_SENSORS[];
+  extern const pm_char STR_VALUE[];
+  extern const pm_char STR_TOPLCDTIMER[];
+  extern const pm_char STR_UNIT[] PROGMEM;
   extern const pm_char STR_TELEMETRY_NEWSENSOR[];
   extern const pm_char STR_ID[];
   extern const pm_char STR_PRECISION[];
+  extern const pm_char STR_RATIO[];
+  extern const pm_char STR_FORMULA[];
+  extern const pm_char STR_CELLINDEX[];
+  extern const pm_char STR_LOGS[];
+  extern const pm_char STR_OPTIONS[];
+  extern const pm_char STR_ALTSENSOR[];
+  extern const pm_char STR_CELLSENSOR[];
+  extern const pm_char STR_GPSSENSOR[];
+  extern const pm_char STR_CURRENTSENSOR[];
+  extern const pm_char STR_AUTOOFFSET[];
+  extern const pm_char STR_FILTER[];
+  extern const pm_char STR_TELEMETRYFULL[];
 #endif
 
 #if defined(PCBTARANIS)
@@ -767,6 +798,18 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_SCRIPT[];
   extern const pm_char STR_INPUTS[];
   extern const pm_char STR_OUTPUTS[];
+  extern const pm_char STR_MENU_INPUTS[];
+  extern const pm_char STR_MENU_LUA[];
+  extern const pm_char STR_MENU_STICKS[];
+  extern const pm_char STR_MENU_POTS[];
+  extern const pm_char STR_MENU_MAX[];
+  extern const pm_char STR_MENU_HELI[];
+  extern const pm_char STR_MENU_TRIMS[];
+  extern const pm_char STR_MENU_SWITCHES[];
+  extern const pm_char STR_MENU_TRAINER[];
+  extern const pm_char STR_MENU_CHANNELS[];
+  extern const pm_char STR_MENU_GVARS[];
+  extern const pm_char STR_MENU_TELEMETRY[];
 #endif
 
 #if MENUS_LOCK == 1

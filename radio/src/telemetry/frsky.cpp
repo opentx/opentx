@@ -357,6 +357,11 @@ void telemetryWakeup()
         uint8_t lastReceived = telemetryItems[i].lastReceived;
         if (lastReceived < TELEMETRY_VALUE_TIMER_CYCLE && uint8_t(now - lastReceived) > TELEMETRY_VALUE_OLD_THRESHOLD) {
           telemetryItems[i].lastReceived = TELEMETRY_VALUE_OLD;
+          TelemetrySensor * sensor = & g_model.telemetrySensors[i];
+          if (sensor->unit == UNIT_DATETIME) {
+            telemetryItems[i].datetime.datestate = 0;
+            telemetryItems[i].datetime.timestate = 0;
+          }
         }
       }
     }
@@ -566,12 +571,15 @@ void telemetryReset()
 #endif
 
 #if defined(CPUARM) && defined(SIMU) 
-  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, RSSI_ID, 0, 75, UNIT_RAW, 0);
-  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, T1_FIRST_ID, 0, 100, UNIT_CELSIUS, 0);
-  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, T1_FIRST_ID, 1, 200, UNIT_CELSIUS, 0);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, RSSI_ID, 25, 75, UNIT_RAW, 0);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, SWR_ID, 25, 5, UNIT_RAW, 0);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, T1_FIRST_ID, 5, 100, UNIT_CELSIUS, 0);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, T1_FIRST_ID+0x10, 5, 200, UNIT_CELSIUS, 0);
   setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ALT_FIRST_ID, 1, 1000, UNIT_METERS, 2);
-  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, CELLS_FIRST_ID, 1, 0x80280220, UNIT_CELLS, 0);
-  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, CURR_FIRST_ID, 1, 100, UNIT_AMPS, 2);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, CELLS_FIRST_ID, 2, 0x80280220, UNIT_CELLS, 0);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, CURR_FIRST_ID, 3, 100, UNIT_AMPS, 2);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, RPM_FIRST_ID, 5, 3600, UNIT_RPMS, 0);
+  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, FUEL_QTY_FIRST_ID, 11, 1000, UNIT_MILLILITERS, 2);
 #endif
 }
 

@@ -48,7 +48,7 @@ void init_trainer_ppm()
   TrainerPulsePtr = ppmStream[TRAINER_MODULE];
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN ;           // Enable portC clock
-  configure_pins( PIN_TR_PPM_OUT, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_2 | PIN_OS25 | PIN_PUSHPULL ) ;
+  configure_pins( PIN_TR_PPM_OUT, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_2 | PIN_OS25) ;
   configure_pins( PIN_TR_PPM_IN, PIN_PORTA | PIN_INPUT ) ;
   RCC->APB1ENR |= RCC_APB1ENR_TIM3EN ;            // Enable clock
   TIM3->CR1 &= ~TIM_CR1_CEN ;
@@ -92,10 +92,22 @@ void set_trainer_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t posi
 // Trainer capture, PC8, Timer 3 channel 3
 void init_trainer_capture()
 {
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN ; // Enable portC clock
-  configure_pins (PIN_TR_PPM_IN, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_2) ;
-  RCC->APB1ENR |= RCC_APB1ENR_TIM3EN ; // Enable clock
+  GPIO_InitTypeDef GPIO_InitStructure;
 
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+#if 0
+  configure_pins (PIN_TR_PPM_IN, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_2) ;
+#else
+  GPIO_InitStructure.GPIO_Pin = PIN_TR_PPM_IN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIO_TR_INOUT, &GPIO_InitStructure);
+  GPIO_PinAFConfig(GPIO_TR_INOUT, GPIO_PinSource8, GPIO_AF_TIM3);
+#endif
+
+  RCC->APB1ENR |= RCC_APB1ENR_TIM3EN ;
   TIM3->ARR = 0xFFFF ;
   TIM3->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1 ;               // 0.5uS
   TIM3->CR2 = 0 ;

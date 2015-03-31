@@ -163,7 +163,7 @@ void menuModelLogicalSwitches(uint8_t event)
       }
     }
     else if (cstate == LS_FAMILY_COMP) {
-      v1_val = (uint8_t)cs->v1;
+      v1_val = cs->v1;
       putsMixerSource(CSW_2ND_COLUMN, y, v1_val, attr1);
       putsMixerSource(CSW_3RD_COLUMN, y, cs->v2, attr2);
       INCDEC_SET_FLAG(EE_MODEL | INCDEC_SOURCE);
@@ -178,7 +178,7 @@ void menuModelLogicalSwitches(uint8_t event)
       INCDEC_ENABLE_CHECK(NULL);
     }
     else {
-      v1_val = (uint8_t)cs->v1;
+      v1_val = cs->v1;
       putsMixerSource(CSW_2ND_COLUMN, y, v1_val, attr1);
       if (horz == 1) {
         INCDEC_SET_FLAG(EE_MODEL | INCDEC_SOURCE);

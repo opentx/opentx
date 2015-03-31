@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,0,0,1,1,1,1,0,0,1,0,1,0,1,1,1,1,1,1,0,1,0,1,0,1,1,0,1">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,0,0,1,1,1,1,0,0,1,0,1,0,1,1,1,1,1,1,0,1,0,0,1,0,0,1,0,0,0,1">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -419,6 +419,46 @@
        <string>Percentage (%)</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>Energy (mAh)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Power (W)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>RF Power (dBm)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>RPM</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Acceleration (g)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Heading (°)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Volume (mL)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Volume (US fl.Oz.)</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item>
@@ -467,6 +507,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="bladesLabel">
+     <property name="text">
+      <string>Blades</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="AutoDoubleSpinBox" name="ratio">
      <property name="enabled">
       <bool>true</bool>
@@ -478,7 +525,10 @@
       </sizepolicy>
      </property>
      <property name="decimals">
-      <number>1</number>
+      <number>0</number>
+     </property>
+     <property name="minimum">
+      <double>0.000000000000000</double>
      </property>
      <property name="maximum">
       <double>3000.000000000000000</double>
@@ -499,6 +549,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="multiplierLabel">
+     <property name="text">
+      <string>Multiplier</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="AutoDoubleSpinBox" name="offset">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -507,42 +564,37 @@
       </sizepolicy>
      </property>
      <property name="decimals">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="minimum">
-      <double>-12.800000000000001</double>
+      <double>-30000.000000000000000</double>
      </property>
      <property name="maximum">
-      <double>12.699999999999999</double>
+      <double>30000.000000000000000</double>
      </property>
      <property name="singleStep">
-      <double>0.100000000000000</double>
+      <double>1.000000000000000</double>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="AutoComboBox" name="inputFlags">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <widget class="AutoCheckBox" name="autoOffset">
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
      </property>
-     <item>
-      <property name="text">
-       <string>---</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Auto Offset</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Filtered</string>
-      </property>
-     </item>
+     <property name="text">
+      <string>Auto Offset</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="AutoCheckBox" name="filter">
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="text">
+      <string>Filter</string>
+     </property>
     </widget>
    </item>
    <item>

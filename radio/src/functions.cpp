@@ -355,6 +355,12 @@ void evalFunctions()
                 break;
 #endif
             }
+#if defined(CPUARM)
+            if (CFN_PARAM(cfn)>=FUNC_RESET_PARAM_FIRST_TELEM) {
+              TelemetryItem * telemetryItem = & telemetryItems[CFN_PARAM(cfn)-FUNC_RESET_PARAM_FIRST_TELEM];
+              telemetryItem->clear();
+            }
+#endif
             break;
 
 #if defined(CPUARM)

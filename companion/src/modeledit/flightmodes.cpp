@@ -209,7 +209,9 @@ void FlightModePanel::update()
 
   if (ui->gvGB->isVisible()) {
     for (int i=0; i<gvCount; i++) {
-      gvNames[i]->setText(model->gvars_names[i]);
+      if (firmware->getCapability(GvarsName) > 0) {
+        gvNames[i]->setText(model->gvars_names[i]);
+      }
       gvValues[i]->setDisabled(model->isGVarLinked(phaseIdx, i));
       gvValues[i]->setValue(model->getGVarValue(phaseIdx, i));
       if (IS_TARANIS(GetEepromInterface()->getBoard()) && phaseIdx == 0) { 

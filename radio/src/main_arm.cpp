@@ -39,8 +39,6 @@
 static uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
 
-extern void checkBattery();
-
 void handleUsbConnection()
 {
 #if defined(PCBTARANIS) && !defined(SIMU)
@@ -185,6 +183,13 @@ void perMain()
     drawStatusLine();
   }
 
+#if defined(REV9E) && !defined(SIMU)
+  uint32_t pwr_pressed_duration = pwrPressedDuration();
+  if (pwr_pressed_duration > 0) {
+    displayShutdownProgress(pwr_pressed_duration);
+  }
+#endif
+
   lcdRefresh();
 
 #if defined(REV9E) && !defined(SIMU)
@@ -196,6 +201,10 @@ void perMain()
   int state = 5 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin);
   setTopBatteryState(state);
   topLcdRefreshEnd();
+#endif
+
+#if defined(REV9E) && !defined(SIMU)
+  bt_wakeup();
 #endif
 
 }

@@ -334,14 +334,15 @@ void defaultInputs()
     expo->mode = 3; // TODO constant
 #if defined(TRANSLATIONS_CZ)
     for (int c=0; c<4; c++) {
-      g_model.inputNames[i][c] = char2idx(STR_INPUTNAMES[1+STR_INPUTNAMES[0]*(stick_index-1)+c]);
+      g_model.inputNames[i][c] = char2idx(STR_INPUTNAMES[1+4*(stick_index-1)+c]);
     }
+    g_model.inputNames[i][4] = '\0';
 #else
     for (int c=0; c<3; c++) {
       g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[2+4*stick_index+c]);
-#endif
     }
     g_model.inputNames[i][3] = '\0';
+#endif
   }
   eeDirty(EE_MODEL);
 }
@@ -2525,6 +2526,10 @@ int main(void)
 
 #if defined(GUI) && !defined(PCBTARANIS)
   lcdSetRefVolt(25);
+#endif
+
+#if defined(PCBTARANIS)
+  displaySplash();
 #endif
 
   sei(); // interrupts needed for telemetryInit and eeReadAll.

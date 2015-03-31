@@ -210,23 +210,6 @@
 #define GPIOTRNDET                      GPIOA
 #define PIN_TRNDET                      GPIO_Pin_8
 
-#define PIN_PORTA                       0x0000
-#define PIN_PORTB                       0x0100
-#define PIN_PORTC                       0x0200
-#define PIN_PORTD                       0x0300
-#define PIN_PORTE                       0x0400
-#define PIN_PORTF                       0x0500
-#define PIN_PER_1                       0x0010
-#define PIN_PER_2                       0x0020
-#define PIN_PER_3                       0x0030
-#define PIN_PER_5                       0x0050
-#define PIN_PER_6                       0x0060
-#define PIN_PER_8                       0x0080
-// #define PIN_OS2                         0x0000
-#define PIN_OS25                        0x2000
-#define PIN_OS50                        0x4000
-#define PIN_OS100                       0x6000
-
 // Cppm
 #define RCC_AHB1Periph_GPIO_INTPPM      RCC_AHB1Periph_GPIOA
 #define PIN_INTPPM_OUT                  GPIO_Pin_10 // PA.10
@@ -301,7 +284,7 @@
 #endif
 
 // LCD
-#if defined(REVPLUS)
+#if defined(REV9E)
   #define RCC_AHB1Periph_LCD            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD)
   #define RCC_AHB1Periph_LCD_RST        RCC_AHB1Periph_GPIOD
   #define RCC_AHB1Periph_LCD_NCS        RCC_AHB1Periph_GPIOA
@@ -312,7 +295,19 @@
   #define PIN_LCD_CLK                   GPIO_Pin_10 // PC.10
   #define PIN_LCD_NCS                   GPIO_Pin_15 // PA.15
   #define PIN_LCD_A0                    GPIO_Pin_11 // PC.11
-  #define PIN_LCD_RST                   GPIO_Pin_15 // TOTO PD.12
+  #define PIN_LCD_RST                   GPIO_Pin_15 // PD.15
+#elif defined(REVPLUS)
+  #define RCC_AHB1Periph_LCD            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD)
+  #define RCC_AHB1Periph_LCD_RST        RCC_AHB1Periph_GPIOD
+  #define RCC_AHB1Periph_LCD_NCS        RCC_AHB1Periph_GPIOA
+  #define GPIO_LCD_SPI                  GPIOC
+  #define GPIO_LCD_NCS                  GPIOA
+  #define GPIO_LCD_RST                  GPIOD
+  #define PIN_LCD_MOSI                  GPIO_Pin_12 // PC.12
+  #define PIN_LCD_CLK                   GPIO_Pin_10 // PC.10
+  #define PIN_LCD_NCS                   GPIO_Pin_15 // PA.15
+  #define PIN_LCD_A0                    GPIO_Pin_11 // PC.11
+  #define PIN_LCD_RST                   GPIO_Pin_12 // PD.12
 #else
   #define RCC_AHB1Periph_LCD            RCC_AHB1Periph_GPIOD
   #define GPIO_LCD_SPI                  GPIOD

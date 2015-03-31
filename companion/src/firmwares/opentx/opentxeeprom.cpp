@@ -2696,7 +2696,8 @@ class SensorField: public TransformedField {
       internalField.Append(new UnsignedField<1>(sensor.type, "type"));
       internalField.Append(new UnsignedField<5>(sensor.unit, "unit"));
       internalField.Append(new UnsignedField<2>(sensor.prec, "prec"));
-      internalField.Append(new UnsignedField<2>(sensor.inputFlags, "inputFlags"));
+      internalField.Append(new BoolField<1>(sensor.autoOffset));
+      internalField.Append(new BoolField<1>(sensor.filter));
       internalField.Append(new BoolField<1>(sensor.logs));
       internalField.Append(new BoolField<1>(sensor.persistent));
       internalField.Append(new SpareBitsField<4>());
@@ -2729,6 +2730,8 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TYPE_CUSTOM) {
         sensor.id = _id;
         sensor.instance = _instance;
+        sensor.ratio = _param & 0xFF;
+        sensor.offset = (_param >> 16) & 0xFF;
       }
       else {
         sensor.persistentValue = _id;
@@ -3012,8 +3015,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
   
   if (IS_ARM(board) && version >= 217) {
-    int size = IS_TARANIS_X9E(board) ? 32 : 8;
-    for (int i=0; i<size; i++) {
+    for (int i=0; i<8; i++) {
       if (i < MAX_POTS(board)+MAX_SLIDERS(board))
         internalField.Append(new BoolField<1>(modelData.potsWarningEnabled[i]));
       else
@@ -3031,7 +3033,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
 
   if (IS_ARM(board) && version >= 216) {
-    for (int i=0; i < GetCurrentFirmware()->getCapability(Pots); i++) {
+    for (int i=0; i < MAX_POTS(board)+MAX_SLIDERS(board); i++) {
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
     }    
   }
@@ -3157,7 +3159,12 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
 
   internalField.Append(new UnsignedField<2>(generalData.stickMode));
   internalField.Append(new SignedField<5>(generalData.timezone));
-  internalField.Append(new SpareBitsField<1>());
+  if (version >= 217 && IS_TARANIS(board)) {
+    internalField.Append(new BoolField<1>(generalData.adjustRTC));
+  }
+  else {
+    internalField.Append(new SpareBitsField<1>());
+  }
 
   internalField.Append(new UnsignedField<8>(generalData.inactivityTimer));
   if (IS_9X(board) && version >= 215) {
@@ -3269,7 +3276,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
       internalField.Append(new SpareBitsField<64>());
     else if (IS_TARANIS(board))
       internalField.Append(new SpareBitsField<16>());
-
+      
     if (version >= 217) {
       for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++) {
         internalField.Append(new ArmCustomFunctionField(generalData.customFn[i], board, version, variant));

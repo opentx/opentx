@@ -906,7 +906,8 @@ class SensorData {
     char label[4+1];
     unsigned int unit;
     unsigned int prec;
-    unsigned int inputFlags;
+    bool autoOffset;
+    bool filter;
     bool logs;
     bool persistent;
 
@@ -1095,7 +1096,8 @@ class GeneralSettings {
     bool      enableTelemetryAlarm;
     BeeperMode hapticMode;
     unsigned int   stickMode; // TODO enum
-    int    timezone;
+    int       timezone;
+    bool      adjustRTC;
     bool      optrexDisplay;
     unsigned int    inactivityTimer;
     bool      minuteBeep;
@@ -1172,6 +1174,7 @@ class GeneralSettings {
     
     static SwitchInfo switchInfoFromSwitchPositionTaranis(unsigned int index);
     bool switchPositionAllowedTaranis(int index) const;
+    bool switchSourceAllowedTaranis(int index) const;
 };
 
 class RadioData {
@@ -1246,7 +1249,6 @@ enum Capability {
   NoTelemetryProtocol,
   TelemetryCustomScreens,
   TelemetryCustomScreensFieldsPerLine,
-  TelemetryTimeshift,
   TelemetryMaxMultiplier,
   HasVario,
   HasVarioSink,

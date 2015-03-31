@@ -486,7 +486,8 @@ TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor,
   ui->instance->setField(sensor.instance);
   ui->ratio->setField(sensor.ratio);
   ui->offset->setField(sensor.offset);
-  ui->inputFlags->setField(sensor.inputFlags);
+  ui->autoOffset->setField(sensor.autoOffset);
+  ui->filter->setField(sensor.filter);
   ui->logs->setField(sensor.logs);
   ui->persistent->setField(sensor.persistent);
   ui->gpsSensor->setField(sensor.gps);
@@ -557,13 +558,28 @@ void TelemetrySensorPanel::update()
     ui->instance->show();
     ui->formula->hide();
     ratioFieldsDisplayed = (sensor.unit != SensorData::UNIT_GPS && sensor.unit != SensorData::UNIT_DATETIME);
-    ui->offset->setDecimals(sensor.prec);
     precDisplayed = (sensor.unit != SensorData::UNIT_GPS && sensor.unit != SensorData::UNIT_DATETIME);
+    ui->offset->setMaximum((sensor.prec > 0 ? sensor.prec == 2 ? 30000 : 3000 : 300));
+    ui->offset->setMinimum((sensor.prec > 0 ? sensor.prec == 2 ? -30000 : -3000 : -300));
+
+    if (sensor.unit == SensorData::UNIT_RPMS) {
+      ui->offset->setDecimals(0);
+      ui->ratio->setDecimals(0);
+      ui->autoOffset->hide();
+      ui->ratio->setMinimum(1);
+      ui->offset->setMinimum(1);
+    }
+    else {
+      ui->offset->setDecimals(sensor.prec);
+      ui->ratio->setDecimals(1);
+    }
   }
 
-  ui->ratioLabel->setVisible(ratioFieldsDisplayed);
+  ui->ratioLabel->setVisible(ratioFieldsDisplayed && sensor.unit != SensorData::UNIT_RPMS);
+  ui->bladesLabel->setVisible(sensor.unit == SensorData::UNIT_RPMS);
   ui->ratio->setVisible(ratioFieldsDisplayed);
-  ui->offsetLabel->setVisible(ratioFieldsDisplayed);
+  ui->offsetLabel->setVisible(ratioFieldsDisplayed && sensor.unit != SensorData::UNIT_RPMS);
+  ui->multiplierLabel->setVisible(sensor.unit == SensorData::UNIT_RPMS);
   ui->offset->setVisible(ratioFieldsDisplayed);
   ui->precLabel->setVisible(precDisplayed);
   ui->prec->setVisible(precDisplayed);
@@ -642,7 +658,7 @@ void TelemetrySensorPanel::on_unit_currentIndexChanged(int index)
   }
 }
 
-void TelemetrySensorPanel::on_prec_editingFinished()
+void TelemetrySensorPanel::on_prec_valueChanged()
 {
   if (!lock) {
     sensor.prec = ui->prec->value();

@@ -36,6 +36,10 @@
 
 #include "../../opentx.h"
 
+const pm_uchar about_bmp[] PROGMEM = {
+#include "../../bitmaps/Taranis/about.lbm"
+};
+
 enum AboutScreens {
   ABOUT_OPENTX,
   ABOUT_BERTRAND,
@@ -78,6 +82,10 @@ void menuAboutView(uint8_t event)
       break;
   }
 
+  lcd_bmp(0, 0, about_bmp);
+  lcd_putsAtt(64, 0, STR_ABOUTUS, DBLSIZE);
+  lcd_hline(ABOUT_X, 18, 120);
+  lcd_hline(ABOUT_X, 19, 130, GREY_DEFAULT);
   LcdFlags att = GREY(max(0, 15-greyIndex/2));
 
   uint8_t screenDuration = 150;

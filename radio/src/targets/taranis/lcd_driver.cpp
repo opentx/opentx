@@ -55,10 +55,10 @@ void initLcdSpi()
   SPI3->CR1 |= SPI_CR1_MSTR ;	// Make sure in case SSM/SSI needed to be set first
   SPI3->CR1 |= SPI_CR1_SPE ;
 
-  configure_pins( PIN_LCD_NCS, PIN_OUTPUT | PIN_PORTA | PIN_PUSHPULL | PIN_OS25 | PIN_NO_PULLUP ) ;
-  configure_pins( PIN_LCD_RST, PIN_OUTPUT | PIN_PORTD | PIN_PUSHPULL | PIN_OS25 | PIN_NO_PULLUP ) ;
-  configure_pins( PIN_LCD_A0,  PIN_OUTPUT | PIN_PORTC | PIN_PUSHPULL | PIN_OS50 | PIN_NO_PULLUP ) ;
-  configure_pins( PIN_LCD_MOSI|PIN_LCD_CLK, PIN_PORTC | PIN_PUSHPULL | PIN_OS50 | PIN_NO_PULLUP | PIN_PER_6 | PIN_PERIPHERAL ) ;
+  configure_pins( PIN_LCD_NCS, PIN_OUTPUT | PIN_PORTA | PIN_OS25) ;
+  configure_pins( PIN_LCD_RST, PIN_OUTPUT | PIN_PORTD | PIN_OS25) ;
+  configure_pins( PIN_LCD_A0,  PIN_OUTPUT | PIN_PORTC | PIN_OS50) ;
+  configure_pins( PIN_LCD_MOSI|PIN_LCD_CLK, PIN_PORTC | PIN_OS50 | PIN_PER_6 | PIN_PERIPHERAL ) ;
 
 
   // NVIC_SetPriority( DMA1_Stream7_IRQn, 8 ) ;

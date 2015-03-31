@@ -1474,6 +1474,10 @@ enum AUDIO_SOUNDS {
 extern uint8_t requiredSpeakerVolume;
 #endif
 
+extern void checkBattery();
+extern void opentxClose();
+extern void opentxInit();
+
 // Re-useable byte array to save having multiple buffers
 #define SD_SCREEN_FILE_LENGTH (32)
 union ReusableBuffer

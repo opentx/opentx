@@ -211,8 +211,18 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           int16_t val_min = 0;
           int16_t val_max = 255;
           if (func == FUNC_RESET) {
-            val_max = FUNC_RESET_PARAM_LAST;
-            lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VFSWRESET, CFN_PARAM(cfn), attr);
+            val_max = FUNC_RESET_PARAM_FIRST_TELEM+lastUsedTelemetryIndex();
+            int param = CFN_PARAM(cfn);
+            if (param < FUNC_RESET_PARAM_FIRST_TELEM) {
+              lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VFSWRESET, param, attr);
+            }
+            else {
+              if (param > FUNC_RESET_PARAM_FIRST_TELEM) {
+                INCDEC_ENABLE_CHECK(isSensorAvailableInResetSpecialFunction);
+              }
+              TelemetrySensor * sensor = & g_model.telemetrySensors[param-FUNC_RESET_PARAM_FIRST_TELEM];
+              lcd_putsnAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, sensor->label, TELEM_LABEL_LEN, attr|ZCHAR);
+            }
           }
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
           else if (func == FUNC_OVERRIDE_CHANNEL) {

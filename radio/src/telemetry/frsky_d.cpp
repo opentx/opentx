@@ -643,10 +643,10 @@ void frskyDSetDefault(int index, uint16_t id)
     if (id >= D_A1_ID && id <= D_A2_ID) {
       telemetrySensor.prec = 1;
       telemetrySensor.custom.ratio = 132;
-      telemetrySensor.inputFlags = TELEM_INPUT_FLAGS_FILTERING;
+      telemetrySensor.filter = 1;
     }
     else if (id == D_RSSI_ID) {
-      telemetrySensor.inputFlags = TELEM_INPUT_FLAGS_FILTERING;
+      telemetrySensor.filter = 1;
     }
   }
   else {

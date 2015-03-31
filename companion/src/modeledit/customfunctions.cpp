@@ -264,6 +264,7 @@ void CustomFunctionsPanel::playMusic()
       phononCurrent = -1;
     }
     else {
+      playBT[phononCurrent]->setIcon(CompanionIcon("play.png"));
       phononCurrent = index;
       clickObject->clear();
 #ifdef __APPLE__
@@ -714,18 +715,18 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
     b->setCurrentIndex(value);
   }
   else if (function==FuncVolume) {
-    populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_TRIMS);
+    populateSourceCB(b, RawSource(value), generalSettings, model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_TRIMS);
   }
   else if (function==FuncPlayValue) {
-    populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRYEXT);
+    populateSourceCB(b, RawSource(value), generalSettings, model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRYEXT);
   }
   else if (function>=FuncAdjustGV1 && function<=FuncAdjustGVLast) {
     switch (adjustmode) {
       case 1:
-        populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_TRIMS|POPULATE_SWITCHES);
+        populateSourceCB(b, RawSource(value), generalSettings, model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_TRIMS|POPULATE_SWITCHES);
         break;
       case 2:
-        populateSourceCB(b, RawSource(value), model, POPULATE_GVARS);
+        populateSourceCB(b, RawSource(value), generalSettings, model, POPULATE_GVARS);
         break;
       case 3:
         b->clear();

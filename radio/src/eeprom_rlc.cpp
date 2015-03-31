@@ -1016,6 +1016,21 @@ void eeLoadModel(uint8_t id)
   }
 }
 
+void eeErase(bool warn)
+{
+  generalDefault();
+
+  if (warn) {
+    ALERT(STR_EEPROMWARN, STR_BADEEPROMDATA, AU_BAD_EEPROM);
+  }
+
+  MESSAGE(STR_EEPROMWARN, STR_EEPROMFORMATTING, NULL, AU_EEPROM_FORMATTING);
+  EeFsFormat();
+  theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&g_eeGeneral, sizeof(EEGeneral), true);
+  modelDefault(0);
+  theFile.writeRlc(FILE_MODEL(0), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), true);
+}
+
 // TODO merge this code with eeprom_arm.cpp one
 void eeReadAll()
 {
@@ -1023,19 +1038,7 @@ void eeReadAll()
        EeFsck() < 0 ||
       !eeLoadGeneral())
   {
-    generalDefault();
-
-    ALERT(STR_EEPROMWARN, STR_BADEEPROMDATA, AU_BAD_EEPROM);
-
-    MESSAGE(STR_EEPROMWARN, STR_EEPROMFORMATTING, NULL, AU_EEPROM_FORMATTING);
-
-    EeFsFormat();
-
-    theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&g_eeGeneral, sizeof(EEGeneral), true);
-
-    modelDefault(0);
-
-    theFile.writeRlc(FILE_MODEL(0), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), true);
+    eeErase(true);
   }
   else {
     eeLoadModelHeaders();

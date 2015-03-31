@@ -130,6 +130,7 @@
     #define NUM_POTS           5
     #define NUM_XPOTS          3
   #endif
+  #define TELEM_VALUES_MAX     32
 #elif defined(CPUARM)
   #define MAX_MODELS           60
   #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
@@ -141,6 +142,7 @@
   #define NUM_TRAINER          16
   #define NUM_POTS             3
   #define NUM_XPOTS            0
+  #define TELEM_VALUES_MAX     16
 #elif defined(CPUM2560) || defined(CPUM2561)
   #define MAX_MODELS           30
   #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
@@ -152,6 +154,7 @@
   #define NUM_TRAINER          8
   #define NUM_POTS             3
   #define NUM_XPOTS            0
+  #define TELEM_VALUES_MAX     0
 #elif defined(CPUM128)
   #define MAX_MODELS           30
   #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
@@ -163,6 +166,7 @@
   #define NUM_TRAINER          8
   #define NUM_POTS             3
   #define NUM_XPOTS            0
+  #define TELEM_VALUES_MAX     0
 #else
   #define MAX_MODELS           16
   #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
@@ -174,6 +178,7 @@
   #define NUM_TRAINER          8
   #define NUM_POTS             3
   #define NUM_XPOTS            0
+  #define TELEM_VALUES_MAX     0
 #endif
 
 #if defined(CPUARM)
@@ -585,8 +590,12 @@ enum ResetFunctionParam {
 #if ROTARY_ENCODERS > 1
   FUNC_RESET_ROTENC2,
 #endif
+#if defined(CPUARM)
+  FUNC_RESET_PARAM_FIRST_TELEM,
+  FUNC_RESET_PARAM_LAST_TELEM = FUNC_RESET_PARAM_FIRST_TELEM + TELEM_VALUES_MAX,
+#endif
   FUNC_RESET_PARAMS_COUNT,
-  FUNC_RESET_PARAM_LAST = FUNC_RESET_PARAMS_COUNT-1
+  FUNC_RESET_PARAM_LAST = FUNC_RESET_PARAMS_COUNT-1,
 };
 
 enum AdjustGvarFunctionParam {
@@ -742,7 +751,7 @@ PACK(typedef struct {
   uint8_t   disableAlarmWarning:1;
   uint8_t   stickMode:2;
   int8_t    timezone:5;
-  uint8_t   spare1:1;
+  uint8_t   adjustRTC:1;
   uint8_t   inactivityTimer;
   uint8_t   mavbaud:3;
   SPLASH_MODE; /* 3bits */
@@ -1141,11 +1150,14 @@ enum TelemetryUnit {
   UNIT_RPMS,
   UNIT_G,
   UNIT_DEGREE,
+  UNIT_MILLILITERS,
+  UNIT_FLOZ,
   UNIT_HOURS,
   UNIT_MINUTES,
   UNIT_SECONDS,
   // FrSky format used for these fields, could be another format in the future
-  UNIT_CELLS,
+  UNIT_FIRST_VIRTUAL,
+  UNIT_CELLS = UNIT_FIRST_VIRTUAL,
   UNIT_DATETIME,
   UNIT_GPS,
   UNIT_GPS_LONGITUDE,
@@ -1157,7 +1169,7 @@ enum TelemetryUnit {
   UNIT_DATETIME_HOUR_MIN,
   UNIT_DATETIME_SEC
 };
-#define UNIT_MAX UNIT_DEGREE
+#define UNIT_MAX UNIT_FLOZ
 #define UNIT_DIST UNIT_METERS
 #define UNIT_TEMPERATURE UNIT_CELSIUS
 #define UNIT_SPEED UNIT_KMH
@@ -1211,11 +1223,6 @@ PACK(typedef struct {
 #endif
 
 #if defined(CPUARM)
-#if defined(PCBTARANIS)
-  #define TELEM_VALUES_MAX        32
-#else
-  #define TELEM_VALUES_MAX        16
-#endif
 #define TELEM_LABEL_LEN           4
 //#define TELEM_FLAG_TIMEOUT      0x01
 #define TELEM_FLAG_LOG            0x02
@@ -1238,17 +1245,11 @@ enum TelemetrySensorFormula
   TELEM_FORMULA_MIN,
   TELEM_FORMULA_MAX,
   TELEM_FORMULA_MULTIPLY,
+  TELEM_FORMULA_TOTALIZE,
   TELEM_FORMULA_CELL,
   TELEM_FORMULA_CONSUMPTION,
   TELEM_FORMULA_DIST,
-};
-
-enum TelemetrySensorInputFlags
-{
-  TELEM_INPUT_FLAGS_NONE,
-  TELEM_INPUT_FLAGS_AUTO_OFFSET,
-  TELEM_INPUT_FLAGS_FILTERING,
-  TELEM_INPUT_FLAGS_MAX=TELEM_INPUT_FLAGS_FILTERING
+  TELEM_FORMULA_LAST = TELEM_FORMULA_DIST
 };
 
 PACK(typedef struct {
@@ -1264,7 +1265,8 @@ PACK(typedef struct {
   uint8_t  type:1;                 // 0=custom / 1=calculated
   uint8_t  unit:5;                 // user can choose what unit to display each value in
   uint8_t  prec:2;
-  uint8_t  inputFlags:2;
+  uint8_t  autoOffset:1;
+  uint8_t  filter:1;
   uint8_t  logs:1;
   uint8_t  persistent:1;
   uint8_t  spare:4;
@@ -1296,6 +1298,7 @@ PACK(typedef struct {
   void init(uint16_t id);
   bool isAvailable();
   int32_t getValue(int32_t value, uint8_t unit, uint8_t prec) const;
+  bool isConfigurable();
 }) TelemetrySensor;
 #endif
 
@@ -1630,17 +1633,13 @@ enum SwitchSources {
   SWSRC_SE1,
   SWSRC_SE2,
   SWSRC_SF0,
-#if defined(REV9E)
   SWSRC_SF1,
-#endif
   SWSRC_SF2,
   SWSRC_SG0,
   SWSRC_SG1,
   SWSRC_SG2,
   SWSRC_SH0,
-#if defined(REV9E)
   SWSRC_SH1,
-#endif
   SWSRC_SH2,
   SWSRC_TRAINER = SWSRC_SH2,
 #if defined(REV9E)
@@ -1767,10 +1766,11 @@ enum MixSources {
   MIXSRC_LAST_LUA = MIXSRC_FIRST_LUA+(MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)-1,
 #endif
 
-  MIXSRC_Rud,                     LUA_EXPORT("rud", "Rudder")
-  MIXSRC_Ele,                     LUA_EXPORT("ele", "Elevator")
-  MIXSRC_Thr,                     LUA_EXPORT("thr", "Throttle")
-  MIXSRC_Ail,                     LUA_EXPORT("ail", "Aileron")
+  MIXSRC_FIRST_STICK,
+  MIXSRC_Rud = MIXSRC_FIRST_STICK, LUA_EXPORT("rud", "Rudder")
+  MIXSRC_Ele,                      LUA_EXPORT("ele", "Elevator")
+  MIXSRC_Thr,                      LUA_EXPORT("thr", "Throttle")
+  MIXSRC_Ail,                      LUA_EXPORT("ail", "Aileron")
 
   MIXSRC_FIRST_POT,
 #if defined(PCBTARANIS)
@@ -1813,14 +1813,17 @@ enum MixSources {
 
   MIXSRC_MAX,
 
-  MIXSRC_CYC1,                  LUA_EXPORT("cyc1", "Cyclic 1")
-  MIXSRC_CYC2,                  LUA_EXPORT("cyc2", "Cyclic 2")
-  MIXSRC_CYC3,                  LUA_EXPORT("cyc3", "Cyclic 3")
+  MIXSRC_FIRST_HELI,
+  MIXSRC_CYC1 = MIXSRC_FIRST_HELI,   LUA_EXPORT("cyc1", "Cyclic 1")
+  MIXSRC_CYC2,                       LUA_EXPORT("cyc2", "Cyclic 2")
+  MIXSRC_CYC3,                       LUA_EXPORT("cyc3", "Cyclic 3")
 
-  MIXSRC_TrimRud,               LUA_EXPORT("trim-rud", "Rudder trim")
-  MIXSRC_TrimEle,               LUA_EXPORT("trim-ele", "Elevator trim")
-  MIXSRC_TrimThr,               LUA_EXPORT("trim-thr", "Throttle trim")
-  MIXSRC_TrimAil,               LUA_EXPORT("trim-ail", "Aileron trim")
+  MIXSRC_FIRST_TRIM,
+  MIXSRC_TrimRud = MIXSRC_FIRST_TRIM,  LUA_EXPORT("trim-rud", "Rudder trim")
+  MIXSRC_TrimEle,                      LUA_EXPORT("trim-ele", "Elevator trim")
+  MIXSRC_TrimThr,                      LUA_EXPORT("trim-thr", "Throttle trim")
+  MIXSRC_TrimAil,                      LUA_EXPORT("trim-ail", "Aileron trim")
+  MIXSRC_LAST_TRIM = MIXSRC_TrimAil,
 
   MIXSRC_FIRST_SWITCH,
 
@@ -1844,6 +1847,9 @@ enum MixSources {
   MIXSRC_SP,                        LUA_EXPORT("sp", "Switch P")
   MIXSRC_SQ,                        LUA_EXPORT("sq", "Switch Q")
   MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R")
+  MIXSRC_LAST_SWITCH = MIXSRC_SR,
+#else
+  MIXSRC_LAST_SWITCH = MIXSRC_SH,
 #endif
 #else
   MIXSRC_3POS = MIXSRC_FIRST_SWITCH,
@@ -1853,6 +1859,7 @@ enum MixSources {
   MIXSRC_AIL,
   MIXSRC_GEA,
   MIXSRC_TRN,
+  MIXSRC_LAST_SWITCH = MIXSRC_TRN,
 #endif
   MIXSRC_FIRST_LOGICAL_SWITCH,
   MIXSRC_SW1 = MIXSRC_FIRST_LOGICAL_SWITCH, LUA_EXPORT_MULTIPLE("ls", "Logical switch L%d", NUM_LOGICAL_SWITCH)

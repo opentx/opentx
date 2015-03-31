@@ -135,9 +135,13 @@
 #define RSSI_ID                 0xf101
 #define ADC1_ID                 0xf102
 #define ADC2_ID                 0xf103
+#define SP2UART_A_ID            0xfd00
+#define SP2UART_B_ID            0xfd01
 #define BATT_ID                 0xf104
 #define SWR_ID                  0xf105
 #define XJT_VERSION_ID          0xf106
+#define FUEL_QTY_FIRST_ID       0x0a10
+#define FUEL_QTY_LAST_ID        0x0a1f
 
 // Default sensor data IDs (Physical IDs + CRC)
 #define DATA_ID_VARIO            0x00 // 0
@@ -331,7 +335,8 @@ struct FrskyData {
 };
 #endif
 
-#define IS_VALID_XJT_VERSION() (frskyData.xjtVersion != 0 && frskyData.xjtVersion != 0xff)
+#define IS_VALID_XJT_VERSION()      (frskyData.xjtVersion != 0 && frskyData.xjtVersion != 0xff)
+#define IS_HIDDEN_TELEMETRY_VALUE() ((appId == SP2UART_A_ID) || (appId == SP2UART_B_ID) || (appId == XJT_VERSION_ID) || ((appId == SWR_ID) && !IS_VALID_XJT_VERSION()))
 
 enum AlarmLevel {
   alarm_off = 0,

@@ -68,7 +68,7 @@
 #include "radiointerface.h"
 #include "progressdialog.h"
 
-#define OPENTX_COMPANION_DOWNLOADS   "http://downloads-20.open-tx.org/companion"
+#define OPENTX_COMPANION_DOWNLOADS   "http://downloads-21.open-tx.org/companion"
 #define DONATE_STR      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
 
 #ifdef __APPLE__
@@ -121,6 +121,7 @@ MainWindow::MainWindow():
     }
     QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
     QTimer::singleShot(updateDelay, this, SLOT(displayWarnings()));
+    updateSdsyncAction();
 
     QStringList strl = QApplication::arguments();
     QString str;
@@ -916,13 +917,12 @@ void MainWindow::updateMenus()
     printAct->setEnabled(hasSelection);
     loadbackupAct->setEnabled(hasMdiChild);
     compareAct->setEnabled(activeMdiChild());
-    updateSdsyncAction();
     updateRecentFileActions();
     updateProfilesActions();
     updateLanguageActions();
     updateIconSizeActions();
     updateIconThemeActions();
-    setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->getName()).arg( g.profile[g.id()].name() ));
+    setWindowTitle(tr("OpenTX Companion 2.1 - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->getName()).arg( g.profile[g.id()].name() ));
 }
 
 MdiChild *MainWindow::createMdiChild()

@@ -88,12 +88,27 @@ void backupEeprom()
 
 void menuGeneralVersion(uint8_t event)
 {
+  if (s_warning_result) {
+    s_warning_result = 0;
+    displayPopup(STR_EEPROMFORMATTING);
+    eeErase(false);
+#if !defined(SIMU)
+    NVIC_SystemReset();
+#else
+    exit(0);
+#endif
+  }
+  
   SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, e_Vers, 1);
 
   lcd_putsLeft(MENU_HEADER_HEIGHT+FH, vers_stamp);
 
-  lcd_putsLeft(MENU_HEADER_HEIGHT+6*FH, STR_EEBACKUP);
+  lcd_putsLeft(MENU_HEADER_HEIGHT+5*FH, STR_EEBACKUP);
+  lcd_putsLeft(MENU_HEADER_HEIGHT+6*FH, STR_FACTORYRESET);
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
     backupEeprom();
+  }
+  else if (event == EVT_KEY_LONG(KEY_MENU)) {
+    POPUP_CONFIRMATION(STR_CONFIRMRESET);
   }
 }

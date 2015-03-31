@@ -105,9 +105,6 @@ bool isInputSourceAvailable(int source)
   if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
     return true;
 
-  if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
-    return true;
-
   if (source>=MIXSRC_TrimRud && source<MIXSRC_SW1)
     return true;
 

@@ -65,10 +65,6 @@ void configure_pins( uint32_t pins, uint16_t config )
 
         /* Output mode configuration*/
         pgpio->OTYPER  &= ~((GPIO_OTYPER_OT_0) << ((uint16_t)pos)) ;
-        if ( config & PIN_ODRAIN )
-        {
-          pgpio->OTYPER |= (GPIO_OTYPER_OT_0) << pos ;
-        }
       }
       /* Pull-up Pull down resistor configuration*/
       pgpio->PUPDR &= ~(GPIO_PUPDR_PUPDR0 << ((uint16_t)pos * 2));

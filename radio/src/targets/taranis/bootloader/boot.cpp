@@ -791,11 +791,17 @@ int main()
       }
     }
 
-    if (pwrCheck() == e_power_off && state != ST_FLASHING && state != ST_USB) {
-      lcdOff();    // this drains LCD caps
-      pwrOff();
-      for (;;) {
-        // Wait for power to go off
+    if (state != ST_FLASHING && state != ST_USB) {
+#if defined(REV9E)
+      if (pwrPressed()) {
+#else
+      if (pwrCheck() == e_power_off) {
+#endif
+        lcdOff(); // this drains LCD caps
+        pwrOff();
+        for (;;) {
+          // Wait for power to go off
+        }
       }
     }
 

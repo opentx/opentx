@@ -551,7 +551,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case FlightModesName:
       return (IS_TARANIS(board) ? 10 : 6);
     case GvarsName:
-      return 6;
+      return (IS_9X(board) ? 0 : 6);
     case HasChNames:
       return (IS_TARANIS(board) ? 1 : 0);
     case GvarsInCS:
@@ -689,8 +689,6 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return IS_TARANIS(board) ? 1 : 0;
     case TelemetryUnits:
       return 0;
-    case TelemetryTimeshift:
-      return 1;
     case TelemetryMaxMultiplier:
       return (IS_ARM(board) ? 32 : 8);
     case PPMCenter:

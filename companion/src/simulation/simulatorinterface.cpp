@@ -31,7 +31,7 @@ void registerSimulators()
 {
   QDir dir(".");
   QStringList filters;
-#if !defined __GNUC__
+#if (!defined __GNUC__) || (defined __CYGWIN__)
   filters << "*-simulator.dll";
 #else
   filters << "*-simulator.so";
