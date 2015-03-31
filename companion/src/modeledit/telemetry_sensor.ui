@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,0,0,1,1,1,1,0,0,1,0,1,0,1,1,1,1,1,1,0,1,0,1,0,1,0,0,0,1">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,0,0,1,1,1,1,0,0,1,0,1,0,1,1,1,1,1,1,0,1,0,0,1,0,0,1,0,0,0,1">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -507,6 +507,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="bladesLabel">
+     <property name="text">
+      <string>Blades</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="AutoDoubleSpinBox" name="ratio">
      <property name="enabled">
       <bool>true</bool>
@@ -518,7 +525,10 @@
       </sizepolicy>
      </property>
      <property name="decimals">
-      <number>1</number>
+      <number>0</number>
+     </property>
+     <property name="minimum">
+      <double>0.000000000000000</double>
      </property>
      <property name="maximum">
       <double>3000.000000000000000</double>
@@ -539,6 +549,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="multiplierLabel">
+     <property name="text">
+      <string>Multiplier</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="AutoDoubleSpinBox" name="offset">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -547,16 +564,16 @@
       </sizepolicy>
      </property>
      <property name="decimals">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="minimum">
-      <double>-12.800000000000001</double>
+      <double>-30000.000000000000000</double>
      </property>
      <property name="maximum">
-      <double>12.699999999999999</double>
+      <double>30000.000000000000000</double>
      </property>
      <property name="singleStep">
-      <double>0.100000000000000</double>
+      <double>1.000000000000000</double>
      </property>
     </widget>
    </item>

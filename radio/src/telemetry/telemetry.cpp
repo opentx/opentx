@@ -172,7 +172,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     newVal = 0;
   }
   else if (unit == UNIT_RPMS) {
-    newVal = newVal / sensor.custom.ratio;
+    newVal = (newVal * sensor.custom.offset) / sensor.custom.ratio;
   }
   else {
     newVal = sensor.getValue(newVal, unit, prec);

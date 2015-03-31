@@ -558,13 +558,28 @@ void TelemetrySensorPanel::update()
     ui->instance->show();
     ui->formula->hide();
     ratioFieldsDisplayed = (sensor.unit != SensorData::UNIT_GPS && sensor.unit != SensorData::UNIT_DATETIME);
-    ui->offset->setDecimals(sensor.prec);
     precDisplayed = (sensor.unit != SensorData::UNIT_GPS && sensor.unit != SensorData::UNIT_DATETIME);
+    ui->offset->setMaximum((sensor.prec > 0 ? sensor.prec == 2 ? 30000 : 3000 : 300));
+    ui->offset->setMinimum((sensor.prec > 0 ? sensor.prec == 2 ? -30000 : -3000 : -300));
+
+    if (sensor.unit == SensorData::UNIT_RPMS) {
+      ui->offset->setDecimals(0);
+      ui->ratio->setDecimals(0);
+      ui->autoOffset->hide();
+      ui->ratio->setMinimum(1);
+      ui->offset->setMinimum(1);
+    }
+    else {
+      ui->offset->setDecimals(sensor.prec);
+      ui->ratio->setDecimals(1);
+    }
   }
 
-  ui->ratioLabel->setVisible(ratioFieldsDisplayed);
+  ui->ratioLabel->setVisible(ratioFieldsDisplayed && sensor.unit != SensorData::UNIT_RPMS);
+  ui->bladesLabel->setVisible(sensor.unit == SensorData::UNIT_RPMS);
   ui->ratio->setVisible(ratioFieldsDisplayed);
-  ui->offsetLabel->setVisible(ratioFieldsDisplayed);
+  ui->offsetLabel->setVisible(ratioFieldsDisplayed && sensor.unit != SensorData::UNIT_RPMS);
+  ui->multiplierLabel->setVisible(sensor.unit == SensorData::UNIT_RPMS);
   ui->offset->setVisible(ratioFieldsDisplayed);
   ui->precLabel->setVisible(precDisplayed);
   ui->prec->setVisible(precDisplayed);
