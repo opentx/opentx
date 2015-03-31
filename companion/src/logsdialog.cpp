@@ -608,6 +608,10 @@ void logsDialog::on_sessions_CB_currentIndexChanged(int index)
 void logsDialog::plotLogs()
 {
   if (plotLock) return;
+  if (!ui->FieldsTW->selectedItems().length()) {
+    removeAllGraphs();
+    return;
+  }
 
   plotsCollection plots;
 
