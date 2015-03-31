@@ -39,15 +39,7 @@
 #define DSM2_SEND_BIND                     (1 << 7)
 #define DSM2_SEND_RANGECHECK               (1 << 5)
 
-#if defined(PCBTARANIS)
-uint16_t dsm2Stream[400];                         // Likely more than we need
-uint16_t *dsm2StreamPtr;
-uint16_t dsm2Value;
-#else
-uint8_t  dsm2Stream[64];                          // Likely more than we need
-uint8_t *dsm2StreamPtr;
-uint8_t  dsm2SerialByte ;
-uint8_t  dsm2SerialBitCount;
+#if defined(PCBSKY9X)
 uint8_t  dsm2BindTimer = DSM2_BIND_TIMEOUT;
 #endif
 
@@ -60,18 +52,17 @@ uint8_t  dsm2BindTimer = DSM2_BIND_TIMEOUT;
 #define BITLEN_DSM2          (8*2) //125000 Baud => 8uS per bit
 
 #if defined(PCBTARANIS)
-uint8_t dsm2Index = 0;
 void _send_1(uint8_t v)
 {
-  if (dsm2Index == 0)
+  if (modulePulsesData[EXTERNAL_MODULE].dsm2.index == 0)
     v -= 2;
   else
     v += 2;
 
-  dsm2Value += v;
-  *dsm2StreamPtr++ = dsm2Value;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.value += v;
+  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.value;
 
-  dsm2Index = (dsm2Index+1) % 2;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.index = (modulePulsesData[EXTERNAL_MODULE].dsm2.index+1) % 2;
 }
 
 void sendByteDsm2(uint8_t b) //max 10 changes 0 10 10 10 10 1
@@ -94,19 +85,19 @@ void sendByteDsm2(uint8_t b) //max 10 changes 0 10 10 10 10 1
 }
 void putDsm2Flush()
 {
-  dsm2StreamPtr--; //remove last stopbits and
-  *dsm2StreamPtr++ = 44010;             // Past the 44000 of the ARR
+  modulePulsesData[EXTERNAL_MODULE].dsm2.ptr--; //remove last stopbits and
+  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = 44010;             // Past the 44000 of the ARR
 }
 #else
 void putDsm2SerialBit(uint8_t bit)
 {
-  dsm2SerialByte >>= 1;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte >>= 1;
   if (bit & 1) {
-    dsm2SerialByte |= 0x80;
+    modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte |= 0x80;
   }
-  if (++dsm2SerialBitCount >= 8) {
-    *dsm2StreamPtr++ = dsm2SerialByte;
-    dsm2SerialBitCount = 0;
+  if (++modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount >= 8) {
+    *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte;
+    modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0;
   }
 }
 void sendByteDsm2(uint8_t b)     // max 10changes 0 10 10 10 10 1
@@ -137,18 +128,18 @@ void setupPulsesDSM2(unsigned int port)
   static uint8_t dsmDat[2+6*2]={0xFF,0x00, 0x00,0xAA, 0x05,0xFF, 0x09,0xFF, 0x0D,0xFF, 0x13,0x54, 0x14,0xAA};
 
 #if defined(PCBSKY9X)
-  dsm2SerialByte = 0 ;
-  dsm2SerialBitCount = 0 ;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
 #else
-  dsm2Value = 0;
-  dsm2Index = 1;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.value = 0;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.index = 1;
 #endif
 
-  dsm2StreamPtr = dsm2Stream;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
 
 #if defined(PCBTARANIS)
-  dsm2Value = 100;
-  *dsm2StreamPtr++ = dsm2Value;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.value = 100;
+  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.value;
 #endif
 
   switch (s_current_protocol[port]) {

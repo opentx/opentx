@@ -41,6 +41,9 @@ uint8_t s_current_protocol[NUM_MODULES] = { MODULES_INIT(255) };
 uint16_t failsafeCounter[NUM_MODULES] = { MODULES_INIT(100) };
 uint8_t moduleFlag[NUM_MODULES] = { 0 };
 
+ModulePulsesData modulePulsesData[NUM_MODULES];
+TrainerPulsesData trainerPulsesData;
+
 void setupPulses(unsigned int port)
 {
   uint8_t required_protocol;

@@ -196,8 +196,11 @@ uint32_t isBootloaderStart(const void * buffer);
 void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
 void init_ppm( uint32_t module_index );
-void set_external_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive);
 void disable_ppm( uint32_t module_index );
+void set_external_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive);
+#if defined(TARANIS_INTERNAL_PPM)
+  void set_internal_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive);
+#endif
 void init_pxx( uint32_t module_index );
 void disable_pxx( uint32_t module_index );
 void init_dsm2( uint32_t module_index );
@@ -261,7 +264,7 @@ void pwrOff(void);
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
 #endif
-#define UNEXPECTED_SHUTDOWN() (g_eeGeneral.unexpectedShutdown)
+#define UNEXPECTED_SHUTDOWN()   (g_eeGeneral.unexpectedShutdown)
 
 // Backlight driver
 #if defined(REVPLUS)

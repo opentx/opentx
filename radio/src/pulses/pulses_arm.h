@@ -47,6 +47,55 @@ extern uint8_t s_current_protocol[NUM_MODULES];
 extern uint8_t s_pulses_paused;
 extern uint16_t failsafeCounter[NUM_MODULES];
 
+PACK(struct PpmPulsesData {
+  uint16_t pulses[20];
+#if defined(PCBSKY9X)
+  uint32_t index;
+#else
+  uint16_t *ptr;
+#endif
+});
+
+PACK(struct PxxPulsesData {
+#if defined(PCBSKY9X)
+  uint8_t  pulses[64];
+  uint8_t  *ptr;
+#else
+  uint16_t pulses[400];
+  uint16_t *ptr;
+#endif
+  uint16_t pcmValue;
+  uint16_t pcmCrc;
+  uint8_t  pcmOnesCount;
+});
+
+PACK(struct Dsm2PulsesData {
+#if defined(PCBSKY9X)
+  uint8_t  pulses[64];
+  uint8_t *ptr;
+  uint8_t  serialByte ;
+  uint8_t  serialBitCount;
+#else
+  uint16_t pulses[400];
+  uint16_t *ptr;
+  uint16_t value;
+  uint8_t  index;
+#endif
+});
+
+union ModulePulsesData {
+  PxxPulsesData pxx;
+  Dsm2PulsesData dsm2;
+  PpmPulsesData ppm;
+};
+
+union TrainerPulsesData {
+  PpmPulsesData ppm;
+};
+
+extern ModulePulsesData modulePulsesData[NUM_MODULES];
+extern TrainerPulsesData trainerPulsesData;
+
 void setupPulses(unsigned int port);
 void setupPulsesDSM2(unsigned int port);
 void setupPulsesPXX(unsigned int port);
@@ -64,7 +113,7 @@ inline void startPulses()
   setupPulses(INTERNAL_MODULE);
   setupPulses(EXTERNAL_MODULE);
 #else
-  setupPulses(0);
+  setupPulses(EXTERNAL_MODULE);
 #endif
 
 #if defined(HUBSAN)
