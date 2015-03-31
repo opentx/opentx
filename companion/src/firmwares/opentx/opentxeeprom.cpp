@@ -3015,8 +3015,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
   
   if (IS_ARM(board) && version >= 217) {
-    int size = IS_TARANIS_X9E(board) ? 32 : 8;
-    for (int i=0; i<size; i++) {
+    for (int i=0; i<8; i++) {
       if (i < MAX_POTS(board)+MAX_SLIDERS(board))
         internalField.Append(new BoolField<1>(modelData.potsWarningEnabled[i]));
       else
@@ -3277,7 +3276,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
       internalField.Append(new SpareBitsField<64>());
     else if (IS_TARANIS(board))
       internalField.Append(new SpareBitsField<16>());
-
+      
     if (version >= 217) {
       for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++) {
         internalField.Append(new ArmCustomFunctionField(generalData.customFn[i], board, version, variant));
