@@ -95,9 +95,6 @@ void init_trainer_capture()
   GPIO_InitTypeDef GPIO_InitStructure;
 
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-#if 0
-  configure_pins (PIN_TR_PPM_IN, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_2) ;
-#else
   GPIO_InitStructure.GPIO_Pin = PIN_TR_PPM_IN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -105,7 +102,6 @@ void init_trainer_capture()
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(GPIO_TR_INOUT, &GPIO_InitStructure);
   GPIO_PinAFConfig(GPIO_TR_INOUT, GPIO_PinSource8, GPIO_AF_TIM3);
-#endif
 
   RCC->APB1ENR |= RCC_APB1ENR_TIM3EN ;
   TIM3->ARR = 0xFFFF ;
