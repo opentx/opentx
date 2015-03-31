@@ -60,9 +60,11 @@ private:
   Ui::logsDialog *ui;
   bool cvsFileParse();
   double GetScale(QString channel);
-  QList<QColor> palette;
   bool plotLock;
   QString logFilename;
+
+  QVarLengthArray<Qt::GlobalColor> colors;
+  QPen pen;
 
   bool hasyAxis2;
   double rangeRatio;

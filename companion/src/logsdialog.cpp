@@ -17,10 +17,22 @@ logsDialog::logsDialog(QWidget *parent) :
   srand(QDateTime::currentDateTime().toTime_t());
   ui->setupUi(this);
   this->setWindowIcon(CompanionIcon("logs.png"));
-  palette.clear();
   plotLock=false;
-  for (int i=0; i< 60; i++)
-        palette << QColor(rand()%245+10, rand()%245+10, rand()%245+10);
+
+  colors.append(Qt::blue);
+  colors.append(Qt::green);
+  colors.append(Qt::red);
+  colors.append(Qt::yellow);
+  colors.append(Qt::magenta);
+  colors.append(Qt::cyan);
+  colors.append(Qt::darkBlue);
+  colors.append(Qt::darkGreen);
+  colors.append(Qt::darkRed);
+  colors.append(Qt::darkYellow);
+  colors.append(Qt::darkMagenta);
+  colors.append(Qt::darkCyan);
+  pen.setWidthF(1.5);
+
   ui->customPlot->setInteractions(QCustomPlot::iRangeDrag | QCustomPlot::iRangeZoom | QCustomPlot::iSelectAxes |
                                   QCustomPlot::iSelectLegend | QCustomPlot::iSelectPlottables | QCustomPlot::iSelectTitle | QCustomPlot::iSelectItems);
   ui->customPlot->setRangeDrag(Qt::Horizontal|Qt::Vertical);
@@ -54,9 +66,7 @@ logsDialog::logsDialog(QWidget *parent) :
 
   // make bottom and left axes transfer their ranges to top and right axes:
   connect(ui->customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->customPlot->xAxis2, SLOT(setRange(QCPRange)));
-  // connect(ui->customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->customPlot->yAxis2, SLOT(setRange(QCPRange)));
-  connect(ui->customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), this,
-    SLOT(setRangeyAxis2(QCPRange)));
+  connect(ui->customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(setRangeyAxis2(QCPRange)));
 
   // connect some interaction slots:
   connect(ui->customPlot, SIGNAL(titleDoubleClick(QMouseEvent*)), this, SLOT(titleDoubleClick()));
@@ -600,23 +610,8 @@ void logsDialog::plotLogs()
   if (plotLock) return;
 
   plotsCollection plots;
-  QVarLengthArray<Qt::GlobalColor> colors;
-  QPen pen;
-  bool hasLogSelection = ui->logTable->selectedItems().length();
 
-  colors.append(Qt::blue);
-  colors.append(Qt::green);
-  colors.append(Qt::red);
-  colors.append(Qt::yellow);
-  colors.append(Qt::magenta);
-  colors.append(Qt::cyan);
-  colors.append(Qt::darkBlue);
-  colors.append(Qt::darkGreen);
-  colors.append(Qt::darkRed);
-  colors.append(Qt::darkYellow);
-  colors.append(Qt::darkMagenta);
-  colors.append(Qt::darkCyan);
-  pen.setWidthF(1.5);
+  bool hasLogSelection = ui->logTable->selectedItems().length();
 
   plots.min_x = QDateTime::currentDateTime().toTime_t();
   plots.max_x = 0;
@@ -771,7 +766,7 @@ void logsDialog::plotLogs()
     }
     ui->customPlot->graph(i)->setData(plots.coords.at(i).x,
       plots.coords.at(i).y);
-    pen.setColor(colors.at(i));
+    pen.setColor(colors.at(i % colors.size()));
     ui->customPlot->graph(i)->setPen(pen);
     ui->customPlot->graph(i)->setName(plots.coords.at(i).name);
   }
