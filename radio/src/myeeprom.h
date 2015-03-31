@@ -341,6 +341,7 @@ enum BeeperMode {
   uint8_t  sticksGain; \
   uint8_t  rotarySteps; \
   uint8_t  countryCode; \
+  uint8_t  imperial; \
   char     ttsLanguage[2]; \
   int8_t   beepVolume; \
   int8_t   wavVolume; \
