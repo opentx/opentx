@@ -14,7 +14,7 @@ logsDialog::logsDialog(QWidget *parent) :
     ui(new Ui::logsDialog)
 {
   csvlog.clear();
-  srand(QDateTime::currentDateTime().toTime_t());
+
   ui->setupUi(this);
   this->setWindowIcon(CompanionIcon("logs.png"));
   plotLock=false;
