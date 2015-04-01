@@ -69,12 +69,12 @@ void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int 
     else if (input==FLAPS_INPUT){
       // There ought to be some kind of constants for switches somewhere...
       maxMixSwitch((char *)"Flaps Up",   model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SA0 :-SWITCH_ELE ,  weight); //Taranis SA-UP, 9X ELE-UP
-      maxMixSwitch((char *)"Flaps Down", model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SA2 : SWITCH_ELE , -weight); //Taranis SA-DOWN, 9X ELE-DOWN
+      maxMixSwitch((char *)"Flaps Dn", model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SA2 : SWITCH_ELE , -weight); //Taranis SA-DOWN, 9X ELE-DOWN
 
     }
     else if (input==AIRBRAKES_INPUT){ 
-      maxMixSwitch((char *)"Airbrk Off", model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SE0 :-SWITCH_RUD , -weight); //Taranis SE-UP, 9X RUD-UP
-      maxMixSwitch((char *)"Airbrk On",  model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SE2 : SWITCH_RUD , weight); //Tatanis SE-DOWN, 9X RUD-DOWN
+      maxMixSwitch((char *)"AirbkOff", model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SE0 :-SWITCH_RUD , -weight); //Taranis SE-UP, 9X RUD-UP
+      maxMixSwitch((char *)"AirbkOn",  model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SE2 : SWITCH_RUD , weight); //Tatanis SE-DOWN, 9X RUD-DOWN
     }
   }
 }
