@@ -36,8 +36,9 @@
 
 #include "opentx.h"
 
-static uint8_t currentSpeakerVolume = 255;
+uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
+uint8_t requestScreenshot = false;
 
 void handleUsbConnection()
 {
@@ -205,6 +206,13 @@ void perMain()
 
 #if defined(REV9E) && !defined(SIMU)
   bt_wakeup();
+#endif
+
+#if defined(PCBTARANIS)
+  if (requestScreenshot) {
+    requestScreenshot = false;
+    writeScreenshot();
+  }
 #endif
 
 }

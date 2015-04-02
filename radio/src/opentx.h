@@ -1474,6 +1474,10 @@ enum AUDIO_SOUNDS {
 extern uint8_t requiredSpeakerVolume;
 #endif
 
+#if defined(PCBTARANIS)
+extern uint8_t requestScreenshot;
+#endif
+
 extern void checkBattery();
 extern void opentxClose();
 extern void opentxInit();

@@ -552,7 +552,7 @@ void evalFunctions()
 #if defined(PCBTARANIS)
           case FUNC_SCREENSHOT:
             if (!(functionsContext.activeSwitches & switch_mask)) {
-              writeScreenshot();
+              requestScreenshot = true;
             }
             break;
 #endif
