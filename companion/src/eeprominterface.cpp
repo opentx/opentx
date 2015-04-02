@@ -229,7 +229,15 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
         case TELEMETRY_SOURCE_DIST_MAX:
           result.step = singleprec ? 8 : 1;
           result.max = singleprec ? 2040 : 10000;
-          result.unit = QObject::tr("m");
+          if (firmware->getCapability(Imperial) || settings.imperial) {
+            result.step = (result.step * 105) / 32;
+            result.min = (result.min * 105) / 32;
+            result.max = (result.max * 105) / 32;
+            result.unit = QObject::tr("ft");
+          }
+          else {
+            result.unit = QObject::tr("m");
+          }
           break;
         case TELEMETRY_SOURCE_CELL:
         case TELEMETRY_SOURCE_CELL_MIN:
