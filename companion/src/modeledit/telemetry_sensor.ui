@@ -386,6 +386,11 @@
      </item>
      <item>
       <property name="text">
+       <string>Speed (ft/s)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
        <string>Speed (km/h)</string>
       </property>
      </item>

@@ -543,8 +543,8 @@ int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t
   for (int i=prec; i<destPrec; i++)
     value *= 10;
 
-  if (unit == UNIT_METERS) {
-    if (destUnit == UNIT_FEET) {
+  if (unit == UNIT_METERS || unit == UNIT_METERS_PER_SECOND) {
+    if (destUnit == UNIT_FEET || destUnit == UNIT_FEET_PER_SECOND) {
       // m to ft *105/32
       value = (value * 105) / 32;
     }
