@@ -5,6 +5,15 @@
 <li>Added Mixers Monitor screen option <i>mixersmon</i> (<a href=https://github.com/opentx/opentx/issues/1945>#1945</a>)</li>
 <li>Added audio playing in simulator (<a href=https://github.com/opentx/opentx/issues/457>#457</a>)</li>
 <li>Fixed sorting of audio tracks (<a href=https://github.com/opentx/opentx/issues/2002>#2002</a>)</li>
+<li>Model wizard fixes (<a href=https://github.com/opentx/opentx/issues/2091>#2091</a>)</li>
+<li>GVAR names removed for 9x, radio doesn't support them (<a href=https://github.com/opentx/opentx/issues/2150>#2150</a>)</li>
+<li>Added more fields to the telemetry simulator (<a href=https://github.com/opentx/opentx/issues/2171>#2171</a>)</li>
+<li>Log viewer improvements (<a href=https://github.com/opentx/opentx/issues/1863>#1863</a>)</li>
+<li>Minor fixes: <a href=https://github.com/opentx/opentx/issues/2153>#2153</a>, 
+                 <a href=https://github.com/opentx/opentx/issues/2138>#2138</a>,
+                 <a href=https://github.com/opentx/opentx/issues/2090>#2090</a>,
+                 <a href=https://github.com/opentx/opentx/issues/2122>#2122</a>
+</li>
 </ul>
 
 

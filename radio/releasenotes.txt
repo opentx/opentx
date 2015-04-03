@@ -11,6 +11,9 @@
 <li>Fixed radio slowdown when SD card was full (<a href=https://github.com/opentx/opentx/issues/2007>#2007</a>)</li>
 <li>Added Mixers Monitor screen (<a href=https://github.com/opentx/opentx/issues/1945>#1945</a>)</li>
 <li>Fixed Lua <i>lcd.drawPixmap()</i> that could write outside the LCD buffer (<a href=https://github.com/opentx/opentx/issues/2123>#2123</a>)</li>
+<li>Gps positon display fixed: fractional seconds lacked leading zeroes (<a href=https://github.com/opentx/opentx/issues/2144>#2144</a>)</li>
+<li>More memory available for Lua scripts (<a href=https://github.com/opentx/opentx/issues/2050>#2050</a>)</li>
+<li>Various texts and translations corrections</li>
 </ul>
 
 
