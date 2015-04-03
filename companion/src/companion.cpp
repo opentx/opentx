@@ -48,6 +48,9 @@
 #include <QSplashScreen>
 #include <QThread>
 #include <iostream>
+#if defined(JOYSTICKS) || defined(SIMU_AUDIO)
+  #include <SDL.h>
+#endif
 #include "mainwindow.h"
 #include "eeprominterface.h"
 #include "appdata.h"
@@ -95,9 +98,20 @@ int main(int argc, char *argv[])
   app.installTranslator(&qtTranslator);
 
   QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-  
-    RegisterEepromInterfaces();
-    registerOpenTxFirmwares();
+
+#if defined(JOYSTICKS) || defined(SIMU_AUDIO)
+  uint32_t sdlFlags = 0;
+  #ifdef JOYSTICKS
+    sdlFlags |= SDL_INIT_JOYSTICK;
+  #endif
+  #ifdef SIMU_AUDIO
+    sdlFlags |= SDL_INIT_AUDIO;
+  #endif
+  SDL_Init(sdlFlags);
+#endif
+
+  RegisterEepromInterfaces();
+  registerOpenTxFirmwares();
 
   if (g.profile[g.id()].fwType().isEmpty()){
     g.profile[g.id()].fwType(default_firmware_variant->getId());
@@ -132,6 +146,10 @@ int main(int argc, char *argv[])
 
   UnregisterFirmwares();
   UnregisterEepromInterfaces();
+
+#if defined(JOYSTICKS) || defined(SIMU_AUDIO)
+  SDL_Quit();
+#endif
 
   return result;
 }
