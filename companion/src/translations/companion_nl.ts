@@ -10232,7 +10232,7 @@ Press cancel to abort joystick calibration</source>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="31"/>
-        <source>Time</source>
+        <source>Time (hh:mm:ss)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

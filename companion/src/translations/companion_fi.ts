@@ -13022,7 +13022,7 @@ Paina &quot;peruuta&quot; niin joystickin kalibrointi perutetaan</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="31"/>
-        <source>Time</source>
+        <source>Time (hh:mm:ss)</source>
         <translation>Aika</translation>
     </message>
     <message>
