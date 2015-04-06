@@ -179,6 +179,10 @@ void menusTask(void * pdata)
   lcd_clear();
   lcdRefresh();
   lcdOff();
+  BACKLIGHT_OFF();
+#if defined(REV9E)
+  topLcdOff();
+#endif
 
 #if !defined(SIMU)
   SysTick->CTRL = 0; // turn off systick

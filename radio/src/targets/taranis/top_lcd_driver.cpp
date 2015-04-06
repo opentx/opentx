@@ -261,6 +261,13 @@ void topLcdInit()
   topLcdRefreshEnd();
 }
 
+void topLcdOff()
+{
+  VA_BL_OFF;
+  topLcdRefreshStart();
+  topLcdRefreshEnd();
+}
+
 void setTopFirstTimer(uint32_t value)
 {
   div_t qr = div(value, 60);

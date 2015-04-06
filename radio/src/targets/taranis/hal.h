@@ -440,6 +440,7 @@
   #define DATA_HIGH                     GPIO_VA->BSRRL = PIN_VA_DATA
   #define DATA_LOW                      GPIO_VA->BSRRH = PIN_VA_DATA
   #define VA_BL_ON                      GPIO_VA->BSRRL = PIN_VA_BL
+  #define VA_BL_OFF                     GPIO_VA->BSRRH = PIN_VA_BL
 #endif
 
 #endif

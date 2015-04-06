@@ -338,6 +338,7 @@ void bt_wakeup(void);
 // Top LCD driver
 #if defined(REV9E)
 void topLcdInit(void);
+void topLcdOff();
 void topLcdRefreshStart(void);
 void topLcdRefreshEnd(void);
 void setTopFirstTimer(uint32_t value);
