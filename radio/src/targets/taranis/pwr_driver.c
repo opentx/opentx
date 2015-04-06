@@ -102,6 +102,13 @@ void pwrInit()
 void pwrOff()
 {
   GPIO_ResetBits(GPIOPWR, PIN_MCU_PWR);
+#if defined(REV9E)
+  // 9E needs watchdog reset because CPU is still running while the power
+  // key is held pressed by the user
+  while (1) {
+    wdt_reset();
+  }
+#endif
 }
 
 #if defined(REV9E)
