@@ -163,7 +163,7 @@ void eeSwapModels(uint8_t id1, uint8_t id2)
 }
 
 // Read eeprom data starting at random address
-void read32_eeprom_data(uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate)
+void read32_eeprom_data(uint32_t eeAddress, register uint8_t *buffer, uint32_t size)
 {
 #ifdef SIMU
   assert(size);
@@ -181,9 +181,6 @@ void read32_eeprom_data(uint32_t eeAddress, register uint8_t *buffer, uint32_t s
   *(p+3) = eeAddress ;	       // 3 bytes address
   spi_PDC_action( p, 0, buffer, 4, size ) ;
 #endif
-
-  if (immediate )
-    return ;
 
   while (!Spi_complete) {
 #ifdef SIMU
@@ -540,11 +537,6 @@ void ee32_process()
     eeAddress = File_system[Eeprom32_file_index].block_no ^ 1 ;
     eeAddress <<= 12 ;		                                // Block start address
     Eeprom32_address = eeAddress ;				// Where to put new data
-#if 0
-    x = Eeprom32_data_size + sizeof( struct t_eeprom_header ) ;	// Size needing to be checked
-    p = (uint8_t *) &Eeprom_buffer ;
-    read32_eeprom_data( eeAddress, p, x, EE_NOWAIT ) ;
-#endif
     Eeprom32_process_state = E32_READSENDING ;
   }
 

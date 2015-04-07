@@ -93,7 +93,7 @@ extern uint8_t Spi_rx_buf[] ;
 
 void eeprom_write_enable();
 uint32_t eeprom_read_status();
-void read32_eeprom_data(uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate=0);
+void read32_eeprom_data(uint32_t eeAddress, register uint8_t *buffer, uint32_t size);
 uint32_t spi_PDC_action( register uint8_t *command, register uint8_t *tx, register uint8_t *rx, register uint32_t comlen, register uint32_t count );
 
 #if defined(SDCARD)
