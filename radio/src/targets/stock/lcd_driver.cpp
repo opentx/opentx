@@ -77,12 +77,22 @@ const static pm_uchar lcdInitSequence[] PROGMEM =
    0xa1, //ADC = 1: reverse direction(SEG132->SEG1)
    0xA6, //REV = 0: non-reverse display
    0xA4, //EON = 0: normal display. non-entire
+#ifdef LCD_ERC12864FSF
+   0xA3, // Select LCD bias
+   0xC0, //SHL = 0: normal direction (COM1->COM64)
+   0x2F, //Control power circuit operation VC=VR=VF=1
+   0x27, //Select int resistance ratio R2 R1 R0
+   0x81, //Set reference voltage Mode
+   0x2D, // 24 SV5 SV4 SV3 SV2 SV1 SV0
+#else
    0xA2, // Select LCD bias=0
    0xC0, //SHL = 0: normal direction (COM1->COM64)
    0x2F, //Control power circuit operation VC=VR=VF=1
    0x25, //Select int resistance ratio R2 R1 R0 =5
    0x81, //Set reference voltage Mode
    0x22, // 24 SV5 SV4 SV3 SV2 SV1 SV0 = 0x18
+#endif
+
    0xAF  //DON = 1: display ON
 };
 
@@ -99,7 +109,11 @@ inline void lcdInit()
   for (uint8_t i=0; i<12; i++) {
     lcdSendCtl(pgm_read_byte(&lcdInitSequence[i])) ;
   }
+#ifdef LCD_ERC12864FSF
+  g_eeGeneral.contrast = 0x2D;
+#else
   g_eeGeneral.contrast = 0x22;
+#endif
   LCD_UNLOCK();
 }
 
