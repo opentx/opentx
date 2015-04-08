@@ -133,27 +133,32 @@ def ttsEn():
         systemSounds.append((str(100*(i+1)), filename(PROMPT_SYSTEM_BASE+100+i)))
     for i, s in enumerate(["thousand", "and", "minus", "point"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+109+i)))
-    for i, s in enumerate(["volt", "volts",
+    for i, s in enumerate(["", "",
+                           "volt", "volts",
                            "amp", "amps",
-                           "meter per second", "meters per second",
-                           "", "",
-                           "kilometer per hour", "kilometers per hour",
-                           "meter", "meters",
-                           "degree", "degrees",
-                           "percent", "percent",
                            "milliamp", "milliamps",
+                           "knot", "knots",
+                           "meter per second", "meters per second",
+                           "foot per second", "feet per second",
+                           "kilometer per hour", "kilometers per hour",
+                           "mile per hour", "miles per hour",
+                           "meter", "meters",
+                           "foot", "feet",
+                           "degree celsius", "degrees celsius",
+                           "degree fahrenheit", "degrees fahrenheit",
+                           "percent", "percent",
                            "milliamp-hour", "milliamp-hours",
                            "watt", "watts",
                            "db", "db",
-                           "foot", "feet",
-                           "mile per hour", "miles per hour",
+                           "r p m", "r p m",
+                           "g", "g",
+                           "degree", "degrees",
+                           "milliliter", "milliliters",
+                           "fluid ounce", "fluid ounces",
                            "hour", "hours",
                            "minute", "minutes",
                            "second", "seconds",
-                           "r p m", "r p m",
-                           "g", "g"
-                           "milliliter", "milliliters"
-                           "fluid ounce", "fluid ounces"]):
+                           ]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+115+i)))
     for i, s in enumerate(["point zero", "point one", "point two", "point three",
                            "point four", "point five", "point six",
