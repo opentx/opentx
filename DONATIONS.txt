@@ -737,3 +737,4 @@ Sylvain Techer
 Wes Warner
 Kevin Caldwell
 Ali Ersan Gur
+Hans-Rudolf Riniker
