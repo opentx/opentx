@@ -516,6 +516,15 @@ PACK(typedef struct {
   int8_t  inputs[10];
 }) ScriptData_v216;
 
+PACK(typedef struct { // Swash Ring data
+  uint8_t   invertELE:1;
+  uint8_t   invertAIL:1;
+  uint8_t   invertCOL:1;
+  uint8_t   type:5;
+  uint8_t   collectiveSource;
+  uint8_t   value;
+}) SwashRingData_v215;
+
 PACK(typedef struct {
   ModelHeader header;
   TimerData_v215 timers[2];
@@ -539,7 +548,7 @@ PACK(typedef struct {
 
   LogicalSwitchData_v215 logicalSw[NUM_LOGICAL_SWITCH];
   CustomFunctionData_v215 customFn[32];
-  SwashRingData swashR;
+  SwashRingData_v215 swashR;
   FlightModeData_v215 flightModeData[MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5ms increments
@@ -601,10 +610,9 @@ PACK(typedef struct {
 
   LogicalSwitchData_v216 logicalSw[NUM_LOGICAL_SWITCH];
   CustomFunctionData customFn[NUM_CFN];
-  SwashRingData swashR;
+  SwashRingData_v215 swashR;
   FlightModeData flightModeData[MAX_FLIGHT_MODES];
 
-  AVR_FIELD(int8_t ppmFrameLength)     // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
 
   uint16_t switchWarningState;
@@ -711,6 +719,10 @@ void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
 void ConvertGeneralSettings_216_to_217(EEGeneral &settings)
 {
   settings.version = 217;
+#if defined(PCBTARANIS)
+  settings.potsConfig = 0x05; // S1 and S2 = pots with detent
+  settings.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
+#endif
 }
 
 int ConvertTelemetrySource_215_to_216(int source)
@@ -834,10 +846,11 @@ int ConvertSwitch_216_to_217(int swtch)
   if (swtch < 0)
     return -ConvertSwitch_216_to_217(-swtch);
 
-#if defined(REV9E)
-  if (swtch >= SWSRC_SI0)
-    swtch += 10*2;
-#endif
+  if (swtch >= SWSRC_SF0)
+    swtch += 1;
+
+  if (swtch >= SWSRC_SH0)
+    swtch += 1;
 
   return swtch;
 }
@@ -1436,8 +1449,8 @@ void ConvertModel_216_to_217(ModelData &model)
     }
   }
 
-  newModel.swashR = oldModel.swashR;
   newModel.swashR.collectiveSource = ConvertSource_216_to_217(newModel.swashR.collectiveSource);
+  // TODO other fields
 
   for (int i=0; i<MAX_FLIGHT_MODES; i++) {
     newModel.flightModeData[i] = oldModel.flightModeData[i];
