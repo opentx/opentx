@@ -1926,7 +1926,7 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <source>Set language of voice.
 May be different from firmware language</source>
-        <translation type="obsolete">Sprachdatei einstellen 
+        <translation type="obsolete">Sprachdatei einstellen
 kann auch von der Firmwaresprache abweichen</translation>
     </message>
     <message>
@@ -3304,7 +3304,7 @@ Werte liegen zwischen 5-10V</translation>
 This function cannot be disabled by the radio.
 Are you sure ?</source>
         <translation>Wenn Sie den FAI-Mode aktiveren gibt es kein Vario, keine Ansagen und Telemetrieanzeigen mehr
-Diese Funktionen können dann am Sedner nicht wieder freigeschaltet werden! 
+Diese Funktionen können dann am Sedner nicht wieder freigeschaltet werden!
 Sind Sie sicher, dass sie das so wollen?</translation>
     </message>
     <message>
@@ -8601,7 +8601,7 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
 
 </source>
         <translation>Vollgas hinten?
-Wenn das angewählt wird, dann ist Leerlauf vorne. Auch die Gas-Leerlauftrimmung und die Gasstellungs-Warung wird 
+Wenn das angewählt wird, dann ist Leerlauf vorne. Auch die Gas-Leerlauftrimmung und die Gasstellungs-Warung wird
 umgedreht und ist dann vorne
 </translation>
     </message>
@@ -11971,7 +11971,7 @@ Press cancel to abort joystick calibration</source>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="31"/>
-        <source>Time</source>
+        <source>Time (hh:mm:ss)</source>
         <translation>Zeit</translation>
     </message>
     <message>

@@ -11191,7 +11191,7 @@ Tlačítkem Zrušit přerušíte kalibraci</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="31"/>
-        <source>Time</source>
+        <source>Time (hh:mm:ss)</source>
         <translation>Čas</translation>
     </message>
     <message>

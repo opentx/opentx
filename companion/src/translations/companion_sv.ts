@@ -2744,7 +2744,7 @@ Mode 4:
     </message>
     <message>
         <source>Play Delay (switch mid position)</source>
-        <translation>Talfördröjning för 
+        <translation>Talfördröjning för
 brytare</translation>
     </message>
     <message>
@@ -8895,7 +8895,7 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
         <translation>Telemetriloggar</translation>
     </message>
     <message>
-        <source>Time</source>
+        <source>Time (hh:mm:ss)</source>
         <translation>Tid</translation>
     </message>
     <message>

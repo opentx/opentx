@@ -4426,7 +4426,7 @@ Voulez-vous la télécharger maintenant ?</translation>
         <source>The file %1
 has not been recognized as a valid Models and Settings file
 Write anyway ?</source>
-        <translation>Le fichier %1 
+        <translation>Le fichier %1
 n&apos;a pas été reconnu comme un fichier de réglages et modèles valide.
 Ecrire quand même?</translation>
     </message>
@@ -10711,7 +10711,7 @@ Press cancel to abort joystick calibration</source>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="31"/>
-        <source>Time</source>
+        <source>Time (hh:mm:ss)</source>
         <translation>Heure</translation>
     </message>
     <message>
