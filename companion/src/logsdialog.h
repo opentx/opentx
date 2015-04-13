@@ -48,7 +48,7 @@ private slots:
   void removeAllGraphs();
   void moveLegend();
   void plotLogs();
-  void plottableItemDoubleClick(QCPAbstractPlottable *  plottable, QMouseEvent * event);
+  // void plottableItemDoubleClick(QCPAbstractPlottable *  plottable, QMouseEvent * event);
   // void graphClicked(QCPAbstractPlottable *plottable);
   void on_fileOpen_BT_clicked();
   void on_sessions_CB_currentIndexChanged(int index);
@@ -59,7 +59,6 @@ private:
   QList<QStringList> csvlog;
   Ui::logsDialog *ui;
   bool cvsFileParse();
-  double GetScale(QString channel);
   bool plotLock;
   QString logFilename;
 
