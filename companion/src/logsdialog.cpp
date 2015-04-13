@@ -535,8 +535,8 @@ bool logsDialog::cvsFileParse()
     csvlog.clear();
     return false;
   }
-  int lastvalue=0;
-  int tmp;
+  double lastvalue=0;
+  double tmp;
   ui->sessions_CB->addItem("---");
   for (int i=1; i<n; i++) {
     QString tstamp=csvlog.at(i).at(0)+QString(" ")+csvlog.at(i).at(1);
@@ -564,19 +564,19 @@ void logsDialog::on_sessions_CB_currentIndexChanged(int index)
   if (plotLock)
      return;
   plotLock=true;
-  int start=0;
-  int stop=-1;
+  double start=0;
+  double stop=-1;
   if (index!=0) {
-    start=ui->sessions_CB->itemData(index,Qt::UserRole).toInt();
+    start=ui->sessions_CB->itemData(index,Qt::UserRole).toDouble();
     if (index<(ui->sessions_CB->count()-1)) {
-      stop=ui->sessions_CB->itemData(index+1,Qt::UserRole).toInt();
+      stop=ui->sessions_CB->itemData(index+1,Qt::UserRole).toDouble();
     }
   }
 //    if (ui->logTable->item(i-1,1)->isSelected()) {
   ui->logTable->clearSelection();
   if (start>0) {
     int n=csvlog.count();
-    int tmp;
+    double tmp;
     ui->logTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     for (int i=1; i<n; i++) {
       QString tstamp=csvlog.at(i).at(0)+QString(" ")+csvlog.at(i).at(1);
