@@ -423,6 +423,10 @@ void logsDialog::on_fileOpen_BT_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName(this,tr("Select your log file"), g.logDir());
   if (!fileName.isEmpty()) {
+
+    QElapsedTimer timer;
+    timer.start();
+
     g.logDir( fileName );
     ui->FileName_LE->setText(fileName);
     if (cvsFileParse()) {
@@ -453,19 +457,25 @@ void logsDialog::on_fileOpen_BT_clicked()
           ui->logTable->setItem(i-1,j,item );
         }
       }
-      ui->logTable->resizeColumnsToContents();
-      ui->logTable->resizeRowsToContents();
+      ui->logTable->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      // ui->logTable->resizeColumnsToContents();
+      // ui->logTable->resizeRowsToContents();
       // Hack - add some pixel of space to columns as Qt resize them too small
-      for (int j=0; j<csvlog.at(0).count(); j++) {
-        int width=ui->logTable->columnWidth(j);
-        ui->logTable->setColumnWidth(j,width+5);
-      }
+      // for (int j=0; j<csvlog.at(0).count(); j++) {
+      //   int width=ui->logTable->columnWidth(j);
+      //   ui->logTable->setColumnWidth(j,width+5);
+      // }
     }
+
+    qDebug() << timer.elapsed();
   }
 }
 
 bool logsDialog::cvsFileParse()
 {
+  QElapsedTimer timer;
+  timer.start();
+
   QFile file(ui->FileName_LE->text());
   int errors=0;
   int lines=-1;
@@ -561,6 +571,8 @@ bool logsDialog::cvsFileParse()
   }
 
   plotLock=false;
+
+  qDebug() << timer.elapsed();
 
   return true;
 }
