@@ -36,7 +36,9 @@
 
 #include "../../opentx.h"
 
-extern volatile uint32_t Spi_complete; // TODO in the driver ?
+volatile uint32_t Spi_complete;
+uint8_t Spi_tx_buf[24] ;
+uint8_t Spi_rx_buf[24] ;
 
 uint32_t spi_PDC_action( register uint8_t *command, register uint8_t *tx, register uint8_t *rx, register uint32_t comlen, register uint32_t count )
 {
@@ -186,9 +188,13 @@ void eeprom_write_enable()
   eeprom_write_one(6, 0);
 }
 
-uint32_t eeprom_read_status()
+uint32_t eepromReadStatus()
 {
+#if defined(SIMU)
+  return 0;
+#else
   return eeprom_write_one(5, 1);
+#endif
 }
 
 // SPI i/f to EEPROM (4Mb)

@@ -83,8 +83,8 @@ void checkEeprom()
   if (!usbPlugged()) {
     // TODO merge these 2 branches
 #if defined(PCBSKY9X)
-    if (Eeprom32_process_state != E32_IDLE)
-      ee32_process();
+    if (eepromWriteState != EEPROM_IDLE)
+      eepromWriteProcess();
     else if (TIME_TO_WRITE())
       eeCheck(false);
 #else

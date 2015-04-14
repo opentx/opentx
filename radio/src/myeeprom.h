@@ -131,18 +131,18 @@
     #define NUM_XPOTS          3
   #endif
   #define TELEM_VALUES_MAX     32
-#elif defined(CPUARM)
+#elif defined(PCBSKY9X)
   #define MAX_MODELS           60
   #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
   #define MAX_FLIGHT_MODES     9
-  #define MAX_MIXERS           60
-  #define MAX_EXPOS            32
+  #define MAX_MIXERS           64
+  #define MAX_EXPOS            64
   #define NUM_LOGICAL_SWITCH   32 // number of custom switches
-  #define NUM_CFN              60 // number of functions assigned to switches
+  #define NUM_CFN              64 // number of functions assigned to switches
   #define NUM_TRAINER          16
   #define NUM_POTS             3
   #define NUM_XPOTS            0
-  #define TELEM_VALUES_MAX     16
+  #define TELEM_VALUES_MAX     32
 #elif defined(CPUM2560) || defined(CPUM2561)
   #define MAX_MODELS           30
   #define NUM_CHNOUT           16 // number of real output channels CH1-CH16

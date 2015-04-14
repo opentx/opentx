@@ -244,10 +244,10 @@ void menuModelFlightModesAll(uint8_t event)
   uint8_t att;
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
 #if defined(CPUARM)
-    coord_t y = MENU_HEADER_HEIGHT + 1 + (i-s_pgOfs)*FH;
-    if (y<MENU_HEADER_HEIGHT+1 || y>(LCD_LINES-1)*FH+MENU_HEADER_HEIGHT-FH) continue;
+    int8_t y = 1 + (1+i-s_pgOfs)*FH;
+    if (y<1*FH+1 || y>(LCD_LINES-1)*FH+1) continue;
 #else
-    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
+    uint8_t y = 1 + (i+1)*FH;
 #endif
     att = (i==sub ? INVERS : 0);
     FlightModeData *p = flightModeAddress(i);
@@ -269,9 +269,9 @@ void menuModelFlightModesAll(uint8_t event)
 #endif
     }
 
-    if (p->fadeIn || p->fadeOut)
+    if (p->fadeIn || p->fadeOut) {
       lcd_putc(LCD_W-FW-MENUS_SCROLLBAR_WIDTH, y, (p->fadeIn && p->fadeOut) ? '*' : (p->fadeIn ? 'I' : 'O'));
-
+    }
   }
 
 #if defined(CPUARM)

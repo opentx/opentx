@@ -40,69 +40,48 @@
 #include <inttypes.h>
 #include <stdint.h>
 
-// States in Eeprom32_process_state
-#define E32_IDLE                                                        1
-#define E32_ERASESENDING                        2
-#define E32_ERASEWAITING                        3
-#define E32_WRITESENDING                        4
-#define E32_WRITEWAITING                        5
-#define E32_READSENDING                         6
-#define E32_READWAITING                         7
-#define E32_BLANKCHECK                          8
-#define E32_WRITESTART                          9
-extern uint8_t Eeprom32_process_state ;
-extern uint8_t *Eeprom32_source_address ;
-extern uint8_t Eeprom32_file_index ;
-extern uint32_t Eeprom32_data_size ;
-
-extern void end_spi(); // TODO not public
-extern void ee32_process( void ) ;
-extern bool eeLoadGeneral( void ) ;
-extern void eeWaitFinished();
-
-extern void eeDeleteModel( uint8_t id ) ;
-extern bool eeModelExists(uint8_t id) ;
-extern bool eeCopyModel(uint8_t dst, uint8_t src);
-extern void eeSwapModels(uint8_t id1, uint8_t id2);
+bool eeLoadGeneral( void ) ;
+void eeDeleteModel( uint8_t id ) ;
+bool eeCopyModel(uint8_t dst, uint8_t src);
+void eeSwapModels(uint8_t id1, uint8_t id2);
 
 #define DISPLAY_PROGRESS_BAR(x)
-
-struct t_file_entry
-{
-    uint32_t block_no ;
-    uint32_t sequence_no ;
-    uint16_t size ;
-    uint8_t flags ;
-} ;
-
-struct t_eeprom_header
-{
-    uint32_t sequence_no ;              // sequence # to decide which block is most recent
-    uint16_t data_size ;                        // # bytes in data area
-    uint8_t flags ;
-    uint8_t hcsum ;
-};
-
-extern struct t_file_entry File_system[] ;
-
-extern EEGeneral  g_eeGeneral;
-extern ModelData  g_model;
-
-extern uint8_t Spi_tx_buf[] ;
-extern uint8_t Spi_rx_buf[] ;
-
-void eeprom_write_enable();
-uint32_t eeprom_read_status();
-void read32_eeprom_data(uint32_t eeAddress, register uint8_t *buffer, uint32_t size);
-uint32_t spi_PDC_action( register uint8_t *command, register uint8_t *tx, register uint8_t *rx, register uint32_t comlen, register uint32_t count );
 
 #if defined(SDCARD)
 const pm_char * eeBackupModel(uint8_t i_fileSrc);
 const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name);
 #endif
 
-void loadGeneralSettings();
-void loadModel(int index);
+uint32_t loadGeneralSettings();
+uint32_t loadModel(uint32_t index);
+
+enum EepromWriteState {
+  EEPROM_IDLE = 0,
+  EEPROM_START_WRITE,
+  EEPROM_ERASING_FILE_BLOCK1,
+  EEPROM_ERASING_FILE_BLOCK1_WAIT,
+  EEPROM_ERASE_FILE_BLOCK2,
+  EEPROM_ERASING_FILE_BLOCK2,
+  EEPROM_ERASING_FILE_BLOCK2_WAIT,
+  EEPROM_WRITE_BUFFER,
+  EEPROM_WRITING_BUFFER,
+  EEPROM_WRITING_BUFFER_WAIT,
+  EEPROM_WRITE_NEXT_BUFFER,
+  EEPROM_ERASING_FAT_BLOCK,
+  EEPROM_ERASING_FAT_BLOCK_WAIT,
+  EEPROM_WRITE_NEW_FAT,
+  EEPROM_WRITING_NEW_FAT,
+  EEPROM_WRITING_NEW_FAT_WAIT,
+  EEPROM_OVERWRITE_OLD_FAT,
+  EEPROM_OVERWRITING_OLD_FAT,
+  EEPROM_OVERWRITING_OLD_FAT_WAIT,
+  EEPROM_END_WRITE
+};
+
+extern EepromWriteState eepromWriteState;
+void eepromWriteProcess();
+void eepromWriteWait(EepromWriteState state = EEPROM_IDLE);
+bool eepromOpen();
+bool eepromCheck();
 
 #endif
-

@@ -275,6 +275,7 @@ uint32_t pwrCheck();
 
 // EEPROM driver
 void eepromInit();
+uint32_t eepromReadStatus();
 
 // Rotary Encoder driver
 void rotencInit();

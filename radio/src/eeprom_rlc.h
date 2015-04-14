@@ -116,8 +116,8 @@ extern EeFs eeFs;
 #define BLOCKS_OFFSET (RESV-BS)
 #endif
 
-int8_t EeFsck();
-void EeFsFormat();
+int8_t eepromCheck();
+void eepromFormat();
 uint16_t EeFsGetFree();
 
 #if !defined(CPUARM)
@@ -246,6 +246,10 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name);
 void loadGeneralSettings();
 void loadModel(int index);
 #endif
+
+bool eepromOpen();
+void eeLoadModelName(uint8_t id, char *name);
+bool eeLoadGeneral();
 
 // For EEPROM backup/restore
 #if defined(CPUARM)

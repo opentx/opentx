@@ -203,7 +203,7 @@ static void EeFsFree(blkid_t blk)
   EeFsFlushFreelist();
 }
 
-int8_t EeFsck()
+int8_t eepromCheck()
 {
   ENABLE_SYNC_WRITE(true);
 
@@ -266,7 +266,7 @@ int8_t EeFsck()
   return 0;
 }
 
-void EeFsFormat()
+void eepromFormat()
 {
   ENABLE_SYNC_WRITE(true);
 
@@ -288,7 +288,7 @@ void EeFsFormat()
   ENABLE_SYNC_WRITE(false);
 }
 
-inline bool EeFsOpen()
+bool eepromOpen()
 {
   eeprom_read_block((uint8_t *)&eeFs, 0, sizeof(eeFs));
 
@@ -550,7 +550,6 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
 }
 
 #if defined(SDCARD)
-extern FIL g_oLogFile;
 const pm_char * eeBackupModel(uint8_t i_fileSrc)
 {
   char *buf = reusableBuffer.modelsel.mainname;
@@ -1025,39 +1024,10 @@ void eeErase(bool warn)
   }
 
   MESSAGE(STR_EEPROMWARN, STR_EEPROMFORMATTING, NULL, AU_EEPROM_FORMATTING);
-  EeFsFormat();
+  eepromFormat();
   theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&g_eeGeneral, sizeof(EEGeneral), true);
   modelDefault(0);
   theFile.writeRlc(FILE_MODEL(0), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), true);
-}
-
-// TODO merge this code with eeprom_arm.cpp one
-void eeReadAll()
-{
-  if (!EeFsOpen() ||
-       EeFsck() < 0 ||
-      !eeLoadGeneral())
-  {
-    eeErase(true);
-  }
-  else {
-    eeLoadModelHeaders();
-  }
-
-  stickMode = g_eeGeneral.stickMode;
-
-#if defined(CPUARM)
-  for (uint8_t i=0; languagePacks[i]!=NULL; i++) {
-    if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
-      currentLanguagePackIdx = i;
-      currentLanguagePack = languagePacks[i];
-    }
-  }
-#endif
-
-#if !defined(CPUARM)
-  eeLoadModel(g_eeGeneral.currModel);
-#endif
 }
 
 void eeCheck(bool immediately)

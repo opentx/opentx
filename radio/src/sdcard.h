@@ -68,6 +68,7 @@
 #define SPORT_FIRMWARE_EXT  ".frk"
 
 extern FATFS g_FATFS_Obj;
+extern FIL g_oLogFile;
 
 extern uint8_t logDelay;
 const pm_char *openLogs();

@@ -55,7 +55,6 @@ void eeDirty(uint8_t msk);
 void eeCheck(bool immediately);
 void eeReadAll();
 bool eeModelExists(uint8_t id);
-void eeLoadModelName(uint8_t id, char *name);
 void eeLoadModel(uint8_t id);
 bool eeConvert();
 void eeErase(bool warn);
