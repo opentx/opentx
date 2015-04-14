@@ -277,14 +277,18 @@ QT4_ADD_RESOURCES( companion_SRCS ${companion_RCS} )
 ADD_DEFINITIONS( -DQT_TRANSLATIONS_DIR="${QT_TRANSLATIONS_DIR}" )
 
 IF( APPLE )
-    ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE ${companion_SRCS} ${companion_QM} )
+    ADD_EXECUTABLE(companion MACOSX_BUNDLE ${companion_SRCS} ${companion_QM})
     # OS X compiler no longer automatically includes /Library/Frameworks in search path
     SET( CMAKE_EXE_LINKER_FLAGS -F/Library/Frameworks )
 ELSE( )
-    ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${companion_SRCS} ${companion_QM} )
+    ADD_EXECUTABLE(companion WIN32 ${companion_SRCS} ${companion_QM})
 ENDIF( )
 
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} modeledit simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
+if(SDL_FOUND)
+  target_link_libraries(companion modeledit simulation common ${QT_LIBRARIES} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
+else()
+  target_link_libraries(companion modeledit simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
+endif()
 
 ############# Standalone simu ###############
 
