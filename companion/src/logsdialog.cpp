@@ -12,6 +12,7 @@ logsDialog::logsDialog(QWidget *parent) :
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
     ui(new Ui::logsDialog)
 {
+  qDebug() << "logsDialog";
   csvlog.clear();
 
   ui->setupUi(this);
@@ -84,11 +85,13 @@ logsDialog::logsDialog(QWidget *parent) :
 
 logsDialog::~logsDialog()
 {
+  qDebug() << "~logsDialog";
   delete ui;
 }
 
 void logsDialog::titleDoubleClick(QMouseEvent *evt, QCPPlotTitle *title)
 {
+  qDebug() << "titleDoubleClick";
   // Set the plot title by double clicking on it
 
   bool ok;
@@ -103,6 +106,7 @@ void logsDialog::titleDoubleClick(QMouseEvent *evt, QCPPlotTitle *title)
 
 void logsDialog::axisLabelDoubleClick(QCPAxis *axis, QCPAxis::SelectablePart part)
 {
+  qDebug() << "axisLabelDoubleClick";
   // Set an axis label by double clicking on it
   if (part == QCPAxis::spAxisLabel) // only react when the actual axis label is clicked, not tick label or axis backbone
   {
@@ -118,6 +122,7 @@ void logsDialog::axisLabelDoubleClick(QCPAxis *axis, QCPAxis::SelectablePart par
 
 void logsDialog::legendDoubleClick(QCPLegend *legend, QCPAbstractLegendItem *item)
 {
+  qDebug() << "legendDoubleClick";
   // Rename a graph by double clicking on its legend item
   if (item) // only react if item was clicked (user could have clicked on border padding of legend where there is no item, then item is 0)
   {
@@ -139,6 +144,7 @@ void logsDialog::legendDoubleClick(QCPLegend *legend, QCPAbstractLegendItem *ite
 
 void logsDialog::selectionChanged()
 {
+  qDebug() << "selectionChanged";
   /*
    normally, axis base line, axis tick labels and axis labels are selectable separately, but we want
    the user only to be able to select the axis as a whole, so we tie the selected states of the tick labels
@@ -191,6 +197,8 @@ void logsDialog::selectionChanged()
 
 void logsDialog::on_mapsButton_clicked()
 {
+  qDebug() << "on_mapsButton_clicked";
+
   int n = csvlog.count(); // number of points in graph
   if (n==0) return;
   int latcol=0, longcol=0, altcol=0, speedcol=0;
@@ -358,6 +366,8 @@ void logsDialog::on_mapsButton_clicked()
 
 void logsDialog::mousePress()
 {
+  qDebug() << "mousePress";
+
   // if an axis is selected, only allow the direction of that axis to be dragged
   // if no axis is selected, both directions may be dragged
 
@@ -371,6 +381,7 @@ void logsDialog::mousePress()
 
 void logsDialog::mouseWheel()
 {
+  qDebug() << "mouseWheel";
   // if an axis is selected, only allow the direction of that axis to be zoomed
   // if no axis is selected, both directions may be zoomed
   int orientation=0;
@@ -389,6 +400,8 @@ void logsDialog::mouseWheel()
 
 void logsDialog::removeSelectedGraph()
 {
+  qDebug() << "removeSelectedGraph";
+
   if (ui->customPlot->selectedGraphs().size() > 0)
   {
     ui->customPlot->removeGraph(ui->customPlot->selectedGraphs().first());
@@ -398,6 +411,8 @@ void logsDialog::removeSelectedGraph()
 
 void logsDialog::removeAllGraphs()
 {
+  qDebug() << "removeAllGraphs";
+
   ui->customPlot->clearGraphs();
   ui->customPlot->legend->setVisible(false);
   ui->customPlot->yAxis2->setVisible(false);
@@ -421,6 +436,8 @@ void logsDialog::removeAllGraphs()
 
 void logsDialog::on_fileOpen_BT_clicked()
 {
+  qDebug() << "on_fileOpen_BT_clicked";
+
   QString fileName = QFileDialog::getOpenFileName(this,tr("Select your log file"), g.logDir());
   if (!fileName.isEmpty()) {
 
@@ -457,7 +474,16 @@ void logsDialog::on_fileOpen_BT_clicked()
           ui->logTable->setItem(i-1,j,item );
         }
       }
+
       ui->logTable->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      QVarLengthArray<int> sizes;
+      for (int i = 0; i < ui->logTable->columnCount(); i++) {
+        sizes.append(ui->logTable->columnWidth(i));
+      }
+      ui->logTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+      for (int i = 0; i < ui->logTable->columnCount(); i++) {
+        ui->logTable->setColumnWidth(i, sizes.at(i));
+      }
       // ui->logTable->resizeColumnsToContents();
       // ui->logTable->resizeRowsToContents();
       // Hack - add some pixel of space to columns as Qt resize them too small
@@ -473,6 +499,8 @@ void logsDialog::on_fileOpen_BT_clicked()
 
 bool logsDialog::cvsFileParse()
 {
+  qDebug() << "cvsFileParse";
+
   QElapsedTimer timer;
   timer.start();
 
@@ -580,6 +608,8 @@ bool logsDialog::cvsFileParse()
 
 void logsDialog::on_sessions_CB_currentIndexChanged(int index)
 {
+  qDebug() << "on_sessions_CB_currentIndexChanged";
+
   if (plotLock) return;
   plotLock = true;
 
@@ -608,6 +638,8 @@ void logsDialog::on_sessions_CB_currentIndexChanged(int index)
 
 void logsDialog::plotLogs()
 {
+  qDebug() << "plotLogs";
+
   if (plotLock) return;
 
   if (!ui->FieldsTW->selectedItems().length()) {
@@ -803,6 +835,8 @@ void logsDialog::plotLogs()
 
 void logsDialog::setRangeyAxis2(QCPRange range)
 {
+  qDebug() << "setRangeyAxis2";
+
   if (hasyAxis2) {
     double lowerChange = (range.lower - rangeyAxisMin) * rangeRatio;
     double upperChange = (range.upper - rangeyAxisMax) * rangeRatio;
