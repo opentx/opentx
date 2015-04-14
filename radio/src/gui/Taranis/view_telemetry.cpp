@@ -45,8 +45,8 @@ bar_threshold_t barsThresholds[THLD_MAX];
 
 uint8_t s_frsky_view = 0;
 
-#define BAR_LEFT    26
-#define BAR_WIDTH   156
+#define BAR_LEFT    30
+#define BAR_WIDTH   152
 
 void displayRssiLine()
 {
