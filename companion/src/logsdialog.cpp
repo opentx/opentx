@@ -627,6 +627,7 @@ void logsDialog::plotLogs()
         selectedRows.append(i);
       }
     }
+    qSort(selectedRows.begin(), selectedRows.end());
   } else {
     hasLogSelection = false;
     rowCount = ui->logTable->rowCount();
