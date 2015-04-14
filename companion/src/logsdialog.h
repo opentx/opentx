@@ -3,7 +3,7 @@
 
 #include <QtCore>
 #include <QtGui>
-#include "qcustomplot.h"
+#include "qcustomplot/qcustomplot.h"
 
 struct coords {
   QVector<double> x, y;
@@ -38,7 +38,7 @@ public:
   ~logsDialog();
 
 private slots:
-  void titleDoubleClick();
+  void titleDoubleClick(QMouseEvent *evt, QCPPlotTitle *title);
   void axisLabelDoubleClick(QCPAxis* axis, QCPAxis::SelectablePart part);
   void legendDoubleClick(QCPLegend* legend, QCPAbstractLegendItem* item);
   void selectionChanged();
@@ -46,7 +46,7 @@ private slots:
   void mouseWheel();
   void removeSelectedGraph();
   void removeAllGraphs();
-  void moveLegend();
+  // void moveLegend();
   void plotLogs();
   // void plottableItemDoubleClick(QCPAbstractPlottable *  plottable, QMouseEvent * event);
   // void graphClicked(QCPAbstractPlottable *plottable);
