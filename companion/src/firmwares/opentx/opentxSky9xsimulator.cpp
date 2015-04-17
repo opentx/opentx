@@ -155,11 +155,9 @@ using namespace Open9xSky9x;
 Open9xSky9xSimulator::Open9xSky9xSimulator()
 {
     QString path=g.profile[g.id()].sdPath()+"/";
-    int i=0;
-    for (i=0; i< std::min(path.length(),1022); i++) {
-      simuSdDirectory[i]=path.at(i).toAscii();
-    }
-    simuSdDirectory[i]=0;  
+    strncpy (simuSdDirectory, path.toAscii().constData(), sizeof(simuSdDirectory)-1);
+    simuSdDirectory[sizeof(simuSdDirectory)-1] = '\0';
+
 }
 
 bool Open9xSky9xSimulator::timer10ms()

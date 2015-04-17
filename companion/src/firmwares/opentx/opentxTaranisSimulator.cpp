@@ -197,11 +197,8 @@ OpentxTaranisSimulator::OpentxTaranisSimulator()
 {
   taranisSimulatorBoard = GetEepromInterface()->getBoard();
   QString path=g.profile[g.id()].sdPath()+"/";
-  int i=0;
-  for (i=0; i< std::min(path.length(),1022); i++) {
-    simuSdDirectory[i]=path.at(i).toAscii();
-  }
-  simuSdDirectory[i]=0;  
+  strncpy (simuSdDirectory, path.toAscii().constData(), sizeof(simuSdDirectory)-1);
+  simuSdDirectory[sizeof(simuSdDirectory)-1] = '\0';  
 }
 
 bool OpentxTaranisSimulator::timer10ms()
