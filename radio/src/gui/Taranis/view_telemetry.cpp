@@ -78,7 +78,7 @@ int barCoord(int value, int min, int max)
     return ((BAR_WIDTH-1) * (value - min)) / (max - min);
 }
 
-bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
+void displayGaugesTelemetryScreen(FrSkyScreenData & screen)
 {
   // Custom Screen with gauges
   int barHeight = 5;
@@ -116,7 +116,6 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
     }
   }
   displayRssiLine();
-  return barHeight < 13;
 }
 
 bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
@@ -170,7 +169,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
   return fields_count;
 }
 
-bool displayCustomTelemetryScreen(uint8_t index)
+void displayCustomTelemetryScreen(uint8_t index)
 {
   FrSkyScreenData & screen = g_model.frsky.screens[index];
 
@@ -181,8 +180,6 @@ bool displayCustomTelemetryScreen(uint8_t index)
 #endif
 
   displayNumbersTelemetryScreen(screen);
-
-  return true;
 }
 
 bool displayTelemetryScreen()
@@ -200,7 +197,7 @@ bool displayTelemetryScreen()
   lcdDrawTelemetryTopBar();
 
   if (s_frsky_view < MAX_TELEMETRY_SCREENS) {
-    return displayCustomTelemetryScreen(s_frsky_view);
+    displayCustomTelemetryScreen(s_frsky_view);
   }
 
   return true;
