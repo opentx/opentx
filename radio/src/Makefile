@@ -382,6 +382,10 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
     CPPDEFS += -DTELEMETRY_MOD_14051
   endif
   
+  ifeq ($(TELEMETRY_MOD), 14051_SWAPPED)
+    CPPDEFS += -DTELEMETRY_MOD_14051_SWAPPED
+  endif
+  
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp
@@ -449,6 +453,10 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
     CPPDEFS += -DTELEMETRY_MOD_14051
   endif  
     
+  ifeq ($(TELEMETRY_MOD), 14051_SWAPPED)
+    CPPDEFS += -DTELEMETRY_MOD_14051_SWAPPED
+  endif
+  
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp

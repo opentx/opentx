@@ -210,7 +210,31 @@ void backlightFade();
 #define INP_G_RuddDR   0
 
 // Keys driver
+#if defined(TELEMETRY_MOD_14051_SWAPPED)
+enum MuxInput {
+  MUX_BATT,
+  MUX_AIL,
+  MUX_PF7_DIGITAL_MIN = MUX_AIL,
+  MUX_THR,
+  MUX_TRM_LV_UP,
+  MUX_TRM_LV_DWN,
+  MUX_PF7_DIGITAL_MAX = MUX_TRM_LV_DWN,
+  MUX_MAX = MUX_PF7_DIGITAL_MAX
+};
+
+enum Pf7Digital {
+  PF7_AIL = MUX_AIL - MUX_PF7_DIGITAL_MIN,
+  PF7_THR = MUX_THR - MUX_PF7_DIGITAL_MIN,
+  PF7_TRM_LV_UP = MUX_TRM_LV_UP - MUX_PF7_DIGITAL_MIN,
+  PF7_TRM_LV_DWN = MUX_TRM_LV_DWN - MUX_PF7_DIGITAL_MIN,
+};
+
+extern uint8_t pf7_digital[MUX_PF7_DIGITAL_MAX - MUX_PF7_DIGITAL_MIN + 1];
+
+#define TRIMS_PRESSED() (~PIND & ~0x0c || pf7_digital[PF7_TRM_LV_UP] || pf7_digital[PF7_TRM_LV_DWN])
+#else
 #define TRIMS_PRESSED() (~PIND)
+#endif
 #define KEYS_PRESSED()  (~PINB)
 #define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_LFT))) == ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_LFT)))
 #define DBLKEYS_PRESSED_UP_DWN(i)  ((in & ((1<<INP_B_KEY_UP)  + (1<<INP_B_KEY_DWN))) == ((1<<INP_B_KEY_UP)  + (1<<INP_B_KEY_DWN)))
@@ -238,5 +262,7 @@ void rotencPoll();
 
 // USB fake driver
 #define usbPlugged()    false
+
+void readMultiplexAna();
 
 #endif

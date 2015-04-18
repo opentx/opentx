@@ -598,7 +598,7 @@ void checkSwitches()
 #if !defined(MODULE_ALWAYS_SEND_PULSES)
   while (1) {
 
-#if defined(TELEMETRY_MOD_14051) || defined(PCBTARANIS)
+#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED) || defined(PCBTARANIS)
     getADC();
 #endif
 #endif  // !defined(MODULE_ALWAYS_SEND_PULSES)

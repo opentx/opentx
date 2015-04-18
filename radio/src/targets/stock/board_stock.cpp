@@ -161,10 +161,57 @@ uint8_t keyDown()
   return ((~PINB) & 0x7E) | ROTENC_DOWN();
 }
 
-#if defined(TELEMETRY_MOD_14051)
-  extern uint8_t pf7_digital[2];
-  #define THR_STATE()   pf7_digital[0]
-  #define AIL_STATE()   pf7_digital[1]
+#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
+
+uint16_t read_adc10(uint8_t adc_input);
+extern uint16_t s_anaFilt[NUMBER_ANALOG];
+
+uint8_t pf7_digital[MUX_PF7_DIGITAL_MAX - MUX_PF7_DIGITAL_MIN + 1];
+/**
+ * Update ADC PF7 using 14051 multiplexer
+ * X0 : Battery voltage
+ * X1 : AIL SW
+ * X2 : THR SW
+ * X3 : TRIM LEFT VERTICAL UP
+ * X4 : TRIM LEFT VERTICAL DOWN
+ */
+void readMultiplexAna()
+{
+  static uint8_t muxNum = MUX_BATT;
+  uint16_t temp_ana;
+  uint8_t nextMuxNum = muxNum-1;
+
+  temp_ana = read_adc10(7);
+
+  switch (muxNum) {
+    case MUX_BATT:
+      s_anaFilt[TX_VOLTAGE] = temp_ana;
+      nextMuxNum = MUX_MAX;
+      break;
+    case MUX_AIL:
+    case MUX_THR:
+    case MUX_TRM_LV_UP:
+    case MUX_TRM_LV_DWN:
+      // Digital switch depend from input voltage
+      // take half voltage to determine digital state
+      pf7_digital[muxNum - MUX_PF7_DIGITAL_MIN] = (temp_ana >= (s_anaFilt[TX_VOLTAGE] / 2)) ? 1 : 0;
+      break;
+  }
+
+  // set the mux number for the next ADC convert,
+  // stabilize voltage before ADC read.
+  muxNum = nextMuxNum;
+  DDRC |= 0xC1;
+  PORTC &= ~((1 << PC7) | (1 << PC6) | (1 << PC0));
+  if(muxNum & 1) PORTC |= (1 << PC7); // Mux CTRL A
+  if(muxNum & 2) PORTC |= (1 << PC6); // Mux CTRL B
+  if(muxNum & 4) PORTC |= (1 << PC0); // Mux CTRL C
+}
+#endif
+
+#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
+  #define THR_STATE()   pf7_digital[PF7_THR]
+  #define AIL_STATE()   pf7_digital[PF7_AIL]
 #elif defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
   #define THR_STATE()   (PINC & (1<<INP_C_ThrCt))
   #define AIL_STATE()   (PINC & (1<<INP_C_AileDR))
@@ -242,21 +289,29 @@ bool switchState(EnumKeys enuk)
 }
 
 // Trim switches ...
-static const pm_uchar crossTrim[] PROGMEM ={
-  1<<INP_D_TRM_LH_DWN,  // bit 7
-  1<<INP_D_TRM_LH_UP,
-  1<<INP_D_TRM_LV_DWN,
-  1<<INP_D_TRM_LV_UP,
-  1<<INP_D_TRM_RV_DWN,
-  1<<INP_D_TRM_RV_UP,
-  1<<INP_D_TRM_RH_DWN,
-  1<<INP_D_TRM_RH_UP    // bit 0
-};
+uint8_t trim_helper(uint8_t neg_pind, uint8_t idx)
+{
+  switch(idx){
+    case 0: return neg_pind & (1<<INP_D_TRM_LH_DWN);
+    case 1: return neg_pind & (1<<INP_D_TRM_LH_UP);
+#if defined(TELEMETRY_MOD_14051_SWAPPED)
+    case 2: return !pf7_digital[PF7_TRM_LV_DWN];
+    case 3: return !pf7_digital[PF7_TRM_LV_UP];
+#else
+    case 2: return neg_pind & (1<<INP_D_TRM_LV_DWN);
+    case 3: return neg_pind & (1<<INP_D_TRM_LV_UP);
+#endif
+    case 4: return neg_pind & (1<<INP_D_TRM_RV_DWN);
+    case 5: return neg_pind & (1<<INP_D_TRM_RV_UP);
+    case 6: return neg_pind & (1<<INP_D_TRM_RH_DWN);
+    case 7: return neg_pind & (1<<INP_D_TRM_RH_UP);
+    default: return 0;
+  }
+}
 
 uint8_t trimDown(uint8_t idx)
 {
-  uint8_t in = ~PIND;
-  return (in & pgm_read_byte(crossTrim+idx));
+  return trim_helper(~PIND, idx);
 }
 
 FORCEINLINE void readKeysAndTrims()
@@ -275,7 +330,7 @@ FORCEINLINE void readKeysAndTrims()
   in = ~PIND;
   for (int i=0; i<8; i++) {
     // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
-    keys[enuk].input(in & pgm_read_byte(crossTrim+i), (EnumKeys)enuk);
+    keys[enuk].input(trim_helper(in, i), (EnumKeys)enuk);
     ++enuk;
   }
 
