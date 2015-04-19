@@ -672,11 +672,14 @@ ifeq ($(PCB), MEGA2560)
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
-  ifeq ($(PCBREV), ST7565R)
-    EXTRABOARDSRC = targets/mega2560/lcd_driver_ST7565R.cpp targets/common_avr/telemetry_driver.cpp 
-  else
+  # LCD driver
+  # Values: ST7565R, ERC12864FSF, MULTIPLEX (none = ST7565P)
+  LCD = ST7565R
+  
+  ifeq ($(LCD), ST7565R)
+    CPPDEFS += -DLCD_ST7565R
+  endif   
     EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
-  endif
 
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/gruvin9x/diskio.cpp

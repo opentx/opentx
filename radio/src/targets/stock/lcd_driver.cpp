@@ -72,28 +72,47 @@ volatile uint8_t LcdLock ;
 
 const static pm_uchar lcdInitSequence[] PROGMEM =
 {
-   0xe2, //Initialize the internal functions
-   0xae, //DON = 0: display OFF
-   0xa1, //ADC = 1: reverse direction(SEG132->SEG1)
+#ifdef LCD_ST7565R
+   0xE2, //Initialize the internal functions
+   0xAE, //DON = 0: display OFF
+   0xA0, //ADC = 0: normal direction(SEG132->SEG1)
    0xA6, //REV = 0: non-reverse display
    0xA4, //EON = 0: normal display. non-entire
-#ifdef LCD_ERC12864FSF
-   0xA3, // Select LCD bias
+   0xA2, //Select LCD bias
+   0xC8, //SHL = 1: reverse direction (COM64->COM1)
+   0x2F, //Control power circuit operation VC=VR=VF=1
+   0x25, //Select int resistance ratio R2 R1 R0 =5
+   0x81, //Set reference voltage Mode
+   0x22, //24 SV5 SV4 SV3 SV2 SV1 SV0 = 0x18
+   0xAF, //DON = 1: display ON
+   0x60  //sets the display start line to zero
+#elif LCD_ERC12864FSF
+   0xE2, //Initialize the internal functions
+   0xAE, //DON = 0: display OFF
+   0xA1, //ADC = 1: reverse direction(SEG132->SEG1)
+   0xA6, //REV = 0: non-reverse display
+   0xA4, //EON = 0: normal display. non-entire
+   0xA3, //Select LCD bias
    0xC0, //SHL = 0: normal direction (COM1->COM64)
    0x2F, //Control power circuit operation VC=VR=VF=1
    0x27, //Select int resistance ratio R2 R1 R0
    0x81, //Set reference voltage Mode
-   0x2D, // 24 SV5 SV4 SV3 SV2 SV1 SV0
+   0x2D, //24 SV5 SV4 SV3 SV2 SV1 SV0
+   0xAF  //DON = 1: display ON
 #else
-   0xA2, // Select LCD bias=0
+   0xE2, //Initialize the internal functions
+   0xAE, //DON = 0: display OFF
+   0xA1, //ADC = 1: reverse direction(SEG132->SEG1)
+   0xA6, //REV = 0: non-reverse display
+   0xA4, //EON = 0: normal display. non-entire
+   0xA2, //Select LCD bias=0
    0xC0, //SHL = 0: normal direction (COM1->COM64)
    0x2F, //Control power circuit operation VC=VR=VF=1
    0x25, //Select int resistance ratio R2 R1 R0 =5
    0x81, //Set reference voltage Mode
-   0x22, // 24 SV5 SV4 SV3 SV2 SV1 SV0 = 0x18
-#endif
-
+   0x22, //24 SV5 SV4 SV3 SV2 SV1 SV0 = 0x18
    0xAF  //DON = 1: display ON
+#endif
 };
 
 inline void lcdInit()
@@ -106,7 +125,7 @@ inline void lcdInit()
   delay_2us();
   PORTC_LCD_CTRL |= (1<<OUT_C_LCD_RES); //  f524  sbi 0x15, 2 IOADR-PORTC_LCD_CTRL; 21           1
   delay_1_5us(1500);
-  for (uint8_t i=0; i<12; i++) {
+  for (uint8_t i=0; i<13; i++) {
     lcdSendCtl(pgm_read_byte(&lcdInitSequence[i])) ;
   }
 #ifdef LCD_ERC12864FSF
@@ -130,7 +149,13 @@ void lcdRefresh()
   LCD_LOCK();
   uint8_t *p=displayBuf;
   for(uint8_t y=0; y < 8; y++) {
+  
+#ifdef LCD_ST7565R
+    lcdSendCtl(0x01);
+#else
     lcdSendCtl(0x04);
+#endif
+
     lcdSendCtl(0x10); //column addr 0
     lcdSendCtl( y | 0xB0); //page addr y
     PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_CS1);
@@ -148,5 +173,6 @@ void lcdRefresh()
     PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_CS1);
   }
   LCD_UNLOCK();
-}
+} 
 
+ 
