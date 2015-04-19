@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>726</width>
-    <height>688</height>
+    <height>653</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -70,7 +70,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="simu">
       <attribute name="title">
@@ -263,7 +263,7 @@
          <x>10</x>
          <y>10</y>
          <width>691</width>
-         <height>231</height>
+         <height>221</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gvarsLayout"/>
