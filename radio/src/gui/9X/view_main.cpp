@@ -93,8 +93,8 @@ void displayTrims(uint8_t phase)
     static coord_t x[4] = {TRIM_LH_X, TRIM_LV_X, TRIM_RV_X, TRIM_RH_X};
     static uint8_t vert[4] = {0,1,1,0};
     coord_t xm, ym;
-    xm = x[CONVERT_MODE(i)];
-
+    uint8_t stickIndex = CONVERT_MODE(i);
+    xm = x[stickIndex];
     uint8_t att = ROUND;
     int16_t val = getTrimValue(phase, i);
 
@@ -135,6 +135,13 @@ void displayTrims(uint8_t phase)
         lcd_hline(xm-1, ym,  3);
       }
 #endif
+#if defined(CPUARM)
+      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
+        if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
+          lcd_outdezAtt(dir>0 ? 22 : 54, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
+        }
+      }
+#endif
     }
     else {
       ym = 60;
@@ -152,6 +159,13 @@ void displayTrims(uint8_t phase)
       }
       if (exttrim) {
         lcd_vline(xm, ym-1,  3);
+      }
+#endif
+#if defined(CPUARM)
+      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
+        if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
+          lcd_outdezAtt((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(dir>0 ? -11 : 20), ym-2, -abs(dir/5), TINSIZE);
+        }
       }
 #endif
     }

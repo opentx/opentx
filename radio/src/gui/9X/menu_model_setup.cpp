@@ -332,7 +332,7 @@ void menuModelSetup(uint8_t event)
 
 #if defined(CPUARM)
       case ITEM_MODEL_DISPLAY_TRIMS:
-        g_model.displayTrims = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, "Display Trims", "\006No\0   ChangeYes", g_model.displayTrims, 0, 2, attr, event);
+        g_model.displayTrims = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_DISPLAY_TRIMS, STR_VDISPLAYTRIMS, g_model.displayTrims, 0, 2, attr, event);
         break;
 #endif
 
@@ -467,7 +467,7 @@ void menuModelSetup(uint8_t event)
 
 #if defined(CPUARM)
       case ITEM_MODEL_USE_GLOBAL_FUNCTIONS:
-        lcd_putsLeft(y, "Use Global Funcs");
+        lcd_putsLeft(y, STR_USE_GLOBAL_FUNCS);
         menu_lcd_onoff(MODEL_SETUP_2ND_COLUMN, y, !g_model.noGlobalFunctions, attr);
         if (attr) g_model.noGlobalFunctions = !checkIncDecModel(event, !g_model.noGlobalFunctions, 0, 1);
         break;
