@@ -92,7 +92,6 @@ void getADC_bandgap()
   }
   ADCSRB |= (1 << MUX5);
 #else
-  ADMUX = 0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.22V reference
 /*
   MCUCR|=0x28;  // enable Sleep (bit5) enable ADC Noise Reduction (bit2)
   asm volatile(" sleep        \n\t");  // if _SLEEP() is not defined use this
