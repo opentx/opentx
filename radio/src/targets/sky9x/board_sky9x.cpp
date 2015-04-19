@@ -611,7 +611,7 @@ uint16_t getCurrent()
   static uint32_t Current_sum ;
   static uint8_t  Current_count ;
 
-  Current_sum += anaIn(8); // TODO enum
+  Current_sum += anaIn(TX_CURRENT);
   if (++Current_count >= 50) {
     Current = Current_sum / 5 ;
     Current_sum = 0 ;

@@ -34,6 +34,12 @@
  *
  */
 
+// ADC driver
+void adcInit();
+void adcPrepare();
+void getADC();
+void getADC_bandgap();
+
 // Telemetry driver
 void telemetryPortInit();
 void telemetryTransmitBuffer();

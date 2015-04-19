@@ -364,7 +364,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   INCDIRS += targets/stock
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   BOARDSRC = targets/stock/board_stock.cpp
-  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/adc_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp
@@ -435,7 +435,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM128 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   INCDIRS += targets/stock
   BOARDSRC = targets/stock/board_stock.cpp
-  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/adc_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp
@@ -502,7 +502,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM2561 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   INCDIRS += targets/stock
   BOARDSRC = targets/stock/board_stock.cpp
-  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/adc_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp
@@ -567,7 +567,7 @@ ifeq ($(PCB), GRUVIN9X)
   THR_TRACE = YES
   INCDIRS += targets/gruvin9x targets/stock FatFs FatFs/option
   BOARDSRC = targets/gruvin9x/board_gruvin9x.cpp
-  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/adc_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp  
@@ -607,7 +607,7 @@ ifeq ($(PCB), MEGA2560)
   THR_TRACE = YES
   INCDIRS += targets/mega2560 targets/stock FatFs FatFs/option
   BOARDSRC = targets/mega2560/board_mega2560.cpp
-  EXTRABOARDSRC = targets/mega2560/lcd_driver_ST7565R.cpp targets/common_avr/telemetry_driver.cpp
+  EXTRABOARDSRC = targets/mega2560/lcd_driver_ST7565R.cpp targets/common_avr/adc_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   LCDSRC = lcd_common.cpp lcd_default.cpp
   PULSESSRC = pulses/pulses_avr.cpp  

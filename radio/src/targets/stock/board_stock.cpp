@@ -99,14 +99,17 @@ inline void boardInit()
   // Set up I/O port data directions and initial states
   DDRA = 0xff;  PORTA = 0x00; // LCD data
   DDRB = 0x81;  PORTB = 0x7e; //pullups keys+nc
+#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
+  DDRC = 0xff;  PORTC = 0x00;
+#else
   DDRC = 0x3e;  PORTC = 0xc1; //pullups nc
+#endif
   DDRD = 0x00;  PORTD = 0xff; //pullups keys
   DDRE = (1<<OUT_E_BUZZER); PORTE = 0xff-(1<<OUT_E_BUZZER); //pullups + buzzer 0
   DDRF = 0x00;  PORTF = 0x00; //anain
   DDRG = 0x14;  PORTG = 0xfb; //pullups + SIM_CTL=1 = phonejack = ppm_in, Haptic output and off (0)
 
-  ADMUX  = ADC_VREF_TYPE;
-  ADCSRA = 0x85; // ADC enabled, pre-scaler division=32 (no interrupt, no auto-triggering)
+  adcInit();
 
 #if defined(CPUM2561)
   TCCR2B  = (0b111 << CS20); // Norm mode, clk/1024 (differs from ATmega64 chip)
@@ -163,9 +166,6 @@ uint8_t keyDown()
 
 #if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
 
-uint16_t read_adc10(uint8_t adc_input);
-extern uint16_t s_anaFilt[NUMBER_ANALOG];
-
 uint8_t pf7_digital[MUX_PF7_DIGITAL_MAX - MUX_PF7_DIGITAL_MIN + 1];
 /**
  * Update ADC PF7 using 14051 multiplexer
@@ -175,17 +175,14 @@ uint8_t pf7_digital[MUX_PF7_DIGITAL_MAX - MUX_PF7_DIGITAL_MIN + 1];
  * X3 : TRIM LEFT VERTICAL UP
  * X4 : TRIM LEFT VERTICAL DOWN
  */
-void readMultiplexAna()
+void processMultiplexAna()
 {
   static uint8_t muxNum = MUX_BATT;
-  uint16_t temp_ana;
   uint8_t nextMuxNum = muxNum-1;
-
-  temp_ana = read_adc10(7);
 
   switch (muxNum) {
     case MUX_BATT:
-      s_anaFilt[TX_VOLTAGE] = temp_ana;
+      s_anaFilt[TX_VOLTAGE] = s_anaFilt[X14051];
       nextMuxNum = MUX_MAX;
       break;
     case MUX_AIL:
@@ -194,14 +191,13 @@ void readMultiplexAna()
     case MUX_TRM_LV_DWN:
       // Digital switch depend from input voltage
       // take half voltage to determine digital state
-      pf7_digital[muxNum - MUX_PF7_DIGITAL_MIN] = (temp_ana >= (s_anaFilt[TX_VOLTAGE] / 2)) ? 1 : 0;
+      pf7_digital[muxNum - MUX_PF7_DIGITAL_MIN] = (s_anaFilt[X14051] >= (s_anaFilt[TX_VOLTAGE] / 2)) ? 1 : 0;
       break;
   }
 
   // set the mux number for the next ADC convert,
   // stabilize voltage before ADC read.
   muxNum = nextMuxNum;
-  DDRC |= 0xC1;
   PORTC &= ~((1 << PC7) | (1 << PC6) | (1 << PC0));
   if(muxNum & 1) PORTC |= (1 << PC7); // Mux CTRL A
   if(muxNum & 2) PORTC |= (1 << PC6); // Mux CTRL B
@@ -289,7 +285,7 @@ bool switchState(EnumKeys enuk)
 }
 
 // Trim switches ...
-uint8_t trim_helper(uint8_t neg_pind, uint8_t idx)
+uint8_t trimHelper(uint8_t neg_pind, uint8_t idx)
 {
   switch(idx){
     case 0: return neg_pind & (1<<INP_D_TRM_LH_DWN);
@@ -311,7 +307,7 @@ uint8_t trim_helper(uint8_t neg_pind, uint8_t idx)
 
 uint8_t trimDown(uint8_t idx)
 {
-  return trim_helper(~PIND, idx);
+  return trimHelper(~PIND, idx);
 }
 
 FORCEINLINE void readKeysAndTrims()
@@ -330,7 +326,7 @@ FORCEINLINE void readKeysAndTrims()
   in = ~PIND;
   for (int i=0; i<8; i++) {
     // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
-    keys[enuk].input(trim_helper(in, i), (EnumKeys)enuk);
+    keys[enuk].input(trimHelper(in, i), (EnumKeys)enuk);
     ++enuk;
   }
 

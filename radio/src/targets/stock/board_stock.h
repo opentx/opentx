@@ -209,8 +209,7 @@ void backlightFade();
 #define INP_G_RF_POW   1
 #define INP_G_RuddDR   0
 
-// Keys driver
-#if defined(TELEMETRY_MOD_14051_SWAPPED)
+#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
 enum MuxInput {
   MUX_BATT,
   MUX_AIL,
@@ -230,7 +229,11 @@ enum Pf7Digital {
 };
 
 extern uint8_t pf7_digital[MUX_PF7_DIGITAL_MAX - MUX_PF7_DIGITAL_MIN + 1];
+void processMultiplexAna();
+#endif
 
+// Keys driver
+#if defined(TELEMETRY_MOD_14051_SWAPPED)
 #define TRIMS_PRESSED() (~PIND & ~0x0c || pf7_digital[PF7_TRM_LV_UP] || pf7_digital[PF7_TRM_LV_DWN])
 #else
 #define TRIMS_PRESSED() (~PIND)
@@ -262,7 +265,5 @@ void rotencPoll();
 
 // USB fake driver
 #define usbPlugged()    false
-
-void readMultiplexAna();
 
 #endif

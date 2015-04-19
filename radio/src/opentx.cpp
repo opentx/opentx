@@ -1460,7 +1460,11 @@ uint16_t anaIn(uint8_t chan)
   volatile uint16_t *p = &s_anaFilt[pgm_read_byte(crossAna+chan)];
   return *p;
 #else
+#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
+  static const pm_char crossAna[] PROGMEM = {3,1,2,0,4,5,6,0/* shouldn't be used */,TX_VOLTAGE};
+#else
   static const pm_char crossAna[] PROGMEM = {3,1,2,0,4,5,6,7};
+#endif
 #if defined(FRSKY_STICKS)
   volatile uint16_t temp = s_anaFilt[pgm_read_byte(crossAna+chan)];  // volatile saves here 40 bytes; maybe removed for newer AVR when available
   if (chan < NUM_STICKS && (g_eeGeneral.stickReverse & (1 << chan))) {
@@ -1508,75 +1512,6 @@ void getADC()
 #endif
     s_anaFilt[x] = v;
   }
-}
-#else
-
-/**
- * Read ADC using 10 bits
- */
-uint16_t read_adc10(uint8_t adc_input) 
-{
-  uint16_t temp_ana;
-  ADMUX = adc_input|ADC_VREF_TYPE;
-  ADCSRA |= 1 << ADSC; // Start the AD conversion
-  while (ADCSRA & (1 << ADSC)); // Wait for the AD conversion to complete
-  temp_ana = ADC;
-  ADCSRA |= 1 << ADSC; // Start the second AD conversion
-  while (ADCSRA & (1 << ADSC)); // Wait for the AD conversion to complete
-  temp_ana += ADC;
-  return temp_ana;
-}
-
-void getADC()
-{
-#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
-  readMultiplexAna();
-  #define ADC_READ_COUNT 7
-#else
-  #define ADC_READ_COUNT 8
-#endif
-  
-  for (uint8_t adc_input=0; adc_input<ADC_READ_COUNT; adc_input++) {
-    s_anaFilt[adc_input] = read_adc10(adc_input);
-  }
-}
-#endif
-
-#if !defined(CPUARM)
-void getADC_bandgap()
-{
-#if defined(CPUM2560)
-  static uint8_t s_bgCheck = 0;
-  static uint16_t s_bgSum = 0;
-  ADCSRA|=0x40; // request sample
-  s_bgCheck += 32;
-  while ((ADCSRA & 0x10)==0); ADCSRA|=0x10; // wait for sample
-  if (s_bgCheck == 0) { // 8x over-sample (256/32=8)
-    BandGap = s_bgSum+ADC;
-    s_bgSum = 0;
-  }
-  else {
-    s_bgSum += ADC;
-  }
-  ADCSRB |= (1<<MUX5);
-#else
-  // TODO is the next line needed (because it has been called before perMain)?
-  ADMUX = 0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.22V reference
-  
-/*
-  MCUCR|=0x28;  // enable Sleep (bit5) enable ADC Noise Reduction (bit2)
-  asm volatile(" sleep        \n\t");  // if _SLEEP() is not defined use this
-  // ADCSRA|=0x40;
-  while ((ADCSRA & 0x10)==0);
-  ADCSRA|=0x10; // take sample  clear flag?
-  BandGap=ADC;    
-  MCUCR&=0x08;  // disable sleep  
-  */
-
-  ADCSRA |= 0x40;
-  while (ADCSRA & 0x40);
-  BandGap = ADC;
-#endif
 }
 #endif
 
@@ -2159,16 +2094,8 @@ void doMixerCalculations()
   lastTMR = tmr10ms;
 #endif
 
-#if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
-  Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
-  if (Current_analogue > Current_max)
-    Current_max = Current_analogue ;
-#elif defined(CPUM2560) && !defined(SIMU)
-  // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
-  ADCSRB &= ~(1<<MUX5);
-  ADMUX = 0x03|ADC_VREF_TYPE; // Switch MUX to internal reference
-#elif defined(PCBSTD) && !defined(SIMU)
-  ADMUX = 0x1E|ADC_VREF_TYPE; // Switch MUX to internal reference
+#if !defined(SIMU)
+  adcPrepare();
 #endif
 
   evalMixes(tick10ms);

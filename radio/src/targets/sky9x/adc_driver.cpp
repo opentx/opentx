@@ -42,7 +42,6 @@ volatile uint16_t Analog_values[NUMBER_ANALOG];
 const char ana_direction[NUMBER_ANALOG] = {1, 1, 0, 1 ,0 ,1 ,0, 0, 0};
 #endif
 
-
 // Settings for mode register ADC_MR
 // USEQ off - silicon problem, doesn't work
 // TRANSFER = 3
@@ -75,6 +74,13 @@ void adcInit()
 #endif
   padc->ADC_CGR = 0 ;  // Gain = 1, all channels
   padc->ADC_COR = 0 ;  // Single ended, 0 offset, all channels
+}
+
+void adcPrepare()
+{
+  Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
+  if (Current_analogue > Current_max)
+    Current_max = Current_analogue ;
 }
 
 // Read 8 (9 for REVB) ADC channels
