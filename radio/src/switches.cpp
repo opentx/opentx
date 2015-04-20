@@ -444,7 +444,7 @@ bool getSwitch(int8_t swtch)
   }
   else if (cs_idx <= SWSRC_LAST_SWITCH) {
 #if defined(PCBTARANIS)
-    if (flags & GETSWITCH_MIDPOS_DELAY)
+    if ((flags & GETSWITCH_MIDPOS_DELAY) && IS_3POS(cs_idx))
       result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
     else
 #endif
