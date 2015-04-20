@@ -79,6 +79,5 @@ extern EepromWriteState eepromWriteState;
 void eepromWriteProcess();
 void eepromWriteWait(EepromWriteState state = EEPROM_IDLE);
 bool eepromOpen();
-bool eepromCheck();
 
 #endif

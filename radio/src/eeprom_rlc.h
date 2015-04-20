@@ -116,7 +116,6 @@ extern EeFs eeFs;
 #define BLOCKS_OFFSET (RESV-BS)
 #endif
 
-int8_t eepromCheck();
 void eepromFormat();
 uint16_t EeFsGetFree();
 

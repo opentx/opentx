@@ -84,8 +84,7 @@ void eeLoadModelHeaders()
 
 void eeReadAll()
 {
-  // TODO merge eepromOpen and eepromCheck
-  if (!eepromOpen() || eepromCheck() < 0 || !eeLoadGeneral()) {
+  if (!eepromOpen() || !eeLoadGeneral()) {
     eeErase(true);
   }
   else {

@@ -195,11 +195,6 @@ bool eepromOpen()
   }
 }
 
-bool eepromCheck()
-{
-  return true;
-}
-
 uint32_t readFile(int index, uint8_t * data, uint32_t size)
 {
   uint16_t fileSize;
