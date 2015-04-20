@@ -58,6 +58,7 @@ PACK(struct EepromHeaderFile
 PACK(struct EepromHeader
 {
   uint32_t         mark;
+  uint32_t         index;
   EepromHeaderFile files[EEPROM_MAX_FILES];
 });
 
@@ -174,16 +175,24 @@ void eepromWrite(uint32_t address, uint8_t * buffer, uint32_t size, bool blockin
 
 bool eepromOpen()
 {
+  int32_t bestFatAddr = -1;
+  uint32_t bestFatIndex = 0;
   eepromFatAddr = 0;
   while (eepromFatAddr < EEPROM_FILE_SIZE) {
-    eepromRead(eepromFatAddr, (uint8_t *)&eepromHeader, sizeof(eepromHeader.mark));
-    if (eepromHeader.mark == EEPROM_MARK) {
-      eepromRead(eepromFatAddr, (uint8_t *)&eepromHeader, sizeof(eepromHeader));
-      return true;
+    eepromRead(eepromFatAddr, (uint8_t *)&eepromHeader, sizeof(eepromHeader.mark) + sizeof(eepromHeader.index));
+    if (eepromHeader.mark == EEPROM_MARK && eepromHeader.index >= bestFatIndex) {
+      bestFatAddr = eepromFatAddr;
     }
     eepromFatAddr += EEPROM_FAT_SIZE;
   }
-  return false;
+  if (bestFatAddr >= 0) {
+    eepromFatAddr = bestFatAddr;
+    eepromRead(eepromFatAddr, (uint8_t *)&eepromHeader, sizeof(eepromHeader));  
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 bool eepromCheck()
@@ -212,6 +221,7 @@ uint32_t readFile(int index, uint8_t * data, uint32_t size)
 void eepromIncFatAddr()
 {
   eepromPreviousFatAddr = eepromFatAddr;
+  eepromHeader.index += 1;
   eepromFatAddr += EEPROM_FAT_SIZE;
   if (eepromFatAddr >= EEPROM_FILE_SIZE) {
     eepromFatAddr = 0;
@@ -397,11 +407,13 @@ void eepromFormat()
 {
   eepromFatAddr = 0;
   eepromHeader.mark = EEPROM_MARK;
+  eepromHeader.index = 0;
   for (int i=0; i<EEPROM_MAX_FILES; i++) {
     eepromHeader.files[i].exists = 0;
     eepromHeader.files[i].index = i+1;
   }
   eepromEraseBlock(0);
+  eepromEraseBlock(EEPROM_BLOCK_SIZE);
   eepromWrite(0, (uint8_t *)&eepromHeader, sizeof(eepromHeader));
 }
 
@@ -470,7 +482,6 @@ void eepromWriteProcess()
     case EEPROM_WRITING_BUFFER_WAIT:
     case EEPROM_ERASING_FAT_BLOCK_WAIT:
     case EEPROM_WRITING_NEW_FAT_WAIT:
-    case EEPROM_OVERWRITING_OLD_FAT_WAIT:
       if ((eepromReadStatus() & 1) == 0)
         eepromWriteState = EepromWriteState(eepromWriteState + 1);
       break;
@@ -521,12 +532,6 @@ void eepromWriteProcess()
     case EEPROM_WRITE_NEW_FAT:
       eepromWriteState = EEPROM_WRITING_NEW_FAT;
       eepromWrite(eepromFatAddr, (uint8_t *)&eepromHeader, sizeof(eepromHeader), false);
-      break;
-
-    case EEPROM_OVERWRITE_OLD_FAT:
-      memset(eepromWriteBuffer, 0, EEPROM_FAT_SIZE);
-      eepromWriteState = EEPROM_OVERWRITING_OLD_FAT;
-      eepromWrite(eepromPreviousFatAddr, eepromWriteBuffer, EEPROM_FAT_SIZE, false);
       break;
 
     case EEPROM_END_WRITE:
