@@ -445,15 +445,11 @@ void logsDialog::on_fileOpen_BT_clicked()
       ui->logTable->setColumnCount(csvlog.at(0).count());
       ui->logTable->setRowCount(csvlog.count()-1);
       ui->logTable->setHorizontalHeaderLabels(csvlog.at(0));
+
+      QAbstractItemModel *model = ui->logTable->model();
       for (int i=1; i<csvlog.count(); i++) {
         for (int j=0; j<csvlog.at(0).count(); j++) {
-          QTableWidgetItem* item= new QTableWidgetItem(csvlog.at(i).at(j));
-          if (j>1) {
-            item->setTextAlignment(Qt::AlignRight);
-          } else {
-            item->setTextAlignment(Qt::AlignCenter);
-          }
-          ui->logTable->setItem(i-1,j,item );
+          model->setData(model->index(i - 1, j, QModelIndex()), csvlog.at(i).at(j));
         }
       }
 
@@ -483,53 +479,29 @@ bool logsDialog::cvsFileParse()
     csvlog.clear();
     logFilename.clear();
     QTextStream inputStream(&file);
-    QRegExp rx2("(?:\"([^\"]*)\";?)|(?:([^,]*),?)");
-    QStringList list;
     QString buffer = file.readLine();
+
     if (buffer.startsWith("Date,Time")) {
       file.reset();
     } else {
       return false;
     }
+
     int numfields=-1;
     while (!file.atEnd()) {
-      int pos2 = 0;
-      QString buffer = file.readLine();
-      QString line=buffer.trimmed();
-      list.clear();
-      if(line.size()<1){
-        list << "";
-      } else {
-        while (line.size()>pos2 && (pos2 = rx2.indexIn(line, pos2)) != -1) {
-          QString col;
-          if(rx2.cap(1).size()>0) {
-            col = rx2.cap(1);
-          } else if(rx2.cap(2).size()>0) {
-            col = rx2.cap(2);
-          }
-          if (col.contains(".")) {
-            if (col.indexOf(".")==(col.length()-3)) {
-              col.append("0");
-            }
-          }
-          list<<col;
-          if(col.size()) {
-            pos2 += rx2.matchedLength();
-          } else {
-            pos2++;
-          }
-        }
-      }
+      QString line = file.readLine().trimmed();
+      QStringList columns = line.split(',');
       if (numfields==-1) {
-        numfields=list.count();
+        numfields=columns.count();
       }
-      if (list.count()==numfields) {
-        csvlog.append(list);
+      if (columns.count()==numfields) {
+        csvlog.append(columns);
       } else {
         errors++;
       }
       lines++;
     }
+
     logFilename=QFileInfo(file.fileName()).baseName();
   }
 
