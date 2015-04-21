@@ -562,11 +562,11 @@
 #define TR_ELIMITS             TR("Limi+25%", "Kanał +/- 125% ")
 #define TR_ETRIMS              TR("E.Trym ", "Poszer Trymery")
 #define TR_TRIMINC             "Krok Trym"
-#define TR_DISPLAY_TRIMS       "Pokaż Trymery"
+#define TR_DISPLAY_TRIMS       TR("Pok.Trym.","Pokaż Trymery")
 #define TR_TTRACE              TR("Źród gaz", INDENT "Źródło gazu ")
 #define TR_TTRIM               TR("TryGaz", INDENT "TrymWolnObrotó")
 #define TR_BEEPCTR             TR("ŚrodBeep", "Pikn.Środka")
-#define TR_USE_GLOBAL_FUNCS    "Użyj Funcji Glob"
+#define TR_USE_GLOBAL_FUNCS    TR("Funk.Glb.","Użyj Funkcji Glb")
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protokół")
 #define TR_PPMFRAME            TR(INDENT "Ramka PPM", INDENT "Ramka PPM")
 #define TR_MS                  "ms"
