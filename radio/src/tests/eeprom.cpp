@@ -44,7 +44,7 @@ TEST(EEPROM, 100_random_writes)
   uint8_t buf[1000];
   uint8_t buf2[1000];
 
-  EeFsFormat();
+  eepromFormat();
 
   for(int i=0; i<100; i++) {
     int size = rand()%800;
@@ -66,7 +66,7 @@ TEST(EEPROM, test2)
   RlcFile f;
   uint8_t buf[1000];
 
-  EeFsFormat();
+  eepromFormat();
 
   for(int i=0; i<1000; i++) buf[i]='6'+i%4;
 
@@ -89,7 +89,7 @@ TEST(EEPROM, eeCheckImmediately)
   // RlcFile f;
   uint8_t buf[1000];
 
-  EeFsFormat();
+  eepromFormat();
 
   for(int i=0; i<1000; i++) buf[i]='6'+i%4;
 
@@ -114,7 +114,7 @@ TEST(EEPROM, copy)
 
   uint8_t buf[1000];
 
-  EeFsFormat();
+  eepromFormat();
 
   for(int i=0; i<1000; i++) buf[i]='6'+i%4;
 
@@ -139,7 +139,7 @@ TEST(EEPROM, rm)
 
   uint8_t buf[1000];
 
-  EeFsFormat();
+  eepromFormat();
 
   for(int i=0; i<1000; i++) buf[i]='6'+i%4;
 

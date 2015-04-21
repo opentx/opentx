@@ -187,13 +187,13 @@ static void EeFsFree(blkid_t blk)
   blkid_t i = blk;
   blkid_t tmp;
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
   freeBlocks++;
 #endif
 
   while ((tmp=EeFsGetLink(i))) {
     i = tmp;
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
     freeBlocks++;
 #endif
   }
@@ -203,7 +203,7 @@ static void EeFsFree(blkid_t blk)
   EeFsFlushFreelist();
 }
 
-int8_t EeFsck()
+void eepromCheck()
 {
   ENABLE_SYNC_WRITE(true);
 
@@ -211,11 +211,11 @@ int8_t EeFsck()
   memclear(bufp, BLOCKS);
   blkid_t blk ;
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
   blkid_t blocksCount;
 #endif
   for (uint8_t i=0; i<=MAXFILES; i++) {
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
     blocksCount = 0;
 #endif
     blkid_t *startP = (i==MAXFILES ? &eeFs.freeList : &eeFs.files[i].startBlk);
@@ -236,7 +236,7 @@ int8_t EeFsck()
         blk = 0; // abort
       }
       else {
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
         blocksCount++;
 #endif
         bufp[blk] = i+1;
@@ -246,13 +246,13 @@ int8_t EeFsck()
     }
   }
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
   freeBlocks = blocksCount;
 #endif
 
   for (blk=FIRSTBLK; blk<BLOCKS; blk++) {
     if (!bufp[blk]) { // unused block
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
       freeBlocks++;
 #endif
       EeFsSetLink(blk, eeFs.freeList);
@@ -262,11 +262,9 @@ int8_t EeFsck()
   }
 
   ENABLE_SYNC_WRITE(false);
-
-  return 0;
 }
 
-void EeFsFormat()
+void eepromFormat()
 {
   ENABLE_SYNC_WRITE(true);
 
@@ -280,7 +278,7 @@ void EeFsFormat()
   }
   EeFsSetLink(BLOCKS-1, 0);
   eeFs.freeList = FIRSTBLK;
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
   freeBlocks = BLOCKS;
 #endif
   EeFsFlush();
@@ -288,7 +286,7 @@ void EeFsFormat()
   ENABLE_SYNC_WRITE(false);
 }
 
-inline bool EeFsOpen()
+bool eepromOpen()
 {
   eeprom_read_block((uint8_t *)&eeFs, 0, sizeof(eeFs));
 
@@ -301,7 +299,12 @@ inline bool EeFsOpen()
   }
 #endif  
 
-  return eeFs.version == EEFS_VERS && eeFs.mySize == sizeof(eeFs);
+  if (eeFs.version != EEFS_VERS || eeFs.mySize != sizeof(eeFs)) {
+    return false;
+  }
+
+  eepromCheck();
+  return true;
 }
 
 bool EFile::exists(uint8_t i_fileId)
@@ -432,7 +435,7 @@ void RlcFile::nextWriteStep()
   if (!m_currBlk && m_pos==0) {
     eeFs.files[FILE_TMP].startBlk = m_currBlk = eeFs.freeList;
     if (m_currBlk) {
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
       freeBlocks--;
 #endif
       eeFs.freeList = EeFsGetLink(m_currBlk);
@@ -471,7 +474,7 @@ void RlcFile::nextWriteStep()
     switch (m_write_step & 0x0f) {
       case WRITE_NEXT_LINK_1:
         m_currBlk = eeFs.freeList;
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
         freeBlocks--;
 #endif
         eeFs.freeList = EeFsGetLink(eeFs.freeList);
@@ -550,7 +553,6 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
 }
 
 #if defined(SDCARD)
-extern FIL g_oLogFile;
 const pm_char * eeBackupModel(uint8_t i_fileSrc)
 {
   char *buf = reusableBuffer.modelsel.mainname;
@@ -802,12 +804,12 @@ void RlcFile::nextRlcWriteStep()
         // TODO reuse EeFsFree!!!
         blkid_t prev_freeList = eeFs.freeList;
         eeFs.freeList = fri;
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
         freeBlocks++;
 #endif
         while (EeFsGetLink(fri)) {
           fri = EeFsGetLink(fri);
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
           freeBlocks++;
 #endif
         }
@@ -1025,39 +1027,10 @@ void eeErase(bool warn)
   }
 
   MESSAGE(STR_EEPROMWARN, STR_EEPROMFORMATTING, NULL, AU_EEPROM_FORMATTING);
-  EeFsFormat();
+  eepromFormat();
   theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&g_eeGeneral, sizeof(EEGeneral), true);
   modelDefault(0);
   theFile.writeRlc(FILE_MODEL(0), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), true);
-}
-
-// TODO merge this code with eeprom_arm.cpp one
-void eeReadAll()
-{
-  if (!EeFsOpen() ||
-       EeFsck() < 0 ||
-      !eeLoadGeneral())
-  {
-    eeErase(true);
-  }
-  else {
-    eeLoadModelHeaders();
-  }
-
-  stickMode = g_eeGeneral.stickMode;
-
-#if defined(CPUARM)
-  for (uint8_t i=0; languagePacks[i]!=NULL; i++) {
-    if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
-      currentLanguagePackIdx = i;
-      currentLanguagePack = languagePacks[i];
-    }
-  }
-#endif
-
-#if !defined(CPUARM)
-  eeLoadModel(g_eeGeneral.currModel);
-#endif
 }
 
 void eeCheck(bool immediately)

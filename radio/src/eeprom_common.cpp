@@ -81,3 +81,28 @@ void eeLoadModelHeaders()
   }
 }
 #endif
+
+void eeReadAll()
+{
+  if (!eepromOpen() || !eeLoadGeneral()) {
+    eeErase(true);
+  }
+  else {
+    eeLoadModelHeaders();
+  }
+
+  stickMode = g_eeGeneral.stickMode;
+
+#if defined(CPUARM)
+  for (uint8_t i=0; languagePacks[i]!=NULL; i++) {
+    if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
+      currentLanguagePackIdx = i;
+      currentLanguagePack = languagePacks[i];
+    }
+  }
+#endif
+
+#if !defined(CPUARM)
+  eeLoadModel(g_eeGeneral.currModel);
+#endif
+}
