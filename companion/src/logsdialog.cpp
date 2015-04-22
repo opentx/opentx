@@ -31,14 +31,20 @@ logsDialog::logsDialog(QWidget *parent) :
   colors.append(Qt::darkMagenta);
   colors.append(Qt::darkCyan);
   colors.append(Qt::blue);
-  pen.setWidthF(1.5);
+  pen.setWidthF(1.0);
 
-  ui->customPlot->setInteractions(QCustomPlot::iRangeDrag | QCustomPlot::iRangeZoom | QCustomPlot::iSelectAxes |
-                                  QCustomPlot::iSelectLegend | QCustomPlot::iSelectPlottables | QCustomPlot::iSelectTitle | QCustomPlot::iSelectItems);
-  ui->customPlot->setRangeDrag(Qt::Horizontal|Qt::Vertical);
-  ui->customPlot->setRangeZoom(Qt::Horizontal|Qt::Vertical);
-  ui->customPlot->yAxis->setRange(-1100, 1100);
-  ui->customPlot->setTitle(tr("Telemetry logs"));
+  // create and prepare a plot title layout element
+  QCPPlotTitle *title = new QCPPlotTitle(ui->customPlot);
+  title->setText(tr("Telemetry logs"));
+  // title->setFont(QFont("sans", 12, QFont::Bold));
+  // add it to the main plot layout
+  ui->customPlot->plotLayout()->insertRow(0);
+  ui->customPlot->plotLayout()->addElement(0, 0, title);
+
+  ui->customPlot->setNoAntialiasingOnDrag(true);
+
+  ui->customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom |
+    QCP::iSelectAxes | QCP::iSelectLegend | QCP::iSelectPlottables);
 
   ui->customPlot->xAxis->setLabel(tr("Time (hh:mm:ss)"));
   ui->customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
@@ -47,17 +53,13 @@ logsDialog::logsDialog(QWidget *parent) :
   ui->customPlot->xAxis->setRange(now.addSecs(-60*60*2).toTime_t(),
     now.toTime_t());
 
-  ui->customPlot->legend->setVisible(true);
   ui->customPlot->yAxis->setTickLabels(false);
-  ui->customPlot->yAxis->setAutoTickCount(10);
-  ui->customPlot->yAxis2->setTicks(false);
-  ui->customPlot->setRangeZoomFactor(2, 2);
+
   QFont legendFont = font();
   legendFont.setPointSize(10);
   ui->customPlot->legend->setFont(legendFont);
   ui->customPlot->legend->setSelectedFont(legendFont);
-  ui->customPlot->legend->setSelectable(QCPLegend::spItems); // legend box shall not be selectable, only legend items
-  ui->customPlot->legend->setVisible(false);
+
   QString Path=g.gePath();
   if (Path.isEmpty() || !QFile(Path).exists()) {
     ui->mapsButton->hide();
@@ -69,14 +71,13 @@ logsDialog::logsDialog(QWidget *parent) :
   connect(ui->customPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
   connect(ui->customPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
 
-  // make left axes transfer its ranges to right axes:
+  // make left axes transfer its range to right axes:
   connect(ui->customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(setRangeyAxis2(QCPRange)));
 
   // connect some interaction slots:
-  connect(ui->customPlot, SIGNAL(titleDoubleClick(QMouseEvent*)), this, SLOT(titleDoubleClick()));
+  connect(ui->customPlot, SIGNAL(titleDoubleClick(QMouseEvent*, QCPPlotTitle*)), this, SLOT(titleDoubleClick(QMouseEvent*, QCPPlotTitle*)));
   connect(ui->customPlot, SIGNAL(axisDoubleClick(QCPAxis*,QCPAxis::SelectablePart,QMouseEvent*)), this, SLOT(axisLabelDoubleClick(QCPAxis*,QCPAxis::SelectablePart)));
   connect(ui->customPlot, SIGNAL(legendDoubleClick(QCPLegend*,QCPAbstractLegendItem*,QMouseEvent*)), this, SLOT(legendDoubleClick(QCPLegend*,QCPAbstractLegendItem*)));
-  // connect(ui->customPlot, SIGNAL(plottableDoubleClick(QCPAbstractPlottable *, QMouseEvent *)), this, SLOT(plottableItemDoubleClick(QCPAbstractPlottable *, QMouseEvent *)));
   connect(ui->FieldsTW, SIGNAL(itemSelectionChanged()), this, SLOT(plotLogs()));
   connect(ui->logTable, SIGNAL(itemSelectionChanged()), this, SLOT(plotLogs()));
   connect(ui->Reset_PB, SIGNAL(clicked()), this, SLOT(plotLogs()));
@@ -87,15 +88,16 @@ logsDialog::~logsDialog()
   delete ui;
 }
 
-void logsDialog::titleDoubleClick()
+void logsDialog::titleDoubleClick(QMouseEvent *evt, QCPPlotTitle *title)
 {
   // Set the plot title by double clicking on it
 
   bool ok;
-  QString newTitle = QInputDialog::getText(this, tr("Plot Title Change"), tr("New plot title:"), QLineEdit::Normal, ui->customPlot->title(), &ok);
+  QString newTitle = QInputDialog::getText(this, tr("Plot Title Change"),
+    tr("New plot title:"), QLineEdit::Normal, title->text(), &ok);
   if (ok)
   {
-    ui->customPlot->setTitle(newTitle);
+    title->setText(newTitle);
     ui->customPlot->replot();
   }
 }
@@ -103,7 +105,6 @@ void logsDialog::titleDoubleClick()
 void logsDialog::axisLabelDoubleClick(QCPAxis *axis, QCPAxis::SelectablePart part)
 {
   // Set an axis label by double clicking on it
-
   if (part == QCPAxis::spAxisLabel) // only react when the actual axis label is clicked, not tick label or axis backbone
   {
     bool ok;
@@ -132,11 +133,6 @@ void logsDialog::legendDoubleClick(QCPLegend *legend, QCPAbstractLegendItem *ite
   }
 }
 
-// void logsDialog::plottableItemDoubleClick(QCPAbstractPlottable *  plottable, QMouseEvent * event)
-// {
-//   qDebug() << plottable->
-// }
-
 void logsDialog::selectionChanged()
 {
   /*
@@ -155,18 +151,24 @@ void logsDialog::selectionChanged()
   if (plotLock) return;
 
   // handle bottom axis and tick labels as one selectable object:
-  if (ui->customPlot->xAxis->selected().testFlag(QCPAxis::spAxis) || ui->customPlot->xAxis->selected().testFlag(QCPAxis::spTickLabels))
+  if (ui->customPlot->xAxis->selectedParts().testFlag(QCPAxis::spAxis) ||
+    ui->customPlot->xAxis->selectedParts().testFlag(QCPAxis::spTickLabels))
   {
-    ui->customPlot->xAxis->setSelected(QCPAxis::spAxis|QCPAxis::spTickLabels);
+    ui->customPlot->xAxis->setSelectedParts(QCPAxis::spAxis |
+      QCPAxis::spTickLabels);
   }
   // make left and right axes be selected synchronously,
   // and handle axis and tick labels as one selectable object:
-  if (ui->customPlot->yAxis->selected().testFlag(QCPAxis::spAxis) || ui->customPlot->yAxis->selected().testFlag(QCPAxis::spTickLabels) ||
-      ui->customPlot->yAxis2->selected().testFlag(QCPAxis::spAxis) || ui->customPlot->yAxis2->selected().testFlag(QCPAxis::spTickLabels))
+  if (ui->customPlot->yAxis->selectedParts().testFlag(QCPAxis::spAxis) ||
+    ui->customPlot->yAxis->selectedParts().testFlag(QCPAxis::spTickLabels) ||
+    ui->customPlot->yAxis2->selectedParts().testFlag(QCPAxis::spAxis) ||
+    ui->customPlot->yAxis2->selectedParts().testFlag(QCPAxis::spTickLabels))
   {
-    ui->customPlot->yAxis->setSelected(QCPAxis::spAxis|QCPAxis::spTickLabels);
+    ui->customPlot->yAxis->setSelectedParts(QCPAxis::spAxis |
+      QCPAxis::spTickLabels);
     if (hasyAxis2) {
-      ui->customPlot->yAxis2->setSelected(QCPAxis::spAxis|QCPAxis::spTickLabels);
+      ui->customPlot->yAxis2->setSelectedParts(QCPAxis::spAxis |
+        QCPAxis::spTickLabels);
     }
   }
 
@@ -355,12 +357,12 @@ void logsDialog::mousePress()
   // if an axis is selected, only allow the direction of that axis to be dragged
   // if no axis is selected, both directions may be dragged
 
-  if (ui->customPlot->xAxis->selected().testFlag(QCPAxis::spAxis))
-    ui->customPlot->setRangeDrag(ui->customPlot->xAxis->orientation());
-  else if (ui->customPlot->yAxis->selected().testFlag(QCPAxis::spAxis))
-    ui->customPlot->setRangeDrag(ui->customPlot->yAxis->orientation());
+  if (ui->customPlot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->customPlot->axisRect()->setRangeDrag(ui->customPlot->xAxis->orientation());
+  else if (ui->customPlot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->customPlot->axisRect()->setRangeDrag(ui->customPlot->yAxis->orientation());
   else
-    ui->customPlot->setRangeDrag(Qt::Horizontal|Qt::Vertical);
+    ui->customPlot->axisRect()->setRangeDrag(Qt::Horizontal | Qt::Vertical);
 }
 
 void logsDialog::mouseWheel()
@@ -375,9 +377,9 @@ void logsDialog::mouseWheel()
     orientation|=Qt::Vertical;
   }
   if (orientation) {
-    ui->customPlot->setRangeZoom((Qt::Orientation)orientation);
+    ui->customPlot->axisRect()->setRangeZoom((Qt::Orientation)orientation);
   } else {
-    ui->customPlot->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+    ui->customPlot->axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);
   }
 }
 
@@ -399,24 +401,11 @@ void logsDialog::removeAllGraphs()
   ui->customPlot->replot();
 }
 
-void logsDialog::moveLegend()
-{
-  if (QAction* contextAction = qobject_cast<QAction*>(sender())) // make sure this slot is really called by a context menu action, so it carries the data we need
-  {
-    bool ok;
-    int dataInt = contextAction->data().toInt(&ok);
-    if (ok)
-    {
-      ui->customPlot->legend->setPositionStyle((QCPLegend::PositionStyle)dataInt);
-      ui->customPlot->replot();
-    }
-  }
-}
-
 void logsDialog::on_fileOpen_BT_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName(this,tr("Select your log file"), g.logDir());
   if (!fileName.isEmpty()) {
+
     g.logDir( fileName );
     ui->FileName_LE->setText(fileName);
     if (cvsFileParse()) {
@@ -436,23 +425,22 @@ void logsDialog::on_fileOpen_BT_clicked()
       ui->logTable->setColumnCount(csvlog.at(0).count());
       ui->logTable->setRowCount(csvlog.count()-1);
       ui->logTable->setHorizontalHeaderLabels(csvlog.at(0));
+
+      QAbstractItemModel *model = ui->logTable->model();
       for (int i=1; i<csvlog.count(); i++) {
         for (int j=0; j<csvlog.at(0).count(); j++) {
-          QTableWidgetItem* item= new QTableWidgetItem(csvlog.at(i).at(j));
-          if (j>1) {
-            item->setTextAlignment(Qt::AlignRight);
-          } else {
-            item->setTextAlignment(Qt::AlignCenter);
-          }
-          ui->logTable->setItem(i-1,j,item );
+          model->setData(model->index(i - 1, j, QModelIndex()), csvlog.at(i).at(j));
         }
       }
-      ui->logTable->resizeColumnsToContents();
-      ui->logTable->resizeRowsToContents();
-      // Hack - add some pixel of space to columns as Qt resize them too small
-      for (int j=0; j<csvlog.at(0).count(); j++) {
-        int width=ui->logTable->columnWidth(j);
-        ui->logTable->setColumnWidth(j,width+5);
+
+      ui->logTable->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      QVarLengthArray<int> sizes;
+      for (int i = 0; i < ui->logTable->columnCount(); i++) {
+        sizes.append(ui->logTable->columnWidth(i));
+      }
+      ui->logTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+      for (int i = 0; i < ui->logTable->columnCount(); i++) {
+        ui->logTable->setColumnWidth(i, sizes.at(i));
       }
     }
   }
@@ -471,53 +459,29 @@ bool logsDialog::cvsFileParse()
     csvlog.clear();
     logFilename.clear();
     QTextStream inputStream(&file);
-    QRegExp rx2("(?:\"([^\"]*)\";?)|(?:([^,]*),?)");
-    QStringList list;
     QString buffer = file.readLine();
+
     if (buffer.startsWith("Date,Time")) {
       file.reset();
     } else {
       return false;
     }
+
     int numfields=-1;
     while (!file.atEnd()) {
-      int pos2 = 0;
-      QString buffer = file.readLine();
-      QString line=buffer.trimmed();
-      list.clear();
-      if(line.size()<1){
-        list << "";
-      } else {
-        while (line.size()>pos2 && (pos2 = rx2.indexIn(line, pos2)) != -1) {
-          QString col;
-          if(rx2.cap(1).size()>0) {
-            col = rx2.cap(1);
-          } else if(rx2.cap(2).size()>0) {
-            col = rx2.cap(2);
-          }
-          if (col.contains(".")) {
-            if (col.indexOf(".")==(col.length()-3)) {
-              col.append("0");
-            }
-          }
-          list<<col;
-          if(col.size()) {
-            pos2 += rx2.matchedLength();
-          } else {
-            pos2++;
-          }
-        }
-      }
+      QString line = file.readLine().trimmed();
+      QStringList columns = line.split(',');
       if (numfields==-1) {
-        numfields=list.count();
+        numfields=columns.count();
       }
-      if (list.count()==numfields) {
-        csvlog.append(list);
+      if (columns.count()==numfields) {
+        csvlog.append(columns);
       } else {
         errors++;
       }
       lines++;
     }
+
     logFilename=QFileInfo(file.fileName()).baseName();
   }
 
@@ -531,72 +495,60 @@ bool logsDialog::cvsFileParse()
     csvlog.clear();
     return false;
   }
-  double lastvalue=0;
-  double tmp;
+
   ui->sessions_CB->addItem("---");
-  for (int i=1; i<n; i++) {
-    QString tstamp=csvlog.at(i).at(0)+QString(" ")+csvlog.at(i).at(1);
+
+  double lastvalue = 0;
+  double tmp;
+  for (int i = 1; i < n; i++) {
+    QString tstamp = csvlog.at(i).at(0) + QString(" ") + csvlog.at(i).at(1);
+
     if (csvlog.at(i).at(1).contains(".")) {
-      tmp=QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss.zzz").toTime_t();
-      tmp+=csvlog.at(i).at(1).mid(csvlog.at(i).at(1).indexOf(".")).toDouble();
+      tmp = QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss.zzz").toTime_t();
+      tmp += csvlog.at(i).at(1).mid(csvlog.at(i).at(1).indexOf(".")).toDouble();
     } else {
-      tmp=QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss").toTime_t();
+      tmp = QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss").toTime_t();
     }
-    if (tmp>(lastvalue+60)) {
-      ui->sessions_CB->addItem(tstamp, tmp);
-      lastvalue=tmp;
+
+    if (tmp > (lastvalue+60)) {
+      ui->sessions_CB->addItem(tstamp, i - 1);
+      lastvalue = tmp;
     } else {
-      lastvalue=tmp;
+      lastvalue = tmp;
     }
   }
+
   plotLock=false;
+
   return true;
 }
 
 
 void logsDialog::on_sessions_CB_currentIndexChanged(int index)
 {
-  if (plotLock)
-     return;
-  plotLock=true;
-  double start=0;
-  double stop=-1;
-  if (index!=0) {
-    start=ui->sessions_CB->itemData(index,Qt::UserRole).toDouble();
-    if (index<(ui->sessions_CB->count()-1)) {
-      stop=ui->sessions_CB->itemData(index+1,Qt::UserRole).toDouble();
-    }
-  }
-//    if (ui->logTable->item(i-1,1)->isSelected()) {
+  if (plotLock) return;
+  plotLock = true;
+
   ui->logTable->clearSelection();
-  if (start>0) {
-    int n=csvlog.count();
-    double tmp;
-    ui->logTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    for (int i=1; i<n; i++) {
-      QString tstamp=csvlog.at(i).at(0)+QString(" ")+csvlog.at(i).at(1);
-      if (csvlog.at(i).at(1).contains(".")) {
-        tmp=QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss.zzz").toTime_t();
-        tmp+=csvlog.at(i).at(1).mid(csvlog.at(i).at(1).indexOf(".")).toDouble();
-      } else {
-        tmp=QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss").toTime_t();
-      }
-      if (stop>0) {
-        if (tmp==start) {
-          ui->logTable->selectionModel()->select(ui->logTable->model()->index(i-1,0), QItemSelectionModel::SelectCurrent|QItemSelectionModel::Rows);
-        } else if (tmp>start && tmp<stop) {
-          ui->logTable->selectionModel()->select(ui->logTable->model()->index(i-1,0), QItemSelectionModel::Select|QItemSelectionModel::Rows);
-        }
-      } else {
-        if (tmp==start) {
-          ui->logTable->selectionModel()->select(ui->logTable->model()->index(i-1,0), QItemSelectionModel::SelectCurrent|QItemSelectionModel::Rows);
-        } else if (tmp>start) {
-          ui->logTable->selectionModel()->select(ui->logTable->model()->index(i-1,0), QItemSelectionModel::Select|QItemSelectionModel::Rows);
-        }
-      }
+
+  if (index != 0) {
+    int bottom;
+    if (index < ui->sessions_CB->count() - 1) {
+      bottom = ui->sessions_CB->itemData(index + 1, Qt::UserRole).toInt();
+    } else {
+      bottom = ui->logTable->rowCount();
     }
+
+    QModelIndex topLeft = ui->logTable->model()->index(
+      ui->sessions_CB->itemData(index, Qt::UserRole).toInt(), 0 , QModelIndex());
+    QModelIndex bottomRight = ui->logTable->model()->index(
+      bottom - 1, ui->logTable->columnCount() - 1, QModelIndex());
+
+    QItemSelection selection(topLeft, bottomRight);
+    ui->logTable->selectionModel()->select(selection, QItemSelectionModel::Select);
   }
-  plotLock=false;
+
+  plotLock = false;
   plotLogs();
 }
 
@@ -611,18 +563,17 @@ void logsDialog::plotLogs()
 
   plotsCollection plots;
 
-  QList<QTableWidgetSelectionRange> selections = ui->logTable->selectedRanges();
-  int rowCount = selections.length();
+  QModelIndexList selection = ui->logTable->selectionModel()->selectedRows();
+  int rowCount = selection.length();
   bool hasLogSelection;
   QVarLengthArray<int> selectedRows;
 
   if (rowCount) {
     hasLogSelection = true;
-    foreach (QTableWidgetSelectionRange range, selections) {
-      for (int i = range.topRow(); i <= range.bottomRow(); i++) {
-        selectedRows.append(i);
-      }
+    foreach (QModelIndex index, selection) {
+      selectedRows.append(index.row());
     }
+    qSort(selectedRows.begin(), selectedRows.end());
   } else {
     hasLogSelection = false;
     rowCount = ui->logTable->rowCount();
