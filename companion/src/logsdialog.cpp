@@ -78,7 +78,6 @@ logsDialog::logsDialog(QWidget *parent) :
   connect(ui->customPlot, SIGNAL(titleDoubleClick(QMouseEvent*, QCPPlotTitle*)), this, SLOT(titleDoubleClick(QMouseEvent*, QCPPlotTitle*)));
   connect(ui->customPlot, SIGNAL(axisDoubleClick(QCPAxis*,QCPAxis::SelectablePart,QMouseEvent*)), this, SLOT(axisLabelDoubleClick(QCPAxis*,QCPAxis::SelectablePart)));
   connect(ui->customPlot, SIGNAL(legendDoubleClick(QCPLegend*,QCPAbstractLegendItem*,QMouseEvent*)), this, SLOT(legendDoubleClick(QCPLegend*,QCPAbstractLegendItem*)));
-  // connect(ui->customPlot, SIGNAL(plottableDoubleClick(QCPAbstractPlottable *, QMouseEvent *)), this, SLOT(plottableItemDoubleClick(QCPAbstractPlottable *, QMouseEvent *)));
   connect(ui->FieldsTW, SIGNAL(itemSelectionChanged()), this, SLOT(plotLogs()));
   connect(ui->logTable, SIGNAL(itemSelectionChanged()), this, SLOT(plotLogs()));
   connect(ui->Reset_PB, SIGNAL(clicked()), this, SLOT(plotLogs()));
@@ -133,11 +132,6 @@ void logsDialog::legendDoubleClick(QCPLegend *legend, QCPAbstractLegendItem *ite
     }
   }
 }
-
-// void logsDialog::plottableItemDoubleClick(QCPAbstractPlottable *  plottable, QMouseEvent * event)
-// {
-//   qDebug() << plottable->
-// }
 
 void logsDialog::selectionChanged()
 {
@@ -406,20 +400,6 @@ void logsDialog::removeAllGraphs()
   ui->customPlot->yAxis->setTickLabels(false);
   ui->customPlot->replot();
 }
-
-// void logsDialog::moveLegend()
-// {
-//   if (QAction* contextAction = qobject_cast<QAction*>(sender())) // make sure this slot is really called by a context menu action, so it carries the data we need
-//   {
-//     bool ok;
-//     int dataInt = contextAction->data().toInt(&ok);
-//     if (ok)
-//     {
-//       ui->customPlot->legend->setPositionStyle((QCPLegend::PositionStyle)dataInt);
-//       ui->customPlot->replot();
-//     }
-//   }
-// }
 
 void logsDialog::on_fileOpen_BT_clicked()
 {

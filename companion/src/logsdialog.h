@@ -46,10 +46,7 @@ private slots:
   void mouseWheel();
   void removeSelectedGraph();
   void removeAllGraphs();
-  // void moveLegend();
   void plotLogs();
-  // void plottableItemDoubleClick(QCPAbstractPlottable *  plottable, QMouseEvent * event);
-  // void graphClicked(QCPAbstractPlottable *plottable);
   void on_fileOpen_BT_clicked();
   void on_sessions_CB_currentIndexChanged(int index);
   void on_mapsButton_clicked();
