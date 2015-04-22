@@ -140,38 +140,46 @@ QString PrintDialog::printFlightModes()
     str.append("</tr>");
     for (int i=0; i<firmware->getCapability(FlightModes); i++) {
       FlightModeData *pd=&g_model->flightModeData[i];
-      str.append("<tr><td><b>"+tr("FM")+QString("%1</b> <font size=+1 face='Courier New' color=green>%2</font></td>").arg(i).arg(pd->name));
-      str.append(QString("<td  align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg((qreal)pd->fadeIn/firmware->getCapability(SlowScale)));
-      str.append(QString("<td width=\"30\" align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg((qreal)pd->fadeOut/firmware->getCapability(SlowScale)));
+      str.append("<tr><td valign=\"middle\"><b>"+tr("FM")+QString("%1</b> <font size=+1 face='Courier New' color=green>%2</font></td>").arg(i).arg(pd->name));
+      str.append(QString("<td valign=\"middle\" align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg((qreal)pd->fadeIn/firmware->getCapability(SlowScale)));
+      str.append(QString("<td valign=\"middle\" width=\"30\" align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg((qreal)pd->fadeOut/firmware->getCapability(SlowScale)));
       for (int k=0; k<4; k++) {
         //TODO trim values
-        if (pd->trimRef[k]==-1) {
-          str.append(QString("<td align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg(pd->trim[k]));
+        if (pd->trimMode[k]==-1) {
+          str.append(QString("<td valign=\"middle\" align=\"center\"><font size=+1 face='Courier New' color=grey>")+tr("Off")+QString("</font></td>"));
         } else {
-          str.append("<td align=\"right\" ><font size=+1 face='Courier New' color=green>"+tr("FM")+QString("%1</font></td>").arg(pd->trimRef[k]));
+          if (pd->trimRef[k]==i) {
+            str.append("<td valign=\"middle\" align=\"center\" ><font size=+1 face='Courier New' color=green>"+QString("%1").arg(pd->trim[k])+QString("</font></td>"));
+          } else {
+            if (pd->trimMode[k]==0) {
+              str.append("<td valign=\"middle\" align=\"center\" ><font size=+1 face='Courier New' color=green>"+tr("FM")+QString("%1").arg(pd->trimRef[k])+QString("</font></td>"));
+            } else {
+              str.append("<td valign=\"middle\" align=\"center\" ><font size=+1 face='Courier New' color=green>"+tr("FM")+QString("%1+").arg(pd->trimRef[k])+QString("<br>%1").arg(pd->trim[k])+QString("</font></td>"));
+            }
+          }
         }
       }
       for (unsigned int k=0; k<gvars; k++) {
         if (pd->gvars[k]<=1024) {
-          str.append(QString("<td align=\"right\"><font size=+1 face='Courier New' color=green>%1").arg(pd->gvars[k])+"</font></td>");
+          str.append(QString("<td align=\"right\" valign=\"middle\"><font size=+1 face='Courier New' color=green>%1").arg(pd->gvars[k])+"</font></td>");
         }
         else {
           int num = pd->gvars[k] - 1025;
           if (num>=i) num++;
-          str.append("<td align=\"right\" ><font size=+1 face='Courier New' color=green>"+tr("FM")+QString("%1</font></td>").arg(num));
+          str.append("<td align=\"right\" valign=\"middle\"><font size=+1 face='Courier New' color=green>"+tr("FM")+QString("%1</font></td>").arg(num));
         }
       }
       for (int k=0; k<firmware->getCapability(RotaryEncoders); k++) {
         if (pd->rotaryEncoders[k]<=1024) {
-          str.append(QString("<td align=\"right\"><font size=+1 face='Courier New' color=green>%1").arg(pd->rotaryEncoders[k])+"</font></td>");
+          str.append(QString("<td align=\"right\" valign=\"middle\"><font size=+1 face='Courier New' color=green>%1").arg(pd->rotaryEncoders[k])+"</font></td>");
         }
         else {
           int num = pd->rotaryEncoders[k] - 1025;
           if (num>=i) num++;
-          str.append(QString("<td align=\"right\"><font size=+1 face='Courier New' color=green>")+tr("FM")+QString("%1</font></td>").arg(num));
+          str.append(QString("<td align=\"right\" valign=\"middle\"><font size=+1 face='Courier New' color=green>")+tr("FM")+QString("%1</font></td>").arg(num));
         }
       }      
-      str.append(QString("<td align=center><font size=+1 face='Courier New' color=green>%1</font></td>").arg(pd->swtch.toString()));
+      str.append(QString("<td align=center valign=\"middle\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg(pd->swtch.toString()));
       str.append("</tr>");
     }
     str.append("</table>");
