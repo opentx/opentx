@@ -797,12 +797,12 @@ QString getTimerStr(TimerData & timer)
   return result;
 }
 
-QString getProtocol(ModelData * g_model)
+QString getProtocol(ModuleData & module)
 {
-  QString str = getProtocolStr(g_model->moduleData[0].protocol);
+  QString str = getProtocolStr(module.protocol);
 
-  if (g_model->moduleData[0].protocol == PPM)
-    str.append(QObject::tr(": %1 Channels, %2usec Delay").arg(g_model->moduleData[0].channelsCount).arg(g_model->moduleData[0].ppmDelay));
+  if (module.protocol == PPM)
+    str.append(QObject::tr(": %1 Channels, %2usec Delay, Pulse polarity %3").arg(module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString()));
 
   return str;
 }

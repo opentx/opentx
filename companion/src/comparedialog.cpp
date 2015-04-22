@@ -25,8 +25,9 @@ public:
   uint8_t models[C9X_MAX_MODELS];
 };
 
-CompareDialog::CompareDialog(QWidget * parent):
+CompareDialog::CompareDialog(QWidget * parent, Firmware * firmware):
   QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
+  firmware(firmware),
   model1(0),
   model2(0),
   ui(new Ui::CompareDialog)
@@ -80,6 +81,8 @@ void CompareDialog::printDiff()
   if (GetCurrentFirmware()->getCapability(FlightModes)) {
     printPhases();
   }
+  curvefile1=generateProcessUniqueTempFileName("curve1.png");
+  curvefile2=generateProcessUniqueTempFileName("curve2.png");  
   printExpos();
   printMixers();
   printLimits();
@@ -161,8 +164,8 @@ void CompareDialog::closeEvent(QCloseEvent *event)
 
 CompareDialog::~CompareDialog()
 {
-  qunlink(curvefile5);
-  qunlink(curvefile9);
+  qunlink(curvefile1);
+  qunlink(curvefile2);
   delete ui;
 }
 
@@ -220,10 +223,8 @@ void CompareDialog::printSetup()
   str.append(fv(tr("Timer1"), getTimerStr(g_model1->timers[0]), color));  //value, mode, count up/down
   color=getColor1(getTimerStr(g_model1->timers[1]), getTimerStr(g_model2->timers[1]));
   str.append(fv(tr("Timer2"), getTimerStr(g_model1->timers[1]), color));  //value, mode, count up/down
-  color=getColor1(getProtocol(g_model1),getProtocol(g_model2));
-  str.append(fv(tr("Protocol"), getProtocol(g_model1), color)); //proto, numch, delay,
-  color=getColor1(g_model1->moduleData[0].ppmPulsePol, g_model2->moduleData[0].ppmPulsePol);
-  str.append(fv(tr("Pulse Polarity"), g_model1->moduleData[0].polarityToString(), color));
+  color=getColor1(getProtocol(g_model1->moduleData[0]),getProtocol(g_model2->moduleData[0]));
+  str.append(fv(tr("Protocol"), getProtocol(g_model1->moduleData[0]), color)); //proto, numch, delay,
   color=getColor1(g_model1->thrTrim,g_model2->thrTrim);
   str.append(fv(tr("Throttle Trim"), g_model1->thrTrim ? tr("Enabled") : tr("Disabled"), color));
   color=getColor1(getTrimInc(g_model1),getTrimInc(g_model2));
@@ -240,10 +241,8 @@ void CompareDialog::printSetup()
   str.append(fv(tr("Timer1"), getTimerStr(g_model2->timers[0]),color));  //value, mode, count up/down
   color=getColor2(getTimerStr(g_model1->timers[1]), getTimerStr(g_model2->timers[1]));
   str.append(fv(tr("Timer2"), getTimerStr(g_model2->timers[1]),color));  //value, mode, count up/down
-  color=getColor2(getProtocol(g_model1),getProtocol(g_model2));
-  str.append(fv(tr("Protocol"), getProtocol(g_model2), color)); //proto, numch, delay,
-  color=getColor2(g_model1->moduleData[0].ppmPulsePol, g_model2->moduleData[0].ppmPulsePol);
-  str.append(fv(tr("Pulse Polarity"), g_model2->moduleData[0].polarityToString(), color));
+  color=getColor2(getProtocol(g_model1->moduleData[0]),getProtocol(g_model2->moduleData[0]));
+  str.append(fv(tr("Protocol"), getProtocol(g_model2->moduleData[0]), color)); //proto, numch, delay,
   color=getColor2(g_model1->thrTrim,g_model2->thrTrim);
   str.append(fv(tr("Throttle Trim"), g_model2->thrTrim ? tr("Enabled") : tr("Disabled"), color));
   color=getColor2(getTrimInc(g_model1),getTrimInc(g_model2));
@@ -898,82 +897,176 @@ void CompareDialog::printMixers()
 
 void CompareDialog::printCurves()
 {
-#if 0
-  int i,r,g,b,c;
+  int i,r,g,b,c,count1,count2,usedcurves=0;
+  QString cm1y,cm1x, cm2y,cm2x;
   char buffer [16];
-  QString color;
-  QColor * qplot_color[8];
-  qplot_color[0]=new QColor(0,0,127);
-  qplot_color[1]=new QColor(0,127,0);
-  qplot_color[2]=new QColor(127,0,0);
-  qplot_color[3]=new QColor(127,127,0);
-  qplot_color[4]=new QColor(0,0,255);
-  qplot_color[5]=new QColor(0,255,0);
-  qplot_color[6]=new QColor(255,0,0);
-  qplot_color[7]=new QColor(255,255,0);
+  QPen pen(Qt::black, 2, Qt::SolidLine);
+  int numcurves=firmware->getCapability(NumCurves);
+  if (numcurves==0) {
+    numcurves=16;
+  }
+
   QString str = "<table border=1 cellspacing=0 cellpadding=3 style=\"page-break-after:always;\" width=\"100%\"><tr><td><h2>";
   str.append(tr("Curves"));
   str.append("</h2></td></tr><tr><td>");
-  str.append("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td colspan=11><b>"+tr("5 Point Curves")+"</b></td></tr><tr>");
-  for(i=0; i<5; i++) 
-    str.append(doTC(tr("pt %1").arg(i+1), "", true));
-  str.append("<td></td>");
-  for(i=0; i<5; i++) 
-    str.append(doTC(tr("pt %1").arg(i+1), "", true));
-  str.append("</tr>");
+  str.append("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">");
+  QImage qi1(ISIZE+1,ISIZE+1,QImage::Format_RGB32);
+  QPainter painter1(&qi1);
+  QImage qi2(ISIZE+1,ISIZE+1,QImage::Format_RGB32);
+  QPainter painter2(&qi2);
+  painter1.setBrush(QBrush("#FFFFFF"));
+  painter2.setBrush(QBrush("#FFFFFF"));
+  painter1.setPen(QColor(0,0,0));
+  painter2.setPen(QColor(0,0,0));
+  painter1.drawRect(0,0,ISIZE,ISIZE);
+  painter2.drawRect(0,0,ISIZE,ISIZE);
+  
+  for(i=0; i<numcurves; i++) {
+    count1=0;
+    for(int j=0; j<g_model1->curves[i].count; j++) {
+      if (g_model1->curves[i].points[j].y!=0)
+        count1++;
+    }
+    count2=0;
+    for(int j=0; j<g_model2->curves[i].count; j++) {
+      if (g_model2->curves[i].points[j].y!=0)
+        count2++;
+    }
+    if ((count1>0) || (g_model1->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)|| (g_model1->curves[i].count !=5) ||
+        (count2>0) || (g_model2->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)|| (g_model2->curves[i].count !=5)) {
+      pen.setColor(colors[usedcurves]);
+      painter1.setPen(pen);
+      painter2.setPen(pen);
 
-  for(i=0; i<MAX_CURVE5; i++) {
-    qplot_color[i]->getRgb(&r,&g,&b);
-    c=r;
-    c*=256;
-    c+=g;
-    c*=256;
-    c+=b;
-    sprintf(buffer,"%06x",c);
-    str.append("<tr>");
-    for(int j=0; j<5; j++) { 
-      color=getColor1(g_model2->curves5[i][j],g_model2->curves5[i][j]);
-      str.append(doTR(QString::number(g_model1->curves5[i][j]),color));
-    }
-    str.append(QString("<td width=\"10%\" align=\"center\"><font color=#%1><b>").arg(buffer)+tr("Curve")+QString(" %1</b></font></td>").arg(i+1));
-    for(int j=0; j<5; j++) { 
-      color=getColor1(g_model2->curves5[i][j],g_model2->curves5[i][j]);
-      str.append(doTR(QString::number(g_model2->curves5[i][j]),color));
-    }
-    str.append("</tr>");
-  }
-  str.append("</table></td></tr><tr><td>");
+      colors[usedcurves].getRgb(&r,&g,&b);
+      c=r;
+      c*=256;
+      c+=g;
+      c*=256;
+      c+=b;
+      sprintf(buffer,"%06x",c);
+      // curves are different in number of points or curve type so makes little sense to compare they are just different
+      if ((g_model1->curves[i].count!=g_model2->curves[i].count) || (g_model1->curves[i].type!=g_model2->curves[i].type)) {        
+        cm1y="[";
+        cm1x="[";
+        for(int j=0; j<g_model1->curves[i].count; j++) {
+          cm1y.append(QString("%1").arg(g_model1->curves[i].points[j].y));
+          cm1x.append(QString("%1").arg(g_model1->curves[i].points[j].x));
+          if (j<(g_model1->curves[i].count-1)) {
+            cm1y.append(",");
+            cm1x.append(",");
+          }
+          if (g_model1->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)
+            painter1.drawLine(ISIZE/2+(ISIZE*g_model1->curves[i].points[j-1].x)/200,ISIZE/2-(ISIZE*g_model1->curves[i].points[j-1].y)/200,ISIZE/2+(ISIZE*g_model1->curves[i].points[j].x)/200,ISIZE/2-(ISIZE*g_model1->curves[i].points[j].y)/200);
+          else
+            painter1.drawLine(ISIZE*(j-1)/(g_model1->curves[i].count-1),ISIZE/2-(ISIZE*g_model1->curves[i].points[j-1].y)/200,ISIZE*(j)/(g_model1->curves[i].count-1),ISIZE/2-(ISIZE*g_model1->curves[i].points[j].y)/200);
+          
+        }
+        cm1y.append("]");
+        cm1x.append("]");
+        cm2y="[";
+        cm2x="[";
+        for(int j=0; j<g_model2->curves[i].count; j++) {
+          cm2y.append(QString("%1").arg(g_model2->curves[i].points[j].y));
+          cm2x.append(QString("%1").arg(g_model2->curves[i].points[j].x));
+          if (j<(g_model2->curves[i].count-1)) {
+            cm2y.append(",");
+            cm2x.append(",");
+          }
+          if (g_model2->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)
+            painter2.drawLine(ISIZE/2+(ISIZE*g_model2->curves[i].points[j-1].x)/200,ISIZE/2-(ISIZE*g_model2->curves[i].points[j-1].y)/200,ISIZE/2+(ISIZE*g_model2->curves[i].points[j].x)/200,ISIZE/2-(ISIZE*g_model2->curves[i].points[j].y)/200);
+          else
+            painter2.drawLine(ISIZE*(j-1)/(g_model2->curves[i].count-1),ISIZE/2-(ISIZE*g_model2->curves[i].points[j-1].y)/200,ISIZE*(j)/(g_model2->curves[i].count-1),ISIZE/2-(ISIZE*g_model2->curves[i].points[j].y)/200);
+          
+        }
+        cm2y.append("]");
+        cm2x.append("]");
+        str.append("<tr><td nowrap width=\"45%\"><font color=green>");
+        str.append(cm1y);
+        if ((g_model1->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)) {
+          str.append(QString("<br>")+cm1x+QString("</font></td>"));
+        }      
+        str.append(QString("<td width=\"10%\" align=\"center\"><font color=#%1><b>").arg(buffer)+tr("Curve")+QString(" %1</b></font></td>").arg(i+1));
+        str.append("<td nowrap width=\"45%\"><font color=red>");
+        str.append(cm2y);
+        if ((g_model2->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)) {
+          str.append(QString("<br>")+cm2x+QString("</font></td></tr>"));
+        }      
+      } else {
+      // curves have the same number of points and the same type, we can compare them point by point
+        cm1y="[";
+        cm1x="[";
+        cm2y="[";
+        cm2x="[";
+        for(int j=0; j<g_model1->curves[i].count; j++) {
+          if (g_model1->curves[i].points[j].y!=g_model2->curves[i].points[j].y) {
+            cm1y.append(QString("<font color=green>%1</font>").arg(g_model1->curves[i].points[j].y));
+            cm2y.append(QString("<font color=red>%1</font>").arg(g_model2->curves[i].points[j].y));
+          } else {
+            cm1y.append(QString("<font color=grey>%1</font>").arg(g_model1->curves[i].points[j].y));
+            cm2y.append(QString("<font color=grey>%1</font>").arg(g_model2->curves[i].points[j].y));            
+          }
+          if (g_model1->curves[i].points[j].x!=g_model2->curves[i].points[j].x) {
+            cm1x.append(QString("<font color=green>%1</font>").arg(g_model1->curves[i].points[j].x));
+            cm2x.append(QString("<font color=red>%1</font>").arg(g_model2->curves[i].points[j].x));
+          } else {
+            cm1x.append(QString("<font color=grey>%1</font>").arg(g_model1->curves[i].points[j].x));
+            cm2x.append(QString("<font color=grey>%1</font>").arg(g_model2->curves[i].points[j].x));            
+          }
+          if (j<(g_model1->curves[i].count-1)) {
+            cm1y.append(",");
+            cm1x.append(",");
+            cm2y.append(",");
+            cm2x.append(",");
+          }
+          if (g_model1->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)
+            painter1.drawLine(ISIZE/2+(ISIZE*g_model1->curves[i].points[j-1].x)/200,ISIZE/2-(ISIZE*g_model1->curves[i].points[j-1].y)/200,ISIZE/2+(ISIZE*g_model1->curves[i].points[j].x)/200,ISIZE/2-(ISIZE*g_model1->curves[i].points[j].y)/200);
+          else
+            painter1.drawLine(ISIZE*(j-1)/(g_model1->curves[i].count-1),ISIZE/2-(ISIZE*g_model1->curves[i].points[j-1].y)/200,ISIZE*(j)/(g_model1->curves[i].count-1),ISIZE/2-(ISIZE*g_model1->curves[i].points[j].y)/200);
+          if (g_model2->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)
+            painter2.drawLine(ISIZE/2+(ISIZE*g_model2->curves[i].points[j-1].x)/200,ISIZE/2-(ISIZE*g_model2->curves[i].points[j-1].y)/200,ISIZE/2+(ISIZE*g_model2->curves[i].points[j].x)/200,ISIZE/2-(ISIZE*g_model2->curves[i].points[j].y)/200);
+          else
+            painter2.drawLine(ISIZE*(j-1)/(g_model2->curves[i].count-1),ISIZE/2-(ISIZE*g_model2->curves[i].points[j-1].y)/200,ISIZE*(j)/(g_model2->curves[i].count-1),ISIZE/2-(ISIZE*g_model2->curves[i].points[j].y)/200);          
+        }
+        painter1.setPen(QColor(0,0,0));
+        painter2.setPen(QColor(0,0,0));
+        painter1.drawLine(0,ISIZE/2,ISIZE,ISIZE/2);
+        painter2.drawLine(0,ISIZE/2,ISIZE,ISIZE/2);
+        painter1.drawLine(ISIZE/2,0,ISIZE/2,ISIZE);
+        painter2.drawLine(ISIZE/2,0,ISIZE/2,ISIZE);
+        for(i=0; i<21; i++) {
+          painter1.drawLine(ISIZE/2-5,(ISIZE*i)/(20),ISIZE/2+5,(ISIZE*i)/(20));
+          painter2.drawLine(ISIZE/2-5,(ISIZE*i)/(20),ISIZE/2+5,(ISIZE*i)/(20));
+          painter1.drawLine((ISIZE*i)/(20),ISIZE/2-5,(ISIZE*i)/(20),ISIZE/2+5);
+          painter2.drawLine((ISIZE*i)/(20),ISIZE/2-5,(ISIZE*i)/(20),ISIZE/2+5);
+        }
 
-  str.append("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td colspan=19><b>"+tr("9 Point Curves")+"</b></td></tr><tr>");
-  for(i=0; i<9; i++) 
-    str.append(doTC(tr("pt %1").arg(i+1), "", true));
-  str.append("<td></td>");
-  for(i=0; i<9; i++) 
-    str.append(doTC(tr("pt %1").arg(i+1), "", true));
-  str.append("</tr>");
-  for(i=0; i<MAX_CURVE9; i++) {
-    qplot_color[i]->getRgb(&r,&g,&b);
-    c=r;
-    c*=256;
-    c+=g;
-    c*=256;
-    c+=b;
-    sprintf(buffer,"%06x",c);
-    str.append("<tr>");
-    for(int j=0; j<9; j++) { 
-      color=getColor1(g_model2->curves9[i][j],g_model2->curves9[i][j]);
-      str.append(doTR(QString::number(g_model1->curves5[i][j]),color));
+        cm1y.append("]");
+        cm1x.append("]");
+        cm2y.append("]");
+        cm2x.append("]");
+        str.append("<tr><td nowrap width=\"45%\">");
+        str.append(cm1y);
+        if ((g_model1->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)) {
+          str.append(QString("<br>")+cm1x+QString("</td>"));
+        }      
+        str.append(QString("<td width=\"10%\" align=\"center\"><font color=#%1><b>").arg(buffer)+tr("Curve")+QString(" %1</b></font></td>").arg(i+1));
+        str.append("<td nowrap width=\"45%\">");
+        str.append(cm2y);
+        if ((g_model2->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)) {
+          str.append(QString("<br>")+cm2x+QString("</td></tr>"));
+        }      
+      }
+      usedcurves++;
     }
-    str.append(QString("<td width=\"10%\" align=\"center\"><font color=#%1><b>").arg(buffer)+tr("Curve")+QString(" %1</b></font></td>").arg(i+1+MAX_CURVE5));
-    for(int j=0; j<9; j++) { 
-      color=getColor1(g_model2->curves9[i][j],g_model2->curves9[i][j]);
-      str.append(doTR(QString::number(g_model2->curves9[i][j]),color));
-    }
-    str.append("</tr>");
   }
-  str.append("</table></td></tr></table>");
-  te->append(str);
-#endif
+  if (usedcurves>0) {
+    str.append(QString("<tr><td width=45 align=center><img src=\"%1\" border=0></td><td>&nbsp;</td><td width=45 align=center><img src=\"%2\" border=0></td>").arg(curvefile1).arg(curvefile2));
+    str.append("</table></td></tr></table>");
+    qi1.save(curvefile1, "png",100); 
+    qi2.save(curvefile2, "png",100); 
+    te->append(str);
+  }
 }
 
 void CompareDialog::printSwitches()
@@ -1026,7 +1119,7 @@ void CompareDialog::printFSwitches()
   for(int i=0; i<GetCurrentFirmware()->getCapability(CustomFunctions); i++)
   {
     if (g_model1->customFn[i].swtch.type || g_model2->customFn[i].swtch.type) {
-      if ((g_model1->customFn[i].swtch != g_model2->customFn[i].swtch) || (g_model1->customFn[i].func!=g_model2->customFn[i].func) || (g_model1->customFn[i].adjustMode!=g_model2->customFn[i].adjustMode) || (g_model1->customFn[i].param!=g_model2->customFn[i].param)) {
+      if ((g_model1->customFn[i].swtch != g_model2->customFn[i].swtch) || (g_model1->customFn[i].func!=g_model2->customFn[i].func) || (g_model1->customFn[i].adjustMode!=g_model2->customFn[i].adjustMode) || (g_model1->customFn[i].param!=g_model2->customFn[i].param) || (g_model1->customFn[i].enabled != g_model2->customFn[i].enabled) || (g_model1->customFn[i].repeatParam != g_model2->customFn[i].repeatParam)) {
         color1="green";
         color2="red";
       } else {

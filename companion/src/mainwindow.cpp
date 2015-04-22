@@ -863,7 +863,7 @@ void MainWindow::burnFuses()
 
 void MainWindow::compare()
 {
-  CompareDialog *fd = new CompareDialog(this);
+  CompareDialog *fd = new CompareDialog(this,GetCurrentFirmware());
   fd->setAttribute(Qt::WA_DeleteOnClose, true);
   fd->show();
 }

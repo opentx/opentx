@@ -15,9 +15,10 @@ class CompareDialog : public QDialog
     Q_OBJECT
 
   public:
-    CompareDialog(QWidget *parent);
+    CompareDialog(QWidget *parent, Firmware * firmware);
     ~CompareDialog();
-
+    Firmware * firmware;
+    
   protected:
     GeneralSettings * settings;
     ModelData * g_model1;
@@ -60,8 +61,8 @@ class CompareDialog : public QDialog
     bool ChannelHasMix(MixData * mixArray, uint8_t destCh);
     
     QTextEdit * te;
-    QString curvefile5;
-    QString curvefile9;
+    QString curvefile1;
+    QString curvefile2;
     QDir *qd;
     
 private slots:
