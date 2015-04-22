@@ -109,18 +109,29 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
   QGraphicsScene *scene = new QGraphicsScene(ui->curvePreview);
   scene->setItemIndexMethod(QGraphicsScene::NoIndex);
   ui->curvePreview->setScene(scene);
-
-  for (int i=0; i<firmware->getCapability(NumCurves); i++) {
+  int numcurves=firmware->getCapability(NumCurves);
+  int limit;
+  if (numcurves>16) {
+      limit=numcurves/2;
+  } else {
+      limit=numcurves;
+  }
+  for (int i=0; i<numcurves; i++) {
     visibleCurves[i] = false;
 
     // The reset curve button
     QPushButton * reset = new QPushButton(this);
     reset->setProperty("index", i);
     reset->setMinimumSize(QSize(0, 0));
+    reset->setMaximumSize(QSize(16, 16));
     reset->setIcon(CompanionIcon("clear.png"));
     reset->setIconSize(QSize(14, 14));
     connect(reset, SIGNAL(clicked()), this, SLOT(resetCurve()));
-    ui->curvesLayout->addWidget(reset, i, 0, 1, 1);
+    if (i<limit) {
+      ui->curvesLayout->addWidget(reset, i, 0, 1, 1);
+    } else {
+      ui->curvesLayout2->addWidget(reset, i-limit, 0, 1, 1);  
+    }
 
     // The edit curve button
     QPushButton * edit = new QPushButton(this);
@@ -136,14 +147,29 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
     edit->setPalette(palette);
     edit->setText(tr("Curve %1").arg(i+1));
     connect(edit, SIGNAL(clicked()), this, SLOT(editCurve()));
-    ui->curvesLayout->addWidget(edit, i, 1, 1, 1);
+    if (i<limit) {
+      ui->curvesLayout->addWidget(edit, i, 1, 1, 1);
+    } else {
+      ui->curvesLayout2->addWidget(edit, i-limit, 1, 1, 1);
+    }
 
     // The curve plot checkbox
     QCheckBox * plot = new QCheckBox(this);
     plot->setProperty("index", i);
     plot->setPalette(palette);
     connect(plot, SIGNAL(toggled(bool)), this, SLOT(plotCurve(bool)));
-    ui->curvesLayout->addWidget(plot, i, 2, 1, 1);
+    if (i<limit) {
+      ui->curvesLayout->addWidget(plot, i, 2, 1, 1);
+    } else {
+      ui->curvesLayout2->addWidget(plot, i-limit, 2, 1, 1);
+    }
+  }
+  QSpacerItem * item = new QSpacerItem(1,1, QSizePolicy::Fixed, QSizePolicy::Expanding);
+
+  ui->curvesLayout->addItem(item,limit+1,1,1,1,0);
+  if (limit!=numcurves) {
+    QSpacerItem * item2 = new QSpacerItem(1,1, QSizePolicy::Fixed, QSizePolicy::Expanding);
+    ui->curvesLayout2->addItem(item2,limit+1,1,1,1,0);
   }
 
   for (int i=0; i<C9X_MAX_POINTS; i++) {
