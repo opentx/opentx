@@ -85,13 +85,17 @@ void PrintDialog::printSetup()
     str.append(fv(tr("EEprom Size"), QString("%1").arg(firmware->getEepromInterface()->getSize(*g_model))));
     str.append(fv(tr("Timer1"), getTimerStr(g_model->timers[0])));  //value, mode, count up/down
     str.append(fv(tr("Timer2"), getTimerStr(g_model->timers[1])));  //value, mode, count up/down
+
     if (firmware->getCapability(NumModules)>1) {
-      str.append("<b>"+tr("Internal module")+"</b><br>"); //proto, numch, delay,
+      str.append("<b>"+(IS_TARANIS(firmware->getBoard()) ? tr("Internal Radio System") : tr("Radio System") )+"</b><br>&nbsp;&nbsp;"); //proto, numch, delay,
     }
-    str.append(fv(tr("Protocol"), getProtocol(g_model->moduleData[0]))); //proto, numch, delay,
+    str.append(fv(tr("Protocol"), getProtocol(g_model->moduleData[0]))); 
     if (firmware->getCapability(NumModules)>1) {
-      str.append("<b>"+tr("External module")+"</b><br>"); //proto, numch, delay,
-      str.append(fv(tr("Protocol"), getProtocol(g_model->moduleData[1]))); //proto, numch, delay,
+      str.append("<b>"+(IS_TARANIS(firmware->getBoard()) ? tr("External Radio Module") : tr("Extra Radio System"))+"</b><br>&nbsp;&nbsp;"); //proto, numch, delay,
+      str.append(fv(tr("Protocol"), getProtocol(g_model->moduleData[1])));
+    }
+    if (IS_TARANIS(firmware->getBoard())){
+      str.append(fv(tr("Trainer port mode"), getTrainerMode(g_model->trainerMode, g_model->moduleData[2]))); 
     }
     str.append(fv(tr("Throttle Trim"), g_model->thrTrim ? tr("Enabled") : tr("Disabled")));
     str.append(fv(tr("Trim Increment"), getTrimInc(g_model)));

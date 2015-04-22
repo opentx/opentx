@@ -124,6 +124,7 @@ int findmult(float value, float base);
 QString getTrimInc(ModelData * g_model);
 QString getTimerStr(TimerData & timer);
 QString getProtocol(ModuleData & module);
+QString getTrainerMode(const int trainermode, ModuleData & module);
 QString getCenterBeepStr(ModelData * g_model);
 
 /* FrSky helpers */
