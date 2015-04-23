@@ -415,7 +415,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   INCDIRS += targets/stock
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
-  EXTRABOARDSRC = targets/common_avr/telemetry_driver.cpp
+  EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/common_avr/telemetry_driver.cpp
   ifeq ($(GUI), YES)
     EXTRABOARDSRC += targets/stock/lcd_driver.cpp
   endif
@@ -435,6 +435,10 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
 
   ifeq ($(TELEMETRY_MOD), 14051)
     CPPDEFS += -DTELEMETRY_MOD_14051
+  endif
+
+  ifeq ($(TELEMETRY_MOD), 14051_SWAPPED)
+    CPPDEFS += -DTELEMETRY_MOD_14051_SWAPPED
   endif
 
   ifeq ($(AUDIO), YES)
@@ -488,7 +492,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM128 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   INCDIRS += targets/stock
   BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
-  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
@@ -505,6 +509,10 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
 
   ifeq ($(TELEMETRY_MOD), 14051)
     CPPDEFS += -DTELEMETRY_MOD_14051
+  endif
+
+  ifeq ($(TELEMETRY_MOD), 14051_SWAPPED)
+    CPPDEFS += -DTELEMETRY_MOD_14051_SWAPPED
   endif
 
   ifeq ($(AUDIO), YES)
@@ -554,7 +562,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM2561 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   INCDIRS += targets/stock
   BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
-  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
@@ -622,7 +630,7 @@ ifeq ($(PCB), GRUVIN9X)
   THR_TRACE = YES
   INCDIRS += targets/gruvin9x targets/stock $(FATFSDIR) $(FATFSDIR)/option
   BOARDSRC = main_avr.cpp targets/gruvin9x/board_gruvin9x.cpp
-  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += audio_avr.cpp haptic.cpp debug.cpp
@@ -680,7 +688,7 @@ ifeq ($(PCB), MEGA2560)
   ifeq ($(LCD), ST7565R)
     CPPDEFS += -DLCD_ST7565R
   endif   
-    EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+    EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
 
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/gruvin9x/diskio.cpp

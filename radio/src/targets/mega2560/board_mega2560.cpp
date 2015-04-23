@@ -53,9 +53,7 @@ inline void boardInit()
   DDRK = 0b00000000;  PORTK = 0b00000000; // Analogic input (no pull-ups)
   DDRL = 0b00000000;  PORTL = 0b11111111; // 7:TRN_SW 6:EleDR_SW, 5:ESC, 4:MENU 3:Keyb_Left, 2:Keyb_Right, 1:Keyb_Up, 0:Keyb_Down
   
-  ADMUX=ADC_VREF_TYPE;
-  ADCSRA=0x85; // ADC enabled, pre-scaler division=32 (no interrupt, no auto-triggering)
-  ADCSRB=(1<<MUX5);
+  adcInit();
 
   /**** Set up timer/counter 0 ****/
   // TCNT0  10ms = 16MHz/1024/156(.25) periodic timer (100ms interval)
