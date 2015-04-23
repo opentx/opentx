@@ -737,6 +737,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return (IS_TARANIS(board) ? true : false);
     case MixersMonitor:
       return id.contains("mixersmon") ? 1 : 0;
+    case HasBatMeterRange:
+      return (IS_TARANIS(board) ? true : false);
     default:
       return 0;
   }
