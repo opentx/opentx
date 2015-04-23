@@ -101,7 +101,7 @@ g_eeGeneral(radioData.generalSettings)
   else {
     mavbaudEditLock = true;
     ui->mavbaud_CB->setCurrentIndex(g_eeGeneral.mavbaud);
-      // TODO why ??? populateVoiceLangCB(ui->voiceLang_CB, g_eeGeneral.ttsLanguage);
+    // TODO why ??? populateVoiceLangCB(ui->voiceLang_CB, g_eeGeneral.ttsLanguage);
     mavbaudEditLock = false;
   }
 
@@ -273,6 +273,14 @@ g_eeGeneral(radioData.generalSettings)
     ui->pot3TypeLabel->hide();
   }
 
+  if (!GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
+    ui->batMeterRangeLabel->hide();
+    ui->HasBatMeterMinRangeLabel->hide();
+    ui->HasBatMeterMaxRangeLabel->hide();
+    ui->vBatMinDSB->hide();
+    ui->vBatMaxDSB->hide();
+  }
+
   if (IS_TARANIS(eepromInterface->getBoard())) {
     ui->serialPortMode->setCurrentIndex(g_eeGeneral.hw_uartMode);
   }
@@ -397,6 +405,12 @@ void GeneralEdit::setValues()
   ui->hapticStrength->setValue(g_eeGeneral.hapticStrength);
   ui->hapticmodeCB->setCurrentIndex(g_eeGeneral.hapticMode+2);
   ui->battCalibDSB->setValue((double)g_eeGeneral.vBatCalib/10);
+
+  if (GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
+    ui->vBatMinDSB->setValue((double)(g_eeGeneral.vBatMin + 90) / 10);
+    ui->vBatMaxDSB->setValue((double)(g_eeGeneral.vBatMax + 120) / 10);
+  }
+
   ui->CurrentCalib_SB->setValue((double)g_eeGeneral.currentCalib);
 
   ui->ana1Neg->setValue(g_eeGeneral.calibSpanNeg[0]);
@@ -454,6 +468,18 @@ void GeneralEdit::on_battwarningDSB_editingFinished()
 void GeneralEdit::on_battCalibDSB_editingFinished()
 {
   g_eeGeneral.vBatCalib = ui->battCalibDSB->value()*10;
+  updateSettings();
+}
+
+void GeneralEdit::on_vBatMinDSB_editingFinished()
+{
+  g_eeGeneral.vBatMin = ui->vBatMinDSB->value() * 10 - 90;
+  updateSettings();
+}
+
+void GeneralEdit::on_vBatMaxDSB_editingFinished()
+{
+  g_eeGeneral.vBatMax = ui->vBatMaxDSB->value() * 10 - 120;
   updateSettings();
 }
 
@@ -1014,6 +1040,10 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       }
       g_eeGeneral.currentCalib=currentCalib;
       g_eeGeneral.vBatCalib=vBatCalib;
+      if (GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
+        g_eeGeneral.vBatMin = (int8_t) g.profile[profile_id].vBatMin();
+        g_eeGeneral.vBatMax = (int8_t) g.profile[profile_id].vBatMax();
+      }
       g_eeGeneral.vBatWarn=vBatWarn;
       g_eeGeneral.PPM_Multiplier=PPM_Multiplier;
     } else {
@@ -1110,6 +1140,10 @@ void GeneralEdit::on_calstore_PB_clicked()
     }
     g.profile[profile_id].trainerCalib( calib );
     g.profile[profile_id].vBatCalib( g_eeGeneral.vBatCalib );
+    if (GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
+      g.profile[profile_id].vBatMin( g_eeGeneral.vBatMin );
+      g.profile[profile_id].vBatMax( g_eeGeneral.vBatMax );
+    }
     g.profile[profile_id].currentCalib( g_eeGeneral.currentCalib );
     g.profile[profile_id].vBatWarn( g_eeGeneral.vBatWarn );
     g.profile[profile_id].ppmMultiplier( g_eeGeneral.PPM_Multiplier );

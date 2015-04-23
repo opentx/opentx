@@ -1,6 +1,6 @@
 /*
  * Author - Kjell Kernen
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
@@ -313,6 +313,8 @@ int     Profile::currentCalib()  const { return _currentCalib;  }
 int     Profile::gsStickMode()   const { return _gsStickMode;   }
 int     Profile::ppmMultiplier() const { return _ppmMultiplier; }
 int     Profile::vBatCalib()     const { return _vBatCalib;     }
+int     Profile::vBatMin()       const { return _vBatMin;       }
+int     Profile::vBatMax()       const { return _vBatMax;       }
 int     Profile::vBatWarn()      const { return _vBatWarn;      }
 
 // Set declarations
@@ -338,6 +340,8 @@ void Profile::currentCalib  (const int     x) { store(x, _currentCalib,  "curren
 void Profile::gsStickMode   (const int     x) { store(x, _gsStickMode,   "GSStickMode"           ,"Profiles", QString("profile%1").arg(index));}
 void Profile::ppmMultiplier (const int     x) { store(x, _ppmMultiplier, "PPM_Multiplier"        ,"Profiles", QString("profile%1").arg(index));}
 void Profile::vBatCalib     (const int     x) { store(x, _vBatCalib,     "VbatCalib"             ,"Profiles", QString("profile%1").arg(index));}
+void Profile::vBatMin       (const int     x) { store(x, _vBatMin,       "VbatMin"               ,"Profiles", QString("profile%1").arg(index));}
+void Profile::vBatMax       (const int     x) { store(x, _vBatMax,       "VbatMax"               ,"Profiles", QString("profile%1").arg(index));}
 void Profile::vBatWarn      (const int     x) { store(x, _vBatWarn,      "vBatWarn"              ,"Profiles", QString("profile%1").arg(index));}
 
 // Constructor
@@ -346,7 +350,7 @@ Profile::Profile()
     index = -1;
 }
 
-// The default copy operator can not be used since the index variable would be destroyed 
+// The default copy operator can not be used since the index variable would be destroyed
 Profile& Profile::operator=(const Profile& rhs)
 {
     name         ( rhs.name()          );
@@ -369,6 +373,8 @@ Profile& Profile::operator=(const Profile& rhs)
     gsStickMode  ( rhs.gsStickMode()   );
     ppmMultiplier( rhs.ppmMultiplier() );
     vBatCalib    ( rhs.vBatCalib()     );
+    vBatMin      ( rhs.vBatMin()       );
+    vBatMax      ( rhs.vBatMax()       );
     vBatWarn     ( rhs.vBatWarn()      );
 
     return *this;
@@ -413,6 +419,8 @@ void Profile::initFwVariables()
     _gsStickMode =   0;
     _ppmMultiplier = 0;
     _vBatCalib =     0;
+    _vBatMin =       0;
+    _vBatMax =       0;
     _vBatWarn =      0;
 }
 
@@ -464,6 +472,8 @@ void Profile::flush()
     getset( _gsStickMode,   "GSStickMode"           ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _ppmMultiplier, "PPM_Multiplier"        ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _vBatCalib,     "VbatCalib"             ,0      ,"Profiles", QString("profile%1").arg(index));
+    getset( _vBatMin,       "VbatMin"               ,0      ,"Profiles", QString("profile%1").arg(index));
+    getset( _vBatMax,       "VbatMax"               ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _vBatWarn,      "vBatWarn"              ,0      ,"Profiles", QString("profile%1").arg(index));
 }
 
@@ -583,25 +593,25 @@ AppData::AppData()
     for (int i=0; i<MAX_JOYSTICKS; i++)
         joystick[i].init( i );
 
-    // Move existing 2.0 settings if present   
+    // Move existing 2.0 settings if present
     QSettings settings(COMPANY, PRODUCT);
     if (profile[0].name().isEmpty())
     {
-        QSettings pre2016settings("OpenTX", "OpenTX Companion"); 
+        QSettings pre2016settings("OpenTX", "OpenTX Companion");
 
         QStringList keys = pre2016settings.allKeys();
         for (QStringList::iterator i=keys.begin(); i!=keys.end(); i++)
         {
             settings.setValue(*i, pre2016settings.value(*i));
         }
-        
+
         //Reload profiles
         for (int i=0; i<MAX_PROFILES; i++)
             profile[i].init( i );
-            
+
         pre2016settings.clear();
     }
-    
+
     // Else import settings from companion9x if present
     if (profile[0].name().isEmpty())
     {
@@ -649,7 +659,7 @@ AppData::AppData()
         settings.remove("patchImage");
         settings.remove("rename_firmware_files");
         settings.remove("sdPath");
-        settings.remove("SplashFileName"); 
+        settings.remove("SplashFileName");
         settings.remove("startup_check_companion9x");
         settings.remove("wizardEnable");
 
