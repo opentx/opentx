@@ -57,8 +57,7 @@ inline void boardInit()            // Done 2013.10.09 : trims, keyboard, LCD, ID
   DDRK = 0b00000000;  PORTK = 0b00000000; // Analogic input (no pull-ups)
   DDRL = 0b10000000;  PORTL = 0b11111111; // 7: Hold_PWR_On (1=On, default Off), 6:Jack_Presence_TTL, 5-0: Keyboard inputs
 
-  ADMUX=ADC_VREF_TYPE;
-  ADCSRA=0x85; // ADC enabled, pre-scaler division=32 (no interrupt, no auto-triggering)
+  adcInit();
   ADCSRB=(1<<MUX5);
 
   /**** Set up timer/counter 0 ****/

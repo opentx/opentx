@@ -107,6 +107,10 @@ void adcInit()
   DMA2_Stream0->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 }
 
+void adcPrepare()
+{
+}
+
 void adcRead()
 {
   uint32_t i ;
