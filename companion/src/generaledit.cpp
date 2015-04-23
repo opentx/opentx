@@ -405,10 +405,12 @@ void GeneralEdit::setValues()
   ui->hapticStrength->setValue(g_eeGeneral.hapticStrength);
   ui->hapticmodeCB->setCurrentIndex(g_eeGeneral.hapticMode+2);
   ui->battCalibDSB->setValue((double)g_eeGeneral.vBatCalib/10);
+
   if (GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
     ui->vBatMinDSB->setValue((double)(g_eeGeneral.vBatMin + 90) / 10);
     ui->vBatMaxDSB->setValue((double)(g_eeGeneral.vBatMax + 120) / 10);
   }
+
   ui->CurrentCalib_SB->setValue((double)g_eeGeneral.currentCalib);
 
   ui->ana1Neg->setValue(g_eeGeneral.calibSpanNeg[0]);
