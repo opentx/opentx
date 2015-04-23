@@ -254,7 +254,19 @@ void CompareDialog::printSetup()
   color=getColor1(getTimerStr(g_model1->timers[1]), getTimerStr(g_model2->timers[1]));
   str.append(fv(tr("Timer2"), getTimerStr(g_model1->timers[1]), color));  //value, mode, count up/down
   color=getColor1(getProtocol(g_model1->moduleData[0]),getProtocol(g_model2->moduleData[0]));
-  str.append(fv(tr("Protocol"), getProtocol(g_model1->moduleData[0]), color)); //proto, numch, delay,
+  if (firmware->getCapability(NumModules)>1) {
+    str.append("<b>"+(IS_TARANIS(firmware->getBoard()) ? tr("Internal Radio System") : tr("Radio System") )+"</b><br>&nbsp;&nbsp;"); //proto, numch, delay,
+  }
+  str.append(fv(tr("Protocol"), getProtocol(g_model1->moduleData[0]),color)); 
+  if (firmware->getCapability(NumModules)>1) {
+    color=getColor1(getProtocol(g_model1->moduleData[1]),getProtocol(g_model2->moduleData[1]));
+    str.append("<b>"+(IS_TARANIS(firmware->getBoard()) ? tr("External Radio Module") : tr("Extra Radio System"))+"</b><br>&nbsp;&nbsp;"); //proto, numch, delay,
+    str.append(fv(tr("Protocol"), getProtocol(g_model1->moduleData[1]),color));
+  }
+  if (IS_TARANIS(firmware->getBoard())){
+    color=getColor1(getTrainerMode(g_model1->trainerMode, g_model1->moduleData[2]),getTrainerMode(g_model2->trainerMode, g_model2->moduleData[2]));
+    str.append(fv(tr("Trainer port mode"), getTrainerMode(g_model1->trainerMode, g_model1->moduleData[2]),color)); 
+  }
   color=getColor1(g_model1->thrTrim,g_model2->thrTrim);
   str.append(fv(tr("Throttle Trim"), g_model1->thrTrim ? tr("Enabled") : tr("Disabled"), color));
   color=getColor1(getTrimInc(g_model1),getTrimInc(g_model2));
@@ -272,7 +284,19 @@ void CompareDialog::printSetup()
   color=getColor2(getTimerStr(g_model1->timers[1]), getTimerStr(g_model2->timers[1]));
   str.append(fv(tr("Timer2"), getTimerStr(g_model2->timers[1]),color));  //value, mode, count up/down
   color=getColor2(getProtocol(g_model1->moduleData[0]),getProtocol(g_model2->moduleData[0]));
-  str.append(fv(tr("Protocol"), getProtocol(g_model2->moduleData[0]), color)); //proto, numch, delay,
+  if (firmware->getCapability(NumModules)>1) {
+    str.append("<b>"+(IS_TARANIS(firmware->getBoard()) ? tr("Internal Radio System") : tr("Radio System") )+"</b><br>&nbsp;&nbsp;"); //proto, numch, delay,
+  }
+  str.append(fv(tr("Protocol"), getProtocol(g_model2->moduleData[0]),color)); 
+  if (firmware->getCapability(NumModules)>1) {
+    color=getColor2(getProtocol(g_model1->moduleData[1]),getProtocol(g_model2->moduleData[1]));
+    str.append("<b>"+(IS_TARANIS(firmware->getBoard()) ? tr("External Radio Module") : tr("Extra Radio System"))+"</b><br>&nbsp;&nbsp;"); //proto, numch, delay,
+    str.append(fv(tr("Protocol"), getProtocol(g_model2->moduleData[1]),color));
+  }
+  if (IS_TARANIS(firmware->getBoard())){
+    color=getColor2(getTrainerMode(g_model1->trainerMode, g_model1->moduleData[2]),getTrainerMode(g_model2->trainerMode, g_model2->moduleData[2]));
+    str.append(fv(tr("Trainer port mode"), getTrainerMode(g_model2->trainerMode, g_model2->moduleData[2]),color)); 
+  }
   color=getColor2(g_model1->thrTrim,g_model2->thrTrim);
   str.append(fv(tr("Throttle Trim"), g_model2->thrTrim ? tr("Enabled") : tr("Disabled"), color));
   color=getColor2(getTrimInc(g_model1),getTrimInc(g_model2));
