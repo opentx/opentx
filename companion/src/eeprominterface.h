@@ -1,6 +1,6 @@
 /*
  * Author - Bertrand Songis <bsongis@gmail.com>
- * 
+ *
  * Based on th9x -> http://code.google.com/p/th9x/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -361,9 +361,9 @@ class RawSource {
     }
 
     QString toString(const ModelData & model);
-    
+
     RawSourceRange getRange(const ModelData & model, const GeneralSettings & settings, unsigned int flags=0) const;
-    
+
     bool operator == ( const RawSource & other) {
       return (this->type == other.type) && (this->index == other.index);
     }
@@ -1053,9 +1053,9 @@ class ModelData {
 };
 
 class RadioData {
-  public:   
+  public:
     GeneralSettings generalSettings;
-    ModelData models[C9X_MAX_MODELS];    
+    ModelData models[C9X_MAX_MODELS];
 };
 
 // TODO rename FlightPhase to FlightMode
@@ -1161,7 +1161,8 @@ enum Capability {
   MavlinkTelemetry,
   HasInputDiff,
   HasMixerExpo,
-  MixersMonitor
+  MixersMonitor,
+  HasBatMeterRange
 };
 
 class SimulatorInterface;
@@ -1181,15 +1182,15 @@ class EEPROMInterface
     virtual bool load(RadioData &radioData, const uint8_t *eeprom, int size) = 0;
 
     virtual bool loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index) = 0;
-    
+
     virtual bool loadxml(RadioData &radioData, QDomDocument &doc) = 0;
 
     virtual int save(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, uint8_t version=0) = 0;
 
     virtual int getSize(ModelData &) = 0;
-    
+
     virtual int getSize(GeneralSettings &) = 0;
-    
+
     virtual int isAvailable(Protocol proto, int port=0) = 0;
 
     virtual const int getEEpromSize() = 0;

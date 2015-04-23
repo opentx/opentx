@@ -32,7 +32,7 @@ class GeneralEdit : public QDialog
 
   protected:
     virtual bool eventFilter(QObject *obj, QEvent *event);
-    
+
   signals:
     void modelValuesChanged();
 
@@ -108,11 +108,11 @@ class GeneralEdit : public QDialog
     void on_bgVolume_SL_valueChanged();
     void on_varioVolume_SL_valueChanged();
     void on_wavVolume_SL_valueChanged();
-    
+
     void on_varioP0_SB_editingFinished();
     void on_varioPMax_SB_editingFinished();
     void on_varioR0_SB_editingFinished();
-    
+
     void on_pot1Type_currentIndexChanged(int index);
     void on_pot2Type_currentIndexChanged(int index);
     void on_pot3Type_currentIndexChanged(int index);
@@ -128,6 +128,8 @@ class GeneralEdit : public QDialog
     void on_mavbaud_CB_currentIndexChanged(int index);
     void on_voiceLang_CB_currentIndexChanged(int index);
     void on_battCalibDSB_editingFinished();
+    void on_vBatMinDSB_editingFinished();
+    void on_vBatMaxDSB_editingFinished();
     void on_battwarningDSB_editingFinished();
     void on_contrastSB_editingFinished();
     void on_calretrieve_PB_clicked();
