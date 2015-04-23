@@ -126,6 +126,9 @@
     </layout>
    </item>
    <item>
+    <layout class="QGridLayout" name="curvesLayout2"/>
+   </item>
+   <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <layout class="QGridLayout" name="pointsLayout">
