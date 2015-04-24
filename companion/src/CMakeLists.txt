@@ -53,6 +53,14 @@ ELSE()
     MESSAGE( "PHONON not found!" )
 ENDIF()
 
+MESSAGE( STATUS "Looking for QT lupdate " )
+FIND_PACKAGE(Lupdate)
+if( LUPDATE_FOUND )
+  MESSAGE( "QT lupdate: " ${LUPDATE_EXECUTABLE} )
+ELSE()
+  MESSAGE( "QT lupdate not found!" )
+ENDIF()
+
 ADD_CUSTOM_COMMAND(
   COMMAND ${XSDCXX_EXECUTABLE} cxx-tree --root-element-all --generate-serialization --output-dir ${PROJECT_BINARY_DIR}/ ${PROJECT_SOURCE_DIR}/radio.xsd
   OUTPUT ${PROJECT_BINARY_DIR}/radio.hxx ${PROJECT_BINARY_DIR}/radio.cxx
@@ -392,15 +400,16 @@ ADD_CUSTOM_TARGET( stamp
                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/version.h ${CMAKE_SOURCE_DIR}/../companion.stamp
                    DEPENDS ${CMAKE_BINARY_DIR}/version.h )
 
-IF(WIN32)
+IF( LUPDATE_FOUND )
   ADD_CUSTOM_TARGET( translations
-                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-                   COMMAND lupdate ${CMAKE_SOURCE_DIR} -ts ${companion_TS} )
-ELSE( )
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMAND ${LUPDATE_EXECUTABLE} ${CMAKE_SOURCE_DIR} -ts ${companion_TS}
+  )
+ELSE()
   ADD_CUSTOM_TARGET( translations
-                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-                   COMMAND lupdate-qt4 ${CMAKE_SOURCE_DIR} -ts ${companion_TS} )
-ENDIF( )
+    COMMAND echo "Sorry, QT lupdate was not found."
+  )
+ENDIF()
 
 SET(CPACK_PACKAGE_NAME "COMPANION")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Models and settings editor for the OpenTx open source firmware")
