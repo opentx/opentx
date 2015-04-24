@@ -1,6 +1,6 @@
 /*
  * Author - Kjell Kernen
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
@@ -12,7 +12,7 @@
  *
  */
 
-// All temporary and permanent global variables are defined here to make 
+// All temporary and permanent global variables are defined here to make
 // initialization and storage safe and visible.
 // Do not access variables in QSettings directly, it is not type safe!
 
@@ -53,7 +53,7 @@ class CompStoreObj
     void getset( QString &string, const QString tag, const QString def, const QString group1="", const QString group2="" );
     void getset( bool &truth, const QString tag, const bool def, const QString group1="", const QString group2="" );
     void getset( int &number, const QString tag, const int def, const QString group1="", const QString group2="" );
-}; 
+};
 
 class FwRevision: protected CompStoreObj
 {
@@ -269,7 +269,7 @@ class AppData: protected CompStoreObj
     QString avrdudeLocation();
     QString dfuArguments();
     QString dfuLocation();
-    QString lastFw();  
+    QString lastFw();
     QString locale();
     QString mcu();
     QString programmer();

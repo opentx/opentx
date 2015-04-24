@@ -1,6 +1,6 @@
 /*
  * Author - Kjell Kernen
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
@@ -346,7 +346,7 @@ Profile::Profile()
     index = -1;
 }
 
-// The default copy operator can not be used since the index variable would be destroyed 
+// The default copy operator can not be used since the index variable would be destroyed
 Profile& Profile::operator=(const Profile& rhs)
 {
     name         ( rhs.name()          );
@@ -577,39 +577,39 @@ AppData::AppData()
     for (int i=0; i<MAX_JOYSTICKS; i++)
         joystick[i].init( i );
 
-    // Copy existing 2.0.16 settings if present   
+    // Copy existing 2.0.16 settings if present
     QSettings settings(COMPANY, PRODUCT);
     if (profile[0].name().isEmpty())
     {
-        QSettings settings20("OpenTX", "Companion 2.0"); 
+        QSettings settings20("OpenTX", "Companion 2.0");
 
         QStringList keys = settings20.allKeys();
         for (QStringList::iterator i=keys.begin(); i!=keys.end(); i++)
         {
             settings.setValue(*i, settings20.value(*i));
         }
-        
+
         //Reload profiles
         for (int i=0; i<MAX_PROFILES; i++)
             profile[i].init( i );
     }
-    
-    // Else copy existing <2.0.16 settings if present   
+
+    // Else copy existing <2.0.16 settings if present
     if (profile[0].name().isEmpty())
     {
-        QSettings pre2016settings("OpenTX", "OpenTX Companion"); 
+        QSettings pre2016settings("OpenTX", "OpenTX Companion");
 
         QStringList keys = pre2016settings.allKeys();
         for (QStringList::iterator i=keys.begin(); i!=keys.end(); i++)
         {
             settings.setValue(*i, pre2016settings.value(*i));
         }
-        
+
         //Reload profiles
         for (int i=0; i<MAX_PROFILES; i++)
             profile[i].init( i );
-    }    
-    
+    }
+
     // Else import settings from companion9x if present
     if (profile[0].name().isEmpty())
     {
@@ -657,7 +657,7 @@ AppData::AppData()
         settings.remove("patchImage");
         settings.remove("rename_firmware_files");
         settings.remove("sdPath");
-        settings.remove("SplashFileName"); 
+        settings.remove("SplashFileName");
         settings.remove("startup_check_companion9x");
         settings.remove("wizardEnable");
 

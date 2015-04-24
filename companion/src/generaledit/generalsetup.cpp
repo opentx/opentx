@@ -3,8 +3,8 @@
 #include <QMessageBox>
 
 GeneralSetupPanel::GeneralSetupPanel(QWidget * parent, GeneralSettings & generalSettings, Firmware * firmware):
-  GeneralPanel(parent, generalSettings, firmware),
-  ui(new Ui::GeneralSetup)
+GeneralPanel(parent, generalSettings, firmware),
+ui(new Ui::GeneralSetup)
 {
   ui->setupUi(this);
 
@@ -358,8 +358,8 @@ void GeneralSetupPanel::on_faimode_CB_stateChanged(int)
 {
   if (ui->faimode_CB->isChecked()) {
     int ret = QMessageBox::question(this, "Companion",
-                   tr("If you enable FAI, you loose the vario, the play functions, the telemetry screen.\nThis function cannot be disabled by the radio.\nAre you sure ?") ,
-                   QMessageBox::Yes | QMessageBox::No);
+     tr("If you enable FAI, you loose the vario, the play functions, the telemetry screen.\nThis function cannot be disabled by the radio.\nAre you sure ?") ,
+     QMessageBox::Yes | QMessageBox::No);
     if (ret==QMessageBox::Yes) {
       generalSettings.fai = true;
     }
@@ -375,58 +375,58 @@ void GeneralSetupPanel::on_faimode_CB_stateChanged(int)
 
 void GeneralSetupPanel::on_speakerPitchSB_editingFinished()
 {
-    generalSettings.speakerPitch = ui->speakerPitchSB->value();
-    emit modified();
+  generalSettings.speakerPitch = ui->speakerPitchSB->value();
+  emit modified();
 }
 
 void GeneralSetupPanel::on_hapticStrength_valueChanged()
 {
-    generalSettings.hapticStrength = ui->hapticStrength->value();
-    emit modified();
+  generalSettings.hapticStrength = ui->hapticStrength->value();
+  emit modified();
 }
 
 void GeneralSetupPanel::on_soundModeCB_currentIndexChanged(int index)
 {
-    generalSettings.speakerMode = index;
-    emit modified();
+  generalSettings.speakerMode = index;
+  emit modified();
 }
 
 
 void GeneralSetupPanel::on_splashScreenChkB_stateChanged(int )
 {
-    generalSettings.splashMode = ui->splashScreenChkB->isChecked() ? 0 : 1;
-    emit modified();
+  generalSettings.splashMode = ui->splashScreenChkB->isChecked() ? 0 : 1;
+  emit modified();
 }
 
 void GeneralSetupPanel::on_splashScreenDuration_currentIndexChanged(int index)
 {
-    generalSettings.splashDuration = 3-index;
-    emit modified();
+  generalSettings.splashDuration = 3-index;
+  emit modified();
 }
 
 
 void GeneralSetupPanel::on_beepVolume_SL_valueChanged()
 {
-    generalSettings.beepVolume=ui->beepVolume_SL->value();
-    emit modified();
+  generalSettings.beepVolume=ui->beepVolume_SL->value();
+  emit modified();
 }
 
 void GeneralSetupPanel::on_wavVolume_SL_valueChanged()
 {
-    generalSettings.wavVolume=ui->wavVolume_SL->value();
-    emit modified();
+  generalSettings.wavVolume=ui->wavVolume_SL->value();
+  emit modified();
 }
 
 void GeneralSetupPanel::on_varioVolume_SL_valueChanged()
 {
-    generalSettings.varioVolume=ui->varioVolume_SL->value();
-    emit modified();
+  generalSettings.varioVolume=ui->varioVolume_SL->value();
+  emit modified();
 }
 
 void GeneralSetupPanel::on_bgVolume_SL_valueChanged()
 {
-    generalSettings.backgroundVolume=ui->bgVolume_SL->value();
-    emit modified();
+  generalSettings.backgroundVolume=ui->bgVolume_SL->value();
+  emit modified();
 }
 
 void GeneralSetupPanel::on_varioP0_SB_editingFinished()
