@@ -127,6 +127,8 @@ class Profile: protected CompStoreObj
     int     _ppmMultiplier;
     int     _vBatCalib;
     int     _vBatWarn;
+    int     _vBatMin;
+    int     _vBatMax;
 
   public:
     // All the get definitions
@@ -153,6 +155,8 @@ class Profile: protected CompStoreObj
     int     ppmMultiplier() const;
     int     vBatCalib() const;
     int     vBatWarn() const;
+    int     vBatMin() const;
+    int     vBatMax() const;
 
     // All the set definitions
     void name          (const QString);
@@ -178,6 +182,8 @@ class Profile: protected CompStoreObj
     void ppmMultiplier (const int);
     void vBatCalib     (const int);
     void vBatWarn      (const int);
+    void vBatMin       (const int);
+    void vBatMax       (const int);
 
     Profile();
     Profile& operator=(const Profile&);

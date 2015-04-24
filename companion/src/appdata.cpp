@@ -314,6 +314,8 @@ int     Profile::gsStickMode()   const { return _gsStickMode;   }
 int     Profile::ppmMultiplier() const { return _ppmMultiplier; }
 int     Profile::vBatCalib()     const { return _vBatCalib;     }
 int     Profile::vBatWarn()      const { return _vBatWarn;      }
+int     Profile::vBatMin()       const { return _vBatMin;       }
+int     Profile::vBatMax()       const { return _vBatMax;       }
 
 // Set declarations
 void Profile::name          (const QString x) { store(x, _name,          "Name"                  ,"Profiles", QString("profile%1").arg(index));}
@@ -339,6 +341,8 @@ void Profile::gsStickMode   (const int     x) { store(x, _gsStickMode,   "GSStic
 void Profile::ppmMultiplier (const int     x) { store(x, _ppmMultiplier, "PPM_Multiplier"        ,"Profiles", QString("profile%1").arg(index));}
 void Profile::vBatCalib     (const int     x) { store(x, _vBatCalib,     "VbatCalib"             ,"Profiles", QString("profile%1").arg(index));}
 void Profile::vBatWarn      (const int     x) { store(x, _vBatWarn,      "vBatWarn"              ,"Profiles", QString("profile%1").arg(index));}
+void Profile::vBatMin       (const int     x) { store(x, _vBatMin,       "VbatMin"               ,"Profiles", QString("profile%1").arg(index));}
+void Profile::vBatMax       (const int     x) { store(x, _vBatMax,       "VbatMax"               ,"Profiles", QString("profile%1").arg(index));}
 
 // Constructor
 Profile::Profile()
@@ -370,6 +374,8 @@ Profile& Profile::operator=(const Profile& rhs)
     ppmMultiplier( rhs.ppmMultiplier() );
     vBatCalib    ( rhs.vBatCalib()     );
     vBatWarn     ( rhs.vBatWarn()      );
+    vBatMin      ( rhs.vBatMin()       );
+    vBatMax      ( rhs.vBatMax()       );
 
     return *this;
 }
@@ -414,6 +420,8 @@ void Profile::initFwVariables()
     _ppmMultiplier = 0;
     _vBatCalib =     0;
     _vBatWarn =      0;
+    _vBatMin =       0;
+    _vBatMax =       0;
 }
 
 void Profile::init(int newIndex)
@@ -465,6 +473,8 @@ void Profile::flush()
     getset( _ppmMultiplier, "PPM_Multiplier"        ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _vBatCalib,     "VbatCalib"             ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _vBatWarn,      "vBatWarn"              ,0      ,"Profiles", QString("profile%1").arg(index));
+    getset( _vBatMin,       "VbatMin"               ,0      ,"Profiles", QString("profile%1").arg(index));
+    getset( _vBatMax,       "VbatMax"               ,0      ,"Profiles", QString("profile%1").arg(index));
 }
 
 

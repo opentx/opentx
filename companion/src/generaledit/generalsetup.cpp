@@ -242,6 +242,14 @@ ui(new Ui::GeneralSetup)
   }
   ui->blAlarm_ChkB->setChecked(generalSettings.flashBeep);
 
+  if (!GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
+    ui->batMeterRangeLabel->hide();
+    ui->HasBatMeterMinRangeLabel->hide();
+    ui->HasBatMeterMaxRangeLabel->hide();
+    ui->vBatMinDSB->hide();
+    ui->vBatMaxDSB->hide();
+  }
+
   disableMouseScrolling();
 }
 
@@ -352,6 +360,11 @@ void GeneralSetupPanel::setValues()
   ui->speakerPitchSB->setValue(generalSettings.speakerPitch);
   ui->hapticStrength->setValue(generalSettings.hapticStrength);
   ui->hapticmodeCB->setCurrentIndex(generalSettings.hapticMode+2);
+
+  if (GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
+    ui->vBatMinDSB->setValue((double)(generalSettings.vBatMin + 90) / 10);
+    ui->vBatMaxDSB->setValue((double)(generalSettings.vBatMax + 120) / 10);
+  }
 }
 
 void GeneralSetupPanel::on_faimode_CB_stateChanged(int)
@@ -469,6 +482,18 @@ void GeneralSetupPanel::on_contrastSB_editingFinished()
 void GeneralSetupPanel::on_battwarningDSB_editingFinished()
 {
   generalSettings.vBatWarn = (int)(ui->battwarningDSB->value()*10);
+  emit modified();
+}
+
+void GeneralSetupPanel::on_vBatMinDSB_editingFinished()
+{
+  generalSettings.vBatMin = ui->vBatMinDSB->value() * 10 - 90;
+  emit modified();
+}
+
+void GeneralSetupPanel::on_vBatMaxDSB_editingFinished()
+{
+  generalSettings.vBatMax = ui->vBatMaxDSB->value() * 10 - 120;
   emit modified();
 }
 

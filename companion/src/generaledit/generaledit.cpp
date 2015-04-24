@@ -93,7 +93,7 @@ void GeneralEdit::on_calretrieve_PB_clicked()
     QString HapticSet = g.profile[profile_id].haptic();
     QString SpeakerSet = g.profile[profile_id].speaker();
     QString CountrySet = g.profile[profile_id].countryCode();
-    
+
     if ((calib.length()==(NUM_STICKS+potsnum)*12) && (trainercalib.length()==16)) {
       QString Byte;
       int16_t byte16;
@@ -121,6 +121,10 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       generalSettings.currentCalib=currentCalib;
       generalSettings.vBatCalib=vBatCalib;
       generalSettings.vBatWarn=vBatWarn;
+      if (GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
+        generalSettings.vBatMin = (int8_t) g.profile[profile_id].vBatMin();
+        generalSettings.vBatMax = (int8_t) g.profile[profile_id].vBatMax();
+      }
       generalSettings.PPM_Multiplier=PPM_Multiplier;
     } else {
       QMessageBox::critical(this, tr("Warning"), tr("Wrong data in profile, radio calibration was not retrieved"));
@@ -197,7 +201,7 @@ void GeneralEdit::on_calstore_PB_clicked()
   else {
     QString calib=g.profile[profile_id].stickPotCalib();
     if (!(calib.isEmpty())) {
-      int ret = QMessageBox::question(this, "Companion", 
+      int ret = QMessageBox::question(this, "Companion",
                       tr("Do you want to store calibration in %1 profile<br>overwriting existing calibration?").arg(name) ,
                       QMessageBox::Yes | QMessageBox::No);
       if (ret == QMessageBox::No) {
@@ -219,6 +223,10 @@ void GeneralEdit::on_calstore_PB_clicked()
     g.profile[profile_id].vBatCalib( generalSettings.vBatCalib );
     g.profile[profile_id].currentCalib( generalSettings.currentCalib );
     g.profile[profile_id].vBatWarn( generalSettings.vBatWarn );
+    if (GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
+      g.profile[profile_id].vBatMin( generalSettings.vBatMin );
+      g.profile[profile_id].vBatMax( generalSettings.vBatMax );
+    }
     g.profile[profile_id].ppmMultiplier( generalSettings.PPM_Multiplier );
     g.profile[profile_id].gsStickMode( generalSettings.stickMode );
     g.profile[profile_id].display( QString("%1%2%3").arg((generalSettings.optrexDisplay ? 1:0), 2, 16, QChar('0')).arg((uint8_t)generalSettings.contrast, 2, 16, QChar('0')).arg((uint8_t)generalSettings.backlightBright, 2, 16, QChar('0')) );
