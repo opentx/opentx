@@ -593,16 +593,19 @@ void logsDialog::plotLogs()
 
     for (int row = 0; row < rowCount; row++) {
       QTableWidgetItem *logValue;
-
-      if (hasLogSelection) {
-        logValue = ui->logTable->item(selectedRows.at(row), plotColumn);
-      } else {
-        logValue = ui->logTable->item(row, plotColumn);
-      }
-
       double y;
       double time;
       QString time_str;
+
+      if (hasLogSelection) {
+        logValue = ui->logTable->item(selectedRows.at(row), plotColumn);
+        time_str = ui->logTable->item(selectedRows.at(row), 0)->text() +
+          QString(" ") + ui->logTable->item(selectedRows.at(row), 1)->text();
+      } else {
+        logValue = ui->logTable->item(row, plotColumn);
+        time_str = ui->logTable->item(row, 0)->text() + QString(" ") +
+          ui->logTable->item(row, 1)->text();
+      }
 
       y = logValue->text().toDouble();
       plotCoords.y.push_back(y);
@@ -613,8 +616,6 @@ void logsDialog::plotLogs()
         plotCoords.max_y = y;
       }
 
-      time_str = ui->logTable->item(row, 0)->text() + QString(" ")
-        + ui->logTable->item(row, 1)->text();
       if (time_str.contains('.')) {
         time = QDateTime::fromString(time_str, "yyyy-MM-dd HH:mm:ss.zzz")
           .toTime_t();
