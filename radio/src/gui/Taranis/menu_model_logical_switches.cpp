@@ -248,6 +248,8 @@ void menuModelLogicalSwitches(uint8_t event)
           cs->v1 = CHECK_INCDEC_PARAM(event, v1_val, v1_min, v1_max);
           break;
         case LS_FIELD_V2:
+          if (v1_val >= MIXSRC_FIRST_TIMER)
+            INCDEC_SET_FLAG(INCDEC_REP10 | NO_INCDEC_MARKS);
           cs->v2 = CHECK_INCDEC_PARAM(event, cs->v2, v2_min, v2_max);
           if (cstate==LS_FAMILY_OFS && cs->v1!=0 && event==EVT_KEY_LONG(KEY_ENTER)) {
             killEvents(event);

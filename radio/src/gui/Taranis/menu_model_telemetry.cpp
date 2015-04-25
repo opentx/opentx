@@ -349,13 +349,13 @@ void menuModelSensor(uint8_t event)
         else {
           if (sensor->unit == UNIT_RPMS) {
             lcd_putsLeft(y, NO_INDENT(STR_BLADES));
-            if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.ratio, 1, 30000);
+            if (attr) sensor->custom.ratio = checkIncDec(event, sensor->custom.ratio, 1, 30000, EE_MODEL|NO_INCDEC_MARKS|INCDEC_REP10);
             lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.ratio, LEFT|attr);
             break;
           }
           else {
             lcd_putsLeft(y, STR_RATIO);
-            if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.ratio, 0, 30000);
+            if (attr) sensor->custom.ratio = checkIncDec(event, sensor->custom.ratio, 0, 30000, EE_MODEL|NO_INCDEC_MARKS|INCDEC_REP10);
             if (sensor->custom.ratio == 0)
               lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
             else
@@ -382,13 +382,13 @@ void menuModelSensor(uint8_t event)
         }
         else if (sensor->unit == UNIT_RPMS) {
           lcd_putsLeft(y, STR_MULTIPLIER);
-          if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.offset, 1, 30000);
+          if (attr) sensor->custom.offset = checkIncDec(event, sensor->custom.offset, 1, 30000, EE_MODEL|NO_INCDEC_MARKS|INCDEC_REP10);
           lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.offset, LEFT|attr);
           break;
         }
         else {
           lcd_putsLeft(y, NO_INDENT(STR_OFFSET));
-          if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.offset, -30000, +30000);
+          if (attr) sensor->custom.offset = checkIncDec(event, sensor->custom.offset, -30000, +30000, EE_MODEL|NO_INCDEC_MARKS|INCDEC_REP10);
           if (sensor->prec > 0) attr |= (sensor->prec == 2 ? PREC2 : PREC1);
           lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.offset, LEFT|attr);
           break;
