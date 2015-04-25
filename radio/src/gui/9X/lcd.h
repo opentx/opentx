@@ -262,7 +262,6 @@ void lcdInit();
 #define lcdOff()
 
 void lcdRefresh();
-#define LCD_REFRESH_DONT_WAIT
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE (0)

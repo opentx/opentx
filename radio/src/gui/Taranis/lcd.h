@@ -233,10 +233,8 @@ void lcdOff();
 
 #if defined(REVPLUS) && !defined(SIMU)
   void lcdRefresh(bool wait=true);
-  #define LCD_REFRESH_DONT_WAIT false
 #else
   void lcdRefresh();
-  #define LCD_REFRESH_DONT_WAIT
 #endif
 
 const char *bmpLoad(uint8_t *dest, const char *filename, const unsigned int width, const unsigned int height);

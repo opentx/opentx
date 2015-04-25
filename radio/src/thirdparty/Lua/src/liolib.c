@@ -15,6 +15,7 @@
 #endif
 
 
+
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,6 +27,9 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+#if defined(USE_FATFS)
+  #define FILE FIL
+#endif
 
 #if !defined(lua_checkmode)
 
@@ -724,3 +728,7 @@ LUAMOD_API int luaopen_io (lua_State *L) {
   // return 1;
   return 0;
 }
+
+#if defined(USE_FATFS)
+  #undef FILE
+#endif

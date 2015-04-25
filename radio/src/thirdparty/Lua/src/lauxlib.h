@@ -193,10 +193,6 @@ LUALIB_API char *(luaL_buffinitsize) (lua_State *L, luaL_Buffer *B, size_t sz);
 
 #define LUA_FILEHANDLE          "FILE*"
 
-#if defined(USE_FATFS)
-  #define FILE FIL
-#endif
-
 typedef struct luaL_Stream {
 #if defined(USE_FATFS)
   FIL f;
