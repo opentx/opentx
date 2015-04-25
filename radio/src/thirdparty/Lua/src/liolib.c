@@ -250,14 +250,12 @@ static int io_open (lua_State *L) {
   LStream *p = newfile(L);
 #if defined(USE_FATFS)
   BYTE mode;
-  if (!strcmp(md, "r"))
-    mode = FA_READ;
-  else if (!strcmp(md, "w") || !strcmp(md, "a"))
+  if (strchr(md, 'w') || strchr(md, 'a'))
     mode = FA_WRITE;
   else
-    luaL_argerror(L, (2), ("invalid mode"));
+    mode = FA_READ;
   FRESULT result = f_open(&p->f, filename, mode);
-  if (result == FR_OK && !strcmp(md, "a"))
+  if (result == FR_OK && strchr(md, 'a'))
     result = f_lseek(&p->f, f_size(&p->f));
   return result == FR_OK ? 1 : 0;
 #else
