@@ -42,7 +42,6 @@ static void Delay(uint32_t ms)
 // New hardware SPI driver for LCD
 void initLcdSpi()
 {
-  // uint16_t temp ;
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_LCD, ENABLE);
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_LCD_RST, ENABLE);
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_LCD_NCS, ENABLE);

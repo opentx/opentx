@@ -313,7 +313,8 @@ void stm32_dma_transfer(
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
     DMA_Init(DMA_Channel_SPI_SD_TX, &DMA_InitStructure);
 
-  } else {//false = write
+  }
+  else {//false = write
 
 #if _FS_READONLY == 0 //READ AND WRITE = write enabled.
     /* DMA1 channel2 configuration SPI1 RX ---------------------------------------------*/
@@ -404,12 +405,10 @@ void power_on (void)
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIO_SPI_SD, &GPIO_InitStructure);
-        
   GPIO_PinAFConfig(GPIO_SPI_SD,GPIO_PinSource_SCK ,GPIO_AF_SD);
   GPIO_PinAFConfig(GPIO_SPI_SD,GPIO_PinSource_MISO,GPIO_AF_SD);
   GPIO_PinAFConfig(GPIO_SPI_SD,GPIO_PinSource_MOSI,GPIO_AF_SD);
-    
-    
+
   /* SPI configuration */
   SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
   SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
@@ -420,7 +419,6 @@ void power_on (void)
   SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_SPI_SD; 
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
   SPI_InitStructure.SPI_CRCPolynomial = 7;
-
   SPI_Init(SPI_SD, &SPI_InitStructure);
   SPI_CalculateCRC(SPI_SD, DISABLE);
   SPI_Cmd(SPI_SD, ENABLE);

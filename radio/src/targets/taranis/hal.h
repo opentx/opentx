@@ -1,17 +1,13 @@
 #ifndef _HAL_
 #define _HAL_
 
-/*
- * GPIOS
- */
-
+// Keys
 #if defined(REV9E)
   #define RCC_AHB1Periph_GPIOBUTTON     (RCC_AHB1Periph_GPIOA|RCC_AHB1Periph_GPIOB|RCC_AHB1Periph_GPIOC|RCC_AHB1Periph_GPIOD|RCC_AHB1Periph_GPIOE|RCC_AHB1Periph_GPIOF|RCC_AHB1Periph_GPIOG)
 #else
   #define RCC_AHB1Periph_GPIOBUTTON     (RCC_AHB1Periph_GPIOA|RCC_AHB1Periph_GPIOB|RCC_AHB1Periph_GPIOC|RCC_AHB1Periph_GPIOD|RCC_AHB1Periph_GPIOE)
 #endif
 
-// Keys
 #define GPIO_BUTTON_PLUS                GPIOE->IDR
 #define GPIO_BUTTON_MINUS               GPIOE->IDR
 #define GPIO_BUTTON_MENU                GPIOD->IDR
@@ -183,9 +179,6 @@
 #define PIN_MVOLT                       GPIO_Pin_0  // PC.00
 #define RCC_AHB1Periph_GPIOADC          RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC
 
-// DAC
-#define PIN_AUDIO_DAC                   GPIO_Pin_4  // PA.04
-
 // Power_OFF Delay and LED
 #define PIN_PWR_LED                     GPIO_Pin_6  // PC.06
 #define PIN_PWR_STATUS                  GPIO_Pin_1  // PD.01
@@ -320,28 +313,7 @@
   #define PIN_LCD_RST                   GPIO_Pin_12 // PD.12
 #endif 
 
-// Audio - I2S3
-#define CODEC_I2S                       SPI3
-#define CODEC_I2S_CLK                   RCC_APB1Periph_SPI3
-#define CODEC_I2S_GPIO_AF               GPIO_AF_SPI3
-#define CODEC_I2S_IRQ                   SPI3_IRQn
-#define CODEC_I2S_GPIO_CLOCK            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC )//| RCC_AHB1Periph_GPIOE)
-#define CODEC_I2S_WS_PIN                GPIO_Pin_15 // PA.15
-#define CODEC_I2S_SCK_PIN               GPIO_Pin_10 // PC.10
-#define CODEC_I2S_SD_PIN                GPIO_Pin_12 // PC.12
-#define CODEC_I2S_MCK_PIN               GPIO_Pin_6  // DISABLED
-#define CODEC_I2S_WS_PINSRC             GPIO_PinSource15
-#define CODEC_I2S_SCK_PINSRC            GPIO_PinSource10
-#define CODEC_I2S_SD_PINSRC             GPIO_PinSource12
-#define CODEC_I2S_MCK_PINSRC            GPIO_PinSource6
-#define CODEC_I2S_GPIO                  GPIOC
-#define CODEC_I2S_MCK_GPIO              GPIOC
-#define CODEC_I2S_WS_GPIO               GPIOA
-#define CODEC_I2S_MUTE                  GPIO_Pin_11 // PC.11
-//#define CODEC_I2S_FLT                 GPIO_Pin_   // IIR/FIR
-//#define CODEC_I2S_MODE                GPIO_Pin_   // Connect to GND=I2S_STANDARD
-
-// Eeprom 5137
+// EEPROM 5137
 #define RCC_APBPeriph_I2C_EE            RCC_APB1Periph_I2C1
 #define I2C_EE                          I2C1
 #define GPIO_AF_I2C_EE                  GPIO_AF_I2C1
@@ -398,14 +370,7 @@
 #define DMA_Channel_SPI2_RX             DMA_Channel_0
 #endif
 
-// Audio----I2S3-----SPI3
-#define CODEC_MCLK_DISABLED
-#define CODEC_USE_INT
-//#define CODEC_USE_DMA 
-#define AudioFreq                       I2S_AudioFreq_44k 
-
 // EEPROM and CAT5137
-#define I2C_Speed                       200000
 #define I2C_FLASH_PAGESIZE              64
 #define I2C_EEPROM_ADDRESS              0xA2
 #define I2C_CAT5137_ADDRESS             0x5C //0101110
