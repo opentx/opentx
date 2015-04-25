@@ -71,7 +71,7 @@ enum EnglishPrompts {
   EN_PROMPT_FEET_PER_SECOND = EN_PROMPT_UNITS_BASE+(UNIT_FEET_PER_SECOND*2),
 #endif
 
-  EN_PROMPT_POINT_BASE = 160, //.0 - .9
+  EN_PROMPT_POINT_BASE = 165, //.0 - .9
 
 };
 
