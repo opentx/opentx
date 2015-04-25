@@ -38,9 +38,8 @@
 
 volatile uint32_t Spi_complete;
 uint8_t Spi_tx_buf[24] ;
-uint8_t Spi_rx_buf[24] ;
 
-uint32_t spi_PDC_action( register uint8_t *command, register uint8_t *tx, register uint8_t *rx, register uint32_t comlen, register uint32_t count )
+uint32_t eepromTransmitData(register uint8_t *command, register uint8_t *tx, register uint8_t *rx, register uint32_t comlen, register uint32_t count )
 {
 #ifndef SIMU
 
@@ -98,103 +97,90 @@ uint32_t spi_PDC_action( register uint8_t *command, register uint8_t *tx, regist
   return 0 ;
 }
 
-uint32_t spi_operation( register uint8_t *tx, register uint8_t *rx, register uint32_t count )
+uint8_t eepromTransmitByte(uint8_t out, bool skipFirst)
 {
   register Spi *spiptr;
-  register uint32_t result;
+  register uint32_t delay;
 
-  result = 0;
   spiptr = SPI;
   spiptr->SPI_CR = 1; // Enable
   (void) spiptr->SPI_RDR; // Dump any rx data
 
-  while (count) {
-    result = 0;
-    while ((spiptr->SPI_SR & SPI_SR_TXEMPTY) == 0) {
-      // wait
-      if (++result > 10000) {
-        result = 0xFFFF;
-        break;
-      }
-    }
-    if (result > 10000) {
+  spiptr->SPI_TDR = out;
+
+  delay = 0;
+  while ((spiptr->SPI_SR & SPI_SR_RDRF) == 0) {
+    // wait for received
+    if (++delay > 10000) {
       break;
     }
-
-    spiptr->SPI_TDR = *tx++;
-    result = 0;
+  }
+  
+  if (skipFirst) {
+    (void) spiptr->SPI_RDR; // Dump the rx data
+    spiptr->SPI_TDR = 0;
+    delay = 0;
     while ((spiptr->SPI_SR & SPI_SR_RDRF) == 0) {
       // wait for received
-      if (++result > 10000) {
-        result = 0x2FFFF;
+      if (++delay > 10000) {
         break;
       }
     }
-    if (result > 10000) {
-      break;
-    }
-    *rx++ = spiptr->SPI_RDR;
-    count -= 1;
   }
-  if (result <= 10000) {
-    result = 0;
-  }
-  spiptr->SPI_CR = 2; // Disable
-
-  return result ;
-}
-
-uint32_t eeprom_write_one(uint8_t byte, uint8_t count)
-{
-#ifndef SIMU
-  register Spi *spiptr;
-  register uint32_t result;
-
-  spiptr = SPI;
-  spiptr->SPI_CR = 1; // Enable
-  (void) spiptr->SPI_RDR; // Dump any rx data
-
-  spiptr->SPI_TDR = byte;
-
-  result = 0;
-  while ((spiptr->SPI_SR & SPI_SR_RDRF) == 0) {
-    // wait for received
-    if (++result > 10000) {
-      break;
-    }
-  }
-  if (count == 0) {
-    spiptr->SPI_CR = 2; // Disable
-    return spiptr->SPI_RDR;
-  }
-  (void) spiptr->SPI_RDR; // Dump the rx data
-  spiptr->SPI_TDR = 0;
-  result = 0;
-  while ((spiptr->SPI_SR & SPI_SR_RDRF) == 0) {
-    // wait for received
-    if (++result > 10000) {
-      break;
-    }
-  }
+  
   spiptr->SPI_CR = 2; // Disable
   return spiptr->SPI_RDR ;
-#else
-  return !Spi_complete;
-#endif
 }
 
-void eeprom_write_enable()
+enum EepromCommand {
+  COMMAND_WRITE_STATUS_REGISTER = 0x01,
+  COMMAND_BYTE_PROGRAM = 0x02,
+  COMMAND_READ_ARRAY = 0x03,
+  COMMAND_READ_STATUS = 0x05,
+  COMMAND_WRITE_ENABLE = 0x06,
+  COMMAND_BLOCK_ERASE = 0x20,
+};
+
+void eepromPrepareCommand(EepromCommand command, uint32_t address)
 {
-  eeprom_write_one(6, 0);
+  uint8_t * p = Spi_tx_buf;
+  *p = command;
+  *(p+1) = address >> 16;
+  *(p+2) = address >> 8;
+  *(p+3) = address;
 }
 
 uint32_t eepromReadStatus()
 {
-#if defined(SIMU)
-  return 0;
-#else
-  return eeprom_write_one(5, 1);
-#endif
+  return eepromTransmitByte(COMMAND_READ_STATUS, true);
+}
+
+void eepromWriteStatusRegister()
+{
+  eepromTransmitByte(COMMAND_WRITE_STATUS_REGISTER, true);
+}
+
+void eepromByteProgram(uint32_t address, uint8_t * buffer, uint32_t size)
+{
+  eepromPrepareCommand(COMMAND_BYTE_PROGRAM, address);
+  eepromTransmitData(Spi_tx_buf, buffer, 0, 4, size);
+}
+
+void eepromReadArray(uint32_t address, uint8_t * buffer, uint32_t size)
+{
+  eepromPrepareCommand(COMMAND_READ_ARRAY, address);
+  eepromTransmitData(Spi_tx_buf, 0, buffer, 4, size);
+}
+
+void eepromWriteEnable()
+{
+  eepromTransmitByte(COMMAND_WRITE_ENABLE, false);
+}
+
+void eepromBlockErase(uint32_t address)
+{
+  eepromPrepareCommand(COMMAND_BLOCK_ERASE, address);
+  eepromTransmitData(Spi_tx_buf, 0, 0, 4, 0);
 }
 
 // SPI i/f to EEPROM (4Mb)
@@ -209,8 +195,6 @@ void eepromInit()
 {
   register Spi *spiptr ;
   register uint32_t timer ;
-  register uint8_t *p ;
-  uint8_t spi_buf[4] ;
 
   PMC->PMC_PCER0 |= 0x00200000L ;               // Enable peripheral clock to SPI
   /* Configure PIO */
@@ -222,20 +206,8 @@ void eepromInit()
   spiptr->SPI_CSR[0] = 0x01180009 | timer ;               // 0000 0001 0001 1000 xxxx xxxx 0000 1001
   NVIC_EnableIRQ(SPI_IRQn) ;
 
-  p = spi_buf ;
-
-//      *p = 0x39 ;             // Unprotect sector command
-//      *(p+1) = 0 ;
-//      *(p+2) = 0 ;
-//      *(p+3) = 0 ;            // 3 bytes address
-
-//      spi_operation( p, spi_buf, 4 ) ;
-
-  eeprom_write_enable() ;
-
-  *p = 1 ;                // Write status register command
-  *(p+1) = 0 ;
-  spi_operation( p, spi_buf, 2 ) ;
+  eepromWriteEnable();
+  eepromWriteStatusRegister();
 }
 
 #ifndef SIMU
@@ -255,28 +227,3 @@ extern "C" void SPI_IRQHandler()
 //  PMC->PMC_PCER0 &= ~0x00200000L ;      // Disable peripheral clock to SPI
 }
 #endif
-
-void end_spi()
-{
-  SPI->SPI_CR = 2 ;                                                               // Disable
-  SPI->SPI_IDR = 0x07FF ;                                 // All interrupts off
-  NVIC_DisableIRQ(SPI_IRQn) ;
-}
-
-#if 0
-uint32_t unprotect_eeprom()
-{
-  register uint8_t *p;
-
-  eeprom_write_enable();
-
-  p = Spi_tx_buf;
-  *p = 0x39; // Unprotect sector command
-  *(p + 1) = 0;
-  *(p + 2) = 0;
-  *(p + 3) = 0; // 3 bytes address
-
-  return spi_operation( p, Spi_rx_buf, 4 ) ;
-}
-#endif
-

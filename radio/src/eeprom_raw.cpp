@@ -46,7 +46,7 @@
 #define EEPROM_ZONE_SIZE      (8*1024)
 #define EEPROM_BUFFER_SIZE    256
 #define EEPROM_FAT_SIZE       128
-#define EEPROM_MAX_ZONES      (EEPROM_SIZE / EEPROM_ZONE_SIZE)
+#define EEPROM_MAX_ZONES      ((EEPROM_SIZE / EEPROM_ZONE_SIZE) - 1)
 #define FIRST_FILE_AVAILABLE  (1+MAX_MODELS)
 
 PACK(struct EepromHeaderFile
@@ -70,10 +70,6 @@ uint8_t * eepromWriteSourceAddr;
 uint32_t eepromWriteDestinationAddr;
 uint16_t eepromFatAddr = 0;
 uint8_t eepromWriteBuffer[EEPROM_BUFFER_SIZE];
-
-#define COMMAND_BLOCK_ERASE 0x20
-#define COMMAND_WRITE       0x02
-#define COMMAND_READ        0x03
 
 void eepromWaitSpiComplete()
 {
@@ -103,13 +99,8 @@ void eepromEraseBlock(uint32_t address, bool blocking=true)
   Spi_complete = false;
   sem_post(eeprom_write_sem);
 #else
-  eeprom_write_enable();
-  uint8_t * p = Spi_tx_buf;
-  *p = COMMAND_BLOCK_ERASE;
-  *(p+1) = address >> 16;
-  *(p+2) = address >> 8;
-  *(p+3) = address;
-  spi_PDC_action(p, 0, 0, 4, 0);
+  eepromWriteEnable();
+  eepromBlockErase(address);
 #endif
 
   if (blocking) {
@@ -131,12 +122,7 @@ void eepromRead(uint32_t address, uint8_t * buffer, uint32_t size, bool blocking
   Spi_complete = false;
   sem_post(eeprom_write_sem);
 #else
-  uint8_t * p = Spi_tx_buf;
-  *p = COMMAND_READ;
-  *(p+1) = address >> 16;
-  *(p+2) = address >> 8;
-  *(p+3) = address;
-  spi_PDC_action(p, 0, buffer, 4, size);
+  eepromReadArray(address, buffer, size);
 #endif
 
   if (blocking) {
@@ -157,13 +143,8 @@ void eepromWrite(uint32_t address, uint8_t * buffer, uint32_t size, bool blockin
   Spi_complete = false;
   sem_post(eeprom_write_sem);
 #else
-  eeprom_write_enable();
-  uint8_t * p = Spi_tx_buf;
-  *p = COMMAND_WRITE;
-  *(p+1) = address >> 16;
-  *(p+2) = address >> 8;
-  *(p+3) = address;
-  spi_PDC_action(p, buffer, 0, 4, size);
+  eepromWriteEnable();
+  eepromByteProgram(address, buffer, size);
 #endif
 
   if (blocking) {
@@ -196,7 +177,7 @@ bool eepromOpen()
 
 uint32_t readFile(int index, uint8_t * data, uint32_t size)
 {
-  uint16_t fileSize;
+  uint16_t fileSize = 0;
   uint32_t address = eepromHeader.files[index].zoneIndex * EEPROM_ZONE_SIZE;
   eepromRead(address, (uint8_t *)&fileSize, sizeof(fileSize));
   if (size < fileSize) {
@@ -292,7 +273,6 @@ void eeSwapModels(uint8_t id1, uint8_t id2)
     modelHeaders[id1] = modelHeaders[id2];
     modelHeaders[id2] = tmp;
   }
-
 }
 
 // For conversions ...
@@ -322,10 +302,14 @@ bool eeLoadGeneral()
 
   if (g_eeGeneral.version != EEPROM_VER) {
     TRACE("EEPROM version %d instead of %d", g_eeGeneral.version, EEPROM_VER);
-    if (!eeConvert())
+#if defined(PCBSKY9X)
+    if (!eeConvert()) {
       return false;
+    }
+#else
+    return false;
+#endif
   }
-
   return true;
 }
 
@@ -423,7 +407,6 @@ void eeErase(bool warn)
   MESSAGE(STR_EEPROMWARN, STR_EEPROMFORMATTING, NULL, AU_EEPROM_FORMATTING);
 
   eepromFormat();
-
   eeDirty(EE_GENERAL);
   eeDirty(EE_MODEL);
   eeCheck(true);
@@ -446,6 +429,7 @@ void eeCheck(bool immediately)
   }
 
   if (s_eeDirtyMsk & EE_GENERAL) {
+    TRACE("eeprom write general");
     s_eeDirtyMsk -= EE_GENERAL;
     writeGeneralSettings();
     if (immediately)
@@ -455,6 +439,7 @@ void eeCheck(bool immediately)
   }
 
   if (s_eeDirtyMsk & EE_MODEL) {
+    TRACE("eeprom write model");
     s_eeDirtyMsk -= EE_MODEL;
     writeModel(g_eeGeneral.currModel);
     if (immediately)
@@ -591,8 +576,10 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
     return SDCARD_ERROR(result);
   }
 
+#if defined(PCBSKY9X)
   strcpy(statusLineMsg, PSTR("File "));
   strcpy(statusLineMsg+5, &buf[sizeof(MODELS_PATH)]);
+#endif
 
   uint16_t size = eeModelSize(i_fileSrc);
 
@@ -621,7 +608,11 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   }
 
   f_close(&archiveFile);
+
+#if defined(PCBSKY9X)
   showStatusLine();
+#endif
+
   return NULL;
 }
 
@@ -700,7 +691,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 
   eeLoadModelHeader(i_fileDst, &modelHeaders[i_fileDst]);
 
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
   if (version < EEPROM_VER) {
     ConvertModel(i_fileDst, version);
     loadModel(g_eeGeneral.currModel);
