@@ -42,6 +42,9 @@
 #include "opentx.h"
 #include <time.h>
 #include <ctype.h>
+#if defined(SIMU_AUDIO)
+  #include <SDL.h>
+#endif
 
 #if LCD_W > 212
   #define LCD_ZOOM 1
@@ -94,6 +97,10 @@ Open9xSim::Open9xSim(FXApp* a):
   firstTime = true;
   memset(displayBuf, 0, DISPLAY_BUFER_SIZE);
   bmp = new FXPPMImage(getApp(),NULL,IMAGE_OWNED|IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP, W2, H2);
+
+#if defined(SIMU_AUDIO)
+  SDL_Init(SDL_INIT_AUDIO);
+#endif
 
   FXHorizontalFrame *hf11=new FXHorizontalFrame(this,LAYOUT_CENTER_X);
   FXHorizontalFrame *hf1=new FXHorizontalFrame(this,LAYOUT_FILL_X);
@@ -152,6 +159,10 @@ Open9xSim::~Open9xSim()
   }
 
   delete bmf;
+
+#if defined(SIMU_AUDIO)
+  SDL_Quit();
+#endif
 }
 
 void Open9xSim::makeSnapshot(const FXDrawable* drawable)

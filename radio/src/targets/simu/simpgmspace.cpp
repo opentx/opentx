@@ -498,6 +498,11 @@ bool audio_thread_running = false;
 
 void *audio_thread(void *)
 {
+  if ( !SDL_WasInit(SDL_INIT_AUDIO) ) {
+    fprintf(stderr, "ERROR: couldn't initialize SDL audio support\n");
+    return 0;
+  }
+
   SDL_AudioSpec wanted, have;
 
   /* Set the audio format */

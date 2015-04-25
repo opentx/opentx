@@ -48,6 +48,9 @@
 #include <QSplashScreen>
 #include <QThread>
 #include <iostream>
+#if defined(JOYSTICKS) || defined(SIMU_AUDIO)
+  #include <SDL.h>
+#endif
 #include "simulatordialog.h"
 #include "eeprominterface.h"
 
@@ -97,6 +100,17 @@ int main(int argc, char *argv[])
 */
 
   QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+
+#if defined(JOYSTICKS) || defined(SIMU_AUDIO)
+  uint32_t sdlFlags = 0;
+  #ifdef JOYSTICKS
+    sdlFlags |= SDL_INIT_JOYSTICK;
+  #endif
+  #ifdef SIMU_AUDIO
+    sdlFlags |= SDL_INIT_AUDIO;
+  #endif
+  SDL_Init(sdlFlags);
+#endif
 
   SimulatorDialog *dialog;
   QString eepromFileName;
@@ -159,6 +173,10 @@ int main(int argc, char *argv[])
   int result = app.exec();
 
   delete dialog;
+
+#if defined(JOYSTICKS) || defined(SIMU_AUDIO)
+  SDL_Quit();
+#endif
 
   return result;
 }
