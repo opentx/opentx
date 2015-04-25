@@ -690,6 +690,10 @@ void PrintDialog::printFrSky()
 {
   int tc=0;
   QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
+  int analog=2;
+  if (IS_ARM(firmware->getBoard())) {
+    analog=4;
+  }
 
   if (IS_TARANIS(GetEepromInterface()->getBoard())) {
     str.append("<tr><td colspan=3><h2>"+tr("Telemetry Settings")+"</h2></td></tr>");
@@ -698,9 +702,8 @@ void PrintDialog::printFrSky()
     str.append(doTC(tr("Range"),"", true));
     str.append(doTC(tr("Offset"),"", true));
     str.append("</tr>");
-
     FrSkyData *fd=&g_model->frsky;
-    for (int i=0; i<2; i++) {
+    for (int i=0; i<analog; i++) {
       if (fd->channels[i].ratio!=0) {
         tc++;
         float ratio=(fd->channels[i].ratio/(fd->channels[i].type==0 ?10.0:1));
@@ -750,7 +753,7 @@ void PrintDialog::printFrSky()
     str.append("<td width=\"40\" align=\"center\"><b>"+tr("Type")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Condition")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Value")+"</b></td>");
     str.append("<td width=\"40\" align=\"center\"><b>"+tr("Type")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Condition")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Value")+"</b></td></tr>");
     FrSkyData *fd=&g_model->frsky;
-    for (int i=0; i<2; i++) {
+    for (int i=0; i<analog; i++) {
       if (fd->channels[i].ratio!=0) {
         tc++;
         float ratio=(fd->channels[i].ratio/(fd->channels[i].type==0 ?10.0:1));
@@ -774,7 +777,7 @@ void PrintDialog::printFrSky()
     str.append("<td width=\"40\" align=\"center\"><b>"+getFrSkyAlarmType(fd->rssiAlarms[1].level)+"</b></td><td width=\"40\" align=\"center\"><b>&lt;</b></td><td width=\"40\" align=\"center\"><b>"+QString::number(fd->rssiAlarms[1].value,10)+"</b></td></tr>");
     str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr>");
     str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Frsky serial protocol")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyProtocol(fd->usrProto)+"</td></tr>");
-    str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Blades")+"</b></td><td colspan=8 align=\"left\">"+fd->blades+"</td></tr>");
+    str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Blades")+"</b></td><td colspan=8 align=\"left\">"+QString("%1").arg(fd->blades)+"</td></tr>");
     str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr></table>");
   }
 #if 0
