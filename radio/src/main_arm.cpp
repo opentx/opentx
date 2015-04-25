@@ -81,18 +81,10 @@ void checkSpeakerVolume()
 void checkEeprom()
 {
   if (!usbPlugged()) {
-    // TODO merge these 2 branches
-#if defined(PCBSKY9X)
-    if (eepromWriteState != EEPROM_IDLE)
+    if (eepromIsWriting())
       eepromWriteProcess();
     else if (TIME_TO_WRITE())
       eeCheck(false);
-#else
-    if (theFile.isWriting())
-      theFile.nextWriteStep();
-    else if (TIME_TO_WRITE())
-      eeCheck(false);
-#endif
   }
 }
 

@@ -76,6 +76,10 @@ enum EepromWriteState {
 };
 
 extern EepromWriteState eepromWriteState;
+inline bool eepromIsWriting()
+{
+  return (eepromWriteState != EEPROM_IDLE);
+}
 void eepromWriteProcess();
 void eepromWriteWait(EepromWriteState state = EEPROM_IDLE);
 bool eepromOpen();

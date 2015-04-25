@@ -709,7 +709,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 
   f_close(&g_oLogFile);
 
-#if defined(CPUARM)
+#if defined(PCBTARANIS)
   if (version < EEPROM_VER) {
     eeCheck(true);
     ConvertModel(i_fileDst, version);
@@ -910,11 +910,12 @@ bool eeLoadGeneral()
     }
   }
 
-#if defined(CPUARM)
+#if defined(PCBTARANIS)
   if (g_eeGeneral.version != EEPROM_VER) {
     TRACE("EEPROM version %d instead of %d", g_eeGeneral.version, EEPROM_VER);
-    if (!eeConvert())
+    if (!eeConvert()) {
       return false;
+    }
   }
   return true;
 #else

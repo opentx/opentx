@@ -79,9 +79,9 @@ PACK(struct DirEnt {
 });
 
 #if defined(CPUARM)
-#define EEFS_EXTRA_FIELDS uint8_t  spare[2];
+  #define EEFS_EXTRA_FIELDS uint8_t  spare[2];
 #else
-#define EEFS_EXTRA_FIELDS
+  #define EEFS_EXTRA_FIELDS
 #endif
 
 PACK(struct EeFs {
@@ -217,7 +217,20 @@ class RlcFile: public EFile
 
 extern RlcFile theFile;  //used for any file operation
 
-inline void eeFlush() { theFile.flush(); }
+inline void eeFlush()
+{
+  theFile.flush();
+}
+
+inline bool eepromIsWriting()
+{
+  return theFile.isWriting();
+}
+
+inline void eepromWriteProcess()
+{
+  theFile.nextWriteStep();
+}
 
 #if defined (EEPROM_PROGRESS_BAR)
 #define DISPLAY_PROGRESS_BAR(x) theFile.DisplayProgressBar(x)
