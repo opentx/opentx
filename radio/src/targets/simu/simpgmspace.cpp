@@ -471,10 +471,15 @@ bool audio_thread_running = false;
 
 void *audio_thread(void *)
 {
-  if ( !SDL_WasInit(SDL_INIT_AUDIO) ) {
-    fprintf(stderr, "ERROR: couldn't initialize SDL audio support\n");
-    return 0;
-  }
+  /*
+    Checking here if SDL audio was initialized is wrong, because
+    the SDL_CloseAudio() de-initializes it.
+
+    if ( !SDL_WasInit(SDL_INIT_AUDIO) ) {
+      fprintf(stderr, "ERROR: couldn't initialize SDL audio support\n");
+      return 0;
+    }
+  */
 
   SDL_AudioSpec wanted, have;
 
@@ -486,7 +491,10 @@ void *audio_thread(void *)
   wanted.callback = fill_audio;
   wanted.userdata = NULL;
 
-  /* Open the audio device, forcing the desired format */
+  /*
+    SDL_OpenAudio() internally calls SDL_InitSubSystem(SDL_INIT_AUDIO),
+    which initializes SDL Audio subsystem if necessary
+  */
   if ( SDL_OpenAudio(&wanted, &have) < 0 ) {
     fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
     return 0;
