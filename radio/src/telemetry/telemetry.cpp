@@ -266,6 +266,7 @@ void TelemetryItem::per10ms(const TelemetrySensor & sensor)
           currentItem.consumption.prescale -= 3600;
           setValue(sensor, value+1, sensor.unit, sensor.prec);
         }
+        lastReceived = now();
       }
       break;
 
