@@ -60,6 +60,8 @@ class GeneralSetupPanel : public GeneralPanel
     void on_backlightautoSB_editingFinished();
 
     void on_battwarningDSB_editingFinished();
+    void on_vBatMinDSB_editingFinished();
+    void on_vBatMaxDSB_editingFinished();
     void on_contrastSB_editingFinished();
 
 

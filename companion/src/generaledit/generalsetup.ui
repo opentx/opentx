@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>758</width>
-    <height>635</height>
+    <height>661</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -230,6 +230,24 @@
      </item>
     </widget>
    </item>
+   <item row="11" column="4">
+    <widget class="QComboBox" name="backlightswCB">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string>This is the switch selectrion for turning on the backlight (if installed).
+
+</string>
+     </property>
+     <property name="currentIndex">
+      <number>-1</number>
+     </property>
+    </widget>
+   </item>
    <item row="16" column="4">
     <layout class="QHBoxLayout" name="backlightColor_Layout">
      <item>
@@ -322,20 +340,6 @@ p, li { white-space: pre-wrap; }
      <property name="text">
       <string>Vario pitch at zero</string>
      </property>
-    </widget>
-   </item>
-   <item row="10" column="1">
-    <widget class="QComboBox" name="displayTypeCB">
-     <item>
-      <property name="text">
-       <string>Standard</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Optrex</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="29" column="0">
@@ -1242,16 +1246,6 @@ Acceptable values are 5v..10v</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="label_contrast">
-     <property name="toolTip">
-      <string extracomment="Screen Contrast [20-45]"/>
-     </property>
-     <property name="text">
-      <string>Contrast</string>
-     </property>
-    </widget>
-   </item>
    <item row="11" column="1">
     <widget class="QSpinBox" name="inactimerSB">
      <property name="sizePolicy">
@@ -1354,63 +1348,10 @@ Acceptable values are 5v..10v</string>
      </property>
     </widget>
    </item>
-   <item row="11" column="4">
-    <widget class="QComboBox" name="backlightswCB">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="statusTip">
-      <string/>
-     </property>
-     <property name="whatsThis">
-      <string>This is the switch selectrion for turning on the backlight (if installed).
-
-</string>
-     </property>
-     <property name="currentIndex">
-      <number>-1</number>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0">
-    <widget class="QLabel" name="label_displayType">
-     <property name="text">
-      <string>LCD Display Type</string>
-     </property>
-    </widget>
-   </item>
    <item row="17" column="0">
     <widget class="QLabel" name="mavbaud_label">
      <property name="text">
       <string>MAVLink Baud Rate</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="1">
-    <widget class="QSpinBox" name="contrastSB">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="statusTip">
-      <string/>
-     </property>
-     <property name="whatsThis">
-      <string/>
-     </property>
-     <property name="minimum">
-      <number>10</number>
-     </property>
-     <property name="maximum">
-      <number>45</number>
-     </property>
-     <property name="value">
-      <number>25</number>
      </property>
     </widget>
    </item>
@@ -1948,6 +1889,140 @@ p, li { white-space: pre-wrap; }
       <string/>
      </property>
     </widget>
+   </item>
+   <item row="10" column="0">
+    <widget class="QLabel" name="label_displayType">
+     <property name="text">
+      <string>LCD Display Type</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1">
+    <widget class="QComboBox" name="displayTypeCB">
+     <item>
+      <property name="text">
+       <string>Standard</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Optrex</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_contrast">
+     <property name="toolTip">
+      <string extracomment="Screen Contrast [20-45]"/>
+     </property>
+     <property name="text">
+      <string>Contrast</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QSpinBox" name="contrastSB">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+     <property name="minimum">
+      <number>10</number>
+     </property>
+     <property name="maximum">
+      <number>45</number>
+     </property>
+     <property name="value">
+      <number>25</number>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="batMeterRangeLabel">
+     <property name="text">
+      <string>Battery Meter Range</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <layout class="QHBoxLayout" name="batMeterRangeLayout" stretch="0,1,0,1">
+     <item>
+      <widget class="QLabel" name="HasBatMeterMinRangeLabel">
+       <property name="text">
+        <string>Min</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="vBatMinDSB">
+       <property name="prefix">
+        <string notr="true"/>
+       </property>
+       <property name="suffix">
+        <string notr="true">v</string>
+       </property>
+       <property name="decimals">
+        <number>1</number>
+       </property>
+       <property name="minimum">
+        <double>4.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>16.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.100000000000000</double>
+       </property>
+       <property name="value">
+        <double>9.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="HasBatMeterMaxRangeLabel">
+       <property name="text">
+        <string>Max</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="vBatMaxDSB">
+       <property name="prefix">
+        <string notr="true"/>
+       </property>
+       <property name="suffix">
+        <string notr="true">v</string>
+       </property>
+       <property name="decimals">
+        <number>1</number>
+       </property>
+       <property name="minimum">
+        <double>4.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>16.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.100000000000000</double>
+       </property>
+       <property name="value">
+        <double>12.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
