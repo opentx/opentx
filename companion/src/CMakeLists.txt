@@ -107,6 +107,7 @@ include_directories(
 
 add_subdirectory(modeledit)
 add_subdirectory(simulation)
+add_subdirectory(qcustomplot)
 
 set(common_SRCS
   eeprominterface.cpp
@@ -115,7 +116,7 @@ set(common_SRCS
   firmwares/er9x/er9xeeprom.cpp
   firmwares/er9x/er9xinterface.cpp
   firmwares/gruvin9x/gruvin9xeeprom.cpp
-  firmwares/gruvin9x/gruvin9xinterface.cpp  
+  firmwares/gruvin9x/gruvin9xinterface.cpp
   firmwares/ersky9x/ersky9xeeprom.cpp
   firmwares/ersky9x/ersky9xinterface.cpp
   ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
@@ -148,7 +149,7 @@ set(companion_SRCS
   mdichild.cpp
   generaledit.cpp
   modelslist.cpp
-  mountlist.cpp 
+  mountlist.cpp
   avroutputdialog.cpp
   apppreferencesdialog.cpp
   fwpreferencesdialog.cpp
@@ -165,7 +166,6 @@ set(companion_SRCS
   mainwindow.cpp
   companion.cpp
   radionotfound.cpp
-  qcustomplot.cpp
   wizarddata.cpp
   wizarddialog.cpp
 )
@@ -190,12 +190,11 @@ set(companion_MOC_HDRS
   mdichild.h
   mainwindow.h
   radionotfound.h
-  qcustomplot.h
   qautocombobox.h
   helpers.h
   wizarddialog.h
 )
-     
+
 set(companion_UIS
   mdichild.ui
   avroutputdialog.ui
@@ -285,9 +284,9 @@ ELSE( )
 ENDIF( )
 
 if(SDL_FOUND)
-  target_link_libraries(companion modeledit simulation common ${QT_LIBRARIES} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
+  target_link_libraries(companion modeledit simulation common qcustomplot ${QT_LIBRARIES} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
 else()
-  target_link_libraries(companion modeledit simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
+  target_link_libraries(companion modeledit simulation common qcustomplot ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
 endif()
 
 ############# Standalone simu ###############
@@ -379,20 +378,20 @@ ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 IF( WIN32 )
   IF( MSVC )
-    SET( NSI_IN_FILE companion-vs.nsi.in )  
+    SET( NSI_IN_FILE companion-vs.nsi.in )
   ELSE( )
     SET( NSI_IN_FILE companion-msys.nsi.in )
   ENDIF( )
 
-  SET( SYSDIR "$ENV{windir}/system32" )  
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${NSI_IN_FILE} ${CMAKE_CURRENT_BINARY_DIR}/companion.nsi @ONLY)     
+  SET( SYSDIR "$ENV{windir}/system32" )
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${NSI_IN_FILE} ${CMAKE_CURRENT_BINARY_DIR}/companion.nsi @ONLY)
 
   FIND_PROGRAM(NSIS_EXE makensis.exe PATHS
     "C:/Program Files/NSIS"
-    "C:/Program Files (x86)/NSIS"    
+    "C:/Program Files (x86)/NSIS"
     "C:/Programs/NSIS"
   )
-  
+
   ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/companionInstall.exe
                      COMMAND "${NSIS_EXE}" ARGS companion.nsi
                      DEPENDS ${PROJECT_NAME} simulator ${PROJECT_BINARY_DIR}/companion.nsi
@@ -411,11 +410,11 @@ IF( APPLE )
   ELSE( )
     SET( WORK_DIR ${PROJECT_BINARY_DIR} )
   ENDIF()
-  
-  ADD_CUSTOM_TARGET( addframeworks ALL 
+
+  ADD_CUSTOM_TARGET( addframeworks ALL
                      COMMAND mkdir -p companion.app/Contents/Frameworks
                      COMMAND mkdir -p companion.app/Contents/Resources
-                     COMMAND mkdir -p companion.app/Contents/translations                     
+                     COMMAND mkdir -p companion.app/Contents/translations
                      COMMAND rsync ${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE} companion.app/Contents/Resources/${MACOSX_BUNDLE_ICON_FILE} # Copy the icon files
                      COMMAND rsync -r --exclude=.svn ${PROJECT_SOURCE_DIR}/../targets/mac/qt_menu.nib companion.app/Contents/Resources/
                      COMMAND rsync -r /Library/Frameworks/SDL.framework companion.app/Contents/Frameworks/
@@ -424,7 +423,7 @@ IF( APPLE )
                      COMMAND install_name_tool -change @rpath/SDL.framework/Versions/A/SDL @executable_path/../Frameworks/SDL.framework/Versions/A/SDL companion.app/Contents/MacOS/companion
                      WORKING_DIRECTORY ${WORK_DIR}
                      DEPENDS ${PROJECT_NAME} )
-                        
+
   ADD_CUSTOM_TARGET( makedmg
                      COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app -dmg -no-plugins
                      WORKING_DIRECTORY ${WORK_DIR}
@@ -433,7 +432,7 @@ IF( APPLE )
 ENDIF( )
 
 ADD_CUSTOM_TARGET( stamp
-                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/version.h ${CMAKE_SOURCE_DIR}/../companion.stamp 
+                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/version.h ${CMAKE_SOURCE_DIR}/../companion.stamp
                    DEPENDS ${CMAKE_BINARY_DIR}/version.h )
 
 IF(WIN32)
@@ -469,6 +468,6 @@ else(DPKG_PROGRAM)
   SET(CPACK_RPM_PACKAGE_VERSION ${C9X_VERSION})
   SET(CPACK_RPM_PACKAGE_DESCRIPTION ${CPACK_PACKAGE_DESCRIPTION_SUMMARY})
   SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME_LOWERCASE}-${C9X_VERSION}-${CMAKE_SYSTEM_PROCESSOR}")
-endif(DPKG_PROGRAM) 
+endif(DPKG_PROGRAM)
 
 INCLUDE(CPack)
