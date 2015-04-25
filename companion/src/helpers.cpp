@@ -838,15 +838,39 @@ QString getTimerStr(TimerData & timer)
   return result;
 }
 
-QString getProtocol(ModelData * g_model)
+QString getProtocol(ModuleData & module)
 {
-  QString str = getProtocolStr(g_model->moduleData[0].protocol);
+  QString str = getProtocolStr(module.protocol);
 
-  if (g_model->moduleData[0].protocol == PPM)
-    str.append(QObject::tr(": %1 Channels, %2usec Delay").arg(g_model->moduleData[0].channelsCount).arg(g_model->moduleData[0].ppmDelay));
-
+  if (module.protocol == PPM)
+    str.append(QObject::tr(": Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4").arg(module.channelsStart+1).arg(module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString()));
+  else if (!module.protocol == OFF)
+    str.append(QObject::tr(": Channel start: %1, %2 Channels").arg(module.channelsStart+1).arg(module.channelsCount));
   return str;
 }
+
+QString getTrainerMode(const int trainermode, ModuleData & module)
+{
+  QString result;
+  switch (trainermode) {
+    case 1:
+      result=QObject::tr("Slave/Jack")+QObject::tr(": Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4").arg(module.channelsStart+1).arg(module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString());
+      break;
+    case 2:
+      result=QObject::tr("Master/SBUS Module");
+      break;
+    case 3:
+      result=QObject::tr("Master/CPPM Module");
+      break;
+    case 4:
+      result=QObject::tr("Master/SBUS in battery compartment");
+      break;
+    default:
+      result=QObject::tr("Master/Jack");
+  }
+  return result;
+}
+
 
 QString getPhasesStr(unsigned int phases, ModelData & model)
 {

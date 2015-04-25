@@ -113,8 +113,17 @@ void PrintDialog::printSetup()
     str.append(fv(tr("EEprom Size"), QString("%1").arg(firmware->getEepromInterface()->getSize(*g_model))));
     str.append(fv(tr("Timer1"), getTimerStr(g_model->timers[0])));  //value, mode, count up/down
     str.append(fv(tr("Timer2"), getTimerStr(g_model->timers[1])));  //value, mode, count up/down
-    str.append(fv(tr("Protocol"), getProtocol(g_model))); //proto, numch, delay,
-    str.append(fv(tr("Pulse Polarity"), g_model->moduleData[0].polarityToString()));
+    if (firmware->getCapability(NumModules)>1) {
+      str.append("<b>"+(IS_TARANIS(firmware->getBoard()) ? tr("Internal Radio System") : tr("Radio System") )+"</b><br>&nbsp;&nbsp;"); //proto, numch, delay,
+    }
+    str.append(fv(tr("Protocol"), getProtocol(g_model->moduleData[0]))); 
+    if (firmware->getCapability(NumModules)>1) {
+      str.append("<b>"+(IS_TARANIS(firmware->getBoard()) ? tr("External Radio Module") : tr("Extra Radio System"))+"</b><br>&nbsp;&nbsp;"); //proto, numch, delay,
+      str.append(fv(tr("Protocol"), getProtocol(g_model->moduleData[1])));
+    }
+    if (IS_TARANIS(firmware->getBoard())){
+      str.append(fv(tr("Trainer port mode"), getTrainerMode(g_model->trainerMode, g_model->moduleData[2]))); 
+    }
     str.append(fv(tr("Throttle Trim"), g_model->thrTrim ? tr("Enabled") : tr("Disabled")));
     str.append(fv(tr("Trim Increment"), getTrimInc(g_model)));
     str.append(fv(tr("Center Beep"), getCenterBeepStr(g_model))); // specify which channels beep
@@ -130,7 +139,7 @@ void PrintDialog::printSetup()
 
 QString PrintDialog::printFlightModes()
 {      
-    QString str="";
+    QString str = "";
     str.append(QString("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td colspan=%1><h2>").arg(!gvars ? 8+firmware->getCapability(RotaryEncoders) : 8+gvars+firmware->getCapability(RotaryEncoders)));
     str.append(tr("Flight modes"));
     str.append("</h2></td></tr><tr><td style=\"border-style:none;\">&nbsp;</td><td colspan=2 align=center><b>");
@@ -147,7 +156,7 @@ QString PrintDialog::printFlightModes()
     QString labels[] = { tr("Rud"), tr("Ele"), tr("Thr"), tr("Ail") }; // TODO is elsewhere for sure
     for (int i=0; i<4; i++) {
       GeneralSettings generalSettings = *g_eeGeneral;
-      str.append(QString("<td  align=\"center\" nowrap><b>%1</b></td>").arg(labels[CONVERT_MODE(i+1)-1]));
+      str.append(QString("<td  align=\"center\" nowrap><b>%1</b></td>").arg((QString)labels[CONVERT_MODE(i+1)-1]));
     }
     for (unsigned int i=0; i<gvars; i++) {
       str.append(QString("<td  align=\"center\" nowrap><b>GV%1</b><br>%2</td>").arg(i+1).arg(g_model->gvars_names[i]));
@@ -158,38 +167,46 @@ QString PrintDialog::printFlightModes()
     str.append("</tr>");
     for (int i=0; i<firmware->getCapability(FlightModes); i++) {
       FlightModeData *pd=&g_model->flightModeData[i];
-      str.append("<tr><td><b>"+tr("FM")+QString("%1</b> <font size=+1 face='Courier New' color=green>%2</font></td>").arg(i).arg(pd->name));
-      str.append(QString("<td  align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg((qreal)pd->fadeIn/firmware->getCapability(SlowScale)));
-      str.append(QString("<td width=\"30\" align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg((qreal)pd->fadeOut/firmware->getCapability(SlowScale)));
+      str.append("<tr><td valign=\"middle\"><b>"+tr("FM")+QString("%1</b> <font size=+1 face='Courier New' color=green>%2</font></td>").arg(i).arg(pd->name));
+      str.append(QString("<td valign=\"middle\" align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg((qreal)pd->fadeIn/firmware->getCapability(SlowScale)));
+      str.append(QString("<td valign=\"middle\" width=\"30\" align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg((qreal)pd->fadeOut/firmware->getCapability(SlowScale)));
       for (int k=0; k<4; k++) {
-        //TODO trim values
-        if (pd->trimRef[k]==-1) {
-          str.append(QString("<td align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg(pd->trim[k]));
+        //Almost done trim values
+        if (pd->trimMode[k]==-1) {
+          str.append(QString("<td valign=\"middle\" align=\"center\"><font size=+1 face='Courier New' color=grey>")+tr("Off")+QString("</font></td>"));
         } else {
-          str.append("<td align=\"right\" ><font size=+1 face='Courier New' color=green>"+tr("FM")+QString("%1</font></td>").arg(pd->trimRef[k]));
+          if (pd->trimRef[k]==i) {
+            str.append("<td valign=\"middle\" align=\"center\" ><font size=+1 face='Courier New' color=green>"+QString("%1").arg(pd->trim[k])+QString("</font></td>"));
+          } else {
+            if (pd->trimMode[k]==0) {
+              str.append("<td valign=\"middle\" align=\"center\" ><font size=+1 face='Courier New' color=green>"+tr("FM")+QString("%1").arg(pd->trimRef[k])+QString("</font></td>"));
+            } else {
+              str.append("<td valign=\"middle\" align=\"center\" ><font size=+1 face='Courier New' color=green>"+tr("FM")+QString("%1+").arg(pd->trimRef[k])+QString("<br>%1").arg(pd->trim[k])+QString("</font></td>"));
+            }
+          }
         }
       }
       for (unsigned int k=0; k<gvars; k++) {
         if (pd->gvars[k]<=1024) {
-          str.append(QString("<td align=\"right\"><font size=+1 face='Courier New' color=green>%1").arg(pd->gvars[k])+"</font></td>");
+          str.append(QString("<td align=\"right\" valign=\"middle\"><font size=+1 face='Courier New' color=green>%1").arg(pd->gvars[k])+"</font></td>");
         }
         else {
           int num = pd->gvars[k] - 1025;
           if (num>=i) num++;
-          str.append("<td align=\"right\" ><font size=+1 face='Courier New' color=green>"+tr("FM")+QString("%1</font></td>").arg(num));
+          str.append("<td align=\"right\" valign=\"middle\"><font size=+1 face='Courier New' color=green>"+tr("FM")+QString("%1</font></td>").arg(num));
         }
       }
       for (int k=0; k<firmware->getCapability(RotaryEncoders); k++) {
         if (pd->rotaryEncoders[k]<=1024) {
-          str.append(QString("<td align=\"right\"><font size=+1 face='Courier New' color=green>%1").arg(pd->rotaryEncoders[k])+"</font></td>");
+          str.append(QString("<td align=\"right\" valign=\"middle\"><font size=+1 face='Courier New' color=green>%1").arg(pd->rotaryEncoders[k])+"</font></td>");
         }
         else {
           int num = pd->rotaryEncoders[k] - 1025;
           if (num>=i) num++;
-          str.append(QString("<td align=\"right\"><font size=+1 face='Courier New' color=green>")+tr("FM")+QString("%1</font></td>").arg(num));
+          str.append(QString("<td align=\"right\" valign=\"middle\"><font size=+1 face='Courier New' color=green>")+tr("FM")+QString("%1</font></td>").arg(num));
         }
       }      
-      str.append(QString("<td align=center><font size=+1 face='Courier New' color=green>%1</font></td>").arg(pd->swtch.toString()));
+      str.append(QString("<td align=center valign=\"middle\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg(pd->swtch.toString()));
       str.append("</tr>");
     }
     str.append("</table>");
@@ -464,7 +481,7 @@ void PrintDialog::printLimits()
 
 void PrintDialog::printCurves()
 {
-    int i,r,g,b,c,count;
+    int i,r,g,b,c,count,usedcurves=0;
     char buffer[16];
     QPen pen(Qt::black, 2, Qt::SolidLine);
     
@@ -475,27 +492,38 @@ void PrintDialog::printCurves()
     if (numcurves==0) {
       numcurves=16;
     }
-    {
-      QImage qi(ISIZEW+1,ISIZEW+1,QImage::Format_RGB32);
-      QPainter painter(&qi);
-      painter.setBrush(QBrush("#FFFFFF"));
-      painter.setPen(QColor(0,0,0));
-      painter.drawRect(0,0,ISIZEW,ISIZEW);
-      str.append("<table border=0 cellspacing=0 cellpadding=3 width=\"100%\">"+QString("<tr><td width=\"400\"><img src=\"%1\" border=0></td><td><table border=1 cellspacing=0 cellpadding=3 width=\"100%\">").arg(curvefile5));
-      for(i=0; i<numcurves; i++) {
-        pen.setColor(colors[i]);
-        painter.setPen(pen);
-        colors[i].getRgb(&r,&g,&b);
-        c=r;
-        c*=256;
-        c+=g;
-        c*=256;
-        c+=b;
-        sprintf(buffer,"%06x",c);
-        if(i%2 == 0) str.append("<tr>");
-        str.append(QString("<td width=\"70\"><font color=#%1><b>").arg(buffer)+tr("Curve")+QString(" %1</b></font></td>").arg(i+1));
-        if(i%2) str.append("</tr>");
+    
+    QImage qi(ISIZEW+1,ISIZEW+1,QImage::Format_RGB32);
+    QPainter painter(&qi);
+    painter.setBrush(QBrush("#FFFFFF"));
+    painter.setPen(QColor(0,0,0));
+    painter.drawRect(0,0,ISIZEW,ISIZEW);
+    str.append("<table border=0 cellspacing=0 cellpadding=3 width=\"100%\">"+QString("<tr><td width=\"400\"><img src=\"%1\" border=0></td><td><table border=1 cellspacing=0 cellpadding=3 width=\"100%\">").arg(curvefile5));
+    for(i=0; i<numcurves; i++) {
+      pen.setColor(colors[usedcurves]);
+      painter.setPen(pen);
+      colors[usedcurves].getRgb(&r,&g,&b);
+      c=r;
+      c*=256;
+      c+=g;
+      c*=256;
+      c+=b;
+      sprintf(buffer,"%06x",c);
+      int curvepoints=g_model->curves[i].count;
+      count=0;
+      for(int j=0; j<curvepoints; j++) {
+        if (g_model->curves[i].points[j].y!=0)
+          count++;
       }
+      if ((count>0) || (g_model->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)|| (g_model->curves[i].count !=5)) {
+        if(usedcurves%2 == 0) str.append("<tr>");
+        str.append(QString("<td width=\"70\"><font color=#%1><b>").arg(buffer)+tr("Curve")+QString(" %1</b></font></td>").arg(i+1));
+        if(usedcurves%2) str.append("</tr>");
+        usedcurves++;
+      }
+    }
+    if (!(usedcurves%2)) str.append("</tr>");
+    if (usedcurves!=0) {
       str.append("</table></td></tr><tr><td colspan=2><table border=1 cellspacing=0 cellpadding=3 width=\"100%\">");
       str.append("<tr>");
       str.append(doTC("&nbsp;"));
@@ -509,48 +537,50 @@ void PrintDialog::printCurves()
           str.append(doTC(tr("pt %1").arg(i+1), "", true));
       str.append("</tr>");
       for(i=0; i<numcurves; i++) {
-        pen.setColor(colors[i]);
-        painter.setPen(pen);
-        colors[i].getRgb(&r,&g,&b);
-        c=r;
-        c*=256;
-        c+=g;
-        c*=256;
-        c+=b;
-        sprintf(buffer,"%06x",c);
-        str.append("<tr>");
         int curvepoints=g_model->curves[i].count;
-        if (g_model->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)
-          str.append(QString("<td width=\"70\" rowspan=2 valign=middle><font color=#%1><b>").arg(buffer)+tr("Curve")+QString(" %1</b></font></td><td width=5>Y</td>").arg(i+1));
-        else
-          str.append(QString("<td width=\"70\"><font color=#%1><b>").arg(buffer)+tr("Curve")+QString(" %1</b></font></td><td width=5>Y</td>").arg(i+1));
         count=0;
         for(int j=0; j<curvepoints; j++) {
           if (g_model->curves[i].points[j].y!=0)
             count++;
         }
-        for(int j=0; j<curvepoints; j++) {    
-          str.append(doTR(QString::number(g_model->curves[i].points[j].y),"green"));
-          if (j>0 && count!=0) {
-            if (g_model->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)
-              painter.drawLine(ISIZEW/2+(ISIZEW*g_model->curves[i].points[j-1].x)/200,ISIZEW/2-(ISIZEW*g_model->curves[i].points[j-1].y)/200,ISIZEW/2+(ISIZEW*g_model->curves[i].points[j].x)/200,ISIZEW/2-(ISIZEW*g_model->curves[i].points[j].y)/200);
-            else
-              painter.drawLine(ISIZEW*(j-1)/(curvepoints-1),ISIZEW/2-(ISIZEW*g_model->curves[i].points[j-1].y)/200,ISIZEW*(j)/(curvepoints-1),ISIZEW/2-(ISIZEW*g_model->curves[i].points[j].y)/200);
-          }
-        }
-        for(int j=curvepoints; j<numpoint; j++) {
-          str.append(doTR("","green"));
-        }     
-        str.append("</tr>");
-        if (g_model->curves[i].type == CurveData::CURVE_TYPE_CUSTOM) {
-          str.append("<tr><td width=5>X</td>");
+        if ((count>0) || (g_model->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)) {
+          pen.setColor(colors[i]);
+          painter.setPen(pen);
+          colors[i].getRgb(&r,&g,&b);
+          c=r;
+          c*=256;
+          c+=g;
+          c*=256;
+          c+=b;
+          sprintf(buffer,"%06x",c);
+          str.append("<tr>");
+          if (g_model->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)
+            str.append(QString("<td width=\"70\" rowspan=2 valign=middle><font color=#%1><b>").arg(buffer)+tr("Curve")+QString(" %1</b></font></td><td width=5>Y</td>").arg(i+1));
+          else
+            str.append(QString("<td width=\"70\"><font color=#%1><b>").arg(buffer)+tr("Curve")+QString(" %1</b></font></td><td width=5>Y</td>").arg(i+1));
           for(int j=0; j<curvepoints; j++) {    
-            str.append(doTR(QString::number(g_model->curves[i].points[j].x),"green"));
+            str.append(doTR(QString::number(g_model->curves[i].points[j].y),"green"));
+            if (j>0 && (count!=0 ||(g_model->curves[i].type == CurveData::CURVE_TYPE_CUSTOM))) {
+              if (g_model->curves[i].type == CurveData::CURVE_TYPE_CUSTOM)
+                painter.drawLine(ISIZEW/2+(ISIZEW*g_model->curves[i].points[j-1].x)/200,ISIZEW/2-(ISIZEW*g_model->curves[i].points[j-1].y)/200,ISIZEW/2+(ISIZEW*g_model->curves[i].points[j].x)/200,ISIZEW/2-(ISIZEW*g_model->curves[i].points[j].y)/200);
+              else
+                painter.drawLine(ISIZEW*(j-1)/(curvepoints-1),ISIZEW/2-(ISIZEW*g_model->curves[i].points[j-1].y)/200,ISIZEW*(j)/(curvepoints-1),ISIZEW/2-(ISIZEW*g_model->curves[i].points[j].y)/200);
+            }
           }
           for(int j=curvepoints; j<numpoint; j++) {
             str.append(doTR("","green"));
           }     
-          str.append("</tr>");  
+          str.append("</tr>");
+          if (g_model->curves[i].type == CurveData::CURVE_TYPE_CUSTOM) {
+            str.append("<tr><td width=5>X</td>");
+            for(int j=0; j<curvepoints; j++) {    
+              str.append(doTR(QString::number(g_model->curves[i].points[j].x),"green"));
+            }
+            for(int j=curvepoints; j<numpoint; j++) {
+              str.append(doTR("","green"));
+            }     
+            str.append("</tr>");  
+          }
         }
       }
       str.append("</table></td></tr></table></td></tr></table>");
@@ -562,11 +592,9 @@ void PrintDialog::printCurves()
         painter.drawLine(ISIZEW/2-5,(ISIZEW*i)/(20),ISIZEW/2+5,(ISIZEW*i)/(20));
         painter.drawLine((ISIZEW*i)/(20),ISIZEW/2-5,(ISIZEW*i)/(20),ISIZEW/2+5);
       }
-
       qi.save(curvefile5, "png",100); 
-      
+      te->append(str);
     }
-    te->append(str);
 }
 
 void PrintDialog::printSwitches()
