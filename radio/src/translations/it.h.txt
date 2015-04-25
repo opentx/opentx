@@ -607,9 +607,9 @@
 #define TR_CV                  "CV"
 #define TR_GV                  "GV"
 #define TR_ACHANNEL            "A\002ingresso"
-#define TR_RANGE               INDENT"Intervallo"
+#define TR_RANGE               tr(INDENT"Inter.",INDENT"Intervallo")
 #define TR_BAR                 "Barra"
-#define TR_ALARM               INDENT"Allarme"
+#define TR_ALARM               tr(INDENT"Allar.",INDENT"Allarme")
 #define TR_USRDATA             "Dati"
 #define TR_BLADES              INDENT"Pale"
 #define TR_SCREEN              "Schermo "
