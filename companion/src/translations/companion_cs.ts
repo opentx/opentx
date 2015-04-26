@@ -720,13 +720,13 @@ Může být jiná než verze firmwaru</translation>
         <location filename="../comparedialog.cpp" line="258"/>
         <location filename="../comparedialog.cpp" line="288"/>
         <source>Internal Radio System</source>
-        <translation type="unfinished">Interní vysílací modul</translation>
+        <translation>Interní vysílací modul</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="258"/>
         <location filename="../comparedialog.cpp" line="288"/>
         <source>Radio System</source>
-        <translation type="unfinished">Vysílací modul</translation>
+        <translation>Vysílací modul</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="260"/>
@@ -766,19 +766,19 @@ Může být jiná než verze firmwaru</translation>
         <location filename="../comparedialog.cpp" line="263"/>
         <location filename="../comparedialog.cpp" line="293"/>
         <source>External Radio Module</source>
-        <translation type="unfinished">Externí vysílací modul</translation>
+        <translation>Externí vysílací modul</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="263"/>
         <location filename="../comparedialog.cpp" line="293"/>
         <source>Extra Radio System</source>
-        <translation type="unfinished">Extra modul</translation>
+        <translation>Extra modul</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="268"/>
         <location filename="../comparedialog.cpp" line="298"/>
         <source>Trainer port mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mód portu Trenér</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="273"/>
@@ -2666,17 +2666,17 @@ který kanál patří ke kterému výstupu.</translation>
     <message>
         <location filename="../generaledit.ui" line="1854"/>
         <source>Min</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1883"/>
         <source>Max</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1914"/>
         <source>Battery Meter Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozsah ukazatele baterie</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1946"/>
@@ -3527,12 +3527,12 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="20"/>
         <source>Configure Joystick</source>
-        <translation type="unfinished">Nastavte joystick</translation>
+        <translation>Nastavení joysticku</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="43"/>
         <source>Ch2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="82"/>
@@ -3544,7 +3544,7 @@ Opravdu to takto chcete ?</translation>
         <location filename="../simulation/joystickdialog.ui" line="579"/>
         <location filename="../simulation/joystickdialog.ui" line="666"/>
         <source>Not  Assigned</source>
-        <translation type="unfinished">Nepřiřazeno</translation>
+        <translation>Nepřiřazeno</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="87"/>
@@ -3556,7 +3556,7 @@ Opravdu to takto chcete ?</translation>
         <location filename="../simulation/joystickdialog.ui" line="584"/>
         <location filename="../simulation/joystickdialog.ui" line="671"/>
         <source>Right Vertical</source>
-        <translation type="unfinished">Pravá vertikální</translation>
+        <translation>Pravá vertikální</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="92"/>
@@ -3568,7 +3568,7 @@ Opravdu to takto chcete ?</translation>
         <location filename="../simulation/joystickdialog.ui" line="589"/>
         <location filename="../simulation/joystickdialog.ui" line="676"/>
         <source>Right Horizontal</source>
-        <translation type="unfinished">Pravá horizontální</translation>
+        <translation>Pravá horizontální</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="97"/>
@@ -3580,7 +3580,7 @@ Opravdu to takto chcete ?</translation>
         <location filename="../simulation/joystickdialog.ui" line="594"/>
         <location filename="../simulation/joystickdialog.ui" line="681"/>
         <source>Left Vertical</source>
-        <translation type="unfinished">Levá vertikální</translation>
+        <translation>Levá vertikální</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="102"/>
@@ -3592,7 +3592,7 @@ Opravdu to takto chcete ?</translation>
         <location filename="../simulation/joystickdialog.ui" line="599"/>
         <location filename="../simulation/joystickdialog.ui" line="686"/>
         <source>Left Horizontal</source>
-        <translation type="unfinished">Levá horizontální</translation>
+        <translation>Levá horizontální</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="107"/>
@@ -3604,7 +3604,7 @@ Opravdu to takto chcete ?</translation>
         <location filename="../simulation/joystickdialog.ui" line="604"/>
         <location filename="../simulation/joystickdialog.ui" line="691"/>
         <source>P1</source>
-        <translation type="unfinished">Potenciometr 1</translation>
+        <translation>Potenciometr 1</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="112"/>
@@ -3616,7 +3616,7 @@ Opravdu to takto chcete ?</translation>
         <location filename="../simulation/joystickdialog.ui" line="609"/>
         <location filename="../simulation/joystickdialog.ui" line="696"/>
         <source>P2</source>
-        <translation type="unfinished"></translation>
+        <translation>Potenciometr 2</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="117"/>
@@ -3628,7 +3628,7 @@ Opravdu to takto chcete ?</translation>
         <location filename="../simulation/joystickdialog.ui" line="614"/>
         <location filename="../simulation/joystickdialog.ui" line="701"/>
         <source>P3/LS</source>
-        <translation type="unfinished">Potenciometr 3 /LS</translation>
+        <translation>Potenciometr 3 /LS</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="122"/>
@@ -3640,113 +3640,113 @@ Opravdu to takto chcete ?</translation>
         <location filename="../simulation/joystickdialog.ui" line="619"/>
         <location filename="../simulation/joystickdialog.ui" line="706"/>
         <source>RS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="130"/>
         <source>Ch1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="272"/>
         <source>Ch4</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="304"/>
         <source>Ch6</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="311"/>
         <source>Ch3</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="533"/>
         <source>Ch5</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="540"/>
         <source>Ch7</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="627"/>
         <source>Ch8</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="818"/>
         <source>Instructions</source>
-        <translation type="unfinished">Instrukce</translation>
+        <translation>Instrukce</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="836"/>
         <source>Cancel</source>
-        <translation type="unfinished">Zrušit</translation>
+        <translation>Zrušit</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="862"/>
         <source>Next</source>
-        <translation type="unfinished">Další</translation>
+        <translation>Další</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="875"/>
         <source>Ok</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="17"/>
         <source>Move sticks and pots in every direction making full movement
 Press next when finished</source>
-        <translation type="unfinished">Hýbejte pákami a potenciometry ve všech směrech až do krajních poloh.
+        <translation>Hýbejte pákami a potenciometry ve všech směrech až do krajních poloh.
 Potom stiskněte tlačítko Další</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="51"/>
         <location filename="../simulation/joystickdialog.cpp" line="126"/>
         <source>Error</source>
-        <translation type="unfinished">Chyba</translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="51"/>
         <source>Cannot open joystick.</source>
-        <translation type="unfinished">Nemohu otevřít joystick.</translation>
+        <translation>Nemohu otevřít joystick.</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="77"/>
         <source>Place sticks and pots in middle position.
 Press next when done</source>
-        <translation type="unfinished">Umístěte páky a potenciometry do střední polohy.
+        <translation>Umístěte páky a potenciometry do střední polohy.
 Potom stiskněte tlačítko Další</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="88"/>
         <source>Map joystick channels to controls using comboboxes.
 Press next when done</source>
-        <translation type="unfinished">Přiřaďte kanály joysticku k ovládání funkcí.
+        <translation>Přiřaďte kanály joysticku k ovládání funkcí.
 Potom stiskněte tlačítko Další</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="95"/>
         <source>Check inversion checkbox to get maximum at top-right position.
 Press next when done</source>
-        <translation type="unfinished">Zkontroluj invertovací políčka k nastavení maxima v pravé horní pozici.
+        <translation>Zkontroluj invertovací políčka k nastavení maxima v pravé horní pozici.
 Potom stiskněte tlačítko Další</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="102"/>
         <source>Press ok to save configuration
 Press cancel to abort joystick calibration</source>
-        <translation type="unfinished">Stiskem tlačítka OK uložíte konfiguraci.
+        <translation>Stiskem tlačítka OK uložíte konfiguraci.
 Tlačítkem Zrušit přerušíte kalibraci</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="126"/>
         <source>Duplicated stick assignement</source>
-        <translation type="unfinished">Duplicitní přiřazení páky</translation>
+        <translation>Duplicitní přiřazení páky</translation>
     </message>
 </context>
 <context>
@@ -4182,7 +4182,7 @@ Chcete ho přesto zapsat ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1499"/>
         <source>OpenTX Companion 2.0 - FW: %1 - Profile: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX Companion 2.0 - FW: %1 - Profil: %2</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1615"/>
@@ -4353,7 +4353,11 @@ Release %2 is available.
 Do you want to download it now?
 
 We recommend you view the release notes using the button below to learn about any changes that may be important to you.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdá se, že Firmware %1 ještě nebyl stažen.
+Vydání %2 je dostupné.
+Chcete ho stáhnout nyní?
+
+Doporučujeme přečíst si poznámky k vydání, dozvíte se tam o všech změnách, které by pro vás mohly být důležité.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="441"/>
@@ -4364,7 +4368,13 @@ We recommend you view the release notes using the button below to learn about an
 Do you want to download it now?
 
 We recommend you view the release notes using the button below to learn about any changes that may be important to you.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nová verze %1 firmwaru je dostupná:
+  - současná %2
+  - nová %3
+
+Chcete ji stáhnout nyní?
+
+Doporučujeme přečíst si poznámky k vydání, dozvíte se tam o všech změnách, které by pro vás mohly být důležité.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1587"/>
@@ -6305,32 +6315,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../printdialog.cpp" line="117"/>
         <source>Internal Radio System</source>
-        <translation type="unfinished">Interní vysílací modul</translation>
+        <translation>Interní vysílací modul</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="117"/>
         <source>Radio System</source>
-        <translation type="unfinished">Vysílací modul</translation>
+        <translation>Vysílací modul</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="121"/>
         <source>External Radio Module</source>
-        <translation type="unfinished">Externí vysílací modul</translation>
+        <translation>Externí vysílací modul</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="121"/>
         <source>Extra Radio System</source>
-        <translation type="unfinished">Extra modul</translation>
+        <translation>Extra modul</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="125"/>
         <source>Trainer port mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mód portu Trenér</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="176"/>
         <source>Off</source>
-        <translation type="unfinished">Vypnuto</translation>
+        <translation>Vypnuto</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="219"/>
@@ -7533,37 +7543,37 @@ Nastavení hodnoty se provádí přímo v seznamu proměnných, nebo pomocí Fun
         <location filename="../helpers.cpp" line="846"/>
         <location filename="../helpers.cpp" line="857"/>
         <source>: Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4</source>
-        <translation type="unfinished"></translation>
+        <translation>: první kanál: %1, %2 kanálů, %3mikrosekund zpoždění, polarita pulzů %4</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="848"/>
         <source>: Channel start: %1, %2 Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>: první kanál: %1, %2 kanálů</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="857"/>
         <source>Slave/Jack</source>
-        <translation type="unfinished"></translation>
+        <translation>Žák/konektor Jack</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="860"/>
         <source>Master/SBUS Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Učitel/SBUS Modul</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="863"/>
         <source>Master/CPPM Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Učitel/CPPM Modul</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="866"/>
         <source>Master/SBUS in battery compartment</source>
-        <translation type="unfinished"></translation>
+        <translation>Učitel/SBUS v bateriové přihrádce</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="869"/>
         <source>Master/Jack</source>
-        <translation type="unfinished"></translation>
+        <translation>Učitel/konektor Jack</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="856"/>
@@ -8764,12 +8774,12 @@ Tým OpenTX.</translation>
     <message>
         <location filename="../eeprominterface.h" line="962"/>
         <source>Positive</source>
-        <translation type="unfinished">Pozitivní</translation>
+        <translation>Pozitivní</translation>
     </message>
     <message>
         <location filename="../eeprominterface.h" line="962"/>
         <source>Negative</source>
-        <translation type="unfinished">Negativní</translation>
+        <translation>Negativní</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="44"/>
@@ -9163,7 +9173,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../wizarddialog.cpp" line="739"/>
         <source>Only one channel still available!&lt;br&gt;You probably should configure your model without using the wizard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zbává pouze jeden kanál!&lt;br&gt;Zdá se, že budete muset nastavit váš model bez použití průvodce.</translation>
     </message>
 </context>
 <context>
@@ -9592,17 +9602,17 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry.cpp" line="671"/>
         <source>Alti</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="554"/>
         <source>FrSky S.PORT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="555"/>
         <source>FrSky D</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="557"/>
@@ -9612,12 +9622,12 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry.cpp" line="672"/>
         <source>Alti+</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="674"/>
         <source>VSpeed</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="676"/>
@@ -9629,7 +9639,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry.cpp" line="678"/>
         <source>dTE</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="689"/>
@@ -9670,117 +9680,117 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="38"/>
         <source>Vario Altitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Výška varia</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="41"/>
         <source>V-ALT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="48"/>
         <source>Vario Vertical Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertikální rychlost varia</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="51"/>
         <source>V-VSPD</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="67"/>
         <source>ACCZ</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="74"/>
         <source>GPS Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Čas z GPS</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="77"/>
         <source>GPS-T</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="87"/>
         <source>ACCX</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="106"/>
         <source>GPS Lat/Lon</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="109"/>
         <source>GPS-LL</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="116"/>
         <source>VFAS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="119"/>
         <source>FAS-V</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="126"/>
         <source>GPS Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost z GPS</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="129"/>
         <source>GPS-S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="136"/>
         <source>CELLS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="152"/>
         <source>ACCY</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="159"/>
         <source>GPS Course</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS směr</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="162"/>
         <source>GPS-C</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="175"/>
         <source>GPS Altitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Výška z GPS</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="178"/>
         <source>GPS-A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="185"/>
         <source>CURRENT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="188"/>
         <source>FAS-C</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="195"/>
         <source>30</source>
-        <translation type="unfinished">CH9X {30?}</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="202"/>
@@ -9790,17 +9800,17 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="209"/>
         <source>75</source>
-        <translation type="unfinished">CH9X {75?}</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="223"/>
         <source>FR_ID_AIR_SPEED</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="226"/>
         <source>ASPD</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="260"/>
@@ -9810,7 +9820,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="334"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Start with &lt;span style=&quot; font-style:italic;&quot;&gt;0x&lt;/span&gt; for hex, &lt;span style=&quot; font-style:italic;&quot;&gt;0&lt;/span&gt; for octal, otherwise decimal.&lt;br/&gt;Numeric entry only. Blank values are not sent.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Použijte prefix &lt;span style=&quot; font-style:italic;&quot;&gt;0x&lt;/span&gt; pro šestnáctkovou, &lt;span style=&quot; font-style:italic;&quot;&gt;0&lt;/span&gt; pro osmičkovou,&lt;br/&gt;a bez prefixu pro desítkovou soustavu.&lt;br/&gt;Prázdná pole nejsou odesílána.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="216"/>
@@ -9820,47 +9830,47 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="274"/>
         <source>A3</source>
-        <translation type="unfinished">Telem. vstup A3</translation>
+        <translation>Telem. vstup A3</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="281"/>
         <source>A4</source>
-        <translation type="unfinished">Telem. vstup A4</translation>
+        <translation>Telem. vstup A4</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="288"/>
         <source>Temperature 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Teplota 1</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="291"/>
         <source>T1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="298"/>
         <source>Temperature 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Teplota 2</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="301"/>
         <source>T2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="308"/>
         <source>RPM</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="315"/>
         <source>FUEL</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="322"/>
         <source>When enabled, sends any non-blank values as simulated telemetry data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokud je povoleno, vyplněná pole budou odesílána jako telemetrická data.</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="325"/>
@@ -10106,7 +10116,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../wizarddialog.cpp" line="40"/>
         <source>Which type of swash control is installed in your helicopter?</source>
-        <translation type="unfinished">Jaký typ desky cykliky je instalován?</translation>
+        <translation>Jaký typ desky cykliky je instalován?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="41"/>
@@ -11915,32 +11925,32 @@ Tlačítkem Zrušit přerušíte kalibraci</translation>
     <message>
         <location filename="../logsdialog.cpp" line="96"/>
         <source>Plot Title Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna názvu znázornění</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="97"/>
         <source>New plot title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nový název znázornění:</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="111"/>
         <source>Axis Label Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna popisu osy</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="111"/>
         <source>New axis label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nový popis osy:</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="127"/>
         <source>Graph Name Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna názvu grafu</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="127"/>
         <source>New graph name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nový název grafu:</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="249"/>
