@@ -1,4 +1,4 @@
-<h2>Version 2.0.16 / todo</h2>
+<h2>Version 2.0.16 / 2015-04-27</h2>
 <ul>
 <li><i>nooverridech</i> firmware option was not working</li>
 <li>Fixed setting Expo from gvars for 9XR-Pro (<a href=https://github.com/opentx/opentx/issues/2040>#2040</a>)</li>
@@ -9,7 +9,9 @@
 <li>GVAR names removed for 9x, radio doesn't support them (<a href=https://github.com/opentx/opentx/issues/2150>#2150</a>)</li>
 <li>Some LS sources didn't follow the Imperial units setting (<a href=https://github.com/opentx/opentx/issues/2180>#2180</a>)</li>
 <li>Added more fields to the telemetry simulator (<a href=https://github.com/opentx/opentx/issues/2171>#2171</a>)</li>
-<li>Log viewer improvements (<a href=https://github.com/opentx/opentx/issues/1863>#1863</a>)</li>
+<li>Log viewer improvements and massive speed increase (<a href=https://github.com/opentx/opentx/issues/1863>#1863</a>, <a href=https://github.com/opentx/opentx/issues/2163>#2163</a>)</li>
+<li>Added Battery meter range setting (<a href=https://github.com/opentx/opentx/issues/2195>#2195</a>)</li>
+<li>Improvements in Print and Compare dialogs (<a href=https://github.com/opentx/opentx/issues/2219>#2219</a>)</li>
 <li>Minor fixes: <a href=https://github.com/opentx/opentx/issues/2153>#2153</a>, 
                  <a href=https://github.com/opentx/opentx/issues/2138>#2138</a>,
                  <a href=https://github.com/opentx/opentx/issues/2090>#2090</a>,
