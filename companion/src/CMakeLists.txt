@@ -274,7 +274,11 @@ ELSE( )
     ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${companion_SRCS} ${companion_QM} )
 ENDIF( )
 
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} generaledit modeledit simulation common qcustomplot shared ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+if(SDL_FOUND)
+	TARGET_LINK_LIBRARIES( ${PROJECT_NAME} generaledit modeledit simulation common qcustomplot shared ${QT_LIBRARIES} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+else()
+	TARGET_LINK_LIBRARIES( ${PROJECT_NAME} generaledit modeledit simulation common qcustomplot shared ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+endif()
 
 ############# Standalone simu ###############
 
