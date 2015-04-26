@@ -1232,7 +1232,7 @@ Può essere differente dalla lingua del firmware</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="104"/>
-        <location filename="../modeledit/curves.ui" line="296"/>
+        <location filename="../modeledit/curves.ui" line="182"/>
         <source>Curve type</source>
         <translation>Tipo curva</translation>
     </message>
@@ -1242,47 +1242,47 @@ Può essere differente dalla lingua del firmware</translation>
         <translation>Generatore di curve</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="182"/>
+        <location filename="../modeledit/curves.ui" line="238"/>
         <source>Y at X=0</source>
         <translation>Y a X=0</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="205"/>
+        <location filename="../modeledit/curves.ui" line="261"/>
         <source>Y at X=100</source>
         <translation>Y a X=100</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="229"/>
+        <location filename="../modeledit/curves.ui" line="292"/>
         <source>Both</source>
         <translation>Entrambi</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="234"/>
+        <location filename="../modeledit/curves.ui" line="297"/>
         <source>x&gt;0</source>
         <translation>x&gt;0</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="239"/>
+        <location filename="../modeledit/curves.ui" line="302"/>
         <source>x&lt;0</source>
         <translation>x&lt;0</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="263"/>
+        <location filename="../modeledit/curves.ui" line="323"/>
         <source>Apply</source>
         <translation>Applica</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="270"/>
+        <location filename="../modeledit/curves.ui" line="284"/>
         <source>Side</source>
         <translation>Lato</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="303"/>
+        <location filename="../modeledit/curves.ui" line="215"/>
         <source>Y at X=-100</source>
         <translation>Y a X=-100</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="310"/>
+        <location filename="../modeledit/curves.ui" line="192"/>
         <source>Coefficient</source>
         <translation>Coefficiente</translation>
     </message>
@@ -1467,133 +1467,219 @@ Può essere differente dalla lingua del firmware</translation>
 <context>
     <name>Er9x::Templates</name>
     <message>
+        <location filename="../modeledit/templates.cpp" line="39"/>
         <source>Simple 4-CH</source>
-        <translation type="obsolete">4 CH semplice</translation>
+        <translation type="unfinished">4 CH semplice</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="40"/>
         <source>T-Cut</source>
-        <translation type="obsolete">Taglio motore</translation>
+        <translation type="unfinished">Taglio motore</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="41"/>
         <source>Sticky T-Cut</source>
         <translatorcomment>Da verficare</translatorcomment>
-        <translation type="obsolete">Taglio motore con blocco</translation>
+        <translation type="unfinished">Taglio motore con blocco</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="42"/>
         <source>V-Tail</source>
-        <translation type="obsolete">Coda a V</translation>
+        <translation type="unfinished">Coda a V</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="43"/>
         <source>Elevon\Delta</source>
-        <translation type="obsolete">Elevoni\Delta</translation>
+        <translation type="unfinished">Elevoni\Delta</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="44"/>
         <source>Heli Setup</source>
-        <translation type="obsolete">Impostazioni elicottero</translation>
+        <translation type="unfinished">Impostazioni elicottero</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="45"/>
         <source>Heli Setup with gyro gain control</source>
-        <translation type="obsolete">Impostazioni elicottero con controllo guadagno giroscopio</translation>
+        <translation type="unfinished">Impostazioni elicottero con controllo guadagno giroscopio</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="46"/>
         <source>Gyro gain control</source>
-        <translation type="obsolete">Controllo guadagno giroscopio</translation>
+        <translation type="unfinished">Controllo guadagno giroscopio</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="47"/>
         <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
-        <translation type="obsolete">Impostazioni elicottero (assegna canali modalità Futaba)</translation>
+        <translation type="unfinished">Impostazioni elicottero (assegna canali modalità Futaba)</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="48"/>
         <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="obsolete">Impostazioni elicottero con controllo guadagno giroscopio (assegna canali modalità Futaba)</translation>
+        <translation type="unfinished">Impostazioni elicottero con controllo guadagno giroscopio (assegna canali modalità Futaba)</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="49"/>
         <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="obsolete">Controllo guadagno giroscopio (assegna canali modalità Futaba)</translation>
+        <translation type="unfinished">Controllo guadagno giroscopio (assegna canali modalità Futaba)</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="50"/>
         <source>Servo Test</source>
-        <translation type="obsolete">Test servocomandi</translation>
+        <translation type="unfinished">Test servocomandi</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="51"/>
         <source>MultiCopter</source>
-        <translation type="obsolete">Multirotore</translation>
+        <translation type="unfinished">Multirotore</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="52"/>
         <source>Use Model Config Wizard</source>
-        <translation type="obsolete">Usa assistente configurazione modello</translation>
+        <translation type="unfinished">Usa assistente configurazione modello</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="81"/>
         <source>Apply Template?</source>
-        <translation type="obsolete">Applica modello?</translation>
+        <translation type="unfinished">Applica modello?</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="81"/>
         <source>Apply template &quot;%1&quot;?</source>
-        <translation type="obsolete">Applica modello &quot;%1&quot;?</translation>
+        <translation type="unfinished">Applica modello &quot;%1&quot;?</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="169"/>
+        <location filename="../modeledit/templates.cpp" line="176"/>
+        <location filename="../modeledit/templates.cpp" line="288"/>
+        <location filename="../modeledit/templates.cpp" line="313"/>
+        <location filename="../modeledit/templates.cpp" line="356"/>
+        <location filename="../modeledit/templates.cpp" line="358"/>
+        <location filename="../modeledit/templates.cpp" line="487"/>
         <source>RUD</source>
-        <translation type="obsolete">DIR</translation>
+        <translation type="unfinished">DIR</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="171"/>
+        <location filename="../modeledit/templates.cpp" line="178"/>
+        <location filename="../modeledit/templates.cpp" line="280"/>
+        <location filename="../modeledit/templates.cpp" line="284"/>
+        <location filename="../modeledit/templates.cpp" line="306"/>
+        <location filename="../modeledit/templates.cpp" line="310"/>
+        <location filename="../modeledit/templates.cpp" line="363"/>
+        <location filename="../modeledit/templates.cpp" line="365"/>
+        <location filename="../modeledit/templates.cpp" line="478"/>
+        <location filename="../modeledit/templates.cpp" line="479"/>
         <source>ELE</source>
-        <translation type="obsolete">ELE</translation>
+        <translation type="unfinished">ELE</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="181"/>
+        <location filename="../modeledit/templates.cpp" line="352"/>
+        <location filename="../modeledit/templates.cpp" line="474"/>
         <source>THR</source>
-        <translation type="obsolete">MOT</translation>
+        <translation type="unfinished">MOT</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="197"/>
+        <location filename="../modeledit/templates.cpp" line="281"/>
+        <location filename="../modeledit/templates.cpp" line="285"/>
+        <location filename="../modeledit/templates.cpp" line="305"/>
+        <location filename="../modeledit/templates.cpp" line="309"/>
+        <location filename="../modeledit/templates.cpp" line="388"/>
+        <location filename="../modeledit/templates.cpp" line="482"/>
+        <location filename="../modeledit/templates.cpp" line="483"/>
         <source>AIL</source>
-        <translation type="obsolete">ALE</translation>
+        <translation type="unfinished">ALE</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="204"/>
+        <location filename="../modeledit/templates.cpp" line="210"/>
+        <location filename="../modeledit/templates.cpp" line="395"/>
+        <location filename="../modeledit/templates.cpp" line="401"/>
         <source>AIL2</source>
-        <translation type="obsolete">ALE2</translation>
+        <translation type="unfinished">ALE2</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="217"/>
+        <location filename="../modeledit/templates.cpp" line="223"/>
+        <location filename="../modeledit/templates.cpp" line="408"/>
+        <location filename="../modeledit/templates.cpp" line="414"/>
         <source>ELE2</source>
-        <translation type="obsolete">ELE2</translation>
+        <translation type="unfinished">ELE2</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="227"/>
+        <location filename="../modeledit/templates.cpp" line="228"/>
+        <location filename="../modeledit/templates.cpp" line="418"/>
+        <location filename="../modeledit/templates.cpp" line="419"/>
+        <location filename="../modeledit/templates.cpp" line="513"/>
+        <location filename="../modeledit/templates.cpp" line="514"/>
         <source>FLAPS</source>
-        <translation type="obsolete">PLAPS</translation>
+        <translation type="unfinished">PLAPS</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="242"/>
+        <location filename="../modeledit/templates.cpp" line="248"/>
+        <location filename="../modeledit/templates.cpp" line="433"/>
+        <location filename="../modeledit/templates.cpp" line="439"/>
+        <location filename="../modeledit/templates.cpp" line="528"/>
+        <location filename="../modeledit/templates.cpp" line="534"/>
         <source>FLAP%1</source>
-        <translation type="obsolete">FLAP%1</translation>
+        <translation type="unfinished">FLAP%1</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="282"/>
+        <location filename="../modeledit/templates.cpp" line="286"/>
+        <location filename="../modeledit/templates.cpp" line="307"/>
+        <location filename="../modeledit/templates.cpp" line="311"/>
         <source>PITCH</source>
-        <translation type="obsolete">BECCHEGGIO</translation>
+        <translation type="unfinished">BECCHEGGIO</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="295"/>
+        <location filename="../modeledit/templates.cpp" line="296"/>
+        <location filename="../modeledit/templates.cpp" line="299"/>
+        <location filename="../modeledit/templates.cpp" line="300"/>
+        <location filename="../modeledit/templates.cpp" line="320"/>
+        <location filename="../modeledit/templates.cpp" line="321"/>
+        <location filename="../modeledit/templates.cpp" line="324"/>
+        <location filename="../modeledit/templates.cpp" line="325"/>
         <source>GYRO</source>
-        <translation type="obsolete">GIRO</translation>
+        <translation type="unfinished">GIRO</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="443"/>
+        <location filename="../modeledit/templates.cpp" line="444"/>
         <source>SPOIL</source>
-        <translation type="obsolete">DIRUTTORE</translation>
+        <translation type="unfinished">DIRUTTORE</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="458"/>
+        <location filename="../modeledit/templates.cpp" line="464"/>
         <source>SPOIL%1</source>
-        <translation type="obsolete">DIRUTTORE%1</translation>
+        <translation type="unfinished">DIRUTTORE%1</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="503"/>
+        <location filename="../modeledit/templates.cpp" line="509"/>
         <source>RUD2</source>
-        <translation type="obsolete">DIR2</translation>
+        <translation type="unfinished">DIR2</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="712"/>
+        <location filename="../modeledit/templates.cpp" line="824"/>
         <source>Clear Mixes?</source>
-        <translation type="obsolete">Cancellare le miscelazioni ?</translation>
+        <translation type="unfinished">Cancellare le miscelazioni ?</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="712"/>
         <source>Really clear existing mixes on CH6?</source>
-        <translation type="obsolete">Cancellare mixer esistente su CH6?</translation>
+        <translation type="unfinished">Cancellare mixer esistente su CH6?</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="824"/>
         <source>Really clear existing mixes on CH5?</source>
-        <translation type="obsolete">Cancellare mixer esistente su CH5?</translation>
+        <translation type="unfinished">Cancellare mixer esistente su CH5?</translation>
     </message>
 </context>
 <context>
@@ -4183,11 +4269,10 @@ Scriverlo ugualmente ?</translation>
         <translation type="obsolete">OpenTx Companion - FW: %1 - Profilo: %2</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="412"/>
         <source>Firmware %1 does not seem to have ever been downloaded.
 Release %2 is available.
 Do you want to download it now?</source>
-        <translation>Il firmware %1 non sembra mai essere stato scaricato.
+        <translation type="obsolete">Il firmware %1 non sembra mai essere stato scaricato.
 E&apos; disponibile la versione %2.
 Volete scaricarla adesso ?</translation>
     </message>
@@ -4196,13 +4281,12 @@ Volete scaricarla adesso ?</translation>
         <translation type="obsolete">Volete scaricare la versione %1 %2 adesso ?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="441"/>
         <source>A new version of %1 firmware is available:
   - current is %2
   - newer is %3
 
 Do you want to download it now ?</source>
-        <translation>Una nuova versione del firmware %1 è disponibile
+        <translation type="obsolete">Una nuova versione del firmware %1 è disponibile
   - attuale %2
  - nuova %3
 
@@ -4806,6 +4890,26 @@ Volete scaricarla ora ?</translation>
         <location filename="../mainwindow.cpp" line="1612"/>
         <source>Show the application&apos;s About box</source>
         <translation>Mostra la finestra Informazioni Su</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="412"/>
+        <source>Firmware %1 does not seem to have ever been downloaded.
+Release %2 is available.
+Do you want to download it now?
+
+We recommend you view the release notes using the button below to learn about any changes that may be important to you.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="441"/>
+        <source>A new version of %1 firmware is available:
+  - current is %2
+  - newer is %3
+
+Do you want to download it now?
+
+We recommend you view the release notes using the button below to learn about any changes that may be important to you.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1646"/>
@@ -8683,12 +8787,14 @@ The OpenTX Team.</source>
 Il Team di OpenTX.</translation>
     </message>
     <message>
+        <location filename="../eeprominterface.h" line="962"/>
         <source>Positive</source>
-        <translation type="obsolete">Positivo</translation>
+        <translation type="unfinished">Positivo</translation>
     </message>
     <message>
+        <location filename="../eeprominterface.h" line="962"/>
         <source>Negative</source>
-        <translation type="obsolete">Negativo</translation>
+        <translation type="unfinished">Negativo</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="44"/>
