@@ -10989,22 +10989,22 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../burndialog.ui" line="319"/>
         <source>Use firmware start screen</source>
-        <translation>Usa scremata di avvio del firmware</translation>
+        <translation>Usa schermata di avvio del firmware</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="326"/>
         <source>Use another start screen</source>
-        <translation>Usa scremata di avvio alternativa</translation>
+        <translation>Usa schermata di avvio alternativa</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="339"/>
         <source>Use profile start screen</source>
-        <translation>Usa scremata di avvio del profilo</translation>
+        <translation>Usa schermata di avvio del profilo</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="346"/>
         <source>Use library start screen</source>
-        <translation>Usa scremata di avvio della libreria</translation>
+        <translation>Usa schermata di avvio della libreria</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="207"/>
