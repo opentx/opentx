@@ -38,7 +38,7 @@
         <string>Vario Altitude</string>
        </property>
        <property name="text">
-        <string>V-ALT</string>
+        <string notr="true">V-ALT</string>
        </property>
       </widget>
      </item>
@@ -48,7 +48,7 @@
         <string>Vario Vertical Speed</string>
        </property>
        <property name="text">
-        <string>V-VSPD</string>
+        <string notr="true">V-VSPD</string>
        </property>
       </widget>
      </item>
@@ -64,7 +64,7 @@
      <item row="12" column="2">
       <widget class="QLabel" name="label_15">
        <property name="text">
-        <string>ACCZ</string>
+        <string notr="true">ACCZ</string>
        </property>
       </widget>
      </item>
@@ -74,7 +74,7 @@
         <string>GPS Time</string>
        </property>
        <property name="text">
-        <string>GPS-T</string>
+        <string notr="true">GPS-T</string>
        </property>
       </widget>
      </item>
@@ -84,7 +84,7 @@
      <item row="10" column="2">
       <widget class="QLabel" name="label_13">
        <property name="text">
-        <string>ACCX</string>
+        <string notr="true">ACCX</string>
        </property>
       </widget>
      </item>
@@ -106,7 +106,7 @@
         <string>GPS Lat/Lon</string>
        </property>
        <property name="text">
-        <string>GPS-LL</string>
+        <string notr="true">GPS-LL</string>
        </property>
       </widget>
      </item>
@@ -116,7 +116,7 @@
         <string>VFAS</string>
        </property>
        <property name="text">
-        <string>FAS-V</string>
+        <string notr="true">FAS-V</string>
        </property>
       </widget>
      </item>
@@ -126,14 +126,14 @@
         <string>GPS Speed</string>
        </property>
        <property name="text">
-        <string>GPS-S</string>
+        <string notr="true">GPS-S</string>
        </property>
       </widget>
      </item>
      <item row="3" column="2">
       <widget class="QLabel" name="label_19">
        <property name="text">
-        <string>CELLS</string>
+        <string notr="true">CELLS</string>
        </property>
       </widget>
      </item>
@@ -149,7 +149,7 @@
      <item row="11" column="2">
       <widget class="QLabel" name="label_14">
        <property name="text">
-        <string>ACCY</string>
+        <string notr="true">ACCY</string>
        </property>
       </widget>
      </item>
@@ -159,7 +159,7 @@
         <string>GPS Course</string>
        </property>
        <property name="text">
-        <string>GPS-C</string>
+        <string notr="true">GPS-C</string>
        </property>
       </widget>
      </item>
@@ -175,24 +175,24 @@
         <string>GPS Altitude</string>
        </property>
        <property name="text">
-        <string>GPS-A</string>
+        <string notr="true">GPS-A</string>
        </property>
       </widget>
      </item>
      <item row="2" column="2">
       <widget class="QLabel" name="label_18">
        <property name="toolTip">
-        <string>CURRENT</string>
+        <string>Current</string>
        </property>
        <property name="text">
-        <string>FAS-C</string>
+        <string notr="true">FAS-C</string>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
       <widget class="QLineEdit" name="Swr">
        <property name="text">
-        <string>30</string>
+        <string notr="true">30</string>
        </property>
       </widget>
      </item>
@@ -206,7 +206,7 @@
      <item row="1" column="1">
       <widget class="QLineEdit" name="Rssi">
        <property name="text">
-        <string>75</string>
+        <string notr="true">75</string>
        </property>
       </widget>
      </item>
@@ -220,10 +220,10 @@
      <item row="4" column="2">
       <widget class="QLabel" name="label_16">
        <property name="toolTip">
-        <string>FR_ID_AIR_SPEED</string>
+        <string>Airspeed</string>
        </property>
        <property name="text">
-        <string>ASPD</string>
+        <string notr="true">ASPD</string>
        </property>
       </widget>
      </item>
@@ -257,28 +257,28 @@
      <item row="3" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>A1</string>
+        <string notr="true">A1</string>
        </property>
       </widget>
      </item>
      <item row="4" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>A2</string>
+        <string notr="true">A2</string>
        </property>
       </widget>
      </item>
      <item row="5" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>A3</string>
+        <string notr="true">A3</string>
        </property>
       </widget>
      </item>
      <item row="6" column="0">
       <widget class="QLabel" name="label_7">
        <property name="text">
-        <string>A4</string>
+        <string notr="true">A4</string>
        </property>
       </widget>
      </item>
@@ -288,7 +288,7 @@
         <string>Temperature 1</string>
        </property>
        <property name="text">
-        <string>T1</string>
+        <string notr="true">T1</string>
        </property>
       </widget>
      </item>
@@ -298,21 +298,21 @@
         <string>Temperature 2</string>
        </property>
        <property name="text">
-        <string>T2</string>
+        <string notr="true">T2</string>
        </property>
       </widget>
      </item>
      <item row="9" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
-        <string>RPM</string>
+        <string notr="true">RPM</string>
        </property>
       </widget>
      </item>
      <item row="10" column="0">
       <widget class="QLabel" name="label_10">
        <property name="text">
-        <string>FUEL</string>
+        <string notr="true">FUEL</string>
        </property>
       </widget>
      </item>
