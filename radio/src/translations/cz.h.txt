@@ -440,20 +440,20 @@
 #define TR_VRENCODERS          "REa""REb"
 
 #define LEN_VSWITCHES          "\003"
-#define LEN_VSRCRAW            "\004"
+#define LEN_VSRCRAW            TR("\004", "\005")
 
 #define LEN_INPUTNAMES         "\004"
 #define TR_INPUTNAMES          "Smer""Vysk""Plyn""Krid"
 
-#define TR_STICKS_VSRCRAW      TR("Směr""Výšk""Plyn""Křid", "\307Smě""\307Výš""\307Pln""\307Kři")
-#define TR_TRIMS_VSRCRAW       TR("TrmS""TrmV""TrmP""TrmK", "\313Smě""\313Výš""\313Pln""\313Kři")
- 
+#define TR_STICKS_VSRCRAW      TR("Směr""Výšk""Plyn""Křid", "\307Směr""\307Výšk""\307Plyn""\307Křid")
+#define TR_TRIMS_VSRCRAW       TR("TrmS""TrmV""TrmP""TrmK", "\313Směr""\313Výšk""\313Plyn""\313Křid")
+
 #if defined(PCBTARANIS) && defined(REV9E)
-  #define TR_POTS_VSRCRAW      "\310S1\0""\310S2\0""\310S3\0""\310S4\0""\311LS\0""\311RS\0""\311LS2""\311RS2"
-  #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0""\312SK\0""\312SL\0""\312SM\0""\312SN\0""\312SO\0""\312SP\0""\312SQ\0""\312SR\0"
+  #define TR_POTS_VSRCRAW      "\310S1\0 ""\310S2\0 ""\310S3\0 ""\310S4\0 ""\311LS\0 ""\311RS\0 ""\311LS2 ""\311RS2 "
+  #define TR_SW_VSRCRAW        "\312SA\0 ""\312SB\0 ""\312SC\0 ""\312SD\0 ""\312SE\0 ""\312SF\0 ""\312SG\0 ""\312SH\0 ""\312SI\0 ""\312SJ\0 ""\312SK\0 ""\312SL\0 ""\312SM\0 ""\312SN\0 ""\312SO\0 ""\312SP\0 ""\312SQ\0 ""\312SR\0 "
 #elif defined(PCBTARANIS)
-  #define TR_POTS_VSRCRAW      "\310S1\0""\310S2\0""\310S3\0""\311LS\0""\311RS\0"
-  #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
+  #define TR_POTS_VSRCRAW      "\310S1\0 ""\310S2\0 ""\310S3\0 ""\311LS\0 ""\311RS\0 "
+  #define TR_SW_VSRCRAW        "\312SA\0 ""\312SB\0 ""\312SC\0 ""\312SD\0 ""\312SE\0 ""\312SF\0 ""\312SG\0 ""\312SH\0 "
 #else
   #define TR_POTS_VSRCRAW      "POT1""POT2""POT3"
   #define TR_SW_VSRCRAW        "3POS"
@@ -499,19 +499,19 @@
 #endif
 
 #if defined(HELI)
-  #define TR_CYC_VSRCRAW       "CYC1""CYC2""CYC3"
+  #define TR_CYC_VSRCRAW       TR("CYC1""CYC2""CYC3", "CYC1\0""CYC2\0""CYC3\0")
 #else
-  #define TR_CYC_VSRCRAW       "[C1]""[C2]""[C3]"
+  #define TR_CYC_VSRCRAW       TR("[C1]""[C2]""[C3]", "[C1]\0""[C2]\0""[C3]\0")
 #endif
 
 #if defined(CPUARM)
-  #define TR_RESERVE_VSRCRAW   "[--]"
-  #define TR_EXTRA_VSRCRAW     "Batt""Time" TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW "Tmr1""Tmr2""Tmr3"
+  #define TR_RESERVE_VSRCRAW   TR("[--]", "[--]\0")
+  #define TR_EXTRA_VSRCRAW     TR("Batt""Time" TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW "Tmr1""Tmr2""Tmr3", "Batt\0""Time\0" TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW "Tmr1\0""Tmr2\0""Tmr3\0")
 #else
   #define TR_EXTRA_VSRCRAW
 #endif
 
-#define TR_VSRCRAW             "---\0" TR_STICKS_VSRCRAW TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW TR_TRIMS_VSRCRAW TR_SW_VSRCRAW TR_EXTRA_VSRCRAW
+#define TR_VSRCRAW             TR("---\0" TR_STICKS_VSRCRAW TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW TR_TRIMS_VSRCRAW TR_SW_VSRCRAW TR_EXTRA_VSRCRAW, "---\0 " TR_STICKS_VSRCRAW TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0 " TR_CYC_VSRCRAW TR_TRIMS_VSRCRAW TR_SW_VSRCRAW TR_EXTRA_VSRCRAW)
 
 #define LEN_VTMRMODES          "\004"
 #define TR_VTMRMODES           "VYP\0""ZAP\0""Pln>""Pln%""Pln*"
