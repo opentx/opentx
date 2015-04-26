@@ -154,7 +154,7 @@ SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c
 SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/src/usbd_msc_scsi.c
 SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
 SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
-SRC += ../i2c.c ../delays.c
+SRC += ../delays.c
 SRC += $(THIRDPARTY)/FatFs/ff.c $(THIRDPARTY)/FatFs/option/ccsbcs.c
 SRC += ../usbd_desc.c
 SRC += ../aspi.c
@@ -166,6 +166,7 @@ SRC += init.c
 CPPSRC = ../lcd_driver.cpp \
 	../configure_pins.cpp \
 	../keys_driver.cpp \
+	../i2c_driver.cpp \
 	../flash_driver.cpp \
 	../diskio.cpp \
 	../usbd_usr.cpp \

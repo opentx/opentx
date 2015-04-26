@@ -85,10 +85,6 @@ extern "C" {
 }
 #endif
 
-#if !defined(BOOT)
-#include "audio_driver.h"
-#endif
-
 #define FLASHSIZE          0x80000
 #define BOOTLOADER_SIZE    0x8000
 #define FIRMWARE_ADDRESS   0x08000000
@@ -303,6 +299,16 @@ void debugPutc(const char c);
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate);
 void sportSendBuffer(uint8_t *buffer, uint32_t count);
+
+// Audio driver
+void audioInit(void) ;
+void audioEnd(void) ;
+void dacStart(void);
+void dacStop(void);
+void setSampleRate(uint32_t frequency);
+#define VOLUME_LEVEL_MAX  23
+#define VOLUME_LEVEL_DEF  12
+void setVolume(uint8_t volume);
 
 // Haptic driver
 void hapticInit(void);
