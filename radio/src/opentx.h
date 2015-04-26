@@ -941,8 +941,6 @@ void checkSwitches();
 void checkAlarm();
 void checkAll();
 
-#define ADC_VREF_TYPE 0x40 // AVCC with external capacitor at AREF pin
-
 #if !defined(SIMU)
   void getADC();
 #endif
@@ -979,6 +977,15 @@ enum Analogs {
     POT2,
     POT3,
     POT_LAST = POT3,
+#endif
+#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
+  // When the mod is applied, ADC7 is connected to 14051's X pin and TX_VOLTAGE
+  // is connected to 14051's X0 pin (one of the multiplexed inputs). TX_VOLTAGE
+  // value is filled in by processMultiplexAna().
+
+  // This shifts TX_VOLTAGE from 7 to 8 and makes X14051 take the 7th position
+  // corresponding to ADC7.
+  X14051,
 #endif
   TX_VOLTAGE,
 #if defined(PCBSKY9X) && !defined(REVA)
@@ -1725,6 +1732,10 @@ struct Clipboard {
 };
 
 extern Clipboard clipboard;
+#endif
+
+#if !defined(SIMU)
+extern uint16_t s_anaFilt[NUMBER_ANALOG];
 #endif
 
 #endif

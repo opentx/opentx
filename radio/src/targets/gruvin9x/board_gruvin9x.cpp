@@ -65,9 +65,7 @@ inline void boardInit()
   DDRL = 0x80;  PORTL = 0xff; // 7: Hold_PWR_On (1=On, default Off), 6:Jack_Presence_TTL, 5-0: User Button inputs
 #endif
 
-  ADMUX=ADC_VREF_TYPE;
-  ADCSRA=0x85; // ADC enabled, pre-scaler division=32 (no interrupt, no auto-triggering)
-  ADCSRB=(1<<MUX5);
+  adcInit();
 
   /**** Set up timer/counter 0 ****/
   /** Move old 64A Timer0 functions to Timer2 and use WGM on OC0(A) (PB7) for spkear tone output **/
