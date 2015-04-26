@@ -81,14 +81,15 @@
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "KN1KN2KN3KN4"
 
-#define LEN_UART3MODES         "\015"
-#define TR_UART3MODES          "Wyłącz\0        ""S-Port Kopia ""Telemetria\0  ""Trener SBUS\0 ""Debug\0"
+
+#define LEN_UART3MODES         "\015"  /*13 decimal*/
+#define TR_UART3MODES          "Wyłącz\0      ""S-Port Kopia ""Telemetria\0  ""Trener SBUS\0 ""Debug\0        "
 
 #define LEN_SWTYPES            "\006"
 #define TR_SWTYPES             "Brak\0 ""Przełą""2POZ\0 ""3POZ\0"
 
-#define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Brak\0          ""Poten z zapadką""Przeł.Wielopoz.""Potencjometr\0"
+#define LEN_POTTYPES           "\017" /*15 decimal*/
+#define TR_POTTYPES            "Brak\0          ""Poten z zapadką""Przeł.Wielopoz.""Potencjometr\0  "
 
 #define LEN_SLIDERTYPES        "\006"
 #define TR_SLIDERTYPES         "Brak\0 ""Suwak "
@@ -99,8 +100,8 @@
 #define LEN_VLCD               "\006"
 #define TR_VLCD                "NormalOptrex"
 
-#define LEN_VPERSISTENT        "\014"
-#define TR_VPERSISTENT         "Wyłącz\0        ""Lot\0     ""Ręczny Reset"
+#define LEN_VPERSISTENT        "\014"  /*12 decimal*/
+#define TR_VPERSISTENT         "Wyłącz\0    ""Lot\0        ""Ręczny Reset"
 
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Ameryka""Japonia""Europa\0")
@@ -114,8 +115,8 @@
 #define LEN_DSM_PROTOCOLS      "\004"
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
 
-#define LEN_VTRIMINC           TR("\006", "\013")
-#define TR_VTRIMINC            TR("Expo\0 ""B.Dokł""Dokł.\0""Średni""Zgrubn", "Expotencja""B. Dokładny\0""Dokładny\0  ""Średni\0    ""Zgrubny\0   ")
+#define LEN_VTRIMINC           TR("\006", "\013") /*11 decimal*/
+#define TR_VTRIMINC            TR("Expo\0 ""B.Dokł""Dokł.\0""Średni""Zgrubn", "Expotencja ""B.Dokładny\0""Dokładny\0  ""Średni\0    ""Zgrubny\0   ")
 
 
 #define LEN_VDISPLAYTRIMS      "\006"
@@ -124,8 +125,8 @@
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "Cichy Pik  \0Dźwięk"
 
-#define LEN_CURVE_TYPES        "\010"
-#define TR_CURVE_TYPES         "Standard""Własny\0"
+#define LEN_CURVE_TYPES        "\010" /*8 decimal*/
+#define TR_CURVE_TYPES         "Standard""Własny\0 "
 
 #define LEN_RETA123            "\001"
 
@@ -179,7 +180,7 @@
 #define LEN_VCURVEFUNC         "\003"
 #define TR_VCURVEFUNC          "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
-#define LEN_VMLTPX             "\010"
+#define LEN_VMLTPX             "\010" /*8 decimal*/
 #define TR_VMLTPX              "Dodaj\0  ""Mnóż    ""Zastąp\0 "
 
 #define LEN_VMLTPX2            "\002"
@@ -218,12 +219,12 @@
 #define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a~x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""^}x\0 ""|^|}x" TR_CSWTIMER TR_CSWSTICKY
 #endif
 
-#define LEN_VFSWFUNC           "\012"
+#define LEN_VFSWFUNC           "\012" /*10 decimal*/
 
 #if defined(VARIO)
   #define TR_VVARIO            "Wario\0   "
 #else
-  #define TR_VVARIO            "[Wario]\0  "
+  #define TR_VVARIO            "[Wario]\0 "
 #endif
 
 #if defined(AUDIO)
@@ -235,7 +236,7 @@
 #if defined(HAPTIC)
   #define TR_HAPTIC            "Wibracje\0 "
 #else
-  #define TR_HAPTIC            "[Wibracje] "
+  #define TR_HAPTIC            "[Wibracje]"
 #endif
 
 #if defined(VOICE)
@@ -302,7 +303,7 @@
   #define TR_VFSWFUNC          TR_SF_SAFETY "Trener \0  ""Inst-Trim ""Resetuj\0  " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Podświetl\0" TR_SF_TEST
 #endif
 
-#define LEN_VFSWRESET          TR("\004", "\011")
+#define LEN_VFSWRESET          TR("\004", "\011")  /*9 decimal*/
 
 #if defined(FRSKY)
   #define TR_FSW_RESET_TELEM   TR("Telm", "Telemetra")
@@ -375,7 +376,7 @@
 #define SPEED_UNIT_METR        "kmh"
 
 #if defined(CPUARM)
-  #define LEN_VUNITSSYSTEM     TR("\006", "\010")
+  #define LEN_VUNITSSYSTEM     TR("\006", "\010") /*8 decimal*/
   #define TR_VUNITSSYSTEM      TR("Metr. ""Imper.", "Metryczn""Imperial")
   #define LEN_VTELEMUNIT       "\003"
   #define TR_VTELEMUNIT        "-\0 ""v\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""dBm""rpm""g\0 ""@\0 ""ml\0""fOz"
@@ -432,8 +433,8 @@
 #define TR_GPSFORMAT           "DMS\0""NMEA"
 
 #define LEN2_VTEMPLATES        13
-#define LEN_VTEMPLATES         "\015"
-#define TR_VTEMPLATES          "Wyczyść mik\0\0""Prosty. 4kn\0 ""Przełą-T-Cut\0""V-Tail      \0""Elevon-Delta\0 ""eCCPM       \0""Ustaw.Heli  \0""Test serwa  \0"
+#define LEN_VTEMPLATES         "\015" /*13 decimal*/
+#define TR_VTEMPLATES          "Usuń Miksy ""Prosty. 4kn\0 ""Przełą-T-Cut\0""V-Tail      \0""Elevon-Delta\0""eCCPM       \0""Ustaw Heli  \0""Test serwa  \0"
 
 #define LEN_VSWASHTYPE         "\004"
 #define TR_VSWASHTYPE          "---\0""120\0""120X""140\0""90\0"
@@ -518,26 +519,26 @@
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "WYŁ""ABS""THs""TH%""THt"
 
-#define LEN_VTRAINERMODES      "\022"
-#define TR_VTRAINERMODES       "Trener/Jack\0      ""Uczeń/Jack\0       ""Trener/SBUS Moduł ""Trener/CPPM Moduł ""Trener/Bateria\0"
+#define LEN_VTRAINERMODES      "\022" /*18 decimal*/
+#define TR_VTRAINERMODES       "Trener/Jack\0      ""Uczeń/Jack\0       ""Trener/SBUS Moduł ""Trener/CPPM Moduł ""Trener/Bateria\0   "
 
-#define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Utrzymuj\0""Własne\0  ""0 sygnału""Odbiorn.\0"
+#define LEN_VFAILSAFE          "\011" /*9 decimal*/
+#define TR_VFAILSAFE           "Utrzymuj\0""Własne\0  ""0 sygnału""Odbiornik"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
   #define TR_MAVLINK_BAUDS     "4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
-  #define LEN_MAVLINK_AC_MODES "\011"
+  #define LEN_MAVLINK_AC_MODES "\011" /*9 decimal*/
   #define TR_MAVLINK_AC_MODES  "Stabiliz.""Akro     ""Alt Hold ""Auto     ""Sterowany""Loiter   ""RTL      ""Koło     ""Utrzymuj ""Ląduj    ""OF Loiter""Toy A    ""Toy M    ""BŁĘDNY   "
-  #define LEN_MAVLINK_AP_MODES "\015"
-  #define TR_MAVLINK_AP_MODES  "Ręczny       ""Koło         ""Stabilizacja ""Trening      ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Sterowany    ""Inicjalizacja""BŁĘDNY       "
+  #define LEN_MAVLINK_AP_MODES "\015" /*13 decimal*/
+  #define TR_MAVLINK_AP_MODES  "Ręczny      ""Koło         ""Stabilizacja ""Trening      ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Sterowany    ""Inicjalizacja""BŁĘDNY       "
 #endif
 
-#define LEN_VSENSORTYPES        "\012"
-#define TR_VSENSORTYPES        "Użytkownika""Obliczone "
+#define LEN_VSENSORTYPES        "\012" /*10 decimal*/
+#define TR_VSENSORTYPES        "Użytkownik""Obliczone "
 
-#define LEN_VFORMULAS          "\010"
-#define TR_VFORMULAS           "Dodaj\0  ""Średnie\0""Min\0    ""Max\0    ""Mnóż\0   ""Zliczani""Komórka\0 ""Zużycie\0""Zasięg\0  "
+#define LEN_VFORMULAS          "\010" /*8 decimal*/
+#define TR_VFORMULAS           "Dodaj\0  ""Średnie\0""Min\0    ""Max\0    ""Mnóż\0   ""Zliczani""Komórka\0""Zużycie\0""Zasięg\0 "
 
 #define LEN_VPREC              "\005"
 #define TR_VPREC               "PREC0""PREC1""PREC2"
