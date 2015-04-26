@@ -522,6 +522,7 @@ void SimulatorDialog::initUi(T * ui)
     for (int fm=0; fm<fmodes; fm++) {
       QLabel * label = new QLabel(tabWidget);
       label->setText(QString("FM%1").arg(fm));
+      label->setAlignment(Qt::AlignCenter);
       ui->gvarsLayout->addWidget(label, 0, fm+1);
     }
     for (int i=0; i<gvars; i++) {
@@ -535,6 +536,7 @@ void SimulatorDialog::initUi(T * ui)
       for (int fm=0; fm<fmodes; fm++) {
         QLabel * value = new QLabel(tabWidget);
         value->setAutoFillBackground(true);
+        value->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         if ((i % 2) ==0 ) {
           value->setStyleSheet("QLabel { background-color: rgb(220, 220, 220) }");
         }
