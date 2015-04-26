@@ -562,7 +562,7 @@
 #define TR_CV                  "CV"
 #define TR_GV                  "GV"
 #define TR_ACHANNEL            "A\002ingresso"
-#define TR_RANGE               tr(INDENT"Inter.",INDENT"Intervallo")
+#define TR_RANGE               tr(INDENT"Campo",INDENT"Campo")
 #define TR_BAR                 "Barra"
 #define TR_ALARM               tr(INDENT"Allar.",INDENT"Allarme")
 #define TR_USRDATA             "Dati"
@@ -576,7 +576,7 @@
 #define TR_HAPTICSTRENGTH      INDENT"Forza"
 #define TR_CONTRAST            "Contrasto"
 #define TR_ALARMS_LABEL        "Allarmi"
-#define TR_BATTERY_RANGE       TR("Interv. Batt","Intervallo batteria")
+#define TR_BATTERY_RANGE       TR("Campo Batt.","Campo mis. batt.")
 #define TR_BATTERYWARNING      INDENT"Avviso batteria"
 #define TR_INACTIVITYALARM     INDENT"Inattivita'"
 #define TR_MEMORYWARNING       INDENT"Avviso memoria"

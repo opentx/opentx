@@ -6444,7 +6444,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../printdialog.cpp" line="702"/>
         <source>Range</source>
-        <translation>Intervallo</translation>
+        <translation>Campo di misura</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="712"/>
@@ -9616,7 +9616,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/telemetry.cpp" line="51"/>
         <source>Range</source>
-        <translation>Intervallo</translation>
+        <translation>Campo di misura</translation>
     </message>
 </context>
 <context>
