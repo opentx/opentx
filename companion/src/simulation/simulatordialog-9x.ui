@@ -1232,7 +1232,7 @@ QPushButton:checked {
       </size>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="simu">
       <attribute name="title">
@@ -1457,17 +1457,11 @@ QPushButton:checked {
       <attribute name="title">
        <string>Gvars</string>
       </attribute>
-      <widget class="QWidget" name="gridLayoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>711</width>
-         <height>211</height>
-        </rect>
-       </property>
-       <layout class="QGridLayout" name="gvarsLayout"/>
-      </widget>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="gvarsLayout"/>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
