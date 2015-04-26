@@ -295,11 +295,13 @@ void writeLogs()
         if (sensor.logs) {
           if (sensor.prec == 2) {
             div_t qr = div(telemetryItem.value, 100);
-            f_printf(&g_oLogFile, "%d.%02d,", qr.quot, qr.rem);
+            if (telemetryItem.value < 0) f_printf(&g_oLogFile, "-");
+            f_printf(&g_oLogFile, "%d.%02d,", abs(qr.quot), abs(qr.rem));
           }
           else if (sensor.prec == 1) {
             div_t qr = div(telemetryItem.value, 10);
-            f_printf(&g_oLogFile, "%d.%d,", qr.quot, qr.rem);
+            if (telemetryItem.value < 0) f_printf(&g_oLogFile, "-");
+            f_printf(&g_oLogFile, "%d.%d,", abs(qr.quot), abs(qr.rem));
           }
           else {
             f_printf(&g_oLogFile, "%d,", telemetryItem.value);
