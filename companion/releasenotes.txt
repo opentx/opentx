@@ -7,6 +7,7 @@
 <li>Fixed sorting of audio tracks (<a href=https://github.com/opentx/opentx/issues/2002>#2002</a>)</li>
 <li>Model wizard fixes (<a href=https://github.com/opentx/opentx/issues/2091>#2091</a>)</li>
 <li>GVAR names removed for 9x, radio doesn't support them (<a href=https://github.com/opentx/opentx/issues/2150>#2150</a>)</li>
+<li>Some LS sources didn't follow the Imperial units setting (<a href=https://github.com/opentx/opentx/issues/2180>#2180</a>)</li>
 <li>Added more fields to the telemetry simulator (<a href=https://github.com/opentx/opentx/issues/2171>#2171</a>)</li>
 <li>Log viewer improvements (<a href=https://github.com/opentx/opentx/issues/1863>#1863</a>)</li>
 <li>Minor fixes: <a href=https://github.com/opentx/opentx/issues/2153>#2153</a>, 
