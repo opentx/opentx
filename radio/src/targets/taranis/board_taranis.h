@@ -306,6 +306,7 @@ void audioEnd(void) ;
 void dacStart(void);
 void dacStop(void);
 void setSampleRate(uint32_t frequency);
+extern const int8_t volumeScale[];
 #define VOLUME_LEVEL_MAX  23
 #define VOLUME_LEVEL_DEF  12
 void setVolume(uint8_t volume);
