@@ -125,7 +125,7 @@ inline void lcdInit()
   delay_2us();
   PORTC_LCD_CTRL |= (1<<OUT_C_LCD_RES); //  f524  sbi 0x15, 2 IOADR-PORTC_LCD_CTRL; 21           1
   delay_1_5us(1500);
-  for (uint8_t i=0; i<13; i++) {
+  for (uint8_t i=0; i<DIM(lcdInitSequence); i++) {
     lcdSendCtl(pgm_read_byte(&lcdInitSequence[i])) ;
   }
 #ifdef LCD_ERC12864FSF
