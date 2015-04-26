@@ -72,7 +72,7 @@ void backupEeprom()
 
   for (int i=0; i<EESIZE; i+=1024) {
     UINT count;
-    eeprom_read_block(buffer, i, 1024);
+    eepromReadBlock(buffer, i, 1024);
     f_write(&file, buffer, 1024, &count);
     updateProgressBar(i, EESIZE);
     SIMU_SLEEP(100/*ms*/);

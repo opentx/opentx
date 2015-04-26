@@ -51,7 +51,7 @@ uint8_t  s_sync_write = false;
 
 #if !defined(CPUARM)
 uint16_t eeprom_pointer;
-const char * eeprom_buffer_data;
+uint8_t * eeprom_buffer_data;
 volatile int8_t eeprom_buffer_size = 0;
 
 #if !defined(SIMU)
@@ -86,12 +86,12 @@ ISR(EE_READY_vect)
 }
 #endif
 
-void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_t size)
+void eepromWriteBlock(uint8_t * i_pointer_ram, uint16_t i_pointer_eeprom, size_t size)
 {
   assert(!eeprom_buffer_size);
 
   eeprom_pointer = i_pointer_eeprom;
-  eeprom_buffer_data = (const char*)i_pointer_ram;
+  eeprom_buffer_data = i_pointer_ram;
   eeprom_buffer_size = size+1;
 
 #if defined(SIMU)
@@ -111,13 +111,7 @@ void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_
 static uint8_t EeFsRead(blkid_t blk, uint8_t ofs)
 {
   uint8_t ret;
-#if defined(CPUARM)
-  eeprom_read_block(&ret, (uint16_t)(blk*BS+ofs+BLOCKS_OFFSET), 1);
-#elif defined(SIMU)
-  eeprom_read_block(&ret, (const void*)(uint64_t)(blk*BS+ofs+BLOCKS_OFFSET), 1);
-#else
-  eeprom_read_block(&ret, (const void*)(blk*BS+ofs+BLOCKS_OFFSET), 1);
-#endif
+  eepromReadBlock(&ret, (uint16_t)(blk*BS+ofs+BLOCKS_OFFSET), 1);
   return ret;
 }
 
@@ -125,7 +119,7 @@ static blkid_t EeFsGetLink(blkid_t blk)
 {
 #if defined(CPUARM)
   blkid_t ret;
-  eeprom_read_block((uint8_t *)&ret, blk*BS+BLOCKS_OFFSET, sizeof(blkid_t));
+  eepromReadBlock((uint8_t *)&ret, blk*BS+BLOCKS_OFFSET, sizeof(blkid_t));
   return ret;
 #else
   return EeFsRead(blk, 0);
@@ -136,7 +130,7 @@ static void EeFsSetLink(blkid_t blk, blkid_t val)
 {
   static blkid_t s_link; // we write asynchronously, then nothing on the stack!
   s_link = val;
-  eeWriteBlockCmp((uint8_t *)&s_link, (blk*BS)+BLOCKS_OFFSET, sizeof(blkid_t));
+  eepromWriteBlock((uint8_t *)&s_link, (blk*BS)+BLOCKS_OFFSET, sizeof(blkid_t));
 }
 
 static uint8_t EeFsGetDat(blkid_t blk, uint8_t ofs)
@@ -146,22 +140,22 @@ static uint8_t EeFsGetDat(blkid_t blk, uint8_t ofs)
 
 static void EeFsSetDat(blkid_t blk, uint8_t ofs, uint8_t *buf, uint8_t len)
 {
-  eeWriteBlockCmp(buf, (blk*BS)+ofs+sizeof(blkid_t)+BLOCKS_OFFSET, len);
+  eepromWriteBlock(buf, (blk*BS)+ofs+sizeof(blkid_t)+BLOCKS_OFFSET, len);
 }
 
 static void EeFsFlushFreelist()
 {
-  eeWriteBlockCmp((uint8_t *)&eeFs.freeList, offsetof(EeFs, freeList), sizeof(eeFs.freeList));
+  eepromWriteBlock((uint8_t *)&eeFs.freeList, offsetof(EeFs, freeList), sizeof(eeFs.freeList));
 }
 
 static void EeFsFlushDirEnt(uint8_t i_fileId)
 {
-  eeWriteBlockCmp((uint8_t *)&eeFs.files[i_fileId], offsetof(EeFs, files) + sizeof(DirEnt)*i_fileId, sizeof(DirEnt));
+  eepromWriteBlock((uint8_t *)&eeFs.files[i_fileId], offsetof(EeFs, files) + sizeof(DirEnt)*i_fileId, sizeof(DirEnt));
 }
 
 static void EeFsFlush()
 {
-  eeWriteBlockCmp((uint8_t *)&eeFs, 0, sizeof(eeFs));
+  eepromWriteBlock((uint8_t *)&eeFs, 0, sizeof(eeFs));
 }
 
 uint16_t EeFsGetFree()
@@ -288,7 +282,7 @@ void eepromFormat()
 
 bool eepromOpen()
 {
-  eeprom_read_block((uint8_t *)&eeFs, 0, sizeof(eeFs));
+  eepromReadBlock((uint8_t *)&eeFs, 0, sizeof(eeFs));
 
 #ifdef SIMU
   if (eeFs.version != EEFS_VERS) {

@@ -101,7 +101,7 @@ void eepromEraseBlock(uint32_t address, bool blocking=true)
 #if defined(SIMU)
   static uint8_t erasedBlock[EEPROM_BLOCK_SIZE] = { 0xff };
   eeprom_pointer = address;
-  eeprom_buffer_data = (char *)erasedBlock;
+  eeprom_buffer_data = erasedBlock;
   eeprom_buffer_size = EEPROM_BLOCK_SIZE;
   eeprom_read_operation = false;
   Spi_complete = false;
@@ -124,7 +124,7 @@ void eepromRead(uint32_t address, uint8_t * buffer, uint32_t size, bool blocking
 #if defined(SIMU)
   assert(size);
   eeprom_pointer = address;
-  eeprom_buffer_data = (char*)buffer;
+  eeprom_buffer_data = buffer;
   eeprom_buffer_size = size;
   eeprom_read_operation = true;
   Spi_complete = false;
@@ -145,7 +145,7 @@ void eepromWrite(uint32_t address, uint8_t * buffer, uint32_t size, bool blockin
 #if defined(SIMU)
   assert(size);
   eeprom_pointer = address;
-  eeprom_buffer_data = (char*)buffer;
+  eeprom_buffer_data = buffer;
   eeprom_buffer_size = size+1;
   eeprom_read_operation = false;
   Spi_complete = false;

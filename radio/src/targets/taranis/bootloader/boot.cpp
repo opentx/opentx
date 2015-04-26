@@ -453,7 +453,7 @@ void writeFlashBlock()
 
 void writeEepromBlock()
 {
-  eeWriteBlockCmp((uint8_t *)Block_buffer, eepromAddress, BlockCount);
+  eepromWriteBlock((uint8_t *)Block_buffer, eepromAddress, BlockCount);
   eepromAddress += BlockCount;
 }
 
@@ -507,7 +507,7 @@ int main()
   turnBacklightOn(0, 0);
 #endif
   keysInit();
-  I2C_EE_Init();
+  eepromInit();
 #endif
 
   __enable_irq();

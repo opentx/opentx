@@ -190,7 +190,7 @@ extern sem_t *eeprom_write_sem;
 
 #if defined(PCBSKY9X)
 extern uint32_t eeprom_pointer;
-extern char* eeprom_buffer_data;
+extern uint8_t * eeprom_buffer_data;
 extern volatile int32_t eeprom_buffer_size;
 extern bool eeprom_read_operation;
 extern volatile uint32_t Spi_complete;
@@ -383,12 +383,8 @@ void StopEepromThread();
   #define StopAudioThread()
 #endif
 
-extern const char *eepromFile;
-#if defined(PCBTARANIS)
-void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size);
-#else
-void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t size);
-#endif
+extern const char * eepromFile;
+void eepromReadBlock (uint8_t * pointer_ram, uint16_t address, uint16_t size);
 
 #define wdt_enable(...) sleep(1/*ms*/)
 #define wdt_reset() sleep(1/*ms*/)

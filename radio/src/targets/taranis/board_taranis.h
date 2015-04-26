@@ -80,7 +80,6 @@ extern "C" {
 
 #include "hal.h"
 #include "aspi.h"
-#include "i2c.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 }
@@ -294,14 +293,9 @@ void usbStop(void);
 #endif
 
 // EEPROM driver
-#if !defined(SIMU)
-#define eepromInit()          I2C_EE_Init()
-#define eeprom_read_block     I2C_EE_BufferRead
-#define eeWriteBlockCmp       I2C_EE_BufferWrite
-#else
-#define eepromInit()
-void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size);
-#endif
+void eepromInit();
+void eepromReadBlock(uint8_t * buffer, uint16_t address, uint16_t size);
+void eepromWriteBlock(uint8_t * buffer, uint16_t address, uint16_t size);
 
 // Debug driver
 void debugPutc(const char c);

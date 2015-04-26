@@ -12,6 +12,26 @@
 
 #include "board_taranis.h"
 
+#define EE_CMD_WRITE  (0)
+#define EE_CMD_READ   (1)
+
+#define SCL_H         do{I2C_EE_GPIO->BSRRL = I2C_EE_SCL;}while(0)
+#define SCL_L         do{I2C_EE_GPIO->BSRRH  = I2C_EE_SCL;}while(0)
+#define SDA_H         do{I2C_EE_GPIO->BSRRL = I2C_EE_SDA;}while(0)
+#define SDA_L         do{I2C_EE_GPIO->BSRRH  = I2C_EE_SDA;}while(0)
+#define SCL_read      (I2C_EE_GPIO->IDR  & I2C_EE_SCL)
+#define SDA_read      (I2C_EE_GPIO->IDR  & I2C_EE_SDA)
+#define WP_H          do{I2C_EE_WP_GPIO->BSRRL = I2C_EE_WP;}while(0)
+#define WP_L          do{I2C_EE_WP_GPIO->BSRRH = I2C_EE_WP;}while(0)
+
+/* Exported functions ------------------------------------------------------- */
+void I2C_EE_ByteWrite(uint8_t* pBuffer, uint16_t WriteAddr);
+void I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite);
+void I2C_EE_WaitEepromStandbyState(void);
+
+void I2C_set_volume(register uint8_t volume);
+uint8_t I2C_read_volume(void);
+
 #define	I2C_delay()   delay_01us(100);
 
 /**
@@ -159,7 +179,7 @@ char I2C_READ(void)
   return ReceiveByte;
 } 
 
-void I2C_EE_Init(void)
+void eepromInit(void)
 {
   /* GPIO Periph clock enable */
   RCC_AHB1PeriphClockCmd(I2C_EE_GPIO_CLK, ENABLE);
@@ -202,7 +222,7 @@ void I2C_EE_ByteWrite(uint8_t* pBuffer, uint16_t WriteAddr)
   * @param  NumByteToRead : number of bytes to read from the EEPROM.
   * @retval None
   */
-void I2C_EE_BufferRead(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRead)
+void eepromReadBlock(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRead)
 {
   I2C_START();
   I2C_SEND_DATA(I2C_EEPROM_ADDRESS|EE_CMD_WRITE);
@@ -243,7 +263,7 @@ void I2C_EE_BufferRead(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRe
   * @param  NumByteToWrite : number of bytes to write to the EEPROM.
   * @retval None
   */
-void I2C_EE_BufferWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteToWrite)
+void eepromWriteBlock(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteToWrite)
 {
   uint8_t NumOfPage = 0, NumOfSingle = 0, count = 0;
   uint16_t Addr = 0;
@@ -372,8 +392,11 @@ void I2C_EE_WaitEepromStandbyState(void)
   I2C_STOP();
 }
 
-void I2C_set_volume( register uint8_t volume )
+void setVolume(uint8_t volume)
 {
+  if (volume > VOLUME_LEVEL_MAX)
+    volume = VOLUME_LEVEL_MAX;
+
   I2C_START();
   I2C_SEND_DATA(I2C_CAT5137_ADDRESS|EE_CMD_WRITE);
   I2C_WAIT_ACK();

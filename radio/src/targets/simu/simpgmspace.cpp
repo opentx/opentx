@@ -80,13 +80,13 @@ Adc Adc0;
 
 #if defined(PCBSKY9X)
   uint32_t eeprom_pointer;
-  char* eeprom_buffer_data;
+  uint8_t * eeprom_buffer_data;
   volatile int32_t eeprom_buffer_size;
   bool eeprom_read_operation;
   #define EESIZE_SIMU (128*4096)
 #else
   extern uint16_t eeprom_pointer;
-  extern const char* eeprom_buffer_data;
+  extern uint8_t * eeprom_buffer_data;
 #endif
 
 #if !defined(EESIZE_SIMU)
@@ -274,7 +274,7 @@ void *eeprom_write_function(void *)
 #if defined(CPUARM)
     if (eeprom_read_operation) {
       assert(eeprom_buffer_size);
-      eeprom_read_block(eeprom_buffer_data, (const void *)(int64_t)eeprom_pointer, eeprom_buffer_size);
+      eepromReadBlock(eeprom_buffer_data, eeprom_pointer, eeprom_buffer_size);
     }
     else {
 #endif
@@ -598,11 +598,7 @@ void StopEepromThread()
   if (fp) fclose(fp);
 }
 
-#if defined(PCBTARANIS)
-void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size)
-#else
-void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t size)
-#endif
+void eepromReadBlock (uint8_t * pointer_ram, uint16_t pointer_eeprom, uint16_t size)
 {
   assert(size);
 
@@ -617,7 +613,7 @@ void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t si
 }
 
 #if defined(PCBTARANIS)
-void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size)
+void eepromWriteBlock(uint8_t * pointer_ram, uint16_t pointer_eeprom, uint16_t size)
 {
   assert(size);
 
