@@ -2970,7 +2970,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../generaledit.ui" line="3336"/>
         <location filename="../generaledit.ui" line="3389"/>
         <source>Pot with detent (normal)</source>
-        <translation>Pot con ritenzione (normale)</translation>
+        <translation>Pot con fermo centrale (normale)</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3300"/>
@@ -4898,7 +4898,11 @@ Release %2 is available.
 Do you want to download it now?
 
 We recommend you view the release notes using the button below to learn about any changes that may be important to you.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il firmware %1 non sembra mai stato essere scaricato.
+E&apos; disponibile la versione %2.
+Volete scaricarla adesso ?
+
+Vi raccomandiamo di leggere le note di rilascio sottostanti per vedere se ci siano cambiamenti che possano essere ritenuti da Voi rilevanti.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="441"/>
@@ -4909,7 +4913,13 @@ We recommend you view the release notes using the button below to learn about an
 Do you want to download it now?
 
 We recommend you view the release notes using the button below to learn about any changes that may be important to you.</source>
-        <translation type="unfinished"></translation>
+        <translation>una nuova versione del firmware %1 è disponibile:
+  - versione attuale %2
+  - nuova %3
+
+Volete scaricare la nuova versione?
+
+Vi raccomandiamo di leggere le note di rilascio sottostanti per vedere se ci siano cambiamenti che possano essere ritenuti da Voi rilevanti.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1646"/>
@@ -10583,17 +10593,17 @@ Utilizzato dai Modelli per stabilire quale uscita viene assegnata ai canali.</tr
         <location filename="../avroutputdialog.cpp" line="159"/>
         <location filename="../avroutputdialog.cpp" line="163"/>
         <source>Error</source>
-        <translation type="unfinished">Errore</translation>
+        <translation>Errore</translation>
     </message>
     <message>
         <location filename="../avroutputdialog.cpp" line="163"/>
         <source>Cannot open source file</source>
-        <translation type="unfinished">Non posso aprire il file di origine</translation>
+        <translation>Non posso aprire il file di origine</translation>
     </message>
     <message>
         <location filename="../avroutputdialog.cpp" line="159"/>
         <source>Cannot write destination</source>
-        <translation type="unfinished">Non posso scrivere sul file di destinazione</translation>
+        <translation>Non posso scrivere sul file di destinazione</translation>
     </message>
     <message>
         <location filename="../avroutputdialog.cpp" line="142"/>
@@ -10609,7 +10619,7 @@ Utilizzato dai Modelli per stabilire quale uscita viene assegnata ai canali.</tr
         <location filename="../avroutputdialog.cpp" line="159"/>
         <location filename="../avroutputdialog.cpp" line="163"/>
         <source>reason</source>
-        <translation type="unfinished"></translation>
+        <translation>motivo</translation>
     </message>
     <message>
         <location filename="../avroutputdialog.cpp" line="304"/>
