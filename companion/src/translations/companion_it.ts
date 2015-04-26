@@ -320,7 +320,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="590"/>
         <source>Offer to write FW to Tx after download</source>
-        <translation>Scrivere dopo aggiornamento </translation>
+        <translation>Scrivere sulla radio dopo il download</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="230"/>
@@ -4132,7 +4132,7 @@ Volete scaricarla ora ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="345"/>
         <source>Not enough memory for all the selected firmware options</source>
-        <translation>Memoria insufficente per tutte le opzioni firmware selezionate</translation>
+        <translation>Memoria insufficiente per tutte le opzioni firmware selezionate</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="535"/>
@@ -4671,7 +4671,7 @@ Volete scaricarla ora ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1630"/>
         <source>Write Models and Settings to Radio</source>
-        <translation>Scrivi Modeli e Impostazioni sulla Radio</translation>
+        <translation>Scrivi Modelli e Impostazioni sulla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1631"/>
@@ -4731,7 +4731,7 @@ Volete scaricarla ora ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1645"/>
         <source>Set Menu Language</source>
-        <translation>Inposta Menu Lingua</translation>
+        <translation>Imposta Menu Lingua</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1615"/>
@@ -4968,7 +4968,7 @@ Vi raccomandiamo di leggere le note di rilascio sottostanti per vedere se ci sia
     <message>
         <location filename="../mainwindow.cpp" line="1790"/>
         <source>Show recent Models+Settings documents</source>
-        <translation>Mostra modell e impostazioni recenti</translation>
+        <translation>Mostra modelli e impostazioni recenti</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1846"/>
@@ -4994,7 +4994,7 @@ Vi raccomandiamo di leggere le note di rilascio sottostanti per vedere se ci sia
         <location filename="../mainwindow.cpp" line="2062"/>
         <source>Error reading file %1:
 %2.</source>
-        <translation>Error durante la lettura del file %1:
+        <translation>Errore durante la lettura del file %1:
 %2.</translation>
     </message>
 </context>
@@ -5066,7 +5066,7 @@ Vi raccomandiamo di leggere le note di rilascio sottostanti per vedere se ci sia
         <location filename="../mdichild.cpp" line="650"/>
         <source>Error reading file %1:
 %2.</source>
-        <translation>Error durante la lettura del file %1:
+        <translation>Errore durante la lettura del file %1:
 %2.</translation>
     </message>
     <message>
@@ -5162,7 +5162,7 @@ Salvare le modifiche ?</translation>
     <message>
         <location filename="../mdichild.cpp" line="537"/>
         <source>Cannot write temporary file!</source>
-        <translation>Errore durante la scittura del file temporaneo!</translation>
+        <translation>Errore durante la scrittura del file temporaneo!</translation>
     </message>
 </context>
 <context>
@@ -5290,7 +5290,7 @@ This determines how mixer values are added.
 &quot;+&quot; means the value of the current mix is added to the previous mixes in the same channel.
 &quot;*&quot; means the value of the current mix is amultiplied with the previous mixes in the same channel.
 &quot;R&quot; means the value replaces the previous values.  If the switch is off the value will be ignored.</source>
-        <translation>Miscelazionir
+        <translation>Miscelazioni
 
 Determina come il valore viene aggiunto alla miscelazione.
 
@@ -5848,7 +5848,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modelslist.cpp" line="526"/>
         <source>No free slot available, cannot duplicate</source>
-        <translation>Nussun spazio di memoria libero, non posso duplicare</translation>
+        <translation>Nessun spazio di memoria libero, non posso duplicare</translation>
     </message>
 </context>
 <context>
@@ -7171,7 +7171,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="598"/>
         <source>Sticky</source>
-        <translation>Bloccato</translation>
+        <translation>Sticky</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="602"/>
@@ -8785,7 +8785,7 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
     <message>
         <location filename="../firmwares/opentx/open9xStockeeprom.cpp" line="92"/>
         <source>Simultaneous usage of expo and curves is no longer supported in OpenTX</source>
-        <translation>L&apos;uso simultaneo di esponeziali e curve non è più supportato in OpenTX</translation>
+        <translation>L&apos;uso simultaneo di esponenziali e curve non è più supportato in OpenTX</translation>
     </message>
     <message>
         <location filename="../warnings.h" line="5"/>
@@ -8822,7 +8822,7 @@ Il Team di OpenTX.</translation>
     <message>
         <location filename="../radionotfound.ui" line="40"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Note: if you have a Taranis that has not had the firmware upgraded to 2.0 then this version of Companion will not work.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Nessuna radio è stata trovata!&lt;/p&gt;&lt;p&gt;Siate sicuri di tenere entrambi i trim inferiori verso il centro durante l&apos;accensione della radio..&lt;/p&gt;&lt;p&gt;Solo dopo connettete il cavo USB.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Nota: se avete una radio Taranis che non ha ancura ricevuto l&apos;aggiornamento alla versione 2.0 del firmware allora questa versione di companion non funzionerà correttamente.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Nessuna radio è stata trovata!&lt;/p&gt;&lt;p&gt;Siate sicuri di tenere entrambi i trim inferiori verso il centro durante l&apos;accensione della radio..&lt;/p&gt;&lt;p&gt;Solo dopo connettete il cavo USB.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Nota: se avete una radio Taranis che non ha ancora ricevuto l&apos;aggiornamento alla versione 2.0 del firmware allora questa versione di companion non funzionerà correttamente.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -10930,7 +10930,7 @@ utilizzatelo solo se sapete cosa state facendo.  Non viene fatto alcun controllo
     <message>
         <location filename="../burnconfigdialog.cpp" line="343"/>
         <source>&lt;b&gt;&lt;u&gt;WARNING!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;This will reset the fuses of  %1 to the factory settings.&lt;br&gt;Writing fuses can mess up your radio.&lt;br&gt;Do this only if you are sure they are wrong!&lt;br&gt;Are you sure you want to continue?</source>
-        <translation>&lt;b&gt;&lt;u&gt;ATTENZIONE!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Questa operazione ripristinerà i fuse del processore %1 ai valori di fabbrica.&lt;br&gt;Modificare i fuse pruo bloccare la radio.&lt;br&gt;Fatelo solo se siete assolutamente sicuri che siano sbagliati&lt;br&gt;sicuri di voler continuare ?</translation>
+        <translation>&lt;b&gt;&lt;u&gt;ATTENZIONE!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Questa operazione ripristinerà i fuse del processore %1 ai valori di fabbrica.&lt;br&gt;Modificare i fuse può bloccare la radio.&lt;br&gt;Fatelo solo se siete assolutamente sicuri che siano sbagliati&lt;br&gt;sicuri di voler continuare ?</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.cpp" line="418"/>
@@ -11136,7 +11136,7 @@ m2560 per le schede v4.1</translation>
         <location filename="../burndialog.cpp" line="292"/>
         <source>Error reading file %1:
 %2.</source>
-        <translation>Error durante la lettura del file %1:
+        <translation>Errore durante la lettura del file %1:
 %2.</translation>
     </message>
     <message>
@@ -11177,7 +11177,7 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../burndialog.cpp" line="400"/>
         <source>The library image could not be loaded</source>
-        <translation>L&apos;iimagine della libreria non può essere caricata</translation>
+        <translation>L&apos;immagine della libreria non può essere caricata</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="438"/>
@@ -11644,7 +11644,7 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../customizesplashdialog.cpp" line="228"/>
         <source>Cannot load profile image %1.</source>
-        <translation>Impossibile caricarel&apos;immagine dal profilo %1.</translation>
+        <translation>Impossibile caricare l&apos;immagine dal profilo %1.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="242"/>
@@ -11679,7 +11679,7 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../customizesplashdialog.cpp" line="257"/>
         <source>Failed to write image to %1</source>
-        <translation>Errore di scittura dell&apos;mmagine nel file %1</translation>
+        <translation>Errore di scrittura dell&apos;mmagine nel file %1</translation>
     </message>
 </context>
 <context>
@@ -12523,7 +12523,7 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../preferencesdialog.ui" line="1603"/>
         <source>Google Earth Executable</source>
-        <translation>Eseguibile Google Eart</translation>
+        <translation>Eseguibile Google Earth</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="694"/>
