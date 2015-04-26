@@ -179,11 +179,16 @@ void pwrOff();
 #define hapticOff() // TODO hapticOn() cleaner ...
 
 // Buzzer driver
-#define buzzerOn()               PORTB |=  (1 << OUT_B_BUZZER)
-#define buzzerOff()              PORTB &= ~(1 << OUT_B_BUZZER)
+#define buzzerOn()                 PORTB |=  (1 << OUT_B_BUZZER)
+#define buzzerOff()                PORTB &= ~(1 << OUT_B_BUZZER)
 
 // Speaker driver
-#define speakerOn()              TCCR0A |=  (1 << COM0A0)
-#define speakerOff()             TCCR0A &= ~(1 << COM0A0)
+#define speakerOn()                TCCR0A |=  (1 << COM0A0)
+#define speakerOff()               TCCR0A &= ~(1 << COM0A0)
+
+// EEPROM driver
+#if !defined(SIMU)
+#define eepromReadBlock(a, b, c)   eeprom_read_block(a, (const void *)b, c)
+#endif
 
 #endif
