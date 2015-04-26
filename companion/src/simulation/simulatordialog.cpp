@@ -527,9 +527,17 @@ void SimulatorDialog::initUi(T * ui)
     for (int i=0; i<gvars; i++) {
       QLabel * label = new QLabel(tabWidget);
       label->setText(QString("GV%1").arg(i+1));
+      label->setAutoFillBackground(true);
+      if ((i % 2) ==0 ) {
+        label->setStyleSheet("QLabel { background-color: rgb(220, 220, 220) }");
+      }
       ui->gvarsLayout->addWidget(label, i+1, 0);
       for (int fm=0; fm<fmodes; fm++) {
         QLabel * value = new QLabel(tabWidget);
+        value->setAutoFillBackground(true);
+        if ((i % 2) ==0 ) {
+          value->setStyleSheet("QLabel { background-color: rgb(220, 220, 220) }");
+        }
         gvarValues << value;
         ui->gvarsLayout->addWidget(value, i+1, fm+1);
       }
