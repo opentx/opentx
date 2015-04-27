@@ -7386,7 +7386,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="621"/>
         <source>Sticky(%1, %2)</source>
-        <translation>Bloccato(%1, %2)</translation>
+        <translation>Sticky(%1, %2)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="624"/>
@@ -8799,12 +8799,12 @@ Il Team di OpenTX.</translation>
     <message>
         <location filename="../eeprominterface.h" line="962"/>
         <source>Positive</source>
-        <translation type="unfinished">Positivo</translation>
+        <translation>Positivo</translation>
     </message>
     <message>
         <location filename="../eeprominterface.h" line="962"/>
         <source>Negative</source>
-        <translation type="unfinished">Negativo</translation>
+        <translation>Negativo</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="44"/>
