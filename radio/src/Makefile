@@ -682,9 +682,8 @@ ifeq ($(PCB), MEGA2560)
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
   # LCD driver
-  # Values: ST7565R, ERC12864FSF, MULTIPLEX (none = ST7565P)
-  LCD = ST7565R
-  
+  # Values: ST7565P(default), ST7565R 
+  LCD = ST7565P
   ifeq ($(LCD), ST7565R)
     CPPDEFS += -DLCD_ST7565R
   endif   

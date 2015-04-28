@@ -1239,8 +1239,8 @@ void registerOpenTxFirmwares()
 
   /* MEGA2560 board */
   openTx = new OpenTxFirmware("opentx-mega2560", QObject::tr("OpenTX for MEGA2560 board"), BOARD_MEGA2560);
-  Option LCD_options[] = { { "LCD_ST7565P", QObject::tr("ST7565P LCD or compatible"), 0 }, { "LCD_ST7565R", QObject::tr("ST7565R LCD or compatible"), 0 }, { NULL } };
-  openTx->addOptions(LCD_options);
+  openTx->addOption("ST7565R", QObject::tr("ST7565R LCD or compatible"));
+  openTx->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   openTx->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   openTx->addOption("nofp", QObject::tr("No flight modes"));
