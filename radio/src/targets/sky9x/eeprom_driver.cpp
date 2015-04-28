@@ -102,6 +102,10 @@ uint8_t eepromTransmitByte(uint8_t out, bool skipFirst)
   register Spi *spiptr;
   register uint32_t delay;
 
+#if defined(SIMU)
+  return 0;
+#endif
+
   spiptr = SPI;
   spiptr->SPI_CR = 1; // Enable
   (void) spiptr->SPI_RDR; // Dump any rx data

@@ -136,7 +136,7 @@
   #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
   #define MAX_FLIGHT_MODES     9
   #define MAX_MIXERS           64
-  #define MAX_EXPOS            64
+  #define MAX_EXPOS            32
   #define NUM_LOGICAL_SWITCH   32 // number of custom switches
   #define NUM_CFN              64 // number of functions assigned to switches
   #define NUM_TRAINER          16
@@ -363,8 +363,8 @@ enum BeeperMode {
     #define swarnenable_t     uint8_t
   #endif
 #else
-  #define swarnstate_t      uint8_t
-  #define swarnenable_t     uint8_t
+  #define swarnstate_t        uint8_t
+  #define swarnenable_t       uint8_t
 #endif
 
 #if defined(PCBTARANIS)
@@ -456,7 +456,7 @@ PACK(typedef struct {
     TRAINER_MODULE
   };
   #define MODELDATA_BITMAP
-  #define MODELDATA_EXTRA   uint8_t externalModule; ModuleData moduleData[NUM_MODULES+1]; uint8_t potsWarnMode:2; uint8_t potsWarnEnabled:6; int8_t potsWarnPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
+  #define MODELDATA_EXTRA   uint8_t externalModule:3; uint8_t spare:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
 #else
   #define MODELDATA_BITMAP
   #define MODELDATA_EXTRA   

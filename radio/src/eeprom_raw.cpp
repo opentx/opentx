@@ -185,20 +185,25 @@ bool eepromOpen()
 
 uint32_t readFile(int index, uint8_t * data, uint32_t size)
 {
-  EepromFileHeader header;
-  uint32_t address = eepromHeader.files[index].zoneIndex * EEPROM_ZONE_SIZE;
-  eepromRead(address, (uint8_t *)&header, sizeof(header));
-  if (size < header.size) {
-    header.size = size;
+  if (eepromHeader.files[index].exists) {
+    EepromFileHeader header;
+    uint32_t address = eepromHeader.files[index].zoneIndex * EEPROM_ZONE_SIZE;
+    eepromRead(address, (uint8_t *)&header, sizeof(header));
+    if (size < header.size) {
+      header.size = size;
+    }
+    if (header.size > 0) {
+      eepromRead(address + sizeof(header), data, header.size);
+      size -= header.size;
+    }
+    if (size > 0) {
+      memset(data + header.size, 0, size);
+    }
+    return header.size;
   }
-  if (header.size > 0) {
-    eepromRead(address + sizeof(header), data, header.size);
-    size -= header.size;
+  else {
+    return 0;
   }
-  if (size > 0) {
-    memset(data + header.size, 0, size);
-  }
-  return header.size;
 }
 
 void eepromIncFatAddr()
