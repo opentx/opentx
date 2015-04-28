@@ -27,18 +27,39 @@ RleFile::RleFile():
 eeprom(NULL),
 eeprom_size(0),
 eeFs(NULL),
-eeFsArm(NULL)
+eeFsArm(NULL),
+eepromFatHeader(NULL)
 {
 }
 
-void RleFile::EeFsCreate(uint8_t *eeprom, int size, BoardEnum board)
+#define EEPROM_SIZE           (4*1024*1024/8)
+#define EEPROM_BLOCK_SIZE     (4*1024)
+#define EEPROM_MARK           0x84697771 /* thanks ;) */
+#define EEPROM_ZONE_SIZE      (8*1024)
+#define EEPROM_BUFFER_SIZE    256
+#define EEPROM_FAT_SIZE       128
+#define EEPROM_MAX_ZONES      (EEPROM_SIZE / EEPROM_ZONE_SIZE)
+#define EEPROM_MAX_FILES      (EEPROM_MAX_ZONES - 1)
+#define FIRST_FILE_AVAILABLE  (1+MAX_MODELS)
+
+void RleFile::EeFsCreate(uint8_t *eeprom, int size, BoardEnum board, unsigned int version)
 {
   this->eeprom = eeprom;
   this->eeprom_size = size;
   this->board = board;
+  this->version = version;
 
   if (IS_SKY9X(board)) {
     memset(eeprom, 0xFF, size);
+    if (version >= 217) {
+      eepromFatHeader = (EepromHeader *)eeprom;
+      eepromFatHeader->mark = EEPROM_MARK;
+      eepromFatHeader->index = 1;
+      for (int i=0; i<EEPROM_MAX_FILES; i++) {
+        eepromFatHeader->files[i].exists = 0;
+        eepromFatHeader->files[i].zoneIndex = i+1;
+      }
+    }
   }
   else if (IS_TARANIS(board)) {
     eeFsArm = (EeFsArm *)eeprom;
@@ -92,6 +113,30 @@ void RleFile::EeFsCreate(uint8_t *eeprom, int size, BoardEnum board)
   }
 }
 
+PACK(struct EepromFileHeader
+{
+  uint16_t fileIndex;
+  uint16_t size;
+});
+
+bool RleFile::searchFat()
+{
+  int bestFatIndex = -1;
+  for (int i=0; i<EEPROM_ZONE_SIZE/EEPROM_FAT_SIZE; i++) {
+    EepromHeader * header = (EepromHeader *)(eeprom+i*EEPROM_FAT_SIZE);
+    if (header->mark == EEPROM_MARK && (int)header->index >= bestFatIndex) {
+      bestFatIndex = i;
+    }
+  }
+  if (bestFatIndex >= 0) {
+    eepromFatHeader = (EepromHeader *)(eeprom+bestFatIndex*EEPROM_FAT_SIZE);;
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
 bool RleFile::EeFsOpen(uint8_t *eeprom, int size, BoardEnum board)
 {
   this->eeprom = eeprom;
@@ -99,6 +144,7 @@ bool RleFile::EeFsOpen(uint8_t *eeprom, int size, BoardEnum board)
   this->board = board;
 
   if (IS_SKY9X(board)) {
+    searchFat();
     return 1;
   }
   else if (IS_TARANIS(board)) {
@@ -249,8 +295,20 @@ unsigned int RleFile::size(unsigned int id)
 unsigned int RleFile::openRd(unsigned int i_fileId)
 {
   if (IS_SKY9X(board)) {
-    m_fileId = get_current_block_number(i_fileId * 2, &m_size);
-    m_pos = sizeof(t_eeprom_header);
+    if (eepromFatHeader) {
+      m_fileId = eepromFatHeader->files[i_fileId].zoneIndex;
+      if (eepromFatHeader->files[i_fileId].exists) {
+        eeprom_read_block(&m_size, m_fileId*(1<<13)+sizeof(uint16_t), sizeof(uint16_t));
+      }
+      else {
+        m_size = 0;
+      }
+      m_pos = sizeof(EepromFileHeader);
+    }
+    else {
+      m_fileId = get_current_block_number(i_fileId * 2, &m_size);
+      m_pos = sizeof(t_eeprom_header);
+    }
     return 1;
   }
   else {
@@ -293,10 +351,18 @@ unsigned int RleFile::readRlc12(uint8_t *buf, unsigned int i_len, bool rlc2)
   memset(buf, 0, i_len);
 
   if (IS_SKY9X(board)) {
-    int len = std::min((int)i_len, (int)m_size + (int)sizeof(t_eeprom_header) - (int)m_pos);
-    if (len > 0) {
-      eeprom_read_block(buf, (m_fileId << 12) + m_pos, len);
+    int len;
+    if (eepromFatHeader) {
+      len = std::min((int)i_len, (int)m_size + (int)sizeof(EepromFileHeader) - (int)m_pos);
+      eeprom_read_block(buf, (m_fileId << 13) + m_pos, len);
       m_pos += len;
+    }
+    else {
+      len = std::min((int)i_len, (int)m_size + (int)sizeof(t_eeprom_header) - (int)m_pos);
+      if (len > 0) {
+        eeprom_read_block(buf, (m_fileId << 12) + m_pos, len);
+        m_pos += len;
+      }
     }
     return len;
   }
@@ -511,13 +577,25 @@ unsigned int RleFile::writeRlc2(unsigned int i_fileId, unsigned int typ, const u
 {
   if (IS_SKY9X(board)) {
     openRd(i_fileId);
-    eeprom_write_block(buf, (m_fileId << 12) + m_pos, i_len);
-    t_eeprom_header header;
-    header.sequence_no = 1;
-    header.data_size = i_len;
-    header.flags = 0;
-    header.hcsum = byte_checksum((uint8_t *) &header, 7);
-    eeprom_write_block(&header, (m_fileId << 12), sizeof(header));
+    if (eepromFatHeader) {
+      eepromFatHeader->files[i_fileId].exists = 1;
+      eeprom_write_block(buf, (m_fileId << 13) + m_pos, i_len);
+      {
+        EepromFileHeader header;
+        header.fileIndex = i_fileId;
+        header.size = i_len;
+        eeprom_write_block(&header, (m_fileId << 13), sizeof(header));
+      }
+    }
+    else {
+      eeprom_write_block(buf, (m_fileId << 12) + m_pos, i_len);
+      t_eeprom_header header;
+      header.sequence_no = 1;
+      header.data_size = i_len;
+      header.flags = 0;
+      header.hcsum = byte_checksum((uint8_t *) &header, 7);
+      eeprom_write_block(&header, (m_fileId << 12), sizeof(header));
+    }
     return i_len;
   }
   else {

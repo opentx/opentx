@@ -396,7 +396,7 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
 
   int size = getEEpromSize();
 
-  efile->EeFsCreate(eeprom, size, board);
+  efile->EeFsCreate(eeprom, size, board, version);
 
   if (board == BOARD_M128) {
     variant |= M128_VARIANT;
@@ -443,11 +443,11 @@ int OpenTxEepromInterface::getSize(ModelData &model)
   if (model.isempty())
     return 0;
 
-  // TODO something better
+  // TODO something better...
   uint8_t tmp[EESIZE_RLC_MAX];
-  efile->EeFsCreate(tmp, EESIZE_RLC_MAX, board);
+  efile->EeFsCreate(tmp, EESIZE_RLC_MAX, board, 255/*version max*/);
 
-  OpenTxModelData open9xModel(model, board, 255, GetCurrentFirmware()->getVariantNumber());
+  OpenTxModelData open9xModel(model, board, 255/*version max*/, GetCurrentFirmware()->getVariantNumber());
 
   QByteArray eeprom;
   open9xModel.Export(eeprom);
@@ -464,7 +464,7 @@ int OpenTxEepromInterface::getSize(GeneralSettings &settings)
     return 0;
 
   uint8_t tmp[EESIZE_RLC_MAX];
-  efile->EeFsCreate(tmp, EESIZE_RLC_MAX, board);
+  efile->EeFsCreate(tmp, EESIZE_RLC_MAX, board, 255);
 
   OpenTxGeneralData open9xGeneral(settings, board, 255, GetCurrentFirmware()->getVariantNumber());
   // open9xGeneral.Dump();

@@ -61,6 +61,19 @@ struct t_eeprom_header
   uint8_t hcsum ;
 };
 
+PACK(struct EepromHeaderFile
+{
+  uint8_t zoneIndex:7;
+  uint8_t exists:1;
+});
+
+PACK(struct EepromHeader
+{
+  uint32_t         mark;
+  uint32_t         index;
+  EepromHeaderFile files[63];
+});
+
 class RleFile
 {
   uint8_t       m_fileId;    //index of file in directory = filename
@@ -73,6 +86,7 @@ class RleFile
   uint16_t      m_size;
 
   BoardEnum board;
+  unsigned int version;
   uint8_t *eeprom;
   unsigned int eeprom_size;
   EeFs         *eeFs;
@@ -84,6 +98,8 @@ class RleFile
   unsigned int eeFsBlocksOffset;
   unsigned int eeFsBlocksMax;
   unsigned int eeFsLinkSize;
+
+  EepromHeader * eepromFatHeader;
 
   void eeprom_read_block (void *pointer_ram, unsigned int pointer_eeprom, size_t size);
   void eeprom_write_block(const void *pointer_ram, unsigned int pointer_eeprom, size_t size);
@@ -98,12 +114,13 @@ class RleFile
   unsigned int EeFsGetFree();
   void EeFsFree(unsigned int blk); // free one or more blocks
   unsigned int EeFsAlloc(); // alloc one block from freelist
+  bool searchFat();
 
 public:
 
   RleFile();
 
-  void EeFsCreate(uint8_t *eeprom, int size, BoardEnum board);
+  void EeFsCreate(uint8_t *eeprom, int size, BoardEnum board, unsigned int version);
 
   bool EeFsOpen(uint8_t *eeprom, int size, BoardEnum board);
 
