@@ -31,6 +31,10 @@
   #define FLAVOUR "taranis"
   #define NAMESPACE Taranis
   #define EEPROM_VARIANT 0
+#elif defined(PCBSKY9X) && defined(REVX)
+  #define FLAVOUR "9xrpro"
+  #define NAMESPACE Sky9xPro
+  #define EEPROM_VARIANT 0
 #elif defined(PCBSKY9X)
   #define FLAVOUR "sky9x"
   #define NAMESPACE Sky9X

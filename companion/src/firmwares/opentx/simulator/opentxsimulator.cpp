@@ -59,7 +59,7 @@
 #define TIMERS 2
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(PCBSKY9X) && !defined(REVX)
 #define ROTARY_ENCODERS 1
 #elif defined(PCBGRUVIN9X)
 #define ROTARY_ENCODERS 2
@@ -362,7 +362,7 @@ bool OpenTxSimulator::lcdChanged(bool & lightEnable)
 
 void OpenTxSimulator::start(QByteArray & eeprom, bool tests)
 {
-#if defined(PCBSKY9X)
+#if defined(PCBSKY9X) && !defined(REVX)
   g_rotenc[0] = 0;
 #elif defined(PCBGRUVIN9X)
   g_rotenc[0] = 0;
@@ -376,7 +376,7 @@ void OpenTxSimulator::start(QByteArray & eeprom, bool tests)
 
 void OpenTxSimulator::start(const char * filename, bool tests)
 {
-#if defined(PCBSKY9X)
+#if defined(PCBSKY9X) && !defined(REVX)
   g_rotenc[0] = 0;
 #elif defined(PCBGRUVIN9X)
   g_rotenc[0] = 0;
@@ -445,7 +445,7 @@ void OpenTxSimulator::wheelEvent(int steps)
     x9de_rotenc -= 2;
   else
     x9de_rotenc += 2;
-#elif defined(PCBSKY9X)
+#elif defined(PCBSKY9X) && !defined(REVX)
   g_rotenc[0] += steps*4;
 #elif defined(PCBGRUVIN9X)
   g_rotenc[0] += steps;

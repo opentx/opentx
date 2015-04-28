@@ -72,6 +72,7 @@ add_library(opentx-9xr128${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-gruvin9x${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-mega2560${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-sky9x${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
+add_library(opentx-9xrpro${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranis${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranisplus${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranisx9e${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
@@ -83,6 +84,7 @@ add_dependencies(opentx-9xr128${SUFFIX}-simulator about_lbm_9x trans)
 add_dependencies(opentx-gruvin9x${SUFFIX}-simulator about_lbm_9x trans)
 add_dependencies(opentx-mega2560${SUFFIX}-simulator about_lbm_9x trans)
 add_dependencies(opentx-sky9x${SUFFIX}-simulator about_lbm_9x trans)
+add_dependencies(opentx-9xrpro${SUFFIX}-simulator about_lbm_9x trans)
 add_dependencies(opentx-taranis${SUFFIX}-simulator about_lbm_taranis trans lua_exports)
 add_dependencies(opentx-taranisplus${SUFFIX}-simulator about_lbm_taranis trans lua_exports)
 add_dependencies(opentx-taranisx9e${SUFFIX}-simulator about_lbm_taranis trans lua_exports)
@@ -95,6 +97,7 @@ set(OPENTX_LIBRARIES
   opentx-gruvin9x${SUFFIX}-simulator
   opentx-mega2560${SUFFIX}-simulator
   opentx-sky9x${SUFFIX}-simulator
+  opentx-9xrpro${SUFFIX}-simulator
   opentx-taranis${SUFFIX}-simulator
   opentx-taranisplus${SUFFIX}-simulator
   opentx-taranisx9e${SUFFIX}-simulator
@@ -134,6 +137,11 @@ target_link_libraries(opentx-mega2560${SUFFIX}-simulator PRIVATE ${COMMON_LIBRAR
 target_include_directories(opentx-sky9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/sky9x)
 target_compile_definitions(opentx-sky9x${SUFFIX}-simulator PRIVATE PCBSKY9X CPUARM VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-sky9x${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
+
+# 9XR-PRO
+target_include_directories(opentx-9xrpro${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/sky9x)
+target_compile_definitions(opentx-9xrpro${SUFFIX}-simulator PRIVATE PCBSKY9X REVX CPUARM VOICE SDCARD ${COMMON_DEFINITIONS})
+target_link_libraries(opentx-9xrpro${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Taranis standard
 target_include_directories(opentx-taranis${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/taranis)

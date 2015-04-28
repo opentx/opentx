@@ -25,7 +25,7 @@
 #define MAX_CUSTOM_FUNCTIONS(board, version) (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))
 #define MAX_CURVES(board, version)           (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 32 : 16) : 8)
 #define MAX_GVARS(board, version)            ((IS_ARM(board) && version >= 216) ? 9 : 5)
-#define MAX_SENSORS(board, version)          (IS_TARANIS(board) ? 32 : 16)
+#define MAX_SENSORS(board, version)          (32)
 #define NUM_PPM_INPUTS(board, version)       ((IS_ARM(board) && version >= 216) ? 16 : 8)
 
 #define IS_AFTER_RELEASE_21_MARCH_2013(board, version) (version >= 214 || (!IS_ARM(board) && version >= 213))
@@ -2960,9 +2960,17 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new UnsignedField<8>(modelData.trainerMode));
     }
   }
-  else if (IS_ARM(board) && version >= 216) {
-    modulesCount = 3;
-    internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this radio protocol")));
+  else if (IS_ARM(board)) {
+    if (version >= 217) {
+      modulesCount = 3;
+      internalField.Append(new ConversionField< SignedField<3> >(modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this radio protocol")));
+      internalField.Append(new SpareBitsField<3>());
+      internalField.Append(new UnsignedField<2>(modelData.potsWarningMode));
+    }
+    else if (version >= 216) {
+      modulesCount = 3;
+      internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this radio protocol")));
+    }
   }
 
   if (IS_ARM(board) && version >= 215) {
@@ -3040,6 +3048,11 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
 
   if (IS_ARM(board) && version == 216) {
     internalField.Append(new SpareBitsField<16>());
+  }
+
+  if (IS_SKY9X(board) && version >= 217) {
+    internalField.Append(new SpareBitsField<8>());
+    internalField.Append(new SpareBitsField<8>());
   }
 
   if (IS_ARM(board) && version >= 217) {
