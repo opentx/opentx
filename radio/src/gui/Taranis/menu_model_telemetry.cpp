@@ -317,7 +317,7 @@ void menuModelSensor(uint8_t event)
             lcd_putsLeft(y, STR_CELLSENSOR);
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->cell.source ? MIXSRC_FIRST_TELEM+3*(sensor->cell.source-1) : 0, attr);
             if (attr) {
-              sensor->cell.source = checkIncDec(event, sensor->cell.source, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isCellsSensor);
+              sensor->cell.source = checkIncDec(event, sensor->cell.source, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isCellsSensor);
             }
             break;
           }
@@ -325,7 +325,7 @@ void menuModelSensor(uint8_t event)
             lcd_putsLeft(y, STR_GPSSENSOR);
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->dist.gps ? MIXSRC_FIRST_TELEM+3*(sensor->dist.gps-1) : 0, attr);
             if (attr) {
-              sensor->dist.gps = checkIncDec(event, sensor->dist.gps, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isGPSSensor);
+              sensor->dist.gps = checkIncDec(event, sensor->dist.gps, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isGPSSensor);
             }
             break;
           }
@@ -333,7 +333,7 @@ void menuModelSensor(uint8_t event)
             lcd_putsLeft(y, STR_CURRENTSENSOR);
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->consumption.source ? MIXSRC_FIRST_TELEM+3*(sensor->consumption.source-1) : 0, attr);
             if (attr) {
-              sensor->consumption.source = checkIncDec(event, sensor->consumption.source, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isCurrentSensor);
+              sensor->consumption.source = checkIncDec(event, sensor->consumption.source, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isCurrentSensor);
             }
             break;
           }
@@ -341,7 +341,7 @@ void menuModelSensor(uint8_t event)
             lcd_putsLeft(y, NO_INDENT(STR_SOURCE));
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->consumption.source ? MIXSRC_FIRST_TELEM+3*(sensor->consumption.source-1) : 0, attr);
             if (attr) {
-              sensor->consumption.source = checkIncDec(event, sensor->consumption.source, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isTelemetryFieldComparisonAvailable);
+              sensor->consumption.source = checkIncDec(event, sensor->consumption.source, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isTelemetryFieldComparisonAvailable);
             }
             break;
           }
@@ -375,7 +375,7 @@ void menuModelSensor(uint8_t event)
             lcd_putsLeft(y, STR_ALTSENSOR);
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->dist.alt ? MIXSRC_FIRST_TELEM+3*(sensor->dist.alt-1) : 0, attr);
             if (attr) {
-              sensor->dist.alt = checkIncDec(event, sensor->dist.alt, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isAltSensor);
+              sensor->dist.alt = checkIncDec(event, sensor->dist.alt, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isAltSensor);
             }
             break;
           }
@@ -403,7 +403,7 @@ void menuModelSensor(uint8_t event)
         putsStrIdx(0, y, NO_INDENT(STR_SOURCE), k-SENSOR_FIELD_PARAM1+1);
         int8_t & source = sensor->calc.sources[k-SENSOR_FIELD_PARAM1];
         if (attr) {
-          source = checkIncDec(event, source, -TELEM_VALUES_MAX, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
+          source = checkIncDec(event, source, -MAX_SENSORS, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
         }
         if (source < 0) {
           lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
@@ -439,14 +439,14 @@ void onSensorMenu(const char *result)
 {
   int index = m_posVert - ITEM_TELEMETRY_SENSOR1;
 
-  if (index < TELEM_VALUES_MAX) {
+  if (index < MAX_SENSORS) {
     if (result == STR_EDIT) {
       pushMenu(menuModelSensor);
     }
     else if (result == STR_DELETE) {
       delTelemetryIndex(index);
       index += 1;
-      if (index<TELEM_VALUES_MAX && isTelemetryFieldAvailable(index))
+      if (index<MAX_SENSORS && isTelemetryFieldAvailable(index))
         m_posVert += 1;
       else
         m_posVert = ITEM_TELEMETRY_NEWSENSOR;
@@ -498,7 +498,7 @@ void menuModelTelemetry(uint8_t event)
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);
 
-    if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+TELEM_VALUES_MAX) {
+    if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+MAX_SENSORS) {
       int index = k-ITEM_TELEMETRY_SENSOR1;
       lcd_outdezAtt(INDENT_WIDTH, y, index+1, LEFT|attr);
       lcd_putcAtt(lcdLastPos, y, ':', attr);
@@ -587,7 +587,7 @@ void menuModelTelemetry(uint8_t event)
         lcd_putsLeft(y, STR_SOURCE);
         putsMixerSource(TELEM_COL2, y, g_model.frsky.varioSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.varioSource-1) : 0, attr);
         if (attr) {
-          g_model.frsky.varioSource = checkIncDec(event, g_model.frsky.varioSource, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
+          g_model.frsky.varioSource = checkIncDec(event, g_model.frsky.varioSource, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
         }
         break;
 
@@ -624,7 +624,7 @@ void menuModelTelemetry(uint8_t event)
         lcd_putsLeft(y, STR_VOLTAGE);
         putsMixerSource(TELEM_COL2, y, g_model.frsky.voltsSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.voltsSource-1) : 0, attr);
         if (attr) {
-          g_model.frsky.voltsSource = checkIncDec(event, g_model.frsky.voltsSource, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isVoltsSensor);
+          g_model.frsky.voltsSource = checkIncDec(event, g_model.frsky.voltsSource, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isVoltsSensor);
         }
         break;
 
@@ -632,7 +632,7 @@ void menuModelTelemetry(uint8_t event)
         lcd_putsLeft(y, STR_ALTITUDE);
         putsMixerSource(TELEM_COL2, y, g_model.frsky.altitudeSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.altitudeSource-1) : 0, attr);
         if (attr) {
-          g_model.frsky.altitudeSource = checkIncDec(event, g_model.frsky.altitudeSource, 0, TELEM_VALUES_MAX, EE_MODEL|NO_INCDEC_MARKS, isAltSensor);
+          g_model.frsky.altitudeSource = checkIncDec(event, g_model.frsky.altitudeSource, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isAltSensor);
         }
         break;
 

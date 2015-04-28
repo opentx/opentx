@@ -99,7 +99,7 @@ void onLongEnterPress(const char *result)
     s_source = MIXSRC_FIRST_GVAR;
   
   else if (result == STR_MENU_TELEMETRY) {
-    for (int i = 0; i < TELEM_VALUES_MAX; i++) {
+    for (int i = 0; i < MAX_SENSORS; i++) {
       TelemetrySensor * sensor = & g_model.telemetrySensors[i];
       if (sensor->isAvailable()) {
         s_source = MIXSRC_FIRST_TELEM + 3*i;
@@ -277,7 +277,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       
       if (i_min <= MIXSRC_FIRST_TELEM && i_max >= MIXSRC_FIRST_TELEM) {
         bool available = false;
-        for (int i = 0; i < TELEM_VALUES_MAX; i++) {
+        for (int i = 0; i < MAX_SENSORS; i++) {
           TelemetrySensor * sensor = & g_model.telemetrySensors[i];
           if (sensor->isAvailable()) {
             available = true;

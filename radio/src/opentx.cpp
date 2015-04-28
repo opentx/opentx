@@ -1742,7 +1742,7 @@ void opentxClose()
   saveTimers();
 
 #if defined(CPUARM)
-  for (int i=0; i<TELEM_VALUES_MAX; i++) {
+  for (int i=0; i<MAX_SENSORS; i++) {
     TelemetrySensor & sensor = g_model.telemetrySensors[i];
     if (sensor.type == TELEM_TYPE_CALCULATED) {
       if (sensor.persistent && sensor.persistentValue != telemetryItems[i].value) {

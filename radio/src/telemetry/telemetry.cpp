@@ -1,6 +1,6 @@
 #include "../opentx.h"
 
-TelemetryItem telemetryItems[TELEM_VALUES_MAX];
+TelemetryItem telemetryItems[MAX_SENSORS];
 
 void TelemetryItem::gpsReceived()
 {
@@ -218,7 +218,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     }
   }
 
-  for (int i=0; i<TELEM_VALUES_MAX; i++) {
+  for (int i=0; i<MAX_SENSORS; i++) {
     TelemetrySensor & it = g_model.telemetrySensors[i];
     if (it.type == TELEM_TYPE_CALCULATED && it.formula == TELEM_FORMULA_TOTALIZE && &g_model.telemetrySensors[it.consumption.source-1] == &sensor) {
       TelemetryItem & item = telemetryItems[i];
@@ -453,7 +453,7 @@ void delTelemetryIndex(uint8_t index)
 
 int availableTelemetryIndex()
 {
-  for (int index=0; index<TELEM_VALUES_MAX; index++) {
+  for (int index=0; index<MAX_SENSORS; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
     if (!telemetrySensor.isAvailable()) {
       return index;
@@ -464,7 +464,7 @@ int availableTelemetryIndex()
 
 int lastUsedTelemetryIndex()
 {
-  for (int index=TELEM_VALUES_MAX-1; index>=0; index--) {
+  for (int index=MAX_SENSORS-1; index>=0; index--) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
     if (telemetrySensor.isAvailable()) {
       return index;
@@ -483,7 +483,7 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance
 {
   bool available = false;
   
-  for (int index=0; index<TELEM_VALUES_MAX; index++) {
+  for (int index=0; index<MAX_SENSORS; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
     if (telemetrySensor.id == id && telemetrySensor.instance == instance) {
       telemetryItems[index].setValue(g_model.telemetrySensors[index], value, unit, prec);

@@ -172,7 +172,7 @@ void writeHeader()
 
 #if defined(CPUARM)
   char label[TELEM_LABEL_LEN+7];
-  for (int i=0; i<TELEM_VALUES_MAX; i++) {
+  for (int i=0; i<MAX_SENSORS; i++) {
     TelemetrySensor & sensor = g_model.telemetrySensors[i];
     if (sensor.logs) {
       memset(label, 0, sizeof(label));
@@ -289,7 +289,7 @@ void writeLogs()
 #endif
 
 #if defined(CPUARM)
-      for (int i=0; i<TELEM_VALUES_MAX; i++) {
+      for (int i=0; i<MAX_SENSORS; i++) {
         TelemetrySensor & sensor = g_model.telemetrySensors[i];
         TelemetryItem & telemetryItem = telemetryItems[i];
         if (sensor.logs) {

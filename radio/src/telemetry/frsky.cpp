@@ -324,7 +324,7 @@ void telemetryWakeup()
 #endif
 
 #if defined(CPUARM)
-  for (int i=0; i<TELEM_VALUES_MAX; i++) {
+  for (int i=0; i<MAX_SENSORS; i++) {
     const TelemetrySensor & sensor = g_model.telemetrySensors[i];
     if (sensor.type == TELEM_TYPE_CALCULATED) {
       telemetryItems[i].eval(sensor);
@@ -352,7 +352,7 @@ void telemetryWakeup()
     SCHEDULE_NEXT_ALARMS_CHECK(1/*second*/);
 
     uint8_t now = TelemetryItem::now();
-    for (int i=0; i<TELEM_VALUES_MAX; i++) {
+    for (int i=0; i<MAX_SENSORS; i++) {
       if (isTelemetryFieldAvailable(i)) {
         uint8_t lastReceived = telemetryItems[i].lastReceived;
         if (lastReceived < TELEMETRY_VALUE_TIMER_CYCLE && uint8_t(now - lastReceived) > TELEMETRY_VALUE_OLD_THRESHOLD) {
@@ -416,7 +416,7 @@ void telemetryInterrupt10ms()
   if (TELEMETRY_STREAMING()) {
     if (!TELEMETRY_OPENXSENSOR()) {
 #if defined(CPUARM)
-      for (int i=0; i<TELEM_VALUES_MAX; i++) {
+      for (int i=0; i<MAX_SENSORS; i++) {
         const TelemetrySensor & sensor = g_model.telemetrySensors[i];
         if (sensor.type == TELEM_TYPE_CALCULATED) {
           telemetryItems[i].per10ms(sensor);
@@ -489,7 +489,7 @@ void telemetryReset()
   memclear(&frskyData, sizeof(frskyData));
 
 #if defined(CPUARM)
-  for (int index=0; index<TELEM_VALUES_MAX; index++) {
+  for (int index=0; index<MAX_SENSORS; index++) {
     telemetryItems[index].clear();
   }
 #endif

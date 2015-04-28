@@ -986,7 +986,7 @@ void eeLoadModel(uint8_t id)
     restoreTimers();
 
 #if defined(CPUARM)
-    for (int i=0; i<TELEM_VALUES_MAX; i++) {
+    for (int i=0; i<MAX_SENSORS; i++) {
       TelemetrySensor & sensor = g_model.telemetrySensors[i];
       if (sensor.type == TELEM_TYPE_CALCULATED && sensor.persistent) {
         telemetryItems[i].value = sensor.persistentValue;

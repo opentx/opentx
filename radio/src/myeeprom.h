@@ -130,7 +130,7 @@
     #define NUM_POTS           5
     #define NUM_XPOTS          3
   #endif
-  #define TELEM_VALUES_MAX     32
+  #define MAX_SENSORS          32
 #elif defined(PCBSKY9X)
   #define MAX_MODELS           60
   #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
@@ -142,7 +142,7 @@
   #define NUM_TRAINER          16
   #define NUM_POTS             3
   #define NUM_XPOTS            0
-  #define TELEM_VALUES_MAX     32
+  #define MAX_SENSORS          32
 #elif defined(CPUM2560) || defined(CPUM2561)
   #define MAX_MODELS           30
   #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
@@ -154,7 +154,7 @@
   #define NUM_TRAINER          8
   #define NUM_POTS             3
   #define NUM_XPOTS            0
-  #define TELEM_VALUES_MAX     0
+  #define MAX_SENSORS          0
 #elif defined(CPUM128)
   #define MAX_MODELS           30
   #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
@@ -166,7 +166,7 @@
   #define NUM_TRAINER          8
   #define NUM_POTS             3
   #define NUM_XPOTS            0
-  #define TELEM_VALUES_MAX     0
+  #define MAX_SENSORS          0
 #else
   #define MAX_MODELS           16
   #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
@@ -178,7 +178,7 @@
   #define NUM_TRAINER          8
   #define NUM_POTS             3
   #define NUM_XPOTS            0
-  #define TELEM_VALUES_MAX     0
+  #define MAX_SENSORS          0
 #endif
 
 #if defined(CPUARM)
@@ -592,7 +592,7 @@ enum ResetFunctionParam {
 #endif
 #if defined(CPUARM)
   FUNC_RESET_PARAM_FIRST_TELEM,
-  FUNC_RESET_PARAM_LAST_TELEM = FUNC_RESET_PARAM_FIRST_TELEM + TELEM_VALUES_MAX,
+  FUNC_RESET_PARAM_LAST_TELEM = FUNC_RESET_PARAM_FIRST_TELEM + MAX_SENSORS,
 #endif
   FUNC_RESET_PARAMS_COUNT,
   FUNC_RESET_PARAM_LAST = FUNC_RESET_PARAMS_COUNT-1,
@@ -1913,7 +1913,7 @@ enum MixSources {
 
   MIXSRC_FIRST_TELEM,
 #if defined(CPUARM)
-  MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*TELEM_VALUES_MAX-1
+  MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*MAX_SENSORS-1
 #else
   MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+NUM_TELEMETRY-1
 #endif
@@ -2129,7 +2129,7 @@ PACK(typedef struct {
 
   MODELDATA_EXTRA
 
-  ARM_FIELD(TelemetrySensor telemetrySensors[TELEM_VALUES_MAX])
+  ARM_FIELD(TelemetrySensor telemetrySensors[MAX_SENSORS])
   
   TARANIS_REV9E_FIELD(uint8_t topLcdTimer)
 }) ModelData;
