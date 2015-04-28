@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>276</width>
-    <height>138</height>
+    <height>106</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,252 +21,8 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QGridLayout" name="gridLayout_11" columnstretch="1,1,1,1" columnminimumwidth="0,0,0,0">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_918">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Unit</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_Max">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Max Value</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="alarm1Label">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Alarm 1    </string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QComboBox" name="alarm1LevelCB">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <item>
-        <property name="text">
-         <string>----</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Yellow</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Orange</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Red</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QComboBox" name="alarm1GreaterCB">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <item>
-        <property name="text">
-         <string>&lt;</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>&gt;</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="alarm2Label">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Alarm 2</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="alarm2LevelCB">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <item>
-        <property name="text">
-         <string>----</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Yellow</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Orange</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Red</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QComboBox" name="alarm2GreaterCB">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <item>
-        <property name="text">
-         <string>&lt;</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>&gt;</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QDoubleSpinBox" name="RatioSB">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>0</number>
-       </property>
-       <property name="maximum">
-        <double>255.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="3">
-      <widget class="QDoubleSpinBox" name="CalibSB">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>2</number>
-       </property>
-       <property name="minimum">
-        <double>-12.800000000000001</double>
-       </property>
-       <property name="maximum">
-        <double>12.699999999999999</double>
-       </property>
-       <property name="singleStep">
-        <double>0.100000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="3">
-      <widget class="QDoubleSpinBox" name="alarm1ValueSB">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>0</number>
-       </property>
-       <property name="maximum">
-        <double>255.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="3">
-      <widget class="QDoubleSpinBox" name="alarm2ValueSB">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>0</number>
-       </property>
-       <property name="maximum">
-        <double>255.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QLabel" name="CalibLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Offset</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1" colspan="3">
+    <layout class="QGridLayout" name="gridLayout_11" columnstretch="0,0,0,0,0">
+     <item row="0" column="1" colspan="4">
       <widget class="QComboBox" name="UnitCB">
        <property name="sizePolicy">
         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -321,6 +77,333 @@
        </item>
       </widget>
      </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="alarm2Label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Alarm 2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" colspan="4">
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,1">
+       <item>
+        <widget class="QComboBox" name="alarm1LevelCB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <item>
+          <property name="text">
+           <string>----</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Yellow</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Orange</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Red</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="alarm1GreaterCB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <item>
+          <property name="text">
+           <string>&lt;</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>&gt;</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="alarm1ValueSB">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>70</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="decimals">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <double>255.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_Max">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Max Value</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" colspan="4">
+      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,1">
+       <item>
+        <widget class="QComboBox" name="alarm2LevelCB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <item>
+          <property name="text">
+           <string>----</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Yellow</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Orange</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Red</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="alarm2GreaterCB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <item>
+          <property name="text">
+           <string>&lt;</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>&gt;</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="alarm2ValueSB">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>70</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="decimals">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <double>255.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="alarm1Label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Alarm 1    </string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_918">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Unit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QDoubleSpinBox" name="RatioSB">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>70</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="decimals">
+        <number>0</number>
+       </property>
+       <property name="maximum">
+        <double>255.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <widget class="QDoubleSpinBox" name="CalibSB">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>70</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="decimals">
+        <number>2</number>
+       </property>
+       <property name="minimum">
+        <double>-12.800000000000001</double>
+       </property>
+       <property name="maximum">
+        <double>12.699999999999999</double>
+       </property>
+       <property name="singleStep">
+        <double>0.100000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QLabel" name="CalibLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Offset</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
     </layout>
    </item>
   </layout>
@@ -329,12 +412,6 @@
   <tabstop>UnitCB</tabstop>
   <tabstop>RatioSB</tabstop>
   <tabstop>CalibSB</tabstop>
-  <tabstop>alarm1LevelCB</tabstop>
-  <tabstop>alarm1GreaterCB</tabstop>
-  <tabstop>alarm1ValueSB</tabstop>
-  <tabstop>alarm2LevelCB</tabstop>
-  <tabstop>alarm2GreaterCB</tabstop>
-  <tabstop>alarm2ValueSB</tabstop>
  </tabstops>
  <resources/>
  <connections/>
