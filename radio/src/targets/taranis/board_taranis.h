@@ -289,7 +289,7 @@ void usbStop(void);
 #endif
 
 // EEPROM driver
-void eepromInit();
+void eepromInit(void);
 void eepromReadBlock(uint8_t * buffer, uint16_t address, uint16_t size);
 void eepromWriteBlock(uint8_t * buffer, uint16_t address, uint16_t size);
 
