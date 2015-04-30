@@ -377,12 +377,14 @@ extern "C" void TIM1_CC_IRQHandler()
     TIM1->CCR3 = modulePulsesData[INTERNAL_MODULE].pxx.pulses[0];
     TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
+#if defined(TARANIS_INTERNAL_PPM)
   else if (s_current_protocol[INTERNAL_MODULE] == PROTO_PPM) {
     modulePulsesData[INTERNAL_MODULE].ppm.ptr = modulePulsesData[INTERNAL_MODULE].ppm.pulses;
     TIM1->DIER |= TIM_DIER_UDE ;
     TIM1->SR &= ~TIM_SR_UIF ;                                       // Clear this flag
     TIM1->DIER |= TIM_DIER_UIE ;                            // Enable this interrupt
   }
+#endif
   else {
     TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
