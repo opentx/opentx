@@ -516,18 +516,35 @@ QString MdiChild::strippedName(const QString &fullFileName)
 
 void MdiChild::writeEeprom()  // write to Tx
 {
-  bool backupEnable=g.enableBackup();
-  QString backupPath=g.backupDir();
-  if (!backupPath.isEmpty()) {
-    if (!QDir(backupPath).exists()) {
-      if (backupEnable) {
-        QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
+  QString backupPath;
+  bool backupEnable = g.profile[g.id()].penableBackup();
+  if (backupEnable) {
+    backupPath=g.profile[g.id()].pBackupDir();
+    if (!backupPath.isEmpty()) {
+      if (!QDir(backupPath).exists()) {
+        backupEnable = false;
       }
-      backupEnable=false;
+    }
+    else {
+      backupEnable = false;
     }
   }
-  else {
-    backupEnable=false;
+  if (!backupEnable) {
+    backupEnable=g.enableBackup();
+    backupPath = g.backupDir();
+    if (!backupPath.isEmpty()) {
+      if (!QDir(backupPath).exists()) {
+        backupEnable = false;
+      }
+    }
+    else {
+      backupEnable = false;
+    }
+  }
+  if ((g.enableBackup() || g.profile[g.id()].penableBackup()) && !(backupEnable)) {
+    if (!QDir(backupPath).exists()) {
+      QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
+    }      
   }
   QString stickCal=g.profile[g.id()].stickPotCalib();
   burnConfigDialog bcd;

@@ -18,6 +18,10 @@ AppPreferencesDialog::AppPreferencesDialog(QWidget *parent) :
   ui->setupUi(this);
   updateLock=false;
   setWindowIcon(CompanionIcon("apppreferences.png"));
+  ui->backupPathClear->setIcon(CompanionIcon("clear.png"));
+  ui->pBackupPathClear->setIcon(CompanionIcon("clear.png"));
+  ui->libraryPathClear->setIcon(CompanionIcon("clear.png"));
+  ui->sdPathClear->setIcon(CompanionIcon("clear.png"));
 
   initSettings();
   connect(ui->downloadVerCB, SIGNAL(currentIndexChanged(int)), this, SLOT(baseFirmwareChanged()));
@@ -66,6 +70,8 @@ void AppPreferencesDialog::writeValues()
   g.profile[g.id()].renameFwFiles(ui->renameFirmware->isChecked());
   g.profile[g.id()].burnFirmware(ui->burnFirmware->isChecked());
   g.profile[g.id()].sdPath(ui->sdPath->text());
+  g.profile[g.id()].pBackupDir(ui->profilebackupPath->text());
+  g.profile[g.id()].penableBackup(ui->pbackupEnable->isChecked());
   g.profile[g.id()].splashFile(ui->SplashFileName->text());
 
   // The profile name may NEVER be empty
@@ -164,6 +170,19 @@ void AppPreferencesDialog::initSettings()
   ui->stickmodeCB->setCurrentIndex(g.profile[g.id()].defaultMode());
   ui->renameFirmware->setChecked(g.profile[g.id()].renameFwFiles());
   ui->sdPath->setText(g.profile[g.id()].sdPath());
+  ui->profilebackupPath->setText(g.profile[g.id()].pBackupDir());
+  if (!g.profile[g.id()].pBackupDir().isEmpty()) {
+    if (QDir(g.profile[g.id()].pBackupDir()).exists()) {
+      ui->profilebackupPath->setText(g.backupDir());
+      ui->pbackupEnable->setEnabled(true);
+      ui->pbackupEnable->setChecked(g.profile[g.id()].penableBackup());
+    } else {
+      ui->pbackupEnable->setDisabled(true);
+    }
+  } else {
+      ui->pbackupEnable->setDisabled(true);
+  }
+
   ui->profileNameLE->setText(g.profile[g.id()].name());
   ui->SplashFileName->setText(g.profile[g.id()].splashFile());
 
@@ -224,8 +243,43 @@ void AppPreferencesDialog::on_backupPathButton_clicked()
   if (!fileName.isEmpty()) {
     g.backupDir(fileName);
     ui->backupPath->setText(fileName);
+    ui->backupEnable->setEnabled(true);
   }
-  ui->backupEnable->setEnabled(true);
+}
+
+void AppPreferencesDialog::on_ProfilebackupPathButton_clicked()
+{
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your Models and Settings backup folder"), g.backupDir());
+  if (!fileName.isEmpty()) {
+    ui->profilebackupPath->setText(fileName);
+    ui->pbackupEnable->setEnabled(true);
+  }
+}
+
+void AppPreferencesDialog::on_sdPathClear_clicked()
+{
+  g.profile[g.id()].sdPath("");
+  ui->sdPath->clear();
+}
+
+void AppPreferencesDialog::on_pBackupPathClear_clicked()
+{
+  g.profile[g.id()].pBackupDir("");  
+  ui->profilebackupPath->clear();
+  ui->pbackupEnable->setDisabled(true);
+}
+
+void AppPreferencesDialog::on_backupPathClear_clicked()
+{
+  g.backupDir("");
+  ui->backupPath->clear();
+  ui->backupEnable->setDisabled(true);
+}
+
+void AppPreferencesDialog::on_libraryPathClear_clicked()
+{
+  g.libDir("");
+  ui->libraryPath->clear();
 }
 
 void AppPreferencesDialog::on_ge_pathButton_clicked()

@@ -1153,20 +1153,36 @@ void MainWindow::writeBackup()
       if (!isValidEEPROM(fileName))
         ret = QMessageBox::question(this, "Companion", tr("The file %1\nhas not been recognized as a valid Models and Settings file\nWrite anyway ?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
       if (ret != QMessageBox::Yes) return;
-      bool backupEnable = g.enableBackup();
-      QString backupPath = g.backupDir();
-      if (!backupPath.isEmpty()) {
-        if (!QDir(backupPath).exists()) {
-          if (backupEnable) {
-            QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
+      QString backupPath;
+      bool backupEnable = g.profile[g.id()].penableBackup();
+      if (backupEnable) {
+        backupPath=g.profile[g.id()].pBackupDir();
+        if (!backupPath.isEmpty()) {
+          if (!QDir(backupPath).exists()) {
+            backupEnable = false;
           }
+        }
+        else {
+          backupEnable = false;
+        }        
+      }
+      if (!backupEnable) {
+        backupEnable=g.enableBackup();
+        backupPath = g.backupDir();
+        if (!backupPath.isEmpty()) {
+          if (!QDir(backupPath).exists()) {
+            backupEnable = false;
+          }
+        }
+        else {
           backupEnable = false;
         }
       }
-      else {
-        backupEnable = false;
+      if ((g.enableBackup() || g.profile[g.id()].penableBackup()) && !(backupEnable)) {
+        if (!QDir(backupPath).exists()) {
+          QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
+        }      
       }
-
       if (backup) {
         if (backupEnable) {
           QString backupFile = backupPath + "/backup-" + QDateTime().currentDateTime().toString("yyyy-MM-dd-HHmmss") + ".bin";
@@ -1336,16 +1352,36 @@ void MainWindow::writeFlash(QString fileToFlash)
     g.backupOnFlash(backup);
     if (backup) {
       QString backupFile = generateProcessUniqueTempFileName("backup.bin");
-      bool backupEnable=g.enableBackup();
-      QString backupPath=g.backupDir();
-      if (!backupPath.isEmpty() && !IS_TARANIS(GetEepromInterface()->getBoard())) {
-        if (!QDir(backupPath).exists()) {
-          if (backupEnable) {
-            QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
+      QString backupPath;
+      bool backupEnable = g.profile[g.id()].penableBackup();
+      if (backupEnable) {
+        backupPath=g.profile[g.id()].pBackupDir();
+        if (!backupPath.isEmpty()) {
+          if (!QDir(backupPath).exists()) {
+            backupEnable = false;
           }
-          backupEnable=false;
+        } 
+        else {
+          backupEnable = false;
+        }        
+      }
+      if (!backupEnable) {
+        backupEnable=g.enableBackup();
+        backupPath = g.backupDir();
+        if (!backupPath.isEmpty()) {
+          if (!QDir(backupPath).exists()) {
+            backupEnable = false;
+          }
+        }
+        else {
+          backupEnable = false;
         }
       }
+      if ((g.enableBackup() || g.profile[g.id()].penableBackup()) && !(backupEnable) && !IS_TARANIS(GetEepromInterface()->getBoard())) {
+        if (!QDir(backupPath).exists()) {
+          QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
+        }      
+      } 
       else {
         backupEnable=false;
       }
@@ -1379,13 +1415,35 @@ void MainWindow::writeFlash(QString fileToFlash)
       }
     }
     else {
-      bool backupEnable=g.enableBackup();
-      QString backupPath=g.backupDir();
-      if (!QDir(backupPath).exists()) {
-        if (backupEnable) {
-          QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
+      QString backupPath;
+      bool backupEnable = g.profile[g.id()].penableBackup();
+      if (backupEnable) {
+        backupPath=g.profile[g.id()].pBackupDir();
+        if (!backupPath.isEmpty()) {
+          if (!QDir(backupPath).exists()) {
+            backupEnable = false;
+          }
         }
-        backupEnable=false;
+        else {
+          backupEnable = false;
+        }
+      }
+      if (!backupEnable) {
+        backupEnable=g.enableBackup();
+        backupPath = g.backupDir();
+        if (!backupPath.isEmpty()) {
+          if (!QDir(backupPath).exists()) {
+            backupEnable = false;
+          }
+        }
+        else {
+          backupEnable = false;
+        }
+      }
+      if ((g.enableBackup() || g.profile[g.id()].penableBackup()) && !(backupEnable)) {
+        if (!QDir(backupPath).exists()) {
+          QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
+        }      
       }
       if (backupEnable && !IS_TARANIS(GetEepromInterface()->getBoard())) {
         QDateTime datetime;
