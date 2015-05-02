@@ -169,7 +169,7 @@ void AppPreferencesDialog::initSettings()
   ui->profilebackupPath->setText(g.profile[g.id()].pBackupDir());
   if (!g.profile[g.id()].pBackupDir().isEmpty()) {
     if (QDir(g.profile[g.id()].pBackupDir()).exists()) {
-      ui->profilebackupPath->setText(g.backupDir());
+      ui->profilebackupPath->setText(g.profile[g.id()].pBackupDir());
       ui->pbackupEnable->setEnabled(true);
       ui->pbackupEnable->setChecked(g.profile[g.id()].penableBackup());
     } else {
