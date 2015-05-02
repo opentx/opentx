@@ -692,8 +692,8 @@ AppData::AppData()
     settings.remove("compilation-server");
 
     // Load and store all variables. Use default values if setting values are missing
-    QString _tempString;                                         // Do not touch. Do not change the settings version before a new verson update!
-    getset( _tempString,      "settings_version"        ,"20" ); // This is a version marker. Will be used to upgrade the settings later on.
+    QString _tempString;                                          // Do not touch. Do not change the settings version before a new verson update!
+    getset( _tempString,      "settings_version"        ,"210" ); // This is a version marker. Will be used to upgrade the settings later on.
 
     getset( _recentFiles,     "recentFileList"          ,"" );
     getset( _mainWinGeo,      "mainWindowGeometry"      ,"" );
