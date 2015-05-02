@@ -455,7 +455,6 @@ bool logsDialog::cvsFileParse()
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) { //reading HEX TEXT file
     return false;
   } else {
-    ui->sessions_CB->clear();
     csvlog.clear();
     logFilename.clear();
     QTextStream inputStream(&file);
@@ -489,13 +488,16 @@ bool logsDialog::cvsFileParse()
   if (errors>1) {
     QMessageBox::warning(this, "Companion", tr("The selected logfile contains %1 invalid lines out of  %2 total lines").arg(errors).arg(lines));
   }
-  plotLock=true;
+
   int n=csvlog.count();
   if (n==1) {
     csvlog.clear();
     return false;
   }
 
+  plotLock = true;
+
+  ui->sessions_CB->clear();
   ui->sessions_CB->addItem("---");
 
   double lastvalue = 0;

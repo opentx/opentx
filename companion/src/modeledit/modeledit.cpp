@@ -92,6 +92,7 @@ void ModelEdit::addTab(ModelPanel *panel, QString text)
   panels << panel;
   QWidget * widget = new QWidget(ui->tabWidget);
   QVBoxLayout *baseLayout = new QVBoxLayout(widget);
+  panel->update();
   VerticalScrollArea * area = new VerticalScrollArea(widget, panel);
   baseLayout->addWidget(area);
   ui->tabWidget->addTab(widget, text);
