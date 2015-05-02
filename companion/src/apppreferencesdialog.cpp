@@ -166,7 +166,6 @@ void AppPreferencesDialog::initSettings()
   ui->stickmodeCB->setCurrentIndex(g.profile[g.id()].defaultMode());
   ui->renameFirmware->setChecked(g.profile[g.id()].renameFwFiles());
   ui->sdPath->setText(g.profile[g.id()].sdPath());
-  ui->profilebackupPath->setText(g.profile[g.id()].pBackupDir());
   if (!g.profile[g.id()].pBackupDir().isEmpty()) {
     if (QDir(g.profile[g.id()].pBackupDir()).exists()) {
       ui->profilebackupPath->setText(g.profile[g.id()].pBackupDir());
