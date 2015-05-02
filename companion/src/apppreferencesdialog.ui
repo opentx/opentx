@@ -291,37 +291,7 @@ May be different from firmware language</string>
           <bool>true</bool>
          </property>
          <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="2">
-        <widget class="QPushButton" name="sdPathClear">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16</width>
-           <height>16</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="companion.qrc">
-           <normaloff>:/themes/classic/16/clear.png</normaloff>:/themes/classic/16/clear.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="3">
-        <widget class="QPushButton" name="sdPathButton">
-         <property name="text">
-          <string>Open Folder</string>
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -341,40 +311,7 @@ May be different from firmware language</string>
           <string>If set it will override the application general setting</string>
          </property>
          <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="2">
-        <widget class="QPushButton" name="pBackupPathClear">
-         <property name="minimumSize">
-          <size>
-           <width>16</width>
-           <height>16</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16</width>
-           <height>16</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="companion.qrc">
-           <normaloff>:/themes/classic/16/clear.png</normaloff>:/themes/classic/16/clear.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="3">
-        <widget class="QPushButton" name="ProfilebackupPathButton">
-         <property name="toolTip">
-          <string>The profile specific folder,  if set, will override general Backup folder</string>
-         </property>
-         <property name="text">
-          <string>Open Folder</string>
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -684,6 +621,23 @@ Mode 4:
          </property>
         </widget>
        </item>
+       <item row="10" column="2" colspan="2">
+        <widget class="QPushButton" name="sdPathButton">
+         <property name="text">
+          <string>Open Folder</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="2" colspan="2">
+        <widget class="QPushButton" name="ProfilebackupPathButton">
+         <property name="toolTip">
+          <string>The profile specific folder,  if set, will override general Backup folder</string>
+         </property>
+         <property name="text">
+          <string>Open Folder</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="applicationTab">
@@ -742,16 +696,6 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="13" column="1">
-        <widget class="QLineEdit" name="libraryPath">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="15" column="1">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
@@ -764,13 +708,6 @@ Mode 4:
           </size>
          </property>
         </spacer>
-       </item>
-       <item row="9" column="3">
-        <widget class="QPushButton" name="backupPathButton">
-         <property name="text">
-          <string>Open Folder</string>
-         </property>
-        </widget>
        </item>
        <item row="12" column="0">
         <widget class="QLabel" name="label_10">
@@ -798,37 +735,10 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="0" column="3">
-        <widget class="QPushButton" name="ge_pathButton">
-         <property name="text">
-          <string>Find Executable</string>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="1" colspan="3">
         <widget class="Line" name="line_4">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="3">
-        <widget class="QPushButton" name="libraryPathButton">
-         <property name="text">
-          <string>Open Folder</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="1">
-        <widget class="QLineEdit" name="backupPath">
-         <property name="minimumSize">
-          <size>
-           <width>350</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -895,50 +805,13 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="9" column="2">
-        <widget class="QPushButton" name="backupPathClear">
-         <property name="maximumSize">
-          <size>
-           <width>16</width>
-           <height>16</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="companion.qrc">
-           <normaloff>:/themes/classic/16/clear.png</normaloff>:/themes/classic/16/clear.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="2">
-        <widget class="QPushButton" name="libraryPathClear">
-         <property name="maximumSize">
-          <size>
-           <width>16</width>
-           <height>16</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="companion.qrc">
-           <normaloff>:/themes/classic/16/clear.png</normaloff>:/themes/classic/16/clear.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1" colspan="2">
-        <widget class="QLineEdit" name="ge_lineedit">
-         <property name="minimumSize">
-          <size>
-           <width>350</width>
-           <height>0</height>
-          </size>
+       <item row="13" column="1">
+        <widget class="QLineEdit" name="libraryPath">
+         <property name="enabled">
+          <bool>true</bool>
          </property>
          <property name="readOnly">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -960,6 +833,53 @@ Mode 4:
            <string>Show user and companion splash images</string>
           </property>
          </item>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QLineEdit" name="backupPath">
+         <property name="minimumSize">
+          <size>
+           <width>350</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="2" colspan="2">
+        <widget class="QPushButton" name="backupPathButton">
+         <property name="text">
+          <string>Open Folder</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="ge_lineedit">
+         <property name="minimumSize">
+          <size>
+           <width>350</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2" colspan="2">
+        <widget class="QPushButton" name="ge_pathButton">
+         <property name="text">
+          <string>Find Executable</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="2" colspan="2">
+        <widget class="QPushButton" name="libraryPathButton">
+         <property name="text">
+          <string>Open Folder</string>
+         </property>
         </widget>
        </item>
       </layout>
