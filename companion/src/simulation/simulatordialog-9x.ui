@@ -974,8 +974,8 @@ QPushButton:checked {
        </layout>
       </item>
       <item row="0" column="1">
-       <layout class="QVBoxLayout" name="verticalLayout_9" stretch="0,1,0,0,1,0,0,1,0,0,1">
-        <item>
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="0" column="0">
          <widget class="QFrame" name="beep_frame">
           <property name="autoFillBackground">
            <bool>true</bool>
@@ -1006,7 +1006,7 @@ QPushButton:checked {
           </layout>
          </widget>
         </item>
-        <item>
+        <item row="1" column="0">
          <spacer name="verticalSpacer_4">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -1019,8 +1019,8 @@ QPushButton:checked {
           </property>
          </spacer>
         </item>
-        <item>
-         <widget class="QDial" name="dialP_1">
+        <item row="2" column="0">
+         <widget class="myQDial" name="dialP_1">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -1053,7 +1053,7 @@ QPushButton:checked {
           </property>
          </widget>
         </item>
-        <item>
+        <item row="3" column="0">
          <widget class="QLabel" name="dialP_1value">
           <property name="text">
            <string notr="true">0 %</string>
@@ -1063,7 +1063,7 @@ QPushButton:checked {
           </property>
          </widget>
         </item>
-        <item>
+        <item row="4" column="0">
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -1076,8 +1076,8 @@ QPushButton:checked {
           </property>
          </spacer>
         </item>
-        <item>
-         <widget class="QDial" name="dialP_2">
+        <item row="5" column="0">
+         <widget class="myQDial" name="dialP_2">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -1113,7 +1113,7 @@ QPushButton:checked {
           </property>
          </widget>
         </item>
-        <item>
+        <item row="6" column="0">
          <widget class="QLabel" name="dialP_2value">
           <property name="text">
            <string notr="true">0 %</string>
@@ -1123,7 +1123,7 @@ QPushButton:checked {
           </property>
          </widget>
         </item>
-        <item>
+        <item row="7" column="0">
          <spacer name="verticalSpacer_2">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -1136,8 +1136,8 @@ QPushButton:checked {
           </property>
          </spacer>
         </item>
-        <item>
-         <widget class="QDial" name="dialP_3">
+        <item row="8" column="0">
+         <widget class="myQDial" name="dialP_3">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -1170,7 +1170,7 @@ QPushButton:checked {
           </property>
          </widget>
         </item>
-        <item>
+        <item row="9" column="0">
          <widget class="QLabel" name="dialP_3value">
           <property name="text">
            <string notr="true">0 %</string>
@@ -1180,7 +1180,7 @@ QPushButton:checked {
           </property>
          </widget>
         </item>
-        <item>
+        <item row="10" column="0">
          <spacer name="verticalSpacer_3">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -1490,6 +1490,11 @@ QPushButton:checked {
    <extends>QWidget</extends>
    <header>menuwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>myQDial</class>
+   <extends>QDial</extends>
+   <header location="global">myqdial.h</header>
   </customwidget>
  </customwidgets>
  <resources>
