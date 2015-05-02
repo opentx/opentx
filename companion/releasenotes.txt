@@ -12,6 +12,7 @@
 <li>Log viewer improvements and massive speed increase (<a href=https://github.com/opentx/opentx/issues/1863>#1863</a>, <a href=https://github.com/opentx/opentx/issues/2163>#2163</a>)</li>
 <li>Added Battery meter range setting (<a href=https://github.com/opentx/opentx/issues/2195>#2195</a>)</li>
 <li>Improvements in Print and Compare dialogs (<a href=https://github.com/opentx/opentx/issues/2219>#2219</a>)</li>
+<li>Reset pots to the middle by right double clicking them in Simulator (<a href=https://github.com/opentx/opentx/issues/1939>#1939</a>)</li>
 <li>Minor fixes: <a href=https://github.com/opentx/opentx/issues/2153>#2153</a>, 
                  <a href=https://github.com/opentx/opentx/issues/2138>#2138</a>,
                  <a href=https://github.com/opentx/opentx/issues/2090>#2090</a>,
