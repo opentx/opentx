@@ -264,7 +264,9 @@ void CustomFunctionsPanel::playMusic()
       phononCurrent = -1;
     }
     else {
-      playBT[phononCurrent]->setIcon(CompanionIcon("play.png"));
+      if (phononCurrent >= 0) {
+        playBT[phononCurrent]->setIcon(CompanionIcon("play.png"));
+      }
       phononCurrent = index;
       clickObject->clear();
 #ifdef __APPLE__
