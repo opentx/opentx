@@ -570,7 +570,7 @@ QPushButton:checked {
          </spacer>
         </item>
         <item row="2" column="10">
-         <widget class="QDial" name="dialP_1">
+         <widget class="myQDial" name="dialP_1">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -826,7 +826,7 @@ QPushButton:checked {
          </widget>
         </item>
         <item row="2" column="3">
-         <widget class="QDial" name="dialP_3">
+         <widget class="myQDial" name="dialP_3">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -1065,7 +1065,7 @@ QPushButton:checked {
          </layout>
         </item>
         <item row="2" column="1">
-         <widget class="QDial" name="dialP_2">
+         <widget class="myQDial" name="dialP_2">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -1430,7 +1430,7 @@ QPushButton:checked {
          </widget>
         </item>
         <item row="2" column="8">
-         <widget class="QDial" name="dialP_4">
+         <widget class="myQDial" name="dialP_4">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -1686,6 +1686,11 @@ QPushButton:checked {
    <extends>QWidget</extends>
    <header>xmenuwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>myQDial</class>
+   <extends>QDial</extends>
+   <header location="global">myqdial.h</header>
   </customwidget>
  </customwidgets>
  <resources>
