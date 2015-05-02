@@ -364,15 +364,15 @@ bool writeEeprom(const QString &filename, ProgressWidget *progress)
 #if defined WIN32 || !defined __GNUC__
 bool isRemovableMedia( QString vol )
 {
-   char szDosDeviceName[MAX_PATH];
-   UINT DriveType = GetDriveType( vol.replace("/","\\").toLatin1() );
-   if ( DriveType != DRIVE_REMOVABLE )
-      return false;
-   QueryDosDevice( vol.replace("/","").toLatin1(), szDosDeviceName, MAX_PATH );
-   if ( strstr( szDosDeviceName,"\\Floppy") != NULL ) { // its a floppy
-      return false;
-   }
-   return true;
+  char szDosDeviceName[MAX_PATH];
+  UINT DriveType = GetDriveType( vol.replace("/","\\").toLatin1() );
+  if ( DriveType != DRIVE_REMOVABLE )
+    return false;
+  QueryDosDevice( vol.replace("/","").toLatin1(), szDosDeviceName, MAX_PATH );
+  if ( strstr( szDosDeviceName,"\\Floppy") != NULL ) { // its a floppy
+    return false;
+  }
+  return true;
 }
 #endif
 
@@ -398,15 +398,15 @@ QString findMassstoragePath(const QString &filename)
         bool ret = GetVolumeInformationW( (WCHAR *) drive.absolutePath().utf16(),szVolumeName,256,&dwSerialNumber,&dwMaxFileNameLength,&dwFileSystemFlags,szFileSystemName,256);
         if (ret) {
           QString vName = QString::fromUtf16 ( (const ushort *) szVolumeName) ;
-    	  temppath = drive.absolutePath();
+          temppath = drive.absolutePath();
           eepromfile = temppath;
           eepromfile.append("/" + filename);
           if (QFile::exists(eepromfile)) {
             return eepromfile;
           }
-		}
+        }
       }
-	}
+    }
   }
 #else
   struct mount_entry *entry;
