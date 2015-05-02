@@ -18,10 +18,6 @@ AppPreferencesDialog::AppPreferencesDialog(QWidget *parent) :
   ui->setupUi(this);
   updateLock=false;
   setWindowIcon(CompanionIcon("apppreferences.png"));
-  ui->backupPathClear->setIcon(CompanionIcon("clear.png"));
-  ui->pBackupPathClear->setIcon(CompanionIcon("clear.png"));
-  ui->libraryPathClear->setIcon(CompanionIcon("clear.png"));
-  ui->sdPathClear->setIcon(CompanionIcon("clear.png"));
 
   initSettings();
   connect(ui->downloadVerCB, SIGNAL(currentIndexChanged(int)), this, SLOT(baseFirmwareChanged()));
@@ -254,32 +250,6 @@ void AppPreferencesDialog::on_ProfilebackupPathButton_clicked()
     ui->profilebackupPath->setText(fileName);
     ui->pbackupEnable->setEnabled(true);
   }
-}
-
-void AppPreferencesDialog::on_sdPathClear_clicked()
-{
-  g.profile[g.id()].sdPath("");
-  ui->sdPath->clear();
-}
-
-void AppPreferencesDialog::on_pBackupPathClear_clicked()
-{
-  g.profile[g.id()].pBackupDir("");  
-  ui->profilebackupPath->clear();
-  ui->pbackupEnable->setDisabled(true);
-}
-
-void AppPreferencesDialog::on_backupPathClear_clicked()
-{
-  g.backupDir("");
-  ui->backupPath->clear();
-  ui->backupEnable->setDisabled(true);
-}
-
-void AppPreferencesDialog::on_libraryPathClear_clicked()
-{
-  g.libDir("");
-  ui->libraryPath->clear();
 }
 
 void AppPreferencesDialog::on_ge_pathButton_clicked()

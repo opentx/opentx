@@ -49,10 +49,6 @@ class AppPreferencesDialog : public QDialog
     void on_backupPathButton_clicked();
     void on_ProfilebackupPathButton_clicked();
     void on_ge_pathButton_clicked();
-    void on_sdPathClear_clicked();
-    void on_pBackupPathClear_clicked();
-    void on_backupPathClear_clicked();
-    void on_libraryPathClear_clicked();
     
     void on_sdPathButton_clicked();
     void on_removeProfileButton_clicked();
