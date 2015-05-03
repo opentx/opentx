@@ -362,13 +362,15 @@ bool writeEeprom(const QString &filename, ProgressWidget *progress)
 }
 
 #if defined WIN32 || !defined __GNUC__
-bool isRemovableMedia( QString vol )
+bool isRemovableMedia(const QString &vol )
 {
   char szDosDeviceName[MAX_PATH];
-  UINT DriveType = GetDriveType( vol.replace("/","\\").toLatin1() );
+  QString volume;
+  volume.append(vol);
+  UINT DriveType = GetDriveType( volume.replace("/","\\").toLatin1() );
   if ( DriveType != DRIVE_REMOVABLE )
     return false;
-  QueryDosDevice( vol.replace("/","").toLatin1(), szDosDeviceName, MAX_PATH );
+  QueryDosDevice( volume.replace("/","").toLatin1(), szDosDeviceName, MAX_PATH );
   if ( strstr( szDosDeviceName,"\\Floppy") != NULL ) { // its a floppy
     return false;
   }
