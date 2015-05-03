@@ -1,4 +1,4 @@
-<h2>Version 2.0.16 / 2015-04-27</h2>
+<h2>Version 2.0.16 / 2015-05-03</h2>
 <ul>
 <li><i>nooverridech</i> firmware option was not working</li>
 <li>Fixed setting Expo from gvars for 9XR-Pro (<a href=https://github.com/opentx/opentx/issues/2040>#2040</a>)</li>
