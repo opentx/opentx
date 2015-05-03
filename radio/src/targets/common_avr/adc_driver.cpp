@@ -49,11 +49,12 @@ void adcInit()
 
 void adcPrepareBandgap()
 {
-#if defined(CPUM2560) && !defined(PCBMEGA2560)  
-   ADCSRB &= ~(1<<MUX5); // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
-#endif
-#if defined(CPUM2560)
+  // #if structure identical to the one in getADC_bandgap()
+#if defined(PCBGRUVIN9X)
+  // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
+  ADCSRB &= ~(1<<MUX5);
   ADMUX = 0x03|ADC_VREF_TYPE; // Switch MUX to internal reference
+#elif defined(PCBMEGA2560)
 #else
   ADMUX = 0x1E|ADC_VREF_TYPE; // Switch MUX to internal reference
 #endif
