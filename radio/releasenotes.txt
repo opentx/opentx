@@ -1,4 +1,4 @@
-<h2>Version 2.0.16 / 2015-04-27</h2>
+<h2>Version 2.0.16 / 2015-05-03</h2>
 
 [Taranis]
 <ul>
@@ -19,7 +19,6 @@
 
 [Bootloader]
 <li>Fixed USB access problem with SD cards larger than 4GB (<a href=https://github.com/opentx/opentx/issues/2154>#2154</a>)</li> 
-
 
 <h2>Version 2.0.15 / 2015-01-13</h2>
 
