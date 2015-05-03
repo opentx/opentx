@@ -20,9 +20,11 @@
 [Bootloader]
 <li>Fixed USB access problem with SD cards larger than 4GB (<a href=https://github.com/opentx/opentx/issues/2154>#2154</a>)</li> 
 
+
 <h2>Version 2.0.15 / 2015-01-13</h2>
 
 Nothing new (only Companion fixes)
+
 
 <h2>Version 2.0.14 / 2015-01-12</h2>
 
