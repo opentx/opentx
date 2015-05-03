@@ -1192,7 +1192,7 @@ void MainWindow::writeBackup()
         ret = QMessageBox::question(this, "Companion", tr("The file %1\nhas not been recognized as a valid Models and Settings file\nWrite anyway ?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
       if (ret != QMessageBox::Yes) return;
       bool backupEnable=true;
-      QString backupPath=this->getBackupPath();
+      QString backupPath=getBackupPath();
       if (backupPath.isEmpty()) backupEnable=false;
       if (backup) {
         if (backupEnable) {
