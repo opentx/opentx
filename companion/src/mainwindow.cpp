@@ -887,7 +887,7 @@ void MainWindow::about()
     aboutStr.append("<br/><br/>");
     aboutStr.append(QString("Version %1, %2").arg(C9X_VERSION).arg(__DATE__));
     aboutStr.append("<br/><br/>");
-    aboutStr.append(tr("Copyright OpenTX Team") + "<br/>&copy; 2011-2014<br/>");
+    aboutStr.append(tr("Copyright OpenTX Team") + "<br/>&copy; 2011-2015<br/>");
     QMessageBox msgBox(this);
     msgBox.setWindowIcon(CompanionIcon("information.png"));
     msgBox.setWindowTitle(tr("About Companion"));
