@@ -516,17 +516,9 @@ QString MdiChild::strippedName(const QString &fullFileName)
 
 void MdiChild::writeEeprom()  // write to Tx
 {
-  bool backupEnable=g.enableBackup();
-  QString backupPath=g.backupDir();
-  if (!backupPath.isEmpty()) {
-    if (!QDir(backupPath).exists()) {
-      if (backupEnable) {
-        QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
-      }
-      backupEnable=false;
-    }
-  }
-  else {
+  bool backupEnable=true;
+  QString backupPath=((MainWindow *)this->parent())->getBackupPath();
+  if (backupPath.isEmpty()) {
     backupEnable=false;
   }
   QString stickCal=g.profile[g.id()].stickPotCalib();

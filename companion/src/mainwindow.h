@@ -82,6 +82,7 @@ class MainWindow : public QMainWindow
     void closeEvent(QCloseEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
+    QString getBackupPath();
 
   private slots:
     void openDocURL();

@@ -107,8 +107,10 @@ class Profile: protected CompStoreObj
     QString _fwType;
     QString _name;
     QString _sdPath;
+    QString _pBackupDir;
     QString _splashFile;
     bool    _burnFirmware;
+    bool    _penableBackup;
     bool    _renameFwFiles;
     int     _channelOrder;
     int     _defaultMode;
@@ -136,9 +138,11 @@ class Profile: protected CompStoreObj
     QString fwType() const;
     QString name() const;
     QString sdPath() const;
+    QString pBackupDir() const;
     QString splashFile() const;
     bool    burnFirmware() const;
     bool    renameFwFiles() const;
+    bool    penableBackup() const;
     int     channelOrder() const;
     int     defaultMode() const;
 
@@ -163,9 +167,11 @@ class Profile: protected CompStoreObj
     void fwName        (const QString);
     void fwType        (const QString);
     void sdPath        (const QString);
+    void pBackupDir    (const QString);
     void splashFile    (const QString);
     void burnFirmware  (const bool);
     void renameFwFiles (const bool);
+    void penableBackup (const bool);
     void channelOrder  (const int);
     void defaultMode   (const int);
 
