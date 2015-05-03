@@ -364,29 +364,29 @@ static void disable_pa10_ppm()
 #if !defined(SIMU)
 extern "C" void TIM1_CC_IRQHandler()
 {
-  TIM1->DIER &= ~TIM_DIER_CC2IE ;         // stop this interrupt
-  TIM1->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
+  TIM1->DIER &= ~TIM_DIER_CC2IE;       // stop this interrupt
+  TIM1->SR &= ~TIM_SR_CC2IF;           // clear flag
+  DMA2_Stream6->CR &= ~DMA_SxCR_EN;    // disable DMA, it will have the whole of the execution time of setupPulses() to actually stop
 
-  setupPulses(INTERNAL_MODULE) ;
+  setupPulses(INTERNAL_MODULE);
 
   if (s_current_protocol[INTERNAL_MODULE] == PROTO_PXX) {
-    DMA2_Stream6->CR &= ~DMA_SxCR_EN ;              // Disable DMA
-    DMA2->HIFCR = DMA_HIFCR_CTCIF6 | DMA_HIFCR_CHTIF6 | DMA_HIFCR_CTEIF6 | DMA_HIFCR_CDMEIF6 | DMA_HIFCR_CFEIF6 ; // Write ones to clear bits
+    DMA2->HIFCR = DMA_HIFCR_CTCIF6 | DMA_HIFCR_CHTIF6 | DMA_HIFCR_CTEIF6 | DMA_HIFCR_CDMEIF6 | DMA_HIFCR_CFEIF6;
     DMA2_Stream6->M0AR = CONVERT_PTR_UINT(&modulePulsesData[INTERNAL_MODULE].pxx.pulses[1]);
-    DMA2_Stream6->CR |= DMA_SxCR_EN ;               // Enable DMA
+    DMA2_Stream6->CR |= DMA_SxCR_EN;   // enable DMA
     TIM1->CCR3 = modulePulsesData[INTERNAL_MODULE].pxx.pulses[0];
-    TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
+    TIM1->DIER |= TIM_DIER_CC2IE;      // enable this interrupt
   }
 #if defined(TARANIS_INTERNAL_PPM)
   else if (s_current_protocol[INTERNAL_MODULE] == PROTO_PPM) {
     modulePulsesData[INTERNAL_MODULE].ppm.ptr = modulePulsesData[INTERNAL_MODULE].ppm.pulses;
-    TIM1->DIER |= TIM_DIER_UDE ;
-    TIM1->SR &= ~TIM_SR_UIF ;                                       // Clear this flag
-    TIM1->DIER |= TIM_DIER_UIE ;                            // Enable this interrupt
+    TIM1->DIER |= TIM_DIER_UDE;
+    TIM1->SR &= ~TIM_SR_UIF;
+    TIM1->DIER |= TIM_DIER_UIE;
   }
 #endif
   else {
-    TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
+    TIM1->DIER |= TIM_DIER_CC2IE;
   }
 }
 
