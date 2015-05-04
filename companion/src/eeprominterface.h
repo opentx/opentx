@@ -821,6 +821,7 @@ class ModuleData {
     int          failsafeChannels[C9X_NUM_CHNOUT];
     int          ppmDelay;
     bool         ppmPulsePol;           // false = positive
+    bool         ppmOutputType;         // false = open drain, true = push pull 
     int          ppmFrameLength;
     void clear() { memset(this, 0, sizeof(ModuleData)); }
     QString polarityToString() { return ppmPulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); }

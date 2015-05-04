@@ -414,7 +414,13 @@ PACK(typedef struct {
   int16_t failsafeChannels[NUM_CHNOUT];
   int8_t  ppmDelay;
   int8_t  ppmFrameLength;
-  uint8_t ppmPulsePol;
+  uint8_t ppmPulsePol:1;
+#if defined(PCBSKY9X) && defined(REVX)
+  uint8_t ppmOutputType:1;     // false = open drain, true = push pull 
+  uint8_t spare:6;
+#else
+  uint8_t spare:7;
+#endif
 }) ModuleData;
 
 #define SET_DEFAULT_PPM_FRAME_LENGTH(idx) g_model.moduleData[idx].ppmFrameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)

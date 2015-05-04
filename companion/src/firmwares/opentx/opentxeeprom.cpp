@@ -2983,7 +2983,16 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
         internalField.Append(new SignedField<16>(modelData.moduleData[module].failsafeChannels[i]));
       internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[module].ppmDelay, exportPpmDelay, importPpmDelay));
       internalField.Append(new SignedField<8>(modelData.moduleData[module].ppmFrameLength));
-      internalField.Append(new BoolField<8>(modelData.moduleData[module].ppmPulsePol));
+      if (IS_9XRPRO(board)) {
+        internalField.Append(new BoolField<1>(modelData.moduleData[module].ppmPulsePol));
+        internalField.Append(new BoolField<1>(modelData.moduleData[module].ppmOutputType));
+        internalField.Append(new SpareBitsField<6>());
+      }
+      else {
+        internalField.Append(new BoolField<1>(modelData.moduleData[module].ppmPulsePol));
+        internalField.Append(new SpareBitsField<7>());
+      }
+
     }
   }
 

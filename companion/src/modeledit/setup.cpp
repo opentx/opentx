@@ -204,6 +204,7 @@ ModulePanel::~ModulePanel()
 #define MASK_CHANNELS_RANGE 8
 #define MASK_PPM_FIELDS     16
 #define MASK_FAILSAFES      32
+#define MASK_OPEN_DRAIN     64
 
 void ModulePanel::update()
 {
@@ -230,6 +231,9 @@ void ModulePanel::update()
         break;
       case PPM:
         mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT;
+        if (IS_9XRPRO(firmware->getBoard())) {
+          mask |= MASK_OPEN_DRAIN;
+        }
         break;
       case OFF:
       default:
@@ -259,6 +263,9 @@ void ModulePanel::update()
   ui->label_ppmPolarity->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmPolarity->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmPolarity->setCurrentIndex(module.ppmPulsePol);
+  ui->label_ppmOutputType->setVisible(mask & MASK_OPEN_DRAIN);
+  ui->ppmOutputType->setVisible(mask & MASK_OPEN_DRAIN);
+  ui->ppmOutputType->setCurrentIndex(module.ppmOutputType);
   ui->label_ppmDelay->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmDelay->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmDelay->setValue(module.ppmDelay);
@@ -303,6 +310,12 @@ void ModulePanel::on_protocol_currentIndexChanged(int index)
 void ModulePanel::on_ppmPolarity_currentIndexChanged(int index)
 {
   module.ppmPulsePol = index;
+  emit modified();
+}
+
+void ModulePanel::on_ppmOutputType_currentIndexChanged(int index)
+{
+  module.ppmOutputType = index;
   emit modified();
 }
 

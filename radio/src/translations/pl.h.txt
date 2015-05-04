@@ -177,6 +177,11 @@
 #define LEN_POSNEG             "\003"
 #define TR_POSNEG              "POZ""NEG"
 
+#if defined(PCBSKY9X) && defined(REVX)
+  #define LEN_VOUTPUT_TYPE     "\011"
+  #define TR_VOUTPUT_TYPE      "OpenDrain""PushPull\0"
+#endif
+
 #define LEN_VCURVEFUNC         "\003"
 #define TR_VCURVEFUNC          "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
@@ -600,6 +605,9 @@
 #define TR_TTRIM               TR("TryGaz", INDENT "TrymWolnObrotó")
 #define TR_BEEPCTR             TR("ŚrodBeep", "Pikn.Środka")
 #define TR_USE_GLOBAL_FUNCS    TR("Funk.Glb.","Użyj Funkcji Glb")
+#if defined(PCBSKY9X) && defined(REVX)
+  #define TR_OUTPUT_TYPE       INDENT "Output"
+#endif
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protokół")
 #if defined(CPUARM)
   #define TR_PPMFRAME          INDENT "Ramka PPM"
