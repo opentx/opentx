@@ -55,6 +55,7 @@ class ModulePanel : public ModelPanel
     void on_channelsCount_editingFinished();
     void on_channelsStart_editingFinished();
     void on_ppmPolarity_currentIndexChanged(int index);
+    void on_ppmOutputType_currentIndexChanged(int index);
     void on_ppmFrameLength_editingFinished();
     void on_rxNumber_editingFinished();
     void on_failsafeMode_currentIndexChanged(int value);

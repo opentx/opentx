@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>692</width>
+    <width>737</width>
     <height>300</height>
    </rect>
   </property>
@@ -545,6 +545,27 @@
         </property>
        </widget>
       </item>
+      <item row="5" column="2">
+       <widget class="QLabel" name="label_ppmOutputType">
+        <property name="text">
+         <string>Output type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="3">
+       <widget class="QComboBox" name="ppmOutputType">
+        <item>
+         <property name="text">
+          <string>Open Drain</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Push Pull</string>
+         </property>
+        </item>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -559,6 +580,7 @@
   <tabstop>ppmPolarity</tabstop>
   <tabstop>ppmDelay</tabstop>
   <tabstop>failsafeMode</tabstop>
+  <tabstop>ppmOutputType</tabstop>
   <tabstop>rxNumber</tabstop>
  </tabstops>
  <resources/>
