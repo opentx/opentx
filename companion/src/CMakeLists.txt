@@ -274,11 +274,7 @@ ELSE( )
     ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${companion_SRCS} ${companion_QM} )
 ENDIF( )
 
-if(SDL_FOUND)
-	TARGET_LINK_LIBRARIES( ${PROJECT_NAME} generaledit modeledit simulation common qcustomplot shared ${QT_LIBRARIES} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
-else()
-	TARGET_LINK_LIBRARIES( ${PROJECT_NAME} generaledit modeledit simulation common qcustomplot shared ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
-endif()
+target_link_libraries(companion generaledit modeledit simulation common qcustomplot shared ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
 
 ############# Standalone simu ###############
 
@@ -306,11 +302,7 @@ else()
   add_executable(simulator WIN32 ${simu_SRCS})
 endif()
 
-target_link_libraries(simulator simulation common ${QT_LIBRARIES} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} ${OPENTX_SIMULATOR_LIBS})
-
-if(NOT SDL_FOUND)
-  target_link_libraries(simulator ${QT_QTMAIN_LIBRARY})
-endif()
+target_link_libraries(simulator simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} ${OPENTX_SIMULATOR_LIBS})
 
 ############# Packaging ####################
 

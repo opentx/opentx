@@ -50,6 +50,7 @@
 #include <iostream>
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   #include <SDL.h>
+  #undef main
 #endif
 #include "mainwindow.h"
 #include "eeprominterface.h"
