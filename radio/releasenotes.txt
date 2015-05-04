@@ -1,3 +1,8 @@
+<h2>Version 2.0.17 / 2015-05-04</h2>
+
+Nothing new (only Companion fixes)
+
+
 <h2>Version 2.0.16 / 2015-05-03</h2>
 
 [Taranis]
