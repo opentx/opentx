@@ -22,7 +22,11 @@ radioData(new RadioData())
     ui->eepromFilename->hide();
     ui->eepromLoad->hide();
   }
-  QString backupPath = g.backupDir();
+  QString backupPath = g.profile[g.id()].pBackupDir();
+  if (backupPath.isEmpty()) {
+    backupPath=g.backupDir();
+    ui->backupBeforeWrite->setChecked(g.enableBackup() || g.profile[g.id()].penableBackup());
+  }
   if (backupPath.isEmpty() || !QDir(backupPath).exists()) {
     ui->backupBeforeWrite->setEnabled(false);
   }
@@ -292,8 +296,13 @@ void FlashEEpromDialog::on_burnButton_clicked()
 
   // backup previous EEPROM if requested
   QString backupFilename;
+  QString backupPath;
   if (ui->backupBeforeWrite->isChecked()) {
-    backupFilename = g.backupDir() + "/backup-" + QDateTime().currentDateTime().toString("yyyy-MM-dd-HHmmss") + ".bin";
+    backupPath = g.profile[g.id()].pBackupDir();
+    if (backupPath.isEmpty()) {
+      backupPath=g.backupDir();
+    }    
+    backupFilename = backupPath + "/backup-" + QDateTime().currentDateTime().toString("yyyy-MM-dd-HHmmss") + ".bin";
   }
   else if (ui->checkFirmwareCompatibility->isChecked()) {
     backupFilename = generateProcessUniqueTempFileName("eeprom.bin");

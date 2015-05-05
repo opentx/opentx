@@ -47,8 +47,9 @@ class AppPreferencesDialog : public QDialog
     void on_snapshotPathButton_clicked();
     void on_snapshotClipboardCKB_clicked();
     void on_backupPathButton_clicked();
+    void on_ProfilebackupPathButton_clicked();
     void on_ge_pathButton_clicked();
-
+    
     void on_sdPathButton_clicked();
     void on_removeProfileButton_clicked();
     void on_SplashSelect_clicked();

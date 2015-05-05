@@ -66,6 +66,8 @@ void AppPreferencesDialog::writeValues()
   g.profile[g.id()].renameFwFiles(ui->renameFirmware->isChecked());
   g.profile[g.id()].burnFirmware(ui->burnFirmware->isChecked());
   g.profile[g.id()].sdPath(ui->sdPath->text());
+  g.profile[g.id()].pBackupDir(ui->profilebackupPath->text());
+  g.profile[g.id()].penableBackup(ui->pbackupEnable->isChecked());
   g.profile[g.id()].splashFile(ui->SplashFileName->text());
 
   // The profile name may NEVER be empty
@@ -164,6 +166,18 @@ void AppPreferencesDialog::initSettings()
   ui->stickmodeCB->setCurrentIndex(g.profile[g.id()].defaultMode());
   ui->renameFirmware->setChecked(g.profile[g.id()].renameFwFiles());
   ui->sdPath->setText(g.profile[g.id()].sdPath());
+  if (!g.profile[g.id()].pBackupDir().isEmpty()) {
+    if (QDir(g.profile[g.id()].pBackupDir()).exists()) {
+      ui->profilebackupPath->setText(g.profile[g.id()].pBackupDir());
+      ui->pbackupEnable->setEnabled(true);
+      ui->pbackupEnable->setChecked(g.profile[g.id()].penableBackup());
+    } else {
+      ui->pbackupEnable->setDisabled(true);
+    }
+  } else {
+      ui->pbackupEnable->setDisabled(true);
+  }
+
   ui->profileNameLE->setText(g.profile[g.id()].name());
   ui->SplashFileName->setText(g.profile[g.id()].splashFile());
 
@@ -224,8 +238,17 @@ void AppPreferencesDialog::on_backupPathButton_clicked()
   if (!fileName.isEmpty()) {
     g.backupDir(fileName);
     ui->backupPath->setText(fileName);
+    ui->backupEnable->setEnabled(true);
   }
-  ui->backupEnable->setEnabled(true);
+}
+
+void AppPreferencesDialog::on_ProfilebackupPathButton_clicked()
+{
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your Models and Settings backup folder"), g.backupDir());
+  if (!fileName.isEmpty()) {
+    ui->profilebackupPath->setText(fileName);
+    ui->pbackupEnable->setEnabled(true);
+  }
 }
 
 void AppPreferencesDialog::on_ge_pathButton_clicked()

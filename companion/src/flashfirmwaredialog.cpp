@@ -46,7 +46,10 @@ fwName(g.profile[g.id()].fwName())
     ui->backupEEprom->setCheckState(g.backupOnFlash() ? Qt::Checked : Qt::Unchecked);
   }
 
-  QString backupPath = g.backupDir();
+  QString backupPath = g.profile[g.id()].pBackupDir();
+  if (backupPath.isEmpty()) {
+    backupPath=g.backupDir();
+  }
   if (backupPath.isEmpty() || !QDir(backupPath).exists()) {
     ui->backupEEprom->setEnabled(false);
   }
@@ -278,8 +281,13 @@ void FlashFirmwareDialog::startFlash(const QString &filename)
   // backup if requested
   bool result = true;
   QString backupFilename;
+  QString backupPath;
   if (backup) {
-    backupFilename = g.backupDir() + "/backup-" + QDateTime().currentDateTime().toString("yyyy-MM-dd-HHmmss") + ".bin";
+    backupPath = g.profile[g.id()].pBackupDir();
+    if (backupPath.isEmpty()) {
+      backupPath=g.backupDir();
+    }     
+    backupFilename = backupPath + "/backup-" + QDateTime().currentDateTime().toString("yyyy-MM-dd-HHmmss") + ".bin";
     result = readEeprom(backupFilename, progressDialog.progress());
     sleep(2);
   }

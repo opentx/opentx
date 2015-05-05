@@ -361,12 +361,31 @@ bool writeEeprom(const QString &filename, ProgressWidget *progress)
   return false;
 }
 
+#if defined WIN32 || !defined __GNUC__
+bool isRemovableMedia(const QString &vol )
+{
+  char szDosDeviceName[MAX_PATH];
+  QString volume;
+  volume.append(vol);
+  UINT DriveType = GetDriveType( volume.replace("/","\\").toLatin1() );
+  if ( DriveType != DRIVE_REMOVABLE )
+    return false;
+  QueryDosDevice( volume.replace("/","").toLatin1(), szDosDeviceName, MAX_PATH );
+  if ( strstr( szDosDeviceName,"\\Floppy") != NULL ) { // its a floppy
+    return false;
+  }
+  return true;
+}
+#endif
+
 QString findMassstoragePath(const QString &filename)
 {
   QString temppath;
   QStringList drives;
   QString eepromfile;
   QString fsname;
+  static QStringList blacklist;
+
 #if defined WIN32 || !defined __GNUC__
   foreach(QFileInfo drive, QDir::drives()) {
     WCHAR szVolumeName[256] ;
@@ -374,14 +393,20 @@ QString findMassstoragePath(const QString &filename)
     DWORD dwSerialNumber = 0;
     DWORD dwMaxFileNameLength=256;
     DWORD dwFileSystemFlags=0;
-    bool ret = GetVolumeInformationW( (WCHAR *) drive.absolutePath().utf16(),szVolumeName,256,&dwSerialNumber,&dwMaxFileNameLength,&dwFileSystemFlags,szFileSystemName,256);
-    if (ret) {
-      QString vName = QString::fromUtf16 ( (const ushort *) szVolumeName) ;
-      temppath = drive.absolutePath();
-      eepromfile = temppath;
-      eepromfile.append("/" + filename);
-      if (QFile::exists(eepromfile)) {
-        return eepromfile;
+    if (!blacklist.contains(drive.absolutePath())) {
+      if (!isRemovableMedia( drive.absolutePath() )) {
+        blacklist.append(drive.absolutePath());
+      } else {
+        bool ret = GetVolumeInformationW( (WCHAR *) drive.absolutePath().utf16(),szVolumeName,256,&dwSerialNumber,&dwMaxFileNameLength,&dwFileSystemFlags,szFileSystemName,256);
+        if (ret) {
+          QString vName = QString::fromUtf16 ( (const ushort *) szVolumeName) ;
+          temppath = drive.absolutePath();
+          eepromfile = temppath;
+          eepromfile.append("/" + filename);
+          if (QFile::exists(eepromfile)) {
+            return eepromfile;
+          }
+        }
       }
     }
   }

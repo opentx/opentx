@@ -295,8 +295,10 @@ QString Profile::fwName()        const { return _fwName;        }
 QString Profile::fwType()        const { return _fwType;        }
 QString Profile::name()          const { return _name;          }
 QString Profile::sdPath()        const { return _sdPath;        }
+QString Profile::pBackupDir()    const { return _pBackupDir;    }
 QString Profile::splashFile()    const { return _splashFile;    }
 bool    Profile::burnFirmware()  const { return _burnFirmware;  }
+bool    Profile::penableBackup() const { return _penableBackup; }
 bool    Profile::renameFwFiles() const { return _renameFwFiles; }
 int     Profile::channelOrder()  const { return _channelOrder;  }
 int     Profile::defaultMode()   const { return _defaultMode;   }
@@ -322,9 +324,11 @@ void Profile::name          (const QString x) { store(x, _name,          "Name" 
 void Profile::fwName        (const QString x) { store(x, _fwName,        "fwName"                ,"Profiles", QString("profile%1").arg(index));}
 void Profile::fwType        (const QString x) { store(x, _fwType,        "fwType"                ,"Profiles", QString("profile%1").arg(index));}
 void Profile::sdPath        (const QString x) { store(x, _sdPath,        "sdPath"                ,"Profiles", QString("profile%1").arg(index));}
+void Profile::pBackupDir    (const QString x) { store(x, _pBackupDir,    "pBackupDir"            ,"Profiles", QString("profile%1").arg(index));}
 void Profile::splashFile    (const QString x) { store(x, _splashFile,    "SplashFileName"        ,"Profiles", QString("profile%1").arg(index));}
 void Profile::burnFirmware  (const bool    x) { store(x, _burnFirmware,  "burnFirmware"          ,"Profiles", QString("profile%1").arg(index));}
 void Profile::renameFwFiles (const bool    x) { store(x, _renameFwFiles, "rename_firmware_files" ,"Profiles", QString("profile%1").arg(index));}
+void Profile::penableBackup (const bool    x) { store(x, _penableBackup, "penableBackup"         ,"Profiles", QString("profile%1").arg(index));}
 void Profile::channelOrder  (const int     x) { store(x, _channelOrder,  "default_channel_order" ,"Profiles", QString("profile%1").arg(index));}
 void Profile::defaultMode   (const int     x) { store(x, _defaultMode,   "default_mode"          ,"Profiles", QString("profile%1").arg(index));}
 
@@ -357,9 +361,11 @@ Profile& Profile::operator=(const Profile& rhs)
     fwName       ( rhs.fwName()        );
     fwType       ( rhs.fwType()        );
     sdPath       ( rhs.sdPath()        );
+    pBackupDir   ( rhs.pBackupDir()    );
     splashFile   ( rhs.splashFile()    );
     burnFirmware ( rhs.burnFirmware()  );
     renameFwFiles( rhs.renameFwFiles() );
+    penableBackup( rhs.penableBackup() );
     channelOrder ( rhs.channelOrder()  );
     defaultMode  ( rhs.defaultMode()   );
     beeper       ( rhs.beeper()        );
@@ -432,9 +438,11 @@ void Profile::init(int newIndex)
     _fwType =        "";
     _name =          "";
     _sdPath =        "";
+    _pBackupDir =    "";
     _splashFile =    "";
     _burnFirmware =  false;
     _renameFwFiles = false;
+    _penableBackup = false;
     _channelOrder =  0;
     _defaultMode =   1;
 
@@ -454,8 +462,10 @@ void Profile::flush()
     getset( _fwType,        "fwType"                ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _name,          "Name"                  ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _sdPath,        "sdPath"                ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _pBackupDir,    "pBackupDir"            ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _splashFile,    "SplashFileName"        ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _burnFirmware,  "burnFirmware"          ,false  ,"Profiles", QString("profile%1").arg(index));
+    getset( _penableBackup, "penableBackup"         ,false  ,"Profiles", QString("profile%1").arg(index));
     getset( _renameFwFiles, "rename_firmware_files" ,false  ,"Profiles", QString("profile%1").arg(index));
     getset( _channelOrder,  "default_channel_order" ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _defaultMode,   "default_mode"          ,1      ,"Profiles", QString("profile%1").arg(index));
@@ -682,8 +692,8 @@ AppData::AppData()
     settings.remove("compilation-server");
 
     // Load and store all variables. Use default values if setting values are missing
-    QString _tempString;                                         // Do not touch. Do not change the settings version before a new verson update!
-    getset( _tempString,      "settings_version"        ,"20" ); // This is a version marker. Will be used to upgrade the settings later on.
+    QString _tempString;                                          // Do not touch. Do not change the settings version before a new verson update!
+    getset( _tempString,      "settings_version"        ,"210" ); // This is a version marker. Will be used to upgrade the settings later on.
 
     getset( _recentFiles,     "recentFileList"          ,"" );
     getset( _mainWinGeo,      "mainWindowGeometry"      ,"" );
