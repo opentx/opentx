@@ -601,16 +601,16 @@ void menuModelSetup(uint8_t event)
             lcd_putsLeft(y, STR_RXNUM);
           }
           if (IS_MODULE_XJT(moduleIdx) || IS_MODULE_DSM2(moduleIdx)) {
-            if (xOffsetBind) lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId, (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
+            if (xOffsetBind) lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
             if (attr && l_posHorz==0) {
               if (editMode>0 || p1valdiff) {
-                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId, IS_MODULE_DSM2(moduleIdx) ? 20 : 63);
+                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], IS_MODULE_DSM2(moduleIdx) ? 20 : 63);
                 if (checkIncDec_Ret) {
-                  modelHeaders[g_eeGeneral.currModel].modelId = g_model.header.modelId;
+                  modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx];
                 }
               }
               if (editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
-                checkModelIdUnique(g_eeGeneral.currModel);
+                checkModelIdUnique(g_eeGeneral.currModel, moduleIdx);
               }
             }
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
@@ -771,11 +771,10 @@ void menuModelSetup(uint8_t event)
           if (attr && m_posHorz > 1) {
             REPEAT_LAST_CURSOR_MOVE(); // limit 3 column row to 2 colums (Rx_Num and RANGE fields)
           }
-
           lcd_putsLeft(y, STR_RXNUM);
-          lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId, (m_posHorz<=0 ? attr : 0) | LEADING0|LEFT, 2);
+          lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[0], (m_posHorz<=0 ? attr : 0) | LEADING0|LEFT, 2);
           if (attr && (m_posHorz==0 && (editMode>0 || p1valdiff))) {
-            CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId, 99);
+            CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[0], 99);
           }
 #if defined(PXX)
           if (protocol == PROTO_PXX) {

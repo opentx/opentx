@@ -501,7 +501,7 @@ t_Open9xGruvin9xModelData_v207::operator ModelData ()
   c9x.frsky = frsky;
   c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
-  c9x.modelId = modelId;
+  c9x.moduleData[0].modelId = modelId;
   for (int line=0; line<4; line++) {
     for (int col=0; col<2; col++) {
       c9x.frsky.screens[1].body.lines[line].source[col] = (col==0 ? (frskyLines[line] & 0x0f) : ((frskyLines[line] & 0xf0) / 16));
@@ -587,7 +587,7 @@ t_Open9xGruvin9xModelData_v208::operator ModelData ()
   c9x.frsky.varioCenterMin = varioSpeedDownMin;
   c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
-  c9x.modelId = modelId;
+  c9x.moduleData[0].modelId = modelId;
   for (int line=0; line<4; line++) {
     for (int col=0; col<2; col++) {
       c9x.frsky.screens[1].body.lines[line].source[col] = (col==0 ? (frskyLines[line] & 0x0f) : ((frskyLines[line] & 0xf0) / 16));
@@ -677,7 +677,7 @@ t_Open9xGruvin9xModelData_v209::operator ModelData ()
   c9x.switchWarningStates = switchWarningStates;
   c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
-  c9x.modelId = modelId;
+  c9x.moduleData[0].modelId = modelId;
   for (int line=0; line<4; line++) {
     for (int col=0; col<2; col++) {
       c9x.frsky.screens[1].body.lines[line].source[col] = (col==0 ? (frskyLines[line] & 0x0f) : ((frskyLines[line] & 0xf0) / 16));
@@ -767,7 +767,7 @@ t_Open9xGruvin9xModelData_v210::operator ModelData ()
   c9x.switchWarningStates = switchWarningStates;
   c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
-  c9x.modelId = modelId;
+  c9x.moduleData[0].modelId = modelId;
   for (int i=0; i<16; i++) {
     c9x.limitData[i].ppmCenter = servoCenter[i];
   }
@@ -854,6 +854,6 @@ t_Open9xGruvin9xModelData_v211::operator ModelData ()
   c9x.switchWarningStates = switchWarningStates;
   c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
-  c9x.modelId = modelId;
+  c9x.moduleData[0].modelId = modelId;
   return c9x;
 }

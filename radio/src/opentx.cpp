@@ -374,12 +374,20 @@ void applyDefaultTemplate()
 #endif
 
 #if defined(CPUARM)
-void checkModelIdUnique(uint8_t id)
+void checkModelIdUnique(uint8_t index, uint8_t module)
 {
-  for (uint8_t i=0; i<MAX_MODELS; i++) {
-    if (i!=id && g_model.header.modelId!=0 && g_model.header.modelId==modelHeaders[i].modelId) {
-      POPUP_WARNING(STR_MODELIDUSED);
-      break;
+  uint8_t modelId = g_model.header.modelId[module];
+  if (modelId != 0) {
+    for (uint8_t i=0; i<MAX_MODELS; i++) {
+      for (uint8_t j=0; j<NUM_MODULES; j++) {
+        if (i == index && module == j) {
+          continue;
+        }
+        else if (modelId == modelHeaders[i].modelId[j]) {
+          POPUP_WARNING(STR_MODELIDUSED);
+          return;
+        }
+      }
     }
   }
 }
@@ -414,8 +422,9 @@ void modelDefault(uint8_t id)
 #endif
 
 #if defined(PXX) && defined(CPUARM)
-  modelHeaders[id].modelId = g_model.header.modelId = id+1;
-  checkModelIdUnique(id);
+  modelHeaders[id].modelId[1] = g_model.header.modelId[1] = 0;
+  modelHeaders[id].modelId[0] = g_model.header.modelId[0] = id+1;
+  checkModelIdUnique(id, 0);
 #endif
 
 #if defined(CPUARM) && defined(FLIGHT_MODES) && defined(GVARS)

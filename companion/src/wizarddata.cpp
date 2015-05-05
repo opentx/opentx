@@ -86,7 +86,7 @@ WizMix::operator ModelData()
 
   ModelData model;
   model.used = true;
-  model.modelId = modelId;
+  model.moduleData[0].modelId = modelId;
   model.setDefaultInputs(settings);
 
   int mixIndex = 0;

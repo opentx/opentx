@@ -1366,7 +1366,7 @@ void ModelData::setDefaultValues(unsigned int id, const GeneralSettings & settin
   clear();
   used = true;
   sprintf(name, "MODEL%02d", id+1);
-  modelId = id+1;
+  moduleData[0].modelId = id+1;
   setDefaultMixes(settings);
 }
 
