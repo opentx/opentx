@@ -57,6 +57,7 @@
 #define OVERRIDE_CHANNEL_FUNCTION
 #define NUM_POTS  5
 #define FLAVOUR "taranis-plus"
+#define MIXERS_MONITOR
 
 #undef min
 #undef max
