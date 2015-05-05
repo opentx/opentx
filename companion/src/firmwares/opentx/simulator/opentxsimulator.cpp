@@ -69,6 +69,10 @@
 #define FRSKY_SPORT
 #endif
 
+#if defined (PCBTARANIS)
+#define MIXERS_MONITOR
+#endif
+
 #undef min
 #undef max
 
