@@ -638,7 +638,7 @@ static int luaModelSetModule(lua_State *L)
         module.rfProtocol = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "modelId")) {
-        g_model.header.modelId[idx] = luaL_checkinteger(L, -1);
+        g_model.header.modelId[idx] = modelHeaders[g_eeGeneral.currModel].modelId[idx] = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "firstChannel")) {
         module.channelsStart = luaL_checkinteger(L, -1);
