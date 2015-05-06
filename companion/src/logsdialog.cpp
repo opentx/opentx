@@ -612,11 +612,8 @@ void logsDialog::plotLogs()
       y = logValue->text().toDouble();
       plotCoords.y.push_back(y);
 
-      if (plotCoords.min_y > y) {
-        plotCoords.min_y = y;
-      } else if (plotCoords.max_y < y) {
-        plotCoords.max_y = y;
-      }
+      if (plotCoords.min_y > y) plotCoords.min_y = y;
+      if (plotCoords.max_y < y) plotCoords.max_y = y;
 
       if (time_str.contains('.')) {
         time = QDateTime::fromString(time_str, "yyyy-MM-dd HH:mm:ss.zzz")
@@ -628,12 +625,15 @@ void logsDialog::plotLogs()
       }
       plotCoords.x.push_back(time);
 
-      if (plots.min_x > time) {
-        plots.min_x = time;
-      } else if (plots.max_x < time) {
-        plots.max_x = time;
-      }
+      if (plots.min_x > time) plots.min_x = time;
+      if (plots.max_x < time) plots.max_x = time;
     }
+
+    double range_inc = (plotCoords.max_y - plotCoords.min_y) / 100;
+    if (range_inc == 0) range_inc = 1;
+    plotCoords.max_y += range_inc;
+    plotCoords.min_y -= range_inc;
+
     plots.coords.append(plotCoords);
   }
 
