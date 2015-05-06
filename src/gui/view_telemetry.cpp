@@ -51,12 +51,23 @@ enum FrskyViews {
   e_frsky_custom_screen_1,
   e_frsky_custom_screen_2,
   IF_CPUARM(e_frsky_custom_screen_3)
-  e_frsky_voltages,
+  //e_frsky_voltages,
   e_frsky_after_flight,
   FRSKY_VIEW_MAX = e_frsky_after_flight
 };
 
 static uint8_t s_frsky_view = e_frsky_custom_screen_1;
+
+
+void timerReset(uint8_t idx)
+{
+  TimerState & timerState = timersStates[idx];
+  timerState.state = TMR_OFF; // is changed to RUNNING dep from mode
+  timerState.val = g_model.timers[idx].start;
+  timerState.val_10ms = 0 ;
+}
+
+
 
 #if defined(PCBTARANIS)
 void displayRssiLine()
@@ -77,20 +88,26 @@ void displayRssiLine()
 void displayRssiLine()
 {
   if (TELEMETRY_STREAMING()) {
-    lcd_hline(0, 55, 128, 0); // separator
-    uint8_t rssi = min((uint8_t)99, frskyData.rssi[1].value);
-    lcd_putsLeft(STATUS_BAR_Y, STR_TX); lcd_outdezNAtt(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
-    lcd_rect(25, 57, 38, 7);
-    lcd_filled_rect(26, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
-    rssi = min((uint8_t)99, frskyData.rssi[0].value);
-    lcd_puts(105, STATUS_BAR_Y, STR_RX); lcd_outdezNAtt(105+4*FW-1, STATUS_BAR_Y, rssi, LEADING0, 2);
-    lcd_rect(65, 57, 38, 7);
-    uint8_t v = 4*rssi/11;
-    lcd_filled_rect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+    //lcd_hline(0, 55, 128, 0); // separator
+    //uint8_t rssi = min((uint8_t)99, frskyData.rssi[1].value);
+    //lcd_putsLeft(STATUS_BAR_Y, STR_TX); lcd_outdezNAtt(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
+    //lcd_rect(25, 57, 38, 7);
+    //lcd_filled_rect(26, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+	//	uint8_t rssi = min((uint8_t)99, frskyData.rssi[0].value);
+	//    lcd_putsAtt(0,STATUS_BAR_Y, PSTR("Signal"),0); lcd_outdezAtt(8*FW, STATUS_BAR_Y, rssi, 0);
+	//	lcd_putsAtt(9*FW-5,STATUS_BAR_Y, PSTR("%"),0);
+	//if (g_model.timers[0].mode) {										
+    lcd_puts(0,STATUS_BAR_Y, PSTR("Time"));
+	putsTime(6*FW+5*FWNUM+2, STATUS_BAR_Y, timersStates[0].val, 0, 0);
+   // } 
+	//lcd_rect(65, 57, 38, 7);
+    //uint8_t v = 4*rssi/11;
+    //lcd_filled_rect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+	lcd_putsAtt(11*FW-1,STATUS_BAR_Y, PSTR("TxBat"),0); putsVBat(20*FW+8,STATUS_BAR_Y,0);	
   }
   else {
     lcd_putsAtt(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
-    lcd_status_line();
+    // lcd_status_line();
   }
 }
 #endif
@@ -104,17 +121,19 @@ void displayGpsTime()
   lcd_outdezNAtt(CENTER_OFS+9*FW+2, STATUS_BAR_Y, frskyData.hub.min, att, 2);
   lcd_putcAtt(CENTER_OFS+11*FW-1, STATUS_BAR_Y, ':', att);
   lcd_outdezNAtt(CENTER_OFS+12*FW-1, STATUS_BAR_Y, frskyData.hub.sec, att, 2);
-  lcd_status_line();
+  //lcd_status_line();
 }
 
 void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
 {
   if (frskyData.hub.gpsFix >= 0) {
-    if (!direction) direction = '-';
-    lcd_outdezAtt(TELEM_2ND_COLUMN, y, bp / 100, LEFT); // ddd before '.'
-    lcd_putc(lcdLastPos, y, '@');
-    uint8_t mn = bp % 100;
+  
+	if (!direction) direction = '-';
     if (g_eeGeneral.gpsFormat == 0) {
+	
+      lcd_outdezAtt(TELEM_2ND_COLUMN, y, bp / 100, LEFT); // ddd before '.'	
+      uint8_t mn = bp % 100;
+	  lcd_putc(lcdLastPos, y, '@');
       lcd_putc(lcdLastPos+FWNUM, y, direction);
       lcd_outdezNAtt(lcdLastPos+FW+FW+1, y, mn, LEFT|LEADING0, 2); // mm before '.'
       lcd_vline(lcdLastPos, y, 2);
@@ -126,10 +145,18 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
       lcd_vline(lcdLastPos+2, y, 2);
     }
     else {
-      lcd_outdezNAtt(lcdLastPos+FW, y, mn, LEFT|LEADING0, 2); // mm before '.'
+	
+	  if (direction == 'S' || direction == 'W') lcd_putc(TELEM_2ND_COLUMN, y, '-');
+	  lcd_outdezAtt(TELEM_2ND_COLUMN+FW, y, bp / 100, LEFT); // ddd before '.'	
+      uint8_t mn = bp % 100; 
       lcd_plot(lcdLastPos, y+FH-2, 0); // small decimal point
-      lcd_outdezNAtt(lcdLastPos+2, y, ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
-      lcd_putc(lcdLastPos+1, y, direction);
+	  lcd_outdezNAtt(lcdLastPos+2, y, (mn+ap/10000.0)*10000.0/60 , LEFT|UNSIGN|LEADING0, 4); // mm before and mmmm after '.'
+	  lcd_putc(lcdLastPos, y, '@');
+	  //lcd_putc(lcdLastPos+FWNUM, y, direction); 	  
+	  //lcd_outdezNAtt(lcdLastPos+FW, y, mn, LEFT|LEADING0, 2); // mm before '.'
+      //lcd_plot(lcdLastPos, y+FH-2, 0); // small decimal point
+      //lcd_outdezNAtt(lcdLastPos+2, y, ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
+      //lcd_putc(lcdLastPos+1, y, direction);
     }
   }
   else {
@@ -199,6 +226,7 @@ void menuTelemetryFrsky(uint8_t event)
 #else
     case EVT_KEY_FIRST(KEY_ENTER):
       resetTelemetry();
+      timerReset(0);
       break;
 #endif
   }
@@ -265,6 +293,7 @@ void menuTelemetryFrsky(uint8_t event)
         }
       }
       displayRssiLine();
+      lcd_status_line();
     }
     else
 #endif
@@ -300,6 +329,7 @@ void menuTelemetryFrsky(uint8_t event)
             }
             else {
               displayRssiLine();
+	      lcd_status_line();	  
               return;
             }
           }
@@ -318,7 +348,13 @@ void menuTelemetryFrsky(uint8_t event)
               // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
               field = field-TELEM_TM1+TELEM_T1;
             }
-            lcd_putsiAtt(pos[j], 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
+			
+			if (field == TELEM_TX_VOLTAGE){									
+            lcd_putsAtt(pos[j], 1+FH+2*FH*i,PSTR("TxBat"), 0);       // Print "TxBat" instead of TBat.
+			}
+			else 
+			{lcd_putsiAtt(pos[j], 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
+			}
           }
         }
       }
@@ -327,67 +363,75 @@ void menuTelemetryFrsky(uint8_t event)
         putEvent(event == EVT_KEY_BREAK(KEY_UP) ? event : EVT_KEY_BREAK(KEY_DOWN));
     }
   }
-  else if (s_frsky_view == e_frsky_voltages) {
-    // Volts / Amps / Watts / mAh
-    uint8_t analog = 0;
-    lcd_putsiAtt(0, 2*FH, STR_VOLTSRC, g_model.frsky.voltsSource+1, 0);
-    switch(g_model.frsky.voltsSource) {
-      case 0:
-      case 1:
-        displayVoltageScreenLine(2*FH, g_model.frsky.voltsSource);
-        analog = 1+g_model.frsky.voltsSource;
-        break;
-#if defined(FRSKY_HUB)
-      case 2:
-        putsTelemetryChannel(3*FW+6*FW+4, FH+1, TELEM_VFAS-1, frskyData.hub.vfas, DBLSIZE);
-        break;
-      case 3:
-        putsTelemetryChannel(3*FW+6*FW+4, FH+1, TELEM_CELLS_SUM-1, frskyData.hub.cellsSum, DBLSIZE);
-        break;
-#endif
-    }
+  
+ 
+//  else if ( s_frsky_view == e_frsky_voltages ) {
+//    // Volts / Amps / Watts / mAh
+//    uint8_t analog = 0;
+//    //lcd_putsiAtt(0, 2*FH, STR_VOLTSRC, g_model.frsky.voltsSource+1, 0);
+//    switch(g_model.frsky.voltsSource) {
+//      case 0:
+//      case 1:
+//        displayVoltageScreenLine(2*FH, g_model.frsky.voltsSource);
+//        analog = 1+g_model.frsky.voltsSource;
+//        break;
+//#if defined(FRSKY_HUB)
+//      case 2:
+//        lcd_puts(0,2*FH, PSTR("Batt:"));
+//		putsTelemetryChannel(3*FW+6*FW+4, FH+1, TELEM_VFAS-1, frskyData.hub.vfas, DBLSIZE);
+//        break;
+//      case 3:
+//        putsTelemetryChannel(3*FW+6*FW+4, FH+1, TELEM_CELLS_SUM-1, frskyData.hub.cellsSum, DBLSIZE);
+//        break;
+//#endif
+//    }
 
-    if (g_model.frsky.currentSource) {
-      lcd_putsiAtt(0, 4*FH, STR_VOLTSRC, g_model.frsky.currentSource, 0);
-      switch(g_model.frsky.currentSource) {
-        case 1:
-        case 2:
-          displayVoltageScreenLine(4*FH, g_model.frsky.currentSource-1);
-          break;
-#if defined(FRSKY_HUB)
-        case 3:
-          putsTelemetryChannel(3*FW+6*FW+4, 3*FH+1, TELEM_CURRENT-1, frskyData.hub.current, DBLSIZE);
-          break;
-#endif
-      }
+//    if (g_model.frsky.currentSource) {
+//     // lcd_putsiAtt(0, 4*FH, STR_VOLTSRC, g_model.frsky.currentSource, 0);
+//      switch(g_model.frsky.currentSource) {
+//        case 1:
+//        case 2:
+//          displayVoltageScreenLine(4*FH, g_model.frsky.currentSource-1);
+//          break;
+//#if defined(FRSKY_HUB)
+//        case 3:
+//		  lcd_puts(0,4*FH, PSTR("Curr:"));
+//          putsTelemetryChannel(3*FW+6*FW+4, 3*FH+1, TELEM_CURRENT-1, frskyData.hub.current, DBLSIZE);
+//          break;
+//#endif
+//      }
 
-      putsTelemetryChannel(4, 5*FH+1, TELEM_POWER-1, frskyData.hub.power, LEFT|DBLSIZE);
-      putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 5*FH+1, TELEM_CONSUMPTION-1, frskyData.hub.currentConsumption, DBLSIZE);
-    }
-    else {
-      displayVoltageScreenLine(analog > 0 ? 5*FH : 4*FH, analog ? 2-analog : 0);
-      if (analog == 0) displayVoltageScreenLine(6*FH, 1);
-    }
+//      putsTelemetryChannel(4, 5*FH+1, TELEM_POWER-1, frskyData.hub.power, LEFT|DBLSIZE);
+//      putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 5*FH+1, TELEM_CONSUMPTION-1, frskyData.hub.currentConsumption, DBLSIZE);
+//    }
+//    else {
+//      displayVoltageScreenLine(analog > 0 ? 5*FH : 4*FH, analog ? 2-analog : 0);
+//      if (analog == 0) displayVoltageScreenLine(6*FH, 1);
+//    }
 
-#if defined(FRSKY_HUB)
-    // Cells voltage
-    if (frskyData.hub.cellsCount > 0) {
-      uint8_t y = 1*FH;
-      for (uint8_t k=0; k<frskyData.hub.cellsCount && k<6; k++) {
-#if defined(GAUGES)
-        uint8_t attr = (barsThresholds[THLD_CELL] && frskyData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
-#else
-        uint8_t attr = PREC2;
-#endif
-        lcd_outdezNAtt(LCD_W, y, frskyData.hub.cellVolts[k] * 2, attr, 4);
-        y += 1*FH;
-      }
-      lcd_vline(LCD_W-3*FW-2, 8, 47);
-    }
-#endif
+//#if defined(FRSKY_HUB)
+//    // Cells voltage
+//    if (frskyData.hub.cellsCount > 0) {
+//      uint8_t y = 1*FH;
+//      for (uint8_t k=0; k<frskyData.hub.cellsCount && k<6; k++) {
+//#if defined(GAUGES)
+//        uint8_t attr = (barsThresholds[THLD_CELL] && frskyData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
+//#else
+//        uint8_t attr = PREC2;
+//#endif
+//        lcd_outdezNAtt(LCD_W, y, frskyData.hub.cellVolts[k] * 2, attr, 4);
+//        y += 1*FH;
+//      }
+//      lcd_vline(LCD_W-3*FW-2, 8, 47);
+//    }
+//#endif
 
-    displayRssiLine();
-  }
+    
+//	displayRssiLine();
+//	lcd_status_line();
+//  }
+  
+  
 #if defined(FRSKY_HUB)
   else if (s_frsky_view == e_frsky_after_flight) {
     uint8_t line=1*FH+1;
@@ -399,19 +443,30 @@ void menuTelemetryFrsky(uint8_t event)
       line+=1*FH+1;
       lcd_putsLeft(line, STR_LONGITUDE);
       displayGpsCoord(line, frskyData.hub.gpsLongitudeEW, frskyData.hub.gpsLongitude_bp, frskyData.hub.gpsLongitude_ap);
-      displayGpsTime();
+      // displayGpsTime();
+	  //lcd_status_line();
       line+=1*FH+1;
     }
-    // Rssi
-    lcd_putsLeft(line, STR_MINRSSI);
-#if defined(PCBTARANIS)
-    lcd_outdezNAtt(TELEM_2ND_COLUMN, line, frskyData.rssi[0].min, LEFT|LEADING0, 2);
-#else
-    lcd_puts(TELEM_2ND_COLUMN, line, STR_TX);
-    lcd_outdezNAtt(TELEM_2ND_COLUMN+3*FW, line, frskyData.rssi[1].min, LEFT|LEADING0, 2);
-    lcd_puts(TELEM_2ND_COLUMN+6*FW, line, STR_RX);
-    lcd_outdezNAtt(TELEM_2ND_COLUMN+9*FW, line, frskyData.rssi[0].min, LEFT|LEADING0, 2);
-#endif
+    
+	 lcd_putsLeft(line, PSTR("Altitude  "));
+	 putsTelemetryChannel(14*FW, line, TELEM_ALT-1, frskyData.hub.baroAltitude_bp, SMLSIZE);
+	 
+	 
+	  displayRssiLine();
+	  lcd_status_line();
+	 
+	
+	// Rssi
+	//    lcd_putsLeft(line, STR_MINRSSI);
+	// #if defined(PCBTARANIS)
+	//    lcd_outdezNAtt(TELEM_2ND_COLUMN, line, frskyData.rssi[0].min, LEFT|LEADING0, 2);
+	//#else
+	//    lcd_puts(TELEM_2ND_COLUMN, line, STR_TX);
+	//    lcd_outdezNAtt(TELEM_2ND_COLUMN+3*FW, line, frskyData.rssi[1].min, LEFT|LEADING0, 2);
+	//    lcd_puts(TELEM_2ND_COLUMN+6*FW, line, STR_RX);
+	//    lcd_outdezNAtt(TELEM_2ND_COLUMN+9*FW, line, frskyData.rssi[0].min, LEFT|LEADING0, 2);
+	//#endif
+   
   }
 #endif    
 }

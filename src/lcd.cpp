@@ -36,6 +36,7 @@
 
 #include "opentx.h"
 
+int16_t GPS_sats_status;
 uint8_t displayBuf[DISPLAY_BUF_SIZE];
 #define DISPLAY_END (displayBuf+DISPLAY_PLAN_SIZE)
 #define ASSERT_IN_DISPLAY(p) assert((p) >= displayBuf && (p) < DISPLAY_END)
@@ -427,7 +428,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
 #if !defined(PCBTARANIS)
     if (dblsize) {
       if (c=='1' && i==len && xn>x+10) { x+=2; f|=CONDENSED; }
-      if ((uint16_t)val >= 1000) { x+=FWNUM; f&=~DBLSIZE; }
+      if ((uint16_t)val >= 10000) { x+=FWNUM; f&=~DBLSIZE; }  
     }
 #endif
     lcd_putcAtt(x, y, c, f);
@@ -464,7 +465,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
       }
     }
 #if !defined(PCBTARANIS)
-    if (dblsize && (uint16_t)val >= 1000 && (uint16_t)val < 10000) x-=2;
+    if (dblsize && (uint16_t)val >= 10000 && (uint16_t)val < 100000) x-=2;
 #endif
     val = qr.quot;
     x-=fw;
@@ -718,13 +719,115 @@ void lcdDrawTelemetryTopBar()
 #else
 void lcdDrawTelemetryTopBar()
 {
-  putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
-  uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
-  putsVBat(14*FW,0,att);
-  if (g_model.timers[0].mode) {
-    att = (timersStates[0].state==TMR_BEEPING ? BLINK : 0);
-    putsTime(17*FW+5*FWNUM+1, 0, timersStates[0].val, att, att);
+  
+  //uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);  				// Display TX battery
+  //lcd_puts(0,0, PSTR("TBat:"));
+  //putsVBat(9*FW,0,att);
+  
+  if (TELEMETRY_STREAMING())
+	{
+   // Auto Pilot modes for Arducopter 3.1
+	
+  switch(frskyData.hub.temperature1) {
+  case 0:
+  lcd_puts(12*FW,0, PSTR("Stabilize"));
+  break;
+  case 1:
+  lcd_puts(12*FW,0, PSTR("  Acro   "));
+  break;
+  case 2:
+  lcd_puts(12*FW,0, PSTR("Alt Hold "));
+  break;
+  case 3:
+  lcd_puts(12*FW,0, PSTR("  Auto   "));
+  break;
+  case 4:
+  lcd_puts(12*FW,0, PSTR(" Guided  "));
+  break;
+  case 5:
+  lcd_puts(12*FW,0, PSTR(" Loiter  "));
+   break;
+  case 6:
+  lcd_puts(12*FW,0, PSTR("  RTL    "));
+   break;
+  case 7:
+  lcd_puts(12*FW,0, PSTR(" Circle  "));
+   break;
+  case 9:
+  lcd_puts(12*FW,0, PSTR("  Land   "));
+   break;
+  case 10:
+  lcd_puts(12*FW,0, PSTR("Of Loiter"));
+   break;
+  case 11:
+  lcd_puts(12*FW,0, PSTR("  Drift  "));
+   break;
+  case 13:
+  lcd_puts(12*FW,0, PSTR("  Sport  "));
+  break;
+   case 14:
+  lcd_puts(12*FW,0, PSTR("  Flip   "));
+  break;
+   case 15:
+  lcd_puts(12*FW,0, PSTR("Autotune "));
+  break;
+   case 16:
+  lcd_puts(12*FW,0, PSTR("Pos Hold "));
+  break;
+   case 17:
+  lcd_puts(12*FW,0, PSTR("Num Modes"));
+  break;
   }
+   
+   uint8_t rssi = min((uint8_t)99, frskyData.rssi[0].value);
+    lcd_putsAtt(0,0, PSTR("Rx"),0); lcd_outdezAtt(4*FW,0, rssi, 0);
+	lcd_putsAtt(4*FW,0, PSTR("%"),0);
+   
+   
+    uint8_t gps_status = GPS_sats_status % 10;
+  
+    //switch(gps_status) {
+    //case 0:
+    //lcd_puts(0,0, PSTR("No GPS    "));
+    //break;
+    //case 1:
+    //lcd_puts(0,0, PSTR("GPS No fix"));
+    //break;
+    //case 2:
+    //lcd_puts(0,0, PSTR("GPS Fix 2D"));
+    //break;
+    //case 3:
+    //lcd_puts(0,0, PSTR("GPS Fix 3D"));
+    //break;
+    //case 4:
+    //lcd_puts(0,0, PSTR("GPS 3D DGP"));
+    //break;
+    //case 5:
+    //lcd_puts(0,0, PSTR("GPS 3D RTK"));
+    //break; 
+    //}
+  
+	switch(gps_status) {
+    case 0:
+    case 1:
+    case 2:
+    lcd_puts(6*FW+4,0, PSTR("----"));
+    break;
+	case 3:  
+    case 4:
+    case 5:
+    lcd_puts(6*FW+4,0, PSTR("Lock"));
+    break; 
+  }
+   
+  }   
+
+   //if (g_model.timers[0].mode) {										// Display timer on Top Bar
+    //uint8_t att = (timersStates[0].state==TMR_BEEPING ? BLINK : 0);
+    //lcd_puts(0,0, PSTR("Ftime:"));
+	//putsTime(6*FW+5*FWNUM+3, 0, timersStates[0].val, 0, 0);
+    //}
+ 
   lcd_invert_line(0);
 }
 #endif
@@ -797,7 +900,7 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 void putsVolts(xcoord_t x, uint8_t y, uint16_t volts, LcdFlags att)
 {
   lcd_outdezAtt(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
-  if (~att & NO_UNIT) lcd_putcAtt(lcdLastPos, y, 'v', att);
+  // if (~att & NO_UNIT) lcd_putcAtt(lcdLastPos, y, 'v', att);
 }
 
 void putsVBat(xcoord_t x, uint8_t y, LcdFlags att)
@@ -1056,7 +1159,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
         att |= PREC2;
 #endif
       }
-      putsTelemetryValue(x, y, converted_value, g_model.frsky.channels[channel].type, att);
+      putsTelemetryValue(x, y, converted_value, g_model.frsky.channels[channel].type, att); 
       break;
     }
 #endif

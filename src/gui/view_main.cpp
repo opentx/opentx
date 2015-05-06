@@ -629,7 +629,7 @@ void menuMainView(uint8_t event)
     displayVoltageOrAlarm();
 
     // Timers
-    displayTimers();
+    //displayTimers();
 #endif
 
     // Trims sliders

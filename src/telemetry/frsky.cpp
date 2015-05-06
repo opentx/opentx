@@ -13,7 +13,7 @@
  * - Michal Hlavinka
  * - Pat Mackenzie
  * - Philip Moss
- * - Rob Thomson
+ * - Rob ThomsonTELEM_BATT
  * - Romolo Manfredini <romolo.manfredini@gmail.com>
  * - Thomas Husterer
  *
@@ -171,7 +171,7 @@ void parseTelemHubByte(uint8_t byte)
 
   ((uint8_t*)&frskyData.hub)[structPos] = lowByte;
   ((uint8_t*)&frskyData.hub)[structPos+1] = byte;
-
+  
   switch ((uint8_t)structPos) {
 
     case offsetof(FrskySerialData, rpm):
@@ -186,6 +186,8 @@ void parseTelemHubByte(uint8_t byte)
       break;
 
     case offsetof(FrskySerialData, temperature2):
+	  GPS_sats_status=frskyData.hub.temperature2;					 //Save GPS status
+	  frskyData.hub.temperature2=frskyData.hub.temperature2/10;		// No Need to Display GPS Status
       if (frskyData.hub.temperature2 > frskyData.hub.maxTemperature2)
         frskyData.hub.maxTemperature2 = frskyData.hub.temperature2;
       break;

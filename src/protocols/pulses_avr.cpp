@@ -108,7 +108,9 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
   // Call setupPulses only after REST pulse had been sent.
   // Must do this before toggle PORTB to keep timing accurate
   if (IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0]) || *((uint16_t*)pulses2MHzRPtr) == 0) {
-    OCR1A = SETUP_PULSES_DURATION;
+    if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
+      OCR1A = SETUP_PULSES_DURATION;
+    }
     setupPulses(); // does not sei() for setupPulsesPPM
     heartbeat |= HEART_TIMER_PULSES;
     return;
