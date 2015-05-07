@@ -89,7 +89,8 @@ void FlashEEpromDialog::on_eepromLoad_clicked()
 
 int FlashEEpromDialog::getEEpromVersion(const QString &filename)
 {
-  RadioData testData;
+  int result = -1;
+  int eeprom_size = 0;
 
   if (filename.isEmpty()) {
     return -1;
@@ -101,10 +102,12 @@ int FlashEEpromDialog::getEEpromVersion(const QString &filename)
     return -1;
   }
 
+  QByteArray eeprom(EESIZE_RLC_MAX, 0);
   int fileType = getFileType(filename);
+  
 #if 0
   if (fileType==FILE_TYPE_XML) {
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
       QMessageBox::critical(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(filename).arg(file.errorString()));
       return -1;
     }
@@ -113,18 +116,23 @@ int FlashEEpromDialog::getEEpromVersion(const QString &filename)
   }
   else
 #endif
-  if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) { //read HEX file
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
+  if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) {
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QMessageBox::warning(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(filename).arg(file.errorString()));
         return -1;
     }
     QDomDocument doc(ER9X_EEPROM_FILE_TYPE);
     bool xmlOK = doc.setContent(&file);
-    if(xmlOK) {
-      if (!loadEEpromXml(testData, doc)) {
+    if (xmlOK) {
+      RadioData * radioData = new RadioData();
+      if (!loadEEpromXml(*radioData, doc)) {
         QMessageBox::warning(this, tr("Error"), tr("Invalid Models and Settings File %1").arg(filename));
-        return -1;
       }
+      else {
+        result = radioData->generalSettings.version;
+      }
+      delete radioData;
+      return result;
     }
     file.reset();
 
@@ -136,36 +144,30 @@ int FlashEEpromDialog::getEEpromVersion(const QString &filename)
         return -1;
       }
     }
-    QByteArray eeprom(EESIZE_RLC_MAX, 0);
-    int eeprom_size = HexInterface(inputStream).load((uint8_t *)eeprom.data(), EESIZE_RLC_MAX);
-    if (!eeprom_size) {
-      QMessageBox::warning(this, tr("Error"), tr("Invalid Models and Settings File %1").arg(filename));
-      return -1;
-    }
-    if (!loadEEprom(testData, (const uint8_t *)eeprom.data(), eeprom_size)) {
-      QMessageBox::warning(this, tr("Error"), tr("Invalid Models and Settings File %1").arg(filename));
-      return -1;
-    }
+    eeprom_size = HexInterface(inputStream).load((uint8_t *)eeprom.data(), EESIZE_RLC_MAX);
   }
   else if (fileType==FILE_TYPE_BIN) { //read binary
-    int eeprom_size = file.size();
+    eeprom_size = file.size();
     if (!file.open(QFile::ReadOnly)) {  //reading binary file   - TODO HEX support
       QMessageBox::warning(this, tr("Error"), tr("Error opening file %1:\n%2.").arg(filename).arg(file.errorString()));
       return -1;
     }
-    QByteArray eeprom(eeprom_size, 0);
-    long result = file.read(eeprom.data(), eeprom_size);
-    if (result != eeprom_size) {
+    int len = file.read(eeprom.data(), eeprom_size);
+    if (len != eeprom_size) {
       QMessageBox::warning(this, tr("Error"), tr("Error reading file %1:\n%2.").arg(filename).arg(file.errorString()));
-      return -1;
-    }
-    if (!loadEEprom(testData, (uint8_t *)eeprom.data(), eeprom_size)) {
-      QMessageBox::warning(this, tr("Error"), tr("Invalid binary Models and Settings File %1").arg(filename));
       return -1;
     }
   }
 
-  return testData.generalSettings.version;
+  RadioData * radioData = new RadioData();
+  if (eeprom_size == 0 || !loadEEprom(*radioData, (const uint8_t *)eeprom.data(), eeprom_size)) {
+    QMessageBox::warning(this, tr("Error"), tr("Invalid Models and Settings file %1").arg(filename));
+  }
+  else {
+    result = radioData->generalSettings.version;
+  }
+  delete radioData;
+  return result;
 }
 
 bool FlashEEpromDialog::patchCalibration()
