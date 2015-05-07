@@ -445,14 +445,11 @@ int main(int argc,char **argv)
 
   printf("Model size = %d\n", (int)sizeof(g_model));
 
+  simuInit();
+
   StartEepromThread(argc >= 2 ? argv[1] : "eeprom.bin");
   StartAudioThread();
   StartMainThread();
-
-#if defined(PCBTARANIS)
-  simuSetSwitch(0, 0);
-  simuSetSwitch(1, 0);
-#endif
 
   return application.run();
 }

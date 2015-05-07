@@ -100,42 +100,46 @@ char simuSdDirectory[1024] = "";
 uint8_t eeprom[EESIZE_SIMU];
 sem_t *eeprom_write_sem;
 
-#if defined(CPUARM)
-#if defined(PCBTARANIS)
-#define SWITCH_CASE(swtch, pin, mask) \
-    case swtch: \
+void simuInit()
+{
+  for (int i = 0; i <= 17; i++)
+    simuSetSwitch(i, 0);
+}
+
+#define NEG_CASE(sw_or_key, pin, mask) \
+    case sw_or_key: \
       if ((int)state > 0) pin &= ~(mask); else pin |= (mask); \
       break;
-#else
-#define SWITCH_CASE(swtch, pin, mask) \
-    case swtch: \
+#define POS_CASE(sw_or_key, pin, mask) \
+    case sw_or_key: \
       if ((int)state > 0) pin |= (mask); else pin &= ~(mask); \
       break;
+
+#if defined(CPUARM)
+#if defined(PCBTARANIS)
+#define SWITCH_CASE NEG_CASE
+#else
+#define SWITCH_CASE POS_CASE
 #endif
 #define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
     case swtch: \
       if ((int)state < 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
       if ((int)state > 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
       break;
-#define KEY_CASE(key, pin, mask) \
-    case key: \
-      if ((int)state > 0) pin &= ~mask; else pin |= mask;\
-      break;
+#define KEY_CASE NEG_CASE
 #define TRIM_CASE KEY_CASE
 #else
-#define SWITCH_CASE(swtch, pin, mask) \
-    case swtch: \
-      if ((int)state > 0) pin &= ~(mask); else pin |= (mask); \
-      break;
+#if defined(PCBMEGA2560)
+#define SWITCH_CASE POS_CASE
+#else
+#define SWITCH_CASE NEG_CASE
+#endif
 #define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
     case swtch: \
       if ((int)state >= 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
       if ((int)state <= 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
       break;
-#define KEY_CASE(key, pin, mask) \
-    case key: \
-      if ((int)state > 0) pin |= (mask); else pin &= ~(mask);\
-      break;
+#define KEY_CASE POS_CASE
 #define TRIM_CASE KEY_CASE
 #endif
 
