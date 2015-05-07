@@ -60,6 +60,7 @@ const char * zchar2string(const char * zstring, int size)
 int main(int argc, char **argv)
 {
   QCoreApplication app(argc, argv);
+  simuInit();
   StartEepromThread(NULL);
   g_menuStackPtr = 0;
   g_menuStack[0] = menuMainView;
