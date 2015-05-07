@@ -1018,6 +1018,23 @@ void doSplash()
 #define doSplash()
 #endif
 
+#if defined(PXX)
+void checkFailsafe()
+{
+  for (int i=0; i<NUM_MODULES; i++) {
+    if (IS_MODULE_XJT(i)) {
+      ModuleData & moduleData = g_model.moduleData[i];
+      if (moduleData.failsafeMode == FAILSAFE_NOT_SET) {
+        ALERT(STR_FAILSAFEWARN, STR_NO_FAILSAFE, AU_ERROR);
+        break;
+      }
+    }
+  }
+}
+#else
+#define checkFailsafe()
+#endif
+
 #if defined(GUI)
 void checkAll()
 {
@@ -1030,6 +1047,7 @@ void checkAll()
 #else
   checkTHR();
   checkSwitches();
+  checkFailsafe();
 #endif
 
 #if defined(CPUARM)

@@ -200,7 +200,7 @@ void setupPulsesPXX(unsigned int port)
   else if (moduleFlag[port] == MODULE_RANGECHECK) {
     flag1 |= PXX_SEND_RANGECHECK;
   }
-  else if (g_model.moduleData[port].failsafeMode != FAILSAFE_RECEIVER) {
+  else if (g_model.moduleData[port].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[port].failsafeMode != FAILSAFE_RECEIVER) {
     if (failsafeCounter[port]-- == 0) {
       failsafeCounter[port] = 1000;
       flag1 |= PXX_SEND_FAILSAFE;

@@ -634,6 +634,8 @@ extern const pm_char STR_EEPROM_CONVERTING[];
 extern const pm_char STR_THROTTLEWARN[];
 extern const pm_char STR_ALARMSWARN[];
 extern const pm_char STR_SWITCHWARN[];
+extern const pm_char STR_FAILSAFEWARN[];
+extern const pm_char STR_NO_FAILSAFE[];
 extern const pm_char STR_KEYSTUCK[];
 
 extern const pm_char STR_SPEAKER_VOLUME[];

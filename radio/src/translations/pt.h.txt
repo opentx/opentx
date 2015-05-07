@@ -498,7 +498,7 @@
 #define TR_VTRAINERMODES       "Master/Jack\0      ""Slave/Jack\0       ""Master/SBUS Module""Master/CPPM Module""Master/Battery\0"
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Hold\0    ""Custom\0  ""No pulses""Receiver\0"
+#define TR_VFAILSAFE           "Not set\0 ""Hold\0    ""Custom\0  ""No pulses""Receiver\0"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -773,6 +773,8 @@
 #define TR_THROTTLEWARN        "ACELERAD"
 #define TR_ALARMSWARN          "ALARMES"
 #define TR_SWITCHWARN          "CHAVES"
+#define TR_FAILSAFEWARN        "FAILSAFE"
+#define TR_NO_FAILSAFE         "Failsafe not set"
 #define TR_KEYSTUCK            "Key stuck"
 #define TR_INVERT_THR          "Inverte Acel?"
 #define TR_SPEAKER_VOLUME      INDENT "Volume"

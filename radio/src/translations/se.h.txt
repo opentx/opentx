@@ -498,7 +498,7 @@
 #define TR_VTRAINERMODES       "Lärare/Uttag\0     ""Elev./Uttag\0      ""Lärare/SBUS-Modul\0""Lärare/CPPM-Modul\0""Lärare/Batteri\0"
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Lås Servo""Anpassat\0""Pulsfritt""Mottagare"
+#define TR_VFAILSAFE           "Not set\0 ""Lås Servo""Anpassat\0""Pulsfritt""Mottagare"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -773,6 +773,8 @@
 #define TR_THROTTLEWARN        "GAS"
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "BRYTARE"
+#define TR_FAILSAFEWARN        "FAILSAFE"
+#define TR_NO_FAILSAFE         "Failsafe not set"
 #define TR_KEYSTUCK            "Knapp-fel"
 #define TR_INVERT_THR          TR("Invert.Gas?", "Invertera Gasen?")
 #define TR_SPEAKER_VOLUME      INDENT "Volym"
