@@ -784,6 +784,20 @@ void menuModelFailsafe(uint8_t event)
     SEND_FAILSAFE_NOW(g_moduleIdx);
   }
 
+  if (!s_editMode && event == EVT_KEY_LONG(KEY_ENTER)) {
+    killEvents(event);
+    int16_t & failsafe = g_model.moduleData[g_moduleIdx].failsafeChannels[m_posVert];
+    if (failsafe < FAILSAFE_CHANNEL_HOLD)
+      failsafe = FAILSAFE_CHANNEL_HOLD;
+    else if (failsafe == FAILSAFE_CHANNEL_HOLD)
+      failsafe = FAILSAFE_CHANNEL_NOPULSE;
+    else
+      failsafe = channelOutputs[m_posVert];
+    eeDirty(EE_MODEL);
+    AUDIO_WARNING1();
+    SEND_FAILSAFE_NOW(g_moduleIdx);
+  }
+
   SIMPLE_SUBMENU_NOTITLE(NUM_CHNOUT);
 
   SET_SCROLLBAR_X(0);
@@ -793,7 +807,7 @@ void menuModelFailsafe(uint8_t event)
   // Column separator
   lcd_vline(LCD_W/2, FH, LCD_H-FH);
 
-  if (m_posVert > 16) {
+  if (m_posVert >= 16) {
     ch = 16;
   }
 
@@ -831,29 +845,42 @@ void menuModelFailsafe(uint8_t event)
       LcdFlags flags = TINSIZE;
       if (m_posVert == ch && !s_noHi) {
         flags |= INVERS;
-        if (s_editMode)
+        if (s_editMode) {
           flags |= BLINK;
+        }
       }
-#if defined(PPM_UNIT_US)
-      uint8_t wbar = (longNames ? SLIDER_W-10 : SLIDER_W);
-      lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, PPM_CH_CENTER(ch)+val/2, flags);
-#elif defined(PPM_UNIT_PERCENT_PREC1)
+
+#if defined(PPM_UNIT_PERCENT_PREC1)
       uint8_t wbar = (longNames ? SLIDER_W-16 : SLIDER_W-6);
-      lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val), PREC1|flags);
 #else
       uint8_t wbar = (longNames ? SLIDER_W-10 : SLIDER_W);
-      lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val)/10, flags);
 #endif
 
-      // Gauge
-      lcd_rect(x+COL_W-3-wbar-ofs, y, wbar+1, 6);
-      uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
-      uint8_t len = limit((uint8_t)1, uint8_t((abs(val) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
-      coord_t x0 = (val>0) ? x+COL_W-ofs-3-wbar/2 : x+COL_W-ofs-2-wbar/2-len;
-      lcd_hline(x0, y+1, len);
-      lcd_hline(x0, y+2, len);
-      lcd_hline(x0, y+3, len);
-      lcd_hline(x0, y+4, len);
+      if (val == FAILSAFE_CHANNEL_HOLD) {
+        lcd_putsAtt(x+COL_W-3-wbar-ofs, y, "HOLD", flags);
+      }
+      else if (val == FAILSAFE_CHANNEL_NOPULSE) {
+        lcd_putsAtt(x+COL_W-3-wbar-ofs, y, "NO PULSE", flags);
+      }
+      else {
+#if defined(PPM_UNIT_US)
+        lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, PPM_CH_CENTER(ch)+val/2, flags);
+#elif defined(PPM_UNIT_PERCENT_PREC1)
+        lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val), PREC1|flags);
+#else
+        lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val)/10, flags);
+#endif
+
+        // Gauge
+        lcd_rect(x+COL_W-3-wbar-ofs, y, wbar+1, 6);
+        uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
+        uint8_t len = limit((uint8_t)1, uint8_t((abs(val) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
+        coord_t x0 = (val>0) ? x+COL_W-ofs-3-wbar/2 : x+COL_W-ofs-2-wbar/2-len;
+        lcd_hline(x0, y+1, len);
+        lcd_hline(x0, y+2, len);
+        lcd_hline(x0, y+3, len);
+        lcd_hline(x0, y+4, len);
+      }
 
       ch++;
     }
