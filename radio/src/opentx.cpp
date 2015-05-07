@@ -1018,7 +1018,7 @@ void doSplash()
 #define doSplash()
 #endif
 
-#if defined(PXX)
+#if defined(PCBTARANIS)
 void checkFailsafe()
 {
   for (int i=0; i<NUM_MODULES; i++) {
