@@ -173,12 +173,12 @@ Keith Hertzog
 Johan Moelich
 Timo Esser
 Dean Church (monthly)
-Brian Paddock (monthly)
+Brian Paddock
 Jean Pierre Parisy
 Norbert Martsch
 Jean-Marie Guitard
 Mike Perkins
-Tilman Baumann (monthly)
+Tilman Baumann
 Fred Larssen
 Ari Aalto
 Robert Sams 
@@ -189,7 +189,7 @@ Paul Robinson
 Dave Matison
 Mike Matheny
 Pino Agostino
-Graham Boucher (monthly)
+Graham Boucher
 Nelson Noura
 Joel Allamy
 Philip David Martin
@@ -200,7 +200,7 @@ Timothy Pelletier
 Glen Roe (ShowMaster)
 Jan Van Ooteghem
 David Ankers - Special thanks here to the OpenPilot project!
-Lawrence Christensen (monthly)
+Lawrence Christensen
 Leo Duflou
 Bruce Wood
 Arnd Feige
@@ -259,7 +259,7 @@ Peter Mitrik
 Thomas Majewski
 ANF King
 Henrik Hammarström
-Kenneth Lilja (monthly)
+Kenneth Lilja
 R Wells
 Uwe Jordt
 Harald Wilczak
@@ -600,7 +600,7 @@ Michel Baily
 Donald Burke
 Ronald Donker
 Fredie Singh
-Patrizio Simoncini (monthly)
+Patrizio Simoncini
 Harald Gabler
 Michael Brown
 Julien Gérard
@@ -723,7 +723,7 @@ Graham Baldwin
 Tomasz Rejman
 Wolfgang Lang
 John Greenwood
-Till von Reumont
+Till von ReumontG
 Paul Pereira Brunner 
 Donald L Singer
 Junsun Lee
@@ -752,4 +752,4 @@ Claudio Piccinini
 John Jackson
 John Beech
 Rene Traa
-Sebastien Charpentier
+Sebastien Charpentier (monthly)
