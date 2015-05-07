@@ -777,8 +777,7 @@ void menuModelFailsafe(uint8_t event)
   bool newLongNames = false;
   uint8_t ch = 0;
 
-  if (event == EVT_KEY_LONG(KEY_ENTER) && s_editMode) {
-    s_noHi = NO_HI_LEN;
+  if (event == EVT_KEY_BREAK(KEY_ENTER) && s_editMode) {
     g_model.moduleData[g_moduleIdx].failsafeChannels[m_posVert] = channelOutputs[m_posVert];
     eeDirty(EE_MODEL);
     AUDIO_WARNING1();
