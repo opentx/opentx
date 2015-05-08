@@ -323,6 +323,8 @@ bool isAssignableFunctionAvailable(int function)
 #if !defined(LUA)
     case FUNC_PLAY_SCRIPT:
 #endif
+    case FUNC_RESERVE1:
+    case FUNC_RESERVE2:
     case FUNC_RESERVE5:
       return false;
 
