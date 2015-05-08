@@ -156,12 +156,12 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterf
 {
   lcdWidth = 212;
   lcdDepth = 4;
-
+  
   initUi<Ui::SimulatorDialogTaranis>(ui);
 
   // install simulator TRACE hook
   simulator->installTraceHook(traceCb);
-
+  
   dialP_4 = ui->dialP_4;
 
   ui->lcd->setBackgroundColor(47, 123, 227);
@@ -169,7 +169,10 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterf
   //restore switches
   if (g.simuSW())
     restoreSwitches();
-
+  if (!(flags && SIMULATOR_FLAGS_S3)) {
+    ui->dialP_5->hide();
+    ui->dialP_5_lbl->hide();
+  }
   ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
   ui->trimHR_R->setText(QString::fromUtf8(rightArrow));
   ui->trimVR_U->setText(QString::fromUtf8(upArrow));
@@ -831,7 +834,7 @@ void SimulatorDialogTaranis::getValues()
     {
       -ui->dialP_1->value(),
       ui->dialP_2->value(),
-      0,
+      ((flags && SIMULATOR_FLAGS_S3) ? ui->dialP_5->value() : 0),
       -ui->dialP_3->value(),
       ui->dialP_4->value()
     },
