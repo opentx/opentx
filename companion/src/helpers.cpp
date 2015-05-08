@@ -940,6 +940,9 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     }
     BoardEnum board = GetCurrentFirmware()->getBoard();
     SimulatorDialog * sd;
+    if (radioData.generalSettings.potConfig[2]!=0 && (IS_TARANIS_PLUS(board)||IS_TARANIS_X9E(board))) {
+      flags |= SIMULATOR_FLAGS_S3;
+    }
     if (IS_TARANIS(board))
       sd = new SimulatorDialogTaranis(parent, si, flags);
     else

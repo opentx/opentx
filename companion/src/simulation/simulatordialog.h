@@ -29,6 +29,7 @@ class mySlider;
 
 #define SIMULATOR_FLAGS_NOTX            1
 #define SIMULATOR_FLAGS_STICK_MODE_LEFT 2
+#define SIMULATOR_FLAGS_S3              4
 
 class SimulatorDialog : public QDialog
 {
