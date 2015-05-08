@@ -55,6 +55,7 @@ private slots:
 private:
   QList<QStringList> csvlog;
   Ui::logsDialog *ui;
+  QCPAxisRect *axisRect;
   bool cvsFileParse();
   bool plotLock;
   QString logFilename;

@@ -46,14 +46,15 @@ logsDialog::logsDialog(QWidget *parent) :
   ui->customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom |
     QCP::iSelectAxes | QCP::iSelectLegend | QCP::iSelectPlottables);
 
-  ui->customPlot->xAxis->setLabel(tr("Time (hh:mm:ss)"));
-  ui->customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
-  ui->customPlot->xAxis->setDateTimeFormat("hh:mm:ss");
+  axisRect = ui->customPlot->axisRect();
+  axisRect->axis(QCPAxis::atBottom)->setLabel(tr("Time (hh:mm:ss)"));
+  axisRect->axis(QCPAxis::atBottom)->setTickLabelType(QCPAxis::ltDateTime);
+  axisRect->axis(QCPAxis::atBottom)->setDateTimeFormat("hh:mm:ss");
   QDateTime now = QDateTime::currentDateTime();
-  ui->customPlot->xAxis->setRange(now.addSecs(-60*60*2).toTime_t(),
+  axisRect->axis(QCPAxis::atBottom)->setRange(now.addSecs(-60*60*2).toTime_t(),
     now.toTime_t());
 
-  ui->customPlot->yAxis->setTickLabels(false);
+  axisRect->axis(QCPAxis::atLeft)->setTickLabels(false);
 
   QFont legendFont = font();
   legendFont.setPointSize(10);
@@ -72,7 +73,7 @@ logsDialog::logsDialog(QWidget *parent) :
   connect(ui->customPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
 
   // make left axes transfer its range to right axes:
-  connect(ui->customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(setRangeyAxis2(QCPRange)));
+  connect(axisRect->axis(QCPAxis::atLeft), SIGNAL(rangeChanged(QCPRange)), this, SLOT(setRangeyAxis2(QCPRange)));
 
   // connect some interaction slots:
   connect(ui->customPlot, SIGNAL(titleDoubleClick(QMouseEvent*, QCPPlotTitle*)), this, SLOT(titleDoubleClick(QMouseEvent*, QCPPlotTitle*)));
@@ -151,23 +152,23 @@ void logsDialog::selectionChanged()
   if (plotLock) return;
 
   // handle bottom axis and tick labels as one selectable object:
-  if (ui->customPlot->xAxis->selectedParts().testFlag(QCPAxis::spAxis) ||
-    ui->customPlot->xAxis->selectedParts().testFlag(QCPAxis::spTickLabels))
+  if (axisRect->axis(QCPAxis::atBottom)->selectedParts().testFlag(QCPAxis::spAxis) ||
+    axisRect->axis(QCPAxis::atBottom)->selectedParts().testFlag(QCPAxis::spTickLabels))
   {
-    ui->customPlot->xAxis->setSelectedParts(QCPAxis::spAxis |
+    axisRect->axis(QCPAxis::atBottom)->setSelectedParts(QCPAxis::spAxis |
       QCPAxis::spTickLabels);
   }
   // make left and right axes be selected synchronously,
   // and handle axis and tick labels as one selectable object:
-  if (ui->customPlot->yAxis->selectedParts().testFlag(QCPAxis::spAxis) ||
-    ui->customPlot->yAxis->selectedParts().testFlag(QCPAxis::spTickLabels) ||
-    ui->customPlot->yAxis2->selectedParts().testFlag(QCPAxis::spAxis) ||
-    ui->customPlot->yAxis2->selectedParts().testFlag(QCPAxis::spTickLabels))
+  if (axisRect->axis(QCPAxis::atLeft)->selectedParts().testFlag(QCPAxis::spAxis) ||
+    axisRect->axis(QCPAxis::atLeft)->selectedParts().testFlag(QCPAxis::spTickLabels) ||
+    axisRect->axis(QCPAxis::atRight)->selectedParts().testFlag(QCPAxis::spAxis) ||
+    axisRect->axis(QCPAxis::atRight)->selectedParts().testFlag(QCPAxis::spTickLabels))
   {
-    ui->customPlot->yAxis->setSelectedParts(QCPAxis::spAxis |
+    axisRect->axis(QCPAxis::atLeft)->setSelectedParts(QCPAxis::spAxis |
       QCPAxis::spTickLabels);
     if (hasyAxis2) {
-      ui->customPlot->yAxis2->setSelectedParts(QCPAxis::spAxis |
+      axisRect->axis(QCPAxis::atRight)->setSelectedParts(QCPAxis::spAxis |
         QCPAxis::spTickLabels);
     }
   }
@@ -357,12 +358,12 @@ void logsDialog::mousePress()
   // if an axis is selected, only allow the direction of that axis to be dragged
   // if no axis is selected, both directions may be dragged
 
-  if (ui->customPlot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
-    ui->customPlot->axisRect()->setRangeDrag(ui->customPlot->xAxis->orientation());
-  else if (ui->customPlot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
-    ui->customPlot->axisRect()->setRangeDrag(ui->customPlot->yAxis->orientation());
+  if (axisRect->axis(QCPAxis::atBottom)->selectedParts().testFlag(QCPAxis::spAxis))
+    axisRect->setRangeDrag(axisRect->axis(QCPAxis::atBottom)->orientation());
+  else if (axisRect->axis(QCPAxis::atLeft)->selectedParts().testFlag(QCPAxis::spAxis))
+    axisRect->setRangeDrag(axisRect->axis(QCPAxis::atLeft)->orientation());
   else
-    ui->customPlot->axisRect()->setRangeDrag(Qt::Horizontal | Qt::Vertical);
+    axisRect->setRangeDrag(Qt::Horizontal | Qt::Vertical);
 }
 
 void logsDialog::mouseWheel()
@@ -377,9 +378,9 @@ void logsDialog::mouseWheel()
     orientation|=Qt::Vertical;
   }
   if (orientation) {
-    ui->customPlot->axisRect()->setRangeZoom((Qt::Orientation)orientation);
+    axisRect->setRangeZoom((Qt::Orientation)orientation);
   } else {
-    ui->customPlot->axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+    axisRect->setRangeZoom(Qt::Horizontal|Qt::Vertical);
   }
 }
 
@@ -396,8 +397,8 @@ void logsDialog::removeAllGraphs()
 {
   ui->customPlot->clearGraphs();
   ui->customPlot->legend->setVisible(false);
-  ui->customPlot->yAxis2->setVisible(false);
-  ui->customPlot->yAxis->setTickLabels(false);
+  axisRect->axis(QCPAxis::atRight)->setVisible(false);
+  axisRect->axis(QCPAxis::atLeft)->setTickLabels(false);
   ui->customPlot->replot();
 }
 
@@ -718,19 +719,19 @@ void logsDialog::plotLogs()
 
   removeAllGraphs();
 
-  ui->customPlot->xAxis->setRange(plots.min_x, plots.max_x);
+  axisRect->axis(QCPAxis::atBottom)->setRange(plots.min_x, plots.max_x);
 
-  ui->customPlot->yAxis->setRange(plots.rangeOneMin, plots.rangeOneMax);
-  ui->customPlot->yAxis->setTickLabels(true);
+  axisRect->axis(QCPAxis::atLeft)->setRange(plots.rangeOneMin, plots.rangeOneMax);
+  axisRect->axis(QCPAxis::atLeft)->setTickLabels(true);
 
   if (plots.twoRanges) {
-    ui->customPlot->yAxis2->setRange(plots.rangeTwoMin, plots.rangeTwoMax);
-    ui->customPlot->yAxis2->setVisible(true);
+    axisRect->axis(QCPAxis::atRight)->setRange(plots.rangeTwoMin, plots.rangeTwoMax);
+    axisRect->axis(QCPAxis::atRight)->setVisible(true);
   }
 
   for (int i = 0; i < plots.coords.size(); i++) {
     if (plots.coords.at(i).secondRange && plots.twoRanges) {
-      ui->customPlot->addGraph(ui->customPlot->xAxis, ui->customPlot->yAxis2);
+      ui->customPlot->addGraph(axisRect->axis(QCPAxis::atBottom), axisRect->axis(QCPAxis::atRight));
     } else {
       ui->customPlot->addGraph();
     }
@@ -755,6 +756,6 @@ void logsDialog::setRangeyAxis2(QCPRange range)
     rangeyAxis2Min += lowerChange;
     rangeyAxis2Max += upperChange;
 
-    ui->customPlot->yAxis2->setRange(rangeyAxis2Min, rangeyAxis2Max);
+    axisRect->axis(QCPAxis::atRight)->setRange(rangeyAxis2Min, rangeyAxis2Max);
   }
 }
