@@ -2978,9 +2978,13 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new SignedField<8>(subprotocols[module]));
       internalField.Append(new UnsignedField<8>(modelData.moduleData[module].channelsStart));
       internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[module].channelsCount, -8));
-      internalField.Append(new UnsignedField<8>(modelData.moduleData[module].failsafeMode));
-      for (int i=0; i<32; i++)
+      if (version >= 217)
+        internalField.Append(new UnsignedField<8>(modelData.moduleData[module].failsafeMode));
+      else
+        internalField.Append(new ConversionField< UnsignedField<8> >(modelData.moduleData[module].failsafeMode, 1));
+      for (int i=0; i<32; i++) {
         internalField.Append(new SignedField<16>(modelData.moduleData[module].failsafeChannels[i]));
+      }
       internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[module].ppmDelay, exportPpmDelay, importPpmDelay));
       internalField.Append(new SignedField<8>(modelData.moduleData[module].ppmFrameLength));
       if (IS_9XRPRO(board)) {

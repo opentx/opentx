@@ -2044,6 +2044,7 @@ enum ModuleTypes {
 #define IS_PULSES_EXTERNAL_MODULE() (g_model.externalModule != MODULE_TYPE_NONE)
 
 enum FailsafeModes {
+  FAILSAFE_NOT_SET,
   FAILSAFE_HOLD,
   FAILSAFE_CUSTOM,
   FAILSAFE_NOPULSES,

@@ -738,15 +738,16 @@ void menuModelSetup(uint8_t event)
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VFAILSAFE, moduleData.failsafeMode, m_posHorz==0 ? attr : 0);
           if (moduleData.failsafeMode == FAILSAFE_CUSTOM) lcd_putsAtt(MODEL_SETUP_2ND_COLUMN + MODEL_SETUP_SET_FAILSAFE_OFS, y, STR_SET, m_posHorz==1 ? attr : 0);
           if (attr) {
-            if (moduleData.failsafeMode != FAILSAFE_CUSTOM)
+            if (moduleData.failsafeMode != FAILSAFE_CUSTOM) {
               m_posHorz = 0;
-            if (m_posHorz==0) {
-              if (s_editMode>0) {
+            }
+            if (m_posHorz == 0) {
+              if (s_editMode > 0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.failsafeMode, FAILSAFE_LAST);
                 if (checkIncDec_Ret) SEND_FAILSAFE_NOW(moduleIdx);
               }
             }
-            else if (m_posHorz==1) {
+            else if (m_posHorz == 1) {
               s_editMode = 0;
               if (moduleData.failsafeMode==FAILSAFE_CUSTOM && event==EVT_KEY_FIRST(KEY_ENTER)) {
                 g_moduleIdx = moduleIdx;

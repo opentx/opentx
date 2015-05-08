@@ -524,7 +524,7 @@
 #define TR_VTRAINERMODES       "Lehrer/Buchse\0    ""Schüler/Buchse\0   ""Lehrer/SBUS Modul\0""Lehrer/CPPM Modul\0""Lehrer/Batterie\0"
 
 #define LEN_VFAILSAFE          "\013"
-#define TR_VFAILSAFE           "Halte Pos.\0""Angepasst\0 ""Kein Signal""Empfänger\0"
+#define TR_VFAILSAFE           "Not set\0 ""Halte Pos.\0""Angepasst\0 ""Kein Signal""Empfänger\0"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -822,6 +822,8 @@
 #define TR_THROTTLEWARN        "GAS"
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "SCHALTER"
+#define TR_FAILSAFEWARN        "FAILSAFE"
+#define TR_NO_FAILSAFE         "Failsafe not set"
 #define TR_KEYSTUCK            "Taste klemmt"  //Key stuck=Taste klemmt 
 #define TR_INVERT_THR          TR("Gas umkehren?","Vollgas hinten?") // Th9x 9XR 
 #define TR_SPEAKER_VOLUME      INDENT "Lautstärke"

@@ -525,7 +525,7 @@
 #define TR_VTRAINERMODES       "Učitel/Jack\0      ""Žák/Jack\0         ""Master/SBUS Module""Master/CPPM Module""Master/Battery\0"
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Držet\0   ""Vlastní\0 ""Bez pulzů""Přijímač"
+#define TR_VFAILSAFE           "Not set\0 ""Držet\0   ""Vlastní\0 ""Bez pulzů""Přijímač"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -823,6 +823,8 @@
 #define TR_THROTTLEWARN        "PLYNU"
 #define TR_ALARMSWARN          "ALARMU"
 #define TR_SWITCHWARN          "POZICE"
+#define TR_FAILSAFEWARN        "FAILSAFE"
+#define TR_NO_FAILSAFE         "Failsafe not set"
 #define TR_KEYSTUCK            "Zaseklá klávesa"
 #define TR_INVERT_THR          "Invertovat plyn?"
 #define TR_SPEAKER_VOLUME      INDENT "Hlasitost"

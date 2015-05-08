@@ -528,7 +528,7 @@
 #define TR_VTRAINERMODES       "Trener/Jack\0      ""Uczeń/Jack\0       ""Trener/SBUS Moduł ""Trener/CPPM Moduł ""Trener/Bateria\0   "
 
 #define LEN_VFAILSAFE          "\011" /*9 decimal*/
-#define TR_VFAILSAFE           "Utrzymuj\0""Własne\0  ""0 sygnału""Odbiornik"
+#define TR_VFAILSAFE           "Not set\0 ""Utrzymuj\0""Własne\0  ""0 sygnału""Odbiornik"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -826,6 +826,8 @@
 #define TR_THROTTLEWARN        "GAZ"
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          TR("Przełą","Kontrola")
+#define TR_FAILSAFEWARN        "FAILSAFE"
+#define TR_NO_FAILSAFE         "Failsafe not set"
 #define TR_KEYSTUCK            "Blokada klucza"
 #define TR_INVERT_THR          TR("Odw.Gaz?","Odwróć gaz?")
 #define TR_SPEAKER_VOLUME      INDENT "Głośność"
