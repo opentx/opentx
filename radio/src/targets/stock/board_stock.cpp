@@ -164,7 +164,7 @@ uint8_t keyDown()
   return ((~PINB) & 0x7E) | ROTENC_DOWN();
 }
 
-#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
+#if !defined(SIMU) && (defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED))
 uint8_t pf7_digital[MUX_PF7_DIGITAL_MAX - MUX_PF7_DIGITAL_MIN + 1];
 /**
  * Update ADC PF7 using 14051 multiplexer
@@ -204,7 +204,7 @@ void processMultiplexAna()
 }
 #endif
 
-#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
+#if !defined(SIMU) && (defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED))
   #define THR_STATE()   pf7_digital[PF7_THR]
   #define AIL_STATE()   pf7_digital[PF7_AIL]
 #elif defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
@@ -275,7 +275,7 @@ uint8_t trimHelper(uint8_t neg_pind, uint8_t idx)
   switch(idx){
     case 0: return neg_pind & (1<<INP_D_TRM_LH_DWN);
     case 1: return neg_pind & (1<<INP_D_TRM_LH_UP);
-#if defined(TELEMETRY_MOD_14051_SWAPPED)
+#if !defined(SIMU) && defined(TELEMETRY_MOD_14051_SWAPPED)
     case 2: return !pf7_digital[PF7_TRM_LV_DWN];
     case 3: return !pf7_digital[PF7_TRM_LV_UP];
 #else
