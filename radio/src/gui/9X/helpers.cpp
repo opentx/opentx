@@ -237,6 +237,8 @@ bool isAssignableFunctionAvailable(int function)
     case FUNC_MODULE_OFF:
 #endif
     case FUNC_PLAY_SCRIPT:
+    case FUNC_RESERVE1:
+    case FUNC_RESERVE2:
     case FUNC_RESERVE5:
       return false;
 
