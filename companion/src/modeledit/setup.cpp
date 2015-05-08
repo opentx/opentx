@@ -279,7 +279,7 @@ void ModulePanel::update()
     ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
     ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
     ui->failsafeMode->setCurrentIndex(module.failsafeMode);
-    ui->failsafesFrame->setEnabled(module.failsafeMode == 1);
+    ui->failsafesFrame->setEnabled(module.failsafeMode == 2);
   }
   else {
     mask = 0;
