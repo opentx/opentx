@@ -886,7 +886,7 @@ ifeq ($(PCB), TARANIS)
   CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp loadboot.cpp debug.cpp
   ifeq ($(PCBREV), REV9E)
     EXTRABOARDSRC += targets/taranis/top_lcd_driver.cpp
-	SRC += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c
+	SRC += targets/taranis/system_stm32f4xx.c
 	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/misc.c
 	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
 	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c
@@ -898,7 +898,7 @@ ifeq ($(PCB), TARANIS)
 	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
 	SRC += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s
   else
-	SRC += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
+	SRC += targets/taranis/system_stm32f2xx.c
 	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/misc.c
 	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
 	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dbgmcu.c

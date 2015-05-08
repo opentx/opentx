@@ -131,13 +131,13 @@ UADEFS =
 SRC =
 
 ifeq ($(PCBREV), REV9E)
-  SRC += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c
+  SRC += ../system_stm32f4xx.c
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/misc.c
 else
-  SRC += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
+  SRC += ../system_stm32f2xx.c
   SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
   SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
   SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c
