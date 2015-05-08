@@ -584,7 +584,6 @@ static int luaModelGetInfo(lua_State *L)
   lua_newtable(L);
   lua_pushtablezstring(L, "name", g_model.header.name);
   lua_pushtablenzstring(L, "bitmap", g_model.header.bitmap);
-  lua_pushtableinteger(L, "id", g_model.header.modelId);
   return 1;
 }
 
@@ -603,12 +602,53 @@ static int luaModelSetInfo(lua_State *L)
       const char * name = luaL_checkstring(L, -1);
       strncpy(g_model.header.bitmap, name, sizeof(g_model.header.bitmap));
     }
-    else if (!strcmp(key, "id")) {
-      g_model.header.modelId = luaL_checkinteger(L, -1);
-      modelHeaders[g_eeGeneral.currModel].modelId = g_model.header.modelId;
-    }
   }
   eeDirty(EE_MODEL);
+  return 0;
+}
+
+static int luaModelGetModule(lua_State *L)
+{
+  unsigned int idx = luaL_checkunsigned(L, 1);
+  if (idx < NUM_MODULES) {
+    ModuleData & module = g_model.moduleData[idx];
+    lua_newtable(L);
+    lua_pushtableinteger(L, "rfProtocol", module.rfProtocol);
+    lua_pushtableinteger(L, "modelId", g_model.header.modelId[idx]);
+    lua_pushtableinteger(L, "firstChannel", module.channelsStart);
+    lua_pushtableinteger(L, "channelsCount", module.channelsCount + 8);
+  }
+  else {
+    lua_pushnil(L);
+  }
+  return 1;
+}
+
+static int luaModelSetModule(lua_State *L)
+{
+  unsigned int idx = luaL_checkunsigned(L, 1);
+
+  if (idx < NUM_MODULES) {
+    ModuleData & module = g_model.moduleData[idx];
+    luaL_checktype(L, -1, LUA_TTABLE);
+    for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+      luaL_checktype(L, -2, LUA_TSTRING); // key is string
+      const char * key = luaL_checkstring(L, -2);
+      if (!strcmp(key, "rfProtocol")) {
+        module.rfProtocol = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "modelId")) {
+        g_model.header.modelId[idx] = modelHeaders[g_eeGeneral.currModel].modelId[idx] = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "firstChannel")) {
+        module.channelsStart = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "channelsCount")) {
+        module.channelsCount = luaL_checkinteger(L, -1) - 8;
+      }
+    }
+    eeDirty(EE_MODEL);
+  }
   return 0;
 }
 
@@ -1401,6 +1441,8 @@ const luaR_value_entry opentxConstants[] = {
 const luaL_Reg modelLib[] = {
   { "getInfo", luaModelGetInfo },
   { "setInfo", luaModelSetInfo },
+  { "getModule", luaModelGetModule },
+  { "setModule", luaModelSetModule },
   { "getTimer", luaModelGetTimer },
   { "setTimer", luaModelSetTimer },
   { "resetTimer", luaModelResetTimer },

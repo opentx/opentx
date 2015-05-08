@@ -175,7 +175,7 @@ void setupPulsesDSM2(unsigned int port)
   }
 #endif
 
-  dsmDat[1] = g_model.header.modelId; // DSM2 Header second byte for model match
+  dsmDat[1] = g_model.header.modelId[port]; // DSM2 Header second byte for model match
 
   for (int i=0; i<DSM2_CHANS; i++) {
     uint16_t pulse = limit(0, ((channelOutputs[g_model.moduleData[port].channelsStart+i]*13)>>5)+512, 1023);

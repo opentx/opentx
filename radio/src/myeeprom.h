@@ -2068,7 +2068,7 @@ enum FailsafeModes {
 
 PACK(typedef struct {
   char      name[LEN_MODEL_NAME]; // must be first for eeLoadModelName
-  uint8_t   modelId;
+  uint8_t   modelId[NUM_MODULES];
   MODELDATA_BITMAP
 }) ModelHeader;
 

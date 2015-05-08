@@ -2781,8 +2781,12 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
 
   bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
 
-  if (afterrelease21March2013)
-    internalField.Append(new UnsignedField<8>(modelData.modelId));
+  if (afterrelease21March2013) {
+    internalField.Append(new UnsignedField<8>(modelData.moduleData[0].modelId));
+  }
+  if (IS_ARM(board) && version >= 217) {
+    internalField.Append(new UnsignedField<8>(modelData.moduleData[1].modelId));
+  }
 
   if (IS_TARANIS(board) && version >= 215) {
     internalField.Append(new CharField<10>(modelData.bitmap));
@@ -2902,7 +2906,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   internalField.Append(new ConversionField< UnsignedField<8> >(modelData.thrTraceSrc, &throttleSourceConversionTable, "Throttle Source"));
 
   if (!afterrelease21March2013) {
-    internalField.Append(new UnsignedField<8>(modelData.modelId));
+    internalField.Append(new UnsignedField<8>(modelData.moduleData[0].modelId));
   }
 
   if (IS_TARANIS_X9E(board) && version >= 217)

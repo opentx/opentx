@@ -190,7 +190,7 @@ void setupPulsesPXX(unsigned int port)
   putPcmHead(port);
 
   /* Rx Number */
-  putPcmByte(g_model.header.modelId, port);
+  putPcmByte(g_model.header.modelId[port], port);
 
   /* FLAG1 */
   uint8_t flag1 = (g_model.moduleData[port].rfProtocol << 6);

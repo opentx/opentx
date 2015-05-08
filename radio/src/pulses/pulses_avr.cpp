@@ -338,7 +338,7 @@ void setupPulsesPXX()
     PcmBitCount = PcmByte = 0 ;
     PcmOnesCount = 0 ;
     putPcmHead() ;
-    putPcmByte( g_model.header.modelId ) ;     // putPcmByte( g_model.rxnum ) ;  //
+    putPcmByte(g_model.header.modelId[0]);
     uint8_t flag1 = 0;
     if (moduleFlag[0] == MODULE_BIND)
       flag1 |= (g_eeGeneral.countryCode << 1) | PXX_SEND_BIND;
@@ -554,7 +554,7 @@ void setupPulsesDSM2()
     moduleFlag[0] = 0;
   }
 
-  dsmDat[1] = g_model.header.modelId; // DSM2 Header second byte for model match
+  dsmDat[1] = g_model.header.modelId[0];
 
   for (uint8_t i=0; i<DSM2_CHANS; i++) {
     uint16_t pulse = limit(0, ((channelOutputs[i]*13)>>5)+512, 1023);

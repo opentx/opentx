@@ -823,6 +823,7 @@ enum Protocol {
 class ModuleData {
   public:
     ModuleData() { clear(); }
+    unsigned int modelId;
     int          protocol;
     unsigned int channelsStart;
     int          channelsCount; // 0=8 channels
@@ -982,7 +983,6 @@ class ModelData {
     CustomFunctionData customFn[C9X_MAX_CUSTOM_FUNCTIONS];
     SwashRingData swashRingData;
     unsigned int thrTraceSrc;
-    unsigned int modelId;
     uint64_t switchWarningStates;
     unsigned int switchWarningEnable;
     unsigned int potsWarningMode;

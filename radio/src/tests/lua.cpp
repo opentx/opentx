@@ -68,16 +68,14 @@ TEST(Lua, testSetModelInfo)
 {
   luaExecStr("info = model.getInfo()");
   // luaExecStr("print('model name: '..info.name..' id: '..info.id)");
-  luaExecStr("info.id = 2; info.name = 'modelA'");
+  luaExecStr("info.name = 'modelA'");
   luaExecStr("model.setInfo(info)");
   // luaExecStr("print('model name: '..info.name..' id: '..info.id)");
-  EXPECT_EQ(g_model.header.modelId, 2);
   EXPECT_ZSTREQ("modelA", g_model.header.name);
 
-  luaExecStr("info.id = 4; info.name = 'Model 1'");
+  luaExecStr("info.name = 'Model 1'");
   luaExecStr("model.setInfo(info)");
   // luaExecStr("print('model name: '..info.name..' id: '..info.id)");
-  EXPECT_EQ(g_model.header.modelId, 4);
   EXPECT_ZSTREQ("Model 1", g_model.header.name);
 }
 

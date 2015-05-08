@@ -1048,7 +1048,7 @@ void modelDefault(uint8_t id);
 
 #if defined(CPUARM)
 bool isFileAvailable(const char * filename);
-void checkModelIdUnique(uint8_t id);
+void checkModelIdUnique(uint8_t index, uint8_t module);
 #endif
 
 #if defined(CPUARM)

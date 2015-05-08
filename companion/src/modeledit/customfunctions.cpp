@@ -73,7 +73,6 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
         }
       }
     }
-    qDebug() << tracksSet;
   }
 
   if (IS_TARANIS(firmware->getBoard())) {
@@ -86,7 +85,6 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
         }
       }
     }
-    qDebug() << scriptsSet;
   }
 
   CompanionIcon playIcon("play.png");
