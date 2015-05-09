@@ -170,21 +170,21 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterf
   if (g.simuSW())
     restoreSwitches();
 
-  if (flags && SIMULATOR_FLAGS_S1_MULTI) {
+  if (flags & SIMULATOR_FLAGS_S1_MULTI) {
     ui->dialP_1->setValue(-1024);
     ui->dialP_1->setSingleStep(2048/5);
     ui->dialP_1->setPageStep(2048/5);
   }
-  if (flags && SIMULATOR_FLAGS_S2_MULTI) {
+  if (flags & SIMULATOR_FLAGS_S2_MULTI) {
     ui->dialP_2->setValue(-1024);
     ui->dialP_2->setSingleStep(2048/5);
     ui->dialP_2->setPageStep(2048/5);
   }
-  if (!(flags && SIMULATOR_FLAGS_S3)) {
+  if (!(flags & SIMULATOR_FLAGS_S3)) {
     ui->dialP_5->hide();
     ui->dialP_5_lbl->hide();
   } else {
-    if (flags && SIMULATOR_FLAGS_S3_MULTI) {
+    if (flags & SIMULATOR_FLAGS_S3_MULTI) {
       ui->dialP_5->setValue(-1024);
       ui->dialP_5->setSingleStep(2048/5);
       ui->dialP_5->setPageStep(2048/5);
