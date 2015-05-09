@@ -169,26 +169,22 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterf
   //restore switches
   if (g.simuSW())
     restoreSwitches();
+  QDial * pots[] = { ui->dialP_1 , ui->dialP_2 , ui->dialP_5};
+  QLabel * potslabel[] = { ui->dialP_1_lbl , ui->dialP_2_lbl , ui->dialP_5_lbl};
+  int potsflag[] = {SIMULATOR_FLAGS_S1, SIMULATOR_FLAGS_S2, SIMULATOR_FLAGS_S3};
+  int potsmflag[] = {SIMULATOR_FLAGS_S1_MULTI, SIMULATOR_FLAGS_S2_MULTI, SIMULATOR_FLAGS_S3_MULTI};
 
-  if (flags & SIMULATOR_FLAGS_S1_MULTI) {
-    ui->dialP_1->setValue(-1024);
-    ui->dialP_1->setSingleStep(2048/5);
-    ui->dialP_1->setPageStep(2048/5);
-  }
-  if (flags & SIMULATOR_FLAGS_S2_MULTI) {
-    ui->dialP_2->setValue(-1024);
-    ui->dialP_2->setSingleStep(2048/5);
-    ui->dialP_2->setPageStep(2048/5);
-  }
-  if (!(flags & SIMULATOR_FLAGS_S3)) {
-    ui->dialP_5->hide();
-    ui->dialP_5_lbl->hide();
-  } else {
-    if (flags & SIMULATOR_FLAGS_S3_MULTI) {
-      ui->dialP_5->setValue(-1024);
-      ui->dialP_5->setSingleStep(2048/5);
-      ui->dialP_5->setPageStep(2048/5);
-    }    
+  for (int i=0; i<3; i++) {
+    if (!(flags & potsflag[i])) {
+      pots[i]->hide();
+      potslabel[i]->hide();
+    } else {
+      if (flags & potsmflag[i]) {
+        pots[i]->setValue(-1024);
+        pots[i]->setSingleStep(2048/5);
+        pots[i]->setPageStep(2048/5);
+      }    
+    }
   }
   
   ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
@@ -841,17 +837,14 @@ void SimulatorDialogTaranis::on_switchH_sliderReleased()
 
 void SimulatorDialogTaranis::getValues()
 {
-  if (flags && SIMULATOR_FLAGS_S1_MULTI) {
-    int s1=round((ui->dialP_1->value()+1024)/(2048.0/5))*(2048.0/5)-1024;
-    ui->dialP_1->setValue(s1);
-  }
-  if (flags && SIMULATOR_FLAGS_S2_MULTI) {
-    int s1=round((ui->dialP_2->value()+1024)/(2048.0/5))*(2048.0/5)-1024;
-    ui->dialP_2->setValue(s1);
-  }
-  if (flags && SIMULATOR_FLAGS_S3_MULTI) {
-    int s1=round((ui->dialP_5->value()+1024)/(2048.0/5))*(2048.0/5)-1024;
-    ui->dialP_5->setValue(s1);
+  QDial * pots[] = { ui->dialP_1 , ui->dialP_2 , ui->dialP_5};
+  int potsmflag[] = {SIMULATOR_FLAGS_S1_MULTI, SIMULATOR_FLAGS_S2_MULTI, SIMULATOR_FLAGS_S3_MULTI};
+
+  for (int i=0; i<3; i++) {
+    if (flags && potsmflag[i]) {
+      int s1=round((pots[i]->value()+1024)/(2048.0/5))*(2048.0/5)-1024;
+      pots[i]->setValue(s1);
+    }
   }
   TxInputs inputs = {
     {

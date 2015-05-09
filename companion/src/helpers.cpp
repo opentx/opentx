@@ -941,12 +941,18 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     BoardEnum board = GetCurrentFirmware()->getBoard();
     SimulatorDialog * sd;
     if (IS_TARANIS(board)) {
-      if (radioData.generalSettings.potConfig[0]==GeneralSettings::POT_MULTIPOS_SWITCH ) {
-        flags |= SIMULATOR_FLAGS_S1_MULTI;
+      if (radioData.generalSettings.potConfig[0]!=GeneralSettings::POT_NONE) {
+        flags |= SIMULATOR_FLAGS_S1;
+        if (radioData.generalSettings.potConfig[0]==GeneralSettings::POT_MULTIPOS_SWITCH ) {
+          flags |= SIMULATOR_FLAGS_S1_MULTI;
+        }              
       }
-      if (radioData.generalSettings.potConfig[1]==GeneralSettings::POT_MULTIPOS_SWITCH ) {
-        flags |= SIMULATOR_FLAGS_S2_MULTI;
-      }      
+      if (radioData.generalSettings.potConfig[1]!=GeneralSettings::POT_NONE) {
+        flags |= SIMULATOR_FLAGS_S2;
+        if (radioData.generalSettings.potConfig[1]==GeneralSettings::POT_MULTIPOS_SWITCH ) {
+          flags |= SIMULATOR_FLAGS_S2_MULTI;
+        }              
+      }
       if ((radioData.generalSettings.potConfig[2]!=GeneralSettings::POT_NONE) && (IS_TARANIS_PLUS(board) || IS_TARANIS_X9E(board))) {
         flags |= SIMULATOR_FLAGS_S3;
         if (radioData.generalSettings.potConfig[2]==GeneralSettings::POT_MULTIPOS_SWITCH ) {
