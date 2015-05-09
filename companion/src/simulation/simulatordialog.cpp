@@ -169,6 +169,7 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterf
   //restore switches
   if (g.simuSW())
     restoreSwitches();
+
   if (flags && SIMULATOR_FLAGS_S1_MULTI) {
     ui->dialP_1->setValue(-1024);
     ui->dialP_1->setSingleStep(2048/5);
