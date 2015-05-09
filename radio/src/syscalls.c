@@ -54,7 +54,7 @@
 #undef errno
 extern int errno;
 extern int _end;
-extern int _main_stack_start;
+extern int _heap_end;
 
 /*----------------------------------------------------------------------------
  *        Exported functions
@@ -66,7 +66,7 @@ extern int _getpid ( void ) ;
 unsigned char *heap = (unsigned char *)&_end;
 extern caddr_t _sbrk(int nbytes)
 {
-  if (heap + nbytes < (unsigned char *)&_main_stack_start) {
+  if (heap + nbytes < (unsigned char *)&_heap_end) {
     unsigned char *prev_heap = heap;
     heap += nbytes;
     return (caddr_t) prev_heap;

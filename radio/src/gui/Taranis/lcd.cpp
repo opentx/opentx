@@ -38,11 +38,11 @@
 #include "../../timers.h"
 
 #if defined(REVPLUS) && defined(LCD_DUAL_BUFFER)
-  display_t displayBuf1[DISPLAY_BUF_SIZE];
-  display_t displayBuf2[DISPLAY_BUF_SIZE];
+  display_t displayBuf1[DISPLAY_BUF_SIZE] _NOCCM;
+  display_t displayBuf2[DISPLAY_BUF_SIZE] _NOCCM;
   display_t * displayBuf = displayBuf1;
 #else
-  display_t displayBuf[DISPLAY_BUF_SIZE];
+  display_t displayBuf[DISPLAY_BUF_SIZE] _NOCCM;
 #endif
 
 void lcd_clear()

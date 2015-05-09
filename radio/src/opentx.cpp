@@ -1724,7 +1724,7 @@ void opentxStart()
   doSplash();
 
 #if defined(DEBUG_TRACE_BUFFER)
-    trace_event(trace_start, 0x12345678); 
+  trace_event(trace_start, 0x12345678);
 #endif 
 
 #if defined(PCBSKY9X) && defined(SDCARD) && !defined(SIMU)

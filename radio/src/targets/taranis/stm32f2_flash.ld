@@ -1,7 +1,7 @@
 /*
 *****************************************************************************
 **
-**  File        : stm32_flash.ld
+**  File        : stm32f2_flash.ld
 **
 **  Abstract    : Linker script for STM32F205 Device with
 **                0.5MByte FLASH, 128KByte SRAM
@@ -12,19 +12,6 @@
 **                Set memory bank area and size if external memory is used.
 **
 **  Target      : STMicroelectronics STM32
-**
-**  Environment : Atollic TrueSTUDIO(R)
-**
-**  Distribution: The file is distributed �as is,� without any warranty
-**                of any kind.
-**
-**  (c)Copyright Atollic AB.
-**  You may use this file as-is or modify it according to the needs of your
-**  project. Distribution of this file (unmodified or modified) is not
-**  permitted. Atollic AB permit registered Atollic TrueSTUDIO(R) users the
-**  rights to distribute the assembled, compiled & linked contents of this
-**  file as part of an application binary file, provided that it is built
-**  using the Atollic TrueSTUDIO(R) toolchain.
 **
 *****************************************************************************
 */
@@ -39,8 +26,9 @@ _estack = 0x20020000;    /* end of 128K SRAM */
 _Min_Heap_Size = 0;      /* required amount of heap  */
 _Main_Stack_Size = 1024; /* required amount of stack for interrupt stack (Main stack) */
 
-/*Main stack end*/
+/* Main stack end */
 _main_stack_start = _estack - _Main_Stack_Size;
+_heap_end = _main_stack_start;
 
 /* Specify the memory areas */
 MEMORY

@@ -91,7 +91,7 @@ STM32USBPATH = ../../../thirdparty/STM32_USB-Host-Device_Lib_V2.1.0/Libraries
 #
 ifeq ($(PCB), TARANIS)
   ARCH = ARM
-  LDSCRIPT = ../stm32_ramBoot.ld
+  LDSCRIPT = ../stm32_ramboot.ld
   TRGT = arm-none-eabi-
   CPPDEFS += -DHSE_VALUE=12000000
   CPPDEFS += -DPCBTARANIS -DEEPROM_RLC
