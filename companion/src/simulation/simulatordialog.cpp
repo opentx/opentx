@@ -841,7 +841,7 @@ void SimulatorDialogTaranis::getValues()
   int potsmflag[] = {SIMULATOR_FLAGS_S1_MULTI, SIMULATOR_FLAGS_S2_MULTI, SIMULATOR_FLAGS_S3_MULTI};
 
   for (int i=0; i<3; i++) {
-    if (flags && potsmflag[i]) {
+    if (flags & potsmflag[i]) {
       int s1=round((pots[i]->value()+1024)/(2048.0/5))*(2048.0/5)-1024;
       pots[i]->setValue(s1);
     }
