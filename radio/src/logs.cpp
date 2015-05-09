@@ -152,9 +152,7 @@ void writeHeader()
 #endif
 
 #if defined(FRSKY)
-#if defined(CPUARM)
-  f_puts("SWR,RSSI,", &g_oLogFile);
-#else
+#if !defined(CPUARM)
   f_puts("Buffer,RX,TX,A1,A2,", &g_oLogFile);
 #if defined(FRSKY_HUB)
   if (IS_USR_PROTO_FRSKY_HUB()) {
@@ -232,11 +230,7 @@ void writeLogs()
 #endif
 
 #if defined(FRSKY)
-#if defined(CPUARM)
-      f_printf(&g_oLogFile, "%d,%d,", RAW_FRSKY_MINMAX(frskyData.swr), RAW_FRSKY_MINMAX(frskyData.rssi));
-#elif defined(CPUARM)
-      f_printf(&g_oLogFile, "%d,", RAW_FRSKY_MINMAX(frskyData.rssi));
-#else
+#if !defined(CPUARM)
       f_printf(&g_oLogFile, "%d,%d,%d,", frskyStreaming, RAW_FRSKY_MINMAX(frskyData.rssi[0]), RAW_FRSKY_MINMAX(frskyData.rssi[1]));
       for (uint8_t i=0; i<MAX_FRSKY_A_CHANNELS; i++) {
         int16_t converted_value = applyChannelRatio(i, RAW_FRSKY_MINMAX(frskyData.analog[i]));
