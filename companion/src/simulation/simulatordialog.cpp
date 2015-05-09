@@ -169,10 +169,27 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterf
   //restore switches
   if (g.simuSW())
     restoreSwitches();
+  if (flags && SIMULATOR_FLAGS_S1_MULTI) {
+    ui->dialP_1->setValue(-1024);
+    ui->dialP_1->setSingleStep(2048/5);
+    ui->dialP_1->setPageStep(2048/5);
+  }
+  if (flags && SIMULATOR_FLAGS_S2_MULTI) {
+    ui->dialP_2->setValue(-1024);
+    ui->dialP_2->setSingleStep(2048/5);
+    ui->dialP_2->setPageStep(2048/5);
+  }
   if (!(flags && SIMULATOR_FLAGS_S3)) {
     ui->dialP_5->hide();
     ui->dialP_5_lbl->hide();
+  } else {
+    if (flags && SIMULATOR_FLAGS_S3_MULTI) {
+      ui->dialP_5->setValue(-1024);
+      ui->dialP_5->setSingleStep(2048/5);
+      ui->dialP_5->setPageStep(2048/5);
+    }    
   }
+  
   ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
   ui->trimHR_R->setText(QString::fromUtf8(rightArrow));
   ui->trimVR_U->setText(QString::fromUtf8(upArrow));
@@ -823,6 +840,18 @@ void SimulatorDialogTaranis::on_switchH_sliderReleased()
 
 void SimulatorDialogTaranis::getValues()
 {
+  if (flags && SIMULATOR_FLAGS_S1_MULTI) {
+    int s1=round((ui->dialP_1->value()+1024)/(2048.0/5))*(2048.0/5)-1024;
+    ui->dialP_1->setValue(s1);
+  }
+  if (flags && SIMULATOR_FLAGS_S2_MULTI) {
+    int s1=round((ui->dialP_2->value()+1024)/(2048.0/5))*(2048.0/5)-1024;
+    ui->dialP_2->setValue(s1);
+  }
+  if (flags && SIMULATOR_FLAGS_S3_MULTI) {
+    int s1=round((ui->dialP_5->value()+1024)/(2048.0/5))*(2048.0/5)-1024;
+    ui->dialP_5->setValue(s1);
+  }
   TxInputs inputs = {
     {
       int(1024*nodeLeft->getX()),  // LEFT HORZ

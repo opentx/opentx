@@ -27,9 +27,14 @@ namespace Ui {
 class lcdWidget;
 class mySlider;
 
-#define SIMULATOR_FLAGS_NOTX            1
-#define SIMULATOR_FLAGS_STICK_MODE_LEFT 2
-#define SIMULATOR_FLAGS_S3              4
+#define SIMULATOR_FLAGS_NOTX              1
+#define SIMULATOR_FLAGS_STICK_MODE_LEFT   2
+#define SIMULATOR_FLAGS_S3                4
+#define SIMULATOR_FLAGS_S4                8 //reserved for the future
+#define SIMULATOR_FLAGS_S1_MULTI         16
+#define SIMULATOR_FLAGS_S2_MULTI         32
+#define SIMULATOR_FLAGS_S3_MULTI         64
+#define SIMULATOR_FLAGS_S4_MULTI        128 //reserved for the future
 
 class SimulatorDialog : public QDialog
 {
