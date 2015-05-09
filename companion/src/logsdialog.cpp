@@ -73,7 +73,7 @@ logsDialog::logsDialog(QWidget *parent) :
   connect(ui->customPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
 
   // make left axes transfer its range to right axes:
-  connect(axisRect->axis(QCPAxis::atLeft), SIGNAL(rangeChanged(QCPRange)), this, SLOT(setRangeyAxis2(QCPRange)));
+  connect(axisRect->axis(QCPAxis::atLeft), SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisChangeRanges(QCPRange)));
 
   // connect some interaction slots:
   connect(ui->customPlot, SIGNAL(titleDoubleClick(QMouseEvent*, QCPPlotTitle*)), this, SLOT(titleDoubleClick(QMouseEvent*, QCPPlotTitle*)));
@@ -162,14 +162,33 @@ void logsDialog::selectionChanged()
   // and handle axis and tick labels as one selectable object:
   if (axisRect->axis(QCPAxis::atLeft)->selectedParts().testFlag(QCPAxis::spAxis) ||
     axisRect->axis(QCPAxis::atLeft)->selectedParts().testFlag(QCPAxis::spTickLabels) ||
-    axisRect->axis(QCPAxis::atRight)->selectedParts().testFlag(QCPAxis::spAxis) ||
-    axisRect->axis(QCPAxis::atRight)->selectedParts().testFlag(QCPAxis::spTickLabels))
-  {
+    (
+      axisRect->axis(QCPAxis::atRight)->visible() &&
+      (axisRect->axis(QCPAxis::atRight)->selectedParts().testFlag(QCPAxis::spAxis) ||
+      axisRect->axis(QCPAxis::atRight)->selectedParts().testFlag(QCPAxis::spTickLabels))
+    ) || (
+      axisRect->axisCount(QCPAxis::atLeft) == 2 &&
+      (axisRect->axis(QCPAxis::atLeft, 1)->selectedParts().testFlag(QCPAxis::spAxis) ||
+      axisRect->axis(QCPAxis::atLeft, 1)->selectedParts().testFlag(QCPAxis::spTickLabels))
+    ) || (
+      axisRect->axisCount(QCPAxis::atRight) == 2 &&
+      (axisRect->axis(QCPAxis::atRight, 1)->selectedParts().testFlag(QCPAxis::spAxis) ||
+      axisRect->axis(QCPAxis::atRight, 1)->selectedParts().testFlag(QCPAxis::spTickLabels))
+    )
+  ) {
     axisRect->axis(QCPAxis::atLeft)->setSelectedParts(QCPAxis::spAxis |
       QCPAxis::spTickLabels);
-    if (hasyAxis2) {
+    if (axisRect->axis(QCPAxis::atRight)->visible()) {
       axisRect->axis(QCPAxis::atRight)->setSelectedParts(QCPAxis::spAxis |
         QCPAxis::spTickLabels);
+      if (axisRect->axisCount(QCPAxis::atLeft) == 2) {
+        axisRect->axis(QCPAxis::atLeft, 1)->setSelectedParts(QCPAxis::spAxis |
+          QCPAxis::spTickLabels);
+        if (axisRect->axisCount(QCPAxis::atRight) == 2) {
+          axisRect->axis(QCPAxis::atRight, 1)->setSelectedParts(QCPAxis::spAxis |
+            QCPAxis::spTickLabels);
+        }
+      }
     }
   }
 
@@ -340,18 +359,17 @@ void logsDialog::on_mapsButton_clicked()
   outputStream << "\t\t\t\t\t\t</SchemaData>\n\t\t\t\t\t</ExtendedData>\n\t\t\t\t</gx:Track>\n\t\t\t</Placemark>\n\t\t</Folder>\n\t</Document>\n</kml>";
   geFile.close();
   QStringList parameters;
-#ifdef __APPLE__
+  #ifdef __APPLE__
   parameters << "-a";
   parameters << gePath;
   gePath = "/usr/bin/open";
-#endif
+  #endif
   parameters << geFilename;
   QProcess *process = new QProcess(this);
   process->start(gePath, parameters);
   ui->FieldsTW->setDisabled(false);
   ui->logTable->setDisabled(false);
 }
-
 
 void logsDialog::mousePress()
 {
@@ -397,8 +415,16 @@ void logsDialog::removeAllGraphs()
 {
   ui->customPlot->clearGraphs();
   ui->customPlot->legend->setVisible(false);
+  axisRect->axis(QCPAxis::atRight)->setSelectedParts(QCPAxis::spNone);
   axisRect->axis(QCPAxis::atRight)->setVisible(false);
+  axisRect->axis(QCPAxis::atLeft)->setSelectedParts(QCPAxis::spNone);
   axisRect->axis(QCPAxis::atLeft)->setTickLabels(false);
+  if (axisRect->axisCount(QCPAxis::atLeft) == 2) {
+    axisRect->removeAxis(axisRect->axis(QCPAxis::atLeft, 1));
+  }
+  if (axisRect->axisCount(QCPAxis::atRight) == 2) {
+    axisRect->removeAxis(axisRect->axis(QCPAxis::atRight, 1));
+  }
   ui->customPlot->replot();
 }
 
@@ -526,7 +552,6 @@ bool logsDialog::cvsFileParse()
   return true;
 }
 
-
 void logsDialog::on_sessions_CB_currentIndexChanged(int index)
 {
   if (plotLock) return;
@@ -589,9 +614,9 @@ void logsDialog::plotLogs()
     coords plotCoords;
     int plotColumn = plot->row() + 2; // Date and Time first
 
-    plotCoords.min_y = 999999;
-    plotCoords.max_y = -999999;
-    plotCoords.secondRange = false;
+    plotCoords.min_y = INVALID_MIN;
+    plotCoords.max_y = INVALID_MAX;
+    plotCoords.yaxis = firstLeft;
     plotCoords.name = plot->text();
 
     for (int row = 0; row < rowCount; row++) {
@@ -638,103 +663,137 @@ void logsDialog::plotLogs()
     plots.coords.append(plotCoords);
   }
 
-  plots.rangeOneMin = plots.coords.at(0).min_y;
-  plots.rangeOneMax = plots.coords.at(0).max_y;
-  plots.twoRanges = false;
+  yAxesRanges[firstLeft].min = plots.coords.at(0).min_y;
+  yAxesRanges[firstLeft].max = plots.coords.at(0).max_y;
+  for (int i = firstRight; i < AXES_LIMIT; i++) {
+    yAxesRanges[i].min = INVALID_MIN;
+    yAxesRanges[i].max = INVALID_MAX;
+  }
   plots.tooManyRanges = false;
 
   for (int i = 1; i < plots.coords.size(); i++) {
-    if (plots.tooManyRanges) {
-      if (plots.coords.at(i).min_y < plots.rangeOneMin) {
-        plots.rangeOneMin = plots.coords.at(i).min_y;
-      }
-      if (plots.coords.at(i).max_y > plots.rangeOneMax) {
-        plots.rangeOneMax = plots.coords.at(i).max_y;
-      }
-
-      continue;
-    }
-
-    double actualRange = plots.rangeOneMax - plots.rangeOneMin;
+    double actualRange = yAxesRanges[firstLeft].max - yAxesRanges[firstLeft].min;
     double thisRange = plots.coords.at(i).max_y - plots.coords.at(i).min_y;
 
-    if (thisRange > actualRange * 1.3 || thisRange * 1.3 < actualRange ||
-        plots.coords.at(i).min_y > plots.rangeOneMax ||
-        plots.coords.at(i).max_y < plots.rangeOneMin) {
-      plots.coords[i].secondRange = true;
-      if (plots.twoRanges) {
-        actualRange = plots.rangeTwoMax - plots.rangeTwoMin;
-        if (thisRange > actualRange * 1.3 || thisRange * 1.3 < actualRange ||
-            plots.coords.at(i).min_y > plots.rangeTwoMax ||
-            plots.coords.at(i).max_y < plots.rangeTwoMin) {
+    while (yAxesRanges[plots.coords.at(i).yaxis].max != INVALID_MAX &&
+        (thisRange > actualRange * 1.3 || thisRange * 1.3 < actualRange ||
+        plots.coords.at(i).min_y > yAxesRanges[plots.coords.at(i).yaxis].max ||
+        plots.coords.at(i).max_y < yAxesRanges[plots.coords.at(i).yaxis].min)
+      ) {
+
+      switch (plots.coords[i].yaxis) {
+        case firstLeft:
+          plots.coords[i].yaxis = firstRight;
+          break;
+        case firstRight:
+          plots.coords[i].yaxis = secondLeft;
+          break;
+        case secondLeft:
+          plots.coords[i].yaxis = secondRight;
+          break;
+        case secondRight:
           plots.tooManyRanges = true;
-          plots.twoRanges = false;
-          if (plots.rangeTwoMin < plots.rangeOneMin) {
-            plots.rangeOneMin = plots.rangeTwoMin;
-          }
-          if (plots.rangeTwoMax > plots.rangeOneMax) {
-            plots.rangeOneMax = plots.rangeTwoMax;
-          }
-          if (plots.coords.at(i).min_y < plots.rangeOneMin) {
-            plots.rangeOneMin = plots.coords.at(i).min_y;
-          }
-          if (plots.coords.at(i).max_y > plots.rangeOneMax) {
-            plots.rangeOneMax = plots.coords.at(i).max_y;
-          }
-        } else {
-          if (plots.coords.at(i).min_y < plots.rangeTwoMin) {
-            plots.rangeTwoMin = plots.coords.at(i).min_y;
-          }
-          if (plots.coords.at(i).max_y > plots.rangeTwoMax) {
-            plots.rangeTwoMax = plots.coords.at(i).max_y;
-          }
-        }
-      } else {
-        plots.twoRanges = true;
-        plots.rangeTwoMax = plots.coords.at(i).max_y;
-        plots.rangeTwoMin = plots.coords.at(i).min_y;
+          break;
+        default:
+          break;
       }
+      if (plots.tooManyRanges) break;
+
+      actualRange = yAxesRanges[plots.coords.at(i).yaxis].max
+        - yAxesRanges[plots.coords.at(i).yaxis].min;
+    }
+
+    if (plots.tooManyRanges) {
+      break;
     } else {
-      if (plots.coords.at(i).min_y < plots.rangeOneMin) {
-        plots.rangeOneMin = plots.coords.at(i).min_y;
+      if (plots.coords.at(i).min_y < yAxesRanges[plots.coords.at(i).yaxis].min) {
+        yAxesRanges[plots.coords.at(i).yaxis].min = plots.coords.at(i).min_y;
       }
-      if (plots.coords.at(i).max_y > plots.rangeOneMax) {
-        plots.rangeOneMax = plots.coords.at(i).max_y;
+      if (plots.coords.at(i).max_y > yAxesRanges[plots.coords.at(i).yaxis].max) {
+        yAxesRanges[plots.coords.at(i).yaxis].max = plots.coords.at(i).max_y;
       }
     }
   }
 
-  if (plots.twoRanges) {
-    rangeRatio = (plots.rangeTwoMax - plots.rangeTwoMin) /
-      (plots.rangeOneMax - plots.rangeOneMin);
-    rangeyAxisMin = plots.rangeOneMin;
-    rangeyAxisMax = plots.rangeOneMax;
-    rangeyAxis2Min = plots.rangeTwoMin;
-    rangeyAxis2Max = plots.rangeTwoMax;
+  if (plots.tooManyRanges) {
+    yAxesRanges[firstLeft].max = 101;
+    yAxesRanges[firstLeft].min = -1;
+    yAxesRanges[firstRight].max = INVALID_MAX;
+    yAxesRanges[firstRight].min = INVALID_MIN;
+    yAxesRanges[secondLeft].max = INVALID_MAX;
+    yAxesRanges[secondLeft].min = INVALID_MIN;
+    yAxesRanges[secondRight].max = INVALID_MAX;
+    yAxesRanges[secondRight].min = INVALID_MIN;
 
-    hasyAxis2 = true;
+    for (int i = 0; i < plots.coords.size(); i++) {
+      plots.coords[i].yaxis = firstLeft;
+
+      double factor = 100 / (plots.coords.at(i).max_y - plots.coords.at(i).min_y);
+      for (int j = 0; j < plots.coords.at(i).y.count(); j++) {
+        plots.coords[i].y[j] = factor * (plots.coords.at(i).y.at(j) - plots.coords.at(i).min_y);
+      }
+    }
   } else {
-    hasyAxis2 = false;
+    for (int i = firstRight; i < AXES_LIMIT; i++) {
+      if (yAxesRanges[i].max == INVALID_MAX) break;
+
+      yAxesRatios[i] = (yAxesRanges[i].max - yAxesRanges[i].min) /
+        (yAxesRanges[firstLeft].max - yAxesRanges[firstLeft].min);
+    }
   }
 
   removeAllGraphs();
 
   axisRect->axis(QCPAxis::atBottom)->setRange(plots.min_x, plots.max_x);
 
-  axisRect->axis(QCPAxis::atLeft)->setRange(plots.rangeOneMin, plots.rangeOneMax);
-  axisRect->axis(QCPAxis::atLeft)->setTickLabels(true);
+  axisRect->axis(QCPAxis::atLeft)->setRange(yAxesRanges[firstLeft].min,
+    yAxesRanges[firstLeft].max);
 
-  if (plots.twoRanges) {
-    axisRect->axis(QCPAxis::atRight)->setRange(plots.rangeTwoMin, plots.rangeTwoMax);
+  if (plots.tooManyRanges) {
+    axisRect->axis(QCPAxis::atLeft)->setTickLabels(false);
+  } else {
+    axisRect->axis(QCPAxis::atLeft)->setTickLabels(true);
+  }
+
+  if (yAxesRanges[firstRight].max != INVALID_MAX) {
+    axisRect->axis(QCPAxis::atRight)->setRange(yAxesRanges[firstRight].min,
+      yAxesRanges[firstRight].max);
     axisRect->axis(QCPAxis::atRight)->setVisible(true);
   }
 
+  if (yAxesRanges[secondLeft].max != INVALID_MAX) {
+    axisRect->addAxis(QCPAxis::atLeft);
+    axisRect->axis(QCPAxis::atLeft, 1)->setRange(yAxesRanges[secondLeft].min,
+      yAxesRanges[secondLeft].max);
+  }
+
+  if (yAxesRanges[secondRight].max != INVALID_MAX) {
+    axisRect->addAxis(QCPAxis::atRight);
+    axisRect->axis(QCPAxis::atRight, 1)->setRange(yAxesRanges[secondRight].min,
+      yAxesRanges[secondRight].max);
+  }
+
   for (int i = 0; i < plots.coords.size(); i++) {
-    if (plots.coords.at(i).secondRange && plots.twoRanges) {
-      ui->customPlot->addGraph(axisRect->axis(QCPAxis::atBottom), axisRect->axis(QCPAxis::atRight));
-    } else {
-      ui->customPlot->addGraph();
+    switch (plots.coords[i].yaxis) {
+      case firstLeft:
+        ui->customPlot->addGraph();
+        break;
+      case firstRight:
+        ui->customPlot->addGraph(axisRect->axis(QCPAxis::atBottom),
+          axisRect->axis(QCPAxis::atRight));
+        break;
+      case secondLeft:
+        ui->customPlot->addGraph(axisRect->axis(QCPAxis::atBottom),
+          axisRect->axis(QCPAxis::atLeft, 1));
+        break;
+      case secondRight:
+        ui->customPlot->addGraph(axisRect->axis(QCPAxis::atBottom),
+          axisRect->axis(QCPAxis::atRight, 1));
+        break;
+      default:
+        break;
     }
+
     ui->customPlot->graph(i)->setData(plots.coords.at(i).x,
       plots.coords.at(i).y);
     pen.setColor(colors.at(i % colors.size()));
@@ -746,16 +805,44 @@ void logsDialog::plotLogs()
   ui->customPlot->replot();
 }
 
-void logsDialog::setRangeyAxis2(QCPRange range)
+void logsDialog::yAxisChangeRanges(QCPRange range)
 {
-  if (hasyAxis2) {
-    double lowerChange = (range.lower - rangeyAxisMin) * rangeRatio;
-    double upperChange = (range.upper - rangeyAxisMax) * rangeRatio;
-    rangeyAxisMin = range.lower;
-    rangeyAxisMax = range.upper;
-    rangeyAxis2Min += lowerChange;
-    rangeyAxis2Max += upperChange;
+  if (axisRect->axis(QCPAxis::atRight)->visible()) {
+    double lowerChange = (range.lower - yAxesRanges[firstLeft].min) *
+      yAxesRatios[firstRight];
+    double upperChange = (range.upper - yAxesRanges[firstLeft].max) *
+      yAxesRatios[firstRight];
 
-    axisRect->axis(QCPAxis::atRight)->setRange(rangeyAxis2Min, rangeyAxis2Max);
+    yAxesRanges[firstRight].min += lowerChange;
+    yAxesRanges[firstRight].max += upperChange;
+    axisRect->axis(QCPAxis::atRight)->setRange(yAxesRanges[firstRight].min,
+      yAxesRanges[firstRight].max);
+
+    if (axisRect->axisCount(QCPAxis::atLeft) == 2) {
+      lowerChange = (range.lower - yAxesRanges[firstLeft].min) *
+        yAxesRatios[secondLeft];
+      upperChange = (range.upper - yAxesRanges[firstLeft].max) *
+        yAxesRatios[secondLeft];
+
+      yAxesRanges[secondLeft].min += lowerChange;
+      yAxesRanges[secondLeft].max += upperChange;
+      axisRect->axis(QCPAxis::atLeft, 1)->setRange(yAxesRanges[secondLeft].min,
+        yAxesRanges[secondLeft].max);
+
+      if (axisRect->axisCount(QCPAxis::atRight) == 2) {
+        lowerChange = (range.lower - yAxesRanges[firstLeft].min) *
+          yAxesRatios[secondRight];
+        upperChange = (range.upper - yAxesRanges[firstLeft].max) *
+          yAxesRatios[secondRight];
+
+        yAxesRanges[secondRight].min += lowerChange;
+        yAxesRanges[secondRight].max += upperChange;
+        axisRect->axis(QCPAxis::atRight, 1)->setRange(yAxesRanges[secondRight].min,
+          yAxesRanges[secondRight].max);
+      }
+    }
+
+    yAxesRanges[firstLeft].min = range.lower;
+    yAxesRanges[firstLeft].max = range.upper;
   }
 }
