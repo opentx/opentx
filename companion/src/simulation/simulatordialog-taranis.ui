@@ -297,134 +297,13 @@
      <layout class="QGridLayout" name="gridLayout_9" rowstretch="1,0">
       <item row="0" column="0" colspan="3">
        <layout class="QGridLayout" name="gridLayout_8" rowstretch="0,0,1">
-        <item row="1" column="0">
-         <widget class="QLabel" name="label">
+        <item row="1" column="6">
+         <widget class="QLabel" name="label_3">
           <property name="text">
-           <string notr="true">SF</string>
+           <string notr="true">SB</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="14">
-         <widget class="QSlider" name="switchD">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>50</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="maximum">
-           <number>2</number>
-          </property>
-          <property name="pageStep">
-           <number>1</number>
-          </property>
-          <property name="value">
-           <number>0</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="invertedAppearance">
-           <bool>true</bool>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::TicksBothSides</enum>
-          </property>
-          <property name="tickInterval">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="7">
-         <spacer name="horizontalSpacer_7">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>13</width>
-            <height>47</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="10">
-         <widget class="myQDial" name="dialP_2">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>42</width>
-            <height>42</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="minimum">
-           <number>-1024</number>
-          </property>
-          <property name="maximum">
-           <number>1024</number>
-          </property>
-          <property name="pageStep">
-           <number>128</number>
-          </property>
-          <property name="notchTarget">
-           <double>64.000000000000000</double>
-          </property>
-          <property name="notchesVisible">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="myQDial" name="dialP_3">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>42</width>
-            <height>42</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="minimum">
-           <number>-1024</number>
-          </property>
-          <property name="maximum">
-           <number>1024</number>
-          </property>
-          <property name="pageStep">
-           <number>128</number>
-          </property>
-          <property name="notchTarget">
-           <double>64.000000000000000</double>
-          </property>
-          <property name="notchesVisible">
-           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -441,8 +320,18 @@
           </property>
          </spacer>
         </item>
-        <item row="0" column="5">
-         <spacer name="horizontalSpacer_12">
+        <item row="1" column="4">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string notr="true">SA</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="12">
+         <spacer name="horizontalSpacer_8">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -478,425 +367,6 @@
            <number>1</number>
           </property>
           <property name="value">
-           <number>0</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="invertedAppearance">
-           <bool>true</bool>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::TicksBothSides</enum>
-          </property>
-          <property name="tickInterval">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="12">
-         <widget class="QSlider" name="switchC">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>50</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="maximum">
-           <number>2</number>
-          </property>
-          <property name="pageStep">
-           <number>1</number>
-          </property>
-          <property name="value">
-           <number>0</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="invertedAppearance">
-           <bool>true</bool>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::TicksBothSides</enum>
-          </property>
-          <property name="tickInterval">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="18">
-         <widget class="QSlider" name="switchH">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>50</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"/>
-          </property>
-          <property name="maximum">
-           <number>1</number>
-          </property>
-          <property name="pageStep">
-           <number>0</number>
-          </property>
-          <property name="value">
-           <number>0</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="invertedAppearance">
-           <bool>true</bool>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::TicksBothSides</enum>
-          </property>
-          <property name="tickInterval">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="15">
-         <widget class="QSlider" name="switchG">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>50</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="maximum">
-           <number>2</number>
-          </property>
-          <property name="pageStep">
-           <number>1</number>
-          </property>
-          <property name="value">
-           <number>0</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="invertedAppearance">
-           <bool>true</bool>
-          </property>
-          <property name="invertedControls">
-           <bool>false</bool>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::TicksBothSides</enum>
-          </property>
-          <property name="tickInterval">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="6">
-         <widget class="QSlider" name="switchB">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>50</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="maximum">
-           <number>2</number>
-          </property>
-          <property name="pageStep">
-           <number>1</number>
-          </property>
-          <property name="value">
-           <number>0</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="invertedAppearance">
-           <bool>true</bool>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::TicksBothSides</enum>
-          </property>
-          <property name="tickInterval">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="16">
-         <spacer name="horizontalSpacer_14">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>13</width>
-            <height>47</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="17">
-         <widget class="myQDial" name="dialP_4">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>42</width>
-            <height>42</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="minimum">
-           <number>-1024</number>
-          </property>
-          <property name="maximum">
-           <number>1024</number>
-          </property>
-          <property name="pageStep">
-           <number>128</number>
-          </property>
-          <property name="notchTarget">
-           <double>64.000000000000000</double>
-          </property>
-          <property name="notchesVisible">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="8">
-         <widget class="myQDial" name="dialP_1">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>42</width>
-            <height>42</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="minimum">
-           <number>-1024</number>
-          </property>
-          <property name="maximum">
-           <number>1024</number>
-          </property>
-          <property name="pageStep">
-           <number>128</number>
-          </property>
-          <property name="notchTarget">
-           <double>64.000000000000000</double>
-          </property>
-          <property name="notchesVisible">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLabel" name="label_9">
-          <property name="text">
-           <string notr="true">LS</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="3">
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string notr="true">SE</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="4">
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string notr="true">SA</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="11">
-         <spacer name="horizontalSpacer_8">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>13</width>
-            <height>47</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="15">
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string notr="true">SG</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="17">
-         <widget class="QLabel" name="label_12">
-          <property name="text">
-           <string notr="true">RS</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="13">
-         <spacer name="horizontalSpacer_13">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>13</width>
-            <height>47</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="18">
-         <widget class="QLabel" name="label_8">
-          <property name="text">
-           <string notr="true">SH</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="6">
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string notr="true">SB</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="10">
-         <widget class="QLabel" name="dialP_2_lbl">
-          <property name="text">
-           <string notr="true">S2</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="12">
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string notr="true">SC</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="14">
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string notr="true">SD</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QSlider" name="switchF">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>50</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="statusTip">
-           <string/>
-          </property>
-          <property name="maximum">
-           <number>1</number>
-          </property>
-          <property name="pageStep">
-           <number>1</number>
-          </property>
-          <property name="value">
-           <number>0</number>
-          </property>
-          <property name="sliderPosition">
            <number>0</number>
           </property>
           <property name="orientation">
@@ -953,8 +423,160 @@
           </property>
          </widget>
         </item>
+        <item row="1" column="13">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string notr="true">SC</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string notr="true">SE</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="18">
+         <widget class="QLabel" name="sliderLabel1">
+          <property name="text">
+           <string notr="true">RS</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="14">
+         <spacer name="horizontalSpacer_13">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>13</width>
+            <height>47</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="0">
+         <widget class="QSlider" name="switchF">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="statusTip">
+           <string/>
+          </property>
+          <property name="maximum">
+           <number>1</number>
+          </property>
+          <property name="pageStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+          <property name="sliderPosition">
+           <number>0</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="invertedAppearance">
+           <bool>true</bool>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBothSides</enum>
+          </property>
+          <property name="tickInterval">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="7">
+         <spacer name="horizontalSpacer_7">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>13</width>
+            <height>47</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="15">
+         <widget class="QSlider" name="switchD">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="maximum">
+           <number>2</number>
+          </property>
+          <property name="pageStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="invertedAppearance">
+           <bool>true</bool>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBothSides</enum>
+          </property>
+          <property name="tickInterval">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="sliderLabel0">
+          <property name="text">
+           <string notr="true">LS</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
         <item row="1" column="8">
-         <widget class="QLabel" name="dialP_1_lbl">
+         <widget class="QLabel" name="potLabel0">
           <property name="text">
            <string notr="true">S1</string>
           </property>
@@ -963,8 +585,366 @@
           </property>
          </widget>
         </item>
+        <item row="2" column="10">
+         <spacer name="horizontalSpacer_9">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>42</width>
+            <height>1</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="17">
+         <spacer name="horizontalSpacer_14">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>13</width>
+            <height>47</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="8">
+         <widget class="myQDial" name="pot0">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>42</width>
+            <height>42</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="minimum">
+           <number>-1024</number>
+          </property>
+          <property name="maximum">
+           <number>1024</number>
+          </property>
+          <property name="pageStep">
+           <number>128</number>
+          </property>
+          <property name="notchTarget">
+           <double>64.000000000000000</double>
+          </property>
+          <property name="notchesVisible">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="19">
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string notr="true">SH</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="19">
+         <widget class="QSlider" name="switchH">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="maximum">
+           <number>1</number>
+          </property>
+          <property name="pageStep">
+           <number>0</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="invertedAppearance">
+           <bool>true</bool>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBothSides</enum>
+          </property>
+          <property name="tickInterval">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <spacer name="horizontalSpacer_12">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>13</width>
+            <height>47</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="16">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string notr="true">SG</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="16">
+         <widget class="QSlider" name="switchG">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="maximum">
+           <number>2</number>
+          </property>
+          <property name="pageStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="invertedAppearance">
+           <bool>true</bool>
+          </property>
+          <property name="invertedControls">
+           <bool>false</bool>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBothSides</enum>
+          </property>
+          <property name="tickInterval">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="8">
+         <spacer name="horizontalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>42</width>
+            <height>1</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string notr="true">SF</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="9">
+         <spacer name="horizontalSpacer_15">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>42</width>
+            <height>1</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="13">
+         <widget class="QSlider" name="switchC">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="maximum">
+           <number>2</number>
+          </property>
+          <property name="pageStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="invertedAppearance">
+           <bool>true</bool>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBothSides</enum>
+          </property>
+          <property name="tickInterval">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="6">
+         <widget class="QSlider" name="switchB">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="maximum">
+           <number>2</number>
+          </property>
+          <property name="pageStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="invertedAppearance">
+           <bool>true</bool>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBothSides</enum>
+          </property>
+          <property name="tickInterval">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="15">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string notr="true">SD</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="10">
+         <widget class="QLabel" name="potLabel2">
+          <property name="text">
+           <string>S3</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="9">
-         <widget class="myQDial" name="dialP_5">
+         <widget class="myQDial" name="pot1">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>42</width>
+            <height>42</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="minimum">
+           <number>-1024</number>
+          </property>
+          <property name="maximum">
+           <number>1024</number>
+          </property>
+          <property name="pageStep">
+           <number>128</number>
+          </property>
+          <property name="notchTarget">
+           <double>64.000000000000000</double>
+          </property>
+          <property name="notchesVisible">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="10">
+         <widget class="myQDial" name="pot2">
           <property name="maximumSize">
            <size>
             <width>42</width>
@@ -989,62 +969,87 @@
          </widget>
         </item>
         <item row="1" column="9">
-         <widget class="QLabel" name="dialP_5_lbl">
+         <widget class="QLabel" name="potLabel1">
           <property name="text">
-           <string>S3</string>
+           <string notr="true">S2</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
-        <item row="2" column="9">
-         <spacer name="horizontalSpacer_15">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
+        <item row="0" column="18">
+         <widget class="QSlider" name="slider1">
+          <property name="maximumSize">
            <size>
-            <width>42</width>
-            <height>1</height>
+            <width>16777215</width>
+            <height>50</height>
            </size>
           </property>
-         </spacer>
+          <property name="minimum">
+           <number>-1024</number>
+          </property>
+          <property name="maximum">
+           <number>1024</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
         </item>
-        <item row="2" column="8">
-         <spacer name="horizontalSpacer_6">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
+        <item row="0" column="1">
+         <widget class="QSlider" name="slider0">
+          <property name="maximumSize">
            <size>
-            <width>42</width>
-            <height>1</height>
+            <width>16777215</width>
+            <height>50</height>
            </size>
           </property>
-         </spacer>
+          <property name="minimum">
+           <number>-1024</number>
+          </property>
+          <property name="maximum">
+           <number>1024</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
         </item>
-        <item row="2" column="10">
-         <spacer name="horizontalSpacer_9">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
+        <item row="0" column="11">
+         <widget class="myQDial" name="pot3">
+          <property name="maximumSize">
            <size>
             <width>42</width>
-            <height>1</height>
+            <height>42</height>
            </size>
           </property>
-         </spacer>
+          <property name="minimum">
+           <number>-1024</number>
+          </property>
+          <property name="maximum">
+           <number>1024</number>
+          </property>
+          <property name="pageStep">
+           <number>128</number>
+          </property>
+          <property name="notchTarget">
+           <double>64.000000000000000</double>
+          </property>
+          <property name="notchesVisible">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="11">
+         <widget class="QLabel" name="potLabel3">
+          <property name="text">
+           <string>S4</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>

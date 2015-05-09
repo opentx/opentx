@@ -50,7 +50,6 @@ void SimulatorDialog::updateDebugOutput()
 SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, unsigned int flags):
   QDialog(parent),
   flags(flags),
-  dialP_4(NULL),
   timer(NULL),
   lightOn(false),
   simulator(simulator),
@@ -118,10 +117,9 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, SimulatorInterface *simul
   ui->trimHL_R->setText(QString::fromUtf8(rightArrow));
   ui->trimVL_U->setText(QString::fromUtf8(upArrow));
   ui->trimVL_D->setText(QString::fromUtf8(downArrow));
-
-  connect(ui->dialP_1, SIGNAL(valueChanged(int)), this, SLOT(dialChanged()));
-  connect(ui->dialP_2, SIGNAL(valueChanged(int)), this, SLOT(dialChanged()));
-  connect(ui->dialP_3, SIGNAL(valueChanged(int)), this, SLOT(dialChanged()));
+  for (int i=0; i<pots.count(); i++) {
+    connect(pots[i], SIGNAL(valueChanged(int)), this, SLOT(dialChanged(i)));
+  }
   connect(ui->cursor, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
   connect(ui->menu, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
   connect(ui->trimHR_L, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
@@ -161,29 +159,23 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterf
 
   // install simulator TRACE hook
   simulator->installTraceHook(traceCb);
-  
-  dialP_4 = ui->dialP_4;
 
   ui->lcd->setBackgroundColor(47, 123, 227);
 
-  //restore switches
-  if (g.simuSW())
+  // restore switches
+  if (g.simuSW()) {
     restoreSwitches();
-  QDial * pots[] = { ui->dialP_1 , ui->dialP_2 , ui->dialP_5};
-  QLabel * potslabel[] = { ui->dialP_1_lbl , ui->dialP_2_lbl , ui->dialP_5_lbl};
-  int potsflag[] = {SIMULATOR_FLAGS_S1, SIMULATOR_FLAGS_S2, SIMULATOR_FLAGS_S3};
-  int potsmflag[] = {SIMULATOR_FLAGS_S1_MULTI, SIMULATOR_FLAGS_S2_MULTI, SIMULATOR_FLAGS_S3_MULTI};
+  }
 
-  for (int i=0; i<3; i++) {
-    if (!(flags & potsflag[i])) {
+  for (int i=0; i<pots.count(); i++) {
+    if (flags & (SIMULATOR_FLAGS_S1_MULTI << i)) {
+      pots[i]->setValue(-1024);
+      pots[i]->setSingleStep(2048/5);
+      pots[i]->setPageStep(2048/5);
+    }
+    else if (!(flags & (SIMULATOR_FLAGS_S1 << i))) {
       pots[i]->hide();
-      potslabel[i]->hide();
-    } else {
-      if (flags & potsmflag[i]) {
-        pots[i]->setValue(-1024);
-        pots[i]->setSingleStep(2048/5);
-        pots[i]->setPageStep(2048/5);
-      }    
+      potLabels[i]->hide();
     }
   }
   
@@ -249,11 +241,9 @@ void SimulatorDialog::mouseReleaseEvent(QMouseEvent *event)
   }
 }
 
-void SimulatorDialog9X::dialChanged()
+void SimulatorDialog::dialChanged(int index)
 {
-  ui->dialP_1value->setText(QString("%1 %").arg((ui->dialP_1->value()*100)/1024));
-  ui->dialP_2value->setText(QString("%1 %").arg((ui->dialP_2->value()*100)/1024));
-  ui->dialP_3value->setText(QString("%1 %").arg((ui->dialP_3->value()*100)/1024));
+  potValues[index]->setText(QString("%1 %").arg((pots[index]->value()*100)/1024));
 }
 
 void SimulatorDialog::wheelEvent (QWheelEvent *event)
@@ -388,9 +378,11 @@ void SimulatorDialog::initUi(T * ui)
   lcd = ui->lcd;
   leftStick = ui->leftStick;
   rightStick = ui->rightStick;
-  dialP_1 = ui->dialP_1;
-  dialP_2 = ui->dialP_2;
-  dialP_3 = ui->dialP_3;
+  pots = findWidgets<QDial *>(this, "pot%1");
+  potLabels = findWidgets<QLabel *>(this, "potLabel%1");
+  potValues = findWidgets<QLabel *>(this, "potValue%1");
+  sliders = findWidgets<QSlider *>(this, "slider%1");
+
   trimHLeft = ui->trimHLeft;
   trimVLeft = ui->trimVLeft;
   trimHRight = ui->trimHRight;
@@ -743,9 +735,9 @@ void SimulatorDialog9X::getValues()
     },
 
     {
-      ui->dialP_1->value(),
-      ui->dialP_2->value(),
-      ui->dialP_3->value(), 0
+      pots[0]->value(),
+      pots[1]->value(),
+      pots[2]->value()
     },
 
     {
@@ -837,15 +829,15 @@ void SimulatorDialogTaranis::on_switchH_sliderReleased()
 
 void SimulatorDialogTaranis::getValues()
 {
-  QDial * pots[] = { ui->dialP_1 , ui->dialP_2 , ui->dialP_5};
-  int potsmflag[] = {SIMULATOR_FLAGS_S1_MULTI, SIMULATOR_FLAGS_S2_MULTI, SIMULATOR_FLAGS_S3_MULTI};
+  unsigned int potsmflag[] = { SIMULATOR_FLAGS_S1_MULTI, SIMULATOR_FLAGS_S2_MULTI, SIMULATOR_FLAGS_S3_MULTI, SIMULATOR_FLAGS_S3_MULTI, SIMULATOR_FLAGS_S3_MULTI };
 
-  for (int i=0; i<3; i++) {
+  for (int i=0; i<pots.count(); i++) {
     if (flags & potsmflag[i]) {
-      int s1=round((pots[i]->value()+1024)/(2048.0/5))*(2048.0/5)-1024;
+      int s1 = round((pots[i]->value()+1024)/(2048.0/5))*(2048.0/5)-1024;
       pots[i]->setValue(s1);
     }
   }
+
   TxInputs inputs = {
     {
       int(1024*nodeLeft->getX()),  // LEFT HORZ
@@ -855,11 +847,11 @@ void SimulatorDialogTaranis::getValues()
     },
 
     {
-      -ui->dialP_1->value(),
-      ui->dialP_2->value(),
-      ((flags && SIMULATOR_FLAGS_S3) ? ui->dialP_5->value() : 0),
-      -ui->dialP_3->value(),
-      ui->dialP_4->value()
+      -pots[0]->value(),
+      pots[1]->value(),
+      ((flags && SIMULATOR_FLAGS_S3) ? pots[2]->value() : 0),
+      -sliders[0]->value(),
+      sliders[1]->value()
     },
 
     {
@@ -1133,18 +1125,9 @@ void SimulatorDialog::onjoystickAxisValueChanged(int axis, int value)
     } 
     else if (stick==4) {
       nodeLeft->setX(stickval/1024.0);
-    } 
-    else if (stick==5) {
-      dialP_1->setValue(stickval);
     }
-    else if (stick==6) {
-      dialP_2->setValue(stickval);
-    }
-    else if (stick==7) {
-      dialP_3->setValue(stickval);
-    }
-    else if (stick==8 && dialP_4) {
-      dialP_4->setValue(stickval);
+    else if (stick >= 5 && stick < 5+pots.count()) {
+      pots[stick-5]->setValue(stickval);
     }
   }
 }
