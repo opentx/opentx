@@ -855,29 +855,45 @@ class SensorData {
 
     enum
     {
-      TYPE_CUSTOM,
-      TYPE_CALCULATED
+      TELEM_TYPE_CUSTOM,
+      TELEM_TYPE_CALCULATED
     };
 
     enum
     {
-      FORMULA_ADD,
-      FORMULA_AVERAGE,
-      FORMULA_MIN,
-      FORMULA_MAX,
-      FORMULA_MULTIPLY,
-      FORMULA_CELL,
-      FORMULA_CONSUMPTION,
-      FORMULA_DIST
+      TELEM_FORMULA_ADD,
+      TELEM_FORMULA_AVERAGE,
+      TELEM_FORMULA_MIN,
+      TELEM_FORMULA_MAX,
+      TELEM_FORMULA_MULTIPLY,
+      TELEM_FORMULA_TOTALIZE,
+      TELEM_FORMULA_CELL,
+      TELEM_FORMULA_CONSUMPTION,
+      TELEM_FORMULA_DIST,
+      TELEM_FORMULA_LAST = TELEM_FORMULA_DIST
     };
 
     enum {
+      TELEM_CELL_INDEX_LOWEST,
+      TELEM_CELL_INDEX_1,
+      TELEM_CELL_INDEX_2,
+      TELEM_CELL_INDEX_3,
+      TELEM_CELL_INDEX_4,
+      TELEM_CELL_INDEX_5,
+      TELEM_CELL_INDEX_6,
+      TELEM_CELL_INDEX_HIGHEST,
+      TELEM_CELL_INDEX_DELTA,
+    };
+
+    enum
+    {
       UNIT_RAW,
       UNIT_VOLTS,
       UNIT_AMPS,
       UNIT_MILLIAMPS,
       UNIT_KTS,
       UNIT_METERS_PER_SECOND,
+      UNIT_FEET_PER_SECOND,
       UNIT_KMH,
       UNIT_MPH,
       UNIT_METERS,
@@ -891,11 +907,14 @@ class SensorData {
       UNIT_RPMS,
       UNIT_G,
       UNIT_DEGREE,
+      UNIT_MILLILITERS,
+      UNIT_FLOZ,
       UNIT_HOURS,
       UNIT_MINUTES,
       UNIT_SECONDS,
       // FrSky format used for these fields, could be another format in the future
-      UNIT_CELLS,
+      UNIT_FIRST_VIRTUAL,
+      UNIT_CELLS = UNIT_FIRST_VIRTUAL,
       UNIT_DATETIME,
       UNIT_GPS,
       UNIT_GPS_LONGITUDE,

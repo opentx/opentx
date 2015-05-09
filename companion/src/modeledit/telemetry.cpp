@@ -494,11 +494,11 @@ TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor,
   ui->altSensor->setField(sensor.alt);
   ui->ampsSensor->setField(sensor.amps);
   ui->cellsSensor->setField(sensor.source);
-  ui->cellsIndex->addItem(tr("Lowest"), 0);
-  for (int i=1; i<=6; ++i)
+  ui->cellsIndex->addItem(tr("Lowest"), SensorData::TELEM_CELL_INDEX_LOWEST);
+  for (int i=1; i<=6; i++)
     ui->cellsIndex->addItem(tr("Cell %1").arg(i), i);
-  ui->cellsIndex->addItem(tr("Highest"), 0);
-  ui->cellsIndex->addItem(tr("Delta"), 0);
+  ui->cellsIndex->addItem(tr("Highest"), SensorData::TELEM_CELL_INDEX_HIGHEST);
+  ui->cellsIndex->addItem(tr("Delta"), SensorData::TELEM_CELL_INDEX_DELTA);
   ui->cellsIndex->setField(sensor.index);
   ui->source1->setField(sensor.sources[0]);
   ui->source2->setField(sensor.sources[1]);
@@ -514,7 +514,7 @@ TelemetrySensorPanel::~TelemetrySensorPanel()
 
 void TelemetrySensorPanel::update()
 {
-  bool precDisplayed = false;
+  bool isConfigurable = false;
   bool gpsFieldsDisplayed = false;
   bool cellsFieldsDisplayed = false;
   bool consFieldsDisplayed = false;
@@ -528,7 +528,7 @@ void TelemetrySensorPanel::update()
   ui->unit->setCurrentIndex(sensor.unit);
   ui->prec->setValue(sensor.prec);
 
-  if (sensor.type == SensorData::TYPE_CALCULATED) {
+  if (sensor.type == SensorData::TELEM_TYPE_CALCULATED) {
     sensor.updateUnit();
     ui->idLabel->hide();
     ui->id->hide();
@@ -536,12 +536,12 @@ void TelemetrySensorPanel::update()
     ui->instance->hide();
     ui->formula->show();
     ui->formula->setCurrentIndex(sensor.formula);
-    precDisplayed = (sensor.formula < SensorData::FORMULA_CELL);
-    gpsFieldsDisplayed = (sensor.formula == SensorData::FORMULA_DIST);
-    cellsFieldsDisplayed = (sensor.formula == SensorData::FORMULA_CELL);
-    consFieldsDisplayed = (sensor.formula == SensorData::FORMULA_CONSUMPTION);
-    sources12FieldsDisplayed = (sensor.formula <= SensorData::FORMULA_MULTIPLY);
-    sources34FieldsDisplayed = (sensor.formula < SensorData::FORMULA_MULTIPLY);
+    isConfigurable = (sensor.formula < SensorData::TELEM_FORMULA_CELL);
+    gpsFieldsDisplayed = (sensor.formula == SensorData::TELEM_FORMULA_DIST);
+    cellsFieldsDisplayed = (sensor.formula == SensorData::TELEM_FORMULA_CELL);
+    consFieldsDisplayed = (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION);
+    sources12FieldsDisplayed = (sensor.formula <= SensorData::TELEM_FORMULA_MULTIPLY);
+    sources34FieldsDisplayed = (sensor.formula < SensorData::TELEM_FORMULA_MULTIPLY);
     updateSourcesComboBox(ui->source1, true);
     updateSourcesComboBox(ui->source2, true);
     updateSourcesComboBox(ui->source3, true);
@@ -557,8 +557,8 @@ void TelemetrySensorPanel::update()
     ui->instanceLabel->show();
     ui->instance->show();
     ui->formula->hide();
-    ratioFieldsDisplayed = (sensor.unit != SensorData::UNIT_GPS && sensor.unit != SensorData::UNIT_DATETIME);
-    precDisplayed = (sensor.unit != SensorData::UNIT_GPS && sensor.unit != SensorData::UNIT_DATETIME);
+    isConfigurable = sensor.unit < SensorData::UNIT_FIRST_VIRTUAL;
+    ratioFieldsDisplayed = (sensor.unit < SensorData::UNIT_FIRST_VIRTUAL);
     ui->offset->setMaximum((sensor.prec > 0 ? sensor.prec == 2 ? 30000 : 3000 : 300));
     ui->offset->setMinimum((sensor.prec > 0 ? sensor.prec == 2 ? -30000 : -3000 : -300));
 
@@ -581,9 +581,9 @@ void TelemetrySensorPanel::update()
   ui->offsetLabel->setVisible(ratioFieldsDisplayed && sensor.unit != SensorData::UNIT_RPMS);
   ui->multiplierLabel->setVisible(sensor.unit == SensorData::UNIT_RPMS);
   ui->offset->setVisible(ratioFieldsDisplayed);
-  ui->precLabel->setVisible(precDisplayed);
-  ui->prec->setVisible(precDisplayed);
-  ui->unit->setVisible(precDisplayed);
+  ui->precLabel->setVisible(isConfigurable);
+  ui->prec->setVisible(isConfigurable && sensor.unit != SensorData::UNIT_FAHRENHEIT);
+  ui->unit->setVisible((sensor.type == SensorData::TELEM_TYPE_CALCULATED && (sensor.formula == SensorData::TELEM_FORMULA_DIST)) || isConfigurable);
   ui->gpsSensorLabel->setVisible(gpsFieldsDisplayed);
   ui->gpsSensor->setVisible(gpsFieldsDisplayed);
   ui->altSensorLabel->setVisible(gpsFieldsDisplayed);
@@ -597,6 +597,9 @@ void TelemetrySensorPanel::update()
   ui->source2->setVisible(sources12FieldsDisplayed);
   ui->source3->setVisible(sources34FieldsDisplayed);
   ui->source4->setVisible(sources34FieldsDisplayed);
+  ui->autoOffset->setVisible(sensor.unit != SensorData::UNIT_RPMS && isConfigurable);
+  ui->filter->setVisible(isConfigurable);
+  ui->persistent->setVisible((sensor.type == SensorData::TELEM_TYPE_CALCULATED && sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION) || isConfigurable);
 
   lock = false;
 }

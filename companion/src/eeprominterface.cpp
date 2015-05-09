@@ -95,8 +95,8 @@ QString getGVarString(int16_t val, bool sign)
 
 void SensorData::updateUnit()
 {
-  if (type == TYPE_CALCULATED) {
-    if (formula == FORMULA_CONSUMPTION)
+  if (type == TELEM_TYPE_CALCULATED) {
+    if (formula == TELEM_FORMULA_CONSUMPTION)
       unit = UNIT_MAH;
   }
 }

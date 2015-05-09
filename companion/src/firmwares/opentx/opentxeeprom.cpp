@@ -2706,7 +2706,7 @@ class SensorField: public TransformedField {
 
     virtual void beforeExport()
     {
-      if (sensor.type == SensorData::TYPE_CUSTOM) {
+      if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         _id = sensor.id;
         _instance = sensor.instance;
         _param = (sensor.ratio) + (sensor.offset << 16);
@@ -2714,20 +2714,20 @@ class SensorField: public TransformedField {
       else {
         _id = sensor.persistentValue;
         _instance = sensor.formula;
-        if (sensor.formula == SensorData::FORMULA_CELL)
+        if (sensor.formula == SensorData::TELEM_FORMULA_CELL)
           _param = (sensor.source) + (sensor.index << 8);
-        else if (sensor.formula == SensorData::FORMULA_ADD || sensor.formula == SensorData::FORMULA_MULTIPLY || sensor.formula == SensorData::FORMULA_MIN || sensor.formula == SensorData::FORMULA_MAX)
+        else if (sensor.formula == SensorData::TELEM_FORMULA_ADD || sensor.formula == SensorData::TELEM_FORMULA_MULTIPLY || sensor.formula == SensorData::TELEM_FORMULA_MIN || sensor.formula == SensorData::TELEM_FORMULA_MAX)
           _param = ((uint8_t)sensor.sources[0]) + ((uint8_t)sensor.sources[1] << 8) + ((uint8_t)sensor.sources[2] << 16) + ((uint8_t)sensor.sources[3] << 24);
-        else if (sensor.formula == SensorData::FORMULA_DIST)
+        else if (sensor.formula == SensorData::TELEM_FORMULA_DIST)
           _param = (sensor.gps) + (sensor.alt << 8);
-        else if (sensor.formula == SensorData::FORMULA_CONSUMPTION)
+        else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION)
           _param = (sensor.amps);
       }
     }
 
     virtual void afterImport()
     {
-      if (sensor.type == SensorData::TYPE_CUSTOM) {
+      if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         sensor.id = _id;
         sensor.instance = _instance;
         sensor.ratio = _param & 0xFF;
@@ -2736,14 +2736,14 @@ class SensorField: public TransformedField {
       else {
         sensor.persistentValue = _id;
         sensor.formula = _instance;
-        if (sensor.formula == SensorData::FORMULA_CELL)
+        if (sensor.formula == SensorData::TELEM_FORMULA_CELL)
           (sensor.source = _sources[0], sensor.index = _sources[1]);
-        else if (sensor.formula == SensorData::FORMULA_ADD || sensor.formula == SensorData::FORMULA_MULTIPLY || sensor.formula == SensorData::FORMULA_MIN || sensor.formula == SensorData::FORMULA_MAX)
+        else if (sensor.formula == SensorData::TELEM_FORMULA_ADD || sensor.formula == SensorData::TELEM_FORMULA_MULTIPLY || sensor.formula == SensorData::TELEM_FORMULA_MIN || sensor.formula == SensorData::TELEM_FORMULA_MAX)
           for (int i=0; i<4; ++i)
             sensor.sources[i] = _sources[i];
-        else if (sensor.formula == SensorData::FORMULA_DIST)
+        else if (sensor.formula == SensorData::TELEM_FORMULA_DIST)
           (sensor.gps = _sources[0], sensor.alt = _sources[1]);
-        else if (sensor.formula == SensorData::FORMULA_CONSUMPTION)
+        else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION)
           sensor.amps = _sources[0];
       }
     }
