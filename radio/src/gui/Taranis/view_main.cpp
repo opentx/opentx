@@ -496,9 +496,9 @@ void menuMainView(uint8_t event)
 
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
-      if (modelHasNotes()) {
+      /*if (modelHasNotes()) {
         MENU_ADD_ITEM(STR_VIEW_NOTES);
-      }
+      }*/
       MENU_ADD_ITEM(STR_RESET_SUBMENU);
       MENU_ADD_ITEM(STR_STATISTICS);
       MENU_ADD_ITEM(STR_ABOUT_US);

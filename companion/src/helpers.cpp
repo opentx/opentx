@@ -940,10 +940,20 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     }
     BoardEnum board = GetCurrentFirmware()->getBoard();
     SimulatorDialog * sd;
-    if (IS_TARANIS(board))
+    if (IS_TARANIS(board)) {
+      for (int i=0; i<GetCurrentFirmware()->getCapability(Pots); i++) {
+        if (radioData.generalSettings.potConfig[i] != GeneralSettings::POT_NONE) {
+          flags |= (SIMULATOR_FLAGS_S1 << i);
+          if (radioData.generalSettings.potConfig[1] == GeneralSettings::POT_MULTIPOS_SWITCH ) {
+            flags |= (SIMULATOR_FLAGS_S1_MULTI << i);
+          }
+        }
+      }
       sd = new SimulatorDialogTaranis(parent, si, flags);
-    else
+    }
+    else {
       sd = new SimulatorDialog9X(parent, si, flags);
+    }
     QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
     GetEepromInterface()->save((uint8_t *)eeprom.data(), *simuData, GetCurrentFirmware()->getCapability(SimulatorVariant));
     delete simuData;

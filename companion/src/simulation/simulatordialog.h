@@ -27,8 +27,16 @@ namespace Ui {
 class lcdWidget;
 class mySlider;
 
-#define SIMULATOR_FLAGS_NOTX            1
-#define SIMULATOR_FLAGS_STICK_MODE_LEFT 2
+#define SIMULATOR_FLAGS_NOTX              1
+#define SIMULATOR_FLAGS_STICK_MODE_LEFT   2
+#define SIMULATOR_FLAGS_S1                4
+#define SIMULATOR_FLAGS_S2                8
+#define SIMULATOR_FLAGS_S3               16
+#define SIMULATOR_FLAGS_S4               32 // reserved for the future
+#define SIMULATOR_FLAGS_S1_MULTI         64
+#define SIMULATOR_FLAGS_S2_MULTI        128
+#define SIMULATOR_FLAGS_S3_MULTI        256
+#define SIMULATOR_FLAGS_S4_MULTI        512 // reserved for the future
 
 class SimulatorDialog : public QDialog
 {
@@ -50,7 +58,11 @@ class SimulatorDialog : public QDialog
     unsigned int flags;
     lcdWidget * lcd;
     QGraphicsView * leftStick, * rightStick;
-    QDial * dialP_1, * dialP_2, * dialP_3, * dialP_4;
+    QVector<QDial *> pots;
+    QVector<QLabel *> potLabels;
+    QVector<QLabel *> potValues;
+    QVector<QSlider *> sliders;
+
     mySlider * trimHLeft, * trimVLeft, * trimHRight, * trimVRight;
     QLabel * leftXPerc, * rightXPerc, * leftYPerc, * rightYPerc;
     QTabWidget * tabWidget;
@@ -119,6 +131,7 @@ class SimulatorDialog : public QDialog
 
   private slots:
     void onButtonPressed(int value);
+    void dialChanged(int index);
     void on_FixRightY_clicked(bool checked);
     void on_FixRightX_clicked(bool checked);
     void on_FixLeftY_clicked(bool checked);
@@ -159,9 +172,6 @@ class SimulatorDialog9X: public SimulatorDialog
     virtual void updateBeepButton();
     void saveSwitches(void);
     void restoreSwitches(void);
-
-  private slots:
-    void dialChanged();
 
   private:
     Ui::SimulatorDialog9X * ui;
