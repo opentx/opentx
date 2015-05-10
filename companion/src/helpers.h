@@ -136,6 +136,26 @@ QString getFrSkySrc(int index);
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx);
 
+template <class T>
+QVector<T> findWidgets(QObject * object, const QString & name)
+{
+  QVector<T> result;
+  QRegExp rx(name.arg("([0-9]+)"));
+  QList<T> children = object->findChildren<T>();
+  foreach(T child, children) {
+    int pos = rx.indexIn(child->objectName());
+    if (pos >= 0) {
+      QStringList list = rx.capturedTexts();
+      int index = list[1].toInt();
+      if (result.size() <= index) {
+        result.resize(index+1);
+      }
+      result[index] = child;
+    }
+  }
+  return result;
+}
+
 // Format a pixmap to fit on the radio using a specific firmware
 QPixmap makePixMap( QImage image, QString firmwareType );
 
