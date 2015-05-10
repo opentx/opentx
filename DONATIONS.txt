@@ -755,3 +755,4 @@ Rene Traa
 Sebastien Charpentier (monthly)
 Nigel Hendriks
 Frédéric Devillard
+Albert Herzog
