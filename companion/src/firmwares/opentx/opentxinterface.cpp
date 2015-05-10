@@ -576,8 +576,10 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case Pots:
       if (IS_TARANIS_X9E(board))
         return 4;
-      else if (IS_TARANIS(board))
+      else if (IS_TARANIS_PLUS(board))
         return 3;
+      else if (IS_TARANIS(board))
+        return 2;
       else
         return 3;
     case Sliders:
