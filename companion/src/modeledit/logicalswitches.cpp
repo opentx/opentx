@@ -461,15 +461,15 @@ void LogicalSwitchesPanel::update()
 
 void LogicalSwitchesPanel::cswPaste()
 {
-    const QClipboard *clipboard = QApplication::clipboard();
-    const QMimeData *mimeData = clipboard->mimeData();
-    if (mimeData->hasFormat("application/x-companion-csw")) {
-      QByteArray cswData = mimeData->data("application/x-companion-csw");
-      LogicalSwitchData *csw = &model->logicalSw[selectedSwitch];
-      memcpy(csw, cswData.mid(0, sizeof(LogicalSwitchData)).constData(), sizeof(LogicalSwitchData));
-      emit modified();
-      updateLine(selectedSwitch);
-    }
+  const QClipboard *clipboard = QApplication::clipboard();
+  const QMimeData *mimeData = clipboard->mimeData();
+  if (mimeData->hasFormat("application/x-companion-csw")) {
+    QByteArray cswData = mimeData->data("application/x-companion-csw");
+    LogicalSwitchData *csw = &model->logicalSw[selectedSwitch];
+    memcpy(csw, cswData.constData(), sizeof(LogicalSwitchData));
+    emit modified();
+    updateLine(selectedSwitch);
+  }
 }
 
 void LogicalSwitchesPanel::cswDelete()

@@ -7,6 +7,7 @@
 #include <QCheckBox>
 #include <QPushButton>
 #include <QMessageBox>
+#include <QAction>
 
 #define GFX_MARGIN 16
 
@@ -119,20 +120,6 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
   for (int i=0; i<numcurves; i++) {
     visibleCurves[i] = false;
 
-    // The reset curve button
-    QPushButton * reset = new QPushButton(this);
-    reset->setProperty("index", i);
-    reset->setMinimumSize(QSize(0, 0));
-    reset->setMaximumSize(QSize(16, 16));
-    reset->setIcon(CompanionIcon("clear.png"));
-    reset->setIconSize(QSize(14, 14));
-    connect(reset, SIGNAL(clicked()), this, SLOT(resetCurve()));
-    if (i<limit) {
-      ui->curvesLayout->addWidget(reset, i, 0, 1, 1);
-    } else {
-      ui->curvesLayout2->addWidget(reset, i-limit, 0, 1, 1);  
-    }
-
     // The edit curve button
     QPushButton * edit = new QPushButton(this);
     edit->setProperty("index", i);
@@ -146,6 +133,8 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
 #endif
     edit->setPalette(palette);
     edit->setText(tr("Curve %1").arg(i+1));
+    edit->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(edit, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(ShowContextMenu(const QPoint&)));
     connect(edit, SIGNAL(clicked()), this, SLOT(editCurve()));
     if (i<limit) {
       ui->curvesLayout->addWidget(edit, i, 1, 1, 1);
@@ -222,18 +211,6 @@ void Curves::editCurve()
   int index = button->property("index").toInt();
   setCurrentCurve(index);
   update();
-}
-
-void Curves::resetCurve()
-{
-  QPushButton *button = (QPushButton *)sender();
-  int index = button->property("index").toInt();
-  int res = QMessageBox::question(this, "companion", tr("Are you sure you want to reset curve %1 ?").arg(index+1), QMessageBox::Yes | QMessageBox::No);
-  if (res == QMessageBox::Yes) {
-    model->curves[index].clear(5);
-    update();
-    emit modified();
-  }
 }
 
 void Curves::plotCurve(bool checked)
@@ -588,41 +565,64 @@ void Curves::on_curveApply_clicked()
   emit modified();
 }
 
-#if 0
-void ModelEdit::clearCurves(bool ask)
+void Curves::ShowContextMenu(const QPoint& pos) // this is a slot
 {
-    if (ask) {
-      int res = QMessageBox::question(this, tr("Clear Curves?"), tr("Really clear all the curves?"), QMessageBox::Yes | QMessageBox::No);
-      if (res!=QMessageBox::Yes) return;
-    }
-    curvesLock=true;
-    for (int j=0; j<16; j++) {
-      model->curves[j].count = 5;
-      model->curves[j].custom = false;
-      memset(model->curves[j].name, 0, sizeof(model->curves[j].name));
-      for (int i=0; i<17; i++) {
-        model->curves[j].points[i].x = 0;
-        model->curves[j].points[i].y = 0;
+  QPushButton *button = (QPushButton *)sender();
+  int index = button->property("index").toInt();
+  const QClipboard *clipboard = QApplication::clipboard();
+  const QMimeData *mimeData = clipboard->mimeData();
+  QPoint globalPos = button->mapToGlobal(pos);
+  QMenu myMenu;
+  QAction *action;
+  action = myMenu.addAction(CompanionIcon("copy.png"),tr("Copy"));
+  action->setProperty("index", CURVE_COPY);
+  
+  action = myMenu.addAction(CompanionIcon("paste.png"),tr("Paste"));
+  if (!mimeData->hasFormat("application/x-companion-curve-item")) {
+    action->setEnabled(false);
+  }
+  action->setProperty("index", CURVE_PASTE);
+  
+  action = myMenu.addAction(CompanionIcon("clear.png"),tr("Clear"));
+  action->setProperty("index", CURVE_RESET);
+  action = myMenu.addAction(CompanionIcon("clear.png"),tr("Clear all curves"));
+  action->setProperty("index", CURVE_RESETALL);
+
+  QAction* selectedItem = myMenu.exec(globalPos);
+  if (selectedItem) {
+    int action=selectedItem->property("index").toInt();
+    if (action==CURVE_COPY) {
+      QByteArray curveData;
+      QMimeData *mimeData2 = new QMimeData;
+      curveData.append((char*)&model->curves[index], sizeof(CurveData));
+      mimeData2->setData("application/x-companion-curve-item", curveData);
+      QApplication::clipboard()->setMimeData(mimeData2, QClipboard::Clipboard);
+    } 
+    else if (action==CURVE_PASTE) {
+      QByteArray curveData = mimeData->data("application/x-companion-curve-item");
+      CurveData *curve = &model->curves[index];
+      memcpy(curve, curveData.constData(), sizeof(CurveData));
+      update();
+      emit modified();
+    } 
+    else if (action==CURVE_RESET) {
+      int res = QMessageBox::question(this, "companion", tr("Are you sure you want to reset curve %1?").arg(index+1), QMessageBox::Yes | QMessageBox::No);
+      if (res == QMessageBox::Yes) {
+        model->curves[index].clear(5);
+        update();
+        emit modified();
+      }
+    } 
+    else if (action==CURVE_RESETALL) {
+      int res = QMessageBox::question(this, "companion", tr("Are you sure you want to reset all curves?"), QMessageBox::Yes | QMessageBox::No);
+      if (res == QMessageBox::Yes) {
+        int numcurves = firmware->getCapability(NumCurves);
+        for (int i=0; i<numcurves; i++) {
+          model->curves[i].clear(5);
+        }
+        update();
+        emit modified();
       }
     }
-    for (int i=0; i<17; i++) {
-      spnx[i]->setMinimum(-100);
-      spnx[i]->setMaximum(100);
-      spnx[i]->setValue(0);
-      spny[i]->setValue(0);
-    }
-    currentCurve=0;
-    curvesLock=false;
-    ui->curvetype_CB->setCurrentIndex(2);
-    ui->curveName->clear();
-    updateSettings();
-    drawCurve();
+  }
 }
-
-void ModelEdit::ControlCurveSignal(bool flag)
-{
-    foreach(QSpinBox *sb, findChildren<QSpinBox *>(QRegExp("curvePt[0-9]+"))) {
-      sb->blockSignals(flag);
-    }
-}
-#endif

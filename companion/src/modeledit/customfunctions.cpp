@@ -563,7 +563,7 @@ void CustomFunctionsPanel::fswPaste()
   if (mimeData->hasFormat("application/x-companion-fsw")) {
     QByteArray fswData = mimeData->data("application/x-companion-fsw");
     CustomFunctionData *fsw = &functions[selectedFunction];
-    memcpy(fsw, fswData.mid(0, sizeof(CustomFunctionData)).constData(), sizeof(CustomFunctionData));
+    memcpy(fsw, fswData.constData(), sizeof(CustomFunctionData));
     lock = true;
     populateSwitchCB(fswtchSwtch[selectedFunction], functions[selectedFunction].swtch, generalSettings, model ? SpecialFunctionsContext : GlobalFunctionsContext);
     populateFuncCB(fswtchFunc[selectedFunction], functions[selectedFunction].func);
