@@ -5,6 +5,13 @@
 #include "eeprominterface.h"
 #include <QSpinBox>
 
+enum CopyAction {
+  CURVE_COPY,
+  CURVE_PASTE,
+  CURVE_RESET,
+  CURVE_RESETALL
+};
+
 namespace Ui {
   class Curves;
 }
@@ -28,8 +35,8 @@ class Curves : public ModelPanel
     virtual void update();
 
   private slots:
-    void resetCurve();
     void editCurve();
+    void ShowContextMenu(const QPoint& pos);
     void plotCurve(bool checked);
     void on_curveName_editingFinished();
     void on_curvePoints_currentIndexChanged(int index);
