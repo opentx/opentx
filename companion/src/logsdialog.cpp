@@ -56,10 +56,25 @@ logsDialog::logsDialog(QWidget *parent) :
 
   axisRect->axis(QCPAxis::atLeft)->setTickLabels(false);
 
+  axisRect->addAxis(QCPAxis::atLeft);
+  axisRect->addAxis(QCPAxis::atRight);
+  axisRect->axis(QCPAxis::atLeft, 1)->setVisible(false);
+  axisRect->axis(QCPAxis::atRight, 1)->setVisible(false);
+
   QFont legendFont = font();
   legendFont.setPointSize(10);
   ui->customPlot->legend->setFont(legendFont);
   ui->customPlot->legend->setSelectedFont(legendFont);
+  axisRect->insetLayout()->setInsetAlignment(0, Qt::AlignTop | Qt::AlignLeft);
+
+  rightLegend = new QCPLegend;
+  axisRect->insetLayout()->addElement(rightLegend, Qt::AlignTop | Qt::AlignRight);
+  rightLegend->setLayer("legend");
+  rightLegend->setFont(legendFont);
+  rightLegend->setSelectedFont(legendFont);
+  rightLegend->setVisible(false);
+
+  ui->customPlot->setAutoAddPlottableToLegend(false);
 
   QString Path=g.gePath();
   if (Path.isEmpty() || !QFile(Path).exists()) {
@@ -167,11 +182,11 @@ void logsDialog::selectionChanged()
       (axisRect->axis(QCPAxis::atRight)->selectedParts().testFlag(QCPAxis::spAxis) ||
       axisRect->axis(QCPAxis::atRight)->selectedParts().testFlag(QCPAxis::spTickLabels))
     ) || (
-      axisRect->axisCount(QCPAxis::atLeft) == 2 &&
+      axisRect->axis(QCPAxis::atLeft, 1)->visible() &&
       (axisRect->axis(QCPAxis::atLeft, 1)->selectedParts().testFlag(QCPAxis::spAxis) ||
       axisRect->axis(QCPAxis::atLeft, 1)->selectedParts().testFlag(QCPAxis::spTickLabels))
     ) || (
-      axisRect->axisCount(QCPAxis::atRight) == 2 &&
+      axisRect->axis(QCPAxis::atRight)->visible() &&
       (axisRect->axis(QCPAxis::atRight, 1)->selectedParts().testFlag(QCPAxis::spAxis) ||
       axisRect->axis(QCPAxis::atRight, 1)->selectedParts().testFlag(QCPAxis::spTickLabels))
     )
@@ -181,10 +196,10 @@ void logsDialog::selectionChanged()
     if (axisRect->axis(QCPAxis::atRight)->visible()) {
       axisRect->axis(QCPAxis::atRight)->setSelectedParts(QCPAxis::spAxis |
         QCPAxis::spTickLabels);
-      if (axisRect->axisCount(QCPAxis::atLeft) == 2) {
+      if (axisRect->axis(QCPAxis::atLeft, 1)->visible()) {
         axisRect->axis(QCPAxis::atLeft, 1)->setSelectedParts(QCPAxis::spAxis |
           QCPAxis::spTickLabels);
-        if (axisRect->axisCount(QCPAxis::atRight) == 2) {
+        if (axisRect->axis(QCPAxis::atRight, 1)->visible()) {
           axisRect->axis(QCPAxis::atRight, 1)->setSelectedParts(QCPAxis::spAxis |
             QCPAxis::spTickLabels);
         }
@@ -197,6 +212,7 @@ void logsDialog::selectionChanged()
   {
     QCPGraph *graph = ui->customPlot->graph(i);
     QCPPlottableLegendItem *item = ui->customPlot->legend->itemWithPlottable(graph);
+    if (item == NULL) item = rightLegend->itemWithPlottable(graph);
     if (item->selected() || graph->selected())
     {
       item->setSelected(true);
@@ -415,16 +431,17 @@ void logsDialog::removeAllGraphs()
 {
   ui->customPlot->clearGraphs();
   ui->customPlot->legend->setVisible(false);
+  rightLegend->clearItems();
+  rightLegend->setVisible(false);
   axisRect->axis(QCPAxis::atRight)->setSelectedParts(QCPAxis::spNone);
   axisRect->axis(QCPAxis::atRight)->setVisible(false);
   axisRect->axis(QCPAxis::atLeft)->setSelectedParts(QCPAxis::spNone);
   axisRect->axis(QCPAxis::atLeft)->setTickLabels(false);
-  if (axisRect->axisCount(QCPAxis::atLeft) == 2) {
-    axisRect->removeAxis(axisRect->axis(QCPAxis::atLeft, 1));
-  }
-  if (axisRect->axisCount(QCPAxis::atRight) == 2) {
-    axisRect->removeAxis(axisRect->axis(QCPAxis::atRight, 1));
-  }
+  axisRect->axis(QCPAxis::atLeft, 1)->setVisible(false);
+  axisRect->axis(QCPAxis::atLeft, 1)->setSelectedParts(QCPAxis::spNone);
+  axisRect->axis(QCPAxis::atRight, 1)->setVisible(false);
+  axisRect->axis(QCPAxis::atRight, 1)->setSelectedParts(QCPAxis::spNone);
+  axisRect->axis(QCPAxis::atBottom)->setSelectedParts(QCPAxis::spNone);
   ui->customPlot->replot();
 }
 
@@ -759,36 +776,58 @@ void logsDialog::plotLogs()
     axisRect->axis(QCPAxis::atRight)->setRange(yAxesRanges[firstRight].min,
       yAxesRanges[firstRight].max);
     axisRect->axis(QCPAxis::atRight)->setVisible(true);
-  }
 
-  if (yAxesRanges[secondLeft].max != INVALID_MAX) {
-    axisRect->addAxis(QCPAxis::atLeft);
-    axisRect->axis(QCPAxis::atLeft, 1)->setRange(yAxesRanges[secondLeft].min,
-      yAxesRanges[secondLeft].max);
-  }
+    rightLegend->setVisible(true);
 
-  if (yAxesRanges[secondRight].max != INVALID_MAX) {
-    axisRect->addAxis(QCPAxis::atRight);
-    axisRect->axis(QCPAxis::atRight, 1)->setRange(yAxesRanges[secondRight].min,
-      yAxesRanges[secondRight].max);
+    if (yAxesRanges[secondLeft].max != INVALID_MAX) {
+      axisRect->axis(QCPAxis::atLeft, 1)->setVisible(true);
+      axisRect->axis(QCPAxis::atLeft, 1)->setRange(yAxesRanges[secondLeft].min,
+        yAxesRanges[secondLeft].max);
+
+      if (yAxesRanges[secondRight].max != INVALID_MAX) {
+        axisRect->axis(QCPAxis::atRight, 1)->setVisible(true);
+        axisRect->axis(QCPAxis::atRight, 1)->setRange(yAxesRanges[secondRight].min,
+          yAxesRanges[secondRight].max);
+      }
+    }
   }
 
   for (int i = 0; i < plots.coords.size(); i++) {
     switch (plots.coords[i].yaxis) {
       case firstLeft:
         ui->customPlot->addGraph();
+        if (yAxesRanges[secondLeft].max != INVALID_MAX) {
+          ui->customPlot->graph(i)->setName(plots.coords.at(i).name + tr(" (L1)"));
+        } else {
+          ui->customPlot->graph(i)->setName(plots.coords.at(i).name);
+        }
+        ui->customPlot->legend->addItem(
+          new QCPPlottableLegendItem(ui->customPlot->legend, ui->customPlot->graph(i)));
         break;
       case firstRight:
         ui->customPlot->addGraph(axisRect->axis(QCPAxis::atBottom),
           axisRect->axis(QCPAxis::atRight));
+        if (yAxesRanges[secondRight].max != INVALID_MAX) {
+          ui->customPlot->graph(i)->setName(plots.coords.at(i).name + tr(" (R1)"));
+        } else {
+          ui->customPlot->graph(i)->setName(plots.coords.at(i).name);
+        }
+        rightLegend->addItem(
+          new QCPPlottableLegendItem(rightLegend, ui->customPlot->graph(i)));
         break;
       case secondLeft:
         ui->customPlot->addGraph(axisRect->axis(QCPAxis::atBottom),
           axisRect->axis(QCPAxis::atLeft, 1));
+        ui->customPlot->graph(i)->setName(plots.coords.at(i).name + tr(" (L2)"));
+        ui->customPlot->legend->addItem(
+          new QCPPlottableLegendItem(ui->customPlot->legend, ui->customPlot->graph(i)));
         break;
       case secondRight:
         ui->customPlot->addGraph(axisRect->axis(QCPAxis::atBottom),
           axisRect->axis(QCPAxis::atRight, 1));
+        ui->customPlot->graph(i)->setName(plots.coords.at(i).name + tr(" (R2)"));
+        rightLegend->addItem(
+          new QCPPlottableLegendItem(rightLegend, ui->customPlot->graph(i)));
         break;
       default:
         break;
@@ -798,7 +837,6 @@ void logsDialog::plotLogs()
       plots.coords.at(i).y);
     pen.setColor(colors.at(i % colors.size()));
     ui->customPlot->graph(i)->setPen(pen);
-    ui->customPlot->graph(i)->setName(plots.coords.at(i).name);
   }
 
   ui->customPlot->legend->setVisible(true);
