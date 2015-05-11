@@ -512,9 +512,9 @@ enum Functions {
   FUNC_ADJUST_GVAR,
 #if defined(CPUARM)
   FUNC_VOLUME,
+  FUNC_SET_FAILSAFE,
   FUNC_RANGECHECK,
   FUNC_BIND,
-  FUNC_MODULE_OFF,
 #endif
   // then the other functions
   FUNC_FIRST_WITHOUT_ENABLE,
