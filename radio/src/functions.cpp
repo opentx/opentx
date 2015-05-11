@@ -371,7 +371,7 @@ void evalFunctions()
           }
 #endif
 
-#if defined(DANGEROUS_MODULE_FUNCTIONS)
+#if 0 //defined(DANGEROUS_MODULE_FUNCTIONS)
           case FUNC_RANGECHECK:
           case FUNC_BIND:
           case FUNC_MODULE_OFF:
