@@ -230,10 +230,24 @@ void setupPulsesPXX(unsigned int port)
         chan = (i < sendUpperChannels ? 2048 : 0);
       }
       else {
-        if (i < sendUpperChannels)
-          chan = limit(2049, PPM_CH_CENTER(8+g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (g_model.moduleData[port].failsafeChannels[8+g_model.moduleData[port].channelsStart+i] * 512 / 682) + 3072, 4094);
-        else
-          chan = limit(1, PPM_CH_CENTER(g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (g_model.moduleData[port].failsafeChannels[g_model.moduleData[port].channelsStart+i] * 512 / 682) + 1024, 2046);
+        if (i < sendUpperChannels) {
+          int16_t failsafeValue = g_model.moduleData[port].failsafeChannels[8+g_model.moduleData[port].channelsStart+i];
+          if (failsafeValue == FAILSAFE_CHANNEL_HOLD)
+            chan = 4095;
+          else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE)
+            chan = 2048;
+          else
+            chan = limit(2049, PPM_CH_CENTER(8+g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (failsafeValue * 512 / 682) + 3072, 4094);
+        }
+        else {
+          int16_t failsafeValue = g_model.moduleData[port].failsafeChannels[g_model.moduleData[port].channelsStart+i];
+          if (failsafeValue == FAILSAFE_CHANNEL_HOLD)
+            chan = 2047;
+          else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE)
+            chan = 0;
+          else
+            chan = limit(1, PPM_CH_CENTER(g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (failsafeValue * 512 / 682) + 1024, 2046);
+        }
       }
     }
     else {

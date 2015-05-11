@@ -406,6 +406,9 @@ enum BeeperMode {
   #define EXTRA_GENERAL_FIELDS
 #endif
 
+#define FAILSAFE_CHANNEL_HOLD    2000
+#define FAILSAFE_CHANNEL_NOPULSE 2001
+
 #if defined(PCBSKY9X) && defined(REVX)
 PACK(typedef struct {
   int8_t  rfProtocol;
