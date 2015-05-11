@@ -418,15 +418,6 @@ void logsDialog::mouseWheel()
   }
 }
 
-void logsDialog::removeSelectedGraph()
-{
-  if (ui->customPlot->selectedGraphs().size() > 0)
-  {
-    ui->customPlot->removeGraph(ui->customPlot->selectedGraphs().first());
-    ui->customPlot->replot();
-  }
-}
-
 void logsDialog::removeAllGraphs()
 {
   ui->customPlot->clearGraphs();
