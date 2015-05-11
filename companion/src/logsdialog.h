@@ -55,7 +55,6 @@ private slots:
   void selectionChanged();
   void mousePress();
   void mouseWheel();
-  void removeSelectedGraph();
   void removeAllGraphs();
   void plotLogs();
   void on_fileOpen_BT_clicked();
