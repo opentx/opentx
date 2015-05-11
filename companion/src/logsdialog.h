@@ -67,6 +67,7 @@ private:
   QList<QStringList> csvlog;
   Ui::logsDialog *ui;
   QCPAxisRect *axisRect;
+  QCPLegend *rightLegend;
   bool cvsFileParse();
   bool plotLock;
   QString logFilename;
