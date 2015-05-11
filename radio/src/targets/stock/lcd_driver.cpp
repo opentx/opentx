@@ -72,7 +72,7 @@ volatile uint8_t LcdLock ;
 
 const static pm_uchar lcdInitSequence[] PROGMEM =
 {
-#ifdef LCD_ST7565R
+#if defined(LCD_ST7565R)
    0xE2, //Initialize the internal functions
    0xAE, //DON = 0: display OFF
    0xA0, //ADC = 0: normal direction(SEG132->SEG1)
@@ -86,7 +86,7 @@ const static pm_uchar lcdInitSequence[] PROGMEM =
    0x22, //24 SV5 SV4 SV3 SV2 SV1 SV0 = 0x18
    0xAF, //DON = 1: display ON
    0x60  //sets the display start line to zero
-#elif LCD_ERC12864FSF
+#elif defined(LCD_ERC12864FSF)
    0xE2, //Initialize the internal functions
    0xAE, //DON = 0: display OFF
    0xA1, //ADC = 1: reverse direction(SEG132->SEG1)

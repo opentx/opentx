@@ -57,6 +57,10 @@ PCB = 9X
 # PCB revision
 PCBREV =
 
+# LCD
+# Values: DEFAULT, ST7565P, ST7565R, ERC12864FSF
+LCD = DEFAULT
+
 # Enable JETI-Telemetry or FrSky Telemetry reception on UART0
 # For this option you need to modify your hardware!
 # More information at [insertURLhere]
@@ -681,13 +685,7 @@ ifeq ($(PCB), MEGA2560)
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
-  # LCD driver
-  # Values: ST7565P(default), ST7565R 
-  LCD = ST7565P
-  ifeq ($(LCD), ST7565R)
-    CPPDEFS += -DLCD_ST7565R
-  endif   
-    EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
 
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/gruvin9x/diskio.cpp
@@ -1071,6 +1069,12 @@ ifeq ($(TURNIGY_TRANSMITTER_FIX), YES)
     CPPDEFS += -DMODULE_ALWAYS_SEND_PULSES
   endif
 endif
+
+ifeq ($(LCD), ST7565R)
+  CPPDEFS += -DLCD_ST7565R
+else ifeq ($(LCD), ERC12864FSF)
+  CPPDEFS += -DLCD_ERC12864FSF
+endif   
 
 ifeq ($(AUTOSWITCH), YES)
   CPPDEFS += -DAUTOSWITCH
