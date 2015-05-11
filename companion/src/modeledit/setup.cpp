@@ -119,6 +119,9 @@ void TimerPanel::on_name_editingFinished()
 
 /******************************************************************************/
 
+#define FAILSAFE_CHANNEL_HOLD    2000
+#define FAILSAFE_CHANNEL_NOPULSE 2001
+
 ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx):
   ModelPanel(parent, model, generalSettings, firmware),
   module(module),
@@ -170,20 +173,29 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
   }
 
   if (firmware->getCapability(HasFailsafe)) {
-    for (int i=0; i<16; i++) {
+    for (int i=0; i<maxChannels; i++) {
       QLabel * label = new QLabel(this);
       label->setText(QString::number(i+1));
+      QComboBox * combo = new QComboBox(this);
+      combo->setProperty("index", i);
+      combo->addItem(tr("Value"), 0);
+      combo->addItem(tr("Hold"), FAILSAFE_CHANNEL_HOLD);
+      combo->addItem(tr("No Pulse"), FAILSAFE_CHANNEL_NOPULSE);
       QDoubleSpinBox * spinbox = new QDoubleSpinBox(this);
       spinbox->setMinimumSize(QSize(20, 0));
       spinbox->setRange(-150, 150);
       spinbox->setSingleStep(0.1);
       spinbox->setDecimals(1);
-      spinbox->setValue(((double)module.failsafeChannels[i]*100)/1024);
       label->setProperty("index", i);
       spinbox->setProperty("index", i);
       failsafeSpins << spinbox;
-      ui->failsafesLayout->addWidget(label, 2*(i/8), i%8, Qt::AlignHCenter);
-      ui->failsafesLayout->addWidget(spinbox, 1+2*(i/8), i%8, Qt::AlignHCenter);
+      ui->failsafesLayout->addWidget(label, 3*(i/8), i%8, Qt::AlignHCenter);
+      ui->failsafesLayout->addWidget(combo, 1+3*(i/8), i%8, Qt::AlignHCenter);
+      ui->failsafesLayout->addWidget(spinbox, 2+3*(i/8), i%8, Qt::AlignHCenter);
+      failsafeGroups[i].combo = combo;
+      failsafeGroups[i].spinbox = spinbox;
+      updateFailsafe(i);
+      connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onFailsafeComboIndexChanged(int)));
       connect(spinbox, SIGNAL(valueChanged(double)), this, SLOT(onFailsafeSpinChanged(double)));
     }
   }
@@ -370,9 +382,43 @@ void ModulePanel::on_failsafeMode_currentIndexChanged(int value)
 void ModulePanel::onFailsafeSpinChanged(double value)
 {
   if (!lock) {
-    int index = sender()->property("index").toInt();
-    module.failsafeChannels[index] = (value*1024)/100;
+    int channel = sender()->property("index").toInt();
+    module.failsafeChannels[channel] = (value*1024)/100;
     emit modified();
+  }
+}
+
+void ModulePanel::onFailsafeComboIndexChanged(int index)
+{
+  if (!lock) {
+    lock = true;
+    int channel = sender()->property("index").toInt();
+    module.failsafeChannels[channel] = ((QComboBox *)sender())->itemData(index).toInt();
+    updateFailsafe(channel);
+    emit modified();
+    lock = false;
+  }
+}
+
+void ModulePanel::updateFailsafe(int channel)
+{
+  int failsafeValue = module.failsafeChannels[channel];
+  QComboBox * combo = failsafeGroups[channel].combo;
+  QDoubleSpinBox * spinbox = failsafeGroups[channel].spinbox;
+  if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
+    combo->setCurrentIndex(1);
+    spinbox->setEnabled(false);
+    spinbox->setValue(0);
+  }
+  else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
+    combo->setCurrentIndex(2);
+    spinbox->setEnabled(false);
+    spinbox->setValue(0);
+  }
+  else {
+    combo->setCurrentIndex(0);
+    spinbox->setEnabled(true);
+    spinbox->setValue(((double)failsafeValue*100)/1024);
   }
 }
 

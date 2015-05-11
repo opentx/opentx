@@ -187,7 +187,7 @@ void lcd_putcAtt(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
     lcdPutPattern(x, y, q, 5, 6, flags);
   }
   else if (fontsize == TINSIZE) {
-    q = &font_3x5[((uint16_t)c-0x2d)*3];
+    q = &font_3x5[((uint16_t)c-0x20)*3];
     lcdPutPattern(x, y, q, 3, 5, flags);
   }
 #if defined(BOLD_FONT)
