@@ -92,7 +92,6 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
   if (!firmware->getCapability(MultiposPots)) {
     ui->potsTypeSeparator->hide();
     ui->potsTypeSeparator_2->hide();
-    ui->potsTypeSeparator_2v->hide();
   }
 
   if (IS_TARANIS(firmware->getBoard())) {
@@ -110,7 +109,12 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
     ui->thrName->hide();
     ui->ailLabel->hide();
     ui->ailName->hide();
-    ui->switchNameSeparator_v->hide();
+    ui->switchline_1->hide();
+    ui->switchline_2->hide();
+    ui->switchline_3->hide();
+    ui->stickline_1->hide();
+    ui->stickline_2->hide();
+    ui->stickline_3->hide();
   }
 
   setupPotConfig(0, ui->pot1Label, ui->pot1Name, ui->pot1Type);
