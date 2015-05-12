@@ -365,7 +365,7 @@ bool writeEeprom(const QString &filename, ProgressWidget *progress)
 bool isRemovableMedia(const QString & vol)
 {
   char szDosDeviceName[MAX_PATH];
-  QString volume = vol
+  QString volume = vol;
   UINT driveType = GetDriveType(volume.replace("/", "\\").toLatin1());
   if (driveType != DRIVE_REMOVABLE)
     return false;
