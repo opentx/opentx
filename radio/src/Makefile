@@ -682,11 +682,11 @@ ifeq ($(PCB), MEGA2560)
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
   # LCD driver
-  # Values: ST7565P(default), ST7565R 
+  # Values: ST7565P(default), ST7565R
   LCD = ST7565P
   ifeq ($(LCD), ST7565R)
     CPPDEFS += -DLCD_ST7565R
-  endif   
+  endif
     EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
 
   ifeq ($(SDCARD), YES)
@@ -1006,7 +1006,7 @@ TARGET = opentx
 
 # List C++ source files here. (C dependencies are automatically generated.)
 ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO TARANIS))
-  TTS_SRC = translations/tts_cz.cpp translations/tts_de.cpp translations/tts_en.cpp translations/tts_es.cpp translations/tts_fr.cpp translations/tts_it.cpp translations/tts_pt.cpp translations/tts_sk.cpp translations/tts_se.cpp translations/tts_pl.cpp translations/tts_hu.cpp
+  TTS_SRC = translations/tts_cz.cpp translations/tts_de.cpp translations/tts_en.cpp translations/tts_es.cpp translations/tts_fr.cpp translations/tts_it.cpp translations/tts_pt.cpp translations/tts_pt-BR.cpp translations/tts_sk.cpp translations/tts_se.cpp translations/tts_pl.cpp translations/tts_hu.cpp
 else
   STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
   TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
@@ -1407,7 +1407,7 @@ bootloader.lbm:
 	mv bootflash4.lbm $@
 endif
 
-tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
+tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/pt-BR.h translations/se.h
 lbm: fonts bitmaps
 
 elf: $(TARGET).elf
@@ -1474,6 +1474,11 @@ translations/pt.h: translations/pt.h.txt
 	@echo
 	@echo "Create Portugese language specific header files"
 	$(TRANSLATE) translations/pt.h.txt translations/pt.h pt
+
+translations/pt-BR.h: translations/pt-BR.h.txt
+	@echo
+	@echo "Create Brasilian Portugese language specific header files"
+	$(TRANSLATE) translations/pt-BR.h.txt translations/pt-BR.h pt-BR
 
 translations/se.h: translations/se.h.txt
 	@echo
