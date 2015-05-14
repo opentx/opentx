@@ -62,14 +62,8 @@
 #define CMD58   (0x40+58)       /* READ_OCR */
 
 /* Card-Select Controls  (Platform dependent) */
-#define SELECT()        GPIO_ResetBits(GPIO_SPI_SD, GPIO_Pin_SPI_SD_CS)    /* MMC CS = L */
-#define DESELECT()      GPIO_SetBits(GPIO_SPI_SD, GPIO_Pin_SPI_SD_CS)      /* MMC CS = H */
-
-#if (_MAX_SS != 512) || (_FS_READONLY == 0) || (STM32_SD_DISK_IOCTRL_FORCE == 1)
-#define STM32_SD_DISK_IOCTRL   1
-#else
-#define STM32_SD_DISK_IOCTRL   0
-#endif
+#define SELECT()        GPIO_ResetBits(SD_GPIO, SD_GPIO_PIN_CS)    /* MMC CS = L */
+#define DESELECT()      GPIO_SetBits(SD_GPIO, SD_GPIO_PIN_CS)      /* MMC CS = H */
 
 #define BOOL   bool
 #define FALSE  false
@@ -81,16 +75,6 @@
 #define CT_SD2              0x04
 #define CT_SDC              (CT_SD1|CT_SD2)
 #define CT_BLOCK            0x08
-
-/*uint32_t Card_ID[4] ;
-uint32_t Card_SCR[2] ;
-uint32_t Card_CSD[4] ;
-int32_t Card_state; //  = SD_ST_STARTUP ;
-volatile uint32_t Card_initialized = 0;
-uint32_t Sd_rca ;
-uint32_t Cmd_A41_resp ;
-uint8_t  cardType;
-uint32_t transSpeed; */
 
 /*-----------------------------------------------------------------------*/
 /* Lock / unlock functions                                               */
@@ -138,39 +122,20 @@ static void interface_speed( enum speed_setting speed )
 {
   DWORD tmp;
 
-  tmp = SPI_SD->CR1;
+  tmp = SD_SPI->CR1;
   if ( speed == INTERFACE_SLOW ) {
     /* Set slow clock (100k-400k) */
     tmp = ( tmp | SPI_BaudRatePrescaler_128 );
   } else {
     /* Set fast clock (depends on the CSD) */
-    tmp = ( tmp & ~SPI_BaudRatePrescaler_128 ) | SPI_BaudRatePrescaler_SPI_SD;
+    tmp = ( tmp & ~SPI_BaudRatePrescaler_128 ) | SD_SPI_BaudRatePrescaler;
   }
-  SPI_SD->CR1 = tmp;
-}
-
-static void socket_wp_init(void)
-{
-  return;
+  SD_SPI->CR1 = tmp;
 }
 
 static inline DWORD socket_is_write_protected(void)
 {
   return 0; /* fake not protected */
-}
-
-static void socket_cp_init(void)
-{
-  GPIO_InitTypeDef GPIO_InitStructure;
-  
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_SD_PRESENT, ENABLE);
-  
-  GPIO_InitStructure.GPIO_Pin = SD_PRESENT_GPIO_Pin;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(SD_PRESENT_GPIO, &GPIO_InitStructure);
 }
 
 static inline DWORD socket_is_empty(void)
@@ -194,16 +159,16 @@ static int chk_power(void)
 static BYTE stm32_spi_rw( BYTE out )
 {
   /* Loop while DR register in not empty */
-  /// not needed: while (SPI_I2S_GetFlagStatus(SPI_SD, SPI_I2S_FLAG_TXE) == RESET) { ; }
+  /// not needed: while (SPI_I2S_GetFlagStatus(SD_SPI, SPI_I2S_FLAG_TXE) == RESET) { ; }
 
   /* Send byte through the SPI peripheral */
-  SPI_I2S_SendData(SPI_SD, out);
+  SPI_I2S_SendData(SD_SPI, out);
 
   /* Wait to receive a byte */
-  while (SPI_I2S_GetFlagStatus(SPI_SD, SPI_I2S_FLAG_RXNE) == RESET) { ; }
+  while (SPI_I2S_GetFlagStatus(SD_SPI, SPI_I2S_FLAG_RXNE) == RESET) { ; }
 
   /* Return the byte read from the SPI bus */
-  return SPI_I2S_ReceiveData(SPI_SD);
+  return SPI_I2S_ReceiveData(SD_SPI);
 }
 
 
@@ -264,7 +229,7 @@ void release_spi (void)
   rcvr_spi();
 }
 
-#ifdef STM32_SD_USE_DMA
+#ifdef SD_USE_DMA
 /*-----------------------------------------------------------------------*/
 /* Transmit/Receive Block using DMA (Platform dependent. STM32 here)     */
 /*-----------------------------------------------------------------------*/
@@ -280,12 +245,12 @@ void stm32_dma_transfer(
   DMA_InitTypeDef DMA_InitStructure;
   WORD rw_workbyte[] = { 0xffff };
 
-  DMA_DeInit(DMA_Channel_SPI_SD_RX);
-  DMA_DeInit(DMA_Channel_SPI_SD_TX);
+  DMA_DeInit(SD_DMA_Stream_SPI_RX);
+  DMA_DeInit(SD_DMA_Stream_SPI_TX);
   
   /* shared DMA configuration values between SPI2 RX & TX*/
-  DMA_InitStructure.DMA_Channel = DMA_Channel_SPI2_TX;//the same channel
-  DMA_InitStructure.DMA_PeripheralBaseAddr = (DWORD)(&(SPI_SD->DR));
+  DMA_InitStructure.DMA_Channel = SD_DMA_Channel_SPI;//the same channel
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (DWORD)(&(SD_SPI->DR));
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
   DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
@@ -305,13 +270,13 @@ void stm32_dma_transfer(
     DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)buff;
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-    DMA_Init(DMA_Channel_SPI_SD_RX, &DMA_InitStructure);
+    DMA_Init(SD_DMA_Stream_SPI_RX, &DMA_InitStructure);
 
     /* DMA1 channel4 configuration SPI2 TX ---------------------------------------------*/
     DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)rw_workbyte;
     DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
-    DMA_Init(DMA_Channel_SPI_SD_TX, &DMA_InitStructure);
+    DMA_Init(SD_DMA_Stream_SPI_TX, &DMA_InitStructure);
 
   }
   else {//false = write
@@ -322,46 +287,46 @@ void stm32_dma_transfer(
     DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)rw_workbyte;
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
-    DMA_Init(DMA_Channel_SPI_SD_RX, &DMA_InitStructure);
+    DMA_Init(SD_DMA_Stream_SPI_RX, &DMA_InitStructure);
 
     /* DMA1 channel3 configuration SPI1 TX ---------------------------------------------*/
     /* DMA1 channel5 configuration SPI2 TX ---------------------------------------------*/
     DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)buff;
     DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-    DMA_Init(DMA_Channel_SPI_SD_TX, &DMA_InitStructure);
+    DMA_Init(SD_DMA_Stream_SPI_TX, &DMA_InitStructure);
 #endif
 
   }
 
   /* Enable DMA RX Channel */
-  DMA_Cmd(DMA_Channel_SPI_SD_RX, ENABLE);
+  DMA_Cmd(SD_DMA_Stream_SPI_RX, ENABLE);
   /* Enable DMA TX Channel */
-  DMA_Cmd(DMA_Channel_SPI_SD_TX, ENABLE);
+  DMA_Cmd(SD_DMA_Stream_SPI_TX, ENABLE);
 
   /* Enable SPI TX/RX request */
-  SPI_I2S_DMACmd(SPI_SD, SPI_I2S_DMAReq_Rx | SPI_I2S_DMAReq_Tx, ENABLE);
+  SPI_I2S_DMACmd(SD_SPI, SPI_I2S_DMAReq_Rx | SPI_I2S_DMAReq_Tx, ENABLE);
 
   /* Wait until DMA1_Channel 3 Transfer Complete */
   
-  while (DMA_GetFlagStatus(DMA_Channel_SPI_SD_TX,DMA_FLAG_SPI_SD_TC_TX) == RESET) { ; }
+  while (DMA_GetFlagStatus(SD_DMA_Stream_SPI_TX, SD_DMA_FLAG_SPI_TC_TX) == RESET) { ; }
   
   /* Wait until DMA1_Channel 2 Receive Complete */
   
-  while (DMA_GetFlagStatus(DMA_Channel_SPI_SD_RX,DMA_FLAG_SPI_SD_TC_RX) == RESET) { ; }
+  while (DMA_GetFlagStatus(SD_DMA_Stream_SPI_RX, SD_DMA_FLAG_SPI_TC_RX) == RESET) { ; }
 
   // same w/o function-call:
-  // while ( ( ( DMA1->ISR ) & DMA_FLAG_SPI_SD_TC_RX ) == RESET ) { ; }
+  // while ( ( ( DMA1->ISR ) & SD_DMA_FLAG_SPI_TC_RX ) == RESET ) { ; }
 
   /* Disable DMA RX Channel */
-  DMA_Cmd(DMA_Channel_SPI_SD_RX, DISABLE);
+  DMA_Cmd(SD_DMA_Stream_SPI_RX, DISABLE);
   /* Disable DMA TX Channel */
-  DMA_Cmd(DMA_Channel_SPI_SD_TX, DISABLE);
+  DMA_Cmd(SD_DMA_Stream_SPI_TX, DISABLE);
 
   /* Disable SPI RX/TX request */
-  SPI_I2S_DMACmd(SPI_SD, SPI_I2S_DMAReq_Rx | SPI_I2S_DMAReq_Tx, DISABLE);
+  SPI_I2S_DMACmd(SD_SPI, SPI_I2S_DMAReq_Rx | SPI_I2S_DMAReq_Tx, DISABLE);
 }
-#endif /* STM32_SD_USE_DMA */
+#endif /* SD_USE_DMA */
 
 
 /*-----------------------------------------------------------------------*/
@@ -376,38 +341,41 @@ void power_on (void)
   volatile BYTE dummyread;
 
   /* Enable GPIO clock for CS */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_SD, ENABLE);
+  RCC_AHB1PeriphClockCmd(SD_RCC_AHB1Periph_GPIO, ENABLE);
   /* Enable SPI clock, SPI1: APB2, SPI2: APB1 */
-  RCC_APBPeriphClockCmd_SPI_SD(RCC_APBPeriph_SPI_SD, ENABLE);
+  RCC_APB1PeriphClockCmd(SD_RCC_APB1Periph_SPI, ENABLE);
     
   card_power(1);
     
-  socket_cp_init();//Empty return
-  socket_wp_init();//Empty return.
+  GPIO_InitStructure.GPIO_Pin = SD_GPIO_PIN_PRESENT;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(SD_GPIO_PRESENT, &GPIO_InitStructure);
 
   for (uint32_t Timer = 25000; Timer>0;Timer--);  /* Wait for 250ms */
 
   /* Configure I/O for Flash Chip select */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_SPI_SD_CS;
+  GPIO_InitStructure.GPIO_Pin   = SD_GPIO_PIN_CS;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIO_SPI_SD, &GPIO_InitStructure);
+  GPIO_Init(SD_GPIO, &GPIO_InitStructure);
 
   /* De-select the Card: Chip Select high */
   DESELECT();
 
   /* Configure SPI pins: SCK MISO and MOSI with alternate function push-down */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_SPI_SD_SCK | GPIO_Pin_SPI_SD_MOSI|GPIO_Pin_SPI_SD_MISO;
+  GPIO_InitStructure.GPIO_Pin   = SD_GPIO_PIN_SCK | SD_GPIO_PIN_MOSI|SD_GPIO_PIN_MISO;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(GPIO_SPI_SD, &GPIO_InitStructure);
-  GPIO_PinAFConfig(GPIO_SPI_SD,GPIO_PinSource_SCK ,GPIO_AF_SD);
-  GPIO_PinAFConfig(GPIO_SPI_SD,GPIO_PinSource_MISO,GPIO_AF_SD);
-  GPIO_PinAFConfig(GPIO_SPI_SD,GPIO_PinSource_MOSI,GPIO_AF_SD);
+  GPIO_Init(SD_GPIO, &GPIO_InitStructure);
+  GPIO_PinAFConfig(SD_GPIO,SD_GPIO_PinSource_SCK ,SD_GPIO_AF);
+  GPIO_PinAFConfig(SD_GPIO,SD_GPIO_PinSource_MISO,SD_GPIO_AF);
+  GPIO_PinAFConfig(SD_GPIO,SD_GPIO_PinSource_MOSI,SD_GPIO_AF);
 
   /* SPI configuration */
   SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
@@ -416,20 +384,20 @@ void power_on (void)
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
   SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
   SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_SPI_SD; 
+  SPI_InitStructure.SPI_BaudRatePrescaler = SD_SPI_BaudRatePrescaler; 
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
   SPI_InitStructure.SPI_CRCPolynomial = 7;
-  SPI_Init(SPI_SD, &SPI_InitStructure);
-  SPI_CalculateCRC(SPI_SD, DISABLE);
-  SPI_Cmd(SPI_SD, ENABLE);
+  SPI_Init(SD_SPI, &SPI_InitStructure);
+  SPI_CalculateCRC(SD_SPI, DISABLE);
+  SPI_Cmd(SD_SPI, ENABLE);
 
   /* drain SPI */
-  while (SPI_I2S_GetFlagStatus(SPI_SD, SPI_I2S_FLAG_TXE) == RESET) { ; }
-  dummyread = SPI_I2S_ReceiveData(SPI_SD);
+  while (SPI_I2S_GetFlagStatus(SD_SPI, SPI_I2S_FLAG_TXE) == RESET) { ; }
+  dummyread = SPI_I2S_ReceiveData(SD_SPI);
 
-#ifdef STM32_SD_USE_DMA
+#ifdef SD_USE_DMA
   /* enable DMA clock */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA_SD, ENABLE);
+  RCC_AHB1PeriphClockCmd(SD_RCC_AHB1Periph_DMA, ENABLE);
 #endif
 
   (void) dummyread;          // Discard value - prevents compiler warning
@@ -445,17 +413,17 @@ void power_off (void)
     release_spi();
   }
 
-  SPI_I2S_DeInit(SPI_SD);
-  SPI_Cmd(SPI_SD, DISABLE);
-  RCC_APBPeriphClockCmd_SPI_SD(RCC_APBPeriph_SPI_SD, DISABLE);
+  SPI_I2S_DeInit(SD_SPI);
+  SPI_Cmd(SD_SPI, DISABLE);
+  RCC_APB1PeriphClockCmd(SD_RCC_APB1Periph_SPI, DISABLE);
 
   //All SPI-Pins to input with weak internal pull-downs
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_SPI_SD_SCK | GPIO_Pin_SPI_SD_MISO
-      | GPIO_Pin_SPI_SD_MOSI;
+  GPIO_InitStructure.GPIO_Pin = SD_GPIO_PIN_SCK | SD_GPIO_PIN_MISO
+      | SD_GPIO_PIN_MOSI;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
-  GPIO_Init(GPIO_SPI_SD, &GPIO_InitStructure);
+  GPIO_Init(SD_GPIO, &GPIO_InitStructure);
 
   card_power(0);
 
@@ -485,7 +453,7 @@ BOOL rcvr_datablock (
     return FALSE; /* If not valid data token, return with error */
   }
 
-#ifdef STM32_SD_USE_DMA
+#ifdef SD_USE_DMA
   stm32_dma_transfer( TRUE, buff, btr );
 #else
   do {                                                    /* Receive the data block into buffer */
@@ -494,7 +462,7 @@ BOOL rcvr_datablock (
     rcvr_spi_m(buff++);
     rcvr_spi_m(buff++);
   } while (btr -= 4);
-#endif /* STM32_SD_USE_DMA */
+#endif /* SD_USE_DMA */
 
   rcvr_spi();                                             /* Discard CRC */
   rcvr_spi();
@@ -517,7 +485,7 @@ BOOL xmit_datablock (
 )
 {
   BYTE resp;
-#ifndef STM32_SD_USE_DMA
+#ifndef SD_USE_DMA
   BYTE wc;
 #endif
 
@@ -530,7 +498,7 @@ BOOL xmit_datablock (
   xmit_spi(token);                                        /* transmit data token */
   if (token != 0xFD) {    /* Is data token */
 
-#ifdef STM32_SD_USE_DMA
+#ifdef SD_USE_DMA
     stm32_dma_transfer( FALSE, buff, 512 );
 #else
     wc = 0;
@@ -538,7 +506,7 @@ BOOL xmit_datablock (
       xmit_spi(*buff++);
       xmit_spi(*buff++);
     } while (--wc);
-#endif /* STM32_SD_USE_DMA */
+#endif /* SD_USE_DMA */
 
     xmit_spi(0xFF);                                 /* CRC (Dummy) */
     xmit_spi(0xFF);

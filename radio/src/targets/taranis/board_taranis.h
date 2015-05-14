@@ -170,7 +170,7 @@ void delay_01us(uint16_t nb);
   void sdPoll10ms(void);
   #define sdMountPoll()
   uint32_t sdMounted(void);
-  #define SD_CARD_PRESENT()       (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_Pin)
+  #define SD_CARD_PRESENT()       (~SD_GPIO_PRESENT->IDR & SD_GPIO_PIN_PRESENT)
 #endif
 
 // Flash Write driver

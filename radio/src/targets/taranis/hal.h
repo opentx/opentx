@@ -313,67 +313,47 @@
   #define PIN_LCD_RST                   GPIO_Pin_12 // PD.12
 #endif 
 
-// EEPROM 5137
-#define RCC_APBPeriph_I2C_EE            RCC_APB1Periph_I2C1
-#define I2C_EE                          I2C1
-#define GPIO_AF_I2C_EE                  GPIO_AF_I2C1
-#define GPIO_PinSource_I2C_EE_SCL       GPIO_PinSource6
-#define GPIO_PinSource_I2C_EE_SDA       GPIO_PinSource7
-#define I2C_EE_GPIO                     GPIOB
-#define I2C_EE_WP_GPIO                  GPIOB
-#define I2C_EE_GPIO_CLK                 RCC_AHB1Periph_GPIOB
-#define I2C_EE_SCL                      GPIO_Pin_6  // PB6
-#define I2C_EE_SDA                      GPIO_Pin_7  // PB7
-#define I2C_EE_WP                       GPIO_Pin_9  // PB9
+// I2C Bus: EEPROM and CAT5137
+#define I2C_RCC_AHB1Periph_GPIO         RCC_AHB1Periph_GPIOB
+#define I2C_RCC_APB1Periph_I2C          RCC_APB1Periph_I2C1
+#define I2C                             I2C1
+#define I2C_GPIO                        GPIOB
+#define I2C_GPIO_PIN_SCL                GPIO_Pin_6  // PB.06
+#define I2C_GPIO_PIN_SDA                GPIO_Pin_7  // PB.07
+#define I2C_GPIO_AF                     GPIO_AF_I2C1
+#define I2C_GPIO_PinSource_SCL          GPIO_PinSource6
+#define I2C_GPIO_PinSource_SDA          GPIO_PinSource7
+#define I2C_ADDRESS_EEPROM              0xA2
+#define I2C_ADDRESS_CAT5137             0x5C
+#define I2C_FLASH_PAGESIZE              64
 
 // SD - SPI2
-#define RCC_AHB1Periph_SD_PRESENT       RCC_AHB1Periph_GPIOD
-#define SD_PRESENT_GPIO                 GPIOD
-#define SD_PRESENT_GPIO_Pin             GPIO_Pin_9  // PD.09
-#define GPIO_Pin_SPI_SD_CS              GPIO_Pin_12 // PB.12
-#define GPIO_Pin_SPI_SD_SCK             GPIO_Pin_13 // PB.13
-#define GPIO_Pin_SPI_SD_MISO            GPIO_Pin_14 // PB.14
-#define GPIO_Pin_SPI_SD_MOSI            GPIO_Pin_15 // PB.15
-#define GPIO_PinSource_CS               GPIO_PinSource12
-#define GPIO_PinSource_SCK              GPIO_PinSource13
-#define GPIO_PinSource_MISO             GPIO_PinSource14
-#define GPIO_PinSource_MOSI             GPIO_PinSource15
+#define SD_RCC_AHB1Periph_GPIO          (RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOB)
+#define SD_RCC_APB1Periph_SPI           RCC_APB1Periph_SPI2
+#define SD_RCC_AHB1Periph_DMA           RCC_AHB1Periph_DMA1
+#define SD_GPIO_PRESENT                 GPIOD
+#define SD_GPIO_PIN_PRESENT             GPIO_Pin_9  // PD.09
+#define SD_GPIO                         GPIOB
+#define SD_GPIO_PIN_CS                  GPIO_Pin_12 // PB.12
+#define SD_GPIO_PIN_SCK                 GPIO_Pin_13 // PB.13
+#define SD_GPIO_PIN_MISO                GPIO_Pin_14 // PB.14
+#define SD_GPIO_PIN_MOSI                GPIO_Pin_15 // PB.15
+#define SD_GPIO_AF                      GPIO_AF_SPI2
+#define SD_GPIO_PinSource_CS            GPIO_PinSource12
+#define SD_GPIO_PinSource_SCK           GPIO_PinSource13
+#define SD_GPIO_PinSource_MISO          GPIO_PinSource14
+#define SD_GPIO_PinSource_MOSI          GPIO_PinSource15
+#define SD_SPI                          SPI2
+#define SD_SPI_BaudRatePrescaler        SPI_BaudRatePrescaler_4 // 10.5<20MHZ, make sure < 20MHZ
 
-#define GPIO_SPI_SD                     GPIOB
-#define SPI_SD                          SPI2
-#define GPIO_AF_SD                      GPIO_AF_SPI2
-#define RCC_AHB1Periph_GPIO_SD          RCC_AHB1Periph_GPIOB
-#define RCC_APBPeriphClockCmd_SPI_SD    RCC_APB1PeriphClockCmd
-#define RCC_APBPeriph_SPI_SD            RCC_APB1Periph_SPI2
-#define RCC_AHB1Periph_DMA_SD           RCC_AHB1Periph_DMA1
-#define SPI_BaudRatePrescaler_SPI_SD    SPI_BaudRatePrescaler_4 //10.5<20MHZ,make sure < 20MHZ
-
-//disabled io_ctl and cp/wp
-#define CARD_SUPPLY_SWITCHABLE          0
-#define SOCKET_WP_CONNECTED             0
-#define SOCKET_CP_CONNECTED             0
-/* set to 1 to provide a disk_ioctrl function even if not needed by the FatFs */
-#define STM32_SD_DISK_IOCTRL_FORCE      0
-
-//DMA
 #if !defined(BOOT)
-#define STM32_SD_USE_DMA //Enable the DMA for SD
+  #define SD_USE_DMA                    // Enable the DMA for SD
+  #define SD_DMA_Stream_SPI_RX          DMA1_Stream3
+  #define SD_DMA_Stream_SPI_TX          DMA1_Stream4
+  #define SD_DMA_FLAG_SPI_TC_RX         DMA_FLAG_TCIF3
+  #define SD_DMA_FLAG_SPI_TC_TX         DMA_FLAG_TCIF4
+  #define SD_DMA_Channel_SPI            DMA_Channel_0
 #endif
-
-#ifdef STM32_SD_USE_DMA
-#define DMA_Channel_SPI_SD_RX           DMA1_Stream3
-#define DMA_Channel_SPI_SD_TX           DMA1_Stream4
-
-#define DMA_FLAG_SPI_SD_TC_RX           DMA_FLAG_TCIF3
-#define DMA_FLAG_SPI_SD_TC_TX           DMA_FLAG_TCIF4
-#define DMA_Channel_SPI2_TX             DMA_Channel_0
-#define DMA_Channel_SPI2_RX             DMA_Channel_0
-#endif
-
-// EEPROM and CAT5137
-#define I2C_FLASH_PAGESIZE              64
-#define I2C_EEPROM_ADDRESS              0xA2
-#define I2C_CAT5137_ADDRESS             0x5C //0101110
 
 // Haptic
 #if defined(REVPLUS)
