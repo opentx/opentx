@@ -62,8 +62,8 @@
 #define CMD58   (0x40+58)       /* READ_OCR */
 
 /* Card-Select Controls  (Platform dependent) */
-#define SELECT()        GPIO_ResetBits(SD_GPIO, SD_GPIO_PIN_CS)    /* MMC CS = L */
-#define DESELECT()      GPIO_SetBits(SD_GPIO, SD_GPIO_PIN_CS)      /* MMC CS = H */
+#define SD_SELECT()        GPIO_ResetBits(SD_GPIO, SD_GPIO_PIN_CS)    /* MMC CS = L */
+#define SD_DESELECT()      GPIO_SetBits(SD_GPIO, SD_GPIO_PIN_CS)      /* MMC CS = H */
 
 #define BOOL   bool
 #define FALSE  false
@@ -225,7 +225,7 @@ static void spi_reset()
 static
 void release_spi (void)
 {
-  DESELECT();
+  SD_DESELECT();
   rcvr_spi();
 }
 
@@ -364,7 +364,7 @@ void power_on (void)
   GPIO_Init(SD_GPIO, &GPIO_InitStructure);
 
   /* De-select the Card: Chip Select high */
-  DESELECT();
+  SD_DESELECT();
 
   /* Configure SPI pins: SCK MISO and MOSI with alternate function push-down */
   GPIO_InitStructure.GPIO_Pin   = SD_GPIO_PIN_SCK | SD_GPIO_PIN_MOSI|SD_GPIO_PIN_MISO;
@@ -408,7 +408,7 @@ void power_off (void)
   GPIO_InitTypeDef GPIO_InitStructure;
 
   if (!(Stat & STA_NOINIT)) {
-    SELECT();
+    SD_SELECT();
     wait_ready();
     release_spi();
   }
@@ -557,7 +557,7 @@ BYTE send_cmd (
   }
 
   /* Select the card and wait for ready */
-  SELECT();
+  SD_SELECT();
   if (wait_ready() != 0xFF) {
     TRACE_SD_CARD_EVENT(1, sd_send_cmd_wait_ready, cmd);
     spi_reset();
@@ -821,7 +821,7 @@ DRESULT disk_ioctl (
 
     switch (ctrl) {
     case CTRL_SYNC :                /* Make sure that no pending write process */
-      SELECT();
+      SD_SELECT();
       if (wait_ready() == 0xFF) {
         res = RES_OK;
       }
