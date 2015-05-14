@@ -338,7 +338,7 @@ LCD_DUAL_BUFFER = NO
 # Enable internal module PPM mode for Taranis
 
 # Values = NO, YES
-TARANIS_INTERNAL_PPM = YES
+TARANIS_INTERNAL_PPM = NO
 
 # Enable disk IO simulation in simulator
 # Simulator will use FatFs module and simulated IO layer that

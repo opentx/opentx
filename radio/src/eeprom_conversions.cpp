@@ -567,7 +567,6 @@ PACK(typedef struct {
 #if defined(PCBTARANIS)
 #define MODELDATA_EXTRA_216 \
   uint8_t externalModule; \
-  uint8_t internalModule; \
   uint8_t trainerMode; \
   ModuleData moduleData[NUM_MODULES+1]; \
   char curveNames[MAX_CURVES][6]; \
