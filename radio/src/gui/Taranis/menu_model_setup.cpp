@@ -190,7 +190,11 @@ int getSwitchWarningsCount()
 void menuModelSetup(uint8_t event)
 {
   horzpos_t l_posHorz = m_posHorz;
+#if defined(TARANIS_INTERNAL_PPM)
+  #define IF_INTERNAL_MODULE_ON(x)          (g_model.internalModule == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
+#else
   #define IF_INTERNAL_MODULE_ON(x)          (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF ? HIDDEN_ROW : (uint8_t)(x))
+#endif
   #define IF_EXTERNAL_MODULE_ON(x)          (g_model.externalModule == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
   #define IF_TRAINER_ON(x)                  (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)(x) : HIDDEN_ROW)
   #define IF_EXTERNAL_MODULE_XJT(x)         (IS_MODULE_XJT(EXTERNAL_MODULE) ? (uint8_t)x : HIDDEN_ROW)
@@ -216,8 +220,22 @@ void menuModelSetup(uint8_t event)
     #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|NUM_POTS : 0)
   #endif
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
+#if defined(TARANIS_INTERNAL_PPM)
+  MENU_TAB({ 0, 0, TIMERS_ROWS, 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0, 
+LABEL(InternalModule), 
+(IS_MODULE_XJT(INTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, 
+IF_INTERNAL_MODULE_ON(INTERNAL_MODULE_CHANNELS_ROWS()), 
+IF_INTERNAL_MODULE_ON(IS_MODULE_XJT(INTERNAL_MODULE) && IS_D8_RX(INTERNAL_MODULE) ? (uint8_t)1 : (IS_MODULE_PPM(INTERNAL_MODULE) || IS_MODULE_XJT(INTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW), 
+IF_INTERNAL_MODULE_ON((IS_MODULE_XJT(INTERNAL_MODULE)) ? FAILSAFE_ROWS(INTERNAL_MODULE) : HIDDEN_ROW), 
+LABEL(ExternalModule), 
+(IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, 
+EXTERNAL_MODULE_CHANNELS_ROWS(), 
+(IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW, 
+IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)), 
+LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
+#else
   MENU_TAB({ 0, 0, TIMERS_ROWS, 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0, LABEL(InternalModule), 0, IF_INTERNAL_MODULE_ON(1), IF_INTERNAL_MODULE_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), LABEL(ExternalModule), (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, EXTERNAL_MODULE_CHANNELS_ROWS(), (IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW, IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
-
+#endif
   MENU_CHECK(STR_MENUSETUP, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX);
 
 #if (defined(DSM2) || defined(PXX))
@@ -570,9 +588,40 @@ void menuModelSetup(uint8_t event)
         if (attr) g_model.noGlobalFunctions = !checkIncDecModel(event, !g_model.noGlobalFunctions, 0, 1);
         break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_LABEL:
-        lcd_putsLeft(y, TR_INTERNALRF);
+       case ITEM_MODEL_INTERNAL_MODULE_LABEL:
+         lcd_putsLeft(y, TR_INTERNALRF);
+       break;
+#if defined(TARANIS_INTERNAL_PPM)
+	case ITEM_MODEL_INTERNAL_MODULE_MODE:
+       	 	lcd_putsLeft(y, STR_MODE);
+        	lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.internalModule, m_posHorz==0 ? attr : 0);
+        	if (IS_MODULE_XJT(INTERNAL_MODULE))
+          		lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[INTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
+        	if (attr && s_editMode>0) {
+          		switch (m_posHorz) {
+            			case 0:
+              				g_model.internalModule = checkIncDec(event, g_model.internalModule, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-2, EE_MODEL, isModuleAvailable);
+              				if (checkIncDec_Ret) {
+                				g_model.moduleData[INTERNAL_MODULE].rfProtocol = 0;
+                				g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;
+                				if (g_model.internalModule == MODULE_TYPE_PPM)
+                  					g_model.moduleData[INTERNAL_MODULE].channelsCount = 0;
+                				else
+                  					g_model.moduleData[INTERNAL_MODULE].channelsCount = MAX_INTERNAL_MODULE_CHANNELS();
+              					}
+              				break;
+            			case 1:
+              
+                			CHECK_INCDEC_MODELVAR(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST);
+              				if (checkIncDec_Ret) {
+              	  				g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;
+              		  			g_model.moduleData[INTERNAL_MODULE].channelsCount = MAX_INTERNAL_MODULE_CHANNELS();
+              				}
+          			}
+        	}
         break;
+#else
+
 
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
         lcd_putsLeft(y, STR_MODE);
@@ -585,7 +634,7 @@ void menuModelSetup(uint8_t event)
           }
         }
         break;
-
+#endif
       case ITEM_MODEL_TRAINER_MODE:
         g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_MODE, STR_VTRAINERMODES, g_model.trainerMode, 0, HAS_WIRELESS_TRAINER_HARDWARE() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE, attr, event);
         break;
@@ -650,7 +699,7 @@ void menuModelSetup(uint8_t event)
                 break;
               case 1:
                 CHECK_INCDEC_MODELVAR(event, moduleData.channelsCount, -4, min<int8_t>(MAX_CHANNELS(moduleIdx), 32-8-moduleData.channelsStart));
-                if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.externalModule == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_CHANNELS)) {
+                if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.externalModule == MODULE_TYPE_PPM) || (k == ITEM_MODEL_INTERNAL_MODULE_CHANNELS && g_model.internalModule == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_CHANNELS)) {
                   SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
                 }
                 break;

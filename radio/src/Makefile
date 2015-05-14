@@ -52,10 +52,10 @@ DELAY = 5
 # PCB version
 # Values: 9X, 9X128, 9X2561, 9XR, 9XR128, 9XR2561, GRUVIN9X, MEGA2560, SKY9X, 9XRPRO, TARANIS
 # Old values STD and STD128 are mapped to 9X and 9X128 for compatibility
-PCB = 9X
+PCB = TARANIS
 
 # PCB revision
-PCBREV =
+PCBREV = REVPLUS
 
 # Enable JETI-Telemetry or FrSky Telemetry reception on UART0
 # For this option you need to modify your hardware!
@@ -339,7 +339,7 @@ LCD_DUAL_BUFFER = NO
 # Notice: enabling this only enable code in the driver,
 # the menu selection is still not possible.
 # Values = NO, YES
-TARANIS_INTERNAL_PPM = NO
+TARANIS_INTERNAL_PPM = YES
 
 # Enable disk IO simulation in simulator
 # Simulator will use FatFs module and simulated IO layer that
