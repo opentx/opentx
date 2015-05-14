@@ -757,3 +757,5 @@ Nigel Hendriks
 Frédéric Devillard
 Albert Herzog
 Anindya Mukerjee
+Kenny Stanberry
+Tauno Rautakorpi
