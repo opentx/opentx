@@ -1135,10 +1135,12 @@ void lcd_putcAtt(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   unsigned char c_remapped = 0;
 
 #if defined(BOLD_SPECIFIC_FONT)
-  if (flags & (DBLSIZE+BOLD)) {
+#define BOLD_SPECIFIC BOLD
 #else
-  if (flags & DBLSIZE) {
+#define BOLD_SPECIFIC 0
 #endif
+
+  if (flags & (DBLSIZE|BOLD_SPECIFIC)) {
     // To save space only some DBLSIZE and BOLD chars are available
     // c has to be remapped. All non existing chars mapped to 0 (space)
 
@@ -1150,16 +1152,11 @@ void lcd_putcAtt(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       c_remapped = c - 'a' + 42;
     else if (c=='_')
       c_remapped = 4;
-#if defined(BOLD_SPECIFIC_FONT)
     else if (c!=' ')
-      flags &= ~BOLD;
-#endif
-
-#if defined(BOLD_SPECIFIC_FONT)
+      flags &= ~BOLD_SPECIFIC;
   }
-  if (flags & DBLSIZE) {
-#endif
 
+  if (flags & DBLSIZE) {
     /* each letter consists of ten top bytes followed by
      * by ten bottom bytes (20 bytes per * char) */
     q = &font_10x14[((uint16_t)c_remapped)*20];
