@@ -36,7 +36,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "OpenTX board based on Arduino MEGA2560"
-Date "14 feb 2015"
+Date "2 may 2015"
 Rev "0"
 Comp "Copyright 2015 F. Aguerre"
 Comment1 ""
@@ -41032,12 +41032,12 @@ F 3 "" H 10450 3850 60  0001 C CNN
 	1    10450 3850
 	-1   0    0    -1  
 $EndComp
-Text Label 6500 7150 2    42   ~ 0
-OpenTX  I/O
-Text GLabel 5250 7150 2    42   Output ~ 0
+Text Label 6550 7450 2    42   ~ 0
+OpenTX output
+Text GLabel 5250 7450 2    42   Output ~ 0
 port pin (initial state) 
-Text Notes 5500 7050 0    60   ~ 0
-Caption
+Text Notes 5450 7300 0    60   ~ 0
+Pinout caption :
 Text Label 5550 2550 2    42   ~ 0
 Gain = 1 + R3/R6
 $Bitmap
@@ -41132,7 +41132,7 @@ CA 3B B1 B4 D6 FB 76 3A 4D 11 32 4D 1E A1 3D 78 1C 8B 1E 14 74 10 57 46 8C 97 FB
 33 B3 93 2C A5 90 EC 7D 2B A5 BC 7A F5 EA E1 E1 5E 44 C8 BD 2E 90 84 08 60 87 C2 BB D7 FD 40 85 
 4A 52 6F 3D D0 6D 9E 6E 41 36 CA 77 04 97 99 83 92 6E D1 7C 20 6D 2C 33 D2 7F 5B 16 F2 83 51 39 
 A0 3F CF F3 A7 9F 7E FA CB 5F FE F5 EB D7 AF 45 64 59 96 6D DB F6 23 3E B3 52 CA B3 1B C5 00 F7 
-08 C0 CC FE 1F 15 4F 30 6D 3D C2 80 DE 00 00 00 00 49 45 4E 44 AE 42 60 82 00 $EndBitmap
+08 C0 CC FE 1F 15 4F 30 6D 3D C2 80 DE 00 00 00 00 49 45 4E 44 AE 42 60 82 14 $EndBitmap
 EndData
 $EndBitmap
 $Comp
@@ -41664,9 +41664,9 @@ Wire Wire Line
 Wire Wire Line
 	10450 4100 10450 4200
 Wire Wire Line
-	6050 7150 6500 7150
+	6050 7450 6550 7450
 Wire Wire Line
-	5100 7150 5250 7150
+	5100 7450 5250 7450
 Wire Wire Line
 	4700 4650 4700 4300
 Wire Wire Line
@@ -41738,4 +41738,14 @@ F 3 "" H 1750 7050 60  0000 C CNN
 	1    1750 7050
 	-1   0    0    1   
 $EndComp
+Text Notes 4850 6550 0    42   ~ 0
+LCD pinout labels (may differ, depending of brand) :\nA0 = R/S (register select) = D/I (data/instruction select)\nRST = RES (reset)\nCS = chip select\nWR = write\nRD = read\n\n
+Text Label 6550 7550 2    42   ~ 0
+OpenTX input
+Text GLabel 5250 7550 2    42   Input ~ 0
+port pin (initial state) 
+Wire Wire Line
+	6050 7550 6550 7550
+Wire Wire Line
+	5100 7550 5250 7550
 $EndSCHEMATC
