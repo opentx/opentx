@@ -778,7 +778,7 @@ static int luaModelInsertInput(lua_State *L)
   unsigned int first = getFirstInput(chn);
   unsigned int count = getInputsCountFromFirst(chn, first);
 
-  if (chn<MAX_INPUTS && getExpoMixCount(1)<MAX_INPUTS && idx<=count) {
+  if (chn<MAX_INPUTS && getExpoMixCount(1)<MAX_EXPOS && idx<=count) {
     idx = first + idx;
     s_currCh = chn + 1;
     insertExpoMix(1, idx);
