@@ -72,6 +72,7 @@ volatile uint8_t LcdLock ;
 
 const static pm_uchar lcdInitSequence[] PROGMEM =
 {
+//ST7565 eq. : KS0713, SED1565, S6B1713, SPLC501C, NT7532 /34 /38, TL03245
 #if defined(LCD_ST7565R)
    0xE2, //Initialize the internal functions
    0xAE, //DON = 0: display OFF
@@ -85,7 +86,7 @@ const static pm_uchar lcdInitSequence[] PROGMEM =
    0x81, //Set reference voltage Mode
    0x22, //24 SV5 SV4 SV3 SV2 SV1 SV0 = 0x18
    0xAF, //DON = 1: display ON
-   0x60  //sets the display start line to zero
+   0x60  //Set the display start line to zero
 #elif defined(LCD_ERC12864FSF)
    0xE2, //Initialize the internal functions
    0xAE, //DON = 0: display OFF
@@ -123,16 +124,9 @@ const static pm_uchar lcdInitSequence[] PROGMEM =
 
 inline void lcdInit()
 {
-  // /home/thus/txt/datasheets/lcd/KS0713.pdf
-  // ~/txt/flieger/ST7565RV17.pdf  from http://www.glyn.de/content.asp?wdid=132&sid=
-
   LCD_LOCK();
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RES);  //LCD reset
-  #ifdef LCD_ST7920
-    _delay_ms(1);
-  #else
-    delay_2us();       //TODO : verify if can be set to 1ms => so some value for both screen and no #ifdef
-  #endif
+  delay_2us();
   PORTC_LCD_CTRL |= (1<<OUT_C_LCD_RES);  //LCD normal operation
   #ifdef LCD_ST7920
     _delay_ms(40);
