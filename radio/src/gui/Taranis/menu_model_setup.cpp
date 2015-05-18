@@ -589,37 +589,37 @@ void menuModelSetup(uint8_t event)
         if (attr) g_model.noGlobalFunctions = !checkIncDecModel(event, !g_model.noGlobalFunctions, 0, 1);
         break;
 
-       case ITEM_MODEL_INTERNAL_MODULE_LABEL:
-         lcd_putsLeft(y, TR_INTERNALRF);
-         break;
+      case ITEM_MODEL_INTERNAL_MODULE_LABEL:
+        lcd_putsLeft(y, TR_INTERNALRF);
+        break;
 #if defined(TARANIS_INTERNAL_PPM)
-       case ITEM_MODEL_INTERNAL_MODULE_MODE:
-         lcd_putsLeft(y, STR_MODE);
-         lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.internalModule, m_posHorz==0 ? attr : 0);
-         if (IS_MODULE_XJT(INTERNAL_MODULE)) 
-           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[INTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
-         if (attr && s_editMode>0) {
-           switch (m_posHorz) {
-             case 0:
-               g_model.internalModule = checkIncDec(event, g_model.internalModule, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-2, EE_MODEL, isModuleAvailable);
-               if (checkIncDec_Ret) {
-                  g_model.moduleData[INTERNAL_MODULE].rfProtocol = 0;
-                  g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;
-                  if (g_model.internalModule == MODULE_TYPE_PPM)
-                    g_model.moduleData[INTERNAL_MODULE].channelsCount = 0;
-                  else
-                    g_model.moduleData[INTERNAL_MODULE].channelsCount = MAX_INTERNAL_MODULE_CHANNELS();
-               }
-               break;
-             case 1:              
-               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST);
-               if (checkIncDec_Ret) {
+      case ITEM_MODEL_INTERNAL_MODULE_MODE:
+        lcd_putsLeft(y, STR_MODE);
+        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.internalModule, m_posHorz==0 ? attr : 0);
+        if (IS_MODULE_XJT(INTERNAL_MODULE)) 
+          lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[INTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
+        if (attr && s_editMode>0) {
+          switch (m_posHorz) {
+            case 0:
+              g_model.internalModule = checkIncDec(event, g_model.internalModule, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-2, EE_MODEL, isModuleAvailable);
+              if (checkIncDec_Ret) {
+                 g_model.moduleData[INTERNAL_MODULE].rfProtocol = 0;
                  g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;
-                 g_model.moduleData[INTERNAL_MODULE].channelsCount = MAX_INTERNAL_MODULE_CHANNELS();
-               }
-             }
-           }
-         break;
+                 if (g_model.internalModule == MODULE_TYPE_PPM)
+                   g_model.moduleData[INTERNAL_MODULE].channelsCount = 0;
+                 else
+                   g_model.moduleData[INTERNAL_MODULE].channelsCount = MAX_INTERNAL_MODULE_CHANNELS();
+              }
+              break;
+            case 1:              
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST);
+              if (checkIncDec_Ret) {
+                g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;
+                g_model.moduleData[INTERNAL_MODULE].channelsCount = MAX_INTERNAL_MODULE_CHANNELS();
+              }
+            }
+          }
+        break;
 #else
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
         lcd_putsLeft(y, STR_MODE);
@@ -697,9 +697,15 @@ void menuModelSetup(uint8_t event)
                 break;
               case 1:
                 CHECK_INCDEC_MODELVAR(event, moduleData.channelsCount, -4, min<int8_t>(MAX_CHANNELS(moduleIdx), 32-8-moduleData.channelsStart));
+#if defined(TARANIS_INTERNAL_PPM)
                 if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.externalModule == MODULE_TYPE_PPM) || (k == ITEM_MODEL_INTERNAL_MODULE_CHANNELS && g_model.internalModule == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_CHANNELS)) {
                   SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
                 }
+#else
+                if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.externalModule == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_CHANNELS)) {
+                  SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
+                }
+#endif
                 break;
             }
           }
