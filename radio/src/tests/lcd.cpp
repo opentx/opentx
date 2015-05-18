@@ -139,20 +139,6 @@ TEST(outdezNAtt, testBigNumbers)
 #endif // #if defined(CPUARM)
 
 
-TEST(Lcd, Invers_0_0)
-{
-  lcd_clear();
-  lcd_putsAtt(0, 0, "Test", INVERS);
-  EXPECT_TRUE(checkScreenshot("invers_0_0"));
-}
-
-TEST(Lcd, Invers_0_1)
-{
-  lcd_clear();
-  lcd_putsAtt(0, 1, "Test", INVERS);
-  EXPECT_TRUE(checkScreenshot("invers_0_1"));
-}
-
 TEST(Lcd, Prec2_Left)
 {
   lcd_clear();
