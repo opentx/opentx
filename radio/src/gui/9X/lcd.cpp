@@ -1247,9 +1247,11 @@ void lcd_putcAtt(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
           uint8_t *r = p + LCD_W;
           if (r<DISPLAY_END)
             LCD_BYTE_FILTER(r, ~mask, b >> (8-ym8));
+          if (inv) *p |= BITMASK(ym8-1);
         }
-
-        if (inv && (ym8 == 1)) *p |= 0x01;
+        else if (y && inv) {
+          p[-LCD_W] |= 0x80;
+        }
       }
       p++;
       lcdNextPos++;

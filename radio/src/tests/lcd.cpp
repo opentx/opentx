@@ -92,13 +92,12 @@ void doPaint(QPainter & p)
   }
 }
 
-bool checkScreenshot(QString test)
+bool checkScreenshot(QString test, QString filename, int width, int height)
 {
   lcdRefresh();
-  QImage buffer(LCD_W, LCD_H, QImage::Format_RGB32);
+  QImage buffer(width, height, QImage::Format_RGB32);
   QPainter p(&buffer);
   doPaint(p);
-  QString filename(QString("%1_%2x%3.png").arg(test).arg(LCD_W).arg(LCD_H));
   buffer.save("/tmp/" + filename);
   QFile screenshot("/tmp/" + filename);
   if (!screenshot.open(QIODevice::ReadOnly))
@@ -110,6 +109,16 @@ bool checkScreenshot(QString test)
     return false;
   screenshot.remove();
   return true;
+}
+
+bool checkScreenshot(QString test)
+{
+  return checkScreenshot(test, QString("%1_%2x%3.png").arg(test).arg(LCD_W).arg(LCD_H), LCD_W, LCD_H);
+}
+
+bool checkPartialScreenshot(QString test, int width, int height)
+{
+  return checkScreenshot(test, QString("%1.png").arg(test), width, height);
 }
 
 TEST(outdezNAtt, test_unsigned)
@@ -271,6 +280,19 @@ TEST(Lcd, Dblsize)
   EXPECT_TRUE(checkScreenshot("dblsize"));
 }
 #endif
+
+TEST(Lcd, InversSteps)
+{
+  lcd_clear();
+  int x, y;
+  x = 0;
+  for(y = 0; y < 16; y++) {
+    lcd_putcAtt(x, y, 'B', INVERS);
+    x = lcdNextPos + 2;
+  }
+
+  EXPECT_TRUE(checkPartialScreenshot("invers_steps", 128, 64));
+}
 
 #if defined(PCBTARANIS)
 TEST(Lcd, DrawSwitch)
