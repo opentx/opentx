@@ -141,6 +141,7 @@ else
   SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
   SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
   SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c
+  SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_i2c.c
   SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/misc.c
 endif  
 

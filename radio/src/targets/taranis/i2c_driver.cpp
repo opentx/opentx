@@ -139,32 +139,45 @@ void eepromInit(void)
   RCC_APB1PeriphClockCmd(I2C_RCC_APB1Periph_I2C, ENABLE);
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = I2C_GPIO_PIN_SCL | I2C_GPIO_PIN_SDA | I2C_GPIO_PIN_WP;
+  GPIO_InitStructure.GPIO_Pin = I2C_GPIO_PIN_WP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(I2C_GPIO, &GPIO_InitStructure);
 
-#if 0
-  GPIO_PinAFConfig(I2C_GPIO, I2C_GPIO_PIN_SCL, I2C_GPIO_AF);
-  GPIO_PinAFConfig(I2C_GPIO, I2C_GPIO_PIN_SDA, I2C_GPIO_AF);
+  GPIO_InitStructure.GPIO_Pin = I2C_GPIO_PIN_SCL | I2C_GPIO_PIN_SDA;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(I2C_GPIO, &GPIO_InitStructure);
+
+  GPIO_PinAFConfig(I2C_GPIO, I2C_GPIO_PinSource_SCL, I2C_GPIO_AF);
+  GPIO_PinAFConfig(I2C_GPIO, I2C_GPIO_PinSource_SDA, I2C_GPIO_AF);
 
   I2C_InitTypeDef I2C_InitStructure;
-  I2C_InitStructure.I2C_OwnAddress1 = 0x00; // MPU6050 7-bit adress = 0x68, 8-bit adress = 0xD0;
+  I2C_InitStructure.I2C_ClockSpeed = 400000;
+  I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_16_9;
+  I2C_InitStructure.I2C_OwnAddress1 = 0x00;
   I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
   I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
   I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
 
   I2C_Init(I2C, &I2C_InitStructure);
   I2C_Cmd(I2C, ENABLE);
-#endif
 
   GPIO_ResetBits(I2C_GPIO, I2C_GPIO_PIN_WP);
+}
 
-  // Set Idle levels
-  SDA_H;
-  SCL_H;
+#define I2C_TIMEOUT_MAX 1000
+bool I2C_CheckEventTimeout(uint32_t event)
+{
+  uint32_t timeout = I2C_TIMEOUT_MAX;
+  while (!I2C_CheckEvent(I2C, event)) {
+    if ((timeout--) == 0) return false;
+  }
+  return true;
 }
 
 /**
@@ -177,27 +190,43 @@ void eepromInit(void)
   */
 void eepromReadBlock(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRead)
 {
-  I2C_START();
-  I2C_SEND_DATA(I2C_ADDRESS_EEPROM|EE_CMD_WRITE);
-  I2C_WAIT_ACK();
-  I2C_SEND_DATA((uint8_t)((ReadAddr & 0xFF00) >> 8));
-  I2C_WAIT_ACK();
-  I2C_SEND_DATA((uint8_t)(ReadAddr & 0x00FF));
-  I2C_WAIT_ACK();
-	
-  I2C_START();
-  I2C_SEND_DATA(I2C_ADDRESS_EEPROM|EE_CMD_READ);
-  I2C_WAIT_ACK();
+  I2C_AcknowledgeConfig(I2C, ENABLE);
+
+  I2C_GenerateSTART(I2C, ENABLE);
+  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_MODE_SELECT))
+    return;
+
+  I2C_Send7bitAddress(I2C, I2C_ADDRESS_EEPROM, I2C_Direction_Transmitter);
+  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
+    return;
+
+  I2C_SendData(I2C, (uint8_t)((ReadAddr & 0xFF00) >> 8));
+  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_TRANSMITTED))
+    return;
+  I2C_SendData(I2C, (uint8_t)(ReadAddr & 0x00FF));
+  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_TRANSMITTED))
+    return;
+
+  I2C_GenerateSTART(I2C, ENABLE);
+  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_MODE_SELECT))
+    return;
+
+  I2C_Send7bitAddress(I2C, I2C_ADDRESS_EEPROM, I2C_Direction_Receiver);
+  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED))
+    return;
+
   while (NumByteToRead) {
     if (NumByteToRead == 1) {
-      *pBuffer = I2C_READ();
-      I2C_NO_ACK();
-      I2C_STOP();
+      I2C_AcknowledgeConfig(I2C, DISABLE);
+      if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_RECEIVED))
+        return;
+      *pBuffer = I2C_ReceiveData(I2C);
+      I2C_GenerateSTOP(I2C, ENABLE);
     }
     else {
-      *pBuffer = I2C_READ();
-      I2C_ACK();
-      pBuffer++;
+      if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_RECEIVED))
+        return;
+      *pBuffer++ = I2C_ReceiveData(I2C);
     }
     NumByteToRead--;
   }
@@ -213,6 +242,7 @@ void eepromReadBlock(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRead
   */
 void eepromWriteBlock(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteToWrite)
 {
+#if 0
   uint8_t NumOfPage = 0, NumOfSingle = 0, count = 0;
   uint16_t Addr = 0;
 
@@ -288,6 +318,7 @@ void eepromWriteBlock(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteToWr
       }
     }
   }
+#endif
 }
 
 /**
@@ -301,6 +332,7 @@ void eepromWriteBlock(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteToWr
   */
 void I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite)
 {
+#if 0
   I2C_START();
   I2C_SEND_DATA(I2C_ADDRESS_EEPROM|EE_CMD_WRITE);
   I2C_WAIT_ACK();
@@ -317,6 +349,7 @@ void I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWri
     pBuffer++;
   }
   I2C_STOP();
+#endif
 }
 
 /**
@@ -326,16 +359,19 @@ void I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWri
   */
 void I2C_EE_WaitEepromStandbyState(void)
 {
+#if 0
   do {
     I2C_START();
     I2C_SEND_DATA(I2C_ADDRESS_EEPROM|EE_CMD_WRITE);
   } while (0 == I2C_WAIT_ACK());
 
   I2C_STOP();
+#endif
 }
 
 void setVolume(uint8_t volume)
 {
+#if 0
   if (volume > VOLUME_LEVEL_MAX) {
     volume = VOLUME_LEVEL_MAX;
   }
@@ -348,10 +384,12 @@ void setVolume(uint8_t volume)
   I2C_SEND_DATA(volume);
   I2C_WAIT_ACK();
   I2C_STOP();
+#endif
 }
 
 uint8_t I2C_read_volume()
 {
+#if 0
   uint8_t volume ;
   I2C_START();
   I2C_SEND_DATA(I2C_ADDRESS_CAT5137|EE_CMD_WRITE);
@@ -365,4 +403,5 @@ uint8_t I2C_read_volume()
   I2C_NO_ACK();
   I2C_STOP();
   return volume ;
+#endif
 }
