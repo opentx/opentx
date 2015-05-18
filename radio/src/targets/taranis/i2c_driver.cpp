@@ -3,12 +3,12 @@
 #define EE_CMD_WRITE  (0)
 #define EE_CMD_READ   (1)
 
-#define SCL_H         do{I2C_GPIO->BSRRL = I2C_GPIO_PIN_SCL;}while(0)
-#define SCL_L         do{I2C_GPIO->BSRRH  = I2C_GPIO_PIN_SCL;}while(0)
-#define SDA_H         do{I2C_GPIO->BSRRL = I2C_GPIO_PIN_SDA;}while(0)
-#define SDA_L         do{I2C_GPIO->BSRRH  = I2C_GPIO_PIN_SDA;}while(0)
-#define SCL_read      (I2C_GPIO->IDR  & I2C_GPIO_PIN_SCL)
-#define SDA_read      (I2C_GPIO->IDR  & I2C_GPIO_PIN_SDA)
+#define SCL_H         do { I2C_GPIO->BSRRL = I2C_GPIO_PIN_SCL; } while(0)
+#define SCL_L         do { I2C_GPIO->BSRRH = I2C_GPIO_PIN_SCL; } while(0)
+#define SDA_H         do { I2C_GPIO->BSRRL = I2C_GPIO_PIN_SDA; } while(0)
+#define SDA_L         do { I2C_GPIO->BSRRH = I2C_GPIO_PIN_SDA; } while(0)
+#define SCL_read      (I2C_GPIO->IDR & I2C_GPIO_PIN_SCL)
+#define SDA_read      (I2C_GPIO->IDR & I2C_GPIO_PIN_SDA)
 
 void I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite);
 void I2C_EE_WaitEepromStandbyState(void);
@@ -139,7 +139,7 @@ void eepromInit(void)
   RCC_APB1PeriphClockCmd(I2C_RCC_APB1Periph_I2C, ENABLE);
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = I2C_GPIO_PIN_SCL | I2C_GPIO_PIN_SDA;
+  GPIO_InitStructure.GPIO_Pin = I2C_GPIO_PIN_SCL | I2C_GPIO_PIN_SDA | I2C_GPIO_PIN_WP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
@@ -159,6 +159,9 @@ void eepromInit(void)
   I2C_Init(I2C, &I2C_InitStructure);
   I2C_Cmd(I2C, ENABLE);
 #endif
+
+  GPIO_ResetBits(I2C_GPIO, I2C_GPIO_PIN_WP);
+
   // Set Idle levels
   SDA_H;
   SCL_H;

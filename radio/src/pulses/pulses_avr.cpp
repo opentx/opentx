@@ -427,7 +427,7 @@ FORCEINLINE void setupPulsesDSM2()
   }
 
   ptr++;
-  *ptr++ = g_model.header.modelId;
+  *ptr++ = g_model.header.modelId[0];
 
   for (uint8_t i=0; i<DSM2_CHANS; i++) {
     uint16_t pulse = limit(0, ((channelOutputs[i]*13)>>5)+512,1023);

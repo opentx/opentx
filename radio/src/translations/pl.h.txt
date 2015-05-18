@@ -101,7 +101,7 @@
 #define TR_VLCD                "NormalOptrex"
 
 #define LEN_VPERSISTENT        "\014"  /*12 decimal*/
-#define TR_VPERSISTENT         "Wyłącz\0    ""Lot\0        ""Ręczny Reset"
+#define TR_VPERSISTENT         "Wyłącz\0     ""Lot\0        ""Ręczny Reset"
 
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Ameryka""Japonia""Europa\0")
@@ -528,7 +528,7 @@
 #define TR_VTRAINERMODES       "Trener/Jack\0      ""Uczeń/Jack\0       ""Trener/SBUS Moduł ""Trener/CPPM Moduł ""Trener/Bateria\0   "
 
 #define LEN_VFAILSAFE          "\011" /*9 decimal*/
-#define TR_VFAILSAFE           "Not set\0 ""Utrzymuj\0""Własne\0  ""0 sygnału""Odbiornik"
+#define TR_VFAILSAFE           "Brak   \0 ""Utrzymuj\0""Własne  \0""0 sygnału""Odbiornik"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -606,7 +606,7 @@
 #define TR_BEEPCTR             TR("ŚrodBeep", "Pikn.Środka")
 #define TR_USE_GLOBAL_FUNCS    TR("Funk.Glb.","Użyj Funkcji Glb")
 #if defined(PCBSKY9X) && defined(REVX)
-  #define TR_OUTPUT_TYPE       INDENT "Output"
+  #define TR_OUTPUT_TYPE       INDENT "Wyjście"
 #endif
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protokół")
 #if defined(CPUARM)
@@ -827,7 +827,7 @@
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          TR("Przełą","Kontrola")
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_NO_FAILSAFE         "Failsafe not set"
+#define TR_NO_FAILSAFE         "Brak Failsafe"
 #define TR_KEYSTUCK            "Blokada klucza"
 #define TR_INVERT_THR          TR("Odw.Gaz?","Odwróć gaz?")
 #define TR_SPEAKER_VOLUME      INDENT "Głośność"

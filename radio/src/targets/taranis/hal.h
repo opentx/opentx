@@ -320,6 +320,7 @@
 #define I2C_GPIO                        GPIOB
 #define I2C_GPIO_PIN_SCL                GPIO_Pin_6  // PB.06
 #define I2C_GPIO_PIN_SDA                GPIO_Pin_7  // PB.07
+#define I2C_GPIO_PIN_WP                 GPIO_Pin_9  // PB.09
 #define I2C_GPIO_AF                     GPIO_AF_I2C1
 #define I2C_GPIO_PinSource_SCL          GPIO_PinSource6
 #define I2C_GPIO_PinSource_SDA          GPIO_PinSource7
