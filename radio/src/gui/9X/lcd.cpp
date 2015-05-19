@@ -1112,11 +1112,7 @@ void lcdSetContrast()
 #if !defined(CPUARM)
 void lcd_putcAtt(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 {
-  uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
-  const pm_uchar *q = &font_5x7[(c-0x20)*5];
-
   lcdNextPos = x-1;
-  p--;
 
   bool inv = false;
   if (flags & BLINK) {
@@ -1157,9 +1153,10 @@ void lcd_putcAtt(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   }
 
   if (flags & DBLSIZE) {
+    uint8_t *p = &displayBuf[ y / 8 * LCD_W + x -1 ];
     /* each letter consists of ten top bytes followed by
      * by ten bottom bytes (20 bytes per * char) */
-    q = &font_10x14[((uint16_t)c_remapped)*20];
+    const pm_uchar *q = &font_10x14[((uint16_t)c_remapped)*20];
     for (int8_t i=0; i<=11; i++) {
       uint8_t b1=0, b2=0;
       if (!i) {
@@ -1189,7 +1186,11 @@ void lcd_putcAtt(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     }
   }
   else {
-    const uint8_t ym8 = (y & 0x07);
+    uint8_t *lineBegin = &displayBuf[((y+7) / 8 - 1) * LCD_W];
+    uint8_t *lineEnd = lineBegin + LCD_W;
+    uint8_t *p = lineBegin + x - 1;
+    const pm_uchar *q = &font_5x7[(c-0x20)*5];
+
 #if defined(BOLD_FONT)
   #if defined(BOLD_SPECIFIC_FONT)
     if (flags & BOLD) {
@@ -1197,11 +1198,11 @@ void lcd_putcAtt(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     }
   #else
     uint8_t bb = 0;
-    if (inv) bb = 0xff;
   #endif
 #endif
 
-    uint8_t *lineEnd = &displayBuf[ y / 8 * LCD_W + LCD_W ];
+    uint8_t s = (y+7) & 7;
+    uint16_t mask = (inv ? 0x01ff : 0x01fe) << s;
 
     for (int8_t i=0; i<=6; i++) {
       uint8_t b = 0;
@@ -1221,7 +1222,6 @@ void lcd_putcAtt(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
         else
           continue;
       }
-      if (inv) b = ~b;
       if ((flags & CONDENSED) && i==2) {
         /*condense the letter by skipping column 3 */
         continue;
@@ -1230,27 +1230,22 @@ void lcd_putcAtt(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 #if defined(BOLD_FONT) && !defined(BOLD_SPECIFIC_FONT)
       if (flags & BOLD) {
         uint8_t a;
-        if (inv)
-          a = b & bb;
-        else
-          a = b | bb;
+        a = b | bb;
         bb = b;
         b = a;
       }
 #endif
 
-      if (p<DISPLAY_END && p<lineEnd) {
-        ASSERT_IN_DISPLAY(p);
-        uint8_t mask = ~(0xff << ym8);
-        LCD_BYTE_FILTER(p, mask, b << ym8);
-        if (ym8) {
-          uint8_t *r = p + LCD_W;
-          if (r<DISPLAY_END)
-            LCD_BYTE_FILTER(r, ~mask, b >> (8-ym8));
-          if (inv) *p |= BITMASK(ym8-1);
+      uint16_t val  = uint16_t(b) << (s + 1);
+      if (inv) val = ~val;
+      val &= mask;
+      if (p < DISPLAY_END && p < lineEnd) {
+        if (p >= displayBuf) {
+          *p = (*p & ~(uint8_t)mask) | (uint8_t)val;
         }
-        else if (y && inv) {
-          p[-LCD_W] |= 0x80;
+        uint8_t *r = p + LCD_W;
+        if (r < DISPLAY_END) {
+          *r = (*r & ~(uint8_t)(mask >> 8)) | (uint8_t)(val >> 8);
         }
       }
       p++;
