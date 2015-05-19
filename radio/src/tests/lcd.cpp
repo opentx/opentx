@@ -214,6 +214,7 @@ TEST(Lcd, Smlsize)
 
   EXPECT_TRUE(checkPartialScreenshot("smlsize", 128, 64));
 }
+#endif
 
 TEST(Lcd, Stdsize)
 {
@@ -232,6 +233,7 @@ TEST(Lcd, Stdsize)
   EXPECT_TRUE(checkPartialScreenshot("stdsize", 128, 64));
 }
 
+#if defined(CPUARM)
 TEST(Lcd, Midsize)
 {
   lcd_clear();
