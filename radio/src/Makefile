@@ -319,7 +319,6 @@ NANO = NO
 # NO - use default Lua allocator
 USE_BIN_ALLOCATOR = NO
 
-
 # Enable trace of events into Trace Buffer for debugging purposes
 # Activating any of these options also activates DEBUG and DEBUG_TRACE_BUFFER
 # Values = NO, YES
@@ -342,6 +341,10 @@ LCD_DUAL_BUFFER = NO
 # Enable internal module PPM mode for Taranis
 # Values = NO, YES
 TARANIS_INTERNAL_PPM = NO
+
+# Support for D16-EU only (no D8, no LR12 which are not EU compatible)
+# Value = NO, YES
+SUPPORT_D16_EU_ONLY = NO
 
 # Enable disk IO simulation in simulator
 # Simulator will use FatFs module and simulated IO layer that
@@ -873,6 +876,9 @@ ifeq ($(PCB), TARANIS)
   endif
   ifeq ($(TARANIS_INTERNAL_PPM), YES)
     CPPDEFS += -DTARANIS_INTERNAL_PPM
+  endif
+  ifeq ($(SUPPORT_D16_EU_ONLY), YES)
+    CPPDEFS += -DMODULE_D16_EU_ONLY_SUPPORT
   endif
   LDSCRIPT = targets/taranis/stm32_flash_bl.ld
   TRGT = arm-none-eabi-
