@@ -762,3 +762,4 @@ Tauno Rautakorpi
 Mathias Krapp
 Fernando Rimoldi
 Wolfgang Rauser
+Richard Shagam
