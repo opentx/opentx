@@ -141,7 +141,7 @@ void varioWakeup()
     }
 #endif
 
-#else // defined(AUDIO)
+#elif defined(BUZZER) // && !defined(AUDIO)
 
     int8_t verticalSpeed = limit((int16_t)-100, (int16_t)(frskyData.hub.varioSpeed/10), (int16_t)+100);
 

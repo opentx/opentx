@@ -1450,9 +1450,7 @@ enum AUDIO_SOUNDS {
 #endif
 #endif
 
-#if defined(BUZZER)
 #include "buzzer.h"
-#endif
 
 #if defined(PCBSTD) && defined(VOICE)
 #include "targets/stock/voice.h"
