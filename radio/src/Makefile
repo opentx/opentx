@@ -444,7 +444,12 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp
+    BUZZER = NO
   else
+    BUZZER = YES
+  endif
+
+  ifeq ($(BUZZER), YES)
     CPPDEFS += -DBUZZER
     CPPSRC += buzzer.cpp
   endif
@@ -518,7 +523,12 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp
+    BUZZER = NO
   else
+    BUZZER = YES
+  endif
+
+  ifeq ($(BUZZER), YES)
     CPPDEFS += -DBUZZER
     CPPSRC += buzzer.cpp
   endif
@@ -580,7 +590,12 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp
+    BUZZER = NO
   else
+    BUZZER = YES
+  endif
+
+  ifeq ($(BUZZER), YES)
     CPPDEFS += -DBUZZER
     CPPSRC += buzzer.cpp
   endif

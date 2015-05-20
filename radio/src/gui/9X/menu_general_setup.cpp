@@ -256,7 +256,7 @@ void menuGeneralSetup(uint8_t event)
 #endif
         break;
 #endif
-#else
+#elif defined(BUZZER)
       case ITEM_SETUP_BUZZER_MODE:
         g_eeGeneral.beepMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_SPEAKER, STR_VBEEPMODE, g_eeGeneral.beepMode, -2, 1, attr, event);
 #if defined(FRSKY)

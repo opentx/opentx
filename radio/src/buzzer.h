@@ -37,6 +37,7 @@
 #ifndef BUZZER_H
 #define BUZZER_H
 
+#if defined(BUZZER)
 extern uint8_t g_beepCnt;
 extern uint8_t beepAgain;
 extern uint8_t beepAgainOrig;
@@ -45,23 +46,31 @@ extern bool warble;
 extern bool warbleC;
 #if defined(HAPTIC)
 extern uint8_t hapticTick;
-#endif
+#endif /* HAPTIC */
+#endif /* BUZZER */
+
+#if defined(BUZZER)
 
 #if defined(CPUARM) && !defined(SIMU)
 inline void _beep(uint8_t b)
 {
   buzzerSound(b);
 }
-#else
+#else /* CPUARM && !SIMU */
 inline void _beep(uint8_t b)
 {
   g_beepCnt = b;
 }
-#endif
+#endif /* CPUARM && !SIMU */
 
 void beep(uint8_t val);
+#else /* BUZZER */
+#define beep(...)
+#endif /* BUZZER */
 
 #if !defined(AUDIO)
+
+#if defined(BUZZER)
   #if defined(VOICE)
     #define AUDIO_TADA()           PUSH_SYSTEM_PROMPT(AU_TADA)
     #define AUDIO_BYE()
@@ -100,6 +109,34 @@ void beep(uint8_t val);
   #define AUDIO_PLAY(p)            beep(3)
 
   #define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)
+#else /* BUZZER */
+  #define AUDIO_TADA()
+  #define AUDIO_BYE()
+  #define AUDIO_TX_BATTERY_LOW()
+  #define AUDIO_INACTIVITY()
+  #define AUDIO_ERROR_MESSAGE(e)
+  #define AUDIO_TIMER_MINUTE(t)
+  #define AUDIO_TIMER_30()
+  #define AUDIO_TIMER_20()
+  #define AUDIO_KEYPAD_UP()
+  #define AUDIO_KEYPAD_DOWN()
+  #define AUDIO_MENUS()
+  #define AUDIO_WARNING2()
+  #define AUDIO_WARNING1()
+  #define AUDIO_ERROR()
+  #define AUDIO_MIX_WARNING(x)
+  #define AUDIO_POT_MIDDLE()
+  #define AUDIO_TIMER_LT10(m, x)
+  #define AUDIO_TIMER_00(m)
+  #define AUDIO_VARIO_UP()
+  #define AUDIO_VARIO_DOWN()
+  #define AUDIO_TRIM(event, f)
+  #define AUDIO_TRIM_MIDDLE(f)
+  #define AUDIO_TRIM_END(f)
+  #define AUDIO_PLAY(p)
+  #define IS_AUDIO_BUSY() false
+#endif /* BUZZER */
+
   #define AUDIO_RESET()
   #define AUDIO_FLUSH()
 
@@ -109,9 +146,10 @@ void beep(uint8_t val);
   #define PLAY_LOGICAL_SWITCH_OFF(sw)
   #define PLAY_LOGICAL_SWITCH_ON(sw)
   #define START_SILENCE_PERIOD()
-#endif
+#endif /* !AUDIO */
 
 #if !defined(CPUARM)
+#if defined(BUZZER)
 inline void BUZZER_HEARTBEAT()
 {
   if (g_beepCnt) {
@@ -145,6 +183,9 @@ inline void BUZZER_HEARTBEAT()
     buzzerOff();
   }
 }
-#endif
+#else // BUZZER
+#define BUZZER_HEARTBEAT()
+#endif // BUZZER
+#endif // CPUARM
 
 #endif
