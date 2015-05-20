@@ -135,13 +135,11 @@ void menuStatisticsDebug(uint8_t event)
 #if defined(DEBUG_TIMERS)
     case EVT_KEY_FIRST(KEY_UP):
       chainMenu(menuDebugTimers);
-      return;
-#endif
-
-#if !defined(DEBUG_TIMERS) && defined(DEBUG_TRACE_BUFFER)
+      break;
+#elif defined(DEBUG_TRACE_BUFFER)
     case EVT_KEY_FIRST(KEY_UP):
-      pushMenu(menuTraceBuffer);
-      return;
+      chainMenu(menuTraceBuffer);
+      break;
 #endif
 
     case EVT_KEY_FIRST(KEY_DOWN):
@@ -242,6 +240,16 @@ void menuTraceBuffer(uint8_t event)
       dumpTraceBuffer();
       killEvents(event);
       break;
+
+#if defined(DEBUG_TIMERS)
+    case EVT_KEY_FIRST(KEY_DOWN):
+      chainMenu(menuDebugTimers);
+      break;
+#else
+    case EVT_KEY_FIRST(KEY_DOWN):
+      chainMenu(menuStatisticsDebug);
+      break;
+#endif
   }
 
   SIMPLE_SUBMENU("Trace Buffer " VERS_STR, TRACE_BUFFER_LEN);
@@ -297,8 +305,9 @@ void menuTraceBuffer(uint8_t event)
 
 void displayDuration(int x, int y, debug_timer_t duration) 
 {
-  if (duration >= 100000) {
-    lcd_putsAtt(x, y, "^", 0);
+  if (duration > 100000) {
+    static const pm_char str_debug_timer_limit_exceeded[] PROGMEM = "}";
+    lcd_putsAtt(x, y, str_debug_timer_limit_exceeded, 0);
   }
   else if (duration >= 300) {
     lcd_outdezAtt(x, y, duration/10, LEFT);  
@@ -310,26 +319,28 @@ void displayDuration(int x, int y, debug_timer_t duration)
 
 void displayTimer(int y, const char * title, const DebugTimer * Duration, const DebugTimer * Period) 
 {
-  lcd_putsAtt(0, y+1, title, SMLSIZE);
+  static const pm_char str_duration[] PROGMEM = "Dur";
+  static const pm_char str_interval[] PROGMEM = "Int";
+  static const pm_char str_delimiter[] PROGMEM = "_";
+  lcd_putsAtt(0, y+1, title, BSS);
   if (Duration) {
-    lcd_putsAtt(MENU_DEBUG_COL1_OFS, y+1, "Dur", SMLSIZE);
+    lcd_putsAtt(lcdLastPos + FW, y+1, str_duration, 0);
     displayDuration(lcdLastPos, y, Duration->getMin());
-    // displayDuration(lcdLastPos, y, Duration->getLast());
-    lcd_putsAtt(lcdLastPos, y+1, "_", SMLSIZE);
+    lcd_putsAtt(lcdLastPos, y+1, str_delimiter, 0);
     displayDuration(lcdLastPos, y, Duration->getMax());
   }
   if (Period) {
-    lcd_putsAtt(lcdLastPos+2, y+1, "Int", SMLSIZE);
+    lcd_putsAtt(lcdLastPos+2, y+1, str_interval, 0);
     displayDuration(lcdLastPos, y, Period->getMin());
-    lcd_putsAtt(lcdLastPos, y+1, "_", SMLSIZE);
+    lcd_putsAtt(lcdLastPos, y+1, str_delimiter, 0);
     displayDuration(lcdLastPos, y, Period->getMax());
   }
 }
 
 void menuDebugTimers(uint8_t event)
 {
-  // TITLE(STR_MENUDEBUG);
-  TITLE("DEBUG TIMERS");
+  static const pm_char str_debug_timers[] PROGMEM = "DEBUG TIMERS";
+  TITLE(str_debug_timers);
 
   switch(event)
   {
@@ -344,19 +355,20 @@ void menuDebugTimers(uint8_t event)
 
 #if defined(DEBUG_TRACE_BUFFER)
     case EVT_KEY_FIRST(KEY_UP):
-      pushMenu(menuTraceBuffer);
-      return;
+      chainMenu(menuTraceBuffer);
+      break;
 #endif
 
     case EVT_KEY_FIRST(KEY_DOWN):
-      chainMenu(menuStatisticsView);
-      return;
+      chainMenu(menuStatisticsDebug);
+      break;
+
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
-      return;
+      break;
   }
 
-  int y = 2*FH-5; 
+  int y = FH; 
   displayTimer(y, "1 and 2", &debugTimer1, &debugTimer2); y += FH;
   displayTimer(y, "2 and 4", &debugTimer3, &debugTimer4); y += FH;
 
