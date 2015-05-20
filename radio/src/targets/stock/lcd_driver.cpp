@@ -36,13 +36,6 @@
 
 #include "opentx.h"
 
-#define delay_1us() _delay_us(1)
-#define delay_2us() _delay_us(2)
-void delay_1_5us(uint16_t ms)
-{
-  for (uint16_t i=0; i<ms; i++) delay_1us();
-}
-
 void lcdSendCtl(uint8_t val)
 {
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_CS1);
@@ -76,7 +69,7 @@ const static pm_uchar lcdInitSequence[] PROGMEM =
 #if defined(LCD_ST7565R)
    0xE2, //Initialize the internal functions
    0xAE, //DON = 0: display OFF
-   0xA0, //ADC = 0: normal direction(SEG132->SEG1)
+   0xA0, //ADC = 0: normal direction (SEG132->SEG1)
    0xA6, //REV = 0: non-reverse display
    0xA4, //EON = 0: normal display. non-entire
    0xA2, //Select LCD bias
@@ -90,7 +83,7 @@ const static pm_uchar lcdInitSequence[] PROGMEM =
 #elif defined(LCD_ERC12864FSF)
    0xE2, //Initialize the internal functions
    0xAE, //DON = 0: display OFF
-   0xA1, //ADC = 1: reverse direction(SEG132->SEG1)
+   0xA1, //ADC = 1: reverse direction (SEG132->SEG1)
    0xA6, //REV = 0: non-reverse display
    0xA4, //EON = 0: normal display. non-entire
    0xA3, //Select LCD bias
@@ -126,18 +119,18 @@ inline void lcdInit()
 {
   LCD_LOCK();
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RES);  //LCD reset
-  delay_2us();
+    _delay_us(2);
   PORTC_LCD_CTRL |= (1<<OUT_C_LCD_RES);  //LCD normal operation
   #ifdef LCD_ST7920
     _delay_ms(40);
   #else
-    delay_1_5us(1500); //TODO : verify if can be set to 40 ms instead of 1.5 ms
-  #endif    
+    _delay_us(1500);
+  #endif  
   for (uint8_t i=0; i<DIM(lcdInitSequence); i++) {
     lcdSendCtl(pgm_read_byte(&lcdInitSequence[i])) ;
     #ifdef LCD_ST7920
       _delay_us(80);
-    #endif   
+    #endif 
   }
   #ifdef LCD_ERC12864FSF
     g_eeGeneral.contrast = 0x2D;
@@ -149,7 +142,7 @@ inline void lcdInit()
 
 void lcdSetRefVolt(uint8_t val)
 {
-  #ifndef LCD_ST7920 //No contrast setting in the ST7920 controller
+  #ifndef LCD_ST7920 //No contrast setting for ST7920
     LCD_LOCK();
     lcdSendCtl(0x81);
     lcdSendCtl(val);
@@ -198,7 +191,7 @@ void lcdRefresh()
 		}
 	}
 #else  //All other LCD
-  uint8_t *p=displayBuf;  
+  uint8_t *p=displayBuf;
   for(uint8_t y=0; y < 8; y++) { 
     #ifdef LCD_ST7565R
       lcdSendCtl(0x01);
