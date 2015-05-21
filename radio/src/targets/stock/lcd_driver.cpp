@@ -39,7 +39,7 @@
 void lcdSendCtl(uint8_t val)
 {
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_CS1);
-#ifdef LCD_MULTIPLEX
+#if defined(LCD_MULTIPLEX)
   DDRA = 0xFF; //Set LCD_DAT pins to output
 #endif
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_A0);
@@ -48,19 +48,19 @@ void lcdSendCtl(uint8_t val)
   PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_E);
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_E);
   PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_A0);
-#ifdef LCD_MULTIPLEX
+#if defined(LCD_MULTIPLEX)
   DDRA = 0x00; //Set LCD_DAT pins to input
 #endif
   PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_CS1);
 }
 
 #if defined(PCBSTD) && defined(VOICE)
-volatile uint8_t LcdLock ;
-#define LCD_LOCK() LcdLock = 1
-#define LCD_UNLOCK() LcdLock = 0
+  volatile uint8_t LcdLock ;
+  #define LCD_LOCK() LcdLock = 1
+  #define LCD_UNLOCK() LcdLock = 0
 #else
-#define LCD_LOCK()
-#define LCD_UNLOCK()
+  #define LCD_LOCK()
+  #define LCD_UNLOCK()
 #endif
 
 const static pm_uchar lcdInitSequence[] PROGMEM =
@@ -119,102 +119,101 @@ inline void lcdInit()
 {
   LCD_LOCK();
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RES);  //LCD reset
-    _delay_us(2);
+  _delay_us(2);
   PORTC_LCD_CTRL |= (1<<OUT_C_LCD_RES);  //LCD normal operation
-  #ifdef LCD_ST7920
-    _delay_ms(40);
-  #else
-    _delay_us(1500);
-  #endif  
+#if defined(LCD_ST7920)
+  _delay_ms(40);
+#else
+  _delay_us(1500);
+#endif
   for (uint8_t i=0; i<DIM(lcdInitSequence); i++) {
     lcdSendCtl(pgm_read_byte(&lcdInitSequence[i])) ;
-    #ifdef LCD_ST7920
-      _delay_us(80);
-    #endif 
+#if defined(LCD_ST7920)
+    _delay_us(80);
+#endif
   }
-  #ifdef LCD_ERC12864FSF
-    g_eeGeneral.contrast = 0x2D;
-  #else
-    g_eeGeneral.contrast = 0x22;
-  #endif
+#if defined(LCD_ERC12864FSF)
+  g_eeGeneral.contrast = 0x2D;
+#else
+  g_eeGeneral.contrast = 0x22;
+#endif
   LCD_UNLOCK();
 }
 
 void lcdSetRefVolt(uint8_t val)
 {
-  #ifndef LCD_ST7920 //No contrast setting for ST7920
-    LCD_LOCK();
-    lcdSendCtl(0x81);
-    lcdSendCtl(val);
-    LCD_UNLOCK();
-  #endif
+#if !defined(LCD_ST7920) // No contrast setting for ST7920
+  LCD_LOCK();
+  lcdSendCtl(0x81);
+  lcdSendCtl(val);
+  LCD_UNLOCK();
+#endif
 }
 
 void lcdRefresh()
 {
   LCD_LOCK();
-#ifdef LCD_ST7920
-	uint8_t x_addr = 0;
-	uint8_t y_addr = 0;
-	uint16_t line_offset = 0;
-	uint8_t col_offset = 0;
-	uint16_t byte_offset = 0;
-	uint8_t bit_count = 0;	
-	for(uint8_t y=0; y < 64; y++) {
-		x_addr = 0;
-		//Convert coordinates to weirdly-arranged 128x64 screen (the ST7920 is mapped for 256x32 displays)
-		if (y > 31)
-		{
-			y_addr = y - 32;    //Because there are only 31 addressable lines in the ST7920
-			x_addr += 8;        //so we overflow x (7 visible bytes per line) to reach the bottom half
-		}else{
-			y_addr = y;
-		}
-		lcdSendCtl( 0x80 | y_addr ); 	//Set Vertical Address 
-		_delay_us(49); 
-		lcdSendCtl( 0x80 | x_addr ); 	//Set Horizontal Address
-		_delay_us(49); 
-		PORTC_LCD_CTRL |= (1<<OUT_C_LCD_A0);	  //HIGH RS and LOW RW will put the LCD to    
-		PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RnW);	//Write data register mode	
-		bit_count = y & 0x07; //Count from 0 bis 7 -> 0=0, 1=1..7=7, 8=0, 9=1...
-		col_offset = 1 << bit_count; //Build a value for a AND operation with the vorrect bitposition
-		line_offset = ( y / 8 ) * 128; //On the ST7565 there are 8 lines with each 128 bytes width
-		for (coord_t x=0; x < 16; x++) { //Walk through 16 bytes form left to right (128 Pixel)	
-			byte_offset = line_offset + ( x * 8 ); //Calculate the position of the first byte im array
-			//adressing the bytes sequential and shift the bits at the correct position, afterwards a OR operation to get all bits in one byte
-			//the position of the LSB is the left-most position of the byte to the ST7920
-			PORTA_LCD_DAT = (((displayBuf[byte_offset] & col_offset) >> bit_count) << 7) | (((displayBuf[byte_offset + 1] & col_offset) >> bit_count) << 6) | (((displayBuf[byte_offset + 2] & col_offset) >> bit_count ) << 5) | (((displayBuf[byte_offset + 3] & col_offset) >> bit_count ) << 4) | (((displayBuf[byte_offset + 4] & col_offset) >> bit_count ) << 3) | (((displayBuf[byte_offset + 5] & col_offset) >> bit_count ) << 2) | (((displayBuf[byte_offset + 6] & col_offset) >> bit_count ) << 1) | (((displayBuf[byte_offset + 7] & col_offset) >> bit_count ) << 0); 
-			PORTC_LCD_CTRL |= (1<<OUT_C_LCD_E);
-			_delay_us(8); 
-			PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_E);
-			_delay_us(49); 
-		}
-	}
+#if defined(LCD_ST7920)
+  uint8_t x_addr = 0;
+  uint8_t y_addr = 0;
+  uint16_t line_offset = 0;
+  uint8_t col_offset = 0;
+  uint16_t byte_offset = 0;
+  uint8_t bit_count = 0;
+  for (uint8_t y=0; y<64; y++) {
+    x_addr = 0;
+    //Convert coordinates to weirdly-arranged 128x64 screen (the ST7920 is mapped for 256x32 displays)
+    if (y > 31) {
+      y_addr = y - 32;    //Because there are only 31 addressable lines in the ST7920
+      x_addr += 8;        //so we overflow x (7 visible bytes per line) to reach the bottom half
+    }
+    else {
+      y_addr = y;
+    }
+    lcdSendCtl( 0x80 | y_addr ); 	//Set Vertical Address
+    _delay_us(49);
+    lcdSendCtl( 0x80 | x_addr ); 	//Set Horizontal Address
+    _delay_us(49);
+    PORTC_LCD_CTRL |= (1<<OUT_C_LCD_A0);	  //HIGH RS and LOW RW will put the LCD to
+    PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RnW);	//Write data register mode
+    bit_count = y & 0x07; //Count from 0 bis 7 -> 0=0, 1=1..7=7, 8=0, 9=1...
+    col_offset = 1 << bit_count; //Build a value for a AND operation with the vorrect bitposition
+    line_offset = ( y / 8 ) * 128; //On the ST7565 there are 8 lines with each 128 bytes width
+    for (coord_t x=0; x<16; x++) { //Walk through 16 bytes form left to right (128 Pixel)
+      byte_offset = line_offset + ( x * 8 ); //Calculate the position of the first byte im array
+      // adressing the bytes sequential and shift the bits at the correct position, afterwards a OR operation to get all bits in one byte
+      // the position of the LSB is the left-most position of the byte to the ST7920
+      PORTA_LCD_DAT = (((displayBuf[byte_offset] & col_offset) >> bit_count) << 7) | (((displayBuf[byte_offset + 1] & col_offset) >> bit_count) << 6) | (((displayBuf[byte_offset + 2] & col_offset) >> bit_count ) << 5) | (((displayBuf[byte_offset + 3] & col_offset) >> bit_count ) << 4) | (((displayBuf[byte_offset + 4] & col_offset) >> bit_count ) << 3) | (((displayBuf[byte_offset + 5] & col_offset) >> bit_count ) << 2) | (((displayBuf[byte_offset + 6] & col_offset) >> bit_count ) << 1) | (((displayBuf[byte_offset + 7] & col_offset) >> bit_count ) << 0);
+      PORTC_LCD_CTRL |= (1<<OUT_C_LCD_E);
+      _delay_us(8);
+      PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_E);
+      _delay_us(49);
+    }
+  }
 #else  //All other LCD
-  uint8_t *p=displayBuf;
-  for(uint8_t y=0; y < 8; y++) { 
-    #ifdef LCD_ST7565R
-      lcdSendCtl(0x01);
-    #else
-      lcdSendCtl(0x04);
-    #endif
-      lcdSendCtl(0x10); //Column addr 0
-      lcdSendCtl( y | 0xB0); //Page addr y
-      PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_CS1);
-    #ifdef LCD_MULTIPLEX
-      DDRA = 0xFF; //Set LCD_DAT pins to output
-    #endif
-      PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_A0);
-      PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RnW);
-      for (coord_t x=LCD_W; x>0; --x) {
-        PORTA_LCD_DAT = *p++;
-        PORTC_LCD_CTRL |= (1<<OUT_C_LCD_E);
-        PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_E);
-      }
-      PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_A0);
-      PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_CS1);
+  uint8_t * p = displayBuf;
+  for (uint8_t y=0; y < 8; y++) {
+#if defined(LCD_ST7565R)
+    lcdSendCtl(0x01);
+#else
+    lcdSendCtl(0x04);
+#endif
+    lcdSendCtl(0x10); // Column addr 0
+    lcdSendCtl( y | 0xB0); //Page addr y
+    PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_CS1);
+#if defined(LCD_MULTIPLEX)
+    DDRA = 0xFF; // Set LCD_DAT pins to output
+#endif
+    PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_A0);
+    PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RnW);
+    for (coord_t x=LCD_W; x>0; --x) {
+      PORTA_LCD_DAT = *p++;
+      PORTC_LCD_CTRL |= (1<<OUT_C_LCD_E);
+      PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_E);
+    }
+    PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_A0);
+    PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_CS1);
   }
 #endif  
   LCD_UNLOCK();
 }
-   
