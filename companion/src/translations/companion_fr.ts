@@ -7254,12 +7254,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="453"/>
         <source>EleTrim Down</source>
-        <translation>TrmE Bas</translation>
+        <translation>TrmP Bas</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="453"/>
         <source>EleTrim Up</source>
-        <translation>TrmE Haut</translation>
+        <translation>TrmP Haut</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="454"/>
