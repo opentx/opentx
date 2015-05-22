@@ -313,6 +313,10 @@ TRACE_AUDIO = NO
 # Values = NO, YES
 TARANIS_INTERNAL_PPM = NO
 
+# Support for D16-EU only (no D8, no LR12 which are not EU compatible)
+# Value = NO, YES
+SUPPORT_D16_EU_ONLY = NO
+
 # Enable disk IO simulation in simulator
 # Simulator will use FatFs module and simulated IO layer that 
 # uses "./sdcard.image" file as image of SD card.
@@ -733,6 +737,9 @@ ifeq ($(PCB), TARANIS)
   endif
   ifeq ($(TARANIS_INTERNAL_PPM), YES)
     CPPDEFS += -DTARANIS_INTERNAL_PPM
+  endif
+  ifeq ($(SUPPORT_D16_EU_ONLY), YES)
+    CPPDEFS += -DMODULE_D16_EU_ONLY_SUPPORT
   endif
   LDSCRIPT = targets/taranis/stm32_flash_bl.ld
   TRGT = arm-none-eabi-
