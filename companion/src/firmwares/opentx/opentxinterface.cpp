@@ -1078,6 +1078,17 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
   firmware->addOptions(fai_options);
 }
 
+void addOpenTxLcdOptions(OpenTxFirmware * firmware)
+{
+  Option lcd_options[] = {
+    { "ST7565R", QObject::tr("ST7565R LCD or compatible") },
+    { "ERC12864FSF", QObject::tr("ERC12864FSF LCD") },
+    { "ST7920", QObject::tr("ST7920 LCD") },
+    { NULL }
+  };
+  firmware->addOptions(lcd_options);
+}
+
 void registerOpenTxFirmwares()
 {
   OpenTxFirmware * openTx;
@@ -1241,7 +1252,7 @@ void registerOpenTxFirmwares()
 
   /* MEGA2560 board */
   openTx = new OpenTxFirmware("opentx-mega2560", QObject::tr("OpenTX for MEGA2560 board"), BOARD_MEGA2560);
-  openTx->addOption("ST7565R", QObject::tr("ST7565R LCD or compatible"));
+  addOpenTxLcdOptions(openTx);
   openTx->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   openTx->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
