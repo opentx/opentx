@@ -106,8 +106,13 @@
 #define LEN_TARANIS_PROTOCOLS  "\004"          
 #define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM2"
 
-#define LEN_XJT_PROTOCOLS      "\004"
-#define TR_XJT_PROTOCOLS       "AUS\0""X16\0""D8\0 ""LR12"
+#if defined(MODULE_D16_EU_ONLY_SUPPORT)
+  #define LEN_XJT_PROTOCOLS    "\006"
+  #define TR_XJT_PROTOCOLS     "AUS\0  ""D16-EU"
+#else
+  #define LEN_XJT_PROTOCOLS    "\004"
+  #define TR_XJT_PROTOCOLS     "AUS\0""X16\0""D8\0 ""LR12"
+#endif
 
 #define LEN_DSM_PROTOCOLS      "\004"
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
@@ -653,7 +658,7 @@
 #define TR_CV                  "KV"
 #define TR_GV                  "GV"
 #define TR_ACHANNEL            TR("A\004gemessen","A\004Kanal gemessen =>") //9XR-Pro
-#define TR_RANGE               TR(INDENT"Bereich",INDENT"Messbereich") //9XR-Pro
+#define TR_RANGE               TR(INDENT"Bereich", INDENT "Reichweite") // 9XR-Pro
 #define TR_BAR                 "Streifen"
 #define TR_ALARM               INDENT"Alarm"
 #define TR_USRDATA             "Daten berechnen aus"
