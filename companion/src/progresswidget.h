@@ -16,6 +16,7 @@ class ProgressWidget : public QWidget
     ~ProgressWidget();
     void lock(bool lock);
     void addText(const QString &text);
+    QString getText();
     void setInfo(const QString &text);
     void setMaximum(int value);
     int maximum();

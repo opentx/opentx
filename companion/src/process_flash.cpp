@@ -200,6 +200,9 @@ void FlashProcess::analyseStandardError(const QString &text)
   if (text.contains("-E-") && !text.contains("-E- No receive file name")) {
     hasErrors = true;
   }
+  if (text.contains("No DFU capable USB device found")) {
+    hasErrors = true;
+  }  
 }
 
 void FlashProcess::onReadyReadStandardOutput()
@@ -218,7 +221,8 @@ void FlashProcess::onReadyReadStandardError()
 
 void FlashProcess::errorWizard()
 {
-  QString output; // TODO = ui->plainTextEdit->toPlainText();
+  QString output=progress->getText(); // TODO = ui->plainTextEdit->toPlainText();
+  
   if (output.contains("avrdude: Expected signature for")) { // wrong signature
     int pos=output.indexOf("avrdude: Device signature = ");
     bool fwexist=false;
@@ -259,6 +263,12 @@ void FlashProcess::errorWizard()
       Firmware *firmware = GetCurrentFirmware();
       QMessageBox::warning(NULL, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease select an appropriate firmware type to program it.").arg(DeviceStr)+FwStr+tr("\nYou are currently using:\n %1").arg(firmware->getName()));
     }
+  } else if (output.contains("No DFU capable USB device found")){
+#if defined WIN32 || !defined __GNUC__
+    QMessageBox::warning(NULL, "Companion - Tip of the day", tr("Your radio does not seem connected to USB or the driver is not installed!!!\n\nPlease use ZADIG to properly install the driver."));
+#else
+    QMessageBox::warning(NULL, "Companion - Tip of the day", tr("Your radio does not seem connected to USB or the driver is not initialized!!!."));
+#endif
   }
 }
 
@@ -270,7 +280,7 @@ void FlashProcess::onFinished(int code=0)
   }
   if (code) {
     progress->setInfo(tr("Flashing done (exit code = %1)").arg(code));
-    if (cmd.toLower().contains("avrdude")) {
+    if (cmd.toLower().contains("avrdude") || cmd.toLower().contains("dfu")) {
       errorWizard();
     }
   }
