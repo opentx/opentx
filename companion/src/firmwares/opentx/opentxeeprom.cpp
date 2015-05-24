@@ -2955,7 +2955,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   if (IS_TARANIS(board)) {
     modulesCount = 3;
     if (version >= 217) {
-      internalField.Append(new ConversionField< SignedField<3> >(modelData.moduleData[1].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this radio protocol")));
+      internalField.Append(new SpareBitsField<3>());
       internalField.Append(new UnsignedField<3>(modelData.trainerMode));
       internalField.Append(new UnsignedField<2>(modelData.potsWarningMode));
     }
@@ -2967,8 +2967,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   else if (IS_ARM(board)) {
     if (version >= 217) {
       modulesCount = 3;
-      internalField.Append(new ConversionField< SignedField<3> >(modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this radio protocol")));
-      internalField.Append(new SpareBitsField<3>());
+      internalField.Append(new SpareBitsField<6>());
       internalField.Append(new UnsignedField<2>(modelData.potsWarningMode));
     }
     else if (version >= 216) {
@@ -2979,7 +2978,13 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
 
   if (IS_ARM(board) && version >= 215) {
     for (int module=0; module<modulesCount; module++) {
-      internalField.Append(new SignedField<8>(subprotocols[module]));
+      if (version >= 217) {
+        internalField.Append(new ConversionField< SignedField<4> >(modelData.moduleData[module].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this radio protocol")));
+        internalField.Append(new SignedField<4>(subprotocols[module]));
+      }
+      else {
+        internalField.Append(new SignedField<8>(subprotocols[module]));
+      }
       internalField.Append(new UnsignedField<8>(modelData.moduleData[module].channelsStart));
       internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[module].channelsCount, -8));
       if (version >= 217)
@@ -2989,18 +2994,17 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       for (int i=0; i<32; i++) {
         internalField.Append(new SignedField<16>(modelData.moduleData[module].failsafeChannels[i]));
       }
-      internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[module].ppmDelay, exportPpmDelay, importPpmDelay));
-      internalField.Append(new SignedField<8>(modelData.moduleData[module].ppmFrameLength));
-      if (IS_9XRPRO(board)) {
+      if (version >= 217) {
+        internalField.Append(new ConversionField< SignedField<6> >(modelData.moduleData[module].ppmDelay, exportPpmDelay, importPpmDelay));
         internalField.Append(new BoolField<1>(modelData.moduleData[module].ppmPulsePol));
         internalField.Append(new BoolField<1>(modelData.moduleData[module].ppmOutputType));
-        internalField.Append(new SpareBitsField<6>());
+        internalField.Append(new SignedField<8>(modelData.moduleData[module].ppmFrameLength));
       }
       else {
-        internalField.Append(new BoolField<1>(modelData.moduleData[module].ppmPulsePol));
-        internalField.Append(new SpareBitsField<7>());
+        internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[module].ppmDelay, exportPpmDelay, importPpmDelay));
+        internalField.Append(new SignedField<8>(modelData.moduleData[module].ppmFrameLength));
+        internalField.Append(new BoolField<8>(modelData.moduleData[module].ppmPulsePol));
       }
-
     }
   }
 
