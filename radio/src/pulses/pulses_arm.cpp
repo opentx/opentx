@@ -59,7 +59,7 @@ void setupPulses(unsigned int port)
 
     default:
       port = EXTERNAL_MODULE; // ensure it's external module only
-      switch (g_model.externalModule) {
+      switch (g_model.moduleData[EXTERNAL_MODULE].type) {
         case MODULE_TYPE_PPM:
           required_protocol = PROTO_PPM;
           break;

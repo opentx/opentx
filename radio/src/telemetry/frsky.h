@@ -504,7 +504,7 @@ void frskyUpdateCells(void);
 #endif
 
 #if defined(PCBTARANIS)
-  #define MODEL_TELEMETRY_PROTOCOL() ((g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.externalModule == MODULE_TYPE_PPM) ? g_model.telemetryProtocol : PROTOCOL_FRSKY_SPORT)
+  #define MODEL_TELEMETRY_PROTOCOL() ((g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? g_model.telemetryProtocol : PROTOCOL_FRSKY_SPORT)
 #elif defined(CPUARM)
   #define MODEL_TELEMETRY_PROTOCOL() g_model.telemetryProtocol
 #endif
