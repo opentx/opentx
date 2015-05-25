@@ -118,7 +118,8 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, SimulatorInterface *simul
   ui->trimVL_U->setText(QString::fromUtf8(upArrow));
   ui->trimVL_D->setText(QString::fromUtf8(downArrow));
   for (int i=0; i<pots.count(); i++) {
-    connect(pots[i], SIGNAL(valueChanged(int)), this, SLOT(dialChanged(i)));
+    pots[i]->setProperty("index", i);
+    connect(pots[i], SIGNAL(valueChanged(int)), this, SLOT(dialChanged(int)));
   }
   connect(ui->cursor, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
   connect(ui->menu, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
@@ -241,9 +242,10 @@ void SimulatorDialog::mouseReleaseEvent(QMouseEvent *event)
   }
 }
 
-void SimulatorDialog::dialChanged(int index)
+void SimulatorDialog9X::dialChanged(int value)
 {
-  potValues[index]->setText(QString("%1 %").arg((pots[index]->value()*100)/1024));
+  int index = sender()->property("index").toInt();
+  potValues[index]->setText(QString("%1 %").arg((value*100)/1024));
 }
 
 void SimulatorDialog::wheelEvent (QWheelEvent *event)

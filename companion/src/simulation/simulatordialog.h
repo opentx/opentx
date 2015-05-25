@@ -131,7 +131,6 @@ class SimulatorDialog : public QDialog
 
   private slots:
     void onButtonPressed(int value);
-    void dialChanged(int index);
     void on_FixRightY_clicked(bool checked);
     void on_FixRightX_clicked(bool checked);
     void on_FixLeftY_clicked(bool checked);
@@ -172,6 +171,9 @@ class SimulatorDialog9X: public SimulatorDialog
     virtual void updateBeepButton();
     void saveSwitches(void);
     void restoreSwitches(void);
+
+  protected slots:
+    void dialChanged(int index);
 
   private:
     Ui::SimulatorDialog9X * ui;
