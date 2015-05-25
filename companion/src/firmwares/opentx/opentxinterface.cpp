@@ -1081,6 +1081,7 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
 void addOpenTxLcdOptions(OpenTxFirmware * firmware)
 {
   Option lcd_options[] = {
+    { "ST7565P", QObject::tr("ST7565P LCD or compatible") },
     { "ST7565R", QObject::tr("ST7565R LCD or compatible") },
     { "ERC12864FSF", QObject::tr("ERC12864FSF LCD") },
     { "ST7920", QObject::tr("ST7920 LCD") },
