@@ -673,20 +673,19 @@ char *findTrueFileName(const char *path)
     char fname[_MAX_FNAME];
     char ext[_MAX_EXT];
     _splitpath(path, drive, dir, fname, ext);
-    std::string fileName = std::string(fname) + std::string(ext);
+    std::string fileName = std::string(fname) + "." + std::string(ext);
     std::string dirName = std::string(drive) + std::string(dir);
-    std::string searchName = dirName + "*";
-    //if (dir) {
-      TRACE("\tsearching for: %s", fileName.c_str());
+    if (dir) {
+      // TRACE("\tsearching for: %s", fileName.c_str());
       WIN32_FIND_DATA ffd;
-      HANDLE hFind = FindFirstFile(searchName.c_str(), &ffd);
+      HANDLE hFind = FindFirstFile(dirName.c_str(), &ffd);
       if (INVALID_HANDLE_VALUE != hFind) {
         do {
-          TRACE("comparing with: %s", ffd.cFileName);
-          if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-            //TRACE("comparing with: %s", ffd.cFileName);
+          if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY == 0) {
+            // TRACE("comparing with: %s", ffd.cFileName);
             if (!strcasecmp(fileName.c_str(), ffd.cFileName)) {
               strcpy(result, dirName.c_str());
+              strcat(result, "/");
               strcat(result, ffd.cFileName);
               TRACE("\tfound: %s", ffd.cFileName);
               fileMap.insert(filemap_t:: value_type(path, result));
@@ -696,7 +695,7 @@ char *findTrueFileName(const char *path)
         }
         while (FindNextFile(hFind, &ffd) != 0);
       }
-    //}
+    }
 #else
     strcpy(result, path);
     std::string fileName = simu::basename(result);
