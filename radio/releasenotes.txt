@@ -1,3 +1,12 @@
+<h2>Version 2.0.18 / todo</h2>
+
+[Taranis]
+<ul>
+<li>Lua <i>model.insertInput()</i> could not add more than 32 inputs (<a href=https://github.com/opentx/opentx/issues/2084>#2084</a>)</li>
+</ul>
+
+
+
 <h2>Version 2.0.17 / 2015-05-04</h2>
 
 Nothing new (only Companion fixes)
