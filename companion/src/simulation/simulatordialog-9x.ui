@@ -1020,7 +1020,7 @@ QPushButton:checked {
          </spacer>
         </item>
         <item row="2" column="0">
-         <widget class="myQDial" name="dial0">
+         <widget class="myQDial" name="pot0">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -1054,7 +1054,7 @@ QPushButton:checked {
          </widget>
         </item>
         <item row="3" column="0">
-         <widget class="QLabel" name="dialValue0">
+         <widget class="QLabel" name="potValue0">
           <property name="text">
            <string notr="true">0 %</string>
           </property>
@@ -1077,7 +1077,7 @@ QPushButton:checked {
          </spacer>
         </item>
         <item row="5" column="0">
-         <widget class="myQDial" name="dial1">
+         <widget class="myQDial" name="pot1">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -1114,7 +1114,7 @@ QPushButton:checked {
          </widget>
         </item>
         <item row="6" column="0">
-         <widget class="QLabel" name="dialValue1">
+         <widget class="QLabel" name="potValue1">
           <property name="text">
            <string notr="true">0 %</string>
           </property>
@@ -1137,7 +1137,7 @@ QPushButton:checked {
          </spacer>
         </item>
         <item row="8" column="0">
-         <widget class="myQDial" name="dial2">
+         <widget class="myQDial" name="pot2">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -1171,7 +1171,7 @@ QPushButton:checked {
          </widget>
         </item>
         <item row="9" column="0">
-         <widget class="QLabel" name="dialValue2">
+         <widget class="QLabel" name="potValue2">
           <property name="text">
            <string notr="true">0 %</string>
           </property>
