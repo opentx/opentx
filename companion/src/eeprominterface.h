@@ -725,7 +725,7 @@ class FrSkyScreenData {
     unsigned int type;
     FrSkyScreenBody body;
 
-    void clear() { memset(this, 0, sizeof(FrSkyScreenData)); }
+    void clear();
 };
 
 enum TelemetryVarioSources {
@@ -1252,7 +1252,6 @@ enum Capability {
   Haptic,
   HasBeeper,
   ModelTrainerEnable,
-  Timer2ThrTrig,
   HasExpoNames,
   HasNoExpo,
   HasMixerNames,
@@ -1265,7 +1264,6 @@ enum Capability {
   OptrexDisplay,
   PPMExtCtrl,
   PPMFrameLength,
-  DSM2Indexes,
   Telemetry,
   TelemetryUnits,
   TelemetryBars,
@@ -1301,6 +1299,8 @@ enum Capability {
   HasDisplayText,
   VirtualInputs,
   TrainerInputs,
+  RtcTime,
+  SportTelemetry,
   LuaScripts,
   LuaInputsPerScript,
   LuaOutputsPerScript,

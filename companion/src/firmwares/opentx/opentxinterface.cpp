@@ -662,8 +662,6 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return 500;
     case Simulation:
       return 1;
-    case DSM2Indexes:
-      return 1;
     case NumCurves:
       return (IS_TARANIS(board) ? 32 : (IS_ARM(board) ? 16 : 8));
     case HasMixerNames:
@@ -737,8 +735,10 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return IS_TARANIS(board) ? 32 : 0;
     case TrainerInputs:
       return IS_ARM(board) ? 16 : 8;
+    case RtcTime:
+      return IS_ARM(board) || IS_2560(board) ? 1 : 0;
     case LuaScripts:
-      return IS_TARANIS(board) ? 7 : 0;
+      return IS_TARANIS(board) && id.contains("lua") ? 7 : 0;
     case LuaInputsPerScript:
       return IS_TARANIS(board) ? 10 : 0;
     case LuaOutputsPerScript:
@@ -763,6 +763,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
         return 0;
     case MavlinkTelemetry:
       return id.contains("mavlink") ? 1 : 0;
+    case SportTelemetry:
+      return IS_ARM(board) ? 1 : 0;
     case HasInputDiff:
     case HasMixerExpo:
       return (IS_TARANIS(board) ? true : false);

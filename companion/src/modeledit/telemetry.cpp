@@ -330,6 +330,14 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
 
   disableMouseScrolling();
 
+  if (IS_ARM(firmware->getBoard()))
+    ui->screenType->addItem(tr("None"), TELEMETRY_SCREEN_NONE);
+  ui->screenType->addItem(tr("Numbers"), TELEMETRY_SCREEN_NUMBERS);
+  ui->screenType->addItem(tr("Bars"), TELEMETRY_SCREEN_BARS);
+  if (IS_TARANIS(firmware->getBoard()))
+    ui->screenType->addItem(tr("Script"), TELEMETRY_SCREEN_SCRIPT);
+  ui->screenType->setField(screen.type, this);
+
   update();
 }
 
@@ -339,7 +347,7 @@ void TelemetryCustomScreen::populateTelemetrySourceCB(QComboBox * b, RawSource &
     populateSourceCB(b, source, generalSettings, model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
   }
   else {
-    populateSourceCB(b, source, generalSettings, model, POPULATE_NONE | (last ? POPULATE_TELEMETRYEXT : POPULATE_TELEMETRY));
+    populateSourceCB(b, source, generalSettings, model, POPULATE_NONE | POPULATE_TELEMETRY | (last ? POPULATE_TELEMETRYEXT : 0));
   }
 }
 
@@ -352,7 +360,6 @@ void TelemetryCustomScreen::update()
 {
   lock = true;
 
-  ui->screenType->setCurrentIndex(screen.type);
   ui->screenNums->setVisible(screen.type == TELEMETRY_SCREEN_NUMBERS);
   ui->screenBars->setVisible(screen.type == TELEMETRY_SCREEN_BARS);
 
@@ -379,11 +386,8 @@ void TelemetryCustomScreen::updateBar(int line)
 {
   lock = true;
 
-#if 0
-  int index = screen.body.bars[line].source;
-  barsCB[line]->setCurrentIndex(index);
-  if (index) {
-    RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, index-1);
+  RawSource source = screen.body.bars[line].source;
+  if (source.type != SOURCE_TYPE_NONE) {
     RawSourceRange range = source.getRange(model, generalSettings, RANGE_SINGLE_PRECISION);
     int max = round((range.max - range.min) / range.step);
     if (int(255-screen.body.bars[line].barMax) > max)
@@ -405,7 +409,6 @@ void TelemetryCustomScreen::updateBar(int line)
     minSB[line]->setDisabled(true);
     maxSB[line]->setDisabled(true);
   }
-#endif
 
   lock = false;
 }
@@ -414,7 +417,6 @@ void TelemetryCustomScreen::on_screenType_currentIndexChanged(int index)
 {
   if (!lock) {
     memset(&screen.body, 0, sizeof(screen.body));
-    screen.type = index;
     update();
     emit modified();
   }
