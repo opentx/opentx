@@ -502,13 +502,6 @@ t_Open9xGruvin9xModelData_v207::operator ModelData ()
   c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
   c9x.moduleData[0].modelId = modelId;
-  for (int line=0; line<4; line++) {
-    for (int col=0; col<2; col++) {
-      c9x.frsky.screens[1].body.lines[line].source[col] = (col==0 ? (frskyLines[line] & 0x0f) : ((frskyLines[line] & 0xf0) / 16));
-      c9x.frsky.screens[1].body.lines[line].source[col] += (((frskyLinesXtra >> (4*line+2*col)) & 0x03) * 16);
-    }
-  }
-
   return c9x;
 }
 
@@ -588,16 +581,9 @@ t_Open9xGruvin9xModelData_v208::operator ModelData ()
   c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
   c9x.moduleData[0].modelId = modelId;
-  for (int line=0; line<4; line++) {
-    for (int col=0; col<2; col++) {
-      c9x.frsky.screens[1].body.lines[line].source[col] = (col==0 ? (frskyLines[line] & 0x0f) : ((frskyLines[line] & 0xf0) / 16));
-      c9x.frsky.screens[1].body.lines[line].source[col] += (((frskyLinesXtra >> (4*line+2*col)) & 0x03) * 16);
-    }
-  }
   for (int i=0; i<16; i++) {
     c9x.limitData[i].ppmCenter = servoCenter[i];
   }
-
   return c9x;
 }
 
@@ -678,16 +664,9 @@ t_Open9xGruvin9xModelData_v209::operator ModelData ()
   c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
   c9x.moduleData[0].modelId = modelId;
-  for (int line=0; line<4; line++) {
-    for (int col=0; col<2; col++) {
-      c9x.frsky.screens[1].body.lines[line].source[col] = (col==0 ? (frskyLines[line] & 0x0f) : ((frskyLines[line] & 0xf0) / 16));
-      c9x.frsky.screens[1].body.lines[line].source[col] += (((frskyLinesXtra >> (4*line+2*col)) & 0x03) * 16);
-    }
-  }
   for (int i=0; i<16; i++) {
     c9x.limitData[i].ppmCenter = servoCenter[i];
   }
-
   return c9x;
 }
 

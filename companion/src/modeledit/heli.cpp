@@ -70,11 +70,11 @@ void HeliPanel::edited()
 {
   if (!lock) {
     model->swashRingData.type  = ui->swashType->currentIndex();
-    model->swashRingData.collectiveSource = ui->swashCollectiveSource->itemData(ui->swashCollectiveSource->currentIndex()).toInt();
+    model->swashRingData.collectiveSource = RawSource(ui->swashCollectiveSource->itemData(ui->swashCollectiveSource->currentIndex()).toInt());
     model->swashRingData.value = ui->swashRingVal->value();
     if (firmware->getCapability(VirtualInputs)) {
-      model->swashRingData.elevatorSource = ui->swashElevatorSource->itemData(ui->swashElevatorSource->currentIndex()).toInt();
-      model->swashRingData.aileronSource = ui->swashAileronSource->itemData(ui->swashAileronSource->currentIndex()).toInt();
+      model->swashRingData.elevatorSource = RawSource(ui->swashElevatorSource->itemData(ui->swashElevatorSource->currentIndex()).toInt());
+      model->swashRingData.aileronSource = RawSource(ui->swashAileronSource->itemData(ui->swashAileronSource->currentIndex()).toInt());
       model->swashRingData.elevatorWeight = ui->swashElevatorWeight->value();
       model->swashRingData.aileronWeight = ui->swashAileronWeight->value();
       model->swashRingData.collectiveWeight = ui->swashCollectiveWeight->value();

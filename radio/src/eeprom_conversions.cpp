@@ -526,49 +526,21 @@ PACK(typedef struct { // Swash Ring data
 }) SwashRingData_v215;
 
 PACK(typedef struct {
-  ModelHeader header;
-  TimerData_v215 timers[2];
-  uint8_t   protocol:3;
-  uint8_t   thrTrim:1;            // Enable Throttle Trim
-  int8_t    ppmNCH:4;
-  uint8_t   trimInc:3;            // Trim Increments
-  uint8_t   disableThrottleWarning:1;
-  uint8_t   pulsePol:1;
-  uint8_t   extendedLimits:1;
-  uint8_t   extendedTrims:1;
-  uint8_t   throttleReversed:1;
-  int8_t    ppmDelay;
-  BeepANACenter beepANACenter;        // 1<<0->A1.. 1<<6->A7
-  MixData_v215   mixData[MAX_MIXERS];
-  LimitData_v215 limitData[NUM_CHNOUT];
-  ExpoData_v215  expoData[32];
-
-  int16_t   curves[16];
-  int8_t    points[NUM_POINTS];
-
-  LogicalSwitchData_v215 logicalSw[NUM_LOGICAL_SWITCH];
-  CustomFunctionData_v215 customFn[32];
-  SwashRingData_v215 swashR;
-  FlightModeData_v215 flightModeData[MAX_FLIGHT_MODES];
-
-  int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5ms increments
-  uint8_t   thrTraceSrc;
-
-  swarnstate_t switchWarningState;
-
-  char gvar_names[5][LEN_GVAR_NAME];
-
-  FrSkyData_v215 frsky;
-
-  MODELDATA_EXTRA
-
-}) ModelData_v215;
+  int8_t  rfProtocol;
+  uint8_t channelsStart;
+  int8_t  channelsCount; // 0=8 channels
+  uint8_t failsafeMode;
+  int16_t failsafeChannels[NUM_CHNOUT];
+  int8_t  ppmDelay;
+  int8_t  ppmFrameLength;
+  uint8_t ppmPulsePol;
+}) ModuleData_v216;
 
 #if defined(PCBTARANIS)
 #define MODELDATA_EXTRA_216 \
   uint8_t externalModule; \
   uint8_t trainerMode; \
-  ModuleData moduleData[NUM_MODULES+1]; \
+  ModuleData_v216 moduleData[NUM_MODULES+1]; \
   char curveNames[MAX_CURVES][6]; \
   ScriptData_v216 scriptsData[MAX_SCRIPTS]; \
   char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; \
@@ -578,14 +550,27 @@ PACK(typedef struct {
 #elif defined(PCBSKY9X)
 #define MODELDATA_EXTRA_216 \
   uint8_t externalModule; \
-  ModuleData moduleData[NUM_MODULES+1]; \
+  ModuleData_v216 moduleData[NUM_MODULES+1]; \
   uint8_t nPotsToWarn; \
   int8_t potPosition[NUM_POTS]; \
   uint8_t rxBattAlarms[2];
 #endif
 
+#if defined(PCBTARANIS)
 PACK(typedef struct {
-  ModelHeader header;
+  char name[LEN_MODEL_NAME];
+  uint8_t modelId;
+  char bitmap[LEN_BITMAP_NAME];
+}) ModelHeader_v216;
+#else
+PACK(typedef struct {
+  char      name[LEN_MODEL_NAME];
+  uint8_t   modelId;
+}) ModelHeader_v216;
+#endif
+
+PACK(typedef struct {
+  ModelHeader_v216 header;
   TimerData_v216 timers[2];
   AVR_FIELD(uint8_t   protocol:3)
   ARM_FIELD(uint8_t   telemetryProtocol:3)
@@ -885,433 +870,6 @@ int16_t ConvertGVAR_215_to_216(int16_t var)
     return var;
 }
 
-void ConvertModel_215_to_216(ModelData &model)
-{
-  // Virtual inputs added instead of Expo/DR
-  // LUA scripts added
-  // GVARS: now 9 GVARS, popup param added
-  // Curves: structure changed, 32 curves
-  // Limits: min and max with PREC1
-  // Custom Functions: play repeat * 5
-  // Logical Switches: better precision for x when A comes from telemetry
-  // Main View: altitude in top bar
-  // Mixes: GVARS in weight moved from 512 to 4096 and -512 to -4096, because GVARS may be used in limits [-1250:1250]
-  // Switches: two 6-pos pots added, REa added to Sky9x
-
-  assert(sizeof(ModelData_v215) <= sizeof(ModelData));
-
-  ModelData_v215 oldModel;
-  memcpy(&oldModel, &model, sizeof(oldModel));
-  ModelData_v216 &newModel = *(ModelData_v216*)&model;
-  memset(&newModel, 0, sizeof(ModelData_v216));
-
-  char name[LEN_MODEL_NAME+1];
-  zchar2str(name, oldModel.header.name, LEN_MODEL_NAME);
-  TRACE("Model %s conversion from v215 to v216", name);
-
-  memcpy(&newModel.header, &oldModel.header, sizeof(newModel.header));
-  for (uint8_t i=0; i<2; i++) {
-    TimerData_v216 & timer = newModel.timers[i];
-    if (oldModel.timers[i].mode >= TMRMODE_COUNT)
-      timer.mode = TMRMODE_COUNT + ConvertSwitch_215_to_216(oldModel.timers[i].mode - TMRMODE_COUNT + 1) - 1;
-    else
-      timer.mode = oldModel.timers[i].mode;
-    timer.start = oldModel.timers[i].start;
-    timer.minuteBeep = oldModel.timers[i].minuteBeep;
-    timer.persistent = oldModel.timers[i].persistent;
-    timer.countdownBeep = oldModel.timers[i].countdownBeep;
-    timer.value = oldModel.timers[i].value;
-  }
-  newModel.thrTrim = oldModel.thrTrim;
-  newModel.trimInc = oldModel.trimInc - 2;
-  newModel.disableThrottleWarning = oldModel.disableThrottleWarning;
-  newModel.extendedLimits = oldModel.extendedLimits;
-  newModel.extendedTrims = oldModel.extendedTrims;
-  newModel.throttleReversed = oldModel.throttleReversed;
-
-#if defined(PCBTARANIS)
-  newModel.beepANACenter = (oldModel.beepANACenter & 0x3f) | ((oldModel.beepANACenter & 0xc0) << 1);
-#else
-  newModel.beepANACenter = oldModel.beepANACenter;
-#endif
-
-  for (uint8_t i=0; i<64; i++) {
-    MixData_v216 * mix = &newModel.mixData[i];
-    MixData_v215 * oldMix = &oldModel.mixData[i];
-#if defined(PCBTARANIS)
-    mix->destCh = oldMix->destCh;
-    mix->flightModes = oldMix->flightModes;
-    mix->mltpx = oldMix->mltpx;
-    if (oldMix->carryTrim == TRIM_OFF) mix->carryTrim = TRIM_OFF;
-    mix->weight = ConvertGVAR_215_to_216(oldMix->weight);
-    mix->swtch = ConvertSwitch_215_to_216(oldMix->swtch);
-    if (oldMix->curveMode==0/*differential*/) {
-      mix->curve.type = CURVE_REF_DIFF;
-      mix->curve.value = oldMix->curveParam;
-    }
-    else if (oldMix->curveParam <= 6) {
-      mix->curve.type = CURVE_REF_FUNC;
-      mix->curve.value = oldMix->curveParam;
-    }
-    else {
-      mix->curve.type = CURVE_REF_CUSTOM;
-      mix->curve.value = oldMix->curveParam - 6;
-    }
-    mix->mixWarn = oldMix->mixWarn;
-    mix->delayUp = oldMix->delayUp;
-    mix->delayDown = oldMix->delayDown;
-    mix->speedUp = oldMix->speedUp;
-    mix->speedDown = oldMix->speedDown;
-    mix->srcRaw = oldMix->srcRaw;
-    if (mix->srcRaw > 4 || oldMix->noExpo)
-      mix->srcRaw = ConvertSource_215_to_216(mix->srcRaw);
-    mix->offset = ConvertGVAR_215_to_216(oldMix->offset);
-    memcpy(mix->name, oldMix->name, LEN_EXPOMIX_NAME);
-    if (!GV_IS_GV_VALUE(mix->weight, 500, 500) && !GV_IS_GV_VALUE(mix->offset, 500, 500)) {
-      mix->offset = divRoundClosest(mix->offset * mix->weight, 100);
-    }
-#else
-    mix->destCh = oldMix->destCh;
-    mix->mixWarn = oldMix->mixWarn;
-    mix->flightModes = oldMix->flightModes;
-    mix->curveMode = oldMix->curveMode;
-    mix->noExpo = oldMix->noExpo;
-    mix->carryTrim = oldMix->carryTrim;
-    mix->mltpx = oldMix->mltpx;
-    mix->weight = oldMix->weight;
-    mix->swtch = ConvertSwitch_215_to_216(oldMix->swtch);
-    mix->curveParam = oldMix->curveParam;
-    mix->delayUp = oldMix->delayUp;
-    mix->delayDown = oldMix->delayDown;
-    mix->speedUp = oldMix->speedUp;
-    mix->speedDown = oldMix->speedDown;
-    mix->srcRaw = ConvertSource_215_to_216(oldMix->srcRaw);
-    mix->offset = oldMix->offset;
-    memcpy(mix->name, oldMix->name, LEN_EXPOMIX_NAME);
-#endif
-  }
-  for (uint8_t i=0; i<32; i++) {
-#if defined(PCBTARANIS)
-    newModel.limitData[i].min = 10 * oldModel.limitData[i].min;
-    newModel.limitData[i].max = 10 * oldModel.limitData[i].max;
-#else
-    newModel.limitData[i].min = oldModel.limitData[i].min;
-    newModel.limitData[i].max = oldModel.limitData[i].max;
-#endif
-    newModel.limitData[i].ppmCenter = oldModel.limitData[i].ppmCenter;
-    newModel.limitData[i].offset = oldModel.limitData[i].offset;
-    newModel.limitData[i].symetrical = oldModel.limitData[i].symetrical;
-    newModel.limitData[i].revert = oldModel.limitData[i].revert;
-#if defined(PCBTARANIS)
-    memcpy(newModel.limitData[i].name, oldModel.limitData[i].name, LEN_CHANNEL_NAME);
-#endif
-  }
-#if defined(PCBTARANIS)
-  int indexes[NUM_STICKS] = { 0, 0, 0, 0 };
-#endif
-  for (uint8_t i=0; i<32; i++) {
-    ExpoData_v216 * expo = &newModel.expoData[i];
-    ExpoData_v215 * oldExpo = &oldModel.expoData[i];
-    if (oldExpo->mode) {
-#if defined(PCBTARANIS)
-      uint8_t chn = oldExpo->chn;
-      if (!oldExpo->swtch && !oldExpo->flightModes) {
-        indexes[chn] = -1;
-      }
-      else if (indexes[chn] != -1) {
-        indexes[chn] = i+1;
-      }
-      for (uint8_t j=chn+1; j<NUM_STICKS; j++) {
-        indexes[j] = i+1;
-      }
-      expo->srcRaw = MIXSRC216_Rud+chn;
-      expo->chn = chn;
-      expo->mode = oldExpo->mode;
-      expo->swtch = ConvertSwitch_215_to_216(oldExpo->swtch);
-      expo->flightModes = oldExpo->flightModes;
-      expo->weight = oldExpo->weight;
-      memcpy(expo->name, oldExpo->name, LEN_EXPOMIX_NAME);
-      if (oldExpo->curveMode==0/*expo*/) {
-        if (oldExpo->curveParam) {
-          expo->curve.type = CURVE_REF_EXPO;
-          expo->curve.value = oldExpo->curveParam;
-        }
-      }
-      else if (oldExpo->curveParam <= 6) {
-        expo->curve.type = CURVE_REF_FUNC;
-        expo->curve.value = oldExpo->curveParam;
-      }
-      else {
-        expo->curve.type = CURVE_REF_CUSTOM;
-        expo->curve.value = oldExpo->curveParam - 6;
-      }
-#else
-      expo->mode = oldExpo->mode;
-      expo->chn = oldExpo->chn;
-      expo->curveMode = oldExpo->curveMode;
-      expo->swtch = oldExpo->swtch;
-      expo->flightModes = oldExpo->flightModes;
-      expo->weight = oldExpo->weight;
-      memcpy(expo->name, oldExpo->name, LEN_EXPOMIX_NAME);
-      expo->curveParam = oldExpo->curveParam;
-#endif
-    }
-    else {
-      break;
-    }
-  }
-#if defined(PCBTARANIS)
-  for (int i=NUM_STICKS-1; i>=0; i--) {
-    int idx = indexes[i];
-    if (idx >= 0) {
-      ExpoData_v216 * expo = &newModel.expoData[idx];
-      memmove(expo+1, expo, (MAX_EXPOS-(idx+1))*sizeof(ExpoData_v216));
-      memclear(expo, sizeof(ExpoData_v216));
-      expo->srcRaw = MIXSRC216_Rud + i;
-      expo->chn = i;
-      expo->weight = 100;
-      expo->curve.type = CURVE_REF_EXPO;
-      expo->mode = 3;
-    }
-    for (int c=0; c<4; c++) {
-      newModel.inputNames[i][c] = char2idx(STR_VSRCRAW[2+STR_VSRCRAW[0]*(i+1)+c]);
-    }
-  }
-#endif
-  for (uint8_t i=0; i<16; i++) {
-#if defined(PCBTARANIS)
-    int8_t *cur = &oldModel.points[i==0 ? 0 : 5*i+oldModel.curves[i-1]];
-    int8_t *nxt = &oldModel.points[5+5*i+oldModel.curves[i]];
-    uint8_t size = nxt - cur;
-    if ((size & 1) == 0) {
-      newModel.curves[i].type = CURVE_TYPE_CUSTOM;
-      newModel.curves[i].points = (size / 2) - 4;
-    }
-    else {
-      newModel.curves[i].points = size-5;
-    }
-#else
-    newModel.curves[i] = oldModel.curves[i];
-#endif
-  }
-  for (uint16_t i=0; i<512; i++) {
-    newModel.points[i] = oldModel.points[i];
-  }
-  for (uint8_t i=0; i<32; i++) {
-    LogicalSwitchData_v216 & sw = newModel.logicalSw[i];
-    sw.func = oldModel.logicalSw[i].func;
-    if (sw.func >= LS_FUNC_VEQUAL) sw.func += 1;
-    if (sw.func >= LS_FUNC_RANGE) sw.func += 1;
-    if (sw.func >= LS_FUNC_EDGE) sw.func += 1;
-    sw.v1 = oldModel.logicalSw[i].v1;
-    sw.v2 = oldModel.logicalSw[i].v2;
-    sw.delay = oldModel.logicalSw[i].delay * 5;
-    sw.duration = oldModel.logicalSw[i].duration * 5;
-    sw.andsw = ConvertSwitch_215_to_216(oldModel.logicalSw[i].andsw);
-    uint8_t cstate = lswFamily(sw.func);
-    if (cstate == LS_FAMILY_BOOL) {
-      sw.v1 = ConvertSwitch_215_to_216(sw.v1);
-      sw.v2 = ConvertSwitch_215_to_216(sw.v2);
-    }
-    else if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
-      sw.v1 = ConvertSource_215_to_216(sw.v1);
-      if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_DIFF) {
-        if ((uint8_t)sw.v1 >= MIXSRC216_FIRST_TELEM) {
-          switch ((uint8_t)sw.v1) {
-            case MIXSRC216_FIRST_TELEM + TELEM216_TIMER1-1:
-            case MIXSRC216_FIRST_TELEM + TELEM216_TIMER2-1:
-              sw.v2 = (sw.v2+128) * 3;
-              break;
-            case MIXSRC216_FIRST_TELEM + TELEM216_ALT-1:
-            case MIXSRC216_FIRST_TELEM + TELEM216_GPSALT-1:
-            case MIXSRC216_FIRST_TELEM + TELEM216_MIN_ALT-1:
-            case MIXSRC216_FIRST_TELEM + TELEM216_MAX_ALT-1:
-              sw.v2 = (sw.v2+128) * 8 - 500;
-              break;
-            case MIXSRC216_FIRST_TELEM + TELEM216_RPM-1:
-            case MIXSRC216_FIRST_TELEM + TELEM216_MAX_RPM-1:
-              sw.v2 = (sw.v2+128) * 50;
-              break;
-            case MIXSRC216_FIRST_TELEM + TELEM216_T1-1:
-            case MIXSRC216_FIRST_TELEM + TELEM216_T2-1:
-            case MIXSRC216_FIRST_TELEM + TELEM216_MAX_T1-1:
-            case MIXSRC216_FIRST_TELEM + TELEM216_MAX_T2-1:
-              sw.v2 = (sw.v2+128) + 30;
-              break;
-            case MIXSRC216_FIRST_TELEM + TELEM216_CELL-1:
-            case MIXSRC216_FIRST_TELEM + TELEM216_HDG-1:
-              sw.v2 = (sw.v2+128) * 2;
-              break;
-            case MIXSRC216_FIRST_TELEM + TELEM216_DIST-1:
-            case MIXSRC216_FIRST_TELEM + TELEM216_MAX_DIST-1:
-              sw.v2 = (sw.v2+128) * 8;
-              break;
-            case MIXSRC216_FIRST_TELEM + TELEM216_CURRENT-1:
-            case MIXSRC216_FIRST_TELEM + TELEM216_POWER-1:
-              sw.v2 = (sw.v2+128) * 5;
-              break;
-            case MIXSRC216_FIRST_TELEM + TELEM216_CONSUMPTION-1:
-              sw.v2 = (sw.v2+128) * 20;
-              break;
-            default:
-              sw.v2 += 128;
-              break;
-          }
-        }
-      }
-      else if (cstate == LS_FAMILY_COMP) {
-        sw.v2 = ConvertSource_215_to_216(sw.v2);
-      }
-    }
-  }
-  for (uint8_t i=0; i<32; i++) {
-    CustomFunctionData & fn = newModel.customFn[i];
-    fn.swtch = ConvertSwitch_215_to_216(oldModel.customFn[i].swtch);
-    fn.func = oldModel.customFn[i].func;
-    if (fn.func <= 15) {
-      fn.all.param = fn.func;
-      fn.func = FUNC_OVERRIDE_CHANNEL;
-    }
-    else if (fn.func <= 20) {
-      fn.all.param = fn.func - 16;
-      fn.func = FUNC_TRAINER;
-    }
-    else if (fn.func == 21) {
-      fn.func = FUNC_INSTANT_TRIM;
-    }
-    else if (fn.func == 22) {
-      fn.func = FUNC_PLAY_SOUND;
-    }
-#if defined(PCBSKY9X)
-    else if (fn.func == 23) {
-      fn.func = FUNC_HAPTIC;
-    }
-#endif
-    else if (fn.func == 23+IS_PCBSKY9X) {
-      fn.func = FUNC_RESET;
-    }
-    else if (fn.func == 24+IS_PCBSKY9X) {
-      fn.func = FUNC_VARIO;
-    }
-    else if (fn.func == 25+IS_PCBSKY9X) {
-      fn.func = FUNC_PLAY_TRACK;
-    }
-    else if (fn.func == 26+IS_PCBSKY9X) {
-      fn.func = FUNC_PLAY_VALUE;
-    }
-    else if (fn.func == 27+IS_PCBSKY9X) {
-      fn.func = FUNC_LOGS;
-    }
-    else if (fn.func == 28+IS_PCBSKY9X) {
-      fn.func = FUNC_VOLUME;
-    }
-    else if (fn.func == 29+IS_PCBSKY9X) {
-      fn.func = FUNC_BACKLIGHT;
-    }
-    else if (fn.func == 30+IS_PCBSKY9X) {
-      fn.func = FUNC_BACKGND_MUSIC;
-    }
-    else if (fn.func == 31+IS_PCBSKY9X) {
-      fn.func = FUNC_BACKGND_MUSIC_PAUSE;
-    }
-    else {
-      fn.all.param = fn.func - 32 - IS_PCBSKY9X;
-      fn.all.mode = oldModel.customFn[i].mode;
-      fn.func = FUNC_ADJUST_GVAR;
-    }
-
-    fn.active = oldModel.customFn[i].active;
-    if (HAS_REPEAT_PARAM(fn.func)) {
-      fn.active *= 5;
-    }
-
-    if (fn.func == FUNC_PLAY_TRACK || fn.func == FUNC_BACKGND_MUSIC) {
-      memcpy(fn.play.name, oldModel.customFn[i].param.name, 8);
-    }
-    else {
-      fn.all.val = oldModel.customFn[i].param.composite.val;
-    }
-    if (fn.func == FUNC_PLAY_VALUE || fn.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(fn.func) && fn.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
-#if defined(PCBTARANIS)
-      fn.all.val = ConvertSource_215_to_216(fn.all.val, true);
-#endif
-    }
-  }
-
-  newModel.swashR = oldModel.swashR;
-  newModel.swashR.collectiveSource = ConvertSource_215_to_216(newModel.swashR.collectiveSource);
-
-  for (uint8_t i=0; i<9; i++) {
-    if (i==0 || oldModel.flightModeData[i].swtch) {
-      memcpy(&newModel.flightModeData[i], &oldModel.flightModeData[i], sizeof(oldModel.flightModeData[i])); // the last 4 gvars will remain blank
-      newModel.flightModeData[i].swtch = ConvertSwitch_215_to_216(oldModel.flightModeData[i].swtch);
-#if defined(PCBTARANIS)
-      for (uint8_t t=0; t<4; t++) {
-        int trim = oldModel.flightModeData[i].trim[t];
-        if (trim > 500) {
-          trim -= 501;
-          if (trim >= i)
-            trim += 1;
-          newModel.flightModeData[i].trim[t].mode = 2*trim;
-          newModel.flightModeData[i].trim[t].value = 0;
-        }
-        else {
-          newModel.flightModeData[i].trim[t].mode = 2*i;
-          newModel.flightModeData[i].trim[t].value = trim;
-        }
-      }
-#endif
-    }
-  }
-  newModel.thrTraceSrc = oldModel.thrTraceSrc;
-#if defined(PCBTARANIS)
-  // S3 added
-  if (newModel.thrTraceSrc >= THROTTLE_SOURCE_S3)
-    newModel.thrTraceSrc += 1;
-#endif
-  newModel.switchWarningState = oldModel.switchWarningState >> 1;
-  newModel.switchWarningEnable = (oldModel.switchWarningState & 0x01) ? 0xFF : 0;
-  for (uint8_t i=0; i<5; i++) {
-    memcpy(newModel.gvars[i].name, oldModel.gvar_names[i], LEN_GVAR_NAME);
-  }
-
-  memcpy(&newModel.frsky, &oldModel.frsky, 2*sizeof(FrSkyChannelData));
-  // gap for A3-A4
-  memcpy(((uint8_t *)&newModel.frsky) + 4*sizeof(FrSkyChannelData), ((uint8_t *)&oldModel.frsky) + 2*sizeof(FrSkyChannelData), sizeof(oldModel.frsky) - 2*sizeof(FrSkyChannelData));
-  // A3 and A4 introduced
-  if (newModel.frsky.voltsSource >= FRSKY_VOLTS_SOURCE_A3)
-    newModel.frsky.voltsSource += 2;
-  if (newModel.frsky.currentSource >= FRSKY_CURRENT_SOURCE_A3)
-    newModel.frsky.currentSource += 2;
-
-  for (int i=0; i<3; i++) {
-    if (newModel.frsky.screensType & (1<<i)) {
-      // gauges
-      for (int j=0; j<4; j++) {
-        // uint8_t & source = newModel.frsky.screens[i].bars[j].source;
-        // source = ConvertTelemetrySource_215_to_216(source);
-      }
-    }
-    else {
-      // numbers
-      for (int j=0; j<4; j++) {
-        for (int k=0; k<NUM_LINE_ITEMS; k++) {
-          // uint8_t & source = newModel.frsky.screens[i].lines[j].sources[k];
-          // source = ConvertTelemetrySource_215_to_216(source);
-        }
-      }
-    }
-  }
-
-#if defined(PCBTARANIS)
-  newModel.externalModule = oldModel.externalModule;
-  newModel.trainerMode = oldModel.trainerMode;
-  memcpy(newModel.curveNames, oldModel.curveNames, sizeof(newModel.curveNames));
-#endif
-
-  memcpy(newModel.moduleData, oldModel.moduleData, sizeof(newModel.moduleData));
-}
-
 int ConvertGVar_216_to_217(int value)
 {
   if (value < -4096 + 9)
@@ -1340,7 +898,12 @@ void ConvertModel_216_to_217(ModelData &model)
   zchar2str(name, oldModel.header.name, LEN_MODEL_NAME);
   TRACE("Model %s conversion from v216 to v217", name);
 
-  memcpy(&newModel.header, &oldModel.header, sizeof(newModel.header));
+  newModel.header.modelId[0] = oldModel.header.modelId;
+  memcpy(newModel.header.name, oldModel.header.name, LEN_MODEL_NAME);
+#if defined(PCBTARANIS)
+  memcpy(newModel.header.bitmap, oldModel.header.bitmap, LEN_BITMAP_NAME);
+#endif
+
   for (uint8_t i=0; i<2; i++) {
     TimerData & timer = newModel.timers[i];
     if (oldModel.timers[i].mode >= TMRMODE_COUNT)
@@ -1463,8 +1026,23 @@ void ConvertModel_216_to_217(ModelData &model)
   memcpy(newModel.gvars, oldModel.gvars, sizeof(newModel.gvars));
 
   memcpy(&newModel.frsky.rssiAlarms, &oldModel.frsky.rssiAlarms, sizeof(newModel.frsky.rssiAlarms));
-  newModel.externalModule = oldModel.externalModule;
-  memcpy(newModel.moduleData, oldModel.moduleData, sizeof(newModel.moduleData));
+
+  for (int i=0; i<NUM_MODULES+1; i++) {
+    newModel.moduleData[i].type = 0;
+    newModel.moduleData[i].rfProtocol = oldModel.moduleData[i].rfProtocol;
+    newModel.moduleData[i].channelsStart = oldModel.moduleData[i].channelsStart;
+    newModel.moduleData[i].channelsCount = oldModel.moduleData[i].channelsCount;
+    newModel.moduleData[i].failsafeMode = oldModel.moduleData[i].failsafeMode;
+    for (int j=0; j<NUM_CHNOUT; j++) {
+      newModel.moduleData[i].failsafeChannels[j] = oldModel.moduleData[i].failsafeChannels[j];
+    }
+    newModel.moduleData[i].ppmDelay = oldModel.moduleData[i].ppmDelay;
+    newModel.moduleData[i].ppmFrameLength = oldModel.moduleData[i].ppmFrameLength;
+    newModel.moduleData[i].ppmPulsePol = oldModel.moduleData[i].ppmPulsePol;
+  }
+
+  newModel.moduleData[EXTERNAL_MODULE].type = oldModel.externalModule;
+
 #if defined(PCBTARANIS)
   newModel.trainerMode = oldModel.trainerMode;
   // TODO memcpy(newModel.scriptsData, oldModel.scriptsData, sizeof(newModel.scriptsData));
@@ -1479,11 +1057,6 @@ void ConvertModel_216_to_217(ModelData &model)
 void ConvertModel(int id, int version)
 {
   loadModel(id);
-
-  if (version == 215) {
-    version = 216;
-    ConvertModel_215_to_216(g_model);
-  }
 
   if (version == 216) {
     version = 217;
@@ -1501,10 +1074,7 @@ bool eeConvert()
 {
   const char *msg = NULL;
 
-  if (g_eeGeneral.version == 215) {
-    msg = PSTR("EEprom Data v215");
-  }
-  else if (g_eeGeneral.version == 216) {
+  if (g_eeGeneral.version == 216) {
     msg = PSTR("EEprom Data v216");
   }
   else {

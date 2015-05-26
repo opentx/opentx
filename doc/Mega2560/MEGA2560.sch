@@ -36,7 +36,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "OpenTX board based on Arduino MEGA2560"
-Date "14 feb 2015"
+Date "20 may 2015"
 Rev "0"
 Comp "Copyright 2015 F. Aguerre"
 Comment1 ""
@@ -196,10 +196,10 @@ F 3 "" H 8800 6900 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R6
+L R R7
 U 1 1 54997DEC
 P 8800 6550
-F 0 "R6" V 8880 6550 50  0000 C CNN
+F 0 "R7" V 8880 6550 50  0000 C CNN
 F 1 "100K" V 8800 6550 50  0000 C CNN
 F 2 "" H 8800 6550 60  0001 C CNN
 F 3 "" H 8800 6550 60  0001 C CNN
@@ -207,11 +207,11 @@ F 3 "" H 8800 6550 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L R R6
+L R R5
 U 1 1 54997CFE
 P 7800 6000
-F 0 "R6" V 7880 6000 50  0000 C CNN
-F 1 "100K" V 7800 6000 50  0000 C CNN
+F 0 "R5" V 7880 6000 50  0000 C CNN
+F 1 "6.8K" V 7800 6000 50  0000 C CNN
 F 2 "" H 7800 6000 60  0001 C CNN
 F 3 "" H 7800 6000 60  0001 C CNN
 	1    7800 6000
@@ -310,11 +310,11 @@ F 3 "" H 9850 4600 60  0001 C CNN
 	0    1    -1   0   
 $EndComp
 $Comp
-L R R6
+L R R5
 U 1 1 5499427F
 P 10100 4850
-F 0 "R6" V 10180 4850 50  0000 C CNN
-F 1 "100K" V 10100 4850 50  0000 C CNN
+F 0 "R5" V 10180 4850 50  0000 C CNN
+F 1 "6.8K" V 10100 4850 50  0000 C CNN
 F 2 "" H 10100 4850 60  0001 C CNN
 F 3 "" H 10100 4850 60  0001 C CNN
 	1    10100 4850
@@ -342,42 +342,42 @@ F 3 "" H 9100 4600 60  0001 C CNN
 	1    9100 4600
 	1    0    0    -1  
 $EndComp
-Text Label 6450 3850 2    42   ~ 0
+Text Label 6650 3900 2    42   ~ 0
 U_batt
 $Comp
 L R R3
 U 1 1 54994034
-P 6050 4100
-F 0 "R3" V 6130 4100 50  0000 C CNN
-F 1 "2.7K" V 6050 4100 50  0000 C CNN
-F 2 "" H 6050 4100 60  0001 C CNN
-F 3 "" H 6050 4100 60  0001 C CNN
-	1    6050 4100
+P 6250 4150
+F 0 "R3" V 6330 4150 50  0000 C CNN
+F 1 "2.7K" V 6250 4150 50  0000 C CNN
+F 2 "" H 6250 4150 60  0001 C CNN
+F 3 "" H 6250 4150 60  0001 C CNN
+	1    6250 4150
 	-1   0    0    -1  
 $EndComp
 $Comp
 L R R4
 U 1 1 54994033
-P 5800 3850
-F 0 "R4" V 5880 3850 50  0000 C CNN
-F 1 "5.1K" V 5800 3850 50  0000 C CNN
-F 2 "" H 5800 3850 60  0001 C CNN
-F 3 "" H 5800 3850 60  0001 C CNN
-	1    5800 3850
+P 6000 3900
+F 0 "R4" V 6080 3900 50  0000 C CNN
+F 1 "5.1K" V 6000 3900 50  0000 C CNN
+F 2 "" H 6000 3900 60  0001 C CNN
+F 3 "" H 6000 3900 60  0001 C CNN
+	1    6000 3900
 	0    1    -1   0   
 $EndComp
 $Comp
 L GND #PWR?
 U 1 1 54994032
-P 6050 4450
-F 0 "#PWR?" H 6050 4450 30  0001 C CNN
-F 1 "GND" H 6050 4380 30  0001 C CNN
-F 2 "" H 6050 4450 60  0001 C CNN
-F 3 "" H 6050 4450 60  0001 C CNN
-	1    6050 4450
+P 6250 4500
+F 0 "#PWR?" H 6250 4500 30  0001 C CNN
+F 1 "GND" H 6250 4430 30  0001 C CNN
+F 2 "" H 6250 4500 60  0001 C CNN
+F 3 "" H 6250 4500 60  0001 C CNN
+	1    6250 4500
 	1    0    0    -1  
 $EndComp
-Text Notes 5400 3500 0    60   ~ 0
+Text Notes 5600 3550 0    60   ~ 0
 Battery voltage reading
 Text Notes 7250 1950 0    60   ~ 0
 Rotary encoders (x2)
@@ -461,11 +461,11 @@ F 3 "" H 5250 1000 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R3
+L R R2
 U 1 1 54993A62
 P 5250 2200
-F 0 "R3" V 5330 2200 50  0000 C CNN
-F 1 "2.7K" V 5250 2200 50  0000 C CNN
+F 0 "R2" V 5330 2200 50  0000 C CNN
+F 1 "2.2K" V 5250 2200 50  0000 C CNN
 F 2 "" H 5250 2200 60  0001 C CNN
 F 3 "" H 5250 2200 60  0001 C CNN
 	1    5250 2200
@@ -646,10 +646,10 @@ $EndComp
 Text Label 9250 1000 0    42   ~ 0
 M2560_Ouput
 $Comp
-L R R5
+L R R6
 U 1 1 54992F2E
 P 10250 1250
-F 0 "R5" V 10330 1250 50  0000 C CNN
+F 0 "R6" V 10330 1250 50  0000 C CNN
 F 1 "10K" V 10250 1250 50  0000 C CNN
 F 2 "" H 10250 1250 60  0001 C CNN
 F 3 "" H 10250 1250 60  0001 C CNN
@@ -837,10 +837,10 @@ F 3 "" H 2350 2100 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R5
+L R R6
 U 1 1 549891B4
 P 2150 1700
-F 0 "R5" V 2230 1700 50  0000 C CNN
+F 0 "R6" V 2230 1700 50  0000 C CNN
 F 1 "10K" V 2150 1700 50  0000 C CNN
 F 2 "" H 2150 1700 60  0001 C CNN
 F 3 "" H 2150 1700 60  0001 C CNN
@@ -872,10 +872,10 @@ F 3 "" H 1400 2300 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R5
+L R R6
 U 1 1 549891AC
 P 2050 2800
-F 0 "R5" V 2130 2800 50  0000 C CNN
+F 0 "R6" V 2130 2800 50  0000 C CNN
 F 1 "10K" V 2050 2800 50  0000 C CNN
 F 2 "" H 2050 2800 60  0001 C CNN
 F 3 "" H 2050 2800 60  0001 C CNN
@@ -998,10 +998,10 @@ F 3 "" H 9100 5400 60  0001 C CNN
 	0    1    -1   0   
 $EndComp
 $Comp
-L R R6
+L R R7
 U 1 1 549881D8
 P 8850 5600
-F 0 "R6" V 8930 5600 50  0000 C CNN
+F 0 "R7" V 8930 5600 50  0000 C CNN
 F 1 "100K" V 8850 5600 50  0000 C CNN
 F 2 "" H 8850 5600 60  0001 C CNN
 F 3 "" H 8850 5600 60  0001 C CNN
@@ -40954,12 +40954,12 @@ $EndComp
 $Comp
 L +BATT U?
 U 1 1 549E8260
-P 5450 3750
-F 0 "U?" H 5450 3700 60  0001 C CNN
-F 1 "+BATT" H 5450 3850 50  0000 C BNN
-F 2 "" H 5450 3750 60  0001 C CNN
-F 3 "" H 5450 3750 60  0001 C CNN
-	1    5450 3750
+P 5650 3800
+F 0 "U?" H 5650 3750 60  0001 C CNN
+F 1 "+BATT" H 5650 3900 50  0000 C BNN
+F 2 "" H 5650 3800 60  0001 C CNN
+F 3 "" H 5650 3800 60  0001 C CNN
+	1    5650 3800
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -41022,24 +41022,24 @@ F 3 "" H 10450 4200 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R?
+L R R6
 U 1 1 549E8FFF
 P 10450 3850
-F 0 "R?" V 10530 3850 50  0000 C CNN
+F 0 "R6" V 10530 3850 50  0000 C CNN
 F 1 "10K" V 10450 3850 50  0000 C CNN
 F 2 "" H 10450 3850 60  0001 C CNN
 F 3 "" H 10450 3850 60  0001 C CNN
 	1    10450 3850
 	-1   0    0    -1  
 $EndComp
-Text Label 6500 7150 2    42   ~ 0
-OpenTX  I/O
-Text GLabel 5250 7150 2    42   Output ~ 0
+Text Label 6550 7450 2    42   ~ 0
+OpenTX output
+Text GLabel 5250 7450 2    42   Output ~ 0
 port pin (initial state) 
-Text Notes 5500 7050 0    60   ~ 0
-Caption
+Text Notes 5450 7300 0    60   ~ 0
+Pinout caption :
 Text Label 5550 2550 2    42   ~ 0
-Gain = 1 + R3/R6
+Gain = 1 + R2/R6
 $Bitmap
 Pos 4600 4650
 Scale 1.000000
@@ -41200,7 +41200,7 @@ Wire Wire Line
 Wire Wire Line
 	2400 1700 2500 1700
 Wire Wire Line
-	6050 4350 6050 4450
+	6250 4400 6250 4500
 Wire Wire Line
 	9600 2250 9450 2250
 Wire Wire Line
@@ -41604,7 +41604,7 @@ Wire Wire Line
 Wire Wire Line
 	10750 3800 10750 4200
 Wire Wire Line
-	6450 3850 6050 3850
+	6650 3900 6250 3900
 Wire Wire Line
 	1900 1450 1900 1700
 Wire Wire Line
@@ -41642,9 +41642,9 @@ Wire Wire Line
 Wire Wire Line
 	4400 1350 4850 1350
 Wire Wire Line
-	5450 3750 5450 3850
+	5650 3800 5650 3900
 Wire Wire Line
-	5450 3850 5550 3850
+	5650 3900 5750 3900
 Wire Wire Line
 	7500 4600 8600 4600
 Connection ~ 8300 4600
@@ -41664,9 +41664,9 @@ Wire Wire Line
 Wire Wire Line
 	10450 4100 10450 4200
 Wire Wire Line
-	6050 7150 6500 7150
+	6050 7450 6550 7450
 Wire Wire Line
-	5100 7150 5250 7150
+	5100 7450 5250 7450
 Wire Wire Line
 	4700 4650 4700 4300
 Wire Wire Line
@@ -41738,4 +41738,16 @@ F 3 "" H 1750 7050 60  0000 C CNN
 	1    1750 7050
 	-1   0    0    1   
 $EndComp
+Text Notes 4850 6550 0    42   ~ 0
+LCD supported : ST7565P, ST7565R, ERC12864FSF, ST7920\nProtocol = 6800, 8 bits parallel mode\n\nLCD pinout labels (may differ, depending of brand) :\nRD = Read or Enable on ST7920\nWR = WRite or Write(0)/Read(1) on ST7920\nA0 = R/S (register select) or D/I (data/instruction select)\nRST = RES (reset)\nCS = Chip Select (not used on ST7920)
+Text Label 6550 7550 2    42   ~ 0
+OpenTX input
+Text GLabel 5250 7550 2    42   Input ~ 0
+port pin (initial state) 
+Wire Wire Line
+	6050 7550 6550 7550
+Wire Wire Line
+	5100 7550 5250 7550
+Text Notes 2300 2950 0    60   ~ 0
+NOTA : all features are optional !\nM2560 can properly work without switch deboucing,\nrotary encoder or PPM / power management.\nMinimum requirement is just LCD and navigation keys.\nSome switches could be usefull, especially for flight\nconditions, but not fundamental.
 $EndSCHEMATC

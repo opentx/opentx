@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>TelemetryCustomScreen</class>
  <widget class="QWidget" name="TelemetryCustomScreen">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>283</width>
+    <height>86</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string/>
   </property>
@@ -28,7 +36,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="screenType">
+      <widget class="AutoComboBox" name="screenType">
        <property name="sizePolicy">
         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -41,26 +49,6 @@
          <height>0</height>
         </size>
        </property>
-       <item>
-        <property name="text">
-         <string>None</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Numbers</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Bars</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Script</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item>
@@ -131,6 +119,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AutoComboBox</class>
+   <extends>QComboBox</extends>
+   <header>autocombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -301,7 +301,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
   {
     case LS_FAMILY_VOFS:
       mask |= SOURCE1_VISIBLE;
-      populateSourceCB(cswitchSource1[i], source, generalSettings, model, POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+      populateSourceCB(cswitchSource1[i], source, generalSettings, model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
       cswitchOffset[i]->setDecimals(range.decimals);
       cswitchOffset[i]->setSingleStep(range.step);
       if (source.isTimeBased()) {
@@ -346,8 +346,8 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       break;
     case LS_FAMILY_VCOMP:
       mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
-      populateSourceCB(cswitchSource1[i], RawSource(model->logicalSw[i].val1), generalSettings, model, POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
-      populateSourceCB(cswitchSource2[i], RawSource(model->logicalSw[i].val2), generalSettings, model, POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+      populateSourceCB(cswitchSource1[i], RawSource(model->logicalSw[i].val1), generalSettings, model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+      populateSourceCB(cswitchSource2[i], RawSource(model->logicalSw[i].val2), generalSettings, model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
       break;
     case LS_FAMILY_TIMER:
       mask |= VALUE1_VISIBLE | VALUE2_VISIBLE;

@@ -48,7 +48,7 @@ inline void boardInit()
   DDRE = 0b00000010;  PORTE = 0b11111100; // 7:N/A, 6:N/A, 5:RENC1_B, 4:RENC1_A, 3:N/A, 2:N/A, 1:TELEM_TX, 0:TELEM_RX
   DDRF = 0b00000000;  PORTF = 0b11111111; // 7-0:Trim switch inputs
   DDRG = 0b00000000;  PORTG = 0b11111111; // 7:N/A, 6:N/A, 5:N/A, 4:N/A, 3:N/A, 2:TCut_SW, 1:Gear_SW, 0: RudDr_SW
-  DDRH = 0b00011000;  PORTH = 0b11110110; // 7:N/A, 6:RFPw, 5:JackPres, 4:HoldPw, 3:Speaker, 2:N/A, 1:N/A, 0:Haptic
+  DDRH = 0b00011000;  PORTH = 0b11110110; // 7:N/A, 6:RF_Activated, 5:DSC_Activated, 4:Hold_Power, 3:Speaker, 2:N/A, 1:N/A, 0:Haptic
   DDRJ = 0b00000000;  PORTJ = 0b11111111; // 7:N/A, 6:N/A, 5:N/A, 4:N/A, 3:N/A, 2:N/A, 1:RENC2_push, 0:RENC1_push
   DDRK = 0b00000000;  PORTK = 0b00000000; // Analogic input (no pull-ups)
   DDRL = 0b00000000;  PORTL = 0b11111111; // 7:TRN_SW 6:EleDR_SW, 5:ESC, 4:MENU 3:Keyb_Left, 2:Keyb_Right, 1:Keyb_Up, 0:Keyb_Down
@@ -98,7 +98,7 @@ uint8_t pwrCheck()
 
 void pwrOff()
 {
-  PORTH = 0xEF;   // PortH-4 set to 0
+  PORTH &= ~0x10;   // PortH-4 set to 0
 }
 
 FORCEINLINE uint8_t keyDown()

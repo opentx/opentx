@@ -79,7 +79,7 @@
 #define PAUSE_PPMIN_INTERRUPT()  TIMSK3 &= ~(1<<ICIE3)
 #define RESUME_PPMIN_INTERRUPT() TIMSK3 |= (1<<ICIE3)
 
-#define SLAVE_MODE()             ~PINH & (1<<INP_H_RF_POW)     
+#define SLAVE_MODE()             ~PINH & (1<<INP_H_RF_Activated)     
 #define JACK_PPM_OUT()           PORTB |= (1<<OUT_B_SIM_CTL)    
 #define JACK_PPM_IN()            PORTB &= ~(1<<OUT_B_SIM_CTL)
 #define __BACKLIGHT_ON           PORTC |= (1<<OUT_C_LIGHT)   
@@ -133,9 +133,9 @@ void sdPoll10ms(void);
 #  define INP_D_I2C_SDA          0
 #  define INP_E_TELEM_RX         1
 #  define OUT_E_TELEM_TX         0    
-#  define INP_H_RF_POW           6    
-//#define INP_H_                 5    //reserved JACKPRES                                                                          
-//#define INP_H_                 4    //reserved HOLDPWR
+#  define INP_H_RF_Activated     6    
+//#define INP_H_                 5    //reserved DSC_Activated, for pwrCheck()                                                                         
+//#define INP_H_                 4    //reserved Hold_Power, for pwrCheck()
 #  define OUT_H_Speaker          3
 #  define OUT_H_HAPTIC           0 
   

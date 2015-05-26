@@ -534,7 +534,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
 
   b->clear();
 
-  if (flags & POPULATE_SOURCES) {
+  if (flags & POPULATE_NONE) {
     item = RawSource(SOURCE_TYPE_NONE);
     b->addItem(item.toString(model), item.toValue());
     if (item == source) b->setCurrentIndex(b->count()-1);
@@ -627,8 +627,8 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
     }
   }
 
-  if (IS_ARM(GetCurrentFirmware()->getBoard())) {
-    if ((flags & POPULATE_TELEMETRY) || (flags & POPULATE_TELEMETRYEXT)) {
+  if (flags & POPULATE_TELEMETRY) {
+    if (IS_ARM(GetCurrentFirmware()->getBoard())) {
       for (int i=0; i<5; ++i) {
         item = RawSource(SOURCE_TYPE_SPECIAL, i);
         b->addItem(item.toString(model), item.toValue());
@@ -639,30 +639,26 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
           for (int j=0; j<3; ++j) {
             item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i+j);
             b->addItem(item.toString(model), item.toValue());
+            // qDebug() << item.toString(model) << source.toString(model);
             if (item == source) b->setCurrentIndex(b->count()-1);
           }
         }
       }
     }
-  }
-  else if (flags & POPULATE_TELEMETRYEXT) {
-    for (int i=0; i<TELEMETRY_SOURCE_ACC; i++) {
-      if (i==TELEMETRY_SOURCE_RSSI_TX && IS_TARANIS(board))
-        continue;
-      item = RawSource(SOURCE_TYPE_TELEMETRY, i);
-      b->addItem(item.toString(model), item.toValue());
-      if (item == source) b->setCurrentIndex(b->count()-1);
-    }
-  }
-  else if (flags & POPULATE_TELEMETRY) {
-    for (int i=0; i<TELEMETRY_SOURCES_COUNT; i++) {
-      if (i==TELEMETRY_SOURCE_RSSI_TX && IS_TARANIS(board))
-        continue;
-      if (i==TELEMETRY_SOURCE_TIMER3 && !IS_ARM(board))
-        continue;
-      item = RawSource(SOURCE_TYPE_TELEMETRY, i);
-      b->addItem(item.toString(model), item.toValue());
-      if (item == source) b->setCurrentIndex(b->count()-1);
+    else {
+      for (int i=0; i<(flags & POPULATE_TELEMETRYEXT ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_COUNT); i++) {
+        if (i==TELEMETRY_SOURCE_RSSI_TX && IS_TARANIS(board))
+          continue;
+        if (i==TELEMETRY_SOURCE_TX_TIME && !GetCurrentFirmware()->getCapability(RtcTime))
+          continue;
+        if (i==TELEMETRY_SOURCE_SWR && !GetCurrentFirmware()->getCapability(SportTelemetry))
+          continue;
+        if (i==TELEMETRY_SOURCE_TIMER3 && !IS_ARM(board))
+          continue;
+        item = RawSource(SOURCE_TYPE_TELEMETRY, i);
+        b->addItem(item.toString(model), item.toValue());
+        if (item == source) b->setCurrentIndex(b->count()-1);
+      }
     }
   }
 

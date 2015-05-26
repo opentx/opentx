@@ -32,8 +32,8 @@
  */
  /* Formatting octal codes available in TR_ strings:
  *  \037\x           -sets LCD x-coord (x value in octal)
- *  \n               -newline
- *  \t               -horizontal tab (ARM only)
+ *  \036             -newline
+ *  \035             -horizontal tab (ARM only)
  *  \001 to \034     -extended spacing (value * FW/2)
  *  \0               -ends current string
  */
@@ -106,8 +106,13 @@
 #define LEN_TARANIS_PROTOCOLS  "\004"          
 #define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM2"
 
-#define LEN_XJT_PROTOCOLS      "\004"
-#define TR_XJT_PROTOCOLS       "AUS\0""X16\0""D8\0 ""LR12"
+#if defined(MODULE_D16_EU_ONLY_SUPPORT)
+  #define LEN_XJT_PROTOCOLS    "\006"
+  #define TR_XJT_PROTOCOLS     "AUS\0  ""D16-EU"
+#else
+  #define LEN_XJT_PROTOCOLS    "\004"
+  #define TR_XJT_PROTOCOLS     "AUS\0""X16\0""D8\0 ""LR12"
+#endif
 
 #define LEN_DSM_PROTOCOLS      "\004"
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
@@ -512,7 +517,7 @@
   #define TR_RESERVE_VSRCRAW   "[--]"
   #define TR_EXTRA_VSRCRAW     "Batt""Time" TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW "Tmr1""Tmr2""Tmr3"
 #else
-  #define TR_EXTRA_VSRCRAVTELEMUNITW
+  #define TR_EXTRA_VSRCRAW
 #endif
 
 #define TR_VSRCRAW             "---\0" TR_STICKS_VSRCRAW TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW TR_TRIMS_VSRCRAW TR_SW_VSRCRAW TR_EXTRA_VSRCRAW
@@ -653,7 +658,7 @@
 #define TR_CV                  "KV"
 #define TR_GV                  "GV"
 #define TR_ACHANNEL            TR("A\004gemessen","A\004Kanal gemessen =>") //9XR-Pro
-#define TR_RANGE               TR(INDENT"Bereich",INDENT"Messbereich") //9XR-Pro
+#define TR_RANGE               TR(INDENT"Bereich", INDENT "Reichweite") // 9XR-Pro
 #define TR_BAR                 "Streifen"
 #define TR_ALARM               INDENT"Alarm"
 #define TR_USRDATA             "Daten berechnen aus"

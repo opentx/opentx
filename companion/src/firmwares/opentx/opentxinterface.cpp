@@ -662,8 +662,6 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return 500;
     case Simulation:
       return 1;
-    case DSM2Indexes:
-      return 1;
     case NumCurves:
       return (IS_TARANIS(board) ? 32 : (IS_ARM(board) ? 16 : 8));
     case HasMixerNames:
@@ -737,8 +735,10 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return IS_TARANIS(board) ? 32 : 0;
     case TrainerInputs:
       return IS_ARM(board) ? 16 : 8;
+    case RtcTime:
+      return IS_ARM(board) || IS_2560(board) ? 1 : 0;
     case LuaScripts:
-      return IS_TARANIS(board) ? 7 : 0;
+      return IS_TARANIS(board) && id.contains("lua") ? 7 : 0;
     case LuaInputsPerScript:
       return IS_TARANIS(board) ? 10 : 0;
     case LuaOutputsPerScript:
@@ -763,6 +763,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
         return 0;
     case MavlinkTelemetry:
       return id.contains("mavlink") ? 1 : 0;
+    case SportTelemetry:
+      return IS_ARM(board) ? 1 : 0;
     case HasInputDiff:
     case HasMixerExpo:
       return (IS_TARANIS(board) ? true : false);
@@ -1078,13 +1080,25 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
   firmware->addOptions(fai_options);
 }
 
+void addOpenTxLcdOptions(OpenTxFirmware * firmware)
+{
+  Option lcd_options[] = {
+    { "ST7565P", QObject::tr("ST7565P LCD or compatible") },
+    { "ST7565R", QObject::tr("ST7565R LCD or compatible") },
+    { "ERC12864FSF", QObject::tr("ERC12864FSF LCD") },
+    { "ST7920", QObject::tr("ST7920 LCD") },
+    { NULL }
+  };
+  firmware->addOptions(lcd_options);
+}
+
 void registerOpenTxFirmwares()
 {
   OpenTxFirmware * openTx;
 
   Option ext_options[] = { { "frsky", QObject::tr("Support for frsky telemetry mod"), FRSKY_VARIANT }, { "telemetrez", QObject::tr("Support for telemetry easy board"), FRSKY_VARIANT }, { "jeti", QObject::tr("Support for jeti telemetry mod"), 0 }, { "ardupilot", QObject::tr("Support for receiving ardupilot data"), 0 }, { "nmea", QObject::tr("Support for receiving NMEA data"), 0 }, { "mavlink", QObject::tr("Support for MAVLINK devices"), MAVLINK_VARIANT }, { NULL } };
-  Option nav_options[] = { { "rotenc", QObject::tr("Rotary Encoder use in menus navigation") }, { "potscroll", QObject::tr("Pots use in menus navigation") }, { NULL } };
   Option extr_options[] = { { "frsky", QObject::tr("Support for frsky telemetry mod"), FRSKY_VARIANT }, { "jeti", QObject::tr("Support for jeti telemetry mod"), 0 }, { "ardupilot", QObject::tr("Support for receiving ardupilot data"), 0 }, { "nmea", QObject::tr("Support for receiving NMEA data"), 0 }, { "mavlink", QObject::tr("Support for MAVLINK devices"), MAVLINK_VARIANT }, { NULL } };
+  Option nav_options[] = { { "rotenc", QObject::tr("Rotary Encoder use in menus navigation") }, { "potscroll", QObject::tr("Pots use in menus navigation") }, { NULL } };
   Option dsm2_options[] = { { "DSM2", QObject::tr("Support for DSM2 modules"), 0 }, { "DSM2PPM", QObject::tr("Support for DSM2 modules using ppm instead of true serial"), 0 }, { NULL } };
 
   /* 9x board */
@@ -1241,16 +1255,16 @@ void registerOpenTxFirmwares()
 
   /* MEGA2560 board */
   openTx = new OpenTxFirmware("opentx-mega2560", QObject::tr("OpenTX for MEGA2560 board"), BOARD_MEGA2560);
-  openTx->addOption("ST7565R", QObject::tr("ST7565R LCD or compatible"));
-  openTx->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
+  addOpenTxLcdOptions(openTx);
+  openTx->addOptions(ext_options);
+  openTx->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
+  openTx->addOptions(dsm2_options);
   openTx->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   openTx->addOption("nofp", QObject::tr("No flight modes"));
   openTx->addOption("nocurves", QObject::tr("Disable curves menus"));
   openTx->addOption("sdcard", QObject::tr("Support for SD memory card"));
   openTx->addOption("voice", QObject::tr("Used if you have voice module"));
-  openTx->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
-  openTx->addOptions(dsm2_options);
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   openTx->addOption("symlimits", QObject::tr("Symetrical Limits"));

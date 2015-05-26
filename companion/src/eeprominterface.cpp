@@ -423,7 +423,7 @@ QString RotaryEncoderString(int index)
   return CHECK_IN_ARRAY(rotary, index);
 }
 
-QString RawSource::toString(const ModelData * model)
+QString RawSource::toString(const ModelData * model) const
 {
   static const QString trims[] = {
     QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA")
@@ -1201,11 +1201,31 @@ RawSourceRange FrSkyChannelData::getRange() const
   return result;
 }
 
+void FrSkyScreenData::clear()
+{
+  memset(this, 0, sizeof(FrSkyScreenData));
+  if (!IS_ARM(GetCurrentFirmware()->getBoard())) {
+    type = TELEMETRY_SCREEN_NUMBERS;
+  }
+}
+
 void FrSkyData::clear()
 {
-  memset(this, 0, sizeof(FrSkyData));
+  usrProto = 0;
+  voltsSource = 0;
+  altitudeSource = 0;
+  currentSource = 0;
+  varioMin = 0;
+  varioCenterMin = 0;    // if increment in 0.2m/s = 3.0m/s max
+  varioCenterMax = 0;
+  varioMax = 0;
+  mAhPersistent = 0;
+  storedMah = 0;
+  fasOffset = 0;
   rssiAlarms[0].clear(2, 45);
   rssiAlarms[1].clear(3, 42);
+  for (int i=0; i<4; i++)
+    screens[i].clear();
   varioSource = 2/*VARIO*/;
   blades = 2;
 }

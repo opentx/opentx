@@ -45,8 +45,8 @@
 
 /* Formatting octal codes available in TR_ strings:
  *  \037\x           -sets LCD x-coord (x value in octal)
- *  \n               -newline
- *  \t               -horizontal tab (ARM only)
+ *  \036             -newline
+ *  \035             -horizontal tab (ARM only)
  *  \001 to \034     -extended spacing (value * FW/2)
  *  \0               -ends current string
  */

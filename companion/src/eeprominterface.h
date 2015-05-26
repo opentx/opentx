@@ -316,7 +316,7 @@ class RawSource {
     {
     }
 
-    RawSource(int value):
+    explicit RawSource(int value):
       type(RawSourceType(abs(value)/65536)),
       index(value >= 0 ? abs(value)%65536 : -(abs(value)%65536))
     {
@@ -333,7 +333,7 @@ class RawSource {
       return index >= 0 ? (type * 65536 + index) : -(type * 65536 - index);
     }
 
-    QString toString(const ModelData * model = NULL);
+    QString toString(const ModelData * model = NULL) const;
 
     RawSourceRange getRange(const ModelData * model, const GeneralSettings & settings, unsigned int flags=0) const;
 
@@ -692,13 +692,13 @@ class FrSkyChannelData {
 };
 
 struct FrSkyBarData {
-  unsigned int   source;
-  unsigned int   barMin;           // minimum for bar display
-  unsigned int   barMax;           // ditto for max display (would usually = ratio)
+  RawSource source;
+  unsigned int barMin;           // minimum for bar display
+  unsigned int barMax;           // ditto for max display (would usually = ratio)
 };
 
 struct FrSkyLineData {
-  unsigned int   source[3];
+  RawSource source[3];
 };
 
 struct TelemetryScriptData {
@@ -716,7 +716,7 @@ class FrSkyScreenData {
   public:
     FrSkyScreenData() { clear(); }
 
-    typedef union {
+    typedef struct {
       FrSkyBarData bars[4];
       FrSkyLineData lines[4];
       TelemetryScriptData script;
@@ -725,7 +725,7 @@ class FrSkyScreenData {
     unsigned int type;
     FrSkyScreenBody body;
 
-    void clear() { memset(this, 0, sizeof(FrSkyScreenData)); }
+    void clear();
 };
 
 enum TelemetryVarioSources {
@@ -1252,7 +1252,6 @@ enum Capability {
   Haptic,
   HasBeeper,
   ModelTrainerEnable,
-  Timer2ThrTrig,
   HasExpoNames,
   HasNoExpo,
   HasMixerNames,
@@ -1265,7 +1264,6 @@ enum Capability {
   OptrexDisplay,
   PPMExtCtrl,
   PPMFrameLength,
-  DSM2Indexes,
   Telemetry,
   TelemetryUnits,
   TelemetryBars,
@@ -1301,6 +1299,8 @@ enum Capability {
   HasDisplayText,
   VirtualInputs,
   TrainerInputs,
+  RtcTime,
+  SportTelemetry,
   LuaScripts,
   LuaInputsPerScript,
   LuaOutputsPerScript,

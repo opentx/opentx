@@ -241,7 +241,7 @@
       <string>Backup and restore Models and Settings</string>
      </property>
      <property name="tristate">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </item>

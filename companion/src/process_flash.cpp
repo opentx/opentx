@@ -197,7 +197,8 @@ void FlashProcess::analyseStandardError(const QString &text)
     currStderrLine = currStderrLine.mid(nlPos+1);
   }
 
-  if (text.contains("-E-") && !text.contains("-E- No receive file name")) {
+  if ((text.contains("-E-") && !text.contains("-E- No receive file name")) ||
+       text.contains("No DFU capable USB device found")) {
     hasErrors = true;
   }
 }
@@ -218,38 +219,39 @@ void FlashProcess::onReadyReadStandardError()
 
 void FlashProcess::errorWizard()
 {
-  QString output; // TODO = ui->plainTextEdit->toPlainText();
+  QString output = progress->getText();
+  
   if (output.contains("avrdude: Expected signature for")) { // wrong signature
-    int pos=output.indexOf("avrdude: Device signature = ");
-    bool fwexist=false;
-    QString DeviceStr="Unknown";
-    QString FwStr="";
+    int pos = output.indexOf("avrdude: Device signature = ");
+    bool fwexist = false;
+    QString DeviceStr = tr("unknown");
+    QString FwStr = "";
 
-    if (pos>0) {
-      QString DeviceId=output.mid(pos+28,8);
+    if (pos > 0) {
+      QString DeviceId = output.mid(pos+28, 8);
       if (DeviceId=="0x1e9602") {
-        DeviceStr="Atmega 64";
-        FwStr="\n"+tr("ie: OpenTX for 9X board or OpenTX for 9XR board");
-        fwexist=true;
+        DeviceStr = "Atmega 64";
+        FwStr="\n" + tr("ie: OpenTX for 9X board or OpenTX for 9XR board");
+        fwexist = true;
       }
       else if (DeviceId=="0x1e9702") {
-        DeviceStr="Atmega 128";
-        FwStr="\n"+tr("ie: OpenTX for M128 / 9X board or OpenTX for 9XR board with M128 chip");
-        fwexist=true;
+        DeviceStr = "Atmega 128";
+        FwStr="\n" + tr("ie: OpenTX for M128 / 9X board or OpenTX for 9XR board with M128 chip");
+        fwexist = true;
       }
       else if (DeviceId=="0x1e9703") {
-        DeviceStr="Atmega 1280";
+        DeviceStr = "Atmega 1280";
       }
       else if (DeviceId=="0x1e9704") {
-        DeviceStr="Atmega 1281";
+        DeviceStr = "Atmega 1281";
       }
       else if (DeviceId=="0x1e9801") {
-        DeviceStr="Atmega 2560";
-        FwStr="\n"+tr("ie: OpenTX for Gruvin9X  board");
+        DeviceStr = "Atmega 2560";
+        FwStr="\n" + tr("ie: OpenTX for Gruvin9X  board");
         fwexist = true;
       }
       else if (DeviceId=="0x1e9802") {
-        DeviceStr="Atmega 2561";
+        DeviceStr = "Atmega 2561";
       }
     }
     if (fwexist==false) {
@@ -259,6 +261,13 @@ void FlashProcess::errorWizard()
       Firmware *firmware = GetCurrentFirmware();
       QMessageBox::warning(NULL, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease select an appropriate firmware type to program it.").arg(DeviceStr)+FwStr+tr("\nYou are currently using:\n %1").arg(firmware->getName()));
     }
+  }
+  else if (output.contains("No DFU capable USB device found")){
+#if defined WIN32 || !defined __GNUC__
+    QMessageBox::warning(NULL, "Companion - Tip of the day", tr("Your radio does not seem connected to USB or the driver is not installed!!!\n\nPlease use ZADIG to properly install the driver."));
+#else
+    QMessageBox::warning(NULL, "Companion - Tip of the day", tr("Your radio does not seem connected to USB or the driver is not initialized!!!."));
+#endif
   }
 }
 
@@ -270,7 +279,7 @@ void FlashProcess::onFinished(int code=0)
   }
   if (code) {
     progress->setInfo(tr("Flashing done (exit code = %1)").arg(code));
-    if (cmd.toLower().contains("avrdude")) {
+    if (cmd.toLower().contains("avrdude") || cmd.toLower().contains("dfu")) {
       errorWizard();
     }
   }
@@ -288,6 +297,6 @@ void FlashProcess::onFinished(int code=0)
 void FlashProcess::addReadFuses()
 {
   progress->addSeparator();
-  progress->addText(tr("FUSES: Low=%1 High=%2 Ext=%3").arg(lfuse,2,16,QChar('0')).arg(hfuse,2,16,QChar('0')).arg(efuse,2,16,QChar('0')));
+  progress->addText(tr("FUSES: Low=%1 High=%2 Ext=%3").arg(lfuse, 2, 16, QChar('0')).arg(hfuse, 2, 16, QChar('0')).arg(efuse, 2, 16, QChar('0')));
   progress->addSeparator();
 }

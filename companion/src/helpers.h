@@ -101,14 +101,15 @@ void populateGvarUseCB(QComboBox *b, unsigned int phase);
 QString getProtocolStr(const int proto);
 QString getPhasesStr(unsigned int phases, ModelData * model);
 
-#define POPULATE_SOURCES        (1<<0)
-#define POPULATE_TRIMS          (1<<1)
-#define POPULATE_SWITCHES       (1<<2)
-#define POPULATE_GVARS          (1<<3)
-#define POPULATE_TELEMETRY      (1<<4)
-#define POPULATE_TELEMETRYEXT   (1<<5)
-#define POPULATE_VIRTUAL_INPUTS (1<<6)
-#define POPULATE_SCRIPT_OUTPUTS (1<<7)
+#define POPULATE_NONE           (1<<0)
+#define POPULATE_SOURCES        (1<<1)
+#define POPULATE_TRIMS          (1<<2)
+#define POPULATE_SWITCHES       (1<<3)
+#define POPULATE_GVARS          (1<<4)
+#define POPULATE_TELEMETRY      (1<<5)
+#define POPULATE_TELEMETRYEXT   (1<<6)
+#define POPULATE_VIRTUAL_INPUTS (1<<7)
+#define POPULATE_SCRIPT_OUTPUTS (1<<8)
 
 #define GVARS_VARIANT 0x0001
 #define FRSKY_VARIANT 0x0002

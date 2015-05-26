@@ -78,6 +78,11 @@ void ProgressWidget::addText(const QString &text)
   }
 }
 
+QString ProgressWidget::getText()
+{
+  return ui->textEdit->toPlainText();
+}
+
 void ProgressWidget::setProgressColor(const QColor &color)
 {
   ui->progressBar->setStyleSheet(QString("QProgressBar  {text-align: center;} QProgressBar::chunk { background-color: %1; text-align:center;}:").arg(color.name()));

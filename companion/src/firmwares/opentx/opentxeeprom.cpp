@@ -277,8 +277,9 @@ class SourcesConversionTable: public ConversionTable {
           addConversion(RawSource(SOURCE_TYPE_SPECIAL, 2), val++); // Timer1
           addConversion(RawSource(SOURCE_TYPE_SPECIAL, 3), val++); // Timer2
           addConversion(RawSource(SOURCE_TYPE_SPECIAL, 4), val++); // Timer3
-          for (int i=0; i<C9X_MAX_SENSORS*3; ++i)
+          for (int i=0; i<C9X_MAX_SENSORS*3; ++i) {
             addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
+          }
         }
         else  {
           if (afterrelease21March2013) {
@@ -407,6 +408,10 @@ class SwitchField: public ConversionField< SignedField<N> > {
     {
     }
 
+    virtual ~SwitchField()
+    {
+    }
+
     virtual void beforeExport()
     {
       _switch = sw.toValue();
@@ -517,20 +522,38 @@ class TelemetrySourcesConversionTable: public ConversionTable {
 template <int N>
 class TelemetrySourceField: public ConversionField< UnsignedField<N> > {
   public:
-    TelemetrySourceField(unsigned int & source, BoardEnum board, unsigned int version):
-      ConversionField< UnsignedField<N> >(source, &conversionTable, "Telemetry source"),
+    TelemetrySourceField(RawSource & source, BoardEnum board, unsigned int version):
+      ConversionField< UnsignedField<N> >(_source, &conversionTable, "Telemetry source"),
       conversionTable(board, version),
       source(source),
       board(board),
-      version(version)
+      version(version),
+      _source(0)
     {
+    }
+
+    virtual ~TelemetrySourceField()
+    {
+    }
+
+    virtual void beforeExport()
+    {
+      _source = (source.type == SOURCE_TYPE_TELEMETRY ? source.index+1 : 0);
+      ConversionField< UnsignedField<N> >::beforeExport();
+    }
+
+    virtual void afterImport()
+    {
+      ConversionField< UnsignedField<N> >::afterImport();
+      source = (_source == 0 ? RawSource(0) : RawSource(SOURCE_TYPE_TELEMETRY, _source-1));
     }
 
   protected:
     TelemetrySourcesConversionTable conversionTable;
-    unsigned int & source;
+    RawSource & source;
     BoardEnum board;
     unsigned int version;
+    unsigned int _source;
 };
 
 template <int N>
@@ -538,14 +561,19 @@ class SourceField: public ConversionField< UnsignedField<N> > {
   public:
     SourceField(RawSource & source, BoardEnum board, unsigned int version, unsigned int variant, unsigned long flags=0):
       ConversionField< UnsignedField<N> >(_source, SourcesConversionTable::getInstance(board, version, variant, flags), 
-            "Source", "Source "+ source.toString()+" cannot be exported on this board!"),
+            "Source", QObject::tr("Source %1 cannot be exported on this board!").arg(source.toString())),
       source(source),
       _source(0)
     {
     }
 
+    virtual ~SourceField()
+    {
+    }
+
     virtual void beforeExport()
     {
+      if (source.type == SOURCE_TYPE_TELEMETRY) qDebug() << source.type << source.index;
       _source = source.toValue();
       ConversionField< UnsignedField<N> >::beforeExport();
     }
@@ -2203,6 +2231,7 @@ class AvrCustomFunctionField: public TransformedField {
       functionsConversionTable(board, version),
       sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, version >= 216 ? 0 : FLAG_NONONE)),
       _param(0),
+      _mode(0),
       _union_param(0),
       _active(0)
     {
@@ -2380,7 +2409,7 @@ class AvrCustomFunctionField: public TransformedField {
 
 class FrskyScreenField: public DataField {
   public:
-    FrskyScreenField(FrSkyScreenData & screen, BoardEnum board, unsigned int version):
+    FrskyScreenField(FrSkyScreenData & screen, BoardEnum board, unsigned int version, unsigned int variant):
       DataField("Frsky Screen"),
       screen(screen),
       board(board),
@@ -2389,9 +2418,9 @@ class FrskyScreenField: public DataField {
       for (int i=0; i<4; i++) {
         if (IS_ARM(board) && version >= 217) {
           if (IS_TARANIS(board))
-            bars.Append(new TelemetrySourceField<16>(screen.body.bars[i].source, board, version));
+            bars.Append(new SourceField<16>(screen.body.bars[i].source, board, version, variant));
           else
-            bars.Append(new TelemetrySourceField<8>(screen.body.bars[i].source, board, version));
+            bars.Append(new SourceField<8>(screen.body.bars[i].source, board, version, variant));
           bars.Append(new UnsignedField<16>(screen.body.bars[i].barMin));
           bars.Append(new UnsignedField<16>(screen.body.bars[i].barMax));
         }
@@ -2406,7 +2435,9 @@ class FrskyScreenField: public DataField {
       for (int i=0; i<4; i++) {
         for (int j=0; j<columns; j++) {
           if (IS_TARANIS(board) && version >= 217)
-            numbers.Append(new TelemetrySourceField<16>(screen.body.lines[i].source[j], board, version));
+            numbers.Append(new SourceField<16>(screen.body.lines[i].source[j], board, version, variant));
+          else if (IS_ARM(board) && version >= 217)
+            numbers.Append(new SourceField<8>(screen.body.lines[i].source[j], board, version, variant));
           else
             numbers.Append(new TelemetrySourceField<8>(screen.body.lines[i].source[j], board, version));
         }
@@ -2419,12 +2450,12 @@ class FrskyScreenField: public DataField {
           numbers.Append(new SpareBitsField<4*8>());
       }
 
-      if (version >= 217) {
-        if (IS_TARANIS(board))
-          none.Append(new SpareBitsField<24*8>());
-        else
-          none.Append(new SpareBitsField<20*8>());
-      }
+      if (IS_TARANIS(board))
+        none.Append(new SpareBitsField<24*8>());
+      else if (IS_ARM(board))
+        none.Append(new SpareBitsField<20*8>());
+      else
+        none.Append(new SpareBitsField<12*8>());
 
       if (IS_TARANIS(board) && version >= 217) {
         script.Append(new CharField<8>(screen.body.script.filename));
@@ -2532,6 +2563,20 @@ class TelemetryVoltsSourceConversionTable: public ConversionTable
     }
 };
 
+class ScreenTypesConversionTable: public ConversionTable
+{
+  public:
+    ScreenTypesConversionTable(BoardEnum board, unsigned int version)
+    {
+      int val = 0;
+      if (IS_ARM(board)) {
+        addConversion(TELEMETRY_SCREEN_NONE, val++);
+      }
+      addConversion(TELEMETRY_SCREEN_NUMBERS, val++);
+      addConversion(TELEMETRY_SCREEN_BARS, val++);
+    }
+};
+
 class TelemetryCurrentSourceConversionTable: public ConversionTable
 {
   public:
@@ -2551,9 +2596,10 @@ class TelemetryCurrentSourceConversionTable: public ConversionTable
 
 class FrskyField: public StructField {
   public:
-    FrskyField(FrSkyData & frsky, BoardEnum board, unsigned int version):
+    FrskyField(FrSkyData & frsky, BoardEnum board, unsigned int version, unsigned int variant):
       StructField("FrSky"),
       telemetryVarioSourceConversionTable(board, version),
+      screenTypesConversionTable(board, version),
       telemetryVoltsSourceConversionTable(board, version),
       telemetryCurrentSourceConversionTable(board, version)
     {
@@ -2596,7 +2642,7 @@ class FrskyField: public StructField {
             Append(new UnsignedField<2>(frsky.screens[i].type));
           }
           for (int i=0; i<4; i++) {
-            Append(new FrskyScreenField(frsky.screens[i], board, version));
+            Append(new FrskyScreenField(frsky.screens[i], board, version, variant));
           }
         }
         else {
@@ -2605,7 +2651,7 @@ class FrskyField: public StructField {
           Append(new UnsignedField<1>(frsky.screens[2].type));
           Append(new SpareBitsField<5>());
           for (int i=0; i<3; i++) {
-            Append(new FrskyScreenField(frsky.screens[i], board, version));
+            Append(new FrskyScreenField(frsky.screens[i], board, version, variant));
           }
         }
 
@@ -2639,8 +2685,9 @@ class FrskyField: public StructField {
         }
         Append(new UnsignedField<2>(frsky.usrProto, "USR Proto"));
         Append(new ConversionField< UnsignedField<2> >((unsigned int &)frsky.blades, -2));
-        Append(new UnsignedField<1>(frsky.screens[0].type));
-        Append(new UnsignedField<1>(frsky.screens[1].type));
+        for (int i=0; i<2; i++) {
+          Append(new ConversionField< UnsignedField<1> >(frsky.screens[i].type, &screenTypesConversionTable, "Screen Type"));
+        }
         Append(new ConversionField< UnsignedField<2> >(frsky.voltsSource, &telemetryVoltsSourceConversionTable, "Volts Source"));
         Append(new SignedField<4>(frsky.varioMin, "Vario Min"));
         Append(new SignedField<4>(frsky.varioMax));
@@ -2649,7 +2696,7 @@ class FrskyField: public StructField {
           Append(new ConversionField< SignedField<6> >(frsky.rssiAlarms[i].value, -45+i*3, 0, 0, 100, "RSSI value"));
         }
         for (int i=0; i<2; i++) {
-          Append(new FrskyScreenField(frsky.screens[i], board, version));
+          Append(new FrskyScreenField(frsky.screens[i], board, version, variant));
         }
         Append(new UnsignedField<3>(frsky.varioSource));
         Append(new SignedField<5>(frsky.varioCenterMin));
@@ -2664,6 +2711,7 @@ class FrskyField: public StructField {
   protected:
     RSSIConversionTable rssiConversionTable[2];
     TelemetryVarioSourceConversionTable telemetryVarioSourceConversionTable;
+    ScreenTypesConversionTable screenTypesConversionTable;
     TelemetryVoltsSourceConversionTable telemetryVoltsSourceConversionTable;
     TelemetryCurrentSourceConversionTable telemetryCurrentSourceConversionTable;
 };
@@ -2940,7 +2988,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
 
   if ((board != BOARD_STOCK && (board != BOARD_M128 || version < 215)) || (variant & FRSKY_VARIANT)) {
-    internalField.Append(new FrskyField(modelData.frsky, board, version));
+    internalField.Append(new FrskyField(modelData.frsky, board, version, variant));
   }
   else if ((board == BOARD_STOCK || board == BOARD_M128) && (variant & MAVLINK_VARIANT)) {
     internalField.Append(new MavlinkField(modelData.mavlink, board, version));
@@ -2955,7 +3003,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   if (IS_TARANIS(board)) {
     modulesCount = 3;
     if (version >= 217) {
-      internalField.Append(new ConversionField< SignedField<3> >(modelData.moduleData[1].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this radio protocol")));
+      internalField.Append(new SpareBitsField<3>());
       internalField.Append(new UnsignedField<3>(modelData.trainerMode));
       internalField.Append(new UnsignedField<2>(modelData.potsWarningMode));
     }
@@ -2967,8 +3015,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   else if (IS_ARM(board)) {
     if (version >= 217) {
       modulesCount = 3;
-      internalField.Append(new ConversionField< SignedField<3> >(modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this radio protocol")));
-      internalField.Append(new SpareBitsField<3>());
+      internalField.Append(new SpareBitsField<6>());
       internalField.Append(new UnsignedField<2>(modelData.potsWarningMode));
     }
     else if (version >= 216) {
@@ -2979,7 +3026,13 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
 
   if (IS_ARM(board) && version >= 215) {
     for (int module=0; module<modulesCount; module++) {
-      internalField.Append(new SignedField<8>(subprotocols[module]));
+      if (version >= 217) {
+        internalField.Append(new ConversionField< SignedField<4> >(modelData.moduleData[module].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this radio protocol")));
+        internalField.Append(new SignedField<4>(subprotocols[module]));
+      }
+      else {
+        internalField.Append(new SignedField<8>(subprotocols[module]));
+      }
       internalField.Append(new UnsignedField<8>(modelData.moduleData[module].channelsStart));
       internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[module].channelsCount, -8));
       if (version >= 217)
@@ -2989,18 +3042,17 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       for (int i=0; i<32; i++) {
         internalField.Append(new SignedField<16>(modelData.moduleData[module].failsafeChannels[i]));
       }
-      internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[module].ppmDelay, exportPpmDelay, importPpmDelay));
-      internalField.Append(new SignedField<8>(modelData.moduleData[module].ppmFrameLength));
-      if (IS_9XRPRO(board)) {
+      if (version >= 217) {
+        internalField.Append(new ConversionField< SignedField<6> >(modelData.moduleData[module].ppmDelay, exportPpmDelay, importPpmDelay));
         internalField.Append(new BoolField<1>(modelData.moduleData[module].ppmPulsePol));
         internalField.Append(new BoolField<1>(modelData.moduleData[module].ppmOutputType));
-        internalField.Append(new SpareBitsField<6>());
+        internalField.Append(new SignedField<8>(modelData.moduleData[module].ppmFrameLength));
       }
       else {
-        internalField.Append(new BoolField<1>(modelData.moduleData[module].ppmPulsePol));
-        internalField.Append(new SpareBitsField<7>());
+        internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[module].ppmDelay, exportPpmDelay, importPpmDelay));
+        internalField.Append(new SignedField<8>(modelData.moduleData[module].ppmFrameLength));
+        internalField.Append(new BoolField<8>(modelData.moduleData[module].ppmPulsePol));
       }
-
     }
   }
 

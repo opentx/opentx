@@ -417,7 +417,7 @@ void modelDefault(uint8_t id)
 #endif
 
 #if defined(PCBSKY9X)
-  g_model.externalModule = MODULE_TYPE_PPM;
+  g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_PPM;
 #endif
 
 #if defined(CPUARM)

@@ -19,7 +19,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
 
     this->setWindowTitle(tr("DEST -> CH%1").arg(md->destCh));
 
-    populateSourceCB(ui->sourceCB, md->srcRaw, generalSettings, &model, POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
+    populateSourceCB(ui->sourceCB, md->srcRaw, generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
     ui->sourceCB->removeItem(0);
 
     int limit = firmware->getCapability(OffsetWeight);
