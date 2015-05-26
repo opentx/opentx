@@ -191,7 +191,7 @@ void menuModelSetup(uint8_t event)
 {
   horzpos_t l_posHorz = m_posHorz;
   #define IF_INTERNAL_MODULE_ON(x)          (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF ? HIDDEN_ROW : (uint8_t)(x))
-  #define IF_EXTERNAL_MODULE_ON(x)          (g_model.externalModule == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
+  #define IF_EXTERNAL_MODULE_ON(x)          (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
   #define IF_TRAINER_ON(x)                  (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)(x) : HIDDEN_ROW)
   #define IF_EXTERNAL_MODULE_XJT(x)         (IS_MODULE_XJT(EXTERNAL_MODULE) ? (uint8_t)x : HIDDEN_ROW)
   #define IS_D8_RX(x)                       (g_model.moduleData[x].rfProtocol == RF_PROTO_D8)
@@ -596,7 +596,7 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODEL_EXTERNAL_MODULE_MODE:
         lcd_putsLeft(y, STR_MODE);
-        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.externalModule, m_posHorz==0 ? attr : 0);
+        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].type, m_posHorz==0 ? attr : 0);
         if (IS_MODULE_XJT(EXTERNAL_MODULE))
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
         else if (IS_MODULE_DSM2(EXTERNAL_MODULE))
@@ -604,11 +604,11 @@ void menuModelSetup(uint8_t event)
         if (attr && s_editMode>0) {
           switch (m_posHorz) {
             case 0:
-              g_model.externalModule = checkIncDec(event, g_model.externalModule, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-1, EE_MODEL, isModuleAvailable);
+              g_model.moduleData[EXTERNAL_MODULE].type = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-1, EE_MODEL, isModuleAvailable);
               if (checkIncDec_Ret) {
                 g_model.moduleData[EXTERNAL_MODULE].rfProtocol = 0;
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
-                if (g_model.externalModule == MODULE_TYPE_PPM)
+                if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM)
                   g_model.moduleData[EXTERNAL_MODULE].channelsCount = 0;
                 else
                   g_model.moduleData[EXTERNAL_MODULE].channelsCount = MAX_EXTERNAL_MODULE_CHANNELS();
@@ -650,7 +650,7 @@ void menuModelSetup(uint8_t event)
                 break;
               case 1:
                 CHECK_INCDEC_MODELVAR(event, moduleData.channelsCount, -4, min<int8_t>(MAX_CHANNELS(moduleIdx), 32-8-moduleData.channelsStart));
-                if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.externalModule == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_CHANNELS)) {
+                if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_CHANNELS)) {
                   SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
                 }
                 break;

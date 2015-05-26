@@ -128,7 +128,7 @@ enum menuModelTelemetryItems {
   #define SCREEN_TYPE_ROWS  0
 #endif
 #define VARIO_RANGE_ROWS  3
-#define TELEMETRY_TYPE_ROWS  (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.externalModule == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW,
+#define TELEMETRY_TYPE_ROWS  (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW,
 
 #if defined(LUA)
   #define TELEMETRY_SCREEN_LINE(x) ((TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_NONE || TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_SCRIPT) ? HIDDEN_ROW : (uint8_t)2)

@@ -409,32 +409,18 @@ enum BeeperMode {
 #define FAILSAFE_CHANNEL_HOLD    2000
 #define FAILSAFE_CHANNEL_NOPULSE 2001
 
-#if defined(PCBSKY9X) && defined(REVX)
 PACK(typedef struct {
-  int8_t  rfProtocol;
+  uint8_t type:4;
+  int8_t  rfProtocol:4;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
   uint8_t failsafeMode;
   int16_t failsafeChannels[NUM_CHNOUT];
-  int8_t  ppmDelay;
-  int8_t  ppmFrameLength;
+  int8_t  ppmDelay:6;
   uint8_t ppmPulsePol:1;
-  uint8_t ppmOutputType:1;     // false = open drain, true = push pull 
-  uint8_t spare:6;
-}) ModuleData;
-#else
-PACK(typedef struct {
-  int8_t  rfProtocol;
-  uint8_t channelsStart;
-  int8_t  channelsCount; // 0=8 channels
-  uint8_t failsafeMode;
-  int16_t failsafeChannels[NUM_CHNOUT];
-  int8_t  ppmDelay;
+  uint8_t ppmOutputType:1;     // false = open drain, true = push pull
   int8_t  ppmFrameLength;
-  uint8_t ppmPulsePol:1;
-  uint8_t spare:7;
 }) ModuleData;
-#endif
 
 #define SET_DEFAULT_PPM_FRAME_LENGTH(idx) g_model.moduleData[idx].ppmFrameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
 
@@ -467,7 +453,7 @@ PACK(typedef struct {
   };
   #define IS_TRAINER_EXTERNAL_MODULE() (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
-  #define MODELDATA_EXTRA   uint8_t externalModule:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
+  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
     EXTERNAL_MODULE,
@@ -475,7 +461,7 @@ PACK(typedef struct {
     TRAINER_MODULE
   };
   #define MODELDATA_BITMAP
-  #define MODELDATA_EXTRA   uint8_t externalModule:3; uint8_t spare:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
+  #define MODELDATA_EXTRA   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
 #else
   #define MODELDATA_BITMAP
   #define MODELDATA_EXTRA   
@@ -2044,7 +2030,7 @@ enum ModuleTypes {
   MODULE_TYPE_COUNT
 };
 
-#define IS_PULSES_EXTERNAL_MODULE() (g_model.externalModule != MODULE_TYPE_NONE)
+#define IS_PULSES_EXTERNAL_MODULE() (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
 
 enum FailsafeModes {
   FAILSAFE_NOT_SET,
