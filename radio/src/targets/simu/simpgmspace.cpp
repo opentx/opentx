@@ -396,7 +396,9 @@ void StopMainThread()
 }
 
 #if defined(CPUARM)
-int Volume = volumeScale[VOLUME_LEVEL_DEF];
+int audio_volumeGain;
+int Volume;
+
 bool dacQueue(AudioBuffer *buffer)
 {
   return false;
@@ -404,7 +406,8 @@ bool dacQueue(AudioBuffer *buffer)
 
 void setVolume(uint8_t volume)
 {
-  Volume = volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)];
+  Volume = min<int>((volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)] * audio_volumeGain) / 10, 127);
+  TRACE("setVolume(): in: %u, out: %u", volume, Volume);
 }
 #endif
 
@@ -511,8 +514,10 @@ void *audio_thread(void *)
 
 pthread_t audio_thread_pid;
 
-void StartAudioThread()
+void StartAudioThread(int volumeGain)
 { 
+  audio_volumeGain = volumeGain;
+  setVolume(VOLUME_LEVEL_DEF);
   pthread_attr_t attr;
   pthread_attr_init(&attr);
   struct sched_param sp;
