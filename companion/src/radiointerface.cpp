@@ -40,6 +40,8 @@ QStringList getAvrdudeArgs(const QString &cmd, const QString &filename)
   args << "-c" << programmer << "-p";
   if (GetEepromInterface()->getBoard() == BOARD_GRUVIN9X)
     args << "m2560";
+  else if (GetEepromInterface()->getBoard() == BOARD_MEGA2560)
+    args << "m2560";
   else if (GetEepromInterface()->getBoard() == BOARD_M128)
     args << "m128";
   else
