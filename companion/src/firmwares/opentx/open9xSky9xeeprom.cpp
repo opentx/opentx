@@ -683,21 +683,8 @@ t_Open9xArmFrSkyData_v210::operator FrSkyData ()
   c9x.blades = blades+2;
   c9x.currentSource=currentSource;
   c9x.screens[0].type = 1;
-  for (int i=0; i<4; i++) {
-    c9x.screens[0].body.bars[i].source = bars[i].source;
-    c9x.screens[0].body.bars[i].barMin = bars[i].barMin;
-    c9x.screens[0].body.bars[i].barMax = bars[i].barMax;
-  }
   c9x.rssiAlarms[0] = rssiAlarms[0].get(0);
   c9x.rssiAlarms[1] = rssiAlarms[1].get(1);
-
-  for (int line=0; line<4; line++) {
-    for (int col=0; col<2; col++) {
-      int i=line*2+col;
-      c9x.screens[1].body.lines[line].source[col] = lines[i];
-    }
-  }
-
   return c9x;
 }
 
@@ -711,21 +698,8 @@ t_Open9xArmFrSkyData_v211::operator FrSkyData ()
   c9x.blades = blades+2;
   c9x.currentSource=currentSource;
   c9x.screens[0].type = 1;
-  for (int i=0; i<4; i++) {
-    c9x.screens[0].body.bars[i].source = bars[i].source;
-    c9x.screens[0].body.bars[i].barMin = bars[i].barMin;
-    c9x.screens[0].body.bars[i].barMax = bars[i].barMax;
-  }
   c9x.rssiAlarms[0] = rssiAlarms[0].get(0);
   c9x.rssiAlarms[1] = rssiAlarms[1].get(1);
-
-  for (int line=0; line<4; line++) {
-    for (int col=0; col<2; col++) {
-      int i=line*2+col;
-      c9x.screens[1].body.lines[line].source[col] = lines[i];
-    }
-  }
-
   c9x.varioSource = varioSource;
   c9x.varioCenterMax = varioSpeedUpMin;
   c9x.varioCenterMin = varioSpeedDownMin;
@@ -809,12 +783,6 @@ t_Open9xArmModelData_v208::operator ModelData ()
   c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
   c9x.moduleData[0].modelId = modelId;
-  for (int line=0; line<4; line++) {
-    for (int col=0; col<2; col++) {
-      c9x.frsky.screens[1].body.lines[line].source[col] = (col==0 ? (frskyLines[line] & 0x0f) : ((frskyLines[line] & 0xf0) / 16));
-      c9x.frsky.screens[1].body.lines[line].source[col] += (((frskyLinesXtra >> (4*line+2*col)) & 0x03) * 16);
-    }
-  }
   for (int i=0; i<16; i++) {
     c9x.limitData[i].ppmCenter = servoCenter[i];
   }
@@ -899,12 +867,6 @@ t_Open9xArmModelData_v209::operator ModelData ()
   c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
   c9x.moduleData[0].modelId = modelId;
-  for (int line=0; line<4; line++) {
-    for (int col=0; col<2; col++) {
-      c9x.frsky.screens[1].body.lines[line].source[col] = (col==0 ? (frskyLines[line] & 0x0f) : ((frskyLines[line] & 0xf0) / 16));
-      c9x.frsky.screens[1].body.lines[line].source[col] += (((frskyLinesXtra >> (4*line+2*col)) & 0x03) * 16);
-    }
-  }
   for (int i=0; i<16; i++) {
     c9x.limitData[i].ppmCenter = servoCenter[i];
   }

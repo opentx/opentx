@@ -534,7 +534,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
 
   b->clear();
 
-  if (flags & POPULATE_SOURCES) {
+  if (flags & POPULATE_NONE) {
     item = RawSource(SOURCE_TYPE_NONE);
     b->addItem(item.toString(model), item.toValue());
     if (item == source) b->setCurrentIndex(b->count()-1);
@@ -639,6 +639,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
           for (int j=0; j<3; ++j) {
             item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i+j);
             b->addItem(item.toString(model), item.toValue());
+            // qDebug() << item.toString(model) << source.toString(model);
             if (item == source) b->setCurrentIndex(b->count()-1);
           }
         }

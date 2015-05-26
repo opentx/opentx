@@ -423,7 +423,7 @@ QString RotaryEncoderString(int index)
   return CHECK_IN_ARRAY(rotary, index);
 }
 
-QString RawSource::toString(const ModelData * model)
+QString RawSource::toString(const ModelData * model) const
 {
   static const QString trims[] = {
     QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA")
