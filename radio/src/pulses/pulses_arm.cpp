@@ -54,7 +54,7 @@ void setupPulses(unsigned int port)
 #if defined(PCBTARANIS)
     case INTERNAL_MODULE:
 #if defined(TARANIS_INTERNAL_PPM)
-	switch (g_model.internalModule) {
+	switch (g_model.moduleData[INTERNAL_MODULE].type) {
         case MODULE_TYPE_PPM:
           required_protocol = PROTO_PPM;
           break;
