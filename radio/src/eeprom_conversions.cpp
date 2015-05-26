@@ -556,8 +556,21 @@ PACK(typedef struct {
   uint8_t rxBattAlarms[2];
 #endif
 
+#if defined(PCBTARANIS)
 PACK(typedef struct {
-  ModelHeader header;
+  char name[LEN_MODEL_NAME];
+  uint8_t modelId;
+  char bitmap[LEN_BITMAP_NAME];
+}) ModelHeader_v216;
+#else
+PACK(typedef struct {
+  char      name[LEN_MODEL_NAME];
+  uint8_t   modelId;
+}) ModelHeader_v216;
+#endif
+
+PACK(typedef struct {
+  ModelHeader_v216 header;
   TimerData_v216 timers[2];
   AVR_FIELD(uint8_t   protocol:3)
   ARM_FIELD(uint8_t   telemetryProtocol:3)
@@ -885,7 +898,12 @@ void ConvertModel_216_to_217(ModelData &model)
   zchar2str(name, oldModel.header.name, LEN_MODEL_NAME);
   TRACE("Model %s conversion from v216 to v217", name);
 
-  memcpy(&newModel.header, &oldModel.header, sizeof(newModel.header));
+  newModel.header.modelId[0] = oldModel.header.modelId;
+  memcpy(newModel.header.name, oldModel.header.name, LEN_MODEL_NAME);
+#if defined(PCBTARANIS)
+  memcpy(newModel.header.bitmap, oldModel.header.bitmap, LEN_BITMAP_NAME);
+#endif
+
   for (uint8_t i=0; i<2; i++) {
     TimerData & timer = newModel.timers[i];
     if (oldModel.timers[i].mode >= TMRMODE_COUNT)
