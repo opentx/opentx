@@ -326,7 +326,7 @@ extern uint8_t s_warning_info_flags;
 #define SET_WARNING_INFO(info, len, flags) (s_warning_info = info, s_warning_info_len = len, s_warning_info_flags = flags)
 
 #define NAVIGATION_MENUS
-#define MENU_ADD_ITEM(s) s_menu[s_menu_count++] = s
+#define MENU_ADD_ITEM(s) do { s_menu_offset_type = MENU_OFFSET_INTERNAL; if (s_menu_count < MENU_MAX_LINES) s_menu[s_menu_count++] = s; } while (0)
 #define MENU_MAX_LINES 12
 #define MENU_MAX_DISPLAY_LINES 6
 #define MENU_ADD_SD_ITEM(s) MENU_ADD_ITEM(s)
@@ -335,6 +335,11 @@ extern const char *s_menu[MENU_MAX_LINES];
 extern uint16_t s_menu_count;
 extern uint8_t s_menu_flags;
 extern uint16_t s_menu_offset;
+enum {
+  MENU_OFFSET_INTERNAL,
+  MENU_OFFSET_EXTERNAL
+};
+extern uint8_t s_menu_offset_type;
 const char * displayMenu(uint8_t event);
 extern void (*menuHandler)(const char *result);
 

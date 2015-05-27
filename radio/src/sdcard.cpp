@@ -51,6 +51,9 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
   fno.lfsize = sizeof(lfn);
 #endif
 
+#if defined(PCBTARANIS)
+  s_menu_offset_type = MENU_OFFSET_EXTERNAL;
+#endif
   static uint16_t s_last_menu_offset = 0;
 
 #if defined(CPUARM)

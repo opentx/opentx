@@ -51,6 +51,7 @@ uint8_t     s_menu_item = 0;
 uint16_t    s_menu_count = 0;
 uint8_t     s_menu_flags = 0;
 uint16_t    s_menu_offset = 0;
+uint8_t     s_menu_offset_type = MENU_OFFSET_INTERNAL;
 void        (*menuHandler)(const char *result);
 
 void displayBox(const char *title)
@@ -127,13 +128,13 @@ const char * displayMenu(uint8_t event)
 {
   const char * result = NULL;
 
-  uint8_t display_count = min(s_menu_count, (uint16_t)MENU_MAX_DISPLAY_LINES);
+  uint8_t display_count = min<uint8_t>(s_menu_count, MENU_MAX_DISPLAY_LINES);
   uint8_t y = (display_count >= 5 ? MENU_Y - FH - 1 : MENU_Y);
   drawFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
   lcd_rect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
-    lcd_putsAtt(MENU_X+6, i*(FH+1) + y + 2, s_menu[i+s_menu_offset], s_menu_flags);
+    lcd_putsAtt(MENU_X+6, i*(FH+1) + y + 2, s_menu[i+(s_menu_offset_type == MENU_OFFSET_INTERNAL ? s_menu_offset : 0)], s_menu_flags);
     if (i == s_menu_item) drawFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
   }
 
@@ -152,7 +153,7 @@ const char * displayMenu(uint8_t event)
         result = STR_UPDATE_LIST;
       }
       else {
-        s_menu_item = min(display_count, (uint8_t)MENU_MAX_DISPLAY_LINES)-1;
+        s_menu_item = min<uint8_t>(display_count, MENU_MAX_DISPLAY_LINES) - 1;
         if (s_menu_count > MENU_MAX_DISPLAY_LINES) {
           s_menu_offset = s_menu_count - MENU_MAX_DISPLAY_LINES;
           result = STR_UPDATE_LIST;
@@ -179,7 +180,7 @@ const char * displayMenu(uint8_t event)
       break;
     CASE_EVT_ROTARY_BREAK
     case EVT_KEY_BREAK(KEY_ENTER):
-      result = s_menu[s_menu_item+s_menu_offset];
+      result = s_menu[s_menu_item + (s_menu_offset_type == MENU_OFFSET_INTERNAL ? s_menu_offset : 0)];
       // no break
     case EVT_KEY_BREAK(KEY_EXIT):
       s_menu_count = 0;
