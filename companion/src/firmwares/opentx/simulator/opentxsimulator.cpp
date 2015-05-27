@@ -21,6 +21,7 @@
 #include <map>
 #include <string>
 
+#define COMPANION
 #define SIMU
 #define SIMU_EXCEPTIONS
 #define GUI
