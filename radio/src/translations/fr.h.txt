@@ -524,7 +524,7 @@
 #define TR_VTRAINERMODES       "Maître/Jack\0      ""Elève/Jack\0       ""Maître/SBUS Module""Maître/CPPM Module""Maître/Batterie\0"
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Not set\0 ""Maintien\0""Prédéfini""Pas d'imp""Récepteur"
+#define TR_VFAILSAFE           "Pas déf.\0""Maintien\0""Prédéfini""Pas d'imp""Récepteur"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -806,7 +806,7 @@
 #define TR_RESTORE_MODEL       "Restaurer Modèle"
 #define TR_SDCARD_ERROR        "Erreur carte SD"
 #define TR_NO_SDCARD           "Carte SD indisponible"
-#define TR_SDCARD_FULL         "SD Card Full"
+#define TR_SDCARD_FULL         "Carte SD pleine"
 #define TR_INCOMPATIBLE        "Incompatible"
 #define TR_WARNING             "ALERTE"
 #define TR_EEPROMWARN          "EEPROM"
@@ -815,8 +815,8 @@
 #define TR_ALARMSWARN          "SON"
 #define TR_SWITCHWARN          TR("INTERS","CONTROLES")
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_NO_FAILSAFE         "Failsafe not set"
-#define TR_KEYSTUCK            "Key stuck"
+#define TR_NO_FAILSAFE         "Failsafe pas déf."
+#define TR_KEYSTUCK            "Touche bloquée"
 #define TR_INVERT_THR          "Inverser Gaz?"
 #define TR_SPEAKER_VOLUME      INDENT "Volume"
 #define TR_LCD                 "Afficheur"
