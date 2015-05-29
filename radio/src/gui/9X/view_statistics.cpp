@@ -298,59 +298,57 @@ void menuTraceBuffer(uint8_t event)
 
 #include "debug_timers.h"
 
-/*extern*/ DebugTimer debugTimer1;
-/*extern*/ DebugTimer debugTimer2;
-/*extern*/ DebugTimer debugTimer3;
-/*extern*/ DebugTimer debugTimer4;
+DebugTimer debugTimer_lcd[9];
 
 void displayDuration(int x, int y, debug_timer_t duration) 
 {
-  if (duration > 100000) {
-    static const pm_char str_debug_timer_limit_exceeded[] PROGMEM = "}";
-    lcd_putsAtt(x, y, str_debug_timer_limit_exceeded, 0);
+  if (duration > 65535) {
+    lcd_putcAtt(x, y, '}', 0);
   }
-  else if (duration >= 300) {
-    lcd_outdezAtt(x, y, duration/10, LEFT);  
+#if defined(CPUARM)
+  else if (duration >= 3000) {
+#else
+  else if (duration >= 419000) {
+#endif
+    lcd_outdezAtt(x, y, duration/100, LEFT);  
   }
   else {
-    lcd_outdezAtt(x, y, duration, LEFT|PREC1);  
+    lcd_outdezAtt(x, y, duration, LEFT|PREC2);
   }
+//  lcd_putcAtt(lcdNextPos, y, 'm', 0);
+//  lcd_putcAtt(lcdNextPos, y, 's', 0);
 }
 
-void displayTimer(int y, const char * title, const DebugTimer * Duration, const DebugTimer * Period) 
+void lorem_ipsum(int x, int y)
 {
-  static const pm_char str_duration[] PROGMEM = "Dur";
-  static const pm_char str_interval[] PROGMEM = "Int";
-  static const pm_char str_delimiter[] PROGMEM = "_";
-  lcd_putsAtt(0, y+1, title, BSS);
-  if (Duration) {
-    lcd_putsAtt(lcdLastPos + FW, y+1, str_duration, 0);
-    displayDuration(lcdLastPos, y, Duration->getMin());
-    lcd_putsAtt(lcdLastPos, y+1, str_delimiter, 0);
-    displayDuration(lcdLastPos, y, Duration->getMax());
-  }
-  if (Period) {
-    lcd_putsAtt(lcdLastPos+2, y+1, str_interval, 0);
-    displayDuration(lcdLastPos, y, Period->getMin());
-    lcd_putsAtt(lcdLastPos, y+1, str_delimiter, 0);
-    displayDuration(lcdLastPos, y, Period->getMax());
-  }
+  static const pm_char str_lorem_ipsum[] PROGMEM =
+    "Lorem ipsum dolor sit\036"
+    "amet, consectetur\036"
+    "adipisicing elit. Proin\036"
+    "nibh augue, suscipit a,\036"
+    "scelerisque sed, lacinia\036"
+    "in, mi. Cras vel lorem.";
+
+  lcd_puts(x, y, str_lorem_ipsum);
 }
 
 void menuDebugTimers(uint8_t event)
 {
+  for (uint8_t i = 0; i < DIM(debugTimer_lcd); i++)
+  {
+    debugTimer_lcd[i].start();
+    lorem_ipsum(0, FH+i);
+    debugTimer_lcd[i].stop();
+  }
+
+  lcd_clear();
+
   static const pm_char str_debug_timers[] PROGMEM = "DEBUG TIMERS";
   TITLE(str_debug_timers);
 
   switch(event)
   {
     case EVT_KEY_FIRST(KEY_ENTER):
-      //reset timers
-      // debugTimerAudioPeriod.reset();
-      // debugTimerAudioDuration.reset();
-      // debugTimerMixerPeriod.reset();
-      // debugTimerMixerDuration.reset();
-      AUDIO_KEYPAD_UP();
       break;
 
 #if defined(DEBUG_TRACE_BUFFER)
@@ -368,12 +366,16 @@ void menuDebugTimers(uint8_t event)
       break;
   }
 
-  int y = FH; 
-  displayTimer(y, "1 and 2", &debugTimer1, &debugTimer2); y += FH;
-  displayTimer(y, "2 and 4", &debugTimer3, &debugTimer4); y += FH;
-
-  lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);
-  lcd_status_line();
+  for (uint8_t i = 0; i < DIM(debugTimer_lcd); i++)
+  {
+    uint8_t x = i % 2 ? LCD_W/2 : 0;
+    uint8_t y = FH * (1 + i / 2);
+    displayDuration(x, y, debugTimer_lcd[i].getMin());
+    lcd_putcAtt(lcdLastPos, y, ' ', 0);
+    displayDuration(lcdNextPos, y, debugTimer_lcd[i].getLast());
+    lcd_putcAtt(lcdLastPos, y, ' ', 0);
+    displayDuration(lcdNextPos, y, debugTimer_lcd[i].getMax());
+  }
 }
 
 #endif  //#if defined(DEBUG_TIMERS)

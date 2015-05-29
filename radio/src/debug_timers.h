@@ -15,7 +15,7 @@ private:
   debug_timer_t min;
   debug_timer_t max;
   // debug_timer_t avg;
-  debug_timer_t last;   //unit 0.1ms
+  debug_timer_t last;   //unit 0.01ms
 
   uint16_t _start_hiprec;
   uint32_t _start_loprec;
@@ -48,16 +48,16 @@ public:
 #if defined(CPUARM)
     if (last < 3) {
       // if time difference is less than 30ms, use high resolution timer
-      last = (uint16_t)(getTmr2MHz() - _start_hiprec) / 200;
+      last = (uint16_t)(getTmr2MHz() - _start_hiprec) / 20;
     }
 #else
     if (last < 419) {
       // if time difference is less than 4190ms, use high resolution timer
-      last = (uint32_t)(uint16_t)(getTmr16KHz() - _start_hiprec) * 64 / 100;
+      last = (uint32_t)(uint16_t)(getTmr16KHz() - _start_hiprec) * 64 / 10;
     }
 #endif
     else {
-      last *= 100ul; //adjust unit to 0.1ms
+      last *= 1000ul; //adjust unit to 0.01ms
     }
 
     evalStats();
