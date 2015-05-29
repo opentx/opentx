@@ -396,7 +396,16 @@ void StopMainThread()
 }
 
 #if defined(CPUARM)
-int Volume = volumeScale[VOLUME_LEVEL_DEF];
+
+struct SimulatorAudio {
+  int volumeGain;
+  int currentVolume;
+  uint16_t leftoverData[AUDIO_BUFFER_SIZE];
+  int leftoverLen;
+  bool threadRunning;
+  pthread_t threadPid;
+} simuAudio;
+
 bool dacQueue(AudioBuffer *buffer)
 {
   return false;
@@ -404,33 +413,31 @@ bool dacQueue(AudioBuffer *buffer)
 
 void setVolume(uint8_t volume)
 {
-  Volume = volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)];
+  simuAudio.currentVolume = min<int>((volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)] * simuAudio.volumeGain) / 10, 127);
+  // TRACE("setVolume(): in: %u, out: %u", volume, simuAudio.currentVolume);
 }
 #endif
 
 #if defined(SIMU_AUDIO) && defined(CPUARM)
 
-int leftover_len = 0;
-uint16_t leftover_data[AUDIO_BUFFER_SIZE];
-
 void copyBuffer(uint8_t * dest, uint16_t * buff, unsigned int samples) 
 {
   for(unsigned int i=0; i<samples; i++) {
     int sample = ((int32_t)(uint32_t)(buff[i]) - 0x8000);  // conversion from uint16_t 
-    *((uint16_t*)dest) = (int16_t)((sample * Volume)/127);
+    *((uint16_t*)dest) = (int16_t)((sample * simuAudio.currentVolume)/127);
     dest += 2;
   }
 }
 
-void fill_audio(void *udata, Uint8 *stream, int len)
+void fillAudioBuffer(void *udata, Uint8 *stream, int len)
 {
   SDL_memset(stream, 0, len);
 
-  if (leftover_len) {
-    copyBuffer(stream, leftover_data, leftover_len);
-    len -= leftover_len*2;
-    stream += leftover_len*2;
-    leftover_len = 0;
+  if (simuAudio.leftoverLen) {
+    copyBuffer(stream, simuAudio.leftoverData, simuAudio.leftoverLen);
+    len -= simuAudio.leftoverLen*2;
+    stream += simuAudio.leftoverLen*2;
+    simuAudio.leftoverLen = 0;
     // putchar('l');
   }
 
@@ -447,8 +454,8 @@ void fill_audio(void *udata, Uint8 *stream, int len)
         else {
           //partial
           copyBuffer(stream, nextBuffer->data, len/2);
-          leftover_len = (nextBuffer->size-len/2);
-          memcpy(leftover_data, &nextBuffer->data[len/2], leftover_len*2);
+          simuAudio.leftoverLen = (nextBuffer->size-len/2);
+          memcpy(simuAudio.leftoverData, &nextBuffer->data[len/2], simuAudio.leftoverLen*2);
           len = 0;
           // putchar('p');
           break;
@@ -467,9 +474,7 @@ void fill_audio(void *udata, Uint8 *stream, int len)
   }
 }
 
-bool audio_thread_running = false;
-
-void *audio_thread(void *)
+void * audioThread(void *)
 {
   /*
     Checking here if SDL audio was initialized is wrong, because
@@ -488,7 +493,7 @@ void *audio_thread(void *)
   wanted.format = AUDIO_S16SYS;
   wanted.channels = 1;    /* 1 = mono, 2 = stereo */
   wanted.samples = AUDIO_BUFFER_SIZE*2;  /* Good low-latency value for callback */
-  wanted.callback = fill_audio;
+  wanted.callback = fillAudioBuffer;
   wanted.userdata = NULL;
 
   /*
@@ -501,7 +506,7 @@ void *audio_thread(void *)
   }
   SDL_PauseAudio(0);
 
-  while (audio_thread_running) {
+  while (simuAudio.threadRunning) {
     audioQueue.wakeup();
     sleep(1);
   }
@@ -509,26 +514,28 @@ void *audio_thread(void *)
   return 0;
 }
 
-pthread_t audio_thread_pid;
-
-void StartAudioThread()
+void StartAudioThread(int volumeGain)
 { 
+  simuAudio.leftoverLen = 0;
+  simuAudio.threadRunning = true;
+  simuAudio.volumeGain = volumeGain;
+  setVolume(VOLUME_LEVEL_DEF);
+
   pthread_attr_t attr;
   pthread_attr_init(&attr);
   struct sched_param sp;
   sp.sched_priority = SCHED_RR;
   pthread_attr_setschedparam(&attr, &sp);
-  pthread_create(&audio_thread_pid, &attr, &audio_thread, NULL);
-  audio_thread_running = true;
+  pthread_create(&simuAudio.threadPid, &attr, &audioThread, NULL);
   return;
 }
 
 void StopAudioThread()
 {
-  audio_thread_running = false;
-  pthread_join(audio_thread_pid, NULL);
+  simuAudio.threadRunning = false;
+  pthread_join(simuAudio.threadPid, NULL);
 }
-#endif // #if defined(CPUARM)
+#endif // #if defined(SIMU_AUDIO) && defined(CPUARM)
 
 pthread_t eeprom_thread_pid;
 

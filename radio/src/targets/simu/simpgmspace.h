@@ -354,7 +354,7 @@ void StopMainThread();
 void StartEepromThread(const char *filename="eeprom.bin");
 void StopEepromThread();
 #if defined(SIMU_AUDIO) && defined(CPUARM)
-  void StartAudioThread(void);
+  void StartAudioThread(int volumeGain = 10);
   void StopAudioThread(void);
 #else
   #define StartAudioThread()

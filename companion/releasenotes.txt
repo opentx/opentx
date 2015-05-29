@@ -3,6 +3,7 @@
 <li>Enabled <i>Mixers monitor</i> in Taranis simulator</li>
 <li>Better support for multi-axes in Log Viewer (<a href=https://github.com/opentx/opentx/issues/2267>#2267</a>)</li>
 <li>File path issue in Taranis simulator function <i>findTrueFileName()</i> on Windows (<a href=https://github.com/opentx/opentx/issues/2301>#2301</a>)</li>
+<li>Added simulator volume gain setting (<a href=https://github.com/opentx/opentx/issues/2260>#2260</a>)</li>
 </ul>
 
 

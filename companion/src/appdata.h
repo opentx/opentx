@@ -107,6 +107,7 @@ class Profile: protected CompStoreObj
     QString _fwType;
     QString _name;
     QString _sdPath;
+    int     _volumeGain;
     QString _pBackupDir;
     QString _splashFile;
     bool    _burnFirmware;
@@ -138,6 +139,7 @@ class Profile: protected CompStoreObj
     QString fwType() const;
     QString name() const;
     QString sdPath() const;
+    int     volumeGain() const;
     QString pBackupDir() const;
     QString splashFile() const;
     bool    burnFirmware() const;
@@ -166,6 +168,7 @@ class Profile: protected CompStoreObj
     void name          (const QString);
     void fwName        (const QString);
     void fwType        (const QString);
+    void volumeGain    (const int);
     void sdPath        (const QString);
     void pBackupDir    (const QString);
     void splashFile    (const QString);

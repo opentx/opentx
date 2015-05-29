@@ -224,14 +224,14 @@ void OpentxTaranisSimulator::start(QByteArray & eeprom, bool tests)
 {
   memcpy(Open9xX9D::eeprom, eeprom.data(), std::min<int>(sizeof(Open9xX9D::eeprom), eeprom.size()));
   StartEepromThread(NULL);
-  StartAudioThread();
+  StartAudioThread(g.profile[g.id()].volumeGain());
   StartMainThread(tests);
 }
 
 void OpentxTaranisSimulator::start(const char * filename, bool tests)
 {
   StartEepromThread(filename);
-  StartAudioThread();
+  StartAudioThread(g.profile[g.id()].volumeGain());
   StartMainThread(tests);
 }
 
