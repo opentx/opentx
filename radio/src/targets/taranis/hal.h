@@ -326,6 +326,8 @@
 #define I2C_GPIO_PinSource_SDA          GPIO_PinSource7
 #if defined(REVPLUS)
   #define I2C_SPEED                     400000
+#elif defined(REV4a)
+  #define I2C_SPEED                     100000
 #else
   #define I2C_SPEED                     200000
 #endif
