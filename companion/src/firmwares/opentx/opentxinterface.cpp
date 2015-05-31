@@ -1256,6 +1256,7 @@ void registerOpenTxFirmwares()
   /* MEGA2560 board */
   openTx = new OpenTxFirmware("opentx-mega2560", QObject::tr("OpenTX for MEGA2560 board"), BOARD_MEGA2560);
   addOpenTxLcdOptions(openTx);
+  openTx->addOption("PWR", QObject::tr("Power management by soft-off circuitry"));
   openTx->addOptions(ext_options);
   openTx->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
   openTx->addOptions(dsm2_options);
@@ -1264,7 +1265,9 @@ void registerOpenTxFirmwares()
   openTx->addOption("nofp", QObject::tr("No flight modes"));
   openTx->addOption("nocurves", QObject::tr("Disable curves menus"));
   openTx->addOption("sdcard", QObject::tr("Support for SD memory card"));
-  openTx->addOption("voice", QObject::tr("Used if you have voice module"));
+//openTx->addOption("audio", QObject::tr("Support for radio modified with regular speaker"));
+//openTx->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
+  openTx->addOption("haptic", QObject::tr("Used if you have modified your radio with haptic mode"));
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   openTx->addOption("symlimits", QObject::tr("Symetrical Limits"));

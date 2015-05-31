@@ -692,6 +692,7 @@ ifeq ($(PCB), MEGA2560)
   SDCARD = NO
   BUZZER = YES
   THR_TRACE = YES
+  PWRMANAGE = NO
   INCDIRS += targets/mega2560 targets/stock $(FATFSDIR) $(FATFSDIR)/option
   BOARDSRC = main_avr.cpp targets/mega2560/board_mega2560.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
@@ -701,6 +702,10 @@ ifeq ($(PCB), MEGA2560)
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
   EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+         
+  ifeq ($(PWRMANAGE), YES)
+    CPPDEFS += -DPWRMANAGE
+  endif
 
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/gruvin9x/diskio.cpp
@@ -709,6 +714,14 @@ ifeq ($(PCB), MEGA2560)
     CPPSRC += rtc.cpp sdcard.cpp logs.cpp targets/gruvin9x/rtc_driver.cpp
   endif
 
+  ifeq ($(AUDIO), YES)
+    CPPDEFS += -DAUDIO
+    CPPSRC += audio_avr.cpp
+    BUZZER = NO
+  else
+    BUZZER = YES
+  endif
+  
   ifeq ($(BUZZER), YES)
     CPPDEFS += -DBUZZER
     CPPSRC += buzzer.cpp
@@ -717,6 +730,11 @@ ifeq ($(PCB), MEGA2560)
   ifeq ($(VOICE), YES)
     CPPDEFS += -DVOICE
     CPPSRC += targets/gruvin9x/somo14d.cpp
+  endif
+  
+  ifeq ($(HAPTIC), YES)
+   CPPDEFS += -DHAPTIC
+   CPPSRC += haptic.cpp
   endif
 
   # Enable extra rotary encoders

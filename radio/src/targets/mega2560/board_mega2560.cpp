@@ -65,10 +65,10 @@ inline void boardInit()
   // Set up Phase correct Waveform Gen. mode, at clk/64 = 250,000 counts/second
   // (Higher speed allows for finer control of frequencies in the audio range.)
   // Used for audio tone generation
-  TCCR0B  = (1<<WGM02) | (0b011 << CS00);
-  TCCR0A  = (0b01<<WGM00);
+  TCCR4B  = (1<<WGM42) | (0b011 << CS00);
+  TCCR4A  = (0b01<<WGM40);
   
-  #if defined (VOICE)
+  #if defined (VOICE)     // OLD FROM GRUVIN9X, TO REWRITE
   // SOMO set-up
   OCR4A = 0x1F4; //2ms
   TCCR4B = (1 << WGM42) | (0b011 << CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)

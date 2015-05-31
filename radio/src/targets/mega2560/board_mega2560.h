@@ -170,21 +170,27 @@ void sdPoll10ms(void);
 // Power driver
 uint8_t pwrCheck();
 void pwrOff();
+#if defined(PWRMANAGE)
 #define UNEXPECTED_SHUTDOWN() ((mcusr & (1 << WDRF)) || g_eeGeneral.unexpectedShutdown)
+#else
+#define UNEXPECTED_SHUTDOWN() (mcusr & (1 << WDRF))
+#endif
 
 // USB fake driver
 #define usbPlugged()    false
 
 // Haptic driver
-#define hapticOff() // TODO hapticOn() cleaner ...
+#define hapticOff()                // TODO hapticOn() cleaner ...
+#define HAPTIC_ON()                PORTH &= ~(1 << OUT_H_HAPTIC)
+#define HAPTIC_OFF()               PORTH |=  (1 << OUT_H_HAPTIC)
 
 // Buzzer driver
 #define buzzerOn()                 PORTB |=  (1 << OUT_B_BUZZER)
 #define buzzerOff()                PORTB &= ~(1 << OUT_B_BUZZER)
 
 // Speaker driver
-#define speakerOn()                TCCR0A |=  (1 << COM0A0)
-#define speakerOff()               TCCR0A &= ~(1 << COM0A0)
+#define speakerOn()                TCCR4A |=  (1 << COM4A0)
+#define speakerOff()               TCCR4A &= ~(1 << COM4A0)
 
 // EEPROM driver
 #if !defined(SIMU)
