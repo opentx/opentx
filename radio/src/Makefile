@@ -340,7 +340,6 @@ TRACE_AUDIO = NO
 LCD_DUAL_BUFFER = NO
 
 # Enable internal module PPM mode for Taranis
-
 # Values = NO, YES
 TARANIS_INTERNAL_PPM = NO
 

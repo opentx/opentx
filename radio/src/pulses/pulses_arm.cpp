@@ -53,21 +53,21 @@ void setupPulses(unsigned int port)
   switch (port) {
 #if defined(PCBTARANIS)
     case INTERNAL_MODULE:
-#if defined(TARANIS_INTERNAL_PPM)
-	switch (g_model.moduleData[INTERNAL_MODULE].type) {
+  #if defined(TARANIS_INTERNAL_PPM)
+      switch (g_model.moduleData[INTERNAL_MODULE].type) {
         case MODULE_TYPE_PPM:
           required_protocol = PROTO_PPM;
           break;
         case MODULE_TYPE_XJT:
           required_protocol = PROTO_PXX;
           break;
-	default:
+        default:
           required_protocol = PROTO_NONE;
           break;
-	}
-#else
+      }
+  #else
       required_protocol = g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF ? PROTO_NONE : PROTO_PXX;
-#endif
+  #endif
       break;
 #endif
 
