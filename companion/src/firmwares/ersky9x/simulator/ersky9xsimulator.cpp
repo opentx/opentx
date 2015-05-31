@@ -204,7 +204,7 @@ bool Ersky9xSimulator::lcdChanged(bool & lightEnable)
 #include "simulatorimport.h"
 }
 
-void Ersky9xSimulator::start(RadioData &radioData, bool tests)
+void Ersky9xSimulator::start(RadioData &radioData, const Profile & profile, bool tests)
 {
   ersky9xInterface->save(Ersky9x::eeprom, radioData);
   StartEepromThread(NULL);

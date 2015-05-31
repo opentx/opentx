@@ -160,7 +160,7 @@ class AudioQueue {
 
   friend void audioTask(void* pdata);
 #if defined(SIMU_AUDIO)
-  friend void *audio_thread(void *);
+  friend void *audioThread(void *);
 #endif
 
   public:

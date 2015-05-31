@@ -81,11 +81,9 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface {
 
     OpenTxSimulator();
 
-    virtual void setSdPath(const QString &sdPath);
+    virtual void start(QByteArray & eeprom, const Profile & profile, bool tests=true);
 
-    virtual void start(QByteArray & eeprom, bool tests=true);
-
-    virtual void start(const char * filename, bool tests=true);
+    virtual void start(const char * filename, const Profile & profile, bool tests=true);
 
     virtual void stop();
 

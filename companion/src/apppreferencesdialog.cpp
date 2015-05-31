@@ -48,6 +48,7 @@ void AppPreferencesDialog::writeValues()
   g.useWizard(ui->modelWizard_CB->isChecked());
   g.historySize(ui->historySize->value());
   g.backLight(ui->backLightColor->currentIndex());
+  g.profile[g.id()].volumeGain(round(ui->volumeGain->value() * 10.0));
   g.libDir(ui->libraryPath->text());
   g.gePath(ui->ge_lineedit->text());
   g.embedSplashes(ui->splashincludeCB->currentIndex());
@@ -111,6 +112,7 @@ void AppPreferencesDialog::initSettings()
   ui->showSplash->setChecked(g.showSplash());
   ui->historySize->setValue(g.historySize());
   ui->backLightColor->setCurrentIndex(g.backLight());
+  ui->volumeGain->setValue(g.profile[g.id()].volumeGain() / 10.0);
 
   if (IS_TARANIS(GetCurrentFirmware()->getBoard())) {
     ui->backLightColor->setEnabled(false);

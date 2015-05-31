@@ -447,7 +447,6 @@ void SimulatorDialog::initUi(T * ui)
   windowName = tr("Simulating Radio (%1)").arg(GetCurrentFirmware()->getName());
   setWindowTitle(windowName);
 
-  simulator->setSdPath(g.profile[g.id()].sdPath());
   lcd->setData(simulator->getLcd(), lcdWidth, 64, lcdDepth);
 
   if (flags & SIMULATOR_FLAGS_STICK_MODE_LEFT) {
@@ -695,7 +694,7 @@ void SimulatorDialog::start(QByteArray & eeprom)
   lastPhase = -1;
   numGvars = GetCurrentFirmware()->getCapability(Gvars);
   numFlightModes = GetCurrentFirmware()->getCapability(FlightModes);
-  simulator->start(eeprom, (flags & SIMULATOR_FLAGS_NOTX) ? false : true);
+  simulator->start(eeprom, g.profile[g.id()], (flags & SIMULATOR_FLAGS_NOTX) ? false : true);
   getValues();
   setupTimer();
 }
@@ -705,7 +704,7 @@ void SimulatorDialog::start(const char * filename)
   lastPhase = -1;
   numGvars = GetCurrentFirmware()->getCapability(Gvars);
   numFlightModes = GetCurrentFirmware()->getCapability(FlightModes);
-  simulator->start(filename);
+  simulator->start(filename, g.profile[g.id()]);
   getValues();
   setupTimer();
 }
