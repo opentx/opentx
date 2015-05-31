@@ -17,29 +17,27 @@ void eepromInit(void)
   GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(I2C_GPIO, &GPIO_InitStructure);
+  GPIO_ResetBits(I2C_GPIO, I2C_GPIO_PIN_WP);
+
+  I2C_InitTypeDef I2C_InitStructure;
+  I2C_InitStructure.I2C_ClockSpeed = I2C_SPEED;
+  I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;
+  I2C_InitStructure.I2C_OwnAddress1 = 0x00;
+  I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
+  I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
+  I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
+  I2C_Init(I2C, &I2C_InitStructure);
+  I2C_Cmd(I2C, ENABLE);
+
+  GPIO_PinAFConfig(I2C_GPIO, I2C_GPIO_PinSource_SCL, I2C_GPIO_AF);
+  GPIO_PinAFConfig(I2C_GPIO, I2C_GPIO_PinSource_SDA, I2C_GPIO_AF);
 
   GPIO_InitStructure.GPIO_Pin = I2C_GPIO_PIN_SCL | I2C_GPIO_PIN_SDA;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(I2C_GPIO, &GPIO_InitStructure);
-
-  GPIO_PinAFConfig(I2C_GPIO, I2C_GPIO_PinSource_SCL, I2C_GPIO_AF);
-  GPIO_PinAFConfig(I2C_GPIO, I2C_GPIO_PinSource_SDA, I2C_GPIO_AF);
-
-  I2C_InitTypeDef I2C_InitStructure;
-  I2C_InitStructure.I2C_ClockSpeed = 240000;
-  I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;
-  I2C_InitStructure.I2C_OwnAddress1 = 0x00;
-  I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
-  I2C_InitStructure.I2C_Ack = I2C_Ack_Enable; // TODO Disable
-  I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
-
-  I2C_Init(I2C, &I2C_InitStructure);
-  I2C_Cmd(I2C, ENABLE);
-
-  GPIO_ResetBits(I2C_GPIO, I2C_GPIO_PIN_WP);
 }
 
 #define I2C_TIMEOUT_MAX 1000
