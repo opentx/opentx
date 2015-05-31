@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>686</width>
-    <height>550</height>
+    <height>619</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -889,49 +889,10 @@ Mode 4:
        <string>Simulator Settings</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
+       <item row="5" column="4">
+        <widget class="QPushButton" name="joystickcalButton">
          <property name="text">
-          <string>Simulator BackLight</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="2">
-        <widget class="QCheckBox" name="joystickChkB">
-         <property name="text">
-          <string>Enable</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="4">
-        <widget class="QPushButton" name="snapshotPathButton">
-         <property name="text">
-          <string>Open Folder</string>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
+          <string>Calibrate</string>
          </property>
         </widget>
        </item>
@@ -970,6 +931,73 @@ Mode 4:
          </item>
         </widget>
        </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_19">
+         <property name="text">
+          <string>Simulator capture folder</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1" colspan="4">
+        <widget class="QCheckBox" name="snapshotClipboardCKB">
+         <property name="text">
+          <string>Only capture to clipboard</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QCheckBox" name="joystickChkB">
+         <property name="text">
+          <string>Enable</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="joystickCB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QPushButton" name="snapshotPathButton">
+         <property name="text">
+          <string>Open Folder</string>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
        <item row="5" column="0">
         <widget class="QLabel" name="label_11">
          <property name="sizePolicy">
@@ -983,42 +1011,21 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
-        <widget class="QComboBox" name="joystickCB">
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_3">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-        </widget>
-       </item>
-       <item row="5" column="4">
-        <widget class="QPushButton" name="joystickcalButton">
          <property name="text">
-          <string>Calibrate</string>
+          <string>Simulator BackLight</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
         </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_19">
-         <property name="text">
-          <string>Simulator capture folder</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
        </item>
        <item row="0" column="1" colspan="2">
         <widget class="QLineEdit" name="snapshotPath">
@@ -1036,17 +1043,42 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="1" column="1" colspan="4">
-        <widget class="QCheckBox" name="snapshotClipboardCKB">
-         <property name="text">
-          <string>Only capture to clipboard</string>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="1" colspan="4">
         <widget class="QCheckBox" name="simuSW">
          <property name="text">
           <string>Remember simulator switch values</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_volumeGain">
+         <property name="text">
+          <string>Simulator Volume Gain</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QDoubleSpinBox" name="volumeGain">
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
+         <property name="minimum">
+          <double>0.500000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>3.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+         <property name="value">
+          <double>1.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -1058,6 +1090,7 @@ Mode 4:
  </widget>
  <tabstops>
   <tabstop>tabWidget</tabstop>
+  <tabstop>profileNameLE</tabstop>
   <tabstop>removeProfileButton</tabstop>
   <tabstop>downloadVerCB</tabstop>
   <tabstop>langCombo</tabstop>
@@ -1067,6 +1100,9 @@ Mode 4:
   <tabstop>clearImageButton</tabstop>
   <tabstop>sdPath</tabstop>
   <tabstop>sdPathButton</tabstop>
+  <tabstop>profilebackupPath</tabstop>
+  <tabstop>ProfilebackupPathButton</tabstop>
+  <tabstop>pbackupEnable</tabstop>
   <tabstop>stickmodeCB</tabstop>
   <tabstop>channelorderCB</tabstop>
   <tabstop>renameFirmware</tabstop>
@@ -1092,6 +1128,7 @@ Mode 4:
   <tabstop>joystickCB</tabstop>
   <tabstop>joystickChkB</tabstop>
   <tabstop>joystickcalButton</tabstop>
+  <tabstop>volumeGain</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>

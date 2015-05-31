@@ -23,6 +23,7 @@
 #include <QByteArray>
 #include <QMap>
 #include <algorithm>
+#include "appdata.h"
 
 #if __GNUC__
   #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
@@ -65,11 +66,9 @@ class SimulatorInterface
 
     virtual ~SimulatorInterface() {};
 
-    virtual void setSdPath(const QString &sdPath) { };
+    virtual void start(QByteArray &eeprom, const Profile & profile, bool tests=true) = 0;
 
-    virtual void start(QByteArray &eeprom, bool tests=true) = 0;
-
-    virtual void start(const char *filename, bool tests=true) = 0;
+    virtual void start(const char *filename, const Profile & profile, bool tests=true) = 0;
 
     virtual void stop() = 0;
 

@@ -28,7 +28,7 @@ class Ersky9xSimulator : public SimulatorInterface {
 
     Ersky9xSimulator(Ersky9xInterface *);
 
-    virtual void start(RadioData & radioData, bool tests);
+    virtual void start(RadioData & radioData, const Profile & profile, bool tests);
 
     virtual void stop();
 

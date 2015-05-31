@@ -295,6 +295,7 @@ QString Profile::fwName()        const { return _fwName;        }
 QString Profile::fwType()        const { return _fwType;        }
 QString Profile::name()          const { return _name;          }
 QString Profile::sdPath()        const { return _sdPath;        }
+int     Profile::volumeGain()    const { return _volumeGain;    }
 QString Profile::pBackupDir()    const { return _pBackupDir;    }
 QString Profile::splashFile()    const { return _splashFile;    }
 bool    Profile::burnFirmware()  const { return _burnFirmware;  }
@@ -324,6 +325,7 @@ void Profile::name          (const QString x) { store(x, _name,          "Name" 
 void Profile::fwName        (const QString x) { store(x, _fwName,        "fwName"                ,"Profiles", QString("profile%1").arg(index));}
 void Profile::fwType        (const QString x) { store(x, _fwType,        "fwType"                ,"Profiles", QString("profile%1").arg(index));}
 void Profile::sdPath        (const QString x) { store(x, _sdPath,        "sdPath"                ,"Profiles", QString("profile%1").arg(index));}
+void Profile::volumeGain    (const int     x) { store(x, _volumeGain,    "volumeGain"            ,"Profiles", QString("profile%1").arg(index));}
 void Profile::pBackupDir    (const QString x) { store(x, _pBackupDir,    "pBackupDir"            ,"Profiles", QString("profile%1").arg(index));}
 void Profile::splashFile    (const QString x) { store(x, _splashFile,    "SplashFileName"        ,"Profiles", QString("profile%1").arg(index));}
 void Profile::burnFirmware  (const bool    x) { store(x, _burnFirmware,  "burnFirmware"          ,"Profiles", QString("profile%1").arg(index));}
@@ -361,6 +363,7 @@ Profile& Profile::operator=(const Profile& rhs)
     fwName       ( rhs.fwName()        );
     fwType       ( rhs.fwType()        );
     sdPath       ( rhs.sdPath()        );
+    volumeGain   ( rhs.volumeGain()    );
     pBackupDir   ( rhs.pBackupDir()    );
     splashFile   ( rhs.splashFile()    );
     burnFirmware ( rhs.burnFirmware()  );
@@ -438,6 +441,7 @@ void Profile::init(int newIndex)
     _fwType =        "";
     _name =          "";
     _sdPath =        "";
+    _volumeGain =    10;
     _pBackupDir =    "";
     _splashFile =    "";
     _burnFirmware =  false;
@@ -462,6 +466,7 @@ void Profile::flush()
     getset( _fwType,        "fwType"                ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _name,          "Name"                  ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _sdPath,        "sdPath"                ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _volumeGain,    "volumeGain"            ,10     ,"Profiles", QString("profile%1").arg(index));
     getset( _pBackupDir,    "pBackupDir"            ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _splashFile,    "SplashFileName"        ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _burnFirmware,  "burnFirmware"          ,false  ,"Profiles", QString("profile%1").arg(index));

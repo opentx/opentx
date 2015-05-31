@@ -339,14 +339,6 @@ OpenTxSimulator::OpenTxSimulator()
 {
 }
 
-void OpenTxSimulator::setSdPath(const QString &sdPath)
-{
-#if defined(SDCARD)
-  strncpy(simuSdDirectory, sdPath.toAscii().constData(), sizeof(simuSdDirectory)-1);
-  simuSdDirectory[sizeof(simuSdDirectory)-1] = '\0';
-#endif
-}
-
 bool OpenTxSimulator::timer10ms()
 {
 #define TIMER10MS_IMPORT
@@ -365,32 +357,28 @@ bool OpenTxSimulator::lcdChanged(bool & lightEnable)
 #include "simulatorimport.h"
 }
 
-void OpenTxSimulator::start(QByteArray & eeprom, bool tests)
+void OpenTxSimulator::start(QByteArray & eeprom, const Profile & profile, bool tests)
 {
-#if defined(PCBSKY9X) && !defined(REVX)
-  g_rotenc[0] = 0;
-#elif defined(PCBGRUVIN9X)
-  g_rotenc[0] = 0;
-  g_rotenc[1] = 0;
-#endif
   memcpy(NAMESPACE::eeprom, eeprom.data(), std::min<int>(sizeof(NAMESPACE::eeprom), eeprom.size()));
-  StartEepromThread(NULL);
-  StartAudioThread();
-  StartMainThread(tests);
+  start((const char *)0, profile, tests);
 }
 
-void OpenTxSimulator::start(const char * filename, bool tests)
+void OpenTxSimulator::start(const char * filename, const Profile & profile, bool tests)
 {
+#if defined(SDCARD)
+  strncpy(simuSdDirectory, profile.sdPath().toAscii().constData(), sizeof(simuSdDirectory)-1);
+  simuSdDirectory[sizeof(simuSdDirectory)-1] = '\0';
+#endif
+
 #if defined(PCBSKY9X) && !defined(REVX)
   g_rotenc[0] = 0;
 #elif defined(PCBGRUVIN9X)
   g_rotenc[0] = 0;
   g_rotenc[1] = 0;
 #endif
+
   StartEepromThread(filename);
-#if defined(CPUARM)
-  StartAudioThread();
-#endif
+  StartAudioThread(profile.volumeGain());
   StartMainThread(tests);
 }
 
