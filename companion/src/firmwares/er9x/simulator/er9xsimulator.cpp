@@ -182,7 +182,7 @@ bool Er9xSimulator::lcdChanged(bool & lightEnable)
 #include "simulatorimport.h"
 }
 
-void Er9xSimulator::start(RadioData &radioData, const Profile & profile, bool tests)
+void Er9xSimulator::start(RadioData &radioData, bool tests)
 {
   er9xInterface->save(&eeprom[0], radioData);
   StartMainThread(tests);

@@ -77,13 +77,20 @@ namespace NAMESPACE {
 
 class DLLEXPORT OpenTxSimulator : public SimulatorInterface {
 
+  private:
+    int volumeGain;
+
   public:
 
     OpenTxSimulator();
 
-    virtual void start(QByteArray & eeprom, const Profile & profile, bool tests=true);
+    virtual void setSdPath(const QString &sdPath);
 
-    virtual void start(const char * filename, const Profile & profile, bool tests=true);
+    virtual void setVolumeGain(int value);
+
+    virtual void start(QByteArray & eeprom, bool tests=true);
+
+    virtual void start(const char * filename, bool tests=true);
 
     virtual void stop();
 

@@ -28,7 +28,7 @@ class Er9xSimulator : public SimulatorInterface {
 
     Er9xSimulator(Er9xInterface *);
 
-    virtual void start(RadioData & radioData, const Profile & profile, bool tests);
+    virtual void start(RadioData & radioData, bool tests);
 
     virtual void stop();
 

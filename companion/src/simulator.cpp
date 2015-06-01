@@ -110,7 +110,9 @@ int main(int argc, char *argv[])
   #ifdef SIMU_AUDIO
     sdlFlags |= SDL_INIT_AUDIO;
   #endif
-  SDL_Init(sdlFlags);
+  if (SDL_Init(sdlFlags) < 0) {
+    fprintf(stderr, "ERROR: couldn't initialize SDL: %s\n", SDL_GetError());
+  }
 #endif
 
   SimulatorDialog *dialog;
