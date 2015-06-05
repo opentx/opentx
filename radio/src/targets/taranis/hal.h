@@ -324,12 +324,10 @@
 #define I2C_GPIO_AF                     GPIO_AF_I2C1
 #define I2C_GPIO_PinSource_SCL          GPIO_PinSource6
 #define I2C_GPIO_PinSource_SDA          GPIO_PinSource7
-#if defined(REVPLUS)
-  #define I2C_SPEED                     400000
-#elif defined(REV4a)
+#if defined(REV4a)
   #define I2C_SPEED                     100000
 #else
-  #define I2C_SPEED                     200000
+  #define I2C_SPEED                     400000
 #endif
 #define I2C_ADDRESS_EEPROM              0xA2
 #define I2C_ADDRESS_CAT5137             0x5C
