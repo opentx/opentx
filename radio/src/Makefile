@@ -340,8 +340,6 @@ TRACE_AUDIO = NO
 LCD_DUAL_BUFFER = NO
 
 # Enable internal module PPM mode for Taranis
-# Notice: enabling this only enable code in the driver,
-# the menu selection is still not possible.
 # Values = NO, YES
 TARANIS_INTERNAL_PPM = NO
 
