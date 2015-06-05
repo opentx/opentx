@@ -382,7 +382,6 @@ LUADIR = $(THIRDPARTY)/Lua/src
 SRC =
 CPPSRC =
 INCDIRS = . translations
-EXTRAINCDIRS =
 LUADEP =
 DEBUG_TRACE_BUFFER = NO
 
@@ -896,15 +895,15 @@ ifeq ($(PCB), TARANIS)
     STM32LIBPATH = $(THIRDPARTY)/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries
     CPPDEFS += -DHSE_VALUE=12000000
     CPPDEFS += -DSTM32F40_41xxx
-    EXTRAINCDIRS += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Include $(STM32LIBPATH)/CMSIS/Include $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/inc
+    INCDIRS += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Include $(STM32LIBPATH)/CMSIS/Include $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/inc
   else
     STM32LIBPATH= $(THIRDPARTY)/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries
     CPPDEFS += -DHSE_VALUE=12000000
-    EXTRAINCDIRS += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/inc $(STM32LIBPATH)/CMSIS/Device/ST/STM32F2xx/Include $(STM32LIBPATH)/CMSIS/include
+    INCDIRS += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/inc $(STM32LIBPATH)/CMSIS/Device/ST/STM32F2xx/Include $(STM32LIBPATH)/CMSIS/include
   endif
   STM32USBPATH = $(THIRDPARTY)/STM32_USB-Host-Device_Lib_V2.1.0/Libraries
-  EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc $(STM32USBPATH)/STM32_USB_Device_Library/Core/inc
-  EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/inc $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc $(STM32USBPATH)/STM32_USB_Device_Library/Core/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/inc $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_hardware.cpp
   BOARDSRC = main_arm.cpp targets/taranis/board_taranis.cpp
   EXTRABOARDSRC += targets/taranis/configure_pins.cpp targets/taranis/lcd_driver.cpp targets/taranis/flash_driver.cpp targets/taranis/i2c_driver.cpp targets/taranis/aspi.c targets/taranis/delays.c
@@ -923,6 +922,7 @@ ifeq ($(PCB), TARANIS)
 	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c
 	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
 	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
+	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_i2c.c
 	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c
 	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rtc.c
 	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_pwr.c
@@ -935,6 +935,7 @@ ifeq ($(PCB), TARANIS)
 	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dbgmcu.c
 	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
 	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c
+	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_i2c.c
 	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dma.c
 	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rtc.c
 	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_pwr.c
@@ -1365,7 +1366,6 @@ CPPFLAGS += -fno-exceptions
 CPPFLAGS += -Wno-strict-aliasing
 CPPFLAGS += -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits
 INCFLAGS = $(patsubst %,-I%,$(INCDIRS))
-EXTRAINCFLAGS = $(patsubst %,-I%,$(EXTRAINCDIRS))
 
 MATH_LIB = -lm
 
@@ -1393,8 +1393,8 @@ MSG_CLEANING = Cleaning project:
 # Add target processor to flags.
 
 CPPFLAGS += -DFLAVOUR=\"$(FLAVOUR)\"
-ARMCPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=opentx.lst -DRUN_FROM_FLASH=1 -O$(OPT) $(CPPFLAGS) -fdata-sections -ffunction-sections $(INCFLAGS) $(EXTRAINCFLAGS) $(GENDEPFLAGS)
-AVRCPPFLAGS = -mmcu=$(MCU) -I. -x c++ -O$(OPT) $(CPPFLAGS) $(INCFLAGS) $(EXTRAINCFLAGS) $(GENDEPFLAGS) -fwhole-program
+ARMCPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=opentx.lst -DRUN_FROM_FLASH=1 -O$(OPT) $(CPPFLAGS) -fdata-sections -ffunction-sections $(INCFLAGS) $(GENDEPFLAGS)
+AVRCPPFLAGS = -mmcu=$(MCU) -I. -x c++ -O$(OPT) $(CPPFLAGS) $(INCFLAGS) $(GENDEPFLAGS) -fwhole-program
 
 ifeq ($(ARCH), AVR)
   GCCVERSIONGTE462 := $(shell expr 4.6.2 \<= `$(CC) -dumpversion`)
