@@ -135,6 +135,7 @@ ifeq ($(PCBREV), REV9E)
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
+  SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_i2c.c
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/misc.c
 else
   SRC += ../system_stm32f2xx.c
