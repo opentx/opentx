@@ -174,6 +174,13 @@ TEST(Lcd, Line_Wrap)
   EXPECT_TRUE(checkScreenshot("line_wrap"));
 }
 
+TEST(Lcd, DblsizeBottomRight)
+{
+  lcd_clear();
+  lcd_putsAtt(LCD_W-20, LCD_H-16, "TEST", DBLSIZE);
+  EXPECT_TRUE(checkScreenshot("dblsize_bottom_right"));
+}
+
 #if defined(CPUARM)
 TEST(Lcd, Smlsize_putsStrIdx)
 {
