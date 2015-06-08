@@ -63,7 +63,7 @@ const pm_uchar font_5x7[] PROGMEM = {
 #endif
 };
 
-#if defined(BOLD_FONT) && (!defined(CPUM64) || defined(EXTSTD))
+#if defined(BOLD_SPECIFIC_FONT)
 const pm_uchar font_5x7_B[] PROGMEM = {
 #include "font_05x07_B_compressed.lbm"
 };
