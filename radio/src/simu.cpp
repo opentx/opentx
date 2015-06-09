@@ -55,8 +55,6 @@
 #define W2 LCD_W*LCD_ZOOM
 #define H2 LCD_H*LCD_ZOOM
 
-int g_snapshot_idx = 0;
-
 class Open9xSim: public FXMainWindow
 {
   FXDECLARE(Open9xSim)
