@@ -180,7 +180,8 @@ extern const pm_char STR_OPEN9X[];
 #if defined(CPUARM)
   #define OFS_VUNITSSYSTEM      (OFS_VLCD + sizeof(TR_VLCD))
   #define OFS_VBEEPCOUNTDOWN    (OFS_VUNITSSYSTEM + sizeof(TR_VUNITSSYSTEM))
-  #define OFS_COUNTRYCODES      (OFS_VBEEPCOUNTDOWN + sizeof(TR_VBEEPCOUNTDOWN))
+  #define OFS_VVARIOCENTER      (OFS_VBEEPCOUNTDOWN + sizeof(TR_VBEEPCOUNTDOWN))
+  #define OFS_COUNTRYCODES      (OFS_VVARIOCENTER + sizeof(TR_VVARIOCENTER))
 #else
   #define OFS_COUNTRYCODES      (OFS_VLCD)
 #endif
@@ -297,6 +298,7 @@ extern const pm_char STR_OPEN9X[];
   #define STR_VLCD              (STR_OPEN9X + OFS_VLCD)
   #define STR_VUNITSSYSTEM      (STR_OPEN9X + OFS_VUNITSSYSTEM)
   #define STR_VBEEPCOUNTDOWN    (STR_OPEN9X + OFS_VBEEPCOUNTDOWN)
+  #define STR_VVARIOCENTER      (STR_OPEN9X + OFS_VVARIOCENTER)
 #endif
 
 #if defined(PXX) || defined(CPUARM)
@@ -405,6 +407,7 @@ extern const pm_char STR_CV[];
 extern const pm_char STR_GV[];
 extern const pm_char STR_ACHANNEL[];
 extern const pm_char STR_RANGE[];
+extern const pm_char STR_CENTER[];
 extern const pm_char STR_BAR[];
 extern const pm_char STR_ALARM[];
 extern const pm_char STR_USRDATA[];

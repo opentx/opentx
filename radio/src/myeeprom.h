@@ -1483,7 +1483,8 @@ PACK(typedef struct {
   uint8_t altitudeSource;
   uint8_t screensType; // 2bits per screen (None/Gauges/Numbers/Script)
   FrSkyScreenData screens[MAX_TELEMETRY_SCREENS];
-  uint8_t varioSource;
+  uint8_t varioSource:7;
+  uint8_t varioCenterSilent:1;
   int8_t  varioCenterMax;
   int8_t  varioCenterMin;
   int8_t  varioMin;

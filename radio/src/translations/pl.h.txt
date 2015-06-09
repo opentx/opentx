@@ -125,6 +125,9 @@
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "Cichy Pik  \0Dźwięk"
 
+#define LEN_VVARIOCENTER       "\006"
+#define TR_VVARIOCENTER        "Tone\0 ""Silent"
+
 #define LEN_CURVE_TYPES        "\010" /*8 decimal*/
 #define TR_CURVE_TYPES         "Standard""Własny\0 "
 
@@ -658,6 +661,7 @@
 #define TR_GV                  "ZG"
 #define TR_ACHANNEL            "A\004Kanał"
 #define TR_RANGE               INDENT "Zakres"
+#define TR_CENTER              INDENT "Center"
 #define TR_BAR                 "Pas"
 #define TR_ALARM               INDENT "Alarm"
 #define TR_USRDATA             TR("Dane Użytk.", "Dane użytkownika")

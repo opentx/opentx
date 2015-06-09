@@ -121,6 +121,9 @@
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "Ne\0   ""Zvuk\0 ""Hlas\0 "
 
+#define LEN_VVARIOCENTER       "\006"
+#define TR_VVARIOCENTER        "Tone\0 ""Silent"
+
 #define LEN_CURVE_TYPES        "\010"
 #define TR_CURVE_TYPES         "Rastr-X\0""Volná-XY"
 
@@ -655,6 +658,7 @@
 #define TR_GV                  "GP"
 #define TR_ACHANNEL            "A\004Kanál"
 #define TR_RANGE               INDENT"Rozsah"
+#define TR_CENTER              INDENT "Center"
 #define TR_BAR                 "Ukazatel"
 #define TR_ALARM               INDENT"Alarm"
 #define TR_USRDATA             TR("UživData", "Uživ. data")

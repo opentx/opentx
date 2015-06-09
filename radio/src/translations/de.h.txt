@@ -126,6 +126,9 @@
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "Kein\0 Pieps\0Stimme"
 
+#define LEN_VVARIOCENTER       "\006"
+#define TR_VVARIOCENTER        "Tone\0 ""Silent"
+
 #define LEN_CURVE_TYPES        "\010"
 #define TR_CURVE_TYPES         " Nur Y  "" X und Y"      //"Standard""Custom\0"
 
@@ -659,6 +662,7 @@
 #define TR_GV                  "GV"
 #define TR_ACHANNEL            TR("A\004gemessen","A\004Kanal gemessen =>") //9XR-Pro
 #define TR_RANGE               TR(INDENT"Bereich", INDENT "Reichweite") // 9XR-Pro
+#define TR_CENTER              INDENT "Center"
 #define TR_BAR                 "Streifen"
 #define TR_ALARM               INDENT"Alarm"
 #define TR_USRDATA             "Daten berechnen aus"

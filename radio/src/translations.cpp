@@ -112,6 +112,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(VLCD)
     ISTR(VUNITSSYSTEM)
     ISTR(VBEEPCOUNTDOWN)
+    ISTR(VVARIOCENTER)
 #endif
 #if defined(PXX) || defined(CPUARM)
     ISTR(COUNTRYCODES)
@@ -211,6 +212,7 @@ const pm_char STR_CV[] PROGMEM = TR_CV;
 const pm_char STR_GV[] PROGMEM = TR_GV;
 const pm_char STR_ACHANNEL[] PROGMEM = TR_ACHANNEL;
 const pm_char STR_RANGE[] PROGMEM = TR_RANGE;
+const pm_char STR_CENTER[] PROGMEM = TR_CENTER;
 const pm_char STR_BAR[] PROGMEM = TR_BAR;
 const pm_char STR_ALARM[] PROGMEM = TR_ALARM;
 const pm_char STR_USRDATA[] PROGMEM = TR_USRDATA;
