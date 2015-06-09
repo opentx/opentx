@@ -71,7 +71,7 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
   *ptr = rest;
   *(ptr + 1) = 0;
 
-#if defined(PCBTARANIS)
+#if !defined(PCBSKY9X)
   rest -= 1000;
   uint32_t ppmDelay = (g_model.moduleData[port].ppmDelay * 50 + 300) * 2;
   // set idle time, ppm delay and ppm polarity
