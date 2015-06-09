@@ -296,7 +296,7 @@ static int luaPlayNumber(lua_State *L)
 {
   int number = luaL_checkinteger(L, 1);
   int unit = luaL_checkinteger(L, 2);
-  int att = luaL_checkinteger(L, 3);
+  unsigned int att = luaL_optunsigned(L, 3, 0);
   playNumber(number, unit, att, 0);
   return 0;
 }
@@ -390,7 +390,7 @@ static int luaLcdDrawText(lua_State *L)
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   const char * s = luaL_checkstring(L, 3);
-  int att = luaL_checkinteger(L, 4);
+  unsigned int att = luaL_optunsigned(L, 4, 0);
   lcd_putsAtt(x, y, s, att);
   return 0;
 }
@@ -401,7 +401,7 @@ static int luaLcdDrawTimer(lua_State *L)
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int seconds = luaL_checkinteger(L, 3);
-  int att = luaL_checkinteger(L, 4);
+  unsigned int att = luaL_optunsigned(L, 4, 0);
   putsTimer(x, y, seconds, att|LEFT, att);
   return 0;
 }
@@ -411,8 +411,15 @@ static int luaLcdDrawNumber(lua_State *L)
   if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
-  int n = luaL_checkinteger(L, 3);
-  int att = luaL_checkinteger(L, 4);
+  float val = luaL_checknumber(L, 3);
+  unsigned int att = luaL_optunsigned(L, 4, 0);
+  int n;
+  if ((att & PREC2) == PREC2)
+    n = val * 100;
+  else if ((att & PREC1) == PREC1)
+    n = val * 10;
+  else
+    n = val;
   lcd_outdezAtt(x, y, n, att);
   return 0;
 }
@@ -434,9 +441,9 @@ static int luaLcdDrawChannel(lua_State *L)
       channel = field.id;
     }
   }
-  int att = luaL_checkinteger(L, 4);
+  unsigned int att = luaL_optunsigned(L, 4, 0);
   getvalue_t value = getValue(channel);
-  putsTelemetryChannelValue(x, y, channel-MIXSRC_FIRST_TELEM, value, att);
+  putsTelemetryChannelValue(x, y, (channel-MIXSRC_FIRST_TELEM)/3, value, att);
   return 0;
 }
 
@@ -446,7 +453,7 @@ static int luaLcdDrawSwitch(lua_State *L)
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int s = luaL_checkinteger(L, 3);
-  int att = luaL_checkinteger(L, 4);
+  unsigned int att = luaL_optunsigned(L, 4, 0);
   putsSwitches(x, y, s, att);
   return 0;
 }
@@ -457,7 +464,7 @@ static int luaLcdDrawSource(lua_State *L)
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int s = luaL_checkinteger(L, 3);
-  int att = luaL_checkinteger(L, 4);
+  unsigned int att = luaL_optunsigned(L, 4, 0);
   putsMixerSource(x, y, s, att);
   return 0;
 }
@@ -483,7 +490,8 @@ static int luaLcdDrawRectangle(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   int w = luaL_checkinteger(L, 3);
   int h = luaL_checkinteger(L, 4);
-  lcd_rect(x, y, w, h, 0xff, 0);
+  unsigned int flags = luaL_optunsigned(L, 5, 0);
+  lcd_rect(x, y, w, h, 0xff, flags);
   return 0;
 }
 
@@ -494,7 +502,7 @@ static int luaLcdDrawFilledRectangle(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   int w = luaL_checkinteger(L, 3);
   int h = luaL_checkinteger(L, 4);
-  int flags = luaL_checkinteger(L, 5);
+  unsigned int flags = luaL_optunsigned(L, 5, 0);
   drawFilledRect(x, y, w, h, SOLID, flags);
   return 0;
 }
@@ -540,7 +548,7 @@ static int luaLcdDrawCombobox(lua_State *L)
   luaL_checktype(L, 4, LUA_TTABLE);
   int count = luaL_len(L, 4);  /* get size of table */
   int idx = luaL_checkinteger(L, 5);
-  int flags = luaL_checkinteger(L, 6);
+  unsigned int flags = luaL_optunsigned(L, 6, 0);
   if (idx >= count) {
     // TODO error
   }
