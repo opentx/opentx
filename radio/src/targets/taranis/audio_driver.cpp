@@ -76,7 +76,7 @@ void dacInit()
   dacTimerInit();
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
-  configure_pins( 0x0010, PIN_ANALOG | PIN_PORTA ) ;
+  configure_pins( GPIO_Pin_4, PIN_ANALOG | PIN_PORTA ) ;
   RCC->APB1ENR |= RCC_APB1ENR_DACEN ;                             // Enable clock
   RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN ;                    // Enable DMA1 clock
 

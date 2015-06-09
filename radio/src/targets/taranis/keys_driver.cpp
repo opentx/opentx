@@ -40,36 +40,33 @@
 
 uint32_t readKeys()
 {
-  register uint32_t d = GPIOD->IDR;
-  register uint32_t e = GPIOE->IDR;
-  register uint32_t f = GPIOF->IDR;
   register uint32_t result = 0;
+  register uint32_t d = ~GPIOD->IDR;
 
+#if !defined(REV9E) || defined(SIMU)
+  register uint32_t e = ~GPIOE->IDR;
   (void)e;
-  (void)f;
+#endif
 
 #if defined(REV9E)
-  if (f & PIN_BUTTON_ENTER)
+  if (!(GPIOF->IDR & KEYS_GPIO_PIN_ENTER))
 #else
-  if (e & PIN_BUTTON_ENTER)
+  if (e & KEYS_GPIO_PIN_ENTER)
 #endif
     result |= 0x02 << KEY_ENTER;
 
 #if !defined(REV9E) || defined(SIMU)
-  if (e & PIN_BUTTON_PLUS)
+  if (e & KEYS_GPIO_PIN_PLUS)
     result |= 0x02 << KEY_PLUS;
-  if (e & PIN_BUTTON_MINUS)
+  if (e & KEYS_GPIO_PIN_MINUS)
     result |= 0x02 << KEY_MINUS;
-#else
-  result |= 0x02 << KEY_PLUS;
-  result |= 0x02 << KEY_MINUS;
 #endif
 
-  if (d & PIN_BUTTON_MENU)
+  if (d & KEYS_GPIO_PIN_MENU)
     result |= 0x02 << KEY_MENU;
-  if (d & PIN_BUTTON_PAGE)
+  if (d & KEYS_GPIO_PIN_PAGE)
     result |= 0x02 << KEY_PAGE;
-  if (d & PIN_BUTTON_EXIT)
+  if (d & KEYS_GPIO_PIN_EXIT)
     result |= 0x02 << KEY_EXIT;
 
   // TRACE("readKeys(): %x %x => %x", d, e, result);
@@ -86,30 +83,30 @@ uint32_t readTrims()
 #endif
   register uint32_t result = 0;
 
-  if (~e & PIN_TRIM_LH_L)
+  if (~e & TRIMS_GPIO_PIN_LHL)
     result |= 0x01;         // LH_L
-  if (~e & PIN_TRIM_LH_R)
+  if (~e & TRIMS_GPIO_PIN_LHR)
     result |= 0x02;         // LH_R
 
 #if defined(REV9E)
-  if (~g & PIN_TRIM_LV_DN)
+  if (~g & TRIMS_GPIO_PIN_LVD)
     result |= 0x04;         // LV_DN
-  if (~g & PIN_TRIM_LV_UP)
+  if (~g & TRIMS_GPIO_PIN_LVU)
     result |= 0x08;         // LV_UP
 #else
-  if (~e & PIN_TRIM_LV_DN)
+  if (~e & TRIMS_GPIO_PIN_LVD)
     result |= 0x04;         // LV_DN
-  if (~e & PIN_TRIM_LV_UP)
+  if (~e & TRIMS_GPIO_PIN_LVU)
     result |= 0x08;         // LV_UP
 #endif
 
-  if (~c & PIN_TRIM_RV_DN)
+  if (~c & TRIMS_GPIO_PIN_RVD)
     result |= 0x10;         // RV_DN
-  if (~c & PIN_TRIM_RV_UP)
+  if (~c & TRIMS_GPIO_PIN_RVU)
     result |= 0x20;         // RV_UP
-  if (~c & PIN_TRIM_RH_L)
+  if (~c & TRIMS_GPIO_PIN_RHL)
     result |= 0x40;         // RH_L
-  if (~c & PIN_TRIM_RH_R)
+  if (~c & TRIMS_GPIO_PIN_RHR)
     result |= 0x80;         // RH_R
 
   // TRACE("readTrims(): %x %x => %x", c, e, result);
@@ -124,7 +121,7 @@ uint8_t trimDown(uint8_t idx)
 
 uint8_t keyDown()
 {
-  return ~readKeys() & 0x7E ;
+  return readKeys();
 }
 
 #if defined(REV9E)
@@ -137,7 +134,7 @@ void readKeysAndTrims()
   register uint32_t i;
 
   uint8_t enuk = KEY_MENU;
-  uint32_t in = ~readKeys();
+  uint32_t in = readKeys();
   for (i = 1; i <= TRM_BASE; i++) {
     keys[enuk].input(in & (1 << i));
     ++enuk;
@@ -171,53 +168,53 @@ void readKeysAndTrims()
 #if defined(REV9E)
 #define ADD_3POS_CASE(x, i) \
     case SW_S ## x ## 0: \
-      xxx = (GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H) && (~GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       break; \
     case SW_S ## x ## 1: \
-      xxx = (GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H) && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       break; \
     case SW_S ## x ## 2: \
-      xxx = (~GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H) && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       break
 #define ADD_3POS_INVERTED_CASE(x, i) ADD_3POS_CASE(x, i)
 #else
 #define ADD_2POS_CASE(x) \
     case SW_S ## x ## 0: \
-      xxx = GPIO_PIN_SW_ ## x  & PIN_SW_ ## x ; \
+      xxx = SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
       break; \
     case SW_S ## x ## 2: \
-      xxx = ~GPIO_PIN_SW_ ## x  & PIN_SW_ ## x ; \
+      xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
       break
 #define ADD_3POS_CASE(x, i) \
     case SW_S ## x ## 0: \
-      xxx = (GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H); \
+      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
       if (IS_3POS(i)) { \
-        xxx = xxx && (~GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+        xxx = xxx && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       } \
       break; \
     case SW_S ## x ## 1: \
-      xxx = (GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H) && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       break; \
     case SW_S ## x ## 2: \
-      xxx = (~GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H); \
+      xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
       if (IS_3POS(i)) { \
-        xxx = xxx && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+        xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       } \
       break
 #define ADD_3POS_INVERTED_CASE(x, i) \
     case SW_S ## x ## 0: \
-      xxx = (~GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H); \
+      xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
       if (IS_3POS(i)) { \
-        xxx = xxx && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+        xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       } \
       break; \
     case SW_S ## x ## 1: \
-      xxx = (GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H) && (GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       break; \
     case SW_S ## x ## 2: \
-      xxx = (GPIO_PIN_SW_ ## x ## _H & PIN_SW_ ## x ## _H); \
+      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
       if (IS_3POS(i)) { \
-        xxx = xxx && (~GPIO_PIN_SW_ ## x ## _L & PIN_SW_ ## x ## _L); \
+        xxx = xxx && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       } \
       break
 #endif
@@ -273,19 +270,19 @@ void keysInit()
 {
     GPIO_InitTypeDef GPIO_InitStructure;
 
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOBUTTON, ENABLE);
+    RCC_AHB1PeriphClockCmd(KEYS_RCC_AHB1Periph_GPIO, ENABLE);
 
 #if defined(REV9E)
-    GPIO_InitStructure.GPIO_Pin = PIN_TRIM_LH_R | PIN_TRIM_LH_L
-                                  | PIN_SW_F_H | PIN_SW_A_L | PIN_SW_B_H | PIN_SW_B_L | PIN_SW_C_H | PIN_SW_D_H | PIN_SW_D_L | PIN_SW_G_H | PIN_SW_G_L | PIN_SW_L_L | PIN_SW_Q_H | PIN_SW_Q_L;
+    GPIO_InitStructure.GPIO_Pin = TRIMS_GPIO_PIN_LHR | TRIMS_GPIO_PIN_LHL
+                                  | SWITCHES_GPIO_PIN_F_H | SWITCHES_GPIO_PIN_A_L | SWITCHES_GPIO_PIN_B_H | SWITCHES_GPIO_PIN_B_L | SWITCHES_GPIO_PIN_C_H | SWITCHES_GPIO_PIN_D_H | SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L | SWITCHES_GPIO_PIN_L_L | SWITCHES_GPIO_PIN_Q_H | SWITCHES_GPIO_PIN_Q_L;
 #elif defined(REVPLUS)
-    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_ENTER | PIN_BUTTON_MINUS | PIN_TRIM_LH_R | PIN_TRIM_LH_L
-                                  | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP
-                                  | PIN_SW_F | PIN_SW_A_L | PIN_SW_B_H | PIN_SW_B_L | PIN_SW_C_H | PIN_SW_D_H | PIN_SW_D_L | PIN_SW_G_H | PIN_SW_G_L;
+    GPIO_InitStructure.GPIO_Pin = KEYS_GPIO_PIN_PLUS | KEYS_GPIO_PIN_ENTER | KEYS_GPIO_PIN_MINUS | TRIMS_GPIO_PIN_LHR | TRIMS_GPIO_PIN_LHL
+                                  | TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU
+                                  | SWITCHES_GPIO_PIN_F | SWITCHES_GPIO_PIN_A_L | SWITCHES_GPIO_PIN_B_H | SWITCHES_GPIO_PIN_B_L | SWITCHES_GPIO_PIN_C_H | SWITCHES_GPIO_PIN_D_H | SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L;
 #else
-    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_ENTER | PIN_BUTTON_MINUS | PIN_TRIM_LH_R | PIN_TRIM_LH_L
-                                  | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP
-                                  | PIN_SW_F | PIN_SW_A_L | PIN_SW_B_H | PIN_SW_B_L | PIN_SW_C_H | PIN_SW_D_H | PIN_SW_G_H | PIN_SW_G_L | PIN_SW_H;
+    GPIO_InitStructure.GPIO_Pin = KEYS_GPIO_PIN_PLUS | KEYS_GPIO_PIN_ENTER | KEYS_GPIO_PIN_MINUS | TRIMS_GPIO_PIN_LHR | TRIMS_GPIO_PIN_LHL
+                                  | TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU
+                                  | SWITCHES_GPIO_PIN_F | SWITCHES_GPIO_PIN_A_L | SWITCHES_GPIO_PIN_B_H | SWITCHES_GPIO_PIN_B_L | SWITCHES_GPIO_PIN_C_H | SWITCHES_GPIO_PIN_D_H | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L | SWITCHES_GPIO_PIN_H;
 #endif
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
@@ -294,33 +291,33 @@ void keysInit()
     GPIO_Init(GPIOE, &GPIO_InitStructure);
 
 #if defined(REV9E)
-    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_ENTER | PIN_SW_F_L | PIN_SW_I_H | PIN_SW_I_L | PIN_SW_J_H | PIN_SW_J_L | PIN_SW_K_H | PIN_SW_K_L | PIN_SW_L_H | PIN_SW_M_H | PIN_SW_M_L | PIN_SW_N_H | PIN_SW_N_L;
+    GPIO_InitStructure.GPIO_Pin = KEYS_GPIO_PIN_ENTER | SWITCHES_GPIO_PIN_F_L | SWITCHES_GPIO_PIN_I_H | SWITCHES_GPIO_PIN_I_L | SWITCHES_GPIO_PIN_J_H | SWITCHES_GPIO_PIN_J_L | SWITCHES_GPIO_PIN_K_H | SWITCHES_GPIO_PIN_K_L | SWITCHES_GPIO_PIN_L_H | SWITCHES_GPIO_PIN_M_H | SWITCHES_GPIO_PIN_M_L | SWITCHES_GPIO_PIN_N_H | SWITCHES_GPIO_PIN_N_L;
     GPIO_Init(GPIOF, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin = PIN_TRIM_LV_DN | PIN_TRIM_LV_UP | PIN_SW_O_H | PIN_SW_O_L | PIN_SW_P_H | PIN_SW_P_L | PIN_SW_R_H | PIN_SW_R_L;
+    GPIO_InitStructure.GPIO_Pin = TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU | SWITCHES_GPIO_PIN_O_H | SWITCHES_GPIO_PIN_O_L | SWITCHES_GPIO_PIN_P_H | SWITCHES_GPIO_PIN_P_L | SWITCHES_GPIO_PIN_R_H | SWITCHES_GPIO_PIN_R_L;
     GPIO_Init(GPIOG, &GPIO_InitStructure);
 #endif
 
 #if defined(REV9E)
-    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_MENU | PIN_BUTTON_EXIT | PIN_BUTTON_PAGE | PIN_SW_H_H | PIN_SW_H_L;
+    GPIO_InitStructure.GPIO_Pin = KEYS_GPIO_PIN_MENU | KEYS_GPIO_PIN_EXIT | KEYS_GPIO_PIN_PAGE | SWITCHES_GPIO_PIN_H_H | SWITCHES_GPIO_PIN_H_L;
 #elif defined(REVPLUS)
-    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_MENU | PIN_BUTTON_EXIT | PIN_BUTTON_PAGE | PIN_SW_H;
+    GPIO_InitStructure.GPIO_Pin = KEYS_GPIO_PIN_MENU | KEYS_GPIO_PIN_EXIT | KEYS_GPIO_PIN_PAGE | SWITCHES_GPIO_PIN_H;
 #else
-    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_MENU | PIN_BUTTON_EXIT | PIN_BUTTON_PAGE;
+    GPIO_InitStructure.GPIO_Pin = KEYS_GPIO_PIN_MENU | KEYS_GPIO_PIN_EXIT | KEYS_GPIO_PIN_PAGE;
 #endif
     GPIO_Init(GPIOD, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin = PIN_TRIM_RV_DN | PIN_TRIM_RV_UP | PIN_TRIM_RH_L | PIN_TRIM_RH_R;
+    GPIO_InitStructure.GPIO_Pin = TRIMS_GPIO_PIN_RVD | TRIMS_GPIO_PIN_RVU | TRIMS_GPIO_PIN_RHL | TRIMS_GPIO_PIN_RHR;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
 
 #if defined(REVPLUS)
-    GPIO_InitStructure.GPIO_Pin =  PIN_SW_E_L | PIN_SW_E_H | PIN_SW_A_H;
+    GPIO_InitStructure.GPIO_Pin =  SWITCHES_GPIO_PIN_E_L | SWITCHES_GPIO_PIN_E_H | SWITCHES_GPIO_PIN_A_H;
 #else
-    GPIO_InitStructure.GPIO_Pin =  PIN_SW_E_L | PIN_SW_E_H | PIN_SW_A_H | PIN_SW_D_L;
+    GPIO_InitStructure.GPIO_Pin =  SWITCHES_GPIO_PIN_E_L | SWITCHES_GPIO_PIN_E_H | SWITCHES_GPIO_PIN_A_H | SWITCHES_GPIO_PIN_D_L;
 #endif
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin = PIN_SW_C_L;
+    GPIO_InitStructure.GPIO_Pin = SWITCHES_GPIO_PIN_C_L;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 #endif

@@ -78,6 +78,7 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, SimulatorInterface *simul
   beepShow(0)
 {
   lcdWidth = 128;
+  lcdHeight = 64;
   lcdDepth = 1;
 
   initUi<Ui::SimulatorDialog9X>(ui);
@@ -154,6 +155,7 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterf
   ui(new Ui::SimulatorDialogTaranis)
 {
   lcdWidth = 212;
+  lcdHeight = 64;
   lcdDepth = 4;
   
   initUi<Ui::SimulatorDialogTaranis>(ui);
@@ -449,7 +451,7 @@ void SimulatorDialog::initUi(T * ui)
 
   simulator->setSdPath(g.profile[g.id()].sdPath());
   simulator->setVolumeGain(g.profile[g.id()].volumeGain());
-  lcd->setData(simulator->getLcd(), lcdWidth, 64, lcdDepth);
+  lcd->setData(simulator->getLcd(), lcdWidth, lcdHeight, lcdDepth);
 
   if (flags & SIMULATOR_FLAGS_STICK_MODE_LEFT) {
     nodeLeft->setCenteringY(false);

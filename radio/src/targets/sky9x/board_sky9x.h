@@ -48,80 +48,80 @@ extern uint16_t ResetReason;
 #define FIRMWARE_ADDRESS                0x00400000
 
 #if defined(REVA)
-  #define GPIO_BUTTON_MENU                PIOB->PIO_PDSR
-  #define GPIO_BUTTON_EXIT                PIOA->PIO_PDSR
-  #define GPIO_BUTTON_UP                  PIOC->PIO_PDSR
-  #define GPIO_BUTTON_DOWN                PIOC->PIO_PDSR
-  #define GPIO_BUTTON_RIGHT               PIOC->PIO_PDSR
-  #define GPIO_BUTTON_LEFT                PIOC->PIO_PDSR
-  #define PIN_BUTTON_MENU                 0x00000040
-  #define PIN_BUTTON_EXIT                 0x80000000
-  #define PIN_BUTTON_UP                   0x00000004
-  #define PIN_BUTTON_DOWN                 0x00000008
-  #define PIN_BUTTON_RIGHT                0x00000010
-  #define PIN_BUTTON_LEFT                 0x00000020
+  #define KEYS_GPIO_REG_MENU                PIOB->PIO_PDSR
+  #define KEYS_GPIO_REG_EXIT                PIOA->PIO_PDSR
+  #define KEYS_GPIO_REG_UP                  PIOC->PIO_PDSR
+  #define KEYS_GPIO_REG_DOWN                PIOC->PIO_PDSR
+  #define KEYS_GPIO_REG_RIGHT               PIOC->PIO_PDSR
+  #define KEYS_GPIO_REG_LEFT                PIOC->PIO_PDSR
+  #define KEYS_GPIO_PIN_MENU                 0x00000040
+  #define KEYS_GPIO_PIN_EXIT                 0x80000000
+  #define KEYS_GPIO_PIN_UP                   0x00000004
+  #define KEYS_GPIO_PIN_DOWN                 0x00000008
+  #define KEYS_GPIO_PIN_RIGHT                0x00000010
+  #define KEYS_GPIO_PIN_LEFT                 0x00000020
 #else
-  #define GPIO_BUTTON_MENU                PIOB->PIO_PDSR
-  #define GPIO_BUTTON_EXIT                PIOC->PIO_PDSR
-  #define GPIO_BUTTON_UP                  PIOC->PIO_PDSR
-  #define GPIO_BUTTON_DOWN                PIOC->PIO_PDSR
-  #define GPIO_BUTTON_RIGHT               PIOC->PIO_PDSR
-  #define GPIO_BUTTON_LEFT                PIOC->PIO_PDSR
-  #define PIN_BUTTON_MENU                 0x00000020
-  #define PIN_BUTTON_EXIT                 0x01000000
-  #define PIN_BUTTON_UP                   0x00000002
-  #define PIN_BUTTON_DOWN                 0x00000020
-  #define PIN_BUTTON_RIGHT                0x00000010
-  #define PIN_BUTTON_LEFT                 0x00000008
+  #define KEYS_GPIO_REG_MENU                PIOB->PIO_PDSR
+  #define KEYS_GPIO_REG_EXIT                PIOC->PIO_PDSR
+  #define KEYS_GPIO_REG_UP                  PIOC->PIO_PDSR
+  #define KEYS_GPIO_REG_DOWN                PIOC->PIO_PDSR
+  #define KEYS_GPIO_REG_RIGHT               PIOC->PIO_PDSR
+  #define KEYS_GPIO_REG_LEFT                PIOC->PIO_PDSR
+  #define KEYS_GPIO_PIN_MENU                 0x00000020
+  #define KEYS_GPIO_PIN_EXIT                 0x01000000
+  #define KEYS_GPIO_PIN_UP                   0x00000002
+  #define KEYS_GPIO_PIN_DOWN                 0x00000020
+  #define KEYS_GPIO_PIN_RIGHT                0x00000010
+  #define KEYS_GPIO_PIN_LEFT                 0x00000008
 #endif
 
 #if defined(REVX)
-  #define GPIO_TRIM_LH_L                  PIOB->PIO_PDSR
-  #define GPIO_TRIM_LV_DN                 PIOA->PIO_PDSR
-  #define GPIO_TRIM_RV_UP                 PIOC->PIO_PDSR
-  #define GPIO_TRIM_RH_L                  PIOA->PIO_PDSR
-  #define GPIO_TRIM_LH_R                  PIOA->PIO_PDSR
-  #define GPIO_TRIM_LV_UP                 PIOC->PIO_PDSR
-  #define GPIO_TRIM_RV_DN                 PIOA->PIO_PDSR
-  #define GPIO_TRIM_RH_R                  PIOC->PIO_PDSR
+  #define TRIMS_GPIO_REG_LHL                  PIOB->PIO_PDSR
+  #define TRIMS_GPIO_REG_LVD                 PIOA->PIO_PDSR
+  #define TRIMS_GPIO_REG_RVU                 PIOC->PIO_PDSR
+  #define TRIMS_GPIO_REG_RHL                  PIOA->PIO_PDSR
+  #define TRIMS_GPIO_REG_LHR                  PIOA->PIO_PDSR
+  #define TRIMS_GPIO_REG_LVU                 PIOC->PIO_PDSR
+  #define TRIMS_GPIO_REG_RVD                 PIOA->PIO_PDSR
+  #define TRIMS_GPIO_REG_RHR                  PIOC->PIO_PDSR
 #else
-  #define GPIO_TRIM_LH_L                  PIOA->PIO_PDSR
-  #define GPIO_TRIM_LV_DN                 PIOA->PIO_PDSR
-  #define GPIO_TRIM_RV_UP                 PIOA->PIO_PDSR
-  #define GPIO_TRIM_RH_L                  PIOA->PIO_PDSR
-  #define GPIO_TRIM_LH_R                  PIOB->PIO_PDSR
-  #define GPIO_TRIM_LV_UP                 PIOC->PIO_PDSR
-  #define GPIO_TRIM_RV_DN                 PIOC->PIO_PDSR
-  #define GPIO_TRIM_RH_R                  PIOC->PIO_PDSR
+  #define TRIMS_GPIO_REG_LHL                  PIOA->PIO_PDSR
+  #define TRIMS_GPIO_REG_LVD                 PIOA->PIO_PDSR
+  #define TRIMS_GPIO_REG_RVU                 PIOA->PIO_PDSR
+  #define TRIMS_GPIO_REG_RHL                  PIOA->PIO_PDSR
+  #define TRIMS_GPIO_REG_LHR                  PIOB->PIO_PDSR
+  #define TRIMS_GPIO_REG_LVU                 PIOC->PIO_PDSR
+  #define TRIMS_GPIO_REG_RVD                 PIOC->PIO_PDSR
+  #define TRIMS_GPIO_REG_RHR                  PIOC->PIO_PDSR
 #endif
 
 #if defined(REVX)
-  #define PIN_TRIM_LH_L                   0x00000010
-  #define PIN_TRIM_LV_DN                  0x01000000
-  #define PIN_TRIM_RV_UP                  0x00000400
-  #define PIN_TRIM_RH_L                   0x00000001
-  #define PIN_TRIM_LH_R                   0x00800000
-  #define PIN_TRIM_LV_UP                  0x10000000
-  #define PIN_TRIM_RV_DN                  0x00000002
-  #define PIN_TRIM_RH_R                   0x00000200
+  #define TRIMS_GPIO_PIN_LHL                   0x00000010
+  #define TRIMS_GPIO_PIN_LVD                  0x01000000
+  #define TRIMS_GPIO_PIN_RVU                  0x00000400
+  #define TRIMS_GPIO_PIN_RHL                   0x00000001
+  #define TRIMS_GPIO_PIN_LHR                   0x00800000
+  #define TRIMS_GPIO_PIN_LVU                  0x10000000
+  #define TRIMS_GPIO_PIN_RVD                  0x00000002
+  #define TRIMS_GPIO_PIN_RHR                   0x00000200
 #elif defined(REVA)
-  #define PIN_TRIM_LH_L                   0x00000080
-  #define PIN_TRIM_LV_DN                  0x08000000
-  #define PIN_TRIM_RV_UP                  0x40000000
-  #define PIN_TRIM_RH_L                   0x20000000
-  #define PIN_TRIM_LH_R                   0x00000010
-  #define PIN_TRIM_LV_UP                  0x10000000
-  #define PIN_TRIM_RV_DN                  0x00000400
-  #define PIN_TRIM_RH_R                   0x00000200
+  #define TRIMS_GPIO_PIN_LHL                   0x00000080
+  #define TRIMS_GPIO_PIN_LVD                  0x08000000
+  #define TRIMS_GPIO_PIN_RVU                  0x40000000
+  #define TRIMS_GPIO_PIN_RHL                   0x20000000
+  #define TRIMS_GPIO_PIN_LHR                   0x00000010
+  #define TRIMS_GPIO_PIN_LVU                  0x10000000
+  #define TRIMS_GPIO_PIN_RVD                  0x00000400
+  #define TRIMS_GPIO_PIN_RHR                   0x00000200
 #else
-  #define PIN_TRIM_LH_L                   0x00800000
-  #define PIN_TRIM_LV_DN                  0x01000000
-  #define PIN_TRIM_RV_UP                  0x00000002
-  #define PIN_TRIM_RH_L                   0x00000001
-  #define PIN_TRIM_LH_R                   0x00000010
-  #define PIN_TRIM_LV_UP                  0x10000000
-  #define PIN_TRIM_RV_DN                  0x00000400
-  #define PIN_TRIM_RH_R                   0x00000200
+  #define TRIMS_GPIO_PIN_LHL                   0x00800000
+  #define TRIMS_GPIO_PIN_LVD                  0x01000000
+  #define TRIMS_GPIO_PIN_RVU                  0x00000002
+  #define TRIMS_GPIO_PIN_RHL                   0x00000001
+  #define TRIMS_GPIO_PIN_LHR                   0x00000010
+  #define TRIMS_GPIO_PIN_LVU                  0x10000000
+  #define TRIMS_GPIO_PIN_RVD                  0x00000400
+  #define TRIMS_GPIO_PIN_RHR                   0x00000200
 #endif
 
 void usbMassStorage();
@@ -187,7 +187,7 @@ void writeFlash(uint32_t * address, uint32_t * buffer);
 extern uint32_t readKeys();
 extern uint32_t readTrims();
 #define TRIMS_PRESSED() (readTrims())
-#define KEYS_PRESSED()  (~readKeys())
+#define KEYS_PRESSED()  (readKeys())
 #define DBLKEYS_PRESSED_RGT_LFT(i) ((in & (0x20 + 0x40)) == (0x20 + 0x40))
 #define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (0x10 + 0x08)) == (0x10 + 0x08))
 #define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (0x20 + 0x10)) == (0x20 + 0x10))

@@ -114,18 +114,18 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
   }
 }
 
-#define GPIO_BUTTON_MENU                PIOB->PIO_PDSR
-#define GPIO_BUTTON_EXIT                PIOC->PIO_PDSR
-#define GPIO_BUTTON_UP                  PIOC->PIO_PDSR
-#define GPIO_BUTTON_DOWN                PIOC->PIO_PDSR
-#define GPIO_BUTTON_RIGHT               PIOC->PIO_PDSR
-#define GPIO_BUTTON_LEFT                PIOC->PIO_PDSR
-#define PIN_BUTTON_MENU                 0x00000020
-#define PIN_BUTTON_EXIT                 0x01000000
-#define PIN_BUTTON_UP                   0x00000002
-#define PIN_BUTTON_DOWN                 0x00000020
-#define PIN_BUTTON_RIGHT                0x00000010
-#define PIN_BUTTON_LEFT                 0x00000008
+#define KEYS_GPIO_REG_MENU                PIOB->PIO_PDSR
+#define KEYS_GPIO_REG_EXIT                PIOC->PIO_PDSR
+#define KEYS_GPIO_REG_UP                  PIOC->PIO_PDSR
+#define KEYS_GPIO_REG_DOWN                PIOC->PIO_PDSR
+#define KEYS_GPIO_REG_RIGHT               PIOC->PIO_PDSR
+#define KEYS_GPIO_REG_LEFT                PIOC->PIO_PDSR
+#define KEYS_GPIO_PIN_MENU                 0x00000020
+#define KEYS_GPIO_PIN_EXIT                 0x01000000
+#define KEYS_GPIO_PIN_UP                   0x00000002
+#define KEYS_GPIO_PIN_DOWN                 0x00000020
+#define KEYS_GPIO_PIN_RIGHT                0x00000010
+#define KEYS_GPIO_PIN_LEFT                 0x00000008
 
 #define KEY_CASE(key, pin, mask) \
     case key: \
@@ -135,23 +135,23 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
 void simuSetKey(uint8_t key, bool state)
 {
   switch (key) {
-    KEY_CASE(KEY_MENU, GPIO_BUTTON_MENU, PIN_BUTTON_MENU)
-    KEY_CASE(KEY_EXIT, GPIO_BUTTON_EXIT, PIN_BUTTON_EXIT)
-    KEY_CASE(KEY_RIGHT, GPIO_BUTTON_RIGHT, PIN_BUTTON_RIGHT)
-    KEY_CASE(KEY_LEFT, GPIO_BUTTON_LEFT, PIN_BUTTON_LEFT)
-    KEY_CASE(KEY_UP, GPIO_BUTTON_UP, PIN_BUTTON_UP)
-    KEY_CASE(KEY_DOWN, GPIO_BUTTON_DOWN, PIN_BUTTON_DOWN)
+    KEY_CASE(KEY_MENU, KEYS_GPIO_REG_MENU, KEYS_GPIO_PIN_MENU)
+    KEY_CASE(KEY_EXIT, KEYS_GPIO_REG_EXIT, KEYS_GPIO_PIN_EXIT)
+    KEY_CASE(KEY_RIGHT, KEYS_GPIO_REG_RIGHT, KEYS_GPIO_PIN_RIGHT)
+    KEY_CASE(KEY_LEFT, KEYS_GPIO_REG_LEFT, KEYS_GPIO_PIN_LEFT)
+    KEY_CASE(KEY_UP, KEYS_GPIO_REG_UP, KEYS_GPIO_PIN_UP)
+    KEY_CASE(KEY_DOWN, KEYS_GPIO_REG_DOWN, KEYS_GPIO_PIN_DOWN)
   }
 }
 
-#define GPIO_TRIM_LH_L                  PIOA->PIO_PDSR
-#define GPIO_TRIM_LV_DN                 PIOA->PIO_PDSR
-#define GPIO_TRIM_RV_UP                 PIOA->PIO_PDSR
-#define GPIO_TRIM_RH_L                  PIOA->PIO_PDSR
-#define GPIO_TRIM_LH_R                  PIOB->PIO_PDSR
-#define GPIO_TRIM_LV_UP                 PIOC->PIO_PDSR
-#define GPIO_TRIM_RV_DN                 PIOC->PIO_PDSR
-#define GPIO_TRIM_RH_R                  PIOC->PIO_PDSR
+#define TRIMS_GPIO_REG_LHL                  PIOA->PIO_PDSR
+#define TRIMS_GPIO_REG_LVD                 PIOA->PIO_PDSR
+#define TRIMS_GPIO_REG_RVU                 PIOA->PIO_PDSR
+#define TRIMS_GPIO_REG_RHL                  PIOA->PIO_PDSR
+#define TRIMS_GPIO_REG_LHR                  PIOB->PIO_PDSR
+#define TRIMS_GPIO_REG_LVU                 PIOC->PIO_PDSR
+#define TRIMS_GPIO_REG_RVD                 PIOC->PIO_PDSR
+#define TRIMS_GPIO_REG_RHR                  PIOC->PIO_PDSR
 #define PIN_TRIM_LH_L                   0x00800000
 #define PIN_TRIM_LV_DN                  0x01000000
 #define PIN_TRIM_RV_UP                  0x00000002
@@ -166,14 +166,14 @@ void simuSetKey(uint8_t key, bool state)
 void simuSetTrim(uint8_t trim, bool state)
 {
   switch (trim) {
-    TRIM_CASE(0, GPIO_TRIM_LH_L, PIN_TRIM_LH_L)
-    TRIM_CASE(1, GPIO_TRIM_LH_R, PIN_TRIM_LH_R)
-    TRIM_CASE(2, GPIO_TRIM_LV_DN, PIN_TRIM_LV_DN)
-    TRIM_CASE(3, GPIO_TRIM_LV_UP, PIN_TRIM_LV_UP)
-    TRIM_CASE(4, GPIO_TRIM_RV_DN, PIN_TRIM_RV_DN)
-    TRIM_CASE(5, GPIO_TRIM_RV_UP, PIN_TRIM_RV_UP)
-    TRIM_CASE(6, GPIO_TRIM_RH_L, PIN_TRIM_RH_L)
-    TRIM_CASE(7, GPIO_TRIM_RH_R, PIN_TRIM_RH_R)
+    TRIM_CASE(0, TRIMS_GPIO_REG_LHL, PIN_TRIM_LH_L)
+    TRIM_CASE(1, TRIMS_GPIO_REG_LHR, PIN_TRIM_LH_R)
+    TRIM_CASE(2, TRIMS_GPIO_REG_LVD, PIN_TRIM_LV_DN)
+    TRIM_CASE(3, TRIMS_GPIO_REG_LVU, PIN_TRIM_LV_UP)
+    TRIM_CASE(4, TRIMS_GPIO_REG_RVD, PIN_TRIM_RV_DN)
+    TRIM_CASE(5, TRIMS_GPIO_REG_RVU, PIN_TRIM_RV_UP)
+    TRIM_CASE(6, TRIMS_GPIO_REG_RHL, PIN_TRIM_RH_L)
+    TRIM_CASE(7, TRIMS_GPIO_REG_RHR, PIN_TRIM_RH_R)
   }
 }
 

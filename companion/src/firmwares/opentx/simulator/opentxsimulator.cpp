@@ -83,7 +83,6 @@ namespace NAMESPACE {
 #include "radio/src/pulses/ppm_arm.cpp"
 #include "radio/src/pulses/pxx_arm.cpp"
 #include "radio/src/pulses/dsm2_arm.cpp"
-#include "radio/src/eeprom_conversions.cpp"
 #include "radio/src/main_arm.cpp"
 #include "radio/src/pulses/pulses_arm.cpp"
 #include "radio/src/tasks_arm.cpp"
@@ -98,10 +97,14 @@ namespace NAMESPACE {
 #endif
 
 #include "radio/src/eeprom_common.cpp"
-#if defined(PCBSKY9X)
-#include "radio/src/eeprom_raw.cpp"
-#else
+#if defined(EEPROM_RLC)
 #include "radio/src/eeprom_rlc.cpp"
+#else
+#include "radio/src/eeprom_raw.cpp"
+#endif
+
+#if defined(PCBTARANIS) || defined(PCBSKY9X)
+#include "radio/src/eeprom_conversions.cpp"
 #endif
 
 #include "radio/src/opentx.cpp"
@@ -326,8 +329,14 @@ uint8_t getStickMode()
 #if defined(PCBTARANIS)
 void resetTrims()
 {
-  GPIOE->IDR |= PIN_TRIM_LH_L | PIN_TRIM_LH_R | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP;
-  GPIOC->IDR |= PIN_TRIM_RV_DN | PIN_TRIM_RV_UP | PIN_TRIM_RH_L | PIN_TRIM_RH_R;
+  TRIMS_GPIO_REG_RVD |= TRIMS_GPIO_PIN_RVD;
+  TRIMS_GPIO_REG_RVU |= TRIMS_GPIO_PIN_RVU;
+  TRIMS_GPIO_REG_RHL |= TRIMS_GPIO_PIN_RHL;
+  TRIMS_GPIO_REG_RHR |= TRIMS_GPIO_PIN_RHR;
+  TRIMS_GPIO_REG_LVD |= TRIMS_GPIO_PIN_LVD;
+  TRIMS_GPIO_REG_LVU |= TRIMS_GPIO_PIN_LVU;
+  TRIMS_GPIO_REG_LHL |= TRIMS_GPIO_PIN_LHL;
+  TRIMS_GPIO_REG_LHR |= TRIMS_GPIO_PIN_LHR;
 }
 #endif
 

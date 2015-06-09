@@ -1047,7 +1047,7 @@ void checkFailsafe()
 #if defined(GUI)
 void checkAll()
 {
-#if !defined(PCBSKY9X)
+#if defined(EEPROM_RLC)
   checkLowEEPROM();
 #endif
 
@@ -1098,7 +1098,7 @@ void checkStartupWarnings()
 }
 #endif
 
-#if !defined(PCBSKY9X)
+#if defined(EEPROM_RLC)
 void checkLowEEPROM()
 {
   if (g_eeGeneral.disableMemoryWarning) return;
@@ -1391,7 +1391,7 @@ void getADC()
 
   for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
     uint16_t v = temp[x] >> 3;
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
     if (calibrationState) v = temp[x] >> 1;
     StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
     if (!calibrationState && IS_POT_MULTIPOS(x) && calib->count>0 && calib->count<XPOTS_MULTIPOS_COUNT) {
@@ -1964,7 +1964,6 @@ void checkBattery()
 #endif
     }
   }
-
 }
 
 int16_t g_ppmIns[NUM_TRAINER];

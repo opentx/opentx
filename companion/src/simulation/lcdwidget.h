@@ -42,7 +42,10 @@ class lcdWidget : public QWidget {
       lcdWidth = width;
       lcdHeight = height;
       lcdDepth = depth;
-      lcdSize = (width * ((height+7)/8)) * depth;
+      if (depth >= 8)
+        lcdSize = (width * height) * (depth / 8);
+      else
+        lcdSize = (width * ((height+7)/8)) * depth;
       previousBuf = (unsigned char *)malloc(lcdSize);
       memset(previousBuf, 0, lcdSize);
     }
@@ -106,45 +109,57 @@ class lcdWidget : public QWidget {
     {
       QRgb rgb;
 
-      if (lightEnable)
-        rgb = qRgb(_r, _g, _b);
-      else
-        rgb = qRgb(161, 161, 161);
-
-      p.setBackground(QBrush(rgb));
-      p.eraseRect(0, 0, 2*lcdWidth, 2*lcdHeight);
-
-      if (lcdBuf) {
-        if (lcdDepth == 1) {
-          rgb = qRgb(0, 0, 0);
-          p.setPen(rgb);
-          p.setBrush(QBrush(rgb));
+      if (lcdDepth >= 8) {
+        for (int x=0; x<lcdWidth; x++) {
+          for (int y=0; y<lcdHeight; y++) {
+            uint16_t z = ((uint16_t *)lcdBuf)[y * lcdWidth + x];
+            rgb = qRgb(255*((z&0xF00)>>8)/0x0f, 255*((z&0x0F0)>>4)/0x0f, 255*(z&0x00F)/0x0f);
+            p.setPen(rgb);
+            p.drawPoint(x, y);
+          }
         }
+      }
+      else {
+        if (lightEnable)
+          rgb = qRgb(_r, _g, _b);
+        else
+          rgb = qRgb(161, 161, 161);
 
-        unsigned int previousDepth = 0xFF;
+        p.setBackground(QBrush(rgb));
+        p.eraseRect(0, 0, 2*lcdWidth, 2*lcdHeight);
 
-        for (int y=0; y<lcdHeight; y++) {
-          unsigned int idx = (y*lcdDepth/8)*lcdWidth;
-          unsigned int mask = (1 << (y%8));
-          for (int x=0; x<lcdWidth; x++, idx++) {
-            if (lcdDepth == 1) {
-              if (lcdBuf[idx] & mask) {
-                p.drawRect(2*x, 2*y, 1, 1);
-              }
-            }
-            else {
-              unsigned int z = (y & 1) ? (lcdBuf[idx] >> 4) : (lcdBuf[idx] & 0x0F);
-              if (z) {
-                if (z != previousDepth) {
-                  previousDepth = z;
-                  if (lightEnable)
-                    rgb = qRgb(_r-(z*_r)/15, _g-(z*_g)/15, _b-(z*_b)/15);
-                  else
-                    rgb = qRgb(161-(z*161)/15, 161-(z*161)/15, 161-(z*161)/15);
-                  p.setPen(rgb);
-                  p.setBrush(QBrush(rgb));
+        if (lcdBuf) {
+          if (lcdDepth == 1) {
+            rgb = qRgb(0, 0, 0);
+            p.setPen(rgb);
+            p.setBrush(QBrush(rgb));
+          }
+
+          unsigned int previousDepth = 0xFF;
+
+          for (int y=0; y<lcdHeight; y++) {
+            unsigned int idx = (y*lcdDepth/8)*lcdWidth;
+            unsigned int mask = (1 << (y%8));
+            for (int x=0; x<lcdWidth; x++, idx++) {
+              if (lcdDepth == 1) {
+                if (lcdBuf[idx] & mask) {
+                  p.drawRect(2*x, 2*y, 1, 1);
                 }
-                p.drawRect(2*x, 2*y, 1, 1);
+              }
+              else {
+                unsigned int z = (y & 1) ? (lcdBuf[idx] >> 4) : (lcdBuf[idx] & 0x0F);
+                if (z) {
+                  if (z != previousDepth) {
+                    previousDepth = z;
+                    if (lightEnable)
+                      rgb = qRgb(_r-(z*_r)/15, _g-(z*_g)/15, _b-(z*_b)/15);
+                    else
+                      rgb = qRgb(161-(z*161)/15, 161-(z*161)/15, 161-(z*161)/15);
+                    p.setPen(rgb);
+                    p.setBrush(QBrush(rgb));
+                  }
+                  p.drawRect(2*x, 2*y, 1, 1);
+                }
               }
             }
           }

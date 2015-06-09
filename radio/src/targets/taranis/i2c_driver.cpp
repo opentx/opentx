@@ -2,8 +2,6 @@
 
 void I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite);
 void I2C_EE_WaitEepromStandbyState(void);
-void I2C_set_volume(register uint8_t volume);
-uint8_t I2C_read_volume(void);
 
 void eepromInit(void)
 {

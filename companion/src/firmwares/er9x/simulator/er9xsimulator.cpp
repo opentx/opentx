@@ -73,14 +73,14 @@ void getTrims(int16_t values[4])
     values[i] = g_model.trim[i];
 }
 
-#define GPIO_TRIM_LH_L         pind
-#define GPIO_TRIM_LV_DN        pind
-#define GPIO_TRIM_RV_UP        pind
-#define GPIO_TRIM_RH_L         pind
-#define GPIO_TRIM_LH_R         pind
-#define GPIO_TRIM_LV_UP        pind
-#define GPIO_TRIM_RV_DN        pind
-#define GPIO_TRIM_RH_R         pind
+#define TRIMS_GPIO_REG_LHL         pind
+#define TRIMS_GPIO_REG_LVD        pind
+#define TRIMS_GPIO_REG_RVU        pind
+#define TRIMS_GPIO_REG_RHL         pind
+#define TRIMS_GPIO_REG_LHR         pind
+#define TRIMS_GPIO_REG_LVU        pind
+#define TRIMS_GPIO_REG_RVD        pind
+#define TRIMS_GPIO_REG_RHR         pind
 #define PIN_TRIM_LH_L          (1<<INP_D_TRM_LH_DWN)
 #define PIN_TRIM_LV_DN         (1<<INP_D_TRM_LV_DWN)
 #define PIN_TRIM_RV_UP         (1<<INP_D_TRM_RV_UP)
@@ -98,14 +98,14 @@ void getTrims(int16_t values[4])
 void simuSetTrim(uint8_t trim, bool state)
 {
   switch (trim) {
-    TRIM_CASE(0, GPIO_TRIM_LH_L, PIN_TRIM_LH_L)
-    TRIM_CASE(1, GPIO_TRIM_LH_R, PIN_TRIM_LH_R)
-    TRIM_CASE(2, GPIO_TRIM_LV_DN, PIN_TRIM_LV_DN)
-    TRIM_CASE(3, GPIO_TRIM_LV_UP, PIN_TRIM_LV_UP)
-    TRIM_CASE(4, GPIO_TRIM_RV_DN, PIN_TRIM_RV_DN)
-    TRIM_CASE(5, GPIO_TRIM_RV_UP, PIN_TRIM_RV_UP)
-    TRIM_CASE(6, GPIO_TRIM_RH_L, PIN_TRIM_RH_L)
-    TRIM_CASE(7, GPIO_TRIM_RH_R, PIN_TRIM_RH_R)
+    TRIM_CASE(0, TRIMS_GPIO_REG_LHL, PIN_TRIM_LH_L)
+    TRIM_CASE(1, TRIMS_GPIO_REG_LHR, PIN_TRIM_LH_R)
+    TRIM_CASE(2, TRIMS_GPIO_REG_LVD, PIN_TRIM_LV_DN)
+    TRIM_CASE(3, TRIMS_GPIO_REG_LVU, PIN_TRIM_LV_UP)
+    TRIM_CASE(4, TRIMS_GPIO_REG_RVD, PIN_TRIM_RV_DN)
+    TRIM_CASE(5, TRIMS_GPIO_REG_RVU, PIN_TRIM_RV_UP)
+    TRIM_CASE(6, TRIMS_GPIO_REG_RHL, PIN_TRIM_RH_L)
+    TRIM_CASE(7, TRIMS_GPIO_REG_RHR, PIN_TRIM_RH_R)
   }
 }
 

@@ -414,7 +414,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   SDCARD = NO
   THR_TRACE = NO
   INCDIRS += targets/stock
-  CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
+  CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM64 -DEEPROM_RLC -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
   EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/common_avr/telemetry_driver.cpp
   ifeq ($(GUI), YES)
@@ -495,7 +495,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   SDCARD = NO
   THR_TRACE = NO
   EEPROM_VARIANT += ${M128_VARIANT}
-  CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM128 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
+  CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM128 -DEEPROM_RLC -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   INCDIRS += targets/stock
   BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
   EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
@@ -570,7 +570,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   SDCARD = NO
   THR_TRACE = YES
   EEPROM_VARIANT += ${M2561_VARIANT}
-  CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM2561 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
+  CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM2561 -DEEPROM_RLC -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   INCDIRS += targets/stock
   BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
   EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
@@ -640,7 +640,7 @@ ifeq ($(PCB), GRUVIN9X)
   TRGT = avr-
   MCU = atmega2560
   OPT = s
-  CPPDEFS += -DF_CPU=$(F_CPU)UL -DPCBGRUVIN9X -DCPUM2560 -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC
+  CPPDEFS += -DF_CPU=$(F_CPU)UL -DPCBGRUVIN9X -DCPUM2560 -DEEPROM_RLC -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC
   SDCARD = NO
   BUZZER = NO
   THR_TRACE = YES
@@ -685,7 +685,7 @@ ifeq ($(PCB), MEGA2560)
   TRGT = avr-
   MCU = atmega2560
   OPT = s
-  CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBMEGA2560 -DCPUM2560 -DEEPROM_VARIANT=0 -DAUDIO
+  CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBMEGA2560 -DCPUM2560 -DEEPROM_RLC -DEEPROM_VARIANT=0 -DAUDIO
   SDCARD = NO
   BUZZER = YES
   THR_TRACE = YES
@@ -884,19 +884,20 @@ ifeq ($(PCB), TARANIS)
   AUTOSWITCH = YES
   AUTOSOURCE = YES
   DBLKEYS = YES
+  TIMERS = 2
+  CPPDEFS += -DTIMERS=$(TIMERS)
   PPM_LIMITS_SYMETRICAL = YES
   PPM_CENTER_ADJUSTABLE = YES
   DSM2 = PPM
-  CPPDEFS += -DPCBTARANIS -DCPUARM -DCPUSTM32 -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DEEPROM_VARIANT=0 -DAUDIO -DPXX
+  CPPDEFS += -DPCBTARANIS -DCPUARM -DCPUSTM32 -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DEEPROM_RLC -DEEPROM_VARIANT=0 -DAUDIO -DPXX
   INCDIRS += targets/taranis $(THIRDPARTY) $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
+  CPPDEFS += -DHSE_VALUE=12000000
   ifeq ($(PCBREV), REV9E)
     STM32LIBPATH = $(THIRDPARTY)/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries
-    CPPDEFS += -DHSE_VALUE=12000000
     CPPDEFS += -DSTM32F40_41xxx
     INCDIRS += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Include $(STM32LIBPATH)/CMSIS/Include $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/inc
   else
     STM32LIBPATH= $(THIRDPARTY)/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries
-    CPPDEFS += -DHSE_VALUE=12000000
     INCDIRS += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/inc $(STM32LIBPATH)/CMSIS/Device/ST/STM32F2xx/Include $(STM32LIBPATH)/CMSIS/include
   endif
   STM32USBPATH = $(THIRDPARTY)/STM32_USB-Host-Device_Lib_V2.1.0/Libraries
@@ -911,7 +912,8 @@ ifeq ($(PCB), TARANIS)
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp sbus.cpp telemetry/telemetry.cpp
   CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/uart3_driver.cpp targets/taranis/telemetry_driver.cpp
-  CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp loadboot.cpp debug.cpp
+  CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp
+  CPPSRC += loadboot.cpp
   ifeq ($(PCBREV), REV9E)
     EXTRABOARDSRC += targets/taranis/top_lcd_driver.cpp
 	SRC += targets/taranis/system_stm32f4xx.c
@@ -1678,7 +1680,7 @@ remallsrc:
 
 # Link: create ELF output file from object files.
 ifeq ($(ARCH), AVR)
-%.elf: allsrc.cpp
+opentx.elf: allsrc.cpp
 	@echo
 	@echo $(MSG_COMPILING) $@
 	$(CC) $(AVRCPPFLAGS) $< --output $@ $(LDFLAGS)
@@ -1689,7 +1691,7 @@ else
 	$(AS) $< -o $@
 TMP = $(SRC:.c=.o)
 OBJS =  $(TMP:.s=.o)
-%.elf: allsrc.cpp $(OBJS)
+opentx.elf: allsrc.cpp $(OBJS)
 	@echo
 	@echo $(MSG_COMPILING) $@
 	$(CC) $(ARMCPPFLAGS) $< -o allsrc.o

@@ -46,7 +46,7 @@ pind = 0;
 if (inputs.rotenc) pind |= 0x20;
 #endif
 
-#ifdef PCBSKY9X
+#if defined(PCBSKY9X)
 if (inputs.rotenc) PIOB->PIO_PDSR &= ~0x40; else PIOB->PIO_PDSR |= 0x40;
 #endif
 

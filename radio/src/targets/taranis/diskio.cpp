@@ -243,7 +243,7 @@ void stm32_dma_transfer(
 )
 {
   DMA_InitTypeDef DMA_InitStructure;
-  WORD rw_workbyte[] = { 0xffff };
+  WORD dummy[] = { 0xffff };
 
   DMA_DeInit(SD_DMA_Stream_SPI_RX);
   DMA_DeInit(SD_DMA_Stream_SPI_TX);
@@ -263,64 +263,42 @@ void stm32_dma_transfer(
   DMA_InitStructure.DMA_MemoryBurst =DMA_MemoryBurst_Single;
   DMA_InitStructure.DMA_PeripheralBurst =DMA_PeripheralBurst_Single;
 
-  //seperate RX & TX
-  if ( receive ) { //true =read 
-
-    /* DMA1 channel3 configuration SPI2 RX ---------------------------------------------*/
+  // separate RX & TX
+  if (receive) {
     DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)buff;
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
     DMA_Init(SD_DMA_Stream_SPI_RX, &DMA_InitStructure);
-
-    /* DMA1 channel4 configuration SPI2 TX ---------------------------------------------*/
-    DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)rw_workbyte;
+    DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)dummy;
     DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
     DMA_Init(SD_DMA_Stream_SPI_TX, &DMA_InitStructure);
-
   }
-  else {//false = write
-
-#if _FS_READONLY == 0 //READ AND WRITE = write enabled.
-    /* DMA1 channel2 configuration SPI1 RX ---------------------------------------------*/
-    /* DMA1 channel4 configuration SPI2 RX ---------------------------------------------*/
-    DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)rw_workbyte;
+  else {
+#if _FS_READONLY == 0
+    DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)dummy;
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
     DMA_Init(SD_DMA_Stream_SPI_RX, &DMA_InitStructure);
-
-    /* DMA1 channel3 configuration SPI1 TX ---------------------------------------------*/
-    /* DMA1 channel5 configuration SPI2 TX ---------------------------------------------*/
     DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)buff;
     DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
     DMA_Init(SD_DMA_Stream_SPI_TX, &DMA_InitStructure);
 #endif
-
   }
 
-  /* Enable DMA RX Channel */
+  /* Enable DMA Channels */
   DMA_Cmd(SD_DMA_Stream_SPI_RX, ENABLE);
-  /* Enable DMA TX Channel */
   DMA_Cmd(SD_DMA_Stream_SPI_TX, ENABLE);
 
   /* Enable SPI TX/RX request */
   SPI_I2S_DMACmd(SD_SPI, SPI_I2S_DMAReq_Rx | SPI_I2S_DMAReq_Tx, ENABLE);
 
-  /* Wait until DMA1_Channel 3 Transfer Complete */
-  
   while (DMA_GetFlagStatus(SD_DMA_Stream_SPI_TX, SD_DMA_FLAG_SPI_TC_TX) == RESET) { ; }
-  
-  /* Wait until DMA1_Channel 2 Receive Complete */
-  
   while (DMA_GetFlagStatus(SD_DMA_Stream_SPI_RX, SD_DMA_FLAG_SPI_TC_RX) == RESET) { ; }
 
-  // same w/o function-call:
-  // while ( ( ( DMA1->ISR ) & SD_DMA_FLAG_SPI_TC_RX ) == RESET ) { ; }
-
-  /* Disable DMA RX Channel */
+  /* Disable DMA Channels */
   DMA_Cmd(SD_DMA_Stream_SPI_RX, DISABLE);
-  /* Disable DMA TX Channel */
   DMA_Cmd(SD_DMA_Stream_SPI_TX, DISABLE);
 
   /* Disable SPI RX/TX request */
@@ -368,9 +346,7 @@ void power_on (void)
 
   /* Configure SPI pins: SCK MISO and MOSI with alternate function push-down */
   GPIO_InitStructure.GPIO_Pin   = SD_GPIO_PIN_SCK | SD_GPIO_PIN_MOSI|SD_GPIO_PIN_MISO;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(SD_GPIO, &GPIO_InitStructure);
   GPIO_PinAFConfig(SD_GPIO,SD_GPIO_PinSource_SCK ,SD_GPIO_AF);
@@ -418,8 +394,7 @@ void power_off (void)
   RCC_APB1PeriphClockCmd(SD_RCC_APB1Periph_SPI, DISABLE);
 
   //All SPI-Pins to input with weak internal pull-downs
-  GPIO_InitStructure.GPIO_Pin = SD_GPIO_PIN_SCK | SD_GPIO_PIN_MISO
-      | SD_GPIO_PIN_MOSI;
+  GPIO_InitStructure.GPIO_Pin = SD_GPIO_PIN_SCK | SD_GPIO_PIN_MISO | SD_GPIO_PIN_MOSI;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;

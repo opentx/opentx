@@ -52,32 +52,33 @@ uint32_t readKeys()
   register uint32_t result = 0;
 
   x = lcdLock ? lcdInputs : PIOC->PIO_PDSR; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
+  x = ~x;
 
 #if defined(REVA)
-  if (x & PIN_BUTTON_RIGHT)
+  if (x & KEYS_GPIO_PIN_RIGHT)
     result |= 0x02 << KEY_RIGHT;
-  if (x & PIN_BUTTON_LEFT)
+  if (x & KEYS_GPIO_PIN_LEFT)
     result |= 0x02 << KEY_LEFT;
-  if (x & PIN_BUTTON_UP)
+  if (x & KEYS_GPIO_PIN_UP)
     result |= 0x02 << KEY_UP;
-  if (x & PIN_BUTTON_DOWN)
+  if (x & KEYS_GPIO_PIN_DOWN)
     result |= 0x02 << KEY_DOWN;
-  if (GPIO_BUTTON_EXIT & PIN_BUTTON_EXIT)
+  if (KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
     result |= 0x02 << KEY_EXIT;
-  if (GPIO_BUTTON_MENU & 0x000000040)
+  if (KEYS_GPIO_REG_MENU & 0x000000040)
     result |= 0x02 << KEY_MENU;
 #else
-  if (x & PIN_BUTTON_RIGHT)
+  if (x & KEYS_GPIO_PIN_RIGHT)
     result |= 0x02 << KEY_RIGHT;
-  if (x & PIN_BUTTON_UP)
+  if (x & KEYS_GPIO_PIN_UP)
     result |= 0x02 << KEY_UP;
-  if (x & PIN_BUTTON_LEFT)
+  if (x & KEYS_GPIO_PIN_LEFT)
     result |= 0x02 << KEY_LEFT;
-  if (x & PIN_BUTTON_DOWN)
+  if (x & KEYS_GPIO_PIN_DOWN)
     result |= 0x02 << KEY_DOWN;
-  if (x & PIN_BUTTON_EXIT)
+  if (x & KEYS_GPIO_PIN_EXIT)
     result |= 0x02 << KEY_EXIT;
-  if (GPIO_BUTTON_MENU & PIN_BUTTON_MENU)
+  if (KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
     result |= 0x02 << KEY_MENU;
 #endif
 
@@ -90,21 +91,21 @@ uint32_t readTrims()
 {
   register uint32_t result = 0;
 
-  if (~GPIO_TRIM_LH_L & PIN_TRIM_LH_L)
+  if (~TRIMS_GPIO_REG_LHL & TRIMS_GPIO_PIN_LHL)
     result |= 0x01;
-  if (~GPIO_TRIM_LV_DN & PIN_TRIM_LV_DN)
+  if (~TRIMS_GPIO_REG_LVD & TRIMS_GPIO_PIN_LVD)
     result |= 0x04;
-  if (~GPIO_TRIM_RV_UP & PIN_TRIM_RV_UP)
+  if (~TRIMS_GPIO_REG_RVU & TRIMS_GPIO_PIN_RVU)
     result |= 0x20;
-  if (~GPIO_TRIM_RH_L & PIN_TRIM_RH_L)
+  if (~TRIMS_GPIO_REG_RHL & TRIMS_GPIO_PIN_RHL)
     result |= 0x40;
-  if (~GPIO_TRIM_LH_R & PIN_TRIM_LH_R)
+  if (~TRIMS_GPIO_REG_LHR & TRIMS_GPIO_PIN_LHR)
     result |= 0x02;
-  if (~GPIO_TRIM_LV_UP & PIN_TRIM_LV_UP)
+  if (~TRIMS_GPIO_REG_LVU & TRIMS_GPIO_PIN_LVU)
     result |= 0x08;
-  if (~GPIO_TRIM_RV_DN & PIN_TRIM_RV_DN)
+  if (~TRIMS_GPIO_REG_RVD & TRIMS_GPIO_PIN_RVD)
     result |= 0x10;
-  if (~GPIO_TRIM_RH_R & PIN_TRIM_RH_R)
+  if (~TRIMS_GPIO_REG_RHR & TRIMS_GPIO_PIN_RHR)
     result |= 0x80;
 
   return result;
@@ -117,7 +118,7 @@ uint8_t trimDown(uint8_t idx)
 
 uint8_t keyDown()
 {
-  return (~readKeys() & 0x7E) || REA_DOWN();
+  return readKeys() || REA_DOWN();
 }
 
 void readKeysAndTrims()

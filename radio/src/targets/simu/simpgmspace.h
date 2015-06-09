@@ -37,6 +37,8 @@
 #ifndef simpgmspace_h
 #define simpgmspace_h
 
+extern int g_snapshot_idx;
+
 #ifndef __GNUC__
 #include <windows.h>
 #define sleep(x) Sleep(x)
@@ -188,7 +190,7 @@ extern Pwm pwm;
 
 extern sem_t *eeprom_write_sem;
 
-#if defined(PCBSKY9X)
+#if !defined(EEPROM_RLC)
 extern uint32_t eeprom_pointer;
 extern uint8_t * eeprom_buffer_data;
 extern volatile int32_t eeprom_buffer_size;
@@ -419,20 +421,35 @@ extern OS_MutexID audioMutex;
 #define CoTickDelay(...)
 #define CoCreateFlag(...) 0
 #define CoGetOSTime(...) 0
-inline void UART3_Configure(uint32_t baudrate, uint32_t masterClock) { }
 #define UART_Stop(...)
 #define UART3_Stop(...)
 #define USART_GetITStatus(...) 0
 
-#if defined(PCBTARANIS)
+#if defined(CPUSTM32)
 inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { }
 #define GPIO_SetBits(GPIOx, pin) GPIOx->BSRRL |= pin
 #define GPIO_ResetBits(GPIOx, pin) GPIOx->BSRRL &= ~pin
 #define GPIO_ReadInputDataBit(GPIOx, pin) (GPIOx->BSRRL & pin)
 #define RCC_AHB1PeriphClockCmd(...)
 #define RCC_APB2PeriphClockCmd(...)
+inline void SPI_Init(SPI_TypeDef* SPIx, SPI_InitTypeDef* SPI_InitStruct) { }
+inline void SPI_CalculateCRC(SPI_TypeDef* SPIx, FunctionalState NewState) { }
+inline void SPI_Cmd(SPI_TypeDef* SPIx, FunctionalState NewState) { }
+inline FlagStatus SPI_I2S_GetFlagStatus(SPI_TypeDef* SPIx, uint16_t SPI_I2S_FLAG) { return RESET; }
+inline uint16_t SPI_I2S_ReceiveData(SPI_TypeDef* SPIx) { return 0; }
+inline void SPI_I2S_SendData(SPI_TypeDef* SPIx, uint16_t Data) { }
+inline void DMA_DeInit(DMA_Stream_TypeDef* DMAy_Streamx) { }
+inline void DMA_Init(DMA_Stream_TypeDef* DMAy_Streamx, DMA_InitTypeDef* DMA_InitStruct) { }
+inline void DMA_ITConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT, FunctionalState NewState) { }
+inline void DMA_StructInit(DMA_InitTypeDef* DMA_InitStruct) { }
+inline void DMA_Cmd(DMA_Stream_TypeDef* DMAy_Streamx, FunctionalState NewState) { }
+inline FlagStatus DMA_GetFlagStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FLAG) { return RESET; }
+inline void SPI_I2S_DMACmd(SPI_TypeDef* SPIx, uint16_t SPI_I2S_DMAReq, FunctionalState NewState) { }
+inline void UART3_Configure(uint32_t baudrate, uint32_t masterClock) { }
+inline void NVIC_Init(NVIC_InitTypeDef *) { }
 #endif
 
+inline void delay_01us(int dummy) { }
 #define configure_pins(...)
 
 #if defined(SDCARD)

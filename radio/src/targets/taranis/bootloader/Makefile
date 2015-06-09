@@ -94,7 +94,7 @@ ifeq ($(PCB), TARANIS)
   LDSCRIPT = ../stm32_ramBoot.ld
   TRGT = arm-none-eabi-
   CPPDEFS += -DHSE_VALUE=12000000
-  CPPDEFS += -DPCBTARANIS 
+  CPPDEFS += -DPCBTARANIS -DEEPROM_RLC
   FULL_PRJ = $(PROJECT)_ramBoot
   ifeq ($(PCBREV), REV9E)
     CPPDEFS += -DSTM32F40_41xxx

@@ -199,7 +199,7 @@ void interrupt10ms(void)
   Tenms |= 1;			// 10 mS has passed
 
   uint8_t enuk = KEY_MENU;
-  uint8_t in = ~readKeys();
+  uint8_t in = readKeys();
 
   for (int i = 1; i < 7; i++) {
     uint8_t value = in & (1 << i);
@@ -806,7 +806,7 @@ int main()
     }
 
     if (state == ST_REBOOT) {
-      if ((~readKeys() & 0x7E) == 0) {
+      if (readKeys() == 0) {
         lcd_clear();
         lcdRefresh();
         lcdRefreshWait();

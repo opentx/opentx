@@ -39,35 +39,35 @@
 
 #include "../common_avr/board_avr.h"
 
-#define GPIO_BUTTON_MENU         pinl
-#define GPIO_BUTTON_EXIT         pinl
-#define GPIO_BUTTON_RIGHT        pinl
-#define GPIO_BUTTON_LEFT         pinl
-#define GPIO_BUTTON_UP           pinl
-#define GPIO_BUTTON_DOWN         pinl
-#define PIN_BUTTON_MENU          (1<<INP_L_KEY_MEN)
-#define PIN_BUTTON_EXIT          (1<<INP_L_KEY_EXT)
-#define PIN_BUTTON_UP            (1<<INP_L_KEY_UP)
-#define PIN_BUTTON_DOWN          (1<<INP_L_KEY_DWN)
-#define PIN_BUTTON_RIGHT         (1<<INP_L_KEY_RGT)
-#define PIN_BUTTON_LEFT          (1<<INP_L_KEY_LFT)
+#define KEYS_GPIO_REG_MENU         pinl
+#define KEYS_GPIO_REG_EXIT         pinl
+#define KEYS_GPIO_REG_RIGHT        pinl
+#define KEYS_GPIO_REG_LEFT         pinl
+#define KEYS_GPIO_REG_UP           pinl
+#define KEYS_GPIO_REG_DOWN         pinl
+#define KEYS_GPIO_PIN_MENU          (1<<INP_L_KEY_MEN)
+#define KEYS_GPIO_PIN_EXIT          (1<<INP_L_KEY_EXT)
+#define KEYS_GPIO_PIN_UP            (1<<INP_L_KEY_UP)
+#define KEYS_GPIO_PIN_DOWN          (1<<INP_L_KEY_DWN)
+#define KEYS_GPIO_PIN_RIGHT         (1<<INP_L_KEY_RGT)
+#define KEYS_GPIO_PIN_LEFT          (1<<INP_L_KEY_LFT)
 
-#define GPIO_TRIM_LH_L           pinj
-#define GPIO_TRIM_LV_DN          pinj
-#define GPIO_TRIM_RV_UP          pinj
-#define GPIO_TRIM_RH_L           pinj
-#define GPIO_TRIM_LH_R           pinj
-#define GPIO_TRIM_LV_UP          pinj
-#define GPIO_TRIM_RV_DN          pinj
-#define GPIO_TRIM_RH_R           pinj
-#define PIN_TRIM_LH_L            (1<<INP_J_TRM_LH_DWN)
-#define PIN_TRIM_LV_DN           (1<<INP_J_TRM_LV_DWN)
-#define PIN_TRIM_RV_UP           (1<<INP_J_TRM_RV_UP)
-#define PIN_TRIM_RH_L            (1<<INP_J_TRM_RH_DWN)
-#define PIN_TRIM_LH_R            (1<<INP_J_TRM_LH_UP)
-#define PIN_TRIM_LV_UP           (1<<INP_J_TRM_LV_UP)
-#define PIN_TRIM_RV_DN           (1<<INP_J_TRM_RV_DWN)
-#define PIN_TRIM_RH_R            (1<<INP_J_TRM_RH_UP)
+#define TRIMS_GPIO_REG_LHL           pinj
+#define TRIMS_GPIO_REG_LVD          pinj
+#define TRIMS_GPIO_REG_RVU          pinj
+#define TRIMS_GPIO_REG_RHL           pinj
+#define TRIMS_GPIO_REG_LHR           pinj
+#define TRIMS_GPIO_REG_LVU          pinj
+#define TRIMS_GPIO_REG_RVD          pinj
+#define TRIMS_GPIO_REG_RHR           pinj
+#define TRIMS_GPIO_PIN_LHL            (1<<INP_J_TRM_LH_DWN)
+#define TRIMS_GPIO_PIN_LVD           (1<<INP_J_TRM_LV_DWN)
+#define TRIMS_GPIO_PIN_RVU           (1<<INP_J_TRM_RV_UP)
+#define TRIMS_GPIO_PIN_RHL            (1<<INP_J_TRM_RH_DWN)
+#define TRIMS_GPIO_PIN_LHR            (1<<INP_J_TRM_LH_UP)
+#define TRIMS_GPIO_PIN_LVU           (1<<INP_J_TRM_LV_UP)
+#define TRIMS_GPIO_PIN_RVD           (1<<INP_J_TRM_RV_DWN)
+#define TRIMS_GPIO_PIN_RHR            (1<<INP_J_TRM_RH_UP)
 
 #define TIMER_16KHZ_VECT         TIMER2_OVF_vect
 #define COUNTER_16KHZ            TCNT2

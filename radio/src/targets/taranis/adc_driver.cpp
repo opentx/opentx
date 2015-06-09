@@ -41,10 +41,10 @@
 #define PIN_PORTB   0x0100
 #define PIN_PORTC   0x0200
 
-#define STICK_LV    3
-#define STICK_LH    2
 #define STICK_RV    0
 #define STICK_RH    1
+#define STICK_LH    2
+#define STICK_LV    3
 #define POT_L       6
 #define POT_R       8
 #define POT_XTRA    9
@@ -53,15 +53,13 @@
 #define BATTERY     10
 
 #if defined(REV9E)
-#define SLIDER_L2   8   // PIN_FLP_J3 (SLIDER3) = ANC3_IN8 
-#define SLIDER_R2   7   // PIN_FLP_J4 (SLIDER4) = ADC3_IN7
-#define POT_4       6   // PIN_FLP_J5 (POT4)    = ADC3_IN6
+#define SLIDER_L2   8   // ADC_GPIO_PIN_POT3 (SLIDER3) = ANC3_IN8 
+#define SLIDER_R2   7   // ADC_GPIO_PIN_POT4 (SLIDER4) = ADC3_IN7
+#define POT_4       6   // ADC_GPIO_PIN_POT5 (POT4)    = ADC3_IN6
 #endif
 
 // Sample time should exceed 1uS
 #define SAMPTIME    2   // sample time = 28 cycles
-
-uint16_t Analog_values[NUMBER_ANALOG];
 
 #if defined(REV9E)
   const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,1,  1,  -1,-1,1};
@@ -83,32 +81,28 @@ uint16_t Analog_values[NUMBER_ANALOG];
                                                  9 /*TX_VOLTAGE*/ };
 #else
     #define NUMBER_ANALOG_ADC1      10
-    #define NUMBER_ANALOG_ADC3      0
-    // mapping from Analog_values order to enum Analogs
-    const uint8_t ana_mapping[NUMBER_ANALOG] = { 0 /*STICK1*/, 1 /*STICK2*/, 2 /*STICK3*/, 3 /*STICK4*/, 
-                                                 4 /*POT1*/, 5 /*POT2*/, 6 /*POT3*/, 
-                                                 7 /*SLIDER1*/, 8 /*SLIDER2*/, 
-                                                 9 /*TX_VOLTAGE*/ };
 #endif
+
+uint16_t Analog_values[NUMBER_ANALOG];
 
 void adcInit()
 {
   RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;            // Enable clock
-  RCC->AHB1ENR |= RCC_AHB1Periph_GPIOADC;        // Enable ports A&C clocks
+  RCC->AHB1ENR |= ADC_AHB1Periph_GPIO;        // Enable ports A&C clocks
   RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;            // Enable DMA2 clock
 
-  configure_pins(PIN_STK_J1 | PIN_STK_J2 | PIN_STK_J3 | PIN_STK_J4 |
-                 PIN_FLP_J1, PIN_ANALOG | PIN_PORTA);
+  configure_pins(ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV |
+                 ADC_GPIO_PIN_POT1, PIN_ANALOG | PIN_PORTA);
 
 #if defined(REV9E)
-  configure_pins(PIN_FLP_J2 | PIN_FLP_J6, PIN_ANALOG|PIN_PORTB);
+  configure_pins(ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_POT6, PIN_ANALOG|PIN_PORTB);
 #elif defined(REVPLUS)
-  configure_pins(PIN_FLP_J2 | PIN_FLP_J3, PIN_ANALOG|PIN_PORTB);
+  configure_pins(ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_POT3, PIN_ANALOG|PIN_PORTB);
 #else
-  configure_pins(PIN_FLP_J2, PIN_ANALOG|PIN_PORTB);
+  configure_pins(ADC_GPIO_PIN_POT2, PIN_ANALOG|PIN_PORTB);
 #endif
 
-  configure_pins(PIN_SLD_J1 | PIN_SLD_J2 | PIN_MVOLT, PIN_ANALOG | PIN_PORTC);
+  configure_pins(ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT, PIN_ANALOG | PIN_PORTC);
 
   ADC1->CR1 = ADC_CR1_SCAN;
   ADC1->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
@@ -128,7 +122,7 @@ void adcInit()
 
 #if defined(REV9E)
   RCC->APB2ENR |= RCC_APB2ENR_ADC3EN ;      // Enable clock
-  configure_pins( PIN_FLP_J3 | PIN_FLP_J4 | PIN_FLP_J5, PIN_ANALOG | PIN_PORTF ) ;
+  configure_pins( ADC_GPIO_PIN_POT3 | ADC_GPIO_PIN_POT4 | ADC_GPIO_PIN_POT5, PIN_ANALOG | PIN_PORTF ) ;
 
   ADC3->CR1 = ADC_CR1_SCAN ;
   ADC3->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS ;
@@ -144,7 +138,7 @@ void adcInit()
   DMA2_Stream1->M0AR = CONVERT_PTR_UINT(Analog_values + NUMBER_ANALOG_ADC1);
   DMA2_Stream1->NDTR = NUMBER_ANALOG_ADC3;
   DMA2_Stream1->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
-#endif  // #if defined(REV9E)
+#endif
 }
 
 void adcRead()
@@ -179,18 +173,6 @@ void adcRead()
   }
   DMA2_Stream0->CR &= ~DMA_SxCR_EN ;              // Disable DMA
 #endif
-
-  // adc direction correct
-  for (uint32_t i=0; i<NUMBER_ANALOG; i++) {
-    if (ana_direction[i] < 0) {
-      Analog_values[i] = 4096-Analog_values[i];
-    }
-#if !defined(REVPLUS)
-    else if (ana_direction[i] == 0) {
-      Analog_values[i] = 0;
-    }
-#endif
-  }
 }
 
 // TODO
@@ -198,7 +180,13 @@ void adcStop()
 {
 }
 
-uint16_t getAnalogValue(uint32_t value)
+uint16_t getAnalogValue(uint32_t index)
 {
-  return Analog_values[ana_mapping[value]];
+#if defined(REV9E)
+  index = ana_mapping[index];
+#endif
+  if (ana_direction[index] < 0)
+    return 4096 - Analog_values[index];
+  else
+    return Analog_values[index];
 }

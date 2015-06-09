@@ -140,7 +140,7 @@ void configure_pins( uint32_t pins, uint16_t config );
 extern uint16_t sessionTimer;
 
 #define SLAVE_MODE()         (g_model.trainerMode == TRAINER_MODE_SLAVE)
-#define TRAINER_CONNECTED()  (GPIO_ReadInputDataBit(GPIOTRNDET, PIN_TRNDET) == Bit_RESET)
+#define TRAINER_CONNECTED()  (GPIO_ReadInputDataBit(TRAINER_GPIO_DETECT, TRAINER_GPIO_PIN_DETECT) == Bit_RESET)
 
 #ifdef __cplusplus
 extern "C" {
@@ -184,12 +184,12 @@ uint32_t isFirmwareStart(const void * buffer);
 uint32_t isBootloaderStart(const void * buffer);
 
 // Pulses driver
-#define INTERNAL_MODULE_ON()      GPIO_SetBits(GPIO_INT_RF_PWR, PIN_INT_RF_PWR)
-#define INTERNAL_MODULE_OFF()     GPIO_ResetBits(GPIO_INT_RF_PWR, PIN_INT_RF_PWR)
-#define EXTERNAL_MODULE_ON()      GPIO_SetBits(GPIO_EXT_RF_PWR, PIN_EXT_RF_PWR)
-#define EXTERNAL_MODULE_OFF()     GPIO_ResetBits(GPIO_EXT_RF_PWR, PIN_EXT_RF_PWR)
-#define IS_INTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(GPIO_INT_RF_PWR, PIN_INT_RF_PWR) == Bit_SET)
-#define IS_EXTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(GPIO_EXT_RF_PWR, PIN_EXT_RF_PWR) == Bit_SET)
+#define INTERNAL_MODULE_ON()      GPIO_SetBits(INTMODULE_GPIO_PWR, INTMODULE_GPIO_PIN_PWR)
+#define INTERNAL_MODULE_OFF()     GPIO_ResetBits(INTMODULE_GPIO_PWR, INTMODULE_GPIO_PIN_PWR)
+#define EXTERNAL_MODULE_ON()      GPIO_SetBits(EXTMODULE_GPIO_PWR, EXTMODULE_GPIO_PIN_PWR)
+#define EXTERNAL_MODULE_OFF()     GPIO_ResetBits(EXTMODULE_GPIO_PWR, EXTMODULE_GPIO_PIN_PWR)
+#define IS_INTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(INTMODULE_GPIO_PWR, INTMODULE_GPIO_PIN_PWR) == Bit_SET)
+#define IS_EXTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(EXTMODULE_GPIO_PWR, EXTMODULE_GPIO_PIN_PWR) == Bit_SET)
 void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
 void init_ppm( uint32_t module_index );
@@ -219,7 +219,7 @@ void keysInit(void);
 uint32_t readKeys(void);
 uint32_t readTrims(void);
 #define TRIMS_PRESSED() (readTrims())
-#define KEYS_PRESSED()  (~readKeys())
+#define KEYS_PRESSED()  (readKeys())
 #define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((2<<KEY_PLUS) + (2<<KEY_MINUS))) == ((2<<KEY_PLUS) + (2<<KEY_MINUS)))
 #define DBLKEYS_PRESSED_UP_DWN(i)  ((in & ((2<<KEY_MENU) + (2<<KEY_PAGE))) == ((2<<KEY_MENU) + (2<<KEY_PAGE)))
 #define DBLKEYS_PRESSED_RGT_UP(i)  ((in & ((2<<KEY_ENTER) + (2<<KEY_MINUS))) == ((2<<KEY_ENTER) + (2<<KEY_MINUS)))
@@ -270,7 +270,7 @@ void turnBacklightOff(void);
   #define setBacklight(xx)      turnBacklightOn(xx, g_eeGeneral.backlightColor)
   #define __BACKLIGHT_ON        turnBacklightOn(g_eeGeneral.backlightBright, g_eeGeneral.backlightColor)
   #define __BACKLIGHT_OFF       turnBacklightOff()
-  #define IS_BACKLIGHT_ON()     (TIM_BL->CCR4 != 0) || (TIM_BL->CCR2 != 0)
+  #define IS_BACKLIGHT_ON()     (BACKLIGHT_TIMER->CCR4 != 0) || (BACKLIGHT_TIMER->CCR2 != 0)
 #else
   #define setBacklight(xx)      TIM10->CCR1 = 100-xx
   #define __BACKLIGHT_ON        TIM10->CCR1 = 100-g_eeGeneral.backlightBright
@@ -324,7 +324,7 @@ void hapticOff(void);
   #define HAPTIC_ON()   hapticOn()
 #endif
 
-// UART3 driver
+// SERIAL_USART driver
 #define DEBUG_BAUDRATE      115200
 void uart3Init(unsigned int mode, unsigned int protocol);
 void uart3Putc(const char c);

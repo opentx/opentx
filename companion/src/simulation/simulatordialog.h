@@ -107,6 +107,7 @@ class SimulatorDialog : public QDialog
     int beepVal;
 
     int lcdWidth;
+    int lcdHeight;
     int lcdDepth;
     TelemetrySimulator * TelemetrySimu;
     TrainerSimulator * TrainerSimu;

@@ -46,19 +46,19 @@ void uart3Setup(unsigned int baudrate)
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_UART3, ENABLE);
+  RCC_AHB1PeriphClockCmd(SERIAL_RCC_AHB1Periph_GPIO, ENABLE);
 
-  GPIO_PinAFConfig(GPIO_UART3, GPIO_PinSource_UART3_RX, GPIO_AF_UART3);
-  GPIO_PinAFConfig(GPIO_UART3, GPIO_PinSource_UART3_TX, GPIO_AF_UART3);
+  GPIO_PinAFConfig(SERIAL_GPIO, SERIAL_GPIO_PinSource_RX, SERIAL_GPIO_AF);
+  GPIO_PinAFConfig(SERIAL_GPIO, SERIAL_GPIO_PinSource_TX, SERIAL_GPIO_AF);
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_UART3_TX | GPIO_PIN_UART3_RX;
+  GPIO_InitStructure.GPIO_Pin = SERIAL_GPIO_PIN_TX | SERIAL_GPIO_PIN_RX;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIO_UART3, &GPIO_InitStructure);
+  GPIO_Init(SERIAL_GPIO, &GPIO_InitStructure);
   
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART3, ENABLE);
+  RCC_APB1PeriphClockCmd(SERIAL_RCC_APB1Periph_USART, ENABLE);
   
   USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
@@ -67,11 +67,11 @@ void uart3Setup(unsigned int baudrate)
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   
-  USART_Init(UART3, &USART_InitStructure);
-  USART_Cmd(UART3, ENABLE);
+  USART_Init(SERIAL_USART, &USART_InitStructure);
+  USART_Cmd(SERIAL_USART, ENABLE);
 
-  USART_ITConfig(UART3, USART_IT_RXNE, ENABLE);
-  USART_ITConfig(UART3, USART_IT_TXE, DISABLE);
+  USART_ITConfig(SERIAL_USART, USART_IT_RXNE, ENABLE);
+  USART_ITConfig(SERIAL_USART, USART_IT_TXE, DISABLE);
 
   NVIC_SetPriority(USART3_IRQn, 7);
   NVIC_EnableIRQ(USART3_IRQn);
@@ -105,7 +105,7 @@ void uart3Init(unsigned int mode, unsigned int protocol)
 void uart3Putc(const char c)
 {
   uart3TxFifo.push(c);
-  USART_ITConfig(UART3, USART_IT_TXE, ENABLE);
+  USART_ITConfig(SERIAL_USART, USART_IT_TXE, ENABLE);
 }
 
 #if defined(DEBUG)
@@ -132,14 +132,14 @@ void uart3Stop()
 extern "C" void USART3_IRQHandler(void)
 {
   // Send
-  if (USART_GetITStatus(UART3, USART_IT_TXE) != RESET) {
+  if (USART_GetITStatus(SERIAL_USART, USART_IT_TXE) != RESET) {
     uint8_t txchar;
     if (uart3TxFifo.pop(txchar)) {
       /* Write one byte to the transmit data register */
-      USART_SendData(UART3, txchar);
+      USART_SendData(SERIAL_USART, txchar);
     }
     else {
-      USART_ITConfig(UART3, USART_IT_TXE, DISABLE);
+      USART_ITConfig(SERIAL_USART, USART_IT_TXE, DISABLE);
     }
   }
 

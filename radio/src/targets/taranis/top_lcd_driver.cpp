@@ -34,6 +34,17 @@
  *
  */
 
+#define CS1_HIGH()     TOPLCD_GPIO->BSRRL = TOPLCD_GPIO_PIN_CS1
+#define CS1_LOW()      TOPLCD_GPIO->BSRRH = TOPLCD_GPIO_PIN_CS1
+#define CS2_HIGH()     TOPLCD_GPIO->BSRRL = TOPLCD_GPIO_PIN_CS2
+#define CS2_LOW()      TOPLCD_GPIO->BSRRH = TOPLCD_GPIO_PIN_CS2
+#define WR_HIGH()      TOPLCD_GPIO->BSRRL = TOPLCD_GPIO_PIN_WR
+#define WR_LOW()       TOPLCD_GPIO->BSRRH = TOPLCD_GPIO_PIN_WR
+#define DATA_HIGH()    TOPLCD_GPIO->BSRRL = TOPLCD_GPIO_PIN_DATA
+#define DATA_LOW()     TOPLCD_GPIO->BSRRH = TOPLCD_GPIO_PIN_DATA
+#define BL_ON()        TOPLCD_GPIO->BSRRL = TOPLCD_GPIO_PIN_BL
+#define BL_OFF()       TOPLCD_GPIO->BSRRH = TOPLCD_GPIO_PIN_BL
+
 const uint8_t TimeLCDsegs[] = { 0xAF, 0x06, 0x6D, 0x4F, 0xC6, 0xCB, 0xEB, 0x0E, 0xEF, 0xCF };
 const uint8_t RssiLCDsegs[] = { 0xFA, 0x60, 0xBC, 0xF4, 0x66, 0xD6, 0xDE, 0x70, 0xFE, 0xF6 };
 const uint8_t OpTimeLCDsegs[] = { 0x5F, 0x06, 0x6B, 0x2F, 0x36, 0x3D, 0x7D, 0x07, 0x7F, 0x3F };
@@ -49,57 +60,57 @@ void delay1_7us()
 void ht1621SendCommand(uint8_t chip, unsigned char command)
 {
   if (chip)
-    CS2_LOW;
+    CS2_LOW();
   else
-    CS1_LOW;
+    CS1_LOW();
 
   delay1_7us();
-  WR_LOW;      //PRESENT 100 COMMAND CODE
+  WR_LOW();      //PRESENT 100 COMMAND CODE
   delay1_7us();
-  DATA_HIGH;
+  DATA_HIGH();
   delay1_7us();
-  WR_HIGH;
+  WR_HIGH();
   delay1_7us();
-  WR_LOW;
+  WR_LOW();
   delay1_7us();
-  DATA_LOW;
+  DATA_LOW();
   delay1_7us();
-  WR_HIGH;
+  WR_HIGH();
   delay1_7us();
 
-  WR_LOW;
+  WR_LOW();
   delay1_7us();
-  DATA_LOW;
+  DATA_LOW();
   delay1_7us();
-  WR_HIGH;
+  WR_HIGH();
   delay1_7us();
 
   for (int i=0; i<8; i++) {
-    WR_LOW;
+    WR_LOW();
     delay1_7us();
     if ((command & 0x80) !=0)
     {
-      DATA_HIGH;
+      DATA_HIGH();
       delay1_7us();
     }
     else
     {
-      DATA_LOW;
+      DATA_LOW();
       delay1_7us();
     }
-    WR_HIGH;
+    WR_HIGH();
     delay1_7us();
     command = command << 1;
   }
-  WR_LOW;
+  WR_LOW();
   delay1_7us();
-  WR_HIGH;
+  WR_HIGH();
   delay1_7us();
 
   if (chip)
-    CS2_HIGH;
+    CS2_HIGH();
   else
-    CS1_HIGH;
+    CS1_HIGH();
 
   delay1_7us();
 }
@@ -107,13 +118,13 @@ void ht1621SendCommand(uint8_t chip, unsigned char command)
 void ht1621WrData(uint8_t data, uint8_t count)
 {
   while (count) {
-    WR_LOW;
+    WR_LOW();
     if (data & 0x80)
-      DATA_HIGH;
+      DATA_HIGH();
     else
-      DATA_LOW;
+      DATA_LOW();
     delay1_7us();
-    WR_HIGH;
+    WR_HIGH();
     delay1_7us();
     data <<= 1;
     count -= 1;
@@ -125,11 +136,11 @@ void ht1621WrAllData(uint8_t chip, uint8_t *pData)
   int len;
   if (chip) {
     len = sizeof(Ht1621Data2);
-    CS2_LOW;
+    CS2_LOW();
   }
   else {
     len = sizeof(Ht1621Data1);
-    CS1_LOW;
+    CS1_LOW();
   }
   delay1_7us();
   ht1621WrData(0xa0, 3);
@@ -138,9 +149,9 @@ void ht1621WrAllData(uint8_t chip, uint8_t *pData)
     ht1621WrData(*pData++, 8);
   }
   if (chip)
-    CS2_HIGH;
+    CS2_HIGH();
   else
-    CS1_HIGH;
+    CS1_HIGH();
   delay1_7us();
 }
 
@@ -168,21 +179,21 @@ extern "C" void TIM8_BRK_TIM12_IRQHandler()
 
   if ( pc->state == TOP_LCD_CKLOW )
   {
-    WR_LOW ;      //PRESENT 100 COMMAND CODE
+    WR_LOW() ;      //PRESENT 100 COMMAND CODE
     if ((*pc->data & 0x80) !=0)
     {
-      DATA_HIGH ;
+      DATA_HIGH() ;
     }
     else
     {
-      DATA_LOW ;
+      DATA_LOW() ;
     }
     *pc->data <<= 1 ;
     pc->state = TOP_LCD_CKHI ;
   }
   else if ( pc->state == TOP_LCD_CKHI )
   {
-    WR_HIGH ;
+    WR_HIGH() ;
     if ( --pc->count == 0 )
     {
       pc->state = TOP_LCD_END ;
@@ -196,13 +207,13 @@ extern "C" void TIM8_BRK_TIM12_IRQHandler()
   {
     if ( pc->chip   )
     {
-      CS2_HIGH ;
+      CS2_HIGH() ;
       pc->state = TOP_LCD_IDLE ;
       TIM12->DIER &= ~1 ;
     }
     else
     {
-      CS1_HIGH ;
+      CS1_HIGH() ;
       pc->chip = 1 ;
       pc->data = pc->data2 ;
       pc->count = pc->count2 ;
@@ -211,19 +222,19 @@ extern "C" void TIM8_BRK_TIM12_IRQHandler()
   }
   else if ( pc->state == TOP_LCD_IDLE )
   {
-    WR_HIGH;
-    if ( pc->chip   ) CS2_LOW ; else CS1_LOW ;
+    WR_HIGH();
+    if ( pc->chip   ) CS2_LOW() ; else CS1_LOW() ;
     pc->state = TOP_LCD_1CKLOW ;
   }
   else if ( pc->state == TOP_LCD_1CKLOW )
   {
-    WR_LOW ;
-    DATA_HIGH ;             // First 1 bit
+    WR_LOW() ;
+    DATA_HIGH() ;             // First 1 bit
     pc->state = TOP_LCD_1CKHI ;
   }
   else if ( pc->state == TOP_LCD_1CKHI )
   {
-    WR_HIGH ;
+    WR_HIGH() ;
     if ( --pc->count == 0 )
     {
       pc->state = TOP_LCD_END ;
@@ -238,16 +249,16 @@ extern "C" void TIM8_BRK_TIM12_IRQHandler()
 
 void topLcdInit()
 {
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_VA, ENABLE);
+  RCC_AHB1PeriphClockCmd(TOPLCD_RCC_AHB1Periph_GPIO, ENABLE);
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = PIN_VA_DATA | PIN_VA_WR |PIN_VA_BL|PIN_VA_CS|PIN_VA_CS2;
+  GPIO_InitStructure.GPIO_Pin = TOPLCD_GPIO_PIN_DATA | TOPLCD_GPIO_PIN_WR |TOPLCD_GPIO_PIN_BL|TOPLCD_GPIO_PIN_CS1|TOPLCD_GPIO_PIN_CS2;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(GPIO_VA, &GPIO_InitStructure);
+  GPIO_Init(TOPLCD_GPIO, &GPIO_InitStructure);
 
-  VA_BL_ON;
+  BL_ON();
 
   ht1621SendCommand(0, 0x03);
   ht1621SendCommand(0, 0x01);
@@ -263,7 +274,7 @@ void topLcdInit()
 
 void topLcdOff()
 {
-  VA_BL_OFF;
+  BL_OFF();
   topLcdRefreshStart();
   topLcdRefreshEnd();
 }
