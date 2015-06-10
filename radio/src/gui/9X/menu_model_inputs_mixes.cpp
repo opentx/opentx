@@ -420,8 +420,8 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 {
   int offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
   int weight = abs(GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode));
-  int barMin = offset - weight;
-  int barMax = offset + weight;
+  int barMin = (-100 + offset) * weight / 100;
+  int barMax = (+100 + offset) * weight / 100;
   if (y > 15) {
 #if defined(CPUARM)
     lcd_outdezAtt(x-((barMin >= 0) ? 2 : 3), y-6, barMin, TINSIZE|LEFT);

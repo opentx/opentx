@@ -932,6 +932,30 @@ TEST(Mixer, SlowOnMultiply)
   CHECK_NO_MOVEMENT(0, CHANNEL_MAX, 250);
 }
 
+#if !defined(PCBTARANIS)
+TEST(Mixer, DiffConservationThroughTrim)
+{
+  MODEL_RESET();
+  MIXER_RESET();  
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_Ail;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[0].curveMode = 0;
+  g_model.mixData[0].curveParam = 50;    //diff = +50% 
+  setTrimValue(0, AIL_STICK, +128);      //trim = +25% 
+
+  anaInValues[AIL_STICK] = +256;
+  evalMixes(1);
+  //output = 25%(trim)*100%(nodiffside) + 25%(stick)*100%(nodiffside) = +50%
+  EXPECT_EQ(channelOutputs[0], +512);
+
+  anaInValues[AIL_STICK] = -256;
+  evalMixes(1);
+  //output = 25%(trim)*100%(nodiffside) - 25%(stick)*50%(diffside) = +12.5%   
+  EXPECT_EQ(channelOutputs[0], +128);
+}
+#endif
 
 #if defined(HELI) && defined(VIRTUALINPUTS)
 TEST(Heli, BasicTest)
