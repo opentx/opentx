@@ -1,4 +1,4 @@
-﻿﻿/*
+﻿/*
  * Authors (alphabetical order)
  * - Andre Bernet <bernet.andre@gmail.com>
  * - Bertrand Songis <bsongis@gmail.com>
