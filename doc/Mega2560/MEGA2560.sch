@@ -36,7 +36,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "OpenTX board based on Arduino MEGA2560"
-Date "4 jun 2015"
+Date "6 jun 2015"
 Rev "0"
 Comp "Copyright 2015 F. Aguerre"
 Comment1 ""
@@ -106,12 +106,12 @@ $EndComp
 $Comp
 L GND #PWR?
 U 1 1 549993C2
-P 2050 3150
-F 0 "#PWR?" H 2050 3150 30  0001 C CNN
-F 1 "GND" H 2050 3080 30  0001 C CNN
-F 2 "" H 2050 3150 60  0001 C CNN
-F 3 "" H 2050 3150 60  0001 C CNN
-	1    2050 3150
+P 2650 2650
+F 0 "#PWR?" H 2650 2650 30  0001 C CNN
+F 1 "GND" H 2650 2580 30  0001 C CNN
+F 2 "" H 2650 2650 60  0001 C CNN
+F 3 "" H 2650 2650 60  0001 C CNN
+	1    2650 2650
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -163,12 +163,12 @@ $EndComp
 $Comp
 L VCC 1
 U 1 1 5499871A
-P 5100 4400
-F 0 "1" H 5100 4500 60  0001 C CNN
-F 1 "VCC" H 5100 4500 50  0000 C CNN
-F 2 "" H 5100 4400 60  0001 C CNN
-F 3 "" H 5100 4400 60  0001 C CNN
-	1    5100 4400
+P 4850 4400
+F 0 "1" H 4850 4500 60  0001 C CNN
+F 1 "VCC" H 4850 4500 50  0000 C CNN
+F 2 "" H 4850 4400 60  0001 C CNN
+F 3 "" H 4850 4400 60  0001 C CNN
+	1    4850 4400
 	1    0    0    -1  
 $EndComp
 Text Notes 8400 4300 0    60   ~ 0
@@ -342,42 +342,42 @@ F 3 "" H 9100 4650 60  0001 C CNN
 	1    9100 4650
 	1    0    0    -1  
 $EndComp
-Text Label 6550 3850 2    42   ~ 0
+Text Label 5750 3700 2    42   ~ 0
 U_batt
 $Comp
 L R R3
 U 1 1 54994034
-P 6150 4100
-F 0 "R3" V 6230 4100 50  0000 C CNN
-F 1 "2.7K" V 6150 4100 50  0000 C CNN
-F 2 "" H 6150 4100 60  0001 C CNN
-F 3 "" H 6150 4100 60  0001 C CNN
-	1    6150 4100
+P 5350 3950
+F 0 "R3" V 5430 3950 50  0000 C CNN
+F 1 "2.7K" V 5350 3950 50  0000 C CNN
+F 2 "" H 5350 3950 60  0001 C CNN
+F 3 "" H 5350 3950 60  0001 C CNN
+	1    5350 3950
 	-1   0    0    -1  
 $EndComp
 $Comp
 L R R4
 U 1 1 54994033
-P 5900 3850
-F 0 "R4" V 5980 3850 50  0000 C CNN
-F 1 "5.1K" V 5900 3850 50  0000 C CNN
-F 2 "" H 5900 3850 60  0001 C CNN
-F 3 "" H 5900 3850 60  0001 C CNN
-	1    5900 3850
+P 5100 3700
+F 0 "R4" V 5180 3700 50  0000 C CNN
+F 1 "5.1K" V 5100 3700 50  0000 C CNN
+F 2 "" H 5100 3700 60  0001 C CNN
+F 3 "" H 5100 3700 60  0001 C CNN
+	1    5100 3700
 	0    1    -1   0   
 $EndComp
 $Comp
 L GND #PWR?
 U 1 1 54994032
-P 6150 4450
-F 0 "#PWR?" H 6150 4450 30  0001 C CNN
-F 1 "GND" H 6150 4380 30  0001 C CNN
-F 2 "" H 6150 4450 60  0001 C CNN
-F 3 "" H 6150 4450 60  0001 C CNN
-	1    6150 4450
+P 5350 4300
+F 0 "#PWR?" H 5350 4300 30  0001 C CNN
+F 1 "GND" H 5350 4230 30  0001 C CNN
+F 2 "" H 5350 4300 60  0001 C CNN
+F 3 "" H 5350 4300 60  0001 C CNN
+	1    5350 4300
 	1    0    0    -1  
 $EndComp
-Text Notes 5500 3500 0    60   ~ 0
+Text Notes 4700 3350 0    60   ~ 0
 Battery voltage reading
 Text Notes 7100 1900 0    60   ~ 0
 Rotary encoders (x2)
@@ -713,7 +713,7 @@ F 3 "" H 10000 2300 60  0001 C CNN
 	1    10000 2300
 	1    0    0    -1  
 $EndComp
-Text Label 7300 3600 0    42   ~ 0
+Text Label 7450 3600 0    42   ~ 0
 LCD_Light
 $Comp
 L R .
@@ -729,12 +729,12 @@ $EndComp
 $Comp
 L R R8
 U 1 1 5498A213
-P 7950 3600
-F 0 "R8" V 8030 3600 50  0000 C CNN
-F 1 "100" V 7950 3600 50  0000 C CNN
-F 2 "" H 7950 3600 60  0001 C CNN
-F 3 "" H 7950 3600 60  0001 C CNN
-	1    7950 3600
+P 8100 3600
+F 0 "R8" V 8180 3600 50  0000 C CNN
+F 1 "100" V 8100 3600 50  0000 C CNN
+F 2 "" H 8100 3600 60  0001 C CNN
+F 3 "" H 8100 3600 60  0001 C CNN
+	1    8100 3600
 	0    -1   -1   0   
 $EndComp
 $Comp
@@ -852,13 +852,13 @@ $EndComp
 $Comp
 L R R6
 U 1 1 549891AC
-P 2050 2800
-F 0 "R6" V 2130 2800 50  0000 C CNN
-F 1 "10K" V 2050 2800 50  0000 C CNN
-F 2 "" H 2050 2800 60  0001 C CNN
-F 3 "" H 2050 2800 60  0001 C CNN
-	1    2050 2800
-	-1   0    0    1   
+P 2300 2550
+F 0 "R6" V 2380 2550 50  0000 C CNN
+F 1 "10K" V 2300 2550 50  0000 C CNN
+F 2 "" H 2300 2550 60  0001 C CNN
+F 3 "" H 2300 2550 60  0001 C CNN
+	1    2300 2550
+	0    -1   -1   0   
 $EndComp
 Text Label 750  2100 0    42   ~ 0
 PPM_IN
@@ -40932,12 +40932,12 @@ $EndComp
 $Comp
 L +BATT U?
 U 1 1 549E8260
-P 5550 3750
-F 0 "U?" H 5550 3700 60  0001 C CNN
-F 1 "+BATT" H 5550 3850 50  0000 C BNN
-F 2 "" H 5550 3750 60  0001 C CNN
-F 3 "" H 5550 3750 60  0001 C CNN
-	1    5550 3750
+P 4750 3600
+F 0 "U?" H 4750 3550 60  0001 C CNN
+F 1 "+BATT" H 4750 3700 50  0000 C BNN
+F 2 "" H 4750 3600 60  0001 C CNN
+F 3 "" H 4750 3600 60  0001 C CNN
+	1    4750 3600
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -41116,12 +41116,12 @@ $EndBitmap
 $Comp
 L GND #PWR?
 U 1 1 54AD6A08
-P 4850 4400
-F 0 "#PWR?" H 4850 4400 30  0001 C CNN
-F 1 "GND" H 4850 4330 30  0001 C CNN
-F 2 "" H 4850 4400 60  0001 C CNN
-F 3 "" H 4850 4400 60  0001 C CNN
-	1    4850 4400
+P 4600 4400
+F 0 "#PWR?" H 4600 4400 30  0001 C CNN
+F 1 "GND" H 4600 4330 30  0001 C CNN
+F 2 "" H 4600 4400 60  0001 C CNN
+F 3 "" H 4600 4400 60  0001 C CNN
+	1    4600 4400
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -41178,7 +41178,7 @@ Wire Wire Line
 Wire Wire Line
 	2400 1700 2500 1700
 Wire Wire Line
-	6150 4350 6150 4450
+	5350 4200 5350 4300
 Wire Wire Line
 	9600 2250 9450 2250
 Wire Wire Line
@@ -41208,7 +41208,7 @@ Wire Wire Line
 Wire Wire Line
 	9450 2250 9450 2100
 Wire Wire Line
-	7300 3600 7700 3600
+	7450 3600 7850 3600
 Wire Notes Line
 	10900 2350 10900 3350
 Wire Wire Line
@@ -41577,7 +41577,7 @@ Wire Wire Line
 Wire Wire Line
 	10750 3800 10750 4200
 Wire Wire Line
-	6550 3850 6150 3850
+	5750 3700 5350 3700
 Wire Wire Line
 	1900 1450 1900 1700
 Wire Wire Line
@@ -41585,7 +41585,7 @@ Wire Wire Line
 Wire Wire Line
 	1000 1700 1300 1700
 Wire Wire Line
-	2050 3050 2050 3150
+	2650 2550 2650 2650
 Wire Wire Line
 	6900 1000 7000 1000
 Wire Wire Line
@@ -41615,9 +41615,9 @@ Wire Wire Line
 Wire Wire Line
 	4350 1350 4800 1350
 Wire Wire Line
-	5550 3750 5550 3850
+	4750 3600 4750 3700
 Wire Wire Line
-	5550 3850 5650 3850
+	4750 3700 4850 3700
 Wire Wire Line
 	7500 4650 8600 4650
 Connection ~ 8300 4650
@@ -41635,23 +41635,17 @@ Wire Wire Line
 Wire Wire Line
 	5100 7450 5250 7450
 Wire Wire Line
-	4700 4650 4700 4300
+	4450 4300 4450 6450
 Wire Wire Line
-	4450 4650 4700 4650
+	4450 4650 4650 4650
 Wire Wire Line
-	4850 4300 4850 4400
+	4600 4300 4600 4400
 Wire Wire Line
-	4700 4300 4850 4300
+	4450 4300 4600 4300
 Wire Wire Line
-	4450 6450 4550 6450
-Wire Wire Line
-	4450 4650 4450 6450
+	4450 6450 4650 6450
 Connection ~ 4550 6450
-Wire Wire Line
-	4550 4750 5100 4750
 Connection ~ 4550 4650
-Wire Wire Line
-	5100 4750 5100 4400
 Wire Wire Line
 	2450 6650 2450 6800
 Wire Wire Line
@@ -41713,46 +41707,46 @@ Wire Wire Line
 	6050 7550 6550 7550
 Wire Wire Line
 	5100 7550 5250 7550
-Text Notes 2250 2950 0    60   ~ 0
-NOTA : all features are optional !\nM2560 can properly work without switch deboucing,\nrotary encoder or PPM / power management.\nMinimum requirement is just LCD and navigation keys.\nSome switches could be usefull, especially for flight\nconditions, but not fundamental.
+Text Notes 750  3100 0    60   ~ 0
+NOTA : all features are optional !\nM2560 can properly work without switch deboucing, stick voltage\nprotection, rotary encoder or PPM / power management.\nMinimum requirement is just LCD and navigation keys. Some switches\ncould be usefull, especially for flight conditions, but not fundamental.
 $Comp
 L LED .
 U 1 1 5568D052
-P 8550 3600
-F 0 "." H 8600 3500 50  0000 C CNN
-F 1 "LED" H 8550 3500 50  0000 C CNN
-F 2 "" H 8550 3600 60  0001 C CNN
-F 3 "" H 8550 3600 60  0001 C CNN
-	1    8550 3600
+P 8700 3600
+F 0 "." H 8750 3500 50  0000 C CNN
+F 1 "LED" H 8700 3500 50  0000 C CNN
+F 2 "" H 8700 3600 60  0001 C CNN
+F 3 "" H 8700 3600 60  0001 C CNN
+	1    8700 3600
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	8350 3600 8200 3600
+	8500 3600 8350 3600
 Wire Notes Line
-	8300 3450 8300 3750
+	8450 3450 8450 3750
 Wire Notes Line
-	8800 3450 8800 3750
+	8950 3450 8950 3750
 Wire Notes Line
-	8300 3450 8800 3450
+	8450 3450 8950 3450
 Wire Notes Line
-	8800 3750 8300 3750
+	8950 3750 8450 3750
 $Comp
 L GND #PWR?
 U 1 1 5568D616
-P 8950 3700
-F 0 "#PWR?" H 8950 3700 30  0001 C CNN
-F 1 "GND" H 8950 3630 30  0001 C CNN
-F 2 "" H 8950 3700 60  0001 C CNN
-F 3 "" H 8950 3700 60  0001 C CNN
-	1    8950 3700
+P 9100 3850
+F 0 "#PWR?" H 9100 3850 30  0001 C CNN
+F 1 "GND" H 9100 3780 30  0001 C CNN
+F 2 "" H 9100 3850 60  0001 C CNN
+F 3 "" H 9100 3850 60  0001 C CNN
+	1    9100 3850
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	8950 3700 8950 3600
+	9100 3600 9100 3850
 Wire Wire Line
-	8950 3600 8750 3600
-Text Notes 7300 3350 0    60   ~ 0
-LCD direct backlight (5V, max. 40 mA)
+	9100 3600 8900 3600
+Text Notes 7500 3350 0    60   ~ 0
+LCD direct backlight (5V, 20 mA)
 Text Label 9450 3600 0    42   ~ 0
 LCD_Light
 $Comp
@@ -41787,4 +41781,67 @@ Wire Wire Line
 	8350 2150 8350 2100
 Connection ~ 8350 2100
 Connection ~ 8350 2900
+$Comp
+L POT Pxx
+U 1 1 55731CC9
+P 6250 3950
+F 0 "Pxx" H 6250 3850 50  0000 C CNN
+F 1 "POT" H 6250 3950 50  0000 C CNN
+F 2 "~" H 6250 3950 60  0000 C CNN
+F 3 "~" H 6250 3950 60  0000 C CNN
+	1    6250 3950
+	0    1    1    0   
+$EndComp
+$Comp
+L VCC U?
+U 1 1 55731CDB
+P 6250 3600
+F 0 "U?" H 6250 3700 60  0001 C CNN
+F 1 "VCC" H 6250 3700 50  0000 C CNN
+F 2 "" H 6250 3600 60  0001 C CNN
+F 3 "" H 6250 3600 60  0001 C CNN
+	1    6250 3600
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 55731CE2
+P 6250 4500
+F 0 "#PWR?" H 6250 4500 50  0001 C CNN
+F 1 "GND" H 6250 4430 50  0001 C CNN
+F 2 "" H 6250 4500 60  0001 C CNN
+F 3 "" H 6250 4500 60  0001 C CNN
+	1    6250 4500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6250 3600 6250 3700
+Wire Wire Line
+	6250 4200 6250 4500
+$Comp
+L C C1
+U 1 1 55732064
+P 6600 4150
+F 0 "C1" V 6550 4000 50  0000 L CNN
+F 1 "100n" V 6650 4000 50  0000 L CNN
+F 2 "" H 6600 4150 60  0001 C CNN
+F 3 "" H 6600 4150 60  0001 C CNN
+	1    6600 4150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6600 4350 6250 4350
+Connection ~ 6250 4350
+Text Label 7050 3950 2    42   ~ 0
+Stick_xx
+Wire Wire Line
+	6400 3950 7050 3950
+Text Notes 6100 3350 0    60   ~ 0
+Stick anti-jitter filter
+Wire Wire Line
+	4550 4750 4850 4750
+Wire Wire Line
+	4850 4750 4850 4400
+Wire Wire Line
+	2650 2550 2550 2550
 $EndSCHEMATC
