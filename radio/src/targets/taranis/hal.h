@@ -278,6 +278,7 @@
   #define ADC_GPIO_PIN_BATT             GPIO_Pin_0  // PC.00
   #define ADC_CHANNEL_POT1              ADC_Channel_6
   #define ADC_CHANNEL_POT2              ADC_Channel_8
+  #define ADC_CHANNEL_POT3              ADC_Channel_9
   #define ADC_CHANNEL_SLIDER1           ADC_Channel_14
   #define ADC_CHANNEL_SLIDER2           ADC_Channel_15
   #define ADC_CHANNEL_BATT              ADC_Channel_10
