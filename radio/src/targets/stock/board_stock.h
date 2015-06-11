@@ -39,98 +39,6 @@
 
 #include "../common_avr/board_avr.h"
 
-#define KEYS_GPIO_REG_MENU       pinb
-#define KEYS_GPIO_REG_EXIT       pinb
-#define KEYS_GPIO_REG_RIGHT      pinb
-#define KEYS_GPIO_REG_LEFT       pinb
-#define KEYS_GPIO_REG_UP         pinb
-#define KEYS_GPIO_REG_DOWN       pinb
-#define KEYS_GPIO_PIN_MENU        (1<<INP_B_KEY_MEN)
-#define KEYS_GPIO_PIN_EXIT        (1<<INP_B_KEY_EXT)
-#define KEYS_GPIO_PIN_UP          (1<<INP_B_KEY_UP)
-#define KEYS_GPIO_PIN_DOWN        (1<<INP_B_KEY_DWN)
-#define KEYS_GPIO_PIN_RIGHT       (1<<INP_B_KEY_RGT)
-#define KEYS_GPIO_PIN_LEFT        (1<<INP_B_KEY_LFT)
-
-#define TRIMS_GPIO_REG_LHL         pind
-#define TRIMS_GPIO_REG_LVD        pind
-#define TRIMS_GPIO_REG_RVU        pind
-#define TRIMS_GPIO_REG_RHL         pind
-#define TRIMS_GPIO_REG_LHR         pind
-#define TRIMS_GPIO_REG_LVU        pind
-#define TRIMS_GPIO_REG_RVD        pind
-#define TRIMS_GPIO_REG_RHR         pind
-#define TRIMS_GPIO_PIN_LHL          (1<<INP_D_TRM_LH_DWN)
-#define TRIMS_GPIO_PIN_LVD         (1<<INP_D_TRM_LV_DWN)
-#define TRIMS_GPIO_PIN_RVU         (1<<INP_D_TRM_RV_UP)
-#define TRIMS_GPIO_PIN_RHL          (1<<INP_D_TRM_RH_DWN)
-#define TRIMS_GPIO_PIN_LHR          (1<<INP_D_TRM_LH_UP)
-#define TRIMS_GPIO_PIN_LVU         (1<<INP_D_TRM_LV_UP)
-#define TRIMS_GPIO_PIN_RVD         (1<<INP_D_TRM_RV_DWN)
-#define TRIMS_GPIO_PIN_RHR          (1<<INP_D_TRM_RH_UP)
-
-#if defined(CPUM2561)
-  #define TIMER_16KHZ_VECT         TIMER2_OVF_vect
-  #define COUNTER_16KHZ            TCNT2
-  #define TIMER_10MS_VECT          TIMER2_COMPA_vect
-  #define TIMER_10MS_COMPVAL       OCR2A
-  #define PAUSE_10MS_INTERRUPT()   TIMSK2 &= ~(1<<OCIE2A)
-  #define RESUME_10MS_INTERRUPT()  TIMSK2 |= (1<<OCIE2A)
-  #define PAUSE_PPMIN_INTERRUPT()  TIMSK3 &= ~(1<<ICIE3)
-  #define RESUME_PPMIN_INTERRUPT() TIMSK3 |= (1<<ICIE3)
-  #define TIMER_AUDIO_VECT         TIMER4_COMPA_vect
-  #define SET_TIMER_AUDIO_CTRL()   TCCR4B = (1 << WGM42) | (0b010 << CS40)
-  #define PAUSE_AUDIO_INTERRUPT()  TIMSK4 &= ~(1<<OCIE4A)
-  #define RESUME_AUDIO_INTERRUPT() TIMSK4 |= (1<<OCIE4A)
-#else
-  #define TIMER_16KHZ_VECT         TIMER0_OVF_vect
-  #define COUNTER_16KHZ            TCNT0
-  #define TIMER_10MS_VECT          TIMER0_COMP_vect
-  #define TIMER_10MS_COMPVAL       OCR0
-  #define PAUSE_10MS_INTERRUPT()   TIMSK &= ~(1<<OCIE0)
-  #define RESUME_10MS_INTERRUPT()  TIMSK |= (1<<OCIE0)
-  #define PAUSE_PPMIN_INTERRUPT()  ETIMSK &= ~(1<<TICIE3)
-  #define RESUME_PPMIN_INTERRUPT() ETIMSK |= (1<<TICIE3)
-  #define TIMER_AUDIO_VECT         TIMER2_OVF_vect
-  #define SET_TIMER_AUDIO_CTRL()   TCCR2 = (0b010 << CS00) // Norm mode, clk/8
-  #define PAUSE_AUDIO_INTERRUPT()  TIMSK &= ~(1<<TOIE2)
-  #define RESUME_AUDIO_INTERRUPT() TIMSK |= (1<<TOIE2)
-#endif
-
-// Power driver (none)
-#define pwrCheck() (e_power_on)
-#define pwrOff()
-#define UNEXPECTED_SHUTDOWN() (mcusr & (1 << WDRF))
-
-// Trainer driver
-bool checkSlaveMode();
-#define SLAVE_MODE() checkSlaveMode()
-#define JACK_PPM_OUT() PORTG &= ~(1<<OUT_G_SIM_CTL)
-#define JACK_PPM_IN() PORTG |=  (1<<OUT_G_SIM_CTL)
-
-// PWM Backlight driver
-#if defined(PWM_BACKLIGHT)
-void backlightFadeOn();
-#define __BACKLIGHT_ON  backlightFadeOn()
-void backlightFadeOff();
-#define __BACKLIGHT_OFF backlightFadeOff()
-bool getBackLightState();
-#define IS_BACKLIGHT_ON() getBackLightState()
-void backlightFade();
-#else
-
-#if defined(SP22)
-#define __BACKLIGHT_ON  PORTB &= ~(1 << OUT_B_LIGHT)
-#define __BACKLIGHT_OFF PORTB |=  (1 << OUT_B_LIGHT)
-#define IS_BACKLIGHT_ON() (~PORTB & (1<<OUT_B_LIGHT))
-#else
-#define __BACKLIGHT_ON  PORTB |=  (1 << OUT_B_LIGHT)
-#define __BACKLIGHT_OFF PORTB &= ~(1 << OUT_B_LIGHT)
-#define IS_BACKLIGHT_ON() (PORTB & (1<<OUT_B_LIGHT))
-#endif
-#endif
-
-// G: The following comments relate to the original stock PCB only
 //
 //                  elev                        thr
 //                   LV                         RV
@@ -170,24 +78,96 @@ void backlightFade();
 //       -      -       -       O       i               i       i
 //                            SIM_CTL  ID1      Haptic      RF_POW RuddDR
 
+// Keys
+#define KEYS_GPIO_REG_MENU         pinb
+#define KEYS_GPIO_PIN_MENU         (1<<1)
+#define KEYS_GPIO_REG_EXIT         pinb
+#define KEYS_GPIO_PIN_EXIT         (1<<2)
+#define KEYS_GPIO_REG_RIGHT        pinb
+#define KEYS_GPIO_PIN_RIGHT        (1<<5)
+#define KEYS_GPIO_REG_LEFT         pinb
+#define KEYS_GPIO_PIN_LEFT         (1<<6)
+#define KEYS_GPIO_REG_UP           pinb
+#define KEYS_GPIO_PIN_UP           (1<<4)
+#define KEYS_GPIO_REG_DOWN         pinb
+#define KEYS_GPIO_PIN_DOWN         (1<<3)
+
+// Trims
+#define TRIMS_GPIO_REG_LHL         pind
+#define TRIMS_GPIO_PIN_LHL         (1<<6)
+#define TRIMS_GPIO_REG_LVD         pind
+#define TRIMS_GPIO_PIN_LVD         (1<<3)
+#define TRIMS_GPIO_REG_RVU         pind
+#define TRIMS_GPIO_PIN_RVU         (1<<4)
+#define TRIMS_GPIO_REG_RHL         pind
+#define TRIMS_GPIO_PIN_RHL         (1<<1)
+#define TRIMS_GPIO_REG_LHR         pind
+#define TRIMS_GPIO_PIN_LHR         (1<<7)
+#define TRIMS_GPIO_REG_LVU         pind
+#define TRIMS_GPIO_PIN_LVU         (1<<2)
+#define TRIMS_GPIO_REG_RVD         pind
+#define TRIMS_GPIO_PIN_RVD         (1<<5)
+#define TRIMS_GPIO_REG_RHR         pind
+#define TRIMS_GPIO_PIN_RHR         (1<<0)
+
+#if defined(CPUM2561)
+  #define TIMER_16KHZ_VECT         TIMER2_OVF_vect
+  #define COUNTER_16KHZ            TCNT2
+  #define TIMER_10MS_VECT          TIMER2_COMPA_vect
+  #define TIMER_10MS_COMPVAL       OCR2A
+  #define PAUSE_10MS_INTERRUPT()   TIMSK2 &= ~(1<<OCIE2A)
+  #define RESUME_10MS_INTERRUPT()  TIMSK2 |= (1<<OCIE2A)
+  #define PAUSE_PPMIN_INTERRUPT()  TIMSK3 &= ~(1<<ICIE3)
+  #define RESUME_PPMIN_INTERRUPT() TIMSK3 |= (1<<ICIE3)
+  #define TIMER_AUDIO_VECT         TIMER4_COMPA_vect
+  #define SET_TIMER_AUDIO_CTRL()   TCCR4B = (1 << WGM42) | (0b010 << CS40)
+  #define PAUSE_AUDIO_INTERRUPT()  TIMSK4 &= ~(1<<OCIE4A)
+  #define RESUME_AUDIO_INTERRUPT() TIMSK4 |= (1<<OCIE4A)
+#else
+  #define TIMER_16KHZ_VECT         TIMER0_OVF_vect
+  #define COUNTER_16KHZ            TCNT0
+  #define TIMER_10MS_VECT          TIMER0_COMP_vect
+  #define TIMER_10MS_COMPVAL       OCR0
+  #define PAUSE_10MS_INTERRUPT()   TIMSK &= ~(1<<OCIE0)
+  #define RESUME_10MS_INTERRUPT()  TIMSK |= (1<<OCIE0)
+  #define PAUSE_PPMIN_INTERRUPT()  ETIMSK &= ~(1<<TICIE3)
+  #define RESUME_PPMIN_INTERRUPT() ETIMSK |= (1<<TICIE3)
+  #define TIMER_AUDIO_VECT         TIMER2_OVF_vect
+  #define SET_TIMER_AUDIO_CTRL()   TCCR2 = (0b010 << CS00) // Norm mode, clk/8
+  #define PAUSE_AUDIO_INTERRUPT()  TIMSK &= ~(1<<TOIE2)
+  #define RESUME_AUDIO_INTERRUPT() TIMSK |= (1<<TOIE2)
+#endif
+
+// Power driver (none)
+#define pwrCheck()                 (e_power_on)
+#define pwrOff()
+#define UNEXPECTED_SHUTDOWN()      (mcusr & (1 << WDRF))
+
+// Trainer driver
+bool checkSlaveMode();
+#define OUT_G_SIM_CTL              4 // 1 : phone-jack=ppm_in
+#define SLAVE_MODE()               checkSlaveMode()
+#define JACK_PPM_OUT()             PORTG &= ~(1<<OUT_G_SIM_CTL)
+#define JACK_PPM_IN()              PORTG |=  (1<<OUT_G_SIM_CTL)
+
+// PWM Backlight driver
 #define OUT_B_LIGHT   7
-#define INP_B_KEY_LFT 6
-#define INP_B_KEY_RGT 5
-#define INP_B_KEY_UP  4
-#define INP_B_KEY_DWN 3
-#define INP_B_KEY_EXT 2
-#define INP_B_KEY_MEN 1
+#if defined(PWM_BACKLIGHT)
+  void backlightEnable();
+  void backlightDisable();
+  bool isBacklightEnable();
+  void backlightFade();
+#elif defined(SP22)
+  #define backlightEnable()        PORTB &= ~(1<<OUT_B_LIGHT)
+  #define backlightDisable()       PORTB |=  (1<<OUT_B_LIGHT)
+  #define isBacklightEnable()      (~PORTB & (1<<OUT_B_LIGHT))
+#else
+  #define backlightEnable()        PORTB |=  (1<<OUT_B_LIGHT)
+  #define backlightDisable()       PORTB &= ~(1<<OUT_B_LIGHT)
+  #define isBacklightEnable()      (PORTB &  (1<<OUT_B_LIGHT))
+#endif
+
 #define OUT_B_PPM     0
-
-#define INP_D_TRM_LH_UP   7
-#define INP_D_TRM_LH_DWN  6
-#define INP_D_TRM_RV_DWN  5
-#define INP_D_TRM_RV_UP   4
-#define INP_D_TRM_LV_DWN  3
-#define INP_D_TRM_LV_UP   2
-#define INP_D_TRM_RH_DWN  1
-#define INP_D_TRM_RH_UP   0
-
 #define INP_E_PPM_IN  7
 #define INP_E_ID2     6
 #define INP_E_Trainer 5
@@ -203,7 +183,6 @@ void backlightFade();
 #define INP_E_AileDR  1
 #endif
 
-#define OUT_G_SIM_CTL  4 //1 : phone-jack=ppm_in
 #define INP_G_ID1      3
 #define OUT_G_HAPTIC   2
 #define INP_G_RF_POW   1

@@ -362,7 +362,7 @@ void Open9xSim::refreshDisplay()
 {
   if (lcd_refresh) {
     lcd_refresh = false;
-    FXColor offColor = IS_BACKLIGHT_ON() ? BL_COLOR : FXRGB(200, 200, 200);
+    FXColor offColor = isBacklightEnable() ? BL_COLOR : FXRGB(200, 200, 200);
 #if LCD_W == 128
     FXColor onColor = FXRGB(0, 0, 0);
 #endif
@@ -373,7 +373,7 @@ void Open9xSim::refreshDisplay()
         uint8_t z = (y & 1) ? (*p >> 4) : (*p & 0x0F);
         if (z) {
           FXColor color;
-          if (IS_BACKLIGHT_ON())
+          if (isBacklightEnable())
             color = FXRGB(47-(z*47)/15, 123-(z*123)/15, 227-(z*227)/15);
           else
             color = FXRGB(200-(z*200)/15, 200-(z*200)/15, 200-(z*200)/15);

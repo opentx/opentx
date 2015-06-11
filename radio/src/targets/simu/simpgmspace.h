@@ -321,13 +321,6 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define INP_C_AileDR  7
 #define INP_E_ID2     6
 
-#define INP_B_KEY_LFT 6
-#define INP_B_KEY_RGT 5
-#define INP_B_KEY_UP  4
-#define INP_B_KEY_DWN 3
-#define INP_B_KEY_EXT 2
-#define INP_B_KEY_MEN 1
-
 #define INP_L_SPARE6    7
 #define INP_L_SPARE5    6
 #define INP_L_KEY_EXT   5

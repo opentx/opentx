@@ -302,7 +302,6 @@ FORCEINLINE void readKeysAndTrims()
   // User buttons ...
   uint8_t in = ~PINB;
   for (int i=1; i<7; i++) {
-    // INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
     keys[enuk].input(in & (1<<i));
     ++enuk;
   }
@@ -354,17 +353,17 @@ static const uint8_t pwmtable[16] PROGMEM =
 static uint8_t bl_target;
 static uint8_t bl_current;
 
-void backlightFadeOn()
+void backlightEnable()
 {
   bl_target = 15 - g_eeGeneral.blOnBright;
 }
 
-void backlightFadeOff()
+void backlightDisable()
 {
   bl_target = g_eeGeneral.blOffBright;
 }
 
-bool getBackLightState()
+bool isBacklightEnable()
 {
   return (bl_target==g_eeGeneral.blOnBright);
 }

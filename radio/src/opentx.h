@@ -1009,8 +1009,8 @@ void checkBacklight();
   #define BACKLIGHT_ON()    (Voice.Backlight = 1)
   #define BACKLIGHT_OFF()   (Voice.Backlight = 0)
 #else
-  #define BACKLIGHT_ON()    __BACKLIGHT_ON
-  #define BACKLIGHT_OFF()   __BACKLIGHT_OFF
+  #define BACKLIGHT_ON()    backlightEnable()
+  #define BACKLIGHT_OFF()   backlightDisable()
 #endif
 
 #define BITMASK(bit) (1<<(bit))

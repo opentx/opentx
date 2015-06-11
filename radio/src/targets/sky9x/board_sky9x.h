@@ -227,10 +227,10 @@ void disable_dsm2(uint32_t port);
 #endif
 
 // Backlight driver
-#define setBacklight(xx)  (PWM->PWM_CH_NUM[0].PWM_CDTYUPD = xx)
-#define __BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
-#define __BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
-#define IS_BACKLIGHT_ON() (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
+#define setBacklight(xx)     (PWM->PWM_CH_NUM[0].PWM_CDTYUPD = xx)
+#define backlightEnable()    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
+#define backlightDisable()   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
+#define isBacklightEnable()  (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
 
 // ADC driver
 void adcInit();

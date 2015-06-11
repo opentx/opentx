@@ -58,7 +58,7 @@ namespace Ersky9x {
 #include "../ersky9x/sound.cpp"
 #include "../ersky9x/diskio.cpp"
 
-#define IS_BACKLIGHT_ON() (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
+#define isBacklightEnable() (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
 
 //uint8_t pxxFlag = 0;
 int16_t g_anas[7];

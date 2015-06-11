@@ -82,9 +82,11 @@
 #define SLAVE_MODE()             ~PINH & (1<<INP_H_RF_Activated)     
 #define JACK_PPM_OUT()           PORTB |= (1<<OUT_B_SIM_CTL)    
 #define JACK_PPM_IN()            PORTB &= ~(1<<OUT_B_SIM_CTL)
-#define __BACKLIGHT_ON           PORTC |= (1<<OUT_C_LIGHT)   
-#define __BACKLIGHT_OFF          PORTC &= ~(1<<OUT_C_LIGHT)   
-#define IS_BACKLIGHT_ON()        PORTC & (1<<OUT_C_LIGHT)
+
+// Backlight driver
+#define backlightEnable()        PORTC |= (1<<OUT_C_LIGHT)   
+#define backlightDisable()       PORTC &= ~(1<<OUT_C_LIGHT)   
+#define isBacklightEnable()      PORTC & (1<<OUT_C_LIGHT)
 
 // SD driver
 #define sdDone()

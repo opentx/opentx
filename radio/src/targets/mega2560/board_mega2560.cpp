@@ -192,7 +192,6 @@ FORCEINLINE void readKeysAndTrims()
   in |= (tin & 0x30) >> 3;
 
   for (int i=1; i<7; i++) {
-    //INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
     keys[enuk].input(in & (1<<i));
     ++enuk;
   }

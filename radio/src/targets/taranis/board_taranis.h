@@ -267,17 +267,17 @@ uint32_t pwrPressedDuration(void);
 
 // Backlight driver
 #if defined(REVPLUS)
-void turnBacklightOn(uint8_t level, uint8_t color);
-void turnBacklightOff(void);
-  #define setBacklight(xx)      turnBacklightOn(xx, g_eeGeneral.backlightColor)
-  #define __BACKLIGHT_ON        turnBacklightOn(g_eeGeneral.backlightBright, g_eeGeneral.backlightColor)
-  #define __BACKLIGHT_OFF       turnBacklightOff()
-  #define IS_BACKLIGHT_ON()     (BACKLIGHT_TIMER->CCR4 != 0) || (BACKLIGHT_TIMER->CCR2 != 0)
+  void turnBacklightOn(uint8_t level, uint8_t color);
+  void turnBacklightOff(void);
+  #define setBacklight(xx)         turnBacklightOn(xx, g_eeGeneral.backlightColor)
+  #define backlightEnable()        turnBacklightOn(g_eeGeneral.backlightBright, g_eeGeneral.backlightColor)
+  #define backlightDisable()       turnBacklightOff()
+  #define isBacklightEnable()      ((BACKLIGHT_TIMER->CCR4 != 0) || (BACKLIGHT_TIMER->CCR2 != 0))
 #else
-  #define setBacklight(xx)      TIM10->CCR1 = 100-xx
-  #define __BACKLIGHT_ON        TIM10->CCR1 = 100-g_eeGeneral.backlightBright
-  #define __BACKLIGHT_OFF       TIM10->CCR1 = 0
-  #define IS_BACKLIGHT_ON()     (TIM10->CCR1 != 0)
+  #define setBacklight(xx)         TIM10->CCR1 = 100-xx
+  #define backlightEnable()        TIM10->CCR1 = 100-g_eeGeneral.backlightBright
+  #define backlightDisable()       TIM10->CCR1 = 0
+  #define isBacklightEnable()      (TIM10->CCR1 != 0)
 #endif
 
 // USB driver

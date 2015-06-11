@@ -92,12 +92,14 @@ void sdMountPoll();
 void sdPoll10ms();
 #endif
 
-#define speakerOn()              TCCR0A |=  (1 << COM0A0)
-#define speakerOff()             TCCR0A &= ~(1 << COM0A0)
-#define __BACKLIGHT_ON           PORTC |=  (1 << OUT_C_LIGHT)
-#define __BACKLIGHT_OFF          PORTC &= ~(1 << OUT_C_LIGHT)
-#define IS_BACKLIGHT_ON()        (PORTC & (1<<OUT_C_LIGHT))
+#define speakerOn()                TCCR0A |=  (1 << COM0A0)
+#define speakerOff()               TCCR0A &= ~(1 << COM0A0)
 
+// Backlight driver
+#define OUT_C_LIGHT                0
+#define backlightEnable()          PORTC |=  (1<<OUT_C_LIGHT)
+#define backlightDisable()         PORTC &= ~(1<<OUT_C_LIGHT)
+#define isBacklightEnable()        (PORTC & (1<<OUT_C_LIGHT))
 
 #define INP_L_SPARE6    7
 #define INP_L_SPARE5    6
@@ -144,7 +146,6 @@ void sdPoll10ms();
 
 #define INP_C_AileDR   7
 #define INP_C_ElevDR   6
-#define OUT_C_LIGHT    0
 
 #define OUT_B_Speaker  7
 #define OUT_B_PPM      6 // will be switched by TCNT1==OCR1B in hardware
