@@ -55,7 +55,7 @@ void rtcSetTime(struct gtm * t)
   RTC_SetDate(RTC_Format_BIN, &RTC_DateStruct);
 }
 
-void rtc_gettime(struct gtm * t)
+void rtcGetTime(struct gtm * t)
 {
   RTC_TimeTypeDef RTC_TimeStruct;
   RTC_DateTypeDef RTC_DateStruct;
@@ -90,6 +90,6 @@ void rtcInit()
   RTC_Init(&RTC_InitStruct);
   
   struct gtm utm;
-  rtc_gettime(&utm);
+  rtcGetTime(&utm);
   g_rtcTime = gmktime(&utm);
 }

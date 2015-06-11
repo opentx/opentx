@@ -234,7 +234,7 @@ int iic_write (
 /*-------------------------------------------------*/
 /* RTC functions                                   */
 
-int g9x_rtc_gettime (RTC *rtc)
+int g9x_rtcGetTime (RTC *rtc)
 {
   BYTE buf[8];
 
@@ -265,11 +265,11 @@ int g9x_rtcSetTime (const RTC *rtc)
   return iic_write(0xD0, 0, 7, buf);
 }
 
-void rtc_gettime(struct gtm * utm)
+void rtcGetTime(struct gtm * utm)
 {
   RTC rtc = {0,0,0,0,0,0,0};
 
-  g9x_rtc_gettime(&rtc);
+  g9x_rtcGetTime(&rtc);
 
   utm->tm_year = rtc.year - 1900;
   utm->tm_mon =  rtc.month - 1;
@@ -316,7 +316,7 @@ void rtcInit (void)
   }
 
   struct gtm utm;
-  rtc_gettime(&utm);
+  rtcGetTime(&utm);
   g_rtcTime = gmktime(&utm);
 }
 

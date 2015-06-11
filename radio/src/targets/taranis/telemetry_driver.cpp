@@ -62,9 +62,7 @@ void telemetryPortInit(uint32_t baudrate)
   
   GPIO_InitStructure.GPIO_Pin = TELEMETRY_GPIO_PIN_DIR;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(TELEMETRY_GPIO_DIR, &GPIO_InitStructure);
   GPIO_ResetBits(TELEMETRY_GPIO_DIR, TELEMETRY_GPIO_PIN_DIR);
   
