@@ -176,7 +176,7 @@
   #define SWITCHES_GPIO_REG_M_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_M_H         GPIO_Pin_15 // PE.15
   #define SWITCHES_GPIO_REG_M_L         GPIOA->IDR
-  #define SWITCHES_GPIO_PIN_M_L         GPIO_Pin_12 // PA.04
+  #define SWITCHES_GPIO_PIN_M_L         GPIO_Pin_5  // PA.05
   #define SWITCHES_GPIO_REG_N_H         GPIOB->IDR
   #define SWITCHES_GPIO_PIN_N_H         GPIO_Pin_3  // PB.03
   #define SWITCHES_GPIO_REG_N_L         GPIOB->IDR
