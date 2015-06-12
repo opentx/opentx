@@ -273,19 +273,19 @@ bool switchState(EnumKeys enuk)
 uint8_t trimHelper(uint8_t neg_pind, uint8_t idx)
 {
   switch(idx){
-    case 0: return neg_pind & (1<<INP_D_TRM_LH_DWN);
-    case 1: return neg_pind & (1<<INP_D_TRM_LH_UP);
+    case 0: return neg_pind & TRIMS_GPIO_PIN_LHL;
+    case 1: return neg_pind & TRIMS_GPIO_PIN_LHR;
 #if !defined(SIMU) && defined(TELEMETRY_MOD_14051_SWAPPED)
     case 2: return !pf7_digital[PF7_TRM_LV_DWN];
     case 3: return !pf7_digital[PF7_TRM_LV_UP];
 #else
-    case 2: return neg_pind & (1<<INP_D_TRM_LV_DWN);
-    case 3: return neg_pind & (1<<INP_D_TRM_LV_UP);
+    case 2: return neg_pind & TRIMS_GPIO_PIN_LVD;
+    case 3: return neg_pind & TRIMS_GPIO_PIN_LVU;
 #endif
-    case 4: return neg_pind & (1<<INP_D_TRM_RV_DWN);
-    case 5: return neg_pind & (1<<INP_D_TRM_RV_UP);
-    case 6: return neg_pind & (1<<INP_D_TRM_RH_DWN);
-    case 7: return neg_pind & (1<<INP_D_TRM_RH_UP);
+    case 4: return neg_pind & TRIMS_GPIO_PIN_RVD;
+    case 5: return neg_pind & TRIMS_GPIO_PIN_RVU;
+    case 6: return neg_pind & TRIMS_GPIO_PIN_RHL;
+    case 7: return neg_pind & TRIMS_GPIO_PIN_RHR;
     default: return 0;
   }
 }
