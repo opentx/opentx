@@ -89,7 +89,6 @@ inline MenuFuncP lastPopMenu()
   return g_menuStack[g_menuStackPtr+1];
 }
 
-void drawPotsBars();
 void doMainScreenGraphics();
 void menuFirstCalib(uint8_t event);
 

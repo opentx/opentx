@@ -58,7 +58,6 @@
 #define REBOOT_X      (LCD_W-FW)
 #define VSWITCH_X(i)  (((i>=NUM_LOGICAL_SWITCH*3/4) ? BITMAP_X+28 : ((i>=NUM_LOGICAL_SWITCH/2) ? BITMAP_X+25 : ((i>=NUM_LOGICAL_SWITCH/4) ? 21 : 18))) + 3*i)
 #define VSWITCH_Y     (LCD_H-9)
-#define BAR_HEIGHT    (31-9)
 #define TRIM_LH_X     (32+9)
 #define TRIM_LV_X     10
 #define TRIM_RV_X     (LCD_W-11)
@@ -87,20 +86,6 @@ const pm_uchar icons[] PROGMEM = {
 #define ICON_USB      81, 11
 #define ICON_REBOOT   91, 11
 #define ICON_ALTITUDE 102, 9
-
-#define POT_SPACING   5
-
-void drawPotsBars()
-{
-  // Optimization by Mike Blandford
-  uint8_t x, i, len ;  // declare temporary variables
-  for (x=LCD_W/2-(NUM_POTS/2)*POT_SPACING, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=POT_SPACING, i++) {
-    if (IS_POT_AVAILABLE(i)) {
-      len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
-      V_BAR(x, LCD_H-8, len)
-    }
-  }
-}
 
 void doMainScreenGraphics()
 {

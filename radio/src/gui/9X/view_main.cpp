@@ -67,7 +67,7 @@ void drawPotsBars()
   for (x=LCD_W/2-5, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=5, i++) {
     if (IS_POT_AVAILABLE(i)) {
       len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
-      V_BAR(x, LCD_H-8, len)
+      V_BAR(x, LCD_H-8, len);
     }
   }
 }
@@ -526,10 +526,10 @@ void menuMainView(uint8_t event)
         int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
 #if ROTARY_ENCODERS > 2
 #define V_BAR_W 5
-        V_BAR(LCD_W/2-8+V_BAR_W*i, LCD_H-8, len)
+        V_BAR(LCD_W/2-8+V_BAR_W*i, LCD_H-8, len);
 #else
 #define V_BAR_W 5
-        V_BAR(LCD_W/2-3+V_BAR_W*i, LCD_H-8, len)
+        V_BAR(LCD_W/2-3+V_BAR_W*i, LCD_H-8, len);
 #endif
       }
 #endif // PCBGRUVIN9X && ROTARY_ENCODERS

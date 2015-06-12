@@ -624,13 +624,11 @@ void putsStrIdx(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags 
   lcd_outdezNAtt(lcdNextPos, y, idx, att|LEFT, 2);
 }
 
-#if defined(PCBTARANIS)
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {
   uint8_t length = STR_VSRCRAW[0];
   lcd_putsnAtt(x, y, STR_VSRCRAW+2+length*(idx+1), length-1, att);
 }
-#endif
 
 void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
 {

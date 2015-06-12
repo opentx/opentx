@@ -251,7 +251,7 @@ void lcdDrawTelemetryTopBar();
 #define V_BAR(xx, yy, ll)    \
   lcd_vline(xx-1,yy-ll,ll);  \
   lcd_vline(xx  ,yy-ll,ll);  \
-  lcd_vline(xx+1,yy-ll,ll);
+  lcd_vline(xx+1,yy-ll,ll)
 
 void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 

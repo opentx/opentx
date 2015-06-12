@@ -36,8 +36,23 @@
 
 #include "../../opentx.h"
 
-#define XPOT_DELTA 10
-#define XPOT_DELAY 10 /* cycles */
+#define XPOT_DELTA    10
+#define XPOT_DELAY    10 /* cycles */
+#define BAR_SPACING   12
+#define BAR_HEIGHT    22
+
+void drawPotsBars()
+{
+  // Optimization by Mike Blandford
+  uint8_t x, i, len ;  // declare temporary variables
+  for (x=LCD_W/2-(NUM_POTS/2)*BAR_SPACING+BAR_SPACING/2, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=BAR_SPACING, i++) {
+    if (IS_POT_AVAILABLE(i)) {
+      len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
+      V_BAR(x, LCD_H-8, len);
+      putsStickName(x-2, LCD_H-6, i, TINSIZE);
+    }
+  }
+}
 
 void menuCommonCalib(uint8_t event)
 {
@@ -172,6 +187,7 @@ void menuCommonCalib(uint8_t event)
   doMainScreenGraphics();
   drawPotsBars();
 
+#if 0
   for (int i=POT1; i<=POT_LAST; i++) {
     uint8_t steps = 0;
     if (reusableBuffer.calib.state == 2) {
@@ -185,6 +201,7 @@ void menuCommonCalib(uint8_t event)
       lcd_outdezAtt(LCD_W/2-2+(i-POT1)*5, LCD_H-6, steps, TINSIZE);
     }
   }
+#endif
 }
 
 void menuGeneralCalib(uint8_t event)

@@ -354,7 +354,8 @@ extern void boardInit();
 #endif
 
 #if defined(PCBTARANIS) && defined(REV9E)
-  #define IS_POT_AVAILABLE(x)       ((x)<POT1 || (x)>POT_LAST || ((g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=POT_NONE))
+  #define IS_SLIDER_AVAILABLE(x)    ((x)==SLIDER1 || (x)==SLIDER2 || (g_eeGeneral.slidersConfig & (0x01 << ((x)-SLIDER3))))
+  #define IS_POT_AVAILABLE(x)       ((x)<POT1 || ((x)<=POT_LAST && ((g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=0)) || ((x)>=SLIDER3 && IS_SLIDER_AVAILABLE(x)))
   #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
   #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
 #elif defined(PCBTARANIS) && defined(REVPLUS)
@@ -966,26 +967,26 @@ enum Analogs {
   STICK3,
   STICK4,
 #if defined(PCBTARANIS)
-    POT1,
-    POT2,
-    POT3,
-    #if defined(REV9E)
-      POT4,
-      POT_LAST = POT4,
-    #else
-      POT_LAST = POT3,
-    #endif
-    SLIDER1,
-    SLIDER2,
-    #if defined(REV9E)
-      SLIDER3,
-      SLIDER4,
-    #endif
-#else
-    POT1,
-    POT2,
-    POT3,
+  POT1,
+  POT2,
+  POT3,
+  #if defined(REV9E)
+    POT4,
+    POT_LAST = POT4,
+  #else
     POT_LAST = POT3,
+  #endif
+  SLIDER1,
+  SLIDER2,
+  #if defined(REV9E)
+    SLIDER3,
+    SLIDER4,
+  #endif
+#else
+  POT1,
+  POT2,
+  POT3,
+  POT_LAST = POT3,
 #endif
 #if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
   // When the mod is applied, ADC7 is connected to 14051's X pin and TX_VOLTAGE
