@@ -220,12 +220,8 @@ void set_trainer_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t posi
 void keysInit(void);
 uint32_t readKeys(void);
 uint32_t readTrims(void);
-#define TRIMS_PRESSED() (readTrims())
-#define KEYS_PRESSED()  (readKeys())
-#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((2<<KEY_PLUS) + (2<<KEY_MINUS))) == ((2<<KEY_PLUS) + (2<<KEY_MINUS)))
-#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & ((2<<KEY_MENU) + (2<<KEY_PAGE))) == ((2<<KEY_MENU) + (2<<KEY_PAGE)))
-#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & ((2<<KEY_ENTER) + (2<<KEY_MINUS))) == ((2<<KEY_ENTER) + (2<<KEY_MINUS)))
-#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & ((2<<KEY_PAGE) + (2<<KEY_EXIT))) == ((2<<KEY_PAGE) + (2<<KEY_EXIT)))
+#define TRIMS_PRESSED()            (readTrims())
+#define KEYS_PRESSED()             (readKeys())
 
 #if defined(REV9E)
 // Rotary Encoder driver

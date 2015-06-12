@@ -213,15 +213,11 @@ void processMultiplexAna();
 #endif
 
 #if defined(TELEMETRY_MOD_14051_SWAPPED)
-#define TRIMS_PRESSED() (~PIND & ~0x0c || pf7_digital[PF7_TRM_LV_UP] || pf7_digital[PF7_TRM_LV_DWN])
+  #define TRIMS_PRESSED()          (~PIND & ~0x0c || pf7_digital[PF7_TRM_LV_UP] || pf7_digital[PF7_TRM_LV_DWN])
 #else
-#define TRIMS_PRESSED()            (~PIND)
+  #define TRIMS_PRESSED()          (~PIND)
 #endif
 #define KEYS_PRESSED()             (~PINB)
-#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
-#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (KEYS_GPIO_PIN_UP  + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP  + KEYS_GPIO_PIN_DOWN))
-#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
-#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
 
 // LCD driver
 #define PORTA_LCD_DAT              PORTA

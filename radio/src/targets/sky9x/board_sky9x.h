@@ -186,12 +186,8 @@ void writeFlash(uint32_t * address, uint32_t * buffer);
 // Keys driver
 extern uint32_t readKeys();
 extern uint32_t readTrims();
-#define TRIMS_PRESSED() (readTrims())
-#define KEYS_PRESSED()  (readKeys())
-#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & (0x20 + 0x40)) == (0x20 + 0x40))
-#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (0x10 + 0x08)) == (0x10 + 0x08))
-#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (0x20 + 0x10)) == (0x20 + 0x10))
-#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (0x40 + 0x08)) == (0x40 + 0x08))
+#define TRIMS_PRESSED()            (readTrims())
+#define KEYS_PRESSED()             (readKeys())
 
 // Pulses driver
 void init_no_pulses(uint32_t port);

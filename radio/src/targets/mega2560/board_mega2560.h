@@ -148,10 +148,6 @@ void sdPoll10ms(void);
 
 // DBLKeys driver                         
 #define KEYS_PRESSED()             (~PINL)
-#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
-#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
-#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
-#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
 
 // Power driver
 uint8_t pwrCheck();
