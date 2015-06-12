@@ -162,9 +162,8 @@ void pwrOff();
 #define usbPlugged()               false
 
 // Haptic driver
-#define hapticOff()                // TODO hapticOn() cleaner ...
-#define HAPTIC_ON()                PORTH |=  (1 << OUT_H_HAPTIC)
-#define HAPTIC_OFF()               PORTH &= ~(1 << OUT_H_HAPTIC)
+#define hapticOn()                 PORTH |=  (1 << OUT_H_HAPTIC)
+#define hapticOff()                PORTH &= ~(1 << OUT_H_HAPTIC)
 
 // Buzzer driver
 #define buzzerOn()                 PORTB |=  (1 << OUT_B_BUZZER)

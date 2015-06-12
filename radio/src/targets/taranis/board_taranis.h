@@ -314,12 +314,10 @@ void setVolume(uint8_t volume);
 // Haptic driver
 void hapticInit(void);
 void hapticOff(void);
-#define HAPTIC_OFF()    hapticOff()
 #if defined(REVPLUS)
   void hapticOn(uint32_t pwmPercent);
 #else
   void hapticOn(void);
-  #define HAPTIC_ON()   hapticOn()
 #endif
 
 // SERIAL_USART driver

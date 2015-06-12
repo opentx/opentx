@@ -254,7 +254,6 @@ extern int8_t Coproc_maxtemp;
 // Haptic driver
 void hapticOff(void);
 void hapticOn(uint32_t pwmPercent);
-#define HAPTIC_OFF()    hapticOff()
 
 // BlueTooth driver
 #if defined(BLUETOOTH)
