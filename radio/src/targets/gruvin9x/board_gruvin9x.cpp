@@ -240,14 +240,14 @@ bool switchState(EnumKeys enuk)
 }
 
 static const pm_uchar crossTrim[] PROGMEM = {
-  1<<INP_J_TRM_LH_DWN,
-  1<<INP_J_TRM_LH_UP,
-  1<<INP_J_TRM_LV_DWN,
-  1<<INP_J_TRM_LV_UP,
-  1<<INP_J_TRM_RV_DWN,
-  1<<INP_J_TRM_RV_UP,
-  1<<INP_J_TRM_RH_DWN,
-  1<<INP_J_TRM_RH_UP
+  TRIMS_GPIO_PIN_LHL,
+  TRIMS_GPIO_PIN_LHR,
+  TRIMS_GPIO_PIN_LVD,
+  TRIMS_GPIO_PIN_LVU,
+  TRIMS_GPIO_PIN_RVD,
+  TRIMS_GPIO_PIN_RVU,
+  TRIMS_GPIO_PIN_RHL,
+  TRIMS_GPIO_PIN_RHR
 };
 
 uint8_t trimDown(uint8_t idx)

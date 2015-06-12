@@ -40,81 +40,65 @@
 
 #include "../common_avr/board_avr.h"
 
+// Keys
 #define KEYS_GPIO_REG_MENU         pinl                          
+#define KEYS_GPIO_PIN_MENU         (1<<4)
 #define KEYS_GPIO_REG_EXIT         pinl                          
+#define KEYS_GPIO_PIN_EXIT         (1<<5)
 #define KEYS_GPIO_REG_RIGHT        pinl                          
+#define KEYS_GPIO_PIN_RIGHT        (1<<2)
 #define KEYS_GPIO_REG_LEFT         pinl                          
+#define KEYS_GPIO_PIN_LEFT         (1<<3)
 #define KEYS_GPIO_REG_UP           pinl                          
+#define KEYS_GPIO_PIN_UP           (1<<1)
 #define KEYS_GPIO_REG_DOWN         pinl                          
-#define KEYS_GPIO_PIN_MENU          (1<<INP_L_KEY_MEN)            
-#define KEYS_GPIO_PIN_EXIT          (1<<INP_L_KEY_EXT)            
-#define KEYS_GPIO_PIN_UP            (1<<INP_L_KEY_UP)             
-#define KEYS_GPIO_PIN_DOWN          (1<<INP_L_KEY_DWN)            
-#define KEYS_GPIO_PIN_RIGHT         (1<<INP_L_KEY_RGT)            
-#define KEYS_GPIO_PIN_LEFT          (1<<INP_L_KEY_LFT)            
+#define KEYS_GPIO_PIN_DOWN         (1<<0)
 
-#define TRIMS_GPIO_REG_LHL           pinf                          
-#define TRIMS_GPIO_REG_LVD          pinf                          
-#define TRIMS_GPIO_REG_RVU          pinf                          
-#define TRIMS_GPIO_REG_RHL           pinf                          
-#define TRIMS_GPIO_REG_LHR           pinf                          
-#define TRIMS_GPIO_REG_LVU          pinf                          
-#define TRIMS_GPIO_REG_RVD          pinf                          
-#define TRIMS_GPIO_REG_RHR           pinf                          
-#define TRIMS_GPIO_PIN_LHL            (1<<INP_F_TRM_LH_DWN)         
-#define TRIMS_GPIO_PIN_LVD           (1<<INP_F_TRM_LV_DWN)         
-#define TRIMS_GPIO_PIN_RVU           (1<<INP_F_TRM_RV_UP)          
-#define TRIMS_GPIO_PIN_RHL            (1<<INP_F_TRM_RH_DWN)         
-#define TRIMS_GPIO_PIN_LHR            (1<<INP_F_TRM_LH_UP)          
-#define TRIMS_GPIO_PIN_LVU           (1<<INP_F_TRM_LV_UP)          
-#define TRIMS_GPIO_PIN_RVD           (1<<INP_F_TRM_RV_DWN)         
-#define TRIMS_GPIO_PIN_RHR            (1<<INP_F_TRM_RH_UP)          
+// Trims
+#define TRIMS_GPIO_REG_LHL         pinf
+#define TRIMS_GPIO_PIN_LHL         (1<<7)
+#define TRIMS_GPIO_REG_LVD         pinf
+#define TRIMS_GPIO_PIN_LVD         (1<<5)
+#define TRIMS_GPIO_REG_RVU         pinf
+#define TRIMS_GPIO_PIN_RVU         (1<<2)
+#define TRIMS_GPIO_REG_RHL         pinf
+#define TRIMS_GPIO_PIN_RHL         (1<<1)
+#define TRIMS_GPIO_REG_LHR         pinf
+#define TRIMS_GPIO_PIN_LHR         (1<<6)
+#define TRIMS_GPIO_REG_LVU         pinf
+#define TRIMS_GPIO_PIN_LVU         (1<<4)
+#define TRIMS_GPIO_REG_RVD         pinf
+#define TRIMS_GPIO_PIN_RVD         (1<<3)
+#define TRIMS_GPIO_REG_RHR         pinf
+#define TRIMS_GPIO_PIN_RHR         (1<<0)
 
-#define TIMER_16KHZ_VECT         TIMER2_OVF_vect
-#define COUNTER_16KHZ            TCNT2
-#define TIMER_10MS_VECT          TIMER2_COMPA_vect
-#define TIMER_10MS_COMPVAL       OCR2A
-#define PAUSE_10MS_INTERRUPT()   TIMSK2 &= ~(1<<OCIE2A)
-#define RESUME_10MS_INTERRUPT()  TIMSK2 |= (1<<OCIE2A)
-#define PAUSE_PPMIN_INTERRUPT()  TIMSK3 &= ~(1<<ICIE3)
-#define RESUME_PPMIN_INTERRUPT() TIMSK3 |= (1<<ICIE3)
+#define TIMER_16KHZ_VECT           TIMER2_OVF_vect
+#define COUNTER_16KHZ              TCNT2
+#define TIMER_10MS_VECT            TIMER2_COMPA_vect
+#define TIMER_10MS_COMPVAL         OCR2A
+#define PAUSE_10MS_INTERRUPT()     TIMSK2 &= ~(1<<OCIE2A)
+#define RESUME_10MS_INTERRUPT()    TIMSK2 |= (1<<OCIE2A)
+#define PAUSE_PPMIN_INTERRUPT()    TIMSK3 &= ~(1<<ICIE3)
+#define RESUME_PPMIN_INTERRUPT()   TIMSK3 |= (1<<ICIE3)
 
-#define SLAVE_MODE()             ~PINH & (1<<INP_H_RF_Activated)     
-#define JACK_PPM_OUT()           PORTB |= (1<<OUT_B_SIM_CTL)    
-#define JACK_PPM_IN()            PORTB &= ~(1<<OUT_B_SIM_CTL)
+#define SLAVE_MODE()               ~PINH & (1<<INP_H_RF_Activated)
+#define JACK_PPM_OUT()             PORTB |= (1<<OUT_B_SIM_CTL)
+#define JACK_PPM_IN()              PORTB &= ~(1<<OUT_B_SIM_CTL)
 
 // Backlight driver
-#define backlightEnable()        PORTC |= (1<<OUT_C_LIGHT)   
-#define backlightDisable()       PORTC &= ~(1<<OUT_C_LIGHT)   
-#define isBacklightEnable()      PORTC & (1<<OUT_C_LIGHT)
+#define backlightEnable()          PORTC |= (1<<OUT_C_LIGHT)
+#define backlightDisable()         PORTC &= ~(1<<OUT_C_LIGHT)
+#define isBacklightEnable()        PORTC & (1<<OUT_C_LIGHT)
 
 // SD driver
 #define sdDone()
-#define SD_IS_HC()               (0)
-#define SD_GET_SPEED()           (0)
+#define SD_IS_HC()                 (0)
+#define SD_GET_SPEED()             (0)
 #if !defined(SIMU)
 bool sdMounted(void);
 void sdMountPoll(void);
 void sdPoll10ms(void);
 #endif
-
-// Keyboard driver
-#  define INP_L_KEY_EXT          5    
-#  define INP_L_KEY_MEN          4    
-#  define INP_L_KEY_LFT          3    
-#  define INP_L_KEY_RGT          2    
-#  define INP_L_KEY_UP           1    
-#  define INP_L_KEY_DWN          0    
-
-// Trims driver
-#  define INP_F_TRM_LH_DWN       7
-#  define INP_F_TRM_LH_UP        6
-#  define INP_F_TRM_LV_DWN       5
-#  define INP_F_TRM_LV_UP        4
-#  define INP_F_TRM_RV_DWN       3
-#  define INP_F_TRM_RV_UP        2
-#  define INP_F_TRM_RH_DWN       1 
-#  define INP_F_TRM_RH_UP        0    
 
 // Switchs driver
 #  define INP_C_ID2              1    
@@ -163,23 +147,23 @@ void sdPoll10ms(void);
 #define OUT_C_LIGHT              2        
 
 // DBLKeys driver                         
-#define KEYS_PRESSED() (~PINL)
-#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_LFT))) == ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_LFT)))
-#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & ((1<<INP_L_KEY_UP)  + (1<<INP_L_KEY_DWN))) == ((1<<INP_L_KEY_UP)  + (1<<INP_L_KEY_DWN)))
-#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_UP)))  == ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_UP)))
-#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & ((1<<INP_L_KEY_LFT) + (1<<INP_L_KEY_DWN))) == ((1<<INP_L_KEY_LFT) + (1<<INP_L_KEY_DWN)))
+#define KEYS_PRESSED()             (~PINL)
+#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
+#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (KEYS_GPIO_PIN_UP + (1<<INP_L_KEY_DWN))) == (KEYS_GPIO_PIN_UP + (1<<INP_L_KEY_DWN)))
+#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
+#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (KEYS_GPIO_PIN_LEFT + (1<<INP_L_KEY_DWN))) == (KEYS_GPIO_PIN_LEFT + (1<<INP_L_KEY_DWN)))
 
 // Power driver
 uint8_t pwrCheck();
 void pwrOff();
 #if defined(PWRMANAGE)
-#define UNEXPECTED_SHUTDOWN() ((mcusr & (1 << WDRF)) || g_eeGeneral.unexpectedShutdown)
+  #define UNEXPECTED_SHUTDOWN()    ((mcusr & (1 << WDRF)) || g_eeGeneral.unexpectedShutdown)
 #else
-#define UNEXPECTED_SHUTDOWN() (mcusr & (1 << WDRF))
+  #define UNEXPECTED_SHUTDOWN()    (mcusr & (1 << WDRF))
 #endif
 
 // USB fake driver
-#define usbPlugged()    false
+#define usbPlugged()               false
 
 // Haptic driver
 #define hapticOff()                // TODO hapticOn() cleaner ...
