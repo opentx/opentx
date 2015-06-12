@@ -4,29 +4,29 @@
 #include "opentxeeprom.h"
 #include <QObject>
 
-#define IS_DBLEEPROM(board, version)         ((IS_2560(board) || board==BOARD_M128) && version >= 213)
+#define IS_DBLEEPROM(board, version)          ((IS_2560(board) || board==BOARD_M128) && version >= 213)
 // Macro used for Gruvin9x board and M128 board between versions 213 and 214 (when there were stack overflows!)
-#define IS_DBLRAM(board, version)            ((IS_2560(board) && version >= 213) || (board==BOARD_M128 && version >= 213 && version <= 214))
+#define IS_DBLRAM(board, version)             ((IS_2560(board) && version >= 213) || (board==BOARD_M128 && version >= 213 && version <= 214))
 
-#define HAS_PERSISTENT_TIMERS(board)         (IS_ARM(board) || IS_2560(board))
-#define HAS_LARGE_LCD(board)                 IS_TARANIS(board)
-#define MAX_VIEWS(board)                     (HAS_LARGE_LCD(board) ? 2 : 256)
-#define MAX_POTS(board)                      (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 3) : 3)
-#define MAX_SLIDERS(board)                   (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 2) : 0)
-#define MAX_SWITCHES(board, version)         (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 18 : 8) : 7)
-#define MAX_SWITCHES_POSITION(board, version) (IS_TARANIS(board) ? (version >= 217 ? 22+12 : 22) : 9)
-#define MAX_ROTARY_ENCODERS(board)           (IS_2560(board) ? 2 : (IS_SKY9X(board) ? 1 : 0))
-#define MAX_FLIGHT_MODES(board, version)     (IS_ARM(board) ? 9 :  (IS_DBLRAM(board, version) ? 6 :  5))
-#define MAX_TIMERS(board, version)           ((IS_ARM(board) && version >= 217) ? 3 : 2)
-#define MAX_MIXERS(board, version)           (IS_ARM(board) ? 64 : 32)
-#define MAX_CHANNELS(board, version)         (IS_ARM(board) ? 32 : 16)
-#define MAX_EXPOS(board, version)            (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 64 : 32) : (IS_DBLRAM(board, version) ? 16 : 14))
-#define MAX_CUSTOM_SWITCHES(board, version)  (IS_ARM(board) ? 32 : ((IS_DBLEEPROM(board, version) && version<217) ? 15 : 12))
-#define MAX_CUSTOM_FUNCTIONS(board, version) (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))
-#define MAX_CURVES(board, version)           (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 32 : 16) : 8)
-#define MAX_GVARS(board, version)            ((IS_ARM(board) && version >= 216) ? 9 : 5)
-#define MAX_SENSORS(board, version)          (32)
-#define NUM_PPM_INPUTS(board, version)       ((IS_ARM(board) && version >= 216) ? 16 : 8)
+#define HAS_PERSISTENT_TIMERS(board)          (IS_ARM(board) || IS_2560(board))
+#define HAS_LARGE_LCD(board)                  IS_TARANIS(board)
+#define MAX_VIEWS(board)                      (HAS_LARGE_LCD(board) ? 2 : 256)
+#define MAX_POTS(board)                       (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 3) : 3)
+#define MAX_SLIDERS(board)                    (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 2) : 0)
+#define MAX_SWITCHES(board, version)          (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 18 : 8) : 7)
+#define MAX_SWITCHES_POSITION(board, version) (IS_TARANIS_X9E(board) ? 18*3 : (IS_TARANIS(board) ? (version >= 217 ? 8*3 : 22) : 9))
+#define MAX_ROTARY_ENCODERS(board)            (IS_2560(board) ? 2 : (IS_SKY9X(board) ? 1 : 0))
+#define MAX_FLIGHT_MODES(board, version)      (IS_ARM(board) ? 9 :  (IS_DBLRAM(board, version) ? 6 :  5))
+#define MAX_TIMERS(board, version)            ((IS_ARM(board) && version >= 217) ? 3 : 2)
+#define MAX_MIXERS(board, version)            (IS_ARM(board) ? 64 : 32)
+#define MAX_CHANNELS(board, version)          (IS_ARM(board) ? 32 : 16)
+#define MAX_EXPOS(board, version)             (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 64 : 32) : (IS_DBLRAM(board, version) ? 16 : 14))
+#define MAX_CUSTOM_SWITCHES(board, version)   (IS_ARM(board) ? 32 : ((IS_DBLEEPROM(board, version) && version<217) ? 15 : 12))
+#define MAX_CUSTOM_FUNCTIONS(board, version)  (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))
+#define MAX_CURVES(board, version)            (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 32 : 16) : 8)
+#define MAX_GVARS(board, version)             ((IS_ARM(board) && version >= 216) ? 9 : 5)
+#define MAX_SENSORS(board, version)           (32)
+#define NUM_PPM_INPUTS(board, version)        ((IS_ARM(board) && version >= 216) ? 16 : 8)
 
 #define IS_AFTER_RELEASE_21_MARCH_2013(board, version) (version >= 214 || (!IS_ARM(board) && version >= 213))
 #define IS_AFTER_RELEASE_23_MARCH_2013(board, version) (version >= 214 || (board==BOARD_STOCK && version >= 213))
@@ -71,7 +71,7 @@ class SwitchesConversionTable: public ConversionTable {
       }
 
       if (IS_TARANIS(board) && version >= 216) {
-        for (int i=1; i<=3*6; i++) {
+        for (int i=1; i<=MAX_POTS(board)*6; i++) {
           addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i), -val+offset);
           addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i), val++);
         }
