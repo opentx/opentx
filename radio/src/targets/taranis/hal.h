@@ -125,9 +125,9 @@
 
 #if defined(REV9E)
   #define SWITCHES_GPIO_REG_F_L         GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_F_L         GPIO_Pin_1  // PE.01
+  #define SWITCHES_GPIO_PIN_F_L         GPIO_Pin_2  // PE.02
   #define SWITCHES_GPIO_REG_F_H         GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_F_H         GPIO_Pin_2  // PE.02
+  #define SWITCHES_GPIO_PIN_F_H         GPIO_Pin_1  // PE.01
 #else
   #define SWITCHES_GPIO_REG_F           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_F           GPIO_Pin_14 // PE.14

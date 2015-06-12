@@ -247,7 +247,7 @@ void keysInit()
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin = KEYS_GPIOD_PINS;
+    GPIO_InitStructure.GPIO_Pin = KEYS_GPIOB_PINS;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 
     GPIO_InitStructure.GPIO_Pin = KEYS_GPIOC_PINS;
