@@ -241,8 +241,8 @@
 #if defined(REV9E)
   #define ADC_GPIO_PIN_POT1             GPIO_Pin_8  // PF.08
   #define ADC_GPIO_PIN_POT2             GPIO_Pin_0  // PB.00
-  #define ADC_GPIO_PIN_POT3             GPIO_Pin_4  // PC.04
-  #define ADC_GPIO_PIN_POT4             GPIO_Pin_5  // PC.05
+  #define ADC_GPIO_PIN_POT3             GPIO_Pin_5  // PC.05
+  #define ADC_GPIO_PIN_POT4             GPIO_Pin_4  // PC.04
   #define ADC_GPIO_PIN_SLIDER1          GPIO_Pin_10 // PF.10
   #define ADC_GPIO_PIN_SLIDER2          GPIO_Pin_9  // PF.09
   #define ADC_GPIO_PIN_SLIDER3          GPIO_Pin_6  // PA.06
@@ -250,12 +250,12 @@
   #define ADC_GPIO_PIN_BATT             GPIO_Pin_0  // PC.00
   #define ADC_CHANNEL_POT1              ADC_Channel_6  // ADC3_IN6
   #define ADC_CHANNEL_POT2              ADC_Channel_8  // ADC1_IN8
-  #define ADC_CHANNEL_POT3              ADC_Channel_14 // ADC1_IN14
-  #define ADC_CHANNEL_POT4              ADC_Channel_15 // ADC1_IN15
+  #define ADC_CHANNEL_POT3              ADC_Channel_15 // ADC1_IN15
+  #define ADC_CHANNEL_POT4              ADC_Channel_14 // ADC1_IN14
   #define ADC_CHANNEL_SLIDER1           ADC_Channel_8  // ADC3_IN8
   #define ADC_CHANNEL_SLIDER2           ADC_Channel_7  // ADC3_IN7
   #define ADC_CHANNEL_SLIDER3           ADC_Channel_6  // ADC1_IN6
-  #define ADC_CHANNEL_SLIDER4           ADC_Channel_7  // ADC1_IN9
+  #define ADC_CHANNEL_SLIDER4           ADC_Channel_9  // ADC1_IN9
   #define ADC_CHANNEL_BATT              ADC_Channel_10 // ADC1_IN10
 #elif defined(REVPLUS)
   #define ADC_GPIO_PIN_POT1             GPIO_Pin_6  // PA.06
