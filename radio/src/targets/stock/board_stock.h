@@ -218,10 +218,10 @@ void processMultiplexAna();
 #define TRIMS_PRESSED()            (~PIND)
 #endif
 #define KEYS_PRESSED()             (~PINB)
-#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_LFT))) == ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_LFT)))
-#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & ((1<<INP_B_KEY_UP)  + (1<<INP_B_KEY_DWN))) == ((1<<INP_B_KEY_UP)  + (1<<INP_B_KEY_DWN)))
-#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_UP)))  == ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_UP)))
-#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & ((1<<INP_B_KEY_LFT) + (1<<INP_B_KEY_DWN))) == ((1<<INP_B_KEY_LFT) + (1<<INP_B_KEY_DWN)))
+#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
+#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (KEYS_GPIO_PIN_UP  + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP  + KEYS_GPIO_PIN_DOWN))
+#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
+#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
 
 // LCD driver
 #define PORTA_LCD_DAT              PORTA
