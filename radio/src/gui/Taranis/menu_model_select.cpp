@@ -71,9 +71,11 @@ void onModelSelectMenu(const char *result)
   }
   else {
     // The user choosed a file on SD to restore
+    eeCheck(true);
     POPUP_WARNING(eeRestoreModel(sub, (char *)result));
-    if (!s_warning && g_eeGeneral.currModel == sub)
+    if (!s_warning && g_eeGeneral.currModel == sub) {
       eeLoadModel(sub);
+    }
   }
 }
 
@@ -81,6 +83,7 @@ void menuModelSelect(uint8_t event)
 {
   if (s_warning_result) {
     s_warning_result = 0;
+    eeCheck(true);
     eeDeleteModel(m_posVert); // delete file
     s_copyMode = 0;
     event = EVT_ENTRY_UP;
@@ -88,8 +91,9 @@ void menuModelSelect(uint8_t event)
 
   uint8_t _event_ = (IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event) ? 0 : event);
 
-  if ((s_copyMode && EVT_KEY_MASK(event) == KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT))
+  if ((s_copyMode && EVT_KEY_MASK(event) == KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT)) {
     _event_ -= KEY_EXIT;
+  }
 
   int8_t oldSub = m_posVert;
 
@@ -106,7 +110,6 @@ void menuModelSelect(uint8_t event)
         if (sub >= NUM_BODY_LINES) s_pgOfs = sub-(NUM_BODY_LINES-1);
         s_copyMode = 0;
         s_editMode = EDIT_MODE_INIT;
-        eeCheck(true);
         break;
 
       case EVT_KEY_LONG(KEY_EXIT):
@@ -234,8 +237,7 @@ void menuModelSelect(uint8_t event)
   }
 
   lcd_puts(27*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
-  if (event) reusableBuffer.modelsel.eepromfree = EeFsGetFree();
-  lcd_outdezAtt(20*FW, 0, reusableBuffer.modelsel.eepromfree, 0);
+  lcd_outdezAtt(20*FW, 0, EeFsGetFree(), 0);
   lcd_puts(21*FW, 0, STR_BYTES);
 
   displayScreenIndex(e_ModelSelect, DIM(menuTabModel), 0);
