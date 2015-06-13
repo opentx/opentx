@@ -200,9 +200,8 @@ void interrupt10ms(void)
 
   uint8_t enuk = KEY_MENU;
   uint8_t in = readKeys();
-
-  for (int i = 1; i < 7; i++) {
-    uint8_t value = in & (1 << i);
+  for (uint8_t i = 1; i != uint8_t(1 << TRM_BASE); i <<= 1) {
+    uint8_t value = (in & i);
     keys[enuk].input(value);
     ++enuk;
   }
