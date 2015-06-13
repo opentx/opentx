@@ -614,3 +614,16 @@ bool TelemetrySensor::isConfigurable()
   }
   return true;
 }
+
+bool TelemetrySensor::isPrecConfigurable()
+{
+  if (isConfigurable()) {
+    return true;
+  }
+  else if (unit == UNIT_CELLS) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}

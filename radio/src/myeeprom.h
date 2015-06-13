@@ -1305,6 +1305,7 @@ PACK(typedef struct {
   bool isAvailable();
   int32_t getValue(int32_t value, uint8_t unit, uint8_t prec) const;
   bool isConfigurable();
+  bool isPrecConfigurable();
 }) TelemetrySensor;
 #endif
 
