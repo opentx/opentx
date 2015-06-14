@@ -236,7 +236,19 @@ void processSportPacket(uint8_t *packet)
           unit = sensor->unit;
           precision = sensor->prec;
         }
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, appId, dataId, data, unit, precision);
+        if (unit == UNIT_CELLS) {
+          uint8_t cellsCount = (data & 0xF0) >> 4;
+          uint8_t cellIndex = (data & 0x0F);
+          uint32_t mask = (cellsCount << 24) + (cellIndex << 16);
+          setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, appId, dataId, mask + (((data & 0x000FFF00) >> 8) / 5), unit, precision);
+          if (cellIndex+1 < cellsCount) {
+            mask += (1 << 16);
+            setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, appId, dataId, mask + (((data & 0xFFF00000) >> 20) / 5), unit, precision);
+          }
+        }
+        else {
+          setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, appId, dataId, data, unit, precision);
+        }
       }
     }
   }

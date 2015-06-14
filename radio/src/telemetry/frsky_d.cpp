@@ -600,6 +600,8 @@ void processHubPacket(uint8_t id, int16_t value)
   }
   else if (id == VOLTS_ID) {
     unit = UNIT_CELLS;
+    uint32_t cellData = (uint32_t)data;
+    data = ((cellData & 0x00F0) << 12) + (((((cellData & 0xFF00) >> 8) + ((cellData & 0x000F) << 8))) / 5);
   }
   else if (id == GPS_DAY_MONTH_ID) {
     id = GPS_HOUR_MIN_ID;
@@ -636,8 +638,6 @@ void frskyDSetDefault(int index, uint16_t id)
   const FrSkyDSensor * sensor = getFrSkyDSensor(id);
   if (sensor) {
     TelemetryUnit unit = sensor->unit;
-    if (unit == UNIT_CELLS)
-      unit = UNIT_VOLTS;
     uint8_t prec = min<uint8_t>(2, sensor->prec);
     telemetrySensor.init(sensor->name, unit, prec);
     if (id >= D_A1_ID && id <= D_A2_ID) {

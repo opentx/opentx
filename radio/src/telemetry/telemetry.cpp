@@ -20,19 +20,22 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
 
   if (unit == UNIT_CELLS) {
     uint32_t data = uint32_t(newVal);
-    uint8_t cellIndex = data & 0xF;
-    uint8_t count = (data & 0xF0) >> 4;
-    if (count != cells.count) {
+    uint8_t cellsCount = (data >> 24);
+    uint8_t cellIndex = ((data >> 16) & 0x0F);
+    uint16_t cellValue = (data & 0xFFFF);
+    if (cellsCount == 0) {
+      cellsCount = (cellIndex >= cells.count ? cellIndex + 1 : cells.count);
+    }
+    if (cellsCount != cells.count) {
       clear();
-      cells.count = count;
+      cells.count = cellsCount;
+      // we skip this round
+      return;
     }
-    cells.values[cellIndex].set(((data & 0x000FFF00) >>  8) / 5);
-    if (cellIndex+1 < cells.count) {
-      cells.values[cellIndex+1].set(((data & 0xFFF00000) >> 20) / 5);
-    }
-    if (cellIndex+2 >= cells.count) {
+    cells.values[cellIndex].set(cellValue);
+    if (cellIndex+1 == cells.count) {
       newVal = 0;
-      for (int i=0; i<count; i++) {
+      for (int i=0; i<cellsCount; i++) {
         if (cells.values[i].state) {
           newVal += cells.values[i].value;
         }
@@ -476,7 +479,7 @@ int lastUsedTelemetryIndex()
 bool isSensorAvailableInResetSpecialFunction(int index)
 {
   TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index-FUNC_RESET_PARAM_FIRST_TELEM];
-    return telemetrySensor.isAvailable();
+  return telemetrySensor.isAvailable();
 }
 
 void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)

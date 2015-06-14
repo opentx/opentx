@@ -166,6 +166,26 @@ void generateSportCellPacket(uint8_t * packet, uint8_t cells, uint8_t battnumber
 
 #define _V(volts)   (volts/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER)
 
+TEST(FrSkySPORT, FrSkyDCells)
+{
+  TELEMETRY_RESET();
+  uint8_t pkt1[] = { 0x7E, 0x98, 0x10, 0x06, 0x00, 0x07, 0xD0, 0x00, 0x00, 0x12 };
+  EXPECT_EQ(checkSportPacket(pkt1+1), true);
+  processSportPacket(pkt1+1);
+  uint8_t pkt2[] = { 0x7E, 0x98, 0x10, 0x06, 0x00, 0x17, 0xD0, 0x00, 0x00, 0x02 };
+  EXPECT_EQ(checkSportPacket(pkt2+1), true);
+  processSportPacket(pkt2+1);
+  uint8_t pkt3[] = { 0x7E, 0x98, 0x10, 0x06, 0x00, 0x27, 0xD0, 0x00, 0x00, 0xF1 };
+  EXPECT_EQ(checkSportPacket(pkt3+1), true);
+  processSportPacket(pkt3+1);
+  processSportPacket(pkt1+1);
+  processSportPacket(pkt2+1);
+  processSportPacket(pkt3+1);
+  EXPECT_EQ(telemetryItems[0].cells.count, 3);
+//  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(000)); // now we ignore such low values
+//  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(413));
+}
+
 #if 0
 TEST(FrSkySPORT, DISABLED_frskySetCellVoltage)
 {
