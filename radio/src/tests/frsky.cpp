@@ -36,8 +36,17 @@
 
 #include "gtests.h"
 
+void frskyDProcessPacket(uint8_t *packet);
+
+#if defined(FRSKY_SPORT)
+bool checkSportPacket(uint8_t *packet);
+void processSportPacket(uint8_t *packet);
+bool checkSportPacket(uint8_t *packet);
+void frskyCalculateCellStats(void);
+void displayVoltagesScreen();
+#endif
+
 #if defined(FRSKY) && !defined(CPUARM)
-extern void frskyDProcessPacket(uint8_t *packet);
 TEST(FrSky, gpsNfuel)
 {
   g_model.frsky.usrProto = 1;
@@ -115,21 +124,13 @@ TEST(FrSky, FrskyValueWithMinAveraging)
 }
 #endif
 
-
-
 #if defined(FRSKY_SPORT)
-extern bool checkSportPacket(uint8_t *packet);
 TEST(FrSkySPORT, checkCrc)
 {
   // uint8_t pkt[] = { 0x7E, 0x98, 0x10, 0x10, 0x00, 0x7D, 0x5E, 0x02, 0x00, 0x00, 0x5F };
   uint8_t pkt[] = { 0x7E, 0x98, 0x10, 0x10, 0x00, 0x7E, 0x02, 0x00, 0x00, 0x5F };
   EXPECT_EQ(checkSportPacket(pkt+1), true);
 }
-
-extern void processSportPacket(uint8_t *packet);
-extern bool checkSportPacket(uint8_t *packet);
-extern void frskyCalculateCellStats(void);
-extern void displayVoltagesScreen();
 
 void setSportPacketCrc(uint8_t * packet)
 {
@@ -145,15 +146,9 @@ void setSportPacketCrc(uint8_t * packet)
   //TRACE("crc set: %x", packet[FRSKY_SPORT_PACKET_SIZE-1]);
 }
 
-void generateSportCellPacket(uint8_t * packet, uint8_t cells, uint8_t battnumber, uint16_t cell1, uint16_t cell2)
+void generateSportCellPacket(uint8_t * packet, uint8_t cells, uint8_t battnumber, uint16_t cell1, uint16_t cell2, uint8_t sensorId=DATA_ID_FLVSS)
 {
-  if (battnumber < 6) {
-    packet[0] = 0xA1; //DATA_ID_FLVSS;
-  }
-  else {
-    packet[0] = 0xA1+1; //DATA_ID_FLVSS+1;
-    battnumber -= 6;
-  }
+  packet[0] = sensorId;
   packet[1] = 0x10; //DATA_FRAME
   *((uint16_t *)(packet+2)) = 0x0300; //CELLS_FIRST_ID
   uint32_t data = 0;
@@ -182,12 +177,14 @@ TEST(FrSkySPORT, FrSkyDCells)
   processSportPacket(pkt2+1);
   processSportPacket(pkt3+1);
   EXPECT_EQ(telemetryItems[0].cells.count, 3);
-//  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(000)); // now we ignore such low values
-//  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(413));
+  EXPECT_EQ(telemetryItems[0].value, 1200);
+  for (int i=0; i<3; i++) {
+    EXPECT_EQ(telemetryItems[0].cells.values[i].state, 1);
+    EXPECT_EQ(telemetryItems[0].cells.values[i].value, 400);
+  }
 }
 
-#if 0
-TEST(FrSkySPORT, DISABLED_frskySetCellVoltage)
+TEST(FrSkySPORT, frskySetCellVoltage)
 {
   uint8_t packet[FRSKY_SPORT_PACKET_SIZE];
 
@@ -202,15 +199,14 @@ TEST(FrSkySPORT, DISABLED_frskySetCellVoltage)
   generateSportCellPacket(packet, 3, 0, _V(405), _V(300)); processSportPacket(packet);
   generateSportCellPacket(packet, 3, 2, _V(430), _V(  0)); processSportPacket(packet);
   
-  EXPECT_EQ(frskyData.hub.cellsCount,         3);
-  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(405));
-  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(300));
-  EXPECT_EQ(frskyData.hub.cellVolts[2], _V(430));
-  EXPECT_EQ(frskyData.hub.cellVolts[4], _V(  0));
-  EXPECT_EQ(frskyData.hub.minCellVolts, _V(300));   //current minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCell,      _V(300));   //all time minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCells,     _V(113));   //all time cells sum minimum
-  EXPECT_EQ(frskyData.hub.cellsSum,     _V(113));   //current cells sum
+  EXPECT_EQ(telemetryItems[0].cells.count, 3);
+  EXPECT_EQ(telemetryItems[0].cells.values[0].value, 405);
+  EXPECT_EQ(telemetryItems[0].cells.values[1].value, 300);
+  EXPECT_EQ(telemetryItems[0].cells.values[2].value, 430);
+  EXPECT_EQ(telemetryItems[0].cells.values[4].value, 0);
+  EXPECT_EQ(telemetryItems[0].value, 1135);
+  EXPECT_EQ(telemetryItems[0].valueMin, 1135);
+  EXPECT_EQ(telemetryItems[0].valueMax, 1260);
 
   generateSportCellPacket(packet, 3, 0, _V(405), _V(250)); processSportPacket(packet);
   generateSportCellPacket(packet, 3, 2, _V(430), _V(  0)); processSportPacket(packet);
@@ -218,84 +214,83 @@ TEST(FrSkySPORT, DISABLED_frskySetCellVoltage)
   generateSportCellPacket(packet, 3, 0, _V(410), _V(420)); processSportPacket(packet);
   generateSportCellPacket(packet, 3, 2, _V(430), _V(  0)); processSportPacket(packet);
   
-  EXPECT_EQ(frskyData.hub.cellsCount,         3);
-  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(410));
-  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(420));
-  EXPECT_EQ(frskyData.hub.cellVolts[2], _V(430));
-  EXPECT_EQ(frskyData.hub.cellVolts[4], _V(  0));
-  EXPECT_EQ(frskyData.hub.minCellVolts, _V(410));   //current minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCell,      _V(250));   //all time minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCells,     _V(108));   //all time cells sum minimum
-  EXPECT_EQ(frskyData.hub.cellsSum,     _V(126));   //current cells sum
+  EXPECT_EQ(telemetryItems[0].cells.count, 3);
+  EXPECT_EQ(telemetryItems[0].cells.values[0].value, 410);
+  EXPECT_EQ(telemetryItems[0].cells.values[1].value, 420);
+  EXPECT_EQ(telemetryItems[0].cells.values[2].value, 430);
+  EXPECT_EQ(telemetryItems[0].cells.values[4].value, 0);
+  EXPECT_EQ(telemetryItems[0].value, 1260);
+  EXPECT_EQ(telemetryItems[0].valueMin, 1085);
+  EXPECT_EQ(telemetryItems[0].valueMax, 1260);
 
   //add another two cells - 5 cell battery
   generateSportCellPacket(packet, 5, 0, _V(418), _V(408)); processSportPacket(packet);
   generateSportCellPacket(packet, 5, 2, _V(415), _V(420)); processSportPacket(packet);
   generateSportCellPacket(packet, 5, 4, _V(410), _V(  0)); processSportPacket(packet);
 
-  EXPECT_EQ(frskyData.hub.cellsCount,         5);
-  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(418));
-  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(408));
-  EXPECT_EQ(frskyData.hub.cellVolts[2], _V(415));
-  EXPECT_EQ(frskyData.hub.cellVolts[3], _V(420));
-  EXPECT_EQ(frskyData.hub.cellVolts[4], _V(410));
-  EXPECT_EQ(frskyData.hub.cellVolts[5], _V(  0));
-  EXPECT_EQ(frskyData.hub.minCellVolts, _V(408));   //current minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCell,      _V(408));   //all time minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCells,     _V(207));   //all time cells sum minimum
-  EXPECT_EQ(frskyData.hub.cellsSum,     _V(207));   //current cells sum
+  EXPECT_EQ(telemetryItems[0].cells.count, 5);
+  EXPECT_EQ(telemetryItems[0].cells.values[0].value, 418);
+  EXPECT_EQ(telemetryItems[0].cells.values[1].value, 408);
+  EXPECT_EQ(telemetryItems[0].cells.values[2].value, 415);
+  EXPECT_EQ(telemetryItems[0].cells.values[3].value, 420);
+  EXPECT_EQ(telemetryItems[0].cells.values[4].value, 410);
+  EXPECT_EQ(telemetryItems[0].cells.values[5].value, 0);
+  EXPECT_EQ(telemetryItems[0].value, 2071);
+  EXPECT_EQ(telemetryItems[0].valueMin, 2071);
+  EXPECT_EQ(telemetryItems[0].valueMax, 2071);
 
   //simulate very low voltage for cell 3
   generateSportCellPacket(packet, 5, 0, _V(418), _V(408)); processSportPacket(packet);
   generateSportCellPacket(packet, 5, 2, _V(100), _V(420)); processSportPacket(packet);
   generateSportCellPacket(packet, 5, 4, _V(410), _V(  0)); processSportPacket(packet);
 
-  EXPECT_EQ(frskyData.hub.cellsCount,         5);
-  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(418));
-  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(408));
-  EXPECT_EQ(frskyData.hub.cellVolts[2], _V(100));
-  EXPECT_EQ(frskyData.hub.cellVolts[3], _V(420));
-  EXPECT_EQ(frskyData.hub.cellVolts[4], _V(410));
-  EXPECT_EQ(frskyData.hub.cellVolts[5], _V(  0));
-  EXPECT_EQ(frskyData.hub.minCellVolts, _V(100));   //current minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCell,      _V(100));   //all time minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCells,     _V(175));   //all time cells sum minimum
-  EXPECT_EQ(frskyData.hub.cellsSum,     _V(175));   //current cells sum
+  EXPECT_EQ(telemetryItems[0].cells.count, 5);
+  EXPECT_EQ(telemetryItems[0].cells.values[0].value, 418);
+  EXPECT_EQ(telemetryItems[0].cells.values[1].value, 408);
+  EXPECT_EQ(telemetryItems[0].cells.values[2].value, 100);
+  EXPECT_EQ(telemetryItems[0].cells.values[3].value, 420);
+  EXPECT_EQ(telemetryItems[0].cells.values[4].value, 410);
+  EXPECT_EQ(telemetryItems[0].cells.values[5].value, 0);
+  EXPECT_EQ(telemetryItems[0].value, 1756);
+  EXPECT_EQ(telemetryItems[0].valueMin, 1756);
+  EXPECT_EQ(telemetryItems[0].valueMax, 2071);
 
   //back to normal (but with reversed order of packets)
   generateSportCellPacket(packet, 5, 4, _V(410), _V(  0)); processSportPacket(packet);
   generateSportCellPacket(packet, 5, 0, _V(418), _V(408)); processSportPacket(packet);
   generateSportCellPacket(packet, 5, 2, _V(412), _V(420)); processSportPacket(packet);
+  generateSportCellPacket(packet, 5, 4, _V(410), _V(  0)); processSportPacket(packet);
 
-  EXPECT_EQ(frskyData.hub.cellsCount,         5);
-  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(418));
-  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(408));
-  EXPECT_EQ(frskyData.hub.cellVolts[2], _V(412));
-  EXPECT_EQ(frskyData.hub.cellVolts[3], _V(420));
-  EXPECT_EQ(frskyData.hub.cellVolts[4], _V(410));
-  EXPECT_EQ(frskyData.hub.cellVolts[5], _V(  0));
-  EXPECT_EQ(frskyData.hub.minCellVolts, _V(408));   //current minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCell,      _V(100));   //all time minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCells,     _V(175));   //all time cells sum minimum
-  EXPECT_EQ(frskyData.hub.cellsSum,     _V(206));   //current cells sum
+  EXPECT_EQ(telemetryItems[0].cells.count, 5);
+  EXPECT_EQ(telemetryItems[0].cells.values[0].value, 418);
+  EXPECT_EQ(telemetryItems[0].cells.values[1].value, 408);
+  EXPECT_EQ(telemetryItems[0].cells.values[2].value, 412);
+  EXPECT_EQ(telemetryItems[0].cells.values[3].value, 420);
+  EXPECT_EQ(telemetryItems[0].cells.values[4].value, 410);
+  EXPECT_EQ(telemetryItems[0].cells.values[5].value, 0);
+  EXPECT_EQ(telemetryItems[0].value, 2068);
+  EXPECT_EQ(telemetryItems[0].valueMin, 1756);
+  EXPECT_EQ(telemetryItems[0].valueMax, 2071);
 
   //display test
   lcd_clear();
   g_model.frsky.voltsSource = FRSKY_VOLTS_SOURCE_A1;
 }
 
-TEST(FrSkySPORT, DISABLED_StrangeCellsBug)
+TEST(FrSkySPORT, StrangeCellsBug)
 {
+  MODEL_RESET();
   TELEMETRY_RESET();
+
   uint8_t pkt[] = { 0x7E, 0x48, 0x10, 0x00, 0x03, 0x30, 0x15, 0x50, 0x81, 0xD5 };
   EXPECT_EQ(checkSportPacket(pkt+1), true);
   processSportPacket(pkt+1);
-  EXPECT_EQ(frskyData.hub.cellsCount,         3);
-  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(000)); // now we ignore such low values 
-  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(413));
+  EXPECT_EQ(telemetryItems[0].cells.count, 3);
+  EXPECT_EQ(telemetryItems[0].cells.values[0].value, 0); // now we ignore such low values
+  EXPECT_EQ(telemetryItems[0].cells.values[1].value, 413);
 }
 
-TEST(FrSkySPORT, DISABLED_frskySetCellVoltageTwoSensors)
+TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
 {
   uint8_t packet[FRSKY_SPORT_PACKET_SIZE];
 
@@ -306,59 +301,51 @@ TEST(FrSkySPORT, DISABLED_frskySetCellVoltageTwoSensors)
   generateSportCellPacket(packet, 3, 0, _V(418), _V(416)); processSportPacket(packet);
   generateSportCellPacket(packet, 3, 2, _V(415), _V(  0)); processSportPacket(packet);
 
-  EXPECT_EQ(frskyData.hub.cellsCount,         3);
-  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(418));
-  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(416));
-  EXPECT_EQ(frskyData.hub.cellVolts[2], _V(415));
-  EXPECT_EQ(frskyData.hub.cellVolts[3], _V(  0));
-  EXPECT_EQ(frskyData.hub.minCellVolts, _V(415));   //current minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCell,      _V(415));   //all time minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCells,     _V(124));   //all time cells sum minimum
-  EXPECT_EQ(frskyData.hub.cellsSum,     _V(124));   //current cells sum
+  EXPECT_EQ(telemetryItems[0].cells.count, 3);
+  EXPECT_EQ(telemetryItems[0].cells.values[0].value, 418);
+  EXPECT_EQ(telemetryItems[0].cells.values[1].value, 416);
+  EXPECT_EQ(telemetryItems[0].cells.values[2].value, 415);
+  EXPECT_EQ(telemetryItems[0].cells.values[3].value, 0);
+  EXPECT_EQ(telemetryItems[0].value, 1249);
+  EXPECT_EQ(telemetryItems[0].valueMin, 1249);
+  EXPECT_EQ(telemetryItems[0].valueMax, 1249);
 
   //sensor 2: 4 cell battery
-  generateSportCellPacket(packet, 4, 6, _V(410), _V(420)); processSportPacket(packet);
-  generateSportCellPacket(packet, 4, 8, _V(400), _V(405)); processSportPacket(packet);
+  generateSportCellPacket(packet, 4, 0, _V(410), _V(420), DATA_ID_FLVSS+1); processSportPacket(packet);
+  generateSportCellPacket(packet, 4, 2, _V(400), _V(405), DATA_ID_FLVSS+1); processSportPacket(packet);
 
-  //we need to send all cells from first battery before a new calculation will be made
-  generateSportCellPacket(packet, 3, 0, _V(418), _V(416)); processSportPacket(packet);
-  generateSportCellPacket(packet, 3, 2, _V(415), _V(  0)); processSportPacket(packet);
-  
-  EXPECT_EQ(frskyData.hub.cellsCount,        7);
-  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(418));
-  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(416));
-  EXPECT_EQ(frskyData.hub.cellVolts[2], _V(415));
-  EXPECT_EQ(frskyData.hub.cellVolts[3], _V(410));
-  EXPECT_EQ(frskyData.hub.cellVolts[4], _V(420));
-  EXPECT_EQ(frskyData.hub.cellVolts[5], _V(400));
-  EXPECT_EQ(frskyData.hub.cellVolts[6], _V(405));
-  EXPECT_EQ(frskyData.hub.cellVolts[7], _V(  0));
-  EXPECT_EQ(frskyData.hub.cellVolts[8], _V(  0));
-  EXPECT_EQ(frskyData.hub.minCellVolts, _V(400));   //current minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCell,      _V(400));   //all time minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCells,     _V(288));   //all time cells sum minimum
-  EXPECT_EQ(frskyData.hub.cellsSum,     _V(288));   //current cells sum
+  EXPECT_EQ(telemetryItems[1].cells.count, 4);
+  EXPECT_EQ(telemetryItems[1].cells.values[0].value, 410);
+  EXPECT_EQ(telemetryItems[1].cells.values[1].value, 420);
+  EXPECT_EQ(telemetryItems[1].cells.values[2].value, 400);
+  EXPECT_EQ(telemetryItems[1].cells.values[3].value, 405);
+  EXPECT_EQ(telemetryItems[1].value, 1635);
+  EXPECT_EQ(telemetryItems[1].valueMin, 1635);
+  EXPECT_EQ(telemetryItems[1].valueMax, 1635);
+
+  g_model.telemetrySensors[2].type = TELEM_TYPE_CALCULATED;
+  g_model.telemetrySensors[2].formula = TELEM_FORMULA_ADD;
+  g_model.telemetrySensors[2].prec = 1;
+  g_model.telemetrySensors[2].calc.sources[0] = 1;
+  g_model.telemetrySensors[2].calc.sources[1] = 2;
+
+  telemetryWakeup();
+
+  EXPECT_EQ(telemetryItems[2].value, 287);
+  EXPECT_EQ(telemetryItems[2].valueMin, 287);
+  EXPECT_EQ(telemetryItems[2].valueMax, 287);
 
   //now change some voltages
   generateSportCellPacket(packet, 3, 2, _V(415), _V(  0)); processSportPacket(packet);
-  generateSportCellPacket(packet, 4, 8, _V(390), _V(370)); processSportPacket(packet);
+  generateSportCellPacket(packet, 4, 2, _V(390), _V(370), DATA_ID_FLVSS+1); processSportPacket(packet);
   generateSportCellPacket(packet, 3, 0, _V(420), _V(410)); processSportPacket(packet);
-  generateSportCellPacket(packet, 4, 6, _V(410), _V(420)); processSportPacket(packet);
+  generateSportCellPacket(packet, 4, 0, _V(410), _V(420), DATA_ID_FLVSS+1); processSportPacket(packet);
 
-  EXPECT_EQ(frskyData.hub.cellsCount,        7);
-  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(420));
-  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(410));
-  EXPECT_EQ(frskyData.hub.cellVolts[2], _V(415));
-  EXPECT_EQ(frskyData.hub.cellVolts[3], _V(410));
-  EXPECT_EQ(frskyData.hub.cellVolts[4], _V(420));
-  EXPECT_EQ(frskyData.hub.cellVolts[5], _V(390));
-  EXPECT_EQ(frskyData.hub.cellVolts[6], _V(370));
-  EXPECT_EQ(frskyData.hub.cellVolts[7],_V(  0));
-  EXPECT_EQ(frskyData.hub.cellVolts[8],_V(  0));
-  EXPECT_EQ(frskyData.hub.minCellVolts, _V(370));   //current minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCell,      _V(370));   //all time minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCells,     _V(283));   //all time cells sum minimum
-  EXPECT_EQ(frskyData.hub.cellsSum,     _V(283));   //current cells sum
+  telemetryWakeup();
+
+  EXPECT_EQ(telemetryItems[2].value, 283);
+  EXPECT_EQ(telemetryItems[2].valueMin, 283);
+  EXPECT_EQ(telemetryItems[2].valueMax, 287);
 
   //display test
   lcd_clear();
@@ -374,29 +361,33 @@ void generateSportFasVoltagePacket(uint8_t * packet, uint32_t voltage)
   setSportPacketCrc(packet);
 }
 
-TEST(FrSkySPORT, DISABLED_frskyVfas)
+TEST(FrSkySPORT, frskyVfas)
 {
   uint8_t packet[FRSKY_SPORT_PACKET_SIZE];
 
-  //telemetryReset();
+  MODEL_RESET();
   TELEMETRY_RESET();
 
   // tests for Vfas
   generateSportFasVoltagePacket(packet, 5000); processSportPacket(packet);
-  EXPECT_EQ(frskyData.hub.vfas,    500);
-  EXPECT_EQ(frskyData.hub.minVfas, 500);
+  EXPECT_EQ(telemetryItems[0].value, 5000);
+  EXPECT_EQ(telemetryItems[0].valueMin, 5000);
+  EXPECT_EQ(telemetryItems[0].valueMax, 5000);
 
   generateSportFasVoltagePacket(packet, 6524); processSportPacket(packet);
-  EXPECT_EQ(frskyData.hub.vfas,    652);
-  EXPECT_EQ(frskyData.hub.minVfas, 500);
+  EXPECT_EQ(telemetryItems[0].value, 6524);
+  EXPECT_EQ(telemetryItems[0].valueMin, 6524); // the batt was changed (val > old max)
+  EXPECT_EQ(telemetryItems[0].valueMax, 6524);
 
   generateSportFasVoltagePacket(packet, 1248); processSportPacket(packet);
-  EXPECT_EQ(frskyData.hub.vfas,    124);
-  EXPECT_EQ(frskyData.hub.minVfas, 124);
+  EXPECT_EQ(telemetryItems[0].value, 1248);
+  EXPECT_EQ(telemetryItems[0].valueMin, 1248);
+  EXPECT_EQ(telemetryItems[0].valueMax, 6524);
 
   generateSportFasVoltagePacket(packet, 2248); processSportPacket(packet);
-  EXPECT_EQ(frskyData.hub.vfas,    224);
-  EXPECT_EQ(frskyData.hub.minVfas, 124);
+  EXPECT_EQ(telemetryItems[0].value, 2248);
+  EXPECT_EQ(telemetryItems[0].valueMin, 1248);
+  EXPECT_EQ(telemetryItems[0].valueMax, 6524);
 }
 
 void generateSportFasCurrentPacket(uint8_t * packet, uint32_t current)
@@ -412,49 +403,56 @@ TEST(FrSkySPORT, frskyCurrent)
 {
   uint8_t packet[FRSKY_SPORT_PACKET_SIZE];
 
+  MODEL_RESET();
   TELEMETRY_RESET();
-  g_model.frsky.fasOffset = -5;  /* unit: 1/10 amps */
 
   // tests for Curr
   generateSportFasCurrentPacket(packet, 0); processSportPacket(packet);
-  EXPECT_EQ(frskyData.hub.current,      0);
-  EXPECT_EQ(frskyData.hub.maxCurrent,   0);
+  g_model.telemetrySensors[0].custom.offset = -5;  /* unit: 1/10 amps */
+  generateSportFasCurrentPacket(packet, 0); processSportPacket(packet);
+  EXPECT_EQ(telemetryItems[0].value, 0);
+  EXPECT_EQ(telemetryItems[0].valueMin, 0);
+  EXPECT_EQ(telemetryItems[0].valueMax, 0);
 
   // measured current less then offset - value should be zero
   generateSportFasCurrentPacket(packet, 4); processSportPacket(packet);
-  EXPECT_EQ(frskyData.hub.current,      0);
-  EXPECT_EQ(frskyData.hub.maxCurrent,   0);
+  EXPECT_EQ(telemetryItems[0].value, 0);
+  EXPECT_EQ(telemetryItems[0].valueMin, 0);
+  EXPECT_EQ(telemetryItems[0].valueMax, 0);
 
   generateSportFasCurrentPacket(packet, 10); processSportPacket(packet);
-  EXPECT_EQ(frskyData.hub.current,      5);
-  EXPECT_EQ(frskyData.hub.maxCurrent,   5);
+  EXPECT_EQ(telemetryItems[0].value, 5);
+  EXPECT_EQ(telemetryItems[0].valueMin, 0);
+  EXPECT_EQ(telemetryItems[0].valueMax, 5);
 
   generateSportFasCurrentPacket(packet, 500); processSportPacket(packet);
-  EXPECT_EQ(frskyData.hub.current,      495);
-  EXPECT_EQ(frskyData.hub.maxCurrent,   495);
+  EXPECT_EQ(telemetryItems[0].value, 495);
+  EXPECT_EQ(telemetryItems[0].valueMin, 0);
+  EXPECT_EQ(telemetryItems[0].valueMax, 495);
 
   generateSportFasCurrentPacket(packet, 200); processSportPacket(packet);
-  EXPECT_EQ(frskyData.hub.current,      195);
-  EXPECT_EQ(frskyData.hub.maxCurrent,   495);
+  EXPECT_EQ(telemetryItems[0].value, 195);
+  EXPECT_EQ(telemetryItems[0].valueMin, 0);
+  EXPECT_EQ(telemetryItems[0].valueMax, 495);
 
   // test with positive offset
   TELEMETRY_RESET();
-  g_model.frsky.fasOffset = 5;  /* unit: 1/10 amps */
+  g_model.telemetrySensors[0].custom.offset = +5;  /* unit: 1/10 amps */
 
   generateSportFasCurrentPacket(packet, 0); processSportPacket(packet);
-  EXPECT_EQ(frskyData.hub.current,      5);
-  EXPECT_EQ(frskyData.hub.maxCurrent,   5);
+  EXPECT_EQ(telemetryItems[0].value, 5);
+  EXPECT_EQ(telemetryItems[0].valueMin, 5);
+  EXPECT_EQ(telemetryItems[0].valueMax, 5);
 
   generateSportFasCurrentPacket(packet, 500); processSportPacket(packet);
-  EXPECT_EQ(frskyData.hub.current,      505);
-  EXPECT_EQ(frskyData.hub.maxCurrent,   505);
+  EXPECT_EQ(telemetryItems[0].value, 505);
+  EXPECT_EQ(telemetryItems[0].valueMin, 5);
+  EXPECT_EQ(telemetryItems[0].valueMax, 505);
 
   generateSportFasCurrentPacket(packet, 200); processSportPacket(packet);
-  EXPECT_EQ(frskyData.hub.current,      205);
-  EXPECT_EQ(frskyData.hub.maxCurrent,   505);
+  EXPECT_EQ(telemetryItems[0].value, 205);
+  EXPECT_EQ(telemetryItems[0].valueMin, 5);
+  EXPECT_EQ(telemetryItems[0].valueMax, 505);
 }
-#endif
 
 #endif  //#if defined(FRSKY_SPORT)
-
-

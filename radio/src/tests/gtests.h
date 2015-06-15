@@ -53,6 +53,11 @@ inline void TELEMETRY_RESET()
   memclear(&frskyData, sizeof(frskyData));
   TELEMETRY_RSSI() = 100;
 #endif
+#if defined(CPUARM) && defined(FRSKY)
+  for (int i=0; i<MAX_SENSORS; i++) {
+    telemetryItems[i].clear();
+  }
+#endif
 }
 
 bool checkScreenshot(QString test);

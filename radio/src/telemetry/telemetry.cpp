@@ -25,12 +25,16 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     uint16_t cellValue = (data & 0xFFFF);
     if (cellsCount == 0) {
       cellsCount = (cellIndex >= cells.count ? cellIndex + 1 : cells.count);
+      if (cellsCount != cells.count) {
+        clear();
+        cells.count = cellsCount;
+        // we skip this round as we are not sure we received all cells values
+        return;
+      }
     }
-    if (cellsCount != cells.count) {
+    else if (cellsCount != cells.count) {
       clear();
       cells.count = cellsCount;
-      // we skip this round
-      return;
     }
     cells.values[cellIndex].set(cellValue);
     if (cellIndex+1 == cells.count) {
@@ -217,7 +221,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   else if (newVal > valueMax) {
     valueMax = newVal;
     if (sensor.unit == UNIT_VOLTS) {
-      valueMin = newVal;
+      valueMin = newVal; // the batt was changed
     }
   }
 
@@ -484,37 +488,34 @@ bool isSensorAvailableInResetSpecialFunction(int index)
 
 void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
 {
-  bool available = false;
-  
   for (int index=0; index<MAX_SENSORS; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-    if (telemetrySensor.id == id && telemetrySensor.instance == instance) {
-      telemetryItems[index].setValue(g_model.telemetrySensors[index], value, unit, prec);
-      available = true;
+    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && telemetrySensor.instance == instance) {
+     telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
+     return;
     }
   }
   
-  if (!available) {
-    int index = availableTelemetryIndex();
-    if (index >= 0) {
-      switch (protocol) {
+  int index = availableTelemetryIndex();
+  if (index >= 0) {
+    switch (protocol) {
 #if defined(FRSKY_SPORT)
-        case TELEM_PROTO_FRSKY_SPORT:
-          frskySportSetDefault(index, id, instance);
-          break;
+      case TELEM_PROTO_FRSKY_SPORT:
+        frskySportSetDefault(index, id, instance);
+        break;
 #endif
 #if defined(FRSKY)
-        case TELEM_PROTO_FRSKY_D:
-          frskyDSetDefault(index, id);
-          break;
+      case TELEM_PROTO_FRSKY_D:
+        frskyDSetDefault(index, id);
+        break;
 #endif
-        default:
-          break;
-      }
+      default:
+        return;
     }
-    else {
-      POPUP_WARNING(STR_TELEMETRYFULL);
-    }
+    telemetryItems[index].setValue(g_model.telemetrySensors[index], value, unit, prec);
+  }
+  else {
+    POPUP_WARNING(STR_TELEMETRYFULL);
   }
 }
 
@@ -598,6 +599,10 @@ int32_t TelemetrySensor::getValue(int32_t value, uint8_t unit, uint8_t prec) con
 
   if (type == TELEM_TYPE_CUSTOM) {
     value += custom.offset;
+    if (value < 0 && unit >= UNIT_VOLTS && unit <= UNIT_MPH) {
+      value = 0;
+    }
+
   }
 
   return value;

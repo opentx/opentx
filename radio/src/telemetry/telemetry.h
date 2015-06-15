@@ -85,16 +85,16 @@ class TelemetryItem
     };
 
     union {
-      int32_t  valueMin;             // min store
+      int32_t  valueMin;        // min store
       uint32_t pilotLongitude;
     };
 
     union {
-      int32_t  valueMax;             // max store
+      int32_t  valueMax;        // max store
       uint32_t pilotLatitude;
     };
 
-    uint8_t lastReceived;    // for detection of sensor loss
+    uint8_t lastReceived;       // for detection of sensor loss
 
     union {
       struct {
