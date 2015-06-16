@@ -136,6 +136,12 @@ void adcRead()
       Analog_values[i] = 0;
     }
 #endif
+    if (IS_POT(i) && !IS_POT_AVAILABLE(i)) {
+      // Use fixed analog value for non-existing and/or non-connected pots.
+      // Non-connected analog inputs will slightly follow the adjacent connected analog inputs, 
+      // which produces ghost readings on these inputs.
+      Analog_values[i] = 0;  
+    }
   }
 #endif
 }
