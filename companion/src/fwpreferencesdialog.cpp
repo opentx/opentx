@@ -52,7 +52,7 @@ void FirmwarePreferencesDialog::on_fw_dnld_clicked()
 
 void FirmwarePreferencesDialog::on_voice_dnld_clicked()
 {
-  QString url = "http://voices-20.open-tx.org/";
+  QString url = "http://voices-21.open-tx.org/";
   QString fwType = g.profile[g.id()].fwType();
   QStringList list = fwType.split("-");
   QString firmware = QString("%1-%2").arg(list[0]).arg(list[1]);
