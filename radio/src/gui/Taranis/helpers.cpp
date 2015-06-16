@@ -183,6 +183,12 @@ enum SwitchContext
   MixesContext
 };
 
+bool isLogicalSwitchAvailable(int index)
+{
+  LogicalSwitchData * lsw = lswAddress(index);
+  return (lsw->func != LS_FUNC_NONE);
+}
+
 bool isSwitchAvailable(int swtch, SwitchContext context)
 {
   uint32_t index = switchInfo(abs(swtch)).quot;
@@ -219,8 +225,7 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
       return false;
     }
     else if (context != LogicalSwitchesContext) {
-      LogicalSwitchData * cs = lswAddress(swtch-SWSRC_FIRST_LOGICAL_SWITCH);
-      return (cs->func != LS_FUNC_NONE);
+      return isLogicalSwitchAvailable(swtch - SWSRC_FIRST_LOGICAL_SWITCH);
     }
   }
 
@@ -344,9 +349,9 @@ bool modelHasNotes()
   return isFileAvailable(filename);
 }
 
-int getFirstAvailableSource(int min, int max, bool (*func)(int))
+int getFirstAvailable(int min, int max, bool (*func)(int))
 {
-  int retval = MIXSRC_NONE;
+  int retval = 0;
   for (int i = min; i <= max; i++) {
     if ((*func)(i)) {
       retval = i;

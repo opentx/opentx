@@ -822,10 +822,13 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_MENU_HELI[];
   extern const pm_char STR_MENU_TRIMS[];
   extern const pm_char STR_MENU_SWITCHES[];
+extern const pm_char STR_MENU_LOGICAL_SWITCHES[];
   extern const pm_char STR_MENU_TRAINER[];
   extern const pm_char STR_MENU_CHANNELS[];
   extern const pm_char STR_MENU_GVARS[];
   extern const pm_char STR_MENU_TELEMETRY[];
+extern const pm_char STR_MENU_OTHER[];
+extern const pm_char STR_MENU_INVERT[];
 #endif
 
 #if MENUS_LOCK == 1

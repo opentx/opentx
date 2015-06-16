@@ -1761,6 +1761,10 @@ enum SwitchSources {
 #endif
   SWSRC_FIRST_IN_LOGICAL_SWITCHES = -SWSRC_LAST_IN_LOGICAL_SWITCHES,
   SWSRC_FIRST_IN_MIXES = -SWSRC_LAST_IN_MIXES,
+
+#if defined(CPUARM)
+  SWSRC_INVERT = SWSRC_COUNT+1,
+#endif
 };
 
 enum MixSources {

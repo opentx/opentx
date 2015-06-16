@@ -42,7 +42,7 @@ horzpos_t m_posHorz;
 int8_t s_editMode;
 uint8_t s_noHi;
 uint8_t calibrationState;
-int s_source = MIXSRC_NONE;
+int checkIncDecSelection = 0;
 
 #if defined(AUTOSWITCH)
 int8_t checkIncDecMovedSwitch(int8_t val)
@@ -71,42 +71,55 @@ INIT_STOPS(stops100, 3, -100, 0, 100)
 INIT_STOPS(stops1000, 3, -1000, 0, 1000)
 INIT_STOPS(stopsSwitch, 15, SWSRC_FIRST, CATEGORY_END(-SWSRC_FIRST_LOGICAL_SWITCH), CATEGORY_END(-SWSRC_FIRST_TRIM), CATEGORY_END(-SWSRC_LAST_SWITCH+1), 0, CATEGORY_END(SWSRC_LAST_SWITCH), CATEGORY_END(SWSRC_FIRST_TRIM-1), CATEGORY_END(SWSRC_FIRST_LOGICAL_SWITCH-1), SWSRC_LAST)
 
-void onLongEnterPress(const char *result)
+void onSourceLongEnterPress(const char *result)
 {
   if (result == STR_MENU_INPUTS)
-    s_source = getFirstAvailableSource(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable)+1;
+    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable)+1;
 #if defined(LUA_MODEL_SCRIPTS)
   else if (result == STR_MENU_LUA)
-    s_source = getFirstAvailableSource(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable);
+    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable);
 #endif
   else if (result == STR_MENU_STICKS)
-    s_source = MIXSRC_FIRST_STICK;
+    checkIncDecSelection = MIXSRC_FIRST_STICK;
   else if (result == STR_MENU_POTS)
-    s_source = MIXSRC_FIRST_POT;
+    checkIncDecSelection = MIXSRC_FIRST_POT;
   else if (result == STR_MENU_MAX)
-    s_source = MIXSRC_MAX;
+    checkIncDecSelection = MIXSRC_MAX;
   else if (result == STR_MENU_HELI)
-    s_source = MIXSRC_FIRST_HELI;
+    checkIncDecSelection = MIXSRC_FIRST_HELI;
   else if (result == STR_MENU_TRIMS)
-    s_source = MIXSRC_FIRST_TRIM;
+    checkIncDecSelection = MIXSRC_FIRST_TRIM;
   else if (result == STR_MENU_SWITCHES)
-    s_source = MIXSRC_FIRST_SWITCH;
+    checkIncDecSelection = MIXSRC_FIRST_SWITCH;
   else if (result == STR_MENU_TRAINER)
-    s_source = MIXSRC_FIRST_TRAINER;
+    checkIncDecSelection = MIXSRC_FIRST_TRAINER;
   else if (result == STR_MENU_CHANNELS)
-    s_source = getFirstAvailableSource(MIXSRC_FIRST_CH, MIXSRC_LAST_CH, isSourceAvailable);
+    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_CH, MIXSRC_LAST_CH, isSourceAvailable);
   else if (result == STR_MENU_GVARS)
-    s_source = MIXSRC_FIRST_GVAR;
-  
+    checkIncDecSelection = MIXSRC_FIRST_GVAR;
   else if (result == STR_MENU_TELEMETRY) {
     for (int i = 0; i < MAX_SENSORS; i++) {
       TelemetrySensor * sensor = & g_model.telemetrySensors[i];
       if (sensor->isAvailable()) {
-        s_source = MIXSRC_FIRST_TELEM + 3*i;
+        checkIncDecSelection = MIXSRC_FIRST_TELEM + 3*i;
         break;
       }
     }
   }  
+}
+
+void onSwitchLongEnterPress(const char *result)
+{
+  if (result == STR_MENU_SWITCHES)
+    checkIncDecSelection = SWSRC_FIRST_SWITCH;
+  else if (result == STR_MENU_TRIMS)
+    checkIncDecSelection = SWSRC_FIRST_TRIM;
+  else if (result == STR_MENU_LOGICAL_SWITCHES)
+    checkIncDecSelection = SWSRC_FIRST_LOGICAL_SWITCH + getFirstAvailable(0, NUM_LOGICAL_SWITCH, isLogicalSwitchAvailable);
+  else if (result == STR_MENU_OTHER)
+    checkIncDecSelection = SWSRC_ON;
+  else if (result == STR_MENU_INVERT)
+    checkIncDecSelection = SWSRC_INVERT;
 }
 
 #define DBLKEYS_PRESSED_RGT_LFT(in) ((in & ((2<<KEY_PLUS) + (2<<KEY_MINUS))) == ((2<<KEY_PLUS) + (2<<KEY_MINUS)))
@@ -255,16 +268,18 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
   if (i_flags & INCDEC_SOURCE) {
     if (event == EVT_KEY_LONG(KEY_ENTER)) {
       killEvents(event);
-      s_source = MIXSRC_NONE;
+      checkIncDecSelection = MIXSRC_NONE;
       
       if (i_min <= MIXSRC_FIRST_INPUT && i_max >= MIXSRC_FIRST_INPUT) {
-        if (getFirstAvailableSource(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable) != MIXSRC_NONE)
+        if (getFirstAvailable(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable) != MIXSRC_NONE) {
           MENU_ADD_ITEM(STR_MENU_INPUTS);
+        }
       }
 #if defined(LUA_MODEL_SCRIPTS)
       if (i_min <= MIXSRC_FIRST_LUA && i_max >= MIXSRC_FIRST_LUA) {
-        if (getFirstAvailableSource(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable) != MIXSRC_NONE)
+        if (getFirstAvailable(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable) != MIXSRC_NONE) {
           MENU_ADD_ITEM(STR_MENU_LUA);
+        }
       }
 #endif
       if (i_min <= MIXSRC_FIRST_STICK && i_max >= MIXSRC_FIRST_STICK)      MENU_ADD_ITEM(STR_MENU_STICKS);
@@ -277,28 +292,50 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       if (i_min <= MIXSRC_FIRST_SWITCH && i_max >= MIXSRC_FIRST_SWITCH)    MENU_ADD_ITEM(STR_MENU_SWITCHES);
       if (i_min <= MIXSRC_FIRST_TRAINER && i_max >= MIXSRC_FIRST_TRAINER)  MENU_ADD_ITEM(STR_MENU_TRAINER);
       if (i_min <= MIXSRC_FIRST_CH && i_max >= MIXSRC_FIRST_CH)            MENU_ADD_ITEM(STR_MENU_CHANNELS);
-      if (i_min <= MIXSRC_FIRST_GVAR && i_max >= MIXSRC_FIRST_GVAR && isValueAvailable(MIXSRC_FIRST_GVAR))
+      if (i_min <= MIXSRC_FIRST_GVAR && i_max >= MIXSRC_FIRST_GVAR && isValueAvailable(MIXSRC_FIRST_GVAR)) {
         MENU_ADD_ITEM(STR_MENU_GVARS);
+      }
       
       if (i_min <= MIXSRC_FIRST_TELEM && i_max >= MIXSRC_FIRST_TELEM) {
-        bool available = false;
         for (int i = 0; i < MAX_SENSORS; i++) {
           TelemetrySensor * sensor = & g_model.telemetrySensors[i];
           if (sensor->isAvailable()) {
-            available = true;
+            MENU_ADD_ITEM(STR_MENU_TELEMETRY);
             break;
           }
         }
-        if (available)
-          MENU_ADD_ITEM(STR_MENU_TELEMETRY);
       }
-      menuHandler = onLongEnterPress;
+      menuHandler = onSourceLongEnterPress;
     }
-    if (s_source != MIXSRC_NONE) {
-      newval = s_source;
-      if (s_source != MIXSRC_MAX)
-        s_editMode = 1;
-      s_source = MIXSRC_NONE;
+    if (checkIncDecSelection != 0) {
+      newval = checkIncDecSelection;
+      if (checkIncDecSelection != MIXSRC_MAX)
+        s_editMode = EDIT_MODIFY_FIELD;
+      checkIncDecSelection = 0;
+    }
+  }
+  else if (i_flags & INCDEC_SWITCH) {
+    if (event == EVT_KEY_LONG(KEY_ENTER)) {
+      killEvents(event);
+      checkIncDecSelection = SWSRC_NONE;
+      if (i_min <= SWSRC_FIRST_SWITCH && i_max >= SWSRC_LAST_SWITCH)       MENU_ADD_ITEM(STR_MENU_SWITCHES);
+      if (i_min <= SWSRC_FIRST_TRIM && i_max >= SWSRC_LAST_TRIM)           MENU_ADD_ITEM(STR_MENU_TRIMS);
+      if (i_min <= SWSRC_FIRST_LOGICAL_SWITCH && i_max >= SWSRC_LAST_LOGICAL_SWITCH) {
+        for (int i = 0; i < NUM_LOGICAL_SWITCH; i++) {
+          if (isLogicalSwitchAvailable(i)) {
+            MENU_ADD_ITEM(STR_MENU_LOGICAL_SWITCHES);
+            break;
+          }
+        }
+      }
+      if (isValueAvailable && isValueAvailable(SWSRC_ON))                  MENU_ADD_ITEM(STR_MENU_OTHER);
+      if (isValueAvailable && isValueAvailable(-newval))                   MENU_ADD_ITEM(STR_MENU_INVERT);
+      menuHandler = onSwitchLongEnterPress;
+    }
+    if (checkIncDecSelection != 0) {
+      newval = (checkIncDecSelection == SWSRC_INVERT ? -newval : checkIncDecSelection);
+      s_editMode = EDIT_MODIFY_FIELD;
+      checkIncDecSelection = 0;
     }
   }
   return newval;

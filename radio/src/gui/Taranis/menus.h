@@ -196,12 +196,13 @@ int8_t checkIncDecMovedSwitch(int8_t val);
 bool isThrottleSourceAvailable(int source);
 bool isLogicalSwitchFunctionAvailable(int function);
 bool isAssignableFunctionAvailable(int function);
+bool isLogicalSwitchAvailable(int index);
 bool isSwitchAvailableInLogicalSwitches(int swtch);
 bool isSwitchAvailableInCustomFunctions(int swtch);
 bool isSwitchAvailableInMixes(int swtch);
 bool isSwitchAvailableInTimers(int swtch);
 bool isModuleAvailable(int module);
-int getFirstAvailableSource(int min, int max, bool (*func)(int));
+int getFirstAvailable(int min, int max, bool (*func)(int));
 #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
 #define CHECK_INCDEC_SWITCH(event, var, min, max, flags, available) \
   var = checkIncDec(event, var, min, max, (flags)|INCDEC_SWITCH, available)
