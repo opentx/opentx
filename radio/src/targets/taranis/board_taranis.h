@@ -270,10 +270,10 @@ uint32_t pwrPressedDuration(void);
   #define backlightDisable()       turnBacklightOff()
   #define isBacklightEnable()      ((BACKLIGHT_TIMER->CCR4 != 0) || (BACKLIGHT_TIMER->CCR2 != 0))
 #else
-  #define setBacklight(xx)         TIM10->CCR1 = 100-xx
-  #define backlightEnable()        TIM10->CCR1 = 100-g_eeGeneral.backlightBright
-  #define backlightDisable()       TIM10->CCR1 = 0
-  #define isBacklightEnable()      (TIM10->CCR1 != 0)
+  #define setBacklight(xx)         BACKLIGHT_TIMER->CCR1 = 100-xx
+  #define backlightEnable()        BACKLIGHT_TIMER->CCR1 = 100-g_eeGeneral.backlightBright
+  #define backlightDisable()       BACKLIGHT_TIMER->CCR1 = 0
+  #define isBacklightEnable()      (BACKLIGHT_TIMER->CCR1 != 0)
 #endif
 
 // USB driver

@@ -42,11 +42,6 @@ static void Delay(uint32_t ms)
 // New hardware SPI driver for LCD
 void initLcdSpi()
 {
-  RCC_AHB1PeriphClockCmd(LCD_RCC_AHB1Periph, ENABLE);
-  RCC_AHB1PeriphClockCmd(LCD_RCC_AHB1Periph_RST, ENABLE);
-  RCC_AHB1PeriphClockCmd(LCD_RCC_AHB1Periph_NCS, ENABLE);
-
-  RCC->APB1ENR |= RCC_APB1ENR_SPI3EN ;    // Enable clock
   // APB1 clock / 2 = 133nS per clock
   SPI3->CR1 = 0 ;		// Clear any mode error
   SPI3->CR1 = SPI_CR1_SSM | SPI_CR1_SSI | SPI_CR1_CPOL | SPI_CR1_CPHA ;
@@ -64,8 +59,6 @@ void initLcdSpi()
   NVIC_EnableIRQ(DMA1_Stream7_IRQn) ;
   DMA1->HIFCR |= DMA_HIFCR_CTCIF7; //clear interrupt flag
   DMA1->LISR |= DMA_HISR_TCIF7;    //enable DMA TX end interrupt
-
-  RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN ;      // Enable DMA1 clock
 
   DMA1_Stream7->CR &= ~DMA_SxCR_EN ;    // Disable DMA
   DMA1->HIFCR = DMA_HIFCR_CTCIF7 | DMA_HIFCR_CHTIF7 | DMA_HIFCR_CTEIF7 | DMA_HIFCR_CDMEIF7 | DMA_HIFCR_CFEIF7 ; // Write ones to clear bits
@@ -263,7 +256,6 @@ void lcdRefresh()
 /**Init the Backlight GPIO */
 static void LCD_BL_Config()
 {
-  RCC_AHB1PeriphClockCmd(BACKLIGHT_RCC_AHB1Periph_GPIO, ENABLE);
   GPIO_InitTypeDef GPIO_InitStructure;
   
 #if defined(REV9E)
@@ -275,15 +267,14 @@ static void LCD_BL_Config()
   GPIO_Init(BACKLIGHT_GPIO, &GPIO_InitStructure);
   GPIO_PinAFConfig(BACKLIGHT_GPIO, BACKLIGHT_GPIO_PinSource_1, BACKLIGHT_GPIO_AF_1);
   GPIO_PinAFConfig(BACKLIGHT_GPIO, BACKLIGHT_GPIO_PinSource_2, BACKLIGHT_GPIO_AF_1);
-  RCC->APB2ENR |= RCC_APB2ENR_TIM9EN ;        // Enable clock
-  TIM9->ARR = 100 ;
-  TIM9->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 50000 - 1;  // 20us * 100 = 2ms => 500Hz
-  TIM9->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 ; // PWM
-  TIM9->CCER = TIM_CCER_CC1E | TIM_CCER_CC2E ;
-  TIM9->CCR1 = 0 ;
-  TIM9->CCR2 = 80 ;
-  TIM9->EGR = 0 ;
-  TIM9->CR1 = TIM_CR1_CEN ;            // Counter enable
+  BACKLIGHT_TIMER->ARR = 100 ;
+  BACKLIGHT_TIMER->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 50000 - 1;  // 20us * 100 = 2ms => 500Hz
+  BACKLIGHT_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 ; // PWM
+  BACKLIGHT_TIMER->CCER = TIM_CCER_CC1E | TIM_CCER_CC2E ;
+  BACKLIGHT_TIMER->CCR1 = 0 ;
+  BACKLIGHT_TIMER->CCR2 = 80 ;
+  BACKLIGHT_TIMER->EGR = 0 ;
+  BACKLIGHT_TIMER->CR1 = TIM_CR1_CEN ;            // Counter enable
 #elif defined(REVPLUS)
   GPIO_InitStructure.GPIO_Pin = BACKLIGHT_GPIO_PIN_1|BACKLIGHT_GPIO_PIN_2;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
@@ -293,17 +284,15 @@ static void LCD_BL_Config()
   GPIO_Init(BACKLIGHT_GPIO, &GPIO_InitStructure);
   GPIO_PinAFConfig(BACKLIGHT_GPIO, BACKLIGHT_GPIO_PinSource_1, BACKLIGHT_GPIO_AF_1);
   GPIO_PinAFConfig(BACKLIGHT_GPIO, BACKLIGHT_GPIO_PinSource_2, BACKLIGHT_GPIO_AF_1);
-
-  RCC->APB1ENR |= RCC_APB1ENR_TIM4EN ;        // Enable clock
-  TIM4->ARR = 100 ;
-  TIM4->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 50000 - 1;  // 20us * 100 = 2ms => 500Hz
-  TIM4->CCMR1 = TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 ; // PWM
-  TIM4->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 ; // PWM
-  TIM4->CCER = TIM_CCER_CC4E | TIM_CCER_CC2E ;
-  TIM4->CCR2 = 0 ;
-  TIM4->CCR4 = 80 ;
-  TIM4->EGR = 0 ;
-  TIM4->CR1 = TIM_CR1_CEN ;            // Counter enable
+  BACKLIGHT_TIMER->ARR = 100 ;
+  BACKLIGHT_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 50000 - 1;  // 20us * 100 = 2ms => 500Hz
+  BACKLIGHT_TIMER->CCMR1 = TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 ; // PWM
+  BACKLIGHT_TIMER->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 ; // PWM
+  BACKLIGHT_TIMER->CCER = TIM_CCER_CC4E | TIM_CCER_CC2E ;
+  BACKLIGHT_TIMER->CCR2 = 0 ;
+  BACKLIGHT_TIMER->CCR4 = 80 ;
+  BACKLIGHT_TIMER->EGR = 0 ;
+  BACKLIGHT_TIMER->CR1 = TIM_CR1_CEN ;            // Counter enable
 #else
   GPIO_InitStructure.GPIO_Pin = BACKLIGHT_GPIO_PIN_1;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
@@ -312,15 +301,13 @@ static void LCD_BL_Config()
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(BACKLIGHT_GPIO, &GPIO_InitStructure);
   GPIO_PinAFConfig(BACKLIGHT_GPIO, BACKLIGHT_GPIO_PinSource_1, BACKLIGHT_GPIO_AF_1);
-
-  RCC->APB2ENR |= RCC_APB2ENR_TIM10EN ;        // Enable clock
-  TIM10->ARR = 100 ;
-  TIM10->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 50000 - 1;  // 20us * 100 = 2ms => 500Hz
-  TIM10->CCMR1 = 0x60 ;    // PWM
-  TIM10->CCER = 1 ;
-  TIM10->CCR1 = 80;
-  TIM10->EGR = 0 ;
-  TIM10->CR1 = 1 ;
+  BACKLIGHT_TIMER->ARR = 100 ;
+  BACKLIGHT_TIMER->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 50000 - 1;  // 20us * 100 = 2ms => 500Hz
+  BACKLIGHT_TIMER->CCMR1 = 0x60 ;    // PWM
+  BACKLIGHT_TIMER->CCER = 1 ;
+  BACKLIGHT_TIMER->CCR1 = 80;
+  BACKLIGHT_TIMER->EGR = 0 ;
+  BACKLIGHT_TIMER->CR1 = 1 ;
 #endif
 }
 
@@ -328,8 +315,6 @@ static void LCD_BL_Config()
 */
 static void LCD_Hardware_Init()
 {
-  RCC_AHB1PeriphClockCmd(LCD_RCC_AHB1Periph, ENABLE);
-
   GPIO_InitTypeDef GPIO_InitStructure;
   
   /*!< Configure lcd CLK\ MOSI\ A0pin in output push-pull mode *************/

@@ -39,7 +39,7 @@
 #if defined(REVPLUS)
 void hapticOff(void)
 {
-  TIM10->CCR1 = 0;
+  HAPTIC_TIMER->CCR1 = 0;
 }
 
 void hapticOn(uint32_t pwmPercent)
@@ -47,12 +47,11 @@ void hapticOn(uint32_t pwmPercent)
   if (pwmPercent > 100) {
     pwmPercent = 100;
   }
-  TIM10->CCR1 = pwmPercent;
+  HAPTIC_TIMER->CCR1 = pwmPercent;
 }
 
 void hapticInit(void)
 {
-  RCC_AHB1PeriphClockCmd(HAPTIC_RCC_AHB1Periph_GPIO, ENABLE);
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = HAPTIC_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
@@ -61,17 +60,16 @@ void hapticInit(void)
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(HAPTIC_GPIO, &GPIO_InitStructure);
 
-  GPIO_PinAFConfig(HAPTIC_GPIO, HAPTIC_GPIO_PinSource, GPIO_AF_TIM10);
+  GPIO_PinAFConfig(HAPTIC_GPIO, HAPTIC_GPIO_PinSource, HAPTIC_GPIO_AF);
 
-  RCC->APB2ENR |= RCC_APB2ENR_TIM10EN ;       // Enable clock
-  TIM10->ARR = 100 ;
-  TIM10->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 10000 - 1;
-  TIM10->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 ;    // PWM
-  TIM10->CCER = TIM_CCER_CC1E ;
+  HAPTIC_TIMER->ARR = 100 ;
+  HAPTIC_TIMER->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 10000 - 1;
+  HAPTIC_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 ;    // PWM
+  HAPTIC_TIMER->CCER = TIM_CCER_CC1E ;
 
-  TIM10->CCR1 = 0 ;
-  TIM10->EGR = 0 ;
-  TIM10->CR1 = TIM_CR1_CEN ;              // Counter enable
+  HAPTIC_TIMER->CCR1 = 0 ;
+  HAPTIC_TIMER->EGR = 0 ;
+  HAPTIC_TIMER->CR1 = TIM_CR1_CEN ;              // Counter enable
 }
 
 #else
@@ -80,9 +78,6 @@ void hapticInit(void)
 void hapticInit(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  RCC_AHB1PeriphClockCmd(HAPTIC_RCC_AHB1Periph_GPIO, ENABLE);
-
-  /* GPIO  Configuration*/
   GPIO_InitStructure.GPIO_Pin = HAPTIC_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;

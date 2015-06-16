@@ -48,8 +48,6 @@ void telemetryPortInit(uint32_t baudrate)
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  RCC_AHB1PeriphClockCmd(TELEMETRY_RCC_AHB1Periph_GPIO, ENABLE);
-
   GPIO_PinAFConfig(TELEMETRY_GPIO, TELEMETRY_GPIO_PinSource_RX, TELEMETRY_GPIO_AF);
   GPIO_PinAFConfig(TELEMETRY_GPIO, TELEMETRY_GPIO_PinSource_TX, TELEMETRY_GPIO_AF);
 
@@ -65,9 +63,7 @@ void telemetryPortInit(uint32_t baudrate)
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(TELEMETRY_GPIO_DIR, &GPIO_InitStructure);
   GPIO_ResetBits(TELEMETRY_GPIO_DIR, TELEMETRY_GPIO_PIN_DIR);
-  
-  RCC_APB1PeriphClockCmd(TELEMETRY_RCC_APB1Periph_USART, ENABLE);
-  
+
   USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;

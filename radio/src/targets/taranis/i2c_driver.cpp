@@ -5,9 +5,6 @@ void I2C_EE_WaitEepromStandbyState(void);
 
 void eepromInit(void)
 {
-  RCC_AHB1PeriphClockCmd(I2C_RCC_AHB1Periph_GPIO, ENABLE);
-  RCC_APB1PeriphClockCmd(I2C_RCC_APB1Periph_I2C, ENABLE);
-
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = I2C_GPIO_PIN_WP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;

@@ -46,8 +46,6 @@ void uart3Setup(unsigned int baudrate)
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  RCC_AHB1PeriphClockCmd(SERIAL_RCC_AHB1Periph_GPIO, ENABLE);
-
   GPIO_PinAFConfig(SERIAL_GPIO, SERIAL_GPIO_PinSource_RX, SERIAL_GPIO_AF);
   GPIO_PinAFConfig(SERIAL_GPIO, SERIAL_GPIO_PinSource_TX, SERIAL_GPIO_AF);
 
@@ -57,8 +55,6 @@ void uart3Setup(unsigned int baudrate)
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(SERIAL_GPIO, &GPIO_InitStructure);
-  
-  RCC_APB1PeriphClockCmd(SERIAL_RCC_APB1Periph_USART, ENABLE);
   
   USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
@@ -73,13 +69,13 @@ void uart3Setup(unsigned int baudrate)
   USART_ITConfig(SERIAL_USART, USART_IT_RXNE, ENABLE);
   USART_ITConfig(SERIAL_USART, USART_IT_TXE, DISABLE);
 
-  NVIC_SetPriority(USART3_IRQn, 7);
-  NVIC_EnableIRQ(USART3_IRQn);
+  NVIC_SetPriority(SERIAL_USART_IRQn, 7);
+  NVIC_EnableIRQ(SERIAL_USART_IRQn);
 }
 
 void uart3Init(unsigned int mode, unsigned int protocol)
 {
-  USART_DeInit(USART3);
+  USART_DeInit(SERIAL_USART);
 
   uart3Mode = false;
 
@@ -120,16 +116,16 @@ void debugPutc(const char c)
 void uart3SbusInit()
 {
   uart3Setup(100000);
-  USART3->CR1 |= USART_CR1_M | USART_CR1_PCE ;
+  SERIAL_USART->CR1 |= USART_CR1_M | USART_CR1_PCE ;
 }
 
 void uart3Stop()
 {
-  USART_DeInit(USART3);
+  USART_DeInit(SERIAL_USART);
 }
 
 #if !defined(SIMU)
-extern "C" void USART3_IRQHandler(void)
+extern "C" void SERIAL_USART_IRQHandler(void)
 {
   // Send
   if (USART_GetITStatus(SERIAL_USART, USART_IT_TXE) != RESET) {
@@ -144,9 +140,9 @@ extern "C" void USART3_IRQHandler(void)
   }
 
   // Receive
-  uint32_t status = USART3->SR;
+  uint32_t status = SERIAL_USART->SR;
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
-    uint8_t data = USART3->DR;
+    uint8_t data = SERIAL_USART->DR;
 
     if (!(status & USART_FLAG_ERRORS)) {
       switch (uart3Mode) {
@@ -159,7 +155,7 @@ extern "C" void USART3_IRQHandler(void)
       }
     }
 
-    status = USART3->SR;
+    status = SERIAL_USART->SR;
   }
 }
 #endif

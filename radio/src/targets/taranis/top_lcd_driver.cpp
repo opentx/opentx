@@ -249,7 +249,7 @@ extern "C" void TIM8_BRK_TIM12_IRQHandler()
 
 void topLcdInit()
 {
-  RCC_AHB1PeriphClockCmd(TOPLCD_RCC_AHB1Periph_GPIO, ENABLE);
+  RCC_AHB1PeriphClockCmd(TOPLCD_RCC_AHB1Periph, ENABLE);
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = TOPLCD_GPIO_PIN_DATA | TOPLCD_GPIO_PIN_WR |TOPLCD_GPIO_PIN_BL|TOPLCD_GPIO_PIN_CS1|TOPLCD_GPIO_PIN_CS2;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;

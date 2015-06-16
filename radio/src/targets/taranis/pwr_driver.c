@@ -43,10 +43,6 @@ extern volatile uint32_t g_tmr10ms;
 void pwrInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  /* GPIOC GPIOD clock enable */
-  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph_GPIO, ENABLE);
-
-  /* GPIO  Configuration*/
   GPIO_InitStructure.GPIO_Pin = PWR_GPIO_PIN_ON;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;

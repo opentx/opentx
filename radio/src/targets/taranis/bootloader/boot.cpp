@@ -223,48 +223,8 @@ void interrupt10ms(void)
 #endif
 }
 
-#if defined(PCBSKY9X)
 void init10msTimer()
 {
-  register Tc *ptc;
-  register uint32_t timer;
-
-  PMC->PMC_PCER0 |= 0x02000000L;		// Enable peripheral clock to TC2
-
-  timer = Master_frequency / 12800;// MCK/128 and 100 Hz
-
-  ptc = TC0;// Tc block 0 (TC0-2)
-  ptc->TC_BCR = 0;// No sync
-  ptc->TC_BMR = 0;
-  ptc->TC_CHANNEL[2].TC_CMR = 0x00008000;// Waveform mode
-  ptc->TC_CHANNEL[2].TC_RC = timer;// 10 Hz
-  ptc->TC_CHANNEL[2].TC_RA = timer >> 1;
-  ptc->TC_CHANNEL[2].TC_CMR = 0x0009C003;// 0000 0000 0000 1001 1100 0000 0000 0011
-                                         // MCK/128, set @ RA, Clear @ RC waveform
-  ptc->TC_CHANNEL[2].TC_CCR = 5;// Enable clock and trigger it (may only need trigger)
-
-  NVIC_EnableIRQ(TC2_IRQn);
-  TC0->TC_CHANNEL[2].TC_IER = TC_IER0_CPCS;
-}
-
-extern "C" void TC2_IRQHandler()
-{
-  register uint32_t dummy;
-
-  /* Clear status bit to acknowledge interrupt */
-  dummy = TC0->TC_CHANNEL[2].TC_SR;
-  (void) dummy;		// Discard value - prevents compiler warning
-
-  interrupt10ms();
-
-}
-#endif
-
-#if defined(PCBTARANIS)
-void init10msTimer()
-{
-  // Timer14
-  RCC->APB1ENR |= RCC_APB1ENR_TIM14EN;		// Enable clock
   TIM14->ARR = 9999;	// 10mS
   TIM14->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1;	// 1uS from 12MHz
   TIM14->CCER = 0;
@@ -280,7 +240,6 @@ extern "C" void TIM8_TRG_COM_TIM14_IRQHandler()
   TIM14->SR &= ~TIM_SR_UIF;
   interrupt10ms();
 }
-#endif
 
 FRESULT readBinDir(DIR *dj, FILINFO *fno)
 {
@@ -468,7 +427,9 @@ int main()
 
 #if defined(PCBTARANIS)
   wdt_reset();
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; 		// Enable portA clock
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph, ENABLE);
+  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph | INTERRUPT_5MS_APB1Periph | I2C_RCC_APB1Periph | SD_RCC_APB1Periph, ENABLE);
+  RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph, ENABLE);
 #endif
 
   pwrInit();

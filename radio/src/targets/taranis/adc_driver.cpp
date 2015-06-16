@@ -70,10 +70,6 @@ uint16_t Analog_values[NUMBER_ANALOG];
 
 void adcInit()
 {
-  RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;         // Enable clock
-  RCC->AHB1ENR |= ADC_AHB1Periph_GPIO;        // Enable ports A&C clocks
-  RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;         // Enable DMA2 clock
-
 #if defined(REV9E)
   configure_pins(ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_SLIDER3, PIN_ANALOG | PIN_PORTA);
   configure_pins(ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_SLIDER4, PIN_ANALOG | PIN_PORTB);
@@ -111,8 +107,6 @@ void adcInit()
   DMA2_Stream0->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 
 #if defined(REV9E)
-  RCC->APB2ENR |= RCC_APB2ENR_ADC3EN ;      // Enable clock
-
   ADC3->CR1 = ADC_CR1_SCAN ;
   ADC3->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS ;
   ADC3->SQR1 = (NUMBER_ANALOG_ADC3-1) << 20 ;   // NUMBER_ANALOG Channels

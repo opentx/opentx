@@ -317,11 +317,6 @@ void power_on (void)
   SPI_InitTypeDef  SPI_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
   volatile BYTE dummyread;
-
-  /* Enable GPIO clock for CS */
-  RCC_AHB1PeriphClockCmd(SD_RCC_AHB1Periph_GPIO, ENABLE);
-  /* Enable SPI clock, SPI1: APB2, SPI2: APB1 */
-  RCC_APB1PeriphClockCmd(SD_RCC_APB1Periph_SPI, ENABLE);
     
   card_power(1);
     
@@ -371,13 +366,9 @@ void power_on (void)
   while (SPI_I2S_GetFlagStatus(SD_SPI, SPI_I2S_FLAG_TXE) == RESET) { ; }
   dummyread = SPI_I2S_ReceiveData(SD_SPI);
 
-#ifdef SD_USE_DMA
-  /* enable DMA clock */
-  RCC_AHB1PeriphClockCmd(SD_RCC_AHB1Periph_DMA, ENABLE);
-#endif
-
   (void) dummyread;          // Discard value - prevents compiler warning
 }
+
 static
 void power_off (void)
 {
@@ -391,7 +382,6 @@ void power_off (void)
 
   SPI_I2S_DeInit(SD_SPI);
   SPI_Cmd(SD_SPI, DISABLE);
-  RCC_APB1PeriphClockCmd(SD_RCC_APB1Periph_SPI, DISABLE);
 
   //All SPI-Pins to input with weak internal pull-downs
   GPIO_InitStructure.GPIO_Pin = SD_GPIO_PIN_SCK | SD_GPIO_PIN_MISO | SD_GPIO_PIN_MOSI;

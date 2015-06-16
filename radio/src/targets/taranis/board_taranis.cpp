@@ -55,39 +55,33 @@ void watchdogInit(unsigned int duration)
   IWDG->KR = 0xCCCC ;      // start
 }
 
-// Start TIMER7 at 2000000Hz
+// Starts TIMER at 2MHz
 void init2MhzTimer()
 {
-  // Now for timer 7
-  RCC->APB1ENR |= RCC_APB1ENR_TIM7EN ;            // Enable clock
-
-  TIM7->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1 ;       // 0.5 uS, 2 MHz
-  TIM7->ARR = 65535;
-  TIM7->CR2 = 0;
-  TIM7->CR1 = TIM_CR1_CEN;
+  TIMER_2MHz_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1 ;       // 0.5 uS, 2 MHz
+  TIMER_2MHz_TIMER->ARR = 65535;
+  TIMER_2MHz_TIMER->CR2 = 0;
+  TIMER_2MHz_TIMER->CR1 = TIM_CR1_CEN;
 }
 
-// Starts TIMER at 200Hz, 5mS period
+// Starts TIMER at 200Hz (5ms)
 void init5msTimer()
 {
-  // Timer14
-  RCC->APB1ENR |= RCC_APB1ENR_TIM14EN ;           // Enable clock
-  TIM14->ARR = 4999 ;     // 5mS
-  TIM14->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1 ;                // 1uS from 30MHz
-  TIM14->CCER = 0 ;
-  TIM14->CCMR1 = 0 ;
-  TIM14->EGR = 0 ;
-  TIM14->CR1 = 5 ;
-  TIM14->DIER |= 1 ;
-  NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn) ;
-  NVIC_SetPriority(TIM8_TRG_COM_TIM14_IRQn, 7);
+  INTERRUPT_5MS_TIMER->ARR = 4999 ;     // 5mS
+  INTERRUPT_5MS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1 ;                // 1uS from 30MHz
+  INTERRUPT_5MS_TIMER->CCER = 0 ;
+  INTERRUPT_5MS_TIMER->CCMR1 = 0 ;
+  INTERRUPT_5MS_TIMER->EGR = 0 ;
+  INTERRUPT_5MS_TIMER->CR1 = 5 ;
+  INTERRUPT_5MS_TIMER->DIER |= 1 ;
+  NVIC_EnableIRQ(INTERRUPT_5MS_IRQn) ;
+  NVIC_SetPriority(INTERRUPT_5MS_IRQn, 7);
 }
 
 void stop5msTimer( void )
 {
-  TIM14->CR1 = 0 ;        // stop timer
-  NVIC_DisableIRQ(TIM8_TRG_COM_TIM14_IRQn) ;
-  RCC->APB1ENR &= ~RCC_APB1ENR_TIM14EN ;          // Disable clock
+  INTERRUPT_5MS_TIMER->CR1 = 0 ;        // stop timer
+  NVIC_DisableIRQ(INTERRUPT_5MS_IRQn) ;
 }
 
 // TODO use the same than board_sky9x.cpp
@@ -112,14 +106,18 @@ void interrupt5ms()
 }
 
 #if !defined(SIMU)
-extern "C" void TIM8_TRG_COM_TIM14_IRQHandler()
+extern "C" void INTERRUPT_5MS_IRQHandler()
 {
-  TIM14->SR &= ~TIM_SR_UIF ;
+  INTERRUPT_5MS_TIMER->SR &= ~TIM_SR_UIF ;
   interrupt5ms() ;
 }
 
 void boardInit()
 {
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph | INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph | HEARTBEAT_RCC_AHB1Periph, ENABLE);
+  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph | INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | I2C_RCC_APB1Periph | SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph, ENABLE);
+  RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph | EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph, ENABLE);
+
   pwrInit();
   keysInit();
   adcInit();
@@ -237,4 +235,3 @@ void checkTrainerSettings()
     }
   }
 }
-
