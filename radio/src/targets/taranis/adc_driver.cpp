@@ -165,6 +165,12 @@ void adcStop()
 
 uint16_t getAnalogValue(uint32_t index)
 {
+  if (IS_POT(index) && !IS_POT_AVAILABLE(index)) {
+    // Use fixed analog value for non-existing and/or non-connected pots.
+    // Non-connected analog inputs will slightly follow the adjacent connected analog inputs, 
+    // which produces ghost readings on these inputs.
+    return 0;
+  }
 #if defined(REV9E)
   index = ana_mapping[index];
 #endif
