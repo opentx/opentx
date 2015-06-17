@@ -27,15 +27,15 @@
 #define KEYS_GPIO_PIN_EXIT              GPIO_Pin_2  // PD.03
 
 // Trims
-#define TRIMS_GPIO_REG_LHL              GPIOE->IDR
-#define TRIMS_GPIO_PIN_LHL              GPIO_Pin_4  // PE.04
-#define TRIMS_GPIO_REG_LHR              GPIOE->IDR
-#define TRIMS_GPIO_PIN_LHR              GPIO_Pin_3  // PE.03
 #if defined(REV9E)
-  #define TRIMS_GPIO_REG_LVD            GPIOG->IDR
-  #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_1  // PG.01
-  #define TRIMS_GPIO_REG_LVU            GPIOG->IDR
-  #define TRIMS_GPIO_PIN_LVU            GPIO_Pin_0  // PG.00
+  #define TRIMS_GPIO_REG_LHL            GPIOG->IDR
+  #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_1  // PG.01
+  #define TRIMS_GPIO_REG_LHR            GPIOG->IDR
+  #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_0  // PG.00
+  #define TRIMS_GPIO_REG_LVD            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_4  // PE.04
+  #define TRIMS_GPIO_REG_LVU            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_LVU            GPIO_Pin_3  // PE.03
   #define TRIMS_GPIO_REG_RHL            GPIOC->IDR
   #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_3  // PC.03
   #define TRIMS_GPIO_REG_RVD            GPIOC->IDR
@@ -45,18 +45,22 @@
   #define TRIMS_GPIO_REG_RVU            GPIOC->IDR
   #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_13 // PC.13
 #else
+  #define TRIMS_GPIO_REG_LHL            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_4  // PE.04
+  #define TRIMS_GPIO_REG_LHR            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_3  // PE.03
   #define TRIMS_GPIO_REG_LVD            GPIOE->IDR
   #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_6  // PE.06
   #define TRIMS_GPIO_REG_LVU            GPIOE->IDR
   #define TRIMS_GPIO_PIN_LVU            GPIO_Pin_5  // PE.05
   #define TRIMS_GPIO_REG_RVD            GPIOC->IDR
-  #define TRIMS_GPIO_PIN_RVD            GPIO_Pin_1  // PC.01
+  #define TRIMS_GPIO_PIN_RVD            GPIO_Pin_3  // PC.03
   #define TRIMS_GPIO_REG_RHL            GPIOC->IDR
-  #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_3  // PC.03
+  #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_1  // PC.01
   #define TRIMS_GPIO_REG_RVU            GPIOC->IDR
-  #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_13 // PC.13
+  #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_2  // PC.02
   #define TRIMS_GPIO_REG_RHR            GPIOC->IDR
-  #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_2  // PC.02
+  #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_13 // PC.13
 #endif
 
 // Switches
