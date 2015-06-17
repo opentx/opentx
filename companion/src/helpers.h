@@ -162,4 +162,31 @@ QSet<QString> getFilesSet(const QString &path, const QStringList &filter, int ma
 
 bool caseInsensitiveLessThan(const QString &s1, const QString &s2);
 
+
+class GpsGlitchFilter
+{
+public:
+  GpsGlitchFilter() : lastValid(false), glitchCount(0) {};
+  bool isGlitch(double latitude, double longitude);
+
+private:
+  bool lastValid;
+  int glitchCount;
+  double lastLat;
+  double lastLon;
+};
+
+class GpsLatLonFilter
+{
+public:
+  GpsLatLonFilter() {};
+  bool isValid(const QString & latitude, const QString & longitude);
+  
+private:
+  QString lastLat;
+  QString lastLon;
+};
+
+double toDecimalCoordinate(const QString & value);
+
 #endif // HELPERS_H

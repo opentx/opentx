@@ -67,7 +67,6 @@ private:
   Ui::logsDialog *ui;
   QCPAxisRect *axisRect;
   QCPLegend *rightLegend;
-  bool cvsFileParse();
   bool plotLock;
   QString logFilename;
 
@@ -76,6 +75,11 @@ private:
 
   double yAxesRatios[AXES_LIMIT];
   minMax yAxesRanges[AXES_LIMIT];
+
+  bool cvsFileParse();
+  QList<QStringList> filterGePoints(const QList<QStringList> & input);
+  void exportToGoogleEarth();
+
 };
 
 #endif // LOGSDIALOG_H
