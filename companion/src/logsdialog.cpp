@@ -246,9 +246,9 @@ QList<QStringList> logsDialog::filterGePoints(const QList<QStringList> & input)
 
   result.append(input.at(0));
   bool rangeSelected = ui->logTable->selectionModel()->selectedRows().length() > 0;
-  
-  gpsGlitchFilter glitchFilter;
-  gpsLatLonFilter latLonFilter;
+
+  GpsGlitchFilter glitchFilter;
+  GpsLatLonFilter latLonFilter;
 
   for (int i = 1; i < n; i++) {
     if ((ui->logTable->item(i-1, 1)->isSelected() && rangeSelected) || !rangeSelected) {

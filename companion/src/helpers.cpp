@@ -1098,7 +1098,7 @@ bool caseInsensitiveLessThan(const QString &s1, const QString &s2)
   return s1.toLower() < s2.toLower();
 }
 
-bool gpsGlitchFilter::isGlitch(double latitude, double longitude) 
+bool GpsGlitchFilter::isGlitch(double latitude, double longitude) 
 {
   if ((fabs(latitude) < 0.1) && (fabs(longitude) < 0.1)) {
     return true;
@@ -1106,13 +1106,13 @@ bool gpsGlitchFilter::isGlitch(double latitude, double longitude)
 
   if (lastValid) {
     if (fabs(latitude - lastLat) > 0.01) {
-      // qDebug() << "gpsGlitchFilter(): latitude glitch " << latitude << lastLat;
+      // qDebug() << "GpsGlitchFilter(): latitude glitch " << latitude << lastLat;
       if ( ++glitchCount < 10) {
         return true; 
       }
     }
     if (fabs(longitude - lastLon) > 0.01) {
-      // qDebug() << "gpsGlitchFilter(): longitude glitch " << longitude << lastLon;
+      // qDebug() << "GpsGlitchFilter(): longitude glitch " << longitude << lastLon;
       if ( ++glitchCount < 10) {
         return true; 
       }
@@ -1125,7 +1125,7 @@ bool gpsGlitchFilter::isGlitch(double latitude, double longitude)
   return false;
 }
 
-bool gpsLatLonFilter::isValid(QString latitude, QString longitude)
+bool GpsLatLonFilter::isValid(const QString & latitude, const QString & longitude)
 {
   if (lastLat == latitude) {
     return false;
@@ -1138,11 +1138,13 @@ bool gpsLatLonFilter::isValid(QString latitude, QString longitude)
   return true;
 }
 
-double toDecimalCoordinate(QString value) 
+double toDecimalCoordinate(const QString & value) 
 {
+  if (value.isEmpty()) return 0.0;
   double temp = int(value.left(value.length()-1).toDouble() / 100);
   double result = temp + (value.left(value.length() - 1).toDouble() - temp * 100) / 60.0;
-  if ((value.right(1) == "S") || (value.right(1) == "W")) {
+  QChar direction = value.at(value.size()-1);
+  if ((direction == 'S') || (direction == 'W')) {
     result = -result;
   }
   return result;
