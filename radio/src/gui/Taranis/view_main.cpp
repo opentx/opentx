@@ -110,8 +110,8 @@ void displayTrims(uint8_t phase)
     xm = x[stickIndex];
 
     uint32_t att = ROUND;
-    int32_t val = getTrimValue(phase, i);
-    int32_t dir = val;
+    int32_t trim = getTrimValue(phase, i);
+    int32_t val = trim;
     bool exttrim = false;
     if (val < TRIM_MIN || val > TRIM_MAX) {
       exttrim = true;
@@ -135,18 +135,18 @@ void displayTrims(uint8_t phase)
       }
       ym -= val;
       drawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
-      if (dir >= 0) {
+      if (trim >= 0) {
         lcd_hline(xm-1, ym-1,  3);
       }
-      if (dir <= 0) {
+      if (trim <= 0) {
         lcd_hline(xm-1, ym+1,  3);
       }
       if (exttrim) {
         lcd_hline(xm-1, ym,  3);
       }
-      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
+      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcd_outdezAtt(dir>0 ? 22 : 54, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
+          lcd_outdezAtt(trim>0 ? 22 : 54, xm-2, -abs(trim), TINSIZE|VERTICAL);
         }
       }
     }
@@ -157,18 +157,18 @@ void displayTrims(uint8_t phase)
       lcd_hline(xm-1, ym+1,  3);
       xm += val;
       drawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
-      if (dir >= 0) {
+      if (trim >= 0) {
         lcd_vline(xm+1, ym-1,  3);
       }
-      if (dir <= 0) {
+      if (trim <= 0) {
         lcd_vline(xm-1, ym-1,  3);
       }
       if (exttrim) {
         lcd_vline(xm, ym-1,  3);
       }
-      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
+      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcd_outdezAtt((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(dir>0 ? -11 : 20), ym-2, -abs(dir/5), TINSIZE);
+          lcd_outdezAtt((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -11 : 20), ym-2, -abs(trim), TINSIZE);
         }
       }
     }
