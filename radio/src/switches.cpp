@@ -388,7 +388,7 @@ DurationAndDelayProcessing:
         if (context.timerState == SWITCH_START) {
           // set delay timer
           context.timerState = SWITCH_DELAY;
-          context.timer = ls->delay;
+          context.timer = (ls->func == LS_FUNC_EDGE ? 0 : ls->delay);
         }
         
         if (context.timerState == SWITCH_DELAY) {
