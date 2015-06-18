@@ -191,11 +191,10 @@ bool isLogicalSwitchAvailable(int index)
 
 bool isSwitchAvailable(int swtch, SwitchContext context)
 {
-  uint32_t index = switchInfo(abs(swtch)).quot;
+  bool negative = false;
 
   if (swtch < 0) {
-    if (!IS_3POS(index))
-      return false;
+    negative = true;
     if (swtch == -SWSRC_ON || swtch == -SWSRC_One) {
       return false;
     }
@@ -203,10 +202,19 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
   }
 
   if (swtch >= SWSRC_SA0 && swtch <= SWSRC_LAST_SWITCH) {
-    if (!SWITCH_EXISTS(index))
+    div_t swinfo = switchInfo(swtch);
+    if (!SWITCH_EXISTS(swinfo.quot)) {
       return false;
-    if ((swtch-SWSRC_SA1)%3 == 0)
-      return IS_3POS(index);
+    }
+    if (!IS_3POS(swinfo.quot)) {
+      if (negative) {
+        return false;
+      }
+      if (IS_3POS_MIDDLE(swinfo.rem)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   if (swtch >= SWSRC_FIRST_MULTIPOS_SWITCH && swtch <= SWSRC_LAST_MULTIPOS_SWITCH) {

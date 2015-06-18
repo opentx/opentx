@@ -732,6 +732,7 @@ PACK(typedef struct {
   #define SWITCH_EXISTS(x)            (SWITCH_CONFIG(x) != SWITCH_NONE)
   #define IS_3POS(x)                  (SWITCH_CONFIG(x) == SWITCH_3POS)
   #define IS_TOGGLE(x)                (SWITCH_CONFIG(x) == SWITCH_TOGGLE)
+  #define IS_3POS_MIDDLE(x)           ((x) == 1)
   #define SWITCH_WARNING_ALLOWED(x)   (SWITCH_EXISTS(x) && !IS_TOGGLE(x))
 #endif
 
