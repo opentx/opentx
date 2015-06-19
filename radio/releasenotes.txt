@@ -3,9 +3,13 @@
 [Taranis]
 <ul>
 <li>Lua <i>model.insertInput()</i> could not add more than 32 inputs (<a href=https://github.com/opentx/opentx/issues/2084>#2084</a>)</li>
+<li>Fixed auto-source problem on radios with non-existing S3 pot (<a href=https://github.com/opentx/opentx/issues/2364>#2364</a>)</li>
 </ul>
 
-
+[ARM Boards]
+<ul>
+<li>Fixed Edge Logical switch erroneous delay (<a href=https://github.com/opentx/opentx/issues/2368>#2368</a>)</li>
+</ul>
 
 <h2>Version 2.0.17 / 2015-05-04</h2>
 

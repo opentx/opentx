@@ -4,6 +4,7 @@
 <li>Better support for multi-axes in Log Viewer (<a href=https://github.com/opentx/opentx/issues/2267>#2267</a>)</li>
 <li>File path issue in Taranis simulator function <i>findTrueFileName()</i> on Windows (<a href=https://github.com/opentx/opentx/issues/2301>#2301</a>)</li>
 <li>Added simulator volume gain setting (<a href=https://github.com/opentx/opentx/issues/2260>#2260</a>)</li>
+<li>Added GPS glitch filtering and Latitude/Longitude position synchronization to Google Earth export (<a href=https://github.com/opentx/opentx/issues/2326>#2326</a>)</li>
 </ul>
 
 
