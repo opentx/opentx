@@ -253,7 +253,7 @@ def ttsFr():
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+110+i)))
     for i, s in enumerate(["virgule", "et", "moins", "minuit", "midi"]): 
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+119+i)))
-    for i, s in enumerate(["volts", u"ampères", u"mètres seconde", "", u"kilomètre heure", u"mètres", u"degrés", "pourcents", u"milli ampères", u"milli ampères / heure", "watt", "db", "pieds", "miles par heure", "heure", "minute", "seconde", "tours minute", "g", "millilitres", "onces"]):
+    for i, s in enumerate(["volts", u"ampères", u"milli ampères", u"knots", u"mètres seconde", u"pieds par seconde", u"kilomètre heure", u"miles par heure", u"mètres", "pieds", u"degrés", u"degrés fahrenheit", "pourcents", u"milli ampères / heure", "watt", "db", "tours minute", "g", u"degrés", "millilitres", "onces", "heure", "minute", "seconde"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+125+i)))
     for i, s in enumerate(["timer", "", "tension", "tension", u"émission", u"réception", "altitude", "moteur",
                            "essence", u"température", u"température", "vitesse", "distance", "altitude", u"élément lipo",
