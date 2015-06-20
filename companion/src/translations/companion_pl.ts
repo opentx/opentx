@@ -74,7 +74,7 @@
         <location filename="../apppreferencesdialog.ui" line="637"/>
         <location filename="../apppreferencesdialog.ui" line="854"/>
         <location filename="../apppreferencesdialog.ui" line="881"/>
-        <location filename="../apppreferencesdialog.ui" line="931"/>
+        <location filename="../apppreferencesdialog.ui" line="994"/>
         <source>Open Folder</source>
         <translation>Otwórz katalog</translation>
     </message>
@@ -298,6 +298,11 @@ Mode 4:
         <translation>L G W K</translation>
     </message>
     <message>
+        <location filename="../apppreferencesdialog.ui" line="1056"/>
+        <source>Simulator Volume Gain</source>
+        <translation>Głośność symulatora</translation>
+    </message>
+    <message>
         <location filename="../apppreferencesdialog.ui" line="58"/>
         <source>Profile Name</source>
         <translation>Nazwa profilu</translation>
@@ -431,57 +436,57 @@ Moze być różny od języka firmware</translation>
         <translation>Ustawienia Symulatora</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="901"/>
+        <location filename="../apppreferencesdialog.ui" line="1023"/>
         <source>Simulator BackLight</source>
         <translation>Podświetlenie symularota</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="911"/>
+        <location filename="../apppreferencesdialog.ui" line="964"/>
         <source>Enable</source>
         <translation>Aktywuj</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="948"/>
+        <location filename="../apppreferencesdialog.ui" line="909"/>
         <source>Blue</source>
         <translation>Niebieskie</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="953"/>
+        <location filename="../apppreferencesdialog.ui" line="914"/>
         <source>Green</source>
         <translation>Zielone</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="958"/>
+        <location filename="../apppreferencesdialog.ui" line="919"/>
         <source>Red</source>
         <translation>Czerwony</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="963"/>
+        <location filename="../apppreferencesdialog.ui" line="924"/>
         <source>Orange</source>
         <translation>Pomarańczowy</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="968"/>
+        <location filename="../apppreferencesdialog.ui" line="929"/>
         <source>Yellow</source>
         <translation>Żółty</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="982"/>
+        <location filename="../apppreferencesdialog.ui" line="1010"/>
         <source>Joystick</source>
         <translation>Joystick</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="999"/>
+        <location filename="../apppreferencesdialog.ui" line="895"/>
         <source>Calibrate</source>
         <translation>Kalibracja</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1006"/>
+        <location filename="../apppreferencesdialog.ui" line="937"/>
         <source>Simulator capture folder</source>
         <translation>Katalog zapisu symulatora</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1042"/>
+        <location filename="../apppreferencesdialog.ui" line="957"/>
         <source>Only capture to clipboard</source>
         <translation>Przechwyć tylko do schowka</translation>
     </message>
@@ -491,74 +496,74 @@ Moze być różny od języka firmware</translation>
         <translation>Zapamiętaj ustawienia przełączników w symulatorze</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="75"/>
+        <location filename="../apppreferencesdialog.cpp" line="76"/>
         <source>My Radio</source>
         <translation>Moje Radio</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="91"/>
+        <location filename="../apppreferencesdialog.cpp" line="92"/>
         <source>Select your snapshot folder</source>
         <translation>Katalog zrzutów</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="141"/>
-        <location filename="../apppreferencesdialog.cpp" line="266"/>
+        <location filename="../apppreferencesdialog.cpp" line="143"/>
+        <location filename="../apppreferencesdialog.cpp" line="268"/>
         <source>No joysticks found</source>
         <translation>Brak joysticka</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="188"/>
+        <location filename="../apppreferencesdialog.cpp" line="190"/>
         <source>EMPTY: No radio settings stored in profile</source>
         <translation>PUSTY:Brak ustawień radia w profilu</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="193"/>
+        <location filename="../apppreferencesdialog.cpp" line="195"/>
         <source>AVAILABLE: Radio settings of unknown age</source>
         <translation>DOSTĘPNY:Nieznany wiek ustawień radia</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="195"/>
+        <location filename="../apppreferencesdialog.cpp" line="197"/>
         <source>AVAILABLE: Radio settings stored %1</source>
         <translation>DOSTĘPNY:Zapamietane ustawienai radia %1</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="213"/>
+        <location filename="../apppreferencesdialog.cpp" line="215"/>
         <source>Select your library folder</source>
         <translation>Wybierz katalog bibliteki</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="237"/>
-        <location filename="../apppreferencesdialog.cpp" line="247"/>
+        <location filename="../apppreferencesdialog.cpp" line="239"/>
+        <location filename="../apppreferencesdialog.cpp" line="249"/>
         <source>Select your Models and Settings backup folder</source>
         <translation>Wybierz folder do backupowania Modeli i Ustawień</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="256"/>
+        <location filename="../apppreferencesdialog.cpp" line="258"/>
         <source>Select Google Earth executable</source>
         <translation>Wybierz wykonywalny plik Google Earth</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="299"/>
+        <location filename="../apppreferencesdialog.cpp" line="301"/>
         <source>Select the folder replicating your SD structure</source>
         <translation>Wybierz folder do zreplikowania struktury Twojej karty SD</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="308"/>
+        <location filename="../apppreferencesdialog.cpp" line="310"/>
         <source>Not possible to remove profile</source>
         <translation>Usunięcie profilu jest niemożliwe</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="308"/>
+        <location filename="../apppreferencesdialog.cpp" line="310"/>
         <source>The default profile can not be removed.</source>
         <translation>Podstawowy profil nie moze być usunięty.</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="345"/>
+        <location filename="../apppreferencesdialog.cpp" line="347"/>
         <source>Open Image to load</source>
         <translation>Otwórz obrazek do załadowania</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="345"/>
+        <location filename="../apppreferencesdialog.cpp" line="347"/>
         <source>Images (%1)</source>
         <translation>Obrazki (%1)</translation>
     </message>
@@ -2707,22 +2712,27 @@ Moze być różny od języka firmware</translation>
         <translation>Weryfikacja...</translation>
     </message>
     <message>
-        <location filename="../process_flash.cpp" line="232"/>
+        <location filename="../process_flash.cpp" line="227"/>
+        <source>unknown</source>
+        <translation>nieznany</translation>
+    </message>
+    <message>
+        <location filename="../process_flash.cpp" line="234"/>
         <source>ie: OpenTX for 9X board or OpenTX for 9XR board</source>
         <translation>ie: OpenTX dal platformy 9X lub OpenTX lub 9XR</translation>
     </message>
     <message>
-        <location filename="../process_flash.cpp" line="237"/>
+        <location filename="../process_flash.cpp" line="239"/>
         <source>ie: OpenTX for M128 / 9X board or OpenTX for 9XR board with M128 chip</source>
         <translation>ie: OpenTX dla platformy M128 / 9X lub OpenTX dla platformy 9XR z chipem M128</translation>
     </message>
     <message>
-        <location filename="../process_flash.cpp" line="248"/>
+        <location filename="../process_flash.cpp" line="250"/>
         <source>ie: OpenTX for Gruvin9X  board</source>
         <translation>ie: OpenTX dla platformy Gruvin9X</translation>
     </message>
     <message>
-        <location filename="../process_flash.cpp" line="256"/>
+        <location filename="../process_flash.cpp" line="258"/>
         <source>Your radio uses a %1 CPU!!!
 
 Please check advanced burn options to set the correct cpu type.</source>
@@ -2731,7 +2741,7 @@ Please check advanced burn options to set the correct cpu type.</source>
 Sprawdź zaawansowane funkcje wypiekania by ustalić prawidłowy procesor.</translation>
     </message>
     <message>
-        <location filename="../process_flash.cpp" line="260"/>
+        <location filename="../process_flash.cpp" line="262"/>
         <source>Your radio uses a %1 CPU!!!
 
 Please select an appropriate firmware type to program it.</source>
@@ -2740,7 +2750,7 @@ Please select an appropriate firmware type to program it.</source>
 Proszę wybrać poprany rodzaj firmware.</translation>
     </message>
     <message>
-        <location filename="../process_flash.cpp" line="260"/>
+        <location filename="../process_flash.cpp" line="262"/>
         <source>
 You are currently using:
  %1</source>
@@ -2749,17 +2759,31 @@ Aktualnie używasz:
  %1</translation>
     </message>
     <message>
-        <location filename="../process_flash.cpp" line="272"/>
+        <location filename="../process_flash.cpp" line="267"/>
+        <source>Your radio does not seem connected to USB or the driver is not installed!!!
+
+Please use ZADIG to properly install the driver.</source>
+        <translation>Radio nie jest podłaczone do USB lub brak drivera!!!
+
+W celu instalacji drivera użycj ZADIG.</translation>
+    </message>
+    <message>
+        <location filename="../process_flash.cpp" line="269"/>
+        <source>Your radio does not seem connected to USB or the driver is not initialized!!!.</source>
+        <translation>Radio nie jest podłaczone do USB lub driver nie został zainicjalzowany!!</translation>
+    </message>
+    <message>
+        <location filename="../process_flash.cpp" line="281"/>
         <source>Flashing done (exit code = %1)</source>
         <translation>Flaszowanie zakończone( z kodem %1)</translation>
     </message>
     <message>
-        <location filename="../process_flash.cpp" line="278"/>
+        <location filename="../process_flash.cpp" line="287"/>
         <source>Flashing done with errors</source>
         <translation>Flashowanie zakończone z Błędami</translation>
     </message>
     <message>
-        <location filename="../process_flash.cpp" line="291"/>
+        <location filename="../process_flash.cpp" line="300"/>
         <source>FUSES: Low=%1 High=%2 Ext=%3</source>
         <translation>Bezpieczniki: Low=%1 High=%2 Ext=%3</translation>
     </message>
@@ -8344,42 +8368,42 @@ Copyright © 1995-2014 Wirtualna Polska
         <translation>!Krzywa(%1)</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1085"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1087"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1099"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1100"/>
         <source>Support for frsky telemetry mod</source>
         <translation>Wsparcie dla telemetrii FrSky</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1085"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1087"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1099"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1100"/>
         <source>Support for jeti telemetry mod</source>
         <translation>Wsparcie telemetrii JETI</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1085"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1087"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1099"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1100"/>
         <source>Support for receiving ardupilot data</source>
         <translation>Wsparcie dla otrzymywania danych ardupilota</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1085"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1087"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1099"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1100"/>
         <source>Support for receiving NMEA data</source>
         <translation>Wsparcie dla otrzymywania danych NMEA</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1085"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1099"/>
         <source>Support for telemetry easy board</source>
         <translation>Wsparcie dla platformy TelemetrEZ</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1085"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1087"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1099"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1100"/>
         <source>Support for MAVLINK devices</source>
         <translation>Wsparcie urządzeń MAVLINK</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1086"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1101"/>
         <source>Rotary Encoder use in menus navigation</source>
         <translation>Użycie pokrętła do nawigacji w menu</translation>
     </message>
@@ -8392,165 +8416,174 @@ Copyright © 1995-2014 Wirtualna Polska
         <translation type="obsolete">Tryb FAI zawsze aktywny</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1093"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1129"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1159"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1192"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1219"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1245"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1246"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1107"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1143"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1173"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1206"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1233"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1263"/>
         <source>Enable heli menu and cyclic mix support</source>
         <translation>Uaktywnione menu Heli i wsparcie dla cyklicznych mikserów</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1094"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1130"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1160"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1193"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1220"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1247"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1272"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1292"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1108"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1144"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1174"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1207"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1234"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1264"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1289"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1309"/>
         <source>Enable TEMPLATES menu</source>
         <translation>Uaktywnienie menu szablonów</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1095"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1131"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1161"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1194"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1109"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1145"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1175"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1208"/>
         <source>No splash screen</source>
         <translation>Bez loga na ekranie</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1096"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1132"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1162"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1195"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1221"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1248"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1273"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1293"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1110"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1146"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1176"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1209"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1235"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1265"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1290"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1310"/>
         <source>No flight modes</source>
         <translation>Firmware bez menu faz lotu</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1074"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1076"/>
         <source>Channel values displayed in us</source>
         <translation>Wartosći kanałów wyswietlone w us</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1290"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1307"/>
         <source>OpenTX for 9XR-PRO</source>
         <translation>OpenTX dla platformy 9XR-PRO</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1075"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1077"/>
         <source>Use alternative SQT5 font</source>
         <translation>Użyj alternatywnego fontu SQT5</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1076"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1078"/>
         <source>No OverrideCH functions available</source>
         <translation>Brak dostępnych Funkcji Nadpisania Kanału</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1077"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1079"/>
         <source>Possibility to enable FAI MODE (no telemetry) at field</source>
         <translation>Umożliwienie uaktywniania trybu FAI(brak telemeri) w menu na lotnisku</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1077"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1079"/>
         <source>FAI MODE (no telemetry) always enabled</source>
         <translation>Tryb FAI (brak telemetri) zawsze aktywny</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1115"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1088"/>
+        <source>ERC12864FSF LCD</source>
+        <translation>LCD: ERC12864FSF</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1089"/>
+        <source>ST7920 LCD</source>
+        <translation>LCD: ST7920</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1129"/>
         <source>EEprom write progress bar</source>
         <translation>Pasek postępu wgrywania EEPROMu</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1117"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1181"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1131"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1195"/>
         <source>No Winged Shadow How High support</source>
         <translation>Bez wsparcia -  Winged Shadow How High</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1118"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1182"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1132"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1196"/>
         <source>No vario support</source>
         <translation>Bez wsparcia wario</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1119"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1183"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1133"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1197"/>
         <source>No GPS support</source>
         <translation>Bez wsparcia GPS</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1120"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1184"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1134"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1198"/>
         <source>No gauges in the custom telemetry screen</source>
         <translation>Bez graficznych wskazań telemetrii</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1121"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1135"/>
         <source>Allow compensating for offset errors in FrSky FAS current sensors</source>
         <translation>Pozwolenie na kompensację błędów w czujnikach natężenia FrSky FAS</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1243"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1257"/>
         <source>OpenTX for MEGA2560 board</source>
         <translation>OpenTX dla platformy MEGA2560</translation>
     </message>
     <message>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1086"/>
         <source>ST7565P LCD or compatible</source>
-        <translation type="obsolete">LCD ST7565P lub kompatybilny</translation>
+        <translation>LCD ST7565P lub kompatybilny</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1244"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1087"/>
         <source>ST7565R LCD or compatible</source>
         <translation>LCD ST7565R lub kompatybilny</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1251"/>
         <source>Used if you have voice module</source>
-        <translation>Używany jeśli masz moguł dźwiękowy</translation>
+        <translation type="obsolete">Używany jeśli masz moguł dźwiękowy</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1257"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1315"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1325"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1335"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1274"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1332"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1342"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1352"/>
         <source>Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views</source>
         <translation>Dodaje widok wyjscia mikserów do ekrany MONITORA KANAŁÓW, wciśnięcie [ENT] przełącza pomiędzy widokami</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1312"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1329"/>
         <source>Haptic module installed</source>
         <translation>Moduł Haptic zainstalowany</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1313"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1323"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1333"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1330"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1340"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1350"/>
         <source>Support for Lua model scripts</source>
         <translation>Wsparcie dla skryptów LUA</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1314"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1324"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1334"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1331"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1341"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1351"/>
         <source>No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)</source>
         <translation>Brak emulacji joyskicka w FW (Tylko jest karta jako dysk w Bootloaderze) </translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1320"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1337"/>
         <source>OpenTX for FrSky Taranis Plus</source>
         <translation>OpenTX dla platformy FrSky Taranis Plus</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1330"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1347"/>
         <source>OpenTX for FrSky Taranis X9E</source>
         <translation>OpenTX dla platformy FrSky Taranis X9E</translation>
     </message>
@@ -8559,93 +8592,94 @@ Copyright © 1995-2014 Wirtualna Polska
         <translation type="obsolete">Wartość SWR jest dostępna do wyświelenia/ogłoszenia/alarmów - Dostępna tylko w najnowszych Taranis+</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1309"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1326"/>
         <source>OpenTX for FrSky Taranis</source>
         <translation>OpenTX dla platformy FrSky Taranis</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1310"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1321"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1331"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1327"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1338"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1348"/>
         <source>Disable HELI menu and cyclic mix support</source>
         <translation>Dezaktywowane menu Heli i wsparcie dla cyklicznych mikserów</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1311"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1322"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1332"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1328"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1339"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1349"/>
         <source>Disable Global variables</source>
         <translation>dezaktywowane zmienne globalne</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1097"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1133"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1163"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1196"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1222"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1249"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1274"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1294"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1111"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1147"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1177"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1210"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1236"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1266"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1291"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1311"/>
         <source>Disable curves menus</source>
         <translation>Bez menu krzywych</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1098"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1134"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1164"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1197"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1112"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1148"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1178"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1211"/>
         <source>Support for radio modified with regular speaker</source>
         <translation>Wsparcie dla modyfikacji radia zwykłym głośnikiem</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1099"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1135"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1165"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1198"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1224"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1113"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1149"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1179"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1212"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1238"/>
         <source>Used if you have modified your radio with voice mode</source>
         <translation>Używane jeśli radio jest zmodyfikowane w calu użycia komunikatów głosowych</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1100"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1136"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1166"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1199"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1114"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1150"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1180"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1213"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1270"/>
         <source>Used if you have modified your radio with haptic mode</source>
         <translation>Używane jeśli radio jest zmodyfikowane do użycia wibracji</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1112"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1148"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1176"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1209"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1235"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1262"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1283"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1302"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1126"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1162"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1190"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1223"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1249"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1279"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1300"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1319"/>
         <source>Battery graph</source>
         <translation>Grafika baterii</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1114"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1150"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1178"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1211"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1128"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1164"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1192"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1225"/>
         <source>Enable the throttle trace in Statistics</source>
         <translation>Uaktywnić śledzenie gazu w statystykach</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1225"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1252"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1239"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1261"/>
         <source>Support of FrSky PXX protocol</source>
         <translation>Wsparcie dla protokołu Frsky PXX</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1088"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1102"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1138"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1168"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1201"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1116"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1152"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1182"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1215"/>
         <source>Support for DSM2 modules</source>
         <translation>wsparcie modułu DSM2</translation>
     </message>
@@ -8657,56 +8691,56 @@ Copyright © 1995-2014 Wirtualna Polska
         wielkość eepromu jest 4096 ale tylko pierwsze 2048 jest używane </translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1103"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1139"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1169"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1202"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1227"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1254"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1275"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1295"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1117"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1153"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1183"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1216"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1241"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1271"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1292"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1312"/>
         <source>PPM center adjustment in limits</source>
         <translation>Limit dostrojenia centrowania PPM </translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1105"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1141"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1171"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1204"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1229"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1256"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1277"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1297"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1119"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1155"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1185"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1218"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1243"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1273"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1294"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1314"/>
         <source>Symetrical Limits</source>
         <translation>Limity symetryczne</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1086"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1172"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1205"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1230"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1278"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1298"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1101"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1186"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1219"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1244"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1295"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1315"/>
         <source>Pots use in menus navigation</source>
         <translation>Użycie potencjometrów do nawigacji w menu</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1091"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1105"/>
         <source>OpenTX for 9X board</source>
         <translation>OpenTX dla platformy 9X</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1107"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1143"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1121"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1157"/>
         <source>SmartieParts 2.2 Backlight support</source>
         <translation>Wsparcie podświetlenia SmartieParts 2.2</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1110"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1146"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1233"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1260"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1281"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1124"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1160"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1247"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1277"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1298"/>
         <source>Enable resetting values by pressing up and down at the same time</source>
         <translation>Szybkie nastawianie wartości
 (+) a (-) neguje wartość
@@ -8715,68 +8749,68 @@ Copyright © 1995-2014 Wirtualna Polska
 (UP) a (DN) ustawia 0</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1111"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1147"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1175"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1208"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1234"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1261"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1282"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1301"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1125"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1161"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1189"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1222"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1248"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1278"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1299"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1318"/>
         <source>No graphical check boxes and sliders</source>
         <translation>Brak graficznych chekboxów i sliderów</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1113"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1149"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1177"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1210"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1236"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1263"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1284"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1303"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1127"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1163"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1191"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1224"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1250"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1280"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1301"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1320"/>
         <source>Don&apos;t use bold font for highlighting active items</source>
         <translation>Nie używaj podświetlenia dla wybranych aktywnych elementów, mikserów, krzywych, expo, etc</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1127"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1141"/>
         <source>OpenTX for M128 / 9X board</source>
         <translation>OpenTX dla platformy M128 / 9X</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1151"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1179"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1212"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1237"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1264"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1165"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1193"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1226"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1251"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1281"/>
         <source>EEprom write Progress bar</source>
         <translation>Pasek postępu zapisywania EEPROM</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1116"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1152"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1180"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1213"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1238"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1265"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1130"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1166"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1194"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1227"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1252"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1282"/>
         <source>Imperial units</source>
         <translation>Imperialne jednostki w telemetrii</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1285"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1304"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1302"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1321"/>
         <source>Bluetooth interface</source>
         <translation>Interface Bluetooth</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1104"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1140"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1170"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1203"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1228"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1255"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1276"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1296"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1118"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1154"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1184"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1217"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1242"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1272"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1293"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1313"/>
         <source>Global variables</source>
         <translation>Globalne zmienne</translation>
     </message>
@@ -8790,75 +8824,80 @@ Copyright © 1995-2014 Wirtualna Polska
         <translation type="obsolete">Brak dostępnych Funkcji Bezpieczny Kanał</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1108"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1144"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1173"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1206"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1231"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1258"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1279"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1299"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1122"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1158"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1187"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1220"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1245"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1275"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1296"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1316"/>
         <source>In model setup menus automatically set source by moving the control</source>
         <translation>W menu ustawień modelu automatycznie wybierz źródło poprzez poruszenie nim</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1109"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1145"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1174"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1207"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1232"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1259"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1280"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1300"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1123"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1159"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1188"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1221"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1246"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1276"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1297"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1317"/>
         <source>In model setup menus automatically set switch by moving the control</source>
         <translation>W menu ustawień modelu automatycznie wybierz źródło poprzez poruszenie nim</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1122"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1185"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1136"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1199"/>
         <source>Add support for reversing stick inputs (e.g. needed for FrSky gimbals)</source>
         <translation>Dodanie wsparcia dla odwracania wejscia drazków (np. potrzebne dla gimbali FrSky)</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1157"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1171"/>
         <source>OpenTX for 9XR</source>
         <translation>OpenTX dla platformy 9XR</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1190"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1204"/>
         <source>OpenTX for 9XR with M128 chip</source>
         <translation>OpenTX dla platformy 9X z układem M128</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1218"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1232"/>
         <source>OpenTX for Gruvin9x board / 9X</source>
         <translation>ie: OpenTX dla platformy Gruvin9X / 9X</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1223"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1250"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1237"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1267"/>
         <source>Support for SD memory card</source>
         <translation>Wsparcie karty SD</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1088"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1102"/>
         <source>Support for DSM2 modules using ppm instead of true serial</source>
         <translation>Wsparcie modułu DSM2 przez użycie PPM zamiast prawdziwego szeregowego</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1270"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1259"/>
+        <source>Power management by soft-off circuitry</source>
+        <translation>Zarządzanie zasilaniem przez obwód Soft-Off </translation>
+    </message>
+    <message>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1287"/>
         <source>OpenTX for Sky9x board / 9X</source>
         <translation>OpenTX dla platformy Sky9x / 9X</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1271"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1291"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1288"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1308"/>
         <source>Enable HELI menu and cyclic mix support</source>
         <translation>Uaktywnij menu HELI i cyklicznych mikserów</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="431"/>
-        <location filename="../helpers.cpp" line="966"/>
+        <location filename="../helpers.cpp" line="962"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
@@ -8960,27 +8999,27 @@ Copyright © 1995-2014 Wirtualna Polska
         <translation>Pokrętło :E</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="787"/>
+        <location filename="../helpers.cpp" line="783"/>
         <source>%1:%2</source>
         <translation>%1:%2</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="790"/>
+        <location filename="../helpers.cpp" line="786"/>
         <source>, Persistent</source>
         <translation>, Stały</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="792"/>
+        <location filename="../helpers.cpp" line="788"/>
         <source>, MinuteBeep</source>
         <translation>, Pikanie minutowe</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="794"/>
+        <location filename="../helpers.cpp" line="790"/>
         <source>, CountDown(Beeps)</source>
         <translation>, Odliczanie (Dźwieki)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="796"/>
+        <location filename="../helpers.cpp" line="792"/>
         <source>, CountDown(Voice)</source>
         <translation>, Odliczanie (Głos)</translation>
     </message>
@@ -9537,7 +9576,7 @@ Copyright © 1995-2014 Wirtualna Polska
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="711"/>
-        <location filename="../helpers.cpp" line="781"/>
+        <location filename="../helpers.cpp" line="777"/>
         <source>Unknown</source>
         <translation>Nieznane</translation>
     </message>
@@ -9665,109 +9704,109 @@ Copyright © 1995-2014 Wirtualna Polska
         <translation>Faza lotu %1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="717"/>
+        <location filename="../helpers.cpp" line="713"/>
         <source>Yellow</source>
         <translation>Żółty</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="719"/>
+        <location filename="../helpers.cpp" line="715"/>
         <source>Orange</source>
         <translation>Pomarańczowy</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="721"/>
+        <location filename="../helpers.cpp" line="717"/>
         <source>Red</source>
         <translation>Czerwony</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="742"/>
+        <location filename="../helpers.cpp" line="738"/>
         <source>Winged Shadow How High</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="744"/>
+        <location filename="../helpers.cpp" line="740"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation>Winged Shadow How High (nie obsługiwane)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="746"/>
+        <location filename="../helpers.cpp" line="742"/>
         <source>FrSky Sensor Hub</source>
         <translation>Hub sensora FrSky</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="748"/>
-        <location filename="../helpers.cpp" line="841"/>
+        <location filename="../helpers.cpp" line="744"/>
+        <location filename="../helpers.cpp" line="837"/>
         <source>None</source>
         <translation>Żaden</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="756"/>
+        <location filename="../helpers.cpp" line="752"/>
         <source>Imperial</source>
         <translation>Imperialne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="758"/>
+        <location filename="../helpers.cpp" line="754"/>
         <source>Metric</source>
         <translation>Metryczne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="773"/>
+        <location filename="../helpers.cpp" line="769"/>
         <source>Extra Fine</source>
         <translation>Bardzo dokładne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="775"/>
+        <location filename="../helpers.cpp" line="771"/>
         <source>Fine</source>
         <translation>Dokładne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="777"/>
+        <location filename="../helpers.cpp" line="773"/>
         <source>Medium</source>
         <translation>Średni</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="779"/>
+        <location filename="../helpers.cpp" line="775"/>
         <source>Coarse</source>
         <translation>Gruby</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="805"/>
-        <location filename="../helpers.cpp" line="816"/>
+        <location filename="../helpers.cpp" line="801"/>
+        <location filename="../helpers.cpp" line="812"/>
         <source>: Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4</source>
         <translation>: Start kanału: %1, %2 Kanałów, Opóznienie %3usec, Polaryzacja pulsu %4 </translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="807"/>
+        <location filename="../helpers.cpp" line="803"/>
         <source>: Channel start: %1, %2 Channels</source>
         <translation>:Kanał początkowy %1, %2 Kanałów</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="816"/>
+        <location filename="../helpers.cpp" line="812"/>
         <source>Slave/Jack</source>
         <translation>Uczeń/Jack</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="819"/>
+        <location filename="../helpers.cpp" line="815"/>
         <source>Master/SBUS Module</source>
         <translation>Trener/SBUS Moduł</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="822"/>
+        <location filename="../helpers.cpp" line="818"/>
         <source>Master/CPPM Module</source>
         <translation>Trener/CPPM Moduł</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="825"/>
+        <location filename="../helpers.cpp" line="821"/>
         <source>Master/SBUS in battery compartment</source>
         <translation>Trener/SBUS w kieszeni baterii</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="828"/>
+        <location filename="../helpers.cpp" line="824"/>
         <source>Master/Jack</source>
         <translation>Trener/Jack</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="771"/>
+        <location filename="../helpers.cpp" line="767"/>
         <source>Exponential</source>
         <translation>Eksponencjalny</translation>
     </message>
@@ -9784,32 +9823,32 @@ Copyright © 1995-2014 Wirtualna Polska
         <translation type="obsolete">:Kanały  %1, opóźnienie %2usX</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="852"/>
+        <location filename="../helpers.cpp" line="848"/>
         <source>Flight modes(%1)</source>
         <translation>Fazy lotu(%1)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="854"/>
+        <location filename="../helpers.cpp" line="850"/>
         <source>Flight mode(%1)</source>
         <translation>Faza lotu (%1)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="865"/>
+        <location filename="../helpers.cpp" line="861"/>
         <source>Rudder</source>
         <translation>SK</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="867"/>
+        <location filename="../helpers.cpp" line="863"/>
         <source>Elevator</source>
         <translation>SW</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="869"/>
+        <location filename="../helpers.cpp" line="865"/>
         <source>Throttle</source>
         <translation>Gaz</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="871"/>
+        <location filename="../helpers.cpp" line="867"/>
         <source>Aileron</source>
         <translation>Lotki</translation>
     </message>
@@ -9821,7 +9860,7 @@ Copyright © 1995-2014 Wirtualna Polska
     <message>
         <location filename="../eeprominterface.cpp" line="669"/>
         <location filename="../helpers.cpp" line="90"/>
-        <location filename="../helpers.cpp" line="731"/>
+        <location filename="../helpers.cpp" line="727"/>
         <source>---</source>
         <translation></translation>
     </message>
@@ -10055,7 +10094,7 @@ Copyright © 1995-2014 Wirtualna Polska
         <translation>ZG%1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="967"/>
+        <location filename="../helpers.cpp" line="963"/>
         <source>Simulator for this firmware is not yet available</source>
         <translation>Nie jest dostępny symulator dla tego firmware</translation>
     </message>
@@ -10066,26 +10105,31 @@ Copyright © 1995-2014 Wirtualna Polska
         <translation>Równoległe użycie expo i krzywych nie jest dłużej wspierane </translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1442"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="564"/>
+        <source>Source %1 cannot be exported on this board!</source>
+        <translation>Źródło %1 nie może być wyeksportowane na tę płytę!</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1470"/>
         <source>OpenTX only accepts %1 points in all curves</source>
         <translation>OpenTX zezwala tylko na %1 punktów we wszytkich krzywych</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1449"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1477"/>
         <source>OpenTx only accepts %1 points in all curves</source>
         <translation>OpenTX zezwala tylko na %1 punktów we wszytkich krzywych</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1998"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2211"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2219"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2226"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2230"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2026"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2240"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2248"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2255"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2259"/>
         <source>OpenTX on this board doesn&apos;t accept this function</source>
         <translation>OpenTX na tej platformie nie dopuszcza tej funkcji</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2842"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2890"/>
         <source>OpenTX doesn&apos;t accept this telemetry protocol</source>
         <translation>OpenTX nie obsługuje tego protokołu telemetri</translation>
     </message>
@@ -10094,10 +10138,9 @@ Copyright © 1995-2014 Wirtualna Polska
         <translation type="obsolete">OpenTX nie obsługuje tego protokołu radiowego</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2958"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2963"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2970"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2976"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3011"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3023"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3030"/>
         <source>OpenTX doesn&apos;t accept this radio protocol</source>
         <translation>OpenTX nie obsługuje tego protokołu radiowego</translation>
     </message>
@@ -10106,7 +10149,7 @@ Copyright © 1995-2014 Wirtualna Polska
         <translation type="obsolete">OpenTX nie obsługuje tego protokołu</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2855"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2903"/>
         <source>OpenTX doesn&apos;t allow this number of channels</source>
         <translation>OpenTX nie obsługuje tej ilości kanałów</translation>
     </message>
@@ -10213,7 +10256,7 @@ Zespół OpenTX.</translation>
         <translation>Zapis &apos;%1&apos; nieudany</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="613"/>
+        <location filename="../modeledit/telemetry.cpp" line="602"/>
         <source>-%1</source>
         <translation>-%1</translation>
     </message>
@@ -10467,34 +10510,34 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
 <context>
     <name>SimulatorDialog</name>
     <message>
-        <location filename="../simulation/simulatordialog.cpp" line="416"/>
-        <location filename="../simulation/simulatordialog.cpp" line="438"/>
+        <location filename="../simulation/simulatordialog.cpp" line="420"/>
+        <location filename="../simulation/simulatordialog.cpp" line="442"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog.cpp" line="416"/>
+        <location filename="../simulation/simulatordialog.cpp" line="420"/>
         <source>Joystick enabled but not configured correctly</source>
         <translation>Joystick uaktywniony ale nieprawidłowo skonfigurowany</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog.cpp" line="438"/>
+        <location filename="../simulation/simulatordialog.cpp" line="442"/>
         <source>Cannot open joystick, joystick disabled</source>
         <translation>Nie mogę otworzyć joysticka, dezaktywowany</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog.cpp" line="445"/>
+        <location filename="../simulation/simulatordialog.cpp" line="449"/>
         <source>Simulating Radio (%1)</source>
         <translation>Symulacja Radia (%1)</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog.cpp" line="468"/>
-        <location filename="../simulation/simulatordialog.cpp" line="469"/>
+        <location filename="../simulation/simulatordialog.cpp" line="473"/>
+        <location filename="../simulation/simulatordialog.cpp" line="474"/>
         <source>Outputs</source>
         <translation>Wyjścia</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog.cpp" line="632"/>
+        <location filename="../simulation/simulatordialog.cpp" line="637"/>
         <source>Firmware %1 error: %2</source>
         <translation>Firmware %1 błąd: %2</translation>
     </message>
@@ -11028,7 +11071,7 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
 <context>
     <name>TelemetryCustomScreen</name>
     <message>
-        <location filename="../modeledit/telemetry_customscreen.ui" line="26"/>
+        <location filename="../modeledit/telemetry_customscreen.ui" line="34"/>
         <source>Custom Screen Type</source>
         <translation>Typ panelu</translation>
     </message>
@@ -11037,42 +11080,42 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <translation type="obsolete">Liczby</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_customscreen.ui" line="46"/>
+        <location filename="../modeledit/telemetry.cpp" line="334"/>
         <source>None</source>
         <translation>Żaden</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_customscreen.ui" line="51"/>
+        <location filename="../modeledit/telemetry.cpp" line="335"/>
         <source>Numbers</source>
         <translation>Liczby</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_customscreen.ui" line="56"/>
+        <location filename="../modeledit/telemetry.cpp" line="336"/>
         <source>Bars</source>
         <translation>Paski</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_customscreen.ui" line="61"/>
+        <location filename="../modeledit/telemetry.cpp" line="338"/>
         <source>Script</source>
         <translation>Skrypt</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_customscreen.ui" line="87"/>
+        <location filename="../modeledit/telemetry_customscreen.ui" line="75"/>
         <source>Min</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_customscreen.ui" line="97"/>
+        <location filename="../modeledit/telemetry_customscreen.ui" line="85"/>
         <source>Source</source>
         <translation>Źródło</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_customscreen.ui" line="107"/>
+        <location filename="../modeledit/telemetry_customscreen.ui" line="95"/>
         <source>Gauge</source>
         <translation>Pomiar</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_customscreen.ui" line="117"/>
+        <location filename="../modeledit/telemetry_customscreen.ui" line="105"/>
         <source>Max</source>
         <translation>Maks</translation>
     </message>
@@ -11080,104 +11123,104 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
 <context>
     <name>TelemetryPanel</name>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="715"/>
+        <location filename="../modeledit/telemetry.cpp" line="704"/>
         <source>Telemetry screen %1</source>
         <translation>Panel Telemetrii %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="779"/>
+        <location filename="../modeledit/telemetry.cpp" line="771"/>
         <source>Low Alarm</source>
         <translation>Alarm niski</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="780"/>
+        <location filename="../modeledit/telemetry.cpp" line="772"/>
         <source>Critical Alarm</source>
         <translation>Alarm krytyczny</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="822"/>
+        <location filename="../modeledit/telemetry.cpp" line="814"/>
         <source>Winged Shadow How High</source>
         <translation>Winged Shadow How High</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="825"/>
+        <location filename="../modeledit/telemetry.cpp" line="817"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation>Winged Shadow How High (Nie obsługiwane)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="875"/>
-        <location filename="../modeledit/telemetry.cpp" line="886"/>
-        <location filename="../modeledit/telemetry.cpp" line="901"/>
+        <location filename="../modeledit/telemetry.cpp" line="867"/>
+        <location filename="../modeledit/telemetry.cpp" line="878"/>
+        <location filename="../modeledit/telemetry.cpp" line="893"/>
         <source>A1</source>
         <translation>A1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="871"/>
+        <location filename="../modeledit/telemetry.cpp" line="863"/>
         <source>Alti</source>
         <translation>Wysokościomierz</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="758"/>
+        <location filename="../modeledit/telemetry.cpp" line="750"/>
         <source>FrSky S.PORT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="759"/>
+        <location filename="../modeledit/telemetry.cpp" line="751"/>
         <source>FrSky D</source>
         <translation>FrSky D</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="761"/>
+        <location filename="../modeledit/telemetry.cpp" line="753"/>
         <source>FrSky D (cable)</source>
         <translation>FrSky D (kabel)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="872"/>
+        <location filename="../modeledit/telemetry.cpp" line="864"/>
         <source>Alti+</source>
         <translation>Wysokościomierz+</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="874"/>
+        <location filename="../modeledit/telemetry.cpp" line="866"/>
         <source>VSpeed</source>
         <translation>Prędkość Pionowa</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="876"/>
-        <location filename="../modeledit/telemetry.cpp" line="887"/>
-        <location filename="../modeledit/telemetry.cpp" line="902"/>
+        <location filename="../modeledit/telemetry.cpp" line="868"/>
+        <location filename="../modeledit/telemetry.cpp" line="879"/>
+        <location filename="../modeledit/telemetry.cpp" line="894"/>
         <source>A2</source>
         <translation>A2</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="878"/>
+        <location filename="../modeledit/telemetry.cpp" line="870"/>
         <source>dTE</source>
         <translation>dTE</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="889"/>
-        <location filename="../modeledit/telemetry.cpp" line="904"/>
+        <location filename="../modeledit/telemetry.cpp" line="881"/>
+        <location filename="../modeledit/telemetry.cpp" line="896"/>
         <source>A3</source>
         <translation>A3</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="890"/>
-        <location filename="../modeledit/telemetry.cpp" line="905"/>
+        <location filename="../modeledit/telemetry.cpp" line="882"/>
+        <location filename="../modeledit/telemetry.cpp" line="897"/>
         <source>A4</source>
         <translation>A4</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="892"/>
-        <location filename="../modeledit/telemetry.cpp" line="907"/>
+        <location filename="../modeledit/telemetry.cpp" line="884"/>
+        <location filename="../modeledit/telemetry.cpp" line="899"/>
         <source>FAS</source>
         <translation>FAS</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="893"/>
+        <location filename="../modeledit/telemetry.cpp" line="885"/>
         <source>Cells</source>
         <translation>Cele</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="900"/>
+        <location filename="../modeledit/telemetry.cpp" line="892"/>
         <source>---</source>
         <translation>---</translation>
     </message>
@@ -11457,22 +11500,22 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
 <context>
     <name>TelemetrySensorPanel</name>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="497"/>
+        <location filename="../modeledit/telemetry.cpp" line="486"/>
         <source>Lowest</source>
         <translation>Najniższy</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="499"/>
+        <location filename="../modeledit/telemetry.cpp" line="488"/>
         <source>Cell %1</source>
         <translation>Cela %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="500"/>
+        <location filename="../modeledit/telemetry.cpp" line="489"/>
         <source>Highest</source>
         <translation>Najwyższy</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="501"/>
+        <location filename="../modeledit/telemetry.cpp" line="490"/>
         <source>Delta</source>
         <translation>Delta</translation>
     </message>
@@ -13376,66 +13419,86 @@ Anuluj w celu przerwania kalibracji joysticka</translation>
         <translation type="obsolete">Czas</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="49"/>
+        <location filename="../logsdialog.cpp" line="50"/>
         <source>Time (hh:mm:ss)</source>
         <translation>Czas (hh:mm:ss)</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="96"/>
+        <location filename="../logsdialog.cpp" line="112"/>
         <source>Plot Title Change</source>
         <translation>Zmiana tytułu pilota</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="97"/>
+        <location filename="../logsdialog.cpp" line="113"/>
         <source>New plot title:</source>
         <translation>Nowy tytuł pilota:</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="111"/>
+        <location filename="../logsdialog.cpp" line="127"/>
         <source>Axis Label Change</source>
         <translation>Zmiana oznaczenia osi</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="111"/>
+        <location filename="../logsdialog.cpp" line="127"/>
         <source>New axis label:</source>
         <translation>Nowe oznaczenie osi:</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="127"/>
+        <location filename="../logsdialog.cpp" line="143"/>
         <source>Graph Name Change</source>
         <translation>Zmiana nazwy wykresu</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="127"/>
+        <location filename="../logsdialog.cpp" line="143"/>
         <source>New graph name:</source>
         <translation>Nowa nazwa wykresu:</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="249"/>
+        <location filename="../logsdialog.cpp" line="326"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="250"/>
+        <location filename="../logsdialog.cpp" line="327"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Nie mogę zapisać pliku %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="406"/>
+        <location filename="../logsdialog.cpp" line="485"/>
         <source>Select your log file</source>
         <translation>Wybierz plik loga</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="418"/>
+        <location filename="../logsdialog.cpp" line="497"/>
         <source>Available fields</source>
         <translation>Dostępne pola</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="489"/>
+        <location filename="../logsdialog.cpp" line="568"/>
         <source>The selected logfile contains %1 invalid lines out of  %2 total lines</source>
         <translation>Wybrany plik zawiera %1 błędnych linii z %2 wszystkich linii</translation>
+    </message>
+    <message>
+        <location filename="../logsdialog.cpp" line="835"/>
+        <source> (L1)</source>
+        <translation>(L1)</translation>
+    </message>
+    <message>
+        <location filename="../logsdialog.cpp" line="846"/>
+        <source> (R1)</source>
+        <translation>(R1)</translation>
+    </message>
+    <message>
+        <location filename="../logsdialog.cpp" line="856"/>
+        <source> (L2)</source>
+        <translation>(L2)</translation>
+    </message>
+    <message>
+        <location filename="../logsdialog.cpp" line="863"/>
+        <source> (R2)</source>
+        <translation>(R2)</translation>
     </message>
 </context>
 <context>
