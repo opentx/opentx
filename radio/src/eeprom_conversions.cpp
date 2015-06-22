@@ -831,10 +831,10 @@ int ConvertSwitch_216_to_217(int swtch)
   if (swtch < 0)
     return -ConvertSwitch_216_to_217(-swtch);
 
-  if (swtch >= SWSRC_SF0)
+  if (swtch > SWSRC_SF0)
     swtch += 1;
 
-  if (swtch >= SWSRC_SH0)
+  if (swtch > SWSRC_SH0)
     swtch += 1;
 
   return swtch;
@@ -998,10 +998,11 @@ void ConvertModel_216_to_217(ModelData &model)
         sw.v2 = ConvertSource_216_to_217((uint8_t)sw.v2);
       }
     }
-    else if (cstate == LS_FAMILY_BOOL) {
+    else if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
       sw.v1 = ConvertSwitch_216_to_217(sw.v1);
       sw.v2 = ConvertSwitch_216_to_217(sw.v2);
     }
+    sw.andsw = ConvertSwitch_216_to_217(sw.andsw);
   }
   for (int i=0; i<NUM_CFN; i++) {
     CustomFunctionData & fn = newModel.customFn[i];
