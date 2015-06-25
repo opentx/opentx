@@ -405,7 +405,7 @@ QString AnalogString(int index)
 {
   static const QString sticks[]  = { QObject::tr("Rud"), QObject::tr("Ele"), QObject::tr("Thr"), QObject::tr("Ail") };
   static const QString pots9X[]  = { QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3") };
-  static const QString potsTaranisX9E[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("S4"), QObject::tr("LS"), QObject::tr("RS"), QObject::tr("LS2"), QObject::tr("RS2") };
+  static const QString potsTaranisX9E[] = { QObject::tr("F1"), QObject::tr("F2"), QObject::tr("F3"), QObject::tr("F4"), QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS") };
   static const QString potsTaranis[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("LS"), QObject::tr("RS") };
   if (index < 4)
     return CHECK_IN_ARRAY(sticks, index);

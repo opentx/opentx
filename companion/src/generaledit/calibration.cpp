@@ -34,6 +34,7 @@ void CalibrationPanel::setupPotConfig(int index, QLabel *label, AutoLineEdit *na
   bool enabled = false;
 
   if (IS_TARANIS_X9E(firmware->getBoard()) && index < 4) {
+    label->setText(RawSource(SOURCE_TYPE_STICK, index+NUM_STICKS).toString());
     enabled = true;
   }
   else if (IS_TARANIS_PLUS(firmware->getBoard()) && index < 3) {
@@ -68,6 +69,10 @@ void CalibrationPanel::setupSliderConfig(int index, QLabel *label, AutoLineEdit 
   }
   else if (IS_TARANIS_X9E(firmware->getBoard()) && index < 4) {
     enabled = true;
+  }
+
+  if (IS_TARANIS_X9E(firmware->getBoard())) {
+    label->setText(RawSource(SOURCE_TYPE_STICK, index+NUM_STICKS+4).toString());
   }
 
   if (enabled) {
