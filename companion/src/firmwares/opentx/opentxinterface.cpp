@@ -576,10 +576,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case Pots:
       if (IS_TARANIS_X9E(board))
         return 4;
-      else if (IS_TARANIS_PLUS(board))
-        return 3;
       else if (IS_TARANIS(board))
-        return 2;
+        return 3;   //Taranis has only 2 pots but still has a placeholder in settings for 3 pots
       else
         return 3;
     case Sliders:

@@ -507,6 +507,21 @@ QString RawSource::toString(const ModelData * model) const
   }
 }
 
+bool RawSource::isPot() const
+{
+  return (type == SOURCE_TYPE_STICK && 
+          index >= NUM_STICKS && 
+          index < NUM_STICKS+GetCurrentFirmware()->getCapability(Pots));
+}
+
+bool RawSource::isSlider() const
+{
+  return (type == SOURCE_TYPE_STICK && 
+          index >= NUM_STICKS+GetCurrentFirmware()->getCapability(Pots) && 
+          index < NUM_STICKS+GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders));
+}
+
+
 QString SwitchUp(const char sw)
 {
   const char result[] = {'S', sw, upArrow[0], upArrow[1], upArrow[2], 0};
@@ -1014,6 +1029,18 @@ bool GeneralSettings::switchPositionAllowedTaranis(int index) const
 bool GeneralSettings::switchSourceAllowedTaranis(int index) const
 {
   return switchConfig[index] != SWITCH_NONE;
+}
+
+bool GeneralSettings::isPotAvailable(int index) const
+{
+  if (index<0 || index>4) return false;
+  return potConfig[index] != POT_NONE;
+}
+
+bool GeneralSettings::isSliderAvailable(int index) const
+{
+  if (index<0 || index>4) return false;
+  return sliderConfig[index] != SLIDER_NONE;
 }
 
 GeneralSettings::GeneralSettings()

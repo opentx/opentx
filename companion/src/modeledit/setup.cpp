@@ -517,15 +517,12 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
     centerBeepCheckboxes << checkbox;
     if (IS_TARANIS(board)) {
-      if (i >= NUM_STICKS  && i < NUM_STICKS + firmware->getCapability(Pots)) {
-        if (generalSettings.potConfig[i-NUM_STICKS] == GeneralSettings::POT_NONE) {
-          checkbox->hide();
-        }
+      RawSource src(SOURCE_TYPE_STICK, i);
+      if (src.isPot() && !generalSettings.isPotAvailable(i-NUM_STICKS)) {
+        checkbox->hide();
       }
-      else if (i >= NUM_STICKS + firmware->getCapability(Pots) && i < analogs) {
-        if (generalSettings.sliderConfig[i-NUM_STICKS-firmware->getCapability(Pots)] == GeneralSettings::SLIDER_NONE) {
-          checkbox->hide();
-        }
+      else if (src.isSlider() && !generalSettings.isSliderAvailable(i-NUM_STICKS-firmware->getCapability(Pots))) {
+        checkbox->hide();
       }
     }
     QWidget::setTabOrder(prevFocus, checkbox);
@@ -592,13 +589,13 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
       ui->potWarningLayout->addWidget(cb, 0, i+1);
       connect(cb, SIGNAL(toggled(bool)), this, SLOT(potWarningToggled(bool)));
       potWarningCheckboxes << cb;
-      if (i < firmware->getCapability(Pots)) {
-        if (generalSettings.potConfig[i] == GeneralSettings::POT_NONE) {
+      if (RawSource(SOURCE_TYPE_STICK,i).isPot()) {
+        if (!generalSettings.isPotAvailable(i)) {
           cb->hide();
         }
       }
       else {
-        if (generalSettings.sliderConfig[i-firmware->getCapability(Pots)] == GeneralSettings::SLIDER_NONE) {
+        if (!generalSettings.isSliderAvailable(i-firmware->getCapability(Pots))) {
           cb->hide();
         }
       }

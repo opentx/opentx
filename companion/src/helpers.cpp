@@ -562,8 +562,11 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
   }
 
   if (flags & POPULATE_SOURCES) {
-    for (int i=0; i<4+GetCurrentFirmware()->getCapability(Pots); i++) {
+    for (int i=0; i<NUM_STICKS+GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders); i++) {
       item = RawSource(SOURCE_TYPE_STICK, i);
+      // skip unavailable pots and sliders
+      if (item.isPot() && !generalSettings.isPotAvailable(i-NUM_STICKS)) continue;
+      if (item.isSlider() && !generalSettings.isSliderAvailable(i-NUM_STICKS-GetCurrentFirmware()->getCapability(Pots))) continue;
       b->addItem(item.toString(model), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
@@ -938,7 +941,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     SimulatorDialog * sd;
     if (IS_TARANIS(board)) {
       for (int i=0; i<GetCurrentFirmware()->getCapability(Pots); i++) {
-        if (radioData.generalSettings.potConfig[i] != GeneralSettings::POT_NONE) {
+        if (radioData.generalSettings.isPotAvailable(i)) {
           flags |= (SIMULATOR_FLAGS_S1 << i);
           if (radioData.generalSettings.potConfig[1] == GeneralSettings::POT_MULTIPOS_SWITCH ) {
             flags |= (SIMULATOR_FLAGS_S1_MULTI << i);

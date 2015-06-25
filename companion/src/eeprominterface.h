@@ -346,6 +346,8 @@ class RawSource {
     }
 
     bool isTimeBased() const;
+    bool isPot() const;
+    bool isSlider() const;
 
     RawSourceType type;
     int index;
@@ -1204,6 +1206,8 @@ class GeneralSettings {
     static SwitchInfo switchInfoFromSwitchPositionTaranis(unsigned int index);
     bool switchPositionAllowedTaranis(int index) const;
     bool switchSourceAllowedTaranis(int index) const;
+    bool isPotAvailable(int index) const;
+    bool isSliderAvailable(int index) const;
 };
 
 class RadioData {
