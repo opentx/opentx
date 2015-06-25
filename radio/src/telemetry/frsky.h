@@ -335,7 +335,12 @@ struct FrskyData {
 };
 #endif
 
-#define IS_VALID_XJT_VERSION()      (frskyData.xjtVersion != 0 && frskyData.xjtVersion != 0xff)
+
+#if defined(PCBTARANIS) && defined(REVPLUS)
+  #define IS_VALID_XJT_VERSION()      (frskyData.xjtVersion != 0 && frskyData.xjtVersion != 0xff)
+#else
+  #define IS_VALID_XJT_VERSION()      (1)
+#endif
 #define IS_HIDDEN_TELEMETRY_VALUE() ((appId == SP2UART_A_ID) || (appId == SP2UART_B_ID) || (appId == XJT_VERSION_ID) || ((appId == SWR_ID) && !IS_VALID_XJT_VERSION()))
 
 enum AlarmLevel {
