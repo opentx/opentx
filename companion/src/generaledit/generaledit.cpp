@@ -21,7 +21,6 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * fir
   this->setWindowIcon(CompanionIcon("open.png"));
 
   QString firmware_id = g.profile[g.id()].fwType();
-  ui->tabWidget->setCurrentIndex( g.generalEditTab() );
   QString name=g.profile[g.id()].name();
   if (name.isEmpty()) {
     ui->calstore_PB->setDisabled(true);
@@ -44,11 +43,18 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * fir
   }
   addTab(new TrainerPanel(this, generalSettings, firmware), tr("Trainer"));
   addTab(new CalibrationPanel(this, generalSettings, firmware), tr("Hardware / Calibration"));
+
+  ui->tabWidget->setCurrentIndex( g.generalEditTab() );
 }
 
 GeneralEdit::~GeneralEdit()
 {
   delete ui;
+}
+
+void GeneralEdit::closeEvent(QCloseEvent *event)
+{
+  g.generalEditTab(ui->tabWidget->currentIndex());
 }
 
 void GeneralEdit::addTab(GenericPanel *panel, QString text)
@@ -70,7 +76,6 @@ void GeneralEdit::onTabModified()
 void GeneralEdit::on_tabWidget_currentChanged(int index)
 {
   panels[index]->update();
-  g.generalEditTab(index);
 }
 
 void GeneralEdit::on_calretrieve_PB_clicked()
