@@ -600,9 +600,11 @@ int32_t TelemetrySensor::getValue(int32_t value, uint8_t unit, uint8_t prec) con
   if (type == TELEM_TYPE_CUSTOM) {
     value += custom.offset;
     if (value < 0 && unit >= UNIT_VOLTS && unit <= UNIT_MPH) {
-      value = 0;
+      // allow negative value for Vario VSPEED
+      if (id < VARIO_FIRST_ID && id > VARIO_LAST_ID) {
+        value = 0;
+      }
     }
-
   }
 
   return value;
