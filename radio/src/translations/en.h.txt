@@ -1075,6 +1075,7 @@
 #define TR_GPSSENSOR           "GPS sensor"
 #define TR_CURRENTSENSOR       "Curr. sensor"
 #define TR_AUTOOFFSET          "Auto Offset"
+#define TR_ONLYPOSITIVE        "Positive"
 #define TR_FILTER              "Filter"
 #define TR_TELEMETRYFULL       "All telemetry slots full!"
 
