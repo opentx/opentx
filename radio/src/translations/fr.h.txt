@@ -1067,6 +1067,7 @@
 #define TR_GPSSENSOR           "Capteur GPS"
 #define TR_CURRENTSENSOR       "Capt courant"
 #define TR_AUTOOFFSET          "Offset auto"
+#define TR_ONLYPOSITIVE        "Positive"
 #define TR_FILTER              "Filtrage"
 #define TR_TELEMETRYFULL       "Plus de capteurs libres!"
 

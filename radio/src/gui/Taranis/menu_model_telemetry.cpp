@@ -155,6 +155,7 @@ enum SensorFields {
   SENSOR_FIELD_PARAM3,
   SENSOR_FIELD_PARAM4,
   SENSOR_FIELD_AUTOOFFSET,
+  SENSOR_FIELD_ONLYPOSITIVE,
   SENSOR_FIELD_FILTER,
   SENSOR_FIELD_PERSISTENT,
   SENSOR_FIELD_LOGS,
@@ -423,7 +424,11 @@ void menuModelSensor(uint8_t event)
       case SENSOR_FIELD_AUTOOFFSET:
         ON_OFF_MENU_ITEM(sensor->autoOffset, SENSOR_2ND_COLUMN, y, STR_AUTOOFFSET, attr, event);
         break;
-        
+
+      case SENSOR_FIELD_ONLYPOSITIVE:
+        ON_OFF_MENU_ITEM(sensor->onlyPositive, SENSOR_2ND_COLUMN, y, STR_ONLYPOSITIVE, attr, event);
+        break;
+
       case SENSOR_FIELD_FILTER:
         ON_OFF_MENU_ITEM(sensor->filter, SENSOR_2ND_COLUMN, y, STR_FILTER, attr, event);
         break;
