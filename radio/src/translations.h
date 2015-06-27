@@ -783,6 +783,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_GPSSENSOR[];
   extern const pm_char STR_CURRENTSENSOR[];
   extern const pm_char STR_AUTOOFFSET[];
+  extern const pm_char STR_ONLYPOSITIVE[];
   extern const pm_char STR_FILTER[];
   extern const pm_char STR_TELEMETRYFULL[];
 #endif

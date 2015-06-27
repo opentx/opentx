@@ -599,10 +599,9 @@ int32_t TelemetrySensor::getValue(int32_t value, uint8_t unit, uint8_t prec) con
 
   if (type == TELEM_TYPE_CUSTOM) {
     value += custom.offset;
-    if (value < 0 && unit >= UNIT_VOLTS && unit <= UNIT_MPH) {
+    if (value < 0 && onlyPositive) {
       value = 0;
     }
-
   }
 
   return value;

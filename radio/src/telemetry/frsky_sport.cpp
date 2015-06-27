@@ -273,6 +273,10 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t instance)
       telemetrySensor.custom.ratio = 132;
       telemetrySensor.filter = 1;
     }
+    else if (id >= CURR_FIRST_ID && id <= CURR_LAST_ID) {
+      telemetrySensor.onlyPositive = 1;
+    }
+    // TODO set telemetrySensor.onlyPositive for other sensors that need it
     else if (unit == UNIT_RPMS) {
       telemetrySensor.custom.ratio = 1;
       telemetrySensor.custom.offset = 1;
