@@ -1208,7 +1208,7 @@ class InputField: public TransformedField {
         internalField.Append(new SignedField<8>(_offset, "Offset"));
         internalField.Append(new CurveReferenceField(expo.curve, board, version));
       }
-      else if (IS_ARM(board) && version >= 216) {
+      else if (IS_ARM(board) && version >= 217) {
         internalField.Append(new UnsignedField<2>(expo.mode, "Mode"));
         internalField.Append(new UnsignedField<3>(expo.chn, "Channel"));
         internalField.Append(new BoolField<2>(_curveMode));
