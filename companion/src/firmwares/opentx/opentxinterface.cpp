@@ -598,7 +598,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
       if (IS_TARANIS_X9E(board))
         return 18*3;
       else if (IS_TARANIS(board))
-        return 22;
+        return 8*3;
       else
         return 9;
     case CustomFunctions:
