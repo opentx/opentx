@@ -156,7 +156,7 @@ QString SensorData::unitString() const
 bool RawSource::isTimeBased() const
 {
   if (IS_ARM(GetCurrentFirmware()->getBoard()))
-    return false;
+    return (type == SOURCE_TYPE_SPECIAL && index > 0);
   else
     return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2 || index==TELEMETRY_SOURCE_TIMER3));
 }
@@ -384,6 +384,25 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
     case SOURCE_TYPE_GVAR:
       result.max = 1024;
       result.min = -result.max;
+      break;
+
+    case SOURCE_TYPE_SPECIAL:
+      if (index == 0)  {  //Batt
+        result.step = 0.1;
+        result.decimals = 1;
+        result.max = 25.5;
+        result.unit = QObject::tr("V");
+      }
+      else if (index == 1) {   //Time
+        result.step = 1;
+        result.max = 24*60 - 1;
+        result.unit = QObject::tr("h:m");
+      }
+      else {      // Timers 1 - 3
+        result.step = singleprec ? 5 : 1;
+        result.max = singleprec ? 255*5 : 60*60;
+        result.unit = singleprec ? QObject::tr("m:s") : QObject::tr("h:m:s");
+      }
       break;
 
     default:
