@@ -3,6 +3,7 @@
 #include "helpers.h"
 #include "opentxeeprom.h"
 #include <QObject>
+#include "customdebug.h"
 
 #define IS_DBLEEPROM(board, version)          ((IS_2560(board) || board==BOARD_M128) && version >= 213)
 // Macro used for Gruvin9x board and M128 board between versions 213 and 214 (when there were stack overflows!)
@@ -422,6 +423,7 @@ class SwitchField: public ConversionField< SignedField<N> > {
     {
       ConversionField< SignedField<N> >::afterImport();	
       sw = RawSwitch(_switch);
+      eepromImportDebug() << QString("imported %1: %2").arg(ConversionField< SignedField<N> >::internalField.getName()).arg(sw.toString());
     }    
     
   protected:
@@ -546,6 +548,7 @@ class TelemetrySourceField: public ConversionField< UnsignedField<N> > {
     {
       ConversionField< UnsignedField<N> >::afterImport();
       source = (_source == 0 ? RawSource(0) : RawSource(SOURCE_TYPE_TELEMETRY, _source-1));
+      eepromImportDebug() << QString("imported %1: %2").arg(ConversionField< UnsignedField<N> >::internalField.getName()).arg(source.toString());
     }
 
   protected:
@@ -582,6 +585,7 @@ class SourceField: public ConversionField< UnsignedField<N> > {
     {
       ConversionField< UnsignedField<N> >::afterImport();	
       source = RawSource(_source);
+      eepromImportDebug() << QString("imported %1: %2").arg(ConversionField< UnsignedField<N> >::internalField.getName()).arg(source.toString());
     }    
 
   protected:
@@ -739,6 +743,7 @@ class CurveReferenceField: public TransformedField {
     {
       curve.type = (CurveReference::CurveRefType)_curve_type;
       curve.value = smallGvarToC9x(_curve_value);
+      eepromImportDebug() << QString("imported CurveReference(%1)").arg(curve.toString());
     }
 
   protected:
@@ -904,6 +909,7 @@ class FlightModeField: public TransformedField {
           }
         }
       }
+      eepromImportDebug() << QString("imported %1: '%2'").arg(internalField.getName()).arg(phase.name);
     }
 
   protected:
@@ -1169,6 +1175,7 @@ class MixField: public TransformedField {
         }
         if (mix.carryTrim < 0) mix.carryTrim = 0;
       }
+      eepromImportDebug() << QString("imported %1: ch %2, name '%3'").arg(internalField.getName()).arg(mix.destCh).arg(mix.name);
     }
 
   protected:
@@ -1330,6 +1337,7 @@ class InputField: public TransformedField {
         else
           expo.curve = CurveReference(CurveReference::CURVE_REF_FUNC, _curveParam);
       }
+      eepromImportDebug() << QString("imported %1: ch %2 name '%3'").arg(internalField.getName()).arg(expo.chn).arg(expo.name);
     }
 
   protected:
@@ -1533,6 +1541,7 @@ class CurvesField: public TransformedField {
           for (int j=0; j<curve->count; j++)
             curve->points[j].x = -100 + (200*i) / (curve->count-1);
         }
+        eepromImportDebug() << QString("imported curve: %3 points").arg(curve->count);
       }
     }
 
@@ -1839,6 +1848,7 @@ class LogicalSwitchField: public TransformedField {
           }
         }
       }
+      eepromImportDebug() << QString("imported %1: %2").arg(internalField.getName()).arg(csw.funcToString());
     }
 
   protected:
@@ -1995,6 +2005,7 @@ class SwitchesWarningField: public TransformedField {
       else {
         sw = _sw;
       }
+      eepromImportDebug() << QString("imported %1").arg(internalField.getName());
     }
 
   protected:
@@ -2203,6 +2214,7 @@ class ArmCustomFunctionField: public TransformedField {
       else {
         fn.param = value;
       }
+      eepromImportDebug() << QString("imported %1").arg(internalField.getName());
     }
 
   protected:
@@ -2391,6 +2403,7 @@ class AvrCustomFunctionField: public TransformedField {
         else if (version >= 213)
           fn.repeatParam = _active * 10;
       }
+      eepromImportDebug() << QString("imported %1").arg(internalField.getName());
     }
 
   protected:
@@ -2477,6 +2490,8 @@ class FrskyScreenField: public DataField {
 
     virtual void ImportBits(QBitArray & input)
     {
+      eepromImportDebug() << QString("importing %1: type: %2").arg(name).arg(screen.type);
+
       // NOTA: screen.type should have been imported first!
       if (screen.type == TELEMETRY_SCREEN_SCRIPT)
         script.ImportBits(input);
@@ -2794,6 +2809,7 @@ class SensorField: public TransformedField {
         else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION)
           sensor.amps = _sources[0];
       }
+      eepromImportDebug() << QString("imported %1").arg(internalField.getName());
     }
 
   protected:
@@ -2821,6 +2837,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   throttleSourceConversionTable(board, version)
 {
   sprintf(name, "Model %s", modelData.name);
+
+  eepromImportDebug() << QString("OpenTxModelData::OpenTxModelData(name: %1, board: %2, ver: %3, var: %4)").arg(name).arg(board).arg(version).arg(variant);
 
   if (HAS_LARGE_LCD(board))
     internalField.Append(new ZCharField<12>(modelData.name));
@@ -3147,7 +3165,7 @@ void OpenTxModelData::beforeExport()
 
 void OpenTxModelData::afterImport()
 {
-  // qDebug() << QString("after import model") << modelData.name ;
+  eepromImportDebug() << QString("OpenTxModelData::afterImport()") << modelData.name;
 
   if (IS_TARANIS(board) && version < 216) {
     for (unsigned int i=0; i<NUM_STICKS; i++) {
@@ -3186,6 +3204,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   version(version),
   inputsCount(NUM_STICKS+MAX_POTS(board)+MAX_SLIDERS(board))
 {
+  eepromImportDebug() << QString("OpenTxGeneralData::OpenTxGeneralData(board: %1, version:%2, variant:%3)").arg(board).arg(version).arg(variant);
+
   generalData.version = version;
   generalData.variant = variant;
 
