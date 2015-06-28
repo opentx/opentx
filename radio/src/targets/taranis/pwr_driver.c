@@ -88,6 +88,13 @@ void pwrOff()
   // key is held pressed by the user
   while (1) {
     wdt_reset();
+    PWR->CR |= PWR_CR_CWUF;
+    /* Select STANDBY mode */
+    PWR->CR |= PWR_CR_PDDS;
+    /* Set SLEEPDEEP bit of Cortex System Control Register */
+    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+    /* Request Wait For Event */
+    __WFE();
   }
 #endif
 }
