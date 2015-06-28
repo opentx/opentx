@@ -60,7 +60,6 @@ class SwitchesConversionTable: public ConversionTable {
 
       for (int i=1; i<=MAX_SWITCHES_POSITION(board, version); i++) {
         int s = switchIndex(i, board, version);
-        addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val);
         if (IS_TARANIS(board) && version < 217) {
           // SF positions 16 and 17 => 16 and 18
           // SH positions 21 and 22 => 22 and 24
@@ -68,12 +67,14 @@ class SwitchesConversionTable: public ConversionTable {
             continue;
           }
           if (s >= 22) {
+            addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val);
             addImportConversion(RawSwitch(SWITCH_TYPE_SWITCH, 21+22-s), -val+offset);
             addExportConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val+offset);
             val++;
             continue;
           }
         }
+        addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val);
         addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val+offset);
         val++;
       }
