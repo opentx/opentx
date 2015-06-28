@@ -95,6 +95,7 @@ class MainWindow : public QMainWindow
     void setITLanguage() {setLanguage("it_IT");};
     void setHELanguage() {setLanguage("he_IL");};
     void setPLLanguage() {setLanguage("pl_PL");};
+    void setESLanguage() {setLanguage("es_ES");};
     void setPTLanguage() {setLanguage("pt_PT");};
     void setRULanguage() {setLanguage("ru_RU");};
     void setSELanguage() {setLanguage("sv_SE");};
@@ -270,6 +271,7 @@ class MainWindow : public QMainWindow
     QAction *italianLangAct;
     QAction *hebrewLangAct;
     QAction *polishLangAct;
+    QAction *spanishLangAct;
     QAction *portugueseLangAct;
     QAction *swedishLangAct;
     QAction *russianLangAct;

@@ -1031,6 +1031,7 @@ void MainWindow::createActions()
 //    hebrewLangAct =      addAct( langAlignGroup,     tr("Hebrew"),          tr("Use Hebrew in menus"),                  SLOT(setHELanguage()));
     polishLangAct =      addAct( langAlignGroup,     tr("Polish"),          tr("Use Polish in menus"),                  SLOT(setPLLanguage()));
 //    portugueseLangAct =  addAct( langAlignGroup,     tr("Portuguese"),      tr("Use Portuguese in menus"),              SLOT(setPTLanguage()));
+    spanishLangAct =     addAct( langAlignGroup,     tr("Spanish"),         tr("Use Spanish in menus"),                 SLOT(setESLanguage()));
     swedishLangAct =     addAct( langAlignGroup,     tr("Swedish"),         tr("Use Swedish in menus"),                 SLOT(setSELanguage()));
 //    russianLangAct =     addAct( langAlignGroup,     tr("Russian"),         tr("Use Russian in menus"),                 SLOT(setRULanguage()));
 //    dutchLangAct =       addAct( langAlignGroup,     tr("Dutch"),           tr("Use Dutch in menus"),                   SLOT(setNLLanguage()));
@@ -1110,6 +1111,7 @@ void MainWindow::createMenus()
       languageMenu->addAction(italianLangAct);
       languageMenu->addAction(polishLangAct);
 //      languageMenu->addAction(portugueseLangAct);
+      languageMenu->addAction(spanishLangAct);
       languageMenu->addAction(swedishLangAct);
 //      languageMenu->addAction(russianLangAct);
 //      languageMenu->addAction(dutchLangAct);
@@ -1361,6 +1363,8 @@ void MainWindow::updateLanguageActions()
     portugueseLangAct->setChecked(true);
   else if (langId=="ru_RU") 
     russianLangAct->setChecked(true);
+  else if (langId=="es_ES")
+    spanishLangAct->setChecked(true);
   else if (langId=="sv_SE") 
     swedishLangAct->setChecked(true);
   else if (langId=="nl_NL") 

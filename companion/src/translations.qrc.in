@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>companion_cs.qm</file>
         <file>companion_de.qm</file>
+        <file>companion_es.qm</file>
         <file>companion_fi.qm</file>
         <file>companion_fr.qm</file>
         <file>companion_he.qm</file>
