@@ -202,7 +202,7 @@ void setVolume(uint8_t volume)
   I2C_SendData(I2C, 0);
   if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
     return;
-  I2C_SendData(I2C, volume);
+  I2C_SendData(I2C, volumeScale[volume]);
   if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_TRANSMITTED))
     return;
 
