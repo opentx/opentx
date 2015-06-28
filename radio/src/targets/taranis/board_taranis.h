@@ -340,7 +340,7 @@ void topLcdInit(void);
 void topLcdOff();
 void topLcdRefreshStart(void);
 void topLcdRefreshEnd(void);
-void setTopFirstTimer(uint32_t value);
+void setTopFirstTimer(int32_t value);
 void setTopSecondTimer(uint32_t value);
 void setTopRssi(uint32_t rssi);
 void setTopBatteryState(uint32_t state);
