@@ -2017,10 +2017,20 @@ enum Protocols {
 enum RFProtocols {
   RF_PROTO_OFF = -1,
   RF_PROTO_X16,
+#if defined(MODULE_D16_EU_ONLY_SUPPORT)
+  RF_PROTO_LAST = RF_PROTO_X16
+#else
   RF_PROTO_D8,
   RF_PROTO_LR12,
   RF_PROTO_LAST = RF_PROTO_LR12
+#endif
 };
+
+#if defined(MODULE_D16_EU_ONLY_SUPPORT)
+  #define HAS_RF_PROTOCOL_FAILSAFE(protocol) ((protocol) == RF_PROTO_X16)
+#else
+  #define HAS_RF_PROTOCOL_FAILSAFE(protocol) ((protocol) == RF_PROTO_X16 || (protocol) == RF_PROTO_LR12)
+#endif
 
 enum DSM2Protocols {
   DSM2_PROTO_LP45,

@@ -1038,7 +1038,7 @@ void checkFailsafe()
   for (int i=0; i<NUM_MODULES; i++) {
     if (IS_MODULE_XJT(i)) {
       ModuleData & moduleData = g_model.moduleData[i];
-      if ((moduleData.rfProtocol == RF_PROTO_X16 || moduleData.rfProtocol == RF_PROTO_LR12) && moduleData.failsafeMode == FAILSAFE_NOT_SET) {
+      if (HAS_RF_PROTOCOL_FAILSAFE(moduleData.rfProtocol) && moduleData.failsafeMode == FAILSAFE_NOT_SET) {
         ALERT(STR_FAILSAFEWARN, STR_NO_FAILSAFE, AU_ERROR);
         break;
       }
