@@ -1273,6 +1273,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
   openTx->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
   openTx->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
+  openTx->addOption("eu", QObject::tr("Removes D8 and LR12 FrSky protocols that are not legal for use anymore on radios sold after Jan 1st, 2015"));
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
@@ -1283,6 +1284,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
   openTx->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
   openTx->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
+  openTx->addOption("eu", QObject::tr("Removes D8 and LR12 FrSky protocols that are not legal for use anymore on radios sold after Jan 1st, 2015"));
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
