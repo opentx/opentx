@@ -425,11 +425,12 @@ PACK(typedef struct {
 #define SET_DEFAULT_PPM_FRAME_LENGTH(idx) g_model.moduleData[idx].ppmFrameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
 
 #define LEN_SCRIPT_FILENAME    8
+#define LEN_SCRIPT_NAME        8
 #define MAX_SCRIPT_INPUTS      8
 #define MAX_SCRIPT_OUTPUTS     6
 PACK(typedef struct {
   char    file[LEN_SCRIPT_FILENAME];
-  char    name[8];
+  char    name[LEN_SCRIPT_NAME];
   int8_t  inputs[MAX_SCRIPT_INPUTS];
 }) ScriptData;
 

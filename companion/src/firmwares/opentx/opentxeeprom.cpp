@@ -2477,30 +2477,38 @@ class FrskyScreenField: public DataField {
         else
           numbers.Append(new SpareBitsField<4*8>());
       }
-
-      if (IS_TARANIS(board))
-        none.Append(new SpareBitsField<24*8>());
-      else if (IS_ARM(board))
-        none.Append(new SpareBitsField<20*8>());
-      else
-        none.Append(new SpareBitsField<12*8>());
-
+      
       if (IS_TARANIS(board) && version >= 217) {
         script.Append(new CharField<8>(screen.body.script.filename));
         script.Append(new SpareBitsField<16*8>());
+      }
+
+      if (IS_ARM(board) && version >= 217) {
+        if (IS_TARANIS(board))
+          none.Append(new SpareBitsField<24*8>());
+        else
+          none.Append(new SpareBitsField<20*8>());
       }
     }
 
     virtual void ExportBits(QBitArray & output)
     {
-      if (screen.type == TELEMETRY_SCREEN_SCRIPT)
-        script.ExportBits(output);
-      else if (screen.type == TELEMETRY_SCREEN_NUMBERS)
-        numbers.ExportBits(output);
-      else if (screen.type == TELEMETRY_SCREEN_BARS)
-        bars.ExportBits(output);
-      else
-        none.ExportBits(output);
+      if (IS_ARM(board) && version >= 217) {
+        if (screen.type == TELEMETRY_SCREEN_SCRIPT)
+          script.ExportBits(output);
+        else if (screen.type == TELEMETRY_SCREEN_NUMBERS)
+          numbers.ExportBits(output);
+        else if (screen.type == TELEMETRY_SCREEN_BARS)
+          bars.ExportBits(output);
+        else
+          none.ExportBits(output);
+      }
+      else {
+        if (screen.type == TELEMETRY_SCREEN_NUMBERS)
+          numbers.ExportBits(output);
+        else
+          bars.ExportBits(output);
+      }
     }
 
     virtual void ImportBits(QBitArray & input)
@@ -2508,27 +2516,43 @@ class FrskyScreenField: public DataField {
       eepromImportDebug() << QString("importing %1: type: %2").arg(name).arg(screen.type);
 
       // NOTA: screen.type should have been imported first!
-      if (screen.type == TELEMETRY_SCREEN_SCRIPT)
-        script.ImportBits(input);
-      else if (screen.type == TELEMETRY_SCREEN_NUMBERS)
-        numbers.ImportBits(input);
-      else if (screen.type == TELEMETRY_SCREEN_BARS)
-        bars.ImportBits(input);
-      else
-        none.ImportBits(input);
+      if (IS_ARM(board) && version >= 217) {
+        if (screen.type == TELEMETRY_SCREEN_SCRIPT)
+          script.ImportBits(input);
+        else if (screen.type == TELEMETRY_SCREEN_NUMBERS)
+          numbers.ImportBits(input);
+        else if (screen.type == TELEMETRY_SCREEN_BARS)
+          bars.ImportBits(input);
+        else
+          none.ImportBits(input);
+      }
+      else {
+        if (screen.type == TELEMETRY_SCREEN_NUMBERS)
+          numbers.ImportBits(input);
+        else
+          bars.ImportBits(input);
+      }
     }
 
     virtual unsigned int size()
     {
       // NOTA: screen.type should have been imported first!
-      if (screen.type == TELEMETRY_SCREEN_SCRIPT)
-        return script.size();
-      else if (screen.type == TELEMETRY_SCREEN_NUMBERS)
-        return numbers.size();
-      else if (screen.type == TELEMETRY_SCREEN_BARS)
-        return bars.size();
-      else
-        return none.size();
+      if (IS_ARM(board) && version >= 217) {
+        if (screen.type == TELEMETRY_SCREEN_SCRIPT)
+          return script.size();
+        else if (screen.type == TELEMETRY_SCREEN_NUMBERS)
+          return numbers.size();
+        else if (screen.type == TELEMETRY_SCREEN_BARS)
+          return bars.size();
+        else
+          return none.size();
+      }
+      else {
+        if (screen.type == TELEMETRY_SCREEN_NUMBERS)
+          return numbers.size();
+        else
+          return bars.size();
+      }
     }
 
   protected:
@@ -2642,7 +2666,7 @@ class FrskyField: public StructField {
           Append(new UnsignedField<8>(frsky.altitudeSource, "Altitude Source"));
         }
         else {
-          for (int i=0; i<((version >= 216) ? 4 : 2); i++) {
+          for (int i=0; i<(version >= 216 ? 4 : 2); i++) {
             Append(new UnsignedField<8>(frsky.channels[i].ratio, "Ratio"));
             Append(new SignedField<12>(frsky.channels[i].offset, "Offset"));
             Append(new UnsignedField<4>(frsky.channels[i].type, "Type"));
