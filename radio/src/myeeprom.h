@@ -957,10 +957,10 @@ PACK(typedef struct {
   uint8_t  destCh:5;
   uint8_t  mixWarn:3;         // mixer warning
   uint16_t flightModes:9;
-  uint8_t  curveMode:1;
-  uint8_t  noExpo:1;
-  int8_t   carryTrim:3;
-  uint8_t  mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint16_t  curveMode:1;
+  uint16_t  noExpo:1;
+  int16_t   carryTrim:3;
+  uint16_t  mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
   int16_t  weight;
   int8_t   swtch;
   int8_t   curveParam;
