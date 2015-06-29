@@ -569,7 +569,7 @@ void evalFunctions()
       else {
         functionsContext.lastFunctionTime[i] = 0;
 #if defined(DANGEROUS_MODULE_FUNCTIONS)
-        if (functionsContext.activeSwitches & switch_mask)) {
+        if (functionsContext.activeSwitches & switch_mask) {
           switch (CFN_FUNC(cfn)) {
             case FUNC_RANGECHECK:
             case FUNC_BIND:
