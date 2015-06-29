@@ -353,15 +353,9 @@
 #define SERIAL_USART_IRQn               USART3_IRQn
 
 // Telemetry
-#if defined(REV9E)
-  #define TELEMETRY_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
-  #define TELEMETRY_GPIO_DIR            GPIOD
-  #define TELEMETRY_GPIO_PIN_DIR        GPIO_Pin_4  // PD.04
-#else
-  #define TELEMETRY_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOD)
-  #define TELEMETRY_GPIO_DIR            GPIOA
-  #define TELEMETRY_GPIO_PIN_DIR        GPIO_Pin_15 // PA.15
-#endif
+#define TELEMETRY_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
+#define TELEMETRY_GPIO_DIR              GPIOD
+#define TELEMETRY_GPIO_PIN_DIR          GPIO_Pin_4  // PD.04
 #define TELEMETRY_RCC_APB1Periph        RCC_APB1Periph_USART2
 #define TELEMETRY_GPIO                  GPIOD
 #define TELEMETRY_GPIO_PIN_TX           GPIO_Pin_5  // PD.05
