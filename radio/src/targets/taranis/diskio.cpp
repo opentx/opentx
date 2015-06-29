@@ -230,6 +230,11 @@ void release_spi (void)
 }
 
 #ifdef SD_USE_DMA
+
+#if defined(STM32F4)
+WORD rw_workbyte[1] _NOCCM;
+#endif
+
 /*-----------------------------------------------------------------------*/
 /* Transmit/Receive Block using DMA (Platform dependent. STM32 here)     */
 /*-----------------------------------------------------------------------*/
@@ -243,7 +248,11 @@ void stm32_dma_transfer(
 )
 {
   DMA_InitTypeDef DMA_InitStructure;
-  WORD dummy[] = { 0xffff };
+#if defined(STM32F4)
+  rw_workbyte[0] = 0xffff;
+#else
+  WORD rw_workbyte[] = { 0xffff };
+#endif
 
   DMA_DeInit(SD_DMA_Stream_SPI_RX);
   DMA_DeInit(SD_DMA_Stream_SPI_TX);
@@ -258,10 +267,10 @@ void stm32_dma_transfer(
   DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
   DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
   
-  DMA_InitStructure.DMA_FIFOMode =DMA_FIFOMode_Enable;
-  DMA_InitStructure.DMA_FIFOThreshold =DMA_FIFOThreshold_Full;
-  DMA_InitStructure.DMA_MemoryBurst =DMA_MemoryBurst_Single;
-  DMA_InitStructure.DMA_PeripheralBurst =DMA_PeripheralBurst_Single;
+  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Enable;
+  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
 
   // separate RX & TX
   if (receive) {
@@ -269,14 +278,14 @@ void stm32_dma_transfer(
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
     DMA_Init(SD_DMA_Stream_SPI_RX, &DMA_InitStructure);
-    DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)dummy;
+    DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)rw_workbyte;
     DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
     DMA_Init(SD_DMA_Stream_SPI_TX, &DMA_InitStructure);
   }
   else {
 #if _FS_READONLY == 0
-    DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)dummy;
+    DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)rw_workbyte;
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
     DMA_Init(SD_DMA_Stream_SPI_RX, &DMA_InitStructure);
@@ -399,6 +408,10 @@ void power_off (void)
 /* Receive a data packet from MMC                                        */
 /*-----------------------------------------------------------------------*/
 
+#if defined(SD_USE_DMA) && defined(STM32F4)
+  uint8_t sd_buff[512] _NOCCM;
+#endif
+
 static
 BOOL rcvr_datablock (
         BYTE *buff,                     /* Data buffer to store received data */
@@ -418,8 +431,11 @@ BOOL rcvr_datablock (
     return FALSE; /* If not valid data token, return with error */
   }
 
-#ifdef SD_USE_DMA
-  stm32_dma_transfer( TRUE, buff, btr );
+#if defined(SD_USE_DMA) && defined(STM32F4)
+  stm32_dma_transfer(TRUE, sd_buff, btr);
+  memcpy(buff, sd_buff, btr);
+#elif defined(SD_USE_DMA)
+  stm32_dma_transfer(TRUE, buff, btr);
 #else
   do {                                                    /* Receive the data block into buffer */
     rcvr_spi_m(buff++);
@@ -463,8 +479,11 @@ BOOL xmit_datablock (
   xmit_spi(token);                                        /* transmit data token */
   if (token != 0xFD) {    /* Is data token */
 
-#ifdef SD_USE_DMA
-    stm32_dma_transfer( FALSE, buff, 512 );
+#if defined(SD_USE_DMA) && defined(STM32F4)
+  memcpy(sd_buff, buff, 512);
+  stm32_dma_transfer(FALSE, sd_buff, 512);
+#elif defined(SD_USE_DMA)
+  stm32_dma_transfer(FALSE, buff, 512);
 #else
     wc = 0;
     do {                                                    /* transmit the 512 byte data block to MMC */

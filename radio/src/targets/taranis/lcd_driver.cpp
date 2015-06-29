@@ -54,7 +54,6 @@ void initLcdSpi()
   configure_pins( LCD_GPIO_PIN_A0,  PIN_OUTPUT | PIN_PORTC | PIN_OS50) ;
   configure_pins( LCD_GPIO_PIN_MOSI|LCD_GPIO_PIN_CLK, PIN_PORTC | PIN_OS50 | PIN_PER_6 | PIN_PERIPHERAL ) ;
 
-
   // NVIC_SetPriority( DMA1_Stream7_IRQn, 8 ) ;
   NVIC_EnableIRQ(DMA1_Stream7_IRQn) ;
   DMA1->HIFCR |= DMA_HIFCR_CTCIF7; //clear interrupt flag
@@ -68,7 +67,6 @@ void initLcdSpi()
   DMA1_Stream7->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
   DMA1_Stream7->NDTR = LCD_W*LCD_H/8*4 ;
 }
-
 
 static void LCD_Init()
 {

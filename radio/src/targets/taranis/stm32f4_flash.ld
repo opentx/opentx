@@ -1,10 +1,10 @@
 /*
 *****************************************************************************
 **
-**  File        : stm32_flashboot.ld
+**  File        : stm32f4_flash.ld
 **
-**  Abstract    : Linker script for STM32F205 Device with
-**                0.5MByte FLASH, 128KByte SRAM
+**  Abstract    : Linker script for STM32F407 Device with
+**                0.5MByte FLASH, 128KByte SRAM, 64KByte CCM
 **
 **                Set heap size, stack size and stack location according
 **                to application requirements.
@@ -20,13 +20,14 @@
 ENTRY(Reset_Handler)
 
 /* Highest address of the user mode stack */
-_estack = 0x20020000;    /* end of 128K SRAM */
+_estack = 0x10010000;    /* end of 64K CCM */
+_heap_end = 0x20020000;  /* end of 128K SRAM */
 
 /* Generate a link error if heap and stack don't fit into RAM */
 _Min_Heap_Size = 0;      /* required amount of heap  */
 _Main_Stack_Size = 1024; /* required amount of stack for interrupt stack (Main stack) */
 
-/*Main stack end*/
+/* Main stack end */
 _main_stack_start = _estack - _Main_Stack_Size;
 
 /* Specify the memory areas */
@@ -34,6 +35,7 @@ MEMORY
 {
   FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 512K
   RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 128K
+  CCM (xrw)       : ORIGIN = 0x10000000, LENGTH = 64K
   MEMORY_B1 (rx)  : ORIGIN = 0x60000000, LENGTH = 0K
 }
 
@@ -45,10 +47,18 @@ SECTIONS
   /* The program code and other data goes into FLASH */
   .text :
   {
-    . = ALIGN(4);
+    FILL(0xFFFF)
+      
+    CREATE_OBJECT_SYMBOLS
+
+    KEEP(*(.isr_boot_vector)) /* Startup code */
+    *(.bootrodata)
+    *(.bootrodata.*)
+      
+    . = 32768;           /* Set the start of the main program */
+    _stext = .;          /* Provide the name for the start of this section */
+	 . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
-    *(.version)
-    . = ALIGN(4);      /* Align the start of the text part */
     *(.text)           /* .text sections (code) */
     *(.text*)          /* .text* sections (code) */
     *(.rodata)         /* .rodata sections (constants, strings, etc.) */
@@ -62,36 +72,36 @@ SECTIONS
 
     . = ALIGN(4);
     _etext = .;        /* define a global symbols at end of code */
-  } >RAM
+  } >FLASH
 
 
-   .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >RAM
+   .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
     .ARM : {
     __exidx_start = .;
       *(.ARM.exidx*)
       __exidx_end = .;
-    } >RAM
+    } >FLASH
 
   .preinit_array     :
   {
     PROVIDE_HIDDEN (__preinit_array_start = .);
     KEEP (*(.preinit_array*))
     PROVIDE_HIDDEN (__preinit_array_end = .);
-  } >RAM
+  } >FLASH
   .init_array :
   {
     PROVIDE_HIDDEN (__init_array_start = .);
     KEEP (*(SORT(.init_array.*)))
     KEEP (*(.init_array*))
     PROVIDE_HIDDEN (__init_array_end = .);
-  } >RAM
+  } >FLASH
   .fini_array :
   {
     PROVIDE_HIDDEN (__fini_array_start = .);
     KEEP (*(.fini_array*))
     KEEP (*(SORT(.fini_array.*)))
     PROVIDE_HIDDEN (__fini_array_end = .);
-  } >RAM
+  } >FLASH
 
   /* used by the startup to initialize data */
   _sidata = .;
@@ -106,7 +116,7 @@ SECTIONS
 
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
-  } >RAM
+  } >CCM
 
   /* Uninitialized data section */
   . = ALIGN(4);
@@ -114,18 +124,30 @@ SECTIONS
   {
     /* This is used by the startup in order to initialize the .bss secion */
     _sbss = .;         /* define a global symbol at bss start */
-    __bss_start__ = _sbss;
+    /* __bss_start__ = _sbss; */
     *(.bss)
     *(.bss*)
     *(COMMON)
 
     . = ALIGN(4);
     _ebss = .;         /* define a global symbol at bss end */
-    __bss_end__ = _ebss;
-  } >RAM
+    /* __bss_end__ = _ebss; */
+  } >CCM
 
-  PROVIDE ( end = _ebss );
-  PROVIDE ( _end = _ebss );
+  /* collect all uninitialized .ccm sections */
+  .ram (NOLOAD) :
+  {
+    . = ALIGN(4);
+    _sram = .;
+    /* __ccm_start__ = _sccm; */
+    *(.ram)
+    . = ALIGN(4);
+    _eram = .;
+    /* __ccm_end__ = _eccm; */
+  } >RAM
+  
+  PROVIDE ( end = _eram );
+  PROVIDE ( _end = _eram );
 
   /* User_heap_stack section, used to check that there is enough RAM left */
   ._user_heap_stack :
@@ -145,7 +167,7 @@ SECTIONS
     *(.mb1rodata)      /* read-only data (constants) */
     *(.mb1rodata*)
   } >MEMORY_B1
-
+  
   /* Remove information from the standard libraries */
   /DISCARD/ :
   {

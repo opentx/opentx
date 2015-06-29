@@ -818,7 +818,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
     CPPSRC += targets/sky9x/bluetooth.cpp
   endif
   ifeq ($(DEBUG), YES)
-    SRC += targets/sky9x/syscalls.c
+    SRC += syscalls.c
   endif
 endif
 
@@ -880,7 +880,6 @@ ifeq ($(PCB), TARANIS)
   ifeq ($(SUPPORT_D16_EU_ONLY), YES)
     CPPDEFS += -DMODULE_D16_EU_ONLY_SUPPORT
   endif
-  LDSCRIPT = targets/taranis/stm32_flash_bl.ld
   TRGT = arm-none-eabi-
   OPT = s
   BITMAPS += $(patsubst %.png,%.lbm,$(wildcard bitmaps/Taranis/*.png)) bitmaps/Taranis/mainmenu.lbm
@@ -900,11 +899,13 @@ ifeq ($(PCB), TARANIS)
   CPPDEFS += -DHSE_VALUE=12000000
   ifeq ($(PCBREV), REV9E)
     STM32LIBPATH = $(THIRDPARTY)/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries
-    CPPDEFS += -DSTM32F40_41xxx
+    CPPDEFS += -DSTM32F4 -DSTM32F40_41xxx
     INCDIRS += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Include $(STM32LIBPATH)/CMSIS/Include $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/inc
+    LDSCRIPT = targets/taranis/stm32f4_flash.ld
   else
     STM32LIBPATH= $(THIRDPARTY)/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries
     INCDIRS += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/inc $(STM32LIBPATH)/CMSIS/Device/ST/STM32F2xx/Include $(STM32LIBPATH)/CMSIS/include
+    LDSCRIPT = targets/taranis/stm32f2_flash.ld
   endif
   STM32USBPATH = $(THIRDPARTY)/STM32_USB-Host-Device_Lib_V2.1.0/Libraries
   INCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc $(STM32USBPATH)/STM32_USB_Device_Library/Core/inc
@@ -956,7 +957,7 @@ ifeq ($(PCB), TARANIS)
   SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Core/src/usbd_ioreq.c
   SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Core/src/usbd_req.c
   EXTRABOARDSRC += targets/taranis/usbd_usr.cpp
-  SRC += targets/sky9x/syscalls.c
+  SRC += syscalls.c
   ifeq ($(USB), JOYSTICK)
     CPPDEFS += -DUSB_JOYSTICK
     SRC += targets/taranis/usbd_hid_joystick.c

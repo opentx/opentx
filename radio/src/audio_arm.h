@@ -67,6 +67,8 @@ struct AudioBuffer {
   uint8_t  state;
 };
 
+extern AudioBuffer audioBuffers[AUDIO_BUFFER_COUNT];
+
 enum FragmentTypes {
   FRAGMENT_EMPTY,
   FRAGMENT_TONE,
@@ -197,14 +199,14 @@ class AudioQueue {
 
     inline AudioBuffer * getNextFilledBuffer()
     {
-      if (buffers[bufferRIdx].state == AUDIO_BUFFER_PLAYING) {
-        buffers[bufferRIdx].state = AUDIO_BUFFER_FREE;
+      if (audioBuffers[bufferRIdx].state == AUDIO_BUFFER_PLAYING) {
+        audioBuffers[bufferRIdx].state = AUDIO_BUFFER_FREE;
         bufferRIdx = nextBufferIdx(bufferRIdx);
       }
 
       uint8_t idx = bufferRIdx;
       do {
-        AudioBuffer * buffer = &buffers[idx];
+        AudioBuffer * buffer = &audioBuffers[idx];
         if (buffer->state == AUDIO_BUFFER_FILLED) {
           buffer->state = AUDIO_BUFFER_PLAYING;
           bufferRIdx = idx;
@@ -219,7 +221,7 @@ class AudioQueue {
     bool filledAtleast(int noBuffers) {
       int count = 0;
       for(int n= 0; n<AUDIO_BUFFER_COUNT; ++n) {
-        if (buffers[n].state == AUDIO_BUFFER_FILLED) {
+        if (audioBuffers[n].state == AUDIO_BUFFER_FILLED) {
           if (++count >= noBuffers) {
             return true;
           }
@@ -243,7 +245,6 @@ class AudioQueue {
     ToneContext  priorityContext;
     ToneContext  varioContext;
 
-    AudioBuffer buffers[AUDIO_BUFFER_COUNT];
     uint8_t bufferRIdx;
     uint8_t bufferWIdx;
 
@@ -254,7 +255,7 @@ class AudioQueue {
 
     inline AudioBuffer * getEmptyBuffer()
     {
-      AudioBuffer * buffer = &buffers[bufferWIdx];
+      AudioBuffer * buffer = &audioBuffers[bufferWIdx];
       if (buffer->state == AUDIO_BUFFER_FREE)
         return buffer;
       else
