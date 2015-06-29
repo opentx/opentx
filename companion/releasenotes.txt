@@ -1,9 +1,109 @@
-<h2>Version 2.0.9</h2>
+<h2>Version 2.1.0 / (set date)</h2>
 <ul>
-<li>Taranis is now the default board in General Settings</li>
+<li>SD card synchronizaton tool</li>
 </ul>
 
-<h2>Version 2.0.8</h2>
+
+<h2>Version 2.0.18 / (not yet released)</h2>
+<ul>
+<li>Enabled <i>Mixers monitor</i> in Taranis simulator</li>
+<li>Better support for multi-axes in Log Viewer (<a href=https://github.com/opentx/opentx/issues/2267>#2267</a>)</li>
+<li>File path issue in Taranis simulator function <i>findTrueFileName()</i> on Windows (<a href=https://github.com/opentx/opentx/issues/2301>#2301</a>)</li>
+<li>Added simulator volume gain setting (<a href=https://github.com/opentx/opentx/issues/2260>#2260</a>)</li>
+<li>Added GPS glitch filtering and Latitude/Longitude position synchronization to Google Earth export (<a href=https://github.com/opentx/opentx/issues/2326>#2326</a>)</li>
+</ul>
+
+
+
+<h2>Version 2.0.17 / 2015-05-04</h2>
+<ul>
+<li>Simulator crash (<a href=https://github.com/opentx/opentx/issues/2253>#2253</a>)</li>
+</ul>
+
+
+<h2>Version 2.0.16 / 2015-05-03</h2>
+<ul>
+<li><i>nooverridech</i> firmware option was not working</li>
+<li>Fixed setting Expo from gvars for 9XR-Pro (<a href=https://github.com/opentx/opentx/issues/2040>#2040</a>)</li>
+<li>Added Mixers Monitor screen option <i>mixersmon</i> (<a href=https://github.com/opentx/opentx/issues/1945>#1945</a>)</li>
+<li>Added audio playing in simulator (<a href=https://github.com/opentx/opentx/issues/457>#457</a>)</li>
+<li>Fixed sorting of audio tracks (<a href=https://github.com/opentx/opentx/issues/2002>#2002</a>)</li>
+<li>Model wizard fixes (<a href=https://github.com/opentx/opentx/issues/2091>#2091</a>)</li>
+<li>GVAR names removed for 9x, radio doesn't support them (<a href=https://github.com/opentx/opentx/issues/2150>#2150</a>)</li>
+<li>Some LS sources didn't follow the Imperial units setting (<a href=https://github.com/opentx/opentx/issues/2180>#2180</a>)</li>
+<li>Added more fields to the telemetry simulator (<a href=https://github.com/opentx/opentx/issues/2171>#2171</a>)</li>
+<li>Log viewer improvements and massive speed increase (<a href=https://github.com/opentx/opentx/issues/1863>#1863</a>, <a href=https://github.com/opentx/opentx/issues/2163>#2163</a>)</li>
+<li>Added Battery meter range setting (<a href=https://github.com/opentx/opentx/issues/2195>#2195</a>)</li>
+<li>Improvements in Print and Compare dialogs (<a href=https://github.com/opentx/opentx/issues/2219>#2219</a>)</li>
+<li>Reset pots to the middle by right double clicking them in Simulator (<a href=https://github.com/opentx/opentx/issues/1939>#1939</a>)</li>
+<li>Minor fixes: <a href=https://github.com/opentx/opentx/issues/2153>#2153</a>, 
+                 <a href=https://github.com/opentx/opentx/issues/2138>#2138</a>,
+                 <a href=https://github.com/opentx/opentx/issues/2090>#2090</a>,
+                 <a href=https://github.com/opentx/opentx/issues/2122>#2122</a>
+</li>
+</ul>
+
+
+<h2>Version 2.0.15 / 2015-01-13</h2>
+<ul>
+<li>Firmware was not written correctly on radio when compatibility warning check enabled</li>
+<li>Time format for Special Functions Set Timers</li>
+</ul>
+
+<h2>Version 2.0.14 / 2015-01-12</h2>
+<ul>
+<li>OpenTX Companion and Companion9x can now be installed side by side on Linux</li>
+<li>Improved TAB order in dialogs</li>
+<li>Special Function <i>Start Logs</i> renamed to more appropriate <i>SD Logs</i></li>
+<li>Improvements for MAC build</li>
+<li>Fixes to Google Earth logs export</li>
+<li>Firmware compatibility warning check added when flashing new firmware to radio</li>
+<li>Fixed issue with Telemetry Type setting on 9XR-PRO</li>
+<li>Added Telemetry simulator</li>
+<li>Added Trainer simulator</li>
+<li>Added Debug Output window</li>
+<li>Various texts and translations corrections</li>
+<li>Various small bug-fixes</li>
+<li>More reliable method of writing EEPROM.BIN and FIRMWARE.BIN to radio</li>
+<li>Fixed issue with Edge function INSTANT for V1>2s</li>
+<li>Fixed buffer overflow in Joystick code</li>
+</ul>
+
+<h2>Version 2.0.13 / 2014-11-20</h2>
+<ul>
+<li>Too many curves shown on non ARM boards</li>
+<li>Fixed vario limits</li>
+<li>Fixes in compare dialog</li>
+<li>Fixed receiver number range</li>
+<li>Virtual inputs not selectable in SF Volume and heli Collective Source</li>
+<li>Joystick calibration crash after channel assignment</li>
+<li>Gvar import error for limits</li>
+<li>Companion shows too many curve types in input/mixer for 9x</li>
+<li>NOT curves removed from inputs (for non ARM platforms)</li>
+<li>Companion again builds on OS X (Mac)</li>
+<li>Companion simulator Lua crash on OS X 64bit (Mac)</li>
+<li>Companion didn't take care of PlayScript functions</li>
+</ul>
+
+<h2>Version 2.0.12 / 2014-09-15</h2>
+<ul>
+<li>Typos & Translations updated</li>
+</ul>
+
+<h2>Version 2.0.11 / 2014-09-10</h2>
+<ul>
+<li>Limits EEPROM export was broken (all boards except Taranis)</li>
+<li>Fix issue when a GVAR was used as Offset</li>
+</ul>
+
+<h2>Version 2.0.10 / 2014-09-08</h2>
+<ul>
+<li>Taranis is now the default board in General Settings</li>
+<li>GVARS allowed in Limits min/max/offset</li>
+<li>Limits displayed in us when ppmus option selected
+</ul>
+
+<h2>Version 2.0.8 / 2014-07-23</h2>
 <ul>
 <li>Compare dialog bugfixes</li>
 <li>Curve index correctly resetted when type changed</li>

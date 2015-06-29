@@ -1,3 +1,146 @@
+<h2>Version 2.1.0 / (set date)</h2>
+
+<ul>
+<li>New Telemetry system</li>
+<li>Added optional alternative memory allocator for LUA (Bin Allocator)</li>
+<li>Added support for Taranis 9XE (tray version)</li>
+<li>New dangerous Custom Functions</li>
+<li>Added another timer (Timer3)</li>
+</ul>
+
+
+<h2>Version 2.0.18 / (not yet released)</h2>
+
+[Taranis]
+<ul>
+<li>Lua <i>model.insertInput()</i> could not add more than 32 inputs (<a href=https://github.com/opentx/opentx/issues/2084>#2084</a>)</li>
+<li>Fixed auto-source problem on radios with non-existing S3 pot (<a href=https://github.com/opentx/opentx/issues/2364>#2364</a>)</li>
+</ul>
+
+[ARM Boards]
+<ul>
+<li>Fixed Edge Logical switch erroneous delay (<a href=https://github.com/opentx/opentx/issues/2368>#2368</a>)</li>
+</ul>
+
+<h2>Version 2.0.17 / 2015-05-04</h2>
+
+Nothing new (only Companion fixes)
+
+
+<h2>Version 2.0.16 / 2015-05-03</h2>
+
+[Taranis]
+<ul>
+<li>Fixed reverse polarity on external PPM output. <b>Users with external module in PPM mode should check and update PPM polarity setting.</b></li>
+<li>File deletion in SD manager did not free used clusters (all radios with SD card)</li>
+<li>Fixed Lua <i>lcd.drawLine()</i> problem with slanted lines</li>
+<li>Fixed bad SWR after flight or telemetry reset (<a href=https://github.com/opentx/opentx/issues/2015>#2015</a>)</li>
+<li>Fixed missing timer voice minute call when triggered by THt (<a href=https://github.com/opentx/opentx/issues/2009>#2009</a>)</li>
+<li>Lua model.insertInput() could not add a line to an empty input or at the end of the existing input lines (<a href=https://github.com/opentx/opentx/issues/2084>#2084</a>)</li>
+<li>Fixed radio slowdown when SD card was full (<a href=https://github.com/opentx/opentx/issues/2007>#2007</a>)</li>
+<li>Added Mixers Monitor screen (<a href=https://github.com/opentx/opentx/issues/1945>#1945</a>)</li>
+<li>Fixed Lua <i>lcd.drawPixmap()</i> that could write outside the LCD buffer (<a href=https://github.com/opentx/opentx/issues/2123>#2123</a>)</li>
+<li>Gps positon display fixed: fractional seconds lacked leading zeros (<a href=https://github.com/opentx/opentx/issues/2144>#2144</a>)</li>
+<li>More memory available for Lua scripts (<a href=https://github.com/opentx/opentx/issues/2050>#2050</a>)</li>
+<li>Various texts and translations corrections</li>
+<li>Telemetry bars title fix (<a href=https://github.com/opentx/opentx/issues/2203>#2203</a>)</li> 
+</ul>
+
+[Bootloader]
+<li>Fixed USB access problem with SD cards larger than 4GB (<a href=https://github.com/opentx/opentx/issues/2154>#2154</a>)</li> 
+
+
+<h2>Version 2.0.15 / 2015-01-13</h2>
+
+Nothing new (only Companion fixes)
+
+
+<h2>Version 2.0.14 / 2015-01-12</h2>
+
+[Taranis]
+<ul>
+<li>Fixed blank LCD screen at very low temperatures</li>
+<li>Shortened radio reboot time in case of watchdog reset</li>
+<li>Fixed timer problem in bootloader, which prevented radio from powering off after being connected to USB</li>
+<li>Fixed issue with heli swash plate mixing when using <i>notrim</i></li>
+<li>Various fixes for double-keys</li>
+<li>Added switch auto detection in Timer source</li>
+<li>Totally removed splash screen display if duration is set to ---</li>
+<li>Back-light turned on sooner at startup (Taranis +)</li>
+<li><strike>Fixed reverse polarity on external CPPM output</strike> (update: this was not fixed in 2.0.14)</li>
+<li>Suppressed center beep for non-existing pots</li>
+<li>Fixed THt persistent timer running after model load (with Throttle at -100%)</li>
+<li>Fixed buffer overflow for automatic flight mode change audio announcements (if very long model and flight mode names were used)</li>
+<li>Limited stick throws to 100% when using trainer in add mode</li>
+<li>Fixed Lua lcd.drawLine(), first pixel was not drawn</li>
+<li>Fixed missing last column for some bitmap sizes</li>
+<li>Minor display corrections</li>
+</ul>
+
+[9XR-PRO]
+<ul>
+<li>MAVLINK adaptation</li>
+</ul>
+
+[9XR]
+<ul>
+<li>Added 115200 bps speed to MAVLINK</li>
+</ul>
+
+[9X2561]
+<ul>
+<li>PWM backlight fixed</li>
+</ul>
+
+[All]
+<ul>
+<li>Various texts and translations corrections</li>
+<li>Various small bug-fixes</li>
+</ul>
+
+
+<h2>Version 2.0.13 / 2014-11-20</h2>
+[Taranis]
+<ul>
+<li>Compilation with -Os instead of -O2 because of a strange bug on LS1 (AND condition changed by itself on SD error)</li>
+<li>Lua getTimer and setTimer parameters fixed (persistent and minuteBeep)</li>
+<li>Lua resetTimer function added</li>
+<li>SWR shown on newer Taranis+</li>
+<li>BOLD, CONDENSED, FIXED constants exported to Lua</li>
+<li>Disable mixer line that uses a Lua source if the Lua script is not running</li>
+<li>Additional parameters for Lua model.getMix/insertMix</li>
+<li>Fixed occasional SD card error</li>
+<li>Fixed bitmap loading</li>
+</ul>
+
+[9XR-PRO]
+<ul>
+<li>Coprocessor interface bugfix</li>
+</ul>
+
+[Stock]
+<ul>
+<li>Fixed never ending haptic repeat</li>
+<li>Fixed curves display</li>
+</ul>
+
+[All]
+<ul>
+<li>Stick icons missing next to trim key states on switch diag page</li>
+</ul>
+
+
+<h2>Version 2.0.12 / 2014-09-16</h2>
+[Taranis]
+<ul>
+<li>LTR patch (modified) applied to the Lua code. Saves around 8-10k RAM</li>
+<li>Lua hardening again!</li>
+<li>bit32 lib added to the Lua interpreter</li>
+<li>Audio tones distorsion (just after playing a wav file)</li>
+<li>ABS changed to ON in Timers modes</li>
+<li>S2 and S3 pots inverted on Taranis+</li>
+</ul>
+
 <h2>Version 2.0.11 / 2014-09-10</h2>
 [9XR-PRO]
 <ul>
