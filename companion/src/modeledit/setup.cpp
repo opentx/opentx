@@ -589,7 +589,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
       ui->potWarningLayout->addWidget(cb, 0, i+1);
       connect(cb, SIGNAL(toggled(bool)), this, SLOT(potWarningToggled(bool)));
       potWarningCheckboxes << cb;
-      if (RawSource(SOURCE_TYPE_STICK,i).isPot()) {
+      if (RawSource(SOURCE_TYPE_STICK, NUM_STICKS+i).isPot()) {
         if (!generalSettings.isPotAvailable(i)) {
           cb->hide();
         }
