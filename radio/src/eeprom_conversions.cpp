@@ -1075,12 +1075,16 @@ bool eeConvert()
 {
   const char *msg = NULL;
 
+#if defined(REV9E)
+  return false;
+#else
   if (g_eeGeneral.version == 216) {
     msg = PSTR("EEprom Data v216");
   }
   else {
     return false;
   }
+#endif
 
   int conversionVersionStart = g_eeGeneral.version;
 
