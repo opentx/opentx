@@ -3472,4 +3472,8 @@ void OpenTxGeneralData::beforeExport()
 
 void OpenTxGeneralData::afterImport()
 {
+  if (IS_TARANIS(board) && version < 217) {
+    generalData.potConfig[0] = GeneralSettings::POT_WITH_DETENT;
+    generalData.potConfig[1] = GeneralSettings::POT_WITH_DETENT;
+  }
 }
