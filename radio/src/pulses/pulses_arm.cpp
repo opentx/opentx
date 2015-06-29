@@ -110,9 +110,12 @@ void setupPulses(unsigned int port)
     required_protocol = PROTO_NONE;
   }
 
+#if 0
+  // will need an EEPROM conversion
   if (moduleFlag[port] == MODULE_OFF) {
     required_protocol = PROTO_NONE;
   }
+#endif
 
   if (s_current_protocol[port] != required_protocol) {
 

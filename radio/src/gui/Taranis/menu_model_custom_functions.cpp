@@ -230,12 +230,10 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
             lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
           }
 #endif
-#if defined(DANGEROUS_MODULE_FUNCTIONS)
-          else if (func >= FUNC_RANGECHECK && func <= FUNC_MODULE_OFF) {
+          else if (func >= FUNC_SET_FAILSAFE && func <= FUNC_BIND) {
             val_max = NUM_MODULES-1;
             lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, "\004Int.Ext.", CFN_PARAM(cfn), attr);
           }
-#endif
           else if (func == FUNC_SET_TIMER) {
             val_max = 59*60+59;
             putsTimer(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT, attr);

@@ -234,7 +234,6 @@ bool isAssignableFunctionAvailable(int function)
 #if !defined(DANGEROUS_MODULE_FUNCTIONS)
     case FUNC_RANGECHECK:
     case FUNC_BIND:
-    case FUNC_MODULE_OFF:
 #endif
     case FUNC_PLAY_SCRIPT:
     case FUNC_RESERVE5:
