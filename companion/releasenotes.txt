@@ -1,6 +1,7 @@
 <h2>Version 2.1.0 / (set date)</h2>
 <ul>
 <li>SD card synchronizaton tool</li>
+<li>Added session duraton information in Log Viewer</li>
 </ul>
 
 

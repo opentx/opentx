@@ -575,33 +575,75 @@ bool logsDialog::cvsFileParse()
   }
 
   plotLock = true;
-
-  ui->sessions_CB->clear();
-  ui->sessions_CB->addItem("---");
-
-  double lastvalue = 0;
-  double tmp;
-  for (int i = 1; i < n; i++) {
-    QString tstamp = csvlog.at(i).at(0) + QString(" ") + csvlog.at(i).at(1);
-
-    if (csvlog.at(i).at(1).contains(".")) {
-      tmp = QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss.zzz").toTime_t();
-      tmp += csvlog.at(i).at(1).mid(csvlog.at(i).at(1).indexOf(".")).toDouble();
-    } else {
-      tmp = QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss").toTime_t();
-    }
-
-    if (tmp > (lastvalue+60)) {
-      ui->sessions_CB->addItem(tstamp, i - 1);
-      lastvalue = tmp;
-    } else {
-      lastvalue = tmp;
-    }
-  }
-
+  setFlightSessions();
   plotLock=false;
 
   return true;
+}
+
+struct FlightSession {
+  QDateTime start;
+  QDateTime end;
+};
+
+QDateTime logsDialog::getRecordTimeStamp(int index) 
+{
+  QString tstamp = csvlog.at(index).at(0) + " " + csvlog.at(index).at(1);
+  if (csvlog.at(index).at(1).contains(".")) 
+    return QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss.zzz");
+  return QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss");
+}
+
+QString logsDialog::generateDuration(const QDateTime & start, const QDateTime & end)
+{
+  int secs = start.secsTo(end);
+  QString durationString;
+  if (secs >= 3600) {
+    durationString = QString("%1:").arg(secs/3600); 
+    secs %= 3600;
+  }
+  durationString += QString("%1:%2").arg(secs/60, 2, 10, QChar('0')).arg(secs%60, 2, 10, QChar('0'));  
+  return durationString;
+}
+
+void logsDialog::setFlightSessions()
+{
+  ui->sessions_CB->clear();
+
+  int n=csvlog.count();
+  // qDebug() << "records" << n;
+
+  // find session breaks
+  QList<int> sessions;
+  QDateTime lastvalue;
+  for (int i = 1; i < n; i++) {
+    QDateTime tmp = getRecordTimeStamp(i);
+    if (lastvalue.secsTo(tmp) > 60) {
+      sessions.push_back(i-1);
+      // qDebug() << "session index" << i-1;
+    }
+    lastvalue = tmp;
+  }
+  sessions.push_back(n-1);
+
+  //now construct a list of sessions with their times
+  //total time
+  int noSesions = sessions.size()-1;
+  QString label = QString("%1 ").arg(noSesions);
+  label += tr(noSesions > 1 ? "sessions" : "session");
+  label += " <" + tr("total duration ") + generateDuration(getRecordTimeStamp(1), getRecordTimeStamp(n-1)) + ">";
+  ui->sessions_CB->addItem(label);
+
+  // add individual sessions
+  if (sessions.size() > 2) {
+    for (int i = 1; i < sessions.size(); i++) {
+      QDateTime sessionStart = getRecordTimeStamp(sessions.at(i-1)+1);
+      QDateTime sessionEnd = getRecordTimeStamp(sessions.at(i));
+      QString label = sessionStart.toString("HH:mm:ss") + " <" + tr("duration ") + generateDuration(sessionStart, sessionEnd) + ">";
+      ui->sessions_CB->addItem(label, sessions.at(i-1));
+      // qDebug() << "added label" << label << sessions.at(i-1);
+    }
+  }
 }
 
 void logsDialog::on_sessions_CB_currentIndexChanged(int index)
