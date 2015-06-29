@@ -51,12 +51,8 @@
 
 #if defined(PCBSKY9X)
   #include "AT91SAM3S4.h"
-#elif defined(PCBTARANIS) && defined(REV9E)
-  #include "stm32f4xx.h"
-  #include "stm32f4xx_gpio.h"
-#elif defined(PCBTARANIS)
-  #include "stm32f2xx.h"
-  #include "stm32f2xx_gpio.h"
+#else
+  #include "board_taranis.h"
 #endif
 
 #if defined(PCBTARANIS)
@@ -93,13 +89,11 @@ const uint8_t BootCode[] = {
 __attribute__ ((section(".bootrodata"), used))
 void _bootStart()
 {
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph, ENABLE);
+
   // turn soft power ON now
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;          // Enable portD clock
   GPIOD->BSRRL = 1;
   GPIOD->MODER = (GPIOD->MODER & 0xFFFFFFFC) | 1;
-
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN; 		// Enable portC clock
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN; 		// Enable portE clock
 
   GPIOC->PUPDR = 0x00000004;
   GPIOE->PUPDR = 0x00000040;
@@ -109,30 +103,27 @@ void _bootStart()
     bwdt_reset();
   }
 
-  if ((GPIOE->IDR & 0x00000008) == 0) {
-    if ((GPIOC->IDR & 0x00000002) == 0) {
-      // Bootloader needed
-      const uint8_t *src;
-      uint8_t *dest;
-      uint32_t size;
+  if (!(TRIMS_GPIO_REG_LHR & TRIMS_GPIO_PIN_LHR) && !(TRIMS_GPIO_REG_RHL & TRIMS_GPIO_PIN_RHL)) {
+    // Bootloader needed
+    const uint8_t *src;
+    uint8_t *dest;
+    uint32_t size;
 
-      bwdt_reset();
-      size = sizeof(BootCode);
-      src = BootCode;
-      dest = (uint8_t *) 0x20000000;
+    bwdt_reset();
+    size = sizeof(BootCode);
+    src = BootCode;
+    dest = (uint8_t *) 0x20000000;
 
-      for (; size; size -= 1) {
-        *dest++ = *src++;
-      }
-      // Could check for a valid copy to RAM here
-      // Go execute bootloader
-      bwdt_reset();
-
-      uint32_t address = *(uint32_t *) 0x20000004;
-
-      ((void (*)(void)) (address))();		// Go execute the loaded application
-
+    for (; size; size -= 1) {
+      *dest++ = *src++;
     }
+    // Could check for a valid copy to RAM here
+    // Go execute bootloader
+    bwdt_reset();
+
+    uint32_t address = *(uint32_t *) 0x20000004;
+
+    ((void (*)(void)) (address))();		// Go execute the loaded application
   }
 
 // run_application() ;

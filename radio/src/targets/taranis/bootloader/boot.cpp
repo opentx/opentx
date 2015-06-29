@@ -155,45 +155,6 @@ typedef int32_t rotenc_t;
 extern rotenc_t x9de_rotenc;
 #endif
 
-/*----------------------------------------------------------------------------
- *         Global functions
- *----------------------------------------------------------------------------*/
-
-#if defined(PCBSKY9X)
-// Starts TIMER0 at full speed (MCK/2) for delay timing
-// @ 36MHz this is 18MHz
-// This was 6 MHz, we may need to slow it to TIMER_CLOCK2 (MCK/8=4.5 MHz)
-void start_timer0()
-{
-  register Tc *ptc;
-
-  PMC->PMC_PCER0 |= 0x00800000L;		// Enable peripheral clock to TC0
-
-  ptc = TC0;// Tc block 0 (TC0-2)
-  ptc->TC_BCR = 0;// No sync
-  ptc->TC_BMR = 2;
-  ptc->TC_CHANNEL[0].TC_CMR = 0x00008001;// Waveform mode MCK/8 for 36MHz osc.(Upset be write below)
-  ptc->TC_CHANNEL[0].TC_RC = 0xFFF0;
-  ptc->TC_CHANNEL[0].TC_RA = 0;
-  ptc->TC_CHANNEL[0].TC_CMR = 0x00008040;// 0000 0000 0000 0000 1000 0000 0100 0000, stop at regC, 18MHz
-  ptc->TC_CHANNEL[0].TC_CCR = 5;// Enable clock and trigger it (may only need trigger)
-}
-
-void stop_timer0( void )
-{
-  TC0->TC_CHANNEL[0].TC_CCR = TC_CCR0_CLKDIS;		// Disable clock
-}
-
-void delay2ms()
-{
-  TC0->TC_CHANNEL[0].TC_CCR = 5;// Enable clock and trigger it (may only need trigger)
-  while ( TC0->TC_CHANNEL[0].TC_CV < 36000 )// 2mS, Value depends on MCK/2 (used 18MHz)
-  {
-    // Wait
-  }
-}
-#endif
-
 void interrupt10ms(void)
 {
   Tenms |= 1;			// 10 mS has passed
