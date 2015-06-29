@@ -79,6 +79,9 @@ private:
   bool cvsFileParse();
   QList<QStringList> filterGePoints(const QList<QStringList> & input);
   void exportToGoogleEarth();
+  QDateTime getRecordTimeStamp(int index);
+  QString generateDuration(const QDateTime & start, const QDateTime & end);
+  void setFlightSessions();
 
 };
 
