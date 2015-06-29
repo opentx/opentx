@@ -3,7 +3,7 @@
 <ul>
 <li>New Telemetry system</li>
 <li>Added optional alternative memory allocator for LUA (Bin Allocator)</li>
-<li>Added support for Taranis 9XE (tray version)</li>
+<li>Added support for Taranis X9E (tray version)</li>
 <li>New dangerous Custom Functions</li>
 <li>Added another timer (Timer3)</li>
 </ul>
