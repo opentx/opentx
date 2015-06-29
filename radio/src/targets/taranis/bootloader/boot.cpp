@@ -66,8 +66,13 @@
 
 #if defined(PCBTARANIS)
   #define BOOTLOADER_TITLE      " Taranis BootLoader - " VERS_STR
-  #define BOOT_KEY_UP		KEY_PLUS
-  #define BOOT_KEY_DOWN		KEY_MINUS
+  #if defined(REV9E)
+    #define BOOT_KEY_UP		KEY_MINUS
+    #define BOOT_KEY_DOWN	KEY_PLUS
+  #else
+    #define BOOT_KEY_UP         KEY_PLUS
+    #define BOOT_KEY_DOWN       KEY_MINUS
+  #endif
   #define BOOT_KEY_LEFT		KEY_MENU
   #define BOOT_KEY_RIGHT	KEY_PAGE
   #define BOOT_KEY_MENU		KEY_ENTER
