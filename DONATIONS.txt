@@ -173,12 +173,12 @@ Keith Hertzog
 Johan Moelich
 Timo Esser
 Dean Church (monthly)
-Brian Paddock (monthly)
+Brian Paddock
 Jean Pierre Parisy
 Norbert Martsch
 Jean-Marie Guitard
 Mike Perkins
-Tilman Baumann (monthly)
+Tilman Baumann
 Fred Larssen
 Ari Aalto
 Robert Sams 
@@ -189,7 +189,7 @@ Paul Robinson
 Dave Matison
 Mike Matheny
 Pino Agostino
-Graham Boucher (monthly)
+Graham Boucher
 Nelson Noura
 Joel Allamy
 Philip David Martin
@@ -200,7 +200,7 @@ Timothy Pelletier
 Glen Roe (ShowMaster)
 Jan Van Ooteghem
 David Ankers - Special thanks here to the OpenPilot project!
-Lawrence Christensen (monthly)
+Lawrence Christensen
 Leo Duflou
 Bruce Wood
 Arnd Feige
@@ -259,7 +259,7 @@ Peter Mitrik
 Thomas Majewski
 ANF King
 Henrik Hammarström
-Kenneth Lilja (monthly)
+Kenneth Lilja
 R Wells
 Uwe Jordt
 Harald Wilczak
@@ -586,3 +586,197 @@ John Lipscomb
 Norbert Wenke
 Erik Frieberg
 Raimo Ruotsalainen
+Brian Harris
+Sebastian Blüml 
+Efisio Maxia
+Jeff Theobald
+Anthony Rizzo
+Rodney Huddleston
+Dietmar Drees
+Jürgen Monden
+David Morgan
+Andrew Fernie
+Michel Baily
+Donald Burke
+Ronald Donker
+Fredie Singh
+Patrizio Simoncini
+Harald Gabler
+Michael Brown
+Julien Gérard
+Alexandre d'Alton
+Peter Mergaerts
+Jan Houwers
+Gordon Stahl
+Christian Grandjean
+Roger Bergevin
+NorthSide
+Sigmund Martinsen
+Lionel Lafraise
+Gisli Ofeigsson 
+The Gruvin9x Project
+Manuel McLure
+Fernando Rimoldi
+Hiltenkamp Stephan
+Sandeep Kishore Jain
+Sebastien Charpentier
+Greg Parker 
+Norman Maaß
+Adriano Del Ben
+Justin Poole
+Kenneth Harrison
+Eugene LaFaille
+John O'Shaughnessy
+Uwe Jordt
+Stuart Olson
+Frédéric Devillard
+Cheung Leo
+Peter Webster
+Jean-Claude Bachetta
+Delfin Perena
+Sae-wook Yoon
+Focus on Excellence
+Jeffery Golias
+Nick Milton
+Paul Zasso
+Reidar Johannes Lillebotn
+Handley William
+Luke Williams
+Michael Shellim
+Brian Spearing
+Derek Foster
+Pasi Pitkänen
+Lexington S Morley
+Jeff Roberson
+Volkov Victor
+Mike Perkins 
+Bryan Anderson
+Daniel Garber
+Pavel Stein 
+Ravi Gupta
+Patrick Tuxbury
+Mark Deverell
+John Capell 
+Neil McVean
+Matthew Elyash
+Kerry Cochrell
+Willem Aandewiel 
+Reg Bell
+Jean Chenoz
+Philippe Grand
+Tauno Rautakorpi
+Jeff Dillingham
+Brad Kelley
+Shaun Currier
+Danilo Schiara
+John Hennig
+RK Custom Homes
+James Houck
+Piet Teekens
+Tommy Widenflycht
+Johan Petrus Theophilus Maria van Melis
+Ralph Gustafson
+Paul Luby
+Andrew Duncan
+Stephen Crowther
+Edward Glover
+Kelly Byrd
+Brad Curtis
+Wolfgang Kuhl
+LitePilots - litepilots.com
+John Beidl
+Roy Nixon
+Glen Roe
+CY Enterprise
+Evening Shade Pottery
+Gilles Dando
+Patrick Richard
+Justin Altemeier
+Constant Dupuis
+Tony Kenward
+Pierre Rondel
+Ernest Luguera Sanchez
+Adam Brackney
+Joe Baker
+单 雷平
+Ben Fay
+Chris Monk
+Stan von Miller
+Christian Krebs
+Michel Motte
+Graziano Rampinelli
+Joe Baker
+Jean-Philippe Laurent
+Romain Rouzaud
+Michel Garbarino
+Henri Mirra
+Otto Fröhlich
+Thomas Cramer
+Anthony Trombetta
+Fernando Rimoldi
+Dietmar Drees
+Michal Kowalski
+Ivan Correa
+Modellbau
+Massimo Luigi Stara
+Graham Baldwin
+Tomasz Rejman
+Wolfgang Lang
+John Greenwood
+Till von Reumont
+Paul Pereira Brunner 
+Donald L Singer
+Junsun Lee
+Guy Lamaison
+Erwin Dulken
+Mike H Dailey
+Jon Cammarata
+Martin Krueger
+Adolfo Perogio
+Sylvain Techer
+Wes Warner
+Kevin Caldwell
+Ali Ersan Gur
+Hans-Rudolf Riniker
+Sébastien Boutard
+Jean Chessé 
+Mike H Dailey 
+Don Polk
+Roberto Orsello
+Borovikov Dmitriy
+John Lipscomb
+Peter Glassey
+Joseph Kramer
+F.Javier Martinez Velasco
+Claudio Piccinini
+John Jackson
+John Beech
+Rene Traa
+Sebastien Charpentier (monthly)
+Nigel Hendriks
+Frédéric Devillard
+Albert Herzog
+Anindya Mukerjee
+Kenny Stanberry
+Tauno Rautakorpi
+Mathias Krapp
+Fernando Rimoldi
+Wolfgang Rauser
+Richard Shagam
+Stephen Bailey
+DK-System
+Casa Kuxtal
+Alain Labonne
+Christopher Potts
+Douglas George
+Michael Banks
+Jon Wiltshire
+David Green
+Guy Willems
+Xavier Mestelan Pinon
+Maik Gottschalk 
+Scott Sparks
+John Dunning
+RAD51
+Ron Powell 
+ 
