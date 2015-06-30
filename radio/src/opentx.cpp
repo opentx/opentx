@@ -263,12 +263,11 @@ void generalDefault()
   g_eeGeneral.contrast = 25;
 
 #if defined(PCBTARANIS)
-  g_eeGeneral.potsConfig = 0x05; // S1 and S2 = pots with detent
+  g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
+  g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
-  g_eeGeneral.switchConfig = 0x00007fbf; // 6x3POS, 1x2POS, 1xTOGGLE
-#elif defined(PCBTARANIS)
+#if defined(PCBTARANIS)
   g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
 #endif
 

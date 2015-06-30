@@ -65,10 +65,10 @@
 
 // Switches
 #if defined(REV9E)
-  #define SWITCHES_GPIO_REG_A_H         GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_7  // PE.07
-  #define SWITCHES_GPIO_REG_A_L         GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_A_L         GPIO_Pin_13 // PE.13
+  #define SWITCHES_GPIO_REG_A_H         GPIOD->IDR
+  #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_10 // PD.10
+  #define SWITCHES_GPIO_REG_A_L         GPIOD->IDR
+  #define SWITCHES_GPIO_PIN_A_L         GPIO_Pin_14 // PD.14
 #else
   #define SWITCHES_GPIO_REG_A_H         GPIOB->IDR
   #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_5  // PB.05
@@ -77,10 +77,10 @@
 #endif
 
 #if defined(REV9E)
-  #define SWITCHES_GPIO_REG_B_H         GPIOD->IDR
-  #define SWITCHES_GPIO_PIN_B_H         GPIO_Pin_10 // PD.10
-  #define SWITCHES_GPIO_REG_B_L         GPIOD->IDR
-  #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_14 // PD.14
+  #define SWITCHES_GPIO_REG_B_H         GPIOG->IDR
+  #define SWITCHES_GPIO_PIN_B_H         GPIO_Pin_11 // PG.11
+  #define SWITCHES_GPIO_REG_B_L         GPIOG->IDR
+  #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_10 // PG.10
 #else
   #define SWITCHES_GPIO_REG_B_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_B_H         GPIO_Pin_1  // PE.01
@@ -89,10 +89,10 @@
 #endif
 
 #if defined(REV9E)
-  #define SWITCHES_GPIO_REG_C_H         GPIOG->IDR
-  #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_11 // PG.11
-  #define SWITCHES_GPIO_REG_C_L         GPIOG->IDR
-  #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_10 // PG.10
+  #define SWITCHES_GPIO_REG_C_H         GPIOF->IDR
+  #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_13 // PF.13
+  #define SWITCHES_GPIO_REG_C_L         GPIOF->IDR
+  #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_14 // PF.14
 #else
   #define SWITCHES_GPIO_REG_C_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_15 // PE.15
@@ -101,8 +101,10 @@
 #endif
 
 #if defined(REV9E)
-  #define SWITCHES_GPIO_REG_D           GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_D           GPIO_Pin_11 // PE.11
+  #define SWITCHES_GPIO_REG_D_H         GPIOE->IDR
+  #define SWITCHES_GPIO_PIN_D_H         GPIO_Pin_1  // PE.01
+  #define SWITCHES_GPIO_REG_D_L         GPIOE->IDR
+  #define SWITCHES_GPIO_PIN_D_L         GPIO_Pin_2  // PE.02
 #elif defined(REVPLUS)
   #define SWITCHES_GPIO_REG_D_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_H         GPIO_Pin_7  // PE.07
@@ -116,10 +118,10 @@
 #endif
 
 #if defined(REV9E)
-  #define SWITCHES_GPIO_REG_E_H         GPIOF->IDR
-  #define SWITCHES_GPIO_PIN_E_H         GPIO_Pin_3  // PF.03
-  #define SWITCHES_GPIO_REG_E_L         GPIOF->IDR
-  #define SWITCHES_GPIO_PIN_E_L         GPIO_Pin_4  // PF.04
+  #define SWITCHES_GPIO_REG_E_H         GPIOE->IDR
+  #define SWITCHES_GPIO_PIN_E_H         GPIO_Pin_7  // PE.07
+  #define SWITCHES_GPIO_REG_E_L         GPIOE->IDR
+  #define SWITCHES_GPIO_PIN_E_L         GPIO_Pin_13 // PE.13
 #else
   #define SWITCHES_GPIO_REG_E_L         GPIOB->IDR
   #define SWITCHES_GPIO_PIN_E_L         GPIO_Pin_3  // PB.03
@@ -128,10 +130,8 @@
 #endif
 
 #if defined(REV9E)
-  #define SWITCHES_GPIO_REG_F_L         GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_F_L         GPIO_Pin_2  // PE.02
-  #define SWITCHES_GPIO_REG_F_H         GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_F_H         GPIO_Pin_1  // PE.01
+  #define SWITCHES_GPIO_REG_F           GPIOE->IDR
+  #define SWITCHES_GPIO_PIN_F           GPIO_Pin_11 // PE.11
 #else
   #define SWITCHES_GPIO_REG_F           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_F           GPIO_Pin_14 // PE.14
@@ -139,9 +139,9 @@
 
 #if defined(REV9E)
   #define SWITCHES_GPIO_REG_G_H         GPIOF->IDR
-  #define SWITCHES_GPIO_PIN_G_H         GPIO_Pin_13 // PF.13
+  #define SWITCHES_GPIO_PIN_G_H         GPIO_Pin_3  // PF.03
   #define SWITCHES_GPIO_REG_G_L         GPIOF->IDR
-  #define SWITCHES_GPIO_PIN_G_L         GPIO_Pin_14 // PF.14
+  #define SWITCHES_GPIO_PIN_G_L         GPIO_Pin_4  // PF.04
 #else
   #define SWITCHES_GPIO_REG_G_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_G_H         GPIO_Pin_9  // PE.09
@@ -209,7 +209,7 @@
   #define KEYS_GPIOB_PINS               (SWITCHES_GPIO_PIN_N_H | SWITCHES_GPIO_PIN_N_L | SWITCHES_GPIO_PIN_R_H)
   #define KEYS_GPIOC_PINS               (TRIMS_GPIO_PIN_RVD | TRIMS_GPIO_PIN_RVU | TRIMS_GPIO_PIN_RHL | TRIMS_GPIO_PIN_RHR)
   #define KEYS_GPIOD_PINS               (KEYS_GPIO_PIN_MENU | KEYS_GPIO_PIN_EXIT | KEYS_GPIO_PIN_PAGE | SWITCHES_GPIO_PIN_B_H | SWITCHES_GPIO_PIN_B_L)
-  #define KEYS_GPIOE_PINS               (TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_LVD | SWITCHES_GPIO_PIN_A_H | SWITCHES_GPIO_PIN_A_L | SWITCHES_GPIO_PIN_D | SWITCHES_GPIO_PIN_F_L | SWITCHES_GPIO_PIN_F_H | SWITCHES_GPIO_PIN_I_L | SWITCHES_GPIO_PIN_L_H | SWITCHES_GPIO_PIN_L_L | SWITCHES_GPIO_PIN_M_H | SWITCHES_GPIO_PIN_O_L | SWITCHES_GPIO_PIN_R_L)
+  #define KEYS_GPIOE_PINS               (TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_LVD | SWITCHES_GPIO_PIN_A_H | SWITCHES_GPIO_PIN_A_L | SWITCHES_GPIO_PIN_I_L | SWITCHES_GPIO_PIN_L_H | SWITCHES_GPIO_PIN_L_L | SWITCHES_GPIO_PIN_M_H | SWITCHES_GPIO_PIN_O_L | SWITCHES_GPIO_PIN_R_L)
   #define KEYS_GPIOF_PINS               (KEYS_GPIO_PIN_ENTER | SWITCHES_GPIO_PIN_E_H | SWITCHES_GPIO_PIN_E_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L | SWITCHES_GPIO_PIN_H | SWITCHES_GPIO_PIN_I_H | SWITCHES_GPIO_PIN_O_H | SWITCHES_GPIO_PIN_P_H | SWITCHES_GPIO_PIN_P_L | SWITCHES_GPIO_PIN_Q_H | SWITCHES_GPIO_PIN_Q_L)
   #define KEYS_GPIOG_PINS               (TRIMS_GPIO_PIN_LHL | TRIMS_GPIO_PIN_LHR| SWITCHES_GPIO_PIN_C_H | SWITCHES_GPIO_PIN_C_L | SWITCHES_GPIO_PIN_J_H | SWITCHES_GPIO_PIN_J_L | SWITCHES_GPIO_PIN_K_H | SWITCHES_GPIO_PIN_K_L)
 #elif defined(REVPLUS)

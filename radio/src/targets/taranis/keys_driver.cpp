@@ -131,18 +131,15 @@ void readKeysAndTrims()
   }
 }
 
-#if !defined(BOOT)
-
-#define ADD_2POS_CASE(x) \
-    case SW_S ## x ## 0: \
+#if defined(REV9E)
+  #define ADD_2POS_CASE(x) \
+    case SW_S ## x ## 2: \
       xxx = SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
       break; \
-    case SW_S ## x ## 2: \
+    case SW_S ## x ## 0: \
       xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
       break
-
-#if defined(REV9E)
-#define ADD_3POS_CASE(x, i) \
+  #define ADD_3POS_CASE(x, i) \
     case SW_S ## x ## 0: \
       xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       break; \
@@ -152,9 +149,16 @@ void readKeysAndTrims()
     case SW_S ## x ## 2: \
       xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       break
-#define ADD_3POS_INVERTED_CASE(x, i) ADD_3POS_CASE(x, i)
+  #define ADD_3POS_INVERTED_CASE(x, i) ADD_3POS_CASE(x, i)
 #else
-#define ADD_3POS_CASE(x, i) \
+  #define ADD_2POS_CASE(x) \
+    case SW_S ## x ## 0: \
+      xxx = SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
+      break; \
+    case SW_S ## x ## 2: \
+      xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
+      break
+  #define ADD_3POS_CASE(x, i) \
     case SW_S ## x ## 0: \
       xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
       if (IS_3POS(i)) { \
@@ -170,7 +174,7 @@ void readKeysAndTrims()
         xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       } \
       break
-#define ADD_3POS_INVERTED_CASE(x, i) \
+  #define ADD_3POS_INVERTED_CASE(x, i) \
     case SW_S ## x ## 0: \
       xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
       if (IS_3POS(i)) { \
@@ -188,6 +192,7 @@ void readKeysAndTrims()
       break
 #endif
 
+#if !defined(BOOT)
 bool switchState(EnumKeys enuk)
 {
   register uint32_t xxx = 0;
@@ -198,17 +203,9 @@ bool switchState(EnumKeys enuk)
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
-#if defined(REV9E)
-    ADD_2POS_CASE(D);
-#else
     ADD_3POS_CASE(D, 3);
-#endif
     ADD_3POS_INVERTED_CASE(E, 4);
-#if defined(REV9E)
-    ADD_3POS_CASE(F, 5);
-#else
     ADD_2POS_CASE(F);
-#endif
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);
 #if defined(REV9E)
