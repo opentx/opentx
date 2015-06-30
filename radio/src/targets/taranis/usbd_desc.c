@@ -68,8 +68,7 @@
   #define USBD_PRODUCT_FS_STRING          "FrSky Taranis Bootloader"
   #define USBD_CONFIGURATION_FS_STRING    "MSC Config"
   #define USBD_INTERFACE_FS_STRING        "MSC Interface"
-#else
-#if defined(USB_JOYSTICK)
+#elif defined(USB_JOYSTICK)
   #define USBD_PID                        0x5710
   #define USBD_PRODUCT_FS_STRING          "FrSky Taranis Joystick"
   #define USBD_CONFIGURATION_FS_STRING    "HID Config"
@@ -79,7 +78,6 @@
   #define USBD_PRODUCT_FS_STRING          "FrSky Taranis Mass Storage"
   #define USBD_CONFIGURATION_FS_STRING    "MSC Config"
   #define USBD_INTERFACE_FS_STRING        "MSC Interface"
-#endif
 #endif
 
 const USBD_DEVICE USR_desc =
@@ -95,26 +93,26 @@ const USBD_DEVICE USR_desc =
 
 /* USB Standard Device Descriptor */
 __ALIGN_BEGIN const uint8_t USBD_DeviceDesc[USB_SIZ_DEVICE_DESC] __ALIGN_END =
-  {
-    0x12,                       /*bLength */
-    USB_DEVICE_DESCRIPTOR_TYPE, /*bDescriptorType*/
-    0x00,                       /*bcdUSB */
-    0x02,
-    0x00,                       /*bDeviceClass*/
-    0x00,                       /*bDeviceSubClass*/
-    0x00,                       /*bDeviceProtocol*/
-    USB_OTG_MAX_EP0_SIZE,      /*bMaxPacketSize*/
-    LOBYTE(USBD_VID),           /*idVendor*/
-    HIBYTE(USBD_VID),           /*idVendor*/
-    LOBYTE(USBD_PID),           /*idVendor*/
-    HIBYTE(USBD_PID),           /*idVendor*/
-    0x00,                       /*bcdDevice rel. 2.00*/
-    0x02,
-    USBD_IDX_MFC_STR,           /*Index of manufacturer  string*/
-    USBD_IDX_PRODUCT_STR,       /*Index of product string*/
-    USBD_IDX_SERIAL_STR,        /*Index of serial number string*/
-    USBD_CFG_MAX_NUM            /*bNumConfigurations*/
-  } ; /* USB_DeviceDescriptor */
+{
+  USB_SIZ_DEVICE_DESC,        /*bLength */
+  USB_DEVICE_DESCRIPTOR_TYPE, /*bDescriptorType*/
+  0x00,                       /*bcdUSB */
+  0x02,
+  0x00,                       /*bDeviceClass*/
+  0x00,                       /*bDeviceSubClass*/
+  0x00,                       /*bDeviceProtocol*/
+  USB_OTG_MAX_EP0_SIZE,       /*bMaxPacketSize*/
+  LOBYTE(USBD_VID),           /*idVendor*/
+  HIBYTE(USBD_VID),           /*idVendor*/
+  LOBYTE(USBD_PID),           /*idVendor*/
+  HIBYTE(USBD_PID),           /*idVendor*/
+  0x00,                       /*bcdDevice rel. 2.00*/
+  0x02,
+  USBD_IDX_MFC_STR,           /*Index of manufacturer  string*/
+  USBD_IDX_PRODUCT_STR,       /*Index of product string*/
+  USBD_IDX_SERIAL_STR,        /*Index of serial number string*/
+  USBD_CFG_MAX_NUM            /*bNumConfigurations*/
+}; /* USB_DeviceDescriptor */
 
 /* USB Standard Device Descriptor */
 __ALIGN_BEGIN const uint8_t USBD_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_DESC] __ALIGN_END =
