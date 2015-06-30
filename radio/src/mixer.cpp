@@ -767,11 +767,11 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #endif
       }
 
-      //========== OFFSET ===============
+      /*========== OFFSET BEFORE ========      Reserved for new option "OffsetOnInput"
       if (apply_offset_and_curve) {
         int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
         if (offset) v += calc100toRESX_16Bits(offset);
-      }
+      }  */
 
       //========== TRIMS ================
       int16_t trim = 0;
@@ -856,8 +856,14 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       //========== WEIGHT ===============
       int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
       weight = calc100to256_16Bits(weight);
-      //Output with curve = (Curve(offset + stick + trim) * weight
       int32_t dv = (int32_t) v * weight;
+      int32_t dtrim = (int32_t) trim * weight;    
+
+      //========== OFFSET AFTER ========= 
+      if (apply_offset_and_curve) { 
+        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode); 
+        if (offset) dv += int32_t(calc100toRESX_16Bits(offset)) << 8; 
+      }
 
       //========== DIFFERENTIAL =========
 #if !defined(XCURVES)
@@ -867,38 +873,43 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
           if (!(mode & e_perout_mode_notrims)) {
 #if defined(VIRTUALINPUTS)
             if (md->carryTrim == 0) {
-              v -= trim;  
+              dv -= dtrim;  
             }
 #else
             int8_t mix_trim = md->carryTrim;
             if (mix_trim == THR_STICK && g_model.throttleReversed)
-              v += trim;
+              dv += dtrim;
             else
-              v -= trim;
+              dv -= dtrim;
 #endif
           }
         }
         //Value and trim are computed separatly              
         // @@@2 also recalculate curveParam to a 256 basis which ease the calculation later a lot
-        int32_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));
-        dv = (int32_t) v * weight;        
+        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));          
         if (curveParam > 0 && dv < 0) {
           dv = (dv * (256 - curveParam)) >> 8;
         }
         else if (curveParam < 0 && dv > 0) {
           dv = (dv * (256 + curveParam)) >> 8;
         }
-        int32_t dtrim = (int32_t) trim * weight;
         if (curveParam > 0 && dtrim < 0) {
           dtrim = (dtrim * (256 - curveParam)) >> 8;
         }
         else if (curveParam < 0 && dtrim > 0) {
           dtrim = (dtrim * (256 + curveParam)) >> 8;      
         }
-        //Output with differential = (Diff(offset + stick) + Diff(trim)) * weight
         dv += dtrim;
       }
 #endif
+      
+      //Output with offset before 
+      //    Curve(stick + offset + trim) * weight
+      //    Diff((stick + offset) * weight) + Diff(trim * weight)
+
+      //Output with offset after 
+      //    Curve(stick + trim) * weight + offset
+      //    Diff(stick * weight) + Diff(trim * weight)
 
       int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
 
