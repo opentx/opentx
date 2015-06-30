@@ -589,7 +589,6 @@ void evalFunctions()
           switch (CFN_FUNC(cfn)) {
             case FUNC_RANGECHECK:
             case FUNC_BIND:
-            case FUNC_MODULE_OFF:
             {
               unsigned int moduleIndex = CFN_PARAM(cfn);
               if (moduleIndex < NUM_MODULES) {
