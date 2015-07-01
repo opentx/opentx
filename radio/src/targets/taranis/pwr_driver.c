@@ -88,6 +88,8 @@ void pwrOff()
   // key is held pressed by the user
   while (1) {
     wdt_reset();
+#if 0
+    // It doesn't work correctly, if we press long on the pwr button, the radio restarts when the button is released
     PWR->CR |= PWR_CR_CWUF;
     /* Select STANDBY mode */
     PWR->CR |= PWR_CR_PDDS;
@@ -95,6 +97,7 @@ void pwrOff()
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
     /* Request Wait For Event */
     __WFE();
+#endif
   }
 #endif
 }
