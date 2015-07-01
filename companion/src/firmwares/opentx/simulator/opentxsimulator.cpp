@@ -227,7 +227,6 @@ namespace NAMESPACE {
 #include "radio/src/targets/taranis/haptic_driver.cpp"
 #if defined(REV9E)
 #include "radio/src/targets/taranis/top_lcd_driver.cpp"
-#include "radio/src/targets/taranis/rotenc_driver.cpp"
 #endif
 #include "radio/src/targets/taranis/pulses_driver.cpp"
 #include "radio/src/targets/taranis/rtc_driver.cpp"
