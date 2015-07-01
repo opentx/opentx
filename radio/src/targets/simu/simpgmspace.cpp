@@ -1179,6 +1179,7 @@ void lcdRefresh()
 void pwrInit() { }
 uint32_t pwrCheck() { return true; }
 void pwrOff() { }
+uint32_t pwrPressedDuration() { return 0; }
 void usbStart() { }
 int usbPlugged() { return false; }
 void USART_DeInit(USART_TypeDef* ) { }

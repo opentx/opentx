@@ -1169,8 +1169,9 @@ void checkAlarm() // added by Gohst
   if (g_eeGeneral.disableAlarmWarning)
     return;
 
-  if (IS_SOUND_OFF())
+  if (IS_SOUND_OFF()) {
     ALERT(STR_ALARMSWARN, STR_ALARMSDISABLED, AU_ERROR);
+  }
 }
 
 void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
@@ -1183,6 +1184,13 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
 
     if (pwrCheck() == e_power_off) {
       // the radio has been powered off during the ALERT
+#if defined(TARANIS) && defined(REV9E)
+      // TODO this is quick & dirty
+      lcdOff();
+      BACKLIGHT_OFF();
+      topLcdOff();
+      SysTick->CTRL = 0; // turn off systick
+#endif
       pwrOff(); // turn power off now
     }
 
@@ -1191,6 +1199,22 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
     checkBacklight();
 
     wdt_reset();
+
+#if defined(REV9E)
+    static bool refresh = false;
+    uint32_t pwr_pressed_duration = pwrPressedDuration();
+    if (refresh) {
+      lcdRefresh();
+      refresh = false;
+      if (pwr_pressed_duration == 0) {
+        MESSAGE(t, s, STR_PRESSANYKEY, AU_NONE);
+      }
+    }
+    if (pwr_pressed_duration > 0) {
+      displayShutdownProgress(pwr_pressed_duration);
+      refresh = true;
+    }
+#endif
   }
 }
 
