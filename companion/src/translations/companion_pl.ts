@@ -13530,22 +13530,32 @@ Anuluj w celu przerwania kalibracji joysticka</translation>
         <translation>Wybrany plik zawiera %1 błędnych linii z %2 wszystkich linii</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="835"/>
+        <location filename="../logsdialog.cpp" line="634"/>
+        <source>total duration </source>
+        <translation>Całkowity czas trwania</translation>
+    </message>
+    <message>
+        <location filename="../logsdialog.cpp" line="642"/>
+        <source>duration </source>
+        <translation>Czas trwania</translation>
+    </message>
+    <message>
+        <location filename="../logsdialog.cpp" line="877"/>
         <source> (L1)</source>
         <translation>(L1)</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="846"/>
+        <location filename="../logsdialog.cpp" line="888"/>
         <source> (R1)</source>
         <translation>(R1)</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="856"/>
+        <location filename="../logsdialog.cpp" line="898"/>
         <source> (L2)</source>
         <translation>(L2)</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="863"/>
+        <location filename="../logsdialog.cpp" line="905"/>
         <source> (R2)</source>
         <translation>(R2)</translation>
     </message>
