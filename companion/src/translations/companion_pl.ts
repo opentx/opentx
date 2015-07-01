@@ -3932,17 +3932,17 @@ Jesteś pewien ?</translation>
         <translation>Wysokość tonów (tylko dźwięki)</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2265"/>
+        <location filename="../generaledit/generalsetup.ui" line="2116"/>
         <source>Measurement Units</source>
         <translation>Jednostki miar</translation>
     </message>
     <message utf8="true">
-        <location filename="../generaledit/generalsetup.ui" line="2239"/>
+        <location filename="../generaledit/generalsetup.ui" line="2090"/>
         <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
         <translation>hh° (N/S) mm&apos; ss&apos;&apos;.dd</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2244"/>
+        <location filename="../generaledit/generalsetup.ui" line="2095"/>
         <source>NMEA</source>
         <translation>NMEA</translation>
     </message>
@@ -3987,32 +3987,32 @@ Jesteś pewien ?</translation>
         <translation>Europa</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2169"/>
-        <location filename="../generaledit/generalsetup.ui" line="2210"/>
+        <location filename="../generaledit/generalsetup.ui" line="2061"/>
+        <location filename="../generaledit/generalsetup.ui" line="2257"/>
         <source>X-Short</source>
         <translation>Bardzo krótka</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2174"/>
-        <location filename="../generaledit/generalsetup.ui" line="2215"/>
+        <location filename="../generaledit/generalsetup.ui" line="2066"/>
+        <location filename="../generaledit/generalsetup.ui" line="2262"/>
         <source>Short</source>
         <translation>Krótka</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2179"/>
-        <location filename="../generaledit/generalsetup.ui" line="2220"/>
+        <location filename="../generaledit/generalsetup.ui" line="2071"/>
+        <location filename="../generaledit/generalsetup.ui" line="2267"/>
         <source>Normal</source>
         <translation>Normalna</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2184"/>
-        <location filename="../generaledit/generalsetup.ui" line="2225"/>
+        <location filename="../generaledit/generalsetup.ui" line="2076"/>
+        <location filename="../generaledit/generalsetup.ui" line="2272"/>
         <source>Long</source>
         <translation>Długa</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2189"/>
-        <location filename="../generaledit/generalsetup.ui" line="2230"/>
+        <location filename="../generaledit/generalsetup.ui" line="2081"/>
+        <location filename="../generaledit/generalsetup.ui" line="2277"/>
         <source>X-Long</source>
         <translation>Bardzo długa</translation>
     </message>
@@ -4027,7 +4027,7 @@ Jesteś pewien ?</translation>
         <translation>Kolor 2</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1505"/>
+        <location filename="../generaledit/generalsetup.ui" line="2167"/>
         <source>Beeper Length</source>
         <translation>Długość piknięcia</translation>
     </message>
@@ -4037,7 +4037,7 @@ Jesteś pewien ?</translation>
         <translation>Nawigacja pokrętłem</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1448"/>
+        <location filename="../generaledit/generalsetup.ui" line="2186"/>
         <source>Beeper Mode</source>
         <translation>Tryb pikania</translation>
     </message>
@@ -4047,12 +4047,12 @@ Jesteś pewien ?</translation>
         <translation>Ton Wario dla zera</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1913"/>
+        <location filename="../generaledit/generalsetup.ui" line="1805"/>
         <source>Standard</source>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1918"/>
+        <location filename="../generaledit/generalsetup.ui" line="1810"/>
         <source>Optrex</source>
         <translation>Optrex</translation>
     </message>
@@ -4067,7 +4067,7 @@ Jesteś pewien ?</translation>
         <translation>Tryb dźwiękowy</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1720"/>
+        <location filename="../generaledit/generalsetup.ui" line="2211"/>
         <source>Beeper volume
 
 0 - Quiet.  No beeps at all.
@@ -4084,35 +4084,35 @@ Jesteś pewien ?</translation>
 4 - Bardzo głośna.</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1730"/>
-        <location filename="../generaledit/generalsetup.ui" line="1766"/>
+        <location filename="../generaledit/generalsetup.ui" line="1658"/>
+        <location filename="../generaledit/generalsetup.ui" line="2221"/>
         <source>Quiet</source>
         <translation>Cichy</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1735"/>
+        <location filename="../generaledit/generalsetup.ui" line="2226"/>
         <source>Alarms Only</source>
         <translation>Tylko alarmy</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1740"/>
-        <location filename="../generaledit/generalsetup.ui" line="1776"/>
+        <location filename="../generaledit/generalsetup.ui" line="1668"/>
+        <location filename="../generaledit/generalsetup.ui" line="2231"/>
         <source>No Keys</source>
         <translation>Bez przycisków</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1745"/>
-        <location filename="../generaledit/generalsetup.ui" line="1781"/>
+        <location filename="../generaledit/generalsetup.ui" line="1673"/>
+        <location filename="../generaledit/generalsetup.ui" line="2236"/>
         <source>All</source>
         <translation>Wszystkie</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1771"/>
+        <location filename="../generaledit/generalsetup.ui" line="1663"/>
         <source>Only Alarms</source>
         <translation>Tylko Alarmy</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1695"/>
+        <location filename="../generaledit/generalsetup.ui" line="2148"/>
         <source>Haptic Mode</source>
         <translation>Tryb wibracji</translation>
     </message>
@@ -4199,12 +4199,12 @@ p, li { white-space: pre-wrap; }
         <translation>Hz</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1644"/>
+        <location filename="../generaledit/generalsetup.ui" line="1606"/>
         <source>Battery Warning</source>
         <translation>Ostrzeżenie o zasilaniu</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1869"/>
+        <location filename="../generaledit/generalsetup.ui" line="1761"/>
         <source>Battery warning voltage.
 This is the threashhold where the battery warning sounds.
 
@@ -4272,62 +4272,62 @@ Dopuszczalne wartości 5v-10v</translation>
         <translation>Maks</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1546"/>
+        <location filename="../generaledit/generalsetup.ui" line="1508"/>
         <source>Contrast</source>
         <translation>Kontrast</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1565"/>
+        <location filename="../generaledit/generalsetup.ui" line="1527"/>
         <source>Battery Meter Range</source>
         <translation>Zakres Pomiaru Bateri</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1944"/>
+        <location filename="../generaledit/generalsetup.ui" line="1836"/>
         <source>If not zero will sound beeps if the transmitter has been left without inputs for the specified number of minutes.</source>
         <translation>Radio zasygnalizuje dźwiękiem brak aktywności po określonej liczbie minut. 0- wyłącza tę funkcję.</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1947"/>
+        <location filename="../generaledit/generalsetup.ui" line="1839"/>
         <source> min</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2037"/>
+        <location filename="../generaledit/generalsetup.ui" line="1929"/>
         <source>4800 Baud</source>
         <translation>4800 bps</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2042"/>
+        <location filename="../generaledit/generalsetup.ui" line="1934"/>
         <source>9600 Baud</source>
         <translation>9600 bps</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2047"/>
+        <location filename="../generaledit/generalsetup.ui" line="1939"/>
         <source>14400 Baud</source>
         <translation>14400 bps</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2052"/>
+        <location filename="../generaledit/generalsetup.ui" line="1944"/>
         <source>19200 Baud</source>
         <translation>19200 bps</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2057"/>
+        <location filename="../generaledit/generalsetup.ui" line="1949"/>
         <source>38400 Baud</source>
         <translation>38400 bps</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2062"/>
+        <location filename="../generaledit/generalsetup.ui" line="1954"/>
         <source>57600 Baud</source>
         <translation>57600 bps</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2067"/>
+        <location filename="../generaledit/generalsetup.ui" line="1959"/>
         <source>76800 Baud</source>
         <translation>76800 bps</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2072"/>
+        <location filename="../generaledit/generalsetup.ui" line="1964"/>
         <source>115200 Baud</source>
         <translation>115200 bps</translation>
     </message>
@@ -4337,7 +4337,7 @@ Dopuszczalne wartości 5v-10v</translation>
         <translation>Przełącznik Podświetlenia</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1524"/>
+        <location filename="../generaledit/generalsetup.ui" line="1486"/>
         <source>Show Splash Screen on Startup</source>
         <translation>Pokazuj ekran startowy z logo</translation>
     </message>
@@ -4349,7 +4349,7 @@ Dopuszczalne wartości 5v-10v</translation>
         <translation>To jest przełącznik do włączenia podświetlenia (jeśli zainstalowane).</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1603"/>
+        <location filename="../generaledit/generalsetup.ui" line="1565"/>
         <source>LCD Display Type</source>
         <translation>Typ ekranu LCD</translation>
     </message>
@@ -4359,8 +4359,8 @@ Dopuszczalne wartości 5v-10v</translation>
         <translation>Dostosuj Zegar</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2098"/>
-        <location filename="../generaledit/generalsetup.ui" line="2133"/>
+        <location filename="../generaledit/generalsetup.ui" line="1990"/>
+        <location filename="../generaledit/generalsetup.ui" line="2025"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -4385,7 +4385,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ostrzeżenie cichej pracy - będzie ostrzegało gdy pikanie jest ustawione na cicho(0)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1676"/>
+        <location filename="../generaledit/generalsetup.ui" line="1638"/>
         <source>MAVLink Baud Rate</source>
         <translation>Prędkość przesyłu MAVLink</translation>
     </message>
@@ -4395,73 +4395,73 @@ p, li { white-space: pre-wrap; }
         <translation>Głośność dźwięków</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1663"/>
+        <location filename="../generaledit/generalsetup.ui" line="1625"/>
         <source>Haptic Length</source>
         <translation>Długość wibracji</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1486"/>
+        <location filename="../generaledit/generalsetup.ui" line="1467"/>
         <source>Inactivity Timer</source>
         <translation>Timer bezczynności</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1971"/>
-        <location filename="../generaledit/generalsetup.ui" line="1974"/>
+        <location filename="../generaledit/generalsetup.ui" line="1863"/>
+        <location filename="../generaledit/generalsetup.ui" line="1866"/>
         <source>Show splash screen on startup</source>
         <translation>Pokazuj ekran startowy z logo</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1991"/>
+        <location filename="../generaledit/generalsetup.ui" line="1883"/>
         <source>---</source>
         <translation>---</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1996"/>
+        <location filename="../generaledit/generalsetup.ui" line="1888"/>
         <source>2s</source>
         <translation>2s</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2001"/>
+        <location filename="../generaledit/generalsetup.ui" line="1893"/>
         <source>3s</source>
         <translation>3s</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2006"/>
+        <location filename="../generaledit/generalsetup.ui" line="1898"/>
         <source>4s</source>
         <translation>4s</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2011"/>
+        <location filename="../generaledit/generalsetup.ui" line="1903"/>
         <source>6s</source>
         <translation>6s</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2016"/>
+        <location filename="../generaledit/generalsetup.ui" line="1908"/>
         <source>8s</source>
         <translation>8s</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2021"/>
+        <location filename="../generaledit/generalsetup.ui" line="1913"/>
         <source>10s</source>
         <translation>10s</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2026"/>
+        <location filename="../generaledit/generalsetup.ui" line="1918"/>
         <source>15s</source>
         <translation>15s</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1622"/>
+        <location filename="../generaledit/generalsetup.ui" line="1584"/>
         <source>&quot;No Sound&quot; Warning</source>
         <translation>Ostrzeżenie &quot;Brak Dźwięku&quot;</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1467"/>
+        <location filename="../generaledit/generalsetup.ui" line="1448"/>
         <source>Low Memory Warning</source>
         <translation>Ostrzeżenie niski stan Pamięci</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1584"/>
+        <location filename="../generaledit/generalsetup.ui" line="1546"/>
         <source>Haptic Strength</source>
         <translation>Siła wibracji</translation>
     </message>
@@ -4505,7 +4505,7 @@ p, li { white-space: pre-wrap; }
         <translation>Tryb FAI</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1252"/>
+        <location filename="../generaledit/generalsetup.ui" line="1116"/>
         <source>Mode selection:
 
 Mode 1:
@@ -4546,147 +4546,147 @@ Mode 4:
 </translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1277"/>
+        <location filename="../generaledit/generalsetup.ui" line="1141"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
         <translation>Mod 1 (SK.SW.Gaz.Lot)</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1282"/>
+        <location filename="../generaledit/generalsetup.ui" line="1146"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
         <translation>Mod 2 (SK.Gaz.SW.Lot)</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1287"/>
+        <location filename="../generaledit/generalsetup.ui" line="1151"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1292"/>
+        <location filename="../generaledit/generalsetup.ui" line="1156"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
         <translation>Mod 4 (Lot.Gaz.SW.SK)</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1116"/>
+        <location filename="../generaledit/generalsetup.ui" line="1170"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Kolejność kanałów&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Definiuje kolejność standardowych mikserów dla nowego modelu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1123"/>
+        <location filename="../generaledit/generalsetup.ui" line="1177"/>
         <source>R E T A</source>
         <translation>K W G L</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1128"/>
+        <location filename="../generaledit/generalsetup.ui" line="1182"/>
         <source>R E A T</source>
         <translation>K W L G</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1133"/>
+        <location filename="../generaledit/generalsetup.ui" line="1187"/>
         <source>R T E A</source>
         <translation>K G W L</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1138"/>
+        <location filename="../generaledit/generalsetup.ui" line="1192"/>
         <source>R T A E</source>
         <translation>K G L W</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1143"/>
+        <location filename="../generaledit/generalsetup.ui" line="1197"/>
         <source>R A E T</source>
         <translation>K L W G</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1148"/>
+        <location filename="../generaledit/generalsetup.ui" line="1202"/>
         <source>R A T E</source>
         <translation>K L G W</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1153"/>
+        <location filename="../generaledit/generalsetup.ui" line="1207"/>
         <source>E R T A</source>
         <translation>W K G L</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1158"/>
+        <location filename="../generaledit/generalsetup.ui" line="1212"/>
         <source>E R A T</source>
         <translation>W K L G</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1163"/>
+        <location filename="../generaledit/generalsetup.ui" line="1217"/>
         <source>E T R A</source>
         <translation>W G K L</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1168"/>
+        <location filename="../generaledit/generalsetup.ui" line="1222"/>
         <source>E T A R</source>
         <translation>W G L K</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1173"/>
+        <location filename="../generaledit/generalsetup.ui" line="1227"/>
         <source>E A R T</source>
         <translation>W L K G</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1178"/>
+        <location filename="../generaledit/generalsetup.ui" line="1232"/>
         <source>E A T R</source>
         <translation>W L G K</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1183"/>
+        <location filename="../generaledit/generalsetup.ui" line="1237"/>
         <source>T R E A</source>
         <translation>G K W L</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1188"/>
+        <location filename="../generaledit/generalsetup.ui" line="1242"/>
         <source>T R A E</source>
         <translation>G K L W</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1193"/>
+        <location filename="../generaledit/generalsetup.ui" line="1247"/>
         <source>T E R A</source>
         <translation>G W K L</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1198"/>
+        <location filename="../generaledit/generalsetup.ui" line="1252"/>
         <source>T E A R</source>
         <translation>G W L K</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1203"/>
+        <location filename="../generaledit/generalsetup.ui" line="1257"/>
         <source>T A R E</source>
         <translation>G L K W</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1208"/>
+        <location filename="../generaledit/generalsetup.ui" line="1262"/>
         <source>T A E R</source>
         <translation>G L W K</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1213"/>
+        <location filename="../generaledit/generalsetup.ui" line="1267"/>
         <source>A R E T</source>
         <translation>L K W G</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1218"/>
+        <location filename="../generaledit/generalsetup.ui" line="1272"/>
         <source>A R T E</source>
         <translation>L R G W</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1223"/>
+        <location filename="../generaledit/generalsetup.ui" line="1277"/>
         <source>A E R T</source>
         <translation>L W K G</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1228"/>
+        <location filename="../generaledit/generalsetup.ui" line="1282"/>
         <source>A E T R</source>
         <translation>L W G K</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1233"/>
+        <location filename="../generaledit/generalsetup.ui" line="1287"/>
         <source>A T R E</source>
         <translation>L G K W</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1238"/>
+        <location filename="../generaledit/generalsetup.ui" line="1292"/>
         <source>A T E R</source>
         <translation>L G W K</translation>
     </message>
@@ -4702,7 +4702,7 @@ Mode 4:
         <translation>Jeśli uaktywnisz tryb FAI, utracisz informacje o wariometrze, funkcje odtwarzania i ekrany telemetrii. Ten tryb nie może być dezaktywowany.</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2258"/>
+        <location filename="../generaledit/generalsetup.ui" line="2109"/>
         <source>Play Delay (switch mid position)</source>
         <translation>Opóźnienie odtwarzania (pozycja środkowa przełacznika)</translation>
     </message>

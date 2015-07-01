@@ -451,6 +451,26 @@ Behöver inte vara samma som menyspråk</translation>
         <source>Images (%1)</source>
         <translation>Bilder (%1)</translation>
     </message>
+    <message>
+        <source>The profile specific folder,  if set, will override general Backup folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Backup folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If set it will override the application general setting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>if set, will override general backup enable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulator Volume Gain</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Calibration</name>
@@ -476,19 +496,19 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
     <message>
         <source>None</source>
-        <translation>Ingen</translation>
+        <translation type="obsolete">Ingen</translation>
     </message>
     <message>
         <source>Pot with detent (normal)</source>
-        <translation>Ratt med mittklick (normal)</translation>
+        <translation type="obsolete">Ratt med mittklick (normal)</translation>
     </message>
     <message>
         <source>Multipos Switch</source>
-        <translation>Flerlägesväljare</translation>
+        <translation type="obsolete">Flerlägesväljare</translation>
     </message>
     <message>
         <source>Pot without detent</source>
-        <translation>Ratt utan mittklick</translation>
+        <translation type="obsolete">Ratt utan mittklick</translation>
     </message>
     <message>
         <source>RS</source>
@@ -504,23 +524,23 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation>Default</translation>
+        <translation type="obsolete">Default</translation>
     </message>
     <message>
         <source>2POS Toggle</source>
-        <translation>2-Läges-brytare</translation>
+        <translation type="obsolete">2-Läges-brytare</translation>
     </message>
     <message>
         <source>2POS</source>
-        <translation>2-Läges</translation>
+        <translation type="obsolete">2-Läges</translation>
     </message>
     <message>
         <source>3POS</source>
-        <translation>3-Läges</translation>
+        <translation type="obsolete">3-Läges</translation>
     </message>
     <message>
         <source>2x2POS</source>
-        <translation>2x2-Läges</translation>
+        <translation type="obsolete">2x2-Läges</translation>
     </message>
     <message>
         <source>OFF</source>
@@ -702,6 +722,69 @@ Behöver inte vara samma som menyspråk</translation>
         <source>SN</source>
         <translation>SN</translation>
     </message>
+    <message>
+        <source>SQ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LS2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S4</source>
+        <translation type="unfinished">S4</translation>
+    </message>
+    <message>
+        <source>RS2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CalibrationPanel</name>
+    <message>
+        <source>None</source>
+        <translation type="unfinished">Ingen</translation>
+    </message>
+    <message>
+        <source>2 Positions Toggle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2 Positions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>3 Positions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pot with detent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multipos switch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pot without detent</source>
+        <translation type="unfinished">Ratt utan mittklick</translation>
+    </message>
+    <message>
+        <source>Slider with detent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Channels</name>
@@ -806,7 +889,7 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
     <message>
         <source>Pulse Polarity</source>
-        <translation>Pulspolaritet</translation>
+        <translation type="obsolete">Pulspolaritet</translation>
     </message>
     <message>
         <source>Throttle Trim</source>
@@ -954,11 +1037,11 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
     <message>
         <source>5 Point Curves</source>
-        <translation>5-punktskurva</translation>
+        <translation type="obsolete">5-punktskurva</translation>
     </message>
     <message>
         <source>pt %1</source>
-        <translation>pt %1</translation>
+        <translation type="obsolete">pt %1</translation>
     </message>
     <message>
         <source>Curve</source>
@@ -966,7 +1049,7 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
     <message>
         <source>9 Point Curves</source>
-        <translation>9-punktskurvor</translation>
+        <translation type="obsolete">9-punktskurvor</translation>
     </message>
     <message>
         <source>Logical Switches</source>
@@ -1206,7 +1289,7 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
     <message>
         <source>Are you sure you want to reset curve %1 ?</source>
-        <translation>Vill du verkligen nollställa kurvan %1 ?</translation>
+        <translation type="obsolete">Vill du verkligen nollställa kurvan %1 ?</translation>
     </message>
     <message>
         <source>Editing curve %1</source>
@@ -1215,6 +1298,30 @@ Behöver inte vara samma som menyspråk</translation>
     <message>
         <source>Not enough free points in EEPROM to store the curve.</source>
         <translation>Kurvan får inte plats i minnet.</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear all curves</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to reset curve %1?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to reset all curves?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1323,6 +1430,137 @@ Behöver inte vara samma som menyspråk</translation>
     <message>
         <source>Second Elevon Channel:</source>
         <translation>Andra roderkanalen:</translation>
+    </message>
+</context>
+<context>
+    <name>Er9x::Templates</name>
+    <message>
+        <source>Simple 4-CH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>T-Cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky T-Cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>V-Tail</source>
+        <translation type="unfinished">V-stjärt</translation>
+    </message>
+    <message>
+        <source>Elevon\Delta</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heli Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heli Setup with gyro gain control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gyro gain control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Servo Test</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MultiCopter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Model Config Wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply Template?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply template &quot;%1&quot;?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RUD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ELE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>THR</source>
+        <translation type="unfinished">GAS</translation>
+    </message>
+    <message>
+        <source>AIL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AIL2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ELE2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FLAPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FLAP%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PITCH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GYRO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SPOIL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SPOIL%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RUD2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear Mixes?</source>
+        <translation type="unfinished">Ta bort mixarna?</translation>
+    </message>
+    <message>
+        <source>Really clear existing mixes on CH6?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Really clear existing mixes on CH5?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1597,7 +1835,7 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
     <message>
         <source>Invalid binary Models and Settings File %1</source>
-        <translation>Den binära filen innehåller inte Modeller och Inställningar: %1</translation>
+        <translation type="obsolete">Den binära filen innehåller inte Modeller och Inställningar: %1</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -1634,6 +1872,10 @@ Behöver inte vara samma som menyspråk</translation>
     <message>
         <source>Cannot check Models and Settings compatibility! Continue anyway?</source>
         <translation>Det går inte att verifiera att Modeller och Inställningar är kompatibla. Fortsätt i alla fall?</translation>
+    </message>
+    <message>
+        <source>Invalid Models and Settings file %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1848,6 +2090,20 @@ Du använder för närvarande:
     <message>
         <source>FUSES: Low=%1 High=%2 Ext=%3</source>
         <translation>SÄKRINGAR: Låg=%1 Hög=%2 Ext=%3</translation>
+    </message>
+    <message>
+        <source>unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your radio does not seem connected to USB or the driver is not installed!!!
+
+Please use ZADIG to properly install the driver.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your radio does not seem connected to USB or the driver is not initialized!!!.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2089,7 +2345,7 @@ Dessa inställningar gäller för alla modeller.</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation>Kalibrering</translation>
+        <translation type="obsolete">Kalibrering</translation>
     </message>
     <message>
         <source>Trainer</source>
@@ -2126,6 +2382,10 @@ Dessa inställningar gäller för alla modeller.</translation>
     <message>
         <source>Global Functions</source>
         <translation>Globala Funktioner</translation>
+    </message>
+    <message>
+        <source>Hardware / Calibration</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2572,7 +2832,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Stick reverse (order as above)</source>
-        <translation>Invertera Spakar</translation>
+        <translation type="obsolete">Invertera Spakar</translation>
     </message>
     <message>
         <source>Default Channel Order</source>
@@ -2750,6 +3010,30 @@ brytare</translation>
     <message>
         <source>Backlight flash on alarm</source>
         <translation>Blinkande ljus vid alarm</translation>
+    </message>
+    <message>
+        <source>Stick reverse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adjust RTC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min</source>
+        <translation type="unfinished">Min</translation>
+    </message>
+    <message>
+        <source>v</source>
+        <translation type="unfinished">v</translation>
+    </message>
+    <message>
+        <source>Max</source>
+        <translation type="unfinished">Max</translation>
+    </message>
+    <message>
+        <source>Battery Meter Range</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3134,7 +3418,7 @@ FAI-funktionen kan inte slås av i sändaren.
     </message>
     <message>
         <source>OpenTX Companion - FW: %1 - Profile: %2</source>
-        <translation>OpenTX Companion - FW: %1 - Profil: %2</translation>
+        <translation type="obsolete">OpenTX Companion - FW: %1 - Profil: %2</translation>
     </message>
     <message>
         <source>Edit Settings</source>
@@ -3479,7 +3763,7 @@ Starta skrivningen i alla fall ?</translation>
         <source>Firmware %1 does not seem to have ever been downloaded.
 Release %2 is available.
 Do you want to download it now?</source>
-        <translation>Firmware %1 tycks aldrig ha laddats ned.
+        <translation type="obsolete">Firmware %1 tycks aldrig ha laddats ned.
 Version %2 finns tillgänglig.
 Vill du ladda ned den nu ?</translation>
     </message>
@@ -3489,7 +3773,7 @@ Vill du ladda ned den nu ?</translation>
   - newer is %3
 
 Do you want to download it now ?</source>
-        <translation>En ny version finns tillgänglig av %1 fimware:
+        <translation type="obsolete">En ny version finns tillgänglig av %1 fimware:
   - Din version %2
   - Ny version %3
 
@@ -3818,6 +4102,36 @@ Vill du ladda ned den nya versionen nu ?</translation>
     <message>
         <source>SD card synchronization</source>
         <translation>Synkronisering av SD-kort</translation>
+    </message>
+    <message>
+        <source>Firmware %1 does not seem to have ever been downloaded.
+Release %2 is available.
+Do you want to download it now?
+
+We recommend you view the release notes using the button below to learn about any changes that may be important to you.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new version of %1 firmware is available:
+  - current is %2
+  - newer is %3
+
+Do you want to download it now?
+
+We recommend you view the release notes using the button below to learn about any changes that may be important to you.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OpenTX Companion 2.1 - FW: %1 - Profile: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spanish</source>
+        <translation type="unfinished">Spanska</translation>
+    </message>
+    <message>
+        <source>Use Spanish in menus</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4324,11 +4638,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Clear Curves?</source>
-        <translation>Ta bort kurvorna?</translation>
+        <translation type="obsolete">Ta bort kurvorna?</translation>
     </message>
     <message>
         <source>Really clear all the curves?</source>
-        <translation>Vill du verkligen ta bort alla kurvor ?</translation>
+        <translation type="obsolete">Vill du verkligen ta bort alla kurvor ?</translation>
     </message>
     <message>
         <source>Flight Modes</source>
@@ -4560,6 +4874,22 @@ p, li { white-space: pre-wrap; }
         <source>Master/SBUS in battery compartment</source>
         <translation>Tränare/SBUS i batterifacket</translation>
     </message>
+    <message>
+        <source>Not set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Drain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Push Pull</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ModulePanel</name>
@@ -4582,6 +4912,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Extra Radio System</source>
         <translation>Ytterligare Radiosystem</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">Värde</translation>
+    </message>
+    <message>
+        <source>Hold</source>
+        <translation type="unfinished">Håll senaste</translation>
+    </message>
+    <message>
+        <source>No Pulse</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4666,7 +5008,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Pulse Polarity</source>
-        <translation>Pulspolaritet</translation>
+        <translation type="obsolete">Pulspolaritet</translation>
     </message>
     <message>
         <source>Throttle Trim</source>
@@ -4971,6 +5313,30 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>ODF files (*.odt);;PDF Files(*.pdf);;HTML-Files (*.htm *.html);;All Files (*)</source>
         <translation>ODF filer (*.odt);;PDF Filer(*.pdf);;HTML-Filer (*.htm *.html);;Alla Filer (*)</translation>
+    </message>
+    <message>
+        <source>Internal Radio System</source>
+        <translation type="unfinished">Intern Radosändare</translation>
+    </message>
+    <message>
+        <source>Radio System</source>
+        <translation type="unfinished">Radiosystem</translation>
+    </message>
+    <message>
+        <source>External Radio Module</source>
+        <translation type="unfinished">Extern Sändarmodul</translation>
+    </message>
+    <message>
+        <source>Extra Radio System</source>
+        <translation type="unfinished">Ytterligare Radiosystem</translation>
+    </message>
+    <message>
+        <source>Trainer port mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished">Av</translation>
     </message>
 </context>
 <context>
@@ -6103,7 +6469,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>: %1 Channels, %2usec Delay</source>
-        <translation>: %1 Kanaler, %2msec Fördröjning</translation>
+        <translation type="obsolete">: %1 Kanaler, %2msec Fördröjning</translation>
     </message>
     <message>
         <source>Flight modes(%1)</source>
@@ -6605,7 +6971,7 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>Used if you have voice module</source>
-        <translation>Används om en röstmodul monterats i sändaren</translation>
+        <translation type="obsolete">Används om en röstmodul monterats i sändaren</translation>
     </message>
     <message>
         <source>Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views</source>
@@ -6648,6 +7014,90 @@ OpenTX-gruppen.</translation>
     <message>
         <source>Could not delete temporary file: %1</source>
         <translation>Det gick inte att ta bort temporärfilen: %1</translation>
+    </message>
+    <message>
+        <source>h:m</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>m:s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>h:m:s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Positive</source>
+        <translation type="unfinished">Positiv</translation>
+    </message>
+    <message>
+        <source>Negative</source>
+        <translation type="unfinished">Negativ</translation>
+    </message>
+    <message>
+        <source>Source %1 cannot be exported on this board!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ERC12864FSF LCD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ST7920 LCD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Power management by soft-off circuitry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removes D8 and LR12 FrSky protocols that are not legal for use anymore on radios sold after Jan 1st, 2015</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>: Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>: Channel start: %1, %2 Channels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slave/Jack</source>
+        <translation type="unfinished">Elev/Uttag</translation>
+    </message>
+    <message>
+        <source>Master/SBUS Module</source>
+        <translation type="unfinished">Tränare/SBUS-modul</translation>
+    </message>
+    <message>
+        <source>Master/CPPM Module</source>
+        <translation type="unfinished">Tränare/CPPM-modul</translation>
+    </message>
+    <message>
+        <source>Master/SBUS in battery compartment</source>
+        <translation type="unfinished">Tränare/SBUS i batterifacket</translation>
+    </message>
+    <message>
+        <source>Master/Jack</source>
+        <translation type="unfinished">Tränare/Uttag</translation>
     </message>
 </context>
 <context>
@@ -6931,6 +7381,14 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <source>Outputs</source>
         <translation>Utgångar</translation>
+    </message>
+    <message>
+        <source>S3</source>
+        <translation type="unfinished">S3</translation>
+    </message>
+    <message>
+        <source>S4</source>
+        <translation type="unfinished">S4</translation>
     </message>
 </context>
 <context>
@@ -7357,7 +7815,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     </message>
     <message>
         <source>Formula</source>
-        <translation>Formel</translation>
+        <translation type="obsolete">Formel</translation>
     </message>
     <message>
         <source>Id</source>
@@ -7457,7 +7915,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     </message>
     <message>
         <source>Feet (f)</source>
-        <translation>Fot (f)</translation>
+        <translation type="obsolete">Fot (f)</translation>
     </message>
     <message utf8="true">
         <source>Temp (°C)</source>
@@ -7489,7 +7947,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     </message>
     <message>
         <source>Filtered</source>
-        <translation>Filtrerad</translation>
+        <translation type="obsolete">Filtrerad</translation>
     </message>
     <message>
         <source>Logs</source>
@@ -7498,6 +7956,66 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <source>Persistent</source>
         <translation>Bestående</translation>
+    </message>
+    <message>
+        <source>Calculated</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Totalize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed (ft/s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feet (ft)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Energy (mAh)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Power (W)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RF Power (dBm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RPM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Acceleration (g)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Heading (°)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Volume (mL)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Volume (US fl.Oz.)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blades</source>
+        <translation type="unfinished">Blad</translation>
+    </message>
+    <message>
+        <source>Multiplier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7544,6 +8062,150 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <source>A2</source>
         <translation>A2</translation>
+    </message>
+    <message>
+        <source>Vario Altitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>V-ALT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vario Vertical Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>V-VSPD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ACCZ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS Time</source>
+        <translation type="unfinished">GPS-tid</translation>
+    </message>
+    <message>
+        <source>GPS-T</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ACCX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS Lat/Lon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS-LL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VFAS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FAS-V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS-S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CELLS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ACCY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS Course</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS-C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS Altitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS-A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CURRENT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FAS-C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>30</source>
+        <translation type="unfinished">30</translation>
+    </message>
+    <message>
+        <source>75</source>
+        <translation type="unfinished">75</translation>
+    </message>
+    <message>
+        <source>FR_ID_AIR_SPEED</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ASPD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A3</source>
+        <translation type="unfinished">A3</translation>
+    </message>
+    <message>
+        <source>A4</source>
+        <translation type="unfinished">A4</translation>
+    </message>
+    <message>
+        <source>Temperature 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>T1</source>
+        <translation type="unfinished">T1</translation>
+    </message>
+    <message>
+        <source>Temperature 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>T2</source>
+        <translation type="unfinished">T2</translation>
+    </message>
+    <message>
+        <source>RPM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FUEL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When enabled, sends any non-blank values as simulated telemetry data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Start with &lt;span style=&quot; font-style:italic;&quot;&gt;0x&lt;/span&gt; for hex, &lt;span style=&quot; font-style:italic;&quot;&gt;0&lt;/span&gt; for octal, otherwise decimal.&lt;br/&gt;Numeric entry only. Blank values are not sent.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7953,11 +8615,11 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <name>avrOutputDialog</name>
     <message>
         <source>Dialog</source>
-        <translation>Dialog</translation>
+        <translation type="obsolete">Dialog</translation>
     </message>
     <message>
         <source>Show Details</source>
-        <translation>Visa Detaljer</translation>
+        <translation type="obsolete">Visa Detaljer</translation>
     </message>
     <message>
         <source>Writing</source>
@@ -8262,27 +8924,27 @@ m2560 för v4.1-kort</translation>
     <name>burnDialog</name>
     <message>
         <source>Customize Splash</source>
-        <translation>Välj Sändarens Startbild</translation>
+        <translation type="obsolete">Välj Sändarens Startbild</translation>
     </message>
     <message>
         <source>Date &amp; Time</source>
-        <translation>Dag &amp; Tid</translation>
+        <translation type="obsolete">Dag &amp; Tid</translation>
     </message>
     <message>
         <source>Allows Companion to write to older version of the firmware</source>
-        <translation>Tillåter Companon att skriva till äldre firmware-versioner</translation>
+        <translation type="obsolete">Tillåter Companon att skriva till äldre firmware-versioner</translation>
     </message>
     <message>
         <source>Write to TX</source>
-        <translation>Skriv till sändaren</translation>
+        <translation type="obsolete">Skriv till sändaren</translation>
     </message>
     <message>
         <source>Check Firmware compatibility</source>
-        <translation>Kontrollera att firmware-filen är kompatibel</translation>
+        <translation type="obsolete">Kontrollera att firmware-filen är kompatibel</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Avbryt</translation>
+        <translation type="obsolete">Avbryt</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -8330,51 +8992,51 @@ m2560 för v4.1-kort</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify calibration parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Uppdatera kalibrerings-parametrarna med data från nuvarande profil&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Uppdatera kalibrerings-parametrarna med data från nuvarande profil&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Patch calibration setting from profile</source>
-        <translation>Uppdatera med kalibreringsdata från profilen</translation>
+        <translation type="obsolete">Uppdatera med kalibreringsdata från profilen</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify HW parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Uppdatera hårdvaruinställningarna med data från nuvarande profil&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Uppdatera hårdvaruinställningarna med data från nuvarande profil&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Patch HW setting from profile</source>
-        <translation>Uppdatera med HW-inställningar från profilen</translation>
+        <translation type="obsolete">Uppdatera med HW-inställningar från profilen</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation>Version</translation>
+        <translation type="obsolete">Version</translation>
     </message>
     <message>
         <source>Browse for file</source>
-        <translation>Välj fil</translation>
+        <translation type="obsolete">Välj fil</translation>
     </message>
     <message>
         <source>Backup and restore Models and Settings</source>
-        <translation>Säkerhetskopiera Modeller och Inställningar</translation>
+        <translation type="obsolete">Säkerhetskopiera Modeller och Inställningar</translation>
     </message>
     <message>
         <source>Current Profile</source>
-        <translation>Nuvarande Profil</translation>
+        <translation type="obsolete">Nuvarande Profil</translation>
     </message>
     <message>
         <source>Use firmware start screen</source>
-        <translation>Använd firmware-startskärmen</translation>
+        <translation type="obsolete">Använd firmware-startskärmen</translation>
     </message>
     <message>
         <source>Use another start screen</source>
-        <translation>Använd en annan startskärm</translation>
+        <translation type="obsolete">Använd en annan startskärm</translation>
     </message>
     <message>
         <source>Use profile start screen</source>
-        <translation>Använd profilens startskärm</translation>
+        <translation type="obsolete">Använd profilens startskärm</translation>
     </message>
     <message>
         <source>Use library start screen</source>
-        <translation>Använd biblioteks-startskärm</translation>
+        <translation type="obsolete">Använd biblioteks-startskärm</translation>
     </message>
     <message>
         <source>Write firmware to Radio</source>
@@ -8450,7 +9112,7 @@ m2560 för v4.1-kort</translation>
     </message>
     <message>
         <source>Variant</source>
-        <translation>Variant</translation>
+        <translation type="obsolete">Variant</translation>
     </message>
 </context>
 <context>
@@ -8598,22 +9260,22 @@ m2560 för v4.1-kort</translation>
     <name>fusesDialog</name>
     <message>
         <source>Fuses</source>
-        <translation>Säkringar</translation>
+        <translation type="obsolete">Säkringar</translation>
     </message>
     <message>
         <source>Read Fuses</source>
-        <translation>Läs in säkringarna</translation>
+        <translation type="obsolete">Läs in säkringarna</translation>
     </message>
     <message>
         <source>Reset Fuses
 EEPROM - PROTECT</source>
-        <translation>Nollställ säkringarna
+        <translation type="obsolete">Nollställ säkringarna
 MODELLDATA - SKYDDA</translation>
     </message>
     <message>
         <source>Reset Fuses
 EEPROM - DELETE</source>
-        <translation>Återställ Säkringarna
+        <translation type="obsolete">Återställ Säkringarna
 MODELLDATA - RADERA</translation>
     </message>
     <message>
@@ -8625,7 +9287,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Changing the fuses can mess up your radio.&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Proceed only if you know what you are doing.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -8648,7 +9310,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Proper states for AtMega 2560 :&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM erase fuse not set: D7, 11, FC&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM erase fuse set: D7, 19, FC&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -8678,7 +9340,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When in doubt consult either the project&apos;s page or the 9xforum (http://9xforums.com/forum/)&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;If you do get locked out - google lookup for &amp;quot;dealing with Fuse Bricks&amp;quot;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -8710,7 +9372,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When in doubt consult either the project&apos;s page or the 9xforum (http://9xforums.com/forum/)&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;If you do get locked out - google lookup for &amp;quot;dealing with Fuse Bricks&amp;quot;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -8923,6 +9585,54 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
     <message>
         <source>Fly sessions</source>
         <translation>Flygningar</translation>
+    </message>
+    <message>
+        <source>Plot Title Change</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New plot title:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Axis Label Change</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New axis label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Graph Name Change</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New graph name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>total duration </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>duration </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> (L1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> (R1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> (L2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> (R2)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
