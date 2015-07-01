@@ -282,28 +282,6 @@ void eepromFormat()
 
 bool eepromOpen()
 {
-#if 0
-  ALERT("!!START!!", "START", AU_ERROR);
-
-  static uint16_t mybuffer[2048];
-
-  for (int i=0; i<2048; i++) {
-    mybuffer[i] = i;
-  }
-
-  eepromWriteBlock((uint8_t *)mybuffer, 0, sizeof(mybuffer));
-
-  eepromReadBlock((uint8_t *)mybuffer, 0, sizeof(mybuffer));
-
-  for (int i=0; i<2048; i++) {
-    if (mybuffer[i] != i) {
-      ALERT("!!ERROR!!", "ERROR", AU_ERROR);
-    }
-  }
-
-  ALERT("!!OK!!", "OK", AU_ERROR);
-#endif
-
   eepromReadBlock((uint8_t *)&eeFs, 0, sizeof(eeFs));
 
 #ifdef SIMU
