@@ -894,16 +894,17 @@ ifeq ($(PCB), TARANIS)
   PPM_LIMITS_SYMETRICAL = YES
   PPM_CENTER_ADJUSTABLE = YES
   DSM2 = PPM
-  CPPDEFS += -DPCBTARANIS -DCPUARM -DCPUSTM32 -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DEEPROM_RLC -DEEPROM_VARIANT=0 -DAUDIO -DPXX
+  CPPDEFS += -DPCBTARANIS -DCPUARM -DCPUSTM32 -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DEEPROM_RLC -DAUDIO -DPXX
   INCDIRS += targets/taranis $(THIRDPARTY) $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
   CPPDEFS += -DHSE_VALUE=12000000
   ifeq ($(PCBREV), REV9E)
     STM32LIBPATH = $(THIRDPARTY)/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries
-    CPPDEFS += -DSTM32F4 -DSTM32F40_41xxx
+    CPPDEFS += -DSTM32F4 -DSTM32F40_41xxx -DEEPROM_VARIANT=32768
     INCDIRS += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Include $(STM32LIBPATH)/CMSIS/Include $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/inc
     LDSCRIPT = targets/taranis/stm32f4_flash.ld
   else
     STM32LIBPATH= $(THIRDPARTY)/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries
+    CPPDEFS += -DEEPROM_VARIANT=0
     INCDIRS += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/inc $(STM32LIBPATH)/CMSIS/Device/ST/STM32F2xx/Include $(STM32LIBPATH)/CMSIS/include
     LDSCRIPT = targets/taranis/stm32f2_flash.ld
   endif
@@ -1015,9 +1016,6 @@ ifeq ($(PCB), TARANIS)
   endif
   ifeq ($(MIXERS_MONITOR), YES)
     CPPDEFS += -DMIXERS_MONITOR
-  endif
-  ifeq ($(PCBREV), REV9E)
-    CPPSRC += targets/taranis/rotenc_driver.cpp
   endif
 endif
 
@@ -1801,16 +1799,6 @@ gtest-all.o : $(GTEST_SRCS_)
 	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include -c \
             $(GTEST_DIR)/src/gtest-all.cc
 
-gtest_main.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include -c \
-            $(GTEST_DIR)/src/gtest_main.cc
-
-gtest.a : gtest-all.o
-	$(AR) $(ARFLAGS) $@ $^
-
-gtest_main.a : gtest-all.o gtest_main.o
-	$(AR) $(ARFLAGS) $@ $^
-
 # Builds a sample test.  A test should link with either gtest.a or
 # gtest_main.a, depending on whether it defines its own main()
 # function.
@@ -1818,6 +1806,6 @@ gtest_main.a : gtest-all.o gtest_main.o
 #use all .cpp files from tests/ dir
 GTEST_TESTS_SRCS = $(shell find tests/ -type f -name '*.cpp')
 
-gtests: allsimusrc.cpp $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp *.h gtest_main.a
-	g++ -std=gnu++0x $(CPPFLAGS) $(SIMUCPPFLAGS) allsimusrc.cpp $(LUASRC) $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp -I$(GTEST_DIR) ${INCFLAGS} -I$(GTEST_DIR)/include -I/usr/include/qt4 -o gtests -lpthread -MD -DSIMU -lQtCore -lQtGui gtest_main.a -fexceptions
+gtests: allsimusrc.cpp $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp *.h gtest-all.o
+	g++ -std=gnu++0x $(CPPFLAGS) $(SIMUCPPFLAGS) allsimusrc.cpp $(LUASRC) $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp -I$(GTEST_DIR) ${INCFLAGS} -I$(GTEST_DIR)/include -I/usr/include/qt4 -o gtests -lpthread -MD -DSIMU -lQtCore -lQtGui gtest-all.o -fexceptions
 

@@ -140,7 +140,6 @@ void boardInit()
 #endif
 
 #if defined(REV9E)
-  rotencInit();
   bt_open();
 #endif
 

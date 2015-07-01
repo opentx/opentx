@@ -179,10 +179,6 @@ CPPSRC = ../lcd_driver.cpp \
 	../../../strhelpers.cpp \
 	boot.cpp
 
-ifeq ($(PCBREV), REV9E)
-  CPPSRC += ../rotenc_driver.cpp
-endif
-
 # List ASM source files here
 
 ifeq ($(PCBREV), REV9E)
