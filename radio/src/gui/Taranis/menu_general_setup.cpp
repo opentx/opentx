@@ -477,7 +477,7 @@ void menuGeneralSetup(uint8_t event)
         lcd_putsLeft(y, STR_SWITCHES_DELAY);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, 10*SWITCHES_DELAY(), attr|LEFT);
         lcd_putsAtt(lcdLastPos, y, STR_MS, attr);
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchesDelay, -15, +15);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchesDelay, -15, 100-15);
         break;
 
       case ITEM_SETUP_RX_CHANNEL_ORD:
