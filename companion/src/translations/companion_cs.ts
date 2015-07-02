@@ -177,22 +177,22 @@ Mode 4:
         <location filename="../apppreferencesdialog.ui" line="301"/>
         <location filename="../apppreferencesdialog.ui" line="634"/>
         <source>The profile specific folder,  if set, will override general Backup folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifická složka profilu, pokud je nastavena, bude použita místo výchozí složky z nastavení aplikace</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="304"/>
         <source>Backup folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Složka pro zálohy</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="311"/>
         <source>If set it will override the application general setting</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokud je nastavena, bude použita místo výchozí složky z nastavení aplikace</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="321"/>
         <source>if set, will override general backup enable</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokud je nastaveno, bude použito místo výchozí volby z nastavení aplikace</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="449"/>
@@ -322,7 +322,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="1056"/>
         <source>Simulator Volume Gain</source>
-        <translation type="unfinished"></translation>
+        <translation>Zisk hlasitosti simulátoru</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="58"/>
@@ -624,52 +624,52 @@ Může být jiná než verze firmwaru</translation>
     <message>
         <location filename="../generaledit/calibration.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="20"/>
         <source>SQ</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="34"/>
         <source>SR</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="68"/>
         <source>LS2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="82"/>
         <source>SP</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="96"/>
         <source>SO</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="103"/>
         <source>S4</source>
-        <translation type="unfinished">S4 (multipos3_poloha6)</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="130"/>
         <source>RS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="137"/>
         <source>SB</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="144"/>
         <source>Serial Port</source>
-        <translation type="unfinished">Seriový port</translation>
+        <translation>Seriový port</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="167"/>
@@ -689,7 +689,7 @@ Může být jiná než verze firmwaru</translation>
 2 - Normal.
 3 - Loud.
 4 - Extra loud.</source>
-        <translation type="unfinished">Hlasitost Bzučáku
+        <translation>Hlasitost Bzučáku
 
 0 - Tichý.  No beeps at all.
 1 - Bez kláves.  Normal beeps but menu keys do not beep.
@@ -700,235 +700,235 @@ Může být jiná než verze firmwaru</translation>
     <message>
         <location filename="../generaledit/calibration.ui" line="213"/>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>Vypnuto</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="218"/>
         <source>S-Port Mirror</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrcadlit S-Port</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="223"/>
         <source>Telemetry</source>
-        <translation type="unfinished">Telemetrie</translation>
+        <translation>Telemetrie</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="228"/>
         <source>SBUS Trainer</source>
-        <translation type="unfinished"></translation>
+        <translation>SBUS trenér</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="233"/>
         <source>Debug</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="262"/>
         <source>Rud</source>
-        <translation type="unfinished">Směrovka</translation>
+        <translation>Směrovka</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="269"/>
         <location filename="../generaledit/calibration.ui" line="377"/>
         <source>Mid value</source>
-        <translation type="unfinished">Střed</translation>
+        <translation>Střed</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="305"/>
         <source>Pot. 4</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="319"/>
         <source>Pot. 3</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="339"/>
         <source>Pot. 2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="346"/>
         <source>Pot. 1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="353"/>
         <source>PPM 1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="360"/>
         <source>Stick 3</source>
-        <translation type="unfinished">Páka 3</translation>
+        <translation>Páka 3</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="367"/>
         <location filename="../generaledit/calibration.ui" line="821"/>
         <source>Negative span</source>
-        <translation type="unfinished">Negativní</translation>
+        <translation>Negativní</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="387"/>
         <location filename="../generaledit/calibration.ui" line="844"/>
         <source>Positive span</source>
-        <translation type="unfinished">Pozitivní</translation>
+        <translation>Pozitivní</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="397"/>
         <source>Stick 1</source>
-        <translation type="unfinished">Páka 1</translation>
+        <translation>Páka 1</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="433"/>
         <source>PPM 2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="440"/>
         <source>Stick 2</source>
-        <translation type="unfinished">Páka 2</translation>
+        <translation>Páka 2</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="512"/>
         <source>Stick 4</source>
-        <translation type="unfinished">Páka 4</translation>
+        <translation>Páka 4</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="561"/>
         <source>Battery</source>
-        <translation type="unfinished">Baterie</translation>
+        <translation>Baterie</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="571"/>
         <source>v</source>
-        <translation type="unfinished">V</translation>
+        <translation>V</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="590"/>
         <source>PPM Multiplier</source>
-        <translation type="unfinished">PPM Násobič</translation>
+        <translation>PPM Násobič</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="673"/>
         <source>PPM 3</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="680"/>
         <source>PPM 4</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="697"/>
         <source>Current</source>
-        <translation type="unfinished">Proud</translation>
+        <translation>Proud</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="854"/>
         <source>S1</source>
-        <translation type="unfinished">S1 (multipos3_poloha6)</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="868"/>
         <source>S2</source>
-        <translation type="unfinished">S2 (multipos3_poloha6)</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="875"/>
         <source>S3</source>
-        <translation type="unfinished">S3 (multipos3_poloha6)</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="882"/>
         <source>SA</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="889"/>
         <source>Ele</source>
-        <translation type="unfinished">Výškovka</translation>
+        <translation>Výškovka</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="903"/>
         <source>Ail</source>
-        <translation type="unfinished">Křidélka</translation>
+        <translation>Křidélka</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="917"/>
         <source>Thr</source>
-        <translation type="unfinished"></translation>
+        <translation>Plyn</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="938"/>
         <source>SC</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="952"/>
         <source>LS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="986"/>
         <source>SD</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="1013"/>
         <source>SE</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="1040"/>
         <source>SF</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="1067"/>
         <source>SG</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="1094"/>
         <source>SH</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="1108"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="1122"/>
         <source>SJ</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="1136"/>
         <source>SK</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="1150"/>
         <source>SL</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="1164"/>
         <source>SM</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="1178"/>
         <source>SN</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="1224"/>
         <source>RS2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -938,42 +938,42 @@ Může být jiná než verze firmwaru</translation>
         <location filename="../generaledit/calibration.cpp" line="48"/>
         <location filename="../generaledit/calibration.cpp" line="79"/>
         <source>None</source>
-        <translation type="unfinished">Žádný</translation>
+        <translation>Žádný</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.cpp" line="19"/>
         <source>2 Positions Toggle</source>
-        <translation type="unfinished"></translation>
+        <translation>2 pozice bez aretace</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.cpp" line="20"/>
         <source>2 Positions</source>
-        <translation type="unfinished"></translation>
+        <translation>2 pozice</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.cpp" line="21"/>
         <source>3 Positions</source>
-        <translation type="unfinished"></translation>
+        <translation>3 pozice</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.cpp" line="49"/>
         <source>Pot with detent</source>
-        <translation type="unfinished"></translation>
+        <translation>Pot s aretací</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.cpp" line="50"/>
         <source>Multipos switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Vícepolohový přepínač</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.cpp" line="51"/>
         <source>Pot without detent</source>
-        <translation type="unfinished">Pot bez aretace</translation>
+        <translation>Pot bez aretace</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.cpp" line="80"/>
         <source>Slider with detent</source>
-        <translation type="unfinished"></translation>
+        <translation>Jezdec s aretací</translation>
     </message>
 </context>
 <context>
@@ -1548,22 +1548,22 @@ Může být jiná než verze firmwaru</translation>
         <location filename="../process_copy.cpp" line="58"/>
         <location filename="../process_copy.cpp" line="63"/>
         <source>Error</source>
-        <translation type="unfinished">Chyba</translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location filename="../process_copy.cpp" line="50"/>
         <source>Write error</source>
-        <translation type="unfinished">Chyba zápisu</translation>
+        <translation>Chyba zápisu</translation>
     </message>
     <message>
         <location filename="../process_copy.cpp" line="58"/>
         <source>Cannot write %1 (reason: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze zapsat %1 (důvod: %2)</translation>
     </message>
     <message>
         <location filename="../process_copy.cpp" line="63"/>
         <source>Cannot open %1 (reason: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze otevřít %1 (důvod: %2)</translation>
     </message>
 </context>
 <context>
@@ -1713,32 +1713,32 @@ Může být jiná než verze firmwaru</translation>
     <message>
         <location filename="../modeledit/curves.cpp" line="577"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="580"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="586"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Vymazat</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="588"/>
         <source>Clear all curves</source>
-        <translation type="unfinished"></translation>
+        <translation>Vymazat všechny křivky</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="609"/>
         <source>Are you sure you want to reset curve %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Opravdu chcete vymazat křivku %1?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="617"/>
         <source>Are you sure you want to reset all curves?</source>
-        <translation type="unfinished"></translation>
+        <translation>Opravdu chcete vymazat všechny křivky?</translation>
     </message>
     <message>
         <source>Are you sure you want to reset curve %1 ?</source>
@@ -1785,13 +1785,13 @@ Může být jiná než verze firmwaru</translation>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="101"/>
         <source>GF%1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="188"/>
         <source>ON</source>
         <translatorcomment>Překlad se do formuláře nevejde.</translatorcomment>
-        <translation></translation>
+        <translation>Zap</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="254"/>
@@ -1891,218 +1891,12 @@ Může být jiná než verze firmwaru</translation>
 <context>
     <name>Er9x::Templates</name>
     <message>
-        <location filename="../modeledit/templates.cpp" line="39"/>
-        <source>Simple 4-CH</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="40"/>
-        <source>T-Cut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="41"/>
-        <source>Sticky T-Cut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="42"/>
         <source>V-Tail</source>
-        <translation type="unfinished">Ocas typu V</translation>
+        <translation type="obsolete">Ocas typu V</translation>
     </message>
     <message>
-        <location filename="../modeledit/templates.cpp" line="43"/>
-        <source>Elevon\Delta</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="44"/>
-        <source>Heli Setup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="45"/>
-        <source>Heli Setup with gyro gain control</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="46"/>
-        <source>Gyro gain control</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="47"/>
-        <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="48"/>
-        <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="49"/>
-        <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="50"/>
-        <source>Servo Test</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="51"/>
-        <source>MultiCopter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="52"/>
-        <source>Use Model Config Wizard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="81"/>
-        <source>Apply Template?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="81"/>
-        <source>Apply template &quot;%1&quot;?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="169"/>
-        <location filename="../modeledit/templates.cpp" line="176"/>
-        <location filename="../modeledit/templates.cpp" line="288"/>
-        <location filename="../modeledit/templates.cpp" line="313"/>
-        <location filename="../modeledit/templates.cpp" line="356"/>
-        <location filename="../modeledit/templates.cpp" line="358"/>
-        <location filename="../modeledit/templates.cpp" line="487"/>
-        <source>RUD</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="171"/>
-        <location filename="../modeledit/templates.cpp" line="178"/>
-        <location filename="../modeledit/templates.cpp" line="280"/>
-        <location filename="../modeledit/templates.cpp" line="284"/>
-        <location filename="../modeledit/templates.cpp" line="306"/>
-        <location filename="../modeledit/templates.cpp" line="310"/>
-        <location filename="../modeledit/templates.cpp" line="363"/>
-        <location filename="../modeledit/templates.cpp" line="365"/>
-        <location filename="../modeledit/templates.cpp" line="478"/>
-        <location filename="../modeledit/templates.cpp" line="479"/>
-        <source>ELE</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="181"/>
-        <location filename="../modeledit/templates.cpp" line="352"/>
-        <location filename="../modeledit/templates.cpp" line="474"/>
-        <source>THR</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="197"/>
-        <location filename="../modeledit/templates.cpp" line="281"/>
-        <location filename="../modeledit/templates.cpp" line="285"/>
-        <location filename="../modeledit/templates.cpp" line="305"/>
-        <location filename="../modeledit/templates.cpp" line="309"/>
-        <location filename="../modeledit/templates.cpp" line="388"/>
-        <location filename="../modeledit/templates.cpp" line="482"/>
-        <location filename="../modeledit/templates.cpp" line="483"/>
-        <source>AIL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="204"/>
-        <location filename="../modeledit/templates.cpp" line="210"/>
-        <location filename="../modeledit/templates.cpp" line="395"/>
-        <location filename="../modeledit/templates.cpp" line="401"/>
-        <source>AIL2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="217"/>
-        <location filename="../modeledit/templates.cpp" line="223"/>
-        <location filename="../modeledit/templates.cpp" line="408"/>
-        <location filename="../modeledit/templates.cpp" line="414"/>
-        <source>ELE2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="227"/>
-        <location filename="../modeledit/templates.cpp" line="228"/>
-        <location filename="../modeledit/templates.cpp" line="418"/>
-        <location filename="../modeledit/templates.cpp" line="419"/>
-        <location filename="../modeledit/templates.cpp" line="513"/>
-        <location filename="../modeledit/templates.cpp" line="514"/>
-        <source>FLAPS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="242"/>
-        <location filename="../modeledit/templates.cpp" line="248"/>
-        <location filename="../modeledit/templates.cpp" line="433"/>
-        <location filename="../modeledit/templates.cpp" line="439"/>
-        <location filename="../modeledit/templates.cpp" line="528"/>
-        <location filename="../modeledit/templates.cpp" line="534"/>
-        <source>FLAP%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="282"/>
-        <location filename="../modeledit/templates.cpp" line="286"/>
-        <location filename="../modeledit/templates.cpp" line="307"/>
-        <location filename="../modeledit/templates.cpp" line="311"/>
-        <source>PITCH</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="295"/>
-        <location filename="../modeledit/templates.cpp" line="296"/>
-        <location filename="../modeledit/templates.cpp" line="299"/>
-        <location filename="../modeledit/templates.cpp" line="300"/>
-        <location filename="../modeledit/templates.cpp" line="320"/>
-        <location filename="../modeledit/templates.cpp" line="321"/>
-        <location filename="../modeledit/templates.cpp" line="324"/>
-        <location filename="../modeledit/templates.cpp" line="325"/>
-        <source>GYRO</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="443"/>
-        <location filename="../modeledit/templates.cpp" line="444"/>
-        <source>SPOIL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="458"/>
-        <location filename="../modeledit/templates.cpp" line="464"/>
-        <source>SPOIL%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="503"/>
-        <location filename="../modeledit/templates.cpp" line="509"/>
-        <source>RUD2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="712"/>
-        <location filename="../modeledit/templates.cpp" line="824"/>
         <source>Clear Mixes?</source>
-        <translation type="unfinished">Vymazat mixy?</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="712"/>
-        <source>Really clear existing mixes on CH6?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="824"/>
-        <source>Really clear existing mixes on CH5?</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Vymazat mixy?</translation>
     </message>
 </context>
 <context>
@@ -2120,12 +1914,12 @@ Může být jiná než verze firmwaru</translation>
     <message>
         <location filename="../modeledit/expodialog.ui" line="435"/>
         <source>Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Ofset</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="454"/>
         <source>The source for the mixer</source>
-        <translation type="unfinished">Zdroj pro mix</translation>
+        <translation>Zdroj pro mix</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="43"/>
@@ -2384,73 +2178,73 @@ Může být jiná než verze firmwaru</translation>
         <location filename="../flasheepromdialog.ui" line="26"/>
         <location filename="../flasheepromdialog.cpp" line="297"/>
         <source>Write Models and Settings to Radio</source>
-        <translation type="unfinished">Zapsat modely a nastavení do rádia</translation>
+        <translation>Zapsat modely a nastavení do rádia</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="66"/>
         <source>Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít...</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="81"/>
         <source>Current Profile</source>
-        <translation type="unfinished">Současný profil</translation>
+        <translation>Současný profil</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="97"/>
         <location filename="../flasheepromdialog.ui" line="113"/>
         <source>Allows Companion to write to older version of the firmware</source>
-        <translation type="unfinished">Umožní Companion zapisovat do starší verze firmware</translation>
+        <translation>Umožní Companion zapisovat do starší verze firmware</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="100"/>
         <source>Check Firmware compatibility</source>
-        <translation type="unfinished">Zkontrolovat kompatibilitu firmware</translation>
+        <translation>Zkontrolovat kompatibilitu firmware</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="116"/>
         <source>Backup before Write</source>
-        <translation type="unfinished"></translation>
+        <translation>Zálohovat před zápisem</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="123"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify calibration parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upraví hodnoty kalibrace parametry ze současného profilu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upraví hodnoty kalibrace použitím parametrů ze současného profilu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="126"/>
         <source>Patch calibration setting from profile</source>
-        <translation type="unfinished">Zaměnit hodnoty kalibrace hodnotami z profilu</translation>
+        <translation>Zaměnit hodnoty kalibrace za hodnoty z profilu</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="133"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify HW parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upraví HW parametery pomocí nastavení současného profilu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upraví HW parametery pomocí nastavení současného profilu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="136"/>
         <source>Patch HW settings from profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaměnit hodnoty HW nastavení za hodnoty z profilu</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="164"/>
         <source>Cancel</source>
-        <translation type="unfinished">Zrušit</translation>
+        <translation>Zrušit</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="180"/>
         <source>Write to TX</source>
-        <translation type="unfinished">Zapsat do rádia</translation>
+        <translation>Zapsat do rádia</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="20"/>
         <source>Current profile: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Současný profil: %1</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="83"/>
         <source>Choose Radio Backup file</source>
-        <translation type="unfinished">vyberte soubor zálohy rádia</translation>
+        <translation>Vyberte soubor se zálohou rádia</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="101"/>
@@ -2465,12 +2259,12 @@ Může být jiná než verze firmwaru</translation>
         <location filename="../flasheepromdialog.cpp" line="284"/>
         <location filename="../flasheepromdialog.cpp" line="290"/>
         <source>Error</source>
-        <translation type="unfinished">Chyba</translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="101"/>
         <source>Unable to find file %1!</source>
-        <translation type="unfinished">Nemohu nalézt soubor %1!</translation>
+        <translation>Nemohu nalézt soubor %1!</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="111"/>
@@ -2478,26 +2272,26 @@ Může být jiná než verze firmwaru</translation>
         <location filename="../flasheepromdialog.cpp" line="152"/>
         <source>Error opening file %1:
 %2.</source>
-        <translation type="unfinished">Chyba při otevírání souboru %1:
+        <translation>Chyba při otevírání souboru %1:
 %2.</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="129"/>
         <location filename="../flasheepromdialog.cpp" line="143"/>
         <source>Invalid Models and Settings File %1</source>
-        <translation type="unfinished">Neplatný soubor modelů a nastavení %1</translation>
+        <translation>Neplatný soubor modelů a nastavení %1</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="157"/>
         <source>Error reading file %1:
 %2.</source>
-        <translation type="unfinished">Chyba při otevírání souboru %1:
+        <translation>Chyba při otevírání souboru %1:
 %2.</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="164"/>
         <source>Invalid Models and Settings file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatný soubor modelů a nastavení %1</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="213"/>
@@ -2505,47 +2299,47 @@ Může být jiná než verze firmwaru</translation>
         <location filename="../flasheepromdialog.cpp" line="328"/>
         <location filename="../flasheepromdialog.cpp" line="332"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Pozor</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="213"/>
         <source>Wrong radio calibration data in profile, Settings not patched</source>
-        <translation type="unfinished">Profil neobsahuje platná kalibrační data, nastavení nebyla upravena</translation>
+        <translation>Profil neobsahuje platná kalibrační data, nastavení nebyla upravena</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="258"/>
         <source>Wrong radio setting data in profile, Settings not patched</source>
-        <translation type="unfinished">Profil neobsahuje platná data nastavení rádia, nastavení nebyla upravena</translation>
+        <translation>Profil neobsahuje platná data nastavení rádia, nastavení nebyla upravena</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="280"/>
         <location filename="../flasheepromdialog.cpp" line="284"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished">Nelze zapsat soubor %1:
+        <translation>Nelze zapsat soubor %1:
 %2.</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="290"/>
         <source>Error writing file %1:
 %2.</source>
-        <translation type="unfinished">Chyba při zápisuí souboru %1:
+        <translation>Chyba při zápisu souboru %1:
 %2.</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="328"/>
         <source>The radio firmware belongs to another product family, check file and preferences!</source>
-        <translation type="unfinished">Firmware rádia je z jiné rodiny produktů , zkontrolujte nastavení předvoleb!</translation>
+        <translation>Firmware rádia je z jiné rodiny produktů , zkontrolujte nastavení předvoleb!</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="332"/>
         <source>The radio firmware is outdated, please upgrade!</source>
-        <translation type="unfinished">Firmware rádia je zastaralý, aktualizujte ho prosím!</translation>
+        <translation>Firmware rádia je zastaralý, aktualizujte ho prosím!</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="337"/>
         <source>Cannot check Models and Settings compatibility! Continue anyway?</source>
-        <translation type="unfinished">Nelze ověřit kompatibilitu dat modelů a nastavení! Chcete přesto pokračovat?</translation>
+        <translation>Nelze ověřit kompatibilitu dat modelů a nastavení! Chcete přesto pokračovat?</translation>
     </message>
 </context>
 <context>
@@ -2553,89 +2347,89 @@ Může být jiná než verze firmwaru</translation>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="26"/>
         <source>Flash Firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Zápis firmware</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="66"/>
         <source>Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít...</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="90"/>
         <source>Date &amp; Time</source>
-        <translation type="unfinished">Datum a čas</translation>
+        <translation>Datum a čas</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="104"/>
         <source>Variant</source>
-        <translation type="unfinished">Varianta</translation>
+        <translation>Varianta</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="118"/>
         <source>Version</source>
-        <translation type="unfinished">Verze</translation>
+        <translation>Verze</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="152"/>
         <source>Use profile start screen</source>
-        <translation type="unfinished">Použít logo z nastavení profilu</translation>
+        <translation>Použít logo z nastavení profilu</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="159"/>
         <source>Use firmware start screen</source>
-        <translation type="unfinished">Použít logo z firmwaru</translation>
+        <translation>Použít logo z firmwaru</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="166"/>
         <source>Use library start screen</source>
-        <translation type="unfinished">Použít logo z knihovny</translation>
+        <translation>Použít logo z knihovny</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="173"/>
         <source>Use another start screen</source>
-        <translation type="unfinished">Použít jiné logo</translation>
+        <translation>Použít jiné logo</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="228"/>
         <source>Allows Companion to write to older version of the firmware</source>
-        <translation type="unfinished">Umožní Companion zapisovat do starší verze firmware</translation>
+        <translation>Umožní Companion zapisovat do starší verze firmware</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="231"/>
         <source>Check Hardware compatibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Zkontrolovat hardwarovou kompatibilitu rádia</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="241"/>
         <source>Backup and restore Models and Settings</source>
-        <translation type="unfinished">Zálohovat a obnovit data modelů a nastavení</translation>
+        <translation>Zálohovat a obnovit data modelů a nastavení</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="285"/>
         <source>Cancel</source>
-        <translation type="unfinished">Zrušit</translation>
+        <translation>Zrušit</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="301"/>
         <source>Write to TX</source>
-        <translation type="unfinished">Zapsat do rádia</translation>
+        <translation>Zapsat do rádia</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="124"/>
         <source>Open Firmware File</source>
-        <translation type="unfinished">Otevřít soubor firmwaru</translation>
+        <translation>Otevřít soubor firmwaru</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="128"/>
         <location filename="../flashfirmwaredialog.cpp" line="219"/>
         <location filename="../flashfirmwaredialog.cpp" line="232"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Pozor</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="128"/>
         <source>%1 may not be a valid firmware file</source>
-        <translation type="unfinished">%1 nemusí být platný soubor firmwaru</translation>
+        <translation>%1 nemusí být platný soubor firmwaru</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="138"/>
@@ -2644,98 +2438,98 @@ Může být jiná než verze firmwaru</translation>
         <location filename="../flashfirmwaredialog.cpp" line="175"/>
         <location filename="../flashfirmwaredialog.cpp" line="193"/>
         <source>Error</source>
-        <translation type="unfinished">Chyba</translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="138"/>
         <source>The firmware file is not valid.</source>
-        <translation type="unfinished">Soubor firmwaru není platný.</translation>
+        <translation>Soubor firmwaru není platný.</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="141"/>
         <source>There is no start screen image in the firmware file.</source>
-        <translation type="unfinished">Soubor firmware neobsahuje žádné logo.</translation>
+        <translation>Soubor firmware neobsahuje žádné logo.</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="155"/>
         <source>Profile image %1 is invalid.</source>
-        <translation type="unfinished">Obrázek profilu %1 není platný.</translation>
+        <translation>Obrázek profilu %1 není platný.</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="170"/>
         <source>Open image file to use as radio start screen</source>
-        <translation type="unfinished">Otevřít soubor obrázku pro použití jako úvodní logo</translation>
+        <translation>Otevřít soubor obrázku pro použití jako úvodní logo</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="170"/>
         <source>Images (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrázky (%1)</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="175"/>
         <source>Image could not be loaded from %1</source>
-        <translation type="unfinished">Nelze načíst obrázek z %1</translation>
+        <translation>Nelze načíst obrázek z %1</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="193"/>
         <source>The library image could not be loaded</source>
-        <translation type="unfinished">Nelze načíst obrázek z knihovny</translation>
+        <translation>Nelze načíst obrázek z knihovny</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="219"/>
         <source>Splash image not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrázek loga nebyl nalezen</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="232"/>
         <source>Cannot save customized firmware</source>
-        <translation type="unfinished">Nelze uložit upravený firmware</translation>
+        <translation>Nelze uložit upravený firmware</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="258"/>
         <source>Write Firmware to Radio</source>
-        <translation type="unfinished">Zapsat firmware do rádia</translation>
+        <translation>Zapsat firmware do rádia</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="264"/>
         <location filename="../flashfirmwaredialog.cpp" line="272"/>
         <source>Firmware check failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrola firmwaru selhala</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="264"/>
         <source>Could not check firmware from radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze ověřit firmware v rádiu</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="272"/>
         <source>New firmware is not compatible with the one currently installed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Nový firmware není kompatibilní s verzí instalovanou v rádiu!</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="303"/>
         <source>Conversion failed</source>
-        <translation type="unfinished">Porovnání selhalo</translation>
+        <translation>Převod selhal</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="303"/>
         <source>Cannot convert Models and Settings for use with this firmware, original data will be used</source>
-        <translation type="unfinished">Nemohu konvertovat modely a nastavení pro použití s tímto firmwarem, budou použita původní data</translation>
+        <translation>Nemohu převést modely a nastavení pro použití s tímto firmwarem, budou použita původní data</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="307"/>
         <source>Restore failed</source>
-        <translation type="unfinished">Zápis selhal</translation>
+        <translation>Obnovení selhalo</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="307"/>
         <source>Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1</source>
-        <translation type="unfinished">Nelze obnovit modely a nastavení rádia. Data modelů a nastavení naleznete v %1</translation>
+        <translation>Nelze obnovit modely a nastavení rádia. Data modelů a nastavení naleznete v %1</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="311"/>
         <source>Flashing done</source>
-        <translation type="unfinished"></translation>
+        <translation>Zápis firmware je dokončen</translation>
     </message>
 </context>
 <context>
@@ -2743,49 +2537,49 @@ Může být jiná než verze firmwaru</translation>
     <message>
         <location filename="../process_flash.cpp" line="49"/>
         <source>Executable %1 not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Spustitelný soubor %1 nebyl nalezen</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="180"/>
         <source>Writing...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zápis...</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="185"/>
         <source>Reading...</source>
-        <translation type="unfinished"></translation>
+        <translation>Načítání...</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="189"/>
         <source>Verifying...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ověřování...</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="227"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>neznámý</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="234"/>
         <source>ie: OpenTX for 9X board or OpenTX for 9XR board</source>
-        <translation type="unfinished">ie: OpenTX pro desku 9X nebo OpenTX pro 9XR</translation>
+        <translation>ie: OpenTX pro desku 9X nebo OpenTX pro 9XR</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="239"/>
         <source>ie: OpenTX for M128 / 9X board or OpenTX for 9XR board with M128 chip</source>
-        <translation type="unfinished">ie: OpenTX pro M128 / 9X nebo OpenTX pro 9XR s čipem M128</translation>
+        <translation>ie: OpenTX pro M128 / 9X nebo OpenTX pro 9XR s čipem M128</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="250"/>
         <source>ie: OpenTX for Gruvin9X  board</source>
-        <translation type="unfinished">ie: OpenTX pro desku Gruvin9X</translation>
+        <translation>ie: OpenTX pro desku Gruvin9X</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="258"/>
         <source>Your radio uses a %1 CPU!!!
 
 Please check advanced burn options to set the correct cpu type.</source>
-        <translation type="unfinished">Vaše rádio používá %1 CPU!!!
+        <translation>Vaše rádio používá %1 CPU!!!
 
 Zkontrolujte prosím rozšířená nastavení programátoru a nastavte správný typ CPU.</translation>
     </message>
@@ -2794,7 +2588,7 @@ Zkontrolujte prosím rozšířená nastavení programátoru a nastavte správný
         <source>Your radio uses a %1 CPU!!!
 
 Please select an appropriate firmware type to program it.</source>
-        <translation type="unfinished">Vaše rádio používá %1 CPU!!!
+        <translation>Vaše rádio používá %1 CPU!!!
 
 Vyberte prosím správný typ firmwaru.</translation>
     </message>
@@ -2803,7 +2597,7 @@ Vyberte prosím správný typ firmwaru.</translation>
         <source>
 You are currently using:
  %1</source>
-        <translation type="unfinished">
+        <translation>
 Nyní používáte:
  %1</translation>
     </message>
@@ -2812,27 +2606,29 @@ Nyní používáte:
         <source>Your radio does not seem connected to USB or the driver is not installed!!!
 
 Please use ZADIG to properly install the driver.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaše rádio není připojeno k USB nebo není nainstalován ovladač !
+
+Prosím, použijte program Zadig pro správnou instalaci ovladače.</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="269"/>
         <source>Your radio does not seem connected to USB or the driver is not initialized!!!.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaše rádio není připojeno k USB nebo není inicializován ovladač!.</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="281"/>
         <source>Flashing done (exit code = %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zápis je dokončen (exit code = %1)</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="287"/>
         <source>Flashing done with errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Zápis byl dokončen s chybami</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="300"/>
         <source>FUSES: Low=%1 High=%2 Ext=%3</source>
-        <translation type="unfinished">POJISTKY: Low=%1 High=%2 Ext=%3</translation>
+        <translation>POJISTKY MCU: Low=%1 High=%2 Ext=%3</translation>
     </message>
 </context>
 <context>
@@ -2976,7 +2772,7 @@ Please use ZADIG to properly install the driver.</source>
     <message>
         <location filename="../fusesdialog.ui" line="14"/>
         <source>Fuses</source>
-        <translation type="unfinished">Pojistky mikrokontroléru</translation>
+        <translation>Pojistky mikrokontroléru</translation>
     </message>
     <message>
         <location filename="../fusesdialog.ui" line="20"/>
@@ -2998,7 +2794,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../fusesdialog.ui" line="35"/>
         <source>Read Fuses</source>
-        <translation type="unfinished">Načíst konfiguraci pojistek</translation>
+        <translation>Načíst konfiguraci pojistek</translation>
     </message>
     <message>
         <location filename="../fusesdialog.ui" line="42"/>
@@ -3023,7 +2819,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../fusesdialog.ui" line="59"/>
         <source>Reset Fuses
 EEPROM - PROTECT</source>
-        <translation type="unfinished">Nastavení pojistek
+        <translation>Nastavení pojistek
 EEPROM - CHRÁNIT</translation>
     </message>
     <message>
@@ -3049,7 +2845,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../fusesdialog.ui" line="84"/>
         <source>Reset Fuses
 EEPROM - DELETE</source>
-        <translation type="unfinished">Nastavení pojistek
+        <translation>Nastavení pojistek
 EEPROM - SMAZAT</translation>
     </message>
     <message>
@@ -3764,12 +3560,12 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="42"/>
         <source>Global Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Globální funkce</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="45"/>
         <source>Hardware / Calibration</source>
-        <translation type="unfinished"></translation>
+        <translation>Hardware / Kalibrace</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="135"/>
@@ -3853,104 +3649,104 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="560"/>
         <source>Timeshift from UTC</source>
-        <translation type="unfinished">Časový posun od UTC</translation>
+        <translation>Časový posun od UTC</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="567"/>
         <source>Voice Language</source>
-        <translation type="unfinished">Jazyk hlasových zpráv</translation>
+        <translation>Jazyk hlasových zpráv</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="577"/>
         <source>Country Code</source>
-        <translation type="unfinished">Kód země</translation>
+        <translation>Kód země</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="590"/>
         <source>Stick reverse</source>
-        <translation type="unfinished">Revers os kniplů</translation>
+        <translation>Revers os kniplů</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="597"/>
         <source>FAI Mode</source>
-        <translation type="unfinished">FAI mód</translation>
+        <translation>FAI mód</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="604"/>
         <location filename="../generaledit/generalsetup.ui" line="661"/>
         <source>If you enable FAI, you loose the vario, the play functions, the telemetry screen. This function cannot be disabled by the radio.</source>
-        <translation type="unfinished">FAI je soutéžní mód (www.fai.org), zablokuje vario, zobrazení telemetrie a funkce hlasového hlášení. Tuto funkci nelze vypnout v menu rádia.</translation>
+        <translation>FAI je soutéžní mód (www.fai.org), zablokuje vario, zobrazení telemetrie a funkce hlasového hlášení. Tuto funkci nelze vypnout v menu rádia.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="667"/>
         <source>Adjust RTC</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit RTC</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="676"/>
         <source>Vario pitch at max</source>
-        <translation type="unfinished">Tón varia na maximu</translation>
+        <translation>Tón varia na maximu</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="696"/>
         <location filename="../generaledit/generalsetup.ui" line="948"/>
         <source> Hz</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="715"/>
         <source>Speaker Volume</source>
-        <translation type="unfinished">Hlasitost reproduktoru</translation>
+        <translation>Hlasitost reproduktoru</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="722"/>
         <source>Backlight Switch</source>
-        <translation type="unfinished">Spínač podsvětlení</translation>
+        <translation>Spínač podsvětlení</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="729"/>
         <source>Sound Mode</source>
-        <translation type="unfinished">Mód zvuku</translation>
+        <translation>Mód zvuku</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="738"/>
         <source>Color 1</source>
-        <translation type="unfinished">Barva 1</translation>
+        <translation>Barva 1</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="758"/>
         <source>Color 2</source>
-        <translation type="unfinished">Barva 2</translation>
+        <translation>Barva 2</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="767"/>
         <source>Speaker Pitch (spkr only)</source>
-        <translation type="unfinished">Tón zvuku (pouze spkr)</translation>
+        <translation>Tón zvuku (pouze spkr)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="786"/>
         <source>If this value is not 0, any keypress will turn on the backlight and turn it off after the specified number of seconds.</source>
-        <translation type="unfinished">Pokud tato hodnota není nula, každé stisknutí klávesy zapne podsvétlení a vypne ho až po uplynutí nastaveného počtu sekund.</translation>
+        <translation>Pokud tato hodnota není nula, každé stisknutí klávesy zapne podsvétlení a vypne ho až po uplynutí nastaveného počtu sekund.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="789"/>
         <source> sec</source>
-        <translation type="unfinished">s</translation>
+        <translation>s</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="802"/>
         <source>Backlight color</source>
-        <translation type="unfinished">Barva podsvětlení</translation>
+        <translation>Barva podsvětlení</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="810"/>
         <source>Beeper</source>
-        <translation type="unfinished">Bzučák</translation>
+        <translation>Bzučák</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="815"/>
         <source>Speaker</source>
-        <translation type="unfinished">Reproduktor</translation>
+        <translation>Reproduktor</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="820"/>
@@ -3986,7 +3782,7 @@ Opravdu to takto chcete ?</translation>
         <location filename="../generaledit/generalsetup.ui" line="929"/>
         <location filename="../generaledit/generalsetup.ui" line="1355"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="967"/>
@@ -4024,7 +3820,12 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;LCD Screen Contrast&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Values can be 20-45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Kontrast LCD panelu&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Hodnoty mohou být 20-45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1054"/>
@@ -4095,22 +3896,22 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1141"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mód1 (Směr.Výšk.Plyn.Křid)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1146"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mód2 (Směr.Plyn.Výšk.Křid)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1151"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mód3 (Křid.Výšk.Plyn.Směr)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1156"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mód4 (Křid.Plyn.Výšk.Směr)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1170"/>
@@ -4301,7 +4102,7 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1527"/>
         <source>Battery Meter Range</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rozsah ukazatele baterie</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1546"/>
@@ -4362,34 +4163,34 @@ Mode 4:
 This is the threashhold where the battery warning sounds.
 
 Acceptable values are 5v..10v</source>
-        <translation type="unfinished">Hodnoto pro varování při nízkém stavu baterie rádia.
+        <translation>Hodnoto pro varování při nízkém stavu baterie rádia.
 Použitelné hodnoty jsou 5v..10v</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1805"/>
         <source>Standard</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1810"/>
         <source>Optrex</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1836"/>
         <source>If not zero will sound beeps if the transmitter has been left without inputs for the specified number of minutes.</source>
-        <translation type="unfinished">Pokud není nastaveno na nulu, bude zapnuto zvukové upozornění, že jste rádio nechali bez povšimnutí nastavený počet minut.</translation>
+        <translation>Pokud není nastaveno na nulu, bude zapnuto zvukové upozornění, že jste rádio nechali bez povšimnutí nastavený počet minut.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1839"/>
         <source> min</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1863"/>
         <location filename="../generaledit/generalsetup.ui" line="1866"/>
         <source>Show splash screen on startup</source>
-        <translation type="unfinished">Zobrazit úvodní logo při zapnutí vysílčky</translation>
+        <translation>Zobrazit úvodní logo při zapnutí vysílčky</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1883"/>
@@ -4399,37 +4200,37 @@ Použitelné hodnoty jsou 5v..10v</translation>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1888"/>
         <source>2s</source>
-        <translation type="unfinished">CH9X {2s?}</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1893"/>
         <source>3s</source>
-        <translation type="unfinished">CH9X {3s?}</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1898"/>
         <source>4s</source>
-        <translation type="unfinished">CH9X {4s?}</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1903"/>
         <source>6s</source>
-        <translation type="unfinished">CH9X {6s?}</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1908"/>
         <source>8s</source>
-        <translation type="unfinished">CH9X {8s?}</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1913"/>
         <source>10s</source>
-        <translation type="unfinished">CH9X {10s?}</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1918"/>
         <source>15s</source>
-        <translation type="unfinished">CH9X {15s?}</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1929"/>
@@ -4582,7 +4383,7 @@ p, li { white-space: pre-wrap; }
         <source>If you enable FAI, you loose the vario, the play functions, the telemetry screen.
 This function cannot be disabled by the radio.
 Are you sure ?</source>
-        <translation type="unfinished">FAI je mód pro soutěže s omezením funkcí telemetrie.
+        <translation>FAI je mód pro soutěže s omezením funkcí telemetrie.
 Pokud aktivujete FAI, zablokujete vario, zobrazení telemetrie a funkce hlasového hlášení.
 Tuto funkci nelze vypnout v menu rádia.
 Opravdu to takto chcete ?</translation>
@@ -4609,72 +4410,80 @@ Opravdu to takto chcete ?</translation>
 <context>
     <name>Heli</name>
     <message>
-        <location filename="../modeledit/heli.ui" line="90"/>
+        <location filename="../modeledit/heli.ui" line="54"/>
         <source>Invert Elevator</source>
         <translation>Invertovat výškovku</translation>
     </message>
     <message>
-        <location filename="../modeledit/heli.ui" line="97"/>
+        <location filename="../modeledit/heli.ui" line="61"/>
         <source>Invert Aileron</source>
         <translation>Invertovat křidélka</translation>
     </message>
     <message>
-        <location filename="../modeledit/heli.ui" line="104"/>
+        <location filename="../modeledit/heli.ui" line="68"/>
         <source>Invert Collective</source>
         <translation>Invertovat kolektiv</translation>
     </message>
     <message>
-        <location filename="../modeledit/heli.ui" line="113"/>
         <source>Elevator</source>
-        <translation type="unfinished">Výškovka</translation>
+        <translation type="obsolete">Výškovka</translation>
     </message>
     <message>
-        <location filename="../modeledit/heli.ui" line="139"/>
+        <location filename="../modeledit/heli.ui" line="103"/>
         <source>Invert</source>
         <translation>Invertovat</translation>
     </message>
     <message>
-        <location filename="../modeledit/heli.ui" line="202"/>
         <source>Aileron</source>
-        <translation type="unfinished">Křidélka</translation>
+        <translation type="obsolete">Křidélka</translation>
     </message>
     <message>
-        <location filename="../modeledit/heli.ui" line="31"/>
+        <location filename="../modeledit/heli.ui" line="24"/>
         <source>Off</source>
         <translation>Vypnuto</translation>
     </message>
     <message>
-        <location filename="../modeledit/heli.ui" line="36"/>
+        <location filename="../modeledit/heli.ui" line="29"/>
         <source>120</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/heli.ui" line="41"/>
+        <location filename="../modeledit/heli.ui" line="34"/>
         <source>120X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/heli.ui" line="46"/>
+        <location filename="../modeledit/heli.ui" line="39"/>
         <source>140</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/heli.ui" line="51"/>
+        <location filename="../modeledit/heli.ui" line="44"/>
         <source>90</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/heli.ui" line="23"/>
+        <location filename="../modeledit/heli.ui" line="77"/>
+        <source>Long. cyc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/heli.ui" line="166"/>
+        <source>Lateral cyc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/heli.ui" line="231"/>
         <source>Collective</source>
         <translation>Kolektiv</translation>
     </message>
     <message>
-        <location filename="../modeledit/heli.ui" line="166"/>
+        <location filename="../modeledit/heli.ui" line="130"/>
         <source>Swash Type</source>
         <translation>Typ cykliky</translation>
     </message>
     <message>
-        <location filename="../modeledit/heli.ui" line="159"/>
+        <location filename="../modeledit/heli.ui" line="123"/>
         <source>Swash Ring</source>
         <translation>Cyklika</translation>
     </message>
@@ -10090,14 +9899,12 @@ The OpenTX Team.</source>
 Tým OpenTX.</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.h" line="839"/>
         <source>Positive</source>
-        <translation type="unfinished">Pozitivní</translation>
+        <translation type="obsolete">Pozitivní</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.h" line="839"/>
         <source>Negative</source>
-        <translation type="unfinished">Negativní</translation>
+        <translation type="obsolete">Negativní</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="44"/>
@@ -13679,7 +13486,7 @@ Potom stiskněte tlačítko Další</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="55"/>
-        <location filename="../simulation/joystickdialog.cpp" line="130"/>
+        <location filename="../simulation/joystickdialog.cpp" line="131"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
@@ -13717,9 +13524,13 @@ Press cancel to abort joystick calibration</source>
 Tlačítkem Zrušit přerušíte kalibraci</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="130"/>
+        <location filename="../simulation/joystickdialog.cpp" line="131"/>
+        <source>Duplicated stick assignment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Duplicated stick assignement</source>
-        <translation>Duplicitní přiřazení páky</translation>
+        <translation type="obsolete">Duplicitní přiřazení páky</translation>
     </message>
 </context>
 <context>
