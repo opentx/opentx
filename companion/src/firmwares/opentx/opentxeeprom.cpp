@@ -3095,7 +3095,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       if (version >= 217)
         internalField.Append(new UnsignedField<8>(modelData.moduleData[module].failsafeMode));
       else
-        internalField.Append(new ConversionField< UnsignedField<8> >(modelData.moduleData[module].failsafeMode, 1));
+        internalField.Append(new ConversionField< UnsignedField<8> >(modelData.moduleData[module].failsafeMode, -1));
       for (int i=0; i<32; i++) {
         internalField.Append(new SignedField<16>(modelData.moduleData[module].failsafeChannels[i]));
       }
