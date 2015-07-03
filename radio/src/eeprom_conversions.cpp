@@ -1035,7 +1035,7 @@ void ConvertModel_216_to_217(ModelData &model)
     newModel.moduleData[i].rfProtocol = oldModel.moduleData[i].rfProtocol;
     newModel.moduleData[i].channelsStart = oldModel.moduleData[i].channelsStart;
     newModel.moduleData[i].channelsCount = oldModel.moduleData[i].channelsCount;
-    newModel.moduleData[i].failsafeMode = oldModel.moduleData[i].failsafeMode;
+    newModel.moduleData[i].failsafeMode = oldModel.moduleData[i].failsafeMode + 1;
     for (int j=0; j<NUM_CHNOUT; j++) {
       newModel.moduleData[i].failsafeChannels[j] = oldModel.moduleData[i].failsafeChannels[j];
     }
