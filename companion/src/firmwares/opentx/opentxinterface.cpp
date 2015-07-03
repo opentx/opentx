@@ -401,6 +401,9 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
   if (board == BOARD_M128) {
     variant |= M128_VARIANT;
   }
+  else if (board == BOARD_TARANIS_X9E) {
+    variant |= TARANIS_X9E_VARIANT;
+  }
 
   int result = saveGeneral<OpenTxGeneralData>(radioData.generalSettings, board, version, variant);
   if (!result) {
@@ -757,6 +760,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
         return SIMU_STOCK_VARIANTS;
       else if (board == BOARD_M128)
         return SIMU_M128_VARIANTS;
+      else if (board == BOARD_TARANIS_X9E)
+        return TARANIS_X9E_VARIANT;
       else
         return 0;
     case MavlinkTelemetry:
@@ -949,7 +954,7 @@ bool OpenTxEepromInterface::checkVersion(unsigned int version)
 
 bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int variant)
 {
-  if (board == BOARD_M128 && !(variant & 0x8000)) {
+  if (board == BOARD_M128 && !(variant & M128_VARIANT)) {
     if (version == 212) {
       uint8_t tmp[1000];
       for (int i=1; i<31; i++) {
@@ -961,12 +966,23 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
         }
       }
     }
-    std::cout << " error when loading M128 general settings (wrong variant)";
+    std::cout << " wrong variant (" << variant << ")";
     return false;
   }
-  else {
-    return true;
+  else if (board == BOARD_TARANIS_X9E) {
+    if (variant != TARANIS_X9E_VARIANT) {
+      std::cout << " wrong variant (" << variant << ")";
+      return false;
+    }
   }
+  else if (IS_TARANIS(board)) {
+    if (variant != 0) {
+      std::cout << " wrong variant (" << variant << ")";
+      return false;
+    }
+  }
+
+  return true;
 }
 
 bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
