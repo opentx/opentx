@@ -139,7 +139,6 @@ enum Mix216Sources {
   MIXSRC216_FIRST_TELEM,
 };
 
-
 enum Telemetry216Source {
   TELEM216_NONE,
   TELEM216_TX_VOLTAGE,
@@ -1001,6 +1000,9 @@ void ConvertModel_216_to_217(ModelData &model)
     else if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
       sw.v1 = ConvertSwitch_216_to_217(sw.v1);
       sw.v2 = ConvertSwitch_216_to_217(sw.v2);
+    }
+    else if (cstate == LS_FAMILY_EDGE) {
+      sw.v1 = ConvertSwitch_216_to_217(sw.v1);
     }
     sw.andsw = ConvertSwitch_216_to_217(sw.andsw);
   }
