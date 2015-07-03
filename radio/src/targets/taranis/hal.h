@@ -538,6 +538,23 @@
   #define TOPLCD_GPIO_PIN_BL            GPIO_Pin_2
 #endif
 
+// Bluetooth on X9E
+#if defined(REV9E)
+  #define BT_USART                     USART6
+  #define BT_GPIO_AF                   GPIO_AF_USART6
+  #define BT_USART_IRQn                USART6_IRQn
+  #define BT_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOB)
+  #define BT_GPIO_TXRX                 GPIOG
+  #define BT_GPIO_PIN_TX               GPIO_Pin_14 // PG.14
+  #define BT_GPIO_PIN_RX               GPIO_Pin_9  // PG.09
+  #define BT_GPIO_EN                   GPIOD
+  #define BT_GPIO_PIN_EN               GPIO_Pin_11 // PD.11
+  #define BT_GPIO_BRTS                 GPIOB
+  #define BT_GPIO_PIN_BRTS             GPIO_Pin_10
+  #define BT_GPIO_PinSource_TX         GPIO_PinSource14
+  #define BT_GPIO_PinSource_RX         GPIO_PinSource9
+#endif
+
 // 5ms Interrupt
 #define INTERRUPT_5MS_APB1Periph        RCC_APB1Periph_TIM14
 #define INTERRUPT_5MS_TIMER             TIM14
