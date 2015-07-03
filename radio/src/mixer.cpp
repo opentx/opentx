@@ -841,7 +841,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       //========== CURVES ===============
 #if defined(XCURVES)
-      if (apply_offset_and_curve && md->curve.value) {
+      if (apply_offset_and_curve && md->curve.type != CURVE_REF_DIFF && md->curve.value) {
         v = applyCurve(v, md->curve);
       }
 #else
@@ -860,7 +860,11 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 
       //========== DIFFERENTIAL =========
-#if !defined(XCURVES)
+#if defined(XCURVES)
+      if (md->curve.type == CURVE_REF_DIFF && md->curve.value) {
+        dv = applyCurve(dv, md->curve);
+      }
+#else
       if (md->curveMode == MODE_DIFFERENTIAL) {
         // @@@2 also recalculate curveParam to a 256 basis which ease the calculation later a lot
         int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));
