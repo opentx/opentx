@@ -3014,7 +3014,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new UnsignedField<8>(modelData.moduleData[0].modelId));
   }
 
-  if (IS_TARANIS_X9E(board) && version >= 217)
+  if (IS_TARANIS_X9E(board))
     internalField.Append(new SwitchesWarningField<64>(modelData.switchWarningStates, board, version));
   else if (IS_TARANIS(board))
     internalField.Append(new SwitchesWarningField<16>(modelData.switchWarningStates, board, version));
@@ -3022,7 +3022,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new SwitchesWarningField<8>(modelData.switchWarningStates, board, version));
 
 
-  if (IS_TARANIS_X9E(board) && version >= 217)
+  if (IS_TARANIS_X9E(board))
     internalField.Append(new UnsignedField<32>(modelData.switchWarningEnable));
   else if (version >= 216)
     internalField.Append(new UnsignedField<8>(modelData.switchWarningEnable));

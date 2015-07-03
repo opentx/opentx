@@ -420,7 +420,9 @@ void modelDefault(uint8_t id)
   }
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(PCBTARANIS)
+  g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_XJT;
+#elif defined(PCBSKY9X)
   g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_PPM;
 #endif
 

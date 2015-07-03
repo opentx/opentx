@@ -917,7 +917,7 @@ void ConvertModel_216_to_217(ModelData &model)
   }
   newModel.telemetryProtocol = oldModel.telemetryProtocol;
   newModel.thrTrim = oldModel.thrTrim;
-  newModel.trimInc = oldModel.trimInc - 2;
+  newModel.trimInc = oldModel.trimInc;
   newModel.disableThrottleWarning = oldModel.disableThrottleWarning;
   newModel.displayChecklist = oldModel.displayChecklist;
   newModel.extendedLimits = oldModel.extendedLimits;
@@ -1044,6 +1044,9 @@ void ConvertModel_216_to_217(ModelData &model)
     newModel.moduleData[i].ppmPulsePol = oldModel.moduleData[i].ppmPulsePol;
   }
 
+#if defined(PCBTARANIS)
+  newModel.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_XJT;
+#endif
   newModel.moduleData[EXTERNAL_MODULE].type = oldModel.externalModule;
 
 #if defined(PCBTARANIS)
