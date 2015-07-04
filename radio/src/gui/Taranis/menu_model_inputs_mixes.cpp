@@ -169,8 +169,12 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
     memclear(mix, sizeof(MixData));
     mix->destCh = s_currCh-1;
     mix->srcRaw = s_currCh;
-    if (!isSourceAvailable(mix->srcRaw))
+    if (!isSourceAvailable(mix->srcRaw)) {
       mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
+      while (!isSourceAvailable(mix->srcRaw)) {
+        mix->srcRaw += 1;
+      }
+    }
     mix->weight = 100;
   }
   resumeMixerCalculations();
