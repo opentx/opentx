@@ -35,7 +35,7 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   addTab(new InputsPanel(this, model, generalSettings, firmware), tr("Inputs"));
   addTab(new MixesPanel(this, model, generalSettings, firmware), tr("Mixes"));
   Channels * chnPanel = new Channels(this, model, generalSettings, firmware);
-  addTab(chnPanel, tr("Servos"));
+  addTab(chnPanel, tr("Outputs"));
   addTab(new Curves(this, model, generalSettings, firmware), tr("Curves"));
   addTab(new LogicalSwitchesPanel(this, model, generalSettings, firmware), tr("Logical Switches"));
   addTab(new CustomFunctionsPanel(this, &model, generalSettings, firmware), tr("Special Functions"));
