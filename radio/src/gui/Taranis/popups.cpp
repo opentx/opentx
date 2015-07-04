@@ -128,7 +128,7 @@ const char * displayMenu(uint8_t event)
 {
   const char * result = NULL;
 
-  uint8_t display_count = min<uint8_t>(s_menu_count, MENU_MAX_DISPLAY_LINES);
+  uint8_t display_count = min<unsigned int>(s_menu_count, MENU_MAX_DISPLAY_LINES);
   uint8_t y = (display_count >= 5 ? MENU_Y - FH - 1 : MENU_Y);
   drawFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
   lcd_rect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);

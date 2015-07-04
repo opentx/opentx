@@ -327,8 +327,8 @@ extern uint8_t s_warning_info_flags;
 
 #define NAVIGATION_MENUS
 #define MENU_ADD_ITEM(s) do { s_menu_offset_type = MENU_OFFSET_INTERNAL; if (s_menu_count < MENU_MAX_LINES) s_menu[s_menu_count++] = s; } while (0)
-#define MENU_MAX_LINES 12
-#define MENU_MAX_DISPLAY_LINES 6
+#define MENU_MAX_LINES           12
+#define MENU_MAX_DISPLAY_LINES   6
 #define MENU_ADD_SD_ITEM(s) MENU_ADD_ITEM(s)
 #define MENU_LINE_LENGTH (LEN_MODEL_NAME+12)
 extern const char *s_menu[MENU_MAX_LINES];

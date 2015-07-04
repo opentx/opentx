@@ -389,7 +389,7 @@ void displayWarning(uint8_t event);
   #define POPUP_WARNING(...)
   #define POPUP_CONFIRMATION(...)
   #define POPUP_INPUT(...)
-  #define WARNING_INFO_FLAGS    0
+  #define WARNING_INFO_FLAGS           0
   #define SET_WARNING_INFO(...)
 #elif defined(CPUARM)
   #define DISPLAY_WARNING       (*popupFunc)
@@ -399,23 +399,24 @@ void displayWarning(uint8_t event);
   #define WARNING_INFO_FLAGS    s_warning_info_flags
   #define SET_WARNING_INFO(info, len, flags) (s_warning_info = info, s_warning_info_len = len, s_warning_info_flags = flags)
 #else
-  #define DISPLAY_WARNING       displayWarning
-  #define POPUP_WARNING(s)      s_warning = s
-  #define POPUP_CONFIRMATION(s) (s_warning = s, s_warning_type = WARNING_TYPE_CONFIRM)
-  #define WARNING_INFO_FLAGS    ZCHAR
+  #define DISPLAY_WARNING              displayWarning
+  #define POPUP_WARNING(s)             s_warning = s
+  #define POPUP_CONFIRMATION(s)        (s_warning = s, s_warning_type = WARNING_TYPE_CONFIRM)
+  #define WARNING_INFO_FLAGS           ZCHAR
   #define SET_WARNING_INFO(info, len, flags) (s_warning_info = info, s_warning_info_len = len)
 #endif
 
 #if defined(SDCARD) || (defined(ROTARY_ENCODER_NAVIGATION) && !defined(CPUM64))
   #define NAVIGATION_MENUS
   #define MENU_ADD_ITEM(s) s_menu[s_menu_count++] = s
-  #define MENU_MAX_LINES 6
+  #define MENU_MAX_LINES               6
+  #define MENU_MAX_DISPLAY_LINES       MENU_MAX_LINES
   #if defined(SDCARD)
-    #define MENU_ADD_SD_ITEM(s) MENU_ADD_ITEM(s)
+    #define MENU_ADD_SD_ITEM(s)        MENU_ADD_ITEM(s)
   #else
     #define MENU_ADD_SD_ITEM(s)
   #endif
-  #define MENU_LINE_LENGTH (LEN_MODEL_NAME+1)
+  #define MENU_LINE_LENGTH             (LEN_MODEL_NAME+1)
   extern const char *s_menu[MENU_MAX_LINES];
   extern uint16_t s_menu_count;
   extern uint8_t s_menu_flags;
@@ -427,7 +428,7 @@ void displayWarning(uint8_t event);
 #endif
 
 #if defined(SDCARD)
-  #define STATUS_LINE_LENGTH 32
+  #define STATUS_LINE_LENGTH           32
   extern char statusLineMsg[STATUS_LINE_LENGTH];
   void showStatusLine();
   void drawStatusLine();
@@ -436,7 +437,7 @@ void displayWarning(uint8_t event);
 #endif
 
 #if defined(CPUARM)
-  #define TEXT_FILENAME_MAXLEN  40
+  #define TEXT_FILENAME_MAXLEN         40
   extern char s_text_file[TEXT_FILENAME_MAXLEN];
   void menuTextView(uint8_t event);
   void pushMenuTextView(const char *filename);
@@ -444,30 +445,30 @@ void displayWarning(uint8_t event);
   void pushModelNotes();
 #endif
 
-#define LABEL(...) (uint8_t)-1
+#define LABEL(...)                     (uint8_t)-1
 
 #define KEY_MOVE_UP    KEY_UP
 #define KEY_MOVE_DOWN  KEY_DOWN
-#define CURSOR_MOVED_LEFT(event)  (IS_ROTARY_LEFT(event) || EVT_KEY_MASK(event) == KEY_LEFT)
-#define CURSOR_MOVED_RIGHT(event) (IS_ROTARY_RIGHT(event) || EVT_KEY_MASK(event) == KEY_RIGHT)
-#define CASE_EVT_ROTARY_MOVE_RIGHT CASE_EVT_ROTARY_RIGHT
-#define CASE_EVT_ROTARY_MOVE_LEFT  CASE_EVT_ROTARY_LEFT
-#define IS_ROTARY_MOVE_RIGHT       IS_ROTARY_RIGHT
-#define IS_ROTARY_MOVE_LEFT        IS_ROTARY_LEFT
+#define CURSOR_MOVED_LEFT(event)       (IS_ROTARY_LEFT(event) || EVT_KEY_MASK(event) == KEY_LEFT)
+#define CURSOR_MOVED_RIGHT(event)      (IS_ROTARY_RIGHT(event) || EVT_KEY_MASK(event) == KEY_RIGHT)
+#define CASE_EVT_ROTARY_MOVE_RIGHT     CASE_EVT_ROTARY_RIGHT
+#define CASE_EVT_ROTARY_MOVE_LEFT      CASE_EVT_ROTARY_LEFT
+#define IS_ROTARY_MOVE_RIGHT           IS_ROTARY_RIGHT
+#define IS_ROTARY_MOVE_LEFT            IS_ROTARY_LEFT
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
   void repeatLastCursorMove(uint8_t event);
-  #define REPEAT_LAST_CURSOR_MOVE() { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else repeatLastCursorMove(event); }
-  #define MOVE_CURSOR_FROM_HERE()   if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
+  #define REPEAT_LAST_CURSOR_MOVE()    { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else repeatLastCursorMove(event); }
+  #define MOVE_CURSOR_FROM_HERE()      if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
 #else
   void repeatLastCursorMove(uint8_t event);
-  #define REPEAT_LAST_CURSOR_MOVE() repeatLastCursorMove(event)
-  #define MOVE_CURSOR_FROM_HERE()   REPEAT_LAST_CURSOR_MOVE()
+  #define REPEAT_LAST_CURSOR_MOVE()    repeatLastCursorMove(event)
+  #define MOVE_CURSOR_FROM_HERE()      REPEAT_LAST_CURSOR_MOVE()
 #endif
 
-#define POS_VERT_INIT            0
-#define POS_HORZ_INIT(posVert)   0
-#define EDIT_MODE_INIT           -1
+#define POS_VERT_INIT                  0
+#define POS_HORZ_INIT(posVert)         0
+#define EDIT_MODE_INIT                 -1
 
 typedef int16_t (*FnFuncP) (int16_t x);
 void DrawFunction(FnFuncP fn, uint8_t offset=0);
