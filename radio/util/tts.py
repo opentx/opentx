@@ -133,8 +133,7 @@ def ttsEn():
         systemSounds.append((str(100*(i+1)), filename(PROMPT_SYSTEM_BASE+100+i)))
     for i, s in enumerate(["thousand", "and", "minus", "point"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+109+i)))
-    for i, s in enumerate(["", "",
-                           "volt", "volts",
+    for i, s in enumerate(["volt", "volts",
                            "amp", "amps",
                            "milliamp", "milliamps",
                            "knot", "knots",
