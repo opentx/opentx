@@ -1009,7 +1009,7 @@ void lcd_plot(coord_t x, coord_t y, LcdFlags att)
 
 void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
 {
-  if (y >= LCD_H) return;
+  if (y < 0 || y >= LCD_H) return;
   if (x+w > LCD_W) {
     if (x >= LCD_W ) return;
     w = LCD_W - x;
