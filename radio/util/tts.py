@@ -312,7 +312,7 @@ def ttsIt():
     systemSounds.append(("mille", filename(PROMPT_SYSTEM_BASE+102)))
     for i, s in enumerate(["virgola", "un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+103+i)))
-    for i, s in enumerate(["volt", "ampere", "metri per secondo", "", "chilometri/ora", "metri", "gradi", "percento", "milliampere", "milliampere/ora", "watt", "db", "piedi", "nodi", "ore", "minuti", "secondi", "R P M", "g", "millilitri", "once"]):
+    for i, s in enumerate(["", "volt", "ampere", "milliampers", "nodi", "metri al secondo", "piedi al secondo", "chilometri ora", "miglia per ora", "metri", "piedi", "gradi celsius","gradi fahrenheit", "percento", "milliampere ora", "watt", "db", "R P M", "g", "gradi", "millilitri", "once"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+113+i)))            
     for s, f, a in [(u"radio inattiva controllare", "inactiv", 486),
                     (u"batteria della radio scarica", "lowbatt", 485),
@@ -332,6 +332,10 @@ def ttsIt():
                     (u"A1 critico", "a1_red", NO_ALTERNATE),
                     (u"A2 in allarme", "a2_org", NO_ALTERNATE),
                     (u"A2 critico", "a2_red", NO_ALTERNATE),
+                    (u"A3 in allarme", "a3_org", NO_ALTERNATE),
+                    (u"A3 critico", "a3_red", NO_ALTERNATE),
+                    (u"A4 in allarme", "a4_org", NO_ALTERNATE),
+                    (u"A4 critico", "a4_red", NO_ALTERNATE),
                     (u"Segnale radio basso", "rssi_org", NO_ALTERNATE),
                     (u"Segnale radio critico", "rssi_red", NO_ALTERNATE),
                     (u"Problema all'antenna della radio", "swr_red", NO_ALTERNATE),
@@ -339,11 +343,11 @@ def ttsIt():
                     (u"Telemetria disponibile", "telemok", NO_ALTERNATE),
                  ]:
         systemSounds.append((s, filename(f, a)))
-    for i, s in enumerate([u"timer", u"timer",  u"trasmissione", u"ricezione", u"A1", u"A2", u"altitudine", u"motore",
+    for i, s in enumerate([u"timer", u"", u"tensione", u"tensione", u"trasmissione", u"ricezione", u"altitudine", u"motore",
                            u"carburante", u"temperatura", u"temperatura", u"velocità", "distanza", u"altitudine", u"cella lipo",
                            u"totale lipo", u"tensione", u"corrente", u"consumo", u"potenza", u"accellerazione X", u"accellerazione Y", u"accellerazione Z",
                            u"direzione", u"variometro",u"minimo",u"massimo"]):
-        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+132+i)))
+        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+135+i)))
     for i, (s, f) in enumerate([
                  (u"carrello chiuso", "gearup"),
                  (u"carrello aperto", "geardn"),

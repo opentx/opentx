@@ -502,7 +502,7 @@
 #define TR_VTMRMODES           "OFF""ABS""MOs""MO%""MOt"
 
 #define LEN_VTRAINERMODES      "\022"
-#define TR_VTRAINERMODES       "Maestro/Jack\0     ""Allievo/Jack\0     ""Master/SBUS Module""Master/CPPM Module""Master/Battery\0"
+#define TR_VTRAINERMODES       "Maestro/Jack\0     ""Allievo/Jack\0     ""Master/Modulo SBUS""Master/Modulo CPPM""Master/Batteria"
 
 #define LEN_VFAILSAFE          "\013"
 #define TR_VFAILSAFE           "Not set\0 ""Mantieni\0  ""Personali\0 ""No impulsi\0""Ricevente\0 "
@@ -517,16 +517,16 @@
 #endif
 
 #define LEN_VSENSORTYPES        "\012"
-#define TR_VSENSORTYPES        "Custom\0   ""Calculated"
+#define TR_VSENSORTYPES        "Custom\0   ""Calcolato\0"
 
-#define LEN_VFORMULAS          "\010"
-#define TR_VFORMULAS           "Add\0    ""Average\0""Min\0    ""Max\0    ""Multiply""Totalize""Cell\0   ""Consumpt""Distance"
+#define LEN_VFORMULAS          "\011"
+#define TR_VFORMULAS           "Somma\0   ""Media\0   ""Min\0     ""Max\0     ""Moltipl\0 ""Totalizza""Cella\0  ""Consumo\0 ""Distanza\0"
 
 #define LEN_VPREC              "\005"
 #define TR_VPREC               "PREC0""PREC1""PREC2"
 
-#define LEN_VCELLINDEX         "\007"
-#define TR_VCELLINDEX          "Lowest\0""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Highest""Delta\0"
+#define LEN_VCELLINDEX         "\010"
+#define TR_VCELLINDEX          "Minore\0 ""1\0      ""2\0      ""3\0      ""4\0      ""5\0      ""6\0      ""Maggiore""Delta\0"
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
@@ -573,7 +573,7 @@
 #define TR_TTRACE              TR("T-Source", INDENT "Sorgente Motore")
 #define TR_TTRIM               TR("T-Trim", INDENT "Trim Motore")
 #define TR_BEEPCTR             TR("Ctr Beep","Beep al centro")
-#define TR_USE_GLOBAL_FUNCS    "Use Global Funcs"
+#define TR_USE_GLOBAL_FUNCS    "Usa Funz Globali"
 #if defined(PCBSKY9X) && defined(REVX)
   #define TR_OUTPUT_TYPE       INDENT "Output"
 #endif
@@ -1018,37 +1018,37 @@
 #define TR_MODS_FORBIDDEN      "Modifica proibita!"
 #define TR_UNLOCKED            "Sbloccato"
 #define TR_ID                  "ID"
-#define TR_PRECISION           "Precision"
+#define TR_PRECISION           "Precisione"
 #define TR_RATIO               "Ratio"
 #define TR_FORMULA             "Formula"
-#define TR_CELLINDEX           "Cell index"
+#define TR_CELLINDEX           "Indice cella"
 #define TR_LOGS                "Logs"
-#define TR_OPTIONS             "Options"
+#define TR_OPTIONS             "Opzioni"
 
-#define TR_ALTSENSOR           "Alt sensor"
-#define TR_CELLSENSOR          "Cell sensor"
-#define TR_GPSSENSOR           "GPS sensor"
-#define TR_CURRENTSENSOR       "Current sensor"
+#define TR_ALTSENSOR           "Sensore Alt"
+#define TR_CELLSENSOR          "Sensore Cell"
+#define TR_GPSSENSOR           "Sensore GPS"
+#define TR_CURRENTSENSOR       "Sensore Currente"
 #define TR_AUTOOFFSET          "Auto Offset"
-#define TR_ONLYPOSITIVE        "Positive"
-#define TR_FILTER              "Filter"
-#define TR_TELEMETRYFULL       "All telemetry slots full!"
+#define TR_ONLYPOSITIVE        "Positivo"
+#define TR_FILTER              "Filtro"
+#define TR_TELEMETRYFULL       "Tutti gli slot sono pieni!"
 
-#define TR_MENU_INPUTS         "\314Inputs"
+#define TR_MENU_INPUTS         "\314Ingressi"
 #define TR_MENU_LUA            "\322Lua scripts"
 #define TR_MENU_STICKS         "\307Sticks"
 #define TR_MENU_POTS           "\310Pots"
 #define TR_MENU_MAX            "\315MAX"
-#define TR_MENU_HELI           "\316Cyclic"
+#define TR_MENU_HELI           "\316Ciclico"
 #define TR_MENU_TRIMS          "\313Trims"
 #define TR_MENU_SWITCHES       "\312Switches"
-#define TR_MENU_LOGICAL_SWITCHES "\312Logical Switches"
+#define TR_MENU_LOGICAL_SWITCHES "\312Switches Logici"
 #define TR_MENU_TRAINER        "\317Trainer"
-#define TR_MENU_CHANNELS       "\320Channels"
+#define TR_MENU_CHANNELS       "\320Canali"
 #define TR_MENU_GVARS          "\311GVars"
 #define TR_MENU_TELEMETRY      "\321Telemetry"
-#define TR_MENU_OTHER          "Other"
-#define TR_MENU_INVERT         "Invert"
+#define TR_MENU_OTHER          "Altro"
+#define TR_MENU_INVERT         "Inverti"
 
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_SWR               "SWR"
@@ -1072,5 +1072,5 @@
 #define ZSTR_HDG               "Hdg"
 #define ZSTR_CELLS             "Cels"
 #define ZSTR_GPSALT            "GAlt"
-#define ZSTR_GPSDATETIME       "Date"
+#define ZSTR_GPSDATETIME       "Data"
 #define ZSTR_GPS               "GPS"
