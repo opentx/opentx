@@ -6597,11 +6597,6 @@ p, li { white-space: pre-wrap; }
         <translation>Mixages</translation>
     </message>
     <message>
-        <location filename="../modeledit/modeledit.cpp" line="38"/>
-        <source>Servos</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../modeledit/modeledit.cpp" line="40"/>
         <source>Logical Switches</source>
         <translation>Inters logiques</translation>
@@ -6633,6 +6628,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/modeledit.cpp" line="34"/>
         <source>Flight Modes</source>
         <translation>Phases de vol</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/modeledit.cpp" line="38"/>
+        <source>Outputs</source>
+        <translation>Sorties</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="41"/>
