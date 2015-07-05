@@ -109,8 +109,9 @@ void eepromWriteBlock(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteToWr
 {
   uint8_t offset = WriteAddr % I2C_FLASH_PAGESIZE;
   uint8_t count = I2C_FLASH_PAGESIZE - offset;
-  if (NumByteToWrite < I2C_FLASH_PAGESIZE)
+  if (NumByteToWrite < count) {
     count = NumByteToWrite;
+  }
   while (count > 0) {
     I2C_EE_PageWrite(pBuffer, WriteAddr, count);
     I2C_EE_WaitEepromStandbyState();
@@ -118,8 +119,9 @@ void eepromWriteBlock(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteToWr
     pBuffer += count;
     NumByteToWrite -= count;
     count = I2C_FLASH_PAGESIZE;
-    if (NumByteToWrite < I2C_FLASH_PAGESIZE)
+    if (NumByteToWrite < I2C_FLASH_PAGESIZE) {
       count = NumByteToWrite;
+    }
   }
 }
 
