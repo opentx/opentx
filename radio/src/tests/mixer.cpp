@@ -935,25 +935,43 @@ TEST(Mixer, SlowOnMultiply)
 #if !defined(PCBTARANIS)
 TEST(Mixer, DiffConservationThroughTrim)
 {
-  MODEL_RESET();
-  MIXER_RESET();  
-  g_model.mixData[0].destCh = 0;
-  g_model.mixData[0].mltpx = MLTPX_ADD;
-  g_model.mixData[0].srcRaw = MIXSRC_Ail;
-  g_model.mixData[0].weight = 100;
-  g_model.mixData[0].curveMode = 0;
-  g_model.mixData[0].curveParam = 50;    //diff = +50% 
-  setTrimValue(0, AIL_STICK, +128);      //trim = +25% 
+  for (int diff=-50; diff<=50; diff+=50) {
+    // diff = -50%, 0, +50%
+    for (int weight=-100; weight<=100; weight+=100) {
+      // weight = -100%, +100%
+      for (int trim=-128; trim<=128; trim+=128) {
+        // trim = -25%, 0, +25%
+        for (int stick=-256; stick<=256; stick+=256) {
+          // stick = -25%, 0, +25%
 
-  anaInValues[AIL_STICK] = +256;
-  evalMixes(1);
-  //output = 25%(trim)*100%(nodiffside) + 25%(stick)*100%(nodiffside) = +50%
-  EXPECT_EQ(channelOutputs[0], +512);
+          // TRACE("RUN %d %d %d %d", diff, weight, trim, stick);
 
-  anaInValues[AIL_STICK] = -256;
-  evalMixes(1);
-  //output = 25%(trim)*100%(nodiffside) - 25%(stick)*50%(diffside) = +12.5%   
-  EXPECT_EQ(channelOutputs[0], +128);
+          MODEL_RESET();
+          MIXER_RESET();
+          g_model.mixData[0].destCh = 0;
+          g_model.mixData[0].mltpx = MLTPX_ADD;
+          g_model.mixData[0].srcRaw = MIXSRC_Ail;
+          g_model.mixData[0].curveMode = 0;
+          g_model.mixData[0].curveParam = diff;
+          g_model.mixData[0].weight = weight+256;
+          g_model.mixData[0].weightMode = (weight >= 0 ? 0 : 1);
+          setTrimValue(0, AIL_STICK, trim);
+          anaInValues[AIL_STICK] = stick;
+
+          int val = stick * weight / 100;
+          if (val * diff < 0) val = val * abs(diff) / 100;      // diff side
+          int trimval = trim * 2 * weight / 100;
+          if (trimval * diff < 0) trimval = trimval * abs(diff) / 100;   // diff side
+
+          evalMixes(1);
+
+          // if (val + trimval != channelOutputs[0])
+          //  TRACE("RUN %d %d %d %d => %d != %d", diff, weight, trim, stick, val + trimval, channelOutputs[0]);
+          EXPECT_EQ(channelOutputs[0],val + trimval);
+        }
+      }
+    }
+  } 
 }
 #endif
 

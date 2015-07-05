@@ -65,6 +65,8 @@ int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMa
   int16_t cyc_anas[3] = {0};
 #endif
 
+bool OffsetOnInput = false;       //temporary, this bool will be link to a checkbox in mixer screen
+
 void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
 {
 #if !defined(VIRTUALINPUTS)
@@ -632,7 +634,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
   memclear(chans, sizeof(chans));        // All outputs to 0
 
-  //========== MIXER LOOP ===============
+  //========== MIXER LOOP ===================
   uint8_t lv_mixWarning = 0;
 
   uint8_t pass = 0;
@@ -662,7 +664,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         chans[md->destCh] = 0;
       }
 
-      //========== PHASE && SWITCH =====
+      //========== PHASE && SWITCH ==========
       bool mixCondition = (md->flightModes != 0 || md->swtch);
       delayval_t mixEnabled = (!(md->flightModes & (1 << mixerCurrentFlightMode)) && getSwitch(md->swtch)) ? DELAY_POS_MARGIN+1 : 0;
 
@@ -682,7 +684,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 #endif
 
-      //========== VALUE ===============
+      //========== VALUE ====================
       getvalue_t v = 0;
       if (mode > e_perout_mode_inactive_flight_mode) {
 #if defined(VIRTUALINPUTS)
@@ -726,7 +728,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       bool apply_offset_and_curve = true;
 
-      //========== DELAYS ===============
+      //========== DELAYS ===================
       delayval_t _swOn = swOn[i].now;
       delayval_t _swPrev = swOn[i].prev;
       bool swTog = (mixEnabled > _swOn+DELAY_POS_MARGIN || mixEnabled < _swOn-DELAY_POS_MARGIN);
@@ -767,13 +769,13 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #endif
       }
 
-      /*========== OFFSET BEFORE ========      Reserved for new option "OffsetOnInput"
-      if (apply_offset_and_curve) {
+      //========== OFFSET BEFORE ============
+      if (apply_offset_and_curve && OffsetOnInput) {
         int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
         if (offset) v += calc100toRESX_16Bits(offset);
-      }  */
+      }
 
-      //========== TRIMS ================
+      //========== TRIMS ====================
       int16_t trim = 0;
       if (apply_offset_and_curve) {
         if (!(mode & e_perout_mode_notrims)) {
@@ -800,8 +802,8 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #endif
         }
       }
- 
-      //========== SPEED ===============
+
+      //========== SPEED ====================
       // now its on input side, but without weight compensation. More like other remote controls
       // lower weight causes slower movement
 
@@ -842,33 +844,26 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         }
       }
 
-      //========== CURVE ================
-#if defined(XCURVES)
-      if (apply_offset_and_curve && md->curve.value) {
-        v = applyCurve(v, md->curve);
-      }
-#else
-      if (apply_offset_and_curve && md->curveParam && md->curveMode == MODE_CURVE) {
-        v = applyCurve(v, md->curveParam);
-      }
-#endif
-
-      //========== WEIGHT ===============
+      //========== WEIGHT ===================
       int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
       weight = calc100to256_16Bits(weight);
       int32_t dv = (int32_t) v * weight;
-      int32_t dtrim = (int32_t) trim * weight;    
-
-      //========== OFFSET AFTER ========= 
-      if (apply_offset_and_curve) { 
-        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode); 
-        if (offset) dv += int32_t(calc100toRESX_16Bits(offset)) << 8; 
+      int32_t dtrim = (int32_t) trim * weight;
+     
+      //========== CURVE & DIFFERENTIAL =====
+#if defined(XCURVES)
+      if (apply_offset_and_curve && md->curve.type != CURVE_REF_DIFF && md->curve.value) {
+        dv = applyCurve(dv, md->curve);
       }
-
-      //========== DIFFERENTIAL =========
-#if !defined(XCURVES)
-      if (md->curveMode == MODE_DIFFERENTIAL) {
-        //Revert trim    
+      else if (md->curve.type == CURVE_REF_DIFF && md->curve.value) {
+        dv = applyCurve(dv, md->curve);
+      }
+#else
+      if (apply_offset_and_curve && md->curveParam && md->curveMode == MODE_CURVE) {
+        dv = applyCurve(dv, md->curveParam);
+      }
+      else if (md->curveMode == MODE_DIFFERENTIAL) {
+      //Revert trim    
         if (apply_offset_and_curve) {
           if (!(mode & e_perout_mode_notrims)) {
 #if defined(VIRTUALINPUTS)
@@ -902,14 +897,20 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         dv += dtrim;
       }
 #endif
+
+      //========== OFFSET AFTER ============= 
+      if (apply_offset_and_curve && !OffsetOnInput) {
+        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode); 
+        if (offset) dv += int32_t(calc100toRESX_16Bits(offset)) << 8; 
+      }
       
       //Output with offset before 
-      //    Curve(stick + offset + trim) * weight
+      //    Curve((stick + offset + trim) * weight)
       //    Diff((stick + offset) * weight) + Diff(trim * weight)
 
       //Output with offset after 
-      //    Curve(stick + trim) * weight + offset
-      //    Diff(stick * weight) + Diff(trim * weight)
+      //    Curve((stick + trim) * weight) + offset
+      //    Diff(stick * weight) + Diff(trim * weight) + offset
 
       int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
 
@@ -943,6 +944,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         // this devices by 64 which should give a good balance between still over 100% but lower then 32x100%; should be OK
         *ptr >>= 6;  // this is quite tricky, reduces the value a lot but should be still over 100% and reduces flash need
       } */
+
 
       PACK( union u_int16int32_t {
         struct {
