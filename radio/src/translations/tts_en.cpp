@@ -44,7 +44,7 @@ enum EnglishPrompts {
   EN_PROMPT_AND = EN_PROMPT_NUMBERS_BASE+110,
   EN_PROMPT_MINUS = EN_PROMPT_NUMBERS_BASE+111,
   EN_PROMPT_POINT = EN_PROMPT_NUMBERS_BASE+112,
-  EN_PROMPT_UNITS_BASE = 115,
+  EN_PROMPT_UNITS_BASE = 113,
   EN_PROMPT_POINT_BASE = 165, //.0 - .9
 };
 
@@ -127,7 +127,7 @@ I18N_PLAY_FUNCTION(en, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
   
   if (unit) {
-    EN_PUSH_UNIT_PROMPT(tmp, (EN_PROMPT_UNITS_BASE+((unit-1)*2)));
+    EN_PUSH_UNIT_PROMPT(tmp, EN_PROMPT_UNITS_BASE + unit*2);
   }
 }
 
