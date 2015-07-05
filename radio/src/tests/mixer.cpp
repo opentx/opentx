@@ -932,7 +932,7 @@ TEST(Mixer, SlowOnMultiply)
   CHECK_NO_MOVEMENT(0, CHANNEL_MAX, 250);
 }
 
-#if !defined(PCBTARANIS)
+#if !defined(PCBTARANIS) && !defined(PCBSKY9X)
 TEST(Mixer, DiffConservationThroughTrim)
 {
   for (int diff=-50; diff<=50; diff+=50) {
