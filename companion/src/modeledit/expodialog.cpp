@@ -2,7 +2,8 @@
 #include "ui_expodialog.h"
 #include "helpers.h"
 
-ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings, Firmware * firmware, char * inputName) :
+ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings, 
+                          Firmware * firmware, QString & inputName) :
   QDialog(parent),
   ui(new Ui::ExpoDialog),
   model(model),
@@ -62,6 +63,8 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
     ui->inputName->setMaxLength(4);
     populateSourceCB(ui->sourceCB, ed->srcRaw, generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | POPULATE_TELEMETRY);
     ui->sourceCB->removeItem(0);
+    ui->inputName->setValidator(new QRegExpValidator(rx, this));
+    ui->inputName->setText(inputName);
   }
   else {
     ui->inputNameLabel->hide();
@@ -86,9 +89,6 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   else {
     ui->lineName->setMaxLength(expolength);
   }
-
-  ui->inputName->setValidator(new QRegExpValidator(rx, this));
-  ui->inputName->setText(inputName);
 
   ui->lineName->setValidator(new QRegExpValidator(rx, this));
   ui->lineName->setText(ed->name);
@@ -153,7 +153,8 @@ void ExpoDialog::valuesChanged()
     ed->mode   = ui->sideCB->currentIndex() + 1;
 
     strcpy(ed->name, ui->lineName->text().toAscii().data());
-    strcpy(inputName, ui->inputName->text().toAscii().data());
+    if (firmware->getCapability(VirtualInputs)) 
+      inputName = ui->inputName->text();
 
     ed->phases=0;
     for (int i=8; i>=0 ; i--) {
