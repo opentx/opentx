@@ -5,6 +5,7 @@
 <li>File path issue in Taranis simulator function <i>findTrueFileName()</i> on Windows (<a href=https://github.com/opentx/opentx/issues/2301>#2301</a>)</li>
 <li>Added simulator volume gain setting (<a href=https://github.com/opentx/opentx/issues/2260>#2260</a>)</li>
 <li>Added GPS glitch filtering and Latitude/Longitude position synchronization to Google Earth export (<a href=https://github.com/opentx/opentx/issues/2326>#2326</a>)</li>
+<li>Fixed a rare program crash when editing Input for 9X radio (<a href=https://github.com/opentx/opentx/issues/2420>#2420</a>)</li>
 </ul>
 
 

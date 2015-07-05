@@ -216,18 +216,18 @@ void InputsPanel::gm_openExpo(int index)
     if(index<0 || index>=C9X_MAX_EXPOS) return;
 
     ExpoData mixd(model.expoData[index]);
-    char inputName[4+1];
     emit modified();
     update();
     
+    QString inputName;
     if (firmware->getCapability(VirtualInputs))
-      strcpy(inputName, model.inputNames[mixd.chn]);
+      inputName = model.inputNames[mixd.chn];
 
     ExpoDialog *g = new ExpoDialog(this, model, &mixd, generalSettings, firmware, inputName);
     if (g->exec())  {
       model.expoData[index] = mixd;
       if (firmware->getCapability(VirtualInputs))
-        strcpy(model.inputNames[mixd.chn], inputName);
+        strncpy(model.inputNames[mixd.chn], inputName.toAscii().data(), 4);
       emit modified();
       update();
     }
