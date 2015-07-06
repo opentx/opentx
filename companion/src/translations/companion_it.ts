@@ -318,7 +318,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="1056"/>
         <source>Simulator Volume Gain</source>
-        <translation type="unfinished"></translation>
+        <translation>Guadagno Volume Simulatore</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="58"/>
@@ -2398,7 +2398,7 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../flasheepromdialog.cpp" line="164"/>
         <source>Invalid Models and Settings file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>File impostazioni e modelli non valido %1</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="213"/>
@@ -2479,12 +2479,12 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="152"/>
         <source>Use profile start screen</source>
-        <translation>Usa scremata di avvio del profilo</translation>
+        <translation>Usa schermata di avvio del profilo</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="159"/>
         <source>Use firmware start screen</source>
-        <translation>Usa scremata di avvio del firmware</translation>
+        <translation>Usa schermata di avvio del firmware</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="166"/>
@@ -2494,7 +2494,7 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="173"/>
         <source>Use another start screen</source>
-        <translation>Usa scremata di avvio alternativa</translation>
+        <translation>Usa schermata di avvio alternativa</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="228"/>
@@ -2664,7 +2664,7 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../process_flash.cpp" line="227"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Sconosciuto</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="234"/>
@@ -2713,12 +2713,14 @@ state attualmente utilizzando:
         <source>Your radio does not seem connected to USB or the driver is not installed!!!
 
 Please use ZADIG to properly install the driver.</source>
-        <translation type="unfinished"></translation>
+        <translation>La vostra radio non sembra connessa alla USB o il driver non è installato!!!
+
+Usate ZADIG per installare correttamente il driver.</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="269"/>
         <source>Your radio does not seem connected to USB or the driver is not initialized!!!.</source>
-        <translation type="unfinished"></translation>
+        <translation>La vostra radio non sembra connessa alla USB o il driver non è inizializzato!!!.</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="281"/>
@@ -4591,7 +4593,7 @@ Siete sicuri ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1027"/>
         <source>Use English in menus</source>
-        <translation>Usa inglese nei menu</translation>
+        <translation>Usa l&apos;inglese nei menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1028"/>
@@ -4636,12 +4638,12 @@ Siete sicuri ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1034"/>
         <source>Spanish</source>
-        <translation type="unfinished">Spagnolo</translation>
+        <translation>Spagnolo</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1034"/>
         <source>Use Spanish in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>UtUsa lo spagnolo nei menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1035"/>
@@ -5911,7 +5913,7 @@ Determina come il valore viene aggiunto alla miscelazione.
     <message>
         <location filename="../modeledit/setup_module.ui" line="423"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Non impostato</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="428"/>
@@ -5995,17 +5997,17 @@ Determina come il valore viene aggiunto alla miscelazione.
     <message>
         <location filename="../modeledit/setup.cpp" line="181"/>
         <source>Value</source>
-        <translation type="unfinished">Valore</translation>
+        <translation>Valore</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="182"/>
         <source>Hold</source>
-        <translation type="unfinished">Mantieni</translation>
+        <translation>Mantieni</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="183"/>
         <source>No Pulse</source>
-        <translation type="unfinished"></translation>
+        <translation>No impulsi</translation>
     </message>
 </context>
 <context>
@@ -6702,37 +6704,37 @@ Determina come il valore viene aggiunto alla miscelazione.
     <message>
         <location filename="../eeprominterface.cpp" line="399"/>
         <source>h:m</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="404"/>
         <source>m:s</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="404"/>
         <source>h:m:s</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="427"/>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="427"/>
         <source>F2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="427"/>
         <source>F3</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="427"/>
         <source>F4</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="428"/>
@@ -7854,7 +7856,7 @@ Determina come il valore viene aggiunto alla miscelazione.
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="575"/>
         <source>Source %1 cannot be exported on this board!</source>
-        <translation type="unfinished"></translation>
+        <translation>La sorgente %1 non può essere esportata su questa radio!</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1486"/>
@@ -8031,7 +8033,7 @@ Determina come il valore viene aggiunto alla miscelazione.
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1257"/>
         <source>Power management by soft-off circuitry</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestione dell&apos;alimentazione mediante pulsante soft-off</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1305"/>
@@ -8062,7 +8064,7 @@ Determina come il valore viene aggiunto alla miscelazione.
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1342"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1353"/>
         <source>Removes D8 and LR12 FrSky protocols that are not legal for use anymore on radios sold after Jan 1st, 2015</source>
-        <translation type="unfinished"></translation>
+        <translation>Rimuove i protocolli D8 e LR12, non più supportati dalle radio vendute in EU dopo il 1° gennaio 2015</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1336"/>
@@ -8104,17 +8106,17 @@ Determina come il valore viene aggiunto alla miscelazione.
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1084"/>
         <source>ST7565P LCD or compatible</source>
-        <translation type="unfinished">Display LCD ST7565R o compatibile {7565P?}</translation>
+        <translation>Display LCD ST7565R o compatibile</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1086"/>
         <source>ERC12864FSF LCD</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1087"/>
         <source>ST7920 LCD</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1126"/>
@@ -9025,12 +9027,12 @@ Il Team di OpenTX.</translation>
     <message>
         <location filename="../eeprominterface.h" line="839"/>
         <source>Positive</source>
-        <translation type="unfinished">Positivo</translation>
+        <translation>Positivo</translation>
     </message>
     <message>
         <location filename="../eeprominterface.h" line="839"/>
         <source>Negative</source>
-        <translation type="unfinished">Negativo</translation>
+        <translation>Negativo</translation>
     </message>
 </context>
 <context>
@@ -9356,12 +9358,12 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1049"/>
         <source>S3</source>
-        <translation type="unfinished">S3</translation>
+        <translation>S3</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1065"/>
         <source>S4</source>
-        <translation type="unfinished">S4</translation>
+        <translation>S4</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1103"/>
@@ -9941,7 +9943,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="51"/>
         <source>Calculated</source>
-        <translation type="unfinished"></translation>
+        <translation>Calcolato</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="65"/>
@@ -9981,7 +9983,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="152"/>
         <source>Totalize</source>
-        <translation type="unfinished"></translation>
+        <translation>Totalizza</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="157"/>
@@ -10053,92 +10055,92 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="384"/>
         <source>Speed (kts)</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocità (kts)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="389"/>
         <source>Speed (m/s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocità (m/s)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="394"/>
         <source>Speed (ft/s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocità (ft/s)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="399"/>
         <source>Speed (km/h)</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocità (km/h)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="404"/>
         <source>Speed (miles/h)</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocità (miglia/h)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="409"/>
         <source>Meters (m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Metri (m)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="414"/>
         <source>Feet (ft)</source>
-        <translation type="unfinished"></translation>
+        <translation>Piedi (ft)</translation>
     </message>
     <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="419"/>
         <source>Temp (°C)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
         <source>Temp (°F)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="429"/>
         <source>Percentage (%)</source>
-        <translation type="unfinished"></translation>
+        <translation>Percentuale (%)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="434"/>
         <source>Energy (mAh)</source>
-        <translation type="unfinished"></translation>
+        <translation>Energia (mAh)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="439"/>
         <source>Power (W)</source>
-        <translation type="unfinished"></translation>
+        <translation>Potenza (W)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="444"/>
         <source>RF Power (dBm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Potenza RF (dBm)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="449"/>
         <source>RPM</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="454"/>
         <source>Acceleration (g)</source>
-        <translation type="unfinished"></translation>
+        <translation>Accelerazione (g)</translation>
     </message>
     <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
         <source>Heading (°)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotta (°)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="464"/>
         <source>Volume (mL)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="469"/>
         <source>Volume (US fl.Oz.)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="483"/>
@@ -10214,32 +10216,32 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="14"/>
         <source>Telemetry Simulator</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulatore Telemetria</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="38"/>
         <source>Vario Altitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Altitudine Vario</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="41"/>
         <source>V-ALT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="48"/>
         <source>Vario Vertical Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocità verticale Vario</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="51"/>
         <source>V-VSPD</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="67"/>
         <source>ACCZ</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="74"/>
@@ -10249,177 +10251,177 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="77"/>
         <source>GPS-T</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="87"/>
         <source>ACCX</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="106"/>
         <source>GPS Lat/Lon</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="109"/>
         <source>GPS-LL</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="116"/>
         <source>VFAS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="119"/>
         <source>FAS-V</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="126"/>
         <source>GPS Speed</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="129"/>
         <source>GPS-S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="136"/>
         <source>CELLS</source>
-        <translation type="unfinished"></translation>
+        <translation>CELLE</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="152"/>
         <source>ACCY</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="159"/>
         <source>GPS Course</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotta GPS</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="162"/>
         <source>GPS-C</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="175"/>
         <source>GPS Altitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Altitudine GPS</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="178"/>
         <source>GPS-A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="185"/>
         <source>CURRENT</source>
-        <translation type="unfinished"></translation>
+        <translation>CORRENTE</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="188"/>
         <source>FAS-C</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="195"/>
         <source>30</source>
-        <translation type="unfinished">9X {30?}</translation>
+        <translation>9X {30?}</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="202"/>
         <source>RSSI</source>
-        <translation type="unfinished">RSSI</translation>
+        <translation>RSSI</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="209"/>
         <source>75</source>
-        <translation type="unfinished">9X {75?}</translation>
+        <translation>9X {75?}</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="216"/>
         <source>SWR</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="223"/>
         <source>FR_ID_AIR_SPEED</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="226"/>
         <source>ASPD</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="260"/>
         <source>A1</source>
-        <translation type="unfinished">A1</translation>
+        <translation>A1</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="267"/>
         <source>A2</source>
-        <translation type="unfinished">A2</translation>
+        <translation>A2</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="274"/>
         <source>A3</source>
-        <translation type="unfinished">A3</translation>
+        <translation>A3</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="281"/>
         <source>A4</source>
-        <translation type="unfinished">A4</translation>
+        <translation>A4</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="288"/>
         <source>Temperature 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Temperatura 1</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="291"/>
         <source>T1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="298"/>
         <source>Temperature 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Temperatura 2</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="301"/>
         <source>T2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="308"/>
         <source>RPM</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="315"/>
         <source>FUEL</source>
-        <translation type="unfinished"></translation>
+        <translation>CARBURANTE</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="322"/>
         <source>When enabled, sends any non-blank values as simulated telemetry data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Quando abilitato invia i valori non nulli come dati telemetrici simulati.</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="325"/>
         <source>simulate</source>
-        <translation type="unfinished"></translation>
+        <translation>simula</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="334"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Start with &lt;span style=&quot; font-style:italic;&quot;&gt;0x&lt;/span&gt; for hex, &lt;span style=&quot; font-style:italic;&quot;&gt;0&lt;/span&gt; for octal, otherwise decimal.&lt;br/&gt;Numeric entry only. Blank values are not sent.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Inserite i numeri iniziando con &lt;span style=&quot; font-style:italic;&quot;&gt;0x&lt;/span&gt; per hex, &lt;span style=&quot; font-style:italic;&quot;&gt;0&lt;/span&gt; per ottali, altrimenti decimali.&lt;br/&gt;Solo valori numerici. I valori non compilati non vengono inviati.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -11696,32 +11698,32 @@ Premere annulla per cancellare l&apos;operazione</translation>
     <message>
         <location filename="../logsdialog.cpp" line="634"/>
         <source>total duration </source>
-        <translation type="unfinished"></translation>
+        <translation>durata totale</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="642"/>
         <source>duration </source>
-        <translation type="unfinished"></translation>
+        <translation>durata</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="877"/>
         <source> (L1)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="888"/>
         <source> (R1)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="898"/>
         <source> (L2)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="905"/>
         <source> (R2)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>

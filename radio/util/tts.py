@@ -312,7 +312,28 @@ def ttsIt():
     systemSounds.append(("mille", filename(PROMPT_SYSTEM_BASE+102)))
     for i, s in enumerate(["virgola", "un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+103+i)))
-    for i, s in enumerate(["", "volt", "ampere", "milliampers", "nodi", "metri al secondo", "piedi al secondo", "chilometri ora", "miglia per ora", "metri", "piedi", "gradi celsius","gradi fahrenheit", "percento", "milliampere ora", "watt", "db", "R P M", "g", "gradi", "millilitri", "once"]):
+    for i, s in enumerate(["", "",
+       "volt", "volt",
+       "ampere", "ampere", 
+       "milliampers", "milliampers",
+       "nodo", "nodi", 
+       "metro al secondo", "metri al secondo", 
+       "piede al secondo", "piedi al secondo", 
+       "chilometro ora", "chilometri ora", 
+       "miglio per ora", "miglia per ora", 
+       "metro", "metri", 
+       "piede", "piedi", 
+       "grado celsius", "gradi celsius",
+       "grado fahrenheit", "gradi fahrenheit", 
+       "percento", "percento", 
+       "milliampere ora", "milliampere ora", 
+       "watt", "watt", 
+       "decibel", "decibel", 
+       "R P M", "R P M", 
+       "g", "g", 
+       "grado", "gradi", 
+       "millilitro", "millilitri", 
+       "oncia", "once"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+113+i)))            
     for s, f, a in [(u"radio inattiva controllare", "inactiv", 486),
                     (u"batteria della radio scarica", "lowbatt", 485),
