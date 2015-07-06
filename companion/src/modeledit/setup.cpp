@@ -252,7 +252,19 @@ void ModulePanel::update()
         break;
     }
   }
-  else if (!IS_TARANIS(firmware->getBoard()) || model->trainerMode != 0) {
+  else if (IS_TARANIS(firmware->getBoard())) {
+    switch(model->trainerMode) {
+      case MASTER_JACK:
+        break;
+      case SLAVE_JACK:
+        mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
+        break;
+      default:
+        mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
+        break;
+    }
+  }
+  else if (model->trainerMode != MASTER_JACK) {
     mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
   }
 

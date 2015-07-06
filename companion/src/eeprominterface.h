@@ -822,6 +822,14 @@ enum Protocol {
   PROTO_LAST
 };
 
+enum TrainerProtocol {
+  MASTER_JACK,
+  SLAVE_JACK,
+  MASTER_SBUS_MODULE,
+  MASTER_CPPM_MODULE,
+  MASTER_SBUS_BATT_COMPARTMENT
+};
+
 class ModuleData {
   public:
     ModuleData() { clear(); }
