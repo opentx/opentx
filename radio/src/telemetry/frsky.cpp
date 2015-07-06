@@ -170,7 +170,7 @@ NOINLINE void processSerialData(uint8_t data)
     }
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBTARANIS) && defined(REV9E) && !defined(SIMU)
     #define BLUETOOTH_BUFFER_LENGTH     20
     static uint8_t bluetoothBuffer[BLUETOOTH_BUFFER_LENGTH];
     static uint8_t bluetoothIndex = 0;
