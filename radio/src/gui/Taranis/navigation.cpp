@@ -322,7 +322,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       if (i_min <= SWSRC_FIRST_TRIM && i_max >= SWSRC_LAST_TRIM)           MENU_ADD_ITEM(STR_MENU_TRIMS);
       if (i_min <= SWSRC_FIRST_LOGICAL_SWITCH && i_max >= SWSRC_LAST_LOGICAL_SWITCH) {
         for (int i = 0; i < NUM_LOGICAL_SWITCH; i++) {
-          if (isLogicalSwitchAvailable(i)) {
+          if (isValueAvailable && isValueAvailable(SWSRC_FIRST_LOGICAL_SWITCH+i)) {
             MENU_ADD_ITEM(STR_MENU_LOGICAL_SWITCHES);
             break;
           }
@@ -331,6 +331,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       if (isValueAvailable && isValueAvailable(SWSRC_ON))                  MENU_ADD_ITEM(STR_MENU_OTHER);
       if (isValueAvailable && isValueAvailable(-newval))                   MENU_ADD_ITEM(STR_MENU_INVERT);
       menuHandler = onSwitchLongEnterPress;
+      s_editMode = EDIT_MODIFY_FIELD;
     }
     if (checkIncDecSelection != 0) {
       newval = (checkIncDecSelection == SWSRC_INVERT ? -newval : checkIncDecSelection);
