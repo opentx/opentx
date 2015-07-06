@@ -3,7 +3,7 @@
 void eepromPageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite);
 void eepromWaitEepromStandbyState(void);
 
-void eepromInit(void)
+void i2cInit()
 {
   I2C_DeInit(I2C);
 
@@ -113,7 +113,7 @@ bool I2C_EE_ReadBlock(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRea
 void eepromReadBlock(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRead)
 {
   while (!I2C_EE_ReadBlock(pBuffer, ReadAddr, NumByteToRead)) {
-    eepromInit();
+    i2cInit();
   }
 }
 
@@ -192,7 +192,7 @@ bool I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWri
 void eepromPageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite)
 {
   while (!I2C_EE_PageWrite(pBuffer, WriteAddr, NumByteToWrite)) {
-    eepromInit();
+    i2cInit();
   }
 }
 
@@ -218,7 +218,7 @@ bool I2C_EE_WaitEepromStandbyState(void)
 void eepromWaitEepromStandbyState(void)
 {
   while (!I2C_EE_WaitEepromStandbyState()) {
-    eepromInit();
+    i2cInit();
   }
 }
 

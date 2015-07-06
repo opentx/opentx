@@ -197,7 +197,7 @@ void perMain()
 #endif
 
 #if defined(REV9E) && !defined(SIMU)
-  bt_wakeup();
+  bluetoothWakeup();
 #endif
 
 #if defined(PCBTARANIS)

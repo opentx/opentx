@@ -170,6 +170,19 @@ NOINLINE void processSerialData(uint8_t data)
     }
 #endif
 
+#if defined(PCBTARANIS) && defined(REV9E)
+    #define BLUETOOTH_BUFFER_LENGTH     20
+    static uint8_t bluetoothBuffer[BLUETOOTH_BUFFER_LENGTH];
+    static uint8_t bluetoothIndex = 0;
+    bluetoothBuffer[bluetoothIndex++] = data;
+    if (bluetoothIndex == BLUETOOTH_BUFFER_LENGTH) {
+      if (bluetoothReady()) {
+        bluetoothWrite(bluetoothBuffer, BLUETOOTH_BUFFER_LENGTH);
+      }
+      bluetoothIndex = 0;
+    }
+#endif
+
   switch (dataState)
   {
     case STATE_DATA_START:

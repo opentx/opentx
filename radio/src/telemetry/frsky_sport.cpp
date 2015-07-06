@@ -511,11 +511,11 @@ void sportFirmwareUpdate(ModuleIndex module, const char *filename)
 {
   bool result = sportUpdatePowerOn(module);
   if (result)
-  	result = sportUpdateReqVersion();
+    result = sportUpdateReqVersion();
   if (result)
-  	result = sportUpdateUploadFile(filename);
+    result = sportUpdateUploadFile(filename);
   if (result)
-  	result = sportUpdateEnd();
+    result = sportUpdateEnd();
   
   if (result == false) {
     POPUP_WARNING("Firmware Update Error");

@@ -123,7 +123,6 @@ TCHAR backupFilename[60];
 
 uint32_t Master_frequency;
 volatile uint8_t Tenms;
-uint8_t EE_timer;
 
 FIL FlashFile;
 DIR Dj;
@@ -423,18 +422,12 @@ int main()
   lcd_putsLeft(0, BOOTLOADER_TITLE);
   lcd_invert_line(0);
   lcdRefresh();
-#if defined(PCBSKY9X)
-  OptrexDisplay = 0;
-  lcdRefresh();
-#endif
 
-#if defined(PCBTARANIS)
 #if defined(REVPLUS)
   turnBacklightOn(0, 0);
 #endif
   keysInit();
-  eepromInit();
-#endif
+  i2cInit();
 
   __enable_irq();
   init10msTimer();
@@ -442,13 +435,6 @@ int main()
 #if defined(PCBSKY9X)
   EblockAddress = -1;
   init_spi();
-#endif
-
-#if defined(PCBSKY9X)
-  LockBits = readLockBits();
-  if (LockBits) {
-    clearLockBits();
-  }
 #endif
 
 #if defined(PCBTARANIS)
@@ -462,15 +448,6 @@ int main()
     wdt_reset();
 
     if (Tenms) {
-
-      if (EE_timer) {
-        if (--EE_timer == 0) {
-#if defined(PCBSKY9X)
-          writeBlock();
-#endif
-        }
-      }
-
       Tenms = 0;
 
       lcdRefreshWait();

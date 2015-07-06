@@ -549,8 +549,10 @@
   #define BT_GPIO_PIN_RX               GPIO_Pin_9  // PG.09
   #define BT_GPIO_EN                   GPIOD
   #define BT_GPIO_PIN_EN               GPIO_Pin_11 // PD.11
-  #define BT_GPIO_BRTS                 GPIOB
-  #define BT_GPIO_PIN_BRTS             GPIO_Pin_10
+  #define BT_GPIO_BRTS                 GPIOE
+  #define BT_GPIO_PIN_BRTS             GPIO_Pin_12 // PE.12
+  #define BT_GPIO_BCTS                 GPIOG
+  #define BT_GPIO_PIN_BCTS             GPIO_Pin_6  // PG.06
   #define BT_GPIO_PinSource_TX         GPIO_PinSource14
   #define BT_GPIO_PinSource_RX         GPIO_PinSource9
 #endif

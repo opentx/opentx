@@ -132,7 +132,7 @@ void boardInit()
   init2MhzTimer();
   init5msTimer();
   __enable_irq();
-  eepromInit();
+  i2cInit();
   usbInit();
   
 #if defined(HAPTIC)  
@@ -140,7 +140,7 @@ void boardInit()
 #endif
 
 #if defined(REV9E)
-  bt_open();
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
 #endif
 
 #if defined(DEBUG)

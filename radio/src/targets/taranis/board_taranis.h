@@ -288,8 +288,8 @@ void usbStop(void);
 }
 #endif
 
-// EEPROM driver
-void eepromInit(void);
+// I2C driver: EEPROM + Audio Volume
+void i2cInit(void);
 void eepromReadBlock(uint8_t * buffer, uint16_t address, uint16_t size);
 void eepromWriteBlock(uint8_t * buffer, uint16_t address, uint16_t size);
 
@@ -321,7 +321,7 @@ void hapticOff(void);
 #endif
 
 // SERIAL_USART driver
-#define DEBUG_BAUDRATE      115200
+#define DEBUG_BAUDRATE                 115200
 void uart3Init(unsigned int mode, unsigned int protocol);
 void uart3Putc(const char c);
 #define telemetrySecondPortInit(protocol) uart3Init(UART_MODE_TELEMETRY, protocol)
@@ -329,10 +329,13 @@ void uart3SbusInit(void);
 void uart3Stop(void);
 
 // BT driver
-int bt_open(void);
-int bt_write(const void *buffer, int len);
-int bt_read(void *buffer, int len);
-void bt_wakeup(void);
+#define BLUETOOTH_DEFAULT_BAUDRATE     115200
+uint8_t bluetoothReady();
+void bluetoothInit(uint32_t baudrate);
+void bluetoothWrite(const void * buffer, int len);
+void bluetoothWriteString(const char * str);
+int bluetoothRead(void * buffer, int len);
+void bluetoothWakeup(void);
 
 // Top LCD driver
 #if defined(REV9E)
