@@ -198,6 +198,7 @@
     <file>themes/monochrome/16/contributors.png</file>
     <file>themes/monochrome/16/stop.png</file>
     <file>themes/monochrome/16/write_eeprom.png</file>
+    <file>themes/monochrome/16/sdsync.png</file>
     <file>themes/monochrome/24/paintbrush.png</file>
     <file>themes/monochrome/24/open.png</file>
     <file>themes/monochrome/24/edit.png</file>
@@ -241,6 +242,7 @@
     <file>themes/monochrome/24/contributors.png</file>
     <file>themes/monochrome/24/stop.png</file>
     <file>themes/monochrome/24/write_eeprom.png</file>
+    <file>themes/monochrome/24/sdsync.png</file>
     <file>themes/monochrome/32/paintbrush.png</file>
     <file>themes/monochrome/32/open.png</file>
     <file>themes/monochrome/32/edit.png</file>
@@ -284,6 +286,7 @@
     <file>themes/monochrome/32/contributors.png</file>
     <file>themes/monochrome/32/stop.png</file>
     <file>themes/monochrome/32/write_eeprom.png</file>
+    <file>themes/monochrome/32/sdsync.png</file>
     <file>themes/monochrome/48/paintbrush.png</file>
     <file>themes/monochrome/48/open.png</file>
     <file>themes/monochrome/48/edit.png</file>
@@ -327,6 +330,7 @@
     <file>themes/monochrome/48/contributors.png</file>
     <file>themes/monochrome/48/stop.png</file>
     <file>themes/monochrome/48/write_eeprom.png</file>
+    <file>themes/monochrome/48/sdsync.png</file>
     <file>themes/classic/16/paintbrush.png</file>
     <file>themes/classic/16/open.png</file>
     <file>themes/classic/16/edit.png</file>
@@ -370,6 +374,7 @@
     <file>themes/classic/16/contributors.png</file>
     <file>themes/classic/16/stop.png</file>
     <file>themes/classic/16/write_eeprom.png</file>
+    <file>themes/classic/16/sdsync.png</file>
     <file>themes/classic/24/paintbrush.png</file>
     <file>themes/classic/24/open.png</file>
     <file>themes/classic/24/edit.png</file>
@@ -413,6 +418,7 @@
     <file>themes/classic/24/contributors.png</file>
     <file>themes/classic/24/stop.png</file>
     <file>themes/classic/24/write_eeprom.png</file>
+    <file>themes/classic/24/sdsync.png</file>
     <file>themes/classic/32/paintbrush.png</file>
     <file>themes/classic/32/open.png</file>
     <file>themes/classic/32/edit.png</file>
@@ -456,6 +462,7 @@
     <file>themes/classic/32/contributors.png</file>
     <file>themes/classic/32/stop.png</file>
     <file>themes/classic/32/write_eeprom.png</file>
+    <file>themes/classic/32/sdsync.png</file>
     <file>themes/classic/48/paintbrush.png</file>
     <file>themes/classic/48/open.png</file>
     <file>themes/classic/48/edit.png</file>
@@ -499,6 +506,7 @@
     <file>themes/classic/48/contributors.png</file>
     <file>themes/classic/48/stop.png</file>
     <file>themes/classic/48/write_eeprom.png</file>
+    <file>themes/classic/48/sdsync.png</file>
     <file>themes/monoblue/16/paintbrush.png</file>
     <file>themes/monoblue/16/open.png</file>
     <file>themes/monoblue/16/edit.png</file>
