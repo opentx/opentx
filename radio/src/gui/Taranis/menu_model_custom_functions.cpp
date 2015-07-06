@@ -149,16 +149,16 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
         case 0:
           putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext.activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
+          if (func == FUNC_OVERRIDE_CHANNEL && functions != g_model.customFn) {
+            func = CFN_FUNC(cfn) = func+1;
+          }
           break;
 
         case 1:
           if (CFN_SWITCH(cfn)) {
-            if (active && func == FUNC_OVERRIDE_CHANNEL) {
-              func = CFN_FUNC(cfn) = checkIncDec(event, CFN_FUNC(cfn), 0, FUNC_MAX-1, eeFlags, isAssignableFunctionAvailable);
-            }
             lcd_putsiAtt(MODEL_CUSTOM_FUNC_2ND_COLUMN, y, STR_VFSWFUNC, func, attr);
             if (active) {
-              CFN_FUNC(cfn) = checkIncDec(event, CFN_FUNC(cfn), 0, FUNC_MAX-1, eeFlags, isAssignableFunctionAvailable);
+              func = CFN_FUNC(cfn) = checkIncDec(event, CFN_FUNC(cfn), 0, FUNC_MAX-1, eeFlags, isAssignableFunctionAvailable);
               if (checkIncDec_Ret) CFN_RESET(cfn);
             }
           }
