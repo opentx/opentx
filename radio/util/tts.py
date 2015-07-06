@@ -572,7 +572,7 @@ def ttsDe():
     systemSounds.append(("tausend", filename(PROMPT_SYSTEM_BASE+101)))
     for i, s in enumerate(["comma", "und", "minus", "uhr", "minute", "minuten", "sekunde", "sekunden"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+102+i)))
-    for i, s in enumerate(["Volt", "Ampere", "Meter pro sekunde", "", "kilometer pro stunde", "Meter", "Grad", "Prozent", "Milliampere", "Milliampere pro stunde", "Watt", "db", "Fuesse", "Knoten", "Uhr", "Minuten", "Secunden", "R P M", "g", "Milliliter", "Unze"]):
+    for i, s in enumerate(["", "Volt", "Ampere", "MilliAmpere", "Knoten", "Meter pro sekunde", "Fuesse pro sekunde", "kilometer pro stunde", "Meilen pro Stunde", "Meter", "Fuesse", "Grad", "Grad Fahrenheit", "Prozent", "Milliampere pro stunde", "Watt", "db", "R P M", "g", "Milliliter", "Unze", "Uhr", "Minuten", "Secunden",]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+110+i)))            
     for s, f, a in [(u"Sender ist inaktiv,bitte Ueberpruefen Sie", "inactiv", 486),
                     (u"Senderakku niedrig", "lowbatt", 485),
@@ -592,6 +592,10 @@ def ttsDe():
                     (u"A1 kritisch!", "a1_red", NO_ALTERNATE),
                     (u"A2 schlecht!", "a2_org", NO_ALTERNATE),
                     (u"A2 kritisch!", "a2_red", NO_ALTERNATE),
+                    (u"A3 schlecht!", "a3_org", NO_ALTERNATE),
+                    (u"A3 kritisch!", "a3_red", NO_ALTERNATE),
+                    (u"A4 schlecht!", "a4_org", NO_ALTERNATE),
+                    (u"A4 kritisch!", "a4_red", NO_ALTERNATE),
                     (u"Funksignal schlecht!", "rssi_org", NO_ALTERNATE),
                     (u"Funksignal kritisch!", "rssi_red", NO_ALTERNATE),
                     (u"Problem mit der sender Antenna", "swr_red", NO_ALTERNATE),
@@ -601,7 +605,7 @@ def ttsDe():
                            "Treibstoff", "Temperatur", "Temperatur", "Geschwindigkeit", "Ferne", "Hoehe", "Lipo-Zelle",
                            "Zellen gesamt", "Spannung", "Strom", "Verbrauch", "Power", "Beschleunigung X", "Beschleunigung Y", "Beschleunigung Z",
                            "Richtung", "Variometer","Minimum","Maximum"]):
-        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+129+i)))
+        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+134+i)))
     for i, (s, f) in enumerate([
                  (u"Fahrwerk eingezogen", "gearup"),
                  (u"Fahrwerk ausgefahren", "geardn"),
