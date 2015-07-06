@@ -1,12 +1,30 @@
 <h2>Version 2.1.0 / (set date)</h2>
 
+
+[ARM Boards]
 <ul>
-<li>New Telemetry system</li>
-<li>Added optional alternative memory allocator for LUA (Bin Allocator)</li>
-<li>Added support for Taranis X9E (tray version)</li>
-<li>New dangerous Custom Functions</li>
-<li>Added another timer (Timer3)</li>
+<li>New Telemetry system (<a href=https://github.com/opentx/opentx/issues/1634>#1634</a>)</li> 
+<li>Added Dangerous Custom Functions (range check, bind)</li>
+<li>Better graphical trim representation (<a href=https://github.com/opentx/opentx/issues/1419>#1419</a>)</li>
 </ul>
+
+
+[Taranis]
+<ul>
+<li>Added support for Taranis X9E (tray version)</li>
+<li>Added Bluetooth support (Taranis X9E)</li>
+<li>Added optional alternative memory allocator for LUA (Bin Allocator)</li>
+<li>Added another timer (Timer3) (<a href=https://github.com/opentx/opentx/issues/1228>#1228</a>)</li>
+<li>Increased maximum timer value to 24 bits</li>
+<li>Enabled LUA bit32 library</li>
+<li>Added new trainer modes: Master/SBUS module, Master/CPPM module, Master/SBUS in battery compartment</li>
+<li>Added global Custom Functions (<a href=https://github.com/opentx/opentx/issues/502>#502</a>)</li>
+<li>Added Screen-shot Special Function (<a href=https://github.com/opentx/opentx/issues/1925>#1925</a>)</li>
+<li>Added firmware upgrade of SPORT devices (<a href=https://github.com/opentx/opentx/issues/1599>#1599</a>)</li>
+<li>Added EEPROM Factory Reset menu option</li>
+<li>Added LUA file read/write capability (<a href=https://github.com/opentx/opentx/issues/1471>#1471</a>)</li>
+</ul>
+
 
 
 <h2>Version 2.0.18 / (not yet released)</h2>
