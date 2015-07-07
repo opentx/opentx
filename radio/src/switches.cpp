@@ -444,18 +444,28 @@ bool getSwitch(int8_t swtch)
   }
   else if (cs_idx <= SWSRC_LAST_SWITCH) {
 #if defined(PCBTARANIS)
-    if ((flags & GETSWITCH_MIDPOS_DELAY) && IS_3POS(cs_idx))
-      result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
-    else
-#endif
+    if (flags & GETSWITCH_MIDPOS_DELAY) {
+      div_t swinfo = switchInfo(cs_idx);
+      if (IS_3POS(swinfo.quot)) {
+        result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
+      }
+      else {
+        result = switchState((EnumKeys)(SW_BASE+cs_idx-SWSRC_FIRST_SWITCH));
+      }
+    }
+    else {
+      result = switchState((EnumKeys)(SW_BASE+cs_idx-SWSRC_FIRST_SWITCH));
+    }
+#else
     result = switchState((EnumKeys)(SW_BASE+cs_idx-SWSRC_FIRST_SWITCH));
+#endif
 
 #if defined(MODULE_ALWAYS_SEND_PULSES)
     if (startupWarningState < STARTUP_WARNING_DONE) {
       // if throttle or switch warning is currently active, ignore actual stick position and use wanted values
       if (cs_idx <= 3) {
-        if (!(g_model.switchWarningEnable&1)) {     // ID1 to ID3 is just one bit in switchWarningEnable
-          result = (cs_idx)==((g_model.switchWarningState&3)+1);  // overwrite result with desired value
+        if (!(g_model.switchWarningEnable & 1)) {     // ID1 to ID3 is just one bit in switchWarningEnable
+          result = (cs_idx)==((g_model.switchWarningState & 3)+1);  // overwrite result with desired value
         }
       }
       else if (!(g_model.switchWarningEnable & (1<<(cs_idx-3)))) {
