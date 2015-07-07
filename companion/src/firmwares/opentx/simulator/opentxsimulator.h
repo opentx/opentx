@@ -22,7 +22,7 @@
 #if defined(PCBTARANIS) && defined(REV9E)
   #define FLAVOUR "taranisx9e"
   #define NAMESPACE TaranisX9E
-  #define EEPROM_VARIANT 0
+  #define EEPROM_VARIANT 0x8000
 #elif defined(PCBTARANIS) && defined(REVPLUS)
   #define FLAVOUR "taranisplus"
   #define NAMESPACE TaranisPlus
