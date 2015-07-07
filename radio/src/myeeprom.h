@@ -381,10 +381,19 @@ enum BeeperMode {
     UART_MODE_MAX = UART_MODE_COUNT-1
   };
 
-  #define LEN_SWITCH_NAME  3
-  #define LEN_ANA_NAME     3
-
+  #define LEN_SWITCH_NAME              3
+  #define LEN_ANA_NAME                 3
+  #define LEN_BLUETOOTH_NAME           10
   #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.uart3Mode==UART_MODE_SBUS_TRAINER/* || g_eeGeneral.uart3Mode==UART_MODE_CPPM_TRAINER*/)
+
+  #if defined(REV9E)
+    #define BLUETOOTH_FIELDS \
+      uint8_t bluetoothEnable; \
+      char bluetoothName[LEN_BLUETOOTH_NAME];
+  #else
+    #define BLUETOOTH_FIELDS
+  #endif
+
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
     uint8_t  uart3Mode:6; \
@@ -395,7 +404,8 @@ enum BeeperMode {
     CustomFunctionData customFn[NUM_CFN]; \
     swconfig_t switchConfig; \
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
-    char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME];
+    char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME]; \
+    BLUETOOTH_FIELDS
 #elif defined(CPUARM)
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \

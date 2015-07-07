@@ -159,6 +159,16 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
     ui->serialPortLabel->hide();
   }
 
+  if (IS_TARANIS_X9E(firmware->getBoard())) {
+    ui->bluetoothEnable->setChecked(generalSettings.bluetoothEnable);
+    ui->bluetoothName->setField(generalSettings.bluetoothName, 10, this);
+  }
+  else {
+    ui->bluetoothLabel->hide();
+    ui->bluetoothEnable->hide();
+    ui->bluetoothName->hide();
+  }
+
   disableMouseScrolling();
 }
 
@@ -205,6 +215,12 @@ void CalibrationPanel::on_PPM4_editingFinished()
 void CalibrationPanel::on_CurrentCalib_SB_editingFinished()
 {
   generalSettings.currentCalib = ui->CurrentCalib_SB->value();
+  emit modified();
+}
+
+void CalibrationPanel::on_bluetoothEnable_stateChanged(int)
+{
+  generalSettings.bluetoothEnable = ui->bluetoothEnable->isChecked();
   emit modified();
 }
 

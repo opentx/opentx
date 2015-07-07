@@ -3444,6 +3444,11 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
         internalField.Append(new ZCharField<3>(generalData.sliderName[i]));
       }
     }
+
+    if (IS_TARANIS_X9E(board) && version >= 217) {
+      internalField.Append(new BoolField<8>(generalData.bluetoothEnable));
+      internalField.Append(new ZCharField<10>(generalData.bluetoothName));
+    }
   }
 }
 

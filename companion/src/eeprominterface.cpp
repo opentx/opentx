@@ -1095,6 +1095,10 @@ GeneralSettings::GeneralSettings()
     speakerVolume = 12;
   }
 
+  if (IS_TARANIS_X9E(board)) {
+    strcpy(bluetoothName, "Taranis");
+  }
+
   templateSetup = g.profile[g.id()].channelOrder();
   stickMode = g.profile[g.id()].defaultMode();
 

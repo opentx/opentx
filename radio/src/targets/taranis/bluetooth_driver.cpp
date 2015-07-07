@@ -15,6 +15,25 @@
 Fifo<64> btTxFifo;
 Fifo<64> btRxFifo;
 
+enum BluetoothState
+{
+  BLUETOOTH_INIT,
+  BLUETOOTH_WAIT_TTM,
+  BLUETOOTH_WAIT_BAUDRATE_CHANGE,
+  BLUETOOTH_OK,
+};
+
+enum BluetoothWriteState
+{
+  BLUETOOTH_WRITE_IDLE,
+  BLUETOOTH_WRITE_INIT,
+  BLUETOOTH_WRITING,
+  BLUETOOTH_WRITE_DONE
+};
+
+volatile uint8_t bluetoothState = BLUETOOTH_INIT;
+volatile uint8_t bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
+
 void bluetoothInit(uint32_t baudrate)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -48,6 +67,7 @@ void bluetoothInit(uint32_t baudrate)
   GPIO_PinAFConfig(BT_GPIO_TXRX, BT_GPIO_PinSource_TX, BT_GPIO_AF);
   GPIO_PinAFConfig(BT_GPIO_TXRX, BT_GPIO_PinSource_RX, BT_GPIO_AF);
 
+  USART_DeInit(BT_USART);
   USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_Parity = USART_Parity_No;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
@@ -69,24 +89,10 @@ void bluetoothInit(uint32_t baudrate)
   GPIO_ResetBits(BT_GPIO_EN, BT_GPIO_PIN_EN); // open bluetooth
 }
 
-enum BluetoothState
+void bluetoothDone()
 {
-  BLUETOOTH_INIT,
-  BLUETOOTH_WAIT_TTM,
-  BLUETOOTH_WAIT_BAUDRATE_CHANGE,
-  BLUETOOTH_OK,
-};
-
-enum BluetoothWriteState
-{
-  BLUETOOTH_WRITE_IDLE,
-  BLUETOOTH_WRITE_INIT,
-  BLUETOOTH_WRITING,
-  BLUETOOTH_WRITE_DONE
-};
-
-volatile uint8_t bluetoothState = BLUETOOTH_INIT;
-volatile uint8_t bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
+  GPIO_SetBits(BT_GPIO_EN, BT_GPIO_PIN_EN); // close bluetooth
+}
 
 extern "C" void USART6_IRQHandler(void)
 {
@@ -144,54 +150,66 @@ void bluetoothWriteWakeup(void)
 
 void bluetoothWakeup(void)
 {
-  if (bluetoothState != BLUETOOTH_OK) {
-    static tmr10ms_t waitEnd = 0;
-
-    if (bluetoothState == BLUETOOTH_INIT) {
-      const char btMessage[] = "TTM:REN-Taranis";
-      bluetoothWriteString(btMessage);
-      bluetoothState = BLUETOOTH_WAIT_TTM;
-      waitEnd = get_tmr10ms() + 25/*250*s*/;
-    }
-    else if (bluetoothState == BLUETOOTH_WAIT_TTM) {
-      if (get_tmr10ms() > waitEnd) {
-        char ttm[] = "TTM:REN";
-        int index = 0;
-        uint8_t c;
-        bool found = false;
-        while (btRxFifo.pop(c)) {
-          if (c == ttm[index]) {
-            index++;
-            if (index == sizeof(ttm)-1) {
-              found = true;
-              break;
-            }
-          }
-          else {
-            index = 0;
-          }
-        }
-        if (found) {
-          bluetoothState = BLUETOOTH_OK;
-        }
-        else {
-          bluetoothInit(9600);
-          const char btMessage[] = "TTM:BPS-115200";
-          bluetoothWriteString(btMessage);
-          bluetoothState = BLUETOOTH_WAIT_BAUDRATE_CHANGE;
-          waitEnd = get_tmr10ms() + 250;
-        }
-      }
-    }
-    else if (bluetoothState == BLUETOOTH_WAIT_BAUDRATE_CHANGE) {
-      if (get_tmr10ms() > waitEnd) {
-        bluetoothInit(115200);
-        bluetoothState = BLUETOOTH_OK;
-      }
+  if (!g_eeGeneral.bluetoothEnable) {
+    if (bluetoothState != BLUETOOTH_INIT) {
+      bluetoothDone();
+      bluetoothState = BLUETOOTH_INIT;
     }
   }
+  else {
+    if (bluetoothState != BLUETOOTH_OK) {
+      static tmr10ms_t waitEnd = 0;
 
-  bluetoothWriteWakeup();
+      if (bluetoothState == BLUETOOTH_INIT) {
+        bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
+        const char btMessage[] = "TTM:REN-";
+        bluetoothWriteString(btMessage);
+        uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
+        for (int i=0; i<len; i++) {
+          btTxFifo.push(idx2char(g_eeGeneral.bluetoothName[i]));
+        }
+        bluetoothState = BLUETOOTH_WAIT_TTM;
+        waitEnd = get_tmr10ms() + 25; // 250ms
+      }
+      else if (bluetoothState == BLUETOOTH_WAIT_TTM) {
+        if (get_tmr10ms() > waitEnd) {
+          char ttm[] = "TTM:REN";
+          int index = 0;
+          uint8_t c;
+          bool found = false;
+          while (btRxFifo.pop(c)) {
+            if (c == ttm[index]) {
+              index++;
+              if (index == sizeof(ttm)-1) {
+                found = true;
+                break;
+              }
+            }
+            else {
+              index = 0;
+            }
+          }
+          if (found) {
+            bluetoothState = BLUETOOTH_OK;
+          }
+          else {
+            bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
+            const char btMessage[] = "TTM:BPS-115200";
+            bluetoothWriteString(btMessage);
+            bluetoothState = BLUETOOTH_WAIT_BAUDRATE_CHANGE;
+            waitEnd = get_tmr10ms() + 250; // 2.5s
+          }
+        }
+      }
+      else if (bluetoothState == BLUETOOTH_WAIT_BAUDRATE_CHANGE) {
+        if (get_tmr10ms() > waitEnd) {
+          bluetoothState = BLUETOOTH_INIT;
+        }
+      }
+    }
+
+    bluetoothWriteWakeup();
+  }
 }
 
 uint8_t bluetoothReady()
@@ -211,9 +229,4 @@ int bluetoothRead(void * buffer, int len)
     data[result++] = byte;
   }
   return result;
-}
-
-void bluetoothDone()
-{
-  GPIO_SetBits(BT_GPIO_EN, BT_GPIO_PIN_EN); // close bluetooth
 }

@@ -7,13 +7,36 @@
     <x>0</x>
     <y>0</y>
     <width>805</width>
-    <height>1188</height>
+    <height>1269</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0,0,0,0,0,0,0">
+  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0,0,0,0,0,0,0">
+   <item row="4" column="2">
+    <widget class="QSpinBox" name="ana4Mid">
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="minimum">
+      <number>-9999</number>
+     </property>
+     <property name="maximum">
+      <number>9999</number>
+     </property>
+    </widget>
+   </item>
+   <item row="40" column="0" alignment="Qt::AlignLeft">
+    <widget class="QLabel" name="serialPortLabel">
+     <property name="text">
+      <string>Serial Port</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
    <item row="35" column="0">
     <widget class="QLabel" name="sqLabel">
      <property name="text">
@@ -83,13 +106,6 @@
      </property>
     </widget>
    </item>
-   <item row="36" column="1">
-    <widget class="AutoLineEdit" name="srName">
-     <property name="maxLength">
-      <number>3</number>
-     </property>
-    </widget>
-   </item>
    <item row="33" column="0">
     <widget class="QLabel" name="soLabel">
      <property name="text">
@@ -138,13 +154,23 @@
      </property>
     </widget>
    </item>
-   <item row="38" column="0" alignment="Qt::AlignLeft">
-    <widget class="QLabel" name="serialPortLabel">
-     <property name="text">
-      <string>Serial Port</string>
+   <item row="2" column="6">
+    <widget class="QSpinBox" name="ana6Neg">
+     <property name="statusTip">
+      <string/>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     <property name="minimum">
+      <number>-9999</number>
+     </property>
+     <property name="maximum">
+      <number>9999</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_17">
+     <property name="text">
+      <string>Stick 3</string>
      </property>
     </widget>
    </item>
@@ -206,7 +232,7 @@
      </property>
     </widget>
    </item>
-   <item row="38" column="1">
+   <item row="40" column="1">
     <widget class="QComboBox" name="serialPortMode">
      <item>
       <property name="text">
@@ -347,17 +373,10 @@
      </property>
     </widget>
    </item>
-   <item row="43" column="0">
+   <item row="45" column="0">
     <widget class="QLabel" name="label_23">
      <property name="text">
       <string>PPM 1</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_17">
-     <property name="text">
-      <string>Stick 3</string>
      </property>
     </widget>
    </item>
@@ -427,7 +446,7 @@
      </property>
     </widget>
    </item>
-   <item row="45" column="0">
+   <item row="47" column="0">
     <widget class="QLabel" name="label_33">
      <property name="text">
       <string>PPM 2</string>
@@ -529,19 +548,6 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="2">
-    <widget class="QSpinBox" name="ana4Mid">
-     <property name="statusTip">
-      <string/>
-     </property>
-     <property name="minimum">
-      <number>-9999</number>
-     </property>
-     <property name="maximum">
-      <number>9999</number>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="3">
     <widget class="QSpinBox" name="ana4Pos">
      <property name="statusTip">
@@ -555,14 +561,14 @@
      </property>
     </widget>
    </item>
-   <item row="40" column="0">
+   <item row="42" column="0">
     <widget class="QLabel" name="label_22">
      <property name="text">
       <string>Battery</string>
      </property>
     </widget>
    </item>
-   <item row="40" column="1">
+   <item row="42" column="1">
     <widget class="QDoubleSpinBox" name="battCalibDSB">
      <property name="statusTip">
       <string/>
@@ -584,14 +590,14 @@
      </property>
     </widget>
    </item>
-   <item row="48" column="0">
+   <item row="50" column="0">
     <widget class="QLabel" name="label_30">
      <property name="text">
       <string>PPM Multiplier</string>
      </property>
     </widget>
    </item>
-   <item row="45" column="1">
+   <item row="47" column="1">
     <widget class="QSpinBox" name="PPM2">
      <property name="toolTip">
       <string/>
@@ -610,7 +616,7 @@
      </property>
     </widget>
    </item>
-   <item row="46" column="1">
+   <item row="48" column="1">
     <widget class="QSpinBox" name="PPM3">
      <property name="toolTip">
       <string/>
@@ -629,7 +635,7 @@
      </property>
     </widget>
    </item>
-   <item row="47" column="1">
+   <item row="49" column="1">
     <widget class="QSpinBox" name="PPM4">
      <property name="toolTip">
       <string/>
@@ -648,7 +654,7 @@
      </property>
     </widget>
    </item>
-   <item row="43" column="1">
+   <item row="45" column="1">
     <widget class="QSpinBox" name="PPM1">
      <property name="toolTip">
       <string/>
@@ -667,21 +673,7 @@
      </property>
     </widget>
    </item>
-   <item row="46" column="0">
-    <widget class="QLabel" name="label_34">
-     <property name="text">
-      <string>PPM 3</string>
-     </property>
-    </widget>
-   </item>
-   <item row="47" column="0">
-    <widget class="QLabel" name="label_35">
-     <property name="text">
-      <string>PPM 4</string>
-     </property>
-    </widget>
-   </item>
-   <item row="41" column="1">
+   <item row="43" column="1">
     <widget class="QSpinBox" name="CurrentCalib_SB">
      <property name="minimum">
       <number>-49</number>
@@ -691,7 +683,21 @@
      </property>
     </widget>
    </item>
-   <item row="41" column="0">
+   <item row="48" column="0">
+    <widget class="QLabel" name="label_34">
+     <property name="text">
+      <string>PPM 3</string>
+     </property>
+    </widget>
+   </item>
+   <item row="49" column="0">
+    <widget class="QLabel" name="label_35">
+     <property name="text">
+      <string>PPM 4</string>
+     </property>
+    </widget>
+   </item>
+   <item row="43" column="0">
     <widget class="QLabel" name="label_CurrentCalib">
      <property name="text">
       <string>Current</string>
@@ -711,29 +717,16 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="6">
-    <widget class="QSpinBox" name="ana6Neg">
+   <item row="30" column="2">
+    <widget class="AutoComboBox" name="slType">
+     <property name="toolTip">
+      <string/>
+     </property>
      <property name="statusTip">
       <string/>
      </property>
-     <property name="minimum">
-      <number>-9999</number>
-     </property>
-     <property name="maximum">
-      <number>9999</number>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="7">
-    <widget class="QSpinBox" name="ana6Mid">
-     <property name="statusTip">
+     <property name="whatsThis">
       <string/>
-     </property>
-     <property name="minimum">
-      <number>-9999</number>
-     </property>
-     <property name="maximum">
-      <number>9999</number>
      </property>
     </widget>
    </item>
@@ -752,6 +745,19 @@
    </item>
    <item row="3" column="7">
     <widget class="QSpinBox" name="ana7Mid">
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="minimum">
+      <number>-9999</number>
+     </property>
+     <property name="maximum">
+      <number>9999</number>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="7">
+    <widget class="QSpinBox" name="ana6Mid">
      <property name="statusTip">
       <string/>
      </property>
@@ -815,16 +821,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="6">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Negative span</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
    <item row="5" column="0" colspan="4">
     <widget class="Line" name="potsTypeSeparator">
      <property name="minimumSize">
@@ -835,6 +831,23 @@
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="6">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Negative span</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="AutoLineEdit" name="rudName">
+     <property name="maxLength">
+      <number>3</number>
      </property>
     </widget>
    </item>
@@ -855,13 +868,6 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
-    <widget class="AutoLineEdit" name="rudName">
-     <property name="maxLength">
-      <number>3</number>
-     </property>
-    </widget>
-   </item>
    <item row="11" column="0">
     <widget class="QLabel" name="pot2Label">
      <property name="text">
@@ -873,6 +879,13 @@
     <widget class="QLabel" name="pot3Label">
      <property name="text">
       <string>S3</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="AutoLineEdit" name="eleName">
+     <property name="maxLength">
+      <number>3</number>
      </property>
     </widget>
    </item>
@@ -890,8 +903,8 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
-    <widget class="AutoLineEdit" name="eleName">
+   <item row="9" column="1">
+    <widget class="AutoLineEdit" name="ailName">
      <property name="maxLength">
       <number>3</number>
      </property>
@@ -901,20 +914,6 @@
     <widget class="QLabel" name="ailLabel">
      <property name="text">
       <string>Ail</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="1">
-    <widget class="AutoLineEdit" name="ailName">
-     <property name="maxLength">
-      <number>3</number>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="thrLabel">
-     <property name="text">
-      <string>Thr</string>
      </property>
     </widget>
    </item>
@@ -932,6 +931,20 @@
      </property>
     </widget>
    </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="thrLabel">
+     <property name="text">
+      <string>Thr</string>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="1">
+    <widget class="AutoLineEdit" name="rsName">
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+   </item>
    <item row="21" column="0">
     <widget class="QLabel" name="scLabel">
      <property name="text">
@@ -939,8 +952,8 @@
      </property>
     </widget>
    </item>
-   <item row="15" column="1">
-    <widget class="AutoLineEdit" name="rsName">
+   <item row="21" column="1">
+    <widget class="AutoLineEdit" name="scName">
      <property name="maxLength">
       <number>3</number>
      </property>
@@ -953,8 +966,8 @@
      </property>
     </widget>
    </item>
-   <item row="21" column="1">
-    <widget class="AutoLineEdit" name="scName">
+   <item row="22" column="1">
+    <widget class="AutoLineEdit" name="sdName">
      <property name="maxLength">
       <number>3</number>
      </property>
@@ -973,8 +986,8 @@
      </property>
     </widget>
    </item>
-   <item row="22" column="1">
-    <widget class="AutoLineEdit" name="sdName">
+   <item row="23" column="1">
+    <widget class="AutoLineEdit" name="seName">
      <property name="maxLength">
       <number>3</number>
      </property>
@@ -1000,8 +1013,8 @@
      </property>
     </widget>
    </item>
-   <item row="23" column="1">
-    <widget class="AutoLineEdit" name="seName">
+   <item row="24" column="1">
+    <widget class="AutoLineEdit" name="sfName">
      <property name="maxLength">
       <number>3</number>
      </property>
@@ -1027,8 +1040,8 @@
      </property>
     </widget>
    </item>
-   <item row="24" column="1">
-    <widget class="AutoLineEdit" name="sfName">
+   <item row="25" column="1">
+    <widget class="AutoLineEdit" name="sgName">
      <property name="maxLength">
       <number>3</number>
      </property>
@@ -1054,8 +1067,8 @@
      </property>
     </widget>
    </item>
-   <item row="25" column="1">
-    <widget class="AutoLineEdit" name="sgName">
+   <item row="26" column="1">
+    <widget class="AutoLineEdit" name="shName">
      <property name="maxLength">
       <number>3</number>
      </property>
@@ -1081,8 +1094,8 @@
      </property>
     </widget>
    </item>
-   <item row="26" column="1">
-    <widget class="AutoLineEdit" name="shName">
+   <item row="27" column="1">
+    <widget class="AutoLineEdit" name="siName">
      <property name="maxLength">
       <number>3</number>
      </property>
@@ -1095,8 +1108,8 @@
      </property>
     </widget>
    </item>
-   <item row="27" column="1">
-    <widget class="AutoLineEdit" name="siName">
+   <item row="28" column="1">
+    <widget class="AutoLineEdit" name="sjName">
      <property name="maxLength">
       <number>3</number>
      </property>
@@ -1109,8 +1122,8 @@
      </property>
     </widget>
    </item>
-   <item row="28" column="1">
-    <widget class="AutoLineEdit" name="sjName">
+   <item row="29" column="1">
+    <widget class="AutoLineEdit" name="skName">
      <property name="maxLength">
       <number>3</number>
      </property>
@@ -1123,8 +1136,8 @@
      </property>
     </widget>
    </item>
-   <item row="29" column="1">
-    <widget class="AutoLineEdit" name="skName">
+   <item row="30" column="1">
+    <widget class="AutoLineEdit" name="slName">
      <property name="maxLength">
       <number>3</number>
      </property>
@@ -1137,8 +1150,8 @@
      </property>
     </widget>
    </item>
-   <item row="30" column="1">
-    <widget class="AutoLineEdit" name="slName">
+   <item row="31" column="1">
+    <widget class="AutoLineEdit" name="smName">
      <property name="maxLength">
       <number>3</number>
      </property>
@@ -1151,8 +1164,8 @@
      </property>
     </widget>
    </item>
-   <item row="31" column="1">
-    <widget class="AutoLineEdit" name="smName">
+   <item row="32" column="1">
+    <widget class="AutoLineEdit" name="snName">
      <property name="maxLength">
       <number>3</number>
      </property>
@@ -1162,20 +1175,6 @@
     <widget class="QLabel" name="smLabel">
      <property name="text">
       <string>SM</string>
-     </property>
-    </widget>
-   </item>
-   <item row="32" column="1">
-    <widget class="AutoLineEdit" name="snName">
-     <property name="maxLength">
-      <number>3</number>
-     </property>
-    </widget>
-   </item>
-   <item row="32" column="0">
-    <widget class="QLabel" name="snLabel">
-     <property name="text">
-      <string>SN</string>
      </property>
     </widget>
    </item>
@@ -1192,7 +1191,7 @@
      </property>
     </widget>
    </item>
-   <item row="42" column="0" colspan="4">
+   <item row="44" column="0" colspan="4">
     <widget class="Line" name="potsTypeSeparator_4">
      <property name="minimumSize">
       <size>
@@ -1205,7 +1204,14 @@
      </property>
     </widget>
    </item>
-   <item row="48" column="1">
+   <item row="32" column="0">
+    <widget class="QLabel" name="snLabel">
+     <property name="text">
+      <string>SN</string>
+     </property>
+    </widget>
+   </item>
+   <item row="50" column="1">
     <widget class="QDoubleSpinBox" name="PPM_MultiplierDSB">
      <property name="decimals">
       <number>1</number>
@@ -1215,6 +1221,13 @@
      </property>
      <property name="value">
       <double>1.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="17" column="1">
+    <widget class="AutoLineEdit" name="rs2Name">
+     <property name="maxLength">
+      <number>3</number>
      </property>
     </widget>
    </item>
@@ -1232,15 +1245,8 @@
      </property>
     </widget>
    </item>
-   <item row="17" column="1">
-    <widget class="AutoLineEdit" name="rs2Name">
-     <property name="maxLength">
-      <number>3</number>
-     </property>
-    </widget>
-   </item>
-   <item row="26" column="2">
-    <widget class="AutoComboBox" name="shType">
+   <item row="27" column="2">
+    <widget class="AutoComboBox" name="siType">
      <property name="toolTip">
       <string/>
      </property>
@@ -1252,8 +1258,8 @@
      </property>
     </widget>
    </item>
-   <item row="27" column="2">
-    <widget class="AutoComboBox" name="siType">
+   <item row="26" column="2">
+    <widget class="AutoComboBox" name="shType">
      <property name="toolTip">
       <string/>
      </property>
@@ -1280,19 +1286,6 @@
    </item>
    <item row="29" column="2">
     <widget class="AutoComboBox" name="skType">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="statusTip">
-      <string/>
-     </property>
-     <property name="whatsThis">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="30" column="2">
-    <widget class="AutoComboBox" name="slType">
      <property name="toolTip">
       <string/>
      </property>
@@ -1531,6 +1524,41 @@
 2 - Normal.
 3 - Loud.
 4 - Extra loud.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="38" column="0">
+    <widget class="QLabel" name="bluetoothLabel">
+     <property name="text">
+      <string>Bluetooth</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="38" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="bluetoothEnable">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="AutoLineEdit" name="bluetoothName">
+       <property name="maxLength">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="36" column="1">
+    <widget class="AutoLineEdit" name="srName">
+     <property name="maxLength">
+      <number>3</number>
      </property>
     </widget>
    </item>

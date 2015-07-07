@@ -306,6 +306,11 @@ void generalDefault()
   }
 #endif
 
+#if defined(PCBTARANIS) && defined(REV9E)
+  const int8_t defaultName[] = { 20, -1, -18, -1, -14, -9, -19 };
+  memcpy(g_eeGeneral.bluetoothName, defaultName, sizeof(defaultName));
+#endif
+
   g_eeGeneral.chkSum = 0xFFFF;
 }
 

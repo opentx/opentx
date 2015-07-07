@@ -29,6 +29,7 @@ class CalibrationPanel : public GeneralPanel
     void on_PPM_MultiplierDSB_editingFinished();
 
     void on_CurrentCalib_SB_editingFinished();
+    void on_bluetoothEnable_stateChanged(int);
 
     void on_ana1Neg_editingFinished();
     void on_ana2Neg_editingFinished();

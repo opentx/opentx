@@ -70,6 +70,7 @@ enum menuGeneralHwItems {
   CASE_REV9E(ITEM_SETUP_HW_SP)
   CASE_REV9E(ITEM_SETUP_HW_SQ)
   CASE_REV9E(ITEM_SETUP_HW_SR)
+  CASE_REV9E(ITEM_SETUP_HW_BLUETOOTH)
   ITEM_SETUP_HW_UART3_MODE,
   ITEM_SETUP_HW_MAX
 };
@@ -86,13 +87,15 @@ enum menuGeneralHwItems {
 
 #if defined(REV9E)
   #define SWITCHES_ROWS  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+  #define BLUETOOTH_ROWS 1,
 #else
   #define SWITCHES_ROWS  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+  #define BLUETOOTH_ROWS
 #endif
 
 void menuGeneralHardware(uint8_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, e_Hardware, ITEM_SETUP_HW_MAX, { LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, 0 });
+  MENU(STR_HARDWARE, menuTabGeneral, e_Hardware, ITEM_SETUP_HW_MAX, { LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0 });
 
   uint8_t sub = m_posVert;
 
@@ -205,6 +208,14 @@ void menuGeneralHardware(uint8_t event)
         }
         break;
       }
+#if defined(REV9E)
+      case ITEM_SETUP_HW_BLUETOOTH:
+        lcd_putsLeft(y, "Bluetooth");
+        menu_lcd_onoff(HW_SETTINGS_COLUMN, y, g_eeGeneral.bluetoothEnable, m_posHorz == 0 ? attr : 0);
+        if (m_posHorz == 0) g_eeGeneral.bluetoothEnable = checkIncDecGen(event, g_eeGeneral.bluetoothEnable, 0, 1);
+        editName(HW_SETTINGS_COLUMN+5*FW, y, g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME, event, m_posHorz == 1 ? attr : 0);
+        break;
+#endif
       case ITEM_SETUP_HW_UART3_MODE:
         g_eeGeneral.uart3Mode = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.uart3Mode, 0, UART_MODE_MAX, attr, event);
         if (attr && checkIncDec_Ret) {

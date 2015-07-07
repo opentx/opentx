@@ -330,6 +330,7 @@ void uart3Stop(void);
 
 // BT driver
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
+#define BLUETOOTH_FACTORY_BAUDRATE     9600
 uint8_t bluetoothReady();
 void bluetoothInit(uint32_t baudrate);
 void bluetoothWrite(const void * buffer, int len);

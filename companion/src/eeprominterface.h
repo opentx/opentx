@@ -1174,6 +1174,8 @@ class GeneralSettings {
     unsigned int mAhWarn;
     unsigned int mAhUsed;
     unsigned int globalTimer;
+    bool bluetoothEnable;
+    char bluetoothName[10+1];
     unsigned int btBaudrate;
     unsigned int sticksGain;
     unsigned int rotarySteps;
