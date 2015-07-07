@@ -3751,7 +3751,7 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="820"/>
         <source>BeeperVoice</source>
-        <translation type="unfinished">Bzučák+Hlas</translation>
+        <translation>Bzučák+Hlas</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="825"/>
@@ -3761,22 +3761,22 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="835"/>
         <source>Beep volume</source>
-        <translation type="unfinished">Upozornění</translation>
+        <translation>Upozornění</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="858"/>
         <source>Wav volume</source>
-        <translation type="unfinished">Wav soubor</translation>
+        <translation>Wav soubor</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="881"/>
         <source>Vario volume</source>
-        <translation type="unfinished">Vario</translation>
+        <translation>Vario</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="904"/>
         <source>Background volume</source>
-        <translation type="unfinished">Zvuk v pozadí</translation>
+        <translation>Zvuk v pozadí</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="929"/>
@@ -3787,29 +3787,29 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="967"/>
         <source>Backlight  Auto OFF after</source>
-        <translation type="unfinished">Auto. vypnutí podsvětlení po</translation>
+        <translation>Auto. vypnutí podsvětlení po</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="974"/>
         <source>Backlight flash on alarm</source>
-        <translation type="unfinished">Blik. podsvětlením při alarmu</translation>
+        <translation>Blik. podsvětlením při alarmu</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="981"/>
         <source>Vario pitch at zero</source>
-        <translation type="unfinished">Tón varia na nule</translation>
+        <translation>Tón varia na nule</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="995"/>
         <source>Vario repeat at zero</source>
-        <translation type="unfinished">Opakování varia na nule</translation>
+        <translation>Opakování varia na nule</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1008"/>
         <source>This is the switch selectrion for turning on the backlight (if installed).
 
 </source>
-        <translation type="unfinished">Toto je volba spínače který zapne podsvětlení (pokud je nainstalováno).</translation>
+        <translation>Toto je volba spínače který zapne podsvětlení (pokud je nainstalováno).</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1033"/>
@@ -3830,27 +3830,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1054"/>
         <source>Backlight Brightness</source>
-        <translation type="unfinished">Jas podsvětlení</translation>
+        <translation>Jas podsvětlení</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1061"/>
         <source>RotEnc Navigation</source>
-        <translation type="unfinished">Navigace otočným enkodérem</translation>
+        <translation>Navigace otočným enkodérem</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1072"/>
         <source>America</source>
-        <translation type="unfinished">Amerika</translation>
+        <translation>Amerika</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1077"/>
         <source>Japan</source>
-        <translation type="unfinished">Japonsko</translation>
+        <translation>Japonsko</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1082"/>
         <source>Europe</source>
-        <translation type="unfinished">Evropa</translation>
+        <translation>Evropa</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1116"/>
@@ -3873,7 +3873,7 @@ Mode 4:
   Right stick:  Elevator, Rudder
 
 </source>
-        <translation type="unfinished">Výběr módu:
+        <translation>Výběr módu:
 
 Mode 1:
   Levá páka  :  Výškovka, Směrovka
@@ -3896,177 +3896,177 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1141"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="unfinished">Mód1 (Směr.Výšk.Plyn.Křid)</translation>
+        <translation>Mód1 (Směr.Výšk.Plyn.Křid)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1146"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="unfinished">Mód2 (Směr.Plyn.Výšk.Křid)</translation>
+        <translation>Mód2 (Směr.Plyn.Výšk.Křid)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1151"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="unfinished">Mód3 (Křid.Výšk.Plyn.Směr)</translation>
+        <translation>Mód3 (Křid.Výšk.Plyn.Směr)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1156"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="unfinished">Mód4 (Křid.Plyn.Výšk.Směr)</translation>
+        <translation>Mód4 (Křid.Plyn.Výšk.Směr)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1170"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pořadí kanálů&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Definuje výchozí pořadí kanálů použité při vytvoření nového modelu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pořadí kanálů&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Definuje výchozí pořadí kanálů použité při vytvoření nového modelu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1177"/>
         <source>R E T A</source>
-        <translation type="unfinished">S V P K</translation>
+        <translation>S V P K</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1182"/>
         <source>R E A T</source>
-        <translation type="unfinished">S V K P</translation>
+        <translation>S V K P</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1187"/>
         <source>R T E A</source>
-        <translation type="unfinished">S P V K</translation>
+        <translation>S P V K</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1192"/>
         <source>R T A E</source>
-        <translation type="unfinished">S P K V</translation>
+        <translation>S P K V</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1197"/>
         <source>R A E T</source>
-        <translation type="unfinished">S K V P</translation>
+        <translation>S K V P</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1202"/>
         <source>R A T E</source>
-        <translation type="unfinished">S K P V</translation>
+        <translation>S K P V</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1207"/>
         <source>E R T A</source>
-        <translation type="unfinished">V S P K</translation>
+        <translation>V S P K</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1212"/>
         <source>E R A T</source>
-        <translation type="unfinished">V S K P</translation>
+        <translation>V S K P</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1217"/>
         <source>E T R A</source>
-        <translation type="unfinished">V P S K</translation>
+        <translation>V P S K</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1222"/>
         <source>E T A R</source>
-        <translation type="unfinished">V P K S</translation>
+        <translation>V P K S</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1227"/>
         <source>E A R T</source>
-        <translation type="unfinished">V K S P</translation>
+        <translation>V K S P</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1232"/>
         <source>E A T R</source>
-        <translation type="unfinished">V K P S</translation>
+        <translation>V K P S</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1237"/>
         <source>T R E A</source>
-        <translation type="unfinished">P S V K</translation>
+        <translation>P S V K</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1242"/>
         <source>T R A E</source>
-        <translation type="unfinished">P S K V</translation>
+        <translation>P S K V</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1247"/>
         <source>T E R A</source>
-        <translation type="unfinished">P V S K</translation>
+        <translation>P V S K</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1252"/>
         <source>T E A R</source>
-        <translation type="unfinished">P V K S</translation>
+        <translation>P V K S</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1257"/>
         <source>T A R E</source>
-        <translation type="unfinished">P K S V</translation>
+        <translation>P K S V</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1262"/>
         <source>T A E R</source>
-        <translation type="unfinished">P K V S</translation>
+        <translation>P K V S</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1267"/>
         <source>A R E T</source>
-        <translation type="unfinished">K S V P</translation>
+        <translation>K S V P</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1272"/>
         <source>A R T E</source>
-        <translation type="unfinished">K S P V</translation>
+        <translation>K S P V</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1277"/>
         <source>A E R T</source>
-        <translation type="unfinished">K V S P</translation>
+        <translation>K V S P</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1282"/>
         <source>A E T R</source>
-        <translation type="unfinished">K V P S</translation>
+        <translation>K V P S</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1287"/>
         <source>A T R E</source>
-        <translation type="unfinished">K P S V</translation>
+        <translation>K P S V</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1292"/>
         <source>A T E R</source>
-        <translation type="unfinished">K P V S</translation>
+        <translation>K P V S</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1300"/>
         <source>Stick Mode</source>
-        <translation type="unfinished">Výchozí mód vysílačky</translation>
+        <translation>Výchozí mód vysílačky</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1308"/>
         <source>Metric</source>
-        <translation type="unfinished">Metrické</translation>
+        <translation>Metrické</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1313"/>
         <source>Imperial</source>
-        <translation type="unfinished">Imperiální</translation>
+        <translation>Imperiální</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1327"/>
         <source>Default Channel Order</source>
-        <translation type="unfinished">Výchozí pořadí kanálů</translation>
+        <translation>Výchozí pořadí kanálů</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1334"/>
         <source>GPS Coordinates</source>
-        <translation type="unfinished">Souřadnice GPS</translation>
+        <translation>Souřadnice GPS</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1376"/>
         <source>Min</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1383"/>
@@ -4077,57 +4077,57 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1405"/>
         <source>Max</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1448"/>
         <source>Low Memory Warning</source>
-        <translation type="unfinished">Upozornit na nedostatek paměti</translation>
+        <translation>Upozornit na nedostatek paměti</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1467"/>
         <source>Inactivity Timer</source>
-        <translation type="unfinished">Časovač nečinnosti</translation>
+        <translation>Časovač nečinnosti</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1486"/>
         <source>Show Splash Screen on Startup</source>
-        <translation type="unfinished">Zobrazit úvodní logo</translation>
+        <translation>Zobrazit úvodní logo</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1508"/>
         <source>Contrast</source>
-        <translation type="unfinished">Kontrast</translation>
+        <translation>Kontrast</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1527"/>
         <source>Battery Meter Range</source>
-        <translation type="unfinished">Rozsah ukazatele baterie</translation>
+        <translation>Rozsah ukazatele baterie</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1546"/>
         <source>Haptic Strength</source>
-        <translation type="unfinished">Síla vibrací</translation>
+        <translation>Síla vibrací</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1565"/>
         <source>LCD Display Type</source>
-        <translation type="unfinished">Typ LCD zobrazovače</translation>
+        <translation>Typ LCD zobrazovače</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1584"/>
         <source>&quot;No Sound&quot; Warning</source>
-        <translation type="unfinished">Upozornění na vypnutý zvuk</translation>
+        <translation>Upozornění na vypnutý zvuk</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1606"/>
         <source>Battery Warning</source>
-        <translation type="unfinished">Alarm baterie</translation>
+        <translation>Alarm baterie</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1625"/>
         <source>Haptic Length</source>
-        <translation type="unfinished">Délka vibrací</translation>
+        <translation>Délka vibrací</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1638"/>
@@ -4138,24 +4138,24 @@ Mode 4:
         <location filename="../generaledit/generalsetup.ui" line="1658"/>
         <location filename="../generaledit/generalsetup.ui" line="2221"/>
         <source>Quiet</source>
-        <translation type="unfinished">Tichý</translation>
+        <translation>Tichý</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1663"/>
         <source>Only Alarms</source>
-        <translation type="unfinished">Jen alarm</translation>
+        <translation>Jen alarm</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1668"/>
         <location filename="../generaledit/generalsetup.ui" line="2231"/>
         <source>No Keys</source>
-        <translation type="unfinished">Bez kláves</translation>
+        <translation>Bez kláves</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1673"/>
         <location filename="../generaledit/generalsetup.ui" line="2236"/>
         <source>All</source>
-        <translation type="unfinished">Vše</translation>
+        <translation>Vše</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1761"/>
@@ -4195,7 +4195,7 @@ Použitelné hodnoty jsou 5v..10v</translation>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1883"/>
         <source>---</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1888"/>
@@ -4235,42 +4235,42 @@ Použitelné hodnoty jsou 5v..10v</translation>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1929"/>
         <source>4800 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1934"/>
         <source>9600 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1939"/>
         <source>14400 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1944"/>
         <source>19200 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1949"/>
         <source>38400 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1954"/>
         <source>57600 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1959"/>
         <source>76800 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1964"/>
         <source>115200 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1990"/>
@@ -4292,31 +4292,31 @@ p, li { white-space: pre-wrap; }
         <location filename="../generaledit/generalsetup.ui" line="2061"/>
         <location filename="../generaledit/generalsetup.ui" line="2257"/>
         <source>X-Short</source>
-        <translation type="unfinished">Extra krátký</translation>
+        <translation>Extra krátký</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2066"/>
         <location filename="../generaledit/generalsetup.ui" line="2262"/>
         <source>Short</source>
-        <translation type="unfinished">Krátký</translation>
+        <translation>Krátký</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2071"/>
         <location filename="../generaledit/generalsetup.ui" line="2267"/>
         <source>Normal</source>
-        <translation type="unfinished">Normální</translation>
+        <translation>Normální</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2076"/>
         <location filename="../generaledit/generalsetup.ui" line="2272"/>
         <source>Long</source>
-        <translation type="unfinished">Dlouhý</translation>
+        <translation>Dlouhý</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2081"/>
         <location filename="../generaledit/generalsetup.ui" line="2277"/>
         <source>X-Long</source>
-        <translation type="unfinished">Extra dlouhý</translation>
+        <translation>Extra dlouhý</translation>
     </message>
     <message utf8="true">
         <location filename="../generaledit/generalsetup.ui" line="2090"/>
@@ -4326,32 +4326,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2095"/>
         <source>NMEA</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2109"/>
         <source>Play Delay (switch mid position)</source>
-        <translation type="unfinished">Přechod střední polohy přepínače</translation>
+        <translation>Přechod střední polohy přepínače</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2116"/>
         <source>Measurement Units</source>
-        <translation type="unfinished">Měrné jednotky</translation>
+        <translation>Měrné jednotky</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2148"/>
         <source>Haptic Mode</source>
-        <translation type="unfinished">Mód vibrací</translation>
+        <translation>Mód vibrací</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2167"/>
         <source>Beeper Length</source>
-        <translation type="unfinished">Délka zvuku</translation>
+        <translation>Délka zvuku</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2186"/>
         <source>Beeper Mode</source>
-        <translation type="unfinished">Mód zvuku</translation>
+        <translation>Mód zvuku</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2211"/>
@@ -4362,10 +4362,10 @@ p, li { white-space: pre-wrap; }
 2 - Normal.
 3 - Loud.
 4 - Extra loud.</source>
-        <translation type="unfinished">Hlasitost Bzučáku
+        <translation>Hlasitost Bzučáku
 
-0 - Tichý.  No beeps at all.
-1 - Bez kláves.  Normal beeps but menu keys do not beep.
+0 - Tichý..
+1 - Bez zvuku kláves..
 2 - Normální.
 3 - Hlasitý.
 4 - Extra Hlasitý.</translation>
@@ -4373,7 +4373,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2226"/>
         <source>Alarms Only</source>
-        <translation type="unfinished">Jen alarmy</translation>
+        <translation>Jen alarmy</translation>
     </message>
 </context>
 <context>
@@ -5204,7 +5204,11 @@ Release %2 is available.
 Do you want to download it now?
 
 We recommend you view the release notes using the button below to learn about any changes that may be important to you.</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware %1 ještě nebyl pravděpodobně stažen.
+Vydání %2 je dostupné.
+Chcete ho stáhnout nyní?
+
+Doporučujeme prohlédnout poznámky k vydání, pomocí tlačítka níže se dozvíte o případných změnách, které mohou být pro vás důležité.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="444"/>
@@ -5215,18 +5219,24 @@ We recommend you view the release notes using the button below to learn about an
 Do you want to download it now?
 
 We recommend you view the release notes using the button below to learn about any changes that may be important to you.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nová verze %1 firmware je dostupná:
+  - současná je %2
+  - nová %3
+
+Chcete firmware stáhnout nyní?
+
+Doporučujeme prohlédnout poznámky k vydání, pomocí tlačítka níže se dozvíte o případných změnách, které mohou být pro vás důležité.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="681"/>
         <location filename="../mainwindow.cpp" line="1063"/>
         <source>Synchronize SD</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronizace SD</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="925"/>
         <source>OpenTX Companion 2.1 - FW: %1 - Profile: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX Companion 2.1 - FW: %1 - Profil: %2</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1013"/>
@@ -5465,12 +5475,12 @@ We recommend you view the release notes using the button below to learn about an
     <message>
         <location filename="../mainwindow.cpp" line="1034"/>
         <source>Spanish</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1034"/>
         <source>Use Spanish in menus</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1035"/>
@@ -5704,7 +5714,7 @@ We recommend you view the release notes using the button below to learn about an
     <message>
         <location filename="../mainwindow.cpp" line="1063"/>
         <source>SD card synchronization</source>
-        <translation type="unfinished"></translation>
+        <translation>Syncronizace SD karty se složkou s daty</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1072"/>
@@ -6700,27 +6710,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/setup_module.ui" line="250"/>
         <source>Master/Jack</source>
-        <translation type="unfinished"></translation>
+        <translation>Učitel/Jack konektor</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="255"/>
         <source>Slave/Jack</source>
-        <translation type="unfinished"></translation>
+        <translation>Žák/Jack konektor</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="260"/>
         <source>Master/SBUS Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Učitel/SBUS modul</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="265"/>
         <source>Master/CPPM Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Učitel/CPPM modul</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="270"/>
         <source>Master/SBUS in battery compartment</source>
-        <translation type="unfinished"></translation>
+        <translation>Učitel/SBUS konektor v šachtě baterie</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="322"/>
@@ -6735,7 +6745,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/setup_module.ui" line="423"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nenastaveno</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="428"/>
@@ -6775,17 +6785,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/setup_module.ui" line="556"/>
         <source>Output type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ řízení výstupu</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="564"/>
         <source>Open Drain</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="569"/>
         <source>Push Pull</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -6819,17 +6829,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/setup.cpp" line="181"/>
         <source>Value</source>
-        <translation type="unfinished">Hodnota</translation>
+        <translation>Hodnota</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="182"/>
         <source>Hold</source>
-        <translation type="unfinished">Držet hodnotu</translation>
+        <translation>Držet hodnotu</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="183"/>
         <source>No Pulse</source>
-        <translation type="unfinished"></translation>
+        <translation>Žádné pulzy</translation>
     </message>
 </context>
 <context>
@@ -7226,32 +7236,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../printdialog.cpp" line="90"/>
         <source>Internal Radio System</source>
-        <translation type="unfinished">Interní vysílací modul</translation>
+        <translation>Interní vysílací modul</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="90"/>
         <source>Radio System</source>
-        <translation type="unfinished">Vysílací modul</translation>
+        <translation>Vysílací modul</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="94"/>
         <source>External Radio Module</source>
-        <translation type="unfinished">Externí vysílací modul</translation>
+        <translation>Externí vysílací modul</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="94"/>
         <source>Extra Radio System</source>
-        <translation type="unfinished">Extra modul</translation>
+        <translation>Extra modul</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="98"/>
         <source>Trainer port mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mód portu trenér</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="149"/>
         <source>Off</source>
-        <translation type="unfinished">Vypnuto</translation>
+        <translation>Vypnuto</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="192"/>
@@ -7471,7 +7481,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../eeprominterface.cpp" line="425"/>
         <location filename="../helpers.cpp" line="90"/>
         <source>Thr</source>
-        <translation>Plyn    </translation>
+        <translation>Plyn </translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="425"/>
@@ -11525,27 +11535,27 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../generaledit/trainer.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="39"/>
         <source>Mode</source>
-        <translation type="unfinished">Mód</translation>
+        <translation>Mód</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="46"/>
         <source>Input</source>
-        <translation type="unfinished">Vstup</translation>
+        <translation>Vstup</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="53"/>
         <source>Weight</source>
-        <translation type="unfinished">Váha</translation>
+        <translation>Váha</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="66"/>
         <source>Rud</source>
-        <translation type="unfinished">Směrovka</translation>
+        <translation>Směrovka</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="79"/>
@@ -11563,10 +11573,10 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
 2 - Normal.
 3 - Loud.
 4 - Extra loud.</source>
-        <translation type="unfinished">Hlasitost Bzučáku
+        <translation>Hlasitost Bzučáku
 
-0 - Tichý.  No beeps at all.
-1 - Bez kláves.  Normal beeps but menu keys do not beep.
+0 - Tichý.
+1 - Bez zvuku kláves.
 2 - Normální.
 3 - Hlasitý.
 4 - Extra Hlasitý.</translation>
@@ -11577,7 +11587,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../generaledit/trainer.ui" line="338"/>
         <location filename="../generaledit/trainer.ui" line="385"/>
         <source>Off</source>
-        <translation type="unfinished">Vypnuto</translation>
+        <translation>Vypnuto</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="94"/>
@@ -11585,7 +11595,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../generaledit/trainer.ui" line="343"/>
         <location filename="../generaledit/trainer.ui" line="390"/>
         <source>+= (Sum)</source>
-        <translation type="unfinished">+= (Sečíst)</translation>
+        <translation>+= (Sečíst)</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="99"/>
@@ -11593,7 +11603,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../generaledit/trainer.ui" line="348"/>
         <location filename="../generaledit/trainer.ui" line="395"/>
         <source>:= (Replace)</source>
-        <translation type="unfinished">:= (Nahradit)</translation>
+        <translation>:= (Nahradit)</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="123"/>
@@ -11601,7 +11611,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../generaledit/trainer.ui" line="267"/>
         <location filename="../generaledit/trainer.ui" line="419"/>
         <source>chn1</source>
-        <translation type="unfinished">Kanál 1</translation>
+        <translation>Kanál 1</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="128"/>
@@ -11609,7 +11619,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../generaledit/trainer.ui" line="272"/>
         <location filename="../generaledit/trainer.ui" line="424"/>
         <source>chn2</source>
-        <translation type="unfinished">Kanál 2</translation>
+        <translation>Kanál 2</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="133"/>
@@ -11617,7 +11627,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../generaledit/trainer.ui" line="277"/>
         <location filename="../generaledit/trainer.ui" line="429"/>
         <source>chn3</source>
-        <translation type="unfinished">Kanál 3</translation>
+        <translation>Kanál 3</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="138"/>
@@ -11625,22 +11635,22 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../generaledit/trainer.ui" line="282"/>
         <location filename="../generaledit/trainer.ui" line="434"/>
         <source>chn4</source>
-        <translation type="unfinished">Kanál 4</translation>
+        <translation>Kanál 4</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="171"/>
         <source>Ele</source>
-        <translation type="unfinished">Výškovka</translation>
+        <translation>Výškovka</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="315"/>
         <source>Thr</source>
-        <translation type="unfinished"></translation>
+        <translation>Plyn</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="362"/>
         <source>Ail</source>
-        <translation type="unfinished">Křidélka</translation>
+        <translation>Křidélka</translation>
     </message>
 </context>
 <context>
