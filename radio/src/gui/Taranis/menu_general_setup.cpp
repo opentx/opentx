@@ -354,7 +354,7 @@ void menuGeneralSetup(uint8_t event)
 #endif
 
       case ITEM_SETUP_INACTIVITY_ALARM:
-        lcd_putsLeft( y,STR_INACTIVITYALARM);
+        lcd_putsLeft(y, STR_INACTIVITYALARM);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.inactivityTimer, attr|LEFT);
         lcd_putc(lcdLastPos, y, 'm');
         if(attr) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
