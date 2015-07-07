@@ -74,12 +74,12 @@ I18N_PLAY_FUNCTION(it, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       prompts.extend(self.getNumberPrompt(temp_digit))
       prompts.append(Prompt(GUIDE_00_MILLION, dir=2))
 */
-
+  getvalue_t orignumber;
   if (number < 0) {
     PUSH_NUMBER_PROMPT(IT_PROMPT_MENO);
     number = -number;
   }
-
+  orignumber=number;
 #if !defined(CPUARM)
   if (unit) {
     unit--;
@@ -111,44 +111,51 @@ I18N_PLAY_FUNCTION(it, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       PUSH_NUMBER_PROMPT(IT_PROMPT_VIRGOLA);
       if (mode==2 && qr.rem < 10)
         PUSH_NUMBER_PROMPT(IT_PROMPT_ZERO);
-      PLAY_NUMBER(qr.rem, unit, 0);
+      PLAY_NUMBER(qr.rem, 0, 0);
     }
     else {
       if (qr.quot==1) {
         PUSH_NUMBER_PROMPT(IT_PROMPT_UN);
         if (unit) {
           PUSH_NUMBER_PROMPT(IT_PROMPT_UNITS_BASE+(unit*2));
-        }        
+        }
+        return;
       } else {
-        PLAY_NUMBER(qr.quot, unit, 0);
+        PLAY_NUMBER(qr.quot, 0, 0);
       }
     }
-    return;
-  }
-  
-  if (number >= 1000) {
-    if (number >= 2000) {
-      PLAY_NUMBER(number / 1000, 0, 0);
-      PUSH_NUMBER_PROMPT(IT_PROMPT_MILA);
+  } else {
+    if (orignumber == 1 && unit) {
+      PUSH_NUMBER_PROMPT(IT_PROMPT_UN);
     } else {
-      PUSH_NUMBER_PROMPT(IT_PROMPT_MILLE);
+      if (number >= 1000) {
+        if (number >= 2000) {
+          PLAY_NUMBER(number / 1000, 0, 0);
+          PUSH_NUMBER_PROMPT(IT_PROMPT_MILA);
+        } else {
+          PUSH_NUMBER_PROMPT(IT_PROMPT_MILLE);
+        }
+        number %= 1000;
+        if (number == 0)
+          number = -1;
+      }
+      if (number >= 100) {
+        if (number >= 200)
+          PUSH_NUMBER_PROMPT(IT_PROMPT_ZERO + number/100);
+        PUSH_NUMBER_PROMPT(IT_PROMPT_CENT);
+        number %= 100;
+        if (number == 0)
+          number = -1;
+      }
+      PUSH_NUMBER_PROMPT(IT_PROMPT_ZERO+number);
     }
-    number %= 1000;
-    if (number == 0)
-      number = -1;
   }
-  if (number >= 100) {
-    if (number >= 200)
-      PUSH_NUMBER_PROMPT(IT_PROMPT_ZERO + number/100);
-    PUSH_NUMBER_PROMPT(IT_PROMPT_CENT);
-    number %= 100;
-    if (number == 0)
-      number = -1;
-  }
-  PUSH_NUMBER_PROMPT(IT_PROMPT_ZERO+number);
-
   if (unit) {
-    PUSH_NUMBER_PROMPT(IT_PROMPT_UNITS_BASE+(unit*2)+1);
+    if (orignumber == 1) {
+      PUSH_NUMBER_PROMPT(IT_PROMPT_UNITS_BASE+(unit*2));
+    } else {
+      PUSH_NUMBER_PROMPT(IT_PROMPT_UNITS_BASE+(unit*2)+1);
+    }
   }
 }
 
