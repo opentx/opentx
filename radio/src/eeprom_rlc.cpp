@@ -262,6 +262,12 @@ void eepromFormat()
 {
   ENABLE_SYNC_WRITE(true);
 
+#ifdef SIMU
+  // write zero to the end of the new EEPROM file to set it's proper size
+  uint8_t dummy = 0;
+  eepromWriteBlock(&dummy, EESIZE-1, 1);
+#endif
+
   memclear(&eeFs, sizeof(eeFs));
   eeFs.version  = EEFS_VERS;
   eeFs.mySize   = sizeof(eeFs);

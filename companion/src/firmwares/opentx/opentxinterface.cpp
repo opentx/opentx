@@ -327,7 +327,7 @@ bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, in
         size=2048;
       }
     } else {
-      std::cout << " wrong size (" << size << ")\n";
+      std::cout << " wrong size (" << size << "/" << getEEpromSize() << ")\n";
       return false;
     }
   }
