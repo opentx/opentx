@@ -58,6 +58,7 @@ void ModelEdit::closeEvent(QCloseEvent *event)
 void ModelEdit::addTab(GenericPanel *panel, QString text)
 {
   panels << panel;
+  panel->update();
   QWidget * widget = new QWidget(ui->tabWidget);
   QVBoxLayout *baseLayout = new QVBoxLayout(widget);
   VerticalScrollArea * area = new VerticalScrollArea(widget, panel);
