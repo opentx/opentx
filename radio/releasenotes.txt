@@ -6,6 +6,7 @@
 <li>New Telemetry system (<a href=https://github.com/opentx/opentx/issues/1634>#1634</a>)</li> 
 <li>Added Dangerous Custom Functions (range check, bind)</li>
 <li>Better graphical trim representation (<a href=https://github.com/opentx/opentx/issues/1419>#1419</a>)</li>
+<li>Increased PPM-Center range</li>
 </ul>
 
 
@@ -23,8 +24,18 @@
 <li>Added firmware upgrade of SPORT devices (<a href=https://github.com/opentx/opentx/issues/1599>#1599</a>)</li>
 <li>Added EEPROM Factory Reset menu option</li>
 <li>Added LUA file read/write capability (<a href=https://github.com/opentx/opentx/issues/1471>#1471</a>)</li>
+<li>Hardware I2C (for EEPROM)</li>
+<li>Added a menu for quick sources and switches selection (by category)</li>
+<li>Possibility to use any input for Long. and Lateral sources</li>
+<li>Failsafe settings improved</li>
+<li>Possibility to have the vario silent in the mid range</li>
+<li>Added wireless trainer modes</li> 
 </ul>
 
+[Mega2560]
+<ul>
+<li>Added support for the DIY Mega2560 radio</li>
+</ul>
 
 
 <h2>Version 2.0.18 / (not yet released)</h2>
