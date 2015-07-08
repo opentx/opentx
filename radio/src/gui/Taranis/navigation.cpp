@@ -556,7 +556,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
       while (1) {
         vertpos_t firstLine = 0;
         for (int numLines=0; firstLine<rowcount && numLines<s_pgOfs; firstLine++) {
-          if (horTab[firstLine] != HIDDEN_ROW) {
+          if (firstLine>=horTabMax || horTab[firstLine] != HIDDEN_ROW) {
             numLines++;
           }
         }
