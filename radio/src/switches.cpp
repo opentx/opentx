@@ -709,7 +709,6 @@ void checkSwitches()
           }
           if (!(g_model.potsWarnEnabled & (1 << i))) {
             if (abs(g_model.potsWarnPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1) {
-              TRACE("POS %d vs %d", g_model.potsWarnPosition[i], GET_LOWRES_POT_POSITION(i));
               lcd_putsiAtt(x, y, STR_VSRCRAW, NUM_STICKS+1+i, INVERS);
               switch (i) {
                 case 0:
@@ -838,7 +837,7 @@ void logicalSwitchesTimerTick()
 #endif
 }
 
-LogicalSwitchData *lswAddress(uint8_t idx)
+LogicalSwitchData * lswAddress(uint8_t idx)
 {
   return &g_model.logicalSw[idx];
 }
@@ -869,6 +868,7 @@ int16_t lswTimerValue(delayval_t val)
 void logicalSwitchesReset()
 {
 #if defined(CPUARM)
+  flightModeTransitionLast = 255;
   memset(lswFm, 0, sizeof(lswFm));
 #else
   s_last_switch_value = 0;
