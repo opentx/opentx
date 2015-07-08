@@ -1403,7 +1403,7 @@ QString removeAccents(const QString & str)
   QString result = str;
 
   // UTF-8 ASCII Table
-  const QString tA[] = { "á", "â", "ã", "à" };
+  const QString tA[] = { "á", "â", "ã", "à", "ä" };
   const QString tE[] = { "é", "è", "ê", "ě" };
   const QString tI[] = { "í" };
   const QString tO[] = { "ó", "ô", "õ", "ö" };
