@@ -1472,9 +1472,17 @@ void flightReset()
     timerReset(0);
   }
 
+#if TIMERS > 1
   if (!IS_MANUAL_RESET_TIMER(1)) {
     timerReset(1);
   }
+#endif
+
+#if TIMERS > 2
+  if (!IS_MANUAL_RESET_TIMER(2)) {
+    timerReset(2);
+  }
+#endif
 
 #if defined(FRSKY)
   telemetryReset();
