@@ -42,6 +42,7 @@ extern LP_CONST LanguagePack esLanguagePack;
 extern LP_CONST LanguagePack frLanguagePack;
 extern LP_CONST LanguagePack deLanguagePack;
 extern LP_CONST LanguagePack itLanguagePack;
+extern LP_CONST LanguagePack nlLanguagePack;
 extern LP_CONST LanguagePack plLanguagePack;
 extern LP_CONST LanguagePack ptLanguagePack;
 extern LP_CONST LanguagePack skLanguagePack;
@@ -57,6 +58,7 @@ const LanguagePack * LP_CONST languagePacks[] = {
   &frLanguagePack,
   &huLanguagePack,
   &itLanguagePack,
+  &nlLanguagePack,
   &plLanguagePack,
   &ptLanguagePack,
   &seLanguagePack,

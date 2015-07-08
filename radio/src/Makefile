@@ -238,7 +238,7 @@ TX_CADDY = NO
 IRPROTOS = NO
 
 # TRANSLATIONS
-# Values = cz, de, en, fi, fr, it, se, es, pl, pt
+# Values = cz, de, en, fi, fr, it, se, es, pl, pt, nl
 TRANSLATIONS = EN
 
 # TTS
@@ -1043,7 +1043,7 @@ TARGET = opentx
 
 # List C++ source files here. (C dependencies are automatically generated.)
 ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO TARANIS))
-  TTS_SRC = translations/tts_cz.cpp translations/tts_de.cpp translations/tts_en.cpp translations/tts_es.cpp translations/tts_fr.cpp translations/tts_it.cpp translations/tts_pt.cpp translations/tts_sk.cpp translations/tts_se.cpp translations/tts_pl.cpp translations/tts_hu.cpp
+  TTS_SRC = translations/tts_cz.cpp translations/tts_de.cpp translations/tts_en.cpp translations/tts_es.cpp translations/tts_fr.cpp translations/tts_it.cpp translations/tts_nl.cpp translations/tts_pt.cpp translations/tts_sk.cpp translations/tts_se.cpp translations/tts_pl.cpp translations/tts_hu.cpp
 else
   STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
   TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
@@ -1451,7 +1451,7 @@ bootloader.lbm:
 	mv bootflash4.lbm $@
 endif
 
-tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
+tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/nl.h translations/pl.h translations/pt.h translations/se.h
 lbm: fonts bitmaps
 
 elf: $(TARGET).elf
@@ -1508,6 +1508,11 @@ translations/it.h: translations/it.h.txt
 	@echo
 	@echo "Create Italian language specific header files"
 	$(TRANSLATE) translations/it.h.txt translations/it.h it
+
+translations/nl.h: translations/nl.h.txt
+	@echo
+	@echo "Create Nederlands language specific header files"
+	$(TRANSLATE) translations/nl.h.txt translations/nl.h nl
 
 translations/pl.h: translations/pl.h.txt
 	@echo

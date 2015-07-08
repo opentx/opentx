@@ -89,26 +89,27 @@ class OpenTxFirmware: public Firmware {
       Firmware(id, name, board, new OpenTxEepromInterface(board))
     {
       addLanguage("en");
+      addLanguage("cz");
+      addLanguage("de");
+      addLanguage("es");
       addLanguage("fr");
       addLanguage("it");
-      addLanguage("de");
-      addLanguage("se");
-      addLanguage("cz");
-      addLanguage("es");
+      addLanguage("nl");
       addLanguage("pl");
       addLanguage("pt");
+      addLanguage("se");
 
       addTTSLanguage("en");
-      addTTSLanguage("fr");
-      addTTSLanguage("it");
-      addTTSLanguage("de");
-      addTTSLanguage("se");
       addTTSLanguage("cz");
-      addTTSLanguage("sk");
+      addTTSLanguage("es");
+      addTTSLanguage("fr");
+      addTTSLanguage("hu");
+      addTTSLanguage("it");
+      addTTSLanguage("nl");
       addTTSLanguage("pl");
       addTTSLanguage("pt");
-      addTTSLanguage("es");
-      addTTSLanguage("hu");
+      addTTSLanguage("se");
+      addTTSLanguage("sk");
     }
 
     virtual Firmware * getFirmwareVariant(const QString & id);

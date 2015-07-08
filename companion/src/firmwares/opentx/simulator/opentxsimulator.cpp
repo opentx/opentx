@@ -265,13 +265,14 @@ namespace NAMESPACE {
 #include "radio/src/translations/tts_cz.cpp"
 #include "radio/src/translations/tts_de.cpp"
 #include "radio/src/translations/tts_es.cpp"
-#include "radio/src/translations/tts_se.cpp"
-#include "radio/src/translations/tts_it.cpp"
 #include "radio/src/translations/tts_fr.cpp"
-#include "radio/src/translations/tts_pt.cpp"
-#include "radio/src/translations/tts_sk.cpp"
-#include "radio/src/translations/tts_pl.cpp"
 #include "radio/src/translations/tts_hu.cpp"
+#include "radio/src/translations/tts_it.cpp"
+#include "radio/src/translations/tts_nl.cpp"
+#include "radio/src/translations/tts_pl.cpp"
+#include "radio/src/translations/tts_pt.cpp"
+#include "radio/src/translations/tts_se.cpp"
+#include "radio/src/translations/tts_sk.cpp"
 #endif
 
 #if defined(LUA)
