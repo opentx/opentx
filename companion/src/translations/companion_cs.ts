@@ -7442,12 +7442,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../progressdialog.ui" line="26"/>
         <source>Flash Firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Zápis firmware</translation>
     </message>
     <message>
         <location filename="../progressdialog.ui" line="76"/>
         <source>Close</source>
-        <translation type="unfinished">Zavřít</translation>
+        <translation>Zavřít</translation>
     </message>
 </context>
 <context>
@@ -7455,12 +7455,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../progresswidget.ui" line="29"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../progresswidget.ui" line="75"/>
         <source>Show Details</source>
-        <translation type="unfinished">Zobrazit podrobnosti</translation>
+        <translation>Zobrazit podrobnosti</translation>
     </message>
 </context>
 <context>
@@ -10006,7 +10006,7 @@ Tým OpenTX.</translation>
     <message>
         <location filename="../radionotfound.ui" line="40"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Note: if you have a Taranis that has not had the firmware upgraded to 2.0 then this version of Companion will not work.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rádio nebylo nalezeno!&lt;/p&gt;&lt;p&gt;Ujistěte se, že během zapínání rádia držíte spodní trimy proti sobě.&lt;/p&gt;&lt;p&gt;Až poté připojte USB kabel..&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Pozor: pokud máte Taranis který ještě nebyl aktualizován na verzi alespoň 2.0, potom tato verze Companion nebude fungovat.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -10066,7 +10066,7 @@ Tým OpenTX.</translation>
     <message>
         <location filename="../modeledit/setup.ui" line="28"/>
         <source>Timer 3</source>
-        <translation type="unfinished">Stopky3</translation>
+        <translation>Stopky3</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="173"/>
@@ -10106,17 +10106,17 @@ Tým OpenTX.</translation>
     <message>
         <location filename="../modeledit/setup.ui" line="203"/>
         <source>Never</source>
-        <translation type="unfinished"></translation>
+        <translation>Nikdy</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="208"/>
         <source>On change</source>
-        <translation type="unfinished"></translation>
+        <translation>Při změně</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="213"/>
         <source>Always</source>
-        <translation type="unfinished"></translation>
+        <translation>Vždy</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="231"/>
@@ -10135,7 +10135,7 @@ Tým OpenTX.</translation>
     <message>
         <location filename="../modeledit/setup.ui" line="263"/>
         <source>Trims Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Číselné zobrazení trimu</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="445"/>
@@ -10235,7 +10235,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../simulation/simulatordialog.cpp" line="473"/>
         <location filename="../simulation/simulatordialog.cpp" line="474"/>
         <source>Outputs</source>
-        <translation type="unfinished">Výstupy</translation>
+        <translation>Výstupy</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="637"/>
@@ -10344,12 +10344,12 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1049"/>
         <source>S3</source>
-        <translation type="unfinished">S3 (multipos3_poloha6)</translation>
+        <translation>S3</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1065"/>
         <source>S4</source>
-        <translation type="unfinished">S4 (multipos3_poloha6)</translation>
+        <translation>S4</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1103"/>
@@ -10523,17 +10523,17 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry.ui" line="557"/>
         <source>Altitude source</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdroj výšky</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="570"/>
         <source>Volts source</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdroj napětí</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="593"/>
         <source>Top Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Hodnoty na horní liště</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="829"/>
@@ -10543,7 +10543,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry.ui" line="882"/>
         <source>Sensors</source>
-        <translation type="unfinished"></translation>
+        <translation>Senzory</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="652"/>
@@ -10823,12 +10823,12 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry.cpp" line="334"/>
         <source>None</source>
-        <translation type="unfinished">Žádný</translation>
+        <translation>Žádný</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="335"/>
         <source>Numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Hodnoty</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="336"/>
@@ -10838,7 +10838,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry.cpp" line="338"/>
         <source>Script</source>
-        <translation type="unfinished"></translation>
+        <translation>Skript</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="75"/>
@@ -10976,47 +10976,47 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="46"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlastní</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="51"/>
         <source>Calculated</source>
-        <translation type="unfinished"></translation>
+        <translation>Vypočtený</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="65"/>
         <source>Id</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="94"/>
         <source>Instance</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="127"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Součet</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="132"/>
         <source>Average</source>
-        <translation type="unfinished"></translation>
+        <translation>Průměr</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="137"/>
         <source>Min</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="142"/>
         <source>Max</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="147"/>
         <source>Multiply</source>
-        <translation type="unfinished"></translation>
+        <translation>Násobení</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="152"/>
@@ -11026,22 +11026,22 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="157"/>
         <source>Cell</source>
-        <translation type="unfinished">Článek</translation>
+        <translation>Článek</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="162"/>
         <source>Consumption</source>
-        <translation type="unfinished"></translation>
+        <translation>Spotřeba</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="167"/>
         <source>Dist</source>
-        <translation type="unfinished">Vzdálenost</translation>
+        <translation>Vzdálenost</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="181"/>
         <source>Cells Sensor :</source>
-        <translation type="unfinished"></translation>
+        <translation>Senzor článků :</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="195"/>
@@ -11053,177 +11053,177 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../modeledit/telemetry_sensor.ui" line="334"/>
         <location filename="../modeledit/telemetry_sensor.ui" line="349"/>
         <source>---</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="219"/>
         <source>GPS Sensor :</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS Senzor :</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="247"/>
         <source>Alt. Sensor :</source>
-        <translation type="unfinished"></translation>
+        <translation>Senzor výšky :</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="275"/>
         <source>Amps Sensor :</source>
-        <translation type="unfinished"></translation>
+        <translation>Senzor proudu :</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="364"/>
         <source>Raw (-)</source>
-        <translation type="unfinished">Jednotky (-)</translation>
+        <translation>Jednotky (-)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="369"/>
         <source>Voltage (V)</source>
-        <translation type="unfinished"></translation>
+        <translation>Napětí (V)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="374"/>
         <source>Current (A)</source>
-        <translation type="unfinished"></translation>
+        <translation>Proud (A)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="379"/>
         <source>Current (mA)</source>
-        <translation type="unfinished"></translation>
+        <translation>Proud (mA)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="384"/>
         <source>Speed (kts)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost (kts)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="389"/>
         <source>Speed (m/s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost (m/s)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="394"/>
         <source>Speed (ft/s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost (ft/s)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="399"/>
         <source>Speed (km/h)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost (km/h)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="404"/>
         <source>Speed (miles/h)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost (míle/h)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="409"/>
         <source>Meters (m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vzdálenost (m)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="414"/>
         <source>Feet (ft)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vzdálenost (ft)</translation>
     </message>
     <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="419"/>
         <source>Temp (°C)</source>
-        <translation type="unfinished"></translation>
+        <translation>Teplota (°C)</translation>
     </message>
     <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
         <source>Temp (°F)</source>
-        <translation type="unfinished"></translation>
+        <translation>Teplota (°F)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="429"/>
         <source>Percentage (%)</source>
-        <translation type="unfinished"></translation>
+        <translation>Procenta (%)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="434"/>
         <source>Energy (mAh)</source>
-        <translation type="unfinished"></translation>
+        <translation>Energie (mAh)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="439"/>
         <source>Power (W)</source>
-        <translation type="unfinished"></translation>
+        <translation>Výkon (W)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="444"/>
         <source>RF Power (dBm)</source>
-        <translation type="unfinished"></translation>
+        <translation>RF výkon (dBm)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="449"/>
         <source>RPM</source>
-        <translation type="unfinished"></translation>
+        <translation>Otáčky (ot/min)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="454"/>
         <source>Acceleration (g)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrychlení (g)</translation>
     </message>
     <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
         <source>Heading (°)</source>
-        <translation type="unfinished"></translation>
+        <translation>Směr (°)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="464"/>
         <source>Volume (mL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Objem (ml)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="469"/>
         <source>Volume (US fl.Oz.)</source>
-        <translation type="unfinished"></translation>
+        <translation>Objem (US fl.Oz.)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="483"/>
         <source>Precision</source>
-        <translation type="unfinished"></translation>
+        <translation>Přesnost</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="515"/>
         <source>Range</source>
-        <translation type="unfinished">Rozsah</translation>
+        <translation>Rozsah</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="522"/>
         <source>Blades</source>
-        <translation type="unfinished">Počet listů vrtule</translation>
+        <translation>Listy vrtule</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="557"/>
         <source>Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Ofset</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="564"/>
         <source>Multiplier</source>
-        <translation type="unfinished"></translation>
+        <translation>Násobitel</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="596"/>
         <source>Auto Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto ofset</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="606"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtr</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="616"/>
         <source>Persistent</source>
-        <translation type="unfinished">Ukládat hodnoty</translation>
+        <translation>Ukládat hodnoty</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="626"/>
         <source>Logs</source>
-        <translation type="unfinished"></translation>
+        <translation>Logovat</translation>
     </message>
 </context>
 <context>
@@ -11231,22 +11231,22 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry.cpp" line="486"/>
         <source>Lowest</source>
-        <translation type="unfinished"></translation>
+        <translation>Nejnižší</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="488"/>
         <source>Cell %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Článek %1</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="489"/>
         <source>Highest</source>
-        <translation type="unfinished"></translation>
+        <translation>Nejvyšší</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="490"/>
         <source>Delta</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -11369,7 +11369,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="195"/>
         <source>30</source>
-        <translation type="unfinished">CH9X {30?}</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="202"/>
@@ -11379,7 +11379,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="209"/>
         <source>75</source>
-        <translation type="unfinished">CH9X {75?}</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="216"/>
@@ -12585,7 +12585,7 @@ m2560 pro V4 desky</translation>
     <message>
         <location filename="../burnconfigdialog.cpp" line="290"/>
         <source>List available programmers</source>
-        <translation type="unfinished">Seznam použitelných programátorů</translation>
+        <translation>Seznam použitelných programátorů</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.cpp" line="304"/>
@@ -13536,7 +13536,7 @@ Tlačítkem Zrušit přerušíte kalibraci</translation>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="131"/>
         <source>Duplicated stick assignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplicitní přiřazení páky</translation>
     </message>
     <message>
         <source>Duplicated stick assignement</source>
