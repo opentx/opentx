@@ -1094,6 +1094,17 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
   firmware->addOptions(fai_options);
 }
 
+void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
+{
+  firmware->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
+  firmware->addOption("nogvars", QObject::tr("Disable Global variables"));
+  firmware->addOption("lua", QObject::tr("Support for Lua model scripts"));
+  firmware->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
+  firmware->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
+  firmware->addOption("eu", QObject::tr("Removes D8 and LR12 FrSky protocols that are not legal for use anymore on radios sold after Jan 1st, 2015"));
+  firmware->addOption("internalppm", QObject::tr("Support for PPM internal module hack"));
+}
+
 void addOpenTxLcdOptions(OpenTxFirmware * firmware)
 {
   Option lcd_options[] = {
@@ -1338,35 +1349,20 @@ void registerOpenTxFirmwares()
 
   /* Taranis board */
   openTx = new OpenTxFirmware("opentx-taranis", QObject::tr("OpenTX for FrSky Taranis"), BOARD_TARANIS);
-  openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
-  openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
   openTx->addOption("haptic", QObject::tr("Haptic module installed"));
-  openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
-  openTx->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
-  openTx->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
-  openTx->addOption("eu", QObject::tr("Removes D8 and LR12 FrSky protocols that are not legal for use anymore on radios sold after Jan 1st, 2015"));
+  addOpenTxTaranisOptions(openTx);
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
   /* Taranis Plus board */
   openTx = new OpenTxFirmware("opentx-taranisplus", QObject::tr("OpenTX for FrSky Taranis Plus"), BOARD_TARANIS_PLUS);
-  openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
-  openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
-  openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
-  openTx->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
-  openTx->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
-  openTx->addOption("eu", QObject::tr("Removes D8 and LR12 FrSky protocols that are not legal for use anymore on radios sold after Jan 1st, 2015"));
+  addOpenTxTaranisOptions(openTx);
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
   /* Taranis X9E board */
   openTx = new OpenTxFirmware("opentx-taranisx9e", QObject::tr("OpenTX for FrSky Taranis X9E"), BOARD_TARANIS_X9E);
-  openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
-  openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
-  openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
-  openTx->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
-  openTx->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
-  openTx->addOption("eu", QObject::tr("Removes D8 and LR12 FrSky protocols that are not legal for use anymore on radios sold after Jan 1st, 2015"));
+  addOpenTxTaranisOptions(openTx);
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 

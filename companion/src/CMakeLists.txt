@@ -144,6 +144,8 @@ set(companion_SRCS
   burnconfigdialog.cpp
   comparedialog.cpp
   contributorsdialog.cpp
+  releasenotesdialog.cpp
+  releasenotesfirmwaredialog.cpp
   customizesplashdialog.cpp
   radiointerface.cpp
   progresswidget.cpp
@@ -174,6 +176,8 @@ set(companion_MOC_HDRS
   fusesdialog.h
   logsdialog.h
   contributorsdialog.h
+  releasenotesdialog.h
+  releasenotesfirmwaredialog.h
   customizesplashdialog.h
   splashlibrary.h
   splashlabel.h
@@ -203,7 +207,7 @@ set(companion_UIS
   burnconfigdialog.ui
   downloaddialog.ui
   printdialog.ui
-  contributorsdialog.ui
+  htmldialog.ui
   customizesplashdialog.ui
   splashlibrary.ui
   progresswidget.ui

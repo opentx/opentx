@@ -56,6 +56,8 @@
 #include "printdialog.h"
 #include "version.h"
 #include "contributorsdialog.h"
+#include "releasenotesdialog.h"
+#include "releasenotesfirmwaredialog.h"
 #include "customizesplashdialog.h"
 #include "flasheepromdialog.h"
 #include "flashfirmwaredialog.h"
@@ -422,8 +424,8 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
           msgBox.resize(0, 0);
           msgBox.exec();
           if (msgBox.clickedButton() == rnButton) {
-            contributorsDialog *cd = new contributorsDialog(this,2,rn);
-            cd->exec();
+            ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, rn);
+            dialog->exec();
             int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(versionString), QMessageBox::Yes | QMessageBox::No);
             if (ret2 == QMessageBox::Yes)
               download = true;
@@ -451,7 +453,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
           msgBox.resize(0,0);
           msgBox.exec();
           if( msgBox.clickedButton() == rnButton ) {
-            contributorsDialog *cd = new contributorsDialog(this, 2, rn);
+            ContributorsDialog *cd = new ContributorsDialog(this); // , 2, rn);
             cd->exec();
             int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(versionString),
                   QMessageBox::Yes | QMessageBox::No);
@@ -666,8 +668,8 @@ void MainWindow::fwPrefs()
 
 void MainWindow::contributors()
 {
-    contributorsDialog *cd = new contributorsDialog(this,0);
-    cd->exec();
+    ContributorsDialog * dialog = new ContributorsDialog(this);
+    dialog->exec();
 }
 
 void MainWindow::sdsync()
@@ -686,8 +688,8 @@ void MainWindow::sdsync()
 
 void MainWindow::changelog()
 {
-    contributorsDialog *cd = new contributorsDialog(this,1);
-    cd->exec();
+    ReleaseNotesDialog * dialog = new ReleaseNotesDialog(this);
+    dialog->exec();
 }
 
 void MainWindow::fwchangelog()
@@ -698,8 +700,8 @@ void MainWindow::fwchangelog()
       QMessageBox::information(this, tr("Firmware updates"), tr("Current firmware does not provide release notes informations."));
     }
     else {
-      contributorsDialog *cd = new contributorsDialog(this,2, rn);
-      cd->exec();
+      ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, rn);
+      dialog->exec();
     }
 }
 

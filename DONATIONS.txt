@@ -1,3 +1,13 @@
+<a href="http://frsky-rc.com">FrSky (monthly)</a>
+<a href="http://alofthobbies.com">Aloft Hobbies</a>
+<a href="http://jonathan.it">Jonathan Modellismo</a>
+<a href="http://wstech.de">WsTech</a>
+<a href="http://aviomotive.com">Aviomotive</a>
+<a href="http://boltrc.com">BoltRC</a>
+<a href="http://aerialtechhobbies.com">Aerial Tech Hobbies</a>
+<a href="http://litepilots.com">LitePilots</a>
+<a href="http://openpilot.com">David Ankers (OpenPilot)</a>
+
 Mario Sette
 Felice Baratto
 Alessandro Mari
@@ -17,8 +27,8 @@ Marc Lucht
 Michel Baily
 Zdenek Trojanek
 Martin Hotar
-[Devo] Stefan Grundevik
-[Devo] Fabio Eboli
+Stefan Grundevik
+Fabio Eboli
 Federico Zotti
 Albin Esbjörnsson
 Kilian Hüttenhofer
@@ -37,7 +47,6 @@ R. Scott Page
 Johan Cronje
 Renato Aranghelovici
 Jeffrey Irvin
-Aloft Hobbies
 John Rodgers
 Kenneth Crump
 Damjan Adamic
@@ -80,7 +89,6 @@ Christian Schulz
 Gregory J Shepherd
 Michael Shellim
 Ming Wang
-R. Scott Page
 Bernard Lukaschek
 Nigel Chippindale
 Mike Perkins
@@ -93,7 +101,6 @@ Heinrich Illig
 Michael Collins
 Michael Manning
 Craig Lorentz
-Jonathan Modellismo - jonathan.it
 André Lasseret
 Felipe Alexandre de Oliveira
 Brian Harris
@@ -121,7 +128,6 @@ Christophe Rodriguez
 Larisa Filocamo
 Hartmut Sahm
 Åke Brodin
-Aloft Hobbies - www.alofthobbies.com
 Ted Moss
 Filippos Tigarakis
 Chewytm
@@ -169,15 +175,12 @@ Willie Swanepoel
 Satoru Sasaki
 Tyler Darby
 Nicholas Crego
-Keith Hertzog
 Johan Moelich
 Timo Esser
-Dean Church (monthly)
 Brian Paddock
 Jean Pierre Parisy
 Norbert Martsch
 Jean-Marie Guitard
-Mike Perkins
 Tilman Baumann
 Fred Larssen
 Ari Aalto
@@ -199,7 +202,6 @@ Blake Spilman
 Timothy Pelletier
 Glen Roe (ShowMaster)
 Jan Van Ooteghem
-David Ankers - Special thanks here to the OpenPilot project!
 Lawrence Christensen
 Leo Duflou
 Bruce Wood
@@ -253,7 +255,6 @@ Terry McKinley
 Марков Алексей
 Offer Shmuely
 Ian Lobley
-Keith Hertzog
 Stéphane Fortas
 Peter Mitrik
 Thomas Majewski
@@ -272,7 +273,6 @@ Miguel Villalpando
 Kim Dong Hoon 
 Terry McKinley
 Walter Bell
-wsTech - http://wstech.de
 Clinton Linck
 Josep Clodas Sola 
 Thierry Martin
@@ -306,7 +306,6 @@ Henry Deucker
 Christian Fuchs
 Arold Reinders
 Robert Miller
-Aviomotive - www.aviomotive.com
 Mark Gaskievicz
 Roland Müller
 Frank Gewalt
@@ -320,7 +319,6 @@ Steve Coley
 Sean Cull
 Roberto Orsello
 David Finger
-FrSky - www.frsky-rc.com (monthly)
 Jean-Marie Oddo
 Mike Matheny
 Glen Roe (Showmaster)
@@ -347,7 +345,6 @@ Sven Assmus
 Markus Eberl
 Nicholas Field
 Harald Wilczak
-Michel Baily
 John Grepps
 Anthony Burbidge
 Sherba Baine
@@ -359,7 +356,6 @@ Aaron Stringer
 Alan J Wasserman
 Wolfgang Rauser
 Samuel Cook
-BoltRC - www.boltrc.com
 Friedrich Ipolt
 Barrington Cole 
 Charles Lakins
@@ -426,14 +422,11 @@ Markus Wolf
 Andrew Fazio
 Stefan Künst
 Stephen Adams
-Arold Reinders
 Tauno Rautakorpi
 Frank Houvenaghel
-Aerial Tech Hobbies - www.aerialtechhobbies.com
 George Neusse
 Andreja Rusjakovski
 Axel Stöckle
-Mike Perkins
 Erwin Störrle
 Rodger Hopper
 Fernando Cesar
@@ -489,7 +482,6 @@ Robert Ferguson
 CY Enterprise 
 Michel Stathakis Neto
 Beat Zurflueh
-Heinrich Illig
 Portstate Pty Ltd
 Jens Hoffmann
 Ricardo Santos
@@ -504,7 +496,6 @@ Cecil Porter
 Robert Canavan
 Greg Higginbottom
 Tim Walker
-Thos. O'Meara Photography 
 Spis Ltd/TurboNote
 Patricia Cox
 Matthew Lukes
@@ -619,7 +610,6 @@ Manuel McLure
 Fernando Rimoldi
 Hiltenkamp Stephan
 Sandeep Kishore Jain
-Sebastien Charpentier
 Greg Parker 
 Norman Maaß
 Adriano Del Ben
@@ -649,7 +639,6 @@ Pasi Pitkänen
 Lexington S Morley
 Jeff Roberson
 Volkov Victor
-Mike Perkins 
 Bryan Anderson
 Daniel Garber
 Pavel Stein 
@@ -674,7 +663,8 @@ RK Custom Homes
 James Houck
 Piet Teekens
 Tommy Widenflycht
-Johan Petrus Theophilus Maria van Melis
+Johan Petrus Theophilus
+Maria van Melis
 Ralph Gustafson
 Paul Luby
 Andrew Duncan
@@ -683,7 +673,6 @@ Edward Glover
 Kelly Byrd
 Brad Curtis
 Wolfgang Kuhl
-LitePilots - litepilots.com
 John Beidl
 Roy Nixon
 Glen Roe
@@ -751,7 +740,7 @@ F.Javier Martinez Velasco
 Claudio Piccinini
 John Jackson
 John Beech
-Rene Traa
+Rene TraaJohn Jackson
 Sebastien Charpentier (monthly)
 Nigel Hendriks
 Frédéric Devillard
@@ -766,7 +755,6 @@ Richard Shagam
 Stephen Bailey
 DK-System
 Casa Kuxtal
-Alain Labonne
 Christopher Potts
 Douglas George
 Michael Banks
