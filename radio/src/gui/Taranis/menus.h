@@ -359,7 +359,7 @@ void menuChannelsView(uint8_t event);
 
 #define LABEL(...) (uint8_t)-1
 
-#if defined(REV9E)
+#if defined(REV9E) && !defined(SIMU)
   #define KEY_MOVE_UP                KEY_MINUS
   #define KEY_MOVE_DOWN              KEY_PLUS
   #define CURSOR_MOVED_LEFT(event)   (EVT_KEY_MASK(event) == KEY_MINUS)
