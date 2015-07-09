@@ -480,12 +480,6 @@ int lastUsedTelemetryIndex()
   return -1;
 }
 
-bool isSensorAvailableInResetSpecialFunction(int index)
-{
-  TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index-FUNC_RESET_PARAM_FIRST_TELEM];
-  return telemetrySensor.isAvailable();
-}
-
 void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
 {
   for (int index=0; index<MAX_SENSORS; index++) {

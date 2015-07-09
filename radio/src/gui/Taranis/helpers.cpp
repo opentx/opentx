@@ -343,6 +343,27 @@ bool isAssignableFunctionAvailable(int function)
   }
 }
 
+bool isAvailableInResetSpecialFunction(int index)
+{
+  if (index >= FUNC_RESET_PARAM_FIRST_TELEM) {
+    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index-FUNC_RESET_PARAM_FIRST_TELEM];
+    return telemetrySensor.isAvailable();
+  }
+#if TIMERS < 3
+  else if (index == FUNC_RESET_TIMER3) {
+    return false;
+  }
+#endif
+#if TIMERS < 2
+  else if (index == FUNC_RESET_TIMER2) {
+    return false;
+  }
+#endif
+  else {
+    return true;
+  }
+}
+
 bool isModuleAvailable(int module)
 {
   return true;

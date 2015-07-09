@@ -192,7 +192,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           }
 #endif
           else if (func == FUNC_SET_TIMER) {
-            maxParam = MAX_TIMERS-1;
+            maxParam = TIMERS-1;
             putsStrIdx(lcdNextPos, y, STR_TIMER, CFN_TIMER_INDEX(cfn)+1, attr);
             if (active) CFN_TIMER_INDEX(cfn) = checkIncDec(event, CFN_TIMER_INDEX(cfn), 0, maxParam, eeFlags);
             break;
@@ -217,12 +217,10 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
               lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VFSWRESET, param, attr);
             }
             else {
-              if (param > FUNC_RESET_PARAM_FIRST_TELEM) {
-                INCDEC_ENABLE_CHECK(isSensorAvailableInResetSpecialFunction);
-              }
               TelemetrySensor * sensor = & g_model.telemetrySensors[param-FUNC_RESET_PARAM_FIRST_TELEM];
               lcd_putsnAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, sensor->label, TELEM_LABEL_LEN, attr|ZCHAR);
             }
+            INCDEC_ENABLE_CHECK(isAvailableInResetSpecialFunction);
           }
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
           else if (func == FUNC_OVERRIDE_CHANNEL) {

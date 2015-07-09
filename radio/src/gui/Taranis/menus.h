@@ -196,6 +196,7 @@ int8_t checkIncDecMovedSwitch(int8_t val);
 bool isThrottleSourceAvailable(int source);
 bool isLogicalSwitchFunctionAvailable(int function);
 bool isAssignableFunctionAvailable(int function);
+bool isAvailableInResetSpecialFunction(int index);
 bool isLogicalSwitchAvailable(int index);
 bool isSwitchAvailableInLogicalSwitches(int swtch);
 bool isSwitchAvailableInCustomFunctions(int swtch);
