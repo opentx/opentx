@@ -197,7 +197,7 @@ enum EnumKeys {
   #define IS_ROTARY_EVENT(evt)  (0)
   #define CASE_EVT_ROTARY_BREAK /*case EVT_KEY_BREAK(KEY_ENTER):*/
   #define CASE_EVT_ROTARY_LONG  /*case EVT_KEY_LONG(KEY_ENTER):*/
-  #if defined(REV9E)
+  #if defined(REV9E) && !defined(SIMU)
     #define CASE_EVT_ROTARY_LEFT  case EVT_KEY_FIRST(KEY_MOVE_UP): case EVT_KEY_REPT(KEY_MOVE_UP):
     #define CASE_EVT_ROTARY_RIGHT case EVT_KEY_FIRST(KEY_MOVE_DOWN): case EVT_KEY_REPT(KEY_MOVE_DOWN):
   #else
