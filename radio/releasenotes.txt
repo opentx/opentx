@@ -29,7 +29,11 @@
 <li>Possibility to use any input for Long. and Lateral sources</li>
 <li>Failsafe settings improved</li>
 <li>Possibility to have the vario silent in the mid range</li>
-<li>Added wireless trainer modes</li> 
+<li>Added wireless trainer modes</li>
+<li>Added category picklists for faster source selection</li>
+<li>Added mixer output range visualization</li>
+<li>Added physical switches, pots and sliders custom names</li>
+<li>Added switch type configuration (none, 3 position, 2 position, toogle) for all switches</li>
 </ul>
 
 [Mega2560]
