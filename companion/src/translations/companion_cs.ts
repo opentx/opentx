@@ -11188,7 +11188,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="515"/>
         <source>Range</source>
-        <translation>Rozsah</translation>
+        <translation>Koeficient</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="522"/>
@@ -11218,7 +11218,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="616"/>
         <source>Persistent</source>
-        <translation>Ukládat hodnoty</translation>
+        <translation>Trvalé</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="626"/>
