@@ -686,15 +686,14 @@ void checkSwitches()
           swarnstate_t mask = ((swarnstate_t)0x03 << (i*2));
           uint8_t attr = ((states & mask) == (switches_states & mask)) ? 0 : INVERS;
           if (attr) {
-            if (++numWarnings < 7) {
-              char c = "\300-\301"[(states & mask) >> (i*2)];
-              putsMixerSource(x, y, MIXSRC_FIRST_SWITCH+i, attr);
-              lcd_putcAtt(lcdNextPos, y, c, attr);
-              x = lcdNextPos + 3;
-            }
-            else if (numWarnings == 7) {
+            if (++numWarnings > 5) {
               lcd_putsAtt(x, y, "...", 0);
+              break;
             }
+            char c = "\300-\301"[(states & mask) >> (i*2)];
+            putsMixerSource(x, y, MIXSRC_FIRST_SWITCH+i, attr);
+            lcd_putcAtt(lcdNextPos, y, c, attr);
+            x = lcdNextPos + 3;
           }
         }
       }
