@@ -1235,6 +1235,7 @@ endif
 
 ifeq ($(EXT), MAVLINK)
  CPPDEFS += -DMAVLINK
+ INCDIRS += thirdparty
  CPPSRC += telemetry/mavlink.cpp gui/$(GUIDIRECTORY)/view_mavlink.cpp serial.cpp
  EEPROM_VARIANT += ${MAVLINK_VARIANT}
 endif

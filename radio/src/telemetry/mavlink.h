@@ -62,7 +62,7 @@ extern void SERIAL_send_uart_bytes(const uint8_t * buf, uint16_t len);
 #define MAVLINK_END_UART_SEND(chan,len) SERIAL_end_uart_send()
 #define MAVLINK_SEND_UART_BYTES(chan,buf,len) SERIAL_send_uart_bytes(buf,len)
 
-#include "../GCS_MAVLink/include_v1.0/ardupilotmega/mavlink.h"
+#include "GCS_MAVLink/include_v1.0/ardupilotmega/mavlink.h"
 
 //#define MAVLINK_PARAMS
 //#define DUMP_RX_TX

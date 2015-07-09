@@ -36,7 +36,7 @@
 #include "../../opentx.h"
 
 #if defined(MAVLINK)
-#include "view_mavlink.h"
+#include "gui/9X/view_mavlink.h"
 #endif
 
 // TODO elsewhere!
