@@ -72,17 +72,18 @@ void pwrInit()
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_Init(TRAINER_GPIO_DETECT, &GPIO_InitStructure);
 
-  // Soft power ON
-  GPIO_SetBits(PWR_GPIO, PWR_GPIO_PIN_ON);
+  pwrOn();
+}
 
-#if defined(REV9E)
-  while (pwrPressed()) ;
-#endif
+void pwrOn()
+{
+  GPIO_SetBits(PWR_GPIO, PWR_GPIO_PIN_ON);
 }
 
 void pwrOff()
 {
   GPIO_ResetBits(PWR_GPIO, PWR_GPIO_PIN_ON);
+
 #if defined(REV9E)
   // 9E needs watchdog reset because CPU is still running while the power
   // key is held pressed by the user
@@ -107,8 +108,11 @@ uint32_t pwrPressed()
 {
   return GPIO_ReadInputDataBit(PWR_GPIO, PWR_GPIO_PIN_SWITCH) == Bit_RESET;
 }
-#if !defined(BOOT)
+#endif
+
+#if defined(REV9E) && !defined(BOOT)
 uint32_t pwrPressTime = 0;
+
 uint32_t pwrPressedDuration()
 {
   if (pwrPressTime == 0) {
@@ -118,6 +122,7 @@ uint32_t pwrPressedDuration()
     return get_tmr10ms() - pwrPressTime;
   }
 }
+
 uint32_t pwrCheck()
 {
   if (pwrPressed()) {
@@ -136,7 +141,8 @@ uint32_t pwrCheck()
   return e_power_on;
 }
 #endif
-#else
+
+#if !defined(REV9E)
 uint32_t pwrCheck()
 {
 #if defined(SIMU)

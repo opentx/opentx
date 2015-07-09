@@ -413,6 +413,7 @@ int main()
   delaysInit();               //needed for lcdInit()
 #endif 
   lcdInit();
+  backlightInit();
 
 #if defined(PCBSKY9X)
   extern uint8_t OptrexDisplay;

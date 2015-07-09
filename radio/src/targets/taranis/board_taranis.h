@@ -254,6 +254,7 @@ extern "C" {
 // Power driver
 void pwrInit(void);
 uint32_t pwrCheck(void);
+void pwrOn(void);
 void pwrOff(void);
 #if defined(REV9E)
 uint32_t pwrPressed(void);
@@ -262,6 +263,7 @@ uint32_t pwrPressedDuration(void);
 #define UNEXPECTED_SHUTDOWN()   (g_eeGeneral.unexpectedShutdown)
 
 // Backlight driver
+void backlightInit(void);
 #if defined(REVPLUS)
   void turnBacklightOn(uint8_t level, uint8_t color);
   void turnBacklightOff(void);
@@ -331,12 +333,16 @@ void uart3Stop(void);
 // BT driver
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
 #define BLUETOOTH_FACTORY_BAUDRATE     9600
-uint8_t bluetoothReady();
+uint8_t bluetoothReady(void);
 void bluetoothInit(uint32_t baudrate);
 void bluetoothWrite(const void * buffer, int len);
 void bluetoothWriteString(const char * str);
 int bluetoothRead(void * buffer, int len);
 void bluetoothWakeup(void);
+
+// LCD driver
+void lcdInit(void);
+void lcdOff(void);
 
 // Top LCD driver
 #if defined(REV9E)

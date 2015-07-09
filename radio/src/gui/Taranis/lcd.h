@@ -228,8 +228,6 @@ void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_
 void lcdSetRefVolt(unsigned char val);
 void lcd_clear();
 void lcdSetContrast();
-void lcdInit();
-void lcdOff();
 
 #if defined(REVPLUS) && !defined(SIMU)
   void lcdRefresh(bool wait=true);

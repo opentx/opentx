@@ -251,8 +251,7 @@ void lcdRefresh()
 }
 #endif
 
-/**Init the Backlight GPIO */
-static void LCD_BL_Config()
+void backlightInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   
@@ -362,7 +361,6 @@ void lcdOff()
 */
 void lcdInit()
 {
-  LCD_BL_Config();
   LCD_Hardware_Init();
 
   if (WAS_RESET_BY_WATCHDOG()|WAS_RESET_BY_SOFTWARE()) return;    //no need to reset LCD module

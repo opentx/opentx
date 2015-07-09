@@ -119,6 +119,21 @@ void boardInit()
   RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph | EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph, ENABLE);
 
   pwrInit();
+
+  init5msTimer();
+  __enable_irq();
+
+#if defined(REV9E)
+  if (!(RCC->CSR & (RCC_CSR_SFTRSTF | RCC_CSR_WDGRSTF))) {
+    tmr10ms_t start = get_tmr10ms();
+    while (pwrPressed());
+    tmr10ms_t duration = get_tmr10ms() - start;
+    if (duration < 200 || duration >= 500) {
+      pwrOff();
+    }
+  }
+#endif
+
   keysInit();
   adcInit();
   delaysInit();
@@ -130,8 +145,6 @@ void boardInit()
 
   audioInit();
   init2MhzTimer();
-  init5msTimer();
-  __enable_irq();
   i2cInit();
   usbInit();
   
@@ -146,6 +159,8 @@ void boardInit()
 #if defined(DEBUG)
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
 #endif
+
+  backlightInit();
 }
 #endif
 
