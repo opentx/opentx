@@ -924,7 +924,7 @@ extern uint16_t lastMixerDuration;
 #endif
 
 #if defined(CPUSTM32)
-  static inline uint16_t getTmr2MHz() { return TIM7->CNT; }
+  static inline uint16_t getTmr2MHz() { return TIMER_2MHz_TIMER->CNT; }
 #elif defined(CPUARM)
   static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
 #else
