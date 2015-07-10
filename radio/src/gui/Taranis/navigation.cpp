@@ -122,17 +122,17 @@ void onSwitchLongEnterPress(const char *result)
     checkIncDecSelection = SWSRC_INVERT;
 }
 
-#define DBLKEYS_PRESSED_RGT_LFT(in) ((in & ((2<<KEY_PLUS) + (2<<KEY_MINUS))) == ((2<<KEY_PLUS) + (2<<KEY_MINUS)))
-#define DBLKEYS_PRESSED_UP_DWN(in)  ((in & ((2<<KEY_MENU) + (2<<KEY_PAGE))) == ((2<<KEY_MENU) + (2<<KEY_PAGE)))
-#define DBLKEYS_PRESSED_RGT_UP(in)  ((in & ((2<<KEY_ENTER) + (2<<KEY_MINUS))) == ((2<<KEY_ENTER) + (2<<KEY_MINUS)))
-#define DBLKEYS_PRESSED_LFT_DWN(in) ((in & ((2<<KEY_PAGE) + (2<<KEY_EXIT))) == ((2<<KEY_PAGE) + (2<<KEY_EXIT)))
+#define DBLKEYS_PRESSED_RGT_LFT(in) ((in & ((1<<KEY_PLUS) + (1<<KEY_MINUS))) == ((1<<KEY_PLUS) + (1<<KEY_MINUS)))
+#define DBLKEYS_PRESSED_UP_DWN(in)  ((in & ((1<<KEY_MENU) + (1<<KEY_PAGE))) == ((1<<KEY_MENU) + (1<<KEY_PAGE)))
+#define DBLKEYS_PRESSED_RGT_UP(in)  ((in & ((1<<KEY_ENTER) + (1<<KEY_MINUS))) == ((1<<KEY_ENTER) + (1<<KEY_MINUS)))
+#define DBLKEYS_PRESSED_LFT_DWN(in) ((in & ((1<<KEY_PAGE) + (1<<KEY_EXIT))) == ((1<<KEY_PAGE) + (1<<KEY_EXIT)))
 
 int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
   int newval = val;
 
 #if defined(DBLKEYS)
-  unsigned int in = KEYS_PRESSED();
+  uint32_t in = KEYS_PRESSED();
   if (!(i_flags & NO_DBLKEYS) && (EVT_KEY_MASK(event))) {
     bool dblkey = true;
     if (DBLKEYS_PRESSED_RGT_LFT(in)) {
