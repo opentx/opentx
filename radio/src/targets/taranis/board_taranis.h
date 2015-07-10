@@ -342,6 +342,7 @@ void bluetoothWakeup(void);
 
 // LCD driver
 void lcdInit(void);
+void lcdInitFinish(void);
 void lcdOff(void);
 
 // Top LCD driver

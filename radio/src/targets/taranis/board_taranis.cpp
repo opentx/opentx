@@ -115,6 +115,18 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
 #if defined(REV9E)
   #define PWR_PRESS_DURATION_MIN       80  // 800ms
   #define PWR_PRESS_DURATION_MAX       300 // 3s
+
+  const pm_uchar bmp_startup[] PROGMEM = {
+    #include "../../bitmaps/Taranis/startup.lbm"
+  };
+
+  const pm_uchar bmp_lock[] PROGMEM = {
+    #include "../../bitmaps/Taranis/lock.lbm"
+  };
+
+  const pm_uchar bmp_sleep[] PROGMEM = {
+    #include "../../bitmaps/Taranis/sleep.lbm"
+  };
 #endif
 
 void boardInit()
@@ -124,74 +136,14 @@ void boardInit()
   RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph | EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph, ENABLE);
 
   pwrInit();
-
-  init5msTimer();
-  __enable_irq();
-
-#if 0 // first version
-  if (!(RCC->CSR & (RCC_CSR_SFTRSTF | RCC_CSR_WDGRSTF))) {
-    tmr10ms_t start = get_tmr10ms();
-    while (pwrPressed());
-    tmr10ms_t duration = get_tmr10ms() - start;
-    if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
-      pwrOff();
-    }
-  }
-#endif
-
-#if 0 // second version
-  if (!(RCC->CSR & (RCC_CSR_SFTRSTF | RCC_CSR_WDGRSTF))) {
-    tmr10ms_t start = get_tmr10ms();
-    tmr10ms_t duration = 0;
-    uint8_t pwr_on = 0;
-    while (pwrPressed()) {
-      duration = get_tmr10ms() - start;
-      if (duration >= PWR_PRESS_DURATION_MAX) {
-        turnBacklightOff();
-      }
-      else if (duration > PWR_PRESS_DURATION_MIN && pwr_on != 1) {
-        backlightInit();
-        pwr_on = 1;
-      }
-    }
-    if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
-      pwrOff();
-    }
-  }
-#endif
-
-#if defined(REV9E) // third version
-  if (!(RCC->CSR & (RCC_CSR_SFTRSTF | RCC_CSR_WDGRSTF))) {
-    tmr10ms_t start = get_tmr10ms();
-    tmr10ms_t duration = 0;
-    uint8_t pwr_on = 0;
-    while (pwrPressed()) {
-      duration = get_tmr10ms() - start;
-      if (duration >= PWR_PRESS_DURATION_MAX) {
-        turnBacklightOff();
-      }
-      else if (duration > PWR_PRESS_DURATION_MIN && pwr_on != 1) {
-        backlightInit();
-        pwr_on = 1;
-      }
-    }
-    if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
-      pwrOff();
-    }
-  }
-#endif
-
   keysInit();
   adcInit();
   delaysInit();
   lcdInit();    // delaysInit() must be called before
-
-#if defined(REV9E)
-  topLcdInit();
-#endif
-
   audioInit();
   init2MhzTimer();
+  init5msTimer();
+  __enable_irq();
   i2cInit();
   usbInit();
   
@@ -207,7 +159,45 @@ void boardInit()
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
 #endif
 
+#if defined(REV9E)
+  if (!(RCC->CSR & (RCC_CSR_SFTRSTF | RCC_CSR_WDGRSTF))) {
+    tmr10ms_t start = get_tmr10ms();
+    tmr10ms_t duration = 0;
+    uint8_t pwr_on = 0;
+    while (pwrPressed()) {
+      duration = get_tmr10ms() - start;
+      lcd_clear();
+      if (duration < PWR_PRESS_DURATION_MIN) {
+        lcd_bmp(76, 0, bmp_lock, 0, 60);
+      }
+      else if (duration >= PWR_PRESS_DURATION_MAX) {
+        lcd_bmp(76, 0, bmp_sleep, 0, 60);
+        turnBacklightOff();
+      }
+      else {
+        unsigned index = (duration - PWR_PRESS_DURATION_MIN) / ((PWR_PRESS_DURATION_MAX-PWR_PRESS_DURATION_MIN) / 4);
+        lcd_bmp(76, 0, bmp_startup, index*60, 60);
+        if (pwr_on != 1) {
+          backlightInit();
+          pwr_on = 1;
+        }
+      }
+      lcdRefresh();
+    }
+    if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
+      pwrOff();
+    }
+    else {
+      lcdRefreshWait();
+    }
+  }
+  else {
+    backlightInit();
+  }
+  topLcdInit();
+#else
   backlightInit();
+#endif
 }
 #endif
 
