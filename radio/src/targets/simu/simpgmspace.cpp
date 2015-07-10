@@ -380,7 +380,21 @@ void StartMainThread(bool tests)
   pthread_mutex_init(&audioMutex, NULL);
 #endif
 
-  g_tmr10ms = 1;      // must be non-zero otherwise some SF functions (that use this timer as a marker when it was last executed) will be executed twice on startup
+  /*
+    g_tmr10ms must be non-zero otherwise some SF functions (that use this timer as a marker when it was last executed) 
+    will be executed twice on startup. Normal radio does not see this issue because g_tmr10ms is already a big number
+    before the first call to the Special Functions. Not so in the simulator.
+
+    There is another issue, some other function static variables depend on this value. If simulator is started 
+    multiple times in one Companion session, they are set to their initial values only first time the simulator
+    is started. Therefore g_tmr10ms must also be set to non-zero value only the first time, then it must be left
+    alone to continue from the previous simulator session value. See the issue #2446
+
+  */
+  if (g_tmr10ms == 0) {
+    g_tmr10ms = 1;
+  }
+  
 #if defined(RTCLOCK)
   g_rtcTime = time(0);
 #endif
