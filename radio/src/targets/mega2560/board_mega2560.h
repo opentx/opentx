@@ -82,8 +82,8 @@
 #define RESUME_PPMIN_INTERRUPT()   TIMSK3 |= (1<<ICIE3)
 
 #define SLAVE_MODE()               ~PINH & (1<<INP_H_RF_Activated)
-#define JACK_PPM_OUT()             PORTB |= (1<<OUT_B_SIM_CTL)
-#define JACK_PPM_IN()              PORTB &= ~(1<<OUT_B_SIM_CTL)
+#define JACK_PPM_OUT()             PORTB &= ~(1<<OUT_B_SIM_CTL)
+#define JACK_PPM_IN()              PORTB |= (1<<OUT_B_SIM_CTL)
 
 // Backlight driver
 #define backlightEnable()          PORTC |= (1<<OUT_C_LIGHT)
