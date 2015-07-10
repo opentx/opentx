@@ -123,12 +123,33 @@ void boardInit()
   init5msTimer();
   __enable_irq();
 
-#if defined(REV9E)
+#if 0 // first version
   if (!(RCC->CSR & (RCC_CSR_SFTRSTF | RCC_CSR_WDGRSTF))) {
     tmr10ms_t start = get_tmr10ms();
     while (pwrPressed());
     tmr10ms_t duration = get_tmr10ms() - start;
     if (duration < 200 || duration >= 500) {
+      pwrOff();
+    }
+  }
+#endif
+
+#if defined(REV9E) // second version
+  if (!(RCC->CSR & (RCC_CSR_SFTRSTF | RCC_CSR_WDGRSTF))) {
+    tmr10ms_t start = get_tmr10ms();
+    tmr10ms_t duration = 0;
+    uint8_t pwr_on = 0;
+    while (pwrPressed()) {
+      duration = get_tmr10ms() - start;
+      if (duration >= 300) {
+        turnBacklightOff();
+      }
+      else if (duration > 80 && pwr_on != 1) {
+        backlightInit();
+        pwr_on = 1;
+      }
+    }
+    if (duration < 80 || duration >= 300) {
       pwrOff();
     }
   }
