@@ -65,10 +65,10 @@
 
 #if defined(PCBTARANIS)
   #define EEPROM_VER             217
-  #define FIRST_CONV_EEPROM_VER  215
+  #define FIRST_CONV_EEPROM_VER  216
 #elif defined(PCBSKY9X)
   #define EEPROM_VER             217
-  #define FIRST_CONV_EEPROM_VER  215
+  #define FIRST_CONV_EEPROM_VER  216
 #elif defined(CPUM2560) || defined(CPUM2561)
   #define EEPROM_VER             217
   #define FIRST_CONV_EEPROM_VER  EEPROM_VER
