@@ -923,7 +923,7 @@ ifeq ($(PCB), TARANIS)
   CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp
   CPPSRC += loadboot.cpp
   ifeq ($(PCBREV), REV9E)
-    EXTRABOARDSRC += targets/taranis/top_lcd_driver.cpp
+    CPPSRC += targets/taranis/top_lcd_driver.cpp
 	SRC += targets/taranis/system_stm32f4xx.c
 	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/misc.c
 	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c

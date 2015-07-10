@@ -977,6 +977,10 @@ bool readonlyUnlocked()
 #if defined(SPLASH)
 void doSplash()
 {
+#if defined(PCBTARANIS) && defined(REV9E)
+  bool refresh = false;
+#endif
+
   if (SPLASH_NEEDED()) {
     displaySplash();
 
@@ -997,7 +1001,8 @@ void doSplash()
     inputsMoved();
 
     tmr10ms_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;
-    while (tgtime != get_tmr10ms()) {
+
+    while (tgtime > get_tmr10ms()) {
 #if defined(SIMU)
       SIMU_SLEEP(1);
 #elif defined(CPUARM)
@@ -1017,7 +1022,23 @@ void doSplash()
       }
 #endif
 
-      if (pwrCheck()==e_power_off) return;
+#if defined(PCBTARANIS) && defined(REV9E)
+      uint32_t pwr_check = pwrCheck();
+      if (pwr_check == e_power_off) {
+        break;
+      }
+      else if (pwr_check == e_power_press) {
+        refresh = true;
+      }
+      else if (pwr_check == e_power_on && refresh) {
+        displaySplash();
+        refresh = false;
+      }
+#else
+      if (pwrCheck() == e_power_off) {
+        return;
+      }
+#endif
 
 #if !defined(PCBTARANIS) && !defined(PCBSTD)
       if (curTime < get_tmr10ms()) {
@@ -1142,15 +1163,25 @@ void checkTHR()
     MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
   }
 #else
-  if (g_model.disableThrottleWarning) return;
+  if (g_model.disableThrottleWarning) {
+    return;
+  }
+
   getADC();
+
   evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 
   int16_t v = calibratedStick[thrchn];
-  if (v<=(THRCHK_DEADBAND-1024)) return;  // prevent warning if throttle input OK
+  if (v <= THRCHK_DEADBAND-1024) {
+    return; // prevent warning if throttle input OK
+  }
 
   // first - display warning; also deletes inputs if any have been before
   MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
+
+#if defined(PCBTARANIS) && defined(REV9E)
+  bool refresh = false;
+#endif
 
   while (1) {
 
@@ -1159,10 +1190,30 @@ void checkTHR()
     getADC();
 
     evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
+
     v = calibratedStick[thrchn];
 
-    if (pwrCheck()==e_power_off || keyDown() || v<=(THRCHK_DEADBAND-1024))
+#if defined(PCBTARANIS) && defined(REV9E)
+    uint32_t pwr_check = pwrCheck();
+    if (pwr_check == e_power_off) {
       break;
+    }
+    else if (pwr_check == e_power_press) {
+      refresh = true;
+    }
+    else if (pwr_check == e_power_on && refresh) {
+      MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_NONE);
+      refresh = false;
+    }
+#else
+    if (pwrCheck() == e_power_off) {
+      break;
+    }
+#endif
+
+    if (keyDown() || v <= THRCHK_DEADBAND-1024) {
+      break;
+    }
 
     checkBacklight();
 
@@ -1173,8 +1224,9 @@ void checkTHR()
 
 void checkAlarm() // added by Gohst
 {
-  if (g_eeGeneral.disableAlarmWarning)
+  if (g_eeGeneral.disableAlarmWarning) {
     return;
+  }
 
   if (IS_SOUND_OFF()) {
     ALERT(STR_ALARMSWARN, STR_ALARMSDISABLED, AU_ERROR);
@@ -1185,21 +1237,13 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
 {
   MESSAGE(t, s, STR_PRESSANYKEY, sound);
 
+#if defined(PCBTARANIS) && defined(REV9E)
+  bool refresh = false;
+#endif
+
   while(1)
   {
     SIMU_SLEEP(1);
-
-    if (pwrCheck() == e_power_off) {
-      // the radio has been powered off during the ALERT
-#if defined(TARANIS) && defined(REV9E)
-      // TODO this is quick & dirty
-      lcdOff();
-      BACKLIGHT_OFF();
-      topLcdOff();
-      SysTick->CTRL = 0; // turn off systick
-#endif
-      pwrOff(); // turn power off now
-    }
 
     if (keyDown()) return;  // wait for key release
 
@@ -1207,19 +1251,26 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
 
     wdt_reset();
 
-#if defined(REV9E)
-    static bool refresh = false;
-    uint32_t pwr_pressed_duration = pwrPressedDuration();
-    if (refresh) {
-      lcdRefresh();
-      refresh = false;
-      if (pwr_pressed_duration == 0) {
-        MESSAGE(t, s, STR_PRESSANYKEY, AU_NONE);
-      }
+#if defined(PCBTARANIS) && defined(REV9E)
+    uint32_t pwr_check = pwrCheck();
+    if (pwr_check == e_power_off) {
+      // TODO this is quick & dirty
+      lcdOff();
+      BACKLIGHT_OFF();
+      topLcdOff();
+      SysTick->CTRL = 0; // turn off systick
+      pwrOff();
     }
-    if (pwr_pressed_duration > 0) {
-      displayShutdownProgress(pwr_pressed_duration);
+    else if (pwr_check == e_power_press) {
       refresh = true;
+    }
+    else if (pwr_check == e_power_on && refresh) {
+      MESSAGE(t, s, STR_PRESSANYKEY, AU_NONE);
+      refresh = false;
+    }
+#else
+    if (pwrCheck() == e_power_off) {
+      pwrOff(); // turn power off now
     }
 #endif
   }
@@ -2546,3 +2597,73 @@ int main(void)
 #endif
 }
 #endif // !SIMU
+
+#if defined(PCBTARANIS) && defined(REV9E)
+uint32_t pwr_press_time = 0;
+
+uint32_t pwrPressedDuration()
+{
+  if (pwr_press_time == 0) {
+    return 0;
+  }
+  else {
+    return get_tmr10ms() - pwr_press_time;
+  }
+}
+
+uint32_t pwrCheck()
+{
+  enum PwrCheckState {
+    PWR_CHECK_ON,
+    PWR_CHECK_OFF,
+    PWR_CHECK_PAUSED,
+  };
+
+  static uint8_t pwr_check_state = PWR_CHECK_ON;
+
+  if (pwr_check_state == PWR_CHECK_OFF) {
+    return e_power_off;
+  }
+  else if (pwrPressed()) {
+    if (pwr_check_state == PWR_CHECK_PAUSED) {
+      // nothing
+    }
+    else if (pwr_press_time == 0) {
+      pwr_press_time = get_tmr10ms();
+    }
+    else {
+      if (get_tmr10ms() - pwr_press_time > 300) {
+        while (1) {
+          lcdRefreshWait();
+          lcd_clear();
+          POPUP_CONFIRMATION("Confirm Shutdown");
+          uint8_t evt = getEvent(false);
+          DISPLAY_WARNING(evt);
+          lcdRefresh();
+          if (s_warning_result == true) {
+            pwr_check_state = PWR_CHECK_OFF;
+            return e_power_off;
+          }
+          else if (!s_warning) {
+            // shutdown has been cancelled
+            pwr_check_state = PWR_CHECK_PAUSED;
+            return e_power_on;
+          }
+        }
+      }
+      else {
+        lcdRefreshWait();
+        displayShutdownProgress(pwrPressedDuration());
+        lcdRefresh();
+        return e_power_press;
+      }
+    }
+  }
+  else {
+    pwr_check_state = PWR_CHECK_ON;
+    pwr_press_time = 0;
+  }
+
+  return e_power_on;
+}
+#endif

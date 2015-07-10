@@ -110,38 +110,6 @@ uint32_t pwrPressed()
 }
 #endif
 
-#if defined(REV9E) && !defined(BOOT)
-uint32_t pwrPressTime = 0;
-
-uint32_t pwrPressedDuration()
-{
-  if (pwrPressTime == 0) {
-    return 0;
-  }
-  else {
-    return get_tmr10ms() - pwrPressTime;
-  }
-}
-
-uint32_t pwrCheck()
-{
-  if (pwrPressed()) {
-    if (pwrPressTime == 0) {
-      pwrPressTime = get_tmr10ms();
-    }
-    else {
-      if (get_tmr10ms() - pwrPressTime > 250) {
-        return e_power_off;
-      }
-    }
-  }
-  else {
-    pwrPressTime = 0;
-  }
-  return e_power_on;
-}
-#endif
-
 #if !defined(REV9E)
 uint32_t pwrCheck()
 {

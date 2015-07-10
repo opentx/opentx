@@ -159,7 +159,18 @@ void menusTask(void * pdata)
 {
   opentxInit();
 
+#if defined(PCBTARANIS) && defined(REV9E)
+  while (1) {
+    uint32_t pwr_check = pwrCheck();
+    if (pwr_check == e_power_off) {
+      break;
+    }
+    else if (pwr_check == e_power_press) {
+      continue;
+    }
+#else
   while (pwrCheck() != e_power_off) {
+#endif
     U64 start = CoGetOSTime();
     perMain();
     // TODO remove completely massstorage from sky9x firmware
