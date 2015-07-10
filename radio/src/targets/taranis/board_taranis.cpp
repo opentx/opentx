@@ -112,6 +112,11 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
   interrupt5ms() ;
 }
 
+#if defined(REV9E)
+  #define PWR_PRESS_DURATION_MIN       80  // 800ms
+  #define PWR_PRESS_DURATION_MAX       300 // 3s
+#endif
+
 void boardInit()
 {
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph | INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph | HEARTBEAT_RCC_AHB1Periph, ENABLE);
@@ -128,28 +133,49 @@ void boardInit()
     tmr10ms_t start = get_tmr10ms();
     while (pwrPressed());
     tmr10ms_t duration = get_tmr10ms() - start;
-    if (duration < 200 || duration >= 500) {
+    if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
       pwrOff();
     }
   }
 #endif
 
-#if defined(REV9E) // second version
+#if 0 // second version
   if (!(RCC->CSR & (RCC_CSR_SFTRSTF | RCC_CSR_WDGRSTF))) {
     tmr10ms_t start = get_tmr10ms();
     tmr10ms_t duration = 0;
     uint8_t pwr_on = 0;
     while (pwrPressed()) {
       duration = get_tmr10ms() - start;
-      if (duration >= 300) {
+      if (duration >= PWR_PRESS_DURATION_MAX) {
         turnBacklightOff();
       }
-      else if (duration > 80 && pwr_on != 1) {
+      else if (duration > PWR_PRESS_DURATION_MIN && pwr_on != 1) {
         backlightInit();
         pwr_on = 1;
       }
     }
-    if (duration < 80 || duration >= 300) {
+    if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
+      pwrOff();
+    }
+  }
+#endif
+
+#if defined(REV9E) // third version
+  if (!(RCC->CSR & (RCC_CSR_SFTRSTF | RCC_CSR_WDGRSTF))) {
+    tmr10ms_t start = get_tmr10ms();
+    tmr10ms_t duration = 0;
+    uint8_t pwr_on = 0;
+    while (pwrPressed()) {
+      duration = get_tmr10ms() - start;
+      if (duration >= PWR_PRESS_DURATION_MAX) {
+        turnBacklightOff();
+      }
+      else if (duration > PWR_PRESS_DURATION_MIN && pwr_on != 1) {
+        backlightInit();
+        pwr_on = 1;
+      }
+    }
+    if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
       pwrOff();
     }
   }
