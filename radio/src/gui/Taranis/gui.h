@@ -53,9 +53,6 @@ void displayScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t
 void displayMenuBar(const MenuItem *menu, int index);
 void displayProgressBar(const char *label);
 void updateProgressBar(int num, int den);
-#if defined(REV9E)
-void displayShutdownProgress(uint32_t progress);
-#endif
 
 extern coord_t scrollbar_X;
 #define SET_SCROLLBAR_X(x) scrollbar_X = (x);

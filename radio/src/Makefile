@@ -257,6 +257,10 @@ DEFAULT_MODE = NO
 # Values = YES, NO
 EEPROM_PROGRESS_BAR = NO
 
+# Shutdown confirmation (for boards which have soft power)
+# Values = NO, YES
+SHUTDOWN_CONFIRMATION = NO
+
 # Activates the DEBUG Mode (all boards)
 # On G9X V4 board, when VOICE=NO:
 #  PORTH:7 --> Transition LOW to HIGH = start of setupPulses(). Transition HIGH to LOW = end of setupPulses().
@@ -1284,6 +1288,10 @@ endif
 
 ifeq ($(EEPROM_PROGRESS_BAR), YES)
   CPPDEFS += -DEEPROM_PROGRESS_BAR
+endif
+
+ifeq ($(SHUTDOWN_CONFIRMATION), YES)
+  CPPDEFS += -DSHUTDOWN_CONFIRMATION
 endif
 
 RUN_FROM_FLASH = 1

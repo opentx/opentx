@@ -2599,6 +2599,12 @@ int main(void)
 #endif // !SIMU
 
 #if defined(PCBTARANIS) && defined(REV9E)
+#define PWR_PRESS_SHUTDOWN             300 // 3s
+
+const pm_uchar bmp_shutdown[] PROGMEM = {
+  #include "../../bitmaps/Taranis/shutdown.lbm"
+};
+
 uint32_t pwr_press_time = 0;
 
 uint32_t pwrPressedDuration()
@@ -2632,7 +2638,8 @@ uint32_t pwrCheck()
       pwr_press_time = get_tmr10ms();
     }
     else {
-      if (get_tmr10ms() - pwr_press_time > 300) {
+      if (get_tmr10ms() - pwr_press_time > PWR_PRESS_SHUTDOWN) {
+#if defined(SHUTDOWN_CONFIRMATION)
         while (1) {
           lcdRefreshWait();
           lcd_clear();
@@ -2650,10 +2657,16 @@ uint32_t pwrCheck()
             return e_power_on;
           }
         }
+#else
+        pwr_check_state = PWR_CHECK_OFF;
+        return e_power_off;
+#endif
       }
       else {
         lcdRefreshWait();
-        displayShutdownProgress(pwrPressedDuration());
+        unsigned index = pwrPressedDuration() / (PWR_PRESS_SHUTDOWN / 4);
+        lcd_clear();
+        lcd_bmp(76, 0, bmp_shutdown, index*60, 60);
         lcdRefresh();
         return e_power_press;
       }
