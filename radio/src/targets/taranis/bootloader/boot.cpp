@@ -398,45 +398,20 @@ int main()
 #endif
 
   pwrInit();
-
-#if defined(PCBSKY9X)
-  MATRIX->CCFG_SYSIO |= 0x000000F0L;		// Disable syspins, enable B4,5,6,7
-#endif
-
-#if defined(PCBSKY9X)
-  init_SDcard();
-  PIOC->PIO_PER = PIO_PC25;		// Enable bit C25 (USB-detect)
-  start_timer0();
-#endif
-
-#if defined(PCBTARANIS)
   delaysInit();               //needed for lcdInit()
-#endif 
   lcdInit();
   backlightInit();
 
-#if defined(PCBSKY9X)
-  extern uint8_t OptrexDisplay;
-  OptrexDisplay = 1;
-#endif
   lcd_clear();
   lcd_putsLeft(0, BOOTLOADER_TITLE);
   lcd_invert_line(0);
   lcdRefresh();
 
-#if defined(REVPLUS)
-  turnBacklightOn(0, 0);
-#endif
   keysInit();
   i2cInit();
 
   __enable_irq();
   init10msTimer();
-
-#if defined(PCBSKY9X)
-  EblockAddress = -1;
-  init_spi();
-#endif
 
 #if defined(PCBTARANIS)
   // SD card detect pin
