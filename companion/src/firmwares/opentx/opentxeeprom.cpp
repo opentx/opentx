@@ -584,7 +584,6 @@ class SourceField: public ConversionField< UnsignedField<N> > {
 
     virtual void beforeExport()
     {
-      if (source.type == SOURCE_TYPE_TELEMETRY) qDebug() << source.type << source.index;
       _source = source.toValue();
       ConversionField< UnsignedField<N> >::beforeExport();
     }
@@ -3223,6 +3222,10 @@ void OpenTxModelData::afterImport()
       }
       strncpy(modelData.inputNames[i], AnalogString(i).toLatin1().constData(), sizeof(modelData.inputNames[i])-1);
     }
+  }
+
+  if (IS_TARANIS(board) && modelData.moduleData[0].protocol == 0) {
+    modelData.moduleData[0].protocol = PXX_XJT_X16;
   }
 
   for (int module=0; module<3; module++) {

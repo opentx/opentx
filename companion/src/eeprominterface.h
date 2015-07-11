@@ -835,6 +835,7 @@ class ModuleData {
     ModuleData() { clear(); }
     unsigned int modelId;
     int          protocol;
+    int          subprotocol;
     unsigned int channelsStart;
     int          channelsCount; // 0=8 channels
     unsigned int failsafeMode;
