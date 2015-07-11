@@ -251,8 +251,7 @@ void lcdRefresh()
 }
 #endif
 
-/**Init the Backlight GPIO */
-static void LCD_BL_Config()
+void backlightInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   
@@ -269,8 +268,8 @@ static void LCD_BL_Config()
   BACKLIGHT_TIMER->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 50000 - 1;  // 20us * 100 = 2ms => 500Hz
   BACKLIGHT_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 ; // PWM
   BACKLIGHT_TIMER->CCER = TIM_CCER_CC1E | TIM_CCER_CC2E ;
-  BACKLIGHT_TIMER->CCR1 = 0 ;
-  BACKLIGHT_TIMER->CCR2 = 80 ;
+  BACKLIGHT_TIMER->CCR2 = 0 ;
+  BACKLIGHT_TIMER->CCR1 = 100 ;
   BACKLIGHT_TIMER->EGR = 0 ;
   BACKLIGHT_TIMER->CR1 = TIM_CR1_CEN ;            // Counter enable
 #elif defined(REVPLUS)
@@ -288,7 +287,7 @@ static void LCD_BL_Config()
   BACKLIGHT_TIMER->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 ; // PWM
   BACKLIGHT_TIMER->CCER = TIM_CCER_CC4E | TIM_CCER_CC2E ;
   BACKLIGHT_TIMER->CCR2 = 0 ;
-  BACKLIGHT_TIMER->CCR4 = 80 ;
+  BACKLIGHT_TIMER->CCR4 = 100 ;
   BACKLIGHT_TIMER->EGR = 0 ;
   BACKLIGHT_TIMER->CR1 = TIM_CR1_CEN ;            // Counter enable
 #else
@@ -362,7 +361,6 @@ void lcdOff()
 */
 void lcdInit()
 {
-  LCD_BL_Config();
   LCD_Hardware_Init();
 
   if (WAS_RESET_BY_WATCHDOG()|WAS_RESET_BY_SOFTWARE()) return;    //no need to reset LCD module

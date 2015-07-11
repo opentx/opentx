@@ -1191,9 +1191,12 @@ void lcdRefresh()
 
 #if defined(PCBTARANIS)
 void pwrInit() { }
-uint32_t pwrCheck() { return true; }
 void pwrOff() { }
-uint32_t pwrPressedDuration() { return 0; }
+#if defined(REV9E)
+uint32_t pwrPressed() { return false; }
+#else
+uint32_t pwrCheck() { return true; }
+#endif
 void usbStart() { }
 int usbPlugged() { return false; }
 void USART_DeInit(USART_TypeDef* ) { }

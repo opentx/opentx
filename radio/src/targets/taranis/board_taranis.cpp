@@ -112,6 +112,23 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
   interrupt5ms() ;
 }
 
+#if defined(REV9E)
+  #define PWR_PRESS_DURATION_MIN       80  // 800ms
+  #define PWR_PRESS_DURATION_MAX       300 // 3s
+
+  const pm_uchar bmp_startup[] PROGMEM = {
+    #include "../../bitmaps/Taranis/startup.lbm"
+  };
+
+  const pm_uchar bmp_lock[] PROGMEM = {
+    #include "../../bitmaps/Taranis/lock.lbm"
+  };
+
+  const pm_uchar bmp_sleep[] PROGMEM = {
+    #include "../../bitmaps/Taranis/sleep.lbm"
+  };
+#endif
+
 void boardInit()
 {
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph | INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph | HEARTBEAT_RCC_AHB1Periph, ENABLE);
@@ -123,11 +140,6 @@ void boardInit()
   adcInit();
   delaysInit();
   lcdInit();    // delaysInit() must be called before
-
-#if defined(REV9E)
-  topLcdInit();
-#endif
-
   audioInit();
   init2MhzTimer();
   init5msTimer();
@@ -145,6 +157,46 @@ void boardInit()
 
 #if defined(DEBUG)
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
+#endif
+
+#if defined(REV9E)
+  if (!(RCC->CSR & (RCC_CSR_SFTRSTF | RCC_CSR_WDGRSTF))) {
+    tmr10ms_t start = get_tmr10ms();
+    tmr10ms_t duration = 0;
+    uint8_t pwr_on = 0;
+    while (pwrPressed()) {
+      duration = get_tmr10ms() - start;
+      lcd_clear();
+      if (duration < PWR_PRESS_DURATION_MIN) {
+        lcd_bmp(76, 0, bmp_lock, 0, 60);
+      }
+      else if (duration >= PWR_PRESS_DURATION_MAX) {
+        lcd_bmp(76, 0, bmp_sleep, 0, 60);
+        turnBacklightOff();
+      }
+      else {
+        unsigned index = (duration - PWR_PRESS_DURATION_MIN) / ((PWR_PRESS_DURATION_MAX-PWR_PRESS_DURATION_MIN) / 4);
+        lcd_bmp(76, 0, bmp_startup, index*60, 60);
+        if (pwr_on != 1) {
+          backlightInit();
+          pwr_on = 1;
+        }
+      }
+      lcdRefresh();
+    }
+    if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
+      pwrOff();
+    }
+    else {
+      lcdRefreshWait();
+    }
+  }
+  else {
+    backlightInit();
+  }
+  topLcdInit();
+#else
+  backlightInit();
 #endif
 }
 #endif

@@ -611,6 +611,10 @@ void checkSwitches()
   uint8_t bad_pots = 0, last_bad_pots = 0xff;
 #endif
 
+#if defined(PCBTARANIS) && defined(REV9E)
+  bool refresh = false;
+#endif
+
 #if !defined(MODULE_ALWAYS_SEND_PULSES)
   while (1) {
 
@@ -621,8 +625,9 @@ void checkSwitches()
 #define GETADC_COUNT 1
 #endif
 #ifdef GETADC_COUNT
-    for (int i=0; i<GETADC_COUNT; i++)
+    for (int i=0; i<GETADC_COUNT; i++) {
       getADC();
+    }
 #undef GETADC_COUNT
 #endif
 #endif  // !defined(MODULE_ALWAYS_SEND_PULSES)
@@ -752,7 +757,28 @@ void checkSwitches()
       last_bad_switches = 0xff;
     }
 #else
-    if (pwrCheck()==e_power_off || keyDown()) return;
+
+    if (keyDown()) {
+      return;
+    }
+
+#if defined(PCBTARANIS) && defined(REV9E)
+    uint32_t pwr_check = pwrCheck();
+    if (pwr_check == e_power_off) {
+      return;
+    }
+    else if (pwr_check == e_power_press) {
+      refresh = true;
+    }
+    else if (pwr_check == e_power_on && refresh) {
+      last_bad_switches = 0xff;
+      refresh = false;
+    }
+#else
+    if (pwrCheck() == e_power_off) {
+      return;
+    }
+#endif
 
     checkBacklight();
 
