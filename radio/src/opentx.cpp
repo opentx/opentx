@@ -271,7 +271,13 @@ void generalDefault()
   g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && defined(REV9E)
+  // NI-MH 9.6V
+  g_eeGeneral.vBatWarn = 87;
+  g_eeGeneral.vBatMin = -5;
+  g_eeGeneral.vBatMax = -5;
+#elif defined(PCBTARANIS)
+  // NI-MH 7.2V
   g_eeGeneral.vBatWarn = 65;
   g_eeGeneral.vBatMin = -30;
   g_eeGeneral.vBatMax = -40;
