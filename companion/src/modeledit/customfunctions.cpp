@@ -701,7 +701,10 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
   else if (function==FuncReset) {
     qs.append( QObject::tr("Timer1"));
     qs.append( QObject::tr("Timer2"));
-    qs.append( QObject::tr("All"));
+    if (IS_ARM(firmware->getBoard())) {
+      qs.append( QObject::tr("Timer3"));
+    }
+    qs.append( QObject::tr("Flight"));
     qs.append( QObject::tr("Telemetry"));
     int reCount = firmware->getCapability(RotaryEncoders);
     if (reCount == 1) {
@@ -710,6 +713,14 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
     else if (reCount == 2) {
       qs.append( QObject::tr("REa"));
       qs.append( QObject::tr("REb"));
+    }
+    if (IS_ARM(firmware->getBoard())) {
+      for (int i=0; i<C9X_MAX_SENSORS; ++i) {
+        if (model->sensorData[i].isAvailable()) {
+          RawSource item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i);
+          qs.append(item.toString(model));
+        }
+      }
     }
     b->addItems(qs);
     b->setCurrentIndex(value);
