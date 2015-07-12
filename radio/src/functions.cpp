@@ -62,6 +62,9 @@ PLAY_FUNCTION(playValue, source_t idx)
   if (IS_FAI_FORBIDDEN(idx))
     return;
 
+  if (idx == MIXSRC_NONE)
+    return;
+
   getvalue_t val = getValue(idx);
 
 #if defined(CPUARM)
