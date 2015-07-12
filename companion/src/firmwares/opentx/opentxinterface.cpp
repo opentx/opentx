@@ -1096,6 +1096,7 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
 
 void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
 {
+  firmware->addOption("timer3", QObject::tr("Support for a third timer"));
   firmware->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", QObject::tr("Disable Global variables"));
   firmware->addOption("lua", QObject::tr("Support for Lua model scripts"));
