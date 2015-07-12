@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
     eepromFileName = eedir.filePath(eepromFileName.toAscii());
     SimulatorFactory *factory = getSimulatorFactory(firmwareId);
     if (factory->type() == BOARD_TARANIS)
-      dialog = new SimulatorDialogTaranis(NULL, factory->create());
+      dialog = new SimulatorDialogTaranis(NULL, factory->create(), SIMULATOR_FLAGS_S1|SIMULATOR_FLAGS_S2);
     else
       dialog = new SimulatorDialog9X(NULL, factory->create());
   }
