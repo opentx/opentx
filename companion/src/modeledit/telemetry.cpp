@@ -330,6 +330,7 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
 
   disableMouseScrolling();
 
+  lock = true;
   if (IS_ARM(firmware->getBoard()))
     ui->screenType->addItem(tr("None"), TELEMETRY_SCREEN_NONE);
   ui->screenType->addItem(tr("Numbers"), TELEMETRY_SCREEN_NUMBERS);
@@ -337,6 +338,7 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
   if (IS_TARANIS(firmware->getBoard()))
     ui->screenType->addItem(tr("Script"), TELEMETRY_SCREEN_SCRIPT);
   ui->screenType->setField(screen.type, this);
+  lock = false;
 
   update();
 }
