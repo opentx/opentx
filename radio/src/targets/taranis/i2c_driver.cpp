@@ -222,6 +222,7 @@ void eepromWaitEepromStandbyState(void)
   }
 }
 
+#if !defined(BOOT)
 void setVolume(uint8_t volume)
 {
   if (volume > VOLUME_LEVEL_MAX) {
@@ -248,6 +249,7 @@ void setVolume(uint8_t volume)
 
   I2C_GenerateSTOP(I2C, ENABLE);
 }
+#endif
 
 #if 0
 uint8_t I2C_read_volume()

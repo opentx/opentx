@@ -403,6 +403,7 @@ int main()
   backlightInit();
 
   lcd_clear();
+  lcd_putsn(0, 0, (const char *)bootloaderVersion, 0); // trick to avoid bootloaderVersion to be optimized out ...
   lcd_putsLeft(0, BOOTLOADER_TITLE);
   lcd_invert_line(0);
   lcdRefresh();
