@@ -139,24 +139,31 @@ void perMain()
   lcdRefreshWait();
 
   // draw LCD from menus or from Lua script
-  // run Lua scripts that use LCD 
-  bool scriptWasRun = luaTask(evt, RUN_TELEM_FG_SCRIPT | RUN_STNDAL_SCRIPT, true);
+  // run Lua scripts that use LCD
+
+  bool standaloneScriptWasRun = luaTask(evt, RUN_STNDAL_SCRIPT, true);
+  bool refreshScreen = true;
+  if (!standaloneScriptWasRun) {
+    refreshScreen = !luaTask(evt, RUN_TELEM_FG_SCRIPT, true);
+  }
 
   t0 = get_tmr10ms() - t0;
   if (t0 > maxLuaDuration) {
     maxLuaDuration = t0;
   }
 
-  if (!scriptWasRun)
-  {
+  if (!standaloneScriptWasRun)
 #else
   lcdRefreshWait();   // WARNING: make sure no code above this line does any change to the LCD display buffer!
-  {
+  const bool refreshScreen = true;
 #endif
+  {
     // normal GUI from menus
     const char *warn = s_warning;
     uint8_t menu = s_menu_count;
-    lcd_clear();
+    if (refreshScreen) {
+      lcd_clear();
+    }
     if (menuEvent) {
       m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
       m_posHorz = 0;
