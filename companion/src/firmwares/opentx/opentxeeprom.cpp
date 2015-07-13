@@ -2801,7 +2801,8 @@ class SensorField: public TransformedField {
       internalField.Append(new BoolField<1>(sensor.filter));
       internalField.Append(new BoolField<1>(sensor.logs));
       internalField.Append(new BoolField<1>(sensor.persistent));
-      internalField.Append(new SpareBitsField<4>());
+      internalField.Append(new BoolField<1>(sensor.onlyPositive));
+      internalField.Append(new SpareBitsField<3>());
       internalField.Append(new UnsignedField<32>(_param, "param"));
     }
 
@@ -2810,7 +2811,7 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         _id = sensor.id;
         _instance = sensor.instance;
-        _param = (sensor.ratio) + (sensor.offset << 16);
+        _param = (sensor.ratio) + ((unsigned int)sensor.offset << 16);
       }
       else {
         _id = sensor.persistentValue;
@@ -2831,8 +2832,8 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         sensor.id = _id;
         sensor.instance = _instance;
-        sensor.ratio = _param & 0xFF;
-        sensor.offset = (_param >> 16) & 0xFF;
+        sensor.ratio = _param & 0xFFFF;
+        sensor.offset = (_param >> 16) & 0xFFFF;
       }
       else {
         sensor.persistentValue = _id;

@@ -481,6 +481,7 @@ TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor,
   ui->filter->setField(sensor.filter);
   ui->logs->setField(sensor.logs);
   ui->persistent->setField(sensor.persistent);
+  ui->onlyPositive->setField(sensor.onlyPositive);
   ui->gpsSensor->setField(sensor.gps);
   ui->altSensor->setField(sensor.alt);
   ui->ampsSensor->setField(sensor.amps);

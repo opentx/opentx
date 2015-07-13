@@ -951,10 +951,11 @@ class SensorData {
     bool filter;
     bool logs;
     bool persistent;
+    bool onlyPositive;
 
     // for custom sensors
     unsigned int ratio;
-    unsigned int offset;
+    int offset;
 
     // for consumption
     unsigned int amps;
