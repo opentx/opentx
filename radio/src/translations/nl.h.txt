@@ -1,6 +1,26 @@
-/* Dutch checked 05.07.2015 r085 opentx V2.099 für X9D,X9D+, X9E, Th9, 9XR, 9XR-Pro  
+
+
+/*
  * Authors (alphabetical order)
+
+
+ * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
+ * - Bertrand Songis <bsongis@gmail.com>
+ * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
+ * - Cameron Weeks <th9xer@gmail.com>
+ * - Erez Raviv
+ * - Gabriel Birkus
+ * - Jean-Pierre Parisy
  * - Jean-Pierre van Melis
+ * - Karl Szmutny
+ * - Michael Blandford
+ * - Michal Hlavinka
+ * - Pat Mackenzie
+ * - Philip Moss
+ * - Rob Thomson
+ * - Romolo Manfredini <romolo.manfredini@gmail.com>
+ * - Thomas Husterer
  *
  * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
@@ -17,11 +37,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+
+ * !!!!! DO NOT EDIT en.h - EDIT en.h.txt INSTEAD !!!!!!!
  *
+
+
+
+ * In order to make translations easier en.h.txt is parsed and national
+ * characters are replaced by bitmap codes. The result is en.h.
+ * See translate.py in the util folder for the list of character codes
  *
  * !!!!! DO NOT EDIT en.h - EDIT en.h.txt INSTEAD !!!!!!!
  */
-
 
 
 /* Formatting octal codes available in TR_ strings:
@@ -52,7 +79,7 @@
 #define TR_VRENAVIG            "No REaREb"
 
 #define LEN_VBLMODE            TR("\005", "\010")
-#define TR_VBLMODE             TR("UIT\0 ""Keys\0""Stick""Beide""AAN\0 ", "UIT\0    ""Toetsen\0  ""Sticks\0   ""Beide\0    ""AAN\0     ")
+#define TR_VBLMODE             TR("UIT\0 ""Keys\0""Stick""Beide""AAN\0 ", "UIT\0    ""Toetsen\0""Sticks\0 ""Beide\0  ""AAN\0    ")
 
 #define LEN_TRNMODE            "\003"
 #define TR_TRNMODE             "UIT"" +="" :="
@@ -61,13 +88,13 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\015"
-#define TR_UART3MODES          "UIT\0         ""S-Port Mirror""Telemetrie\0  ""SBUS Leerling\0""Debug\0"
+#define TR_UART3MODES          "UIT\0         ""S-Port Mirror""Telemetrie\0  ""SBUS Leerling""Debug\0       "
 
 #define LEN_SWTYPES            "\006"
 #define TR_SWTYPES             "Geen\0 ""Wissel""2POS\0 ""3POS\0"
 
-#define LEN_POTTYPES           "\017" 
-#define TR_POTTYPES            "Geen\0          ""Pot met Klik ""Standenschakelaar""Pot zonder Klik\0"
+#define LEN_POTTYPES           "\021" 
+#define TR_POTTYPES            "Geen\0            ""Pot met Klik\0    ""Standenschakelaar""Pot zonder Klik\0 "
 
 #define LEN_SLIDERTYPES        "\006"
 #define TR_SLIDERTYPES         "Geen\0 ""Schuif"
@@ -84,7 +111,7 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
-#define LEN_TARANIS_PROTOCOLS  "\004"          
+#define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "UIT\0""PPM\0""XJT\0""DSM2"
 
 #define LEN_XJT_PROTOCOLS      "\004"
@@ -93,20 +120,20 @@
 #define LEN_DSM_PROTOCOLS      "\004"
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
 
-#define LEN_VTRIMINC           TR("\006", "\013")
-#define TR_VTRIMINC            TR("Expo\0 ""ExFijn""Fijn\0 ""Medium""Grof\0 ", "Exponentieel\0""Extra Fijn\0  ""Fijn\0        ""Medium\0      ""Grof\0        ")
+#define LEN_VTRIMINC           TR("\006", "\014")
+#define TR_VTRIMINC            TR("Expo\0 ""ExFijn""Fijn\0 ""Medium""Grof\0 ", "Exponentieel""Extra Fijn\0 ""Fijn\0       ""Medium\0     ""Grof\0       ")
 
 #define LEN_VDISPLAYTRIMS      "\006"
 #define TR_VDISPLAYTRIMS       "Nee\0  ""Wijzig""Ja\0   "
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "SilentBeeps\0Spraak\0"
+#define TR_VBEEPCOUNTDOWN      "SilentBeeps\0Spraak"
 
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Tonen\0""Stilte"
 
-#define LEN_CURVE_TYPES        "\010"
-#define TR_CURVE_TYPES         "Standaard\0""Custom\0   "
+#define LEN_CURVE_TYPES        "\011"
+#define TR_CURVE_TYPES         "Standaard""Custom\0  "
 
 #define LEN_RETA123            "\001"
 
@@ -213,9 +240,9 @@
 #endif
 
 #if defined(AUDIO)
-  #define TR_SOUND             "Spiel Töne"
+  #define TR_SOUND             "Geluid   "
 #else
-  #define TR_SOUND             "Spiel\0    "
+  #define TR_SOUND             "Beep\0    "
 #endif
 
 #if defined(HAPTIC)
@@ -226,16 +253,16 @@
 
 #if defined(VOICE)
   #if defined(PCBSKY9X)
-    #define TR_PLAY_TRACK      "Zeg\0    "
+    #define TR_PLAY_TRACK      "Play\0     "
   #else
-    #define TR_PLAY_TRACK      "Zeg Tekst\0 "
+    #define TR_PLAY_TRACK      "Play Track"
   #endif
-  #define TR_PLAY_BOTH         "Zeg Beide "  
-  #define TR_PLAY_VALUE        TR("Zeg Waarde\0 ", "Zeg Waarde  ")
+  #define TR_PLAY_BOTH         "Play Both\0"
+  #define TR_PLAY_VALUE        TR("Play Val\0 ", "Play Value")
 #else
-  #define TR_PLAY_TRACK        "[Zeg Tekst]"
-  #define TR_PLAY_BOTH         "[Zeg Beide]"
-  #define TR_PLAY_VALUE        "[Zeg Waarde]"
+  #define TR_PLAY_TRACK        "[Play Trk]"
+  #define TR_PLAY_BOTH         "[Play Bth]"
+  #define TR_PLAY_VALUE        "[Play Val]"
 #endif
 
 #define TR_SF_BG_MUSIC         "BgMusic\0  ""BgMusic ||"
@@ -265,9 +292,9 @@
 #endif
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION) && LCD_W >= 212
-  #define TR_SF_SAFETY        "Override\0 "   //"Override\0 "
+  #define TR_SF_SAFETY        "Override\0 "
 #elif defined(OVERRIDE_CHANNEL_FUNCTION)
-  #define TR_SF_SAFETY        "Overr.\0   "   //"Overr.\0   "
+  #define TR_SF_SAFETY        "Overr.\0   "
 #else
   #define TR_SF_SAFETY        "---\0      "
 #endif
@@ -288,7 +315,7 @@
   #define TR_VFSWFUNC          TR_SF_SAFETY "Trainer\0  ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Backlight\0" TR_SF_TEST
 #endif
 
-#define LEN_VFSWRESET          TR("\004", "\010")
+#define LEN_VFSWRESET          TR("\004", "\012")
 
 #if defined(FRSKY)
   #define TR_FSW_RESET_TELEM   TR("Telm", "Telemetrie")
@@ -511,8 +538,8 @@
 #define LEN_VTRAINERMODES      "\022"
 #define TR_VTRAINERMODES       "Master/Jack\0      ""Slave/Jack\0       ""Master/SBUS Module""Master/CPPM Module""Master/Battery\0"
 
-#define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Niet Gezet\0""Vasthouden\0""Custom\0    ""Geen Pulsen""Ontvanger\0 "
+#define LEN_VFAILSAFE          TR("\013","\011")
+#define TR_VFAILSAFE           TR("Niet Gezet\0""Vasthouden\0""Custom\0    ""Geen Pulsen""Ontvanger\0 ","Not Set\0 ""Hold\0    ""Custom\0  ""No Pulses""Receiver\0")
 
 
 #if defined(MAVLINK)
@@ -524,11 +551,11 @@
   #define TR_MAVLINK_AP_MODES  "Manueel      ""Circle       ""Stabiliseer  ""Training     ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Begeleid     ""Initialiseren""ONGELDIG     "
 #endif
 
-#define LEN_VSENSORTYPES        "\012"
-#define TR_VSENSORTYPES        "Custom\0   ""Berekend"
+#define LEN_VSENSORTYPES        "\010"
+#define TR_VSENSORTYPES        "Custom\0 ""Berekend"
 
-#define LEN_VFORMULAS          "\012"
-#define TR_VFORMULAS           "Optellen\0   ""Gemiddeld\0  ""Min\0        ""Max\0        ""Vermenigvuld""Totaal\0     ""Cellen\0      ""Verbruik\0  ""Afstand\0    "
+#define LEN_VFORMULAS          "\014"
+#define TR_VFORMULAS           "Optellen\0   ""Gemiddeld\0  ""Min\0        ""Max\0            ""Vermenigvuld""Totaal\0     ""Cellen\0      ""Verbruik\0  ""Afstand\0    "
 
 
 #define LEN_VPREC              "\005"
@@ -567,7 +594,7 @@
 
 #define TR_MENUWHENDONE        CENTER"\010"TR_ENTER" > Verder"
 #define TR_FREE                "vrij"
-#define TR_DELETEMODEL         "Model wissen?"
+#define TR_DELETEMODEL         "WIS" BREAKSPACE "MODEL"
 #define TR_COPYINGMODEL        "Kopiëer Model"
 #define TR_MOVINGMODEL         "Verplaats Model"
 #define TR_LOADINGMODEL        "Laad Model..."
@@ -581,7 +608,7 @@
 #else
   #define TR_EXPONAME          "Expo Naam"
 #endif
-#define TR_BITMAP              "Modelafb"
+#define TR_BITMAP              "Modelafbeelding"
 #define TR_TIMER               TR("Timer", "Timer ")
 #define TR_ELIMITS             TR("E.Limits", "Extended Limits")
 #define TR_ETRIMS              TR("E.Trims", "Extended Trims")
@@ -700,7 +727,7 @@
 
 #define TR_MODESRC             " Modus\003%  Bron"
 #define TR_MULTIPLIER          "Multiplier"
-#define TR_CAL                 "Kal."
+#define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim - +"
 #define TR_BG                  "BG:"
 #if defined(COLORLCD)
@@ -717,7 +744,7 @@
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER"Geen Data"
-#define TR_TOTTM1TM2THRTHP     "\037\146TOT\036TM1\037\146TM2\036GAS\037\146GS%"
+#define TR_TOTTM1TM2THRTHP     "\037\146TOT\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
 #define STR_US                 (STR_TMR1LATMAXUS+13)
 #define TR_TMR1LATMINUS        "Tmr1Lat min\037\124us"
@@ -732,15 +759,15 @@
 #endif
 
 #define TR_MENUTORESET         CENTER TR_ENTER" voor Reset"
-#define TR_PPM_TRAINER         "TR"              //old #define TR_PPM      "PPM"
+#define TR_PPM_TRAINER         "TR"
 
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODEL"
 #define TR_FP                  "FP"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM vol"
-#define TR_ALERT               "WAARSCHUWING"
-#define TR_PRESSANYKEYTOSKIP	"Druk een toets om over te slaan"	
+#define TR_ALERT               "ALARM"
+#define TR_PRESSANYKEYTOSKIP   "Druk een toets.."	
 #define TR_THROTTLENOTIDLE     "Gas niet Dicht!"
 #define TR_ALARMSDISABLED      "Alarm uitgeschakeld"
 #define TR_PRESSANYKEY         TR("\010Druk een Toets", "Druk een Toets")
@@ -805,32 +832,31 @@
 #define TR_POWEROFF            "\027Uitschakelen..."
 #define TR_SHUTDOWN            "Afsluiten"
 #define TR_SAVEMODEL           "Bewaar Model-instellingen"
-#define TR_BATT_CALIB          "Accu Calib."
-#define TR_CURRENT_CALIB       "Stroom Calib."
+#define TR_BATT_CALIB          "Accu Calib"
+#define TR_CURRENT_CALIB       "Stroom Calib"
 #define TR_VOLTAGE             TR(INDENT "Spg", INDENT "Spanningsbron")  //9XR-Pro
 #define TR_CURRENT             TR(INDENT "Stroom", INDENT "Stroombron")
-#define TR_SELECT_MODEL        "Model Kiezen"
+#define TR_SELECT_MODEL        "Kies Model"
 #define TR_CREATE_MODEL        "Nieuw Model"
 #define TR_COPY_MODEL          "Kopieer Model"
 #define TR_MOVE_MODEL          "Verplaats Model"
-#define TR_BACKUP_MODEL        "Model op SD-Kaart"  //9XR-Pro
-#define TR_DELETE_MODEL        "Model Verwijderd"
+#define TR_BACKUP_MODEL        "Backup Model"
+#define TR_DELETE_MODEL        "Wis Model"
 #define TR_RESTORE_MODEL       "Model Terugzetten"
 #define TR_SDCARD_ERROR        "SD-Kaart fout"
 #define TR_NO_SDCARD           "Geen SD-Kaart"
 #define TR_SDCARD_FULL         "SD-Kaart vol"
 #define TR_INCOMPATIBLE        "Niet compatibel"
-#define TR_WARNING             "WAARSCHUWING"
+#define TR_WARNING             TR("WARNING","WAARSCHUWING")
 #define TR_EEPROMWARN          "EEPROM"
-#define TR_EEPROM_CONVERTING   "EEPROM Converting"
+#define TR_EEPROM_CONVERTING   "EEPROM Converteren"
 #define TR_THROTTLEWARN        "GAS"
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "SCHAKELAAR"
 #define TR_FAILSAFEWARN        "FAILSAFE"
 #define TR_NO_FAILSAFE         TR("Failsafe niet ing.", "Failsafe niet ingesteld")
-#define TR_KEYSTUCK            "Toets klemt"  //Key stuck=Taste klemmt 
-#define TR_INVERT_THR          TR("Gas omdraaien?", "Volgas achter?") // Th9x 9XR 
-
+#define TR_KEYSTUCK            "Toets klemt"
+#define TR_INVERT_THR          TR("Gas omdraaien?", "Volgas achter?")
 #define TR_SPEAKER_VOLUME      INDENT "Volume"
 #define TR_LCD                 "LCD"
 #define TR_BRIGHTNESS          INDENT "Helderheid"
@@ -884,14 +910,13 @@
 #define TR_MIXERS_MONITOR      "==>Mixer Monitor"
 #define TR_PATH_TOO_LONG       "Pad te Lang"
 #define TR_VIEW_TEXT           "Lees Tekst"
-#define TR_FLASH_BOOTLOADER      "Flash BootLoader"      //
+#define TR_FLASH_BOOTLOADER      "Flash BootLoader"
 #define TR_FLASH_EXTERNAL_DEVICE "Flash extern Apparaat"
-#define TR_FLASH_INTERNAL_MODULE "Flash intern XJT-Module"
-#define TR_WRITING               "\032Schrijven..."        //
+#define TR_FLASH_INTERNAL_MODULE "Flash interne XJT-Module"
+#define TR_WRITING               "\032Schrijven..."
 #define TR_CONFIRM_FORMAT      "Formatteren bevestigen?"
-#define TR_INTERNALRF          "----Intern RF-Modul----------"
-#define TR_EXTERNALRF          TR("---Extern RF-Module---", "----Extern RF-Module----------")  //9XR-Pro
-
+#define TR_INTERNALRF          "Interne RF"
+#define TR_EXTERNALRF          "Externe RF"
 #define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Failsafe Modus")
 #define TR_FAILSAFESET         "Failsafe instellen"
 #define TR_MENUSENSOR          "SENSOR"
@@ -912,13 +937,10 @@
 #define TR_RESET_TIMER3	       "Reset Timer3"
 #define TR_RESET_TELEMETRY     "Reset Telemetrie"
 #define TR_STATISTICS          "Statistieken"
-#define TR_ABOUT_US            "Die Programmierer"
-#define TR_AND_SWITCH          "EN Schak" //UND mit weiterem Schaltern 
-#define TR_SF                  "SF" //Spezial Funktionen 
-#define TR_GF                  "GF" // Globale Funktionen
-
-
-
+#define TR_ABOUT_US            "De Programmeurs"
+#define TR_AND_SWITCH          "AND Switch"
+#define TR_SF                  "SF"
+#define TR_GF                  "GF"
 #define TR_SPEAKER             INDENT "Speaker"
 #define TR_BUZZER              INDENT "Zoemer"
 #define TR_BYTES               "Bytes"
