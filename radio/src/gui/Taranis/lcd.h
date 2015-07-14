@@ -213,6 +213,8 @@ void lcd_invert_line(int8_t line);
 #define lcd_status_line() lcd_invert_line(LCD_LINES-1)
 inline void lcd_square(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcd_rect(x, y, w, w, SOLID, att); }
 
+void displaySleepBitmap();
+
 void lcdDrawTelemetryTopBar();
 
 #define V_BAR(xx, yy, ll)    \

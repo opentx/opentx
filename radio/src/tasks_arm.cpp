@@ -182,18 +182,20 @@ void menusTask(void * pdata)
     }
   }
 
-  lcd_clear();
-  displayPopup(STR_SHUTDOWN);
-
-  opentxClose();
-
-  lcd_clear();
-  lcdRefresh();
-  lcdOff();
-  BACKLIGHT_OFF();
 #if defined(REV9E)
   topLcdOff();
 #endif
+
+  BACKLIGHT_OFF();
+
+#if defined(PCBTARANIS)
+  displaySleepBitmap();
+#else
+  lcd_clear();
+  displayPopup(STR_SHUTDOWN);
+#endif
+
+  opentxClose();
 
 #if !defined(SIMU)
   SysTick->CTRL = 0; // turn off systick

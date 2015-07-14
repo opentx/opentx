@@ -123,10 +123,6 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
   const pm_uchar bmp_lock[] PROGMEM = {
     #include "../../bitmaps/Taranis/lock.lbm"
   };
-
-  const pm_uchar bmp_sleep[] PROGMEM = {
-    #include "../../bitmaps/Taranis/sleep.lbm"
-  };
 #endif
 
 void boardInit()
@@ -177,8 +173,7 @@ void boardInit()
         lcd_bmp(76, 2, bmp_startup, index*60, 60);
       }
       else if (duration >= PWR_PRESS_DURATION_MAX) {
-        lcd_clear();
-        lcd_bmp(76, 2, bmp_sleep, 0, 60);
+        displaySleepBitmap();
         turnBacklightOff();
       }
       else {

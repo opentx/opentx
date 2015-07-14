@@ -36,6 +36,17 @@
 
 #include "../../opentx.h"
 
+const pm_uchar bmp_sleep[] PROGMEM = {
+  #include "../../bitmaps/Taranis/sleep.lbm"
+};
+
+void displaySleepBitmap()
+{
+  lcd_clear();
+  lcd_bmp(76, 2, bmp_sleep, 0, 60);
+  lcdRefresh();
+}
+
 void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 {
 #define BOX_CENTERY   (LCD_H-BOX_WIDTH/2-10)
