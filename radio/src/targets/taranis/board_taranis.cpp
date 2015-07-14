@@ -161,6 +161,11 @@ void boardInit()
 
 #if defined(REV9E)
   if (!(RCC->CSR & (RCC_CSR_SFTRSTF | RCC_CSR_WDGRSTF))) {
+    lcd_clear();
+    lcd_bmp(76, 0, bmp_lock, 0, 60);
+    lcdRefresh();
+    lcdRefreshWait();
+
     tmr10ms_t start = get_tmr10ms();
     tmr10ms_t duration = 0;
     uint8_t pwr_on = 0;
