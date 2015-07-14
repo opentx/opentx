@@ -1,23 +1,6 @@
 /* Dutch checked 05.07.2015 r085 opentx V2.099 für X9D,X9D+, X9E, Th9, 9XR, 9XR-Pro  
-
  * Authors (alphabetical order)
-
-
- * - Bertrand Songis <bsongis@gmail.com>
- * - Bernet Andre <bernet.andre@gmail.com>
-
-
-
-
  * - Jean-Pierre van Melis
-
-
-
-
-
-
-
-
  *
  * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
@@ -34,11 +17,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
-
  *
-
-
-
  *
  * !!!!! DO NOT EDIT en.h - EDIT en.h.txt INSTEAD !!!!!!!
  */
@@ -1058,7 +1037,7 @@
 #if defined(PCBTARANIS)
   #define TR_ABOUT_HARDWARE_1  "Firma FrSky "
   #define TR_ABOUT_HARDWARE_2  "Hardware-Design/-Produktie"
-  #define TR_ABOUT_HARDWARE_3  "Firmware-Leverancier
+  #define TR_ABOUT_HARDWARE_3  "Firmware-Leverancier"
 #else
   #define TR_ABOUT_HARDWARE_1  "Brent Nelson"
   #define TR_ABOUT_HARDWARE_2  "Sky9x Design/Produktie"
