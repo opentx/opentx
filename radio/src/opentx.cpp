@@ -2672,7 +2672,7 @@ uint32_t pwrCheck()
         lcdRefreshWait();
         unsigned index = pwrPressedDuration() / (PWR_PRESS_SHUTDOWN / 4);
         lcd_clear();
-        lcd_bmp(76, 0, bmp_shutdown, index*60, 60);
+        lcd_bmp(76, 2, bmp_shutdown, index*60, 60);
         lcdRefresh();
         return e_power_press;
       }

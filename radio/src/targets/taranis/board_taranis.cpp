@@ -162,7 +162,7 @@ void boardInit()
 #if defined(REV9E)
   if (!(RCC->CSR & (RCC_CSR_SFTRSTF | RCC_CSR_WDGRSTF))) {
     lcd_clear();
-    lcd_bmp(76, 0, bmp_lock, 0, 60);
+    lcd_bmp(76, 2, bmp_lock, 0, 60);
     lcdRefresh();
     lcdRefreshWait();
 
@@ -174,11 +174,11 @@ void boardInit()
       if (duration < PWR_PRESS_DURATION_MIN) {
         unsigned index = duration / (PWR_PRESS_DURATION_MIN / 4);
         lcd_clear();
-        lcd_bmp(76, 0, bmp_startup, index*60, 60);
+        lcd_bmp(76, 2, bmp_startup, index*60, 60);
       }
       else if (duration >= PWR_PRESS_DURATION_MAX) {
         lcd_clear();
-        lcd_bmp(76, 0, bmp_sleep, 0, 60);
+        lcd_bmp(76, 2, bmp_sleep, 0, 60);
         turnBacklightOff();
       }
       else {
