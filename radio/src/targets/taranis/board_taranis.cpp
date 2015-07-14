@@ -113,7 +113,7 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
 }
 
 #if defined(REV9E)
-  #define PWR_PRESS_DURATION_MIN       80  // 800ms
+  #define PWR_PRESS_DURATION_MIN       200 // 2s
   #define PWR_PRESS_DURATION_MAX       300 // 3s
 
   const pm_uchar bmp_startup[] PROGMEM = {
@@ -166,17 +166,17 @@ void boardInit()
     uint8_t pwr_on = 0;
     while (pwrPressed()) {
       duration = get_tmr10ms() - start;
-      lcd_clear();
       if (duration < PWR_PRESS_DURATION_MIN) {
-        lcd_bmp(76, 0, bmp_lock, 0, 60);
+        unsigned index = duration / (PWR_PRESS_DURATION_MIN / 4);
+        lcd_clear();
+        lcd_bmp(76, 0, bmp_startup, index*60, 60);
       }
       else if (duration >= PWR_PRESS_DURATION_MAX) {
+        lcd_clear();
         lcd_bmp(76, 0, bmp_sleep, 0, 60);
         turnBacklightOff();
       }
       else {
-        unsigned index = (duration - PWR_PRESS_DURATION_MIN) / ((PWR_PRESS_DURATION_MAX-PWR_PRESS_DURATION_MIN) / 4);
-        lcd_bmp(76, 0, bmp_startup, index*60, 60);
         if (pwr_on != 1) {
           backlightInit();
           pwr_on = 1;
