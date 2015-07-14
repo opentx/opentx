@@ -114,7 +114,7 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
 
 #if defined(REV9E)
   #define PWR_PRESS_DURATION_MIN       200 // 2s
-  #define PWR_PRESS_DURATION_MAX       300 // 3s
+  #define PWR_PRESS_DURATION_MAX       500 // 5s
 
   const pm_uchar bmp_startup[] PROGMEM = {
     #include "../../bitmaps/Taranis/startup.lbm"
