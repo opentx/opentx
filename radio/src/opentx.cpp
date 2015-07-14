@@ -2664,6 +2664,7 @@ uint32_t pwrCheck()
           }
         }
 #else
+        haptic.play(15, 3, PLAY_NOW);
         pwr_check_state = PWR_CHECK_OFF;
         return e_power_off;
 #endif

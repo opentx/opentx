@@ -183,8 +183,9 @@ void boardInit()
       }
       else {
         if (pwr_on != 1) {
-          backlightInit();
           pwr_on = 1;
+          backlightInit();
+          haptic.play(15, 3, PLAY_NOW);
         }
       }
       lcdRefresh();
