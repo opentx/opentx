@@ -89,15 +89,22 @@ const uint8_t BootCode[] = {
 __attribute__ ((section(".bootrodata"), used))
 void _bootStart()
 {
-  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph, ENABLE);
-
   // turn soft power ON now
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;          // Enable portD clock
   GPIOD->BSRRL = 1;
   GPIOD->MODER = (GPIOD->MODER & 0xFFFFFFFC) | 1;
 
+#if defined(REV9E)
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN; 		// Enable portC clock
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOGEN; 		// Enable portG clock
+#else
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN; 		// Enable portC clock
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN; 		// Enable portE clock
+#endif
+
   GPIOC->PUPDR = 0x00000004;
   GPIOE->PUPDR = 0x00000040;
-
+  
   uint32_t i;
   for (i = 0; i < 50000; i += 1) {
     bwdt_reset();
