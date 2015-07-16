@@ -3231,10 +3231,6 @@ void OpenTxModelData::afterImport()
     }
   }
 
-  if (IS_TARANIS(board) && modelData.moduleData[0].protocol == 0) {
-    modelData.moduleData[0].protocol = PXX_XJT_X16;
-  }
-
   for (int module=0; module<3; module++) {
     if (modelData.moduleData[module].protocol == PXX_XJT_X16 || modelData.moduleData[module].protocol == LP45) {
       if (subprotocols[module] >= 0)
@@ -3242,6 +3238,10 @@ void OpenTxModelData::afterImport()
       else
         modelData.moduleData[module].protocol = OFF;
     }
+  }
+
+  if (IS_TARANIS(board) && version < 217 && modelData.moduleData[1].protocol != OFF) {
+    modelData.moduleData[1].modelId = modelData.moduleData[0].modelId;
   }
 }
 
