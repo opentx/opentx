@@ -697,6 +697,8 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
   if (IS_TARANIS(firmware->getBoard())) {
     ui->voltsSource->setField(model.frsky.voltsSource);
     ui->altitudeSource->setField(model.frsky.altitudeSource);
+    ui->varioSource->setField(model.frsky.varioSource);
+    ui->varioCenterSilent->setField(model.frsky.varioCenterSilent);
   }
   else {
     ui->topbarGB->hide();
@@ -731,6 +733,7 @@ void TelemetryPanel::update()
 
     populateTelemetrySourcesComboBox(ui->voltsSource, model, false);
     populateTelemetrySourcesComboBox(ui->altitudeSource, model, false);
+    populateTelemetrySourcesComboBox(ui->varioSource, model, false);
   }
 
   if (IS_ARM(firmware->getBoard())) {
@@ -794,7 +797,7 @@ void TelemetryPanel::setup()
       ui->VarioLabel_2->hide();
       ui->VarioLabel_3->hide();
       ui->VarioLabel_4->hide();
-      ui->varioSourceCB->hide();
+      ui->varioSource->hide();
       ui->varioSource_label->hide();
     }
     else {
@@ -860,18 +863,13 @@ void TelemetryPanel::setup()
 
 void TelemetryPanel::populateVarioSource()
 {
-  AutoComboBox * cb = ui->varioSourceCB;
+  AutoComboBox * cb = ui->varioSource;
   cb->setField(model->frsky.varioSource, this);
-  if (!IS_TARANIS(firmware->getBoard())) {
-    cb->addItem(tr("Alti"), TELEMETRY_VARIO_SOURCE_ALTI);
-    cb->addItem(tr("Alti+"), TELEMETRY_VARIO_SOURCE_ALTI_PLUS);
-  }
+  cb->addItem(tr("Alti"), TELEMETRY_VARIO_SOURCE_ALTI);
+  cb->addItem(tr("Alti+"), TELEMETRY_VARIO_SOURCE_ALTI_PLUS);
   cb->addItem(tr("VSpeed"), TELEMETRY_VARIO_SOURCE_VSPEED);
   cb->addItem(tr("A1"), TELEMETRY_VARIO_SOURCE_A1);
   cb->addItem(tr("A2"), TELEMETRY_VARIO_SOURCE_A2);
-  if (IS_TARANIS(firmware->getBoard())) {
-    cb->addItem(tr("dTE"), TELEMETRY_VARIO_SOURCE_DTE);
-  }
 }
 
 void TelemetryPanel::populateVoltsSource()

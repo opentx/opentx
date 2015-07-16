@@ -2708,7 +2708,13 @@ class FrskyField: public StructField {
           }
         }
 
-        Append(new ConversionField< UnsignedField<8> >(frsky.varioSource, &telemetryVarioSourceConversionTable, "Vario Source"));
+        if (version >= 217) {
+          Append(new UnsignedField<7>(frsky.varioSource, "Vario Source"));
+          Append(new BoolField<1>(frsky.varioCenterSilent));
+        }
+        else {
+          Append(new ConversionField< UnsignedField<8> >(frsky.varioSource, &telemetryVarioSourceConversionTable, "Vario Source"));
+        }
         Append(new SignedField<8>(frsky.varioCenterMax));
         Append(new SignedField<8>(frsky.varioCenterMin));
         Append(new SignedField<8>(frsky.varioMin));

@@ -329,7 +329,7 @@
        <number>6</number>
       </property>
       <item row="2" column="1">
-       <layout class="QGridLayout" name="gridLayout_66" columnstretch="1,0,0,0">
+       <layout class="QGridLayout" name="gridLayout_66" columnstretch="1,1,1,1,1">
         <item row="0" column="0">
          <widget class="QLabel" name="VarioLabel_1">
           <property name="sizePolicy">
@@ -488,6 +488,32 @@
           </property>
          </widget>
         </item>
+        <item row="0" column="4">
+         <widget class="QLabel" name="VarioLabel_6">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Center Silent</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4">
+         <widget class="AutoCheckBox" name="varioCenterSilent">
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item row="2" column="0">
@@ -511,7 +537,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="AutoComboBox" name="varioSourceCB">
+       <widget class="AutoComboBox" name="varioSource">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -920,6 +946,11 @@
    <extends>QComboBox</extends>
    <header>autocombobox.h</header>
   </customwidget>
+  <customwidget>
+   <class>AutoCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>autocheckbox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>telemetryProtocol</tabstop>
@@ -927,7 +958,7 @@
   <tabstop>rssiAlarm1SB</tabstop>
   <tabstop>rssiAlarm2CB</tabstop>
   <tabstop>rssiAlarm2SB</tabstop>
-  <tabstop>varioSourceCB</tabstop>
+  <tabstop>varioSource</tabstop>
   <tabstop>varioLimitMin_DSB</tabstop>
   <tabstop>varioLimitCenterMin_DSB</tabstop>
   <tabstop>varioLimitCenterMax_DSB</tabstop>

@@ -769,6 +769,7 @@ class FrSkyData {
     FrSkyScreenData screens[4];
     FrSkyRSSIAlarm rssiAlarms[2];
     unsigned int varioSource;
+    bool varioCenterSilent;
     int varioMin;
     int varioCenterMin;    // if increment in 0.2m/s = 3.0m/s max
     int varioCenterMax;
