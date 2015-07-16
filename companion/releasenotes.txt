@@ -1,12 +1,7 @@
-<h2>Version 2.1.0 / (set date)</h2>
+<h2>Version 2.1.0 / 2015-07-16</h2>
 <ul>
 <li>SD card synchronizaton tool</li>
 <li>Added session duraton information in Log Viewer</li>
-</ul>
-
-
-<h2>Version 2.0.18 / (not yet released)</h2>
-<ul>
 <li>Enabled <i>Mixers monitor</i> in Taranis simulator</li>
 <li>Better support for multi-axes in Log Viewer (<a href=https://github.com/opentx/opentx/issues/2267>#2267</a>)</li>
 <li>File path issue in Taranis simulator function <i>findTrueFileName()</i> on Windows (<a href=https://github.com/opentx/opentx/issues/2301>#2301</a>)</li>
@@ -15,7 +10,6 @@
 <li>Fixed a rare program crash when editing Input for 9X radio (<a href=https://github.com/opentx/opentx/issues/2420>#2420</a>)</li>
 <li>Fixed missing RSSI audio warnings if simulator was started multiple times (<a href=https://github.com/opentx/opentx/issues/2446>#2446</a>)</li>
 </ul>
-
 
 
 <h2>Version 2.0.17 / 2015-05-04</h2>

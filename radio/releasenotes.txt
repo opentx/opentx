@@ -1,5 +1,4 @@
-<h2>Version 2.1.0 / (set date)</h2>
-
+<h2>Version 2.1.0 / 2015-07-16</h2>
 
 [ARM Boards]
 <ul>
@@ -7,8 +6,8 @@
 <li>Added Dangerous Custom Functions (range check, bind)</li>
 <li>Better graphical trim representation (<a href=https://github.com/opentx/opentx/issues/1419>#1419</a>)</li>
 <li>Increased PPM-Center range</li>
+<li>Fixed Edge Logical switch erroneous delay (<a href=https://github.com/opentx/opentx/issues/2368>#2368</a>)</li>
 </ul>
-
 
 [Taranis]
 <ul>
@@ -34,6 +33,8 @@
 <li>Added mixer output range visualization</li>
 <li>Added physical switches, pots and sliders custom names</li>
 <li>Added switch type configuration (none, 3 position, 2 position, toogle) for all switches</li>
+<li>Lua <i>model.insertInput()</i> could not add more than 32 inputs (<a href=https://github.com/opentx/opentx/issues/2084>#2084</a>)</li>
+<li>Fixed auto-source problem on radios with non-existing S3 pot (<a href=https://github.com/opentx/opentx/issues/2364>#2364</a>)</li>
 </ul>
 
 [Mega2560]
@@ -41,19 +42,6 @@
 <li>Added support for the DIY Mega2560 radio</li>
 </ul>
 
-
-<h2>Version 2.0.18 / (not yet released)</h2>
-
-[Taranis]
-<ul>
-<li>Lua <i>model.insertInput()</i> could not add more than 32 inputs (<a href=https://github.com/opentx/opentx/issues/2084>#2084</a>)</li>
-<li>Fixed auto-source problem on radios with non-existing S3 pot (<a href=https://github.com/opentx/opentx/issues/2364>#2364</a>)</li>
-</ul>
-
-[ARM Boards]
-<ul>
-<li>Fixed Edge Logical switch erroneous delay (<a href=https://github.com/opentx/opentx/issues/2368>#2368</a>)</li>
-</ul>
 
 <h2>Version 2.0.17 / 2015-05-04</h2>
 
