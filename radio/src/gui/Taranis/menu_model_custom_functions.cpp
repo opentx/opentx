@@ -44,8 +44,19 @@
 void onCustomFunctionsFileSelectionMenu(const char *result)
 {
   int  sub = m_posVert;
-  CustomFunctionData * cf = &g_model.customFn[sub];
-  uint8_t func = CFN_FUNC(cf);
+  CustomFunctionData * cfn;
+  uint8_t eeFlags;
+
+  if (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions) {
+    cfn = &g_model.customFn[sub];
+    eeFlags = EE_MODEL;
+  }
+  else {
+    cfn = &g_eeGeneral.customFn[sub];
+    eeFlags = EE_GENERAL;
+  }
+
+  uint8_t func = CFN_FUNC(cfn);
 
   if (result == STR_UPDATE_LIST) {
     char directory[256];
@@ -56,15 +67,15 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
       strcpy(directory, SOUNDS_PATH);
       strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
     }
-    if (!listSdFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cf->play.name), NULL)) {
+    if (!listSdFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), NULL)) {
       POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
       s_menu_flags = 0;
     }
   }
   else {
     // The user choosed a file in the list
-    memcpy(cf->play.name, result, sizeof(cf->play.name));
-    eeDirty(EE_MODEL);
+    memcpy(cfn->play.name, result, sizeof(cfn->play.name));
+    eeDirty(eeFlags);
     if (func == FUNC_PLAY_SCRIPT) {
       LUA_LOAD_MODEL_SCRIPTS();
     }
