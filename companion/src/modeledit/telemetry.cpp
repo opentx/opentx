@@ -639,6 +639,9 @@ void TelemetrySensorPanel::on_formula_currentIndexChanged(int index)
 {
   if (!lock) {
     sensor.formula = index;
+    if (sensor.formula == SensorData::TELEM_FORMULA_CELL) {
+      sensor.prec = 2;
+    }
     update();
     emit modified();
   }
