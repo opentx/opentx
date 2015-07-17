@@ -53,6 +53,7 @@ void displayScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t
 void displayMenuBar(const MenuItem *menu, int index);
 void displayProgressBar(const char *label);
 void updateProgressBar(int num, int den);
+void drawGauge(coord_t x, coord_t y, coord_t w, coord_t h, int32_t val, int32_t max);
 
 extern coord_t scrollbar_X;
 #define SET_SCROLLBAR_X(x) scrollbar_X = (x);

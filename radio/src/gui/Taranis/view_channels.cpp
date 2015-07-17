@@ -117,18 +117,12 @@ void menuChannelsView(uint8_t event)
 #endif
 
       // Gauge
-      lcd_rect(x+LCD_W/2-3-wbar-ofs, y, wbar+1, 6);
 #ifdef MIXERS_MONITOR
       uint16_t lim = mixersView ? 512*2*2 : (g_model.extendedLimits ? 640*2 : 512*2);
 #else
       uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
 #endif
-      uint8_t len = limit((uint8_t)1, uint8_t((abs(val) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
-      uint8_t x0 = (val>0) ? x+LCD_W/2-ofs-3-wbar/2 : x+LCD_W/2-ofs-2-wbar/2-len;
-      lcd_hline(x0, y+1, len);
-      lcd_hline(x0, y+2, len);
-      lcd_hline(x0, y+3, len);
-      lcd_hline(x0, y+4, len);
+      drawGauge(x+LCD_W/2-3-wbar-ofs, y, wbar, 6, val, lim);
 
       ch++;
     }
