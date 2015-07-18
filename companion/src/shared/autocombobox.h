@@ -3,7 +3,7 @@
 
 #include <QComboBox>
 #include "genericpanel.h"
-
+#include <QDebug>
 class AutoComboBox: public QComboBox
 {
   Q_OBJECT
@@ -13,6 +13,7 @@ class AutoComboBox: public QComboBox
       QComboBox(parent),
       field(NULL),
       panel(NULL),
+      next(0),
       lock(false)
     {
       connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onCurrentIndexChanged(int)));
@@ -22,10 +23,23 @@ class AutoComboBox: public QComboBox
     {
       lock = true;
       QComboBox::clear();
+      next = 0;
       lock = false;
     }
 
-    void addItem(const QString & item, int value)
+    virtual void insertItems(int index, const QStringList & items)
+    {
+      foreach(QString item, items) {
+        addItem(item);
+      }
+    }
+
+    virtual void addItem(const QString & item)
+    {
+      addItem(item, next++);
+    }
+
+    virtual void addItem(const QString & item, int value)
     {
       lock = true;
       QComboBox::addItem(item, value);
@@ -78,6 +92,7 @@ class AutoComboBox: public QComboBox
   protected:
     int * field;
     GenericPanel * panel;
+    int next;
     bool lock;
 };
 
