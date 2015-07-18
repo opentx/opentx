@@ -488,9 +488,7 @@ void evalInputs(uint8_t mode)
       }
 #endif
 
-#if defined(VIRTUALINPUTS)
-      calibratedStick[ch] = v;
-#else
+#if !defined(VIRTUALINPUTS)
       rawAnas[ch] = v;
       anas[ch] = v; // set values for mixer
 #endif
