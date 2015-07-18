@@ -90,7 +90,7 @@ uint64_t check2PosSwitchPosition(EnumKeys sw)
   if (switchState(sw))
     index = sw - SW_SA0;
   else
-    index = sw - SW_SA0 + 1;
+    index = sw - SW_SA0 + 2;
 
   result = ((int64_t)1 << index);
 
