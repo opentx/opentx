@@ -97,6 +97,7 @@ void populateGvSourceCB(QComboBox *b, int value)
 
 void populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current)
 {
+  b->clear();
   b->addItem("----");
 
   bool added = false;
