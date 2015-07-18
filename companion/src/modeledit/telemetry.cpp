@@ -399,9 +399,12 @@ void TelemetryCustomScreen::updateBar(int line)
   RawSource source = screen.body.bars[line].source;
   if (source.type != SOURCE_TYPE_NONE) {
     RawSourceRange range = source.getRange(model, generalSettings, RANGE_SINGLE_PRECISION);
-    int max = round((range.max - range.min) / range.step);
-    if (int(255-screen.body.bars[line].barMax) > max)
-      screen.body.bars[line].barMax = 255 - max;
+    if (!IS_ARM(GetCurrentFirmware()->getBoard())) {
+      int max = round((range.max - range.min) / range.step);
+      if (int(255-screen.body.bars[line].barMax) > max) {
+        screen.body.bars[line].barMax = 255 - max;
+      }
+    }
     minSB[line]->setEnabled(true);
     minSB[line]->setDecimals(range.decimals);
     minSB[line]->setMinimum(range.min);
@@ -413,7 +416,12 @@ void TelemetryCustomScreen::updateBar(int line)
     maxSB[line]->setMinimum(range.min);
     maxSB[line]->setMaximum(range.max);
     maxSB[line]->setSingleStep(range.step);
-    maxSB[line]->setValue(range.getValue(255 - screen.body.bars[line].barMax));
+    if (IS_ARM(GetCurrentFirmware()->getBoard())) {
+      maxSB[line]->setValue(range.getValue(screen.body.bars[line].barMax));
+    }
+    else {
+      maxSB[line]->setValue(range.getValue(255 - screen.body.bars[line].barMax));
+    }
   }
   else {
     minSB[line]->setDisabled(true);
@@ -468,7 +476,10 @@ void TelemetryCustomScreen::barMinChanged(double value)
 {
   if (!lock) {
     int line = sender()->property("index").toInt();
-    screen.body.bars[line].barMin = round((value-minSB[line]->minimum()) / minSB[line]->singleStep());
+    if (IS_ARM(GetCurrentFirmware()->getBoard()))
+      screen.body.bars[line].barMin = round(value / minSB[line]->singleStep());
+    else
+      screen.body.bars[line].barMin = round((value-minSB[line]->minimum()) / minSB[line]->singleStep());
     // TODO set min (maxSB)
     emit modified();
   }
@@ -478,7 +489,10 @@ void TelemetryCustomScreen::barMaxChanged(double value)
 {
   if (!lock) {
     int line = sender()->property("index").toInt();
-    screen.body.bars[line].barMax = 255 - round((value-minSB[line]->minimum()) / maxSB[line]->singleStep());
+    if (IS_ARM(GetCurrentFirmware()->getBoard()))
+      screen.body.bars[line].barMax = round((value) / maxSB[line]->singleStep());
+    else
+      screen.body.bars[line].barMax = 255 - round((value-minSB[line]->minimum()) / maxSB[line]->singleStep());
     // TODO set max (minSB)
     emit modified();
   }
