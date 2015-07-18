@@ -837,12 +837,16 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
     // Value
     uint8_t index = expoAddress(s_currIdx)->chn;
-    lcd_outdezAtt(120, 2, calcRESXto1000(anas[index]), PREC1|TINSIZE);
+    if (!s_currCh) {
+      lcd_outdezAtt(120, 2, calcRESXto1000(anas[index]), PREC1|TINSIZE);
+    }
 
     SIMPLE_MENU(STR_MENUINPUTS, menuTabModel, e_InputsAll, s_maxLines);
 
     // Gauge
-    drawGauge(120, 1, 58, 6, anas[index], 1024);
+    if (!s_currCh) {
+      drawGauge(120, 1, 58, 6, anas[index], 1024);
+    }
   }
   else {
     lcd_outdezAtt(FW*sizeof(TR_MIXER)+FW+FW/2, 0, getExpoMixCount(false));
@@ -850,13 +854,17 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
     // Value
     uint8_t index = mixAddress(s_currIdx)->destCh;
-    displayHeaderChannelName(index);
-    lcd_outdezAtt(120, 2, calcRESXto1000(ex_chans[index]), PREC1|TINSIZE);
+    if (!s_currCh) {
+      displayHeaderChannelName(index);
+      lcd_outdezAtt(120, 2, calcRESXto1000(ex_chans[index]), PREC1|TINSIZE);
+    }
 
     SIMPLE_MENU(STR_MIXER, menuTabModel, e_MixAll, s_maxLines);
 
     // Gauge
-    drawGauge(120, 1, 58, 6, ex_chans[index], 1024);
+    if (!s_currCh) {
+      drawGauge(120, 1, 58, 6, ex_chans[index], 1024);
+    }
   }
 
   sub = m_posVert;
