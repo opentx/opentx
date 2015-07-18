@@ -260,6 +260,13 @@ void evalFunctions()
   MASK_FUNC_TYPE newActiveFunctions  = 0;
   MASK_CFN_TYPE  newActiveSwitches = 0;
 
+#if defined(CPUARM)
+  uint8_t playFirstIndex = (functions == g_model.customFn ? 1 : 1+NUM_CFN);
+  #define PLAY_INDEX   (i+playFirstIndex)
+#else
+  #define PLAY_INDEX   (i+1)
+#endif
+
 #if defined(ROTARY_ENCODERS) && defined(GVARS)
   static rotenc_t rePreviousValues[ROTARY_ENCODERS];
 #endif
@@ -460,13 +467,13 @@ void evalFunctions()
               functionsContext.lastFunctionTime[i] = tmr10ms;
             }
             if (!functionsContext.lastFunctionTime[i] || (repeatParam && repeatParam!=CFN_PLAY_REPEAT_NOSTART && (signed)(tmr10ms-functionsContext.lastFunctionTime[i])>=100*repeatParam)) {
-              if (!IS_PLAYING(i+1)) {
+              if (!IS_PLAYING(PLAY_INDEX)) {
                 functionsContext.lastFunctionTime[i] = tmr10ms;
                 if (CFN_FUNC(cfn) == FUNC_PLAY_SOUND) {
                   AUDIO_PLAY(AU_FRSKY_FIRST+CFN_PARAM(cfn));
                 }
                 else if (CFN_FUNC(cfn) == FUNC_PLAY_VALUE) {
-                  PLAY_VALUE(CFN_PARAM(cfn), i+1);
+                  PLAY_VALUE(CFN_PARAM(cfn), PLAY_INDEX);
                 }
 #if defined(HAPTIC)
                 else if (CFN_FUNC(cfn) == FUNC_HAPTIC) {
@@ -474,7 +481,7 @@ void evalFunctions()
                 }
 #endif
                 else {
-                  playCustomFunctionFile(cfn, i+1);
+                  playCustomFunctionFile(cfn, PLAY_INDEX);
                 }
               }
             }
@@ -483,8 +490,8 @@ void evalFunctions()
 
           case FUNC_BACKGND_MUSIC:
             newActiveFunctions |= (1 << FUNCTION_BACKGND_MUSIC);
-            if (!IS_PLAYING(i+1)) {
-              playCustomFunctionFile(cfn, i+1);
+            if (!IS_PLAYING(PLAY_INDEX)) {
+              playCustomFunctionFile(cfn, PLAY_INDEX);
             }
             break;
 
@@ -507,14 +514,14 @@ void evalFunctions()
                 AUDIO_PLAY(AU_FRSKY_FIRST+param);
               }
               else if (CFN_FUNC(cfn) == FUNC_PLAY_VALUE) {
-                PLAY_VALUE(param, i+1);
+                PLAY_VALUE(param, PLAY_INDEX);
               }
               else {
 #if defined(GVARS)
                 if (CFN_FUNC(cfn) == FUNC_PLAY_TRACK && param > 250)
                   param = GVAR_VALUE(param-251, getGVarFlightPhase(mixerCurrentFlightMode, param-251));
 #endif
-                PUSH_CUSTOM_PROMPT(active ? param : param+1, i+1);
+                PUSH_CUSTOM_PROMPT(active ? param : param+1, PLAY_INDEX);
               }
             }
             if (!active) {
