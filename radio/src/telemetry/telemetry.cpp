@@ -83,7 +83,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
         datetime.timestate = 1;
       }
 #if defined(RTCLOCK)
-      if (g_eeGeneral.adjustRTC && (datetime.datestate == 1)) {
+      if (g_eeGeneral.adjustRTC && datetime.datestate == 1) {
         struct gtm t;
         gettime(&t);
         if (abs((t.tm_hour-datetime.hour)*3600 + (t.tm_min-datetime.min)*60 + (t.tm_sec-datetime.sec)) > 20) {
