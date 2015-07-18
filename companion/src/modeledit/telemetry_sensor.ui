@@ -512,7 +512,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Range</string>
+      <string>Ratio</string>
      </property>
     </widget>
    </item>

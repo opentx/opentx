@@ -750,6 +750,10 @@ Behöver inte vara samma som menyspråk</translation>
         <source>RS2</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CalibrationPanel</name>
@@ -1160,6 +1164,41 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
 </context>
 <context>
+    <name>ContributorsDialog</name>
+    <message>
+        <source>OpenTX Contributors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Main Developers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Other contributors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Companies and projects who have donated to OpenTX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>People who have donated to OpenTX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)</source>
+        <translation type="unfinished">All ära åt Rafal Tomczak (RadioClone), Thomas Husterer (th9x) och Erez Raviv (er9x and eePe)</translation>
+    </message>
+    <message>
+        <source>Thank you all !!!</source>
+        <translation type="unfinished">Tack till er alla !!!</translation>
+    </message>
+    <message>
+        <source>monthly</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CopyProcess</name>
     <message>
         <source>Error</source>
@@ -1435,132 +1474,16 @@ Behöver inte vara samma som menyspråk</translation>
 <context>
     <name>Er9x::Templates</name>
     <message>
-        <source>Simple 4-CH</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>T-Cut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sticky T-Cut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>V-Tail</source>
-        <translation type="unfinished">V-stjärt</translation>
-    </message>
-    <message>
-        <source>Elevon\Delta</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Heli Setup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Heli Setup with gyro gain control</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Gyro gain control</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Servo Test</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>MultiCopter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use Model Config Wizard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Apply Template?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Apply template &quot;%1&quot;?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>RUD</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ELE</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">V-stjärt</translation>
     </message>
     <message>
         <source>THR</source>
-        <translation type="unfinished">GAS</translation>
-    </message>
-    <message>
-        <source>AIL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>AIL2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ELE2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>FLAPS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>FLAP%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>PITCH</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GYRO</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SPOIL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SPOIL%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>RUD2</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">GAS</translation>
     </message>
     <message>
         <source>Clear Mixes?</source>
-        <translation type="unfinished">Ta bort mixarna?</translation>
-    </message>
-    <message>
-        <source>Really clear existing mixes on CH6?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Really clear existing mixes on CH5?</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ta bort mixarna?</translation>
     </message>
 </context>
 <context>
@@ -3114,11 +3037,19 @@ FAI-funktionen kan inte slås av i sändaren.
     </message>
     <message>
         <source>Elevator</source>
-        <translation>Höjdroder</translation>
+        <translation type="obsolete">Höjdroder</translation>
     </message>
     <message>
         <source>Aileron</source>
-        <translation>Skevroder</translation>
+        <translation type="obsolete">Skevroder</translation>
+    </message>
+    <message>
+        <source>Long. cyc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lateral cyc</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4606,7 +4537,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Servos</source>
-        <translation>Servon</translation>
+        <translation type="obsolete">Servon</translation>
     </message>
     <message>
         <source>Special Functions</source>
@@ -4647,6 +4578,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Flight Modes</source>
         <translation>Flyglägen</translation>
+    </message>
+    <message>
+        <source>Outputs</source>
+        <translation type="unfinished">Utgångar</translation>
     </message>
 </context>
 <context>
@@ -7045,11 +6980,11 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>Positive</source>
-        <translation type="unfinished">Positiv</translation>
+        <translation type="obsolete">Positiv</translation>
     </message>
     <message>
         <source>Negative</source>
-        <translation type="unfinished">Negativ</translation>
+        <translation type="obsolete">Negativ</translation>
     </message>
     <message>
         <source>Source %1 cannot be exported on this board!</source>
@@ -7099,6 +7034,22 @@ OpenTX-gruppen.</translation>
         <source>Master/Jack</source>
         <translation type="unfinished">Tränare/Uttag</translation>
     </message>
+    <message>
+        <source>Support for a third timer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Support for PPM internal module hack</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Confirmation before radio shutdown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flight</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RadioNotFoundDialog</name>
@@ -7113,6 +7064,20 @@ OpenTX-gruppen.</translation>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Note: if you have a Taranis that has not had the firmware upgraded to 2.0 then this version of Companion will not work.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ingen radio hittades!&lt;/p&gt;&lt;p&gt;Se till att du håller de båda nedre trimknappana mot centrum när du slår på radion.&lt;/p&gt;&lt;p&gt;Anslut sedan USB-kabeln.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;OBS: Denna version av Companion kräver att programvaran i din Taranis är av version 2.0 eller senare. Programmet fungerar INTE med Taranis-sändare med äldre programvaruversioner.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>ReleaseNotesDialog</name>
+    <message>
+        <source>Companion Release Notes</source>
+        <translation type="unfinished">Companion Release Notes</translation>
+    </message>
+</context>
+<context>
+    <name>ReleaseNotesFirmwareDialog</name>
+    <message>
+        <source>OpenTX Release Notes</source>
+        <translation type="unfinished">OpenTX Release Notes</translation>
     </message>
 </context>
 <context>
@@ -7589,6 +7554,10 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <source>Sensors</source>
         <translation>Sensorer</translation>
     </message>
+    <message>
+        <source>Center Silent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TelemetryAnalog</name>
@@ -7795,10 +7764,6 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation></translation>
     </message>
     <message>
-        <source>dTE</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Cells</source>
         <translation></translation>
     </message>
@@ -7935,7 +7900,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     </message>
     <message>
         <source>Range</source>
-        <translation>Räckvidd</translation>
+        <translation type="obsolete">Räckvidd</translation>
     </message>
     <message>
         <source>Offset</source>
@@ -8016,6 +7981,14 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <source>Filter</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ratio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Positive</source>
+        <translation type="unfinished">Positiv</translation>
     </message>
 </context>
 <context>
@@ -9119,31 +9092,31 @@ m2560 för v4.1-kort</translation>
     <name>contributorsDialog</name>
     <message>
         <source>People who have contributed to this project</source>
-        <translation>De som har bidragit till detta projekt</translation>
+        <translation type="obsolete">De som har bidragit till detta projekt</translation>
     </message>
     <message>
         <source>Coders</source>
-        <translation>Programmerare</translation>
+        <translation type="obsolete">Programmerare</translation>
     </message>
     <message>
         <source>Companion Release Notes</source>
-        <translation>Companion Release Notes</translation>
+        <translation type="obsolete">Companion Release Notes</translation>
     </message>
     <message>
         <source>Thank you all !!!</source>
-        <translation>Tack till er alla !!!</translation>
+        <translation type="obsolete">Tack till er alla !!!</translation>
     </message>
     <message>
         <source>Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)</source>
-        <translation>All ära åt Rafal Tomczak (RadioClone), Thomas Husterer (th9x) och Erez Raviv (er9x and eePe)</translation>
+        <translation type="obsolete">All ära åt Rafal Tomczak (RadioClone), Thomas Husterer (th9x) och Erez Raviv (er9x and eePe)</translation>
     </message>
     <message>
         <source>Contributors</source>
-        <translation>Bidragande</translation>
+        <translation type="obsolete">Bidragande</translation>
     </message>
     <message>
         <source>OpenTX Release Notes</source>
-        <translation>OpenTX Release Notes</translation>
+        <translation type="obsolete">OpenTX Release Notes</translation>
     </message>
 </context>
 <context>
@@ -9511,7 +9484,7 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
     </message>
     <message>
         <source>Duplicated stick assignement</source>
-        <translation>Dubblerad koppling av spak</translation>
+        <translation type="obsolete">Dubblerad koppling av spak</translation>
     </message>
     <message>
         <source>P3/LS</source>
@@ -9520,6 +9493,10 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
     <message>
         <source>RS</source>
         <translation>RS</translation>
+    </message>
+    <message>
+        <source>Duplicated stick assignment</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
