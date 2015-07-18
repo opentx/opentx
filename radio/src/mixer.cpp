@@ -482,13 +482,14 @@ void evalInputs(uint8_t mode)
         }
       }
 
-#if defined(HELI)
+#if defined(VIRTUALINPUTS)
+      calibratedStick[ch] = v;
+#else
+ #if defined(HELI)
       if (d && (ch==ELE_STICK || ch==AIL_STICK)) {
         v = (int32_t(v) * calc100toRESX(g_model.swashR.value)) / int32_t(d);
       }
-#endif
-
-#if !defined(VIRTUALINPUTS)
+ #endif
       rawAnas[ch] = v;
       anas[ch] = v; // set values for mixer
 #endif
