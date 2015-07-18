@@ -101,6 +101,7 @@ class OpenTxFirmware: public Firmware {
 
       addTTSLanguage("en");
       addTTSLanguage("cz");
+      addTTSLanguage("de");
       addTTSLanguage("es");
       addTTSLanguage("fr");
       addTTSLanguage("hu");
