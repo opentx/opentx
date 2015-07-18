@@ -95,6 +95,36 @@ void populateGvSourceCB(QComboBox *b, int value)
   b->setCurrentIndex(value);
 }
 
+void populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current)
+{
+  b->addItem("----");
+
+  bool added = false;
+  // Convert set into list and sort it alphabetically case insensitive
+  QStringList list = QStringList::fromSet(set);
+  qSort(list.begin(), list.end(), caseInsensitiveLessThan);
+  foreach (QString entry, list) {
+    b->addItem(entry);
+    if (entry == current) {
+      b->setCurrentIndex(b->count()-1);
+      added = true;
+    }
+  }
+
+  if (!added && !current.isEmpty()) {
+    b->addItem(current);
+    b->setCurrentIndex(b->count()-1);
+  }
+}
+
+void getFileComboBoxValue(QComboBox * b, char * dest, int length)
+{
+  memset(dest, 0, length+1);
+  if (b->currentText() != "----") {
+    strncpy(dest, b->currentText().toAscii(), length);
+  }
+}
+
 QString getProtocolStr(const int proto)
 {
   static const char *strings[] = { "OFF",

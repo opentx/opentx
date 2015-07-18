@@ -26,6 +26,8 @@ extern const QColor colors[C9X_MAX_CURVES];
 #define TRIM_MODE_NONE  0x1F  // 0b11111
 
 void populateGvSourceCB(QComboBox *b, int value);
+void populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current);
+void getFileComboBoxValue(QComboBox * b, char * dest, int length);
 void populateRotEncCB(QComboBox *b, int value, int renumber);
 
 QString getTheme();
