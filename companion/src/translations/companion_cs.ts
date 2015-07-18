@@ -9355,7 +9355,7 @@ Nastavení hodnoty se provádí přímo v seznamu proměnných, nebo pomocí Fun
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="893"/>
-        <source>Play Haptic</source>
+        <source>Haptic</source>
         <translation>Vibrovat</translation>
     </message>
     <message>

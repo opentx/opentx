@@ -6650,7 +6650,7 @@ This determines how mixer values are added.
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="893"/>
-        <source>Play Haptic</source>
+        <source>Haptic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

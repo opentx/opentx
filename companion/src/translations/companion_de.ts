@@ -8111,7 +8111,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="893"/>
-        <source>Play Haptic</source>
+        <source>Haptic</source>
         <translation>Play Haptik</translation>
     </message>
     <message>

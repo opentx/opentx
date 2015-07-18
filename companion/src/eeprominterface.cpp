@@ -898,7 +898,7 @@ QString CustomFunctionData::funcToString()
   else if (func == FuncPlaySound)
     return QObject::tr("Play Sound");
   else if (func == FuncPlayHaptic)
-    return QObject::tr("Play Haptic");
+    return QObject::tr("Haptic");
   else if (func == FuncReset)
     return QObject::tr("Reset");
   else if (func >= FuncSetTimer1 && func <= FuncSetTimer3)

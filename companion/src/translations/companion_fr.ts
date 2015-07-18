@@ -7770,7 +7770,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="893"/>
-        <source>Play Haptic</source>
+        <source>Haptic</source>
         <translation>Vibreur</translation>
     </message>
     <message>

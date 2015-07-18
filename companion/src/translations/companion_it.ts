@@ -6698,7 +6698,7 @@ Determina come il valore viene aggiunto alla miscelazione.
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="893"/>
-        <source>Play Haptic</source>
+        <source>Haptic</source>
         <translation>Vibrazione</translation>
     </message>
     <message>
