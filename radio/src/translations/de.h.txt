@@ -1,4 +1,4 @@
-/* German checked 05.07.2015 r085 opentx V2.099 für X9D,X9D+, X9E, Th9, 9XR, 9XR-Pro  
+/* German checked 20.07.2015 r085 opentx V2.099 für X9D,X9D+, X9E, Th9, 9XR, 9XR-Pro  
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -511,7 +511,7 @@
 #endif
 
 #if defined(HELI)
-#define TR_CYC_VSRCRAW         "ZYK1""ZYK2""ZYK3"
+#define TR_CYC_VSRCRAW         "CYC1""CYC2""CYC3"
 #else
 #define TR_CYC_VSRCRAW         "[C1]""[C2]""[C3]"
 #endif
@@ -604,7 +604,7 @@
 #define TR_ELIMITS             TR("Erw. Limit", "Erw. Wege auf 150%")
 #define TR_ETRIMS              TR("Erw. Trims", "Erw. Trim  auf 100%")
 #define TR_TRIMINC             TR("Trim Schr.", "Trimmschritte")
-#define TR_DISPLAY_TRIMS       TR("Trim anzeig", "Trimwerte anzeigen)")
+#define TR_DISPLAY_TRIMS       TR("Trim anzeig", "Trimwerte anzeigen")
 #define TR_TTRACE              TR("Gasquelle", INDENT "Gas-Timerquelle")
 #define TR_TTRIM 	       			 TR("Gastrim", INDENT "Gas-Leerlauftrim")  
 #define TR_BEEPCTR             TR("Mitt.Piep", "Mittelstell. -Pieps")
@@ -924,7 +924,7 @@
 #define TR_BYTES               "Bytes"
 #define TR_MODULE_BIND         "[Bind]"
 #define TR_MODULE_RANGE        "[Range]"
-#define TR_RESET_BTN           "[Reset]"
+#define TR_RESET_BTN           TR("[Reset]", "[Reset Trim]")
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             "----DSC Buchse PPM In/Out------" //DSC Buchse Trainer Buchse
 #define TR_ANTENNAPROBLEM      CENTER "TX-Antennenproblem!"
@@ -1083,13 +1083,13 @@
 #define TR_ONLYPOSITIVE        "Nur Positiv"
 #define TR_FILTER              "Filter aktiv"
 #define TR_TELEMETRYFULL       "Telemetriezeilen voll!"
-
+// ----------------------------- Symbole für Auswahlliste----------
 #define TR_MENU_INPUTS         "\314Inputs"
 #define TR_MENU_LUA            "\322Lua Scripte"
 #define TR_MENU_STICKS         "\307Knüppel"
 #define TR_MENU_POTS           "\310Potis"
 #define TR_MENU_MAX            "\315MAX"
-#define TR_MENU_HELI           "\316HeliCyclic"
+#define TR_MENU_HELI           "\316Heli-TS CYC1-3"
 #define TR_MENU_TRIMS          "\313Trimmung"
 #define TR_MENU_SWITCHES       "\312Schalter"
 #define TR_MENU_LOGICAL_SWITCHES "\312Log. Schalter"
@@ -1097,9 +1097,9 @@
 #define TR_MENU_CHANNELS       "\320Kanäle"
 #define TR_MENU_GVARS          "\311Glob. Vars"
 #define TR_MENU_TELEMETRY      "\321Telemetrie"
-#define TR_MENU_OTHER          "Weitere"
-#define TR_MENU_INVERT         "Invertiert"
-
+#define TR_MENU_OTHER          "  Weitere"
+#define TR_MENU_INVERT         "! Invers"
+// ----------------------------------------------------------------
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_SWR               "SWR"
 #define ZSTR_A1                "A1"
