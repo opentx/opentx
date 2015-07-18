@@ -5632,7 +5632,7 @@ p, li { white-space: pre-wrap; }
         <translation> Fördröjning (%1s)</translation>
     </message>
     <message>
-        <source>Play Haptic</source>
+        <source>Haptic</source>
         <translation>Spela Vibration</translation>
     </message>
     <message>
