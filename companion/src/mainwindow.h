@@ -156,7 +156,6 @@ class MainWindow : public QMainWindow
     void loadBackup();
     void appPrefs();
     void fwPrefs();
-    void updateSdsyncAction();
     void updateMenus();
     void createProfile();
     MdiChild *createMdiChild();

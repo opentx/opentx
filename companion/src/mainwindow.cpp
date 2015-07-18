@@ -123,7 +123,6 @@ MainWindow::MainWindow():
     }
     QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
     QTimer::singleShot(updateDelay, this, SLOT(displayWarnings()));
-    updateSdsyncAction();
 
     QStringList strl = QApplication::arguments();
     QString str;
@@ -895,12 +894,6 @@ void MainWindow::about()
     msgBox.setWindowTitle(tr("About Companion"));
     msgBox.setText(aboutStr);
     msgBox.exec();
-}
-
-void MainWindow::updateSdsyncAction()
-{
-  QTimer::singleShot(1000, this, SLOT(updateSdsyncAction()));
-  sdsyncAct->setEnabled(!findMassstoragePath("SOUNDS").isEmpty());
 }
 
 void MainWindow::updateMenus()
