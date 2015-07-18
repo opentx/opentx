@@ -309,7 +309,9 @@ bool isLogicalSwitchFunctionAvailable(int function)
 
 bool isAssignableFunctionAvailable(int function)
 {
+#if defined(OVERRIDE_CHANNEL_FUNCTION) || defined(GVARS)
   bool modelFunctions = (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions);
+#endif
 
   switch (function) {
     case FUNC_OVERRIDE_CHANNEL:
