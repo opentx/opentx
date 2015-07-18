@@ -291,7 +291,7 @@ void writeLogs()
             if (telemetryItem.gps.longitudeEW && telemetryItem.gps.latitudeNS)
               f_printf(&g_oLogFile, "%03d.%04d%c,%03d.%04d%c,", telemetryItem.gps.longitude_bp, telemetryItem.gps.longitude_ap, telemetryItem.gps.longitudeEW, telemetryItem.gps.latitude_bp, telemetryItem.gps.latitude_ap, telemetryItem.gps.latitudeNS);
             else
-              f_printf(&g_oLogFile, "-,-");
+              f_printf(&g_oLogFile, "-,-,");
           }
           else if (sensor.prec == 2) {
             div_t qr = div(telemetryItem.value, 100);
