@@ -161,6 +161,14 @@ bool RawSource::isTimeBased() const
     return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2 || index==TELEMETRY_SOURCE_TIMER3));
 }
 
+float RawSourceRange::getValue(int value)
+{
+  if (IS_ARM(GetCurrentFirmware()->getBoard()))
+    return float(value) * step;
+  else
+    return min + float(value) * step;
+}
+
 RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSettings & settings, unsigned int flags) const
 {
   RawSourceRange result;

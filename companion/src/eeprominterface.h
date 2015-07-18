@@ -292,9 +292,7 @@ class RawSourceRange
     {
     }
 
-    float getValue(int value) {
-      return min + float(value) * step;
-    }
+    float getValue(int value);
 
     int decimals;
     double min;
