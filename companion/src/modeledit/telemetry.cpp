@@ -641,6 +641,7 @@ void TelemetrySensorPanel::on_formula_currentIndexChanged(int index)
     sensor.formula = index;
     if (sensor.formula == SensorData::TELEM_FORMULA_CELL) {
       sensor.prec = 2;
+      sensor.unit = SensorData::UNIT_VOLTS;
     }
     update();
     emit modified();
