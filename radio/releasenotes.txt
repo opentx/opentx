@@ -1,3 +1,16 @@
+<h2>Version 2.1.1 / (set date)</h2>
+
+[ARM Boards]
+<ul>
+<li>Fixed broken track selection for Global Functions Play Track (<a href=https://github.com/opentx/opentx/issues/2472>#2472</a>)</li>
+<li>Added individual input/mixer line output value display</li>
+<li>Fixed SD logs fields shift when no GPS fix</li>
+<li>Telemetry Date not logged correctly(<a href=https://github.com/opentx/opentx/issues/2487>#2487</a>)</li>
+<li>Fixed unwanted interaction between Global and Special Functions play track/music (<a href=https://github.com/opentx/opentx/issues/2478>#2478</a>)</li>
+</ul>
+
+
+
 <h2>Version 2.1.0 / 2015-07-16</h2>
 
 [ARM Boards]

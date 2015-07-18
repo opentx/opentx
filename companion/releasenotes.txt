@@ -1,3 +1,15 @@
+<h2>Version 2.1.1 / (set date)</h2>
+<ul>
+<li>Vario source and center silent options were not saved(<a href=https://github.com/opentx/opentx/issues/2476>#2476</a>)</li>
+<li>DSM receiver numbers for external module were not converted from previous version EEPROM (<a href=https://github.com/opentx/opentx/issues/2474>#2474</a>)</li>
+<li>Precision incorrectly set for Calculated->Cells sensor (<a href=https://github.com/opentx/opentx/issues/2479>#2479</a>)</li>
+<li>Unit incorrectly set for Calculated->Cells sensor (<a href=https://github.com/opentx/opentx/issues/2485>#2485</a>)</li>
+<li>Fixed import/export of trim values (<a href=https://github.com/opentx/opentx/issues/2484>#2484</a>)</li>
+<li>Removed constant access to floppy disk (<a href=https://github.com/opentx/opentx/issues/2160>#2160</a>)</li>
+<li>Telemetry view script combo box list was empty (<a href=https://github.com/opentx/opentx/issues/2465>#2465</a>)</li>
+<li>Telemetry view bars ranges not transfered to radio (<a href=https://github.com/opentx/opentx/issues/2491>#2491</a>)</li>
+</ul>
+
 <h2>Version 2.1.0 / 2015-07-16</h2>
 <ul>
 <li>SD card synchronizaton tool</li>
