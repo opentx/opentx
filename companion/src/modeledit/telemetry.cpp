@@ -340,6 +340,13 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
   ui->screenType->setField(screen.type, this);
   lock = false;
 
+  if (IS_TARANIS(firmware->getBoard())) {
+    QSet<QString> scriptsSet = getFilesSet(g.profile[g.id()].sdPath() + "/SCRIPTS/TELEMETRY", QStringList() << "*.lua", 8);
+    populateFileComboBox(ui->scriptName, scriptsSet, screen.body.script.filename);
+    connect(ui->scriptName, SIGNAL(currentIndexChanged(int)), this, SLOT(scriptNameEdited()));
+    connect(ui->scriptName, SIGNAL(editTextChanged ( const QString)), this, SLOT(scriptNameEdited()));
+  }
+
   update();
 }
 
@@ -362,6 +369,7 @@ void TelemetryCustomScreen::update()
 {
   lock = true;
 
+  ui->scriptName->setVisible(screen.type == TELEMETRY_SCREEN_SCRIPT);
   ui->screenNums->setVisible(screen.type == TELEMETRY_SCREEN_NUMBERS);
   ui->screenBars->setVisible(screen.type == TELEMETRY_SCREEN_BARS);
 
@@ -421,6 +429,16 @@ void TelemetryCustomScreen::on_screenType_currentIndexChanged(int index)
     memset(&screen.body, 0, sizeof(screen.body));
     update();
     emit modified();
+  }
+}
+
+void TelemetryCustomScreen::scriptNameEdited()
+{
+  if (!lock) {
+    lock = true;
+    getFileComboBoxValue(ui->scriptName, screen.body.script.filename, 8);
+    emit modified();
+    lock = false;
   }
 }
 

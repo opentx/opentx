@@ -442,16 +442,9 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         else {
           widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
           if (modified) {
-            memset(cfn.paramarm, 0, sizeof(cfn.paramarm));
-            int vml = firmware->getCapability(VoicesMaxLength);
-            if (fswtchParamArmT[i]->currentText() != "----") {
-              widgetsMask |= CUSTOM_FUNCTION_PLAY;
-              for (int j=0; j<std::min(fswtchParamArmT[i]->currentText().length(), vml); j++) {
-                cfn.paramarm[j] = fswtchParamArmT[i]->currentText().toAscii().at(j);
-              }
-            }
+            getFileComboBoxValue(fswtchParamArmT[i], cfn.paramarm, firmware->getCapability(VoicesMaxLength));
           }
-          populateFuncParamArmTCB(fswtchParamArmT[i], cfn.paramarm, tracksSet);
+          populateFileComboBox(fswtchParamArmT[i], tracksSet, cfn.paramarm);
           if (fswtchParamArmT[i]->currentText() != "----") {
             widgetsMask |= CUSTOM_FUNCTION_PLAY;
           }
@@ -460,16 +453,12 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       else if (func==FuncBackgroundMusic) {
         widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
         if (modified) {
-          memset(cfn.paramarm, 0, sizeof(cfn.paramarm));
-          int vml=firmware->getCapability(VoicesMaxLength);
-          if (fswtchParamArmT[i]->currentText() != "----") {
-            widgetsMask |= CUSTOM_FUNCTION_PLAY;
-            for (int j=0; j<std::min(fswtchParamArmT[i]->currentText().length(),vml); j++) {
-              cfn.paramarm[j] = fswtchParamArmT[i]->currentText().toAscii().at(j);
-            }
-          }
+          getFileComboBoxValue(fswtchParamArmT[i], cfn.paramarm, firmware->getCapability(VoicesMaxLength));
         }
-        populateFuncParamArmTCB(fswtchParamArmT[i], cfn.paramarm, tracksSet);
+        populateFileComboBox(fswtchParamArmT[i], tracksSet, cfn.paramarm);
+        if (fswtchParamArmT[i]->currentText() != "----") {
+          widgetsMask |= CUSTOM_FUNCTION_PLAY;
+        }
       }
       else if (func==FuncPlaySound) {
         if (modified) cfn.param = (uint8_t)fswtchParamT[i]->currentIndex();
@@ -485,27 +474,9 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     else if (func==FuncPlayScript) {
       widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
       if (modified) {
-        memset(cfn.paramarm, 0, sizeof(cfn.paramarm));
-        int vml = 8/*TODO*/;
-        if (fswtchParamArmT[i]->currentText() != "----") {
-          for (int j=0; j<std::min(fswtchParamArmT[i]->currentText().length(), vml); j++) {
-            cfn.paramarm[j] = fswtchParamArmT[i]->currentText().toAscii().at(j);
-          }
-        }
+        getFileComboBoxValue(fswtchParamArmT[i], cfn.paramarm, 8);
       }
-      populateFuncParamArmTCB(fswtchParamArmT[i], cfn.paramarm, scriptsSet);
-    }
-    else if (func==FuncPlayScript) {
-      widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
-      if (modified) {
-        memset(cfn.paramarm, 0, sizeof(cfn.paramarm));
-        int vml = 8/*TODO*/;
-        if (fswtchParamArmT[i]->currentText() != "----") {
-          for (int j=0; j<std::min(fswtchParamArmT[i]->currentText().length(), vml); j++) {
-            cfn.paramarm[j] = fswtchParamArmT[i]->currentText().toAscii().at(j);
-          }
-        }
-      }
+      populateFileComboBox(fswtchParamArmT[i], scriptsSet, cfn.paramarm);
     }
     else if (func==FuncBacklight && IS_TARANIS_PLUS(GetEepromInterface()->getBoard())) {
       if (modified) cfn.param = (uint8_t)fswtchBLcolor[i]->value();
@@ -657,30 +628,6 @@ void CustomFunctionsPanel::populateGVmodeCB(QComboBox *b, unsigned int value)
   b->addItem(QObject::tr("GVAR"));
   b->addItem(QObject::tr("Increment"));
   b->setCurrentIndex(value);
-}
-
-void CustomFunctionsPanel::populateFuncParamArmTCB(QComboBox *b, char * value, const QSet<QString> &paramsList)
-{
-  b->clear();
-  b->addItem("----");
-
-  bool added = false;
-  QString currentvalue(value);
-  // Convert set into list and sort it alphabetically case insensitive
-  QStringList list = QStringList::fromSet(paramsList);
-  qSort(list.begin(), list.end(), caseInsensitiveLessThan);
-  foreach (QString entry, list) {
-    b->addItem(entry);
-    if (entry==currentvalue) {
-      b->setCurrentIndex(b->count()-1);
-      added = true;
-    }
-  }
-
-  if (!added && strlen(value)) {
-    b->addItem(value);
-    b->setCurrentIndex(b->count()-1);
-  }
 }
 
 void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode)

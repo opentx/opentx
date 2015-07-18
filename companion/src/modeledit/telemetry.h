@@ -60,6 +60,7 @@ class TelemetryCustomScreen: public ModelPanel
 
   private slots:
     void on_screenType_currentIndexChanged(int index);
+    void scriptNameEdited();
     void customFieldChanged(int index);
     void barSourceChanged(int index);
     void barMinChanged(double value);

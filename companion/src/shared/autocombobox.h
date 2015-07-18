@@ -3,7 +3,7 @@
 
 #include <QComboBox>
 #include "genericpanel.h"
-#include <QDebug>
+
 class AutoComboBox: public QComboBox
 {
   Q_OBJECT
