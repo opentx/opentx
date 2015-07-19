@@ -103,6 +103,10 @@ set(OPENTX_LIBRARIES
   opentx-taranisx9e${SUFFIX}-simulator
 )
 
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  INSTALL( TARGETS ${OPENTX_LIBRARIES} LIBRARY DESTINATION ${SIMULATOR_LIB_PATH} )
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
 # 9X with ATmega64
 target_include_directories(opentx-9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/stock)
 target_compile_definitions(opentx-9x${SUFFIX}-simulator PRIVATE PCBSTD PCB9X CPUM64 EEPROM_RLC ${COMMON_DEFINITIONS})
