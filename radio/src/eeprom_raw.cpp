@@ -382,7 +382,10 @@ void eeLoadModel(uint8_t id)
     LOAD_MODEL_BITMAP();
 
     SEND_FAILSAFE_1S();
+
+#if defined(SDCARD)
     PLAY_MODEL_NAME();
+#endif
   }
 }
 
