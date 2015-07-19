@@ -512,6 +512,7 @@ QString AppData::mcu()             { return _mcu;             }
 QString AppData::programmer()      { return _programmer;      }
 QString AppData::sambaLocation()   { return _sambaLocation;   }
 QString AppData::sambaPort()       { return _sambaPort;       }
+QString AppData::lastSimulator()   { return _lastSimulator;   }
 
 QString AppData::backupDir()       { return _backupDir;       }
 QString AppData::gePath()          { return _gePath;          }
@@ -560,6 +561,7 @@ void AppData::mcu             (const QString     x) { store(x, _mcu,            
 void AppData::programmer      (const QString     x) { store(x, _programmer,      "programmer"              );}
 void AppData::sambaLocation   (const QString     x) { store(x, _sambaLocation,   "samba_location"          );}
 void AppData::sambaPort       (const QString     x) { store(x, _sambaPort,       "samba_port"              );}
+void AppData::lastSimulator   (const QString     x) { store(x, _lastSimulator,   "last_simulator"          );}
 
 void AppData::backupDir       (const QString     x) { store(x, _backupDir,       "backupPath"              );}
 void AppData::gePath          (const QString     x) { store(x, _gePath,          "gePath"                  );}
@@ -716,6 +718,7 @@ AppData::AppData()
     getset( _programmer,      "programmer"              ,"usbasp" );
     getset( _sambaLocation,   "samba_location"          ,"" );
     getset( _sambaPort,       "samba_port"              ,"\\USBserial\\COM23" );
+    getset( _lastSimulator,   "last_simulator"          ,"" );
 
     getset( _backupDir,       "backupPath"              ,"" );
     getset( _gePath,          "gePath"                  ,"" );

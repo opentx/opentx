@@ -54,6 +54,7 @@
 #endif
 #include "simulatordialog.h"
 #include "eeprominterface.h"
+#include "appdata.h"
 
 #if defined WIN32 || !defined __GNUC__
 #include <windows.h>
@@ -130,15 +131,22 @@ int main(int argc, char *argv[])
   eedir.cd("OpenTX");
 
   QStringList firmwareIds;
+  int currentIdx = 0;
   foreach(SimulatorFactory *factory, registered_simulators) {
     firmwareIds << factory->name();
+    if (factory->name() == g.lastSimulator()) {
+      currentIdx = firmwareIds.size() - 1;
+    }
   }
 
   bool ok;
   QString firmwareId = QInputDialog::getItem(0, QObject::tr("Radio type"), 
                                                 QObject::tr("Which radio type do you want to simulate?"),
-                                                firmwareIds, 0, false, &ok);
+                                                firmwareIds, currentIdx, false, &ok);
   if (ok && !firmwareId.isEmpty()) {
+    if (firmwareId != g.lastSimulator()) {
+      g.lastSimulator(firmwareId);
+    }
     QString radioId;
     int pos = firmwareId.indexOf("-");
     if (pos > 0) {
