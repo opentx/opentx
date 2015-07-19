@@ -4,6 +4,7 @@
 #include <QLibrary>
 #include <QMap>
 #include <QMessageBox>
+#include "version.h"
 
 QMap<QString, SimulatorFactory *> registered_simulators;
 
@@ -29,6 +30,7 @@ void registerSimulator(const QString &filename)
 
 void registerSimulators()
 {
+  bool simulatorsFound = false;
   QDir dir(".");
   QStringList filters;
 #if (!defined __GNUC__) || (defined __CYGWIN__)
@@ -36,9 +38,21 @@ void registerSimulators()
 #else
   filters << "*-simulator.so";
 #endif
+
   foreach(QString filename, dir.entryList(filters, QDir::Files)) {
     registerSimulator(filename.prepend("./"));
+    simulatorsFound = true;
   }
+
+#if !( (!defined __GNUC__) || (defined __CYGWIN__) )
+  if (!simulatorsFound) {
+    dir = SIMULATOR_LIB_SEARCH_PATH;
+    foreach(QString filename, dir.entryList(filters, QDir::Files)) {
+      registerSimulator(filename.prepend(dir.path() + "/"));
+      simulatorsFound = true;
+    }
+  }
+#endif
 }
 
 SimulatorFactory *getSimulatorFactory(const QString &name)
