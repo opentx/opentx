@@ -1,11 +1,11 @@
 [Desktop Entry]
 Type=Application
 Encoding=UTF-8
-Name=Companion
+Name=Companion @C9X_VERSION_SHORT@
 GenericName=Transmitter Companion App
 Comment=The Ultimate Transmitter Companion
-Icon=companion
-Exec='companion'
+Icon=@COMPANION_NAME@
+Exec='@COMPANION_NAME@'
 Terminal=false
 StartupNotify=false
 Categories=Application
