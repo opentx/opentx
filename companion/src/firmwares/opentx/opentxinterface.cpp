@@ -1102,7 +1102,7 @@ void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
   firmware->addOption("lua", QObject::tr("Support for Lua model scripts"));
   firmware->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
   firmware->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
-  firmware->addOption("eu", QObject::tr("Removes D8 and LR12 FrSky protocols that are not legal for use anymore on radios sold after Jan 1st, 2015"));
+  firmware->addOption("eu", QObject::tr("Removes D8 and LR12 FrSky protocols that are not legal for use in the EU on radios sold after Jan 1st, 2015"));
   firmware->addOption("internalppm", QObject::tr("Support for PPM internal module hack"));
 }
 
