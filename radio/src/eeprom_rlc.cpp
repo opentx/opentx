@@ -1014,6 +1014,7 @@ void eeLoadModel(uint8_t id)
     LOAD_MODEL_BITMAP();
     LUA_LOAD_MODEL_SCRIPTS();
     SEND_FAILSAFE_1S();
+    PLAY_MODEL_NAME();
   }
 }
 
