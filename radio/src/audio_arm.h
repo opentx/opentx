@@ -373,6 +373,7 @@ void pushPrompt(uint16_t prompt, uint8_t id=0);
   #define PLAY_SWITCH_MOVED(sw)         playModelEvent(SWITCH_AUDIO_CATEGORY, sw)
   #define PLAY_LOGICAL_SWITCH_OFF(sw)   playModelEvent(LOGICAL_SWITCH_AUDIO_CATEGORY, sw, AUDIO_EVENT_OFF)
   #define PLAY_LOGICAL_SWITCH_ON(sw)    playModelEvent(LOGICAL_SWITCH_AUDIO_CATEGORY, sw, AUDIO_EVENT_ON)
+  #define PLAY_MODEL_NAME()             playModelName()
   #define START_SILENCE_PERIOD()        timeAutomaticPromptsSilence = get_tmr10ms()
   #define IS_SILENCE_PERIOD_ELAPSED()   (get_tmr10ms()-timeAutomaticPromptsSilence > 50)
 #else
@@ -381,6 +382,7 @@ void pushPrompt(uint16_t prompt, uint8_t id=0);
   #define PLAY_SWITCH_MOVED(sw)
   #define PLAY_LOGICAL_SWITCH_OFF(sw)
   #define PLAY_LOGICAL_SWITCH_ON(sw)
+  #define PLAY_MODEL_NAME()
   #define START_SILENCE_PERIOD()
 #endif
 
