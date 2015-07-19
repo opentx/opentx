@@ -8,6 +8,7 @@
 <li>Removed constant access to floppy disk (<a href=https://github.com/opentx/opentx/issues/2160>#2160</a>)</li>
 <li>Telemetry view script combo box list was empty (<a href=https://github.com/opentx/opentx/issues/2465>#2465</a>)</li>
 <li>Telemetry view bars ranges not transfered to radio (<a href=https://github.com/opentx/opentx/issues/2491>#2491</a>)</li>
+<li>Fixed Standalone simulator radio selection display problem (<a href=https://github.com/opentx/opentx/issues/2503>#2503</a>)</li>
 </ul>
 
 <h2>Version 2.1.0 / 2015-07-16</h2>

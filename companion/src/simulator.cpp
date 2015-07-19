@@ -123,34 +123,22 @@ int main(int argc, char *argv[])
   registerSimulators();
   registerOpenTxFirmwares();
 
-  QMessageBox msgBox;
-  msgBox.setWindowTitle("Radio type");
-  msgBox.setText("Which radio type do you want to simulate?");
-  msgBox.setIcon(QMessageBox::Question);
-
-  foreach(SimulatorFactory *factory, registered_simulators) {
-    QPushButton *button = msgBox.addButton(factory->name(), QMessageBox::ActionRole);
-    button->adjustSize();
-    button->setProperty("name", factory->name());
-  }
-  msgBox.adjustSize();
-
-  QPushButton *exitButton = msgBox.addButton(QMessageBox::Close);
-
   eedir = QDir(QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation));
   if (!eedir.exists("OpenTX")) {
     eedir.mkdir("OpenTX");
   }
   eedir.cd("OpenTX");
 
-  msgBox.exec();
-  
-  QAbstractButton *button = msgBox.clickedButton();
-  if (button == exitButton) {
-    return 0;
+  QStringList firmwareIds;
+  foreach(SimulatorFactory *factory, registered_simulators) {
+    firmwareIds << factory->name();
   }
-  else {
-    QString firmwareId = button->property("name").toString();
+
+  bool ok;
+  QString firmwareId = QInputDialog::getItem(0, QObject::tr("Radio type"), 
+                                                QObject::tr("Which radio type do you want to simulate?"),
+                                                firmwareIds, 0, false, &ok);
+  if (ok && !firmwareId.isEmpty()) {
     QString radioId;
     int pos = firmwareId.indexOf("-");
     if (pos > 0) {
@@ -168,6 +156,9 @@ int main(int argc, char *argv[])
       dialog = new SimulatorDialogTaranis(NULL, factory->create(), SIMULATOR_FLAGS_S1|SIMULATOR_FLAGS_S2);
     else
       dialog = new SimulatorDialog9X(NULL, factory->create());
+  }
+  else {
+    return 0;
   }
 
   dialog->show();
