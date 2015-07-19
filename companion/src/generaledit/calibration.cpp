@@ -170,6 +170,8 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
   }
 
   disableMouseScrolling();
+
+  setValues();
 }
 
 CalibrationPanel::~CalibrationPanel()
