@@ -192,7 +192,7 @@ int getSwitchWarningsCount()
 #elif defined(MODULE_D16_EU_ONLY_SUPPORT)
   #define INTERNAL_MODULE_MODE_ROWS       0 // Module Type only
 #else
-  #define INTERNAL_MODULE_MODE_ROWS       (IS_MODULE_XJT(INTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0) // Module type + RF protocols
+  #define INTERNAL_MODULE_MODE_ROWS       (IS_MODULE_XJT(INTERNAL_MODULE) ? (uint8_t)1 : (uint8_t)0) // Module type + RF protocols
 #endif
 #if defined(TARANIS_INTERNAL_PPM)
   #define IF_INTERNAL_MODULE_ON(x)        (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
