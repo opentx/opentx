@@ -1014,10 +1014,7 @@ void eeLoadModel(uint8_t id)
     LOAD_MODEL_BITMAP();
     LUA_LOAD_MODEL_SCRIPTS();
     SEND_FAILSAFE_1S();
-
-#if defined(CPUARM) && defined(SDCARD)
     PLAY_MODEL_NAME();
-#endif
   }
 }
 
