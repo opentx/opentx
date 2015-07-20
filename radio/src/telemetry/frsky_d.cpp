@@ -598,6 +598,16 @@ void processHubPacket(uint8_t id, int16_t value)
       return;
     }
   }
+  else if (id == VOLTS_AP_ID) {
+    if (lastId == VOLTS_BP_ID) {
+      data += lastValue * 100;
+      unit = UNIT_VOLTS;
+      precision = 2;
+    }
+    else {
+      return;
+    }
+  }
   else if (id == VOLTS_ID) {
     unit = UNIT_CELLS;
     uint32_t cellData = (uint32_t)data;
