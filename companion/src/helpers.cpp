@@ -669,7 +669,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
         if (item == source) b->setCurrentIndex(b->count()-1);
       }
       for (int i=0; i<C9X_MAX_SENSORS; ++i) {
-        if (model->sensorData[i].isAvailable()) {
+        if (model && model->sensorData[i].isAvailable()) {    //this conditon must be false if we populate Global Functions where model = 0
           for (int j=0; j<3; ++j) {
             item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i+j);
             b->addItem(item.toString(model), item.toValue());
@@ -681,7 +681,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
     }
     else {
       for (int i=0; i<(flags & POPULATE_TELEMETRYEXT ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_COUNT); i++) {
-        if (i==TELEMETRY_SOURCE_RSSI_TX && IS_TARANIS(board))
+        if (i==TELEMETRY_SOURCE_RSSI_TX && IS_TARANIS(board))  // TODO this condition is never true since else clause is never taken for ARM boards!!!
           continue;
         if (i==TELEMETRY_SOURCE_TX_TIME && !GetCurrentFirmware()->getCapability(RtcTime))
           continue;
