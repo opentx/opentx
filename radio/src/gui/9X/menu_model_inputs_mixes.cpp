@@ -814,6 +814,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         if (READ_ONLY()) {
           if (!s_currCh) {
             pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
+            return;
           }
         }
         else {
@@ -824,6 +825,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             insertExpoMix(expo, s_currIdx);
             pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
             s_copyMode = 0;
+            return;
           }
           else {
             event = 0;
@@ -843,6 +845,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
           }
           pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
           s_copyMode = 0;
+          return;
 #endif
         }
       }
@@ -857,6 +860,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
         s_copyMode = 0;
         killEvents(event);
+        return;
       }
       break;
 #if defined(ROTARY_ENCODER_NAVIGATION)
