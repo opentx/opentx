@@ -131,6 +131,14 @@ bool isSourceAvailable(int source)
   return true;
 }
 
+bool isSourceAvailableInGlobalFunctions(int source)
+{
+  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
+    return false;
+  }
+  return isSourceAvailable(source);
+}
+
 bool isSourceAvailableInCustomSwitches(int source)
 {
   bool result = isSourceAvailable(source);

@@ -74,7 +74,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
 }
 #endif
 
-void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext)
+void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
 {
   int8_t  sub = m_posVert - 1;
 
@@ -95,7 +95,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
-          putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext.activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
+          putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext->activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
           break;
 
@@ -278,7 +278,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           else if (func == FUNC_PLAY_VALUE) {
             val_max = MIXSRC_FIRST_TELEM + TELEM_DISPLAY_MAX - 1;
             putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
-            INCDEC_ENABLE_CHECK(isSourceAvailable);
+            INCDEC_ENABLE_CHECK(functionsContext == &globalFunctionsContext ? isSourceAvailableInGlobalFunctions : isSourceAvailable);
           }
 #endif
 #if defined(SDCARD)
@@ -377,5 +377,5 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 void menuModelCustomFunctions(uint8_t event)
 {
   MENU(STR_MENUCUSTOMFUNC, menuTabModel, e_CustomFunctions, NUM_CFN+1, {0, NAVIGATION_LINE_BY_LINE|4/*repeated*/});
-  return menuCustomFunctions(event, g_model.customFn, modelFunctionsContext);
+  return menuCustomFunctions(event, g_model.customFn, &modelFunctionsContext);
 }
