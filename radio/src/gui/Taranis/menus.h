@@ -104,7 +104,7 @@ void menuGeneralSetup(uint8_t event);
 void menuGeneralSdManager(uint8_t event);
 void menuGeneralCalib(uint8_t event);
 void menuGeneralVersion(uint8_t event);
-void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext);
+void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext);
 
 void menuModelSelect(uint8_t event);
 void menuModelCustomFunctions(uint8_t event);
@@ -212,6 +212,7 @@ int getFirstAvailable(int min, int max, bool (*func)(int));
 
 bool isInputAvailable(int input);
 bool isSourceAvailable(int source);
+bool isSourceAvailableInGlobalFunctions(int source);
 bool isSourceAvailableInCustomSwitches(int source);
 bool isInputSourceAvailable(int source);
 #define CHECK_INCDEC_MODELSOURCE(event, var, min, max) \

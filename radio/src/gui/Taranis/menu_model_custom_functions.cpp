@@ -121,7 +121,7 @@ void onCustomFunctionsMenu(const char *result)
   }
 }
 
-void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext)
+void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
 {
   int sub = m_posVert;
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
@@ -158,7 +158,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
       uint8_t active = (attr && s_editMode>0);
       switch (j) {
         case 0:
-          putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext.activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
+          putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext->activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
           if (func == FUNC_OVERRIDE_CHANNEL && functions != g_model.customFn) {
             func = CFN_FUNC(cfn) = func+1;
@@ -288,7 +288,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
             val_max = MIXSRC_LAST_TELEM;
             putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
             INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
-            INCDEC_ENABLE_CHECK(isSourceAvailable);
+            INCDEC_ENABLE_CHECK(functionsContext == &globalFunctionsContext ? isSourceAvailableInGlobalFunctions : isSourceAvailable);
           }
 #endif
           else if (func == FUNC_VOLUME) {
@@ -390,5 +390,5 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 void menuModelCustomFunctions(uint8_t event)
 {
   MENU(STR_MENUCUSTOMFUNC, menuTabModel, e_CustomFunctions, NUM_CFN, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
-  return menuCustomFunctions(event, g_model.customFn, modelFunctionsContext);
+  return menuCustomFunctions(event, g_model.customFn, &modelFunctionsContext);
 }

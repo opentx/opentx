@@ -104,6 +104,6 @@ const MenuFuncP_PROGMEM menuTabGeneral[] PROGMEM = {
 void menuGeneralCustomFunctions(uint8_t event)
 {
   MENU(STR_MENUGLOBALFUNCS, menuTabGeneral, e_GeneralCustomFunctions, NUM_CFN+1, {0, NAVIGATION_LINE_BY_LINE|4/*repeated*/});
-  return menuCustomFunctions(event, g_eeGeneral.customFn, globalFunctionsContext);
+  return menuCustomFunctions(event, g_eeGeneral.customFn, &globalFunctionsContext);
 }
 #endif
