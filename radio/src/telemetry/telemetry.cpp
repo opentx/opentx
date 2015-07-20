@@ -482,12 +482,19 @@ int lastUsedTelemetryIndex()
 
 void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
 {
+  bool available = false;
+
   for (int index=0; index<MAX_SENSORS; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
     if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && telemetrySensor.instance == instance) {
-     telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
-     return;
+      telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
+      available = true;
+      // we continue search here, because more than one sensor can have the same id and instance
     }
+  }
+
+  if (available) {
+    return;
   }
   
   int index = availableTelemetryIndex();
