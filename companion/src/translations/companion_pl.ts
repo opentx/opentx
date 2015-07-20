@@ -1927,132 +1927,218 @@ Moze być różny od języka firmware</translation>
 <context>
     <name>Er9x::Templates</name>
     <message>
+        <location filename="../modeledit/templates.cpp" line="39"/>
         <source>Simple 4-CH</source>
-        <translation type="obsolete">Proste 4 kanały</translation>
+        <translation>Proste 4 kanały</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="40"/>
         <source>T-Cut</source>
-        <translation type="obsolete">Wył Gazu</translation>
+        <translation>Wył Gazu</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="41"/>
         <source>Sticky T-Cut</source>
-        <translation type="obsolete">Stały wyłącznik Gazu</translation>
+        <translation>Stały wyłącznik Gazu</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="42"/>
         <source>V-Tail</source>
-        <translation type="obsolete">Motylkowy</translation>
+        <translation>Motylkowy</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="43"/>
         <source>Elevon\Delta</source>
-        <translation type="obsolete">Elevon/Delta</translation>
+        <translation>Elevon/Delta</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="44"/>
         <source>Heli Setup</source>
-        <translation type="obsolete">Ustawienie Heli</translation>
+        <translation>Ustawienie Heli</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="45"/>
         <source>Heli Setup with gyro gain control</source>
-        <translation type="obsolete">Ustawienie heli ze stabilizają Żyro </translation>
+        <translation>Ustawienie heli ze stabilizają Żyro </translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="46"/>
         <source>Gyro gain control</source>
-        <translation type="obsolete">Stabilizaja Żyro</translation>
+        <translation>Stabilizaja Żyro</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="47"/>
         <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
-        <translation type="obsolete">Ustawienie heli (Ustawienie kanałów w stylu Futaby)</translation>
+        <translation>Ustawienie heli (Ustawienie kanałów w stylu Futaby)</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="48"/>
         <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="obsolete">Ustawienie heli ze stabilizają Żyro(Ustawienie kanałów w stylu Futaby)</translation>
+        <translation>Ustawienie heli ze stabilizają Żyro(Ustawienie kanałów w stylu Futaby)</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="49"/>
         <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="obsolete">Stabilizaja Żyro(Ustawienie kanałów w stylu Futaby)</translation>
+        <translation>Stabilizaja Żyro(Ustawienie kanałów w stylu Futaby)</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="50"/>
         <source>Servo Test</source>
-        <translation type="obsolete">Test Serwa</translation>
+        <translation>Test Serwa</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="51"/>
         <source>MultiCopter</source>
-        <translation type="obsolete">Wielowirnikowiec</translation>
+        <translation>Wielowirnikowiec</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="52"/>
         <source>Use Model Config Wizard</source>
-        <translation type="obsolete">Uzyj kofiguratora modelu</translation>
+        <translation>Uzyj kofiguratora modelu</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="81"/>
         <source>Apply Template?</source>
-        <translation type="obsolete">Dodać szablon ?</translation>
+        <translation>Dodać szablon ?</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="81"/>
         <source>Apply template &quot;%1&quot;?</source>
-        <translation type="obsolete">Dodać szablon &quot;%1&quot;?</translation>
+        <translation>Dodać szablon &quot;%1&quot;?</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="169"/>
+        <location filename="../modeledit/templates.cpp" line="176"/>
+        <location filename="../modeledit/templates.cpp" line="288"/>
+        <location filename="../modeledit/templates.cpp" line="313"/>
+        <location filename="../modeledit/templates.cpp" line="356"/>
+        <location filename="../modeledit/templates.cpp" line="358"/>
+        <location filename="../modeledit/templates.cpp" line="487"/>
         <source>RUD</source>
-        <translation type="obsolete">SK</translation>
+        <translation>SK</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="171"/>
+        <location filename="../modeledit/templates.cpp" line="178"/>
+        <location filename="../modeledit/templates.cpp" line="280"/>
+        <location filename="../modeledit/templates.cpp" line="284"/>
+        <location filename="../modeledit/templates.cpp" line="306"/>
+        <location filename="../modeledit/templates.cpp" line="310"/>
+        <location filename="../modeledit/templates.cpp" line="363"/>
+        <location filename="../modeledit/templates.cpp" line="365"/>
+        <location filename="../modeledit/templates.cpp" line="478"/>
+        <location filename="../modeledit/templates.cpp" line="479"/>
         <source>ELE</source>
-        <translation type="obsolete">SW</translation>
+        <translation>SW</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="181"/>
+        <location filename="../modeledit/templates.cpp" line="352"/>
+        <location filename="../modeledit/templates.cpp" line="474"/>
         <source>THR</source>
-        <translation type="obsolete">Gaz</translation>
+        <translation>Gaz</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="197"/>
+        <location filename="../modeledit/templates.cpp" line="281"/>
+        <location filename="../modeledit/templates.cpp" line="285"/>
+        <location filename="../modeledit/templates.cpp" line="305"/>
+        <location filename="../modeledit/templates.cpp" line="309"/>
+        <location filename="../modeledit/templates.cpp" line="388"/>
+        <location filename="../modeledit/templates.cpp" line="482"/>
+        <location filename="../modeledit/templates.cpp" line="483"/>
         <source>AIL</source>
-        <translation type="obsolete">Lotki</translation>
+        <translation>Lotki</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="204"/>
+        <location filename="../modeledit/templates.cpp" line="210"/>
+        <location filename="../modeledit/templates.cpp" line="395"/>
+        <location filename="../modeledit/templates.cpp" line="401"/>
         <source>AIL2</source>
-        <translation type="obsolete">Lotka2</translation>
+        <translation>Lotka2</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="217"/>
+        <location filename="../modeledit/templates.cpp" line="223"/>
+        <location filename="../modeledit/templates.cpp" line="408"/>
+        <location filename="../modeledit/templates.cpp" line="414"/>
         <source>ELE2</source>
-        <translation type="obsolete">SW2</translation>
+        <translation>SW2</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="227"/>
+        <location filename="../modeledit/templates.cpp" line="228"/>
+        <location filename="../modeledit/templates.cpp" line="418"/>
+        <location filename="../modeledit/templates.cpp" line="419"/>
+        <location filename="../modeledit/templates.cpp" line="513"/>
+        <location filename="../modeledit/templates.cpp" line="514"/>
         <source>FLAPS</source>
-        <translation type="obsolete">Klapy</translation>
+        <translation>Klapy</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="242"/>
+        <location filename="../modeledit/templates.cpp" line="248"/>
+        <location filename="../modeledit/templates.cpp" line="433"/>
+        <location filename="../modeledit/templates.cpp" line="439"/>
+        <location filename="../modeledit/templates.cpp" line="528"/>
+        <location filename="../modeledit/templates.cpp" line="534"/>
         <source>FLAP%1</source>
-        <translation type="obsolete">Klapy %1</translation>
+        <translation>Klapy %1</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="282"/>
+        <location filename="../modeledit/templates.cpp" line="286"/>
+        <location filename="../modeledit/templates.cpp" line="307"/>
+        <location filename="../modeledit/templates.cpp" line="311"/>
         <source>PITCH</source>
-        <translation type="obsolete">Pochylenie</translation>
+        <translation>Pochylenie</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="295"/>
+        <location filename="../modeledit/templates.cpp" line="296"/>
+        <location filename="../modeledit/templates.cpp" line="299"/>
+        <location filename="../modeledit/templates.cpp" line="300"/>
+        <location filename="../modeledit/templates.cpp" line="320"/>
+        <location filename="../modeledit/templates.cpp" line="321"/>
+        <location filename="../modeledit/templates.cpp" line="324"/>
+        <location filename="../modeledit/templates.cpp" line="325"/>
         <source>GYRO</source>
-        <translation type="obsolete">ŻYRO</translation>
+        <translation>ŻYRO</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="443"/>
+        <location filename="../modeledit/templates.cpp" line="444"/>
         <source>SPOIL</source>
-        <translation type="obsolete">Spoler</translation>
+        <translation>Spoler</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="458"/>
+        <location filename="../modeledit/templates.cpp" line="464"/>
         <source>SPOIL%1</source>
-        <translation type="obsolete">Spoiler%1</translation>
+        <translation>Spoiler%1</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="503"/>
+        <location filename="../modeledit/templates.cpp" line="509"/>
         <source>RUD2</source>
-        <translation type="obsolete">SK2</translation>
+        <translation>SK2</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="712"/>
+        <location filename="../modeledit/templates.cpp" line="824"/>
         <source>Clear Mixes?</source>
-        <translation type="obsolete">Wyczyść miksery?</translation>
+        <translation>Wyczyść miksery?</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="712"/>
         <source>Really clear existing mixes on CH6?</source>
-        <translation type="obsolete">Na pewno wyczyścić mikser na kanale 6?</translation>
+        <translation>Na pewno wyczyścić mikser na kanale 6?</translation>
     </message>
     <message>
+        <location filename="../modeledit/templates.cpp" line="824"/>
         <source>Really clear existing mixes on CH5?</source>
-        <translation type="obsolete">Na pewno wyczyścić mikser na kanale 5?</translation>
+        <translation>Na pewno wyczyścić mikser na kanale 5?</translation>
     </message>
 </context>
 <context>
@@ -8339,7 +8425,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1090"/>
         <source>Channel values displayed in us</source>
-        <translation>Wartosći kanałów wyswietlone w us</translation>
+        <translation>Wartośći kanałów wyswietlone w us</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1333"/>
@@ -8370,6 +8456,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1099"/>
         <source>Support for a third timer</source>
         <translation>Wsparcie dla 3ciego Timera</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1105"/>
+        <source>Removes D8 and LR12 FrSky protocols that are not legal for use in the EU on radios sold after Jan 1st, 2015</source>
+        <translation>Usuwa protokoły FrSky D8 i LR12,które są nielegalne na terenie UE w radiach sprzedawanych po 01-01-2015</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1106"/>
@@ -8466,9 +8557,8 @@ p, li { white-space: pre-wrap; }
         <translation>Brak emulacji joyskicka w FW (Tylko jest karta jako dysk w Bootloaderze) </translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1105"/>
         <source>Removes D8 and LR12 FrSky protocols that are not legal for use anymore on radios sold after Jan 1st, 2015</source>
-        <translation>Usuwa protokoły D8 i LR12 które nie dłużej legalne w radiach sprzedawanych po 01.01.2015</translation>
+        <translation type="obsolete">Usuwa protokoły D8 i LR12 które nie dłużej legalne w radiach sprzedawanych po 01.01.2015</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1359"/>
@@ -8786,7 +8876,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="434"/>
-        <location filename="../helpers.cpp" line="996"/>
+        <location filename="../helpers.cpp" line="994"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
@@ -8888,27 +8978,27 @@ p, li { white-space: pre-wrap; }
         <translation>Pokrętło :E</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="817"/>
+        <location filename="../helpers.cpp" line="815"/>
         <source>%1:%2</source>
         <translation>%1:%2</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="820"/>
+        <location filename="../helpers.cpp" line="818"/>
         <source>, Persistent</source>
         <translation>, Stały</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="822"/>
+        <location filename="../helpers.cpp" line="820"/>
         <source>, MinuteBeep</source>
         <translation>, Pikanie minutowe</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="824"/>
+        <location filename="../helpers.cpp" line="822"/>
         <source>, CountDown(Beeps)</source>
         <translation>, Odliczanie (Dźwieki)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="826"/>
+        <location filename="../helpers.cpp" line="824"/>
         <source>, CountDown(Voice)</source>
         <translation>, Odliczanie (Głos)</translation>
     </message>
@@ -9462,7 +9552,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="753"/>
-        <location filename="../helpers.cpp" line="811"/>
+        <location filename="../helpers.cpp" line="809"/>
         <source>Unknown</source>
         <translation>Nieznane</translation>
     </message>
@@ -9507,9 +9597,8 @@ p, li { white-space: pre-wrap; }
         <translation>Odtwórz dźwięk</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="901"/>
-        <source>Haptic</source>
-        <translation>Wibruj</translation>
+        <source>Play Haptic</source>
+        <translation type="obsolete">Wibruj</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="903"/>
@@ -9590,109 +9679,109 @@ p, li { white-space: pre-wrap; }
         <translation>Faza lotu %1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="747"/>
+        <location filename="../helpers.cpp" line="745"/>
         <source>Yellow</source>
         <translation>Żółty</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="749"/>
+        <location filename="../helpers.cpp" line="747"/>
         <source>Orange</source>
         <translation>Pomarańczowy</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="751"/>
+        <location filename="../helpers.cpp" line="749"/>
         <source>Red</source>
         <translation>Czerwony</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="772"/>
+        <location filename="../helpers.cpp" line="770"/>
         <source>Winged Shadow How High</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="774"/>
+        <location filename="../helpers.cpp" line="772"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation>Winged Shadow How High (nie obsługiwane)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="776"/>
+        <location filename="../helpers.cpp" line="774"/>
         <source>FrSky Sensor Hub</source>
         <translation>Hub sensora FrSky</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="778"/>
-        <location filename="../helpers.cpp" line="871"/>
+        <location filename="../helpers.cpp" line="776"/>
+        <location filename="../helpers.cpp" line="869"/>
         <source>None</source>
         <translation>Żaden</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="786"/>
+        <location filename="../helpers.cpp" line="784"/>
         <source>Imperial</source>
         <translation>Imperialne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="788"/>
+        <location filename="../helpers.cpp" line="786"/>
         <source>Metric</source>
         <translation>Metryczne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="803"/>
+        <location filename="../helpers.cpp" line="801"/>
         <source>Extra Fine</source>
         <translation>Bardzo dokładne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="805"/>
+        <location filename="../helpers.cpp" line="803"/>
         <source>Fine</source>
         <translation>Dokładne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="807"/>
+        <location filename="../helpers.cpp" line="805"/>
         <source>Medium</source>
         <translation>Średni</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="809"/>
+        <location filename="../helpers.cpp" line="807"/>
         <source>Coarse</source>
         <translation>Gruby</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="835"/>
-        <location filename="../helpers.cpp" line="846"/>
+        <location filename="../helpers.cpp" line="833"/>
+        <location filename="../helpers.cpp" line="844"/>
         <source>: Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4</source>
         <translation>: Start kanału: %1, %2 Kanałów, Opóznienie %3usec, Polaryzacja pulsu %4 </translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="837"/>
+        <location filename="../helpers.cpp" line="835"/>
         <source>: Channel start: %1, %2 Channels</source>
         <translation>:Kanał początkowy %1, %2 Kanałów</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="846"/>
+        <location filename="../helpers.cpp" line="844"/>
         <source>Slave/Jack</source>
         <translation>Uczeń/Jack</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="849"/>
+        <location filename="../helpers.cpp" line="847"/>
         <source>Master/SBUS Module</source>
         <translation>Trener/SBUS Moduł</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="852"/>
+        <location filename="../helpers.cpp" line="850"/>
         <source>Master/CPPM Module</source>
         <translation>Trener/CPPM Moduł</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="855"/>
+        <location filename="../helpers.cpp" line="853"/>
         <source>Master/SBUS in battery compartment</source>
         <translation>Trener/SBUS w kieszeni baterii</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="858"/>
+        <location filename="../helpers.cpp" line="856"/>
         <source>Master/Jack</source>
         <translation>Trener/Jack</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="801"/>
+        <location filename="../helpers.cpp" line="799"/>
         <source>Exponential</source>
         <translation>Eksponencjalny</translation>
     </message>
@@ -9709,32 +9798,32 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">:Kanały  %1, opóźnienie %2usX</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="882"/>
+        <location filename="../helpers.cpp" line="880"/>
         <source>Flight modes(%1)</source>
         <translation>Fazy lotu(%1)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="884"/>
+        <location filename="../helpers.cpp" line="882"/>
         <source>Flight mode(%1)</source>
         <translation>Faza lotu (%1)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="895"/>
+        <location filename="../helpers.cpp" line="893"/>
         <source>Rudder</source>
         <translation>SK</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="897"/>
+        <location filename="../helpers.cpp" line="895"/>
         <source>Elevator</source>
         <translation>SW</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="899"/>
+        <location filename="../helpers.cpp" line="897"/>
         <source>Throttle</source>
         <translation>Gaz</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="901"/>
+        <location filename="../helpers.cpp" line="899"/>
         <source>Aileron</source>
         <translation>Lotki</translation>
     </message>
@@ -9746,7 +9835,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="711"/>
         <location filename="../helpers.cpp" line="90"/>
-        <location filename="../helpers.cpp" line="761"/>
+        <location filename="../helpers.cpp" line="759"/>
         <source>---</source>
         <translation></translation>
     </message>
@@ -9787,6 +9876,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../printdialog.cpp" line="283"/>
         <source>CH%1</source>
         <translation>Kan %1</translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="901"/>
+        <source>Haptic</source>
+        <translation>Wibracje</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="925"/>
@@ -9984,7 +10078,7 @@ p, li { white-space: pre-wrap; }
         <translation>ZG%1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="997"/>
+        <location filename="../helpers.cpp" line="995"/>
         <source>Simulator for this firmware is not yet available</source>
         <translation>Nie jest dostępny symulator dla tego firmware</translation>
     </message>
@@ -10151,12 +10245,14 @@ Zespół OpenTX.</translation>
         <translation>-%1</translation>
     </message>
     <message>
+        <location filename="../eeprominterface.h" line="847"/>
         <source>Positive</source>
-        <translation type="obsolete">Dodatni</translation>
+        <translation>Dodatni</translation>
     </message>
     <message>
+        <location filename="../eeprominterface.h" line="847"/>
         <source>Negative</source>
-        <translation type="obsolete">Ujemny</translation>
+        <translation>Ujemny</translation>
     </message>
     <message>
         <location filename="../radiointerface.cpp" line="89"/>
@@ -10187,6 +10283,16 @@ Zespół OpenTX.</translation>
         <location filename="../radiointerface.cpp" line="296"/>
         <source>Could not delete temporary file: %1</source>
         <translation>Nie mogę skasować pliku tymczasowego: %1</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="143"/>
+        <source>Radio type</source>
+        <translation>Typ radia</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="144"/>
+        <source>Which radio type do you want to simulate?</source>
+        <translation>Które radio chcesz zasymulować ?</translation>
     </message>
 </context>
 <context>
@@ -11299,7 +11405,7 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="515"/>
         <source>Ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>Współczynnik</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="626"/>
