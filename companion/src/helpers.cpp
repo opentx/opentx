@@ -681,8 +681,6 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
     }
     else {
       for (int i=0; i<(flags & POPULATE_TELEMETRYEXT ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_COUNT); i++) {
-        if (i==TELEMETRY_SOURCE_RSSI_TX && IS_TARANIS(board))  // TODO this condition is never true since else clause is never taken for ARM boards!!!
-          continue;
         if (i==TELEMETRY_SOURCE_TX_TIME && !GetCurrentFirmware()->getCapability(RtcTime))
           continue;
         if (i==TELEMETRY_SOURCE_SWR && !GetCurrentFirmware()->getCapability(SportTelemetry))
