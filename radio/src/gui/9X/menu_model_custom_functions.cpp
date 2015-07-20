@@ -101,11 +101,6 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 
         case 1:
           if (CFN_SWITCH(cfn)) {
-#if defined(CPUARM)
-            if (func == FUNC_OVERRIDE_CHANNEL) {
-              func = CFN_FUNC(cfn) = checkIncDec(event, CFN_FUNC(cfn), 0, FUNC_MAX-1, eeFlags, isAssignableFunctionAvailable);
-            }
-#endif
             lcd_putsiAtt(MODEL_CUSTOM_FUNC_2ND_COLUMN, y, STR_VFSWFUNC, func, attr);
             if (active) {
 #if defined(CPUARM)
