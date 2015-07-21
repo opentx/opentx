@@ -9,7 +9,12 @@
 <li>Telemetry view script combo box list was empty (<a href=https://github.com/opentx/opentx/issues/2465>#2465</a>)</li>
 <li>Telemetry view bars ranges not transfered to radio (<a href=https://github.com/opentx/opentx/issues/2491>#2491</a>)</li>
 <li>Fixed Standalone simulator radio selection display problem (<a href=https://github.com/opentx/opentx/issues/2503>#2503</a>)</li>
+<li>Added missing simulation libraries and enabled side by side installation of Companion 2.0 and 2.1 on Linux (<a href=https://github.com/opentx/opentx/issues/2500>#2500</a>)</li>
+<li>Standalone simulator now remembers which radio was simulated in previous session (<a href=https://github.com/opentx/opentx/issues/2503>#2503</a>)</li>
+<li>Radio calibration value were not displayed (<a href=https://github.com/opentx/opentx/issues/2502>#2502</a>)</li>
+<li>Fixed Vario / Voltage / Current sources export problem</li>
 </ul>
+
 
 <h2>Version 2.1.0 / 2015-07-16</h2>
 <ul>
