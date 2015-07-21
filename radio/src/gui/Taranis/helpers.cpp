@@ -353,7 +353,15 @@ bool isAssignableFunctionAvailable(int function)
   }
 }
 
-bool isAvailableInResetSpecialFunction(int index)
+bool isSourceAvailableInGlobalResetSpecialFunction(int index)
+{
+  if (index >= FUNC_RESET_PARAM_FIRST_TELEM)
+    return false;
+  else
+    return isSourceAvailableInResetSpecialFunction(index);
+}
+
+bool isSourceAvailableInResetSpecialFunction(int index)
 {
   if (index >= FUNC_RESET_PARAM_FIRST_TELEM) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index-FUNC_RESET_PARAM_FIRST_TELEM];
