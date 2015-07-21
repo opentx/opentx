@@ -663,7 +663,7 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
     }
     if (IS_ARM(firmware->getBoard())) {
       for (int i=0; i<C9X_MAX_SENSORS; ++i) {
-        if (model->sensorData[i].isAvailable()) {
+        if (model && model->sensorData[i].isAvailable()) {
           RawSource item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i);
           qs.append(item.toString(model));
         }
