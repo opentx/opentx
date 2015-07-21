@@ -601,7 +601,7 @@ void processHubPacket(uint8_t id, int16_t value)
   }
   else if (id == VOLTS_AP_ID) {
     if (lastId == VOLTS_BP_ID) {
-      data += lastValue * 100;
+      data = ((lastValue * 100 + value * 10) * 210) / 110;
       unit = UNIT_VOLTS;
       precision = 2;
     }
@@ -638,6 +638,9 @@ void processHubPacket(uint8_t id, int16_t value)
   }
   if (id == RPM_ID) {
     data = data * 60;
+  }
+  else if (id == VFAS_ID) {
+    data *= 10;
   }
   
   setTelemetryValue(TELEM_PROTO_FRSKY_D, id, 0, data, unit, precision);
