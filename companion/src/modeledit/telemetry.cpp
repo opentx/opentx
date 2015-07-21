@@ -888,11 +888,10 @@ void TelemetryPanel::setup()
 
       ui->frskyProtoCB->setCurrentIndex(model->frsky.usrProto);
       ui->bladesCount->setValue(model->frsky.blades);
+      populateVarioSource();
+      populateVoltsSource();
+      populateCurrentSource();
     }
-
-    populateVoltsSource();
-    populateCurrentSource();
-    populateVarioSource();
 
     lock = false;
 }
