@@ -377,7 +377,7 @@ IMG2LBM = -$(PYTHON) ../util/img2lbm.py
 BIN2LBM = -$(PYTHON) ../util/bin2lbm.py
 FONT2PNG = -$(PYTHON) ../util/font2png.py
 TRANSLATE = -$(PYTHON) ../util/translate.py
-VERSION = 2.1.99
+VERSION = 2.2.0
 
 THIRDPARTY = thirdparty
 COOSDIR = $(THIRDPARTY)/CoOS
