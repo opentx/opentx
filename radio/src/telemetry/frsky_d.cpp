@@ -511,7 +511,7 @@ const FrSkyDSensor frskyDSensors[] = {
   { D_RSSI_ID, ZSTR_RSSI, UNIT_RAW, 0 },
   { D_A1_ID, ZSTR_A1, UNIT_VOLTS, 0 },
   { D_A2_ID, ZSTR_A2, UNIT_VOLTS, 0 },
-  { RPM_ID, ZSTR_RPM, UNIT_RAW, 0 },
+  { RPM_ID, ZSTR_RPM, UNIT_RPMS, 0 },
   { FUEL_ID, ZSTR_FUEL, UNIT_PERCENT, 0 },
   { TEMP1_ID, ZSTR_TEMP, UNIT_CELSIUS, 0 },
   { TEMP2_ID, ZSTR_TEMP, UNIT_CELSIUS, 0 },
@@ -636,6 +636,10 @@ void processHubPacket(uint8_t id, int16_t value)
       precision = sensor->prec;
     }
   }
+  if (id == RPM_ID) {
+    data = data * 60;
+  }
+  
   setTelemetryValue(TELEM_PROTO_FRSKY_D, id, 0, data, unit, precision);
 }
 
@@ -658,6 +662,10 @@ void frskyDSetDefault(int index, uint16_t id)
     }
     else if (id == D_RSSI_ID) {
       telemetrySensor.filter = 1;
+    }
+    else if (unit == UNIT_RPMS) {
+      telemetrySensor.custom.ratio = 1;
+      telemetrySensor.custom.offset = 1;
     }
   }
   else {
