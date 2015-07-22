@@ -179,7 +179,9 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     newVal = 0;
   }
   else if (unit == UNIT_RPMS) {
-    newVal = (newVal * sensor.custom.offset) / sensor.custom.ratio;
+    if (sensor.custom.ratio != 0) {
+      newVal = (newVal * sensor.custom.offset) / sensor.custom.ratio;
+    }
   }
   else {
     newVal = sensor.getValue(newVal, unit, prec);
@@ -486,7 +488,7 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance
 
   for (int index=0; index<MAX_SENSORS; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && telemetrySensor.instance == instance) {
+    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && (telemetrySensor.id == id || g_model.ignoreSensorIds) && telemetrySensor.instance == instance) {
       telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
       available = true;
       // we continue search here, because more than one sensor can have the same id and instance
