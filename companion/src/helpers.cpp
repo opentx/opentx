@@ -1017,27 +1017,36 @@ QPixmap makePixMap( QImage image, QString firmwareType )
   return(QPixmap::fromImage(image));
 }
 
-int version2index(QString version)
+int version2index(const QString & version)
 {
-  QStringList parts = version.split('.');
-  int result = 0;
-  if (parts.size() > 2)
-    result = parts[2].toInt();
+  int result = 999;
+  QStringList parts = version.split(":n");
   if (parts.size() > 1)
-    result += 100 * parts[1].toInt();
+    result = parts[1].toInt(); // nightly build
+  parts = parts[0].split('.');
+  if (parts.size() > 2)
+    result += 1000 * parts[2].toInt();
+  if (parts.size() > 1)
+    result += 100000 * parts[1].toInt();
   if (parts.size() > 0)
-    result += 10000 * parts[0].toInt();
+    result += 10000000 * parts[0].toInt();
   return result;
 }
 
 QString index2version(int index)
 {
-  if (index >= 19900) {
+  if (index >= 19900000) {
+    int nightly = index % 1000;
+    index /= 1000;
     int revision = index % 100;
     index /= 100;
     int minor = index % 100;
     int major = index / 100;
-    return QString("%1.%2.%3").arg(major).arg(minor).arg(revision);
+    QString result = QString("%1.%2.%3").arg(major).arg(minor).arg(revision);
+    if (nightly > 0 && nightly < 999) {
+      result += QString(":n%1").arg(nightly);
+    }
+    return result;
   }
   else {
     return QString();

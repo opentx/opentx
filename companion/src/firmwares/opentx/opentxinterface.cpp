@@ -1048,7 +1048,7 @@ bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, in
 
 QString OpenTxFirmware::getFirmwareUrl()
 {
-  QString url = OPENTX_FIRMWARE_DOWNLOADS;
+  QString url = (g.useFirmwareNightlyBuilds() ? OPENTX_NIGHT_FIRMWARE_DOWNLOADS : OPENTX_FIRMWARE_DOWNLOADS);
   switch (board) {
     case BOARD_STOCK:
     case BOARD_M128:
@@ -1072,16 +1072,16 @@ QString OpenTxFirmware::getFirmwareUrl()
 
 QString OpenTxFirmware::getReleaseNotesUrl()
 {
-  QString url = OPENTX_FIRMWARE_DOWNLOADS;
+  QString url = (g.useFirmwareNightlyBuilds() ? OPENTX_NIGHT_FIRMWARE_DOWNLOADS : OPENTX_FIRMWARE_DOWNLOADS);
   url.append("/releasenotes.txt");
   return url;
 }
 
 QString OpenTxFirmware::getStampUrl()
 {
-   QString url = OPENTX_FIRMWARE_DOWNLOADS;
-   url.append("/stamp-opentx.txt");
-   return url;
+  QString url = (g.useFirmwareNightlyBuilds() ? OPENTX_NIGHT_FIRMWARE_DOWNLOADS : OPENTX_FIRMWARE_DOWNLOADS);
+  url.append("/stamp-opentx.txt");
+  return url;
 }
 
 void addOpenTxCommonOptions(OpenTxFirmware * firmware)

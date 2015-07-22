@@ -70,15 +70,16 @@
 #include "radiointerface.h"
 #include "progressdialog.h"
 
-#define OPENTX_COMPANION_DOWNLOADS   "http://downloads-21.open-tx.org/companion"
-#define DONATE_STR      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
+#define OPENTX_COMPANION_DOWNLOADS        "http://downloads-21.open-tx.org/companion"
+#define OPENTX_NIGHT_COMPANION_DOWNLOADS  "http://downloads-21.open-tx.org/nightly/companion"
+#define DONATE_STR                        "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
 
 #ifdef __APPLE__
-  #define C9X_STAMP     OPENTX_COMPANION_DOWNLOADS "/companion-macosx.stamp"
-  #define C9X_INSTALLER "/companion-macosx-%1.dmg"
+  #define COMPANION_STAMP                 "companion-macosx.stamp"
+  #define COMPANION_INSTALLER             "companion-macosx-%1.dmg"
 #else
-  #define C9X_STAMP     OPENTX_COMPANION_DOWNLOADS "/companion-windows.stamp"
-  #define C9X_INSTALLER "/companion-windows-%1.exe"
+  #define COMPANION_STAMP                 "companion-windows.stamp"
+  #define COMPANION_INSTALLER             "companion-windows-%1.exe"
 #endif
 
 #if defined WIN32 || !defined __GNUC__
@@ -228,7 +229,7 @@ void MainWindow::checkForUpdates()
     // TODO why create each time a network manager?
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),this, SLOT(checkForCompanionUpdateFinished(QNetworkReply*)));
-    QNetworkRequest request(QUrl(C9X_STAMP));
+    QNetworkRequest request(QUrl(QString("%1/%2").arg(g.useCompanionNightlyBuilds() ? OPENTX_NIGHT_COMPANION_DOWNLOADS : OPENTX_COMPANION_DOWNLOADS).arg(COMPANION_STAMP)));
     request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
     networkManager->get(request);
   }
@@ -289,13 +290,13 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 
         if (ret == QMessageBox::Yes) {
 #if defined __APPLE__          
-          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.updatesDir() + QString(C9X_INSTALLER).arg(version));
+          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.updatesDir() + QString(COMPANION_INSTALLER).arg(version));
 #else            
-          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.updatesDir() + QString(C9X_INSTALLER).arg(version), tr("Executable (*.exe)"));
+          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.updatesDir() + QString(COMPANION_INSTALLER).arg(version), tr("Executable (*.exe)"));
 #endif
           if (!fileName.isEmpty()) {
             g.updatesDir(QFileInfo(fileName).dir().absolutePath());
-            downloadDialog * dd = new downloadDialog(this, QString(OPENTX_COMPANION_DOWNLOADS C9X_INSTALLER).arg(version), fileName);
+            downloadDialog * dd = new downloadDialog(this, QString("%1/%2").arg(g.useCompanionNightlyBuilds() ? OPENTX_NIGHT_COMPANION_DOWNLOADS : OPENTX_COMPANION_DOWNLOADS).arg(QString(COMPANION_INSTALLER).arg(version)), fileName);
             installer_fileName = fileName;
             connect(dd, SIGNAL(accepted()), this, SLOT(updateDownloaded()));
             dd->exec();

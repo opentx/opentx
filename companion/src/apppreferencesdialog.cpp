@@ -41,8 +41,10 @@ AppPreferencesDialog::~AppPreferencesDialog()
 
 void AppPreferencesDialog::writeValues()
 {
-  g.autoCheckApp(ui->startupCheck_companion9x->isChecked());
-  g.autoCheckFw(ui->startupCheck_fw->isChecked());
+  g.useCompanionNightlyBuilds(ui->useCompanionNightlyBuilds->isChecked());
+  g.autoCheckApp(ui->autoCheckCompanion->isChecked());
+  g.useFirmwareNightlyBuilds(ui->useFirmwareNightlyBuilds->isChecked());
+  g.autoCheckFw(ui->autoCheckFirmware->isChecked());
   g.showSplash(ui->showSplash->isChecked());
   g.simuSW(ui->simuSW->isChecked());
   g.useWizard(ui->modelWizard_CB->isChecked());
@@ -107,8 +109,10 @@ void AppPreferencesDialog::initSettings()
     ui->snapshotPath->setDisabled(true);
     ui->snapshotPathButton->setDisabled(true);
   }
-  ui->startupCheck_companion9x->setChecked(g.autoCheckApp());
-  ui->startupCheck_fw->setChecked(g.autoCheckFw());
+  ui->useCompanionNightlyBuilds->setChecked(g.useCompanionNightlyBuilds());
+  ui->autoCheckCompanion->setChecked(g.autoCheckApp());
+  ui->useFirmwareNightlyBuilds->setChecked(g.useFirmwareNightlyBuilds());
+  ui->autoCheckFirmware->setChecked(g.autoCheckFw());
   ui->showSplash->setChecked(g.showSplash());
   ui->historySize->setValue(g.historySize());
   ui->backLightColor->setCurrentIndex(g.backLight());

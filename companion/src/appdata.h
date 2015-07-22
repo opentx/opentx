@@ -216,6 +216,8 @@ class AppData: protected CompStoreObj
   BOOL_PROPERTY(outputDisplayDetails, false)
   BOOL_PROPERTY(backupOnFlash, true)
   BOOL_PROPERTY(checkHardwareCompatibility, true)
+  BOOL_PROPERTY(useCompanionNightlyBuilds, false)
+  BOOL_PROPERTY(useFirmwareNightlyBuilds, false)
 
   // All the global variables
   public:

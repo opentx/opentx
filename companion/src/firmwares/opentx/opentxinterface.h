@@ -19,7 +19,8 @@
 
 #include "eeprominterface.h"
 
-#define OPENTX_FIRMWARE_DOWNLOADS    "http://downloads-21.open-tx.org/firmware"
+#define OPENTX_FIRMWARE_DOWNLOADS        "http://downloads-21.open-tx.org/firmware"
+#define OPENTX_NIGHT_FIRMWARE_DOWNLOADS  "http://downloads-21.open-tx.org/nightly/firmware"
 
 class RleFile;
 

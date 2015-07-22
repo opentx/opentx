@@ -39,7 +39,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="profileTab">
       <attribute name="title">
@@ -645,8 +645,8 @@ Mode 4:
        <string>Application Settings</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="7" column="1" colspan="3">
-        <widget class="QCheckBox" name="startupCheck_companion9x">
+       <item row="10" column="1" colspan="3">
+        <widget class="QCheckBox" name="autoCheckCompanion">
          <property name="text">
           <string>Automatic check for Companion updates</string>
          </property>
@@ -665,7 +665,7 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="10" column="1" colspan="3">
+       <item row="13" column="1" colspan="3">
         <widget class="QCheckBox" name="backupEnable">
          <property name="text">
           <string>Enable automatic backup before writing firmware</string>
@@ -679,24 +679,7 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="8" column="1" colspan="3">
-        <widget class="Line" name="line_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1" colspan="3">
-        <widget class="QCheckBox" name="startupCheck_fw">
-         <property name="text">
-          <string>Automatic check for OpenTX firmware updates</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="15" column="1">
+       <item row="18" column="1">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -709,7 +692,24 @@ Mode 4:
          </property>
         </spacer>
        </item>
-       <item row="12" column="0">
+       <item row="11" column="1" colspan="3">
+        <widget class="Line" name="line_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1" colspan="3">
+        <widget class="QCheckBox" name="autoCheckFirmware">
+         <property name="text">
+          <string>Automatic check for OpenTX firmware updates</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="0">
         <widget class="QLabel" name="label_10">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -749,7 +749,7 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="13" column="0">
+       <item row="16" column="0">
         <widget class="QLabel" name="label_9">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -784,14 +784,14 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="9" column="0">
+       <item row="12" column="0">
         <widget class="QLabel" name="label_17">
          <property name="text">
           <string>Automatic Backup Folder</string>
          </property>
         </widget>
        </item>
-       <item row="11" column="1" colspan="3">
+       <item row="14" column="1" colspan="3">
         <widget class="Line" name="line_5">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -805,7 +805,7 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="13" column="1">
+       <item row="16" column="1">
         <widget class="QLineEdit" name="libraryPath">
          <property name="enabled">
           <bool>true</bool>
@@ -815,7 +815,7 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="12" column="1">
+       <item row="15" column="1">
         <widget class="QComboBox" name="splashincludeCB">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -835,7 +835,7 @@ Mode 4:
          </item>
         </widget>
        </item>
-       <item row="9" column="1">
+       <item row="12" column="1">
         <widget class="QLineEdit" name="backupPath">
          <property name="minimumSize">
           <size>
@@ -848,7 +848,7 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="9" column="2" colspan="2">
+       <item row="12" column="2" colspan="2">
         <widget class="QPushButton" name="backupPathButton">
          <property name="text">
           <string>Open Folder</string>
@@ -875,10 +875,30 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="13" column="2" colspan="2">
+       <item row="16" column="2" colspan="2">
         <widget class="QPushButton" name="libraryPathButton">
          <property name="text">
           <string>Open Folder</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QCheckBox" name="useFirmwareNightlyBuilds">
+         <property name="text">
+          <string>Use OpenTX firmware nightly builds</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QCheckBox" name="useCompanionNightlyBuilds">
+         <property name="text">
+          <string>Use Companion nightly builds</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -1112,8 +1132,8 @@ Mode 4:
   <tabstop>historySize</tabstop>
   <tabstop>showSplash</tabstop>
   <tabstop>modelWizard_CB</tabstop>
-  <tabstop>startupCheck_fw</tabstop>
-  <tabstop>startupCheck_companion9x</tabstop>
+  <tabstop>autoCheckFirmware</tabstop>
+  <tabstop>autoCheckCompanion</tabstop>
   <tabstop>backupPath</tabstop>
   <tabstop>backupPathButton</tabstop>
   <tabstop>backupEnable</tabstop>
