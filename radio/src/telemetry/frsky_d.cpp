@@ -556,7 +556,7 @@ void processHubPacket(uint8_t id, int16_t value)
     return;
   }
 
-  if (id == GPS_LAT_BP_ID || id == GPS_LONG_BP_ID || id == GPS_ALT_BP_ID || id == BARO_ALT_BP_ID || id == VOLTS_BP_ID) {
+  if (id == GPS_LAT_BP_ID || id == GPS_LONG_BP_ID || id == BARO_ALT_BP_ID || id == VOLTS_BP_ID) {
     lastId = id;
     lastValue = value;
     return;
