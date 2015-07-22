@@ -26,13 +26,13 @@
 #include "constants.h"
 #include "simulatorinterface.h"
 
-#define EESIZE_STOCK          2048
-#define EESIZE_M128           4096
-#define EESIZE_GRUVIN9X       4096
-#define EESIZE_TARANIS        (32*1024)
-#define EESIZE_SKY9X          (128*4096)
-#define EESIZE_9XRPRO         (128*4096)
-#define EESIZE_RLC_MAX        EESIZE_TARANIS
+#define EESIZE_STOCK           2048
+#define EESIZE_M128            4096
+#define EESIZE_GRUVIN9X        4096
+#define EESIZE_TARANIS         (32*1024)
+#define EESIZE_SKY9X           (128*4096)
+#define EESIZE_9XRPRO          (128*4096)
+#define EESIZE_MAX             EESIZE_9XRPRO
 
 QString getBoardName(BoardEnum board);
 

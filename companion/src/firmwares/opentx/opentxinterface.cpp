@@ -446,9 +446,8 @@ int OpenTxEepromInterface::getSize(ModelData &model)
   if (model.isempty())
     return 0;
 
-  // TODO something better...
-  uint8_t tmp[EESIZE_RLC_MAX];
-  efile->EeFsCreate(tmp, EESIZE_RLC_MAX, board, 255/*version max*/);
+  QByteArray tmp(EESIZE_MAX, 0);
+  efile->EeFsCreate((uint8_t *)tmp.data(), EESIZE_MAX, board, 255/*version max*/);
 
   OpenTxModelData open9xModel(model, board, 255/*version max*/, GetCurrentFirmware()->getVariantNumber());
 
@@ -466,8 +465,8 @@ int OpenTxEepromInterface::getSize(GeneralSettings &settings)
   if (IS_SKY9X(board))
     return 0;
 
-  uint8_t tmp[EESIZE_RLC_MAX];
-  efile->EeFsCreate(tmp, EESIZE_RLC_MAX, board, 255);
+  QByteArray tmp(EESIZE_MAX, 0);
+  efile->EeFsCreate((uint8_t *)tmp.data(), EESIZE_MAX, board, 255);
 
   OpenTxGeneralData open9xGeneral(settings, board, 255, GetCurrentFirmware()->getVariantNumber());
   // open9xGeneral.Dump();

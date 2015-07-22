@@ -102,7 +102,7 @@ int FlashEEpromDialog::getEEpromVersion(const QString &filename)
     return -1;
   }
 
-  QByteArray eeprom(EESIZE_RLC_MAX, 0);
+  QByteArray eeprom(EESIZE_MAX, 0);
   int fileType = getFileType(filename);
   
 #if 0
@@ -144,7 +144,7 @@ int FlashEEpromDialog::getEEpromVersion(const QString &filename)
         return -1;
       }
     }
-    eeprom_size = HexInterface(inputStream).load((uint8_t *)eeprom.data(), EESIZE_RLC_MAX);
+    eeprom_size = HexInterface(inputStream).load((uint8_t *)eeprom.data(), EESIZE_MAX);
   }
   else if (fileType==FILE_TYPE_BIN) { //read binary
     eeprom_size = file.size();
