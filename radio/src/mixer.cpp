@@ -371,16 +371,10 @@ void evalInputs(uint8_t mode)
 {
   BeepANACenter anaCenter = 0;
 
-#if defined(HELI)
+#if defined(HELI) && !defined(VIRTUALINPUTS)
   uint16_t d = 0;
   if (g_model.swashR.value) {
-#if defined(VIRTUALINPUTS)
-    int ele = (int16_t)anaIn(ELE_STICK);
-    int ail = (int16_t)anaIn(AIL_STICK);
-    uint32_t v = (ele*ele) + (ail*ail);
-#else
     uint32_t v = (int32_t(calibratedStick[ELE_STICK])*calibratedStick[ELE_STICK] + int32_t(calibratedStick[AIL_STICK])*calibratedStick[AIL_STICK]);
-#endif
     uint32_t q = calc100toRESX(g_model.swashR.value);
     q *= q;
     if (v > q) {
