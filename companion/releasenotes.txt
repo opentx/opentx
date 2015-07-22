@@ -13,6 +13,7 @@
 <li>Standalone simulator now remembers which radio was simulated in previous session (<a href=https://github.com/opentx/opentx/issues/2503>#2503</a>)</li>
 <li>Radio calibration value were not displayed (<a href=https://github.com/opentx/opentx/issues/2502>#2502</a>)</li>
 <li>Fixed Vario / Voltage / Current sources export problem</li>
+<li>Writing model settings to 9XR-PRO did not work (<a href=https://github.com/opentx/opentx/issues/2402>#2402</a>, <a href=https://github.com/opentx/opentx/issues/2517>#2517</a>)</li>
 </ul>
 
 
