@@ -379,7 +379,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       }
     }
     else if (func==FuncReset) {
-      if (modified) cfn.param = (uint8_t)fswtchParamT[i]->currentIndex();
+      if (modified) cfn.param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
       populateFuncParamCB(fswtchParamT[i], func, cfn.param);
       widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM | CUSTOM_FUNCTION_ENABLE;
     }
@@ -646,31 +646,36 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
     b->setCurrentIndex(value);
   }
   else if (function==FuncReset) {
-    qs.append( QObject::tr("Timer1"));
-    qs.append( QObject::tr("Timer2"));
+    int val = 0;
+    b->addItem(tr("Timer1"), val++);
+    b->addItem(tr("Timer2"), val++);
     if (IS_ARM(firmware->getBoard())) {
-      qs.append( QObject::tr("Timer3"));
+      b->addItem( QObject::tr("Timer3"), val++);
     }
-    qs.append( QObject::tr("Flight"));
-    qs.append( QObject::tr("Telemetry"));
+    b->addItem(tr("Flight"), val++);
+    b->addItem(tr("Telemetry"), val++);
     int reCount = firmware->getCapability(RotaryEncoders);
     if (reCount == 1) {
-      qs.append( QObject::tr("Rotary Encoder"));
+      b->addItem(tr("Rotary Encoder"), val++);
     }
     else if (reCount == 2) {
-      qs.append( QObject::tr("REa"));
-      qs.append( QObject::tr("REb"));
+      b->addItem(tr("REa"), val++);
+      b->addItem(tr("REb"), val++);
     }
-    if (IS_ARM(firmware->getBoard())) {
+    if ((int)value < b->count()) {
+      b->setCurrentIndex(value);
+    }
+    if (model && IS_ARM(firmware->getBoard())) {
       for (int i=0; i<C9X_MAX_SENSORS; ++i) {
-        if (model && model->sensorData[i].isAvailable()) {
+        if (model->sensorData[i].isAvailable()) {
           RawSource item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i);
-          qs.append(item.toString(model));
+          b->addItem(item.toString(model), val+i);
+          if ((int)value == val+i) {
+            b->setCurrentIndex(b->count()-1);
+          }
         }
       }
     }
-    b->addItems(qs);
-    b->setCurrentIndex(value);
   }
   else if (function==FuncVolume) {
     populateSourceCB(b, RawSource(value), generalSettings, model, POPULATE_NONE|POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_TRIMS|POPULATE_SWITCHES);
