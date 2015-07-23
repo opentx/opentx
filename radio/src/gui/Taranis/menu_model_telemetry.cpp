@@ -440,6 +440,9 @@ void menuModelSensor(uint8_t event)
 
       case SENSOR_FIELD_LOGS:
         ON_OFF_MENU_ITEM(sensor->logs, SENSOR_2ND_COLUMN, y, STR_LOGS, attr, event);
+        if (attr && checkIncDec_Ret) {
+          closeLogs();
+        }
         break;
 
     }

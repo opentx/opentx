@@ -520,13 +520,12 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance
   }
 }
 
-void TelemetrySensor::init(const char *label, uint8_t unit, uint8_t prec)
+void TelemetrySensor::init(const char * label, uint8_t unit, uint8_t prec)
 {
   memclear(this->label, TELEM_LABEL_LEN);
   strncpy(this->label, label, TELEM_LABEL_LEN);
   this->unit = unit;
   this->prec = prec;
-  // this->inputFlags = inputFlags;
 }
 
 void TelemetrySensor::init(uint16_t id)
