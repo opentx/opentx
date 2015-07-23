@@ -39,7 +39,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="profileTab">
       <attribute name="title">
@@ -289,6 +289,9 @@ May be different from firmware language</string>
         <widget class="QLineEdit" name="sdPath">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string/>
          </property>
          <property name="readOnly">
           <bool>false</bool>
