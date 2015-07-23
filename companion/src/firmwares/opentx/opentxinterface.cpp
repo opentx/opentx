@@ -1127,7 +1127,7 @@ void registerOpenTxFirmwares()
   Option dsm2_options[] = { { "DSM2", QObject::tr("Support for DSM2 modules"), 0 }, { "DSM2PPM", QObject::tr("Support for DSM2 modules using ppm instead of true serial"), 0 }, { NULL } };
 
   /* 9x board */
-  firmware = new OpenTxFirmware("opentx-9x", QObject::tr("OpenTX for 9X board"), BOARD_STOCK);
+  firmware = new OpenTxFirmware("opentx-9x", QObject::tr("9X board"), BOARD_STOCK);
   firmware->addOptions(ext_options);
   firmware->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1163,7 +1163,7 @@ void registerOpenTxFirmwares()
   firmwares.push_back(firmware);
 
   /* 9x board with M128 chip */
-  firmware = new OpenTxFirmware("opentx-9x128", QObject::tr("OpenTX for M128 / 9X board"), BOARD_M128);
+  firmware = new OpenTxFirmware("opentx-9x128", QObject::tr("M128 / 9X board"), BOARD_M128);
   firmware->addOptions(ext_options);
   firmware->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1193,7 +1193,7 @@ void registerOpenTxFirmwares()
   firmwares.push_back(firmware);
 
   /* 9XR board */
-  firmware = new OpenTxFirmware("opentx-9xr", QObject::tr("OpenTX for 9XR"), BOARD_STOCK);
+  firmware = new OpenTxFirmware("opentx-9xr", QObject::tr("9XR"), BOARD_STOCK);
   firmware->addOptions(extr_options);
   firmware->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1226,7 +1226,7 @@ void registerOpenTxFirmwares()
   firmwares.push_back(firmware);
 
   /* 9XR board with M128 chip */
-  firmware = new OpenTxFirmware("opentx-9xr128", QObject::tr("OpenTX for 9XR with M128 chip"), BOARD_M128);
+  firmware = new OpenTxFirmware("opentx-9xr128", QObject::tr("9XR with M128 chip"), BOARD_M128);
   firmware->addOptions(extr_options);
   firmware->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1254,7 +1254,7 @@ void registerOpenTxFirmwares()
   firmwares.push_back(firmware);
 
   /* Gruvin9x board */
-  firmware = new OpenTxFirmware("opentx-gruvin9x", QObject::tr("OpenTX for Gruvin9x board / 9X"), BOARD_GRUVIN9X);
+  firmware = new OpenTxFirmware("opentx-gruvin9x", QObject::tr("Gruvin9x board / 9X"), BOARD_GRUVIN9X);
   firmware->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   firmware->addOption("nofp", QObject::tr("No flight modes"));
@@ -1279,7 +1279,7 @@ void registerOpenTxFirmwares()
   firmwares.push_back(firmware);
 
   /* MEGA2560 board */
-  firmware = new OpenTxFirmware("opentx-mega2560", QObject::tr("OpenTX for MEGA2560 board"), BOARD_MEGA2560);
+  firmware = new OpenTxFirmware("opentx-mega2560", QObject::tr("MEGA2560 board"), BOARD_MEGA2560);
   addOpenTxLcdOptions(firmware);
   firmware->addOption("PWR", QObject::tr("Power management by soft-off circuitry"));
   firmware->addOptions(ext_options);
@@ -1309,7 +1309,7 @@ void registerOpenTxFirmwares()
   firmwares.push_back(firmware);
 
   /* Sky9x board */
-  firmware = new OpenTxFirmware("opentx-sky9x", QObject::tr("OpenTX for Sky9x board / 9X"), BOARD_SKY9X);
+  firmware = new OpenTxFirmware("opentx-sky9x", QObject::tr("Sky9x board / 9X"), BOARD_SKY9X);
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
   firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   firmware->addOption("nofp", QObject::tr("No flight modes"));
@@ -1329,7 +1329,7 @@ void registerOpenTxFirmwares()
   firmwares.push_back(firmware);
 
   /* 9XR-Pro */
-  firmware = new OpenTxFirmware("opentx-9xrpro", QObject::tr("OpenTX for 9XR-PRO"), BOARD_9XRPRO);
+  firmware = new OpenTxFirmware("opentx-9xrpro", QObject::tr("9XR-PRO"), BOARD_9XRPRO);
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
   firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   firmware->addOption("nofp", QObject::tr("No flight modes"));
@@ -1348,20 +1348,20 @@ void registerOpenTxFirmwares()
   firmwares.push_back(firmware);
 
   /* Taranis board */
-  firmware = new OpenTxFirmware("opentx-taranis", QObject::tr("OpenTX for FrSky Taranis"), BOARD_TARANIS);
+  firmware = new OpenTxFirmware("opentx-taranis", QObject::tr("FrSky Taranis"), BOARD_TARANIS);
   firmware->addOption("haptic", QObject::tr("Haptic module installed"));
   addOpenTxTaranisOptions(firmware);
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
   /* Taranis Plus board */
-  firmware = new OpenTxFirmware("opentx-taranisplus", QObject::tr("OpenTX for FrSky Taranis Plus"), BOARD_TARANIS_PLUS);
+  firmware = new OpenTxFirmware("opentx-taranisplus", QObject::tr("FrSky Taranis Plus"), BOARD_TARANIS_PLUS);
   addOpenTxTaranisOptions(firmware);
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
   /* Taranis X9E board */
-  firmware = new OpenTxFirmware("opentx-taranisx9e", QObject::tr("OpenTX for FrSky Taranis X9E"), BOARD_TARANIS_X9E);
+  firmware = new OpenTxFirmware("opentx-taranisx9e", QObject::tr("FrSky Taranis X9E"), BOARD_TARANIS_X9E);
   firmware->addOption("shutdownconfirm", QObject::tr("Confirmation before radio shutdown"));
   addOpenTxTaranisOptions(firmware);
   addOpenTxCommonOptions(firmware);
