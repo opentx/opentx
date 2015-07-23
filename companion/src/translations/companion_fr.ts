@@ -389,12 +389,12 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../apppreferencesdialog.ui" line="661"/>
         <source>Show splash screen when Companion starts</source>
-        <translation>Afficher l&apos;écran d&apos;accueil au lancement de companion</translation>
+        <translation>Afficher l&apos;écran d&apos;accueil au lancement de Companion</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="651"/>
         <source>Automatic check for Companion updates</source>
-        <translation>Vérifier la présence de mises à jour de companion automatiquement</translation>
+        <translation>Vérifier la présence de mises à jour de Companion automatiquement</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="324"/>
@@ -435,7 +435,7 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../apppreferencesdialog.ui" line="833"/>
         <source>Show user and companion splash images</source>
-        <translation>Montrer les images de companion et de l&apos;utilisateur</translation>
+        <translation>Montrer les images de Companion et de l&apos;utilisateur</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="761"/>
@@ -2287,7 +2287,7 @@ Peut être différente de la langue du firmware</translation>
         <location filename="../flasheepromdialog.ui" line="97"/>
         <location filename="../flasheepromdialog.ui" line="113"/>
         <source>Allows Companion to write to older version of the firmware</source>
-        <translation>Permet à companion de transférer des réglages à une ancienne version de firmware</translation>
+        <translation>Permet à Companion de transférer des réglages à une ancienne version de firmware</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="100"/>
@@ -2485,7 +2485,7 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="228"/>
         <source>Allows Companion to write to older version of the firmware</source>
-        <translation>Permet à companion de transférer des réglages à une ancienne version de firmware</translation>
+        <translation>Permet à Companion de transférer des réglages à une ancienne version de firmware</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="231"/>
@@ -2655,17 +2655,17 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../process_flash.cpp" line="234"/>
         <source>ie: OpenTX for 9X board or OpenTX for 9XR board</source>
-        <translation>p.ex. openTx pour carte d&apos;origine 9x ou openTx pour 9XR</translation>
+        <translation>p.ex. OpenTX pour carte d&apos;origine 9x ou OpenTX pour 9XR</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="239"/>
         <source>ie: OpenTX for M128 / 9X board or OpenTX for 9XR board with M128 chip</source>
-        <translation>p.ex. openTx pour carte d&apos;origine 9x avec m128 ou openTx pour 9XR avec m128</translation>
+        <translation>p.ex. OpenTX pour carte d&apos;origine 9x avec m128 ou OpenTX pour 9XR avec m128</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="250"/>
         <source>ie: OpenTX for Gruvin9X  board</source>
-        <translation>p.ex. openTx pour carte gruvin9x</translation>
+        <translation>p.ex. OpenTX pour carte gruvin9x</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="258"/>
@@ -5427,7 +5427,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="305"/>
         <source>A new release of Companion is available, please check the OpenTX website!</source>
-        <translation>Une nouvelle version de companion est disponible, veuillez vous référer au site web d&apos;OpenTX!</translation>
+        <translation>Une nouvelle version de Companion est disponible, veuillez vous référer au site web d&apos;OpenTX!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="349"/>
@@ -5616,7 +5616,7 @@ Voulez vous la télécharger maintenant ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1006"/>
         <source>The classic companion9x icon theme</source>
-        <translation>Thème d&apos;icônes classique de companion</translation>
+        <translation>Thème d&apos;icônes classique de Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1007"/>
@@ -5746,17 +5746,17 @@ Voulez vous la télécharger maintenant ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1041"/>
         <source>Check OpenTX and Companion updates</source>
-        <translation>Vérifier les mises à jour d&apos;OpenTX et companion</translation>
+        <translation>Vérifier les mises à jour d&apos;OpenTX et Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1042"/>
         <source>Companion Changes...</source>
-        <translation>Changements de companion...</translation>
+        <translation>Changements de Companion...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1042"/>
         <source>Show Companion change log</source>
-        <translation>Voir l&apos;historique des changements de companion</translation>
+        <translation>Voir l&apos;historique des changements de Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1043"/>
@@ -5848,7 +5848,7 @@ Voulez-vous la télécharger maintenant ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="537"/>
         <source>The selected language will be used the next time you start Companion.</source>
-        <translation>La langue sélectionnée sera utilisée lors du prochain lancement de companion.</translation>
+        <translation>La langue sélectionnée sera utilisée lors du prochain lancement de Companion.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="539"/>
@@ -5860,12 +5860,12 @@ Voulez-vous la télécharger maintenant ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="548"/>
         <source>The new theme will be loaded the next time you start Companion.</source>
-        <translation>Le nouveau thème sera utilisé lors du prochain lancement de companion.</translation>
+        <translation>Le nouveau thème sera utilisé lors du prochain lancement de Companion.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="559"/>
         <source>The icon size will be used the next time you start Companion.</source>
-        <translation>La nouvelle taille d&apos;icônes sera utilisée lors du prochain lancement de companion.</translation>
+        <translation>La nouvelle taille d&apos;icônes sera utilisée lors du prochain lancement de Companion.</translation>
     </message>
     <message>
         <source>The file %1
@@ -5890,7 +5890,7 @@ Ecrire quand même?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="894"/>
         <source>About Companion</source>
-        <translation>A propos de companion</translation>
+        <translation>A propos de Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1068"/>
@@ -10085,7 +10085,7 @@ L&apos;équipe OpenTX.</translation>
     <message>
         <location filename="../releasenotesdialog.cpp" line="10"/>
         <source>Companion Release Notes</source>
-        <translation type="unfinished">Notes de version de companion</translation>
+        <translation type="unfinished">Notes de version de Companion</translation>
     </message>
 </context>
 <context>
@@ -10093,7 +10093,7 @@ L&apos;équipe OpenTX.</translation>
     <message>
         <location filename="../releasenotesfirmwaredialog.cpp" line="11"/>
         <source>OpenTX Release Notes</source>
-        <translation type="unfinished">Notes de version d&apos;openTx</translation>
+        <translation type="unfinished">Notes de version d&apos;OpenTX</translation>
     </message>
 </context>
 <context>
@@ -10325,7 +10325,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="26"/>
         <source>Companion Simulator</source>
-        <translation>Simulateur companion</translation>
+        <translation>Simulateur Companion</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="404"/>
@@ -10390,7 +10390,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="26"/>
         <source>Companion Simulator</source>
-        <translation>Simulateur companion</translation>
+        <translation>Simulateur Companion</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="245"/>
@@ -12135,15 +12135,15 @@ Extra long : bips extra longs.</translation>
     </message>
     <message>
         <source>ie: OpenTX for 9X board or OpenTX for 9XR board</source>
-        <translation type="obsolete">p.ex. openTx pour carte d&apos;origine 9x ou openTx pour 9XR</translation>
+        <translation type="obsolete">p.ex. OpenTX pour carte d&apos;origine 9x ou OpenTX pour 9XR</translation>
     </message>
     <message>
         <source>ie: OpenTX for M128 / 9X board or OpenTX for 9XR board with M128 chip</source>
-        <translation type="obsolete">p.ex. openTx pour carte d&apos;origine 9x avec m128 ou openTx pour 9XR avec m128</translation>
+        <translation type="obsolete">p.ex. OpenTX pour carte d&apos;origine 9x avec m128 ou OpenTX pour 9XR avec m128</translation>
     </message>
     <message>
         <source>ie: OpenTX for Gruvin9X  board</source>
-        <translation type="obsolete">p.ex. openTx pour carte gruvin9x</translation>
+        <translation type="obsolete">p.ex. OpenTX pour carte gruvin9x</translation>
     </message>
     <message>
         <source>Your radio uses a %1 CPU!!!
@@ -12495,7 +12495,7 @@ m2560 for v4.1 boards</source>
     </message>
     <message>
         <source>Allows Companion to write to older version of the firmware</source>
-        <translation type="obsolete">Permet à companion de transférer des réglages à une ancienne version de firmware</translation>
+        <translation type="obsolete">Permet à Companion de transférer des réglages à une ancienne version de firmware</translation>
     </message>
     <message>
         <source>Backup and restore Models and Settings</source>
@@ -12654,7 +12654,7 @@ m2560 for v4.1 boards</source>
     </message>
     <message>
         <source>Companion Release Notes</source>
-        <translation type="obsolete">Notes de version de companion</translation>
+        <translation type="obsolete">Notes de version de Companion</translation>
     </message>
     <message>
         <source>Thank you all !!!</source>
@@ -12666,7 +12666,7 @@ m2560 for v4.1 boards</source>
     </message>
     <message>
         <source>OpenTX Release Notes</source>
-        <translation type="obsolete">Notes de version d&apos;openTx</translation>
+        <translation type="obsolete">Notes de version d&apos;OpenTX</translation>
     </message>
 </context>
 <context>
@@ -13185,7 +13185,7 @@ Press cancel to abort joystick calibration</source>
     <message>
         <location filename="../logsdialog.ui" line="14"/>
         <source>Companion Log Viewer</source>
-        <translation>Visualiseur de logs de companion</translation>
+        <translation>Visualiseur de logs de Companion</translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="25"/>
@@ -13657,7 +13657,7 @@ Indique l&apos;affectation voie / numéro de voie par défaut utilisée lors de 
     <message>
         <location filename="../imgpreferences.ui" line="253"/>
         <source>Include companion splashes</source>
-        <translation>Inclure les écrans d&apos;accueil de companion9x</translation>
+        <translation>Inclure les écrans d&apos;accueil de Companion</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="258"/>
