@@ -1060,13 +1060,13 @@ bool GeneralSettings::switchSourceAllowedTaranis(int index) const
 
 bool GeneralSettings::isPotAvailable(int index) const
 {
-  if (index<0 || index>4) return false;
+  if (index<0 || index>GetCurrentFirmware()->getCapability(Pots)) return false;
   return potConfig[index] != POT_NONE;
 }
 
 bool GeneralSettings::isSliderAvailable(int index) const
 {
-  if (index<0 || index>4) return false;
+  if (index<0 || index>GetCurrentFirmware()->getCapability(Sliders)) return false;
   return sliderConfig[index] != SLIDER_NONE;
 }
 
@@ -1097,6 +1097,11 @@ GeneralSettings::GeneralSettings()
     switchConfig[5] = SWITCH_2POS;
     switchConfig[6] = SWITCH_3POS;
     switchConfig[7] = SWITCH_TOGGLE;
+  }
+  else {
+    for (int i=0; i<3; i++) {
+      potConfig[i] = POT_WITHOUT_DETENT;
+    }
   }
 
   if (IS_ARM(board)) {
