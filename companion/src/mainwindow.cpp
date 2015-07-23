@@ -530,37 +530,22 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-void MainWindow::setLanguage(QString langString)
+void MainWindow::setLanguage(const QString & langString)
 {    
-    g.locale( langString );
-    
-    QMessageBox msgBox;
-    msgBox.setText(tr("The selected language will be used the next time you start Companion."));
-    msgBox.setIcon(QMessageBox::Information);
-    msgBox.addButton(tr("OK"), QMessageBox::AcceptRole);
-    msgBox.exec();
+  g.locale(langString);
+  QMessageBox::information(this, tr("Companion"), tr("The selected language will be used the next time you start Companion."));
 }
 
 void  MainWindow::setTheme(int index)
 {    
-    g.theme( index );
-    
-    QMessageBox msgBox;
-    msgBox.setText(tr("The new theme will be loaded the next time you start Companion."));
-    msgBox.setIcon(QMessageBox::Information);
-    msgBox.addButton(tr("OK"), QMessageBox::AcceptRole);
-    msgBox.exec();
+  g.theme(index);
+  QMessageBox::information(this, tr("Companion"), tr("The new theme will be loaded the next time you start Companion."));
 }
 
 void  MainWindow::setIconThemeSize(int index)
 {    
-    g.iconSize( index );
-
-    QMessageBox msgBox;
-    msgBox.setText(tr("The icon size will be used the next time you start Companion."));
-    msgBox.setIcon(QMessageBox::Information);
-    msgBox.addButton(tr("OK"), QMessageBox::AcceptRole);
-    msgBox.exec();
+  g.iconSize(index);
+  QMessageBox::information(this, tr("Companion"), tr("The icon size will be used the next time you start Companion."));
 }
 
 void MainWindow::newFile()
@@ -934,7 +919,7 @@ void MainWindow::updateMenus()
     updateLanguageActions();
     updateIconSizeActions();
     updateIconThemeActions();
-    setWindowTitle(tr("OpenTX Companion 2.1 - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->getName()).arg( g.profile[g.id()].name() ));
+    setWindowTitle(tr("OpenTX Companion %1 - Radio: %2 - Profile: %3").arg(C9X_VERSION).arg(GetCurrentFirmware()->getName()).arg(g.profile[g.id()].name()));
 }
 
 MdiChild *MainWindow::createMdiChild()
