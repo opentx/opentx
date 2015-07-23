@@ -13,10 +13,12 @@ add_custom_target(about_lbm_taranis
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
-add_custom_target(trans
-  make tra
+add_custom_target(commondeps
+  OPENTX_VERSION_SUFFIX=${C9X_VERSION_SUFFIX} && make stamp_header tra
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
+
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${RADIO_SRC_DIRECTORY}/stamp-opentx.h)
 
 add_custom_target(lua_exports 
   make PCB=TARANIS lua_exports.inc
@@ -77,17 +79,17 @@ add_library(opentx-taranis${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranisplus${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranisx9e${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 
-add_dependencies(opentx-9x${SUFFIX}-simulator about_lbm_9x trans)
-add_dependencies(opentx-9xr${SUFFIX}-simulator about_lbm_9x trans)
-add_dependencies(opentx-9x128${SUFFIX}-simulator about_lbm_9x trans)
-add_dependencies(opentx-9xr128${SUFFIX}-simulator about_lbm_9x trans)
-add_dependencies(opentx-gruvin9x${SUFFIX}-simulator about_lbm_9x trans)
-add_dependencies(opentx-mega2560${SUFFIX}-simulator about_lbm_9x trans)
-add_dependencies(opentx-sky9x${SUFFIX}-simulator about_lbm_9x trans)
-add_dependencies(opentx-9xrpro${SUFFIX}-simulator about_lbm_9x trans)
-add_dependencies(opentx-taranis${SUFFIX}-simulator about_lbm_taranis trans lua_exports)
-add_dependencies(opentx-taranisplus${SUFFIX}-simulator about_lbm_taranis trans lua_exports)
-add_dependencies(opentx-taranisx9e${SUFFIX}-simulator about_lbm_taranis trans lua_exports)
+add_dependencies(opentx-9x${SUFFIX}-simulator about_lbm_9x commondeps)
+add_dependencies(opentx-9xr${SUFFIX}-simulator about_lbm_9x commondeps)
+add_dependencies(opentx-9x128${SUFFIX}-simulator about_lbm_9x commondeps)
+add_dependencies(opentx-9xr128${SUFFIX}-simulator about_lbm_9x commondeps)
+add_dependencies(opentx-gruvin9x${SUFFIX}-simulator about_lbm_9x commondeps)
+add_dependencies(opentx-mega2560${SUFFIX}-simulator about_lbm_9x commondeps)
+add_dependencies(opentx-sky9x${SUFFIX}-simulator about_lbm_9x commondeps)
+add_dependencies(opentx-9xrpro${SUFFIX}-simulator about_lbm_9x commondeps)
+add_dependencies(opentx-taranis${SUFFIX}-simulator about_lbm_taranis commondeps lua_exports)
+add_dependencies(opentx-taranisplus${SUFFIX}-simulator about_lbm_taranis commondeps lua_exports)
+add_dependencies(opentx-taranisx9e${SUFFIX}-simulator about_lbm_taranis commondeps lua_exports)
 
 set(OPENTX_LIBRARIES
   opentx-9x${SUFFIX}-simulator
@@ -103,9 +105,9 @@ set(OPENTX_LIBRARIES
   opentx-taranisx9e${SUFFIX}-simulator
 )
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  INSTALL( TARGETS ${OPENTX_LIBRARIES} LIBRARY DESTINATION ${SIMULATOR_LIB_PATH} )
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  install(TARGETS ${OPENTX_LIBRARIES} LIBRARY DESTINATION ${SIMULATOR_LIB_PATH})
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 # 9X with ATmega64
 target_include_directories(opentx-9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/stock)
@@ -162,6 +164,6 @@ target_include_directories(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${RADIO_
 target_compile_definitions(opentx-taranisx9e${SUFFIX}-simulator PRIVATE PCBTARANIS REVPLUS REV9E CPUARM CPUSTM32 STM32F40_41xxx EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
-ADD_CUSTOM_TARGET(opentx-simulators
+add_custom_target(opentx-simulators
   DEPENDS ${OPENTX_LIBRARIES}
 )
