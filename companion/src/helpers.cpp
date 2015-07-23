@@ -1020,7 +1020,7 @@ QPixmap makePixMap( QImage image, QString firmwareType )
 int version2index(const QString & version)
 {
   int result = 999;
-  QStringList parts = version.split(":n");
+  QStringList parts = version.split("N");
   if (parts.size() > 1)
     result = parts[1].toInt(); // nightly build
   parts = parts[0].split('.');
@@ -1044,7 +1044,7 @@ QString index2version(int index)
     int major = index / 100;
     QString result = QString("%1.%2.%3").arg(major).arg(minor).arg(revision);
     if (nightly > 0 && nightly < 999) {
-      result += QString(":n%1").arg(nightly);
+      result += QString("N%1").arg(nightly);
     }
     return result;
   }

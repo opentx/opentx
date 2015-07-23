@@ -14,7 +14,7 @@ add_custom_target(about_lbm_taranis
 )
 
 add_custom_target(commondeps
-  OPENTX_VERSION_SUFFIX=${C9X_VERSION_SUFFIX} && make stamp_header tra
+  make stamp_header tra
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
