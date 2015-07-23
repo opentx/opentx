@@ -20,6 +20,7 @@
 #include "firmwareinterface.h"
 #include "helpers.h"
 
+#define FW_MARK     "FW"
 #define VERS_MARK   "VERS"
 #define DATE_MARK   "DATE"
 #define TIME_MARK   "TIME"
@@ -66,8 +67,10 @@ FirmwareInterface::FirmwareInterface(const QString &filename):
   }
 
   if (flash_size > 0) {
+    flavour = seekLabel(FW_MARK);
     version = seekLabel(VERS_MARK);
     if (version.startsWith("opentx-")) {
+      // old version format
       int index = version.lastIndexOf('-');
       flavour = version.mid(0, index);
       version = version.mid(index+1);
