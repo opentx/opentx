@@ -783,25 +783,41 @@ void MainWindow::readEeprom()
 bool MainWindow::readFirmwareFromRadio(const QString &filename)
 {
   ProgressDialog progressDialog(this, tr("Read Firmware from Radio"), CompanionIcon("read_flash.png"));
-  return readFirmware(filename, progressDialog.progress());
+  bool result = readFirmware(filename, progressDialog.progress());
+  if (!result) {
+    progressDialog.exec();
+  }
+  return result;
 }
 
 bool MainWindow::writeFirmwareToRadio(const QString &filename)
 {
   ProgressDialog progressDialog(this, tr("Write Firmware to Radio"), CompanionIcon("write_flash.png"));
-  return writeFirmware(filename, progressDialog.progress());
+  bool result = writeFirmware(filename, progressDialog.progress());
+  if (!result) {
+    progressDialog.exec();
+  }
+  return result;
 }
 
 bool MainWindow::readEepromFromRadio(const QString &filename)
 {
   ProgressDialog progressDialog(this, tr("Read Models and Settings from Radio"), CompanionIcon("read_eeprom.png"));
-  return ::readEeprom(filename, progressDialog.progress());
+  bool result = ::readEeprom(filename, progressDialog.progress());
+  if (!result) {
+    progressDialog.exec();
+  }
+  return result;
 }
 
 bool MainWindow::writeEepromToRadio(const QString &filename)
 {
   ProgressDialog progressDialog(this, tr("Write Models and Settings to Radio"), CompanionIcon("write_eeprom.png"));
-  return ::writeEeprom(filename, progressDialog.progress());
+  bool result = ::writeEeprom(filename, progressDialog.progress());
+  if (!result) {
+    progressDialog.exec();
+  }
+  return result;
 }
 
 void MainWindow::writeBackup()
