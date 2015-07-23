@@ -45,7 +45,7 @@ class FirmwareInterface
     FirmwareInterface(const QString &filename);
     inline QString getDate() { return date; }
     inline QString getTime() { return time; }
-    int getSize() { return flash_size; }
+    int getSize() { return flashSize; }
     QString getFlavour() const;
     bool isHardwareCompatible(const FirmwareInterface &previousFirmware) const;
     inline QString getVersion() { return version; }
@@ -64,7 +64,7 @@ class FirmwareInterface
 
   private:
     QByteArray flash;
-    uint flash_size;
+    uint flashSize;
     QString seekString(const QString & string);
     QString seekLabel(const QString & label);
     void SeekSplash();
@@ -80,10 +80,10 @@ class FirmwareInterface
     int eepromVersion;
     int eepromVariant;
     QByteArray splash;
-    uint splash_offset;
-    uint splash_size;
-    uint splash_width;
-    uint splash_height;
+    uint splashOffset;
+    uint splashSize;
+    uint splashWidth;
+    uint splashHeight;
     QImage::Format splash_format;
     bool isValidFlag;
 };
