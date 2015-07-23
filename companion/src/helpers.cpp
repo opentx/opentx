@@ -1048,6 +1048,13 @@ QString index2version(int index)
     }
     return result;
   }
+  else if (index >= 19900) {
+    int revision = index % 100;
+    index /= 100;
+    int minor = index % 100;
+    int major = index / 100;
+    return QString("%1.%2.%3").arg(major).arg(minor).arg(revision);
+  }
   else {
     return QString();
   }
