@@ -509,8 +509,8 @@ struct FrSkyDSensor {
 
 const FrSkyDSensor frskyDSensors[] = {
   { D_RSSI_ID, ZSTR_RSSI, UNIT_RAW, 0 },
-  { D_A1_ID, ZSTR_A1, UNIT_VOLTS, 0 },
-  { D_A2_ID, ZSTR_A2, UNIT_VOLTS, 0 },
+  { D_A1_ID, ZSTR_A1, UNIT_VOLTS, 1 },
+  { D_A2_ID, ZSTR_A2, UNIT_VOLTS, 1 },
   { RPM_ID, ZSTR_RPM, UNIT_RPMS, 0 },
   { FUEL_ID, ZSTR_FUEL, UNIT_PERCENT, 0 },
   { TEMP1_ID, ZSTR_TEMP, UNIT_CELSIUS, 0 },
@@ -659,7 +659,6 @@ void frskyDSetDefault(int index, uint16_t id)
     uint8_t prec = min<uint8_t>(2, sensor->prec);
     telemetrySensor.init(sensor->name, unit, prec);
     if (id >= D_A1_ID && id <= D_A2_ID) {
-      telemetrySensor.prec = 1;
       telemetrySensor.custom.ratio = 132;
       telemetrySensor.filter = 1;
     }
