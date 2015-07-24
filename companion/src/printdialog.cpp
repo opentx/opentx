@@ -83,8 +83,10 @@ void PrintDialog::printSetup()
     str.append("<tr><td>");
     str.append(fv(tr("Name"), g_model->name));
     str.append(fv(tr("EEprom Size"), QString("%1").arg(firmware->getEepromInterface()->getSize(*g_model))));
-    str.append(fv(tr("Timer1"), getTimerStr(g_model->timers[0])));  //value, mode, count up/down
-    str.append(fv(tr("Timer2"), getTimerStr(g_model->timers[1])));  //value, mode, count up/down
+
+    for (int i=0; i<firmware->getCapability(Timers); i++) {
+      str.append(fv(tr("Timer%1").arg(i+1), getTimerStr(g_model->timers[i])));  // value, mode, count up/down
+    }
 
     if (firmware->getCapability(NumModules)>1) {
       str.append("<b>"+(IS_TARANIS(firmware->getBoard()) ? tr("Internal Radio System") : tr("Radio System") )+"</b><br>&nbsp;&nbsp;"); //proto, numch, delay,
