@@ -604,10 +604,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
       else
         return 9;
     case CustomFunctions:
-      if (IS_TARANIS(board))
+      if (IS_ARM(board))
         return 64;
-      else if (IS_ARM(board))
-        return 60;
       else if (IS_2560(board) || board==BOARD_M128)
         return 24;
       else
