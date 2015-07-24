@@ -787,11 +787,15 @@ QString LogicalSwitchData::toString(const ModelData & model, const GeneralSettin
         res = "|" + res + "|";
       else if (func == LS_FN_DAPOS)
         res = "|d(" + res + ")|";
-      else if (func == LS_FN_DPOS) result = "d(" + res + ")";
+      else if (func == LS_FN_DPOS)
+        res = "d(" + res + ")";
       result += res;
-
       if (func == LS_FN_APOS || func == LS_FN_VPOS || func == LS_FN_DPOS || func == LS_FN_DAPOS)
         result += " &gt; ";
+      else if (func == LS_FN_EQUAL || func == LS_FN_VEQUAL)
+        result += " = ";
+      else if (func == LS_FN_NEQUAL)
+        result += " != ";
       else if (func == LS_FN_ANEG || func == LS_FN_VNEG)
         result += " &lt; ";
       else if (func == LS_FN_VALMOSTEQUAL)
