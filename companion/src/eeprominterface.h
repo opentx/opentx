@@ -1312,6 +1312,7 @@ enum Capability {
   LCDWidth,
   GetThrSwitch,
   HasDisplayText,
+  GlobalFunctions,
   VirtualInputs,
   TrainerInputs,
   RtcTime,

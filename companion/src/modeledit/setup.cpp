@@ -517,6 +517,10 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   if (!firmware->getCapability(HasDisplayText)) {
     ui->displayText->hide();
   }
+  
+  if (!firmware->getCapability(GlobalFunctions)) {
+    ui->gfEnabled->hide();
+  }
 
   // Beep Center checkboxes
   prevFocus = ui->trimsDisplay;
@@ -774,6 +778,7 @@ void SetupPanel::update()
   ui->extendedLimits->setChecked(model->extendedLimits);
   ui->extendedTrims->setChecked(model->extendedTrims);
   ui->displayText->setChecked(model->displayChecklist);
+  ui->gfEnabled->setChecked(!model->noGlobalFunctions);
 
   updateBeepCenter();
   updateStartupSwitches();
@@ -912,6 +917,12 @@ void SetupPanel::on_potWarningMode_currentIndexChanged(int index)
 void SetupPanel::on_displayText_toggled(bool checked)
 {
   model->displayChecklist = checked;
+  emit modified();
+}
+
+void SetupPanel::on_gfEnabled_toggled(bool checked)
+{
+  model->noGlobalFunctions = !checked;
   emit modified();
 }
 

@@ -61,7 +61,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   addEmptyLabel(gridLayout, 5 );
 
   lock = true;
-  int num_fsw = firmware->getCapability(CustomFunctions);
+  int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
 
   if (!firmware->getCapability(VoicesAsNumbers)) {
     tracksSet = getFilesSet(getSoundsPath(generalSettings), QStringList() << "*.wav" << "*.WAV", firmware->getCapability(VoicesMaxLength));
@@ -514,7 +514,8 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 void CustomFunctionsPanel::update()
 {
   lock = true;
-  for (int i=0; i<firmware->getCapability(CustomFunctions); i++) {
+  int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
+  for (int i=0; i<num_fsw; i++) {
     if (!initialized) {
       populateSwitchCB(fswtchSwtch[i], functions[i].swtch, generalSettings, model ? SpecialFunctionsContext : GlobalFunctionsContext);
       populateFuncCB(fswtchFunc[i], functions[i].func);
