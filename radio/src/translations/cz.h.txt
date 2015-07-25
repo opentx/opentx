@@ -424,11 +424,11 @@
 #endif
 
 #if defined(CPUARM)
-#define LEN_VTELEMSCREENTYPE   "\010"
-#define TR_VTELEMSCREENTYPE    "Hodnota ""Ukazatel""Skript\0"
+  #define LEN_VTELEMSCREENTYPE "\010"
+  #define TR_VTELEMSCREENTYPE  "Nic\0    ""Hodnota ""Ukazatel""Skript\0"
 #else
-#define LEN_VTELEMSCREENTYPE   "\010"
-#define TR_VTELEMSCREENTYPE    "Hodnota ""Ukazatel"
+  #define LEN_VTELEMSCREENTYPE "\010"
+  #define TR_VTELEMSCREENTYPE  "Hodnota ""Ukazatel"
 #endif
 
 #define LEN_GPSFORMAT          "\004"
