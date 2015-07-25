@@ -728,6 +728,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     analogs[1] = new TelemetryAnalog(this, model.frsky.channels[1], model, generalSettings, firmware);
     ui->A2Layout->addWidget(analogs[1]);
     connect(analogs[1], SIGNAL(modified()), this, SLOT(onAnalogModified()));
+    ui->ignoreSensorIds->hide();
   }
 
   if (IS_TARANIS(firmware->getBoard())) {
@@ -868,6 +869,10 @@ void TelemetryPanel::setup()
       else {
         ui->fasOffset_DSB->setValue(model->frsky.fasOffset/10.0);
         ui->variousGB->show();
+      }
+
+      if (IS_ARM(firmware->getBoard())) {
+        ui->ignoreSensorIds->setChecked(model->frsky.ignoreSensorIds);
       }
 
       if (!(firmware->getCapability(HasMahPersistent))) {
@@ -1033,6 +1038,12 @@ void TelemetryPanel::on_fasOffset_DSB_editingFinished()
 void TelemetryPanel::on_mahCount_SB_editingFinished()
 {
   model->frsky.storedMah = ui->mahCount_SB->value();
+  emit modified();
+}
+
+void TelemetryPanel::on_ignoreSensorIds_toggled(bool checked)
+{
+  model->frsky.ignoreSensorIds = checked;
   emit modified();
 }
 
