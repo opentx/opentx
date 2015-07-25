@@ -132,7 +132,7 @@ QString SensorData::unitString() const
       return QObject::tr("mAh");
     case UNIT_WATTS:
       return QObject::tr("W");
-    case UNIT_DBM:
+    case UNIT_DB:
       return QObject::tr("dB");
     case UNIT_RPMS:
       return QObject::tr("rpms");

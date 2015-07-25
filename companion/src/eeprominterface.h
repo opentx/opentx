@@ -913,7 +913,7 @@ class SensorData {
       UNIT_PERCENT,
       UNIT_MAH,
       UNIT_WATTS,
-      UNIT_DBM,
+      UNIT_DB,
       UNIT_RPMS,
       UNIT_G,
       UNIT_DEGREE,
