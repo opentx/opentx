@@ -372,19 +372,19 @@ IF( WIN32 )
     "C:/Programs/NSIS"
   )
 
-  ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/companionInstall.exe
+  ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/companion-windows.exe
                      COMMAND "${NSIS_EXE}" ARGS companion.nsi
                      DEPENDS companion simulator opentx-simulators ${PROJECT_BINARY_DIR}/companion.nsi
                      COMMENT "Companion Windows NSIS Installer")
 
-  ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/simulatorInstall.exe
+  ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/simulator-install.exe
                      COMMAND "${NSIS_EXE}" ARGS simulator.nsi
                      DEPENDS simulator opentx-simulators ${PROJECT_BINARY_DIR}/simulator.nsi
                      COMMENT "Simulator Windows NSIS Installer")
 
   ADD_CUSTOM_TARGET( installer
-    DEPENDS ${PROJECT_BINARY_DIR}/companionInstall.exe
-    DEPENDS ${PROJECT_BINARY_DIR}/simulatorInstall.exe
+    DEPENDS ${PROJECT_BINARY_DIR}/companion-windows.exe
+    DEPENDS ${PROJECT_BINARY_DIR}/simulator-windows.exe
     SOURCES ${PROJECT_BINARY_DIR}/companion.nsi
     SOURCES ${PROJECT_BINARY_DIR}/simulator.nsi
   )
