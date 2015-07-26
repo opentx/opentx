@@ -409,14 +409,13 @@ IF( APPLE )
                      COMMAND rsync -r /Library/Frameworks/SDL.framework companion.app/Contents/Frameworks/
                      COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app
                      COMMAND install_name_tool -change @rpath/SDL.framework/Versions/A/SDL @executable_path/../Frameworks/SDL.framework/Versions/A/SDL companion.app/Contents/MacOS/companion
-
                      WORKING_DIRECTORY ${WORK_DIR}
                      DEPENDS ${COMPANION_NAME} )
 
   ADD_CUSTOM_TARGET( makedmg
                      COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app -dmg -no-plugins
                      WORKING_DIRECTORY ${WORK_DIR}
-                     DEPENDS addframeworks )
+                     DEPENDS addframeworks opentx-simulators-bundle)
 ENDIF( )
 
 ADD_CUSTOM_TARGET( stamp
