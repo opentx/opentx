@@ -179,6 +179,8 @@ if(APPLE)
       COMMAND install_name_tool -change /opt/local/Library/Frameworks/QtGui.framework/Versions/4/QtGui @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui lib${_file}.dylib
       COMMAND install_name_tool -change @rpath/SDL.framework/Versions/A/SDL @executable_path/../Frameworks/SDL.framework/Versions/A/SDL lib${_file}.dylib
       WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+      COMMAND pwd
+      COMMAND cp lib${_file}.dylib companion.app/Contents/Resources/
       DEPENDS ${_file}
     )
     list(APPEND SIMULATOR_BUNDLES ${SIMULATOR_BUNDLE})
