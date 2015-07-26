@@ -34,7 +34,7 @@ void registerSimulators()
   QDir dir(".");
   QStringList filters;
 #if defined(__APPLE__)
-  filters << "*-simulator.dynlib";
+  filters << "*-simulator.dylib";
 #elif (!defined __GNUC__) || (defined __CYGWIN__)
   filters << "*-simulator.dll";
 #else
