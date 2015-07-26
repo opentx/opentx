@@ -391,7 +391,7 @@ IF( WIN32 )
 ENDIF( )
 
 IF( APPLE )
-    SET(MACOSX_BUNDLE_ICON_FILE iconmac.icns)
+  SET(MACOSX_BUNDLE_ICON_FILE iconmac.icns)
   IF( CMAKE_GENERATOR STREQUAL Xcode )
     SET( WORK_DIR ${CMAKE_BINARY_DIR}/Debug )
   ELSE( )
@@ -403,14 +403,14 @@ IF( APPLE )
                      COMMAND mkdir -p companion.app/Contents/Resources
                      COMMAND mkdir -p companion.app/Contents/translations
                      COMMAND rsync ${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE} companion.app/Contents/Resources/${MACOSX_BUNDLE_ICON_FILE} # Copy the icon files
-                     #COMMAND rsync ${PROJECT_SOURCE_DIR}/../targets/mac/lib* companion.app/Contents/Frameworks
-                     #COMMAND rsync ${PROJECT_SOURCE_DIR}/../targets/mac/libcrypto.1.0.0.dylib companion.app/Contents/Frameworks
                      COMMAND rsync -r --exclude=.svn  ${PROJECT_SOURCE_DIR}/../targets/mac/qt_menu.nib companion.app/Contents/Resources/
                      COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion.app/Contents/translations
+                     COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion.app/Contents/translations
+                     COMMAND cp -pR /Library/Frameworks/SDL.framework companion.app/Contents/Frameworks/
                      COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app
+                     install_name_tool -change @rpath/SDL.framework/Versions/A/SDL @executable_path/../Frameworks/SDL.framework/Versions/A/SDL companion.app/Contents/MacOS/companion
                      WORKING_DIRECTORY ${WORK_DIR}
                      DEPENDS ${COMPANION_NAME} )
-
 
   ADD_CUSTOM_TARGET( makedmg
                      COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app -dmg -no-plugins
