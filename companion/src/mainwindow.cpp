@@ -406,6 +406,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
         QString currentVersionString = index2version(currentVersion);
 
         QMessageBox msgBox;
+        msgBox.setWindowTitle("Companion");
         QSpacerItem * horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
         QGridLayout * layout = (QGridLayout*)msgBox.layout();
         layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
@@ -413,8 +414,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
         if (currentVersion == 0) {
           QString rn = GetCurrentFirmware()->getReleaseNotesUrl();
           QAbstractButton *rnButton = NULL;
-          msgBox.setWindowTitle("Companion");
-          msgBox.setInformativeText(tr("Firmware %1 does not seem to have ever been downloaded.\nRelease %2 is available.\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.").arg(current_firmware_variant->getId()).arg(versionString));
+          msgBox.setText(tr("Firmware %1 does not seem to have ever been downloaded.\nRelease %2 is available.\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.").arg(current_firmware_variant->getId()).arg(versionString));
           QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
           msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
           if (!rn.isEmpty()) {
@@ -442,8 +442,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
         else if (version > currentVersion) {
           QString rn = GetCurrentFirmware()->getReleaseNotesUrl();
           QAbstractButton *rnButton = NULL;
-          msgBox.setText("Companion");
-          msgBox.setInformativeText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.").arg(current_firmware_variant->getId()).arg(currentVersionString).arg(versionString));
+          msgBox.setText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.").arg(current_firmware_variant->getId()).arg(currentVersionString).arg(versionString));
           QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
           msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
           if (!rn.isEmpty()) {
