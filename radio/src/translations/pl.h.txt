@@ -86,7 +86,7 @@
 #define TR_UART3MODES          "Wyłącz\0      ""S-Port Kopia ""Telemetria\0  ""Trener SBUS\0 ""Debug\0        "
 
 #define LEN_SWTYPES            "\006"
-#define TR_SWTYPES             "Brak\0 ""Przełą""2POZ\0 ""3POZ\0"
+#define TR_SWTYPES             "Brak\0 ""Chwil.""2POZ\0 ""3POZ\0"
 
 #define LEN_POTTYPES           "\017" /*15 decimal*/
 #define TR_POTTYPES            "Brak\0          ""Poten z zapadką""Przeł.Wielopoz.""Potencjometr\0  "
@@ -230,9 +230,9 @@
 #define LEN_VFSWFUNC           "\012" /*10 decimal*/
 
 #if defined(VARIO)
-  #define TR_VVARIO            "Wario\0   "
+  #define TR_VVARIO            "Wario\0    "
 #else
-  #define TR_VVARIO            "[Wario]\0 "
+  #define TR_VVARIO            "[Wario]\0  "
 #endif
 
 #if defined(AUDIO)
@@ -276,7 +276,7 @@
 #endif
 
 #if defined(LUA)
-  #define TR_SF_PLAY_SCRIPT   "Skrypty Lua"
+  #define TR_SF_PLAY_SCRIPT   "SkryptyLua"
 #else
   #define TR_SF_PLAY_SCRIPT   "[Lua]\0    "
 #endif
@@ -678,7 +678,7 @@
 #define TR_BATTERY_RANGE       TR("PokażPasBat.", "Pokaż pasek bateri")
 #define TR_BATTERYWARNING      INDENT"Bateria rozładowana"
 #define TR_INACTIVITYALARM     INDENT"Alarm bezczynności"
-#define TR_MEMORYWARNING       INDENT"Pełna pamięć'"
+#define TR_MEMORYWARNING       INDENT"Pełna pamięć"
 #define TR_ALARMWARNING        INDENT"Wyłącz dźwięk"
 #define TR_RENAVIG             "Nawigacja potencjometrem"
 #define TR_THROTTLE_LABEL      "Gaz    "
@@ -711,11 +711,11 @@
 #define TR_VTRIM               "Trym- +"
 #define TR_BG                  "BG:"
 #if defined(COLORLCD)
-  #define TR_MENUTOSTART       TR_ENTER " TO START"
-  #define TR_SETMIDPOINT       "Centruj drażk/potencj"
+  #define TR_MENUTOSTART       TR_ENTER " KALIBRUJ"
+  #define TR_SETMIDPOINT       "Centruj drażki/potencj"
   #define TR_MOVESTICKSPOTS      "Poruszaj drążkami/pot"
 #else
-  #define TR_MENUTOSTART       CENTER "\010" TR_ENTER " TO START"
+  #define TR_MENUTOSTART       CENTER "\010" TR_ENTER " KALIBRUJ"
   #define TR_SETMIDPOINT         TR(CENTER "\002Cenruj drążki/potencj",CENTER "\010Ustaw drązki/potencj na środku")
   #define TR_MOVESTICKSPOTS      "Poruszaj drążkami/pot"
 #endif
