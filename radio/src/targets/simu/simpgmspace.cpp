@@ -760,7 +760,11 @@ char *findTrueFileName(const char *path)
       for (;;) {
         struct simu::dirent * res = simu::readdir(dir);
         if (res == 0) break;
+#if defined(__APPLE__)
+        if ((res->d_type == DT_REG) || (res->d_type == DT_LNK)) {
+#else
         if ((res->d_type == simu::DT_REG) || (res->d_type == simu::DT_LNK)) {
+#endif
           // TRACE("comparing with: %s", res->d_name);
           if (!strcasecmp(fileName.c_str(), res->d_name)) {
             strcpy(result, dirName.c_str());

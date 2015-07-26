@@ -13,7 +13,7 @@
 
   ;Name and file
   Name "OpenTX companion"
-  OutFile "companionInstall_v@C9X_VERSION@.exe"
+  OutFile "companion-windows-v@C9X_VERSION@.exe"
 
   ;Default installation folder
   InstallDir "$PROGRAMFILES\OpenTX companion"
@@ -141,7 +141,7 @@ SectionEnd
 
   ;Language strings
   LangString DESC_SecDummy ${LANG_ENGLISH} "Models and settings editor for OpenTX"
-  LangString DESC_SecDummy ${LANG_FRENCH} "Editeur de réglages et modèles pour OpenTX"
+  LangString DESC_SecDummy ${LANG_FRENCH} "Editeur de rï¿½glages et modï¿½les pour OpenTX"
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN

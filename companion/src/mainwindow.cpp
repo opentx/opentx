@@ -873,7 +873,7 @@ void MainWindow::compare()
 
 void MainWindow::logFile()
 {
-  logsDialog *fd = new logsDialog(this);
+  LogsDialog *fd = new LogsDialog(this);
   fd->setWindowFlags(Qt::Window);   //to show minimize an maximize buttons
   fd->setAttribute(Qt::WA_DeleteOnClose, true);
   fd->show();

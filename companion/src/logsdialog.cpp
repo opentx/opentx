@@ -8,14 +8,14 @@
 #include <unistd.h>
 #endif
 
-logsDialog::logsDialog(QWidget *parent) :
-    QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
-    ui(new Ui::logsDialog)
+LogsDialog::LogsDialog(QWidget *parent) :
+  QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
+  ui(new Ui::LogsDialog)
 {
   csvlog.clear();
 
   ui->setupUi(this);
-  this->setWindowIcon(CompanionIcon("logs.png"));
+  setWindowIcon(CompanionIcon("logs.png"));
 
   plotLock=false;
 
@@ -36,26 +36,20 @@ logsDialog::logsDialog(QWidget *parent) :
   // create and prepare a plot title layout element
   QCPPlotTitle *title = new QCPPlotTitle(ui->customPlot);
   title->setText(tr("Telemetry logs"));
-  // title->setFont(QFont("sans", 12, QFont::Bold));
+
   // add it to the main plot layout
   ui->customPlot->plotLayout()->insertRow(0);
   ui->customPlot->plotLayout()->addElement(0, 0, title);
-
   ui->customPlot->setNoAntialiasingOnDrag(true);
-
-  ui->customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom |
-    QCP::iSelectAxes | QCP::iSelectLegend | QCP::iSelectPlottables);
+  ui->customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes | QCP::iSelectLegend | QCP::iSelectPlottables);
 
   axisRect = ui->customPlot->axisRect();
   axisRect->axis(QCPAxis::atBottom)->setLabel(tr("Time (hh:mm:ss)"));
   axisRect->axis(QCPAxis::atBottom)->setTickLabelType(QCPAxis::ltDateTime);
   axisRect->axis(QCPAxis::atBottom)->setDateTimeFormat("hh:mm:ss");
   QDateTime now = QDateTime::currentDateTime();
-  axisRect->axis(QCPAxis::atBottom)->setRange(now.addSecs(-60*60*2).toTime_t(),
-    now.toTime_t());
-
+  axisRect->axis(QCPAxis::atBottom)->setRange(now.addSecs(-60*60*2).toTime_t(), now.toTime_t());
   axisRect->axis(QCPAxis::atLeft)->setTickLabels(false);
-
   axisRect->addAxis(QCPAxis::atLeft);
   axisRect->addAxis(QCPAxis::atRight);
   axisRect->axis(QCPAxis::atLeft, 1)->setVisible(false);
@@ -76,8 +70,8 @@ logsDialog::logsDialog(QWidget *parent) :
 
   ui->customPlot->setAutoAddPlottableToLegend(false);
 
-  QString Path=g.gePath();
-  if (Path.isEmpty() || !QFile(Path).exists()) {
+  QString path = g.gePath();
+  if (path.isEmpty() || !QFile(path).exists()) {
     ui->mapsButton->hide();
   }
 
@@ -99,57 +93,52 @@ logsDialog::logsDialog(QWidget *parent) :
   connect(ui->Reset_PB, SIGNAL(clicked()), this, SLOT(plotLogs()));
 }
 
-logsDialog::~logsDialog()
+LogsDialog::~LogsDialog()
 {
   delete ui;
 }
 
-void logsDialog::titleDoubleClick(QMouseEvent *evt, QCPPlotTitle *title)
+void LogsDialog::titleDoubleClick(QMouseEvent *evt, QCPPlotTitle *title)
 {
   // Set the plot title by double clicking on it
-
   bool ok;
-  QString newTitle = QInputDialog::getText(this, tr("Plot Title Change"),
-    tr("New plot title:"), QLineEdit::Normal, title->text(), &ok);
-  if (ok)
-  {
+  QString newTitle = QInputDialog::getText(this, tr("Plot Title Change"), tr("New plot title:"), QLineEdit::Normal, title->text(), &ok);
+  if (ok) {
     title->setText(newTitle);
     ui->customPlot->replot();
   }
 }
 
-void logsDialog::axisLabelDoubleClick(QCPAxis *axis, QCPAxis::SelectablePart part)
+void LogsDialog::axisLabelDoubleClick(QCPAxis *axis, QCPAxis::SelectablePart part)
 {
   // Set an axis label by double clicking on it
-  if (part == QCPAxis::spAxisLabel) // only react when the actual axis label is clicked, not tick label or axis backbone
-  {
+  if (part == QCPAxis::spAxisLabel) {
+    // only react when the actual axis label is clicked, not tick label or axis backbone
     bool ok;
     QString newLabel = QInputDialog::getText(this, tr("Axis Label Change"), tr("New axis label:"), QLineEdit::Normal, axis->label(), &ok);
-    if (ok)
-    {
+    if (ok) {
       axis->setLabel(newLabel);
       ui->customPlot->replot();
     }
   }
 }
 
-void logsDialog::legendDoubleClick(QCPLegend *legend, QCPAbstractLegendItem *item)
+void LogsDialog::legendDoubleClick(QCPLegend *legend, QCPAbstractLegendItem *item)
 {
   // Rename a graph by double clicking on its legend item
-  if (item) // only react if item was clicked (user could have clicked on border padding of legend where there is no item, then item is 0)
-  {
+  if (item) {
+    // only react if item was clicked (user could have clicked on border padding of legend where there is no item, then item is 0)
     QCPPlottableLegendItem *plItem = qobject_cast<QCPPlottableLegendItem*>(item);
     bool ok;
     QString newName = QInputDialog::getText(this, tr("Graph Name Change"), tr("New graph name:"), QLineEdit::Normal, plItem->plottable()->name(), &ok);
-    if (ok)
-    {
+    if (ok) {
       plItem->plottable()->setName(newName);
       ui->customPlot->replot();
     }
   }
 }
 
-void logsDialog::selectionChanged()
+void LogsDialog::selectionChanged()
 {
   /*
    normally, axis base line, axis tick labels and axis labels are selectable separately, but we want
@@ -208,20 +197,18 @@ void logsDialog::selectionChanged()
   }
 
   // synchronize selection of graphs with selection of corresponding legend items:
-  for (int i=0; i<ui->customPlot->graphCount(); ++i)
-  {
+  for (int i=0; i<ui->customPlot->graphCount(); ++i) {
     QCPGraph *graph = ui->customPlot->graph(i);
     QCPPlottableLegendItem *item = ui->customPlot->legend->itemWithPlottable(graph);
     if (item == NULL) item = rightLegend->itemWithPlottable(graph);
-    if (item->selected() || graph->selected())
-    {
+    if (item->selected() || graph->selected()) {
       item->setSelected(true);
       graph->setSelected(true);
     }
   }
 }
 
-QList<QStringList> logsDialog::filterGePoints(const QList<QStringList> & input)
+QList<QStringList> LogsDialog::filterGePoints(const QList<QStringList> & input)
 {
   QList<QStringList> result;
 
@@ -260,7 +247,7 @@ QList<QStringList> logsDialog::filterGePoints(const QList<QStringList> & input)
 
       // glitch filter
       if ( glitchFilter.isGlitch(flatitude, flongitude) ) {
-        qDebug() << "filterGePoints(): GPS glitch detected at" << i << flatitude << flongitude;  
+        // qDebug() << "filterGePoints(): GPS glitch detected at" << i << flatitude << flongitude;  
         continue;
       }
 
@@ -275,11 +262,11 @@ QList<QStringList> logsDialog::filterGePoints(const QList<QStringList> & input)
     }
   }
 
-  qDebug() << "filterGePoints(): filtered from" << input.count() << "to " << result.count() << "points";
+  // qDebug() << "filterGePoints(): filtered from" << input.count() << "to " << result.count() << "points";
   return result;
 }
 
-void logsDialog::exportToGoogleEarth()
+void LogsDialog::exportToGoogleEarth()
 {
   // filter data points
   QList<QStringList> dataPoints = filterGePoints(csvlog);
@@ -289,25 +276,26 @@ void logsDialog::exportToGoogleEarth()
   int latcol=0, longcol=0, altcol=0, speedcol=0;
   QSet<int> nondataCols;
   for (int i=1; i<dataPoints.at(0).count(); i++) {
-    //Long,Lat,Course,GPS Speed,GPS Alt
+    // Long,Lat,Course,GPS Speed,GPS Alt
     if (dataPoints.at(0).at(i).contains("Long")) {
-      longcol=i;
+      longcol = i;
       nondataCols << i;
     }
     if (dataPoints.at(0).at(i).contains("Lat")) {
-      latcol=i;
+      latcol = i;
       nondataCols << i;
     }
-    if (dataPoints.at(0).at(i).contains("GPS Alt")) {
-      altcol=i;
+    if (dataPoints.at(0).at(i).contains("GPS Alt") || dataPoints.at(0).at(i).contains("GAlt")) {
+      altcol = i;
       nondataCols << i;
     }
     if (dataPoints.at(0).at(i).contains("GPS Speed")) {
-      speedcol=i;
+      speedcol = i;
       nondataCols << i;
     }
   }
-  if (longcol==0 || latcol==0 || altcol==0) {
+
+  if (longcol==0 || latcol==0) {
     return;
   }
 
@@ -375,22 +363,25 @@ void logsDialog::exportToGoogleEarth()
 
   // coordinate data points
   for (int i=1; i<n; i++) {
-    QString latitude=dataPoints.at(i).at(latcol).trimmed();
-    QString longitude=dataPoints.at(i).at(longcol).trimmed();
+    QString latitude = dataPoints.at(i).at(latcol).trimmed();
+    QString longitude = dataPoints.at(i).at(longcol).trimmed();
+    int altitude = altcol ? dataPoints.at(i).at(altcol).toFloat() : 0;
     latitude.sprintf("%3.8f", toDecimalCoordinate(latitude));
     longitude.sprintf("%3.8f", toDecimalCoordinate(longitude));
-    outputStream << "\t\t\t\t\t<gx:coord>" << longitude << " " << latitude << " " << dataPoints.at(i).at(altcol).toFloat() << " </gx:coord>\n" ;
+    outputStream << "\t\t\t\t\t<gx:coord>" << longitude << " " << latitude << " " <<  altitude << " </gx:coord>\n" ;
   }
 
   // additional data for data points
   outputStream << "\t\t\t\t\t<ExtendedData>\n\t\t\t\t\t\t<SchemaData schemaUrl=\"#schema\">\n";
 
-  // gps speed data points
-  outputStream << "\t\t\t\t\t\t\t<gx:SimpleArrayData name=\"GPSSpeed\">\n";
-  for (int i=1; i<n; i++) {
-    outputStream << "\t\t\t\t\t\t\t\t<gx:value>"<< dataPoints.at(i).at(speedcol) <<"</gx:value>\n";
+  if (speedcol) {
+    // gps speed data points
+    outputStream << "\t\t\t\t\t\t\t<gx:SimpleArrayData name=\"GPSSpeed\">\n";
+    for (int i=1; i<n; i++) {
+      outputStream << "\t\t\t\t\t\t\t\t<gx:value>"<< dataPoints.at(i).at(speedcol) <<"</gx:value>\n";
+    }
+    outputStream << "\t\t\t\t\t\t\t</gx:SimpleArrayData>\n";
   }
-  outputStream << "\t\t\t\t\t\t\t</gx:SimpleArrayData>\n";
 
   // add values for additional fields
   for (int i=0; i<dataPoints.at(0).count()-2; i++) {
@@ -420,7 +411,7 @@ void logsDialog::exportToGoogleEarth()
   process->start(gePath, parameters);
 }
 
-void logsDialog::on_mapsButton_clicked()
+void LogsDialog::on_mapsButton_clicked()
 {
   ui->FieldsTW->setDisabled(true);
   ui->logTable->setDisabled(true);
@@ -431,7 +422,7 @@ void logsDialog::on_mapsButton_clicked()
   ui->logTable->setDisabled(false);
 }
 
-void logsDialog::mousePress()
+void LogsDialog::mousePress()
 {
   // if an axis is selected, only allow the direction of that axis to be dragged
   // if no axis is selected, both directions may be dragged
@@ -444,7 +435,7 @@ void logsDialog::mousePress()
     axisRect->setRangeDrag(Qt::Horizontal | Qt::Vertical);
 }
 
-void logsDialog::mouseWheel()
+void LogsDialog::mouseWheel()
 {
   // if an axis is selected, only allow the direction of that axis to be zoomed
   // if no axis is selected, both directions may be zoomed
@@ -462,7 +453,7 @@ void logsDialog::mouseWheel()
   }
 }
 
-void logsDialog::removeAllGraphs()
+void LogsDialog::removeAllGraphs()
 {
   ui->customPlot->clearGraphs();
   ui->customPlot->legend->setVisible(false);
@@ -480,12 +471,11 @@ void logsDialog::removeAllGraphs()
   ui->customPlot->replot();
 }
 
-void logsDialog::on_fileOpen_BT_clicked()
+void LogsDialog::on_fileOpen_BT_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName(this,tr("Select your log file"), g.logDir());
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Select your log file"), g.logDir());
   if (!fileName.isEmpty()) {
-
-    g.logDir( fileName );
+    g.logDir(fileName);
     ui->FileName_LE->setText(fileName);
     if (cvsFileParse()) {
       ui->FieldsTW->clear();
@@ -525,15 +515,16 @@ void logsDialog::on_fileOpen_BT_clicked()
   }
 }
 
-bool logsDialog::cvsFileParse()
+bool LogsDialog::cvsFileParse()
 {
   QFile file(ui->FileName_LE->text());
   int errors=0;
   int lines=-1;
 
-  if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) { //reading HEX TEXT file
+  if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) { // reading HEX TEXT file
     return false;
-  } else {
+  }
+  else {
     csvlog.clear();
     logFilename.clear();
     QTextStream inputStream(&file);
@@ -541,7 +532,8 @@ bool logsDialog::cvsFileParse()
 
     if (buffer.startsWith("Date,Time")) {
       file.reset();
-    } else {
+    }
+    else {
       return false;
     }
 
@@ -554,29 +546,30 @@ bool logsDialog::cvsFileParse()
       }
       if (columns.count()==numfields) {
         csvlog.append(columns);
-      } else {
+      }
+      else {
         errors++;
       }
       lines++;
     }
 
-    logFilename=QFileInfo(file.fileName()).baseName();
+    logFilename = QFileInfo(file.fileName()).baseName();
   }
 
   file.close();
-  if (errors>1) {
+  if (errors > 1) {
     QMessageBox::warning(this, "Companion", tr("The selected logfile contains %1 invalid lines out of  %2 total lines").arg(errors).arg(lines));
   }
 
-  int n=csvlog.count();
-  if (n==1) {
+  int n = csvlog.count();
+  if (n == 1) {
     csvlog.clear();
     return false;
   }
 
   plotLock = true;
   setFlightSessions();
-  plotLock=false;
+  plotLock = false;
 
   return true;
 }
@@ -586,7 +579,7 @@ struct FlightSession {
   QDateTime end;
 };
 
-QDateTime logsDialog::getRecordTimeStamp(int index) 
+QDateTime LogsDialog::getRecordTimeStamp(int index) 
 {
   QString tstamp = csvlog.at(index).at(0) + " " + csvlog.at(index).at(1);
   if (csvlog.at(index).at(1).contains(".")) 
@@ -594,7 +587,7 @@ QDateTime logsDialog::getRecordTimeStamp(int index)
   return QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss");
 }
 
-QString logsDialog::generateDuration(const QDateTime & start, const QDateTime & end)
+QString LogsDialog::generateDuration(const QDateTime & start, const QDateTime & end)
 {
   int secs = start.secsTo(end);
   QString durationString;
@@ -606,11 +599,11 @@ QString logsDialog::generateDuration(const QDateTime & start, const QDateTime & 
   return durationString;
 }
 
-void logsDialog::setFlightSessions()
+void LogsDialog::setFlightSessions()
 {
   ui->sessions_CB->clear();
 
-  int n=csvlog.count();
+  int n = csvlog.count();
   // qDebug() << "records" << n;
 
   // find session breaks
@@ -646,7 +639,7 @@ void logsDialog::setFlightSessions()
   }
 }
 
-void logsDialog::on_sessions_CB_currentIndexChanged(int index)
+void LogsDialog::on_sessions_CB_currentIndexChanged(int index)
 {
   if (plotLock) return;
   plotLock = true;
@@ -674,7 +667,7 @@ void logsDialog::on_sessions_CB_currentIndexChanged(int index)
   plotLogs();
 }
 
-void logsDialog::plotLogs()
+void LogsDialog::plotLogs()
 {
   if (plotLock) return;
 
@@ -920,7 +913,7 @@ void logsDialog::plotLogs()
   ui->customPlot->replot();
 }
 
-void logsDialog::yAxisChangeRanges(QCPRange range)
+void LogsDialog::yAxisChangeRanges(QCPRange range)
 {
   if (axisRect->axis(QCPAxis::atRight)->visible()) {
     double lowerChange = (range.lower - yAxesRanges[firstLeft].min) *

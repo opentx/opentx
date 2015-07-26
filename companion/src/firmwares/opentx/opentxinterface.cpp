@@ -604,10 +604,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
       else
         return 9;
     case CustomFunctions:
-      if (IS_TARANIS(board))
+      if (IS_ARM(board))
         return 64;
-      else if (IS_ARM(board))
-        return 60;
       else if (IS_2560(board) || board==BOARD_M128)
         return 24;
       else
@@ -731,6 +729,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return (IS_TARANIS(board) ? SWITCH_SF1 : SWITCH_THR) ;
     case HasDisplayText:
       return IS_ARM(board) ? 1 : 0;
+    case GlobalFunctions:
+      return IS_ARM(board) ? 64 : 0;
     case VirtualInputs:
       return IS_TARANIS(board) ? 32 : 0;
     case TrainerInputs:

@@ -33,7 +33,9 @@ void registerSimulators()
   bool simulatorsFound = false;
   QDir dir(".");
   QStringList filters;
-#if (!defined __GNUC__) || (defined __CYGWIN__)
+#if defined(__APPLE__)
+  filters << "*-simulator.dylib";
+#elif (!defined __GNUC__) || (defined __CYGWIN__)
   filters << "*-simulator.dll";
 #else
   filters << "*-simulator.so";
