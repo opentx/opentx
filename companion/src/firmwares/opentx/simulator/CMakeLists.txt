@@ -167,3 +167,22 @@ target_link_libraries(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${COMMON_LIBR
 add_custom_target(opentx-simulators
   DEPENDS ${OPENTX_LIBRARIES}
 )
+
+if(APPLE)
+  set(SIMULATOR_BUNDLES)
+  foreach(_file ${OPENTX_LIBRARIES})
+    set(SIMULATOR_BUNDLE "${_file}-bundle")
+    add_custom_target(${SIMULATOR_BUNDLE}
+      COMMAND install_name_tool -change /opt/local/Library/Frameworks/QtCore.framework/Versions/4/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore lib${_file}.dylib
+      COMMAND install_name_tool -change /opt/local/Library/Frameworks/QtNetwork.framework/Versions/4/QtNetwork @executable_path/../Frameworks/QtNetwork.framework/Versions/4/QtNetwork lib${_file}.dylib
+      COMMAND install_name_tool -change /opt/local/Library/Frameworks/QtXml.framework/Versions/4/QtXml @executable_path/../Frameworks/QtXml.framework/Versions/4/QtXml lib${_file}.dylib
+      COMMAND install_name_tool -change /opt/local/Library/Frameworks/QtGui.framework/Versions/4/QtGui @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui lib${_file}.dylib
+      COMMAND install_name_tool -change @rpath/SDL.framework/Versions/A/SDL @executable_path/../Frameworks/SDL.framework/Versions/A/SDL lib${_file}.dylib
+      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+      DEPENDS ${_file}
+    )
+    list(APPEND SIMULATOR_BUNDLES ${SIMULATOR_BUNDLE})
+  endforeach()
+  add_custom_target(opentx-simulators-bundle DEPENDS ${SIMULATOR_BUNDLES})
+endif(APPLE)
+

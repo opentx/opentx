@@ -398,7 +398,7 @@ IF( APPLE )
     SET( WORK_DIR ${PROJECT_BINARY_DIR} )
   ENDIF()
 
-  ADD_CUSTOM_TARGET( addframeworks ALL
+  ADD_CUSTOM_TARGET( addframeworks
                      COMMAND mkdir -p companion.app/Contents/Frameworks
                      COMMAND mkdir -p companion.app/Contents/Resources
                      COMMAND mkdir -p companion.app/Contents/translations
@@ -408,7 +408,8 @@ IF( APPLE )
                      COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion.app/Contents/translations
                      COMMAND rsync -r /Library/Frameworks/SDL.framework companion.app/Contents/Frameworks/
                      COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app
-                     COMMAND install_name_tool  -change @rpath/SDL.framework/Versions/A/SDL @executable_path/../Frameworks/SDL.framework/Versions/A/SDL companion.app/Contents/MacOS/companion
+                     COMMAND install_name_tool -change @rpath/SDL.framework/Versions/A/SDL @executable_path/../Frameworks/SDL.framework/Versions/A/SDL companion.app/Contents/MacOS/companion
+
                      WORKING_DIRECTORY ${WORK_DIR}
                      DEPENDS ${COMPANION_NAME} )
 
@@ -416,7 +417,6 @@ IF( APPLE )
                      COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app -dmg -no-plugins
                      WORKING_DIRECTORY ${WORK_DIR}
                      DEPENDS addframeworks )
-
 ENDIF( )
 
 ADD_CUSTOM_TARGET( stamp
