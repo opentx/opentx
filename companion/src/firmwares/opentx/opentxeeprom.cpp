@@ -1360,10 +1360,9 @@ class InputField: public TransformedField {
 
 class LimitField: public StructField {
   public:
-    template <int shift>
+    template <int shift, int GV1>
     static int exportLimitValue(int value)
     {
-      const int GV1 = 4096;
       if (value > 10000) {
         return -GV1 + value - 10001;
       }
@@ -1373,16 +1372,9 @@ class LimitField: public StructField {
       return value + shift;
     }
 
-    template <int shift>
+    template <int shift, int GV1>
     static int importLimitValue(int value)
     {
-      /* GVARS mapping on radio:
-        GV1 = -4096
-        GV9 = -4088
-        -GV1 = 4095
-        -GV9 = 4087
-      */
-      const int GV1 = 4096;
       if (value >= GV1) {
         return 10001 + value - GV1;
       }
@@ -1402,10 +1394,10 @@ class LimitField: public StructField {
       StructField("Limit")
     {
       if (IS_TARANIS(board) && version >= 217) {
-        Append(new ConversionField< SignedField<11> >(limit.min, exportLimitValue<1000>, importLimitValue<1000>));
-        Append(new ConversionField< SignedField<11> >(limit.max, exportLimitValue<-1000>, importLimitValue<-1000>));
+        Append(new ConversionField< SignedField<11> >(limit.min, exportLimitValue<1000, 1024>, importLimitValue<1000, 1024>));
+        Append(new ConversionField< SignedField<11> >(limit.max, exportLimitValue<-1000, 1024>, importLimitValue<-1000, 1024>));
         Append(new SignedField<10>(limit.ppmCenter));
-        Append(new ConversionField< SignedField<11> >(limit.offset, exportLimitValue<0>, importLimitValue<0>));
+        Append(new ConversionField< SignedField<11> >(limit.offset, exportLimitValue<0, 1024>, importLimitValue<0, 1024>));
         Append(new BoolField<1>(limit.symetrical));
         Append(new BoolField<1>(limit.revert));
         Append(new SpareBitsField<3>());
@@ -1416,10 +1408,10 @@ class LimitField: public StructField {
       }
       else {
         if (IS_TARANIS(board) && version >= 216) {
-          Append(new ConversionField< SignedField<16> >(limit.min, exportLimitValue<1000>, importLimitValue<1000>));
-          Append(new ConversionField< SignedField<16> >(limit.max, exportLimitValue<-1000>, importLimitValue<-1000>));
+          Append(new ConversionField< SignedField<16> >(limit.min, exportLimitValue<1000, 4096>, importLimitValue<1000, 4096>));
+          Append(new ConversionField< SignedField<16> >(limit.max, exportLimitValue<-1000, 4096>, importLimitValue<-1000, 4096>));
           Append(new SignedField<8>(limit.ppmCenter));
-          Append(new ConversionField< SignedField<14> >(limit.offset, exportLimitValue<0>, importLimitValue<0>));
+          Append(new ConversionField< SignedField<14> >(limit.offset, exportLimitValue<0, 4096>, importLimitValue<0, 4096>));
         }
         else {
           Append(new ConversionField< SignedField<8> >(limit.min, +100, 10));
