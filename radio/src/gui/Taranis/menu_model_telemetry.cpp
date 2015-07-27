@@ -74,6 +74,7 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_SENSOR31,
   ITEM_TELEMETRY_SENSOR32,
   ITEM_TELEMETRY_NEWSENSOR,
+  ITEM_TELEMETRY_IGNORE_SENSORID,
 #if defined(VARIO)
   ITEM_TELEMETRY_VARIO_LABEL,
   ITEM_TELEMETRY_VARIO_SOURCE,
@@ -120,7 +121,7 @@ enum menuModelTelemetryItems {
 #define IS_RANGE_DEFINED(k) (g_model.frsky.channels[k].ratio > 0)
 
 #define SENSOR_ROWS(x)    (isTelemetryFieldAvailable(x) ? (uint8_t)0 : HIDDEN_ROW)
-#define SENSORS_ROWS      LABEL(Sensors), SENSOR_ROWS(0), SENSOR_ROWS(1), SENSOR_ROWS(2), SENSOR_ROWS(3), SENSOR_ROWS(4), SENSOR_ROWS(5), SENSOR_ROWS(6), SENSOR_ROWS(7), SENSOR_ROWS(8), SENSOR_ROWS(9), SENSOR_ROWS(10), SENSOR_ROWS(11), SENSOR_ROWS(12), SENSOR_ROWS(13), SENSOR_ROWS(14), SENSOR_ROWS(15), SENSOR_ROWS(16), SENSOR_ROWS(17), SENSOR_ROWS(18), SENSOR_ROWS(19), SENSOR_ROWS(20), SENSOR_ROWS(21), SENSOR_ROWS(22), SENSOR_ROWS(23), SENSOR_ROWS(24), SENSOR_ROWS(25), SENSOR_ROWS(26), SENSOR_ROWS(27), SENSOR_ROWS(28), SENSOR_ROWS(29), SENSOR_ROWS(30), SENSOR_ROWS(31), 0,
+#define SENSORS_ROWS      LABEL(Sensors), SENSOR_ROWS(0), SENSOR_ROWS(1), SENSOR_ROWS(2), SENSOR_ROWS(3), SENSOR_ROWS(4), SENSOR_ROWS(5), SENSOR_ROWS(6), SENSOR_ROWS(7), SENSOR_ROWS(8), SENSOR_ROWS(9), SENSOR_ROWS(10), SENSOR_ROWS(11), SENSOR_ROWS(12), SENSOR_ROWS(13), SENSOR_ROWS(14), SENSOR_ROWS(15), SENSOR_ROWS(16), SENSOR_ROWS(17), SENSOR_ROWS(18), SENSOR_ROWS(19), SENSOR_ROWS(20), SENSOR_ROWS(21), SENSOR_ROWS(22), SENSOR_ROWS(23), SENSOR_ROWS(24), SENSOR_ROWS(25), SENSOR_ROWS(26), SENSOR_ROWS(27), SENSOR_ROWS(28), SENSOR_ROWS(29), SENSOR_ROWS(30), SENSOR_ROWS(31), 0, 0,
 #if defined(VARIO)
   #define VARIO_ROWS      LABEL(Vario), 0, 1, 2,
 #else
@@ -535,7 +536,7 @@ void menuModelTelemetry(uint8_t event)
         lcd_putsAtt(TELEM_COL2, y, "---", 0); // TODO shortcut
       }
       TelemetrySensor * sensor = & g_model.telemetrySensors[index];
-      if (sensor->type == TELEM_TYPE_CUSTOM) {
+      if (sensor->type == TELEM_TYPE_CUSTOM && !g_model.ignoreSensorIds) {
         lcd_outdezAtt(TELEM_COL3, y, sensor->instance, LEFT);
       }
       if (attr) {
@@ -561,8 +562,10 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_SENSORS_LABEL:
         lcd_putsLeft(y, STR_TELEMETRY_SENSORS);
-        lcd_putsAtt(TELEM_COL2, y, STR_VALUE, 0);
-        lcd_putsAtt(TELEM_COL3, y, STR_ID, 0);
+        if (!g_model.ignoreSensorIds) {
+          lcd_putsAtt(TELEM_COL2, y, STR_VALUE, 0);
+          lcd_putsAtt(TELEM_COL3, y, STR_ID, 0);
+        }
         break;
 
       case ITEM_TELEMETRY_NEWSENSOR:
@@ -578,6 +581,10 @@ void menuModelTelemetry(uint8_t event)
             POPUP_WARNING(STR_TELEMETRYFULL);
           }
         }
+        break;
+
+      case ITEM_TELEMETRY_IGNORE_SENSORID:
+        ON_OFF_MENU_ITEM(g_model.ignoreSensorIds, TELEM_COL2, y, INDENT "Ignore IDs", attr, event);
         break;
 
       case ITEM_TELEMETRY_RSSI_LABEL:

@@ -29,7 +29,7 @@ class AutoCheckBox: public QCheckBox
     {
       lock = true;
       if (field) {
-        setChecked((int)*field);
+        setChecked(*field);
       }
       lock = false;
     }

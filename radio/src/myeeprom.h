@@ -1272,7 +1272,7 @@ enum TelemetrySensorFormula
 
 PACK(typedef struct {
   union {
-    uint16_t id;                     // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
+    uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
     uint16_t persistentValue;
   };
   union {
@@ -2130,7 +2130,7 @@ PACK(typedef struct {
   AVR_FIELD(int8_t    ppmNCH:4)
   ARM_FIELD(uint8_t   noGlobalFunctions:1)
   ARM_FIELD(uint8_t   displayTrims:2)
-  ARM_FIELD(uint8_t   spare2:1)
+  ARM_FIELD(uint8_t   ignoreSensorIds:1)
   int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
   ARM_FIELD(uint8_t displayChecklist:1)

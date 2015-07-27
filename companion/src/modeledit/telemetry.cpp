@@ -795,10 +795,12 @@ void TelemetryPanel::setup()
         ui->telemetryProtocol->addItem(tr("FrSky D (cable)"), 2);
       }
       ui->telemetryProtocol->setCurrentIndex(model->telemetryProtocol);
+      ui->ignoreSensorIds->setField(model->frsky.ignoreSensorIds);
     }
     else {
       ui->telemetryProtocolLabel->hide();
       ui->telemetryProtocol->hide();
+      ui->ignoreSensorIds->hide();
     }
 
     ui->rssiAlarm1SB->setValue(model->frsky.rssiAlarms[0].value);

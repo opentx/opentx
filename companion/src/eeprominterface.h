@@ -775,6 +775,7 @@ class FrSkyData {
     bool mAhPersistent;
     unsigned int storedMah;
     int fasOffset;
+    bool ignoreSensorIds;
 
     void clear();
 };
