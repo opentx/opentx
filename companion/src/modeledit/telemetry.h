@@ -132,7 +132,6 @@ class TelemetryPanel : public ModelPanel
     void on_fasOffset_DSB_editingFinished();
     void on_mahCount_SB_editingFinished();
     void on_mahCount_ChkB_toggled(bool checked);
-    void on_ignoreSensorIds_toggled(bool checked);
 
   private:
     Ui::Telemetry *ui;
