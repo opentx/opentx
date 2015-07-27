@@ -662,15 +662,24 @@ void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
 
   else if (idx < MIXSRC_LAST_POT) {
     idx = idx-MIXSRC_Rud;
-    if (ZEXIST(g_eeGeneral.anaNames[idx]))
-      lcd_putsnAtt(x, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, ZCHAR|att);
+    if (ZEXIST(g_eeGeneral.anaNames[idx])) {
+      if (idx < MIXSRC_FIRST_POT-MIXSRC_Rud )
+        lcd_putcAtt(x, y, '\307', att); //stick symbol
+      else if (idx < MIXSRC_FIRST_SLIDER-MIXSRC_Rud )
+        lcd_putcAtt(x, y, '\310', att); //pot symbol
+      else 
+        lcd_putcAtt(x, y, '\311', att); //slider symbol
+      lcd_putsnAtt(lcdNextPos, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, ZCHAR|att);
+    }
     else
       lcd_putsiAtt(x, y, STR_VSRCRAW, idx+1, att);
   }
   else if (idx >= MIXSRC_FIRST_SWITCH && idx < MIXSRC_FIRST_LOGICAL_SWITCH) {
     idx = idx-MIXSRC_FIRST_SWITCH;
-    if (ZEXIST(g_eeGeneral.switchNames[idx]))
-      lcd_putsnAtt(x, y, g_eeGeneral.switchNames[idx], LEN_SWITCH_NAME, ZCHAR|att);
+    if (ZEXIST(g_eeGeneral.switchNames[idx])) {
+      lcd_putcAtt(x, y, '\312', att); //switch symbol
+      lcd_putsnAtt(lcdNextPos, y, g_eeGeneral.switchNames[idx], LEN_SWITCH_NAME, ZCHAR|att);
+    }
     else
       lcd_putsiAtt(x, y, STR_VSRCRAW, idx+MIXSRC_FIRST_SWITCH-MIXSRC_Rud+1, att);
   }

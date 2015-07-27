@@ -1792,24 +1792,25 @@ enum MixSources {
 #endif
 
   MIXSRC_FIRST_STICK,
-  MIXSRC_Rud = MIXSRC_FIRST_STICK, LUA_EXPORT("rud", "Rudder")
-  MIXSRC_Ele,                      LUA_EXPORT("ele", "Elevator")
-  MIXSRC_Thr,                      LUA_EXPORT("thr", "Throttle")
-  MIXSRC_Ail,                      LUA_EXPORT("ail", "Aileron")
+  MIXSRC_Rud = MIXSRC_FIRST_STICK,      LUA_EXPORT("rud", "Rudder")
+  MIXSRC_Ele,                           LUA_EXPORT("ele", "Elevator")
+  MIXSRC_Thr,                           LUA_EXPORT("thr", "Throttle")
+  MIXSRC_Ail,                           LUA_EXPORT("ail", "Aileron")
 
   MIXSRC_FIRST_POT,
 #if defined(PCBTARANIS)
-  MIXSRC_POT1 = MIXSRC_FIRST_POT, LUA_EXPORT("s1", "Potentiometer 1")
-  MIXSRC_POT2,                    LUA_EXPORT("s2", "Potentiometer 2")
-  MIXSRC_POT3,                    LUA_EXPORT("s3", "Potentiometer 3")
+  MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
+  MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
+  MIXSRC_POT3,                          LUA_EXPORT("s3", "Potentiometer 3")
   #if defined(REV9E)
-    MIXSRC_POT4,                  LUA_EXPORT("s4", "Potentiometer 4")
+    MIXSRC_POT4,                        LUA_EXPORT("s4", "Potentiometer 4")
   #endif
-  MIXSRC_SLIDER1,                 LUA_EXPORT("ls", "Left slider")
-  MIXSRC_SLIDER2,                 LUA_EXPORT("rs", "Right slider")
+  MIXSRC_FIRST_SLIDER,
+  MIXSRC_SLIDER1 = MIXSRC_FIRST_SLIDER, LUA_EXPORT("ls", "Left slider")
+  MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
   #if defined(REV9E)
-    MIXSRC_SLIDER3,               LUA_EXPORT("ls2", "Left center slider")
-    MIXSRC_SLIDER4,               LUA_EXPORT("rs2", "Right center slider")
+    MIXSRC_SLIDER3,                     LUA_EXPORT("ls2", "Left center slider")
+    MIXSRC_SLIDER4,                     LUA_EXPORT("rs2", "Right center slider")
     MIXSRC_LAST_POT = MIXSRC_SLIDER4,
   #else
     MIXSRC_LAST_POT = MIXSRC_SLIDER2,
