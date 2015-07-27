@@ -17,6 +17,7 @@
 <li>Fixed missing option in the sensor setup menu (<a href=https://github.com/opentx/opentx/issues/2533>#2533</a>)</li>
 <li>Fixed several VFAS issues when using D series sensors (<a href=https://github.com/opentx/opentx/issues/2518>#2518</a>, <a href=https://github.com/opentx/opentx/issues/2531>#2531</a>)</li>, <a href=https://github.com/opentx/opentx/issues/2530>#2530</a>)</li>
 <li>Fixed missing GPS altitude when using D series sensors (<a href=https://github.com/opentx/opentx/issues/2539>#2539</a>)</li>
+<li>Symbols for renamed physical inputs were not shown (<a href=https://github.com/opentx/opentx/issues/2581>#2581</a>)</li>
 </ul>
 
 [Boards with narrow LCD (9X, 9XR, etc)]
