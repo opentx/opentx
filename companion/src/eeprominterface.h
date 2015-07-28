@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <QList>
 #include <QtXml>
+#include <QComboBox>
 #include <iostream>
 #include "constants.h"
 #include "simulatorinterface.h"
@@ -390,7 +391,7 @@ class RawSwitch {
       return index >= 0 ? (type * 256 + index) : -(type * 256 - index);
     }
 
-    QString toString();
+    QString toString() const;
 
     bool operator== ( const RawSwitch& other) {
       return (this->type == other.type) && (this->index == other.index);
@@ -426,7 +427,7 @@ class CurveReference {
     CurveRefType type;
     int value;
 
-    QString toString();
+    QString toString() const;
 };
 
 enum InputMode {
@@ -575,10 +576,9 @@ class LogicalSwitchData { // Logical Switches data
     unsigned int duration;
     int andsw;
     void clear() { memset(this, 0, sizeof(LogicalSwitchData)); }
-    CSFunctionFamily getFunctionFamily();
-    unsigned int getRangeFlags();
-    QString funcToString();
-    QString toString(const ModelData & model, const GeneralSettings & settings);
+    CSFunctionFamily getFunctionFamily() const;
+    unsigned int getRangeFlags() const;
+    QString funcToString() const;
 };
 
 enum AssignFunc {
@@ -624,10 +624,15 @@ class CustomFunctionData { // Function Switches data
     unsigned int adjustMode;
     int repeatParam;
     void clear();
-    QString funcToString();
-    QString paramToString();
-    QString repeatToString();
-    QStringList toStringList();
+    QString funcToString() const;
+    QString paramToString(ModelData * model) const;
+    QString repeatToString() const;
+    QString enabledToString() const;
+
+    static void populateResetParams(ModelData * model, QComboBox * b, unsigned int value);
+    static void populatePlaySoundParams(QStringList & qs);
+    static void populateHapticParams(QStringList & qs);
+
 };
 
 class FlightModeData {

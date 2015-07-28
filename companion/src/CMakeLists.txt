@@ -168,6 +168,7 @@ set(companion_SRCS
   flashfirmwaredialog.cpp
   flasheepromdialog.cpp
   printdialog.cpp
+  modelprinter.cpp
   fusesdialog.cpp
   logsdialog.cpp
   downloaddialog.cpp

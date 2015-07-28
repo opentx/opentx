@@ -483,8 +483,7 @@ void SimulatorDialog::initUi(T * ui)
       line =   (i-16) % (std::min(16,outputs-16)/2);
     }
     QLabel * label = new QLabel(tabWidget);
-    ModelData model;
-    label->setText(RawSource(SOURCE_TYPE_CH, i).toString(&model));
+    label->setText(RawSource(SOURCE_TYPE_CH, i).toString());
     outputTab->addWidget(label, line, column == 0 ? 0 : 5, 1, 1);
 
     QSlider * slider = new QSlider(tabWidget);
@@ -546,7 +545,7 @@ void SimulatorDialog::initUi(T * ui)
       label->setAutoFillBackground(true);
       if ((i % 2) ==0 ) {
         label->setStyleSheet("QLabel { background-color: rgb(220, 220, 220) }");
-      }      
+      }
       ui->gvarsLayout->addWidget(label, i+1, 0);
       for (int fm=0; fm<fmodes; fm++) {
         QLabel * value = new QLabel(tabWidget);

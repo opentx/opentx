@@ -4,6 +4,7 @@
 #include "modeledit.h"
 #include "mixerslist.h"
 #include "mixerdialog.h"
+#include "modelprinter.h"
 
 class MixesPanel : public ModelPanel
 {
@@ -44,6 +45,7 @@ class MixesPanel : public ModelPanel
     bool mixInserted;
     unsigned int highlightedSource;
     bool firstLine;
+    ModelPrinter modelPrinter;
 
     int getMixerIndex(unsigned int dch);
     bool gm_insertMix(int idx);
@@ -53,7 +55,6 @@ class MixesPanel : public ModelPanel
     void mixersDeleteList(QList<int> list);
     QList<int> createMixListFromSelected();
     void setSelectedByMixList(QList<int> list);
-    QString getChannelLabel(int curDest);
     bool AddMixerLine(int dest);
     QString getMixerText(int dest, bool * new_ch);
 };

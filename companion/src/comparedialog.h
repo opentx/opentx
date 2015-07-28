@@ -5,6 +5,7 @@
 #include <QtGui>
 #include <QDir>
 #include "eeprominterface.h"
+#include "modelprinter.h"
 
 namespace Ui {
   class CompareDialog;
@@ -21,11 +22,10 @@ class CompareDialog : public QDialog
     
   protected:
     GeneralSettings * settings;
-    ModelData * g_model1;
-    ModelData * g_model2;
-    ModelData * modeltemp;
-    int model1;
-    int model2;
+    ModelData g_model1;
+    ModelData g_model2;
+    bool model1Valid;
+    bool model2Valid;
   
   private:
     void  closeEvent(QCloseEvent *event);
@@ -55,15 +55,20 @@ class CompareDialog : public QDialog
         return "grey";
     }
 
-    int ModelHasExpo(ExpoData * ExpoArray, ExpoData expo, bool * expoused);
     bool ChannelHasExpo(ExpoData * expoArray, uint8_t destCh);
-    int ModelHasMix(MixData * mixArray, MixData mix, bool * mixused);
     bool ChannelHasMix(MixData * mixArray, uint8_t destCh);
+    bool handleDroppedModel(const QMimeData * mimeData, ModelData * model, QLabel * label);
+    void applyDiffFont(QString & v1, QString & v2, const QString & font = "", bool eqGrey = false);
+    void diffAndAssembleTableLines(QStringList & i1, QStringList & i2, QString & o1, QString & o2);
     
     QTextEdit * te;
     QString curvefile1;
     QString curvefile2;
     QDir *qd;
+
+    ModelPrinter modelPrinter1;
+    ModelPrinter modelPrinter2;
+    GeneralSettings dummySettings;
     
 private slots:
     void on_printButton_clicked();
@@ -78,13 +83,13 @@ protected:
     void printSetup();
     void printPhases();
     void printLimits();
-    void printExpos();
+    void printInputs();
     void printMixers();
     void printCurves();
     void printGvars();
-    void printSwitches();
+    void printLogicalSwitches();
     void printSafetySwitches();
-    void printFSwitches();
+    void printCustomFunctions();
     void printFrSky();
 };
 

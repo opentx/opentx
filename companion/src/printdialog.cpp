@@ -3,6 +3,7 @@
 #include "helpers.h"
 #include "helpers_html.h"
 #include "eeprominterface.h"
+#include "modelprinter.h"
 #include <QtGui>
 #include <QImage>
 #include <QColor>
@@ -22,7 +23,8 @@ PrintDialog::PrintDialog(QWidget *parent, Firmware * firmware, GeneralSettings *
   g_model(gm),
   printfilename(filename),
   ui(new Ui::PrintDialog),
-  gvars(firmware->getCapability(Gvars))
+  gvars(firmware->getCapability(Gvars)),
+  modelPrinter(firmware, gg, gm)
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("print.png"));
@@ -48,8 +50,8 @@ PrintDialog::PrintDialog(QWidget *parent, Firmware * firmware, GeneralSettings *
   printLimits();
   printCurves();
   printGvars();
-  printSwitches();
-  printFSwitches();
+  printLogicalSwitches();
+  printCustomFunctions();
   printFrSky();
   
   te->scrollToAnchor("1");
@@ -191,161 +193,55 @@ QString PrintDialog::printFlightModes()
 void PrintDialog::printInputs()
 {
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td><h2>";
-    str.append(tr("Inputs"));
-    str.append("</h2></td></tr><tr><td><table border=0 cellspacing=0 cellpadding=3>");
+    str += tr("Inputs");
+    str += "</h2></td></tr><tr><td><table border=0 cellspacing=0 cellpadding=3>";
     int ec=0;
     unsigned int lastCHN = 255;
     for(int i=0; i<C9X_MAX_EXPOS; i++) {
       ExpoData *ed=&g_model->expoData[i];
-      if(ed->mode==0)
-        continue;
+      if(ed->mode==0) continue;
       ec++;
-      str.append("<tr><td><font size=+1 face='Courier New'>");
+
+      str += "<tr><td>";
       if(lastCHN!=ed->chn) {
         lastCHN=ed->chn;
-        str.append("<b>"+getInputStr(g_model, ed->chn)+"</b>");
+        str += addFont("<b>"+modelPrinter.printInputName(ed->chn)+"</b>", "", "+1", "Courier New");
       }
-      str.append("</font></td>");
-      str.append("<td><font size=+1 face='Courier New' color=green>");
-
-      switch(ed->mode) {
-        case (1): 
-          str += "&lt;-";
-          break;
-        case (2): 
-          str += "-&gt;";
-          break;
-        default:
-          str += "&nbsp;&nbsp;";
-          break;
-      };
-
-      str += "&nbsp;" + tr("Weight") + QString("(%1)").arg(getGVarString(ed->weight,true));
-  
-      if (firmware->getCapability(VirtualInputs)) {
-        str += " " + tr("Source") + QString("(%1)").arg(ed->srcRaw.toString(g_model));
-        if (ed->carryTrim>0) str += " " + tr("NoTrim");
-        else if (ed->carryTrim<0) str += " " + RawSource(SOURCE_TYPE_TRIM, (-(ed->carryTrim)-1)).toString(g_model);
-      }
-      if (ed->curve.value) str += " " + Qt::escape(ed->curve.toString());
-
-      if (firmware->getCapability(FlightModes)) {
-        if(ed->phases) {
-          if (ed->phases!=(unsigned int)(1<<firmware->getCapability(FlightModes))-1) {
-            unsigned int mask=1;
-            bool first = true;
-            bool multiple = false;
-            QString strModes;
-            for (int j=0; j<firmware->getCapability(FlightModes);j++) {
-              if (!(ed->phases & mask)) {
-                //FlightModeData *pd = &g_model->flightModeData[j];
-                const char * pdName = g_model->flightModeData[j].name;
-                if (first) {
-                  strModes += Qt::escape(QString("%1").arg(getPhaseName(j+1,pdName)));
-                  first = false;
-                } else {
-                  strModes += Qt::escape(QString(", %1").arg(getPhaseName(j+1, pdName)));
-                  multiple = true;
-                }
-              }
-              mask <<= 1;
-            }
-            if (!strModes.isEmpty()) {
-              str += " " + tr(multiple?"Flight modes":"Flight mode") + "(" + strModes + ")";
-            }
-          } else {
-            str += tr("DISABLED")+QString(" !!!");
-          }
-        }
-      } 
-      if (ed->swtch.type) str += " " + tr("Switch") + QString("(%1)").arg(ed->swtch.toString());
-      if (firmware->getCapability(HasExpoNames) && ed->name[0]) str += Qt::escape(QString(" [%1]").arg(ed->name));
-      str += "</font></td></tr>";
+      str += "</td>";
+      
+      str += "<td>" + addFont(modelPrinter.printInputLine(ed), "green", "+1", "Courier New") + "</td>";
+      str += "</tr>";
     }
     str += "</table></td></tr></table><br>";
-    if (ec>0)
-      te->append(str);
+    if (ec>0) te->append(str);
+    // debugHtml(str);
 }
 
 
 void PrintDialog::printMixes()
 {
     QString str = "<table border=1 cellspacing=0 cellpadding=3 style=\"page-break-after:always;\" width=\"100%\"><tr><td><h2>";
-    str.append(tr("Mixers"));
-    str.append("</h2></td></tr><tr><td><table border=0 cellspacing=0 cellpadding=3>");
+    str += tr("Mixers");
+    str += "</h2></td></tr><tr><td><table border=0 cellspacing=0 cellpadding=3>";
 
     unsigned int lastCHN = 255;
     for(int i=0; i<firmware->getCapability(Mixes); i++) {
       MixData *md = &g_model->mixData[i];
       if(!md->destCh || md->destCh>(unsigned int)firmware->getCapability(Outputs) ) break;
-      str.append("<tr><td><font size=+1 face='Courier New'><b>");
+
+      str += "<tr><td><b>";
       if(lastCHN!=md->destCh) {
         lastCHN=md->destCh;
-
-        QString chname = QObject::tr("CH%1").arg(lastCHN);
-        // TODO not nice, Qt brings a function for that, I don't remember right now
-        (chname.length() < 4) ? chname.append("  ") : chname.append(" ");
-        if (firmware->getCapability(HasChNames)) {
-          QString name = g_model->limitData[lastCHN-1].name;
-          if (!name.isEmpty()) {
-            name = QString("(") + name + QString(")");
-          }
-          name.append("        ");
-          chname += name.left(8);
-        }
-        chname = Qt::escape(chname);
-        str.append(chname.replace(" ", "&nbsp;")); 
+        str += addFont(modelPrinter.printMixerName(md->destCh).replace(" ", "&nbsp;"), "", "+1", "Courier New"); 
       } 
-      else {
-        str.append("&nbsp;");
-      }
-      str.append("</b></font></td>");
-      str.append("<td><font size=+1 face='Courier New' color=green>");
-      switch(md->mltpx) {
-        case (1): str += "&nbsp;*"; break;
-        case (2): str += "&nbsp;R"; break;
-        default:  str += "&nbsp;&nbsp;"; break;
-      };
+      str += "</b></td>";
 
-      str += " " + md->srcRaw.toString(g_model);
-      str += " " + Qt::escape(tr("Weight(%1)").arg(getGVarString(md->weight, true)));
-
-      QString phasesStr = getPhasesStr(md->phases, g_model);
-      if (!phasesStr.isEmpty()) str += " " + Qt::escape(phasesStr);
-
-      if (md->swtch.type != SWITCH_TYPE_NONE) {
-        str += " " + Qt::escape(tr("Switch(%1)").arg(md->swtch.toString()));
-      }
-
-      if (md->carryTrim>0)
-        str += " " + Qt::escape(tr("NoTrim"));
-      else if (md->carryTrim<0)
-        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString(g_model);
-
-      if (firmware->getCapability(HasNoExpo) && md->noExpo) str += " " + Qt::escape(tr("No DR/Expo"));
-      if (md->sOffset)     str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(md->sOffset)));
-      if (md->curve.value) str += " " + Qt::escape(md->curve.toString());
-  
-      int scale = firmware->getCapability(SlowScale);
-      if (scale == 0)
-        scale = 1;
-      if (md->delayDown || md->delayUp)
-        str += Qt::escape(tr(" Delay(u%1:d%2)").arg((double)md->delayUp/scale).arg((double)md->delayDown/scale));
-      if (md->speedDown || md->speedUp)
-        str += Qt::escape(tr(" Slow(u%1:d%2)").arg((double)md->speedUp/scale).arg((double)md->speedDown/scale));
-      if (md->mixWarn)
-        str += Qt::escape(tr(" Warn(%1)").arg(md->mixWarn));
-      if (firmware->getCapability(HasMixerNames)) {
-        QString MixerName;
-        MixerName.append(md->name);
-        if (!MixerName.isEmpty()) {
-          str += " " + Qt::escape(QString("(%1)").arg(MixerName));
-        }
-      }
-      str.append("</font></td></tr>");
+      str += "<td>" + addFont(modelPrinter.printMixerLine(md), "green", "+1", "Courier New") + "</td>";
+      str += "</tr>";
     }
-    str.append("</table></td></tr></table><br>");
+    str += "</table></td></tr></table><br>";
     te->append(str);
+    // debugHtml(str);
 }
 
 void PrintDialog::printLimits()
@@ -572,27 +468,25 @@ void PrintDialog::printCurves()
     }
 }
 
-void PrintDialog::printSwitches()
+void PrintDialog::printLogicalSwitches()
 {
-    int sc=0;
-    QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
-    str.append("<tr><td><h2>"+tr("Logical Switches")+"</h2></td></tr>");
-    str.append("<tr><td><table border=0 cellspacing=0 cellpadding=3>");
-
-    for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
-      if (g_model->logicalSw[i].func) {
-        str.append("<tr>");
-        str.append("<td width=\"60\"><b>"+tr("L")+QString("%1</b></td>").arg(i+1));
-        QString tstr = g_model->logicalSw[i].toString(*g_model, *g_eeGeneral);
-        str.append(doTL(tstr,"green"));
-        str.append("</tr>");
-        sc++;
-      }
+  bool haveOutput = false;
+  QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
+  str += "<tr><td><h2>" + tr("Logical Switches") + "</h2></td></tr>";
+  str += "<tr><td><table border=0 cellspacing=0 cellpadding=3>";
+  for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
+    QString sw = modelPrinter.printLogicalSwitchLine(i);
+    if (!sw.isEmpty()) {
+      str += "<tr>";
+      str += "<td width=\"60\"><b>"+ tr("L") + QString("%1</b></td>").arg(i+1);
+      str += "<td align=left>" + addFont(sw, "green") + "</td>";
+      str += "</tr>";
+      haveOutput = true;
     }
-    str.append("</table></td></tr></table>");
-    str.append("<br>");
-    if (sc!=0)
-      te->append(str);
+  }
+  str += "</table></td></tr></table>";
+  str += "<br>";
+  if (haveOutput) te->append(str);
 }
 
 void PrintDialog::printGvars()
@@ -619,52 +513,35 @@ void PrintDialog::printGvars()
   }
 }
 
-void PrintDialog::printFSwitches()
+void PrintDialog::printCustomFunctions()
 {
-    int sc=0;
-    QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
-    str.append("<tr><td><h2>"+tr("Special Functions")+"</h2></td></tr>");
-    str.append("<tr><td><table border=0 cellspacing=0 cellpadding=3><tr>");
-    str.append("<td width=\"60\"><b>#</b></td>");
-    str.append(doTL(tr("Switch"), "", true));
-    str.append(doTL(tr("Function"), "", true));
-    str.append(doTL(tr("Parameter"), "", true));
-    str.append(doTL(tr("Repeat"), "", true));
-    str.append(doTL(tr("Enabled"), "", true));
-    str.append("</tr>");
-    for(int i=0; i<firmware->getCapability(CustomFunctions); i++) {
-      if (g_model->customFn[i].swtch.type!=SWITCH_TYPE_NONE) {
-          str.append("<tr>");
-          str.append(doTL(tr("SF%1").arg(i+1),"", true));
-          str.append(doTL(g_model->customFn[i].swtch.toString(),"green"));
-          str.append(doTL(g_model->customFn[i].funcToString(),"green"));
-          str.append(doTL(g_model->customFn[i].paramToString(),"green"));
-          int index=g_model->customFn[i].func;
-          if ((g_model->customFn[i].repeatParam>0) && 
-              (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic)) {
-            str.append(doTL(QString("%1").arg(g_model->customFn[i].repeatParam),"green"));
-          } else {
-            str.append(doTL( "&nbsp;","green"));
-          }
-          if ((index<=FuncInstantTrim) || (index>FuncBackgroundMusicPause)) {
-            str.append(doTL((g_model->customFn[i].enabled ? "ON" : "OFF"),"green"));
-          } else {
-            str.append(doTL( "---","green"));
-          }
-          str.append("</tr>");
-          sc++;
-      }
+  bool haveOutput = false;
+  QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
+  str += "<tr><td><h2>" + tr("Special Functions") + "</h2></td></tr>";
+  str += "<tr><td><table border=0 cellspacing=0 cellpadding=3>";
+  for (int i=0; i<firmware->getCapability(CustomFunctions); i++) {
+    QString cf = modelPrinter.printCustomFunctionLine(i);
+    if (!cf.isEmpty()) {
+      str += "<tr>";
+      str += "<td width=\"60\"><b>"+ tr("SF") + QString("%1</b></td>").arg(i+1);
+      str += "<td align=left>" + addFont(cf, "green") + "</td>";
+      str += "</tr>";
+      haveOutput = true;
     }
-    str.append("</table></td></tr></table>");
-    str.append("<br>");
-    if (sc!=0)
-      te->append(str);
+  }
+  str += "</table></td></tr></table>";
+  str += "<br>";
+  if (haveOutput) te->append(str);
 }
 
 void PrintDialog::printFrSky()
 {
   int tc=0;
   QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
+  int analog=2;
+  if (IS_ARM(firmware->getBoard())) {
+    analog=4;
+  }
 
   if (IS_TARANIS(GetEepromInterface()->getBoard())) {
     str.append("<tr><td colspan=3><h2>"+tr("Telemetry Settings")+"</h2></td></tr>");
@@ -675,7 +552,7 @@ void PrintDialog::printFrSky()
     str.append("</tr>");
 
     FrSkyData *fd=&g_model->frsky;
-    for (int i=0; i<2; i++) {
+    for (int i=0; i<analog; i++) {
       if (fd->channels[i].ratio!=0) {
         tc++;
         float ratio=(fd->channels[i].ratio/(fd->channels[i].type==0 ?10.0:1));
@@ -725,7 +602,7 @@ void PrintDialog::printFrSky()
     str.append("<td width=\"40\" align=\"center\"><b>"+tr("Type")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Condition")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Value")+"</b></td>");
     str.append("<td width=\"40\" align=\"center\"><b>"+tr("Type")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Condition")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Value")+"</b></td></tr>");
     FrSkyData *fd=&g_model->frsky;
-    for (int i=0; i<2; i++) {
+    for (int i=0; i<analog; i++) {
       if (fd->channels[i].ratio!=0) {
         tc++;
         float ratio=(fd->channels[i].ratio/(fd->channels[i].type==0 ?10.0:1));
@@ -749,7 +626,7 @@ void PrintDialog::printFrSky()
     str.append("<td width=\"40\" align=\"center\"><b>"+getFrSkyAlarmType(fd->rssiAlarms[1].level)+"</b></td><td width=\"40\" align=\"center\"><b>&lt;</b></td><td width=\"40\" align=\"center\"><b>"+QString::number(fd->rssiAlarms[1].value,10)+"</b></td></tr>");
     str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr>");
     str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Frsky serial protocol")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyProtocol(fd->usrProto)+"</td></tr>");
-    str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Blades")+"</b></td><td colspan=8 align=\"left\">"+fd->blades+"</td></tr>");
+    str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Blades")+"</b></td><td colspan=8 align=\"left\">"+QString("%1").arg(fd->blades)+"</td></tr>");
     str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr></table>");
   }
 #if 0

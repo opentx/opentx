@@ -3,6 +3,7 @@
 
 #include "modeledit.h"
 #include "mixerslist.h"
+#include "modelprinter.h"
 
 class InputsPanel : public ModelPanel
 {
@@ -35,6 +36,7 @@ class InputsPanel : public ModelPanel
     MixersList *ExposlistWidget;
     bool firstLine;
     int inputsCount;
+    ModelPrinter modelPrinter;
 
     int getExpoIndex(unsigned int dch);
     bool gm_insertExpo(int idx);

@@ -101,7 +101,6 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
 void populatePhasesCB(QComboBox *b, int value);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
 QString getProtocolStr(const int proto);
-QString getPhasesStr(unsigned int phases, ModelData * model);
 
 #define POPULATE_NONE           (1<<0)
 #define POPULATE_SOURCES        (1<<1)
@@ -120,7 +119,6 @@ QString getPhasesStr(unsigned int phases, ModelData * model);
 void populateGVCB(QComboBox *b, int value);
 void populateSourceCB(QComboBox *b, const RawSource &source, const GeneralSettings generalSettings, const ModelData * model, unsigned int flags);
 QString getPhaseName(int val, const char * phasename=NULL);
-QString getInputStr(ModelData * model, int index);
 QString image2qstring(QImage image);
 int findmult(float value, float base);
 
