@@ -36,6 +36,11 @@
 
 #include "opentx.h"
 
+#define SBUS_FLAGS_IDX 23
+
+#define SBUS_FRAMELOST_BIT   2
+#define SBUS_FAILSAFE_BIT    3
+
 Fifo<32> sbusFifo;
 uint8_t SbusFrame[28] ;
 uint16_t SbusTimer ;
@@ -52,6 +57,11 @@ void processSbusFrame(uint8_t *sbus, int16_t *pulses, uint32_t size)
 
   if (size < 23) {
     return;
+  }
+
+  if (size > SBUS_FLAGS_IDX &&
+      (sbus[SBUS_FLAGS_IDX-1] & (1<<SBUS_FAILSAFE_BIT))) {
+    return; // SBUS failsafe mode
   }
 
   for (uint32_t i=0; i<NUM_TRAINER; i++) {
