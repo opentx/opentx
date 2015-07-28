@@ -636,47 +636,17 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
   QStringList qs;
   b->clear();
   if (function==FuncPlaySound) {
-    qs <<"Beep 1" << "Beep 2" << "Beep 3" << "Warn1" << "Warn2" << "Cheep" << "Ratata" << "Tick" << "Siren" << "Ring" ;
-    qs << "SciFi" << "Robot" << "Chirp" << "Tada" << "Crickt"  << "AlmClk"  ;
+    CustomFunctionData::populatePlaySoundParams(qs);
     b->addItems(qs);
     b->setCurrentIndex(value);
   }
   else if (function==FuncPlayHaptic) {
-    qs << "0" << "1" << "2" << "3";
+    CustomFunctionData::populateHapticParams(qs);
     b->addItems(qs);
     b->setCurrentIndex(value);
   }
   else if (function==FuncReset) {
-    int val = 0;
-    b->addItem(tr("Timer1"), val++);
-    b->addItem(tr("Timer2"), val++);
-    if (IS_ARM(firmware->getBoard())) {
-      b->addItem( QObject::tr("Timer3"), val++);
-    }
-    b->addItem(tr("Flight"), val++);
-    b->addItem(tr("Telemetry"), val++);
-    int reCount = firmware->getCapability(RotaryEncoders);
-    if (reCount == 1) {
-      b->addItem(tr("Rotary Encoder"), val++);
-    }
-    else if (reCount == 2) {
-      b->addItem(tr("REa"), val++);
-      b->addItem(tr("REb"), val++);
-    }
-    if ((int)value < b->count()) {
-      b->setCurrentIndex(value);
-    }
-    if (model && IS_ARM(firmware->getBoard())) {
-      for (int i=0; i<C9X_MAX_SENSORS; ++i) {
-        if (model->sensorData[i].isAvailable()) {
-          RawSource item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i);
-          b->addItem(item.toString(model), val+i);
-          if ((int)value == val+i) {
-            b->setCurrentIndex(b->count()-1);
-          }
-        }
-      }
-    }
+    CustomFunctionData::populateResetParams(model, b, value);
   }
   else if (function==FuncVolume) {
     populateSourceCB(b, RawSource(value), generalSettings, model, POPULATE_NONE|POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_TRIMS|POPULATE_SWITCHES);

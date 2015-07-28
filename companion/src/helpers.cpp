@@ -65,26 +65,6 @@ QString getPhaseName(int val, const char * phasename)
   }
 }
 
-QString getInputStr(ModelData * model, int index)
-{
-  QString result;
-
-  if (GetCurrentFirmware()->getCapability(VirtualInputs)) {
-    if (strlen(model->inputNames[index]) > 0) {
-      result = QObject::tr("[I%1]").arg(index+1);
-      result += QString(model->inputNames[index]);
-    }
-    else {
-      result = QObject::tr("Input%1").arg(index+1, 2, 10, QChar('0'));
-    }
-  }
-  else {
-    result = RawSource(SOURCE_TYPE_STICK, index).toString(model);
-  }
-
-  return result;
-}
-
 void populateGvSourceCB(QComboBox *b, int value)
 {
   QString strings[] = { QObject::tr("---"), QObject::tr("Rud Trim"), QObject::tr("Ele Trim"), QObject::tr("Thr Trim"), QObject::tr("Ail Trim"), QObject::tr("Rot Enc"), QObject::tr("Rud"), QObject::tr("Ele"), QObject::tr("Thr"), QObject::tr("Ail"), QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3")};
@@ -856,34 +836,6 @@ QString getTrainerMode(const int trainermode, ModuleData & module)
       result=QObject::tr("Master/Jack");
   }
   return result;
-}
-
-QString getPhasesStr(unsigned int phases, ModelData * model)
-{
-  int numphases = GetCurrentFirmware()->getCapability(FlightModes);
-
-  if (numphases && phases) {
-    QString str;
-    int count = 0;
-    if (phases == (unsigned int)(1<<numphases) - 1) {
-      str = QObject::tr("None");
-    }
-    if (phases) {
-      for (int i=0; i<numphases;i++) {
-        if (!(phases & (1<<i))) {
-          if (count++ > 0) str += QString(", ");
-          str += getPhaseName(i+1, model->flightModeData[i].name);
-        }
-      }
-    }
-    if (count > 1)
-      return QObject::tr("Flight modes(%1)").arg(str);
-    else
-      return QObject::tr("Flight mode(%1)").arg(str);
-  }
-  else {
-    return "";
-  }
 }
 
 QString getCenterBeepStr(ModelData * g_model)

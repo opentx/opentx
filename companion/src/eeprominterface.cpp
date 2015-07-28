@@ -561,7 +561,7 @@ QString SwitchDn(const char sw)
   return QString::fromUtf8(result);
 }
 
-QString RawSwitch::toString()
+QString RawSwitch::toString() const
 {
   static const QString switches9X[] = {
     QString("THR"), QString("RUD"), QString("ELE"),
@@ -659,7 +659,7 @@ QString RawSwitch::toString()
   }
 }
 
-QString CurveReference::toString()
+QString CurveReference::toString() const
 {
   if (value == 0) {
     return "----";
@@ -678,7 +678,7 @@ QString CurveReference::toString()
   }
 }
 
-CSFunctionFamily LogicalSwitchData::getFunctionFamily()
+CSFunctionFamily LogicalSwitchData::getFunctionFamily() const
 {
   if (func == LS_FN_EDGE)
     return LS_FAMILY_EDGE;
@@ -694,7 +694,7 @@ CSFunctionFamily LogicalSwitchData::getFunctionFamily()
     return LS_FAMILY_VCOMP;
 }
 
-unsigned int LogicalSwitchData::getRangeFlags()
+unsigned int LogicalSwitchData::getRangeFlags() const
 {
   if (func == LS_FN_DPOS)
     return RANGE_DELTA_FUNCTION;
@@ -704,7 +704,7 @@ unsigned int LogicalSwitchData::getRangeFlags()
     return 0;
 }
 
-QString LogicalSwitchData::funcToString()
+QString LogicalSwitchData::funcToString() const
 {
   switch (func) {
     case LS_FN_OFF:
@@ -754,127 +754,6 @@ QString LogicalSwitchData::funcToString()
   }
 }
 
-QString LogicalSwitchData::toString(const ModelData & model, const GeneralSettings & settings)
-{
-  QString result = "";
-
-  if (!func)
-    return result;
-
-  if (andsw!=0) {
-    result +="( ";
-  }
-  switch (getFunctionFamily()) {
-    case LS_FAMILY_EDGE:
-      result += QObject::tr("Edge(%1, [%2:%3])").arg(RawSwitch(val1).toString()).arg(ValToTim(val2)).arg(ValToTim(val2+val3));
-      break;
-    case LS_FAMILY_STICKY:
-      result += QObject::tr("Sticky(%1, %2)").arg(RawSwitch(val1).toString()).arg(RawSwitch(val2).toString());
-      break;
-    case LS_FAMILY_TIMER:
-      result += QObject::tr("Timer(%1, %2)").arg(ValToTim(val1)).arg(ValToTim(val2));
-      break;
-    case LS_FAMILY_VOFS: {
-      RawSource source = RawSource(val1);
-      RawSourceRange range = source.getRange(&model, settings);
-      QString res;
-      if (val1)
-        res += source.toString(&model);
-      else
-        res += "0";
-      res.remove(" ");
-      if (func == LS_FN_APOS || func == LS_FN_ANEG)
-        res = "|" + res + "|";
-      else if (func == LS_FN_DAPOS)
-        res = "|d(" + res + ")|";
-      else if (func == LS_FN_DPOS)
-        res = "d(" + res + ")";
-      result += res;
-      if (func == LS_FN_APOS || func == LS_FN_VPOS || func == LS_FN_DPOS || func == LS_FN_DAPOS)
-        result += " &gt; ";
-      else if (func == LS_FN_EQUAL || func == LS_FN_VEQUAL)
-        result += " = ";
-      else if (func == LS_FN_NEQUAL)
-        result += " != ";
-      else if (func == LS_FN_ANEG || func == LS_FN_VNEG)
-        result += " &lt; ";
-      else if (func == LS_FN_VALMOSTEQUAL)
-        result += " ~ ";
-      else
-        result += " missing";
-      result += QString::number(range.step * (val2 /*TODO+ source.getRawOffset(model)*/) + range.offset);
-      break;
-    }
-    case LS_FAMILY_VBOOL:
-      result += RawSwitch(val1).toString();
-      switch (func) {
-        case LS_FN_AND:
-          result += " AND ";
-          break;
-        case LS_FN_OR:
-          result += " OR ";
-          break;
-        case LS_FN_XOR:
-          result += " XOR ";
-          break;
-       default:
-          result += " bar ";
-          break;
-      }
-      result += RawSwitch(val2).toString();
-      break;
-
-    case LS_FAMILY_VCOMP:
-      if (val1)
-        result += RawSource(val1).toString(&model);
-      else
-        result += "0";
-      switch (func) {
-        case LS_FN_EQUAL:
-        case LS_FN_VEQUAL:
-          result += " = ";
-          break;
-        case LS_FN_NEQUAL:
-          result += " != ";
-          break;
-        case LS_FN_GREATER:
-          result += " &gt; ";
-          break;
-        case LS_FN_LESS:
-          result += " &lt; ";
-          break;
-        case LS_FN_EGREATER:
-          result += " &gt;= ";
-          break;
-        case LS_FN_ELESS:
-          result += " &lt;= ";
-          break;
-        default:
-          result += " foo ";
-          break;
-      }
-      if (val2)
-        result += RawSource(val2).toString(&model);
-      else
-        result += "0";
-      break;
-  }
-
-  if (andsw!=0) {
-    result +=" ) AND ";
-    result += RawSwitch(andsw).toString();
-  }
-
-  if (GetCurrentFirmware()->getCapability(LogicalSwitchesExt)) {
-    if (duration)
-      result += QObject::tr(" Duration (%1s)").arg(duration/10.0);
-    if (delay)
-      result += QObject::tr(" Delay (%1s)").arg(delay/10.0);
-  }
-
-  return result;
-}
-
 void CustomFunctionData::clear()
 {
   memset(this, 0, sizeof(CustomFunctionData));
@@ -883,7 +762,7 @@ void CustomFunctionData::clear()
   }
 }
 
-QString CustomFunctionData::funcToString()
+QString CustomFunctionData::funcToString() const
 {
   if (func >= FuncOverrideCH1 && func <= FuncOverrideCH32)
     return QObject::tr("Override %1").arg(RawSource(SOURCE_TYPE_CH, func).toString());
@@ -936,36 +815,84 @@ QString CustomFunctionData::funcToString()
   }
 }
 
-QString CustomFunctionData::paramToString()
+void CustomFunctionData::populateResetParams(ModelData * model, QComboBox * b, unsigned int value = 0) 
+{
+  int val = 0;
+  Firmware * firmware = GetCurrentFirmware();
+  BoardEnum board = GetEepromInterface()->getBoard();
+
+  b->addItem(QObject::tr("Timer1"), val++);
+  b->addItem(QObject::tr("Timer2"), val++);
+  if (IS_ARM(board)) {
+    b->addItem( QObject::tr("Timer3"), val++);
+  }
+  b->addItem(QObject::tr("Flight"), val++);
+  b->addItem(QObject::tr("Telemetry"), val++);
+  int reCount = firmware->getCapability(RotaryEncoders);
+  if (reCount == 1) {
+    b->addItem(QObject::tr("Rotary Encoder"), val++);
+  }
+  else if (reCount == 2) {
+    b->addItem(QObject::tr("REa"), val++);
+    b->addItem(QObject::tr("REb"), val++);
+  }
+  if ((int)value < b->count()) {
+    b->setCurrentIndex(value);
+  }
+  if (model && IS_ARM(board)) {
+    for (int i=0; i<C9X_MAX_SENSORS; ++i) {
+      if (model->sensorData[i].isAvailable()) {
+        RawSource item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i);
+        b->addItem(item.toString(model), val+i);
+        if ((int)value == val+i) {
+          b->setCurrentIndex(b->count()-1);
+        }
+      }
+    }
+  }
+}
+
+void CustomFunctionData::populatePlaySoundParams(QStringList & qs)
+{
+  qs <<"Beep 1" << "Beep 2" << "Beep 3" << "Warn1" << "Warn2" << "Cheep" << "Ratata" << "Tick" << "Siren" << "Ring" ;
+  qs << "SciFi" << "Robot" << "Chirp" << "Tada" << "Crickt"  << "AlmClk"  ;
+}
+
+void CustomFunctionData::populateHapticParams(QStringList & qs) 
+{
+  qs << "0" << "1" << "2" << "3";
+}
+
+QString CustomFunctionData::paramToString(ModelData * model) const
 {
   QStringList qs;
   if (func <= FuncInstantTrim) {
     return QString("%1").arg(param);
   }
+  else if (func==FuncLogs) {
+    return QString("%1").arg(param/10.0) + QObject::tr("s");
+  }
   else if (func==FuncPlaySound) {
-    qs <<"Beep 1" << "Beep 2" << "Beep 3" << "Warn1" << "Warn2" << "Cheep" << "Ratata" << "Tick" << "Siren" << "Ring" ;
-    qs << "SciFi" << "Robot" << "Chirp" << "Tada" << "Crickt"  << "AlmClk"  ;
+    CustomFunctionData::populatePlaySoundParams(qs);
     if (param>=0 && param<(int)qs.count())
       return qs.at(param);
     else
       return QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
   else if (func==FuncPlayHaptic) {
-    qs << "0" << "1" << "2" << "3";
+    CustomFunctionData::populateHapticParams(qs);
     if (param>=0 && param<(int)qs.count())
       return qs.at(param);
     else
       return QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
   else if (func==FuncReset) {
-    qs.append( QObject::tr("Timer1"));
-    qs.append( QObject::tr("Timer2"));
-    qs.append( QObject::tr("Timer3"));
-    qs.append( QObject::tr("All"));
-    qs.append( QObject::tr("Telemetry"));
-    if (param>=0 && param<(int)qs.count())
-      return qs.at(param);
-    else
+    QComboBox cb;
+    CustomFunctionData::populateResetParams(model, &cb);
+    int pos = cb.findData(param);
+    if (pos >= 0)
+      return cb.itemText(pos);
+    else 
       return QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
   else if ((func==FuncVolume)|| (func==FuncPlayValue)) {
@@ -980,41 +907,45 @@ QString CustomFunctionData::paramToString()
       return paramarm;
     }
   }
-  else if ((func>FuncBackgroundMusicPause) && (func<FuncCount)) {
+  else if ((func>=FuncAdjustGV1) && (func<FuncCount)) {
     switch (adjustMode) {
       case 0:
         return QObject::tr("Value ")+QString("%1").arg(param);
-        break;
       case 1:
-        return RawSource(param).toString();
-        break;
       case 2:
         return RawSource(param).toString();
-        break;
       case 3:
-        if (param==0) {
-          return QObject::tr("Decr:")+QString(" -1");
-        }
-        else {
-          return QObject::tr("Incr:")+QString(" +1");
-        }
-        break;
-      default:
-        return "";
+        if (param==0) return QObject::tr("Decr:") + " -1";
+        else          return QObject::tr("Incr:") + " +1";
     }
   }
   return "";
 }
 
-QString CustomFunctionData::repeatToString()
+QString CustomFunctionData::repeatToString() const
 {
   if (repeatParam==0) {
-    return QObject::tr("No repeat");
+    return "";
   }
   else {
-    unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 5 : 10;
-    return QObject::tr("%1 sec").arg(step*repeatParam);
+    unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 1 : 10;
+    return QObject::tr("repeat") + QString("(%1").arg(step*repeatParam) + QObject::tr("s") + ")";
   }
+}
+
+QString CustomFunctionData::enabledToString() const
+{
+  if ((func>=FuncOverrideCH1 && func<=FuncOverrideCH32) ||
+      (func>=FuncAdjustGV1 && func<=FuncAdjustGVLast) ||
+      (func==FuncReset) ||
+      (func>=FuncSetTimer1 && func<=FuncSetTimer2) ||
+      (func==FuncVolume) ||
+      (func <= FuncInstantTrim)) {
+    if (!enabled) {
+      return QObject::tr("DISABLED");
+    }
+  }
+  return "";
 }
 
 QString LimitData::minToString()

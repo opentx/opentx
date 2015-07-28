@@ -6,7 +6,8 @@
 MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   mixInserted(false), 
-  highlightedSource(0)
+  highlightedSource(0),
+  modelPrinter(firmware, &generalSettings, &model)
 {
   QGridLayout * mixesLayout = new QGridLayout(this);
 
@@ -41,23 +42,6 @@ MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
 
 MixesPanel::~MixesPanel()
 {
-}
-
-QString MixesPanel::getChannelLabel(int curDest)
-{
-  QString str;
-  str = QObject::tr("CH%1").arg(curDest);
-  // TODO not nice, Qt brings a function for that, I don't remember right now
-  (str.length() < 4) ? str.append("  ") : str.append(" ");
-  if (firmware->getCapability(HasChNames)) {
-    QString name = model->limitData[curDest-1].name;
-    if (!name.isEmpty()) {
-      name = QString("(") + name + QString(")");
-    }
-    name.append("        ");
-    str += name.left(8);
-  }
-  return Qt::escape(str);
 }
 
 void MixesPanel::update()
@@ -141,8 +125,8 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
   QString str;
   if (new_ch) *new_ch = 0;
   if (dest < 0) {
-    str = getChannelLabel(-dest);
-    //highlight channell if needed
+    str = modelPrinter.printMixerName(-dest);
+    //highlight channel if needed
     if (-dest == (int)highlightedSource) {
       str = "<b>" + str + "</b>";
     }
@@ -151,11 +135,11 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
   else {
     MixData *md = &model->mixData[dest];
     //md->destCh from 1 to 32
-    str = getChannelLabel(md->destCh);
+    str = modelPrinter.printMixerName(md->destCh);
 
     if ((dest == 0) || (model->mixData[dest-1].destCh != md->destCh)) {
       if (new_ch) *new_ch = 1;
-      //highlight channell if needed
+      //highlight channel if needed
       if (md->destCh == highlightedSource) {
         str = "<b>" + str + "</b>";
       }
@@ -164,53 +148,7 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
       str.fill(' ');
     }
 
-    switch (md->mltpx) {
-      case (1): str += " *"; break;
-      case (2): str += " R"; break;
-      default:  str += "  "; break;
-    };
-
-    // highlight source if needed
-    if ( (md->srcRaw.type == SOURCE_TYPE_CH) && (md->srcRaw.index+1 == (int)highlightedSource) ) {
-      str += " <b>" + Qt::escape(md->srcRaw.toString(model)) + "</b>";
-    }
-    else {
-      str += " " + Qt::escape(md->srcRaw.toString(model));
-    }
-
-    str += " " + Qt::escape(tr("Weight(%1)").arg(getGVarString(md->weight, true)));
-
-    QString phasesStr = getPhasesStr(md->phases, model);
-    if (!phasesStr.isEmpty()) str += " " + Qt::escape(phasesStr);
-
-    if (md->swtch.type != SWITCH_TYPE_NONE) {
-      str += " " + Qt::escape(tr("Switch(%1)").arg(md->swtch.toString()));
-    }
-
-    if (md->carryTrim > 0)
-      str += " " + Qt::escape(tr("NoTrim"));
-    else if (md->carryTrim<0)
-      str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString(model);
-
-    if (firmware->getCapability(HasNoExpo) && md->noExpo) str += " " + Qt::escape(tr("No DR/Expo"));
-    if (md->sOffset)     str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(md->sOffset)));
-    if (md->curve.value) str += " " + Qt::escape(md->curve.toString());
-
-    int scale = firmware->getCapability(SlowScale);
-    if (scale == 0)
-      scale = 1;
-    if (md->delayDown || md->delayUp)
-      str += Qt::escape(tr(" Delay(u%1:d%2)").arg((double)md->delayUp/scale).arg((double)md->delayDown/scale));
-    if (md->speedDown || md->speedUp)
-      str += Qt::escape(tr(" Slow(u%1:d%2)").arg((double)md->speedUp/scale).arg((double)md->speedDown/scale));
-    if (md->mixWarn)  str += Qt::escape(tr(" Warn(%1)").arg(md->mixWarn));
-    if (firmware->getCapability(HasMixerNames)) {
-      QString MixerName;
-      MixerName.append(md->name);
-      if (!MixerName.isEmpty()) {
-        str += " " + Qt::escape(QString("(%1)").arg(MixerName));
-      }
-    }
+    str += modelPrinter.printMixerLine(md, highlightedSource);
   }
   return str.replace(" ", "&nbsp;");
 }

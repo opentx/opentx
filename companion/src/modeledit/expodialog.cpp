@@ -10,13 +10,14 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   generalSettings(generalSettings),
   firmware(firmware),
   ed(expoData),
-  inputName(inputName)
+  inputName(inputName),
+  modelPrinter(firmware, &generalSettings, &model)
 {
   ui->setupUi(this);
   QLabel * lb_fp[] = {ui->lb_FP0,ui->lb_FP1,ui->lb_FP2,ui->lb_FP3,ui->lb_FP4,ui->lb_FP5,ui->lb_FP6,ui->lb_FP7,ui->lb_FP8 };
   QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
 
-  setWindowTitle(tr("Edit %1").arg(getInputStr(&model, ed->chn)));
+  setWindowTitle(tr("Edit %1").arg(modelPrinter.printInputName(ed->chn)));
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
 
   if (IS_TARANIS(GetEepromInterface()->getBoard())) {
