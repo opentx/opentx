@@ -41,7 +41,6 @@ CompareDialog::CompareDialog(QWidget * parent, Firmware * firmware):
   te = ui->textEdit;
   this->setAcceptDrops(true);
 
-
   //setDragDropOverwriteMode(true);
   //setDropIndicatorShown(true);
   te->scrollToAnchor("1");
