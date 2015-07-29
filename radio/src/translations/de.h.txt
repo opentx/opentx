@@ -604,7 +604,7 @@
 #define TR_ELIMITS             TR("Erw. Limit", "Erw. Wege auf 150%")
 #define TR_ETRIMS              TR("Erw. Trims", "Erw. Trim  auf 100%")
 #define TR_TRIMINC             TR("Trim Schr.", "Trimmschritte")
-#define TR_DISPLAY_TRIMS       TR("Trim anzeig", "Trimwerte anzeigen)")
+#define TR_DISPLAY_TRIMS       TR("Trim anzeig", "Trimwerte anzeigen")
 #define TR_TTRACE              TR("Gasquelle", INDENT "Gas-Timerquelle")
 #define TR_TTRIM 	       			 TR("Gastrim", INDENT "Gas-Leerlauftrim")  
 #define TR_BEEPCTR             TR("Mitt.Piep", "Mittelstell. -Pieps")
