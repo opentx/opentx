@@ -75,7 +75,7 @@ QString ModelPrinter::printInputLine(const ExpoData * ed)
   str += " " + Qt::escape(QObject::tr("Weight")) + QString("(%1)").arg(getGVarString(ed->weight,true));
   if (ed->curve.value) str += " " + Qt::escape(ed->curve.toString());
 
-  QString phasesStr = getPhasesStr(ed->phases);
+  QString phasesStr = printPhases(ed->phases);
   if (!phasesStr.isEmpty()) str += " " + Qt::escape(phasesStr);
 
   if (ed->swtch.type != SWITCH_TYPE_NONE) 
@@ -129,7 +129,7 @@ QString ModelPrinter::printMixerLine(const MixData * md, int highlightedSource)
 
   str += " " + Qt::escape(QObject::tr("Weight")) + QString("(%1)").arg(getGVarString(md->weight, true));
 
-  QString phasesStr = getPhasesStr(md->phases);
+  QString phasesStr = printPhases(md->phases);
   if (!phasesStr.isEmpty()) str += " " + Qt::escape(phasesStr);
 
   if (md->swtch.type != SWITCH_TYPE_NONE) {
@@ -158,7 +158,7 @@ QString ModelPrinter::printMixerLine(const MixData * md, int highlightedSource)
   return str;
 }
 
-QString ModelPrinter::getPhasesStr(unsigned int phases)
+QString ModelPrinter::printPhases(unsigned int phases)
 {
   int numphases = GetCurrentFirmware()->getCapability(FlightModes);
 

@@ -29,7 +29,7 @@ private:
   GeneralSettings * g_eeGeneral;
   ModelData * g_model;
 
-  QString getPhasesStr(unsigned int phases);
+  QString printPhases(unsigned int phases);
 };
 
 #endif //#ifndef MODELPRINTER_H
