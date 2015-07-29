@@ -1,4 +1,4 @@
-/* German checked 05.07.2015 r085 opentx V2.099 für X9D,X9D+, X9E, Th9, 9XR, 9XR-Pro  
+/* German checked 29.07.2015 r085 opentx V2.099 für X9D,X9D+, X9E, Th9, 9XR, 9XR-Pro  
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -461,7 +461,7 @@
 #define TR_TRIMS_VSRCRAW       TR("TrmS""TrmH""TrmG""TrmQ", "\313Sei""\313Höh""\313Gas""\313Qur")
 
 #if defined(PCBTARANIS) && defined(REV9E)
-  #define TR_POTS_VSRCRAW      "\310S1\0""\310S2\0""\310S3\0""\310S4\0""\311LS\0""\311RS\0""\311LS2""\311RS2"
+  #define TR_POTS_VSRCRAW      "\310F1\0""\310F2\0""\310F3\0""\310F4\0""\311S1\0""\311S2\0""\311LS""\311RS"
   #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0""\312SK\0""\312SL\0""\312SM\0""\312SN\0""\312SO\0""\312SP\0""\312SQ\0""\312SR\0"
 #elif defined(PCBTARANIS)
   #define TR_POTS_VSRCRAW      "\310S1\0""\310S2\0""\310S3\0""\311LS\0""\311RS\0"
@@ -511,7 +511,7 @@
 #endif
 
 #if defined(HELI)
-#define TR_CYC_VSRCRAW         "ZYK1""ZYK2""ZYK3"
+#define TR_CYC_VSRCRAW         "CYC1""CYC2""CYC3"
 #else
 #define TR_CYC_VSRCRAW         "[C1]""[C2]""[C3]"
 #endif
@@ -771,7 +771,7 @@
 #define TR_MENUSETUP           TR("MODELL-EINSTELLUNG", "MODELL-EINSTELLUNGEN")
 #define TR_MENUFLIGHTPHASE     "FLUGPHASE"
 #define TR_MENUFLIGHTPHASES    "FLUGPHASEN"
-#define TR_MENUHELISETUP       "HELI TS-Mischer CYC1-3"
+#define TR_MENUHELISETUP       TR("HELI TS-Mischer", "HELI TS-Mischer CYC1-3")
 
 #if defined(PCBTARANIS)
   #define TR_MENUINPUTS        "INPUTS"
@@ -924,7 +924,7 @@
 #define TR_BYTES               "Bytes"
 #define TR_MODULE_BIND         "[Bind]"
 #define TR_MODULE_RANGE        "[Range]"
-#define TR_RESET_BTN           "[Reset]"
+#define TR_RESET_BTN           TR("[Reset]", "[Reset Trim]")
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             "----DSC Buchse PPM In/Out------" //DSC Buchse Trainer Buchse
 #define TR_ANTENNAPROBLEM      CENTER "TX-Antennenproblem!"
@@ -1083,13 +1083,13 @@
 #define TR_ONLYPOSITIVE        "Nur Positiv"
 #define TR_FILTER              "Filter aktiv"
 #define TR_TELEMETRYFULL       "Telemetriezeilen voll!"
-
+// ----------------------------- Symbole für Auswahlliste----------
 #define TR_MENU_INPUTS         "\314Inputs"
 #define TR_MENU_LUA            "\322Lua Scripte"
 #define TR_MENU_STICKS         "\307Knüppel"
 #define TR_MENU_POTS           "\310Potis"
 #define TR_MENU_MAX            "\315MAX"
-#define TR_MENU_HELI           "\316HeliCyclic"
+#define TR_MENU_HELI           "\316Heli-TS CYC1-3"
 #define TR_MENU_TRIMS          "\313Trimmung"
 #define TR_MENU_SWITCHES       "\312Schalter"
 #define TR_MENU_LOGICAL_SWITCHES "\312Log. Schalter"
@@ -1098,8 +1098,8 @@
 #define TR_MENU_GVARS          "\311Glob. Vars"
 #define TR_MENU_TELEMETRY      "\321Telemetrie"
 #define TR_MENU_OTHER          "Weitere"
-#define TR_MENU_INVERT         "Invertiert"
-
+#define TR_MENU_INVERT         "Invertiern<!>"
+// ----------------------------------------------------------------
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_SWR               "SWR"
 #define ZSTR_A1                "A1"
