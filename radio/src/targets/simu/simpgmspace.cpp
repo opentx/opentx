@@ -117,7 +117,7 @@ void simuInit()
       break;
 
 #if defined(CPUARM)
-  #if defined(PCBTARANIS)
+  #if defined(PCBTARANIS) && !defined(REV9E)
     #define SWITCH_CASE NEG_CASE
   #else
     #define SWITCH_CASE POS_CASE
