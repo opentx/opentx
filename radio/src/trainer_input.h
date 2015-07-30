@@ -40,13 +40,13 @@
 #include "myeeprom.h"
 
 // Trainer input channels
-extern int16_t g_ppmIns[NUM_TRAINER];
+extern int16_t ppmInput[NUM_TRAINER];
 
 // Timer gets decremented in per10ms()
 #define PPM_IN_VALID_TIMEOUT 100 // 1s
-extern uint8_t g_ppmInputValidityTimer;
+extern uint8_t ppmInputValidityTimer;
 
-#define IS_TRAINER_INPUT_VALID() (g_ppmInputValidityTimer != 0)
+#define IS_TRAINER_INPUT_VALID() (ppmInputValidityTimer != 0)
 
 #if defined(CPUARM)
 void checkTrainerSignalWarning();
@@ -63,7 +63,7 @@ inline void captureTrainerPulses(uint16_t capture)
   uint16_t val = (uint16_t)(capture - lastCapt) / 2;
   lastCapt = capture;
 
-  // We process g_ppmInsright here to make servo movement as smooth as possible
+  // We process ppmInput right here to make servo movement as smooth as possible
   //    while under trainee control
   //
   // G: Prioritize reset pulse. (Needed when less than 16 incoming pulses)
@@ -74,8 +74,8 @@ inline void captureTrainerPulses(uint16_t capture)
   else {
     if ((channelNumber > 0) && (channelNumber <= NUM_TRAINER)) {
       if (val>800 && val<2200) {
-        g_ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
-        g_ppmIns[channelNumber++ - 1] =
+        ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
+        ppmInput[channelNumber++ - 1] =
           //+-500 != 512, but close enough.
           (int16_t)(val - 1500)*(g_eeGeneral.PPM_Multiplier+10)/10; 
       }

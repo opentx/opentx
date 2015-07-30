@@ -155,7 +155,7 @@ void per10ms()
 #endif
 
   if (trimsCheckTimer) trimsCheckTimer--;
-  if (g_ppmInputValidityTimer) g_ppmInputValidityTimer--;
+  if (ppmInputValidityTimer) ppmInputValidityTimer--;
 
 #if defined(CPUARM)
   if (trimsDisplayTimer)

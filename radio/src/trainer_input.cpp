@@ -36,8 +36,8 @@
 
 #include "trainer_input.h"
 
-int16_t g_ppmIns[NUM_TRAINER];
-uint8_t g_ppmInputValidityTimer;
+int16_t ppmInput[NUM_TRAINER];
+uint8_t ppmInputValidityTimer;
 
 
 #if defined(CPUARM)
@@ -53,14 +53,14 @@ void checkTrainerSignalWarning()
 
   static uint8_t ppmInputValidState = PPM_IN_IS_NOT_USED;
 
-  if(g_ppmInputValidityTimer && (ppmInputValidState == PPM_IN_IS_NOT_USED)) {
+  if(ppmInputValidityTimer && (ppmInputValidState == PPM_IN_IS_NOT_USED)) {
     ppmInputValidState = PPM_IN_IS_VALID;
   }
-  else if (!g_ppmInputValidityTimer && (ppmInputValidState == PPM_IN_IS_VALID)) {
+  else if (!ppmInputValidityTimer && (ppmInputValidState == PPM_IN_IS_VALID)) {
     ppmInputValidState = PPM_IN_INVALID;
     AUDIO_TRAINER_LOST();
   }
-  else if (g_ppmInputValidityTimer && (ppmInputValidState == PPM_IN_INVALID)) {
+  else if (ppmInputValidityTimer && (ppmInputValidState == PPM_IN_INVALID)) {
     ppmInputValidState = PPM_IN_IS_VALID;
     AUDIO_TRAINER_BACK();
   }

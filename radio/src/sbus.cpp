@@ -87,7 +87,7 @@ void processSbusFrame(uint8_t *sbus, int16_t *pulses, uint32_t size)
     inputbits >>= SBUS_CH_BITS;
   }
 
-  g_ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
+  ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
 }
 
 void processSbusInput()
@@ -108,7 +108,7 @@ void processSbusInput()
   else {
     if (SbusIndex) {
       if ((uint16_t) (getTmr2MHz() - SbusTimer) > SBUS_FRAME_GAP_DELAY) {
-        processSbusFrame(SbusFrame, g_ppmIns, SbusIndex);
+        processSbusFrame(SbusFrame, ppmInput, SbusIndex);
         SbusIndex = 0;
       }
     }

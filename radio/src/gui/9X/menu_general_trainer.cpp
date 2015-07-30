@@ -97,15 +97,15 @@ void menuGeneralTrainer(uint8_t event)
     for (uint8_t i=0; i<4; i++) {
       uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
 #if defined (PPM_UNIT_PERCENT_PREC1)
-      lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
+      lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
 #else
-      lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])/5, 0);
+      lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5, 0);
 #endif
     }
 
     if (attr) {
       if (event==EVT_KEY_LONG(KEY_ENTER)){
-        memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
+        memcpy(g_eeGeneral.trainer.calib, ppmInput, sizeof(g_eeGeneral.trainer.calib));
         eeDirty(EE_GENERAL);
         AUDIO_WARNING1();
       }
