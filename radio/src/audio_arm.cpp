@@ -169,6 +169,8 @@ const char * const audioFilenames[] = {
   "swr_red",
   "telemko",
   "telemok",
+  "trainko",
+  "trainok",
 #if defined(PCBSKY9X)
   "highmah",
   "hightemp",

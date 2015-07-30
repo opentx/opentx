@@ -455,7 +455,7 @@ void evalInputs(uint8_t mode)
       }
 #endif
 
-      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER+ch) && ppmInValid) {
+      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER+ch) && IS_TRAINER_INPUT_VALID()) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
@@ -662,7 +662,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
 #define MIXER_LINE_DISABLE()   (mixCondition = true, mixEnabled = 0)
 
-      if (mixEnabled && md->srcRaw >= MIXSRC_FIRST_TRAINER && md->srcRaw <= MIXSRC_LAST_TRAINER && !ppmInValid) {
+      if (mixEnabled && md->srcRaw >= MIXSRC_FIRST_TRAINER && md->srcRaw <= MIXSRC_LAST_TRAINER && !IS_TRAINER_INPUT_VALID()) {
         MIXER_LINE_DISABLE();
       }
 

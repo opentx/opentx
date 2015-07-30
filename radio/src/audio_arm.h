@@ -331,6 +331,8 @@ void audioStart();
 #define AUDIO_RXBATT_RED()       audioEvent(AU_RXBATT_RED)
 #define AUDIO_TELEMETRY_LOST()   audioEvent(AU_TELEMETRY_LOST)
 #define AUDIO_TELEMETRY_BACK()   audioEvent(AU_TELEMETRY_BACK)
+#define AUDIO_TRAINER_LOST()     audioEvent(AU_TRAINER_LOST)
+#define AUDIO_TRAINER_BACK()     audioEvent(AU_TRAINER_BACK)
 
 #define AUDIO_HEARTBEAT()
 

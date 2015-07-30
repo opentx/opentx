@@ -121,8 +121,6 @@ void stop_trainer_capture()
 extern "C" void TIM3_IRQHandler()
 {
   uint16_t capture = 0;
-  static uint16_t lastCapt ;
-  uint16_t val ;
   bool doCapture = false ;
 
   // What mode? in or out?
@@ -139,25 +137,7 @@ extern "C" void TIM3_IRQHandler()
   }
 
   if (doCapture) {
-    val = (uint16_t)(capture - lastCapt) / 2 ;
-    lastCapt = capture;
-
-    // We process g_ppmInsright here to make servo movement as smooth as possible
-    //    while under trainee control
-    if (val>4000 && val<19000) { // G: Prioritize reset pulse. (Needed when less than 16 incoming pulses)
-      ppmInState = 1; // triggered
-    }
-    else {
-      if (ppmInState>0 && ppmInState<=16) {
-        if (val>800 && val<2200) {
-          ppmInValid = PPM_IN_VALID_TIMEOUT;
-          g_ppmIns[ppmInState++ - 1] = (int16_t)(val - 1500)*(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
-        }
-        else {
-          ppmInState = 0; // not triggered
-        }
-      }
-    }
+    captureTrainerPulses(capture);
   }
 
   // PPM out compare interrupt

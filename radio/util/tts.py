@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 
@@ -186,6 +186,8 @@ def ttsEn():
                     (u"radio antenna defective", "swr_red", NO_ALTERNATE),
                     (u"telemetry lost", "telemko", NO_ALTERNATE),
                     (u"telemetry recovered", "telemok", NO_ALTERNATE),
+                    (u"trainer signal lost", "trainko", NO_ALTERNATE),
+                    (u"trainer signal recovered", "trainok", NO_ALTERNATE),
                    ]:
         systemSounds.append((s, filename(f, a)))
     for i, (s, f) in enumerate([
@@ -282,6 +284,8 @@ def ttsFr():
                     (u"Antenne défectueuse", "swr_red", NO_ALTERNATE),
                     (u"Plus de télémétrie", "telemko", NO_ALTERNATE),
                     (u"Télémétrie retrouvée", "telemok", NO_ALTERNATE),
+                    (u"Signal écolage perdu", "trainko", NO_ALTERNATE),
+                    (u"Signal écolage retrouvé", "trainok", NO_ALTERNATE),
                    ]:
         systemSounds.append((s, filename(f, a)))
     for i, (s, f) in enumerate([
@@ -599,6 +603,10 @@ def ttsDe():
                     (u"Funksignal schlecht!", "rssi_org", NO_ALTERNATE),
                     (u"Funksignal kritisch!", "rssi_red", NO_ALTERNATE),
                     (u"Problem mit der sender Antenna", "swr_red", NO_ALTERNATE),
+                    (u"Telemetrie verloren", "telemko", NO_ALTERNATE),
+                    (u"Telemetrie wiederhergestellt", "telemok", NO_ALTERNATE),
+                    (u"Schülersignal verloren", "trainko", NO_ALTERNATE),
+                    (u"Schülersignal wiederhergestellt", "trainok", NO_ALTERNATE),
                  ]:
         systemSounds.append((s, filename(f, a)))
     for i, s in enumerate(["Timer", "Timer",  "Sendung", "Empfang", "A1", "A2", "Hoehe", "Motor",

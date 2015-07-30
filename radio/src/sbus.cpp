@@ -87,7 +87,7 @@ void processSbusFrame(uint8_t *sbus, int16_t *pulses, uint32_t size)
     inputbits >>= SBUS_CH_BITS;
   }
 
-  ppmInValid = PPM_IN_VALID_TIMEOUT;
+  g_ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
 }
 
 void processSbusInput()

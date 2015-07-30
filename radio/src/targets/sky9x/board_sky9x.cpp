@@ -248,31 +248,10 @@ void start_timer4()
 
 extern "C" void TC3_IRQHandler() //capture ppm in at 2MHz
 {
-  static uint16_t lastCapt ;
-
   uint16_t capture = TC1->TC_CHANNEL[0].TC_RA ;
   (void) TC1->TC_CHANNEL[0].TC_SR ;               // Acknowledge the interrupt
 
-  uint16_t val = ((uint16_t)(capture - lastCapt)) / 2;
-
-  // G: We process g_ppmIns immediately here, to make servo movement as smooth as possible
-  //    while under trainee control
-  if (val>4000 && val<19000) { // G: Prioritize reset pulse. (Needed when less than 16 incoming pulses)
-    ppmInState = 1; // triggered
-  }
-  else {
-    if (ppmInState>0 && ppmInState<=16) {
-      if (val>800 && val<2200) { // if valid pulse-width range
-        ppmInValid = PPM_IN_VALID_TIMEOUT;
-        g_ppmIns[ppmInState++ - 1] = (int16_t)(val - 1500)*(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
-      }
-      else {
-        ppmInState = 0; // not triggered
-      }
-    }
-  }
-
-  lastCapt = capture;
+  captureTrainerPulses(capture);
 }
 
 void init_trainer_capture()
