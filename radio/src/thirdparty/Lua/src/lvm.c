@@ -123,7 +123,7 @@ void luaV_gettable (lua_State *L, const TValue *t, TValue *key, StkId val) {
       char keyname[LUA_MAX_ROTABLE_NAME + 1];
       lu_byte keytype;
       lua_getcstr(keyname, rawtsvalue(key), LUA_MAX_ROTABLE_NAME);
-      TRACE("luaV_gettable(key=%s)", keyname);
+      // TRACE("luaV_gettable(key=%s)", keyname);
       luaR_result res = luaR_findentry(rvalue(t), keyname, &keytype);
       if (keytype == LUA_TLIGHTFUNCTION)
         setlfvalue(val, (void*)(size_t)res)

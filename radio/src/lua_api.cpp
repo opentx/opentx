@@ -1830,7 +1830,7 @@ void luaDoOneRunStandalone(uint8_t evt)
           luaExec(nextScript);
         }
         else {
-          TRACE("Script error");
+          TRACE("Script run function returned unexpected value");
           standaloneScript.state = SCRIPT_SYNTAX_ERROR;
           luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
         }
