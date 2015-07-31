@@ -50,7 +50,6 @@ void registerSimulators()
 #if defined(__APPLE__) || !( (!defined __GNUC__) || (defined __CYGWIN__) )
   if (!simulatorsFound) {
 #if defined(__APPLE__)
-    qDebug() << "QLibraryInfo::PrefixPath: " << QLibraryInfo::location(QLibraryInfo::PrefixPath);
     dir = QLibraryInfo::location(QLibraryInfo::PrefixPath) + "/Resources";
 #else
     dir = SIMULATOR_LIB_SEARCH_PATH;
