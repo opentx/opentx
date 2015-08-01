@@ -67,7 +67,13 @@ void menuStatisticsView(uint8_t event)
 
   putsTimer(   12*FW+5*FWNUM+1, FH*0, sessionTimer, 0, 0);
   
-  putsTimer(21*FW+5*FWNUM+1, 0*FH, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
+  lcd_puts(    24*FW, FH*0, "TOT");
+  putsTimer(   28*FW+5*FWNUM+1, FH*0, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
+  
+  if (TIMERS == 3) {
+    lcd_puts(    24*FW, FH*1, "TM3");
+    putsTimer(   28*FW+5*FWNUM+1, FH*1, timersStates[2].val, TIMEHOUR, 0);
+  }
 
 #if defined(THRTRACE)
   coord_t traceRd = (s_traceCnt < 0 ? s_traceWr : 0);
