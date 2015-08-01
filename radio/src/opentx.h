@@ -1127,10 +1127,8 @@ extern uint8_t            g_vbat100mV;
 extern uint8_t            g_beepCnt;
 extern uint8_t            g_beepVal[5];
 
-extern uint8_t            ppmInState; //0=unsync 1..8= wait for value i-1
-extern uint8_t            ppmInValid;
-#define PPM_IN_VALID_TIMEOUT 100
-extern int16_t            g_ppmIns[NUM_TRAINER];
+#include "trainer_input.h"
+
 extern int32_t            chans[NUM_CHNOUT];
 extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of the last perMain
 extern int16_t            channelOutputs[NUM_CHNOUT];
@@ -1392,6 +1390,8 @@ enum AUDIO_SOUNDS {
     AU_SWR_RED,
     AU_TELEMETRY_LOST,
     AU_TELEMETRY_BACK,
+    AU_TRAINER_LOST,
+    AU_TRAINER_BACK,
 #endif
 #if defined(PCBSKY9X)
     AU_TX_MAH_HIGH,

@@ -155,7 +155,7 @@ void per10ms()
 #endif
 
   if (trimsCheckTimer) trimsCheckTimer--;
-  if (ppmInValid) ppmInValid--;
+  if (ppmInputValidityTimer) ppmInputValidityTimer--;
 
 #if defined(CPUARM)
   if (trimsDisplayTimer)
@@ -1714,6 +1714,7 @@ void doMixerCalculations()
       s_cnt_1s += 1;
 
       logicalSwitchesTimerTick();
+      checkTrainerSignalWarning();
 
       if (s_cnt_1s >= 10) { // 1sec
         s_cnt_1s -= 10;
@@ -2068,10 +2069,6 @@ void checkBattery()
   }
 }
 
-int16_t g_ppmIns[NUM_TRAINER];
-uint8_t ppmInState = 0; // 0=unsync 1..8= wait for value i-1
-uint8_t ppmInValid = 0;
-
 #if !defined(SIMU) && !defined(CPUARM)
 
 volatile uint8_t g_tmr16KHz; //continuous timer 16ms (16MHz/1024/256) -- 8-bit counter overflow
@@ -2153,27 +2150,8 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
   PAUSE_PPMIN_INTERRUPT();
   sei(); // enable other interrupts
 
-  uint16_t val = (capture - lastCapt) / 2;
-
-  // G: We process g_ppmIns immediately here, to make servo movement as smooth as possible
-  //    while under trainee control
-  if (val>4000 && val < 16000) { // G: Prioritize reset pulse. (Needed when less than 8 incoming pulses)
-    ppmInState = 1; // triggered
-  }
-  else {
-    if (ppmInState>0 && ppmInState<=8) {
-      if (val>800 && val<2200) { // if valid pulse-width range
-        ppmInValid = PPM_IN_VALID_TIMEOUT;
-        g_ppmIns[ppmInState++ - 1] = (int16_t)(val - 1500) * (uint8_t)(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
-      }
-      else {
-        ppmInState = 0; // not triggered
-      }
-    }
-  }
-
-  lastCapt = capture;
-
+  captureTrainerPulses(capture);
+  
   cli(); // disable other interrupts for stack pops before this function's RETI
   RESUME_PPMIN_INTERRUPT();
 }
