@@ -13,8 +13,6 @@ for filename in sys.argv[1:]:
         line = line.strip()
         if line.startswith("#ifndef "):
             guard = line[8:]
-            if guard == newguard:
-                break
             if lines[i+1].strip() == "#define %s" % guard:
                 print filename, ":", guard, "=>", newguard
                 lines[i] = "#ifndef %s\n" % newguard
