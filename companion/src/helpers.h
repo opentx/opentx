@@ -207,5 +207,6 @@ private:
 };
 
 double toDecimalCoordinate(const QString & value);
+QStringList extractLatLon(const QString & position);
 
 #endif // HELPERS_H

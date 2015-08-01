@@ -1112,3 +1112,18 @@ double toDecimalCoordinate(const QString & value)
   }
   return result;
 }
+
+QStringList extractLatLon(const QString & position)
+{
+  QStringList result;
+  QStringList parts = position.split(' ');
+  if (parts.size() != 2) {
+    result.append(""); 
+    result.append(""); 
+  }
+  else {
+    result.append(parts.at(1).trimmed());
+    result.append(parts.at(0).trimmed());
+  }
+  return result;
+}

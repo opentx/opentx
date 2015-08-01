@@ -217,17 +217,16 @@ QList<QStringList> LogsDialog::filterGePoints(const QList<QStringList> & input)
     return result;
   }
 
-  int latcol=0, longcol=0;
+  int gpscol = 0;
   for (int i=1; i<input.at(0).count(); i++) {
-    //Long,Lat,Course,GPS Speed,GPS Alt
-    if (input.at(0).at(i).contains("Long")) {
-      longcol=i;
-    }
-    if (input.at(0).at(i).contains("Lat")) {
-      latcol=i;
+    if (input.at(0).at(i) == "GPS") {
+      gpscol=i;
     }
   }
-  if (longcol==0 || latcol==0) {
+  if (gpscol == 0) {
+    QMessageBox::critical(this, tr("Error: no GPS data not found"), 
+      tr("The column containing GPS coordinates must be named \"GPS\".\n\n\
+The columns for altitude \"GAlt\" and for speed \"GSpd\" are optional"));
     return result;
   }
 
@@ -240,8 +239,9 @@ QList<QStringList> LogsDialog::filterGePoints(const QList<QStringList> & input)
   for (int i = 1; i < n; i++) {
     if ((ui->logTable->item(i-1, 1)->isSelected() && rangeSelected) || !rangeSelected) {
 
-      QString latitude = input.at(i).at(latcol).trimmed();
-      QString longitude = input.at(i).at(longcol).trimmed();
+      QStringList latlon = extractLatLon(input.at(i).at(gpscol));
+      QString latitude = latlon[0];
+      QString longitude = latlon[1];
       double flatitude = toDecimalCoordinate(latitude);
       double flongitude = toDecimalCoordinate(longitude);
 
@@ -273,32 +273,28 @@ void LogsDialog::exportToGoogleEarth()
   int n = dataPoints.count(); // number of points to export
   if (n==0) return;
 
-  int latcol=0, longcol=0, altcol=0, speedcol=0;
+  int gpscol=0, altcol=0, speedcol=0;
   QSet<int> nondataCols;
   for (int i=1; i<dataPoints.at(0).count(); i++) {
     // Long,Lat,Course,GPS Speed,GPS Alt
-    if (dataPoints.at(0).at(i).contains("Long")) {
-      longcol = i;
-      nondataCols << i;
+    if (dataPoints.at(0).at(i) == "GPS") {
+      gpscol=i;
     }
-    if (dataPoints.at(0).at(i).contains("Lat")) {
-      latcol = i;
-      nondataCols << i;
-    }
-    if (dataPoints.at(0).at(i).contains("GPS Alt") || dataPoints.at(0).at(i).contains("GAlt")) {
+    if (dataPoints.at(0).at(i).contains("GAlt")) {
       altcol = i;
       nondataCols << i;
     }
-    if (dataPoints.at(0).at(i).contains("GPS Speed")) {
+    if (dataPoints.at(0).at(i).contains("GSpd")) {
       speedcol = i;
       nondataCols << i;
     }
   }
 
-  if (longcol==0 || latcol==0) {
+  if (gpscol==0 ) {
     return;
   }
 
+  // qDebug() << "gpscol" << gpscol << "altcol" << altcol << "speedcol" << speedcol;
   QString geIconFilename = generateProcessUniqueTempFileName("track0.png");
   if (QFile::exists(geIconFilename)) {
     QFile::remove(geIconFilename);
@@ -363,8 +359,9 @@ void LogsDialog::exportToGoogleEarth()
 
   // coordinate data points
   for (int i=1; i<n; i++) {
-    QString latitude = dataPoints.at(i).at(latcol).trimmed();
-    QString longitude = dataPoints.at(i).at(longcol).trimmed();
+    QStringList latlon = extractLatLon(dataPoints.at(i).at(gpscol));
+    QString latitude = latlon[0];
+    QString longitude = latlon[1];
     int altitude = altcol ? dataPoints.at(i).at(altcol).toFloat() : 0;
     latitude.sprintf("%3.8f", toDecimalCoordinate(latitude));
     longitude.sprintf("%3.8f", toDecimalCoordinate(longitude));
