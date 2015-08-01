@@ -36,31 +36,7 @@ enum CzechPrompts {
   CZ_PROMPT_CELYCH = CZ_PROMPT_NUMBERS_BASE+116,
   CZ_PROMPT_MINUS = CZ_PROMPT_NUMBERS_BASE+117,
 
-  CZ_PROMPT_UNITS_BASE = 118,
-  CZ_PROMPT_VOLTS = CZ_PROMPT_UNITS_BASE+UNIT_VOLTS, //(jeden)volt,(dva)volty,(pet)voltu,(desetina)voltu
-  CZ_PROMPT_AMPS = CZ_PROMPT_UNITS_BASE+(UNIT_AMPS*4),
-  CZ_PROMPT_METERS_PER_SECOND = CZ_PROMPT_UNITS_BASE+(UNIT_METERS_PER_SECOND*4),
-  CZ_PROMPT_SPARE1 = CZ_PROMPT_UNITS_BASE+(UNIT_RAW*4),
-  CZ_PROMPT_KMH = CZ_PROMPT_UNITS_BASE+(UNIT_SPEED*4),
-  CZ_PROMPT_METERS = CZ_PROMPT_UNITS_BASE+(UNIT_DIST*4),
-  CZ_PROMPT_DEGREES = CZ_PROMPT_UNITS_BASE+(UNIT_TEMPERATURE*4),
-  CZ_PROMPT_PERCENT = CZ_PROMPT_UNITS_BASE+(UNIT_PERCENT*4),
-  CZ_PROMPT_MILLIAMPS = CZ_PROMPT_UNITS_BASE+(UNIT_MILLIAMPS*4),
-  CZ_PROMPT_MAH = CZ_PROMPT_UNITS_BASE+(UNIT_MAH*4),
-  CZ_PROMPT_WATTS = CZ_PROMPT_UNITS_BASE+(UNIT_WATTS*4),
-  CZ_PROMPT_DB = CZ_PROMPT_UNITS_BASE+(UNIT_DB*4),
-  CZ_PROMPT_FEET = CZ_PROMPT_UNITS_BASE+(UNIT_FEET*4),
-  CZ_PROMPT_KTS = CZ_PROMPT_UNITS_BASE+(UNIT_KTS*4),
-  CZ_PROMPT_HOURS = CZ_PROMPT_UNITS_BASE+(UNIT_HOURS*4),
-  CZ_PROMPT_MINUTES = CZ_PROMPT_UNITS_BASE+(UNIT_MINUTES*4),
-  CZ_PROMPT_SECONDS = CZ_PROMPT_UNITS_BASE+(UNIT_SECONDS*4),
-  CZ_PROMPT_RPMS = CZ_PROMPT_UNITS_BASE+(UNIT_RPMS*4),
-  CZ_PROMPT_G = CZ_PROMPT_UNITS_BASE+(UNIT_G*4),
-#if defined(CPUARM)
-  CZ_PROMPT_MILLILITERS = CZ_PROMPT_UNITS_BASE+(UNIT_MILLILITERS*4),
-  CZ_PROMPT_FLOZ = CZ_PROMPT_UNITS_BASE+(UNIT_FLOZ*4),
-  CZ_PROMPT_FEET_PER_SECOND = CZ_PROMPT_UNITS_BASE+(UNIT_FEET_PER_SECOND*4),
-#endif
+  CZ_PROMPT_UNITS_BASE = 118, //(jeden)volt,(dva)volty,(pet)voltu,(desetina)voltu
 
 };
 
@@ -135,13 +111,37 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   int16_t tmp = number;
-  
+#if defined(CPUARM) 
+  switch(unit) {
+    case 0:
+      break;
+    case 6:
+    case 8:
+    case 10:
+    case 14:
+    case 17:
+    case 21:
+    case 22:
+    case 23:
+    case 24:
+      att = ZENSKY;
+      break;
+    case 13:
+    case 18:
+      att = STREDNI;
+      break;
+    default:
+      att = MUZSKY;
+      break;
+  }
+#else
   switch(unit) {
     case 0:
       break;
     case 4:
     case 10:
     case 13:
+    case 14:
     case 15:
     case 16:
     case 17:
@@ -156,6 +156,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       att = MUZSKY;
       break;
   }
+#endif
 
   if ((number == 1) && (att == MUZSKY)) {
     PUSH_NUMBER_PROMPT(CZ_PROMPT_JEDEN);

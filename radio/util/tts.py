@@ -662,23 +662,29 @@ def ttsCz():
         
     for i, s in enumerate(["volt", "volty", u"voltů", "voltu",
                            u"ampér", u"ampéry", u"ampérů", u"ampéru",
-                           "metr za sekundu", "metry za sekundu", u"metrů za sekundu", "metru za sekundu",
-                           "jednotka", "jednotky", "jednotek", "jednotky",
-                           "kilometr za hodinu", "kilometry za hodinu", u"kilometrů za hodinu", "kilometru za hodinu",
-                           "metr", "metry", u"metrů", "metru",
-                           u"stupeň", u"stupně", u"stupňů", u"stupně",
-                           "procento", "procenta", "procento", "procenta",
                            u"miliampér", u"miliampéry", u"miliampérů", u"miliampéru",
+                           u"uzel", u"uzly", u"uzlů", u"uzlu",
+                           "metr za sekundu", "metry za sekundu", u"metrů za sekundu", "metru za sekundu",
+                           "stopa za sekundu", "stopy za sekundu", "stop za sekundu", "stopy za sekundu",
+                           "kilometr za hodinu", "kilometry za hodinu", u"kilometrů za hodinu", "kilometru za hodinu",
+                           u"míle za hodinu", u"míle za hodinu", u"mil za hodinu", u"míle za hodinu",
+                           "metr", "metry", u"metrů", "metru",
+                           "stopa", "stopy", "stop", "stopy",
+                           u"stupeň celsia", u"stupně celsia", u"stupňů celsia", u"stupně celsia",
+                           u"stupeň fahrenheita", u"stupně fahrenheita", u"stupňů fahrenheita", u"stupně fahrenheita",
+                           "procento", "procenta", "procent", "procenta",
                            u"miliampérhodina", u"miliampérhodiny", u"miliampérhodin", u"miliampérhodiny",
                            "vat", "vaty", u"vatů", "vatu",
                            "decibel", "decibely", u"decibelů", "decibelu",
-                           "stopa", "stopy", "stop", "stopy",
-                           u"míle za hodinu", u"míle za hodinu", u"mil za hodinu", "míle za hodinu",
+                           u"otáčka za minutu", u"otáčky za minutu", u"otáček za minutu", u"otáčky za minutu",
+                           u"gé", u"gé", u"gé", u"gé"
+                           u"stupeň", u"stupně", u"stupňů", u"stupně",
+                           u"mililitr", u"mililitry", u"mililitrů", "mililitru",
+                           u"dutá unce", u"duté unce", u"dutých uncí", u"duté unce",
                            "hodina", "hodiny", "hodin", "hodiny",
                            "minuta", "minuty", "minut", "minuty",
                            "sekunda", "sekundy", "sekund", "sekundy",
-                           u"otáčka za minutu", u"otáčky za minutu", u"otáček za minutu", u"otáčky za minutu",
-                           u"gé", u"gé", u"gé", u"gé"]):
+                           ]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+118+i)))
 
     for s, f, a in [(u"střed trimu", "midtrim", 495),
@@ -704,6 +710,8 @@ def ttsCz():
                     (u"problém s anténou rádia", "swr_red", NO_ALTERNATE),
                     (u"telemetrie ztracena", "telemko", NO_ALTERNATE),
                     (u"telemetrie je funkční", "telemok", NO_ALTERNATE),
+                    (u"trenér port odpojen", "trainko", NO_ALTERNATE),
+                    (u"trenér port připojen", "trainok", NO_ALTERNATE),
                    ]:
         systemSounds.append((s, filename(f, a)))
     for i, (s, f) in enumerate([
