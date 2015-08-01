@@ -121,6 +121,7 @@ namespace NAMESPACE {
 #include "radio/src/stamp.cpp"
 #include "radio/src/maths.cpp"
 #include "radio/src/vario.cpp"
+#include "radio/src/trainer_input.cpp"
 
 #if defined(PCBTARANIS)
 #include "radio/src/bmp.cpp"
