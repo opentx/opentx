@@ -601,7 +601,7 @@ void menuModelTelemetry(uint8_t event)
         break;
 
       case ITEM_TELEMETRY_IGNORE_SENSORID:
-        ON_OFF_MENU_ITEM(g_model.ignoreSensorIds, TELEM_COL2, y, INDENT "Ignore IDs", attr, event);
+        ON_OFF_MENU_ITEM(g_model.ignoreSensorIds, TELEM_COL2, y, STR_IGNOREIDS, attr, event);
         break;
 
       case ITEM_TELEMETRY_RSSI_LABEL:

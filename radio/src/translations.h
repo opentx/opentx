@@ -789,6 +789,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_ONLYPOSITIVE[];
   extern const pm_char STR_FILTER[];
   extern const pm_char STR_TELEMETRYFULL[];
+  extern const pm_char STR_IGNOREIDS[];
 #endif
 
 #if defined(PCBTARANIS)

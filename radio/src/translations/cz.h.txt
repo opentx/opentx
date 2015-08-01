@@ -1079,6 +1079,7 @@
 #define TR_ONLYPOSITIVE        "Jen kladné"
 #define TR_FILTER              "Filtr"
 #define TR_TELEMETRYFULL       "Všechny sloty jsou plné!"
+#define TR_IGNOREIDS           INDENT "Ignore instance"
 
 #define TR_MENU_INPUTS         "\314Vstupy"
 #define TR_MENU_LUA            "\322Lua skripty"
