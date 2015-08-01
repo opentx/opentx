@@ -471,6 +471,14 @@ Behöver inte vara samma som menyspråk</translation>
         <source>Simulator Volume Gain</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Use OpenTX firmware nightly builds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Companion nightly builds</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Calibration</name>
@@ -997,23 +1005,23 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
     <message>
         <source>Expo/Dr Settings</source>
-        <translation>Inställningar förExpo/DR</translation>
+        <translation type="obsolete">Inställningar förExpo/DR</translation>
     </message>
     <message>
         <source>Weight</source>
-        <translation>Vikt</translation>
+        <translation type="obsolete">Vikt</translation>
     </message>
     <message>
         <source>Flight modes</source>
-        <translation>Flyglägen</translation>
+        <translation type="obsolete">Flyglägen</translation>
     </message>
     <message>
         <source>Flight mode</source>
-        <translation>Flygläge</translation>
+        <translation type="obsolete">Flygläge</translation>
     </message>
     <message>
         <source>DISABLED</source>
-        <translation>INAKTIV</translation>
+        <translation type="obsolete">INAKTIV</translation>
     </message>
     <message>
         <source>Mixers</source>
@@ -1021,19 +1029,19 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
     <message>
         <source>noTrim</source>
-        <translation>ingenTrim</translation>
+        <translation type="obsolete">ingenTrim</translation>
     </message>
     <message>
         <source> Delay(u%1:d%2)</source>
-        <translation> Fördröjning(u%1:d%2)</translation>
+        <translation type="obsolete"> Fördröjning(u%1:d%2)</translation>
     </message>
     <message>
         <source> Slow(u%1:d%2)</source>
-        <translation> Tröghet(u%1:d%2)</translation>
+        <translation type="obsolete"> Tröghet(u%1:d%2)</translation>
     </message>
     <message>
         <source>Warn</source>
-        <translation>Varn</translation>
+        <translation type="obsolete">Varn</translation>
     </message>
     <message>
         <source>Curves</source>
@@ -1065,19 +1073,19 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
     <message>
         <source>Function</source>
-        <translation>Funktion</translation>
+        <translation type="obsolete">Funktion</translation>
     </message>
     <message>
         <source>Param</source>
-        <translation>Param</translation>
+        <translation type="obsolete">Param</translation>
     </message>
     <message>
         <source>Repeat</source>
-        <translation>Upprepa</translation>
+        <translation type="obsolete">Upprepa</translation>
     </message>
     <message>
         <source>Enable</source>
-        <translation>Aktivera</translation>
+        <translation type="obsolete">Aktivera</translation>
     </message>
     <message>
         <source>SF</source>
@@ -1153,7 +1161,35 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
     <message>
         <source>L%1</source>
-        <translation>LB%1</translation>
+        <translation type="obsolete">LB%1</translation>
+    </message>
+    <message>
+        <source>Internal Radio System</source>
+        <translation type="unfinished">Intern Radosändare</translation>
+    </message>
+    <message>
+        <source>Radio System</source>
+        <translation type="unfinished">Radiosystem</translation>
+    </message>
+    <message>
+        <source>External Radio Module</source>
+        <translation type="unfinished">Extern Sändarmodul</translation>
+    </message>
+    <message>
+        <source>Extra Radio System</source>
+        <translation type="unfinished">Ytterligare Radiosystem</translation>
+    </message>
+    <message>
+        <source>Trainer port mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inputs</source>
+        <translation type="unfinished">Inputs</translation>
+    </message>
+    <message>
+        <source>L</source>
+        <translation type="unfinished">L</translation>
     </message>
 </context>
 <context>
@@ -1475,15 +1511,131 @@ Behöver inte vara samma som menyspråk</translation>
     <name>Er9x::Templates</name>
     <message>
         <source>V-Tail</source>
-        <translation type="obsolete">V-stjärt</translation>
+        <translation type="unfinished">V-stjärt</translation>
     </message>
     <message>
         <source>THR</source>
-        <translation type="obsolete">GAS</translation>
+        <translation type="unfinished">GAS</translation>
     </message>
     <message>
         <source>Clear Mixes?</source>
-        <translation type="obsolete">Ta bort mixarna?</translation>
+        <translation type="unfinished">Ta bort mixarna?</translation>
+    </message>
+    <message>
+        <source>Simple 4-CH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>T-Cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky T-Cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Elevon\Delta</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heli Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heli Setup with gyro gain control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gyro gain control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Servo Test</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MultiCopter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Model Config Wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply Template?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply template &quot;%1&quot;?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RUD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ELE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AIL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AIL2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ELE2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FLAPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FLAP%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PITCH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GYRO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SPOIL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SPOIL%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RUD2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Really clear existing mixes on CH6?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Really clear existing mixes on CH5?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3095,23 +3247,23 @@ FAI-funktionen kan inte slås av i sändaren.
     </message>
     <message>
         <source>Offset(%1)</source>
-        <translation>Offset(%1)</translation>
+        <translation type="obsolete">Offset(%1)</translation>
     </message>
     <message>
         <source>Source(%1)</source>
-        <translation>Källa(%1)</translation>
+        <translation type="obsolete">Källa(%1)</translation>
     </message>
     <message>
         <source>Weight(%1)</source>
-        <translation>Vikt(%1)</translation>
+        <translation type="obsolete">Vikt(%1)</translation>
     </message>
     <message>
         <source>NoTrim</source>
-        <translation>EjTrim</translation>
+        <translation type="obsolete">EjTrim</translation>
     </message>
     <message>
         <source>Switch(%1)</source>
-        <translation>Brytare(%1)</translation>
+        <translation type="obsolete">Brytare(%1)</translation>
     </message>
     <message>
         <source>Not enough available inputs!</source>
@@ -3255,6 +3407,129 @@ FAI-funktionen kan inte slås av i sändaren.
     <message>
         <source>(no release)</source>
         <translation>(release saknas)</translation>
+    </message>
+</context>
+<context>
+    <name>LogsDialog</name>
+    <message>
+        <source>Companion Log Viewer</source>
+        <translation type="unfinished">Companion Logg-läsare</translation>
+    </message>
+    <message>
+        <source>Filename</source>
+        <translation type="unfinished">Filnamn</translation>
+    </message>
+    <message>
+        <source>Open LogFile</source>
+        <translation type="unfinished">Öppna Loggfil</translation>
+    </message>
+    <message>
+        <source>Zoom</source>
+        <translation type="unfinished">Zoom</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished">X</translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation type="unfinished">Y</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation type="unfinished">Nollställ</translation>
+    </message>
+    <message>
+        <source>Fly sessions</source>
+        <translation type="unfinished">Flygningar</translation>
+    </message>
+    <message>
+        <source>Telemetry logs</source>
+        <translation type="unfinished">Telemetriloggar</translation>
+    </message>
+    <message>
+        <source>Time (hh:mm:ss)</source>
+        <translation type="unfinished">Tid</translation>
+    </message>
+    <message>
+        <source>Plot Title Change</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New plot title:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Axis Label Change</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New axis label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Graph Name Change</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New graph name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: no GPS data not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The column containing GPS coordinates must be named &quot;GPS&quot;.
+
+The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are optional</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Fel</translation>
+    </message>
+    <message>
+        <source>Cannot write file %1:
+%2.</source>
+        <translation type="unfinished">Filen %1 kunde inte skrivas:
+%2.</translation>
+    </message>
+    <message>
+        <source>Select your log file</source>
+        <translation type="unfinished">Välj loggfil</translation>
+    </message>
+    <message>
+        <source>Available fields</source>
+        <translation type="unfinished">Tillgängliga fält</translation>
+    </message>
+    <message>
+        <source>The selected logfile contains %1 invalid lines out of  %2 total lines</source>
+        <translation type="unfinished">Denn aktuella filen innehåller %1 felaktiga rader. Totalt innehåller filen %2 rader</translation>
+    </message>
+    <message>
+        <source>total duration </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>duration </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> (L1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> (R1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> (L2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> (R2)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3632,7 +3907,7 @@ FAI-funktionen kan inte slås av i sändaren.
     </message>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <source>The new theme will be loaded the next time you start Companion.</source>
@@ -4053,15 +4328,19 @@ We recommend you view the release notes using the button below to learn about an
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>OpenTX Companion 2.1 - FW: %1 - Profile: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Spanish</source>
         <translation type="unfinished">Spanska</translation>
     </message>
     <message>
         <source>Use Spanish in menus</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Companion</source>
+        <translation type="unfinished">Companion</translation>
+    </message>
+    <message>
+        <source>OpenTX Companion %1 - Radio: %2 - Profile: %3</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4410,35 +4689,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Weight(%1)</source>
-        <translation>Vikt(%1)</translation>
+        <translation type="obsolete">Vikt(%1)</translation>
     </message>
     <message>
         <source>Switch(%1)</source>
-        <translation>Brytare(%1)</translation>
+        <translation type="obsolete">Brytare(%1)</translation>
     </message>
     <message>
         <source>NoTrim</source>
-        <translation>EjTrim</translation>
+        <translation type="obsolete">EjTrim</translation>
     </message>
     <message>
         <source>No DR/Expo</source>
-        <translation>Ingen DR/Expo</translation>
+        <translation type="obsolete">Ingen DR/Expo</translation>
     </message>
     <message>
         <source>Offset(%1)</source>
-        <translation>Offset(%1)</translation>
+        <translation type="obsolete">Offset(%1)</translation>
     </message>
     <message>
         <source> Delay(u%1:d%2)</source>
-        <translation> Fördröjning(u%1:d%2)</translation>
+        <translation type="obsolete"> Fördröjning(u%1:d%2)</translation>
     </message>
     <message>
         <source> Slow(u%1:d%2)</source>
-        <translation> Tröghet(u%1:d%2)</translation>
+        <translation type="obsolete"> Tröghet(u%1:d%2)</translation>
     </message>
     <message>
         <source> Warn(%1)</source>
-        <translation> Varn(%1)</translation>
+        <translation type="obsolete"> Varn(%1)</translation>
     </message>
     <message>
         <source>Not enough available mixers!</source>
@@ -4931,11 +5210,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Timer1</source>
-        <translation>Timer1</translation>
+        <translation type="obsolete">Timer1</translation>
     </message>
     <message>
         <source>Timer2</source>
-        <translation>Timer2</translation>
+        <translation type="obsolete">Timer2</translation>
     </message>
     <message>
         <source>Protocol</source>
@@ -5019,7 +5298,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Weight</source>
-        <translation>Vikt</translation>
+        <translation type="obsolete">Vikt</translation>
     </message>
     <message>
         <source>Flight modes</source>
@@ -5027,7 +5306,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>DISABLED</source>
-        <translation>INAKTIV</translation>
+        <translation type="obsolete">INAKTIV</translation>
     </message>
     <message>
         <source>Mixers</source>
@@ -5043,11 +5322,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> Delay(u%1:d%2)</source>
-        <translation> Fördröjning(u%1:d%2)</translation>
+        <translation type="obsolete"> Fördröjning(u%1:d%2)</translation>
     </message>
     <message>
         <source> Slow(u%1:d%2)</source>
-        <translation> Tröghet(u%1:d%2)</translation>
+        <translation type="obsolete"> Tröghet(u%1:d%2)</translation>
     </message>
     <message>
         <source>Limits</source>
@@ -5103,15 +5382,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Function</source>
-        <translation>Funktion</translation>
+        <translation type="obsolete">Funktion</translation>
     </message>
     <message>
         <source>Parameter</source>
-        <translation>Parameter</translation>
+        <translation type="obsolete">Parameter</translation>
     </message>
     <message>
         <source>Repeat</source>
-        <translation>Upprepa</translation>
+        <translation type="obsolete">Upprepa</translation>
     </message>
     <message>
         <source>Telemetry Settings</source>
@@ -5135,27 +5414,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>NoTrim</source>
-        <translation>EjTrim</translation>
+        <translation type="obsolete">EjTrim</translation>
     </message>
     <message>
         <source>Weight(%1)</source>
-        <translation>Vikt(%1)</translation>
+        <translation type="obsolete">Vikt(%1)</translation>
     </message>
     <message>
         <source>Switch(%1)</source>
-        <translation>Brytare(%1)</translation>
+        <translation type="obsolete">Brytare(%1)</translation>
     </message>
     <message>
         <source>No DR/Expo</source>
-        <translation>Ingen DR/Expo</translation>
+        <translation type="obsolete">Ingen DR/Expo</translation>
     </message>
     <message>
         <source>Offset(%1)</source>
-        <translation>Offset(%1)</translation>
+        <translation type="obsolete">Offset(%1)</translation>
     </message>
     <message>
         <source> Warn(%1)</source>
-        <translation> Varn(%1)</translation>
+        <translation type="obsolete"> Varn(%1)</translation>
     </message>
     <message>
         <source>L</source>
@@ -5163,7 +5442,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>SF%1</source>
-        <translation>SF%1</translation>
+        <translation type="obsolete">SF%1</translation>
     </message>
     <message>
         <source>Range</source>
@@ -5272,6 +5551,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Off</source>
         <translation type="unfinished">Av</translation>
+    </message>
+    <message>
+        <source>Timer%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SF</source>
+        <translation type="unfinished">SF</translation>
     </message>
 </context>
 <context>
@@ -5580,7 +5867,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>All</source>
-        <translation>För alla händelser</translation>
+        <translation type="obsolete">För alla händelser</translation>
     </message>
     <message>
         <source>Telemetry</source>
@@ -5708,7 +5995,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OpenTX for 9X board</source>
-        <translation>OpenTX för 9X</translation>
+        <translation type="obsolete">OpenTX för 9X</translation>
     </message>
     <message>
         <source>Enable heli menu and cyclic mix support</source>
@@ -5760,19 +6047,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OpenTX for M128 / 9X board</source>
-        <translation>OpenTX för 9X med m128-processor</translation>
+        <translation type="obsolete">OpenTX för 9X med m128-processor</translation>
     </message>
     <message>
         <source>OpenTX for 9XR</source>
-        <translation>OpenTX för 9XR</translation>
+        <translation type="obsolete">OpenTX för 9XR</translation>
     </message>
     <message>
         <source>OpenTX for 9XR with M128 chip</source>
-        <translation>OpenTX för 9XR med m128-processor</translation>
+        <translation type="obsolete">OpenTX för 9XR med m128-processor</translation>
     </message>
     <message>
         <source>OpenTX for Gruvin9x board / 9X</source>
-        <translation>OpenTX för 9X med Gruvin9X-kort</translation>
+        <translation type="obsolete">OpenTX för 9X med Gruvin9X-kort</translation>
     </message>
     <message>
         <source>Support of FrSky PXX protocol</source>
@@ -5780,7 +6067,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OpenTX for 9XR-PRO</source>
-        <translation>OpenTX för 9XR PRO</translation>
+        <translation type="obsolete">OpenTX för 9XR PRO</translation>
     </message>
     <message>
         <source>Haptic module installed</source>
@@ -5792,7 +6079,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OpenTX for FrSky Taranis Plus</source>
-        <translation>OpenTx för FrSky Taranis Plus</translation>
+        <translation type="obsolete">OpenTx för FrSky Taranis Plus</translation>
     </message>
     <message>
         <source>Support for DSM2 modules</source>
@@ -5848,7 +6135,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OpenTX for Sky9x board / 9X</source>
-        <translation>OpenTX för 9X med Sky9X-kort</translation>
+        <translation type="obsolete">OpenTX för 9X med Sky9X-kort</translation>
     </message>
     <message>
         <source>Enable HELI menu and cyclic mix support</source>
@@ -6296,7 +6583,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1 sec</source>
-        <translation>%1 sek</translation>
+        <translation type="obsolete">%1 sek</translation>
     </message>
     <message>
         <source>Play Both</source>
@@ -6408,11 +6695,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Flight modes(%1)</source>
-        <translation>Flyglägen(%1)</translation>
+        <translation type="obsolete">Flyglägen(%1)</translation>
     </message>
     <message>
         <source>Flight mode(%1)</source>
-        <translation>Flygläge(%1)</translation>
+        <translation type="obsolete">Flygläge(%1)</translation>
     </message>
     <message>
         <source>Rudder</source>
@@ -6642,7 +6929,7 @@ eeprom-storleken är 4096, men enbart den första hälften används</translation
     </message>
     <message>
         <source>OpenTX for FrSky Taranis</source>
-        <translation>OpenTx för FrSky Taranis</translation>
+        <translation type="obsolete">OpenTx för FrSky Taranis</translation>
     </message>
     <message>
         <source>Disable HELI menu and cyclic mix support</source>
@@ -6705,23 +6992,11 @@ OpenTX-gruppen.</translation>
         <translation></translation>
     </message>
     <message>
-        <source>Â°C</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>%F</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>dB</source>
         <translation></translation>
     </message>
     <message>
         <source>rpms</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Â°</source>
         <translation></translation>
     </message>
     <message>
@@ -6894,7 +7169,7 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>OpenTX for MEGA2560 board</source>
-        <translation>OpenTX för MEGA2560-kort</translation>
+        <translation type="obsolete">OpenTX för MEGA2560-kort</translation>
     </message>
     <message>
         <source>ST7565P LCD or compatible</source>
@@ -6914,7 +7189,7 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>OpenTX for FrSky Taranis X9E</source>
-        <translation>OpenTX för FrSky Taranis X9E</translation>
+        <translation type="obsolete">OpenTX för FrSky Taranis X9E</translation>
     </message>
     <message>
         <source>Synchronization error</source>
@@ -6980,11 +7255,11 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>Positive</source>
-        <translation type="obsolete">Positiv</translation>
+        <translation type="unfinished">Positiv</translation>
     </message>
     <message>
         <source>Negative</source>
-        <translation type="obsolete">Negativ</translation>
+        <translation type="unfinished">Negativ</translation>
     </message>
     <message>
         <source>Source %1 cannot be exported on this board!</source>
@@ -7000,10 +7275,6 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>Power management by soft-off circuitry</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Removes D8 and LR12 FrSky protocols that are not legal for use anymore on radios sold after Jan 1st, 2015</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7048,6 +7319,114 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>Flight</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>°F</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>repeat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DISABLED</source>
+        <translation type="unfinished">INAKTIV</translation>
+    </message>
+    <message>
+        <source>Removes D8 and LR12 FrSky protocols that are not legal for use in the EU on radios sold after Jan 1st, 2015</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>9X board</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>M128 / 9X board</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>9XR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>9XR with M128 chip</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gruvin9x board / 9X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MEGA2560 board</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sky9x board / 9X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>9XR-PRO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FrSky Taranis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FrSky Taranis Plus</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FrSky Taranis X9E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Weight</source>
+        <translation type="unfinished">Vikt</translation>
+    </message>
+    <message>
+        <source>Switch</source>
+        <translation type="unfinished">Brytare</translation>
+    </message>
+    <message>
+        <source>NoTrim</source>
+        <translation type="unfinished">EjTrim</translation>
+    </message>
+    <message>
+        <source>No DR/Expo</source>
+        <translation type="unfinished">Ingen DR/Expo</translation>
+    </message>
+    <message>
+        <source>Offset</source>
+        <translation type="unfinished">Offset</translation>
+    </message>
+    <message>
+        <source>Delay</source>
+        <translation type="unfinished">Fördröjning</translation>
+    </message>
+    <message>
+        <source>Slow</source>
+        <translation type="unfinished">Tröghet</translation>
+    </message>
+    <message>
+        <source>Warn</source>
+        <translation type="unfinished">Varn</translation>
+    </message>
+    <message>
+        <source>Flight modes</source>
+        <translation type="unfinished">Flyglägen</translation>
+    </message>
+    <message>
+        <source>Flight mode</source>
+        <translation type="unfinished">Flygläge</translation>
+    </message>
+    <message>
+        <source>Radio type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Which radio type do you want to simulate?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7222,6 +7601,10 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <source>Trims Display</source>
         <translation>Trim-visning</translation>
+    </message>
+    <message>
+        <source>Global Functions</source>
+        <translation type="unfinished">Globala Funktioner</translation>
     </message>
 </context>
 <context>
@@ -7556,6 +7939,10 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     </message>
     <message>
         <source>Center Silent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disable multi sensor handling</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9503,113 +9890,65 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
     <name>logsDialog</name>
     <message>
         <source>Companion Log Viewer</source>
-        <translation>Companion Logg-läsare</translation>
+        <translation type="obsolete">Companion Logg-läsare</translation>
     </message>
     <message>
         <source>Filename</source>
-        <translation>Filnamn</translation>
+        <translation type="obsolete">Filnamn</translation>
     </message>
     <message>
         <source>Open LogFile</source>
-        <translation>Öppna Loggfil</translation>
+        <translation type="obsolete">Öppna Loggfil</translation>
     </message>
     <message>
         <source>Zoom</source>
-        <translation>Zoom</translation>
+        <translation type="obsolete">Zoom</translation>
     </message>
     <message>
         <source>X</source>
-        <translation>X</translation>
+        <translation type="obsolete">X</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation>Y</translation>
+        <translation type="obsolete">Y</translation>
     </message>
     <message>
         <source>Reset</source>
-        <translation>Nollställ</translation>
+        <translation type="obsolete">Nollställ</translation>
     </message>
     <message>
         <source>Telemetry logs</source>
-        <translation>Telemetriloggar</translation>
+        <translation type="obsolete">Telemetriloggar</translation>
     </message>
     <message>
         <source>Time (hh:mm:ss)</source>
-        <translation>Tid</translation>
+        <translation type="obsolete">Tid</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Fel</translation>
+        <translation type="obsolete">Fel</translation>
     </message>
     <message>
         <source>Cannot write file %1:
 %2.</source>
-        <translation>Filen %1 kunde inte skrivas:
+        <translation type="obsolete">Filen %1 kunde inte skrivas:
 %2.</translation>
     </message>
     <message>
         <source>Select your log file</source>
-        <translation>Välj loggfil</translation>
+        <translation type="obsolete">Välj loggfil</translation>
     </message>
     <message>
         <source>Available fields</source>
-        <translation>Tillgängliga fält</translation>
+        <translation type="obsolete">Tillgängliga fält</translation>
     </message>
     <message>
         <source>The selected logfile contains %1 invalid lines out of  %2 total lines</source>
-        <translation>Denn aktuella filen innehåller %1 felaktiga rader. Totalt innehåller filen %2 rader</translation>
+        <translation type="obsolete">Denn aktuella filen innehåller %1 felaktiga rader. Totalt innehåller filen %2 rader</translation>
     </message>
     <message>
         <source>Fly sessions</source>
-        <translation>Flygningar</translation>
-    </message>
-    <message>
-        <source>Plot Title Change</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New plot title:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Axis Label Change</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New axis label:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Graph Name Change</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New graph name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>total duration </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>duration </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> (L1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> (R1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> (L2)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> (R2)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Flygningar</translation>
     </message>
 </context>
 <context>

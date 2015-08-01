@@ -4354,59 +4354,71 @@ Jesteś pewien ?</translation>
         <translation>Nowa nazwa wykresu:</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="314"/>
+        <location filename="../logsdialog.cpp" line="227"/>
+        <source>Error: no GPS data not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../logsdialog.cpp" line="228"/>
+        <source>The column containing GPS coordinates must be named &quot;GPS&quot;.
+
+The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are optional</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../logsdialog.cpp" line="310"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="315"/>
+        <location filename="../logsdialog.cpp" line="311"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Nie mogę zapisać pliku %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="476"/>
+        <location filename="../logsdialog.cpp" line="473"/>
         <source>Select your log file</source>
         <translation>Wybierz plik logów</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="487"/>
+        <location filename="../logsdialog.cpp" line="484"/>
         <source>Available fields</source>
         <translation>Dostępne pola</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="561"/>
+        <location filename="../logsdialog.cpp" line="558"/>
         <source>The selected logfile contains %1 invalid lines out of  %2 total lines</source>
         <translation>Wybrany plik zawiera %1 błędnych linii z %2 wszystkich linii</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="627"/>
+        <location filename="../logsdialog.cpp" line="624"/>
         <source>total duration </source>
         <translation>Całkowity czas trwania</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="635"/>
+        <location filename="../logsdialog.cpp" line="632"/>
         <source>duration </source>
         <translation>Czas trwania</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="870"/>
+        <location filename="../logsdialog.cpp" line="867"/>
         <source> (L1)</source>
         <translation>(L1)</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="881"/>
+        <location filename="../logsdialog.cpp" line="878"/>
         <source> (R1)</source>
         <translation>(R1)</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="891"/>
+        <location filename="../logsdialog.cpp" line="888"/>
         <source> (L2)</source>
         <translation>(L2)</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="898"/>
+        <location filename="../logsdialog.cpp" line="895"/>
         <source> (R2)</source>
         <translation>(R2)</translation>
     </message>
