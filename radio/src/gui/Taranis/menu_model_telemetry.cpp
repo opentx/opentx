@@ -469,6 +469,22 @@ void onSensorMenu(const char *result)
       else
         m_posVert = ITEM_TELEMETRY_NEWSENSOR;
     }
+    else if (result == STR_COPY) {
+      int newIndex = availableTelemetryIndex();
+      
+      if (newIndex >= 0) {
+        TelemetrySensor & sourceSensor = g_model.telemetrySensors[index];
+        TelemetrySensor & newSensor = g_model.telemetrySensors[newIndex];
+        newSensor = sourceSensor;
+        TelemetryItem & sourceItem = telemetryItems[index];
+        TelemetryItem & newItem = telemetryItems[newIndex];
+        newItem = sourceItem;
+        eeDirty(EE_MODEL);
+      } 
+      else {
+        POPUP_WARNING(STR_TELEMETRYFULL);
+      }
+    }
   }
 }
 
@@ -545,6 +561,7 @@ void menuModelTelemetry(uint8_t event)
         if (event == EVT_KEY_LONG(KEY_ENTER)) {
           killEvents(event);
           MENU_ADD_ITEM(STR_EDIT);
+          MENU_ADD_ITEM(STR_COPY);
           MENU_ADD_ITEM(STR_DELETE);
           menuHandler = onSensorMenu;
         }
