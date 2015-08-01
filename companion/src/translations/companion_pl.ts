@@ -4356,14 +4356,16 @@ Jesteś pewien ?</translation>
     <message>
         <location filename="../logsdialog.cpp" line="227"/>
         <source>Error: no GPS data not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: Brak danych GPS</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="228"/>
         <source>The column containing GPS coordinates must be named &quot;GPS&quot;.
 
 The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are optional</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolumna zawierająca dane GPS musi być nazwana &quot;GPS&quot;
+
+Kolumny wysokości &quot;GAlt&quot; i prędkości &quot;GSpd&quot; są opcjonalne</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="310"/>
