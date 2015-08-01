@@ -1070,7 +1070,7 @@
 #define TR_ONLYPOSITIVE        "Positive"
 #define TR_FILTER              "Filtrage"
 #define TR_TELEMETRYFULL       "Plus de capteurs libres!"
-#define TR_IGNOREIDS           "Ignorer l'instance"
+#define TR_IGNOREIDS           "Ignorer instance"
 
 #define TR_MENU_INPUTS         "\314Entrées"
 #define TR_MENU_LUA            "\322Scripts Lua"
