@@ -105,7 +105,7 @@ void init_no_pulses(uint32_t port)
 void disable_no_pulses(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
-    disable_ppm(0);
+    disable_ppm(EXTERNAL_MODULE);
   }
   else {
     // TODO
@@ -186,6 +186,7 @@ void disable_pxx(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
     disable_ssc();
+    disable_ppm(EXTERNAL_MODULE);
   }
   else {
     // TODO
@@ -207,6 +208,7 @@ void disable_dsm2(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
     disable_ssc();
+    disable_ppm(EXTERNAL_MODULE);
   }
   else {
     // TODO
@@ -261,7 +263,7 @@ extern "C" void PWM_IRQHandler(void)
         }
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
         if (period != 5000) { // 2.5 mS
-          setupPulses(0);
+          setupPulses(EXTERNAL_MODULE);
         }
         else {
           // Kick off serial output here
