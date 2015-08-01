@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QLibrary>
+#include <QLibraryInfo>
 #include <QMap>
 #include <QMessageBox>
 #include "version.h"
@@ -46,9 +47,13 @@ void registerSimulators()
     simulatorsFound = true;
   }
 
-#if !( (!defined __GNUC__) || (defined __CYGWIN__) )
+#if defined(__APPLE__) || !( (!defined __GNUC__) || (defined __CYGWIN__) )
   if (!simulatorsFound) {
+#if defined(__APPLE__)
+    dir = QLibraryInfo::location(QLibraryInfo::PrefixPath) + "/Resources";
+#else
     dir = SIMULATOR_LIB_SEARCH_PATH;
+#endif
     foreach(QString filename, dir.entryList(filters, QDir::Files)) {
       registerSimulator(filename.prepend(dir.path() + "/"));
       simulatorsFound = true;
