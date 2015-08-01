@@ -133,18 +133,38 @@ void readKeysAndTrims()
   }
 
 #if defined(REV9E) && !defined(SIMU)
+  #define X9E_RE_TIMEOUT 5
   static rotenc_t rePreviousValue;
   rotenc_t reNewValue = (x9de_rotenc / 2);
+  static int timeout = X9E_RE_TIMEOUT;
+  static int lastkey = 0;
   int8_t scrollRE = reNewValue - rePreviousValue;
   if (scrollRE) {
     rePreviousValue = reNewValue;
+    timeout = X9E_RE_TIMEOUT;
     if (scrollRE < 0) {
+      if (lastkey != KEY_MINUS) {
+        putEvent(EVT_KEY_BREAK(lastkey));
+      }
       putEvent(EVT_KEY_FIRST(KEY_MINUS));
+      lastkey = KEY_MINUS;
     }
     else {
-      putEvent(EVT_KEY_FIRST(KEY_PLUS)); 
+      if (lastkey != KEY_PLUS) {
+        putEvent(EVT_KEY_BREAK(lastkey));
+      }
+      putEvent(EVT_KEY_FIRST(KEY_PLUS));
+      lastkey = KEY_PLUS; 
     }
   }
+  else if (timeout > 0) {
+    timeout--;
+  }
+  else if (lastkey && timeout == 0) {
+    putEvent(EVT_KEY_BREAK(lastkey));
+    lastkey = 0;
+  }
+    
 #endif
 
   in = readTrims();
