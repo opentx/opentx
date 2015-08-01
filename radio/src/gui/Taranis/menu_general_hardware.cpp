@@ -212,7 +212,9 @@ void menuGeneralHardware(uint8_t event)
       case ITEM_SETUP_HW_BLUETOOTH:
         lcd_putsLeft(y, "Bluetooth");
         menu_lcd_onoff(HW_SETTINGS_COLUMN, y, g_eeGeneral.bluetoothEnable, m_posHorz == 0 ? attr : 0);
-        if (m_posHorz == 0) g_eeGeneral.bluetoothEnable = checkIncDecGen(event, g_eeGeneral.bluetoothEnable, 0, 1);
+        if (attr && m_posHorz == 0) {
+          g_eeGeneral.bluetoothEnable = checkIncDecGen(event, g_eeGeneral.bluetoothEnable, 0, 1);
+        }
         editName(HW_SETTINGS_COLUMN+5*FW, y, g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME, event, m_posHorz == 1 ? attr : 0);
         break;
 #endif
