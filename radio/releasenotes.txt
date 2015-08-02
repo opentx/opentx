@@ -30,6 +30,7 @@
 <li>Added Timer3 to stats screen (<a href=https://github.com/opentx/opentx/issues/2515>#2515</a>)</li>
 <li>FrSky S.Port Airspeed sensor unit set to kph (<a href=https://github.com/opentx/opentx/issues/2305>#2305</a>)</li>
 <li>Frsky-D Telemetry protocol bug fixed (0x5D followed by 0x3D)</li>
+<li>Added support for 0.01V resolution to D series VFAS ID 0x39 (<a href=https://github.com/opentx/opentx/issues/2607>#2607</a>)</li>
 </ul>
 
 [Boards with narrow LCD (9X, 9XR, etc)]
