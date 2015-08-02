@@ -300,7 +300,7 @@
 #define TR_SF_RESERVE         "[reserve]\0   "
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          TR_SF_SAFETY "Ecolage\0     ""Trim instant.""Remise à 0\0  ""Déf.\0        " TR_ADJUST_GVAR "Volume\0      " "SetFailsafe\0 " "RangeCheck\0  " "ModuleBind\0  " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Rétroécl.\0   " TR_SF_SCREENSHOT TR_SF_TEST
+  #define TR_VFSWFUNC          TR_SF_SAFETY "Ecolage\0     ""Trim instant.""Remise à 0\0  ""Déf.\0        " TR_ADJUST_GVAR "Volume\0      " "DéfFailsafe\0 " "Test Port.\0  " "Bind\0        " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Rétroécl.\0   " TR_SF_SCREENSHOT TR_SF_TEST
 #elif defined(PCBGRUVIN9X)
   #define TR_VFSWFUNC          TR_SF_SAFETY "Ecolage\0     ""Trim instant.""Remise à 0\0  " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Rétroécl.\0   " TR_SF_TEST
 #else
@@ -527,7 +527,7 @@
 #define TR_VTRAINERMODES       "Maître/Jack\0      ""Elève/Jack\0       ""Maître/SBUS Module""Maître/CPPM Module""Maître/Batterie\0"
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Pas déf.\0""Maintien\0""Prédéfini""Pas d'imp""Récepteur"
+#define TR_VFAILSAFE           TR("Pas déf.\0""Maintien\0""Prédéf.\0 ""Pas d'imp""Récepteur", "Pas déf.\0""Maintien\0""Prédéfini""Pas d'imp""Récepteur")
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -596,22 +596,22 @@
 #endif
 #define TR_BITMAP              "Image du modèle"
 #define TR_TIMER               "Chrono "
-#define TR_ELIMITS             TR("Limites ét", "Limites étendues")
+#define TR_ELIMITS             TR("Limites ét.", "Limites étendues")
 #define TR_ETRIMS              TR("Trims ét.", "Trims étendus")
 #define TR_TRIMINC             TR("Pas Trim", "Pas des trims")
-#define TR_DISPLAY_TRIMS       "Affichage Trims"
+#define TR_DISPLAY_TRIMS       TR("Aff. trims", "Affichage Trims")
 #define TR_TTRACE              TR("Source Gaz", INDENT "Source")
 #define TR_TTRIM               TR("Trim gaz", INDENT "Trim ralenti uniq.")
 #define TR_BEEPCTR             TR("Bips centr", "Bips centrage")
-#define TR_USE_GLOBAL_FUNCS    "Fonctions Globales"
+#define TR_USE_GLOBAL_FUNCS    TR("Fonc. glob.", "Fonctions Globales")
 #if defined(PCBSKY9X) && defined(REVX)
-  #define TR_OUTPUT_TYPE       INDENT "Output"
+  #define TR_OUTPUT_TYPE       INDENT "Sortie"
 #endif
 #define TR_PROTO               TR(INDENT "Proto.", INDENT "Protocole")
 #if defined(CPUARM)
-  #define TR_PPMFRAME          INDENT "PPM frame"
+  #define TR_PPMFRAME          INDENT "Trame PPM"
 #else
-  #define TR_PPMFRAME          "PPM frame"
+  #define TR_PPMFRAME          "Trame PPM"
 #endif
 #define TR_MS                  "ms"
 #define TR_SWITCH              TR("Inter", "Interrupteur")
@@ -793,7 +793,7 @@
 #define TR_VARIO               TR("Vario", "Variomètre")
 #define TR_PITCH_AT_ZERO       INDENT "Tonalité au zéro"
 #define TR_PITCH_AT_MAX        INDENT "Tonalité au max"
-#define TR_REPEAT_AT_ZERO      INDENT "Intervalle au zéro"
+#define TR_REPEAT_AT_ZERO      TR(INDENT "Interv. au zéro", INDENT "Intervalle au zéro")
 #define TR_POWEROFF            "\037\120ARRET..."
 #define TR_SHUTDOWN            "ARRET EN COURS"
 #define TR_SAVEMODEL           "Sauvegarde modèle..."
@@ -909,20 +909,20 @@
 #define TR_SPEAKER             INDENT "Haut-p."
 #define TR_BUZZER              INDENT "Bipeur"
 #define TR_BYTES               "bytes"
-#define TR_MODULE_BIND         "[Bind]"
-#define TR_MODULE_RANGE        "[Port.]"
+#define TR_MODULE_BIND         TR("[Bnd]", "[Bind]")
+#define TR_MODULE_RANGE        TR("[Prt]", "[Port.]")
 #define TR_RESET_BTN           "[RAZ]"
-#define TR_SET                 "[Déf.]"
+#define TR_SET                 "[Déf]"
 #define TR_TRAINER             "Ecolage"
 #define TR_ANTENNAPROBLEM      CENTER "Antenne radio défectueuse!"
 #define TR_MODELIDUSED         TR("ID déjà affecté", "No de modèle déjà utilisé")
 #define TR_MODULE              INDENT "Type de module"
-#define TR_TELEMETRY_TYPE      "Type télémesure"
+#define TR_TELEMETRY_TYPE      TR("Type télm.", "Type télémesure")
 #define TR_TELEMETRY_SENSORS   "Capteurs"
 #define TR_VALUE               "Valeur"
 #define TR_TOPLCDTIMER         "Timer LCD haut"
 #define TR_UNIT                "Unité"
-#define TR_TELEMETRY_NEWSENSOR INDENT "Ajout d'un nouveau capteur..."
+#define TR_TELEMETRY_NEWSENSOR TR(INDENT"Nouveau capteur...", INDENT "Ajout d'un nouveau capteur...")
 #define TR_CHANNELRANGE        TR(INDENT "Canaux", INDENT "Plage de canaux")
 #define TR_LOWALARM            INDENT "Alarme basse"
 #define TR_CRITICALALARM       INDENT "Alarme critique"
@@ -1070,7 +1070,7 @@
 #define TR_ONLYPOSITIVE        "Positive"
 #define TR_FILTER              "Filtrage"
 #define TR_TELEMETRYFULL       "Plus de capteurs libres!"
-#define TR_IGNOREIDS           "Ignorer instance"
+#define TR_IGNOREIDS           TR(INDENT "Ign. inst.",INDENT "Ignorer instance")
 
 #define TR_MENU_INPUTS         "\314Entrées"
 #define TR_MENU_LUA            "\322Scripts Lua"

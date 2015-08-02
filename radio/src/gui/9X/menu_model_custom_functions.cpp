@@ -151,7 +151,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 #if defined(CPUARM)
           else if (func == FUNC_SET_TIMER) {
             maxParam = MAX_TIMERS-1;
-            putsStrIdx(lcdNextPos, y, STR_TIMER, CFN_TIMER_INDEX(cfn)+1, attr);
+            lcd_putsiAtt(lcdNextPos, y, STR_VFSWRESET, CFN_TIMER_INDEX(cfn), attr);
             if (active) CFN_TIMER_INDEX(cfn) = checkIncDec(event, CFN_TIMER_INDEX(cfn), 0, maxParam, eeFlags);
             break;
           }
