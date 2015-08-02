@@ -84,7 +84,7 @@ void parseTelemHubByte(uint8_t byte)
     byte = byte ^ 0x60;
     state = (TS_STATE)(state - TS_XOR);
   }
-  if (byte == 0x5d) {
+  else if (byte == 0x5d) {
     state = (TS_STATE)(state | TS_XOR);
     return;
   }
