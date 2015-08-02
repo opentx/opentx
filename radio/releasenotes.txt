@@ -18,11 +18,31 @@
 <li>Fixed several VFAS issues when using D series sensors (<a href=https://github.com/opentx/opentx/issues/2518>#2518</a>, <a href=https://github.com/opentx/opentx/issues/2531>#2531</a>)</li>, <a href=https://github.com/opentx/opentx/issues/2530>#2530</a>)</li>
 <li>Fixed missing GPS altitude when using D series sensors (<a href=https://github.com/opentx/opentx/issues/2539>#2539</a>)</li>
 <li>Symbols for renamed physical inputs were not shown (<a href=https://github.com/opentx/opentx/issues/2581>#2581</a>)</li>
+<li>Allow sensors which have a bad S.PORT implementation (<a href=https://github.com/opentx/opentx/issues/2538>#2538</a>)</li>
+<li>Fixed "repeated lines" menu problem (<a href=https://github.com/opentx/opentx/issues/2533>#2533</a>)</li>
+<li>Added symbols to renamed physical inputs (<a href=https://github.com/opentx/opentx/issues/2581>#2581</a>)</li>
+<li>Fixed: Telemetry values not selectable in model scripts (<a href=https://github.com/opentx/opentx/issues/2589>#2589</a>)</li>
+<li>SH polarity was wrong in simulator for X9E (<a href=https://github.com/opentx/opentx/issues/2561>#2561</a>)</li>
+<li>Added support for Trainer input signal alarm (<a href=https://github.com/opentx/opentx/issues/2579>#2579</a>)</li>
+<li>Fixed: the "Serial port" value could not be changed in Radio hardware menu</li>
+<li>X9E rotary encoder events were not "visible" in Lua scripts (<a href=https://github.com/opentx/opentx/issues/2609>#2609</a>)</li>
+<li>Added "Copy telemetry sensor" option (<a href=https://github.com/opentx/opentx/issues/2513>#2513</a>)</li>
+<li>Added Timer3 to stats screen (<a href=https://github.com/opentx/opentx/issues/2515>#2515</a>)</li>
+<li>FrSky S.Port Airspeed sensor unit set to kph (<a href=https://github.com/opentx/opentx/issues/2305>#2305</a>)</li>
+<li>Frsky-D Telemetry protocol bug fixed (0x5D followed by 0x3D)</li>
 </ul>
 
 [Boards with narrow LCD (9X, 9XR, etc)]
 <ul>
 <li>Fixed bug in mixer edit menu (<a href=https://github.com/opentx/opentx/issues/2512>#2512</a>)</li>
+<li>Telemetry setup page was broken (<a href=https://github.com/opentx/opentx/issues/2612>#2612</a>)</li>
+<li>Fixed 9XR pro resetting when changing from XJT to PPM in setup menu (<a href=https://github.com/opentx/opentx/issues/2592>#2592</a>)</li>
+</ul>
+
+[All]
+<ul>
+<li>Various texts and translations corrections</li>
+<li>Various small bug-fixes</li>
 </ul>
 
 
