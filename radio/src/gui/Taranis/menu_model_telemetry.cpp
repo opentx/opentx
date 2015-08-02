@@ -579,8 +579,8 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_SENSORS_LABEL:
         lcd_putsLeft(y, STR_TELEMETRY_SENSORS);
+        lcd_putsAtt(TELEM_COL2, y, STR_VALUE, 0);
         if (!g_model.ignoreSensorIds) {
-          lcd_putsAtt(TELEM_COL2, y, STR_VALUE, 0);
           lcd_putsAtt(TELEM_COL3, y, STR_ID, 0);
         }
         break;
