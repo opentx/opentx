@@ -82,8 +82,9 @@ void onModelSelectMenu(const char *result)
   else {
     // The user choosed a file on SD to restore
     POPUP_WARNING(eeRestoreModel(sub, (char *)result));
-    if (!s_warning && g_eeGeneral.currModel == sub)
+    if (!s_warning && g_eeGeneral.currModel == sub) {
       eeLoadModel(sub);
+    }
   }
 #endif
 }
