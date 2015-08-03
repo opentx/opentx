@@ -624,7 +624,7 @@ void StopEepromThread()
   if (fp) fclose(fp);
 }
 
-void eepromReadBlock (uint8_t * pointer_ram, uint16_t pointer_eeprom, uint16_t size)
+void eepromReadBlock (uint8_t * pointer_ram, uint32_t pointer_eeprom, uint32_t size)
 {
   assert(size);
 
@@ -639,7 +639,7 @@ void eepromReadBlock (uint8_t * pointer_ram, uint16_t pointer_eeprom, uint16_t s
 }
 
 #if defined(PCBTARANIS)
-void eepromWriteBlock(uint8_t * pointer_ram, uint16_t pointer_eeprom, uint16_t size)
+void eepromWriteBlock(uint8_t * pointer_ram, uint32_t pointer_eeprom, uint32_t size)
 {
   assert(size);
 

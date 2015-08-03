@@ -110,7 +110,7 @@ bool I2C_EE_ReadBlock(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRea
   return true;
 }
 
-void eepromReadBlock(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRead)
+void eepromReadBlock(uint8_t* pBuffer, uint32_t ReadAddr, uint32_t NumByteToRead)
 {
   while (!I2C_EE_ReadBlock(pBuffer, ReadAddr, NumByteToRead)) {
     i2cInit();
@@ -125,7 +125,7 @@ void eepromReadBlock(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRead
   * @param  NumByteToWrite : number of bytes to write to the EEPROM.
   * @retval None
   */
-void eepromWriteBlock(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteToWrite)
+void eepromWriteBlock(uint8_t* pBuffer, uint32_t WriteAddr, uint32_t NumByteToWrite)
 {
   uint8_t offset = WriteAddr % I2C_FLASH_PAGESIZE;
   uint8_t count = I2C_FLASH_PAGESIZE - offset;

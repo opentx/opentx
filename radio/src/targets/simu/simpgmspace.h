@@ -372,7 +372,7 @@ void StopEepromThread();
 #endif
 
 extern const char * eepromFile;
-void eepromReadBlock (uint8_t * pointer_ram, uint16_t address, uint16_t size);
+void eepromReadBlock (uint8_t * pointer_ram, uint32_t address, uint32_t size);
 
 #define wdt_enable(...) sleep(1/*ms*/)
 #define wdt_reset() sleep(1/*ms*/)

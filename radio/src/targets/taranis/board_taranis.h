@@ -292,8 +292,8 @@ void usbStop(void);
 
 // I2C driver: EEPROM + Audio Volume
 void i2cInit(void);
-void eepromReadBlock(uint8_t * buffer, uint16_t address, uint16_t size);
-void eepromWriteBlock(uint8_t * buffer, uint16_t address, uint16_t size);
+void eepromReadBlock(uint8_t * buffer, uint32_t address, uint32_t size);
+void eepromWriteBlock(uint8_t * buffer, uint32_t address, uint32_t size);
 
 // Debug driver
 void debugPutc(const char c);
