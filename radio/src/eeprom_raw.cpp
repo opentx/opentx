@@ -171,6 +171,7 @@ bool eepromOpen()
     eepromRead(eepromFatAddr, (uint8_t *)&eepromHeader, sizeof(eepromHeader.mark) + sizeof(eepromHeader.index));
     if (eepromHeader.mark == EEPROM_MARK && eepromHeader.index >= bestFatIndex) {
       bestFatAddr = eepromFatAddr;
+      bestFatIndex = eepromHeader.index;
     }
     eepromFatAddr += EEPROM_FAT_SIZE;
   }
