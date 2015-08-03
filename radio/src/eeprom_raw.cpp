@@ -99,7 +99,8 @@ void eepromEraseBlock(uint32_t address, bool blocking=true)
   // TRACE("eepromEraseBlock(%d)", address);
 
 #if defined(SIMU)
-  static uint8_t erasedBlock[EEPROM_BLOCK_SIZE] = { 0xff };
+  static uint8_t erasedBlock[EEPROM_BLOCK_SIZE]; // can't be on the stack!
+  memset(erasedBlock, 0xff, sizeof(erasedBlock));
   eeprom_pointer = address;
   eeprom_buffer_data = erasedBlock;
   eeprom_buffer_size = EEPROM_BLOCK_SIZE;
@@ -441,6 +442,8 @@ void eeCheck(bool immediately)
   if (immediately) {
     eepromWriteWait();
   }
+
+  assert(eepromWriteState == EEPROM_IDLE);
 
   if (s_eeDirtyMsk & EE_GENERAL) {
     TRACE("eeprom write general");
