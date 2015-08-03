@@ -640,7 +640,14 @@ void processHubPacket(uint8_t id, int16_t value)
     data = data * 60;
   }
   else if (id == VFAS_ID) {
-    data *= 10;
+    if (data >= VFAS_D_HIPREC_OFFSET) {
+      // incoming value has a resolution of 0.01V and added offset of VFAS_D_HIPREC_OFFSET
+      data -= VFAS_D_HIPREC_OFFSET;
+    }
+    else {
+      // incoming value has a resolution of 0.1V
+      data *= 10;
+    }
   }
   
   setTelemetryValue(TELEM_PROTO_FRSKY_D, id, 0, data, unit, precision);

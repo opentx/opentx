@@ -91,6 +91,9 @@
 #define D_A1_ID                 0xF1
 #define D_A2_ID                 0xF2
 
+#define VFAS_D_HIPREC_OFFSET    2000
+ 
+
 // FrSky new DATA IDs (2 bytes)
 #define ALT_FIRST_ID            0x0100
 #define ALT_LAST_ID             0x010f
@@ -151,6 +154,7 @@
 #define DATA_ID_RPM              0xE4 // 4
 #define DATA_ID_SP2UH            0x45 // 5
 #define DATA_ID_SP2UR            0xC6 // 6
+
 
 // Global Fr-Sky telemetry data variables
 extern uint8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata detected for some time
