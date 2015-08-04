@@ -52,7 +52,8 @@ void RleFile::EeFsCreate(uint8_t *eeprom, int size, BoardEnum board, unsigned in
   if (IS_SKY9X(board)) {
     memset(eeprom, 0xFF, size);
     if (version >= 217) {
-      eepromFatHeader = (EepromHeader *)eeprom;
+      memset(eeprom, 0, EEPROM_FAT_SIZE);
+      eepromFatHeader = (EepromHeader *)(eeprom + EEPROM_FAT_SIZE);
       eepromFatHeader->mark = EEPROM_MARK;
       eepromFatHeader->index = 1;
       for (int i=0; i<EEPROM_MAX_FILES; i++) {
