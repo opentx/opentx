@@ -785,3 +785,5 @@ Tanguy Le Moign
 Barrett Powell
 Patrice Lafeuille
 Martin Blume
+Marek Kopyto
+Marco Lange
