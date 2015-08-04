@@ -1,4 +1,4 @@
-<h2>Version 2.1.1 / (set date)</h2>
+<h2>Version 2.1.1 / 2015-08-04</h2>
 
 [ARM Boards]
 <ul>
@@ -45,7 +45,6 @@
 <li>Various texts and translations corrections</li>
 <li>Various small bug-fixes</li>
 </ul>
-
 
 
 <h2>Version 2.1.0 / 2015-07-16</h2>

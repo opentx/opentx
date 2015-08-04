@@ -1,4 +1,4 @@
-<h2>Version 2.1.1 / (set date)</h2>
+<h2>Version 2.1.1 / 2015-08-04</h2>
 <ul>
 <li>Vario source and center silent options were not saved(<a href=https://github.com/opentx/opentx/issues/2476>#2476</a>)</li>
 <li>DSM receiver numbers for external module were not converted from previous version EEPROM (<a href=https://github.com/opentx/opentx/issues/2474>#2474</a>)</li>
