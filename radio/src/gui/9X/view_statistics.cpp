@@ -68,10 +68,6 @@ void menuStatisticsView(uint8_t event)
 
   putsTimer(   12*FW+5*FWNUM+1, FH*0, sessionTimer, 0, 0);
   
-#if defined(CPUARM)
-  putsTimer(21*FW+5*FWNUM+1, 0*FH, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
-#endif
-
 #if defined(THRTRACE)
   coord_t traceRd = (s_traceCnt < 0 ? s_traceWr : 0);
   const coord_t x = 5;
@@ -198,13 +194,13 @@ void menuStatisticsDebug(uint8_t event)
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS, stack_free(0), UNSIGN|LEFT);
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+2, stack_free(0), UNSIGN|LEFT|TINSIZE);
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(1), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS+2, stack_free(1), UNSIGN|LEFT|TINSIZE);
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(2), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS+2, stack_free(2), UNSIGN|LEFT|TINSIZE);
 #endif
 
 #if !defined(CPUARM)
@@ -220,6 +216,6 @@ void menuStatisticsDebug(uint8_t event)
   lcd_outdezAtt(14*FW, 5*FH, stack_free(), UNSIGN) ;
 #endif
 
-  lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);
+  lcd_puts(4*FW, 7*FH+1, STR_MENUTORESET);
   lcd_status_line();
 }
