@@ -23,6 +23,9 @@
 #include "file.h"
 #include "appdata.h"
 
+#define OPENTX_FIRMWARE_DOWNLOADS        "http://downloads-21.open-tx.org/firmware"
+#define OPENTX_NIGHT_FIRMWARE_DOWNLOADS  "http://downloads-21.open-tx.org/nightly/firmware"
+
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
 
@@ -1046,9 +1049,18 @@ bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, in
   return true;
 }
 
+QString OpenTxFirmware::getFirmwareBaseUrl()
+{
+#if defined(ALLOW_NIGHTLY_BUILDS)
+  return (g.useFirmwareNightlyBuilds() ? OPENTX_NIGHT_FIRMWARE_DOWNLOADS : OPENTX_FIRMWARE_DOWNLOADS);
+#else
+  return OPENTX_FIRMWARE_DOWNLOADS;
+#endif
+}
+
 QString OpenTxFirmware::getFirmwareUrl()
 {
-  QString url = (g.useFirmwareNightlyBuilds() ? OPENTX_NIGHT_FIRMWARE_DOWNLOADS : OPENTX_FIRMWARE_DOWNLOADS);
+  QString url = getFirmwareBaseUrl();
   switch (board) {
     case BOARD_STOCK:
     case BOARD_M128:
@@ -1072,14 +1084,14 @@ QString OpenTxFirmware::getFirmwareUrl()
 
 QString OpenTxFirmware::getReleaseNotesUrl()
 {
-  QString url = (g.useFirmwareNightlyBuilds() ? OPENTX_NIGHT_FIRMWARE_DOWNLOADS : OPENTX_FIRMWARE_DOWNLOADS);
+  QString url = getFirmwareBaseUrl();
   url.append("/releasenotes.txt");
   return url;
 }
 
 QString OpenTxFirmware::getStampUrl()
 {
-  QString url = (g.useFirmwareNightlyBuilds() ? OPENTX_NIGHT_FIRMWARE_DOWNLOADS : OPENTX_FIRMWARE_DOWNLOADS);
+  QString url = getFirmwareBaseUrl();
   url.append("/stamp-opentx.txt");
   return url;
 }

@@ -76,6 +76,7 @@ class MainWindow : public QMainWindow
     MainWindow();
 
   protected:
+    QString getCompanionUpdateBaseUrl();
     void dowloadLastFirmwareUpdate();
     void startFirmwareDownload();
     void closeEvent(QCloseEvent *event);

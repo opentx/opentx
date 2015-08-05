@@ -22,8 +22,12 @@ ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   SET(SIMULATOR_NAME "simulator")
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-OPTION(DEBUG_IMPORT "Turns on debug output for EEPROM import") # Disabled by default
+OPTION(ALLOW_NIGHTLY_BUILDS "Allow nightly builds download / update") # Disabled by default 
+IF(ALLOW_NIGHTLY_BUILDS)
+	ADD_DEFINITIONS(-DALLOW_NIGHTLY_BUILDS)
+ENDIF(ALLOW_NIGHTLY_BUILDS)
 
+OPTION(DEBUG_IMPORT "Turn on debug output for EEPROM import") # Disabled by default
 IF(DEBUG_IMPORT)
     ADD_DEFINITIONS( -DDEBUG_MODEL_IMPORT)
     MESSAGE( STATUS "EEPROM import debugging enabled" )

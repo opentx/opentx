@@ -216,6 +216,15 @@ void MainWindow::dowloadLastFirmwareUpdate()
   checkForUpdates();
 }
 
+QString MainWindow::getCompanionUpdateBaseUrl()
+{
+#if defined(ALLOW_NIGHTLY_BUILDS)
+  return g.useCompanionNightlyBuilds() ? OPENTX_NIGHT_COMPANION_DOWNLOADS : OPENTX_COMPANION_DOWNLOADS;
+#else
+  return OPENTX_COMPANION_DOWNLOADS;
+#endif
+}
+
 void MainWindow::checkForUpdates()
 {
   if (checkForUpdatesState & SHOW_DIALOG_WAIT) {
@@ -229,7 +238,7 @@ void MainWindow::checkForUpdates()
     // TODO why create each time a network manager?
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),this, SLOT(checkForCompanionUpdateFinished(QNetworkReply*)));
-    QNetworkRequest request(QUrl(QString("%1/%2").arg(g.useCompanionNightlyBuilds() ? OPENTX_NIGHT_COMPANION_DOWNLOADS : OPENTX_COMPANION_DOWNLOADS).arg(COMPANION_STAMP)));
+    QNetworkRequest request(QUrl(QString("%1/%2").arg(getCompanionUpdateBaseUrl()).arg(COMPANION_STAMP)));
     request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
     networkManager->get(request);
   }
@@ -296,7 +305,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 #endif
           if (!fileName.isEmpty()) {
             g.updatesDir(QFileInfo(fileName).dir().absolutePath());
-            downloadDialog * dd = new downloadDialog(this, QString("%1/%2").arg(g.useCompanionNightlyBuilds() ? OPENTX_NIGHT_COMPANION_DOWNLOADS : OPENTX_COMPANION_DOWNLOADS).arg(QString(COMPANION_INSTALLER).arg(version)), fileName);
+            downloadDialog * dd = new downloadDialog(this, QString("%1/%2").arg(getCompanionUpdateBaseUrl()).arg(QString(COMPANION_INSTALLER).arg(version)), fileName);
             installer_fileName = fileName;
             connect(dd, SIGNAL(accepted()), this, SLOT(updateDownloaded()));
             dd->exec();

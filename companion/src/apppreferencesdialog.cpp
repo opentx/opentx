@@ -109,9 +109,14 @@ void AppPreferencesDialog::initSettings()
     ui->snapshotPath->setDisabled(true);
     ui->snapshotPathButton->setDisabled(true);
   }
+#if defined(ALLOW_NIGHTLY_BUILDS)
   ui->useCompanionNightlyBuilds->setChecked(g.useCompanionNightlyBuilds());
-  ui->autoCheckCompanion->setChecked(g.autoCheckApp());
   ui->useFirmwareNightlyBuilds->setChecked(g.useFirmwareNightlyBuilds());
+#else
+  ui->useCompanionNightlyBuilds->hide();
+  ui->useFirmwareNightlyBuilds->hide();
+#endif
+  ui->autoCheckCompanion->setChecked(g.autoCheckApp());
   ui->autoCheckFirmware->setChecked(g.autoCheckFw());
   ui->showSplash->setChecked(g.showSplash());
   ui->historySize->setValue(g.historySize());
