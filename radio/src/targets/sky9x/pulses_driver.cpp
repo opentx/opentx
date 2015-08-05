@@ -179,7 +179,7 @@ void disable_ssc()
 void init_pxx(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
-    init_main_ppm(5000, 0);
+    init_main_ppm(2500 * 2, 0);
     init_ssc();
   }
   else {
@@ -201,7 +201,7 @@ void disable_pxx(uint32_t port)
 void init_dsm2(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
-    init_main_ppm(5000, 0);
+    init_main_ppm(2500 * 2, 0);
     init_ssc();
   }
   else {
@@ -234,16 +234,16 @@ extern "C" void PWM_IRQHandler(void)
     // Use the current protocol, don't switch until set_up_pulses
     switch (s_current_protocol[EXTERNAL_MODULE]) {
       case PROTO_PXX:
-        // Alternate periods of 15.5mS and 2.5 mS
+        // Alternate periods of 6.5mS and 2.5 mS
         period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;
-        if (period == 5000) { // 2.5 mS
+        if (period == 2500 * 2) {
           period = 6500 * 2;
         }
         else {
-          period = 5000;
+          period = 2500 * 2;
         }
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
-        if (period != 5000) { // 2.5 mS
+        if (period != 2500 * 2) {
           setupPulses(EXTERNAL_MODULE);
         }
         else {
@@ -260,14 +260,14 @@ extern "C" void PWM_IRQHandler(void)
       case PROTO_DSM2_DSMX:
         // Alternate periods of 19.5mS and 2.5 mS
         period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;
-        if (period == 5000) { // 2.5 mS
+        if (period == 2500 * 2) {
           period = 19500 * 2;
         }
         else {
-          period = 5000;
+          period = 2500 * 2;
         }
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
-        if (period != 5000) { // 2.5 mS
+        if (period != 2500 * 2) {
           setupPulses(EXTERNAL_MODULE);
         }
         else {
