@@ -525,7 +525,7 @@
 #define TR_VTMRMODES           "VYP\0""ZAP\0""Pln>""Pln%""Pln*"
 
 #define LEN_VTRAINERMODES      "\022"
-#define TR_VTRAINERMODES       "Učitel/Jack\0      ""Žák/Jack\0         ""Master/SBUS Module""Master/CPPM Module""Master/Battery\0"
+#define TR_VTRAINERMODES       "Učitel/Jack\0      ""Žák/Jack\0         ""Učitel/SBUS Modul\0""Učitel/CPPM Modul\0""Učitel/Bat. slot\0"
 
 #define LEN_VFAILSAFE          "\012"
 #define TR_VFAILSAFE           "Nenastaven""Držet\0    ""Vlastní\0  ""Bez pulzů\0""Přijímač\0"
@@ -540,7 +540,7 @@
 #endif
 
 #define LEN_VSENSORTYPES        "\011"
-#define TR_VSENSORTYPES        "Vlastní\0""Vypočtený"
+#define TR_VSENSORTYPES        "Vlastní\0 ""Vypočtený"
 
 #define LEN_VFORMULAS          "\012"
 #define TR_VFORMULAS           "Součet\0   ""Průměr\0   ""Min\0      ""Max\0      ""Násobení  ""Totalize  ""Článek\0   ""Spotřeba  ""Vzdálenost"
@@ -694,7 +694,7 @@
 #define TR_SWITCHWARNING       TR("* Spínače", INDENT "Polohy spínačů")
 #define TR_POTWARNING          TR("* Potenc.", INDENT "Nastavení Pot.")
 #define TR_TIMEZONE            "časové pásmo"
-#define TR_ADJUST_RTC          INDENT "Adjust RTC"
+#define TR_ADJUST_RTC          INDENT "Upravit RTC"
 #define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        TR("Pořadí kanálů", "Výchozí pořadí kanálů")
 #define TR_STICKS              "Páky"
@@ -1079,7 +1079,7 @@
 #define TR_ONLYPOSITIVE        "Jen kladné"
 #define TR_FILTER              "Filtr"
 #define TR_TELEMETRYFULL       "Všechny sloty jsou plné!"
-#define TR_IGNOREIDS           INDENT "Ignore instance"
+#define TR_IGNOREIDS           INDENT "Ignoruj chyby ID"
 
 #define TR_MENU_INPUTS         "\314Vstupy"
 #define TR_MENU_LUA            "\322Lua skripty"
