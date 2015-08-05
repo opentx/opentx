@@ -168,8 +168,11 @@ void menuModelSetup(uint8_t event)
     uint8_t k = i+s_pgOfs;
 #if defined(CPUARM)
     for (int j=0; j<=k; j++) {
-      if (mstate_tab[j+1] == HIDDEN_ROW)
-        k++;
+      if (mstate_tab[j+1] == HIDDEN_ROW) {
+    	if (++k >= (int)DIM(mstate_tab)) {
+    	  return;
+    	}
+      }
     }
 #endif
 
