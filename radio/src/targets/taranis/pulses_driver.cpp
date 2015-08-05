@@ -289,9 +289,8 @@ static void intmodulePxxStop()
 static void intmodulePpmStart()
 {
   INTERNAL_MODULE_ON();
-  // Timer1
-  modulePulsesData[INTERNAL_MODULE].ppm.ptr = modulePulsesData[INTERNAL_MODULE].ppm.pulses;
 
+  // Timer1
   configure_pins(INTMODULE_GPIO_PIN, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_1 | PIN_OS25);
   
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN ;
@@ -352,7 +351,6 @@ extern "C" void TIM1_CC_IRQHandler()
   }
 #if defined(TARANIS_INTERNAL_PPM)
   else if (s_current_protocol[INTERNAL_MODULE] == PROTO_PPM) {
-    modulePulsesData[INTERNAL_MODULE].ppm.ptr = modulePulsesData[INTERNAL_MODULE].ppm.pulses;
     INTMODULE_TIMER->DIER |= TIM_DIER_UDE;
     INTMODULE_TIMER->SR &= ~TIM_SR_UIF;
     INTMODULE_TIMER->DIER |= TIM_DIER_UIE;
@@ -368,8 +366,7 @@ extern "C" void TIM1_UP_TIM10_IRQHandler()
   INTMODULE_TIMER->SR &= ~TIM_SR_UIF ;                               // Clear flag
 
   INTMODULE_TIMER->ARR = *modulePulsesData[INTERNAL_MODULE].ppm.ptr++ ;
-  if ( *modulePulsesData[INTERNAL_MODULE].ppm.ptr == 0 )
-  {
+  if (*modulePulsesData[INTERNAL_MODULE].ppm.ptr == 0) {
     INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF ;                     // Clear this flag
     INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
@@ -505,8 +502,6 @@ static void extmodulePpmStart()
   EXTERNAL_MODULE_ON();
 
   // Timer1
-  modulePulsesData[EXTERNAL_MODULE].ppm.ptr = modulePulsesData[EXTERNAL_MODULE].ppm.pulses;
-
   configure_pins(EXTMODULE_GPIO_PIN, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_3 | PIN_OS25);
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN ;
 
@@ -572,7 +567,6 @@ extern "C" void TIM8_CC_IRQHandler()
   }
 #endif
   else if (s_current_protocol[EXTERNAL_MODULE] == PROTO_PPM) {
-    modulePulsesData[EXTERNAL_MODULE].ppm.ptr = modulePulsesData[EXTERNAL_MODULE].ppm.pulses;
     EXTMODULE_TIMER->DIER |= TIM_DIER_UDE ;
     EXTMODULE_TIMER->SR &= ~TIM_SR_UIF ;                                       // Clear this flag
     EXTMODULE_TIMER->DIER |= TIM_DIER_UIE ;                            // Enable this interrupt
