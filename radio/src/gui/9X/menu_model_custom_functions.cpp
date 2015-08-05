@@ -48,9 +48,20 @@
 #if defined(CPUARM) && defined(SDCARD)
 void onCustomFunctionsFileSelectionMenu(const char *result)
 {
-  int8_t  sub = m_posVert - 1;
-  CustomFunctionData * cf = &g_model.customFn[sub];
-  uint8_t func = CFN_FUNC(cf);
+  int  sub = m_posVert - 1;
+  CustomFunctionData * cfn;
+  uint8_t eeFlags;
+
+  if (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions) {
+    cfn = &g_model.customFn[sub];
+    eeFlags = EE_MODEL;
+  }
+  else {
+    cfn = &g_eeGeneral.customFn[sub];
+    eeFlags = EE_GENERAL;
+  }
+
+  uint8_t func = CFN_FUNC(cfn);
 
   if (result == STR_UPDATE_LIST) {
     char directory[256];
@@ -61,22 +72,22 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
       strcpy(directory, SOUNDS_PATH);
       strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
     }
-    if (!listSdFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cf->play.name), NULL)) {
+    if (!listSdFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), NULL)) {
       POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
       s_menu_flags = 0;
     }
   }
   else {
     // The user choosed a file in the list
-    memcpy(cf->play.name, result, sizeof(cf->play.name));
-    eeDirty(EE_MODEL);
+    memcpy(cfn->play.name, result, sizeof(cfn->play.name));
+    eeDirty(eeFlags);
   }
 }
 #endif
 
 void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
 {
-  int8_t  sub = m_posVert - 1;
+  int8_t sub = m_posVert - 1;
 
 #if defined(CPUARM)
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
@@ -97,6 +108,11 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
         case 0:
           putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext->activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
+#if defined(CPUARM)
+          if (func == FUNC_OVERRIDE_CHANNEL && functions != g_model.customFn) {
+            func = CFN_FUNC(cfn) = func+1;
+          }
+#endif
           break;
 
         case 1:
