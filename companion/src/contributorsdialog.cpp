@@ -59,12 +59,16 @@ ContributorsDialog::ContributorsDialog(QWidget * parent):
     str.append(formatTable(tr("People who have donated to OpenTX"), names, 6));
   }
 
-  str.append("  <tr><td class=\"normal\">&nbsp;</td></tr>" \
-             "  <tr><td colspan=3 class=\"normal\">" + tr("Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)") + "<br/></td></tr>" \
-             "  <tr><td colspan=3 class=\"normal\">" + tr("Thank you all !!!") + "</td></tr>" \
+  str.append("<table><tr><td class=\"normal\">&nbsp;</td></tr>" \
+             "  <tr><td class=\"normal\">" + tr("Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)") + "<br/></td></tr>" \
              "</table>");
 
-
+  QFile blacklist(":/BLACKLIST.txt");
+  if (blacklist.open(QIODevice::ReadOnly | QIODevice::Text)) {
+	QStringList names;
+	names << blacklist.readAll();
+	str.append(formatTable(tr("OpenTX Blacklist"), names, 1));
+  }
   str.append("</body></html>");
   ui->textEditor->setHtml(str);
   ui->textEditor->scroll(0, 0);
