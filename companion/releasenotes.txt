@@ -1,4 +1,4 @@
-<h2>Version 2.1.1 / 2015-08-04</h2>
+<h2>Version 2.1.1 / 2015-08-05</h2>
 <ul>
 <li>Vario source and center silent options were not saved(<a href=https://github.com/opentx/opentx/issues/2476>#2476</a>)</li>
 <li>DSM receiver numbers for external module were not converted from previous version EEPROM (<a href=https://github.com/opentx/opentx/issues/2474>#2474</a>)</li>
@@ -16,12 +16,14 @@
 <li>Writing model settings to 9XR-PRO did not work (<a href=https://github.com/opentx/opentx/issues/2402>#2402</a>, <a href=https://github.com/opentx/opentx/issues/2517>#2517</a>)</li>
 <li>Model Print and Model Compare improvements</li>
 <li>Fixed Companion OSX version (<a href=https://github.com/opentx/opentx/issues/2549>#2549</a>)</li>
-<li>Firmware nightly builds are now downloadable from Companion (<a href=https://github.com/opentx/opentx/issues/2526>#2526</a>)</li>
+<li>Firmware nightly builds are now downloadable from nightly builds of Companion (<a href=https://github.com/opentx/opentx/issues/2526>#2526</a>,<a href=https://github.com/opentx/opentx/issues/2634>#2634</a>)</li>
 <li>Fixed telemetry item lists (<a href=https://github.com/opentx/opentx/issues/2541>#2541</a>)</li>
 <li>Fixed missing pots P1..P3 for 9X (<a href=https://github.com/opentx/opentx/issues/2543>#2543</a>)</li>
 <li>Fixed "Invalid model and settings" error message when writing models and settings to the radio (<a href=https://github.com/opentx/opentx/issues/2544>#2544</a>)</li>
 <li>Global Functions fixes (<a href=https://github.com/opentx/opentx/issues/2558>#2558</a>)</li>
 <li>Export to Google Earth now working (only) with the new telemetry fields (GPS, GAlt and GSpd) (<a href=https://github.com/opentx/opentx/issues/2546>#2546</a>)</li>
+<li>Fixed unsuccessful writing of setting to the radio for 9XR PRO (<a href=https://github.com/opentx/opentx/issues/2605>#2605</a>)</li>
+
 <li>Various texts and translations corrections</li>
 <li>Various small bug-fixes</li>
 </ul>

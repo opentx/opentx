@@ -1,4 +1,4 @@
-<h2>Version 2.1.1 / 2015-08-04</h2>
+<h2>Version 2.1.1 / 2015-08-05</h2>
 
 [ARM Boards]
 <ul>
@@ -31,6 +31,8 @@
 <li>FrSky S.Port Airspeed sensor unit set to kph (<a href=https://github.com/opentx/opentx/issues/2305>#2305</a>)</li>
 <li>Frsky-D Telemetry protocol bug fixed (0x5D followed by 0x3D)</li>
 <li>Added support for 0.01V resolution to D series VFAS ID 0x39 (<a href=https://github.com/opentx/opentx/issues/2607>#2607</a>)</li>
+<li>Set a more reasonable default precision for telemetry values (<a href=https://github.com/opentx/opentx/issues/2631>#2631</a>)</li>
+<li>Fixed a problem when moving mixer lines on X9E (<a href=https://github.com/opentx/opentx/issues/2643>#2643</a>)</li>
 </ul>
 
 [Boards with narrow LCD (9X, 9XR, etc)]
@@ -38,6 +40,8 @@
 <li>Fixed bug in mixer edit menu (<a href=https://github.com/opentx/opentx/issues/2512>#2512</a>)</li>
 <li>Telemetry setup page was broken (<a href=https://github.com/opentx/opentx/issues/2612>#2612</a>)</li>
 <li>Fixed 9XR pro resetting when changing from XJT to PPM in setup menu (<a href=https://github.com/opentx/opentx/issues/2592>#2592</a>)</li>
+<li>Special function choices were broken on small screen ARM platforms (<a href=https://github.com/opentx/opentx/issues/2618>#2618</a>)</li>
+<li>Fixed reset on 9XR-PRO when user changed module protocol from PXX (<a href=https://github.com/opentx/opentx/issues/2592>#2592</a>)</li>
 </ul>
 
 [All]
