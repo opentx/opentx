@@ -753,7 +753,6 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
       }
       // no break
 
-    CASE_EVT_ROTARY_BREAK
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
       if (s_copyTgtOfs) {
@@ -806,23 +805,23 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
     case EVT_KEY_REPT(KEY_MOVE_DOWN):
       if (s_copyMode) {
         uint8_t key = (event & 0x1f);
-        uint8_t next_ofs = ((IS_ROTARY_UP(event) || key==KEY_MOVE_UP) ? s_copyTgtOfs - 1 : s_copyTgtOfs + 1);
+        uint8_t next_ofs = (key==KEY_MOVE_UP ? s_copyTgtOfs - 1 : s_copyTgtOfs + 1);
 
         if (s_copyTgtOfs==0 && s_copyMode==COPY_MODE) {
           // insert a mix on the same channel (just above / just below)
           if (reachExpoMixCountLimit(expo)) break;
           copyExpoMix(expo, s_currIdx);
-          if (IS_ROTARY_DOWN(event) || key==KEY_MOVE_DOWN) s_currIdx++;
+          if (key==KEY_MOVE_DOWN) s_currIdx++;
           else if (sub-s_pgOfs >= 6) s_pgOfs++;
         }
         else if (next_ofs==0 && s_copyMode==COPY_MODE) {
           // delete the mix
           deleteExpoMix(expo, s_currIdx);
-          if (IS_ROTARY_UP(event) || key==KEY_MOVE_UP) s_currIdx--;
+          if (key==KEY_MOVE_UP) s_currIdx--;
         }
         else {
           // only swap the mix with its neighbor
-          if (!swapExpoMix(expo, s_currIdx, IS_ROTARY_UP(event) || key==KEY_MOVE_UP)) break;
+          if (!swapExpoMix(expo, s_currIdx, key==KEY_MOVE_UP)) break;
           eeDirty(EE_MODEL);
         }
 
