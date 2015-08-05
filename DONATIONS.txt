@@ -787,3 +787,4 @@ Patrice Lafeuille
 Martin Blume
 Marek Kopyto
 Marco Lange
+Gary Nix
