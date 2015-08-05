@@ -192,4 +192,7 @@ int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t
 void frskySportSetDefault(int index, uint16_t type, uint8_t instance);
 void frskyDSetDefault(int index, uint16_t id);
 
+#define IS_DISTANCE_UNIT(unit)         ((unit) == UNIT_METERS || (unit) == UNIT_FEET)
+#define IS_SPEED_UNIT(unit)            ((unit) >= UNIT_KTS && (unit) <= UNIT_MPH)
+
 #endif
