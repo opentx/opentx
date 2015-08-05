@@ -101,8 +101,9 @@ void menuModelSelect(uint8_t event)
 
   uint8_t _event_ = (IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event) ? 0 : event);
 
-  if ((s_copyMode && EVT_KEY_MASK(event) == KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT))
+  if ((s_copyMode && EVT_KEY_MASK(event) == KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT)) {
     _event_ -= KEY_EXIT;
+  }
 
   int8_t oldSub = m_posVert;
 
@@ -133,7 +134,9 @@ void menuModelSelect(uint8_t event)
         s_editMode = EDIT_MODE_INIT;
         eeCheck(true);
         break;
+
       case EVT_KEY_LONG(KEY_EXIT):
+        killEvents(event);
         if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && eeModelExists(sub)) {
           POPUP_CONFIRMATION(STR_DELETEMODEL);
 #if defined(CPUARM)
@@ -143,10 +146,13 @@ void menuModelSelect(uint8_t event)
           eeLoadModelName(sub, name);
           SET_WARNING_INFO(name, sizeof(g_model.header.name), ZCHAR);
 #endif
-          killEvents(event);
-          break;
         }
-        // no break
+        else {
+          s_copyMode = 0;
+          m_posVert = g_eeGeneral.currModel;
+        }
+        break;
+
 #if defined(ROTARY_ENCODER_NAVIGATION)
       case EVT_ROTARY_LONG:
         killEvents(event);
@@ -161,12 +167,20 @@ void menuModelSelect(uint8_t event)
         }
         // no break
 #endif
+
       case EVT_KEY_BREAK(KEY_EXIT):
         if (s_copyMode) {
           sub = m_posVert = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow;
           s_copyMode = 0;
         }
+        else if (m_posVert != g_eeGeneral.currModel) {
+          m_posVert = g_eeGeneral.currModel;
+        }
+        else {
+          popMenu();
+        }
         break;
+
 #if defined(ROTARY_ENCODER_NAVIGATION)
       case EVT_ROTARY_BREAK:
         if (s_editMode == -1) {
@@ -175,6 +189,7 @@ void menuModelSelect(uint8_t event)
         }
         // no break;
 #endif
+
       case EVT_KEY_LONG(KEY_ENTER):
       case EVT_KEY_BREAK(KEY_ENTER):
         s_editMode = 0;
