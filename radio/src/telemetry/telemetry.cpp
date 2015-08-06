@@ -562,12 +562,20 @@ int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t
   }
   else if (unit == UNIT_KTS) {
     if (destUnit == UNIT_KMH) {
-      // kts to km/h
+      // kts to km/h (1 knot = 1.85200 kilometers per hour)
       value = (value * 1852) / 1000;
     }
     else if (destUnit == UNIT_MPH) {
-      // kts to mph
-      value = (value * 23) / 20;
+      // kts to mph (1 knot = 1.15077945 miles per hour)
+      value = (value * 1151) / 1000;
+    }
+    else if (destUnit == UNIT_METERS_PER_SECOND) {
+      // kts to m/s (1 knot = 0.514444444 meters / second)
+      value = (value * 514) / 1000;
+    }
+    else if (destUnit == UNIT_FEET_PER_SECOND) {
+      // kts to f/s  (1 knot = 1.68780986 feet per second)
+      value = (value * 1688) / 1000;
     }
   }
   else if (unit == UNIT_CELSIUS) {
