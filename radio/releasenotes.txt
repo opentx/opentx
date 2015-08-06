@@ -9,7 +9,7 @@
 <li>Fixed unwanted interaction between Global and Special Functions play track/music (<a href=https://github.com/opentx/opentx/issues/2478>#2478</a>)</li>
 <li>Fixed 2-pos switch conversion (<a href=https://github.com/opentx/opentx/issues/2493>#2493</a>)</li>
 <li>Fixed heli swash-ring problem (<a href=https://github.com/opentx/opentx/issues/2492>#2492</a>)</li>
-<li>New feature: model name played when model is loaded (plays file "SOUNDS/<language>/<model_name>/name.wav") (<a href=https://github.com/opentx/opentx/issues/2404>#2404</a>)</li>
+<li>New feature: model name played when model is loaded (plays file "SOUNDS/&lt;language&gt;/&lt;model_name&gt;/name.wav") (<a href=https://github.com/opentx/opentx/issues/2404>#2404</a>)</li>
 <li>Faster scrolling when setting custom sensor id (<a href=https://github.com/opentx/opentx/issues/2506>#2506</a>)</li>
 <li>Removed telemetry values from available selection in Global Functions for "Play Value" and "Reset" (<a href=https://github.com/opentx/opentx/issues/2519>#2519</a>)</li>
 <li>D-type RPM sensor was broken (<a href=https://github.com/opentx/opentx/issues/2509>#2509</a>)</li>
