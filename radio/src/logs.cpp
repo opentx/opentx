@@ -188,7 +188,16 @@ void writeHeader()
 #endif
 
 #if defined(PCBTARANIS)
-  f_puts("Rud,Ele,Thr,Ail,S1,S2,S3,LS,RS,SA,SB,SC,SD,SE,SF,SG,SH\n", &g_oLogFile);
+  for (uint8_t i=1; i<NUM_STICKS+NUM_POTS+1; i++) {
+    const char * p = STR_VSRCRAW + i * STR_VSRCRAW[0] + 2;
+    for (uint8_t j=0; j<STR_VSRCRAW[0]-1; ++j) {
+      if (!*p) break;
+      f_putc(*p, &g_oLogFile);
+      ++p;
+    }
+    f_putc(',', &g_oLogFile);
+  }
+  f_puts("SA,SB,SC,SD,SE,SF,SG,SH\n", &g_oLogFile);
 #else
   f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,3POS,AIL,GEA,TRN\n", &g_oLogFile);
 #endif

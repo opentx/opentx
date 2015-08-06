@@ -33,6 +33,7 @@
 <li>Added support for 0.01V resolution to D series VFAS ID 0x39 (<a href=https://github.com/opentx/opentx/issues/2607>#2607</a>)</li>
 <li>Set a more reasonable default precision for telemetry values (<a href=https://github.com/opentx/opentx/issues/2631>#2631</a>)</li>
 <li>Fixed a problem when moving mixer lines on X9E (<a href=https://github.com/opentx/opentx/issues/2643>#2643</a>)</li>
+<li>Fixed X9E SD log header line (<a href=https://github.com/opentx/opentx/issues/2638>#2638</a>)</li> 
 </ul>
 
 [Boards with narrow LCD (9X, 9XR, etc)]
