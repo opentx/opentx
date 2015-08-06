@@ -461,8 +461,8 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
           msgBox.resize(0,0);
           msgBox.exec();
           if( msgBox.clickedButton() == rnButton ) {
-            ContributorsDialog *cd = new ReleaseNotesFirmwareDialog(this, rn);
-            cd->exec();
+            ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, rn);
+            dialog->exec();
             int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(versionString),
                   QMessageBox::Yes | QMessageBox::No);
             if (ret2 == QMessageBox::Yes) {
