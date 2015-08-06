@@ -665,16 +665,25 @@ void frskyDSetDefault(int index, uint16_t id)
     TelemetryUnit unit = sensor->unit;
     uint8_t prec = min<uint8_t>(2, sensor->prec);
     telemetrySensor.init(sensor->name, unit, prec);
-    if (id >= D_A1_ID && id <= D_A2_ID) {
+    if (id == D_RSSI_ID) {
+      telemetrySensor.filter = 1;
+      telemetrySensor.logs = true;
+    }
+    else if (id >= D_A1_ID && id <= D_A2_ID) {
       telemetrySensor.custom.ratio = 132;
       telemetrySensor.filter = 1;
     }
-    else if (id == D_RSSI_ID) {
-      telemetrySensor.filter = 1;
+    else if (id == CURRENT_ID) {
+      telemetrySensor.onlyPositive = 1;
     }
     else if (unit == UNIT_RPMS) {
       telemetrySensor.custom.ratio = 1;
       telemetrySensor.custom.offset = 1;
+    }
+    else if (unit == UNIT_METERS) {
+      if (IS_IMPERIAL_ENABLE()) {
+        telemetrySensor.unit = UNIT_FEET;
+      }
     }
   }
   else {
