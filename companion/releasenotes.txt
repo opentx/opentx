@@ -23,7 +23,7 @@
 <li>Global Functions fixes (<a href=https://github.com/opentx/opentx/issues/2558>#2558</a>)</li>
 <li>Export to Google Earth now working (only) with the new telemetry fields (GPS, GAlt and GSpd) (<a href=https://github.com/opentx/opentx/issues/2546>#2546</a>)</li>
 <li>Fixed unsuccessful writing of setting to the radio for 9XR PRO (<a href=https://github.com/opentx/opentx/issues/2605>#2605</a>)</li>
-
+<li>Fixed missing LUA script outputs in special function "Play Value" (<a href=https://github.com/opentx/opentx/issues/2649>#2649</a>)</li>
 <li>Various texts and translations corrections</li>
 <li>Various small bug-fixes</li>
 </ul>
