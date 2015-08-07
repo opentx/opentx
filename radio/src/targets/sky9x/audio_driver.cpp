@@ -117,13 +117,28 @@ bool dacQueue(AudioBuffer *buffer)
 
 extern "C" void DAC_IRQHandler()
 {
-  AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
-  if (nextBuffer) {
-    DACC->DACC_TNPR = CONVERT_PTR_UINT(nextBuffer->data);
-    DACC->DACC_TNCR = nextBuffer->size/2;
-  }
-  else {
-    dacStop();
+  uint32_t sr = DACC->DACC_ISR;
+  if (sr & DACC_ISR_ENDTX) {
+    AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
+    if (nextBuffer) {
+	  // Try the first PDC buffer
+	  if ((DACC->DACC_TCR == 0) && (DACC->DACC_TNCR == 0)) {
+        DACC->DACC_TPR = CONVERT_PTR_UINT(nextBuffer->data);
+        DACC->DACC_TCR = nextBuffer->size/2;
+        DACC->DACC_PTCR = DACC_PTCR_TXTEN;
+        return;
+      }
+	  // Try the second PDC buffer
+      if (DACC->DACC_TNCR == 0) {
+        DACC->DACC_TNPR = CONVERT_PTR_UINT(nextBuffer->data);
+        DACC->DACC_TNCR = nextBuffer->size/2;
+        DACC->DACC_PTCR = DACC_PTCR_TXTEN;
+        return;
+      }
+    }
+    else {
+      dacStop();
+    }
   }
 }
 
