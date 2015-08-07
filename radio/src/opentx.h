@@ -212,10 +212,12 @@
   #define ROTARY_ENCODER_NAVIGATION
 #endif
 
-#if defined(STM32F4)
-  #define _NOCCM __attribute__((section(".ram")))
+#if defined(PCBSKY9X)
+  #define __DMA __attribute__((aligned(32)))
+#elif defined(STM32F4)
+  #define __DMA __attribute__((section(".ram")))
 #else
-  #define _NOCCM
+  #define __DMA
 #endif
 
 #if defined(SIMU) || defined(CPUARM) || GCC_VERSION < 472

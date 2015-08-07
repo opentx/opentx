@@ -232,7 +232,7 @@ void release_spi (void)
 #ifdef SD_USE_DMA
 
 #if defined(STM32F4)
-WORD rw_workbyte[1] _NOCCM;
+WORD rw_workbyte[1] __DMA;
 #endif
 
 /*-----------------------------------------------------------------------*/
@@ -409,7 +409,7 @@ void power_off (void)
 /*-----------------------------------------------------------------------*/
 
 #if defined(SD_USE_DMA) && defined(STM32F4)
-  uint8_t sd_buff[512] _NOCCM;
+  uint8_t sd_buff[512] __DMA;
 #endif
 
 static

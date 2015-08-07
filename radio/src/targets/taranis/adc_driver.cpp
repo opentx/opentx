@@ -66,7 +66,7 @@
     #define NUMBER_ANALOG_ADC1      10
 #endif
 
-uint16_t Analog_values[NUMBER_ANALOG] _NOCCM;
+uint16_t Analog_values[NUMBER_ANALOG] __DMA;
 
 void adcInit()
 {
