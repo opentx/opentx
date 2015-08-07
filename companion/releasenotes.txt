@@ -16,7 +16,7 @@
 <li>Writing model settings to 9XR-PRO did not work (<a href=https://github.com/opentx/opentx/issues/2402>#2402</a>, <a href=https://github.com/opentx/opentx/issues/2517>#2517</a>)</li>
 <li>Model Print and Model Compare improvements</li>
 <li>Fixed Companion OSX version (<a href=https://github.com/opentx/opentx/issues/2549>#2549</a>)</li>
-<li>Firmware nightly builds are now downloadable from nightly builds of Companion (<a href=https://github.com/opentx/opentx/issues/2526>#2526</a>,<a href=https://github.com/opentx/opentx/issues/2634>#2634</a>)</li>
+<li>Firmware nightly builds are now downloadable from nightly builds of Companion (<a href=https://github.com/opentx/opentx/issues/2526>#2526</a>, <a href=https://github.com/opentx/opentx/issues/2634>#2634</a>)</li>
 <li>Fixed telemetry item lists (<a href=https://github.com/opentx/opentx/issues/2541>#2541</a>)</li>
 <li>Fixed missing pots P1..P3 for 9X (<a href=https://github.com/opentx/opentx/issues/2543>#2543</a>)</li>
 <li>Fixed "Invalid model and settings" error message when writing models and settings to the radio (<a href=https://github.com/opentx/opentx/issues/2544>#2544</a>)</li>
