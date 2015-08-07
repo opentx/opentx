@@ -374,19 +374,40 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
     fw -= 1;
   }
   else {
-    if (flags & LEFT) {
-      if (mode > 0)
-        x += 2;
-    }
 #if defined(BOLD_FONT)
     if (flags & BOLD) fw += 1;
 #endif
   }
 
   if (flags & LEFT) {
+    if (mode > 0) {
+      if (xxlsize) {
+        x += 17;
+      }
+      else if (dblsize) {
+        // for DBLSIZE we the dot is pasted without moving digits
+      }
+      else if (midsize) {
+        x += 3;
+      }
+      else {
+        x += 2;
+      }
+    }
     x += len * fw;
     if (neg) {
-      x += ((xxlsize|dblsize|midsize) ? 7 : FWNUM);
+      if (xxlsize) {
+        x += 24;
+      }
+      else if (dblsize) {
+        x += 10;
+      }
+      else if (xxlsize || midsize) {
+        x += 7;
+      }
+      else {
+        x += FWNUM;
+      }
     }
   }
 
@@ -425,9 +446,9 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
       }
       else if (smlsize) {
         x -= 2;
-        lcd_plot(x+1, y+5);
+        lcd_plot(x, y+5);
         if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcd_vline(x+1, y, 7);
+          lcd_vline(x, y-1, 8);
         }
       }
       else if (tinsize) {
