@@ -523,3 +523,216 @@ TEST(Lcd, lcd_line)
   EXPECT_TRUE(checkScreenshot("lcd_line"));
 }
 #endif
+
+// Test the precise placement of dot for DBLSIZE font.
+TEST(outdezNAtt, dblsize_no_dot)
+{
+  lcd_clear();
+  lcd_outdezAtt( 32,  0, 12, DBLSIZE);
+  lcd_outdezAtt( 32, 16, 13, DBLSIZE);
+  lcd_outdezAtt( 32, 32, 14, DBLSIZE);
+  lcd_outdezAtt( 32, 48, 15, DBLSIZE);
+  lcd_outdezAtt( 64,  0, 22, DBLSIZE);
+  lcd_outdezAtt( 64, 16, 23, DBLSIZE);
+  lcd_outdezAtt( 64, 32, 24, DBLSIZE);
+  lcd_outdezAtt( 64, 48, 25, DBLSIZE);
+  lcd_outdezAtt( 96,  0, 32, DBLSIZE);
+  lcd_outdezAtt( 96, 16, 33, DBLSIZE);
+  lcd_outdezAtt( 96, 32, 34, DBLSIZE);
+  lcd_outdezAtt( 96, 48, 35, DBLSIZE);
+  lcd_outdezAtt(128,  0, 42, DBLSIZE);
+  lcd_outdezAtt(128, 16, 43, DBLSIZE);
+  lcd_outdezAtt(128, 32, 44, DBLSIZE);
+  lcd_outdezAtt(128, 48, 45, DBLSIZE);
+  EXPECT_TRUE(checkPartialScreenshot("lcd_outdezNAtt_dblsize_no_dot", 128, 64));
+}
+
+TEST(outdezNAtt, dblsize_dot)
+{
+  lcd_clear();
+  lcd_outdezAtt( 32,  0, 12, DBLSIZE|PREC1);
+  lcd_outdezAtt( 32, 16, 13, DBLSIZE|PREC1);
+  lcd_outdezAtt( 32, 32, 14, DBLSIZE|PREC1);
+  lcd_outdezAtt( 32, 48, 15, DBLSIZE|PREC1);
+  lcd_outdezAtt( 64,  0, 22, DBLSIZE|PREC1);
+  lcd_outdezAtt( 64, 16, 23, DBLSIZE|PREC1);
+  lcd_outdezAtt( 64, 32, 24, DBLSIZE|PREC1);
+  lcd_outdezAtt( 64, 48, 25, DBLSIZE|PREC1);
+  lcd_outdezAtt( 96,  0, 32, DBLSIZE|PREC1);
+  lcd_outdezAtt( 96, 16, 33, DBLSIZE|PREC1);
+  lcd_outdezAtt( 96, 32, 34, DBLSIZE|PREC1);
+  lcd_outdezAtt( 96, 48, 35, DBLSIZE|PREC1);
+  lcd_outdezAtt(128,  0, 42, DBLSIZE|PREC1);
+  lcd_outdezAtt(128, 16, 43, DBLSIZE|PREC1);
+  lcd_outdezAtt(128, 32, 44, DBLSIZE|PREC1);
+  lcd_outdezAtt(128, 48, 45, DBLSIZE|PREC1);
+  EXPECT_TRUE(checkPartialScreenshot("lcd_outdezNAtt_dblsize_dot", 128, 64));
+}
+
+TEST(outdezNAtt, stdsize)
+{
+  lcd_clear();
+  lcd_vline(32, 0, LCD_H);
+  lcd_outdezAtt(31,  0,   3,   0);
+  lcd_outdezAtt(31,  9,   3,   INVERS);
+  lcd_outdezAtt(31,  24,  31,  PREC1);
+  lcd_outdezAtt(31,  33,  31,  PREC1|INVERS);
+  lcd_outdezAtt(31,  48,  314, PREC2);
+  lcd_outdezAtt(31,  57,  314, PREC2|INVERS);
+
+  lcd_vline(64, 0, LCD_H);
+  lcd_outdezAtt(65,  0,   3,   LEFT);
+  lcd_outdezAtt(65,  9,   3,   LEFT|INVERS);
+  lcd_outdezAtt(65,  24,  31,  LEFT|PREC1);
+  lcd_outdezAtt(65,  33,  31,  LEFT|PREC1|INVERS);
+  lcd_outdezAtt(65,  48,  314, LEFT|PREC2);
+  lcd_outdezAtt(65,  57,  314, LEFT|PREC2|INVERS);
+
+  lcd_vline(96, 0, LCD_H);
+  lcd_outdezAtt(97,  0,  -3,   LEFT);
+  lcd_outdezAtt(97,  9,  -3,   LEFT|INVERS);
+  lcd_outdezAtt(97,  24, -31,  LEFT|PREC1);
+  lcd_outdezAtt(97,  33, -31,  LEFT|PREC1|INVERS);
+  lcd_outdezAtt(97,  48, -314, LEFT|PREC2);
+  lcd_outdezAtt(97,  57, -314, LEFT|PREC2|INVERS);
+  EXPECT_TRUE(checkPartialScreenshot("lcd_outdezNAtt_stdsize", 128, 64));
+}
+
+TEST(outdezNAtt, dblsize)
+{
+  lcd_clear();
+  lcd_vline(32, 0, LCD_H);
+  lcd_outdezAtt(31,  0,   3,   DBLSIZE);
+  lcd_outdezAtt(31,  16,  3,   DBLSIZE|INVERS);
+  lcd_outdezAtt(31,  32,  31,  DBLSIZE|PREC1);
+  lcd_outdezAtt(31,  48,  31,  DBLSIZE|PREC1|INVERS);
+
+  lcd_vline(64, 0, LCD_H);
+  lcd_outdezAtt(65,  0,   3,   DBLSIZE|LEFT);
+  lcd_outdezAtt(65,  16,   3,  DBLSIZE|LEFT|INVERS);
+  lcd_outdezAtt(65,  32,  31,  DBLSIZE|LEFT|PREC1);
+  lcd_outdezAtt(65,  48,  31,  DBLSIZE|LEFT|PREC1|INVERS);
+
+  lcd_vline(96, 0, LCD_H);
+  lcd_outdezAtt(97,  0,  -3,   DBLSIZE|LEFT);
+  lcd_outdezAtt(97,  16,  -3,  DBLSIZE|LEFT|INVERS);
+  lcd_outdezAtt(97,  32, -31,  DBLSIZE|LEFT|PREC1);
+  lcd_outdezAtt(97,  48, -31,  DBLSIZE|LEFT|PREC1|INVERS);
+  EXPECT_TRUE(checkPartialScreenshot("lcd_outdezNAtt_dblsize", 128, 64));
+}
+
+#if defined(CPUARM)
+TEST(outdezNAtt, xxlsize)
+{
+  lcd_clear();
+  lcd_vline(96, 0, LCD_H);
+  lcd_outdezAtt(95,  0,   3,   XXLSIZE);
+  EXPECT_TRUE(checkPartialScreenshot("lcd_outdezNAtt_xxlsize_right", 128, 64));
+
+  lcd_clear();
+  lcd_vline(96, 0, LCD_H);
+  lcd_outdezAtt(95,  0,   31,  XXLSIZE|PREC1);
+  EXPECT_TRUE(checkPartialScreenshot("lcd_outdezNAtt_xxlsize_right_prec1", 128, 64));
+
+  lcd_clear();
+  lcd_vline(16, 0, LCD_H);
+  lcd_outdezAtt(17,  0,   3,   XXLSIZE|LEFT);
+  EXPECT_TRUE(checkPartialScreenshot("lcd_outdezNAtt_xxlsize_left", 128, 64));
+
+  lcd_clear();
+  lcd_vline(16, 0, LCD_H);
+  lcd_outdezAtt(17,  0,   31,  XXLSIZE|LEFT|PREC1);
+  EXPECT_TRUE(checkPartialScreenshot("lcd_outdezNAtt_xxlsize_left_prec1", 128, 64));
+
+  lcd_clear();
+  lcd_vline(16, 0, LCD_H);
+  lcd_outdezAtt(17,  0,  -3,   XXLSIZE|LEFT);
+  EXPECT_TRUE(checkPartialScreenshot("lcd_outdezNAtt_xxlsize_left_minus", 128, 64));
+
+  lcd_clear();
+  lcd_vline(16, 0, LCD_H);
+  lcd_outdezAtt(17,  0,  -31,  XXLSIZE|LEFT|PREC1);
+  EXPECT_TRUE(checkPartialScreenshot("lcd_outdezNAtt_xxlsize_left_minus_prec1", 128, 64));
+}
+
+TEST(outdezNAtt, midsize)
+{
+  lcd_clear();
+  lcd_vline(32, 0, LCD_H);
+  lcd_outdezAtt(31,   0,  3,   MIDSIZE);
+  lcd_outdezAtt(31,  16,  3,   MIDSIZE|INVERS);
+  lcd_outdezAtt(31,  32,  31,  MIDSIZE|PREC1);
+  lcd_outdezAtt(31,  48,  31,  MIDSIZE|PREC1|INVERS);
+
+  lcd_vline(64, 0, LCD_H);
+  lcd_outdezAtt(65,   0,  3,   MIDSIZE|LEFT);
+  lcd_outdezAtt(65,  16,  3,   MIDSIZE|LEFT|INVERS);
+  lcd_outdezAtt(65,  32,  31,  MIDSIZE|LEFT|PREC1);
+  lcd_outdezAtt(65,  48,  31,  MIDSIZE|LEFT|PREC1|INVERS);
+
+  lcd_vline(96, 0, LCD_H);
+  lcd_outdezAtt(97,   0, -3,   MIDSIZE|LEFT);
+  lcd_outdezAtt(97,  16, -3,   MIDSIZE|LEFT|INVERS);
+  lcd_outdezAtt(97,  32, -31,  MIDSIZE|LEFT|PREC1);
+  lcd_outdezAtt(97,  48, -31,  MIDSIZE|LEFT|PREC1|INVERS);
+  EXPECT_TRUE(checkPartialScreenshot("lcd_outdezNAtt_midsize", 128, 64));
+}
+
+TEST(outdezNAtt, smlsize)
+{
+  lcd_clear();
+  lcd_vline(32, 0, LCD_H);
+  lcd_outdezAtt(31,   0,  3,   SMLSIZE);
+  lcd_outdezAtt(31,   9,  3,   SMLSIZE|INVERS);
+  lcd_outdezAtt(31,  24,  31,  SMLSIZE|PREC1);
+  lcd_outdezAtt(31,  33,  31,  SMLSIZE|PREC1|INVERS);
+  lcd_outdezAtt(31,  48,  314, SMLSIZE|PREC2);
+  lcd_outdezAtt(31,  57,  314, SMLSIZE|PREC2|INVERS);
+
+  lcd_vline(64, 0, LCD_H);
+  lcd_outdezAtt(65,   0,  3,   SMLSIZE|LEFT);
+  lcd_outdezAtt(65,   9,  3,   SMLSIZE|LEFT|INVERS);
+  lcd_outdezAtt(65,  24,  31,  SMLSIZE|LEFT|PREC1);
+  lcd_outdezAtt(65,  33,  31,  SMLSIZE|LEFT|PREC1|INVERS);
+  lcd_outdezAtt(65,  57,  314, SMLSIZE|LEFT|PREC2|INVERS);
+  lcd_outdezAtt(65,  48,  314, SMLSIZE|LEFT|PREC2);
+
+  lcd_vline(96, 0, LCD_H);
+  lcd_outdezAtt(97,   0, -3,   SMLSIZE|LEFT);
+  lcd_outdezAtt(97,   9, -3,   SMLSIZE|LEFT|INVERS);
+  lcd_outdezAtt(97,  24, -31,  SMLSIZE|LEFT|PREC1);
+  lcd_outdezAtt(97,  33, -31,  SMLSIZE|LEFT|PREC1|INVERS);
+  lcd_outdezAtt(97,  48, -314, SMLSIZE|LEFT|PREC2);
+  lcd_outdezAtt(97,  57, -314, SMLSIZE|LEFT|PREC2|INVERS);
+  EXPECT_TRUE(checkPartialScreenshot("lcd_outdezNAtt_smlsize", 128, 64));
+}
+
+TEST(outdezNAtt, tinsize)
+{
+  lcd_clear();
+  lcd_vline(32, 0, LCD_H);
+  lcd_outdezAtt(31,   0,  3,   TINSIZE);
+  lcd_outdezAtt(31,   9,  3,   TINSIZE|INVERS);
+  lcd_outdezAtt(31,  24,  31,  TINSIZE|PREC1);
+  lcd_outdezAtt(31,  33,  31,  TINSIZE|PREC1|INVERS);
+  lcd_outdezAtt(31,  48,  314, TINSIZE|PREC2);
+  lcd_outdezAtt(31,  57,  314, TINSIZE|PREC2|INVERS);
+
+  lcd_vline(64, 0, LCD_H);
+  lcd_outdezAtt(65,   0,  3,   TINSIZE|LEFT);
+  lcd_outdezAtt(65,   9,  3,   TINSIZE|LEFT|INVERS);
+  lcd_outdezAtt(65,  24,  31,  TINSIZE|LEFT|PREC1);
+  lcd_outdezAtt(65,  33,  31,  TINSIZE|LEFT|PREC1|INVERS);
+  lcd_outdezAtt(65,  48,  314, TINSIZE|LEFT|PREC2);
+  lcd_outdezAtt(65,  57,  314, TINSIZE|LEFT|PREC2|INVERS);
+
+  lcd_vline(96, 0, LCD_H);
+  lcd_outdezAtt(97,   0, -3,   TINSIZE|LEFT);
+  lcd_outdezAtt(97,   9, -3,   TINSIZE|LEFT|INVERS);
+  lcd_outdezAtt(97,  24, -31,  TINSIZE|LEFT|PREC1);
+  lcd_outdezAtt(97,  33, -31,  TINSIZE|LEFT|PREC1|INVERS);
+  lcd_outdezAtt(97,  48, -314, TINSIZE|LEFT|PREC2);
+  lcd_outdezAtt(97,  57, -314, TINSIZE|LEFT|PREC2|INVERS);
+  EXPECT_TRUE(checkPartialScreenshot("lcd_outdezNAtt_tinsize", 128, 64));
+}
+#endif
