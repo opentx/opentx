@@ -121,14 +121,14 @@ extern "C" void DAC_IRQHandler()
   if (sr & DACC_ISR_ENDTX) {
     AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
     if (nextBuffer) {
-	  // Try the first PDC buffer
-	  if ((DACC->DACC_TCR == 0) && (DACC->DACC_TNCR == 0)) {
+      // Try the first PDC buffer
+      if ((DACC->DACC_TCR == 0) && (DACC->DACC_TNCR == 0)) {
         DACC->DACC_TPR = CONVERT_PTR_UINT(nextBuffer->data);
         DACC->DACC_TCR = nextBuffer->size/2;
         DACC->DACC_PTCR = DACC_PTCR_TXTEN;
         return;
       }
-	  // Try the second PDC buffer
+      // Try the second PDC buffer
       if (DACC->DACC_TNCR == 0) {
         DACC->DACC_TNPR = CONVERT_PTR_UINT(nextBuffer->data);
         DACC->DACC_TNCR = nextBuffer->size/2;
