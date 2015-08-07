@@ -67,9 +67,7 @@ struct AudioBuffer {
   uint8_t  state;
 };
 
-#if !defined(PCBSKY9X)
 extern AudioBuffer audioBuffers[AUDIO_BUFFER_COUNT];
-#endif
 
 enum FragmentTypes {
   FRAGMENT_EMPTY,
@@ -246,10 +244,6 @@ class AudioQueue {
     WavContext   backgroundContext;
     ToneContext  priorityContext;
     ToneContext  varioContext;
-
-#if defined(PCBSKY9X)
-    AudioBuffer audioBuffers[AUDIO_BUFFER_COUNT];
-#endif
 
     uint8_t bufferRIdx;
     uint8_t bufferWIdx;
