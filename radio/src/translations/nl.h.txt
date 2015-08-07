@@ -235,7 +235,7 @@
 #endif
 
 #if defined(AUDIO)
-  #define TR_SOUND             "Geluid   "
+  #define TR_SOUND             "Geluid    "
 #else
   #define TR_SOUND             "Beep\0    "
 #endif
@@ -549,7 +549,7 @@
 
 
 #define LEN_VPREC              "\004"  //  "\005"  Prec0 Prec1 Prec2
-#define TR_VPREC               "0.--""0.0\0""0.00"
+#define TR_VPREC               "0.--""0.0 ""0.00"
 
 #define LEN_VCELLINDEX         "\007"
 #define TR_VCELLINDEX          "Laagste""1e Cel\0""2e Cel\0""3e Cel\0""4e Cel\0""5e Cel\0""6e Cel\0""Hoogste""Delta\0 "
@@ -667,7 +667,7 @@
 #define TR_USRDATA             "Data berekenen uit"
 #define TR_BLADES              "Bladen"
 
-#define TR_SCREEN              "Telemetriescherm"
+#define TR_SCREEN              "Scherm\001"
 #define TR_SOUND_LABEL         "----Geluid-------"
 #define TR_LENGTH              INDENT "Duur"
 #define TR_BEEP_LENGTH         INDENT "Piep-Lengte"
@@ -957,8 +957,8 @@
 #define TR_PT                  "Pt"
 #define TR_PTS                 "Ptn"
 #define TR_SMOOTH              "Afronden"
-#define TR_COPY_STICKS_TO_OFS  "Kopieer Sticks naar Subtrim"  
-#define TR_COPY_TRIMS_TO_OFS   "Kopieer Trim naar Subtrim"
+#define TR_COPY_STICKS_TO_OFS  "Kopiëer Sticks naar Subtrim"  
+#define TR_COPY_TRIMS_TO_OFS   "Kopiëer Trim naar Subtrim"
 #define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Persistent mAh")
 #define TR_PREFLIGHT           "Preflight Checks"
 #define TR_CHECKLIST           TR(INDENT "Checklist", INDENT "Display Checklist")
@@ -967,7 +967,7 @@
 #define TR_SCRIPT              "Script"
 #define TR_INPUTS              "Inputs"
 #define TR_OUTPUTS             "Outputs"
-#define TR_EEBACKUP            "\004[ENTER Lang] voor een EEPROM backup"
+#define TR_EEBACKUP            "\012[ENTER Lang] voor een EEPROM backup"
 #define TR_FACTORYRESET        "\012[MENU Lang]: Factory reset"
 #define TR_CONFIRMRESET        "Wis ALLE modellen en instellingen?"
 #define TR_TO_MANY_LUA_SCRIPTS "Te veel Lua scripts!"
@@ -1062,7 +1062,7 @@
 #define TR_CHR_INPUT  'I' // Values between A-I will work
 
 #define TR_BEEP_VOLUME         "Beep-Volume"
-#define TR_WAV_VOLUME          "Wave-Volume"
+#define TR_WAV_VOLUME          "Wav-Volume"
 #define TR_VARIO_VOLUME        "Vario-Volume"
 #define TR_BG_VOLUME           "Achtergr-Volume"
 
@@ -1077,7 +1077,7 @@
 #define TR_PRECISION           "Precisie"
 #define TR_RATIO               "Ratio"
 #define TR_FORMULA             "Formule"
-#define TR_CELLINDEX           "Cellenindex"
+#define TR_CELLINDEX           "Cel index"
 #define TR_LOGS                "Log Data"
 #define TR_OPTIONS             "Opties"
 
@@ -1089,7 +1089,7 @@
 #define TR_ONLYPOSITIVE        "Alleen Positief"
 #define TR_FILTER              "Filter aktief"
 #define TR_TELEMETRYFULL       "Telemetrie slots vol!"
-#define TR_IGNOREIDS           INDENT "Ignore instance"
+#define TR_IGNOREIDS           TR(INDENT "Neg. ID ","Negeer ID's")
 
 
 #define TR_MENU_INPUTS         "\314Inputs"
