@@ -92,31 +92,79 @@ void doPaint(QPainter & p)
   }
 }
 
-bool checkScreenshot(QString test)
+void checkPartialScreenshot(QString test, coord_t width, coord_t height, bool &ok)
 {
+  ok = false;
+
   lcdRefresh();
   QImage buffer(LCD_W, LCD_H, QImage::Format_RGB32);
   QPainter p(&buffer);
   doPaint(p);
-  QString filename(QString("%1_%2x%3.png").arg(test).arg(LCD_W).arg(LCD_H));
-  buffer.save("/tmp/" + filename);
-  QFile screenshot("/tmp/" + filename);
-  if (!screenshot.open(QIODevice::ReadOnly))
-    return false;
-  QFile reference("./tests/" + filename);
-  if (!reference.open(QIODevice::ReadOnly))
-    return false;
-  if (reference.readAll() != screenshot.readAll())
-    return false;
-  screenshot.remove();
-  return true;
+  ASSERT_EQ(buffer.width(), LCD_W);
+  ASSERT_EQ(buffer.height(), LCD_H);
+
+  QString reference_name = QString("%1_%2x%3").arg(test).arg(width).arg(height);
+  QImage reference;
+  ok = reference.load(QString("tests/%1.png").arg(reference_name));
+  if (ok) {
+    ASSERT_EQ(reference.width(), width);
+    ASSERT_EQ(reference.height(), height);
+    QImage difference(max(coord_t(LCD_W), width), max(coord_t(LCD_H), height), QImage::Format_RGB32);
+    for (coord_t y = 0; y < LCD_H; y++) {
+      for (coord_t x = 0; x < LCD_W; x++) {
+        QPoint point(x, y);
+        int reference_color;
+        if (x >= reference.width() || y >= reference.height()) {
+          reference_color = qRgb(161, 161, 161);
+        }
+        else {
+          reference_color = reference.pixel(QPoint(x, y));
+        }
+
+        int buffer_color;
+        if (x >= buffer.width() || y >= buffer.height()) {
+          buffer_color = qRgb(161, 161, 161);
+        }
+        else {
+          buffer_color = buffer.pixel(point);
+        }
+
+        if (buffer_color != reference_color)
+        {
+          ok = false;
+          difference.setPixel(point, qRgb(255, 0, 0));
+        }
+        else {
+          difference.setPixel(point, reference_color);
+        }
+      }
+    }
+    if (!ok) {
+      difference.save(QString("tests/%1-diff.png").arg(reference_name));
+    }
+  }
+  if (!ok) {
+    buffer.save(QString("tests/%1-failed.png").arg(reference_name));
+  }
+}
+
+bool checkPartialScreenshot(QString test, coord_t width, coord_t height)
+{
+  bool ok;
+  checkPartialScreenshot(test, width, height, ok);
+  return ok;
+}
+
+bool checkScreenshot(QString test)
+{
+  return checkPartialScreenshot(test, LCD_W, LCD_H);
 }
 
 TEST(outdezNAtt, test_unsigned)
 {
   lcd_clear();
   lcd_outdezNAtt(0, 0, 65530, LEFT|UNSIGN);
-  EXPECT_TRUE(checkScreenshot("unsigned")) << "Unsigned numbers will be bad displayed";
+  EXPECT_TRUE(checkPartialScreenshot("unsigned", 128, 64)) << "Unsigned numbers will be bad displayed";
 }
 
 #if defined(CPUARM)
@@ -125,7 +173,7 @@ TEST(outdezNAtt, testBigNumbers)
   lcd_clear();
   lcd_outdezNAtt(0, 0, 1234567, LEFT);
   lcd_outdezNAtt(0, FH, -1234567, LEFT);
-  EXPECT_TRUE(checkScreenshot("big_numbers"));
+  EXPECT_TRUE(checkPartialScreenshot("big_numbers", 128, 64));
 }
 #endif // #if defined(CPUARM)
 
@@ -134,21 +182,21 @@ TEST(Lcd, Invers_0_0)
 {
   lcd_clear();
   lcd_putsAtt(0, 0, "Test", INVERS);
-  EXPECT_TRUE(checkScreenshot("invers_0_0"));
+  EXPECT_TRUE(checkPartialScreenshot("invers_0_0", 128, 64));
 }
 
 TEST(Lcd, Invers_0_1)
 {
   lcd_clear();
   lcd_putsAtt(0, 1, "Test", INVERS);
-  EXPECT_TRUE(checkScreenshot("invers_0_1"));
+  EXPECT_TRUE(checkPartialScreenshot("invers_0_1", 128, 64));
 }
 
 TEST(Lcd, Prec2_Left)
 {
   lcd_clear();
   lcd_outdezAtt(0, 0, 2, PREC2|LEFT);
-  EXPECT_TRUE(checkScreenshot("prec2_left"));
+  EXPECT_TRUE(checkPartialScreenshot("prec2_left", 128, 64));
 }
 
 TEST(Lcd, Prec2_Right)
@@ -186,7 +234,7 @@ TEST(Lcd, Smlsize_putsStrIdx)
 {
   lcd_clear();
   putsStrIdx(0, 0, "FM", 0, SMLSIZE);
-  EXPECT_TRUE(checkScreenshot("smlsize_putsstridx"));
+  EXPECT_TRUE(checkPartialScreenshot("smlsize_putsstridx", 128, 64));
 }
 #endif
 
@@ -196,7 +244,7 @@ TEST(Lcd, vline)
   for (int x=0; x<100; x+=2) {
     lcd_vline(x, x/2, 12);
   }
-  EXPECT_TRUE(checkScreenshot("vline"));
+  EXPECT_TRUE(checkPartialScreenshot("vline", 128, 64));
 }
 
 #if defined(CPUARM)
@@ -205,7 +253,7 @@ TEST(Lcd, vline_x_lt0)
   lcd_clear();
   lcd_vline(50, -10, 12);
   lcd_vline(100, -10, 1);
-  EXPECT_TRUE(checkScreenshot("vline_lt0"));
+  EXPECT_TRUE(checkPartialScreenshot("vline_lt0", 128, 64));
 }
 #endif
 
@@ -224,7 +272,7 @@ TEST(Lcd, Smlsize)
     invert = !invert;
   }
 
-  EXPECT_TRUE(checkScreenshot("smlsize"));
+  EXPECT_TRUE(checkPartialScreenshot("smlsize", 128, 64));
 }
 
 TEST(Lcd, Stdsize)
@@ -241,7 +289,7 @@ TEST(Lcd, Stdsize)
     invert = !invert;
   }
 
-  EXPECT_TRUE(checkScreenshot("stdsize"));
+  EXPECT_TRUE(checkPartialScreenshot("stdsize", 128, 64));
 }
 
 TEST(Lcd, Midsize)
@@ -258,7 +306,7 @@ TEST(Lcd, Midsize)
     invert = !invert;
   }
 
-  EXPECT_TRUE(checkScreenshot("midsize"));
+  EXPECT_TRUE(checkPartialScreenshot("midsize", 128, 64));
 }
 
 TEST(Lcd, Dblsize)
@@ -275,7 +323,7 @@ TEST(Lcd, Dblsize)
     invert = !invert;
   }
 
-  EXPECT_TRUE(checkScreenshot("dblsize"));
+  EXPECT_TRUE(checkPartialScreenshot("dblsize", 128, 64));
 }
 #endif
 
