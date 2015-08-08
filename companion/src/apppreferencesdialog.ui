@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>686</width>
-    <height>619</height>
+    <height>713</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -233,7 +233,7 @@ May be different from firmware language</string>
           </size>
          </property>
          <property name="frameShape">
-          <enum>QFrame::Panel</enum>
+          <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Plain</enum>
@@ -912,7 +912,17 @@ Mode 4:
        <string>Simulator Settings</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
-       <item row="5" column="4">
+       <item row="5" column="1">
+        <widget class="QComboBox" name="joystickCB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="3">
         <widget class="QPushButton" name="joystickcalButton">
          <property name="text">
           <string>Calibrate</string>
@@ -974,7 +984,7 @@ Mode 4:
          </property>
         </spacer>
        </item>
-       <item row="1" column="1" colspan="4">
+       <item row="1" column="1" colspan="3">
         <widget class="QCheckBox" name="snapshotClipboardCKB">
          <property name="text">
           <string>Only capture to clipboard</string>
@@ -989,29 +999,6 @@ Mode 4:
         </widget>
        </item>
        <item row="0" column="3">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="5" column="1">
-        <widget class="QComboBox" name="joystickCB">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="4">
         <widget class="QPushButton" name="snapshotPathButton">
          <property name="text">
           <string>Open Folder</string>
@@ -1055,9 +1042,15 @@ Mode 4:
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
-           <width>350</width>
+           <width>0</width>
            <height>0</height>
           </size>
          </property>
@@ -1066,7 +1059,7 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="2" column="1" colspan="4">
+       <item row="2" column="1" colspan="3">
         <widget class="QCheckBox" name="simuSW">
          <property name="text">
           <string>Remember simulator switch values</string>
