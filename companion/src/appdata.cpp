@@ -613,7 +613,10 @@ AppData::AppData()
         QStringList keys = settings20.allKeys();
         for (QStringList::iterator i=keys.begin(); i!=keys.end(); i++)
         {
-            settings.setValue(*i, settings20.value(*i));
+            if (settings20.value(*i) != QString("") && settings20.value(*i) != QString("Start Menu Folder"))
+            {
+                settings.setValue(*i, settings20.value(*i));
+            }
         }
 
         //Reload profiles
@@ -629,7 +632,10 @@ AppData::AppData()
         QStringList keys = pre2016settings.allKeys();
         for (QStringList::iterator i=keys.begin(); i!=keys.end(); i++)
         {
-            settings.setValue(*i, pre2016settings.value(*i));
+            if (pre2016settings.value(*i) != QString("") && pre2016settings.value(*i) != QString("Start Menu Folder"))
+            {
+                settings.setValue(*i, pre2016settings.value(*i));
+            }
         }
 
         //Reload profiles
