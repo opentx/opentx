@@ -122,7 +122,26 @@ TEST(FrSky, FrskyValueWithMinAveraging)
     EXPECT_EQ(testVal.value, expected[testPos++]);
   }
 }
-#endif
+
+TEST(FrSky, Vfas_0x39_HiPrecision)
+{
+  MODEL_RESET();
+  TELEMETRY_RESET();
+  EXPECT_EQ(telemetryItems[0].value, 0);
+
+  // normal precision, resolution 0.1V
+  processHubPacket(VFAS_ID, 1234);  // set value of 123.4V
+  EXPECT_EQ(telemetryItems[0].value, 12340);      // stored value has resolution of 0.01V
+
+  // now high precision, resolution 0.01V
+  processHubPacket(VFAS_ID, VFAS_D_HIPREC_OFFSET);  // set value of 0V
+  EXPECT_EQ(telemetryItems[0].value, 0);
+  processHubPacket(VFAS_ID, VFAS_D_HIPREC_OFFSET + 12345);  // set value of 123.45V
+  EXPECT_EQ(telemetryItems[0].value, 12345);
+  processHubPacket(VFAS_ID, VFAS_D_HIPREC_OFFSET + 30012);  // set value of 300.12V
+  EXPECT_EQ(telemetryItems[0].value, 30012);
+}
+#endif  // #if defined(FRSKY) && defined(CPUARM)
 
 #if defined(FRSKY_SPORT)
 TEST(FrSkySPORT, checkCrc)
@@ -163,6 +182,7 @@ void generateSportCellPacket(uint8_t * packet, uint8_t cells, uint8_t battnumber
 
 TEST(FrSkySPORT, FrSkyDCells)
 {
+  MODEL_RESET();
   TELEMETRY_RESET();
   uint8_t pkt1[] = { 0x7E, 0x98, 0x10, 0x06, 0x00, 0x07, 0xD0, 0x00, 0x00, 0x12 };
   EXPECT_EQ(checkSportPacket(pkt1+1), true);
