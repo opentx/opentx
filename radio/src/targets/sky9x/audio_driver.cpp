@@ -111,51 +111,33 @@ void dacInit()
 
 bool dacQueue(AudioBuffer *buffer)
 {
-  if (DACC->DACC_TCR == 0 && DACC->DACC_TNCR == 0) {
-    DACC->DACC_TPR = CONVERT_PTR_UINT(buffer->data);
-    DACC->DACC_TCR = buffer->size/2;
-    DACC->DACC_PTCR = DACC_PTCR_TXTEN;
-    dacStart();
-    return true;
-  }
-  else if (DACC->DACC_TNCR == 0) {
-    DACC->DACC_TNPR = CONVERT_PTR_UINT(buffer->data);
-    DACC->DACC_TNCR = buffer->size/2;
-    DACC->DACC_PTCR = DACC_PTCR_TXTEN;
-    dacStart();
-    return true;
-  }
-  else {
-    dacStart();
-    return false;
-  }
+  dacStart();
+  return false;
 }
 
 extern "C" void DAC_IRQHandler()
 {
   uint32_t sr = DACC->DACC_ISR;
   if (sr & DACC_ISR_ENDTX) {
-    // Try the first PDC buffer
-    if (DACC->DACC_TCR == 0 && DACC->DACC_TNCR == 0) {
-      AudioBuffer * nextBuffer = audioQueue.getNextFilledBuffer();
-      if (nextBuffer) {
+    AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
+    if (nextBuffer) {
+      // Try the first PDC buffer
+      if ((DACC->DACC_TCR == 0) && (DACC->DACC_TNCR == 0)) {
         DACC->DACC_TPR = CONVERT_PTR_UINT(nextBuffer->data);
         DACC->DACC_TCR = nextBuffer->size/2;
         DACC->DACC_PTCR = DACC_PTCR_TXTEN;
-      }
-      else {
-        dacStop();
         return;
       }
-    }
-    // Try the second PDC buffer
-    if (DACC->DACC_TNCR == 0) {
-      AudioBuffer * nextBuffer = audioQueue.getNextFilledBuffer();
-      if (nextBuffer) {
+      // Try the second PDC buffer
+      if (DACC->DACC_TNCR == 0) {
         DACC->DACC_TNPR = CONVERT_PTR_UINT(nextBuffer->data);
         DACC->DACC_TNCR = nextBuffer->size/2;
         DACC->DACC_PTCR = DACC_PTCR_TXTEN;
+        return;
       }
+    }
+    else {
+      dacStop();
     }
   }
 }
