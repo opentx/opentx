@@ -212,7 +212,9 @@
   #define ROTARY_ENCODER_NAVIGATION
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(SIMU)
+  #define __DMA
+#elif defined(PCBSKY9X)
   #define __DMA __attribute__((aligned(32)))
 #elif defined(STM32F4)
   #define __DMA __attribute__((section(".ram")))
