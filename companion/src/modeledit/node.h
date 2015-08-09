@@ -42,7 +42,7 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 #define DEFAULT_BALL_SIZE 10
 #define BALL_HEIGHT 2

@@ -19,6 +19,7 @@
 
 #include <QWidget>
 #include <QtGui>
+#include <QStyleOption>
 
 class ButtonsWidget : public QWidget
 {

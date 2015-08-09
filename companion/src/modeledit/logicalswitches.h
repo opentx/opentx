@@ -3,9 +3,6 @@
 
 #include "modeledit.h"
 #include "eeprominterface.h"
-#include <QComboBox>
-#include <QDoubleSpinBox>
-#include <QTimeEdit>
 
 class LogicalSwitchesPanel : public ModelPanel
 {

@@ -1,7 +1,7 @@
 #ifndef EXPODIALOG_H
 #define EXPODIALOG_H
 
-#include <QDialog>
+#include <QtWidgets>
 #include "eeprominterface.h"
 #include "modelprinter.h"
 

@@ -1,7 +1,5 @@
 #include "mixes.h"
 #include "helpers.h"
-// #include <QMessageBox>
-// #include "expodialog.h"
 
 MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),

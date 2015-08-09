@@ -1,7 +1,7 @@
 #ifndef TEMPLATES_H
 #define TEMPLATES_H
 
-#include <QWidget>
+#include <QtWidgets>
 #include "eeprominterface.h"
 
 class Templates : public QWidget

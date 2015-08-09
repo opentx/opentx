@@ -27,29 +27,31 @@ Joystick::~Joystick()
 
 bool Joystick::open(int stick)
 {
-  if ( isOpen() )
+  if (isOpen())
     close();
 
   joystick = SDL_JoystickOpen(stick);
-  if ( joystick ) {
+  if (joystick) {
     numAxes = SDL_JoystickNumAxes(joystick);
     numButtons = SDL_JoystickNumButtons(joystick);
     numHats = SDL_JoystickNumHats(joystick);
     numTrackballs = SDL_JoystickNumBalls(joystick);
     joystickTimer.start(eventTimeout);
-    return TRUE;
-  } else {
+    return true;
+  }
+  else {
     fprintf(stderr, "ERROR: couldn't open SDL joystick #%d", stick);
-    return FALSE;
+    return false;
   }
 }
 
 void Joystick::close()
 {
   joystickTimer.stop();
-  if ( joystick )
+  if (joystick) {
     SDL_JoystickClose(joystick);
-  joystick = NULL;
+    joystick = NULL;
+  }
   numAxes = numButtons = numHats = numTrackballs = 0;
 }
 
@@ -70,15 +72,19 @@ void Joystick::processEvents()
           emit axisValueChanged(i, moved);
         axes[i] = moved;
         axisRepeatTimers[i].restart();
-      } else if (autoRepeat && moved != 0) {
+      }
+      else if (autoRepeat && moved != 0) {
         if ( axisRepeatTimers[i].elapsed() >= autoRepeatDelay ) {
           emit axisValueChanged(i, moved);
           axes[i] = moved;
         }
-      } else
+      }
+      else
         axisRepeatTimers[i].restart();
-    } else
+    }
+    else {
       emit axisValueChanged(i, 0);
+    }
   }
   for (i = 0; i < numButtons; i++) {
     Uint8 changed = SDL_JoystickGetButton(joystick, i);

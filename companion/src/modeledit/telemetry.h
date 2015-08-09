@@ -3,9 +3,6 @@
 
 #include "modeledit.h"
 #include "eeprominterface.h"
-#include <QGroupBox>
-#include <QComboBox>
-#include <QDoubleSpinBox>
 
 class AutoComboBox;
 

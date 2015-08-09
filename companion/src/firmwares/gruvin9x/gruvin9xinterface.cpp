@@ -207,7 +207,7 @@ unsigned long Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eepro
   }
 
   std::cout << "ok\n";
-  errors.set(NO_ERROR);
+  errors.set(ALL_OK);
   return errors.to_ulong();
 }
 

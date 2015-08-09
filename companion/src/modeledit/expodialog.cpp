@@ -154,7 +154,7 @@ void ExpoDialog::valuesChanged()
   ed->swtch = RawSwitch(ui->switchesCB->itemData(ui->switchesCB->currentIndex()).toInt());
   ed->mode = ui->sideCB->currentIndex() + 1;
 
-  strcpy(ed->name, ui->lineName->text().toAscii().data());
+  strcpy(ed->name, ui->lineName->text().toLatin1().data());
   if (firmware->getCapability(VirtualInputs)) {
     inputName = ui->inputName->text();
   }

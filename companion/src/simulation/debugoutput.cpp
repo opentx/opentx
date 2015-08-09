@@ -1,5 +1,3 @@
-#include <QtGui>
-#include <stdint.h>
 #include "debugoutput.h"
 #include "ui_debugoutput.h"
 
@@ -18,7 +16,6 @@ DebugOutput::DebugOutput(QWidget * parent):
   QFont newFont("Courier", 9);
   ui->Output->setFont(newFont);
 #endif
-
 }
 
 DebugOutput::~DebugOutput()

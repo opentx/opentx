@@ -887,6 +887,7 @@ set(CMAKE_EXE_LINKER_FLAGS "")
 set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_C_COMPILER> <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET>")
 set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET>")
 
+if(NOT MSVC)
 if(ARCH STREQUAL ARM)
   cmake_force_c_compiler(arm-none-eabi-gcc GNU)
   cmake_force_cxx_compiler(arm-none-eabi-g++ GNU)
@@ -957,4 +958,5 @@ if(CPU_FAMILY STREQUAL STM32)
     DEPENDS firmware
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   )
+endif()
 endif()

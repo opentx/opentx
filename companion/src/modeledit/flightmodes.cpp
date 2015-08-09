@@ -1,9 +1,6 @@
 #include "flightmodes.h"
 #include "ui_flightmode.h"
-// #include "firmwares/opentx/opentxeeprom.h" // TODO shouldn't be there
 #include "helpers.h"
-#include <QComboBox>
-#include <QGridLayout>
 
 FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
@@ -244,7 +241,7 @@ void FlightModePanel::update()
 void FlightModePanel::phaseName_editingFinished()
 {
     QLineEdit *lineEdit = qobject_cast<QLineEdit*>(sender());
-    strcpy(phase.name, lineEdit->text().toAscii());
+    strcpy(phase.name, lineEdit->text().toLatin1());
     emit modified();
     emit nameModified();
 }
@@ -312,7 +309,7 @@ void FlightModePanel::GVName_editingFinished()
     QLineEdit *lineedit = qobject_cast<QLineEdit*>(sender());
     int gvar = lineedit->property("index").toInt();
     memset(&model->gvars_names[gvar], 0, sizeof(model->gvars_names[gvar]));
-    strcpy(model->gvars_names[gvar], lineedit->text().toAscii());
+    strcpy(model->gvars_names[gvar], lineedit->text().toLatin1());
     emit modified();
   }
 }

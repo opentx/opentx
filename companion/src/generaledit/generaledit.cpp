@@ -1,6 +1,3 @@
-#include <QDateTime>
-#include <QtGui>
-#include <QScrollArea>
 #include "generaledit.h"
 #include "ui_generaledit.h"
 #include "helpers.h"
@@ -146,13 +143,13 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       int16_t offset;
       bool ok;
       for (int i=0; i<NUM_STICKS; i++) {
-        qba = controlNames.mid(3*i,3).toAscii();
+        qba = controlNames.mid(3*i,3).toLatin1();
         strcpy(generalSettings.stickName[i], qba.data());
       }
       for (int i=0; i<(GetCurrentFirmware()->getCapability(Switches)); i++) {
         Byte=hwtypes.mid(i,1);
         byte16=(int16_t)Byte.toInt(&ok,16);
-        qba=controlNames.mid(3*(i+NUM_STICKS),3).toAscii();
+        qba=controlNames.mid(3*(i+NUM_STICKS),3).toLatin1();
         if (ok)
           generalSettings.switchConfig[i]=byte16;
           strcpy(generalSettings.switchName[i], qba.data());
@@ -161,7 +158,7 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       for (int i=0; i<(GetCurrentFirmware()->getCapability(Pots)); i++) {
         Byte=hwtypes.mid(i+offset,1);
         byte16=(int16_t)Byte.toInt(&ok,16);
-        qba=controlNames.mid(3*(i+NUM_STICKS+offset),3).toAscii();
+        qba=controlNames.mid(3*(i+NUM_STICKS+offset),3).toLatin1();
         if (ok)
           generalSettings.potConfig[i]=byte16;
           strcpy(generalSettings.potName[i], qba.data());
@@ -170,7 +167,7 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       for (int i=0; i<(GetCurrentFirmware()->getCapability(Sliders)); i++) {
         Byte=hwtypes.mid(i+offset,1);
         byte16=(int16_t)Byte.toInt(&ok,16);
-        qba=controlNames.mid(3*(i+NUM_STICKS+offset),3).toAscii();
+        qba=controlNames.mid(3*(i+NUM_STICKS+offset),3).toLatin1();
         if (ok)
           generalSettings.sliderConfig[i]=byte16;
           strcpy(generalSettings.sliderName[i], qba.data());
@@ -225,8 +222,8 @@ void GeneralEdit::on_calretrieve_PB_clicked()
         if (ok)
           generalSettings.imperial=byte8u;
         chars=CountrySet.mid(4,2);
-        generalSettings.ttsLanguage[0]=chars[0].toAscii();
-        generalSettings.ttsLanguage[1]=chars[1].toAscii();
+        generalSettings.ttsLanguage[0]=chars[0].toLatin1();
+        generalSettings.ttsLanguage[1]=chars[1].toLatin1();
       }
     }
     else {

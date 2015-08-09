@@ -606,6 +606,10 @@ void AppData::warningId       (const int         x) { store(x, _warningId,      
 // Constructor
 AppData::AppData()
 {
+}
+
+void AppData::init()
+{
     //Initialize the profiles
     for (int i=0; i<MAX_PROFILES; i++)
         profile[i].init( i );

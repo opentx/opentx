@@ -4,25 +4,25 @@
 #  SDL_FOUND, if false, do not try to link to SDL
 #  SDL_INCLUDE_DIR, where to find SDL.h
 #
-# Don't forget to include SDLmain.h and SDLmain.m your project for the 
+# Don't forget to include SDLmain.h and SDLmain.m your project for the
 # OS X framework based version. (Other versions link to -lSDLmain which
-# this module will try to find on your behalf.) Also for OS X, this 
+# this module will try to find on your behalf.) Also for OS X, this
 # module will automatically add the -framework Cocoa on your behalf.
 # $SDLDIR is an environment variable that would
 # correspond to the ./configure --prefix=$SDLDIR
 # used in building SDL.
 # l.e.galup  9-20-02
 #
-# Modified by Eric Wing. 
-# Added new modifications to recognize OS X frameworks and 
-# additional Unix paths (FreeBSD, etc). 
+# Modified by Eric Wing.
+# Added new modifications to recognize OS X frameworks and
+# additional Unix paths (FreeBSD, etc).
 # Also corrected the header search path to follow "proper" SDL guidelines.
 # Added a search for SDLmain which is needed by some platforms.
 # Added a search for threads which is needed by some platforms.
 # Added needed compile switches for MinGW.
 #
 # On OSX, this will prefer the Framework version (if found) over others.
-# People will have to manually change the cache values of 
+# People will have to manually change the cache values of
 # SDL_LIBRARY to override this selection.
 #
 # Note that the header path has changed from SDL/SDL.h to just SDL.h
@@ -46,14 +46,14 @@ FIND_PATH(SDL_INCLUDE_DIR SDL.h
   /opt/local/include/SDL # DarwinPorts
   /opt/local/include
   /opt/csw/include/SDL # Blastwave
-  /opt/csw/include 
+  /opt/csw/include
   /opt/include/SDL
   /opt/include
   C:/Programs/SDL/include
   )
-# I'm not sure if I should do a special casing for Apple. It is 
+# I'm not sure if I should do a special casing for Apple. It is
 # unlikely that other Unix systems will find the framework path.
-# But if they do ([Next|Open|GNU]Step?), 
+# But if they do ([Next|Open|GNU]Step?),
 # do they want the -framework option also?
 IF(${SDL_INCLUDE_DIR} MATCHES ".framework")
   # The Cocoa framework must be linked into SDL because SDL is Cocoa based.
@@ -83,7 +83,7 @@ IF(${SDL_INCLUDE_DIR} MATCHES ".framework")
 ELSE(${SDL_INCLUDE_DIR} MATCHES ".framework")
   # SDL-1.1 is the name used by FreeBSD ports...
   # don't confuse it for the version number.
-  FIND_LIBRARY(SDL_LIBRARY_TEMP 
+  FIND_LIBRARY(SDL_LIBRARY_TEMP
     NAMES SDL SDL-1.1
     PATHS
     $ENV{SDLDIR}/lib
@@ -93,13 +93,13 @@ ELSE(${SDL_INCLUDE_DIR} MATCHES ".framework")
     /opt/local/lib
     /opt/csw/lib
     /opt/lib
-    C:/Programs/SDL/lib
+    C:/Programs/SDL/lib/x86
     )
-  # Non-OS X framework versions expect you to also dynamically link to 
-  # SDLmain. This is mainly for Windows and OS X. Other platforms 
+  # Non-OS X framework versions expect you to also dynamically link to
+  # SDLmain. This is mainly for Windows and OS X. Other platforms
   # seem to provide SDLmain for compatibility even though they don't
   # necessarily need it.
-  FIND_LIBRARY(SDLMAIN_LIBRARY 
+  FIND_LIBRARY(SDLMAIN_LIBRARY
     NAMES SDLmain SDLmain-1.1
     PATHS
     $ENV{SDLDIR}/lib
@@ -109,13 +109,12 @@ ELSE(${SDL_INCLUDE_DIR} MATCHES ".framework")
     /opt/local/lib
     /opt/csw/lib
     /opt/lib
-    C:/Programs/SDL/lib
     )
 ENDIF(${SDL_INCLUDE_DIR} MATCHES ".framework")
 
 # SDL may require threads on your system.
-# The Apple build may not need an explicit flag because one of the 
-# frameworks may already provide it. 
+# The Apple build may not need an explicit flag because one of the
+# frameworks may already provide it.
 # But for non-OSX systems, I will use the CMake Threads package.
 IF(NOT APPLE)
   FIND_PACKAGE(Threads)
@@ -136,14 +135,14 @@ IF(SDL_LIBRARY_TEMP)
   ENDIF(SDLMAIN_LIBRARY)
 
   # For OS X, SDL uses Cocoa as a backend so it must link to Cocoa.
-  # CMake doesn't display the -framework Cocoa string in the UI even 
-  # though it actually is there. I think it has something to do 
+  # CMake doesn't display the -framework Cocoa string in the UI even
+  # though it actually is there. I think it has something to do
   # with the CACHE STRING. Maybe somebody else knows how to fix this.
   # The problem is mainly cosmetic, and not a functional issue.
   IF(APPLE)
     SET(SDL_LIBRARY_TEMP ${SDL_LIBRARY_TEMP} "-framework Cocoa")
   ENDIF(APPLE)
-  
+
   # For threads, as mentioned Apple doesn't need this.
   # In fact, there seems to be a problem if Find the threads package
   # and try using this line, so I'm just skipping it entirely for OS X.

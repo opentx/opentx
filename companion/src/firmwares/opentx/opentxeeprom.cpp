@@ -392,8 +392,8 @@ template <int N>
 class SwitchField: public ConversionField< SignedField<N> > {
   public:
     SwitchField(RawSwitch & sw, BoardEnum board, unsigned int version, unsigned long flags=0):
-      ConversionField< SignedField<N> >(_switch, SwitchesConversionTable::getInstance(board, version, flags),  QObject::tr("Switch").toAscii(),
-          QObject::tr("Switch ").toAscii()+ sw.toString()+  QObject::tr(" cannot be exported on this board!").toAscii()),
+      ConversionField< SignedField<N> >(_switch, SwitchesConversionTable::getInstance(board, version, flags),  QObject::tr("Switch").toLatin1(),
+          QObject::tr("Switch ").toLatin1()+ sw.toString()+  QObject::tr(" cannot be exported on this board!").toLatin1()),
       sw(sw),
       _switch(0)
     {

@@ -1,7 +1,5 @@
 #include "downloaddialog.h"
 #include "ui_downloaddialog.h"
-#include <QMessageBox>
-#include <QtGui>
 #include <QTime>
 #include "helpers.h"
 

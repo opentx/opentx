@@ -499,12 +499,12 @@ void LogsDialog::on_fileOpen_BT_clicked()
         }
       }
 
-      ui->logTable->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      ui->logTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
       QVarLengthArray<int> sizes;
       for (int i = 0; i < ui->logTable->columnCount(); i++) {
         sizes.append(ui->logTable->columnWidth(i));
       }
-      ui->logTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+      ui->logTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
       for (int i = 0; i < ui->logTable->columnCount(); i++) {
         ui->logTable->setColumnWidth(i, sizes.at(i));
       }

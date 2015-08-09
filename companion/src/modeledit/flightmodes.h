@@ -3,12 +3,6 @@
 
 #include "modeledit.h"
 #include "eeprominterface.h"
-#include <QVector>
-#include <QLabel>
-#include <QTabWidget>
-#include <QSpinBox>
-#include <QComboBox>
-#include <QCheckBox>
 
 namespace Ui {
   class FlightMode;

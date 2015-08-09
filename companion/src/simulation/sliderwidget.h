@@ -3,6 +3,7 @@
 
 #include <QSlider>
 #include <QtGui>
+#include <QFrame>
 
 class SliderWidget : public QSlider
 {

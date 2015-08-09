@@ -6,6 +6,8 @@ set(qxtcommandoptions_HDRS
   qxtcommandoptions.h
 )
 
-qt4_wrap_cpp(qxtcommandoptions_SRCS ${qxtcommandoptions_HDRS})
+qt5_wrap_cpp(qxtcommandoptions_SRCS ${qxtcommandoptions_HDRS})
 
 add_library(qxtcommandoptions ${qxtcommandoptions_SRCS})
+qt5_use_modules(qxtcommandoptions Widgets)
+

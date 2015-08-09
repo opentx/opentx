@@ -1,6 +1,5 @@
 #include "generalsetup.h"
 #include "ui_generalsetup.h"
-#include <QMessageBox>
 
 GeneralSetupPanel::GeneralSetupPanel(QWidget * parent, GeneralSettings & generalSettings, Firmware * firmware):
 GeneralPanel(parent, generalSettings, firmware),
@@ -316,7 +315,7 @@ void GeneralSetupPanel::on_voiceLang_CB_currentIndexChanged(int index)
   if (!lock) {
     QString code = ui->voiceLang_CB->itemData(index).toString();
     for (int i=0; i<2; i++) {
-      generalSettings.ttsLanguage[i] = code.at(i).toAscii();
+      generalSettings.ttsLanguage[i] = code.at(i).toLatin1();
     }
     generalSettings.ttsLanguage[2] = '\0';
     emit modified();

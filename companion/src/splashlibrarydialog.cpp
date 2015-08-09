@@ -1,7 +1,6 @@
 #include "splashlibrarydialog.h"
 #include "ui_splashlibrarydialog.h"
 #include "appdata.h"
-#include <QtGui>
 #include "helpers.h"
 #include "firmwareinterface.h"
 #include "helpers.h"

@@ -3,12 +3,6 @@
 
 #include "modeledit.h"
 #include "eeprominterface.h"
-#include <QVector>
-#include <QCheckBox>
-#include <QSlider>
-#include <QSpinBox>
-#include <QComboBox>
-#include <QLabel>
 
 namespace Ui {
   class Setup;

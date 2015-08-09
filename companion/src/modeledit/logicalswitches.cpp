@@ -1,10 +1,4 @@
 #include "logicalswitches.h"
-#include <QLabel>
-#include <QLineEdit>
-#include <QSpinBox>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QDoubleSpinBox>
 #include "helpers.h"
 
 LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):

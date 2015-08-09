@@ -38,20 +38,11 @@ else()
   message("SDL not found! Joysticks support will be disabled. Simulator audio will not work.")
 endif()
 
-find_package(Qt4 4.8.1 REQUIRED)
-set(QT_USE_QTNETWORK True)
-set(QT_USE_QTXML True)
-include(${QT_USE_FILE})
-
-message(STATUS "Looking for PHONON ")
-find_package(Phonon)
-if(PHONON_FOUND)
-  include_directories(${PHONO_INCLUDE_DIR})
-  message("PHONON Include Path: " ${PHONON_INCLUDE_DIR})
-  add_definitions(-DPHONON)
-else()
-  message("PHONON not found!")
-endif()
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Xml REQUIRED)
+find_package(Qt5LinguistTools REQUIRED)
+find_package(Qt5PrintSupport REQUIRED)
+find_package(Qt5Multimedia REQUIRED)
 
 message(STATUS "Looking for QT lupdate ")
 find_package(Lupdate)
@@ -114,9 +105,10 @@ set(common_SRCS
   appdata.cpp
   )
 
-qt4_wrap_cpp(common_SRCS)
+qt5_wrap_cpp(common_SRCS)
 
 add_library(common ${common_SRCS})
+qt5_use_modules(common Core Xml Widgets)
 
 set(companion_SRCS
   hexinterface.cpp
@@ -211,7 +203,7 @@ set(companion_UIS
   radionotfound.ui
   )
 
-set(companion_RCS
+set(companion_RESOURCES
   companion.qrc
   ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
   )
@@ -239,23 +231,23 @@ foreach(language ${LANGUAGES})
   set(companion_TS ${companion_TS} translations/companion_${language}.ts)
 endforeach(language)
 
-set(companion_SRCS ${companion_SRCS})
-qt4_wrap_ui(companion_SRCS ${companion_UIS})
-qt4_wrap_cpp(companion_SRCS ${companion_MOC_HDRS})
-qt4_add_translation(companion_QM ${companion_TS})
-qt4_add_resources(companion_SRCS ${companion_RCS})
+qt5_wrap_ui(companion_SRCS ${companion_UIS})
+qt5_wrap_cpp(companion_SRCS ${companion_MOC_HDRS})
+qt5_add_translation(companion_QM ${companion_TS})
+qt5_add_resources(companion_RCC ${companion_RESOURCES})
 
 add_definitions(-DQT_TRANSLATIONS_DIR="${QT_TRANSLATIONS_DIR}")
 
 if(APPLE)
-  add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${companion_SRCS} ${companion_QM})
+  add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${companion_SRCS} ${companion_RCC} ${companion_QM})
   # OS X compiler no longer automatically includes /Library/Frameworks in search path
   set(CMAKE_EXE_LINKER_FLAGS -F/Library/Frameworks)
 else()
-  add_executable(${COMPANION_NAME} WIN32 ${companion_SRCS} ${companion_QM})
+  add_executable(${COMPANION_NAME} WIN32 ${companion_SRCS} ${companion_RCC} ${companion_QM})
 endif()
 
-target_link_libraries(${COMPANION_NAME} generaledit modeledit simulation common qcustomplot shared ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
+target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation common qcustomplot shared ${PTHREAD_LIBRARY} ${SDL_LIBRARY})
 
 ############# Standalone simu ###############
 
@@ -269,21 +261,20 @@ set(simu_MOC_HDRS
   modeledit/node.h
   )
 
-set(simu_SRCS ${simu_SRCS})
-qt4_wrap_cpp(simu_SRCS ${simu_MOC_HDRS})
-qt4_add_resources(simu_SRCS companion.qrc) # TODO not needed
+qt5_wrap_cpp(simu_SRCS ${simu_MOC_HDRS} )
 
 if(WIN32)
   set(simu_SRCS ${simu_SRCS} icon.rc)
 endif()
 
 if(APPLE)
-  add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${simu_SRCS})
+  add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${simu_SRCS} ${companion_RCC})
 else()
-  add_executable(${SIMULATOR_NAME} WIN32 ${simu_SRCS})
+  add_executable(${SIMULATOR_NAME} WIN32 ${simu_SRCS} ${companion_RCC})
 endif()
 
-target_link_libraries(${SIMULATOR_NAME} simulation common qxtcommandoptions ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} ${OPENTX_SIMULATOR_LIBS})
+# TODO not the same link command than companion?
+target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common qxtcommandoptions ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${OPENTX_SIMULATOR_LIBS})
 
 ############# Packaging ####################
 
@@ -304,9 +295,13 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   install(FILES ../targets/linux/45-companion-taranis.rules DESTINATION /lib/udev/rules.d RENAME 45-companion${C9X_NAME_SUFFIX}-taranis.rules)
   # Linux specific code
   set(OperatingSystem "Linux")
-else(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  install(TARGETS ${COMPANION_NAME} DESTINATION ${QT_BINARY_DIR})
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+else()
+  get_target_property(QtCore_LOCATION Qt5::Core LOCATION)
+  get_filename_component(QT_DLL_DIR ${QtCore_LOCATION} PATH)
+  get_filename_component(SDL_DIR ${SDL_LIBRARY} PATH)
+  install(FILES ${QT_DLL_DIR}/icudt54.dll ${QT_DLL_DIR}/icuin54.dll ${QT_DLL_DIR}/icuuc54.dll ${QT_DLL_DIR}/Qt5Core.dll ${QT_DLL_DIR}/Qt5Gui.dll ${QT_DLL_DIR}/Qt5Widgets.dll ${QT_DLL_DIR}/Qt5Xml.dll ${QT_DLL_DIR}/Qt5Network.dll ${QT_DLL_DIR}/Qt5PrintSupport.dll ${QT_DLL_DIR}/Qt5Multimedia.dll ${SDL_DIR}/SDL.dll DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>)
+  install(FILES ${QT_DLL_DIR}/icudt54.dll ${QT_DLL_DIR}/icuin54.dll ${QT_DLL_DIR}/icuuc54.dll ${QT_DLL_DIR}/Qt5Cored.dll ${QT_DLL_DIR}/Qt5Guid.dll ${QT_DLL_DIR}/Qt5Widgetsd.dll ${QT_DLL_DIR}/Qt5Xmld.dll ${QT_DLL_DIR}/Qt5Networkd.dll ${QT_DLL_DIR}/Qt5PrintSupportd.dll ${QT_DLL_DIR}/Qt5Multimediad.dll ${SDL_DIR}/SDL.dll DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>)
+endif()
 
 if(WIN32)
   if(MSVC)
@@ -388,7 +383,7 @@ set(CPACK_PACKAGE_NAME "companion${C9X_NAME_SUFFIX}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Models and settings editor for the OpenTx open source firmware")
 string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE)
 
-# The file stripping is deliberately disabled, with the stripped file we get 
+# The file stripping is deliberately disabled, with the stripped file we get
 # very poor trace-backs from the users when they report Companion crash
 set(CPACK_STRIP_FILES FALSE)
 

@@ -107,67 +107,59 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 # 9X with ATmega64
 target_include_directories(opentx-9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/9x PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/9x)
 target_compile_definitions(opentx-9x${SUFFIX}-simulator PRIVATE PCBSTD PCB9X CPUM64 EEPROM EEPROM_RLC ${COMMON_DEFINITIONS})
-target_link_libraries(opentx-9x${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # 9XR with ATmega64
 target_include_directories(opentx-9xr${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/9x PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/9x)
 target_compile_definitions(opentx-9xr${SUFFIX}-simulator PRIVATE PCBSTD PCB9XR CPUM64 EEPROM EEPROM_RLC ${COMMON_DEFINITIONS})
-target_link_libraries(opentx-9xr${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # 9X with ATmega128
 target_include_directories(opentx-9x128${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/9x PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/9x)
 target_compile_definitions(opentx-9x128${SUFFIX}-simulator PRIVATE PCBSTD PCB9X CPUM128 EEPROM EEPROM_RLC ${COMMON_DEFINITIONS})
-target_link_libraries(opentx-9x128${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # 9XR with ATmega128
 target_include_directories(opentx-9xr128${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/9x PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/9x)
 target_compile_definitions(opentx-9xr128${SUFFIX}-simulator PRIVATE PCBSTD PCB9XR CPUM128 EEPROM EEPROM_RLC ${COMMON_DEFINITIONS})
-target_link_libraries(opentx-9xr128${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Gruvin9x
 target_include_directories(opentx-gruvin9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/gruvin9x PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/9x)
 target_compile_definitions(opentx-gruvin9x${SUFFIX}-simulator PRIVATE PCBGRUVIN9X CPUM2560 EEPROM EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
-target_link_libraries(opentx-gruvin9x${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Mega2560
 target_include_directories(opentx-mega2560${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/mega2560 PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/9x)
 target_compile_definitions(opentx-mega2560${SUFFIX}-simulator PRIVATE PCBMEGA2560 CPUM2560 EEPROM EEPROM_RLC SDCARD ROTARY_ENCODERS=2 ${COMMON_DEFINITIONS})
-target_link_libraries(opentx-mega2560${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Sky9x
 target_include_directories(opentx-sky9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/sky9x PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/9x)
 target_compile_definitions(opentx-sky9x${SUFFIX}-simulator PRIVATE PCBSKY9X CPUARM VOICE EEPROM SDCARD ${COMMON_DEFINITIONS})
-target_link_libraries(opentx-sky9x${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # 9XR-PRO
 target_include_directories(opentx-9xrpro${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/sky9x PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/9x)
 target_compile_definitions(opentx-9xrpro${SUFFIX}-simulator PRIVATE PCBSKY9X REVX CPUARM VOICE EEPROM SDCARD ${COMMON_DEFINITIONS})
-target_link_libraries(opentx-9xrpro${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # AR9X
 target_include_directories(opentx-ar9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/sky9x PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/9x)
 target_compile_definitions(opentx-ar9x${SUFFIX}-simulator PRIVATE PCBSKY9X AR9X CPUARM VOICE EEPROM SDCARD ${COMMON_DEFINITIONS})
-target_link_libraries(opentx-ar9x${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Taranis standard
 target_include_directories(opentx-taranis${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/taranis PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/taranis)
 target_compile_definitions(opentx-taranis${SUFFIX}-simulator PRIVATE PCBTARANIS CPUARM CPUSTM32 EEPROM EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
-target_link_libraries(opentx-taranis${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Taranis Plus 
 target_include_directories(opentx-taranisplus${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/taranis PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/taranis)
 target_compile_definitions(opentx-taranisplus${SUFFIX}-simulator PRIVATE PCBTARANIS REVPLUS CPUARM CPUSTM32 EEPROM EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
-target_link_libraries(opentx-taranisplus${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Taranis X9E
 target_include_directories(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/taranis PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/taranis)
 target_compile_definitions(opentx-taranisx9e${SUFFIX}-simulator PRIVATE PCBTARANIS REVPLUS REV9E CPUARM CPUSTM32 STM32F40_41xxx EEPROM EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
-target_link_libraries(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Horus
 target_include_directories(opentx-horus${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/horus PRIVATE ${RADIO_SRC_DIRECTORY}/gui/horus PRIVATE ${RADIO_SRC_DIRECTORY}/fonts/horus PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/horus)
 target_compile_definitions(opentx-horus${SUFFIX}-simulator PRIVATE PCBHORUS CPUARM CPUSTM32 STM32F40_41xxx COLORLCD VOICE SDCARD ${COMMON_DEFINITIONS})
-target_link_libraries(opentx-horus${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
+
+foreach(library ${OPENTX_LIBRARIES})
+  qt5_use_modules(${library} Core)
+  target_link_libraries(${library} PRIVATE ${COMMON_LIBRARIES})
+endforeach()
 
 add_custom_target(opentx-simulators
   DEPENDS ${OPENTX_LIBRARIES}
@@ -175,18 +167,18 @@ add_custom_target(opentx-simulators
 
 if(APPLE)
   set(SIMULATOR_BUNDLES)
-  foreach(_file ${OPENTX_LIBRARIES})
-    set(SIMULATOR_BUNDLE "${_file}-bundle")
+  foreach(library ${OPENTX_LIBRARIES})
+    set(SIMULATOR_BUNDLE "${library}-bundle")
     add_custom_target(${SIMULATOR_BUNDLE}
-      COMMAND install_name_tool -change /opt/local/Library/Frameworks/QtCore.framework/Versions/4/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore lib${_file}.dylib
-      COMMAND install_name_tool -change /opt/local/Library/Frameworks/QtNetwork.framework/Versions/4/QtNetwork @executable_path/../Frameworks/QtNetwork.framework/Versions/4/QtNetwork lib${_file}.dylib
-      COMMAND install_name_tool -change /opt/local/Library/Frameworks/QtXml.framework/Versions/4/QtXml @executable_path/../Frameworks/QtXml.framework/Versions/4/QtXml lib${_file}.dylib
-      COMMAND install_name_tool -change /opt/local/Library/Frameworks/QtGui.framework/Versions/4/QtGui @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui lib${_file}.dylib
-      COMMAND install_name_tool -change @rpath/SDL.framework/Versions/A/SDL @executable_path/../Frameworks/SDL.framework/Versions/A/SDL lib${_file}.dylib
+      COMMAND install_name_tool -change /opt/local/Library/Frameworks/QtCore.framework/Versions/4/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore lib${library}.dylib
+      COMMAND install_name_tool -change /opt/local/Library/Frameworks/QtNetwork.framework/Versions/4/QtNetwork @executable_path/../Frameworks/QtNetwork.framework/Versions/4/QtNetwork lib${library}.dylib
+      COMMAND install_name_tool -change /opt/local/Library/Frameworks/QtXml.framework/Versions/4/QtXml @executable_path/../Frameworks/QtXml.framework/Versions/4/QtXml lib${library}.dylib
+      COMMAND install_name_tool -change /opt/local/Library/Frameworks/QtGui.framework/Versions/4/QtGui @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui lib${library}.dylib
+      COMMAND install_name_tool -change @rpath/SDL.framework/Versions/A/SDL @executable_path/../Frameworks/SDL.framework/Versions/A/SDL lib${library}.dylib
       WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
       COMMAND pwd
-      COMMAND cp lib${_file}.dylib companion.app/Contents/Resources/
-      DEPENDS ${_file}
+      COMMAND cp lib${library}.dylib companion.app/Contents/Resources/
+      DEPENDS ${library}
       )
     list(APPEND SIMULATOR_BUNDLES ${SIMULATOR_BUNDLE})
   endforeach()

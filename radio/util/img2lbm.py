@@ -3,7 +3,10 @@
 from __future__ import division, print_function
 
 import sys
-from PyQt4 import Qt, QtGui
+try:
+    from PyQt5 import Qt, QtGui
+except:
+    from PyQt4 import Qt, QtGui
 
 image = QtGui.QImage(sys.argv[1])
 width, height = image.size().width(), image.size().height()

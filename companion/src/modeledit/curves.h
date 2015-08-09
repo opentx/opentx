@@ -3,7 +3,6 @@
 
 #include "modeledit.h"
 #include "eeprominterface.h"
-#include <QSpinBox>
 
 enum CopyAction {
   CURVE_COPY,

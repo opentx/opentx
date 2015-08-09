@@ -1,11 +1,5 @@
 #include "channels.h"
 #include "helpers.h"
-#include <QLabel>
-#include <QLineEdit>
-#include <QSpinBox>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QDoubleSpinBox>
 
 LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout *tableLayout, int row, int col, int & value, int min, int max, int deflt):
   firmware(firmware),
@@ -200,7 +194,7 @@ void Channels::nameEdited()
   if (!lock) {
     QLineEdit *le = qobject_cast<QLineEdit*>(sender());
     int index = le->property("index").toInt();
-    strcpy(model->limitData[index].name, le->text().toAscii());
+    strcpy(model->limitData[index].name, le->text().toLatin1());
     emit modified();
   }
 }

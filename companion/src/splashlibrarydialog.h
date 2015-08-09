@@ -1,8 +1,7 @@
 #ifndef SPLASHLIBRARY_H
 #define SPLASHLIBRARY_H
 
-#include <QtGui>
-#include <QDialog>
+#include <QtWidgets>
 
 namespace Ui {
     class SplashLibraryDialog;

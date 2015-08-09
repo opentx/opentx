@@ -21,7 +21,7 @@
 #include <QString>
 #include <QStringList>
 #include <QList>
-#include <QtXml>
+#include <QtXml> // This should be removed from here, and remove Xml dependency from all libs which don't need it.
 #include <QComboBox>
 #include <iostream>
 #include <bitset>
@@ -1507,8 +1507,7 @@ void registerOpenTxFirmwares();
 void unregisterOpenTxFirmwares();
 
 enum EepromLoadErrors {
-  NO_ERROR,
-
+  ALL_OK,
   UNKNOWN_ERROR,
   UNSUPPORTED_NEWER_VERSION,
   WRONG_SIZE,

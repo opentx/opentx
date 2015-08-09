@@ -1,7 +1,7 @@
 #ifndef GENERALEDIT_H
 #define GENERALEDIT_H
 
-#include <QDialog>
+#include <QtWidgets>
 #include "eeprominterface.h"
 #include "genericpanel.h"
 

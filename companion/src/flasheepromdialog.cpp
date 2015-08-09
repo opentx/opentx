@@ -126,7 +126,7 @@ int FlashEEpromDialog::getEEpromVersion(const QString &filename)
     if (xmlOK) {
       RadioData * radioData = new RadioData();
       std::bitset<NUM_ERRORS> errors((unsigned long long)LoadEepromXml(*radioData, doc));
-      if (!errors.test(NO_ERROR)) {
+      if (!errors.test(ALL_OK)) {
         QMessageBox::warning(this, tr("Error"), tr("Invalid Models and Settings File %1").arg(filename));
       }
       else {
@@ -162,7 +162,7 @@ int FlashEEpromDialog::getEEpromVersion(const QString &filename)
 
   RadioData * radioData = new RadioData();
   std::bitset<NUM_ERRORS> errors((unsigned long long)LoadEeprom(*radioData, (const uint8_t *)eeprom.data(), eeprom_size));
-  if (eeprom_size == 0 || !errors.test(NO_ERROR)) {
+  if (eeprom_size == 0 || !errors.test(ALL_OK)) {
     QMessageBox::warning(this, tr("Error"), tr("Invalid Models and Settings file %1").arg(filename));
   }
   else {
