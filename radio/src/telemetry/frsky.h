@@ -330,6 +330,7 @@ struct FrskyData {
   FrskyValueWithMin swr; // TODO Min not needed
   FrskyValueWithMin rssi; // TODO Min not needed
   uint16_t xjtVersion;
+  bool varioHighPrecision;
 };
 #else
 struct FrskyData {

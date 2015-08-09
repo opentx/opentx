@@ -521,7 +521,7 @@ const FrSkyDSensor frskyDSensors[] = {
   { ACCEL_Z_ID, ZSTR_ACCZ, UNIT_G, 3 },
   { VARIO_ID, ZSTR_VSPD, UNIT_METERS_PER_SECOND, 2 },
   { VFAS_ID, ZSTR_VFAS, UNIT_VOLTS, 2 },
-  { BARO_ALT_AP_ID, ZSTR_ALT, UNIT_METERS, 2 },
+  { BARO_ALT_AP_ID, ZSTR_ALT, UNIT_METERS, 1 },   // we map hi precision vario into PREC1!
   { VOLTS_AP_ID, ZSTR_VFAS, UNIT_VOLTS, 2 },
   { GPS_SPEED_BP_ID, ZSTR_GSPD, UNIT_KTS, 0 },
   { GPS_COURS_BP_ID, ZSTR_HDG, UNIT_DEGREE, 0 },
@@ -591,9 +591,13 @@ void processHubPacket(uint8_t id, int16_t value)
   }
   else if (id == BARO_ALT_AP_ID) {
     if (lastId == BARO_ALT_BP_ID) {
-      data += lastValue * 100;
+      if (data > 9 || frskyData.varioHighPrecision) {
+        frskyData.varioHighPrecision = true;
+        data /= 10;    // map hi precision vario into low precision. Altitude is stored in 0.1m anyways
+      }
+      data = (int16_t)lastValue * 10 + (((int16_t)lastValue < 0) ? -data : data);
       unit = UNIT_METERS;
-      precision = 2;
+      precision = 1;
     }
     else {
       return;
