@@ -43,6 +43,11 @@ include_directories(
   ${RADIO_SRC_DIRECTORY}/thirdparty/Lua/src
 )
 
+if(APPLE)
+  # OS X compiler no longer automatically includes /Library/Frameworks in search path
+  set(CMAKE_SHARED_LINKER_FLAGS -F/Library/Frameworks)
+endif(APPLE)
+
 if(DEFINED TRANSLATIONS)
   set(COMMON_DEFINITIONS ${COMMON_DEFINITIONS} TRANSLATIONS_${TRANSLATIONS})
   string(TOLOWER ${TRANSLATIONS} TRANSLATION_SUFFIX)

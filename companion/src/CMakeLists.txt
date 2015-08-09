@@ -412,6 +412,7 @@ IF( APPLE )
                      COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion.app/Contents/translations
                      COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion.app/Contents/translations
                      COMMAND rsync -r ${XSD_INCLUDE_DIR}/.. companion.app/Contents/Frameworks/
+                     COMMAND rsync -r /Library/Frameworks/SDL.framework companion.app/Contents/Frameworks/
                      COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app
                      COMMAND install_name_tool -change @rpath/SDL.framework/Versions/A/SDL @executable_path/../Frameworks/SDL.framework/Versions/A/SDL companion.app/Contents/MacOS/companion
                      WORKING_DIRECTORY ${WORK_DIR}
