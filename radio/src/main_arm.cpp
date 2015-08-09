@@ -40,33 +40,62 @@ uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
 uint8_t requestScreenshot = false;
 
+
+#if defined(USB_SERIAL)
+
+Fifo<64> cliRxFifo;
+
+void handleCli()
+{
+  uint8_t c;
+
+  while(cliRxFifo.pop(c)) {
+    //send back
+    sendUsbSerialChar(c);
+    sendUsbSerialChar('+');
+  }
+
+}
+#endif
+
 void handleUsbConnection()
 {
 #if defined(PCBTARANIS) && !defined(SIMU)
   static bool usbStarted = false;
+
   if (!usbStarted && usbPlugged()) {
+    usbStarted = true;
+
+    /*
+      We used to initialize USB peripheral and driver here.
+      According to my tests this is way too late. The USB peripheral
+      therefore does not have enough information to start responding to 
+      USB host request, which causes very slow USB device recognition, 
+      multiple USB device resets, etc...
+
+      If we want to change the USB profile, the procedure is simple:
+        * USB cable must be disconnected
+        * call usbDeInit();
+        * call usbUnit(); which initializes USB with the new profile. 
+          Obviously the usbInit() should be modified to have a runtime
+          selection of the USB profile.
+    */
+
 #if defined(USB_MASS_STORAGE)
     opentxClose();
-#endif
-    usbStart();
-#if defined(USB_MASS_STORAGE)
     usbPluggedIn();
 #endif
-    usbStarted = true;
+  }
+  if (usbStarted && !usbPlugged()) {
+    usbStarted = false;
   }
   
 #if defined(USB_JOYSTICK)
-  if (usbStarted) {
-    if (!usbPlugged()) {
-      //disable USB
-      usbStop();
-      usbStarted = false;
-    }
-    else {
-      usbJoystickUpdate();
-    }
+  if (usbStarted ) {
+    usbJoystickUpdate();
   }
 #endif
+  
 #endif //#if defined(PCBTARANIS) && !defined(SIMU)
 }
 
@@ -100,6 +129,9 @@ void perMain()
   handleUsbConnection();
   checkTrainerSettings();
   checkBattery();
+#if defined(USB_SERIAL)
+  handleCli();
+#endif
 
   uint8_t evt = getEvent(false);
   if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on

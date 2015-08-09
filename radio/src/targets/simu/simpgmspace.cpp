@@ -1201,7 +1201,6 @@ uint32_t pwrPressed() { return false; }
 #else
 uint32_t pwrCheck() { return true; }
 #endif
-void usbStart() { }
 int usbPlugged() { return false; }
 void USART_DeInit(USART_TypeDef* ) { }
 ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { return SUCCESS; }

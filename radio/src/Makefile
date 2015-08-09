@@ -301,9 +301,10 @@ LUA = NO
 MENUS_LOCK = NO
 
 # USB options in the main image
-# Values = JOYSTICK, MASSSTORAGE
+# Values = JOYSTICK, MASSSTORAGE, SERIAL
 # JOYSTICK: The TX will appear as a joystick
 # MASSSTORAGE: The TX will appear as a drive
+# SERIAL: The TX will appear as a serial port
 USB = JOYSTICK
 
 # Mixers monitor view added to Channels monitor one
@@ -913,8 +914,11 @@ ifeq ($(PCB), TARANIS)
     LDSCRIPT = targets/taranis/stm32f2_flash.ld
   endif
   STM32USBPATH = $(THIRDPARTY)/STM32_USB-Host-Device_Lib_V2.1.0/Libraries
-  INCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc $(STM32USBPATH)/STM32_USB_Device_Library/Core/inc
-  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/inc $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Core/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/inc
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_hardware.cpp
   BOARDSRC = main_arm.cpp targets/taranis/board_taranis.cpp
   EXTRABOARDSRC += targets/taranis/configure_pins.cpp targets/taranis/lcd_driver.cpp targets/taranis/flash_driver.cpp targets/taranis/i2c_driver.cpp targets/taranis/aspi.c targets/taranis/delays.c
@@ -966,6 +970,10 @@ ifeq ($(PCB), TARANIS)
   ifeq ($(USB), JOYSTICK)
     CPPDEFS += -DUSB_JOYSTICK
     SRC += targets/taranis/usbd_hid_joystick.c
+  else ifeq ($(USB), SERIAL)
+    CPPDEFS += -DUSB_SERIAL
+    SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c
+    EXTRABOARDSRC += targets/taranis/usbd_cdc.cpp
   else
     CPPDEFS += -DUSB_MASS_STORAGE
     SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c

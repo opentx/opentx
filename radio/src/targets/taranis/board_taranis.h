@@ -74,9 +74,10 @@ extern "C" {
 #endif
 
 #if !defined(SIMU)
-  #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc/usbd_msc_core.h"
-  #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc/usbd_hid_core.h"
-  #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc/usbd_usr.h"
+  #include "usbd_cdc_core.h"
+  #include "usbd_msc_core.h"
+  #include "usbd_hid_core.h"
+  #include "usbd_usr.h"
   #include "usbd_desc.h"
   #include "usb_conf.h"
   #include "usbd_conf.h"
@@ -281,10 +282,7 @@ void backlightInit(void);
 // USB driver
 int usbPlugged(void);
 void usbInit(void);
-void usbStart(void);
-#if defined(USB_JOYSTICK)
-void usbStop(void);
-#endif
+void usbDeInit(void);
 
 #if defined(__cplusplus) && !defined(SIMU)
 }
