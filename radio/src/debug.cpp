@@ -35,6 +35,7 @@
  */
 
 #include "opentx.h"
+#include <stdarg.h>
 
 #if defined(SIMU)
 traceCallbackFunc traceCallback = 0;

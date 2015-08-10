@@ -36,11 +36,8 @@
 
 #include "opentx.h"
 #include "serial.h"
-
-extern "C" {
-  #include <stdio.h>
-  #include <stdarg.h>
-}
+#include <stdarg.h>
+#include <stdio.h>
 
 #define PRINTF_BUFFER_SIZE    256
 
