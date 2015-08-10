@@ -53,7 +53,7 @@ Fifo<512> serial2RxFifo;
  * This function is synchronous (i.e. uses polling).
  * c  Character to send.
  */
-void debugPutc(const char c)
+void serial2Putc(const char c)
 {
   Uart *pUart = SECOND_SERIAL_UART;
 
@@ -117,7 +117,7 @@ extern "C" void UART0_IRQHandler()
 #endif
 
 #if defined(FRSKY)
-void telemetrySecondPortInit(unsigned int /*protocol*/)
+void serial2TelemetryInit(unsigned int /*protocol*/)
 {
   SECOND_UART_Configure(FRSKY_D_BAUDRATE, Master_frequency);
   // startPdcUsartReceive();

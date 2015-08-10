@@ -260,7 +260,7 @@ void checkTrainerSettings()
         stop_sbus_on_heartbeat_capture() ;
         break;
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        uart3Stop();
+        serial2Stop();
     }
 
     currentTrainerMode = requiredTrainerMode;
@@ -275,8 +275,8 @@ void checkTrainerSettings()
          init_sbus_on_heartbeat_capture() ;
          break;
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        if (g_eeGeneral.uart3Mode == UART_MODE_SBUS_TRAINER) {
-          uart3SbusInit();
+        if (g_eeGeneral.serial2Mode == UART_MODE_SBUS_TRAINER) {
+          serial2SbusInit();
           break;
         }
         // no break

@@ -165,8 +165,8 @@ NOINLINE void processSerialData(uint8_t data)
 #endif
 
 #if defined(PCBTARANIS)
-    if (g_eeGeneral.uart3Mode == UART_MODE_TELEMETRY_MIRROR) {
-      uart3Putc(data);
+    if (g_eeGeneral.serial2Mode == UART_MODE_TELEMETRY_MIRROR) {
+      serial2Putc(data);
     }
 #endif
 
@@ -604,7 +604,7 @@ void telemetryInit(void)
   }
   else if (telemetryProtocol==PROTOCOL_FRSKY_D_SECONDARY) {
     telemetryPortInit(0);
-    telemetrySecondPortInit(PROTOCOL_FRSKY_D_SECONDARY);
+    serial2TelemetryInit(PROTOCOL_FRSKY_D_SECONDARY);
   }
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE);

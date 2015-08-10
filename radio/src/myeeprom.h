@@ -384,7 +384,7 @@ enum BeeperMode {
   #define LEN_SWITCH_NAME              3
   #define LEN_ANA_NAME                 3
   #define LEN_BLUETOOTH_NAME           10
-  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.uart3Mode==UART_MODE_SBUS_TRAINER/* || g_eeGeneral.uart3Mode==UART_MODE_CPPM_TRAINER*/)
+  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER/* || g_eeGeneral.serial2Mode==UART_MODE_CPPM_TRAINER*/)
 
   #if defined(REV9E)
     #define BLUETOOTH_FIELDS \
@@ -396,7 +396,7 @@ enum BeeperMode {
 
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
-    uint8_t  uart3Mode:6; \
+    uint8_t  serial2Mode:6; \
     uint8_t  slidersConfig:2; \
     uint8_t  potsConfig; /*two bits for every pot*/\
     uint8_t  backlightColor; \
