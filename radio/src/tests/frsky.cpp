@@ -148,18 +148,29 @@ TEST(FrSky, HubAltNegative)
   TELEMETRY_RESET();
   EXPECT_EQ(telemetryItems[0].value, 0);
 
-  // low precision alitmeter, bp always less than 10
+  // altimeter auto offset
+  processHubPacket(BARO_ALT_BP_ID, 0);
+  processHubPacket(BARO_ALT_AP_ID, 0);
+  EXPECT_EQ(telemetryItems[0].value, 0);
+
+  // low precision altimeter, bp always less than 10
   processHubPacket(BARO_ALT_BP_ID, 12);  // set value of 12.3m
   processHubPacket(BARO_ALT_AP_ID, 3);
-  EXPECT_EQ(telemetryItems[0].value, 123);      // altitued stored has resolution of 0.1m
+  EXPECT_EQ(telemetryItems[0].value, 123);      // altitude stored has resolution of 0.1m
 
   processHubPacket(BARO_ALT_BP_ID, -12);  // set value of -12.3m
   processHubPacket(BARO_ALT_AP_ID, 3);
   EXPECT_EQ(telemetryItems[0].value, -123);
 
-  // hi precision alitmeter, bp can be two decimals
+  // hi precision altimeter, bp can be two decimals
   MODEL_RESET();
   TELEMETRY_RESET();
+
+  // altimeter auto offset
+  processHubPacket(BARO_ALT_BP_ID, 0);
+  processHubPacket(BARO_ALT_AP_ID, 0);
+  EXPECT_EQ(telemetryItems[0].value, 0);
+
   // first trigger hi precision, by setting AP above 9
   processHubPacket(BARO_ALT_BP_ID, -1);  // set value of -1.35m
   processHubPacket(BARO_ALT_AP_ID, 35);
