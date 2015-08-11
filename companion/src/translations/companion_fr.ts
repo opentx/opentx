@@ -14015,7 +14015,7 @@ Indique l&apos;affectation voie / numéro de voie par défaut utilisée lors de 
     </message>
 </context>
 <context>
-    <name>splashLibrary</name>
+    <name>SplashLibraryDialog</name>
     <message>
         <location filename="../splashlibrary.ui" line="47"/>
         <location filename="../splashlibrary.ui" line="879"/>

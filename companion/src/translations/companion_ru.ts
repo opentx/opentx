@@ -12164,7 +12164,7 @@ This is used by the templated to determine which channel goes to what number out
     </message>
 </context>
 <context>
-    <name>splashLibrary</name>
+    <name>SplashLibraryDialog</name>
     <message>
         <location filename="../splashlibrary.ui" line="47"/>
         <location filename="../splashlibrary.ui" line="879"/>

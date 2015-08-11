@@ -1,15 +1,18 @@
-#include "splashlibrary.h"
-#include "ui_splashlibrary.h"
+#include "splashlibrarydialog.h"
+#include "ui_splashlibrarydialog.h"
 #include "appdata.h"
 #include <QtGui>
 #include "helpers.h"
 #include "firmwareinterface.h"
 #include "helpers.h"
 
-splashLibrary::splashLibrary(QWidget *parent, QString * fileName) : QDialog(parent), ui(new Ui::splashLibrary) {
-  splashFileName = fileName;
+SplashLibraryDialog::SplashLibraryDialog(QWidget *parent, QString * filename):
+  QDialog(parent),
+  ui(new Ui::SplashLibraryDialog),
+  splashFileName(filename)
+{
   ui->setupUi(this);
-  this->setWindowIcon(CompanionIcon("library.png"));
+  setWindowIcon(CompanionIcon("library.png"));
   ui->nextPage->setIcon(CompanionIcon("arrow-right.png"));
   ui->prevPage->setIcon(CompanionIcon("arrow-left.png"));
   page = 0;
@@ -24,11 +27,13 @@ splashLibrary::splashLibrary(QWidget *parent, QString * fileName) : QDialog(pare
   }
 }
 
-splashLibrary::~splashLibrary() {
+SplashLibraryDialog::~SplashLibraryDialog()
+{
   delete ui;
 }
 
-void splashLibrary::setupPage(int page) {
+void SplashLibraryDialog::setupPage(int page)
+{
   splashLabel * sl[] = { ui->FwImage_01, ui->FwImage_02, ui->FwImage_03, ui->FwImage_04 ,
         ui->FwImage_05, ui->FwImage_06, ui->FwImage_07, ui->FwImage_08 ,
         ui->FwImage_09, ui->FwImage_10, ui->FwImage_11, ui->FwImage_12 ,
@@ -60,7 +65,8 @@ void splashLibrary::setupPage(int page) {
   setWindowTitle(tr("Splash Library - page %1 of %2").arg(page + 1).arg(ceil((float) imageList.size() / 20.0)));
 }
 
-void splashLibrary::getFileList() {
+void SplashLibraryDialog::getFileList()
+{
   imageList.clear();
   if (g.embedSplashes()) {
     QDir myRes(":/images/library");
@@ -102,11 +108,13 @@ void splashLibrary::getFileList() {
   }
 }
 
-void splashLibrary::dclose() {
+void SplashLibraryDialog::dclose()
+{
   close();
 }
 
-void splashLibrary::onButtonPressed(int button) {
+void SplashLibraryDialog::onButtonPressed(int button)
+{
   splashLabel * myLabel = qobject_cast<splashLabel *>(sender());
 
   foreach(splashLabel *sl, findChildren<splashLabel *>()) {
@@ -123,7 +131,7 @@ void splashLibrary::onButtonPressed(int button) {
   myLabel->setStyleSheet("border:1px solid; border-color:#00ffff");
 }
 
-void splashLibrary::on_nextPage_clicked() {
+void SplashLibraryDialog::on_nextPage_clicked() {
   page++;
   if (page >= (imageList.size() / 20)) {
     ui->nextPage->setDisabled(true);
@@ -132,7 +140,7 @@ void splashLibrary::on_nextPage_clicked() {
   setupPage(page);
 }
 
-void splashLibrary::on_prevPage_clicked() {
+void SplashLibraryDialog::on_prevPage_clicked() {
   page--;
   if (page == 0) {
     ui->prevPage->setDisabled(true);

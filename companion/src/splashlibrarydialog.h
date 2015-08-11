@@ -5,16 +5,16 @@
 #include <QDialog>
 
 namespace Ui {
-    class splashLibrary;
+    class SplashLibraryDialog;
 }
 
-class splashLibrary : public QDialog
+class SplashLibraryDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit splashLibrary(QWidget *parent = 0, QString * fileName=NULL);
-    ~splashLibrary();
+    explicit SplashLibraryDialog(QWidget *parent = 0, QString * fileName=NULL);
+    ~SplashLibraryDialog();
 
 private slots:
     void dclose();
@@ -25,7 +25,7 @@ private slots:
 private:
     void getFileList();
     void setupPage(int page);
-    Ui::splashLibrary *ui;
+    Ui::SplashLibraryDialog *ui;
     QString * splashFileName;
     QString libraryPath;
     QStringList imageList;

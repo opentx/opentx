@@ -176,7 +176,7 @@ set(companion_SRCS
   fusesdialog.cpp
   logsdialog.cpp
   downloaddialog.cpp
-  splashlibrary.cpp
+  splashlibrarydialog.cpp
   mainwindow.cpp
   companion.cpp
   radionotfound.cpp
@@ -196,7 +196,7 @@ set(companion_MOC_HDRS
   releasenotesdialog.h
   releasenotesfirmwaredialog.h
   customizesplashdialog.h
-  splashlibrary.h
+  splashlibrarydialog.h
   splashlabel.h
   progresswidget.h
   progressdialog.h
@@ -226,7 +226,7 @@ set(companion_UIS
   printdialog.ui
   htmldialog.ui
   customizesplashdialog.ui
-  splashlibrary.ui
+  splashlibrarydialog.ui
   progresswidget.ui
   progressdialog.ui
   flashfirmwaredialog.ui

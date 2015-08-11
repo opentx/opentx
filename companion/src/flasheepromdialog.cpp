@@ -2,13 +2,13 @@
 #include "ui_flasheepromdialog.h"
 #include "eeprominterface.h"
 #include "helpers.h"
-#include "splashlibrary.h"
 #include "firmwareinterface.h"
 #include "hexinterface.h"
 #include "appdata.h"
 #include "progressdialog.h"
 #include "radiointerface.h"
 #include "converteeprom.h"
+#include "splashlibrarydialog.h"
 
 FlashEEpromDialog::FlashEEpromDialog(QWidget *parent, const QString &filename):
 QDialog(parent),

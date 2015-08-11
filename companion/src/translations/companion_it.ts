@@ -12155,7 +12155,7 @@ Premere annulla per cancellare l&apos;operazione</translation>
     </message>
 </context>
 <context>
-    <name>splashLibrary</name>
+    <name>SplashLibraryDialog</name>
     <message>
         <location filename="../splashlibrary.ui" line="47"/>
         <location filename="../splashlibrary.ui" line="879"/>

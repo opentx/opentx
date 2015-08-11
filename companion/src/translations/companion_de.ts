@@ -15537,7 +15537,7 @@ Die kann auch unterschiedlch zur Firmwaresprache sein</translation>
     </message>
 </context>
 <context>
-    <name>splashLibrary</name>
+    <name>SplashLibraryDialog</name>
     <message>
         <location filename="../splashlibrary.ui" line="47"/>
         <location filename="../splashlibrary.ui" line="879"/>

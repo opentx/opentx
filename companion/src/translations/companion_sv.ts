@@ -10325,7 +10325,7 @@ Får skilja från språket för mjukvaran</translation>
     </message>
 </context>
 <context>
-    <name>splashLibrary</name>
+    <name>SplashLibraryDialog</name>
     <message>
         <source>...</source>
         <translation>...</translation>

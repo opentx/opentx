@@ -9,8 +9,8 @@
 #include "hexinterface.h"
 #include "progressdialog.h"
 #include "radiointerface.h"
-#include "splashlibrary.h"
 #include "progresswidget.h"
+#include "splashlibrarydialog.h"
 
 #if defined WIN32 || !defined __GNUC__
   #include <windows.h>
@@ -185,7 +185,7 @@ void FlashFirmwareDialog::on_useExternalSplash_clicked()
 void FlashFirmwareDialog::on_useLibrarySplash_clicked()
 {
   QString fileName;
-  splashLibrary *ld = new splashLibrary(this, &fileName);
+  SplashLibraryDialog *ld = new SplashLibraryDialog(this, &fileName);
   ld->exec();
   if (!fileName.isEmpty()) {
     QImage image(fileName);
