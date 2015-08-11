@@ -354,7 +354,7 @@ void topLcdRefreshEnd(void);
 void setTopFirstTimer(int32_t value);
 void setTopSecondTimer(uint32_t value);
 void setTopRssi(uint32_t rssi);
-void setTopBatteryState(uint32_t state);
+void setTopBatteryState(int state, uint8_t blinking);
 void setTopBatteryValue(uint32_t volts);
 #endif
 

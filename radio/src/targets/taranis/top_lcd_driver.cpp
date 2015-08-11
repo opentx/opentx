@@ -34,6 +34,8 @@
  *
  */
 
+#include "board_taranis.h"
+
 #define CS1_HIGH()     TOPLCD_GPIO->BSRRL = TOPLCD_GPIO_PIN_CS1
 #define CS1_LOW()      TOPLCD_GPIO->BSRRH = TOPLCD_GPIO_PIN_CS1
 #define CS2_HIGH()     TOPLCD_GPIO->BSRRL = TOPLCD_GPIO_PIN_CS2
@@ -334,19 +336,26 @@ void setTopRssi(uint32_t rssi)
   setTopRssiBar(rssi);
 }
 
-void setTopBatteryState(uint32_t state)
+void setTopBatteryState(int state, uint8_t blinking)
 {
-  Ht1621Data1[4] |= 0x40; // Battery border
-  if (state > 0)
-    Ht1621Data1[7] |= 0x80;
-  if (state > 1)
-    Ht1621Data1[9] |= 0x80;
-  if (state > 2)
-    Ht1621Data1[5] |= 0x80;
-  if (state > 3)
-    Ht1621Data1[10] |= 0x80;
-  if (state > 4)
-    Ht1621Data1[4] |= 0x80;
+  if (!blinking || BLINK_ON_PHASE) {
+    // since the border can not be turned off,
+    // we blink the first bar even if the actual value is zero
+    if (blinking && state < 1) {
+      state = 1;
+    }
+    Ht1621Data1[4] |= 0x40; // Battery border  // TODO this is not working for me, the border is ALWAYS on
+    if (state > 0)
+      Ht1621Data1[7] |= 0x80;
+    if (state > 1)
+      Ht1621Data1[9] |= 0x80;
+    if (state > 2)
+      Ht1621Data1[5] |= 0x80;
+    if (state > 3)
+      Ht1621Data1[10] |= 0x80;
+    if (state > 4)
+      Ht1621Data1[4] |= 0x80;
+  }
 }
 
 void setTopBatteryValue(uint32_t volts)
