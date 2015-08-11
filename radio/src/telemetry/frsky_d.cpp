@@ -680,7 +680,10 @@ void frskyDSetDefault(int index, uint16_t id)
     else if (id == CURRENT_ID) {
       telemetrySensor.onlyPositive = 1;
     }
-    else if (unit == UNIT_RPMS) {
+    else if (id == BARO_ALT_AP_ID) {
+      telemetrySensor.autoOffset = 1;
+    }
+    if (unit == UNIT_RPMS) {
       telemetrySensor.custom.ratio = 1;
       telemetrySensor.custom.offset = 1;
     }
