@@ -283,6 +283,7 @@ void backlightInit(void);
 int usbPlugged(void);
 void usbInit(void);
 void usbDeInit(void);
+void usbSerialPutc(uint8_t c);
 
 #if defined(__cplusplus) && !defined(SIMU)
 }

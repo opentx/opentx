@@ -37,8 +37,9 @@
 #include "opentx.h"
 #include <ctype.h>
 
-#define CLI_STACK_SIZE    500
-#define CLI_MAX_ARGS      8
+#define CLI_STACK_SIZE                 500
+#define CLI_COMMAND_MAX_ARGS           8
+#define CLI_COMMAND_MAX_LEN            256
 
 extern Fifo<512> uart3TxFifo;
 OS_TID cliTaskId;
@@ -253,14 +254,14 @@ int cliExecCommand(const char ** argv)
 int cliExecLine(char * line)
 {
   int len = strlen(line);
-  const char * argv[CLI_MAX_ARGS];
+  const char * argv[CLI_COMMAND_MAX_ARGS];
   memset(argv, 0, sizeof(argv));
   int argc = 1;
   argv[0] = line;
   for (int i=0; i<len; i++) {
     if (line[i] == ' ') {
       line[i] = '\0';
-      if (argc < CLI_MAX_ARGS) {
+      if (argc < CLI_COMMAND_MAX_ARGS) {
         argv[argc++] = &line[i+1];
       }
     }
@@ -270,7 +271,7 @@ int cliExecLine(char * line)
 
 void cliTask(void * pdata)
 {
-  char line[256];
+  char line[CLI_COMMAND_MAX_LEN+1];
   uint8_t pos = 0;
 
   cliPrompt();
@@ -302,7 +303,7 @@ void cliTask(void * pdata)
       pos = 0;
       cliPrompt();
     }
-    else if (isascii(c)) {
+    else if (isascii(c) && pos < CLI_COMMAND_MAX_LEN) {
       line[pos++] = c;
       serialPutc(c);
     }

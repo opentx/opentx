@@ -51,8 +51,8 @@ void handleCli()
 
   while(cliRxFifo.pop(c)) {
     //send back
-    sendUsbSerialChar(c);
-    sendUsbSerialChar('+');
+    usbSerialPutc(c);
+    usbSerialPutc('+');
   }
 
 }

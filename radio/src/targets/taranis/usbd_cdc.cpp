@@ -157,7 +157,7 @@ static uint16_t VCP_Ctrl (uint32_t Cmd, uint8_t* Buf, uint32_t Len)
 uint16_t usbWraps = 0;
 uint16_t charsWritten = 0;
 
-void sendUsbSerialChar(uint8_t c)
+void usbSerialPutc(uint8_t c)
 {
   if (!cdcConnected) return;
 

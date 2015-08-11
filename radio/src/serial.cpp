@@ -44,7 +44,7 @@
 void serialPutc(char c)
 {
 #if defined(USB_SERIAL)
-  sendUsbSerialChar(c);
+  usbSerialPutc(c);
 #else
   serial2Putc(c);
 #endif
