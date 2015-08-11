@@ -64,6 +64,11 @@ void serial2Putc(const char c)
   pUart->UART_THR = c;
 }
 
+uint8_t serial2TracesEnabled()
+{
+  return false;
+}
+
 /**
  * Configures a UART peripheral with the specified parameters.
  *
