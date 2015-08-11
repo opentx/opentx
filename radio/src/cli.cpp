@@ -272,7 +272,7 @@ int cliExecLine(char * line)
 void cliTask(void * pdata)
 {
   char line[CLI_COMMAND_MAX_LEN+1];
-  uint8_t pos = 0;
+  int pos = 0;
 
   cliPrompt();
 

@@ -40,24 +40,6 @@ uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
 uint8_t requestScreenshot = false;
 
-
-#if defined(USB_SERIAL)
-
-Fifo<64> cliRxFifo;
-
-void handleCli()
-{
-  uint8_t c;
-
-  while(cliRxFifo.pop(c)) {
-    //send back
-    usbSerialPutc(c);
-    usbSerialPutc('+');
-  }
-
-}
-#endif
-
 void handleUsbConnection()
 {
 #if defined(PCBTARANIS) && !defined(SIMU)
@@ -129,9 +111,6 @@ void perMain()
   handleUsbConnection();
   checkTrainerSettings();
   checkBattery();
-#if defined(USB_SERIAL)
-  handleCli();
-#endif
 
   uint8_t evt = getEvent(false);
   if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on

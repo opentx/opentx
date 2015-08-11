@@ -323,8 +323,6 @@ void hapticOff(void);
 
 // Second serial port driver
 #define DEBUG_BAUDRATE                 115200
-extern uint8_t serial2Mode;
-#define serialTracesEnabled()          (serial2Mode == 0)
 void serial2Init(unsigned int mode, unsigned int protocol);
 void serial2Putc(char c);
 #define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)

@@ -113,6 +113,11 @@ void serial2Stop()
   USART_DeInit(SERIAL_USART);
 }
 
+uint8_t serial2TracesEnabled()
+{
+  return (serial2Mode == 0);
+}
+
 #if !defined(SIMU)
 extern "C" void SERIAL_USART_IRQHandler(void)
 {
