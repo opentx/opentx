@@ -646,7 +646,7 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att)
 {
   lcd_outdezAtt(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
-  if (~att & NO_UNIT) lcd_putcAtt(lcdLastPos, y, 'v', att);
+  if (~att & NO_UNIT) lcd_putcAtt(lcdLastPos, y, 'V', att);
 }
 
 void putsVBat(coord_t x, coord_t y, LcdFlags att)
