@@ -942,7 +942,7 @@ FRESULT f_unlink (const TCHAR* name)
 
 FRESULT f_rename(const TCHAR *oldname, const TCHAR *newname)
 {
-  if ( rename(oldname, newname) < 0) {
+  if (rename(oldname, newname) < 0) {
     TRACE("f_rename(%s, %s) = error %d (%s)", oldname, newname, errno, strerror(errno));
     return FR_INVALID_NAME;
   }

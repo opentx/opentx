@@ -36,7 +36,10 @@
 
 #include "../../opentx.h"
 
-#define REFRESH_FILES() reusableBuffer.sdmanager.offset = 65535; m_posVert = 0;
+#define REFRESH_FILES()        do { reusableBuffer.sdmanager.offset = 65535; m_posVert = 0; } while(0)
+#define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
+#define IS_DIRECTORY(fname)    ((bool)(!NODE_TYPE(fname)))
+#define IS_FILE(fname)         ((bool)(NODE_TYPE(fname)))
 
 void menuGeneralSdManagerInfo(uint8_t event)
 {
@@ -66,12 +69,12 @@ void menuGeneralSdManagerInfo(uint8_t event)
 
 inline bool isFilenameGreater(bool isfile, const char * fn, const char * line)
 {
-  return (isfile && !line[SD_SCREEN_FILE_LENGTH+1]) || (isfile==(bool)line[SD_SCREEN_FILE_LENGTH+1] && strcasecmp(fn, line) > 0);
+  return (isfile && IS_DIRECTORY(line)) || (isfile==IS_FILE(line) && strcasecmp(fn, line) > 0);
 }
 
 inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
 {
-  return (!isfile && line[SD_SCREEN_FILE_LENGTH+1]) || (isfile==(bool)line[SD_SCREEN_FILE_LENGTH+1] && strcasecmp(fn, line) < 0);
+  return (!isfile && IS_FILE(line)) || (isfile==IS_FILE(line) && strcasecmp(fn, line) < 0);
 }
 
 bool isBootloader(const char *filename)
@@ -173,7 +176,7 @@ void onSdManagerMenu(const char *result)
   else if (result == STR_PASTE) {
     f_getcwd(lfn, _MAX_LFN);
     // if destination is dir, copy into that dir
-    if (!line[SD_SCREEN_FILE_LENGTH+1]) {
+    if (IS_DIRECTORY(line)) {
       strcat(lfn, PSTR("/"));
       strcat(lfn, line);
     }
@@ -288,7 +291,7 @@ void menuGeneralSdManager(uint8_t _event)
         break;
       }
       else {
-        if (!reusableBuffer.sdmanager.lines[index][SD_SCREEN_FILE_LENGTH+1]) {
+        if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[index])) {
           f_chdir(reusableBuffer.sdmanager.lines[index]);
           s_pgOfs = 0;
           m_posVert = 1;
@@ -305,7 +308,7 @@ void menuGeneralSdManager(uint8_t _event)
         killEvents(_event);
         char *line = reusableBuffer.sdmanager.lines[index];
         char *ext = getFileExtension(line, SD_SCREEN_FILE_LENGTH+1);
-        if (!strcasecmp(line, "..")) {
+        if (!strcmp(line, "..")) {
           break;      // no menu for parent dir
         }
         if (ext) {
@@ -338,12 +341,12 @@ void menuGeneralSdManager(uint8_t _event)
           }
         }
         if (!READ_ONLY()) {
-          if (line[SD_SCREEN_FILE_LENGTH+1]) // it's a file
+          if (IS_FILE(line)) // it's a file
             MENU_ADD_ITEM(STR_COPY_FILE);
           if (clipboard.type == CLIPBOARD_TYPE_SD_FILE)
             MENU_ADD_ITEM(STR_PASTE);
           MENU_ADD_ITEM(STR_RENAME_FILE);
-          if (line[SD_SCREEN_FILE_LENGTH+1])
+          if (IS_FILE(line))
             MENU_ADD_ITEM(STR_DELETE_FILE);
         }
         menuHandler = onSdManagerMenu;
@@ -370,7 +373,7 @@ void menuGeneralSdManager(uint8_t _event)
     else if (s_pgOfs > reusableBuffer.sdmanager.offset) {
       memmove(reusableBuffer.sdmanager.lines[0], reusableBuffer.sdmanager.lines[1], 6*sizeof(reusableBuffer.sdmanager.lines[0]));
       memset(reusableBuffer.sdmanager.lines[6], 0xff, SD_SCREEN_FILE_LENGTH);
-      reusableBuffer.sdmanager.lines[6][SD_SCREEN_FILE_LENGTH+1] = 1;
+      NODE_TYPE(reusableBuffer.sdmanager.lines[6]) = 1;
     }
     else {
       memmove(reusableBuffer.sdmanager.lines[1], reusableBuffer.sdmanager.lines[0], 6*sizeof(reusableBuffer.sdmanager.lines[0]));
@@ -403,7 +406,7 @@ void menuGeneralSdManager(uint8_t _event)
               if (i < 6) memmove(reusableBuffer.sdmanager.lines[i+1], line, sizeof(reusableBuffer.sdmanager.lines[i]) * (6-i));
               memset(line, 0, sizeof(reusableBuffer.sdmanager.lines[0]));
               strcpy(line, fn);
-              line[SD_SCREEN_FILE_LENGTH+1] = isfile;
+              NODE_TYPE(line) = isfile;
               break;
             }
           }
@@ -415,7 +418,7 @@ void menuGeneralSdManager(uint8_t _event)
               if (i > 0) memmove(reusableBuffer.sdmanager.lines[0], reusableBuffer.sdmanager.lines[1], sizeof(reusableBuffer.sdmanager.lines[0]) * i);
               memset(line, 0, sizeof(reusableBuffer.sdmanager.lines[0]));
               strcpy(line, fn);
-              line[SD_SCREEN_FILE_LENGTH+1] = isfile;
+              NODE_TYPE(line) = isfile;
               break;
             }
           }
@@ -424,14 +427,14 @@ void menuGeneralSdManager(uint8_t _event)
           if (isFilenameGreater(isfile, fn, reusableBuffer.sdmanager.lines[5]) && isFilenameLower(isfile, fn, reusableBuffer.sdmanager.lines[6])) {
             memset(reusableBuffer.sdmanager.lines[6], 0, sizeof(reusableBuffer.sdmanager.lines[0]));
             strcpy(reusableBuffer.sdmanager.lines[6], fn);
-            reusableBuffer.sdmanager.lines[6][SD_SCREEN_FILE_LENGTH+1] = isfile;
+            NODE_TYPE(reusableBuffer.sdmanager.lines[6]) = isfile;
           }
         }
         else {
           if (isFilenameLower(isfile, fn, reusableBuffer.sdmanager.lines[1]) && isFilenameGreater(isfile, fn, reusableBuffer.sdmanager.lines[0])) {
             memset(reusableBuffer.sdmanager.lines[0], 0, sizeof(reusableBuffer.sdmanager.lines[0]));
             strcpy(reusableBuffer.sdmanager.lines[0], fn);
-            reusableBuffer.sdmanager.lines[0][SD_SCREEN_FILE_LENGTH+1] = isfile;
+            NODE_TYPE(reusableBuffer.sdmanager.lines[0]) = isfile;
           }
         }
       }
@@ -445,7 +448,7 @@ void menuGeneralSdManager(uint8_t _event)
     lcdNextPos = 0;
     LcdFlags attr = (index == i ? BSS|INVERS : BSS);
     if (reusableBuffer.sdmanager.lines[i][0]) {
-      if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(0, y, '[', s_editMode == EDIT_MODIFY_STRING ? 0 : attr); }
+      if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[i])) { lcd_putcAtt(0, y, '[', s_editMode == EDIT_MODIFY_STRING ? 0 : attr); }
       if (s_editMode == EDIT_MODIFY_STRING && attr) {
         editName(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH-4, _event, attr, 0);
         if (s_editMode == 0) {
@@ -464,7 +467,7 @@ void menuGeneralSdManager(uint8_t _event)
       else {
         lcd_putsAtt(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], attr);
       }
-      if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(lcdNextPos, y, ']', s_editMode == EDIT_MODIFY_STRING ? 0 : attr); }
+      if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[i])) { lcd_putcAtt(lcdNextPos, y, ']', s_editMode == EDIT_MODIFY_STRING ? 0 : attr); }
     }
   }
 
