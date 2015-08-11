@@ -184,12 +184,10 @@ void boardInit()
         }
       }
       lcdRefresh();
+      lcdRefreshWait();
     }
     if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
       pwrOff();
-    }
-    else {
-      lcdRefreshWait();
     }
   }
   else {
