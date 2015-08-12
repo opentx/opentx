@@ -1126,8 +1126,16 @@ extern const char eeprom_stamp[];
 extern const char vers_stamp[];
 #endif
 
-extern uint8_t            g_vbat100mV;
-#define g_blinkTmr10ms (*(uint8_t*)&g_tmr10ms)
+extern uint8_t              g_vbat100mV;
+#if defined(CPUARM)
+  #define GET_TXBATT_BARS() (min(10, 10 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin)))
+#else
+  #define GET_TXBATT_BARS() (limit<uint8_t>(2, 20 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 20))
+#endif
+#define IS_TXBATT_WARNING() (g_vbat100mV <= g_eeGeneral.vBatWarn)
+
+
+#define g_blinkTmr10ms    (*(uint8_t*)&g_tmr10ms)
 extern uint8_t            g_beepCnt;
 extern uint8_t            g_beepVal[5];
 
