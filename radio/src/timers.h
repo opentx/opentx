@@ -42,14 +42,23 @@
 #define TMR_NEGATIVE 2
 #define TMR_STOPPED  3
 
-#define TIMER_MAX     (32767)
-#define TIMER_MIN     (-32767-1)
+#if defined(CPUARM)
+typedef int32_t tmrval_t;
+typedef uint32_t tmrstart_t;
+#define TIMER_MIN     (-0xffffff/2)
+#else
+typedef int16_t tmrval_t;
+typedef uint16_t tmrstart_t;
+#define TIMER_MIN     (-0xffff/2)
+#endif
+
+#define TIMER_MAX     (-TIMER_MIN-1)
 
 struct TimerState {
   uint16_t cnt;
   uint16_t sum;
   uint8_t  state;
-  int16_t  val;
+  tmrval_t  val;
   uint8_t  val_10ms;
 };
 
@@ -58,7 +67,7 @@ extern TimerState timersStates[TIMERS];
 void timerReset(uint8_t idx);
 
 #if defined(CPUARM)
-void timerSet(int idx, int16_t val);
+void timerSet(int idx, int val);
 #endif // #if defined(CPUARM)
 
 #if defined(CPUARM) || defined(CPUM2560)

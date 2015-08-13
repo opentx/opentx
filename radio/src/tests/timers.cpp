@@ -115,11 +115,10 @@ void initModelTimer(uint32_t idx, uint8_t mode, int16_t start = 0)
 /*
   Run timers for n seconds and test the end state
 */
-::testing::AssertionResult evalTimersForNSecondsAndTest(unsigned int n, uint8_t throttle, uint32_t idx, uint8_t state, int16_t value)
+::testing::AssertionResult evalTimersForNSecondsAndTest(unsigned int n, uint8_t throttle, uint32_t idx, uint8_t state, int value)
 {
   unsigned int noLoops = n * 100;
-  while(noLoops--)
-  {
+  while (noLoops--) {
     evalTimers(throttle, 1);
   }
   TEST_AB_EQUAL(timersStates[idx].state, state);
@@ -131,21 +130,29 @@ TEST(Timers, timerReset)
 {
   initModelTimer(0, TMRMODE_THR_REL, 200);
   timerReset(0);
-  EXPECT_TRUE(evalTimersForNSecondsAndTest(0, THR_100, 0, TMR_OFF,  200));
+  EXPECT_TRUE(evalTimersForNSecondsAndTest(0, THR_100, 0, TMR_OFF, 200));
 
   initModelTimer(1, TMRMODE_THR_REL, 0);
   timerReset(1);
-  EXPECT_TRUE(evalTimersForNSecondsAndTest(0, THR_100, 1, TMR_OFF,  0));
+  EXPECT_TRUE(evalTimersForNSecondsAndTest(0, THR_100, 1, TMR_OFF, 0));
 }
 
 #if defined(CPUARM)
 TEST(Timers, timerSet)
 {
   timerSet(0, 500);
-  EXPECT_TRUE(evalTimersForNSecondsAndTest(0, THR_100, 0, TMR_OFF,  500));
+  EXPECT_TRUE(evalTimersForNSecondsAndTest(0, THR_100, 0, TMR_OFF, 500));
 
   timerSet(1, 300);
-  EXPECT_TRUE(evalTimersForNSecondsAndTest(0, THR_100, 1, TMR_OFF,  300));
+  EXPECT_TRUE(evalTimersForNSecondsAndTest(0, THR_100, 1, TMR_OFF, 300));
+}
+
+TEST(Timers, timerGreaterThan9hours)
+{
+  initModelTimer(0, TMRMODE_ABS, 0);
+  timerSet(0, 0);
+  // test with 24 hours
+  EXPECT_TRUE(evalTimersForNSecondsAndTest(24*3600, THR_100, 0, TMR_RUNNING, 24*3600));
 }
 #endif // #if defined(CPUARM)
 
@@ -201,10 +208,12 @@ TEST(Timers, timerAbsolute)
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100, THR_100, 0, TMR_NEGATIVE,  -1));
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100, THR_100, 0, TMR_STOPPED, -101));
 
+#if !defined(CPUARM)
   // min timer value test
   timerSet(0, TIMER_MIN+10);
   EXPECT_TRUE(evalTimersForNSecondsAndTest(1,   THR_100, 0, TMR_RUNNING, TIMER_MIN+9));
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100, THR_100, 0, TMR_RUNNING,   TIMER_MIN));
+#endif
 }
 
 TEST(Timers, timerThrottle)
@@ -226,8 +235,6 @@ TEST(Timers, timerThrottle)
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100,  THR_50, 0, TMR_NEGATIVE, -1));
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100, THR_100, 0, TMR_STOPPED,-101));
 }
-
-
 
 TEST(Timers, timerThrottleRelative)
 {
