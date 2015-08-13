@@ -89,7 +89,7 @@
 #define TR_POTTYPES            "None\0          ""Pot. con centro""Inter. Multipos""Potenziometro\0 "
 
 #define LEN_SLIDERTYPES        "\006"
-#define TR_SLIDERTYPES         "Rien\0 ""Slider"
+#define TR_SLIDERTYPES         "Niente""Slider"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATA:""ORA :"
@@ -116,13 +116,13 @@
 #define TR_VTRIMINC            "Exp   ""ExFine""Fine  ""Medio ""Ampio "
 
 #define LEN_VDISPLAYTRIMS      "\006"
-#define TR_VDISPLAYTRIMS       "No\0   ""Change""Yes\0"
+#define TR_VDISPLAYTRIMS       "No\0   ""Cambio""Si\0 "
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "NienteSuoni\0Voce\0 "
 
 #define LEN_VVARIOCENTER       "\006"
-#define TR_VVARIOCENTER        "Tone\0 ""Silent"
+#define TR_VVARIOCENTER        "Tono\0 ""Silent"
 
 #define LEN_CURVE_TYPES        "\010"
 #define TR_CURVE_TYPES         "Fisso\0  ""Modific."
@@ -421,8 +421,13 @@
   #define TR_VARIOSRC          "Alti\0""Alti+""Vario""A1\0  ""A2\0"
 #endif
 
-#define LEN_VTELEMSCREENTYPE   "\006"
-#define TR_VTELEMSCREENTYPE    "Valori""Barre "
+#if defined(CPUARM)
+  #define LEN_VTELEMSCREENTYPE "\006"
+  #define TR_VTELEMSCREENTYPE  "Niente""Valori""Barre\0""Script"
+#else
+  #define LEN_VTELEMSCREENTYPE   "\006"
+  #define TR_VTELEMSCREENTYPE    "Valori""Barre\0"
+#endif
 
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "HMS NMEA"
@@ -569,7 +574,7 @@
 #define TR_ELIMITS             TR("Limiti.E","Limiti Estesi")
 #define TR_ETRIMS              TR("Trim Ext","Trim Estesi")
 #define TR_TRIMINC             "Passo Trim"
-#define TR_DISPLAY_TRIMS       "Display Trims"
+#define TR_DISPLAY_TRIMS       "Mostra Trims"
 #define TR_TTRACE              TR("T-Source", INDENT "Sorgente Motore")
 #define TR_TTRIM               TR("T-Trim", INDENT "Trim Motore")
 #define TR_BEEPCTR             TR("Ctr Beep","Beep al centro")
@@ -645,7 +650,7 @@
 #define TR_RENAVIG             "Navig EncRot "
 #define TR_THROTTLE_LABEL      "Motore"
 #define TR_THROTTLEREVERSE     TR("Mot inv.", INDENT "Motore Inverso")
-#define TR_TIMER_NAME          INDENT "Name"
+#define TR_TIMER_NAME          INDENT "Nome"
 #define TR_MINUTEBEEP          INDENT"Minuto"
 #define TR_BEEPCOUNTDOWN       TR(INDENT"Conto rov", INDENT"Conto rovescia")
 #define TR_PERSISTENT          TR(INDENT"Persist.", INDENT"Persistente")
@@ -663,8 +668,8 @@
 #define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        "Ordine ch RX"
 #define TR_STICKS              "Sticks"
-#define TR_POTS                "Pots"
-#define TR_SWITCHES            "Switches"
+#define TR_POTS                "Pot."
+#define TR_SWITCHES            "Interutt."
 #define TR_SWITCHES_DELAY      "Ritardo voce FV"
 #define TR_SLAVE               "Allievo"
 #define TR_MODESRC             "Modo\006% Origine"
@@ -759,7 +764,7 @@
 #define TR_REPEAT_AT_ZERO      INDENT "Ripeti a Zero"
 #define TR_POWEROFF            "\027Power OFF..."
 #define TR_SHUTDOWN            "ARRESTO.."
-#define TR_SAVEMODEL           "Saving model settings"
+#define TR_SAVEMODEL           "Salvataggio dati modello"
 #define TR_BATT_CALIB          "Calibra batt."
 #define TR_CURRENT_CALIB       "Calibra corr."
 #define TR_VOLTAGE             "Voltaggio"
@@ -782,8 +787,8 @@
 #define TR_ALARMSWARN          "ALLARMI"
 #define TR_SWITCHWARN          "CONTROLLI"
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_NO_FAILSAFE         "Failsafe not set"
-#define TR_KEYSTUCK            "Key stuck"
+#define TR_NO_FAILSAFE         "Failsafe non settato"
+#define TR_KEYSTUCK            "Tasto bloccato"
 #define TR_INVERT_THR          "Inverti Mot?"
 #define TR_SPEAKER_VOLUME      "Volume Audio"
 #define TR_LCD                 "LCD"
@@ -881,11 +886,11 @@
 #define TR_MODELIDUSED         TR("ID già usato","ID Modello già usato")
 #define TR_MODULE              INDENT "Modulo"
 #define TR_TELEMETRY_TYPE      "Tipo Telemetria"
-#define TR_TELEMETRY_SENSORS   "Sensors"
-#define TR_VALUE               "Value"
-#define TR_TOPLCDTIMER         "Top LCD Timer"
-#define TR_UNIT                "Unit"
-#define TR_TELEMETRY_NEWSENSOR INDENT "Add a new sensor..."
+#define TR_TELEMETRY_SENSORS   "Sensori"
+#define TR_VALUE               "Valore"
+#define TR_TOPLCDTIMER         "Timer LCD Sup."
+#define TR_UNIT                "Unita"
+#define TR_TELEMETRY_NEWSENSOR INDENT "Aggiungi nuovo sensore..."
 #define TR_CHANNELRANGE        INDENT "Numero Canali"
 #define TR_LOWALARM            INDENT "Allarme Basso"
 #define TR_CRITICALALARM       INDENT "Allarme Critico"
