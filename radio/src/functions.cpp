@@ -489,9 +489,11 @@ void evalFunctions()
           }
 
           case FUNC_BACKGND_MUSIC:
-            newActiveFunctions |= (1 << FUNCTION_BACKGND_MUSIC);
-            if (!IS_PLAYING(PLAY_INDEX)) {
-              playCustomFunctionFile(cfn, PLAY_INDEX);
+            if (!(newActiveFunctions & (1 << FUNCTION_BACKGND_MUSIC))) {
+              newActiveFunctions |= (1 << FUNCTION_BACKGND_MUSIC);
+              if (!IS_PLAYING(PLAY_INDEX)) {
+                playCustomFunctionFile(cfn, PLAY_INDEX);
+              }
             }
             break;
 
