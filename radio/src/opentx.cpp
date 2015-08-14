@@ -2076,9 +2076,11 @@ void evalFunctions()
           }
 
           case FUNC_BACKGND_MUSIC:
-            newActiveFunctions |= (1 << FUNCTION_BACKGND_MUSIC);
-            if (!IS_PLAYING(i+1)) {
-              playCustomFunctionFile(sd, i+1);
+            if (!(newActiveFunctions & (1 << FUNCTION_BACKGND_MUSIC))) {
+              newActiveFunctions |= (1 << FUNCTION_BACKGND_MUSIC);
+              if (!IS_PLAYING(i+1)) {
+                playCustomFunctionFile(sd, i+1);
+              }
             }
             break;
 
