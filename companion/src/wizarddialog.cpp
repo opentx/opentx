@@ -1,6 +1,6 @@
 /*
  * Author - Kjell Kernen
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
@@ -214,7 +214,7 @@ bool StandardPage::bookChannel(QComboBox * cb, Input input1, int weight1, Input 
 {
   int channel = cb->itemData(cb->currentIndex()).toInt();
   if (channel<0 || channel>=WIZ_MAX_CHANNELS)
-    return false; 
+    return false;
   if (wizDlg->mix.channel[channel].page != Page_None)
     return false;
 
@@ -231,7 +231,7 @@ void StandardPage::releaseBookings()
 {
   for (int i=0; i<WIZ_MAX_CHANNELS; i++) {
     if (wizDlg->mix.channel[i].page == pageCurrent) {
-      wizDlg->mix.channel[i].clear();    
+      wizDlg->mix.channel[i].clear();
     }
   }
 }
@@ -298,7 +298,7 @@ bool ModelSelectionPage::validatePage()
   return true;
 }
 
-int ModelSelectionPage::nextId() const 
+int ModelSelectionPage::nextId() const
 {
   if (helicopterRB->isChecked())
     return Page_Cyclic;
@@ -432,7 +432,7 @@ AileronsPage::AileronsPage(WizardDialog *dlg, QString image, QString title, QStr
   l->addWidget(aileron1CB);
   l->addWidget(new QLabel(tr("Second Aileron Channel:")));
   l->addWidget(aileron2CB);
-  
+
   connect(noAileronsRB, SIGNAL(toggled(bool)), this, SLOT(noAileronChannel()));
   connect(oneAileronRB, SIGNAL(toggled(bool)), this, SLOT(oneAileronChannel()));
   connect(twoAileronsRB, SIGNAL(toggled(bool)), this, SLOT(twoAileronChannels()));
@@ -448,10 +448,10 @@ void AileronsPage::initializePage()
 bool AileronsPage::validatePage()
 {
   releaseBookings();
-  if (noAileronsRB->isChecked()) { 
+  if (noAileronsRB->isChecked()) {
     return true;
   }
-  if (oneAileronRB->isChecked()) { 
+  if (oneAileronRB->isChecked()) {
     return (bookChannel(aileron1CB, AILERONS_INPUT, 100 ));
   }
   return( bookChannel(aileron1CB, AILERONS_INPUT, 100 ) &&
@@ -497,7 +497,7 @@ FlapsPage::FlapsPage(WizardDialog *dlg, QString image, QString title, QString te
   l->addWidget(flap1CB);
   l->addWidget(new QLabel(tr("Second Flap Channel:")));
   l->addWidget(flap2CB);
-  
+
   connect(noFlapsRB, SIGNAL(toggled(bool)), this, SLOT(noFlapChannel()));
   connect(oneFlapRB, SIGNAL(toggled(bool)), this, SLOT(oneFlapChannel()));
   connect(twoFlapsRB, SIGNAL(toggled(bool)), this, SLOT(twoFlapChannels()));
@@ -512,10 +512,10 @@ void FlapsPage::initializePage()
 
 bool FlapsPage::validatePage() {
   releaseBookings();
-  if (noFlapsRB->isChecked()) { 
+  if (noFlapsRB->isChecked()) {
     return true;
   }
-  if (oneFlapRB->isChecked()) { 
+  if (oneFlapRB->isChecked()) {
     return (bookChannel(flap1CB, FLAPS_INPUT, 100 ));
   }
   return( bookChannel(flap1CB, FLAPS_INPUT, 100 ) &&
@@ -561,7 +561,7 @@ AirbrakesPage::AirbrakesPage(WizardDialog *dlg, QString image, QString title, QS
   l->addWidget(airbrake1CB);
   l->addWidget(new QLabel(tr("Second Airbrake Channel:")));
   l->addWidget(airbrake2CB);
-  
+
   connect(noAirbrakesRB, SIGNAL(toggled(bool)), this, SLOT(noAirbrakeChannel()));
   connect(oneAirbrakeRB, SIGNAL(toggled(bool)), this, SLOT(oneAirbrakeChannel()));
   connect(twoAirbrakesRB, SIGNAL(toggled(bool)), this, SLOT(twoAirbrakeChannels()));
@@ -577,10 +577,10 @@ void AirbrakesPage::initializePage()
 bool AirbrakesPage::validatePage()
 {
   releaseBookings();
-  if (noAirbrakesRB->isChecked()) { 
+  if (noAirbrakesRB->isChecked()) {
     return true;
   }
-  if (oneAirbrakeRB->isChecked()) { 
+  if (oneAirbrakeRB->isChecked()) {
     return (bookChannel(airbrake1CB, AIRBRAKES_INPUT, 100 ));
   }
   return( bookChannel(airbrake1CB, AIRBRAKES_INPUT, 100 ) &&
@@ -731,7 +731,7 @@ bool TailPage::validatePage()
 
 SimpleTailPage::SimpleTailPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
   : StandardPage(Page_Simpletail, dlg, image, title, text, nextPage)
-{  
+{
   elevatorCB = new QComboBox();
 
   QLayout *l = layout();
@@ -1001,7 +1001,7 @@ WizardPrinter::WizardPrinter(WizMix *wizMix)
 {
   mix = wizMix;
 }
-  
+
 QString WizardPrinter::printChannel( Input input1, int weight1, Input input2, int weight2 )
 {
   QString str;
