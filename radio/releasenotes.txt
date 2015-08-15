@@ -1,12 +1,14 @@
 <h2>Version 2.1.2 / <set date></h2>
 
 [ARM Boards]
+<ul>
 <li>Fixed several issues with D series altimeter/vario (negative values, hi/lo precision vario) (<a href=https://github.com/opentx/opentx/issues/2685>#2685</a>)</li>
 <li>Auto-offset for Frsky variometer on per default (<a href=https://github.com/opentx/opentx/issues/2693>#2693</a>)</li>
 <li>9XE top LDC fixes: added TX battery blinking on battery warning, fixed display problem when battery voltage lower than batlow value. (<a href=https://github.com/opentx/opentx/issues/2671>#2671</a>)</li>
 <li>Timers range extended (it was limited to around 9 hours before) (<a href=https://github.com/opentx/opentx/issues/2702>#2702</a>)</li>
 <li>Fixed: Playing two background sounds at once causes sound to stop (<a href=https://github.com/opentx/opentx/issues/2704>#2704</a>)</li>
 <li> (<a href=https://github.com/opentx/opentx/issues/2685>#2685</a>)</li>
+</ul>
 
 [Sky9x / 9XR-PRO]
 <ul>
