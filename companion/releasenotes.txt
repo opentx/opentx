@@ -1,9 +1,11 @@
 <h2>Version 2.1.2 / <set date></h2>
 <ul>
 <li>Fixed: Lua model scripts outputs not working in a simulator (<a href=https://github.com/opentx/opentx/issues/2684>#2684</a>)</li>
+<li>Fixed a problem of Companion 2.1 trying to install into 2.0 path. 
+    The effect will only be visible for the users that did not install any of the previous 2.1.x versions. 
+    (<a href=https://github.com/opentx/opentx/issues/2645>#2645</a>)</li>
+<li>Added missing SDL libraries to MAC package  (<a href=https://github.com/opentx/opentx/issues/2678>#2678</a>)</li>
 </ul>
-
-
 
 
 <h2>Version 2.1.1 / 2015-08-06</h2>
