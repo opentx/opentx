@@ -525,7 +525,7 @@
 #define TR_VSENSORTYPES        "Custom\0   ""Calcolato\0"
 
 #define LEN_VFORMULAS          "\011"
-#define TR_VFORMULAS           "Somma\0   ""Media\0   ""Min\0     ""Max\0     ""Moltipl\0 ""Totalizza""Cella\0  ""Consumo\0 ""Distanza\0"
+#define TR_VFORMULAS           "Somma\0   ""Media\0   ""Min\0     ""Max\0     ""Moltipl.\0""Totalizza""Cella\0   ""Consumo\0 ""Distanza\0"
 
 #define LEN_VPREC              "\005"
 #define TR_VPREC               "PREC0""PREC1""PREC2"
@@ -605,7 +605,7 @@
 #define TR_NOFREEMIXER         "Mixer pieni!"
 #define TR_INSERTMIX           "INSER. MIX"
 #define TR_EDITMIX             "MOD. MIX"
-#define TR_SOURCE              INDENT"Sorg."
+#define TR_SOURCE              INDENT"Sorgente"
 #define TR_WEIGHT              "Peso"
 #define TR_EXPO                "Espo"
 #define TR_SIDE                "Lato"
@@ -628,7 +628,7 @@
 #define TR_GV                  "GV"
 #define TR_ACHANNEL            "A\002ingresso"
 #define TR_RANGE               TR(INDENT"Inter.", INDENT"Intervallo")
-#define TR_CENTER              INDENT "Center"
+#define TR_CENTER              INDENT "Centro"
 #define TR_BAR                 "Barra"
 #define TR_ALARM               TR(INDENT"Allar.", INDENT"Allarme")
 #define TR_USRDATA             "Dati"
@@ -664,7 +664,7 @@
 #define TR_SWITCHWARNING       TR("Avv. Int.", INDENT "Avviso Interr.")
 #define TR_POTWARNING          TR("Avv. Pot.", INDENT "Avviso Pot.")
 #define TR_TIMEZONE            "Ora locale"
-#define TR_ADJUST_RTC          INDENT "Adjust RTC"
+#define TR_ADJUST_RTC          INDENT "Aggiusta RTC"
 #define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        "Ordine ch RX"
 #define TR_STICKS              "Sticks"
@@ -762,7 +762,7 @@
 #define TR_PITCH_AT_ZERO       INDENT "Tono a Zero"
 #define TR_PITCH_AT_MAX        INDENT "Tono al Max"
 #define TR_REPEAT_AT_ZERO      INDENT "Ripeti a Zero"
-#define TR_POWEROFF            "\027Power OFF..."
+#define TR_POWEROFF            "\027Spegni Radio..."
 #define TR_SHUTDOWN            "ARRESTO.."
 #define TR_SAVEMODEL           "Salvataggio dati modello"
 #define TR_BATT_CALIB          "Calibra batt."
@@ -840,12 +840,12 @@
 #define TR_DATE                "Data"
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "MONITOR CANALI"
-#define TR_MIXERS_MONITOR      "MIXERS MONITOR"
+#define TR_MIXERS_MONITOR      "MONITOR MIXERS"
 #define TR_PATH_TOO_LONG       "Path troppo lungo"
 #define TR_VIEW_TEXT           "Vedi testo"
 #define TR_FLASH_BOOTLOADER    "Flash BootLoader"
-#define TR_FLASH_EXTERNAL_DEVICE "Flash External Device"
-#define TR_FLASH_INTERNAL_MODULE "Flash Internal Module"
+#define TR_FLASH_EXTERNAL_DEVICE "Programma dispositivo Esterno"
+#define TR_FLASH_INTERNAL_MODULE "Programma Modulo Interno"
 #define TR_WRITING             "\032Scrivendo..."
 #define TR_CONFIRM_FORMAT      "Confermi Format?"
 #define TR_INTERNALRF          "Modulo Interno"
@@ -917,8 +917,8 @@
 #define TR_INPUTS              "Ingresso"
 #define TR_OUTPUTS             "Uscita"
 #define TR_EEBACKUP            "\004[ENTER Lungo] per copiare la EEPROM"
-#define TR_FACTORYRESET        "\012[MENU Long]: Factory reset"
-#define TR_CONFIRMRESET        "Erase ALL models and settings?"
+#define TR_FACTORYRESET        "\012[MENU Lungo]: Factory reset"
+#define TR_CONFIRMRESET        "Cancellare tutti i modelli e impostazioni?"
 #define TR_TO_MANY_LUA_SCRIPTS "Troppi Scripts Lua!"
 
 #if defined(MAVLINK)
@@ -1038,7 +1038,7 @@
 #define TR_ONLYPOSITIVE        "Positivo"
 #define TR_FILTER              "Filtro"
 #define TR_TELEMETRYFULL       "Tutti gli slot sono pieni!"
-#define TR_IGNOREIDS           INDENT "Ignore instance"
+#define TR_IGNOREIDS           INDENT "Ignora instanza"
 
 #define TR_MENU_INPUTS         "\314Ingressi"
 #define TR_MENU_LUA            "\322Lua scripts"
