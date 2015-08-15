@@ -260,7 +260,11 @@ getvalue_t getValue(mixsrc_t i)
   }
 #endif
 
+#if defined(LUAINPUTS)
   else if (i<=MIXSRC_LAST_POT) return calibratedStick[i-MIXSRC_Rud];
+#else
+  else if (i>=MIXSRC_FIRST_STICK && i<=MIXSRC_LAST_POT) return calibratedStick[i-MIXSRC_Rud];
+#endif
 
 #if defined(PCBGRUVIN9X) || defined(PCBMEGA2560) || defined(ROTARY_ENCODERS)
   else if (i<=MIXSRC_LAST_ROTARY_ENCODER) return getRotaryEncoder(i-MIXSRC_REa);

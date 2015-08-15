@@ -41,14 +41,15 @@
 #define GRAPHICS
 #define CURVES
 #if defined(PCBTARANIS)
-#define RTCLOCK
-#define XCURVES
-#define VIRTUALINPUTS
-#define LUA
-#define LUA_MODEL_SCRIPTS
+  #define RTCLOCK
+  #define XCURVES
+  #define VIRTUALINPUTS
+  #define LUA
+  #define LUA_MODEL_SCRIPTS
+  #define LUAINPUTS 
 #else
-#define BUZZER
-#define TEMPLATES
+  #define BUZZER
+  #define TEMPLATES
 #endif
 #define BOLD_FONT
 #define HAPTIC
@@ -61,17 +62,17 @@
 #endif
 
 #if defined(PCBSKY9X) && !defined(REVX)
-#define ROTARY_ENCODERS 1
+  #define ROTARY_ENCODERS 1
 #elif defined(PCBGRUVIN9X)
-#define ROTARY_ENCODERS 2
+  #define ROTARY_ENCODERS 2
 #endif
 
 #if defined(CPUARM)
-#define FRSKY_SPORT
+  #define FRSKY_SPORT
 #endif
 
 #if defined (PCBTARANIS)
-#define MIXERS_MONITOR
+  #define MIXERS_MONITOR
 #endif
 
 #undef min

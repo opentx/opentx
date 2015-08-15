@@ -1,3 +1,11 @@
+<h2>Version 2.1.2 / <set date></h2>
+<ul>
+<li>Fixed: Lua model scripts outputs not working in a simulator (<a href=https://github.com/opentx/opentx/issues/2684>#2684</a>)</li>
+</ul>
+
+
+
+
 <h2>Version 2.1.1 / 2015-08-06</h2>
 <ul>
 <li>Vario source and center silent options were not saved(<a href=https://github.com/opentx/opentx/issues/2476>#2476</a>)</li>
