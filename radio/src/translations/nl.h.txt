@@ -585,7 +585,7 @@
 #define TR_MENUWHENDONE        CENTER "\006" TR_ENTER " BIJ GEREED"
 #define TR_FREE                "vrij"
 #define TR_DELETEMODEL         "WIS" BREAKSPACE "MODEL"
-#define TR_COPYINGMODEL        "Kopiëer Model"
+#define TR_COPYINGMODEL        "Kopieer Model"
 #define TR_MOVINGMODEL         "Verplaats Model"
 #define TR_LOADINGMODEL        "Laad Model..."
 #define TR_NAME                "Naam"
@@ -808,7 +808,7 @@
 #define TR_MINRSSI             "Min. RSSI"
 #define TR_LATITUDE            "Latitude"
 #define TR_LONGITUDE           "Longitude"
-#define TR_GPSCOORD            TR("GPS-coörd.", "GPS-coördinaten format")
+#define TR_GPSCOORD            TR("GPS-coord.", "GPS-coordinaten format")
 #define TR_VARIO               TR("----Vario--------", "----Variometer----") //9XR-Pro
 #define TR_PITCH_AT_ZERO       INDENT "Laagste Toon"
 #define TR_PITCH_AT_MAX        INDENT "Hoogste Toon"
@@ -847,7 +847,7 @@
 #define TR_CPU_TEMP            "CPU-Temp.\016>"
 #define TR_CPU_CURRENT         "Stroom\022>"
 #define TR_CPU_MAH             "Verbruik"
-#define TR_COPROC              "CoProz."
+#define TR_COPROC              "CoProc."
 #define TR_COPROC_TEMP         "MB Temp. \016>"
 #define TR_CAPAWARNING         INDENT "Capaciteit laag" // wg 9XR-Pro
 #define TR_TEMPWARNING         INDENT "Overhitting"  //wg 9XR-Pro
@@ -910,7 +910,7 @@
 #define TR_EDIT                "Wijzigen"
 #define TR_INSERT_BEFORE       "Invoegen ervoor"
 #define TR_INSERT_AFTER        "Invoegen erna"
-#define TR_COPY                "Kopiëren"
+#define TR_COPY                "Kopieren"
 #define TR_MOVE                "Verplaatsen"
 #define TR_PASTE               "Plakken"
 #define TR_DELETE              "Verwijderen"
@@ -918,7 +918,7 @@
 #define TR_RESET_FLIGHT        "Reset Vliegdata"
 #define TR_RESET_TIMER1        "Reset Timer1"
 #define TR_RESET_TIMER2        "Reset Timer2"
-#define TR_RESET_TIMER3	       "Reset Timer3"
+#define TR_RESET_TIMER3        "Reset Timer3"
 #define TR_RESET_TELEMETRY     "Reset Telemetrie"
 #define TR_STATISTICS          "Statistieken"
 #define TR_ABOUT_US            "De Programmeurs"
@@ -957,13 +957,13 @@
 #define TR_PT                  "Pt"
 #define TR_PTS                 "Ptn"
 #define TR_SMOOTH              "Afronden"
-#define TR_COPY_STICKS_TO_OFS  "Kopiëer Sticks naar Subtrim"  
-#define TR_COPY_TRIMS_TO_OFS   "Kopiëer Trim naar Subtrim"
+#define TR_COPY_STICKS_TO_OFS  "Kopieer Sticks naar Subtrim"  
+#define TR_COPY_TRIMS_TO_OFS   "Kopieer Trim naar Subtrim"
 #define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Persistent mAh")
 #define TR_PREFLIGHT           "Preflight Checks"
 #define TR_CHECKLIST           TR(INDENT "Checklist", INDENT "Display Checklist")
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
-#define TR_UART3MODE           "Seriële poort"
+#define TR_UART3MODE           "Seriele poort"
 #define TR_SCRIPT              "Script"
 #define TR_INPUTS              "Inputs"
 #define TR_OUTPUTS             "Outputs"
