@@ -5,6 +5,7 @@
     The effect will only be visible for the users that did not install any of the previous 2.1.x versions. 
     (<a href=https://github.com/opentx/opentx/issues/2645>#2645</a>)</li>
 <li>Added missing SDL libraries to MAC package  (<a href=https://github.com/opentx/opentx/issues/2678>#2678</a>)</li>
+<li>Added used channels check/warning in Wizard (<a href=https://github.com/opentx/opentx/issues/2091>#2091</a>)</li>
 </ul>
 
 
