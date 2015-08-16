@@ -29,6 +29,11 @@ ProgressWidget::~ProgressWidget()
   delete ui;
 }
 
+void ProgressWidget::stop()
+{
+  emit stopped();
+}
+
 void ProgressWidget::forceOpen()
 {
   ui->checkBox->hide();

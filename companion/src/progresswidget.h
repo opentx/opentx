@@ -24,10 +24,12 @@ class ProgressWidget : public QWidget
     void setProgressColor(const QColor &color);
     void addSeparator();
     void forceOpen();
+    void stop();
 
   signals:
     void detailsToggled();
     void locked(bool);
+    void stopped();
 
   protected slots:
     void on_checkBox_toggled(bool checked);

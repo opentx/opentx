@@ -667,41 +667,47 @@ void MainWindow::contributors()
 
 void MainWindow::sdsync()
 {
+  QString sdPath = g.profile[g.id()].sdPath();
+  if (sdPath.isEmpty()) {
+    QMessageBox::warning(this, QObject::tr("Synchronization error"), QObject::tr("No SD directory configured!"));
+    return;
+  }
   QString massstoragePath = findMassstoragePath("SOUNDS");
   if (massstoragePath.isEmpty()) {
     QMessageBox::warning(this, QObject::tr("Synchronization error"), QObject::tr("No Radio connected!"));
     return;
   }
-  massstoragePath += "/..";
+  massstoragePath = massstoragePath.left(massstoragePath.length() - 7);
   ProgressDialog progressDialog(this, tr("Synchronize SD"), CompanionIcon("sdsync.png"));
   SyncProcess syncProcess(massstoragePath, g.profile[g.id()].sdPath(), progressDialog.progress());
-  syncProcess.run();
-  progressDialog.exec();
+  if (!syncProcess.run()) {
+    progressDialog.exec();
+  }
 }
 
 void MainWindow::changelog()
 {
-    ReleaseNotesDialog * dialog = new ReleaseNotesDialog(this);
-    dialog->exec();
+  ReleaseNotesDialog * dialog = new ReleaseNotesDialog(this);
+  dialog->exec();
 }
 
 void MainWindow::fwchangelog()
 {
-    Firmware *currfirm = GetCurrentFirmware();
-    QString rn=currfirm->getReleaseNotesUrl();
-    if (rn.isEmpty()) {
-      QMessageBox::information(this, tr("Firmware updates"), tr("Current firmware does not provide release notes informations."));
-    }
-    else {
-      ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, rn);
-      dialog->exec();
-    }
+  Firmware * firmware = GetCurrentFirmware();
+  QString url = firmware->getReleaseNotesUrl();
+  if (url.isEmpty()) {
+    QMessageBox::information(this, tr("Firmware updates"), tr("Current firmware does not provide release notes informations."));
+  }
+  else {
+    ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, url);
+    dialog->exec();
+  }
 }
 
 void MainWindow::customizeSplash()
 {    
-    customizeSplashDialog *cd = new customizeSplashDialog(this);
-    cd->exec();
+  customizeSplashDialog * dialog = new customizeSplashDialog(this);
+  dialog->exec();
 }
 
 void MainWindow::cut()
