@@ -287,7 +287,7 @@
 #endif
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION) && LCD_W >= 212
-  #define TR_SF_SAFETY        "Override\0 "
+  #define TR_SF_SAFETY        "Blocco\0   "
 #elif defined(OVERRIDE_CHANNEL_FUNCTION)
   #define TR_SF_SAFETY        "Blocco\0      "
 #else
@@ -441,7 +441,7 @@
 
 #define LEN2_VTEMPLATES        13
 #define LEN_VTEMPLATES         "\015"
-#define TR_VTEMPLATES          "Canc. Mixes\0 ""Semplice 4CH\0""Sticky-T-Cut\0""Coda-V      \0""Elevoni\0     ""Delta\0       ""eCCPM\0       ""Setup Heli\0  ""Test Servo\0  "
+#define TR_VTEMPLATES          "Canc. Mixer\0 ""Semplice 4CH\0""Sticky-T-Cut\0""Coda-V      \0""Elevoni\0     ""Delta\0       ""eCCPM\0       ""Setup Heli\0  ""Test Servo\0  "
 
 #define LEN_VSWASHTYPE         "\004"
 #define TR_VSWASHTYPE          "---\0""120\0""120X""140\0""90\0"
@@ -696,7 +696,7 @@
 #define TR_SWITCHWARNING       TR("Avv. Int.", INDENT "Avviso Interr.")
 #define TR_POTWARNING          TR("Avv. Pot.", INDENT "Avviso Pot.")
 #define TR_TIMEZONE            "Ora locale"
-#define TR_ADJUST_RTC          INDENT "Adjust RTC"
+#define TR_ADJUST_RTC          INDENT "Aggiusta RTC"
 #define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        "Ordine ch RX"
 #define TR_STICKS              "Sticks"
@@ -755,7 +755,7 @@
 #define TR_MENURADIOSETUP      "CONFIGURATX"
 #define TR_MENUDATEANDTIME     "DATA E ORA"
 #define TR_MENUTRAINER         "MAESTRO/ALLIEVO"
-#define TR_MENUGLOBALFUNCS     "GLOBAL FUNCTIONS"
+#define TR_MENUGLOBALFUNCS     "FUNZIONI GLOBALI"
 #define TR_MENUVERSION         "VERSIONE"
 #define TR_MENUDIAG            "DIAG"
 #define TR_MENUANA             "ANAS"
@@ -791,7 +791,7 @@
 #define TR_MENUSTAT            "STATO"
 #define TR_MENUDEBUG           "DEBUG"
 #if defined(CPUARM)
-  #define TR_RXNUM             TR(INDENT "RxNum", INDENT "Receiver No.")
+  #define TR_RXNUM             TR(INDENT "RxNum", INDENT "Ricevente No.")
 #else
   #define TR_RXNUM             "RxNum"
 #endif
@@ -800,8 +800,8 @@
 #define TR_MINRSSI             "Min Rssi"
 #define TR_LATITUDE            "Latitud."
 #define TR_LONGITUDE           "Longitud."
-#define TR_GPSCOORD            TR("GPS Coords", INDENT "Coordinate format")
-#define TR_VARIO               TR("Vario", "Variometer")
+#define TR_GPSCOORD            TR("GPS Coords", INDENT "Formato Coordinate")
+#define TR_VARIO               TR("Vario", "Variometro")
 #define TR_PITCH_AT_ZERO       INDENT "Tono a Zero"
 #define TR_PITCH_AT_MAX        INDENT "Tono al Max"
 #define TR_REPEAT_AT_ZERO      INDENT "Ripeti a Zero"
@@ -821,7 +821,7 @@
 #define TR_RESTORE_MODEL       TR("Ripr. Modello","Ripristina Modello")
 #define TR_SDCARD_ERROR        "Errore SD"
 #define TR_NO_SDCARD           "No SDCARD"
-#define TR_SDCARD_FULL         "SD Card Full"
+#define TR_SDCARD_FULL         "SD Card Piena"
 #define TR_INCOMPATIBLE        "Incompatibile"
 #define TR_WARNING             "AVVISO"
 #define TR_EEPROMWARN          "EEPROM"
@@ -887,8 +887,8 @@
 #define TR_PATH_TOO_LONG       "Path troppo lungo"
 #define TR_VIEW_TEXT           "Vedi testo"
 #define TR_FLASH_BOOTLOADER    "Flash BootLoader"
-#define TR_FLASH_EXTERNAL_DEVICE "Flash External Device"
-#define TR_FLASH_INTERNAL_MODULE "Flash Internal Module"
+#define TR_FLASH_EXTERNAL_DEVICE "Progr. Dispositivo Esterno"
+#define TR_FLASH_INTERNAL_MODULE "Progr. Modulo Interno"
 #define TR_WRITING             "\032Scrivendo..."
 #define TR_CONFIRM_FORMAT      "Confermi Format?"
 #define TR_INTERNALRF          "Modulo Interno"
@@ -960,8 +960,8 @@
 #define TR_INPUTS              "Ingresso"
 #define TR_OUTPUTS             "Uscita"
 #define TR_EEBACKUP            "\004[ENTER Lungo] per copiare la EEPROM"
-#define TR_FACTORYRESET        "\012[MENU Long]: Factory reset"
-#define TR_CONFIRMRESET        "Erase ALL models and settings?"
+#define TR_FACTORYRESET        "\012[MENU Lungo]: Inizializza dati"
+#define TR_CONFIRMRESET        "Resettare TUTTI i dati?"
 #define TR_TO_MANY_LUA_SCRIPTS "Troppi Scripts Lua!"
 
 #if defined(MAVLINK)
@@ -1081,7 +1081,7 @@
 #define TR_ONLYPOSITIVE        "Positivo"
 #define TR_FILTER              "Filtro"
 #define TR_TELEMETRYFULL       "Tutti gli slot sono pieni!"
-#define TR_IGNOREIDS           TR(INDENT "No inst.","Ignore instance")
+#define TR_IGNOREIDS           TR(INDENT "No inst.","Ignora instanza")
 
 #define TR_MENU_INPUTS         "\314Ingressi"
 #define TR_MENU_LUA            "\322Lua scripts"
@@ -1090,8 +1090,8 @@
 #define TR_MENU_MAX            "\315MAX"
 #define TR_MENU_HELI           "\316Ciclico"
 #define TR_MENU_TRIMS          "\313Trims"
-#define TR_MENU_SWITCHES       "\312Switches"
-#define TR_MENU_LOGICAL_SWITCHES "\312Switches Logici"
+#define TR_MENU_SWITCHES       "\312Interrut."
+#define TR_MENU_LOGICAL_SWITCHES "\312Interrut. Logici"
 #define TR_MENU_TRAINER        "\317Trainer"
 #define TR_MENU_CHANNELS       "\320Canali"
 #define TR_MENU_GVARS          "\311GVars"
