@@ -78,13 +78,14 @@ ModelsListWidget::ModelsListWidget(QWidget *parent):
 
 void ModelsListWidget::ShowContextMenu(const QPoint& pos)
 {
-    QPoint globalPos = this->mapToGlobal(pos);
-
+  QPoint globalPos = this->mapToGlobal(pos);
+  QMenu contextMenu;
+  if (((MdiChild *)parent())->getCurrentRow() > 0) {
+    // context menu for model
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
     bool hasData = mimeData->hasFormat("application/x-companion");
 
-    QMenu contextMenu;
     contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(EditModel()));
     contextMenu.addAction(CompanionIcon("open.png"), tr("&Restore from backup"),this,SLOT(LoadBackup()));
     contextMenu.addAction(CompanionIcon("wizard.png"), tr("&Model Wizard"),this,SLOT(OpenWizard()));
@@ -100,7 +101,12 @@ void ModelsListWidget::ShowContextMenu(const QPoint& pos)
     contextMenu.addAction(CompanionIcon("print.png"), tr("P&rint model"),this, SLOT(print()),QKeySequence(tr("Ctrl+P")));
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("simulate.png"), tr("&Simulate model"),this, SLOT(simulate()),tr("Alt+S"));
-    contextMenu.exec(globalPos);
+  }
+  else {
+    // context menu for radio settings
+    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(EditModel()));
+  }
+  contextMenu.exec(globalPos);
 }
 
 void ModelsListWidget::EditModel()
