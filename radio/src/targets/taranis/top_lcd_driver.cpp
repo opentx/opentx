@@ -347,13 +347,13 @@ void setTopBatteryState(int state, uint8_t blinking)
     Ht1621Data1[4] |= 0x40; // Battery border  // TODO this is not working for me, the border is ALWAYS on
     if (state > 0)
       Ht1621Data1[7] |= 0x80;
-    if (state > 1)
-      Ht1621Data1[9] |= 0x80;
     if (state > 2)
-      Ht1621Data1[5] |= 0x80;
-    if (state > 3)
-      Ht1621Data1[10] |= 0x80;
+      Ht1621Data1[9] |= 0x80;
     if (state > 4)
+      Ht1621Data1[5] |= 0x80;
+    if (state > 6)
+      Ht1621Data1[10] |= 0x80;
+    if (state > 8)
       Ht1621Data1[4] |= 0x80;
   }
 }

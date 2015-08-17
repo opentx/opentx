@@ -208,13 +208,13 @@ void displayBattVoltage()
   putsVBat(VBATT_X-8, VBATT_Y+1, 0);
   drawFilledRect(VBATT_X-25, VBATT_Y+9, 22, 5);
   lcd_vline(VBATT_X-3, VBATT_Y+10, 3);
-  uint8_t count = limit<uint8_t>(2, 20 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 20);
+  uint8_t count = GET_TXBATT_BARS();
   for (uint8_t i=0; i<count; i+=2)
     lcd_vline(VBATT_X-24+i, VBATT_Y+10, 3);
-  if (g_vbat100mV > g_eeGeneral.vBatWarn || BLINK_ON_PHASE)
+  if (!IS_TXBATT_WARNING() || BLINK_ON_PHASE)
     drawFilledRect(VBATT_X-26, VBATT_Y, 25, 15);
 #else
-  LcdFlags att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | BIGSIZE;
+  LcdFlags att = (IS_TXBATT_WARNING() ? BLINK|INVERS : 0) | BIGSIZE;
   putsVBat(VBATT_X-1, VBATT_Y, att|NO_UNIT);
   lcd_putc(VBATT_X, VBATTUNIT_Y, 'V');
 #endif
@@ -223,14 +223,14 @@ void displayBattVoltage()
 #if defined(PCBSKY9X)
 void displayVoltageOrAlarm()
 {
-  if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
+  if (IS_TXBATT_WARNING()) {
+    displayBattVoltage();
+  }
+  else if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
     putsValueWithUnit(6*FW-1, 2*FH, getTemperature(), UNIT_TEMPERATURE, BLINK|INVERS|DBLSIZE);
   }
-  else if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
+  else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
     putsValueWithUnit(7*FW-1, 2*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.currentCalib)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE);
-  }
-  else {
-    displayBattVoltage();
   }
 }
 #else

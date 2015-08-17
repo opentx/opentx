@@ -2054,7 +2054,7 @@ void checkBattery()
       }
       else
 #endif
-      if (g_vbat100mV <= g_eeGeneral.vBatWarn && g_vbat100mV>50) {
+      if (IS_TXBATT_WARNING() && g_vbat100mV>50) {
         AUDIO_TX_BATTERY_LOW();
       }
 #if defined(PCBSKY9X)

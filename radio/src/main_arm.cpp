@@ -191,8 +191,7 @@ void perMain()
   setTopSecondTimer(g_eeGeneral.globalTimer + sessionTimer);
   setTopRssi(TELEMETRY_RSSI());
   setTopBatteryValue(g_vbat100mV);
-  int state = 5 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin);
-  setTopBatteryState(state, g_vbat100mV <= g_eeGeneral.vBatWarn);
+  setTopBatteryState(GET_TXBATT_BARS(), IS_TXBATT_WARNING());
   topLcdRefreshEnd();
 #endif
 

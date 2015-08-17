@@ -587,7 +587,7 @@ void drawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, Lc
 void lcdDrawTelemetryTopBar()
 {
   putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
-  uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
+  uint8_t att = (IS_TXBATT_WARNING() ? BLINK : 0);
   putsVBat(14*FW,0,att);
   if (g_model.timers[0].mode) {
     att = (timersStates[0].val<0 ? BLINK : 0);
