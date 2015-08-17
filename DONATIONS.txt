@@ -796,3 +796,4 @@ Håkan Berggen
 Ayelet Egosi
 Jean-Frederic Gaudreault
 Jim Wagner
+Lee Scott
