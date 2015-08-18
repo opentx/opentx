@@ -984,12 +984,12 @@ void menuGeneralSdManager(uint8_t _event)
       else
 #endif
       {
-#if defined(CPUARM)
         uint8_t index = m_posVert-1-s_pgOfs;
         char *line = reusableBuffer.sdmanager.lines[index];
         if (!strcmp(line, "..")) {
           break;      // no menu for parent dir
         }
+#if defined(CPUARM)
         // TODO duplicated code for finding extension
         char * ext = line;
         int len = strlen(ext) - 4;
@@ -1059,7 +1059,8 @@ void menuGeneralSdManager(uint8_t _event)
 #else
         fn = fno.fname;
 #endif
-        if (strlen(fn) > SD_SCREEN_FILE_LENGTH) continue;
+        TRACE("strlen(%s) = %d", fn, strlen(fn));
+        if (strlen(fn) > SD_SCREEN_FILE_LENGTH) { TRACE("too long"); continue; }
 
         reusableBuffer.sdmanager.count++;
 
