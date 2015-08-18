@@ -109,6 +109,14 @@ char simuSdDirectory[1024] = "";
 uint8_t eeprom[EESIZE_SIMU];
 sem_t *eeprom_write_sem;
 
+void simuInit()
+{
+  for (int i = 0; i <= 17; i++) {
+    simuSetSwitch(i, 0);
+    simuSetKey(i, false);  // a little dirty, but setting keys that don't exist is perfectly OK here
+  }
+}
+
 #if defined(CPUARM)
 #if defined(PCBTARANIS)
 #define SWITCH_CASE(swtch, pin, mask) \
