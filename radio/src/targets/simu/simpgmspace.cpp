@@ -921,11 +921,21 @@ int f_printf (FIL *fil, const TCHAR * format, ...)
 
 FRESULT f_getcwd (TCHAR *path, UINT sz_path)
 {
+  char cwd[1024];
+  if (!getcwd(cwd, 1024)) {
+    TRACE("f_getcwd() = getcwd() error %d (%s)", errno, strerror(errno));
+    strcpy(path, ".");
+    return FR_NO_PATH;
+  }
+
+  if (strlen(cwd) < strlen(simuSdDirectory)) {
+    TRACE("f_getcwd() = logic error strlen(cwd) < strlen(simuSdDirectory):  cwd: \"%s\",  simuSdDirectory: \"%s\"", cwd, simuSdDirectory);
+    strcpy(path, ".");
+    return FR_NO_PATH;
+  }
+
   // remove simuSdDirectory from the cwd
-  char * cwd = get_current_dir_name();
-  std::string c(cwd + strlen(simuSdDirectory));
-  free(cwd);
-  strcpy(path, c.c_str());
+  strcpy(path, cwd + strlen(simuSdDirectory));
   TRACE("f_getcwd() = %s", path);
   return FR_OK;
 }
