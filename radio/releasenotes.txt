@@ -9,6 +9,7 @@
 <li>Fixed: Playing two background sounds at once causes sound to stop (<a href=https://github.com/opentx/opentx/issues/2704>#2704</a>)</li>
 <li>Several fixes to the SD card manager menu (<a href=https://github.com/opentx/opentx/issues/2623>#2623</a>)</li>
 <li>Fixed the difference between top and main LCD TX battery bars on 9Xe (<a href=https://github.com/opentx/opentx/issues/2671>#2671</a>)</li>
+<li>Fixed: Edge Logical Switch could trigger right after the model was loaded or the radio turned on (<a href=https://github.com/opentx/opentx/issues/2728>#2728</a>)</li>
 </ul>
 
 [Sky9x / 9XR-PRO]
