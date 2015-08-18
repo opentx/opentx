@@ -103,8 +103,10 @@ sem_t *eeprom_write_sem;
 
 void simuInit()
 {
-  for (int i = 0; i <= 17; i++)
+  for (int i = 0; i <= 17; i++) {
     simuSetSwitch(i, 0);
+    simuSetKey(i, false);  // a little dirty, but setting keys that don't exist is perfectly OK here
+  }
 }
 
 #define NEG_CASE(sw_or_key, pin, mask) \
