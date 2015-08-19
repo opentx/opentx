@@ -213,7 +213,7 @@ bool isSensorAvailable(int sensor)
 #define SENSOR_PREC_ROWS       (sensor->isPrecConfigurable() && sensor->unit != UNIT_FAHRENHEIT  ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSOR_PARAM1_ROWS     (sensor->unit >= UNIT_FIRST_VIRTUAL ? HIDDEN_ROW : (uint8_t)0)
 #define SENSOR_PARAM2_ROWS     (sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS || (sensor->type==TELEM_TYPE_CALCULATED && (sensor->formula==TELEM_FORMULA_CONSUMPTION || sensor->formula==TELEM_FORMULA_TOTALIZE)) ? HIDDEN_ROW : (uint8_t)0)
-#define SENSOR_PARAM3_ROWS     (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula < TELEM_FORMULA_MULTIPLY) ? (uint8_t)0 : HIDDEN_ROW
+#define SENSOR_PARAM3_ROWS     (sensor->type == TELEM_TYPE_CUSTOM || (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula < TELEM_FORMULA_MULTIPLY)) ? (uint8_t)0 : HIDDEN_ROW
 #define SENSOR_PARAM4_ROWS     (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula < TELEM_FORMULA_MULTIPLY) ? (uint8_t)0 : HIDDEN_ROW
 #define SENSOR_AUTOOFFSET_ROWS (sensor->unit != UNIT_RPMS && sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSOR_ONLYPOS_ROWS    (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
@@ -358,21 +358,13 @@ void menuModelSensor(uint8_t event)
           }
         }
         else {
-          if (sensor->unit == UNIT_RPMS) {
-            lcd_putsLeft(y, NO_INDENT(STR_BLADES));
-            if (attr) sensor->custom.ratio = checkIncDec(event, sensor->custom.ratio, 1, 30000, EE_MODEL|NO_INCDEC_MARKS|INCDEC_REP10);
-            lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.ratio, LEFT|attr);
-            break;
-          }
-          else {
-            lcd_putsLeft(y, STR_RATIO);
-            if (attr) sensor->custom.ratio = checkIncDec(event, sensor->custom.ratio, 0, 30000, EE_MODEL|NO_INCDEC_MARKS|INCDEC_REP10);
-            if (sensor->custom.ratio == 0)
-              lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
-            else
-              lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.ratio, LEFT|attr|PREC1);
-            break;
-          }
+          lcd_putsLeft(y, STR_MULTIPLIER);
+          if (attr) sensor->custom.multiplier = checkIncDec(event, sensor->custom.multiplier, 0, 16000, EE_MODEL|NO_INCDEC_MARKS|INCDEC_REP10);
+          if (sensor->custom.multiplier == 0)
+            lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
+          else
+            lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.multiplier, LEFT|attr);
+          break;
         }
         // no break
 
@@ -391,22 +383,22 @@ void menuModelSensor(uint8_t event)
             break;
           }
         }
-        else if (sensor->unit == UNIT_RPMS) {
-          lcd_putsLeft(y, STR_MULTIPLIER);
-          if (attr) sensor->custom.offset = checkIncDec(event, sensor->custom.offset, 1, 30000, EE_MODEL|NO_INCDEC_MARKS|INCDEC_REP10);
-          lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.offset, LEFT|attr);
+        else {
+          lcd_putsLeft(y, "Divisor");
+          if (attr) sensor->custom.divisor = checkIncDec(event, sensor->custom.divisor, 0, 3, EE_MODEL|NO_INCDEC_MARKS|INCDEC_REP10);
+          lcd_outdezAtt(SENSOR_2ND_COLUMN, y, divisors_div[sensor->custom.divisor], LEFT|attr);
           break;
         }
-        else {
+        // no break
+
+      case SENSOR_FIELD_PARAM3:
+        if (sensor->type == TELEM_TYPE_CUSTOM) {
           lcd_putsLeft(y, NO_INDENT(STR_OFFSET));
           if (attr) sensor->custom.offset = checkIncDec(event, sensor->custom.offset, -30000, +30000, EE_MODEL|NO_INCDEC_MARKS|INCDEC_REP10);
           if (sensor->prec > 0) attr |= (sensor->prec == 2 ? PREC2 : PREC1);
           lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.offset, LEFT|attr);
           break;
         }
-        // no break
-
-      case SENSOR_FIELD_PARAM3:
         // no break
 
       case SENSOR_FIELD_PARAM4:

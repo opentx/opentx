@@ -1270,6 +1270,8 @@ enum TelemetrySensorFormula
   TELEM_FORMULA_LAST = TELEM_FORMULA_DIST
 };
 
+extern uint16_t divisors_div[];
+
 PACK(typedef struct {
   union {
     uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
@@ -1291,7 +1293,9 @@ PACK(typedef struct {
   uint8_t  spare:3;
   union {
     PACK(struct {
-      uint16_t ratio;
+      // uint16_t ratio;
+      uint16_t multiplier:14;  // range 1-16384, 0 - not used
+      uint16_t divisor:2;   // actual divisor value is 10^divisor, possble values: 1, 10, 100, 1000, 
       int16_t  offset;
     }) custom;
     PACK(struct {

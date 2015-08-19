@@ -486,7 +486,7 @@ void telemetryInterrupt10ms()
     frskyStreaming--;
   }
   else {
-#if !defined(SIMU)
+#if !defined(SIMU) || defined(SIMU_TELEMETRY)
 #if defined(CPUARM)
     frskyData.rssi.reset();
 #else
