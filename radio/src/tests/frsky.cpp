@@ -395,9 +395,9 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
 
   telemetryWakeup();
 
-  EXPECT_EQ(telemetryItems[2].value, 287);
-  EXPECT_EQ(telemetryItems[2].valueMin, 287);
-  EXPECT_EQ(telemetryItems[2].valueMax, 287);
+  EXPECT_EQ(telemetryItems[2].value, 289);  //12.5 + 16.4 =  28.9
+  EXPECT_EQ(telemetryItems[2].valueMin, 289);
+  EXPECT_EQ(telemetryItems[2].valueMax, 289);
 
   //now change some voltages
   generateSportCellPacket(packet, 3, 2, _V(415), _V(  0)); processSportPacket(packet);
@@ -407,9 +407,9 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
 
   telemetryWakeup();
 
-  EXPECT_EQ(telemetryItems[2].value, 283);
-  EXPECT_EQ(telemetryItems[2].valueMin, 283);
-  EXPECT_EQ(telemetryItems[2].valueMax, 287);
+  EXPECT_EQ(telemetryItems[2].value, 284);
+  EXPECT_EQ(telemetryItems[2].valueMin, 284);
+  EXPECT_EQ(telemetryItems[2].valueMax, 289);
 
   //display test
   lcd_clear();
