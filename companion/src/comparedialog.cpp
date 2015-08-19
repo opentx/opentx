@@ -1088,11 +1088,11 @@ void CompareDialog::printCurves()
         painter2.drawLine(0,ISIZE/2,ISIZE,ISIZE/2);
         painter1.drawLine(ISIZE/2,0,ISIZE/2,ISIZE);
         painter2.drawLine(ISIZE/2,0,ISIZE/2,ISIZE);
-        for(i=0; i<21; i++) {
-          painter1.drawLine(ISIZE/2-5,(ISIZE*i)/(20),ISIZE/2+5,(ISIZE*i)/(20));
-          painter2.drawLine(ISIZE/2-5,(ISIZE*i)/(20),ISIZE/2+5,(ISIZE*i)/(20));
-          painter1.drawLine((ISIZE*i)/(20),ISIZE/2-5,(ISIZE*i)/(20),ISIZE/2+5);
-          painter2.drawLine((ISIZE*i)/(20),ISIZE/2-5,(ISIZE*i)/(20),ISIZE/2+5);
+        for(int k=0; k<21; k++) {
+          painter1.drawLine(ISIZE/2-5,(ISIZE*k)/(20),ISIZE/2+5,(ISIZE*k)/(20));
+          painter2.drawLine(ISIZE/2-5,(ISIZE*k)/(20),ISIZE/2+5,(ISIZE*k)/(20));
+          painter1.drawLine((ISIZE*k)/(20),ISIZE/2-5,(ISIZE*k)/(20),ISIZE/2+5);
+          painter2.drawLine((ISIZE*k)/(20),ISIZE/2-5,(ISIZE*k)/(20),ISIZE/2+5);
         }
 
         cm1y.append("]");
