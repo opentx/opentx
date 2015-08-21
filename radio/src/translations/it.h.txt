@@ -135,7 +135,7 @@
 #if defined(PCBTARANIS) && defined(REV9E)
   #define TR_RETA123           "DEMA123SDSD"
 #elif defined(PCBTARANIS) || defined(REVX)
-  #define TR_RETA123           "RETA123LR"
+  #define TR_RETA123           "DEMA123SD"
 #elif defined(PCBSKY9X)
   #define TR_RETA123           "DEMA123a"
 #elif defined(CPUM2560)
@@ -253,7 +253,7 @@
     #define TR_PLAY_TRACK      "SuonaTraccia\0"
   #endif
   #define TR_PLAY_BOTH         "Play Both\0   "
-  #define TR_PLAY_VALUE        TR("LeggiVal\0 ", "LeggiValore")
+  #define TR_PLAY_VALUE        TR("LeggiVal\0 ", "LeggiValore\0 ")
 #else
   #define TR_PLAY_TRACK        "[Brano]\0     "
   #define TR_PLAY_BOTH         "[Play Both]\0 "
@@ -287,7 +287,7 @@
 #endif
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION) && LCD_W >= 212
-  #define TR_SF_SAFETY        "Blocco\0   "
+  #define TR_SF_SAFETY        "Blocco\0      "
 #elif defined(OVERRIDE_CHANNEL_FUNCTION)
   #define TR_SF_SAFETY        "Blocco\0      "
 #else
@@ -295,7 +295,7 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_SF_SCREENSHOT    "Screenshot"
+  #define TR_SF_SCREENSHOT    "Screenshot\0  "
 #else
   #define TR_SF_SCREENSHOT
 #endif
@@ -660,7 +660,7 @@
 #define TR_GV                  "GV"
 #define TR_ACHANNEL            "A\002ingresso"
 #define TR_RANGE               TR(INDENT"Inter.", INDENT"Intervallo")
-#define TR_CENTER              INDENT "Center"
+#define TR_CENTER              INDENT "Centro"
 #define TR_BAR                 "Barra"
 #define TR_ALARM               TR(INDENT"Allar.", INDENT"Allarme")
 #define TR_USRDATA             "Dati"
