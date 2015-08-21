@@ -122,7 +122,7 @@
 #define TR_VDISPLAYTRIMS       "Nee\0  ""Kort\0 ""Ja\0   "
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "SilentBeeps\0Spraak"
+#define TR_VBEEPCOUNTDOWN      "StilteBeeps\0Spraak"
 
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Tonen\0""Stilte"
@@ -618,7 +618,7 @@
   #define TR_PPMFRAME          "PPM frame"
 #endif
 #define TR_MS                  "ms"
-#define TR_SWITCH              "Schakelaar"
+#define TR_SWITCH              TR("Schak.", "Schakelaar")
 #define TR_TRIMS               "Trims"
 #define TR_FADEIN              "Fade In"
 #define TR_FADEOUT             "Fade Out"
@@ -683,12 +683,12 @@
 #define TR_MEMORYWARNING       INDENT "Geheugen laag"
 #define TR_ALARMWARNING        TR(INDENT "Al Geluid uit?", INDENT "Al het geluid uit?")
 #define TR_RENAVIG             "Stappenschakelaar"
-#define TR_THROTTLE_LABEL      "----Gas-Controle----"
-#define TR_THROTTLEREVERSE     TR("Gas omgedraaid", INDENT "Volgas achter?") //Änderung wg TH9x, Taranis
+#define TR_THROTTLE_LABEL      "----Gas-------------"
+#define TR_THROTTLEREVERSE     TR("Reverse", INDENT "Omgekeerd")
 #define TR_TIMER_NAME          INDENT "Naam"
 #define TR_MINUTEBEEP          TR(INDENT "Min-Alarm", INDENT "Minuten-Alarm")
 #define TR_BEEPCOUNTDOWN       INDENT "Countdown"
-#define TR_PERSISTENT          TR(INDENT "Aanhoudend", INDENT "Aanhoudend")
+#define TR_PERSISTENT          TR(INDENT "Vasth.", INDENT "Vasthouden")
 #define TR_BACKLIGHT_LABEL     "----LCD-Verlichting--"
 #define TR_BLDELAY             INDENT "Duur"
 #define TR_BLONBRIGHTNESS      INDENT "Aan-Helderheid"
@@ -750,7 +750,7 @@
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM vol"
 #define TR_ALERT               "ALARM"
-#define TR_PRESSANYKEYTOSKIP   "Druk een toets.."	
+#define TR_PRESSANYKEYTOSKIP   "Druk een toets.." 
 #define TR_THROTTLENOTIDLE     "Gas niet Dicht!"
 #define TR_ALARMSDISABLED      "Alarm uitgeschakeld"
 #define TR_PRESSANYKEY         TR("\010Druk een Toets", "Druk een Toets")
@@ -959,7 +959,7 @@
 #define TR_SMOOTH              "Afronden"
 #define TR_COPY_STICKS_TO_OFS  "Kopieer Sticks naar Subtrim"  
 #define TR_COPY_TRIMS_TO_OFS   "Kopieer Trim naar Subtrim"
-#define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Persistent mAh")
+#define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Vasthouden mAh")
 #define TR_PREFLIGHT           "Preflight Checks"
 #define TR_CHECKLIST           TR(INDENT "Checklist", INDENT "Display Checklist")
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
@@ -1003,8 +1003,8 @@
 #define TR_LIMITS_HEADERS      { " Name ", " Subtrim ", " Min ", " Max ", " Richtung ", " Curve ", " PPM-Midden ", " Subtrim Mode " }
 #define TR_CSW_HEADERS         { " Funktie ", " Var1 ", " Var2 ", " Var2 ", " EN-Schakelaar ", " Duur ", " Vertraging " }
 
-//Taranis About screen
-#define TR_ABOUTUS             "Over OpenTx"
+// About screen
+#define TR_ABOUTUS             TR(" ABOUT ", "ABOUT")
 
 #define TR_ABOUT_OPENTX_1      TR("OpenTX\001is\001open\001source,\001non", "OpenTX is open source, non-")
 #define TR_ABOUT_OPENTX_2      TR("commercial,\001wo\001warranties.", "commercial and comes with no")
@@ -1017,41 +1017,41 @@
 #define TR_ABOUT_BERTRAND_3    "Companion9x co-author"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
-#define TR_ABOUT_MIKE_2        "Code- en Driver-Guru"
+#define TR_ABOUT_MIKE_2        "Code and drivers guru"
 #define TR_ABOUT_MIKE_3        TR("Arguably,\001one\001of\001the\001best", "Arguably, one of the best")
 #define TR_ABOUT_MIKE_4        "Inspirational"
-       
+
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
 #define TR_ABOUT_ROMOLO_2      "Companion co-author"
 #define TR_ABOUT_ROMOLO_3      ""
 
 #define TR_ABOUT_ANDRE_1       "Andre Bernet"
-#define TR_ABOUT_ANDRE_2       "Funktionaliteit en Testen,"
-#define TR_ABOUT_ANDRE_3       "Debugging, Documentatie"
+#define TR_ABOUT_ANDRE_2       "Functionality, usability,"
+#define TR_ABOUT_ANDRE_3       "debugging, documentation"
 
 #define TR_ABOUT_ROB_1         "Rob Thomson"
-#define TR_ABOUT_ROB_2         "Openrcforums Webmaster"
+#define TR_ABOUT_ROB_2         "openrcforums webmaster"
 
 #define TR_ABOUT_KJELL_1       "Kjell Kernen"
-#define TR_ABOUT_KJELL_2       "www.open-tx.org Auteur"
-#define TR_ABOUT_KJELL_3       "Auteur OpenTX Recorder"
+#define TR_ABOUT_KJELL_2       "www.open-tx.org main author"
+#define TR_ABOUT_KJELL_3       "OpenTX Recorder author"
 #define TR_ABOUT_KJELL_4       "Companion contributor"
 
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
 #define TR_ABOUT_MARTIN_2      "Graphics designer"
 
 #if defined(PCBTARANIS)
-  #define TR_ABOUT_HARDWARE_1  "Firma FrSky "
-  #define TR_ABOUT_HARDWARE_2  "Hardware-Design/-Produktie"
-  #define TR_ABOUT_HARDWARE_3  "Firmware-Leverancier"
+  #define TR_ABOUT_HARDWARE_1  "FrSky"
+  #define TR_ABOUT_HARDWARE_2  "Hardware designer/producer"
+  #define TR_ABOUT_HARDWARE_3  "Firmware contributor"
 #else
   #define TR_ABOUT_HARDWARE_1  "Brent Nelson"
-  #define TR_ABOUT_HARDWARE_2  "Sky9x Design/Produktie"
+  #define TR_ABOUT_HARDWARE_2  "Sky9x designer/producer"
   #define TR_ABOUT_HARDWARE_3  ""
 #endif
 
-#define TR_ABOUT_PARENTS_1     "Voorganger-Projekten"
-#define TR_ABOUT_PARENTS_2     "Ersky9x (Mike Blandford)"
+#define TR_ABOUT_PARENTS_1     "Parent projects"
+#define TR_ABOUT_PARENTS_2     TR("Ersky9x (Mike Blandford)", "Ersky9x (Mike Blandford)")
 #define TR_ABOUT_PARENTS_3     "ER9X (Erez Raviv)"
 #define TR_ABOUT_PARENTS_4     "TH9X (Thomas Husterer)"
 
@@ -1086,7 +1086,7 @@
 #define TR_GPSSENSOR           "GPS Sensor"
 #define TR_CURRENTSENSOR       "Stroomsensor"
 #define TR_AUTOOFFSET          "Auto Offset"
-#define TR_ONLYPOSITIVE        "Alleen Positief"
+#define TR_ONLYPOSITIVE        "Geen Negatief"
 #define TR_FILTER              "Filter aktief"
 #define TR_TELEMETRYFULL       "Telemetrie slots vol!"
 #define TR_IGNOREIDS           TR(INDENT "Neg. ID ","Negeer ID's")
