@@ -37,11 +37,6 @@ def LEXP(name, description):
   checkName(name)
   exports.append( (CONSTANT_VALUE, name, description) )
 
-def LEXP_TELEMETRY(name, description):
-  # print "LEXP %s, %s" % (name, description)
-  checkName(name)
-  exports.append( ("MIXSRC_FIRST_TELEM-1+"+CONSTANT_VALUE, name, description) )
-
 def LEXP_MULTIPLE(nameFormat, descriptionFormat, valuesCount):
   # print "LEXP_MULTIPLE %s, %s, %s" % (nameFormat, descriptionFormat, valuesCount)
   for v in range(valuesCount):
