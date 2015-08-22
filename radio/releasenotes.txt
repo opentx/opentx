@@ -9,6 +9,7 @@
 <li>Fixed: Playing two background sounds at once causes sound to stop (<a href=https://github.com/opentx/opentx/issues/2704>#2704</a>)</li>
 <li>Several fixes to the SD card manager menu (<a href=https://github.com/opentx/opentx/issues/2623>#2623</a>)</li>
 <li>Fixed the difference between top and main LCD TX battery bars on 9Xe (<a href=https://github.com/opentx/opentx/issues/2671>#2671</a>)</li>
+<li>Several Lua getValue() fields were not exported correctly (tx-voltage, clock and timers1-3)</li>
 </ul>
 
 [Sky9x / 9XR-PRO]

@@ -1922,17 +1922,17 @@ enum MixSources {
   MIXSRC_LAST_GVAR = MIXSRC_FIRST_GVAR+MAX_GVARS-1,
 
 #if defined(CPUARM)
-  MIXSRC_TX_VOLTAGE,                        LUA_EXPORT_TELEMETRY("tx-voltage", "Transmitter battery voltage [volts]")
-  MIXSRC_TX_TIME,                           LUA_EXPORT_TELEMETRY("clock", "RTC clock [minutes from midnight]")
+  MIXSRC_TX_VOLTAGE,                        LUA_EXPORT("tx-voltage", "Transmitter battery voltage [volts]")
+  MIXSRC_TX_TIME,                           LUA_EXPORT("clock", "RTC clock [minutes from midnight]")
   MIXSRC_RESERVE1,
   MIXSRC_RESERVE2,
   MIXSRC_RESERVE3,
   MIXSRC_RESERVE4,
   MIXSRC_RESERVE5,
   MIXSRC_FIRST_TIMER,
-  MIXSRC_TIMER1 = MIXSRC_FIRST_TIMER,       LUA_EXPORT_TELEMETRY("timer1", "Timer 1 value [seconds]")
-  MIXSRC_TIMER2,                            LUA_EXPORT_TELEMETRY("timer2", "Timer 2 value [seconds]")
-  MIXSRC_TIMER3,                            LUA_EXPORT_TELEMETRY("timer3", "Timer 3 value [seconds]")
+  MIXSRC_TIMER1 = MIXSRC_FIRST_TIMER,       LUA_EXPORT("timer1", "Timer 1 value [seconds]")
+  MIXSRC_TIMER2,                            LUA_EXPORT("timer2", "Timer 2 value [seconds]")
+  MIXSRC_TIMER3,                            LUA_EXPORT("timer3", "Timer 3 value [seconds]")
   MIXSRC_LAST_TIMER = MIXSRC_TIMER3,
 #endif
 
