@@ -102,7 +102,7 @@ MultiModelPrinter::MultiModelPrinter(Firmware * firmware):
 MultiModelPrinter::~MultiModelPrinter()
 {
   for(int i=0; i<modelPrinters.size(); i++) {
-    if (modelPrinters[i]) delete modelPrinters[i];
+    delete modelPrinters[i];
   }
 }
 
