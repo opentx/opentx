@@ -391,7 +391,7 @@ QString ModelPrinter::printFlightModeName(int index)
 {
   const FlightModeData & fm = model.flightModeData[index];
   if (strlen(fm.name) > 0) {
-    return tr("FM%1 \"%2\"").arg(index).arg(fm.name);
+    return tr("%1").arg(fm.name);
   }
   else {
     return tr("FM%1").arg(index);
