@@ -321,7 +321,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TIMER1_COUNTDOWN_BEEP:
-        g_model.timers[0].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[0].countdownBeep, 0, 2, attr, event);
+        g_model.timers[0].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[0].countdownBeep, COUNTDOWN_SILENT, COUNTDOWN_COUNT-1, attr, event);
         break;
 
       case ITEM_MODEL_TIMER1_PERSISTENT:
@@ -342,7 +342,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TIMER2_COUNTDOWN_BEEP:
-        g_model.timers[1].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[1].countdownBeep, 0, 2, attr, event);
+        g_model.timers[1].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[1].countdownBeep, COUNTDOWN_SILENT, COUNTDOWN_COUNT-1, attr, event);
         break;
 
       case ITEM_MODEL_TIMER2_PERSISTENT:
@@ -364,7 +364,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TIMER3_COUNTDOWN_BEEP:
-        g_model.timers[2].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[2].countdownBeep, 0, 2, attr, event);
+        g_model.timers[2].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[2].countdownBeep, COUNTDOWN_SILENT, COUNTDOWN_COUNT-1, attr, event);
         break;
 
       case ITEM_MODEL_TIMER3_PERSISTENT:
