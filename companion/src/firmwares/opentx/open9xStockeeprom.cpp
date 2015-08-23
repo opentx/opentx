@@ -88,7 +88,7 @@ t_Open9xExpoData_v201::operator ExpoData ()
   ExpoData c9x;
   c9x.mode = mode;
   c9x.chn = chn;
-  if (expo!=0 && curve!=0) {
+  if (expo != 0 && curve != 0) {
     EEPROMWarnings.push_back(::QObject::tr("Simultaneous usage of expo and curves is no longer supported in OpenTX"));
   }
   else {
@@ -101,13 +101,13 @@ t_Open9xExpoData_v201::operator ExpoData ()
   }
   c9x.swtch = open9xStockToSwitch(swtch);
   if (negPhase) {
-    c9x.flightModes= 1 << (phase -1);
+    c9x.flightModes = 1 << (phase -1);
   }
-  else if (phase==0) {
-    c9x.flightModes=0;
+  else if (phase == 0) {
+    c9x.flightModes = 0;
   }
   else {
-    c9x.flightModes=63;
+    c9x.flightModes = 63;
     c9x.flightModes &= ~(1 << (phase -1));
   }  
   c9x.weight = weight;
@@ -129,8 +129,8 @@ t_Open9xExpoData_v211::operator ExpoData ()
 t_Open9xLimitData_v201::operator LimitData ()
 {
   LimitData c9x;
-  c9x.min = 10*(min-100);
-  c9x.max = 10*(max+100);
+  c9x.min = 10 * (min - 100);
+  c9x.max = 10 * (max + 100);
   c9x.revert = revert;
   c9x.offset = offset;
   return c9x;
@@ -139,12 +139,12 @@ t_Open9xLimitData_v201::operator LimitData ()
 t_Open9xLimitData_v211::operator LimitData ()
 {
   LimitData c9x;
-  c9x.min = 10*(min-100);
-  c9x.max = 10*(max+100);
+  c9x.min = 10 * (min - 100);
+  c9x.max = 10 * (max + 100);
   c9x.revert = revert;
   c9x.offset = offset;
-  c9x.symetrical=symetrical;
-  c9x.ppmCenter=ppmCenter;
+  c9x.symetrical = symetrical;
+  c9x.ppmCenter = ppmCenter;
   return c9x;
 }
 
@@ -197,12 +197,12 @@ t_Open9xMixData_v201::operator MixData ()
   c9x.mltpx = (MltpxValue)mltpx;
   c9x.mixWarn = mixWarn;
 
-  if (phase<0) {
-    c9x.flightModes= 1 << (-phase -1);
-  } else if (phase==0) {
-    c9x.flightModes=0;
+  if (phase < 0) {
+    c9x.flightModes = 1 << (-phase -1);
+  } else if (phase == 0) {
+    c9x.flightModes = 0;
   } else {
-    c9x.flightModes=63;
+    c9x.flightModes = 63;
     c9x.flightModes &= ~(1 << (phase -1));
   }  
   c9x.sOffset = sOffset;
@@ -258,12 +258,12 @@ t_Open9xMixData_v203::operator MixData ()
   c9x.mltpx = (MltpxValue)mltpx;
   c9x.mixWarn = mixWarn;
 
-  if (phase<0) {
-    c9x.flightModes= 1 << (-phase -1);
-  } else if (phase==0) {
-    c9x.flightModes=0;
+  if (phase < 0) {
+    c9x.flightModes = 1 << (-phase -1);
+  } else if (phase == 0) {
+    c9x.flightModes = 0;
   } else {
-    c9x.flightModes=63;
+    c9x.flightModes = 63;
     c9x.flightModes &= ~(1 << (phase -1));
   } 
   c9x.sOffset = sOffset;
@@ -319,14 +319,14 @@ t_Open9xMixData_v205::operator MixData ()
     c9x.mltpx = (MltpxValue)mltpx;
     c9x.mixWarn = mixWarn;
 
-    if (phase<0) {
-      c9x.flightModes= 1 << (-phase -1);
+    if (phase < 0) {
+      c9x.flightModes = 1 << (-phase -1);
     }
-    else if (phase==0) {
-      c9x.flightModes=0;
+    else if (phase == 0) {
+      c9x.flightModes = 0;
     }
     else {
-      c9x.flightModes=63;
+      c9x.flightModes = 63;
       c9x.flightModes &= ~(1 << (phase -1));
     }
     c9x.sOffset = sOffset;
@@ -339,7 +339,7 @@ t_Open9xMixData_v209::operator MixData ()
   MixData c9x;
 
   if (srcRaw) {
-    c9x.destCh = destCh+1;
+    c9x.destCh = destCh + 1;
     c9x.swtch = open9xStockToSwitch(swtch);
 
     if (srcRaw == 0) {
@@ -386,14 +386,14 @@ t_Open9xMixData_v209::operator MixData ()
     c9x.mltpx = (MltpxValue)mltpx;
     c9x.mixWarn = mixWarn;
 
-    if (phase<0) {
-      c9x.flightModes= 1 << (-phase -1);
+    if (phase < 0) {
+      c9x.flightModes = 1 << (-phase -1);
     }
-    else if (phase==0) {
-      c9x.flightModes=0;
+    else if (phase ==0 ) {
+      c9x.flightModes = 0;
     }
     else {
-      c9x.flightModes=63;
+      c9x.flightModes = 63;
       c9x.flightModes &= ~(1 << (phase -1));
     }
     c9x.sOffset = sOffset;
@@ -406,7 +406,7 @@ t_Open9xMixData_v211::operator MixData ()
   MixData c9x;
 
   if (srcRaw) {
-    c9x.destCh = destCh+1;
+    c9x.destCh = destCh + 1;
     c9x.swtch = open9xStockToSwitch(swtch);
 
     if (srcRaw == 0) {
@@ -603,8 +603,8 @@ t_Open9xCustomFunctionData_v203::operator CustomFunctionData ()
   CustomFunctionData c9x;
   c9x.swtch = open9xStockToSwitch(swtch);
   if (func < 16) {
-    c9x.enabled=param & 0x01;
-    c9x.param = (param>>1)<<1;
+    c9x.enabled = param & 0x01;
+    c9x.param = (param>>1) << 1;
     c9x.func = (AssignFunc)(func);
   } else {
     c9x.param = param;
@@ -730,7 +730,7 @@ t_Open9xTimerData_v202::operator TimerData ()
 FrSkyRSSIAlarm t_Open9xFrSkyRSSIAlarm::get(int index)
 {
   FrSkyRSSIAlarm c9x;
-  c9x.level = (2+index+level) % 4;
+  c9x.level = (2 + index + level) % 4;
   c9x.value = value + 50;
   return c9x;
 }
@@ -840,7 +840,7 @@ t_Open9xFrSkyData_v204::operator FrSkyData ()
   c9x.channels[0] = channels[0];
   c9x.channels[1] = channels[1];
   c9x.usrProto = usrProto;
-  c9x.blades = blades+2;
+  c9x.blades = blades + 2;
   c9x.screens[0].type = 1;
   for (int i=0; i<4; i++)
     c9x.screens[0].body.bars[i] = bars[i];
@@ -853,7 +853,7 @@ t_Open9xFrSkyData_v205::operator FrSkyData ()
   c9x.channels[0] = channels[0];
   c9x.channels[1] = channels[1];
   c9x.usrProto = usrProto;
-  c9x.blades = blades+2;
+  c9x.blades = blades + 2;
   c9x.screens[0].type = 1;
   for (int i=0; i<4; i++)
     c9x.screens[0].body.bars[i] = bars[i];
@@ -869,7 +869,7 @@ t_Open9xFrSkyData_v208::operator FrSkyData ()
   c9x.channels[1] = channels[1];
   c9x.usrProto = usrProto;
   c9x.voltsSource = voltsSource;
-  c9x.blades = blades+2;
+  c9x.blades = blades + 2;
   c9x.currentSource=currentSource;
   c9x.screens[0].type = 1;
   for (int i=0; i<4; i++)
@@ -886,7 +886,7 @@ t_Open9xFrSkyData_v210::operator FrSkyData ()
   c9x.channels[1] = channels[1];
   c9x.usrProto = usrProto;
   c9x.voltsSource = voltsSource;
-  c9x.blades = blades+2;
+  c9x.blades = blades + 2;
   c9x.currentSource=currentSource;
 
   int lines_screen_index = 0;

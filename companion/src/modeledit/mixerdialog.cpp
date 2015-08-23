@@ -19,16 +19,18 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
 
     this->setWindowTitle(tr("DEST -> CH%1").arg(md->destCh));
 
-    populateSourceCB(ui->sourceCB, md->srcRaw, generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
+    populateSourceCB(ui->sourceCB, md->srcRaw, generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | 
+                                                                        POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
     ui->sourceCB->removeItem(0);
 
     int limit = firmware->getCapability(OffsetWeight);
 
     gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, md->weight, 100, -limit, limit);
     gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, md->sOffset, 0, -limit, limit);
-    curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, md->curve, firmware->getCapability(HasMixerExpo) ? 0 : HIDE_EXPO);
+    curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, 
+                                md->curve, firmware->getCapability(HasMixerExpo) ? 0 : HIDE_EXPO);
 
-    ui->MixDR_CB->setChecked(md->noExpo==0);
+    ui->MixDR_CB->setChecked(md->noExpo == 0);
 
     if (!firmware->getCapability(HasNoExpo)) {
       ui->MixDR_CB->hide();
@@ -63,14 +65,14 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
       }
     }
     else {
-      int mask=1;
+      int mask = 1;
       for (int i=0; i<9 ; i++) {
-        if ((md->flightModes & mask)==0) {
+        if ((md->flightModes & mask) == 0) {
           cb_fp[i]->setChecked(true);
         }
         mask <<= 1;
       }
-      for (int i=firmware->getCapability(FlightModes); i<9;i++) {
+      for (int i=firmware->getCapability(FlightModes); i<9; i++) {
         lb_fp[i]->hide();
         cb_fp[i]->hide();
       }
@@ -149,29 +151,26 @@ void MixerDialog::valuesChanged()
       ui->label_MixDR->setEnabled(drVisible);
     }
     md->carryTrim = -(ui->trimCB->currentIndex()-1);
-    md->noExpo = ui->MixDR_CB->checkState() ? 0 : 1;
+    md->noExpo    = ui->MixDR_CB->checkState() ? 0 : 1;
     md->swtch     = RawSwitch(ui->switchesCB->itemData(ui->switchesCB->currentIndex()).toInt());
     md->mixWarn   = ui->warningCB->currentIndex();
     md->mltpx     = (MltpxValue)ui->mltpxCB->currentIndex();
-    int scale=firmware->getCapability(SlowScale);
+    int scale = firmware->getCapability(SlowScale);
     md->delayDown = round(ui->delayDownSB->value()*scale);
     md->delayUp   = round(ui->delayUpSB->value()*scale);
     md->speedDown = round(ui->slowDownSB->value()*scale);
     md->speedUp   = round(ui->slowUpSB->value()*scale);
 
-    int i=0;
-    for (i=0; i<ui->mixerName->text().toAscii().length(); i++) {
-      md->name[i]=ui->mixerName->text().toAscii().at(i);
-    }
-    md->name[i]=0;
-    md->flightModes=0;
+    strcpy(md->name, ui->mixerName->text().toAscii());
+
+    md->flightModes = 0;
     for (int i=8; i>=0 ; i--) {
       if (!cb_fp[i]->checkState()) {
-        md->flightModes+=1;
+        md->flightModes++;
       }
-      md->flightModes<<=1;
+      md->flightModes <<= 1;
     }
-    md->flightModes>>=1;
+    md->flightModes >>= 1;
 
     lock = false;
   }

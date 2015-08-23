@@ -33,7 +33,8 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
     ui->offsetCB->hide();
   }
 
-  curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve, firmware->getCapability(HasInputDiff) ? 0 : (HIDE_DIFF | HIDE_NEGATIVE_CURVES));
+  curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve, 
+                              firmware->getCapability(HasInputDiff) ? 0 : (HIDE_DIFF | HIDE_NEGATIVE_CURVES));
 
   populateSwitchCB(ui->switchesCB, ed->swtch, generalSettings, MixesContext);
 
@@ -47,14 +48,14 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
     }
   }
   else {
-    int mask=1;
-    for (int i=0; i<9 ; i++) {
-      if ((ed->flightModes & mask)==0) {
+    int mask = 1;
+    for (int i=0; i<9; i++) {
+      if ((ed->flightModes & mask) == 0) {
         cb_fp[i]->setChecked(true);
       }
       mask <<= 1;
     }
-    for (int i=firmware->getCapability(FlightModes); i<9;i++) {
+    for (int i=firmware->getCapability(FlightModes); i<9; i++) {
       lb_fp[i]->hide();
       cb_fp[i]->hide();
     }
@@ -62,7 +63,8 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   if (firmware->getCapability(VirtualInputs)) {
     ui->inputName->setMaxLength(4);
-    populateSourceCB(ui->sourceCB, ed->srcRaw, generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | POPULATE_TELEMETRY);
+    populateSourceCB(ui->sourceCB, ed->srcRaw, generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | 
+                                                  POPULATE_SWITCHES | POPULATE_TRIMS | POPULATE_TELEMETRY);
     ui->sourceCB->removeItem(0);
     ui->inputName->setValidator(new QRegExpValidator(rx, this));
     ui->inputName->setText(inputName);
@@ -139,67 +141,68 @@ void ExpoDialog::updateScale()
 
 void ExpoDialog::valuesChanged()
 {
-    QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
+  QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
 
-    RawSource srcRaw = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt());
-    if (ed->srcRaw != srcRaw) {
-      ed->srcRaw = srcRaw;
-      updateScale();
+  RawSource srcRaw = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt());
+  if (ed->srcRaw != srcRaw) {
+    ed->srcRaw = srcRaw;
+    updateScale();
+  }
+
+  RawSourceRange range = srcRaw.getRange(&model, generalSettings);
+  ed->scale = round(float(ui->scale->value()) / range.step);
+  ed->carryTrim = 1 - ui->trimCB->currentIndex();
+  ed->swtch = RawSwitch(ui->switchesCB->itemData(ui->switchesCB->currentIndex()).toInt());
+  ed->mode = ui->sideCB->currentIndex() + 1;
+
+  strcpy(ed->name, ui->lineName->text().toAscii().data());
+  if (firmware->getCapability(VirtualInputs)) {
+    inputName = ui->inputName->text();
+  }
+
+  ed->flightModes = 0;
+  for (int i=8; i>=0 ; i--) {
+    if (!cb_fp[i]->checkState()) {
+      ed->flightModes++;
     }
-
-    RawSourceRange range = srcRaw.getRange(&model, generalSettings);
-    ed->scale = round(float(ui->scale->value()) / range.step);
-    ed->carryTrim = 1 - ui->trimCB->currentIndex();
-    ed->swtch  = RawSwitch(ui->switchesCB->itemData(ui->switchesCB->currentIndex()).toInt());
-    ed->mode   = ui->sideCB->currentIndex() + 1;
-
-    strcpy(ed->name, ui->lineName->text().toAscii().data());
-    if (firmware->getCapability(VirtualInputs)) 
-      inputName = ui->inputName->text();
-
-    ed->flightModes=0;
-    for (int i=8; i>=0 ; i--) {
-      if (!cb_fp[i]->checkState()) {
-        ed->flightModes+=1;
+    ed->flightModes <<= 1;
+  }
+  ed->flightModes >>= 1;
+  if (firmware->getCapability(FlightModes)) {
+    int zeros = 0;
+    int ones = 0;
+    int phtemp = ed->flightModes;
+    for (int i=0; i<firmware->getCapability(FlightModes); i++) {
+      if (phtemp & 1) {
+        ones++;
       }
-      ed->flightModes<<=1;
+      else {
+        zeros++;
+      }
+      phtemp >>= 1;
     }
-    ed->flightModes>>=1;
-    if (firmware->getCapability(FlightModes)) {
-      int zeros=0;
-      int ones=0;
-      int phtemp=ed->flightModes;
+    if (zeros == 1) {
+      phtemp=ed->flightModes;
+      for (int i=0; i<firmware->getCapability(FlightModes); i++) {
+        if ((phtemp & 1) == 0) {
+          break;
+        }
+        phtemp >>= 1;
+      }
+    }
+    else if (ones == 1) {
+      phtemp = ed->flightModes;
       for (int i=0; i<firmware->getCapability(FlightModes); i++) {
         if (phtemp & 1) {
-          ones++;
+          break;
         }
-        else {
-          zeros++;
-        }
-        phtemp >>=1;
-      }
-      if (zeros==1) {
-        phtemp=ed->flightModes;
-        for (int i=0; i<firmware->getCapability(FlightModes); i++) {
-          if ((phtemp & 1)==0) {
-            break;
-          }
-          phtemp >>=1;
-        }
-      }
-      else if (ones==1) {
-        phtemp=ed->flightModes;
-        for (int i=0; i<firmware->getCapability(FlightModes); i++) {
-          if (phtemp & 1) {
-            break;
-          }
-          phtemp >>=1;
-        }
+        phtemp >>= 1;
       }
     }
-    else {
-      ed->flightModes=0;
-    }  
+  }
+  else {
+    ed->flightModes = 0;
+  }  
 }
 
 void ExpoDialog::shrink()
