@@ -445,7 +445,7 @@ class ExpoData {
     unsigned int mode;
     unsigned int chn;
     RawSwitch swtch;
-    unsigned int phases;        // -5=!FP4, 0=normal, 5=FP4
+    unsigned int flightModes;        // -5=!FP4, 0=normal, 5=FP4
     int  weight;
     int offset;
     CurveReference curve;
@@ -468,14 +468,14 @@ class CurveData {
       CURVE_TYPE_LAST = CURVE_TYPE_CUSTOM
     };
 
-    CurveData() { clear(5); }
-
+    CurveData();
+    void clear(int count);
+    bool isEmpty() const;
     CurveType type;
     bool smooth;
     int  count;
     CurvePoint points[C9X_MAX_POINTS];
     char name[6+1];
-    void clear(int count) { memset(this, 0, sizeof(CurveData)); this->count = count; }
 };
 
 class LimitData {
@@ -489,9 +489,10 @@ class LimitData {
     bool  symetrical;
     char  name[6+1];
     CurveReference curve;
-    QString minToString();
-    QString maxToString();
-    QString offsetToString();
+    QString minToString() const;
+    QString maxToString() const;
+    QString offsetToString() const;
+    QString revertToString() const;
     void clear();
 };
 
@@ -519,7 +520,7 @@ class MixData {
     bool noExpo;
     MltpxValue mltpx;          // multiplex method 0=+ 1=* 2=replace
     unsigned int mixWarn;           // mixer warning
-    unsigned int phases;             // -5=!FP4, 0=normal, 5=FP4
+    unsigned int flightModes;             // -5=!FP4, 0=normal, 5=FP4
     int    sOffset;
     char   name[MIXDATA_NAME_LEN+1];
 
@@ -625,11 +626,11 @@ class CustomFunctionData { // Function Switches data
     int repeatParam;
     void clear();
     QString funcToString() const;
-    QString paramToString(ModelData * model) const;
+    QString paramToString(const ModelData * model) const;
     QString repeatToString() const;
     QString enabledToString() const;
 
-    static void populateResetParams(ModelData * model, QComboBox * b, unsigned int value);
+    static void populateResetParams(const ModelData * model, QComboBox * b, unsigned int value);
     static void populatePlaySoundParams(QStringList & qs);
     static void populateHapticParams(QStringList & qs);
 
@@ -797,6 +798,12 @@ class MavlinkData {
 
 class TimerData {
   public:
+    enum CountDownMode {
+      COUNTDOWN_SILENT,
+      COUNTDOWN_BEEPS,
+      COUNTDOWN_VOICE,
+      COUNTDOWN_HAPTIC
+    };
     TimerData() { clear(); }
     RawSwitch    mode;
     char         name[TIMER_NAME_LEN+1];
@@ -850,7 +857,7 @@ class ModuleData {
     bool         ppmOutputType;         // false = open drain, true = push pull 
     int          ppmFrameLength;
     void clear() { memset(this, 0, sizeof(ModuleData)); }
-    QString polarityToString() { return ppmPulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); }
+    QString polarityToString() const { return ppmPulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); } // TODO ModelPrinter
 };
 
 #define C9X_MAX_SCRIPTS       7
@@ -992,6 +999,11 @@ class ModelData {
     void removeInput(const int idx);
 
     bool isInputValid(const unsigned int idx) const;
+    bool hasExpos(uint8_t inputIdx) const;
+    bool hasMixes(uint8_t output) const;
+
+    QVector<const ExpoData *> expos(int input) const;
+    QVector<const MixData *> mixes(int channel) const;
 
     bool      used;
     char      name[12+1];
@@ -1043,7 +1055,7 @@ class ModelData {
     SensorData sensorData[C9X_MAX_SENSORS];
 
     void clear();
-    bool isempty();
+    bool isEmpty() const;
     void setDefaultInputs(const GeneralSettings & settings);
     void setDefaultMixes(const GeneralSettings & settings);
     void setDefaultValues(unsigned int id, const GeneralSettings & settings);
@@ -1362,9 +1374,9 @@ class EEPROMInterface
 
     virtual int save(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, uint8_t version=0) = 0;
 
-    virtual int getSize(ModelData &) = 0;
+    virtual int getSize(const ModelData &) = 0;
 
-    virtual int getSize(GeneralSettings &) = 0;
+    virtual int getSize(const GeneralSettings &) = 0;
 
     virtual int isAvailable(Protocol proto, int port=0) = 0;
 

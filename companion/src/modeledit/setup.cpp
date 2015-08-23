@@ -4,6 +4,7 @@
 #include "ui_setup_module.h"
 #include "helpers.h"
 #include "appdata.h"
+#include "modelprinter.h"
 
 TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget *prevFocus):
   ModelPanel(parent, model, generalSettings, firmware),
@@ -35,10 +36,11 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   }
 
   ui->countdownBeep->setField(timer.countdownBeep, this);
-  ui->countdownBeep->addItem(tr("Silent"), 0);
-  ui->countdownBeep->addItem(tr("Beeps"), 1);
+  ui->countdownBeep->addItem(tr("Silent"), TimerData::COUNTDOWN_SILENT);
+  ui->countdownBeep->addItem(tr("Beeps"), TimerData::COUNTDOWN_BEEPS);
   if (IS_ARM(board) || IS_2560(board)) {
-    ui->countdownBeep->addItem(tr("Voice"), 2);
+    ui->countdownBeep->addItem(tr("Voice"), TimerData::COUNTDOWN_VOICE);
+    ui->countdownBeep->addItem(tr("Haptic"), TimerData::COUNTDOWN_HAPTIC);
   }
 
   ui->persistent->setField(timer.persistent, this);
@@ -167,7 +169,7 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
   // The protocols available on this board
   for (int i=0; i<PROTO_LAST; i++) {
     if (GetEepromInterface()->isAvailable((Protocol)i, moduleIdx)) {
-      ui->protocol->addItem(getProtocolStr(i), (QVariant)i);
+      ui->protocol->addItem(ModelPrinter::printModuleProtocol(i), (QVariant)i);
       if (i == module.protocol) ui->protocol->setCurrentIndex(ui->protocol->count()-1);
     }
   }
@@ -756,7 +758,7 @@ void SetupPanel::populateThrottleSourceCB()
 
   int channels = (IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
   for (int i=0; i<channels; i++) {
-    ui->throttleSource->addItem(QObject::tr("CH%1").arg(i+1, 2, 10, QChar('0')), THROTTLE_SOURCE_FIRST_CHANNEL+i);
+    ui->throttleSource->addItem(ModelPrinter::printChannelName(i), THROTTLE_SOURCE_FIRST_CHANNEL+i);
     if (model->thrTraceSrc == unsigned(THROTTLE_SOURCE_FIRST_CHANNEL+i))
       ui->throttleSource->setCurrentIndex(ui->throttleSource->count()-1);
   }

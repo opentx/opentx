@@ -1,11 +1,9 @@
-#ifndef PRINTDIALOG_H
-#define PRINTDIALOG_H
+#ifndef _PRINTDIALOG_H
+#define _PRINTDIALOG_H
 
 #include <QDialog>
-#include <QtGui>
-#include <QDir>
 #include "eeprominterface.h"
-#include "modelprinter.h"
+#include "multimodelprinter.h"
 
 namespace Ui {
   class PrintDialog;
@@ -15,46 +13,27 @@ class PrintDialog : public QDialog
 {
     Q_OBJECT
 
-public:
-    explicit PrintDialog(QWidget *parent, Firmware * firmware, GeneralSettings *gg, ModelData *gm, QString filename="");
-    
+  public:
+    PrintDialog(QWidget * parent, Firmware * firmware, GeneralSettings & generalSettings, ModelData & model, const QString & filename="");
     ~PrintDialog();
-    void  closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent * event);
     
     Firmware * firmware;
-    GeneralSettings * g_eeGeneral;
-    ModelData * g_model;
+    GeneralSettings & generalSettings;
+    ModelData & model;
 
     QString printfilename;
 
-private:
+  protected:
     Ui::PrintDialog *ui;
-    unsigned int gvars;
+    MultiModelPrinter multimodelprinter; // TODO multimodelPrinter
 
-    void printSetup();
-    QString printFlightModes();
-    void printInputs();
-    void printMixes();
-    void printLimits();
-    void printCurves();
-    void printGvars();
-    void printLogicalSwitches();
-    void printSafetySwitches();
-    void printCustomFunctions();
-    void printFrSky();
     void printToFile();
-    
-    QTextEdit * te;
-    QString curvefile5;
-    QString curvefile9;
-    QDir *qd;
 
-    ModelPrinter modelPrinter;
-    
-private slots:
+  private slots:
     void on_printButton_clicked();
     void on_printFileButton_clicked();
     void autoClose();
 };
 
-#endif // PRINTDIALOG_H
+#endif // _PRINTDIALOG_H

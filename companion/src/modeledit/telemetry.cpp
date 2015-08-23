@@ -29,20 +29,10 @@ TelemetryAnalog::TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, Mod
   update();
 
   ui->UnitCB->setCurrentIndex(analog.type);
-  if (!IS_TARANIS(firmware->getBoard())) {
-    ui->alarm1LevelCB->setCurrentIndex(analog.alarms[0].level);
-    ui->alarm1GreaterCB->setCurrentIndex(analog.alarms[0].greater);
-    ui->alarm2LevelCB->setCurrentIndex(analog.alarms[1].level);
-    ui->alarm2GreaterCB->setCurrentIndex(analog.alarms[1].greater);
-  }
-  else {
-    ui->alarm1LevelCB->hide();
-    ui->alarm2LevelCB->hide();
-    ui->alarm1GreaterCB->hide();
-    ui->alarm2GreaterCB->hide();
-    ui->alarm1Label->setText(tr("Low Alarm"));
-    ui->alarm2Label->setText(tr("Critical Alarm"));
-  }
+  ui->alarm1LevelCB->setCurrentIndex(analog.alarms[0].level);
+  ui->alarm1GreaterCB->setCurrentIndex(analog.alarms[0].greater);
+  ui->alarm2LevelCB->setCurrentIndex(analog.alarms[1].level);
+  ui->alarm2GreaterCB->setCurrentIndex(analog.alarms[1].greater);
 
   if (!(firmware->getCapability(Telemetry) & TM_HASOFFSET)) {
     ui->CalibSB->hide();

@@ -155,7 +155,7 @@ void MdiChild::on_SimulateTxButton_clicked()
 void MdiChild::checkAndInitModel(int row)
 {
   ModelData &model = radioData.models[row - 1];
-  if (model.isempty()) {
+  if (model.isEmpty()) {
     model.setDefaultValues(row - 1, radioData.generalSettings);
     setModified();
   }
@@ -209,7 +209,7 @@ void MdiChild::openEditWindow()
   }
   else{
     ModelData &model = radioData.models[row - 1];
-    if (model.isempty() && g.useWizard()) {
+    if (model.isEmpty() && g.useWizard()) {
       wizardEdit();
     }
     else {
@@ -539,10 +539,10 @@ void MdiChild::print(int model, QString filename)
   PrintDialog * pd = NULL;
 
   if (model>=0 && !filename.isEmpty()) {
-    pd = new PrintDialog(this, GetCurrentFirmware()/*firmware*/, &radioData.generalSettings, &radioData.models[model], filename);
+    pd = new PrintDialog(this, GetCurrentFirmware()/*firmware*/, radioData.generalSettings, radioData.models[model], filename);
   }
   else if (getCurrentRow() > 0) {
-    pd = new PrintDialog(this, GetCurrentFirmware()/*firmware*/, &radioData.generalSettings, &radioData.models[getCurrentRow()-1]);
+    pd = new PrintDialog(this, GetCurrentFirmware()/*firmware*/, radioData.generalSettings, radioData.models[getCurrentRow()-1]);
   }
     
   if (pd) {

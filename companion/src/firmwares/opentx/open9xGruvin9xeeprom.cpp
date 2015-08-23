@@ -87,14 +87,14 @@ t_Open9xGruvin9xMixData_v207::operator MixData ()
     c9x.mixWarn = mixWarn;
 
     if (phase<0) {
-      c9x.phases= 1 << (-phase -1);
+      c9x.flightModes= 1 << (-phase -1);
     }
     else if (phase==0) {
-      c9x.phases=0;
+      c9x.flightModes=0;
     }
     else {
-      c9x.phases=63;
-      c9x.phases &= ~(1 << (phase -1));
+      c9x.flightModes=63;
+      c9x.flightModes &= ~(1 << (phase -1));
     }
     c9x.sOffset = sOffset;
   }
@@ -155,14 +155,14 @@ t_Open9xGruvin9xMixData_v209::operator MixData ()
     c9x.mixWarn = mixWarn;
 
     if (phase<0) {
-      c9x.phases= 1 << (-phase -1);
+      c9x.flightModes= 1 << (-phase -1);
     }
     else if (phase==0) {
-      c9x.phases=0;
+      c9x.flightModes=0;
     }
     else {
-      c9x.phases=63;
-      c9x.phases &= ~(1 << (phase -1));
+      c9x.flightModes=63;
+      c9x.flightModes &= ~(1 << (phase -1));
     }    
     c9x.sOffset = sOffset;
   }
@@ -222,7 +222,7 @@ t_Open9xGruvin9xMixData_v211::operator MixData ()
     c9x.noExpo = noExpo;
     c9x.mltpx = (MltpxValue)mltpx;
     c9x.mixWarn = mixWarn;
-    c9x.phases = phases;
+    c9x.flightModes = phases;
     c9x.sOffset = sOffset;
   }
   return c9x;

@@ -206,12 +206,12 @@ int Gruvin9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t vari
   return 0;
 }
 
-int Gruvin9xInterface::getSize(ModelData &model)
+int Gruvin9xInterface::getSize(const ModelData & model)
 {
   return 0;
 }
 
-int Gruvin9xInterface::getSize(GeneralSettings &settings)
+int Gruvin9xInterface::getSize(const GeneralSettings & settings)
 {
   return 0;
 }
