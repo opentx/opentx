@@ -64,7 +64,7 @@ QString ModelPrinter::printOutputName(int idx)
     return name;
   }
   else {
-    return printChannelName(idx);
+    return "";
   }
 }
 
@@ -180,7 +180,7 @@ QString ModelPrinter::printTimer(int idx)
 QString ModelPrinter::printTimer(const TimerData & timer)
 {
   QStringList result;
-  if (firmware->getCapability(TimersName))
+  if (firmware->getCapability(TimersName) && timer.name[0]) 
     result += tr("Name(%1)").arg(timer.name);
   result += tr("%1:%2").arg(timer.val/60, 2, 10, QChar('0')).arg(timer.val%60, 2, 10, QChar('0'));
   result += timer.mode.toString();
@@ -201,10 +201,25 @@ QString ModelPrinter::printTrim(int flightModeIndex, int stickIndex)
 {
   const FlightModeData & fm = model.flightModeData[flightModeIndex];
 
-  if (fm.trimRef[stickIndex] == -1)
-    return QString("%1").arg(fm.trim[stickIndex]);
-  else
-    return tr("FM%1").arg(fm.trimRef[stickIndex]);
+  if (fm.trimMode[stickIndex] == -1) { 
+    return tr("Off");
+  } 
+  else {
+    if (fm.trimRef[stickIndex] == flightModeIndex) {
+      return QString("%1").arg(fm.trim[stickIndex]);
+    }
+    else {
+      if (fm.trimMode[stickIndex] == 0) {
+        return tr("FM%1").arg(fm.trimRef[stickIndex]);
+      }
+      else {
+        if (fm.trim[stickIndex] < 0) 
+          return tr("FM%1%2").arg(fm.trimRef[stickIndex]).arg(fm.trim[stickIndex]);
+        else
+          return tr("FM%1+%2").arg(fm.trimRef[stickIndex]).arg(fm.trim[stickIndex]);
+      }
+    }
+  }
 }
 
 QString ModelPrinter::printGlobalVar(int flightModeIndex, int gvarIndex)
@@ -295,7 +310,7 @@ QString ModelPrinter::printInputLine(const ExpoData & input)
 
 QString ModelPrinter::printMixerName(int curDest)
 {
-  QString str = printChannelName(curDest) + " ";
+  QString str = printChannelName(curDest-1) + " ";
   if (firmware->getCapability(HasChNames)) {
     QString name = model.limitData[curDest-1].name;
     if (!name.isEmpty()) {

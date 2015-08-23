@@ -38,10 +38,9 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
     }
 
     if (!firmware->getCapability(VirtualInputs)) {
-      ui->trimCB->addItem(tr("Rud"));
-      ui->trimCB->addItem(tr("Ele"));
-      ui->trimCB->addItem(tr("Thr"));
-      ui->trimCB->addItem(tr("Ail"));
+      for(int i=0; i < NUM_STICKS; i++) {
+        ui->trimCB->addItem(AnalogString(i));
+      }
     }
 
     ui->trimCB->setCurrentIndex(1 - md->carryTrim);

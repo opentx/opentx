@@ -78,10 +78,9 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
     ui->trimCB->hide();
   }
 
-  ui->trimCB->addItem(tr("Rud"), 1);
-  ui->trimCB->addItem(tr("Ele"), 2);
-  ui->trimCB->addItem(tr("Thr"), 3);
-  ui->trimCB->addItem(tr("Ail"), 4);
+  for(int i=0; i < NUM_STICKS; i++) {
+    ui->trimCB->addItem(AnalogString(i), i+1);
+  }
   ui->trimCB->setCurrentIndex(1 - ed->carryTrim);
 
   int expolength = firmware->getCapability(HasExpoNames);

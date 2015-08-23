@@ -84,8 +84,8 @@ bool MultiModelPrinter::MultiColumns::isEmpty()
   for (int cc=0; cc<models.size(); cc++) { \
     ModelPrinter * modelPrinter = modelPrinters[cc]; \
     ModelData * model = models[cc]; \
-    model = model; modelPrinter = modelPrinter; \
-    columns.append(cc, what); \
+    (void)(model); (void)(modelPrinter); \
+    columns.append(cc, (what)); \
   } \
   columns.endCompare();
 
@@ -101,6 +101,9 @@ MultiModelPrinter::MultiModelPrinter(Firmware * firmware):
 
 MultiModelPrinter::~MultiModelPrinter()
 {
+  for(int i=0; i<modelPrinters.size(); i++) {
+    if (modelPrinters[i]) delete modelPrinters[i];
+  }
 }
 
 void MultiModelPrinter::setModel(int idx, const ModelData & model)
@@ -108,13 +111,20 @@ void MultiModelPrinter::setModel(int idx, const ModelData & model)
   int count = std::max(models.size(), idx+1);
   models.resize(count);
   modelPrinters.resize(count);
+
+  if (modelPrinters[idx]) {
+    // free existing model printer
+    delete modelPrinters[idx];
+    modelPrinters[idx] = 0;
+  }
+
   models[idx] = (ModelData *)&model; // TODO remove cast
   modelPrinters[idx] = new ModelPrinter(firmware, defaultSettings, model);
 }
 
 QString MultiModelPrinter::print()
 {
-  QString str = "<table border='1' cellspacing='0' cellpadding='3' width='100%'>";
+  QString str = "<table border='1' cellspacing='0' cellpadding='3' width='100%' style='font-family: monospace;'>";
   str += printSetup();
   if (firmware->getCapability(FlightModes))
     str += printFlightModes();
@@ -182,10 +192,8 @@ QString MultiModelPrinter::printFlightModes()
     columns.append("<td><b>" + tr("Switch") + "</b></td>");
     columns.append("<td><b>" + tr("Fade IN") + "</b></td>");
     columns.append("<td><b>" + tr("Fade OUT") + "</b></td>");
-    for (int i=0; i<4; i++) {
-      columns.append("<td><b>");
-      COMPARE(modelPrinter->printInputName(i));
-      columns.append("</b></td>");
+    for (int i=0; i<NUM_STICKS; i++) {
+      columns.append("<td><b>" + AnalogString(i) + " trim</b></td>");
     }
     columns.append("</tr>");
 
@@ -199,7 +207,7 @@ QString MultiModelPrinter::printFlightModes()
       columns.append("</td><td>");
       COMPARE(model->flightModeData[i].fadeOut);
       columns.append("</td>");
-      for (int k=0; k<4; k++) {
+      for (int k=0; k<NUM_STICKS; k++) {
         columns.append("<td>");
         COMPARE(modelPrinter->printTrim(i, k));
         columns.append("</td>");
@@ -259,14 +267,17 @@ QString MultiModelPrinter::printLimits()
   MultiColumns columns(models.size());
   columns.append("<table border='0' cellspacing='0' cellpadding='1' width='100%'>" \
                  "<tr>" \
-                 " <td>" + (firmware->getCapability(HasChNames) ? tr("Name") : "") + "</td>" \
+                 " <td><b>" + tr("Channel") + "</b></td>" \
+                 " <td><b>" + (firmware->getCapability(HasChNames) ? tr("Name") : "") + "</b></td>" \
                  " <td><b>" + tr("Offset") + "</b></td>" \
                  " <td><b>" + tr("Min") + "</b></td>" \
                  " <td><b>" + tr("Max") + "</b></td>" \
                  " <td><b>" + tr("Invert") + "</b></td>" \
                  "</tr>");
   for (int i=0; i<firmware->getCapability(Outputs); i++) {
-    columns.append("<tr><td>");
+    columns.append("<tr><td><b>");
+    COMPARE(modelPrinter->printChannelName(i));
+    columns.append("</b></td><td>");
     COMPARE(modelPrinter->printOutputName(i));
     columns.append("</td><td>");
     COMPARE(model->limitData[i].offsetToString());
@@ -341,12 +352,12 @@ QString MultiModelPrinter::printMixers()
     }
     if (count > 0) {
       columns.append("<tr><td width='20%'><b>");
-      COMPARE(modelPrinter->printChannelName(i));
+      COMPARE(modelPrinter->printMixerName(i+1));
       columns.append("</b></td><td>");
       for (int j=0; j<count; j++) {
         if (j > 0)
           columns.append("<br/>");
-        COMPARE(modelPrinter->printMixerLine(*model->mixes(i)[j]));
+        COMPARE((j < model->mixes(i).size()) ? modelPrinter->printMixerLine(*model->mixes(i)[j]) : "&nbsp;");
       }
       columns.append("</td></tr>");
     }
