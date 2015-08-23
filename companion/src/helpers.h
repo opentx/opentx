@@ -100,7 +100,6 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
 
 void populatePhasesCB(QComboBox *b, int value);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
-QString getProtocolStr(const int proto);
 
 #define POPULATE_NONE           (1<<0)
 #define POPULATE_SOURCES        (1<<1)
@@ -118,15 +117,8 @@ QString getProtocolStr(const int proto);
 // void populateGVarCB(QComboBox *b, int value, int min, int max,int pgvars=5); //TODO: Clean Up
 void populateGVCB(QComboBox *b, int value);
 void populateSourceCB(QComboBox *b, const RawSource &source, const GeneralSettings generalSettings, const ModelData * model, unsigned int flags);
-QString getPhaseName(int val, const char * phasename=NULL);
 QString image2qstring(QImage image);
 int findmult(float value, float base);
-
-QString getTrimInc(ModelData * g_model);
-QString getTimerStr(TimerData & timer);
-QString getProtocol(ModuleData & module);
-QString getTrainerMode(const int trainermode, ModuleData & module);
-QString getCenterBeepStr(ModelData * g_model);
 
 /* FrSky helpers */
 QString getFrSkyAlarmType(int alarm);

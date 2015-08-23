@@ -170,12 +170,12 @@ t_Gruvin9xExpoData::operator ExpoData ()
   c9x.chn = chn;
   c9x.swtch = gruvin9xToSwitch(swtch);
   if (negPhase) {
-    c9x.phases= 1 << (phase -1);
+    c9x.flightModes= 1 << (phase -1);
   } else if (phase==0) {
-    c9x.phases=0;
+    c9x.flightModes=0;
   } else {
-    c9x.phases=63;
-    c9x.phases &= ~(1 << (phase -1));
+    c9x.flightModes=63;
+    c9x.flightModes &= ~(1 << (phase -1));
   }  
   c9x.weight = weight;
   if (expo) {

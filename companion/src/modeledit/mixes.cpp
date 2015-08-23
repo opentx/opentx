@@ -7,7 +7,7 @@ MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   ModelPanel(parent, model, generalSettings, firmware),
   mixInserted(false), 
   highlightedSource(0),
-  modelPrinter(firmware, &generalSettings, &model)
+  modelPrinter(firmware, generalSettings, model)
 {
   QGridLayout * mixesLayout = new QGridLayout(this);
 
@@ -56,11 +56,11 @@ void MixesPanel::update()
   unsigned int outputs = firmware->getCapability(Outputs);
 
   for (i=0; i<firmware->getCapability(Mixes); i++) {
-    MixData *md = &model->mixData[i];
-    // qDebug() << "md->destCh: " << md->destCh;
-    if (md->destCh==0 || md->destCh>outputs) continue;
+    MixData & mix = model->mixData[i];
+    // qDebug() << "mix.destCh: " << mix.destCh;
+    if (mix.destCh==0 || mix.destCh>outputs) continue;
     QString str = "";
-    while (curDest < md->destCh-1) {
+    while (curDest < mix.destCh-1) {
       curDest++;
       AddMixerLine(-curDest);
     }
@@ -133,14 +133,14 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
     if (new_ch) *new_ch = 1;
   }
   else {
-    MixData *md = &model->mixData[dest];
-    //md->destCh from 1 to 32
-    str = modelPrinter.printMixerName(md->destCh);
+    MixData & mix = model->mixData[dest];
+    //mix->destCh from 1 to 32
+    str = modelPrinter.printMixerName(mix.destCh);
 
-    if ((dest == 0) || (model->mixData[dest-1].destCh != md->destCh)) {
+    if ((dest == 0) || (model->mixData[dest-1].destCh != mix.destCh)) {
       if (new_ch) *new_ch = 1;
       //highlight channel if needed
-      if (md->destCh == highlightedSource) {
+      if (mix.destCh == highlightedSource) {
         str = "<b>" + str + "</b>";
       }
     }
@@ -148,7 +148,7 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
       str.fill(' ');
     }
 
-    str += modelPrinter.printMixerLine(md, highlightedSource);
+    str += modelPrinter.printMixerLine(mix, highlightedSource);
   }
   return str.replace(" ", "&nbsp;");
 }
@@ -303,10 +303,11 @@ void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
     int idx; // mixer index
     int dch;
 
-    if(destIdx<0) {
+    if (destIdx < 0) {
       dch = -destIdx;
       idx = getMixerIndex(dch) - 1; //get mixer index to insert
-    } else {
+    }
+    else {
       idx = destIdx;
       dch = model->mixData[idx].destCh;
     }
@@ -314,14 +315,14 @@ void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
     QByteArray mxData = mimeData->data("application/x-companion-mix");
 
     int i = 0;
-    while(i<mxData.size()) {
+    while (i < mxData.size()) {
       idx++;
-      if(idx==firmware->getCapability(Mixes)) break;
+      if (idx == firmware->getCapability(Mixes)) break;
 
       if (!gm_insertMix(idx))
         break;
-      MixData *md = &model->mixData[idx];
-      memcpy(md,mxData.mid(i,sizeof(MixData)).constData(),sizeof(MixData));
+      MixData * md = &model->mixData[idx];
+      memcpy(md, mxData.mid(i, sizeof(MixData)).constData(), sizeof(MixData));
       md->destCh = dch;
       i += sizeof(MixData);
     }

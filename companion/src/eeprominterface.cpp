@@ -815,7 +815,7 @@ QString CustomFunctionData::funcToString() const
   }
 }
 
-void CustomFunctionData::populateResetParams(ModelData * model, QComboBox * b, unsigned int value = 0) 
+void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox * b, unsigned int value = 0)
 {
   int val = 0;
   Firmware * firmware = GetCurrentFirmware();
@@ -863,7 +863,7 @@ void CustomFunctionData::populateHapticParams(QStringList & qs)
   qs << "0" << "1" << "2" << "3";
 }
 
-QString CustomFunctionData::paramToString(ModelData * model) const
+QString CustomFunctionData::paramToString(const ModelData * model) const
 {
   QStringList qs;
   if (func <= FuncInstantTrim) {
@@ -948,17 +948,43 @@ QString CustomFunctionData::enabledToString() const
   return "";
 }
 
-QString LimitData::minToString()
+CurveData::CurveData()
+{
+  clear(5);
+}
+
+void CurveData::clear(int count)
+{
+  memset(this, 0, sizeof(CurveData));
+  this->count = count;
+}
+
+bool CurveData::isEmpty() const
+{
+  for (int i=0; i<count; i++) {
+    if (points[i].y != 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+QString LimitData::minToString() const
 {
   return QString::number((qreal)min/10);
 }
 
-QString LimitData::maxToString()
+QString LimitData::maxToString() const
 {
   return QString::number((qreal)max/10);
 }
 
-QString LimitData::offsetToString()
+QString LimitData::revertToString() const
+{
+  return revert ? QObject::tr("INV") : QObject::tr("NOR");
+}
+
+QString LimitData::offsetToString() const
 {
   return QString::number((qreal)offset/10, 'f', 1);
 }
@@ -1262,6 +1288,52 @@ bool ModelData::isInputValid(const unsigned int idx) const
   return false;
 }
 
+bool ModelData::hasExpos(uint8_t inputIdx) const
+{
+  for (int i=0; i<C9X_MAX_EXPOS; i++) {
+    const ExpoData & expo = expoData[i];
+    if (expo.chn==inputIdx && expo.mode!=0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool ModelData::hasMixes(uint8_t channelIdx) const
+{
+  channelIdx += 1;
+  for (int i=0; i<C9X_MAX_MIXERS; i++) {
+    if (mixData[i].destCh == channelIdx) {
+      return true;
+    }
+  }
+  return false;
+}
+
+QVector<const ExpoData *> ModelData::expos(int input) const
+{
+  QVector<const ExpoData *> result;
+  for (int i=0; i<C9X_MAX_EXPOS; i++) {
+    const ExpoData * ed = &expoData[i];
+    if ((int)ed->chn==input && ed->mode!=0) {
+      result << ed;
+    }
+  }
+  return result;
+}
+
+QVector<const MixData *> ModelData::mixes(int channel) const
+{
+  QVector<const MixData *> result;
+  for (int i=0; i<C9X_MAX_MIXERS; i++) {
+    const MixData * md = &mixData[i];
+    if ((int)md->destCh == channel+1) {
+      result << md;
+    }
+  }
+  return result;
+}
+
 void ModelData::removeInput(const int idx)
 {
   unsigned int chn = expoData[idx].chn;
@@ -1341,7 +1413,7 @@ void ModelData::clear()
     sensorData[i].clear();
 }
 
-bool ModelData::isempty()
+bool ModelData::isEmpty() const
 {
   return !used;
 }

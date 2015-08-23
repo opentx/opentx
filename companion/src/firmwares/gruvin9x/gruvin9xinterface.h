@@ -43,9 +43,9 @@ class Gruvin9xInterface : public EEPROMInterface
 
     virtual int save(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, uint8_t version=0);
 
-    virtual int getSize(ModelData &);
+    virtual int getSize(const ModelData &);
     
-    virtual int getSize(GeneralSettings &settings);
+    virtual int getSize(const GeneralSettings & settings);
 
     virtual int isAvailable(Protocol proto, int port=0);
 

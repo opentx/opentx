@@ -47,24 +47,6 @@ const QColor colors[C9X_MAX_CURVES] = {
   QColor(255,127,0),
 };
 
-QString getPhaseName(int val, const char * phasename)
-{
-  if (!val) return "---";
-  if (!phasename) {
-    return QString(val < 0 ? "!" : "") + QObject::tr("FM%1").arg(abs(val) - 1);
-  }
-  else {
-    QString phaseName;
-    phaseName.append(phasename);
-    if (phaseName.isEmpty()) {
-      return QString(val < 0 ? "!" : "") + QObject::tr("FM%1").arg(abs(val) - 1);
-    }
-    else {
-      return QString(val < 0 ? "!" : "") + phaseName;
-    }
-  }
-}
-
 void populateGvSourceCB(QComboBox *b, int value)
 {
   QString strings[] = { QObject::tr("---"), QObject::tr("Rud Trim"), QObject::tr("Ele Trim"), QObject::tr("Thr Trim"), QObject::tr("Ail Trim"), QObject::tr("Rot Enc"), QObject::tr("Rud"), QObject::tr("Ele"), QObject::tr("Thr"), QObject::tr("Ail"), QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3")};
@@ -104,20 +86,6 @@ void getFileComboBoxValue(QComboBox * b, char * dest, int length)
   if (b->currentText() != "----") {
     strncpy(dest, b->currentText().toAscii(), length);
   }
-}
-
-QString getProtocolStr(const int proto)
-{
-  static const char *strings[] = { "OFF",
-                                   "PPM",
-                                   "Silverlit A", "Silverlit B", "Silverlit C",
-                                   "CTP1009",
-                                   "LP45", "DSM2", "DSMX",
-                                   "PPM16", "PPMsim",
-                                   "FrSky XJT - D16", "FrSky XJT - D8", "FrSky XJT - LR12", "FrSky DJT",
-  };
-
-  return CHECK_IN_ARRAY(strings, proto);
 }
 
 void populatePhasesCB(QComboBox *b, int value)
@@ -772,106 +740,6 @@ QString getFrSkySrc(int index)
   return RawSource(SOURCE_TYPE_TELEMETRY, index-1).toString();
 }
 
-QString getTrimInc(ModelData * g_model)
-{
-  switch (g_model->trimInc) {
-    case -2:
-      return QObject::tr("Exponential");
-    case -1:
-      return QObject::tr("Extra Fine");
-    case 0:
-      return QObject::tr("Fine");
-    case 1:
-      return QObject::tr("Medium");
-    case 2:
-      return QObject::tr("Coarse");
-    default:
-      return QObject::tr("Unknown");
-  }
-}
-
-QString getTimerStr(TimerData & timer)
-{
-  QString result = QObject::tr("%1:%2").arg(timer.val/60, 2, 10, QChar('0')).arg(timer.val%60, 2, 10, QChar('0'));
-  result += QString(", ") + timer.mode.toString();
-  if (timer.persistent)
-    result += QObject::tr(", Persistent");
-  if (timer.minuteBeep)
-    result += QObject::tr(", MinuteBeep");
-  if (timer.countdownBeep == 1)
-    result += QObject::tr(", CountDown(Beeps)");
-  else if (timer.countdownBeep == 2)
-    result += QObject::tr(", CountDown(Voice)");
-  return result;
-}
-
-QString getProtocol(ModuleData & module)
-{
-  QString str = getProtocolStr(module.protocol);
-
-  if (module.protocol == PPM)
-    str.append(QObject::tr(": Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4").arg(module.channelsStart+1).arg(module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString()));
-  else
-    str.append(QObject::tr(": Channel start: %1, %2 Channels").arg(module.channelsStart+1).arg(module.channelsCount));
-  return str;
-}
-
-QString getTrainerMode(const int trainermode, ModuleData & module)
-{
-  QString result;
-  switch (trainermode) {
-    case 1:
-      result=QObject::tr("Slave/Jack")+QObject::tr(": Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4").arg(module.channelsStart+1).arg(module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString());
-      break;
-    case 2:
-      result=QObject::tr("Master/SBUS Module");
-      break;
-    case 3:
-      result=QObject::tr("Master/CPPM Module");
-      break;
-    case 4:
-      result=QObject::tr("Master/SBUS in battery compartment");
-      break;
-    default:
-      result=QObject::tr("Master/Jack");
-  }
-  return result;
-}
-
-QString getCenterBeepStr(ModelData * g_model)
-{
-  QStringList strl;
-  if (g_model->beepANACenter & 0x01)
-    strl << QObject::tr("Rudder");
-  if (g_model->beepANACenter & 0x02)
-    strl << QObject::tr("Elevator");
-  if (g_model->beepANACenter & 0x04)
-    strl << QObject::tr("Throttle");
-  if (g_model->beepANACenter & 0x08)
-    strl << QObject::tr("Aileron");
-  if (IS_TARANIS(GetCurrentFirmware()->getBoard())) {
-    if (g_model->beepANACenter & 0x10)
-      strl << "S1";
-    if (g_model->beepANACenter & 0x20)
-      strl << "S2";
-    if (g_model->beepANACenter & 0x40)
-      strl << "S3";
-    if (g_model->beepANACenter & 0x80)
-      strl << "LS";
-    if (g_model->beepANACenter & 0x100)
-      strl << "RS";
-  }
-  else {
-    if (g_model->beepANACenter & 0x10)
-      strl << "P1";
-    if (g_model->beepANACenter & 0x20)
-      strl << "P2";
-    if (g_model->beepANACenter & 0x40)
-      strl << "P3";
-  }
-  return strl.join(", ");
-}
-
 QString getTheme()
 {
   int theme_set = g.theme();
@@ -1018,7 +886,7 @@ int qunlink(const QString & fileName)
   return unlink(ba.constData());
 }
 
-QString generateProcessUniqueTempFileName(const QString &fileName)
+QString generateProcessUniqueTempFileName(const QString & fileName)
 {
   QString sanitizedFileName = fileName;
   sanitizedFileName.remove('/');

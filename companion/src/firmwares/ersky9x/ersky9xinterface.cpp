@@ -234,12 +234,12 @@ int Ersky9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t varia
   return 0;
 }
 
-int Ersky9xInterface::getSize(ModelData &model)
+int Ersky9xInterface::getSize(const ModelData & model)
 {
   return 0;
 }
 
-int Ersky9xInterface::getSize(GeneralSettings &settings)
+int Ersky9xInterface::getSize(const GeneralSettings & settings)
 {
   return 0;
 }

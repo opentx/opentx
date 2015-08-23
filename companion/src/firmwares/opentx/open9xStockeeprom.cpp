@@ -101,14 +101,14 @@ t_Open9xExpoData_v201::operator ExpoData ()
   }
   c9x.swtch = open9xStockToSwitch(swtch);
   if (negPhase) {
-    c9x.phases= 1 << (phase -1);
+    c9x.flightModes= 1 << (phase -1);
   }
   else if (phase==0) {
-    c9x.phases=0;
+    c9x.flightModes=0;
   }
   else {
-    c9x.phases=63;
-    c9x.phases &= ~(1 << (phase -1));
+    c9x.flightModes=63;
+    c9x.flightModes &= ~(1 << (phase -1));
   }  
   c9x.weight = weight;
   return c9x;
@@ -121,7 +121,7 @@ t_Open9xExpoData_v211::operator ExpoData ()
   c9x.chn = chn;
   // TODO c9x.curve
   c9x.swtch = open9xStockToSwitch(swtch);
-  c9x.phases = phases;
+  c9x.flightModes = phases;
   c9x.weight = weight;
   return c9x;
 }
@@ -198,12 +198,12 @@ t_Open9xMixData_v201::operator MixData ()
   c9x.mixWarn = mixWarn;
 
   if (phase<0) {
-    c9x.phases= 1 << (-phase -1);
+    c9x.flightModes= 1 << (-phase -1);
   } else if (phase==0) {
-    c9x.phases=0;
+    c9x.flightModes=0;
   } else {
-    c9x.phases=63;
-    c9x.phases &= ~(1 << (phase -1));
+    c9x.flightModes=63;
+    c9x.flightModes &= ~(1 << (phase -1));
   }  
   c9x.sOffset = sOffset;
   return c9x;
@@ -259,12 +259,12 @@ t_Open9xMixData_v203::operator MixData ()
   c9x.mixWarn = mixWarn;
 
   if (phase<0) {
-    c9x.phases= 1 << (-phase -1);
+    c9x.flightModes= 1 << (-phase -1);
   } else if (phase==0) {
-    c9x.phases=0;
+    c9x.flightModes=0;
   } else {
-    c9x.phases=63;
-    c9x.phases &= ~(1 << (phase -1));
+    c9x.flightModes=63;
+    c9x.flightModes &= ~(1 << (phase -1));
   } 
   c9x.sOffset = sOffset;
   return c9x;
@@ -320,14 +320,14 @@ t_Open9xMixData_v205::operator MixData ()
     c9x.mixWarn = mixWarn;
 
     if (phase<0) {
-      c9x.phases= 1 << (-phase -1);
+      c9x.flightModes= 1 << (-phase -1);
     }
     else if (phase==0) {
-      c9x.phases=0;
+      c9x.flightModes=0;
     }
     else {
-      c9x.phases=63;
-      c9x.phases &= ~(1 << (phase -1));
+      c9x.flightModes=63;
+      c9x.flightModes &= ~(1 << (phase -1));
     }
     c9x.sOffset = sOffset;
   }
@@ -387,14 +387,14 @@ t_Open9xMixData_v209::operator MixData ()
     c9x.mixWarn = mixWarn;
 
     if (phase<0) {
-      c9x.phases= 1 << (-phase -1);
+      c9x.flightModes= 1 << (-phase -1);
     }
     else if (phase==0) {
-      c9x.phases=0;
+      c9x.flightModes=0;
     }
     else {
-      c9x.phases=63;
-      c9x.phases &= ~(1 << (phase -1));
+      c9x.flightModes=63;
+      c9x.flightModes &= ~(1 << (phase -1));
     }
     c9x.sOffset = sOffset;
   }
@@ -453,7 +453,7 @@ t_Open9xMixData_v211::operator MixData ()
     c9x.noExpo = noExpo;
     c9x.mltpx = (MltpxValue)mltpx;
     c9x.mixWarn = mixWarn;
-    c9x.phases = phases;
+    c9x.flightModes = phases;
     c9x.sOffset = sOffset;
   }
   return c9x;

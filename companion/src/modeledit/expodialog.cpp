@@ -11,7 +11,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   firmware(firmware),
   ed(expoData),
   inputName(inputName),
-  modelPrinter(firmware, &generalSettings, &model)
+  modelPrinter(firmware, generalSettings, model)
 {
   ui->setupUi(this);
   QLabel * lb_fp[] = {ui->lb_FP0,ui->lb_FP1,ui->lb_FP2,ui->lb_FP3,ui->lb_FP4,ui->lb_FP5,ui->lb_FP6,ui->lb_FP7,ui->lb_FP8 };
@@ -49,7 +49,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   else {
     int mask=1;
     for (int i=0; i<9 ; i++) {
-      if ((ed->phases & mask)==0) {
+      if ((ed->flightModes & mask)==0) {
         cb_fp[i]->setChecked(true);
       }
       mask <<= 1;
@@ -157,18 +157,18 @@ void ExpoDialog::valuesChanged()
     if (firmware->getCapability(VirtualInputs)) 
       inputName = ui->inputName->text();
 
-    ed->phases=0;
+    ed->flightModes=0;
     for (int i=8; i>=0 ; i--) {
       if (!cb_fp[i]->checkState()) {
-        ed->phases+=1;
+        ed->flightModes+=1;
       }
-      ed->phases<<=1;
+      ed->flightModes<<=1;
     }
-    ed->phases>>=1;
+    ed->flightModes>>=1;
     if (firmware->getCapability(FlightModes)) {
       int zeros=0;
       int ones=0;
-      int phtemp=ed->phases;
+      int phtemp=ed->flightModes;
       for (int i=0; i<firmware->getCapability(FlightModes); i++) {
         if (phtemp & 1) {
           ones++;
@@ -179,7 +179,7 @@ void ExpoDialog::valuesChanged()
         phtemp >>=1;
       }
       if (zeros==1) {
-        phtemp=ed->phases;
+        phtemp=ed->flightModes;
         for (int i=0; i<firmware->getCapability(FlightModes); i++) {
           if ((phtemp & 1)==0) {
             break;
@@ -188,7 +188,7 @@ void ExpoDialog::valuesChanged()
         }
       }
       else if (ones==1) {
-        phtemp=ed->phases;
+        phtemp=ed->flightModes;
         for (int i=0; i<firmware->getCapability(FlightModes); i++) {
           if (phtemp & 1) {
             break;
@@ -198,7 +198,7 @@ void ExpoDialog::valuesChanged()
       }
     }
     else {
-      ed->phases=0;
+      ed->flightModes=0;
     }  
 }
 

@@ -158,6 +158,7 @@ set(companion_SRCS
   apppreferencesdialog.cpp
   fwpreferencesdialog.cpp
   burnconfigdialog.cpp
+  multimodelprinter.cpp
   comparedialog.cpp
   contributorsdialog.cpp
   releasenotesdialog.cpp

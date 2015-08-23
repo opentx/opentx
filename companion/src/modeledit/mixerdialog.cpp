@@ -65,7 +65,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
     else {
       int mask=1;
       for (int i=0; i<9 ; i++) {
-        if ((md->phases & mask)==0) {
+        if ((md->flightModes & mask)==0) {
           cb_fp[i]->setChecked(true);
         }
         mask <<= 1;
@@ -164,14 +164,14 @@ void MixerDialog::valuesChanged()
       md->name[i]=ui->mixerName->text().toAscii().at(i);
     }
     md->name[i]=0;
-    md->phases=0;
+    md->flightModes=0;
     for (int i=8; i>=0 ; i--) {
       if (!cb_fp[i]->checkState()) {
-        md->phases+=1;
+        md->flightModes+=1;
       }
-      md->phases<<=1;
+      md->flightModes<<=1;
     }
-    md->phases>>=1;
+    md->flightModes>>=1;
 
     lock = false;
   }

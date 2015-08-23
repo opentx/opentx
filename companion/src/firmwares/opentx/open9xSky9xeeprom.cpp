@@ -160,12 +160,12 @@ t_Open9xArmExpoData_v208::operator ExpoData ()
   }
   c9x.swtch = open9xArmToSwitch(swtch);
   if (phase<0) {
-    c9x.phases= 1 << (-phase -1);
+    c9x.flightModes= 1 << (-phase -1);
   } else if (phase==0) {
-    c9x.phases=0;
+    c9x.flightModes=0;
   } else {
-    c9x.phases=63;
-    c9x.phases &= ~(1 << (phase -1));
+    c9x.flightModes=63;
+    c9x.flightModes &= ~(1 << (phase -1));
   }  
   c9x.weight = weight;
   return c9x;
@@ -190,14 +190,14 @@ t_Open9xArmExpoData_v210::operator ExpoData ()
   }
   c9x.swtch = open9xArmToSwitch(swtch);
   if (phase<0) {
-    c9x.phases= 1 << (-phase -1);
+    c9x.flightModes= 1 << (-phase -1);
   }
   else if (phase==0) {
-    c9x.phases=0;
+    c9x.flightModes=0;
   }
   else {
-    c9x.phases=63;
-    c9x.phases &= ~(1 << (phase -1));
+    c9x.flightModes=63;
+    c9x.flightModes &= ~(1 << (phase -1));
   }  
   c9x.weight = weight;
   getEEPROMZString(c9x.name, name, sizeof(name));
@@ -213,7 +213,7 @@ t_Open9xArmExpoData_v212::operator ExpoData ()
   // TODO c9x.curveMode=curveMode;
   // c9x.curveParam=curveParam;
   c9x.swtch = open9xArmToSwitch(swtch);
-  c9x.phases= phases;
+  c9x.flightModes= phases;
   c9x.weight = weight;
   getEEPROMZString(c9x.name, name, sizeof(name));
   return c9x;
@@ -292,14 +292,14 @@ t_Open9xArmMixData_v208::operator MixData ()
     c9x.mixWarn = mixWarn;
 
     if (phase<0) {
-      c9x.phases= 1 << (-phase -1);
+      c9x.flightModes= 1 << (-phase -1);
     }
     else if (phase==0) {
-      c9x.phases=0;
+      c9x.flightModes=0;
     }
     else {
-      c9x.phases=511;
-      c9x.phases &= ~(1 << (phase -1));
+      c9x.flightModes=511;
+      c9x.flightModes &= ~(1 << (phase -1));
     }
 
     c9x.sOffset = sOffset;
@@ -358,14 +358,14 @@ t_Open9xArmMixData_v209::operator MixData ()
     c9x.mixWarn = mixWarn;
 
     if (phase<0) {
-      c9x.phases= 1 << (-phase -1);
+      c9x.flightModes= 1 << (-phase -1);
     }
     else if (phase==0) {
-      c9x.phases=0;
+      c9x.flightModes=0;
     }
     else {
-      c9x.phases=511;
-      c9x.phases &= ~(1 << (phase -1));
+      c9x.flightModes=511;
+      c9x.flightModes &= ~(1 << (phase -1));
     }
 
     c9x.sOffset = sOffset;
@@ -424,14 +424,14 @@ t_Open9xArmMixData_v210::operator MixData ()
     c9x.mixWarn = mixWarn;
 
     if (phase<0) {
-      c9x.phases= 1 << (-phase -1);
+      c9x.flightModes= 1 << (-phase -1);
     }
     else if (phase==0) {
-      c9x.phases=0;
+      c9x.flightModes=0;
     }
     else {
-      c9x.phases=511;
-      c9x.phases &= ~(1 << (phase -1));
+      c9x.flightModes=511;
+      c9x.flightModes &= ~(1 << (phase -1));
     }
 
     c9x.sOffset = sOffset;
@@ -493,7 +493,7 @@ t_Open9xArmMixData_v212::operator MixData ()
     c9x.noExpo = noExpo;
     c9x.mltpx = (MltpxValue)mltpx;
     c9x.mixWarn = mixWarn;
-    c9x.phases = phases;
+    c9x.flightModes = phases;
     c9x.sOffset = sOffset;
     getEEPROMZString(c9x.name, name, sizeof(name));
   }
