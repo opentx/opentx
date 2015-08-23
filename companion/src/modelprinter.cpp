@@ -112,8 +112,13 @@ QString ModelPrinter::printModule(int idx)
     return printModuleProtocol(module.protocol);
   else if (module.protocol == PPM)
     return tr("%1, Channels(%2-%3), PPM delay(%4usec), Pulse polarity(%5)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart+1).arg(module.channelsStart+module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString());
-  else
-    return tr("%1, Channels(%2-%3)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart+1).arg(module.channelsStart+module.channelsCount);
+  else {
+    QString result = tr("%1, Channels(%2-%3)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart+1).arg(module.channelsStart+module.channelsCount);
+    if (module.protocol != PXX_XJT_D8) {
+      result += " " + tr("Receiver number(%1)").arg(module.modelId);
+    }
+    return result;
+  }
 }
 
 QString ModelPrinter::printTrainerMode()
