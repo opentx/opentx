@@ -291,33 +291,39 @@
 #include "debug.h"
 
 #if defined(SIMU)
-#include "targets/simu/simpgmspace.h"
+  #include "targets/simu/simpgmspace.h"
 #elif defined(CPUARM)
-typedef const unsigned char pm_uchar;
-typedef const char pm_char;
-typedef const uint16_t pm_uint16_t;
-typedef const uint8_t pm_uint8_t;
-typedef const int16_t pm_int16_t;
-typedef const int8_t pm_int8_t;
-#define pgm_read_byte(address_short) (*(uint8_t*)(address_short))
-#define PSTR(adr) adr
-#define PROGMEM
-#define pgm_read_adr(x) *(x)
-#define cli()
-#define sei()
-extern void boardInit();
+  typedef const unsigned char pm_uchar;
+  typedef const char pm_char;
+  typedef const uint16_t pm_uint16_t;
+  typedef const uint8_t pm_uint8_t;
+  typedef const int16_t pm_int16_t;
+  typedef const int8_t pm_int8_t;
+  #define pgm_read_byte(address_short) (*(uint8_t*)(address_short))
+  #define PSTR(adr) adr
+  #define PROGMEM
+  #define pgm_read_adr(x) *(x)
+  #define cli()
+  #define sei()
+  extern void boardInit();
+  #if defined(PCBTARANIS)
+    extern void boardOff();
+  #else
+    #define boardOff()  pwrOff();
+  #endif
 #else
-#include <avr/io.h>
-#include <avr/pgmspace.h>
-#include "pgmtypes.h"
+  #define boardOff()  pwrOff();
+  #include <avr/io.h>
+  #include <avr/pgmspace.h>
+  #include "pgmtypes.h"
 
-#include <avr/eeprom.h>
-#include <avr/sleep.h>
-#include <avr/interrupt.h>
-#define F_CPU 16000000UL  // 16 MHz
-#include <util/delay.h>
-#define pgm_read_adr(address_short) pgm_read_word(address_short)
-#include <avr/wdt.h>
+  #include <avr/eeprom.h>
+  #include <avr/sleep.h>
+  #include <avr/interrupt.h>
+  #define F_CPU 16000000UL  // 16 MHz
+  #include <util/delay.h>
+  #define pgm_read_adr(address_short) pgm_read_word(address_short)
+  #include <avr/wdt.h>
 #endif
 
 #if defined(PCBTARANIS)

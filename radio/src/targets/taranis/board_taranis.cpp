@@ -187,7 +187,7 @@ void boardInit()
       lcdRefreshWait();
     }
     if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
-      pwrOff();
+      boardOff();
     }
   }
   else {
@@ -198,7 +198,26 @@ void boardInit()
   backlightInit();
 #endif
 }
+
+void boardOff()
+{
+  BACKLIGHT_OFF();
+#if defined(REV9E)
+  topLcdOff();
 #endif
+
+#if defined(REV9E)
+  while (pwrPressed()) {
+    wdt_reset();
+  }
+#endif
+
+  lcdOff();
+  SysTick->CTRL = 0; // turn off systick
+  pwrOff();
+}
+
+#endif   // #if !defined(SIMU)
 
 
 #if defined(USB_JOYSTICK) && !defined(SIMU)
