@@ -753,6 +753,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   LCDSIZE = 128
   CPPDEFS = -Dat91sam3s4
   ifeq ($(PCB), 9XRPRO)
+    CPPDEFS = -Dat91sam3s8
     FLAVOUR = 9xrpro
     CPPDEFS += -DREVX
     LDSCRIPT = targets/sky9x/sam3s8c_flash.ld

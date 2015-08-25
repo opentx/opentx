@@ -81,7 +81,7 @@ INIT_STOPS(stopsSwitch, 15, SWSRC_FIRST, CATEGORY_END(-SWSRC_FIRST_LOGICAL_SWITC
 
 int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
-  int16_t newval = val;
+  int newval = val;
 
 #if defined(DBLKEYS)
   uint8_t in = KEYS_PRESSED();
