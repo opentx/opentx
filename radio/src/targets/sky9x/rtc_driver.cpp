@@ -267,7 +267,7 @@ void rtcSetTime(struct gtm * t)
   I2CTime.Time[6] = (t->tm_year+1900) >> 8;
 #if defined(REVX)
   writeRTC((uint8_t *)&I2CTime.Time[0]) ;
-#else
+#elif defined(COPROCESSOR)
   coprocWriteData((uint8_t *) &I2CTime, 8);
 #endif
 }
@@ -276,7 +276,7 @@ void rtcInit()
 {
 #if defined(REVX)
   readRTC();
-#else
+#elif defined(COPROCESSOR)
   coprocReadData();
 #endif
 }

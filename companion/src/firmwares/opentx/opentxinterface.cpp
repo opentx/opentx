@@ -73,6 +73,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for Sky9x board / 9X";
     case BOARD_9XRPRO:
       return "OpenTX for 9XR-PRO";
+    case BOARD_AR9X:
+      return "OpenTX for ar9x board / 9X";
     default:
       return "OpenTX for an unknown board";
   }
@@ -91,6 +93,7 @@ const int OpenTxEepromInterface::getEEpromSize()
     case BOARD_SKY9X:
       return EESIZE_SKY9X;
     case BOARD_9XRPRO:
+	case BOARD_AR9X:
       return EESIZE_9XRPRO;
     case BOARD_TARANIS:
     case BOARD_TARANIS_PLUS:
@@ -381,6 +384,7 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
       case BOARD_TARANIS_PLUS:
       case BOARD_TARANIS_X9E:
       case BOARD_SKY9X:
+      case BOARD_AR9X:
       case BOARD_9XRPRO:
         version = 217;
         break;
@@ -1069,6 +1073,7 @@ QString OpenTxFirmware::getFirmwareUrl()
       url.append(QString("/getfw.php?fw=%1.hex").arg(id));
       break;
     case BOARD_SKY9X:
+    case BOARD_AR9X:
     case BOARD_9XRPRO:
     case BOARD_TARANIS:
     case BOARD_TARANIS_PLUS:
@@ -1338,6 +1343,29 @@ void registerOpenTxFirmwares()
   firmware->addOption("battgraph", QObject::tr("Battery graph"));
   firmware->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   firmware->addOption("bluetooth", QObject::tr("Bluetooth interface"));
+  addOpenTxCommonOptions(firmware);
+  firmwares.push_back(firmware);
+  
+  /* ar9x board */
+  firmware = new OpenTxFirmware("opentx-ar9x", QObject::tr("ar9x board / 9X"), BOARD_AR9X);
+  firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
+  firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
+  firmware->addOption("nofp", QObject::tr("No flight modes"));
+  firmware->addOption("nocurves", QObject::tr("Disable curves menus"));
+  firmware->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
+  firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
+  firmware->addOption("symlimits", QObject::tr("Symetrical Limits"));
+  firmware->addOption("timer3", QObject::tr("Support for a third timer"));
+  firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
+  firmware->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
+  firmware->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
+  firmware->addOption("dblkeys", QObject::tr("Enable resetting values by pressing up and down at the same time"));
+  firmware->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
+  firmware->addOption("battgraph", QObject::tr("Battery graph"));
+  firmware->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
+  firmware->addOption("bluetooth", QObject::tr("Bluetooth interface"));
+  firmware->addOption("rtc", QObject::tr("Optional RTC added"));
+  firmware->addOption("volume", QObject::tr("i2c volume control added"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 

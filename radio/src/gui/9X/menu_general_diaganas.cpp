@@ -38,7 +38,7 @@
 
 void menuGeneralDiagAna(uint8_t event)
 {
-#if defined(PCBSKY9X) && !defined(REVA)
+#if defined(PCBSKY9X) && !defined(REVA) && !defined(AR9X)
   #define ANAS_ITEMS_COUNT 4
 #elif defined(PCBSKY9X)
   #define ANAS_ITEMS_COUNT 3
@@ -93,15 +93,23 @@ void menuGeneralDiagAna(uint8_t event)
 #endif
   if (m_posVert==1) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatCalib, -127, 127);
 
-#if defined(PCBSKY9X) && !defined(REVA)
+#if defined(PCBSKY9X) && !defined(REVA) && !defined(AR9X)
   lcd_putsLeft(6*FH+1, STR_CURRENT_CALIB);
   putsValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, 6*FH+1, getCurrent(), UNIT_MILLIAMPS, (m_posVert==2 ? INVERS : 0)) ;
   if (m_posVert==2) CHECK_INCDEC_GENVAR(event, g_eeGeneral.currentCalib, -49, 49);
 #endif
 
 #if defined(PCBSKY9X)
-  lcd_putsLeft(7*FH+1, STR_TEMP_CALIB);
-  putsValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, 7*FH+1, getTemperature(), UNIT_TEMPERATURE, (m_posVert==3 ? INVERS : 0)) ;
-  if (m_posVert==3) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
+  #if defined(AR9X)
+    #define TEMP_CALIB_POS 6*FH+1
+    #define TEMP_CALIB_MENU_POS 2
+  #else
+    #define TEMP_CALIB_POS 7*FH+1
+    #define TEMP_CALIB_MENU_POS 3
+  #endif
+
+  lcd_putsLeft(TEMP_CALIB_POS, STR_TEMP_CALIB);
+  putsValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, TEMP_CALIB_POS, getTemperature(), UNIT_TEMPERATURE, (m_posVert==TEMP_CALIB_MENU_POS ? INVERS : 0)) ;
+  if (m_posVert==TEMP_CALIB_MENU_POS) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
 #endif
 }

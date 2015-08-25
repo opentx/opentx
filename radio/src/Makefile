@@ -50,7 +50,7 @@ DELAY = 5
 #----------- BUILD OPTIONS ---------------------------
 
 # PCB version
-# Values: 9X, 9X128, 9X2561, 9XR, 9XR128, 9XR2561, GRUVIN9X, MEGA2560, SKY9X, 9XRPRO, TARANIS
+# Values: 9X, 9X128, 9X2561, 9XR, 9XR128, 9XR2561, GRUVIN9X, MEGA2560, SKY9X, 9XRPRO, AR9X, TARANIS
 # Old values STD and STD128 are mapped to 9X and 9X128 for compatibility
 PCB = 9X
 
@@ -213,6 +213,11 @@ VARIO = YES
 # Values = YES, NO
 # default = YES (means enabled when available)
 RTCLOCK = YES
+
+# Hardware volume
+# Values = YES, NO
+# default = YES (AR9X board doesn't have a hardware volume control as delivered but it can be fitted optionally)
+HARDWARE_VOLUME = YES
 
 # BLUETOOTH
 # Values = YES, NO
@@ -391,7 +396,7 @@ LUADEP =
 DEBUG_TRACE_BUFFER = NO
 
 # MCU name
-ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO TARANIS))
+ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO AR9X TARANIS))
   $(error Sorry, the PCB $(PCB) is not supported yet in OpenTX)
 endif
 
@@ -746,7 +751,7 @@ ifeq ($(PCB), MEGA2560)
   CPPDEFS += -DROTARY_ENCODERS=${ROTARY_ENCODERS}
 endif
 
-ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
+ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
   # 9x/9XR radio with a sky9x replacement board
   GUIDIRECTORY = 9X
   ARCH = ARM
@@ -756,6 +761,11 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
     CPPDEFS = -Dat91sam3s8
     FLAVOUR = 9xrpro
     CPPDEFS += -DREVX
+    LDSCRIPT = targets/sky9x/sam3s8c_flash.ld
+  else ifeq ($(PCB), AR9X)
+    CPPDEFS = -Dat91sam3s8
+    FLAVOUR = ar9x
+    CPPDEFS += -DAR9X
     LDSCRIPT = targets/sky9x/sam3s8c_flash.ld
   else ifeq ($(PCBREV), REVA)
     FLAVOUR = sky9x
@@ -825,6 +835,9 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   endif
   ifeq ($(DEBUG), YES)
     SRC += syscalls.c
+  endif
+  ifeq ($(HARDWARE_VOLUME), NO)
+    CPPDEFS += -DNO_HARDWARE_VOLUME
   endif
 endif
 
@@ -1048,7 +1061,7 @@ FORMAT = ihex
 TARGET = opentx
 
 # List C++ source files here. (C dependencies are automatically generated.)
-ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO TARANIS))
+ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X TARANIS))
   TTS_SRC = translations/tts_cz.cpp translations/tts_de.cpp translations/tts_en.cpp translations/tts_es.cpp translations/tts_fr.cpp translations/tts_it.cpp translations/tts_nl.cpp translations/tts_pt.cpp translations/tts_sk.cpp translations/tts_se.cpp translations/tts_pl.cpp translations/tts_hu.cpp
 else
   STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
@@ -1437,7 +1450,7 @@ all: begin gccversion sizebefore build sizeafter end
 # Change the build target to build a HEX file or a library.
 ifeq ($(ARCH), AVR)
   build: stamp_header tra lbm allsrc.cpp elf remallsrc hex
-else ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO TARANIS))
+else ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X TARANIS))
   build: stamp_header tra lbm bootloader.lbm $(LUADEP) allsrc.cpp elf remallsrc bin
 else
   build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
@@ -1450,7 +1463,7 @@ bootloader.lbm: targets/taranis/bootloader/bootloader_ramBoot.bin
 .PHONY targets/taranis/bootloader/bootloader_ramBoot.bin:
 	@echo "Building bootloader..."
 	$(MAKE) -C targets/taranis/bootloader PCB=$(PCB) PCBREV=$(PCBREV) NANO=$(NANO)
-else ifeq ($(PCB), 9XRPRO)
+else ifeq ($(PCB), $(filter $(PCB), 9XRPRO AR9X))
 bootloader.lbm:
 	@echo "Fetching Mike's bootloader..."
 	wget http://ersky9x.googlecode.com/svn/trunk/src/bootloader/bootflash8.lbm
