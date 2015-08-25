@@ -479,6 +479,10 @@ void menuModelSelect(uint8_t event)
             eeDirty(EE_GENERAL);
           }
 
+#if defined(CPUARM)
+          checkModelIdUnique(g_eeGeneral.currModel);
+#endif
+
           s_copyMode = 0;
           event = EVT_ENTRY_UP;
         }
