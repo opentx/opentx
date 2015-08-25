@@ -1386,6 +1386,10 @@ void ModelData::clear()
     moduleData[0].protocol=PXX_XJT_X16;
     moduleData[1].protocol=OFF;
   }
+  else if (IS_SKY9X(board)) {
+    moduleData[0].protocol=PPM;
+    moduleData[1].protocol=PPM;      
+  }
   else {
     moduleData[0].protocol=PPM;
     moduleData[1].protocol=OFF;      

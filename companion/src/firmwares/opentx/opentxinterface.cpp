@@ -649,7 +649,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case Haptic:
       return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || id.contains("haptic"));
     case ModelTrainerEnable:
-      if (IS_ARM(board))
+      if (IS_TARANIS(board))
         return 1;
       else
         return 0;
@@ -841,9 +841,9 @@ int OpenTxEepromInterface::isAvailable(Protocol proto, int port)
       case 0:
         switch (proto) {
           case PPM:
-          // case PXX_XJT_X16:
-          // case PXX_XJT_D8:
-          // case PXX_XJT_LR12:
+          case PXX_XJT_X16:
+          case PXX_XJT_D8:
+          case PXX_XJT_LR12:
           case LP45:
           case DSM2:
           case DSMX:
@@ -1329,6 +1329,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   firmware->addOption("symlimits", QObject::tr("Symetrical Limits"));
+  firmware->addOption("timer3", QObject::tr("Support for a third timer"));
   firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
   firmware->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
   firmware->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
@@ -1349,6 +1350,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   firmware->addOption("symlimits", QObject::tr("Symetrical Limits"));
+  firmware->addOption("timer3", QObject::tr("Support for a third timer"));
   firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
   firmware->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
   firmware->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));

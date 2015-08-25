@@ -561,7 +561,7 @@ void menuModelTelemetry(uint8_t event)
       lcd_putcAtt(lcdLastPos, y, ':', attr);
       lcd_putsnAtt(3*FW, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
       if (telemetryItems[index].isFresh()) {
-        lcd_putc(10*FW, y, '*');
+        lcd_putc(16*FW, y, '*');
       }
       TelemetryItem & telemetryItem = telemetryItems[index];
       if (telemetryItem.isAvailable()) {
