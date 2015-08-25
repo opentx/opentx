@@ -41,9 +41,9 @@ class OpenTxEepromInterface : public EEPROMInterface
 
     virtual int save(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, uint8_t version=0);
 
-    virtual int getSize(ModelData &);
+    virtual int getSize(const ModelData &);
 
-    virtual int getSize(GeneralSettings &);
+    virtual int getSize(const GeneralSettings &);
     
     virtual int isAvailable(Protocol proto, int port=0);
     

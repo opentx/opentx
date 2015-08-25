@@ -414,7 +414,7 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
   }
 
   for (int i=0; i<getMaxModels(); i++) {
-    if (!radioData.models[i].isempty()) {
+    if (!radioData.models[i].isEmpty()) {
       result = saveModel<OpenTxModelData>(i, radioData.models[i], version, variant);
       if (!result) {
         return 0;
@@ -441,18 +441,18 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
   return size;
 }
 
-int OpenTxEepromInterface::getSize(ModelData &model)
+int OpenTxEepromInterface::getSize(const ModelData & model)
 {
   if (IS_SKY9X(board))
     return 0;
 
-  if (model.isempty())
+  if (model.isEmpty())
     return 0;
 
   QByteArray tmp(EESIZE_MAX, 0);
   efile->EeFsCreate((uint8_t *)tmp.data(), EESIZE_MAX, board, 255/*version max*/);
 
-  OpenTxModelData open9xModel(model, board, 255/*version max*/, GetCurrentFirmware()->getVariantNumber());
+  OpenTxModelData open9xModel((ModelData &)model, board, 255/*version max*/, GetCurrentFirmware()->getVariantNumber());
 
   QByteArray eeprom;
   open9xModel.Export(eeprom);
@@ -463,7 +463,7 @@ int OpenTxEepromInterface::getSize(ModelData &model)
   return efile->size(0);
 }
 
-int OpenTxEepromInterface::getSize(GeneralSettings &settings)
+int OpenTxEepromInterface::getSize(const GeneralSettings & settings)
 {
   if (IS_SKY9X(board))
     return 0;
@@ -471,7 +471,7 @@ int OpenTxEepromInterface::getSize(GeneralSettings &settings)
   QByteArray tmp(EESIZE_MAX, 0);
   efile->EeFsCreate((uint8_t *)tmp.data(), EESIZE_MAX, board, 255);
 
-  OpenTxGeneralData open9xGeneral(settings, board, 255, GetCurrentFirmware()->getVariantNumber());
+  OpenTxGeneralData open9xGeneral((GeneralSettings &)settings, board, 255, GetCurrentFirmware()->getVariantNumber());
   // open9xGeneral.Dump();
 
   QByteArray eeprom;

@@ -943,7 +943,7 @@ class MixField: public TransformedField {
     {
       if (IS_TARANIS(board) && version >= 217) {
         internalField.Append(new UnsignedField<8>(_destCh));
-        internalField.Append(new UnsignedField<9>(mix.phases));
+        internalField.Append(new UnsignedField<9>(mix.flightModes));
         internalField.Append(new UnsignedField<2>((unsigned int &)mix.mltpx));
         internalField.Append(new UnsignedField<1>((unsigned int &)mix.carryTrim));
         internalField.Append(new UnsignedField<4>(mix.mixWarn));
@@ -961,7 +961,7 @@ class MixField: public TransformedField {
       else if (IS_ARM(board) && version >= 217) {
         internalField.Append(new UnsignedField<5>(_destCh));
         internalField.Append(new UnsignedField<3>(mix.mixWarn));
-        internalField.Append(new UnsignedField<9>(mix.phases));
+        internalField.Append(new UnsignedField<9>(mix.flightModes));
         internalField.Append(new BoolField<1>(_curveMode));
         internalField.Append(new BoolField<1>(mix.noExpo));
         internalField.Append(new SignedField<3>(mix.carryTrim));
@@ -979,7 +979,7 @@ class MixField: public TransformedField {
       }
       else if (IS_TARANIS(board) && version == 216) {
         internalField.Append(new UnsignedField<8>(_destCh));
-        internalField.Append(new UnsignedField<16>(mix.phases));
+        internalField.Append(new UnsignedField<16>(mix.flightModes));
         internalField.Append(new UnsignedField<2>((unsigned int &)mix.mltpx));
         internalField.Append(new UnsignedField<1>((unsigned int &)mix.carryTrim));
         internalField.Append(new SpareBitsField<5>());
@@ -1000,7 +1000,7 @@ class MixField: public TransformedField {
       else if (IS_ARM(board) && version == 216) {
         internalField.Append(new UnsignedField<5>(_destCh));
         internalField.Append(new UnsignedField<3>(mix.mixWarn));
-        internalField.Append(new UnsignedField<16>(mix.phases));
+        internalField.Append(new UnsignedField<16>(mix.flightModes));
         internalField.Append(new BoolField<1>(_curveMode));
         internalField.Append(new BoolField<1>(mix.noExpo));
         internalField.Append(new SignedField<3>(mix.carryTrim));
@@ -1019,7 +1019,7 @@ class MixField: public TransformedField {
       }
       else if (IS_ARM(board)) {
         internalField.Append(new UnsignedField<8>(_destCh));
-        internalField.Append(new UnsignedField<16>(mix.phases));
+        internalField.Append(new UnsignedField<16>(mix.flightModes));
         internalField.Append(new BoolField<1>(_curveMode));
         internalField.Append(new BoolField<1>(mix.noExpo));
         internalField.Append(new SignedField<3>(mix.carryTrim));
@@ -1064,7 +1064,7 @@ class MixField: public TransformedField {
         internalField.Append(new SourceField<8>(mix.srcRaw, board, version, FLAG_NOTELEMETRY));
         internalField.Append(new SignedField<8>(_weight));
         internalField.Append(new SwitchField<8>(mix.swtch, board, version));
-        internalField.Append(new UnsignedField<8>(mix.phases));
+        internalField.Append(new UnsignedField<8>(mix.flightModes));
         internalField.Append(new UnsignedField<2>((unsigned int &)mix.mltpx));
         internalField.Append(new SignedField<3>(mix.carryTrim));
         internalField.Append(new UnsignedField<2>(mix.mixWarn));
@@ -1085,7 +1085,7 @@ class MixField: public TransformedField {
         internalField.Append(new SignedField<8>(_weight));
         internalField.Append(new SwitchField<6>(mix.swtch, board, version));
         internalField.Append(new UnsignedField<2>((unsigned int &)mix.mltpx));
-        internalField.Append(new UnsignedField<5>(mix.phases));
+        internalField.Append(new UnsignedField<5>(mix.flightModes));
         internalField.Append(new SignedField<3>(mix.carryTrim));
         internalField.Append(new SourceField<6>(mix.srcRaw, board, version, FLAG_NOTELEMETRY));
         internalField.Append(new UnsignedField<2>(mix.mixWarn));
@@ -1214,7 +1214,7 @@ class InputField: public TransformedField {
         internalField.Append(new UnsignedField<14>(expo.scale, "Scale"));
         internalField.Append(new UnsignedField<8>(expo.chn, "Channel"));
         internalField.Append(new SwitchField<8>(expo.swtch, board, version));
-        internalField.Append(new UnsignedField<16>(expo.phases));
+        internalField.Append(new UnsignedField<16>(expo.flightModes));
         internalField.Append(new SignedField<8>(_weight, "Weight"));
         internalField.Append(new SignedField<6>(expo.carryTrim, "CarryTrim"));
         internalField.Append(new UnsignedField<2>(expo.mode, "Mode"));
@@ -1226,7 +1226,7 @@ class InputField: public TransformedField {
         internalField.Append(new UnsignedField<2>(expo.mode, "Mode"));
         internalField.Append(new UnsignedField<3>(expo.chn, "Channel"));
         internalField.Append(new BoolField<2>(_curveMode));
-        internalField.Append(new UnsignedField<9>(expo.phases, "Phases"));
+        internalField.Append(new UnsignedField<9>(expo.flightModes, "Phases"));
         internalField.Append(new SwitchField<8>(expo.swtch, board, version));
         internalField.Append(new SignedField<8>(_weight, "Weight"));
         internalField.Append(new ZCharField<6>(expo.name));
@@ -1237,7 +1237,7 @@ class InputField: public TransformedField {
         internalField.Append(new UnsignedField<16>(expo.scale, "Scale"));
         internalField.Append(new UnsignedField<8>(expo.chn, "Channel"));
         internalField.Append(new SwitchField<8>(expo.swtch, board, version));
-        internalField.Append(new UnsignedField<16>(expo.phases));
+        internalField.Append(new UnsignedField<16>(expo.flightModes));
         internalField.Append(new SignedField<8>(_weight, "Weight"));
         internalField.Append(new SignedField<6>(expo.carryTrim, "CarryTrim"));
         internalField.Append(new UnsignedField<2>(expo.mode, "Mode"));
@@ -1251,7 +1251,7 @@ class InputField: public TransformedField {
         internalField.Append(new UnsignedField<4>(expo.chn, "Channel"));
         internalField.Append(new BoolField<2>(_curveMode));
         internalField.Append(new SwitchField<8>(expo.swtch, board, version));
-        internalField.Append(new UnsignedField<16>(expo.phases, "Phases"));
+        internalField.Append(new UnsignedField<16>(expo.flightModes, "Phases"));
         internalField.Append(new SignedField<8>(_weight, "Weight"));
         internalField.Append(new ZCharField<6>(expo.name));
         internalField.Append(new SignedField<8>(_curveParam));
@@ -1260,7 +1260,7 @@ class InputField: public TransformedField {
         internalField.Append(new UnsignedField<8>(expo.mode, "Mode"));
         internalField.Append(new UnsignedField<8>(expo.chn, "Channel"));
         internalField.Append(new SwitchField<8>(expo.swtch, board, version));
-        internalField.Append(new UnsignedField<16>(expo.phases, "Phases"));
+        internalField.Append(new UnsignedField<16>(expo.flightModes, "Phases"));
         internalField.Append(new SignedField<8>(_weight, "Weight"));
         internalField.Append(new BoolField<8>(_curveMode));
         if (HAS_LARGE_LCD(board)) {
@@ -1277,7 +1277,7 @@ class InputField: public TransformedField {
         internalField.Append(new UnsignedField<2>(expo.chn));
         internalField.Append(new BoolField<1>(_curveMode));
         internalField.Append(new SpareBitsField<3>());
-        internalField.Append(new UnsignedField<8>(expo.phases));
+        internalField.Append(new UnsignedField<8>(expo.flightModes));
         internalField.Append(new SwitchField<8>(expo.swtch, board, version));
         internalField.Append(new SignedField<8>(_weight));
         internalField.Append(new SignedField<8>(_curveParam));
@@ -1286,7 +1286,7 @@ class InputField: public TransformedField {
         internalField.Append(new UnsignedField<2>(expo.mode));
         internalField.Append(new SwitchField<6>(expo.swtch, board, version));
         internalField.Append(new UnsignedField<2>(expo.chn));
-        internalField.Append(new UnsignedField<5>(expo.phases));
+        internalField.Append(new UnsignedField<5>(expo.flightModes));
         internalField.Append(new BoolField<1>(_curveMode));
         internalField.Append(new SignedField<8>(_weight));
         internalField.Append(new SignedField<8>(_curveParam));
@@ -3208,7 +3208,7 @@ void OpenTxModelData::afterImport()
     for (unsigned int i=0; i<NUM_STICKS; i++) {
       for (int j=0; j<64; j++) {
         ExpoData * expo = &modelData.expoData[j];
-        if (expo->mode == INPUT_MODE_BOTH && expo->chn == i && expo->phases == 0 && expo->swtch.type == SWITCH_TYPE_NONE)
+        if (expo->mode == INPUT_MODE_BOTH && expo->chn == i && expo->flightModes == 0 && expo->swtch.type == SWITCH_TYPE_NONE)
           break;
         if (expo->mode == 0 || expo->chn > i) {
           ExpoData * newExpo = modelData.insertInput(j);

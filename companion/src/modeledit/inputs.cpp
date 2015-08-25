@@ -6,7 +6,7 @@
 InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   expoInserted(false),
-  modelPrinter(firmware, &generalSettings, &model)
+  modelPrinter(firmware, generalSettings, model)
 {
   inputsCount = firmware->getCapability(VirtualInputs);
   if (inputsCount == 0)
@@ -140,14 +140,14 @@ QString InputsPanel::getInputText(int dest, bool * new_ch)
     if (new_ch) *new_ch = 1;
   }
   else {
-    ExpoData *md = &model->expoData[dest];
+    ExpoData & input = model->expoData[dest];
 
-    if ((dest == 0) || (model->expoData[dest-1].chn != md->chn)) {
+    if ((dest == 0) || (model->expoData[dest-1].chn != input.chn)) {
       if (new_ch) *new_ch = 1;
       if (firmware->getCapability(VirtualInputs))
-        str += QString("%1").arg(modelPrinter.printInputName(md->chn), -10, ' ');
+        str += QString("%1").arg(modelPrinter.printInputName(input.chn), -10, ' ');
       else
-        str = modelPrinter.printInputName(md->chn);
+        str = modelPrinter.printInputName(input.chn);
     }
     else {
       if (firmware->getCapability(VirtualInputs))
@@ -156,7 +156,7 @@ QString InputsPanel::getInputText(int dest, bool * new_ch)
         str = "   ";
     }
     str.replace(" ", "&nbsp;");
-    str += modelPrinter.printInputLine(md);
+    str += modelPrinter.printInputLine(input);
   }
   return str;
 }

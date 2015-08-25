@@ -7,6 +7,7 @@
 <a href="http://aerialtechhobbies.com">Aerial Tech Hobbies</a>
 <a href="http://litepilots.com">LitePilots</a>
 <a href="http://openpilot.com">David Ankers (OpenPilot)</a>
+<a href="http://3drobotics.com">3D Robotics</a>
 
 Mario Sette
 Felice Baratto
@@ -797,3 +798,8 @@ Ayelet Egosi
 Jean-Frederic Gaudreault
 Jim Wagner
 Lee Scott
+Roger Keatley
+Sherman Lovell
+Hugh Caldwell
+JB Fisher Company
+ 
