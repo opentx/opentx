@@ -908,7 +908,7 @@ bool OpenTxEepromInterface::checkVersion(unsigned int version)
       break;
     case 217:
       // 3 logical switches removed on M128 / gruvin9x boards
-      break;
+      // break; // we do not want to support OpenTX 2.1 ans later on Companion 2.0
     default:
       return false;
   }
