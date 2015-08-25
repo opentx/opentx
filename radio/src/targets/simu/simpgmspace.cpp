@@ -892,8 +892,14 @@ FRESULT f_mkdir (const TCHAR*)
   return FR_OK;
 }
 
-FRESULT f_unlink (const TCHAR*)
+FRESULT f_unlink (const TCHAR* name)
 {
+  char *path = convertSimuPath(name);
+  if (unlink(path)) {
+    TRACE("f_unlink(%s) = error %d (%s)", path, errno, strerror(errno));
+    return FR_INVALID_NAME;
+  }
+  TRACE("f_unlink(%s) = OK", path);
   return FR_OK;
 }
 
@@ -923,7 +929,22 @@ int f_printf (FIL *fil, const TCHAR * format, ...)
 
 FRESULT f_getcwd (TCHAR *path, UINT sz_path)
 {
-  strcpy(path, ".");
+  char cwd[1024];
+  if (!getcwd(cwd, 1024)) {
+    TRACE("f_getcwd() = getcwd() error %d (%s)", errno, strerror(errno));
+    strcpy(path, ".");
+    return FR_NO_PATH;
+  }
+
+  if (strlen(cwd) < strlen(simuSdDirectory)) {
+    TRACE("f_getcwd() = logic error strlen(cwd) < strlen(simuSdDirectory):  cwd: \"%s\",  simuSdDirectory: \"%s\"", cwd, simuSdDirectory);
+    strcpy(path, ".");
+    return FR_NO_PATH;
+  }
+
+  // remove simuSdDirectory from the cwd
+  strcpy(path, cwd + strlen(simuSdDirectory));
+  TRACE("f_getcwd() = %s", path);
   return FR_OK;
 }
 
