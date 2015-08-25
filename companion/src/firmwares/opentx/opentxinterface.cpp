@@ -344,6 +344,13 @@ bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, in
     return false;
   }
 
+  // we do not want to support OpenTX 2.1 ans later on Companion 2.0
+  if (version > 216) {
+    std::cout << " version " << (unsigned int)version;
+    std::cout << " unsupported\n";
+    return false;
+  }
+
   std::cout << " version " << (unsigned int)version;
 
   if (!checkVersion(version)) {
