@@ -263,6 +263,10 @@ void lcdInit();
 
 void lcdRefresh();
 
+#if defined(LCD_ST7920)
+uint8_t	lcdRefresh_ST7920(uint8_t full);
+#endif
+
 #if defined(BOOT)
   #define BLINK_ON_PHASE (0)
 #else

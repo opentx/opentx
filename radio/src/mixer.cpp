@@ -179,6 +179,7 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   }
 #endif
 
+
   int16_t ofs   = LIMIT_OFS_RESX(lim);
   int16_t lim_p = LIMIT_MAX_RESX(lim);
   int16_t lim_n = LIMIT_MIN_RESX(lim);
@@ -1097,7 +1098,7 @@ void evalMixes(uint8_t tick10ms)
     }
   }
 
-#if defined(PCBGRUVIN9X) && defined(DEBUG) && !defined(VOICE)
+#if (defined(PCBMEGA2560) || defined(PCBGRUVIN9X)) && defined(DEBUG) && !defined(VOICE)
   PORTH &= ~0x40; // PORTH:6 HIGH->LOW signals end of mixer interrupt
 #endif
 }
