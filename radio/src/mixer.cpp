@@ -530,8 +530,13 @@ int getSourceTrimValue(int source, int value=0)
 {
   if (source >= MIXSRC_Rud && source <= MIXSRC_Ail)
     return getStickTrimValue(source - MIXSRC_Rud, value);
-  else if (source >= MIXSRC_FIRST_INPUT && source <= MIXSRC_LAST_INPUT)
-    return getStickTrimValue(virtualInputsTrims[source - MIXSRC_FIRST_INPUT], value);
+  else if (source >= MIXSRC_FIRST_INPUT && source <= MIXSRC_LAST_INPUT) {
+    int8_t trim = virtualInputsTrims[source - MIXSRC_FIRST_INPUT];
+    if (trim >= 0)
+      return getStickTrimValue(trim, value);
+    else
+      return 0;
+  }
   else
     return 0;
 }
