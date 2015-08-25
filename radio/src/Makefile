@@ -361,6 +361,10 @@ SIMU_DISKIO = NO
 # Values = NO, YES
 SIMU_AUDIO = NO
 
+# Enable Watchdog test (DANGEROUS)
+# Values = NO, YES
+WATCHDOG_TEST = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -1022,6 +1026,9 @@ ifeq ($(PCB), TARANIS)
   endif
   ifeq ($(MIXERS_MONITOR), YES)
     CPPDEFS += -DMIXERS_MONITOR
+  endif
+  ifeq ($(WATCHDOG_TEST), YES)
+    CPPDEFS += -DWATCHDOG_TEST
   endif
 endif
 

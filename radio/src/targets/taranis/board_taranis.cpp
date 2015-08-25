@@ -156,7 +156,7 @@ void boardInit()
 #endif
 
 #if defined(REV9E)
-  if (!(RCC->CSR & (RCC_CSR_SFTRSTF | RCC_CSR_WDGRSTF))) {
+  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     lcd_clear();
     lcd_bmp(76, 2, bmp_lock, 0, 60);
     lcdRefresh();

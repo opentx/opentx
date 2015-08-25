@@ -42,6 +42,9 @@ extern volatile uint32_t g_tmr10ms;
 
 void pwrInit()
 {
+  // if any changes are done to the PWR PIN or pwrOn() function
+  // then the same changes must be done in _bootStart()
+
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = PWR_GPIO_PIN_ON;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;

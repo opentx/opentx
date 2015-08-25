@@ -363,7 +363,7 @@ void lcdInit()
 {
   LCD_Hardware_Init();
 
-  if (WAS_RESET_BY_WATCHDOG()|WAS_RESET_BY_SOFTWARE()) return;    //no need to reset LCD module
+  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) return;    //no need to reset LCD module
 
   //reset LCD module
   LCD_RST_LOW();
@@ -400,7 +400,7 @@ void lcdInitFinish()
     initialization (without reset) is also recommended by the data sheet.
   */
 
-  if (!WAS_RESET_BY_WATCHDOG() && !WAS_RESET_BY_SOFTWARE()) {
+  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
 #if !defined(BOOT)
     while(g_tmr10ms < (RESET_WAIT_DELAY_MS/10)) {};    //wait measured from the power-on
 #else
