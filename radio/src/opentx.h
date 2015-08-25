@@ -208,7 +208,7 @@
   #define CASE_REV9E(x)
 #endif
 
-#if defined(PCBSKX9X) && !defined(AR9X)
+#if defined(PCBSKY9X) && !defined(AR9X)
   #define CASE_CAPACITY(x) x,
 #else
   #define CASE_CAPACITY(x)
