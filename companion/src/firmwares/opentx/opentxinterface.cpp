@@ -938,6 +938,8 @@ bool OpenTxEepromInterface::checkVersion(unsigned int version)
       // A lot of things (first github release)
       break;
     case 217:
+      QMessageBox::warning(NULL, "eeprom load error",
+        QObject::tr("This looks like a 2.1 (>= 217) eeprom. Companion 2.0 do not support it."));
       // 3 logical switches removed on M128 / gruvin9x boards
       // break; // we do not want to support OpenTX 2.1 ans later on Companion 2.0
     default:
