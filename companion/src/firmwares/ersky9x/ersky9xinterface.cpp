@@ -1,6 +1,6 @@
 /*
  * Author - Bertrand Songis <bsongis@gmail.com>
- * 
+ *
  * Based on th9x -> http://code.google.com/p/th9x/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -14,8 +14,10 @@
  *
  */
 
+#ifdef DEBUG
 #include <iostream>
-#include <QMessageBox>
+#endif
+
 #include "ersky9xinterface.h"
 #include "ersky9xeeprom.h"
 #include "ersky9xsimulator.h"
@@ -122,7 +124,9 @@ inline void applyStickModeToModel(Ersky9xModelData_v11 & model, unsigned int mod
 
 bool Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
+  #ifdef DEBUG
   std::cout << "trying ersky9x xml import... ";
+  #endif
 
   Ersky9xGeneral ersky9xGeneral;
   memset(&ersky9xGeneral,0,sizeof(ersky9xGeneral));
@@ -131,49 +135,67 @@ bool Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   }
   else {
     radioData.generalSettings=ersky9xGeneral;
+    #ifdef DEBUG
     std::cout << "version " << (unsigned int)ersky9xGeneral.myVers << " ";
+    #endif
   }
   for(int i=0; i<getMaxModels(); i++) {
     if (ersky9xGeneral.myVers == 10) {
       if (!loadModelDataXML<Ersky9xModelData_v10>(&doc, &radioData.models[i], i, radioData.generalSettings.stickMode+1)) {
+        #ifdef DEBUG
         std::cout << "ko\n";
+        #endif
         return false;
       }
     }
     else {
       if (!loadModelDataXML<Ersky9xModelData_v11>(&doc, &radioData.models[i], i, radioData.generalSettings.stickMode+1)) {
+        #ifdef DEBUG
         std::cout << "ko\n";
+        #endif
         return false;
       }
     }
   }
+  #ifdef DEBUG
   std::cout << "ok\n";
+  #endif
   return true;
 }
 
 bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
+  #ifdef DEBUG
   std::cout << "trying ersky9x import... ";
+  #endif
 
   if (size != EESIZE_SKY9X) {
+    #ifdef DEBUG
     std::cout << "wrong size\n";
+    #endif
     return false;
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_SKY9X)) {
+    #ifdef DEBUG
     std::cout << "wrong file system\n";
+    #endif
     return false;
   }
-    
+
   efile->openRd(FILE_GENERAL);
   Ersky9xGeneral ersky9xGeneral;
 
   if (efile->readRlc2((uint8_t*)&ersky9xGeneral, 1) != 1) {
+    #ifdef DEBUG
     std::cout << "no\n";
+    #endif
     return false;
   }
 
+  #ifdef DEBUG
   std::cout << "version " << (unsigned int)ersky9xGeneral.myVers << " ";
+  #endif
 
   switch(ersky9xGeneral.myVers) {
     case 10:
@@ -181,22 +203,26 @@ bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int siz
     case 11:
       break;
     default:
+      #ifdef DEBUG
       std::cout << "not ersky9x\n";
+      #endif
       return false;
   }
   efile->openRd(FILE_GENERAL);
   if (!efile->readRlc2((uint8_t*)&ersky9xGeneral, sizeof(Ersky9xGeneral))) {
+    #ifdef DEBUG
     std::cout << "ko\n";
+    #endif
     return false;
   }
   radioData.generalSettings = ersky9xGeneral;
-  
+
   for (int i=0; i<getMaxModels(); i++) {
     uint8_t buffer[4096];
     uint size;
     memset(buffer,0,sizeof(buffer));
     efile->openRd(FILE_MODEL(i));
-    
+
 //    if (!efile->readRlc2((uint8_t*)&ersky9xModel, sizeof(Ersky9xModelData))) {
     size=efile->readRlc2(buffer, 4096);
     if (!size) {
@@ -214,10 +240,12 @@ bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int siz
         applyStickModeToModel(ersky9xModel, radioData.generalSettings.stickMode+1);
         radioData.models[i] = ersky9xModel;
       }
-    } 
+    }
   }
 
+  #ifdef DEBUG
   std::cout << "ok\n";
+  #endif
   return true;
 }
 
@@ -228,7 +256,9 @@ bool Ersky9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esi
 
 int Ersky9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
 {
+  #ifdef DEBUG
   std::cout << "NO!\n";
+  #endif
   // TODO an error
 
   return 0;

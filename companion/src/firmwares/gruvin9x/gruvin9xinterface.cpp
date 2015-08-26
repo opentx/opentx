@@ -1,6 +1,6 @@
 /*
  * Author - Bertrand Songis <bsongis@gmail.com>
- * 
+ *
  * Based on th9x -> http://code.google.com/p/th9x/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -14,7 +14,10 @@
  *
  */
 
+#ifdef DEBUG
 #include <iostream>
+#endif
+
 #include "gruvin9xinterface.h"
 #include "gruvin9xeeprom.h"
 #include "file.h"
@@ -101,15 +104,21 @@ bool Gruvin9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 
 bool Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
+  #ifdef DEBUG
   std::cout << "trying " << getName() << " import... ";
+  #endif
 
   if (size != this->getEEpromSize()) {
+    #ifdef DEBUG
     std::cout << "wrong size\n";
+    #endif
     return false;
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
+    #ifdef DEBUG
     std::cout << "wrong file system\n";
+    #endif
     return false;
   }
 
@@ -117,19 +126,25 @@ bool Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int si
 
   uint8_t version;
   if (efile->readRlc2(&version, 1) != 1) {
+    #ifdef DEBUG
     std::cout << "no\n";
+    #endif
     return false;
   }
 
   if (version == 0) {
     efile->openRd(FILE_GENERAL);
     if (efile->readRlc1(&version, 1) != 1) {
+      #ifdef DEBUG
       std::cout << "no\n";
+      #endif
       return false;
     }
   }
 
+  #ifdef DEBUG
   std::cout << "version " << (unsigned int)version << " ";
+  #endif
 
   switch(version) {
     case 5:
@@ -144,7 +159,9 @@ bool Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int si
       // trims(10bits), no subtrims
       break;
     default:
+      #ifdef DEBUG
       std::cout << "not gruvin9x\n";
+      #endif
       return false;
   }
 
@@ -162,10 +179,12 @@ bool Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int si
       return false;
   }
   else {
+    #ifdef DEBUG
     std::cout << "ko\n";
+    #endif
     return false;
   }
-  
+
   for (int i=0; i<getMaxModels(); i++) {
     efile->openRd(FILE_MODEL(i));
     if (version == 5) {
@@ -184,12 +203,16 @@ bool Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int si
       loadModel<Gruvin9xModelData_v106>(radioData.models[i], radioData.generalSettings.stickMode+1);
     }
     else {
+      #ifdef DEBUG
       std::cout << "ko\n";
+      #endif
       return false;
     }
   }
 
+  #ifdef DEBUG
   std::cout << "ok\n";
+  #endif
   return true;
 }
 
@@ -200,7 +223,9 @@ bool Gruvin9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int es
 
 int Gruvin9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
 {
+  #ifdef DEBUG
   std::cout << "NO!\n";
+  #endif
   // TODO an error
 
   return 0;
