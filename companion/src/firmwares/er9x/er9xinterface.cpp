@@ -14,7 +14,10 @@
  *
  */
 
+#ifndef NDEBUG
 #include <iostream>
+#endif
+
 #include "er9xinterface.h"
 #include "er9xeeprom.h"
 #include "er9xsimulator.h"
@@ -91,7 +94,9 @@ inline void applyStickModeToModel(Er9xModelData & model, unsigned int mode)
 
 bool Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
+  #ifndef NDEBUG
   std::cout << "trying er9x xml import... ";
+  #endif
 
   Er9xGeneral er9xGeneral;
   memset(&er9xGeneral,0,sizeof(er9xGeneral));
@@ -99,7 +104,9 @@ bool Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
     return false;
   } else {
     radioData.generalSettings=er9xGeneral;
+    #ifndef NDEBUG
     std::cout << "version " << (unsigned int)er9xGeneral.myVers << " ";
+    #endif
   }
   for(int i=0; i<getMaxModels(); i++)
   {
@@ -110,21 +117,29 @@ bool Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
       radioData.models[i] = er9xModel;
     }
   }
+  #ifndef NDEBUG
   std::cout << "ok\n";
+  #endif
   return true;
 }
 
 bool Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
+  #ifndef NDEBUG
   std::cout << "trying er9x import... ";
+  #endif
 
   if (size != getEEpromSize()) {
+    #ifndef NDEBUG
     std::cout << "wrong size\n";
+    #endif
     return false;
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
+    #ifndef NDEBUG
     std::cout << "wrong file system\n";
+    #endif
     return false;
   }
 
@@ -132,15 +147,21 @@ bool Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
   Er9xGeneral er9xGeneral;
 
   if (efile->readRlc1((uint8_t*)&er9xGeneral, 1) != 1) {
+    #ifndef NDEBUG
     std::cout << "no\n";
+    #endif
     return false;
   }
 
+  #ifndef NDEBUG
   std::cout << "version " << (unsigned int)er9xGeneral.myVers << " ";
+  #endif
 
   switch(er9xGeneral.myVers) {
     case 3:
+      #ifndef NDEBUG
       std::cout << "(old gruvin9x) ";
+      #endif
     case 4:
 //    case 5:
     case 6:
@@ -150,13 +171,17 @@ bool Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
     case 10:
       break;
     default:
+      #ifndef NDEBUG
       std::cout << "not er9x\n";
+      #endif
       return false;
   }
 
   efile->openRd(FILE_GENERAL);
   if (!efile->readRlc1((uint8_t*)&er9xGeneral, sizeof(Er9xGeneral))) {
+    #ifndef NDEBUG
     std::cout << "ko\n";
+    #endif
     return false;
   }
   radioData.generalSettings = er9xGeneral;
@@ -173,7 +198,9 @@ bool Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
     }
   }
 
+  #ifndef NDEBUG
   std::cout << "ok\n";
+  #endif
   return true;
 }
 
@@ -184,7 +211,9 @@ bool Er9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize,
 
 int Er9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
 {
+  #ifndef NDEBUG
   std::cout << "NO!\n";
+  #endif
   // TODO an error
 
   return 0;

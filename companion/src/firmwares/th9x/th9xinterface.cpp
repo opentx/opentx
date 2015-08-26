@@ -14,7 +14,10 @@
  *
  */
 
+#ifndef NDEBUG
 #include <iostream>
+#endif
+
 #include "th9xinterface.h"
 #include "th9xeeprom.h"
 #include "th9xsimulator.h"
@@ -64,15 +67,21 @@ bool Th9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 
 bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
+  #ifndef NDEBUG
   std::cout << "trying th9x import... ";
+  #endif
 
   if (size != getEEpromSize()) {
+    #ifndef NDEBUG
     std::cout << "wrong size\n";
+    #endif
     return false;
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
+    #ifndef NDEBUG
     std::cout << "wrong file system\n";
+    #endif
     return false;
   }
 
@@ -80,24 +89,32 @@ bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
   Th9xGeneral th9xGeneral;
 
   if (efile->readRlc2((uint8_t*)&th9xGeneral, 1) != 1) {
+    #ifndef NDEBUG
     std::cout << "no\n";
+    #endif
     return false;
   }
 
+  #ifndef NDEBUG
   std::cout << "version " << (unsigned int)th9xGeneral.myVers << " ";
+  #endif
 
   switch(th9xGeneral.myVers) {
     case 6:
       break;
     default:
+      #ifndef NDEBUG
       std::cout << "not th9x\n";
+      #endif
       return false;
   }
 
   efile->openRd(FILE_GENERAL);
   int len = efile->readRlc2((uint8_t*)&th9xGeneral, sizeof(Th9xGeneral));
   if (len != sizeof(Th9xGeneral)) {
+    #ifndef NDEBUG
     std::cout << "not th9x\n";
+    #endif
     return false;
   }
   radioData.generalSettings = th9xGeneral;
@@ -113,7 +130,9 @@ bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
     }
   }
 
+  #ifndef NDEBUG
   std::cout << "ok\n";
+  #endif
   return true;
 }
 
@@ -124,7 +143,9 @@ bool Th9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize,
 
 int Th9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
 {
+  #ifndef NDEBUG
   std::cout << "NO!\n";
+  #endif
   // TODO a warning
 
   return 0;
