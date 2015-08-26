@@ -105,6 +105,15 @@ void menuStatisticsDebug(uint8_t event)
 {
   TITLE(STR_MENUDEBUG);
 
+#if defined(WATCHDOG_TEST)
+  if (s_warning_result) {
+    s_warning_result = 0;
+    // do a user requested watchdog test
+    TRACE("Performing watchdog test");
+    pausePulses();
+  }
+#endif
+
   switch(event)
   {
     case EVT_KEY_LONG(KEY_ENTER):
@@ -136,6 +145,15 @@ void menuStatisticsDebug(uint8_t event)
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
       break;
+#if defined(WATCHDOG_TEST)
+    case EVT_KEY_LONG(KEY_MENU):
+      {
+        POPUP_CONFIRMATION("Test the watchdog?");
+        const char * w = "The radio will reset!";
+        SET_WARNING_INFO(w, strlen(w), 0);
+      }
+      break;
+#endif
   }
 
   lcd_putsLeft(MENU_DEBUG_Y_FREE_RAM, "Free Mem");

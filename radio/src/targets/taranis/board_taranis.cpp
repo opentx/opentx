@@ -156,7 +156,7 @@ void boardInit()
 #endif
 
 #if defined(REV9E)
-  if (!(RCC->CSR & (RCC_CSR_SFTRSTF | RCC_CSR_WDGRSTF))) {
+  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     lcd_clear();
     lcd_bmp(76, 2, bmp_lock, 0, 60);
     lcdRefresh();
@@ -187,7 +187,7 @@ void boardInit()
       lcdRefreshWait();
     }
     if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
-      pwrOff();
+      boardOff();
     }
   }
   else {
@@ -198,7 +198,26 @@ void boardInit()
   backlightInit();
 #endif
 }
+
+void boardOff()
+{
+  BACKLIGHT_OFF();
+#if defined(REV9E)
+  topLcdOff();
 #endif
+
+#if defined(REV9E)
+  while (pwrPressed()) {
+    wdt_reset();
+  }
+#endif
+
+  lcdOff();
+  SysTick->CTRL = 0; // turn off systick
+  pwrOff();
+}
+
+#endif   // #if !defined(SIMU)
 
 
 #if defined(USB_JOYSTICK) && !defined(SIMU)

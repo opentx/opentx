@@ -1260,12 +1260,7 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
 #if defined(PCBTARANIS) && defined(REV9E)
     uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
-      // TODO this is quick & dirty
-      lcdOff();
-      BACKLIGHT_OFF();
-      topLcdOff();
-      SysTick->CTRL = 0; // turn off systick
-      pwrOff();
+      boardOff();
     }
     else if (pwr_check == e_power_press) {
       refresh = true;
@@ -1276,7 +1271,7 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
     }
 #else
     if (pwrCheck() == e_power_off) {
-      pwrOff(); // turn power off now
+      boardOff(); // turn power off now
     }
 #endif
   }
@@ -2577,7 +2572,7 @@ int main(void)
   opentxClose();
   lcd_clear() ;
   lcdRefresh() ;
-  pwrOff(); // Only turn power off if necessary
+  boardOff(); // Only turn power off if necessary
   wdt_disable();
   while(1); // never return from main() - there is no code to return back, if any delays occurs in physical power it does dead loop.
 #endif

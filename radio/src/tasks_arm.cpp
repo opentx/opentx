@@ -196,12 +196,7 @@ void menusTask(void * pdata)
 #endif
 
   opentxClose();
-
-#if !defined(SIMU)
-  SysTick->CTRL = 0; // turn off systick
-#endif
-
-  pwrOff(); // Only turn power off if necessary
+  boardOff(); // Only turn power off if necessary
 }
 
 extern void audioTask(void* pdata);
