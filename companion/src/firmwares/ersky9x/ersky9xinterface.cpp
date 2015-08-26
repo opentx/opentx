@@ -14,7 +14,7 @@
  *
  */
 
-#ifndef NDEBUG
+#ifdef DEBUG
 #include <iostream>
 #endif
 
@@ -124,7 +124,7 @@ inline void applyStickModeToModel(Ersky9xModelData_v11 & model, unsigned int mod
 
 bool Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "trying ersky9x xml import... ";
   #endif
 
@@ -135,14 +135,14 @@ bool Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   }
   else {
     radioData.generalSettings=ersky9xGeneral;
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << "version " << (unsigned int)ersky9xGeneral.myVers << " ";
     #endif
   }
   for(int i=0; i<getMaxModels(); i++) {
     if (ersky9xGeneral.myVers == 10) {
       if (!loadModelDataXML<Ersky9xModelData_v10>(&doc, &radioData.models[i], i, radioData.generalSettings.stickMode+1)) {
-        #ifndef NDEBUG
+        #ifdef DEBUG
         std::cout << "ko\n";
         #endif
         return false;
@@ -150,14 +150,14 @@ bool Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
     }
     else {
       if (!loadModelDataXML<Ersky9xModelData_v11>(&doc, &radioData.models[i], i, radioData.generalSettings.stickMode+1)) {
-        #ifndef NDEBUG
+        #ifdef DEBUG
         std::cout << "ko\n";
         #endif
         return false;
       }
     }
   }
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "ok\n";
   #endif
   return true;
@@ -165,19 +165,19 @@ bool Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 
 bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "trying ersky9x import... ";
   #endif
 
   if (size != EESIZE_SKY9X) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << "wrong size\n";
     #endif
     return false;
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_SKY9X)) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << "wrong file system\n";
     #endif
     return false;
@@ -187,13 +187,13 @@ bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int siz
   Ersky9xGeneral ersky9xGeneral;
 
   if (efile->readRlc2((uint8_t*)&ersky9xGeneral, 1) != 1) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << "no\n";
     #endif
     return false;
   }
 
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "version " << (unsigned int)ersky9xGeneral.myVers << " ";
   #endif
 
@@ -203,14 +203,14 @@ bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int siz
     case 11:
       break;
     default:
-      #ifndef NDEBUG
+      #ifdef DEBUG
       std::cout << "not ersky9x\n";
       #endif
       return false;
   }
   efile->openRd(FILE_GENERAL);
   if (!efile->readRlc2((uint8_t*)&ersky9xGeneral, sizeof(Ersky9xGeneral))) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << "ko\n";
     #endif
     return false;
@@ -243,7 +243,7 @@ bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int siz
     }
   }
 
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "ok\n";
   #endif
   return true;
@@ -256,7 +256,7 @@ bool Ersky9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esi
 
 int Ersky9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
 {
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "NO!\n";
   #endif
   // TODO an error

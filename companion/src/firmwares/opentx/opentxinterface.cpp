@@ -14,7 +14,7 @@
  *
  */
 
-#ifndef NDEBUG
+#ifdef DEBUG
 #include <iostream>
 #endif
 
@@ -123,7 +123,7 @@ bool OpenTxEepromInterface::loadModel(ModelData &model, uint8_t *data, int index
     int sz = efile->readRlc2((uint8_t*)&_model, sizeof(T));
     if (sz) {
       model = _model;
-      #ifndef NDEBUG
+      #ifdef DEBUG
       if (sz < (int)sizeof(T)) {
         std::cout << " size(" << model.name << ") " << sz << " < " << (int)sizeof(T) << " ";
       }
@@ -263,7 +263,7 @@ bool OpenTxEepromInterface::loadModel(uint8_t version, ModelData &model, uint8_t
     return loadModelVariant<OpenTxModelData>(index, model, data, version, variant);
   }
 
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << " ko\n";
   #endif
   return false;
@@ -281,7 +281,7 @@ bool OpenTxEepromInterface::loadGeneral(GeneralSettings &settings, unsigned int 
     return checkVariant(settings.version, settings.variant);
   }
 
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << " error when loading general settings";
   #endif
   return false;
@@ -316,7 +316,7 @@ bool OpenTxEepromInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 
 bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "trying " << getName() << " import...";
   #endif
 
@@ -329,7 +329,7 @@ bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, in
         }
       }
       if (notnull) {
-        #ifndef NDEBUG
+        #ifdef DEBUG
         std::cout << " wrong size (" << size << ")\n";
         #endif
         return false;
@@ -339,7 +339,7 @@ bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, in
         size=2048;
       }
     } else {
-      #ifndef NDEBUG
+      #ifdef DEBUG
       std::cout << " wrong size (" << size << ")\n";
       #endif
       return false;
@@ -347,7 +347,7 @@ bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, in
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, board)) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << " wrong file system\n";
     #endif
     return false;
@@ -357,42 +357,42 @@ bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, in
 
   uint8_t version;
   if (efile->readRlc2(&version, 1) != 1) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << " no\n";
     #endif
     return false;
   }
 
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << " version " << (unsigned int)version;
   #endif
 
   if (!checkVersion(version)) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << " not OpenTX\n";
     #endif
     return false;
   }
 
   if (!loadGeneral<OpenTxGeneralData>(radioData.generalSettings, version)) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << " ko\n";
     #endif
     return false;
   }
 
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << " variant " << radioData.generalSettings.variant;
   #endif
   for (int i=0; i<getMaxModels(); i++) {
     if (!loadModel(version, radioData.models[i], NULL, i, radioData.generalSettings.variant, radioData.generalSettings.stickMode+1)) {
-      #ifndef NDEBUG
+      #ifdef DEBUG
       std::cout << " ko\n";
       #endif
       return false;
     }
   }
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << " ok\n";
   #endif
   return true;
@@ -956,14 +956,14 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
         efile->openRd(i);
         int sz = efile->readRlc2(tmp, sizeof(tmp));
         if (sz == 849) {
-          #ifndef NDEBUG
+          #ifdef DEBUG
           std::cout << " warning: M128 variant not set (but model size seems ok)";
           #endif
           return true;
         }
       }
     }
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << " error when loading M128 general settings (wrong variant)";
     #endif
     return false;
@@ -975,12 +975,12 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
 
 bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
 {
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "trying " << getName() << " backup import...";
   #endif
 
   if (esize < 8 || memcmp(eeprom, "o9x", 3) != 0) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << " no\n";
     #endif
     return false;
@@ -998,14 +998,14 @@ bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, in
       backupBoard = BOARD_GRUVIN9X;
       break;
     default:
-      #ifndef NDEBUG
+      #ifdef DEBUG
       std::cout << " unknown board\n";
       #endif
       return false;
   }
 
   if (backupBoard != board) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << " not right board\n";
     #endif
     return false;
@@ -1016,19 +1016,19 @@ bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, in
   uint16_t size = ((uint16_t)eeprom[7] << 8) + eeprom[6];
   uint16_t variant = ((uint16_t)eeprom[9] << 8) + eeprom[8];
 
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << " version " << (unsigned int)version << " ";
   #endif
 
   if (!checkVersion(version)) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << " not OpenTX\n";
     #endif
     return false;
   }
 
   if (size > esize-8) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << " wrong size\n";
     #endif
     return false;
@@ -1036,20 +1036,20 @@ bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, in
 
   if (bcktype=='M') {
     if (!loadModel(version, radioData.models[index], &eeprom[8], size, variant)) {
-      #ifndef NDEBUG
+      #ifdef DEBUG
       std::cout << " ko\n";
       #endif
       return false;
     }
   }
   else {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << " backup type not supported\n";
     #endif
     return false;
   }
 
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << " ok\n";
   #endif
   return true;

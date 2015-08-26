@@ -14,7 +14,7 @@
  *
  */
 
-#ifndef NDEBUG
+#ifdef DEBUG
 #include <iostream>
 #endif
 
@@ -67,19 +67,19 @@ bool Th9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 
 bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "trying th9x import... ";
   #endif
 
   if (size != getEEpromSize()) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << "wrong size\n";
     #endif
     return false;
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << "wrong file system\n";
     #endif
     return false;
@@ -89,13 +89,13 @@ bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
   Th9xGeneral th9xGeneral;
 
   if (efile->readRlc2((uint8_t*)&th9xGeneral, 1) != 1) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << "no\n";
     #endif
     return false;
   }
 
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "version " << (unsigned int)th9xGeneral.myVers << " ";
   #endif
 
@@ -103,7 +103,7 @@ bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
     case 6:
       break;
     default:
-      #ifndef NDEBUG
+      #ifdef DEBUG
       std::cout << "not th9x\n";
       #endif
       return false;
@@ -112,7 +112,7 @@ bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
   efile->openRd(FILE_GENERAL);
   int len = efile->readRlc2((uint8_t*)&th9xGeneral, sizeof(Th9xGeneral));
   if (len != sizeof(Th9xGeneral)) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << "not th9x\n";
     #endif
     return false;
@@ -130,7 +130,7 @@ bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
     }
   }
 
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "ok\n";
   #endif
   return true;
@@ -143,7 +143,7 @@ bool Th9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize,
 
 int Th9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
 {
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "NO!\n";
   #endif
   // TODO a warning

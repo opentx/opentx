@@ -14,7 +14,7 @@
  *
  */
 
-#ifndef NDEBUG
+#ifdef DEBUG
 #include <iostream>
 #endif
 
@@ -104,19 +104,19 @@ bool Gruvin9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 
 bool Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "trying " << getName() << " import... ";
   #endif
 
   if (size != this->getEEpromSize()) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << "wrong size\n";
     #endif
     return false;
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << "wrong file system\n";
     #endif
     return false;
@@ -126,7 +126,7 @@ bool Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int si
 
   uint8_t version;
   if (efile->readRlc2(&version, 1) != 1) {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << "no\n";
     #endif
     return false;
@@ -135,14 +135,14 @@ bool Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int si
   if (version == 0) {
     efile->openRd(FILE_GENERAL);
     if (efile->readRlc1(&version, 1) != 1) {
-      #ifndef NDEBUG
+      #ifdef DEBUG
       std::cout << "no\n";
       #endif
       return false;
     }
   }
 
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "version " << (unsigned int)version << " ";
   #endif
 
@@ -159,7 +159,7 @@ bool Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int si
       // trims(10bits), no subtrims
       break;
     default:
-      #ifndef NDEBUG
+      #ifdef DEBUG
       std::cout << "not gruvin9x\n";
       #endif
       return false;
@@ -179,7 +179,7 @@ bool Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int si
       return false;
   }
   else {
-    #ifndef NDEBUG
+    #ifdef DEBUG
     std::cout << "ko\n";
     #endif
     return false;
@@ -203,14 +203,14 @@ bool Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int si
       loadModel<Gruvin9xModelData_v106>(radioData.models[i], radioData.generalSettings.stickMode+1);
     }
     else {
-      #ifndef NDEBUG
+      #ifdef DEBUG
       std::cout << "ko\n";
       #endif
       return false;
     }
   }
 
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "ok\n";
   #endif
   return true;
@@ -223,7 +223,7 @@ bool Gruvin9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int es
 
 int Gruvin9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
 {
-  #ifndef NDEBUG
+  #ifdef DEBUG
   std::cout << "NO!\n";
   #endif
   // TODO an error
