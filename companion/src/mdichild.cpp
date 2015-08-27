@@ -81,7 +81,7 @@ MdiChild::MdiChild():
   }
 }
 
-MdiChild::~MdiChild() 
+MdiChild::~MdiChild()
 {
   delete ui;
 }
@@ -174,7 +174,7 @@ void MdiChild::modelEdit()
 
   if (row == 0){
     generalEdit();
-  } 
+  }
   else {
     QApplication::setOverrideCursor(Qt::WaitCursor);
     checkAndInitModel( row );
@@ -251,7 +251,7 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
       XmlInterface(inputStream).load(radioData);
     }
     else
-#endif 
+#endif
     if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) { //read HEX file
       if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
           QMessageBox::critical(this, tr("Error"),
@@ -260,18 +260,19 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
                                .arg(file.errorString()));
           return false;
       }
-        
+
       QDomDocument doc(ER9X_EEPROM_FILE_TYPE);
       bool xmlOK = doc.setContent(&file);
       if(xmlOK) {
-        if (loadEEpromXml(radioData, doc)){
+        std::bitset<NUM_ERRORS> errors(LoadEepromXml(radioData, doc));
+        if (errors.test(NO_ERROR)) {
           ui->modelsList->refreshList();
           if(resetCurrentFile) setCurrentFile(fileName);
           return true;
         }
       }
       file.reset();
-      
+
       QTextStream inputStream(&file);
 
       if (fileType==FILE_TYPE_EEPE) {  // read EEPE file header
@@ -294,11 +295,13 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
 
       file.close();
 
-      if (!loadEEprom(radioData, (uint8_t *)eeprom.data(), eeprom_size)) {
-        QMessageBox::critical(this, tr("Error"),
-            tr("Invalid EEPROM File %1")
-            .arg(fileName));
+      std::bitset<NUM_ERRORS> errors(LoadEeprom(radioData, (uint8_t *)eeprom.data(), eeprom_size));
+      if (!errors.test(NO_ERROR)) {
+        ShowEepromErrors(this, tr("Error"), tr("Invalid EEPROM File %1").arg(fileName), errors.to_ulong());
         return false;
+      }
+      if (errors.test(HAS_WARNINGS)) {
+        ShowEepromWarnings(this, tr("Warning"), errors.to_ulong());
       }
 
       ui->modelsList->refreshList();
@@ -330,11 +333,18 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
           return false;
       }
 
-      if (!loadEEprom(radioData, eeprom, eeprom_size) && !::loadBackup(radioData, eeprom, eeprom_size, 0)) {
-        QMessageBox::critical(this, tr("Error"),
-            tr("Invalid binary EEPROM File %1")
-            .arg(fileName));
-        return false;
+      std::bitset<NUM_ERRORS> errorsEeprom(LoadEeprom(radioData, eeprom, eeprom_size));
+      if (!errorsEeprom.test(NO_ERROR)) {
+        std::bitset<NUM_ERRORS> errorsBackup(LoadBackup(radioData, eeprom, eeprom_size, 0));
+        if (!errorsBackup.test(NO_ERROR)) {
+          ShowEepromErrors(this, tr("Error"), tr("Invalid binary EEPROM File %1").arg(fileName), (errorsEeprom | errorsBackup).to_ulong());
+          return false;
+        }
+        if (errorsBackup.test(HAS_WARNINGS)) {
+          ShowEepromWarnings(this, tr("Warning"), errorsBackup.to_ulong());
+        }
+      } else if (errorsEeprom.test(HAS_WARNINGS)) {
+        ShowEepromWarnings(this, tr("Warning"), errorsEeprom.to_ulong());
       }
 
       ui->modelsList->refreshList();
@@ -367,7 +377,7 @@ bool MdiChild::saveAs(bool isNew)
       fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
 #else
       fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(BIN_FILES_FILTER));
-#endif      
+#endif
     }
     else {
       QFileInfo fi(curFile);
@@ -375,14 +385,14 @@ bool MdiChild::saveAs(bool isNew)
       fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
 #else
       fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(EEPROM_FILES_FILTER));
-#endif      
+#endif
     }
     if (fileName.isEmpty())
       return false;
     g.eepromDir( QFileInfo(fileName).dir().absolutePath() );
     if (isNew)
       return saveFile(fileName);
-    else 
+    else
       return saveFile(fileName,true);
 }
 
@@ -505,7 +515,7 @@ void MdiChild::setCurrentFile(const QString &fileName)
   files.prepend(fileName);
   while (files.size() > MaxRecentFiles)
       files.removeLast();
- 
+
   g.recentFiles( files );
 }
 
@@ -544,7 +554,7 @@ void MdiChild::print(int model, QString filename)
   else if (getCurrentRow() > 0) {
     pd = new PrintDialog(this, GetCurrentFirmware()/*firmware*/, radioData.generalSettings, radioData.models[getCurrentRow()-1]);
   }
-    
+
   if (pd) {
     pd->setAttribute(Qt::WA_DeleteOnClose, true);
     pd->show();
@@ -601,12 +611,14 @@ bool MdiChild::loadBackup()
     return false;
   }
 
-  if (!::loadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index)) {
-    QMessageBox::critical(this, tr("Error"),
-        tr("Invalid binary backup File %1")
-        .arg(fileName));
-    return false;
-  }
+    std::bitset<NUM_ERRORS> errorsEeprom(LoadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index));
+    if (!errorsEeprom.test(NO_ERROR)) {
+      ShowEepromErrors(this, tr("Error"), tr("Invalid binary backup File %1").arg(fileName), (errorsEeprom).to_ulong());
+      return false;
+    }
+    if (errorsEeprom.test(HAS_WARNINGS)) {
+      ShowEepromWarnings(this, tr("Warning"), errorsEeprom.to_ulong());
+    }
 
   ui->modelsList->refreshList();
 

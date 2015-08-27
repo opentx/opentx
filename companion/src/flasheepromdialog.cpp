@@ -104,7 +104,7 @@ int FlashEEpromDialog::getEEpromVersion(const QString &filename)
 
   QByteArray eeprom(EESIZE_MAX, 0);
   int fileType = getFileType(filename);
-  
+
 #if 0
   if (fileType==FILE_TYPE_XML) {
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -125,7 +125,8 @@ int FlashEEpromDialog::getEEpromVersion(const QString &filename)
     bool xmlOK = doc.setContent(&file);
     if (xmlOK) {
       RadioData * radioData = new RadioData();
-      if (!loadEEpromXml(*radioData, doc)) {
+      std::bitset<NUM_ERRORS> errors(LoadEepromXml(*radioData, doc));
+      if (!errors.test(NO_ERROR)) {
         QMessageBox::warning(this, tr("Error"), tr("Invalid Models and Settings File %1").arg(filename));
       }
       else {
@@ -160,7 +161,8 @@ int FlashEEpromDialog::getEEpromVersion(const QString &filename)
   }
 
   RadioData * radioData = new RadioData();
-  if (eeprom_size == 0 || !loadEEprom(*radioData, (const uint8_t *)eeprom.data(), eeprom_size)) {
+  std::bitset<NUM_ERRORS> errors(LoadEeprom(*radioData, (const uint8_t *)eeprom.data(), eeprom_size));
+  if (eeprom_size == 0 || !errors.test(NO_ERROR)) {
     QMessageBox::warning(this, tr("Error"), tr("Invalid Models and Settings file %1").arg(filename));
   }
   else {
@@ -303,7 +305,7 @@ void FlashEEpromDialog::on_burnButton_clicked()
     backupPath = g.profile[g.id()].pBackupDir();
     if (backupPath.isEmpty()) {
       backupPath=g.backupDir();
-    }    
+    }
     backupFilename = backupPath + "/backup-" + QDateTime().currentDateTime().toString("yyyy-MM-dd-HHmmss") + ".bin";
   }
   else if (ui->checkFirmwareCompatibility->isChecked()) {
