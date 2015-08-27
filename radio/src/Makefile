@@ -395,7 +395,7 @@ IMG2LBM = -$(PYTHON) ../util/img2lbm.py
 BIN2LBM = -$(PYTHON) ../util/bin2lbm.py
 FONT2PNG = -$(PYTHON) ../util/font2png.py
 TRANSLATE = -$(PYTHON) ../util/translate.py
-VERSION = 2.1.4$(OPENTX_VERSION_SUFFIX)
+VERSION = 2.2.0$(OPENTX_VERSION_SUFFIX)
 
 THIRDPARTY = thirdparty
 COOSDIR = $(THIRDPARTY)/CoOS
