@@ -89,14 +89,17 @@ inline void applyStickModeToModel(Er9xModelData & model, unsigned int mode)
   model.swashCollectiveSource = applyStickMode(model.swashCollectiveSource, mode);
 }
 
-bool Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
+unsigned long Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
   std::cout << "trying er9x xml import... ";
+
+  std::bitset<NUM_ERRORS> errors;
 
   Er9xGeneral er9xGeneral;
   memset(&er9xGeneral,0,sizeof(er9xGeneral));
   if(!loadGeneralDataXML(&doc, &er9xGeneral)) {
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   } else {
     radioData.generalSettings=er9xGeneral;
     std::cout << "version " << (unsigned int)er9xGeneral.myVers << " ";
@@ -111,21 +114,26 @@ bool Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
     }
   }
   std::cout << "ok\n";
-  return true;
+  errors.set(NO_ERROR);
+  return errors.to_ulong();
 }
 
-bool Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
+unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying er9x import... ";
 
+  std::bitset<NUM_ERRORS> errors;
+
   if (size != getEEpromSize()) {
     std::cout << "wrong size\n";
-    return false;
+    errors.set(WRONG_SIZE);
+    return errors.to_ulong();
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
     std::cout << "wrong file system\n";
-    return false;
+    errors.set(WRONG_FILE_SYSTEM);
+    return errors.to_ulong();
   }
     
   efile->openRd(FILE_GENERAL);
@@ -133,7 +141,8 @@ bool Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 
   if (efile->readRlc1((uint8_t*)&er9xGeneral, 1) != 1) {
     std::cout << "no\n";
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
 
   std::cout << "version " << (unsigned int)er9xGeneral.myVers << " ";
@@ -151,13 +160,16 @@ bool Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
       break;
     default:
       std::cout << "not er9x\n";
-      return false;
+      errors.set(NOT_ER9X);
+      return errors.to_ulong();
   }
 
   efile->openRd(FILE_GENERAL);
   if (!efile->readRlc1((uint8_t*)&er9xGeneral, sizeof(Er9xGeneral))) {
     std::cout << "ko\n";
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
+
   }
   radioData.generalSettings = er9xGeneral;
   
@@ -174,12 +186,15 @@ bool Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
   }
 
   std::cout << "ok\n";
-  return true;
+  errors.set(NO_ERROR);
+  return errors.to_ulong();
 }
 
-bool Er9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
+unsigned long Er9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
 {
-  return false;
+  std::bitset<NUM_ERRORS> errors;
+  errors.set(UNKNOWN_ERROR);
+  return errors.to_ulong();
 }
 
 int Er9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)

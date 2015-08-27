@@ -481,7 +481,7 @@ QString RawSource::toString(const ModelData * model) const
     QObject::tr("L21"), QObject::tr("L22"), QObject::tr("L23"), QObject::tr("L24"), QObject::tr("L25"), QObject::tr("L26"), QObject::tr("L27"), QObject::tr("L28"), QObject::tr("L29"), QObject::tr("L30"),
     QObject::tr("L31"), QObject::tr("L32")
   };
-  
+
   if (index<0) {
     return QObject::tr("----");
   }
@@ -528,7 +528,7 @@ QString RawSource::toString(const ModelData * model) const
         return CHECK_IN_ARRAY(telemetry, index);
       }
     case SOURCE_TYPE_GVAR:
-      return QObject::tr("GV%1").arg(index+1);      
+      return QObject::tr("GV%1").arg(index+1);
     default:
       return QObject::tr("----");
   }
@@ -536,15 +536,15 @@ QString RawSource::toString(const ModelData * model) const
 
 bool RawSource::isPot() const
 {
-  return (type == SOURCE_TYPE_STICK && 
-          index >= NUM_STICKS && 
+  return (type == SOURCE_TYPE_STICK &&
+          index >= NUM_STICKS &&
           index < NUM_STICKS+GetCurrentFirmware()->getCapability(Pots));
 }
 
 bool RawSource::isSlider() const
 {
-  return (type == SOURCE_TYPE_STICK && 
-          index >= NUM_STICKS+GetCurrentFirmware()->getCapability(Pots) && 
+  return (type == SOURCE_TYPE_STICK &&
+          index >= NUM_STICKS+GetCurrentFirmware()->getCapability(Pots) &&
           index < NUM_STICKS+GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders));
 }
 
@@ -858,7 +858,7 @@ void CustomFunctionData::populatePlaySoundParams(QStringList & qs)
   qs << "SciFi" << "Robot" << "Chirp" << "Tada" << "Crickt"  << "AlmClk"  ;
 }
 
-void CustomFunctionData::populateHapticParams(QStringList & qs) 
+void CustomFunctionData::populateHapticParams(QStringList & qs)
 {
   qs << "0" << "1" << "2" << "3";
 }
@@ -892,7 +892,7 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
     int pos = cb.findData(param);
     if (pos >= 0)
       return cb.itemText(pos);
-    else 
+    else
       return QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
   else if ((func==FuncVolume)|| (func==FuncPlayValue)) {
@@ -1608,7 +1608,7 @@ void registerEEpromInterfaces()
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_SKY9X));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_9XRPRO));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS));
-  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_PLUS));  
+  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_PLUS));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_X9E));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_GRUVIN9X));
@@ -1622,7 +1622,7 @@ void unregisterEEpromInterfaces()
   foreach(EEPROMInterface * intf, eepromInterfaces) {
     // qDebug() << "UnregisterEepromInterfaces(): deleting " <<  QString::number( reinterpret_cast<uint64_t>(intf), 16 );
     delete intf;
-  } 
+  }
   OpenTxEepromCleanup();
 }
 
@@ -1637,35 +1637,112 @@ void unregisterFirmwares()
   }
 }
 
-bool loadEEprom(RadioData &radioData, const uint8_t *eeprom, const int size)
+void ShowEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound)
 {
-  foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
-    if (eepromInterface->load(radioData, eeprom, size))
-      return true;
+  std::bitset<NUM_ERRORS> errors(errorsFound);
+  QStringList errorsList;
+
+  errorsList << QT_TRANSLATE_NOOP("EepromInterface", "Possible causes for this:");
+
+  if (errors.test(UNSUPPORTED_NEWER_VERSION)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is from a newer version of OpenTX"); }
+  if (errors.test(NOT_OPENTX)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is not from OpenTX"); }
+  if (errors.test(NOT_TH9X)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is not from Th9X"); }
+  if (errors.test(NOT_GRUVIN9X)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is not from Gruvin9X"); }
+  if (errors.test(NOT_ERSKY9X)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is not from ErSky9X"); }
+  if (errors.test(NOT_ER9X)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is not from Er9X"); }
+  if (errors.test(WRONG_SIZE)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom size is invalid"); }
+  if (errors.test(WRONG_FILE_SYSTEM)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom file system is invalid"); }
+  if (errors.test(UNKNOWN_BOARD)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is from a unknown board"); }
+  if (errors.test(WRONG_BOARD)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is from the wrong board"); }
+  if (errors.test(BACKUP_NOT_SUPPORTED)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom backup not supported"); }
+
+  if (errors.test(UNKNOWN_ERROR)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Something that couldn't be guessed, sorry"); }
+
+  if (errors.test(HAS_WARNINGS)) {
+    errorsList << QT_TRANSLATE_NOOP("EepromInterface", "Warning:");
+    if (errors.test(WARNING_WRONG_FIRMWARE)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"); }
   }
 
-  return false;
+  QMessageBox msgBox(parent);
+  msgBox.setWindowTitle(title);
+  msgBox.setIcon(QMessageBox::Critical);
+  msgBox.setText(mainMessage);
+  msgBox.setInformativeText(errorsList.join("\n"));
+  msgBox.setStandardButtons(QMessageBox::Ok);
+  msgBox.exec();
 }
 
-bool loadBackup(RadioData &radioData, uint8_t *eeprom, int size, int index)
+void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound)
 {
+  std::bitset<NUM_ERRORS> errors(errorsFound);
+  QStringList warningsList;
+  if (errors.test(WARNING_WRONG_FIRMWARE)) { warningsList << QT_TRANSLATE_NOOP("EepromInterface", "- Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"); }
+
+  QMessageBox msgBox(parent);
+  msgBox.setWindowTitle(title);
+  msgBox.setIcon(QMessageBox::Warning);
+  msgBox.setText(QT_TRANSLATE_NOOP("EepromInterface", "Warnings!"));
+  msgBox.setInformativeText(warningsList.join("\n"));
+  msgBox.setStandardButtons(QMessageBox::Ok);
+  msgBox.exec();
+}
+
+unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int size)
+{
+  std::bitset<NUM_ERRORS> errors;
+
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
-    if (eepromInterface->loadBackup(radioData, eeprom, size, index))
-      return true;
+    std::bitset<NUM_ERRORS> result(eepromInterface->load(radioData, eeprom, size));
+    if (result.test(NO_ERROR)) {
+      return result.to_ulong();
+    } else {
+      errors |= result;
+    }
   }
 
-  return false;
+  if (errors.none()) {
+    errors.set(UNKNOWN_ERROR);
+  }
+  return errors.to_ulong();
+}
+
+unsigned long LoadBackup(RadioData &radioData, uint8_t *eeprom, int size, int index)
+{
+  std::bitset<NUM_ERRORS> errors;
+
+  foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
+    std::bitset<NUM_ERRORS> result(eepromInterface->loadBackup(radioData, eeprom, size, index));
+    if (result.test(NO_ERROR)) {
+      return result.to_ulong();
+    } else {
+      errors |= result;
+    }
+  }
+
+  if (errors.none()) {
+    errors.set(UNKNOWN_ERROR);
+  }
+  return errors.to_ulong();
 }
 
 
-bool loadEEpromXml(RadioData &radioData, QDomDocument &doc)
+unsigned long LoadEepromXml(RadioData &radioData, QDomDocument &doc)
 {
+  std::bitset<NUM_ERRORS> errors;
+
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
-    if (eepromInterface->loadxml(radioData, doc))
-      return true;
+    std::bitset<NUM_ERRORS> result(eepromInterface->loadxml(radioData, doc));
+    if (result.test(NO_ERROR)) {
+      return result.to_ulong();
+    } else {
+      errors |= result;
+    }
   }
 
-  return false;
+  if (errors.none()) {
+    errors.set(UNKNOWN_ERROR);
+  }
+  return errors.to_ulong();
 }
 
 QString getBoardName(BoardEnum board)
