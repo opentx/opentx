@@ -276,7 +276,7 @@ bool getLogicalSwitch(uint8_t idx)
       }
     }
     else {
-      uint8_t v1 = ls->v1;
+      mixsrc_t v1 = ls->v1;
 #if defined(FRSKY)
       // Telemetry
       if (v1 >= MIXSRC_FIRST_TELEM) {

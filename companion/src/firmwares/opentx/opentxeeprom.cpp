@@ -1787,8 +1787,14 @@ class LogicalSwitchField: public TransformedField {
         switchesConversionTable->importValue(v2, csw.val2);
       }
       else if (csw.func >= LS_FN_EQUAL && csw.func <= LS_FN_ELESS) {
-        sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
-        sourcesConversionTable->importValue((uint8_t)v2, csw.val2);
+        if (IS_ARM(board)) {
+          sourcesConversionTable->importValue((uint32_t)v1, csw.val1);
+          sourcesConversionTable->importValue((uint32_t)v2, csw.val2);
+        }
+        else {
+          sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
+          sourcesConversionTable->importValue((uint8_t)v2, csw.val2);
+        }
         if (IS_TARANIS(board) && version < 216) {
           RawSource val1(csw.val1);
           if (val1.type == SOURCE_TYPE_STICK && val1.index < NUM_STICKS) {
@@ -1801,7 +1807,12 @@ class LogicalSwitchField: public TransformedField {
         }
       }
       else if (csw.func != LS_FN_OFF) {
-        sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
+        if (IS_ARM(board)) {
+          sourcesConversionTable->importValue((uint32_t)v1, csw.val1);
+        }
+        else {
+          sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
+        }
         if (IS_TARANIS(board) && version < 216) {
           RawSource val1(csw.val1);
           if (val1.type == SOURCE_TYPE_STICK && val1.index < NUM_STICKS) {
