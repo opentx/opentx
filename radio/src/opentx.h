@@ -430,7 +430,6 @@
   typedef int8_t rotenc_t;
   typedef int16_t getvalue_t;
   typedef uint8_t mixsrc_t;
-  void watchdogSetTimeout(uint32_t timeout);
 #endif
 
 #if defined(NAVIGATION_STICKS)
