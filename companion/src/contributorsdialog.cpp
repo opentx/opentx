@@ -63,12 +63,15 @@ ContributorsDialog::ContributorsDialog(QWidget * parent):
              "  <tr><td class=\"normal\">" + tr("Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)") + "<br/></td></tr>" \
              "</table>");
 
+#if 0
   QFile blacklist(":/BLACKLIST.txt");
   if (blacklist.open(QIODevice::ReadOnly | QIODevice::Text)) {
 	QStringList names;
 	names << blacklist.readAll();
 	str.append(formatTable(tr("OpenTX Blacklist"), names, 1));
   }
+#endif
+
   str.append("</body></html>");
   ui->textEditor->setHtml(str);
   ui->textEditor->scroll(0, 0);

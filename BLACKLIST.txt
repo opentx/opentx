@@ -1,3 +1,0 @@
-<a href="http://3drobotics.com">3D Robotics</a>
-They sell the Iris+ with a modified version of OpenTX which doesn't fullfil the GPL requirements.
-No donations, no thanks, we are just free staff for them...

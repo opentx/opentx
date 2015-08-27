@@ -4,7 +4,7 @@
     <file>icon.png</file>
     <file>../../CREDITS.txt</file>
     <file>../../DONATIONS.txt</file>
-    <file>../../BLACKLIST.txt</file>
+    <!-- <file>../../BLACKLIST.txt</file> -->
     <file>../releasenotes.txt</file>
     <file>images/9xdb.png</file>
     <file>images/9xdl.png</file>
