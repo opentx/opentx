@@ -511,13 +511,16 @@ void evalInputs(uint8_t mode)
 }
 
 #if defined(VIRTUALINPUTS)
-int getStickTrimValue(int stick, int value)
+int getStickTrimValue(int stick, int stickValue)
 {
+  if (stick < 0)
+    return 0;
+    
   int trim = trims[stick];
   if (stick == THR_STICK) {
     if (g_model.thrTrim) {
       int trimMin = g_model.extendedTrims ? 2*TRIM_EXTENDED_MIN : 2*TRIM_MIN;
-      trim = ((g_model.throttleReversed ? (trim+trimMin) : (trim-trimMin)) * (RESX-value)) >> (RESX_SHIFT+1);
+      trim = ((g_model.throttleReversed ? (trim+trimMin) : (trim-trimMin)) * (RESX-stickValue)) >> (RESX_SHIFT+1);
     }
     if (g_model.throttleReversed) {
       trim = -trim;
@@ -526,12 +529,12 @@ int getStickTrimValue(int stick, int value)
   return trim;
 }
 
-int getSourceTrimValue(int source, int value=0)
+int getSourceTrimValue(int source, int stickValue=0)
 {
   if (source >= MIXSRC_Rud && source <= MIXSRC_Ail)
-    return getStickTrimValue(source - MIXSRC_Rud, value);
+    return getStickTrimValue(source - MIXSRC_Rud, stickValue);
   else if (source >= MIXSRC_FIRST_INPUT && source <= MIXSRC_LAST_INPUT)
-    return getStickTrimValue(virtualInputsTrims[source - MIXSRC_FIRST_INPUT], value);
+    return getStickTrimValue(virtualInputsTrims[source - MIXSRC_FIRST_INPUT], stickValue);
   else
     return 0;
 }
