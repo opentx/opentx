@@ -81,7 +81,7 @@ MdiChild::MdiChild():
   }
 }
 
-MdiChild::~MdiChild() 
+MdiChild::~MdiChild()
 {
   delete ui;
 }
@@ -174,7 +174,7 @@ void MdiChild::modelEdit()
 
   if (row == 0){
     generalEdit();
-  } 
+  }
   else {
     QApplication::setOverrideCursor(Qt::WaitCursor);
     checkAndInitModel( row );
@@ -251,7 +251,7 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
       XmlInterface(inputStream).load(radioData);
     }
     else
-#endif 
+#endif
     if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) { //read HEX file
       if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
           QMessageBox::critical(this, tr("Error"),
@@ -260,7 +260,7 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
                                .arg(file.errorString()));
           return false;
       }
-        
+
       QDomDocument doc(ER9X_EEPROM_FILE_TYPE);
       bool xmlOK = doc.setContent(&file);
       if(xmlOK) {
@@ -271,7 +271,7 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
         }
       }
       file.reset();
-      
+
       QTextStream inputStream(&file);
 
       if (fileType==FILE_TYPE_EEPE) {  // read EEPE file header
@@ -367,7 +367,7 @@ bool MdiChild::saveAs(bool isNew)
       fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
 #else
       fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(BIN_FILES_FILTER));
-#endif      
+#endif
     }
     else {
       QFileInfo fi(curFile);
@@ -375,14 +375,14 @@ bool MdiChild::saveAs(bool isNew)
       fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
 #else
       fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(EEPROM_FILES_FILTER));
-#endif      
+#endif
     }
     if (fileName.isEmpty())
       return false;
     g.eepromDir( QFileInfo(fileName).dir().absolutePath() );
     if (isNew)
       return saveFile(fileName);
-    else 
+    else
       return saveFile(fileName,true);
 }
 
@@ -505,7 +505,7 @@ void MdiChild::setCurrentFile(const QString &fileName)
   files.prepend(fileName);
   while (files.size() > MaxRecentFiles)
       files.removeLast();
- 
+
   g.recentFiles( files );
 }
 
@@ -594,7 +594,7 @@ void MdiChild::print(int model, QString filename)
   else if (ui->modelsList->currentRow() > 0) {
     pd = new PrintDialog(this, GetCurrentFirmware()/*firmware*/, &radioData.generalSettings, &radioData.models[ui->modelsList->currentRow()-1]);
   }
-    
+
   if (pd) {
     pd->setAttribute(Qt::WA_DeleteOnClose, true);
     pd->show();

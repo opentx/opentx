@@ -366,7 +366,7 @@ QString RawSource::toString(const ModelData & model)
     QObject::tr("L21"), QObject::tr("L22"), QObject::tr("L23"), QObject::tr("L24"), QObject::tr("L25"), QObject::tr("L26"), QObject::tr("L27"), QObject::tr("L28"), QObject::tr("L29"), QObject::tr("L30"),
     QObject::tr("L31"), QObject::tr("L32")
   };
-  
+
   if (index<0) {
     return QObject::tr("----");
   }
@@ -402,7 +402,7 @@ QString RawSource::toString(const ModelData & model)
     case SOURCE_TYPE_TELEMETRY:
       return CHECK_IN_ARRAY(telemetry, index);
     case SOURCE_TYPE_GVAR:
-      return QObject::tr("GV%1").arg(index+1);      
+      return QObject::tr("GV%1").arg(index+1);
     default:
       return QObject::tr("----");
   }
@@ -1155,7 +1155,7 @@ void ModelData::clear()
   }
   else {
     moduleData[0].protocol=PPM;
-    moduleData[1].protocol=OFF;      
+    moduleData[1].protocol=OFF;
   }
   for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     flightModeData[i].clear();
@@ -1336,7 +1336,7 @@ void RegisterEepromInterfaces()
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_SKY9X));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_9XRPRO));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS));
-  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_PLUS));  
+  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_PLUS));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_GRUVIN9X));
   eepromInterfaces.push_back(new Ersky9xInterface());
@@ -1349,7 +1349,7 @@ void UnregisterEepromInterfaces()
   foreach(EEPROMInterface * intf, eepromInterfaces) {
     // qDebug() << "UnregisterEepromInterfaces(): deleting " <<  QString::number( reinterpret_cast<uint64_t>(intf), 16 );
     delete intf;
-  } 
+  }
   OpenTxEepromCleanup();
 }
 
@@ -1357,7 +1357,7 @@ QList<FirmwareInterface *> firmwares;
 FirmwareInterface * default_firmware_variant;
 FirmwareInterface * current_firmware_variant;
 
-void UnregisterFirmwares() 
+void UnregisterFirmwares()
 {
   foreach (FirmwareInterface * f, firmwares) {
     delete f;

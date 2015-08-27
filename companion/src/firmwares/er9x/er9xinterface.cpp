@@ -1,6 +1,6 @@
 /*
  * Author - Bertrand Songis <bsongis@gmail.com>
- * 
+ *
  * Based on th9x -> http://code.google.com/p/th9x/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -127,7 +127,7 @@ bool Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
     std::cout << "wrong file system\n";
     return false;
   }
-    
+
   efile->openRd(FILE_GENERAL);
   Er9xGeneral er9xGeneral;
 
@@ -160,7 +160,7 @@ bool Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
     return false;
   }
   radioData.generalSettings = er9xGeneral;
-  
+
   for (int i=0; i<getMaxModels(); i++) {
     Er9xModelData er9xModel;
     efile->openRd(FILE_MODEL(i));
@@ -170,7 +170,7 @@ bool Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
     else {
       applyStickModeToModel(er9xModel, radioData.generalSettings.stickMode+1);
       radioData.models[i] = er9xModel;
-    } 
+    }
   }
 
   std::cout << "ok\n";

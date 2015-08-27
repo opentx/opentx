@@ -1,6 +1,6 @@
 /*
  * Author - Bertrand Songis <bsongis@gmail.com>
- * 
+ *
  * Based on th9x -> http://code.google.com/p/th9x/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -165,7 +165,7 @@ bool Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int si
     std::cout << "ko\n";
     return false;
   }
-  
+
   for (int i=0; i<getMaxModels(); i++) {
     efile->openRd(FILE_MODEL(i));
     if (version == 5) {
