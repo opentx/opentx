@@ -181,7 +181,7 @@ void getSwitchesPosition(bool startup)
 #define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
 #define POT_POSITION(sw)     ((potsPos[(sw)/XPOTS_MULTIPOS_COUNT] & 0x0f) == ((sw) % XPOTS_MULTIPOS_COUNT))
 
-getvalue_t getValueForLogicalSwitch(uint8_t i)
+getvalue_t getValueForLogicalSwitch(mixsrc_t i)
 {
   getvalue_t result = getValue(i);
   if (i>=MIXSRC_FIRST_INPUT && i<=MIXSRC_LAST_INPUT) {
