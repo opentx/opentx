@@ -37,7 +37,7 @@
 #include "../../opentx.h"
 
 uint8_t serial2Mode = 0;
-Fifo<512> uart3TxFifo;
+Fifo<512> serial2TxFifo;
 extern Fifo<512> telemetryFifo;
 extern Fifo<32> sbusFifo;
 
@@ -98,7 +98,8 @@ void serial2Init(unsigned int mode, unsigned int protocol)
 
 void serial2Putc(char c)
 {
-  uart3TxFifo.push(c);
+  while (serial2TxFifo.isFull());
+  serial2TxFifo.push(c);
   USART_ITConfig(SERIAL_USART, USART_IT_TXE, ENABLE);
 }
 
@@ -124,7 +125,7 @@ extern "C" void SERIAL_USART_IRQHandler(void)
   // Send
   if (USART_GetITStatus(SERIAL_USART, USART_IT_TXE) != RESET) {
     uint8_t txchar;
-    if (uart3TxFifo.pop(txchar)) {
+    if (serial2TxFifo.pop(txchar)) {
       /* Write one byte to the transmit data register */
       USART_SendData(SERIAL_USART, txchar);
     }

@@ -56,7 +56,7 @@ class Fifo
     }
 
     bool pop(uint8_t & byte) {
-      if (empty()) {
+      if (isEmpty()) {
         return false;
       }
       else {
@@ -66,12 +66,17 @@ class Fifo
       }
     }
 
-    bool empty() {
+    bool isEmpty() {
       return (ridx == widx);
     }
 
+    bool isFull() {
+      uint32_t next = (widx+1) & (N-1);
+      return (next == ridx);
+    }
+
     void flush() {
-      while (!empty()) {};
+      while (!isEmpty()) {};
     }
 
   protected:
@@ -80,4 +85,4 @@ class Fifo
     volatile uint32_t ridx;
 };
 
-#endif
+#endif // _FIFO_H_

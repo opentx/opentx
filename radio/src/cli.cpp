@@ -41,7 +41,6 @@
 #define CLI_COMMAND_MAX_ARGS           8
 #define CLI_COMMAND_MAX_LEN            256
 
-extern Fifo<512> uart3TxFifo;
 OS_TID cliTaskId;
 OS_STK cliStack[CLI_STACK_SIZE];
 Fifo<256> cliRxFifo;
