@@ -34,7 +34,7 @@ class OpenTxEepromInterface : public EEPROMInterface
 
     virtual const int getMaxModels();
 
-    virtual bool load(RadioData &, const uint8_t *eeprom, int size);
+    virtual unsigned long load(RadioData &, const uint8_t *eeprom, int size);
 
     virtual bool loadBackup(RadioData &, uint8_t *eeprom, int esize, int index);
 
@@ -52,7 +52,7 @@ class OpenTxEepromInterface : public EEPROMInterface
 
     const char * getName();
 
-    bool checkVersion(unsigned int version);
+    EepromLoadErrors checkVersion(unsigned int version);
 
     bool checkVariant(unsigned int version, unsigned int variant);
 

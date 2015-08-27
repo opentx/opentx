@@ -294,11 +294,13 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
 
       file.close();
 
-      if (!LoadEeprom(radioData, eeprom, eeprom_size)) {
-        QMessageBox::critical(this, tr("Error"),
-            tr("Invalid EEPROM File %1")
-            .arg(fileName));
+      std::bitset<NUM_ERRORS> errors(LoadEeprom(radioData, eeprom, eeprom_size));
+      if (!errors.test(NO_ERROR)) {
+        ShowEepromErrors(this, tr("Error"), tr("Invalid EEPROM File %1").arg(fileName), errors.to_ulong());
         return false;
+      }
+      if (errors.test(HAS_WARNINGS)) {
+        ShowEepromWarnings(this, tr("Warning"), errors.to_ulong());
       }
 
       ui->modelsList->refreshList();
@@ -330,11 +332,19 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
           return false;
       }
 
-      if (!LoadEeprom(radioData, eeprom, eeprom_size) && !LoadBackup(radioData, eeprom, eeprom_size, 0)) {
-        QMessageBox::critical(this, tr("Error"),
-            tr("Invalid binary EEPROM File %1")
-            .arg(fileName));
-        return false;
+      std::bitset<NUM_ERRORS> errorsEeprom(LoadEeprom(radioData, eeprom, eeprom_size));
+      std::bitset<NUM_ERRORS> errorsBackup;
+      if (!errorsEeprom.test(NO_ERROR)) {
+        std::bitset<NUM_ERRORS> errorsBackup(LoadBackup(radioData, eeprom, eeprom_size, 0));
+        if (!errorsBackup.test(NO_ERROR)) {
+          ShowEepromErrors(this, tr("Error"), tr("Invalid binary EEPROM File %1").arg(fileName), (errorsEeprom | errorsBackup).to_ulong());
+          return false;
+        }
+        if (errorsBackup.test(HAS_WARNINGS)) {
+          ShowEepromWarnings(this, tr("Warning"), errorsBackup.to_ulong());
+        }
+      } else if (errorsEeprom.test(HAS_WARNINGS)) {
+        ShowEepromWarnings(this, tr("Warning"), errorsEeprom.to_ulong());
       }
 
       ui->modelsList->refreshList();

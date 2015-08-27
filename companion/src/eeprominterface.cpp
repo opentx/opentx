@@ -1364,14 +1364,67 @@ void UnregisterFirmwares()
   }
 }
 
-bool LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int size)
+void ShowEepromErrors(QWidget *parent, QString title, QString mainMessage, unsigned long errorsFound)
 {
-  foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
-    if (eepromInterface->load(radioData, eeprom, size))
-      return true;
+  std::bitset<NUM_ERRORS> errors(errorsFound);
+  QString errorsList(QT_TRANSLATE_NOOP("EepromInterface", "Possible causes for this:\n"));
+
+  if (errors.test(UNSUPPORTED_NEWER_VERSION)) { errorsList += QT_TRANSLATE_NOOP("EepromInterface", "\n- Eeprom is from a newer version of OpenTX"); }
+  if (errors.test(NOT_OPENTX)) { errorsList += QT_TRANSLATE_NOOP("EepromInterface", "\n- Eeprom is not from OpenTX"); }
+  if (errors.test(WRONG_SIZE)) { errorsList += QT_TRANSLATE_NOOP("EepromInterface", "\n- Eeprom size is invalid"); }
+  if (errors.test(WRONG_FILE_SYSTEM)) { errorsList += QT_TRANSLATE_NOOP("EepromInterface", "\n- Eeprom file system is invalid"); }
+  if (errors.test(UNKNOWN_BOARD)) { errorsList += QT_TRANSLATE_NOOP("EepromInterface", "\n- Eeprom is from a unknown board"); }
+  if (errors.test(WRONG_BOARD)) { errorsList += QT_TRANSLATE_NOOP("EepromInterface", "\n- Eeprom is from the wrong board"); }
+  if (errors.test(BACKUP_NOT_SUPPORTED)) { errorsList += QT_TRANSLATE_NOOP("EepromInterface", "\n- Eeprom backup not supported"); }
+
+  if (errors.test(UNKNOWN_ERROR)) { errorsList += QT_TRANSLATE_NOOP("EepromInterface", "\n- Something that couldn't be guessed, sorry"); }
+
+  if (errors.test(HAS_WARNINGS)) {
+    errorsList += QT_TRANSLATE_NOOP("EepromInterface", "\n\nWarning:\n");
+    if (errors.test(WARNING_WRONG_FIRMWARE)) { errorsList += QT_TRANSLATE_NOOP("EepromInterface", "\n- Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"); }
   }
 
-  return false;
+  QMessageBox msgBox(parent);
+  msgBox.setWindowTitle(title);
+  msgBox.setIcon(QMessageBox::Critical);
+  msgBox.setText(mainMessage);
+  msgBox.setInformativeText(errorsList);
+  msgBox.setStandardButtons(QMessageBox::Ok);
+  msgBox.exec();
+}
+
+void ShowEepromWarnings(QWidget *parent, QString title, unsigned long errorsFound)
+{
+  std::bitset<NUM_ERRORS> errors(errorsFound);
+  QString errorsList;
+  if (errors.test(WARNING_WRONG_FIRMWARE)) { errorsList += QT_TRANSLATE_NOOP("EepromInterface", "\n- Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"); }
+
+  QMessageBox msgBox(parent);
+  msgBox.setWindowTitle(title);
+  msgBox.setIcon(QMessageBox::Warning);
+  msgBox.setText(QT_TRANSLATE_NOOP("EepromInterface", "Warnings!"));
+  msgBox.setInformativeText(errorsList);
+  msgBox.setStandardButtons(QMessageBox::Ok);
+  msgBox.exec();
+}
+
+unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int size)
+{
+  std::bitset<NUM_ERRORS> errors;
+
+  foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
+    std::bitset<NUM_ERRORS> result(eepromInterface->load(radioData, eeprom, size));
+    if (result.test(NO_ERROR)) {
+      return result.to_ulong();
+    } else {
+      errors |= result;
+    }
+  }
+
+  if (errors.none()) {
+    errors.set(UNKNOWN_ERROR);
+  }
+  return errors.to_ulong();
 }
 
 bool LoadBackup(RadioData &radioData, uint8_t *eeprom, int size, int index)

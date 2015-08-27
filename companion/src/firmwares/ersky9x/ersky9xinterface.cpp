@@ -15,7 +15,6 @@
  */
 
 #include <iostream>
-#include <QMessageBox>
 #include "ersky9xinterface.h"
 #include "ersky9xeeprom.h"
 #include "ersky9xsimulator.h"
@@ -151,7 +150,7 @@ bool Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return true;
 }
 
-bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
+unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying ersky9x import... ";
 

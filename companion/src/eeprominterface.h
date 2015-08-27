@@ -25,6 +25,8 @@
 #include <QtXml>
 #include <iostream>
 
+#include <bitset>
+
 #if __GNUC__
   #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
 #else
@@ -1179,7 +1181,7 @@ class EEPROMInterface
 
     inline BoardEnum getBoard() { return board; }
 
-    virtual bool load(RadioData &radioData, const uint8_t *eeprom, int size) = 0;
+    virtual unsigned long load(RadioData &radioData, const uint8_t *eeprom, int size) = 0;
 
     virtual bool loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index) = 0;
 
@@ -1305,8 +1307,29 @@ void RegisterEepromInterfaces();
 void UnregisterFirmwares();
 void registerOpenTxFirmwares();
 
+enum EepromLoadErrors {
+  NO_ERROR,
+
+  UNKNOWN_ERROR,
+  UNSUPPORTED_NEWER_VERSION,
+  WRONG_SIZE,
+  WRONG_FILE_SYSTEM,
+  NOT_OPENTX,
+  UNKNOWN_BOARD,
+  WRONG_BOARD,
+  BACKUP_NOT_SUPPORTED,
+
+  HAS_WARNINGS,
+  WARNING_WRONG_FIRMWARE,
+
+  NUM_ERRORS
+};
+
+void ShowEepromErrors(QWidget *parent, QString title, QString mainMessage, unsigned long errorsFound);
+void ShowEepromWarnings(QWidget *parent, QString title, unsigned long errorsFound);
+
 bool LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
-bool LoadEeprom(RadioData &radioData, const uint8_t *eeprom, int size);
+unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, int size);
 bool LoadEepromXml(RadioData &radioData, QDomDocument &doc);
 
 struct Option {

@@ -305,9 +305,11 @@ bool OpenTxEepromInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return false;
 }
 
-bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
+unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying " << getName() << " import...";
+
+  std::bitset<NUM_ERRORS> errors;
 
   if (size != getEEpromSize()) {
     if (size==4096) {
@@ -319,21 +321,25 @@ bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, in
       }
       if (notnull) {
         std::cout << " wrong size (" << size << ")\n";
-        return false;
+        errors.set(WRONG_SIZE);
+        return errors.to_ulong();
       }
       else {
-        QMessageBox::warning(NULL, "companion", QObject::tr("Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"));
+        errors.set(HAS_WARNINGS);
+        errors.set(WARNING_WRONG_FIRMWARE);
         size=2048;
       }
     } else {
       std::cout << " wrong size (" << size << ")\n";
-      return false;
+      errors.set(WRONG_SIZE);
+      return errors.to_ulong();
     }
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, board)) {
     std::cout << " wrong file system\n";
-    return false;
+    errors.set(WRONG_FILE_SYSTEM);
+    return errors.to_ulong();
   }
 
   efile->openRd(FILE_GENERAL);
@@ -341,30 +347,36 @@ bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, in
   uint8_t version;
   if (efile->readRlc2(&version, 1) != 1) {
     std::cout << " no\n";
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
 
   std::cout << " version " << (unsigned int)version;
 
-  if (!checkVersion(version)) {
+  EepromLoadErrors version_error = checkVersion(version);
+  if (version_error != NO_ERROR) {
     std::cout << " not open9x\n";
-    return false;
+    errors.set(version_error);
+    return errors.to_ulong();
   }
 
   if (!loadGeneral<OpenTxGeneralData>(radioData.generalSettings, version)) {
     std::cout << " ko\n";
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
 
   std::cout << " variant " << radioData.generalSettings.variant;
   for (int i=0; i<getMaxModels(); i++) {
     if (!loadModel(version, radioData.models[i], NULL, i, radioData.generalSettings.variant, radioData.generalSettings.stickMode+1)) {
       std::cout << " ko\n";
-      return false;
+      errors.set(UNKNOWN_ERROR);
+      return errors.to_ulong();
     }
   }
   std::cout << " ok\n";
-  return true;
+  errors.set(NO_ERROR);
+  return errors.to_ulong();
 }
 
 int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
@@ -847,7 +859,7 @@ size_t getSizeA(T (&)[SIZE]) {
     return SIZE;
 }
 
-bool OpenTxEepromInterface::checkVersion(unsigned int version)
+EepromLoadErrors OpenTxEepromInterface::checkVersion(unsigned int version)
 {
   switch(version) {
     case 201:
@@ -908,12 +920,13 @@ bool OpenTxEepromInterface::checkVersion(unsigned int version)
       break;
     case 217:
       // 3 logical switches removed on M128 / gruvin9x boards
+      return UNSUPPORTED_NEWER_VERSION;
       break;
     default:
-      return false;
+      return NOT_OPENTX;
   }
 
-  return true;
+  return NO_ERROR;
 }
 
 bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int variant)

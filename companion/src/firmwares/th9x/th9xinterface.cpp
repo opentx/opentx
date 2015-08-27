@@ -62,7 +62,7 @@ bool Th9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return false;
 }
 
-bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
+unsigned long Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying th9x import... ";
 

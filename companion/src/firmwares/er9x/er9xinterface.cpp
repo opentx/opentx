@@ -114,7 +114,7 @@ bool Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return true;
 }
 
-bool Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
+unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying er9x import... ";
 
