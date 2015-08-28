@@ -547,8 +547,8 @@
 #define LEN_VFORMULAS          "\011"
 #define TR_VFORMULAS           "Somma\0   ""Media\0   ""Min\0     ""Max\0     ""Moltipl\0 ""Totalizza""Cella\0  ""Consumo\0 ""Distanza\0"
 
-#define LEN_VPREC              "\005"
-#define TR_VPREC               "PREC0""PREC1""PREC2"
+#define LEN_VPREC              "\004"
+#define TR_VPREC               "0.--""0.0 ""0.00"
 
 #define LEN_VCELLINDEX         "\010"
 #define TR_VCELLINDEX          "Minore\0 ""1\0      ""2\0      ""3\0      ""4\0      ""5\0      ""6\0      ""Maggiore""Delta\0"
