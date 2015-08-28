@@ -493,16 +493,16 @@ t_Ersky9xModelData_v10::operator ModelData ()
   }
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 2:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].ppmFrameLength=ppmFrameLength;
@@ -608,16 +608,16 @@ t_Ersky9xModelData_v11::operator ModelData ()
   }
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 2:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].ppmFrameLength=ppmFrameLength;

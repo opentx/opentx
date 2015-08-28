@@ -46,7 +46,7 @@ class Er9xInterface : public EEPROMInterface
     
     virtual int getSize(const GeneralSettings &settings);
 
-    virtual int isAvailable(Protocol proto, int port=0);
+    virtual int isAvailable(PulsesProtocol proto, int port=0);
 
   protected:
 

@@ -108,13 +108,13 @@ QString ModelPrinter::printModuleProtocol(unsigned int protocol)
 QString ModelPrinter::printModule(int idx)
 {
   const ModuleData & module = model.moduleData[idx];
-  if (module.protocol == OFF)
+  if (module.protocol == PULSES_OFF)
     return printModuleProtocol(module.protocol);
-  else if (module.protocol == PPM)
+  else if (module.protocol == PULSES_PPM)
     return tr("%1, Channels(%2-%3), PPM delay(%4usec), Pulse polarity(%5)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart+1).arg(module.channelsStart+module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString());
   else {
     QString result = tr("%1, Channels(%2-%3)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart+1).arg(module.channelsStart+module.channelsCount);
-    if (module.protocol != PXX_XJT_D8) {
+    if (module.protocol != PULSES_PXX_XJT_D8) {
       result += " " + tr("Receiver number(%1)").arg(module.modelId);
     }
     return result;

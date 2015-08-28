@@ -749,7 +749,7 @@ TelemetryPanel::~TelemetryPanel()
 void TelemetryPanel::update()
 {
   if (IS_TARANIS(firmware->getBoard())) {
-    if (model->moduleData[0].protocol == OFF && model->moduleData[1].protocol == PPM) {
+    if (model->moduleData[0].protocol == PULSES_OFF && model->moduleData[1].protocol == PULSES_PPM) {
       ui->telemetryProtocol->setEnabled(true);
     }
     else {

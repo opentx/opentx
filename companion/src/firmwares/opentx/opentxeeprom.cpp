@@ -3202,10 +3202,10 @@ void OpenTxModelData::beforeExport()
   // qDebug() << QString("before export model") << modelData.name;
 
   for (int module=0; module<3; module++) {
-    if (modelData.moduleData[module].protocol >= PXX_XJT_X16 && modelData.moduleData[module].protocol <= PXX_XJT_LR12)
-      subprotocols[module] = modelData.moduleData[module].protocol - PXX_XJT_X16;
-    else if (modelData.moduleData[module].protocol >= LP45 && modelData.moduleData[module].protocol <= DSMX)
-      subprotocols[module] = modelData.moduleData[module].protocol - LP45;
+    if (modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12)
+      subprotocols[module] = modelData.moduleData[module].protocol - PULSES_PXX_XJT_X16;
+    else if (modelData.moduleData[module].protocol >= PULSES_LP45 && modelData.moduleData[module].protocol <= PULSES_DSMX)
+      subprotocols[module] = modelData.moduleData[module].protocol - PULSES_LP45;
     else
       subprotocols[module] = (module==0 ? -1 : 0);
   }
@@ -3235,15 +3235,15 @@ void OpenTxModelData::afterImport()
   }
 
   for (int module=0; module<3; module++) {
-    if (modelData.moduleData[module].protocol == PXX_XJT_X16 || modelData.moduleData[module].protocol == LP45) {
+    if (modelData.moduleData[module].protocol == PULSES_PXX_XJT_X16 || modelData.moduleData[module].protocol == PULSES_LP45) {
       if (subprotocols[module] >= 0)
         modelData.moduleData[module].protocol += subprotocols[module];
       else
-        modelData.moduleData[module].protocol = OFF;
+        modelData.moduleData[module].protocol = PULSES_OFF;
     }
   }
 
-  if (IS_TARANIS(board) && version < 217 && modelData.moduleData[1].protocol != OFF) {
+  if (IS_TARANIS(board) && version < 217 && modelData.moduleData[1].protocol != PULSES_OFF) {
     modelData.moduleData[1].modelId = modelData.moduleData[0].modelId;
   }
 }

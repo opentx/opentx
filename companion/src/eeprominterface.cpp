@@ -1383,16 +1383,16 @@ void ModelData::clear()
   moduleData[2].ppmDelay = 300;
   int board = GetEepromInterface()->getBoard();
   if (IS_TARANIS(board)) {
-    moduleData[0].protocol=PXX_XJT_X16;
-    moduleData[1].protocol=OFF;
+    moduleData[0].protocol = PULSES_PXX_XJT_X16;
+    moduleData[1].protocol = PULSES_OFF;
   }
   else if (IS_SKY9X(board)) {
-    moduleData[0].protocol=PPM;
-    moduleData[1].protocol=PPM;      
+    moduleData[0].protocol = PULSES_PPM;
+    moduleData[1].protocol = PULSES_PPM;
   }
   else {
-    moduleData[0].protocol=PPM;
-    moduleData[1].protocol=OFF;      
+    moduleData[0].protocol = PULSES_PPM;
+    moduleData[1].protocol = PULSES_OFF;
   }
   for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     flightModeData[i].clear();

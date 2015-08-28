@@ -200,13 +200,13 @@ int Er9xInterface::getSize(const GeneralSettings &settings)
   return 0;
 }
 
-int Er9xInterface::isAvailable(Protocol prot, int port)
+int Er9xInterface::isAvailable(PulsesProtocol prot, int port)
 {
   switch (prot) {
-    case PPM:
-    case DSM2:
-    case PXX_DJT:
-    case PPM16:
+    case PULSES_PPM:
+    case PULSES_DSM2:
+    case PULSES_PXX_DJT:
+    case PULSES_PPM16:
       return 1;
     default:
       return 0;

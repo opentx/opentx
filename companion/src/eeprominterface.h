@@ -815,31 +815,31 @@ class TimerData {
     void clear() { memset(this, 0, sizeof(TimerData)); mode = RawSwitch(SWITCH_TYPE_TIMER_MODE, 0); }
 };
 
-enum Protocol {
-  OFF,
-  PPM,
-  SILV_A,
-  SILV_B,
-  SILV_C,
-  CTP1009,
-  LP45,
-  DSM2,
-  DSMX,
-  PPM16,
-  PPMSIM,
-  PXX_XJT_X16,
-  PXX_XJT_D8,
-  PXX_XJT_LR12,
-  PXX_DJT,
-  PROTO_LAST
+enum PulsesProtocol {
+  PULSES_OFF,
+  PULSES_PPM,
+  PULSES_SILV_A,
+  PULSES_SILV_B,
+  PULSES_SILV_C,
+  PULSES_CTP1009,
+  PULSES_LP45,
+  PULSES_DSM2,
+  PULSES_DSMX,
+  PULSES_PPM16,
+  PULSES_PPMSIM,
+  PULSES_PXX_XJT_X16,
+  PULSES_PXX_XJT_D8,
+  PULSES_PXX_XJT_LR12,
+  PULSES_PXX_DJT,
+  PULSES_PROTOCOL_LAST
 };
 
 enum TrainerProtocol {
-  MASTER_JACK,
-  SLAVE_JACK,
-  MASTER_SBUS_MODULE,
-  MASTER_CPPM_MODULE,
-  MASTER_SBUS_BATT_COMPARTMENT
+  TRAINER_MASTER_JACK,
+  TRAINER_SLAVE_JACK,
+  TRAINER_MASTER_SBUS_MODULE,
+  TRAINER_MASTER_CPPM_MODULE,
+  TRAINER_MASTER_SBUS_BATT_COMPARTMENT
 };
 
 class ModuleData {
@@ -1378,7 +1378,7 @@ class EEPROMInterface
 
     virtual int getSize(const GeneralSettings &) = 0;
 
-    virtual int isAvailable(Protocol proto, int port=0) = 0;
+    virtual int isAvailable(PulsesProtocol proto, int port=0) = 0;
 
     virtual const int getEEpromSize() = 0;
 
