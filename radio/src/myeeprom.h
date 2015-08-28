@@ -62,10 +62,10 @@
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
 #if defined(PCBTARANIS)
-  #define EEPROM_VER             217
+  #define EEPROM_VER             218
   #define FIRST_CONV_EEPROM_VER  216
 #elif defined(PCBSKY9X)
-  #define EEPROM_VER             217
+  #define EEPROM_VER             218
   #define FIRST_CONV_EEPROM_VER  216
 #elif defined(CPUM2560) || defined(CPUM2561)
   #define EEPROM_VER             217
@@ -116,7 +116,7 @@
   #define MAX_FLIGHT_MODES     9
   #define MAX_MIXERS           64
   #define MAX_EXPOS            64
-  #define NUM_LOGICAL_SWITCH   32 // number of logical switches
+  #define NUM_LOGICAL_SWITCH   64 // number of logical switches
   #define NUM_CFN              64 // number of functions assigned to switches
   #define MAX_SCRIPTS          7
   #define MAX_INPUTS           32
@@ -628,8 +628,8 @@ enum AdjustGvarFunctionParam {
   #define CFN_SPARE_TYPE int16_t
 #endif
 PACK(typedef struct {
-  int8_t  swtch;
-  uint8_t func;
+  int16_t  swtch:9;
+  uint16_t func:7;
   PACK(union {
     PACK(struct {
       char name[LEN_CFN_NAME];
@@ -817,14 +817,15 @@ PACK(typedef struct {
 
 #if defined(PCBTARANIS)
 PACK(typedef struct {
-  uint32_t srcRaw:10;
-  uint32_t scale:14;
-  uint32_t chn:8;
-  int8_t   swtch;
-  uint16_t flightModes;
-  int8_t   weight;
-  int8_t   carryTrim:6;
-  uint8_t  mode:2;
+  uint16_t mode:2;
+  uint16_t scale:14;
+  uint16_t srcRaw:10;
+  int16_t  carryTrim:6;
+  uint32_t chn:5;
+  int32_t  swtch:9;
+  uint32_t flightModes:9;
+  int32_t  weight:8;
+  int32_t  spare:1;
   char     name[LEN_EXPOMIX_NAME];
   int8_t   offset;
   CurveRef curve;
@@ -944,15 +945,16 @@ PACK(typedef struct {
 #define SLOW_MAX        (25*SLOW_STEP)  /* 25 seconds */
 #if defined(PCBTARANIS)
 PACK(typedef struct {
-  uint8_t  destCh;
-  uint16_t flightModes:9;
-  uint16_t mltpx:2;         // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  int16_t  weight:11;       // GV1=-1024, -GV1=1023
+  uint16_t destCh:5;
+  uint16_t srcRaw:10;       // srcRaw=0 means not used
   uint16_t carryTrim:1;
-  uint16_t mixWarn:4;       // mixer warning
-  int16_t  weight;
-  uint32_t srcRaw:10;
+  uint16_t mixWarn:2;       // mixer warning
+  uint16_t mltpx:2;         // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint16_t spare:1;
   int32_t  offset:14;
-  int32_t  swtch:8;
+  int32_t  swtch:9;
+  uint32_t flightModes:9;
   CurveRef curve;
   uint8_t  delayUp;
   uint8_t  delayDown;
@@ -1125,13 +1127,15 @@ enum LogicalSwitchesFunctions {
 #define MAX_LS_ANDSW    SWSRC_LAST
 typedef int16_t ls_telemetry_value_t;
 PACK(typedef struct { // Logical Switches data
-  uint16_t func:6;
-  int16_t  v1:10;
+  uint8_t  func;
+  int32_t  v1:10;  
+  int32_t  v3:10;
+  int32_t  andsw:9;      // TODO rename to xswtch
+  uint32_t andswtype:1;  // TODO rename to xswtchType (AND / OR)
+  uint32_t spare:2;      // anything else needed?
   int16_t  v2;
-  int16_t  v3;
   uint8_t  delay;
   uint8_t  duration;
-  int8_t   andsw;
 }) LogicalSwitchData;
 #else
 typedef uint8_t ls_telemetry_value_t;
@@ -1611,10 +1615,11 @@ PACK(typedef struct {
 #if defined(CPUARM)
 PACK(typedef struct {
   TRIMS_ARRAY;
-  int8_t swtch;       // swtch of phase[0] is not used
   char name[LEN_FLIGHT_MODE_NAME];
-  uint8_t fadeIn;
-  uint8_t fadeOut;
+  int16_t  swtch:9;       // swtch of phase[0] is not used
+  int16_t  spare:7;
+  uint8_t  fadeIn;
+  uint8_t  fadeOut;
   ROTARY_ENCODER_ARRAY;
   PHASE_GVARS_DATA;
 }) FlightModeData;
@@ -1754,6 +1759,10 @@ enum SwitchSources {
 #if defined(CPUARM)
   SWSRC_FIRST_FLIGHT_MODE,
   SWSRC_LAST_FLIGHT_MODE = SWSRC_FIRST_FLIGHT_MODE+MAX_FLIGHT_MODES-1,
+
+  SWSRC_TELEMETRY_STREAMING,
+  SWSRC_FIRST_SENSOR,
+  SWSRC_LAST_SENSOR = SWSRC_FIRST_SENSOR+MAX_SENSORS-1,
 #endif
 
   SWSRC_COUNT,
@@ -1972,8 +1981,8 @@ enum CountDownModes {
 
 #if defined(CPUARM)
 PACK(typedef struct {
-  int32_t  mode:8;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
-  uint32_t start:24;
+  int32_t  mode:9;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
+  uint32_t start:23;
   int32_t  value:24;
   uint32_t countdownBeep:2;
   uint32_t minuteBeep:1;
