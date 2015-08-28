@@ -692,8 +692,8 @@ void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
   else if (idx <= MIXSRC_LAST_CH) {
     putsStrIdx(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
     if (ZEXIST(g_model.limitData[idx-MIXSRC_CH1].name) && (att & STREXPANDED)) {
-      lcd_putcAtt(lcdLastPos, y, ' ', att);
-      lcd_putsnAtt(lcdLastPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att);
+      lcd_putcAtt(lcdLastPos, y, ' ', att|SMLSIZE);
+      lcd_putsnAtt(lcdLastPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att|SMLSIZE);
     }
   }
   else if (idx <= MIXSRC_LAST_GVAR)
