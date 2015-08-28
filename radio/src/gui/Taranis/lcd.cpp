@@ -712,7 +712,7 @@ void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
   else {
     idx -= MIXSRC_FIRST_TELEM;
     div_t qr = div(idx, 3);
-    lcd_putsnAtt(x, y, g_model.telemetrySensors[qr.quot].label, ZLEN(g_model.telemetrySensors[qr.quot].label), ZCHAR|att);
+    lcd_putsnAtt(x, y, g_model.telemetrySensors[qr.quot].label, TELEM_LABEL_LEN, ZCHAR|att);
     if (qr.rem) lcd_putcAtt(lcdLastPos, y, qr.rem==2 ? '+' : '-', att);
   }
 }
@@ -773,8 +773,14 @@ void putsSwitches(coord_t x, coord_t y, int32_t idx, LcdFlags att)
   else if (idx <= SWSRC_ONE) {
     lcd_putsiAtt(x, y, STR_VSWITCHES, idx-SWSRC_ON+1+(2*NUM_STICKS), att);
   }
-  else {
+  else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
     putsStrIdx(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
+  }
+  else if (idx == SWSRC_TELEMETRY_STREAMING) {
+    lcd_putsAtt(x, y, "Tele", att);
+  }
+  else {
+    lcd_putsnAtt(x, y, g_model.telemetrySensors[idx-SWSRC_FIRST_SENSOR].label, TELEM_LABEL_LEN, ZCHAR|att);
   }
 }
 
