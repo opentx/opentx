@@ -100,13 +100,19 @@ void _bootStart()
   __ASM volatile ("nop");
   __ASM volatile ("nop");
 
-  // Turn soft power ON now
-  GPIOD->BSRRL = 1;                                  // set PWR_GPIO_PIN_ON pin to 1
-  GPIOD->MODER = (GPIOD->MODER & 0xFFFFFFFC) | 1;    // General purpose output mode
+  // Turn soft power ON now, but only if we got started because of the watchdog
+  // or software reset. If the radio was started by user pressing the power button
+  // then that button is providing power and we don't need to enable it here.
+  //
+  // If we were to turn it on here indiscriminately, then the radio can go into the 
+  // power on/off loop after being powered off by the user. (issue #2790)
+  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    GPIOD->BSRRL = 1;                                  // set PWR_GPIO_PIN_ON pin to 1
+    GPIOD->MODER = (GPIOD->MODER & 0xFFFFFFFC) | 1;    // General purpose output mode
+  }
 
   // TRIMS_GPIO_PIN_LHR is on PG0 on 9XE and on PE3 on Taranis
   // TRIMS_GPIO_PIN_RHL is on PC1 on all versions
-
   // turn on pull-ups on trim keys 
   GPIOC->PUPDR = 0x00000004;
 #if defined(REV9E)
@@ -114,9 +120,22 @@ void _bootStart()
 #else
   GPIOE->PUPDR = 0x00000040;
 #endif
-  
+
+  // wait for inputs to stabilize
   for (uint32_t i = 0; i < 50000; i += 1) {
     bwdt_reset();
+  }
+
+  // now the second part of power on sequence
+  // If we got here and the radio was not started by the watchdog/software reset,
+  // then we must have a power button pressed. If not then we are in power on/off loop
+  // and to terminate it, just wait here without turning on PWR pin. The power supply will
+  // eventually exhaust and the radio will turn off.
+  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    // wait here until the power key is pressed
+    while (GPIOD->IDR & PWR_GPIO_PIN_SWITCH) {
+      bwdt_reset();
+    }
   }
 
   if (!(TRIMS_GPIO_REG_LHR & TRIMS_GPIO_PIN_LHR) && !(TRIMS_GPIO_REG_RHL & TRIMS_GPIO_PIN_RHL)) {
