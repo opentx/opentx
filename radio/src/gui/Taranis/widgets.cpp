@@ -154,7 +154,7 @@ uint8_t onoffMenuItem(uint8_t value, coord_t x, coord_t y, const pm_char *label,
   return selectMenuItem(x, y, label, NULL, value, 0, 1, attr, event);
 }
 
-int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, uint8_t event)
+swsrc_t switchMenuItem(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, uint8_t event)
 {
   lcd_putsColumnLeft(x, y, STR_SWITCH);
   putsSwitches(x,  y, value, attr);
