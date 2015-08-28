@@ -2820,7 +2820,8 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         _id = sensor.id;
         _instance = sensor.instance;
-        _param = (sensor.ratio) + ((unsigned int)sensor.offset << 16);
+        _ratio = sensor.ratio;
+        _offset = sensor.offset;
       }
       else {
         _id = sensor.persistentValue;
@@ -2841,8 +2842,8 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         sensor.id = _id;
         sensor.instance = _instance;
-        sensor.ratio = _param & 0xFFFF;
-        sensor.offset = (_param >> 16) & 0xFFFF;
+        sensor.ratio = _ratio;
+        sensor.offset = _offset;
       }
       else {
         sensor.persistentValue = _id;
@@ -2868,6 +2869,10 @@ class SensorField: public TransformedField {
     union {
       unsigned int _param;
       uint8_t _sources[4];
+      struct {
+        uint16_t _ratio;
+        int16_t _offset;
+      };
     };
 };
 
