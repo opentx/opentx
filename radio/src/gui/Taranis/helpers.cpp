@@ -263,6 +263,10 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
     }
   }
 
+  if (swtch >= SWSRC_FIRST_SENSOR && swtch <= SWSRC_LAST_SENSOR) {
+    return isTelemetryFieldAvailable(swtch - SWSRC_FIRST_SENSOR);
+  }
+
   return true;
 }
 
