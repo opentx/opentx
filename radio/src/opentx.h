@@ -416,6 +416,7 @@
   typedef int32_t rotenc_t;
   typedef int32_t getvalue_t;
   typedef uint32_t mixsrc_t;
+  typedef int8_t swsrc_t;
 #else
   #define tmr10ms_t uint16_t
   extern volatile tmr10ms_t g_tmr10ms;
@@ -430,6 +431,7 @@
   typedef int8_t rotenc_t;
   typedef int16_t getvalue_t;
   typedef uint8_t mixsrc_t;
+  typedef int8_t swsrc_t;
 #endif
 
 #if defined(NAVIGATION_STICKS)
@@ -766,7 +768,7 @@ void logicalSwitchesReset();
 #endif
 
 extern swarnstate_t switches_states;
-int8_t  getMovedSwitch();
+swsrc_t getMovedSwitch();
 
 #if defined(PCBTARANIS)
   #define GET_MOVED_SOURCE_PARAMS uint8_t min

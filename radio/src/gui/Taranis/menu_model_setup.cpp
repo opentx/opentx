@@ -142,15 +142,15 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
     switch (m_posHorz) {
       case 0:
       {
-        int8_t timerMode = timer->mode;
+        swsrc_t timerMode = timer->mode;
         if (timerMode < 0) timerMode -= TMRMODE_COUNT-1;
         CHECK_INCDEC_MODELVAR_CHECK(event, timerMode, -TMRMODE_COUNT-SWSRC_LAST+1, TMRMODE_COUNT+SWSRC_LAST-1, isSwitchAvailableInTimers);
         if (timerMode < 0) timerMode += TMRMODE_COUNT-1;
         timer->mode = timerMode;
 #if defined(AUTOSWITCH)
         if (s_editMode>0) {
-          int8_t val = timer->mode - (TMRMODE_COUNT-1);
-          int8_t switchVal = checkIncDecMovedSwitch(val);
+          swsrc_t val = timer->mode - (TMRMODE_COUNT-1);
+          swsrc_t switchVal = checkIncDecMovedSwitch(val);
           if (val != switchVal) {
             timer->mode = switchVal + (TMRMODE_COUNT-1);
             eeDirty(EE_MODEL);

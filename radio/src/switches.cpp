@@ -552,10 +552,10 @@ void evalLogicalSwitches(bool isCurrentPhase)
 #endif
 
 swarnstate_t switches_states = 0;
-int8_t getMovedSwitch()
+swsrc_t getMovedSwitch()
 {
   static tmr10ms_t s_move_last_time = 0;
-  int8_t result = 0;
+  swsrc_t result = 0;
 
 #if defined(PCBTARANIS)
   for (int i=0; i<NUM_SWITCHES; i++) {
