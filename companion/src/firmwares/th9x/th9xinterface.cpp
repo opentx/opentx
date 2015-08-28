@@ -1,6 +1,6 @@
 /*
  * Author - Bertrand Songis <bsongis@gmail.com>
- * 
+ *
  * Based on th9x -> http://code.google.com/p/th9x/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -62,7 +62,7 @@ bool Th9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return false;
 }
 
-bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
+unsigned long Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying th9x import... ";
 
@@ -75,7 +75,7 @@ bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
     std::cout << "wrong file system\n";
     return false;
   }
-    
+
   efile->openRd(FILE_GENERAL);
   Th9xGeneral th9xGeneral;
 
@@ -101,7 +101,7 @@ bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
     return false;
   }
   radioData.generalSettings = th9xGeneral;
-  
+
   for (int i=0; i<getMaxModels(); i++) {
     Th9xModelData th9xModel;
     efile->openRd(FILE_MODEL(i));
@@ -110,7 +110,7 @@ bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
     }
     else {
       radioData.models[i] = th9xModel;
-    } 
+    }
   }
 
   std::cout << "ok\n";

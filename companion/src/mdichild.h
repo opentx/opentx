@@ -95,7 +95,7 @@ class MdiChild : public QWidget
     void modelEdit();
     void wizardEdit();
     void openEditWindow();
-    
+
     void cut();
     void copy();
     void paste();

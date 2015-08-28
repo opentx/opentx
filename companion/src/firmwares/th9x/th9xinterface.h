@@ -1,6 +1,6 @@
 /*
  * Author - Bertrand Songis <bsongis@gmail.com>
- * 
+ *
  * Based on th9x -> http://code.google.com/p/th9x/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -34,7 +34,7 @@ class Th9xInterface : public EEPROMInterface
 
     virtual const int getMaxModels();
 
-    virtual bool load(RadioData &, const uint8_t *eeprom, int size);
+    virtual unsigned long load(RadioData &, const uint8_t *eeprom, int size);
 
     virtual bool loadBackup(RadioData &, uint8_t *eeprom, int esize, int index);
 

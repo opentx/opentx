@@ -1,6 +1,6 @@
 /*
  * Author - Bertrand Songis <bsongis@gmail.com>
- * 
+ *
  * Based on th9x -> http://code.google.com/p/th9x/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,7 +15,6 @@
  */
 
 #include <iostream>
-#include <QMessageBox>
 #include "ersky9xinterface.h"
 #include "ersky9xeeprom.h"
 #include "ersky9xsimulator.h"
@@ -151,7 +150,7 @@ bool Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return true;
 }
 
-bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
+unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying ersky9x import... ";
 
@@ -164,7 +163,7 @@ bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int siz
     std::cout << "wrong file system\n";
     return false;
   }
-    
+
   efile->openRd(FILE_GENERAL);
   Ersky9xGeneral ersky9xGeneral;
 
@@ -190,13 +189,13 @@ bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int siz
     return false;
   }
   radioData.generalSettings = ersky9xGeneral;
-  
+
   for (int i=0; i<getMaxModels(); i++) {
     uint8_t buffer[4096];
     uint size;
     memset(buffer,0,sizeof(buffer));
     efile->openRd(FILE_MODEL(i));
-    
+
 //    if (!efile->readRlc2((uint8_t*)&ersky9xModel, sizeof(Ersky9xModelData))) {
     size=efile->readRlc2(buffer, 4096);
     if (!size) {
@@ -214,7 +213,7 @@ bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int siz
         applyStickModeToModel(ersky9xModel, radioData.generalSettings.stickMode+1);
         radioData.models[i] = ersky9xModel;
       }
-    } 
+    }
   }
 
   std::cout << "ok\n";

@@ -1,6 +1,6 @@
 /*
  * Author - Bertrand Songis <bsongis@gmail.com>
- * 
+ *
  * Based on th9x -> http://code.google.com/p/th9x/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,12 +29,12 @@ class Ersky9xInterface : public EEPROMInterface
     virtual ~Ersky9xInterface();
 
     virtual const char * getName();
-    
+
     virtual const int  getEEpromSize();
 
     virtual const int getMaxModels();
 
-    virtual bool load(RadioData &, const uint8_t * eeprom, int size);
+    virtual unsigned long load(RadioData &, const uint8_t * eeprom, int size);
 
     virtual bool loadBackup(RadioData &, uint8_t * eeprom, int esize, int index);
 
@@ -43,7 +43,7 @@ class Ersky9xInterface : public EEPROMInterface
     virtual int save(uint8_t * eeprom, RadioData & radioData, uint32_t variant=0, uint8_t version=0);
 
     virtual int getSize(ModelData &);
-    
+
     virtual int getSize(GeneralSettings &settings);
 
     virtual int isAvailable(Protocol proto, int port=0);
@@ -54,17 +54,17 @@ class Ersky9xInterface : public EEPROMInterface
 
   private:
     void appendTextElement(QDomDocument * qdoc, QDomElement * pe, QString name, QString value);
-    
+
     void appendNumberElement(QDomDocument * qdoc, QDomElement * pe,QString name, int value, bool forceZeroWrite = false);
-    
+
     void appendCDATAElement(QDomDocument * qdoc, QDomElement * pe,QString name, const char * data, int size);
-    
+
     QDomElement getGeneralDataXML(QDomDocument * qdoc, Ersky9xGeneral * tgen);   //parse out data to XML format
-    
+
     QDomElement getModelDataXML(QDomDocument * qdoc, Ersky9xModelData_v11 * tmod, int modelNum, int mdver); //parse out data to XML format
-    
+
     bool loadGeneralDataXML(QDomDocument * qdoc, Ersky9xGeneral * tgen); // get data from XML
-    
+
     template <class T>
     bool loadModelDataXML(QDomDocument * qdoc, ModelData * model, int modelNum, int stickMode); // get data from XML
 
