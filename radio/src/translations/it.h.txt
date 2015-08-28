@@ -1076,7 +1076,7 @@
 #define TR_ALTSENSOR           "Sensore Alt"
 #define TR_CELLSENSOR          "Sensore Cell"
 #define TR_GPSSENSOR           "Sensore GPS"
-#define TR_CURRENTSENSOR       "Sensore Currente"
+#define TR_CURRENTSENSOR       "Sensore"
 #define TR_AUTOOFFSET          "Auto Offset"
 #define TR_ONLYPOSITIVE        "Positivo"
 #define TR_FILTER              "Filtro"

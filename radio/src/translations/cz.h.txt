@@ -1074,7 +1074,7 @@
 #define TR_ALTSENSOR           "Senzor výšky"
 #define TR_CELLSENSOR          "Senzor článků"
 #define TR_GPSSENSOR           "GPS senzor"
-#define TR_CURRENTSENSOR       "Sensor proudu"
+#define TR_CURRENTSENSOR       "Sensor"
 #define TR_AUTOOFFSET          "Auto ofset"
 #define TR_ONLYPOSITIVE        "Jen kladné"
 #define TR_FILTER              "Filtr"

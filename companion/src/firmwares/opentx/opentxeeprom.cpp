@@ -2831,7 +2831,7 @@ class SensorField: public TransformedField {
           _param = ((uint8_t)sensor.sources[0]) + ((uint8_t)sensor.sources[1] << 8) + ((uint8_t)sensor.sources[2] << 16) + ((uint8_t)sensor.sources[3] << 24);
         else if (sensor.formula == SensorData::TELEM_FORMULA_DIST)
           _param = (sensor.gps) + (sensor.alt << 8);
-        else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION)
+        else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION || sensor.formula == SensorData::TELEM_FORMULA_TOTALIZE)
           _param = (sensor.amps);
       }
     }
@@ -2854,7 +2854,7 @@ class SensorField: public TransformedField {
             sensor.sources[i] = _sources[i];
         else if (sensor.formula == SensorData::TELEM_FORMULA_DIST)
           (sensor.gps = _sources[0], sensor.alt = _sources[1]);
-        else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION)
+        else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION || sensor.formula == SensorData::TELEM_FORMULA_TOTALIZE)
           sensor.amps = _sources[0];
       }
       eepromImportDebug() << QString("imported %1").arg(internalField.getName());
