@@ -203,7 +203,7 @@ PACK(typedef struct {
 }) CurveInfo;
 #else
 struct CurveInfo {
-  int8_t *crv;
+  int8_t * crv;
   uint8_t points;
   bool custom;
 };
