@@ -110,12 +110,12 @@ MainWindow::MainWindow():
     this->setIconSize(QSize(32, 32));
     QNetworkProxyFactory::setUseSystemConfiguration(true);
     setAcceptDrops(true);
-    
+
     // give time to the splash to disappear and main window to open before starting updates
     int updateDelay = 1000;
     bool showSplash = g.showSplash();
     if (showSplash) {
-      updateDelay += (SPLASH_TIME*1000); 
+      updateDelay += (SPLASH_TIME*1000);
     }
     QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
     QTimer::singleShot(updateDelay, this, SLOT(displayWarnings()));
@@ -153,13 +153,13 @@ MainWindow::MainWindow():
             child->show();
           }
           else {
-            child->show();            
+            child->show();
             child->print(model,printfilename);
             child->close();
           }
         }
       }
-    } 
+    }
     if (printing) {
       QTimer::singleShot(0, this, SLOT(autoClose()));
     }
@@ -180,7 +180,7 @@ void MainWindow::displayWarnings()
     }
   }
   else if (warnId==0) {
-    g.warningId(WARNING_ID);    
+    g.warningId(WARNING_ID);
   }
 }
 
@@ -193,10 +193,10 @@ QString MainWindow::getBackupPath() {
       if (!QDir(backupPath).exists()) {
         backupEnable = false;
       }
-    } 
+    }
     else {
       backupEnable = false;
-    }        
+    }
   }
   if (!backupEnable) {
     backupEnable=g.enableBackup();
@@ -213,8 +213,8 @@ QString MainWindow::getBackupPath() {
   if ((g.enableBackup() || g.profile[g.id()].penableBackup()) && !(backupEnable) && !IS_TARANIS(GetEepromInterface()->getBoard())) {
     if (!QDir(backupPath).exists()) {
       QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
-    }      
-  } 
+    }
+  }
   else {
     backupEnable=false;
   }
@@ -316,15 +316,15 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
       int c9xver = version2index(c9xversion);
 
       if (c9xver < vnum) {
-#if defined WIN32 || !defined __GNUC__ // || defined __APPLE__  // OSX should only notify of updates since no update packages are available. 
+#if defined WIN32 || !defined __GNUC__ // || defined __APPLE__  // OSX should only notify of updates since no update packages are available.
         int ret = QMessageBox::question(this, "Companion", tr("A new version of Companion is available (version %1)<br>"
                                                             "Would you like to download it?").arg(version) ,
                                         QMessageBox::Yes | QMessageBox::No);
 
         if (ret == QMessageBox::Yes) {
-#if defined __APPLE__          
+#if defined __APPLE__
           QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.updatesDir() + QString(C9X_INSTALLER).arg(version));
-#else            
+#else
           QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.updatesDir() + QString(C9X_INSTALLER).arg(version), tr("Executable (*.exe)"));
 #endif
           if (!fileName.isEmpty()) {
@@ -337,7 +337,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
         }
 #else
         QMessageBox::warning(this, tr("New release available"), tr("A new release of Companion is available, please check the OpenTX website!"));
-#endif            
+#endif
       }
       else {
         if (downloadDialog_forWait && checkForUpdatesState==0) {
@@ -564,9 +564,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 void MainWindow::setLanguage(QString langString)
-{    
+{
     g.locale( langString );
-    
+
     QMessageBox msgBox;
     msgBox.setText(tr("The selected language will be used the next time you start Companion."));
     msgBox.setIcon(QMessageBox::Information);
@@ -575,9 +575,9 @@ void MainWindow::setLanguage(QString langString)
 }
 
 void  MainWindow::setTheme(int index)
-{    
+{
     g.theme( index );
-    
+
     QMessageBox msgBox;
     msgBox.setText(tr("The new theme will be loaded the next time you start Companion."));
     msgBox.setIcon(QMessageBox::Information);
@@ -586,7 +586,7 @@ void  MainWindow::setTheme(int index)
 }
 
 void  MainWindow::setIconThemeSize(int index)
-{    
+{
     g.iconSize( index );
 
     QMessageBox msgBox;
@@ -725,7 +725,7 @@ void MainWindow::fwchangelog()
 }
 
 void MainWindow::customizeSplash()
-{    
+{
     customizeSplashDialog *cd = new customizeSplashDialog(this);
     cd->exec();
 }
@@ -901,7 +901,7 @@ QStringList MainWindow::GetSendFlashCommand(const QString &filename)
     QStringList ret;
     EEPROMInterface *eepromInterface = GetEepromInterface();
     if (IS_TARANIS(eepromInterface->getBoard())) {
-      ret=GetDFUUtilArguments("-D", filename);    
+      ret=GetDFUUtilArguments("-D", filename);
     }
     else if (eepromInterface->getBoard() == BOARD_SKY9X) {
       ret=GetSambaArguments(QString("send_file {Flash} \"") + filename + "\" 0x400000 0\n" + "FLASH::ScriptGPNMV 2\n");
@@ -919,7 +919,7 @@ QStringList MainWindow::GetReceiveFlashCommand(const QString &filename)
 {
     EEPROMInterface *eepromInterface = GetEepromInterface();
     if (IS_TARANIS(eepromInterface->getBoard())) {
-      return GetDFUUtilArguments("-U", filename);    
+      return GetDFUUtilArguments("-U", filename);
     }
     else if (eepromInterface->getBoard() == BOARD_SKY9X) {
       return GetSambaArguments(QString("receive_file {Flash} \"") + filename + "\" 0x400000 0x40000 0\n");
@@ -988,7 +988,7 @@ void MainWindow::readEeprom()
 
     EEPROMInterface *eepromInterface = GetEepromInterface();
 
-    if (IS_ARM(eepromInterface->getBoard())) 
+    if (IS_ARM(eepromInterface->getBoard()))
       tempFile = generateProcessUniqueTempFileName("temp.bin");
     else
       tempFile += generateProcessUniqueTempFileName("temp.hex");
@@ -1247,7 +1247,7 @@ int MainWindow::getFileType(const QString &fullFileName)
 }
 
 bool MainWindow::isValidEEPROM(QString eepromfile)
-{  
+{
     int eeprom_size;
     QFile file(eepromfile);
     int fileType = getFileType(eepromfile);
@@ -1335,7 +1335,7 @@ void MainWindow::writeFlash(QString fileToFlash)
   burnDialog *cd = new burnDialog(this, 2, &fileName, &backup);
   cd->exec();
   qDebug() << "MainWindow::writeFlash(): flashing " << fileName;
-  
+
   if (IS_TARANIS(GetEepromInterface()->getBoard())) {
     backup=false;
   }
@@ -1497,7 +1497,7 @@ void MainWindow::updateMenus()
     pasteAct->setEnabled(hasMdiChild ? activeMdiChild()->hasPasteData() : false);
     writeEepromAct->setEnabled(hasMdiChild);
     separatorAct->setVisible(hasMdiChild);
-    
+
     bool hasSelection = (activeMdiChild() && activeMdiChild()->hasSelection());
     cutAct->setEnabled(hasSelection);
     copyAct->setEnabled(hasSelection);
@@ -1540,7 +1540,7 @@ QAction * MainWindow::addAct(const QString & icon, const QString & sName, const 
   QAction * newAction = new QAction( this );
   if (!icon.isEmpty())
     newAction->setIcon(CompanionIcon(icon));
-  if (!sName.isEmpty()) 
+  if (!sName.isEmpty())
     newAction->setText(sName);
   if (!lName.isEmpty())
     newAction->setStatusTip(lName);
@@ -1561,7 +1561,7 @@ QAction * MainWindow::addAct(QActionGroup *aGroup, const QString & sName, const 
 {
   QAction *action = addAct("", sName, lName, QKeySequence::UnknownKey, slot);
   action->setCheckable(true);
-  aGroup->addAction(action);   
+  aGroup->addAction(action);
   return action;
 }
 
@@ -1595,7 +1595,7 @@ void MainWindow::createActions()
     cutAct =             addAct("cut.png",    tr("Cut Model"),              tr("Cut current model to the clipboard"),    QKeySequence::Cut,    SLOT(cut()));
     copyAct =            addAct("copy.png",   tr("Copy Model"),             tr("Copy current model to the clipboard"),   QKeySequence::Copy,   SLOT(copy()));
     pasteAct =           addAct("paste.png",  tr("Paste Model"),            tr("Paste model from clipboard"),            QKeySequence::Paste,  SLOT(paste()));
- 
+
     QActionGroup *themeAlignGroup = new QActionGroup(this);
     classicThemeAct =    addAct( themeAlignGroup,    tr("Classical"),       tr("The classic companion9x icon theme"),   SLOT(setClassicTheme()));
     yericoThemeAct =     addAct( themeAlignGroup,    tr("Yerico"),          tr("Yellow round honey sweet icon theme"),  SLOT(setYericoTheme()));
@@ -1648,7 +1648,7 @@ void MainWindow::createActions()
     writeBackupToRadioAct = addAct("write_eeprom_file.png", tr("Write Backup to Radio"), tr("Write Backup from file to Radio"), SLOT(writeBackup()));
     readBackupToFileAct = addAct("read_eeprom_file.png", tr("Backup Radio to File"), tr("Save a complete backup file of all settings and model data in the Radio"), SLOT(readBackup()));
     contributorsAct =    addAct("contributors.png",  tr("Contributors..."), tr("A tribute to those who have contributed to OpenTX and Companion"), SLOT(contributors()));
-    
+
     compareAct->setEnabled(false);
     simulateAct->setEnabled(false);
     printAct->setEnabled(false);
@@ -1730,7 +1730,7 @@ void MainWindow::createMenus()
     burnMenu->addSeparator();
     burnMenu->addSeparator();
     EEPROMInterface *eepromInterface = GetEepromInterface();
-    if (!IS_ARM(eepromInterface->getBoard())) {    
+    if (!IS_ARM(eepromInterface->getBoard())) {
       burnMenu->addAction(burnFusesAct);
       burnMenu->addAction(burnListAct);
     }
@@ -1747,7 +1747,7 @@ void MainWindow::createMenus()
     helpMenu->addSeparator();
     helpMenu->addAction(contributorsAct);
 }
- 
+
 QMenu *MainWindow::createRecentFileMenu()
 {
     QMenu *recentFileMenu = new QMenu(this);
@@ -1788,7 +1788,7 @@ void MainWindow::createToolBars()
         break;
       default:
         size=QSize(24,24);
-        break;        
+        break;
     }
     fileToolBar = addToolBar(tr("File"));
     fileToolBar->setIconSize(size);
@@ -1833,7 +1833,7 @@ void MainWindow::createToolBars()
     editToolBar->addAction(cutAct);
     editToolBar->addAction(copyAct);
     editToolBar->addAction(pasteAct);
-    
+
     burnToolBar = new QToolBar(tr("Write"));
     addToolBar( Qt::LeftToolBarArea, burnToolBar );
     burnToolBar->setIconSize(size);
@@ -1890,7 +1890,7 @@ void MainWindow::setActiveSubWindow(QWidget *window)
 void MainWindow::updateRecentFileActions()
 {
     int i, numRecentFiles;
- 
+
     //  Hide all document slots
     for ( i=0 ; i < g.historySize(); i++)
       recentFileActs[i]->setVisible(false);
@@ -1898,7 +1898,7 @@ void MainWindow::updateRecentFileActions()
     // Fill slots with content and unhide them
     QStringList files = g.recentFiles();
     numRecentFiles = qMin(files.size(), g.historySize());
- 
+
     for ( i = 0; i < numRecentFiles; i++)  {
       QString text = strippedName(files[i]);
       if (!text.trimmed().isEmpty())
@@ -1925,31 +1925,31 @@ void MainWindow::updateLanguageActions()
 {
   QString langId = g.locale();
 
-  if (langId=="") 
+  if (langId=="")
     sysLangAct->setChecked(true);
-  else if (langId=="cs_CZ") 
+  else if (langId=="cs_CZ")
     czechLangAct->setChecked(true);
-  else if (langId=="de_DE") 
+  else if (langId=="de_DE")
     germanLangAct->setChecked(true);
-  else if (langId=="en") 
+  else if (langId=="en")
     englishLangAct->setChecked(true);
-  else if (langId=="fi_FI") 
+  else if (langId=="fi_FI")
     finnishLangAct->setChecked(true);
-  else if (langId=="fr_FR") 
+  else if (langId=="fr_FR")
     frenchLangAct->setChecked(true);
-  else if (langId=="it_IT") 
+  else if (langId=="it_IT")
     italianLangAct->setChecked(true);
-  else if (langId=="he_IL") 
+  else if (langId=="he_IL")
     hebrewLangAct->setChecked(true);
-  else if (langId=="pl_PL") 
+  else if (langId=="pl_PL")
     polishLangAct->setChecked(true);
-  else if (langId=="pt_PT") 
+  else if (langId=="pt_PT")
     portugueseLangAct->setChecked(true);
-  else if (langId=="ru_RU") 
+  else if (langId=="ru_RU")
     russianLangAct->setChecked(true);
-  else if (langId=="sv_SE") 
+  else if (langId=="sv_SE")
     swedishLangAct->setChecked(true);
-  else if (langId=="nl_NL") 
+  else if (langId=="nl_NL")
     dutchLangAct->setChecked(true);
 }
 
@@ -1967,9 +1967,9 @@ void MainWindow::updateIconThemeActions()
 
 void MainWindow::updateProfilesActions()
 {
-  for (int i=0; i<MAX_PROFILES; i++) 
+  for (int i=0; i<MAX_PROFILES; i++)
   {
-    if (g.profile[i].existsOnDisk()) 
+    if (g.profile[i].existsOnDisk())
     {
       QString text = tr("%2").arg(g.profile[i].name());
       profileActs[i]->setText(text);
@@ -1977,8 +1977,8 @@ void MainWindow::updateProfilesActions()
       profileActs[i]->setVisible(true);
       if (i == g.id())
         profileActs[i]->setChecked(true);
-    } 
-    else 
+    }
+    else
     {
       profileActs[i]->setVisible(false);
     }
@@ -1992,7 +1992,7 @@ void MainWindow::createProfile()
     ;
   if (i==MAX_PROFILES)  //Failed to find free slot
     return;
- 
+
   // Copy current profile to new and give it a new name
   g.profile[i] = g.profile[g.id()];
   g.profile[i].name(tr("New Radio"));
@@ -2033,7 +2033,7 @@ int MainWindow::getEpromVersion(QString fileName)
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
         QMessageBox::critical(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(fileName).arg(file.errorString()));
         return -1;
-    }        
+    }
     QDomDocument doc(ER9X_EEPROM_FILE_TYPE);
     bool xmlOK = doc.setContent(&file);
     if(xmlOK) {
@@ -2042,7 +2042,7 @@ int MainWindow::getEpromVersion(QString fileName)
       }
     }
     file.reset();
-      
+
     QTextStream inputStream(&file);
     if (fileType==FILE_TYPE_EEPE) {  // read EEPE file header
       QString hline = inputStream.readLine();
