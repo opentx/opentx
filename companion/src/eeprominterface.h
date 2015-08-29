@@ -1325,8 +1325,8 @@ enum EepromLoadErrors {
   NUM_ERRORS
 };
 
-void ShowEepromErrors(QWidget *parent, QString title, QString mainMessage, unsigned long errorsFound);
-void ShowEepromWarnings(QWidget *parent, QString title, unsigned long errorsFound);
+void ShowEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound);
+void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound);
 
 bool LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
 unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, int size);
