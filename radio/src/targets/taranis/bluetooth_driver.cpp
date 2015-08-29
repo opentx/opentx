@@ -133,7 +133,7 @@ void bluetoothWriteString(const char * str)
 void bluetoothWriteWakeup(void)
 {
   if (bluetoothWriteState == BLUETOOTH_WRITE_IDLE) {
-    if (!btTxFifo.empty()) {
+    if (!btTxFifo.isEmpty()) {
       bluetoothWriteState = BLUETOOTH_WRITE_INIT;
       GPIO_ResetBits(BT_GPIO_BRTS, BT_GPIO_PIN_BRTS);
     }
