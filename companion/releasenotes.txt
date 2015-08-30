@@ -10,6 +10,7 @@
 <li>Model Print and Model Compare improvements and fixes (<a href=https://github.com/opentx/opentx/issues/2734>#2734</a>, <a href=https://github.com/opentx/opentx/issues/2737>#2737</a>, <a href=https://github.com/opentx/opentx/issues/2576>#2576</a>)</li>
 <li>Negative telemetry offset value was reset when writing back to radio (<a href=https://github.com/opentx/opentx/issues/2738>#2738</a>)</li>
 <li>Telemetry sensor names were not displayed (<a href=https://github.com/opentx/opentx/issues/2807>#2807</a>)</li>
+<li>Mixes multiplex representation now the same as on the radio (<a href=https://github.com/opentx/opentx/issues/2808>#2808</a>)</li>
 </ul>
 
 

@@ -121,14 +121,14 @@ bool MixesPanel::AddMixerLine(int dest)
 QString MixesPanel::getMixerText(int dest, bool * new_ch)
 {
   QString str;
-  if (new_ch) *new_ch = 0;
+  bool newChannel = false;
   if (dest < 0) {
     str = modelPrinter.printMixerName(-dest);
     //highlight channel if needed
     if (-dest == (int)highlightedSource) {
       str = "<b>" + str + "</b>";
     }
-    if (new_ch) *new_ch = 1;
+    newChannel = true;
   }
   else {
     MixData & mix = model->mixData[dest];
@@ -136,7 +136,7 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
     str = modelPrinter.printMixerName(mix.destCh);
 
     if ((dest == 0) || (model->mixData[dest-1].destCh != mix.destCh)) {
-      if (new_ch) *new_ch = 1;
+      newChannel = true;
       //highlight channel if needed
       if (mix.destCh == highlightedSource) {
         str = "<b>" + str + "</b>";
@@ -146,8 +146,9 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
       str.fill(' ');
     }
 
-    str += modelPrinter.printMixerLine(mix, highlightedSource);
+    str += modelPrinter.printMixerLine(mix, !newChannel, highlightedSource);
   }
+  if (new_ch) *new_ch = newChannel;
   return str.replace(" ", "&nbsp;");
 }
 
