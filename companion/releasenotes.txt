@@ -9,6 +9,7 @@
 <li>Added used channels check/warning in Wizard (<a href=https://github.com/opentx/opentx/issues/2091>#2091</a>)</li>
 <li>Model Print and Model Compare improvements and fixes (<a href=https://github.com/opentx/opentx/issues/2734>#2734</a>, <a href=https://github.com/opentx/opentx/issues/2737>#2737</a>, <a href=https://github.com/opentx/opentx/issues/2576>#2576</a>)</li>
 <li>Negative telemetry offset value was reset when writing back to radio (<a href=https://github.com/opentx/opentx/issues/2738>#2738</a>)</li>
+Telemerty sensor names were not displayed#2807 
 </ul>
 
 

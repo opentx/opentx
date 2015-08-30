@@ -897,7 +897,7 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
   }
   else if ((func==FuncVolume)|| (func==FuncPlayValue)) {
     RawSource item(param);
-    return item.toString();
+    return item.toString(model);
   }
   else if ((func==FuncPlayPrompt) || (func==FuncPlayBoth)) {
     if ( GetCurrentFirmware()->getCapability(VoicesAsNumbers)) {
