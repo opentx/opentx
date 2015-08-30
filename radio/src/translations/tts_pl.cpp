@@ -194,7 +194,7 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     if (number >= 2000 && number < 5000)
       PUSH_NUMBER_PROMPT(PL_PROMPT_TYSIACE);
     else
-      PUSH_NUMBER_PROMPT(PL_PROMPT_TYSIAC);
+      PUSH_NUMBER_PROMPT(PL_PROMPT_TYSIECY);
     number %= 1000;
     if (number == 0)
       number = -1;
