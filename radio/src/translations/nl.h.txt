@@ -545,8 +545,7 @@
 #define TR_VSENSORTYPES        "Custom\0 ""Berekend"
 
 #define LEN_VFORMULAS          "\014"
-#define TR_VFORMULAS           "Optellen\0   ""Gemiddeld\0  ""Min\0        ""Max\0            ""Vermenigvuld""Totaal\0     ""Cellen\0      ""Verbruik\0  ""Afstand\0    "
-
+#define TR_VFORMULAS           "Optellen\0   ""Gemiddeld\0  ""Min\0        ""Max\0        ""Vermenigvuld""Totaal\0     ""Cellen\0     ""Verbruik\0   ""Afstand\0    "
 
 #define LEN_VPREC              "\004"  //  "\005"  Prec0 Prec1 Prec2
 #define TR_VPREC               "0.--""0.0 ""0.00"
@@ -956,7 +955,7 @@
 #define TR_COUNT               "Punten"
 #define TR_PT                  "Pt"
 #define TR_PTS                 "Ptn"
-#define TR_SMOOTH              "Afronden"
+#define TR_SMOOTH              "Zacht"
 #define TR_COPY_STICKS_TO_OFS  "Kopieer Sticks naar Subtrim"  
 #define TR_COPY_TRIMS_TO_OFS   "Kopieer Trim naar Subtrim"
 #define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Vasthouden mAh")
@@ -1084,7 +1083,7 @@
 #define TR_ALTSENSOR           "Hoogte Sensor"
 #define TR_CELLSENSOR          "Cellen Sensor"
 #define TR_GPSSENSOR           "GPS Sensor"
-#define TR_CURRENTSENSOR       "Sensor"
+#define TR_CURRENTSENSOR       "Stroomsensor"
 #define TR_AUTOOFFSET          "Auto Offset"
 #define TR_ONLYPOSITIVE        "Geen Negatief"
 #define TR_FILTER              "Filter aktief"
