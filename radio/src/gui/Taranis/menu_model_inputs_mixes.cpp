@@ -88,7 +88,7 @@ void DrawFunction(FnFuncP fn, uint8_t offset)
 
   coord_t prev_yv = (coord_t)-1;
 
-  for (int8_t xv=-WCHART; xv<=WCHART; xv++) {
+  for (int xv=-WCHART; xv<=WCHART; xv++) {
     coord_t yv = (LCD_H-1) - (((uint16_t)RESX + fn(xv * (RESX/WCHART))) / 2 * (LCD_H-1) / RESX);
     if (prev_yv != (coord_t)-1) {
       if (abs((int8_t)yv-prev_yv) <= 1) {
@@ -108,7 +108,7 @@ uint8_t getExpoMixCount(uint8_t expo)
   uint8_t count = 0;
   uint8_t ch ;
 
-  for(int8_t i=(expo ? MAX_EXPOS-1 : MAX_MIXERS-1); i>=0; i--) {
+  for (int i=(expo ? MAX_EXPOS-1 : MAX_MIXERS-1); i>=0; i--) {
     ch = (expo ? EXPO_VALID(expoAddress(i)) : mixAddress(i)->srcRaw);
     if (ch != 0) {
       count++;

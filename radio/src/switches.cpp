@@ -436,7 +436,7 @@ bool getSwitch(int8_t swtch)
 
   uint8_t cs_idx = abs(swtch);
 
-  if (cs_idx == SWSRC_One) {
+  if (cs_idx == SWSRC_ONE) {
     result = !s_mixer_first_run_done;
   }
   else if (cs_idx == SWSRC_ON) {

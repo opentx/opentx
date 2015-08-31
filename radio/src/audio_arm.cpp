@@ -305,24 +305,28 @@ void getPhaseAudioFile(char * filename, int index, unsigned int event)
 void getSwitchAudioFile(char * filename, int index)
 {
   char * str = getModelAudioPath(filename);
-  int len = STR_VSWITCHES[0];
-  strncpy(str, &STR_VSWITCHES[1+len*(index+1)], len);
-  str += len-1;
-  if (*str == '\300') {
-    strcpy(str, "-up");
-    str += 3;
-  }
-  else if (*str == '-') {
-    strcpy(str, "-mid");
-    str += 4;
-  }
-  else if (*str == '\301') {
-    strcpy(str, "-down");
-    str += 5;
+
+#if defined(PCBTARANIS)
+  if (index <= SWSRC_LAST_SWITCH) {
+    div_t swinfo = switchInfo(index);
+    *str++ = 'S';
+    *str++ = 'A' + swinfo.quot;
+    const char * positions[] = { "-up", "-mid", "-down" };
+    strcpy(str, positions[swinfo.rem]);
   }
   else {
-    *(str+1) = 0;
+    div_t swinfo = div(index - SWSRC_FIRST_MULTIPOS_SWITCH, XPOTS_MULTIPOS_COUNT);
+    *str++ = 'S';
+    *str++ = '1' + swinfo.quot;
+    *str++ = '1' + swinfo.rem;
+    *str = '\0';
   }
+#else
+  int len = STR_VSWITCHES[0];
+  strncpy(str, &STR_VSWITCHES[1+(len*index)], len);
+  str += len;
+  *str = '\0';
+#endif
   strcat(str, SOUNDS_EXT);
 }
 
@@ -381,7 +385,7 @@ void referenceModelAudioFiles()
       }
 
       // Switches Audio Files <switchname>-[up|mid|down].wav
-      for (int i=0; i<SWSRC_LAST_SWITCH+NUM_XPOTS*XPOTS_MULTIPOS_COUNT && !found; i++) {
+      for (int i=SWSRC_FIRST_SWITCH; i<=SWSRC_LAST_SWITCH+NUM_XPOTS*XPOTS_MULTIPOS_COUNT && !found; i++) {
         getSwitchAudioFile(path, i);
         // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fn);
         if (!strcasecmp(filename, fn)) {
