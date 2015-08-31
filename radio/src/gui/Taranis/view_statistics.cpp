@@ -104,7 +104,7 @@ void menuStatisticsView(uint8_t event)
 #if defined(USB_SERIAL)
   extern uint16_t usbWraps;
   extern uint16_t charsWritten;
-  extern "C" uint32_t APP_Rx_ptr_in;
+  extern "C" volatile uint32_t APP_Rx_ptr_in;
 #endif
 
 void menuStatisticsDebug(uint8_t event)

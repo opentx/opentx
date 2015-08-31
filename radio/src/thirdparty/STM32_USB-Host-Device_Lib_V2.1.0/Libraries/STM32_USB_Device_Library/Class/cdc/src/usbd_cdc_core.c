@@ -179,8 +179,8 @@ __ALIGN_BEGIN uint8_t APP_Rx_Buffer   [APP_RX_DATA_SIZE] __ALIGN_END ;
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 __ALIGN_BEGIN uint8_t CmdBuff[CDC_CMD_PACKET_SZE] __ALIGN_END ;
 
-uint32_t APP_Rx_ptr_in  = 0;
-uint32_t APP_Rx_ptr_out = 0;
+volatile uint32_t APP_Rx_ptr_in  = 0;
+volatile uint32_t APP_Rx_ptr_out = 0;
 uint32_t APP_Rx_length  = 0;
 
 uint8_t  USB_Tx_State = 0;

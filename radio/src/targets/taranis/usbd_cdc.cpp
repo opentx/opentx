@@ -47,10 +47,10 @@ extern "C" {
 extern uint8_t  APP_Rx_Buffer []; /* Write CDC received data in this buffer.
                                      These data will be sent over USB IN endpoint
                                      in the CDC core functions. */
-extern uint32_t APP_Rx_ptr_in;    /* Increment this pointer or roll it back to
+extern volatile uint32_t APP_Rx_ptr_in;    /* Increment this pointer or roll it back to
                                      start address when writing received data
                                      in the buffer APP_Rx_Buffer. */
-extern uint32_t APP_Rx_ptr_out;
+extern volatile uint32_t APP_Rx_ptr_out;
 
 /* Private function prototypes -----------------------------------------------*/
 static uint16_t VCP_Init     (void);
@@ -162,13 +162,13 @@ void usbSerialPutc(uint8_t c)
 {
   if (!cdcConnected) return;
 
-  uint32_t APP_Rx_length;
+  uint32_t txDataLen;
   do {
-    APP_Rx_length = APP_RX_DATA_SIZE + APP_Rx_ptr_in - APP_Rx_ptr_out;
-    if (APP_Rx_length >= APP_RX_DATA_SIZE) {
-      APP_Rx_length -= APP_RX_DATA_SIZE;
+    txDataLen = APP_RX_DATA_SIZE + APP_Rx_ptr_in - APP_Rx_ptr_out;
+    if (txDataLen >= APP_RX_DATA_SIZE) {
+      txDataLen -= APP_RX_DATA_SIZE;
     }
-  } while (APP_Rx_length == APP_RX_DATA_SIZE-1);
+  } while (txDataLen >= (APP_RX_DATA_SIZE - CDC_DATA_MAX_PACKET_SIZE));
 
   APP_Rx_Buffer[APP_Rx_ptr_in] = c;
   ++charsWritten;
