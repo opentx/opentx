@@ -958,6 +958,10 @@
 #define TR_SMOOTH              "Zacht"
 #define TR_COPY_STICKS_TO_OFS  "Kopieer Sticks naar Subtrim"  
 #define TR_COPY_TRIMS_TO_OFS   "Kopieer Trim naar Subtrim"
+#define TR_INCDEC              "Inc/Decrement"
+#define TR_GLOBALVAR           "Global Var"
+#define TR_MIXSOURCE           "Mixer Source"
+#define TR_CONSTANT            "Constant"
 #define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Vasthouden mAh")
 #define TR_PREFLIGHT           "Preflight Checks"
 #define TR_CHECKLIST           TR(INDENT "Checklist", INDENT "Display Checklist")

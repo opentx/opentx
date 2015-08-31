@@ -809,6 +809,10 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_SMOOTH[];
   extern const pm_char STR_COPY_STICKS_TO_OFS[];
   extern const pm_char STR_COPY_TRIMS_TO_OFS[];
+  extern const pm_char STR_INCDEC[];
+  extern const pm_char STR_GLOBALVAR[];
+  extern const pm_char STR_MIXSOURCE[];
+  extern const pm_char STR_CONSTANT[];
   extern const pm_char STR_TOP_BAR[];
   extern const pm_char STR_ALTITUDE[];
   extern const pm_char STR_SCALE[];
@@ -827,13 +831,13 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_MENU_HELI[];
   extern const pm_char STR_MENU_TRIMS[];
   extern const pm_char STR_MENU_SWITCHES[];
-extern const pm_char STR_MENU_LOGICAL_SWITCHES[];
+  extern const pm_char STR_MENU_LOGICAL_SWITCHES[];
   extern const pm_char STR_MENU_TRAINER[];
   extern const pm_char STR_MENU_CHANNELS[];
   extern const pm_char STR_MENU_GVARS[];
   extern const pm_char STR_MENU_TELEMETRY[];
-extern const pm_char STR_MENU_OTHER[];
-extern const pm_char STR_MENU_INVERT[];
+  extern const pm_char STR_MENU_OTHER[];
+  extern const pm_char STR_MENU_INVERT[];
 #endif
 
 #if MENUS_LOCK == 1
