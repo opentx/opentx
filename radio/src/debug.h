@@ -39,58 +39,40 @@
 
 #include <inttypes.h>
 #include "rtc.h"
+#include "dump.h"
+#include "cli.h"
 
-#if (defined(DEBUG) && defined(CPUARM)) || defined(SIMU)
-
-#ifdef __cplusplus
+#if defined(__cplusplus)
 extern "C" {
+#endif
+uint8_t serial2TracesEnabled();
+#if defined(__cplusplus)
+}
 #endif
 
 #if defined(SIMU)
 typedef void (*traceCallbackFunc)(const char * text);
 extern traceCallbackFunc traceCallback;
+void debugPrintf(const char * format, ...);
+#elif defined(DEBUG) && defined(CLI) && defined(USB_SERIAL)
+#define debugPrintf(...) do { if (cliTracesEnabled) serialPrintf(__VA_ARGS__); } while(0)
+#elif defined(DEBUG) && defined(CLI)
+#define debugPrintf(...) do { if (serial2TracesEnabled() && cliTracesEnabled) serialPrintf(__VA_ARGS__); } while(0)
+#elif defined(DEBUG) && defined(CPUARM)
+#define debugPrintf(...) do { if (serial2TracesEnabled()) serialPrintf(__VA_ARGS__); } while(0)
+#else
+#define debugPrintf(...)
 #endif
 
-void debugPuts(const char *string, ...);
-void dump(unsigned char *data, unsigned int size);
-void debugFlush();
-
-#ifdef __cplusplus
-}
-#endif
-
-#define TRACE(...)            do { debugPuts(__VA_ARGS__); debugPuts("\r\n"); } while(0)
+#define TRACE(...)            do { debugPrintf(__VA_ARGS__); debugPrintf("\r\n"); } while(0)
 #define DUMP(data, size)      dump(data, size)
-#define TRACE_DEBUG(...)      debugPuts("-D- " __VA_ARGS__)
-#define TRACE_DEBUG_WP(...)   debugPuts(__VA_ARGS__)
-#define TRACE_INFO(...)       debugPuts("-I- " __VA_ARGS__)
-#define TRACE_INFO_WP(...)    debugPuts(__VA_ARGS__)
-#define TRACE_WARNING(...)    debugPuts("-W- " __VA_ARGS__)
-#define TRACE_WARNING_WP(...) debugPuts(__VA_ARGS__)
-#define TRACE_ERROR(...)      debugPuts("-E- " __VA_ARGS__)
-
-#if !defined(SIMU)
-#define FLUSH()               debugFlush();
-void debugTask(void* pdata);
-#else
-#define FLUSH()
-#endif
-
-#else
-
-#define TRACE(...) { }
-#define DUMP(...) { }
-#define TRACE_DEBUG(...) { }
-#define TRACE_DEBUG_WP(...) { }
-#define TRACE_INFO(...) { }
-#define TRACE_INFO_WP(...) { }
-#define TRACE_WARNING(...) { }
-#define TRACE_WARNING_WP(...) { }
-#define TRACE_ERROR(...) { }
-#define FLUSH()
-
-#endif
-
+#define TRACE_DEBUG(...)      debugPrintf("-D- " __VA_ARGS__)
+#define TRACE_DEBUG_WP(...)   debugPrintf(__VA_ARGS__)
+#define TRACE_INFO(...)       debugPrintf("-I- " __VA_ARGS__)
+#define TRACE_INFO_WP(...)    debugPrintf(__VA_ARGS__)
+#define TRACE_WARNING(...)    debugPrintf("-W- " __VA_ARGS__)
+#define TRACE_WARNING_WP(...) debugPrintf(__VA_ARGS__)
+#define TRACE_ERROR(...)      debugPrintf("-E- " __VA_ARGS__)
 
 #if defined(DEBUG_TRACE_BUFFER)
 

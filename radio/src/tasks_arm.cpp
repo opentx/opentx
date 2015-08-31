@@ -40,7 +40,6 @@
 #define MIXER_STACK_SIZE    500
 #define AUDIO_STACK_SIZE    500
 #define BT_STACK_SIZE       500
-#define DEBUG_STACK_SIZE    500
 
 #if defined(_MSC_VER)
   #define _ALIGNED(x) __declspec(align(x))
@@ -61,11 +60,6 @@ OS_STK audioStack[AUDIO_STACK_SIZE];
 #if defined(BLUETOOTH)
 OS_TID btTaskId;
 OS_STK btStack[BT_STACK_SIZE];
-#endif
-
-#if defined(DEBUG)
-OS_TID debugTaskId;
-OS_STK debugStack[DEBUG_STACK_SIZE];
 #endif
 
 OS_MutexID audioMutex;
@@ -205,8 +199,8 @@ void tasksStart()
 {
   CoInitOS();
 
-#if defined(CPUARM) && defined(DEBUG) && !defined(SIMU)
-  debugTaskId = CoCreateTaskEx(debugTask, NULL, 10, &debugStack[DEBUG_STACK_SIZE-1], DEBUG_STACK_SIZE, 1, false);
+#if defined(CLI)
+  cliStart();
 #endif
 
 #if defined(BLUETOOTH)

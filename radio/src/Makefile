@@ -268,6 +268,10 @@ SHUTDOWN_CONFIRMATION = NO
 # Values = YES, NO
 DEBUG = NO
 
+# Activate Command Line Interpreter
+# Values = NO, YES
+CLI = NO
+
 # Activate writing of SPORT telemetry received data to sport.log file
 # Values = YES, NO
 SPORT_FILE_LOG = NO
@@ -301,9 +305,10 @@ LUA = NO
 MENUS_LOCK = NO
 
 # USB options in the main image
-# Values = JOYSTICK, MASSSTORAGE
+# Values = JOYSTICK, MASSSTORAGE, SERIAL
 # JOYSTICK: The TX will appear as a joystick
 # MASSSTORAGE: The TX will appear as a drive
+# SERIAL: The TX will appear as a serial port
 USB = JOYSTICK
 
 # Mixers monitor view added to Channels monitor one
@@ -805,7 +810,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   EEPROMSRC = eeprom_common.cpp eeprom_raw.cpp eeprom_conversions.cpp
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp pulses/dsm2_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp haptic.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp telemetry/telemetry.cpp
-  CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/second_serial_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
+  CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/serial2_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
   CPPSRC += loadboot.cpp debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
   ifeq ($(SDCARD), YES)
@@ -919,8 +924,11 @@ ifeq ($(PCB), TARANIS)
     LDSCRIPT = targets/taranis/stm32f2_flash.ld
   endif
   STM32USBPATH = $(THIRDPARTY)/STM32_USB-Host-Device_Lib_V2.1.0/Libraries
-  INCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc $(STM32USBPATH)/STM32_USB_Device_Library/Core/inc
-  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/inc $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Core/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/inc
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_hardware.cpp
   BOARDSRC = main_arm.cpp targets/taranis/board_taranis.cpp
   EXTRABOARDSRC += targets/taranis/configure_pins.cpp targets/taranis/lcd_driver.cpp targets/taranis/flash_driver.cpp targets/taranis/i2c_driver.cpp targets/taranis/aspi.c targets/taranis/delays.c
@@ -929,8 +937,8 @@ ifeq ($(PCB), TARANIS)
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp eeprom_conversions.cpp
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp sbus.cpp telemetry/telemetry.cpp
-  CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/uart3_driver.cpp targets/taranis/telemetry_driver.cpp
-  CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp
+  CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/serial2_driver.cpp targets/taranis/telemetry_driver.cpp
+  CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp serial.cpp
   CPPSRC += loadboot.cpp
   ifeq ($(PCBREV), REV9E)
     CPPSRC += targets/taranis/top_lcd_driver.cpp
@@ -972,6 +980,10 @@ ifeq ($(PCB), TARANIS)
   ifeq ($(USB), JOYSTICK)
     CPPDEFS += -DUSB_JOYSTICK
     SRC += targets/taranis/usbd_hid_joystick.c
+  else ifeq ($(USB), SERIAL)
+    CPPDEFS += -DUSB_SERIAL
+    SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c
+    EXTRABOARDSRC += targets/taranis/usbd_cdc.cpp
   else
     CPPDEFS += -DUSB_MASS_STORAGE
     SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c
@@ -1247,10 +1259,10 @@ ifeq ($(EXT), JETI)
 endif
 
 ifeq ($(EXT), MAVLINK)
- CPPDEFS += -DMAVLINK
- INCDIRS += thirdparty
- CPPSRC += telemetry/mavlink.cpp gui/$(GUIDIRECTORY)/view_mavlink.cpp serial.cpp
- EEPROM_VARIANT += ${MAVLINK_VARIANT}
+  CPPDEFS += -DMAVLINK
+  INCDIRS += thirdparty
+  CPPSRC += telemetry/mavlink.cpp gui/$(GUIDIRECTORY)/view_mavlink.cpp targets/common_avr/serial_driver.cpp
+  EEPROM_VARIANT += ${MAVLINK_VARIANT}
 endif
 
 ifeq ($(EXT), TELEMETREZ)
@@ -1291,8 +1303,15 @@ ifeq ($(EXT), $(filter $(EXT), FRSKY FRSKY_SPORT TELEMETREZ))
   EEPROM_VARIANT += ${FRSKY_VARIANT}
 endif
 
-ifeq ($(DEBUG), YES)
+ifeq ($(SIMU), YES)
   CPPDEFS += -DDEBUG
+  CPPSRC += dump.cpp
+else ifeq ($(CLI), YES)
+  CPPDEFS += -DCLI -DDEBUG
+  CPPSRC += cli.cpp dump.cpp
+else ifeq ($(DEBUG), YES)
+  CPPDEFS += -DDEBUG
+  CPPSRC += dump.cpp
 endif
 
 ifeq ($(EEPROM_PROGRESS_BAR), YES)

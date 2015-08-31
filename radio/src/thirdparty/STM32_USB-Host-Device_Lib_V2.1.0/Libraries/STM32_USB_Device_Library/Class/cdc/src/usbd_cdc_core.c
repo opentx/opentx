@@ -122,7 +122,7 @@ static uint8_t  usbd_cdc_SOF         (void *pdev);
    CDC specific management functions
  *********************************************/
 static void Handle_USBAsynchXfer  (void *pdev);
-static uint8_t  *USBD_cdc_GetCfgDesc (uint8_t speed, uint16_t *length);
+static const uint8_t  *USBD_cdc_GetCfgDesc (uint8_t speed, uint16_t *length);
 #ifdef USE_USB_OTG_HS  
 static uint8_t  *USBD_cdc_GetOtherCfgDesc (uint8_t speed, uint16_t *length);
 #endif
@@ -134,7 +134,7 @@ static uint8_t  *USBD_cdc_GetOtherCfgDesc (uint8_t speed, uint16_t *length);
   * @{
   */ 
 extern CDC_IF_Prop_TypeDef  APP_FOPS;
-extern uint8_t USBD_DeviceDesc   [USB_SIZ_DEVICE_DESC];
+extern const uint8_t USBD_DeviceDesc   [USB_SIZ_DEVICE_DESC];
 
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
   #if defined ( __ICCARM__ ) /*!< IAR Compiler */
@@ -179,8 +179,8 @@ __ALIGN_BEGIN uint8_t APP_Rx_Buffer   [APP_RX_DATA_SIZE] __ALIGN_END ;
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 __ALIGN_BEGIN uint8_t CmdBuff[CDC_CMD_PACKET_SZE] __ALIGN_END ;
 
-uint32_t APP_Rx_ptr_in  = 0;
-uint32_t APP_Rx_ptr_out = 0;
+volatile uint32_t APP_Rx_ptr_in  = 0;
+volatile uint32_t APP_Rx_ptr_out = 0;
 uint32_t APP_Rx_length  = 0;
 
 uint8_t  USB_Tx_State = 0;
@@ -782,7 +782,7 @@ static void Handle_USBAsynchXfer (void *pdev)
   * @param  length : pointer data length
   * @retval pointer to descriptor buffer
   */
-static uint8_t  *USBD_cdc_GetCfgDesc (uint8_t speed, uint16_t *length)
+static const uint8_t  *USBD_cdc_GetCfgDesc (uint8_t speed, uint16_t *length)
 {
   *length = sizeof (usbd_cdc_CfgDesc);
   return usbd_cdc_CfgDesc;

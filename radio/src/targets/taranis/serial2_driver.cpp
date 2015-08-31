@@ -36,8 +36,8 @@
 
 #include "../../opentx.h"
 
-uint8_t uart3Mode = UART_MODE_NONE;
-Fifo<512> uart3TxFifo;
+uint8_t serial2Mode = 0;
+Fifo<512> serial2TxFifo;
 extern Fifo<512> telemetryFifo;
 extern Fifo<32> sbusFifo;
 
@@ -73,17 +73,17 @@ void uart3Setup(unsigned int baudrate)
   NVIC_EnableIRQ(SERIAL_USART_IRQn);
 }
 
-void uart3Init(unsigned int mode, unsigned int protocol)
+void serial2Init(unsigned int mode, unsigned int protocol)
 {
   USART_DeInit(SERIAL_USART);
 
-  uart3Mode = false;
+  serial2Mode = mode;
 
   switch (mode) {
     case UART_MODE_TELEMETRY_MIRROR:
       uart3Setup(FRSKY_SPORT_BAUDRATE);
       break;
-#if defined(DEBUG)
+#if !defined(USB_SERIAL) && (defined(DEBUG) || defined(CLI))
     case UART_MODE_DEBUG:
       uart3Setup(DEBUG_BAUDRATE);
       break;
@@ -94,34 +94,29 @@ void uart3Init(unsigned int mode, unsigned int protocol)
       }
       break;
   }
-
-  uart3Mode = mode;
 }
 
-void uart3Putc(const char c)
+void serial2Putc(char c)
 {
-  uart3TxFifo.push(c);
+  while (serial2TxFifo.isFull());
+  serial2TxFifo.push(c);
   USART_ITConfig(SERIAL_USART, USART_IT_TXE, ENABLE);
 }
 
-#if defined(DEBUG)
-void debugPutc(const char c)
-{
-  if (uart3Mode == UART_MODE_DEBUG) {
-    uart3Putc(c);
-  }
-}
-#endif
-
-void uart3SbusInit()
+void serial2SbusInit()
 {
   uart3Setup(100000);
   SERIAL_USART->CR1 |= USART_CR1_M | USART_CR1_PCE ;
 }
 
-void uart3Stop()
+void serial2Stop()
 {
   USART_DeInit(SERIAL_USART);
+}
+
+uint8_t serial2TracesEnabled()
+{
+  return (serial2Mode == 0);
 }
 
 #if !defined(SIMU)
@@ -130,7 +125,7 @@ extern "C" void SERIAL_USART_IRQHandler(void)
   // Send
   if (USART_GetITStatus(SERIAL_USART, USART_IT_TXE) != RESET) {
     uint8_t txchar;
-    if (uart3TxFifo.pop(txchar)) {
+    if (serial2TxFifo.pop(txchar)) {
       /* Write one byte to the transmit data register */
       USART_SendData(SERIAL_USART, txchar);
     }
@@ -145,13 +140,18 @@ extern "C" void SERIAL_USART_IRQHandler(void)
     uint8_t data = SERIAL_USART->DR;
 
     if (!(status & USART_FLAG_ERRORS)) {
-      switch (uart3Mode) {
+      switch (serial2Mode) {
         case UART_MODE_TELEMETRY:
           telemetryFifo.push(data);
           break;
         case UART_MODE_SBUS_TRAINER:
           sbusFifo.push(data);
           break;
+#if !defined(USB_SERIAL) && defined(CLI)
+        case UART_MODE_DEBUG:
+          cliRxFifo.push(data);
+          break;
+#endif
       }
     }
 

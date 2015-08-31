@@ -43,10 +43,8 @@
 #define MAVLINK_COMM_NUM_BUFFERS 1
 
 #include "GCS_MAVLink/include_v1.0/mavlink_types.h"
-#include "serial.h"
+#include "targets/common_avr/serial_driver.h"
 #include "opentx.h"
-#include "serial.h"
-//#include "include/mavlink_helpers.h"
 
 extern mavlink_system_t mavlink_system;
 

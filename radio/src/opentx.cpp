@@ -2451,7 +2451,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   backlightOn();
 
 #if defined(PCBTARANIS)
-  uart3Init(g_eeGeneral.uart3Mode, MODEL_TELEMETRY_PROTOCOL());
+  serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
 #endif
 
 #if defined(PCBSKY9X) && !defined(SIMU)

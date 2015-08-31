@@ -98,8 +98,14 @@ void menuStatisticsView(uint8_t event)
 #define MENU_DEBUG_Y_MIXMAX   (2*FH-3)
 #define MENU_DEBUG_Y_LUA      (3*FH-2)
 #define MENU_DEBUG_Y_FREE_RAM (4*FH-1)
-#define MENU_DEBUG_Y_STACK    (5*FH)
+#define MENU_DEBUG_Y_USB      (5*FH)
 #define MENU_DEBUG_Y_RTOS     (6*FH)
+
+#if defined(USB_SERIAL)
+  extern uint16_t usbWraps;
+  extern uint16_t charsWritten;
+  extern "C" volatile uint32_t APP_Rx_ptr_in;
+#endif
 
 void menuStatisticsDebug(uint8_t event)
 {
@@ -171,6 +177,15 @@ void menuStatisticsDebug(uint8_t event)
   lcd_putsLeft(MENU_DEBUG_Y_MIXMAX, STR_TMIXMAXMS);
   lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
+
+#if defined(USB_SERIAL)
+  lcd_putsLeft(MENU_DEBUG_Y_USB, "Usb");
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_USB, charsWritten, LEFT);
+  lcd_puts(lcdLastPos, MENU_DEBUG_Y_USB, " ");
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_USB, APP_Rx_ptr_in, LEFT);
+  lcd_puts(lcdLastPos, MENU_DEBUG_Y_USB, " ");
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_USB, usbWraps, LEFT);
+#endif
 
   lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
   lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[M]", SMLSIZE);

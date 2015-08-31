@@ -74,9 +74,10 @@ extern "C" {
 #endif
 
 #if !defined(SIMU)
-  #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc/usbd_msc_core.h"
-  #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc/usbd_hid_core.h"
-  #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc/usbd_usr.h"
+  #include "usbd_cdc_core.h"
+  #include "usbd_msc_core.h"
+  #include "usbd_hid_core.h"
+  #include "usbd_usr.h"
   #include "usbd_desc.h"
   #include "usb_conf.h"
   #include "usbd_conf.h"
@@ -282,10 +283,8 @@ void backlightInit(void);
 // USB driver
 int usbPlugged(void);
 void usbInit(void);
-void usbStart(void);
-#if defined(USB_JOYSTICK)
-void usbStop(void);
-#endif
+void usbDeInit(void);
+void usbSerialPutc(uint8_t c);
 
 #if defined(__cplusplus) && !defined(SIMU)
 }
@@ -323,13 +322,13 @@ void hapticOff(void);
   void hapticOn(void);
 #endif
 
-// SERIAL_USART driver
+// Second serial port driver
 #define DEBUG_BAUDRATE                 115200
-void uart3Init(unsigned int mode, unsigned int protocol);
-void uart3Putc(const char c);
-#define telemetrySecondPortInit(protocol) uart3Init(UART_MODE_TELEMETRY, protocol)
-void uart3SbusInit(void);
-void uart3Stop(void);
+void serial2Init(unsigned int mode, unsigned int protocol);
+void serial2Putc(char c);
+#define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
+void serial2SbusInit(void);
+void serial2Stop(void);
 
 // BT driver
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
