@@ -401,7 +401,6 @@ Colin Rycroft
 Emanuel Stassar
 Michael Gregory
 Robert Russell
-Gordon Stahl
 Felix Kaiser
 Joshua Bardwell
 Davd Goodall
@@ -599,7 +598,6 @@ Julien Gérard
 Alexandre d'Alton
 Peter Mergaerts
 Jan Houwers
-Gordon Stahl
 Christian Grandjean
 Roger Bergevin
 NorthSide
@@ -808,3 +806,4 @@ Carsten Wache
 Brock White 
 Steven Poretz
 David Huelster
+Gordon Stahl (monthly)
