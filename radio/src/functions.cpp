@@ -284,10 +284,10 @@ void evalFunctions()
 #endif
 
   for (uint8_t i=0; i<NUM_CFN; i++) {
-    const CustomFunctionData *cfn = &functions[i];
+    const CustomFunctionData * cfn = &functions[i];
     int8_t swtch = CFN_SWITCH(cfn);
     if (swtch) {
-      MASK_CFN_TYPE  switch_mask = ((MASK_CFN_TYPE)1 << i);
+      MASK_CFN_TYPE switch_mask = ((MASK_CFN_TYPE)1 << i);
 
 #if defined(CPUARM)
       bool active = getSwitch(swtch, IS_PLAY_FUNC(CFN_FUNC(cfn)) ? GETSWITCH_MIDPOS_DELAY : 0);

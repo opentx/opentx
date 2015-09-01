@@ -92,7 +92,7 @@ uint64_t check2PosSwitchPosition(EnumKeys sw)
   else
     index = sw - SW_SA0 + 2;
 
-  result = ((int64_t)1 << index);
+  result = ((uint64_t)1 << index);
 
   if (!(switchesPos & result)) {
     PLAY_SWITCH_MOVED(index);
@@ -101,9 +101,9 @@ uint64_t check2PosSwitchPosition(EnumKeys sw)
   return result;
 }
 
-uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
+uint64_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
 {
-  uint32_t result;
+  uint64_t result;
   uint32_t index;
 
   if (switchState(sw)) {
@@ -178,6 +178,7 @@ void getSwitchesPosition(bool startup)
     }
   }
 }
+
 #define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
 #define POT_POSITION(sw)     ((potsPos[(sw)/XPOTS_MULTIPOS_COUNT] & 0x0f) == ((sw) % XPOTS_MULTIPOS_COUNT))
 
@@ -444,18 +445,10 @@ bool getSwitch(int8_t swtch)
   }
   else if (cs_idx <= SWSRC_LAST_SWITCH) {
 #if defined(PCBTARANIS)
-    if (flags & GETSWITCH_MIDPOS_DELAY) {
-      div_t swinfo = switchInfo(cs_idx);
-      if (IS_3POS(swinfo.quot)) {
-        result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
-      }
-      else {
-        result = switchState((EnumKeys)(SW_BASE+cs_idx-SWSRC_FIRST_SWITCH));
-      }
-    }
-    else {
+    if (flags & GETSWITCH_MIDPOS_DELAY)
+      result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
+    else
       result = switchState((EnumKeys)(SW_BASE+cs_idx-SWSRC_FIRST_SWITCH));
-    }
 #else
     result = switchState((EnumKeys)(SW_BASE+cs_idx-SWSRC_FIRST_SWITCH));
 #endif

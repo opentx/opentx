@@ -530,7 +530,7 @@ typedef struct {
   MASK_CFN_TYPE  activeSwitches;
   tmr10ms_t lastFunctionTime[NUM_CFN];
 
-  inline bool isFuunctionActive(uint8_t func)
+  inline bool isFunctionActive(uint8_t func)
   {
     return activeFunctions & ((MASK_FUNC_TYPE)1 << func);
   }
@@ -1333,7 +1333,7 @@ extern CustomFunctionsContext modelFunctionsContext;
 extern CustomFunctionsContext globalFunctionsContext;
 inline bool isFunctionActive(uint8_t func)
 {
-  return globalFunctionsContext.isFuunctionActive(func) || modelFunctionsContext.isFuunctionActive(func);
+  return globalFunctionsContext.isFunctionActive(func) || modelFunctionsContext.isFunctionActive(func);
 }
 void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext & functionsContext);
 inline void customFunctionsReset()
@@ -1343,7 +1343,7 @@ inline void customFunctionsReset()
 }
 #else
 extern CustomFunctionsContext modelFunctionsContext;
-#define isFunctionActive(func) modelFunctionsContext.isFuunctionActive(func)
+#define isFunctionActive(func) modelFunctionsContext.isFunctionActive(func)
 void evalFunctions();
 #define customFunctionsReset() modelFunctionsContext.reset()
 #endif
