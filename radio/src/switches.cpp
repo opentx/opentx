@@ -81,6 +81,9 @@ uint64_t  switchesPos = 0;
 tmr10ms_t potsLastposStart[NUM_XPOTS];
 uint8_t   potsPos[NUM_XPOTS];
 
+#define SWITCH_POSITION(sw)  (switchesPos & ((MASK_CFN_TYPE)1<<(sw)))
+#define POT_POSITION(sw)     ((potsPos[(sw)/XPOTS_MULTIPOS_COUNT] & 0x0f) == ((sw) % XPOTS_MULTIPOS_COUNT))
+
 div_t switchInfo(int switchPosition)
 {
   return div(switchPosition-SWSRC_FIRST_SWITCH, 3);
@@ -120,17 +123,18 @@ uint64_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
     result = ((MASK_CFN_TYPE)1 << index);
     switchesMidposStart[idx] = 0;
   }
-  else if (startup || (switchesPos & ((MASK_CFN_TYPE)1 << (sw - SW_SA0 + 1))) || g_eeGeneral.switchesDelay==SWITCHES_DELAY_NONE || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > SWITCHES_DELAY())) {
-    index = sw - SW_SA0 + 1;
-    result = ((MASK_CFN_TYPE)1 << index);
-    switchesMidposStart[idx] = 0;
-  }
   else {
     index = sw - SW_SA0 + 1;
-    if (!switchesMidposStart[idx]) {
-      switchesMidposStart[idx] = get_tmr10ms();
+    if (startup || SWITCH_POSITION(index) || g_eeGeneral.switchesDelay==SWITCHES_DELAY_NONE || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > SWITCHES_DELAY())) {
+      result = ((MASK_CFN_TYPE)1 << index);
+      switchesMidposStart[idx] = 0;
     }
-    result = (switchesPos & ((MASK_CFN_TYPE)0x7 << (sw - SW_SA0)));
+    else {
+      result = (switchesPos & ((MASK_CFN_TYPE)0x7 << (sw - SW_SA0)));
+      if (!switchesMidposStart[idx]) {
+        switchesMidposStart[idx] = get_tmr10ms();
+      }
+    }
   }
 
   if (!(switchesPos & result)) {
@@ -192,9 +196,6 @@ void getSwitchesPosition(bool startup)
     }
   }
 }
-
-#define SWITCH_POSITION(sw)  (switchesPos & ((MASK_CFN_TYPE)1<<(sw)))
-#define POT_POSITION(sw)     ((potsPos[(sw)/XPOTS_MULTIPOS_COUNT] & 0x0f) == ((sw) % XPOTS_MULTIPOS_COUNT))
 
 getvalue_t getValueForLogicalSwitch(mixsrc_t i)
 {
