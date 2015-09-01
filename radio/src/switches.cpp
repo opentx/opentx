@@ -158,6 +158,8 @@ void getSwitchesPosition(bool startup)
   CHECK_2POS(SW_SF);
   CHECK_3POS(5, SW_SG);
   CHECK_2POS(SW_SH);
+
+#if defined(REV9E)
   CHECK_3POS(6, SW_SI);
   CHECK_3POS(7, SW_SJ);
   CHECK_3POS(8, SW_SK);
@@ -168,6 +170,7 @@ void getSwitchesPosition(bool startup)
   CHECK_3POS(13, SW_SP);
   CHECK_3POS(14, SW_SQ);
   CHECK_3POS(15, SW_SR);
+#endif
 
   switchesPos = newPos;
 
