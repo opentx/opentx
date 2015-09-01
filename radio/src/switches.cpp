@@ -72,9 +72,13 @@ volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value = 0;
 #endif
 
 #if defined(PCBTARANIS)
-tmr10ms_t switchesMidposStart[6] = { 0 };
+#if defined(REV9E)
+tmr10ms_t switchesMidposStart[6];
+#else
+tmr10ms_t switchesMidposStart[16]; // TODO constant
+#endif
 uint64_t  switchesPos = 0;
-tmr10ms_t potsLastposStart[NUM_XPOTS] = { 0 };
+tmr10ms_t potsLastposStart[NUM_XPOTS];
 uint8_t   potsPos[NUM_XPOTS];
 
 div_t switchInfo(int switchPosition)
@@ -108,17 +112,17 @@ uint64_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
 
   if (switchState(sw)) {
     index = sw - SW_SA0;
-    result = (1 << index);
+    result = ((MASK_CFN_TYPE)1 << index);
     switchesMidposStart[idx] = 0;
   }
   else if (switchState(EnumKeys(sw+2))) {
     index = sw - SW_SA0 + 2;
-    result = (1 << index);
+    result = ((MASK_CFN_TYPE)1 << index);
     switchesMidposStart[idx] = 0;
   }
-  else if (startup || (switchesPos & (1 << (sw - SW_SA0 + 1))) || g_eeGeneral.switchesDelay==SWITCHES_DELAY_NONE || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > SWITCHES_DELAY())) {
+  else if (startup || (switchesPos & ((MASK_CFN_TYPE)1 << (sw - SW_SA0 + 1))) || g_eeGeneral.switchesDelay==SWITCHES_DELAY_NONE || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > SWITCHES_DELAY())) {
     index = sw - SW_SA0 + 1;
-    result = (1 << index);
+    result = ((MASK_CFN_TYPE)1 << index);
     switchesMidposStart[idx] = 0;
   }
   else {
@@ -126,7 +130,7 @@ uint64_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
     if (!switchesMidposStart[idx]) {
       switchesMidposStart[idx] = get_tmr10ms();
     }
-    result = (switchesPos & (0x7 << (sw - SW_SA0)));
+    result = (switchesPos & ((MASK_CFN_TYPE)0x7 << (sw - SW_SA0)));
   }
 
   if (!(switchesPos & result)) {
@@ -150,6 +154,16 @@ void getSwitchesPosition(bool startup)
   CHECK_2POS(SW_SF);
   CHECK_3POS(5, SW_SG);
   CHECK_2POS(SW_SH);
+  CHECK_3POS(6, SW_SI);
+  CHECK_3POS(7, SW_SJ);
+  CHECK_3POS(8, SW_SK);
+  CHECK_3POS(9, SW_SL);
+  CHECK_3POS(10, SW_SM);
+  CHECK_3POS(11, SW_SN);
+  CHECK_3POS(12, SW_SO);
+  CHECK_3POS(13, SW_SP);
+  CHECK_3POS(14, SW_SQ);
+  CHECK_3POS(15, SW_SR);
 
   switchesPos = newPos;
 
@@ -179,7 +193,7 @@ void getSwitchesPosition(bool startup)
   }
 }
 
-#define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
+#define SWITCH_POSITION(sw)  (switchesPos & ((MASK_CFN_TYPE)1<<(sw)))
 #define POT_POSITION(sw)     ((potsPos[(sw)/XPOTS_MULTIPOS_COUNT] & 0x0f) == ((sw) % XPOTS_MULTIPOS_COUNT))
 
 getvalue_t getValueForLogicalSwitch(mixsrc_t i)
