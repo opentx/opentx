@@ -12,7 +12,7 @@
 #define HAS_PERSISTENT_TIMERS(board)          (IS_ARM(board) || IS_2560(board))
 #define HAS_LARGE_LCD(board)                  IS_TARANIS(board)
 #define MAX_VIEWS(board)                      (HAS_LARGE_LCD(board) ? 2 : 256)
-#define MAX_POTS(board)                       (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 3) : 3)
+#define MAX_POTS(board, version)              (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : (version >= 216 ? 3 : 2)) : 3)
 #define MAX_SLIDERS(board)                    (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 2) : 0)
 #define MAX_SWITCHES(board, version)          (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 18 : 8) : 7)
 #define MAX_SWITCHES_POSITION(board, version) (IS_TARANIS_X9E(board) ? 18*3 : (IS_TARANIS(board) ? 8*3 : 9))
@@ -80,7 +80,7 @@ class SwitchesConversionTable: public ConversionTable {
       }
 
       if (IS_TARANIS(board) && version >= 216) {
-        for (int i=1; i<=MAX_POTS(board)*6; i++) {
+        for (int i=1; i<=MAX_POTS(board, version)*6; i++) {
           addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i), -val+offset);
           addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i), val++);
         }
@@ -212,8 +212,9 @@ class SourcesConversionTable: public ConversionTable {
       }
 
       if (IS_TARANIS(board) && version >= 216) {
-        for (int i=0; i<32; i++)
+        for (int i=0; i<32; i++) {
           addConversion(RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i), val++);
+        }
         for (int i=0; i<7; i++) {
           for (int j=0; j<6; j++) {
             addConversion(RawSource(SOURCE_TYPE_LUA_OUTPUT, i*16+j), val++);
@@ -221,16 +222,18 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<NUM_STICKS+MAX_POTS(board)+MAX_SLIDERS(board); i++) {
+      for (int i=0; i<NUM_STICKS+MAX_POTS(board, version)+MAX_SLIDERS(board); i++) {
         addConversion(RawSource(SOURCE_TYPE_STICK, i), val++);
       }
 
-      for (int i=0; i<MAX_ROTARY_ENCODERS(board); i++)
+      for (int i=0; i<MAX_ROTARY_ENCODERS(board); i++) {
         addConversion(RawSource(SOURCE_TYPE_ROTARY_ENCODER, 0), val++);
+      }
 
       if (!afterrelease21March2013) {
-        for (int i=0; i<NUM_STICKS; i++)
+        for (int i=0; i<NUM_STICKS; i++) {
           addConversion(RawSource(SOURCE_TYPE_TRIM, i), val++);
+        }
       }
 
       addConversion(RawSource(SOURCE_TYPE_MAX), val++);
@@ -3164,7 +3167,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   
   if (IS_ARM(board) && version >= 217) {
     for (int i=0; i<8; i++) {
-      if (i < MAX_POTS(board)+MAX_SLIDERS(board))
+      if (i < MAX_POTS(board, version)+MAX_SLIDERS(board))
         internalField.Append(new BoolField<1>(modelData.potsWarningEnabled[i]));
       else
         internalField.Append(new SpareBitsField<1>());
@@ -3172,7 +3175,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
   else if (IS_ARM(board) && version >= 216) {
     for (int i=0; i<6; i++) {
-      if (i < MAX_POTS(board)+MAX_SLIDERS(board))
+      if (i < MAX_POTS(board, version)+MAX_SLIDERS(board))
         internalField.Append(new BoolField<1>(modelData.potsWarningEnabled[i]));
       else
         internalField.Append(new SpareBitsField<1>());
@@ -3181,7 +3184,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
 
   if (IS_ARM(board) && version >= 216) {
-    for (int i=0; i < MAX_POTS(board)+MAX_SLIDERS(board); i++) {
+    for (int i=0; i < MAX_POTS(board, version)+MAX_SLIDERS(board); i++) {
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
     }    
   }
@@ -3259,7 +3262,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   generalData(generalData),
   board(board),
   version(version),
-  inputsCount(NUM_STICKS+MAX_POTS(board)+MAX_SLIDERS(board))
+  inputsCount(NUM_STICKS+MAX_POTS(board, version)+MAX_SLIDERS(board))
 {
   eepromImportDebug() << QString("OpenTxGeneralData::OpenTxGeneralData(board: %1, version:%2, variant:%3)").arg(board).arg(version).arg(variant);
 
@@ -3423,7 +3426,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
         internalField.Append(new UnsignedField<8>(generalData.hw_uartMode));
       }
       for (int i=0; i<4; i++) {
-        if (i < MAX_POTS(board))
+        if (i < MAX_POTS(board, version))
           internalField.Append(new UnsignedField<2>(generalData.potConfig[i]));
         else
           internalField.Append(new SpareBitsField<2>());
@@ -3455,7 +3458,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
       for (int i=0; i<NUM_STICKS; ++i) {
         internalField.Append(new ZCharField<3>(generalData.stickName[i]));
       }
-      for (int i=0; i<MAX_POTS(board); ++i) {
+      for (int i=0; i<MAX_POTS(board, version); ++i) {
         internalField.Append(new ZCharField<3>(generalData.potName[i]));
       }
       for (int i=0; i<MAX_SLIDERS(board); ++i) {
