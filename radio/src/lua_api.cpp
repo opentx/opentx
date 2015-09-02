@@ -130,6 +130,30 @@ static int luaGetDateTime(lua_State *L)
   return 1;
 }
 
+static void luaPushLatLon(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
+/* result is lua table containing members ["Lat"] and ["Lon"] as lua_Number (doubles) in decimal degrees */
+{
+  lua_Number lat = 0.0;
+  lua_Number lon = 0.0;
+  uint32_t gpsLat = 0;
+  uint32_t gpsLon = 0;
+
+  telemetryItem.gps.extractLatitudeLongitude(&gpsLat, &gpsLon); /* close, but not the format we want */
+  lat = gpsLat / 1000000.0;
+  if (telemetryItem.gps.latitudeNS == 'S') lat = -lat;
+  lon = gpsLon / 1000000.0;
+  if (telemetryItem.gps.longitudeEW == 'W') lon = -lon;
+
+  lua_createtable(L, 0, 2); /* push the result table */
+  lua_pushstring(L, "Lat");
+  lua_pushnumber(L, lat);
+  lua_settable(L, -3);
+  lua_pushstring(L, "Lon");
+  lua_pushnumber(L, lon);
+  lua_settable(L, -3);
+
+}
+
 static void luaGetValueAndPush(int src)
 {
   getvalue_t value = getValue(src);
@@ -139,7 +163,9 @@ static void luaGetValueAndPush(int src)
     // telemetry values
     if (TELEMETRY_STREAMING() && telemetryItems[src].isAvailable()) {
       TelemetrySensor & telemetrySensor = g_model.telemetrySensors[src];
-      if (telemetrySensor.prec > 0)
+      if (telemetrySensor.unit == UNIT_GPS)
+        luaPushLatLon(telemetrySensor, telemetryItems[src]);
+      else if (telemetrySensor.prec > 0)
         lua_pushnumber(L, float(value)/(telemetrySensor.prec == 2 ? 100.0 : 10.0));
       else
         lua_pushinteger(L, value);
