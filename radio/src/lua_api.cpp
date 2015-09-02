@@ -182,7 +182,7 @@ static void luaGetValueAndPush(int src)
   if (src >= MIXSRC_FIRST_TELEM && src <= MIXSRC_LAST_TELEM) {
     src = (src-MIXSRC_FIRST_TELEM) / 3;
     // telemetry values
-    if (TELEMETRY_STREAMING() /* && telemetryItems[src].isAvailable() */) {
+    if (TELEMETRY_STREAMING() && telemetryItems[src].isAvailable()) {
       TelemetrySensor & telemetrySensor = g_model.telemetrySensors[src];
       switch (telemetrySensor.unit) {
         case UNIT_GPS:
