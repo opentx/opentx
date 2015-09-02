@@ -931,14 +931,14 @@ ifeq ($(PCB), TARANIS)
   INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/inc
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_hardware.cpp
   BOARDSRC = main_arm.cpp targets/taranis/board_taranis.cpp
-  EXTRABOARDSRC += targets/taranis/configure_pins.cpp targets/taranis/lcd_driver.cpp targets/taranis/flash_driver.cpp targets/taranis/i2c_driver.cpp targets/taranis/aspi.c targets/taranis/delays.c
+  EXTRABOARDSRC += targets/taranis/configure_pins.cpp targets/taranis/lcd_driver.cpp targets/taranis/flash_driver.cpp targets/taranis/i2c_driver.cpp targets/taranis/aspi.c targets/taranis/delays.c serial.cpp
   SRC += $(COOSDIR)/kernel/core.c $(COOSDIR)/kernel/hook.c $(COOSDIR)/kernel/task.c $(COOSDIR)/kernel/event.c $(COOSDIR)/kernel/time.c $(COOSDIR)/kernel/timer.c $(COOSDIR)/kernel/flag.c $(COOSDIR)/kernel/mutex.c $(COOSDIR)/kernel/serviceReq.c $(COOSDIR)/portable/GCC/port.c $(COOSDIR)/portable/arch.c
   SRC += targets/taranis/pwr_driver.c targets/taranis/usb_driver.c
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp eeprom_conversions.cpp
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp sbus.cpp telemetry/telemetry.cpp
   CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/serial2_driver.cpp targets/taranis/telemetry_driver.cpp
-  CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp serial.cpp
+  CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp
   CPPSRC += loadboot.cpp
   ifeq ($(PCBREV), REV9E)
     CPPSRC += targets/taranis/top_lcd_driver.cpp
