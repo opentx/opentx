@@ -7,6 +7,8 @@
 #include <QTimer>
 #include "simulatorinterface.h"
 
+#define INSTANCE (ui->Instance->text().toInt(&ok,0) -1)
+
 namespace Ui {
   class TelemetrySimulator;
 }

@@ -583,6 +583,37 @@ void telemetryReset()
 #endif
 #endif
 
+/*Add some default sensor values to the simulator*/
+#if defined(CPUARM) && defined(SIMU)
+  for (int i=0; i<MAX_SENSORS; i++) {
+    const TelemetrySensor & sensor = g_model.telemetrySensors[i];
+    printf("Sensor ID %x Instance %i \n", sensor.id, sensor.instance);
+      switch (sensor.id)
+      {
+        case RSSI_ID:
+          setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, RSSI_ID, sensor.instance , 75, UNIT_RAW, 0);
+          break;
+
+        case ADC1_ID:
+          setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ADC1_ID, sensor.instance, 100, UNIT_RAW, 0);
+          break;
+
+        case ADC2_ID:
+          setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ADC2_ID, sensor.instance, 245, UNIT_RAW, 0);
+          break;
+
+        case SWR_ID:
+          setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, SWR_ID, sensor.instance, 30, UNIT_RAW, 0);
+          break;
+
+        case BATT_ID:
+          setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, BATT_ID, sensor.instance, 100, UNIT_RAW, 0);
+          break;
+      }
+    }
+#endif
+
+
 #if defined(CPUARM) && defined(SIMU) && !defined(COMPANION)
   setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, RSSI_ID, 25, 75, UNIT_RAW, 0);
   setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, SWR_ID, 25, 5, UNIT_RAW, 0);
