@@ -1118,8 +1118,8 @@ void MainWindow::createMenus()
       languageMenu->addAction(germanLangAct);
       languageMenu->addAction(finnishLangAct);
       languageMenu->addAction(frenchLangAct);
-//      languageMenu->addAction(hebrewLangAct);
       languageMenu->addAction(italianLangAct);
+//      languageMenu->addAction(hebrewLangAct);
       languageMenu->addAction(polishLangAct);
 //      languageMenu->addAction(portugueseLangAct);
       languageMenu->addAction(spanishLangAct);
@@ -1366,20 +1366,20 @@ void MainWindow::updateLanguageActions()
     frenchLangAct->setChecked(true);
   else if (langId=="it_IT") 
     italianLangAct->setChecked(true);
-  else if (langId=="he_IL") 
-    hebrewLangAct->setChecked(true);
+  // else if (langId=="he_IL") 
+  //   hebrewLangAct->setChecked(true);
   else if (langId=="pl_PL") 
     polishLangAct->setChecked(true);
-  else if (langId=="pt_PT") 
-    portugueseLangAct->setChecked(true);
-  else if (langId=="ru_RU") 
-    russianLangAct->setChecked(true);
+  // else if (langId=="pt_PT") 
+  //   portugueseLangAct->setChecked(true);
   else if (langId=="es_ES")
     spanishLangAct->setChecked(true);
   else if (langId=="sv_SE") 
     swedishLangAct->setChecked(true);
-  else if (langId=="nl_NL") 
-    dutchLangAct->setChecked(true);
+  // else if (langId=="ru_RU") 
+  //   russianLangAct->setChecked(true);
+  // else if (langId=="nl_NL") 
+  //   dutchLangAct->setChecked(true);
 }
 
 void MainWindow::updateIconThemeActions()
