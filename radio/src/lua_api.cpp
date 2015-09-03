@@ -119,7 +119,7 @@ static int luaGetTime(lua_State *L)
 static void luaPushDateTime(lua_State *L, uint32_t year, uint32_t mon, uint32_t day,
                             uint32_t hour, uint32_t min, uint32_t sec)
 {
-  lua_newtable(L);
+  lua_createtable(L, 0, 6);
   lua_pushtableinteger(L, "year", year);
   lua_pushtableinteger(L, "mon", mon);
   lua_pushtableinteger(L, "day", day);
@@ -150,7 +150,7 @@ static void luaPushLatLon(TelemetrySensor & telemetrySensor, TelemetryItem & tel
   lon = gpsLon / 1000000.0;
   if (telemetryItem.gps.longitudeEW == 'W') lon = -lon;
 
-  lua_newtable(L);
+  lua_createtable(L, 0, 2);
   lua_pushtablenumber(L, "lat", lat);
   lua_pushtablenumber(L, "lon", lon);
 }
@@ -166,7 +166,7 @@ static void luaPushCells(TelemetrySensor & telemetrySensor, TelemetryItem & tele
   if (telemetryItem.cells.count == 0)
     lua_pushinteger(L, (int)0); // returns zero if no cells
   else {
-    lua_createtable(L, 0 /*telemetryItem.cells.count*/, 0);
+    lua_createtable(L, telemetryItem.cells.count, 0);
     for (int i = 0; i < telemetryItem.cells.count; i++) {
       lua_pushnumber(L, i + 1);
       lua_pushnumber(L, telemetryItem.cells.values[i].value / 100.0);
