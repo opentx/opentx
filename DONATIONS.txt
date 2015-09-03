@@ -8,6 +8,7 @@
 <a href="http://litepilots.com">LitePilots</a>
 <a href="http://openpilot.com">David Ankers (OpenPilot)</a>
 <a href="http://3drobotics.com">3D Robotics</a>
+<a href="http://rcstudio.cz">RC Studio (monthly)</a>
 
 Mario Sette
 Felice Baratto
@@ -807,3 +808,4 @@ Brock White
 Steven Poretz
 David Huelster
 Gordon Stahl (monthly)
+John Mathison
