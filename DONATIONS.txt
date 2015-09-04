@@ -809,3 +809,4 @@ Steven Poretz
 David Huelster
 Gordon Stahl (monthly)
 John Mathison
+Richard Duczmal
