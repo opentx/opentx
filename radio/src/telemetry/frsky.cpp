@@ -586,7 +586,7 @@ void telemetryReset()
 /*Add some default sensor values to the simulator*/
 #if defined(CPUARM) && defined(SIMU)
   for (int i=0; i<MAX_SENSORS; i++) {
-  const TelemetrySensor & sensor = g_model.telemetrySensors[i];
+    const TelemetrySensor & sensor = g_model.telemetrySensors[i];
     switch (sensor.id)
     {
       case RSSI_ID:
