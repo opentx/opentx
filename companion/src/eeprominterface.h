@@ -1139,7 +1139,8 @@ class GeneralSettings {
     unsigned int  currModel; // 0..15
     unsigned int   contrast;
     unsigned int   vBatWarn;
-    int    vBatCalib;
+    int    txVoltageCalibration;
+    int    txCurrentCalibration;
     int    vBatMin;
     int    vBatMax;
     int   backlightMode;
@@ -1187,7 +1188,6 @@ class GeneralSettings {
     int     speakerVolume;
     unsigned int   backlightBright;
     int switchesDelay;
-    int    currentCalib;
     int    temperatureCalib;
     int    temperatureWarn;
     unsigned int mAhWarn;
@@ -1318,7 +1318,7 @@ enum Capability {
   PPMCenter,
   PPMUnitMicroseconds,
   SYMLimits,
-  HasCurrentCalibration,
+  HastxCurrentCalibration,
   HasVolume,
   HasBrightness,
   PerModelTimers,

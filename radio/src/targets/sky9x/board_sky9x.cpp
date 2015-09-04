@@ -603,7 +603,7 @@ uint16_t getCurrent()
     Current_count = 0 ;
   }
 
-  uint32_t current_scale = 488 + g_eeGeneral.currentCalib ;
+  uint32_t current_scale = 488 + g_eeGeneral.txCurrentCalibration ;
   return (current_scale * Current) / 8192;
 }
 #endif

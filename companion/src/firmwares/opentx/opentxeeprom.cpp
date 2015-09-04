@@ -3299,7 +3299,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   internalField.Append(new UnsignedField<8>(generalData.currModel));
   internalField.Append(new UnsignedField<8>(generalData.contrast));
   internalField.Append(new UnsignedField<8>(generalData.vBatWarn));
-  internalField.Append(new SignedField<8>(generalData.vBatCalib));
+  internalField.Append(new SignedField<8>(generalData.txVoltageCalibration));
   internalField.Append(new SignedField<8>(generalData.backlightMode));
 
   for (int i=0; i<NUM_STICKS; i++)
@@ -3383,7 +3383,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
 
   if (IS_ARM(board)) {
     internalField.Append(new UnsignedField<8>(generalData.backlightBright));
-    internalField.Append(new SignedField<8>(generalData.currentCalib));
+    internalField.Append(new SignedField<8>(generalData.txCurrentCalibration));
     if (version >= 213) {
       internalField.Append(new SignedField<8>(generalData.temperatureWarn)); // TODO
       internalField.Append(new UnsignedField<8>(generalData.mAhWarn));

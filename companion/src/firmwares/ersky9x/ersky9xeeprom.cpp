@@ -82,7 +82,7 @@ Ersky9xGeneral::operator GeneralSettings ()
   result.currModel = currModel;
   result.contrast = contrast;
   result.vBatWarn = vBatWarn;
-  result.vBatCalib = vBatCalib;
+  result.txVoltageCalibration = txVoltageCalibration;
 
   result.backlightMode = 0;
   if (lightSw == 22) {
@@ -135,7 +135,7 @@ Ersky9xGeneral::operator GeneralSettings ()
   result.switchWarningStates = switchWarningStates;
   result.speakerVolume = volume;
   result.backlightBright = bright ;
-  result.currentCalib = current_calib;
+  result.txCurrentCalibration = current_calib;
   return result;
 }
 

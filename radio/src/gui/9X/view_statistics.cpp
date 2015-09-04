@@ -155,7 +155,7 @@ void menuStatisticsDebug(uint8_t event)
   // current
   lcd_putsLeft(MENU_DEBUG_Y_CURRENT, STR_CPU_CURRENT);
   putsValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_CURRENT, getCurrent(), UNIT_MILLIAMPS, LEFT);
-  uint32_t current_scale = 488 + g_eeGeneral.currentCalib;
+  uint32_t current_scale = 488 + g_eeGeneral.txCurrentCalibration;
   lcd_putc(MENU_DEBUG_COL2_OFS, MENU_DEBUG_Y_CURRENT, '>');
   putsValueWithUnit(MENU_DEBUG_COL2_OFS+FW+1, MENU_DEBUG_Y_CURRENT, Current_max*10*current_scale/8192, UNIT_RAW, LEFT);
   // consumption

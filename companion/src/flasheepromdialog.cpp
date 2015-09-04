@@ -175,8 +175,8 @@ bool FlashEEpromDialog::patchCalibration()
   QString calib = g.profile[g.id()].stickPotCalib();
   QString trainercalib = g.profile[g.id()].trainerCalib();
   int potsnum=GetCurrentFirmware()->getCapability(Pots);
-  int8_t vBatCalib=(int8_t) g.profile[g.id()].vBatCalib();
-  int8_t currentCalib=(int8_t) g.profile[g.id()].currentCalib();
+  int8_t txVoltageCalibration=(int8_t) g.profile[g.id()].txVoltageCalibration();
+  int8_t txCurrentCalibration=(int8_t) g.profile[g.id()].txCurrentCalibration();
   int8_t PPM_Multiplier=(int8_t) g.profile[g.id()].ppmMultiplier();
 
   if ((calib.length()==(NUM_STICKS+potsnum)*12) && (trainercalib.length()==16)) {
@@ -204,8 +204,8 @@ bool FlashEEpromDialog::patchCalibration()
         radioData->generalSettings.trainer.calib[i] = byte16;
       }
     }
-    radioData->generalSettings.currentCalib = currentCalib;
-    radioData->generalSettings.vBatCalib = vBatCalib;
+    radioData->generalSettings.txCurrentCalibration = txCurrentCalibration;
+    radioData->generalSettings.txVoltageCalibration = txVoltageCalibration;
     radioData->generalSettings.PPM_Multiplier = PPM_Multiplier;
     return true;
   }

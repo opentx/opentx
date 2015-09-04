@@ -69,7 +69,7 @@ void saveGeneralSettings(GeneralSettings & settings, global_settings & gs)
 
   // TODO BSS settings.currModel;
   gs.contrast(settings.contrast);
-  gs.battery(battery(settings.vBatCalib, settings.vBatWarn));
+  gs.battery(battery(settings.txVoltageCalibration, settings.vBatWarn));
 
   gs.ppm_input_calibration(ppm_input_calibration(settings.PPM_Multiplier,
                                                  PPMCalibration(settings.trainer.calib[0]),

@@ -328,7 +328,7 @@ enum BeeperMode {
 #if defined(CPUARM)
   #define EXTRA_GENERAL_FIELDS_ARM \
   uint8_t  backlightBright; \
-  int8_t   currentCalib; \
+  int8_t   txCurrentCalibration; \
   int8_t   temperatureWarn; \
   uint8_t  mAhWarn; \
   uint16_t mAhUsed; \
@@ -754,7 +754,7 @@ PACK(typedef struct {
   int8_t    currModel;
   uint8_t   contrast;
   uint8_t   vBatWarn;
-  int8_t    vBatCalib;
+  int8_t    txVoltageCalibration;
   int8_t    backlightMode;
   TrainerData trainer;
   uint8_t   view;            // index of view in main screen

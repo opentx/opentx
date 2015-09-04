@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>805</width>
-    <height>1269</height>
+    <height>1313</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -562,14 +562,14 @@
     </widget>
    </item>
    <item row="42" column="0">
-    <widget class="QLabel" name="label_22">
+    <widget class="QLabel" name="txVoltageCalibrationLabel">
      <property name="text">
-      <string>Battery</string>
+      <string>Battery Offset</string>
      </property>
     </widget>
    </item>
    <item row="42" column="1">
-    <widget class="QDoubleSpinBox" name="battCalibDSB">
+    <widget class="QDoubleSpinBox" name="txVoltageCalibration">
      <property name="statusTip">
       <string/>
      </property>
@@ -674,7 +674,7 @@
     </widget>
    </item>
    <item row="43" column="1">
-    <widget class="QSpinBox" name="CurrentCalib_SB">
+    <widget class="QSpinBox" name="txCurrentCalibration">
      <property name="minimum">
       <number>-49</number>
      </property>
@@ -698,9 +698,9 @@
     </widget>
    </item>
    <item row="43" column="0">
-    <widget class="QLabel" name="label_CurrentCalib">
+    <widget class="QLabel" name="txCurrentCalibrationLabel">
      <property name="text">
-      <string>Current</string>
+      <string>Current Offset</string>
      </property>
     </widget>
    </item>

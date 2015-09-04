@@ -70,7 +70,7 @@ Gruvin9xGeneral_v103::operator GeneralSettings ()
   result.currModel = currModel;
   result.contrast = contrast;
   result.vBatWarn = vBatWarn;
-  result.vBatCalib = vBatCalib;
+  result.txVoltageCalibration = txVoltageCalibration;
 
   result.backlightMode = 0;
   if (lightSw == 22) {
@@ -127,7 +127,7 @@ Gruvin9xGeneral_v104::operator GeneralSettings ()
   result.currModel = currModel;
   result.contrast = contrast;
   result.vBatWarn = vBatWarn;
-  result.vBatCalib = vBatCalib;
+  result.txVoltageCalibration = txVoltageCalibration;
 
   result.backlightMode = 0;
   if (lightSw == 22) {

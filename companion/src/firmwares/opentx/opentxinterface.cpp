@@ -710,7 +710,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return (IS_ARM(board) && !IS_9XRPRO(board)) ? 2 : 1;
     case HasPPMStart:
       return (IS_ARM(board) ? true : false);
-    case HasCurrentCalibration:
+    case HastxCurrentCalibration:
       return (IS_SKY9X(board) ? true : false);
     case HasVolume:
       return (IS_ARM(board) ? true : false);

@@ -312,10 +312,10 @@ QString Profile::speaker()       const { return _speaker;       }
 QString Profile::stickPotCalib() const { return _stickPotCalib; }
 QString Profile::timeStamp()     const { return _timeStamp;     }
 QString Profile::trainerCalib()  const { return _trainerCalib;  }
-int     Profile::currentCalib()  const { return _currentCalib;  }
+int     Profile::txCurrentCalibration()  const { return _txCurrentCalibration;  }
 int     Profile::gsStickMode()   const { return _gsStickMode;   }
 int     Profile::ppmMultiplier() const { return _ppmMultiplier; }
-int     Profile::vBatCalib()     const { return _vBatCalib;     }
+int     Profile::txVoltageCalibration()     const { return _txVoltageCalibration;     }
 int     Profile::vBatWarn()      const { return _vBatWarn;      }
 int     Profile::vBatMin()       const { return _vBatMin;       }
 int     Profile::vBatMax()       const { return _vBatMax;       }
@@ -342,10 +342,10 @@ void Profile::speaker       (const QString x) { store(x, _speaker,       "Speake
 void Profile::stickPotCalib (const QString x) { store(x, _stickPotCalib, "StickPotCalib"         ,"Profiles", QString("profile%1").arg(index));}
 void Profile::timeStamp     (const QString x) { store(x, _timeStamp,     "TimeStamp"             ,"Profiles", QString("profile%1").arg(index));}
 void Profile::trainerCalib  (const QString x) { store(x, _trainerCalib,  "TrainerCalib"          ,"Profiles", QString("profile%1").arg(index));}
-void Profile::currentCalib  (const int     x) { store(x, _currentCalib,  "currentCalib"          ,"Profiles", QString("profile%1").arg(index));}
+void Profile::txCurrentCalibration  (const int x) { store(x, _txCurrentCalibration, "currentCalib","Profiles", QString("profile%1").arg(index));}
 void Profile::gsStickMode   (const int     x) { store(x, _gsStickMode,   "GSStickMode"           ,"Profiles", QString("profile%1").arg(index));}
 void Profile::ppmMultiplier (const int     x) { store(x, _ppmMultiplier, "PPM_Multiplier"        ,"Profiles", QString("profile%1").arg(index));}
-void Profile::vBatCalib     (const int     x) { store(x, _vBatCalib,     "VbatCalib"             ,"Profiles", QString("profile%1").arg(index));}
+void Profile::txVoltageCalibration     (const int x) { store(x, _txVoltageCalibration, "VbatCalib","Profiles", QString("profile%1").arg(index));}
 void Profile::vBatWarn      (const int     x) { store(x, _vBatWarn,      "vBatWarn"              ,"Profiles", QString("profile%1").arg(index));}
 void Profile::vBatMin       (const int     x) { store(x, _vBatMin,       "VbatMin"               ,"Profiles", QString("profile%1").arg(index));}
 void Profile::vBatMax       (const int     x) { store(x, _vBatMax,       "VbatMax"               ,"Profiles", QString("profile%1").arg(index));}
@@ -378,10 +378,10 @@ Profile& Profile::operator=(const Profile& rhs)
     speaker      ( rhs.speaker()       );
     stickPotCalib( rhs.stickPotCalib() );
     trainerCalib ( rhs.trainerCalib()  );
-    currentCalib ( rhs.currentCalib()  );
+    txCurrentCalibration ( rhs.txCurrentCalibration()  );
     gsStickMode  ( rhs.gsStickMode()   );
     ppmMultiplier( rhs.ppmMultiplier() );
-    vBatCalib    ( rhs.vBatCalib()     );
+    txVoltageCalibration    ( rhs.txVoltageCalibration()     );
     vBatWarn     ( rhs.vBatWarn()      );
     vBatMin      ( rhs.vBatMin()       );
     vBatMax      ( rhs.vBatMax()       );
@@ -424,10 +424,10 @@ void Profile::initFwVariables()
     _timeStamp =     "";
     _trainerCalib =  "";
 
-    _currentCalib =  0;
+    _txCurrentCalibration =  0;
     _gsStickMode =   0;
     _ppmMultiplier = 0;
-    _vBatCalib =     0;
+    _txVoltageCalibration =     0;
     _vBatWarn =      0;
     _vBatMin =       0;
     _vBatMax =       0;
@@ -483,10 +483,10 @@ void Profile::flush()
     getset( _stickPotCalib, "StickPotCalib"         ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _timeStamp,     "TimeStamp"             ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _trainerCalib,  "TrainerCalib"          ,""     ,"Profiles", QString("profile%1").arg(index));
-    getset( _currentCalib,  "currentCalib"          ,0      ,"Profiles", QString("profile%1").arg(index));
+    getset( _txCurrentCalibration,  "currentCalib"          ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _gsStickMode,   "GSStickMode"           ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _ppmMultiplier, "PPM_Multiplier"        ,0      ,"Profiles", QString("profile%1").arg(index));
-    getset( _vBatCalib,     "VbatCalib"             ,0      ,"Profiles", QString("profile%1").arg(index));
+    getset( _txVoltageCalibration,     "VbatCalib"             ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _vBatWarn,      "vBatWarn"              ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _vBatMin,       "VbatMin"               ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _vBatMax,       "VbatMax"               ,0      ,"Profiles", QString("profile%1").arg(index));

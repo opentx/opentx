@@ -1083,8 +1083,8 @@ GeneralSettings::GeneralSettings()
   }
   else {
     QString t_trainercalib=g.profile[g.id()].trainerCalib();
-    int8_t t_vBatCalib=(int8_t)g.profile[g.id()].vBatCalib();
-    int8_t t_currentCalib=(int8_t)g.profile[g.id()].currentCalib();
+    int8_t t_txVoltageCalibration=(int8_t)g.profile[g.id()].txVoltageCalibration();
+    int8_t t_txCurrentCalibration=(int8_t)g.profile[g.id()].txCurrentCalibration();
     int8_t t_PPM_Multiplier=(int8_t)g.profile[g.id()].ppmMultiplier();
     uint8_t t_stickMode=(uint8_t)g.profile[g.id()].gsStickMode();
     uint8_t t_vBatWarn=(uint8_t)g.profile[g.id()].vBatWarn();
@@ -1118,8 +1118,8 @@ GeneralSettings::GeneralSettings()
         if (ok)
           trainer.calib[i]=byte16;
       }
-      currentCalib=t_currentCalib;
-      vBatCalib=t_vBatCalib;
+      txCurrentCalibration=t_txCurrentCalibration;
+      txVoltageCalibration=t_txVoltageCalibration;
       vBatWarn=t_vBatWarn;
       PPM_Multiplier=t_PPM_Multiplier;
       stickMode = t_stickMode;

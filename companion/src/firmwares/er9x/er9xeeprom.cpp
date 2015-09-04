@@ -70,7 +70,7 @@ Er9xGeneral::operator GeneralSettings ()
   result.currModel = currModel;
   result.contrast = contrast;
   result.vBatWarn = vBatWarn;
-  result.vBatCalib = vBatCalib;
+  result.txVoltageCalibration = txVoltageCalibration;
   result.trainer = trainer;
   result.blightinv=blightinv;
   result.stickScroll=stickScroll;
