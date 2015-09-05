@@ -491,11 +491,11 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance
     if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && (telemetrySensor.instance == instance || g_model.ignoreSensorIds)) {
       telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
       available = true;
-      // we continue search here, because more than one sensor can have the same id and instance
+      // we continue search here, because sensors can share the same id and instance
     }
   }
 
-  if (available) {
+  if (available || g_model.rejectNewSensors) {
     return;
   }
   
