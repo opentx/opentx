@@ -40,7 +40,9 @@
 #include <inttypes.h>
 #include "rtc.h"
 #include "dump.h"
+#if defined(CLI)
 #include "cli.h"
+#endif
 
 #if defined(__cplusplus)
 extern "C" {

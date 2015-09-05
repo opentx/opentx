@@ -717,14 +717,14 @@ extern uint8_t flightModeTransitionLast;
 #endif
 
 #if defined(SIMU)
-  inline int getAvailableMemory() { return 1000; }
+  inline int availableMemory() { return 1000; }
 #elif defined(CPUARM) && !defined(SIMU)
   extern unsigned char *heap;
   extern int _end;
   extern int _estack;
   extern int _main_stack_start;
   extern int _heap_end;
-  #define getAvailableMemory() ((unsigned int)((unsigned char *)&_heap_end - heap))
+  #define availableMemory() ((unsigned int)((unsigned char *)&_heap_end - heap))
 #endif
 
 void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms);
@@ -942,11 +942,8 @@ extern uint16_t lastMixerDuration;
   uint16_t getTmr16KHz();
 #endif
 
-#if defined(CPUARM)
-  uint32_t stack_free(uint32_t tid);
-  void stack_paint();
-#else
-  uint16_t stack_free();
+#if !defined(CPUARM)
+  uint16_t stackAvailable();
 #endif
 
 #if defined(SPLASH)
@@ -1050,12 +1047,7 @@ template<class t> void SWAP(t & a, t & b) { t tmp = b; b = a; a = tmp; }
 uint16_t isqrt32(uint32_t n);
 
 #if defined(CPUARM) && !defined(BOOT)
-#if !defined(SIMU)
-extern "C" {
-#include <CoOS.h>
-}
-#endif
-
+#include "tasks_arm.h"
 extern OS_MutexID mixerMutex;
 inline void pauseMixerCalculations()
 {

@@ -330,7 +330,7 @@ void *main_thread(void *)
 #endif
 
 #if defined(CPUARM)
-    stack_paint();
+    stackPaint();
 #endif
     
     s_current_protocol[0] = 255;
@@ -658,7 +658,7 @@ void eepromWriteBlock(uint8_t * pointer_ram, uint32_t pointer_eeprom, uint32_t s
 #endif
 
 #if !defined(CPUARM)
-uint16_t stack_free()
+uint16_t stackAvailable()
 {
   return 500;
 }

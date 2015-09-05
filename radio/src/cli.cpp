@@ -37,12 +37,11 @@
 #include "opentx.h"
 #include <ctype.h>
 
-#define CLI_STACK_SIZE                 500
 #define CLI_COMMAND_MAX_ARGS           8
 #define CLI_COMMAND_MAX_LEN            256
 
 OS_TID cliTaskId;
-OS_STK cliStack[CLI_STACK_SIZE];
+TaskStack<CLI_STACK_SIZE> cliStack;
 Fifo<256> cliRxFifo;
 uint8_t cliTracesEnabled = false;
 
@@ -151,6 +150,44 @@ int cliTrace(const char ** argv)
   return 0;
 }
 
+int cliStackInfo(const char ** argv)
+{
+  int tid = 0;
+  if (toInt(argv, 1, &tid) > 0) {
+    int available = 0;
+    int total = 0;
+    switch(tid) {
+      case MENU_TASK_INDEX:
+        total = menusStack.getSize();
+        available = menusStack.available();
+        break;
+      case MIXER_TASK_INDEX:
+        total = mixerStack.getSize();
+        available = mixerStack.available();
+        break;
+      case AUDIO_TASK_INDEX:
+        total = audioStack.getSize();
+        available = audioStack.available();
+        break;
+      case CLI_TASK_INDEX:
+        total = cliStack.getSize();
+        available = cliStack.available();
+        break;
+      case MAIN_TASK_INDEX:
+        total = mainStackAvailable();
+        available = mainStackSize();
+        break;
+      default:
+        break;
+    }
+    serialPrint("%d available (%d total)", available, total);
+  }
+  else {
+    serialPrint("%s: Invalid argument \"%s\"", argv[0], argv[1]);
+  }
+  return 0;
+}
+
 int cliVolume(const char ** argv)
 {
   int level = 0;
@@ -214,6 +251,7 @@ const CliCommand cliCommands[] = {
   { "ls", cliLs, "<directory>" },
   { "play", cliPlay, "<filename>" },
   { "print", cliDisplay, "<address> [<size>] | <what>" },
+  { "stackinfo", cliStackInfo, "<tid>" },
   { "trace", cliTrace, "on | off" },
   { "volume", cliVolume, "<level>" },
   { "help", cliHelp, "[<command>]" },
@@ -279,7 +317,7 @@ void cliTask(void * pdata)
     uint8_t c;
 
     while (!cliRxFifo.pop(c)) {
-      CoTickDelay(5); // 10ms
+      CoTickDelay(10); // 20ms
     }
 
     if (c == 12) {
@@ -311,5 +349,5 @@ void cliTask(void * pdata)
 
 void cliStart()
 {
-  cliTaskId = CoCreateTaskEx(cliTask, NULL, 10, &cliStack[CLI_STACK_SIZE-1], CLI_STACK_SIZE, 1, false);
+  cliTaskId = CoCreateTaskEx(cliTask, NULL, 10, &cliStack.stack[CLI_STACK_SIZE-1], CLI_STACK_SIZE, 1, false);
 }

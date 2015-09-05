@@ -196,11 +196,11 @@ void menuStatisticsDebug(uint8_t event)
 
 #if defined(CPUARM)
   lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+2, stack_free(0), UNSIGN|LEFT|TINSIZE);
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+2, menusStack.available(), UNSIGN|LEFT|TINSIZE);
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS+2, stack_free(1), UNSIGN|LEFT|TINSIZE);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS+2, mixerStack.available(), UNSIGN|LEFT|TINSIZE);
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS+2, stack_free(2), UNSIGN|LEFT|TINSIZE);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS+2, audioStack.available(), UNSIGN|LEFT|TINSIZE);
 #endif
 
 #if !defined(CPUARM)
@@ -213,7 +213,7 @@ void menuStatisticsDebug(uint8_t event)
   lcd_putsLeft(4*FH, STR_TMIXMAXMS);
   lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 4*FH, DURATION_MS_PREC2(maxMixerDuration), PREC2);
   lcd_putsLeft(5*FH, STR_FREESTACKMINB);
-  lcd_outdezAtt(14*FW, 5*FH, stack_free(), UNSIGN) ;
+  lcd_outdezAtt(14*FW, 5*FH, stackAvailable(), UNSIGN) ;
 #endif
 
   lcd_puts(4*FW, 7*FH+1, STR_MENUTORESET);

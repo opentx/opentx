@@ -163,7 +163,7 @@ void menuStatisticsDebug(uint8_t event)
   }
 
   lcd_putsLeft(MENU_DEBUG_Y_FREE_RAM, "Free Mem");
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, getAvailableMemory(), LEFT);
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, availableMemory(), LEFT);
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_FREE_RAM, "b");
 
 #if defined(LUA)
@@ -189,13 +189,13 @@ void menuStatisticsDebug(uint8_t event)
 
   lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
   lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[M]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(0), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, menusStack.available(), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[X]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(1), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, mixerStack.available(), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[A]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(2), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, audioStack.available(), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[I]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(255), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, mainStackAvailable(), UNSIGN|LEFT);
 
   lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);
   lcd_status_line();
