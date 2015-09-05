@@ -38,42 +38,6 @@
 #include "opentx.h"
 #include "timers.h"
 
-/*
-struct TimerState {
-  uint16_t cnt;
-  uint16_t sum;
-  uint8_t  state;
-  int16_t  val;
-  uint8_t  val_10ms;
-};
-
-PACK(typedef struct t_TimerData {
-  int8_t   mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
-  uint16_t start;
-  uint8_t  countdownBeep:2;
-  uint8_t  minuteBeep:1;
-  uint8_t  persistent:2; // 0 off, 1 flight, 2 manual reset
-  uint8_t  spare:3;
-  uint16_t value;
-}) TimerData;
-
-enum TimerModes {
-  TMRMODE_NONE,
-  TMRMODE_ABS,
-  TMRMODE_THR,
-  TMRMODE_THR_REL,
-  TMRMODE_THR_TRG,
-  TMRMODE_COUNT
-};
-
-enum CountDownModes {
-  COUNTDOWN_SILENT,
-  COUNTDOWN_BEEPS,
-  COUNTDOWN_VOICE
-};
-
-*/
-
 #if !defined(CPUARM)
 #undef timerSet
 void timerSet(int idx, int16_t val)

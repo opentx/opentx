@@ -1963,7 +1963,11 @@ enum TimerModes {
 enum CountDownModes {
   COUNTDOWN_SILENT,
   COUNTDOWN_BEEPS,
-  COUNTDOWN_VOICE
+  COUNTDOWN_VOICE,
+#if defined(CPUARM) && defined(HAPTIC)
+  COUNTDOWN_HAPTIC,
+#endif
+  COUNTDOWN_COUNT
 };
 
 #if defined(CPUARM)
