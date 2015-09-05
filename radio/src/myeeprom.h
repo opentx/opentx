@@ -2153,11 +2153,9 @@ PACK(typedef struct {
   FlightModeData flightModeData[MAX_FLIGHT_MODES];
 
   AVR_FIELD(int8_t ppmFrameLength)     // 0=22.5ms  (10ms-30ms) 0.5ms increments
-  AVR_FIELD(uint8_t thrTraceSrc)
 
-  ARM_FIELD(uint8_t thrTraceSrc:7)
-  ARM_FIELD(uint8_t rejectNewSensors:1)
-  
+  uint8_t thrTraceSrc;
+
   swarnstate_t  switchWarningState;
   swarnenable_t switchWarningEnable;
 

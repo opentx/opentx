@@ -1,6 +1,7 @@
 #include "../opentx.h"
 
 TelemetryItem telemetryItems[MAX_SENSORS];
+uint8_t allowNewSensors;
 
 void TelemetryItem::gpsReceived()
 {
@@ -495,7 +496,7 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance
     }
   }
 
-  if (available || g_model.rejectNewSensors) {
+  if (available || !allowNewSensors) {
     return;
   }
   

@@ -3025,13 +3025,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new SignedField<8>(modelData.moduleData[0].ppmFrameLength));
   }
 
-  if (!IS_ARM(board) || version < 217) {
-    internalField.Append(new ConversionField< UnsignedField<8> >(modelData.thrTraceSrc, &throttleSourceConversionTable, "Throttle Source"));
-  }
-  else {
-    internalField.Append(new ConversionField< UnsignedField<7> >(modelData.thrTraceSrc, &throttleSourceConversionTable, "Throttle Source"));
-    internalField.Append(new BoolField<1>(modelData.frsky.rejectNewSensors));
-  }
+  internalField.Append(new ConversionField< UnsignedField<8> >(modelData.thrTraceSrc, &throttleSourceConversionTable, "Throttle Source"));
 
   if (!afterrelease21March2013) {
     internalField.Append(new UnsignedField<8>(modelData.moduleData[0].modelId));

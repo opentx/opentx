@@ -73,8 +73,8 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_SENSOR30,
   ITEM_TELEMETRY_SENSOR31,
   ITEM_TELEMETRY_SENSOR32,
-  ITEM_TELEMETRY_NEWSENSOR,
-  ITEM_TELEMETRY_REJECT_NEWSENSORS,
+  ITEM_TELEMETRY_DISCOVER_SENSORS,
+  ITEM_TELEMETRY_NEW_SENSOR,
   ITEM_TELEMETRY_IGNORE_SENSOR_INSTANCE,
 #if defined(VARIO)
   ITEM_TELEMETRY_VARIO_LABEL,
@@ -122,7 +122,7 @@ enum menuModelTelemetryItems {
 #define IS_RANGE_DEFINED(k)           (g_model.frsky.channels[k].ratio > 0)
 
 #define SENSOR_ROWS(x)                (isTelemetryFieldAvailable(x) ? (uint8_t)0 : HIDDEN_ROW)
-#define SENSORS_ROWS                  LABEL(Sensors), SENSOR_ROWS(0), SENSOR_ROWS(1), SENSOR_ROWS(2), SENSOR_ROWS(3), SENSOR_ROWS(4), SENSOR_ROWS(5), SENSOR_ROWS(6), SENSOR_ROWS(7), SENSOR_ROWS(8), SENSOR_ROWS(9), SENSOR_ROWS(10), SENSOR_ROWS(11), SENSOR_ROWS(12), SENSOR_ROWS(13), SENSOR_ROWS(14), SENSOR_ROWS(15), SENSOR_ROWS(16), SENSOR_ROWS(17), SENSOR_ROWS(18), SENSOR_ROWS(19), SENSOR_ROWS(20), SENSOR_ROWS(21), SENSOR_ROWS(22), SENSOR_ROWS(23), SENSOR_ROWS(24), SENSOR_ROWS(25), SENSOR_ROWS(26), SENSOR_ROWS(27), SENSOR_ROWS(28), SENSOR_ROWS(29), SENSOR_ROWS(30), SENSOR_ROWS(31), (g_model.rejectNewSensors ? HIDDEN_ROW : (uint8_t)0), 0, 0,
+#define SENSORS_ROWS                  LABEL(Sensors), SENSOR_ROWS(0), SENSOR_ROWS(1), SENSOR_ROWS(2), SENSOR_ROWS(3), SENSOR_ROWS(4), SENSOR_ROWS(5), SENSOR_ROWS(6), SENSOR_ROWS(7), SENSOR_ROWS(8), SENSOR_ROWS(9), SENSOR_ROWS(10), SENSOR_ROWS(11), SENSOR_ROWS(12), SENSOR_ROWS(13), SENSOR_ROWS(14), SENSOR_ROWS(15), SENSOR_ROWS(16), SENSOR_ROWS(17), SENSOR_ROWS(18), SENSOR_ROWS(19), SENSOR_ROWS(20), SENSOR_ROWS(21), SENSOR_ROWS(22), SENSOR_ROWS(23), SENSOR_ROWS(24), SENSOR_ROWS(25), SENSOR_ROWS(26), SENSOR_ROWS(27), SENSOR_ROWS(28), SENSOR_ROWS(29), SENSOR_ROWS(30), SENSOR_ROWS(31), 0, 0, 0,
 #if defined(VARIO)
   #define VARIO_ROWS                  LABEL(Vario), 0, 1, 2,
 #else
@@ -468,7 +468,7 @@ void onSensorMenu(const char *result)
       if (index<MAX_SENSORS && isTelemetryFieldAvailable(index))
         m_posVert += 1;
       else
-        m_posVert = ITEM_TELEMETRY_NEWSENSOR;
+        m_posVert = ITEM_TELEMETRY_NEW_SENSOR;
     }
     else if (result == STR_COPY) {
       int newIndex = availableTelemetryIndex();
@@ -586,7 +586,15 @@ void menuModelTelemetry(uint8_t event)
         }
         break;
 
-      case ITEM_TELEMETRY_NEWSENSOR:
+      case ITEM_TELEMETRY_DISCOVER_SENSORS:
+        lcd_putsAtt(0, y, allowNewSensors ? STR_STOP_DISCOVER_SENSORS : STR_DISCOVER_SENSORS, attr);
+        if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
+          s_editMode = 0;
+          allowNewSensors = !allowNewSensors;
+        }
+        break;
+
+      case ITEM_TELEMETRY_NEW_SENSOR:
         lcd_putsAtt(0, y, STR_TELEMETRY_NEWSENSOR, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
@@ -599,10 +607,6 @@ void menuModelTelemetry(uint8_t event)
             POPUP_WARNING(STR_TELEMETRYFULL);
           }
         }
-        break;
-
-      case ITEM_TELEMETRY_REJECT_NEWSENSORS:
-        ON_OFF_MENU_ITEM(g_model.rejectNewSensors, TELEM_COL2, y, STR_REJECT_NEWSENSORS, attr, event);
         break;
 
       case ITEM_TELEMETRY_IGNORE_SENSOR_INSTANCE:

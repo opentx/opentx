@@ -1082,7 +1082,8 @@
 #define TR_FILTER              "Filtro"
 #define TR_TELEMETRYFULL       "Tutti gli slot sono pieni!"
 #define TR_IGNORE_INSTANCE     TR(INDENT "No inst.","Ignora instanza")
-#define TR_REJECT_NEWSENSORS   "Reject new sensors"
+#define TR_DISCOVER_SENSORS   "Reject new sensors"
+#define TR_STOP_DISCOVER_SENSORS INDENT "Stop Discover"
 
 #define TR_MENU_INPUTS         "\314Ingressi"
 #define TR_MENU_LUA            "\322Lua scripts"
