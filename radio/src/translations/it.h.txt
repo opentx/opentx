@@ -122,7 +122,7 @@
 #define TR_VDISPLAYTRIMS       "No\0   ""Cambio""Si\0 "
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "NienteSuoni\0Voce\0 "
+#define TR_VBEEPCOUNTDOWN      "NienteSuoni\0Voce\0 Haptic"
 
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Tono\0 ""Silent"

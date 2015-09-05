@@ -124,7 +124,7 @@
 #define TR_VDISPLAYTRIMS       "Nein\0 ""Kurz\0 ""Ja\0"  //Trimmwerte Keine, kurze Anzeigen, Ja
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "Kein\0 Pieps\0Stimme"
+#define TR_VBEEPCOUNTDOWN      "Kein\0 Pieps\0StimmeHaptic"
 
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Ton\0  ""Ruhe  "
