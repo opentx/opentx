@@ -657,12 +657,10 @@ void eepromWriteBlock(uint8_t * pointer_ram, uint32_t pointer_eeprom, uint32_t s
 
 #endif
 
-#if !defined(CPUARM)
 uint16_t stackAvailable()
 {
   return 500;
 }
-#endif
 
 #if 0
 static void EeFsDump(){

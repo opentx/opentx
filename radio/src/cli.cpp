@@ -158,24 +158,24 @@ int cliStackInfo(const char ** argv)
     int total = 0;
     switch(tid) {
       case MENU_TASK_INDEX:
-        total = menusStack.getSize();
+        total = menusStack.size();
         available = menusStack.available();
         break;
       case MIXER_TASK_INDEX:
-        total = mixerStack.getSize();
+        total = mixerStack.size();
         available = mixerStack.available();
         break;
       case AUDIO_TASK_INDEX:
-        total = audioStack.getSize();
+        total = audioStack.size();
         available = audioStack.available();
         break;
       case CLI_TASK_INDEX:
-        total = cliStack.getSize();
+        total = cliStack.size();
         available = cliStack.available();
         break;
       case MAIN_TASK_INDEX:
-        total = mainStackAvailable();
-        available = mainStackSize();
+        total = stackAvailable();
+        available = stackSize();
         break;
       default:
         break;

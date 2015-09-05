@@ -195,7 +195,7 @@ void menuStatisticsDebug(uint8_t event)
   lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[A]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, audioStack.available(), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[I]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, mainStackAvailable(), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stackAvailable(), UNSIGN|LEFT);
 
   lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);
   lcd_status_line();

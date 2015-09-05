@@ -43,19 +43,19 @@ extern "C" {
 }
 #endif
 
-template<int size>
+template<int SIZE>
 class TaskStack
 {
   public:
     TaskStack() { }
     void paint();
-    uint32_t getSize();
-    uint32_t available();
-    OS_STK stack[size];
+    uint16_t size();
+    uint16_t available();
+    OS_STK stack[SIZE];
 };
 
 void stackPaint();
-uint32_t mainStackSize();
-uint32_t mainStackAvailable();
+uint16_t stackSize();
+uint16_t stackAvailable();
 
 #endif // _TASKS_ARM_H_

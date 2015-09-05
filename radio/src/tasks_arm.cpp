@@ -75,34 +75,34 @@ enum TaskIndex {
   MAIN_TASK_INDEX = 255
 };
 
-template<int size>
-void TaskStack<size>::paint()
+template<int SIZE>
+void TaskStack<SIZE>::paint()
 {
-  for (uint32_t i=0; i<size; i++) {
+  for (uint32_t i=0; i<SIZE; i++) {
     stack[i] = 0x55555555;
   }
 }
 
-template<int size>
-uint32_t TaskStack<size>::getSize()
+template<int SIZE>
+uint16_t TaskStack<SIZE>::size()
 {
-  return size;
+  return SIZE*4;
 }
 
-uint32_t getStackAvailable(void * address, uint32_t size)
+uint16_t getStackAvailable(void * address, uint16_t size)
 {
   uint32_t * array = (uint32_t *)address;
-  uint32_t i = 0;
+  uint16_t i = 0;
   while (i < size && array[i] == 0x55555555) {
     i++;
   }
   return i*4;
 }
 
-template<int size>
-uint32_t TaskStack<size>::available()
+template<int SIZE>
+uint16_t TaskStack<SIZE>::available()
 {
-  return getStackAvailable(stack, size);
+  return getStackAvailable(stack, SIZE);
 }
 
 void stackPaint()
@@ -115,15 +115,15 @@ void stackPaint()
 #endif
 }
 
-#if defined(CPUSTM32)
-uint32_t mainStackSize()
+#if defined(CPUSTM32) && !defined(SIMU)
+uint16_t stackSize()
 {
   return ((unsigned char *)&_estack - (unsigned char *)&_main_stack_start) / 4;
 }
 
-uint32_t mainStackAvailable()
+uint16_t stackAvailable()
 {
-  return getStackAvailable(&_main_stack_start, mainStackSize());
+  return getStackAvailable(&_main_stack_start, stackSize());
 }
 #endif
 
@@ -216,7 +216,7 @@ void tasksStart()
 #endif
 
 #if defined(BLUETOOTH)
-  btTaskId = CoCreateTask(btTask, NULL, 15, &bluetoothStack[BLUETOOTH_STACK_SIZE-1], BLUETOOTH_STACK_SIZE);
+  btTaskId = CoCreateTask(btTask, NULL, 15, &bluetoothStack.stack[BLUETOOTH_STACK_SIZE-1], BLUETOOTH_STACK_SIZE);
 #endif
 
   mixerTaskId = CoCreateTask(mixerTask, NULL, 5, &mixerStack.stack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
