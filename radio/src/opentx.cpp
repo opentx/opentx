@@ -2348,7 +2348,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 #if !defined(CPUARM) && !defined(SIMU)
 extern unsigned char __bss_end ;
 #define STACKPTR     _SFR_IO16(0x3D)
-void stack_paint()
+void stackPaint()
 {
   // Init Stack while interrupts are disabled
   unsigned char *p ;
@@ -2362,7 +2362,7 @@ void stack_paint()
   }
 }
 
-uint16_t stack_free()
+uint16_t stackAvailable()
 {
   unsigned char *p ;
 
@@ -2492,7 +2492,7 @@ int main(void)
   lcdInit();
 #endif
 
-  stack_paint();
+  stackPaint();
 
 #if defined(GUI)
   g_menuStack[0] = menuMainView;
