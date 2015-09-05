@@ -129,6 +129,8 @@ TEST(FrSky, Vfas_0x39_HiPrecision)
   TELEMETRY_RESET();
   EXPECT_EQ(telemetryItems[0].value, 0);
 
+  allowNewSensors = true;
+
   // normal precision, resolution 0.1V
   processHubPacket(VFAS_ID, 1234);  // set value of 123.4V
   EXPECT_EQ(telemetryItems[0].value, 12340);      // stored value has resolution of 0.01V
@@ -147,6 +149,8 @@ TEST(FrSky, HubAltNegative)
   MODEL_RESET();
   TELEMETRY_RESET();
   EXPECT_EQ(telemetryItems[0].value, 0);
+
+  allowNewSensors = true;
 
   // altimeter auto offset
   processHubPacket(BARO_ALT_BP_ID, 0);
