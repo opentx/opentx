@@ -1086,6 +1086,8 @@
 #define TR_IGNORE_INSTANCE     INDENT "Ignore instance"
 #define TR_DISCOVER_SENSORS    INDENT "Discover new sensors"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Stop discovery"
+#define TR_DELETE_ALL_SENSORS  INDENT "Delete all sensors"
+#define TR_CONFIRMDELETE       "Really delete all?"
 // ----------------------------- Symbole für Auswahlliste----------
 #define TR_MENU_INPUTS         "\314Inputs"
 #define TR_MENU_LUA            "\322Lua Scripte"

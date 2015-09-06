@@ -75,6 +75,7 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_SENSOR32,
   ITEM_TELEMETRY_DISCOVER_SENSORS,
   ITEM_TELEMETRY_NEW_SENSOR,
+  ITEM_TELEMETRY_DELETE_ALL_SENSORS,
   ITEM_TELEMETRY_IGNORE_SENSOR_INSTANCE,
 #if defined(VARIO)
   ITEM_TELEMETRY_VARIO_LABEL,
@@ -122,7 +123,7 @@ enum menuModelTelemetryItems {
 #define IS_RANGE_DEFINED(k)           (g_model.frsky.channels[k].ratio > 0)
 
 #define SENSOR_ROWS(x)                (isTelemetryFieldAvailable(x) ? (uint8_t)0 : HIDDEN_ROW)
-#define SENSORS_ROWS                  LABEL(Sensors), SENSOR_ROWS(0), SENSOR_ROWS(1), SENSOR_ROWS(2), SENSOR_ROWS(3), SENSOR_ROWS(4), SENSOR_ROWS(5), SENSOR_ROWS(6), SENSOR_ROWS(7), SENSOR_ROWS(8), SENSOR_ROWS(9), SENSOR_ROWS(10), SENSOR_ROWS(11), SENSOR_ROWS(12), SENSOR_ROWS(13), SENSOR_ROWS(14), SENSOR_ROWS(15), SENSOR_ROWS(16), SENSOR_ROWS(17), SENSOR_ROWS(18), SENSOR_ROWS(19), SENSOR_ROWS(20), SENSOR_ROWS(21), SENSOR_ROWS(22), SENSOR_ROWS(23), SENSOR_ROWS(24), SENSOR_ROWS(25), SENSOR_ROWS(26), SENSOR_ROWS(27), SENSOR_ROWS(28), SENSOR_ROWS(29), SENSOR_ROWS(30), SENSOR_ROWS(31), 0, 0, 0,
+#define SENSORS_ROWS                  LABEL(Sensors), SENSOR_ROWS(0), SENSOR_ROWS(1), SENSOR_ROWS(2), SENSOR_ROWS(3), SENSOR_ROWS(4), SENSOR_ROWS(5), SENSOR_ROWS(6), SENSOR_ROWS(7), SENSOR_ROWS(8), SENSOR_ROWS(9), SENSOR_ROWS(10), SENSOR_ROWS(11), SENSOR_ROWS(12), SENSOR_ROWS(13), SENSOR_ROWS(14), SENSOR_ROWS(15), SENSOR_ROWS(16), SENSOR_ROWS(17), SENSOR_ROWS(18), SENSOR_ROWS(19), SENSOR_ROWS(20), SENSOR_ROWS(21), SENSOR_ROWS(22), SENSOR_ROWS(23), SENSOR_ROWS(24), SENSOR_ROWS(25), SENSOR_ROWS(26), SENSOR_ROWS(27), SENSOR_ROWS(28), SENSOR_ROWS(29), SENSOR_ROWS(30), SENSOR_ROWS(31), 0, 0, 0, 0,
 #if defined(VARIO)
   #define VARIO_ROWS                  LABEL(Vario), 0, 1, 2,
 #else
@@ -518,6 +519,13 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
 
 void menuModelTelemetry(uint8_t event)
 {
+  if (s_warning_result) {
+    s_warning_result = 0;
+    for (int i=0; i<MAX_SENSORS; i++) {
+      delTelemetryIndex(i);
+    }
+  }
+  
   MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS LABEL(TopBar), 0, 0, TOPLCD_ROWS TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), CASE_CPUARM(TELEMETRY_SCREEN_ROWS(2)) CASE_CPUARM(TELEMETRY_SCREEN_ROWS(3)) });
 
   int sub = m_posVert;
@@ -608,6 +616,15 @@ void menuModelTelemetry(uint8_t event)
           }
         }
         break;
+
+      case ITEM_TELEMETRY_DELETE_ALL_SENSORS:
+        lcd_putsAtt(0, y, STR_DELETE_ALL_SENSORS, attr);
+        s_editMode = 0;
+        if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
+          killEvents(KEY_ENTER);
+          POPUP_CONFIRMATION(STR_CONFIRMDELETE);
+        }
+        break;        
 
       case ITEM_TELEMETRY_IGNORE_SENSOR_INSTANCE:
         ON_OFF_MENU_ITEM(g_model.ignoreSensorIds, TELEM_COL2, y, STR_IGNORE_INSTANCE, attr, event);
