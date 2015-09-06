@@ -908,7 +908,7 @@ void ConvertModel_216_to_217(ModelData &model)
     if (oldModel.timers[i].mode >= TMRMODE_COUNT)
       timer.mode = TMRMODE_COUNT + ConvertSwitch_216_to_217(oldModel.timers[i].mode - TMRMODE_COUNT + 1) - 1;
     else
-      timer.mode = oldModel.timers[i].mode;
+      timer.mode = ConvertSwitch_216_to_217(oldModel.timers[i].mode);
     timer.start = oldModel.timers[i].start;
     timer.countdownBeep = oldModel.timers[i].countdownBeep;
     timer.minuteBeep = oldModel.timers[i].minuteBeep;
