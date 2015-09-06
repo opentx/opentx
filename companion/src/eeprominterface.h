@@ -40,7 +40,7 @@ QString getBoardName(BoardEnum board);
 #define IS_9X(board)           (board==BOARD_STOCK || board==BOARD_M128)
 #define IS_STOCK(board)        (board==BOARD_STOCK)
 #define IS_2560(board)         (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
-#define IS_SKY9X(board)        (board==BOARD_SKY9X || board==BOARD_9XRPRO)
+#define IS_SKY9X(board)        (board==BOARD_SKY9X || board==BOARD_9XRPRO || board==BOARD_AR9X)
 #define IS_9XRPRO(board)       (board==BOARD_9XRPRO)
 #define IS_TARANIS(board)      (board==BOARD_TARANIS  || board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)
 #define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)

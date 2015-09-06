@@ -208,6 +208,13 @@
   #define CASE_REV9E(x)
 #endif
 
+#if defined(PCBSKY9X) && !defined(AR9X) && !defined(REVA)
+  #define TX_CAPACITY_MEASUREMENT
+  #define CASE_CAPACITY(x) x,
+#else
+  #define CASE_CAPACITY(x)
+#endif
+
 #if ROTARY_ENCODERS > 0
   #define ROTARY_ENCODER_NAVIGATION
 #endif

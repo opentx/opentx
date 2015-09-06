@@ -337,22 +337,6 @@ void menuGeneralSetup(uint8_t event)
         break;
       }
 
-#if defined(PCBSKY9X)
-      case ITEM_SETUP_CAPACITY_WARNING:
-        lcd_putsLeft(y, STR_CAPAWARNING);
-        putsValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.mAhWarn*50, UNIT_MAH, attr|LEFT) ;
-        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.mAhWarn, 0, 100);
-        break;
-#endif
-
-#if defined(PCBSKY9X)
-      case ITEM_SETUP_TEMPERATURE_WARNING:
-        lcd_putsLeft(y, STR_TEMPWARNING);
-        putsValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.temperatureWarn, UNIT_TEMPERATURE, attr|LEFT) ;
-        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureWarn, 0, 120); // 0 means no alarm
-        break;
-#endif
-
       case ITEM_SETUP_INACTIVITY_ALARM:
         lcd_putsLeft(y, STR_INACTIVITYALARM);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.inactivityTimer, attr|LEFT);

@@ -179,10 +179,12 @@ void audioEnd()
 
 void setVolume(uint8_t volume)
 {
+#if !defined(NO_HARDWARE_VOLUME)
   volumeRequired = volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)];
   __disable_irq() ;
   i2cCheck() ;
   __enable_irq() ;
+#endif
 }
 
 
