@@ -122,7 +122,7 @@
 #define TR_VDISPLAYTRIMS       "Nee\0  ""Kort\0 ""Ja\0   "
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "StilteBeeps\0SpraakHaptic"
+#define TR_VBEEPCOUNTDOWN      "StilteBeeps\0SpraakTril\0 "
 
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Tonen\0""Stilte"
@@ -489,7 +489,11 @@
   #define TR_ROTENC_SWITCHES
 #endif
 
+
+
 #if !defined(PCBTARANIS)
+
+
   #define TR_PHYS_SWITCHES     "THR""RUD""ELE""AIL""GEA""TRN"
 #endif
 
@@ -498,7 +502,13 @@
 #if defined(PCBTARANIS)
   // only special switches here
   #define TR_VSWITCHES         "---" TR_TRIMS_SWITCHES TR_ON_ONE_SWITCHES
+
+
 #else
+
+
+
+
   #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES TR_PHYS_SWITCHES TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW TR_ON_ONE_SWITCHES
 #endif
 
@@ -540,6 +550,8 @@
 
 #define LEN_VFORMULAS          "\014"
 #define TR_VFORMULAS           "Optellen\0   ""Gemiddeld\0  ""Min\0        ""Max\0        ""Vermenigvuld""Totaal\0     ""Cellen\0     ""Verbruik\0   ""Afstand\0    "
+
+
 
 #define LEN_VPREC              "\004"  //  "\005"  Prec0 Prec1 Prec2
 #define TR_VPREC               "0.--""0.0 ""0.00"
@@ -953,8 +965,8 @@
 #define TR_COPY_STICKS_TO_OFS  "Kopieer Sticks naar Subtrim"  
 #define TR_COPY_TRIMS_TO_OFS   "Kopieer Trim naar Subtrim"
 #define TR_INCDEC              "Inc/Decrement"
-#define TR_GLOBALVAR           "Global Var"
-#define TR_MIXSOURCE           "Mixer Source"
+#define TR_GLOBALVAR           "Globale Var"
+#define TR_MIXSOURCE           "Mixer Bron"
 #define TR_CONSTANT            "Constant"
 #define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Vasthouden mAh")
 #define TR_PREFLIGHT           "Preflight Checks"
@@ -1087,10 +1099,10 @@
 #define TR_FILTER              "Filter aktief"
 #define TR_TELEMETRYFULL       "Telemetrie slots vol!"
 #define TR_IGNORE_INSTANCE     TR(INDENT "Neg. ID ","Negeer ID's")
-#define TR_DISCOVER_SENSORS    INDENT "Discover new sensors"
-#define TR_STOP_DISCOVER_SENSORS INDENT "Stop discovery"
-#define TR_DELETE_ALL_SENSORS  INDENT "Delete all sensors"
-#define TR_CONFIRMDELETE       "Really delete all?"
+#define TR_DISCOVER_SENSORS    INDENT "Ontdek nieuwe sensors"
+#define TR_STOP_DISCOVER_SENSORS INDENT "Stop ontdekking"
+#define TR_DELETE_ALL_SENSORS  INDENT "Wis alle sensors"
+#define TR_CONFIRMDELETE       "Echt alles wissen?"
 
 
 #define TR_MENU_INPUTS         "\314Inputs"
