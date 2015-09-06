@@ -118,8 +118,8 @@
 #define LEN_VDISPLAYTRIMS      "\006"
 #define TR_VDISPLAYTRIMS       "Ne\0   ""Změna\0""Ano\0  "
 
-#define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "Ne\0   ""Zvuk\0 ""Hlas\0 Haptic"
+#define LEN_VBEEPCOUNTDOWN     "\007"
+#define TR_VBEEPCOUNTDOWN      "Ne\0    ""Zvuk\0  ""Hlas\0  ""Vibrace"
 
 #define LEN_VVARIOCENTER       "\005"
 #define TR_VVARIOCENTER        "Tón\0 ""Ticho"
@@ -925,7 +925,7 @@
 #define TR_VALUE               "Hodnota"
 #define TR_TOPLCDTIMER         "Stopky horního LCD"
 #define TR_UNIT                "Jednotky"
-#define TR_TELEMETRY_NEWSENSOR INDENT "+ Přidat nový senzor.."
+#define TR_TELEMETRY_NEWSENSOR INDENT "Přidat senzor ručně"
 #define TR_CHANNELRANGE        INDENT "Rozsah kanálů"
 #define TR_LOWALARM            INDENT "Nízký Alarm"
 #define TR_CRITICALALARM       INDENT "Kritický Alarm"
@@ -943,11 +943,11 @@
 #define TR_SMOOTH              "Hladká"
 #define TR_COPY_STICKS_TO_OFS  "Kopie pák do subtrimu"
 #define TR_COPY_TRIMS_TO_OFS   "Kopíe trimů do subtrimu"
-#define TR_INCDEC              "Inc/Decrement"
-#define TR_GLOBALVAR           "Global Var"
-#define TR_MIXSOURCE           "Mixer Source"
-#define TR_CONSTANT            "Constant"
-#define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Ukládat mAh")
+#define TR_INCDEC              "Zvěšit/Zmenšit"
+#define TR_GLOBALVAR           "Glob. proměnná"
+#define TR_MIXSOURCE           "Zdroje mixeru"
+#define TR_CONSTANT            "Konstanta"
+#define TR_PERSISTENT_MAH      TR(INDENT "Ulož mAh", INDENT "Ukládat mAh")
 #define TR_PREFLIGHT           "Předletová kontrola"
 #define TR_CHECKLIST           INDENT "Zobrazit poznámky"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Ofset")
@@ -1078,10 +1078,10 @@
 #define TR_FILTER              "Filtr"
 #define TR_TELEMETRYFULL       "Všechny sloty jsou plné!"
 #define TR_IGNORE_INSTANCE     INDENT "Ignoruj chyby ID"
-#define TR_DISCOVER_SENSORS    INDENT "Discover new sensors"
-#define TR_STOP_DISCOVER_SENSORS INDENT "Stop discovery"
-#define TR_DELETE_ALL_SENSORS  INDENT "Delete all sensors"
-#define TR_CONFIRMDELETE       "Really delete all?"
+#define TR_DISCOVER_SENSORS    INDENT "Detekovat nové senzory"
+#define TR_STOP_DISCOVER_SENSORS INDENT "Zastavit autodetekci"
+#define TR_DELETE_ALL_SENSORS  INDENT "Odstranit všechny senzory"
+#define TR_CONFIRMDELETE       "Opravdu odstranit vše?"
 
 #define TR_MENU_INPUTS         "\314Vstupy"
 #define TR_MENU_LUA            "\322Lua skripty"
