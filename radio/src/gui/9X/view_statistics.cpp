@@ -151,7 +151,7 @@ void menuStatisticsDebug(uint8_t event)
   }
 #endif
 
-#if defined(PCBSKY9X) && !defined(REVA)
+#if defined(TX_CAPACITY_MEASUREMENT)
   // current
   lcd_putsLeft(MENU_DEBUG_Y_CURRENT, STR_CPU_CURRENT);
   putsValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_CURRENT, getCurrent(), UNIT_MILLIAMPS, LEFT);

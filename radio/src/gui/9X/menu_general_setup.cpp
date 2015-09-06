@@ -394,7 +394,7 @@ void menuGeneralSetup(uint8_t event)
         break;
       }
 
-#if defined(PCBSKY9X) && !defined(AR9X)
+#if defined(TX_CAPACITY_MEASUREMENT)
       case ITEM_SETUP_CAPACITY_WARNING:
         lcd_putsLeft(y, STR_CAPAWARNING);
         putsValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.mAhWarn*50, UNIT_MAH, attr|LEFT) ;
