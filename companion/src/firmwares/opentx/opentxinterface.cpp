@@ -93,7 +93,7 @@ const int OpenTxEepromInterface::getEEpromSize()
     case BOARD_SKY9X:
       return EESIZE_SKY9X;
     case BOARD_9XRPRO:
-	case BOARD_AR9X:
+	  case BOARD_AR9X:
       return EESIZE_9XRPRO;
     case BOARD_TARANIS:
     case BOARD_TARANIS_PLUS:
