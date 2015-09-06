@@ -246,6 +246,10 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
 #if defined(CPUARM)
     getvalue_t barMin = bar.barMin;
     getvalue_t barMax = bar.barMax;
+    if (source <= MIXSRC_LAST_CH) {
+      barMin = calc100toRESX(barMin);
+      barMax = calc100toRESX(barMax);
+    }
 #else
     getvalue_t barMin = convertBarTelemValue(source, bar.barMin);
     getvalue_t barMax = convertBarTelemValue(source, 255-bar.barMax);
