@@ -1080,8 +1080,8 @@
 #define TR_FILTER              "Filtr"
 #define TR_TELEMETRYFULL       "Všechny sloty jsou plné!"
 #define TR_IGNORE_INSTANCE     INDENT "Ignoruj chyby ID"
-#define TR_DISCOVER_SENSORS   "Reject new sensors"
-#define TR_STOP_DISCOVER_SENSORS INDENT "Stop Discover"
+#define TR_DISCOVER_SENSORS    INDENT "Discover new sensors"
+#define TR_STOP_DISCOVER_SENSORS INDENT "Stop discovery"
 
 #define TR_MENU_INPUTS         "\314Vstupy"
 #define TR_MENU_LUA            "\322Lua skripty"
