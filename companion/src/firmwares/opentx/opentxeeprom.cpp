@@ -1749,6 +1749,7 @@ class LogicalSwitchField: public TransformedField {
     {
       delete andswitchesConversionTable;
     }
+
     virtual void beforeExport()
     {
       if (csw.func == LS_FN_TIMER) {
