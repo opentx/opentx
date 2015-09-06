@@ -710,7 +710,7 @@ Może być różny od języka firmware</translation>
     <message>
         <location filename="../generaledit/calibration.ui" line="703"/>
         <source>Current Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuany ofset</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="867"/>
@@ -830,7 +830,7 @@ Może być różny od języka firmware</translation>
     <message>
         <location filename="../generaledit/calibration.ui" line="567"/>
         <source>Battery Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Ofset baterii</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="689"/>
