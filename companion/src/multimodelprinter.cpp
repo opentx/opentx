@@ -357,7 +357,7 @@ QString MultiModelPrinter::printMixers()
       for (int j=0; j<count; j++) {
         if (j > 0)
           columns.append("<br/>");
-        COMPARE((j < model->mixes(i).size()) ? modelPrinter->printMixerLine(*model->mixes(i)[j]) : "&nbsp;");
+        COMPARE((j < model->mixes(i).size()) ? modelPrinter->printMixerLine(*model->mixes(i)[j], (j>0)) : "&nbsp;");
       }
       columns.append("</td></tr>");
     }

@@ -140,8 +140,9 @@ void menuModelLogicalSwitchOne(uint8_t event)
           v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
         }
         else if (cstate == LS_FAMILY_TIMER) {
-          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, v1_val+1, LEFT|attr);
-          v1_max = 99;
+          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT|PREC1|attr);
+          v1_min = -128;
+          v1_max = 122;
         }
         else {
           v1_val = (uint8_t)cs->v1;
@@ -163,8 +164,9 @@ void menuModelLogicalSwitchOne(uint8_t event)
           v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
         }
         else if (cstate == LS_FAMILY_TIMER) {
-          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cs->v2+1, LEFT|attr);
-          v2_max = 99;
+          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1|attr);
+          v2_min = -128;
+          v2_max = 122;
         }
         else if (cstate == LS_FAMILY_EDGE) {
           putsEdgeDelayParam(CSWONE_2ND_COLUMN, y, cs, m_posHorz==0 ? attr : 0, m_posHorz==1 ? attr : 0);
@@ -286,8 +288,8 @@ void menuModelLogicalSwitches(uint8_t event)
         putsEdgeDelayParam(CSW_3RD_COLUMN, y, cs, 0, 0);
       }
       else if (cstate == LS_FAMILY_TIMER) {
-        lcd_outdezAtt(CSW_2ND_COLUMN, y, cs->v1+1, LEFT);
-        lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2+1, LEFT);
+        lcd_outdezAtt(CSW_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT|PREC1);
+        lcd_outdezAtt(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1);
       }
       else {
         uint8_t v1 = cs->v1;

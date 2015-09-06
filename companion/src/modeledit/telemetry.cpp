@@ -533,6 +533,7 @@ void TelemetrySensorPanel::update()
   bool cellsFieldsDisplayed = false;
   bool consFieldsDisplayed = false;
   bool ratioFieldsDisplayed = false;
+  bool totalizeFieldsDisplayed = false;
   bool sources12FieldsDisplayed = false;
   bool sources34FieldsDisplayed = false;
 
@@ -556,6 +557,7 @@ void TelemetrySensorPanel::update()
     consFieldsDisplayed = (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION);
     sources12FieldsDisplayed = (sensor.formula <= SensorData::TELEM_FORMULA_MULTIPLY);
     sources34FieldsDisplayed = (sensor.formula < SensorData::TELEM_FORMULA_MULTIPLY);
+    totalizeFieldsDisplayed = (sensor.formula == SensorData::TELEM_FORMULA_TOTALIZE);
     updateSourcesComboBox(ui->source1, true);
     updateSourcesComboBox(ui->source2, true);
     updateSourcesComboBox(ui->source3, true);
@@ -595,15 +597,15 @@ void TelemetrySensorPanel::update()
   ui->offsetLabel->setVisible(ratioFieldsDisplayed && sensor.unit != SensorData::UNIT_RPMS);
   ui->multiplierLabel->setVisible(sensor.unit == SensorData::UNIT_RPMS);
   ui->offset->setVisible(ratioFieldsDisplayed);
-  ui->precLabel->setVisible(isConfigurable);
+  ui->precLabel->setVisible(isConfigurable && sensor.unit != SensorData::UNIT_FAHRENHEIT);
   ui->prec->setVisible(isConfigurable && sensor.unit != SensorData::UNIT_FAHRENHEIT);
   ui->unit->setVisible((sensor.type == SensorData::TELEM_TYPE_CALCULATED && (sensor.formula == SensorData::TELEM_FORMULA_DIST)) || isConfigurable);
   ui->gpsSensorLabel->setVisible(gpsFieldsDisplayed);
   ui->gpsSensor->setVisible(gpsFieldsDisplayed);
   ui->altSensorLabel->setVisible(gpsFieldsDisplayed);
   ui->altSensor->setVisible(gpsFieldsDisplayed);
-  ui->ampsSensorLabel->setVisible(consFieldsDisplayed);
-  ui->ampsSensor->setVisible(consFieldsDisplayed);
+  ui->ampsSensorLabel->setVisible(consFieldsDisplayed || totalizeFieldsDisplayed);
+  ui->ampsSensor->setVisible(consFieldsDisplayed || totalizeFieldsDisplayed);
   ui->cellsSensorLabel->setVisible(cellsFieldsDisplayed);
   ui->cellsSensor->setVisible(cellsFieldsDisplayed);
   ui->cellsIndex->setVisible(cellsFieldsDisplayed);
@@ -749,7 +751,7 @@ TelemetryPanel::~TelemetryPanel()
 void TelemetryPanel::update()
 {
   if (IS_TARANIS(firmware->getBoard())) {
-    if (model->moduleData[0].protocol == OFF && model->moduleData[1].protocol == PPM) {
+    if (model->moduleData[0].protocol == PULSES_OFF && model->moduleData[1].protocol == PULSES_PPM) {
       ui->telemetryProtocol->setEnabled(true);
     }
     else {

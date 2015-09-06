@@ -12,7 +12,7 @@
 #define HAS_PERSISTENT_TIMERS(board)          (IS_ARM(board) || IS_2560(board))
 #define HAS_LARGE_LCD(board)                  IS_TARANIS(board)
 #define MAX_VIEWS(board)                      (HAS_LARGE_LCD(board) ? 2 : 256)
-#define MAX_POTS(board)                       (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 3) : 3)
+#define MAX_POTS(board, version)              (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : (version >= 216 ? 3 : 2)) : 3)
 #define MAX_SLIDERS(board)                    (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 2) : 0)
 #define MAX_SWITCHES(board, version)          (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 18 : 8) : 7)
 #define MAX_SWITCHES_POSITION(board, version) (IS_TARANIS_X9E(board) ? 18*3 : (IS_TARANIS(board) ? 8*3 : 9))
@@ -80,7 +80,7 @@ class SwitchesConversionTable: public ConversionTable {
       }
 
       if (IS_TARANIS(board) && version >= 216) {
-        for (int i=1; i<=MAX_POTS(board)*6; i++) {
+        for (int i=1; i<=MAX_POTS(board, version)*6; i++) {
           addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i), -val+offset);
           addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i), val++);
         }
@@ -212,8 +212,9 @@ class SourcesConversionTable: public ConversionTable {
       }
 
       if (IS_TARANIS(board) && version >= 216) {
-        for (int i=0; i<32; i++)
+        for (int i=0; i<32; i++) {
           addConversion(RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i), val++);
+        }
         for (int i=0; i<7; i++) {
           for (int j=0; j<6; j++) {
             addConversion(RawSource(SOURCE_TYPE_LUA_OUTPUT, i*16+j), val++);
@@ -221,16 +222,18 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<NUM_STICKS+MAX_POTS(board)+MAX_SLIDERS(board); i++) {
+      for (int i=0; i<NUM_STICKS+MAX_POTS(board, version)+MAX_SLIDERS(board); i++) {
         addConversion(RawSource(SOURCE_TYPE_STICK, i), val++);
       }
 
-      for (int i=0; i<MAX_ROTARY_ENCODERS(board); i++)
+      for (int i=0; i<MAX_ROTARY_ENCODERS(board); i++) {
         addConversion(RawSource(SOURCE_TYPE_ROTARY_ENCODER, 0), val++);
+      }
 
       if (!afterrelease21March2013) {
-        for (int i=0; i<NUM_STICKS; i++)
+        for (int i=0; i<NUM_STICKS; i++) {
           addConversion(RawSource(SOURCE_TYPE_TRIM, i), val++);
+        }
       }
 
       addConversion(RawSource(SOURCE_TYPE_MAX), val++);
@@ -1746,6 +1749,7 @@ class LogicalSwitchField: public TransformedField {
     {
       delete andswitchesConversionTable;
     }
+
     virtual void beforeExport()
     {
       if (csw.func == LS_FN_TIMER) {
@@ -1787,8 +1791,14 @@ class LogicalSwitchField: public TransformedField {
         switchesConversionTable->importValue(v2, csw.val2);
       }
       else if (csw.func >= LS_FN_EQUAL && csw.func <= LS_FN_ELESS) {
-        sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
-        sourcesConversionTable->importValue((uint8_t)v2, csw.val2);
+        if (IS_ARM(board)) {
+          sourcesConversionTable->importValue((uint32_t)v1, csw.val1);
+          sourcesConversionTable->importValue((uint32_t)v2, csw.val2);
+        }
+        else {
+          sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
+          sourcesConversionTable->importValue((uint8_t)v2, csw.val2);
+        }
         if (IS_TARANIS(board) && version < 216) {
           RawSource val1(csw.val1);
           if (val1.type == SOURCE_TYPE_STICK && val1.index < NUM_STICKS) {
@@ -1801,7 +1811,12 @@ class LogicalSwitchField: public TransformedField {
         }
       }
       else if (csw.func != LS_FN_OFF) {
-        sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
+        if (IS_ARM(board)) {
+          sourcesConversionTable->importValue((uint32_t)v1, csw.val1);
+        }
+        else {
+          sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
+        }
         if (IS_TARANIS(board) && version < 216) {
           RawSource val1(csw.val1);
           if (val1.type == SOURCE_TYPE_STICK && val1.index < NUM_STICKS) {
@@ -2809,7 +2824,8 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         _id = sensor.id;
         _instance = sensor.instance;
-        _param = (sensor.ratio) + ((unsigned int)sensor.offset << 16);
+        _ratio = sensor.ratio;
+        _offset = sensor.offset;
       }
       else {
         _id = sensor.persistentValue;
@@ -2820,7 +2836,7 @@ class SensorField: public TransformedField {
           _param = ((uint8_t)sensor.sources[0]) + ((uint8_t)sensor.sources[1] << 8) + ((uint8_t)sensor.sources[2] << 16) + ((uint8_t)sensor.sources[3] << 24);
         else if (sensor.formula == SensorData::TELEM_FORMULA_DIST)
           _param = (sensor.gps) + (sensor.alt << 8);
-        else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION)
+        else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION || sensor.formula == SensorData::TELEM_FORMULA_TOTALIZE)
           _param = (sensor.amps);
       }
     }
@@ -2830,8 +2846,8 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         sensor.id = _id;
         sensor.instance = _instance;
-        sensor.ratio = _param & 0xFFFF;
-        sensor.offset = (_param >> 16) & 0xFFFF;
+        sensor.ratio = _ratio;
+        sensor.offset = _offset;
       }
       else {
         sensor.persistentValue = _id;
@@ -2843,7 +2859,7 @@ class SensorField: public TransformedField {
             sensor.sources[i] = _sources[i];
         else if (sensor.formula == SensorData::TELEM_FORMULA_DIST)
           (sensor.gps = _sources[0], sensor.alt = _sources[1]);
-        else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION)
+        else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION || sensor.formula == SensorData::TELEM_FORMULA_TOTALIZE)
           sensor.amps = _sources[0];
       }
       eepromImportDebug() << QString("imported %1").arg(internalField.getName());
@@ -2857,6 +2873,10 @@ class SensorField: public TransformedField {
     union {
       unsigned int _param;
       uint8_t _sources[4];
+      struct {
+        uint16_t _ratio;
+        int16_t _offset;
+      };
     };
 };
 
@@ -3148,7 +3168,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   
   if (IS_ARM(board) && version >= 217) {
     for (int i=0; i<8; i++) {
-      if (i < MAX_POTS(board)+MAX_SLIDERS(board))
+      if (i < MAX_POTS(board, version)+MAX_SLIDERS(board))
         internalField.Append(new BoolField<1>(modelData.potsWarningEnabled[i]));
       else
         internalField.Append(new SpareBitsField<1>());
@@ -3156,7 +3176,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
   else if (IS_ARM(board) && version >= 216) {
     for (int i=0; i<6; i++) {
-      if (i < MAX_POTS(board)+MAX_SLIDERS(board))
+      if (i < MAX_POTS(board, version)+MAX_SLIDERS(board))
         internalField.Append(new BoolField<1>(modelData.potsWarningEnabled[i]));
       else
         internalField.Append(new SpareBitsField<1>());
@@ -3165,7 +3185,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
 
   if (IS_ARM(board) && version >= 216) {
-    for (int i=0; i < MAX_POTS(board)+MAX_SLIDERS(board); i++) {
+    for (int i=0; i < MAX_POTS(board, version)+MAX_SLIDERS(board); i++) {
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
     }    
   }
@@ -3191,10 +3211,10 @@ void OpenTxModelData::beforeExport()
   // qDebug() << QString("before export model") << modelData.name;
 
   for (int module=0; module<3; module++) {
-    if (modelData.moduleData[module].protocol >= PXX_XJT_X16 && modelData.moduleData[module].protocol <= PXX_XJT_LR12)
-      subprotocols[module] = modelData.moduleData[module].protocol - PXX_XJT_X16;
-    else if (modelData.moduleData[module].protocol >= LP45 && modelData.moduleData[module].protocol <= DSMX)
-      subprotocols[module] = modelData.moduleData[module].protocol - LP45;
+    if (modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12)
+      subprotocols[module] = modelData.moduleData[module].protocol - PULSES_PXX_XJT_X16;
+    else if (modelData.moduleData[module].protocol >= PULSES_LP45 && modelData.moduleData[module].protocol <= PULSES_DSMX)
+      subprotocols[module] = modelData.moduleData[module].protocol - PULSES_LP45;
     else
       subprotocols[module] = (module==0 ? -1 : 0);
   }
@@ -3224,15 +3244,15 @@ void OpenTxModelData::afterImport()
   }
 
   for (int module=0; module<3; module++) {
-    if (modelData.moduleData[module].protocol == PXX_XJT_X16 || modelData.moduleData[module].protocol == LP45) {
+    if (modelData.moduleData[module].protocol == PULSES_PXX_XJT_X16 || modelData.moduleData[module].protocol == PULSES_LP45) {
       if (subprotocols[module] >= 0)
         modelData.moduleData[module].protocol += subprotocols[module];
       else
-        modelData.moduleData[module].protocol = OFF;
+        modelData.moduleData[module].protocol = PULSES_OFF;
     }
   }
 
-  if (IS_TARANIS(board) && version < 217 && modelData.moduleData[1].protocol != OFF) {
+  if (IS_TARANIS(board) && version < 217 && modelData.moduleData[1].protocol != PULSES_OFF) {
     modelData.moduleData[1].modelId = modelData.moduleData[0].modelId;
   }
 }
@@ -3243,7 +3263,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   generalData(generalData),
   board(board),
   version(version),
-  inputsCount(NUM_STICKS+MAX_POTS(board)+MAX_SLIDERS(board))
+  inputsCount(NUM_STICKS+MAX_POTS(board, version)+MAX_SLIDERS(board))
 {
   eepromImportDebug() << QString("OpenTxGeneralData::OpenTxGeneralData(board: %1, version:%2, variant:%3)").arg(board).arg(version).arg(variant);
 
@@ -3280,7 +3300,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   internalField.Append(new UnsignedField<8>(generalData.currModel));
   internalField.Append(new UnsignedField<8>(generalData.contrast));
   internalField.Append(new UnsignedField<8>(generalData.vBatWarn));
-  internalField.Append(new SignedField<8>(generalData.vBatCalib));
+  internalField.Append(new SignedField<8>(generalData.txVoltageCalibration));
   internalField.Append(new SignedField<8>(generalData.backlightMode));
 
   for (int i=0; i<NUM_STICKS; i++)
@@ -3364,7 +3384,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
 
   if (IS_ARM(board)) {
     internalField.Append(new UnsignedField<8>(generalData.backlightBright));
-    internalField.Append(new SignedField<8>(generalData.currentCalib));
+    internalField.Append(new SignedField<8>(generalData.txCurrentCalibration));
     if (version >= 213) {
       internalField.Append(new SignedField<8>(generalData.temperatureWarn)); // TODO
       internalField.Append(new UnsignedField<8>(generalData.mAhWarn));
@@ -3407,7 +3427,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
         internalField.Append(new UnsignedField<8>(generalData.hw_uartMode));
       }
       for (int i=0; i<4; i++) {
-        if (i < MAX_POTS(board))
+        if (i < MAX_POTS(board, version))
           internalField.Append(new UnsignedField<2>(generalData.potConfig[i]));
         else
           internalField.Append(new SpareBitsField<2>());
@@ -3439,7 +3459,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
       for (int i=0; i<NUM_STICKS; ++i) {
         internalField.Append(new ZCharField<3>(generalData.stickName[i]));
       }
-      for (int i=0; i<MAX_POTS(board); ++i) {
+      for (int i=0; i<MAX_POTS(board, version); ++i) {
         internalField.Append(new ZCharField<3>(generalData.potName[i]));
       }
       for (int i=0; i<MAX_SLIDERS(board); ++i) {

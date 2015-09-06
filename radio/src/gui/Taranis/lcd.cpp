@@ -674,7 +674,7 @@ void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
     else
       lcd_putsiAtt(x, y, STR_VSRCRAW, idx+1, att);
   }
-  else if (idx >= MIXSRC_FIRST_SWITCH && idx < MIXSRC_FIRST_LOGICAL_SWITCH) {
+  else if (idx >= MIXSRC_FIRST_SWITCH && idx <= MIXSRC_LAST_SWITCH) {
     idx = idx-MIXSRC_FIRST_SWITCH;
     if (ZEXIST(g_eeGeneral.switchNames[idx])) {
       lcd_putcAtt(x, y, '\312', att); //switch symbol
@@ -692,8 +692,8 @@ void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
   else if (idx <= MIXSRC_LAST_CH) {
     putsStrIdx(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
     if (ZEXIST(g_model.limitData[idx-MIXSRC_CH1].name) && (att & STREXPANDED)) {
-      lcd_putcAtt(lcdLastPos, y, ' ', att);
-      lcd_putsnAtt(lcdLastPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att);
+      lcd_putcAtt(lcdLastPos, y, ' ', att|SMLSIZE);
+      lcd_putsnAtt(lcdLastPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att|SMLSIZE);
     }
   }
   else if (idx <= MIXSRC_LAST_GVAR)
@@ -727,29 +727,48 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
   }
 }
 
-void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
+void putsSwitches(coord_t x, coord_t y, int32_t idx, LcdFlags att)
 {
-  if (idx == SWSRC_OFF)
+  if (idx == SWSRC_NONE) {
+    return lcd_putsiAtt(x, y, STR_VSWITCHES, 0, att);
+  }
+  else if (idx == SWSRC_OFF) {
     return lcd_putsiAtt(x, y, STR_OFFON, 0, att);
+  }
+
   if (idx < 0) {
     lcd_putcAtt(x-2, y, '!', att);
     idx = -idx;
   }
-#if defined(FLIGHT_MODES)
-  if (idx >= SWSRC_FIRST_FLIGHT_MODE) {
-    return putsStrIdx(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
-  }
-#endif
-  if (idx >= SWSRC_FIRST_SWITCH && idx <= SWSRC_LAST_SWITCH) {
+
+  if (idx <= SWSRC_LAST_SWITCH) {
     div_t swinfo = switchInfo(idx);
     if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
       lcd_putsnAtt(x, y, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME, ZCHAR|att);
-      char c = "\300-\301"[swinfo.rem];
-      lcd_putcAtt(lcdNextPos, y, c, att);
-      return;
     }
+    else {
+      lcd_putcAtt(x, y, 'S', att);
+      lcd_putcAtt(lcdNextPos, y, 'A'+swinfo.quot, att);
+    }
+    char c = "\300-\301"[swinfo.rem];
+    lcd_putcAtt(lcdNextPos, y, c, att);
   }
-  return lcd_putsiAtt(x, y, STR_VSWITCHES, idx, att);
+  else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
+    div_t swinfo = div(idx - SWSRC_FIRST_MULTIPOS_SWITCH, XPOTS_MULTIPOS_COUNT);
+    putsStrIdx(x, y, "S", swinfo.quot*10+swinfo.rem+11, att);
+  }
+  else if (idx <= SWSRC_LAST_TRIM) {
+    lcd_putsiAtt(x, y, STR_VSWITCHES, idx-SWSRC_FIRST_TRIM+1, att);
+  }
+  else if (idx <= SWSRC_LAST_LOGICAL_SWITCH) {
+    putsStrIdx(x, y, "L", idx-SWSRC_FIRST_LOGICAL_SWITCH+1, att);
+  }
+  else if (idx <= SWSRC_ONE) {
+    lcd_putsiAtt(x, y, STR_VSWITCHES, idx-SWSRC_ON+1+(2*NUM_STICKS), att);
+  }
+  else {
+    putsStrIdx(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
+  }
 }
 
 #if defined(FLIGHT_MODES)
@@ -803,7 +822,7 @@ void putsCurve(coord_t x, coord_t y, int8_t idx, LcdFlags att)
   putsStrIdx(x, y, STR_CV, idx, att);
 }
 
-void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
+void putsTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att)
 {
   if (mode >= 0) {
     if (mode < TMRMODE_COUNT)

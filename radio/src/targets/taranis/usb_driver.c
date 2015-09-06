@@ -35,8 +35,6 @@
  */
 
 #include "board_taranis.h"
-#include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_dcd_int.h"
-#include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_bsp.h"
 
 int usbPlugged(void)
 {
@@ -63,28 +61,24 @@ USB_OTG_CORE_HANDLE USB_OTG_dev;
 
 void OTG_FS_IRQHandler(void)
 {
-  USBD_OTG_ISR_Handler (&USB_OTG_dev);
+  USBD_OTG_ISR_Handler(&USB_OTG_dev);
 }
 
 void usbInit(void)
 {
-  USB_OTG_BSP_Init(&USB_OTG_dev);
-}
-
-void usbStart(void)
-{
 #if defined(USB_JOYSTICK)
   // initialize USB as HID device
   USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_HID_cb, &USR_cb);
+#elif defined(USB_SERIAL)
+  // initialize USB as CDC device (virtual serial port)
+  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_CDC_cb, &USR_cb);
 #elif defined(USB_MASS_STORAGE)
   // initialize USB as MSC device
   USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_MSC_cb, &USR_cb);
 #endif
 }
 
-#if defined(USB_JOYSTICK)
-void usbStop(void)
+void usbDeInit(void)
 {
   USBD_DeInit(&USB_OTG_dev);
 }
-#endif

@@ -62,7 +62,7 @@ Th9xGeneral::operator GeneralSettings ()
   result.currModel = currModel;
   result.contrast = contrast;
   result.vBatWarn = vBatWarn;
-  result.vBatCalib = vBatCalib;
+  result.txVoltageCalibration = txVoltageCalibration;
   // result.lightSw = th9xToSwitch(lightSw);
   result.trainer = trainer;
   result.view = view;

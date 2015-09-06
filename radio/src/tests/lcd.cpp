@@ -92,7 +92,7 @@ void doPaint(QPainter & p)
   }
 }
 
-bool checkScreenshot(QString test)
+bool checkScreenshot(const QString & test)
 {
   lcdRefresh();
   QImage buffer(LCD_W, LCD_H, QImage::Format_RGB32);

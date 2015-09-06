@@ -88,7 +88,7 @@ I18N_PLAY_FUNCTION(pl, pushUnitPrompt, int16_t number, uint8_t unitprompt)
     test_2 =number % 10;
     int ten=0;
     ten=(number - (number % 10))/10;
-    if ((test_2 > 1 && test_2 < 5) && ten >2)
+    if ((test_2 > 1 && test_2 < 5) && ten >=2)
 	PUSH_NUMBER_PROMPT(unitprompt+1);
     else
 	PUSH_NUMBER_PROMPT(unitprompt+2);
@@ -149,11 +149,16 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   switch(unit) {
     case 0:
       break;
+// ft/s
+    case 6:
+// mph
+    case 8:
+// feet
     case 10:
-    case 13:
-    case 15:
-    case 16:
-    case 17:
+//mAh
+    case 14:
+//flOz
+    case 21:
       att = ZENSKI;
       break;
     case 100:
@@ -186,10 +191,14 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   if (number >= 1000) {
     if (number >= 2000) 
       PLAY_NUMBER(number / 1000, 0, 0);
+
     if (number >= 2000 && number < 5000)
       PUSH_NUMBER_PROMPT(PL_PROMPT_TYSIACE);
-    else
+    else if (number >= 5000)
+      PUSH_NUMBER_PROMPT(PL_PROMPT_TYSIECY);
+    else 
       PUSH_NUMBER_PROMPT(PL_PROMPT_TYSIAC);
+
     number %= 1000;
     if (number == 0)
       number = -1;

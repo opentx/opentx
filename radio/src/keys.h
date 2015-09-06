@@ -128,19 +128,6 @@ enum EnumKeys {
   SW_SR0,
   SW_SR1,
   SW_SR2,
-#else
-  SW_SI0,
-  SW_SI2,
-  SW_SJ0,
-  SW_SJ2,
-  SW_SK0,
-  SW_SK2,
-  SW_SL0,
-  SW_SL2,
-  SW_SM0,
-  SW_SM2,
-  SW_SN0,
-  SW_SN2,
 #endif
 #else
   SW_ID0=SW_BASE,

@@ -45,10 +45,10 @@ uint8_t calibrationState;
 int checkIncDecSelection = 0;
 
 #if defined(AUTOSWITCH)
-int8_t checkIncDecMovedSwitch(int8_t val)
+swsrc_t checkIncDecMovedSwitch(swsrc_t val)
 {
   if (s_editMode>0) {
-    int8_t swtch = getMovedSwitch();
+    swsrc_t swtch = getMovedSwitch();
     if (swtch) {
       div_t info = switchInfo(swtch);
       if (IS_TOGGLE(info.quot)) {

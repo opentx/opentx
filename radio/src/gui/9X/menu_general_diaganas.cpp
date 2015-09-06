@@ -77,7 +77,7 @@ void menuGeneralDiagAna(uint8_t event)
   lcd_putsLeft(MENU_HEADER_HEIGHT+1+4*FH, STR_BATT_CALIB);
   static int32_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8;
-  uint32_t batCalV = (adcBatt + adcBatt*(g_eeGeneral.vBatCalib)/128) * 4191;
+  uint32_t batCalV = (adcBatt + adcBatt*(g_eeGeneral.txVoltageCalibration)/128) * 4191;
   batCalV /= 55296;
   putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT+1+4*FH, batCalV, (m_posVert==1 ? INVERS : 0));
 #elif defined(PCBGRUVIN9X)
@@ -85,18 +85,18 @@ void menuGeneralDiagAna(uint8_t event)
   // Gruvin wants 2 decimal places and instant update of volts calib field when button pressed
   static uint16_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8; // running average, sourced directly (to avoid unending debate :P)
-  uint32_t batCalV = ((uint32_t)adcBatt*1390 + (10*(int32_t)adcBatt*g_eeGeneral.vBatCalib)/8) / BandGap;
+  uint32_t batCalV = ((uint32_t)adcBatt*1390 + (10*(int32_t)adcBatt*g_eeGeneral.txVoltageCalibration)/8) / BandGap;
   lcd_outdezNAtt(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, PREC2|(m_posVert==1 ? INVERS : 0));
 #else
   lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
   putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, g_vbat100mV, (m_posVert==1 ? INVERS : 0));
 #endif
-  if (m_posVert==1) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatCalib, -127, 127);
+  if (m_posVert==1) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
 
 #if defined(PCBSKY9X) && !defined(REVA) && !defined(AR9X)
   lcd_putsLeft(6*FH+1, STR_CURRENT_CALIB);
   putsValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, 6*FH+1, getCurrent(), UNIT_MILLIAMPS, (m_posVert==2 ? INVERS : 0)) ;
-  if (m_posVert==2) CHECK_INCDEC_GENVAR(event, g_eeGeneral.currentCalib, -49, 49);
+  if (m_posVert==2) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txCurrentCalibration, -49, 49);
 #endif
 
 #if defined(PCBSKY9X)

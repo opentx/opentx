@@ -108,13 +108,13 @@ QString ModelPrinter::printModuleProtocol(unsigned int protocol)
 QString ModelPrinter::printModule(int idx)
 {
   const ModuleData & module = model.moduleData[idx];
-  if (module.protocol == OFF)
+  if (module.protocol == PULSES_OFF)
     return printModuleProtocol(module.protocol);
-  else if (module.protocol == PPM)
+  else if (module.protocol == PULSES_PPM)
     return tr("%1, Channels(%2-%3), PPM delay(%4usec), Pulse polarity(%5)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart+1).arg(module.channelsStart+module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString());
   else {
     QString result = tr("%1, Channels(%2-%3)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart+1).arg(module.channelsStart+module.channelsCount);
-    if (module.protocol != PXX_XJT_D8) {
+    if (module.protocol != PULSES_PXX_XJT_D8) {
       result += " " + tr("Receiver number(%1)").arg(module.modelId);
     }
     return result;
@@ -327,21 +327,25 @@ QString ModelPrinter::printMixerName(int curDest)
   return Qt::escape(str);
 }
 
-QString ModelPrinter::printMixerLine(int idx, int highlightedSource)
+QString ModelPrinter::printMixerLine(int idx, bool showMultiplex, int highlightedSource)
 {
-  return printMixerLine(model.mixData[idx], highlightedSource);
+  return printMixerLine(model.mixData[idx], highlightedSource, showMultiplex);
 }
 
-QString ModelPrinter::printMixerLine(const MixData & mix, int highlightedSource)
+QString ModelPrinter::printMixerLine(const MixData & mix, bool showMultiplex, int highlightedSource)
 {
   QString str = "&nbsp;";
 
-  switch(mix.mltpx) {
-    case (1): str += "*"; break;
-    case (2): str += "R"; break;
-    default:  str += "&nbsp;"; break;
-  };
-
+  if (showMultiplex) {
+    switch(mix.mltpx) {
+      case (1): str += "*="; break;
+      case (2): str += ":="; break;
+      default:  str += "+="; break;
+    }
+  }
+  else {
+    str += "&nbsp;&nbsp;";
+  }
   // highlight source if needed
   QString source = Qt::escape(mix.srcRaw.toString(&model));
   if ( (mix.srcRaw.type == SOURCE_TYPE_CH) && (mix.srcRaw.index+1 == (int)highlightedSource) ) {

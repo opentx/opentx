@@ -8,6 +8,7 @@
 <a href="http://litepilots.com">LitePilots</a>
 <a href="http://openpilot.com">David Ankers (OpenPilot)</a>
 <a href="http://3drobotics.com">3D Robotics</a>
+<a href="http://rcstudio.cz">RC Studio (monthly)</a>
 
 Mario Sette
 Felice Baratto
@@ -401,7 +402,6 @@ Colin Rycroft
 Emanuel Stassar
 Michael Gregory
 Robert Russell
-Gordon Stahl
 Felix Kaiser
 Joshua Bardwell
 Davd Goodall
@@ -599,7 +599,6 @@ Julien Gérard
 Alexandre d'Alton
 Peter Mergaerts
 Jan Houwers
-Gordon Stahl
 Christian Grandjean
 Roger Bergevin
 NorthSide
@@ -802,4 +801,12 @@ Roger Keatley
 Sherman Lovell
 Hugh Caldwell
 JB Fisher Company
- 
+Michels Bernhard 
+Pietro Rossin
+Carsten Wache
+Brock White 
+Steven Poretz
+David Huelster
+Gordon Stahl (monthly)
+John Mathison
+Richard Duczmal

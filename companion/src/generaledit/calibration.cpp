@@ -159,6 +159,11 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
     ui->serialPortLabel->hide();
   }
 
+  if (!IS_SKY9X(firmware->getBoard())) {
+    ui->txCurrentCalibration->hide();
+    ui->txCurrentCalibrationLabel->hide();
+  }
+
   if (IS_TARANIS_X9E(firmware->getBoard())) {
     ui->bluetoothEnable->setChecked(generalSettings.bluetoothEnable);
     ui->bluetoothName->setField(generalSettings.bluetoothName, 10, this);
@@ -214,9 +219,9 @@ void CalibrationPanel::on_PPM4_editingFinished()
 }
 
 
-void CalibrationPanel::on_CurrentCalib_SB_editingFinished()
+void CalibrationPanel::on_txCurrentCalibration_editingFinished()
 {
-  generalSettings.currentCalib = ui->CurrentCalib_SB->value();
+  generalSettings.txCurrentCalibration = ui->txCurrentCalibration->value();
   emit modified();
 }
 
@@ -228,8 +233,8 @@ void CalibrationPanel::on_bluetoothEnable_stateChanged(int)
 
 void CalibrationPanel::setValues()
 {
-  ui->battCalibDSB->setValue((double)generalSettings.vBatCalib/10);
-  ui->CurrentCalib_SB->setValue((double)generalSettings.currentCalib);
+  ui->txVoltageCalibration->setValue((double)generalSettings.txVoltageCalibration/10);
+  ui->txCurrentCalibration->setValue((double)generalSettings.txCurrentCalibration);
 
   ui->ana1Neg->setValue(generalSettings.calibSpanNeg[0]);
   ui->ana2Neg->setValue(generalSettings.calibSpanNeg[1]);
@@ -265,9 +270,9 @@ void CalibrationPanel::setValues()
   ui->PPM_MultiplierDSB->setValue((qreal)(generalSettings.PPM_Multiplier+10)/10);
 }
 
-void CalibrationPanel::on_battCalibDSB_editingFinished()
+void CalibrationPanel::on_txVoltageCalibration_editingFinished()
 {
-  generalSettings.vBatCalib = ui->battCalibDSB->value()*10;
+  generalSettings.txVoltageCalibration = ui->txVoltageCalibration->value()*10;
   emit modified();
 }
 

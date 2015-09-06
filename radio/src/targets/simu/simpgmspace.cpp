@@ -330,7 +330,7 @@ void *main_thread(void *)
 #endif
 
 #if defined(CPUARM)
-    stack_paint();
+    stackPaint();
 #endif
     
     s_current_protocol[0] = 255;
@@ -657,12 +657,10 @@ void eepromWriteBlock(uint8_t * pointer_ram, uint32_t pointer_eeprom, uint32_t s
 
 #endif
 
-#if !defined(CPUARM)
-uint16_t stack_free()
+uint16_t stackAvailable()
 {
   return 500;
 }
-#endif
 
 #if 0
 static void EeFsDump(){
@@ -1228,7 +1226,6 @@ uint32_t pwrPressed() { return false; }
 #else
 uint32_t pwrCheck() { return true; }
 #endif
-void usbStart() { }
 int usbPlugged() { return false; }
 void USART_DeInit(USART_TypeDef* ) { }
 ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { return SUCCESS; }

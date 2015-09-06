@@ -897,7 +897,7 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
   }
   else if ((func==FuncVolume)|| (func==FuncPlayValue)) {
     RawSource item(param);
-    return item.toString();
+    return item.toString(model);
   }
   else if ((func==FuncPlayPrompt) || (func==FuncPlayBoth)) {
     if ( GetCurrentFirmware()->getCapability(VoicesAsNumbers)) {
@@ -1083,8 +1083,8 @@ GeneralSettings::GeneralSettings()
   }
   else {
     QString t_trainercalib=g.profile[g.id()].trainerCalib();
-    int8_t t_vBatCalib=(int8_t)g.profile[g.id()].vBatCalib();
-    int8_t t_currentCalib=(int8_t)g.profile[g.id()].currentCalib();
+    int8_t t_txVoltageCalibration=(int8_t)g.profile[g.id()].txVoltageCalibration();
+    int8_t t_txCurrentCalibration=(int8_t)g.profile[g.id()].txCurrentCalibration();
     int8_t t_PPM_Multiplier=(int8_t)g.profile[g.id()].ppmMultiplier();
     uint8_t t_stickMode=(uint8_t)g.profile[g.id()].gsStickMode();
     uint8_t t_vBatWarn=(uint8_t)g.profile[g.id()].vBatWarn();
@@ -1118,8 +1118,8 @@ GeneralSettings::GeneralSettings()
         if (ok)
           trainer.calib[i]=byte16;
       }
-      currentCalib=t_currentCalib;
-      vBatCalib=t_vBatCalib;
+      txCurrentCalibration=t_txCurrentCalibration;
+      txVoltageCalibration=t_txVoltageCalibration;
       vBatWarn=t_vBatWarn;
       PPM_Multiplier=t_PPM_Multiplier;
       stickMode = t_stickMode;
@@ -1383,16 +1383,16 @@ void ModelData::clear()
   moduleData[2].ppmDelay = 300;
   int board = GetEepromInterface()->getBoard();
   if (IS_TARANIS(board)) {
-    moduleData[0].protocol=PXX_XJT_X16;
-    moduleData[1].protocol=OFF;
+    moduleData[0].protocol = PULSES_PXX_XJT_X16;
+    moduleData[1].protocol = PULSES_OFF;
   }
   else if (IS_SKY9X(board)) {
-    moduleData[0].protocol=PPM;
-    moduleData[1].protocol=PPM;      
+    moduleData[0].protocol = PULSES_PPM;
+    moduleData[1].protocol = PULSES_PPM;
   }
   else {
-    moduleData[0].protocol=PPM;
-    moduleData[1].protocol=OFF;      
+    moduleData[0].protocol = PULSES_PPM;
+    moduleData[1].protocol = PULSES_OFF;
   }
   for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     flightModeData[i].clear();

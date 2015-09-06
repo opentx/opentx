@@ -73,6 +73,11 @@
   #define USBD_PRODUCT_FS_STRING          "FrSky Taranis Joystick"
   #define USBD_CONFIGURATION_FS_STRING    "HID Config"
   #define USBD_INTERFACE_FS_STRING        "HID Interface"
+#elif defined(USB_SERIAL)
+  #define USBD_PID                        0x5740      // do not change, this ID is used by the ST USB driver for Windows
+  #define USBD_PRODUCT_FS_STRING          "FrSky Taranis Serial Port"
+  #define USBD_CONFIGURATION_FS_STRING    "VSP Config"
+  #define USBD_INTERFACE_FS_STRING        "VSP Interface"
 #elif defined(USB_MASS_STORAGE)
   #define USBD_PID                        0x5720
   #define USBD_PRODUCT_FS_STRING          "FrSky Taranis Mass Storage"

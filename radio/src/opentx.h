@@ -297,33 +297,39 @@
 #include "debug.h"
 
 #if defined(SIMU)
-#include "targets/simu/simpgmspace.h"
+  #include "targets/simu/simpgmspace.h"
 #elif defined(CPUARM)
-typedef const unsigned char pm_uchar;
-typedef const char pm_char;
-typedef const uint16_t pm_uint16_t;
-typedef const uint8_t pm_uint8_t;
-typedef const int16_t pm_int16_t;
-typedef const int8_t pm_int8_t;
-#define pgm_read_byte(address_short) (*(uint8_t*)(address_short))
-#define PSTR(adr) adr
-#define PROGMEM
-#define pgm_read_adr(x) *(x)
-#define cli()
-#define sei()
-extern void boardInit();
+  typedef const unsigned char pm_uchar;
+  typedef const char pm_char;
+  typedef const uint16_t pm_uint16_t;
+  typedef const uint8_t pm_uint8_t;
+  typedef const int16_t pm_int16_t;
+  typedef const int8_t pm_int8_t;
+  #define pgm_read_byte(address_short) (*(uint8_t*)(address_short))
+  #define PSTR(adr) adr
+  #define PROGMEM
+  #define pgm_read_adr(x) *(x)
+  #define cli()
+  #define sei()
+  extern void boardInit();
+  #if defined(PCBTARANIS)
+    extern void boardOff();
+  #else
+    #define boardOff()  pwrOff();
+  #endif
 #else
-#include <avr/io.h>
-#include <avr/pgmspace.h>
-#include "pgmtypes.h"
+  #define boardOff()  pwrOff();
+  #include <avr/io.h>
+  #include <avr/pgmspace.h>
+  #include "pgmtypes.h"
 
-#include <avr/eeprom.h>
-#include <avr/sleep.h>
-#include <avr/interrupt.h>
-#define F_CPU 16000000UL  // 16 MHz
-#include <util/delay.h>
-#define pgm_read_adr(address_short) pgm_read_word(address_short)
-#include <avr/wdt.h>
+  #include <avr/eeprom.h>
+  #include <avr/sleep.h>
+  #include <avr/interrupt.h>
+  #define F_CPU 16000000UL  // 16 MHz
+  #include <util/delay.h>
+  #define pgm_read_adr(address_short) pgm_read_word(address_short)
+  #include <avr/wdt.h>
 #endif
 
 #if defined(PCBTARANIS)
@@ -416,6 +422,7 @@ extern void boardInit();
   typedef int32_t rotenc_t;
   typedef int32_t getvalue_t;
   typedef uint32_t mixsrc_t;
+  typedef int8_t swsrc_t;
 #else
   #define tmr10ms_t uint16_t
   extern volatile tmr10ms_t g_tmr10ms;
@@ -430,7 +437,7 @@ extern void boardInit();
   typedef int8_t rotenc_t;
   typedef int16_t getvalue_t;
   typedef uint8_t mixsrc_t;
-  void watchdogSetTimeout(uint32_t timeout);
+  typedef int8_t swsrc_t;
 #endif
 
 #if defined(NAVIGATION_STICKS)
@@ -529,7 +536,7 @@ typedef struct {
   MASK_CFN_TYPE  activeSwitches;
   tmr10ms_t lastFunctionTime[NUM_CFN];
 
-  inline bool isFuunctionActive(uint8_t func)
+  inline bool isFunctionActive(uint8_t func)
   {
     return activeFunctions & ((MASK_FUNC_TYPE)1 << func);
   }
@@ -716,14 +723,14 @@ extern uint8_t flightModeTransitionLast;
 #endif
 
 #if defined(SIMU)
-  inline int getAvailableMemory() { return 1000; }
+  inline int availableMemory() { return 1000; }
 #elif defined(CPUARM) && !defined(SIMU)
   extern unsigned char *heap;
   extern int _end;
   extern int _estack;
   extern int _main_stack_start;
   extern int _heap_end;
-  #define getAvailableMemory() ((unsigned int)((unsigned char *)&_heap_end - heap))
+  #define availableMemory() ((unsigned int)((unsigned char *)&_heap_end - heap))
 #endif
 
 void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms);
@@ -767,7 +774,7 @@ void logicalSwitchesReset();
 #endif
 
 extern swarnstate_t switches_states;
-int8_t  getMovedSwitch();
+swsrc_t getMovedSwitch();
 
 #if defined(PCBTARANIS)
   #define GET_MOVED_SOURCE_PARAMS uint8_t min
@@ -941,11 +948,8 @@ extern uint16_t lastMixerDuration;
   uint16_t getTmr16KHz();
 #endif
 
-#if defined(CPUARM)
-  uint32_t stack_free(uint32_t tid);
-  void stack_paint();
-#else
-  uint16_t stack_free();
+#if !defined(CPUARM)
+  uint16_t stackAvailable();
 #endif
 
 #if defined(SPLASH)
@@ -1049,12 +1053,7 @@ template<class t> void SWAP(t & a, t & b) { t tmp = b; b = a; a = tmp; }
 uint16_t isqrt32(uint32_t n);
 
 #if defined(CPUARM) && !defined(BOOT)
-#if !defined(SIMU)
-extern "C" {
-#include <CoOS.h>
-}
-#endif
-
+#include "tasks_arm.h"
 extern OS_MutexID mixerMutex;
 inline void pauseMixerCalculations()
 {
@@ -1332,7 +1331,7 @@ extern CustomFunctionsContext modelFunctionsContext;
 extern CustomFunctionsContext globalFunctionsContext;
 inline bool isFunctionActive(uint8_t func)
 {
-  return globalFunctionsContext.isFuunctionActive(func) || modelFunctionsContext.isFuunctionActive(func);
+  return globalFunctionsContext.isFunctionActive(func) || modelFunctionsContext.isFunctionActive(func);
 }
 void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext & functionsContext);
 inline void customFunctionsReset()
@@ -1342,7 +1341,7 @@ inline void customFunctionsReset()
 }
 #else
 extern CustomFunctionsContext modelFunctionsContext;
-#define isFunctionActive(func) modelFunctionsContext.isFuunctionActive(func)
+#define isFunctionActive(func) modelFunctionsContext.isFunctionActive(func)
 void evalFunctions();
 #define customFunctionsReset() modelFunctionsContext.reset()
 #endif

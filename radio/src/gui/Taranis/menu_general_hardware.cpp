@@ -219,9 +219,9 @@ void menuGeneralHardware(uint8_t event)
         break;
 #endif
       case ITEM_SETUP_HW_UART3_MODE:
-        g_eeGeneral.uart3Mode = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.uart3Mode, 0, UART_MODE_MAX, attr, event);
+        g_eeGeneral.serial2Mode = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.serial2Mode, 0, UART_MODE_MAX, attr, event);
         if (attr && checkIncDec_Ret) {
-          uart3Init(g_eeGeneral.uart3Mode, MODEL_TELEMETRY_PROTOCOL());
+          serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
         }
         break;
     }

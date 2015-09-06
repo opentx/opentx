@@ -116,7 +116,7 @@
   #define MAX_FLIGHT_MODES     9
   #define MAX_MIXERS           64
   #define MAX_EXPOS            64
-  #define NUM_LOGICAL_SWITCH   32 // number of custom switches
+  #define NUM_LOGICAL_SWITCH   32 // number of logical switches
   #define NUM_CFN              64 // number of functions assigned to switches
   #define MAX_SCRIPTS          7
   #define MAX_INPUTS           32
@@ -203,7 +203,7 @@ PACK(typedef struct {
 }) CurveInfo;
 #else
 struct CurveInfo {
-  int8_t *crv;
+  int8_t * crv;
   uint8_t points;
   bool custom;
 };
@@ -328,7 +328,7 @@ enum BeeperMode {
 #if defined(CPUARM)
   #define EXTRA_GENERAL_FIELDS_ARM \
   uint8_t  backlightBright; \
-  int8_t   currentCalib; \
+  int8_t   txCurrentCalibration; \
   int8_t   temperatureWarn; \
   uint8_t  mAhWarn; \
   uint16_t mAhUsed; \
@@ -382,7 +382,7 @@ enum BeeperMode {
   #define LEN_SWITCH_NAME              3
   #define LEN_ANA_NAME                 3
   #define LEN_BLUETOOTH_NAME           10
-  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.uart3Mode==UART_MODE_SBUS_TRAINER/* || g_eeGeneral.uart3Mode==UART_MODE_CPPM_TRAINER*/)
+  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER/* || g_eeGeneral.serial2Mode==UART_MODE_CPPM_TRAINER*/)
 
   #if defined(REV9E)
     #define BLUETOOTH_FIELDS \
@@ -394,7 +394,7 @@ enum BeeperMode {
 
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
-    uint8_t  uart3Mode:6; \
+    uint8_t  serial2Mode:6; \
     uint8_t  slidersConfig:2; \
     uint8_t  potsConfig; /*two bits for every pot*/\
     uint8_t  backlightColor; \
@@ -754,7 +754,7 @@ PACK(typedef struct {
   int8_t    currModel;
   uint8_t   contrast;
   uint8_t   vBatWarn;
-  int8_t    vBatCalib;
+  int8_t    txVoltageCalibration;
   int8_t    backlightMode;
   TrainerData trainer;
   uint8_t   view;            // index of view in main screen
@@ -1749,7 +1749,7 @@ enum SwitchSources {
   SWSRC_LAST_LOGICAL_SWITCH = SWSRC_FIRST_LOGICAL_SWITCH+NUM_LOGICAL_SWITCH-1,
 
   SWSRC_ON,
-  SWSRC_One,
+  SWSRC_ONE,
 
 #if defined(CPUARM)
   SWSRC_FIRST_FLIGHT_MODE,
@@ -1764,12 +1764,13 @@ enum SwitchSources {
   SWSRC_FIRST = -SWSRC_LAST,
 
 #if defined(CPUARM)
-  SWSRC_LAST_IN_LOGICAL_SWITCHES = SWSRC_LAST_FLIGHT_MODE,
-  SWSRC_LAST_IN_MIXES = SWSRC_LAST_FLIGHT_MODE,
+  SWSRC_LAST_IN_LOGICAL_SWITCHES = SWSRC_COUNT-1,
+  SWSRC_LAST_IN_MIXES = SWSRC_COUNT-1,
 #else
   SWSRC_LAST_IN_LOGICAL_SWITCHES = SWSRC_LAST_LOGICAL_SWITCH,
   SWSRC_LAST_IN_MIXES = SWSRC_LAST_LOGICAL_SWITCH,
 #endif
+
   SWSRC_FIRST_IN_LOGICAL_SWITCHES = -SWSRC_LAST_IN_LOGICAL_SWITCHES,
   SWSRC_FIRST_IN_MIXES = -SWSRC_LAST_IN_MIXES,
 
@@ -1962,7 +1963,11 @@ enum TimerModes {
 enum CountDownModes {
   COUNTDOWN_SILENT,
   COUNTDOWN_BEEPS,
-  COUNTDOWN_VOICE
+  COUNTDOWN_VOICE,
+#if defined(CPUARM) && defined(HAPTIC)
+  COUNTDOWN_HAPTIC,
+#endif
+  COUNTDOWN_COUNT
 };
 
 #if defined(CPUARM)
@@ -2152,8 +2157,9 @@ PACK(typedef struct {
   FlightModeData flightModeData[MAX_FLIGHT_MODES];
 
   AVR_FIELD(int8_t ppmFrameLength)     // 0=22.5ms  (10ms-30ms) 0.5ms increments
-  uint8_t   thrTraceSrc;
-  
+
+  uint8_t thrTraceSrc;
+
   swarnstate_t  switchWarningState;
   swarnenable_t switchWarningEnable;
 

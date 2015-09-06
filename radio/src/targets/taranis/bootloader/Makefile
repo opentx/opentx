@@ -109,6 +109,8 @@ ifeq ($(PCB), TARANIS)
   EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc
   EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Core/inc
   EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/inc
+  EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
+  EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/inc
   EXTRAINCDIRS += .. ../../.. ../../../fonts/std
   ifeq ($(PCBREV), REV4a)
     CPPDEFS += -DREV4a

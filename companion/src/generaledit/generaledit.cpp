@@ -88,8 +88,8 @@ void GeneralEdit::on_calretrieve_PB_clicked()
   }
   else {
     QString trainercalib = g.profile[profile_id].trainerCalib();
-    int8_t vBatCalib = (int8_t)g.profile[profile_id].vBatCalib();
-    int8_t currentCalib = (int8_t)g.profile[profile_id].currentCalib();
+    int8_t txVoltageCalibration = (int8_t)g.profile[profile_id].txVoltageCalibration();
+    int8_t txCurrentCalibration = (int8_t)g.profile[profile_id].txCurrentCalibration();
     int8_t PPM_Multiplier = (int8_t)g.profile[profile_id].ppmMultiplier();
     uint8_t GSStickMode = (uint8_t)g.profile[profile_id].gsStickMode();
     uint8_t vBatWarn = (uint8_t)g.profile[profile_id].vBatWarn();
@@ -123,8 +123,8 @@ void GeneralEdit::on_calretrieve_PB_clicked()
         if (ok)
           generalSettings.trainer.calib[i]=byte16;
       }
-      generalSettings.currentCalib=currentCalib;
-      generalSettings.vBatCalib=vBatCalib;
+      generalSettings.txCurrentCalibration=txCurrentCalibration;
+      generalSettings.txVoltageCalibration=txVoltageCalibration;
       generalSettings.vBatWarn=vBatWarn;
       if (GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
         generalSettings.vBatMin = (int8_t) g.profile[profile_id].vBatMin();
@@ -225,8 +225,8 @@ void GeneralEdit::on_calstore_PB_clicked()
       calib.append(QString("%1").arg((uint16_t)generalSettings.trainer.calib[i], 4, 16, QChar('0')));
     }
     g.profile[profile_id].trainerCalib( calib );
-    g.profile[profile_id].vBatCalib( generalSettings.vBatCalib );
-    g.profile[profile_id].currentCalib( generalSettings.currentCalib );
+    g.profile[profile_id].txVoltageCalibration( generalSettings.txVoltageCalibration );
+    g.profile[profile_id].txCurrentCalibration( generalSettings.txCurrentCalibration );
     g.profile[profile_id].vBatWarn( generalSettings.vBatWarn );
     if (GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
       g.profile[profile_id].vBatMin( generalSettings.vBatMin );

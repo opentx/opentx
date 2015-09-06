@@ -50,8 +50,8 @@ class ModelPrinter: public QObject
     QString printInputLine(int idx);
     QString printInputLine(const ExpoData & ed);
     QString printMixerName(int curDest);
-    QString printMixerLine(int idx, int highlightedSource = 0);
-    QString printMixerLine(const MixData & md, int highlightedSource = 0);
+    QString printMixerLine(int idx, bool showMultiplex, int highlightedSource = 0);
+    QString printMixerLine(const MixData & md, bool showMultiplex, int highlightedSource = 0);
     QString printLogicalSwitchLine(int idx);
     QString printCustomFunctionLine(int idx);
     static QString printChannelName(int idx);

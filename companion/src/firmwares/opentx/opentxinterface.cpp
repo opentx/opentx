@@ -714,7 +714,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return (IS_ARM(board) && !IS_9XRPRO(board)) ? 2 : 1;
     case HasPPMStart:
       return (IS_ARM(board) ? true : false);
-    case HasCurrentCalibration:
+    case HastxCurrentCalibration:
       return (IS_SKY9X(board) ? true : false);
     case HasVolume:
       return (IS_ARM(board) ? true : false);
@@ -797,16 +797,16 @@ bool OpenTxFirmware::isTelemetrySourceAvailable(int source)
   return true;
 }
 
-int OpenTxEepromInterface::isAvailable(Protocol proto, int port)
+int OpenTxEepromInterface::isAvailable(PulsesProtocol proto, int port)
 {
   if (IS_TARANIS(board)) {
     switch (port) {
       case 0:
         switch (proto) {
-          case OFF:
-          case PXX_XJT_X16:
-          case PXX_XJT_D8:
-          case PXX_XJT_LR12:
+          case PULSES_OFF:
+          case PULSES_PXX_XJT_X16:
+          case PULSES_PXX_XJT_D8:
+          case PULSES_PXX_XJT_LR12:
             return 1;
           default:
             return 0;
@@ -814,15 +814,15 @@ int OpenTxEepromInterface::isAvailable(Protocol proto, int port)
         break;
       case 1:
         switch (proto) {
-          case OFF:
-          case PPM:
-          case PXX_XJT_X16:
-          case PXX_XJT_D8:
-          case PXX_XJT_LR12:
-          //case PXX_DJT:     // Unavailable for now
-          case LP45:
-          case DSM2:
-          case DSMX:
+          case PULSES_OFF:
+          case PULSES_PPM:
+          case PULSES_PXX_XJT_X16:
+          case PULSES_PXX_XJT_D8:
+          case PULSES_PXX_XJT_LR12:
+          //case PULSES_PXX_DJT:     // Unavailable for now
+          case PULSES_LP45:
+          case PULSES_DSM2:
+          case PULSES_DSMX:
             return 1;
           default:
             return 0;
@@ -830,7 +830,7 @@ int OpenTxEepromInterface::isAvailable(Protocol proto, int port)
         break;
       case -1:
         switch (proto) {
-          case PPM:
+          case PULSES_PPM:
             return 1;
           default:
             return 0;
@@ -844,13 +844,13 @@ int OpenTxEepromInterface::isAvailable(Protocol proto, int port)
     switch (port) {
       case 0:
         switch (proto) {
-          case PPM:
-          case PXX_XJT_X16:
-          case PXX_XJT_D8:
-          case PXX_XJT_LR12:
-          case LP45:
-          case DSM2:
-          case DSMX:
+          case PULSES_PPM:
+          case PULSES_PXX_XJT_X16:
+          case PULSES_PXX_XJT_D8:
+          case PULSES_PXX_XJT_LR12:
+          case PULSES_LP45:
+          case PULSES_DSM2:
+          case PULSES_DSMX:
             return 1;
           default:
             return 0;
@@ -858,7 +858,7 @@ int OpenTxEepromInterface::isAvailable(Protocol proto, int port)
         break;
       case 1:
         switch (proto) {
-          case PPM:
+          case PULSES_PPM:
             return 1;
           default:
             return 0;
@@ -870,13 +870,13 @@ int OpenTxEepromInterface::isAvailable(Protocol proto, int port)
   }
   else {
     switch (proto) {
-      case PPM:
-      case DSMX:
-      case LP45:
-      case DSM2:
-      case PXX_DJT:
-      case PPM16:
-      case PPMSIM:
+      case PULSES_PPM:
+      case PULSES_DSMX:
+      case PULSES_LP45:
+      case PULSES_DSM2:
+      case PULSES_PXX_DJT:
+      case PULSES_PPM16:
+      case PULSES_PPMSIM:
         return 1;
       default:
         return 0;

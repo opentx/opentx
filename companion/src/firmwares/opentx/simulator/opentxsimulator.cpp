@@ -233,7 +233,7 @@ namespace NAMESPACE {
 #include "radio/src/targets/taranis/pulses_driver.cpp"
 #include "radio/src/targets/taranis/rtc_driver.cpp"
 #include "radio/src/targets/taranis/trainer_driver.cpp"
-#include "radio/src/targets/taranis/uart3_driver.cpp"
+#include "radio/src/targets/taranis/serial2_driver.cpp"
 #elif defined(PCBSKY9X)
 #include "radio/src/targets/sky9x/board_sky9x.cpp"
 #include "radio/src/targets/sky9x/telemetry_driver.cpp"
@@ -244,7 +244,7 @@ namespace NAMESPACE {
 #include "radio/src/targets/sky9x/sdcard_driver.cpp"
 #include "radio/src/targets/sky9x/coproc_driver.cpp"
 #include "radio/src/targets/sky9x/haptic_driver.cpp"
-#include "radio/src/targets/sky9x/second_serial_driver.cpp"
+#include "radio/src/targets/sky9x/serial2_driver.cpp"
 #include "radio/src/targets/sky9x/pulses_driver.cpp"
 #elif defined(PCBGRUVIN9X)
 #include "radio/src/targets/gruvin9x/board_gruvin9x.cpp"

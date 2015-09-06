@@ -418,7 +418,6 @@ int main()
   // SD card detect pin
   sdInit();
   usbInit();
-  usbStart();
 #endif
 
   for (;;) {

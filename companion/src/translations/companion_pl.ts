@@ -694,9 +694,8 @@ Może być różny od języka firmware</translation>
         <translation>Drążek 4</translation>
     </message>
     <message>
-        <location filename="../generaledit/calibration.ui" line="567"/>
         <source>Battery</source>
-        <translation>Zasilanie</translation>
+        <translation type="obsolete">Zasilanie</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="577"/>
@@ -707,6 +706,11 @@ Może być różny od języka firmware</translation>
         <location filename="../generaledit/calibration.ui" line="596"/>
         <source>PPM Multiplier</source>
         <translation>Mnożnik PPM</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/calibration.ui" line="703"/>
+        <source>Current Offset</source>
+        <translation>Aktuany ofset</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="867"/>
@@ -824,6 +828,11 @@ Może być różny od języka firmware</translation>
         <translation>PPM 2</translation>
     </message>
     <message>
+        <location filename="../generaledit/calibration.ui" line="567"/>
+        <source>Battery Offset</source>
+        <translation>Ofset baterii</translation>
+    </message>
+    <message>
         <location filename="../generaledit/calibration.ui" line="689"/>
         <source>PPM 3</source>
         <translation>PPM 3</translation>
@@ -834,9 +843,8 @@ Może być różny od języka firmware</translation>
         <translation>PPM 4</translation>
     </message>
     <message>
-        <location filename="../generaledit/calibration.ui" line="703"/>
         <source>Current</source>
-        <translation>Natężenie</translation>
+        <translation type="obsolete">Natężenie</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="193"/>
@@ -1379,7 +1387,7 @@ Może być różny od języka firmware</translation>
         <translation>Specjalne podziękowania Rafałowi Tomczakowi (RadioClone), Thomasowi Husteterowi (th9x) a także Erazowi Ravivowi(er9x i eePe)</translation>
     </message>
     <message>
-        <location filename="../contributorsdialog.cpp" line="70"/>
+        <location filename="../contributorsdialog.cpp" line="71"/>
         <source>OpenTX Blacklist</source>
         <translation>Indeks (zakaz) OpenTX</translation>
     </message>
@@ -1388,7 +1396,7 @@ Może być różny od języka firmware</translation>
         <translation type="obsolete">Wszystkim wam dziękujemy !!!</translation>
     </message>
     <message>
-        <location filename="../contributorsdialog.cpp" line="99"/>
+        <location filename="../contributorsdialog.cpp" line="102"/>
         <source>monthly</source>
         <translation>miesięcznie</translation>
     </message>
@@ -5496,25 +5504,25 @@ p, li { white-space: pre-wrap; }
     <name>MixesPanel</name>
     <message>
         <location filename="../modeledit/mixes.cpp" line="18"/>
-        <location filename="../modeledit/mixes.cpp" line="426"/>
+        <location filename="../modeledit/mixes.cpp" line="427"/>
         <source>Move Up</source>
         <translation>W górę</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="20"/>
-        <location filename="../modeledit/mixes.cpp" line="426"/>
+        <location filename="../modeledit/mixes.cpp" line="427"/>
         <source>Ctrl+Up</source>
         <translation>Ctrl+Up</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="21"/>
-        <location filename="../modeledit/mixes.cpp" line="427"/>
+        <location filename="../modeledit/mixes.cpp" line="428"/>
         <source>Move Down</source>
         <translation>W dół</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="23"/>
-        <location filename="../modeledit/mixes.cpp" line="427"/>
+        <location filename="../modeledit/mixes.cpp" line="428"/>
         <source>Ctrl+Down</source>
         <translation>Ctrl+Down</translation>
     </message>
@@ -5556,102 +5564,102 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete"> Ostrzeżenie(%1)</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="157"/>
+        <location filename="../modeledit/mixes.cpp" line="158"/>
         <source>Not enough available mixers!</source>
         <translation>Za mało dostępnych mikserów!</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="268"/>
+        <location filename="../modeledit/mixes.cpp" line="269"/>
         <source>Delete Selected Mixes?</source>
         <translation>Skasować wybrane miksery?</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="416"/>
+        <location filename="../modeledit/mixes.cpp" line="417"/>
         <source>&amp;Add</source>
         <translation>&amp;Dodaj</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="416"/>
+        <location filename="../modeledit/mixes.cpp" line="417"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="417"/>
+        <location filename="../modeledit/mixes.cpp" line="418"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edycja</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="417"/>
+        <location filename="../modeledit/mixes.cpp" line="418"/>
         <source>Enter</source>
         <translation>Enter</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="418"/>
+        <location filename="../modeledit/mixes.cpp" line="419"/>
         <source>&amp;Toggle highlight</source>
         <translation>&amp;Przełącz podświetlenie</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="418"/>
+        <location filename="../modeledit/mixes.cpp" line="419"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="420"/>
+        <location filename="../modeledit/mixes.cpp" line="421"/>
         <source>&amp;Delete</source>
         <translation>&amp;Wykasuj</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="420"/>
+        <location filename="../modeledit/mixes.cpp" line="421"/>
         <source>Delete</source>
         <translation>Wykasuj</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="421"/>
+        <location filename="../modeledit/mixes.cpp" line="422"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopiuj</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="421"/>
+        <location filename="../modeledit/mixes.cpp" line="422"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="422"/>
+        <location filename="../modeledit/mixes.cpp" line="423"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="422"/>
+        <location filename="../modeledit/mixes.cpp" line="423"/>
         <source>C&amp;ut</source>
         <translation>&amp;Wytnij</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="423"/>
+        <location filename="../modeledit/mixes.cpp" line="424"/>
         <source>&amp;Paste</source>
         <translation>&amp;Wklej</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="423"/>
+        <location filename="../modeledit/mixes.cpp" line="424"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="424"/>
+        <location filename="../modeledit/mixes.cpp" line="425"/>
         <source>Du&amp;plicate</source>
         <translation>&amp;Zduplikuj</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="424"/>
+        <location filename="../modeledit/mixes.cpp" line="425"/>
         <source>Ctrl+U</source>
         <translation>Ctrl+U</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="522"/>
+        <location filename="../modeledit/mixes.cpp" line="523"/>
         <source>Clear Mixes?</source>
         <translation>Wyczyść miksery?</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="522"/>
+        <location filename="../modeledit/mixes.cpp" line="523"/>
         <source>Really clear all the mixes?</source>
         <translation>Czy na pewno wyczyścić wszystkie miksery?</translation>
     </message>
@@ -5875,7 +5883,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../modelprinter.cpp" line="218"/>
         <location filename="../modelprinter.cpp" line="240"/>
         <location filename="../modelprinter.cpp" line="254"/>
-        <location filename="../modelprinter.cpp" line="402"/>
+        <location filename="../modelprinter.cpp" line="406"/>
         <source>FM%1</source>
         <translation>FM%1</translation>
     </message>
@@ -5901,94 +5909,94 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="295"/>
-        <location filename="../modelprinter.cpp" line="352"/>
+        <location filename="../modelprinter.cpp" line="356"/>
         <source>Weight</source>
         <translation>Waga</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="302"/>
-        <location filename="../modelprinter.cpp" line="358"/>
+        <location filename="../modelprinter.cpp" line="362"/>
         <source>Switch</source>
         <translation>Przełącznik</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="306"/>
-        <location filename="../modelprinter.cpp" line="361"/>
+        <location filename="../modelprinter.cpp" line="365"/>
         <source>NoTrim</source>
         <translation>Bez Trymera</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="364"/>
+        <location filename="../modelprinter.cpp" line="368"/>
         <source>No DR/Expo</source>
         <translation>Bez DR/Expo</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="365"/>
+        <location filename="../modelprinter.cpp" line="369"/>
         <source>Offset</source>
         <translation>Wyrównanie</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="373"/>
+        <location filename="../modelprinter.cpp" line="377"/>
         <source>Delay</source>
         <translation>Opóźnienie</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="375"/>
+        <location filename="../modelprinter.cpp" line="379"/>
         <source>Slow</source>
         <translation>Spowolnienie</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="377"/>
+        <location filename="../modelprinter.cpp" line="381"/>
         <source>Warn(%1)</source>
         <translation>(%1)Ostrzeżenie</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="411"/>
+        <location filename="../modelprinter.cpp" line="415"/>
         <source>Disabled in all flight modes</source>
         <translation>Wyłaczone we wszystkich fazach lotu</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="421"/>
+        <location filename="../modelprinter.cpp" line="425"/>
         <source>Flight modes(%1)</source>
         <translation>Fazy lotu(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="423"/>
+        <location filename="../modelprinter.cpp" line="427"/>
         <source>Flight mode(%1)</source>
         <translation>Faza lotu (%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="442"/>
+        <location filename="../modelprinter.cpp" line="446"/>
         <source>Edge(%1, [%2:%3])</source>
         <translation>Brzeg(%1, [%2:%3])</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="445"/>
+        <location filename="../modelprinter.cpp" line="449"/>
         <source>Sticky(%1, %2)</source>
         <translation>Stały(%1, %2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="448"/>
+        <location filename="../modelprinter.cpp" line="452"/>
         <source>Timer(%1, %2)</source>
         <translation>Timer(%1, %2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="541"/>
+        <location filename="../modelprinter.cpp" line="545"/>
         <source>Duration(%1s)</source>
         <translation>Trwanie(%1s)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="543"/>
+        <location filename="../modelprinter.cpp" line="547"/>
         <source>Delay(%1s)</source>
         <translation>Opóznienie(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="567"/>
+        <location filename="../modelprinter.cpp" line="571"/>
         <source>Custom</source>
         <translation>Własny</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="567"/>
+        <location filename="../modelprinter.cpp" line="571"/>
         <source>Standard</source>
         <translation>Standard</translation>
     </message>
@@ -7617,7 +7625,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1271"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1301"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1326"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1346"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1347"/>
         <source>Enable TEMPLATES menu</source>
         <translation>Uaktywnienie menu szablonów</translation>
     </message>
@@ -7637,7 +7645,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1272"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1302"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1327"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1347"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1348"/>
         <source>No flight modes</source>
         <translation>Firmware bez menu faz lotu</translation>
     </message>
@@ -7668,6 +7676,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1110"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1332"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1353"/>
         <source>Support for a third timer</source>
         <translation>Wsparcie dla 3ciego Timera</translation>
     </message>
@@ -7731,17 +7741,17 @@ p, li { white-space: pre-wrap; }
         <translation>Pozwolenie na kompensację błędów w czujnikach natężenia FrSky FAS</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1370"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1372"/>
         <source>FrSky Taranis Plus</source>
         <translation>FrSky Taranis Plus</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1376"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1378"/>
         <source>FrSky Taranis X9E</source>
         <translation>FrSky Taranis X9E</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1377"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1379"/>
         <source>Confirmation before radio shutdown</source>
         <translation>Potwierdzenie przez wyłączeniem radia</translation>
     </message>
@@ -7772,17 +7782,17 @@ p, li { white-space: pre-wrap; }
         <translation>Płyta Sky9x / 9X</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1344"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1345"/>
         <source>9XR-PRO</source>
         <translation>9XR-PRO</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1363"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1365"/>
         <source>FrSky Taranis</source>
         <translation>FrSky Taranis</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1364"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1366"/>
         <source>Haptic module installed</source>
         <translation>Moduł wibracji zainstalowany</translation>
     </message>
@@ -7814,7 +7824,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1273"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1303"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1328"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1348"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1349"/>
         <source>Disable curves menus</source>
         <translation>Bez menu krzywych</translation>
     </message>
@@ -7851,8 +7861,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1260"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1286"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1316"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1337"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1356"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1338"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1358"/>
         <source>Battery graph</source>
         <translation>Grafika baterii</translation>
     </message>
@@ -7914,7 +7924,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1278"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1308"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1329"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1349"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1350"/>
         <source>PPM center adjustment in limits</source>
         <translation>Limit dostrojenia centrowania PPM </translation>
     </message>
@@ -7926,7 +7936,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1280"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1310"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1331"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1351"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1352"/>
         <source>Symetrical Limits</source>
         <translation>Limity symetryczne</translation>
     </message>
@@ -7935,8 +7945,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1223"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1256"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1281"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1332"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1352"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1333"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1354"/>
         <source>Pots use in menus navigation</source>
         <translation>Użycie potencjometrów do nawigacji w menu</translation>
     </message>
@@ -7951,7 +7961,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1197"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1284"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1314"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1335"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1336"/>
         <source>Enable resetting values by pressing up and down at the same time</source>
         <translation>Szybkie nastawianie wartości
 (+) a (-) neguje wartość
@@ -7966,8 +7976,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1259"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1285"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1315"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1336"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1355"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1337"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1357"/>
         <source>No graphical check boxes and sliders</source>
         <translation>Brak graficznych pol wyboru i suwaków</translation>
     </message>
@@ -7978,8 +7988,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1261"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1287"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1317"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1338"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1357"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1339"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1359"/>
         <source>Don&apos;t use bold font for highlighting active items</source>
         <translation>Nie używaj podświetlenia dla wybranych aktywnych elementów, mikserów, krzywych, expo, etc</translation>
     </message>
@@ -8003,8 +8013,8 @@ p, li { white-space: pre-wrap; }
         <translation>Imperialne jednostki w telemetrii</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1339"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1358"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1340"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1360"/>
         <source>Bluetooth interface</source>
         <translation>Interface Bluetooth</translation>
     </message>
@@ -8016,7 +8026,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1279"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1309"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1330"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1350"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1351"/>
         <source>Global variables</source>
         <translation>Globalne zmienne</translation>
     </message>
@@ -8032,8 +8042,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1257"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1282"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1312"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1333"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1353"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1334"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1355"/>
         <source>In model setup menus automatically set source by moving the control</source>
         <translation>W menu ustawień modelu automatycznie wybierz źródło poprzez poruszenie nim</translation>
     </message>
@@ -8044,8 +8054,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1258"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1283"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1313"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1334"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1354"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1335"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1356"/>
         <source>In model setup menus automatically set switch by moving the control</source>
         <translation>W menu ustawień modelu automatycznie wybierz źródło poprzez poruszenie nim</translation>
     </message>
@@ -8073,7 +8083,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1325"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1345"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1346"/>
         <source>Enable HELI menu and cyclic mix support</source>
         <translation>Uaktywnij menu HELI i cyklicznych mikserów</translation>
     </message>
@@ -9267,43 +9277,43 @@ p, li { white-space: pre-wrap; }
         <translation>Równoległe użycie expo i krzywych nie jest dłużej wspierane </translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="575"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="578"/>
         <source>Source %1 cannot be exported on this board!</source>
         <translation>Źródło %1 nie może być wyeksportowane na tę płytę!</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1477"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1480"/>
         <source>OpenTX only accepts %1 points in all curves</source>
         <translation>OpenTX zezwala tylko na %1 punktów we wszystkich krzywych</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1484"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1487"/>
         <source>OpenTx only accepts %1 points in all curves</source>
         <translation>OpenTX zezwala tylko na %1 punktów we wszystkich krzywych</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2043"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2258"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2266"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2273"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2277"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2057"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2272"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2280"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2287"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2291"/>
         <source>OpenTX on this board doesn&apos;t accept this function</source>
         <translation>OpenTX na tej platformie nie dopuszcza tej funkcji</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2945"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2964"/>
         <source>OpenTX doesn&apos;t accept this telemetry protocol</source>
         <translation>OpenTX nie obsługuje tego protokołu telemetrii</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3066"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3078"/>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3085"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3097"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3104"/>
         <source>OpenTX doesn&apos;t accept this radio protocol</source>
         <translation>OpenTX nie obsługuje tego protokołu radiowego</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2958"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2977"/>
         <source>OpenTX doesn&apos;t allow this number of channels</source>
         <translation>OpenTX nie obsługuje tej ilości kanałów</translation>
     </message>
@@ -9412,7 +9422,7 @@ Zespół OpenTX.</translation>
         <translation>Zapis &apos;%1&apos; nieudany</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="627"/>
+        <location filename="../modeledit/telemetry.cpp" line="629"/>
         <source>-%1</source>
         <translation>-%1</translation>
     </message>
@@ -9977,96 +9987,96 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
 <context>
     <name>Telemetry</name>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="284"/>
+        <location filename="../modeledit/telemetry.ui" line="302"/>
         <source>A1</source>
         <translation>A1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="309"/>
+        <location filename="../modeledit/telemetry.ui" line="336"/>
         <source>A2</source>
         <translation>A2</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="247"/>
+        <location filename="../modeledit/telemetry.ui" line="256"/>
         <source>RSSI</source>
         <translation>RSSI</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="86"/>
+        <location filename="../modeledit/telemetry.ui" line="95"/>
         <source>Alarm 1</source>
         <translation>Alarm 1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="100"/>
-        <location filename="../modeledit/telemetry.ui" line="177"/>
+        <location filename="../modeledit/telemetry.ui" line="109"/>
+        <location filename="../modeledit/telemetry.ui" line="186"/>
         <source>----</source>
         <translation>----</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="105"/>
-        <location filename="../modeledit/telemetry.ui" line="182"/>
+        <location filename="../modeledit/telemetry.ui" line="114"/>
+        <location filename="../modeledit/telemetry.ui" line="191"/>
         <source>Yellow</source>
         <translation>Żółty</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="110"/>
-        <location filename="../modeledit/telemetry.ui" line="187"/>
+        <location filename="../modeledit/telemetry.ui" line="119"/>
+        <location filename="../modeledit/telemetry.ui" line="196"/>
         <source>Orange</source>
         <translation>Pomarańczowy</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="115"/>
-        <location filename="../modeledit/telemetry.ui" line="192"/>
+        <location filename="../modeledit/telemetry.ui" line="124"/>
+        <location filename="../modeledit/telemetry.ui" line="201"/>
         <source>Red</source>
         <translation>Czerwony</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="163"/>
+        <location filename="../modeledit/telemetry.ui" line="172"/>
         <source>Alarm 2</source>
         <translation>Alarm 2</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="500"/>
+        <location filename="../modeledit/telemetry.ui" line="536"/>
         <source>Center Silent</source>
         <translation>Środek cichy</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="583"/>
+        <location filename="../modeledit/telemetry.ui" line="628"/>
         <source>Altitude source</source>
         <translation>Źródło wysokości</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="596"/>
+        <location filename="../modeledit/telemetry.ui" line="641"/>
         <source>Volts source</source>
         <translation>Źródło napięcia</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="619"/>
+        <location filename="../modeledit/telemetry.ui" line="664"/>
         <source>Top Bar</source>
         <translation>Górny pasek</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="855"/>
+        <location filename="../modeledit/telemetry.ui" line="909"/>
         <source>Serial Protocol</source>
         <translation>Protokół szeregowy</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="908"/>
+        <location filename="../modeledit/telemetry.ui" line="971"/>
         <source>Sensors</source>
         <translation>Czujniki</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="915"/>
+        <location filename="../modeledit/telemetry.ui" line="978"/>
         <source>Disable multi sensor handling</source>
         <translation>Wyłącz obsługę wielu czujników</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="678"/>
+        <location filename="../modeledit/telemetry.ui" line="732"/>
         <source>Volt source</source>
         <translation>Źródło napięcia</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="720"/>
+        <location filename="../modeledit/telemetry.ui" line="774"/>
         <source>Current source</source>
         <translation>Źródło prądu(natężenia)</translation>
     </message>
@@ -10076,82 +10086,82 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <translation>Protokół</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="869"/>
+        <location filename="../modeledit/telemetry.ui" line="923"/>
         <source>None</source>
         <translation>Żadne</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="874"/>
+        <location filename="../modeledit/telemetry.ui" line="928"/>
         <source>FrSky Sensor Hub</source>
         <translation>Hub Czujników FrSky</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="755"/>
+        <location filename="../modeledit/telemetry.ui" line="809"/>
         <source>Blades</source>
         <translation>Łopaty śmigła</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="342"/>
+        <location filename="../modeledit/telemetry.ui" line="378"/>
         <source>Sink Max</source>
         <translation>Maks. Opadanie</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="452"/>
+        <location filename="../modeledit/telemetry.ui" line="488"/>
         <source>Climb Max</source>
         <translation>Maks. Wznoszenie</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="468"/>
+        <location filename="../modeledit/telemetry.ui" line="504"/>
         <source>Sink Min</source>
         <translation>Min. Opadanie</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="484"/>
+        <location filename="../modeledit/telemetry.ui" line="520"/>
         <source>Climb Min</source>
         <translation>Min. Wznoszenie</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="535"/>
+        <location filename="../modeledit/telemetry.ui" line="571"/>
         <source>Vario source</source>
         <translation>Źródło wario</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="522"/>
+        <location filename="../modeledit/telemetry.ui" line="558"/>
         <source>Vario limits</source>
         <translation>Limity wario</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="558"/>
+        <location filename="../modeledit/telemetry.ui" line="594"/>
         <source>Altimetry</source>
         <translation>Wysokościomierz</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="775"/>
+        <location filename="../modeledit/telemetry.ui" line="829"/>
         <source> mAh</source>
         <translation>mAh</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="791"/>
+        <location filename="../modeledit/telemetry.ui" line="845"/>
         <source> A</source>
         <translation>A</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="842"/>
+        <location filename="../modeledit/telemetry.ui" line="896"/>
         <source>Various</source>
         <translation>Różne</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="762"/>
+        <location filename="../modeledit/telemetry.ui" line="816"/>
         <source>mAh count</source>
         <translation>Licznik mAh</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="816"/>
+        <location filename="../modeledit/telemetry.ui" line="870"/>
         <source>FAS Offset</source>
         <translation>Wyrównanie FAS</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="823"/>
+        <location filename="../modeledit/telemetry.ui" line="877"/>
         <source>Persistent mAh</source>
         <translation>Stałe mAh</translation>
     </message>
@@ -10329,99 +10339,99 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
 <context>
     <name>TelemetryPanel</name>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="735"/>
+        <location filename="../modeledit/telemetry.cpp" line="737"/>
         <source>Telemetry screen %1</source>
         <translation>Panel Telemetrii %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="805"/>
+        <location filename="../modeledit/telemetry.cpp" line="807"/>
         <source>Low Alarm</source>
         <translation>Alarm niski</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="806"/>
+        <location filename="../modeledit/telemetry.cpp" line="808"/>
         <source>Critical Alarm</source>
         <translation>Alarm krytyczny</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="848"/>
+        <location filename="../modeledit/telemetry.cpp" line="850"/>
         <source>Winged Shadow How High</source>
         <translation>Winged Shadow How High</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="851"/>
+        <location filename="../modeledit/telemetry.cpp" line="853"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation>Winged Shadow How High (Nie obsługiwane)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="898"/>
-        <location filename="../modeledit/telemetry.cpp" line="906"/>
-        <location filename="../modeledit/telemetry.cpp" line="921"/>
+        <location filename="../modeledit/telemetry.cpp" line="900"/>
+        <location filename="../modeledit/telemetry.cpp" line="908"/>
+        <location filename="../modeledit/telemetry.cpp" line="923"/>
         <source>A1</source>
         <translation>A1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="895"/>
+        <location filename="../modeledit/telemetry.cpp" line="897"/>
         <source>Alti</source>
         <translation>Wysokościomierz</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="782"/>
+        <location filename="../modeledit/telemetry.cpp" line="784"/>
         <source>FrSky S.PORT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="783"/>
+        <location filename="../modeledit/telemetry.cpp" line="785"/>
         <source>FrSky D</source>
         <translation>FrSky D</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="785"/>
+        <location filename="../modeledit/telemetry.cpp" line="787"/>
         <source>FrSky D (cable)</source>
         <translation>FrSky D (kabel)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="896"/>
+        <location filename="../modeledit/telemetry.cpp" line="898"/>
         <source>Alti+</source>
         <translation>Wysokościomierz+</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="897"/>
+        <location filename="../modeledit/telemetry.cpp" line="899"/>
         <source>VSpeed</source>
         <translation>Prędkość Pionowa</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="899"/>
-        <location filename="../modeledit/telemetry.cpp" line="907"/>
-        <location filename="../modeledit/telemetry.cpp" line="922"/>
+        <location filename="../modeledit/telemetry.cpp" line="901"/>
+        <location filename="../modeledit/telemetry.cpp" line="909"/>
+        <location filename="../modeledit/telemetry.cpp" line="924"/>
         <source>A2</source>
         <translation>A2</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="909"/>
-        <location filename="../modeledit/telemetry.cpp" line="924"/>
+        <location filename="../modeledit/telemetry.cpp" line="911"/>
+        <location filename="../modeledit/telemetry.cpp" line="926"/>
         <source>A3</source>
         <translation>A3</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="910"/>
-        <location filename="../modeledit/telemetry.cpp" line="925"/>
+        <location filename="../modeledit/telemetry.cpp" line="912"/>
+        <location filename="../modeledit/telemetry.cpp" line="927"/>
         <source>A4</source>
         <translation>A4</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="912"/>
-        <location filename="../modeledit/telemetry.cpp" line="927"/>
+        <location filename="../modeledit/telemetry.cpp" line="914"/>
+        <location filename="../modeledit/telemetry.cpp" line="929"/>
         <source>FAS</source>
         <translation>FAS</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="913"/>
+        <location filename="../modeledit/telemetry.cpp" line="915"/>
         <source>Cells</source>
         <translation>Cele</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="920"/>
+        <location filename="../modeledit/telemetry.cpp" line="922"/>
         <source>---</source>
         <translation>---</translation>
     </message>
@@ -10527,8 +10537,112 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="275"/>
+        <source>Sensor :</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="369"/>
+        <source>V</source>
+        <translation>V</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="374"/>
+        <source>A</source>
+        <translation>A</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="379"/>
+        <source>mA</source>
+        <translation>mA</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="384"/>
+        <source>kt</source>
+        <translation>kt</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="389"/>
+        <source>m/s</source>
+        <translation>m/s</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="394"/>
+        <source>ft/s</source>
+        <translation>ft/s</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="399"/>
+        <source>km/h</source>
+        <translation>km/h</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="404"/>
+        <source>mph</source>
+        <translation>mph</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="409"/>
+        <source>m</source>
+        <translation>m</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="414"/>
+        <source>ft</source>
+        <translation>ft</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../modeledit/telemetry_sensor.ui" line="419"/>
+        <source>°C</source>
+        <translation>°C</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
+        <source>°F</source>
+        <translation>°F</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="429"/>
+        <source>%</source>
+        <translation>%</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="434"/>
+        <source>mAh</source>
+        <translation>mAh</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="439"/>
+        <source>W</source>
+        <translation>W</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="444"/>
+        <source>dBm</source>
+        <translation>dBm</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="454"/>
+        <source>g</source>
+        <translation>g</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
+        <source>°</source>
+        <translation>°</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="464"/>
+        <source>mL</source>
+        <translation>ml</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="469"/>
+        <source>US fl.Oz.</source>
+        <translation>US fl.Oz.</translation>
+    </message>
+    <message>
         <source>Amps Sensor :</source>
-        <translation>Czujnik Natężenia :</translation>
+        <translation type="obsolete">Czujnik Natężenia :</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="364"/>
@@ -10536,54 +10650,44 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <translation>Bezwymiarowe (-)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="369"/>
         <source>Voltage (V)</source>
-        <translation>Napięcie (V)</translation>
+        <translation type="obsolete">Napięcie (V)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="374"/>
         <source>Current (A)</source>
-        <translation>Natężenie (A)</translation>
+        <translation type="obsolete">Natężenie (A)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="379"/>
         <source>Current (mA)</source>
-        <translation>Natężenie (mA)</translation>
+        <translation type="obsolete">Natężenie (mA)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="384"/>
         <source>Speed (kts)</source>
-        <translation>Prędkość (kts)</translation>
+        <translation type="obsolete">Prędkość (kts)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="389"/>
         <source>Speed (m/s)</source>
-        <translation>Prędkość (m/s)</translation>
+        <translation type="obsolete">Prędkość (m/s)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="394"/>
         <source>Speed (ft/s)</source>
-        <translation>Prędkość (ft/s)</translation>
+        <translation type="obsolete">Prędkość (ft/s)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="399"/>
         <source>Speed (km/h)</source>
-        <translation>Prędkość (km/h)</translation>
+        <translation type="obsolete">Prędkość (km/h)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="404"/>
         <source>Speed (miles/h)</source>
-        <translation>Prędkość (mile/h)</translation>
+        <translation type="obsolete">Prędkość (mile/h)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="409"/>
         <source>Meters (m)</source>
-        <translation>Wysokość (m)</translation>
+        <translation type="obsolete">Wysokość (m)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="414"/>
         <source>Feet (ft)</source>
-        <translation>Stopa (ft)</translation>
+        <translation type="obsolete">Stopa (ft)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="515"/>
@@ -10596,34 +10700,28 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <translation>Dodatni</translation>
     </message>
     <message utf8="true">
-        <location filename="../modeledit/telemetry_sensor.ui" line="419"/>
         <source>Temp (°C)</source>
-        <translation>Temp (°C)</translation>
+        <translation type="obsolete">Temp (°C)</translation>
     </message>
     <message utf8="true">
-        <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
         <source>Temp (°F)</source>
-        <translation>Temp (°F)</translation>
+        <translation type="obsolete">Temp (°F)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="429"/>
         <source>Percentage (%)</source>
-        <translation>Procent (%)</translation>
+        <translation type="obsolete">Procent (%)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="434"/>
         <source>Energy (mAh)</source>
-        <translation>Energia (mAh)</translation>
+        <translation type="obsolete">Energia (mAh)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="439"/>
         <source>Power (W)</source>
-        <translation>Moc (W)</translation>
+        <translation type="obsolete">Moc (W)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="444"/>
         <source>RF Power (dBm)</source>
-        <translation>Moc RF (dBm)</translation>
+        <translation type="obsolete">Moc RF (dBm)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="449"/>
@@ -10631,24 +10729,20 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <translation>RPM</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="454"/>
         <source>Acceleration (g)</source>
-        <translation>Przyspieszenie (g)</translation>
+        <translation type="obsolete">Przyspieszenie (g)</translation>
     </message>
     <message utf8="true">
-        <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
         <source>Heading (°)</source>
-        <translation>Kurs (°)</translation>
+        <translation type="obsolete">Kurs (°)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="464"/>
         <source>Volume (mL)</source>
-        <translation>Objętość (mL)</translation>
+        <translation type="obsolete">Objętość (mL)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="469"/>
         <source>Volume (US fl.Oz.)</source>
-        <translation>Objętość (Uncje US)</translation>
+        <translation type="obsolete">Objętość (Uncje US)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="483"/>

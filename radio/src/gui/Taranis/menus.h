@@ -176,7 +176,7 @@ extern const CheckIncDecStops &stopsSwitch;
   (val), (val+1)
 
 int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=NULL, const CheckIncDecStops &stops=stops100);
-int8_t checkIncDecMovedSwitch(int8_t val);
+swsrc_t checkIncDecMovedSwitch(swsrc_t val);
 #define checkIncDecModel(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_MODEL)
 #define checkIncDecModelZero(event, i_val, i_max) checkIncDec(event, i_val, 0, i_max, EE_MODEL)
 #define checkIncDecGen(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_GENERAL)

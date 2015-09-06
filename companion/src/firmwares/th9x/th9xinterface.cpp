@@ -140,14 +140,14 @@ int Th9xInterface::getSize(const GeneralSettings & settings)
   return 0;
 }
 
-int Th9xInterface::isAvailable(Protocol proto, int port)
+int Th9xInterface::isAvailable(PulsesProtocol proto, int port)
 {
   switch (proto) {
-    case PPM:
-    case SILV_A:
-    case SILV_B:
-    case SILV_C:
-    case CTP1009:
+    case PULSES_PPM:
+    case PULSES_SILV_A:
+    case PULSES_SILV_B:
+    case PULSES_SILV_C:
+    case PULSES_CTP1009:
       return 1;
     default:
       return 0;

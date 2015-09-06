@@ -116,33 +116,91 @@ static int luaGetTime(lua_State *L)
   return 1;
 }
 
+static void luaPushDateTime(lua_State *L, uint32_t year, uint32_t mon, uint32_t day,
+                            uint32_t hour, uint32_t min, uint32_t sec)
+{
+  lua_createtable(L, 0, 6);
+  lua_pushtableinteger(L, "year", year);
+  lua_pushtableinteger(L, "mon", mon);
+  lua_pushtableinteger(L, "day", day);
+  lua_pushtableinteger(L, "hour", hour);
+  lua_pushtableinteger(L, "min", min);
+  lua_pushtableinteger(L, "sec", sec);
+}
+
 static int luaGetDateTime(lua_State *L)
 {
   struct gtm utm;
   gettime(&utm);
-  lua_newtable(L);
-  lua_pushtableinteger(L, "year", utm.tm_year+1900);
-  lua_pushtableinteger(L, "mon", utm.tm_mon+1);
-  lua_pushtableinteger(L, "day", utm.tm_mday);
-  lua_pushtableinteger(L, "hour", utm.tm_hour);
-  lua_pushtableinteger(L, "min", utm.tm_min);
-  lua_pushtableinteger(L, "sec", utm.tm_sec);
+  luaPushDateTime(L, utm.tm_year + 1900, utm.tm_mon + 1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec);
   return 1;
+}
+
+static void luaPushLatLon(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
+/* result is lua table containing members ["lat"] and ["lon"] as lua_Number (doubles) in decimal degrees */
+{
+  lua_Number lat = 0.0;
+  lua_Number lon = 0.0;
+  uint32_t gpsLat = 0;
+  uint32_t gpsLon = 0;
+
+  telemetryItem.gps.extractLatitudeLongitude(&gpsLat, &gpsLon); /* close, but not the format we want */
+  lat = gpsLat / 1000000.0;
+  if (telemetryItem.gps.latitudeNS == 'S') lat = -lat;
+  lon = gpsLon / 1000000.0;
+  if (telemetryItem.gps.longitudeEW == 'W') lon = -lon;
+
+  lua_createtable(L, 0, 2);
+  lua_pushtablenumber(L, "lat", lat);
+  lua_pushtablenumber(L, "lon", lon);
+}
+
+static void luaPushTelemetryDateTime(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
+{
+  luaPushDateTime(L, telemetryItem.datetime.year + 2000, telemetryItem.datetime.month, telemetryItem.datetime.day,
+                  telemetryItem.datetime.hour, telemetryItem.datetime.min, telemetryItem.datetime.sec);
+}
+
+static void luaPushCells(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
+{
+  if (telemetryItem.cells.count == 0)
+    lua_pushinteger(L, (int)0); // returns zero if no cells
+  else {
+    lua_createtable(L, telemetryItem.cells.count, 0);
+    for (int i = 0; i < telemetryItem.cells.count; i++) {
+      lua_pushnumber(L, i + 1);
+      lua_pushnumber(L, telemetryItem.cells.values[i].value / 100.0);
+      lua_settable(L, -3);
+    }
+  }
 }
 
 static void luaGetValueAndPush(int src)
 {
-  getvalue_t value = getValue(src);
+  getvalue_t value = getValue(src); // ignored for GPS, DATETIME, and CELLS
 
   if (src >= MIXSRC_FIRST_TELEM && src <= MIXSRC_LAST_TELEM) {
     src = (src-MIXSRC_FIRST_TELEM) / 3;
     // telemetry values
     if (TELEMETRY_STREAMING() && telemetryItems[src].isAvailable()) {
       TelemetrySensor & telemetrySensor = g_model.telemetrySensors[src];
-      if (telemetrySensor.prec > 0)
-        lua_pushnumber(L, float(value)/(telemetrySensor.prec == 2 ? 100.0 : 10.0));
-      else
-        lua_pushinteger(L, value);
+      switch (telemetrySensor.unit) {
+        case UNIT_GPS:
+          luaPushLatLon(telemetrySensor, telemetryItems[src]);
+          break;
+        case UNIT_DATETIME:
+          luaPushTelemetryDateTime(telemetrySensor, telemetryItems[src]);
+          break;
+        case UNIT_CELLS:
+          luaPushCells(telemetrySensor, telemetryItems[src]);
+          break;
+        default:
+          if (telemetrySensor.prec > 0)
+            lua_pushnumber(L, float(value)/(telemetrySensor.prec == 2 ? 100.0 : 10.0));
+          else
+            lua_pushinteger(L, value);
+          break;
+      }
     }
     else {
       // telemetry not working, return zero for telemetry sources
