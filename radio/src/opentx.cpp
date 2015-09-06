@@ -366,13 +366,15 @@ void defaultInputs()
 #if defined(TEMPLATES)
 inline void applyDefaultTemplate()
 {
-  applyTemplate(TMPL_SIMPLE_4CH);
+  applyTemplate(TMPL_SIMPLE_4CH); // calls eeDirty internally
 }
 #else
 void applyDefaultTemplate()
 {
 #if defined(VIRTUALINPUTS)
-  defaultInputs();
+  defaultInputs(); // calls eeDirty internally
+#else
+  eeDirty(EE_MODEL);
 #endif
 
   for (int i=0; i<NUM_STICKS; i++) {
