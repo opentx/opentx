@@ -1081,7 +1081,11 @@
 #define TR_ONLYPOSITIVE        "Positivo"
 #define TR_FILTER              "Filtro"
 #define TR_TELEMETRYFULL       "Tutti gli slot sono pieni!"
-#define TR_IGNOREIDS           TR(INDENT "No inst.","Ignora instanza")
+#define TR_IGNORE_INSTANCE     TR(INDENT "No inst.","Ignora instanza")
+#define TR_DISCOVER_SENSORS    INDENT "Discover new sensors"
+#define TR_STOP_DISCOVER_SENSORS INDENT "Stop discovery"
+#define TR_DELETE_ALL_SENSORS  INDENT "Delete all sensors"
+#define TR_CONFIRMDELETE       "Really delete all?"
 
 #define TR_MENU_INPUTS         "\314Ingressi"
 #define TR_MENU_LUA            "\322Lua scripts"

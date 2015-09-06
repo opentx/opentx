@@ -1079,7 +1079,11 @@
 #define TR_ONLYPOSITIVE        "Jen kladné"
 #define TR_FILTER              "Filtr"
 #define TR_TELEMETRYFULL       "Všechny sloty jsou plné!"
-#define TR_IGNOREIDS           INDENT "Ignoruj chyby ID"
+#define TR_IGNORE_INSTANCE     INDENT "Ignoruj chyby ID"
+#define TR_DISCOVER_SENSORS    INDENT "Discover new sensors"
+#define TR_STOP_DISCOVER_SENSORS INDENT "Stop discovery"
+#define TR_DELETE_ALL_SENSORS  INDENT "Delete all sensors"
+#define TR_CONFIRMDELETE       "Really delete all?"
 
 #define TR_MENU_INPUTS         "\314Vstupy"
 #define TR_MENU_LUA            "\322Lua skripty"

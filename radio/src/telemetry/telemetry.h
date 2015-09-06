@@ -165,6 +165,7 @@ class TelemetryItem
 };
 
 extern TelemetryItem telemetryItems[MAX_SENSORS];
+extern uint8_t allowNewSensors;
 
 inline bool isTelemetryFieldAvailable(int index)
 {

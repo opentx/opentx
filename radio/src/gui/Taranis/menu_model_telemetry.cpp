@@ -73,8 +73,10 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_SENSOR30,
   ITEM_TELEMETRY_SENSOR31,
   ITEM_TELEMETRY_SENSOR32,
-  ITEM_TELEMETRY_NEWSENSOR,
-  ITEM_TELEMETRY_IGNORE_SENSORID,
+  ITEM_TELEMETRY_DISCOVER_SENSORS,
+  ITEM_TELEMETRY_NEW_SENSOR,
+  ITEM_TELEMETRY_DELETE_ALL_SENSORS,
+  ITEM_TELEMETRY_IGNORE_SENSOR_INSTANCE,
 #if defined(VARIO)
   ITEM_TELEMETRY_VARIO_LABEL,
   ITEM_TELEMETRY_VARIO_SOURCE,
@@ -110,39 +112,39 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_MAX
 };
 
-#define TELEM_COL1        (1*FW)
-#define TELEM_COL2        (16*FW)
-#define TELEM_COL3        (28*FW)
-#define TELEM_BARS_COLMIN TELEM_COL2
-#define TELEM_BARS_COLMAX TELEM_COL3
-#define TELEM_SCRTYPE_COL TELEM_COL2
+#define TELEM_COL1                    (1*FW)
+#define TELEM_COL2                    (16*FW)
+#define TELEM_COL3                    (28*FW)
+#define TELEM_BARS_COLMIN             TELEM_COL2
+#define TELEM_BARS_COLMAX             TELEM_COL3
+#define TELEM_SCRTYPE_COL             TELEM_COL2
 
-#define IF_FAS_OFFSET(x)  x,
-#define IS_RANGE_DEFINED(k) (g_model.frsky.channels[k].ratio > 0)
+#define IF_FAS_OFFSET(x)              x,
+#define IS_RANGE_DEFINED(k)           (g_model.frsky.channels[k].ratio > 0)
 
-#define SENSOR_ROWS(x)    (isTelemetryFieldAvailable(x) ? (uint8_t)0 : HIDDEN_ROW)
-#define SENSORS_ROWS      LABEL(Sensors), SENSOR_ROWS(0), SENSOR_ROWS(1), SENSOR_ROWS(2), SENSOR_ROWS(3), SENSOR_ROWS(4), SENSOR_ROWS(5), SENSOR_ROWS(6), SENSOR_ROWS(7), SENSOR_ROWS(8), SENSOR_ROWS(9), SENSOR_ROWS(10), SENSOR_ROWS(11), SENSOR_ROWS(12), SENSOR_ROWS(13), SENSOR_ROWS(14), SENSOR_ROWS(15), SENSOR_ROWS(16), SENSOR_ROWS(17), SENSOR_ROWS(18), SENSOR_ROWS(19), SENSOR_ROWS(20), SENSOR_ROWS(21), SENSOR_ROWS(22), SENSOR_ROWS(23), SENSOR_ROWS(24), SENSOR_ROWS(25), SENSOR_ROWS(26), SENSOR_ROWS(27), SENSOR_ROWS(28), SENSOR_ROWS(29), SENSOR_ROWS(30), SENSOR_ROWS(31), 0, 0,
+#define SENSOR_ROWS(x)                (isTelemetryFieldAvailable(x) ? (uint8_t)0 : HIDDEN_ROW)
+#define SENSORS_ROWS                  LABEL(Sensors), SENSOR_ROWS(0), SENSOR_ROWS(1), SENSOR_ROWS(2), SENSOR_ROWS(3), SENSOR_ROWS(4), SENSOR_ROWS(5), SENSOR_ROWS(6), SENSOR_ROWS(7), SENSOR_ROWS(8), SENSOR_ROWS(9), SENSOR_ROWS(10), SENSOR_ROWS(11), SENSOR_ROWS(12), SENSOR_ROWS(13), SENSOR_ROWS(14), SENSOR_ROWS(15), SENSOR_ROWS(16), SENSOR_ROWS(17), SENSOR_ROWS(18), SENSOR_ROWS(19), SENSOR_ROWS(20), SENSOR_ROWS(21), SENSOR_ROWS(22), SENSOR_ROWS(23), SENSOR_ROWS(24), SENSOR_ROWS(25), SENSOR_ROWS(26), SENSOR_ROWS(27), SENSOR_ROWS(28), SENSOR_ROWS(29), SENSOR_ROWS(30), SENSOR_ROWS(31), 0, 0, 0, 0,
 #if defined(VARIO)
-  #define VARIO_ROWS      LABEL(Vario), 0, 1, 2,
+  #define VARIO_ROWS                  LABEL(Vario), 0, 1, 2,
 #else
   #define VARIO_ROWS
 #endif
-#define RSSI_ROWS         LABEL(RSSI), 0, 0,
+#define RSSI_ROWS                     LABEL(RSSI), 0, 0,
 #if defined(LUA)
-  #define SCREEN_TYPE_ROWS  1
+  #define SCREEN_TYPE_ROWS            1
 #else
-  #define SCREEN_TYPE_ROWS  0
+  #define SCREEN_TYPE_ROWS            0
 #endif
-#define VARIO_RANGE_ROWS  3
-#define TELEMETRY_TYPE_ROWS  (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW,
+#define VARIO_RANGE_ROWS              3
+#define TELEMETRY_TYPE_ROWS           (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW,
 
 #if defined(LUA)
-  #define TELEMETRY_SCREEN_LINE(x) ((TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_NONE || TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_SCRIPT) ? HIDDEN_ROW : (uint8_t)2)
+  #define TELEMETRY_SCREEN_LINE(x)    ((TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_NONE || TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_SCRIPT) ? HIDDEN_ROW : (uint8_t)2)
 #else
-  #define TELEMETRY_SCREEN_LINE(x) (TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_NONE ? HIDDEN_ROW : (uint8_t)2)
+  #define TELEMETRY_SCREEN_LINE(x)    (TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_NONE ? HIDDEN_ROW : (uint8_t)2)
 #endif
-#define TELEMETRY_SCREEN_ROWS(x) SCREEN_TYPE_ROWS, TELEMETRY_SCREEN_LINE(x), TELEMETRY_SCREEN_LINE(x), TELEMETRY_SCREEN_LINE(x), TELEMETRY_SCREEN_LINE(x)
-#define TELEMETRY_CURRENT_EDIT_SCREEN(k) (k < ITEM_TELEMETRY_SCREEN_LABEL2 ? 0 : (k < ITEM_TELEMETRY_SCREEN_LABEL3 ? 1 : (k < ITEM_TELEMETRY_SCREEN_LABEL4 ? 2 : 3)))
+#define TELEMETRY_SCREEN_ROWS(x)      SCREEN_TYPE_ROWS, TELEMETRY_SCREEN_LINE(x), TELEMETRY_SCREEN_LINE(x), TELEMETRY_SCREEN_LINE(x), TELEMETRY_SCREEN_LINE(x)
+#define TELEMETRY_CURRENT_SCREEN(k)   (k < ITEM_TELEMETRY_SCREEN_LABEL2 ? 0 : (k < ITEM_TELEMETRY_SCREEN_LABEL3 ? 1 : (k < ITEM_TELEMETRY_SCREEN_LABEL4 ? 2 : 3)))
 
 enum SensorFields {
   SENSOR_FIELD_NAME,
@@ -467,7 +469,7 @@ void onSensorMenu(const char *result)
       if (index<MAX_SENSORS && isTelemetryFieldAvailable(index))
         m_posVert += 1;
       else
-        m_posVert = ITEM_TELEMETRY_NEWSENSOR;
+        m_posVert = ITEM_TELEMETRY_NEW_SENSOR;
     }
     else if (result == STR_COPY) {
       int newIndex = availableTelemetryIndex();
@@ -492,7 +494,7 @@ void onSensorMenu(const char *result)
 void onTelemetryScriptFileSelectionMenu(const char *result)
 {
   int sub = m_posVert;
-  int screenIndex = TELEMETRY_CURRENT_EDIT_SCREEN(sub);
+  int screenIndex = TELEMETRY_CURRENT_SCREEN(sub);
 
   if (result == STR_UPDATE_LIST) {
     if (!listSdFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), NULL)) {
@@ -517,6 +519,13 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
 
 void menuModelTelemetry(uint8_t event)
 {
+  if (s_warning_result) {
+    s_warning_result = 0;
+    for (int i=0; i<MAX_SENSORS; i++) {
+      delTelemetryIndex(i);
+    }
+  }
+  
   MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS LABEL(TopBar), 0, 0, TOPLCD_ROWS TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), CASE_CPUARM(TELEMETRY_SCREEN_ROWS(2)) CASE_CPUARM(TELEMETRY_SCREEN_ROWS(3)) });
 
   int sub = m_posVert;
@@ -585,7 +594,15 @@ void menuModelTelemetry(uint8_t event)
         }
         break;
 
-      case ITEM_TELEMETRY_NEWSENSOR:
+      case ITEM_TELEMETRY_DISCOVER_SENSORS:
+        lcd_putsAtt(0, y, allowNewSensors ? STR_STOP_DISCOVER_SENSORS : STR_DISCOVER_SENSORS, attr);
+        if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
+          s_editMode = 0;
+          allowNewSensors = !allowNewSensors;
+        }
+        break;
+
+      case ITEM_TELEMETRY_NEW_SENSOR:
         lcd_putsAtt(0, y, STR_TELEMETRY_NEWSENSOR, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
@@ -600,8 +617,17 @@ void menuModelTelemetry(uint8_t event)
         }
         break;
 
-      case ITEM_TELEMETRY_IGNORE_SENSORID:
-        ON_OFF_MENU_ITEM(g_model.ignoreSensorIds, TELEM_COL2, y, STR_IGNOREIDS, attr, event);
+      case ITEM_TELEMETRY_DELETE_ALL_SENSORS:
+        lcd_putsAtt(0, y, STR_DELETE_ALL_SENSORS, attr);
+        s_editMode = 0;
+        if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
+          killEvents(KEY_ENTER);
+          POPUP_CONFIRMATION(STR_CONFIRMDELETE);
+        }
+        break;        
+
+      case ITEM_TELEMETRY_IGNORE_SENSOR_INSTANCE:
+        ON_OFF_MENU_ITEM(g_model.ignoreSensorIds, TELEM_COL2, y, STR_IGNORE_INSTANCE, attr, event);
         break;
 
       case ITEM_TELEMETRY_RSSI_LABEL:
@@ -705,7 +731,7 @@ void menuModelTelemetry(uint8_t event)
       case ITEM_TELEMETRY_SCREEN_LABEL3:
       case ITEM_TELEMETRY_SCREEN_LABEL4:
       {
-        uint8_t screenIndex = TELEMETRY_CURRENT_EDIT_SCREEN(k);
+        uint8_t screenIndex = TELEMETRY_CURRENT_SCREEN(k);
         putsStrIdx(0*FW, y, STR_SCREEN, screenIndex+1);
         TelemetryScreenType oldScreenType = TELEMETRY_SCREEN_TYPE(screenIndex);
         TelemetryScreenType newScreenType = (TelemetryScreenType)selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (m_posHorz==0 ? attr : 0), event);
