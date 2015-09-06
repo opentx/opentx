@@ -1364,8 +1364,8 @@ void registerOpenTxFirmwares()
   firmware->addOption("battgraph", QObject::tr("Battery graph"));
   firmware->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   firmware->addOption("bluetooth", QObject::tr("Bluetooth interface"));
-  firmware->addOption("rtc", QObject::tr("Optional RTC added"));
-  firmware->addOption("volume", QObject::tr("i2c volume control added"));
+//  firmware->addOption("rtc", QObject::tr("Optional RTC added"));
+//  firmware->addOption("volume", QObject::tr("i2c volume control added"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
