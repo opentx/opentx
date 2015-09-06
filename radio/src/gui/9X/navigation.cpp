@@ -628,69 +628,71 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       break;
   }
 
-#if defined(CPUARM)
+  uint8_t maxLines = menuTab ? LCD_LINES-1 : LCD_LINES-2;
+
   int linesCount = maxrow;
 
-    if (l_posVert == 0 || (l_posVert==1 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW) || (l_posVert==2 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW)) {
-      s_pgOfs = 0;
-      if (horTab) {
-        linesCount = 0;
-        for (int i=0; i<maxrow; i++) {
-          if (i>=horTabMax || horTab[i] != HIDDEN_ROW) {
-            linesCount++;
-          }
+#if defined(CPUARM)
+  if (l_posVert == 0 || (l_posVert==1 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW) || (l_posVert==2 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW)) {
+    s_pgOfs = 0;
+    if (horTab) {
+      linesCount = 0;
+      for (int i=0; i<maxrow; i++) {
+        if (i>=horTabMax || horTab[i] != HIDDEN_ROW) {
+          linesCount++;
         }
       }
     }
-    else if (horTab) {
-      if (maxrow > NUM_BODY_LINES) {
-        while (1) {
-          vertpos_t firstLine = 0;
-          for (int numLines=0; firstLine<maxrow && numLines<s_pgOfs; firstLine++) {
-            if (firstLine>=horTabMax || horTab[firstLine+1] != HIDDEN_ROW) {
+  }
+  else if (horTab) {
+    if (maxrow > maxLines) {
+      while (1) {
+        vertpos_t firstLine = 0;
+        for (int numLines=0; firstLine<maxrow && numLines<s_pgOfs; firstLine++) {
+          if (firstLine>=horTabMax || horTab[firstLine+1] != HIDDEN_ROW) {
+            numLines++;
+          }
+        }
+        if (l_posVert <= firstLine) {
+          s_pgOfs--;
+        }
+        else {
+          vertpos_t lastLine = firstLine;
+          for (int numLines=0; lastLine<maxrow && numLines<maxLines; lastLine++) {
+            if (lastLine>=horTabMax || horTab[lastLine+1] != HIDDEN_ROW) {
               numLines++;
             }
           }
-          if (l_posVert <= firstLine) {
-            s_pgOfs--;
+          if (l_posVert > lastLine) {
+            s_pgOfs++;
           }
           else {
-            vertpos_t lastLine = firstLine;
-            for (int numLines=0; lastLine<maxrow && numLines<NUM_BODY_LINES; lastLine++) {
-              if (lastLine>=horTabMax || horTab[lastLine+1] != HIDDEN_ROW) {
-                numLines++;
+            linesCount = s_pgOfs + maxLines;
+            for (int i=lastLine; i<maxrow; i++) {
+              if (i>=horTabMax || horTab[i] != HIDDEN_ROW) {
+                linesCount++;
               }
             }
-            if (l_posVert > lastLine) {
-              s_pgOfs++;
-            }
-            else {
-              linesCount = s_pgOfs + NUM_BODY_LINES;
-              for (int i=lastLine; i<maxrow; i++) {
-                if (i>=horTabMax || horTab[i] != HIDDEN_ROW) {
-                  linesCount++;
-                }
-              }
-              break;
-            }
+            break;
           }
         }
       }
     }
-    else {
-      if (l_posVert>NUM_BODY_LINES+s_pgOfs) {
-        s_pgOfs = l_posVert-NUM_BODY_LINES;
-      }
-      else if (l_posVert<=s_pgOfs) {
-        s_pgOfs = l_posVert-1;
-      }
-    }
+  }
 #else
-  uint8_t max = menuTab ? LCD_LINES-1 : LCD_LINES-2;
-  if (l_posVert<1) s_pgOfs=0;
-  else if (l_posVert>max+s_pgOfs) s_pgOfs = l_posVert-max;
-  else if (l_posVert<1+s_pgOfs) s_pgOfs = l_posVert-1;
+  if (l_posVert<1) {
+    s_pgOfs=0;
+  }
 #endif
+  else {
+    if (l_posVert>maxLines+s_pgOfs) {
+      s_pgOfs = l_posVert-maxLines;
+    }
+    else if (l_posVert<=s_pgOfs) {
+      s_pgOfs = l_posVert-1;
+    }
+  }
+
   m_posVert = l_posVert;
   m_posHorz = l_posHorz;
 #if !defined(CPUM64)
