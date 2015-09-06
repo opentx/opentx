@@ -903,6 +903,10 @@
 #define TR_SMOOTH              "Mjuk"
 #define TR_COPY_STICKS_TO_OFS  "Spara spakar som offset"
 #define TR_COPY_TRIMS_TO_OFS   "Spara trimmar som offset"
+#define TR_INCDEC              "Inc/Decrement"
+#define TR_GLOBALVAR           "Global Var"
+#define TR_MIXSOURCE           "Mixer Source"
+#define TR_CONSTANT            "Constant"
 #define TR_PERSISTENT_MAH      INDENT "Lagra mAh"
 #define TR_PREFLIGHT           "Startkontroller"
 #define TR_CHECKLIST           TR(INDENT "Checklista", INDENT "Visa Checklista")

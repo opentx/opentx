@@ -940,6 +940,10 @@
 #define TR_SMOOTH              "Lissage"
 #define TR_COPY_STICKS_TO_OFS  "Manche vers subtrim"
 #define TR_COPY_TRIMS_TO_OFS   "Trim vers subtrim"
+#define TR_INCDEC              "Inc/Decrement"
+#define TR_GLOBALVAR           "Global Var"
+#define TR_MIXSOURCE           "Mixer Source"
+#define TR_CONSTANT            "Constant"
 #define TR_PERSISTENT_MAH      TR(INDENT "Enr. mAh", INDENT "Enregistrer mAh")
 #define TR_PREFLIGHT           "Vérifications avant vol"
 #define TR_CHECKLIST           TR(INDENT "Notes", INDENT "Afficher notes")
