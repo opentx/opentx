@@ -934,10 +934,10 @@
 #define TR_SMOOTH              "Lissage"
 #define TR_COPY_STICKS_TO_OFS  "Manche vers subtrim"
 #define TR_COPY_TRIMS_TO_OFS   "Trim vers subtrim"
-#define TR_INCDEC              "Inc/Decrement"
-#define TR_GLOBALVAR           "Global Var"
-#define TR_MIXSOURCE           "Mixer Source"
-#define TR_CONSTANT            "Constant"
+#define TR_INCDEC              "Inc/Décrementer"
+#define TR_GLOBALVAR           "Var. Globale"
+#define TR_MIXSOURCE           "Source mixeur"
+#define TR_CONSTANT            "Constante"
 #define TR_PERSISTENT_MAH      TR(INDENT "Enr. mAh", INDENT "Enregistrer mAh")
 #define TR_PREFLIGHT           "Vérifications avant vol"
 #define TR_CHECKLIST           TR(INDENT "Notes", INDENT "Afficher notes")
@@ -949,7 +949,7 @@
 #define TR_EEBACKUP            "\004[ENTER Long]: Sauvegarder l'EEPROM"
 #define TR_FACTORYRESET        "\016[MENU Long]: RAZ d'usine"
 #define TR_CONFIRMRESET        "Effacer TOUS modèles/réglages?"
-#define TR_TO_MANY_LUA_SCRIPTS "Too many Lua scripts!"
+#define TR_TO_MANY_LUA_SCRIPTS "Trop de scripts lua!"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "RSSI Max"
