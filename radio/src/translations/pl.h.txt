@@ -123,7 +123,7 @@
 #define TR_VDISPLAYTRIMS       "Nie\0  ""Zmień\0""Tak\0"
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "Cichy Pik  \0DźwiękHaptic"
+#define TR_VBEEPCOUNTDOWN      "Cichy Pik  \0DźwiękWibrac"
 
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Ton\0  ""Cicho "
@@ -1083,10 +1083,10 @@
 #define TR_FILTER              "Filtr"
 #define TR_TELEMETRYFULL       "Wszyskie miejsca zajęte!"
 #define TR_IGNORE_INSTANCE     INDENT "Ignoruj przypadek"
-#define TR_DISCOVER_SENSORS    INDENT "Discover new sensors"
-#define TR_STOP_DISCOVER_SENSORS INDENT "Stop discovery"
-#define TR_DELETE_ALL_SENSORS  INDENT "Delete all sensors"
-#define TR_CONFIRMDELETE       "Really delete all?"
+#define TR_DISCOVER_SENSORS    INDENT "Znajdź nowe czujniki"
+#define TR_STOP_DISCOVER_SENSORS INDENT "Szukanie STOP "
+#define TR_DELETE_ALL_SENSORS  INDENT "Usuń czujniki     "
+#define TR_CONFIRMDELETE       "Usunąć wszystkie ?"
 
 #define TR_MENU_INPUTS         "\314Wejści"
 #define TR_MENU_LUA            "\322SkryptyLUA"
