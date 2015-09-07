@@ -1,4 +1,4 @@
-<h2>Version 2.1.2 / <set date></h2>
+<h2>Version 2.1.2 / 2015-09-07</h2>
 
 <ul>
 <li>Fixed: Lua model scripts outputs not working in a simulator (<a href=https://github.com/opentx/opentx/issues/2684>#2684</a>)</li>
@@ -11,6 +11,9 @@
 <li>Negative telemetry offset value was reset when writing back to radio (<a href=https://github.com/opentx/opentx/issues/2738>#2738</a>)</li>
 <li>Telemetry sensor names were not displayed (<a href=https://github.com/opentx/opentx/issues/2807>#2807</a>)</li>
 <li>Mixes multiplex representation now the same as on the radio (<a href=https://github.com/opentx/opentx/issues/2808>#2808</a>)</li>
+<li>Fixed language-related startup crash on Mac  (<a href=https://github.com/opentx/opentx/issues/2815>#2815</a>)</li>
+<li>Fixed issues with conversion from 2.0 (<a href=https://github.com/opentx/opentx/issues/2809>#2809</a>, <a href=https://github.com/opentx/opentx/issues/2800>#2800</a>)</li>
+<li>Fixed Throttle source export issue on X9E  (<a href=https://github.com/opentx/opentx/issues/2844>#2844</a>)</li>
 </ul>
 
 
