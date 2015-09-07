@@ -630,9 +630,8 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
   uint8_t maxLines = menuTab ? LCD_LINES-1 : LCD_LINES-2;
 
-  int linesCount = maxrow;
-
 #if defined(CPUARM)
+  int linesCount = maxrow;
   if (l_posVert == 0 || (l_posVert==1 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW) || (l_posVert==2 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW)) {
     s_pgOfs = 0;
     if (horTab) {
