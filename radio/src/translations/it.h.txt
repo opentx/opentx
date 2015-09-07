@@ -122,7 +122,7 @@
 #define TR_VDISPLAYTRIMS       "No\0   ""Cambio""Si\0 "
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "NienteSuoni\0Voce\0 Haptic"
+#define TR_VBEEPCOUNTDOWN      "NienteSuoni\0Voce\0 Vibra\0"
 
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Tono\0 ""Silent"
@@ -616,8 +616,8 @@
 #define TR_FADEIN              "Diss.In"
 #define TR_FADEOUT             "Diss.Out"
 #define TR_DEFAULT             "(Predefinita)"
-#define TR_CHECKTRIMS          "\003Contr.\004Trim"
-#define OFS_CHECKTRIMS         (9*FW)
+#define TR_CHECKTRIMS          CENTER "\006Check\012Trims"
+#define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           "Tipo Ciclico"
 #define TR_COLLECTIVE          TR("Collettivo","Origine Collettivo")
 #define TR_AILERON             "Lateral cyc. source"
@@ -1080,10 +1080,10 @@
 #define TR_FILTER              "Filtro"
 #define TR_TELEMETRYFULL       "Tutti gli slot sono pieni!"
 #define TR_IGNORE_INSTANCE     TR(INDENT "No inst.","Ignora instanza")
-#define TR_DISCOVER_SENSORS    INDENT "Discover new sensors"
-#define TR_STOP_DISCOVER_SENSORS INDENT "Stop discovery"
-#define TR_DELETE_ALL_SENSORS  INDENT "Delete all sensors"
-#define TR_CONFIRMDELETE       "Really delete all?"
+#define TR_DISCOVER_SENSORS    INDENT "Cerca nuovi sensori"
+#define TR_STOP_DISCOVER_SENSORS INDENT "Ferma ricerca.."
+#define TR_DELETE_ALL_SENSORS  INDENT "Elimina tutti i sensori"
+#define TR_CONFIRMDELETE       "Confermi eliminazione?"
 
 #define TR_MENU_INPUTS         "\314Ingressi"
 #define TR_MENU_LUA            "\322Lua scripts"
