@@ -2,7 +2,7 @@
 
 <b>PLEASE NOTE the following important information:</b>
 <ul>
-<li>FrSky Taranis X9E users are highly advised to upgrade to this version or its equivalent when provided by FrSky due to the risk of shutdown upon software error that was present in previous versions.</li>
+<li>FrSky Taranis X9E users are highly advised to upgrade firmware (including bootloader!) to this version or its equivalent when provided by FrSky due to the risk of shutdown upon software error that was present in previous versions.</li>
 <li>Telemetry sensors are no longer continuously detected, it is now necessary to go to the telemetry setup page and select the "Discover new sensors" menu item. This prevents creation of non-existing sensors in case if transmission errors, and allows deleting sensors that are received but considered uninteresting.</li>
 </ul>
 
@@ -21,6 +21,7 @@
 <li>Improved "Adjust GVAR" SF source selection with popup (<a href=https://github.com/opentx/opentx/issues/2418>#2418</a>)</li>
 <li>Improved mixer screen layout (<a href=https://github.com/opentx/opentx/issues/2785>#2785</a>)</li>
 <li>Added support for the AR9X replacement board (prototype) for the Turnigy 9X radio, info <a href=http://www.rcgroups.com/forums/showthread.php?t=2479552>here</a></li>
+<li>Added a virtual serial port over USB and a command line interface (via option, replacing joystick) (<a href=https://github.com/opentx/opentx/issues/2595>#2595</a>)</li>
 </ul>
 
 [X9E]
