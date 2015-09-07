@@ -14,6 +14,7 @@
 <li>Fixed language-related startup crash on Mac  (<a href=https://github.com/opentx/opentx/issues/2815>#2815</a>)</li>
 <li>Fixed issues with conversion from 2.0 (<a href=https://github.com/opentx/opentx/issues/2809>#2809</a>, <a href=https://github.com/opentx/opentx/issues/2800>#2800</a>)</li>
 <li>Fixed Throttle source export issue on X9E  (<a href=https://github.com/opentx/opentx/issues/2844>#2844</a>)</li>
+<li>Added support for the AR9X replacement board (prototype) for the Turnigy 9X radio, info <a href=http://www.rcgroups.com/forums/showthread.php?t=2479552>here</a></li>
 </ul>
 
 
