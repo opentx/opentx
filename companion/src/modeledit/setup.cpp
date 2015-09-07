@@ -689,7 +689,7 @@ void SetupPanel::on_trimIncrement_currentIndexChanged(int index)
 void SetupPanel::on_throttleSource_currentIndexChanged(int index)
 {
   if (!lock) {
-    model->thrTraceSrc = ui->throttleSource->itemData(index).toInt();
+    model->thrTraceSrc = index;
     emit modified();
   }
 }
@@ -735,33 +735,38 @@ void SetupPanel::on_image_currentIndexChanged(int index)
 
 void SetupPanel::populateThrottleSourceCB()
 {
-  const QString sources9x[] = { QObject::tr("THR"), QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3")};
-  const QString sourcesTaranis[] = { QObject::tr("THR"), QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("LS"), QObject::tr("RS")};
+  const QString pots9x[] = { QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3")};
+  const QString potsTaranis[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("LS"), QObject::tr("RS")};
+  const QString potsTaranisX9E[] = { QObject::tr("F1"), QObject::tr("F2"), QObject::tr("F3"), QObject::tr("F4"), QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS")};
 
   unsigned int i;
 
   lock = true;
 
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-    for (i=0; i<6; i++) {
-      ui->throttleSource->addItem(sourcesTaranis[i], i);
+  ui->throttleSource->addItem(QObject::tr("THR"));
+
+  if (IS_TARANIS_X9E(GetEepromInterface()->getBoard())) {
+    for (i=0; i<8; i++) {
+      ui->throttleSource->addItem(potsTaranisX9E[i], i);
+    }
+  }
+  else if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    for (i=0; i<5; i++) {
+      ui->throttleSource->addItem(potsTaranis[i], i);
     }
   }
   else {
-    for (i=0; i<4; i++) {
-      ui->throttleSource->addItem(sources9x[i], i);
+    for (i=0; i<3; i++) {
+      ui->throttleSource->addItem(pots9x[i], i);
     }
   }
 
-  if (model->thrTraceSrc < i)
-    ui->throttleSource->setCurrentIndex(model->thrTraceSrc);
-
   int channels = (IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
   for (int i=0; i<channels; i++) {
-    ui->throttleSource->addItem(ModelPrinter::printChannelName(i), THROTTLE_SOURCE_FIRST_CHANNEL+i);
-    if (model->thrTraceSrc == unsigned(THROTTLE_SOURCE_FIRST_CHANNEL+i))
-      ui->throttleSource->setCurrentIndex(ui->throttleSource->count()-1);
+    ui->throttleSource->addItem(ModelPrinter::printChannelName(i));
   }
+
+  ui->throttleSource->setCurrentIndex(model->thrTraceSrc);
 
   lock = false;
 }

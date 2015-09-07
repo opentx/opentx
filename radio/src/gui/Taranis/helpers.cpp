@@ -304,7 +304,7 @@ bool isSwitchAvailableInTimers(int swtch)
 
 bool isThrottleSourceAvailable(int source)
 {
-  if (source == THROTTLE_SOURCE_S3 && !IS_POT_AVAILABLE(POT3))
+  if (source >= THROTTLE_SOURCE_FIRST_POT && source < THROTTLE_SOURCE_FIRST_POT+NUM_POTS && !IS_POT_AVAILABLE(POT1+source-THROTTLE_SOURCE_FIRST_POT))
     return false;
   else
     return true;
