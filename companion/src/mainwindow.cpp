@@ -1262,10 +1262,12 @@ bool MainWindow::isValidEEPROM(QString eepromfile)
         return false;
       }
       file.close();
+
       RadioData * radioData = new RadioData();
-      bool result = LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size);
+      std::bitset<NUM_ERRORS> errors(LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size));
       delete radioData;
-      return result;
+
+      return errors.test(NO_ERROR);
     }
     else if (fileType==FILE_TYPE_BIN) { //read binary
       if (!file.open(QFile::ReadOnly))
@@ -1277,10 +1279,12 @@ bool MainWindow::isValidEEPROM(QString eepromfile)
       if (read != eeprom_size) {
         return false;
       }
+
       RadioData * radioData = new RadioData();
-      bool result = LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size);
+      std::bitset<NUM_ERRORS> errors(LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size));
       delete radioData;
-      return result;
+
+      return errors.test(NO_ERROR);
     }
     return false;
 }
@@ -1308,7 +1312,8 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
     file.close();
 
     QSharedPointer<RadioData> radioData = QSharedPointer<RadioData>(new RadioData());
-    if (!LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size) || !firmware->saveEEPROM((uint8_t *)eeprom.data(), *radioData, variant, version))
+    std::bitset<NUM_ERRORS> errors(LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size));
+    if (!errors.test(NO_ERROR) || !firmware->saveEEPROM((uint8_t *)eeprom.data(), *radioData, variant, version))
       return false;
 
     QFile file2(restoreFile);
@@ -2059,7 +2064,9 @@ int MainWindow::getEpromVersion(QString fileName)
       return -1;
     }
     file.close();
-    if (!LoadEeprom(testData, eeprom, eeprom_size)) {
+
+    std::bitset<NUM_ERRORS> errors(LoadEeprom(testData, eeprom, eeprom_size));
+    if (!errors.test(NO_ERROR)) {
       QMessageBox::critical(this, tr("Error"),tr("Invalid Models and Settings File %1").arg(fileName));
       return -1;
     }
@@ -2077,7 +2084,9 @@ int MainWindow::getEpromVersion(QString fileName)
       QMessageBox::critical(this, tr("Error"),tr("Error reading file %1:\n%2.").arg(fileName).arg(file.errorString()));
       return -1;
     }
-    if (!LoadEeprom(testData, (uint8_t *)eeprom.data(), eeprom_size)) {
+
+    std::bitset<NUM_ERRORS> errors(LoadEeprom(testData, (uint8_t *)eeprom.data(), eeprom_size));
+    if (!errors.test(NO_ERROR)) {
       QMessageBox::critical(this, tr("Error"),tr("Invalid binary Models and Settings File %1").arg(fileName));
       return -1;
     }

@@ -268,7 +268,9 @@ bool burnDialog::checkeEprom(QString fileName)
       return true;
     }
     file.close();
-    if (!LoadEeprom(radioData, eeprom, eeprom_size)) {
+
+    std::bitset<NUM_ERRORS> errors(LoadEeprom(radioData, eeprom, eeprom_size));
+    if (!errors.test(NO_ERROR)) {
       int res = QMessageBox::question(this, "Companion",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::No) {
         return false;
@@ -292,7 +294,9 @@ bool burnDialog::checkeEprom(QString fileName)
         QMessageBox::critical(this, tr("Error"),tr("Error reading file %1:\n%2.").arg(fileName).arg(file.errorString()));
         return false;
     }
-    if (!LoadEeprom(radioData, eeprom, eeprom_size)) {
+
+    std::bitset<NUM_ERRORS> errors(LoadEeprom(radioData, eeprom, eeprom_size));
+    if (!errors.test(NO_ERROR)) {
       int res = QMessageBox::question(this, "Companion",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::No) {
         return false;

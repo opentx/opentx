@@ -154,14 +154,18 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
 {
   std::cout << "trying ersky9x import... ";
 
+  std::bitset<NUM_ERRORS> errors;
+
   if (size != EESIZE_SKY9X) {
     std::cout << "wrong size\n";
-    return false;
+    errors.set(WRONG_SIZE);
+    return errors.to_ulong();
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_SKY9X)) {
     std::cout << "wrong file system\n";
-    return false;
+    errors.set(WRONG_FILE_SYSTEM);
+    return errors.to_ulong();
   }
 
   efile->openRd(FILE_GENERAL);
@@ -169,7 +173,8 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
 
   if (efile->readRlc2((uint8_t*)&ersky9xGeneral, 1) != 1) {
     std::cout << "no\n";
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
 
   std::cout << "version " << (unsigned int)ersky9xGeneral.myVers << " ";
@@ -181,12 +186,14 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
       break;
     default:
       std::cout << "not ersky9x\n";
-      return false;
+      errors.set(NOT_ERSKY9X);
+      return errors.to_ulong();
   }
   efile->openRd(FILE_GENERAL);
   if (!efile->readRlc2((uint8_t*)&ersky9xGeneral, sizeof(Ersky9xGeneral))) {
     std::cout << "ko\n";
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
   radioData.generalSettings = ersky9xGeneral;
 
@@ -217,7 +224,8 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
   }
 
   std::cout << "ok\n";
-  return true;
+  errors.set(NO_ERROR);
+  return errors.to_ulong();
 }
 
 bool Ersky9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)

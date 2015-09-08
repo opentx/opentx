@@ -103,14 +103,18 @@ unsigned long Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eepro
 {
   std::cout << "trying " << getName() << " import... ";
 
+  std::bitset<NUM_ERRORS> errors;
+
   if (size != this->getEEpromSize()) {
     std::cout << "wrong size\n";
-    return false;
+    errors.set(WRONG_SIZE);
+    return errors.to_ulong();
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
     std::cout << "wrong file system\n";
-    return false;
+    errors.set(WRONG_FILE_SYSTEM);
+    return errors.to_ulong();
   }
 
   efile->openRd(FILE_GENERAL);
@@ -118,14 +122,16 @@ unsigned long Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eepro
   uint8_t version;
   if (efile->readRlc2(&version, 1) != 1) {
     std::cout << "no\n";
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
 
   if (version == 0) {
     efile->openRd(FILE_GENERAL);
     if (efile->readRlc1(&version, 1) != 1) {
       std::cout << "no\n";
-      return false;
+      errors.set(UNKNOWN_ERROR);
+      return errors.to_ulong();
     }
   }
 
@@ -145,25 +151,33 @@ unsigned long Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eepro
       break;
     default:
       std::cout << "not gruvin9x\n";
-      return false;
+      errors.set(NOT_GRUVIN9X);
+      return errors.to_ulong();
   }
 
   efile->openRd(FILE_GENERAL);
   if (version == 5) {
-    if (!loadGeneral<Gruvin9xGeneral_v103>(radioData.generalSettings, 1))
-      return false;
+    if (!loadGeneral<Gruvin9xGeneral_v103>(radioData.generalSettings, 1)) {
+      errors.set(UNKNOWN_ERROR);
+      return errors.to_ulong();
+    }
   }
   else if (version < 104) {
-    if (!loadGeneral<Gruvin9xGeneral_v103>(radioData.generalSettings))
-      return false;
+    if (!loadGeneral<Gruvin9xGeneral_v103>(radioData.generalSettings)) {
+      errors.set(UNKNOWN_ERROR);
+      return errors.to_ulong();
+    }
   }
   else if (version <= 106) {
-    if (!loadGeneral<Gruvin9xGeneral_v104>(radioData.generalSettings))
-      return false;
+    if (!loadGeneral<Gruvin9xGeneral_v104>(radioData.generalSettings)) {
+      errors.set(UNKNOWN_ERROR);
+      return errors.to_ulong();
+    }
   }
   else {
     std::cout << "ko\n";
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
 
   for (int i=0; i<getMaxModels(); i++) {
@@ -185,12 +199,14 @@ unsigned long Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eepro
     }
     else {
       std::cout << "ko\n";
-      return false;
+      errors.set(UNKNOWN_ERROR);
+      return errors.to_ulong();
     }
   }
 
   std::cout << "ok\n";
-  return true;
+  errors.set(NO_ERROR);
+  return errors.to_ulong();
 }
 
 bool Gruvin9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)

@@ -66,14 +66,18 @@ unsigned long Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
 {
   std::cout << "trying th9x import... ";
 
+  std::bitset<NUM_ERRORS> errors;
+
   if (size != getEEpromSize()) {
     std::cout << "wrong size\n";
-    return false;
+    errors.set(WRONG_SIZE);
+    return errors.to_ulong();
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
     std::cout << "wrong file system\n";
-    return false;
+    errors.set(WRONG_FILE_SYSTEM);
+    return errors.to_ulong();
   }
 
   efile->openRd(FILE_GENERAL);
@@ -81,7 +85,8 @@ unsigned long Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
 
   if (efile->readRlc2((uint8_t*)&th9xGeneral, 1) != 1) {
     std::cout << "no\n";
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
 
   std::cout << "version " << (unsigned int)th9xGeneral.myVers << " ";
@@ -91,14 +96,16 @@ unsigned long Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
       break;
     default:
       std::cout << "not th9x\n";
-      return false;
+      errors.set(NOT_TH9X);
+      return errors.to_ulong();
   }
 
   efile->openRd(FILE_GENERAL);
   int len = efile->readRlc2((uint8_t*)&th9xGeneral, sizeof(Th9xGeneral));
   if (len != sizeof(Th9xGeneral)) {
     std::cout << "not th9x\n";
-    return false;
+    errors.set(NOT_TH9X);
+    return errors.to_ulong();
   }
   radioData.generalSettings = th9xGeneral;
 
@@ -114,7 +121,8 @@ unsigned long Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
   }
 
   std::cout << "ok\n";
-  return true;
+  errors.set(NO_ERROR);
+  return errors.to_ulong();
 }
 
 bool Th9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)

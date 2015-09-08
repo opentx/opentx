@@ -333,7 +333,6 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
       }
 
       std::bitset<NUM_ERRORS> errorsEeprom(LoadEeprom(radioData, eeprom, eeprom_size));
-      std::bitset<NUM_ERRORS> errorsBackup;
       if (!errorsEeprom.test(NO_ERROR)) {
         std::bitset<NUM_ERRORS> errorsBackup(LoadBackup(radioData, eeprom, eeprom_size, 0));
         if (!errorsBackup.test(NO_ERROR)) {
