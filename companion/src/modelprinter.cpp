@@ -187,7 +187,7 @@ QString ModelPrinter::printTimer(const TimerData & timer)
   QStringList result;
   if (firmware->getCapability(TimersName) && timer.name[0]) 
     result += tr("Name(%1)").arg(timer.name);
-  result += tr("%1:%2").arg(timer.val/60, 2, 10, QChar('0')).arg(timer.val%60, 2, 10, QChar('0'));
+  result += QString("%1:%2").arg(timer.val/60, 2, 10, QChar('0')).arg(timer.val%60, 2, 10, QChar('0'));
   result += timer.mode.toString();
   if (timer.persistent)
     result += tr("Persistent");
@@ -353,30 +353,33 @@ QString ModelPrinter::printMixerLine(const MixData & mix, bool showMultiplex, in
   }
   str += "&nbsp;" + source;
 
-  str += " " + Qt::escape(tr("Weight")) + QString("(%1)").arg(getGVarString(mix.weight, true));
+  str += " " + Qt::escape(tr("Weight(%1)").arg(getGVarString(mix.weight, true)));
 
   QString flightModesStr = printFlightModes(mix.flightModes);
-  if (!flightModesStr.isEmpty()) str += " " + Qt::escape(flightModesStr);
+  if (!flightModesStr.isEmpty())
+    str += " " + Qt::escape(flightModesStr);
 
-  if (mix.swtch.type != SWITCH_TYPE_NONE) {
-    str += " " + Qt::escape(tr("Switch")) + QString("(%1)").arg(mix.swtch.toString());
-  }
+  if (mix.swtch.type != SWITCH_TYPE_NONE)
+    str += " " + Qt::escape(tr("Switch(%1)").arg(mix.swtch.toString()));
 
-  if (mix.carryTrim>0)      str += " " + Qt::escape(tr("NoTrim"));
-  else if (mix.carryTrim<0) str += " " + RawSource(SOURCE_TYPE_TRIM, (-(mix.carryTrim)-1)).toString(&model);
+  if (mix.carryTrim > 0)
+    str += " " + Qt::escape(tr("NoTrim"));
+  else if (mix.carryTrim < 0)
+    str += " " + RawSource(SOURCE_TYPE_TRIM, (-(mix.carryTrim)-1)).toString(&model);
 
-  if (firmware->getCapability(HasNoExpo) && mix.noExpo) str += " " + Qt::escape(tr("No DR/Expo"));
-  if (mix.sOffset)     str += " " + Qt::escape(tr("Offset")
-  ) + QString("(%1)").arg(getGVarString(mix.sOffset));
-  if (mix.curve.value) str += " " + Qt::escape(mix.curve.toString());
-
+  if (firmware->getCapability(HasNoExpo) && mix.noExpo)
+    str += " " + Qt::escape(tr("No DR/Expo"));
+  if (mix.sOffset)
+    str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(mix.sOffset)));
+  if (mix.curve.value)
+    str += " " + Qt::escape(mix.curve.toString());
   int scale = firmware->getCapability(SlowScale);
   if (scale == 0)
     scale = 1;
   if (mix.delayDown || mix.delayUp)
-    str += " " + Qt::escape(tr("Delay")) + QString("(u%1:d%2)").arg((double)mix.delayUp/scale).arg((double)mix.delayDown/scale);
+    str += " " + Qt::escape(tr("Delay(u%1:d%2)").arg((double)mix.delayUp/scale).arg((double)mix.delayDown/scale));
   if (mix.speedDown || mix.speedUp)
-    str += " " + Qt::escape(tr("Slow")) + QString("(u%1:d%2)").arg((double)mix.speedUp/scale).arg((double)mix.speedDown/scale);
+    str += " " + Qt::escape(tr("Slow((u%1:d%2)").arg((double)mix.speedUp/scale).arg((double)mix.speedDown/scale));
   if (mix.mixWarn)
     str += " " + Qt::escape(tr("Warn(%1)").arg(mix.mixWarn));
   if (firmware->getCapability(HasMixerNames) && mix.name[0]) 

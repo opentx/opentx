@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="sv_SE">
+<TS version="2.1" language="sv_SE">
 <context>
     <name>AileronsPage</name>
     <message>
@@ -2495,7 +2495,7 @@ Dessa inställningar gäller för alla modeller.</translation>
         <source>Measurement Units</source>
         <translation>Måttenheter</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
         <translation>hh° (N/S) mm&apos; ss&apos;&apos;.dd</translation>
     </message>
@@ -5047,19 +5047,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Offset</source>
-        <translation type="unfinished">Offset</translation>
+        <translation type="obsolete">Offset</translation>
     </message>
     <message>
         <source>Delay</source>
-        <translation type="unfinished">Fördröjning</translation>
+        <translation type="obsolete">Fördröjning</translation>
     </message>
     <message>
         <source>Slow</source>
-        <translation type="unfinished">Tröghet</translation>
-    </message>
-    <message>
-        <source>Warn(%1)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Tröghet</translation>
     </message>
     <message>
         <source>Disabled in all flight modes</source>
@@ -5100,6 +5096,30 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Standard</source>
         <translation type="unfinished">Standard</translation>
+    </message>
+    <message>
+        <source>Weight(%1)</source>
+        <translation type="unfinished">Vikt(%1)</translation>
+    </message>
+    <message>
+        <source>Switch(%1)</source>
+        <translation type="unfinished">Brytare(%1)</translation>
+    </message>
+    <message>
+        <source>Offset(%1)</source>
+        <translation type="unfinished">Offset(%1)</translation>
+    </message>
+    <message>
+        <source>Delay(u%1:d%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slow((u%1:d%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warn(%1)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6023,11 +6043,11 @@ p, li { white-space: pre-wrap; }
         <source>m</source>
         <translation>m</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°C</source>
         <translation>°C</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°</source>
         <translation>°</translation>
     </message>
@@ -7503,7 +7523,7 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)</source>
-        <translation>Ingen Joystick-emulering -&gt; Direkt åtkomst till minnet utan att hålla in trimmar vid start</translation>
+        <translation type="vanished">Ingen Joystick-emulering -&gt; Direkt åtkomst till minnet utan att hålla in trimmar vid start</translation>
     </message>
     <message>
         <source>SWR value will be available for display/audio/alarms - Only available on latest Taranis+ production</source>
@@ -7715,7 +7735,7 @@ OpenTX-gruppen.</translation>
         <source>Flight</source>
         <translation>Flygning</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°F</source>
         <translation>°F</translation>
     </message>
@@ -7846,6 +7866,18 @@ OpenTX-gruppen.</translation>
     <message>
         <source>ar9x board / 9X</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Weight(%1)</source>
+        <translation type="obsolete">Vikt(%1)</translation>
+    </message>
+    <message>
+        <source>Switch(%1)</source>
+        <translation type="obsolete">Brytare(%1)</translation>
+    </message>
+    <message>
+        <source>Offset(%1)</source>
+        <translation type="obsolete">Offset(%1)</translation>
     </message>
 </context>
 <context>
@@ -8469,7 +8501,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <source>Meters (m or ft)</source>
         <translation>Meter (m eller ft)</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Temp (°)</source>
         <translation>Temp (°)</translation>
     </message>
@@ -8722,11 +8754,11 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <source>Feet (f)</source>
         <translation type="obsolete">Fot (f)</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Temp (°C)</source>
         <translation type="obsolete">Temp (°C)</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Temp (°F)</source>
         <translation type="obsolete">Temp (°F)</translation>
     </message>
@@ -8798,7 +8830,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <source>Acceleration (g)</source>
         <translation type="obsolete">Acceleration (g)</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Heading (°)</source>
         <translation type="obsolete">Riktning (°)</translation>
     </message>
@@ -8874,11 +8906,11 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <source>ft</source>
         <translation type="unfinished">ft</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°C</source>
         <translation type="unfinished">°C</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°F</source>
         <translation type="unfinished">°F</translation>
     </message>
@@ -8902,7 +8934,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <source>g</source>
         <translation type="unfinished">g</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°</source>
         <translation type="unfinished">°</translation>
     </message>

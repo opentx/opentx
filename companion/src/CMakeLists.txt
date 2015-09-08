@@ -213,6 +213,7 @@ set(companion_MOC_HDRS
   radionotfound.h
   helpers.h
   wizarddialog.h
+  modelprinter.h
 )
 
 set(companion_UIS

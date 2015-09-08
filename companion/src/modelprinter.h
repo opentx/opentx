@@ -27,6 +27,8 @@ class CurveImage
 
 class ModelPrinter: public QObject
 {
+  Q_OBJECT
+
   public:
     ModelPrinter(Firmware * firmware, const GeneralSettings & generalSettings, const ModelData & model);
     virtual ~ModelPrinter();
