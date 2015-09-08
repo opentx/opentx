@@ -260,7 +260,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
               TelemetrySensor * sensor = & g_model.telemetrySensors[param-FUNC_RESET_PARAM_FIRST_TELEM];
               lcd_putsnAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, sensor->label, TELEM_LABEL_LEN, attr|ZCHAR);
             }
-            INCDEC_ENABLE_CHECK(functionsContext == &globalFunctionsContext ? isSourceAvailableInGlobalResetSpecialFunction : isSourceAvailableInResetSpecialFunction);
+            if (active) INCDEC_ENABLE_CHECK(functionsContext == &globalFunctionsContext ? isSourceAvailableInGlobalResetSpecialFunction : isSourceAvailableInResetSpecialFunction);
           }
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
           else if (func == FUNC_OVERRIDE_CHANNEL) {
@@ -316,15 +316,19 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           else if (func == FUNC_PLAY_VALUE) {
             val_max = MIXSRC_LAST_TELEM;
             putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
-            INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
-            INCDEC_ENABLE_CHECK(functionsContext == &globalFunctionsContext ? isSourceAvailableInGlobalFunctions : isSourceAvailable);
+            if (active) {
+              INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
+              INCDEC_ENABLE_CHECK(functionsContext == &globalFunctionsContext ? isSourceAvailableInGlobalFunctions : isSourceAvailable);
+            }
           }
 #endif
           else if (func == FUNC_VOLUME) {
             val_max = MIXSRC_LAST_CH;
             putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
-            INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
-            INCDEC_ENABLE_CHECK(isSourceAvailable);
+            if (active) {
+              INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
+              INCDEC_ENABLE_CHECK(isSourceAvailable);
+            }
           }
           else if (func == FUNC_LOGS) {
             if (val_displayed) {
@@ -338,7 +342,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 #if defined(REVPLUS)
           else if (func == FUNC_BACKLIGHT) {
             displaySlider(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, CFN_PARAM(cfn), 100, attr);
-            INCDEC_SET_FLAG(eeFlags | NO_INCDEC_MARKS);
+            if (active) INCDEC_SET_FLAG(eeFlags | NO_INCDEC_MARKS);
             val_min = 0;
             val_max = 100;
           }
@@ -354,8 +358,10 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
               case FUNC_ADJUST_GVAR_SOURCE:
                 val_max = MIXSRC_LAST_CH;
                 putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
-                INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
-                INCDEC_ENABLE_CHECK(isSourceAvailable);
+                if (active) {
+                  INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
+                  INCDEC_ENABLE_CHECK(isSourceAvailable);
+                }
                 break;
               case FUNC_ADJUST_GVAR_GVAR:
                 val_max = MAX_GVARS-1;
@@ -382,7 +388,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 
           if (active || event==EVT_KEY_LONG(KEY_ENTER)) {
             CFN_PARAM(cfn) = CHECK_INCDEC_PARAM(event, val_displayed, val_min, val_max);
-            if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
+            if (func == FUNC_ADJUST_GVAR && attr && event==EVT_KEY_LONG(KEY_ENTER)) {
               killEvents(event);
               if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_CONSTANT)
                 MENU_ADD_ITEM(STR_CONSTANT);
