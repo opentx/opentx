@@ -812,3 +812,4 @@ John Mathison
 Richard Duczmal
 Gregory Barron
 Marcel Fischer
+Klas Mälman
