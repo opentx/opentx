@@ -49,7 +49,7 @@ typedef uint32_t tmrstart_t;
 #else
 typedef int16_t tmrval_t;
 typedef uint16_t tmrstart_t;
-#define TIMER_MIN     (-0xffff/2)
+#define TIMER_MIN     (32767)
 #endif
 
 #define TIMER_MAX     (-TIMER_MIN-1)
