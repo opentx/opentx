@@ -1367,11 +1367,9 @@ void MainWindow::writeFlash(QString fileToFlash)
     }
     g.backupOnFlash(backup);
     if (backup) {
-      bool backupEnable=true;
       QString backupFile;
       QString backupPath=getBackupPath();
       if (backupPath.isEmpty()) {
-        backupEnable=false;
         backupFile = generateProcessUniqueTempFileName("backup.bin");
       }
       else {
