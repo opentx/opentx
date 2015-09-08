@@ -2139,8 +2139,6 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK)
 // (The timer is free-running and is thus not reset to zero at each capture interval.)
 ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with ISR_NOBLOCK
 {
-  static uint16_t lastCapt;
-
   uint16_t capture=ICR3;
 
   // Prevent rentrance for this IRQ only
