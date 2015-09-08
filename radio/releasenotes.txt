@@ -4,6 +4,7 @@
 <ul>
 <li>FrSky Taranis X9E users are highly advised to upgrade firmware (including bootloader!) to this version or its equivalent when provided by FrSky due to the risk of shutdown upon software error that was present in previous versions.</li>
 <li>Telemetry sensors are no longer continuously detected, it is now necessary to go to the telemetry setup page and select the "Discover new sensors" menu item. This prevents creation of non-existing sensors in case if transmission errors, and allows deleting sensors that are received but considered uninteresting.</li>
+<li>A bug was found in the "Throttle source" setting, fixing it might have changed your selection. If your throttle-based timers don't work check this first and set it back to the correct setting if needed.</li>
 </ul>
 
 [ARM Boards]
