@@ -1433,25 +1433,43 @@ unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int 
   return errors.to_ulong();
 }
 
-bool LoadBackup(RadioData &radioData, uint8_t *eeprom, int size, int index)
+unsigned long LoadBackup(RadioData &radioData, uint8_t *eeprom, int size, int index)
 {
+  std::bitset<NUM_ERRORS> errors;
+
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
-    if (eepromInterface->loadBackup(radioData, eeprom, size, index))
-      return true;
+    std::bitset<NUM_ERRORS> result(eepromInterface->loadBackup(radioData, eeprom, size, index));
+    if (result.test(NO_ERROR)) {
+      return result.to_ulong();
+    } else {
+      errors |= result;
+    }
   }
 
-  return false;
+  if (errors.none()) {
+    errors.set(UNKNOWN_ERROR);
+  }
+  return errors.to_ulong();
 }
 
 
-bool LoadEepromXml(RadioData &radioData, QDomDocument &doc)
+unsigned long LoadEepromXml(RadioData &radioData, QDomDocument &doc)
 {
+  std::bitset<NUM_ERRORS> errors;
+
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
-    if (eepromInterface->loadxml(radioData, doc))
-      return true;
+    std::bitset<NUM_ERRORS> result(eepromInterface->loadxml(radioData, doc));
+    if (result.test(NO_ERROR)) {
+      return result.to_ulong();
+    } else {
+      errors |= result;
+    }
   }
 
-  return false;
+  if (errors.none()) {
+    errors.set(UNKNOWN_ERROR);
+  }
+  return errors.to_ulong();
 }
 
 QString getBoardName(BoardEnum board)

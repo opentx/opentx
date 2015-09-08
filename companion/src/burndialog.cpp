@@ -242,7 +242,8 @@ bool burnDialog::checkeEprom(QString fileName)
     QDomDocument doc(ER9X_EEPROM_FILE_TYPE);
     bool xmlOK = doc.setContent(&file);
     if(xmlOK) {
-      if (!LoadEepromXml(radioData, doc)){
+      std::bitset<NUM_ERRORS> errors(LoadEepromXml(radioData, doc));
+      if (!errors.test(NO_ERROR)) {
         return false;
       }
     }

@@ -2042,7 +2042,8 @@ int MainWindow::getEpromVersion(QString fileName)
     QDomDocument doc(ER9X_EEPROM_FILE_TYPE);
     bool xmlOK = doc.setContent(&file);
     if(xmlOK) {
-      if (!LoadEepromXml(testData, doc)){
+      std::bitset<NUM_ERRORS> errors(LoadEepromXml(testData, doc));
+      if (!errors.test(NO_ERROR)) {
         return -1;
       }
     }

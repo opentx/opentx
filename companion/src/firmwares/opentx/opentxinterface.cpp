@@ -300,9 +300,11 @@ bool OpenTxEepromInterface::saveModel(unsigned int index, ModelData &model, unsi
   return (sz == eeprom.size());
 }
 
-bool OpenTxEepromInterface::loadxml(RadioData &radioData, QDomDocument &doc)
+unsigned long OpenTxEepromInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
-  return false;
+  std::bitset<NUM_ERRORS> errors;
+  errors.set(UNKNOWN_ERROR);
+  return errors.to_ulong();
 }
 
 unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
@@ -951,13 +953,16 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
   }
 }
 
-bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
+unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
 {
+  std::bitset<NUM_ERRORS> errors;
+
   std::cout << "trying " << getName() << " backup import...";
 
   if (esize < 8 || memcmp(eeprom, "o9x", 3) != 0) {
     std::cout << " no\n";
-    return false;
+    errors.set(WRONG_SIZE);
+    return errors.to_ulong();
   }
 
   BoardEnum backupBoard = (BoardEnum)-1;
@@ -973,12 +978,14 @@ bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, in
       break;
     default:
       std::cout << " unknown board\n";
-      return false;
+      errors.set(UNKNOWN_BOARD);
+      return errors.to_ulong();
   }
 
   if (backupBoard != board) {
     std::cout << " not right board\n";
-    return false;
+    errors.set(WRONG_BOARD);
+    return errors.to_ulong();
   }
 
   uint8_t version = eeprom[4];
@@ -990,27 +997,32 @@ bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, in
 
   if (!checkVersion(version)) {
     std::cout << " not open9x\n";
-    return false;
+    errors.set(NOT_OPENTX);
+    return errors.to_ulong();
   }
 
   if (size > esize-8) {
     std::cout << " wrong size\n";
-    return false;
+    errors.set(WRONG_SIZE);
+    return errors.to_ulong();
   }
 
   if (bcktype=='M') {
     if (!loadModel(version, radioData.models[index], &eeprom[8], size, variant)) {
       std::cout << " ko\n";
-      return false;
+      errors.set(UNKNOWN_ERROR);
+      return errors.to_ulong();
     }
   }
   else {
     std::cout << " backup type not supported\n";
-    return false;
+    errors.set(BACKUP_NOT_SUPPORTED);
+    return errors.to_ulong();
   }
 
   std::cout << " ok\n";
-  return true;
+  errors.set(NO_ERROR);
+  return errors.to_ulong();
 }
 
 QString OpenTxFirmware::getFirmwareUrl()

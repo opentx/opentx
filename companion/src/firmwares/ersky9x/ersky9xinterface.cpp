@@ -119,14 +119,17 @@ inline void applyStickModeToModel(Ersky9xModelData_v11 & model, unsigned int mod
   model.swashCollectiveSource = applyStickMode(model.swashCollectiveSource, mode);
 }
 
-bool Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
+unsigned long Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
   std::cout << "trying ersky9x xml import... ";
+
+  std::bitset<NUM_ERRORS> errors;
 
   Ersky9xGeneral ersky9xGeneral;
   memset(&ersky9xGeneral,0,sizeof(ersky9xGeneral));
   if(!loadGeneralDataXML(&doc, &ersky9xGeneral)) {
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
   else {
     radioData.generalSettings=ersky9xGeneral;
@@ -136,18 +139,21 @@ bool Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
     if (ersky9xGeneral.myVers == 10) {
       if (!loadModelDataXML<Ersky9xModelData_v10>(&doc, &radioData.models[i], i, radioData.generalSettings.stickMode+1)) {
         std::cout << "ko\n";
-        return false;
+        errors.set(UNKNOWN_ERROR);
+        return errors.to_ulong();
       }
     }
     else {
       if (!loadModelDataXML<Ersky9xModelData_v11>(&doc, &radioData.models[i], i, radioData.generalSettings.stickMode+1)) {
         std::cout << "ko\n";
-        return false;
+        errors.set(UNKNOWN_ERROR);
+        return errors.to_ulong();
       }
     }
   }
   std::cout << "ok\n";
-  return true;
+  errors.set(NO_ERROR);
+  return errors.to_ulong();
 }
 
 unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
@@ -228,9 +234,11 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
   return errors.to_ulong();
 }
 
-bool Ersky9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
+unsigned long Ersky9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
 {
-  return false;
+  std::bitset<NUM_ERRORS> errors;
+  errors.set(UNKNOWN_ERROR);
+  return errors.to_ulong();
 }
 
 int Ersky9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)

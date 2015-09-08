@@ -57,9 +57,11 @@ const int Th9xInterface::getMaxModels()
   return 16;
 }
 
-bool Th9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
+unsigned long Th9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
-  return false;
+  std::bitset<NUM_ERRORS> errors;
+  errors.set(UNKNOWN_ERROR);
+  return errors.to_ulong();
 }
 
 unsigned long Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
@@ -125,9 +127,11 @@ unsigned long Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
   return errors.to_ulong();
 }
 
-bool Th9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
+unsigned long Th9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
 {
-  return false;
+  std::bitset<NUM_ERRORS> errors;
+  errors.set(UNKNOWN_ERROR);
+  return errors.to_ulong();
 }
 
 int Th9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)

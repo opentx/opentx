@@ -89,14 +89,17 @@ inline void applyStickModeToModel(Er9xModelData & model, unsigned int mode)
   model.swashCollectiveSource = applyStickMode(model.swashCollectiveSource, mode);
 }
 
-bool Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
+unsigned long Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
   std::cout << "trying er9x xml import... ";
+
+  std::bitset<NUM_ERRORS> errors;
 
   Er9xGeneral er9xGeneral;
   memset(&er9xGeneral,0,sizeof(er9xGeneral));
   if(!loadGeneralDataXML(&doc, &er9xGeneral)) {
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   } else {
     radioData.generalSettings=er9xGeneral;
     std::cout << "version " << (unsigned int)er9xGeneral.myVers << " ";
@@ -111,7 +114,8 @@ bool Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
     }
   }
   std::cout << "ok\n";
-  return true;
+  errors.set(NO_ERROR);
+  return errors.to_ulong();
 }
 
 unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
@@ -186,9 +190,11 @@ unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
   return errors.to_ulong();
 }
 
-bool Er9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
+unsigned long Er9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
 {
-  return false;
+  std::bitset<NUM_ERRORS> errors;
+  errors.set(UNKNOWN_ERROR);
+  return errors.to_ulong();
 }
 
 int Er9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)

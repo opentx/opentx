@@ -93,9 +93,11 @@ bool Gruvin9xInterface::loadGeneral(GeneralSettings &settings, int version)
   return false;
 }
 
-bool Gruvin9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
+unsigned long Gruvin9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
-  return false;
+  std::bitset<NUM_ERRORS> errors;
+  errors.set(UNKNOWN_ERROR);
+  return errors.to_ulong();
 }
 
 
@@ -209,9 +211,11 @@ unsigned long Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eepro
   return errors.to_ulong();
 }
 
-bool Gruvin9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
+unsigned long Gruvin9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
 {
-  return false;
+  std::bitset<NUM_ERRORS> errors;
+  errors.set(UNKNOWN_ERROR);
+  return errors.to_ulong();
 }
 
 int Gruvin9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
