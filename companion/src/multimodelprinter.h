@@ -7,6 +7,8 @@
 
 class MultiModelPrinter: public QObject
 {
+  Q_OBJECT
+
   public:
     MultiModelPrinter(Firmware * firmware);
     virtual ~MultiModelPrinter();
