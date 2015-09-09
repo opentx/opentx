@@ -333,10 +333,17 @@ void getSwitchAudioFile(char * filename, swsrc_t index)
 void getLogicalSwitchAudioFile(char * filename, int index, unsigned int event)
 {
   char * str = getModelAudioPath(filename);
+
+#if defined(PCBTARANIS)
+  *str++ = 'L';
+  *str++ = '1'+index;
+#else
   int len = STR_VSWITCHES[0];
   strncpy(str, &STR_VSWITCHES[1+len*(index+SWSRC_FIRST_LOGICAL_SWITCH)], len);
-  str[len] = '\0';
-  strcat(str, suffixes[event]);
+  str += len;
+#endif
+
+  strcpy(str, suffixes[event]);
   strcat(str, SOUNDS_EXT);
 }
 
