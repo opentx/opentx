@@ -53,6 +53,7 @@
   #undef main
 #endif
 #include "mainwindow.h"
+#include "version.h"
 #include "eeprominterface.h"
 #include "appdata.h"
 
@@ -86,6 +87,13 @@ int main(int argc, char *argv[])
   app.setOrganizationName("OpenTX");
   app.setOrganizationDomain("open-tx.org");
   app.setAttribute(Qt::AA_DontShowIconsInMenus, false);
+
+  QStringList strl = QApplication::arguments();
+  if (strl.contains("--version")) {
+    printf("%s\n", C9X_VERSION);
+    fflush(stdout);
+    exit(0);
+  }
 
 #ifdef __APPLE__
   app.setStyle(new MyProxyStyle);
