@@ -213,10 +213,10 @@ uint32_t sdAvailablePhaseAudioFiles = 0;
 uint64_t sdAvailableSwitchAudioFiles = 0;
 uint64_t sdAvailableLogicalSwitchAudioFiles = 0;
 
-#define MASK_SYSTEM_AUDIO_FILE(index)                 ((uint64_t)1 << index)
-#define MASK_PHASE_AUDIO_FILE(index, event)           ((uint32_t)1 << (2*index+event))
-#define MASK_SWITCH_AUDIO_FILE(index)                 ((uint64_t)1 << index)
-#define MASK_LOGICAL_SWITCH_AUDIO_FILE(index, event)  ((uint64_t)1 << (2*index+event))
+#define MASK_SYSTEM_AUDIO_FILE(index)                 ((uint64_t)1 << (index))
+#define MASK_PHASE_AUDIO_FILE(index, event)           ((uint32_t)1 << (2*(index)+(event)))
+#define MASK_SWITCH_AUDIO_FILE(index)                 ((uint64_t)1 << (index))
+#define MASK_LOGICAL_SWITCH_AUDIO_FILE(index, event)  ((uint64_t)1 << (2*(index)+(event)))
 
 char * getAudioPath(char * path)
 {
@@ -302,7 +302,7 @@ void getPhaseAudioFile(char * filename, int index, unsigned int event)
   strcat(tmp, SOUNDS_EXT);
 }
 
-void getSwitchAudioFile(char * filename, int index)
+void getSwitchAudioFile(char * filename, swsrc_t index)
 {
   char * str = getModelAudioPath(filename);
 
@@ -389,7 +389,7 @@ void referenceModelAudioFiles()
         getSwitchAudioFile(path, i);
         // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fn);
         if (!strcasecmp(filename, fn)) {
-          sdAvailableSwitchAudioFiles |= MASK_SWITCH_AUDIO_FILE(i);
+          sdAvailableSwitchAudioFiles |= MASK_SWITCH_AUDIO_FILE(i-SWSRC_FIRST_SWITCH);
           found = true;
           TRACE("\tfound: %s", filename);
         }
@@ -435,7 +435,7 @@ bool isAudioFileReferenced(uint32_t i, char * filename)
   }
   else if (category == SWITCH_AUDIO_CATEGORY) {
     if (sdAvailableSwitchAudioFiles & MASK_SWITCH_AUDIO_FILE(index)) {
-      getSwitchAudioFile(filename, index);
+      getSwitchAudioFile(filename, SWSRC_FIRST_SWITCH+index);
       return true;
     }
   }
