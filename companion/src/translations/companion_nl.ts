@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="nl_NL">
+<TS version="2.0" language="nl_NL">
 <context>
     <name>AileronsPage</name>
     <message>
@@ -3249,7 +3249,7 @@ p, li { white-space: pre-wrap; }
         <source>X-Long</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../generaledit/generalsetup.ui" line="2090"/>
         <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
         <translation type="unfinished"></translation>
@@ -5262,11 +5262,6 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="190"/>
-        <source>%1:%2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../modelprinter.cpp" line="193"/>
         <source>Persistent</source>
         <translation type="unfinished"></translation>
@@ -6183,7 +6178,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <source>LS</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="128"/>
         <source>°F</source>
         <translation type="unfinished"></translation>
@@ -6516,13 +6511,13 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <source>m</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="126"/>
         <location filename="../eeprominterface.cpp" line="263"/>
         <source>°C</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="142"/>
         <location filename="../eeprominterface.cpp" line="269"/>
         <source>°</source>
@@ -9173,7 +9168,7 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
         <source>Meters (m or ft)</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_analog.ui" line="309"/>
         <source>Temp (°)</source>
         <translation type="unfinished"></translation>
@@ -9496,12 +9491,12 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
         <source>ft</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="419"/>
         <source>°C</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
         <source>°F</source>
         <translation type="unfinished"></translation>
@@ -9531,7 +9526,7 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
         <source>g</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
         <source>°</source>
         <translation type="unfinished"></translation>

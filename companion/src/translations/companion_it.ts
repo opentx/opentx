@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="it_IT">
+<TS version="2.0" language="it_IT">
 <context>
     <name>AileronsPage</name>
     <message>
@@ -3754,7 +3754,7 @@ p, li { white-space: pre-wrap; }
         <source>X-Long</source>
         <translation>Extra Lungo</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../generaledit/generalsetup.ui" line="2090"/>
         <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
         <translation>hh° (N/S) mm&apos; ss&quot; .dd</translation>
@@ -5862,9 +5862,8 @@ Determina come il valore viene aggiunto alla miscelazione.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="190"/>
         <source>%1:%2</source>
-        <translation type="unfinished">%1:%2</translation>
+        <translation type="obsolete">%1:%2</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="193"/>
@@ -7142,7 +7141,7 @@ Determina come il valore viene aggiunto alla miscelazione.
         <source>Haptic</source>
         <translation>Vibrazione</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="128"/>
         <source>°F</source>
         <translation type="unfinished"></translation>
@@ -8558,7 +8557,7 @@ Determina come il valore viene aggiunto alla miscelazione.
     </message>
     <message>
         <source>No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)</source>
-        <translation type="vanished">Nessuna emulazione joystick nel FW (solo memoria di massa come nel Bootloader)</translation>
+        <translation type="obsolete">Nessuna emulazione joystick nel FW (solo memoria di massa come nel Bootloader)</translation>
     </message>
     <message>
         <source>Removes D8 and LR12 FrSky protocols that are not legal for use anymore on radios sold after Jan 1st, 2015</source>
@@ -9029,13 +9028,13 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
         <source>m</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="126"/>
         <location filename="../eeprominterface.cpp" line="263"/>
         <source>°C</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="142"/>
         <location filename="../eeprominterface.cpp" line="269"/>
         <source>°</source>
@@ -10389,7 +10388,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
         <source>Meters (m or ft)</source>
         <translation>Metri (m o ft)</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_analog.ui" line="309"/>
         <source>Temp (°)</source>
         <translation>Temperatura (°)</translation>
@@ -10720,12 +10719,12 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
         <source>ft</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="419"/>
         <source>°C</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
         <source>°F</source>
         <translation type="unfinished"></translation>
@@ -10755,7 +10754,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
         <source>g</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
         <source>°</source>
         <translation type="unfinished"></translation>

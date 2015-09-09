@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="cs_CZ">
+<TS version="2.0" language="cs_CZ">
 <context>
     <name>AileronsPage</name>
     <message>
@@ -4400,7 +4400,7 @@ p, li { white-space: pre-wrap; }
         <source>X-Long</source>
         <translation>Extra dlouhý</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../generaledit/generalsetup.ui" line="2090"/>
         <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
         <translation type="unfinished"></translation>
@@ -6825,11 +6825,6 @@ p, li { white-space: pre-wrap; }
         <translation>Název(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="190"/>
-        <source>%1:%2</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../modelprinter.cpp" line="193"/>
         <source>Persistent</source>
         <translation>Trvalé</translation>
@@ -6935,15 +6930,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Offset</source>
-        <translation type="vanished">Ofset</translation>
+        <translation type="obsolete">Ofset</translation>
     </message>
     <message>
         <source>Delay</source>
-        <translation type="vanished">Zpoždění</translation>
+        <translation type="obsolete">Zpoždění</translation>
     </message>
     <message>
         <source>Slow</source>
-        <translation type="vanished">Zpomalení</translation>
+        <translation type="obsolete">Zpomalení</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="384"/>
@@ -8159,7 +8154,7 @@ p, li { white-space: pre-wrap; }
         <source>SWR</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="128"/>
         <source>°F</source>
         <translation type="unfinished"></translation>
@@ -8512,7 +8507,7 @@ Toto se hodí pokud je potřeba ušetřit místo v paměti FLASH pro jiné funkc
     </message>
     <message>
         <source>No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)</source>
-        <translation type="vanished">Firmware bez emulace Joisticku (USB bude v režimu Mass Storage (přístup k souborům na SD kartě) stejně jako v Bootloaderu)</translation>
+        <translation type="obsolete">Firmware bez emulace Joisticku (USB bude v režimu Mass Storage (přístup k souborům na SD kartě) stejně jako v Bootloaderu)</translation>
     </message>
     <message>
         <source>OpenTX for FrSky Taranis Plus</source>
@@ -9210,13 +9205,13 @@ Nastavení hodnoty se provádí přímo v seznamu proměnných, nebo pomocí Fun
         <source>m</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="126"/>
         <location filename="../eeprominterface.cpp" line="263"/>
         <source>°C</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="142"/>
         <location filename="../eeprominterface.cpp" line="269"/>
         <source>°</source>
@@ -11487,7 +11482,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <source>Meters (m or ft)</source>
         <translation>Vzdálenost (m nebo ft)</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_analog.ui" line="309"/>
         <source>Temp (°)</source>
         <translation>Teplota (°)</translation>
@@ -11822,12 +11817,12 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <source>ft</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="419"/>
         <source>°C</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
         <source>°F</source>
         <translation></translation>
@@ -11857,7 +11852,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <source>g</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
         <source>°</source>
         <translation></translation>

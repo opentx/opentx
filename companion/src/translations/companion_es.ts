@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="es_ES">
+<TS version="2.0" language="es_ES">
 <context>
     <name>AileronsPage</name>
     <message>
@@ -4150,7 +4150,7 @@ p, li { white-space: pre-wrap; }
         <source>X-Long</source>
         <translation type="unfinished">X-Largo</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../generaledit/generalsetup.ui" line="2090"/>
         <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
         <translation type="unfinished"></translation>
@@ -6437,9 +6437,8 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="190"/>
         <source>%1:%2</source>
-        <translation type="unfinished">%1:%2</translation>
+        <translation type="obsolete">%1:%2</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="193"/>
@@ -8779,13 +8778,13 @@ p, li { white-space: pre-wrap; }
         <source>m</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="126"/>
         <location filename="../eeprominterface.cpp" line="263"/>
         <source>°C</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="142"/>
         <location filename="../eeprominterface.cpp" line="269"/>
         <source>°</source>
@@ -8823,7 +8822,7 @@ p, li { white-space: pre-wrap; }
         <source>A</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="128"/>
         <source>°F</source>
         <translation type="unfinished"></translation>
@@ -10800,7 +10799,7 @@ Si está marcado el acelerador será invertido.  El ralentí será delante, el t
         <source>Meters (m or ft)</source>
         <translation>Metros (m o pies)</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_analog.ui" line="309"/>
         <source>Temp (°)</source>
         <translation>Temp (°)</translation>
@@ -11135,12 +11134,12 @@ Si está marcado el acelerador será invertido.  El ralentí será delante, el t
         <source>ft</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="419"/>
         <source>°C</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
         <source>°F</source>
         <translation type="unfinished"></translation>
@@ -11170,7 +11169,7 @@ Si está marcado el acelerador será invertido.  El ralentí será delante, el t
         <source>g</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
         <source>°</source>
         <translation type="unfinished"></translation>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="fr_FR">
+<TS version="2.0" language="fr_FR">
 <context>
     <name>AileronsPage</name>
     <message>
@@ -4442,7 +4442,7 @@ p, li { white-space: pre-wrap; }
         <source>X-Long</source>
         <translation>X-long</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../generaledit/generalsetup.ui" line="2090"/>
         <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
         <translation></translation>
@@ -6815,11 +6815,6 @@ p, li { white-space: pre-wrap; }
         <translation>Nom(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="190"/>
-        <source>%1:%2</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../modelprinter.cpp" line="193"/>
         <source>Persistent</source>
         <translation>Persistant</translation>
@@ -6925,15 +6920,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Offset</source>
-        <translation type="vanished">Décalage</translation>
+        <translation type="obsolete">Décalage</translation>
     </message>
     <message>
         <source>Delay</source>
-        <translation type="vanished">Délai</translation>
+        <translation type="obsolete">Délai</translation>
     </message>
     <message>
         <source>Slow</source>
-        <translation type="vanished">Ralenti</translation>
+        <translation type="obsolete">Ralenti</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="384"/>
@@ -8793,35 +8788,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Weight(%1)</source>
-        <translation type="vanished">Ratio(%1)</translation>
+        <translation type="obsolete">Ratio(%1)</translation>
     </message>
     <message>
         <source>Switch(%1)</source>
-        <translation type="vanished">Inter(%1)</translation>
+        <translation type="obsolete">Inter(%1)</translation>
     </message>
     <message>
         <source>NoTrim</source>
-        <translation type="vanished">Pas de trim</translation>
+        <translation type="obsolete">Pas de trim</translation>
     </message>
     <message>
         <source>No DR/Expo</source>
-        <translation type="vanished">Pas d&apos;expo/DR</translation>
+        <translation type="obsolete">Pas d&apos;expo/DR</translation>
     </message>
     <message>
         <source>Offset(%1)</source>
-        <translation type="vanished">Décalage(%1)</translation>
+        <translation type="obsolete">Décalage(%1)</translation>
     </message>
     <message>
         <source>Delay(u%1:d%2)</source>
-        <translation type="vanished">Délai(h%1:b%2)</translation>
+        <translation type="obsolete">Délai(h%1:b%2)</translation>
     </message>
     <message>
         <source>Slow((u%1:d%2)</source>
-        <translation type="vanished">Ralenti(h%1:b%2)</translation>
+        <translation type="obsolete">Ralenti(h%1:b%2)</translation>
     </message>
     <message>
         <source>Warn(%1)</source>
-        <translation type="vanished">Alerte(%1)</translation>
+        <translation type="obsolete">Alerte(%1)</translation>
     </message>
     <message>
         <source>Offset</source>
@@ -9237,13 +9232,13 @@ p, li { white-space: pre-wrap; }
         <source>m</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="126"/>
         <location filename="../eeprominterface.cpp" line="263"/>
         <source>°C</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="142"/>
         <location filename="../eeprominterface.cpp" line="269"/>
         <source>°</source>
@@ -9281,7 +9276,7 @@ p, li { white-space: pre-wrap; }
         <source>A</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="128"/>
         <source>°F</source>
         <translation></translation>
@@ -10105,7 +10100,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)</source>
-        <translation type="vanished">Pas d&apos;émulation de joystick dans le firmware (accès mémoire uniquement)</translation>
+        <translation type="obsolete">Pas d&apos;émulation de joystick dans le firmware (accès mémoire uniquement)</translation>
     </message>
     <message>
         <source>Removes D8 and LR12 FrSky protocols that are not legal for use anymore on radios sold after Jan 1st, 2015</source>
@@ -11510,7 +11505,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <source>Meters (m or ft)</source>
         <translation>Distance (m ou ft)</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_analog.ui" line="309"/>
         <source>Temp (°)</source>
         <translation>Température (°)</translation>
@@ -11849,12 +11844,12 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <source>ft</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="419"/>
         <source>°C</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
         <source>°F</source>
         <translation></translation>
@@ -11884,7 +11879,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <source>g</source>
         <translation></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
         <source>°</source>
         <translation></translation>

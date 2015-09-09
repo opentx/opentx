@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="pl_PL">
+<TS version="2.0" language="pl_PL">
 <context>
     <name>AileronsPage</name>
     <message>
@@ -3006,7 +3006,7 @@ Będą one obowiązywać dla wszystkich modeli w tym samym EEPROM-ie.</translati
         <source>Measurement Units</source>
         <translation>Jednostki miar</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../generaledit/generalsetup.ui" line="2090"/>
         <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
         <translation>hh° (N/S) mm&apos; ss&apos;&apos;.dd</translation>
@@ -5845,9 +5845,8 @@ p, li { white-space: pre-wrap; }
         <translation>Nazwa(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="190"/>
         <source>%1:%2</source>
-        <translation>%1:%2</translation>
+        <translation type="obsolete">%1:%2</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="193"/>
@@ -5955,15 +5954,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Offset</source>
-        <translation type="vanished">Wyrównanie</translation>
+        <translation type="obsolete">Wyrównanie</translation>
     </message>
     <message>
         <source>Delay</source>
-        <translation type="vanished">Opóźnienie</translation>
+        <translation type="obsolete">Opóźnienie</translation>
     </message>
     <message>
         <source>Slow</source>
-        <translation type="vanished">Spowolnienie</translation>
+        <translation type="obsolete">Spowolnienie</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="384"/>
@@ -7448,13 +7447,13 @@ p, li { white-space: pre-wrap; }
         <source>Time</source>
         <translation>Czas</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="126"/>
         <location filename="../eeprominterface.cpp" line="263"/>
         <source>°C</source>
         <translation>°C</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="142"/>
         <location filename="../eeprominterface.cpp" line="269"/>
         <source>°</source>
@@ -7467,7 +7466,7 @@ p, li { white-space: pre-wrap; }
         <source>mph</source>
         <translation>mph</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="128"/>
         <source>°F</source>
         <translation>°F</translation>
@@ -7848,7 +7847,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)</source>
-        <translation type="vanished">Brak emulacji joyskicka w FW (Tylko jest karta jako dysk w Bootloaderze) </translation>
+        <translation type="obsolete">Brak emulacji joyskicka w FW (Tylko jest karta jako dysk w Bootloaderze) </translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1116"/>
@@ -10332,7 +10331,7 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <source>Meters (m or ft)</source>
         <translation>Wysokość (m albo ft)</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_analog.ui" line="309"/>
         <source>Temp (°)</source>
         <translation>Temp (°)</translation>
@@ -10663,12 +10662,12 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <source>ft</source>
         <translation>ft</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="419"/>
         <source>°C</source>
         <translation>°C</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
         <source>°F</source>
         <translation>°F</translation>
@@ -10698,7 +10697,7 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <source>g</source>
         <translation>g</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
         <source>°</source>
         <translation>°</translation>

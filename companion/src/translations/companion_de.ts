@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de_DE">
+<TS version="2.0" language="de_DE">
 <context>
     <name>AileronsPage</name>
     <message>
@@ -4754,7 +4754,7 @@ Warnung stummer Betrieb - Wird angezeigt, wenn der Piepser komplett ausgeschalte
         <source>X-Long</source>
         <translation>X-lang</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../generaledit/generalsetup.ui" line="2090"/>
         <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
         <translation>GMS hh° (N/S) mm&apos; ss&apos;&apos;.dd</translation>
@@ -7190,9 +7190,8 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="190"/>
         <source>%1:%2</source>
-        <translation type="unfinished">%1:%2</translation>
+        <translation type="obsolete">%1:%2</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="193"/>
@@ -9783,7 +9782,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <source>Rud</source>
         <translation>Sei</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="128"/>
         <source>°F</source>
         <translation type="unfinished"></translation>
@@ -9865,13 +9864,13 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <source>m</source>
         <translation>m</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="126"/>
         <location filename="../eeprominterface.cpp" line="263"/>
         <source>°C</source>
         <translation>°C</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../eeprominterface.cpp" line="142"/>
         <location filename="../eeprominterface.cpp" line="269"/>
         <source>°</source>
@@ -12063,7 +12062,7 @@ umgedreht und ist dann vorne
         <source>Meters (m or ft)</source>
         <translation>Meter (m or ft)</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_analog.ui" line="309"/>
         <source>Temp (°)</source>
         <translation>Temp(°)</translation>
@@ -12410,12 +12409,12 @@ umgedreht und ist dann vorne
         <source>ft</source>
         <translation type="unfinished">ft</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="419"/>
         <source>°C</source>
         <translation type="unfinished">°C</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
         <source>°F</source>
         <translation type="unfinished"></translation>
@@ -12445,7 +12444,7 @@ umgedreht und ist dann vorne
         <source>g</source>
         <translation type="unfinished">g</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
         <source>°</source>
         <translation type="unfinished">°</translation>

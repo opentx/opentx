@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="sv_SE">
+<TS version="2.0" language="sv_SE">
 <context>
     <name>AileronsPage</name>
     <message>
@@ -2495,7 +2495,7 @@ Dessa inställningar gäller för alla modeller.</translation>
         <source>Measurement Units</source>
         <translation>Måttenheter</translation>
     </message>
-    <message>
+    <message utf8="true">
         <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
         <translation>hh° (N/S) mm&apos; ss&apos;&apos;.dd</translation>
     </message>
@@ -4983,7 +4983,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1:%2</source>
-        <translation type="unfinished">%1:%2</translation>
+        <translation type="obsolete">%1:%2</translation>
     </message>
     <message>
         <source>Persistent</source>
@@ -6043,11 +6043,11 @@ p, li { white-space: pre-wrap; }
         <source>m</source>
         <translation>m</translation>
     </message>
-    <message>
+    <message utf8="true">
         <source>°C</source>
         <translation>°C</translation>
     </message>
-    <message>
+    <message utf8="true">
         <source>°</source>
         <translation>°</translation>
     </message>
@@ -7523,7 +7523,7 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)</source>
-        <translation type="vanished">Ingen Joystick-emulering -&gt; Direkt åtkomst till minnet utan att hålla in trimmar vid start</translation>
+        <translation type="obsolete">Ingen Joystick-emulering -&gt; Direkt åtkomst till minnet utan att hålla in trimmar vid start</translation>
     </message>
     <message>
         <source>SWR value will be available for display/audio/alarms - Only available on latest Taranis+ production</source>
@@ -7735,7 +7735,7 @@ OpenTX-gruppen.</translation>
         <source>Flight</source>
         <translation>Flygning</translation>
     </message>
-    <message>
+    <message utf8="true">
         <source>°F</source>
         <translation>°F</translation>
     </message>
@@ -8501,7 +8501,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <source>Meters (m or ft)</source>
         <translation>Meter (m eller ft)</translation>
     </message>
-    <message>
+    <message utf8="true">
         <source>Temp (°)</source>
         <translation>Temp (°)</translation>
     </message>
@@ -8906,11 +8906,11 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <source>ft</source>
         <translation type="unfinished">ft</translation>
     </message>
-    <message>
+    <message utf8="true">
         <source>°C</source>
         <translation type="unfinished">°C</translation>
     </message>
-    <message>
+    <message utf8="true">
         <source>°F</source>
         <translation type="unfinished">°F</translation>
     </message>
@@ -8934,7 +8934,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <source>g</source>
         <translation type="unfinished">g</translation>
     </message>
-    <message>
+    <message utf8="true">
         <source>°</source>
         <translation type="unfinished">°</translation>
     </message>
