@@ -98,6 +98,7 @@
   void luaExec(const char *filename);
   int luaGetMemUsed();
   #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
+  uint8_t isTelemetryScriptAvailable(uint8_t index);
   #define LUA_LOAD_MODEL_SCRIPTS()   luaState |= INTERPRETER_RELOAD_PERMANENT_SCRIPTS
   #define LUA_LOAD_MODEL_SCRIPT(idx) luaState |= INTERPRETER_RELOAD_PERMANENT_SCRIPTS
   #define LUA_STANDALONE_SCRIPT_RUNNING() (luaState == INTERPRETER_RUNNING_STANDALONE_SCRIPT)
