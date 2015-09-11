@@ -336,7 +336,12 @@ void getLogicalSwitchAudioFile(char * filename, int index, unsigned int event)
 
 #if defined(PCBTARANIS)
   *str++ = 'L';
-  *str++ = '1'+index;
+  if (index >= 10) {
+    div_t qr = div(index, 10);
+    *str++ = '1' + qr.quot;
+    index = qr.rem;
+  }
+  *str++ = '1' + index;
 #else
   int len = STR_VSWITCHES[0];
   strncpy(str, &STR_VSWITCHES[1+len*(index+SWSRC_FIRST_LOGICAL_SWITCH)], len);
