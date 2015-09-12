@@ -40,11 +40,13 @@ inline void MIXER_RESET()
   logicalSwitchesReset();
 }
 
+#if defined(FRSKY)
 inline void TELEMETRY_RESET()
 {
   memclear(&frskyData, sizeof(frskyData));
   frskyData.rssi[0].value = 100;
 }
+#endif
 
 bool checkScreenshot(QString test);
 
