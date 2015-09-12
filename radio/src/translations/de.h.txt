@@ -1,4 +1,4 @@
-/* German checked 29.07.2015 r085 opentx V2.099 für X9D,X9D+, X9E, Th9, 9XR, 9XR-Pro  
+/* German checked 12.09.2015 r096 opentx V2.1.4 für X9D,X9D+, X9E, Th9, 9XR, 9XR-Pro  
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -124,7 +124,7 @@
 #define TR_VDISPLAYTRIMS       "Nein\0 ""Kurz\0 ""Ja\0"  //Trimmwerte Keine, kurze Anzeigen, Ja
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "Kein\0 Pieps\0StimmeHaptic"
+#define TR_VBEEPCOUNTDOWN      "Kein\0 Pieps\0StimmeHaptik"
 
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Ton\0  ""Ruhe  "
@@ -658,7 +658,7 @@
 #define TR_RANGE               TR(INDENT "Bereich", INDENT "Variobereich m/s") // 9XR-Pro
 #define TR_CENTER              TR(INDENT "Mitte m/s", INDENT "Variomitte     m/s")
 #define TR_BAR                 "Streifen"
-#define TR_ALARM               INDENT "Ein bei Alarm"
+#define TR_ALARM               TR(INDENT "Ein bei", INDENT "Ein bei Alarm")  //9XR-Pro
 #define TR_USRDATA             "Daten berechnen aus"
 #define TR_BLADES              TR(INDENT "Prop", INDENT "Prop-Blätter") //9XR-Pro
 #define TR_SCREEN              "Telm-Bild "
@@ -949,8 +949,8 @@
 #define TR_COPY_TRIMS_TO_OFS   "Kopie Trimm to Servo-Mitte"  // "Trim to Subtrim"
 #define TR_INCDEC              "Inc/Decrement"
 #define TR_GLOBALVAR           "Global Var"
-#define TR_MIXSOURCE           "Mixer Source"
-#define TR_CONSTANT            "Constant"
+#define TR_MIXSOURCE           "Mixer Quelle"
+#define TR_CONSTANT            "Konstant"
 #define TR_PERSISTENT_MAH      TR(INDENT "Spr. mAh", INDENT "Speichern mAh") //9XR-Pro
 #define TR_PREFLIGHT           TR("---Vorflug-Checkliste--", "----Vorflug-Checkliste----")
 #define TR_CHECKLIST           TR(INDENT "Checkliste", INDENT "Checkliste anzeigen") //9XR-Pro
@@ -1067,7 +1067,7 @@
 #define TR_UNLOCKED            "Entsperrt"
 #define TR_ID                  "ID"
 #define TR_PRECISION           "Prezision"
-#define TR_RATIO               "Umrechnung"
+#define TR_RATIO               "Umrechnung"  //Faktor, Mulitplikator, Teiler  0,1 bis 10,0
 #define TR_FORMULA             "Formel"
 #define TR_CELLINDEX           "Zellenindex"
 #define TR_LOGS                "Log Daten"
@@ -1081,11 +1081,11 @@
 #define TR_ONLYPOSITIVE        "Nur Positiv"
 #define TR_FILTER              "Filter aktiv"
 #define TR_TELEMETRYFULL       "Telemetriezeilen voll!"
-#define TR_IGNORE_INSTANCE     INDENT "Ignore instance"
-#define TR_DISCOVER_SENSORS    INDENT "Discover new sensors"
-#define TR_STOP_DISCOVER_SENSORS INDENT "Stop discovery"
-#define TR_DELETE_ALL_SENSORS  INDENT "Delete all sensors"
-#define TR_CONFIRMDELETE       "Really delete all?"
+#define TR_IGNORE_INSTANCE     INDENT "Ignore Instanz"  // unklar für was ganz genau
+#define TR_DISCOVER_SENSORS    INDENT "Start Sensorsuche"
+#define TR_STOP_DISCOVER_SENSORS INDENT "Stop Sensorsuche"
+#define TR_DELETE_ALL_SENSORS  INDENT "Lösche alle Sensoren"
+#define TR_CONFIRMDELETE       "Wirklich alle löschen?"
 // ----------------------------- Symbole für Auswahlliste----------
 #define TR_MENU_INPUTS         "\314Inputs"
 #define TR_MENU_LUA            "\322Lua Scripte"
