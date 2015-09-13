@@ -264,7 +264,8 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
       QDomDocument doc(ER9X_EEPROM_FILE_TYPE);
       bool xmlOK = doc.setContent(&file);
       if(xmlOK) {
-        if (LoadEepromXml(radioData, doc)){
+        std::bitset<NUM_ERRORS> errors(LoadEepromXml(radioData, doc));
+        if (!errors.test(NO_ERROR)) {
           ui->modelsList->refreshList();
           if(resetCurrentFile) setCurrentFile(fileName);
           return true;
@@ -333,7 +334,6 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
       }
 
       std::bitset<NUM_ERRORS> errorsEeprom(LoadEeprom(radioData, eeprom, eeprom_size));
-      std::bitset<NUM_ERRORS> errorsBackup;
       if (!errorsEeprom.test(NO_ERROR)) {
         std::bitset<NUM_ERRORS> errorsBackup(LoadBackup(radioData, eeprom, eeprom_size, 0));
         if (!errorsBackup.test(NO_ERROR)) {
@@ -656,11 +656,13 @@ bool MdiChild::loadBackup()
         return false;
     }
 
-    if (!LoadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index)) {
-      QMessageBox::critical(this, tr("Error"),
-          tr("Invalid binary backup File %1")
-          .arg(fileName));
+    std::bitset<NUM_ERRORS> errorsEeprom(LoadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index));
+    if (!errorsEeprom.test(NO_ERROR)) {
+      ShowEepromErrors(this, tr("Error"), tr("Invalid binary backup File %1").arg(fileName), (errorsEeprom).to_ulong());
       return false;
+    }
+    if (errorsEeprom.test(HAS_WARNINGS)) {
+      ShowEepromWarnings(this, tr("Warning"), errorsEeprom.to_ulong());
     }
 
     ui->modelsList->refreshList();

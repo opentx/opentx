@@ -108,7 +108,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
       }
     }
     ui->FWFileName->hide();
-    ui->FlashLoadButton->hide();   
+    ui->FlashLoadButton->hide();
     hexfileName->clear();
   }
   else if (Type==FLASH_FILE_TYPE) {
@@ -168,7 +168,7 @@ void burnDialog::on_FlashLoadButton_clicked()
         ui->patchcalib_CB->setChecked(false);
         ui->patchhw_CB->setChecked(false);
         ui->patchhw_CB->hide();
-        ui->patchcalib_CB->hide();        
+        ui->patchcalib_CB->hide();
       }
       QTimer::singleShot(0, this, SLOT(shrink()));
     }
@@ -205,7 +205,7 @@ void burnDialog::checkFw(QString fileName)
   }
   else {
     QMessageBox::warning(this, tr("Warning"), tr("%1 may not be a valid firmware file").arg(fileName));
-  }  
+  }
   ui->BurnFlashButton->setEnabled(true);
   QTimer::singleShot(0, this, SLOT(shrink()));
   g.flashDir( QFileInfo(fileName).dir().absolutePath() );
@@ -238,16 +238,17 @@ bool burnDialog::checkeEprom(QString fileName)
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
         QMessageBox::critical(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(fileName).arg(file.errorString()));
         return false;
-    }        
+    }
     QDomDocument doc(ER9X_EEPROM_FILE_TYPE);
     bool xmlOK = doc.setContent(&file);
     if(xmlOK) {
-      if (!LoadEepromXml(radioData, doc)){
+      std::bitset<NUM_ERRORS> errors(LoadEepromXml(radioData, doc));
+      if (!errors.test(NO_ERROR)) {
         return false;
       }
     }
     file.reset();
-      
+
     QTextStream inputStream(&file);
     if (fileType==FILE_TYPE_EEPE) {  // read EEPE file header
       QString hline = inputStream.readLine();
@@ -268,7 +269,9 @@ bool burnDialog::checkeEprom(QString fileName)
       return true;
     }
     file.close();
-    if (!LoadEeprom(radioData, eeprom, eeprom_size)) {
+
+    std::bitset<NUM_ERRORS> errors(LoadEeprom(radioData, eeprom, eeprom_size));
+    if (!errors.test(NO_ERROR)) {
       int res = QMessageBox::question(this, "Companion",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::No) {
         return false;
@@ -292,7 +295,9 @@ bool burnDialog::checkeEprom(QString fileName)
         QMessageBox::critical(this, tr("Error"),tr("Error reading file %1:\n%2.").arg(fileName).arg(file.errorString()));
         return false;
     }
-    if (!LoadEeprom(radioData, eeprom, eeprom_size)) {
+
+    std::bitset<NUM_ERRORS> errors(LoadEeprom(radioData, eeprom, eeprom_size));
+    if (!errors.test(NO_ERROR)) {
       int res = QMessageBox::question(this, "Companion",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::No) {
         return false;
@@ -329,7 +334,7 @@ void burnDialog::updateUI()
   ui->useFwImageCB->setChecked( imageSource == FIRMWARE );
   ui->useLibraryImageCB->setChecked( imageSource == LIBRARY );
   ui->useAnotherImageCB->setChecked( imageSource == ANOTHER );
-  
+
   displaySplash();
 }
 
@@ -384,7 +389,7 @@ void burnDialog::on_useAnotherImageCB_clicked()
     else{
       imageSource = ANOTHER;
       imageFile = fileName;
-    }  
+    }
   }
   updateUI();
 }
@@ -450,7 +455,7 @@ void burnDialog::on_BurnFlashButton_clicked()
     }
     else {
       QMessageBox::critical(this, tr("Warning"), tr("No firmware selected"));
-      hexfileName->clear();     
+      hexfileName->clear();
     }
   }
 
@@ -463,7 +468,7 @@ void burnDialog::on_BurnFlashButton_clicked()
     int8_t PPM_Multiplier=(int8_t) g.profile[g.id()].ppmMultiplier();
     uint8_t GSStickMode=(uint8_t) g.profile[g.id()].gsStickMode();
     uint8_t vBatWarn=(uint8_t) g.profile[g.id()].vBatWarn();
-    
+
     QString DisplaySet= g.profile[g.id()].display();
     QString BeeperSet= g.profile[g.id()].beeper();
     QString HapticSet= g.profile[g.id()].haptic();
@@ -557,7 +562,7 @@ void burnDialog::on_BurnFlashButton_clicked()
       else {
         QMessageBox::critical(this, tr("Warning"), tr("Wrong radio setting data in profile, Settings not patched"));
       }
-    
+
       if (patch) {
         QString fileName = generateProcessUniqueTempFileName("temp.bin");
         QFile file(fileName);
@@ -586,12 +591,12 @@ void burnDialog::on_BurnFlashButton_clicked()
       }
       else {
         hexfileName->clear();
-        hexfileName->append(ui->FWFileName->text());        
+        hexfileName->append(ui->FWFileName->text());
       }
     }
     else {
       hexfileName->clear();
-      hexfileName->append(ui->FWFileName->text());        
+      hexfileName->append(ui->FWFileName->text());
     }
   }
   this->close();
@@ -599,8 +604,8 @@ void burnDialog::on_BurnFlashButton_clicked()
 
 void burnDialog::on_cancelButton_clicked()
 {
-  hexfileName->clear();     
-  this->close();  
+  hexfileName->clear();
+  this->close();
 }
 
 void burnDialog::on_EEpromCB_toggled(bool checked)

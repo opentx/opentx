@@ -1183,9 +1183,9 @@ class EEPROMInterface
 
     virtual unsigned long load(RadioData &radioData, const uint8_t *eeprom, int size) = 0;
 
-    virtual bool loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index) = 0;
+    virtual unsigned long loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index) = 0;
 
-    virtual bool loadxml(RadioData &radioData, QDomDocument &doc) = 0;
+    virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc) = 0;
 
     virtual int save(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, uint8_t version=0) = 0;
 
@@ -1315,6 +1315,10 @@ enum EepromLoadErrors {
   WRONG_SIZE,
   WRONG_FILE_SYSTEM,
   NOT_OPENTX,
+  NOT_TH9X,
+  NOT_GRUVIN9X,
+  NOT_ERSKY9X,
+  NOT_ER9X,
   UNKNOWN_BOARD,
   WRONG_BOARD,
   BACKUP_NOT_SUPPORTED,
@@ -1325,12 +1329,12 @@ enum EepromLoadErrors {
   NUM_ERRORS
 };
 
-void ShowEepromErrors(QWidget *parent, QString title, QString mainMessage, unsigned long errorsFound);
-void ShowEepromWarnings(QWidget *parent, QString title, unsigned long errorsFound);
+void ShowEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound);
+void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound);
 
-bool LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
+unsigned long LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
 unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, int size);
-bool LoadEepromXml(RadioData &radioData, QDomDocument &doc);
+unsigned long LoadEepromXml(RadioData &radioData, QDomDocument &doc);
 
 struct Option {
   const char * name;
