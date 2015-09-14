@@ -748,9 +748,9 @@ getvalue_t getValue(mixsrc_t i);
 
 #if defined(CPUARM)
 #define GETSWITCH_MIDPOS_DELAY   1
-bool getSwitch(int8_t swtch, uint8_t flags=0);
+bool getSwitch(swsrc_t swtch, uint8_t flags=0);
 #else
-bool getSwitch(int8_t swtch);
+bool getSwitch(swsrc_t swtch);
 #endif
 
 void logicalSwitchesTimerTick();

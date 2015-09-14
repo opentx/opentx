@@ -61,14 +61,20 @@ TEST(getSwitch, circularCSW)
 }
 #endif
 
+#define SET_LOGICAL_SWITCH(index, _func, _v1, _v2) ( \
+  g_model.logicalSw[index].func = _func, \
+  g_model.logicalSw[index].v1 = _v1, \
+  g_model.logicalSw[index].v2 = _v2 )
+
 #if defined(PCBTARANIS)
 TEST(getSwitch, OldTypeStickyCSW)
 {
   RADIO_RESET();
   MODEL_RESET();
   MIXER_RESET();
-  g_model.logicalSw[0] = { LS_FUNC_AND, SWSRC_SA0, 0, 0,  };
-  g_model.logicalSw[1] = { LS_FUNC_OR, SWSRC_SW1, SWSRC_SW2, 0  };
+
+  SET_LOGICAL_SWITCH(0, LS_FUNC_AND, SWSRC_SA0, SWSRC_NONE);
+  SET_LOGICAL_SWITCH(1, LS_FUNC_OR, SWSRC_SW1, SWSRC_SW2);
 
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);

@@ -235,7 +235,7 @@ bool getLogicalSwitch(uint8_t idx)
   bool result;
 
 #if defined(CPUARM)
-  int8_t s = ls->andsw;
+  swsrc_t s = ls->andsw;
 #else
   uint8_t s = ls->andsw;
   if (s > SWSRC_LAST_SWITCH) {
@@ -443,9 +443,9 @@ DurationAndDelayProcessing:
 }
 
 #if defined(CPUARM)
-bool getSwitch(int8_t swtch, uint8_t flags)
+bool getSwitch(swsrc_t swtch, uint8_t flags)
 #else
-bool getSwitch(int8_t swtch)
+bool getSwitch(swsrc_t swtch)
 #endif
 {
   bool result;
@@ -547,7 +547,7 @@ bool getSwitch(int8_t swtch)
 void evalLogicalSwitches(bool isCurrentPhase)
 {
   for (unsigned int idx=0; idx<NUM_LOGICAL_SWITCH; idx++) {
-    LogicalSwitchContext &context = lswFm[mixerCurrentFlightMode].lsw[idx];
+    LogicalSwitchContext & context = lswFm[mixerCurrentFlightMode].lsw[idx];
     bool result = getLogicalSwitch(idx);
     if (isCurrentPhase) {
       if (result) {
