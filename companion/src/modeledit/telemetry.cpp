@@ -710,6 +710,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
       ui->sensorsLayout->addWidget(panel);
       sensorPanels[i] = panel;
       connect(panel, SIGNAL(nameModified()), this, SLOT(update()));
+      connect(panel, SIGNAL(modified()), this, SLOT(onModified()));
     }
   }
   else {
@@ -719,14 +720,14 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     connect(analogs[0], SIGNAL(modified()), this, SLOT(onAnalogModified()));
     analogs[1] = new TelemetryAnalog(this, model.frsky.channels[1], model, generalSettings, firmware);
     ui->A2Layout->addWidget(analogs[1]);
-    connect(analogs[1], SIGNAL(modified()), this, SLOT(onAnalogModified()));
+    connect(analogs[1], SIGNAL(modified()), this, SLOT(onModified()));
   }
 
   if (IS_TARANIS(firmware->getBoard())) {
-    ui->voltsSource->setField(model.frsky.voltsSource);
-    ui->altitudeSource->setField(model.frsky.altitudeSource);
-    ui->varioSource->setField(model.frsky.varioSource);
-    ui->varioCenterSilent->setField(model.frsky.varioCenterSilent);
+    ui->voltsSource->setField(model.frsky.voltsSource, this);
+    ui->altitudeSource->setField(model.frsky.altitudeSource, this);
+    ui->varioSource->setField(model.frsky.varioSource, this);
+    ui->varioCenterSilent->setField(model.frsky.varioCenterSilent, this);
   }
   else {
     ui->topbarGB->hide();
@@ -937,7 +938,7 @@ void TelemetryPanel::on_telemetryProtocol_currentIndexChanged(int index)
   }
 }
 
-void TelemetryPanel::onAnalogModified()
+void TelemetryPanel::onModified()
 {
   emit modified();
 }
