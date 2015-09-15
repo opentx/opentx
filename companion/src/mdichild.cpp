@@ -265,7 +265,7 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
       bool xmlOK = doc.setContent(&file);
       if(xmlOK) {
         std::bitset<NUM_ERRORS> errors(LoadEepromXml(radioData, doc));
-        if (!errors.test(NO_ERROR)) {
+        if (errors.test(NO_ERROR)) {
           ui->modelsList->refreshList();
           if(resetCurrentFile) setCurrentFile(fileName);
           return true;
