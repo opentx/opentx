@@ -7,4 +7,4 @@ install:
   - sudo apt-get install -y -qq lcov curl git subversion gcc-avr avr-libc avrdude build-essential libqtcore4  libqt4-dev qt4-qmake g++ cmake libxerces-c-dev xsdcxx libsdl1.2-dev libusb-1.0-0 libphonon-dev phonon libqtwebkit-dev python-qt4 python-qt4-dev
 
 script:
-  - mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug ../companion/src && cmake --build .
+  - mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug ../companion/src && cmake --build . 
