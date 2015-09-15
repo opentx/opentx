@@ -924,12 +924,15 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
 
 QString CustomFunctionData::repeatToString() const
 {
-  if (repeatParam==0) {
+  if (repeatParam == -1) {
+    return QObject::tr("played once, not during startup");
+  }
+  else if (repeatParam == 0) {
     return "";
   }
   else {
     unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 1 : 10;
-    return QObject::tr("repeat") + QString("(%1").arg(step*repeatParam) + QObject::tr("s") + ")";
+    return QObject::tr("repeat(%1s)").arg(step*repeatParam);
   }
 }
 
