@@ -1,8 +1,8 @@
 language: cpp
 
 install:
-  - sudo apt-get install software-properties-common
-  - sudo add-apt-repository ppa:george-edison55/cmake-3.x
+  - sudo apt-get install -qq software-properties-common
+  - sudo add-apt-repository -qq ppa:george-edison55/cmake-3.x
   - sudo apt-get update -qq
   - sudo apt-get install -y -qq lcov curl git subversion gcc-avr avr-libc avrdude build-essential libqtcore4  libqt4-dev qt4-qmake g++ cmake libxerces-c-dev xsdcxx libsdl1.2-dev libusb-1.0-0 libphonon-dev phonon libqtwebkit-dev python-qt4 python-qt4-dev
 
