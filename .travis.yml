@@ -1,0 +1,12 @@
+language: cpp
+
+before_install:
+    - sudo apt-get remove cmake cmake-data --yes
+    - sudo add-apt-repository ppa:george-edison55/precise-backports --yes
+    - sudo apt-get update    
+
+install:
+   - sudo apt-get install -y lcov cmake cmake-data curl gcc-avr avr-libc avrdude libqtcore4 libqt4-dev qt4-qmake g++ libxerces-c-dev xsdcxx libsdl1.2-dev libusb-1.0-0 libphonon-dev phonon libqtwebkit-dev python-qt4 python-qt4-dev
+
+script:
+  - mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug ../companion/src && cmake --build .
