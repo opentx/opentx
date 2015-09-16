@@ -3177,6 +3177,10 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new SensorField(modelData.sensorData[i], board, version));
     }
   }
+
+  if (IS_TARANIS_X9E(board)) {
+    internalField.Append(new UnsignedField<8>(modelData.toplcdTimer));
+  }
 }
 
 void OpenTxModelData::beforeExport()

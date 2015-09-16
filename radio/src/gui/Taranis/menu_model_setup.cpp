@@ -60,6 +60,9 @@ enum menuModelSetupItems {
   ITEM_MODEL_TIMER3_MINUTE_BEEP,
   ITEM_MODEL_TIMER3_COUNTDOWN_BEEP,
 #endif
+#if defined(REV9E)
+  ITEM_MODEL_TOP_LCD_TIMER,
+#endif
   ITEM_MODEL_EXTENDED_LIMITS,
   ITEM_MODEL_EXTENDED_TRIMS,
   ITEM_MODEL_DISPLAY_TRIMS,
@@ -224,9 +227,11 @@ int getSwitchWarningsCount()
 #if defined(REV9E)
   #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > 8 ? TITLE_ROW : HIDDEN_ROW), uint8_t(getSwitchWarningsCount() > 16 ? TITLE_ROW : HIDDEN_ROW)
   #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|NUM_POTS : 0), uint8_t(g_model.potsWarnMode ? TITLE_ROW : HIDDEN_ROW)
+  #define TOPLCD_ROWS                     0,
 #else
   #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsCount())
   #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|NUM_POTS : 0)
+  #define TOPLCD_ROWS
 #endif
 
 void menuModelSetup(uint8_t event)
@@ -234,7 +239,7 @@ void menuModelSetup(uint8_t event)
   horzpos_t l_posHorz = m_posHorz;
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
 #if defined(TARANIS_INTERNAL_PPM)
-  MENU_TAB({ 0, 0, TIMERS_ROWS, 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(),
+  MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(),
     NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0, 
     LABEL(InternalModule), 
     INTERNAL_MODULE_MODE_ROWS, 
@@ -248,7 +253,7 @@ void menuModelSetup(uint8_t event)
     IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)), 
     LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
 #else
-  MENU_TAB({ 0, 0, TIMERS_ROWS, 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(),
+  MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(),
     NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0,
     LABEL(InternalModule),
     INTERNAL_MODULE_MODE_ROWS,
@@ -369,6 +374,16 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODEL_TIMER3_PERSISTENT:
         g_model.timers[2].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, g_model.timers[2].persistent, 0, 2, attr, event);
+        break;
+#endif
+
+#if defined(REV9E)
+      case ITEM_MODEL_TOP_LCD_TIMER:
+        lcd_putsLeft(y, STR_TOPLCDTIMER);
+        putsStrIdx(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER, g_model.topLcdTimer+1, attr);
+        if (attr) {
+          g_model.topLcdTimer = checkIncDec(event, g_model.topLcdTimer, 0, TIMERS-1, EE_MODEL);
+        }
         break;
 #endif
 

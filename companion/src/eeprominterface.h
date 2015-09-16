@@ -1041,6 +1041,8 @@ class ModelData {
 
     SensorData sensorData[C9X_MAX_SENSORS];
 
+    unsigned int toplcdTimer;
+
     void clear();
     bool isEmpty() const;
     void setDefaultInputs(const GeneralSettings & settings);
@@ -1317,6 +1319,7 @@ enum Capability {
   LCDWidth,
   GetThrSwitch,
   HasDisplayText,
+  HasTopLcd,
   GlobalFunctions,
   VirtualInputs,
   TrainerInputs,
