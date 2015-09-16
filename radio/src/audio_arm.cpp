@@ -338,7 +338,7 @@ void getLogicalSwitchAudioFile(char * filename, int index, unsigned int event)
   *str++ = 'L';
   if (index >= 9) {
     div_t qr = div(index+1, 10);
-    *str++ = '1' + qr.quot;
+    *str++ = '0' + qr.quot;
     *str++ = '0' + qr.rem;
   }
   else {

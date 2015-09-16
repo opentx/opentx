@@ -357,3 +357,20 @@ TEST(getSwitch, inputWithTrim)
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
 }
 #endif
+
+#if defined(PCBTARANIS)
+TEST(evalLogicalSwitches, playFile)
+{
+  extern uint64_t sdAvailableLogicalSwitchAudioFiles;
+  sdAvailableLogicalSwitchAudioFiles = 0xffffffffffffffff;
+  char filename[AUDIO_FILENAME_MAXLEN+1];
+  isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (0 << 16) + AUDIO_EVENT_OFF, filename);
+  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L1-off.wav"), 0);
+  isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (0 << 16) + AUDIO_EVENT_ON, filename);
+  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L1-on.wav"), 0);
+  isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (31 << 16) + AUDIO_EVENT_OFF, filename);
+  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L32-off.wav"), 0);
+  isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (31 << 16) + AUDIO_EVENT_ON, filename);
+  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L32-on.wav"), 0);
+}
+#endif
