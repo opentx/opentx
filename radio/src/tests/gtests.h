@@ -22,6 +22,13 @@ void doMixerCalculations();
   #define RADIO_RESET()
 #endif
 
+inline void SYSTEM_RESET()
+{
+  g_eeGeneral.currModel = 0;
+  memset(modelHeaders, 0, sizeof(modelHeaders));
+  generalDefault();
+}
+
 inline void MODEL_RESET()
 {
   memset(&g_model, 0, sizeof(g_model));
