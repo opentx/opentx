@@ -5845,6 +5845,21 @@ p, li { white-space: pre-wrap; }
         <translation>Nazwa(%1)</translation>
     </message>
     <message>
+        <location filename="../modelprinter.cpp" line="373"/>
+        <source>Offset(%1)</source>
+        <translation>Wyrównanie(%1)</translation>
+    </message>
+    <message>
+        <location filename="../modelprinter.cpp" line="380"/>
+        <source>Delay(u%1:d%2)</source>
+        <translation>Opóźnienie(u%1:d%2)</translation>
+    </message>
+    <message>
+        <location filename="../modelprinter.cpp" line="382"/>
+        <source>Slow((u%1:d%2)</source>
+        <translation>Spowolnienie(u%1:d%2)</translation>
+    </message>
+    <message>
         <source>%1:%2</source>
         <translation type="obsolete">%1:%2</translation>
     </message>
@@ -5925,32 +5940,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modelprinter.cpp" line="356"/>
         <source>Weight(%1)</source>
-        <translation type="unfinished">Waga(%1)</translation>
+        <translation>Waga(%1)</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="363"/>
         <source>Switch(%1)</source>
-        <translation type="unfinished">Przełącznik(%1)</translation>
+        <translation>Przełącznik(%1)</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="371"/>
         <source>No DR/Expo</source>
         <translation>Bez DR/Expo</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="373"/>
-        <source>Offset(%1)</source>
-        <translation type="unfinished">Wyrównanie(%1)</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="380"/>
-        <source>Delay(u%1:d%2)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="382"/>
-        <source>Slow((u%1:d%2)</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Offset</source>
@@ -7179,14 +7179,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../eeprominterface.cpp" line="332"/>
         <location filename="../eeprominterface.cpp" line="341"/>
         <location filename="../eeprominterface.cpp" line="402"/>
-        <location filename="../eeprominterface.cpp" line="1224"/>
+        <location filename="../eeprominterface.cpp" line="1227"/>
         <source>V</source>
         <translation>V</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="221"/>
         <location filename="../eeprominterface.cpp" line="873"/>
-        <location filename="../eeprominterface.cpp" line="932"/>
         <source>s</source>
         <translation>s</translation>
     </message>
@@ -7713,12 +7712,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1119"/>
         <source>Instead of Joystick emulation, USB connection is Mass Storage (as in the Bootloader)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamiast emulacji joysticka, podłaczenie USB działa jako dysk zewnętrzny (jak w Bootloaderze)</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1119"/>
         <source>Instead of Joystick emulation, USB connection is Command Line Interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamiast emulacji joysticka, podłaczenie USB działa jako interface linii komend</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1122"/>
@@ -8906,22 +8905,31 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;font color=red&gt;&lt;b&gt;Niespójny parametr&lt;/b&gt;&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="932"/>
-        <source>repeat</source>
-        <translation>Powtórz</translation>
+        <location filename="../eeprominterface.cpp" line="928"/>
+        <source>played once, not during startup</source>
+        <translation>Odtworzone raz, nie w czasie startu</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="945"/>
+        <location filename="../eeprominterface.cpp" line="935"/>
+        <source>repeat(%1s)</source>
+        <translation>powtórz(%1s)</translation>
+    </message>
+    <message>
+        <source>repeat</source>
+        <translation type="obsolete">Powtórz</translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="948"/>
         <source>DISABLED</source>
         <translation>Wyłączone</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="984"/>
+        <location filename="../eeprominterface.cpp" line="987"/>
         <source>INV</source>
         <translation>Odwróć</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="984"/>
+        <location filename="../eeprominterface.cpp" line="987"/>
         <source>NOR</source>
         <translation>NormalnyNOR</translation>
     </message>
@@ -9177,28 +9185,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Przełącznik</translation>
     </message>
     <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Waga(%1)</translation>
-    </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Przełącznik(%1)</translation>
-    </message>
-    <message>
         <source>NoTrim</source>
         <translation type="obsolete">BezTrymera</translation>
     </message>
     <message>
         <source>No DR/Expo</source>
         <translation type="obsolete">Bez DR/Expo</translation>
-    </message>
-    <message>
-        <source>Offset(%1)</source>
-        <translation type="obsolete">Wyrównanie(%1)</translation>
-    </message>
-    <message>
-        <source>Warn(%1)</source>
-        <translation type="obsolete">(%1)Ostrzeżenie</translation>
     </message>
     <message>
         <source>Offset</source>
@@ -10411,99 +10403,99 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
 <context>
     <name>TelemetryPanel</name>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="737"/>
+        <location filename="../modeledit/telemetry.cpp" line="738"/>
         <source>Telemetry screen %1</source>
         <translation>Panel Telemetrii %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="807"/>
+        <location filename="../modeledit/telemetry.cpp" line="808"/>
         <source>Low Alarm</source>
         <translation>Alarm niski</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="808"/>
+        <location filename="../modeledit/telemetry.cpp" line="809"/>
         <source>Critical Alarm</source>
         <translation>Alarm krytyczny</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="850"/>
+        <location filename="../modeledit/telemetry.cpp" line="851"/>
         <source>Winged Shadow How High</source>
         <translation>Winged Shadow How High</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="853"/>
+        <location filename="../modeledit/telemetry.cpp" line="854"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation>Winged Shadow How High (Nie obsługiwane)</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry.cpp" line="900"/>
-        <location filename="../modeledit/telemetry.cpp" line="908"/>
-        <location filename="../modeledit/telemetry.cpp" line="923"/>
-        <source>A1</source>
-        <translation>A1</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry.cpp" line="897"/>
-        <source>Alti</source>
-        <translation>Wysokościomierz</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry.cpp" line="784"/>
-        <source>FrSky S.PORT</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry.cpp" line="785"/>
-        <source>FrSky D</source>
-        <translation>FrSky D</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry.cpp" line="787"/>
-        <source>FrSky D (cable)</source>
-        <translation>FrSky D (kabel)</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry.cpp" line="898"/>
-        <source>Alti+</source>
-        <translation>Wysokościomierz+</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry.cpp" line="899"/>
-        <source>VSpeed</source>
-        <translation>Prędkość Pionowa</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="901"/>
         <location filename="../modeledit/telemetry.cpp" line="909"/>
         <location filename="../modeledit/telemetry.cpp" line="924"/>
+        <source>A1</source>
+        <translation>A1</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="898"/>
+        <source>Alti</source>
+        <translation>Wysokościomierz</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="785"/>
+        <source>FrSky S.PORT</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="786"/>
+        <source>FrSky D</source>
+        <translation>FrSky D</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="788"/>
+        <source>FrSky D (cable)</source>
+        <translation>FrSky D (kabel)</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="899"/>
+        <source>Alti+</source>
+        <translation>Wysokościomierz+</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="900"/>
+        <source>VSpeed</source>
+        <translation>Prędkość Pionowa</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="902"/>
+        <location filename="../modeledit/telemetry.cpp" line="910"/>
+        <location filename="../modeledit/telemetry.cpp" line="925"/>
         <source>A2</source>
         <translation>A2</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="911"/>
-        <location filename="../modeledit/telemetry.cpp" line="926"/>
+        <location filename="../modeledit/telemetry.cpp" line="912"/>
+        <location filename="../modeledit/telemetry.cpp" line="927"/>
         <source>A3</source>
         <translation>A3</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="912"/>
-        <location filename="../modeledit/telemetry.cpp" line="927"/>
+        <location filename="../modeledit/telemetry.cpp" line="913"/>
+        <location filename="../modeledit/telemetry.cpp" line="928"/>
         <source>A4</source>
         <translation>A4</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="914"/>
-        <location filename="../modeledit/telemetry.cpp" line="929"/>
+        <location filename="../modeledit/telemetry.cpp" line="915"/>
+        <location filename="../modeledit/telemetry.cpp" line="930"/>
         <source>FAS</source>
         <translation>FAS</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="915"/>
+        <location filename="../modeledit/telemetry.cpp" line="916"/>
         <source>Cells</source>
         <translation>Cele</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="922"/>
+        <location filename="../modeledit/telemetry.cpp" line="923"/>
         <source>---</source>
         <translation>---</translation>
     </message>
@@ -10771,11 +10763,11 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <source>Positive</source>
         <translation>Dodatni</translation>
     </message>
-    <message>
+    <message utf8="true">
         <source>Temp (°C)</source>
         <translation type="obsolete">Temp (°C)</translation>
     </message>
-    <message>
+    <message utf8="true">
         <source>Temp (°F)</source>
         <translation type="obsolete">Temp (°F)</translation>
     </message>
@@ -10804,7 +10796,7 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <source>Acceleration (g)</source>
         <translation type="obsolete">Przyspieszenie (g)</translation>
     </message>
-    <message>
+    <message utf8="true">
         <source>Heading (°)</source>
         <translation type="obsolete">Kurs (°)</translation>
     </message>
