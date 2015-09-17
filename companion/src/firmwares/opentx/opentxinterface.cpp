@@ -363,7 +363,10 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *e
   std::cout << " version " << (unsigned int)version;
 
   EepromLoadErrors version_error = checkVersion(version);
-  if (version_error != NO_ERROR) {
+  if (version_error == OLD_VERSION) {
+    errors.set(version_error);
+    errors.set(HAS_WARNINGS);
+  } else if (version_error == NOT_OPENTX) {
     std::cout << " not open9x\n";
     errors.set(version_error);
     return errors.to_ulong();
@@ -908,59 +911,46 @@ EepromLoadErrors OpenTxEepromInterface::checkVersion(unsigned int version)
   switch(version) {
     case 201:
       // first version
-      break;
     case 202:
       // channel order is now always RUD - ELE - THR - AIL
       // changes in timers
       // ppmFrameLength added
       // thrTraceSrc added
-      break;
     case 203:
       // mixers changed (for the trims use for change the offset of a mix)
       // telemetry offset raised to -127 +127
       // function switches now have a param on 4 bits
-      break;
     case 204:
       // telemetry changes (bars)
-      break;
     case 205:
       // mixer changes (differential, negative curves)...
-      break;
     // case 206:
     case 207:
       // V4: Rotary Encoders position in FlightModes
-      break;
     case 208:
       // Trim value in 16bits
       // FrSky A1/A2 offset on 12bits
       // ARM: More Mixers / Expos / CSW / FSW / CHNOUT
-      break;
     case 209:
       // Add TrmR, TrmE, TrmT, TrmA as Mix sources
       // Trims are now OFF / ON / Rud / Ele / Thr / Ail
-      break;
     case 210:
       // Add names in Mixes / Expos
       // Add a new telemetry screen
       // Add support for Play Track <filename>
-      break;
     case 211:
       // Curves big change
-      break;
     case 212:
       // Big changes in mixers / limitse
-      break;
     case 213:
       // GVARS / Variants introduction
-      break;
     case 214:
       // Massive EEPROM change!
-      break;
     case 215:
       // M128 revert because too much RAM used!
-      break;
     case 216:
       // A lot of things (first github release)
+      return OLD_VERSION;
       break;
     case 217:
       // 3 logical switches removed on M128 / gruvin9x boards
@@ -1047,9 +1037,13 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *e
 
   std::cout << " version " << (unsigned int)version << " ";
 
-  if (!checkVersion(version)) {
+  EepromLoadErrors version_error = checkVersion(version);
+  if (version_error == OLD_VERSION) {
+    errors.set(version_error);
+    errors.set(HAS_WARNINGS);
+  } else if (version_error == NOT_OPENTX) {
     std::cout << " not open9x\n";
-    errors.set(NOT_OPENTX);
+    errors.set(version_error);
     return errors.to_ulong();
   }
 
