@@ -995,9 +995,10 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *e
 
   std::cout << " version " << (unsigned int)version << " ";
 
-  if (!checkVersion(version)) {
+  EepromLoadErrors version_error = checkVersion(version);
+  if (version_error != NO_ERROR) {
     std::cout << " not open9x\n";
-    errors.set(NOT_OPENTX);
+    errors.set(version_error);
     return errors.to_ulong();
   }
 
