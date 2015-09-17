@@ -86,9 +86,6 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_TOP_BAR_LABEL,
   ITEM_TELEMETRY_TOP_BAR_VOLTAGE,
   ITEM_TELEMETRY_TOP_BAR_ALTITUDE,
-#if defined(REV9E)
-  ITEM_TELEMETRY_TOP_LCD_TIMER,
-#endif
   ITEM_TELEMETRY_SCREEN_LABEL1,
   ITEM_TELEMETRY_SCREEN_LINE1,
   ITEM_TELEMETRY_SCREEN_LINE2,
@@ -511,12 +508,6 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
 }
 #endif
 
-#if defined(REV9E)
-  #define TOPLCD_ROWS 0,
-#else
-  #define TOPLCD_ROWS
-#endif
-
 void menuModelTelemetry(uint8_t event)
 {
   if (s_warning_result) {
@@ -526,7 +517,7 @@ void menuModelTelemetry(uint8_t event)
     }
   }
   
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS LABEL(TopBar), 0, 0, TOPLCD_ROWS TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), CASE_CPUARM(TELEMETRY_SCREEN_ROWS(2)) CASE_CPUARM(TELEMETRY_SCREEN_ROWS(3)) });
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), CASE_CPUARM(TELEMETRY_SCREEN_ROWS(2)) CASE_CPUARM(TELEMETRY_SCREEN_ROWS(3)) });
 
   int sub = m_posVert;
 
@@ -715,16 +706,6 @@ void menuModelTelemetry(uint8_t event)
           g_model.frsky.altitudeSource = checkIncDec(event, g_model.frsky.altitudeSource, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isAltSensor);
         }
         break;
-
-#if defined(REV9E)
-      case ITEM_TELEMETRY_TOP_LCD_TIMER:
-        lcd_putsLeft(y, STR_TOPLCDTIMER);
-        putsStrIdx(TELEM_COL2, y, STR_TIMER, g_model.topLcdTimer+1, attr);
-        if (attr) {
-          g_model.topLcdTimer = checkIncDec(event, g_model.topLcdTimer, 0, MAX_TIMERS-1, EE_MODEL);
-        }
-        break;
-#endif
 
       case ITEM_TELEMETRY_SCREEN_LABEL1:
       case ITEM_TELEMETRY_SCREEN_LABEL2:

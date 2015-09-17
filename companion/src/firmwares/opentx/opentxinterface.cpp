@@ -591,7 +591,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case OffsetWeight:
       return (IS_ARM(board) ? 500 : 245);
     case Timers:
-      return (IS_ARM(board) ? 3 : 2);
+      return ((IS_ARM(board) && id.contains("timer3")) ? 3 : 2);
     case TimersName:
       return (IS_TARANIS(board) ? 8 : (IS_ARM(board) ? 3 : 0));
     case PermTimers:
@@ -753,6 +753,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return (IS_TARANIS(board) ? SWITCH_SF1 : SWITCH_THR) ;
     case HasDisplayText:
       return IS_ARM(board) ? 1 : 0;
+    case HasTopLcd:
+      return IS_TARANIS_X9E(board) ? 1 : 0;
     case GlobalFunctions:
       return IS_ARM(board) ? 64 : 0;
     case VirtualInputs:

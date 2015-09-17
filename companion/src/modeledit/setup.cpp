@@ -516,6 +516,19 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     }
   }
 
+  if (firmware->getCapability(HasTopLcd)) {
+    ui->toplcdTimer->setField(model.toplcdTimer, this);
+    for (int i=0; i<C9X_MAX_TIMERS; i++) {
+      if (i<firmware->getCapability(Timers)) {
+        ui->toplcdTimer->addItem(tr("Timer %1").arg(i+1), i);
+      }
+    }
+  }
+  else {
+    ui->toplcdTimerLabel->hide();
+    ui->toplcdTimer->hide();
+  }
+
   if (!firmware->getCapability(HasDisplayText)) {
     ui->displayText->hide();
   }
