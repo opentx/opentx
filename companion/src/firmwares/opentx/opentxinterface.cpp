@@ -307,14 +307,18 @@ bool OpenTxEepromInterface::saveModel(unsigned int index, ModelData &model, unsi
   return (sz == eeprom.size());
 }
 
-bool OpenTxEepromInterface::loadxml(RadioData &radioData, QDomDocument &doc)
+unsigned long OpenTxEepromInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
-  return false;
+  std::bitset<NUM_ERRORS> errors;
+  errors.set(UNKNOWN_ERROR);
+  return errors.to_ulong();
 }
 
-bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
+unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying " << getName() << " import...";
+
+  std::bitset<NUM_ERRORS> errors;
 
   if (size != getEEpromSize()) {
     if (size==4096) {
@@ -326,21 +330,25 @@ bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, in
       }
       if (notnull) {
         std::cout << " wrong size (" << size << ")\n";
-        return false;
+        errors.set(WRONG_SIZE);
+        return errors.to_ulong();
       }
       else {
-        QMessageBox::warning(NULL, "companion", QObject::tr("Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"));
+        errors.set(HAS_WARNINGS);
+        errors.set(WARNING_WRONG_FIRMWARE);
         size=2048;
       }
     } else {
       std::cout << " wrong size (" << size << "/" << getEEpromSize() << ")\n";
-      return false;
+      errors.set(WRONG_SIZE);
+      return errors.to_ulong();
     }
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, board)) {
     std::cout << " wrong file system\n";
-    return false;
+    errors.set(WRONG_FILE_SYSTEM);
+    return errors.to_ulong();
   }
 
   efile->openRd(FILE_GENERAL);
@@ -348,30 +356,39 @@ bool OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, in
   uint8_t version;
   if (efile->readRlc2(&version, 1) != 1) {
     std::cout << " no\n";
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
 
   std::cout << " version " << (unsigned int)version;
 
-  if (!checkVersion(version)) {
+  EepromLoadErrors version_error = checkVersion(version);
+  if (version_error == OLD_VERSION) {
+    errors.set(version_error);
+    errors.set(HAS_WARNINGS);
+  } else if (version_error == NOT_OPENTX) {
     std::cout << " not open9x\n";
-    return false;
+    errors.set(version_error);
+    return errors.to_ulong();
   }
 
   if (!loadGeneral<OpenTxGeneralData>(radioData.generalSettings, version)) {
     std::cout << " ko\n";
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
 
   std::cout << " variant " << radioData.generalSettings.variant;
   for (int i=0; i<getMaxModels(); i++) {
     if (!loadModel(version, radioData.models[i], NULL, i, radioData.generalSettings.variant, radioData.generalSettings.stickMode+1)) {
       std::cout << " ko\n";
-      return false;
+      errors.set(UNKNOWN_ERROR);
+      return errors.to_ulong();
     }
   }
   std::cout << " ok\n";
-  return true;
+  errors.set(NO_ERROR);
+  return errors.to_ulong();
 }
 
 int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
@@ -889,73 +906,60 @@ size_t getSizeA(T (&)[SIZE]) {
     return SIZE;
 }
 
-bool OpenTxEepromInterface::checkVersion(unsigned int version)
+EepromLoadErrors OpenTxEepromInterface::checkVersion(unsigned int version)
 {
   switch(version) {
     case 201:
       // first version
-      break;
     case 202:
       // channel order is now always RUD - ELE - THR - AIL
       // changes in timers
       // ppmFrameLength added
       // thrTraceSrc added
-      break;
     case 203:
       // mixers changed (for the trims use for change the offset of a mix)
       // telemetry offset raised to -127 +127
       // function switches now have a param on 4 bits
-      break;
     case 204:
       // telemetry changes (bars)
-      break;
     case 205:
       // mixer changes (differential, negative curves)...
-      break;
     // case 206:
     case 207:
       // V4: Rotary Encoders position in FlightModes
-      break;
     case 208:
       // Trim value in 16bits
       // FrSky A1/A2 offset on 12bits
       // ARM: More Mixers / Expos / CSW / FSW / CHNOUT
-      break;
     case 209:
       // Add TrmR, TrmE, TrmT, TrmA as Mix sources
       // Trims are now OFF / ON / Rud / Ele / Thr / Ail
-      break;
     case 210:
       // Add names in Mixes / Expos
       // Add a new telemetry screen
       // Add support for Play Track <filename>
-      break;
     case 211:
       // Curves big change
-      break;
     case 212:
       // Big changes in mixers / limitse
-      break;
     case 213:
       // GVARS / Variants introduction
-      break;
     case 214:
       // Massive EEPROM change!
-      break;
     case 215:
       // M128 revert because too much RAM used!
-      break;
     case 216:
       // A lot of things (first github release)
+      return OLD_VERSION;
       break;
     case 217:
       // 3 logical switches removed on M128 / gruvin9x boards
       break;
     default:
-      return false;
+      return NOT_OPENTX;
   }
 
-  return true;
+  return NO_ERROR;
 }
 
 bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int variant)
@@ -991,13 +995,16 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
   return true;
 }
 
-bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
+unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
 {
+  std::bitset<NUM_ERRORS> errors;
+
   std::cout << "trying " << getName() << " backup import...";
 
   if (esize < 8 || memcmp(eeprom, "o9x", 3) != 0) {
     std::cout << " no\n";
-    return false;
+    errors.set(WRONG_SIZE);
+    return errors.to_ulong();
   }
 
   BoardEnum backupBoard = (BoardEnum)-1;
@@ -1013,12 +1020,14 @@ bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, in
       break;
     default:
       std::cout << " unknown board\n";
-      return false;
+      errors.set(UNKNOWN_BOARD);
+      return errors.to_ulong();
   }
 
   if (backupBoard != board) {
     std::cout << " not right board\n";
-    return false;
+    errors.set(WRONG_BOARD);
+    return errors.to_ulong();
   }
 
   uint8_t version = eeprom[4];
@@ -1028,29 +1037,38 @@ bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, in
 
   std::cout << " version " << (unsigned int)version << " ";
 
-  if (!checkVersion(version)) {
+  EepromLoadErrors version_error = checkVersion(version);
+  if (version_error == OLD_VERSION) {
+    errors.set(version_error);
+    errors.set(HAS_WARNINGS);
+  } else if (version_error == NOT_OPENTX) {
     std::cout << " not open9x\n";
-    return false;
+    errors.set(version_error);
+    return errors.to_ulong();
   }
 
   if (size > esize-8) {
     std::cout << " wrong size\n";
-    return false;
+    errors.set(WRONG_SIZE);
+    return errors.to_ulong();
   }
 
   if (bcktype=='M') {
     if (!loadModel(version, radioData.models[index], &eeprom[8], size, variant)) {
       std::cout << " ko\n";
-      return false;
+      errors.set(UNKNOWN_ERROR);
+      return errors.to_ulong();
     }
   }
   else {
     std::cout << " backup type not supported\n";
-    return false;
+    errors.set(BACKUP_NOT_SUPPORTED);
+    return errors.to_ulong();
   }
 
   std::cout << " ok\n";
-  return true;
+  errors.set(NO_ERROR);
+  return errors.to_ulong();
 }
 
 QString OpenTxFirmware::getFirmwareBaseUrl()
@@ -1346,7 +1364,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("bluetooth", QObject::tr("Bluetooth interface"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
-  
+
   /* ar9x board */
   firmware = new OpenTxFirmware("opentx-ar9x", QObject::tr("ar9x board / 9X"), BOARD_AR9X);
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));

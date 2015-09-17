@@ -24,6 +24,7 @@
 #include <QtXml>
 #include <QComboBox>
 #include <iostream>
+#include <bitset>
 #include "constants.h"
 #include "simulatorinterface.h"
 
@@ -841,7 +842,7 @@ class ModuleData {
     int          failsafeChannels[C9X_NUM_CHNOUT];
     int          ppmDelay;
     bool         ppmPulsePol;           // false = positive
-    bool         ppmOutputType;         // false = open drain, true = push pull 
+    bool         ppmOutputType;         // false = open drain, true = push pull
     int          ppmFrameLength;
     void clear() { memset(this, 0, sizeof(ModuleData)); }
     QString polarityToString() const { return ppmPulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); } // TODO ModelPrinter
@@ -1353,11 +1354,11 @@ class EEPROMInterface
 
     inline BoardEnum getBoard() { return board; }
 
-    virtual bool load(RadioData &radioData, const uint8_t *eeprom, int size) = 0;
+    virtual unsigned long load(RadioData &radioData, const uint8_t *eeprom, int size) = 0;
 
-    virtual bool loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index) = 0;
+    virtual unsigned long loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index) = 0;
 
-    virtual bool loadxml(RadioData &radioData, QDomDocument &doc) = 0;
+    virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc) = 0;
 
     virtual int save(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, uint8_t version=0) = 0;
 
@@ -1480,9 +1481,35 @@ void unregisterEEpromInterfaces();
 void registerOpenTxFirmwares();
 void unregisterFirmwares();
 
-bool loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
-bool loadEEprom(RadioData &radioData, const uint8_t *eeprom, int size);
-bool loadEEpromXml(RadioData &radioData, QDomDocument &doc);
+enum EepromLoadErrors {
+  NO_ERROR,
+
+  UNKNOWN_ERROR,
+  UNSUPPORTED_NEWER_VERSION,
+  WRONG_SIZE,
+  WRONG_FILE_SYSTEM,
+  NOT_OPENTX,
+  NOT_TH9X,
+  NOT_GRUVIN9X,
+  NOT_ERSKY9X,
+  NOT_ER9X,
+  UNKNOWN_BOARD,
+  WRONG_BOARD,
+  BACKUP_NOT_SUPPORTED,
+
+  HAS_WARNINGS,
+  OLD_VERSION,
+  WARNING_WRONG_FIRMWARE,
+
+  NUM_ERRORS
+};
+
+void ShowEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound);
+void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound);
+
+unsigned long LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
+unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, int size);
+unsigned long LoadEepromXml(RadioData &radioData, QDomDocument &doc);
 
 struct Option {
   const char * name;

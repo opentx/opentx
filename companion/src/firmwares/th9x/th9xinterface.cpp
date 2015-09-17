@@ -57,23 +57,29 @@ const int Th9xInterface::getMaxModels()
   return 16;
 }
 
-bool Th9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
+unsigned long Th9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
-  return false;
+  std::bitset<NUM_ERRORS> errors;
+  errors.set(UNKNOWN_ERROR);
+  return errors.to_ulong();
 }
 
-bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
+unsigned long Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying th9x import... ";
 
+  std::bitset<NUM_ERRORS> errors;
+
   if (size != getEEpromSize()) {
     std::cout << "wrong size\n";
-    return false;
+    errors.set(WRONG_SIZE);
+    return errors.to_ulong();
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
     std::cout << "wrong file system\n";
-    return false;
+    errors.set(WRONG_FILE_SYSTEM);
+    return errors.to_ulong();
   }
     
   efile->openRd(FILE_GENERAL);
@@ -81,7 +87,8 @@ bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 
   if (efile->readRlc2((uint8_t*)&th9xGeneral, 1) != 1) {
     std::cout << "no\n";
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
 
   std::cout << "version " << (unsigned int)th9xGeneral.myVers << " ";
@@ -91,14 +98,16 @@ bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
       break;
     default:
       std::cout << "not th9x\n";
-      return false;
+      errors.set(NOT_TH9X);
+      return errors.to_ulong();
   }
 
   efile->openRd(FILE_GENERAL);
   int len = efile->readRlc2((uint8_t*)&th9xGeneral, sizeof(Th9xGeneral));
   if (len != sizeof(Th9xGeneral)) {
     std::cout << "not th9x\n";
-    return false;
+    errors.set(NOT_TH9X);
+    return errors.to_ulong();
   }
   radioData.generalSettings = th9xGeneral;
   
@@ -114,12 +123,15 @@ bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
   }
 
   std::cout << "ok\n";
-  return true;
+  errors.set(NO_ERROR);
+  return errors.to_ulong();
 }
 
-bool Th9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
+unsigned long Th9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
 {
-  return false;
+  std::bitset<NUM_ERRORS> errors;
+  errors.set(UNKNOWN_ERROR);
+  return errors.to_ulong();
 }
 
 int Th9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
