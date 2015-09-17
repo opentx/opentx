@@ -807,7 +807,7 @@ void menuModelTelemetry(uint8_t event)
           if (attr && s_editMode>0) {
             switch (m_posHorz) {
               case 0:
-                bar.source = CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, barSource, MIXSRC_LAST_TELEM, isSourceAvailable);
+                bar.source = checkIncDec(event, barSource, 0, MIXSRC_LAST_TELEM, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable);
                 if (checkIncDec_Ret) {
                   if (barSource <= MIXSRC_LAST_CH) {
                     bar.barMin = -100;
