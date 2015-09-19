@@ -17,9 +17,6 @@ ModelPrinter::ModelPrinter(Firmware * firmware, const GeneralSettings & generalS
 
 ModelPrinter::~ModelPrinter()
 {
-  foreach(QString filename, curvefiles) {
-    qunlink(filename);
-  }
 }
 
 void debugHtml(const QString & html)
@@ -620,29 +617,12 @@ void CurveImage::drawCurve(const CurveData & curve, QColor color)
   }
 }
 
-void CurveImage::save(const QString & filename)
-{
-  image.save(filename, "png", 100);
-}
-
-QString ModelPrinter::createCurveImage(int idx)
+QString ModelPrinter::createCurveImage(int idx, QTextDocument * document)
 {
   CurveImage image;
   image.drawCurve(model.curves[idx], colors[idx]);
-  QString filename = generateProcessUniqueTempFileName(QString("curve-%1-%2.png").arg((uint64_t)this).arg(idx));
-  image.save(filename);
-  curvefiles << filename;
-  return filename;
-}
-
-QString ModelPrinter::createCurvesImage()
-{
-  CurveImage image;
-  for (int idx=0; idx<firmware->getCapability(NumCurves); idx++) {
-    image.drawCurve(model.curves[idx], colors[idx]);
-  }
-  QString filename = generateProcessUniqueTempFileName(QString("curves-%1.png").arg((uint64_t)this));
-  image.save(filename);
-  curvefiles << filename;
-  return filename;
+  QString filename = QString("curve-%1-%2.png").arg((uint64_t)this).arg(idx);
+  if (document) document->addResource(QTextDocument::ImageResource, QUrl(filename), image.get());
+  // qDebug() << "ModelPrinter::createCurveImage()" << idx << filename;
+  return ":" + filename;
 }

@@ -4,6 +4,7 @@
 #include <QString>
 #include <QStringList>
 #include <QPainter>
+#include <QTextDocument>
 #include "eeprominterface.h"
 
 QString changeColor(const QString & input, const QString & to, const QString & from = "grey");
@@ -17,7 +18,7 @@ class CurveImage
   public:
     CurveImage();
     void drawCurve(const CurveData & curve, QColor color);
-    void save(const QString & filename);
+    const QImage & get() const { return image; };
 
   protected:
     int size;
@@ -59,14 +60,12 @@ class ModelPrinter: public QObject
     static QString printChannelName(int idx);
     QString printOutputName(int idx);
     QString printCurve(int idx);
-    QString createCurvesImage();
-    QString createCurveImage(int idx);
+    QString createCurveImage(int idx, QTextDocument * document);
 
   private:
     Firmware * firmware;
     const GeneralSettings & generalSettings;
     const ModelData & model;
-    QStringList curvefiles;
 
 };
 

@@ -101,7 +101,7 @@ void CompareDialog::dropEvent(QDropEvent *event)
   if (model1Valid && model2Valid) {
     multimodelprinter.setModel(0, model1);
     multimodelprinter.setModel(1, model2);
-    ui->textEdit->setHtml(multimodelprinter.print());
+    ui->textEdit->setHtml(multimodelprinter.print(ui->textEdit->document()));
   }
 }
 
