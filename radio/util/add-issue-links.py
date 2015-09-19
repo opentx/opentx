@@ -10,8 +10,11 @@ import re
 import re
 
 
-inputFile = sys.argv[1]
-inp = open(inputFile, "r")
+if len(sys.argv) > 1:
+  inputFile = sys.argv[1]
+  inp = open(inputFile, "r")
+else:
+  inp = sys.stdin
 
 pattern = re.compile("#\d+")
 while True:
