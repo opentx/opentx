@@ -122,8 +122,10 @@ void MultiModelPrinter::setModel(int idx, const ModelData & model)
   modelPrinters[idx] = new ModelPrinter(firmware, defaultSettings, model);
 }
 
-QString MultiModelPrinter::print()
+QString MultiModelPrinter::print(QTextDocument * document)
 {
+  if (document) document->clear();
+
   QString str = "<table border='1' cellspacing='0' cellpadding='3' width='100%' style='font-family: monospace;'>";
   str += printSetup();
   if (firmware->getCapability(FlightModes))
@@ -131,7 +133,7 @@ QString MultiModelPrinter::print()
   str += printInputs();
   str += printMixers();
   str += printLimits();
-  str += printCurves();
+  str += printCurves(document);
   if (firmware->getCapability(Gvars) && !firmware->getCapability(GvarsFlightModes))
     str += printGvars();
   str += printLogicalSwitches();
@@ -366,7 +368,7 @@ QString MultiModelPrinter::printMixers()
   return str;
 }
 
-QString MultiModelPrinter::printCurves()
+QString MultiModelPrinter::printCurves(QTextDocument * document)
 {
   QString str;
   MultiColumns columns(models.size());
@@ -385,7 +387,7 @@ QString MultiModelPrinter::printCurves()
       columns.append("<tr><td width='20%'><b>" + tr("CV%1").arg(i+1) + "</b></td><td>");
       COMPARE(modelPrinter->printCurve(i));
       for (int k=0; k<models.size(); k++)
-        columns.append(k, QString("<br/><img src='%1' border='0' />").arg(modelPrinters[k]->createCurveImage(i)));
+        columns.append(k, QString("<br/><img src='%1' border='0' />").arg(modelPrinters[k]->createCurveImage(i, document)));
       columns.append("</td></tr>");
     }
   }
