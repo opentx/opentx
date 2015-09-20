@@ -50,7 +50,3 @@ make simu PCB=GRUVIN9X EXT=FRSKY SDCARD=YES
 make clean
 make PCB=MEGA2560
 
-# Companion
-cd ../../buildir/
-cmake ../companion/src
-make
