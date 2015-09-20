@@ -38,7 +38,7 @@ ELSE()
     MESSAGE( "SDL not found! Joysticks support will be disabled. Simulator audio will not work." )
 ENDIF()
 
-FIND_PACKAGE(Qt4 4.8.4 REQUIRED)
+FIND_PACKAGE(Qt4 4.8.1 REQUIRED)
 SET( QT_USE_QTNETWORK True )
 SET( QT_USE_QTXML True )
 INCLUDE( ${QT_USE_FILE} )
