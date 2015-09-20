@@ -7,6 +7,13 @@
 <li>Added GPS glitch filtering and Latitude/Longitude position synchronization to Google Earth export (<a href=https://github.com/opentx/opentx/issues/2326>#2326</a>)</li>
 <li>Fixed a rare program crash when editing Input for 9X radio (<a href=https://github.com/opentx/opentx/issues/2420>#2420</a>)</li>
 <li>Fixed missing RSSI audio warnings if simulator was started multiple times (<a href=https://github.com/opentx/opentx/issues/2446>#2446</a>)</li>
+<li>EU-only firmware option added</li>
+<li>Joystick channel mapping bug fixed (<a href=https://github.com/opentx/opentx/issues/1732>#1732</a>)</li>
+<li>Physical switches were missing from Adjust Volume special function sources (<a href=https://github.com/opentx/opentx/issues/2414>#2414</a>)</li>
+<li>Fixed a rare program crash: input name buffer overflow (<a href=https://github.com/opentx/opentx/issues/2420>#2420</a>)</li>
+<li>Alarms did not work if user started radio simulation several times (<a href=https://github.com/opentx/opentx/issues/2446>#2446</a>)</li>
+<li>Fixed endless loop in model compare (<a href=https://github.com/opentx/opentx/issues/2734>#2734</a>)</li>
+<li>Prevent user from opening 2.1 or higher EEPE (<a href=https://github.com/opentx/opentx/issues/2620>#2620</a>)</li>
 </ul>
 
 

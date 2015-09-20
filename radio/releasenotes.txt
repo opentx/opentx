@@ -9,7 +9,19 @@
 [ARM Boards]
 <ul>
 <li>Fixed Edge Logical switch erroneous delay (<a href=https://github.com/opentx/opentx/issues/2368>#2368</a>)</li>
+<li>Fixed a problem with FMxx switches (<a href=https://github.com/opentx/opentx/issues/2442>#2442</a>)</li>
+<li>Fixed: playing two background sounds at once causes sound to stop (<a href=https://github.com/opentx/opentx/issues/2704>#2704</a>)</li>
+<li>SD Card manager improvements: Disable menu for [..], refresh file list after delete, removed delete menu option for directories (<a href=https://github.com/opentx/opentx/issues/2623>#2623</a>)</li>
+<li>Added a warning about used receiver ID on model copy (<a href=https://github.com/opentx/opentx/issues/2187>#2187</a>)</li>
+<li>PPM center did not work with the DSM hack module (<a href=https://github.com/opentx/opentx/issues/2880>#2880</a>)</li>
 </ul>
+
+[All]
+<ul>
+<li>Fixed a compilation problem on MAC (<a href=https://github.com/opentx/opentx/issues/2271>#2271</a>)</li>
+<li>Fixed FrSky-D Telemetry protocol bug (0x5D followed by 0x3D)</li>
+</ul>
+
 
 <h2>Version 2.0.17 / 2015-05-04</h2>
 
