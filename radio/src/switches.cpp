@@ -776,6 +776,13 @@ void logicalSwitchesTimerTick()
 #if defined(CPUARM)
       else if (ls->func == LS_FUNC_STAY) {
         ls_stay_struct & lastValue = (ls_stay_struct &)LS_LAST_VALUE(fm, i);
+        // if this ls was reset by the logicalSwitchesReset() the lastValue will be set to CS_LAST_VALUE_INIT(0x8000)
+        // when it is unpacked into ls_stay_struct the lastValue.duration will have a value of 0x4000
+        // this will produce an instant true for edge logical switch if the second parameter is big enough.
+        // So we reset it here.
+        if (LS_LAST_VALUE(fm, i) == CS_LAST_VALUE_INIT) {
+          lastValue.duration = 0;
+        }
         lastValue.state = false;
         bool state = getSwitch(ls->v1);
         if (state) {
