@@ -1273,7 +1273,7 @@ endif
 
 ifeq ($(EXT), MAVLINK)
   CPPDEFS += -DMAVLINK
-  INCDIRS += thirdparty
+  INCDIRS += thirdparty targets/common_avr/
   CPPSRC += telemetry/mavlink.cpp gui/$(GUIDIRECTORY)/view_mavlink.cpp targets/common_avr/serial_driver.cpp
   EEPROM_VARIANT += ${MAVLINK_VARIANT}
 endif

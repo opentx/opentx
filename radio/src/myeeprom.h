@@ -2074,10 +2074,10 @@ enum FailsafeModes {
   FAILSAFE_LAST = FAILSAFE_RECEIVER
 };
 
-#if defined(FRSKY) || !defined(PCBSTD)
-  #define TELEMETRY_DATA FrSkyData frsky;
-#elif defined(MAVLINK)
+#if defined(MAVLINK)
   #define TELEMETRY_DATA MavlinkData mavlink;
+#elif defined(FRSKY) || !defined(PCBSTD)
+  #define TELEMETRY_DATA FrSkyData frsky;
 #else
   #define TELEMETRY_DATA
 #endif
