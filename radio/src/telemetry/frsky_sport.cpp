@@ -59,8 +59,8 @@ struct FrSkySportSensor {
 const FrSkySportSensor sportSensors[] = {
   { RSSI_ID, RSSI_ID, ZSTR_RSSI, UNIT_DB, 0 },
   { SWR_ID, SWR_ID, ZSTR_SWR, UNIT_RAW, 0 },
-  { ADC1_ID, ADC1_ID, ZSTR_A1, UNIT_VOLTS, 1 },
-  { ADC2_ID, ADC2_ID, ZSTR_A2, UNIT_VOLTS, 1 },
+  { ADC1_ID, ADC1_ID, ZSTR_A1, UNIT_VOLTS, 2 },
+  { ADC2_ID, ADC2_ID, ZSTR_A2, UNIT_VOLTS, 2 },
   { A3_FIRST_ID, A3_LAST_ID, ZSTR_A3, UNIT_VOLTS, 2 },
   { A4_FIRST_ID, A4_LAST_ID, ZSTR_A4, UNIT_VOLTS, 2 },  
   { BATT_ID, BATT_ID, ZSTR_BATT, UNIT_VOLTS, 1 },
@@ -270,7 +270,8 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t instance)
       telemetrySensor.logs = true;
     }
     else if (id >= ADC1_ID && id <= BATT_ID) {
-      telemetrySensor.custom.ratio = 132;
+      telemetrySensor.custom.multiplier = 5176;
+      telemetrySensor.custom.divisor = 3;
       telemetrySensor.filter = 1;
     }
     else if (id >= CURR_FIRST_ID && id <= CURR_LAST_ID) {
@@ -280,8 +281,8 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t instance)
       telemetrySensor.autoOffset = 1;
     }
     if (unit == UNIT_RPMS) {
-      telemetrySensor.custom.ratio = 1;
-      telemetrySensor.custom.offset = 1;
+      telemetrySensor.custom.multiplier = 5;    // default blades = 5/10^1 = 0.5 = two blades
+      telemetrySensor.custom.divisor = 1;
     }
     else if (unit == UNIT_METERS) {
       if (IS_IMPERIAL_ENABLE()) {

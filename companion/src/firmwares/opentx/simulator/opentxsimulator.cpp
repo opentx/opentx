@@ -24,6 +24,7 @@
 #define COMPANION
 #define SIMU
 #define SIMU_EXCEPTIONS
+#define SIMU_TELEMETRY
 #define GUI
 #define SPLASH
 #define FRSKY

@@ -179,11 +179,6 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     datetime.timestate = 1;
     newVal = 0;
   }
-  else if (unit == UNIT_RPMS) {
-    if (sensor.custom.ratio != 0) {
-      newVal = (newVal * sensor.custom.offset) / sensor.custom.ratio;
-    }
-  }
   else {
     newVal = sensor.getValue(newVal, unit, prec);
     if (sensor.autoOffset) {
@@ -591,26 +586,34 @@ int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t
     }
   }
   
-  for (int i=destPrec; i<prec; i++)
+  for (int i=destPrec; i<prec; i++) {
+    value += (value >= 0) ? 5 : -5;
     value /= 10;
+  }
 
   return value;
 }
 
+uint16_t divisors_add[] = {0, 5, 50, 500};
+uint16_t divisors_div[] = {1,10,100,1000};
+
 int32_t TelemetrySensor::getValue(int32_t value, uint8_t unit, uint8_t prec) const
 {
-  if (type == TELEM_TYPE_CUSTOM && custom.ratio) {
-    if (this->prec == 2) {
-      value *= 10;
-      prec = 2;
-    }
-    else {
-      prec = 1;
-    }
-    value = (custom.ratio * value + 122) / 255;
-  }
-
   value = convertTelemetryValue(value, unit, prec, this->unit, this->prec);
+
+  if (type == TELEM_TYPE_CUSTOM ) {
+    if (custom.multiplier) {
+      value *= custom.multiplier;
+    }
+    if (custom.divisor) {
+      // for (uint n=custom.divisor; n>0; n--) {
+      //   value += (value >= 0) ? 5 : -5;
+      //   value /= 10;
+      // }
+      value += (value >= 0) ? divisors_add[custom.divisor] : -divisors_add[custom.divisor];
+      value /= divisors_div[custom.divisor];
+    }
+  }
 
   if (type == TELEM_TYPE_CUSTOM) {
     value += custom.offset;

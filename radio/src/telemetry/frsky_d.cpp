@@ -509,8 +509,8 @@ struct FrSkyDSensor {
 
 const FrSkyDSensor frskyDSensors[] = {
   { D_RSSI_ID, ZSTR_RSSI, UNIT_RAW, 0 },
-  { D_A1_ID, ZSTR_A1, UNIT_VOLTS, 1 },
-  { D_A2_ID, ZSTR_A2, UNIT_VOLTS, 1 },
+  { D_A1_ID, ZSTR_A1, UNIT_VOLTS, 2 },
+  { D_A2_ID, ZSTR_A2, UNIT_VOLTS, 2 },
   { RPM_ID, ZSTR_RPM, UNIT_RPMS, 0 },
   { FUEL_ID, ZSTR_FUEL, UNIT_PERCENT, 0 },
   { TEMP1_ID, ZSTR_TEMP, UNIT_CELSIUS, 0 },
@@ -674,8 +674,8 @@ void frskyDSetDefault(int index, uint16_t id)
       telemetrySensor.logs = true;
     }
     else if (id >= D_A1_ID && id <= D_A2_ID) {
-      telemetrySensor.custom.ratio = 132;
-      telemetrySensor.filter = 1;
+      telemetrySensor.custom.multiplier = 5176;
+      telemetrySensor.custom.divisor = 3;
     }
     else if (id == CURRENT_ID) {
       telemetrySensor.onlyPositive = 1;
@@ -684,8 +684,8 @@ void frskyDSetDefault(int index, uint16_t id)
       telemetrySensor.autoOffset = 1;
     }
     if (unit == UNIT_RPMS) {
-      telemetrySensor.custom.ratio = 1;
-      telemetrySensor.custom.offset = 1;
+      telemetrySensor.custom.multiplier = 5;    // default blades = 5/10^1 = 0.5 = two blades
+      telemetrySensor.custom.divisor = 1;
     }
     else if (unit == UNIT_METERS) {
       if (IS_IMPERIAL_ENABLE()) {
