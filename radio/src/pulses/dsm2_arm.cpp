@@ -61,7 +61,6 @@ void _send_1(uint8_t v)
 
   modulePulsesData[EXTERNAL_MODULE].dsm2.value += v;
   *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.value;
-
   modulePulsesData[EXTERNAL_MODULE].dsm2.index = (modulePulsesData[EXTERNAL_MODULE].dsm2.index+1) % 2;
 }
 
@@ -83,6 +82,7 @@ void sendByteDsm2(uint8_t b) //max 10 changes 0 10 10 10 10 1
   }
   _send_1(len+BITLEN_DSM2); // _send_1(len+BITLEN_DSM2+3); // 2 stop bits
 }
+
 void putDsm2Flush()
 {
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr--; //remove last stopbits and
@@ -100,6 +100,7 @@ void putDsm2SerialBit(uint8_t bit)
     modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0;
   }
 }
+
 void sendByteDsm2(uint8_t b)     // max 10changes 0 10 10 10 10 1
 {
   putDsm2SerialBit(0);           // Start bit
@@ -111,6 +112,7 @@ void sendByteDsm2(uint8_t b)     // max 10changes 0 10 10 10 10 1
   putDsm2SerialBit(1);           // Stop bit
   putDsm2SerialBit(1);           // Stop bit
 }
+
 void putDsm2Flush()
 {
   for (int i=0; i<16; i++) {
@@ -178,7 +180,9 @@ void setupPulsesDSM2(unsigned int port)
   dsmDat[1] = g_model.header.modelId[port]; // DSM2 Header second byte for model match
 
   for (int i=0; i<DSM2_CHANS; i++) {
-    uint16_t pulse = limit(0, ((channelOutputs[g_model.moduleData[port].channelsStart+i]*13)>>5)+512, 1023);
+    int channel = g_model.moduleData[port].channelsStart+i;
+    int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+    uint16_t pulse = limit(0, ((value*13)>>5)+512, 1023);
     dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03);
     dsmDat[3+2*i] = pulse & 0xff;
   }
