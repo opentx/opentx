@@ -47,7 +47,7 @@ uint8_t link_counter = 0;
 #define FRSKY_RX_PACKET_SIZE   19
 uint8_t frskyRxBuffer[FRSKY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 
-#if !defined(PCBTARANIS)
+#if !defined(CPUARM)
 uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];
 #endif
 
@@ -323,7 +323,7 @@ void telemetryWakeup()
   }
 #endif
 
-#if !defined(PCBTARANIS)
+#if !defined(CPUARM)
   if (IS_FRSKY_D_PROTOCOL()) {
     // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
     static uint8_t frskyTxDelay = 5;
