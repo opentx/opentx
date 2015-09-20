@@ -370,16 +370,12 @@ TEST(evalLogicalSwitches, playFile)
   sdAvailableLogicalSwitchAudioFiles = 0xffffffffffffffff;
   char filename[AUDIO_FILENAME_MAXLEN+1];
   isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (0 << 16) + AUDIO_EVENT_OFF, filename);
-  TRACE(filename);
   EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L1-off.wav"), 0);
   isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (0 << 16) + AUDIO_EVENT_ON, filename);
-  TRACE(filename);
   EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L1-on.wav"), 0);
   isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (31 << 16) + AUDIO_EVENT_OFF, filename);
-  TRACE(filename);
   EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L32-off.wav"), 0);
   isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (31 << 16) + AUDIO_EVENT_ON, filename);
-  TRACE(filename);
   EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L32-on.wav"), 0);
 }
 #endif

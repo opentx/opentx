@@ -24,11 +24,11 @@ void doMixerCalculations();
 
 inline void SYSTEM_RESET()
 {
-  g_eeGeneral.currModel = 0;
 #if defined(CPUARM)
   memset(modelHeaders, 0, sizeof(modelHeaders));
 #endif
   generalDefault();
+  g_eeGeneral.templateSetup = 0;
 }
 
 inline void MODEL_RESET()
