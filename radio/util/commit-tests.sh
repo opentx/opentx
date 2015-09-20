@@ -13,6 +13,10 @@ make simu PCB=9X EXT=FRSKY HELI=YES
 make gtests EXT=FRSKY HELI=YES
 ./gtests
 
+# OpenTX on 9X stock with MAVLINK
+make clean
+make PCB=9X EXT=MAVLINK HELI=YES
+
 # OpenTX on Taranis X9E
 make clean
 make PCB=TARANIS PCBREV=REV9E HELI=YES GVARS=YES LUA=YES
@@ -50,3 +54,6 @@ make simu PCB=GRUVIN9X EXT=FRSKY SDCARD=YES
 make clean
 make PCB=MEGA2560
 
+# OpenTX on MEGA2560 with MAVLINK
+make clean
+make PCB=MEGA2560 EXT=MAVLINK
