@@ -375,6 +375,10 @@ SIMU_AUDIO = NO
 # Values = NO, YES
 WATCHDOG_TEST = NO
 
+# Treat compiler warnings as errors
+# Values = NO, YES
+WARNINGS_AS_ERRORS = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -1284,11 +1288,16 @@ endif
 
 ifeq ($(EXT), $(filter $(EXT), FRSKY FRSKY_SPORT TELEMETREZ))
   CPPDEFS += -DFRSKY
-  ifeq ($(EXT), FRSKY_SPORT)
-    CPPSRC += telemetry/frsky.cpp telemetry/frsky_sport.cpp telemetry/frsky_d.cpp
-    CPPDEFS += -DFRSKY_SPORT
+
+  ifeq ($(ARCH), ARM)
+    CPPSRC += telemetry/frsky.cpp telemetry/frsky_d_arm.cpp
   else
     CPPSRC += telemetry/frsky.cpp telemetry/frsky_d.cpp
+  endif
+
+  ifeq ($(EXT), FRSKY_SPORT)
+    CPPSRC += telemetry/frsky_sport.cpp
+    CPPDEFS += -DFRSKY_SPORT
   endif
 
   CPPSRC += gui/$(GUIDIRECTORY)/view_telemetry.cpp
@@ -1422,6 +1431,10 @@ CPPFLAGS += -Wno-strict-aliasing
 CPPFLAGS += -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits
 INCFLAGS = $(patsubst %,-I%,$(INCDIRS))
 
+ifeq ($(WARNINGS_AS_ERRORS), YES)
+  CPPFLAGS += -Werror
+endif
+
 MATH_LIB = -lm
 
 #---------------- Linker Options ----------------
@@ -1488,7 +1501,7 @@ bootloader.lbm: targets/taranis/bootloader/bootloader_ramBoot.bin
 	$(BIN2LBM) $^ $@
 .PHONY targets/taranis/bootloader/bootloader_ramBoot.bin:
 	@echo "Building bootloader..."
-	$(MAKE) -C targets/taranis/bootloader PCB=$(PCB) PCBREV=$(PCBREV) NANO=$(NANO)
+	$(MAKE) -C targets/taranis/bootloader PCB=$(PCB) PCBREV=$(PCBREV) NANO=$(NANO) WARNINGS_AS_ERRORS=$(WARNINGS_AS_ERRORS)
 else ifeq ($(PCB), $(filter $(PCB), 9XRPRO AR9X))
 bootloader.lbm:
 	@echo "Fetching Mike's bootloader..."

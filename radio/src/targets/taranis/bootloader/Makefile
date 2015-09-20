@@ -240,6 +240,11 @@ CPFLAGS = $(MCFLAGS) $(OPT) -gdwarf-2 -mthumb -fomit-frame-pointer -Wall -Wstric
 LDFLAGS = $(MCFLAGS) -mthumb -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(FULL_PRJ).map,--cref,--no-warn-mismatch,--gc-sections $(LIBDIR) $(NEWLIB_NANO_FLAGS)
 CPPFLAGS = $(MCFLAGS) $(OPT) -gdwarf-2 -mthumb -fomit-frame-pointer -fdata-sections -ffunction-sections -Wall -fverbose-asm $(DEFS)
 
+ifeq ($(WARNINGS_AS_ERRORS), YES)
+  CPFLAGS  += -Werror
+  CPPFLAGS += -Werror
+endif
+
 CPPFLAGS += $(CPPDEFS)
 CPFLAGS += $(CPPDEFS)
 CPFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
