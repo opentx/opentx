@@ -260,7 +260,11 @@ namespace NAMESPACE {
 #include "radio/src/targets/simu/simpgmspace.cpp"
 #include "radio/src/translations.cpp"
 #include "radio/src/telemetry/frsky.cpp"
-#include "radio/src/telemetry/frsky_d.cpp"
+#if defined(CPUARM)
+  #include "radio/src/telemetry/frsky_d_arm.cpp"
+#else
+  #include "radio/src/telemetry/frsky_d.cpp"
+#endif
 #include "radio/src/translations/tts_en.cpp"
 
 #if defined(CPUARM)
