@@ -810,6 +810,18 @@ QString CustomFunctionData::funcToString() const
     return QObject::tr("Background Music Pause");
   else if (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast)
     return QObject::tr("Adjust GV%1").arg(func-FuncAdjustGV1+1);
+  else if (func == FuncSetFailsafeInternalModule)
+    return QObject::tr("SetFailsafe Int. Module");
+  else if (func == FuncSetFailsafeExternalModule)
+    return QObject::tr("SetFailsafe Ext. Module");
+  else if (func == FuncRangeCheckInternalModule)
+    return QObject::tr("RangeCheck Int. Module");
+  else if (func == FuncRangeCheckExternalModule)
+    return QObject::tr("RangeCheck Ext. Module");
+  else if (func == FuncBindInternalModule)
+    return QObject::tr("Bind Int. Module");
+  else if (func == FuncBindExternalModule)
+    return QObject::tr("Bind Ext. Module");
   else {
     return QString("???"); // Highlight unknown functions with output of question marks.(BTW should not happen that we do not know what a function is)
   }
