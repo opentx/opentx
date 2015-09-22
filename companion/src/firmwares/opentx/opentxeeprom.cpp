@@ -22,12 +22,13 @@
 #define MAX_MIXERS(board, version)            (IS_ARM(board) ? 64 : 32)
 #define MAX_CHANNELS(board, version)          (IS_ARM(board) ? 32 : 16)
 #define MAX_EXPOS(board, version)             (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 64 : 32) : (IS_DBLRAM(board, version) ? 16 : 14))
-#define MAX_CUSTOM_SWITCHES(board, version)   (IS_ARM(board) ? 32 : ((IS_DBLEEPROM(board, version) && version<217) ? 15 : 12))
+#define MAX_LOGICAL_SWITCHES(board, version)  (IS_ARM(board) ? (version >= 218 ? 64 : 32) : ((IS_DBLEEPROM(board, version) && version<217) ? 15 : 12))
 #define MAX_CUSTOM_FUNCTIONS(board, version)  (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))
 #define MAX_CURVES(board, version)            (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 32 : 16) : 8)
 #define MAX_GVARS(board, version)             ((IS_ARM(board) && version >= 216) ? 9 : 5)
 #define MAX_SENSORS(board, version)           (32)
 #define NUM_PPM_INPUTS(board, version)        ((IS_ARM(board) && version >= 216) ? 16 : 8)
+#define ROTENC_COUNT(board, version)          (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 218) ? 0 : 1) : (IS_2560(board) ? 2 : 0))
 
 #define IS_AFTER_RELEASE_21_MARCH_2013(board, version) (version >= 214 || (!IS_ARM(board) && version >= 213))
 #define IS_AFTER_RELEASE_23_MARCH_2013(board, version) (version >= 214 || (board==BOARD_STOCK && version >= 213))
@@ -100,7 +101,7 @@ class SwitchesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=1; i<=MAX_CUSTOM_SWITCHES(board, version); i++) {
+      for (int i=1; i<=MAX_LOGICAL_SWITCHES(board, version); i++) {
         addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, -i), -val+offset);
         addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
       }
@@ -125,7 +126,7 @@ class SwitchesConversionTable: public ConversionTable {
           addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
         }
 
-        for (int i=1; i<=MAX_CUSTOM_SWITCHES(board, version); i++) {
+        for (int i=1; i<=MAX_LOGICAL_SWITCHES(board, version); i++) {
           addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
         }
 
@@ -263,7 +264,7 @@ class SourcesConversionTable: public ConversionTable {
               addConversion(RawSource(SOURCE_TYPE_SWITCH, i), val++);
           }
         }
-        for (int i=0; i<MAX_CUSTOM_SWITCHES(board, version); i++) {
+        for (int i=0; i<MAX_LOGICAL_SWITCHES(board, version); i++) {
           addConversion(RawSource(SOURCE_TYPE_CUSTOM_SWITCH, i), val++);
         }
       }
@@ -783,7 +784,7 @@ class FlightModeField: public TransformedField {
       index(index),
       board(board),
       version(version),
-      rotencCount(IS_ARM(board) ? 1 : (IS_2560(board) ? 2 : 0))
+      rotencCount(ROTENC_COUNT(board, version))
     {
       if (board == BOARD_STOCK || (board==BOARD_M128 && version>=215)) {
         // On stock we use 10bits per trim
@@ -803,13 +804,21 @@ class FlightModeField: public TransformedField {
           internalField.Append(new SignedField<16>(trimBase[i]));
         }
       }
-
-      internalField.Append(new SwitchField<8>(phase.swtch, board, version));
-      if (HAS_LARGE_LCD(board))
-        internalField.Append(new ZCharField<10>(phase.name));
-      else
-        internalField.Append(new ZCharField<6>(phase.name));
-
+      if (IS_ARM(board) && version >= 218) {
+        if (HAS_LARGE_LCD(board))
+          internalField.Append(new ZCharField<10>(phase.name));
+        else
+          internalField.Append(new ZCharField<6>(phase.name));
+        internalField.Append(new SwitchField<9>(phase.swtch, board, version));
+        internalField.Append(new SpareBitsField<7>());
+      }
+      else {
+        internalField.Append(new SwitchField<8>(phase.swtch, board, version));
+        if (HAS_LARGE_LCD(board))
+          internalField.Append(new ZCharField<10>(phase.name));
+        else
+          internalField.Append(new ZCharField<6>(phase.name));
+      }
       if (IS_ARM(board) && version >= 214) {
         internalField.Append(new UnsignedField<8>(phase.fadeIn));
         internalField.Append(new UnsignedField<8>(phase.fadeOut));
@@ -922,7 +931,25 @@ class MixField: public TransformedField {
       version(version),
       model(model)
     {
-      if (IS_TARANIS(board) && version >= 217) {
+      if (IS_TARANIS(board) && version >= 218) {
+        internalField.Append(new SignedField<11>(_weight));
+        internalField.Append(new UnsignedField<5>(_destCh));
+        internalField.Append(new SourceField<10>(mix.srcRaw, board, version, FLAG_NOTELEMETRY));
+        internalField.Append(new UnsignedField<1>((unsigned int &)mix.carryTrim));
+        internalField.Append(new UnsignedField<2>(mix.mixWarn));
+        internalField.Append(new UnsignedField<2>((unsigned int &)mix.mltpx));
+        internalField.Append(new SpareBitsField<1>());
+        internalField.Append(new SignedField<14>(_offset));
+        internalField.Append(new SwitchField<9>(mix.swtch, board, version));
+        internalField.Append(new UnsignedField<9>(mix.flightModes));
+        internalField.Append(new CurveReferenceField(mix.curve, board, version));
+        internalField.Append(new UnsignedField<8>(mix.delayUp));
+        internalField.Append(new UnsignedField<8>(mix.delayDown));
+        internalField.Append(new UnsignedField<8>(mix.speedUp));
+        internalField.Append(new UnsignedField<8>(mix.speedDown));
+        internalField.Append(new ZCharField<8>(mix.name));
+      }
+      else if (IS_TARANIS(board) && version >= 217) {
         internalField.Append(new UnsignedField<8>(_destCh));
         internalField.Append(new UnsignedField<9>(mix.flightModes));
         internalField.Append(new UnsignedField<2>((unsigned int &)mix.mltpx));
@@ -1190,7 +1217,21 @@ class InputField: public TransformedField {
       board(board),
       version(version)
     {
-      if (IS_TARANIS(board) && version >= 217) {
+      if (IS_TARANIS(board) && version >= 218) {
+        internalField.Append(new UnsignedField<2>(expo.mode, "Mode"));
+        internalField.Append(new UnsignedField<14>(expo.scale, "Scale"));
+        internalField.Append(new SourceField<10>(expo.srcRaw, board, version, 0));
+        internalField.Append(new SignedField<6>(expo.carryTrim, "CarryTrim"));
+        internalField.Append(new UnsignedField<5>(expo.chn, "Channel"));
+        internalField.Append(new SwitchField<9>(expo.swtch, board, version));
+        internalField.Append(new UnsignedField<9>(expo.flightModes));
+        internalField.Append(new SignedField<8>(_weight, "Weight"));
+        internalField.Append(new SpareBitsField<1>());
+        internalField.Append(new ZCharField<8>(expo.name));
+        internalField.Append(new SignedField<8>(_offset, "Offset"));
+        internalField.Append(new CurveReferenceField(expo.curve, board, version));
+      }
+      else if (IS_TARANIS(board) && version >= 217) {
         internalField.Append(new SourceField<10>(expo.srcRaw, board, version, 0));
         internalField.Append(new UnsignedField<14>(expo.scale, "Scale"));
         internalField.Append(new UnsignedField<8>(expo.chn, "Channel"));
@@ -1595,7 +1636,7 @@ class AndSwitchesConversionTable: public ConversionTable {
           addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val);
           addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
         }
-        for (int i=1; i<=MAX_CUSTOM_SWITCHES(board, version); i++) {
+        for (int i=1; i<=MAX_LOGICAL_SWITCHES(board, version); i++) {
           addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, -i), -val);
           addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
         }
@@ -1606,7 +1647,7 @@ class AndSwitchesConversionTable: public ConversionTable {
           addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val);
           addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
         }
-        for (int i=1; i<=MAX_CUSTOM_SWITCHES(board, version); i++) {
+        for (int i=1; i<=MAX_LOGICAL_SWITCHES(board, version); i++) {
           addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, -i), -val);
           addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
         }
@@ -1671,7 +1712,16 @@ class LogicalSwitchField: public TransformedField {
       v2(0),
       v3(0)
     {
-      if (IS_ARM(board) && version >= 217) {
+      if (IS_ARM(board) && version >= 218) {
+        internalField.Append(new ConversionField< UnsignedField<8> >(csw.func, &functionsConversionTable, "Function"));
+        internalField.Append(new SignedField<10>(v1));
+        internalField.Append(new SignedField<10>(v3));
+        internalField.Append(new ConversionField< SignedField<9> >((int &)csw.andsw, andswitchesConversionTable, "AND switch"));
+        internalField.Append(new SpareBitsField<1>()); // TODO extra switch mode
+        internalField.Append(new SpareBitsField<2>());
+        internalField.Append(new SignedField<16>(v2));
+      }
+      else if (IS_ARM(board) && version >= 217) {
         internalField.Append(new ConversionField< UnsignedField<6> >(csw.func, &functionsConversionTable, "Function"));
         internalField.Append(new SignedField<10>(v1));
         internalField.Append(new SignedField<16>(v2));
@@ -1706,7 +1756,7 @@ class LogicalSwitchField: public TransformedField {
         int scale = (version >= 216 ? 0 : 5);
         internalField.Append(new ConversionField< UnsignedField<8> >(csw.delay, 0, scale));
         internalField.Append(new ConversionField< UnsignedField<8> >(csw.duration, 0, scale));
-        if (version >= 214) {
+        if (version >= 214 && version <= 217) {
           internalField.Append(new ConversionField< SignedField<8> >((int &)csw.andsw, andswitchesConversionTable, "AND switch"));
         }
       }
@@ -2029,8 +2079,14 @@ class ArmCustomFunctionField: public TransformedField {
     {
       memset(_param, 0, sizeof(_param));
 
-      internalField.Append(new SwitchField<8>(fn.swtch, board, version));
-      internalField.Append(new ConversionField< UnsignedField<8> >(_func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
+      if (version >= 218) {
+        internalField.Append(new SwitchField<9>(fn.swtch, board, version));
+        internalField.Append(new ConversionField< UnsignedField<7> >(_func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
+      }
+      else {
+        internalField.Append(new SwitchField<8>(fn.swtch, board, version));
+        internalField.Append(new ConversionField< UnsignedField<8> >(_func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
+      }
 
       if (IS_TARANIS(board) && version >= 216)
         internalField.Append(new CharField<8>(_param, false));
@@ -2905,8 +2961,21 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
 
   for (int i=0; i<MAX_TIMERS(board, version); i++) {
-    internalField.Append(new SwitchField<8>(modelData.timers[i].mode, board, version, true));
-    if (IS_ARM(board) && version >= 217) {
+    if (IS_ARM(board) && version >= 218) {
+      internalField.Append(new SwitchField<9>(modelData.timers[i].mode, board, version, true));
+      internalField.Append(new UnsignedField<23>(modelData.timers[i].val));
+      internalField.Append(new SignedField<24>(modelData.timers[i].pvalue));
+      internalField.Append(new UnsignedField<2>(modelData.timers[i].countdownBeep));
+      internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));
+      internalField.Append(new UnsignedField<2>(modelData.timers[i].persistent));
+      internalField.Append(new SpareBitsField<3>());
+      if (IS_TARANIS(board))
+        internalField.Append(new ZCharField<8>(modelData.timers[i].name));
+      else
+        internalField.Append(new ZCharField<3>(modelData.timers[i].name));
+    }
+    else if (IS_ARM(board) && version >= 217) {
+      internalField.Append(new SwitchField<8>(modelData.timers[i].mode, board, version, true));
       internalField.Append(new UnsignedField<24>(modelData.timers[i].val));
       internalField.Append(new SignedField<24>(modelData.timers[i].pvalue));
       internalField.Append(new UnsignedField<2>(modelData.timers[i].countdownBeep));
@@ -2919,6 +2988,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
         internalField.Append(new ZCharField<3>(modelData.timers[i].name));
     }
     else if ((IS_ARM(board) || IS_2560(board)) && version >= 216) {
+      internalField.Append(new SwitchField<8>(modelData.timers[i].mode, board, version, true));
       internalField.Append(new UnsignedField<16>(modelData.timers[i].val));
       internalField.Append(new UnsignedField<2>(modelData.timers[i].countdownBeep));
       internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));
@@ -2927,6 +2997,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new SignedField<16>(modelData.timers[i].pvalue));
     }
     else if (afterrelease21March2013) {
+      internalField.Append(new SwitchField<8>(modelData.timers[i].mode, board, version, true));
       internalField.Append(new UnsignedField<12>(modelData.timers[i].val));
       internalField.Append(new BoolField<1>((bool &)modelData.timers[i].countdownBeep));
       internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));
@@ -2940,6 +3011,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       }
     }
     else {
+      internalField.Append(new SwitchField<8>(modelData.timers[i].mode, board, version, true));
       internalField.Append(new UnsignedField<16>(modelData.timers[i].val));
       if (HAS_PERSISTENT_TIMERS(board)) {
         internalField.Append(new UnsignedField<1>(modelData.timers[i].persistent));
@@ -2999,7 +3071,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   for (int i=0; i<MAX_EXPOS(board, version); i++)
     internalField.Append(new InputField(modelData.expoData[i], board, version));
   internalField.Append(new CurvesField(modelData.curves, board, version));
-  for (int i=0; i<MAX_CUSTOM_SWITCHES(board, version); i++)
+  for (int i=0; i<MAX_LOGICAL_SWITCHES(board, version); i++)
     internalField.Append(new LogicalSwitchField(modelData.logicalSw[i], board, version, variant, &modelData));
   for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++) {
     if (IS_ARM(board))
@@ -3008,8 +3080,9 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new AvrCustomFunctionField(modelData.customFn[i], board, version, variant));
   }
   internalField.Append(new HeliField(modelData.swashRingData, board, version, variant));
-  for (int i=0; i<MAX_FLIGHT_MODES(board, version); i++)
+  for (int i=0; i<MAX_FLIGHT_MODES(board, version); i++) {
     internalField.Append(new FlightModeField(modelData.flightModeData[i], i, board, version));
+  }
 
   if (!IS_ARM(board) || version < 216) {
     internalField.Append(new SignedField<8>(modelData.moduleData[0].ppmFrameLength));

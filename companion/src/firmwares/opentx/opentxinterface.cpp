@@ -403,7 +403,7 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
       case BOARD_SKY9X:
       case BOARD_AR9X:
       case BOARD_9XRPRO:
-        version = 217;
+        version = 218;
         break;
       case BOARD_GRUVIN9X:
       case BOARD_MEGA2560:
@@ -638,7 +638,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return id.contains("nooverridech") ? 0 : 1;
     case LogicalSwitches:
       if (IS_ARM(board))
-        return 32;
+        return 64;
       else
         return 12;
     case CustomAndSwitches:
@@ -954,10 +954,10 @@ EepromLoadErrors OpenTxEepromInterface::checkVersion(unsigned int version)
       // M128 revert because too much RAM used!
     case 216:
       // A lot of things (first github release)
-      return OLD_VERSION;
-      break;
     case 217:
       // 3 logical switches removed on M128 / gruvin9x boards
+      return OLD_VERSION;
+    case 218:
       break;
     default:
       return NOT_OPENTX;

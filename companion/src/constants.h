@@ -25,7 +25,7 @@ enum BoardEnum {
 #define C9X_MAX_GVARS             9
 #define C9X_MAX_ENCODERS          2
 #define C9X_NUM_CHNOUT            32 // number of real output channels
-#define C9X_NUM_CSW               32 // number of custom switches
+#define C9X_NUM_CSW               64 // number of custom switches
 #define C9X_MAX_CUSTOM_FUNCTIONS  64 // number of functions assigned to switches
 #define C9X_NUM_MODULES           2
 #define NUM_STICKS                4

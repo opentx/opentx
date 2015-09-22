@@ -135,7 +135,7 @@
   #define MAX_FLIGHT_MODES     9
   #define MAX_MIXERS           64
   #define MAX_EXPOS            32
-  #define NUM_LOGICAL_SWITCH   32 // number of custom switches
+  #define NUM_LOGICAL_SWITCH   64 // number of custom switches
   #define NUM_CFN              64 // number of functions assigned to switches
   #define NUM_TRAINER          16
   #define NUM_POTS             3
@@ -967,10 +967,10 @@ PACK(typedef struct {
   uint8_t  destCh:5;
   uint8_t  mixWarn:3;         // mixer warning
   uint16_t flightModes:9;
-  uint16_t  curveMode:1;
-  uint16_t  noExpo:1;
-  int16_t   carryTrim:3;
-  uint16_t  mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint16_t curveMode:1;
+  uint16_t noExpo:1;
+  int16_t  carryTrim:3;
+  uint16_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
   int16_t  weight;
   int8_t   swtch;
   int8_t   curveParam;
@@ -1580,7 +1580,10 @@ PACK(typedef struct {
 
 #define ROTARY_ENCODER_MAX  1024
 
-#if defined(PCBTARANIS) || defined(REVX)
+#if defined(PCBTARANIS)
+  #define NUM_ROTARY_ENCODERS 0
+  #define ROTARY_ENCODER_ARRAY
+#elif defined(REVX)
   #define NUM_ROTARY_ENCODERS 0
   #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[1];
 #elif defined(PCBSKY9X)
