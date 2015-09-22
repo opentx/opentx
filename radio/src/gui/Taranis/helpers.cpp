@@ -337,7 +337,7 @@ bool isAssignableFunctionAvailable(int function)
 #if !defined(HAPTIC)
     case FUNC_HAPTIC:
 #endif
-    case FUNC_PLAY_DIFF:
+    case FUNC_RESERVE4:
 #if !defined(DANGEROUS_MODULE_FUNCTIONS)
     case FUNC_RANGECHECK:
     case FUNC_BIND:
