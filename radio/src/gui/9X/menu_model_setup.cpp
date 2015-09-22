@@ -79,7 +79,7 @@ enum menuModelSetupItems {
   ITEM_MODEL_EXTERNAL_MODULE_OUTPUT_TYPE,
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE,
-#if defined(PCBSKY9X) && !defined(REVA) && !defined(REVX)
+#if defined(PCBSKY9X) && !defined(REVA)
   ITEM_MODEL_EXTRA_MODULE_LABEL,
   ITEM_MODEL_EXTRA_MODULE_CHANNELS,
   ITEM_MODEL_EXTRA_MODULE_BIND,
@@ -102,7 +102,7 @@ enum menuModelSetupItems {
 #define MODEL_SETUP_RANGE_OFS         4*FW+3
 #define MODEL_SETUP_SET_FAILSAFE_OFS  7*FW-2
 
-#if defined(PCBSKY9X) && !defined(REVA) && !defined(REVX)
+#if defined(PCBSKY9X) && !defined(REVA)
   #define CURRENT_MODULE_EDITED(k)         (k>=ITEM_MODEL_EXTRA_MODULE_LABEL ? EXTRA_MODULE : EXTERNAL_MODULE)
 #else
   #define CURRENT_MODULE_EDITED(k)         (EXTERNAL_MODULE)
@@ -116,7 +116,7 @@ void menuModelSetup(uint8_t event)
   #define IS_D8_RX(x)                       (g_model.moduleData[x].rfProtocol == RF_PROTO_D8)
   #define EXTERNAL_MODULE_CHANNELS_ROWS()   IF_EXTERNAL_MODULE_ON(IS_MODULE_DSM2(EXTERNAL_MODULE) ? (uint8_t)0 : (uint8_t)1)
   #define EXTERNAL_MODULE_SETTINGS_ROWS()   (IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW
-#if defined(PCBSKY9X) && defined(REVX)
+#if defined(PCBSKY9X) && !defined(REVX)
   #define OUTPUT_TYPE_ROWS()                (IS_MODULE_PPM(EXTERNAL_MODULE) ? (uint8_t)0 : HIDDEN_ROW) ,
 #else
   #define OUTPUT_TYPE_ROWS() 
@@ -128,7 +128,7 @@ void menuModelSetup(uint8_t event)
   #define MODEL_SETUP_MAX_LINES             (1+ITEM_MODEL_SETUP_MAX)
   #define POT_WARN_ITEMS()                  ((g_model.nPotsToWarn >> 6) ? (uint8_t)NUM_POTS : (uint8_t)0)
   #define TIMER_ROWS                        2, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
-#if (defined(PCBSKY9X) && !defined(REVA) && !defined(REVX))
+#if (defined(PCBSKY9X) && !defined(REVA))
   #define EXTRA_MODULE_ROWS                 LABEL(ExtraModule), 1, 2,
 #else
   #define EXTRA_MODULE_ROWS
@@ -485,7 +485,7 @@ void menuModelSetup(uint8_t event)
         break;
 #endif
 
-#if defined(PCBSKY9X) && !defined(REVX)
+#if defined(PCBSKY9X)
       case ITEM_MODEL_EXTRA_MODULE_LABEL:
         lcd_putsLeft(y, "RF Port 2 (PPM)");
         break;
@@ -530,7 +530,7 @@ void menuModelSetup(uint8_t event)
         break;
 #endif
 
-#if defined(PCBSKY9X) && !defined(REVX)
+#if defined(PCBSKY9X)
       case ITEM_MODEL_EXTRA_MODULE_CHANNELS:
 #endif
 #if defined(CPUARM)
@@ -562,7 +562,7 @@ void menuModelSetup(uint8_t event)
       }
 #endif
 
-#if defined(PCBSKY9X) && !defined(REVX)
+#if defined(PCBSKY9X)
       case ITEM_MODEL_EXTRA_MODULE_BIND:
 #endif
 #if defined(CPUARM)

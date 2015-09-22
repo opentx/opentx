@@ -728,7 +728,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case HasFailsafe:
       return (IS_ARM(board) ? 32 : 0);
     case NumModules:
-      return (IS_ARM(board) && !IS_9XRPRO(board)) ? 2 : 1;
+      return (IS_ARM(board) ? 2 : 1);
     case HasPPMStart:
       return (IS_ARM(board) ? true : false);
     case HastxCurrentCalibration:

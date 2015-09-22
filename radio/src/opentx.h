@@ -506,7 +506,7 @@
   #endif
   #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.moduleData[EXTERNAL_MODULE].type])
   #define MAX_CHANNELS(idx)                 (idx==INTERNAL_MODULE ? MAX_INTERNAL_MODULE_CHANNELS() : (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS()))
-#elif defined(PCBSKY9X) && !defined(REVA) && !defined(REVX)
+#elif defined(PCBSKY9X) && !defined(REVA)
   #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || idx==EXTRA_MODULE || (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
   #define IS_MODULE_XJT(idx)                (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT)
   #define IS_MODULE_DSM2(idx)               (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_DSM2)
