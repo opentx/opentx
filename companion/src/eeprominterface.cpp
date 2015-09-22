@@ -475,13 +475,6 @@ QString RawSource::toString(const ModelData * model) const
     QObject::tr("ACC"), QObject::tr("GPS Time"),
   };
 
-  static const QString logicalSwitches[] = {
-    QObject::tr("L1"), QObject::tr("L2"), QObject::tr("L3"), QObject::tr("L4"), QObject::tr("L5"), QObject::tr("L6"), QObject::tr("L7"), QObject::tr("L8"), QObject::tr("L9"), QObject::tr("L10"),
-    QObject::tr("L11"), QObject::tr("L12"), QObject::tr("L13"), QObject::tr("L14"), QObject::tr("L15"), QObject::tr("L16"), QObject::tr("L17"), QObject::tr("L18"), QObject::tr("L19"), QObject::tr("L20"),
-    QObject::tr("L21"), QObject::tr("L22"), QObject::tr("L23"), QObject::tr("L24"), QObject::tr("L25"), QObject::tr("L26"), QObject::tr("L27"), QObject::tr("L28"), QObject::tr("L29"), QObject::tr("L30"),
-    QObject::tr("L31"), QObject::tr("L32")
-  };
-
   if (index<0) {
     return QObject::tr("----");
   }
@@ -508,7 +501,7 @@ QString RawSource::toString(const ModelData * model) const
     case SOURCE_TYPE_SWITCH:
       return (IS_TARANIS(GetEepromInterface()->getBoard()) ? CHECK_IN_ARRAY(switchesX9D, index) : CHECK_IN_ARRAY(switches9X, index));
     case SOURCE_TYPE_CUSTOM_SWITCH:
-      return logicalSwitches[index];
+      return QObject::tr("L%1").arg(index+1);
     case SOURCE_TYPE_CYC:
       return QObject::tr("CYC%1").arg(index+1);
     case SOURCE_TYPE_PPM:
@@ -590,13 +583,6 @@ QString RawSwitch::toString() const
     SwitchUp('R'), QString::fromUtf8("SR-"), SwitchDn('R'),
   };
 
-  static const QString logicalSwitches[] = {
-    QObject::tr("L1"), QObject::tr("L2"), QObject::tr("L3"), QObject::tr("L4"), QObject::tr("L5"), QObject::tr("L6"), QObject::tr("L7"), QObject::tr("L8"), QObject::tr("L9"), QObject::tr("L10"),
-    QObject::tr("L11"), QObject::tr("L12"), QObject::tr("L13"), QObject::tr("L14"), QObject::tr("L15"), QObject::tr("L16"), QObject::tr("L17"), QObject::tr("L18"), QObject::tr("L19"), QObject::tr("L20"),
-    QObject::tr("L21"), QObject::tr("L22"), QObject::tr("L23"), QObject::tr("L24"), QObject::tr("L25"), QObject::tr("L26"), QObject::tr("L27"), QObject::tr("L28"), QObject::tr("L29"), QObject::tr("L30"),
-    QObject::tr("L31"), QObject::tr("L32")
-  };
-
   static const QString flightModes[] = {
     QObject::tr("FM0"), QObject::tr("FM1"), QObject::tr("FM2"), QObject::tr("FM3"), QObject::tr("FM4"), QObject::tr("FM5"), QObject::tr("FM6"), QObject::tr("FM7"), QObject::tr("FM8")
   };
@@ -634,7 +620,7 @@ QString RawSwitch::toString() const
         else
           return CHECK_IN_ARRAY(switches9X, index-1);
       case SWITCH_TYPE_VIRTUAL:
-        return CHECK_IN_ARRAY(logicalSwitches, index-1);
+        return QObject::tr("L%1").arg(index);
       case SWITCH_TYPE_MULTIPOS_POT:
         return CHECK_IN_ARRAY(multiposPots, index-1);
       case SWITCH_TYPE_TRIM:
