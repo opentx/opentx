@@ -255,7 +255,9 @@ def ttsFr():
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+146+i)))            
     for i, s in enumerate(["virgule 0", "virgule 1", "virgule 2", "virgule 3", "virgule 4", "virgule 5", "virgule 6", "virgule 7", "virgule 8", "virgule 9"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+180+i)))
-    for s, f, a in [(u"Batterie radio faible !", "lowbatt", 485),
+    for s, f, a in [(u"Trim centré", "midtrim", 495),
+                    (u"Trim maximum atteint", "endtrim", NO_ALTERNATE),
+                    (u"Batterie radio faible !", "lowbatt", 485),
                     (u"Radio inactive !", "inactiv", 486),
                     (u"Alerte manche des gaz", "thralert", 481),
                     (u"Alerte inters", "swalert", 482),
