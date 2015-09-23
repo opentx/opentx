@@ -1509,6 +1509,79 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
 </context>
 <context>
+    <name>EepromInterface</name>
+    <message>
+        <source>Possible causes for this:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>- Eeprom is from a newer version of OpenTX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>- Eeprom is not from OpenTX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>- Eeprom is not from Th9X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>- Eeprom is not from Gruvin9X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>- Eeprom is not from ErSky9X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>- Eeprom is not from Er9X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>- Eeprom size is invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>- Eeprom file system is invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>- Eeprom is from a unknown board</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>- Eeprom is from the wrong board</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>- Eeprom backup not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>- Something that couldn&apos;t be guessed, sorry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>- Your radio probably uses a wrong firmware,
+ eeprom size is 4096 but only the first 2048 are used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>- Your eeprom is from an old version of OpenTX, upgrading!
+ You should &apos;save as&apos; to keep the old file as a backup.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warnings!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ElevonsPage</name>
     <message>
         <source>&lt;br&gt;First Elevon Channel:</source>
@@ -1523,131 +1596,95 @@ Behöver inte vara samma som menyspråk</translation>
     <name>Er9x::Templates</name>
     <message>
         <source>V-Tail</source>
-        <translation>V-stjärt</translation>
+        <translation type="obsolete">V-stjärt</translation>
     </message>
     <message>
         <source>THR</source>
-        <translation>GAS</translation>
+        <translation type="obsolete">GAS</translation>
     </message>
     <message>
         <source>Clear Mixes?</source>
-        <translation>Ta bort mixarna?</translation>
+        <translation type="obsolete">Ta bort mixarna?</translation>
     </message>
     <message>
         <source>Simple 4-CH</source>
-        <translation>Enkel 4kanal</translation>
-    </message>
-    <message>
-        <source>T-Cut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sticky T-Cut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Elevon\Delta</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Heli Setup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Heli Setup with gyro gain control</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Gyro gain control</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Enkel 4kanal</translation>
     </message>
     <message>
         <source>Servo Test</source>
-        <translation>Servotest</translation>
+        <translation type="obsolete">Servotest</translation>
     </message>
     <message>
         <source>MultiCopter</source>
-        <translation>Multikopter</translation>
+        <translation type="obsolete">Multikopter</translation>
     </message>
     <message>
         <source>Use Model Config Wizard</source>
-        <translation>Använd modellguiden</translation>
+        <translation type="obsolete">Använd modellguiden</translation>
     </message>
     <message>
         <source>Apply Template?</source>
-        <translation>Tillämpa Mall?</translation>
+        <translation type="obsolete">Tillämpa Mall?</translation>
     </message>
     <message>
         <source>Apply template &quot;%1&quot;?</source>
-        <translation>Tillämpa mallen &quot;%1&quot;?</translation>
+        <translation type="obsolete">Tillämpa mallen &quot;%1&quot;?</translation>
     </message>
     <message>
         <source>RUD</source>
-        <translation>ROD</translation>
+        <translation type="obsolete">ROD</translation>
     </message>
     <message>
         <source>ELE</source>
-        <translation>HJD</translation>
+        <translation type="obsolete">HJD</translation>
     </message>
     <message>
         <source>AIL</source>
-        <translation>SKE</translation>
+        <translation type="obsolete">SKE</translation>
     </message>
     <message>
         <source>AIL2</source>
-        <translation>SKE2</translation>
+        <translation type="obsolete">SKE2</translation>
     </message>
     <message>
         <source>ELE2</source>
-        <translation>HJD2</translation>
+        <translation type="obsolete">HJD2</translation>
     </message>
     <message>
         <source>FLAPS</source>
-        <translation>FLAPS</translation>
+        <translation type="obsolete">FLAPS</translation>
     </message>
     <message>
         <source>FLAP%1</source>
-        <translation>FLAP%1</translation>
+        <translation type="obsolete">FLAP%1</translation>
     </message>
     <message>
         <source>PITCH</source>
-        <translation>PITCH</translation>
+        <translation type="obsolete">PITCH</translation>
     </message>
     <message>
         <source>GYRO</source>
-        <translation>GYRO</translation>
+        <translation type="obsolete">GYRO</translation>
     </message>
     <message>
         <source>SPOIL</source>
-        <translation>SPOIL</translation>
+        <translation type="obsolete">SPOIL</translation>
     </message>
     <message>
         <source>SPOIL%1</source>
-        <translation>SPOIL%1</translation>
+        <translation type="obsolete">SPOIL%1</translation>
     </message>
     <message>
         <source>RUD2</source>
-        <translation>ROD2</translation>
+        <translation type="obsolete">ROD2</translation>
     </message>
     <message>
         <source>Really clear existing mixes on CH6?</source>
-        <translation>Vill du verkligen ta bort mixarna på kanal 6?</translation>
+        <translation type="obsolete">Vill du verkligen ta bort mixarna på kanal 6?</translation>
     </message>
     <message>
         <source>Really clear existing mixes on CH5?</source>
-        <translation>Vill du verkligen ta bort mixarna på kanal 5?</translation>
+        <translation type="obsolete">Vill du verkligen ta bort mixarna på kanal 5?</translation>
     </message>
 </context>
 <context>
@@ -4454,7 +4491,7 @@ Vill du spara förändringarna?</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Varning</translation>
+        <translation type="unfinished">Varning</translation>
     </message>
     <message>
         <source>Firmware in radio is of a different family of eeprom written, check file and preferences!</source>
@@ -5114,11 +5151,11 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Slow((u%1:d%2)</source>
+        <source>Warn(%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Warn(%1)</source>
+        <source>Slow(u%1:d%2)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7302,7 +7339,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Your radio probably uses a wrong firmware,
  eeprom size is 4096 but only the first 2048 are used</source>
-        <translation>Din sändare har antagligen laddats med felaktig programvara.
+        <translation type="obsolete">Din sändare har antagligen laddats med felaktig programvara.
 eeprom-storleken är 4096, men enbart den första hälften används</translation>
     </message>
     <message>
@@ -7669,11 +7706,11 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>Positive</source>
-        <translation>Positiv</translation>
+        <translation type="obsolete">Positiv</translation>
     </message>
     <message>
         <source>Negative</source>
-        <translation>Negativ</translation>
+        <translation type="obsolete">Negativ</translation>
     </message>
     <message>
         <source>Source %1 cannot be exported on this board!</source>
@@ -7741,7 +7778,7 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>repeat</source>
-        <translation>upprepa</translation>
+        <translation type="obsolete">upprepa</translation>
     </message>
     <message>
         <source>DISABLED</source>
@@ -7878,6 +7915,38 @@ OpenTX-gruppen.</translation>
     <message>
         <source>Offset(%1)</source>
         <translation type="obsolete">Offset(%1)</translation>
+    </message>
+    <message>
+        <source>SetFailsafe Int. Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SetFailsafe Ext. Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RangeCheck Int. Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RangeCheck Ext. Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bind Int. Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bind Ext. Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>played once, not during startup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>repeat(%1s)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8055,6 +8124,17 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <source>Global Functions</source>
         <translation>Globala Funktioner</translation>
+    </message>
+    <message>
+        <source>Top LCD Timer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SetupPanel</name>
+    <message>
+        <source>Timer %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
