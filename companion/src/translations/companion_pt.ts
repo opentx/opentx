@@ -1029,106 +1029,6 @@ May be different from firmware language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Name</source>
-        <translation type="obsolete">Nome</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protocolo</translation>
-    </message>
-    <message>
-        <source>Pulse Polarity</source>
-        <translation type="obsolete">Polaridade</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Ajuste do Acelerador</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Activo</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Inactivo</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Exponencial do Acelerador</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Incremento do Ajuste</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Som ao Centrar</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Ajustes</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Interruptor</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Limites</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Min</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Max</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Inverter</translation>
-    </message>
-    <message>
-        <source>INV</source>
-        <translation type="obsolete">INV</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">NOR</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Peso</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete">Atraso(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete">Lento(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Curvas</translation>
-    </message>
-    <message>
-        <source>pt %1</source>
-        <translation type="obsolete">pt %1</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Curva</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Função</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Fonte</translation>
-    </message>
-    <message>
         <location filename="../comparedialog.cpp" line="122"/>
         <source>Print Document</source>
         <translation type="unfinished">Imprimir Documento</translation>
@@ -1613,25 +1513,6 @@ May be different from firmware language</source>
         <location filename="../wizarddialog.cpp" line="627"/>
         <source>Second Elevon Channel:</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Er9x::Templates</name>
-    <message>
-        <source>RUD</source>
-        <translation type="obsolete">RUD</translation>
-    </message>
-    <message>
-        <source>ELE</source>
-        <translation type="obsolete">ELE</translation>
-    </message>
-    <message>
-        <source>THR</source>
-        <translation type="obsolete">THR</translation>
-    </message>
-    <message>
-        <source>AIL</source>
-        <translation type="obsolete">AIL</translation>
     </message>
 </context>
 <context>
@@ -2491,30 +2372,6 @@ These will be relevant for all models in the same EEPROM.</source>
         <translation>Parâmetros</translation>
     </message>
     <message>
-        <source>Contrast</source>
-        <translation type="obsolete">Contraste</translation>
-    </message>
-    <message>
-        <source>Battery Warning</source>
-        <translation type="obsolete">Alerta de Bateria</translation>
-    </message>
-    <message>
-        <source>v</source>
-        <translation type="obsolete">v</translation>
-    </message>
-    <message>
-        <source> sec</source>
-        <translation type="obsolete">seg.</translation>
-    </message>
-    <message>
-        <source>Inactivity Timer</source>
-        <translation type="obsolete">Temporizador de Inatividade</translation>
-    </message>
-    <message>
-        <source> min</source>
-        <translation type="obsolete">min.</translation>
-    </message>
-    <message>
         <location filename="../generaledit/generaledit.cpp" line="44"/>
         <source>Trainer</source>
         <translation type="unfinished"></translation>
@@ -2528,66 +2385,6 @@ These will be relevant for all models in the same EEPROM.</source>
         <location filename="../generaledit/generaledit.ui" line="55"/>
         <source>Retrieve calib. and hw settings from profile</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Default Channel Order</source>
-        <translation type="obsolete">Ordem dos Canais por Defeito</translation>
-    </message>
-    <message>
-        <source>OFF</source>
-        <translation type="obsolete">OFF</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Peso</translation>
-    </message>
-    <message>
-        <source>STICK 1</source>
-        <translation type="obsolete">STICK 1</translation>
-    </message>
-    <message>
-        <source>STICK 2</source>
-        <translation type="obsolete">STICK 2</translation>
-    </message>
-    <message>
-        <source>STICK 3</source>
-        <translation type="obsolete">STICK 4</translation>
-    </message>
-    <message>
-        <source>STICK 4</source>
-        <translation type="obsolete">STICK 3</translation>
-    </message>
-    <message>
-        <source>Beeper Mode</source>
-        <translation type="obsolete">Modo dos Alarmes Sonoros</translation>
-    </message>
-    <message>
-        <source>Channel Order (For Templates)</source>
-        <translation type="obsolete">Ordem dos Canais (para as Mascaras)</translation>
-    </message>
-    <message>
-        <source>Stick Mode</source>
-        <translation type="obsolete">Modo do Emissor</translation>
-    </message>
-    <message>
-        <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="obsolete">Modo 1 (RUD ELE THR AIL)</translation>
-    </message>
-    <message>
-        <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="obsolete">Modo 2 (RUD THR ELE AIL)</translation>
-    </message>
-    <message>
-        <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="obsolete">Modo 3 (AIL ELE THR RUD)</translation>
-    </message>
-    <message>
-        <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="obsolete">Modo 4 (AIL THR ELE RUD)</translation>
-    </message>
-    <message>
-        <source>Calibration</source>
-        <translation type="obsolete">Calibração</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="42"/>
@@ -3424,17 +3221,9 @@ Are you sure ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Elevator</source>
-        <translation type="obsolete">Elevador</translation>
-    </message>
-    <message>
         <location filename="../modeledit/heli.ui" line="103"/>
         <source>Invert</source>
         <translation type="unfinished">Inverter</translation>
-    </message>
-    <message>
-        <source>Aileron</source>
-        <translation type="obsolete">Aileron</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="24"/>
@@ -4014,10 +3803,6 @@ We recommend you view the release notes using the button below to learn about an
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Warning</source>
-        <translation type="obsolete">Aviso</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="899"/>
         <source>OpenTX Home Page: &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
@@ -4081,10 +3866,6 @@ We recommend you view the release notes using the button below to learn about an
         <location filename="../mainwindow.cpp" line="1427"/>
         <source>New Radio</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to find file %1!</source>
-        <translation type="obsolete">Impossível encontrar o ficheiro %1!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="232"/>
@@ -5047,10 +4828,6 @@ This determines how mixer values are added.
         <translation>Baixo</translation>
     </message>
     <message>
-        <source>DEST -&gt; CH%1%2</source>
-        <translation type="obsolete">DEST -&gt; CH%1%2</translation>
-    </message>
-    <message>
         <location filename="../modeledit/mixerdialog.cpp" line="20"/>
         <source>DEST -&gt; CH%1</source>
         <translation type="unfinished">DEST -&gt; CH%1</translation>
@@ -5086,18 +4863,6 @@ This determines how mixer values are added.
         <location filename="../modeledit/mixes.cpp" line="24"/>
         <source>Clear Mixes</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete">Atraso(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete">Lento(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Warn(%1)</source>
-        <translation type="obsolete">Aviso(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="158"/>
@@ -5490,14 +5255,6 @@ This determines how mixer values are added.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Delay</source>
-        <translation type="obsolete">Atraso</translation>
-    </message>
-    <message>
-        <source>Slow</source>
-        <translation type="obsolete">Lento</translation>
-    </message>
-    <message>
         <location filename="../modelprinter.cpp" line="415"/>
         <source>Disabled in all flight modes</source>
         <translation type="unfinished"></translation>
@@ -5725,10 +5482,6 @@ This determines how mixer values are added.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> usec</source>
-        <translation type="obsolete">useg</translation>
-    </message>
-    <message>
         <location filename="../modeledit/setup_module.ui" line="230"/>
         <source>Negative</source>
         <translation type="unfinished"></translation>
@@ -5752,10 +5505,6 @@ This determines how mixer values are added.
         <location filename="../modeledit/setup_module.ui" line="378"/>
         <source>PPM Frame Length</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ch</source>
-        <translation type="obsolete">ch</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="91"/>
@@ -6166,114 +5915,6 @@ This determines how mixer values are added.
         <location filename="../printdialog.ui" line="68"/>
         <source>Print to file</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Setup for: </source>
-        <translation type="obsolete">Configurar para:</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nome</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protocolo</translation>
-    </message>
-    <message>
-        <source>Pulse Polarity</source>
-        <translation type="obsolete">Polaridade</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Ajuste do Acelerador</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Activo</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Inactivo</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Exponencial do Acelerador</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Incremento do Ajuste</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Som ao Centrar</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Ajustes</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Interruptor</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Peso</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Fonte</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete">Atraso(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete">Lento(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Warn(%1)</source>
-        <translation type="obsolete">Aviso(%1)</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Limites</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Min</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Max</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Inverter</translation>
-    </message>
-    <message>
-        <source>INV</source>
-        <translation type="obsolete">INV</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">NOR</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Curvas</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Curva</translation>
-    </message>
-    <message>
-        <source>pt %1</source>
-        <translation type="obsolete">pt %1</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Função</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="45"/>
@@ -7323,58 +6964,6 @@ This determines how mixer values are added.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Extra Fine</source>
-        <translation type="obsolete">Extra-fino</translation>
-    </message>
-    <message>
-        <source>Fine</source>
-        <translation type="obsolete">Fino</translation>
-    </message>
-    <message>
-        <source>Medium</source>
-        <translation type="obsolete">Médio</translation>
-    </message>
-    <message>
-        <source>Coarse</source>
-        <translation type="obsolete">Aberto</translation>
-    </message>
-    <message>
-        <source>Exponential</source>
-        <translation type="obsolete">Exponencial</translation>
-    </message>
-    <message>
-        <source>Count Up</source>
-        <translation type="obsolete">Contagem progressiva</translation>
-    </message>
-    <message>
-        <source>Count Down</source>
-        <translation type="obsolete">Contagem regressiva</translation>
-    </message>
-    <message>
-        <source>%1:%2, </source>
-        <translation type="obsolete">%1:%2,</translation>
-    </message>
-    <message>
-        <source>: %1 Channels, %2usec Delay</source>
-        <translation type="obsolete">:%1 Canais, Atraso de %3 mseg {1 ?} {2m?} {1 ?} {2u?}</translation>
-    </message>
-    <message>
-        <source>Rudder</source>
-        <translation type="obsolete">Leme</translation>
-    </message>
-    <message>
-        <source>Elevator</source>
-        <translation type="obsolete">Elevador</translation>
-    </message>
-    <message>
-        <source>Throttle</source>
-        <translation type="obsolete">Acelerador</translation>
-    </message>
-    <message>
-        <source>Aileron</source>
-        <translation type="obsolete">Aileron</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="460"/>
         <location filename="../eeprominterface.cpp" line="464"/>
         <location filename="../eeprominterface.cpp" line="836"/>
@@ -7387,22 +6976,6 @@ This determines how mixer values are added.
         <location filename="../eeprominterface.cpp" line="837"/>
         <source>Timer2</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Peso</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Interruptor</translation>
-    </message>
-    <message>
-        <source>Delay</source>
-        <translation type="obsolete">Atraso</translation>
-    </message>
-    <message>
-        <source>Slow</source>
-        <translation type="obsolete">Lento</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="842"/>
@@ -8506,11 +8079,6 @@ This determines how mixer values are added.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>CH%1%2</source>
-        <oldsource>CH%1</oldsource>
-        <translation type="obsolete">CH%1</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="622"/>
         <location filename="../eeprominterface.cpp" line="645"/>
         <location filename="../generaledit/generalsetup.cpp" line="264"/>
@@ -9013,22 +8581,6 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>THR</source>
-        <translation type="obsolete">THR</translation>
-    </message>
-    <message>
-        <source>RUD</source>
-        <translation type="obsolete">RUD</translation>
-    </message>
-    <message>
-        <source>ELE</source>
-        <translation type="obsolete">ELE</translation>
-    </message>
-    <message>
-        <source>AIL</source>
-        <translation type="obsolete">AIL</translation>
-    </message>
-    <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="248"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="717"/>
         <source>Hold X</source>
@@ -9063,41 +8615,9 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>TRN</source>
-        <translation type="obsolete">TRN</translation>
-    </message>
-    <message>
-        <source>GEA</source>
-        <translation type="obsolete">GEA</translation>
-    </message>
-    <message>
-        <source>ID0</source>
-        <translation type="obsolete">ID0</translation>
-    </message>
-    <message>
-        <source>ID1</source>
-        <translation type="obsolete">ID1</translation>
-    </message>
-    <message>
-        <source>ID2</source>
-        <translation type="obsolete">ID2</translation>
-    </message>
-    <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="999"/>
         <source>BEEP</source>
         <translation type="unfinished">BEEP</translation>
-    </message>
-    <message>
-        <source>P1</source>
-        <translation type="obsolete">P1</translation>
-    </message>
-    <message>
-        <source>P2</source>
-        <translation type="obsolete">P2</translation>
-    </message>
-    <message>
-        <source>P3</source>
-        <translation type="obsolete">P3</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1239"/>
@@ -10265,10 +9785,6 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
 <context>
     <name>Timer</name>
     <message>
-        <source>mm:ss</source>
-        <translation type="obsolete">mm:ss</translation>
-    </message>
-    <message>
         <location filename="../modeledit/setup_timer.ui" line="55"/>
         <source>Countdown</source>
         <translation type="unfinished"></translation>
@@ -10781,52 +10297,6 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
     </message>
 </context>
 <context>
-    <name>appPreferencesDialog</name>
-    <message>
-        <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="obsolete">Modo 1 (RUD ELE THR AIL)</translation>
-    </message>
-    <message>
-        <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="obsolete">Modo 2 (RUD THR ELE AIL)</translation>
-    </message>
-    <message>
-        <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="obsolete">Modo 3 (AIL ELE THR RUD)</translation>
-    </message>
-    <message>
-        <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="obsolete">Modo 4 (AIL THR ELE RUD)</translation>
-    </message>
-    <message>
-        <source>Default Stick Mode</source>
-        <translation type="obsolete">Modo do Rádio por Defeito</translation>
-    </message>
-    <message>
-        <source>General Settings</source>
-        <translation type="obsolete">Parâmetros Gerais</translation>
-    </message>
-    <message>
-        <source>Default Channel Order</source>
-        <translation type="obsolete">Ordem dos Canais por Defeito</translation>
-    </message>
-</context>
-<context>
-    <name>avrOutputDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Dialogo</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Erro</translation>
-    </message>
-    <message>
-        <source>FUSES: Low=%1 High=%2 Ext=%3</source>
-        <translation type="obsolete">FUSES: Baixo=%1 Alto=%2 Ext=%3 </translation>
-    </message>
-</context>
-<context>
     <name>burnConfigDialog</name>
     <message>
         <location filename="../burnconfigdialog.cpp" line="61"/>
@@ -11035,143 +10505,6 @@ m2560 for v4.1 boards</source>
     </message>
 </context>
 <context>
-    <name>burnDialog</name>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Aviso</translation>
-    </message>
-    <message>
-        <source>Unable to find file %1!</source>
-        <translation type="obsolete">Impossível encontrar o ficheiro %1!</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Erro</translation>
-    </message>
-</context>
-<context>
-    <name>compareDialog</name>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Fechar</translation>
-    </message>
-    <message>
-        <source>Print</source>
-        <translation type="obsolete">Imprimir</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nome</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protocolo</translation>
-    </message>
-    <message>
-        <source>Pulse Polarity</source>
-        <translation type="obsolete">Polaridade</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Ajuste do Acelerador</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Activo</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Inactivo</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Exponencial do Acelerador</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Incremento do Ajuste</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Som ao Centrar</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Ajustes</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Interruptor</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Limites</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Min</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Max</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Inverter</translation>
-    </message>
-    <message>
-        <source>INV</source>
-        <translation type="obsolete">INV</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">NOR</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Peso</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Curva</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete">Atraso(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete">Lento(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Curvas</translation>
-    </message>
-    <message>
-        <source>pt %1</source>
-        <translation type="obsolete">pt %1</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Função</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Fonte</translation>
-    </message>
-    <message>
-        <source>Print Document</source>
-        <translation type="obsolete">Imprimir Documento</translation>
-    </message>
-</context>
-<context>
-    <name>contributorsDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Dialogo</translation>
-    </message>
-</context>
-<context>
     <name>customizeSplashDialog</name>
     <message>
         <location filename="../customizesplashdialog.ui" line="23"/>
@@ -11317,13 +10650,6 @@ m2560 for v4.1 boards</source>
         <location filename="../downloaddialog.cpp" line="54"/>
         <source>Download failed: %1.</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>fusesDialog</name>
-    <message>
-        <source>Read Fuses</source>
-        <translation type="obsolete">Ler os Fuses</translation>
     </message>
 </context>
 <context>
@@ -11549,13 +10875,6 @@ Press cancel to abort joystick calibration</source>
     </message>
 </context>
 <context>
-    <name>logsDialog</name>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Erro</translation>
-    </message>
-</context>
-<context>
     <name>mdiChild</name>
     <message>
         <location filename="../mdichild.ui" line="23"/>
@@ -11569,30 +10888,6 @@ Press cancel to abort joystick calibration</source>
         <location filename="../imgpreferences.ui" line="26"/>
         <source>Preferences</source>
         <translation>Preferências</translation>
-    </message>
-    <message>
-        <source>Default Channel Order</source>
-        <translation type="obsolete">Ordem dos Canais por Defeito</translation>
-    </message>
-    <message>
-        <source>Default Stick Mode</source>
-        <translation type="obsolete">Modo do Rádio por Defeito</translation>
-    </message>
-    <message>
-        <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="obsolete">Modo 1 (RUD ELE THR AIL)</translation>
-    </message>
-    <message>
-        <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="obsolete">Modo 2 (RUD THR ELE AIL)</translation>
-    </message>
-    <message>
-        <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="obsolete">Modo 3 (AIL ELE THR RUD)</translation>
-    </message>
-    <message>
-        <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="obsolete">Modo 4 (AIL THR ELE RUD)</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="349"/>
@@ -11701,133 +10996,6 @@ Press cancel to abort joystick calibration</source>
         <location filename="../imgpreferences.ui" line="366"/>
         <source>Invert Pixels</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>printDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Dialogo</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Fechar</translation>
-    </message>
-    <message>
-        <source>Print</source>
-        <translation type="obsolete">Imprimir</translation>
-    </message>
-    <message>
-        <source>Setup for: </source>
-        <translation type="obsolete">Configurar para:</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nome</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protocolo</translation>
-    </message>
-    <message>
-        <source>Pulse Polarity</source>
-        <translation type="obsolete">Polaridade</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Activo</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Inactivo</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Ajuste do Acelerador</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Exponencial do Acelerador</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Ajustes</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Incremento do Ajuste</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Som ao Centrar</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete">Atraso(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete">Lento(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>pt %1</source>
-        <translation type="obsolete">pt %1</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Fonte</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Compensação</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Função</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Interruptor</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Peso</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Curva</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Limites</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Min</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Max</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Inverter</translation>
-    </message>
-    <message>
-        <source>INV</source>
-        <translation type="obsolete">INV</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">NOR</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Curvas</translation>
-    </message>
-    <message>
-        <source>Print Document</source>
-        <translation type="obsolete">Imprimir Documento</translation>
     </message>
 </context>
 </TS>

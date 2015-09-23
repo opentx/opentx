@@ -1525,137 +1525,6 @@ Powinieneś &apos;zapisać jako&apos; stary plik jako kopię zapasową.</transla
     </message>
 </context>
 <context>
-    <name>Er9x::Templates</name>
-    <message>
-        <source>Simple 4-CH</source>
-        <translation type="obsolete">Proste 4 kanały</translation>
-    </message>
-    <message>
-        <source>T-Cut</source>
-        <translation type="obsolete">Wył Gazu</translation>
-    </message>
-    <message>
-        <source>Sticky T-Cut</source>
-        <translation type="obsolete">Stały wyłącznik Gazu</translation>
-    </message>
-    <message>
-        <source>V-Tail</source>
-        <translation type="obsolete">Motylkowy</translation>
-    </message>
-    <message>
-        <source>Elevon\Delta</source>
-        <translation type="obsolete">Elevon/Delta</translation>
-    </message>
-    <message>
-        <source>Heli Setup</source>
-        <translation type="obsolete">Ustawienie Heli</translation>
-    </message>
-    <message>
-        <source>Heli Setup with gyro gain control</source>
-        <translation type="obsolete">Ustawienie heli ze stabilizacją Żyro</translation>
-    </message>
-    <message>
-        <source>Gyro gain control</source>
-        <translation type="obsolete">Stabilizacja Żyro</translation>
-    </message>
-    <message>
-        <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
-        <translation type="obsolete">Ustawienie heli (Ustawienie kanałów w stylu Futaby)</translation>
-    </message>
-    <message>
-        <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="obsolete">Ustawienie heli ze stabilizacją Żyro(Ustawienie kanałów w stylu Futaby)</translation>
-    </message>
-    <message>
-        <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="obsolete">Stabilizacja Żyro(Ustawienie kanałów w stylu Futaby)</translation>
-    </message>
-    <message>
-        <source>Servo Test</source>
-        <translation type="obsolete">Test Serwa</translation>
-    </message>
-    <message>
-        <source>MultiCopter</source>
-        <translation type="obsolete">Wielowirnikowiec</translation>
-    </message>
-    <message>
-        <source>Use Model Config Wizard</source>
-        <translation type="obsolete">Użyj konfiguratora modelu</translation>
-    </message>
-    <message>
-        <source>Apply Template?</source>
-        <translation type="obsolete">Dodać szablon ?</translation>
-    </message>
-    <message>
-        <source>Apply template &quot;%1&quot;?</source>
-        <translation type="obsolete">Dodać szablon &quot;%1&quot;?</translation>
-    </message>
-    <message>
-        <source>RUD</source>
-        <translation type="obsolete">SK</translation>
-    </message>
-    <message>
-        <source>ELE</source>
-        <translation type="obsolete">SW</translation>
-    </message>
-    <message>
-        <source>THR</source>
-        <translation type="obsolete">Gaz</translation>
-    </message>
-    <message>
-        <source>AIL</source>
-        <translation type="obsolete">Lotki</translation>
-    </message>
-    <message>
-        <source>AIL2</source>
-        <translation type="obsolete">Lotka2</translation>
-    </message>
-    <message>
-        <source>ELE2</source>
-        <translation type="obsolete">SW2</translation>
-    </message>
-    <message>
-        <source>FLAPS</source>
-        <translation type="obsolete">Klapy</translation>
-    </message>
-    <message>
-        <source>FLAP%1</source>
-        <translation type="obsolete">Klapy %1</translation>
-    </message>
-    <message>
-        <source>PITCH</source>
-        <translation type="obsolete">Pochylenie</translation>
-    </message>
-    <message>
-        <source>GYRO</source>
-        <translation type="obsolete">ŻYRO</translation>
-    </message>
-    <message>
-        <source>SPOIL</source>
-        <translation type="obsolete">Spoiler</translation>
-    </message>
-    <message>
-        <source>SPOIL%1</source>
-        <translation type="obsolete">Spoiler%1</translation>
-    </message>
-    <message>
-        <source>RUD2</source>
-        <translation type="obsolete">SK2</translation>
-    </message>
-    <message>
-        <source>Clear Mixes?</source>
-        <translation type="obsolete">Wyczyść miksery?</translation>
-    </message>
-    <message>
-        <source>Really clear existing mixes on CH6?</source>
-        <translation type="obsolete">Na pewno wyczyścić mikser na kanale 6?</translation>
-    </message>
-    <message>
-        <source>Really clear existing mixes on CH5?</source>
-        <translation type="obsolete">Na pewno wyczyścić mikser na kanale 5?</translation>
-    </message>
-</context>
-<context>
     <name>ExpoDialog</name>
     <message>
         <location filename="../modeledit/expodialog.ui" line="98"/>
@@ -5438,10 +5307,6 @@ p, li { white-space: pre-wrap; }
         <translation>Opóźnienie(u%1:d%2)</translation>
     </message>
     <message>
-        <source>Slow((u%1:d%2)</source>
-        <translation type="obsolete">Spowolnienie(u%1:d%2)</translation>
-    </message>
-    <message>
         <location filename="../modelprinter.cpp" line="190"/>
         <source>Persistent</source>
         <translation>Stały</translation>
@@ -8550,14 +8415,6 @@ Zespół OpenTX.</translation>
         <location filename="../modeledit/telemetry.cpp" line="629"/>
         <source>-%1</source>
         <translation>-%1</translation>
-    </message>
-    <message>
-        <source>Positive</source>
-        <translation type="obsolete">Dodatni</translation>
-    </message>
-    <message>
-        <source>Negative</source>
-        <translation type="obsolete">Ujemny</translation>
     </message>
     <message>
         <location filename="../radiointerface.cpp" line="89"/>

@@ -1035,82 +1035,6 @@ May be different from firmware language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Протокол</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Газ трим</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Газ экспо</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Изм. триммеров</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Триммеры</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Тумблер</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Лимиты</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Смещен.</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Мин</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Макс</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Инверт</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Вес</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete"> Задержка(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Задержка(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Кривые</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Кривая</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Функция</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Значение</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Источник</translation>
-    </message>
-    <message>
         <location filename="../comparedialog.cpp" line="122"/>
         <source>Print Document</source>
         <translation type="unfinished"></translation>
@@ -1650,23 +1574,6 @@ May be different from firmware language</source>
         <location filename="../modeledit/expodialog.ui" line="277"/>
         <source>Stick Side</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Delay and slow&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These values control the speed and delay of the output of the mix.  &lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Delay is not zero the actuation of the mix will be delayed by the specified amount of seconds.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Slow is not zero then the speed of the mix will be set by the value specified -&amp;gt; the value states the number of seconds it takes to transit from -100 to 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">Задержка и замедление.
-Эти значение управляют скоростью и задержкой на выходе микшера.
-Если &quot;Задержка&quot; не равна нулю, то срабатывание микшера происходит через указанное число секунд.
-Если &quot;Замедление&quot; не равно нулю, то это значение означает число секунд для перемещения от -100 до +100.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="348"/>
@@ -2475,80 +2382,6 @@ These will be relevant for all models in the same EEPROM.</source>
         <translation>Настройка</translation>
     </message>
     <message>
-        <source>Contrast</source>
-        <translation type="obsolete">Конраст</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;LCD Screen Contrast&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Values can be 20-45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">Контраст LCD дисплея
-Значения в пределах 20-45</translation>
-    </message>
-    <message>
-        <source>Battery Warning</source>
-        <translation type="obsolete">Напряж. при разряде</translation>
-    </message>
-    <message>
-        <source>Battery warning voltage.
-This is the threashhold where the battery warning sounds.
-
-Acceptable values are 5v..10v</source>
-        <translation type="obsolete">Предупреждение о разряде.
-Значение при котором сработает сигнализация.
-
-Диапазон 5В..10В</translation>
-    </message>
-    <message>
-        <source>v</source>
-        <translation type="obsolete">В</translation>
-    </message>
-    <message>
-        <source>This is the switch selectrion for turning on the backlight (if installed).
-
-</source>
-        <translation type="obsolete">Включение подсветки (при ее наличии).</translation>
-    </message>
-    <message>
-        <source>If this value is not 0, any keypress will turn on the backlight and turn it off after the specified number of seconds.</source>
-        <translation type="obsolete">Если не равно нулю, то любое нажатие кнопок будет включать подсветку и выключать ее через указанное кол-во секунд.</translation>
-    </message>
-    <message>
-        <source> sec</source>
-        <translation type="obsolete"> сек</translation>
-    </message>
-    <message>
-        <source>Inactivity Timer</source>
-        <translation type="obsolete">Таймер активности</translation>
-    </message>
-    <message>
-        <source>If not zero will sound beeps if the transmitter has been left without inputs for the specified number of minutes.</source>
-        <translation type="obsolete">Если не равно нулю, начнет бипать при отсутсвии активности через указанное кол-во минут.</translation>
-    </message>
-    <message>
-        <source> min</source>
-        <translation type="obsolete"> мин</translation>
-    </message>
-    <message>
-        <source>Quiet</source>
-        <translation type="obsolete">тихо</translation>
-    </message>
-    <message>
-        <source>No Keys</source>
-        <translation type="obsolete">без кнопок</translation>
-    </message>
-    <message>
-        <source>Normal</source>
-        <translation type="obsolete">нормально</translation>
-    </message>
-    <message>
-        <source>Long</source>
-        <translation type="obsolete">долго</translation>
-    </message>
-    <message>
         <location filename="../generaledit/generaledit.cpp" line="44"/>
         <source>Trainer</source>
         <translation type="unfinished"></translation>
@@ -2562,88 +2395,6 @@ Acceptable values are 5v..10v</source>
         <location filename="../generaledit/generaledit.ui" line="55"/>
         <source>Retrieve calib. and hw settings from profile</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Default Channel Order</source>
-        <translation type="obsolete">Порядок следов. каналов</translation>
-    </message>
-    <message>
-        <source>OFF</source>
-        <translation type="obsolete">ВЫКЛ</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Вес</translation>
-    </message>
-    <message>
-        <source>PPM Multiplier</source>
-        <translation type="obsolete">PPM множитель</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Warnings&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These will define startup warnings.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Throttle warning - will alert if the throttle is not at idle during startup&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Switch warning - will alert if switches are not in their defaul position&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Memory warning - will alert if there&apos;s not a lot of memory left&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Silent mode warning - will alert you if the beeper is set to quiet (0)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">Определение предупреждений при включении.
-&quot;Газ не в нуле&quot; - Стик газа не в нулевом положении
-&quot;Тумблеры&quot; - Переключатели не в положении по-умолчанию
-&quot;Память&quot; - Не осталось свободной памяти под модели
-&quot;Тишина&quot; - Предупреждение о &quot;тихом&quot; режиме (без звука)</translation>
-    </message>
-    <message>
-        <source>Beeper Mode</source>
-        <translation type="obsolete">Режим бипов</translation>
-    </message>
-    <message>
-        <source>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</source>
-        <translation type="obsolete">Громкость.
-
-0 - Тишина.
-1 - Без кнопок.
-2 - Обычная.
-3 - Громкая.
-4 - Очень громкая.</translation>
-    </message>
-    <message>
-        <source>Channel Order (For Templates)</source>
-        <translation type="obsolete">Порядок каналов</translation>
-    </message>
-    <message>
-        <source>Channel order
-
-This is used by the templated to determine which channel goes to what number output.</source>
-        <translation type="obsolete">Порядок каналов
-
-Используется в шаблоне порядка следования каналов.</translation>
-    </message>
-    <message>
-        <source>Stick Mode</source>
-        <translation type="obsolete">Режим стиков</translation>
-    </message>
-    <message>
-        <source>Show Splash Screen on Startup</source>
-        <translation type="obsolete">Показывать заставку</translation>
-    </message>
-    <message>
-        <source>Show splash screen on startup</source>
-        <translation type="obsolete">Показывать заставку при включении</translation>
-    </message>
-    <message>
-        <source>Calibration</source>
-        <translation type="obsolete">Калибровка.</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="42"/>
@@ -3494,17 +3245,9 @@ Are you sure ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Elevator</source>
-        <translation type="obsolete">Элеватор</translation>
-    </message>
-    <message>
         <location filename="../modeledit/heli.ui" line="103"/>
         <source>Invert</source>
         <translation type="unfinished">Инверт</translation>
-    </message>
-    <message>
-        <source>Aileron</source>
-        <translation type="obsolete">Элероны</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="24"/>
@@ -4100,16 +3843,6 @@ We recommend you view the release notes using the button below to learn about an
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot write file %1:
-%2.</source>
-        <translation type="obsolete">Не удается записать файл %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Звук</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="899"/>
         <source>OpenTX Home Page: &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
@@ -4203,16 +3936,6 @@ We recommend you view the release notes using the button below to learn about an
         <location filename="../mainwindow.cpp" line="1427"/>
         <source>New Radio</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to find file %1!</source>
-        <translation type="obsolete">Невозможно найти файл %1!</translation>
-    </message>
-    <message>
-        <source>Error reading file %1:
-%2.</source>
-        <translation type="obsolete">Ошибка при считывании файла %1:
-%2.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="232"/>
@@ -5136,23 +4859,6 @@ This determines how mixer values are added.
         <translation>Верх</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Delay and slow&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These values control the speed and delay of the output of the mix.  &lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Delay is not zero the actuation of the mix will be delayed by the specified amount of seconds.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Slow is not zero then the speed of the mix will be set by the value specified -&amp;gt; the value states the number of seconds it takes to transit from -100 to 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">Задержка и замедление.
-Эти значение управляют скоростью и задержкой на выходе микшера.
-Если &quot;Задержка&quot; не равна нулю, то срабатывание микшера происходит через указанное число секунд.
-Если &quot;Замедление&quot; не равно нулю, то это значение означает число секунд для перемещения от -100 до +100.</translation>
-    </message>
-    <message>
         <location filename="../modeledit/mixerdialog.ui" line="56"/>
         <source>Down</source>
         <translation>Низ</translation>
@@ -5193,18 +4899,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/mixes.cpp" line="24"/>
         <source>Clear Mixes</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete"> Задержка(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Задержка(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Warn(%1)</source>
-        <translation type="obsolete"> Пред(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="158"/>
@@ -5265,10 +4959,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/mixes.cpp" line="422"/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Cut</source>
-        <translation type="obsolete">Вырезать</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="423"/>
@@ -5601,18 +5291,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Offset</source>
-        <translation type="obsolete">Смещен.</translation>
-    </message>
-    <message>
-        <source>Delay</source>
-        <translation type="obsolete">Задержка</translation>
-    </message>
-    <message>
-        <source>Slow</source>
-        <translation type="obsolete">Замедлен.</translation>
-    </message>
-    <message>
         <location filename="../modelprinter.cpp" line="415"/>
         <source>Disabled in all flight modes</source>
         <translation type="unfinished"></translation>
@@ -5840,10 +5518,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> usec</source>
-        <translation type="obsolete">мсек</translation>
-    </message>
-    <message>
         <location filename="../modeledit/setup_module.ui" line="230"/>
         <source>Negative</source>
         <translation type="unfinished"></translation>
@@ -5867,10 +5541,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/setup_module.ui" line="378"/>
         <source>PPM Frame Length</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ch</source>
-        <translation type="obsolete">ch</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="91"/>
@@ -6281,86 +5951,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../printdialog.ui" line="68"/>
         <source>Print to file</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Протокол</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Газ трим</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Газ экспо</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Изм. триммеров</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Триммеры</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Тумблер</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Вес</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Источник</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete"> Задержка(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Задержка(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Warn(%1)</source>
-        <translation type="obsolete"> Пред(%1)</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Лимиты</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Смещен.</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Мин</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Макс</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Инверт</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Кривые</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Кривая</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Функция</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Значение</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="45"/>
@@ -7470,50 +7060,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Extra Fine</source>
-        <translation type="obsolete">очень точно</translation>
-    </message>
-    <message>
-        <source>Fine</source>
-        <translation type="obsolete">точно</translation>
-    </message>
-    <message>
-        <source>Medium</source>
-        <translation type="obsolete">средне</translation>
-    </message>
-    <message>
-        <source>Coarse</source>
-        <translation type="obsolete">грубо</translation>
-    </message>
-    <message>
-        <source>Exponential</source>
-        <translation type="obsolete">экспонента</translation>
-    </message>
-    <message>
-        <source>Count Up</source>
-        <translation type="obsolete">Прямой отсчет</translation>
-    </message>
-    <message>
-        <source>Count Down</source>
-        <translation type="obsolete">Обратный отсчет</translation>
-    </message>
-    <message>
-        <source>Rudder</source>
-        <translation type="obsolete">Руддер</translation>
-    </message>
-    <message>
-        <source>Elevator</source>
-        <translation type="obsolete">Элеватор</translation>
-    </message>
-    <message>
-        <source>Throttle</source>
-        <translation type="obsolete">Газ</translation>
-    </message>
-    <message>
-        <source>Aileron</source>
-        <translation type="obsolete">Элероны</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="460"/>
         <location filename="../eeprominterface.cpp" line="464"/>
         <location filename="../eeprominterface.cpp" line="836"/>
@@ -7526,26 +7072,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../eeprominterface.cpp" line="837"/>
         <source>Timer2</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Вес</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Тумблер</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Смещен.</translation>
-    </message>
-    <message>
-        <source>Delay</source>
-        <translation type="obsolete">Задержка</translation>
-    </message>
-    <message>
-        <source>Slow</source>
-        <translation type="obsolete">Замедлен.</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="842"/>
@@ -10814,28 +10340,6 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
     </message>
 </context>
 <context>
-    <name>appPreferencesDialog</name>
-    <message>
-        <source>Default Stick Mode</source>
-        <translation type="obsolete">Режим стиков</translation>
-    </message>
-    <message>
-        <source>General Settings</source>
-        <translation type="obsolete">Основные настройки</translation>
-    </message>
-    <message>
-        <source>Default Channel Order</source>
-        <translation type="obsolete">Порядок следов. каналов</translation>
-    </message>
-</context>
-<context>
-    <name>avrOutputDialog</name>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Ошибка</translation>
-    </message>
-</context>
-<context>
     <name>burnConfigDialog</name>
     <message>
         <location filename="../burnconfigdialog.cpp" line="61"/>
@@ -11045,125 +10549,6 @@ m2560 for v4.1 boards</source>
     </message>
 </context>
 <context>
-    <name>burnDialog</name>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Звук</translation>
-    </message>
-    <message>
-        <source>Unable to find file %1!</source>
-        <translation type="obsolete">Невозможно найти файл %1!</translation>
-    </message>
-    <message>
-        <source>Error reading file %1:
-%2.</source>
-        <translation type="obsolete">Ошибка при считывании файла %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Cannot write file %1:
-%2.</source>
-        <translation type="obsolete">Не удается записать файл %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Error writing file %1:
-%2.</source>
-        <translation type="obsolete">Ошибка при записи файла %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Ошибка</translation>
-    </message>
-</context>
-<context>
-    <name>compareDialog</name>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Протокол</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Газ трим</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Газ экспо</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Изм. триммеров</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Триммеры</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Тумблер</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Лимиты</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Смещен.</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Мин</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Макс</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Инверт</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Вес</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Кривая</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete"> Задержка(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Задержка(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Кривые</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Функция</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Значение</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Источник</translation>
-    </message>
-</context>
-<context>
-    <name>contributorsDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Диалог</translation>
-    </message>
-</context>
-<context>
     <name>customizeSplashDialog</name>
     <message>
         <location filename="../customizesplashdialog.ui" line="23"/>
@@ -11309,17 +10694,6 @@ m2560 for v4.1 boards</source>
         <location filename="../downloaddialog.cpp" line="54"/>
         <source>Download failed: %1.</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>fusesDialog</name>
-    <message>
-        <source>Fuses</source>
-        <translation type="obsolete">Фьюзы</translation>
-    </message>
-    <message>
-        <source>Read Fuses</source>
-        <translation type="obsolete">Считать фьюзы</translation>
     </message>
 </context>
 <context>
@@ -11545,19 +10919,6 @@ Press cancel to abort joystick calibration</source>
     </message>
 </context>
 <context>
-    <name>logsDialog</name>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Ошибка</translation>
-    </message>
-    <message>
-        <source>Cannot write file %1:
-%2.</source>
-        <translation type="obsolete">Не удается записать файл %1:
-%2.</translation>
-    </message>
-</context>
-<context>
     <name>mdiChild</name>
     <message>
         <location filename="../mdichild.ui" line="23"/>
@@ -11571,26 +10932,6 @@ Press cancel to abort joystick calibration</source>
         <location filename="../imgpreferences.ui" line="26"/>
         <source>Preferences</source>
         <translation>Настройки</translation>
-    </message>
-    <message>
-        <source>Default Channel Order</source>
-        <translation type="obsolete">Порядок следов. каналов</translation>
-    </message>
-    <message>
-        <source>Default Stick Mode</source>
-        <translation type="obsolete">Режим стиков</translation>
-    </message>
-    <message>
-        <source>Channel order
-
-This is used by the templated to determine which channel goes to what number output.</source>
-        <translation type="obsolete">Порядок каналов
-
-Шаблон для определения порядка следования каналов.</translation>
-    </message>
-    <message>
-        <source>Check for updates on startup</source>
-        <translation type="obsolete">Проверять обновления</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="349"/>
@@ -11699,89 +11040,6 @@ This is used by the templated to determine which channel goes to what number out
         <location filename="../imgpreferences.ui" line="366"/>
         <source>Invert Pixels</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>printDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Диалог</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Протокол</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Газ трим</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Газ экспо</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Триммеры</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Изм. триммеров</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete"> Задержка(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Задержка(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Источник</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Функция</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Тумблер</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Вес</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Кривая</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Смещен.</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Лимиты</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Мин</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Макс</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Инверт</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Кривые</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Значение</translation>
     </message>
 </context>
 </TS>

@@ -104,10 +104,6 @@
         <translation>Vybrat obrázek</translation>
     </message>
     <message>
-        <source>Processor ID</source>
-        <translation type="obsolete">ID procesoru</translation>
-    </message>
-    <message>
         <location filename="../apppreferencesdialog.ui" line="370"/>
         <source>Mode selection:
 
@@ -372,10 +368,6 @@ May be different from firmware language</source>
 Může být jiná než verze firmwaru</translation>
     </message>
     <message>
-        <source>Radio Firmware</source>
-        <translation type="obsolete">Firmware rádia</translation>
-    </message>
-    <message>
         <location filename="../apppreferencesdialog.ui" line="268"/>
         <source>Other Settings</source>
         <translation>Ostatní volby</translation>
@@ -389,12 +381,6 @@ Může být jiná než verze firmwaru</translation>
         <location filename="../apppreferencesdialog.ui" line="281"/>
         <source>SD Structure path</source>
         <translation>Cesta k obsahu SD karty</translation>
-    </message>
-    <message>
-        <source>Set language of voice.
-May be different from firmware language</source>
-        <translation type="obsolete">Vyberte jazykovou verzi hlasu tts(voice).
-Může být jiná než verze firmwaru</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="143"/>
@@ -611,25 +597,6 @@ Může být jiná než verze firmwaru</translation>
     </message>
 </context>
 <context>
-    <name>BankPage</name>
-    <message>
-        <source>One</source>
-        <translation type="obsolete">Jedním</translation>
-    </message>
-    <message>
-        <source>Two</source>
-        <translation type="obsolete">Dvěma</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation type="obsolete">&lt;br&gt;První kanál elevonů:</translation>
-    </message>
-    <message>
-        <source>Second Elevon Channel:</source>
-        <translation type="obsolete">&lt;br&gt;Druhý kanál elevonů:</translation>
-    </message>
-</context>
-<context>
     <name>Calibration</name>
     <message>
         <location filename="../generaledit/calibration.ui" line="14"/>
@@ -806,10 +773,6 @@ Může být jiná než verze firmwaru</translation>
         <translation>Páka 4</translation>
     </message>
     <message>
-        <source>Battery</source>
-        <translation type="obsolete">Baterie</translation>
-    </message>
-    <message>
         <location filename="../generaledit/calibration.ui" line="577"/>
         <source>v</source>
         <translation>V</translation>
@@ -828,10 +791,6 @@ Může být jiná než verze firmwaru</translation>
         <location filename="../generaledit/calibration.ui" line="696"/>
         <source>PPM 4</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>Current</source>
-        <translation type="obsolete">Proud</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="567"/>
@@ -1095,270 +1054,6 @@ Může být jiná než verze firmwaru</translation>
         <translation>Model nepojmenován</translation>
     </message>
     <message>
-        <source>General Model Settings</source>
-        <translation type="obsolete">Obecná nastavení modelu</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Název</translation>
-    </message>
-    <message>
-        <source>EEprom Size</source>
-        <translation type="obsolete">Velikost EEPROM</translation>
-    </message>
-    <message>
-        <source>Timer1</source>
-        <translation type="obsolete">Stopky1</translation>
-    </message>
-    <message>
-        <source>Timer2</source>
-        <translation type="obsolete">Stopky2</translation>
-    </message>
-    <message>
-        <source>Internal Radio System</source>
-        <translation type="obsolete">Interní vysílací modul</translation>
-    </message>
-    <message>
-        <source>Radio System</source>
-        <translation type="obsolete">Vysílací modul</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protokol</translation>
-    </message>
-    <message>
-        <source>Pulse Polarity</source>
-        <translation type="obsolete">Polarita pulzů</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Trim volnoběhu plynu</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Povoleno</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Zakázáno</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Expo plynu</translation>
-    </message>
-    <message>
-        <source>External Radio Module</source>
-        <translation type="obsolete">Externí vysílací modul</translation>
-    </message>
-    <message>
-        <source>Extra Radio System</source>
-        <translation type="obsolete">Extra modul</translation>
-    </message>
-    <message>
-        <source>Trainer port mode</source>
-        <translation type="obsolete">Mód portu trenér</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Krok trimu</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Zvuk ve středové poloze</translation>
-    </message>
-    <message>
-        <source>Flight modes Settings</source>
-        <translation type="obsolete">Nastavení letových fází</translation>
-    </message>
-    <message>
-        <source>Fades</source>
-        <translation type="obsolete">Přechody</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Trimy</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Spínač</translation>
-    </message>
-    <message>
-        <source>Flight mode name</source>
-        <translation type="obsolete">Název režimu</translation>
-    </message>
-    <message>
-        <source>IN</source>
-        <translation type="obsolete">(+)</translation>
-    </message>
-    <message>
-        <source>OUT</source>
-        <translation type="obsolete">(-)</translation>
-    </message>
-    <message>
-        <source>FM</source>
-        <translation type="obsolete">LR</translation>
-    </message>
-    <message>
-        <source>Gvars</source>
-        <translation type="obsolete">GP</translation>
-    </message>
-    <message>
-        <source>Rot. Enc.</source>
-        <translation type="obsolete">Rot.Enkoder</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Limity</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Subtrim</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Invertovat</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">---</translation>
-    </message>
-    <message>
-        <source>Global Variables</source>
-        <translation type="obsolete">Globální proměnné</translation>
-    </message>
-    <message>
-        <source>GV</source>
-        <translation type="obsolete">GP</translation>
-    </message>
-    <message>
-        <source>Inputs</source>
-        <translation type="obsolete">Vstupy(DR/Expo)</translation>
-    </message>
-    <message>
-        <source>Expo/Dr Settings</source>
-        <translation type="obsolete">DR/Expo</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Váha</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Letové režimy</translation>
-    </message>
-    <message>
-        <source>Flight mode</source>
-        <translation type="obsolete">Letový režim</translation>
-    </message>
-    <message>
-        <source>DISABLED</source>
-        <translation type="obsolete">ZAKÁZÁN</translation>
-    </message>
-    <message>
-        <source>Mixers</source>
-        <translation type="obsolete">Mixy</translation>
-    </message>
-    <message>
-        <source>noTrim</source>
-        <translation type="obsolete">Žádný trim</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete"> Zpoždění(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Zpomalení(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>Warn</source>
-        <translation type="obsolete">Varování</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Křivky</translation>
-    </message>
-    <message>
-        <source>5 Point Curves</source>
-        <translation type="obsolete">5ti bodové křivky</translation>
-    </message>
-    <message>
-        <source>pt %1</source>
-        <translation type="obsolete">bod %1</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Křivka</translation>
-    </message>
-    <message>
-        <source>9 Point Curves</source>
-        <translation type="obsolete">9ti bodové křivky</translation>
-    </message>
-    <message>
-        <source>Logical Switches</source>
-        <translation type="obsolete">Logické spínače</translation>
-    </message>
-    <message>
-        <source>Special Functions</source>
-        <translation type="obsolete">Speciální funkce</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Funkce</translation>
-    </message>
-    <message>
-        <source>Param</source>
-        <translation type="obsolete">Parametr</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="obsolete">Opakování</translation>
-    </message>
-    <message>
-        <source>Enable</source>
-        <translation type="obsolete">Povolit</translation>
-    </message>
-    <message>
-        <source>Telemetry Settings</source>
-        <translation type="obsolete">Nastavení telemetrie</translation>
-    </message>
-    <message>
-        <source>Unit</source>
-        <translation type="obsolete">Jednotky</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">Měřítko</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Typ</translation>
-    </message>
-    <message>
-        <source>Condition</source>
-        <translation type="obsolete">Podmínka</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Hodnota</translation>
-    </message>
-    <message>
-        <source>Custom Telemetry View</source>
-        <translation type="obsolete">Vlastní zobrazení telemetrie</translation>
-    </message>
-    <message>
-        <source>Telemetry Bars</source>
-        <translation type="obsolete">Telemetrické ukazatele</translation>
-    </message>
-    <message>
-        <source>Bar Number</source>
-        <translation type="obsolete">Číslo ukazatele</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Zdroj</translation>
-    </message>
-    <message>
         <location filename="../comparedialog.cpp" line="122"/>
         <source>Print Document</source>
         <translation>Vytisknout dokument</translation>
@@ -1416,10 +1111,6 @@ Thomasi Hustererovi (th9x) a také Erazovi Ravivovi(er9x a eePe)</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Thank you all !!!</source>
-        <translation type="obsolete">Děkujeme vám všem !!!</translation>
-    </message>
-    <message>
         <location filename="../contributorsdialog.cpp" line="102"/>
         <source>monthly</source>
         <translation>měsíčně</translation>
@@ -1475,14 +1166,6 @@ Thomasi Hustererovi (th9x) a také Erazovi Ravivovi(er9x a eePe)</translation>
 </context>
 <context>
     <name>Curves</name>
-    <message>
-        <source>Standard</source>
-        <translation type="obsolete">Rastr-X</translation>
-    </message>
-    <message>
-        <source>Custom</source>
-        <translation type="obsolete">Volná-XY</translation>
-    </message>
     <message>
         <location filename="../modeledit/curves.ui" line="68"/>
         <source>Fixed X</source>
@@ -1623,10 +1306,6 @@ Thomasi Hustererovi (th9x) a také Erazovi Ravivovi(er9x a eePe)</translation>
         <location filename="../modeledit/curves.cpp" line="617"/>
         <source>Are you sure you want to reset all curves?</source>
         <translation>Opravdu chcete vymazat všechny křivky?</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to reset curve %1 ?</source>
-        <translation type="obsolete">Opravdu chcete vymazat křivku %1 ?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="287"/>
@@ -1864,17 +1543,6 @@ Thomasi Hustererovi (th9x) a také Erazovi Ravivovi(er9x a eePe)</translation>
     </message>
 </context>
 <context>
-    <name>Er9x::Templates</name>
-    <message>
-        <source>V-Tail</source>
-        <translation type="obsolete">Ocas typu V</translation>
-    </message>
-    <message>
-        <source>Clear Mixes?</source>
-        <translation type="obsolete">Vymazat mixy?</translation>
-    </message>
-</context>
-<context>
     <name>ExpoDialog</name>
     <message>
         <location filename="../modeledit/expodialog.ui" line="98"/>
@@ -1919,36 +1587,6 @@ Thomasi Hustererovi (th9x) a také Erazovi Ravivovi(er9x a eePe)</translation>
         <translation>Spínač</translation>
     </message>
     <message>
-        <source>Switch used by the input.
-If blank then the input is considered to be &quot;ON&quot; all the time.</source>
-        <translation type="obsolete">Spínač aktivující tento vstup.
-Pokud není použito, vstup je AKTIVNÍ stále.</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Delay ans Slow&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These values control the speed and delay of the output of the mix.  &lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Delay is not zero the actuation of the mix will be delayed by the specified amount of seconds.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Slow is not zero then the speed of the mix will be set by the value specified -&amp;gt; the value states the number of seconds it takes to transit from -100 to 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Zpoždění a zpomalení&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Tyto volby nastavují rychlost a zpoždění výstupu mixu.  &lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Pokud je nastaveno zpoždění, ovládání mixu bude zpoždéno o uvedený počet sekund.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Pokud je nastaveno zpomalení, nastavená hodnota udává rychlost mixu -&amp;gt; hodnota udává počet sekund které trvá změna hodnoty z -100 na 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../modeledit/expodialog.ui" line="348"/>
         <source>Scale</source>
         <translation>Měřítko</translation>
@@ -1967,10 +1605,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/expodialog.ui" line="368"/>
         <source>Yes</source>
         <translation>Ano</translation>
-    </message>
-    <message>
-        <source>The curve used by the input</source>
-        <translation type="obsolete">Křivka použitá vstupem</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="414"/>
@@ -2024,22 +1658,6 @@ Pokud není použito, vstup je AKTIVNÍ stále.</translation>
         <source>Edit %1</source>
         <translation>Upravit %1</translation>
     </message>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">Směrovka</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">Výškovka</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">Plyn</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">Křidélka</translation>
-    </message>
 </context>
 <context>
     <name>FblPage</name>
@@ -2080,12 +1698,6 @@ Pokud není použito, vstup je AKTIVNÍ stále.</translation>
         <location filename="../fwpreferencesdialog.ui" line="68"/>
         <source>Voice</source>
         <translation>Hlas tts</translation>
-    </message>
-    <message>
-        <source>Set language of voice.
-May be different from firmware language</source>
-        <translation type="obsolete">Vyberte jazykovou verzi hlasu tts(voice).
-Může být jiná než verze firmwaru</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="81"/>
@@ -2624,53 +2236,9 @@ Prosím, použijte program Zadig pro správnou instalaci ovladače.</translation
         <source>Switch</source>
         <translation>Spínač</translation>
     </message>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">Směrovka</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">Výškovka</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">Plyn</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">Křidélka</translation>
-    </message>
-    <message>
-        <source>Rotary Encoder %1</source>
-        <translation type="obsolete">Otočný enkodér %1</translation>
-    </message>
-    <message>
-        <source>GVAR%1</source>
-        <translation type="obsolete">GP%1</translation>
-    </message>
-    <message>
-        <source>Popup enabled</source>
-        <translation type="obsolete">Vyskakovací okno povoleno</translation>
-    </message>
 </context>
 <context>
     <name>FlightModePanel</name>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">Směrovka</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">Výškovka</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">Plyn</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">Křidélka</translation>
-    </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="106"/>
         <source>Rotary Encoder %1</source>
@@ -2685,17 +2253,6 @@ Prosím, použijte program Zadig pro správnou instalaci ovladače.</translation
         <location filename="../modeledit/flightmodes.cpp" line="173"/>
         <source>Popup enabled</source>
         <translation>Vyskakovací okno povoleno</translation>
-    </message>
-</context>
-<context>
-    <name>FlightModes</name>
-    <message>
-        <source>Flight Mode %1</source>
-        <translation type="obsolete">Letový režim %1</translation>
-    </message>
-    <message>
-        <source> (default)</source>
-        <translation type="obsolete"> (výchozí)</translation>
     </message>
 </context>
 <context>
@@ -2876,653 +2433,9 @@ Tyto volby jsou platné pro všechny modely v jedné EEPROM.</translation>
         <translation>Nastevní</translation>
     </message>
     <message>
-        <source>Contrast</source>
-        <translation type="obsolete">Kontrast</translation>
-    </message>
-    <message>
-        <source>Channel Order (For Templates)</source>
-        <translation type="obsolete">Pořadí kanálů (pro šablony)</translation>
-    </message>
-    <message>
-        <source>Mode selection:
-
-Mode 1:
-  Left stick:  Elevator, Rudder
-  Right stick:  Throttle, Aileron
-
-Mode 2:
-  Left stick:  Throttle, Rudder
-  Right stick:  Elevator, Aileron
-
-Mode 3:
-  Left stick:  Elevator, Aileron
-  Right stick:  Throttle, Rudder
-
-Mode 4:
-  Left stick:  Throttle, Aileron
-  Right stick:  Elevator, Rudder
-
-</source>
-        <translation type="obsolete">Výběr módu:
-
-Mode 1:
-  Levá páka  :  Výškovka, Směrovka
-  Pravá páka:  Plyn, Křidélka
-
-Mode 2:
-  Levá páka  :  Plyn, Směrovka
-  Pravá páka:  Výškovka, Křidélka
-
-Mode 3:
-  Levá páka  :  Výškovka, Křidélka
-  Pravá páka:  Plyn, Směrovka
-
-Mode 4:
-  Levá páka  :  Plyn, Křidélka
-  Pravá páka:  Výškovka, Směrovka
-
-</translation>
-    </message>
-    <message>
-        <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="obsolete">Mód1 (Směr.Výšk.Plyn.Křid)</translation>
-    </message>
-    <message>
-        <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="obsolete">Mód2 (Směr.Plyn.Výšk.Křid)</translation>
-    </message>
-    <message>
-        <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="obsolete">Mód3 (Křid.Výšk.Plyn.Směr)</translation>
-    </message>
-    <message>
-        <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="obsolete">Mód4 (Křid.Plyn.Výšk.Směr)</translation>
-    </message>
-    <message>
-        <source>Quiet</source>
-        <translation type="obsolete">Tichý</translation>
-    </message>
-    <message>
-        <source>Only Alarms</source>
-        <translation type="obsolete">Jen alarm</translation>
-    </message>
-    <message>
-        <source>No Keys</source>
-        <translation type="obsolete">Bez kláves</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation type="obsolete">Vše</translation>
-    </message>
-    <message>
-        <source>If this value is not 0, any keypress will turn on the backlight and turn it off after the specified number of seconds.</source>
-        <translation type="obsolete">Pokud tato hodnota není nula, každé stisknutí klávesy zapne podsvétlení a vypne ho až po uplynutí nastaveného počtu sekund.</translation>
-    </message>
-    <message>
-        <source> sec</source>
-        <translation type="obsolete">s</translation>
-    </message>
-    <message>
-        <source>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</source>
-        <translation type="obsolete">Hlasitost Bzučáku
-
-0 - Tichý.  No beeps at all.
-1 - Bez kláves.  Normal beeps but menu keys do not beep.
-2 - Normální.
-3 - Hlasitý.
-4 - Extra Hlasitý.</translation>
-    </message>
-    <message>
-        <source>Alarms Only</source>
-        <translation type="obsolete">Jen alarmy</translation>
-    </message>
-    <message>
-        <source>Beeper Mode</source>
-        <translation type="obsolete">Mód zvuku</translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation type="obsolete">Vypnuto</translation>
-    </message>
-    <message>
-        <source>X-Short</source>
-        <translation type="obsolete">Extra krátký</translation>
-    </message>
-    <message>
-        <source>Short</source>
-        <translation type="obsolete">Krátký</translation>
-    </message>
-    <message>
-        <source>Normal</source>
-        <translation type="obsolete">Normální</translation>
-    </message>
-    <message>
-        <source>Long</source>
-        <translation type="obsolete">Dlouhý</translation>
-    </message>
-    <message>
-        <source>X-Long</source>
-        <translation type="obsolete">Extra dlouhý</translation>
-    </message>
-    <message>
-        <source>Battery warning voltage.
-This is the threashhold where the battery warning sounds.
-
-Acceptable values are 5v..10v</source>
-        <translation type="obsolete">Hodnoto pro varování při nízkém stavu baterie rádia.
-Použitelné hodnoty jsou 5v..10v</translation>
-    </message>
-    <message>
-        <source>Battery Warning</source>
-        <translation type="obsolete">Alarm baterie</translation>
-    </message>
-    <message>
-        <source>Sound Mode</source>
-        <translation type="obsolete">Mód zvuku</translation>
-    </message>
-    <message>
-        <source>If not zero will sound beeps if the transmitter has been left without inputs for the specified number of minutes.</source>
-        <translation type="obsolete">Pokud není nastaveno na nulu, bude zapnuto zvukové upozornění, že jste rádio nechali bez povšimnutí nastavený počet minut.</translation>
-    </message>
-    <message>
-        <source>Show splash screen on startup</source>
-        <translation type="obsolete">Zobrazit úvodní logo při zapnutí vysílčky</translation>
-    </message>
-    <message>
-        <source>Show Splash Screen on Startup</source>
-        <translation type="obsolete">Zobrazit úvodní logo</translation>
-    </message>
-    <message>
-        <source>Inactivity Timer</source>
-        <translation type="obsolete">Časovač nečinnosti</translation>
-    </message>
-    <message>
-        <source>Beeper</source>
-        <translation type="obsolete">Bzučák</translation>
-    </message>
-    <message>
-        <source>Speaker</source>
-        <translation type="obsolete">Reproduktor</translation>
-    </message>
-    <message>
-        <source>BeeperVoice</source>
-        <translation type="obsolete">Bzučák+Hlas</translation>
-    </message>
-    <message>
-        <source>SpeakerVoice</source>
-        <translation type="obsolete">Repro+Hlas</translation>
-    </message>
-    <message>
-        <source>Beeper Length</source>
-        <translation type="obsolete">Délka zvuku</translation>
-    </message>
-    <message>
-        <source>GPS Coordinates</source>
-        <translation type="obsolete">Souřadnice GPS</translation>
-    </message>
-    <message>
-        <source>Timeshift from UTC</source>
-        <translation type="obsolete">Časový posun od UTC</translation>
-    </message>
-    <message>
-        <source>Channel order
-
-This is used by the templated to determine which channel goes to what number output.</source>
-        <translation type="obsolete">Pořadí kanálů
-
-Toto je použito šablonami k určení
-který kanál patří ke kterému výstupu.</translation>
-    </message>
-    <message>
-        <source>Speaker Pitch (spkr only)</source>
-        <translation type="obsolete">Tón zvuku (pouze spkr)</translation>
-    </message>
-    <message>
-        <source>Haptic Mode</source>
-        <translation type="obsolete">Mód vibrací</translation>
-    </message>
-    <message>
-        <source>Stick Mode</source>
-        <translation type="obsolete">Výchozí mód vysílačky</translation>
-    </message>
-    <message>
-        <source>LCD Display Type</source>
-        <translation type="obsolete">Typ LCD zobrazovače</translation>
-    </message>
-    <message>
-        <source>Standard</source>
-        <translation type="obsolete">Běžný</translation>
-    </message>
-    <message>
-        <source>This is the switch selectrion for turning on the backlight (if installed).
-
-</source>
-        <translation type="obsolete">Toto je volba spínače který zapne podsvětlení (pokud je nainstalováno).</translation>
-    </message>
-    <message>
-        <source>Speaker Volume</source>
-        <translation type="obsolete">Hlasitost reproduktoru</translation>
-    </message>
-    <message>
-        <source>Haptic Length</source>
-        <translation type="obsolete">Délka vibrací</translation>
-    </message>
-    <message>
-        <source>Haptic Strength</source>
-        <translation type="obsolete">Síla vibrací</translation>
-    </message>
-    <message>
-        <source>BackLight Brightness</source>
-        <translation type="obsolete">Jas podsvětlení</translation>
-    </message>
-    <message>
-        <source>BackLight  Auto OFF after</source>
-        <translation type="obsolete">Auto. vypnutí podsvětlení po</translation>
-    </message>
-    <message>
-        <source>RotEnc Navigation</source>
-        <translation type="obsolete">Navigace otočným enkodérem</translation>
-    </message>
-    <message>
-        <source>BackLight Switch</source>
-        <translation type="obsolete">Spínač podsvětlení</translation>
-    </message>
-    <message>
-        <source>Country Code</source>
-        <translation type="obsolete">Kód země</translation>
-    </message>
-    <message>
-        <source>Europe</source>
-        <translation type="obsolete">Evropa</translation>
-    </message>
-    <message>
-        <source>Japan</source>
-        <translation type="obsolete">Japonsko</translation>
-    </message>
-    <message>
-        <source>America</source>
-        <translation type="obsolete">Amerika</translation>
-    </message>
-    <message>
-        <source>Metric</source>
-        <translation type="obsolete">Metrické</translation>
-    </message>
-    <message>
-        <source>Imperial</source>
-        <translation type="obsolete">Imperiální</translation>
-    </message>
-    <message>
-        <source>Measurement Units</source>
-        <translation type="obsolete">Měrné jednotky</translation>
-    </message>
-    <message>
-        <source>Voice Language</source>
-        <translation type="obsolete">Jazyk hlasových zpráv</translation>
-    </message>
-    <message>
-        <source>Beep volume</source>
-        <translation type="obsolete">Upozornění</translation>
-    </message>
-    <message>
-        <source>Wav volume</source>
-        <translation type="obsolete">Wav soubor</translation>
-    </message>
-    <message>
-        <source>Vario volume</source>
-        <translation type="obsolete">Vario</translation>
-    </message>
-    <message>
-        <source>Background volume</source>
-        <translation type="obsolete">Zvuk v pozadí</translation>
-    </message>
-    <message>
-        <source>FAI Mode</source>
-        <translation type="obsolete">FAI mód</translation>
-    </message>
-    <message>
-        <source>If you enable FAI, you loose the vario, the play functions, the telemetry screen. This function cannot be disabled by the radio.</source>
-        <translation type="obsolete">FAI je soutéžní mód (www.fai.org), zablokuje vario, zobrazení telemetrie a funkce hlasového hlášení. Tuto funkci nelze vypnout v menu rádia.</translation>
-    </message>
-    <message>
-        <source>R E T A</source>
-        <translation type="obsolete">S V P K</translation>
-    </message>
-    <message>
-        <source>Color 1</source>
-        <translation type="obsolete">Barva 1</translation>
-    </message>
-    <message>
-        <source>Color 2</source>
-        <translation type="obsolete">Barva 2</translation>
-    </message>
-    <message>
-        <source>Vario pitch at zero</source>
-        <translation type="obsolete">Tón varia na nule</translation>
-    </message>
-    <message>
-        <source>Backlight Brightness</source>
-        <translation type="obsolete">Jas podsvětlení</translation>
-    </message>
-    <message>
-        <source>Backlight  Auto OFF after</source>
-        <translation type="obsolete">Auto. vypnutí podsvětlení po</translation>
-    </message>
-    <message>
-        <source>Backlight color</source>
-        <translation type="obsolete">Barva podsvětlení</translation>
-    </message>
-    <message>
-        <source>Backlight Switch</source>
-        <translation type="obsolete">Spínač podsvětlení</translation>
-    </message>
-    <message>
-        <source>Stick reverse (order as above)</source>
-        <translation type="obsolete">Revers kniplů (pořadí jako mód)</translation>
-    </message>
-    <message>
-        <source>R E A T</source>
-        <translation type="obsolete">S V K P</translation>
-    </message>
-    <message>
-        <source>R T E A</source>
-        <translation type="obsolete">S P V K</translation>
-    </message>
-    <message>
-        <source>R T A E</source>
-        <translation type="obsolete">S P K V</translation>
-    </message>
-    <message>
-        <source>R A E T</source>
-        <translation type="obsolete">S K V P</translation>
-    </message>
-    <message>
-        <source>R A T E</source>
-        <translation type="obsolete">S K P V</translation>
-    </message>
-    <message>
-        <source>E R T A</source>
-        <translation type="obsolete">V S P K</translation>
-    </message>
-    <message>
-        <source>E R A T</source>
-        <translation type="obsolete">V S K P</translation>
-    </message>
-    <message>
-        <source>E T R A</source>
-        <translation type="obsolete">V P S K</translation>
-    </message>
-    <message>
-        <source>E T A R</source>
-        <translation type="obsolete">V P K S</translation>
-    </message>
-    <message>
-        <source>E A R T</source>
-        <translation type="obsolete">V K S P</translation>
-    </message>
-    <message>
-        <source>E A T R</source>
-        <translation type="obsolete">V K P S</translation>
-    </message>
-    <message>
-        <source>T R E A</source>
-        <translation type="obsolete">P S V K</translation>
-    </message>
-    <message>
-        <source>T R A E</source>
-        <translation type="obsolete">P S K V</translation>
-    </message>
-    <message>
-        <source>T E R A</source>
-        <translation type="obsolete">P V S K</translation>
-    </message>
-    <message>
-        <source>T E A R</source>
-        <translation type="obsolete">P V K S</translation>
-    </message>
-    <message>
-        <source>T A R E</source>
-        <translation type="obsolete">P K S V</translation>
-    </message>
-    <message>
-        <source>T A E R</source>
-        <translation type="obsolete">P K V S</translation>
-    </message>
-    <message>
-        <source>A R E T</source>
-        <translation type="obsolete">K S V P</translation>
-    </message>
-    <message>
-        <source>A R T E</source>
-        <translation type="obsolete">K S P V</translation>
-    </message>
-    <message>
-        <source>A E R T</source>
-        <translation type="obsolete">K V S P</translation>
-    </message>
-    <message>
-        <source>A E T R</source>
-        <translation type="obsolete">K V P S</translation>
-    </message>
-    <message>
-        <source>A T R E</source>
-        <translation type="obsolete">K P S V</translation>
-    </message>
-    <message>
-        <source>A T E R</source>
-        <translation type="obsolete">K P V S</translation>
-    </message>
-    <message>
-        <source>Default Channel Order</source>
-        <translation type="obsolete">Výchozí pořadí kanálů</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pořadí kanálů&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Definuje výchozí pořadí kanálů použité při vytvoření nového modelu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Stick reverse</source>
-        <translation type="obsolete">Revers os kniplů</translation>
-    </message>
-    <message>
-        <source>&quot;No Sound&quot; Warning</source>
-        <translation type="obsolete">Upozornění na vypnutý zvuk</translation>
-    </message>
-    <message>
-        <source>Low Memory Warning</source>
-        <translation type="obsolete">Upozornit na nedostatek paměti</translation>
-    </message>
-    <message>
-        <source>Vario pitch at max</source>
-        <translation type="obsolete">Tón varia na maximu</translation>
-    </message>
-    <message>
-        <source>Vario repeat at zero</source>
-        <translation type="obsolete">Opakování varia na nule</translation>
-    </message>
-    <message>
-        <source>Play Delay (switch mid position)</source>
-        <translation type="obsolete">Přechod střední polohy přepínače</translation>
-    </message>
-    <message>
-        <source>Backlight flash on alarm</source>
-        <translation type="obsolete">Blik. podsvětlením při alarmu</translation>
-    </message>
-    <message>
         <location filename="../generaledit/generaledit.cpp" line="44"/>
         <source>Trainer</source>
         <translation>Trenér</translation>
-    </message>
-    <message>
-        <source>Mode</source>
-        <translation type="obsolete">Mód</translation>
-    </message>
-    <message>
-        <source>Input</source>
-        <translation type="obsolete">Vstup</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Váha</translation>
-    </message>
-    <message>
-        <source>Stick 3</source>
-        <translation type="obsolete">Páka 3</translation>
-    </message>
-    <message>
-        <source>Stick 1</source>
-        <translation type="obsolete">Páka 1</translation>
-    </message>
-    <message>
-        <source>Stick 2</source>
-        <translation type="obsolete">Páka 2</translation>
-    </message>
-    <message>
-        <source>Stick 4</source>
-        <translation type="obsolete">Páka 4</translation>
-    </message>
-    <message>
-        <source>Pot with detent (normal)</source>
-        <translation type="obsolete">Pot s aretací (normální)</translation>
-    </message>
-    <message>
-        <source>Pot without detent</source>
-        <translation type="obsolete">Pot bez aretace</translation>
-    </message>
-    <message>
-        <source>S3 Type</source>
-        <translation type="obsolete">Typ S3</translation>
-    </message>
-    <message>
-        <source>OFF</source>
-        <translation type="obsolete">VYP</translation>
-    </message>
-    <message>
-        <source>Serial Port</source>
-        <translation type="obsolete">Seriový port</translation>
-    </message>
-    <message>
-        <source>chn1</source>
-        <translation type="obsolete">Kanál 1</translation>
-    </message>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">Směrovka</translation>
-    </message>
-    <message>
-        <source>chn2</source>
-        <translation type="obsolete">Kanál 2</translation>
-    </message>
-    <message>
-        <source>chn3</source>
-        <translation type="obsolete">Kanál 3</translation>
-    </message>
-    <message>
-        <source>chn4</source>
-        <translation type="obsolete">Kanál 4</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">Výškovka</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">Plyn</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">Křidélka</translation>
-    </message>
-    <message>
-        <source>Calibration</source>
-        <translation type="obsolete">Kalibrace</translation>
-    </message>
-    <message>
-        <source>STICK 3</source>
-        <translation type="obsolete">PÁKA 3</translation>
-    </message>
-    <message>
-        <source>Negative span</source>
-        <translation type="obsolete">Negativní</translation>
-    </message>
-    <message>
-        <source>Mid value</source>
-        <translation type="obsolete">Střed</translation>
-    </message>
-    <message>
-        <source>Positive span</source>
-        <translation type="obsolete">Pozitivní</translation>
-    </message>
-    <message>
-        <source>STICK 1</source>
-        <translation type="obsolete">PÁKA 1</translation>
-    </message>
-    <message>
-        <source>STICK 2</source>
-        <translation type="obsolete">PÁKA 2</translation>
-    </message>
-    <message>
-        <source>STICK 4</source>
-        <translation type="obsolete">PÁKA 4</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="obsolete">Žádný</translation>
-    </message>
-    <message>
-        <source>Pot (normal)</source>
-        <translation type="obsolete">Potenciometr (klasický)</translation>
-    </message>
-    <message>
-        <source>Multipos Switch</source>
-        <translation type="obsolete">Vícepolohový přepínač</translation>
-    </message>
-    <message>
-        <source>S1 Type</source>
-        <translation type="obsolete">Typ S1</translation>
-    </message>
-    <message>
-        <source>S2 Type</source>
-        <translation type="obsolete">Typ S2</translation>
-    </message>
-    <message>
-        <source>+= (Sum)</source>
-        <translation type="obsolete">+= (Sečíst)</translation>
-    </message>
-    <message>
-        <source>:= (Replace)</source>
-        <translation type="obsolete">:= (Nahradit)</translation>
-    </message>
-    <message>
-        <source>Battery</source>
-        <translation type="obsolete">Baterie</translation>
-    </message>
-    <message>
-        <source>v</source>
-        <translation type="obsolete">V</translation>
-    </message>
-    <message>
-        <source>PPM Multiplier</source>
-        <translation type="obsolete">PPM Násobič</translation>
-    </message>
-    <message>
-        <source>Current</source>
-        <translation type="obsolete">Proud</translation>
-    </message>
-    <message>
-        <source>If you enable FAI, you loose the vario, the play functions, the telemetry screen.
-This function cannot be disabled by the radio.
-Are you sure ?</source>
-        <translation type="obsolete">FAI je mód pro soutěže s omezením funkcí telemetrie.
-Pokud aktivujete FAI, zablokujete vario, zobrazení telemetrie a funkce hlasového hlášení.
-Tuto funkci nelze vypnout v menu rádia.
-Opravdu to takto chcete ?</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="42"/>
@@ -4392,17 +3305,9 @@ Opravdu to takto chcete ?</translation>
         <translation>Invertovat kolektiv</translation>
     </message>
     <message>
-        <source>Elevator</source>
-        <translation type="obsolete">Výškovka</translation>
-    </message>
-    <message>
         <location filename="../modeledit/heli.ui" line="103"/>
         <source>Invert</source>
         <translation>Invertovat</translation>
-    </message>
-    <message>
-        <source>Aileron</source>
-        <translation type="obsolete">Křidélka</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="24"/>
@@ -4506,37 +3411,9 @@ Opravdu to takto chcete ?</translation>
         <translation>Ctrl+Dolů</translation>
     </message>
     <message>
-        <source>Clear All Settings</source>
-        <translation type="obsolete">Vymazat všechny vstupy</translation>
-    </message>
-    <message>
         <location filename="../modeledit/inputs.cpp" line="28"/>
         <source>Clear All Inputs</source>
         <translation>Vymazat všechny vstupy</translation>
-    </message>
-    <message>
-        <source>Source(%1)</source>
-        <translation type="obsolete">Zdroj(%1)</translation>
-    </message>
-    <message>
-        <source>No Trim</source>
-        <translation type="obsolete">Žádný trim</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Váha(%1)</translation>
-    </message>
-    <message>
-        <source>Offset(%1)</source>
-        <translation type="obsolete">Ofset(%1)</translation>
-    </message>
-    <message>
-        <source>NoTrim</source>
-        <translation type="obsolete">Žádný trim</translation>
-    </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Spínač(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="167"/>
@@ -4937,21 +3814,9 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
 %2.</translation>
     </message>
     <message>
-        <source>Firmware does not longer fit in the radio, due to selected firmware options</source>
-        <translation type="obsolete">Firmware se zvolenými vlastnostmi se již nevejde do rádia</translation>
-    </message>
-    <message>
-        <source>Firmware does not fit in the radio, due to selected firmware options</source>
-        <translation type="obsolete">Firmware se zvolenými vlastnostmi nevejde do rádia</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="362"/>
         <source>Compilation server termporary failure, try later</source>
         <translation>Server companion je dočasně nedostupný, zkuste to později</translation>
-    </message>
-    <message>
-        <source>Display previous message again at startup ?</source>
-        <translation type="obsolete">Chcete zobrazit předchozí zprávu i příště ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="315"/>
@@ -4962,10 +3827,6 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <location filename="../mainwindow.cpp" line="359"/>
         <source>Not enough memory for all the selected firmware options</source>
         <translation>Není dostatek paměti pro všechny zvolené vlastnosti firmwaru</translation>
-    </message>
-    <message>
-        <source>Compilation server temporary failure, try later</source>
-        <translation type="obsolete">Dočasná chyba kompilačního serveru, zkuste to prosím později znovu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="365"/>
@@ -4981,14 +3842,6 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <location filename="../mainwindow.cpp" line="381"/>
         <source>Do you want to write the firmware to the radio now ?</source>
         <translation>Chcete zapsat firmware do rádia nyní?</translation>
-    </message>
-    <message>
-        <source>Firmware %1 does not seem to have ever been downloaded.
-Version %2 is available.
-Do you want to download it now ?</source>
-        <translation type="obsolete">Vypadá to že firmware %1 ještě nebyl stažen.
-Verze %2 je dostupná.
-Chcete ho nyní stáhnout ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="427"/>
@@ -5015,21 +3868,6 @@ Chcete ho nyní stáhnout ?</translation>
         <translation>Chcete nyní stáhnout vydání %1 ?</translation>
     </message>
     <message>
-        <source>A new version of %1 firmware is available (current %2 - newer %3).
-Do you want to download it now ?</source>
-        <translation type="obsolete">Nová verze firmware %1 je dostupná.
-(stávající %2 - nová %3)
-Chcete ji stáhnout nyní ?</translation>
-    </message>
-    <message>
-        <source>Ignore this version (r%1)?</source>
-        <translation type="obsolete">Ignorovat tuto verzi (r%1)?</translation>
-    </message>
-    <message>
-        <source>Release notes contain very important informations. Do you want to see them now ?</source>
-        <translation type="obsolete">Poznámky k vydání mohou obsahovat důležité informace. Chcete si je přečíst nyní ?</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="595"/>
         <location filename="../mainwindow.cpp" line="601"/>
         <source>File saved</source>
@@ -5046,36 +3884,6 @@ Chcete ji stáhnout nyní ?</translation>
         <translation>K tomuto firmwaru nejsou poznámky k vydání.</translation>
     </message>
     <message>
-        <source>Cannot write file %1:
-%2.</source>
-        <translation type="obsolete">Nelze zapsat soubor %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Backup is impossible</source>
-        <translation type="obsolete">Není možné zálohovat</translation>
-    </message>
-    <message>
-        <source>The backup dir set in preferences does not exist</source>
-        <translation type="obsolete">Složka pro zálohování zvolená v předvolbách neexistuje</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Varování</translation>
-    </message>
-    <message>
-        <source>Conversion failed</source>
-        <translation type="obsolete">Porovnání selhalo</translation>
-    </message>
-    <message>
-        <source>Restore failed</source>
-        <translation type="obsolete">Zápis selhal</translation>
-    </message>
-    <message>
-        <source>Backup failed</source>
-        <translation type="obsolete">Zálohování selhalo</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="296"/>
         <source>A new version of Companion is available (version %1)&lt;br&gt;Would you like to download it?</source>
         <translation>Je dostupná nová verze Companion (verze %1)&lt;br&gt;Chcete ji nyní stáhnout?</translation>
@@ -5084,30 +3892,6 @@ Chcete ji stáhnout nyní ?</translation>
         <location filename="../mainwindow.cpp" line="368"/>
         <source>Compilation server requires registration, please check OpenTX web site</source>
         <translation>Kompilační server vyžaduje registraci, prosím navštivte internetové stránky OpenTX</translation>
-    </message>
-    <message>
-        <source>Firmware %1 does not seem to have ever been downloaded.
-Release %2 is available.
-Do you want to download it now?</source>
-        <translation type="obsolete">Vypadá to že firmware %1 ještě nebyl stažen.
-Verze %2 je dostupná.
-Chcete ho stáhnout nyní?</translation>
-    </message>
-    <message>
-        <source>Do you want to download release %1 %2 now ?</source>
-        <translation type="obsolete">Chcete nyní stáhnout vydání %1 %2 ?</translation>
-    </message>
-    <message>
-        <source>A new version of %1 firmware is available:
-  - current is %2
-  - newer is %3
-
-Do you want to download it now ?</source>
-        <translation type="obsolete">Nová verze firmware %1 je dostupná.
-  - stávající %2
-  - nová je %3
-
-Chcete ji stáhnout nyní ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="490"/>
@@ -5130,30 +3914,6 @@ Chcete ji stáhnout nyní ?</translation>
         <translation>Zvolená velikost ikon bude použita při příštím spuštění Companion.</translation>
     </message>
     <message>
-        <source>Could not delete temporary file: %1</source>
-        <translation type="obsolete">Nelze odstarnit dočasný soubor: %1</translation>
-    </message>
-    <message>
-        <source>The file %1
-has not been recognized as a valid Models and Settings file
-Write anyway ?</source>
-        <translation type="obsolete">Vypadá to že soubor %1
-neobsahuje platná data modelů a nastavení
-Chcete ho přesto zapsat ?</translation>
-    </message>
-    <message>
-        <source>Cannot check Models and Settings compatibility! Continue anyway?</source>
-        <translation type="obsolete">Nelze ověřit kompatibilitu dat modelů a nastavení! Chcete přesto pokračovat?</translation>
-    </message>
-    <message>
-        <source>Cannot convert Models and Settings for use with this firmware, original data will be used</source>
-        <translation type="obsolete">Nemohu konvertovat modely a nastavení pro použití s tímto firmwarem, budou použita původní data</translation>
-    </message>
-    <message>
-        <source>Firmware write failed</source>
-        <translation type="obsolete">Zápis firmware selhal</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="901"/>
         <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</source>
         <translation>Projekt OpenTX Companion vznikl oddělením z &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</translation>
@@ -5162,10 +3922,6 @@ Chcete ho přesto zapsat ?</translation>
         <location filename="../mainwindow.cpp" line="1053"/>
         <source>Load backup from file</source>
         <translation>Načíst zálohu ze souboru</translation>
-    </message>
-    <message>
-        <source>A new release of Companion is available please check the OpenTX website!</source>
-        <translation type="obsolete">Je dostupná nová verze Companion, prosím navštivte internetové stránky OpenTX!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="574"/>
@@ -5179,57 +3935,9 @@ Chcete ho přesto zapsat ?</translation>
         <translation>Načíst modely a nastavení z rádia</translation>
     </message>
     <message>
-        <source>Write Radio Backup from %1 to the radio?</source>
-        <translation type="obsolete">Zapsat zálohu z %1 do rádia?</translation>
-    </message>
-    <message>
-        <source>Backup Models and Settings From Radio</source>
-        <translation type="obsolete">Zálohovat modely a nastavení z rádia</translation>
-    </message>
-    <message>
-        <source>The radio firmware belongs to another product family, check file and preferences!</source>
-        <translation type="obsolete">Firmware rádia je z jiné rodiny produktů , zkontrolujte nastavení předvoleb!</translation>
-    </message>
-    <message>
-        <source>The radio firmware is outdated, please upgrade!</source>
-        <translation type="obsolete">Firmware rádia je zastaralý, aktualizujte ho prosím!</translation>
-    </message>
-    <message>
-        <source>Write Backup To Radio</source>
-        <translation type="obsolete">Zapsat zálohu do rádia</translation>
-    </message>
-    <message>
-        <source>Write Firmware To Radio</source>
-        <translation type="obsolete">Zapsat firmware do rádia</translation>
-    </message>
-    <message>
-        <source>Read Firmware From Radio</source>
-        <translation type="obsolete">Načíst firmware z rádia</translation>
-    </message>
-    <message>
-        <source>Restore Models and Settings To Radio</source>
-        <translation type="obsolete">Obnovit modely a nastavení rádia</translation>
-    </message>
-    <message>
-        <source>Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1</source>
-        <translation type="obsolete">Nelze obnovit modely a nastavení rádia. Data modelů a nastavení naleznete v %1</translation>
-    </message>
-    <message>
-        <source>Could not write firmware to radio. The models and settings data file can be found at: %1</source>
-        <translation type="obsolete">Nelze zapsat firmware do rádia. Data modelů a nastavení naleznete v %1</translation>
-    </message>
-    <message>
-        <source>Cannot backup existing Models and Settings from Radio. Firmware write process aborted</source>
-        <translation type="obsolete">Nelze zálohovat stávající modely a nastavení z rádia. Zápis firmware byl přerušen</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="846"/>
         <source>Save Radio Backup to File</source>
         <translation>Uložit zálohu rádia do souboru</translation>
-    </message>
-    <message>
-        <source>Read Radio Backup</source>
-        <translation type="obsolete">Načíst zálohu rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="855"/>
@@ -5242,17 +3950,9 @@ Chcete ho přesto zapsat ?</translation>
         <translation>Internetová stránka OpenTX : &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</translation>
     </message>
     <message>
-        <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt;</source>
-        <translation type="obsolete">Projekt OpenTX Companion vznikl oddělením z &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt;</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="903"/>
         <source>If you&apos;ve found this program useful, please support by &lt;a href=&apos;%1&apos;&gt;donating&lt;/a&gt;</source>
         <translation>Pokud vám byl tento program užitečný, podpořte jej &lt;a href=&apos;%1&apos;&gt;darem&lt;/a&gt;</translation>
-    </message>
-    <message>
-        <source>Version %1, %3</source>
-        <translation type="obsolete">Verze %1, %3</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="907"/>
@@ -5341,10 +4041,6 @@ Doporučujeme prohlédnout poznámky k vydání, pomocí tlačítka níže se do
         <translation>Synchronizace SD</translation>
     </message>
     <message>
-        <source>OpenTX Companion 2.1 - FW: %1 - Profile: %2</source>
-        <translation type="obsolete">OpenTX Companion 2.1 - FW: %1 - Profil: %2</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1024"/>
         <source>A monochrome black icon theme</source>
         <translation>Černé mono téma</translation>
@@ -5400,35 +4096,15 @@ Doporučujeme prohlédnout poznámky k vydání, pomocí tlačítka níže se do
         <translation>Největší</translation>
     </message>
     <message>
-        <source>OpenTX Companion - FW: %1 - Profile: %2</source>
-        <translation type="obsolete">OpenTX Companion - FW: %1 - Profil: %2</translation>
-    </message>
-    <message>
-        <source>New Models+Settings</source>
-        <translation type="obsolete">Nový</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1012"/>
         <source>Create a new Models and Settings file</source>
         <translation>Vytvořit nový soubor modelů a nastavení</translation>
-    </message>
-    <message>
-        <source>Open Models+Settings...</source>
-        <translation type="obsolete">Otevřít</translation>
-    </message>
-    <message>
-        <source>Save Models+Settings...</source>
-        <translation type="obsolete">Uložit</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1014"/>
         <location filename="../mainwindow.cpp" line="1015"/>
         <source>Save Models and Settings file</source>
         <translation>Uložit soubor modelů a nastavení</translation>
-    </message>
-    <message>
-        <source>Save Models+Settings as...</source>
-        <translation type="obsolete">Uložit jako ...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1016"/>
@@ -5446,17 +4122,9 @@ Doporučujeme prohlédnout poznámky k vydání, pomocí tlačítka níže se do
         <translation>Vyjmout aktuální model a uložit do schránky</translation>
     </message>
     <message>
-        <source>Copy Model...</source>
-        <translation type="obsolete">Kopírovat</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1018"/>
         <source>Copy current model to the clipboard</source>
         <translation>Kopírovat aktuální model do schránky</translation>
-    </message>
-    <message>
-        <source>Paste Model...</source>
-        <translation type="obsolete">Vložit</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1019"/>
@@ -5870,14 +4538,6 @@ Doporučujeme prohlédnout poznámky k vydání, pomocí tlačítka níže se do
         <translation>Nové rádio</translation>
     </message>
     <message>
-        <source>Invalid Models and Settings File %1</source>
-        <translation type="obsolete">Neplatný soubor modelů a nastavení %1</translation>
-    </message>
-    <message>
-        <source>Invalid binary Models and Settings File %1</source>
-        <translation type="obsolete">Neplatný binární soubor modelů a nastavení %1</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1062"/>
         <source>List available programmers</source>
         <translation>Seznam použitelných programátorů</translation>
@@ -5937,10 +4597,6 @@ Doporučujeme prohlédnout poznámky k vydání, pomocí tlačítka níže se do
         <translation>Nedávné dokumenty modelů a nastavení rádia</translation>
     </message>
     <message>
-        <source>Show a selection list of radio profiles</source>
-        <translation type="obsolete">Výběr profilů rádia</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1288"/>
         <source>Ready</source>
         <translation>Připraven</translation>
@@ -5949,16 +4605,6 @@ Doporučujeme prohlédnout poznámky k vydání, pomocí tlačítka níže se do
         <location filename="../mainwindow.cpp" line="1403"/>
         <source>%2</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>Unable to find file %1!</source>
-        <translation type="obsolete">Nemohu nalézt soubor %1!</translation>
-    </message>
-    <message>
-        <source>Error reading file %1:
-%2.</source>
-        <translation type="obsolete">Chyba při otevírání souboru %1:
-%2.</translation>
     </message>
 </context>
 <context>
@@ -6058,14 +4704,6 @@ Doporučujeme prohlédnout poznámky k vydání, pomocí tlačítka níže se do
 %2.</translation>
     </message>
     <message>
-        <source>Backup EEPROM From Radio</source>
-        <translation type="obsolete">Zálohovat modely a nastavení z rádia</translation>
-    </message>
-    <message>
-        <source>Write EEPROM To Radio</source>
-        <translation type="obsolete">Zapsat modely a nastavení do rádia</translation>
-    </message>
-    <message>
         <location filename="../mdichild.cpp" line="581"/>
         <source>Open backup Models and Settings file</source>
         <translation>Otevřít zálohu modelů a nastavení rádia</translation>
@@ -6083,21 +4721,9 @@ Do you want to save your changes?</source>
 Chcete ho uložit?</translation>
     </message>
     <message>
-        <source>Backup is impossible</source>
-        <translation type="obsolete">Není možné zálohovat</translation>
-    </message>
-    <message>
-        <source>The backup dir set in preferences does not exist</source>
-        <translation type="obsolete">Složka pro zálohování zvolená v předvolbách neexistuje</translation>
-    </message>
-    <message>
         <location filename="../mdichild.cpp" line="532"/>
         <source>Cannot write temporary file!</source>
         <translation>Nelze zapsat dočasný soubor!</translation>
-    </message>
-    <message>
-        <source>Cannot check eeprom compatibility! Continue anyway?</source>
-        <translation type="obsolete">Nelze ověřit kompatibilitu EEprom! Mám přesto pokračovat?</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="304"/>
@@ -6106,14 +4732,6 @@ Chcete ho uložit?</translation>
         <location filename="../mdichild.cpp" line="620"/>
         <source>Warning</source>
         <translation type="unfinished">Varování</translation>
-    </message>
-    <message>
-        <source>Firmware in radio is of a different family of eeprom written, check file and preferences!</source>
-        <translation type="obsolete">Firmware rádia je z jiné rodiny než EEprom, zkontrolujte nastavení předvoleb!</translation>
-    </message>
-    <message>
-        <source>Firmware in flash is outdated, please upgrade!</source>
-        <translation type="obsolete">Firmware rádia je zastaralý, aktualizujte ho prosím!</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="616"/>
@@ -6332,22 +4950,6 @@ p, li { white-space: pre-wrap; }
         <source>DEST -&gt; CH%1</source>
         <translation></translation>
     </message>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">Směrovka</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">Výškovka</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">Plyn</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">Křidélka</translation>
-    </message>
 </context>
 <context>
     <name>MixesPanel</name>
@@ -6379,42 +4981,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/mixes.cpp" line="24"/>
         <source>Clear Mixes</source>
         <translation>Vymazat všechny mixy</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Váha(%1)</translation>
-    </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Spínač(%1)</translation>
-    </message>
-    <message>
-        <source>No Trim</source>
-        <translation type="obsolete">Žádný trim</translation>
-    </message>
-    <message>
-        <source>NoTrim</source>
-        <translation type="obsolete">Žádný trim</translation>
-    </message>
-    <message>
-        <source>No DR/Expo</source>
-        <translation type="obsolete">Bez DR/Expo</translation>
-    </message>
-    <message>
-        <source>Offset(%1)</source>
-        <translation type="obsolete">Ofset(%1)</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete"> Zpoždění(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Zpomalení(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Warn(%1)</source>
-        <translation type="obsolete"> Varování(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="158"/>
@@ -6475,10 +5041,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/mixes.cpp" line="422"/>
         <source>Ctrl+C</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>&amp;Cut</source>
-        <translation type="obsolete">&amp;Vyjmout</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="423"/>
@@ -6549,10 +5111,6 @@ p, li { white-space: pre-wrap; }
         <translation>Vstupy(DR/Expo)</translation>
     </message>
     <message>
-        <source>Servos</source>
-        <translation type="obsolete">Serva</translation>
-    </message>
-    <message>
         <location filename="../modeledit/modeledit.cpp" line="40"/>
         <source>Logical Switches</source>
         <translation>Logické spínače</translation>
@@ -6586,14 +5144,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/modeledit.cpp" line="43"/>
         <source>Telemetry</source>
         <translation>Telemetrie</translation>
-    </message>
-    <message>
-        <source>Clear Curves?</source>
-        <translation type="obsolete">Vymazat křivky?</translation>
-    </message>
-    <message>
-        <source>Really clear all the curves?</source>
-        <translation type="obsolete">Opravdu vymazat všechny křivky?</translation>
     </message>
 </context>
 <context>
@@ -6816,18 +5366,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../modelprinter.cpp" line="379"/>
         <source>Slow(u%1:d%2)</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Ofset</translation>
-    </message>
-    <message>
-        <source>Delay</source>
-        <translation type="obsolete">Zpoždění</translation>
-    </message>
-    <message>
-        <source>Slow</source>
-        <translation type="obsolete">Zpomalení</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="381"/>
@@ -7061,10 +5599,6 @@ p, li { white-space: pre-wrap; }
         <translation>PPM zpoždění</translation>
     </message>
     <message>
-        <source> usec</source>
-        <translation type="obsolete">us</translation>
-    </message>
-    <message>
         <location filename="../modeledit/setup_module.ui" line="230"/>
         <source>Negative</source>
         <translation>Negativní</translation>
@@ -7075,14 +5609,6 @@ p, li { white-space: pre-wrap; }
         <translation>Pozitivní</translation>
     </message>
     <message>
-        <source>Master</source>
-        <translation type="obsolete">Učitel</translation>
-    </message>
-    <message>
-        <source>Slave</source>
-        <translation type="obsolete">Žák</translation>
-    </message>
-    <message>
         <location filename="../modeledit/setup_module.ui" line="284"/>
         <source>Polarity</source>
         <translation>Polarita</translation>
@@ -7091,10 +5617,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/setup_module.ui" line="300"/>
         <source>Trainer Mode</source>
         <translation>Mód trenér</translation>
-    </message>
-    <message>
-        <source> mSec</source>
-        <translation type="obsolete">ms</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="378"/>
@@ -7510,342 +6032,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../printdialog.ui" line="68"/>
         <source>Print to file</source>
         <translation>Tisk do souboru</translation>
-    </message>
-    <message>
-        <source>Setup for: </source>
-        <translation type="obsolete">Nastavení: </translation>
-    </message>
-    <message>
-        <source>printed on: %1</source>
-        <translation type="obsolete">vytištěno: %1</translation>
-    </message>
-    <message>
-        <source>General Model Settings</source>
-        <translation type="obsolete">Obecná nastavení modelu</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Název</translation>
-    </message>
-    <message>
-        <source>EEprom Size</source>
-        <translation type="obsolete">Velikost EEPROM</translation>
-    </message>
-    <message>
-        <source>Timer1</source>
-        <translation type="obsolete">Stopky1</translation>
-    </message>
-    <message>
-        <source>Timer2</source>
-        <translation type="obsolete">Stopky2</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protokol</translation>
-    </message>
-    <message>
-        <source>Pulse Polarity</source>
-        <translation type="obsolete">Polarita pulzů</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Trim plynu</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Povoleno</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Zakázáno</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Expo plynu</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Krok trimu</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Zvuk ve středové poloze</translation>
-    </message>
-    <message>
-        <source>Flight modes Settings</source>
-        <translation type="obsolete">Nastavení letových fází</translation>
-    </message>
-    <message>
-        <source>Fades</source>
-        <translation type="obsolete">Přechody</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Trimy</translation>
-    </message>
-    <message>
-        <source>Gvars</source>
-        <translation type="obsolete">GP</translation>
-    </message>
-    <message>
-        <source>Rot.Enc.</source>
-        <translation type="obsolete">Rot.Enkoder</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Spínač</translation>
-    </message>
-    <message>
-        <source>Flight mode name</source>
-        <translation type="obsolete">Název režimu</translation>
-    </message>
-    <message>
-        <source>IN</source>
-        <translation type="obsolete">(+)</translation>
-    </message>
-    <message>
-        <source>OUT</source>
-        <translation type="obsolete">(-)</translation>
-    </message>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">Směrovka</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">Výškovka</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">Plyn</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">Křidélka</translation>
-    </message>
-    <message>
-        <source>FM</source>
-        <translation type="obsolete">LR</translation>
-    </message>
-    <message>
-        <source>Expo/Dr Settings</source>
-        <translation type="obsolete">Vstupy(Expo/DR)</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Váha</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Letové režimy</translation>
-    </message>
-    <message>
-        <source>Flight mode</source>
-        <translation type="obsolete">Letový režim</translation>
-    </message>
-    <message>
-        <source>DISABLED</source>
-        <translation type="obsolete">ZAKÁZÁN</translation>
-    </message>
-    <message>
-        <source>Mixers</source>
-        <translation type="obsolete">Mixy</translation>
-    </message>
-    <message>
-        <source>noTrim</source>
-        <translation type="obsolete">Žádný trim</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Ofset</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete"> Zpoždění(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Zpomalení(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>Warn</source>
-        <translation type="obsolete">Varování</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Limity</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Invertovat</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">---</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Křivky</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Křivka</translation>
-    </message>
-    <message>
-        <source>pt %1</source>
-        <translation type="obsolete">bod %1</translation>
-    </message>
-    <message>
-        <source>Logical Switches</source>
-        <translation type="obsolete">Logické spínače</translation>
-    </message>
-    <message>
-        <source>Global Variables</source>
-        <translation type="obsolete">Globální proměnné</translation>
-    </message>
-    <message>
-        <source>GV</source>
-        <translation type="obsolete">GP</translation>
-    </message>
-    <message>
-        <source>Special Functions</source>
-        <translation type="obsolete">Speciální funkce</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Funkce</translation>
-    </message>
-    <message>
-        <source>Parameter</source>
-        <translation type="obsolete">Parametr</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="obsolete">Opakování</translation>
-    </message>
-    <message>
-        <source>Telemetry Settings</source>
-        <translation type="obsolete">Nastavení telemetrie</translation>
-    </message>
-    <message>
-        <source>Internal Radio System</source>
-        <translation type="obsolete">Interní vysílací modul</translation>
-    </message>
-    <message>
-        <source>Radio System</source>
-        <translation type="obsolete">Vysílací modul</translation>
-    </message>
-    <message>
-        <source>External Radio Module</source>
-        <translation type="obsolete">Externí vysílací modul</translation>
-    </message>
-    <message>
-        <source>Extra Radio System</source>
-        <translation type="obsolete">Extra modul</translation>
-    </message>
-    <message>
-        <source>Trainer port mode</source>
-        <translation type="obsolete">Mód portu trenér</translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation type="obsolete">Vypnuto</translation>
-    </message>
-    <message>
-        <source>Inputs</source>
-        <translation type="obsolete">Vstupy(DR/Expo)</translation>
-    </message>
-    <message>
-        <source>NoTrim</source>
-        <translation type="obsolete">Žádný trim</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Váha(%1)</translation>
-    </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Spínač(%1)</translation>
-    </message>
-    <message>
-        <source>No DR/Expo</source>
-        <translation type="obsolete">Bez DR/Expo</translation>
-    </message>
-    <message>
-        <source>Offset(%1)</source>
-        <translation type="obsolete">Ofset(%1)</translation>
-    </message>
-    <message>
-        <source> Warn(%1)</source>
-        <translation type="obsolete"> Varování(%1)</translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="obsolete">Rozsah</translation>
-    </message>
-    <message>
-        <source>Alarms</source>
-        <translation type="obsolete">Alarmy</translation>
-    </message>
-    <message>
-        <source>Low Alarm</source>
-        <translation type="obsolete">Nízký alarm</translation>
-    </message>
-    <message>
-        <source>Critical Alarm</source>
-        <translation type="obsolete">Kriticky alarm</translation>
-    </message>
-    <message>
-        <source>Unit</source>
-        <translation type="obsolete">Jednotky</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">Měřítko</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Typ</translation>
-    </message>
-    <message>
-        <source>Condition</source>
-        <translation type="obsolete">Podmínka</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Hodnota</translation>
-    </message>
-    <message>
-        <source>Frsky serial protocol</source>
-        <translation type="obsolete">Sériový protokol Frsky</translation>
-    </message>
-    <message>
-        <source>Units system</source>
-        <translation type="obsolete">Systém jednotek</translation>
-    </message>
-    <message>
-        <source>System of units</source>
-        <translation type="obsolete">Systém jednotek</translation>
-    </message>
-    <message>
-        <source>Blades</source>
-        <translation type="obsolete">Počet listů vrtule</translation>
-    </message>
-    <message>
-        <source>Custom Telemetry View</source>
-        <translation type="obsolete">Vlastní zobrazení telemetrie</translation>
-    </message>
-    <message>
-        <source>Telemetry Bars</source>
-        <translation type="obsolete">Telemetrické ukazatele</translation>
-    </message>
-    <message>
-        <source>Bar Number</source>
-        <translation type="obsolete">Číslo ukazatele</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Zdroj</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="45"/>
@@ -8319,19 +6505,9 @@ a pochopitelně nebudou zobrazena žádná telem. data.)</translation>
         <translation>Použít Rotary Encoder pro navigaci v menu</translation>
     </message>
     <message>
-        <source>Possibility to enable FAI MODE at field</source>
-        <translation type="obsolete">Možnost povolit FAI MODE v menu rádia.
-FAI je soutěžní mód (www.fai.org), zablokuje vario, zobrazení telemetrie a funkce hlasového hlášení.</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1130"/>
         <source>No OverrideCH functions available</source>
         <translation>Funkce Zámek kanálu není dostupná</translation>
-    </message>
-    <message>
-        <source>FAI MODE always enabled</source>
-        <translation type="obsolete">FAI MODE vždy aktivní (nelze vypnout v menu rádia)
-FAI je soutěžní mód (www.fai.org), zablokuje vario, zobrazení telemetrie a funkce hlasového hlášení.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1172"/>
@@ -8381,26 +6557,10 @@ Toto se hodí pokud je potřeba ušetřit místo v paměti FLASH pro jiné funkc
         <translation>Firmware nebude obsahovat podporu Letových Režimů</translation>
     </message>
     <message>
-        <source>OpenTX for 9XR-PRO</source>
-        <translation type="obsolete">OpenTX pro 9XR-PRO</translation>
-    </message>
-    <message>
-        <source>In model setup menus automatically set source by moving some of them</source>
-        <translation type="obsolete">V menu nastavení modelu automaticky nastavíte Zdroj jeho pohybem</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1140"/>
         <source>Support for Lua model scripts</source>
         <translation>Podpora pro Lua skripty.
 -miniaplikace spustitelné z SD karty</translation>
-    </message>
-    <message>
-        <source>No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)</source>
-        <translation type="obsolete">Firmware bez emulace Joisticku (USB bude v režimu Mass Storage (přístup k souborům na SD kartě) stejně jako v Bootloaderu)</translation>
-    </message>
-    <message>
-        <source>OpenTX for FrSky Taranis Plus</source>
-        <translation type="obsolete">OpenTX pro FrSky Taranis Plus</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1129"/>
@@ -8520,22 +6680,6 @@ FAI je soutěžní mód (www.fai.org), zablokuje vario, zobrazení telemetrie a 
 To je nutné zejména pro osazení FrSky kniplů do 9X.</translation>
     </message>
     <message>
-        <source>OpenTX for M128 / 9X board</source>
-        <translation type="obsolete">OpenTX pro M128 / 9X</translation>
-    </message>
-    <message>
-        <source>OpenTX for 9XR</source>
-        <translation type="obsolete">OpenTX pro 9XR</translation>
-    </message>
-    <message>
-        <source>OpenTX for 9XR with M128 chip</source>
-        <translation type="obsolete">OpenTX pro 9XR s M128 čipem</translation>
-    </message>
-    <message>
-        <source>OpenTX for Gruvin9x board / 9X</source>
-        <translation type="obsolete">OpenTX pro Gruvin9x desku / 9X</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1324"/>
         <source>Power management by soft-off circuitry</source>
         <translation type="unfinished"></translation>
@@ -8577,35 +6721,14 @@ To je nutné zejména pro osazení FrSky kniplů do 9X.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>OpenTX for Sky9x board / 9X</source>
-        <translation type="obsolete">OpenTX pro Sky9x desku / 9X</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1417"/>
         <source>Haptic module installed</source>
         <translation>Podpora pro vibrační modul</translation>
     </message>
     <message>
-        <source>OpenTX for FrSky Taranis Rev4a</source>
-        <translation type="obsolete">OpenTX pro FrSky Taranis Rev4a</translation>
-    </message>
-    <message>
-        <source>Use FrSky Taranis sticks in a 9X/9XR</source>
-        <translation type="obsolete">Použití pák z Taranis (hardware) v rádiu 9X/9XR</translation>
-    </message>
-    <message>
-        <source>OpenTX for FrSky Taranis</source>
-        <translation type="obsolete">OpenTX pro FrSky Taranis</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1138"/>
         <source>Disable HELI menu and cyclic mix support</source>
         <translation>Odstranit funkce pro heli a nastavení typu mechaniky</translation>
-    </message>
-    <message>
-        <source>Disable TEMPLATES menu</source>
-        <translation type="obsolete">Odstranit menu s jednoduchými
-šablonami modelu</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1139"/>
@@ -8746,16 +6869,6 @@ se provádí jeho sepnutím</translation>
         <translation>Podpora DSM2 modulů</translation>
     </message>
     <message>
-        <source>Your radio probably uses a wrong firmware,
- eeprom size is 4096 but only the first 2048 are used</source>
-        <translation type="obsolete">Vaše rádio pravděpodobně nepoužívá správnou verzi firmware,
-velikost eeprom je 4096B, ale pouze prvních 2048B je použito</translation>
-    </message>
-    <message>
-        <source>OpenTX for 9X board</source>
-        <translation type="obsolete">OpenTX pro 9X desku</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1182"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1218"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1248"/>
@@ -8767,10 +6880,6 @@ velikost eeprom je 4096B, ale pouze prvních 2048B je použito</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1401"/>
         <source>PPM center adjustment in limits</source>
         <translation>Možnost nastavovat střed serva šířkou pulzu</translation>
-    </message>
-    <message>
-        <source>PPM values displayed in us</source>
-        <translation type="obsolete">Hodnoty PPM budou zobrazeny v us (mikrosekundy)</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1184"/>
@@ -8811,11 +6920,6 @@ pomocí potenciometrů</translation>
         <translation>Podpora pro modul SmartieParts 2.2
 (programátor/podsvícení)
 Není určeno pro starší verze Smartie Parts</translation>
-    </message>
-    <message>
-        <source>In model setup menus automatically set switch by moving some of them</source>
-        <translation type="obsolete">Výběr spínače v mixu atd.
-se provádí jeho sepnutím</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1189"/>
@@ -8946,15 +7050,6 @@ Nastavení hodnoty se provádí přímo v seznamu proměnných, nebo pomocí Fun
         <translation>EEPROM uložena s těmito varováními:</translation>
     </message>
     <message>
-        <source>FM%1</source>
-        <oldsource>FP%1</oldsource>
-        <translation type="obsolete">LR%1</translation>
-    </message>
-    <message>
-        <source>Input%1</source>
-        <translation type="obsolete">Vstup%1</translation>
-    </message>
-    <message>
         <location filename="../generaledit/generalsetup.cpp" line="278"/>
         <source>English</source>
         <translation></translation>
@@ -9035,33 +7130,9 @@ Nastavení hodnoty se provádí přímo v seznamu proměnných, nebo pomocí Fun
         <translation>Otočný enkodér :E</translation>
     </message>
     <message>
-        <source>, Persistent</source>
-        <translation type="obsolete">Ukládat hodnoty</translation>
-    </message>
-    <message>
-        <source>, MinuteBeep</source>
-        <translation type="obsolete">Oznamovat minuty</translation>
-    </message>
-    <message>
-        <source>, CountDown(Beeps)</source>
-        <translation type="obsolete">Odečítat (Zvuk)</translation>
-    </message>
-    <message>
-        <source>, CountDown(Voice)</source>
-        <translation type="obsolete">Odečítat (Hlas)</translation>
-    </message>
-    <message>
         <location filename="../modeledit/customfunctions.cpp" line="17"/>
         <source>No repeat</source>
         <translation>Neopakovat</translation>
-    </message>
-    <message>
-        <source>%1 sec</source>
-        <translation type="obsolete">%1 s</translation>
-    </message>
-    <message>
-        <source>Safety %1</source>
-        <translation type="obsolete">Zabezpečení(zámek) %1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="108"/>
@@ -10016,82 +8087,6 @@ Nastavení hodnoty se provádí přímo v seznamu proměnných, nebo pomocí Fun
         <translation>Metrické</translation>
     </message>
     <message>
-        <source>Extra Fine</source>
-        <translation type="obsolete">Extra jemný</translation>
-    </message>
-    <message>
-        <source>Fine</source>
-        <translation type="obsolete">Jemný</translation>
-    </message>
-    <message>
-        <source>Medium</source>
-        <translation type="obsolete">Střední</translation>
-    </message>
-    <message>
-        <source>Coarse</source>
-        <translation type="obsolete">Hrubý</translation>
-    </message>
-    <message>
-        <source>Slave/Jack</source>
-        <translation type="obsolete">Žák/Jack konektor</translation>
-    </message>
-    <message>
-        <source>Master/SBUS Module</source>
-        <translation type="obsolete">Učitel/SBUS modul</translation>
-    </message>
-    <message>
-        <source>Master/CPPM Module</source>
-        <translation type="obsolete">Učitel/CPPM modul</translation>
-    </message>
-    <message>
-        <source>Master/SBUS in battery compartment</source>
-        <translation type="obsolete">Učitel/SBUS konektor v šachtě baterie</translation>
-    </message>
-    <message>
-        <source>Master/Jack</source>
-        <translation type="obsolete">Učitel/Jack konektor</translation>
-    </message>
-    <message>
-        <source>Exponential</source>
-        <translation type="obsolete">Exponenciální</translation>
-    </message>
-    <message>
-        <source>Count Up</source>
-        <translation type="obsolete">Přičítat</translation>
-    </message>
-    <message>
-        <source>Count Down</source>
-        <translation type="obsolete">Odečítat</translation>
-    </message>
-    <message>
-        <source>: %1 Channels, %2usec Delay</source>
-        <translation type="obsolete">: %1 Kanálů, %2us pauza</translation>
-    </message>
-    <message>
-        <source>Flight modes(%1)</source>
-        <translation type="obsolete">Letové režimy(%1)</translation>
-    </message>
-    <message>
-        <source>Flight mode(%1)</source>
-        <translation type="obsolete">Letový režim(%1)</translation>
-    </message>
-    <message>
-        <source>Rudder</source>
-        <translation type="obsolete">Směrovka</translation>
-    </message>
-    <message>
-        <source>Elevator</source>
-        <translation type="obsolete">Výškovka</translation>
-    </message>
-    <message>
-        <source>Throttle</source>
-        <translation type="obsolete">Plyn</translation>
-    </message>
-    <message>
-        <source>Aileron</source>
-        <translation type="obsolete">Křidélka</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="792"/>
         <source>Play Track</source>
         <translation>Hrát stopu</translation>
@@ -10149,14 +8144,6 @@ Nastavení hodnoty se provádí přímo v seznamu proměnných, nebo pomocí Fun
         <translation>Hudba na pozadí -pozastavit</translation>
     </message>
     <message>
-        <source> Delay %1 sec</source>
-        <translation type="obsolete"> Zpoždění %1sec</translation>
-    </message>
-    <message>
-        <source> Duration %1 sec</source>
-        <translation type="obsolete">Trvání %1 sec</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="460"/>
         <location filename="../eeprominterface.cpp" line="464"/>
         <location filename="../eeprominterface.cpp" line="836"/>
@@ -10174,70 +8161,6 @@ Nastavení hodnoty se provádí přímo v seznamu proměnných, nebo pomocí Fun
         <location filename="../eeprominterface.cpp" line="751"/>
         <source>Edge</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Váha</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Spínač</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Váha(%1)</translation>
-    </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Spínač(%1)</translation>
-    </message>
-    <message>
-        <source>NoTrim</source>
-        <translation type="obsolete">Žádný trim</translation>
-    </message>
-    <message>
-        <source>No DR/Expo</source>
-        <translation type="obsolete">Bez DR/Expo</translation>
-    </message>
-    <message>
-        <source>Offset(%1)</source>
-        <translation type="obsolete">Ofset(%1)</translation>
-    </message>
-    <message>
-        <source>Warn(%1)</source>
-        <translation type="obsolete">Varování(%1)</translation>
-    </message>
-    <message>
-        <source>Delay</source>
-        <translation type="obsolete">Zpoždění</translation>
-    </message>
-    <message>
-        <source>Slow</source>
-        <translation type="obsolete">Zpomalení</translation>
-    </message>
-    <message>
-        <source>Warn</source>
-        <translation type="obsolete">Varování</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Letové režimy</translation>
-    </message>
-    <message>
-        <source>Flight mode</source>
-        <translation type="obsolete">Letový režim</translation>
-    </message>
-    <message>
-        <source> Duration (%1s)</source>
-        <translation type="obsolete">Trvání (%1 s)</translation>
-    </message>
-    <message>
-        <source> Delay (%1s)</source>
-        <translation type="obsolete"> Zpoždění (%1s)</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation type="obsolete">Vše</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="842"/>
@@ -10381,17 +8304,9 @@ Nastavení hodnoty se provádí přímo v seznamu proměnných, nebo pomocí Fun
         <translation>OpenTX nepodporuje tento protokol</translation>
     </message>
     <message>
-        <source>OpenTX doesn&apos;t accept this protocol</source>
-        <translation type="obsolete">OpenTX nepodporuje tento protokol</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2969"/>
         <source>OpenTX doesn&apos;t allow this number of channels</source>
         <translation>V OpenTX nelze použít tento počet kanálů</translation>
-    </message>
-    <message>
-        <source>Simultaneous usage of expo and curves is no longer supported in open9x</source>
-        <translation type="obsolete">Současné použití expa a křivek již není v Open9x podporováno</translation>
     </message>
     <message>
         <location filename="../firmwares/th9x/th9xeeprom.cpp" line="200"/>
@@ -10446,14 +8361,6 @@ The OpenTX Team.</source>
         <translation>Děkujeme že jste aktualizovali na OpenTX 2.0. Toto je velká aktualizace, která přidává a upravuje mnoho věcí. Seznamte se prosím s provedenými změnami popsanými v poznámkách k vydání této verze. Důkladně zkontrolujte všechna nastavení modelů, zda fungují jak mají.
 
 Tým OpenTX.</translation>
-    </message>
-    <message>
-        <source>Positive</source>
-        <translation type="obsolete">Pozitivní</translation>
-    </message>
-    <message>
-        <source>Negative</source>
-        <translation type="obsolete">Negativní</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="44"/>
@@ -10562,10 +8469,6 @@ Tým OpenTX.</translation>
         <location filename="../radionotfound.ui" line="40"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Note: if you have a Taranis that has not had the firmware upgraded to 2.0 then this version of Companion will not work.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rádio nebylo nalezeno!&lt;/p&gt;&lt;p&gt;Ujistěte se, že během zapínání rádia držíte spodní trimy proti sobě.&lt;/p&gt;&lt;p&gt;Až poté připojte USB kabel..&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Pozor: pokud máte Taranis který ještě nebyl aktualizován na verzi alespoň 2.0, potom tato verze Companion nebude fungovat.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rádio nebylo nalezeno!&lt;/p&gt;&lt;p&gt;Ujistěte se, že během zapínání rádia, držíte spodní trimy proti sobě.&lt;/p&gt;&lt;p&gt;Až poté připojte USB kabel.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../radionotfound.ui" line="92"/>
@@ -10698,10 +8601,6 @@ Tým OpenTX.</translation>
         <location filename="../modeledit/setup.ui" line="515"/>
         <source>Throttle Source</source>
         <translation>Stopa plynu</translation>
-    </message>
-    <message>
-        <source>Timer Source</source>
-        <translation type="obsolete">Stopa (TH) stopek</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="531"/>
@@ -10848,10 +8747,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <translation>Dvojité kliknutí pravým tlačítkem myši nastaví na střed</translation>
     </message>
     <message>
-        <source>THR</source>
-        <translation type="obsolete">THR</translation>
-    </message>
-    <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="248"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="717"/>
         <source>Hold X</source>
@@ -10889,18 +8784,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../simulation/simulatordialog-9x.ui" line="1458"/>
         <source>Gvars</source>
         <translation>GP</translation>
-    </message>
-    <message>
-        <source>P1</source>
-        <translation type="obsolete">Potenciometr1</translation>
-    </message>
-    <message>
-        <source>P2</source>
-        <translation type="obsolete">Potenciometr2</translation>
-    </message>
-    <message>
-        <source>P3</source>
-        <translation type="obsolete">Potenciometr 3</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1239"/>
@@ -11115,10 +8998,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <translation></translation>
     </message>
     <message>
-        <source>Critical Alarm</source>
-        <translation type="obsolete">Kritický alarm</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry.ui" line="109"/>
         <location filename="../modeledit/telemetry.ui" line="186"/>
         <source>----</source>
@@ -11188,22 +9067,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <translation>Snímač napětí</translation>
     </message>
     <message>
-        <source>A4</source>
-        <translation type="obsolete">Telem. vstup A4</translation>
-    </message>
-    <message>
-        <source>A3</source>
-        <translation type="obsolete">Telem. vstup A3</translation>
-    </message>
-    <message>
-        <source>Metric</source>
-        <translation type="obsolete">Metrické</translation>
-    </message>
-    <message>
-        <source>Imperial</source>
-        <translation type="obsolete">Imperiální</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry.ui" line="774"/>
         <source>Current source</source>
         <translation>Snímač proudu</translation>
@@ -11212,10 +9075,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../modeledit/telemetry.ui" line="37"/>
         <source>Protocol</source>
         <translation>Protokol</translation>
-    </message>
-    <message>
-        <source>NONE</source>
-        <translation type="obsolete">Žádný</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="923"/>
@@ -11228,14 +9087,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <translation>FrSky Senzor Hub</translation>
     </message>
     <message>
-        <source>CEL</source>
-        <translation type="obsolete">Článek</translation>
-    </message>
-    <message>
-        <source>Units</source>
-        <translation type="obsolete">Jednotky</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry.ui" line="809"/>
         <source>Blades</source>
         <translation>Počet listů vrtule</translation>
@@ -11244,10 +9095,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../modeledit/telemetry.ui" line="378"/>
         <source>Sink Max</source>
         <translation>Klesání Max</translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation type="obsolete">Vypnuto</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="488"/>
@@ -11275,14 +9122,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <translation>Rozsah varia</translation>
     </message>
     <message>
-        <source>Use GPS as altitude source</source>
-        <translation type="obsolete">Použít GPS jako senzor výšky</translation>
-    </message>
-    <message>
-        <source>Display altitude in toolbar</source>
-        <translation type="obsolete">Zobrazit výšku v nástrojové liště</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry.ui" line="594"/>
         <source>Altimetry</source>
         <translation></translation>
@@ -11306,10 +9145,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../modeledit/telemetry.ui" line="816"/>
         <source>mAh count</source>
         <translation>Počet mAh</translation>
-    </message>
-    <message>
-        <source>Low Alarm</source>
-        <translation type="obsolete">Nízký alarm</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="870"/>
@@ -11431,14 +9266,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <translation>MiliAmpéry (mA)</translation>
     </message>
     <message>
-        <source>Low Alarm</source>
-        <translation type="obsolete">Nízký alarm</translation>
-    </message>
-    <message>
-        <source>Critical Alarm</source>
-        <translation type="obsolete">Kriticky alarm</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry.cpp" line="42"/>
         <source>Range</source>
         <translation>Rozsah</translation>
@@ -11450,10 +9277,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../modeledit/telemetry_customscreen.ui" line="34"/>
         <source>Custom Screen Type</source>
         <translation>Typ panelu</translation>
-    </message>
-    <message>
-        <source>Nums</source>
-        <translation type="obsolete">Hodnoty</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="325"/>
@@ -11801,98 +9624,14 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <translation></translation>
     </message>
     <message>
-        <source>Amps Sensor :</source>
-        <translation type="obsolete">Senzor proudu :</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="364"/>
         <source>Raw (-)</source>
         <translation>Jednotky (-)</translation>
     </message>
     <message>
-        <source>Voltage (V)</source>
-        <translation type="obsolete">Napětí (V)</translation>
-    </message>
-    <message>
-        <source>Current (A)</source>
-        <translation type="obsolete">Proud (A)</translation>
-    </message>
-    <message>
-        <source>Current (mA)</source>
-        <translation type="obsolete">Proud (mA)</translation>
-    </message>
-    <message>
-        <source>Speed (kts)</source>
-        <translation type="obsolete">Rychlost (kts)</translation>
-    </message>
-    <message>
-        <source>Speed (m/s)</source>
-        <translation type="obsolete">Rychlost (m/s)</translation>
-    </message>
-    <message>
-        <source>Speed (ft/s)</source>
-        <translation type="obsolete">Rychlost (ft/s)</translation>
-    </message>
-    <message>
-        <source>Speed (km/h)</source>
-        <translation type="obsolete">Rychlost (km/h)</translation>
-    </message>
-    <message>
-        <source>Speed (miles/h)</source>
-        <translation type="obsolete">Rychlost (míle/h)</translation>
-    </message>
-    <message>
-        <source>Meters (m)</source>
-        <translation type="obsolete">Vzdálenost (m)</translation>
-    </message>
-    <message>
-        <source>Feet (ft)</source>
-        <translation type="obsolete">Vzdálenost (ft)</translation>
-    </message>
-    <message>
-        <source>Temp (°C)</source>
-        <translation type="obsolete">Teplota (°C)</translation>
-    </message>
-    <message>
-        <source>Temp (°F)</source>
-        <translation type="obsolete">Teplota (°F)</translation>
-    </message>
-    <message>
-        <source>Percentage (%)</source>
-        <translation type="obsolete">Procenta (%)</translation>
-    </message>
-    <message>
-        <source>Energy (mAh)</source>
-        <translation type="obsolete">Energie (mAh)</translation>
-    </message>
-    <message>
-        <source>Power (W)</source>
-        <translation type="obsolete">Výkon (W)</translation>
-    </message>
-    <message>
-        <source>RF Power (dBm)</source>
-        <translation type="obsolete">RF výkon (dBm)</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="449"/>
         <source>RPM</source>
         <translation>Otáčky (ot/min)</translation>
-    </message>
-    <message>
-        <source>Acceleration (g)</source>
-        <translation type="obsolete">Zrychlení (g)</translation>
-    </message>
-    <message>
-        <source>Heading (°)</source>
-        <translation type="obsolete">Směr (°)</translation>
-    </message>
-    <message>
-        <source>Volume (mL)</source>
-        <translation type="obsolete">Objem (ml)</translation>
-    </message>
-    <message>
-        <source>Volume (US fl.Oz.)</source>
-        <translation type="obsolete">Objem (US fl.Oz.)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="483"/>
@@ -11903,10 +9642,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../modeledit/telemetry_sensor.ui" line="515"/>
         <source>Ratio</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="obsolete">Koeficient</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="522"/>
@@ -12225,10 +9960,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <source>Minute Call</source>
         <translation>Oznamovat minuty</translation>
     </message>
-    <message>
-        <source>Persistent</source>
-        <translation type="obsolete">Ukládat hodnoty</translation>
-    </message>
 </context>
 <context>
     <name>TimerPanel</name>
@@ -12498,10 +10229,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <translation>Samokřídlo / Delta křídlo</translation>
     </message>
     <message>
-        <source>Are the elevons controlled by servos connected to separate channels or by a single servo channel?</source>
-        <translation type="obsolete">Jsou elevony ovládány dvěma servy, každým na jednoum kanále, nebo jen jedním servem/kanálem ?</translation>
-    </message>
-    <message>
         <location filename="../wizarddialog.cpp" line="34"/>
         <source>Select the elevons channels</source>
         <translation>Zvolte kanál elevonů</translation>
@@ -12641,10 +10368,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <translation>Modely používají jeden, nebo dva kanály pro ovládání křidélek.&lt;br&gt;Tzv. Y-kabel lze použít pro připojení dvou samostatných serv křidélek do jednoho kanálu přijímače. Pokud jsou vaše serva spojeny Y-kabelem, měli byste zvolit možnost &quot;jeden kanál&quot;&lt;br&gt;&lt;br&gt;Spektrum: CH2, Futaba: CH1</translation>
     </message>
     <message>
-        <source>Models use one or two channels to control the elevons.&lt;br&gt;A so called Y-cable can be used to connect single a receiver channel to two separate elevon servos. If your servos are connected by a Y-cable you should select the single-servo option.</source>
-        <translation type="obsolete">Modely používají jeden, nebo dva kanály pro ovládání elevonů.&lt;br&gt;Tzv. Y-kabel lze použít pro připojení dvou samostatných serv elevonů do jednoho kanálu přijímače. Pokud jsou vaše serva spojeny Y-kabelem, měli byste zvolit možnost &quot;jeden kanál&quot;.</translation>
-    </message>
-    <message>
         <location filename="../wizarddialog.cpp" line="88"/>
         <source>This wizard assumes that your flaps are controlled by a switch. If your flaps are controlled by a potentiometer you can change that manually later.</source>
         <translation>Tento průvodce předpokládá, že vaše klapky jsou ovládány spínačem. Pokud jsou vaše klapky řízeny potenciometrem můžete toto změnit později ručně.</translation>
@@ -12743,389 +10466,6 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../wizarddialog.cpp" line="1061"/>
         <source>Channel %1: </source>
         <translation>Kanál %1: </translation>
-    </message>
-</context>
-<context>
-    <name>appPreferencesDialog</name>
-    <message>
-        <source>Simulator capture folder</source>
-        <translation type="obsolete">Složka pro snímky obrazovky Simu</translation>
-    </message>
-    <message>
-        <source>Open Folder</source>
-        <translation type="obsolete">Vybrat složku</translation>
-    </message>
-    <message>
-        <source>Edit Settings</source>
-        <translation type="obsolete">Upravit nastavení předvoleb</translation>
-    </message>
-    <message>
-        <source>Radio Profile</source>
-        <translation type="obsolete">Profil rádia</translation>
-    </message>
-    <message>
-        <source>Mode selection:
-
-Mode 1:
-  Left stick:  Elevator, Rudder
-  Right stick:  Throttle, Aileron
-
-Mode 2:
-  Left stick:  Throttle, Rudder
-  Right stick:  Elevator, Aileron
-
-Mode 3:
-  Left stick:  Elevator, Aileron
-  Right stick:  Throttle, Rudder
-
-Mode 4:
-  Left stick:  Throttle, Aileron
-  Right stick:  Elevator, Rudder
-
-</source>
-        <translation type="obsolete">Výběr módu:
-
-Mode 1:
-  Levá páka  :  Výškovka, Směrovka
-  Pravá páka:  Plyn, Křidélka
-
-Mode 2:
-  Levá páka  :  Plyn, Směrovka
-  Pravá páka:  Výškovka, Křidélka
-
-Mode 3:
-  Levá páka  :  Výškovka, Křidélka
-  Pravá páka:  Plyn, Směrovka
-
-Mode 4:
-  Levá páka  :  Plyn, Křidélka
-  Pravá páka:  Výškovka, Směrovka
-
-</translation>
-    </message>
-    <message>
-        <source>Channel order
-
-This is used by the templated to determine which channel goes to what number output.</source>
-        <translation type="obsolete">Pořadí kanálů
-
-Toto je použito šablonami k určení
-který kanál patří ke kterému výstupu.</translation>
-    </message>
-    <message>
-        <source>R E T A</source>
-        <translation type="obsolete">S V P K</translation>
-    </message>
-    <message>
-        <source>R E A T</source>
-        <translation type="obsolete">S V K P</translation>
-    </message>
-    <message>
-        <source>R T E A</source>
-        <translation type="obsolete">S P V K</translation>
-    </message>
-    <message>
-        <source>R T A E</source>
-        <translation type="obsolete">S P K V</translation>
-    </message>
-    <message>
-        <source>R A E T</source>
-        <translation type="obsolete">S K V P</translation>
-    </message>
-    <message>
-        <source>R A T E</source>
-        <translation type="obsolete">S K P V</translation>
-    </message>
-    <message>
-        <source>E R T A</source>
-        <translation type="obsolete">V S P K</translation>
-    </message>
-    <message>
-        <source>E R A T</source>
-        <translation type="obsolete">V S K P</translation>
-    </message>
-    <message>
-        <source>E T R A</source>
-        <translation type="obsolete">V P S K</translation>
-    </message>
-    <message>
-        <source>E T A R</source>
-        <translation type="obsolete">V P K S</translation>
-    </message>
-    <message>
-        <source>E A R T</source>
-        <translation type="obsolete">V K S P</translation>
-    </message>
-    <message>
-        <source>E A T R</source>
-        <translation type="obsolete">V K P S</translation>
-    </message>
-    <message>
-        <source>T R E A</source>
-        <translation type="obsolete">P S V K</translation>
-    </message>
-    <message>
-        <source>T R A E</source>
-        <translation type="obsolete">P S K V</translation>
-    </message>
-    <message>
-        <source>T E R A</source>
-        <translation type="obsolete">P V S K</translation>
-    </message>
-    <message>
-        <source>T E A R</source>
-        <translation type="obsolete">P V K S</translation>
-    </message>
-    <message>
-        <source>T A R E</source>
-        <translation type="obsolete">P K S V</translation>
-    </message>
-    <message>
-        <source>T A E R</source>
-        <translation type="obsolete">P K V S</translation>
-    </message>
-    <message>
-        <source>A R E T</source>
-        <translation type="obsolete">K S V P</translation>
-    </message>
-    <message>
-        <source>A R T E</source>
-        <translation type="obsolete">K S P V</translation>
-    </message>
-    <message>
-        <source>A E R T</source>
-        <translation type="obsolete">K V S P</translation>
-    </message>
-    <message>
-        <source>A E T R</source>
-        <translation type="obsolete">K V P S</translation>
-    </message>
-    <message>
-        <source>A T R E</source>
-        <translation type="obsolete">K P S V</translation>
-    </message>
-    <message>
-        <source>A T E R</source>
-        <translation type="obsolete">K P V S</translation>
-    </message>
-    <message>
-        <source>Default Stick Mode</source>
-        <translation type="obsolete">Výchozí mód vysílačky</translation>
-    </message>
-    <message>
-        <source>Profile Name</source>
-        <translation type="obsolete">Název profilu</translation>
-    </message>
-    <message>
-        <source>SD Structure path</source>
-        <translation type="obsolete">Cesta k obsahu SD karty</translation>
-    </message>
-    <message>
-        <source>9X</source>
-        <translation type="obsolete">CH9X</translation>
-    </message>
-    <message>
-        <source>General Settings</source>
-        <translation type="obsolete">Obecná nastavení</translation>
-    </message>
-    <message>
-        <source>Blue</source>
-        <translation type="obsolete">Modrá</translation>
-    </message>
-    <message>
-        <source>Green</source>
-        <translation type="obsolete">Zelená</translation>
-    </message>
-    <message>
-        <source>Red</source>
-        <translation type="obsolete">Červená</translation>
-    </message>
-    <message>
-        <source>Orange</source>
-        <translation type="obsolete">Oranžová</translation>
-    </message>
-    <message>
-        <source>Yellow</source>
-        <translation type="obsolete">Žlutá</translation>
-    </message>
-    <message>
-        <source>Automatic Backup Folder</source>
-        <translation type="obsolete">Složka pro automatické zálohy</translation>
-    </message>
-    <message>
-        <source>Default Channel Order</source>
-        <translation type="obsolete">Výchozí pořadí kanálů</translation>
-    </message>
-    <message>
-        <source>Calibrate</source>
-        <translation type="obsolete">Kalibrovat</translation>
-    </message>
-    <message>
-        <source>Select your snapshot folder</source>
-        <translation type="obsolete">Vyberte složku pro snímky obrazovky simulátoru</translation>
-    </message>
-    <message>
-        <source>No joysticks found</source>
-        <translation type="obsolete">Joystick nenalezen</translation>
-    </message>
-    <message>
-        <source>Select your library folder</source>
-        <translation type="obsolete">Vyberte složkus s logy</translation>
-    </message>
-    <message>
-        <source>Select your Models and Settings backup folder</source>
-        <translation type="obsolete">Zvolte složku pro automatické zálohy modelů a nastavení</translation>
-    </message>
-    <message>
-        <source>Select the folder replicating your SD structure</source>
-        <translation type="obsolete">Vyberte složku která představuje obsah SD karty rádia</translation>
-    </message>
-    <message>
-        <source>Open Image to load</source>
-        <translation type="obsolete">Otevřít soubor s logem</translation>
-    </message>
-    <message>
-        <source>Images (%1)</source>
-        <translation type="obsolete">obrázky (%1)</translation>
-    </message>
-</context>
-<context>
-    <name>avrOutputDialog</name>
-    <message>
-        <source>Show Details</source>
-        <translation type="obsolete">Zobrazit podrobnosti</translation>
-    </message>
-    <message>
-        <source>result</source>
-        <oldsource> result</oldsource>
-        <translation type="obsolete">výsledek</translation>
-    </message>
-    <message>
-        <source>executable not found</source>
-        <oldsource> executable not found</oldsource>
-        <translation type="obsolete">spustitelný soubor nebyl nalezen</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Chyba</translation>
-    </message>
-    <message>
-        <source>Cannot open source file</source>
-        <translation type="obsolete">Nemohu otevřít zdrojový soubor</translation>
-    </message>
-    <message>
-        <source>Cannot write destination</source>
-        <translation type="obsolete">Do požadovaného místa nelze zapsat</translation>
-    </message>
-    <message>
-        <source>Writing file: </source>
-        <translation type="obsolete">Zapisuji soubor:</translation>
-    </message>
-    <message>
-        <source>Write error</source>
-        <translation type="obsolete">Chyba zápisu</translation>
-    </message>
-    <message>
-        <source>reason</source>
-        <translation type="obsolete">důvod</translation>
-    </message>
-    <message>
-        <source>ie: OpenTX for 9X board or OpenTX for 9XR board</source>
-        <translation type="obsolete">ie: OpenTX pro desku 9X nebo OpenTX pro 9XR</translation>
-    </message>
-    <message>
-        <source>ie: OpenTX for M128 / 9X board or OpenTX for 9XR board with M128 chip</source>
-        <translation type="obsolete">ie: OpenTX pro M128 / 9X nebo OpenTX pro 9XR s čipem M128</translation>
-    </message>
-    <message>
-        <source>ie: OpenTX for Gruvin9X  board</source>
-        <translation type="obsolete">ie: OpenTX pro desku Gruvin9X</translation>
-    </message>
-    <message>
-        <source>Your radio uses a %1 CPU!!!
-
-Please check advanced burn options to set the correct cpu type.</source>
-        <translation type="obsolete">Vaše rádio používá %1 CPU!!!
-
-Zkontrolujte prosím rozšířená nastavení programátoru a nastavte správný typ CPU.</translation>
-    </message>
-    <message>
-        <source>Your radio uses a %1 CPU!!!
-
-Please select an appropriate firmware type to program it.</source>
-        <translation type="obsolete">Vaše rádio používá %1 CPU!!!
-
-Vyberte prosím správný typ firmwaru.</translation>
-    </message>
-    <message>
-        <source>
-You are currently using:
- %1</source>
-        <translation type="obsolete">
-Nyní používáte:
- %1</translation>
-    </message>
-    <message>
-        <source>Writing</source>
-        <translation type="obsolete">Zápis</translation>
-    </message>
-    <message>
-        <source>Reading</source>
-        <translation type="obsolete">Načítání</translation>
-    </message>
-    <message>
-        <source>Verifying</source>
-        <translation type="obsolete">Ověřování</translation>
-    </message>
-    <message>
-        <source>done - exit code %1</source>
-        <oldsource> done - exit code %1</oldsource>
-        <translation type="obsolete">dokončeno   návratový kód %1</translation>
-    </message>
-    <message>
-        <source>done with errors</source>
-        <oldsource> done with errors</oldsource>
-        <translation type="obsolete">dokončeno s chybami</translation>
-    </message>
-    <message>
-        <source>done - SUCCESSFUL</source>
-        <oldsource> done - SUCCESSFUL</oldsource>
-        <translation type="obsolete">dokončeno   ÚSPĚŠNĚ</translation>
-    </message>
-    <message>
-        <source>did not finish correctly</source>
-        <oldsource> did not finish correctly</oldsource>
-        <translation type="obsolete">nebylo správně dokončeno</translation>
-    </message>
-    <message>
-        <source>did not finish correctly!
-Do you want some help ?</source>
-        <oldsource> did not finish correctly!
-Do you want some help ?</oldsource>
-        <translation type="obsolete">nebylo správně dokončeno!
-Chcete poradit ?</translation>
-    </message>
-    <message>
-        <source>Copy did not finish correctly</source>
-        <translation type="obsolete">Kopírování  nebylo správně dokončeno</translation>
-    </message>
-    <message>
-        <source>finished correctly</source>
-        <oldsource> finished correctly</oldsource>
-        <translation type="obsolete">dokončeno v pořádku</translation>
-    </message>
-    <message>
-        <source>Copy finished correctly</source>
-        <translation type="obsolete">Kopírování dokončeno v pořádku</translation>
-    </message>
-    <message>
-        <source>Started</source>
-        <oldsource>Started </oldsource>
-        <translation type="obsolete">Zahájeno</translation>
-    </message>
-    <message>
-        <source>FUSES: Low=%1 High=%2 Ext=%3</source>
-        <translation type="obsolete">POJISTKY: Low=%1 High=%2 Ext=%3</translation>
     </message>
 </context>
 <context>
@@ -13336,497 +10676,9 @@ m2560 pro V4 desky</translation>
         <translation></translation>
     </message>
     <message>
-        <source>&lt;b&gt;&lt;u&gt;WARNING!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;This will reset the fuses of  %1 to the factory settings.&lt;br&gt;Writing fuses can mess up your radio.&lt;br&gt;Do this only if you are sure they are wrong!&lt;br&gt;Are you sure you want to continue?</source>
-        <translation type="obsolete">&lt;b&gt;&lt;u&gt;POZOR!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Toto nastaví pojistky  %1 do továrního nastavení.&lt;br&gt;Zápis pojistek může poškodit vaše rádio.&lt;br&gt;Proveďte pouze pokud jste si jist že jsou nastaveny špatně!&lt;br&gt;Jste si opravdu jist, že chcete pokračovat?</translation>
-    </message>
-    <message>
         <location filename="../burnconfigdialog.cpp" line="325"/>
         <source>&lt;b&gt;&lt;u&gt;WARNING!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Normally CPU type is automatically selected according to the chosen firmware.&lt;br&gt;If you change the CPU type the resulting eeprom could be inconsistent.</source>
         <translation>&lt;b&gt;&lt;u&gt;VAROVÁNÍ!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Běžně je typ CPU vybrán podle typu zvoleného firmware.&lt;br&gt;Pokud změníte typ CPU, výsledná eeprom nemusí být platná.</translation>
-    </message>
-</context>
-<context>
-    <name>burnDialog</name>
-    <message>
-        <source>Customize Splash</source>
-        <translation type="obsolete">Přizpůsobení loga</translation>
-    </message>
-    <message>
-        <source>Write to TX</source>
-        <translation type="obsolete">Zapsat do rádia</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify calibration parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upraví hodnoty kalibrace parametry ze současného profilu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Patch calibration setting from profile</source>
-        <translation type="obsolete">Zaměnit hodnoty kalibrace hodnotami z profilu</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify HW parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upraví HW parametery pomocí nastavení současného profilu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Patch HW setting from profile</source>
-        <translation type="obsolete">Zaměnit hodnoty HW nastavení hodnotami z profilu</translation>
-    </message>
-    <message>
-        <source>Date &amp; Time</source>
-        <translation type="obsolete">Datum a čas</translation>
-    </message>
-    <message>
-        <source>Version</source>
-        <translation type="obsolete">Verze</translation>
-    </message>
-    <message>
-        <source>Use firmware start screen</source>
-        <translation type="obsolete">Použít logo z firmwaru</translation>
-    </message>
-    <message>
-        <source>Use another start screen</source>
-        <translation type="obsolete">Použít jiné logo</translation>
-    </message>
-    <message>
-        <source>Use profile start screen</source>
-        <translation type="obsolete">Použít logo z nastavení profilu</translation>
-    </message>
-    <message>
-        <source>Use library start screen</source>
-        <translation type="obsolete">Použít logo z knihovny</translation>
-    </message>
-    <message>
-        <source>Variant</source>
-        <translation type="obsolete">Varianta</translation>
-    </message>
-    <message>
-        <source>Browse for file</source>
-        <translation type="obsolete">Procházet ...</translation>
-    </message>
-    <message>
-        <source>Allows Companion to write to older version of the firmware</source>
-        <translation type="obsolete">Umožní Companion zapisovat do starší verze firmware</translation>
-    </message>
-    <message>
-        <source>Backup and restore Models and Settings</source>
-        <translation type="obsolete">Zálohovat a obnovit data modelů a nastavení</translation>
-    </message>
-    <message>
-        <source>Check Firmware compatibility</source>
-        <translation type="obsolete">Zkontrolovat kompatibilitu firmware</translation>
-    </message>
-    <message>
-        <source>Current Profile</source>
-        <translation type="obsolete">Současný profil</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
-    </message>
-    <message>
-        <source>Current profile</source>
-        <translation type="obsolete">Současný profil</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Varování</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Chyba</translation>
-    </message>
-    <message>
-        <source>Unable to find file %1!</source>
-        <translation type="obsolete">Nemohu nalézt soubor %1!</translation>
-    </message>
-    <message>
-        <source>Error opening file %1:
-%2.</source>
-        <translation type="obsolete">Chyba při otevírání souboru %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Invalid binary Models and Settings File %1, Proceed anyway ?</source>
-        <translation type="obsolete">Neplatný soubor s binárními daty modelů a nastavení %1, Přesto pokračovat ?</translation>
-    </message>
-    <message>
-        <source>Error reading file %1:
-%2.</source>
-        <translation type="obsolete">Chyba při otevírání souboru %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Profile image %1 is invalid.</source>
-        <translation type="obsolete">Obrázek profilu %1 není platný.</translation>
-    </message>
-    <message>
-        <source>Images (%1)</source>
-        <translation type="obsolete">obrázky (%1)</translation>
-    </message>
-    <message>
-        <source>Write firmware to Radio</source>
-        <translation type="obsolete">Zapsat firmware do rádia</translation>
-    </message>
-    <message>
-        <source>Write Backup to Radio</source>
-        <translation type="obsolete">Zapsat zálohu do rádia</translation>
-    </message>
-    <message>
-        <source>Write Backup from %1 to Radio</source>
-        <translation type="obsolete">Zapsat zálohu ze souboru %1 do rádia</translation>
-    </message>
-    <message>
-        <source>Open Firmware File</source>
-        <translation type="obsolete">Otevřít soubor firmwaru</translation>
-    </message>
-    <message>
-        <source>Choose Radio Backup file</source>
-        <translation type="obsolete">vyberte soubor zálohy rádia</translation>
-    </message>
-    <message>
-        <source>%1 may not be a valid firmware file</source>
-        <translation type="obsolete">%1 nemusí být platný soubor firmwaru</translation>
-    </message>
-    <message>
-        <source>The firmware file is not valid.</source>
-        <translation type="obsolete">Soubor firmwaru není platný.</translation>
-    </message>
-    <message>
-        <source>There is no start screen image in the firmware file.</source>
-        <translation type="obsolete">Soubor firmware neobsahuje žádné logo.</translation>
-    </message>
-    <message>
-        <source>Open image file to use as radio start screen</source>
-        <translation type="obsolete">Otevřít soubor obrázku pro použití jako úvodní logo</translation>
-    </message>
-    <message>
-        <source>Image could not be loaded from %1</source>
-        <translation type="obsolete">Nelze načíst obrázek z %1</translation>
-    </message>
-    <message>
-        <source>The library image could not be loaded</source>
-        <translation type="obsolete">Nelze načíst obrázek z knihovny</translation>
-    </message>
-    <message>
-        <source>Cannot save customized firmware</source>
-        <translation type="obsolete">Nelze uložit upravený firmware</translation>
-    </message>
-    <message>
-        <source>Custom image not found</source>
-        <translation type="obsolete">Vlastní obrázek nebyl nalezen</translation>
-    </message>
-    <message>
-        <source>No firmware selected</source>
-        <translation type="obsolete">nebyl vybrán firmware</translation>
-    </message>
-    <message>
-        <source>Wrong radio calibration data in profile, Settings not patched</source>
-        <translation type="obsolete">Profil neobsahuje platná kalibrační data, nastavení nebyla upravena</translation>
-    </message>
-    <message>
-        <source>Wrong radio setting data in profile, Settings not patched</source>
-        <translation type="obsolete">Profil neobsahuje platná data nastavení rádia, nastavení nebyla upravena</translation>
-    </message>
-    <message>
-        <source>Cannot write file %1:
-%2.</source>
-        <translation type="obsolete">Nelze zapsat soubor %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Error writing file %1:
-%2.</source>
-        <translation type="obsolete">Chyba při zápisuí souboru %1:
-%2.</translation>
-    </message>
-</context>
-<context>
-    <name>compareDialog</name>
-    <message>
-        <source>Drag first model here</source>
-        <translation type="obsolete">Přetáhněte jeden model sem</translation>
-    </message>
-    <message>
-        <source>Drag second model here</source>
-        <translation type="obsolete">Přetáhněte druhý model sem</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Zavřít</translation>
-    </message>
-    <message>
-        <source>Print</source>
-        <translation type="obsolete">Tisk</translation>
-    </message>
-    <message>
-        <source>Print to file</source>
-        <translation type="obsolete">Tisk do souboru</translation>
-    </message>
-    <message>
-        <source>General Model Settings</source>
-        <translation type="obsolete">Obecná nastavení modelu</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Název</translation>
-    </message>
-    <message>
-        <source>EEprom Size</source>
-        <translation type="obsolete">Velikost EEPROM</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protokol</translation>
-    </message>
-    <message>
-        <source>Pulse Polarity</source>
-        <translation type="obsolete">Polarita pulzů</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Trim plynu</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Povoleno</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Zakázáno</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Expo plynu</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Krok trimu</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Zvuk ve středové poloze</translation>
-    </message>
-    <message>
-        <source>Flight modes Settings</source>
-        <oldsource>Flight Phases Settings</oldsource>
-        <translation type="obsolete">Nastavení letových fází</translation>
-    </message>
-    <message>
-        <source>Fades</source>
-        <translation type="obsolete">Přechody</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Trimy</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Spínač</translation>
-    </message>
-    <message>
-        <source>IN</source>
-        <translation type="obsolete">(+)</translation>
-    </message>
-    <message>
-        <source>OUT</source>
-        <translation type="obsolete">(-)</translation>
-    </message>
-    <message>
-        <source>FM</source>
-        <oldsource>FP</oldsource>
-        <translation type="obsolete">LR</translation>
-    </message>
-    <message>
-        <source>Gvars</source>
-        <translation type="obsolete">GProm</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Limity</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Ofset</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Invertovat</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">---</translation>
-    </message>
-    <message>
-        <source>Global Variables</source>
-        <translation type="obsolete">Globální proměnné</translation>
-    </message>
-    <message>
-        <source>GV</source>
-        <translation type="obsolete">GP</translation>
-    </message>
-    <message>
-        <source>Expo/Dr Settings</source>
-        <translation type="obsolete">Expo/Nastavení DV</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Váha</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Křivka</translation>
-    </message>
-    <message>
-        <source>Mixers</source>
-        <translation type="obsolete">Mixy</translation>
-    </message>
-    <message>
-        <source>noTrim</source>
-        <translation type="obsolete">Žádný trim</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete"> Zpoždění(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Zpomalení(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>Warn</source>
-        <translation type="obsolete">Varování</translation>
-    </message>
-    <message>
-        <source>No name</source>
-        <translation type="obsolete">Model bez jména</translation>
-    </message>
-    <message>
-        <source>DISABLED</source>
-        <translation type="obsolete">ZAKÁZÁN</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Křivky</translation>
-    </message>
-    <message>
-        <source>5 Points Curves</source>
-        <translation type="obsolete">Pěti-bodové křivky</translation>
-    </message>
-    <message>
-        <source>pt %1</source>
-        <translation type="obsolete">bod %1</translation>
-    </message>
-    <message>
-        <source>9 Points Curves</source>
-        <translation type="obsolete">Devíti-bodové křivky</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Funkce</translation>
-    </message>
-    <message>
-        <source>Param</source>
-        <translation type="obsolete">Parametr</translation>
-    </message>
-    <message>
-        <source>Enable</source>
-        <translation type="obsolete">Povoleno</translation>
-    </message>
-    <message>
-        <source>Telemetry Settings</source>
-        <translation type="obsolete">Nastavení telemetrie</translation>
-    </message>
-    <message>
-        <source>Unit</source>
-        <translation type="obsolete">Jednotky</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">Rozsah</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Typ</translation>
-    </message>
-    <message>
-        <source>Condition</source>
-        <translation type="obsolete">Podmínka</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Hodnota</translation>
-    </message>
-    <message>
-        <source>Flight mode name</source>
-        <translation type="obsolete">Název režimu</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Letové režimy</translation>
-    </message>
-    <message>
-        <source>Flight mode</source>
-        <translation type="obsolete">Letový režim</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="obsolete">Opakování</translation>
-    </message>
-    <message>
-        <source>Telemetry Bars</source>
-        <translation type="obsolete">Telemetrické ukazatele</translation>
-    </message>
-    <message>
-        <source>Bar Number</source>
-        <translation type="obsolete">Číslo ukazatele</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Zdroj</translation>
-    </message>
-    <message>
-        <source>Custom Telemetry View</source>
-        <translation type="obsolete">Vlastní zobrazení telemetrie</translation>
-    </message>
-    <message>
-        <source>Print Document</source>
-        <translation type="obsolete">Vytisknout dokument</translation>
-    </message>
-    <message>
-        <source>Select PDF output file</source>
-        <translation type="obsolete">Vyberte cílový PDF soubor</translation>
-    </message>
-</context>
-<context>
-    <name>contributorsDialog</name>
-    <message>
-        <source>People who have contributed to this project</source>
-        <translation type="obsolete">Lidé kteří přispěli tomuto projektu</translation>
-    </message>
-    <message>
-        <source>Coders</source>
-        <translation type="obsolete">Programátoři</translation>
-    </message>
-    <message>
-        <source>Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)</source>
-        <translation type="obsolete">Speciální poděkování patří Rafalu Tomczakovi (RadioClone),
-Thomasi Hustererovi (th9x) a také Erazovi Ravivovi(er9x a eePe)</translation>
-    </message>
-    <message>
-        <source>Companion Release Notes</source>
-        <translation type="obsolete">Poznámky k vydání Companion</translation>
-    </message>
-    <message>
-        <source>Thank you all !!!</source>
-        <translation type="obsolete">Děkujeme vám všem !!!</translation>
-    </message>
-    <message>
-        <source>Contributors</source>
-        <translation type="obsolete">Přispěvatelé</translation>
-    </message>
-    <message>
-        <source>OpenTX Release Notes</source>
-        <translation type="obsolete">Poznámky k vydání OpenTX</translation>
     </message>
 </context>
 <context>
@@ -13975,72 +10827,6 @@ Thomasi Hustererovi (th9x) a také Erazovi Ravivovi(er9x a eePe)</translation>
         <location filename="../downloaddialog.cpp" line="54"/>
         <source>Download failed: %1.</source>
         <translation>Stažení se nezdařilo: %1.</translation>
-    </message>
-</context>
-<context>
-    <name>fusesDialog</name>
-    <message>
-        <source>Fuses</source>
-        <translation type="obsolete">Pojistky mikrokontroléru</translation>
-    </message>
-    <message>
-        <source>Read Fuses</source>
-        <translation type="obsolete">Načíst konfiguraci pojistek</translation>
-    </message>
-    <message>
-        <source>Reset Fuses
-EEPROM - PROTECT</source>
-        <translation type="obsolete">Nastavení pojistek
-EEPROM - CHRÁNIT</translation>
-    </message>
-    <message>
-        <source>Reset Fuses
-EEPROM - DELETE</source>
-        <translation type="obsolete">Nastavení pojistek
-EEPROM - SMAZAT</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;WARNING&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Changing the fuses can mess up your radio.&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Proceed only if you know what you are doing.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;POZOR!&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Změna pojistek může poškodit vaše rádio.&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Provádějte pouze pokud opravdu víte co děláte.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>fwPreferencesDialog</name>
-    <message>
-        <source>Set language of voice.
-May be different from firmware language</source>
-        <translation type="obsolete">Vyberte jazykovou verzi hlasu tts(voice).
-Může být jiná než verze firmwaru</translation>
-    </message>
-    <message>
-        <source>Processor ID</source>
-        <translation type="obsolete">ID procesoru</translation>
-    </message>
-    <message>
-        <source>Voice Language</source>
-        <translation type="obsolete">Jazyk hlasových zpráv</translation>
-    </message>
-    <message>
-        <source>Check for updates</source>
-        <translation type="obsolete">Zkontrolovat aktualizace</translation>
-    </message>
-    <message>
-        <source>Last downloaded release: %1</source>
-        <translation type="obsolete">Naposledy stažené vydání: %1</translation>
     </message>
 </context>
 <context>
@@ -14269,59 +11055,6 @@ Tlačítkem Zrušit přerušíte kalibraci</translation>
         <source>Duplicated stick assignment</source>
         <translation>Duplicitní přiřazení páky</translation>
     </message>
-    <message>
-        <source>Duplicated stick assignement</source>
-        <translation type="obsolete">Duplicitní přiřazení páky</translation>
-    </message>
-</context>
-<context>
-    <name>logsDialog</name>
-    <message>
-        <source>Companion Log Viewer</source>
-        <translation type="obsolete">Prohlížeč logu</translation>
-    </message>
-    <message>
-        <source>Filename</source>
-        <translation type="obsolete">Soubor</translation>
-    </message>
-    <message>
-        <source>Open LogFile</source>
-        <translation type="obsolete">Otevřít</translation>
-    </message>
-    <message>
-        <source>Fly sessions</source>
-        <translation type="obsolete">Lety</translation>
-    </message>
-    <message>
-        <source>Telemetry logs</source>
-        <translation type="obsolete">Logy telemetrie</translation>
-    </message>
-    <message>
-        <source>Time (hh:mm:ss)</source>
-        <translation type="obsolete">Čas</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Chyba</translation>
-    </message>
-    <message>
-        <source>Cannot write file %1:
-%2.</source>
-        <translation type="obsolete">Nelze zapsat soubor %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Select your log file</source>
-        <translation type="obsolete">Vyberte soubor s logy</translation>
-    </message>
-    <message>
-        <source>Available fields</source>
-        <translation type="obsolete">Dostupná pole</translation>
-    </message>
-    <message>
-        <source>The selected logfile contains %1 invalid lines out of  %2 total lines</source>
-        <translation type="obsolete">Zvolený soubor logu obsahuje %1neplatných řádků z celkových %2</translation>
-    </message>
 </context>
 <context>
     <name>mdiChild</name>
@@ -14339,14 +11072,6 @@ Tlačítkem Zrušit přerušíte kalibraci</translation>
         <translation>Předvolby</translation>
     </message>
     <message>
-        <source>Check for selected Fw updates</source>
-        <translation type="obsolete">Aktualizace vybraného firmware</translation>
-    </message>
-    <message>
-        <source>Ask use of wizard for new models</source>
-        <translation type="obsolete">Zeptat se na použití průvodce pro nový model</translation>
-    </message>
-    <message>
         <location filename="../imgpreferences.ui" line="366"/>
         <source>Invert Pixels</source>
         <translation>Invertovat</translation>
@@ -14356,10 +11081,6 @@ Tlačítkem Zrušit přerušíte kalibraci</translation>
         <location filename="../imgpreferences.ui" line="356"/>
         <source>...</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>Remember switches in simulator</source>
-        <translation type="obsolete">Pamatovat si přepínače v simulátoru</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="120"/>
@@ -14378,155 +11099,9 @@ Tlačítkem Zrušit přerušíte kalibraci</translation>
         <translation>Vybrat složku</translation>
     </message>
     <message>
-        <source>Check for updates</source>
-        <translation type="obsolete">Zkontrolovat aktualizace</translation>
-    </message>
-    <message>
         <location filename="../imgpreferences.ui" line="336"/>
         <source>Open Image</source>
         <translation>Načíst obrázek</translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation type="obsolete">  Jazyk</translation>
-    </message>
-    <message>
-        <source>Download</source>
-        <translation type="obsolete">Stáhnout</translation>
-    </message>
-    <message>
-        <source>Set language of voice.
-May be different from firmware language</source>
-        <translation type="obsolete">Vyberte jazykovou verzi hlasu tts(voice).
-Může být jiná než verze firmwaru</translation>
-    </message>
-    <message>
-        <source>Voice</source>
-        <translation type="obsolete">Hlas tts</translation>
-    </message>
-    <message>
-        <source>Ask for flashing after Download</source>
-        <translation type="obsolete">Po stažení firmwaru se zeptat, zda ho hned zapsat do rádia </translation>
-    </message>
-    <message>
-        <source>R E T A</source>
-        <translation type="obsolete">S V P K</translation>
-    </message>
-    <message>
-        <source>R E A T</source>
-        <translation type="obsolete">S V K P</translation>
-    </message>
-    <message>
-        <source>R T E A</source>
-        <translation type="obsolete">S P V K</translation>
-    </message>
-    <message>
-        <source>R T A E</source>
-        <translation type="obsolete">S P K V</translation>
-    </message>
-    <message>
-        <source>R A E T</source>
-        <translation type="obsolete">S K V P</translation>
-    </message>
-    <message>
-        <source>R A T E</source>
-        <translation type="obsolete">S K P V</translation>
-    </message>
-    <message>
-        <source>E R T A</source>
-        <translation type="obsolete">V S P K</translation>
-    </message>
-    <message>
-        <source>E R A T</source>
-        <translation type="obsolete">V S K P</translation>
-    </message>
-    <message>
-        <source>E T R A</source>
-        <translation type="obsolete">V P S K</translation>
-    </message>
-    <message>
-        <source>E T A R</source>
-        <translation type="obsolete">V P K S</translation>
-    </message>
-    <message>
-        <source>E A R T</source>
-        <translation type="obsolete">V K S P</translation>
-    </message>
-    <message>
-        <source>E A T R</source>
-        <translation type="obsolete">V K P S</translation>
-    </message>
-    <message>
-        <source>T R E A</source>
-        <translation type="obsolete">P S V K</translation>
-    </message>
-    <message>
-        <source>T R A E</source>
-        <translation type="obsolete">P S K V</translation>
-    </message>
-    <message>
-        <source>T E R A</source>
-        <translation type="obsolete">P V S K</translation>
-    </message>
-    <message>
-        <source>T E A R</source>
-        <translation type="obsolete">P V K S</translation>
-    </message>
-    <message>
-        <source>T A R E</source>
-        <translation type="obsolete">P K S V</translation>
-    </message>
-    <message>
-        <source>T A E R</source>
-        <translation type="obsolete">P K V S</translation>
-    </message>
-    <message>
-        <source>A R E T</source>
-        <translation type="obsolete">K S V P</translation>
-    </message>
-    <message>
-        <source>A R T E</source>
-        <translation type="obsolete">K S P V</translation>
-    </message>
-    <message>
-        <source>A E R T</source>
-        <translation type="obsolete">K V S P</translation>
-    </message>
-    <message>
-        <source>A E T R</source>
-        <translation type="obsolete">K V P S</translation>
-    </message>
-    <message>
-        <source>A T R E</source>
-        <translation type="obsolete">K P S V</translation>
-    </message>
-    <message>
-        <source>A T E R</source>
-        <translation type="obsolete">K P V S</translation>
-    </message>
-    <message>
-        <source>Export Profile</source>
-        <translation type="obsolete">Exportovat profil</translation>
-    </message>
-    <message>
-        <source>Import Profile</source>
-        <translation type="obsolete">Importovat profil</translation>
-    </message>
-    <message>
-        <source>Profile Name</source>
-        <translation type="obsolete">Název profilu</translation>
-    </message>
-    <message>
-        <source>Automatically add version number to the filename after download</source>
-        <translation type="obsolete">Přidat číslo verze do názvu souboru staženého firmwaru </translation>
-    </message>
-    <message>
-        <source>Save Profile</source>
-        <translation type="obsolete">Uložit profil</translation>
-    </message>
-    <message>
-        <source>Show Splash At Start</source>
-        <translation type="obsolete">Zobrazit úvodní logo Companion</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="64"/>
@@ -14565,91 +11140,14 @@ Může být jiná než verze firmwaru</translation>
         <translation>Žlutá</translation>
     </message>
     <message>
-        <source>Check for updates on startup</source>
-        <translation type="obsolete">Aktualizace při spuštění</translation>
-    </message>
-    <message>
         <location filename="../imgpreferences.ui" line="311"/>
         <source>Custom TX splash screen</source>
         <translation>Vlastní úvodní logo</translation>
     </message>
     <message>
-        <source>Channel order
-
-This is used by the templated to determine which channel goes to what number output.</source>
-        <translation type="obsolete">Pořadí kanálů
-
-Toto je použito šablonami k určení
-který kanál patří ke kterému výstupu.</translation>
-    </message>
-    <message>
-        <source>Default Stick Mode</source>
-        <translation type="obsolete">Výchozí mód vysílačky</translation>
-    </message>
-    <message>
-        <source>Default Channel Order</source>
-        <translation type="obsolete">Výchozí pořadí kanálů</translation>
-    </message>
-    <message>
         <location filename="../imgpreferences.ui" line="216"/>
         <source>Personal splash library</source>
         <translation>Vlastní knihovna s logy</translation>
-    </message>
-    <message>
-        <source>Mode selection:
-
-Mode 1:
-  Left stick:  Elevator, Rudder
-  Right stick:  Throttle, Aileron
-
-Mode 2:
-  Left stick:  Throttle, Rudder
-  Right stick:  Elevator, Aileron
-
-Mode 3:
-  Left stick:  Elevator, Aileron
-  Right stick:  Throttle, Rudder
-
-Mode 4:
-  Left stick:  Throttle, Aileron
-  Right stick:  Elevator, Rudder
-
-</source>
-        <translation type="obsolete">Výběr módu:
-
-Mode 1:
-  Levá páka  :  Výškovka, Směrovka
-  Pravá páka:  Plyn, Křidélka
-
-Mode 2:
-  Levá páka  :  Plyn, Směrovka
-  Pravá páka:  Výškovka, Křidélka
-
-Mode 3:
-  Levá páka  :  Výškovka, Křidélka
-  Pravá páka:  Plyn, Směrovka
-
-Mode 4:
-  Levá páka  :  Plyn, Křidélka
-  Pravá páka:  Výškovka, Směrovka
-
-</translation>
-    </message>
-    <message>
-        <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="obsolete">Mode 1 (Směr.Výšk.Plyn.Křid)</translation>
-    </message>
-    <message>
-        <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="obsolete">Mode 2 (Směr.Plyn.Výšk.Křid)</translation>
-    </message>
-    <message>
-        <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="obsolete">Mode 3 (Křid.Výšk.Plyn.Směr)</translation>
-    </message>
-    <message>
-        <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="obsolete">Mode 4 (Křid.Plyn.Výšk.Směr)</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="87"/>
@@ -14672,38 +11170,6 @@ Mode 4:
         <translation>Chování knihovny s logy</translation>
     </message>
     <message>
-        <source>Automatic Backup Folder</source>
-        <translation type="obsolete">Složka pro automatické zálohy</translation>
-    </message>
-    <message>
-        <source>SD Structure path</source>
-        <translation type="obsolete">Cesta k obsahu SD karty</translation>
-    </message>
-    <message>
-        <source>Processor ID</source>
-        <translation type="obsolete">ID procesoru</translation>
-    </message>
-    <message>
-        <source>Recent History Size</source>
-        <translation type="obsolete">Počet položek nedávné historie</translation>
-    </message>
-    <message>
-        <source>Find Executable</source>
-        <translation type="obsolete">Najít</translation>
-    </message>
-    <message>
-        <source>Google Earth Executable</source>
-        <translation type="obsolete">Spustitelný soubor Google Earth</translation>
-    </message>
-    <message>
-        <source>Profile slot</source>
-        <translation type="obsolete">Slot profilu</translation>
-    </message>
-    <message>
-        <source>auto backup before write</source>
-        <translation type="obsolete">zálohovat před zápisem</translation>
-    </message>
-    <message>
         <location filename="../imgpreferences.ui" line="74"/>
         <source>Simulator capture folder</source>
         <translation>Složka pro snímky obrazovky Simu</translation>
@@ -14712,274 +11178,6 @@ Mode 4:
         <location filename="../imgpreferences.ui" line="129"/>
         <source>Use clipboard only</source>
         <translation>Kopírovat pouze do schránky</translation>
-    </message>
-</context>
-<context>
-    <name>printDialog</name>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Zavřít</translation>
-    </message>
-    <message>
-        <source>Print</source>
-        <translation type="obsolete">Tisk</translation>
-    </message>
-    <message>
-        <source>Print to file</source>
-        <translation type="obsolete">Tisk do souboru</translation>
-    </message>
-    <message>
-        <source>Setup for: </source>
-        <translation type="obsolete">Nastavení: </translation>
-    </message>
-    <message>
-        <source>printed on: %1</source>
-        <translation type="obsolete">vytištěno: %1</translation>
-    </message>
-    <message>
-        <source>General Model Settings</source>
-        <translation type="obsolete">Obecná nastavení modelu</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Název</translation>
-    </message>
-    <message>
-        <source>EEprom Size</source>
-        <translation type="obsolete">Velikost EEPROM</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protokol</translation>
-    </message>
-    <message>
-        <source>Pulse Polarity</source>
-        <translation type="obsolete">Polarita pulzů</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Trim plynu</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Povoleno</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Zakázáno</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Expo plynu</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Krok trimu</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Zvuk ve středové poloze</translation>
-    </message>
-    <message>
-        <source>Flight modes Settings</source>
-        <oldsource>Flight Phases Settings</oldsource>
-        <translation type="obsolete">Nastavení letových fází</translation>
-    </message>
-    <message>
-        <source>Fades</source>
-        <translation type="obsolete">Přechody</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Trimy</translation>
-    </message>
-    <message>
-        <source>Gvars</source>
-        <translation type="obsolete">GProm</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Spínač</translation>
-    </message>
-    <message>
-        <source>IN</source>
-        <translation type="obsolete">(+)</translation>
-    </message>
-    <message>
-        <source>OUT</source>
-        <translation type="obsolete">(-)</translation>
-    </message>
-    <message>
-        <source>FM</source>
-        <oldsource>FP</oldsource>
-        <translation type="obsolete">LR</translation>
-    </message>
-    <message>
-        <source>Expo/Dr Settings</source>
-        <translation type="obsolete">Expo/Nastavení DV</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Váha</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Křivka</translation>
-    </message>
-    <message>
-        <source>Mixers</source>
-        <translation type="obsolete">Mixy</translation>
-    </message>
-    <message>
-        <source>noTrim</source>
-        <translation type="obsolete">Žádný trim</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Ofset</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete"> Zpoždění(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Zpomalení(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>Warn</source>
-        <translation type="obsolete">Varování</translation>
-    </message>
-    <message>
-        <source>DISABLED</source>
-        <translation type="obsolete">ZAKÁZÁN</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Limity</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Invertovat</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">---</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Křivky</translation>
-    </message>
-    <message>
-        <source>pt %1</source>
-        <translation type="obsolete">bod %1</translation>
-    </message>
-    <message>
-        <source>Global Variables</source>
-        <translation type="obsolete">Globální proměnné</translation>
-    </message>
-    <message>
-        <source>GV</source>
-        <translation type="obsolete">GP</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Hodnota</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Funkce</translation>
-    </message>
-    <message>
-        <source>Parameter</source>
-        <translation type="obsolete">Parametr</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="obsolete">Opakování</translation>
-    </message>
-    <message>
-        <source>Telemetry Settings</source>
-        <translation type="obsolete">Nastavení telemetrie</translation>
-    </message>
-    <message>
-        <source>Unit</source>
-        <translation type="obsolete">Jednotky</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">Rozsah</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Typ</translation>
-    </message>
-    <message>
-        <source>Condition</source>
-        <translation type="obsolete">Podmínka</translation>
-    </message>
-    <message>
-        <source>Frsky serial protocol</source>
-        <translation type="obsolete">Sériový protokol Frsky</translation>
-    </message>
-    <message>
-        <source>System of units</source>
-        <translation type="obsolete">Systém jednotek</translation>
-    </message>
-    <message>
-        <source>Telemetry Bars</source>
-        <translation type="obsolete">Telemetrické ukazatele</translation>
-    </message>
-    <message>
-        <source>Bar Number</source>
-        <translation type="obsolete">Číslo ukazatele</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Zdroj</translation>
-    </message>
-    <message>
-        <source>ODF files (*.odt);;PDF Files(*.pdf);;HTML-Files (*.htm *.html);;All Files (*)</source>
-        <translation type="obsolete">soubor ODF (*.odt);;soubor PDF (*.pdf);;soubor HTML (*.htm *.html);;Všechny (*)</translation>
-    </message>
-    <message>
-        <source>Custom Telemetry View</source>
-        <translation type="obsolete">Vlastní zobrazení telemetrie</translation>
-    </message>
-    <message>
-        <source>Flight mode name</source>
-        <translation type="obsolete">Název režimu</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Letové režimy</translation>
-    </message>
-    <message>
-        <source>Flight mode</source>
-        <translation type="obsolete">Letový režim</translation>
-    </message>
-    <message>
-        <source>Blades</source>
-        <translation type="obsolete">Počet listů vrtule</translation>
-    </message>
-    <message>
-        <source>Print Document</source>
-        <translation type="obsolete">Vytisknout dokument</translation>
-    </message>
-    <message>
-        <source>Select PDF output file</source>
-        <translation type="obsolete">Vyberte cílový PDF soubor</translation>
-    </message>
-</context>
-<context>
-    <name>taranisNotFoundDialog</name>
-    <message>
-        <source>No Taranis Radio Found</source>
-        <translation type="obsolete">Rádio Taranis nebylo nalezeno</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Taranis Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rádio taranis nebylo nalezeno!&lt;/p&gt;&lt;p&gt;Ujistěte se, že během zapínání rádia, držíte spodní trimy proti sobě.&lt;/p&gt;&lt;p&gt;Až poté připojte USB kabel.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 </TS>

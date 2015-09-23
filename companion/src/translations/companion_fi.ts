@@ -104,10 +104,6 @@
         <translation>Valitse kuva</translation>
     </message>
     <message>
-        <source>Processor ID</source>
-        <translation type="obsolete">Prossu ID</translation>
-    </message>
-    <message>
         <location filename="../apppreferencesdialog.ui" line="370"/>
         <source>Mode selection:
 
@@ -383,12 +379,6 @@ Tila 4:
         <translation>SD muistikortin kansio</translation>
     </message>
     <message>
-        <source>Set language of voice.
-May be different from firmware language</source>
-        <translation type="obsolete">Aseta äänen kieli.
-Voi olla eri kun firmwaren kieli</translation>
-    </message>
-    <message>
         <location filename="../apppreferencesdialog.ui" line="143"/>
         <source>Voice Language</source>
         <translation>Äänen kieli</translation>
@@ -610,25 +600,6 @@ Voi olla eri kun firmwaren kieli</translation>
     </message>
 </context>
 <context>
-    <name>BankPage</name>
-    <message>
-        <source>One</source>
-        <translation type="obsolete">Yksi</translation>
-    </message>
-    <message>
-        <source>Two</source>
-        <translation type="obsolete">Kaksi</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation type="obsolete">&lt;br&gt;1. korkeusper kanava:</translation>
-    </message>
-    <message>
-        <source>Second Elevon Channel:</source>
-        <translation type="obsolete">2. korkeusper kanava:</translation>
-    </message>
-</context>
-<context>
     <name>Calibration</name>
     <message>
         <location filename="../generaledit/calibration.ui" line="14"/>
@@ -805,10 +776,6 @@ Voi olla eri kun firmwaren kieli</translation>
         <translation type="unfinished">Tikku 4</translation>
     </message>
     <message>
-        <source>Battery</source>
-        <translation type="obsolete">Akku</translation>
-    </message>
-    <message>
         <location filename="../generaledit/calibration.ui" line="577"/>
         <source>v</source>
         <translation type="unfinished">v</translation>
@@ -827,10 +794,6 @@ Voi olla eri kun firmwaren kieli</translation>
         <location filename="../generaledit/calibration.ui" line="696"/>
         <source>PPM 4</source>
         <translation type="unfinished">PPM 4</translation>
-    </message>
-    <message>
-        <source>Current</source>
-        <translation type="obsolete">Virta</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="567"/>
@@ -1006,10 +969,6 @@ Voi olla eri kun firmwaren kieli</translation>
         <translation>Nimi</translation>
     </message>
     <message>
-        <source>Offset</source>
-        <translation type="obsolete">Tasoitus</translation>
-    </message>
-    <message>
         <location filename="../modeledit/channels.cpp" line="86"/>
         <source>Min</source>
         <translation>Min</translation>
@@ -1018,18 +977,6 @@ Voi olla eri kun firmwaren kieli</translation>
         <location filename="../modeledit/channels.cpp" line="87"/>
         <source>Max</source>
         <translation>Max</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Käänteinen</translation>
-    </message>
-    <message>
-        <source>Center</source>
-        <translation type="obsolete">Keski</translation>
-    </message>
-    <message>
-        <source>Sym</source>
-        <translation type="obsolete">Sym</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="85"/>
@@ -1110,290 +1057,6 @@ Voi olla eri kun firmwaren kieli</translation>
         <translation>Ei nimeä</translation>
     </message>
     <message>
-        <source>General Model Settings</source>
-        <translation type="obsolete">Yleiset mallin asetukset</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nimi</translation>
-    </message>
-    <message>
-        <source>EEprom Size</source>
-        <translation type="obsolete">EEpromin koko</translation>
-    </message>
-    <message>
-        <source>Timer1</source>
-        <translation type="obsolete">Ajastin 1</translation>
-    </message>
-    <message>
-        <source>Timer2</source>
-        <translation type="obsolete">Ajastin 2</translation>
-    </message>
-    <message>
-        <source>Internal Radio System</source>
-        <translation type="obsolete">Sisäinen radio systeemi</translation>
-    </message>
-    <message>
-        <source>Radio System</source>
-        <translation type="obsolete">Radio systeemi</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protokolla</translation>
-    </message>
-    <message>
-        <source>Pulse Polarity</source>
-        <translation type="obsolete">Pulssin napaisuus</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Kaasu trimmi</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Päälle</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Pois</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Kaasu expo</translation>
-    </message>
-    <message>
-        <source>External Radio Module</source>
-        <translation type="obsolete">Ulkoinen radio systeemi</translation>
-    </message>
-    <message>
-        <source>Extra Radio System</source>
-        <translation type="obsolete">Extra Radio järjestelmä</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Keski piippaus</translation>
-    </message>
-    <message>
-        <source>Flight modes Settings</source>
-        <translation type="obsolete">Lentotilan asetukset</translation>
-    </message>
-    <message>
-        <source>Fades</source>
-        <translation type="obsolete">Liut</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Trimmit</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Kytkin</translation>
-    </message>
-    <message>
-        <source>Flight mode name</source>
-        <translation type="obsolete">Lentotilan nimi</translation>
-    </message>
-    <message>
-        <source>IN</source>
-        <translation type="obsolete">SIS</translation>
-    </message>
-    <message>
-        <source>OUT</source>
-        <translation type="obsolete">ULO</translation>
-    </message>
-    <message>
-        <source>FM</source>
-        <translation type="obsolete">FM</translation>
-    </message>
-    <message>
-        <source>Gvars</source>
-        <translation type="obsolete">Gvarit</translation>
-    </message>
-    <message>
-        <source>Rot. Enc.</source>
-        <translation type="obsolete">Rot.Enc.</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Rajat</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Tasoitus</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Min</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Max</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Käänteinen</translation>
-    </message>
-    <message>
-        <source>CH</source>
-        <translation type="obsolete">ch</translation>
-    </message>
-    <message>
-        <source>INV</source>
-        <translation type="obsolete">KÄÄNT</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">NOR</translation>
-    </message>
-    <message>
-        <source>Global Variables</source>
-        <translation type="obsolete">Globaalit muuttujat</translation>
-    </message>
-    <message>
-        <source>GV</source>
-        <translation type="obsolete">GV</translation>
-    </message>
-    <message>
-        <source>Inputs</source>
-        <translation type="obsolete">Tulot</translation>
-    </message>
-    <message>
-        <source>L</source>
-        <translation type="obsolete">L</translation>
-    </message>
-    <message>
-        <source>Expo/Dr Settings</source>
-        <translation type="obsolete">Expo / DR asetukset</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Paino</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Lento tilat</translation>
-    </message>
-    <message>
-        <source>Flight mode</source>
-        <translation type="obsolete">Lento tila</translation>
-    </message>
-    <message>
-        <source>DISABLED</source>
-        <translation type="obsolete">Pois</translation>
-    </message>
-    <message>
-        <source>Mixers</source>
-        <translation type="obsolete">Mikserit</translation>
-    </message>
-    <message>
-        <source>noTrim</source>
-        <translation type="obsolete">Ei trimmiä</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete">Viive(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Käyrät</translation>
-    </message>
-    <message>
-        <source>L%1</source>
-        <translation type="obsolete">L%1</translation>
-    </message>
-    <message>
-        <source>pt %1</source>
-        <translation type="obsolete">pt %1</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Käyrä</translation>
-    </message>
-    <message>
-        <source>Logical Switches</source>
-        <translation type="obsolete">Loogiset kytkimet</translation>
-    </message>
-    <message>
-        <source>LS</source>
-        <translation type="obsolete">LS</translation>
-    </message>
-    <message>
-        <source>Special Functions</source>
-        <translation type="obsolete">Spesiaali toiminnot</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Toiminto</translation>
-    </message>
-    <message>
-        <source>Param</source>
-        <translation type="obsolete">Parametrit</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="obsolete">Toista</translation>
-    </message>
-    <message>
-        <source>Enable</source>
-        <translation type="obsolete">Päälle</translation>
-    </message>
-    <message>
-        <source>SF</source>
-        <translation type="obsolete">SF</translation>
-    </message>
-    <message>
-        <source>Telemetry Settings</source>
-        <translation type="obsolete">Telemetria asetukset</translation>
-    </message>
-    <message>
-        <source>Analog</source>
-        <translation type="obsolete">Analoginen</translation>
-    </message>
-    <message>
-        <source>Unit</source>
-        <translation type="obsolete">Yksikkö</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">Skaala</translation>
-    </message>
-    <message>
-        <source>A%1</source>
-        <translation type="obsolete">A%1</translation>
-    </message>
-    <message>
-        <source>Alarm 1</source>
-        <translation type="obsolete">Varoitus 1</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tyyppi</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Arvo</translation>
-    </message>
-    <message>
-        <source>RSSI Alarm</source>
-        <translation type="obsolete">RSSI hälytys</translation>
-    </message>
-    <message>
-        <source>Custom Telemetry View</source>
-        <translation type="obsolete">Oma telemetria näkymä</translation>
-    </message>
-    <message>
-        <source>Telemetry Bars</source>
-        <translation type="obsolete">Telemetria palkein</translation>
-    </message>
-    <message>
-        <source>Bar Number</source>
-        <translation type="obsolete">Palkkien määrä</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Lähde</translation>
-    </message>
-    <message>
         <location filename="../comparedialog.cpp" line="122"/>
         <source>Print Document</source>
         <translation>Tulosta dokumentti</translation>
@@ -1448,10 +1111,6 @@ Voi olla eri kun firmwaren kieli</translation>
         <location filename="../contributorsdialog.cpp" line="71"/>
         <source>OpenTX Blacklist</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Thank you all !!!</source>
-        <translation type="obsolete">Kiitokset kaikille !!!</translation>
     </message>
     <message>
         <location filename="../contributorsdialog.cpp" line="102"/>
@@ -1509,18 +1168,6 @@ Voi olla eri kun firmwaren kieli</translation>
 </context>
 <context>
     <name>Curves</name>
-    <message>
-        <source>Form</source>
-        <translation type="obsolete">Käyrät</translation>
-    </message>
-    <message>
-        <source>Standard</source>
-        <translation type="obsolete">Vakio</translation>
-    </message>
-    <message>
-        <source>Custom</source>
-        <translation type="obsolete">Omat</translation>
-    </message>
     <message>
         <location filename="../modeledit/curves.ui" line="68"/>
         <source>Fixed X</source>
@@ -1663,10 +1310,6 @@ Voi olla eri kun firmwaren kieli</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Are you sure you want to reset curve %1 ?</source>
-        <translation type="obsolete">Oletko varma että haluat palauttaa käyrän %1 ?</translation>
-    </message>
-    <message>
         <location filename="../modeledit/curves.cpp" line="287"/>
         <source>Editing curve %1</source>
         <translation>Muutetaan käyrää %1</translation>
@@ -1698,10 +1341,6 @@ Voi olla eri kun firmwaren kieli</translation>
         <location filename="../modeledit/customfunctions.cpp" line="60"/>
         <source>Enable</source>
         <translation>Päälle</translation>
-    </message>
-    <message>
-        <source>CF%1</source>
-        <translation type="obsolete">OF%1</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="99"/>
@@ -1798,65 +1437,6 @@ Voi olla eri kun firmwaren kieli</translation>
         <location filename="../simulation/debugoutput.ui" line="14"/>
         <source>Debug Output</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Dialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Käyrä</translation>
-    </message>
-    <message>
-        <source>Curve type</source>
-        <translation type="obsolete">Tyyppi</translation>
-    </message>
-    <message>
-        <source>Coefficient</source>
-        <translation type="obsolete">Vaikutus</translation>
-    </message>
-    <message>
-        <source>Both</source>
-        <translation type="obsolete">Molemmat</translation>
-    </message>
-    <message>
-        <source>x&gt;0</source>
-        <translation type="obsolete">x&gt;0</translation>
-    </message>
-    <message>
-        <source>x&lt;0</source>
-        <translation type="obsolete">x&lt;0</translation>
-    </message>
-    <message>
-        <source>Y at X=0</source>
-        <translation type="obsolete">Y suhde X =0</translation>
-    </message>
-    <message>
-        <source>Side</source>
-        <translation type="obsolete">Sivu</translation>
-    </message>
-    <message>
-        <source>Y at X=-100</source>
-        <translation type="obsolete">Y suhde X =-100</translation>
-    </message>
-    <message>
-        <source>Y at X=100</source>
-        <translation type="obsolete">Y suhde X =100</translation>
-    </message>
-    <message>
-        <source>Linear</source>
-        <translation type="obsolete">Suora</translation>
-    </message>
-    <message>
-        <source>Single Expo</source>
-        <translation type="obsolete">yks expo</translation>
-    </message>
-    <message>
-        <source>Symmetrical f(x)=-f(-x)</source>
-        <translation type="obsolete">Symmetrinen f(x)=-f(-x)</translation>
-    </message>
-    <message>
-        <source>Symmetrical f(x)=f(-x)</source>
-        <translation type="obsolete">Symmetrinen f(x)=f(-x)</translation>
     </message>
 </context>
 <context>
@@ -1964,137 +1544,6 @@ Voi olla eri kun firmwaren kieli</translation>
     </message>
 </context>
 <context>
-    <name>Er9x::Templates</name>
-    <message>
-        <source>Simple 4-CH</source>
-        <translation type="obsolete">Yksinkertainen 4-CH</translation>
-    </message>
-    <message>
-        <source>T-Cut</source>
-        <translation type="obsolete">t-Cut</translation>
-    </message>
-    <message>
-        <source>Sticky T-Cut</source>
-        <translation type="obsolete">Tahmea T-Cut</translation>
-    </message>
-    <message>
-        <source>V-Tail</source>
-        <translation type="obsolete">V-Peräsin</translation>
-    </message>
-    <message>
-        <source>Elevon\Delta</source>
-        <translation type="obsolete">Elevoni \ Delta</translation>
-    </message>
-    <message>
-        <source>Heli Setup</source>
-        <translation type="obsolete">Kopteri asetukset</translation>
-    </message>
-    <message>
-        <source>Heli Setup with gyro gain control</source>
-        <translation type="obsolete">Kopteri asetukset Gyron kanssa</translation>
-    </message>
-    <message>
-        <source>Gyro gain control</source>
-        <translation type="obsolete">Gyron asetukset</translation>
-    </message>
-    <message>
-        <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
-        <translation type="obsolete">Kopterin asetukset ( futaba tyylinen kanavien asettelu)</translation>
-    </message>
-    <message>
-        <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="obsolete">Kopterin asetukset + Gyro ( futaba tyylinen kanavien asettelu)</translation>
-    </message>
-    <message>
-        <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="obsolete">Gyron asetukset ( Futaba tyylinen kanavien asettelu)</translation>
-    </message>
-    <message>
-        <source>Servo Test</source>
-        <translation type="obsolete">Servo testi</translation>
-    </message>
-    <message>
-        <source>MultiCopter</source>
-        <translation type="obsolete">Multikopteri</translation>
-    </message>
-    <message>
-        <source>Use Model Config Wizard</source>
-        <translation type="obsolete">Käytä mallien teko apuria</translation>
-    </message>
-    <message>
-        <source>Apply Template?</source>
-        <translation type="obsolete">Käytä tätä mallia ?</translation>
-    </message>
-    <message>
-        <source>Apply template &quot;%1&quot;?</source>
-        <translation type="obsolete">Käytä mallia &quot;%1&quot;?</translation>
-    </message>
-    <message>
-        <source>RUD</source>
-        <translation type="obsolete">PER</translation>
-    </message>
-    <message>
-        <source>ELE</source>
-        <translation type="obsolete">KOR</translation>
-    </message>
-    <message>
-        <source>THR</source>
-        <translation type="obsolete">KAA</translation>
-    </message>
-    <message>
-        <source>AIL</source>
-        <translation type="obsolete">SII</translation>
-    </message>
-    <message>
-        <source>AIL2</source>
-        <translation type="obsolete">SII2</translation>
-    </message>
-    <message>
-        <source>ELE2</source>
-        <translation type="obsolete">KOR2</translation>
-    </message>
-    <message>
-        <source>FLAPS</source>
-        <translation type="obsolete">LAIPAT</translation>
-    </message>
-    <message>
-        <source>FLAP%1</source>
-        <translation type="obsolete">LAIPAT%1</translation>
-    </message>
-    <message>
-        <source>PITCH</source>
-        <translation type="obsolete">PITCH</translation>
-    </message>
-    <message>
-        <source>GYRO</source>
-        <translation type="obsolete">GYRO</translation>
-    </message>
-    <message>
-        <source>SPOIL</source>
-        <translation type="obsolete">SPOIL</translation>
-    </message>
-    <message>
-        <source>SPOIL%1</source>
-        <translation type="obsolete">SPOIL%1</translation>
-    </message>
-    <message>
-        <source>RUD2</source>
-        <translation type="obsolete">PER2</translation>
-    </message>
-    <message>
-        <source>Clear Mixes?</source>
-        <translation type="obsolete">Tyhjennä mikserit?</translation>
-    </message>
-    <message>
-        <source>Really clear existing mixes on CH6?</source>
-        <translation type="obsolete">Varmasti tyhjennä mikseri 6CH ?</translation>
-    </message>
-    <message>
-        <source>Really clear existing mixes on CH5?</source>
-        <translation type="obsolete">Varmasti tyhjennä mikseri CH5 ?</translation>
-    </message>
-</context>
-<context>
     <name>ExpoDialog</name>
     <message>
         <location filename="../modeledit/expodialog.ui" line="454"/>
@@ -2119,60 +1568,14 @@ Voi olla eri kun firmwaren kieli</translation>
         <translation>GV</translation>
     </message>
     <message>
-        <source>Phase used by the input.</source>
-        <translation type="obsolete">Tulossa käytetty.</translation>
-    </message>
-    <message>
         <location filename="../modeledit/expodialog.ui" line="36"/>
         <source>Flight modes</source>
         <translation>Lento tilat</translation>
     </message>
     <message>
-        <source>0</source>
-        <translation type="obsolete">0</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
-    </message>
-    <message>
-        <source>2</source>
-        <translation type="obsolete">2</translation>
-    </message>
-    <message>
-        <source>3</source>
-        <translation type="obsolete">3</translation>
-    </message>
-    <message>
-        <source>4</source>
-        <translation type="obsolete">4</translation>
-    </message>
-    <message>
-        <source>5</source>
-        <translation type="obsolete">5</translation>
-    </message>
-    <message>
-        <source>6</source>
-        <translation type="obsolete">6</translation>
-    </message>
-    <message>
-        <source>7</source>
-        <translation type="obsolete">7</translation>
-    </message>
-    <message>
-        <source>8</source>
-        <translation type="obsolete">8</translation>
-    </message>
-    <message>
         <location filename="../modeledit/expodialog.ui" line="262"/>
         <source>Switch</source>
         <translation>Kytkin</translation>
-    </message>
-    <message>
-        <source>Switch used by the input.
-If blank then the input is considered to be &quot;ON&quot; all the time.</source>
-        <translation type="obsolete">Tulossa käytetty kytkin.
-Jos tyhjä tulon katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="277"/>
@@ -2193,30 +1596,6 @@ Jos tyhjä tulon katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <location filename="../modeledit/expodialog.ui" line="295"/>
         <source>ALL</source>
         <translation>Kaikki</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Delay and slow&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These values control the speed and delay of the output of the mix.  &lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Delay is not zero the actuation of the mix will be delayed by the specified amount of seconds.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Slow is not zero then the speed of the mix will be set by the value specified -&amp;gt; the value states the number of seconds it takes to transit from -100 to 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Delay and slow&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These values control the speed and delay of the output of the mix.  &lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Delay is not zero the actuation of the mix will be delayed by the specified amount of seconds.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Slow is not zero then the speed of the mix will be set by the value specified -&amp;gt; the value states the number of seconds it takes to transit from -100 to 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="91"/>
@@ -2266,10 +1645,6 @@ Jos on tyhjä, katsotaan tulon olen ON tilassa kokoajan.</translation>
         <translation>Tasoitus</translation>
     </message>
     <message>
-        <source>The curve used by the input</source>
-        <translation type="obsolete">Tulossa käytettävä käyrä</translation>
-    </message>
-    <message>
         <location filename="../modeledit/expodialog.ui" line="414"/>
         <source>Source</source>
         <translation>Lähde</translation>
@@ -2284,25 +1659,9 @@ Jos on tyhjä, katsotaan tulon olen ON tilassa kokoajan.</translation>
         <source>Edit %1</source>
         <translation>Muuta %1</translation>
     </message>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">PER</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">KOR</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">SII</translation>
-    </message>
 </context>
 <context>
     <name>FblPage</name>
-    <message>
-        <source>Trottle Channel:</source>
-        <translation type="obsolete">Kaasu kanava:</translation>
-    </message>
     <message>
         <location filename="../wizarddialog.cpp" line="844"/>
         <source>Throttle Channel:</source>
@@ -2349,48 +1708,6 @@ May be different from firmware language</source>
 Voi olla eri kun firmwaren kieli</translation>
     </message>
     <message>
-        <source>Set language of voice.
-May be different from firmware language</source>
-        <translation type="obsolete">Aseta äänen kieli.
-Voi olla eri kun firmwaren kieli</translation>
-    </message>
-    <message>
-        <source>en</source>
-        <translation type="obsolete">en</translation>
-    </message>
-    <message>
-        <source>cz</source>
-        <translation type="obsolete">cz</translation>
-    </message>
-    <message>
-        <source>de</source>
-        <translation type="obsolete">de</translation>
-    </message>
-    <message>
-        <source>es</source>
-        <translation type="obsolete">es</translation>
-    </message>
-    <message>
-        <source>fr</source>
-        <translation type="obsolete">fr</translation>
-    </message>
-    <message>
-        <source>it</source>
-        <translation type="obsolete">it</translation>
-    </message>
-    <message>
-        <source>pl</source>
-        <translation type="obsolete">pl</translation>
-    </message>
-    <message>
-        <source>pt</source>
-        <translation type="obsolete">pt</translation>
-    </message>
-    <message>
-        <source>se</source>
-        <translation type="obsolete">se</translation>
-    </message>
-    <message>
         <location filename="../fwpreferencesdialog.ui" line="89"/>
         <source>Download Voice</source>
         <translation>Lataa äänet</translation>
@@ -2404,10 +1721,6 @@ Voi olla eri kun firmwaren kieli</translation>
         <location filename="../fwpreferencesdialog.ui" line="143"/>
         <source>Firmware</source>
         <translation>Firmware</translation>
-    </message>
-    <message>
-        <source>-</source>
-        <translation type="obsolete">-</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="173"/>
@@ -2902,10 +2215,6 @@ Please use ZADIG to properly install the driver.</source>
 <context>
     <name>FlightMode</name>
     <message>
-        <source>Form</source>
-        <translation type="obsolete">Lentotila</translation>
-    </message>
-    <message>
         <location filename="../modeledit/flightmode.ui" line="22"/>
         <source>Fade In</source>
         <translation>Fade In</translation>
@@ -2925,69 +2234,9 @@ Please use ZADIG to properly install the driver.</source>
         <source>Switch</source>
         <translation>Kytkin</translation>
     </message>
-    <message>
-        <source>trim1</source>
-        <translation type="obsolete">Trimmi1</translation>
-    </message>
-    <message>
-        <source>trim2</source>
-        <translation type="obsolete">Trimmi2</translation>
-    </message>
-    <message>
-        <source>trim4</source>
-        <translation type="obsolete">Trimmi4</translation>
-    </message>
-    <message>
-        <source>trim3</source>
-        <translation type="obsolete">Trimmi3</translation>
-    </message>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">PER</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">KOR</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">KAA</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">SII</translation>
-    </message>
-    <message>
-        <source>Rotary Encoder %1</source>
-        <translation type="obsolete">Rotary Encoder?? %1</translation>
-    </message>
-    <message>
-        <source>GVAR%1</source>
-        <translation type="obsolete">GVAR %1</translation>
-    </message>
-    <message>
-        <source>Popup enabled</source>
-        <translation type="obsolete">Popupit sallittu</translation>
-    </message>
 </context>
 <context>
     <name>FlightModePanel</name>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">PER</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">KOR</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">KAA</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">SII</translation>
-    </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="106"/>
         <source>Rotary Encoder %1</source>
@@ -3002,21 +2251,6 @@ Please use ZADIG to properly install the driver.</source>
         <location filename="../modeledit/flightmodes.cpp" line="173"/>
         <source>Popup enabled</source>
         <translation>Popupit sallittu</translation>
-    </message>
-</context>
-<context>
-    <name>FlightModes</name>
-    <message>
-        <source>Flight Mode %1</source>
-        <translation type="obsolete">Lentotila %1</translation>
-    </message>
-    <message>
-        <source> (%1)</source>
-        <translation type="obsolete">(%1)</translation>
-    </message>
-    <message>
-        <source> (default)</source>
-        <translation type="obsolete">(oletus)</translation>
     </message>
 </context>
 <context>
@@ -3237,1058 +2471,9 @@ Nämä vaikuttaa kaikkiin malleihin jotka on EEPROMilla.</translation>
         <translation>Asetukset</translation>
     </message>
     <message>
-        <source>Country Code</source>
-        <translation type="obsolete">Maa koodi</translation>
-    </message>
-    <message>
-        <source>America</source>
-        <translation type="obsolete">Amerikka</translation>
-    </message>
-    <message>
-        <source>Japan</source>
-        <translation type="obsolete">Japani</translation>
-    </message>
-    <message>
-        <source>Europe</source>
-        <translation type="obsolete">Eurooppa</translation>
-    </message>
-    <message>
-        <source>MAVLink Baud Rate</source>
-        <translation type="obsolete">MAV linkki baudit</translation>
-    </message>
-    <message>
-        <source>Voice Language</source>
-        <translation type="obsolete">Äänen kieli</translation>
-    </message>
-    <message>
-        <source>Measurement Units</source>
-        <translation type="obsolete">Mittayksiköt</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Single Beep Every whole Minute&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Single Beep Every whole Minute&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Every Minute</source>
-        <translation type="obsolete">Joka minuutti</translation>
-    </message>
-    <message>
-        <source>Beeps at 30, 15, 10, and down from5 seconds</source>
-        <translation type="obsolete">Piippaa 30, 15, 10 ja 5sek alas</translation>
-    </message>
-    <message>
-        <source>Count Down to Zero</source>
-        <translation type="obsolete">Laskuri alas nollaan saakka</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Flash backlight on timer  beep&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Flash backlight on timer  beep&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Flash on beep</source>
-        <translation type="obsolete">Flash on piip</translation>
-    </message>
-    <message>
-        <source>Beep volume</source>
-        <translation type="obsolete">Piippaus voluumi</translation>
-    </message>
-    <message>
-        <source>Wav volume</source>
-        <translation type="obsolete">Wav voluumi</translation>
-    </message>
-    <message>
-        <source>Vario volume</source>
-        <translation type="obsolete">Vario voluumi</translation>
-    </message>
-    <message>
-        <source>Background volume</source>
-        <translation type="obsolete">Taustan voluumi</translation>
-    </message>
-    <message>
-        <source>PPMSim</source>
-        <translation type="obsolete">PPMSim</translation>
-    </message>
-    <message>
-        <source>4800 Baud</source>
-        <translation type="obsolete">4800 Baudia</translation>
-    </message>
-    <message>
-        <source>9600 Baud</source>
-        <translation type="obsolete">9600 Baudia</translation>
-    </message>
-    <message>
-        <source>14400 Baud</source>
-        <translation type="obsolete">14400 Baudia</translation>
-    </message>
-    <message>
-        <source>19200 Baud</source>
-        <translation type="obsolete">19200 Baudia</translation>
-    </message>
-    <message>
-        <source>38400 Baud</source>
-        <translation type="obsolete">38400 Baudia</translation>
-    </message>
-    <message>
-        <source>57600 Baud</source>
-        <translation type="obsolete">57600 Baudia</translation>
-    </message>
-    <message>
-        <source>76800 Baud</source>
-        <translation type="obsolete">76800 Baudia</translation>
-    </message>
-    <message>
-        <source>115200 Baud</source>
-        <translation type="obsolete">115200 Baudia</translation>
-    </message>
-    <message>
-        <source>Beeper Length</source>
-        <translation type="obsolete">Piippaus pituus</translation>
-    </message>
-    <message>
-        <source>Pot Scrolling Enable</source>
-        <translation type="obsolete">Potikka käytössä</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;LCD Screen Contrast&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Values can be 20-45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;LCD Screen Contrast&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Values can be 20-45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Haptic Length</source>
-        <translation type="obsolete">Värinän pituus</translation>
-    </message>
-    <message>
-        <source>Mode selection:
-
-Mode 1:
-  Left stick:  Elevator, Rudder
-  Right stick:  Throttle, Aileron
-
-Mode 2:
-  Left stick:  Throttle, Rudder
-  Right stick:  Elevator, Aileron
-
-Mode 3:
-  Left stick:  Elevator, Aileron
-  Right stick:  Throttle, Rudder
-
-Mode 4:
-  Left stick:  Throttle, Aileron
-  Right stick:  Elevator, Rudder
-
-</source>
-        <translation type="obsolete">Tilan valinta:
-
-Tila 1:
-  Vas tikku: Korkeusp, Sivup
-  Oik tikku: Kaasu, Siivekkeet
-
-Tila 2:
-
-  Vas tikku: Kaasu, Sivup
-  Oik tikku: Korkeusp, Siivekkeet
-
-Tila 3:
-
-  Vas tikku: Korkeusp, Siivekkeet
-  Oik tikku: Kaasu, Sivup
-
-Tila 4:
-
-  Vas tikku: Kaasu, Siivekkeet
-  Oik tikku: Korkeusp, Sivup
-
-</translation>
-    </message>
-    <message>
-        <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="obsolete">Mode 1 (PER KOR KAA SII)</translation>
-    </message>
-    <message>
-        <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="obsolete">Mode 2 (PER KAA KOR SII)</translation>
-    </message>
-    <message>
-        <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="obsolete">Mode 3 (SII KOR KAA PER)</translation>
-    </message>
-    <message>
-        <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="obsolete">Mode 4 (SII KAA KOR PER)</translation>
-    </message>
-    <message>
-        <source>LCD Display Type</source>
-        <translation type="obsolete">LCD näytön tyyppi</translation>
-    </message>
-    <message>
-        <source>BackLight On Stick Move</source>
-        <translation type="obsolete">Taustavalo päälle tikun liikkeestä</translation>
-    </message>
-    <message>
-        <source> sec</source>
-        <translation type="obsolete">sec</translation>
-    </message>
-    <message>
-        <source>Beeper Mode</source>
-        <translation type="obsolete">Piipperin moodi</translation>
-    </message>
-    <message>
-        <source>Timeshift from UTC</source>
-        <translation type="obsolete">Ajansiirto UTC:stä</translation>
-    </message>
-    <message>
-        <source>RotEnc Navigation</source>
-        <translation type="obsolete">RotEnc navigaatio</translation>
-    </message>
-    <message>
-        <source>FrSky Internal Alarm</source>
-        <translation type="obsolete">FrSky sisäinen hälytys</translation>
-    </message>
-    <message>
-        <source>THR</source>
-        <translation type="obsolete">KAA</translation>
-    </message>
-    <message>
-        <source>RUD</source>
-        <translation type="obsolete">PER</translation>
-    </message>
-    <message>
-        <source>ELE</source>
-        <translation type="obsolete">KOR</translation>
-    </message>
-    <message>
-        <source>AIL</source>
-        <translation type="obsolete">SII</translation>
-    </message>
-    <message>
-        <source>GEA</source>
-        <translation type="obsolete">REN</translation>
-    </message>
-    <message>
-        <source>ID0</source>
-        <translation type="obsolete">ID0</translation>
-    </message>
-    <message>
-        <source>ID1</source>
-        <translation type="obsolete">ID1</translation>
-    </message>
-    <message>
-        <source>ID2</source>
-        <translation type="obsolete">ID2</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Warnings&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These will define startup warnings.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Throttle warning - will alert if the throttle is not at idle during startup&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Switch warning - will alert if switches are not in their defaul position&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Memory warning - will alert if there&apos;s not a lot of memory left&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Silent mode warning - will alert you if the beeper is set to quiet (0)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Warnings&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These will define startup warnings.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Throttle warning - will alert if the throttle is not at idle during startup&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Switch warning - will alert if switches are not in their defaul position&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Memory warning - will alert if there&apos;s not a lot of memory left&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Silent mode warning - will alert you if the beeper is set to quiet (0)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>GPS Coordinates</source>
-        <translation type="obsolete">GPS koordinaatit</translation>
-    </message>
-    <message>
-        <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
-        <translation type="obsolete">hh° (N/S) mm&apos; ss&apos;&apos;.dd</translation>
-    </message>
-    <message>
-        <source>NMEA</source>
-        <translation type="obsolete">NMEA</translation>
-    </message>
-    <message>
-        <source>If you enable FAI, you loose the vario, the play functions, the telemetry screen. This function cannot be disabled by the radio.</source>
-        <translation type="obsolete">FAI tilassa ei toimi: Vario, äänten toistaminen, telemetria ruutu. Tätä ei saa pois päältä radiosta.</translation>
-    </message>
-    <message>
-        <source>Vario pitch at zero</source>
-        <translation type="obsolete">Vario ääni kun nolla</translation>
-    </message>
-    <message>
-        <source>Channel order
-
-This is used by the templated to determine which channel goes to what number output.</source>
-        <translation type="obsolete">Kanavien järjestys
-
-Tätä käytetään pohjana kanava määrityksille, mikä kanava menee mihinkä lähtöön.</translation>
-    </message>
-    <message>
-        <source>R E T A</source>
-        <translation type="obsolete">P Ko Ka S</translation>
-    </message>
-    <message>
-        <source>R E A T</source>
-        <translation type="obsolete">P Ko S Ka</translation>
-    </message>
-    <message>
-        <source>R T E A</source>
-        <translation type="obsolete">P Ka Ko S</translation>
-    </message>
-    <message>
-        <source>R T A E</source>
-        <translation type="obsolete">P Ka S Ko</translation>
-    </message>
-    <message>
-        <source>R A E T</source>
-        <translation type="obsolete">P S Ko Ka</translation>
-    </message>
-    <message>
-        <source>R A T E</source>
-        <translation type="obsolete">P S Ka Ko</translation>
-    </message>
-    <message>
-        <source>E R T A</source>
-        <translation type="obsolete">Ko P Ka S</translation>
-    </message>
-    <message>
-        <source>E R A T</source>
-        <translation type="obsolete">Ko P S Ka</translation>
-    </message>
-    <message>
-        <source>E T R A</source>
-        <translation type="obsolete">Ko Ka P S</translation>
-    </message>
-    <message>
-        <source>E T A R</source>
-        <translation type="obsolete">Ko Ka S P</translation>
-    </message>
-    <message>
-        <source>E A R T</source>
-        <translation type="obsolete">Ko S P Ka</translation>
-    </message>
-    <message>
-        <source>E A T R</source>
-        <translation type="obsolete">Ko S Ka P</translation>
-    </message>
-    <message>
-        <source>T R E A</source>
-        <translation type="obsolete">Ka P Ko S</translation>
-    </message>
-    <message>
-        <source>T R A E</source>
-        <translation type="obsolete">Ka P S Ko</translation>
-    </message>
-    <message>
-        <source>T E R A</source>
-        <translation type="obsolete">Ka Ko P S</translation>
-    </message>
-    <message>
-        <source>T E A R</source>
-        <translation type="obsolete">Ka Ko S P</translation>
-    </message>
-    <message>
-        <source>T A R E</source>
-        <translation type="obsolete">Ka S P Ko</translation>
-    </message>
-    <message>
-        <source>T A E R</source>
-        <translation type="obsolete">Ka S Ko P</translation>
-    </message>
-    <message>
-        <source>A R E T</source>
-        <translation type="obsolete">S P Ko Ka</translation>
-    </message>
-    <message>
-        <source>A R T E</source>
-        <translation type="obsolete">S P Ka Ko</translation>
-    </message>
-    <message>
-        <source>A E R T</source>
-        <translation type="obsolete">S Ko P Ka</translation>
-    </message>
-    <message>
-        <source>A E T R</source>
-        <translation type="obsolete">S Ko Ka P</translation>
-    </message>
-    <message>
-        <source>A T R E</source>
-        <translation type="obsolete">S Ka P Ko</translation>
-    </message>
-    <message>
-        <source>A T E R</source>
-        <translation type="obsolete">S Ka Ko P</translation>
-    </message>
-    <message>
-        <source>Show Owner Name on Splash</source>
-        <translation type="obsolete">Näytä omistajan nimi alkuruudulla</translation>
-    </message>
-    <message>
-        <source>Speaker Pitch (spkr only)</source>
-        <translation type="obsolete">Äänen korkeus (vain kaj.)</translation>
-    </message>
-    <message>
-        <source>X-Short</source>
-        <translation type="obsolete">X-lyhyt</translation>
-    </message>
-    <message>
-        <source>Short</source>
-        <translation type="obsolete">Lyhyt</translation>
-    </message>
-    <message>
-        <source>Normal</source>
-        <translation type="obsolete">Normaali</translation>
-    </message>
-    <message>
-        <source>Long</source>
-        <translation type="obsolete">Pitkä</translation>
-    </message>
-    <message>
-        <source>X-Long</source>
-        <translation type="obsolete">X-Pitkä</translation>
-    </message>
-    <message>
-        <source>StickScroll</source>
-        <translation type="obsolete">StickScrolli</translation>
-    </message>
-    <message>
-        <source>FAI Mode</source>
-        <translation type="obsolete">FAI tila</translation>
-    </message>
-    <message>
-        <source>Haptic Strength</source>
-        <translation type="obsolete">Värinän voimakkuus</translation>
-    </message>
-    <message>
-        <source>Beeper</source>
-        <translation type="obsolete">Piipperi</translation>
-    </message>
-    <message>
-        <source>Speaker</source>
-        <translation type="obsolete">Kaiutin</translation>
-    </message>
-    <message>
-        <source>BeeperVoice</source>
-        <translation type="obsolete">Piippausääni</translation>
-    </message>
-    <message>
-        <source>SpeakerVoice</source>
-        <translation type="obsolete">Kaiutinääni</translation>
-    </message>
-    <message>
-        <source>Show Splash Screen on Startup</source>
-        <translation type="obsolete">Näytä alkuruutu käynnistyksessä</translation>
-    </message>
-    <message>
-        <source>Metric</source>
-        <translation type="obsolete">Metrit</translation>
-    </message>
-    <message>
-        <source>Imperial</source>
-        <translation type="obsolete">Imperiaali</translation>
-    </message>
-    <message>
-        <source>Channel Order (For Templates)</source>
-        <translation type="obsolete">Kanava järjestys (pohjiin)</translation>
-    </message>
-    <message>
-        <source>Stick Mode</source>
-        <translation type="obsolete">Tikku tila</translation>
-    </message>
-    <message>
-        <source>Haptic Mode</source>
-        <translation type="obsolete">Värinä tila</translation>
-    </message>
-    <message>
-        <source>Owner Name</source>
-        <translation type="obsolete">Omistajan nimi</translation>
-    </message>
-    <message>
-        <source>BackLight Invert</source>
-        <translation type="obsolete">Käänteinen taustavalo</translation>
-    </message>
-    <message>
-        <source>Standard</source>
-        <translation type="obsolete">Vakio</translation>
-    </message>
-    <message>
-        <source>Optrex</source>
-        <translation type="obsolete">Optrex</translation>
-    </message>
-    <message>
-        <source>Show splash screen on startup</source>
-        <translation type="obsolete">Näytä alkuruutu käynnistyksessä</translation>
-    </message>
-    <message>
-        <source>Quiet</source>
-        <translation type="obsolete">Äänetön</translation>
-    </message>
-    <message>
-        <source>Only Alarms</source>
-        <translation type="obsolete">Vain hälyt</translation>
-    </message>
-    <message>
-        <source>No Keys</source>
-        <translation type="obsolete">Ei nap</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation type="obsolete">Kaikki</translation>
-    </message>
-    <message>
-        <source>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</source>
-        <translation type="obsolete">Piipperin voluumi
-
-0 -Äänetön ( ei piippaa ).
-1 -Ei nap ( normaalisti mutta ei menun napeista).
-2 -Normaalisti.
-3 -Voimakas.
-4 -Erittäin voimakas.</translation>
-    </message>
-    <message>
-        <source>Alarms Only</source>
-        <translation type="obsolete">Vain hälyt</translation>
-    </message>
-    <message>
-        <source>If this value is not 0, any keypress will turn on the backlight and turn it off after the specified number of seconds.</source>
-        <translation type="obsolete">Jos tämä arvo ei ole 0, jokainen painallus sytyttää taustavalon, sammuu valitun ajan jälkeen ( SEK).</translation>
-    </message>
-    <message>
-        <source>Timer Beeps</source>
-        <translation type="obsolete">Ajastin piipit</translation>
-    </message>
-    <message>
-        <source>BackLight Brightness</source>
-        <translation type="obsolete">Taustavalon kirkkaus</translation>
-    </message>
-    <message>
-        <source>Contrast</source>
-        <translation type="obsolete">Kontrasti</translation>
-    </message>
-    <message>
-        <source>BackLight  Auto OFF after</source>
-        <translation type="obsolete">Taustavalo pois ajakuluttua</translation>
-    </message>
-    <message>
-        <source>Single</source>
-        <translation type="obsolete">Yksi</translation>
-    </message>
-    <message>
-        <source>Oversample</source>
-        <translation type="obsolete">Oversample</translation>
-    </message>
-    <message>
-        <source>Filter</source>
-        <translation type="obsolete">Filtteri</translation>
-    </message>
-    <message>
-        <source>This is the switch selectrion for turning on the backlight (if installed).
-
-</source>
-        <translation type="obsolete">Tässä kohtaa valitaan taustavalon käyttäytyminen (mikäli se on asennettuna).
-
-</translation>
-    </message>
-    <message>
-        <source>Bandgap Measuring Enable</source>
-        <translation type="obsolete">Bandgap mittaus päälle</translation>
-    </message>
-    <message>
-        <source>Input Filter</source>
-        <translation type="obsolete">Tulo filtteri</translation>
-    </message>
-    <message>
-        <source>CrossTrim</source>
-        <translation type="obsolete">Risti trimmi</translation>
-    </message>
-    <message>
-        <source>Sound Mode</source>
-        <translation type="obsolete">Ääni tila</translation>
-    </message>
-    <message>
-        <source>BackLight Switch</source>
-        <translation type="obsolete">Taustavalon kytkin</translation>
-    </message>
-    <message>
-        <source>Battery calibration:
-This value will be added to the measured battery voltage.  Use this value to calibrate the meter with an external meter.</source>
-        <translation type="obsolete">Akun kalibrointi:
-Tämä arvo määrittelee akun jännitteen.</translation>
-    </message>
-    <message>
-        <source>Battery Calibration</source>
-        <translation type="obsolete">Akun kalibrointi</translation>
-    </message>
-    <message>
-        <source>Battery Warning</source>
-        <translation type="obsolete">Akun varoitin</translation>
-    </message>
-    <message>
-        <source>Battery warning voltage.
-This is the threashhold where the battery warning sounds.
-
-Acceptable values are 5v..10v</source>
-        <translation type="obsolete">Akun varoitus jännite.
-Tämä on jännitealue jolloin akun varoitus ääni annetaan.
-
-Hyväksytty arvo: 5v - 10v</translation>
-    </message>
-    <message>
-        <source>Telemetry NO DATA Alarm</source>
-        <translation type="obsolete">Telemetrian EI DATAA hälytys</translation>
-    </message>
-    <message>
-        <source>Readonly Unlock</source>
-        <translation type="obsolete">Vainlue tilan avaus</translation>
-    </message>
-    <message>
-        <source>Speaker Volume</source>
-        <translation type="obsolete">Äänen voimakkuus</translation>
-    </message>
-    <message>
-        <source>If not zero will sound beeps if the transmitter has been left without inputs for the specified number of minutes.</source>
-        <translation type="obsolete">Jos tämä arvo ei ole 0, piipataan valitun ajan jos mitään käskyjä ei tule ( MIN ).</translation>
-    </message>
-    <message>
-        <source> min</source>
-        <translation type="obsolete">Min</translation>
-    </message>
-    <message>
-        <source>Inactivity Timer</source>
-        <translation type="obsolete">Käyttämättömyys ajastin</translation>
-    </message>
-    <message>
-        <source>SC</source>
-        <translation type="obsolete">SC</translation>
-    </message>
-    <message>
-        <source>SE</source>
-        <translation type="obsolete">SE</translation>
-    </message>
-    <message>
-        <source>SA</source>
-        <translation type="obsolete">SA</translation>
-    </message>
-    <message>
-        <source>SF</source>
-        <translation type="obsolete">SF</translation>
-    </message>
-    <message>
-        <source>SH</source>
-        <translation type="obsolete">SH</translation>
-    </message>
-    <message>
-        <source>SD</source>
-        <translation type="obsolete">SD</translation>
-    </message>
-    <message>
-        <source>SB</source>
-        <translation type="obsolete">SB</translation>
-    </message>
-    <message>
-        <source>SG</source>
-        <translation type="obsolete">SG</translation>
-    </message>
-    <message>
-        <source>Alarm Warning</source>
-        <translation type="obsolete">Hälytys varoitus</translation>
-    </message>
-    <message>
-        <source>Memory Startup Warning</source>
-        <translation type="obsolete">Muistin varoitus alussa</translation>
-    </message>
-    <message>
         <location filename="../generaledit/generaledit.cpp" line="44"/>
         <source>Trainer</source>
         <translation>Traineri</translation>
-    </message>
-    <message>
-        <source>Mode</source>
-        <translation type="obsolete">Moodi</translation>
-    </message>
-    <message>
-        <source>Input</source>
-        <translation type="obsolete">Tulo</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Paino</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Kytkin</translation>
-    </message>
-    <message>
-        <source>PPM 1</source>
-        <translation type="obsolete">PPM 1</translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation type="obsolete">Pois</translation>
-    </message>
-    <message>
-        <source>Default Channel Order</source>
-        <translation type="obsolete">Kanavien järjestys</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Kanava järjestys&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Määrittelee miksereiden perusasetukset uuteen malliin.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source> Hz</source>
-        <translation type="obsolete">Hz</translation>
-    </message>
-    <message>
-        <source>&quot;No Sound&quot; Warning</source>
-        <translation type="obsolete">&quot;Ei ääniä&quot; hälytys</translation>
-    </message>
-    <message>
-        <source>Low Memory Warning</source>
-        <translation type="obsolete">Muisti vähissä hälytys</translation>
-    </message>
-    <message>
-        <source>---</source>
-        <translation type="obsolete">---</translation>
-    </message>
-    <message>
-        <source>2s</source>
-        <translation type="obsolete">2s</translation>
-    </message>
-    <message>
-        <source>3s</source>
-        <translation type="obsolete">3s</translation>
-    </message>
-    <message>
-        <source>4s</source>
-        <translation type="obsolete">4s</translation>
-    </message>
-    <message>
-        <source>6s</source>
-        <translation type="obsolete">6s</translation>
-    </message>
-    <message>
-        <source>8s</source>
-        <translation type="obsolete">8s</translation>
-    </message>
-    <message>
-        <source>10s</source>
-        <translation type="obsolete">10s</translation>
-    </message>
-    <message>
-        <source>15s</source>
-        <translation type="obsolete">15s</translation>
-    </message>
-    <message>
-        <source>Vario pitch at max</source>
-        <translation type="obsolete">Vario ääni kun max</translation>
-    </message>
-    <message>
-        <source>Color 1</source>
-        <translation type="obsolete">Väri 1</translation>
-    </message>
-    <message>
-        <source>Color 2</source>
-        <translation type="obsolete">Väri 2</translation>
-    </message>
-    <message>
-        <source> ms</source>
-        <translation type="obsolete">ms</translation>
-    </message>
-    <message>
-        <source>Backlight Brightness</source>
-        <translation type="obsolete">Taustavalon kirkkaus</translation>
-    </message>
-    <message>
-        <source>Vario repeat at zero</source>
-        <translation type="obsolete">Varion toisto nollassa</translation>
-    </message>
-    <message>
-        <source>Backlight  Auto OFF after</source>
-        <translation type="obsolete">Taustavalo pois automaattisesti</translation>
-    </message>
-    <message>
-        <source>Backlight color</source>
-        <translation type="obsolete">Taustavalon väri</translation>
-    </message>
-    <message>
-        <source>Backlight Switch</source>
-        <translation type="obsolete">Taustavalon kytkin</translation>
-    </message>
-    <message>
-        <source>Stick reverse (order as above)</source>
-        <translation type="obsolete">Käännetty tikku (järjestys yllä)</translation>
-    </message>
-    <message>
-        <source>Play Delay (switch mid position)</source>
-        <translation type="obsolete">Toista viive (kytkin keskiasennossa)</translation>
-    </message>
-    <message>
-        <source>Backlight flash on alarm</source>
-        <translation type="obsolete">Taustavalo vilkkuu hälytyksenä</translation>
-    </message>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">PER</translation>
-    </message>
-    <message>
-        <source>+= (Sum)</source>
-        <translation type="obsolete">+= (Sum)</translation>
-    </message>
-    <message>
-        <source>:= (Replace)</source>
-        <translation type="obsolete">:= (Korvaa)</translation>
-    </message>
-    <message>
-        <source>chn1</source>
-        <translation type="obsolete">chn1</translation>
-    </message>
-    <message>
-        <source>chn2</source>
-        <translation type="obsolete">chn2</translation>
-    </message>
-    <message>
-        <source>chn3</source>
-        <translation type="obsolete">chn3</translation>
-    </message>
-    <message>
-        <source>chn4</source>
-        <translation type="obsolete">chn4</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">KOR</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">KAA</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">SII</translation>
-    </message>
-    <message>
-        <source>Pot. 4</source>
-        <translation type="obsolete">Pot- 4</translation>
-    </message>
-    <message>
-        <source>Pot. 3</source>
-        <translation type="obsolete">Pot. 3</translation>
-    </message>
-    <message>
-        <source>Pot. 2</source>
-        <translation type="obsolete">Pot. 2</translation>
-    </message>
-    <message>
-        <source>Pot. 1</source>
-        <translation type="obsolete">Pot. 1</translation>
-    </message>
-    <message>
-        <source>Stick 3</source>
-        <translation type="obsolete">Tikku 3</translation>
-    </message>
-    <message>
-        <source>Stick 1</source>
-        <translation type="obsolete">Tikku 1</translation>
-    </message>
-    <message>
-        <source>Stick 2</source>
-        <translation type="obsolete">Tikku 2</translation>
-    </message>
-    <message>
-        <source>Stick 4</source>
-        <translation type="obsolete">Tikku 4</translation>
-    </message>
-    <message>
-        <source>PPM 2</source>
-        <translation type="obsolete">PPM 2</translation>
-    </message>
-    <message>
-        <source>PPM 3</source>
-        <translation type="obsolete">PPM 3</translation>
-    </message>
-    <message>
-        <source>PPM 4</source>
-        <translation type="obsolete">PPM 4</translation>
-    </message>
-    <message>
-        <source>S3 Type</source>
-        <translation type="obsolete">S2 tyyppi {3 ?}</translation>
-    </message>
-    <message>
-        <source>OFF</source>
-        <translation type="obsolete">Pois</translation>
-    </message>
-    <message>
-        <source>S-Port Mirror</source>
-        <translation type="obsolete">S-Portti peilik</translation>
-    </message>
-    <message>
-        <source>Debug</source>
-        <translation type="obsolete">Korjaus</translation>
-    </message>
-    <message>
-        <source>Serial Port</source>
-        <translation type="obsolete">Sarja portti</translation>
-    </message>
-    <message>
-        <source>Telemetry</source>
-        <translation type="obsolete">Telemetria</translation>
-    </message>
-    <message>
-        <source>RSSI Alarm 1</source>
-        <translation type="obsolete">RSSI häly 1</translation>
-    </message>
-    <message>
-        <source>----</source>
-        <translation type="obsolete">----</translation>
-    </message>
-    <message>
-        <source>Yellow</source>
-        <translation type="obsolete">Kelt</translation>
-    </message>
-    <message>
-        <source>Orange</source>
-        <translation type="obsolete">Orans</translation>
-    </message>
-    <message>
-        <source>Red</source>
-        <translation type="obsolete">Pun</translation>
-    </message>
-    <message>
-        <source>RSSI Alarm 2</source>
-        <translation type="obsolete">RSSI häly 2</translation>
-    </message>
-    <message>
-        <source>NO DATA Alarm</source>
-        <translation type="obsolete">EI DATAA hälytys</translation>
-    </message>
-    <message>
-        <source>Calibration</source>
-        <translation type="obsolete">Kalibrointi</translation>
-    </message>
-    <message>
-        <source>POT 4</source>
-        <translation type="obsolete">POT 4</translation>
-    </message>
-    <message>
-        <source>POT 3</source>
-        <translation type="obsolete">POT 3</translation>
-    </message>
-    <message>
-        <source>POT 2</source>
-        <translation type="obsolete">POT 2</translation>
-    </message>
-    <message>
-        <source>POT 1</source>
-        <translation type="obsolete">POT 1</translation>
-    </message>
-    <message>
-        <source>STICK 3</source>
-        <translation type="obsolete">TIKKU 3</translation>
-    </message>
-    <message>
-        <source>Negative span</source>
-        <translation type="obsolete">Negatiivinen liike</translation>
-    </message>
-    <message>
-        <source>Mid value</source>
-        <translation type="obsolete">Keski alue</translation>
-    </message>
-    <message>
-        <source>Positive span</source>
-        <translation type="obsolete">Positiivinen liike</translation>
-    </message>
-    <message>
-        <source>STICK 1</source>
-        <translation type="obsolete">TIKKU 1</translation>
-    </message>
-    <message>
-        <source>STICK 2</source>
-        <translation type="obsolete">TIKKU 2</translation>
-    </message>
-    <message>
-        <source>STICK 4</source>
-        <translation type="obsolete">TIKKU 4</translation>
-    </message>
-    <message>
-        <source>Battery</source>
-        <translation type="obsolete">Akku</translation>
-    </message>
-    <message>
-        <source>v</source>
-        <translation type="obsolete">v</translation>
-    </message>
-    <message>
-        <source>PPM Multiplier</source>
-        <translation type="obsolete">PPM Kerroin</translation>
-    </message>
-    <message>
-        <source>Current</source>
-        <translation type="obsolete">Virta</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="obsolete">Ei mitään</translation>
-    </message>
-    <message>
-        <source>Pot (normal)</source>
-        <translation type="obsolete">Potikka (Norm)</translation>
-    </message>
-    <message>
-        <source>Multipos Switch</source>
-        <translation type="obsolete">Monias kytkin</translation>
-    </message>
-    <message>
-        <source>S1 Type</source>
-        <translation type="obsolete">S1 tyyppi</translation>
-    </message>
-    <message>
-        <source>S2 Type</source>
-        <translation type="obsolete">S2 tyyppi</translation>
-    </message>
-    <message>
-        <source>If you enable FAI, you loose the vario, the play functions, the telemetry screen.
-This function cannot be disabled by the radio.
-Are you sure ?</source>
-        <translation type="obsolete">FAI tilassa ei toimi: Vario, äänten toistaminen, telemetria ruutu.
-Tätä ei saa pois päältä radiosta.
-Oletko varma ?</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="42"/>
@@ -5159,10 +3344,6 @@ Oletko varma ?</translation>
 <context>
     <name>Heli</name>
     <message>
-        <source>Form</source>
-        <translation type="obsolete">Kopteri</translation>
-    </message>
-    <message>
         <location filename="../modeledit/heli.ui" line="54"/>
         <source>Invert Elevator</source>
         <translation>Käänt kork</translation>
@@ -5178,17 +3359,9 @@ Oletko varma ?</translation>
         <translation>Käänt koll</translation>
     </message>
     <message>
-        <source>Elevator</source>
-        <translation type="obsolete">Korkeusperäsin</translation>
-    </message>
-    <message>
         <location filename="../modeledit/heli.ui" line="103"/>
         <source>Invert</source>
         <translation>Käänteinen</translation>
-    </message>
-    <message>
-        <source>Aileron</source>
-        <translation type="obsolete">Siivekkeet</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="24"/>
@@ -5244,10 +3417,6 @@ Oletko varma ?</translation>
 <context>
     <name>HeliPage</name>
     <message>
-        <source>Trottle Channel:</source>
-        <translation type="obsolete">Kaasu kanava:</translation>
-    </message>
-    <message>
         <location filename="../wizarddialog.cpp" line="881"/>
         <source>Throttle Channel:</source>
         <translation>Kaasu kanava:</translation>
@@ -5295,37 +3464,9 @@ Oletko varma ?</translation>
         <translation>Ctrl+Alas</translation>
     </message>
     <message>
-        <source>Clear All Settings</source>
-        <translation type="obsolete">Tyhjennä kaikki asetukset</translation>
-    </message>
-    <message>
         <location filename="../modeledit/inputs.cpp" line="28"/>
         <source>Clear All Inputs</source>
         <translation>Tyhjennä kaikki tulot</translation>
-    </message>
-    <message>
-        <source>Source(%1)</source>
-        <translation type="obsolete">Lähde(%1)</translation>
-    </message>
-    <message>
-        <source>No Trim</source>
-        <translation type="obsolete">Ei trimmiä</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Paino(%1)</translation>
-    </message>
-    <message>
-        <source>Offset(%1)</source>
-        <translation type="obsolete">Tasoitus(%1)</translation>
-    </message>
-    <message>
-        <source>NoTrim</source>
-        <translation type="obsolete">Ei trimmiä</translation>
-    </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Kytkin(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="167"/>
@@ -5421,10 +3562,6 @@ Oletko varma ?</translation>
 <context>
     <name>LogicalSwitchesPanel</name>
     <message>
-        <source>Condition</source>
-        <translation type="obsolete">Tila</translation>
-    </message>
-    <message>
         <location filename="../modeledit/logicalswitches.cpp" line="20"/>
         <source>V1</source>
         <translation>V1</translation>
@@ -5435,10 +3572,6 @@ Oletko varma ?</translation>
         <translation>V2</translation>
     </message>
     <message>
-        <source>AND</source>
-        <translation type="obsolete">JA</translation>
-    </message>
-    <message>
         <location filename="../modeledit/logicalswitches.cpp" line="24"/>
         <source>Duration</source>
         <translation>Kesto</translation>
@@ -5447,10 +3580,6 @@ Oletko varma ?</translation>
         <location filename="../modeledit/logicalswitches.cpp" line="25"/>
         <source>Delay</source>
         <translation>Viive</translation>
-    </message>
-    <message>
-        <source>LS%1</source>
-        <translation type="obsolete">LS%1</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="19"/>
@@ -5686,10 +3815,6 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <translation>Näytä edellinen varoitus uudelleen kun radio käynnistetään ?</translation>
     </message>
     <message>
-        <source>Display previous message again at startup ?</source>
-        <translation type="obsolete">Näytä edellinen viesti uudelleen kun radio käynnistetään ?</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="232"/>
         <source>Checking for updates</source>
         <translation>Tarkistetaan päivityksiä</translation>
@@ -5722,10 +3847,6 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <translation>Uusi julkaisu saatavilla</translation>
     </message>
     <message>
-        <source>A new release of Companion is available please check the OpenTX website!</source>
-        <translation type="obsolete">Uusi versio Companionista on saatavilla. Käy OpenTX sivuilla katsomassa lisää!</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="320"/>
         <location filename="../mainwindow.cpp" line="484"/>
         <source>No updates available at this time.</source>
@@ -5750,14 +3871,6 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
 %2.</translation>
     </message>
     <message>
-        <source>Firmware does not longer fit in the Tx, due to selected firmware options</source>
-        <translation type="obsolete">Firmware ei enää mahdu lähettimen muistiin, näillä asetus määrillä</translation>
-    </message>
-    <message>
-        <source>Compilation server temporary failure, try later</source>
-        <translation type="obsolete">Kääntäjä palvelin tilapäisesti pois käytöstä, yritä kohta uudelleen</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="365"/>
         <source>Compilation server too busy, try later</source>
         <translation>Kääntäjä palvelin liian kiireinen, yritä kohta uudelleen</translation>
@@ -5773,25 +3886,9 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <translation>Tuntematon palvelin virhe, yritä kohta uudelleen</translation>
     </message>
     <message>
-        <source>Firmware does not fit in the Tx, due to selected firmware options</source>
-        <translation type="obsolete">Firmware ei enää mahdu lähettimen muistiin, näillä asetus määrillä</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="362"/>
         <source>Compilation server termporary failure, try later</source>
         <translation>Companion palvelin tilapäisesti tiltissä, yritä kohta uudelleen</translation>
-    </message>
-    <message>
-        <source>Do you want to write the firmware to the transmitter now ?</source>
-        <translation type="obsolete">Haluatko kirjoittaa firmwaren lähettimen muistiin ?</translation>
-    </message>
-    <message>
-        <source>Firmware %1 does not seem to have ever been downloaded.
-Version %2 is available.
-Do you want to download it now ?</source>
-        <translation type="obsolete">Firmware %1 ei ole koskaan ladattu.
-Versio %2 firmwaresta on saatavilla.
-Haluatko ladata sen nyt ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="427"/>
@@ -5818,27 +3915,9 @@ Haluatko ladata sen nyt ?</translation>
         <translation>Haluatko ladata julkaisun %1 nyt ?</translation>
     </message>
     <message>
-        <source>A new version of %1 firmware is available (current %2 - newer %3).
-Do you want to download it now ?</source>
-        <translation type="obsolete">Uusi versio %1 firmwaresta on saatavilla ( nyk %2 - Uudempi %3).
-Haluatko ladata sen nyt ?</translation>
-    </message>
-    <message>
-        <source>Ignore this version (r%1)?</source>
-        <translation type="obsolete">Ohita tämä versio (r%1)?</translation>
-    </message>
-    <message>
-        <source>Release notes contain very important informations. Do you want to see them now ?</source>
-        <translation type="obsolete">Julkaisu dokut sisältää erittäin tärkeää tietoa. Haluatko lukea ne nyt ?</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="544"/>
         <source>The selected language will be used the next time you start Companion.</source>
         <translation>Valittu kieli otetaan käyttöön Companionissa kun se käynnistettään seuraavan kerran.</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">Ok</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="550"/>
@@ -5849,10 +3928,6 @@ Haluatko ladata sen nyt ?</translation>
         <location filename="../mainwindow.cpp" line="556"/>
         <source>The icon size will be used the next time you start Companion.</source>
         <translation>Uusi ikonienkoko otetaan käyttöön Companionissa kun se käynnistettään seuraavan kerran.</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="obsolete">Avaa</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="595"/>
@@ -5871,127 +3946,9 @@ Haluatko ladata sen nyt ?</translation>
         <translation>Nykyinen firmware ei sisällä julkaisu dokuja.</translation>
     </message>
     <message>
-        <source>Cannot write file %1:
-%2.</source>
-        <translation type="obsolete">Ei voi kirjoittaa tiedostoa %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Taranis radio not found</source>
-        <translation type="obsolete">Taranis radiota ei löydy</translation>
-    </message>
-    <message>
-        <source>Impossible to identify the radio on your system, please verify the eeprom disk is connected.</source>
-        <translation type="obsolete">Ei voi varmentaa mikä radio käytössä, varmistu että olet liittänyt radion koneeseen.</translation>
-    </message>
-    <message>
-        <source>Read Models and Settings From Tx</source>
-        <translation type="obsolete">Lue mallit ja asetukset lähettimestä</translation>
-    </message>
-    <message>
-        <source>Write Models and settings from %1 to the Tx?</source>
-        <translation type="obsolete">Kirjoita mallit ja asetukset tiedostosta %1  lähettimeen?</translation>
-    </message>
-    <message>
-        <source>The file %1
-has not been recognized as a valid Models and Settings file
-Write anyway ?</source>
-        <translation type="obsolete">Tiedosto %1
-Ei tunnisteta malli ja asetus tiedostoksi.
-Kirjoita se silti lähettimeen ?</translation>
-    </message>
-    <message>
-        <source>Backup is impossible</source>
-        <translation type="obsolete">Varmuuskopiota ei voi tehdä</translation>
-    </message>
-    <message>
-        <source>The backup dir set in preferences does not exist</source>
-        <translation type="obsolete">Varmuuskopion kansiota ei ole määritelty asetuksiin</translation>
-    </message>
-    <message>
-        <source>Backup Models and Settings From Tx</source>
-        <translation type="obsolete">Varmuuskopioi mallit ja asetukset lähettimestä</translation>
-    </message>
-    <message>
-        <source>Cannot check Models and Settings compatibility! Continue anyway?</source>
-        <translation type="obsolete">Ei voi varmistaa että mallit ja asetukset täsmää laitteistoon. Jatketaanko silti ?</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Varoitus</translation>
-    </message>
-    <message>
-        <source>The transmitter firmware belongs to another product family, check file and preferences!</source>
-        <translation type="obsolete">Lähettimen firmware kuuluu toiselle lähettin mallille, tarkista oikea tiedosto ja asetukset!</translation>
-    </message>
-    <message>
-        <source>The transmitter firmware is outdated, please upgrade!</source>
-        <translation type="obsolete">Lähettimen firmware tiedosto on vanha, päivitä se uuteen!</translation>
-    </message>
-    <message>
-        <source>Write Models and Settings To Tx</source>
-        <translation type="obsolete">Kirjoita mallit ja asetukset lähettimeen</translation>
-    </message>
-    <message>
-        <source>Write Firmware To Tx</source>
-        <translation type="obsolete">Kirjoita firmware lähettimeen</translation>
-    </message>
-    <message>
-        <source>Conversion failed</source>
-        <translation type="obsolete">Muutos virheellinen</translation>
-    </message>
-    <message>
-        <source>Cannot convert Models and Settings for use with this firmware, original data will be used</source>
-        <translation type="obsolete">Ei voida muuttaa malli ja asetus tietoja käymään uuteen firmwareen, alkuperäiset tiedot otetaan käyttöön</translation>
-    </message>
-    <message>
-        <source>Restore Models and Settings To Tx</source>
-        <translation type="obsolete">Palauta mallit ja asetukset lähettimeen</translation>
-    </message>
-    <message>
-        <source>Restore failed</source>
-        <translation type="obsolete">Palautus epäonnistui</translation>
-    </message>
-    <message>
-        <source>Could not restore Models and Settings to TX. The models and settings data file can be found at: %1</source>
-        <translation type="obsolete">Ei voi palauttaa malli ja asetus tietoja lähettimestä. Mallit ja asetukset löytyy tiedostosta: %1</translation>
-    </message>
-    <message>
-        <source>Firmware write failed</source>
-        <translation type="obsolete">Firmwaren kirjoitus epäonnistui</translation>
-    </message>
-    <message>
-        <source>Could not write firmware to to transmitter. The models and settings data file can be found at: %1</source>
-        <translation type="obsolete">Ei voi kirjoittaa malli ja asetus tietoja lähettimeen. Mallit ja asetukset löytyy tiedostosta: %1</translation>
-    </message>
-    <message>
-        <source>Backup failed</source>
-        <translation type="obsolete">Palautus epäonnistui</translation>
-    </message>
-    <message>
-        <source>Cannot backup existing Models and Settings from TX. Firmware write process aborted</source>
-        <translation type="obsolete">Ei voi varmuuskopioida nykyisiä malli ja asetuksia lähettimestä. Firmwaren kirjoitus prosessi keskeytetään</translation>
-    </message>
-    <message>
-        <source>Save transmitter Models and Settings to File</source>
-        <translation type="obsolete">Tallenna lähettimen mallit ja asetukset tiedostoon</translation>
-    </message>
-    <message>
-        <source>Impossible to identify the radio on your system, please verify that the eeprom disk is connected.</source>
-        <translation type="obsolete">Ei voi varmentaa mikä radio käytössä, varmistu että olet liittänyt radion koneeseen.</translation>
-    </message>
-    <message>
-        <source>Read Tx Firmware to File</source>
-        <translation type="obsolete">Lue lähettimen firmware tiedostoksi</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="899"/>
         <source>OpenTX Home Page: &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</source>
         <translation>OpenTX Kotisivut: &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</translation>
-    </message>
-    <message>
-        <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt;</source>
-        <translation type="obsolete">OpenTX Companion projektin on aloittanut alunperin: &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="903"/>
@@ -5999,21 +3956,9 @@ Kirjoita se silti lähettimeen ?</translation>
         <translation>Jos meinaat että tämä ohjelma on hyvä. Teeppä hyvä teko ja: &lt;a href=&apos;%1&apos;&gt;Lahjoita&lt;/a&gt;</translation>
     </message>
     <message>
-        <source>Version %1, %3</source>
-        <translation type="obsolete">Versio %1, %3</translation>
-    </message>
-    <message>
-        <source>Copyright</source>
-        <translation type="obsolete">Kopiosuoja</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="910"/>
         <source>About Companion</source>
         <translation>Tietoja Companionista</translation>
-    </message>
-    <message>
-        <source>OpenTX Companion - FW: %1 - Profile: %2</source>
-        <translation type="obsolete">OpenTX Companion -FW: %1 -Profiili: %2</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1012"/>
@@ -6021,25 +3966,9 @@ Kirjoita se silti lähettimeen ?</translation>
         <translation>Uusi</translation>
     </message>
     <message>
-        <source>Create a new file</source>
-        <translation type="obsolete">Luo uusi tiedosto</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1013"/>
         <source>Open...</source>
         <translation>Avaa...</translation>
-    </message>
-    <message>
-        <source>Open an existing file</source>
-        <translation type="obsolete">Avaa olemassa oleva tiedosto</translation>
-    </message>
-    <message>
-        <source>Save...</source>
-        <translation type="obsolete">Tallenna...</translation>
-    </message>
-    <message>
-        <source>Save the document to disk</source>
-        <translation type="obsolete">Tallenna doku levylle</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1015"/>
@@ -6057,74 +3986,14 @@ Kirjoita se silti lähettimeen ?</translation>
         <translation>Poistu ohjelmasta</translation>
     </message>
     <message>
-        <source>Cut</source>
-        <translation type="obsolete">Leikkaa</translation>
-    </message>
-    <message>
-        <source>Cut current selection to the clipboard</source>
-        <translation type="obsolete">Leikkaa nykyiset valinnat ja siirrä leikepöydälle</translation>
-    </message>
-    <message>
-        <source>Copy...</source>
-        <translation type="obsolete">Kopio...</translation>
-    </message>
-    <message>
-        <source>Copy current selection to the clipboard</source>
-        <translation type="obsolete">Kopioi nykyiset valinnat ja siirrä leikepöydälle</translation>
-    </message>
-    <message>
-        <source>Paste...</source>
-        <translation type="obsolete">Liitä...</translation>
-    </message>
-    <message>
-        <source>Paste clipboard into current selection</source>
-        <translation type="obsolete">Liitä leikepöydän tiedot nykyiseen valintaan</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1022"/>
         <source>Classical</source>
         <translation>Klassinen</translation>
     </message>
     <message>
-        <source>The classical Companion icon theme</source>
-        <translation type="obsolete">Klassiset Companion iconit teema</translation>
-    </message>
-    <message>
-        <source>The new Companion 2 icon theme</source>
-        <translation type="obsolete">Uusi Companion 2 ikoni teema</translation>
-    </message>
-    <message>
-        <source>Firmware does not longer fit in the radio, due to selected firmware options</source>
-        <translation type="obsolete">Firmware ei enää pian mahdu lähettimen muistiin, näillä asetus määrillä</translation>
-    </message>
-    <message>
-        <source>Firmware does not fit in the radio, due to selected firmware options</source>
-        <translation type="obsolete">Firmware ei enää mahdu lähettimen muistiin, näillä asetus määrillä</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="381"/>
         <source>Do you want to write the firmware to the radio now ?</source>
         <translation>Haluatko kirjoittaa firmwaren lähettimen muistiin ?</translation>
-    </message>
-    <message>
-        <source>Firmware %1 does not seem to have ever been downloaded.
-Release %2 is available.
-Do you want to download it now?</source>
-        <translation type="obsolete">Firmware %1 ei ole koskaan ladattu.
-Versio %2 firmwaresta on saatavilla.
-Haluatko ladata sen nyt ?</translation>
-    </message>
-    <message>
-        <source>A new version of %1 firmware is available:
-  - current is %2
-  - newer is %3
-
-Do you want to download it now ?</source>
-        <translation type="obsolete">Uusi versio %1 firmwaresta on saatavilla:
-  - Nykyinen %2
-  - Uudempi %3)
-
-Haluatko ladata sen nyt ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="490"/>
@@ -6143,57 +4012,9 @@ Haluatko ladata sen nyt ?</translation>
         <translation>Lue mallit ja asetukset lähettimestä</translation>
     </message>
     <message>
-        <source>Read Firmware From Radio</source>
-        <translation type="obsolete">Lue firmware lähettimestä</translation>
-    </message>
-    <message>
-        <source>Write Radio Backup from %1 to the radio?</source>
-        <translation type="obsolete">Kirjoita varmuuskopio tiedosto %1  lähettimeen?</translation>
-    </message>
-    <message>
-        <source>Backup Models and Settings From Radio</source>
-        <translation type="obsolete">Varmuuskopioi mallit ja asetukset lähettimestä</translation>
-    </message>
-    <message>
-        <source>The radio firmware belongs to another product family, check file and preferences!</source>
-        <translation type="obsolete">Lähettimen firmware kuuluu toiselle lähettin mallille, tarkista oikea tiedosto ja asetukset!</translation>
-    </message>
-    <message>
-        <source>The radio firmware is outdated, please upgrade!</source>
-        <translation type="obsolete">Firware on vanhaa versio, päivitä se uudempaan!</translation>
-    </message>
-    <message>
-        <source>Write Backup To Radio</source>
-        <translation type="obsolete">Kirjoita varmuuskiop lähettimeen</translation>
-    </message>
-    <message>
-        <source>Write Firmware To Radio</source>
-        <translation type="obsolete">Kirjoita firmware lähettimeen</translation>
-    </message>
-    <message>
-        <source>Restore Models and Settings To Radio</source>
-        <translation type="obsolete">Palauta mallit ja asetukset lähettimeen</translation>
-    </message>
-    <message>
-        <source>Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1</source>
-        <translation type="obsolete">Ei voi palauttaa malli ja asetus tietoja lähettimestä. Mallit ja asetukset löytyy tiedostosta: %1</translation>
-    </message>
-    <message>
-        <source>Could not write firmware to radio. The models and settings data file can be found at: %1</source>
-        <translation type="obsolete">Ei voi kirjoittaa malli ja asetus tietoja lähettimeen. Mallit ja asetukset löytyy tiedostosta: %1</translation>
-    </message>
-    <message>
-        <source>Cannot backup existing Models and Settings from Radio. Firmware write process aborted</source>
-        <translation type="obsolete">Ei voi varmuuskopioida nykyisiä malli ja asetuksia lähettimestä. Firmwaren kirjoitus prosessi keskeytetään</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="846"/>
         <source>Save Radio Backup to File</source>
         <translation>Tallenna lähettimen varmuuskopio tiedostoon</translation>
-    </message>
-    <message>
-        <source>Read Radio Backup</source>
-        <translation type="obsolete">Lue lähettimen varmuuskopio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="855"/>
@@ -6201,31 +4022,15 @@ Haluatko ladata sen nyt ?</translation>
         <translation>Lue firmware tiedostosta</translation>
     </message>
     <message>
-        <source>New Models+Settings</source>
-        <translation type="obsolete">Uudet mallit ja asetukset</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1012"/>
         <source>Create a new Models and Settings file</source>
         <translation>Luo uusi mallit ja asetukset tiedosto</translation>
-    </message>
-    <message>
-        <source>Open Models+Settings...</source>
-        <translation type="obsolete">Avaa mallit ja asetukset...</translation>
-    </message>
-    <message>
-        <source>Save Models+Settings...</source>
-        <translation type="obsolete">Tallenna mallit ja asutket...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1014"/>
         <location filename="../mainwindow.cpp" line="1015"/>
         <source>Save Models and Settings file</source>
         <translation>Tallenna mallit ja asetukset tiedostoon</translation>
-    </message>
-    <message>
-        <source>Save Models+Settings as...</source>
-        <translation type="obsolete">Tallenna mallit ja asetukset nimellä...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1017"/>
@@ -6238,17 +4043,9 @@ Haluatko ladata sen nyt ?</translation>
         <translation>Leikka nykyinen malli leikepöydälle</translation>
     </message>
     <message>
-        <source>Copy Model...</source>
-        <translation type="obsolete">Kopio malli...</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1018"/>
         <source>Copy current model to the clipboard</source>
         <translation>Kopio nykyinen malli leikepöydälle</translation>
-    </message>
-    <message>
-        <source>Paste Model...</source>
-        <translation type="obsolete">Liitä malli...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1019"/>
@@ -6446,14 +4243,6 @@ Haluatko ladata sen nyt ?</translation>
         <translation>Uusi Radio</translation>
     </message>
     <message>
-        <source>Hebrew</source>
-        <translation type="obsolete">Heprea</translation>
-    </message>
-    <message>
-        <source>Use Hebrew in menus</source>
-        <translation type="obsolete">Käytä heprea valikoita</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1043"/>
         <source>Polish</source>
         <translation>Puola</translation>
@@ -6464,14 +4253,6 @@ Haluatko ladata sen nyt ?</translation>
         <translation>Käytä puola valikoita</translation>
     </message>
     <message>
-        <source>Portuguese</source>
-        <translation type="obsolete">Portugali</translation>
-    </message>
-    <message>
-        <source>Use Portuguese in menus</source>
-        <translation type="obsolete">Käytä portugali valikoita</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1046"/>
         <source>Swedish</source>
         <translation>Ruotsi</translation>
@@ -6480,22 +4261,6 @@ Haluatko ladata sen nyt ?</translation>
         <location filename="../mainwindow.cpp" line="1046"/>
         <source>Use Swedish in menus</source>
         <translation>Käytä ruotsi valikoita</translation>
-    </message>
-    <message>
-        <source>Russian</source>
-        <translation type="obsolete">Venäjä</translation>
-    </message>
-    <message>
-        <source>Use Russian in menus</source>
-        <translation type="obsolete">Käytä venäjä valikoita</translation>
-    </message>
-    <message>
-        <source>Dutch</source>
-        <translation type="obsolete">Tanska</translation>
-    </message>
-    <message>
-        <source>Use Dutch in menus</source>
-        <translation type="obsolete">Käytä tanskai valikoita</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1050"/>
@@ -6741,17 +4506,9 @@ We recommend you view the release notes using the button below to learn about an
         <translation>Näytä lista viimeaikaisista mallit ja asetukset dokuista</translation>
     </message>
     <message>
-        <source>Show a selection list of radio profiles</source>
-        <translation type="obsolete">Näytä lista viimeaikaisista radion asetus profiileista</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1403"/>
         <source>%2</source>
         <translation>%2</translation>
-    </message>
-    <message>
-        <source>About</source>
-        <translation type="obsolete">Tietoja</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1050"/>
@@ -6759,25 +4516,9 @@ We recommend you view the release notes using the button below to learn about an
         <translation>Näytä sovelluksen tietoja ikkuna</translation>
     </message>
     <message>
-        <source>Print</source>
-        <translation type="obsolete">Tulosta</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1051"/>
         <source>Print current model</source>
         <translation>Tulosta nykyinen malli</translation>
-    </message>
-    <message>
-        <source>Simulate</source>
-        <translation type="obsolete">Simuloi</translation>
-    </message>
-    <message>
-        <source>Simulate selected model</source>
-        <translation type="obsolete">Simuloi valittu malli</translation>
-    </message>
-    <message>
-        <source>loadBackup...</source>
-        <translation type="obsolete">Lataa varmuuskopio...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1053"/>
@@ -6785,25 +4526,9 @@ We recommend you view the release notes using the button below to learn about an
         <translation>Lataa varmuuskipio tiedostosta</translation>
     </message>
     <message>
-        <source>Logs</source>
-        <translation type="obsolete">Logit</translation>
-    </message>
-    <message>
-        <source>Open log file</source>
-        <translation type="obsolete">Avaa logi tiedosto</translation>
-    </message>
-    <message>
-        <source>Setting...</source>
-        <translation type="obsolete">Asetukset...</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1055"/>
         <source>Edit Settings</source>
         <translation>Muuta asetuksia</translation>
-    </message>
-    <message>
-        <source>Downloads...</source>
-        <translation type="obsolete">Ladatut...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1056"/>
@@ -6811,50 +4536,14 @@ We recommend you view the release notes using the button below to learn about an
         <translation>Lataa firmware ja ääni tiedostot</translation>
     </message>
     <message>
-        <source>Check for updates...</source>
-        <translation type="obsolete">Tarkistetaan päivityksiä...</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1057"/>
         <source>Check OpenTX and Companion updates</source>
         <translation>Tarkista OpenTX ja Companion päivitykset</translation>
     </message>
     <message>
-        <source>ChangeLog...</source>
-        <translation type="obsolete">Muutos logi...</translation>
-    </message>
-    <message>
-        <source>Show Companion changelog</source>
-        <translation type="obsolete">Näytä Companionin muutos logi</translation>
-    </message>
-    <message>
-        <source>Firmware ChangeLog...</source>
-        <translation type="obsolete">Firmwaren muutos logi...</translation>
-    </message>
-    <message>
-        <source>Show firmware changelog</source>
-        <translation type="obsolete">Näytä firmwaren muutos logi</translation>
-    </message>
-    <message>
-        <source>Compare...</source>
-        <translation type="obsolete">Vertaa...</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1060"/>
         <source>Compare models</source>
         <translation>Vertaa malleja</translation>
-    </message>
-    <message>
-        <source>Edit Tx Splash Image...</source>
-        <translation type="obsolete">Muuta lähettimen  alkuruutu kuvaa...</translation>
-    </message>
-    <message>
-        <source>edit the splash screen of your TX</source>
-        <translation type="obsolete">Muuta alkuruutua omaan lähettimeen</translation>
-    </message>
-    <message>
-        <source>List programmers</source>
-        <translation type="obsolete">Lista ohjelmointilaitteista</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1062"/>
@@ -6877,26 +4566,6 @@ We recommend you view the release notes using the button below to learn about an
         <translation>Näytä sulake dialogi</translation>
     </message>
     <message>
-        <source>Read Firmware</source>
-        <translation type="obsolete">Lue firmware</translation>
-    </message>
-    <message>
-        <source>Read firmware from transmitter</source>
-        <translation type="obsolete">Lue firmware lähettimestä</translation>
-    </message>
-    <message>
-        <source>Write Firmware</source>
-        <translation type="obsolete">Kirjoita firmware</translation>
-    </message>
-    <message>
-        <source>Write firmware to transmitter</source>
-        <translation type="obsolete">Kirjoita firmware lähettimeen</translation>
-    </message>
-    <message>
-        <source>New Profile</source>
-        <translation type="obsolete">Uusi profiili</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1066"/>
         <source>Create a new Radio Setting Profile</source>
         <translation>Luo uusi radio asetus profiili</translation>
@@ -6915,42 +4584,6 @@ We recommend you view the release notes using the button below to learn about an
         <location filename="../mainwindow.cpp" line="1067"/>
         <source>Open the OpenTX document page in a web browser</source>
         <translation>Avaa OpenTX dokut webbi selaimen sivulle</translation>
-    </message>
-    <message>
-        <source>Write Models and Settings to transmitter</source>
-        <translation type="obsolete">Kirjoita mallit ja asetukset lähettimeen</translation>
-    </message>
-    <message>
-        <source>Read Models and Settings from transmitter</source>
-        <translation type="obsolete">Lue mallit ja asetukset lähettimestä</translation>
-    </message>
-    <message>
-        <source>Configure connection software...</source>
-        <translation type="obsolete">Määrittele softan yhteysasetukset...</translation>
-    </message>
-    <message>
-        <source>Configure software for reading from and writing to the transmitter</source>
-        <translation type="obsolete">Asetetaan ohjelma joka lukee ja kirjoittaa tiedot lähettimeen</translation>
-    </message>
-    <message>
-        <source>Write Models and Settings from file to Tx</source>
-        <translation type="obsolete">Kirjoita mallit ja asetukset tiedostosta lähettimeen</translation>
-    </message>
-    <message>
-        <source>Write Models and Settings from file to transmitter</source>
-        <translation type="obsolete">Kirjoita mallit ja asetukset tiedostosta lähettimeen</translation>
-    </message>
-    <message>
-        <source>Save Tx Models and Settings to file</source>
-        <translation type="obsolete">Tallenna lähettimen mallit ja asetukset tiedostoon</translation>
-    </message>
-    <message>
-        <source>Save the Models and Settings from the transmitter to a file</source>
-        <translation type="obsolete">Tallenna lähettimen mallit ja asetukset tiedostoon</translation>
-    </message>
-    <message>
-        <source>Contributors</source>
-        <translation type="obsolete">Avustajat</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1073"/>
@@ -7006,22 +4639,6 @@ We recommend you view the release notes using the button below to learn about an
         <translation>Apu</translation>
     </message>
     <message>
-        <source>Radio Settings Profiles</source>
-        <translation type="obsolete">Radion asetus profiilit</translation>
-    </message>
-    <message>
-        <source>Show a selection list of recent documents</source>
-        <translation type="obsolete">Näytä lista viimeaikaisista dokuista</translation>
-    </message>
-    <message>
-        <source>Radio Profiles</source>
-        <translation type="obsolete">Radio profiilit</translation>
-    </message>
-    <message>
-        <source>Show a selection list of radio settings profiles</source>
-        <translation type="obsolete">Näytä lista viimeaikaisista radion asetus profiileista</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1264"/>
         <source>Write</source>
         <translation>Kirjoita</translation>
@@ -7030,28 +4647,6 @@ We recommend you view the release notes using the button below to learn about an
         <location filename="../mainwindow.cpp" line="1288"/>
         <source>Ready</source>
         <translation>Valmis</translation>
-    </message>
-    <message>
-        <source>&amp;%1 %2</source>
-        <translation type="obsolete">&amp;%1 %2</translation>
-    </message>
-    <message>
-        <source>Unable to find file %1!</source>
-        <translation type="obsolete">Ei löydy tiedostoa %1!</translation>
-    </message>
-    <message>
-        <source>Invalid Models and Settings File %1</source>
-        <translation type="obsolete">Huono malli ja asetus tiedosto %1</translation>
-    </message>
-    <message>
-        <source>Error reading file %1:
-%2.</source>
-        <translation type="obsolete">Virhe luettaessa tiedostoa %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Invalid binary Models and Settings File %1</source>
-        <translation type="obsolete">Huonoja merkkejä mallit ja asetus tiedostossa %1</translation>
     </message>
 </context>
 <context>
@@ -7065,14 +4660,6 @@ We recommend you view the release notes using the button below to learn about an
         <location filename="../mdichild.cpp" line="492"/>
         <source>Companion</source>
         <translation>Companion</translation>
-    </message>
-    <message>
-        <source>Do you want to use model wizard? </source>
-        <translation type="obsolete">Haluatko käyttää apuria mallin luomiseen ?</translation>
-    </message>
-    <message>
-        <source>Ask this question again ? </source>
-        <translation type="obsolete">Kysy tämä kysymys uudelleen ? </translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="183"/>
@@ -7171,46 +4758,14 @@ Do you want to save your changes?</source>
 Haluatko tallentaa muutokset ?</translation>
     </message>
     <message>
-        <source>Backup is impossible</source>
-        <translation type="obsolete">Varmuuskopiota ei voi tehdä</translation>
-    </message>
-    <message>
-        <source>The backup dir set in preferences does not exist</source>
-        <translation type="obsolete">Varmuuskopion kansiota ei ole määritelty asetuksiin</translation>
-    </message>
-    <message>
         <location filename="../mdichild.cpp" line="532"/>
         <source>Cannot write temporary file!</source>
         <translation>Väliaikaiseen tiedostoon ei voida kirjoittaa!</translation>
     </message>
     <message>
-        <source>Backup EEPROM From Radio</source>
-        <translation type="obsolete">Varmuuskopio EEPROM lähettimestä</translation>
-    </message>
-    <message>
-        <source>Write EEPROM To Radio</source>
-        <translation type="obsolete">Kirjoita EEPROM lähettimeen</translation>
-    </message>
-    <message>
         <location filename="../mdichild.cpp" line="581"/>
         <source>Open backup Models and Settings file</source>
         <translation>Avaa varmuuskopio  mallit ja asetukset </translation>
-    </message>
-    <message>
-        <source>Taranis radio not found</source>
-        <translation type="obsolete">Taranis radiota ei löydy</translation>
-    </message>
-    <message>
-        <source>Impossible to identify the radio on your system, please verify the eeprom disk is connected.</source>
-        <translation type="obsolete">Ei voi varmentaa mikä radio käytössä, varmistu että olet liittänyt radion koneeseen.</translation>
-    </message>
-    <message>
-        <source>Backup EEPROM From Tx</source>
-        <translation type="obsolete">Varmuuskopio EEPROM lähettimestä</translation>
-    </message>
-    <message>
-        <source>Cannot check eeprom compatibility! Continue anyway?</source>
-        <translation type="obsolete">Ei voi varmistaa että EEPROM täsmää laitteistoon! Jatketaanko silti ?</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="304"/>
@@ -7219,22 +4774,6 @@ Haluatko tallentaa muutokset ?</translation>
         <location filename="../mdichild.cpp" line="620"/>
         <source>Warning</source>
         <translation type="unfinished">Varoitus</translation>
-    </message>
-    <message>
-        <source>Firmware in radio is of a different family of eeprom written, check file and preferences!</source>
-        <translation type="obsolete">Lähettimen firmware kuuluu toiselle lähettin mallille, tarkista oikea tiedosto ja asetukset!</translation>
-    </message>
-    <message>
-        <source>Firmware in flash is outdated, please upgrade!</source>
-        <translation type="obsolete">Firware on vanhaa versio, päivitä se uudempaan!</translation>
-    </message>
-    <message>
-        <source>Write EEPROM To Tx</source>
-        <translation type="obsolete">Kirjoita EEPROM lähettimeen</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="obsolete">Avaa</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="616"/>
@@ -7270,30 +4809,6 @@ Haluatko tallentaa muutokset ?</translation>
         <translation>Alas</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Delay and slow&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These values control the speed and delay of the output of the mix.  &lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Delay is not zero the actuation of the mix will be delayed by the specified amount of seconds.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Slow is not zero then the speed of the mix will be set by the value specified -&amp;gt; the value states the number of seconds it takes to transit from -100 to 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Delay and slow&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These values control the speed and delay of the output of the mix.  &lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Delay is not zero the actuation of the mix will be delayed by the specified amount of seconds.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Slow is not zero then the speed of the mix will be set by the value specified -&amp;gt; the value states the number of seconds it takes to transit from -100 to 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../modeledit/mixerdialog.ui" line="184"/>
         <source>Include Trim</source>
         <translation>Myös trimmi</translation>
@@ -7307,42 +4822,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/mixerdialog.ui" line="198"/>
         <source>Weight</source>
         <translation>Paino</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation type="obsolete">0</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
-    </message>
-    <message>
-        <source>2</source>
-        <translation type="obsolete">2</translation>
-    </message>
-    <message>
-        <source>3</source>
-        <translation type="obsolete">3</translation>
-    </message>
-    <message>
-        <source>4</source>
-        <translation type="obsolete">4</translation>
-    </message>
-    <message>
-        <source>5</source>
-        <translation type="obsolete">5</translation>
-    </message>
-    <message>
-        <source>6</source>
-        <translation type="obsolete">6</translation>
-    </message>
-    <message>
-        <source>7</source>
-        <translation type="obsolete">7</translation>
-    </message>
-    <message>
-        <source>8</source>
-        <translation type="obsolete">8</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="66"/>
@@ -7499,33 +4978,9 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
 Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     </message>
     <message>
-        <source>DEST -&gt; X%1</source>
-        <translation type="obsolete">KOHD -&gt; X%1</translation>
-    </message>
-    <message>
-        <source>DEST -&gt; CH%1%2</source>
-        <translation type="obsolete">KOHD -&gt; CH%1%2</translation>
-    </message>
-    <message>
         <location filename="../modeledit/mixerdialog.cpp" line="20"/>
         <source>DEST -&gt; CH%1</source>
         <translation>KOHD -&gt; CH%1</translation>
-    </message>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">PER</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">KOR</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">KAA</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">SII</translation>
     </message>
 </context>
 <context>
@@ -7558,50 +5013,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <location filename="../modeledit/mixes.cpp" line="24"/>
         <source>Clear Mixes</source>
         <translation>Tyhjennä mikserit</translation>
-    </message>
-    <message>
-        <source>X%1  </source>
-        <translation type="obsolete">X%1</translation>
-    </message>
-    <message>
-        <source>CH%1%2</source>
-        <translation type="obsolete">CH%1%2</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Paino(%1)</translation>
-    </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Kytkin(%1)</translation>
-    </message>
-    <message>
-        <source>No Trim</source>
-        <translation type="obsolete">Ei trimmiä</translation>
-    </message>
-    <message>
-        <source>NoTrim</source>
-        <translation type="obsolete">Ei trimmiä</translation>
-    </message>
-    <message>
-        <source>No DR/Expo</source>
-        <translation type="obsolete">Ei DR / Expoja</translation>
-    </message>
-    <message>
-        <source>Offset(%1)</source>
-        <translation type="obsolete">Tasoitus(%1)</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete">Viive(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Hidastus(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Warn(%1)</source>
-        <translation type="obsolete"> Välys(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="158"/>
@@ -7664,10 +5075,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <source>&amp;Cut</source>
-        <translation type="obsolete">&amp;Leikkaa</translation>
-    </message>
-    <message>
         <location filename="../modeledit/mixes.cpp" line="423"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
@@ -7721,14 +5128,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation>Simuloi</translation>
     </message>
     <message>
-        <source>Clear Curves?</source>
-        <translation type="obsolete">Tyhjennä käyrät?</translation>
-    </message>
-    <message>
-        <source>Really clear all the curves?</source>
-        <translation type="obsolete">Varmasti tyhjennä kaikki käyrät?</translation>
-    </message>
-    <message>
         <location filename="../modeledit/modeledit.cpp" line="31"/>
         <source>Setup</source>
         <translation>Asetukset</translation>
@@ -7759,21 +5158,9 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Servos</source>
-        <translation type="obsolete">Servot</translation>
-    </message>
-    <message>
-        <source>Channels</source>
-        <translation type="obsolete">Kanavat</translation>
-    </message>
-    <message>
         <location filename="../modeledit/modeledit.cpp" line="40"/>
         <source>Logical Switches</source>
         <translation>Loogiset kytkimet</translation>
-    </message>
-    <message>
-        <source>Switch Assignment</source>
-        <translation type="obsolete">Kytkimien asettelu</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="39"/>
@@ -7914,10 +5301,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1:%2</source>
-        <translation type="obsolete">%1s {1:%2?}</translation>
-    </message>
-    <message>
         <location filename="../modelprinter.cpp" line="190"/>
         <source>Persistent</source>
         <translation type="unfinished">Yhtämittainen</translation>
@@ -8020,18 +5403,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <location filename="../modelprinter.cpp" line="381"/>
         <source>Warn(%1)</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Tasoitus</translation>
-    </message>
-    <message>
-        <source>Delay</source>
-        <translation type="obsolete">Viive</translation>
-    </message>
-    <message>
-        <source>Slow</source>
-        <translation type="obsolete">Hidas</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="415"/>
@@ -8196,10 +5567,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <translation type="obsolete">Alt+R</translation>
-    </message>
-    <message>
         <location filename="../modelslist.cpp" line="103"/>
         <source>&amp;Simulate model</source>
         <translation>&amp;Simuloi malli</translation>
@@ -8236,10 +5603,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation>Haluatko päällekirjoittaa radion yleiset asetukset ?</translation>
     </message>
     <message>
-        <source>Do you want to overwrite TX general settings?</source>
-        <translation type="obsolete">Haluatko päällekirjoittaa TX:n yleiset asetukset ?</translation>
-    </message>
-    <message>
         <location filename="../modelslist.cpp" line="469"/>
         <source>You are pasting on an not empty model, are you sure?</source>
         <translation>Yrität liittää tietoja ei tyhjän mallin tietoihin, haluatko varmasti jatkaa ?</translation>
@@ -8252,10 +5615,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
 </context>
 <context>
     <name>Module</name>
-    <message>
-        <source>Form</source>
-        <translation type="obsolete">Moduuli</translation>
-    </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="137"/>
         <source>Failsafe Mode</source>
@@ -8272,10 +5631,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation>PPM viive</translation>
     </message>
     <message>
-        <source> usec</source>
-        <translation type="obsolete">usec</translation>
-    </message>
-    <message>
         <location filename="../modeledit/setup_module.ui" line="230"/>
         <source>Negative</source>
         <translation>Negatiivinen</translation>
@@ -8284,18 +5639,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <location filename="../modeledit/setup_module.ui" line="235"/>
         <source>Positive</source>
         <translation>Positiivinen</translation>
-    </message>
-    <message>
-        <source>RX Number</source>
-        <translation type="obsolete">RX numero</translation>
-    </message>
-    <message>
-        <source>Master</source>
-        <translation type="obsolete">Masteri</translation>
-    </message>
-    <message>
-        <source>Slave</source>
-        <translation type="obsolete">Orja</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="284"/>
@@ -8308,21 +5651,9 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation>Harjoitus tila</translation>
     </message>
     <message>
-        <source> mSec</source>
-        <translation type="obsolete">mSec</translation>
-    </message>
-    <message>
         <location filename="../modeledit/setup_module.ui" line="378"/>
         <source>PPM Frame Length</source>
         <translation>PPM läh pituus</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">Lappu</translation>
-    </message>
-    <message>
-        <source>ch</source>
-        <translation type="obsolete">ch</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="91"/>
@@ -8427,10 +5758,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
 </context>
 <context>
     <name>ModulePanel</name>
-    <message>
-        <source>Trainer Output</source>
-        <translation type="obsolete">Opetus ulostulo</translation>
-    </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="139"/>
         <source>Trainer Port</source>
@@ -8683,10 +6010,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
 <context>
     <name>MultirotorPage</name>
     <message>
-        <source>Trottle Channel:</source>
-        <translation type="obsolete">Kaasu kanava:</translation>
-    </message>
-    <message>
         <location filename="../wizarddialog.cpp" line="918"/>
         <source>Throttle Channel:</source>
         <translation>Kaasun kanava:</translation>
@@ -8741,390 +6064,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <location filename="../printdialog.ui" line="68"/>
         <source>Print to file</source>
         <translation>Tulosta tiedostoon</translation>
-    </message>
-    <message>
-        <source>Setup for: </source>
-        <translation type="obsolete">Asetukset: </translation>
-    </message>
-    <message>
-        <source>printed on: %1</source>
-        <translation type="obsolete">Tulostettu: %1</translation>
-    </message>
-    <message>
-        <source>General Model Settings</source>
-        <translation type="obsolete">Yleiset mallin asetukset</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nimi</translation>
-    </message>
-    <message>
-        <source>EEprom Size</source>
-        <translation type="obsolete">EEpromin koko</translation>
-    </message>
-    <message>
-        <source>Timer1</source>
-        <translation type="obsolete">Ajastin 1</translation>
-    </message>
-    <message>
-        <source>Timer2</source>
-        <translation type="obsolete">Ajastin 2</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protokolla</translation>
-    </message>
-    <message>
-        <source>Pulse Polarity</source>
-        <translation type="obsolete">Pulssin napaisuus</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Kaasu trimmi</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Päälle</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Pois</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Kaasu expo</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Trimmin säätö</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Keski piippaus</translation>
-    </message>
-    <message>
-        <source>Flight modes Settings</source>
-        <translation type="obsolete">Lentotilan asetukset</translation>
-    </message>
-    <message>
-        <source>Fades</source>
-        <translation type="obsolete">Liut</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Trimmit</translation>
-    </message>
-    <message>
-        <source>Gvars</source>
-        <translation type="obsolete">Gvarit</translation>
-    </message>
-    <message>
-        <source>Rot.Enc.</source>
-        <translation type="obsolete">Rot.Enc.</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Kytkin</translation>
-    </message>
-    <message>
-        <source>Flight mode name</source>
-        <translation type="obsolete">Lentotilan nimi</translation>
-    </message>
-    <message>
-        <source>IN</source>
-        <translation type="obsolete">SIS</translation>
-    </message>
-    <message>
-        <source>OUT</source>
-        <translation type="obsolete">ULO</translation>
-    </message>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">PER</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">KOR</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">KAA</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">SII</translation>
-    </message>
-    <message>
-        <source>FM</source>
-        <translation type="obsolete">FM</translation>
-    </message>
-    <message>
-        <source>Expo/Dr Settings</source>
-        <translation type="obsolete">Expo / DR asetukset</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Paino</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Lento tilat</translation>
-    </message>
-    <message>
-        <source>Flight mode</source>
-        <translation type="obsolete">Lento tila</translation>
-    </message>
-    <message>
-        <source>DISABLED</source>
-        <translation type="obsolete">Pois</translation>
-    </message>
-    <message>
-        <source>Mixers</source>
-        <translation type="obsolete">Mikserit</translation>
-    </message>
-    <message>
-        <source>CH</source>
-        <translation type="obsolete">ch</translation>
-    </message>
-    <message>
-        <source>noTrim</source>
-        <translation type="obsolete">Ei trimmiä</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Tasoitus</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete">Viive(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete">Hidas(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>Warn</source>
-        <translation type="obsolete">Välys</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Rajat</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Min</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Max</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Käänteinen</translation>
-    </message>
-    <message>
-        <source>INV</source>
-        <translation type="obsolete">KÄÄNT</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">NOR</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Käyrät</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Käyrä</translation>
-    </message>
-    <message>
-        <source>pt %1</source>
-        <translation type="obsolete">pt %1</translation>
-    </message>
-    <message>
-        <source>Logical Switches</source>
-        <translation type="obsolete">Loogiset kytkimet</translation>
-    </message>
-    <message>
-        <source>LS</source>
-        <translation type="obsolete">LS</translation>
-    </message>
-    <message>
-        <source>Global Variables</source>
-        <translation type="obsolete">Globaalit muuttujat</translation>
-    </message>
-    <message>
-        <source>GV</source>
-        <translation type="obsolete">GV</translation>
-    </message>
-    <message>
-        <source>Special Functions</source>
-        <translation type="obsolete">Spesiaali toiminnot</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Toiminto</translation>
-    </message>
-    <message>
-        <source>Parameter</source>
-        <translation type="obsolete">Parametrit</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="obsolete">Toista</translation>
-    </message>
-    <message>
-        <source>Telemetry Settings</source>
-        <translation type="obsolete">Telemetria asetukset</translation>
-    </message>
-    <message>
-        <source>Alarm 1</source>
-        <translation type="obsolete">Varoitus 1</translation>
-    </message>
-    <message>
-        <source>Alarm 2</source>
-        <translation type="obsolete">Varoitus 2</translation>
-    </message>
-    <message>
-        <source>Analog</source>
-        <translation type="obsolete">Analoginen</translation>
-    </message>
-    <message>
-        <source>Internal Radio System</source>
-        <translation type="obsolete">Sisäinen radio systeemi</translation>
-    </message>
-    <message>
-        <source>Radio System</source>
-        <translation type="obsolete">Radio systeemi</translation>
-    </message>
-    <message>
-        <source>External Radio Module</source>
-        <translation type="obsolete">Ulkoinen radio systeemi</translation>
-    </message>
-    <message>
-        <source>Extra Radio System</source>
-        <translation type="obsolete">Extra Radio järjestelmä</translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation type="obsolete">Pois</translation>
-    </message>
-    <message>
-        <source>Inputs</source>
-        <translation type="obsolete">Tulot</translation>
-    </message>
-    <message>
-        <source>NoTrim</source>
-        <translation type="obsolete">Ei trimmiä</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Paino(%1)</translation>
-    </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Kytkin(%1)</translation>
-    </message>
-    <message>
-        <source>No DR/Expo</source>
-        <translation type="obsolete">Ei DR / Expoja</translation>
-    </message>
-    <message>
-        <source>Offset(%1)</source>
-        <translation type="obsolete">Tasoitus(%1)</translation>
-    </message>
-    <message>
-        <source> Warn(%1)</source>
-        <translation type="obsolete"> Välys(%1)</translation>
-    </message>
-    <message>
-        <source>L</source>
-        <translation type="obsolete">L</translation>
-    </message>
-    <message>
-        <source>SF%1</source>
-        <translation type="obsolete">SF%1</translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="obsolete">Matka</translation>
-    </message>
-    <message>
-        <source>Alarms</source>
-        <translation type="obsolete">Hälytykset</translation>
-    </message>
-    <message>
-        <source>Low Alarm</source>
-        <translation type="obsolete">Ala hälytys</translation>
-    </message>
-    <message>
-        <source>Critical Alarm</source>
-        <translation type="obsolete">Kriittinen hälytys</translation>
-    </message>
-    <message>
-        <source>RSSI</source>
-        <translation type="obsolete">RSSI</translation>
-    </message>
-    <message>
-        <source>Unit</source>
-        <translation type="obsolete">Yksikkö</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">Skaala</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tyyppi</translation>
-    </message>
-    <message>
-        <source>Condition</source>
-        <translation type="obsolete">Tila</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Arvo</translation>
-    </message>
-    <message>
-        <source>A%1</source>
-        <translation type="obsolete">A%1</translation>
-    </message>
-    <message>
-        <source>SF</source>
-        <translation type="obsolete">SF</translation>
-    </message>
-    <message>
-        <source>RSSI Alarm</source>
-        <translation type="obsolete">RSSI hälytys</translation>
-    </message>
-    <message>
-        <source>Frsky serial protocol</source>
-        <translation type="obsolete">FrSky sarja protokolla</translation>
-    </message>
-    <message>
-        <source>System of units</source>
-        <translation type="obsolete">Systeemin yksiköt</translation>
-    </message>
-    <message>
-        <source>Blades</source>
-        <translation type="obsolete">Prop lavat</translation>
-    </message>
-    <message>
-        <source>Custom Telemetry View</source>
-        <translation type="obsolete">Oma telemetria näkymä</translation>
-    </message>
-    <message>
-        <source>Telemetry Bars</source>
-        <translation type="obsolete">Telemetria palkein</translation>
-    </message>
-    <message>
-        <source>Bar Number</source>
-        <translation type="obsolete">Palkkien määrä</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Lähde</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="45"/>
@@ -9322,18 +6261,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation>SWR</translation>
     </message>
     <message>
-        <source>Tx</source>
-        <translation type="obsolete">Tx</translation>
-    </message>
-    <message>
-        <source>RSSI</source>
-        <translation type="obsolete">RSSI</translation>
-    </message>
-    <message>
-        <source>Rx</source>
-        <translation type="obsolete">Rx</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="466"/>
         <source>A1</source>
         <translation>A1</translation>
@@ -9389,10 +6316,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation>Kenno</translation>
     </message>
     <message>
-        <source>Cels</source>
-        <translation type="obsolete">Kennoja</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="469"/>
         <source>Vfas</source>
         <translation>Vfas</translation>
@@ -9428,17 +6351,9 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation>AccZ</translation>
     </message>
     <message>
-        <source>HDG </source>
-        <translation type="obsolete">HDG</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="471"/>
         <source>VSpd</source>
         <translation>Vspd</translation>
-    </message>
-    <message>
-        <source>ASpd</source>
-        <translation type="obsolete">Aspd</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="471"/>
@@ -9481,166 +6396,10 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation>T2+</translation>
     </message>
     <message>
-        <source>Spd+</source>
-        <translation type="obsolete">Spd+</translation>
-    </message>
-    <message>
-        <source>Dst+</source>
-        <translation type="obsolete">Dst+</translation>
-    </message>
-    <message>
-        <source>Cel-</source>
-        <translation type="obsolete">Cel-</translation>
-    </message>
-    <message>
-        <source>Vfs-</source>
-        <translation type="obsolete">Vfs-</translation>
-    </message>
-    <message>
-        <source>Cur+</source>
-        <translation type="obsolete">Cur+</translation>
-    </message>
-    <message>
-        <source>Pwr+</source>
-        <translation type="obsolete">Pwr+</translation>
-    </message>
-    <message>
-        <source>ACC </source>
-        <translation type="obsolete">ACC</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="460"/>
         <location filename="../eeprominterface.cpp" line="464"/>
         <source>Time</source>
         <translation>Aika</translation>
-    </message>
-    <message>
-        <source>LS1</source>
-        <translation type="obsolete">LS1</translation>
-    </message>
-    <message>
-        <source>LS2</source>
-        <translation type="obsolete">LS2</translation>
-    </message>
-    <message>
-        <source>LS3</source>
-        <translation type="obsolete">LS3</translation>
-    </message>
-    <message>
-        <source>LS4</source>
-        <translation type="obsolete">LS4</translation>
-    </message>
-    <message>
-        <source>LS5</source>
-        <translation type="obsolete">LS5</translation>
-    </message>
-    <message>
-        <source>LS6</source>
-        <translation type="obsolete">LS6</translation>
-    </message>
-    <message>
-        <source>LS7</source>
-        <translation type="obsolete">LS7</translation>
-    </message>
-    <message>
-        <source>LS8</source>
-        <translation type="obsolete">LS8</translation>
-    </message>
-    <message>
-        <source>LS9</source>
-        <translation type="obsolete">LS9</translation>
-    </message>
-    <message>
-        <source>LSA</source>
-        <translation type="obsolete">LSA</translation>
-    </message>
-    <message>
-        <source>LSB</source>
-        <translation type="obsolete">LSB</translation>
-    </message>
-    <message>
-        <source>LSC</source>
-        <translation type="obsolete">LSC</translation>
-    </message>
-    <message>
-        <source>LSD</source>
-        <translation type="obsolete">LSD</translation>
-    </message>
-    <message>
-        <source>LSE</source>
-        <translation type="obsolete">LSE</translation>
-    </message>
-    <message>
-        <source>LSF</source>
-        <translation type="obsolete">LSF</translation>
-    </message>
-    <message>
-        <source>LSG</source>
-        <translation type="obsolete">LSG</translation>
-    </message>
-    <message>
-        <source>LSH</source>
-        <translation type="obsolete">LSH</translation>
-    </message>
-    <message>
-        <source>LSI</source>
-        <translation type="obsolete">LSI</translation>
-    </message>
-    <message>
-        <source>LSJ</source>
-        <translation type="obsolete">LSJ</translation>
-    </message>
-    <message>
-        <source>LSK</source>
-        <translation type="obsolete">LSK</translation>
-    </message>
-    <message>
-        <source>LSL</source>
-        <translation type="obsolete">LSL</translation>
-    </message>
-    <message>
-        <source>LSM</source>
-        <translation type="obsolete">LSM</translation>
-    </message>
-    <message>
-        <source>LSN</source>
-        <translation type="obsolete">LSN</translation>
-    </message>
-    <message>
-        <source>LSO</source>
-        <translation type="obsolete">LSO</translation>
-    </message>
-    <message>
-        <source>LSP</source>
-        <translation type="obsolete">LSP</translation>
-    </message>
-    <message>
-        <source>LSQ</source>
-        <translation type="obsolete">LSQ</translation>
-    </message>
-    <message>
-        <source>LSR</source>
-        <translation type="obsolete">LSR</translation>
-    </message>
-    <message>
-        <source>LSS</source>
-        <translation type="obsolete">LSS</translation>
-    </message>
-    <message>
-        <source>LST</source>
-        <translation type="obsolete">LST</translation>
-    </message>
-    <message>
-        <source>LSU</source>
-        <translation type="obsolete">LSU</translation>
-    </message>
-    <message>
-        <source>LSV</source>
-        <translation type="obsolete">LSV</translation>
-    </message>
-    <message>
-        <source>LSW</source>
-        <translation type="obsolete">LSW</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="486"/>
@@ -9651,10 +6410,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation>----</translation>
     </message>
     <message>
-        <source>Input %1</source>
-        <translation type="obsolete">Tulo %1</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="507"/>
         <source>MAX</source>
         <translation>MAX</translation>
@@ -9663,18 +6418,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <location filename="../eeprominterface.cpp" line="513"/>
         <source>CYC%1</source>
         <translation>CYC%1</translation>
-    </message>
-    <message>
-        <source>PPM%1</source>
-        <translation type="obsolete">PPM%1</translation>
-    </message>
-    <message>
-        <source>CH%1%2</source>
-        <translation type="obsolete">CH%1%2</translation>
-    </message>
-    <message>
-        <source>X%1</source>
-        <translation type="obsolete">X%1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="92"/>
@@ -9698,10 +6441,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <location filename="../eeprominterface.cpp" line="465"/>
         <source>RSSI Rx</source>
         <translation>RSSI RX</translation>
-    </message>
-    <message>
-        <source>Rx Batt</source>
-        <translation type="obsolete">Rx akku</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="466"/>
@@ -10233,10 +6972,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation type="unfinished">NOR</translation>
     </message>
     <message>
-        <source>ABS</source>
-        <translation type="obsolete">ABS</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="623"/>
         <source>THs</source>
         <translation>THs</translation>
@@ -10406,33 +7141,9 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation>Reuna</translation>
     </message>
     <message>
-        <source>Stay</source>
-        <translation type="obsolete">Pidä</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="753"/>
         <source>Unknown</source>
         <translation>Tuntematon</translation>
-    </message>
-    <message>
-        <source>STAY(%1, [%2:%3])</source>
-        <translation type="obsolete">PIDÄ(%1, [%2:%3])</translation>
-    </message>
-    <message>
-        <source>STICKY(%1, %2)</source>
-        <translation type="obsolete">JÄHMEÄ(%1, %2)</translation>
-    </message>
-    <message>
-        <source>TIMER(%1, %2)</source>
-        <translation type="obsolete">AJASTIN(%1, %2)</translation>
-    </message>
-    <message>
-        <source> Delay %1 sec</source>
-        <translation type="obsolete">Viive %1 sek</translation>
-    </message>
-    <message>
-        <source> Duration %1 sec</source>
-        <translation type="obsolete">Kesto %1 sek</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="892"/>
@@ -10440,10 +7151,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <location filename="../eeprominterface.cpp" line="908"/>
         <source>&lt;font color=red&gt;&lt;b&gt;Inconsistent parameter&lt;/b&gt;&lt;/font&gt;</source>
         <translation>&lt;font color=red&gt;&lt;b&gt;epäjohdonmukainen arvo&lt;/b&gt;&lt;/font&gt;</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation type="obsolete">Kaikki</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="842"/>
@@ -10464,10 +7171,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <location filename="../eeprominterface.cpp" line="931"/>
         <source>Incr:</source>
         <translation>Lis:</translation>
-    </message>
-    <message>
-        <source>Safety %1</source>
-        <translation type="obsolete">Turva %1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="108"/>
@@ -10647,74 +7350,6 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation type="unfinished">Ajastin 3</translation>
     </message>
     <message>
-        <source>Weight</source>
-        <translation type="obsolete">Paino</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Kytkin</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Paino(%1)</translation>
-    </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Kytkin(%1)</translation>
-    </message>
-    <message>
-        <source>NoTrim</source>
-        <translation type="obsolete">Ei trimmiä</translation>
-    </message>
-    <message>
-        <source>No DR/Expo</source>
-        <translation type="obsolete">Ei DR / Expoja</translation>
-    </message>
-    <message>
-        <source>Offset(%1)</source>
-        <translation type="obsolete">Tasoitus(%1)</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Tasoitus</translation>
-    </message>
-    <message>
-        <source>Delay</source>
-        <translation type="obsolete">Viive</translation>
-    </message>
-    <message>
-        <source>Slow</source>
-        <translation type="obsolete">Hidas</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Lento tilat</translation>
-    </message>
-    <message>
-        <source>Flight mode</source>
-        <translation type="obsolete">Lento tila</translation>
-    </message>
-    <message>
-        <source>Edge(%1, [%2:%3])</source>
-        <translation type="obsolete">reuna(%1, [%2:%3])</translation>
-    </message>
-    <message>
-        <source>Sticky(%1, %2)</source>
-        <translation type="obsolete">Jähmeä(%1, %2)</translation>
-    </message>
-    <message>
-        <source>Timer(%1, %2)</source>
-        <translation type="obsolete">Ajastin(%1, %2)</translation>
-    </message>
-    <message>
-        <source> Duration (%1s)</source>
-        <translation type="obsolete">Kesto (%1 sek)</translation>
-    </message>
-    <message>
-        <source> Delay (%1s)</source>
-        <translation type="obsolete">Viive (%1 sek)</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="768"/>
         <source>Override %1</source>
         <translation>Ohitus %1</translation>
@@ -10835,34 +7470,10 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation>Ei toistoa</translation>
     </message>
     <message>
-        <source>%1 sec</source>
-        <translation type="obsolete">%1 sek</translation>
-    </message>
-    <message>
-        <source>th9x</source>
-        <translation type="obsolete">th9x</translation>
-    </message>
-    <message>
-        <source>er9x</source>
-        <translation type="obsolete">er9x</translation>
-    </message>
-    <message>
-        <source>ersky9x</source>
-        <translation type="obsolete">ersky9x</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/open9xSky9xeeprom.cpp" line="151"/>
         <location filename="../firmwares/opentx/open9xSky9xeeprom.cpp" line="181"/>
         <source>Simultaneous usage of expo and curves is no longer supported</source>
         <translation>Samanaikainen käyttö expolla ja käyrällä ei ole enää tuettu</translation>
-    </message>
-    <message>
-        <source>Simultaneous usage of expo and curves is no longer supported in open9x</source>
-        <translation type="obsolete">Samanaikainen käyttö expolla ja käyrällä ei ole enää tuettu open9x:ssä</translation>
-    </message>
-    <message>
-        <source>openTx only accepts %1 points in all curves</source>
-        <translation type="obsolete">OpenTX vastaanottaa vain %1 pistettä kaikkiin käyriin</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="552"/>
@@ -10901,19 +7512,9 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
         <translation>OpenTX ei hyväksy tätä radio protokollaa</translation>
     </message>
     <message>
-        <source>OpenTX doesn&apos;t accept this protocol</source>
-        <translation type="obsolete">OpenTX ei hyväksy tätä protokollaa</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2969"/>
         <source>OpenTX doesn&apos;t allow this number of channels</source>
         <translation>OpenTX ei hyväksy näin montaa kanavaa</translation>
-    </message>
-    <message>
-        <source>Your radio probably uses a wrong firmware,
- eeprom size is 4096 but only the first 2048 are used</source>
-        <translation type="obsolete">Sinun radio käyttää luultavasta väärää firmwarea,
-eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="458"/>
@@ -10978,21 +7579,9 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <translation>Potikoiden käyttö valikko navigoinnissa</translation>
     </message>
     <message>
-        <source>Possibility to enable FAI MODE at field</source>
-        <translation type="obsolete">Mahdollisuus valita FAI TILA käyttöön kentällä</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1130"/>
         <source>No OverrideCH functions available</source>
         <translation>Ei ohituskanava funkitoita saatavissa</translation>
-    </message>
-    <message>
-        <source>FAI MODE always enabled</source>
-        <translation type="obsolete">FAI TILA aina päällä</translation>
-    </message>
-    <message>
-        <source>OpenTX for 9X board</source>
-        <translation type="obsolete">OpenTX 9X radioille</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1172"/>
@@ -11100,10 +7689,6 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <translation>PPM keskitys arvojen mukaan</translation>
     </message>
     <message>
-        <source>PPM values displayed in us</source>
-        <translation type="obsolete">PPM arvot näytetään&quot; us&quot; tyyppisesti</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1183"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1219"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1249"/>
@@ -11134,14 +7719,6 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1222"/>
         <source>SmartieParts 2.2 Backlight support</source>
         <translation>&quot;Smartie parts 2.2&quot; taustavalo tuki</translation>
-    </message>
-    <message>
-        <source>In model setup menus automatically set source by moving some of them</source>
-        <translation type="obsolete">Mallien valikossa lähde valitaan automaattisesti kun jotain siirretään</translation>
-    </message>
-    <message>
-        <source>In model setup menus automatically set switch by moving some of them</source>
-        <translation type="obsolete">Mallien valikossa kytkimet valitaan automaattisesti kun jotain siirretään</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1128"/>
@@ -11400,10 +7977,6 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>OpenTX for M128 / 9X board</source>
-        <translation type="obsolete">OpenTX M128 / 9X radiolle</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1230"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1258"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1291"/>
@@ -11411,18 +7984,6 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1346"/>
         <source>EEprom write Progress bar</source>
         <translation>EEprom tallennus palkki</translation>
-    </message>
-    <message>
-        <source>OpenTX for 9XR</source>
-        <translation type="obsolete">OpenTX -&gt; 9XR</translation>
-    </message>
-    <message>
-        <source>OpenTX for 9XR with M128 chip</source>
-        <translation type="obsolete">OpenTX -&gt; 9XR M128 sirulla</translation>
-    </message>
-    <message>
-        <source>OpenTX for Gruvin9x board / 9X</source>
-        <translation type="obsolete">OpenTX -&gt; Gruvin9x / 9X</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1302"/>
@@ -11458,10 +8019,6 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>OpenTX for Sky9x board / 9X</source>
-        <translation type="obsolete">OpenTX -&gt; Sky9x / 9X</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1353"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1374"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1397"/>
@@ -11489,14 +8046,6 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <translation>Tuki LUA mallien skripteille</translation>
     </message>
     <message>
-        <source>OpenTX for FrSky Taranis Plus</source>
-        <translation type="obsolete">OpenTX FrSky Taranis Plus</translation>
-    </message>
-    <message>
-        <source>Use FrSky Taranis sticks in a 9X/9XR</source>
-        <translation type="obsolete">Käytä FrSky Taranis tikkuja 9X / 9XR</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1368"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1389"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1411"/>
@@ -11504,21 +8053,9 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <translation>Bluetooth liintäntä</translation>
     </message>
     <message>
-        <source>OpenTX for 9XR-PRO</source>
-        <translation type="obsolete">OpenTX 9XR-PRO</translation>
-    </message>
-    <message>
-        <source>OpenTX for FrSky Taranis</source>
-        <translation type="obsolete">OpenTX -&gt; Taranis</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1138"/>
         <source>Disable HELI menu and cyclic mix support</source>
         <translation>HELI valikko pois ,myös cyclic mix tuki</translation>
-    </message>
-    <message>
-        <source>Disable TEMPLATES menu</source>
-        <translation type="obsolete">Mallit valikko pois käytöstä</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1139"/>
@@ -11526,21 +8063,9 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <translation>Globaalit muuttujat pois päältä</translation>
     </message>
     <message>
-        <source>OpenTX for FrSky Taranis Rev4a</source>
-        <translation type="obsolete">OpenTX -&gt; Taranis Rev4a</translation>
-    </message>
-    <message>
         <location filename="../firmwares/th9x/th9xeeprom.cpp" line="200"/>
         <source>th9x on this board doesn&apos;t have Rotary Encoders</source>
         <translation>th9x radiossa ei ole Rot Enc</translation>
-    </message>
-    <message>
-        <source>FM%1</source>
-        <translation type="obsolete">FM%1</translation>
-    </message>
-    <message>
-        <source>Input%1</source>
-        <translation type="obsolete">Tulo%1</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="52"/>
@@ -11621,10 +8146,6 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <location filename="../modeledit/setup.cpp" line="759"/>
         <source>THR</source>
         <translation>KAA</translation>
-    </message>
-    <message>
-        <source>X%1  </source>
-        <translation type="obsolete">X%1  </translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="517"/>
@@ -11753,70 +8274,6 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <translation>Metrit</translation>
     </message>
     <message>
-        <source>Extra Fine</source>
-        <translation type="obsolete">Eri hieno</translation>
-    </message>
-    <message>
-        <source>Fine</source>
-        <translation type="obsolete">Hieno</translation>
-    </message>
-    <message>
-        <source>Medium</source>
-        <translation type="obsolete">Keski</translation>
-    </message>
-    <message>
-        <source>Coarse</source>
-        <translation type="obsolete">Karkea</translation>
-    </message>
-    <message>
-        <source>%1:%2</source>
-        <translation type="obsolete">%1s {1:%2?}</translation>
-    </message>
-    <message>
-        <source>Exponential</source>
-        <translation type="obsolete">Expo</translation>
-    </message>
-    <message>
-        <source>Count Up</source>
-        <translation type="obsolete">Laske ylös</translation>
-    </message>
-    <message>
-        <source>Count Down</source>
-        <translation type="obsolete">Laske alas</translation>
-    </message>
-    <message>
-        <source>%1:%2, </source>
-        <translation type="obsolete">%1 %2, </translation>
-    </message>
-    <message>
-        <source>: %1 Channels, %2usec Delay</source>
-        <translation type="obsolete">:%1 Kanaville, %2 käyt viive</translation>
-    </message>
-    <message>
-        <source>Flight modes(%1)</source>
-        <translation type="obsolete">Lentotilat(%1)</translation>
-    </message>
-    <message>
-        <source>Flight mode(%1)</source>
-        <translation type="obsolete">Lentotila(%1)</translation>
-    </message>
-    <message>
-        <source>Rudder</source>
-        <translation type="obsolete">Sivuperäsin</translation>
-    </message>
-    <message>
-        <source>Elevator</source>
-        <translation type="obsolete">Korkeusperäsin</translation>
-    </message>
-    <message>
-        <source>Throttle</source>
-        <translation type="obsolete">Kaasu</translation>
-    </message>
-    <message>
-        <source>Aileron</source>
-        <translation type="obsolete">Siivekkeet</translation>
-    </message>
-    <message>
         <location filename="../helpers.cpp" line="815"/>
         <source>Simulator for this firmware is not yet available</source>
         <translation>Tämän firmwaren simulointi ei ole vielä mahdollista</translation>
@@ -11882,18 +8339,6 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <translation>Käytä trimmiä lentotilaan %1 + Oma trimmi asetuksena</translation>
     </message>
     <message>
-        <source>Thanks all for the donations, kind messages, nice ideas, constructive proposals etc. for the next OpenTX/Companion funding model.
-
-We are really appreciative for that!
-
-The OpenTX/Companion Team.</source>
-        <translation type="obsolete">Kiitos kaikille lahjoituksista, kivoista viesteistä, rakentavista kommenteista ja ehdotuksista. Pyritään saamaan niitä seuraavaan OpenTX/Companion verisoon.
-
-Arvostamme niitä !
-
-OpenTX/Compantion tiimi.</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/open9xStockeeprom.cpp" line="92"/>
         <source>Simultaneous usage of expo and curves is no longer supported in OpenTX</source>
         <translation>Molempien käyttö yhtäaikaa ( expot ja käyrät) ei ole enää tuettu OpenTX:llä</translation>
@@ -11906,14 +8351,6 @@ The OpenTX Team.</source>
         <translation>Kiitos että päivitit OpenTX 2.0:laan. Tämä on suurin päivitys joka lisää paljon uutta asiaa lähettimeen. Joten lue ohjeet tarkkaan, jotta ymmärrät paremmin mitä on muutettu ja kuinka kaikki toimii.
 
 OpenTX Tiimi.</translation>
-    </message>
-    <message>
-        <source>Positive</source>
-        <translation type="obsolete">Positiivinen</translation>
-    </message>
-    <message>
-        <source>Negative</source>
-        <translation type="obsolete">Negatiivinen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="672"/>
@@ -12023,10 +8460,6 @@ OpenTX Tiimi.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Lähetintä ei löydy!&lt;/p&gt;&lt;p&gt;Muista pitää molemmat ala trimmi napit keskustaa kohden kun käynnistät lähettimen.&lt;/p&gt;&lt;p&gt;Liitä sitten USB johto lähettimeen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../radionotfound.ui" line="92"/>
         <source>OK</source>
         <translation>Ok</translation>
@@ -12069,25 +8502,9 @@ OpenTX Tiimi.</translation>
 <context>
     <name>Setup</name>
     <message>
-        <source>Form</source>
-        <translation type="obsolete">Asetukset</translation>
-    </message>
-    <message>
         <location filename="../modeledit/setup.ui" line="87"/>
         <source>Model Image</source>
         <translation>Mallin kuva</translation>
-    </message>
-    <message>
-        <source>Model Name</source>
-        <translation type="obsolete">Mallin nimi</translation>
-    </message>
-    <message>
-        <source>Timer2</source>
-        <translation type="obsolete">Ajastin 2</translation>
-    </message>
-    <message>
-        <source>Timer1</source>
-        <translation type="obsolete">Ajastin 1</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="515"/>
@@ -12103,10 +8520,6 @@ OpenTX Tiimi.</translation>
         <location filename="../modeledit/setup.ui" line="330"/>
         <source>Center beep</source>
         <translation>Keski piippaus</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Trimmin säätö</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="445"/>
@@ -12154,10 +8567,6 @@ OpenTX Tiimi.</translation>
         <translation>Näytä teht.lista</translation>
     </message>
     <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Kaasu trimmi</translation>
-    </message>
-    <message>
         <location filename="../modeledit/setup.ui" line="418"/>
         <source>Throttle Warning</source>
         <translation>Kaasu varoitus</translation>
@@ -12191,10 +8600,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../modeledit/setup.ui" line="28"/>
         <source>Timer 1</source>
         <translation>Ajastin 1</translation>
-    </message>
-    <message>
-        <source>Timer Source</source>
-        <translation type="obsolete">Ajastimen lähde</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="480"/>
@@ -12321,22 +8726,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation>Companion simulaattori</translation>
     </message>
     <message>
-        <source>THR</source>
-        <translation type="obsolete">KAA</translation>
-    </message>
-    <message>
-        <source>RUD</source>
-        <translation type="obsolete">PER</translation>
-    </message>
-    <message>
-        <source>ELE</source>
-        <translation type="obsolete">KOR</translation>
-    </message>
-    <message>
-        <source>AIL</source>
-        <translation type="obsolete">SII</translation>
-    </message>
-    <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="248"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="717"/>
         <source>Hold X</source>
@@ -12371,10 +8760,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation>Gvarit</translation>
     </message>
     <message>
-        <source>TextLabel</source>
-        <translation type="obsolete">Simulaattori</translation>
-    </message>
-    <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="404"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="468"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="873"/>
@@ -12383,45 +8768,9 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation>Tuplaklikkaa oikea -&gt; resetoi</translation>
     </message>
     <message>
-        <source>TRN</source>
-        <translation type="obsolete">TRN</translation>
-    </message>
-    <message>
-        <source>GEA</source>
-        <translation type="obsolete">REN</translation>
-    </message>
-    <message>
-        <source>ID0</source>
-        <translation type="obsolete">ID0</translation>
-    </message>
-    <message>
-        <source>ID1</source>
-        <translation type="obsolete">ID1</translation>
-    </message>
-    <message>
-        <source>ID2</source>
-        <translation type="obsolete">ID2</translation>
-    </message>
-    <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="999"/>
         <source>BEEP</source>
         <translation>PIIP</translation>
-    </message>
-    <message>
-        <source>P1</source>
-        <translation type="obsolete">P1</translation>
-    </message>
-    <message>
-        <source>0 %</source>
-        <translation type="obsolete">0 %</translation>
-    </message>
-    <message>
-        <source>P2</source>
-        <translation type="obsolete">P2</translation>
-    </message>
-    <message>
-        <source>P3</source>
-        <translation type="obsolete">P3</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1239"/>
@@ -12502,58 +8851,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../simulation/simulatordialog-taranis.ui" line="1607"/>
         <source>Hold X</source>
         <translation>Pidä X</translation>
-    </message>
-    <message>
-        <source>S1</source>
-        <translation type="obsolete">S1</translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation type="obsolete">Simulaattori</translation>
-    </message>
-    <message>
-        <source>SB</source>
-        <translation type="obsolete">SB</translation>
-    </message>
-    <message>
-        <source>SA</source>
-        <translation type="obsolete">SA</translation>
-    </message>
-    <message>
-        <source>SE</source>
-        <translation type="obsolete">SE</translation>
-    </message>
-    <message>
-        <source>SF</source>
-        <translation type="obsolete">SF</translation>
-    </message>
-    <message>
-        <source>LS</source>
-        <translation type="obsolete">LS</translation>
-    </message>
-    <message>
-        <source>S2</source>
-        <translation type="obsolete">S2</translation>
-    </message>
-    <message>
-        <source>SD</source>
-        <translation type="obsolete">SD</translation>
-    </message>
-    <message>
-        <source>SC</source>
-        <translation type="obsolete">SC</translation>
-    </message>
-    <message>
-        <source>SG</source>
-        <translation type="obsolete">SG</translation>
-    </message>
-    <message>
-        <source>RS</source>
-        <translation type="obsolete">RS</translation>
-    </message>
-    <message>
-        <source>SH</source>
-        <translation type="obsolete">SH</translation>
     </message>
 </context>
 <context>
@@ -12668,10 +8965,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
 <context>
     <name>Telemetry</name>
     <message>
-        <source>Form</source>
-        <translation type="obsolete">Telemetria</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry.ui" line="302"/>
         <source>A1</source>
         <translation>A1</translation>
@@ -12690,14 +8983,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../modeledit/telemetry.ui" line="95"/>
         <source>Alarm 1</source>
         <translation>Varoitus 1</translation>
-    </message>
-    <message>
-        <source>A4</source>
-        <translation type="obsolete">A4</translation>
-    </message>
-    <message>
-        <source>A3</source>
-        <translation type="obsolete">A3</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="109"/>
@@ -12729,10 +9014,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation>Varoitus 2</translation>
     </message>
     <message>
-        <source>CELS</source>
-        <translation type="obsolete">CELS</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry.ui" line="909"/>
         <source>Serial Protocol</source>
         <translation>Sarja protokolla</translation>
@@ -12741,14 +9022,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../modeledit/telemetry.ui" line="732"/>
         <source>Volt source</source>
         <translation>Voltti lähde</translation>
-    </message>
-    <message>
-        <source>Metric</source>
-        <translation type="obsolete">Metrit</translation>
-    </message>
-    <message>
-        <source>Imperial</source>
-        <translation type="obsolete">Imperiaali</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="774"/>
@@ -12761,14 +9034,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation>Protokolla</translation>
     </message>
     <message>
-        <source>NONE</source>
-        <translation type="obsolete">EI MITÄÄN</translation>
-    </message>
-    <message>
-        <source>FAS</source>
-        <translation type="obsolete">FAS</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry.ui" line="923"/>
         <source>None</source>
         <translation>Ei mitään</translation>
@@ -12779,54 +9044,14 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation>FrSky:n hubi</translation>
     </message>
     <message>
-        <source>CEL</source>
-        <translation type="obsolete">CEL</translation>
-    </message>
-    <message>
-        <source>2</source>
-        <translation type="obsolete">2</translation>
-    </message>
-    <message>
-        <source>3</source>
-        <translation type="obsolete">3</translation>
-    </message>
-    <message>
-        <source>4</source>
-        <translation type="obsolete">4</translation>
-    </message>
-    <message>
-        <source>Units</source>
-        <translation type="obsolete">Asteikko</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry.ui" line="809"/>
         <source>Blades</source>
         <translation>Prop lavat</translation>
     </message>
     <message>
-        <source>Altimetry / Vario</source>
-        <translation type="obsolete">Korkeusm / Variometri</translation>
-    </message>
-    <message>
-        <source>Alti</source>
-        <translation type="obsolete">Alti</translation>
-    </message>
-    <message>
-        <source>Alti+</source>
-        <translation type="obsolete">Kork+</translation>
-    </message>
-    <message>
-        <source>Vario</source>
-        <translation type="obsolete">Alti+</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry.ui" line="378"/>
         <source>Sink Max</source>
         <translation>Maksimi vajoama</translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation type="obsolete">Pois</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="488"/>
@@ -12857,14 +9082,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../modeledit/telemetry.ui" line="558"/>
         <source>Vario limits</source>
         <translation>Varionm asetukset</translation>
-    </message>
-    <message>
-        <source>Use GPS as altitude source</source>
-        <translation type="obsolete">Käytä GPS:sää kork. lähteenä</translation>
-    </message>
-    <message>
-        <source>Display altitude in toolbar</source>
-        <translation type="obsolete">Näytä korkeus työkalupalkissa</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="594"/>
@@ -12930,10 +9147,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
 <context>
     <name>TelemetryAnalog</name>
     <message>
-        <source>Form</source>
-        <translation type="obsolete">Telemetria</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry_analog.ui" line="34"/>
         <source>Unit</source>
         <translation>Yksikkö</translation>
@@ -12995,10 +9208,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation>Tasoitus</translation>
     </message>
     <message>
-        <source>Min Value</source>
-        <translation type="obsolete">Pienin arvo</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry_analog.ui" line="279"/>
         <source>Volts (V)</source>
         <translation>Voltit ( V )</translation>
@@ -13044,14 +9253,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation>mAmp (mA)</translation>
     </message>
     <message>
-        <source>Low Alarm</source>
-        <translation type="obsolete">Ala hälytys</translation>
-    </message>
-    <message>
-        <source>Critical Alarm</source>
-        <translation type="obsolete">Kriittinen hälytys</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry.cpp" line="42"/>
         <source>Range</source>
         <translation>Matka</translation>
@@ -13060,17 +9261,9 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
 <context>
     <name>TelemetryCustomScreen</name>
     <message>
-        <source>Form</source>
-        <translation type="obsolete">Telemetria oma ruutu</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="34"/>
         <source>Custom Screen Type</source>
         <translation>Oman ruudun tyyppi</translation>
-    </message>
-    <message>
-        <source>Nums</source>
-        <translation type="obsolete">Numerot</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="325"/>
@@ -13183,10 +9376,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../modeledit/telemetry.cpp" line="925"/>
         <source>A2</source>
         <translation>A2</translation>
-    </message>
-    <message>
-        <source>dTE</source>
-        <translation type="obsolete">dTE</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="912"/>
@@ -13440,10 +9629,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../modeledit/telemetry_sensor.ui" line="515"/>
         <source>Ratio</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="obsolete">Matka</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="522"/>
@@ -13753,14 +9938,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
 <context>
     <name>Timer</name>
     <message>
-        <source>Form</source>
-        <translation type="obsolete">Ajastin</translation>
-    </message>
-    <message>
-        <source>mm:ss</source>
-        <translation type="obsolete">mm:ss</translation>
-    </message>
-    <message>
         <location filename="../modeledit/setup_timer.ui" line="55"/>
         <source>Countdown</source>
         <translation>Laskuri</translation>
@@ -13770,25 +9947,9 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <source>Minute Call</source>
         <translation>Minuutti merkki</translation>
     </message>
-    <message>
-        <source>MinuteBeep</source>
-        <translation type="obsolete">Minutti piippaus</translation>
-    </message>
-    <message>
-        <source>Persistent</source>
-        <translation type="obsolete">Yhtämittainen</translation>
-    </message>
-    <message>
-        <source> (00:00:00)</source>
-        <translation type="obsolete">(00:00:00)</translation>
-    </message>
 </context>
 <context>
     <name>TimerPanel</name>
-    <message>
-        <source>None</source>
-        <translation type="obsolete">Ei mitään</translation>
-    </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="39"/>
         <source>Silent</source>
@@ -13823,10 +9984,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../modeledit/setup.cpp" line="49"/>
         <source>Persistent (manual reset)</source>
         <translation>Jatkuva (manuaalinen nollaus)</translation>
-    </message>
-    <message>
-        <source>Countdown</source>
-        <translation type="obsolete">Laskuri</translation>
     </message>
 </context>
 <context>
@@ -14059,10 +10216,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation>Lentäväsiipi / Deltasiipi</translation>
     </message>
     <message>
-        <source>Are the elevons controlled by servos connected to separate channels or by a single servo channel?</source>
-        <translation type="obsolete">Onko mallissa korkkarin servot erikanavilla ? Vai yhdellä kanavalla ?</translation>
-    </message>
-    <message>
         <location filename="../wizarddialog.cpp" line="34"/>
         <source>Select the elevons channels</source>
         <translation>Valitse elevonien kanavat</translation>
@@ -14207,18 +10360,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation>Malli käyttää kahta kanavaa elevonien käyttämiseen. &lt;br&gt;Valitse nämä kaksi kanavaa</translation>
     </message>
     <message>
-        <source>Models use one or two channels to control the elevons.&lt;br&gt;A so called Y-cable can be used to connect single a receiver channel to two separate elevon servos. If your servos are connected by a Y-cable you should select the single-servo option.</source>
-        <translation type="obsolete">Mallit käyttää korkkariin jokp yhtä tai kahta kanavaa.&lt;br&gt;Niin kutsuttu Y-kaapeli yhdistää korkkarin servot yhteen kanavaan. Jos yhdistät käyttäen Y-kaapelia valitse yhden servon valinta.</translation>
-    </message>
-    <message>
-        <source>Most aircraft have a main wing and a tail with control surfaces. Flying wings and delta winged aircraft only have a single wing. The main control surface on a standard wing controlls the roll of the aircraft. This surface is called an aileron.&lt;br&gt;The control surface of a delta wing controls both roll and elevation. This surface is called an elevon. </source>
-        <translation type="obsolete">Yleisesti lentokoneissa on siipi ja peräsimet, joissa on ohjainpinnat. Lentäväsiipi ja deltasiipi koneissa on yksi siipi. Siiven ohjainpintoja kutsutaan siivekkeiksi jolla konetta kallistetaan.&lt;br&gt;Lentävänsiiven ja deltasiiven ohjaus tapahtuu siivenohjainpinnalla jolla kone kallistuu sekä nousee tai laskee.</translation>
-    </message>
-    <message>
-        <source>Models use one or two channels to control the ailerons.&lt;br&gt;A so called Y-cable can be used to connect single receiver channel to two separeate aileron servos. If your servos are connected by a Y-cable you should select the single-servo option.&lt;br&gt;&lt;br&gt;Aileron - Spektrum: CH2, Futaba: CH1</source>
-        <translation type="obsolete">Mallit käyttää siivekkeisiin joko yhtä tai kahta kanavaa.&lt;br&gt; Niin kutsuttu Y-kaapeli yhdistää molemmat siiveke servot yhteen kanavaan. Jos yhdistät käyttäen Y-kaapelia niin valitse yhden servon valinta.&lt;br&gt;&lt;br&gt;Siiveke -Spektrum: CH2, Futaba: CH:1</translation>
-    </message>
-    <message>
         <location filename="../wizarddialog.cpp" line="88"/>
         <source>This wizard assumes that your flaps are controlled by a switch. If your flaps are controlled by a potentiometer you can change that manually later.</source>
         <translation>Tämä apuri olettaa että laippoja ohjataan kytkimellä. Jos laippoja ohjataan potikalla, voit muuttaa sen myöhemmin valikosta.</translation>
@@ -14227,10 +10368,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../wizarddialog.cpp" line="92"/>
         <source>Air brakes are used to reduce the speed of advanced sail planes.&lt;br&gt;They are very uncommon on other types of planes.</source>
         <translation>Lentojarruja käytetään vähentämään lentonopeutta isommissa liidokeissa/ Purjekoneissa.&lt;br&gt; Ne ovat aika harvinaisia muun tyyppisissä koneissa.</translation>
-    </message>
-    <message>
-        <source>Models use one or two channels to control the elevons.&lt;br&gt;A so called Y-cable can be used to connect single receiver channel to two separeate elevon servos. If your servos are connected by a Y-cable you should select the single-servo option.</source>
-        <translation type="obsolete">Mallit käyttää korkkariin jokp yhtä tai kahta kanavaa.&lt;br&gt;Niin kutsuttu Y-kaapeli yhdistää korkkarin servot yhteen kanavaan. Jos yhdistät käyttäen Y-kaapelia valitse yhden servon valinta.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="100"/>
@@ -14316,581 +10453,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../wizarddialog.cpp" line="1061"/>
         <source>Channel %1: </source>
         <translation>Kanava %1: </translation>
-    </message>
-</context>
-<context>
-    <name>appPreferencesDialog</name>
-    <message>
-        <source>Edit Settings</source>
-        <translation type="obsolete">Muuta asetuksia</translation>
-    </message>
-    <message>
-        <source>Radio Profile</source>
-        <translation type="obsolete">Radio profiili</translation>
-    </message>
-    <message>
-        <source>Profile Name</source>
-        <translation type="obsolete">Profiilin nimi</translation>
-    </message>
-    <message>
-        <source>Radio Type</source>
-        <translation type="obsolete">Radio tyyppi</translation>
-    </message>
-    <message>
-        <source>9X</source>
-        <translation type="obsolete">9X</translation>
-    </message>
-    <message>
-        <source>9X with m128</source>
-        <translation type="obsolete">9X m128 sirulla</translation>
-    </message>
-    <message>
-        <source>9XR</source>
-        <translation type="obsolete">9XR</translation>
-    </message>
-    <message>
-        <source>9XR with m128</source>
-        <translation type="obsolete">9XR m128 sirulla</translation>
-    </message>
-    <message>
-        <source>Gruvin9x Board</source>
-        <translation type="obsolete">Gruvin9x </translation>
-    </message>
-    <message>
-        <source>Sky9x Board</source>
-        <translation type="obsolete">Sky9x</translation>
-    </message>
-    <message>
-        <source>Taranis</source>
-        <translation type="obsolete">Taranis</translation>
-    </message>
-    <message>
-        <source>General Settings</source>
-        <translation type="obsolete">Yleiset asetukset</translation>
-    </message>
-    <message>
-        <source>General Settings Label</source>
-        <translation type="obsolete">Yleiset asetukset</translation>
-    </message>
-    <message>
-        <source>Application Settings</source>
-        <translation type="obsolete">Ohjelman asetukset</translation>
-    </message>
-    <message>
-        <source>Only show user splash images</source>
-        <translation type="obsolete">Näytä vain käyttäjän oma alkuruutu kuvat</translation>
-    </message>
-    <message>
-        <source>Show user and companion splash images</source>
-        <translation type="obsolete">Näytä käyttäjän ja Companionin alkuruutu kuvat</translation>
-    </message>
-    <message>
-        <source>Automatic Backup Folder</source>
-        <translation type="obsolete">Automaattisen varmuuskopion kansio</translation>
-    </message>
-    <message>
-        <source>User Splash Screens</source>
-        <translation type="obsolete">Käyttäjän oma alkuruudut</translation>
-    </message>
-    <message>
-        <source>Include companion splashes</source>
-        <translation type="obsolete">Sisällytä Companionin alkuruudut</translation>
-    </message>
-    <message>
-        <source>Only user defined splashes</source>
-        <translation type="obsolete">Vain käyttäjän määrittelemät alkuruudut</translation>
-    </message>
-    <message>
-        <source>Google Earth Executable</source>
-        <translation type="obsolete">Google Earth tiedosto</translation>
-    </message>
-    <message>
-        <source>Automatic check for OpenTX firmware updates</source>
-        <translation type="obsolete">Tutki automaattisesti OpenTX firmware päivitykset</translation>
-    </message>
-    <message>
-        <source>Open Folder</source>
-        <translation type="obsolete">Avaa kansio</translation>
-    </message>
-    <message>
-        <source>Find Executable</source>
-        <translation type="obsolete">Avaa tiedosto</translation>
-    </message>
-    <message>
-        <source>Files to keep</source>
-        <translation type="obsolete">Tiedostoja</translation>
-    </message>
-    <message>
-        <source>Splash Screen Library</source>
-        <translation type="obsolete">Alkuruutu kirjasto</translation>
-    </message>
-    <message>
-        <source>Enable automatic backup before writing firmware</source>
-        <translation type="obsolete">Laita automaatiinen varmuuskopionti päälle ennen firmwaren kirjoitusta</translation>
-    </message>
-    <message>
-        <source>Automatic check for Companion updates</source>
-        <translation type="obsolete">Tutki automaattisesti Companionin päivitykset</translation>
-    </message>
-    <message>
-        <source>Offer to use wizard for new models</source>
-        <translation type="obsolete">Tarjoa avustajaa uuden mallin luomiseen</translation>
-    </message>
-    <message>
-        <source>Show splash screen when Companion starts</source>
-        <translation type="obsolete">Näytä alkuruutu kun Companion käynnistetään</translation>
-    </message>
-    <message>
-        <source>Use model wizard when creating a new model</source>
-        <translation type="obsolete">Käytä malli avustajaa kun luodaan uusi malli</translation>
-    </message>
-    <message>
-        <source>Simulator Settings</source>
-        <translation type="obsolete">Simulaattorin asetukset</translation>
-    </message>
-    <message>
-        <source>Simulator BackLight</source>
-        <translation type="obsolete">Simulaattorin taustavalo</translation>
-    </message>
-    <message>
-        <source>Enable</source>
-        <translation type="obsolete">Päälle</translation>
-    </message>
-    <message>
-        <source>Blue</source>
-        <translation type="obsolete">Sininen</translation>
-    </message>
-    <message>
-        <source>Green</source>
-        <translation type="obsolete">Vihreä</translation>
-    </message>
-    <message>
-        <source>Red</source>
-        <translation type="obsolete">Punainen</translation>
-    </message>
-    <message>
-        <source>Orange</source>
-        <translation type="obsolete">Oranssi</translation>
-    </message>
-    <message>
-        <source>Yellow</source>
-        <translation type="obsolete">Keltainen</translation>
-    </message>
-    <message>
-        <source>Joystick</source>
-        <translation type="obsolete">Joystick</translation>
-    </message>
-    <message>
-        <source>Only capture to clipboard</source>
-        <translation type="obsolete">Kaappaa leikepöydälle</translation>
-    </message>
-    <message>
-        <source>Calibrate</source>
-        <translation type="obsolete">Kalibroi</translation>
-    </message>
-    <message>
-        <source>Remember simulator switch values</source>
-        <translation type="obsolete">Muista simulaattorin kytkimien asennot</translation>
-    </message>
-    <message>
-        <source>Simulator capture folder</source>
-        <translation type="obsolete">Simulaattorin tiedostojen kansio</translation>
-    </message>
-    <message>
-        <source>Radio Settings</source>
-        <translation type="obsolete">Radion asetukset</translation>
-    </message>
-    <message>
-        <source>Mode selection:
-
-Mode 1:
-  Left stick:  Elevator, Rudder
-  Right stick:  Throttle, Aileron
-
-Mode 2:
-  Left stick:  Throttle, Rudder
-  Right stick:  Elevator, Aileron
-
-Mode 3:
-  Left stick:  Elevator, Aileron
-  Right stick:  Throttle, Rudder
-
-Mode 4:
-  Left stick:  Throttle, Aileron
-  Right stick:  Elevator, Rudder
-
-</source>
-        <translation type="obsolete">Tilan valinta:
-
-Tila 1:
-  Vas tikku: Korkeusp, Sivup
-  Oik tikku: Kaasu, Siivekkeet
-
-Tila 2:
-
-  Vas tikku: Kaasu, Sivup
-  Oik tikku: Korkeusp, Siivekkeet
-
-Tila 3:
-
-  Vas tikku: Korkeusp, Siivekkeet
-  Oik tikku: Kaasu, Sivup
-
-Tila 4:
-
-  Vas tikku: Kaasu, Siivekkeet
-  Oik tikku: Korkeusp, Sivup
-
-</translation>
-    </message>
-    <message>
-        <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="obsolete">Mode 1 (PER KOR KAA SII)</translation>
-    </message>
-    <message>
-        <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="obsolete">Mode 2 (PER KAA KOR SII)</translation>
-    </message>
-    <message>
-        <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="obsolete">Mode 3 (SII KOR KAA PER)</translation>
-    </message>
-    <message>
-        <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="obsolete">Mode 4 (SII KAA KOR PER)</translation>
-    </message>
-    <message>
-        <source>Channel order
-
-This is used by the templated to determine which channel goes to what number output.</source>
-        <translation type="obsolete">Kanavien järjestys
-
-Tätä käytetään pohjana kanava määrityksille, mikä kanava menee mihinkä lähtöön.</translation>
-    </message>
-    <message>
-        <source>R E T A</source>
-        <translation type="obsolete">P Ko Ka S</translation>
-    </message>
-    <message>
-        <source>R E A T</source>
-        <translation type="obsolete">P Ko S Ka</translation>
-    </message>
-    <message>
-        <source>R T E A</source>
-        <translation type="obsolete">P Ka Ko S</translation>
-    </message>
-    <message>
-        <source>R T A E</source>
-        <translation type="obsolete">P Ka S Ko</translation>
-    </message>
-    <message>
-        <source>R A E T</source>
-        <translation type="obsolete">P S Ko Ka</translation>
-    </message>
-    <message>
-        <source>R A T E</source>
-        <translation type="obsolete">P S Ka Ko</translation>
-    </message>
-    <message>
-        <source>E R T A</source>
-        <translation type="obsolete">Ko P Ka S</translation>
-    </message>
-    <message>
-        <source>E R A T</source>
-        <translation type="obsolete">Ko P S Ka</translation>
-    </message>
-    <message>
-        <source>E T R A</source>
-        <translation type="obsolete">Ko Ka P S</translation>
-    </message>
-    <message>
-        <source>E T A R</source>
-        <translation type="obsolete">Ko Ka S P</translation>
-    </message>
-    <message>
-        <source>E A R T</source>
-        <translation type="obsolete">Ko S P Ka</translation>
-    </message>
-    <message>
-        <source>E A T R</source>
-        <translation type="obsolete">Ko S Ka P</translation>
-    </message>
-    <message>
-        <source>T R E A</source>
-        <translation type="obsolete">Ka P Ko S</translation>
-    </message>
-    <message>
-        <source>T R A E</source>
-        <translation type="obsolete">Ka P S Ko</translation>
-    </message>
-    <message>
-        <source>T E R A</source>
-        <translation type="obsolete">Ka Ko P S</translation>
-    </message>
-    <message>
-        <source>T E A R</source>
-        <translation type="obsolete">Ka Ko S P</translation>
-    </message>
-    <message>
-        <source>T A R E</source>
-        <translation type="obsolete">Ka S P Ko</translation>
-    </message>
-    <message>
-        <source>T A E R</source>
-        <translation type="obsolete">Ka S Ko P</translation>
-    </message>
-    <message>
-        <source>A R E T</source>
-        <translation type="obsolete">S P Ko Ka</translation>
-    </message>
-    <message>
-        <source>A R T E</source>
-        <translation type="obsolete">S P Ka Ko</translation>
-    </message>
-    <message>
-        <source>A E R T</source>
-        <translation type="obsolete">S Ko P Ka</translation>
-    </message>
-    <message>
-        <source>A E T R</source>
-        <translation type="obsolete">S Ko Ka P</translation>
-    </message>
-    <message>
-        <source>A T R E</source>
-        <translation type="obsolete">S Ka P Ko</translation>
-    </message>
-    <message>
-        <source>A T E R</source>
-        <translation type="obsolete">S Ka Ko P</translation>
-    </message>
-    <message>
-        <source>Default Stick Mode</source>
-        <translation type="obsolete">Perus tikkujen tila</translation>
-    </message>
-    <message>
-        <source>Settings Profile</source>
-        <translation type="obsolete">Asetus profiili</translation>
-    </message>
-    <message>
-        <source>Splash Screen</source>
-        <translation type="obsolete">Alkuruutu</translation>
-    </message>
-    <message>
-        <source>Channel Order</source>
-        <translation type="obsolete">Kanavien järjestys</translation>
-    </message>
-    <message>
-        <source>Append version number to FW file name</source>
-        <translation type="obsolete">Liitä version numero FW tiedoston nimeen</translation>
-    </message>
-    <message>
-        <source>SD Structure path</source>
-        <translation type="obsolete">SD muistikortin kansio</translation>
-    </message>
-    <message>
-        <source>Offer to write FW to Tx after download</source>
-        <translation type="obsolete">Tarjoa että FW ladataan lähettimeen kun se on ladattu</translation>
-    </message>
-    <message>
-        <source>Remove Profile</source>
-        <translation type="obsolete">Poista profiili</translation>
-    </message>
-    <message>
-        <source>Firmware</source>
-        <translation type="obsolete">Firmware</translation>
-    </message>
-    <message>
-        <source>Select Image</source>
-        <translation type="obsolete">Valitse kuva</translation>
-    </message>
-    <message>
-        <source>Clear Image</source>
-        <translation type="obsolete">Tyhjennä kuva</translation>
-    </message>
-    <message>
-        <source>My Radio</source>
-        <translation type="obsolete">Minun radio</translation>
-    </message>
-    <message>
-        <source>Select your snapshot folder</source>
-        <translation type="obsolete">Valitse kansioi kuville</translation>
-    </message>
-    <message>
-        <source>No joysticks found</source>
-        <translation type="obsolete">Joystickia ei löydy</translation>
-    </message>
-    <message>
-        <source>EMPTY: No radio settings stored in profile</source>
-        <translation type="obsolete">TYHJÄ: Ei radion asetuksia tallennettu profiiliin</translation>
-    </message>
-    <message>
-        <source>AVAILABLE: Radio settings of unknown age</source>
-        <translation type="obsolete">TARJOLLA: Radion asetukset, voi olla vanhoja</translation>
-    </message>
-    <message>
-        <source>AVAILABLE: Radio settings stored %1</source>
-        <translation type="obsolete">TARJOLLA: Radion asetukset %1</translation>
-    </message>
-    <message>
-        <source>Select your library folder</source>
-        <translation type="obsolete">Valitse kansio kirjastolle</translation>
-    </message>
-    <message>
-        <source>Select your Models and Settings backup folder</source>
-        <translation type="obsolete">Valitse kansio mallien ja asetusten varmuuskopioille</translation>
-    </message>
-    <message>
-        <source>Select Google Earth executable</source>
-        <translation type="obsolete">Valitse Google Earth tiedosto</translation>
-    </message>
-    <message>
-        <source>Select the folder replicating your SD structure</source>
-        <translation type="obsolete">Valitse kansio mihin &quot;monistetaan&quot; SD muistikortin kansio</translation>
-    </message>
-    <message>
-        <source>Not possible to remove profile</source>
-        <translation type="obsolete">Profiilia ei voida poistaa</translation>
-    </message>
-    <message>
-        <source>The default profile can not be removed.</source>
-        <translation type="obsolete">Nykyistä profiilia ei voida poistaa.</translation>
-    </message>
-    <message>
-        <source>Open Image to load</source>
-        <translation type="obsolete">Avaa kuva latausta varten</translation>
-    </message>
-    <message>
-        <source>Images (%1)</source>
-        <translation type="obsolete">Kuvia (%1)</translation>
-    </message>
-</context>
-<context>
-    <name>avrOutputDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Ulostulot</translation>
-    </message>
-    <message>
-        <source>Show Details</source>
-        <translation type="obsolete">Näytä detailit</translation>
-    </message>
-    <message>
-        <source>result</source>
-        <translation type="obsolete">Tulokset</translation>
-    </message>
-    <message>
-        <source>executable not found</source>
-        <translation type="obsolete">Toimiva tiedosto puuttuu</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Virhe</translation>
-    </message>
-    <message>
-        <source>Cannot open source file</source>
-        <translation type="obsolete">Ei voi avata lähde tiedostoa</translation>
-    </message>
-    <message>
-        <source>Cannot write destination</source>
-        <translation type="obsolete">Ei voi kirjoittaa kohteeseen</translation>
-    </message>
-    <message>
-        <source>Writing file: </source>
-        <translation type="obsolete">Kirjoitetaan tiedostoa: </translation>
-    </message>
-    <message>
-        <source>Write error</source>
-        <translation type="obsolete">Kirjoitus virhe</translation>
-    </message>
-    <message>
-        <source>ie: OpenTX for 9X board or OpenTX for 9XR board</source>
-        <translation type="obsolete">ie: OpenTX 9X tai OpenTX 9XR</translation>
-    </message>
-    <message>
-        <source>ie: OpenTX for M128 / 9X board or OpenTX for 9XR board with M128 chip</source>
-        <translation type="obsolete">ie: OpenTX M128 / 9X tai OpenTX 9XR M128 sirulla</translation>
-    </message>
-    <message>
-        <source>ie: OpenTX for Gruvin9X  board</source>
-        <translation type="obsolete">ie: OpenTX Gruvin9X</translation>
-    </message>
-    <message>
-        <source>Your radio uses a %1 CPU!!!
-
-Please check advanced burn options to set the correct cpu type.</source>
-        <translation type="obsolete">Lähetin käyttää %1 CPU !!!
-
-Tarkasta asetuksista CPU:n oikea tyyppi.</translation>
-    </message>
-    <message>
-        <source>Your radio uses a %1 CPU!!!
-
-Please select an appropriate firmware type to program it.</source>
-        <translation type="obsolete">Lähetin käyttää %1 CPU !!!
-
-Valitse oikea firmware jonka ohjelmoit.</translation>
-    </message>
-    <message>
-        <source>
-You are currently using:
- %1</source>
-        <translation type="obsolete">
-Käytät nyt:
-%1</translation>
-    </message>
-    <message>
-        <source>Writing</source>
-        <translation type="obsolete">Kirjoitetaan</translation>
-    </message>
-    <message>
-        <source>Reading</source>
-        <translation type="obsolete">Luetaan</translation>
-    </message>
-    <message>
-        <source>Verifying</source>
-        <translation type="obsolete">Varmistetaan</translation>
-    </message>
-    <message>
-        <source>done - exit code %1</source>
-        <translation type="obsolete">Valmis - virhe %1</translation>
-    </message>
-    <message>
-        <source>done with errors</source>
-        <translation type="obsolete">Valmis mutta virheitä</translation>
-    </message>
-    <message>
-        <source>done - SUCCESSFUL</source>
-        <translation type="obsolete">Valmis- ONNISTUI</translation>
-    </message>
-    <message>
-        <source>did not finish correctly</source>
-        <translation type="obsolete">Ei mennyt läpi oikein</translation>
-    </message>
-    <message>
-        <source>did not finish correctly!
-Do you want some help ?</source>
-        <translation type="obsolete">Ei mennyt läpi oikein!
-Tarvitko kenties apua ?</translation>
-    </message>
-    <message>
-        <source>Copy did not finish correctly</source>
-        <translation type="obsolete">Kopio ei mennyt läpi oikein</translation>
-    </message>
-    <message>
-        <source>finished correctly</source>
-        <translation type="obsolete">Meni läpi oikein</translation>
-    </message>
-    <message>
-        <source>Copy finished correctly</source>
-        <translation type="obsolete">Kopio meni läpi oikein</translation>
-    </message>
-    <message>
-        <source>Started</source>
-        <translation type="obsolete">Aloitettu</translation>
-    </message>
-    <message>
-        <source>FUSES: Low=%1 High=%2 Ext=%3</source>
-        <translation type="obsolete">SULAKKEET: Ala=%1 Kork=%2 Lis=%3</translation>
     </message>
 </context>
 <context>
@@ -15100,646 +10662,9 @@ m2560 joka on v4.1 lähettimessä</translation>
         <translation>Companion</translation>
     </message>
     <message>
-        <source>&lt;b&gt;&lt;u&gt;WARNING!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;This will reset the fuses of  %1 to the factory settings.&lt;br&gt;Writing fuses can mess up your radio.&lt;br&gt;Do this only if you are sure they are wrong!&lt;br&gt;Are you sure you want to continue?</source>
-        <translation type="obsolete">&lt;b&gt;&lt;u&gt;VAROITUS!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Tämä nollaa sulakkeet  %1 tehdas asetuksille.&lt;br&gt;Sulakkeiden kirjoittaminen voi sekoittaa lähettimeno.&lt;br&gt;Muuta vain jos tiedät että nykyiset on väärin!&lt;br&gt;Haluatko varmasti jatkaa ?</translation>
-    </message>
-    <message>
         <location filename="../burnconfigdialog.cpp" line="325"/>
         <source>&lt;b&gt;&lt;u&gt;WARNING!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Normally CPU type is automatically selected according to the chosen firmware.&lt;br&gt;If you change the CPU type the resulting eeprom could be inconsistent.</source>
         <translation>&lt;b&gt;&lt;u&gt;VAROITUS!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;CPU Tyyppi valitaan yleensä valitun firmwaren mukaan.&lt;br&gt;Jos vaihdat CPU Tyyppiä eeprom ei välttämättä toimi oikein.</translation>
-    </message>
-</context>
-<context>
-    <name>burnDialog</name>
-    <message>
-        <source>Customize Splash</source>
-        <translation type="obsolete">Alkuruutu editori</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Peruuta</translation>
-    </message>
-    <message>
-        <source>Write to TX</source>
-        <translation type="obsolete">Kirjoita lähettimeen</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify calibration parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Muuta kalibraation parametrit käyttäen nykyisen profiilin parametreja&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Patch calibration setting from profile</source>
-        <translation type="obsolete">Korjaa kalibraatio  asetukset profiilista</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify HW parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Muuta HW parametrit käyttäen nykyisen profiilin parametreja&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Patch HW setting from profile</source>
-        <translation type="obsolete">Korjaa HW  asetukset profiilista</translation>
-    </message>
-    <message>
-        <source>Date &amp; Time</source>
-        <translation type="obsolete">Päivä &amp; Aika</translation>
-    </message>
-    <message>
-        <source>Use firmware start screen</source>
-        <translation type="obsolete">Käytä firmwaren aloitus ruutua</translation>
-    </message>
-    <message>
-        <source>Use another start screen</source>
-        <translation type="obsolete">Käytä muuta aloitus ruutua</translation>
-    </message>
-    <message>
-        <source>Use profile start screen</source>
-        <translation type="obsolete">Käytä profiilin aloitus ruutua</translation>
-    </message>
-    <message>
-        <source>Use library start screen</source>
-        <translation type="obsolete">Käytä kirjaston aloitus ruutua</translation>
-    </message>
-    <message>
-        <source>SVN</source>
-        <translation type="obsolete">SVN</translation>
-    </message>
-    <message>
-        <source>Variant</source>
-        <translation type="obsolete">Muunnos</translation>
-    </message>
-    <message>
-        <source>Version</source>
-        <translation type="obsolete">Versio</translation>
-    </message>
-    <message>
-        <source>Browse for file</source>
-        <translation type="obsolete">Selaa tiedostoa</translation>
-    </message>
-    <message>
-        <source>Allows Companion to write to older version of the firmware</source>
-        <translation type="obsolete">Anna Companionin kirjoittaa myös vanhaan firmwareen</translation>
-    </message>
-    <message>
-        <source>Check Firmware compatibility</source>
-        <translation type="obsolete">Tarkista firmwaren yhteensopivuus</translation>
-    </message>
-    <message>
-        <source>Backup and restore Models and Settings</source>
-        <translation type="obsolete">Varmuuskopioi ja palauta mallit ja asetukset</translation>
-    </message>
-    <message>
-        <source>Current Profile</source>
-        <translation type="obsolete">Nykyinen profiili</translation>
-    </message>
-    <message>
-        <source>Invert Color</source>
-        <translation type="obsolete">Käänteiset värit</translation>
-    </message>
-    <message>
-        <source>Use image in settings</source>
-        <translation type="obsolete">Käytä kuvaa myös asetuksissa</translation>
-    </message>
-    <message>
-        <source>Substitute image in firmware</source>
-        <translation type="obsolete">Korvaa firmwaren omakuva</translation>
-    </message>
-    <message>
-        <source>Load Image</source>
-        <translation type="obsolete">Lataa kuva</translation>
-    </message>
-    <message>
-        <source>Open Splash Library</source>
-        <translation type="obsolete">Avaa kuvakirjasto</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Write firmware to TX</source>
-        <translation type="obsolete">Kirjoita firmware lähettimeen</translation>
-    </message>
-    <message>
-        <source>Write Models and Settings to TX</source>
-        <translation type="obsolete">Kirjoita mallit ja asetukset lähettimeen</translation>
-    </message>
-    <message>
-        <source>Write Models and Settings in %1 to TX</source>
-        <translation type="obsolete">Kirjoita mallit ja asetukset: %1 lähettimeen</translation>
-    </message>
-    <message>
-        <source>Current profile</source>
-        <translation type="obsolete">Nykyinen profiili</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="obsolete">Avaa</translation>
-    </message>
-    <message>
-        <source>Choose file to load Models and Settings from</source>
-        <translation type="obsolete">Valitse tiedosto josta ladataan mallit ja asetukset</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Varoitus</translation>
-    </message>
-    <message>
-        <source>%1 is not a known firmware</source>
-        <translation type="obsolete">%1 ei ole tunnettu firmware</translation>
-    </message>
-    <message>
-        <source>Burn anyway !</source>
-        <translation type="obsolete">Lataa se kuitenkin !</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Virhe</translation>
-    </message>
-    <message>
-        <source>Unable to find file %1!</source>
-        <translation type="obsolete">Ei löydy tiedostoa %1!</translation>
-    </message>
-    <message>
-        <source>Error opening file %1:
-%2.</source>
-        <translation type="obsolete">Virhe avattaessa tiedostoa %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Invalid binary Models and Settings File %1, Proceed anyway ?</source>
-        <translation type="obsolete">Huonoja merkkejä mallit ja asetus tiedostossa %1, Jatketaanko silti ?</translation>
-    </message>
-    <message>
-        <source>Error reading file %1:
-%2.</source>
-        <translation type="obsolete">Virhe luettaessa tiedostoa %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Open Image to load</source>
-        <translation type="obsolete">Avaa kuva latausta varten</translation>
-    </message>
-    <message>
-        <source>Images (%1)</source>
-        <translation type="obsolete">Kuvia (%1)</translation>
-    </message>
-    <message>
-        <source>Cannot load %1.</source>
-        <translation type="obsolete">Ei voi ladata %1.</translation>
-    </message>
-    <message>
-        <source>Write firmware to Radio</source>
-        <translation type="obsolete">Kirjoita firmware lähettimeen</translation>
-    </message>
-    <message>
-        <source>Write Backup to Radio</source>
-        <translation type="obsolete">Kirjoita varmuuskiop lähettimeen</translation>
-    </message>
-    <message>
-        <source>Write Backup from %1 to Radio</source>
-        <translation type="obsolete">Kirjoita varmuuskopio tiedosto %1  lähettimeen</translation>
-    </message>
-    <message>
-        <source>Open Firmware File</source>
-        <translation type="obsolete">Avaa firmware tiedosto</translation>
-    </message>
-    <message>
-        <source>Choose Radio Backup file</source>
-        <translation type="obsolete">Valitse Lähettimen varmuuskopio tiedosto</translation>
-    </message>
-    <message>
-        <source>%1 may not be a valid firmware file</source>
-        <translation type="obsolete">%1 ei ehkä ole oikea firmware tiedosto</translation>
-    </message>
-    <message>
-        <source>The firmware file is not valid.</source>
-        <translation type="obsolete">Tämä ei ole oikea firmware tiedosto.</translation>
-    </message>
-    <message>
-        <source>There is no start screen image in the firmware file.</source>
-        <translation type="obsolete">Tälle firmwarelle ei ole alku ruutu kuvaa.</translation>
-    </message>
-    <message>
-        <source>The profile image %1 does not contain an image.</source>
-        <translation type="obsolete">Profiilin kuva %1 ei sisällä kuva tiedostoa.</translation>
-    </message>
-    <message>
-        <source>Profile image %1 is invalid.</source>
-        <translation type="obsolete">Profiilin kuva %1 on väärä.</translation>
-    </message>
-    <message>
-        <source>Open image file to use as radio start screen</source>
-        <translation type="obsolete">Avaa kuva ja käytä sitä alku ruutu kuvana</translation>
-    </message>
-    <message>
-        <source>Image could not be loaded from %1</source>
-        <translation type="obsolete">Kuvaa ei voi ladata %1</translation>
-    </message>
-    <message>
-        <source>The library image could not be loaded</source>
-        <translation type="obsolete">Kuvaa ei voi ladata</translation>
-    </message>
-    <message>
-        <source>Cannot save customized firmware</source>
-        <translation type="obsolete">Muutettua firmwarea ei voi tallentaa</translation>
-    </message>
-    <message>
-        <source>Custom image not found</source>
-        <translation type="obsolete">Tehtyä kuvaa ei löydy</translation>
-    </message>
-    <message>
-        <source>No firmware selected</source>
-        <translation type="obsolete">Ei valittua firmwarea</translation>
-    </message>
-    <message>
-        <source>Wrong radio calibration data in profile, Settings not patched</source>
-        <translation type="obsolete">Väärä radion kalibraatio data profiilissa, asetuksia ei ole korjattu</translation>
-    </message>
-    <message>
-        <source>Wrong radio setting data in profile, Settings not patched</source>
-        <translation type="obsolete">Väärä radion asetus data profiilissa, asetuksia ei ole korjattu</translation>
-    </message>
-    <message>
-        <source>Cannot write file %1:
-%2.</source>
-        <translation type="obsolete">Ei voi kirjoittaa tiedostoa %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Error writing file %1:
-%2.</source>
-        <translation type="obsolete">Virhe kirjottaessa tiedostoa %1:
-%2.</translation>
-    </message>
-</context>
-<context>
-    <name>compareDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Vertaa</translation>
-    </message>
-    <message>
-        <source>Compare Models</source>
-        <translation type="obsolete">Vertaa malleja</translation>
-    </message>
-    <message>
-        <source>Drag first model here</source>
-        <translation type="obsolete">Vedä 1. malli tähän</translation>
-    </message>
-    <message>
-        <source>Drag second model here</source>
-        <translation type="obsolete">Vedä 2. malli tähän</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Sulje</translation>
-    </message>
-    <message>
-        <source>Print</source>
-        <translation type="obsolete">Tulosta</translation>
-    </message>
-    <message>
-        <source>Print to file</source>
-        <translation type="obsolete">Tulosta tiedostoon</translation>
-    </message>
-    <message>
-        <source>No name</source>
-        <translation type="obsolete">Ei nimeä</translation>
-    </message>
-    <message>
-        <source>General Model Settings</source>
-        <translation type="obsolete">Yleiset mallin asetukset</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nimi</translation>
-    </message>
-    <message>
-        <source>EEprom Size</source>
-        <translation type="obsolete">EEpromin koko</translation>
-    </message>
-    <message>
-        <source>Timer1</source>
-        <translation type="obsolete">Ajastin 1</translation>
-    </message>
-    <message>
-        <source>Timer2</source>
-        <translation type="obsolete">Ajastin 2</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protokolla</translation>
-    </message>
-    <message>
-        <source>Pulse Polarity</source>
-        <translation type="obsolete">Pulssin napaisuus</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Kaasu trimmi</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Päälle</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Pois</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Kaasu expo</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Trimmi lisäys</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Keski piippaus</translation>
-    </message>
-    <message>
-        <source>Flight modes Settings</source>
-        <translation type="obsolete">Lentotilan asetukset</translation>
-    </message>
-    <message>
-        <source>Fades</source>
-        <translation type="obsolete">Liut</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Trimmit</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Kytkin</translation>
-    </message>
-    <message>
-        <source>Flight mode name</source>
-        <translation type="obsolete">Lentotilan nimi</translation>
-    </message>
-    <message>
-        <source>IN</source>
-        <translation type="obsolete">SIS</translation>
-    </message>
-    <message>
-        <source>OUT</source>
-        <translation type="obsolete">ULO</translation>
-    </message>
-    <message>
-        <source>FM</source>
-        <translation type="obsolete">FM</translation>
-    </message>
-    <message>
-        <source>Gvars</source>
-        <translation type="obsolete">Gvarit</translation>
-    </message>
-    <message>
-        <source>Rot. Enc.</source>
-        <translation type="obsolete">Rot.Enc.</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Rajat</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Tasoitus</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Min</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Max</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Käänteinen</translation>
-    </message>
-    <message>
-        <source>CH</source>
-        <translation type="obsolete">ch</translation>
-    </message>
-    <message>
-        <source>INV</source>
-        <translation type="obsolete">KÄÄNT</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">NOR</translation>
-    </message>
-    <message>
-        <source>Global Variables</source>
-        <translation type="obsolete">Globaalit muuttujat</translation>
-    </message>
-    <message>
-        <source>GV</source>
-        <translation type="obsolete">GV</translation>
-    </message>
-    <message>
-        <source>Expo/Dr Settings</source>
-        <translation type="obsolete">Expo / DR asetukset</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Paino</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Lento tilat</translation>
-    </message>
-    <message>
-        <source>Flight mode</source>
-        <translation type="obsolete">Lento tila</translation>
-    </message>
-    <message>
-        <source>DISABLED</source>
-        <translation type="obsolete">Pois</translation>
-    </message>
-    <message>
-        <source>Mixers</source>
-        <translation type="obsolete">Mikserit</translation>
-    </message>
-    <message>
-        <source>noTrim</source>
-        <translation type="obsolete">Ei trimmiä</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete">Viive(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Hidastus(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>Warn</source>
-        <translation type="obsolete">Välys</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Käyrät</translation>
-    </message>
-    <message>
-        <source>5 Points Curves</source>
-        <translation type="obsolete">5 Pisteen käyrät</translation>
-    </message>
-    <message>
-        <source>pt %1</source>
-        <translation type="obsolete">pt %1</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Käyrä</translation>
-    </message>
-    <message>
-        <source>9 Points Curves</source>
-        <translation type="obsolete">9 Pisteen käyrät</translation>
-    </message>
-    <message>
-        <source>Logical Switches</source>
-        <translation type="obsolete">Loogiset kytkimet</translation>
-    </message>
-    <message>
-        <source>LS</source>
-        <translation type="obsolete">LS</translation>
-    </message>
-    <message>
-        <source>Special Functions</source>
-        <translation type="obsolete">Spesiaali toiminnot</translation>
-    </message>
-    <message>
-        <source>SF</source>
-        <translation type="obsolete">SF</translation>
-    </message>
-    <message>
-        <source>Switch Assignment</source>
-        <translation type="obsolete">Kytkimien asettelu</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Toiminto</translation>
-    </message>
-    <message>
-        <source>Param</source>
-        <translation type="obsolete">Parametrit</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="obsolete">Toista</translation>
-    </message>
-    <message>
-        <source>Enable</source>
-        <translation type="obsolete">Päälle</translation>
-    </message>
-    <message>
-        <source>CF</source>
-        <translation type="obsolete">CF</translation>
-    </message>
-    <message>
-        <source>Telemetry Settings</source>
-        <translation type="obsolete">Telemetria asetukset</translation>
-    </message>
-    <message>
-        <source>Analog</source>
-        <translation type="obsolete">Analoginen</translation>
-    </message>
-    <message>
-        <source>Unit</source>
-        <translation type="obsolete">Yksikkö</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">Skaala</translation>
-    </message>
-    <message>
-        <source>A%1</source>
-        <translation type="obsolete">A%1</translation>
-    </message>
-    <message>
-        <source>Alarm 1</source>
-        <translation type="obsolete">Varoitus 1</translation>
-    </message>
-    <message>
-        <source>Alarm 2</source>
-        <translation type="obsolete">Varoitus 2</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tyyppi</translation>
-    </message>
-    <message>
-        <source>Condition</source>
-        <translation type="obsolete">Tila</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Arvo</translation>
-    </message>
-    <message>
-        <source>RSSI Alarm</source>
-        <translation type="obsolete">RSSI hälytys</translation>
-    </message>
-    <message>
-        <source>Custom Telemetry View</source>
-        <translation type="obsolete">Oma telemetria näkymä</translation>
-    </message>
-    <message>
-        <source>Telemetry Bars</source>
-        <translation type="obsolete">Telemetria palkein</translation>
-    </message>
-    <message>
-        <source>Bar Number</source>
-        <translation type="obsolete">Palkkien määrä</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Lähde</translation>
-    </message>
-    <message>
-        <source>Print Document</source>
-        <translation type="obsolete">Tulosta dokumentti</translation>
-    </message>
-    <message>
-        <source>Select PDF output file</source>
-        <translation type="obsolete">Valitse PDF tiedosto</translation>
-    </message>
-</context>
-<context>
-    <name>contributorsDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Kehittäjät</translation>
-    </message>
-    <message>
-        <source>People who have contributed to this project</source>
-        <translation type="obsolete">Henkilöt jotka on tehnyt töitä projektin eteen</translation>
-    </message>
-    <message>
-        <source>Coders</source>
-        <translation type="obsolete">Koodaajat</translation>
-    </message>
-    <message>
-        <source>Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)</source>
-        <translation type="obsolete">Kiitokset: Rafal Tomczak(RadioClone), Thomas Husterer (th9x) sekä Eriz Raviv (er9x ja eePe)</translation>
-    </message>
-    <message>
-        <source>Thank you all !!!</source>
-        <translation type="obsolete">Kiitokset kaikille !!!</translation>
-    </message>
-    <message>
-        <source>Contributors</source>
-        <translation type="obsolete">Avustajat</translation>
-    </message>
-    <message>
-        <source>Companion Release Notes</source>
-        <translation type="obsolete">Companion muistiinpanot</translation>
-    </message>
-    <message>
-        <source>OpenTX Release Notes</source>
-        <translation type="obsolete">OpenTX muistiinpanot</translation>
     </message>
 </context>
 <context>
@@ -15794,20 +10719,12 @@ m2560 joka on v4.1 lähettimessä</translation>
         <translation>Tallenna</translation>
     </message>
     <message>
-        <source>Open</source>
-        <translation type="obsolete">Avaa</translation>
-    </message>
-    <message>
         <location filename="../customizesplashdialog.cpp" line="191"/>
         <location filename="../customizesplashdialog.cpp" line="211"/>
         <location filename="../customizesplashdialog.cpp" line="226"/>
         <location filename="../customizesplashdialog.cpp" line="240"/>
         <source>Error</source>
         <translation>Virhe</translation>
-    </message>
-    <message>
-        <source>Cannot load embedded FW image from %1.</source>
-        <translation type="obsolete">Ei voi ladata liitettyä FW kuvaa %1.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="188"/>
@@ -15833,10 +10750,6 @@ m2560 joka on v4.1 lähettimessä</translation>
         <location filename="../customizesplashdialog.cpp" line="211"/>
         <source>Cannot load the image file %1.</source>
         <translation>Ei voi ladata kuvaa tiedostosta %1.</translation>
-    </message>
-    <message>
-        <source>Cannot load the profile image %1.</source>
-        <translation type="obsolete">Ei voi ladata profiilikuvaa %1.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="226"/>
@@ -15900,204 +10813,6 @@ m2560 joka on v4.1 lähettimessä</translation>
         <location filename="../downloaddialog.cpp" line="54"/>
         <source>Download failed: %1.</source>
         <translation>Lataus epäonnistui %1.</translation>
-    </message>
-</context>
-<context>
-    <name>fusesDialog</name>
-    <message>
-        <source>Fuses</source>
-        <translation type="obsolete">Sulakkeet</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Reads the current fuses in the AVR controller.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Proper states for &lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;AtMega 64 &lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;:&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM erase fuse not set: 0E, 81, FF&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM erase fuse set: 0E, 89, FF&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Proper states for AtMega 2560 :&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM erase fuse not set: D7, 11, FC&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM erase fuse set: D7, 19, FC&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Reads the current fuses in the AVR controller.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Proper states for &lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;AtMega 64 &lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;:&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM erase fuse not set: 0E, 81, FF&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM erase fuse set: 0E, 89, FF&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Proper states for AtMega 2560 :&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM erase fuse not set: D7, 11, FC&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;EEPROM erase fuse set: D7, 19, FC&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Read Fuses</source>
-        <translation type="obsolete">Lue sulakkeet</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Reset Fuses&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Fuses in the AVR tell it how to behave.  Pressing this button sets the fuses to the default parameters needed in the FW. These parameters are different for stock and 4.1 MB, please verify you selected the appropriate processor type in preferences.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;This button also sets the &amp;quot;EEPROM protect&amp;quot; Fuse.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;This prevents erasing of the EEPROM when the flash memory is written.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;WARNING&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Setting fuses can lead to problems and even a total lockout from your controller.  Do this only if you know what you are doing.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When in doubt consult either the project&apos;s page or the 9xforum (http://9xforums.com/forum/)&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;If you do get locked out - google lookup for &amp;quot;dealing with Fuse Bricks&amp;quot;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Reset Fuses&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Fuses in the AVR tell it how to behave.  Pressing this button sets the fuses to the default parameters needed in the FW. These parameters are different for stock and 4.1 MB, please verify you selected the appropriate processor type in preferences.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;This button also sets the &amp;quot;EEPROM protect&amp;quot; Fuse.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;This prevents erasing of the EEPROM when the flash memory is written.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;WARNING&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Setting fuses can lead to problems and even a total lockout from your controller.  Do this only if you know what you are doing.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When in doubt consult either the project&apos;s page or the 9xforum (http://9xforums.com/forum/)&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;If you do get locked out - google lookup for &amp;quot;dealing with Fuse Bricks&amp;quot;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Reset Fuses
-EEPROM - PROTECT</source>
-        <translation type="obsolete">Nollaa sulakkeet
-EEPROM - SUOJATTU</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Reset Fuses&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Fuses in the AVR tell it how to behave.  Pressing this button sets the fuses to the default parameters needed in the &lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;FW. These parameters are different for stock and 4.1 MB, please verify you selected the appropriate processor type in preferences.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;This button also clears the &amp;quot;EEPROM protect&amp;quot; Fuse.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;This causes erasing of the EEPROM when the flash memory is written.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;WARNING&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Setting fuses can lead to problems and even a total lockout from your controller.  Do this only if you know what you are doing.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When in doubt consult either the project&apos;s page or the 9xforum (http://9xforums.com/forum/)&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;If you do get locked out - google lookup for &amp;quot;dealing with Fuse Bricks&amp;quot;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Reset Fuses&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Fuses in the AVR tell it how to behave.  Pressing this button sets the fuses to the default parameters needed in the &lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;FW. These parameters are different for stock and 4.1 MB, please verify you selected the appropriate processor type in preferences.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;This button also clears the &amp;quot;EEPROM protect&amp;quot; Fuse.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;This causes erasing of the EEPROM when the flash memory is written.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;WARNING&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Setting fuses can lead to problems and even a total lockout from your controller.  Do this only if you know what you are doing.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When in doubt consult either the project&apos;s page or the 9xforum (http://9xforums.com/forum/)&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;If you do get locked out - google lookup for &amp;quot;dealing with Fuse Bricks&amp;quot;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Reset Fuses
-EEPROM - DELETE</source>
-        <translation type="obsolete">Nollaa sulakkeet
-EEPRON - POISTO</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;WARNING&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Changing the fuses can mess up your radio.&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Proceed only if you know what you are doing.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;WARNING&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Changing the fuses can mess up your radio.&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Proceed only if you know what you are doing.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>fwPreferencesDialog</name>
-    <message>
-        <source>Downloads</source>
-        <translation type="obsolete">Ladatut</translation>
-    </message>
-    <message>
-        <source>CheckBox</source>
-        <translation type="obsolete">Valintaruutu</translation>
-    </message>
-    <message>
-        <source>Menu Language</source>
-        <translation type="obsolete">Valikon kieli</translation>
-    </message>
-    <message>
-        <source>Firmware Type</source>
-        <translation type="obsolete">Firmware tyyppi</translation>
-    </message>
-    <message>
-        <source>Check for updates</source>
-        <translation type="obsolete">Tarkista päivitykset</translation>
-    </message>
-    <message>
-        <source>Voice Language</source>
-        <translation type="obsolete">Äänen kieli</translation>
-    </message>
-    <message>
-        <source>Set language of voice.
-May be different from firmware language</source>
-        <translation type="obsolete">Aseta äänen kieli.
-Voi olla eri kun firmwaren kieli</translation>
-    </message>
-    <message>
-        <source>Download Voice</source>
-        <translation type="obsolete">Lataa äänet</translation>
-    </message>
-    <message>
-        <source>Download FW</source>
-        <translation type="obsolete">Lataa FW</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">Valinnat</translation>
-    </message>
-    <message>
-        <source>Processor ID</source>
-        <translation type="obsolete">Prossu ID</translation>
-    </message>
-    <message>
-        <source>FwInfo</source>
-        <translation type="obsolete">FwInfo</translation>
-    </message>
-    <message>
-        <source>Last downloaded release: %1</source>
-        <translation type="obsolete">Viimeksi ladattu julkaisu: %1</translation>
-    </message>
-    <message>
-        <source>The selected firmware has never been downloaded by Companion.</source>
-        <translation type="obsolete">Valittua firwarea ei ole koskaan ladattu Companionin kautta.</translation>
-    </message>
-    <message>
-        <source>The selected firmware cannot be downloaded by Companion.</source>
-        <translation type="obsolete">Valittua firmwarea ei voida ladata Companionin kautta.</translation>
     </message>
 </context>
 <context>
@@ -16326,75 +11041,6 @@ Paina &quot;peruuta&quot; niin joystickin kalibrointi perutetaan</translation>
         <source>Duplicated stick assignment</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Duplicated stick assignement</source>
-        <translation type="obsolete">Kopio tikkujen asettelut</translation>
-    </message>
-</context>
-<context>
-    <name>logsDialog</name>
-    <message>
-        <source>Companion Log Viewer</source>
-        <translation type="obsolete">Companion logit</translation>
-    </message>
-    <message>
-        <source>Filename</source>
-        <translation type="obsolete">Tiedoston nimi</translation>
-    </message>
-    <message>
-        <source>Open LogFile</source>
-        <translation type="obsolete">Avaa logi</translation>
-    </message>
-    <message>
-        <source>Zoom</source>
-        <translation type="obsolete">Zuumaa</translation>
-    </message>
-    <message>
-        <source>X</source>
-        <translation type="obsolete">X</translation>
-    </message>
-    <message>
-        <source>Y</source>
-        <translation type="obsolete">Y</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation type="obsolete">Resetti</translation>
-    </message>
-    <message>
-        <source>Fly sessions</source>
-        <translation type="obsolete">Lento jakso</translation>
-    </message>
-    <message>
-        <source>Telemetry logs</source>
-        <translation type="obsolete">Telemetria logit</translation>
-    </message>
-    <message>
-        <source>Time (hh:mm:ss)</source>
-        <translation type="obsolete">Aika</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Virhe</translation>
-    </message>
-    <message>
-        <source>Cannot write file %1:
-%2.</source>
-        <translation type="obsolete">Ei voi kirjoittaa tiedostoon %1
-%2.</translation>
-    </message>
-    <message>
-        <source>Select your log file</source>
-        <translation type="obsolete">Valitse logi tiedosto</translation>
-    </message>
-    <message>
-        <source>Available fields</source>
-        <translation type="obsolete">Valittavana olevat kentät</translation>
-    </message>
-    <message>
-        <source>The selected logfile contains %1 invalid lines out of  %2 total lines</source>
-        <translation type="obsolete">Valittu logi sisältää: %1 virhe riviä, kokomäärästä  %2 riviä</translation>
-    </message>
 </context>
 <context>
     <name>mdiChild</name>
@@ -16517,1259 +11163,6 @@ Paina &quot;peruuta&quot; niin joystickin kalibrointi perutetaan</translation>
         <location filename="../imgpreferences.ui" line="366"/>
         <source>Invert Pixels</source>
         <translation>Käännä pixelit</translation>
-    </message>
-    <message>
-        <source>Mode selection:
-
-Mode 1:
-  Left stick:  Elevator, Rudder
-  Right stick:  Throttle, Aileron
-
-Mode 2:
-  Left stick:  Throttle, Rudder
-  Right stick:  Elevator, Aileron
-
-Mode 3:
-  Left stick:  Elevator, Aileron
-  Right stick:  Throttle, Rudder
-
-Mode 4:
-  Left stick:  Throttle, Aileron
-  Right stick:  Elevator, Rudder
-
-</source>
-        <translation type="obsolete">Tilan valinta:
-
-Tila 1:
-  Vas tikku: Korkeusp, Sivup
-  Oik tikku: Kaasu, Siivekkeet
-
-Tila 2:
-
-  Vas tikku: Kaasu, Sivup
-  Oik tikku: Korkeusp, Siivekkeet
-
-Tila 3:
-
-  Vas tikku: Korkeusp, Siivekkeet
-  Oik tikku: Kaasu, Sivup
-
-Tila 4:
-
-  Vas tikku: Kaasu, Siivekkeet
-  Oik tikku: Korkeusp, Sivup
-
-</translation>
-    </message>
-    <message>
-        <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="obsolete">Mode 1 (PER KOR KAA SII)</translation>
-    </message>
-    <message>
-        <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="obsolete">Mode 2 (PER KAA KOR SII)</translation>
-    </message>
-    <message>
-        <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="obsolete">Mode 3 (SII KOR KAA PER)</translation>
-    </message>
-    <message>
-        <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="obsolete">Mode 4 (SII KAA KOR PER)</translation>
-    </message>
-    <message>
-        <source>auto backup before write</source>
-        <translation type="obsolete">Autom. varmuuskopio ennen kirjoitusta</translation>
-    </message>
-    <message>
-        <source>Automatic Backup Folder</source>
-        <translation type="obsolete">Automaattisen varmuuskopion kansio</translation>
-    </message>
-    <message>
-        <source>Show Splash At Start</source>
-        <translation type="obsolete">Näytä alkuruutu käynnistyksessä</translation>
-    </message>
-    <message>
-        <source>Ask use of wizard for new models</source>
-        <translation type="obsolete">Kysy käytetäänkö avustajaa uusiin malleihin</translation>
-    </message>
-    <message>
-        <source>Remember switches in simulator</source>
-        <translation type="obsolete">Muista simulaattorin kytkimien asennot</translation>
-    </message>
-    <message>
-        <source>Channel order
-
-This is used by the templated to determine which channel goes to what number output.</source>
-        <translation type="obsolete">Kanavien järjestys
-
-Tätä käytetään pohjana kanava määrityksille, mikä kanava menee mihinkä lähtöön.</translation>
-    </message>
-    <message>
-        <source>R E T A</source>
-        <translation type="obsolete">P Ko Ka S</translation>
-    </message>
-    <message>
-        <source>R E A T</source>
-        <translation type="obsolete">P Ko S Ka</translation>
-    </message>
-    <message>
-        <source>R T E A</source>
-        <translation type="obsolete">P Ka Ko S</translation>
-    </message>
-    <message>
-        <source>R T A E</source>
-        <translation type="obsolete">P Ka S Ko</translation>
-    </message>
-    <message>
-        <source>R A E T</source>
-        <translation type="obsolete">P S Ko Ka</translation>
-    </message>
-    <message>
-        <source>R A T E</source>
-        <translation type="obsolete">P S Ka Ko</translation>
-    </message>
-    <message>
-        <source>E R T A</source>
-        <translation type="obsolete">Ko P Ka S</translation>
-    </message>
-    <message>
-        <source>E R A T</source>
-        <translation type="obsolete">Ko P S Ka</translation>
-    </message>
-    <message>
-        <source>E T R A</source>
-        <translation type="obsolete">Ko Ka P S</translation>
-    </message>
-    <message>
-        <source>E T A R</source>
-        <translation type="obsolete">Ko Ka S P</translation>
-    </message>
-    <message>
-        <source>E A R T</source>
-        <translation type="obsolete">Ko S P Ka</translation>
-    </message>
-    <message>
-        <source>E A T R</source>
-        <translation type="obsolete">Ko S Ka P</translation>
-    </message>
-    <message>
-        <source>T R E A</source>
-        <translation type="obsolete">Ka P Ko S</translation>
-    </message>
-    <message>
-        <source>T R A E</source>
-        <translation type="obsolete">Ka P S Ko</translation>
-    </message>
-    <message>
-        <source>T E R A</source>
-        <translation type="obsolete">Ka Ko P S</translation>
-    </message>
-    <message>
-        <source>T E A R</source>
-        <translation type="obsolete">Ka Ko S P</translation>
-    </message>
-    <message>
-        <source>T A R E</source>
-        <translation type="obsolete">Ka S P Ko</translation>
-    </message>
-    <message>
-        <source>T A E R</source>
-        <translation type="obsolete">Ka S Ko P</translation>
-    </message>
-    <message>
-        <source>A R E T</source>
-        <translation type="obsolete">S P Ko Ka</translation>
-    </message>
-    <message>
-        <source>A R T E</source>
-        <translation type="obsolete">S P Ka Ko</translation>
-    </message>
-    <message>
-        <source>A E R T</source>
-        <translation type="obsolete">S Ko P Ka</translation>
-    </message>
-    <message>
-        <source>A E T R</source>
-        <translation type="obsolete">S Ko Ka P</translation>
-    </message>
-    <message>
-        <source>A T R E</source>
-        <translation type="obsolete">S Ka P Ko</translation>
-    </message>
-    <message>
-        <source>A T E R</source>
-        <translation type="obsolete">S Ka Ko P</translation>
-    </message>
-    <message>
-        <source>FwInfo</source>
-        <translation type="obsolete">FwInfo</translation>
-    </message>
-    <message>
-        <source>Check for updates</source>
-        <translation type="obsolete">Tarkista päivitykset</translation>
-    </message>
-    <message>
-        <source>Ask for flashing after Download</source>
-        <translation type="obsolete">Kysy päivitys kun on ladattu</translation>
-    </message>
-    <message>
-        <source>Export Profile</source>
-        <translation type="obsolete">Vie profiili</translation>
-    </message>
-    <message>
-        <source>Save Profile</source>
-        <translation type="obsolete">Tallenna profiili</translation>
-    </message>
-    <message>
-        <source>Import Profile</source>
-        <translation type="obsolete">Tuo profiili</translation>
-    </message>
-    <message>
-        <source>Profile Name</source>
-        <translation type="obsolete">Profiilin nimi</translation>
-    </message>
-    <message>
-        <source>Default Stick Mode</source>
-        <translation type="obsolete">Perus tikkujen tila</translation>
-    </message>
-    <message>
-        <source>Default Channel Order</source>
-        <translation type="obsolete">Kanavien järjestys</translation>
-    </message>
-    <message>
-        <source>Profile slot</source>
-        <translation type="obsolete">Profiilin paikka</translation>
-    </message>
-    <message>
-        <source>Automatically add version number to the filename after download</source>
-        <translation type="obsolete">Lisää versionumero tiedoston nimeen automaattisesti kun on ladattu</translation>
-    </message>
-    <message>
-        <source>Voice</source>
-        <translation type="obsolete">Ääni</translation>
-    </message>
-    <message>
-        <source>Download</source>
-        <translation type="obsolete">Ladattu</translation>
-    </message>
-    <message>
-        <source>Set language of voice.
-May be different from firmware language</source>
-        <translation type="obsolete">Aseta äänen kieli.
-Voi olla eri kun firmwaren kieli</translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation type="obsolete">Kieli</translation>
-    </message>
-    <message>
-        <source>Firmware</source>
-        <translation type="obsolete">Firmware</translation>
-    </message>
-    <message>
-        <source>SD Structure path</source>
-        <translation type="obsolete">SD muistikortin kansio</translation>
-    </message>
-    <message>
-        <source>Processor ID</source>
-        <translation type="obsolete">Prossu ID</translation>
-    </message>
-    <message>
-        <source>Recent History Size</source>
-        <translation type="obsolete">Historian koko</translation>
-    </message>
-    <message>
-        <source>CheckBox</source>
-        <translation type="obsolete">Valintaruutu</translation>
-    </message>
-    <message>
-        <source>Check for updates on startup</source>
-        <translation type="obsolete">Tarkista päivitykset kun käynnistetään</translation>
-    </message>
-    <message>
-        <source>Check for selected Fw updates</source>
-        <translation type="obsolete">Tarkista valitun FW päivitykset</translation>
-    </message>
-    <message>
-        <source>Google Earth Executable</source>
-        <translation type="obsolete">Google Earth tiedosto</translation>
-    </message>
-    <message>
-        <source>Find Executable</source>
-        <translation type="obsolete">Avaa tiedosto</translation>
-    </message>
-</context>
-<context>
-    <name>printDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Tulosta</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Sulje</translation>
-    </message>
-    <message>
-        <source>Print</source>
-        <translation type="obsolete">Tulosta</translation>
-    </message>
-    <message>
-        <source>Print to file</source>
-        <translation type="obsolete">Tulosta tiedostoon</translation>
-    </message>
-    <message>
-        <source>Setup for: </source>
-        <translation type="obsolete">Asetukset: </translation>
-    </message>
-    <message>
-        <source>printed on: %1</source>
-        <translation type="obsolete">Tulostettu: %1</translation>
-    </message>
-    <message>
-        <source>General Model Settings</source>
-        <translation type="obsolete">Yleiset mallin asetukset</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nimi</translation>
-    </message>
-    <message>
-        <source>EEprom Size</source>
-        <translation type="obsolete">EEpromin koko</translation>
-    </message>
-    <message>
-        <source>Timer1</source>
-        <translation type="obsolete">Ajastin 1</translation>
-    </message>
-    <message>
-        <source>Timer2</source>
-        <translation type="obsolete">Ajastin 2</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protokolla</translation>
-    </message>
-    <message>
-        <source>Pulse Polarity</source>
-        <translation type="obsolete">Pulssin napaisuus</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Kaasu trimmi</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Päälle</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Pois</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Kaasu expo</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Trimmi lisäys</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Keski piippaus</translation>
-    </message>
-    <message>
-        <source>Flight modes Settings</source>
-        <translation type="obsolete">Lentotilan asetukset</translation>
-    </message>
-    <message>
-        <source>Fades</source>
-        <translation type="obsolete">Liut</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Trimmit</translation>
-    </message>
-    <message>
-        <source>Gvars</source>
-        <translation type="obsolete">Gvarit</translation>
-    </message>
-    <message>
-        <source>Rot.Enc.</source>
-        <translation type="obsolete">Rot.Enc.</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Kytkin</translation>
-    </message>
-    <message>
-        <source>Flight mode name</source>
-        <translation type="obsolete">Lentotilan nimi</translation>
-    </message>
-    <message>
-        <source>IN</source>
-        <translation type="obsolete">SIS</translation>
-    </message>
-    <message>
-        <source>OUT</source>
-        <translation type="obsolete">ULO</translation>
-    </message>
-    <message>
-        <source>FM</source>
-        <translation type="obsolete">FM</translation>
-    </message>
-    <message>
-        <source>Expo/Dr Settings</source>
-        <translation type="obsolete">Expo / DR asetukset</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Paino</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Lento tilat</translation>
-    </message>
-    <message>
-        <source>Flight mode</source>
-        <translation type="obsolete">Lento tila</translation>
-    </message>
-    <message>
-        <source>DISABLED</source>
-        <translation type="obsolete">Pois</translation>
-    </message>
-    <message>
-        <source>Mixers</source>
-        <translation type="obsolete">Mikserit</translation>
-    </message>
-    <message>
-        <source>CH</source>
-        <translation type="obsolete">ch</translation>
-    </message>
-    <message>
-        <source>noTrim</source>
-        <translation type="obsolete">Ei trimmiä</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Tasoitus</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete">Viive(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete">Hidastus(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>Warn</source>
-        <translation type="obsolete">Warn</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Rajat</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Min</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Max</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Käänteinen</translation>
-    </message>
-    <message>
-        <source>INV</source>
-        <translation type="obsolete">KÄÄNT</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">NOR</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Käyrät</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Käyrä</translation>
-    </message>
-    <message>
-        <source>pt %1</source>
-        <translation type="obsolete">pt %1</translation>
-    </message>
-    <message>
-        <source>Logical Switches</source>
-        <translation type="obsolete">Loogiset kytkimet</translation>
-    </message>
-    <message>
-        <source>LS</source>
-        <translation type="obsolete">LS</translation>
-    </message>
-    <message>
-        <source>Global Variables</source>
-        <translation type="obsolete">Globaalit muuttujat</translation>
-    </message>
-    <message>
-        <source>GV</source>
-        <translation type="obsolete">GV</translation>
-    </message>
-    <message>
-        <source>Special Functions</source>
-        <translation type="obsolete">Spesiaali toiminnot</translation>
-    </message>
-    <message>
-        <source>Blades</source>
-        <translation type="obsolete">Prop lavat</translation>
-    </message>
-    <message>
-        <source>Switch Assignments</source>
-        <translation type="obsolete">Kytkimien asettelu</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Toiminto</translation>
-    </message>
-    <message>
-        <source>Parameter</source>
-        <translation type="obsolete">Parametrit</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="obsolete">Toista</translation>
-    </message>
-    <message>
-        <source>Telemetry Settings</source>
-        <translation type="obsolete">Telemetria asetukset</translation>
-    </message>
-    <message>
-        <source>Alarm 1</source>
-        <translation type="obsolete">Varoitus 1</translation>
-    </message>
-    <message>
-        <source>Alarm 2</source>
-        <translation type="obsolete">Varoitus 2</translation>
-    </message>
-    <message>
-        <source>Analog</source>
-        <translation type="obsolete">Analoginen</translation>
-    </message>
-    <message>
-        <source>Unit</source>
-        <translation type="obsolete">Yksikkö</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">Skaala</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tyyppi</translation>
-    </message>
-    <message>
-        <source>Condition</source>
-        <translation type="obsolete">Kunto</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Arvo</translation>
-    </message>
-    <message>
-        <source>A%1</source>
-        <translation type="obsolete">A%1</translation>
-    </message>
-    <message>
-        <source>RSSI Alarm</source>
-        <translation type="obsolete">RSSI hälytys</translation>
-    </message>
-    <message>
-        <source>Frsky serial protocol</source>
-        <translation type="obsolete">FrSky sarja protokolla</translation>
-    </message>
-    <message>
-        <source>System of units</source>
-        <translation type="obsolete">Systeemin yksiköt</translation>
-    </message>
-    <message>
-        <source>Propeller blades</source>
-        <translation type="obsolete">Prop lavat</translation>
-    </message>
-    <message>
-        <source>Custom Telemetry View</source>
-        <translation type="obsolete">Oma telemetria näkymä</translation>
-    </message>
-    <message>
-        <source>Telemetry Bars</source>
-        <translation type="obsolete">Telemetria palkein</translation>
-    </message>
-    <message>
-        <source>Bar Number</source>
-        <translation type="obsolete">Palkkien määrä</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Lähde</translation>
-    </message>
-    <message>
-        <source>Print Document</source>
-        <translation type="obsolete">Tulosta dokumentti</translation>
-    </message>
-    <message>
-        <source>Select PDF output file</source>
-        <translation type="obsolete">Valitse PDF tiedosto</translation>
-    </message>
-    <message>
-        <source>ODF files (*.odt);;PDF Files(*.pdf);;HTML-Files (*.htm *.html);;All Files (*)</source>
-        <translation type="obsolete">ODF tiedosto (*.odt);;PDF tiedosto (*.pdf);;HTML-tiedosto (*.htm *.html);;Kaikki tiedostot (*)</translation>
-    </message>
-</context>
-<context>
-    <name>simulatorDialog</name>
-    <message>
-        <source>Companion Simulator</source>
-        <translation type="obsolete">Companion simulaattori</translation>
-    </message>
-    <message>
-        <source>Right Double Click to Reset</source>
-        <translation type="obsolete">Tuplaklikkaa oikea resetoi</translation>
-    </message>
-    <message>
-        <source>THR</source>
-        <translation type="obsolete">KAA</translation>
-    </message>
-    <message>
-        <source>RUD</source>
-        <translation type="obsolete">PER</translation>
-    </message>
-    <message>
-        <source>ELE</source>
-        <translation type="obsolete">KOR</translation>
-    </message>
-    <message>
-        <source>AIL</source>
-        <translation type="obsolete">SII</translation>
-    </message>
-    <message>
-        <source>Hold X</source>
-        <translation type="obsolete">Pidä X</translation>
-    </message>
-    <message>
-        <source>Fix X</source>
-        <translation type="obsolete">Kesk X</translation>
-    </message>
-    <message>
-        <source>Fix Y</source>
-        <translation type="obsolete">Kesk Y</translation>
-    </message>
-    <message>
-        <source>Hold Y</source>
-        <translation type="obsolete">Pidä Y</translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation type="obsolete">Tekstilappu</translation>
-    </message>
-    <message>
-        <source>TRN</source>
-        <translation type="obsolete">TRN</translation>
-    </message>
-    <message>
-        <source>GEA</source>
-        <translation type="obsolete">REN</translation>
-    </message>
-    <message>
-        <source>ID0</source>
-        <translation type="obsolete">ID0</translation>
-    </message>
-    <message>
-        <source>ID1</source>
-        <translation type="obsolete">ID1</translation>
-    </message>
-    <message>
-        <source>ID2</source>
-        <translation type="obsolete">ID2</translation>
-    </message>
-    <message>
-        <source>BEEP</source>
-        <translation type="obsolete">PIIP</translation>
-    </message>
-    <message>
-        <source>P1</source>
-        <translation type="obsolete">P1</translation>
-    </message>
-    <message>
-        <source>0 %</source>
-        <translation type="obsolete">0 %</translation>
-    </message>
-    <message>
-        <source>P2</source>
-        <translation type="obsolete">P2</translation>
-    </message>
-    <message>
-        <source>P3</source>
-        <translation type="obsolete">P3</translation>
-    </message>
-    <message>
-        <source>9x Simulator</source>
-        <translation type="obsolete">9x simulaattori</translation>
-    </message>
-    <message>
-        <source>Outputs</source>
-        <translation type="obsolete">Ulostulot</translation>
-    </message>
-    <message>
-        <source>LS1</source>
-        <translation type="obsolete">LS1</translation>
-    </message>
-    <message>
-        <source>LS2</source>
-        <translation type="obsolete">LS2</translation>
-    </message>
-    <message>
-        <source>LS3</source>
-        <translation type="obsolete">LS3</translation>
-    </message>
-    <message>
-        <source>LS4</source>
-        <translation type="obsolete">LS4</translation>
-    </message>
-    <message>
-        <source>LS5</source>
-        <translation type="obsolete">LS5</translation>
-    </message>
-    <message>
-        <source>LS6</source>
-        <translation type="obsolete">LS6</translation>
-    </message>
-    <message>
-        <source>LS7</source>
-        <translation type="obsolete">LS7</translation>
-    </message>
-    <message>
-        <source>LS8</source>
-        <translation type="obsolete">LS8</translation>
-    </message>
-    <message>
-        <source>LS9</source>
-        <translation type="obsolete">LS9</translation>
-    </message>
-    <message>
-        <source>LSA</source>
-        <translation type="obsolete">LSA</translation>
-    </message>
-    <message>
-        <source>LSB</source>
-        <translation type="obsolete">LSB</translation>
-    </message>
-    <message>
-        <source>LSC</source>
-        <translation type="obsolete">LSC</translation>
-    </message>
-    <message>
-        <source>LSD</source>
-        <translation type="obsolete">LSD</translation>
-    </message>
-    <message>
-        <source>LSE</source>
-        <translation type="obsolete">LSE</translation>
-    </message>
-    <message>
-        <source>LSF</source>
-        <translation type="obsolete">LSF</translation>
-    </message>
-    <message>
-        <source>LSG</source>
-        <translation type="obsolete">LSG</translation>
-    </message>
-    <message>
-        <source>LSH</source>
-        <translation type="obsolete">LSH</translation>
-    </message>
-    <message>
-        <source>LSI</source>
-        <translation type="obsolete">LSI</translation>
-    </message>
-    <message>
-        <source>LSJ</source>
-        <translation type="obsolete">LSJ</translation>
-    </message>
-    <message>
-        <source>LSK</source>
-        <translation type="obsolete">LSK</translation>
-    </message>
-    <message>
-        <source>LSL</source>
-        <translation type="obsolete">LSL</translation>
-    </message>
-    <message>
-        <source>LSM</source>
-        <translation type="obsolete">LSM</translation>
-    </message>
-    <message>
-        <source>LSN</source>
-        <translation type="obsolete">LSN</translation>
-    </message>
-    <message>
-        <source>LSO</source>
-        <translation type="obsolete">LSO</translation>
-    </message>
-    <message>
-        <source>LSP</source>
-        <translation type="obsolete">LSP</translation>
-    </message>
-    <message>
-        <source>LSQ</source>
-        <translation type="obsolete">LSQ</translation>
-    </message>
-    <message>
-        <source>LSR</source>
-        <translation type="obsolete">LSR</translation>
-    </message>
-    <message>
-        <source>LSS</source>
-        <translation type="obsolete">LSS</translation>
-    </message>
-    <message>
-        <source>LST</source>
-        <translation type="obsolete">LST</translation>
-    </message>
-    <message>
-        <source>LSU</source>
-        <translation type="obsolete">LSU</translation>
-    </message>
-    <message>
-        <source>LSV</source>
-        <translation type="obsolete">LSV</translation>
-    </message>
-    <message>
-        <source>LSW</source>
-        <translation type="obsolete">LSW</translation>
-    </message>
-    <message>
-        <source>CH1</source>
-        <translation type="obsolete">CH1</translation>
-    </message>
-    <message>
-        <source>-100.1</source>
-        <translation type="obsolete">-100.1</translation>
-    </message>
-    <message>
-        <source>CH9</source>
-        <translation type="obsolete">CH9</translation>
-    </message>
-    <message>
-        <source>CH2</source>
-        <translation type="obsolete">CH2</translation>
-    </message>
-    <message>
-        <source>CH10</source>
-        <translation type="obsolete">CH10</translation>
-    </message>
-    <message>
-        <source>CH3</source>
-        <translation type="obsolete">CH3</translation>
-    </message>
-    <message>
-        <source>CH11</source>
-        <translation type="obsolete">CH11</translation>
-    </message>
-    <message>
-        <source>CH4</source>
-        <translation type="obsolete">CH4</translation>
-    </message>
-    <message>
-        <source>CH12</source>
-        <translation type="obsolete">CH12</translation>
-    </message>
-    <message>
-        <source>CH5</source>
-        <translation type="obsolete">CH5</translation>
-    </message>
-    <message>
-        <source>CH13</source>
-        <translation type="obsolete">CH13</translation>
-    </message>
-    <message>
-        <source>CH6</source>
-        <translation type="obsolete">CH6</translation>
-    </message>
-    <message>
-        <source>CH14</source>
-        <translation type="obsolete">CH14</translation>
-    </message>
-    <message>
-        <source>CH7</source>
-        <translation type="obsolete">CH7</translation>
-    </message>
-    <message>
-        <source>CH15</source>
-        <translation type="obsolete">CH15</translation>
-    </message>
-    <message>
-        <source>CH8</source>
-        <translation type="obsolete">CH8</translation>
-    </message>
-    <message>
-        <source>CH16</source>
-        <translation type="obsolete">CH16</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Varoitus</translation>
-    </message>
-    <message>
-        <source>Joystick enabled but not configured correctly</source>
-        <translation type="obsolete">Joystick päällä mutta väärin aseteltu</translation>
-    </message>
-    <message>
-        <source>Cannot open joystick, joystick disabled</source>
-        <translation type="obsolete">Joystickia ei voi avata, pois päältä</translation>
-    </message>
-    <message>
-        <source>Firmware %1 error: %2</source>
-        <translation type="obsolete">Firmware %1 virhe: %2</translation>
-    </message>
-    <message>
-        <source> - Flight mode: %1(%2)</source>
-        <translation type="obsolete">- Lentotila: %1(%2)</translation>
-    </message>
-    <message>
-        <source>Simulating Tx (%1)</source>
-        <translation type="obsolete">Simuloi TX (%1)</translation>
-    </message>
-    <message>
-        <source>Simulating </source>
-        <translation type="obsolete">Simuloi</translation>
-    </message>
-</context>
-<context>
-    <name>taranisNotFoundDialog</name>
-    <message>
-        <source>No Taranis Radio Found</source>
-        <translation type="obsolete">Taranis radiota ei löydy</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Taranis Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Taranis Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-</context>
-<context>
-    <name>xsimulatorDialog</name>
-    <message>
-        <source>Companion Simulator</source>
-        <translation type="obsolete">Companion simulaattori</translation>
-    </message>
-    <message>
-        <source>Hold Y</source>
-        <translation type="obsolete">Pidä Y</translation>
-    </message>
-    <message>
-        <source>Fix Y</source>
-        <translation type="obsolete">Kesk X</translation>
-    </message>
-    <message>
-        <source>Fix X</source>
-        <translation type="obsolete">Kesk Y</translation>
-    </message>
-    <message>
-        <source>Hold X</source>
-        <translation type="obsolete">Pidä X</translation>
-    </message>
-    <message>
-        <source>SD</source>
-        <translation type="obsolete">SD</translation>
-    </message>
-    <message>
-        <source>SC</source>
-        <translation type="obsolete">SC</translation>
-    </message>
-    <message>
-        <source>Right Double Click to Reset</source>
-        <translation type="obsolete">Tyhjäys, tuplaklikkaa oikeaa</translation>
-    </message>
-    <message>
-        <source>S2</source>
-        <translation type="obsolete">S2</translation>
-    </message>
-    <message>
-        <source>SG</source>
-        <translation type="obsolete">SG</translation>
-    </message>
-    <message>
-        <source>RS</source>
-        <translation type="obsolete">RS</translation>
-    </message>
-    <message>
-        <source>SH</source>
-        <translation type="obsolete">SH</translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation type="obsolete">Simulaattori</translation>
-    </message>
-    <message>
-        <source>S1</source>
-        <translation type="obsolete">S1</translation>
-    </message>
-    <message>
-        <source>SB</source>
-        <translation type="obsolete">SB</translation>
-    </message>
-    <message>
-        <source>SA</source>
-        <translation type="obsolete">SA</translation>
-    </message>
-    <message>
-        <source>SE</source>
-        <translation type="obsolete">SE</translation>
-    </message>
-    <message>
-        <source>SF</source>
-        <translation type="obsolete">SF</translation>
-    </message>
-    <message>
-        <source>LS</source>
-        <translation type="obsolete">LS</translation>
-    </message>
-    <message>
-        <source>Taranis Simulator</source>
-        <translation type="obsolete">Taranis simulaattori</translation>
-    </message>
-    <message>
-        <source>Outputs</source>
-        <translation type="obsolete">Lähdöt</translation>
-    </message>
-    <message>
-        <source>CH1</source>
-        <translation type="obsolete">CH1</translation>
-    </message>
-    <message>
-        <source>-100.1</source>
-        <translation type="obsolete">-100.1</translation>
-    </message>
-    <message>
-        <source>CH9</source>
-        <translation type="obsolete">CH9</translation>
-    </message>
-    <message>
-        <source>CH2</source>
-        <translation type="obsolete">CH2</translation>
-    </message>
-    <message>
-        <source>CH10</source>
-        <translation type="obsolete">CH10</translation>
-    </message>
-    <message>
-        <source>CH3</source>
-        <translation type="obsolete">CH3</translation>
-    </message>
-    <message>
-        <source>CH11</source>
-        <translation type="obsolete">CH11</translation>
-    </message>
-    <message>
-        <source>CH4</source>
-        <translation type="obsolete">CH4</translation>
-    </message>
-    <message>
-        <source>CH12</source>
-        <translation type="obsolete">CH12</translation>
-    </message>
-    <message>
-        <source>CH5</source>
-        <translation type="obsolete">CH5</translation>
-    </message>
-    <message>
-        <source>CH13</source>
-        <translation type="obsolete">CH13</translation>
-    </message>
-    <message>
-        <source>CH6</source>
-        <translation type="obsolete">CH6</translation>
-    </message>
-    <message>
-        <source>CH14</source>
-        <translation type="obsolete">CH14</translation>
-    </message>
-    <message>
-        <source>CH7</source>
-        <translation type="obsolete">CH7</translation>
-    </message>
-    <message>
-        <source>CH15</source>
-        <translation type="obsolete">CH15</translation>
-    </message>
-    <message>
-        <source>CH8</source>
-        <translation type="obsolete">CH8</translation>
-    </message>
-    <message>
-        <source>CH16</source>
-        <translation type="obsolete">CH16</translation>
-    </message>
-    <message>
-        <source>LSK</source>
-        <translation type="obsolete">LSK</translation>
-    </message>
-    <message>
-        <source>LSC</source>
-        <translation type="obsolete">LSC</translation>
-    </message>
-    <message>
-        <source>LSD</source>
-        <translation type="obsolete">LSD</translation>
-    </message>
-    <message>
-        <source>LS7</source>
-        <translation type="obsolete">LS7</translation>
-    </message>
-    <message>
-        <source>LSL</source>
-        <translation type="obsolete">LSL</translation>
-    </message>
-    <message>
-        <source>LSB</source>
-        <translation type="obsolete">LSB</translation>
-    </message>
-    <message>
-        <source>LS1</source>
-        <translation type="obsolete">LS1</translation>
-    </message>
-    <message>
-        <source>LSH</source>
-        <translation type="obsolete">LSH</translation>
-    </message>
-    <message>
-        <source>LSG</source>
-        <translation type="obsolete">LSG</translation>
-    </message>
-    <message>
-        <source>LSE</source>
-        <translation type="obsolete">LSE</translation>
-    </message>
-    <message>
-        <source>LSF</source>
-        <translation type="obsolete">LSF</translation>
-    </message>
-    <message>
-        <source>LS8</source>
-        <translation type="obsolete">LS8</translation>
-    </message>
-    <message>
-        <source>LS9</source>
-        <translation type="obsolete">LS9</translation>
-    </message>
-    <message>
-        <source>LSA</source>
-        <translation type="obsolete">LSA</translation>
-    </message>
-    <message>
-        <source>LSM</source>
-        <translation type="obsolete">LSM</translation>
-    </message>
-    <message>
-        <source>LSJ</source>
-        <translation type="obsolete">LSJ</translation>
-    </message>
-    <message>
-        <source>LSI</source>
-        <translation type="obsolete">LSI</translation>
-    </message>
-    <message>
-        <source>LS4</source>
-        <translation type="obsolete">LS4</translation>
-    </message>
-    <message>
-        <source>LS5</source>
-        <translation type="obsolete">LS5</translation>
-    </message>
-    <message>
-        <source>LS2</source>
-        <translation type="obsolete">LS2</translation>
-    </message>
-    <message>
-        <source>LS3</source>
-        <translation type="obsolete">LS3</translation>
-    </message>
-    <message>
-        <source>LS6</source>
-        <translation type="obsolete">LS6</translation>
-    </message>
-    <message>
-        <source>LSN</source>
-        <translation type="obsolete">LSN</translation>
-    </message>
-    <message>
-        <source>LSO</source>
-        <translation type="obsolete">LSO</translation>
-    </message>
-    <message>
-        <source>LSP</source>
-        <translation type="obsolete">LSP</translation>
-    </message>
-    <message>
-        <source>LSQ</source>
-        <translation type="obsolete">LSQ</translation>
-    </message>
-    <message>
-        <source>LSR</source>
-        <translation type="obsolete">LSR</translation>
-    </message>
-    <message>
-        <source>LSS</source>
-        <translation type="obsolete">LSS</translation>
-    </message>
-    <message>
-        <source>LST</source>
-        <translation type="obsolete">LST</translation>
-    </message>
-    <message>
-        <source>LSU</source>
-        <translation type="obsolete">LSU</translation>
-    </message>
-    <message>
-        <source>LSV</source>
-        <translation type="obsolete">LSV</translation>
-    </message>
-    <message>
-        <source>LSW</source>
-        <translation type="obsolete">LSW</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Varoitus</translation>
-    </message>
-    <message>
-        <source>Joystick enabled but not configured correctly</source>
-        <translation type="obsolete">Joystick päällä, mutta konfiguraatio ongelma</translation>
-    </message>
-    <message>
-        <source>Cannot open joystick, joystick disabled</source>
-        <translation type="obsolete">Ei voi avata joystickia, joystick pois käytöstä</translation>
-    </message>
-    <message>
-        <source>Firmware %1 error: %2</source>
-        <translation type="obsolete">Firmware %1 virhe %2</translation>
-    </message>
-    <message>
-        <source> - Flight mode: %1(%2)</source>
-        <translation type="obsolete">- Lennätystila %1(%2)</translation>
-    </message>
-    <message>
-        <source>Simulating Tx (%1)</source>
-        <translation type="obsolete">Simuloi Tx(%1)</translation>
-    </message>
-    <message>
-        <source>Simulating </source>
-        <translation type="obsolete">Simuloidaan</translation>
     </message>
 </context>
 </TS>

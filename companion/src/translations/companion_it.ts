@@ -773,10 +773,6 @@ Può essere differente dalla lingua del firmware</translation>
         <translation>Stick 4</translation>
     </message>
     <message>
-        <source>Battery</source>
-        <translation type="obsolete">Batteria</translation>
-    </message>
-    <message>
         <location filename="../generaledit/calibration.ui" line="577"/>
         <source>v</source>
         <translation>v</translation>
@@ -795,10 +791,6 @@ Può essere differente dalla lingua del firmware</translation>
         <location filename="../generaledit/calibration.ui" line="696"/>
         <source>PPM 4</source>
         <translation>PPM 4</translation>
-    </message>
-    <message>
-        <source>Current</source>
-        <translation type="obsolete">Corrente</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="567"/>
@@ -1062,298 +1054,6 @@ Può essere differente dalla lingua del firmware</translation>
         <translation>Modello senza nome</translation>
     </message>
     <message>
-        <source>General Model Settings</source>
-        <translation type="obsolete">Impostazioni generali del modello</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nome</translation>
-    </message>
-    <message>
-        <source>EEprom Size</source>
-        <translation type="obsolete">Dimensione in EEprom</translation>
-    </message>
-    <message>
-        <source>Timer1</source>
-        <translation type="obsolete">Temporizzatore 1</translation>
-    </message>
-    <message>
-        <source>Timer2</source>
-        <translation type="obsolete">Temporizzatore 2</translation>
-    </message>
-    <message>
-        <source>Internal Radio System</source>
-        <translation type="obsolete">Sistema Radio interno</translation>
-    </message>
-    <message>
-        <source>Radio System</source>
-        <translation type="obsolete">Sistema Radio</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protocollo</translation>
-    </message>
-    <message>
-        <source>External Radio Module</source>
-        <translation type="obsolete">Modulo radio Esterno</translation>
-    </message>
-    <message>
-        <source>Extra Radio System</source>
-        <translation type="obsolete">Sistema radio esteso</translation>
-    </message>
-    <message>
-        <source>Trainer port mode</source>
-        <translation type="obsolete">Modalità porta Maestro/Allievo</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Trim Motore</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Abilitato</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Disabilitato</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Incremento del Trim</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Avviso centraggio</translation>
-    </message>
-    <message>
-        <source>Flight modes Settings</source>
-        <translation type="obsolete">Impostazioni Fasi di Volo</translation>
-    </message>
-    <message>
-        <source>Fades</source>
-        <translation type="obsolete">Transizioni</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Trims</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Interruttore</translation>
-    </message>
-    <message>
-        <source>Flight mode name</source>
-        <translation type="obsolete">Nome fase di volo</translation>
-    </message>
-    <message>
-        <source>IN</source>
-        <translation type="obsolete">Ingr.</translation>
-    </message>
-    <message>
-        <source>OUT</source>
-        <translation type="obsolete">Usc.</translation>
-    </message>
-    <message>
-        <source>FM</source>
-        <translation type="obsolete">FV</translation>
-    </message>
-    <message>
-        <source>Gvars</source>
-        <translation type="obsolete">Var Glob</translation>
-    </message>
-    <message>
-        <source>Rot. Enc.</source>
-        <translation type="obsolete">Enc. Rot.</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Limiti</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Spostamento</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Min</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Max</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Inversione</translation>
-    </message>
-    <message>
-        <source>CH</source>
-        <translation type="obsolete">CH</translation>
-    </message>
-    <message>
-        <source>INV</source>
-        <translation type="obsolete">INV</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">NOR</translation>
-    </message>
-    <message>
-        <source>Global Variables</source>
-        <translation type="obsolete">Variabili Globali</translation>
-    </message>
-    <message>
-        <source>GV</source>
-        <translation type="obsolete">VG</translation>
-    </message>
-    <message>
-        <source>Inputs</source>
-        <translation type="obsolete">Ingressi</translation>
-    </message>
-    <message>
-        <source>Expo/Dr Settings</source>
-        <translation type="obsolete">Impostazioni Corsa/Esponenziali</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Peso</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Fasi di volo</translation>
-    </message>
-    <message>
-        <source>Flight mode</source>
-        <translation type="obsolete">Fase di volo</translation>
-    </message>
-    <message>
-        <source>DISABLED</source>
-        <translation type="obsolete">DISABILITATO</translation>
-    </message>
-    <message>
-        <source>Mixers</source>
-        <translation type="obsolete">Miscelazioni</translation>
-    </message>
-    <message>
-        <source>noTrim</source>
-        <translation type="obsolete">noTrim</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete"> Ritarda(s%1:g%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Rallenta(s%1:g%2)</translation>
-    </message>
-    <message>
-        <source>Warn</source>
-        <translation type="obsolete">Avviso</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Curve</translation>
-    </message>
-    <message>
-        <source>L%1</source>
-        <translation type="obsolete">L%1</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Curva</translation>
-    </message>
-    <message>
-        <source>Logical Switches</source>
-        <translation type="obsolete">Interruttori logici</translation>
-    </message>
-    <message>
-        <source>L</source>
-        <translation type="obsolete">L</translation>
-    </message>
-    <message>
-        <source>Special Functions</source>
-        <translation type="obsolete">Funzioni speciali</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Funzione</translation>
-    </message>
-    <message>
-        <source>Param</source>
-        <translation type="obsolete">Parametro</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="obsolete">Ripeti</translation>
-    </message>
-    <message>
-        <source>Enable</source>
-        <translation type="obsolete">Abilita</translation>
-    </message>
-    <message>
-        <source>SF</source>
-        <translation type="obsolete">SF</translation>
-    </message>
-    <message>
-        <source>Telemetry Settings</source>
-        <translation type="obsolete">Impostazioni telemetria</translation>
-    </message>
-    <message>
-        <source>Analog</source>
-        <translation type="obsolete">Analogico</translation>
-    </message>
-    <message>
-        <source>Unit</source>
-        <translation type="obsolete">Unità</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">Campo di misura</translation>
-    </message>
-    <message>
-        <source>A%1</source>
-        <translation type="obsolete">A%1</translation>
-    </message>
-    <message>
-        <source>Alarm 1</source>
-        <translation type="obsolete">Allarme 1</translation>
-    </message>
-    <message>
-        <source>Alarm 2</source>
-        <translation type="obsolete">Allarme 2</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tipo</translation>
-    </message>
-    <message>
-        <source>Condition</source>
-        <translation type="obsolete">Condizione</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Valore</translation>
-    </message>
-    <message>
-        <source>RSSI Alarm</source>
-        <translation type="obsolete">Allarmi RSSI</translation>
-    </message>
-    <message>
-        <source>Custom Telemetry View</source>
-        <translation type="obsolete">Schermata personalizzata dati telemetrici</translation>
-    </message>
-    <message>
-        <source>Telemetry Bars</source>
-        <translation type="obsolete">Barre Telemetria</translation>
-    </message>
-    <message>
-        <source>Bar Number</source>
-        <translation type="obsolete">Numero Barra</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Sorgente</translation>
-    </message>
-    <message>
         <location filename="../comparedialog.cpp" line="122"/>
         <source>Print Document</source>
         <translation>Stampa documento</translation>
@@ -1408,10 +1108,6 @@ Può essere differente dalla lingua del firmware</translation>
         <location filename="../contributorsdialog.cpp" line="71"/>
         <source>OpenTX Blacklist</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Thank you all !!!</source>
-        <translation type="obsolete">Grazie a tutti !!!</translation>
     </message>
     <message>
         <location filename="../contributorsdialog.cpp" line="102"/>
@@ -1845,21 +1541,6 @@ Può essere differente dalla lingua del firmware</translation>
     </message>
 </context>
 <context>
-    <name>Er9x::Templates</name>
-    <message>
-        <source>V-Tail</source>
-        <translation type="obsolete">Coda a V</translation>
-    </message>
-    <message>
-        <source>THR</source>
-        <translation type="obsolete">MOT</translation>
-    </message>
-    <message>
-        <source>Clear Mixes?</source>
-        <translation type="obsolete">Cancellare le miscelazioni ?</translation>
-    </message>
-</context>
-<context>
     <name>ExpoDialog</name>
     <message>
         <location filename="../modeledit/expodialog.ui" line="98"/>
@@ -1974,22 +1655,6 @@ Se vuoto verrà sempre considerata &quot;Attiva&quot;.</translation>
         <location filename="../modeledit/expodialog.cpp" line="20"/>
         <source>Edit %1</source>
         <translation>Modifica %1</translation>
-    </message>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">Dir</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">Ele</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">Mot</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">Ale</translation>
     </message>
 </context>
 <context>
@@ -2206,10 +1871,6 @@ Può essere differente dalla lingua del firmware</translation>
 %2.</source>
         <translation>Error durante la lettura del file %1:
 %2.</translation>
-    </message>
-    <message>
-        <source>Invalid binary Models and Settings File %1</source>
-        <translation type="obsolete">File binario delle impostazioni non valido %1</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="166"/>
@@ -2579,22 +2240,6 @@ Usate ZADIG per installare correttamente il driver.</translation>
 </context>
 <context>
     <name>FlightModePanel</name>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">Dir</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">Ele</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">Mot</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">Ale</translation>
-    </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="106"/>
         <source>Rotary Encoder %1</source>
@@ -3713,17 +3358,9 @@ Siete sicuri ?</translation>
         <translation>Collettivo</translation>
     </message>
     <message>
-        <source>Elevator</source>
-        <translation type="obsolete">Elevatore</translation>
-    </message>
-    <message>
         <location filename="../modeledit/heli.ui" line="103"/>
         <source>Invert</source>
         <translation>Inversioni</translation>
-    </message>
-    <message>
-        <source>Aileron</source>
-        <translation type="obsolete">Alettoni</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="24"/>
@@ -3829,26 +3466,6 @@ Siete sicuri ?</translation>
         <location filename="../modeledit/inputs.cpp" line="28"/>
         <source>Clear All Inputs</source>
         <translation>Cancella tutti gli ingressi</translation>
-    </message>
-    <message>
-        <source>Source(%1)</source>
-        <translation type="obsolete">Sorgente(%1)</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Peso(%1)</translation>
-    </message>
-    <message>
-        <source>Offset(%1)</source>
-        <translation type="obsolete">Spostamento(%1)</translation>
-    </message>
-    <message>
-        <source>NoTrim</source>
-        <translation type="obsolete">NoTrim</translation>
-    </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Interruttore(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="167"/>
@@ -4330,10 +3947,6 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <translation>Memoria insufficente per tutte le opzioni firmware selezionate</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="550"/>
         <source>The new theme will be loaded the next time you start Companion.</source>
         <translation>Il nuovo tema sarà caricato al prossimo riavvio di Companion.</translation>
@@ -4447,10 +4060,6 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <location filename="../mainwindow.cpp" line="907"/>
         <source>Copyright OpenTX Team</source>
         <translation>Copyright OpenTX Team</translation>
-    </message>
-    <message>
-        <source>OpenTX Companion 2.1 - FW: %1 - Profile: %2</source>
-        <translation type="obsolete">OpenTx Companion 2.1 - FW: %1 - Profilo: %2</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1012"/>
@@ -5393,22 +5002,6 @@ Determina come il valore viene aggiunto alla miscelazione.
         <source>DEST -&gt; CH%1</source>
         <translation>DEST -&gt; CH%1</translation>
     </message>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">Dir</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">Ele</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">Mot</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">Ale</translation>
-    </message>
 </context>
 <context>
     <name>MixesPanel</name>
@@ -5440,38 +5033,6 @@ Determina come il valore viene aggiunto alla miscelazione.
         <location filename="../modeledit/mixes.cpp" line="24"/>
         <source>Clear Mixes</source>
         <translation>Cancella Miscelazioni</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Peso(%1)</translation>
-    </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Interruttore(%1)</translation>
-    </message>
-    <message>
-        <source>NoTrim</source>
-        <translation type="obsolete">NoTrim</translation>
-    </message>
-    <message>
-        <source>No DR/Expo</source>
-        <translation type="obsolete">No DR/Espo</translation>
-    </message>
-    <message>
-        <source>Offset(%1)</source>
-        <translation type="obsolete">Spostamento(%1)</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete"> Ritarda(s%1:g%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Rallenta(s%1:g%2)</translation>
-    </message>
-    <message>
-        <source> Warn(%1)</source>
-        <translation type="obsolete"> Avviso(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="158"/>
@@ -5600,10 +5161,6 @@ Determina come il valore viene aggiunto alla miscelazione.
         <location filename="../modeledit/modeledit.cpp" line="35"/>
         <source>Inputs</source>
         <translation>Ingressi</translation>
-    </message>
-    <message>
-        <source>Servos</source>
-        <translation type="obsolete">Servi</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="40"/>
@@ -5764,10 +5321,6 @@ Determina come il valore viene aggiunto alla miscelazione.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1:%2</source>
-        <translation type="obsolete">%1:%2</translation>
-    </message>
-    <message>
         <location filename="../modelprinter.cpp" line="190"/>
         <source>Persistent</source>
         <translation type="unfinished">Persistente</translation>
@@ -5870,18 +5423,6 @@ Determina come il valore viene aggiunto alla miscelazione.
         <location filename="../modelprinter.cpp" line="381"/>
         <source>Warn(%1)</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Spostamento</translation>
-    </message>
-    <message>
-        <source>Delay</source>
-        <translation type="obsolete">Ritardo</translation>
-    </message>
-    <message>
-        <source>Slow</source>
-        <translation type="obsolete">Rallentamento</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="415"/>
@@ -6545,358 +6086,6 @@ Determina come il valore viene aggiunto alla miscelazione.
         <translation>Stampa su file</translation>
     </message>
     <message>
-        <source>Setup for: </source>
-        <translation type="obsolete">Impostazioni per: </translation>
-    </message>
-    <message>
-        <source>printed on: %1</source>
-        <translation type="obsolete">stampato il: %1</translation>
-    </message>
-    <message>
-        <source>General Model Settings</source>
-        <translation type="obsolete">Impostazioni generali del modello</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nome</translation>
-    </message>
-    <message>
-        <source>EEprom Size</source>
-        <translation type="obsolete">Dimensione in EEprom</translation>
-    </message>
-    <message>
-        <source>Timer1</source>
-        <translation type="obsolete">Temporizzatore 1</translation>
-    </message>
-    <message>
-        <source>Timer2</source>
-        <translation type="obsolete">Temporizzatore 2</translation>
-    </message>
-    <message>
-        <source>Internal Radio System</source>
-        <translation type="obsolete">Sistema Radio interno</translation>
-    </message>
-    <message>
-        <source>Radio System</source>
-        <translation type="obsolete">Sistema Radio</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protocollo</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Trim Motore</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Abilitato</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Disabilitato</translation>
-    </message>
-    <message>
-        <source>External Radio Module</source>
-        <translation type="obsolete">Modulo radio Esterno</translation>
-    </message>
-    <message>
-        <source>Extra Radio System</source>
-        <translation type="obsolete">Sistema radio esteso</translation>
-    </message>
-    <message>
-        <source>Trainer port mode</source>
-        <translation type="obsolete">Modalità porta Maestro/Allievo</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Incremento del Trim</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Avviso centraggio</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Fasi di volo</translation>
-    </message>
-    <message>
-        <source>Fades</source>
-        <translation type="obsolete">Transizioni</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Trims</translation>
-    </message>
-    <message>
-        <source>Gvars</source>
-        <translation type="obsolete">Var Glob</translation>
-    </message>
-    <message>
-        <source>Rot.Enc.</source>
-        <translation type="obsolete">Enc. Rot.</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Int.</translation>
-    </message>
-    <message>
-        <source>Flight mode name</source>
-        <translation type="obsolete">Nome fase di volo</translation>
-    </message>
-    <message>
-        <source>IN</source>
-        <translation type="obsolete">Ingr.</translation>
-    </message>
-    <message>
-        <source>OUT</source>
-        <translation type="obsolete">Usc.</translation>
-    </message>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">Dir</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">Ele</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">Mot</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">Ale</translation>
-    </message>
-    <message>
-        <source>FM</source>
-        <translation type="obsolete">FV</translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation type="obsolete">Spento</translation>
-    </message>
-    <message>
-        <source>Inputs</source>
-        <translation type="obsolete">Ingressi</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Peso</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Sorgente</translation>
-    </message>
-    <message>
-        <source>NoTrim</source>
-        <translation type="obsolete">NoTrim</translation>
-    </message>
-    <message>
-        <source>DISABLED</source>
-        <translation type="obsolete">DISABILITATO</translation>
-    </message>
-    <message>
-        <source>Mixers</source>
-        <translation type="obsolete">Miscelazioni</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Peso(%1)</translation>
-    </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Interruttore(%1)</translation>
-    </message>
-    <message>
-        <source>No DR/Expo</source>
-        <translation type="obsolete">No DR/Espo</translation>
-    </message>
-    <message>
-        <source>Offset(%1)</source>
-        <translation type="obsolete">Spostamento(%1)</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete"> Ritarda(s%1:g%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete"> Rallenta(s%1:g%2)</translation>
-    </message>
-    <message>
-        <source> Warn(%1)</source>
-        <translation type="obsolete"> Avviso(%1)</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Limiti</translation>
-    </message>
-    <message>
-        <source>CH</source>
-        <translation type="obsolete">CH</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Spostamento</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Min</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Max</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Inversione</translation>
-    </message>
-    <message>
-        <source>INV</source>
-        <translation type="obsolete">INV</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">NOR</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Curve</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Curva</translation>
-    </message>
-    <message>
-        <source>pt %1</source>
-        <translation type="obsolete">pt %1</translation>
-    </message>
-    <message>
-        <source>Logical Switches</source>
-        <translation type="obsolete">Interruttori logici</translation>
-    </message>
-    <message>
-        <source>L</source>
-        <translation type="obsolete">L</translation>
-    </message>
-    <message>
-        <source>Global Variables</source>
-        <translation type="obsolete">Variabili Globali</translation>
-    </message>
-    <message>
-        <source>GV</source>
-        <translation type="obsolete">VG</translation>
-    </message>
-    <message>
-        <source>Special Functions</source>
-        <translation type="obsolete">Funzioni speciali</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Funzione</translation>
-    </message>
-    <message>
-        <source>Parameter</source>
-        <translation type="obsolete">Parametro</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="obsolete">Ripeti</translation>
-    </message>
-    <message>
-        <source>SF%1</source>
-        <translation type="obsolete">FS%1</translation>
-    </message>
-    <message>
-        <source>SF</source>
-        <translation type="obsolete">SF</translation>
-    </message>
-    <message>
-        <source>Telemetry Settings</source>
-        <translation type="obsolete">Impostazioni telemetria</translation>
-    </message>
-    <message>
-        <source>Analog</source>
-        <translation type="obsolete">Analogico</translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="obsolete">Intervallo</translation>
-    </message>
-    <message>
-        <source>A%1</source>
-        <translation type="obsolete">A%1</translation>
-    </message>
-    <message>
-        <source>Alarms</source>
-        <translation type="obsolete">Allarmi</translation>
-    </message>
-    <message>
-        <source>Low Alarm</source>
-        <translation type="obsolete">Allarme basso</translation>
-    </message>
-    <message>
-        <source>Critical Alarm</source>
-        <translation type="obsolete">Allarme critico</translation>
-    </message>
-    <message>
-        <source>RSSI</source>
-        <translation type="obsolete">RSSI</translation>
-    </message>
-    <message>
-        <source>Blades</source>
-        <translation type="obsolete">Pale dell&apos;elica</translation>
-    </message>
-    <message>
-        <source>Alarm 1</source>
-        <translation type="obsolete">Allarme 1</translation>
-    </message>
-    <message>
-        <source>Alarm 2</source>
-        <translation type="obsolete">Allarme 2</translation>
-    </message>
-    <message>
-        <source>Unit</source>
-        <translation type="obsolete">Unità</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">Campo di misura</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tipo</translation>
-    </message>
-    <message>
-        <source>Condition</source>
-        <translation type="obsolete">Condizione</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Valore</translation>
-    </message>
-    <message>
-        <source>RSSI Alarm</source>
-        <translation type="obsolete">Allarmi RSSI</translation>
-    </message>
-    <message>
-        <source>Frsky serial protocol</source>
-        <translation type="obsolete">Protocollo seriale FrSky</translation>
-    </message>
-    <message>
-        <source>Custom Telemetry View</source>
-        <translation type="obsolete">Schermata personalizzata dati telemetrici</translation>
-    </message>
-    <message>
-        <source>Telemetry Bars</source>
-        <translation type="obsolete">Barre Telemetria</translation>
-    </message>
-    <message>
-        <source>Bar Number</source>
-        <translation type="obsolete">Barra Numero</translation>
-    </message>
-    <message>
         <location filename="../printdialog.cpp" line="45"/>
         <source>Print Document</source>
         <translation>Stampa documento</translation>
@@ -6940,14 +6129,6 @@ Determina come il valore viene aggiunto alla miscelazione.
 </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>FM%1</source>
-        <translation type="obsolete">FV %1</translation>
-    </message>
-    <message>
-        <source>Input%1</source>
-        <translation type="obsolete">Ingresso%1</translation>
-    </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="278"/>
         <source>Polish</source>
@@ -7723,81 +6904,9 @@ Determina come il valore viene aggiunto alla miscelazione.
         <translation>Non ripetere</translation>
     </message>
     <message>
-        <source>%1 sec</source>
-        <translation type="obsolete">%1 sec</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="794"/>
         <source>Play Both</source>
         <translation>Suana Entrambi</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Peso</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Peso(%1)</translation>
-    </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Interruttore(%1)</translation>
-    </message>
-    <message>
-        <source>NoTrim</source>
-        <translation type="obsolete">NoTrim</translation>
-    </message>
-    <message>
-        <source>No DR/Expo</source>
-        <translation type="obsolete">No DR/Espo</translation>
-    </message>
-    <message>
-        <source>Offset(%1)</source>
-        <translation type="obsolete">Spostamento(%1)</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Spostamento</translation>
-    </message>
-    <message>
-        <source>Delay</source>
-        <translation type="obsolete">Ritardo</translation>
-    </message>
-    <message>
-        <source>Slow</source>
-        <translation type="obsolete">Rallentamento</translation>
-    </message>
-    <message>
-        <source>Warn</source>
-        <translation type="obsolete">Avviso</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Fasi di volo</translation>
-    </message>
-    <message>
-        <source>Flight mode</source>
-        <translation type="obsolete">Fase di volo</translation>
-    </message>
-    <message>
-        <source>Edge(%1, [%2:%3])</source>
-        <translation type="obsolete">Soglia(%1, [%2:%3])</translation>
-    </message>
-    <message>
-        <source>Sticky(%1, %2)</source>
-        <translation type="obsolete">Bloccato(%1, %2)</translation>
-    </message>
-    <message>
-        <source>Timer(%1, %2)</source>
-        <translation type="obsolete">Temporizzatore(%1, %2)</translation>
-    </message>
-    <message>
-        <source> Duration (%1s)</source>
-        <translation type="obsolete"> Durata (%1s)</translation>
-    </message>
-    <message>
-        <source> Delay (%1s)</source>
-        <translation type="obsolete">Ritardo (%1s)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="806"/>
@@ -8011,98 +7120,6 @@ Determina come il valore viene aggiunto alla miscelazione.
         <location filename="../helpers.cpp" line="734"/>
         <source>Metric</source>
         <translation>Sistema Metrico</translation>
-    </message>
-    <message>
-        <source>Extra Fine</source>
-        <translation type="obsolete">Extra Fine</translation>
-    </message>
-    <message>
-        <source>Fine</source>
-        <translation type="obsolete">Fine</translation>
-    </message>
-    <message>
-        <source>Medium</source>
-        <translation type="obsolete">Medio</translation>
-    </message>
-    <message>
-        <source>Coarse</source>
-        <translation type="obsolete">Ampio</translation>
-    </message>
-    <message>
-        <source>%1:%2</source>
-        <translation type="obsolete">%1:%2</translation>
-    </message>
-    <message>
-        <source>, Persistent</source>
-        <translation type="obsolete">, Persistente</translation>
-    </message>
-    <message>
-        <source>, MinuteBeep</source>
-        <translation type="obsolete">, Avviso Minuto</translation>
-    </message>
-    <message>
-        <source>, CountDown(Beeps)</source>
-        <translation type="obsolete">, Conto alla rovescia(Suono)</translation>
-    </message>
-    <message>
-        <source>, CountDown(Voice)</source>
-        <translation type="obsolete">, Conto alla rovescia(Voce)</translation>
-    </message>
-    <message>
-        <source>: Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4</source>
-        <translation type="obsolete">: Canale iniziale: %1, %2 Canali, %3usec Delay, Polarità impulso %4</translation>
-    </message>
-    <message>
-        <source>: Channel start: %1, %2 Channels</source>
-        <translation type="obsolete">: Canale iniziale: %1, %2 Canali</translation>
-    </message>
-    <message>
-        <source>Slave/Jack</source>
-        <translation type="obsolete">Allievo/(Presa)</translation>
-    </message>
-    <message>
-        <source>Master/SBUS Module</source>
-        <translation type="obsolete">Maestro/Modulo SBUS</translation>
-    </message>
-    <message>
-        <source>Master/CPPM Module</source>
-        <translation type="obsolete">Maestro/Modulo CPPM</translation>
-    </message>
-    <message>
-        <source>Master/SBUS in battery compartment</source>
-        <translation type="obsolete">Maestro/SBUS nel compartimento batteria</translation>
-    </message>
-    <message>
-        <source>Master/Jack</source>
-        <translation type="obsolete">Maestro/(presa)</translation>
-    </message>
-    <message>
-        <source>Exponential</source>
-        <translation type="obsolete">Esponenziale</translation>
-    </message>
-    <message>
-        <source>Flight modes(%1)</source>
-        <translation type="obsolete">Fasi di volo(%1)</translation>
-    </message>
-    <message>
-        <source>Flight mode(%1)</source>
-        <translation type="obsolete">Fase di volo(%1)</translation>
-    </message>
-    <message>
-        <source>Rudder</source>
-        <translation type="obsolete">Direzionale</translation>
-    </message>
-    <message>
-        <source>Elevator</source>
-        <translation type="obsolete">Elevatore</translation>
-    </message>
-    <message>
-        <source>Throttle</source>
-        <translation type="obsolete">Motore</translation>
-    </message>
-    <message>
-        <source>Aileron</source>
-        <translation type="obsolete">Alettoni</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="92"/>
@@ -8474,10 +7491,6 @@ Determina come il valore viene aggiunto alla miscelazione.
         <translation>Gestione dell&apos;alimentazione mediante pulsante soft-off</translation>
     </message>
     <message>
-        <source>OpenTX for 9XR-PRO</source>
-        <translation type="obsolete">OpenTX per 9XR-PRO</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1417"/>
         <source>Haptic module installed</source>
         <translation>Modulo vibrazione installato </translation>
@@ -8486,18 +7499,6 @@ Determina come il valore viene aggiunto alla miscelazione.
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1140"/>
         <source>Support for Lua model scripts</source>
         <translation>Supporto degli script LUA</translation>
-    </message>
-    <message>
-        <source>No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)</source>
-        <translation type="obsolete">Nessuna emulazione joystick nel FW (solo memoria di massa come nel Bootloader)</translation>
-    </message>
-    <message>
-        <source>Removes D8 and LR12 FrSky protocols that are not legal for use anymore on radios sold after Jan 1st, 2015</source>
-        <translation type="obsolete">Rimuove i protocolli D8 e LR12, non più supportati dalle radio vendute in EU dopo il 1° gennaio 2015</translation>
-    </message>
-    <message>
-        <source>OpenTX for FrSky Taranis Plus</source>
-        <translation type="obsolete">OpenTx per FrSky Taranis Plus</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1191"/>
@@ -8648,10 +7649,6 @@ Determina come il valore viene aggiunto alla miscelazione.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>OpenTX for MEGA2560 board</source>
-        <translation type="obsolete">OpenTX per scheda MEGA2560</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1430"/>
         <source>Confirmation before radio shutdown</source>
         <translation type="unfinished"></translation>
@@ -8662,22 +7659,10 @@ Determina come il valore viene aggiunto alla miscelazione.
         <translation>Display LCD ST7565R o compatibile</translation>
     </message>
     <message>
-        <source>Used if you have voice module</source>
-        <translation type="obsolete">Utilizzato se il modulo audio è disponibile</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1143"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1339"/>
         <source>Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views</source>
         <translation>Aggiungi la vista delle uscite dei mixer alla schermata Monitor Canali, premendo [ENT] si intervallano le viste</translation>
-    </message>
-    <message>
-        <source>OpenTX for FrSky Taranis</source>
-        <translation type="obsolete">OpenTx per FrSky Taranis</translation>
-    </message>
-    <message>
-        <source>OpenTX for FrSky Taranis X9E</source>
-        <translation type="obsolete">OpenTx per FrSky Taranis X9E</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1304"/>
@@ -8742,16 +7727,6 @@ Determina come il valore viene aggiunto alla miscelazione.
         <translation>Utilizzo dei potenziometri per la navigazione nei menù</translation>
     </message>
     <message>
-        <source>Your radio probably uses a wrong firmware,
- eeprom size is 4096 but only the first 2048 are used</source>
-        <translation type="obsolete">La tua radio probabilmente sta utilizzando un firmware sbagliato,
-la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
-    </message>
-    <message>
-        <source>OpenTX for 9X board</source>
-        <translation type="obsolete">OpenTX for scheda 9X</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1186"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1222"/>
         <source>SmartieParts 2.2 Backlight support</source>
@@ -8792,10 +7767,6 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1410"/>
         <source>Don&apos;t use bold font for highlighting active items</source>
         <translation>Non utilizzare font in grassetto per evidenziare le voci attive</translation>
-    </message>
-    <message>
-        <source>OpenTX for M128 / 9X board</source>
-        <translation type="obsolete">OpenTx per Board M128 / 9X</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1230"/>
@@ -8868,18 +7839,6 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
         <translation>Nel menu settaggio modelli selezionare automaticamente l&apos;interruttore muovendo il controllo</translation>
     </message>
     <message>
-        <source>OpenTX for 9XR</source>
-        <translation type="obsolete">OpenTx per 9xR</translation>
-    </message>
-    <message>
-        <source>OpenTX for 9XR with M128 chip</source>
-        <translation type="obsolete">OpenTx per 9XR con chip M128</translation>
-    </message>
-    <message>
-        <source>OpenTX for Gruvin9x board / 9X</source>
-        <translation type="obsolete">OpenTX per board Gruvin 9x / 9x</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1302"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1332"/>
         <source>Support for SD memory card</source>
@@ -8889,10 +7848,6 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1167"/>
         <source>Support for DSM2 modules using ppm instead of true serial</source>
         <translation>Supporto per moduli DSM2 usando il ppm invece della seriale</translation>
-    </message>
-    <message>
-        <source>OpenTX for Sky9x board / 9X</source>
-        <translation type="obsolete">OpenTX per scheda Sky9x / 9X</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1353"/>
@@ -9083,18 +8038,6 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
         <location filename="../modeledit/setup.cpp" line="753"/>
         <source>RS</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>S4</source>
-        <translation type="obsolete">S4</translation>
-    </message>
-    <message>
-        <source>LS2</source>
-        <translation type="obsolete">LS2</translation>
-    </message>
-    <message>
-        <source>RS2</source>
-        <translation type="obsolete">RS2</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="460"/>
@@ -9513,14 +8456,6 @@ Il Team di OpenTX.</translation>
         <location filename="../radiointerface.cpp" line="296"/>
         <source>Could not delete temporary file: %1</source>
         <translation>Non posso cancellare il file temporaneo: %1</translation>
-    </message>
-    <message>
-        <source>Positive</source>
-        <translation type="obsolete">Positivo</translation>
-    </message>
-    <message>
-        <source>Negative</source>
-        <translation type="obsolete">Negativo</translation>
     </message>
     <message>
         <location filename="../simulator.cpp" line="143"/>
@@ -10002,11 +8937,6 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
         <translation>Copia %1 su %2</translation>
     </message>
     <message>
-        <source>Read %1
-</source>
-        <translation type="obsolete">Leggi %1</translation>
-    </message>
-    <message>
         <location filename="../process_sync.cpp" line="123"/>
         <source>Write %1
 </source>
@@ -10343,14 +9273,6 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
         <location filename="../modeledit/telemetry_analog.ui" line="319"/>
         <source>mAmps (mA)</source>
         <translation>Corrente (mA)</translation>
-    </message>
-    <message>
-        <source>Low Alarm</source>
-        <translation type="obsolete">Allarme basso</translation>
-    </message>
-    <message>
-        <source>Critical Alarm</source>
-        <translation type="obsolete">Allarme critico</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="42"/>
@@ -10711,82 +9633,14 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Amps Sensor :</source>
-        <translation type="obsolete">Sensore corrente :</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="364"/>
         <source>Raw (-)</source>
         <translation>Grezza (-)</translation>
     </message>
     <message>
-        <source>Voltage (V)</source>
-        <translation type="obsolete">Voltaggio (V)</translation>
-    </message>
-    <message>
-        <source>Current (A)</source>
-        <translation type="obsolete">Corrente (A)</translation>
-    </message>
-    <message>
-        <source>Current (mA)</source>
-        <translation type="obsolete">Corrente (mA)</translation>
-    </message>
-    <message>
-        <source>Speed (kts)</source>
-        <translation type="obsolete">Velocità (kts)</translation>
-    </message>
-    <message>
-        <source>Speed (m/s)</source>
-        <translation type="obsolete">Velocità (m/s)</translation>
-    </message>
-    <message>
-        <source>Speed (ft/s)</source>
-        <translation type="obsolete">Velocità (ft/s)</translation>
-    </message>
-    <message>
-        <source>Speed (km/h)</source>
-        <translation type="obsolete">Velocità (km/h)</translation>
-    </message>
-    <message>
-        <source>Speed (miles/h)</source>
-        <translation type="obsolete">Velocità (miglia/h)</translation>
-    </message>
-    <message>
-        <source>Meters (m)</source>
-        <translation type="obsolete">Metri (m)</translation>
-    </message>
-    <message>
-        <source>Feet (ft)</source>
-        <translation type="obsolete">Piedi (ft)</translation>
-    </message>
-    <message>
-        <source>Percentage (%)</source>
-        <translation type="obsolete">Percentuale (%)</translation>
-    </message>
-    <message>
-        <source>Energy (mAh)</source>
-        <translation type="obsolete">Energia (mAh)</translation>
-    </message>
-    <message>
-        <source>Power (W)</source>
-        <translation type="obsolete">Potenza (W)</translation>
-    </message>
-    <message>
-        <source>RF Power (dBm)</source>
-        <translation type="obsolete">Potenza RF (dBm)</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="449"/>
         <source>RPM</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>Acceleration (g)</source>
-        <translation type="obsolete">Accelerazione (g)</translation>
-    </message>
-    <message>
-        <source>Heading (°)</source>
-        <translation type="obsolete">Rotta (°)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="483"/>
@@ -10797,10 +9651,6 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
         <location filename="../modeledit/telemetry_sensor.ui" line="515"/>
         <source>Ratio</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="obsolete">Campo</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="522"/>
@@ -11843,37 +10693,6 @@ m2560 per le schede v4.1</translation>
     </message>
 </context>
 <context>
-    <name>contributorsDialog</name>
-    <message>
-        <source>People who have contributed to this project</source>
-        <translation type="obsolete">Persone che hanno contribuito a questo progetto</translation>
-    </message>
-    <message>
-        <source>Coders</source>
-        <translation type="obsolete">Programmatori e grafici</translation>
-    </message>
-    <message>
-        <source>Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)</source>
-        <translation type="obsolete">Un sentito ringraziamento è dovuto a Rafal Tomczak (RadioClone), Thomas Husterer (th9x) e Erez Raviv (er9x e eePe)</translation>
-    </message>
-    <message>
-        <source>Companion Release Notes</source>
-        <translation type="obsolete">Note di aggiornamento di Companion</translation>
-    </message>
-    <message>
-        <source>Thank you all !!!</source>
-        <translation type="obsolete">Grazie a tutti !!!</translation>
-    </message>
-    <message>
-        <source>Contributors</source>
-        <translation type="obsolete">Amici e Programmatori </translation>
-    </message>
-    <message>
-        <source>OpenTX Release Notes</source>
-        <translation type="obsolete">informazioni su aggiornamenti OpenTX</translation>
-    </message>
-</context>
-<context>
     <name>customizeSplashDialog</name>
     <message>
         <location filename="../customizesplashdialog.ui" line="23"/>
@@ -12247,107 +11066,6 @@ Premere annulla per cancellare l&apos;operazione</translation>
         <location filename="../simulation/joystickdialog.cpp" line="131"/>
         <source>Duplicated stick assignment</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Duplicated stick assignement</source>
-        <translation type="obsolete">Assegnamento stick duplicato</translation>
-    </message>
-</context>
-<context>
-    <name>logsDialog</name>
-    <message>
-        <source>Companion Log Viewer</source>
-        <translation type="obsolete">Visualizzatore di Log di Companion</translation>
-    </message>
-    <message>
-        <source>Filename</source>
-        <translation type="obsolete">Nome file</translation>
-    </message>
-    <message>
-        <source>Open LogFile</source>
-        <translation type="obsolete">Apri file di log</translation>
-    </message>
-    <message>
-        <source>Zoom</source>
-        <translation type="obsolete">Ingrandimento</translation>
-    </message>
-    <message>
-        <source>X</source>
-        <translation type="obsolete">X</translation>
-    </message>
-    <message>
-        <source>Y</source>
-        <translation type="obsolete">Y</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation type="obsolete">Ripristina</translation>
-    </message>
-    <message>
-        <source>Fly sessions</source>
-        <translation type="obsolete">Sessioni di volo</translation>
-    </message>
-    <message>
-        <source>Telemetry logs</source>
-        <translation type="obsolete">Log telemetrici</translation>
-    </message>
-    <message>
-        <source>Time (hh:mm:ss)</source>
-        <translation type="obsolete">Tempo</translation>
-    </message>
-    <message>
-        <source>Plot Title Change</source>
-        <translation type="obsolete">Cambia titolo del grafico</translation>
-    </message>
-    <message>
-        <source>New plot title:</source>
-        <translation type="obsolete">Nuovo titolo del grafico:</translation>
-    </message>
-    <message>
-        <source>Axis Label Change</source>
-        <translation type="obsolete">Cambia etichetta asse</translation>
-    </message>
-    <message>
-        <source>New axis label:</source>
-        <translation type="obsolete">Nuova etichetta:</translation>
-    </message>
-    <message>
-        <source>Graph Name Change</source>
-        <translation type="obsolete">Cambia nome del grafico</translation>
-    </message>
-    <message>
-        <source>New graph name:</source>
-        <translation type="obsolete">Nuovo nome del grafico:</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Errore</translation>
-    </message>
-    <message>
-        <source>Cannot write file %1:
-%2.</source>
-        <translation type="obsolete">Non posso scrivere il file %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Select your log file</source>
-        <translation type="obsolete">Selezionare il file di log</translation>
-    </message>
-    <message>
-        <source>Available fields</source>
-        <translation type="obsolete">Campi disponibili</translation>
-    </message>
-    <message>
-        <source>The selected logfile contains %1 invalid lines out of  %2 total lines</source>
-        <translation type="obsolete">Il file di log selezionato contiene %1 righe errate su un totale di %2 righe</translation>
-    </message>
-    <message>
-        <source>total duration </source>
-        <translation type="obsolete">durata totale</translation>
-    </message>
-    <message>
-        <source>duration </source>
-        <translation type="obsolete">durata</translation>
     </message>
 </context>
 <context>
