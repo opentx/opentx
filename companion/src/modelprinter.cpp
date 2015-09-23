@@ -376,7 +376,7 @@ QString ModelPrinter::printMixerLine(const MixData & mix, bool showMultiplex, in
   if (mix.delayDown || mix.delayUp)
     str += " " + Qt::escape(tr("Delay(u%1:d%2)").arg((double)mix.delayUp/scale).arg((double)mix.delayDown/scale));
   if (mix.speedDown || mix.speedUp)
-    str += " " + Qt::escape(tr("Slow((u%1:d%2)").arg((double)mix.speedUp/scale).arg((double)mix.speedDown/scale));
+    str += " " + Qt::escape(tr("Slow(u%1:d%2)").arg((double)mix.speedUp/scale).arg((double)mix.speedDown/scale));
   if (mix.mixWarn)
     str += " " + Qt::escape(tr("Warn(%1)").arg(mix.mixWarn));
   if (firmware->getCapability(HasMixerNames) && mix.name[0]) 

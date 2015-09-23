@@ -773,10 +773,6 @@ Puede ser diferente del lenguaje del firmware</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Battery</source>
-        <translation type="obsolete">Bateria</translation>
-    </message>
-    <message>
         <location filename="../generaledit/calibration.ui" line="577"/>
         <source>v</source>
         <translation type="unfinished"></translation>
@@ -795,10 +791,6 @@ Puede ser diferente del lenguaje del firmware</translation>
         <location filename="../generaledit/calibration.ui" line="696"/>
         <source>PPM 4</source>
         <translation type="unfinished">PPM 4</translation>
-    </message>
-    <message>
-        <source>Current</source>
-        <translation type="obsolete">Actual</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.ui" line="567"/>
@@ -1062,310 +1054,6 @@ Puede ser diferente del lenguaje del firmware</translation>
         <translation>Sin nombre</translation>
     </message>
     <message>
-        <source>General Model Settings</source>
-        <translation type="obsolete">Ajustes generales del modelo</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nombre</translation>
-    </message>
-    <message>
-        <source>EEprom Size</source>
-        <translation type="obsolete">Tamaño EEprom</translation>
-    </message>
-    <message>
-        <source>Timer1</source>
-        <translation type="obsolete">Temporizador1</translation>
-    </message>
-    <message>
-        <source>Timer2</source>
-        <translation type="obsolete">Temporizador 2</translation>
-    </message>
-    <message>
-        <source>Internal Radio System</source>
-        <translation type="obsolete">Sistema Interno de Radio</translation>
-    </message>
-    <message>
-        <source>Radio System</source>
-        <translation type="obsolete">Sistema de Radio</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protocolo</translation>
-    </message>
-    <message>
-        <source>Pulse Polarity</source>
-        <translation type="obsolete">Polaridad del pulso</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Trim Acelerador</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Activado</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Desactivado</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Expo Acelerador</translation>
-    </message>
-    <message>
-        <source>External Radio Module</source>
-        <translation type="obsolete">Modulo externo de Radio</translation>
-    </message>
-    <message>
-        <source>Extra Radio System</source>
-        <translation type="obsolete">Extra Sistema de Radio</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Incremento Trim</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Centro Beep</translation>
-    </message>
-    <message>
-        <source>Flight modes Settings</source>
-        <translation type="obsolete">Ajustes modos de vuelo</translation>
-    </message>
-    <message>
-        <source>Fades</source>
-        <translation type="obsolete">Fades</translation>
-    </message>
-    <message>
-        <source>Trims</source>
-        <translation type="obsolete">Trims</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Switch</translation>
-    </message>
-    <message>
-        <source>Flight mode name</source>
-        <translation type="obsolete">Nombre del modo de vuelo</translation>
-    </message>
-    <message>
-        <source>IN</source>
-        <translation type="obsolete">IN</translation>
-    </message>
-    <message>
-        <source>OUT</source>
-        <translation type="obsolete">OUT</translation>
-    </message>
-    <message>
-        <source>FM</source>
-        <translation type="obsolete">FM</translation>
-    </message>
-    <message>
-        <source>Gvars</source>
-        <translation type="obsolete">Gvars</translation>
-    </message>
-    <message>
-        <source>Rot. Enc.</source>
-        <translation type="obsolete">Rot. Enc.</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Limites</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="obsolete">Offset</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">Min</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">Max</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Invertir</translation>
-    </message>
-    <message>
-        <source>CH</source>
-        <translation type="obsolete">H</translation>
-    </message>
-    <message>
-        <source>INV</source>
-        <translation type="obsolete">INV</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">NOR</translation>
-    </message>
-    <message>
-        <source>Global Variables</source>
-        <translation type="obsolete">Variables globales</translation>
-    </message>
-    <message>
-        <source>GV</source>
-        <translation type="obsolete">GV</translation>
-    </message>
-    <message>
-        <source>Inputs</source>
-        <translation type="obsolete">Entradas</translation>
-    </message>
-    <message>
-        <source>Expo/Dr Settings</source>
-        <translation type="obsolete">Expo/Dr Ajustes</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Carga</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Modos de vuelo</translation>
-    </message>
-    <message>
-        <source>Flight mode</source>
-        <translation type="obsolete">Modo de vuelo</translation>
-    </message>
-    <message>
-        <source>DISABLED</source>
-        <translation type="obsolete">Desactivado</translation>
-    </message>
-    <message>
-        <source>Mixers</source>
-        <translation type="obsolete">Mezclas</translation>
-    </message>
-    <message>
-        <source>noTrim</source>
-        <translation type="obsolete">noTrim</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete">Retrasar(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete">Lento(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source>Warn</source>
-        <translation type="obsolete">Aviso</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Curvas</translation>
-    </message>
-    <message>
-        <source>5 Point Curves</source>
-        <translation type="obsolete">Curvas de 5 puntos</translation>
-    </message>
-    <message>
-        <source>pt %1</source>
-        <translation type="obsolete">pt %1</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Curva</translation>
-    </message>
-    <message>
-        <source>9 Point Curves</source>
-        <translation type="obsolete">Curvas de 9 puntos</translation>
-    </message>
-    <message>
-        <source>Logical Switches</source>
-        <translation type="obsolete">Switches lógicos</translation>
-    </message>
-    <message>
-        <source>LS</source>
-        <translation type="obsolete">LS</translation>
-    </message>
-    <message>
-        <source>Special Functions</source>
-        <translation type="obsolete">Funciones especiales</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Función</translation>
-    </message>
-    <message>
-        <source>Param</source>
-        <translation type="obsolete">Param</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="obsolete">Repetir</translation>
-    </message>
-    <message>
-        <source>Enable</source>
-        <translation type="obsolete">Activado</translation>
-    </message>
-    <message>
-        <source>SF</source>
-        <translation type="obsolete">SF</translation>
-    </message>
-    <message>
-        <source>Telemetry Settings</source>
-        <translation type="obsolete">Ajustes Telemetría</translation>
-    </message>
-    <message>
-        <source>Analog</source>
-        <translation type="obsolete">Analógico</translation>
-    </message>
-    <message>
-        <source>Unit</source>
-        <translation type="obsolete">Unidad</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">Escala</translation>
-    </message>
-    <message>
-        <source>A%1</source>
-        <translation type="obsolete">A%1</translation>
-    </message>
-    <message>
-        <source>Alarm 1</source>
-        <translation type="obsolete">Alarma 1</translation>
-    </message>
-    <message>
-        <source>Alarm 2</source>
-        <translation type="obsolete">Alarma 2</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tipo</translation>
-    </message>
-    <message>
-        <source>Condition</source>
-        <translation type="obsolete">Condición</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Valor</translation>
-    </message>
-    <message>
-        <source>RSSI Alarm</source>
-        <translation type="obsolete">Alarma RSSI</translation>
-    </message>
-    <message>
-        <source>Custom Telemetry View</source>
-        <translation type="obsolete">Vistas personalizadas de telemetría</translation>
-    </message>
-    <message>
-        <source>Telemetry Bars</source>
-        <translation type="obsolete">Barras Telemetría</translation>
-    </message>
-    <message>
-        <source>Bar Number</source>
-        <translation type="obsolete">Numero Barra</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Origen</translation>
-    </message>
-    <message>
         <location filename="../comparedialog.cpp" line="122"/>
         <source>Print Document</source>
         <translation>Imprimir documento</translation>
@@ -1420,10 +1108,6 @@ Puede ser diferente del lenguaje del firmware</translation>
         <location filename="../contributorsdialog.cpp" line="71"/>
         <source>OpenTX Blacklist</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Thank you all !!!</source>
-        <translation type="obsolete">¡¡Gracias a todos!!</translation>
     </message>
     <message>
         <location filename="../contributorsdialog.cpp" line="102"/>
@@ -1623,10 +1307,6 @@ Puede ser diferente del lenguaje del firmware</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Are you sure you want to reset curve %1 ?</source>
-        <translation type="obsolete">¿Estas seguro que quieres reiniciar la curva %1?</translation>
-    </message>
-    <message>
         <location filename="../modeledit/curves.cpp" line="287"/>
         <source>Editing curve %1</source>
         <translation>Edición de curva %1</translation>
@@ -1685,42 +1365,42 @@ Puede ser diferente del lenguaje del firmware</translation>
         <translation>¡No se ha encontrado el archivo de sonido %1!</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="592"/>
+        <location filename="../modeledit/customfunctions.cpp" line="595"/>
         <source>&amp;Delete</source>
         <translation>&amp;Borrar</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="592"/>
+        <location filename="../modeledit/customfunctions.cpp" line="595"/>
         <source>Delete</source>
         <translation>Borrar</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="589"/>
+        <location filename="../modeledit/customfunctions.cpp" line="592"/>
         <source>&amp;Copy</source>
         <translation>&amp;Copiar</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="589"/>
+        <location filename="../modeledit/customfunctions.cpp" line="592"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="590"/>
+        <location filename="../modeledit/customfunctions.cpp" line="593"/>
         <source>&amp;Cut</source>
         <translation>C&amp;ortar</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="590"/>
+        <location filename="../modeledit/customfunctions.cpp" line="593"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="591"/>
+        <location filename="../modeledit/customfunctions.cpp" line="594"/>
         <source>&amp;Paste</source>
         <translation>&amp;Pegar</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="591"/>
+        <location filename="../modeledit/customfunctions.cpp" line="594"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
@@ -1757,6 +1437,97 @@ Puede ser diferente del lenguaje del firmware</translation>
     </message>
 </context>
 <context>
+    <name>EepromInterface</name>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1657"/>
+        <source>Possible causes for this:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1659"/>
+        <source>- Eeprom is from a newer version of OpenTX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1660"/>
+        <source>- Eeprom is not from OpenTX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1661"/>
+        <source>- Eeprom is not from Th9X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1662"/>
+        <source>- Eeprom is not from Gruvin9X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1663"/>
+        <source>- Eeprom is not from ErSky9X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1664"/>
+        <source>- Eeprom is not from Er9X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1665"/>
+        <source>- Eeprom size is invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1666"/>
+        <source>- Eeprom file system is invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1667"/>
+        <source>- Eeprom is from a unknown board</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1668"/>
+        <source>- Eeprom is from the wrong board</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1669"/>
+        <source>- Eeprom backup not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1671"/>
+        <source>- Something that couldn&apos;t be guessed, sorry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1674"/>
+        <source>Warning:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1675"/>
+        <location filename="../eeprominterface.cpp" line="1691"/>
+        <source>- Your radio probably uses a wrong firmware,
+ eeprom size is 4096 but only the first 2048 are used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1692"/>
+        <source>- Your eeprom is from an old version of OpenTX, upgrading!
+ You should &apos;save as&apos; to keep the old file as a backup.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="1697"/>
+        <source>Warnings!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ElevonsPage</name>
     <message>
         <location filename="../wizarddialog.cpp" line="625"/>
@@ -1767,223 +1538,6 @@ Puede ser diferente del lenguaje del firmware</translation>
         <location filename="../wizarddialog.cpp" line="627"/>
         <source>Second Elevon Channel:</source>
         <translation>Segundo canal de Elevon:</translation>
-    </message>
-</context>
-<context>
-    <name>Er9x::Templates</name>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="39"/>
-        <source>Simple 4-CH</source>
-        <translation type="unfinished">4-CH Simples</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="40"/>
-        <source>T-Cut</source>
-        <translation type="unfinished">Corte de Gas</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="41"/>
-        <source>Sticky T-Cut</source>
-        <translation type="unfinished">Stick Corte de Gas</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="42"/>
-        <source>V-Tail</source>
-        <translation type="unfinished">Cola-V</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="43"/>
-        <source>Elevon\Delta</source>
-        <translation type="unfinished">Elevon\Delta</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="44"/>
-        <source>Heli Setup</source>
-        <translation type="unfinished">Configuración Heli</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="45"/>
-        <source>Heli Setup with gyro gain control</source>
-        <translation type="unfinished">Configuración Heli con control de ganancia de gyro</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="46"/>
-        <source>Gyro gain control</source>
-        <translation type="unfinished">Control ganancia gyro</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="47"/>
-        <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished">Configuración Heli (Asignación de canales estilo Futaba)</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="48"/>
-        <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished">Configuracion Heli con control de ganancia de gyro (Asignación de canales estilo Futaba)</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="49"/>
-        <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished">Control ganancia de gyro (Asignación de canales estilo Futaba)</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="50"/>
-        <source>Servo Test</source>
-        <translation type="unfinished">Servo Test</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="51"/>
-        <source>MultiCopter</source>
-        <translation type="unfinished">Multicóptero</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="52"/>
-        <source>Use Model Config Wizard</source>
-        <translation type="unfinished">Usar asistente de configuración de modelo</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="81"/>
-        <source>Apply Template?</source>
-        <translation type="unfinished">¿Aplicar plantilla?</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="81"/>
-        <source>Apply template &quot;%1&quot;?</source>
-        <translation type="unfinished">¿Aplicar plantilla &quot;%1&quot;?</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="169"/>
-        <location filename="../modeledit/templates.cpp" line="176"/>
-        <location filename="../modeledit/templates.cpp" line="288"/>
-        <location filename="../modeledit/templates.cpp" line="313"/>
-        <location filename="../modeledit/templates.cpp" line="356"/>
-        <location filename="../modeledit/templates.cpp" line="358"/>
-        <location filename="../modeledit/templates.cpp" line="487"/>
-        <source>RUD</source>
-        <translation type="unfinished">RUD</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="171"/>
-        <location filename="../modeledit/templates.cpp" line="178"/>
-        <location filename="../modeledit/templates.cpp" line="280"/>
-        <location filename="../modeledit/templates.cpp" line="284"/>
-        <location filename="../modeledit/templates.cpp" line="306"/>
-        <location filename="../modeledit/templates.cpp" line="310"/>
-        <location filename="../modeledit/templates.cpp" line="363"/>
-        <location filename="../modeledit/templates.cpp" line="365"/>
-        <location filename="../modeledit/templates.cpp" line="478"/>
-        <location filename="../modeledit/templates.cpp" line="479"/>
-        <source>ELE</source>
-        <translation type="unfinished">ELE</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="181"/>
-        <location filename="../modeledit/templates.cpp" line="352"/>
-        <location filename="../modeledit/templates.cpp" line="474"/>
-        <source>THR</source>
-        <translation type="unfinished">THR</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="197"/>
-        <location filename="../modeledit/templates.cpp" line="281"/>
-        <location filename="../modeledit/templates.cpp" line="285"/>
-        <location filename="../modeledit/templates.cpp" line="305"/>
-        <location filename="../modeledit/templates.cpp" line="309"/>
-        <location filename="../modeledit/templates.cpp" line="388"/>
-        <location filename="../modeledit/templates.cpp" line="482"/>
-        <location filename="../modeledit/templates.cpp" line="483"/>
-        <source>AIL</source>
-        <translation type="unfinished">AIL</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="204"/>
-        <location filename="../modeledit/templates.cpp" line="210"/>
-        <location filename="../modeledit/templates.cpp" line="395"/>
-        <location filename="../modeledit/templates.cpp" line="401"/>
-        <source>AIL2</source>
-        <translation type="unfinished">AIL2</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="217"/>
-        <location filename="../modeledit/templates.cpp" line="223"/>
-        <location filename="../modeledit/templates.cpp" line="408"/>
-        <location filename="../modeledit/templates.cpp" line="414"/>
-        <source>ELE2</source>
-        <translation type="unfinished">ELE2</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="227"/>
-        <location filename="../modeledit/templates.cpp" line="228"/>
-        <location filename="../modeledit/templates.cpp" line="418"/>
-        <location filename="../modeledit/templates.cpp" line="419"/>
-        <location filename="../modeledit/templates.cpp" line="513"/>
-        <location filename="../modeledit/templates.cpp" line="514"/>
-        <source>FLAPS</source>
-        <translation type="unfinished">FLAPS</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="242"/>
-        <location filename="../modeledit/templates.cpp" line="248"/>
-        <location filename="../modeledit/templates.cpp" line="433"/>
-        <location filename="../modeledit/templates.cpp" line="439"/>
-        <location filename="../modeledit/templates.cpp" line="528"/>
-        <location filename="../modeledit/templates.cpp" line="534"/>
-        <source>FLAP%1</source>
-        <translation type="unfinished">FLAP%1</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="282"/>
-        <location filename="../modeledit/templates.cpp" line="286"/>
-        <location filename="../modeledit/templates.cpp" line="307"/>
-        <location filename="../modeledit/templates.cpp" line="311"/>
-        <source>PITCH</source>
-        <translation type="unfinished">PITCH</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="295"/>
-        <location filename="../modeledit/templates.cpp" line="296"/>
-        <location filename="../modeledit/templates.cpp" line="299"/>
-        <location filename="../modeledit/templates.cpp" line="300"/>
-        <location filename="../modeledit/templates.cpp" line="320"/>
-        <location filename="../modeledit/templates.cpp" line="321"/>
-        <location filename="../modeledit/templates.cpp" line="324"/>
-        <location filename="../modeledit/templates.cpp" line="325"/>
-        <source>GYRO</source>
-        <translation type="unfinished">GYRO</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="443"/>
-        <location filename="../modeledit/templates.cpp" line="444"/>
-        <source>SPOIL</source>
-        <translation type="unfinished">SPOIL</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="458"/>
-        <location filename="../modeledit/templates.cpp" line="464"/>
-        <source>SPOIL%1</source>
-        <translation type="unfinished">SPOIL%1</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="503"/>
-        <location filename="../modeledit/templates.cpp" line="509"/>
-        <source>RUD2</source>
-        <translation type="unfinished">RUD2</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="712"/>
-        <location filename="../modeledit/templates.cpp" line="824"/>
-        <source>Clear Mixes?</source>
-        <translation type="unfinished">¿Limpiar mezclas?</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="712"/>
-        <source>Really clear existing mixes on CH6?</source>
-        <translation type="unfinished">¿Seguro que quieres limpiar la mezcla en CH6?</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/templates.cpp" line="824"/>
-        <source>Really clear existing mixes on CH5?</source>
-        <translation type="unfinished">¿Seguro que quieres limpiar la mezcla en CH5?</translation>
     </message>
 </context>
 <context>
@@ -2102,22 +1656,6 @@ Si está en blanco entonces las entradas son consideradas como ON todo el tiempo
         <source>Edit %1</source>
         <translation>Editar %1</translation>
     </message>
-    <message>
-        <source>Rud</source>
-        <translation type="obsolete">Rud</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">Ele</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">Thr</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">Ail</translation>
-    </message>
 </context>
 <context>
     <name>FblPage</name>
@@ -2219,7 +1757,7 @@ Puede ser diferente del lenguaje del firmware</translation>
     <name>FlashEEpromDialog</name>
     <message>
         <location filename="../flasheepromdialog.ui" line="26"/>
-        <location filename="../flasheepromdialog.cpp" line="297"/>
+        <location filename="../flasheepromdialog.cpp" line="299"/>
         <source>Write Models and Settings to Radio</source>
         <translation type="unfinished">Escribir Modelos y Ajustes a la Radio</translation>
     </message>
@@ -2293,14 +1831,14 @@ Puede ser diferente del lenguaje del firmware</translation>
         <location filename="../flasheepromdialog.cpp" line="101"/>
         <location filename="../flasheepromdialog.cpp" line="111"/>
         <location filename="../flasheepromdialog.cpp" line="121"/>
-        <location filename="../flasheepromdialog.cpp" line="129"/>
-        <location filename="../flasheepromdialog.cpp" line="143"/>
-        <location filename="../flasheepromdialog.cpp" line="152"/>
-        <location filename="../flasheepromdialog.cpp" line="157"/>
-        <location filename="../flasheepromdialog.cpp" line="164"/>
-        <location filename="../flasheepromdialog.cpp" line="280"/>
-        <location filename="../flasheepromdialog.cpp" line="284"/>
-        <location filename="../flasheepromdialog.cpp" line="290"/>
+        <location filename="../flasheepromdialog.cpp" line="130"/>
+        <location filename="../flasheepromdialog.cpp" line="144"/>
+        <location filename="../flasheepromdialog.cpp" line="153"/>
+        <location filename="../flasheepromdialog.cpp" line="158"/>
+        <location filename="../flasheepromdialog.cpp" line="166"/>
+        <location filename="../flasheepromdialog.cpp" line="282"/>
+        <location filename="../flasheepromdialog.cpp" line="286"/>
+        <location filename="../flasheepromdialog.cpp" line="292"/>
         <source>Error</source>
         <translation type="unfinished">Error</translation>
     </message>
@@ -2312,75 +1850,75 @@ Puede ser diferente del lenguaje del firmware</translation>
     <message>
         <location filename="../flasheepromdialog.cpp" line="111"/>
         <location filename="../flasheepromdialog.cpp" line="121"/>
-        <location filename="../flasheepromdialog.cpp" line="152"/>
+        <location filename="../flasheepromdialog.cpp" line="153"/>
         <source>Error opening file %1:
 %2.</source>
         <translation type="unfinished">Error abriendo el archivo %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../flasheepromdialog.cpp" line="129"/>
-        <location filename="../flasheepromdialog.cpp" line="143"/>
+        <location filename="../flasheepromdialog.cpp" line="130"/>
+        <location filename="../flasheepromdialog.cpp" line="144"/>
         <source>Invalid Models and Settings File %1</source>
         <translation type="unfinished">Archivo de Modelos y Ajustes inválido %1</translation>
     </message>
     <message>
-        <location filename="../flasheepromdialog.cpp" line="157"/>
+        <location filename="../flasheepromdialog.cpp" line="158"/>
         <source>Error reading file %1:
 %2.</source>
         <translation type="unfinished">Error leyendo el archivo %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../flasheepromdialog.cpp" line="164"/>
+        <location filename="../flasheepromdialog.cpp" line="166"/>
         <source>Invalid Models and Settings file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../flasheepromdialog.cpp" line="213"/>
-        <location filename="../flasheepromdialog.cpp" line="258"/>
-        <location filename="../flasheepromdialog.cpp" line="328"/>
-        <location filename="../flasheepromdialog.cpp" line="332"/>
+        <location filename="../flasheepromdialog.cpp" line="215"/>
+        <location filename="../flasheepromdialog.cpp" line="260"/>
+        <location filename="../flasheepromdialog.cpp" line="330"/>
+        <location filename="../flasheepromdialog.cpp" line="334"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../flasheepromdialog.cpp" line="213"/>
+        <location filename="../flasheepromdialog.cpp" line="215"/>
         <source>Wrong radio calibration data in profile, Settings not patched</source>
         <translation type="unfinished">Datos de calibración de radio incorrectos en el perfil, ajustes no corregidos</translation>
     </message>
     <message>
-        <location filename="../flasheepromdialog.cpp" line="258"/>
+        <location filename="../flasheepromdialog.cpp" line="260"/>
         <source>Wrong radio setting data in profile, Settings not patched</source>
         <translation type="unfinished">Datos de ajustes de radio incorrectos en el perfil, ajustes no corregidos</translation>
     </message>
     <message>
-        <location filename="../flasheepromdialog.cpp" line="280"/>
-        <location filename="../flasheepromdialog.cpp" line="284"/>
+        <location filename="../flasheepromdialog.cpp" line="282"/>
+        <location filename="../flasheepromdialog.cpp" line="286"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation type="unfinished">No se puede escribir el archivo %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../flasheepromdialog.cpp" line="290"/>
+        <location filename="../flasheepromdialog.cpp" line="292"/>
         <source>Error writing file %1:
 %2.</source>
         <translation type="unfinished">Error escribiendo el archivo %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../flasheepromdialog.cpp" line="328"/>
+        <location filename="../flasheepromdialog.cpp" line="330"/>
         <source>The radio firmware belongs to another product family, check file and preferences!</source>
         <translation type="unfinished">El firmware de la radio pertenece a otro producto, ¡comprueba el archivo y las preferencias!</translation>
     </message>
     <message>
-        <location filename="../flasheepromdialog.cpp" line="332"/>
+        <location filename="../flasheepromdialog.cpp" line="334"/>
         <source>The radio firmware is outdated, please upgrade!</source>
         <translation type="unfinished">El firmware de la radio está obsoleto, ¡por favor actializalo!</translation>
     </message>
     <message>
-        <location filename="../flasheepromdialog.cpp" line="337"/>
+        <location filename="../flasheepromdialog.cpp" line="339"/>
         <source>Cannot check Models and Settings compatibility! Continue anyway?</source>
         <translation type="unfinished">¡No se pueden comprobar la compatibilidad de Modelos y Ajustes! ¿Continuar de todas maneras?</translation>
     </message>
@@ -2698,22 +2236,6 @@ Please use ZADIG to properly install the driver.</source>
 <context>
     <name>FlightModePanel</name>
     <message>
-        <source>Rud</source>
-        <translation type="obsolete">Rud</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation type="obsolete">Ele</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation type="obsolete">Thr</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation type="obsolete">Ail</translation>
-    </message>
-    <message>
         <location filename="../modeledit/flightmodes.cpp" line="106"/>
         <source>Rotary Encoder %1</source>
         <translation>Codificador Rotativo %1</translation>
@@ -2889,129 +2411,9 @@ Estos puede ser relevantes para todos los modelos en el mismo EEPROM.</translati
         <translation>Configuración</translation>
     </message>
     <message>
-        <source>Contrast</source>
-        <translation type="obsolete">Contraste</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;LCD Screen Contrast&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Values can be 20-45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Contraste de la pantalla LCD&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Los valores pueden ser 20-45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Battery Warning</source>
-        <translation type="obsolete">Aviso de Bateria</translation>
-    </message>
-    <message>
-        <source>Battery warning voltage.
-This is the threashhold where the battery warning sounds.
-
-Acceptable values are 5v..10v</source>
-        <translation type="obsolete">Voltaje de aviso de la batería.
-Este es el umbral cuando la batería emite sonidos de aviso.
-
-Los valores aceptables son 5v..10v</translation>
-    </message>
-    <message>
-        <source>This is the switch selectrion for turning on the backlight (if installed).
-
-</source>
-        <translation type="obsolete">Este es el switch seleccionado para encender la pantalla (si está instalada).
-
-</translation>
-    </message>
-    <message>
-        <source>If this value is not 0, any keypress will turn on the backlight and turn it off after the specified number of seconds.</source>
-        <translation type="obsolete">Si este valor no es 0, cualquier pulsación encenderá la pantalla y se apagará despues de un número determinado de segundos.</translation>
-    </message>
-    <message>
-        <source> sec</source>
-        <translation type="obsolete">seg</translation>
-    </message>
-    <message>
-        <source>Inactivity Timer</source>
-        <translation type="obsolete">Tiempo de inactividad</translation>
-    </message>
-    <message>
-        <source>If not zero will sound beeps if the transmitter has been left without inputs for the specified number of minutes.</source>
-        <translation type="obsolete">Si no es cero emitirá sonidos si el transmisor de deja sin pulsaciones surante el numero específico de minutos.</translation>
-    </message>
-    <message>
-        <source> min</source>
-        <translation type="obsolete">min</translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation type="obsolete">Apagado</translation>
-    </message>
-    <message>
         <location filename="../generaledit/generaledit.cpp" line="44"/>
         <source>Trainer</source>
         <translation>Trainer</translation>
-    </message>
-    <message>
-        <source>PPM 1</source>
-        <translation type="obsolete">PPM 1</translation>
-    </message>
-    <message>
-        <source>Mode</source>
-        <translation type="obsolete">Modo</translation>
-    </message>
-    <message>
-        <source>Sound Mode</source>
-        <translation type="obsolete">Modo sonido</translation>
-    </message>
-    <message>
-        <source>Speaker Pitch (spkr only)</source>
-        <translation type="obsolete">Tono del altavoz (solo altavoz)</translation>
-    </message>
-    <message>
-        <source>Only Alarms</source>
-        <translation type="obsolete">Solo Alarmas</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation type="obsolete">Todo</translation>
-    </message>
-    <message>
-        <source>Beeper Length</source>
-        <translation type="obsolete">Longitud del beeper</translation>
-    </message>
-    <message>
-        <source>X-Short</source>
-        <translation type="obsolete">X-Corto</translation>
-    </message>
-    <message>
-        <source>Short</source>
-        <translation type="obsolete">Corto</translation>
-    </message>
-    <message>
-        <source>X-Long</source>
-        <translation type="obsolete">X-Largo</translation>
-    </message>
-    <message>
-        <source>Haptic Mode</source>
-        <translation type="obsolete">Modo Haptic</translation>
-    </message>
-    <message>
-        <source>Alarms Only</source>
-        <translation type="obsolete">Solo Alarmas</translation>
-    </message>
-    <message>
-        <source>Haptic Length</source>
-        <translation type="obsolete">Longitud Haptic</translation>
-    </message>
-    <message>
-        <source>GPS Coordinates</source>
-        <translation type="obsolete">Coordenadas GPS</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.ui" line="84"/>
@@ -3022,358 +2424,6 @@ Los valores aceptables son 5v..10v</translation>
         <location filename="../generaledit/generaledit.ui" line="55"/>
         <source>Retrieve calib. and hw settings from profile</source>
         <translation>Recuperar calib. y los ajustes de hw de un perfil</translation>
-    </message>
-    <message>
-        <source>Speaker</source>
-        <translation type="obsolete">Altavoz</translation>
-    </message>
-    <message>
-        <source>BeeperVoice</source>
-        <translation type="obsolete">BeeperVoz</translation>
-    </message>
-    <message>
-        <source>SpeakerVoice</source>
-        <translation type="obsolete">VozAltavoz</translation>
-    </message>
-    <message>
-        <source>Timeshift from UTC</source>
-        <translation type="obsolete">Zona horaria UTC</translation>
-    </message>
-    <message>
-        <source>LCD Display Type</source>
-        <translation type="obsolete">Tipo de Pantalla LCD</translation>
-    </message>
-    <message>
-        <source>Standard</source>
-        <translation type="obsolete">Estandar</translation>
-    </message>
-    <message>
-        <source>Speaker Volume</source>
-        <translation type="obsolete">Volumen Altavoz</translation>
-    </message>
-    <message>
-        <source>Haptic Strength</source>
-        <translation type="obsolete">Fuerza de Haptic</translation>
-    </message>
-    <message>
-        <source>RotEnc Navigation</source>
-        <translation type="obsolete">Navegación RotEnc</translation>
-    </message>
-    <message>
-        <source>Country Code</source>
-        <translation type="obsolete">Codigo País</translation>
-    </message>
-    <message>
-        <source>Japan</source>
-        <translation type="obsolete">Japón</translation>
-    </message>
-    <message>
-        <source>Europe</source>
-        <translation type="obsolete">Europa</translation>
-    </message>
-    <message>
-        <source>MAVLink Baud Rate</source>
-        <translation type="obsolete">Transferencia Baud MAVLink</translation>
-    </message>
-    <message>
-        <source>Voice Language</source>
-        <translation type="obsolete">Lenguaje de la voz</translation>
-    </message>
-    <message>
-        <source>Measurement Units</source>
-        <translation type="obsolete">Unidades de Medida</translation>
-    </message>
-    <message>
-        <source>Beep volume</source>
-        <translation type="obsolete">Volumen Beep</translation>
-    </message>
-    <message>
-        <source>Wav volume</source>
-        <translation type="obsolete">Volumen Wav</translation>
-    </message>
-    <message>
-        <source>Vario volume</source>
-        <translation type="obsolete">Volumen Vario</translation>
-    </message>
-    <message>
-        <source>Background volume</source>
-        <translation type="obsolete">Volumen de Fondo</translation>
-    </message>
-    <message>
-        <source>If you enable FAI, you loose the vario, the play functions, the telemetry screen. This function cannot be disabled by the radio.</source>
-        <translation type="obsolete">Si activas FAI, perderás el vario, las funciones de reproducción, la pantalla de telemetría. Esta función no se puede desactivar en la radio.</translation>
-    </message>
-    <message>
-        <source>Vario pitch at zero</source>
-        <translation type="obsolete">Tono de vario a cero</translation>
-    </message>
-    <message>
-        <source>Backlight Brightness</source>
-        <translation type="obsolete">Brillo pantalla</translation>
-    </message>
-    <message>
-        <source>Backlight  Auto OFF after</source>
-        <translation type="obsolete">Apagado automático de pantalla después</translation>
-    </message>
-    <message>
-        <source>Backlight color</source>
-        <translation type="obsolete">Color de pantalla</translation>
-    </message>
-    <message>
-        <source>Backlight Switch</source>
-        <translation type="obsolete">Switch de pantalla</translation>
-    </message>
-    <message>
-        <source>Stick reverse (order as above)</source>
-        <translation type="obsolete">Reverso de Sticks (ordenado como sigue)</translation>
-    </message>
-    <message>
-        <source>Default Channel Order</source>
-        <translation type="obsolete">Orden Perderterminado de Canales</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Orden de canales&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Define el orden prederterminado de las mezclas creadas en un nuevo modelo.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Play Delay (switch mid position)</source>
-        <translation type="obsolete">Retardo de Play (switch en posición media)</translation>
-    </message>
-    <message>
-        <source>Backlight flash on alarm</source>
-        <translation type="obsolete">Pantalla parpadea con una alarma</translation>
-    </message>
-    <message>
-        <source>OFF</source>
-        <translation type="obsolete">APAGADO</translation>
-    </message>
-    <message>
-        <source>S-Port Mirror</source>
-        <translation type="obsolete">S-Port Espejo</translation>
-    </message>
-    <message>
-        <source>Debug</source>
-        <translation type="obsolete">Depurar</translation>
-    </message>
-    <message>
-        <source>Serial Port</source>
-        <translation type="obsolete">Puerto Serie</translation>
-    </message>
-    <message>
-        <source>FAI Mode</source>
-        <translation type="obsolete">Modo FAI</translation>
-    </message>
-    <message>
-        <source>Metric</source>
-        <translation type="obsolete">Métrico</translation>
-    </message>
-    <message>
-        <source>Readonly Unlock</source>
-        <translation type="obsolete">Desactivar solo lectura</translation>
-    </message>
-    <message>
-        <source>&quot;No Sound&quot; Warning</source>
-        <translation type="obsolete">Aviso &quot;Sin Sonido&quot;</translation>
-    </message>
-    <message>
-        <source>Low Memory Warning</source>
-        <translation type="obsolete">Aviso Memoria Baja</translation>
-    </message>
-    <message>
-        <source>Vario pitch at max</source>
-        <translation type="obsolete">Tono de vario al max</translation>
-    </message>
-    <message>
-        <source>Vario repeat at zero</source>
-        <translation type="obsolete">Vario repite a cero</translation>
-    </message>
-    <message>
-        <source>Input</source>
-        <translation type="obsolete">Entrada</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Peso</translation>
-    </message>
-    <message>
-        <source>:= (Replace)</source>
-        <translation type="obsolete">:= (Reemplazar)</translation>
-    </message>
-    <message>
-        <source>Negative span</source>
-        <translation type="obsolete">Amplitud negativa</translation>
-    </message>
-    <message>
-        <source>Mid value</source>
-        <translation type="obsolete">Valor medio</translation>
-    </message>
-    <message>
-        <source>Positive span</source>
-        <translation type="obsolete">Amplitud positiva</translation>
-    </message>
-    <message>
-        <source>Current</source>
-        <translation type="obsolete">Actual</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="obsolete">Ninguno</translation>
-    </message>
-    <message>
-        <source>Multipos Switch</source>
-        <translation type="obsolete">Switch Multipos</translation>
-    </message>
-    <message>
-        <source>S1 Type</source>
-        <translation type="obsolete">Tipo S1</translation>
-    </message>
-    <message>
-        <source>S2 Type</source>
-        <translation type="obsolete">Tipo S2</translation>
-    </message>
-    <message>
-        <source>Battery</source>
-        <translation type="obsolete">Bateria</translation>
-    </message>
-    <message>
-        <source>PPM Multiplier</source>
-        <translation type="obsolete">Multiplicador PPM</translation>
-    </message>
-    <message>
-        <source>Quiet</source>
-        <translation type="obsolete">Silencio</translation>
-    </message>
-    <message>
-        <source>No Keys</source>
-        <translation type="obsolete">Sin teclas</translation>
-    </message>
-    <message>
-        <source>Long</source>
-        <translation type="obsolete">Largo</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Warnings&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These will define startup warnings.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Throttle warning - will alert if the throttle is not at idle during startup&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Switch warning - will alert if switches are not in their defaul position&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Memory warning - will alert if there&apos;s not a lot of memory left&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Silent mode warning - will alert you if the beeper is set to quiet (0)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Avisos&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Esto define los avisos al inicio.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Aviso de acelerador - te alertará sin el gas no esta en la posición inactiva&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Aviso de Switch - tealertará si los switches no están en su posición prederterminada&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Aviso de memoria - te alertará si no hay suficiente memoria libre&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Aviso de silencio - te alertará si el beeper está en modo silencio (0)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Beeper Mode</source>
-        <translation type="obsolete">Modo Beeper</translation>
-    </message>
-    <message>
-        <source>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</source>
-        <translation type="obsolete">Volumen Beeper
-
-0 - Silencio.  Ningun tipo de beep.
-1 - Sin teclas.  Los beeps suenan normal pero las teclas de menu no sonarán.
-2 - Normal.
-3 - Alto.
-4 - Extra Alto.</translation>
-    </message>
-    <message>
-        <source>Stick Mode</source>
-        <translation type="obsolete">Modo Stick</translation>
-    </message>
-    <message>
-        <source>Mode selection:
-
-Mode 1:
-  Left stick:  Elevator, Rudder
-  Right stick:  Throttle, Aileron
-
-Mode 2:
-  Left stick:  Throttle, Rudder
-  Right stick:  Elevator, Aileron
-
-Mode 3:
-  Left stick:  Elevator, Aileron
-  Right stick:  Throttle, Rudder
-
-Mode 4:
-  Left stick:  Throttle, Aileron
-  Right stick:  Elevator, Rudder
-
-</source>
-        <translation type="obsolete">Selección de Modo:
-
-Modo 1:
-  Stick Izquierdo:  Elevador, Timón
-  Stick Derecho:  Acelerador, Alerón
-
-Modo 2:
-  Stick Izquierdo:  Acelerador, Timón
-  Stick Derecho:  Elevador, Alerón
-
-Modo 3:
-  Stick Izquierdo:  Elevador, Alerón
-  Stick Derecho:  Acelerador, Timón
-
-Modo 4:
-  Stick Izquierdo:  Acelerador, Alerón
-  Stick Derecho:  Elevador, Timón
-
-</translation>
-    </message>
-    <message>
-        <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="obsolete">Modo 1 (RUD ELE THR AIL)</translation>
-    </message>
-    <message>
-        <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="obsolete">Modo 2  (RUD THR ELE AIL)</translation>
-    </message>
-    <message>
-        <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="obsolete">Modo 3 (AIL ELE THR RUD)</translation>
-    </message>
-    <message>
-        <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="obsolete">Modo 4 (AIL THR ELE RUD)</translation>
-    </message>
-    <message>
-        <source>Show Splash Screen on Startup</source>
-        <translation type="obsolete">Mostrar Pantalla de Inicio al Enceder</translation>
-    </message>
-    <message>
-        <source>Show splash screen on startup</source>
-        <translation type="obsolete">Mostrar pantalla de inicio al encender</translation>
-    </message>
-    <message>
-        <source>Calibration</source>
-        <translation type="obsolete">Calibración</translation>
-    </message>
-    <message>
-        <source>If you enable FAI, you loose the vario, the play functions, the telemetry screen.
-This function cannot be disabled by the radio.
-Are you sure ?</source>
-        <translation type="obsolete">Si activas FAI, perderás el vario, las funciones de reproducción, la pantalla de telemetría.
-Esta función no se puede desactivar en la radio.
-¿Estas seguro?</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="42"/>
@@ -4256,17 +3306,9 @@ Esta función no se puede desactivar en la radio.
         <translation>Invertir Colectivo</translation>
     </message>
     <message>
-        <source>Elevator</source>
-        <translation type="obsolete">Profundidad</translation>
-    </message>
-    <message>
         <location filename="../modeledit/heli.ui" line="103"/>
         <source>Invert</source>
         <translation>Invertir</translation>
-    </message>
-    <message>
-        <source>Aileron</source>
-        <translation type="obsolete">Aleron</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="24"/>
@@ -4372,14 +3414,6 @@ Esta función no se puede desactivar en la radio.
         <location filename="../modeledit/inputs.cpp" line="28"/>
         <source>Clear All Inputs</source>
         <translation>Limpiar Todas las entradas</translation>
-    </message>
-    <message>
-        <source>Source(%1)</source>
-        <translation type="obsolete">Origen(%1)</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Peso(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="167"/>
@@ -4778,53 +3812,9 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <translation>Leer los Modelos y Ajustes de la Radio</translation>
     </message>
     <message>
-        <source>Write Radio Backup from %1 to the radio?</source>
-        <translation type="obsolete">¿Escribir una copia de seguridad desde %1 a la radio?</translation>
-    </message>
-    <message>
-        <source>Backup Models and Settings From Radio</source>
-        <translation type="obsolete">Copia de Seguridad de Modelos y ajustes desde la Radio</translation>
-    </message>
-    <message>
-        <source>The radio firmware belongs to another product family, check file and preferences!</source>
-        <translation type="obsolete">El firmware de la radio pertenece a otro producto, ¡comprueba el archivo y las preferencias!</translation>
-    </message>
-    <message>
-        <source>The radio firmware is outdated, please upgrade!</source>
-        <translation type="obsolete">El firmware de la radio está obsoleto, ¡por favor actializalo!</translation>
-    </message>
-    <message>
-        <source>Write Backup To Radio</source>
-        <translation type="obsolete">Escribir Copia de Seguridad a la Radio</translation>
-    </message>
-    <message>
-        <source>Write Firmware To Radio</source>
-        <translation type="obsolete">Escribir Firmware a la Radio</translation>
-    </message>
-    <message>
-        <source>Restore Models and Settings To Radio</source>
-        <translation type="obsolete">Restaurar Modelos y ajustes a la Radio</translation>
-    </message>
-    <message>
-        <source>Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1</source>
-        <translation type="obsolete">No se ha podido restaurar los Modelos y Ajustes a la Radio. Los datos de los modelos y ajustes se pueden encontrar en: %1</translation>
-    </message>
-    <message>
-        <source>Could not write firmware to radio. The models and settings data file can be found at: %1</source>
-        <translation type="obsolete">No se ha podido escribir el firmware a la Radio. Los datos de los modelos y ajustes se pueden encontrar en: %1</translation>
-    </message>
-    <message>
-        <source>Cannot backup existing Models and Settings from Radio. Firmware write process aborted</source>
-        <translation type="obsolete">No se puede realizar una copia de seguridad de los Modelos y Ajustes existentes desde la Radio. Proceso de escritura de firmware abortado</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="846"/>
         <source>Save Radio Backup to File</source>
         <translation>Guardar Copia deSeguridad de la Radio a un Archivo</translation>
-    </message>
-    <message>
-        <source>Read Radio Backup</source>
-        <translation type="obsolete">Leer Copia de Seguridad de la Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="855"/>
@@ -4920,36 +3910,6 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <translation>EL firmware actual no proporciona notas de la versión.</translation>
     </message>
     <message>
-        <source>Cannot write file %1:
-%2.</source>
-        <translation type="obsolete">No se puede escribir el archivo %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Backup is impossible</source>
-        <translation type="obsolete">Copia de Seguridad imposible</translation>
-    </message>
-    <message>
-        <source>The backup dir set in preferences does not exist</source>
-        <translation type="obsolete">El directorio de la copia de seguridad establecido en las preferencias no existe</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Atención</translation>
-    </message>
-    <message>
-        <source>Conversion failed</source>
-        <translation type="obsolete">Coversion fallida</translation>
-    </message>
-    <message>
-        <source>Restore failed</source>
-        <translation type="obsolete">Restauración fallida</translation>
-    </message>
-    <message>
-        <source>Backup failed</source>
-        <translation type="obsolete">Copia de seguridad fallida</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1012"/>
         <source>New</source>
         <translation>Nuevo</translation>
@@ -5035,16 +3995,6 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <translation>Nueva Radio</translation>
     </message>
     <message>
-        <source>Unable to find file %1!</source>
-        <translation type="obsolete">¡No se ha encontrado el archivo %1!</translation>
-    </message>
-    <message>
-        <source>Error reading file %1:
-%2.</source>
-        <translation type="obsolete">Error leyendo el archivo %1:
-%2.</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="296"/>
         <source>A new version of Companion is available (version %1)&lt;br&gt;Would you like to download it?</source>
         <translation>Una nueva versión de Companion está disponible (versión %1),&lt;br&gt;¿Te gustaría descargarla?</translation>
@@ -5065,10 +4015,6 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <translation>El lenguaje seleccionado podrá ser usado la próxima vez que inicies Companion.</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="550"/>
         <source>The new theme will be loaded the next time you start Companion.</source>
         <translation>El nuevo tema será cargado la próxima vez que inicies Companion.</translation>
@@ -5077,26 +4023,6 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <location filename="../mainwindow.cpp" line="556"/>
         <source>The icon size will be used the next time you start Companion.</source>
         <translation>El tamaño de los iconos será usado la próxima vez que inicies Companion.</translation>
-    </message>
-    <message>
-        <source>The file %1
-has not been recognized as a valid Models and Settings file
-Write anyway ?</source>
-        <translation type="obsolete">El Archivo %1
-no se ha reconocido como un archivo valido de Modelo y Ajustes
-¿Escribir de todas maneras?</translation>
-    </message>
-    <message>
-        <source>Cannot check Models and Settings compatibility! Continue anyway?</source>
-        <translation type="obsolete">¡No se pueden comprobar la compatibilidad de Modelos y Ajustes! ¿Continuar de todas maneras?</translation>
-    </message>
-    <message>
-        <source>Cannot convert Models and Settings for use with this firmware, original data will be used</source>
-        <translation type="obsolete">No se pueden convertir los Modelos y Ajustes para usar con este firmware, se usarán los datos originales</translation>
-    </message>
-    <message>
-        <source>Firmware write failed</source>
-        <translation type="obsolete">Escritura de firmware fallida</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="910"/>
@@ -5159,37 +4085,9 @@ no se ha reconocido como un archivo valido de Modelo y Ajustes
         <translation>Extra Grande</translation>
     </message>
     <message>
-        <source>OpenTX Companion - FW: %1 - Profile: %2</source>
-        <translation type="obsolete">OpenTX Companion - FW: %1 - Perfil: %2</translation>
-    </message>
-    <message>
-        <source>Firmware %1 does not seem to have ever been downloaded.
-Release %2 is available.
-Do you want to download it now?</source>
-        <translation type="obsolete">El firmaware %1 parace que no se ha descargado.
-La versión %2 está disponible.
-¿Quieres descargarla ahora?</translation>
-    </message>
-    <message>
-        <source>A new version of %1 firmware is available:
-  - current is %2
-  - newer is %3
-
-Do you want to download it now ?</source>
-        <translation type="obsolete">Una nueva versión de %1 firmware está disponible:
-  -la actual es %2
-  -la nueva es %3
-
-¿Quieres descargarla ahora?</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="490"/>
         <source>Ignore this release %1?</source>
         <translation>¿Ignorar esta versión %1?</translation>
-    </message>
-    <message>
-        <source>Read Firmware From Radio</source>
-        <translation type="obsolete">Leer el Firmware desde la Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="901"/>
@@ -5655,14 +4553,6 @@ We recommend you view the release notes using the button below to learn about an
         <translation>Selecciona el Tamaño de Iconos</translation>
     </message>
     <message>
-        <source>Invalid Models and Settings File %1</source>
-        <translation type="obsolete">Archivo de Modelos y Ajustes inválido %1</translation>
-    </message>
-    <message>
-        <source>Invalid binary Models and Settings File %1</source>
-        <translation type="obsolete">Archivo binario inválido de Modelos y Ajustes %1</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1088"/>
         <location filename="../mainwindow.cpp" line="1219"/>
         <source>File</source>
@@ -5713,22 +4603,22 @@ We recommend you view the release notes using the button below to learn about an
         <location filename="../mdichild.cpp" line="235"/>
         <location filename="../mdichild.cpp" line="244"/>
         <location filename="../mdichild.cpp" line="257"/>
-        <location filename="../mdichild.cpp" line="288"/>
-        <location filename="../mdichild.cpp" line="298"/>
-        <location filename="../mdichild.cpp" line="313"/>
-        <location filename="../mdichild.cpp" line="325"/>
-        <location filename="../mdichild.cpp" line="334"/>
-        <location filename="../mdichild.cpp" line="406"/>
-        <location filename="../mdichild.cpp" line="412"/>
-        <location filename="../mdichild.cpp" line="421"/>
-        <location filename="../mdichild.cpp" line="433"/>
-        <location filename="../mdichild.cpp" line="442"/>
-        <location filename="../mdichild.cpp" line="447"/>
-        <location filename="../mdichild.cpp" line="522"/>
-        <location filename="../mdichild.cpp" line="577"/>
-        <location filename="../mdichild.cpp" line="585"/>
-        <location filename="../mdichild.cpp" line="596"/>
-        <location filename="../mdichild.cpp" line="605"/>
+        <location filename="../mdichild.cpp" line="289"/>
+        <location filename="../mdichild.cpp" line="300"/>
+        <location filename="../mdichild.cpp" line="316"/>
+        <location filename="../mdichild.cpp" line="328"/>
+        <location filename="../mdichild.cpp" line="340"/>
+        <location filename="../mdichild.cpp" line="416"/>
+        <location filename="../mdichild.cpp" line="422"/>
+        <location filename="../mdichild.cpp" line="431"/>
+        <location filename="../mdichild.cpp" line="443"/>
+        <location filename="../mdichild.cpp" line="452"/>
+        <location filename="../mdichild.cpp" line="457"/>
+        <location filename="../mdichild.cpp" line="532"/>
+        <location filename="../mdichild.cpp" line="587"/>
+        <location filename="../mdichild.cpp" line="595"/>
+        <location filename="../mdichild.cpp" line="606"/>
+        <location filename="../mdichild.cpp" line="616"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
@@ -5739,13 +4629,13 @@ We recommend you view the release notes using the button below to learn about an
     </message>
     <message>
         <location filename="../mdichild.cpp" line="235"/>
-        <location filename="../mdichild.cpp" line="577"/>
+        <location filename="../mdichild.cpp" line="587"/>
         <source>Unable to find file %1!</source>
         <translation>¡No es posible encontrar el archivo %1!</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="326"/>
-        <location filename="../mdichild.cpp" line="597"/>
+        <location filename="../mdichild.cpp" line="329"/>
+        <location filename="../mdichild.cpp" line="607"/>
         <source>Error reading file %1:
 %2.</source>
         <translation>Error leyendo el archivo %1:
@@ -5759,106 +4649,82 @@ We recommend you view the release notes using the button below to learn about an
     <message>
         <location filename="../mdichild.cpp" line="245"/>
         <location filename="../mdichild.cpp" line="258"/>
-        <location filename="../mdichild.cpp" line="314"/>
-        <location filename="../mdichild.cpp" line="586"/>
+        <location filename="../mdichild.cpp" line="317"/>
+        <location filename="../mdichild.cpp" line="596"/>
         <source>Error opening file %1:
 %2.</source>
         <translation>Error abriendo el archivo %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="289"/>
-        <location filename="../mdichild.cpp" line="299"/>
+        <location filename="../mdichild.cpp" line="290"/>
+        <location filename="../mdichild.cpp" line="300"/>
         <source>Invalid EEPROM File %1</source>
         <translation>Archivo EEPROM inválido %1</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="335"/>
+        <location filename="../mdichild.cpp" line="340"/>
         <source>Invalid binary EEPROM File %1</source>
         <translation>Archivo binario EEPROM inválido %1</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="367"/>
-        <location filename="../mdichild.cpp" line="369"/>
-        <location filename="../mdichild.cpp" line="375"/>
         <location filename="../mdichild.cpp" line="377"/>
+        <location filename="../mdichild.cpp" line="379"/>
+        <location filename="../mdichild.cpp" line="385"/>
+        <location filename="../mdichild.cpp" line="387"/>
         <source>Save As</source>
         <translation>Guardar Como</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="406"/>
-        <location filename="../mdichild.cpp" line="412"/>
-        <location filename="../mdichild.cpp" line="421"/>
-        <location filename="../mdichild.cpp" line="433"/>
+        <location filename="../mdichild.cpp" line="416"/>
+        <location filename="../mdichild.cpp" line="422"/>
+        <location filename="../mdichild.cpp" line="431"/>
+        <location filename="../mdichild.cpp" line="443"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>No se puede escribir el archivo %1:
 %2.</translation>
     </message>
     <message>
-        <source>Backup EEPROM From Radio</source>
-        <translation type="obsolete">Copia de seguridad del EEPROM desde la radio</translation>
-    </message>
-    <message>
-        <source>Write EEPROM To Radio</source>
-        <translation type="obsolete">Escribir EEPROM a la Radio</translation>
-    </message>
-    <message>
-        <location filename="../mdichild.cpp" line="571"/>
+        <location filename="../mdichild.cpp" line="581"/>
         <source>Open backup Models and Settings file</source>
         <translation>Abrir archivo de copia de seguridad de Modelos y Ajustes</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="482"/>
+        <location filename="../mdichild.cpp" line="492"/>
         <source>Companion</source>
         <translation>Companion</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="483"/>
+        <location filename="../mdichild.cpp" line="493"/>
         <source>%1 has been modified.
 Do you want to save your changes?</source>
         <translation>%1 ha sido modificado.
 ¿Quieres guardar los cambios?</translation>
     </message>
     <message>
-        <source>Backup is impossible</source>
-        <translation type="obsolete">Copia de seguidad imposible</translation>
-    </message>
-    <message>
-        <source>The backup dir set in preferences does not exist</source>
-        <translation type="obsolete">El directorio de la copia de seguridad ajustado en las preferencias no existe</translation>
-    </message>
-    <message>
-        <source>Cannot check eeprom compatibility! Continue anyway?</source>
-        <translation type="obsolete">¡No se puede comprobar la compatibilidad del eeprom! ¿Continuar de todas formas?</translation>
-    </message>
-    <message>
+        <location filename="../mdichild.cpp" line="304"/>
+        <location filename="../mdichild.cpp" line="344"/>
+        <location filename="../mdichild.cpp" line="347"/>
+        <location filename="../mdichild.cpp" line="620"/>
         <source>Warning</source>
-        <translation type="obsolete">Aviso</translation>
+        <translation type="unfinished">Aviso</translation>
     </message>
     <message>
-        <source>Firmware in radio is of a different family of eeprom written, check file and preferences!</source>
-        <translation type="obsolete">El firmware en la radio pertenece a otra familia de eeprom, ¡comprueba el archivo y las preferencias!</translation>
-    </message>
-    <message>
-        <source>Firmware in flash is outdated, please upgrade!</source>
-        <translation type="obsolete">El firmware está obsoleto, ¡por favor actualízalo!</translation>
-    </message>
-    <message>
-        <location filename="../mdichild.cpp" line="606"/>
+        <location filename="../mdichild.cpp" line="616"/>
         <source>Invalid binary backup File %1</source>
         <translation>Archivo binariode copia de seguridad inválido %1</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="442"/>
-        <location filename="../mdichild.cpp" line="447"/>
+        <location filename="../mdichild.cpp" line="452"/>
+        <location filename="../mdichild.cpp" line="457"/>
         <source>Error writing file %1:
 %2.</source>
         <translation>Error escribiendo el archivo %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="522"/>
+        <location filename="../mdichild.cpp" line="532"/>
         <source>Cannot write temporary file!</source>
         <translation>¡No se puede escribir el archivo temporal!</translation>
     </message>
@@ -6058,30 +4924,6 @@ Esto determina como los valores de mezcla son añadidos.
         <translation>Arriba</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Delay and slow&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These values control the speed and delay of the output of the mix.  &lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Delay is not zero the actuation of the mix will be delayed by the specified amount of seconds.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Slow is not zero then the speed of the mix will be set by the value specified -&amp;gt; the value states the number of seconds it takes to transit from -100 to 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Retardo y lento&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Estos valores controlan la velocidad y retardo de la salida de la mezcla.  &lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Si Retardo no es cero la actuación de la mezcla será retrasada por el número específico de segundos.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Si Lento no es cero entoonces la velocidad de la mezcla será la ajustada por el valor específico-&amp;gt; el valor comprende el número de segundos que toma en hacer el recorrido de -100 a 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../modeledit/mixerdialog.ui" line="56"/>
         <source>Down</source>
         <translation>Abajo</translation>
@@ -6122,30 +4964,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/mixes.cpp" line="24"/>
         <source>Clear Mixes</source>
         <translation>Limpiar mezclas</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Carga(%1)</translation>
-    </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Switch(%1)</translation>
-    </message>
-    <message>
-        <source>NoTrim</source>
-        <translation type="obsolete">noTrim</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete">Retrasar(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete">Lento(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Warn(%1)</source>
-        <translation type="obsolete">Aviso(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="158"/>
@@ -6310,304 +5128,280 @@ p, li { white-space: pre-wrap; }
         <source>Simulate</source>
         <translation>Simular</translation>
     </message>
-    <message>
-        <source>Clear Curves?</source>
-        <translation type="obsolete">¿Limpiar curvas?</translation>
-    </message>
-    <message>
-        <source>Really clear all the curves?</source>
-        <translation type="obsolete">¿Seguro que quieres limpiar todas las curvas?</translation>
-    </message>
 </context>
 <context>
     <name>ModelPrinter</name>
     <message>
-        <location filename="../modelprinter.cpp" line="52"/>
+        <location filename="../modelprinter.cpp" line="49"/>
         <source>%1 bytes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="57"/>
+        <location filename="../modelprinter.cpp" line="54"/>
         <source>CH%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="75"/>
+        <location filename="../modelprinter.cpp" line="72"/>
         <source>Exponential</source>
         <translation type="unfinished">Exponencial</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="77"/>
+        <location filename="../modelprinter.cpp" line="74"/>
         <source>Extra Fine</source>
         <translation type="unfinished">Extra Fino</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="79"/>
+        <location filename="../modelprinter.cpp" line="76"/>
         <source>Fine</source>
         <translation type="unfinished">Fino</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="81"/>
+        <location filename="../modelprinter.cpp" line="78"/>
         <source>Medium</source>
         <translation type="unfinished">Medio</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="83"/>
+        <location filename="../modelprinter.cpp" line="80"/>
         <source>Coarse</source>
         <translation type="unfinished">Duro</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="85"/>
+        <location filename="../modelprinter.cpp" line="82"/>
         <source>Unknown</source>
         <translation type="unfinished">Desconocido</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="91"/>
+        <location filename="../modelprinter.cpp" line="88"/>
         <source>Enabled</source>
         <translation type="unfinished">Activado</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="91"/>
+        <location filename="../modelprinter.cpp" line="88"/>
         <source>Disabled</source>
         <translation type="unfinished">Desactivado</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="114"/>
+        <location filename="../modelprinter.cpp" line="111"/>
         <source>%1, Channels(%2-%3), PPM delay(%4usec), Pulse polarity(%5)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="116"/>
+        <location filename="../modelprinter.cpp" line="113"/>
         <source>%1, Channels(%2-%3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="118"/>
+        <location filename="../modelprinter.cpp" line="115"/>
         <source>Receiver number(%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="129"/>
+        <location filename="../modelprinter.cpp" line="126"/>
         <source>Slave/Jack</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="132"/>
+        <location filename="../modelprinter.cpp" line="129"/>
         <source>Master/SBUS Module</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="135"/>
+        <location filename="../modelprinter.cpp" line="132"/>
         <source>Master/CPPM Module</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="138"/>
+        <location filename="../modelprinter.cpp" line="135"/>
         <source>Master/SBUS in battery compartment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="141"/>
+        <location filename="../modelprinter.cpp" line="138"/>
         <source>Master/Jack</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="150"/>
+        <location filename="../modelprinter.cpp" line="147"/>
         <source>Rudder</source>
         <translation type="unfinished">Timón</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="152"/>
+        <location filename="../modelprinter.cpp" line="149"/>
         <source>Elevator</source>
         <translation type="unfinished">Profundidad</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="154"/>
+        <location filename="../modelprinter.cpp" line="151"/>
         <source>Throttle</source>
         <translation type="unfinished">Acelerador</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="156"/>
+        <location filename="../modelprinter.cpp" line="153"/>
         <source>Aileron</source>
         <translation type="unfinished">Aleron</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="189"/>
+        <location filename="../modelprinter.cpp" line="186"/>
         <source>Name(%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1:%2</source>
-        <translation type="obsolete">%1:%2</translation>
+        <location filename="../modelprinter.cpp" line="379"/>
+        <source>Slow(u%1:d%2)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="193"/>
+        <location filename="../modelprinter.cpp" line="190"/>
         <source>Persistent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="195"/>
+        <location filename="../modelprinter.cpp" line="192"/>
         <source>MinuteBeep</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="197"/>
+        <location filename="../modelprinter.cpp" line="194"/>
         <source>CountDown(Beeps)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="199"/>
+        <location filename="../modelprinter.cpp" line="196"/>
         <source>CountDown(Voice)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="201"/>
+        <location filename="../modelprinter.cpp" line="198"/>
         <source>CountDown(Haptic)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="210"/>
+        <location filename="../modelprinter.cpp" line="207"/>
         <source>Off</source>
         <translation type="unfinished">Apagado</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="218"/>
-        <location filename="../modelprinter.cpp" line="240"/>
-        <location filename="../modelprinter.cpp" line="254"/>
-        <location filename="../modelprinter.cpp" line="409"/>
+        <location filename="../modelprinter.cpp" line="215"/>
+        <location filename="../modelprinter.cpp" line="237"/>
+        <location filename="../modelprinter.cpp" line="251"/>
+        <location filename="../modelprinter.cpp" line="406"/>
         <source>FM%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="222"/>
+        <location filename="../modelprinter.cpp" line="219"/>
         <source>FM%1%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="224"/>
+        <location filename="../modelprinter.cpp" line="221"/>
         <source>FM%1+%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="263"/>
+        <location filename="../modelprinter.cpp" line="260"/>
         <source>[I%1]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="267"/>
+        <location filename="../modelprinter.cpp" line="264"/>
         <source>Input%1</source>
         <translation type="unfinished">Entrada%1</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="295"/>
+        <location filename="../modelprinter.cpp" line="292"/>
         <source>Weight</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="302"/>
+        <location filename="../modelprinter.cpp" line="299"/>
         <source>Switch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="306"/>
-        <location filename="../modelprinter.cpp" line="366"/>
+        <location filename="../modelprinter.cpp" line="303"/>
+        <location filename="../modelprinter.cpp" line="363"/>
         <source>NoTrim</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="356"/>
+        <location filename="../modelprinter.cpp" line="353"/>
         <source>Weight(%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="363"/>
+        <location filename="../modelprinter.cpp" line="360"/>
         <source>Switch(%1)</source>
         <translation type="unfinished">Switch(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="371"/>
+        <location filename="../modelprinter.cpp" line="368"/>
         <source>No DR/Expo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="373"/>
+        <location filename="../modelprinter.cpp" line="370"/>
         <source>Offset(%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="380"/>
+        <location filename="../modelprinter.cpp" line="377"/>
         <source>Delay(u%1:d%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="382"/>
-        <source>Slow((u%1:d%2)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="384"/>
+        <location filename="../modelprinter.cpp" line="381"/>
         <source>Warn(%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Offset</source>
-        <translation type="obsolete">Offset</translation>
-    </message>
-    <message>
-        <source>Delay</source>
-        <translation type="obsolete">Retardo</translation>
-    </message>
-    <message>
-        <source>Slow</source>
-        <translation type="obsolete">Lento</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="418"/>
+        <location filename="../modelprinter.cpp" line="415"/>
         <source>Disabled in all flight modes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="428"/>
+        <location filename="../modelprinter.cpp" line="425"/>
         <source>Flight modes(%1)</source>
         <translation type="unfinished">Modos de vuelo(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="430"/>
+        <location filename="../modelprinter.cpp" line="427"/>
         <source>Flight mode(%1)</source>
         <translation type="unfinished">Modo de vuelo(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="449"/>
+        <location filename="../modelprinter.cpp" line="446"/>
         <source>Edge(%1, [%2:%3])</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="452"/>
+        <location filename="../modelprinter.cpp" line="449"/>
         <source>Sticky(%1, %2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="455"/>
+        <location filename="../modelprinter.cpp" line="452"/>
         <source>Timer(%1, %2)</source>
         <translation type="unfinished">Temporizador (%1, %2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="548"/>
+        <location filename="../modelprinter.cpp" line="545"/>
         <source>Duration(%1s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="550"/>
+        <location filename="../modelprinter.cpp" line="547"/>
         <source>Delay(%1s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="574"/>
+        <location filename="../modelprinter.cpp" line="571"/>
         <source>Custom</source>
         <translation type="unfinished">A medida</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="574"/>
+        <location filename="../modelprinter.cpp" line="571"/>
         <source>Standard</source>
         <translation type="unfinished">Estandar</translation>
     </message>
@@ -6799,14 +5593,6 @@ p, li { white-space: pre-wrap; }
         <translation>Positivo</translation>
     </message>
     <message>
-        <source>Master</source>
-        <translation type="obsolete">Maestro</translation>
-    </message>
-    <message>
-        <source>Slave</source>
-        <translation type="obsolete">Esclavo</translation>
-    </message>
-    <message>
         <location filename="../modeledit/setup_module.ui" line="284"/>
         <source>Polarity</source>
         <translation>Polaridad</translation>
@@ -6969,206 +5755,206 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MultiModelPrinter</name>
     <message>
-        <location filename="../multimodelprinter.cpp" line="146"/>
+        <location filename="../multimodelprinter.cpp" line="148"/>
         <source>General Model Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="149"/>
+        <location filename="../multimodelprinter.cpp" line="151"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="152"/>
+        <location filename="../multimodelprinter.cpp" line="154"/>
         <source>EEprom Size:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="156"/>
+        <location filename="../multimodelprinter.cpp" line="158"/>
         <source>Timer%1:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="161"/>
+        <location filename="../multimodelprinter.cpp" line="163"/>
         <source>Module%1:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="161"/>
+        <location filename="../multimodelprinter.cpp" line="163"/>
         <source>Module:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="166"/>
+        <location filename="../multimodelprinter.cpp" line="168"/>
         <source>Trainer port:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="170"/>
+        <location filename="../multimodelprinter.cpp" line="172"/>
         <source>Throttle Trim:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="173"/>
+        <location filename="../multimodelprinter.cpp" line="175"/>
         <source>Trim Increment:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="176"/>
+        <location filename="../multimodelprinter.cpp" line="178"/>
         <source>Center Beep:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="184"/>
+        <location filename="../multimodelprinter.cpp" line="186"/>
         <source>Flight modes</source>
         <translation type="unfinished">Modos de vuelo</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="191"/>
-        <location filename="../multimodelprinter.cpp" line="227"/>
+        <location filename="../multimodelprinter.cpp" line="193"/>
+        <location filename="../multimodelprinter.cpp" line="229"/>
         <source>Flight mode</source>
         <translation type="unfinished">Modo de vuelo</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="192"/>
+        <location filename="../multimodelprinter.cpp" line="194"/>
         <source>Switch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="193"/>
+        <location filename="../multimodelprinter.cpp" line="195"/>
         <source>Fade IN</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="194"/>
+        <location filename="../multimodelprinter.cpp" line="196"/>
         <source>Fade OUT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="201"/>
-        <location filename="../multimodelprinter.cpp" line="240"/>
+        <location filename="../multimodelprinter.cpp" line="203"/>
+        <location filename="../multimodelprinter.cpp" line="242"/>
         <source>FM%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="230"/>
-        <location filename="../multimodelprinter.cpp" line="304"/>
+        <location filename="../multimodelprinter.cpp" line="232"/>
+        <location filename="../multimodelprinter.cpp" line="306"/>
         <source>GV%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="236"/>
+        <location filename="../multimodelprinter.cpp" line="238"/>
         <source>RE%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="266"/>
+        <location filename="../multimodelprinter.cpp" line="268"/>
         <source>Limits</source>
         <translation type="unfinished">Limites</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="270"/>
+        <location filename="../multimodelprinter.cpp" line="272"/>
         <source>Channel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="271"/>
+        <location filename="../multimodelprinter.cpp" line="273"/>
         <source>Name</source>
         <translation type="unfinished">Nombre</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="272"/>
-        <location filename="../multimodelprinter.cpp" line="466"/>
+        <location filename="../multimodelprinter.cpp" line="274"/>
+        <location filename="../multimodelprinter.cpp" line="468"/>
         <source>Offset</source>
         <translation type="unfinished">Offset</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="273"/>
+        <location filename="../multimodelprinter.cpp" line="275"/>
         <source>Min</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="274"/>
+        <location filename="../multimodelprinter.cpp" line="276"/>
         <source>Max</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="275"/>
+        <location filename="../multimodelprinter.cpp" line="277"/>
         <source>Invert</source>
         <translation type="unfinished">Invertir</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="299"/>
+        <location filename="../multimodelprinter.cpp" line="301"/>
         <source>Global Variables</source>
         <translation type="unfinished">Variables globales</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="319"/>
+        <location filename="../multimodelprinter.cpp" line="321"/>
         <source>Inputs</source>
         <translation type="unfinished">Entradas</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="345"/>
+        <location filename="../multimodelprinter.cpp" line="347"/>
         <source>Mixers</source>
         <translation type="unfinished">Mezclas</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="385"/>
+        <location filename="../multimodelprinter.cpp" line="387"/>
         <source>CV%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="394"/>
+        <location filename="../multimodelprinter.cpp" line="396"/>
         <source>Curves</source>
         <translation type="unfinished">Curvas</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="416"/>
+        <location filename="../multimodelprinter.cpp" line="418"/>
         <source>L%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="423"/>
+        <location filename="../multimodelprinter.cpp" line="425"/>
         <source>Logical Switches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="445"/>
+        <location filename="../multimodelprinter.cpp" line="447"/>
         <source>SF%1</source>
         <translation type="unfinished">SF%1</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="452"/>
+        <location filename="../multimodelprinter.cpp" line="454"/>
         <source>Special Functions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="460"/>
+        <location filename="../multimodelprinter.cpp" line="462"/>
         <source>Telemetry Settings</source>
         <translation type="unfinished">Ajustes Telemetría</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="466"/>
+        <location filename="../multimodelprinter.cpp" line="468"/>
         <source>Analogs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="466"/>
+        <location filename="../multimodelprinter.cpp" line="468"/>
         <source>Unit</source>
         <translation type="unfinished">Unidad</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="466"/>
+        <location filename="../multimodelprinter.cpp" line="468"/>
         <source>Scale</source>
         <translation type="unfinished">Escala</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="468"/>
+        <location filename="../multimodelprinter.cpp" line="470"/>
         <source>A%1</source>
         <translation type="unfinished">A%1</translation>
     </message>
     <message>
-        <location filename="../multimodelprinter.cpp" line="486"/>
+        <location filename="../multimodelprinter.cpp" line="488"/>
         <source>RSSI Alarms</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7232,258 +6018,6 @@ p, li { white-space: pre-wrap; }
         <translation>Imprimir a archivo</translation>
     </message>
     <message>
-        <source>Setup for: </source>
-        <translation type="obsolete">Configuración para:</translation>
-    </message>
-    <message>
-        <source>printed on: %1</source>
-        <translation type="obsolete">Impreso en: %1</translation>
-    </message>
-    <message>
-        <source>General Model Settings</source>
-        <translation type="obsolete">Ajustes Generales de Modelo</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nombre</translation>
-    </message>
-    <message>
-        <source>EEprom Size</source>
-        <translation type="obsolete">Tamaño EEprom</translation>
-    </message>
-    <message>
-        <source>Timer1</source>
-        <translation type="obsolete">Temporizador1</translation>
-    </message>
-    <message>
-        <source>Timer2</source>
-        <translation type="obsolete">Temporizador 2</translation>
-    </message>
-    <message>
-        <source>Internal Radio System</source>
-        <translation type="obsolete">Sistema Interno de Radio</translation>
-    </message>
-    <message>
-        <source>Radio System</source>
-        <translation type="obsolete">Sistema de Radio</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protocolo</translation>
-    </message>
-    <message>
-        <source>Pulse Polarity</source>
-        <translation type="obsolete">Polaridad del pulso</translation>
-    </message>
-    <message>
-        <source>Throttle Trim</source>
-        <translation type="obsolete">Trim Acelerador</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Activado</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation type="obsolete">Desactivado</translation>
-    </message>
-    <message>
-        <source>Throttle Expo</source>
-        <translation type="obsolete">Expo Acelerador</translation>
-    </message>
-    <message>
-        <source>External Radio Module</source>
-        <translation type="obsolete">Modulo externo de Radio</translation>
-    </message>
-    <message>
-        <source>Extra Radio System</source>
-        <translation type="obsolete">Extra Sistema de Radio</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation type="obsolete">Incremento Trim</translation>
-    </message>
-    <message>
-        <source>Center Beep</source>
-        <translation type="obsolete">Centro Beep</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Modos de vuelo</translation>
-    </message>
-    <message>
-        <source>Fades</source>
-        <translation type="obsolete">Fades</translation>
-    </message>
-    <message>
-        <source>Flight mode name</source>
-        <translation type="obsolete">Nombre del modo de vuelo</translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation type="obsolete">Apagado</translation>
-    </message>
-    <message>
-        <source>Inputs</source>
-        <translation type="obsolete">Entradas</translation>
-    </message>
-    <message>
-        <source>Weight</source>
-        <translation type="obsolete">Carga</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Origen</translation>
-    </message>
-    <message>
-        <source>NoTrim</source>
-        <translation type="obsolete">NoTrim</translation>
-    </message>
-    <message>
-        <source>DISABLED</source>
-        <translation type="obsolete">DESACTIVADO</translation>
-    </message>
-    <message>
-        <source>Mixers</source>
-        <translation type="obsolete">Mezclas</translation>
-    </message>
-    <message>
-        <source>Weight(%1)</source>
-        <translation type="obsolete">Carga(%1)</translation>
-    </message>
-    <message>
-        <source> Delay(u%1:d%2)</source>
-        <translation type="obsolete">Retrasar(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Slow(u%1:d%2)</source>
-        <translation type="obsolete">Lento(u%1:d%2)</translation>
-    </message>
-    <message>
-        <source> Warn(%1)</source>
-        <translation type="obsolete">Aviso(%1)</translation>
-    </message>
-    <message>
-        <source>Limits</source>
-        <translation type="obsolete">Limites</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Invertir</translation>
-    </message>
-    <message>
-        <source>Curves</source>
-        <translation type="obsolete">Curvas</translation>
-    </message>
-    <message>
-        <source>Curve</source>
-        <translation type="obsolete">Curva</translation>
-    </message>
-    <message>
-        <source>Logical Switches</source>
-        <translation type="obsolete">Switches Logicos</translation>
-    </message>
-    <message>
-        <source>Global Variables</source>
-        <translation type="obsolete">Variables globales</translation>
-    </message>
-    <message>
-        <source>Special Functions</source>
-        <translation type="obsolete">Funciones Especiales</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Función</translation>
-    </message>
-    <message>
-        <source>Parameter</source>
-        <translation type="obsolete">Parámetro</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="obsolete">Repetir</translation>
-    </message>
-    <message>
-        <source>SF</source>
-        <translation type="obsolete">SF</translation>
-    </message>
-    <message>
-        <source>Telemetry Settings</source>
-        <translation type="obsolete">Ajustes Telemetría</translation>
-    </message>
-    <message>
-        <source>Analog</source>
-        <translation type="obsolete">Analógico</translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="obsolete">Rango</translation>
-    </message>
-    <message>
-        <source>Alarms</source>
-        <translation type="obsolete">Alarmas</translation>
-    </message>
-    <message>
-        <source>Low Alarm</source>
-        <translation type="obsolete">Alarma Baja</translation>
-    </message>
-    <message>
-        <source>Critical Alarm</source>
-        <translation type="obsolete">Alarma crítica</translation>
-    </message>
-    <message>
-        <source>Blades</source>
-        <translation type="obsolete">Palas</translation>
-    </message>
-    <message>
-        <source>Alarm 1</source>
-        <translation type="obsolete">Alarma 1</translation>
-    </message>
-    <message>
-        <source>Alarm 2</source>
-        <translation type="obsolete">Alarma 2</translation>
-    </message>
-    <message>
-        <source>Unit</source>
-        <translation type="obsolete">Unidad</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">Escala</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tipo</translation>
-    </message>
-    <message>
-        <source>Condition</source>
-        <translation type="obsolete">Condición</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Valor</translation>
-    </message>
-    <message>
-        <source>RSSI Alarm</source>
-        <translation type="obsolete">Alarma RSSI</translation>
-    </message>
-    <message>
-        <source>Frsky serial protocol</source>
-        <translation type="obsolete">Puerto Serie Frsky</translation>
-    </message>
-    <message>
-        <source>Custom Telemetry View</source>
-        <translation type="obsolete">Vista personalizada de telemetría</translation>
-    </message>
-    <message>
-        <source>Telemetry Bars</source>
-        <translation type="obsolete">Barras Telemetría</translation>
-    </message>
-    <message>
-        <source>Bar Number</source>
-        <translation type="obsolete">Numero Barra</translation>
-    </message>
-    <message>
         <location filename="../printdialog.cpp" line="45"/>
         <source>Print Document</source>
         <translation>Imprimir documento</translation>
@@ -7527,10 +6061,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>Input%1</source>
-        <translation type="obsolete">Entrada%1</translation>
-    </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="278"/>
         <source>Polish</source>
@@ -7699,10 +6229,6 @@ p, li { white-space: pre-wrap; }
         <translation>No Repetir</translation>
     </message>
     <message>
-        <source>%1 sec</source>
-        <translation type="obsolete">%1 seg</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="786"/>
         <source>Reset</source>
         <translation>Resetear</translation>
@@ -7764,38 +6290,38 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="435"/>
-        <location filename="../modeledit/setup.cpp" line="740"/>
+        <location filename="../modeledit/setup.cpp" line="753"/>
         <source>F1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="435"/>
-        <location filename="../modeledit/setup.cpp" line="740"/>
+        <location filename="../modeledit/setup.cpp" line="753"/>
         <source>F2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="435"/>
-        <location filename="../modeledit/setup.cpp" line="740"/>
+        <location filename="../modeledit/setup.cpp" line="753"/>
         <source>F3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="435"/>
-        <location filename="../modeledit/setup.cpp" line="740"/>
+        <location filename="../modeledit/setup.cpp" line="753"/>
         <source>F4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="436"/>
-        <location filename="../modeledit/setup.cpp" line="739"/>
+        <location filename="../modeledit/setup.cpp" line="752"/>
         <source>S3</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="460"/>
         <location filename="../eeprominterface.cpp" line="464"/>
-        <location filename="../eeprominterface.cpp" line="827"/>
+        <location filename="../eeprominterface.cpp" line="839"/>
         <source>Timer3</source>
         <translation type="unfinished">Temporizador 3</translation>
     </message>
@@ -8407,22 +6933,27 @@ p, li { white-space: pre-wrap; }
         <translation>Pausar Música de Fondo</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="932"/>
-        <source>repeat</source>
+        <location filename="../eeprominterface.cpp" line="940"/>
+        <source>played once, not during startup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="945"/>
+        <location filename="../eeprominterface.cpp" line="947"/>
+        <source>repeat(%1s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="960"/>
         <source>DISABLED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="984"/>
+        <location filename="../eeprominterface.cpp" line="999"/>
         <source>INV</source>
         <translation type="unfinished">INV</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="984"/>
+        <location filename="../eeprominterface.cpp" line="999"/>
         <source>NOR</source>
         <translation type="unfinished">NOR</translation>
     </message>
@@ -8432,24 +6963,54 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="880"/>
-        <location filename="../eeprominterface.cpp" line="887"/>
-        <location filename="../eeprominterface.cpp" line="896"/>
+        <location filename="../eeprominterface.cpp" line="814"/>
+        <source>SetFailsafe Int. Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="816"/>
+        <source>SetFailsafe Ext. Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="818"/>
+        <source>RangeCheck Int. Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="820"/>
+        <source>RangeCheck Ext. Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="822"/>
+        <source>Bind Int. Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="824"/>
+        <source>Bind Ext. Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="892"/>
+        <location filename="../eeprominterface.cpp" line="899"/>
+        <location filename="../eeprominterface.cpp" line="908"/>
         <source>&lt;font color=red&gt;&lt;b&gt;Inconsistent parameter&lt;/b&gt;&lt;/font&gt;</source>
         <translation>&lt;font color=red&gt;&lt;b&gt;Parámetro Inconsistente&lt;/b&gt;&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="913"/>
+        <location filename="../eeprominterface.cpp" line="925"/>
         <source>Value </source>
         <translation>Valor</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="918"/>
+        <location filename="../eeprominterface.cpp" line="930"/>
         <source>Decr:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="919"/>
+        <location filename="../eeprominterface.cpp" line="931"/>
         <source>Incr:</source>
         <translation></translation>
     </message>
@@ -8469,32 +7030,32 @@ p, li { white-space: pre-wrap; }
         <translation>Ajustar GV%1</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="833"/>
+        <location filename="../eeprominterface.cpp" line="845"/>
         <source>Rotary Encoder</source>
         <translation>Codificador Rotativo</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="627"/>
+        <location filename="../modeledit/customfunctions.cpp" line="632"/>
         <source>Value</source>
         <translation>Valor</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="628"/>
+        <location filename="../modeledit/customfunctions.cpp" line="633"/>
         <source>Source</source>
         <translation>Origen</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="629"/>
+        <location filename="../modeledit/customfunctions.cpp" line="634"/>
         <source>GVAR</source>
         <translation>GVAR</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="630"/>
+        <location filename="../modeledit/customfunctions.cpp" line="635"/>
         <source>Increment</source>
         <translation>Incremento</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="829"/>
+        <location filename="../eeprominterface.cpp" line="841"/>
         <source>Flight</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8564,121 +7125,21 @@ p, li { white-space: pre-wrap; }
         <translation>Métrico</translation>
     </message>
     <message>
-        <source>Extra Fine</source>
-        <translation type="obsolete">Extra Fino</translation>
-    </message>
-    <message>
-        <source>Fine</source>
-        <translation type="obsolete">Fino</translation>
-    </message>
-    <message>
-        <source>Medium</source>
-        <translation type="obsolete">Medio</translation>
-    </message>
-    <message>
-        <source>Coarse</source>
-        <translation type="obsolete">Duro</translation>
-    </message>
-    <message>
-        <source>%1:%2</source>
-        <translation type="obsolete">%1:%2</translation>
-    </message>
-    <message>
-        <source>Exponential</source>
-        <translation type="obsolete">Exponencial</translation>
-    </message>
-    <message>
-        <source>Count Up</source>
-        <translation type="obsolete">Cuenta Arriba</translation>
-    </message>
-    <message>
-        <source>Count Down</source>
-        <translation type="obsolete">Cuenta Atrás</translation>
-    </message>
-    <message>
-        <source>: %1 Channels, %2usec Delay</source>
-        <translation type="obsolete">: %1 Canales, %2Retardo usec</translation>
-    </message>
-    <message>
-        <source>Flight modes(%1)</source>
-        <translation type="obsolete">Modos de vuelo(%1)</translation>
-    </message>
-    <message>
-        <source>Flight mode(%1)</source>
-        <translation type="obsolete">Modo de vuelo(%1)</translation>
-    </message>
-    <message>
-        <source>Rudder</source>
-        <translation type="obsolete">Timón</translation>
-    </message>
-    <message>
-        <source>Elevator</source>
-        <translation type="obsolete">Profundidad</translation>
-    </message>
-    <message>
-        <source>Throttle</source>
-        <translation type="obsolete">Acelerador</translation>
-    </message>
-    <message>
-        <source>Aileron</source>
-        <translation type="obsolete">Aleron</translation>
-    </message>
-    <message>
         <location filename="../eeprominterface.cpp" line="460"/>
         <location filename="../eeprominterface.cpp" line="464"/>
-        <location filename="../eeprominterface.cpp" line="824"/>
+        <location filename="../eeprominterface.cpp" line="836"/>
         <source>Timer1</source>
         <translation>Temporizador1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="460"/>
         <location filename="../eeprominterface.cpp" line="464"/>
-        <location filename="../eeprominterface.cpp" line="825"/>
+        <location filename="../eeprominterface.cpp" line="837"/>
         <source>Timer2</source>
         <translation>Temporizador 2</translation>
     </message>
     <message>
-        <source>Offset</source>
-        <translation type="obsolete">Offset</translation>
-    </message>
-    <message>
-        <source>Delay</source>
-        <translation type="obsolete">Retardo</translation>
-    </message>
-    <message>
-        <source>Slow</source>
-        <translation type="obsolete">Lento</translation>
-    </message>
-    <message>
-        <source>Warn</source>
-        <translation type="obsolete">Aviso</translation>
-    </message>
-    <message>
-        <source>Flight modes</source>
-        <translation type="obsolete">Modos de vuelo</translation>
-    </message>
-    <message>
-        <source>Flight mode</source>
-        <translation type="obsolete">Modo de vuelo</translation>
-    </message>
-    <message>
-        <source>Timer(%1, %2)</source>
-        <translation type="obsolete">Temporizador (%1, %2)</translation>
-    </message>
-    <message>
-        <source> Duration (%1s)</source>
-        <translation type="obsolete">Duración (%1s)</translation>
-    </message>
-    <message>
-        <source> Delay (%1s)</source>
-        <translation type="obsolete">Retardo (%1s)</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation type="obsolete">Todo</translation>
-    </message>
-    <message>
-        <location filename="../eeprominterface.cpp" line="830"/>
+        <location filename="../eeprominterface.cpp" line="842"/>
         <source>Telemetry</source>
         <translation>Telemetría</translation>
     </message>
@@ -8719,21 +7180,21 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="434"/>
         <location filename="../helpers.cpp" line="52"/>
-        <location filename="../modeledit/setup.cpp" line="738"/>
+        <location filename="../modeledit/setup.cpp" line="751"/>
         <source>P1</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="434"/>
         <location filename="../helpers.cpp" line="52"/>
-        <location filename="../modeledit/setup.cpp" line="738"/>
+        <location filename="../modeledit/setup.cpp" line="751"/>
         <source>P2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="434"/>
         <location filename="../helpers.cpp" line="52"/>
-        <location filename="../modeledit/setup.cpp" line="738"/>
+        <location filename="../modeledit/setup.cpp" line="751"/>
         <source>P3</source>
         <translation></translation>
     </message>
@@ -8755,14 +7216,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../eeprominterface.cpp" line="332"/>
         <location filename="../eeprominterface.cpp" line="341"/>
         <location filename="../eeprominterface.cpp" line="402"/>
-        <location filename="../eeprominterface.cpp" line="1224"/>
+        <location filename="../eeprominterface.cpp" line="1239"/>
         <source>V</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="221"/>
-        <location filename="../eeprominterface.cpp" line="873"/>
-        <location filename="../eeprominterface.cpp" line="932"/>
+        <location filename="../eeprominterface.cpp" line="885"/>
         <source>s</source>
         <translation></translation>
     </message>
@@ -8866,14 +7326,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="449"/>
         <location filename="../eeprominterface.cpp" line="618"/>
-        <location filename="../eeprominterface.cpp" line="836"/>
+        <location filename="../eeprominterface.cpp" line="848"/>
         <source>REa</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="449"/>
         <location filename="../eeprominterface.cpp" line="618"/>
-        <location filename="../eeprominterface.cpp" line="837"/>
+        <location filename="../eeprominterface.cpp" line="849"/>
         <source>REb</source>
         <translation></translation>
     </message>
@@ -9046,32 +7506,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="435"/>
         <location filename="../eeprominterface.cpp" line="436"/>
-        <location filename="../modeledit/setup.cpp" line="739"/>
-        <location filename="../modeledit/setup.cpp" line="740"/>
+        <location filename="../modeledit/setup.cpp" line="752"/>
+        <location filename="../modeledit/setup.cpp" line="753"/>
         <source>S1</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="435"/>
         <location filename="../eeprominterface.cpp" line="436"/>
-        <location filename="../modeledit/setup.cpp" line="739"/>
-        <location filename="../modeledit/setup.cpp" line="740"/>
+        <location filename="../modeledit/setup.cpp" line="752"/>
+        <location filename="../modeledit/setup.cpp" line="753"/>
         <source>S2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="435"/>
         <location filename="../eeprominterface.cpp" line="436"/>
-        <location filename="../modeledit/setup.cpp" line="739"/>
-        <location filename="../modeledit/setup.cpp" line="740"/>
+        <location filename="../modeledit/setup.cpp" line="752"/>
+        <location filename="../modeledit/setup.cpp" line="753"/>
         <source>LS</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="435"/>
         <location filename="../eeprominterface.cpp" line="436"/>
-        <location filename="../modeledit/setup.cpp" line="739"/>
-        <location filename="../modeledit/setup.cpp" line="740"/>
+        <location filename="../modeledit/setup.cpp" line="752"/>
+        <location filename="../modeledit/setup.cpp" line="753"/>
         <source>RS</source>
         <translation></translation>
     </message>
@@ -9180,7 +7640,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="746"/>
+        <location filename="../modeledit/setup.cpp" line="759"/>
         <source>THR</source>
         <translation></translation>
     </message>
@@ -9199,599 +7659,548 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1142"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1143"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1164"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1165"/>
         <source>Support for frsky telemetry mod</source>
         <translation>Mod de soporte para telemetría frsky</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1142"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1143"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1164"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1165"/>
         <source>Support for jeti telemetry mod</source>
         <translation>Mod de soporte para tele,etría jeti</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1142"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1143"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1164"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1165"/>
         <source>Support for receiving ardupilot data</source>
         <translation>Soporte para recepción de datos ardupilot</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1142"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1143"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1164"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1165"/>
         <source>Support for receiving NMEA data</source>
         <translation>Soporte para recepción de datos NMEA</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1142"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1164"/>
         <source>Support for telemetry easy board</source>
         <translation>Soporte para para placa sencilla de telemetría</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1142"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1143"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1164"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1165"/>
         <source>Support for MAVLINK devices</source>
         <translation>Soporte para dispositivos MAVLINK</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1144"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1166"/>
         <source>Rotary Encoder use in menus navigation</source>
         <translation>Uso de codificador rotativo en los menús de navegación</translation>
     </message>
     <message>
-        <source>Possibility to enable FAI MODE at field</source>
-        <translation type="obsolete">Posibilidad de activar el MODO FAI en el campo</translation>
-    </message>
-    <message>
-        <source>FAI MODE always enabled</source>
-        <translation type="obsolete">MODO FAI siempre activado</translation>
-    </message>
-    <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1150"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1186"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1216"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1249"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1276"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1306"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1172"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1208"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1238"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1271"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1298"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1328"/>
         <source>Enable heli menu and cyclic mix support</source>
         <translation>Activar menú Heli y el soporte de mezcla de cíclico</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1151"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1187"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1217"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1250"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1277"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1307"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1332"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1353"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1376"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1173"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1209"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1239"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1272"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1299"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1329"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1354"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1375"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1398"/>
         <source>Enable TEMPLATES menu</source>
         <translation>Activar menú PLANTILLAS</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1152"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1188"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1218"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1251"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1174"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1210"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1240"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1273"/>
         <source>No splash screen</source>
         <translation>Sin pantalla de inicio</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1154"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1190"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1220"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1253"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1279"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1309"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1334"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1355"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1378"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1176"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1212"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1242"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1275"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1301"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1331"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1356"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1377"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1400"/>
         <source>Disable curves menus</source>
         <translation>Desctivar el menú curvas</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1155"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1191"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1221"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1254"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1177"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1213"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1243"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1276"/>
         <source>Support for radio modified with regular speaker</source>
         <translation>Soporte para radio modificada con altavoz normal</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1156"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1192"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1222"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1255"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1281"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1178"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1214"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1244"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1277"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1303"/>
         <source>Used if you have modified your radio with voice mode</source>
         <translation>Usado si tienes modificada tu radio con modo voz</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1157"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1193"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1223"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1256"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1313"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1179"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1215"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1245"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1278"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1335"/>
         <source>Used if you have modified your radio with haptic mode</source>
         <translation>Usado si tienes tu radio modificada con el modo haptic</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1106"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1128"/>
         <source>Channel values displayed in us</source>
         <translation>Visualizar los valores de canal en us</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1165"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1201"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1230"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1263"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1288"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1318"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1187"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1223"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1252"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1285"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1310"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1340"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1361"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1384"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1362"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1383"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1406"/>
         <source>In model setup menus automatically set source by moving the control</source>
         <translation>En el menú de ajuste de modelo se selecciona automáticamente el origen del control moviendolo</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1166"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1202"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1231"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1264"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1289"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1319"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1188"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1224"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1253"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1286"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1311"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1341"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1362"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1385"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1363"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1384"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1407"/>
         <source>In model setup menus automatically set switch by moving the control</source>
         <translation>En el menú de ajuste de modelo se selecciona automáticamente el switch de control moviendolo</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1107"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1129"/>
         <source>Use alternative SQT5 font</source>
         <translation>Usar fuente alternativa SQT5</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="437"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="454"/>
         <source>(displaying only first 10 warnings)</source>
         <translation>(visualizar solo los 10 primero avisos)</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1109"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1131"/>
         <source>Possibility to enable FAI MODE (no telemetry) at field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1109"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1131"/>
         <source>FAI MODE (no telemetry) always enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1115"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1338"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1359"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1382"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1137"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1360"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1381"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1404"/>
         <source>Support for a third timer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1119"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1141"/>
         <source>Instead of Joystick emulation, USB connection is Mass Storage (as in the Bootloader)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1119"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1141"/>
         <source>Instead of Joystick emulation, USB connection is Command Line Interface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1122"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1144"/>
         <source>Removes D8 and LR12 FrSky protocols that are not legal for use in the EU on radios sold after Jan 1st, 2015</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1123"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1145"/>
         <source>Support for PPM internal module hack</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1129"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1151"/>
         <source>ST7565P LCD or compatible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1130"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1152"/>
         <source>ST7565R LCD or compatible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1131"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1153"/>
         <source>ERC12864FSF LCD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1132"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1154"/>
         <source>ST7920 LCD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1148"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1170"/>
         <source>9X board</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1171"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1207"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1235"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1268"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1193"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1229"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1257"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1290"/>
         <source>Enable the throttle trace in Statistics</source>
         <translation>Activar el recorrido del acelerador en las Estadísticas</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1172"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1194"/>
         <source>EEprom write progress bar</source>
         <translation>Barra de progreso de escritura EEPROM</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1174"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1238"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1196"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1260"/>
         <source>No Winged Shadow How High support</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1175"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1239"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1197"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1261"/>
         <source>No vario support</source>
         <translation>No hay soporte de variómetro</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1176"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1240"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1198"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1262"/>
         <source>No GPS support</source>
         <translation>No hay soporte para GPS</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1177"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1241"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1199"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1263"/>
         <source>No gauges in the custom telemetry screen</source>
         <translation>No hay indicadores en la pantalla de telemetría personalizada</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1178"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1200"/>
         <source>Allow compensating for offset errors in FrSky FAS current sensors</source>
         <translation>Permitir la compensación de los errores de offset en los sensores FrSky FAS actuales</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1179"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1242"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1201"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1264"/>
         <source>Add support for reversing stick inputs (e.g. needed for FrSky gimbals)</source>
         <translation>Añadir soporte para invertir las entradas de sticks (ejem. neseraio para los gimbals FrSky)</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1302"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1324"/>
         <source>Power management by soft-off circuitry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1351"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1373"/>
         <source>ar9x board / 9X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1374"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1396"/>
         <source>9XR-PRO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1394"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1416"/>
         <source>FrSky Taranis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1401"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1423"/>
         <source>FrSky Taranis Plus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1407"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1429"/>
         <source>FrSky Taranis X9E</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1408"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1430"/>
         <source>Confirmation before radio shutdown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1121"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1317"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1143"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1339"/>
         <source>Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>OpenTX for 9XR-PRO</source>
-        <translation type="obsolete">OpenTX para 9XR-PRO</translation>
-    </message>
-    <message>
-        <source>OpenTX for FrSky Taranis</source>
-        <translation type="obsolete">OpenTX para FrSky Taranis</translation>
-    </message>
-    <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1395"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1417"/>
         <source>Haptic module installed</source>
         <translation>Módulo Haptic instalado</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1118"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1140"/>
         <source>Support for Lua model scripts</source>
         <translation>Soporte para los modelos de scripts Lua</translation>
     </message>
     <message>
-        <source>OpenTX for FrSky Taranis Plus</source>
-        <translation type="obsolete">OpenTX para FrSky Taranis Plus</translation>
-    </message>
-    <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1282"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1304"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1326"/>
         <source>Support of FrSky PXX protocol</source>
         <translation>Soporte para protocolo FrSky PXX</translation>
     </message>
     <message>
-        <source>OpenTX for Sky9x board / 9X</source>
-        <translation type="obsolete">OpenTX para placas Sky9x/9x</translation>
-    </message>
-    <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1116"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1138"/>
         <source>Disable HELI menu and cyclic mix support</source>
         <translation>Desactivar el menú de HELI y el soporte de mezcla de cíclico</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1117"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1139"/>
         <source>Disable Global variables</source>
         <translation>Desactivar las variables Globales</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1145"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1159"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1195"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1225"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1258"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1167"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1181"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1217"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1247"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1280"/>
         <source>Support for DSM2 modules</source>
         <translation>Soporte para los módulos DSM2</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1160"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1196"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1226"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1259"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1284"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1314"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1335"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1356"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1379"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1182"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1218"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1248"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1281"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1306"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1336"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1357"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1378"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1401"/>
         <source>PPM center adjustment in limits</source>
         <translation>Ajuste del centro PPM en los limites </translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1162"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1198"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1228"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1261"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1286"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1316"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1337"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1358"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1381"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1184"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1220"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1250"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1283"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1308"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1338"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1359"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1380"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1403"/>
         <source>Symetrical Limits</source>
         <translation>Límites simétricos</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1144"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1229"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1262"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1287"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1339"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1360"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1383"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1166"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1251"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1284"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1309"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1361"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1382"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1405"/>
         <source>Pots use in menus navigation</source>
         <translation>Usar potenciómetros en los menús de navegación</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="332"/>
-        <source>Your radio probably uses a wrong firmware,
- eeprom size is 4096 but only the first 2048 are used</source>
-        <translation>Tu radio posiblemente usa un firmware incorrecto,
-el tamaño del eeprom es 4096 pero solo los primeros 2048 están usados</translation>
-    </message>
-    <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1108"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1130"/>
         <source>No OverrideCH functions available</source>
         <translation>No hay funciones OverrideCH disponibles</translation>
     </message>
     <message>
-        <source>OpenTX for 9X board</source>
-        <translation type="obsolete">OpenTX para placa 9X</translation>
-    </message>
-    <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1153"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1189"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1219"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1252"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1278"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1308"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1333"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1354"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1377"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1175"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1211"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1241"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1274"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1300"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1330"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1355"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1376"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1399"/>
         <source>No flight modes</source>
         <translation>Sin modos de vuelo</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1164"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1200"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1186"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1222"/>
         <source>SmartieParts 2.2 Backlight support</source>
         <translation>Soporte de retroiluminación para SmartieParts 2.2</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1167"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1203"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1290"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1320"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1189"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1225"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1312"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1342"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1363"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1364"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1385"/>
         <source>Enable resetting values by pressing up and down at the same time</source>
         <translation>Activar el reseteo de valores presionando up y down al mismo tiempo</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1168"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1204"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1232"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1265"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1291"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1321"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1190"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1226"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1254"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1287"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1313"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1343"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1364"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1365"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1386"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1408"/>
         <source>No graphical check boxes and sliders</source>
         <translation>Sin casillas de verificación ni sliders gráficos</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1169"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1205"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1233"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1266"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1292"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1322"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1191"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1227"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1255"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1288"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1314"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1344"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1365"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1366"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1387"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1409"/>
         <source>Battery graph</source>
         <translation>Gráfico batería</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1170"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1206"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1234"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1267"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1293"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1323"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1192"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1228"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1256"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1289"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1315"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1345"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1366"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1367"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1388"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1410"/>
         <source>Don&apos;t use bold font for highlighting active items</source>
         <translation>No usar la fuente negrita para destacar elementos activos</translation>
     </message>
     <message>
-        <source>OpenTX for M128 / 9X board</source>
-        <translation type="obsolete">OpenTX para placa M128 / 9X</translation>
-    </message>
-    <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1208"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1236"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1269"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1294"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1324"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1230"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1258"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1291"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1316"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1346"/>
         <source>EEprom write Progress bar</source>
         <translation>Barra de progreso de escriture de EEprom</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1173"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1209"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1237"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1270"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1295"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1325"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1195"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1231"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1259"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1292"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1317"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1347"/>
         <source>Imperial units</source>
         <translation>Unidades Imperiales</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1184"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1206"/>
         <source>M128 / 9X board</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1214"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1236"/>
         <source>9XR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1247"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1269"/>
         <source>9XR with M128 chip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1275"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1297"/>
         <source>Gruvin9x board / 9X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1300"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1322"/>
         <source>MEGA2560 board</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1330"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1352"/>
         <source>Sky9x board / 9X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1346"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1367"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1368"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1389"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1411"/>
         <source>Bluetooth interface</source>
         <translation>Interfaz Bluetooth</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1161"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1197"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1227"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1260"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1285"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1315"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1336"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1357"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1380"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1183"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1219"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1249"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1282"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1307"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1337"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1358"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1379"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1402"/>
         <source>Global variables</source>
         <translation>Variables globales</translation>
     </message>
     <message>
-        <source>OpenTX for 9XR</source>
-        <translation type="obsolete">OpenTX para 9XR</translation>
-    </message>
-    <message>
-        <source>OpenTX for 9XR with M128 chip</source>
-        <translation type="obsolete">OpenTX para placa 9XR con el chip M128</translation>
-    </message>
-    <message>
-        <source>OpenTX for Gruvin9x board / 9X</source>
-        <translation type="obsolete">OpenTX para placas Gruvin9x / 9x</translation>
-    </message>
-    <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1280"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1310"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1302"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1332"/>
         <source>Support for SD memory card</source>
         <translation>Soporte para tarjetas de memoria SD</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1145"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1167"/>
         <source>Support for DSM2 modules using ppm instead of true serial</source>
         <translation>Soporte para módulos DSM2 que usan PPM en lugar de true serial</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1331"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1352"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1375"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1353"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1374"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1397"/>
         <source>Enable HELI menu and cyclic mix support</source>
         <translation>Activar menú HELI y el soporte de mezcla de cíclico</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="441"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="458"/>
         <location filename="../helpers.cpp" line="814"/>
         <source>Warning</source>
         <translation>Aviso</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="442"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="459"/>
         <source>EEPROM saved with these warnings:</source>
         <translation>EEPROM guardado con estos avisos:</translation>
     </message>
@@ -9821,28 +8230,28 @@ el tamaño del eeprom es 4096 pero solo los primeros 2048 están usados</transla
         <translation>OpenTx solo aceta %1 puntos en todas las curvas</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2032"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2247"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2255"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2262"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2266"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2035"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2265"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2273"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2280"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2284"/>
         <source>OpenTX on this board doesn&apos;t accept this function</source>
         <translation>OpenTX en esta placa no acepta esa función</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2938"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2956"/>
         <source>OpenTX doesn&apos;t accept this telemetry protocol</source>
         <translation>OpenTX en esta placa no acepta este protocolo de telemetría</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3059"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3071"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3078"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3077"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3089"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3096"/>
         <source>OpenTX doesn&apos;t accept this radio protocol</source>
         <translation>OpenTX en esta placa no acepta este protocolo de radio</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2951"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2969"/>
         <source>OpenTX doesn&apos;t allow this number of channels</source>
         <translation>OpenTX en esta placa no acepta este número de canales</translation>
     </message>
@@ -9894,16 +8303,6 @@ The OpenTX Team.</source>
         <translation>Gracias por actualizar a OpenTX 2.0. Esta es la mayor actualización que añade y modifica muchísimas cosas, asi que por favor asegúrate de que lees las notas de la versión con cuidaddo para aprender sobre los cambios, y comprueba minuciosamente cada uno de tus modelos que funcione correctamente.
 
 El equipo OpenTX.</translation>
-    </message>
-    <message>
-        <location filename="../eeprominterface.h" line="847"/>
-        <source>Positive</source>
-        <translation type="unfinished">Positivo</translation>
-    </message>
-    <message>
-        <location filename="../eeprominterface.h" line="847"/>
-        <source>Negative</source>
-        <translation type="unfinished">Negativo</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="672"/>
@@ -10000,10 +8399,6 @@ El equipo OpenTX.</translation>
         <source>Which radio type do you want to simulate?</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Switch(%1)</source>
-        <translation type="obsolete">Switch(%1)</translation>
-    </message>
 </context>
 <context>
     <name>RadioNotFoundDialog</name>
@@ -10016,10 +8411,6 @@ El equipo OpenTX.</translation>
         <location filename="../radionotfound.ui" line="40"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Note: if you have a Taranis that has not had the firmware upgraded to 2.0 then this version of Companion will not work.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;¡No se ha encontado la radio!&lt;/p&gt;&lt;p&gt;Asegúrate de presionar los trims infeirores hacia el centro mientras la enciendes.&lt;/p&gt;&lt;p&gt;Entonces conecta el cable USB.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../radionotfound.ui" line="92"/>
@@ -10064,152 +8455,157 @@ El equipo OpenTX.</translation>
 <context>
     <name>Setup</name>
     <message>
-        <location filename="../modeledit/setup.ui" line="322"/>
+        <location filename="../modeledit/setup.ui" line="330"/>
         <source>Center beep</source>
         <translation>Centro beep</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="516"/>
+        <location filename="../modeledit/setup.ui" line="231"/>
         <source>OFF</source>
         <translation>OFF</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="372"/>
+        <location filename="../modeledit/setup.ui" line="87"/>
         <source>Model Image</source>
         <translation>Imagen del modelo</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="168"/>
+        <location filename="../modeledit/setup.ui" line="445"/>
         <source>Exponential</source>
         <translation>Exponencial</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="131"/>
+        <location filename="../modeledit/setup.ui" line="408"/>
         <source>Throttle Trim Idle Only</source>
         <translation>Trim de acelerador ajuste de ralentí</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="173"/>
+        <location filename="../modeledit/setup.ui" line="450"/>
         <source>Extra Fine</source>
         <translation>Extra Fino</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="178"/>
+        <location filename="../modeledit/setup.ui" line="455"/>
         <source>Fine</source>
         <translation>Fino</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="183"/>
+        <location filename="../modeledit/setup.ui" line="460"/>
         <source>Medium</source>
         <translation>Medio</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="188"/>
+        <location filename="../modeledit/setup.ui" line="465"/>
         <source>Coarse</source>
         <translation>Duro</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="85"/>
+        <location filename="../modeledit/setup.ui" line="362"/>
         <source>Display Checklist</source>
         <translation>Lista verificación pantalla</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="60"/>
+        <location filename="../modeledit/setup.ui" line="572"/>
         <source>Timer 2</source>
         <translation>Temporizador 2</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="44"/>
+        <location filename="../modeledit/setup.ui" line="28"/>
         <source>Timer 1</source>
         <translation>Temporizador1</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="28"/>
+        <location filename="../modeledit/setup.ui" line="588"/>
         <source>Timer 3</source>
         <translation type="unfinished">Temporizador3</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="203"/>
+        <location filename="../modeledit/setup.ui" line="480"/>
         <source>Never</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="208"/>
+        <location filename="../modeledit/setup.ui" line="44"/>
+        <source>Top LCD Timer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/setup.ui" line="485"/>
         <source>On change</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="213"/>
+        <location filename="../modeledit/setup.ui" line="490"/>
         <source>Always</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="221"/>
+        <location filename="../modeledit/setup.ui" line="498"/>
         <source>Global Functions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="238"/>
+        <location filename="../modeledit/setup.ui" line="515"/>
         <source>Throttle Source</source>
         <translation>Fuente del acelerador</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="254"/>
+        <location filename="../modeledit/setup.ui" line="531"/>
         <source>Trim Step</source>
         <translation>Pasos de Trim</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="270"/>
+        <location filename="../modeledit/setup.ui" line="547"/>
         <source>Trims Display</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="452"/>
+        <location filename="../modeledit/setup.ui" line="167"/>
         <source>Warnings</source>
         <translation>Avisos</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="466"/>
+        <location filename="../modeledit/setup.ui" line="181"/>
         <source>Switch Warnings</source>
         <translation>Avisos palancas (Switch)</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="506"/>
+        <location filename="../modeledit/setup.ui" line="221"/>
         <source>Pot Warnings</source>
         <translation>Avisos Potenciómetros</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="521"/>
+        <location filename="../modeledit/setup.ui" line="236"/>
         <source>Manual</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="526"/>
+        <location filename="../modeledit/setup.ui" line="241"/>
         <source>Auto</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="572"/>
+        <location filename="../modeledit/setup.ui" line="287"/>
         <source>Model</source>
         <translation>Modelo</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="95"/>
+        <location filename="../modeledit/setup.ui" line="372"/>
         <source>Extended Limits</source>
         <translation>Límites extendidos</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="75"/>
+        <location filename="../modeledit/setup.ui" line="352"/>
         <source>Extended Trims</source>
         <translation>Trims extendidos</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="141"/>
+        <location filename="../modeledit/setup.ui" line="418"/>
         <source>Throttle Warning</source>
         <translation>Aviso acelerador</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="102"/>
+        <location filename="../modeledit/setup.ui" line="379"/>
         <source>Reverse throttle operation.
 If this is checked the throttle will be reversed.  Idle will be forward, trim will also be reversed and the throttle warning will be reversed as well.
 
@@ -10220,9 +8616,17 @@ Si está marcado el acelerador será invertido.  El ralentí será delante, el t
 </translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="111"/>
+        <location filename="../modeledit/setup.ui" line="388"/>
         <source>Reverse Throttle</source>
         <translation>Invertir acelerador (Throttle)</translation>
+    </message>
+</context>
+<context>
+    <name>SetupPanel</name>
+    <message>
+        <location filename="../modeledit/setup.cpp" line="523"/>
+        <source>Timer %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10634,10 +9038,6 @@ Si está marcado el acelerador será invertido.  El ralentí será delante, el t
         <translation>Descenso Máximo</translation>
     </message>
     <message>
-        <source>Off</source>
-        <translation type="obsolete">Apagado</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry.ui" line="488"/>
         <source>Climb Max</source>
         <translation>Máximo Ascenso</translation>
@@ -10661,14 +9061,6 @@ Si está marcado el acelerador será invertido.  El ralentí será delante, el t
         <location filename="../modeledit/telemetry.ui" line="558"/>
         <source>Vario limits</source>
         <translation>Límites Variómetro</translation>
-    </message>
-    <message>
-        <source>Use GPS as altitude source</source>
-        <translation type="obsolete">Usar GPS con fuente de altitud</translation>
-    </message>
-    <message>
-        <source>Display altitude in toolbar</source>
-        <translation type="obsolete">Mostrar la altitud en una barra</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="594"/>
@@ -10815,14 +9207,6 @@ Si está marcado el acelerador será invertido.  El ralentí será delante, el t
         <translation>miliAmperios (mA)</translation>
     </message>
     <message>
-        <source>Low Alarm</source>
-        <translation type="obsolete">Alarma Baja</translation>
-    </message>
-    <message>
-        <source>Critical Alarm</source>
-        <translation type="obsolete">Alarma crítica</translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry.cpp" line="42"/>
         <source>Range</source>
         <translation>Rango</translation>
@@ -10834,10 +9218,6 @@ Si está marcado el acelerador será invertido.  El ralentí será delante, el t
         <location filename="../modeledit/telemetry_customscreen.ui" line="34"/>
         <source>Custom Screen Type</source>
         <translation>Personalizar tipo pantalla</translation>
-    </message>
-    <message>
-        <source>Nums</source>
-        <translation type="obsolete">Números</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="325"/>
@@ -10883,99 +9263,99 @@ Si está marcado el acelerador será invertido.  El ralentí será delante, el t
 <context>
     <name>TelemetryPanel</name>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="784"/>
+        <location filename="../modeledit/telemetry.cpp" line="785"/>
         <source>FrSky S.PORT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="785"/>
+        <location filename="../modeledit/telemetry.cpp" line="786"/>
         <source>FrSky D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="787"/>
+        <location filename="../modeledit/telemetry.cpp" line="788"/>
         <source>FrSky D (cable)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="737"/>
+        <location filename="../modeledit/telemetry.cpp" line="738"/>
         <source>Telemetry screen %1</source>
         <translation>Pantalla telemetría %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="807"/>
+        <location filename="../modeledit/telemetry.cpp" line="808"/>
         <source>Low Alarm</source>
         <translation>Alarma Baja</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="808"/>
+        <location filename="../modeledit/telemetry.cpp" line="809"/>
         <source>Critical Alarm</source>
         <translation>Alarma crítica</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="850"/>
+        <location filename="../modeledit/telemetry.cpp" line="851"/>
         <source>Winged Shadow How High</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="853"/>
+        <location filename="../modeledit/telemetry.cpp" line="854"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation>Winged Shadow How High (no soportado)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="897"/>
+        <location filename="../modeledit/telemetry.cpp" line="898"/>
         <source>Alti</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="898"/>
+        <location filename="../modeledit/telemetry.cpp" line="899"/>
         <source>Alti+</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="899"/>
-        <source>VSpeed</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../modeledit/telemetry.cpp" line="900"/>
-        <location filename="../modeledit/telemetry.cpp" line="908"/>
-        <location filename="../modeledit/telemetry.cpp" line="923"/>
-        <source>A1</source>
+        <source>VSpeed</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="901"/>
         <location filename="../modeledit/telemetry.cpp" line="909"/>
         <location filename="../modeledit/telemetry.cpp" line="924"/>
-        <source>A2</source>
+        <source>A1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="911"/>
-        <location filename="../modeledit/telemetry.cpp" line="926"/>
-        <source>A3</source>
+        <location filename="../modeledit/telemetry.cpp" line="902"/>
+        <location filename="../modeledit/telemetry.cpp" line="910"/>
+        <location filename="../modeledit/telemetry.cpp" line="925"/>
+        <source>A2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="912"/>
         <location filename="../modeledit/telemetry.cpp" line="927"/>
+        <source>A3</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="913"/>
+        <location filename="../modeledit/telemetry.cpp" line="928"/>
         <source>A4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="914"/>
-        <location filename="../modeledit/telemetry.cpp" line="929"/>
+        <location filename="../modeledit/telemetry.cpp" line="915"/>
+        <location filename="../modeledit/telemetry.cpp" line="930"/>
         <source>FAS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="915"/>
+        <location filename="../modeledit/telemetry.cpp" line="916"/>
         <source>Cells</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="922"/>
+        <location filename="../modeledit/telemetry.cpp" line="923"/>
         <source>---</source>
         <translation></translation>
     </message>
@@ -11203,10 +9583,6 @@ Si está marcado el acelerador será invertido.  El ralentí será delante, el t
         <location filename="../modeledit/telemetry_sensor.ui" line="515"/>
         <source>Ratio</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="obsolete">Rango</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="522"/>
@@ -12034,123 +10410,6 @@ Si está marcado el acelerador será invertido.  El ralentí será delante, el t
     </message>
 </context>
 <context>
-    <name>avrOutputDialog</name>
-    <message>
-        <source>Show Details</source>
-        <translation type="obsolete">Mostrar detalles</translation>
-    </message>
-    <message>
-        <source>result</source>
-        <translation type="obsolete">resultado</translation>
-    </message>
-    <message>
-        <source>executable not found</source>
-        <translation type="obsolete">ejecutable no encontrado</translation>
-    </message>
-    <message>
-        <source>Cannot open source file</source>
-        <translation type="obsolete">No se puede abrir el archivo de origen</translation>
-    </message>
-    <message>
-        <source>Cannot write destination</source>
-        <translation type="obsolete">No se puede escribir en el destino</translation>
-    </message>
-    <message>
-        <source>Writing file: </source>
-        <translation type="obsolete">Escribiendo archivo: </translation>
-    </message>
-    <message>
-        <source>Write error</source>
-        <translation type="obsolete">Error escritura</translation>
-    </message>
-    <message>
-        <source>ie: OpenTX for 9X board or OpenTX for 9XR board</source>
-        <translation type="obsolete">Esto es: OpenTX para placas 9x o OpenTX para placas 9XR</translation>
-    </message>
-    <message>
-        <source>ie: OpenTX for M128 / 9X board or OpenTX for 9XR board with M128 chip</source>
-        <translation type="obsolete">Esto es: OpenTX para placas M128 / 9x o OpenTX para placas 9XR con el chip M128</translation>
-    </message>
-    <message>
-        <source>ie: OpenTX for Gruvin9X  board</source>
-        <translation type="obsolete">Esto es: OpenTX para placas Gruvin9x</translation>
-    </message>
-    <message>
-        <source>Your radio uses a %1 CPU!!!
-
-Please check advanced burn options to set the correct cpu type.</source>
-        <translation type="obsolete">Tu radio usa un %1 CPU!!!
-
-Por favor comprueba en las opciones avanzadas de gravado el tipo correcto de cpu.</translation>
-    </message>
-    <message>
-        <source>Your radio uses a %1 CPU!!!
-
-Please select an appropriate firmware type to program it.</source>
-        <translation type="obsolete">Tu radio usa un %1 CPU!!!
-
-Por favor elige el tipo de firmware apropiado para programarlo.</translation>
-    </message>
-    <message>
-        <source>
-You are currently using:
- %1</source>
-        <translation type="obsolete">
-Actualmente estás usando:
- %1</translation>
-    </message>
-    <message>
-        <source>Writing</source>
-        <translation type="obsolete">Escribiendo</translation>
-    </message>
-    <message>
-        <source>Reading</source>
-        <translation type="obsolete">Leyendo</translation>
-    </message>
-    <message>
-        <source>Verifying</source>
-        <translation type="obsolete">Verificando</translation>
-    </message>
-    <message>
-        <source>done - exit code %1</source>
-        <translation type="obsolete">Hecho - Código salida %1</translation>
-    </message>
-    <message>
-        <source>done with errors</source>
-        <translation type="obsolete">Hecho con errores</translation>
-    </message>
-    <message>
-        <source>done - SUCCESSFUL</source>
-        <translation type="obsolete">Hecho - ÉXITO</translation>
-    </message>
-    <message>
-        <source>did not finish correctly</source>
-        <translation type="obsolete">No ha finalizado correctamente</translation>
-    </message>
-    <message>
-        <source>did not finish correctly!
-Do you want some help ?</source>
-        <translation type="obsolete">¡No ha finalizado correctamente!
-¿Necesitas alguna ayuda?</translation>
-    </message>
-    <message>
-        <source>Copy did not finish correctly</source>
-        <translation type="obsolete">La copia no ha finalizado correctamente</translation>
-    </message>
-    <message>
-        <source>finished correctly</source>
-        <translation type="obsolete">finalizado correctamente</translation>
-    </message>
-    <message>
-        <source>Copy finished correctly</source>
-        <translation type="obsolete">La copia finalizó correctamente</translation>
-    </message>
-    <message>
-        <source>Started</source>
-        <translation type="obsolete">Comenzado</translation>
-    </message>
-</context>
-<context>
     <name>burnConfigDialog</name>
     <message>
         <location filename="../burnconfigdialog.ui" line="609"/>
@@ -12343,10 +10602,6 @@ Por favor solamente usa esto si sabes lo que estás haciendo.  No hay control de
         <translation></translation>
     </message>
     <message>
-        <source>&lt;b&gt;&lt;u&gt;WARNING!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;This will reset the fuses of  %1 to the factory settings.&lt;br&gt;Writing fuses can mess up your radio.&lt;br&gt;Do this only if you are sure they are wrong!&lt;br&gt;Are you sure you want to continue?</source>
-        <translation type="obsolete">&lt;b&gt;&lt;u&gt;¡AVISO!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Esto reseteará los fuses de  %1 a los ajustes de fábrica.&lt;br&gt;Escribir fuses puede estropear tu radio.&lt;br&gt;¡Haz esto sólo si estás seguro que están mal!&lt;br&gt;¿Estás seguro de continuar?</translation>
-    </message>
-    <message>
         <location filename="../burnconfigdialog.cpp" line="325"/>
         <source>&lt;b&gt;&lt;u&gt;WARNING!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Normally CPU type is automatically selected according to the chosen firmware.&lt;br&gt;If you change the CPU type the resulting eeprom could be inconsistent.</source>
         <translation>&lt;b&gt;&lt;u&gt;¡AVISO!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Normalmente el tipo de CPU ees automáticamente elegida para el tipo de firmware.&lt;br&gt;Si cambias el tipo de CPU el eeprom resultante podria ser inconsistente.</translation>
@@ -12366,224 +10621,6 @@ m2560 for v4.1 boards</source>
         <translation>La CPU presente en tu radio 9x
 Debe ser M64 para los valores de radios
 m2560 para las placas v4.1</translation>
-    </message>
-</context>
-<context>
-    <name>burnDialog</name>
-    <message>
-        <source>Customize Splash</source>
-        <translation type="obsolete">Personalizar Pantalla de Inicio</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify calibration parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modificar los parámetros de calibración utilizando la configuración de perfil actual&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Patch calibration setting from profile</source>
-        <translation type="obsolete">Arreglar los ajustes de calibración desde el perfil</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify HW parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modificar los parámetros de HW usando los ajustes del perfil actual&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Patch HW setting from profile</source>
-        <translation type="obsolete">Arreglar los ajustes de HW desde el perfil</translation>
-    </message>
-    <message>
-        <source>Date &amp; Time</source>
-        <translation type="obsolete">Fecha &amp; Hora</translation>
-    </message>
-    <message>
-        <source>Use firmware start screen</source>
-        <translation type="obsolete">Usar la pantalla de inicio del firmware</translation>
-    </message>
-    <message>
-        <source>Use another start screen</source>
-        <translation type="obsolete">Usar otra pantalla de inicio</translation>
-    </message>
-    <message>
-        <source>Use profile start screen</source>
-        <translation type="obsolete">Usar la pantala de inicio del perfil</translation>
-    </message>
-    <message>
-        <source>Use library start screen</source>
-        <translation type="obsolete">Usar la libreria de pantalla de inicio</translation>
-    </message>
-    <message>
-        <source>Browse for file</source>
-        <translation type="obsolete">Buscar archivo</translation>
-    </message>
-    <message>
-        <source>Allows Companion to write to older version of the firmware</source>
-        <translation type="obsolete">Permitir a Companion escribir a las versiones viejas de firmware</translation>
-    </message>
-    <message>
-        <source>Backup and restore Models and Settings</source>
-        <translation type="obsolete">Copia de seguridad y restauración de Modelos y Ajustes</translation>
-    </message>
-    <message>
-        <source>Write to TX</source>
-        <translation type="obsolete">Escribir al TX</translation>
-    </message>
-    <message>
-        <source>Variant</source>
-        <translation type="obsolete">Variante</translation>
-    </message>
-    <message>
-        <source>Check Firmware compatibility</source>
-        <translation type="obsolete">Comprobar la compatibilidad del firmware</translation>
-    </message>
-    <message>
-        <source>Current Profile</source>
-        <translation type="obsolete">Perfil Actual</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Cancelar</translation>
-    </message>
-    <message>
-        <source>Current profile</source>
-        <translation type="obsolete">Perfil actual</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Aviso</translation>
-    </message>
-    <message>
-        <source>Unable to find file %1!</source>
-        <translation type="obsolete">¡No se ha encontrado el archivo %1!</translation>
-    </message>
-    <message>
-        <source>Error opening file %1:
-%2.</source>
-        <translation type="obsolete">Error abriendo el archivo %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Invalid binary Models and Settings File %1, Proceed anyway ?</source>
-        <translation type="obsolete">Archivo binario inválido de Modelos y Ajustes %1, ¿Proceder de todas maneras?</translation>
-    </message>
-    <message>
-        <source>Error reading file %1:
-%2.</source>
-        <translation type="obsolete">Error leyendo el archivo %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Write firmware to Radio</source>
-        <translation type="obsolete">Escribir Firmware a la Radio</translation>
-    </message>
-    <message>
-        <source>Write Backup to Radio</source>
-        <translation type="obsolete">Escribir Copia de Seguridad a la Radio</translation>
-    </message>
-    <message>
-        <source>Write Backup from %1 to Radio</source>
-        <translation type="obsolete">Escribir Copia de Seguridad desde %1 a la Radio</translation>
-    </message>
-    <message>
-        <source>Open Firmware File</source>
-        <translation type="obsolete">Abrir archivo de Firmware</translation>
-    </message>
-    <message>
-        <source>Choose Radio Backup file</source>
-        <translation type="obsolete">Elegir archivo de copia de seguridad de la radio</translation>
-    </message>
-    <message>
-        <source>%1 may not be a valid firmware file</source>
-        <translation type="obsolete">%1 puede no ser un archivo de firmware válido</translation>
-    </message>
-    <message>
-        <source>The firmware file is not valid.</source>
-        <translation type="obsolete">El archivo de firmware no es válido.</translation>
-    </message>
-    <message>
-        <source>There is no start screen image in the firmware file.</source>
-        <translation type="obsolete">No hay imagen de pantalla de inicio en el archivo de firmware.</translation>
-    </message>
-    <message>
-        <source>Images (%1)</source>
-        <translation type="obsolete">Imagenes (%1)</translation>
-    </message>
-    <message>
-        <source>Open image file to use as radio start screen</source>
-        <translation type="obsolete">Abir archivo de imagen para usar de pantalla de inicio de la radio</translation>
-    </message>
-    <message>
-        <source>Image could not be loaded from %1</source>
-        <translation type="obsolete">La imagen no puede ser cargada desde %1</translation>
-    </message>
-    <message>
-        <source>The library image could not be loaded</source>
-        <translation type="obsolete">La librería de imágen no puede ser cargada</translation>
-    </message>
-    <message>
-        <source>Wrong radio calibration data in profile, Settings not patched</source>
-        <translation type="obsolete">Datos de calibración de radio incorrectos en el perfil, ajustes no corregidos</translation>
-    </message>
-    <message>
-        <source>Wrong radio setting data in profile, Settings not patched</source>
-        <translation type="obsolete">Datos de ajustes de radio incorrectos en el perfil, ajustes no corregidos</translation>
-    </message>
-    <message>
-        <source>Cannot write file %1:
-%2.</source>
-        <translation type="obsolete">No se puede escribir el archivo %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Error writing file %1:
-%2.</source>
-        <translation type="obsolete">Error escribiendo el archivo %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Profile image %1 is invalid.</source>
-        <translation type="obsolete">El perfil de imagen %1 es inválido.</translation>
-    </message>
-    <message>
-        <source>Cannot save customized firmware</source>
-        <translation type="obsolete">No se puede guardar el firmware personalizado</translation>
-    </message>
-    <message>
-        <source>Custom image not found</source>
-        <translation type="obsolete">No se encuentra la imagen personalizada</translation>
-    </message>
-    <message>
-        <source>No firmware selected</source>
-        <translation type="obsolete">No se ha elegido firmware</translation>
-    </message>
-</context>
-<context>
-    <name>contributorsDialog</name>
-    <message>
-        <source>People who have contributed to this project</source>
-        <translation type="obsolete">Gente que ha contribuido a este proyecto</translation>
-    </message>
-    <message>
-        <source>Coders</source>
-        <translation type="obsolete">Codificadores</translation>
-    </message>
-    <message>
-        <source>Companion Release Notes</source>
-        <translation type="obsolete">Notas de la versión Companion</translation>
-    </message>
-    <message>
-        <source>Thank you all !!!</source>
-        <translation type="obsolete">¡¡Gracias a todos!!</translation>
-    </message>
-    <message>
-        <source>Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)</source>
-        <translation type="obsolete">Los honores van a Rafal Tomczak (RadioClone), Thomas Husterer (th9x) y Erez Raviv (er9x y eePe)</translation>
-    </message>
-    <message>
-        <source>Contributors</source>
-        <translation type="obsolete">Colaboradores</translation>
-    </message>
-    <message>
-        <source>OpenTX Release Notes</source>
-        <translation type="obsolete">Notas de la versión OpenTX</translation>
     </message>
 </context>
 <context>
@@ -12732,19 +10769,6 @@ m2560 para las placas v4.1</translation>
         <location filename="../downloaddialog.cpp" line="54"/>
         <source>Download failed: %1.</source>
         <translation>Descarga fallida: %1.</translation>
-    </message>
-</context>
-<context>
-    <name>fusesDialog</name>
-    <message>
-        <source>Read Fuses</source>
-        <translation type="obsolete">Leer Fuses</translation>
-    </message>
-    <message>
-        <source>Reset Fuses
-EEPROM - PROTECT</source>
-        <translation type="obsolete">Resetear Fuses
-EEPROM - PROTEGIDA</translation>
     </message>
 </context>
 <context>
@@ -12973,59 +10997,6 @@ Presiona cancelar para abortar la calibración del joystick</translation>
         <source>Duplicated stick assignment</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Duplicated stick assignement</source>
-        <translation type="obsolete">Asignación suplicada de stick</translation>
-    </message>
-</context>
-<context>
-    <name>logsDialog</name>
-    <message>
-        <source>Companion Log Viewer</source>
-        <translation type="obsolete">Visor de registros de Companion</translation>
-    </message>
-    <message>
-        <source>Filename</source>
-        <translation type="obsolete">Nombre Archivo</translation>
-    </message>
-    <message>
-        <source>Open LogFile</source>
-        <translation type="obsolete">Abrir archivo Registros</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation type="obsolete">Resetear</translation>
-    </message>
-    <message>
-        <source>Fly sessions</source>
-        <translation type="obsolete">Sesiones de vuelo</translation>
-    </message>
-    <message>
-        <source>Telemetry logs</source>
-        <translation type="obsolete">Registros de telemetría</translation>
-    </message>
-    <message>
-        <source>Time (hh:mm:ss)</source>
-        <translation type="obsolete">Hora (hh:mm:ss)</translation>
-    </message>
-    <message>
-        <source>Cannot write file %1:
-%2.</source>
-        <translation type="obsolete">No se puede escribir el archivo %1:
-%2.</translation>
-    </message>
-    <message>
-        <source>Select your log file</source>
-        <translation type="obsolete">Selecciona tu archivo de registros</translation>
-    </message>
-    <message>
-        <source>Available fields</source>
-        <translation type="obsolete">Campos disponibles</translation>
-    </message>
-    <message>
-        <source>The selected logfile contains %1 invalid lines out of  %2 total lines</source>
-        <translation type="obsolete">El archivo de registros elegido contiene %1 lineas inválidas de un total de  %2 lineas</translation>
-    </message>
 </context>
 <context>
     <name>mdiChild</name>
@@ -13043,14 +11014,6 @@ Presiona cancelar para abortar la calibración del joystick</translation>
         <translation>Preferencias</translation>
     </message>
     <message>
-        <source>SD Structure path</source>
-        <translation type="obsolete">Estructura de archivos SD</translation>
-    </message>
-    <message>
-        <source>Processor ID</source>
-        <translation type="obsolete">Procesador ID</translation>
-    </message>
-    <message>
         <location filename="../imgpreferences.ui" line="74"/>
         <source>Simulator capture folder</source>
         <translation>Carpeta de captura de simulador</translation>
@@ -13059,116 +11022,6 @@ Presiona cancelar para abortar la calibración del joystick</translation>
         <location filename="../imgpreferences.ui" line="129"/>
         <source>Use clipboard only</source>
         <translation>Usar sólo portapapeles</translation>
-    </message>
-    <message>
-        <source>Recent History Size</source>
-        <translation type="obsolete">Tamaño Histria Reciente</translation>
-    </message>
-    <message>
-        <source>Download</source>
-        <translation type="obsolete">Descargar</translation>
-    </message>
-    <message>
-        <source>Default Channel Order</source>
-        <translation type="obsolete">Orden Perderterminado de Canales</translation>
-    </message>
-    <message>
-        <source>Default Stick Mode</source>
-        <translation type="obsolete">Modo Prederterminado Sticks</translation>
-    </message>
-    <message>
-        <source>Channel order
-
-This is used by the templated to determine which channel goes to what number output.</source>
-        <translation type="obsolete">Orden Canales
-
-Esto es usado por la plantilla para determinar que canal va con cada numero de salida.</translation>
-    </message>
-    <message>
-        <source>Mode selection:
-
-Mode 1:
-  Left stick:  Elevator, Rudder
-  Right stick:  Throttle, Aileron
-
-Mode 2:
-  Left stick:  Throttle, Rudder
-  Right stick:  Elevator, Aileron
-
-Mode 3:
-  Left stick:  Elevator, Aileron
-  Right stick:  Throttle, Rudder
-
-Mode 4:
-  Left stick:  Throttle, Aileron
-  Right stick:  Elevator, Rudder
-
-</source>
-        <translation type="obsolete">Selección de Modo:
-
-Modo 1:
-  Stick Izquierdo:  Elevador, Timón
-  Stick Derecho:  Acelerador, Alerón
-
-Modo 2:
-  Stick Izquierdo:  Acelerador, Timón
-  Stick Derecho:  Elevador, Alerón
-
-Modo 3:
-  Stick Izquierdo:  Elevador, Alerón
-  Stick Derecho:  Acelerador, Timón
-
-Modo 4:
-  Stick Izquierdo:  Acelerador, Alerón
-  Stick Derecho:  Elevador, Timón
-
-</translation>
-    </message>
-    <message>
-        <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="obsolete">Modo 1 (RUD ELE THR AIL)</translation>
-    </message>
-    <message>
-        <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="obsolete">Modo 2  (RUD THR ELE AIL)</translation>
-    </message>
-    <message>
-        <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="obsolete">Modo 3 (AIL ELE THR RUD)</translation>
-    </message>
-    <message>
-        <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="obsolete">Modo 4 (AIL THR ELE RUD)</translation>
-    </message>
-    <message>
-        <source>Automatic Backup Folder</source>
-        <translation type="obsolete">Carpeta copia de seguridad Automática</translation>
-    </message>
-    <message>
-        <source>Automatically add version number to the filename after download</source>
-        <translation type="obsolete">Añade automáticamente el número de versión al nombre de archivo después de la descarga</translation>
-    </message>
-    <message>
-        <source>Voice</source>
-        <translation type="obsolete">Voz</translation>
-    </message>
-    <message>
-        <source>Set language of voice.
-May be different from firmware language</source>
-        <translation type="obsolete">Selecciona el lenguaje de la voz.
-Puede ser diferente del lenguaje del firmware</translation>
-    </message>
-    <message>
-        <source>Find Executable</source>
-        <translation type="obsolete">Encontrar ejecutable</translation>
-    </message>
-    <message>
-        <source>Google Earth Executable</source>
-        <translation type="obsolete">Ejecutable Google Earth</translation>
-    </message>
-    <message>
-        <source>Check for updates on startup</source>
-        <translation type="obsolete">Comprobar actualizaciones al arrancar</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="349"/>
@@ -13218,30 +11071,6 @@ Puede ser diferente del lenguaje del firmware</translation>
         <translation>Abrir Carpeta</translation>
     </message>
     <message>
-        <source>Check for updates</source>
-        <translation type="obsolete">Comprobar actualizaciones</translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation type="obsolete">Lenguaje</translation>
-    </message>
-    <message>
-        <source>Profile Name</source>
-        <translation type="obsolete">Nombre Perfil</translation>
-    </message>
-    <message>
-        <source>Export Profile</source>
-        <translation type="obsolete">Exportar Perfil</translation>
-    </message>
-    <message>
-        <source>Save Profile</source>
-        <translation type="obsolete">Guardar Perfil</translation>
-    </message>
-    <message>
-        <source>Import Profile</source>
-        <translation type="obsolete">Importar Perfil</translation>
-    </message>
-    <message>
         <location filename="../imgpreferences.ui" line="146"/>
         <source>Blue</source>
         <oldsource>Blu</oldsource>
@@ -13251,22 +11080,6 @@ Puede ser diferente del lenguaje del firmware</translation>
         <location filename="../imgpreferences.ui" line="64"/>
         <source>Simu BackLight</source>
         <translation>Luz de fondo del simulador</translation>
-    </message>
-    <message>
-        <source>Check for selected Fw updates</source>
-        <translation type="obsolete">Comprobar en seleccionado las actualizaciones de firmware</translation>
-    </message>
-    <message>
-        <source>Ask use of wizard for new models</source>
-        <translation type="obsolete">Pregunta usar el asistente para nuevos modelos</translation>
-    </message>
-    <message>
-        <source>Show Splash At Start</source>
-        <translation type="obsolete">Mostrar Pantalla de inicio al comenzar</translation>
-    </message>
-    <message>
-        <source>Remember switches in simulator</source>
-        <translation type="obsolete">Recordar los switch en el simulador</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="151"/>
@@ -13287,18 +11100,6 @@ Puede ser diferente del lenguaje del firmware</translation>
         <location filename="../imgpreferences.ui" line="166"/>
         <source>Yellow</source>
         <translation>Amarillo</translation>
-    </message>
-    <message>
-        <source>Profile slot</source>
-        <translation type="obsolete">Slot Perfil</translation>
-    </message>
-    <message>
-        <source>auto backup before write</source>
-        <translation type="obsolete">copia de seguridad automática antes de escribir</translation>
-    </message>
-    <message>
-        <source>Ask for flashing after Download</source>
-        <translation type="obsolete">Pregunta por flashear después de descargar</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="120"/>
