@@ -159,6 +159,12 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     case 14:
 //flOz
     case 21:
+//Hours
+    case 22:
+//Minutes
+    case 23:
+//Seconds
+    case 24:
       att = ZENSKI;
       break;
     case 100:
@@ -239,17 +245,17 @@ I18N_PLAY_FUNCTION(pl, playDuration, int seconds PLAY_DURATION_ATT)
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0 || IS_PLAY_TIME()) {
-    PLAY_NUMBER(tmp, UNIT_HOURS+1, ZENSKI);
+    PLAY_NUMBER(tmp, UNIT_HOURS, ZENSKI);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
-    PLAY_NUMBER(tmp, UNIT_MINUTES+1, ZENSKI);
+    PLAY_NUMBER(tmp, UNIT_MINUTES, ZENSKI);
   }
 
   if (seconds > 0) {
-    PLAY_NUMBER(seconds, UNIT_SECONDS+1, ZENSKI);
+    PLAY_NUMBER(seconds, UNIT_SECONDS, ZENSKI);
   }
 }
 
