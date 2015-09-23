@@ -46,7 +46,8 @@ void init_trainer_ppm()
   trainerPulsesData.ppm.ptr = trainerPulsesData.ppm.pulses;
 
   configure_pins( TRAINER_GPIO_PIN_OUT, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_2 | PIN_OS25) ;
-  configure_pins( TRAINER_GPIO_PIN_IN, PIN_PORTA | PIN_INPUT ) ;
+  configure_pins( TRAINER_GPIO_PIN_DETECT, PIN_PORTA | PIN_INPUT ) ;
+
   TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN ;
 
   // setupTrainerPulses() is also configuring registers,

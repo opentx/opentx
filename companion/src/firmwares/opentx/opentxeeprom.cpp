@@ -1919,9 +1919,12 @@ class CustomFunctionsConversionTable: public ConversionTable {
         val++;
         if (IS_ARM(board)) {
           addConversion(FuncVolume, val++);
-          addConversion(FuncReserve, val++);
-          addConversion(FuncReserve, val++);
-          addConversion(FuncReserve, val++);
+          addConversion(FuncSetFailsafeInternalModule, val);
+          addConversion(FuncSetFailsafeExternalModule, val++);
+          addConversion(FuncRangeCheckInternalModule, val);
+          addConversion(FuncRangeCheckExternalModule, val++);
+          addConversion(FuncBindInternalModule, val);
+          addConversion(FuncBindExternalModule, val++);
         }
         addConversion(FuncPlaySound, val++);
         addConversion(FuncPlayPrompt, val++);
@@ -2078,6 +2081,21 @@ class ArmCustomFunctionField: public TransformedField {
           if (version >= 216) {
             *((uint16_t *)_param) = fn.param;
             *((uint8_t *)(_param+3)) = fn.func - FuncSetTimer1;
+          }
+        }
+        else if (fn.func >= FuncSetFailsafeInternalModule && fn.func <= FuncSetFailsafeExternalModule) {
+          if (version >= 216) {
+            *((uint16_t *)_param) = fn.func - FuncSetFailsafeInternalModule;
+          }
+        }
+        else if (fn.func >= FuncRangeCheckInternalModule && fn.func <= FuncRangeCheckExternalModule) {
+          if (version >= 216) {
+            *((uint16_t *)_param) = fn.func - FuncRangeCheckInternalModule;
+          }
+        }
+        else if (fn.func >= FuncBindInternalModule && fn.func <= FuncBindExternalModule) {
+          if (version >= 216) {
+            *((uint16_t *)_param) = fn.func - FuncBindInternalModule;
           }
         }
         else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic || fn.func == FuncPlayScript) {

@@ -598,6 +598,12 @@ enum AssignFunc {
   FuncBackgroundMusicPause,
   FuncAdjustGV1,
   FuncAdjustGVLast = FuncAdjustGV1+C9X_MAX_GVARS-1,
+  FuncSetFailsafeInternalModule,
+  FuncSetFailsafeExternalModule,
+  FuncRangeCheckInternalModule,
+  FuncRangeCheckExternalModule,
+  FuncBindInternalModule,
+  FuncBindExternalModule,
   FuncCount,
   FuncReserve = -1
 };
@@ -1340,7 +1346,8 @@ enum Capability {
   HasInputDiff,
   HasMixerExpo,
   MixersMonitor,
-  HasBatMeterRange
+  HasBatMeterRange,
+  DangerousFunctions,
 };
 
 class SimulatorInterface;
