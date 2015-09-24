@@ -104,7 +104,7 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
 #define LEN_TARANIS_PROTOCOLS  "\004"          
-#define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM?"
+#define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM?""CRSF"
 
 #if defined(MODULE_D16_EU_ONLY_SUPPORT)
   #define LEN_XJT_PROTOCOLS    "\006"
