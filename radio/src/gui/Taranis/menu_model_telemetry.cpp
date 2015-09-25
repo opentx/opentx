@@ -610,7 +610,8 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_DELETE_ALL_SENSORS:
         lcd_putsAtt(0, y, STR_DELETE_ALL_SENSORS, attr);
-        s_editMode = 0;
+        if (attr)
+          s_editMode = 0;
         if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
           killEvents(KEY_ENTER);
           POPUP_CONFIRMATION(STR_CONFIRMDELETE);
