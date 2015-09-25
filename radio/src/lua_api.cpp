@@ -1823,52 +1823,71 @@ void luaLoadPermanentScripts()
   }
 }
 
-char lua_warning_str[WARNING_LINE_LEN+1];
-char lua_warning_info[WARNING_LINE_LEN+1];
+#define LUA_WARNING_INFO_LEN 64
+char lua_warning_info[LUA_WARNING_INFO_LEN+1];
 
-void luaError(uint8_t error, bool exit_button=false)
+void displayLuaError(const char * title)
 {
-  const char * msg = lua_tostring(L, -1);
+  displayBox(title);
+  if (lua_warning_info[0]) {
+    char * split = strstr(lua_warning_info, ": ");
+    if (split) {
+      lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, split-lua_warning_info, SMLSIZE);
+      lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, split+2, lua_warning_info+LUA_WARNING_INFO_LEN-split, SMLSIZE);
+    }
+    else {
+      lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, 40, SMLSIZE);
+    }
+  }
+}
 
+void displayAcknowledgeLuaError(uint8_t event)
+{
+  s_warning_result = false;
+  displayLuaError(s_warning);
+  if (event == EVT_KEY_BREAK(KEY_EXIT)) {
+    s_warning = NULL;
+  }
+}
+
+void luaError(uint8_t error, bool acknowledge)
+{
+  const char * errorTitle;
+
+  switch (error) {
+    case SCRIPT_SYNTAX_ERROR:
+      errorTitle = STR_SCRIPT_SYNTAX_ERROR;
+      break;
+    case SCRIPT_KILLED:
+      errorTitle = STR_SCRIPT_KILLED;
+      break;
+    case SCRIPT_PANIC:
+      errorTitle = STR_SCRIPT_PANIC;
+      break;
+    default:
+      errorTitle = STR_SCRIPT_ERROR;
+      break;
+  }
+
+  const char * msg = lua_tostring(L, -1);
   if (msg) {
 #if defined(SIMU)
     if (!strncmp(msg, ".", 2)) msg += 1;
 #endif
     if (!strncmp(msg, "/SCRIPTS/", 9)) msg += 9;
-    strncpy(lua_warning_str, msg, WARNING_LINE_LEN);
-    lua_warning_str[WARNING_LINE_LEN] = '\0';
-
-    for (int i=0; i<WARNING_LINE_LEN; i++) {
-      if (msg[i] == ':' && msg[i+1] == ' ') {
-        lua_warning_str[i] = '\0';
-        strncpy(lua_warning_info, &msg[i+2], WARNING_LINE_LEN);
-        lua_warning_info[WARNING_LINE_LEN] = '\0';
-        SET_WARNING_INFO(lua_warning_info, WARNING_LINE_LEN, 0);
-        break;
-      }
-    }
-    msg = lua_warning_str;
+    strncpy(lua_warning_info, msg, LUA_WARNING_INFO_LEN);
+    lua_warning_info[LUA_WARNING_INFO_LEN] = '\0';
   }
   else {
-    switch (error) {
-      case SCRIPT_SYNTAX_ERROR:
-        msg = STR_SCRIPT_SYNTAX_ERROR;
-        break;
-      case SCRIPT_KILLED:
-        msg = STR_SCRIPT_KILLED;
-        break;
-      case SCRIPT_PANIC:
-        msg = STR_SCRIPT_PANIC;
-        break;
-    }
+    lua_warning_info[0] = '\0';
   }
 
-  if (exit_button) {
-    POPUP_WARNING(msg);
+  if (acknowledge) {
+    s_warning = errorTitle;
+    popupFunc = displayAcknowledgeLuaError;
   }
   else {
-    displayBox(msg);
-    lcd_puts(WARNING_LINE_X, WARNING_LINE_Y+FH, lua_warning_info);
+    displayLuaError(errorTitle);
   }
 }
 

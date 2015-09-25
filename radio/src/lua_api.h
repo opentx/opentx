@@ -95,7 +95,8 @@
   extern ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS];
   void luaClose();
   bool luaTask(uint8_t evt, uint8_t scriptType, bool allowLcdUsage);
-  void luaExec(const char *filename);
+  void luaExec(const char * filename);
+  void luaError(uint8_t error, bool acknowledge=true);
   int luaGetMemUsed();
   #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
   uint8_t isTelemetryScriptAvailable(uint8_t index);
