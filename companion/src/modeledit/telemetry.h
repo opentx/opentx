@@ -89,7 +89,7 @@ class TelemetrySensorPanel: public ModelPanel
     void update();
 
   signals:
-    void nameModified();
+    void dataModified();
 
   protected slots:
     void on_name_editingFinished();

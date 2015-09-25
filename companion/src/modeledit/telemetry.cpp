@@ -645,7 +645,7 @@ void TelemetrySensorPanel::on_name_editingFinished()
 {
   if (!lock) {
     strcpy(sensor.label, ui->name->text().toAscii());
-    emit nameModified();
+    emit dataModified();
     emit modified();
   }
 }
@@ -667,7 +667,15 @@ void TelemetrySensorPanel::on_formula_currentIndexChanged(int index)
       sensor.prec = 2;
       sensor.unit = SensorData::UNIT_VOLTS;
     }
-    update();
+    else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION) {
+      sensor.prec = 0;
+      sensor.unit = SensorData::UNIT_MAH;
+    }
+    else if (sensor.formula == SensorData::TELEM_FORMULA_DIST) {
+      sensor.prec = 0;
+      sensor.unit = SensorData::UNIT_METERS;
+    }
+    emit dataModified();
     emit modified();
   }
 }
@@ -685,7 +693,7 @@ void TelemetrySensorPanel::on_prec_valueChanged()
 {
   if (!lock) {
     sensor.prec = ui->prec->value();
-    update();
+    emit dataModified();
     emit modified();
   }
 }
@@ -709,7 +717,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
       TelemetrySensorPanel * panel = new TelemetrySensorPanel(this, model.sensorData[i], model, generalSettings, firmware);
       ui->sensorsLayout->addWidget(panel);
       sensorPanels[i] = panel;
-      connect(panel, SIGNAL(nameModified()), this, SLOT(update()));
+      connect(panel, SIGNAL(dataModified()), this, SLOT(update()));
       connect(panel, SIGNAL(modified()), this, SLOT(onModified()));
     }
   }
