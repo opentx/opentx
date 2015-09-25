@@ -45,6 +45,11 @@
   display_t displayBuf[DISPLAY_BUF_SIZE] __DMA;
 #endif
 
+inline bool lcdIsPointOutside(coord_t x, coord_t y)
+{
+  return (x<0 || x>=LCD_W || y<0 || y>=LCD_H);
+}
+
 void lcd_clear()
 {
   memset(displayBuf, 0, DISPLAY_BUFER_SIZE);
@@ -476,6 +481,8 @@ void lcd_hline(coord_t x, coord_t y, coord_t w, LcdFlags att)
 #if !defined(BOOT)
 void lcd_line(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, LcdFlags att)
 {
+  if (lcdIsPointOutside(x1, y1) || lcdIsPointOutside(x2, y2)) return;
+
   int dx = x2-x1;      /* the horizontal distance of the line */
   int dy = y2-y1;      /* the vertical distance of the line */
   int dxabs = abs(dx);
@@ -1029,7 +1036,7 @@ void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
 
 void lcd_plot(coord_t x, coord_t y, LcdFlags att)
 {
-  if (x<0 || x>=LCD_W || y<0 || y>=LCD_H) return;
+  if (lcdIsPointOutside(x, y)) return;
   uint8_t *p = &displayBuf[ y / 2 * LCD_W + x ];
   uint8_t mask = PIXEL_GREY_MASK(y, att);
   lcd_mask(p, mask, att);
