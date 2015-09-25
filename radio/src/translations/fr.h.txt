@@ -949,6 +949,7 @@
 #define TR_EEBACKUP            "\004[ENTER Long]: Sauvegarder l'EEPROM"
 #define TR_FACTORYRESET        "\016[MENU Long]: RAZ d'usine"
 #define TR_CONFIRMRESET        "Effacer TOUS modèles/réglages?"
+#define TR_TO_MANY_LUA_SCRIPTS "Trop de scripts lua!"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "RSSI Max"
