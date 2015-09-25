@@ -182,11 +182,53 @@ void displayCustomTelemetryScreen(uint8_t index)
   displayNumbersTelemetryScreen(screen);
 }
 
+#if defined(LUA)
+
+#define LUA_SCRIPT_ERROR_Y    3*FH
+// TODO more visual appealing implementation and text translations
+void displayLuaScriptError(uint8_t state, int index)
+{
+  TelemetryScriptData & script = g_model.frsky.screens[index].script;
+  char filename[sizeof(script.file)+1];
+  strncpy(filename, script.file, sizeof(script.file));
+  filename[sizeof(script.file)] = '\0';
+
+  lcd_putsAtt(0, LUA_SCRIPT_ERROR_Y, filename, 0);
+  lcd_putsAtt(lcdLastPos, LUA_SCRIPT_ERROR_Y, ": ", 0);
+  switch (state) {
+    case SCRIPT_SYNTAX_ERROR:
+      lcd_putsAtt(lcdLastPos, LUA_SCRIPT_ERROR_Y, "Script syntax error", 0);
+      break;
+    case SCRIPT_PANIC:
+      lcd_putsAtt(lcdLastPos, LUA_SCRIPT_ERROR_Y, "Script panic", 0);
+      break;
+    case SCRIPT_KILLED:
+      lcd_putsAtt(lcdLastPos, LUA_SCRIPT_ERROR_Y, "Script killed", 0);
+      break;
+    default:
+      lcd_putsAtt(lcdLastPos, LUA_SCRIPT_ERROR_Y, "Unknown error", 0);
+  }
+}
+#endif
+
 bool displayTelemetryScreen()
 {
 #if defined(LUA)
   if (TELEMETRY_SCREEN_TYPE(s_frsky_view) == TELEMETRY_SCREEN_TYPE_SCRIPT) {
-    return true;
+    uint8_t state = isTelemetryScriptAvailable(s_frsky_view);
+    switch (state) {
+      case SCRIPT_OK:
+        return true;  //contents will be drawed by Lua Task
+      case SCRIPT_NOFILE:
+        return false;  //requested lua telemetry screen not available
+      case SCRIPT_SYNTAX_ERROR:
+      case SCRIPT_PANIC:
+      case SCRIPT_KILLED:
+        //display script error
+        displayLuaScriptError(state, s_frsky_view+1);
+        return true;
+    }
+    return false;
   }
 #endif
 
