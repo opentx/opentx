@@ -1826,40 +1826,49 @@ void luaLoadPermanentScripts()
 char lua_warning_str[WARNING_LINE_LEN+1];
 char lua_warning_info[WARNING_LINE_LEN+1];
 
-void luaError(uint8_t error)
+void luaError(uint8_t error, bool exit_button=false)
 {
-  const char *msg = lua_tostring(L, -1);
+  const char * msg = lua_tostring(L, -1);
+
   if (msg) {
 #if defined(SIMU)
-    if (!strncmp(msg, "./", 2)) msg += 2;
-#else
-    if (!strncmp(msg, "/SCRIPTS/", 9)) msg += 9;
+    if (!strncmp(msg, ".", 2)) msg += 1;
 #endif
+    if (!strncmp(msg, "/SCRIPTS/", 9)) msg += 9;
     strncpy(lua_warning_str, msg, WARNING_LINE_LEN);
     lua_warning_str[WARNING_LINE_LEN] = '\0';
-    POPUP_WARNING(lua_warning_str);
+
     for (int i=0; i<WARNING_LINE_LEN; i++) {
       if (msg[i] == ':' && msg[i+1] == ' ') {
         lua_warning_str[i] = '\0';
         strncpy(lua_warning_info, &msg[i+2], WARNING_LINE_LEN);
         lua_warning_info[WARNING_LINE_LEN] = '\0';
         SET_WARNING_INFO(lua_warning_info, WARNING_LINE_LEN, 0);
+        break;
       }
     }
+    msg = lua_warning_str;
   }
   else {
     switch (error) {
       case SCRIPT_SYNTAX_ERROR:
-        msg = "Script syntax error";
+        msg = STR_SCRIPT_SYNTAX_ERROR;
         break;
       case SCRIPT_KILLED:
-        msg = "Script killed";
+        msg = STR_SCRIPT_KILLED;
         break;
       case SCRIPT_PANIC:
-        msg = "Script panic";
+        msg = STR_SCRIPT_PANIC;
         break;
     }
+  }
+
+  if (exit_button) {
     POPUP_WARNING(msg);
+  }
+  else {
+    displayBox(msg);
+    lcd_puts(WARNING_LINE_X, WARNING_LINE_Y+FH, lua_warning_info);
   }
 }
 
