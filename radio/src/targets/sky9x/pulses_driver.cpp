@@ -78,7 +78,7 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
   pwmptr->PWM_ENA = PWM_ENA_CHID3 ;                             // Enable channel 3
   pwmptr->PWM_IER1 = PWM_IER1_CHID3 ;
 
-#if !defined(REVA) && !defined(REVX)
+#if !defined(REVA)
   // PWM1 for PPM2
   configure_pins(PIO_PC15, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP ) ;
   pwmptr->PWM_CH_NUM[1].PWM_CMR = 0x0000000B ;    // CLKB
@@ -137,9 +137,9 @@ void disable_ppm(uint32_t port)
     PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
   }
   else {
-#if !defined(REVA) && !defined(REVX)
+#if !defined(REVA) 
     pioptr = PIOC ;
-    pioptr->PIO_PER = PIO_PC17 ;                                            // Assign A17 to PIO
+    pioptr->PIO_PER = PIO_PC17 ;                                            // Assign C17 to PIO
     PWM->PWM_IDR1 = PWM_IDR1_CHID1 ;
     NVIC_DisableIRQ(PWM_IRQn) ;
 #endif
@@ -290,7 +290,7 @@ extern "C" void PWM_IRQHandler(void)
     }
   }
 
-#if !defined(REVA) && !defined(REVX)
+#if !defined(REVA)
   if (reason & PWM_ISR1_CHID1) {
     pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = modulePulsesData[EXTRA_MODULE].ppm.pulses[modulePulsesData[EXTRA_MODULE].ppm.index++] ;  // Period in half uS
     if (modulePulsesData[EXTRA_MODULE].ppm.pulses[modulePulsesData[EXTRA_MODULE].ppm.index] == 0) {
