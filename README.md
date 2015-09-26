@@ -1,7 +1,7 @@
 ﻿##OpenTX 2.1 Branch
 
-[![Build Status](https://img.shields.io/badge/%E2%8A%AA%20GITTER%20-JOIN%20CHAT%20%E2%86%92-brightgreen.svg?style=flat)](https://travis-ci.org/opentx/opentx)
-[![Join the chat at https://gitter.im/opentx/opentx](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/opentx/opentx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/opentx/opentx.svg?branch=master)](https://travis-ci.org/opentx/opentx)
+[![Join the chat at https://gitter.im/opentx/opentx](https://img.shields.io/badge/%E2%8A%AA%20GITTER%20-JOIN%20CHAT%20%E2%86%92-brightgreen.svg?style=flat)](https://gitter.im/opentx/opentx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Donate using Paypal](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DJ9MASSKVW8WN)
 
 The ongoing development on 2.1.x is done in this branch.
