@@ -1,4 +1,4 @@
-/* German checked 12.09.2015 r096 opentx V2.1.4 für X9D,X9D+, X9E, Th9, 9XR, 9XR-Pro  
+/* German checked 27.09.2015 r096 opentx V2.1.4 für X9D,X9D+, X9E, Th9, 9XR, 9XR-Pro  
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -104,7 +104,7 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
 #define LEN_TARANIS_PROTOCOLS  "\004"          
-#define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM2"
+#define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM?"
 
 #if defined(MODULE_D16_EU_ONLY_SUPPORT)
   #define LEN_XJT_PROTOCOLS    "\006"
@@ -115,7 +115,7 @@
 #endif
 
 #define LEN_DSM_PROTOCOLS      "\004"
-#define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
+#define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"  //LP45 =Low Power 4 und 5 Kanal
 
 #define LEN_VTRIMINC           TR("\007", "\014") // ursprüglich "\006", "\013"
 #define TR_VTRIMINC            TR("Expo   ""ExFein ""Fein   ""Mittel ""Grob   ", "Exponentiell""Extrafein   ""Fein        ""Mittel      ""Grob        ")
@@ -526,7 +526,7 @@
 #define TR_VTRAINERMODES       "Lehrer/Buchse\0    ""Schüler/Buchse\0   ""Lehrer/SBUS Modul\0""Lehrer/CPPM Modul\0""Lehrer/Batterie\0"
 
 #define LEN_VFAILSAFE          "\015" // "\013" original
-#define TR_VFAILSAFE           "Kein Failsafe""Halte Pos.\0  ""Angepasst\0   ""Kein Signal\0 ""Empfänger\0  "
+#define TR_VFAILSAFE           "Kein Failsafe""Halte Pos.\0  ""Kanäle\0      ""Kein Signal\0 ""Empfänger\0   "
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -658,7 +658,7 @@
 #define TR_RANGE               TR(INDENT "Bereich", INDENT "Variobereich m/s") // 9XR-Pro
 #define TR_CENTER              TR(INDENT "Mitte m/s", INDENT "Variomitte     m/s")
 #define TR_BAR                 "Streifen"
-#define TR_ALARM               TR(INDENT "Ein bei", INDENT "Ein bei Alarm")  //9XR-Pro
+#define TR_ALARM               TR(INDENT "Alarme ", INDENT "Ein bei Alarm")  //9XR-Pro
 #define TR_USRDATA             "Daten berechnen aus"
 #define TR_BLADES              TR(INDENT "Prop", INDENT "Prop-Blätter") //9XR-Pro
 #define TR_SCREEN              "Telm-Bild "
@@ -787,9 +787,9 @@
 #define TR_MENUSTAT            "STAT"
 #define TR_MENUDEBUG           "DEBUG"
 #if defined(CPUARM)
-  #define TR_RXNUM             TR(INDENT "RxNum", INDENT "Modell-Match-Nr.")
+  #define TR_RXNUM             TR(INDENT "RxNummer", INDENT "Modell-Match-Nr.")
 #else
-  #define TR_RXNUM             "RxNum"
+  #define TR_RXNUM             "RxNummer"
 #endif
 #define TR_SYNCMENU            "Sync [MENU]"
 #define TR_LIMIT               INDENT "Grenzen"   
@@ -850,10 +850,10 @@
 #define TR_NO_MODELS_ON_SD     "Kein Modell auf SD"
 #define TR_NO_BITMAPS_ON_SD    "Keine Bitmaps auf SD"
 #define TR_NO_SCRIPTS_ON_SD    "Keine Scripte auf SD"
-#define TR_SCRIPT_SYNTAX_ERROR "Script syntax error"
-#define TR_SCRIPT_PANIC        "Script panic"
-#define TR_SCRIPT_KILLED       "Script killed"
-#define TR_SCRIPT_ERROR        "Unknown error"
+#define TR_SCRIPT_SYNTAX_ERROR "Script Syntax Fehler"
+#define TR_SCRIPT_PANIC        "Script panic"  //  ??
+#define TR_SCRIPT_KILLED       "Script killed"  // ??
+#define TR_SCRIPT_ERROR        "Unbekannter Fehler"
 #define TR_PLAY_FILE           "Spielen"
 #define TR_DELETE_FILE         "Löschen"
 #define TR_COPY_FILE           "Kopieren"
@@ -920,8 +920,8 @@
 #define TR_SPEAKER             INDENT "Lautspr"
 #define TR_BUZZER              INDENT "Summer"
 #define TR_BYTES               "Bytes"
-#define TR_MODULE_BIND         "[Bind]"
-#define TR_MODULE_RANGE        "[Range]"
+#define TR_MODULE_BIND         TR("Bind","[Bind]")   //9XR-Pro
+#define TR_MODULE_RANGE        TR("Rang", "[Range]")  //9XR-Pro
 #define TR_RESET_BTN           TR("[Reset]", "[Reset Trim]")
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             "----DSC Buchse PPM In/Out------" //DSC Buchse Trainer Buchse
@@ -1085,7 +1085,7 @@
 #define TR_ONLYPOSITIVE        "Nur Positiv"
 #define TR_FILTER              "Filter aktiv"
 #define TR_TELEMETRYFULL       "Telemetriezeilen voll!"
-#define TR_IGNORE_INSTANCE     INDENT "Ignore Instanz"  // unklar für was ganz genau
+#define TR_IGNORE_INSTANCE     TR(INDENT "Keine ID", INDENT "Keine Multisen-ID")	//unklar was gemeint ist
 #define TR_DISCOVER_SENSORS    INDENT "Start Sensorsuche"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Stop Sensorsuche"
 #define TR_DELETE_ALL_SENSORS  INDENT "Lösche alle Sensoren"
