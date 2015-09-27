@@ -432,10 +432,10 @@
 
 #if defined(CPUARM)
   #define LEN_VTELEMSCREENTYPE "\007"
-  #define TR_VTELEMSCREENTYPE  "None\0  "":Werte\0"":Balken""Script\0"
+  #define TR_VTELEMSCREENTYPE  " None  "" Werte "" Balken"" Script"
 #else
-  #define LEN_VTELEMSCREENTYPE "\006" 
-  #define TR_VTELEMSCREENTYPE  "Werte\0""Balken"
+  #define LEN_VTELEMSCREENTYPE "\007" 
+  #define TR_VTELEMSCREENTYPE  " Werte "" Balken"
 #endif
 
 #define LEN_GPSFORMAT          "\004"
@@ -787,9 +787,9 @@
 #define TR_MENUSTAT            "STAT"
 #define TR_MENUDEBUG           "DEBUG"
 #if defined(CPUARM)
-  #define TR_RXNUM             TR(INDENT "RxNummer", INDENT "Modell-Match-Nr.")
+  #define TR_RXNUM             TR(INDENT "Empf Nr.", INDENT "Modell-Match-Nr.")
 #else
-  #define TR_RXNUM             "RxNummer"
+  #define TR_RXNUM             "Empf Nr."
 #endif
 #define TR_SYNCMENU            "Sync [MENU]"
 #define TR_LIMIT               INDENT "Grenzen"   
@@ -851,8 +851,8 @@
 #define TR_NO_BITMAPS_ON_SD    "Keine Bitmaps auf SD"
 #define TR_NO_SCRIPTS_ON_SD    "Keine Scripte auf SD"
 #define TR_SCRIPT_SYNTAX_ERROR "Script Syntax Fehler"
-#define TR_SCRIPT_PANIC        "Script panic"  //  ??
-#define TR_SCRIPT_KILLED       "Script killed"  // ??
+#define TR_SCRIPT_PANIC        "Script panic"   //??
+#define TR_SCRIPT_KILLED       "Script killed"  //??
 #define TR_SCRIPT_ERROR        "Unbekannter Fehler"
 #define TR_PLAY_FILE           "Spielen"
 #define TR_DELETE_FILE         "Löschen"
@@ -1085,7 +1085,7 @@
 #define TR_ONLYPOSITIVE        "Nur Positiv"
 #define TR_FILTER              "Filter aktiv"
 #define TR_TELEMETRYFULL       "Telemetriezeilen voll!"
-#define TR_IGNORE_INSTANCE     TR(INDENT "Keine ID", INDENT "Keine Multisen-ID")	//unklar was gemeint ist
+#define TR_IGNORE_INSTANCE     TR(INDENT "Keine ID", INDENT "Keine Multisen-ID")	//unklar
 #define TR_DISCOVER_SENSORS    INDENT "Start Sensorsuche"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Stop Sensorsuche"
 #define TR_DELETE_ALL_SENSORS  INDENT "Lösche alle Sensoren"
