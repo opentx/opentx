@@ -109,6 +109,8 @@ ifeq ($(PCB), TARANIS)
   EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc
   EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Core/inc
   EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/inc
+  EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
+  EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/inc
   EXTRAINCDIRS += .. ../../.. ../../../fonts/std
   ifeq ($(PCBREV), REV4a)
     CPPDEFS += -DREV4a
@@ -237,6 +239,11 @@ endif
 CPFLAGS = $(MCFLAGS) $(OPT) -gdwarf-2 -mthumb -fomit-frame-pointer -Wall -Wstrict-prototypes -fverbose-asm $(DEFS)
 LDFLAGS = $(MCFLAGS) -mthumb -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(FULL_PRJ).map,--cref,--no-warn-mismatch,--gc-sections $(LIBDIR) $(NEWLIB_NANO_FLAGS)
 CPPFLAGS = $(MCFLAGS) $(OPT) -gdwarf-2 -mthumb -fomit-frame-pointer -fdata-sections -ffunction-sections -Wall -fverbose-asm $(DEFS)
+
+ifeq ($(WARNINGS_AS_ERRORS), YES)
+  CPFLAGS  += -Werror
+  CPPFLAGS += -Werror
+endif
 
 CPPFLAGS += $(CPPDEFS)
 CPFLAGS += $(CPPDEFS)

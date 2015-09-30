@@ -1,21 +1,81 @@
-<h2>Version 2.1.2 / <set date></h2>
+<h2>Version 2.1.4 / <set date></h2>
+
+[AVR boards]
+<ul>
+<li>Fixed several problems with automatic playing of Physical and Logical Switches changes (eg LS15-on.wav, SG-mid.wav) (<a href=https://github.com/opentx/opentx/issues/2855>#2855</a>)</li>
+<li>Sorce selector did not work in Telemetry screen for Bars (<a href=https://github.com/opentx/opentx/issues/2843>#2843</a>)</li>
+</ul>
+
+
+<h2>Version 2.1.3 / 2015-09-09</h2>
+
+[ARM boards]
+<ul>
+<li>Fix shift in automatic switch sounds (<a href=https://github.com/opentx/opentx/issues/2855>#2855</a>)</li>
+</ul>
+
+[Taranis]
+<ul>
+<li>Fix broken popup menu on some special functions (<a href=https://github.com/opentx/opentx/issues/2851>#2851</a>)</li>
+</ul>
+
+[AVR boards]
+<ul>
+<li>Fix timers not working (<a href=https://github.com/opentx/opentx/issues/2848>#2848</a>)</li>
+</ul>
+
+
+<h2>Version 2.1.2 / 2015-09-07</h2><br>
+
+<b>PLEASE NOTE the following important information:</b>
+<ul>
+<li>FrSky Taranis X9E users are highly advised to upgrade firmware (including bootloader!) to this version or its equivalent when provided by FrSky due to the risk of shutdown upon software error that was present in previous versions.</li>
+<li>Telemetry sensors are no longer continuously detected, it is now necessary to go to the telemetry setup page and select the "Discover new sensors" menu item. This prevents creation of non-existing sensors in case if transmission errors, and allows deleting sensors that are received but considered uninteresting.</li>
+<li>A bug was found in the "Throttle source" setting, fixing it might have changed your selection. If your throttle-based timers don't work check this first and set it back to the correct setting if needed.</li>
+</ul>
 
 [ARM Boards]
 <ul>
 <li>Fixed several issues with D series altimeter/vario (negative values, hi/lo precision vario) (<a href=https://github.com/opentx/opentx/issues/2685>#2685</a>)</li>
-<li>Auto-offset for Frsky variometer on per default (<a href=https://github.com/opentx/opentx/issues/2693>#2693</a>)</li>
-<li>9XE top LDC fixes: added TX battery blinking on battery warning, fixed display problem when battery voltage lower than batlow value. (<a href=https://github.com/opentx/opentx/issues/2671>#2671</a>)</li>
+<li>Auto-offset for Frsky variometer on by default (<a href=https://github.com/opentx/opentx/issues/2693>#2693</a>)</li>
 <li>Timers range extended (it was limited to around 9 hours before) (<a href=https://github.com/opentx/opentx/issues/2702>#2702</a>)</li>
 <li>Fixed: Playing two background sounds at once causes sound to stop (<a href=https://github.com/opentx/opentx/issues/2704>#2704</a>)</li>
 <li>Several fixes to the SD card manager menu (<a href=https://github.com/opentx/opentx/issues/2623>#2623</a>)</li>
-<li>Fixed the difference between top and main LCD TX battery bars on 9Xe (<a href=https://github.com/opentx/opentx/issues/2671>#2671</a>)</li>
-<li>Several Lua getValue() fields were not exported correctly (tx-voltage, clock and timers1-3)</li>
+<li>Several Lua getValue() fields were not exported correctly (tx-voltage, clock and timers 1-3)</li>
 <li>Fixed: Edge Logical Switch could trigger right after the model was loaded or the radio turned on (<a href=https://github.com/opentx/opentx/issues/2728>#2728</a>)</li>
+<li>Fixed: output channel jitter if trim was used (<a href=https://github.com/opentx/opentx/issues/2774>#2774</a>)</li>
+<li>Fixed: Logical switches based on telemetry sensors above number 20 were not working (<a href=https://github.com/opentx/opentx/issues/2787>#2787</a>)</li>
+<li>Added menu option to delete all detected/configured telemetry sensors (<a href=https://github.com/opentx/opentx/issues/2730>#2730</a>)</li>
+<li>Improved "Adjust GVAR" SF source selection with popup (<a href=https://github.com/opentx/opentx/issues/2418>#2418</a>)</li>
+<li>Improved mixer screen layout (<a href=https://github.com/opentx/opentx/issues/2785>#2785</a>)</li>
+<li>Added support for the AR9X replacement board (prototype) for the Turnigy 9X radio, info <a href=http://www.rcgroups.com/forums/showthread.php?t=2479552>here</a></li>
+<li>Added a virtual serial port over USB and a command line interface (via option, replacing joystick) (<a href=https://github.com/opentx/opentx/issues/2595>#2595</a>)</li>
 </ul>
 
-[Sky9x / 9XR-PRO]
+[X9E]
+<ul>
+<li>Unwanted radio turning off on watchdog reset fixed (<a href=https://github.com/opentx/opentx/issues/2681>#2681</a>, <a href=https://github.com/opentx/opentx/issues/2790>#2790</a>)</li>
+<li>Added code to help mitigate the issue of RTC loosing its time when radio was turned off (<a href=https://github.com/opentx/opentx/issues/2626>#2626</a>)</li>
+<li>X9E top LCD fixes: added TX battery blinking on battery warning, fixed display problem when battery voltage lower than batlow value. (<a href=https://github.com/opentx/opentx/issues/2671>#2671</a>)</li>
+<li>Fixed the difference between top and main LCD TX battery bars on X9E (<a href=https://github.com/opentx/opentx/issues/2671>#2671</a>)</li>
+</ul>
+
+
+[Sky9x / 9XR-PRO / AR9X]
 <ul>
 <li>Sound was unintelligible (<a href=https://github.com/opentx/opentx/issues/2665>#2665</a>)</li>
+<li>PXX and Smart Port telemetry weren't enabled</li>
+</ul>
+
+[MEGA2560]
+<ul>
+<li>Audio was not working (<a href=https://github.com/opentx/opentx/issues/2825>#2825</a>)</li>
+</ul>
+
+[All]
+<ul>
+<li>Various texts and translations corrections</li>
+<li>Various small bug-fixes</li>
 </ul>
 
 

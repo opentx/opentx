@@ -35,6 +35,10 @@
   #define FLAVOUR "9xrpro"
   #define NAMESPACE Sky9xPro
   #define EEPROM_VARIANT 0
+#elif defined(PCBSKY9X) && defined(AR9X)
+  #define FLAVOUR "ar9x"
+  #define NAMESPACE Ar9x
+  #define EEPROM_VARIANT 0
 #elif defined(PCBSKY9X)
   #define FLAVOUR "sky9x"
   #define NAMESPACE Sky9X

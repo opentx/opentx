@@ -123,7 +123,7 @@
 #define TR_VDISPLAYTRIMS       "Nie\0  ""Zmień\0""Tak\0"
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "Cichy Pik  \0Dźwięk"
+#define TR_VBEEPCOUNTDOWN      "Cichy Pik  \0DźwiękWibrac"
 
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Ton\0  ""Cicho "
@@ -490,23 +490,17 @@
   #define TR_ROTENC_SWITCHES
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
-  #define TR_PHYS_SWITCHES     "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF-""SF\301""SG\300""SG-""SG\301""SH\300""SH-""SH\301""SI\300""SI-""SI\301""SJ\300""SJ-""SJ\301""SK\300""SK-""SK\301""SL\300""SL-""SL\301""SM\300""SM-""SM\301""SN\300""SN-""SN\301""SO\300""SO-""SO\301""SP\300""SP-""SP\301""SQ\300""SQ-""SQ\301""SR\300""SR-""SR\301"
-#elif defined(PCBTARANIS)
-  #define TR_PHYS_SWITCHES     "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF-""SF\301""SG\300""SG-""SG\301""SH\300""SH-""SH\301"
-#else
+#if !defined(PCBTARANIS)
   #define TR_PHYS_SWITCHES     "GAZ""SK ""SW ""LOT""GEA""TRN"
 #endif
 
+#define TR_ON_ONE_SWITCHES     "ON\0""One"
+
 #if defined(PCBTARANIS)
-  #if defined(REV9E)
-    #define TR_6POS_POTS       "S11""S12""S13""S14""S15""S16""S21""S22""S23""S24""S25""S26""S31""S32""S33""S34""S35""S36""S41""S42""S43""S44""S45""S46"
-  #else
-    #define TR_6POS_POTS       "S11""S12""S13""S14""S15""S16""S21""S22""S23""S24""S25""S26""S31""S32""S33""S34""S35""S36"
-  #endif
-  #define TR_VSWITCHES         "---" TR_PHYS_SWITCHES TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
+  // only special switches here
+  #define TR_VSWITCHES         "---" TR_TRIMS_SWITCHES TR_ON_ONE_SWITCHES
 #else
-  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES TR_PHYS_SWITCHES TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
+  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES TR_PHYS_SWITCHES TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW TR_ON_ONE_SWITCHES
 #endif
 
 #if defined(HELI)
@@ -548,8 +542,8 @@
 #define LEN_VFORMULAS          "\010" /*8 decimal*/
 #define TR_VFORMULAS           "Dodaj\0  ""Średnie\0""Min\0    ""Max\0    ""Mnóż\0   ""Zliczani""Komórka\0""Zużycie\0""Zasięg\0 "
 
-#define LEN_VPREC              "\005"
-#define TR_VPREC               "PREC0""PREC1""PREC2"
+#define LEN_VPREC              "\004"
+#define TR_VPREC               "0.--""0.0 ""0.00"
 
 #define LEN_VCELLINDEX         "\007"
 #define TR_VCELLINDEX          "Niskie\0""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Wysokie""Delta\0"
@@ -855,6 +849,10 @@
 #define TR_NO_MODELS_ON_SD     "Brak modelu na SD"
 #define TR_NO_BITMAPS_ON_SD    "Brak obrazków na SD"
 #define TR_NO_SCRIPTS_ON_SD    "Brak skryptów na SD"
+#define TR_SCRIPT_SYNTAX_ERROR "Script syntax error"
+#define TR_SCRIPT_PANIC        "Script panic"
+#define TR_SCRIPT_KILLED       "Script killed"
+#define TR_SCRIPT_ERROR        "Unknown error"
 #define TR_PLAY_FILE           "Odtwórz"
 #define TR_DELETE_FILE         "Skasuj"
 #define TR_COPY_FILE           "Kopiuj"
@@ -952,6 +950,10 @@
 #define TR_SMOOTH              "Gładka"
 #define TR_COPY_STICKS_TO_OFS  "Skopiuj Drążki Do Offsetu"
 #define TR_COPY_TRIMS_TO_OFS   "Skopiuj Trymery Do subtrymerów"
+#define TR_INCDEC              "Zwiększ/Zmnie"
+#define TR_GLOBALVAR           "Zm.Global."
+#define TR_MIXSOURCE           "Źródło Miks."
+#define TR_CONSTANT            "Stala   "
 #define TR_PERSISTENT_MAH      TR(INDENT "Zap. mAh", INDENT "Zapisz mAh")
 #define TR_PREFLIGHT           "Lista Ostrzeżeń"
 #define TR_CHECKLIST           TR(INDENT "Czeklista",INDENT "Pokaż Listę Ostrzeżeń")
@@ -1077,12 +1079,16 @@
 #define TR_ALTSENSOR           "Alt sensor"
 #define TR_CELLSENSOR          "Cell sensor"
 #define TR_GPSSENSOR           "GPS sensor"
-#define TR_CURRENTSENSOR       "Curr. sensor"
+#define TR_CURRENTSENSOR       "Sensor"
 #define TR_AUTOOFFSET          "Auto Ofset"
 #define TR_ONLYPOSITIVE        "Dodatni"
 #define TR_FILTER              "Filtr"
 #define TR_TELEMETRYFULL       "Wszyskie miejsca zajęte!"
-#define TR_IGNOREIDS           INDENT "Ignoruj przypadek"
+#define TR_IGNORE_INSTANCE     INDENT "Ignoruj przypadek"
+#define TR_DISCOVER_SENSORS    INDENT "Znajdź nowe czujniki"
+#define TR_STOP_DISCOVER_SENSORS INDENT "Szukanie STOP "
+#define TR_DELETE_ALL_SENSORS  INDENT "Usuń czujniki     "
+#define TR_CONFIRMDELETE       "Usunąć wszystkie ?"
 
 #define TR_MENU_INPUTS         "\314Wejści"
 #define TR_MENU_LUA            "\322SkryptyLUA"

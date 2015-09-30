@@ -72,10 +72,17 @@ volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value = 0;
 #endif
 
 #if defined(PCBTARANIS)
-tmr10ms_t switchesMidposStart[6] = { 0 };
+#if defined(REV9E)
+tmr10ms_t switchesMidposStart[6];
+#else
+tmr10ms_t switchesMidposStart[16]; // TODO constant
+#endif
 uint64_t  switchesPos = 0;
-tmr10ms_t potsLastposStart[NUM_XPOTS] = { 0 };
+tmr10ms_t potsLastposStart[NUM_XPOTS];
 uint8_t   potsPos[NUM_XPOTS];
+
+#define SWITCH_POSITION(sw)  (switchesPos & ((MASK_CFN_TYPE)1<<(sw)))
+#define POT_POSITION(sw)     ((potsPos[(sw)/XPOTS_MULTIPOS_COUNT] & 0x0f) == ((sw) % XPOTS_MULTIPOS_COUNT))
 
 div_t switchInfo(int switchPosition)
 {
@@ -92,7 +99,7 @@ uint64_t check2PosSwitchPosition(EnumKeys sw)
   else
     index = sw - SW_SA0 + 2;
 
-  result = ((int64_t)1 << index);
+  result = ((uint64_t)1 << index);
 
   if (!(switchesPos & result)) {
     PLAY_SWITCH_MOVED(index);
@@ -101,32 +108,33 @@ uint64_t check2PosSwitchPosition(EnumKeys sw)
   return result;
 }
 
-uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
+uint64_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
 {
-  uint32_t result;
+  uint64_t result;
   uint32_t index;
 
   if (switchState(sw)) {
     index = sw - SW_SA0;
-    result = (1 << index);
+    result = ((MASK_CFN_TYPE)1 << index);
     switchesMidposStart[idx] = 0;
   }
   else if (switchState(EnumKeys(sw+2))) {
     index = sw - SW_SA0 + 2;
-    result = (1 << index);
-    switchesMidposStart[idx] = 0;
-  }
-  else if (startup || (switchesPos & (1 << (sw - SW_SA0 + 1))) || g_eeGeneral.switchesDelay==SWITCHES_DELAY_NONE || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > SWITCHES_DELAY())) {
-    index = sw - SW_SA0 + 1;
-    result = (1 << index);
+    result = ((MASK_CFN_TYPE)1 << index);
     switchesMidposStart[idx] = 0;
   }
   else {
     index = sw - SW_SA0 + 1;
-    if (!switchesMidposStart[idx]) {
-      switchesMidposStart[idx] = get_tmr10ms();
+    if (startup || SWITCH_POSITION(index) || g_eeGeneral.switchesDelay==SWITCHES_DELAY_NONE || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > SWITCHES_DELAY())) {
+      result = ((MASK_CFN_TYPE)1 << index);
+      switchesMidposStart[idx] = 0;
     }
-    result = (switchesPos & (0x7 << (sw - SW_SA0)));
+    else {
+      result = (switchesPos & ((MASK_CFN_TYPE)0x7 << (sw - SW_SA0)));
+      if (!switchesMidposStart[idx]) {
+        switchesMidposStart[idx] = get_tmr10ms();
+      }
+    }
   }
 
   if (!(switchesPos & result)) {
@@ -150,6 +158,19 @@ void getSwitchesPosition(bool startup)
   CHECK_2POS(SW_SF);
   CHECK_3POS(5, SW_SG);
   CHECK_2POS(SW_SH);
+
+#if defined(REV9E)
+  CHECK_3POS(6, SW_SI);
+  CHECK_3POS(7, SW_SJ);
+  CHECK_3POS(8, SW_SK);
+  CHECK_3POS(9, SW_SL);
+  CHECK_3POS(10, SW_SM);
+  CHECK_3POS(11, SW_SN);
+  CHECK_3POS(12, SW_SO);
+  CHECK_3POS(13, SW_SP);
+  CHECK_3POS(14, SW_SQ);
+  CHECK_3POS(15, SW_SR);
+#endif
 
   switchesPos = newPos;
 
@@ -178,10 +199,8 @@ void getSwitchesPosition(bool startup)
     }
   }
 }
-#define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
-#define POT_POSITION(sw)     ((potsPos[(sw)/XPOTS_MULTIPOS_COUNT] & 0x0f) == ((sw) % XPOTS_MULTIPOS_COUNT))
 
-getvalue_t getValueForLogicalSwitch(uint8_t i)
+getvalue_t getValueForLogicalSwitch(mixsrc_t i)
 {
   getvalue_t result = getValue(i);
   if (i>=MIXSRC_FIRST_INPUT && i<=MIXSRC_LAST_INPUT) {
@@ -216,7 +235,7 @@ bool getLogicalSwitch(uint8_t idx)
   bool result;
 
 #if defined(CPUARM)
-  int8_t s = ls->andsw;
+  swsrc_t s = ls->andsw;
 #else
   uint8_t s = ls->andsw;
   if (s > SWSRC_LAST_SWITCH) {
@@ -276,7 +295,7 @@ bool getLogicalSwitch(uint8_t idx)
       }
     }
     else {
-      uint8_t v1 = ls->v1;
+      mixsrc_t v1 = ls->v1;
 #if defined(FRSKY)
       // Telemetry
       if (v1 >= MIXSRC_FIRST_TELEM) {
@@ -424,9 +443,9 @@ DurationAndDelayProcessing:
 }
 
 #if defined(CPUARM)
-bool getSwitch(int8_t swtch, uint8_t flags)
+bool getSwitch(swsrc_t swtch, uint8_t flags)
 #else
-bool getSwitch(int8_t swtch)
+bool getSwitch(swsrc_t swtch)
 #endif
 {
   bool result;
@@ -436,7 +455,7 @@ bool getSwitch(int8_t swtch)
 
   uint8_t cs_idx = abs(swtch);
 
-  if (cs_idx == SWSRC_One) {
+  if (cs_idx == SWSRC_ONE) {
     result = !s_mixer_first_run_done;
   }
   else if (cs_idx == SWSRC_ON) {
@@ -444,18 +463,10 @@ bool getSwitch(int8_t swtch)
   }
   else if (cs_idx <= SWSRC_LAST_SWITCH) {
 #if defined(PCBTARANIS)
-    if (flags & GETSWITCH_MIDPOS_DELAY) {
-      div_t swinfo = switchInfo(cs_idx);
-      if (IS_3POS(swinfo.quot)) {
-        result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
-      }
-      else {
-        result = switchState((EnumKeys)(SW_BASE+cs_idx-SWSRC_FIRST_SWITCH));
-      }
-    }
-    else {
+    if (flags & GETSWITCH_MIDPOS_DELAY)
+      result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
+    else
       result = switchState((EnumKeys)(SW_BASE+cs_idx-SWSRC_FIRST_SWITCH));
-    }
 #else
     result = switchState((EnumKeys)(SW_BASE+cs_idx-SWSRC_FIRST_SWITCH));
 #endif
@@ -536,7 +547,7 @@ bool getSwitch(int8_t swtch)
 void evalLogicalSwitches(bool isCurrentPhase)
 {
   for (unsigned int idx=0; idx<NUM_LOGICAL_SWITCH; idx++) {
-    LogicalSwitchContext &context = lswFm[mixerCurrentFlightMode].lsw[idx];
+    LogicalSwitchContext & context = lswFm[mixerCurrentFlightMode].lsw[idx];
     bool result = getLogicalSwitch(idx);
     if (isCurrentPhase) {
       if (result) {
@@ -552,10 +563,10 @@ void evalLogicalSwitches(bool isCurrentPhase)
 #endif
 
 swarnstate_t switches_states = 0;
-int8_t getMovedSwitch()
+swsrc_t getMovedSwitch()
 {
   static tmr10ms_t s_move_last_time = 0;
-  int8_t result = 0;
+  swsrc_t result = 0;
 
 #if defined(PCBTARANIS)
   for (int i=0; i<NUM_SWITCHES; i++) {

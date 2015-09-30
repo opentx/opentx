@@ -262,20 +262,22 @@ class MainWindow : public QMainWindow
     QAction *normalIconAct;
     QAction *bigIconAct;
     QAction *hugeIconAct;
+
     QAction *sysLangAct;
-    QAction *englishLangAct;
     QAction *czechLangAct;
     QAction *germanLangAct;
-    QAction *frenchLangAct;
+    QAction *englishLangAct;
     QAction *finnishLangAct;
+    QAction *frenchLangAct;
     QAction *italianLangAct;
-    QAction *hebrewLangAct;
+    // QAction *hebrewLangAct;
     QAction *polishLangAct;
+    // QAction *portugueseLangAct;
     QAction *spanishLangAct;
-    QAction *portugueseLangAct;
     QAction *swedishLangAct;
-    QAction *russianLangAct;
-    QAction *dutchLangAct;
+    // QAction *russianLangAct;
+    // QAction *dutchLangAct;
+
     QAction *openDocURLAct;
 };
 

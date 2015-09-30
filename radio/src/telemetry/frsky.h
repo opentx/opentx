@@ -50,6 +50,18 @@
 #define FRSKY_SPORT_AVERAGING     4
 #define FRSKY_D_AVERAGING         8
 
+// Enumerate FrSky packet codes
+#define LINKPKT                 0xfe
+#define USRPKT                  0xfd
+#define A11PKT                  0xfc
+#define A12PKT                  0xfb
+#define A21PKT                  0xfa
+#define A22PKT                  0xf9
+#define ALRM_REQUEST            0xf8
+#define RSSI1PKT                0xf7
+#define RSSI2PKT                0xf6
+#define RSSI_REQUEST            0xf1
+
 
 // FrSky PRIM IDs (1 byte)
 #define DATA_FRAME              0x10
@@ -471,7 +483,7 @@ enum FrSkyDataState {
 #endif
 };
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
   #define frskySendAlarms()
 #else
   #define SEND_RSSI_ALARMS  6
@@ -484,6 +496,16 @@ enum FrSkyDataState {
   {
     frskyAlarmsSendState = SEND_RSSI_ALARMS;
   }
+#endif
+
+#if defined(FRSKY_HUB)
+typedef enum {
+  TS_IDLE = 0,  // waiting for 0x5e frame marker
+  TS_DATA_ID,   // waiting for dataID
+  TS_DATA_LOW,  // waiting for data low byte
+  TS_DATA_HIGH, // waiting for data high byte
+  TS_XOR = 0x80 // decode stuffed byte
+} TS_STATE;
 #endif
 
 // FrSky D Protocol

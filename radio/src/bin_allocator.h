@@ -20,7 +20,7 @@ public:
       if (ptr == Bins[n].data) {
         Bins[n].Used = false;
         --NoUsedBins;
-        // TRACE("\tBinAllocator<%d> free %lu ------", SIZE_SLOT, n); FLUSH();
+        // TRACE("\tBinAllocator<%d> free %lu ------", SIZE_SLOT, n);
         return true;
       }
     }
@@ -31,22 +31,22 @@ public:
   }
   void * malloc(size_t size) {
     if (size > SIZE_SLOT) {
-      // TRACE("BinAllocator<%d> malloc [%lu] size > SIZE_SLOT", SIZE_SLOT, size); FLUSH();
+      // TRACE("BinAllocator<%d> malloc [%lu] size > SIZE_SLOT", SIZE_SLOT, size);
       return 0;
     }
     if (NoUsedBins >= NUM_BINS) {
-      // TRACE("BinAllocator<%d> malloc [%lu] no free slots", SIZE_SLOT, size); FLUSH();
+      // TRACE("BinAllocator<%d> malloc [%lu] no free slots", SIZE_SLOT, size);
       return 0;
     }
     for (size_t n = 0; n < NUM_BINS; ++n) {
       if (!Bins[n].Used) {
         Bins[n].Used = true;
         ++NoUsedBins;
-        // TRACE("\tBinAllocator<%d> malloc %lu[%lu]", SIZE_SLOT, n, size); FLUSH();
+        // TRACE("\tBinAllocator<%d> malloc %lu[%lu]", SIZE_SLOT, n, size);
         return Bins[n].data;
       }
     }
-    // TRACE("BinAllocator<%d> malloc [%lu] no free slots", SIZE_SLOT , size); FLUSH();
+    // TRACE("BinAllocator<%d> malloc [%lu] no free slots", SIZE_SLOT , size);
     return 0;
   }
   size_t size(void * ptr) {

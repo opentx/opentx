@@ -50,7 +50,7 @@ DELAY = 5
 #----------- BUILD OPTIONS ---------------------------
 
 # PCB version
-# Values: 9X, 9X128, 9X2561, 9XR, 9XR128, 9XR2561, GRUVIN9X, MEGA2560, SKY9X, 9XRPRO, TARANIS
+# Values: 9X, 9X128, 9X2561, 9XR, 9XR128, 9XR2561, GRUVIN9X, MEGA2560, SKY9X, 9XRPRO, AR9X, TARANIS
 # Old values STD and STD128 are mapped to 9X and 9X128 for compatibility
 PCB = 9X
 
@@ -214,6 +214,11 @@ VARIO = YES
 # default = YES (means enabled when available)
 RTCLOCK = YES
 
+# Hardware volume
+# Values = YES, NO
+# default = YES (AR9X board doesn't have a hardware volume control as delivered but it can be fitted optionally)
+HARDWARE_VOLUME = YES
+
 # BLUETOOTH
 # Values = YES, NO
 BLUETOOTH = NO
@@ -268,6 +273,10 @@ SHUTDOWN_CONFIRMATION = NO
 # Values = YES, NO
 DEBUG = NO
 
+# Activate Command Line Interpreter
+# Values = NO, YES
+CLI = NO
+
 # Activate writing of SPORT telemetry received data to sport.log file
 # Values = YES, NO
 SPORT_FILE_LOG = NO
@@ -301,9 +310,10 @@ LUA = NO
 MENUS_LOCK = NO
 
 # USB options in the main image
-# Values = JOYSTICK, MASSSTORAGE
+# Values = JOYSTICK, MASSSTORAGE, SERIAL
 # JOYSTICK: The TX will appear as a joystick
 # MASSSTORAGE: The TX will appear as a drive
+# SERIAL: The TX will appear as a serial port
 USB = JOYSTICK
 
 # Mixers monitor view added to Channels monitor one
@@ -361,6 +371,14 @@ SIMU_DISKIO = NO
 # Values = NO, YES
 SIMU_AUDIO = NO
 
+# Enable Watchdog test (DANGEROUS)
+# Values = NO, YES
+WATCHDOG_TEST = NO
+
+# Treat compiler warnings as errors
+# Values = NO, YES
+WARNINGS_AS_ERRORS = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -377,7 +395,7 @@ IMG2LBM = -$(PYTHON) ../util/img2lbm.py
 BIN2LBM = -$(PYTHON) ../util/bin2lbm.py
 FONT2PNG = -$(PYTHON) ../util/font2png.py
 TRANSLATE = -$(PYTHON) ../util/translate.py
-VERSION = 2.1.2$(OPENTX_VERSION_SUFFIX)
+VERSION = 2.1.4$(OPENTX_VERSION_SUFFIX)
 
 THIRDPARTY = thirdparty
 COOSDIR = $(THIRDPARTY)/CoOS
@@ -391,7 +409,7 @@ LUADEP =
 DEBUG_TRACE_BUFFER = NO
 
 # MCU name
-ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO TARANIS))
+ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO AR9X TARANIS))
   $(error Sorry, the PCB $(PCB) is not supported yet in OpenTX)
 endif
 
@@ -746,15 +764,21 @@ ifeq ($(PCB), MEGA2560)
   CPPDEFS += -DROTARY_ENCODERS=${ROTARY_ENCODERS}
 endif
 
-ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
+ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
   # 9x/9XR radio with a sky9x replacement board
   GUIDIRECTORY = 9X
   ARCH = ARM
   LCDSIZE = 128
   CPPDEFS = -Dat91sam3s4
   ifeq ($(PCB), 9XRPRO)
+    CPPDEFS = -Dat91sam3s8
     FLAVOUR = 9xrpro
     CPPDEFS += -DREVX
+    LDSCRIPT = targets/sky9x/sam3s8c_flash.ld
+  else ifeq ($(PCB), AR9X)
+    CPPDEFS = -Dat91sam3s8
+    FLAVOUR = ar9x
+    CPPDEFS += -DAR9X
     LDSCRIPT = targets/sky9x/sam3s8c_flash.ld
   else ifeq ($(PCBREV), REVA)
     FLAVOUR = sky9x
@@ -778,7 +802,8 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   SDCARD = YES
   BUZZER = NO
   THR_TRACE = YES
-  CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DDSM2 -DDSM2_PPM
+  EXT = FRSKY_SPORT
+  CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DDSM2 -DDSM2_PPM -DPXX
   ifeq ($(PCB), SKY9X)
     CPPDEFS += -DROTARY_ENCODERS=1
     CPPSRC += targets/sky9x/rotenc_driver.cpp
@@ -799,7 +824,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   EEPROMSRC = eeprom_common.cpp eeprom_raw.cpp eeprom_conversions.cpp
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp pulses/dsm2_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp haptic.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp telemetry/telemetry.cpp
-  CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/second_serial_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
+  CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/serial2_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
   CPPSRC += loadboot.cpp debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
   ifeq ($(SDCARD), YES)
@@ -823,6 +848,9 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   endif
   ifeq ($(DEBUG), YES)
     SRC += syscalls.c
+  endif
+  ifeq ($(HARDWARE_VOLUME), NO)
+    CPPDEFS += -DNO_HARDWARE_VOLUME
   endif
 endif
 
@@ -913,17 +941,20 @@ ifeq ($(PCB), TARANIS)
     LDSCRIPT = targets/taranis/stm32f2_flash.ld
   endif
   STM32USBPATH = $(THIRDPARTY)/STM32_USB-Host-Device_Lib_V2.1.0/Libraries
-  INCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc $(STM32USBPATH)/STM32_USB_Device_Library/Core/inc
-  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/inc $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Core/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/inc
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_hardware.cpp
   BOARDSRC = main_arm.cpp targets/taranis/board_taranis.cpp
-  EXTRABOARDSRC += targets/taranis/configure_pins.cpp targets/taranis/lcd_driver.cpp targets/taranis/flash_driver.cpp targets/taranis/i2c_driver.cpp targets/taranis/aspi.c targets/taranis/delays.c
+  EXTRABOARDSRC += targets/taranis/configure_pins.cpp targets/taranis/lcd_driver.cpp targets/taranis/flash_driver.cpp targets/taranis/i2c_driver.cpp targets/taranis/aspi.c targets/taranis/delays.c serial.cpp
   SRC += $(COOSDIR)/kernel/core.c $(COOSDIR)/kernel/hook.c $(COOSDIR)/kernel/task.c $(COOSDIR)/kernel/event.c $(COOSDIR)/kernel/time.c $(COOSDIR)/kernel/timer.c $(COOSDIR)/kernel/flag.c $(COOSDIR)/kernel/mutex.c $(COOSDIR)/kernel/serviceReq.c $(COOSDIR)/portable/GCC/port.c $(COOSDIR)/portable/arch.c
   SRC += targets/taranis/pwr_driver.c targets/taranis/usb_driver.c
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp eeprom_conversions.cpp
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp sbus.cpp telemetry/telemetry.cpp
-  CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/uart3_driver.cpp targets/taranis/telemetry_driver.cpp
+  CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/serial2_driver.cpp targets/taranis/telemetry_driver.cpp
   CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp
   CPPSRC += loadboot.cpp
   ifeq ($(PCBREV), REV9E)
@@ -966,6 +997,10 @@ ifeq ($(PCB), TARANIS)
   ifeq ($(USB), JOYSTICK)
     CPPDEFS += -DUSB_JOYSTICK
     SRC += targets/taranis/usbd_hid_joystick.c
+  else ifeq ($(USB), SERIAL)
+    CPPDEFS += -DUSB_SERIAL
+    SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c
+    EXTRABOARDSRC += targets/taranis/usbd_cdc.cpp
   else
     CPPDEFS += -DUSB_MASS_STORAGE
     SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c
@@ -1021,6 +1056,9 @@ ifeq ($(PCB), TARANIS)
   ifeq ($(MIXERS_MONITOR), YES)
     CPPDEFS += -DMIXERS_MONITOR
   endif
+  ifeq ($(WATCHDOG_TEST), YES)
+    CPPDEFS += -DWATCHDOG_TEST
+  endif
 endif
 
 CC      = $(TRGT)gcc
@@ -1046,7 +1084,7 @@ FORMAT = ihex
 TARGET = opentx
 
 # List C++ source files here. (C dependencies are automatically generated.)
-ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO TARANIS))
+ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X TARANIS))
   TTS_SRC = translations/tts_cz.cpp translations/tts_de.cpp translations/tts_en.cpp translations/tts_es.cpp translations/tts_fr.cpp translations/tts_it.cpp translations/tts_nl.cpp translations/tts_pt.cpp translations/tts_sk.cpp translations/tts_se.cpp translations/tts_pl.cpp translations/tts_hu.cpp
 else
   STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
@@ -1238,10 +1276,10 @@ ifeq ($(EXT), JETI)
 endif
 
 ifeq ($(EXT), MAVLINK)
- CPPDEFS += -DMAVLINK
- INCDIRS += thirdparty
- CPPSRC += telemetry/mavlink.cpp gui/$(GUIDIRECTORY)/view_mavlink.cpp serial.cpp
- EEPROM_VARIANT += ${MAVLINK_VARIANT}
+  CPPDEFS += -DMAVLINK
+  INCDIRS += thirdparty targets/common_avr/
+  CPPSRC += telemetry/mavlink.cpp gui/$(GUIDIRECTORY)/view_mavlink.cpp targets/common_avr/serial_driver.cpp
+  EEPROM_VARIANT += ${MAVLINK_VARIANT}
 endif
 
 ifeq ($(EXT), TELEMETREZ)
@@ -1250,11 +1288,16 @@ endif
 
 ifeq ($(EXT), $(filter $(EXT), FRSKY FRSKY_SPORT TELEMETREZ))
   CPPDEFS += -DFRSKY
-  ifeq ($(EXT), FRSKY_SPORT)
-    CPPSRC += telemetry/frsky.cpp telemetry/frsky_sport.cpp telemetry/frsky_d.cpp
-    CPPDEFS += -DFRSKY_SPORT
+
+  ifeq ($(ARCH), ARM)
+    CPPSRC += telemetry/frsky.cpp telemetry/frsky_d_arm.cpp
   else
     CPPSRC += telemetry/frsky.cpp telemetry/frsky_d.cpp
+  endif
+
+  ifeq ($(EXT), FRSKY_SPORT)
+    CPPSRC += telemetry/frsky_sport.cpp
+    CPPDEFS += -DFRSKY_SPORT
   endif
 
   CPPSRC += gui/$(GUIDIRECTORY)/view_telemetry.cpp
@@ -1282,8 +1325,15 @@ ifeq ($(EXT), $(filter $(EXT), FRSKY FRSKY_SPORT TELEMETREZ))
   EEPROM_VARIANT += ${FRSKY_VARIANT}
 endif
 
-ifeq ($(DEBUG), YES)
+ifeq ($(SIMU), YES)
   CPPDEFS += -DDEBUG
+  CPPSRC += dump.cpp
+else ifeq ($(CLI), YES)
+  CPPDEFS += -DCLI -DDEBUG
+  CPPSRC += cli.cpp dump.cpp
+else ifeq ($(DEBUG), YES)
+  CPPDEFS += -DDEBUG
+  CPPSRC += dump.cpp
 endif
 
 ifeq ($(EEPROM_PROGRESS_BAR), YES)
@@ -1381,6 +1431,10 @@ CPPFLAGS += -Wno-strict-aliasing
 CPPFLAGS += -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits
 INCFLAGS = $(patsubst %,-I%,$(INCDIRS))
 
+ifeq ($(WARNINGS_AS_ERRORS), YES)
+  CPPFLAGS += -Werror
+endif
+
 MATH_LIB = -lm
 
 #---------------- Linker Options ----------------
@@ -1435,7 +1489,7 @@ all: begin gccversion sizebefore build sizeafter end
 # Change the build target to build a HEX file or a library.
 ifeq ($(ARCH), AVR)
   build: stamp_header tra lbm allsrc.cpp elf remallsrc hex
-else ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO TARANIS))
+else ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X TARANIS))
   build: stamp_header tra lbm bootloader.lbm $(LUADEP) allsrc.cpp elf remallsrc bin
 else
   build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
@@ -1447,8 +1501,8 @@ bootloader.lbm: targets/taranis/bootloader/bootloader_ramBoot.bin
 	$(BIN2LBM) $^ $@
 .PHONY targets/taranis/bootloader/bootloader_ramBoot.bin:
 	@echo "Building bootloader..."
-	$(MAKE) -C targets/taranis/bootloader PCB=$(PCB) PCBREV=$(PCBREV) NANO=$(NANO)
-else ifeq ($(PCB), 9XRPRO)
+	$(MAKE) -C targets/taranis/bootloader PCB=$(PCB) PCBREV=$(PCBREV) NANO=$(NANO) WARNINGS_AS_ERRORS=$(WARNINGS_AS_ERRORS)
+else ifeq ($(PCB), $(filter $(PCB), 9XRPRO AR9X))
 bootloader.lbm:
 	@echo "Fetching Mike's bootloader..."
 	wget http://ersky9x.googlecode.com/svn/trunk/src/bootloader/bootflash8.lbm
@@ -1787,15 +1841,16 @@ endif
 
 #### GOOGLE TESTS
 
-GTEST_DIR = ../gtest-1.6.0
+GTEST_INCDIR = /usr/include/gtest
+GTEST_SRCDIR = /usr/src/gtest/
 
 # Where to find user code.
 USER_DIR = ./
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
-GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
-                $(GTEST_DIR)/include/gtest/internal/*.h
+GTEST_HEADERS = $(GTEST_INCDIR)/*.h \
+                $(GTEST_INCDIR)/internal/*.h
 
 # House-keeping build targets.
 
@@ -1803,15 +1858,14 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 
 # Usually you shouldn't tweak such internal variables, indicated by a
 # trailing _.
-GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
+GTEST_SRCS = $(GTEST_SRCDIR)/src/*.cc $(GTEST_HEADERS)
 
 # For simplicity and to avoid depending on Google Test's
 # implementation details, the dependencies specified below are
 # conservative and not optimized.  This is fine as Google Test
 # compiles fast and for ordinary users its source rarely changes.
-gtest-all.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include -c \
-            $(GTEST_DIR)/src/gtest-all.cc
+gtest-all.o : $(GTEST_SRCS)
+	$(CXX) $(CPPFLAGS) -I$(GTEST_SRCDIR) -I$(GTEST_INCDIR) -c $(GTEST_SRCDIR)/src/gtest-all.cc
 
 # Builds a sample test.  A test should link with either gtest.a or
 # gtest_main.a, depending on whether it defines its own main()
@@ -1821,5 +1875,5 @@ gtest-all.o : $(GTEST_SRCS_)
 GTEST_TESTS_SRCS = $(shell find tests/ -type f -name '*.cpp')
 
 gtests: allsimusrc.cpp $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp *.h tests/gtests.h gtest-all.o
-	g++ -std=gnu++0x $(CPPFLAGS) $(SIMUCPPFLAGS) allsimusrc.cpp $(LUASRC) $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp -I$(GTEST_DIR) ${INCFLAGS} -I$(GTEST_DIR)/include -I/usr/include/qt4 -o gtests -lpthread -MD -DSIMU -lQtCore -lQtGui gtest-all.o -fexceptions
+	g++ -std=gnu++0x $(CPPFLAGS) $(SIMUCPPFLAGS) allsimusrc.cpp $(LUASRC) $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp ${INCFLAGS} -I$(GTEST_INCDIR) -I/usr/include/qt4 -o gtests -lpthread -MD -DSIMU -lQtCore -lQtGui gtest-all.o -fexceptions
 

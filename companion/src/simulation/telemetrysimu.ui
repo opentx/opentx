@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>278</width>
+    <width>331</width>
     <height>384</height>
    </rect>
   </property>
@@ -323,6 +323,20 @@
        </property>
        <property name="text">
         <string>simulate</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_26">
+       <property name="text">
+        <string>Instance</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QLineEdit" name="Instance">
+       <property name="text">
+        <string>2</string>
        </property>
       </widget>
      </item>

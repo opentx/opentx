@@ -56,38 +56,32 @@ class ProtocolsConversionTable: public ConversionTable
     {
       int val = 0;
       if (IS_ARM(board)) {
-        addConversion(OFF, val++);
+        addConversion(PULSES_OFF, val++);
       }
-      addConversion(PPM, val++);
+      addConversion(PULSES_PPM, val++);
       if (!IS_ARM(board)) {
-        addConversion(PPM16, val++);
-        addConversion(PPMSIM, val++);
+        addConversion(PULSES_PPM16, val++);
+        addConversion(PULSES_PPMSIM, val++);
       }
       if (IS_ARM(board)) {
-        addConversion(PXX_XJT_X16, val);
-        addConversion(PXX_XJT_D8, val);
-        addConversion(PXX_XJT_LR12, val++);
+        addConversion(PULSES_PXX_XJT_X16, val);
+        addConversion(PULSES_PXX_XJT_D8, val);
+        addConversion(PULSES_PXX_XJT_LR12, val++);
       }
       else {
-        addConversion(PXX_DJT, val++);
+        addConversion(PULSES_PXX_DJT, val++);
       }
       if (IS_ARM(board)) {
-        addConversion(LP45, val);
-        addConversion(DSM2, val);
-        addConversion(DSMX, val++);
+        addConversion(PULSES_LP45, val);
+        addConversion(PULSES_DSM2, val);
+        addConversion(PULSES_DSMX, val++);
       }
       else {
-        addConversion(LP45, val++);
-        addConversion(DSM2, val++);
-        addConversion(DSMX, val++);
+        addConversion(PULSES_LP45, val++);
+        addConversion(PULSES_DSM2, val++);
+        addConversion(PULSES_DSMX, val++);
       }
     }
-};
-
-class ThrottleSourceConversionTable: public ConversionTable {
-
-  public:
-    ThrottleSourceConversionTable(BoardEnum board, unsigned int version);
 };
 
 class ChannelsConversionTable: public ConversionTable
@@ -121,7 +115,6 @@ class OpenTxModelData: public TransformedField {
     char name[256];
     int subprotocols[C9X_NUM_MODULES+1/*trainer*/];
     ProtocolsConversionTable protocolsConversionTable;
-    ThrottleSourceConversionTable throttleSourceConversionTable;
     ChannelsConversionTable channelsConversionTable;
 };
 

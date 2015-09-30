@@ -15,7 +15,6 @@
  */
 
 #include <iostream>
-#include <QMessageBox>
 #include "ersky9xinterface.h"
 #include "ersky9xeeprom.h"
 #include "simulator/ersky9xsimulator.h"
@@ -120,14 +119,17 @@ inline void applyStickModeToModel(Ersky9xModelData_v11 & model, unsigned int mod
   model.swashCollectiveSource = applyStickMode(model.swashCollectiveSource, mode);
 }
 
-bool Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
+unsigned long Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
   std::cout << "trying ersky9x xml import... ";
+
+  std::bitset<NUM_ERRORS> errors;
 
   Ersky9xGeneral ersky9xGeneral;
   memset(&ersky9xGeneral,0,sizeof(ersky9xGeneral));
   if(!loadGeneralDataXML(&doc, &ersky9xGeneral)) {
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
   else {
     radioData.generalSettings=ersky9xGeneral;
@@ -137,32 +139,39 @@ bool Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
     if (ersky9xGeneral.myVers == 10) {
       if (!loadModelDataXML<Ersky9xModelData_v10>(&doc, &radioData.models[i], i, radioData.generalSettings.stickMode+1)) {
         std::cout << "ko\n";
-        return false;
+        errors.set(UNKNOWN_ERROR);
+        return errors.to_ulong();
       }
     }
     else {
       if (!loadModelDataXML<Ersky9xModelData_v11>(&doc, &radioData.models[i], i, radioData.generalSettings.stickMode+1)) {
         std::cout << "ko\n";
-        return false;
+        errors.set(UNKNOWN_ERROR);
+        return errors.to_ulong();
       }
     }
   }
   std::cout << "ok\n";
-  return true;
+  errors.set(NO_ERROR);
+  return errors.to_ulong();
 }
 
-bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
+unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying ersky9x import... ";
 
+  std::bitset<NUM_ERRORS> errors;
+
   if (size != EESIZE_SKY9X) {
     std::cout << "wrong size\n";
-    return false;
+    errors.set(WRONG_SIZE);
+    return errors.to_ulong();
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_SKY9X)) {
     std::cout << "wrong file system\n";
-    return false;
+    errors.set(WRONG_FILE_SYSTEM);
+    return errors.to_ulong();
   }
     
   efile->openRd(FILE_GENERAL);
@@ -170,7 +179,8 @@ bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int siz
 
   if (efile->readRlc2((uint8_t*)&ersky9xGeneral, 1) != 1) {
     std::cout << "no\n";
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
 
   std::cout << "version " << (unsigned int)ersky9xGeneral.myVers << " ";
@@ -182,12 +192,14 @@ bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int siz
       break;
     default:
       std::cout << "not ersky9x\n";
-      return false;
+      errors.set(NOT_ERSKY9X);
+      return errors.to_ulong();
   }
   efile->openRd(FILE_GENERAL);
   if (!efile->readRlc2((uint8_t*)&ersky9xGeneral, sizeof(Ersky9xGeneral))) {
     std::cout << "ko\n";
-    return false;
+    errors.set(UNKNOWN_ERROR);
+    return errors.to_ulong();
   }
   radioData.generalSettings = ersky9xGeneral;
   
@@ -218,12 +230,15 @@ bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int siz
   }
 
   std::cout << "ok\n";
-  return true;
+  errors.set(NO_ERROR);
+  return errors.to_ulong();
 }
 
-bool Ersky9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
+unsigned long Ersky9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
 {
-  return false;
+  std::bitset<NUM_ERRORS> errors;
+  errors.set(UNKNOWN_ERROR);
+  return errors.to_ulong();
 }
 
 int Ersky9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
@@ -244,13 +259,13 @@ int Ersky9xInterface::getSize(const GeneralSettings & settings)
   return 0;
 }
 
-int Ersky9xInterface::isAvailable(Protocol prot, int port)
+int Ersky9xInterface::isAvailable(PulsesProtocol prot, int port)
 {
   switch (prot) {
-    case PPM:
-    case DSM2:
-    case PXX_DJT:
-    case PPM16:
+    case PULSES_PPM:
+    case PULSES_DSM2:
+    case PULSES_PXX_DJT:
+    case PULSES_PPM16:
       return 1;
     default:
       return 0;

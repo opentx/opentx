@@ -37,11 +37,11 @@
 #include "board_taranis.h"
 #include "../../pwr.h"
 
-extern volatile uint32_t g_tmr10ms;
-#define get_tmr10ms() g_tmr10ms
-
 void pwrInit()
 {
+  // if any changes are done to the PWR PIN or pwrOn() function
+  // then the same changes must be done in _bootStart()
+
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = PWR_GPIO_PIN_ON;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
@@ -84,23 +84,29 @@ void pwrOff()
 {
   GPIO_ResetBits(PWR_GPIO, PWR_GPIO_PIN_ON);
 
-#if defined(REV9E)
-  // 9E needs watchdog reset because CPU is still running while the power
-  // key is held pressed by the user
-  while (1) {
+  // disable interrupts
+ __disable_irq();
+
+  while(1) {
     wdt_reset();
-#if 0
-    // It doesn't work correctly, if we press long on the pwr button, the radio restarts when the button is released
-    PWR->CR |= PWR_CR_CWUF;
-    /* Select STANDBY mode */
-    PWR->CR |= PWR_CR_PDDS;
-    /* Set SLEEPDEEP bit of Cortex System Control Register */
-    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-    /* Request Wait For Event */
-    __WFE();
+#if defined(REV9E)
+    // 9E needs watchdog reset because CPU is still running while 
+    // the power key is held pressed by the user.
+    // The power key should be released by now, but we must make sure
+    if (!pwrPressed()) {
+      // Put the CPU into sleep to reduce the consumption,
+      // it might help with the RTC reset issue
+      PWR->CR |= PWR_CR_CWUF;
+      /* Select STANDBY mode */
+      PWR->CR |= PWR_CR_PDDS;
+      /* Set SLEEPDEEP bit of Cortex System Control Register */
+      SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+      /* Request Wait For Event */
+      __WFE();
+    }
 #endif
   }
-#endif
+  //this function must not return!
 }
 
 #if defined(REV9E)

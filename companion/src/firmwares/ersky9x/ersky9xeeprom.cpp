@@ -82,7 +82,7 @@ Ersky9xGeneral::operator GeneralSettings ()
   result.currModel = currModel;
   result.contrast = contrast;
   result.vBatWarn = vBatWarn;
-  result.vBatCalib = vBatCalib;
+  result.txVoltageCalibration = txVoltageCalibration;
 
   result.backlightMode = 0;
   if (lightSw == 22) {
@@ -135,7 +135,7 @@ Ersky9xGeneral::operator GeneralSettings ()
   result.switchWarningStates = switchWarningStates;
   result.speakerVolume = volume;
   result.backlightBright = bright ;
-  result.currentCalib = current_calib;
+  result.txCurrentCalibration = current_calib;
   return result;
 }
 
@@ -493,16 +493,16 @@ t_Ersky9xModelData_v10::operator ModelData ()
   }
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 2:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].ppmFrameLength=ppmFrameLength;
@@ -608,16 +608,16 @@ t_Ersky9xModelData_v11::operator ModelData ()
   }
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 2:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].ppmFrameLength=ppmFrameLength;

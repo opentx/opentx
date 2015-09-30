@@ -4,6 +4,7 @@
 #include <QString>
 #include <QStringList>
 #include <QPainter>
+#include <QTextDocument>
 #include "eeprominterface.h"
 
 QString changeColor(const QString & input, const QString & to, const QString & from = "grey");
@@ -17,7 +18,7 @@ class CurveImage
   public:
     CurveImage();
     void drawCurve(const CurveData & curve, QColor color);
-    void save(const QString & filename);
+    const QImage & get() const { return image; };
 
   protected:
     int size;
@@ -27,6 +28,8 @@ class CurveImage
 
 class ModelPrinter: public QObject
 {
+  Q_OBJECT
+
   public:
     ModelPrinter(Firmware * firmware, const GeneralSettings & generalSettings, const ModelData & model);
     virtual ~ModelPrinter();
@@ -50,21 +53,19 @@ class ModelPrinter: public QObject
     QString printInputLine(int idx);
     QString printInputLine(const ExpoData & ed);
     QString printMixerName(int curDest);
-    QString printMixerLine(int idx, int highlightedSource = 0);
-    QString printMixerLine(const MixData & md, int highlightedSource = 0);
+    QString printMixerLine(int idx, bool showMultiplex, int highlightedSource = 0);
+    QString printMixerLine(const MixData & md, bool showMultiplex, int highlightedSource = 0);
     QString printLogicalSwitchLine(int idx);
     QString printCustomFunctionLine(int idx);
     static QString printChannelName(int idx);
     QString printOutputName(int idx);
     QString printCurve(int idx);
-    QString createCurvesImage();
-    QString createCurveImage(int idx);
+    QString createCurveImage(int idx, QTextDocument * document);
 
   private:
     Firmware * firmware;
     const GeneralSettings & generalSettings;
     const ModelData & model;
-    QStringList curvefiles;
 
 };
 

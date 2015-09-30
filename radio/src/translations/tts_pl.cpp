@@ -88,7 +88,7 @@ I18N_PLAY_FUNCTION(pl, pushUnitPrompt, int16_t number, uint8_t unitprompt)
     test_2 =number % 10;
     int ten=0;
     ten=(number - (number % 10))/10;
-    if ((test_2 > 1 && test_2 < 5) && ten >2)
+    if ((test_2 > 1 && test_2 < 5) && ten >=2)
 	PUSH_NUMBER_PROMPT(unitprompt+1);
     else
 	PUSH_NUMBER_PROMPT(unitprompt+2);
@@ -149,11 +149,22 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   switch(unit) {
     case 0:
       break;
+// ft/s
+    case 6:
+// mph
+    case 8:
+// feet
     case 10:
-    case 13:
-    case 15:
-    case 16:
-    case 17:
+//mAh
+    case 14:
+//flOz
+    case 21:
+//Hours
+    case 22:
+//Minutes
+    case 23:
+//Seconds
+    case 24:
       att = ZENSKI;
       break;
     case 100:
@@ -186,10 +197,14 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   if (number >= 1000) {
     if (number >= 2000) 
       PLAY_NUMBER(number / 1000, 0, 0);
+
     if (number >= 2000 && number < 5000)
       PUSH_NUMBER_PROMPT(PL_PROMPT_TYSIACE);
-    else
+    else if (number >= 5000)
+      PUSH_NUMBER_PROMPT(PL_PROMPT_TYSIECY);
+    else 
       PUSH_NUMBER_PROMPT(PL_PROMPT_TYSIAC);
+
     number %= 1000;
     if (number == 0)
       number = -1;
@@ -230,17 +245,17 @@ I18N_PLAY_FUNCTION(pl, playDuration, int seconds PLAY_DURATION_ATT)
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0 || IS_PLAY_TIME()) {
-    PLAY_NUMBER(tmp, UNIT_HOURS+1, ZENSKI);
+    PLAY_NUMBER(tmp, UNIT_HOURS, ZENSKI);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
-    PLAY_NUMBER(tmp, UNIT_MINUTES+1, ZENSKI);
+    PLAY_NUMBER(tmp, UNIT_MINUTES, ZENSKI);
   }
 
   if (seconds > 0) {
-    PLAY_NUMBER(seconds, UNIT_SECONDS+1, ZENSKI);
+    PLAY_NUMBER(seconds, UNIT_SECONDS, ZENSKI);
   }
 }
 

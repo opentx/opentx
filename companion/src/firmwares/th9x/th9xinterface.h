@@ -34,11 +34,11 @@ class Th9xInterface : public EEPROMInterface
 
     virtual const int getMaxModels();
 
-    virtual bool load(RadioData &, const uint8_t *eeprom, int size);
+    virtual unsigned long load(RadioData &, const uint8_t *eeprom, int size);
 
-    virtual bool loadBackup(RadioData &, uint8_t *eeprom, int esize, int index);
+    virtual unsigned long loadBackup(RadioData &, uint8_t *eeprom, int esize, int index);
 
-    virtual bool loadxml(RadioData &radioData, QDomDocument &doc);
+    virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc);
 
     virtual int save(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, uint8_t version=0);
 
@@ -46,7 +46,7 @@ class Th9xInterface : public EEPROMInterface
 
     virtual int getSize(const GeneralSettings &);
 
-    virtual int isAvailable(Protocol proto, int port=0);
+    virtual int isAvailable(PulsesProtocol proto, int port=0);
 
   protected:
 

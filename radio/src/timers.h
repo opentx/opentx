@@ -45,14 +45,14 @@
 #if defined(CPUARM)
 typedef int32_t tmrval_t;
 typedef uint32_t tmrstart_t;
-#define TIMER_MIN     (-0xffffff/2)
+#define TIMER_MAX     (0xffffff/2)
 #else
 typedef int16_t tmrval_t;
 typedef uint16_t tmrstart_t;
-#define TIMER_MIN     (-0xffff/2)
+#define TIMER_MAX     (0xffff/2)
 #endif
 
-#define TIMER_MAX     (-TIMER_MIN-1)
+#define TIMER_MIN     (-TIMER_MAX-1)
 
 struct TimerState {
   uint16_t cnt;

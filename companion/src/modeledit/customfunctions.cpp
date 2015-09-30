@@ -383,12 +383,15 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       populateFuncParamCB(fswtchParamT[i], func, cfn.param);
       widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM | CUSTOM_FUNCTION_ENABLE;
     }
-    else if (func>=FuncSetTimer1 && func<=FuncSetTimer2) {
+    else if (func>=FuncSetTimer1 && func<=FuncSetTimer3) {
       if (modified) cfn.param = QTimeS(fswtchParamTime[i]->time()).seconds();
       fswtchParamTime[i]->setMinimumTime(QTime(0, 0, 0));
       fswtchParamTime[i]->setMaximumTime(QTime(0, 59, 59));
       fswtchParamTime[i]->setTime(QTimeS(cfn.param));
       widgetsMask |= CUSTOM_FUNCTION_TIME_PARAM + CUSTOM_FUNCTION_ENABLE;
+    }
+    else if (func>=FuncSetFailsafeInternalModule && func<=FuncBindExternalModule) {
+      widgetsMask |= CUSTOM_FUNCTION_ENABLE;
     }
     else if (func==FuncVolume) {
       if (modified) cfn.param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
@@ -604,6 +607,8 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
         ((i==FuncPlayHaptic) && !firmware->getCapability(Haptic)) ||
         ((i==FuncPlayBoth) && !firmware->getCapability(HasBeeper)) ||
         ((i==FuncLogs) && !firmware->getCapability(HasSDLogs)) ||
+        ((i==FuncSetTimer3) && firmware->getCapability(Timers) < 3) ||
+        ((i>=FuncRangeCheckInternalModule && i<=FuncBindExternalModule) && (!model || !firmware->getCapability(DangerousFunctions))) ||
         ((i>=FuncAdjustGV1 && i<=FuncAdjustGVLast) && !firmware->getCapability(Gvars))
         ) {
       // skipped

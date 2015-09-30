@@ -203,7 +203,7 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
 
   if (swtch < 0) {
     negative = true;
-    if (swtch == -SWSRC_ON || swtch == -SWSRC_One) {
+    if (swtch == -SWSRC_ON || swtch == -SWSRC_ONE) {
       return false;
     }
     swtch = -swtch;
@@ -245,7 +245,7 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
     }
   }
 
-  if (context != ModelCustomFunctionsContext && context != GeneralCustomFunctionsContext && (swtch == SWSRC_ON || swtch == SWSRC_One)) {
+  if (context != ModelCustomFunctionsContext && context != GeneralCustomFunctionsContext && (swtch == SWSRC_ON || swtch == SWSRC_ONE)) {
     return false;
   }
 
@@ -304,7 +304,7 @@ bool isSwitchAvailableInTimers(int swtch)
 
 bool isThrottleSourceAvailable(int source)
 {
-  if (source == THROTTLE_SOURCE_S3 && !IS_POT_AVAILABLE(POT3))
+  if (source >= THROTTLE_SOURCE_FIRST_POT && source < THROTTLE_SOURCE_FIRST_POT+NUM_POTS && !IS_POT_AVAILABLE(POT1+source-THROTTLE_SOURCE_FIRST_POT))
     return false;
   else
     return true;
@@ -337,7 +337,7 @@ bool isAssignableFunctionAvailable(int function)
 #if !defined(HAPTIC)
     case FUNC_HAPTIC:
 #endif
-    case FUNC_PLAY_DIFF:
+    case FUNC_RESERVE4:
 #if !defined(DANGEROUS_MODULE_FUNCTIONS)
     case FUNC_RANGECHECK:
     case FUNC_BIND:

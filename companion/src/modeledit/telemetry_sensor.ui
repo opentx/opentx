@@ -272,7 +272,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Amps Sensor :</string>
+      <string>Sensor :</string>
      </property>
     </widget>
    </item>
@@ -366,82 +366,82 @@
      </item>
      <item>
       <property name="text">
-       <string>Voltage (V)</string>
+       <string>V</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Current (A)</string>
+       <string>A</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Current (mA)</string>
+       <string>mA</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Speed (kts)</string>
+       <string>kt</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Speed (m/s)</string>
+       <string>m/s</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Speed (ft/s)</string>
+       <string>ft/s</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Speed (km/h)</string>
+       <string>km/h</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Speed (miles/h)</string>
+       <string>mph</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Meters (m)</string>
+       <string>m</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Feet (ft)</string>
+       <string>ft</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Temp (°C)</string>
+       <string>°C</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Temp (°F)</string>
+       <string>°F</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Percentage (%)</string>
+       <string>%</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Energy (mAh)</string>
+       <string>mAh</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Power (W)</string>
+       <string>W</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>RF Power (dBm)</string>
+       <string>dBm</string>
       </property>
      </item>
      <item>
@@ -451,22 +451,22 @@
      </item>
      <item>
       <property name="text">
-       <string>Acceleration (g)</string>
+       <string>g</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Heading (°)</string>
+       <string>°</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Volume (mL)</string>
+       <string>mL</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Volume (US fl.Oz.)</string>
+       <string>US fl.Oz.</string>
       </property>
      </item>
     </widget>

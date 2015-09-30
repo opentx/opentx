@@ -125,10 +125,10 @@ class Profile: protected CompStoreObj
     QString _stickPotCalib;
     QString _timeStamp;
     QString _trainerCalib;
-    int     _currentCalib;
+    int     _txCurrentCalibration;
     int     _gsStickMode;
     int     _ppmMultiplier;
-    int     _vBatCalib;
+    int     _txVoltageCalibration;
     int     _vBatWarn;
     int     _vBatMin;
     int     _vBatMax;
@@ -156,10 +156,10 @@ class Profile: protected CompStoreObj
     QString stickPotCalib() const;
     QString timeStamp() const;
     QString trainerCalib() const;
-    int     currentCalib() const;
+    int     txCurrentCalibration() const;
     int     gsStickMode() const;
     int     ppmMultiplier() const;
-    int     vBatCalib() const;
+    int     txVoltageCalibration() const;
     int     vBatWarn() const;
     int     vBatMin() const;
     int     vBatMax() const;
@@ -186,10 +186,10 @@ class Profile: protected CompStoreObj
     void stickPotCalib (const QString);
     void timeStamp     (const QString);
     void trainerCalib  (const QString);
-    void currentCalib  (const int);
+    void txCurrentCalibration  (const int);
     void gsStickMode   (const int);
     void ppmMultiplier (const int);
-    void vBatCalib     (const int);
+    void txVoltageCalibration     (const int);
     void vBatWarn      (const int);
     void vBatMin       (const int);
     void vBatMax       (const int);

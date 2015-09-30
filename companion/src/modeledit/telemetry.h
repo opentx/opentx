@@ -89,7 +89,7 @@ class TelemetrySensorPanel: public ModelPanel
     void update();
 
   signals:
-    void nameModified();
+    void dataModified();
 
   protected slots:
     void on_name_editingFinished();
@@ -118,7 +118,7 @@ class TelemetryPanel : public ModelPanel
 
   private slots:
     void on_telemetryProtocol_currentIndexChanged(int index);
-    void onAnalogModified();
+    void onModified();
     void on_frskyProtoCB_currentIndexChanged(int index);
     void on_bladesCount_editingFinished();
     void on_rssiAlarm1CB_currentIndexChanged(int index);

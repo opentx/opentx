@@ -24,6 +24,7 @@
 #include <QtXml>
 #include <QComboBox>
 #include <iostream>
+#include <bitset>
 #include "constants.h"
 #include "simulatorinterface.h"
 
@@ -40,7 +41,7 @@ QString getBoardName(BoardEnum board);
 #define IS_9X(board)           (board==BOARD_STOCK || board==BOARD_M128)
 #define IS_STOCK(board)        (board==BOARD_STOCK)
 #define IS_2560(board)         (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
-#define IS_SKY9X(board)        (board==BOARD_SKY9X || board==BOARD_9XRPRO)
+#define IS_SKY9X(board)        (board==BOARD_SKY9X || board==BOARD_9XRPRO || board==BOARD_AR9X)
 #define IS_9XRPRO(board)       (board==BOARD_9XRPRO)
 #define IS_TARANIS(board)      (board==BOARD_TARANIS  || board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)
 #define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)
@@ -182,19 +183,6 @@ extern const char downArrow[];
 
 class ModelData;
 class GeneralSettings;
-
-enum ThrottleSource {
-  THROTTLE_SOURCE_THR,
-  THROTTLE_SOURCE_P1,
-  THROTTLE_SOURCE_P2,
-  THROTTLE_SOURCE_P3,
-  THROTTLE_SOURCE_S1 = THROTTLE_SOURCE_P1,
-  THROTTLE_SOURCE_S2,
-  THROTTLE_SOURCE_S3,
-  THROTTLE_SOURCE_LS,
-  THROTTLE_SOURCE_RS,
-  THROTTLE_SOURCE_FIRST_CHANNEL,
-};
 
 enum TelemetrySource {
   TELEMETRY_SOURCE_TX_BATT,
@@ -610,6 +598,12 @@ enum AssignFunc {
   FuncBackgroundMusicPause,
   FuncAdjustGV1,
   FuncAdjustGVLast = FuncAdjustGV1+C9X_MAX_GVARS-1,
+  FuncSetFailsafeInternalModule,
+  FuncSetFailsafeExternalModule,
+  FuncRangeCheckInternalModule,
+  FuncRangeCheckExternalModule,
+  FuncBindInternalModule,
+  FuncBindExternalModule,
   FuncCount,
   FuncReserve = -1
 };
@@ -815,31 +809,31 @@ class TimerData {
     void clear() { memset(this, 0, sizeof(TimerData)); mode = RawSwitch(SWITCH_TYPE_TIMER_MODE, 0); }
 };
 
-enum Protocol {
-  OFF,
-  PPM,
-  SILV_A,
-  SILV_B,
-  SILV_C,
-  CTP1009,
-  LP45,
-  DSM2,
-  DSMX,
-  PPM16,
-  PPMSIM,
-  PXX_XJT_X16,
-  PXX_XJT_D8,
-  PXX_XJT_LR12,
-  PXX_DJT,
-  PROTO_LAST
+enum PulsesProtocol {
+  PULSES_OFF,
+  PULSES_PPM,
+  PULSES_SILV_A,
+  PULSES_SILV_B,
+  PULSES_SILV_C,
+  PULSES_CTP1009,
+  PULSES_LP45,
+  PULSES_DSM2,
+  PULSES_DSMX,
+  PULSES_PPM16,
+  PULSES_PPMSIM,
+  PULSES_PXX_XJT_X16,
+  PULSES_PXX_XJT_D8,
+  PULSES_PXX_XJT_LR12,
+  PULSES_PXX_DJT,
+  PULSES_PROTOCOL_LAST
 };
 
 enum TrainerProtocol {
-  MASTER_JACK,
-  SLAVE_JACK,
-  MASTER_SBUS_MODULE,
-  MASTER_CPPM_MODULE,
-  MASTER_SBUS_BATT_COMPARTMENT
+  TRAINER_MASTER_JACK,
+  TRAINER_SLAVE_JACK,
+  TRAINER_MASTER_SBUS_MODULE,
+  TRAINER_MASTER_CPPM_MODULE,
+  TRAINER_MASTER_SBUS_BATT_COMPARTMENT
 };
 
 class ModuleData {
@@ -854,7 +848,7 @@ class ModuleData {
     int          failsafeChannels[C9X_NUM_CHNOUT];
     int          ppmDelay;
     bool         ppmPulsePol;           // false = positive
-    bool         ppmOutputType;         // false = open drain, true = push pull 
+    bool         ppmOutputType;         // false = open drain, true = push pull
     int          ppmFrameLength;
     void clear() { memset(this, 0, sizeof(ModuleData)); }
     QString polarityToString() const { return ppmPulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); } // TODO ModelPrinter
@@ -1054,6 +1048,8 @@ class ModelData {
 
     SensorData sensorData[C9X_MAX_SENSORS];
 
+    unsigned int toplcdTimer;
+
     void clear();
     bool isEmpty() const;
     void setDefaultInputs(const GeneralSettings & settings);
@@ -1139,7 +1135,8 @@ class GeneralSettings {
     unsigned int  currModel; // 0..15
     unsigned int   contrast;
     unsigned int   vBatWarn;
-    int    vBatCalib;
+    int    txVoltageCalibration;
+    int    txCurrentCalibration;
     int    vBatMin;
     int    vBatMax;
     int   backlightMode;
@@ -1187,7 +1184,6 @@ class GeneralSettings {
     int     speakerVolume;
     unsigned int   backlightBright;
     int switchesDelay;
-    int    currentCalib;
     int    temperatureCalib;
     int    temperatureWarn;
     unsigned int mAhWarn;
@@ -1318,7 +1314,7 @@ enum Capability {
   PPMCenter,
   PPMUnitMicroseconds,
   SYMLimits,
-  HasCurrentCalibration,
+  HastxCurrentCalibration,
   HasVolume,
   HasBrightness,
   PerModelTimers,
@@ -1330,6 +1326,7 @@ enum Capability {
   LCDWidth,
   GetThrSwitch,
   HasDisplayText,
+  HasTopLcd,
   GlobalFunctions,
   VirtualInputs,
   TrainerInputs,
@@ -1349,7 +1346,8 @@ enum Capability {
   HasInputDiff,
   HasMixerExpo,
   MixersMonitor,
-  HasBatMeterRange
+  HasBatMeterRange,
+  DangerousFunctions,
 };
 
 class SimulatorInterface;
@@ -1366,11 +1364,11 @@ class EEPROMInterface
 
     inline BoardEnum getBoard() { return board; }
 
-    virtual bool load(RadioData &radioData, const uint8_t *eeprom, int size) = 0;
+    virtual unsigned long load(RadioData &radioData, const uint8_t *eeprom, int size) = 0;
 
-    virtual bool loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index) = 0;
+    virtual unsigned long loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index) = 0;
 
-    virtual bool loadxml(RadioData &radioData, QDomDocument &doc) = 0;
+    virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc) = 0;
 
     virtual int save(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, uint8_t version=0) = 0;
 
@@ -1378,7 +1376,7 @@ class EEPROMInterface
 
     virtual int getSize(const GeneralSettings &) = 0;
 
-    virtual int isAvailable(Protocol proto, int port=0) = 0;
+    virtual int isAvailable(PulsesProtocol proto, int port=0) = 0;
 
     virtual const int getEEpromSize() = 0;
 
@@ -1493,9 +1491,35 @@ void unregisterEEpromInterfaces();
 void registerOpenTxFirmwares();
 void unregisterFirmwares();
 
-bool loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
-bool loadEEprom(RadioData &radioData, const uint8_t *eeprom, int size);
-bool loadEEpromXml(RadioData &radioData, QDomDocument &doc);
+enum EepromLoadErrors {
+  NO_ERROR,
+
+  UNKNOWN_ERROR,
+  UNSUPPORTED_NEWER_VERSION,
+  WRONG_SIZE,
+  WRONG_FILE_SYSTEM,
+  NOT_OPENTX,
+  NOT_TH9X,
+  NOT_GRUVIN9X,
+  NOT_ERSKY9X,
+  NOT_ER9X,
+  UNKNOWN_BOARD,
+  WRONG_BOARD,
+  BACKUP_NOT_SUPPORTED,
+
+  HAS_WARNINGS,
+  OLD_VERSION,
+  WARNING_WRONG_FIRMWARE,
+
+  NUM_ERRORS
+};
+
+void ShowEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound);
+void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound);
+
+unsigned long LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
+unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, int size);
+unsigned long LoadEepromXml(RadioData &radioData, QDomDocument &doc);
 
 struct Option {
   const char * name;

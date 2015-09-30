@@ -53,7 +53,7 @@ void checkTrainerSignalWarning()
 
   static uint8_t ppmInputValidState = PPM_IN_IS_NOT_USED;
 
-  if(ppmInputValidityTimer && (ppmInputValidState == PPM_IN_IS_NOT_USED)) {
+  if (ppmInputValidityTimer && (ppmInputValidState == PPM_IN_IS_NOT_USED)) {
     ppmInputValidState = PPM_IN_IS_VALID;
   }
   else if (!ppmInputValidityTimer && (ppmInputValidState == PPM_IN_IS_VALID)) {

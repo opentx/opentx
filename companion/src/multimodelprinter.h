@@ -2,17 +2,20 @@
 #define _MULTIMODELPRINTER_H
 
 #include <QObject>
+#include <QTextDocument>
 #include "eeprominterface.h"
 #include "modelprinter.h"
 
 class MultiModelPrinter: public QObject
 {
+  Q_OBJECT
+
   public:
     MultiModelPrinter(Firmware * firmware);
     virtual ~MultiModelPrinter();
     
     void setModel(int idx, const ModelData & model);
-    QString print();
+    QString print(QTextDocument * document);
 
   protected:
     class MultiColumns {
@@ -44,7 +47,7 @@ class MultiModelPrinter: public QObject
     QString printLimits();
     QString printInputs();
     QString printMixers();
-    QString printCurves();
+    QString printCurves(QTextDocument * document);
     QString printGvars();
     QString printLogicalSwitches();
     QString printCustomFunctions();

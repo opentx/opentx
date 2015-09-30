@@ -62,6 +62,7 @@
 
 TEST(Trims, throttleTrim)
 {
+  SYSTEM_RESET();
   MODEL_RESET();
   modelDefault(0);
   g_model.thrTrim = 1;

@@ -45,6 +45,11 @@
   display_t displayBuf[DISPLAY_BUF_SIZE] __DMA;
 #endif
 
+inline bool lcdIsPointOutside(coord_t x, coord_t y)
+{
+  return (x<0 || x>=LCD_W || y<0 || y>=LCD_H);
+}
+
 void lcd_clear()
 {
   memset(displayBuf, 0, DISPLAY_BUFER_SIZE);
@@ -476,6 +481,8 @@ void lcd_hline(coord_t x, coord_t y, coord_t w, LcdFlags att)
 #if !defined(BOOT)
 void lcd_line(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, LcdFlags att)
 {
+  if (lcdIsPointOutside(x1, y1) || lcdIsPointOutside(x2, y2)) return;
+
   int dx = x2-x1;      /* the horizontal distance of the line */
   int dy = y2-y1;      /* the vertical distance of the line */
   int dxabs = abs(dx);
@@ -674,7 +681,7 @@ void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
     else
       lcd_putsiAtt(x, y, STR_VSRCRAW, idx+1, att);
   }
-  else if (idx >= MIXSRC_FIRST_SWITCH && idx < MIXSRC_FIRST_LOGICAL_SWITCH) {
+  else if (idx >= MIXSRC_FIRST_SWITCH && idx <= MIXSRC_LAST_SWITCH) {
     idx = idx-MIXSRC_FIRST_SWITCH;
     if (ZEXIST(g_eeGeneral.switchNames[idx])) {
       lcd_putcAtt(x, y, '\312', att); //switch symbol
@@ -692,13 +699,13 @@ void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
   else if (idx <= MIXSRC_LAST_CH) {
     putsStrIdx(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
     if (ZEXIST(g_model.limitData[idx-MIXSRC_CH1].name) && (att & STREXPANDED)) {
-      lcd_putcAtt(lcdLastPos, y, ' ', att);
-      lcd_putsnAtt(lcdLastPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att);
+      lcd_putcAtt(lcdLastPos, y, ' ', att|SMLSIZE);
+      lcd_putsnAtt(lcdLastPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att|SMLSIZE);
     }
   }
-  else if (idx <= MIXSRC_LAST_GVAR)
+  else if (idx <= MIXSRC_LAST_GVAR) {
     putsStrIdx(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
-
+  }
   else if (idx < MIXSRC_FIRST_TELEM) {
     lcd_putsiAtt(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-NUM_LOGICAL_SWITCH-NUM_TRAINER-NUM_CHNOUT-MAX_GVARS, att);
   }
@@ -727,29 +734,48 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
   }
 }
 
-void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
+void putsSwitches(coord_t x, coord_t y, int32_t idx, LcdFlags att)
 {
-  if (idx == SWSRC_OFF)
+  if (idx == SWSRC_NONE) {
+    return lcd_putsiAtt(x, y, STR_VSWITCHES, 0, att);
+  }
+  else if (idx == SWSRC_OFF) {
     return lcd_putsiAtt(x, y, STR_OFFON, 0, att);
+  }
+
   if (idx < 0) {
     lcd_putcAtt(x-2, y, '!', att);
     idx = -idx;
   }
-#if defined(FLIGHT_MODES)
-  if (idx >= SWSRC_FIRST_FLIGHT_MODE) {
-    return putsStrIdx(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
-  }
-#endif
-  if (idx >= SWSRC_FIRST_SWITCH && idx <= SWSRC_LAST_SWITCH) {
+
+  if (idx <= SWSRC_LAST_SWITCH) {
     div_t swinfo = switchInfo(idx);
     if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
       lcd_putsnAtt(x, y, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME, ZCHAR|att);
-      char c = "\300-\301"[swinfo.rem];
-      lcd_putcAtt(lcdNextPos, y, c, att);
-      return;
     }
+    else {
+      lcd_putcAtt(x, y, 'S', att);
+      lcd_putcAtt(lcdNextPos, y, 'A'+swinfo.quot, att);
+    }
+    char c = "\300-\301"[swinfo.rem];
+    lcd_putcAtt(lcdNextPos, y, c, att);
   }
-  return lcd_putsiAtt(x, y, STR_VSWITCHES, idx, att);
+  else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
+    div_t swinfo = div(idx - SWSRC_FIRST_MULTIPOS_SWITCH, XPOTS_MULTIPOS_COUNT);
+    putsStrIdx(x, y, "S", swinfo.quot*10+swinfo.rem+11, att);
+  }
+  else if (idx <= SWSRC_LAST_TRIM) {
+    lcd_putsiAtt(x, y, STR_VSWITCHES, idx-SWSRC_FIRST_TRIM+1, att);
+  }
+  else if (idx <= SWSRC_LAST_LOGICAL_SWITCH) {
+    putsStrIdx(x, y, "L", idx-SWSRC_FIRST_LOGICAL_SWITCH+1, att);
+  }
+  else if (idx <= SWSRC_ONE) {
+    lcd_putsiAtt(x, y, STR_VSWITCHES, idx-SWSRC_ON+1+(2*NUM_STICKS), att);
+  }
+  else {
+    putsStrIdx(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
+  }
 }
 
 #if defined(FLIGHT_MODES)
@@ -803,7 +829,7 @@ void putsCurve(coord_t x, coord_t y, int8_t idx, LcdFlags att)
   putsStrIdx(x, y, STR_CV, idx, att);
 }
 
-void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
+void putsTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att)
 {
   if (mode >= 0) {
     if (mode < TMRMODE_COUNT)
@@ -1010,7 +1036,7 @@ void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
 
 void lcd_plot(coord_t x, coord_t y, LcdFlags att)
 {
-  if (x<0 || x>=LCD_W || y<0 || y>=LCD_H) return;
+  if (lcdIsPointOutside(x, y)) return;
   uint8_t *p = &displayBuf[ y / 2 * LCD_W + x ];
   uint8_t mask = PIXEL_GREY_MASK(y, att);
   lcd_mask(p, mask, att);

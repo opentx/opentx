@@ -167,8 +167,8 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
   ui->label_module->setText(label);
 
   // The protocols available on this board
-  for (int i=0; i<PROTO_LAST; i++) {
-    if (GetEepromInterface()->isAvailable((Protocol)i, moduleIdx)) {
+  for (int i=0; i<PULSES_PROTOCOL_LAST; i++) {
+    if (GetEepromInterface()->isAvailable((PulsesProtocol)i, moduleIdx)) {
       ui->protocol->addItem(ModelPrinter::printModuleProtocol(i), (QVariant)i);
       if (i == module.protocol) ui->protocol->setCurrentIndex(ui->protocol->count()-1);
     }
@@ -223,42 +223,42 @@ ModulePanel::~ModulePanel()
 void ModulePanel::update()
 {
   unsigned int mask = 0;
-  Protocol protocol = (Protocol)module.protocol;
+  PulsesProtocol protocol = (PulsesProtocol)module.protocol;
   unsigned int max_rx_num = 63;
 
   if (moduleIdx >= 0) {
     mask |= MASK_PROTOCOL;
     switch (protocol) {
-      case PXX_XJT_X16:
-      case PXX_XJT_D8:
-      case PXX_XJT_LR12:
-      case PXX_DJT:
+      case PULSES_PXX_XJT_X16:
+      case PULSES_PXX_XJT_D8:
+      case PULSES_PXX_XJT_LR12:
+      case PULSES_PXX_DJT:
         mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
-        if ((protocol==PXX_XJT_X16) || (protocol==PXX_XJT_LR12)) mask |= MASK_FAILSAFES | MASK_RX_NUMBER;
+        if ((protocol==PULSES_PXX_XJT_X16) || (protocol==PULSES_PXX_XJT_LR12)) mask |= MASK_FAILSAFES | MASK_RX_NUMBER;
         break;
-      case LP45:
-      case DSM2:
-      case DSMX:
+      case PULSES_LP45:
+      case PULSES_DSM2:
+      case PULSES_DSMX:
         mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER;
         module.channelsCount = 6;
         max_rx_num = 20;
         break;
-      case PPM:
+      case PULSES_PPM:
         mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT;
         if (IS_9XRPRO(firmware->getBoard())) {
           mask |= MASK_OPEN_DRAIN;
         }
         break;
-      case OFF:
+      case PULSES_OFF:
       default:
         break;
     }
   }
   else if (IS_TARANIS(firmware->getBoard())) {
     switch(model->trainerMode) {
-      case MASTER_JACK:
+      case TRAINER_MASTER_JACK:
         break;
-      case SLAVE_JACK:
+      case TRAINER_SLAVE_JACK:
         mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
         break;
       default:
@@ -266,7 +266,7 @@ void ModulePanel::update()
         break;
     }
   }
-  else if (model->trainerMode != MASTER_JACK) {
+  else if (model->trainerMode != TRAINER_MASTER_JACK) {
     mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
   }
 
@@ -516,6 +516,19 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     }
   }
 
+  if (firmware->getCapability(HasTopLcd)) {
+    ui->toplcdTimer->setField(model.toplcdTimer, this);
+    for (int i=0; i<C9X_MAX_TIMERS; i++) {
+      if (i<firmware->getCapability(Timers)) {
+        ui->toplcdTimer->addItem(tr("Timer %1").arg(i+1), i);
+      }
+    }
+  }
+  else {
+    ui->toplcdTimerLabel->hide();
+    ui->toplcdTimer->hide();
+  }
+
   if (!firmware->getCapability(HasDisplayText)) {
     ui->displayText->hide();
   }
@@ -689,7 +702,7 @@ void SetupPanel::on_trimIncrement_currentIndexChanged(int index)
 void SetupPanel::on_throttleSource_currentIndexChanged(int index)
 {
   if (!lock) {
-    model->thrTraceSrc = ui->throttleSource->itemData(index).toInt();
+    model->thrTraceSrc = index;
     emit modified();
   }
 }
@@ -735,33 +748,38 @@ void SetupPanel::on_image_currentIndexChanged(int index)
 
 void SetupPanel::populateThrottleSourceCB()
 {
-  const QString sources9x[] = { QObject::tr("THR"), QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3")};
-  const QString sourcesTaranis[] = { QObject::tr("THR"), QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("LS"), QObject::tr("RS")};
+  const QString pots9x[] = { QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3")};
+  const QString potsTaranis[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("LS"), QObject::tr("RS")};
+  const QString potsTaranisX9E[] = { QObject::tr("F1"), QObject::tr("F2"), QObject::tr("F3"), QObject::tr("F4"), QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS")};
 
   unsigned int i;
 
   lock = true;
 
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-    for (i=0; i<6; i++) {
-      ui->throttleSource->addItem(sourcesTaranis[i], i);
+  ui->throttleSource->addItem(QObject::tr("THR"));
+
+  if (IS_TARANIS_X9E(GetEepromInterface()->getBoard())) {
+    for (i=0; i<8; i++) {
+      ui->throttleSource->addItem(potsTaranisX9E[i], i);
+    }
+  }
+  else if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    for (i=0; i<5; i++) {
+      ui->throttleSource->addItem(potsTaranis[i], i);
     }
   }
   else {
-    for (i=0; i<4; i++) {
-      ui->throttleSource->addItem(sources9x[i], i);
+    for (i=0; i<3; i++) {
+      ui->throttleSource->addItem(pots9x[i], i);
     }
   }
 
-  if (model->thrTraceSrc < i)
-    ui->throttleSource->setCurrentIndex(model->thrTraceSrc);
-
   int channels = (IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
   for (int i=0; i<channels; i++) {
-    ui->throttleSource->addItem(ModelPrinter::printChannelName(i), THROTTLE_SOURCE_FIRST_CHANNEL+i);
-    if (model->thrTraceSrc == unsigned(THROTTLE_SOURCE_FIRST_CHANNEL+i))
-      ui->throttleSource->setCurrentIndex(ui->throttleSource->count()-1);
+    ui->throttleSource->addItem(ModelPrinter::printChannelName(i));
   }
+
+  ui->throttleSource->setCurrentIndex(model->thrTraceSrc);
 
   lock = false;
 }

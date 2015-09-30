@@ -104,7 +104,7 @@ int FlashEEpromDialog::getEEpromVersion(const QString &filename)
 
   QByteArray eeprom(EESIZE_MAX, 0);
   int fileType = getFileType(filename);
-  
+
 #if 0
   if (fileType==FILE_TYPE_XML) {
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -125,7 +125,8 @@ int FlashEEpromDialog::getEEpromVersion(const QString &filename)
     bool xmlOK = doc.setContent(&file);
     if (xmlOK) {
       RadioData * radioData = new RadioData();
-      if (!loadEEpromXml(*radioData, doc)) {
+      std::bitset<NUM_ERRORS> errors((unsigned long long)LoadEepromXml(*radioData, doc));
+      if (!errors.test(NO_ERROR)) {
         QMessageBox::warning(this, tr("Error"), tr("Invalid Models and Settings File %1").arg(filename));
       }
       else {
@@ -160,7 +161,8 @@ int FlashEEpromDialog::getEEpromVersion(const QString &filename)
   }
 
   RadioData * radioData = new RadioData();
-  if (eeprom_size == 0 || !loadEEprom(*radioData, (const uint8_t *)eeprom.data(), eeprom_size)) {
+  std::bitset<NUM_ERRORS> errors((unsigned long long)LoadEeprom(*radioData, (const uint8_t *)eeprom.data(), eeprom_size));
+  if (eeprom_size == 0 || !errors.test(NO_ERROR)) {
     QMessageBox::warning(this, tr("Error"), tr("Invalid Models and Settings file %1").arg(filename));
   }
   else {
@@ -175,8 +177,8 @@ bool FlashEEpromDialog::patchCalibration()
   QString calib = g.profile[g.id()].stickPotCalib();
   QString trainercalib = g.profile[g.id()].trainerCalib();
   int potsnum=GetCurrentFirmware()->getCapability(Pots);
-  int8_t vBatCalib=(int8_t) g.profile[g.id()].vBatCalib();
-  int8_t currentCalib=(int8_t) g.profile[g.id()].currentCalib();
+  int8_t txVoltageCalibration=(int8_t) g.profile[g.id()].txVoltageCalibration();
+  int8_t txCurrentCalibration=(int8_t) g.profile[g.id()].txCurrentCalibration();
   int8_t PPM_Multiplier=(int8_t) g.profile[g.id()].ppmMultiplier();
 
   if ((calib.length()==(NUM_STICKS+potsnum)*12) && (trainercalib.length()==16)) {
@@ -204,8 +206,8 @@ bool FlashEEpromDialog::patchCalibration()
         radioData->generalSettings.trainer.calib[i] = byte16;
       }
     }
-    radioData->generalSettings.currentCalib = currentCalib;
-    radioData->generalSettings.vBatCalib = vBatCalib;
+    radioData->generalSettings.txCurrentCalibration = txCurrentCalibration;
+    radioData->generalSettings.txVoltageCalibration = txVoltageCalibration;
     radioData->generalSettings.PPM_Multiplier = PPM_Multiplier;
     return true;
   }
@@ -303,7 +305,7 @@ void FlashEEpromDialog::on_burnButton_clicked()
     backupPath = g.profile[g.id()].pBackupDir();
     if (backupPath.isEmpty()) {
       backupPath=g.backupDir();
-    }    
+    }
     backupFilename = backupPath + "/backup-" + QDateTime().currentDateTime().toString("yyyy-MM-dd-HHmmss") + ".bin";
   }
   else if (ui->checkFirmwareCompatibility->isChecked()) {

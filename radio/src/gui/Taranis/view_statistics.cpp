@@ -98,12 +98,27 @@ void menuStatisticsView(uint8_t event)
 #define MENU_DEBUG_Y_MIXMAX   (2*FH-3)
 #define MENU_DEBUG_Y_LUA      (3*FH-2)
 #define MENU_DEBUG_Y_FREE_RAM (4*FH-1)
-#define MENU_DEBUG_Y_STACK    (5*FH)
+#define MENU_DEBUG_Y_USB      (5*FH)
 #define MENU_DEBUG_Y_RTOS     (6*FH)
+
+#if defined(USB_SERIAL)
+  extern uint16_t usbWraps;
+  extern uint16_t charsWritten;
+  extern "C" volatile uint32_t APP_Rx_ptr_in;
+#endif
 
 void menuStatisticsDebug(uint8_t event)
 {
   TITLE(STR_MENUDEBUG);
+
+#if defined(WATCHDOG_TEST)
+  if (s_warning_result) {
+    s_warning_result = 0;
+    // do a user requested watchdog test
+    TRACE("Performing watchdog test");
+    pausePulses();
+  }
+#endif
 
   switch(event)
   {
@@ -136,10 +151,19 @@ void menuStatisticsDebug(uint8_t event)
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
       break;
+#if defined(WATCHDOG_TEST)
+    case EVT_KEY_LONG(KEY_MENU):
+      {
+        POPUP_CONFIRMATION("Test the watchdog?");
+        const char * w = "The radio will reset!";
+        SET_WARNING_INFO(w, strlen(w), 0);
+      }
+      break;
+#endif
   }
 
   lcd_putsLeft(MENU_DEBUG_Y_FREE_RAM, "Free Mem");
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, getAvailableMemory(), LEFT);
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, availableMemory(), LEFT);
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_FREE_RAM, "b");
 
 #if defined(LUA)
@@ -154,15 +178,24 @@ void menuStatisticsDebug(uint8_t event)
   lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
 
+#if defined(USB_SERIAL)
+  lcd_putsLeft(MENU_DEBUG_Y_USB, "Usb");
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_USB, charsWritten, LEFT);
+  lcd_puts(lcdLastPos, MENU_DEBUG_Y_USB, " ");
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_USB, APP_Rx_ptr_in, LEFT);
+  lcd_puts(lcdLastPos, MENU_DEBUG_Y_USB, " ");
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_USB, usbWraps, LEFT);
+#endif
+
   lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
   lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[M]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(0), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, menusStack.available(), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[X]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(1), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, mixerStack.available(), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[A]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(2), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, audioStack.available(), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[I]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(255), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stackAvailable(), UNSIGN|LEFT);
 
   lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);
   lcd_status_line();

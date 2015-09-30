@@ -22,6 +22,15 @@ void doMixerCalculations();
   #define RADIO_RESET()
 #endif
 
+inline void SYSTEM_RESET()
+{
+#if defined(CPUARM)
+  memset(modelHeaders, 0, sizeof(modelHeaders));
+#endif
+  generalDefault();
+  g_eeGeneral.templateSetup = 0;
+}
+
 inline void MODEL_RESET()
 {
   memset(&g_model, 0, sizeof(g_model));

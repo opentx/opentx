@@ -60,6 +60,9 @@ enum menuModelSetupItems {
   ITEM_MODEL_TIMER3_MINUTE_BEEP,
   ITEM_MODEL_TIMER3_COUNTDOWN_BEEP,
 #endif
+#if defined(REV9E)
+  ITEM_MODEL_TOP_LCD_TIMER,
+#endif
   ITEM_MODEL_EXTENDED_LIMITS,
   ITEM_MODEL_EXTENDED_TRIMS,
   ITEM_MODEL_DISPLAY_TRIMS,
@@ -142,15 +145,15 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
     switch (m_posHorz) {
       case 0:
       {
-        int8_t timerMode = timer->mode;
+        swsrc_t timerMode = timer->mode;
         if (timerMode < 0) timerMode -= TMRMODE_COUNT-1;
         CHECK_INCDEC_MODELVAR_CHECK(event, timerMode, -TMRMODE_COUNT-SWSRC_LAST+1, TMRMODE_COUNT+SWSRC_LAST-1, isSwitchAvailableInTimers);
         if (timerMode < 0) timerMode += TMRMODE_COUNT-1;
         timer->mode = timerMode;
 #if defined(AUTOSWITCH)
         if (s_editMode>0) {
-          int8_t val = timer->mode - (TMRMODE_COUNT-1);
-          int8_t switchVal = checkIncDecMovedSwitch(val);
+          swsrc_t val = timer->mode - (TMRMODE_COUNT-1);
+          swsrc_t switchVal = checkIncDecMovedSwitch(val);
           if (val != switchVal) {
             timer->mode = switchVal + (TMRMODE_COUNT-1);
             eeDirty(EE_MODEL);
@@ -224,9 +227,11 @@ int getSwitchWarningsCount()
 #if defined(REV9E)
   #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > 8 ? TITLE_ROW : HIDDEN_ROW), uint8_t(getSwitchWarningsCount() > 16 ? TITLE_ROW : HIDDEN_ROW)
   #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|NUM_POTS : 0), uint8_t(g_model.potsWarnMode ? TITLE_ROW : HIDDEN_ROW)
+  #define TOPLCD_ROWS                     0,
 #else
   #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsCount())
   #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|NUM_POTS : 0)
+  #define TOPLCD_ROWS
 #endif
 
 void menuModelSetup(uint8_t event)
@@ -234,7 +239,7 @@ void menuModelSetup(uint8_t event)
   horzpos_t l_posHorz = m_posHorz;
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
 #if defined(TARANIS_INTERNAL_PPM)
-  MENU_TAB({ 0, 0, TIMERS_ROWS, 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(),
+  MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(),
     NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0, 
     LABEL(InternalModule), 
     INTERNAL_MODULE_MODE_ROWS, 
@@ -248,7 +253,7 @@ void menuModelSetup(uint8_t event)
     IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)), 
     LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
 #else
-  MENU_TAB({ 0, 0, TIMERS_ROWS, 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(),
+  MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(),
     NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0,
     LABEL(InternalModule),
     INTERNAL_MODULE_MODE_ROWS,
@@ -321,7 +326,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TIMER1_COUNTDOWN_BEEP:
-        g_model.timers[0].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[0].countdownBeep, 0, 2, attr, event);
+        g_model.timers[0].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[0].countdownBeep, COUNTDOWN_SILENT, COUNTDOWN_COUNT-1, attr, event);
         break;
 
       case ITEM_MODEL_TIMER1_PERSISTENT:
@@ -342,7 +347,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TIMER2_COUNTDOWN_BEEP:
-        g_model.timers[1].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[1].countdownBeep, 0, 2, attr, event);
+        g_model.timers[1].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[1].countdownBeep, COUNTDOWN_SILENT, COUNTDOWN_COUNT-1, attr, event);
         break;
 
       case ITEM_MODEL_TIMER2_PERSISTENT:
@@ -364,11 +369,21 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TIMER3_COUNTDOWN_BEEP:
-        g_model.timers[2].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[2].countdownBeep, 0, 2, attr, event);
+        g_model.timers[2].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[2].countdownBeep, COUNTDOWN_SILENT, COUNTDOWN_COUNT-1, attr, event);
         break;
 
       case ITEM_MODEL_TIMER3_PERSISTENT:
         g_model.timers[2].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, g_model.timers[2].persistent, 0, 2, attr, event);
+        break;
+#endif
+
+#if defined(REV9E)
+      case ITEM_MODEL_TOP_LCD_TIMER:
+        lcd_putsLeft(y, STR_TOPLCDTIMER);
+        putsStrIdx(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER, g_model.topLcdTimer+1, attr);
+        if (attr) {
+          g_model.topLcdTimer = checkIncDec(event, g_model.topLcdTimer, 0, TIMERS-1, EE_MODEL);
+        }
         break;
 #endif
 

@@ -1,6 +1,6 @@
 /*
  * Author - Bertrand Songis <bsongis@gmail.com>
- * 
+ *
  * Based on th9x -> http://code.google.com/p/th9x/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -69,7 +69,7 @@ void saveGeneralSettings(GeneralSettings & settings, global_settings & gs)
 
   // TODO BSS settings.currModel;
   gs.contrast(settings.contrast);
-  gs.battery(battery(settings.vBatCalib, settings.vBatWarn));
+  gs.battery(battery(settings.txVoltageCalibration, settings.vBatWarn));
 
   gs.ppm_input_calibration(ppm_input_calibration(settings.PPM_Multiplier,
                                                  PPMCalibration(settings.trainer.calib[0]),
@@ -121,10 +121,10 @@ void saveModel(ModelData & m, model & xm)
      if (t.mode) {
       timer xt(TimerSwitch::value(t.mode+TMR_NUM_OPTION), direction::value(t.dir), timer::value_type(t.val/3600, (t.val%3600)/60, t.val%60));
       timer_sequence.push_back(xt);
-    } 
+    }
   }
   */
-  if (m.moduleData[0].protocol != PPM || m.moduleData[0].channelsCount != 8 || m.moduleData[0].ppmDelay != 300 || m.moduleData[0].ppmPulsePol != 0) {
+  if (m.moduleData[0].protocol != PULSES_PPM || m.moduleData[0].channelsCount != 8 || m.moduleData[0].ppmDelay != 300 || m.moduleData[0].ppmPulsePol != 0) {
     modulation mod;
     mod.type(modulation::type_type::value(m.moduleData[0].protocol));
     mod.channels(m.moduleData[0].channelsCount);
@@ -185,7 +185,7 @@ bool XmlInterface::save(RadioData &radioData)
     radio r;
 
     // the general settings
-    global_settings gs;  
+    global_settings gs;
     saveGeneralSettings(settings, gs);
     r.global_settings(gs);
 

@@ -17,9 +17,6 @@ ModelPrinter::ModelPrinter(Firmware * firmware, const GeneralSettings & generalS
 
 ModelPrinter::~ModelPrinter()
 {
-  foreach(QString filename, curvefiles) {
-    qunlink(filename);
-  }
 }
 
 void debugHtml(const QString & html)
@@ -108,13 +105,13 @@ QString ModelPrinter::printModuleProtocol(unsigned int protocol)
 QString ModelPrinter::printModule(int idx)
 {
   const ModuleData & module = model.moduleData[idx];
-  if (module.protocol == OFF)
+  if (module.protocol == PULSES_OFF)
     return printModuleProtocol(module.protocol);
-  else if (module.protocol == PPM)
+  else if (module.protocol == PULSES_PPM)
     return tr("%1, Channels(%2-%3), PPM delay(%4usec), Pulse polarity(%5)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart+1).arg(module.channelsStart+module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString());
   else {
     QString result = tr("%1, Channels(%2-%3)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart+1).arg(module.channelsStart+module.channelsCount);
-    if (module.protocol != PXX_XJT_D8) {
+    if (module.protocol != PULSES_PXX_XJT_D8) {
       result += " " + tr("Receiver number(%1)").arg(module.modelId);
     }
     return result;
@@ -187,7 +184,7 @@ QString ModelPrinter::printTimer(const TimerData & timer)
   QStringList result;
   if (firmware->getCapability(TimersName) && timer.name[0]) 
     result += tr("Name(%1)").arg(timer.name);
-  result += tr("%1:%2").arg(timer.val/60, 2, 10, QChar('0')).arg(timer.val%60, 2, 10, QChar('0'));
+  result += QString("%1:%2").arg(timer.val/60, 2, 10, QChar('0')).arg(timer.val%60, 2, 10, QChar('0'));
   result += timer.mode.toString();
   if (timer.persistent)
     result += tr("Persistent");
@@ -327,21 +324,25 @@ QString ModelPrinter::printMixerName(int curDest)
   return Qt::escape(str);
 }
 
-QString ModelPrinter::printMixerLine(int idx, int highlightedSource)
+QString ModelPrinter::printMixerLine(int idx, bool showMultiplex, int highlightedSource)
 {
-  return printMixerLine(model.mixData[idx], highlightedSource);
+  return printMixerLine(model.mixData[idx], highlightedSource, showMultiplex);
 }
 
-QString ModelPrinter::printMixerLine(const MixData & mix, int highlightedSource)
+QString ModelPrinter::printMixerLine(const MixData & mix, bool showMultiplex, int highlightedSource)
 {
   QString str = "&nbsp;";
 
-  switch(mix.mltpx) {
-    case (1): str += "*"; break;
-    case (2): str += "R"; break;
-    default:  str += "&nbsp;"; break;
-  };
-
+  if (showMultiplex) {
+    switch(mix.mltpx) {
+      case (1): str += "*="; break;
+      case (2): str += ":="; break;
+      default:  str += "+="; break;
+    }
+  }
+  else {
+    str += "&nbsp;&nbsp;";
+  }
   // highlight source if needed
   QString source = Qt::escape(mix.srcRaw.toString(&model));
   if ( (mix.srcRaw.type == SOURCE_TYPE_CH) && (mix.srcRaw.index+1 == (int)highlightedSource) ) {
@@ -349,30 +350,33 @@ QString ModelPrinter::printMixerLine(const MixData & mix, int highlightedSource)
   }
   str += "&nbsp;" + source;
 
-  str += " " + Qt::escape(tr("Weight")) + QString("(%1)").arg(getGVarString(mix.weight, true));
+  str += " " + Qt::escape(tr("Weight(%1)").arg(getGVarString(mix.weight, true)));
 
   QString flightModesStr = printFlightModes(mix.flightModes);
-  if (!flightModesStr.isEmpty()) str += " " + Qt::escape(flightModesStr);
+  if (!flightModesStr.isEmpty())
+    str += " " + Qt::escape(flightModesStr);
 
-  if (mix.swtch.type != SWITCH_TYPE_NONE) {
-    str += " " + Qt::escape(tr("Switch")) + QString("(%1)").arg(mix.swtch.toString());
-  }
+  if (mix.swtch.type != SWITCH_TYPE_NONE)
+    str += " " + Qt::escape(tr("Switch(%1)").arg(mix.swtch.toString()));
 
-  if (mix.carryTrim>0)      str += " " + Qt::escape(tr("NoTrim"));
-  else if (mix.carryTrim<0) str += " " + RawSource(SOURCE_TYPE_TRIM, (-(mix.carryTrim)-1)).toString(&model);
+  if (mix.carryTrim > 0)
+    str += " " + Qt::escape(tr("NoTrim"));
+  else if (mix.carryTrim < 0)
+    str += " " + RawSource(SOURCE_TYPE_TRIM, (-(mix.carryTrim)-1)).toString(&model);
 
-  if (firmware->getCapability(HasNoExpo) && mix.noExpo) str += " " + Qt::escape(tr("No DR/Expo"));
-  if (mix.sOffset)     str += " " + Qt::escape(tr("Offset")
-  ) + QString("(%1)").arg(getGVarString(mix.sOffset));
-  if (mix.curve.value) str += " " + Qt::escape(mix.curve.toString());
-
+  if (firmware->getCapability(HasNoExpo) && mix.noExpo)
+    str += " " + Qt::escape(tr("No DR/Expo"));
+  if (mix.sOffset)
+    str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(mix.sOffset)));
+  if (mix.curve.value)
+    str += " " + Qt::escape(mix.curve.toString());
   int scale = firmware->getCapability(SlowScale);
   if (scale == 0)
     scale = 1;
   if (mix.delayDown || mix.delayUp)
-    str += " " + Qt::escape(tr("Delay")) + QString("(u%1:d%2)").arg((double)mix.delayUp/scale).arg((double)mix.delayDown/scale);
+    str += " " + Qt::escape(tr("Delay(u%1:d%2)").arg((double)mix.delayUp/scale).arg((double)mix.delayDown/scale));
   if (mix.speedDown || mix.speedUp)
-    str += " " + Qt::escape(tr("Slow")) + QString("(u%1:d%2)").arg((double)mix.speedUp/scale).arg((double)mix.speedDown/scale);
+    str += " " + Qt::escape(tr("Slow(u%1:d%2)").arg((double)mix.speedUp/scale).arg((double)mix.speedDown/scale));
   if (mix.mixWarn)
     str += " " + Qt::escape(tr("Warn(%1)").arg(mix.mixWarn));
   if (firmware->getCapability(HasMixerNames) && mix.name[0]) 
@@ -613,29 +617,12 @@ void CurveImage::drawCurve(const CurveData & curve, QColor color)
   }
 }
 
-void CurveImage::save(const QString & filename)
-{
-  image.save(filename, "png", 100);
-}
-
-QString ModelPrinter::createCurveImage(int idx)
+QString ModelPrinter::createCurveImage(int idx, QTextDocument * document)
 {
   CurveImage image;
   image.drawCurve(model.curves[idx], colors[idx]);
-  QString filename = generateProcessUniqueTempFileName(QString("curve-%1-%2.png").arg((uint64_t)this).arg(idx));
-  image.save(filename);
-  curvefiles << filename;
-  return filename;
-}
-
-QString ModelPrinter::createCurvesImage()
-{
-  CurveImage image;
-  for (int idx=0; idx<firmware->getCapability(NumCurves); idx++) {
-    image.drawCurve(model.curves[idx], colors[idx]);
-  }
-  QString filename = generateProcessUniqueTempFileName(QString("curves-%1.png").arg((uint64_t)this));
-  image.save(filename);
-  curvefiles << filename;
-  return filename;
+  QString filename = QString("curve-%1-%2.png").arg((uint64_t)this).arg(idx);
+  if (document) document->addResource(QTextDocument::ImageResource, QUrl(filename), image.get());
+  // qDebug() << "ModelPrinter::createCurveImage()" << idx << filename;
+  return ":" + filename;
 }

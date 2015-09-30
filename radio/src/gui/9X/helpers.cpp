@@ -140,7 +140,7 @@ enum SwitchContext
 bool isSwitchAvailable(int swtch, SwitchContext context)
 {
   if (swtch < 0) {
-    if (swtch == -SWSRC_ON || swtch == -SWSRC_One) {
+    if (swtch == -SWSRC_ON || swtch == -SWSRC_ONE) {
       return false;
     }
     swtch = -swtch;
@@ -156,7 +156,7 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
     }
   }
 
-  if (context != ModelCustomFunctionsContext && context != GeneralCustomFunctionsContext && (swtch == SWSRC_ON || swtch == SWSRC_One)) {
+  if (context != ModelCustomFunctionsContext && context != GeneralCustomFunctionsContext && (swtch == SWSRC_ON || swtch == SWSRC_ONE)) {
     return false;
   }
 
@@ -238,7 +238,7 @@ bool isAssignableFunctionAvailable(int function)
 #if !defined(HAPTIC)
     case FUNC_HAPTIC:
 #endif
-    case FUNC_PLAY_DIFF:
+    case FUNC_RESERVE4:
 #if !defined(DANGEROUS_MODULE_FUNCTIONS)
     case FUNC_RANGECHECK:
     case FUNC_BIND:

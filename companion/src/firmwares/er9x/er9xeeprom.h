@@ -61,7 +61,7 @@ PACK(typedef struct t_Er9xGeneral {
   uint8_t   currModel; //0..15
   uint8_t   contrast;
   uint8_t   vBatWarn;
-  int8_t    vBatCalib;
+  int8_t    txVoltageCalibration;
   int8_t    lightSw;
   Er9xTrainerData trainer;
   uint8_t   view;

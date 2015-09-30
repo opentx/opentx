@@ -70,7 +70,7 @@ Er9xGeneral::operator GeneralSettings ()
   result.currModel = currModel;
   result.contrast = contrast;
   result.vBatWarn = vBatWarn;
-  result.vBatCalib = vBatCalib;
+  result.txVoltageCalibration = txVoltageCalibration;
   result.trainer = trainer;
   result.blightinv=blightinv;
   result.stickScroll=stickScroll;
@@ -361,16 +361,16 @@ t_Er9xModelData::operator ModelData ()
   c9x.timers[0].val = tmrVal;
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 2:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].ppmFrameLength=ppmFrameLength;

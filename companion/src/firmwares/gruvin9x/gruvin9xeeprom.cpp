@@ -70,7 +70,7 @@ Gruvin9xGeneral_v103::operator GeneralSettings ()
   result.currModel = currModel;
   result.contrast = contrast;
   result.vBatWarn = vBatWarn;
-  result.vBatCalib = vBatCalib;
+  result.txVoltageCalibration = txVoltageCalibration;
 
   result.backlightMode = 0;
   if (lightSw == 22) {
@@ -127,7 +127,7 @@ Gruvin9xGeneral_v104::operator GeneralSettings ()
   result.currModel = currModel;
   result.contrast = contrast;
   result.vBatWarn = vBatWarn;
-  result.vBatCalib = vBatCalib;
+  result.txVoltageCalibration = txVoltageCalibration;
 
   result.backlightMode = 0;
   if (lightSw == 22) {
@@ -423,25 +423,25 @@ t_Gruvin9xModelData_v102::operator ModelData ()
 
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 2:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     case 3:
-      c9x.moduleData[0].protocol = SILV_A;
+      c9x.moduleData[0].protocol = PULSES_SILV_A;
       break;
     case 4:
-      c9x.moduleData[0].protocol = SILV_B;
+      c9x.moduleData[0].protocol = PULSES_SILV_B;
       break;
     case 5:
-      c9x.moduleData[0].protocol = SILV_C;
+      c9x.moduleData[0].protocol = PULSES_SILV_C;
       break;
     case 6:
-      c9x.moduleData[0].protocol = CTP1009;
+      c9x.moduleData[0].protocol = PULSES_CTP1009;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -493,25 +493,25 @@ t_Gruvin9xModelData_v103::operator ModelData ()
   c9x.timers[1] = timer2;
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 2:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     case 3:
-      c9x.moduleData[0].protocol = SILV_A;
+      c9x.moduleData[0].protocol = PULSES_SILV_A;
       break;
     case 4:
-      c9x.moduleData[0].protocol = SILV_B;
+      c9x.moduleData[0].protocol = PULSES_SILV_B;
       break;
     case 5:
-      c9x.moduleData[0].protocol = SILV_C;
+      c9x.moduleData[0].protocol = PULSES_SILV_C;
       break;
     case 6:
-      c9x.moduleData[0].protocol = CTP1009;
+      c9x.moduleData[0].protocol = PULSES_CTP1009;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -563,25 +563,25 @@ t_Gruvin9xModelData_v105::operator ModelData ()
   c9x.timers[1] = timer2;
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 2:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     case 3:
-      c9x.moduleData[0].protocol = SILV_A;
+      c9x.moduleData[0].protocol = PULSES_SILV_A;
       break;
     case 4:
-      c9x.moduleData[0].protocol = SILV_B;
+      c9x.moduleData[0].protocol = PULSES_SILV_B;
       break;
     case 5:
-      c9x.moduleData[0].protocol = SILV_C;
+      c9x.moduleData[0].protocol = PULSES_SILV_C;
       break;
     case 6:
-      c9x.moduleData[0].protocol = CTP1009;
+      c9x.moduleData[0].protocol = PULSES_CTP1009;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -653,25 +653,25 @@ t_Gruvin9xModelData_v106::operator ModelData ()
   c9x.timers[1] = timer2;
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 2:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     case 3:
-      c9x.moduleData[0].protocol = SILV_A;
+      c9x.moduleData[0].protocol = PULSES_SILV_A;
       break;
     case 4:
-      c9x.moduleData[0].protocol = SILV_B;
+      c9x.moduleData[0].protocol = PULSES_SILV_B;
       break;
     case 5:
-      c9x.moduleData[0].protocol = SILV_C;
+      c9x.moduleData[0].protocol = PULSES_SILV_C;
       break;
     case 6:
-      c9x.moduleData[0].protocol = CTP1009;
+      c9x.moduleData[0].protocol = PULSES_CTP1009;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);

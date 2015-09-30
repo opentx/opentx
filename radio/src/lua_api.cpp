@@ -116,33 +116,91 @@ static int luaGetTime(lua_State *L)
   return 1;
 }
 
+static void luaPushDateTime(lua_State *L, uint32_t year, uint32_t mon, uint32_t day,
+                            uint32_t hour, uint32_t min, uint32_t sec)
+{
+  lua_createtable(L, 0, 6);
+  lua_pushtableinteger(L, "year", year);
+  lua_pushtableinteger(L, "mon", mon);
+  lua_pushtableinteger(L, "day", day);
+  lua_pushtableinteger(L, "hour", hour);
+  lua_pushtableinteger(L, "min", min);
+  lua_pushtableinteger(L, "sec", sec);
+}
+
 static int luaGetDateTime(lua_State *L)
 {
   struct gtm utm;
   gettime(&utm);
-  lua_newtable(L);
-  lua_pushtableinteger(L, "year", utm.tm_year+1900);
-  lua_pushtableinteger(L, "mon", utm.tm_mon+1);
-  lua_pushtableinteger(L, "day", utm.tm_mday);
-  lua_pushtableinteger(L, "hour", utm.tm_hour);
-  lua_pushtableinteger(L, "min", utm.tm_min);
-  lua_pushtableinteger(L, "sec", utm.tm_sec);
+  luaPushDateTime(L, utm.tm_year + 1900, utm.tm_mon + 1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec);
   return 1;
+}
+
+static void luaPushLatLon(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
+/* result is lua table containing members ["lat"] and ["lon"] as lua_Number (doubles) in decimal degrees */
+{
+  lua_Number lat = 0.0;
+  lua_Number lon = 0.0;
+  uint32_t gpsLat = 0;
+  uint32_t gpsLon = 0;
+
+  telemetryItem.gps.extractLatitudeLongitude(&gpsLat, &gpsLon); /* close, but not the format we want */
+  lat = gpsLat / 1000000.0;
+  if (telemetryItem.gps.latitudeNS == 'S') lat = -lat;
+  lon = gpsLon / 1000000.0;
+  if (telemetryItem.gps.longitudeEW == 'W') lon = -lon;
+
+  lua_createtable(L, 0, 2);
+  lua_pushtablenumber(L, "lat", lat);
+  lua_pushtablenumber(L, "lon", lon);
+}
+
+static void luaPushTelemetryDateTime(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
+{
+  luaPushDateTime(L, telemetryItem.datetime.year + 2000, telemetryItem.datetime.month, telemetryItem.datetime.day,
+                  telemetryItem.datetime.hour, telemetryItem.datetime.min, telemetryItem.datetime.sec);
+}
+
+static void luaPushCells(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
+{
+  if (telemetryItem.cells.count == 0)
+    lua_pushinteger(L, (int)0); // returns zero if no cells
+  else {
+    lua_createtable(L, telemetryItem.cells.count, 0);
+    for (int i = 0; i < telemetryItem.cells.count; i++) {
+      lua_pushnumber(L, i + 1);
+      lua_pushnumber(L, telemetryItem.cells.values[i].value / 100.0);
+      lua_settable(L, -3);
+    }
+  }
 }
 
 static void luaGetValueAndPush(int src)
 {
-  getvalue_t value = getValue(src);
+  getvalue_t value = getValue(src); // ignored for GPS, DATETIME, and CELLS
 
   if (src >= MIXSRC_FIRST_TELEM && src <= MIXSRC_LAST_TELEM) {
     src = (src-MIXSRC_FIRST_TELEM) / 3;
     // telemetry values
     if (TELEMETRY_STREAMING() && telemetryItems[src].isAvailable()) {
       TelemetrySensor & telemetrySensor = g_model.telemetrySensors[src];
-      if (telemetrySensor.prec > 0)
-        lua_pushnumber(L, float(value)/(telemetrySensor.prec == 2 ? 100.0 : 10.0));
-      else
-        lua_pushinteger(L, value);
+      switch (telemetrySensor.unit) {
+        case UNIT_GPS:
+          luaPushLatLon(telemetrySensor, telemetryItems[src]);
+          break;
+        case UNIT_DATETIME:
+          luaPushTelemetryDateTime(telemetrySensor, telemetryItems[src]);
+          break;
+        case UNIT_CELLS:
+          luaPushCells(telemetrySensor, telemetryItems[src]);
+          break;
+        default:
+          if (telemetrySensor.prec > 0)
+            lua_pushnumber(L, float(value)/(telemetrySensor.prec == 2 ? 100.0 : 10.0));
+          else
+            lua_pushinteger(L, value);
+          break;
+      }
     }
     else {
       // telemetry not working, return zero for telemetry sources
@@ -1726,6 +1784,17 @@ bool luaLoadTelemetryScript(uint8_t index)
   return true;
 }
 
+uint8_t isTelemetryScriptAvailable(uint8_t index)
+{
+  for (int i=0; i<luaScriptsCount; i++) {
+    ScriptInternalData & sid = scriptInternalData[i];
+    if (sid.reference == SCRIPT_TELEMETRY_FIRST+index) {
+      return sid.state;
+    }
+  }
+  return SCRIPT_NOFILE;
+}
+
 void luaLoadPermanentScripts()
 {
   luaScriptsCount = 0;
@@ -1754,43 +1823,71 @@ void luaLoadPermanentScripts()
   }
 }
 
-char lua_warning_str[WARNING_LINE_LEN+1];
-char lua_warning_info[WARNING_LINE_LEN+1];
+#define LUA_WARNING_INFO_LEN 64
+char lua_warning_info[LUA_WARNING_INFO_LEN+1];
 
-void luaError(uint8_t error)
+void displayLuaError(const char * title)
 {
-  const char *msg = lua_tostring(L, -1);
-  if (msg) {
-#if defined(SIMU)
-    if (!strncmp(msg, "./", 2)) msg += 2;
-#else
-    if (!strncmp(msg, "/SCRIPTS/", 9)) msg += 9;
-#endif
-    strncpy(lua_warning_str, msg, WARNING_LINE_LEN);
-    lua_warning_str[WARNING_LINE_LEN] = '\0';
-    POPUP_WARNING(lua_warning_str);
-    for (int i=0; i<WARNING_LINE_LEN; i++) {
-      if (msg[i] == ':' && msg[i+1] == ' ') {
-        lua_warning_str[i] = '\0';
-        strncpy(lua_warning_info, &msg[i+2], WARNING_LINE_LEN);
-        lua_warning_info[WARNING_LINE_LEN] = '\0';
-        SET_WARNING_INFO(lua_warning_info, WARNING_LINE_LEN, 0);
-      }
+  displayBox(title);
+  if (lua_warning_info[0]) {
+    char * split = strstr(lua_warning_info, ": ");
+    if (split) {
+      lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, split-lua_warning_info, SMLSIZE);
+      lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, split+2, lua_warning_info+LUA_WARNING_INFO_LEN-split, SMLSIZE);
+    }
+    else {
+      lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, 40, SMLSIZE);
     }
   }
+}
+
+void displayAcknowledgeLuaError(uint8_t event)
+{
+  s_warning_result = false;
+  displayLuaError(s_warning);
+  if (event == EVT_KEY_BREAK(KEY_EXIT)) {
+    s_warning = NULL;
+  }
+}
+
+void luaError(uint8_t error, bool acknowledge)
+{
+  const char * errorTitle;
+
+  switch (error) {
+    case SCRIPT_SYNTAX_ERROR:
+      errorTitle = STR_SCRIPT_SYNTAX_ERROR;
+      break;
+    case SCRIPT_KILLED:
+      errorTitle = STR_SCRIPT_KILLED;
+      break;
+    case SCRIPT_PANIC:
+      errorTitle = STR_SCRIPT_PANIC;
+      break;
+    default:
+      errorTitle = STR_SCRIPT_ERROR;
+      break;
+  }
+
+  const char * msg = lua_tostring(L, -1);
+  if (msg) {
+#if defined(SIMU)
+    if (!strncmp(msg, ".", 2)) msg += 1;
+#endif
+    if (!strncmp(msg, "/SCRIPTS/", 9)) msg += 9;
+    strncpy(lua_warning_info, msg, LUA_WARNING_INFO_LEN);
+    lua_warning_info[LUA_WARNING_INFO_LEN] = '\0';
+  }
   else {
-    switch (error) {
-      case SCRIPT_SYNTAX_ERROR:
-        msg = "Script syntax error";
-        break;
-      case SCRIPT_KILLED:
-        msg = "Script killed";
-        break;
-      case SCRIPT_PANIC:
-        msg = "Script panic";
-        break;
-    }
-    POPUP_WARNING(msg);
+    lua_warning_info[0] = '\0';
+  }
+
+  if (acknowledge) {
+    s_warning = errorTitle;
+    popupFunc = displayAcknowledgeLuaError;
+  }
+  else {
+    displayLuaError(errorTitle);
   }
 }
 

@@ -61,14 +61,20 @@ TEST(getSwitch, circularCSW)
 }
 #endif
 
+#define SET_LOGICAL_SWITCH(index, _func, _v1, _v2) ( \
+  g_model.logicalSw[index].func = _func, \
+  g_model.logicalSw[index].v1 = _v1, \
+  g_model.logicalSw[index].v2 = _v2 )
+
 #if defined(PCBTARANIS)
 TEST(getSwitch, OldTypeStickyCSW)
 {
   RADIO_RESET();
   MODEL_RESET();
   MIXER_RESET();
-  g_model.logicalSw[0] = { LS_FUNC_AND, SWSRC_SA0, 0, 0,  };
-  g_model.logicalSw[1] = { LS_FUNC_OR, SWSRC_SW1, SWSRC_SW2, 0  };
+
+  SET_LOGICAL_SWITCH(0, LS_FUNC_AND, SWSRC_SA0, SWSRC_NONE);
+  SET_LOGICAL_SWITCH(1, LS_FUNC_OR, SWSRC_SW1, SWSRC_SW2);
 
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
@@ -349,5 +355,27 @@ TEST(getSwitch, inputWithTrim)
   doMixerCalculations();
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+}
+#endif
+
+#if defined(PCBTARANIS)
+TEST(evalLogicalSwitches, playFile)
+{
+  SYSTEM_RESET();
+  MODEL_RESET();
+  modelDefault(0);
+  MIXER_RESET();
+
+  extern uint64_t sdAvailableLogicalSwitchAudioFiles;
+  sdAvailableLogicalSwitchAudioFiles = 0xffffffffffffffff;
+  char filename[AUDIO_FILENAME_MAXLEN+1];
+  isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (0 << 16) + AUDIO_EVENT_OFF, filename);
+  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L1-off.wav"), 0);
+  isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (0 << 16) + AUDIO_EVENT_ON, filename);
+  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L1-on.wav"), 0);
+  isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (31 << 16) + AUDIO_EVENT_OFF, filename);
+  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L32-off.wav"), 0);
+  isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (31 << 16) + AUDIO_EVENT_ON, filename);
+  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L32-on.wav"), 0);
 }
 #endif

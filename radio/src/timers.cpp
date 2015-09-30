@@ -188,15 +188,15 @@ void evalTimers(int16_t throttle, uint8_t tick10ms)
           timerState->val = newTimerVal;
           if (timerState->state == TMR_RUNNING) {
             if (g_model.timers[i].countdownBeep && g_model.timers[i].start) {
-              if (newTimerVal==30) { 
+              if (newTimerVal == 30) {
                 AUDIO_TIMER_30(); 
                 // TRACE("Timer[%d] 30s announcement", i);
               }
-              if (newTimerVal==20) { 
+              if (newTimerVal == 20) {
                 AUDIO_TIMER_20();
                 // TRACE("Timer[%d] 20s announcement", i);
               }
-              if (newTimerVal<=10) {
+              if (newTimerVal <= 10) {
                 AUDIO_TIMER_LT10(g_model.timers[i].countdownBeep, newTimerVal);
                 // TRACE("Timer[%d] %ds announcement", i, newTimerVal);
               }

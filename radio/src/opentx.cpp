@@ -366,13 +366,15 @@ void defaultInputs()
 #if defined(TEMPLATES)
 inline void applyDefaultTemplate()
 {
-  applyTemplate(TMPL_SIMPLE_4CH);
+  applyTemplate(TMPL_SIMPLE_4CH); // calls eeDirty internally
 }
 #else
 void applyDefaultTemplate()
 {
 #if defined(VIRTUALINPUTS)
-  defaultInputs();
+  defaultInputs(); // calls eeDirty internally
+#else
+  eeDirty(EE_MODEL);
 #endif
 
   for (int i=0; i<NUM_STICKS; i++) {
@@ -1260,12 +1262,7 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
 #if defined(PCBTARANIS) && defined(REV9E)
     uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
-      // TODO this is quick & dirty
-      lcdOff();
-      BACKLIGHT_OFF();
-      topLcdOff();
-      SysTick->CTRL = 0; // turn off systick
-      pwrOff();
+      boardOff();
     }
     else if (pwr_check == e_power_press) {
       refresh = true;
@@ -1276,7 +1273,7 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
     }
 #else
     if (pwrCheck() == e_power_off) {
-      pwrOff(); // turn power off now
+      boardOff(); // turn power off now
     }
 #endif
   }
@@ -1886,7 +1883,7 @@ void opentxClose()
 #endif
 
 #if defined(PCBSKY9X)
-  uint32_t mAhUsed = g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib) / 8192 / 36;
+  uint32_t mAhUsed = g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration) / 8192 / 36;
   if (g_eeGeneral.mAhUsed != mAhUsed) {
     g_eeGeneral.mAhUsed = mAhUsed;
   }
@@ -2013,16 +2010,16 @@ void checkBattery()
     counter = 10;
     int32_t instant_vbat = anaIn(TX_VOLTAGE);
 #if defined(PCBTARANIS)
-    instant_vbat = (instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128) * BATT_SCALE;
+    instant_vbat = (instant_vbat + instant_vbat*(g_eeGeneral.txVoltageCalibration)/128) * BATT_SCALE;
     instant_vbat >>= 11;
     instant_vbat += 2; // because of the diode
 #elif defined(PCBSKY9X)
-    instant_vbat = (instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128) * 4191;
+    instant_vbat = (instant_vbat + instant_vbat*(g_eeGeneral.txVoltageCalibration)/128) * 4191;
     instant_vbat /= 55296;
 #elif defined(CPUM2560)
-    instant_vbat = (instant_vbat*1112 + instant_vbat*g_eeGeneral.vBatCalib + (BandGap<<2)) / (BandGap<<3);
+    instant_vbat = (instant_vbat*1112 + instant_vbat*g_eeGeneral.txVoltageCalibration + (BandGap<<2)) / (BandGap<<3);
 #else
-    instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.vBatCalib/8) / BandGap;
+    instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.txVoltageCalibration/8) / BandGap;
 #endif
 
     static uint8_t  s_batCheck;
@@ -2061,7 +2058,7 @@ void checkBattery()
       else if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
         AUDIO_TX_TEMP_HIGH();
       }
-      else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
+      else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
         AUDIO_TX_MAH_HIGH();
       }
 #endif
@@ -2142,8 +2139,6 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK)
 // (The timer is free-running and is thus not reset to zero at each capture interval.)
 ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with ISR_NOBLOCK
 {
-  static uint16_t lastCapt;
-
   uint16_t capture=ICR3;
 
   // Prevent rentrance for this IRQ only
@@ -2353,7 +2348,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 #if !defined(CPUARM) && !defined(SIMU)
 extern unsigned char __bss_end ;
 #define STACKPTR     _SFR_IO16(0x3D)
-void stack_paint()
+void stackPaint()
 {
   // Init Stack while interrupts are disabled
   unsigned char *p ;
@@ -2367,7 +2362,7 @@ void stack_paint()
   }
 }
 
-uint16_t stack_free()
+uint16_t stackAvailable()
 {
   unsigned char *p ;
 
@@ -2456,7 +2451,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   backlightOn();
 
 #if defined(PCBTARANIS)
-  uart3Init(g_eeGeneral.uart3Mode, MODEL_TELEMETRY_PROTOCOL());
+  serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
 #endif
 
 #if defined(PCBSKY9X) && !defined(SIMU)
@@ -2497,7 +2492,7 @@ int main(void)
   lcdInit();
 #endif
 
-  stack_paint();
+  stackPaint();
 
 #if defined(GUI)
   g_menuStack[0] = menuMainView;
@@ -2577,7 +2572,7 @@ int main(void)
   opentxClose();
   lcd_clear() ;
   lcdRefresh() ;
-  pwrOff(); // Only turn power off if necessary
+  boardOff(); // Only turn power off if necessary
   wdt_disable();
   while(1); // never return from main() - there is no code to return back, if any delays occurs in physical power it does dead loop.
 #endif

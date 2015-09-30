@@ -64,7 +64,7 @@ PACK(typedef struct t_Th9xGeneral {
   uint8_t   currModel; //0..15
   uint8_t   contrast;
   uint8_t   vBatWarn;
-  int8_t    vBatCalib;
+  int8_t    txVoltageCalibration;
   int8_t    lightSw;
   Th9xTrainerData trainer;
   uint8_t   adcFilt:2;

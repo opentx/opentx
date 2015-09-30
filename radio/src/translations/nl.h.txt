@@ -122,7 +122,7 @@
 #define TR_VDISPLAYTRIMS       "Nee\0  ""Kort\0 ""Ja\0   "
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "StilteBeeps\0Spraak"
+#define TR_VBEEPCOUNTDOWN      "StilteBeeps\0SpraakTril\0 "
 
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Tonen\0""Stilte"
@@ -319,22 +319,22 @@
 #endif
 
 #if ROTARY_ENCODERS == 2
-  #define TR_FSW_RESET_ROTENC  TR("REa\0""REb\0", "RotEnc A\0""RotEnc B\0")
+  #define TR_FSW_RESET_ROTENC  TR("REa\0""REb\0", "RotEnc A\0 ""RotEnc B\0 ")
 #elif ROTARY_ENCODERS == 1
-  #define TR_FSW_RESET_ROTENC  TR("R.E.", "RotEnc\0  ")
+  #define TR_FSW_RESET_ROTENC  TR("R.E.", "RotEnc\0   ")
 #else
   #define TR_FSW_RESET_ROTENC
 #endif
 
 #if LCD_W >= 212
-  #define TR_FSW_RESET_TIMERS  "Timer 1\0 ""Timer 2\0 ""Timer 3\0 "
+  #define TR_FSW_RESET_TIMERS  "Timer 1\0  ""Timer 2\0  ""Timer 3\0  "
 #elif defined(CPUARM)
   #define TR_FSW_RESET_TIMERS  "Tmr1""Tmr2""Tmr3"
 #else
   #define TR_FSW_RESET_TIMERS  "Tmr1""Tmr2"
 #endif
 
-#define TR_VFSWRESET           TR(TR_FSW_RESET_TIMERS "All\0" TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC, TR_FSW_RESET_TIMERS "Flight\0  " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC)
+#define TR_VFSWRESET           TR(TR_FSW_RESET_TIMERS "All\0" TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC, TR_FSW_RESET_TIMERS "Vliegdata\0" TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC)
 
 #define LEN_FUNCSOUNDS         TR("\004", "\006")
 #define TR_FUNCSOUNDS          TR("Bp1\0""Bp2\0""Bp3\0""Wrn1""Wrn2""Chee""Rata""Tick""Sirn""Ring""SciF""Robt""Chrp""Tada""Crck""Alrm", "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ratata""Tick  ""Siren ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""AlmClk")
@@ -489,23 +489,27 @@
   #define TR_ROTENC_SWITCHES
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
-  #define TR_PHYS_SWITCHES     "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF-""SF\301""SG\300""SG-""SG\301""SH\300""SH-""SH\301""SI\300""SI-""SI\301""SJ\300""SJ-""SJ\301""SK\300""SK-""SK\301""SL\300""SL-""SL\301""SM\300""SM-""SM\301""SN\300""SN-""SN\301""SO\300""SO-""SO\301""SP\300""SP-""SP\301""SQ\300""SQ-""SQ\301""SR\300""SR-""SR\301"
-#elif defined(PCBTARANIS)
-  #define TR_PHYS_SWITCHES     "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF-""SF\301""SG\300""SG-""SG\301""SH\300""SH-""SH\301"
-#else
+
+
+#if !defined(PCBTARANIS)
+
+
   #define TR_PHYS_SWITCHES     "THR""RUD""ELE""AIL""GEA""TRN"
 #endif
 
+#define TR_ON_ONE_SWITCHES     "ON\0""One"
+
 #if defined(PCBTARANIS)
-  #if defined(REV9E)
-    #define TR_6POS_POTS       "S11""S12""S13""S14""S15""S16""S21""S22""S23""S24""S25""S26""S31""S32""S33""S34""S35""S36""S41""S42""S43""S44""S45""S46"
-  #else
-    #define TR_6POS_POTS       "S11""S12""S13""S14""S15""S16""S21""S22""S23""S24""S25""S26""S31""S32""S33""S34""S35""S36"
-  #endif
-  #define TR_VSWITCHES         "---" TR_PHYS_SWITCHES TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
+  // only special switches here
+  #define TR_VSWITCHES         "---" TR_TRIMS_SWITCHES TR_ON_ONE_SWITCHES
+
+
 #else
-  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES TR_PHYS_SWITCHES TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
+
+
+
+
+  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES TR_PHYS_SWITCHES TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW TR_ON_ONE_SWITCHES
 #endif
 
 #if defined(HELI)
@@ -545,7 +549,8 @@
 #define TR_VSENSORTYPES        "Custom\0 ""Berekend"
 
 #define LEN_VFORMULAS          "\014"
-#define TR_VFORMULAS           "Optellen\0   ""Gemiddeld\0  ""Min\0        ""Max\0            ""Vermenigvuld""Totaal\0     ""Cellen\0      ""Verbruik\0  ""Afstand\0    "
+#define TR_VFORMULAS           "Optellen\0   ""Gemiddeld\0  ""Min\0        ""Max\0        ""Vermenigvuld""Totaal\0     ""Cellen\0     ""Verbruik\0   ""Afstand\0    "
+
 
 
 #define LEN_VPREC              "\004"  //  "\005"  Prec0 Prec1 Prec2
@@ -862,6 +867,10 @@
 #define TR_NO_MODELS_ON_SD     "Geen Modellen" BREAKSPACE "op SD"
 #define TR_NO_BITMAPS_ON_SD    "Geen Bitmaps" BREAKSPACE "op SD"
 #define TR_NO_SCRIPTS_ON_SD    "Geen Scripts" BREAKSPACE "op SD"
+#define TR_SCRIPT_SYNTAX_ERROR "Script syntax error"
+#define TR_SCRIPT_PANIC        "Script panic"
+#define TR_SCRIPT_KILLED       "Script killed"
+#define TR_SCRIPT_ERROR        "Unknown error"
 #define TR_PLAY_FILE           "Speel af"
 #define TR_DELETE_FILE         "Verwijderen"
 #define TR_COPY_FILE           "Kopieer"
@@ -956,9 +965,13 @@
 #define TR_COUNT               "Punten"
 #define TR_PT                  "Pt"
 #define TR_PTS                 "Ptn"
-#define TR_SMOOTH              "Afronden"
+#define TR_SMOOTH              "Zacht"
 #define TR_COPY_STICKS_TO_OFS  "Kopieer Sticks naar Subtrim"  
 #define TR_COPY_TRIMS_TO_OFS   "Kopieer Trim naar Subtrim"
+#define TR_INCDEC              "Inc/Decrement"
+#define TR_GLOBALVAR           "Globale Var"
+#define TR_MIXSOURCE           "Mixer Bron"
+#define TR_CONSTANT            "Constant"
 #define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Vasthouden mAh")
 #define TR_PREFLIGHT           "Preflight Checks"
 #define TR_CHECKLIST           TR(INDENT "Checklist", INDENT "Display Checklist")
@@ -1089,7 +1102,11 @@
 #define TR_ONLYPOSITIVE        "Geen Negatief"
 #define TR_FILTER              "Filter aktief"
 #define TR_TELEMETRYFULL       "Telemetrie slots vol!"
-#define TR_IGNOREIDS           TR(INDENT "Neg. ID ","Negeer ID's")
+#define TR_IGNORE_INSTANCE     TR(INDENT "Neg. ID ","Negeer ID's")
+#define TR_DISCOVER_SENSORS    INDENT "Ontdek nieuwe sensors"
+#define TR_STOP_DISCOVER_SENSORS INDENT "Stop ontdekking"
+#define TR_DELETE_ALL_SENSORS  INDENT "Wis alle sensors"
+#define TR_CONFIRMDELETE       "Echt alles wissen?"
 
 
 #define TR_MENU_INPUTS         "\314Inputs"
