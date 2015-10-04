@@ -143,16 +143,15 @@ void readKeysAndTrims()
   if (scrollRE) {
     rePreviousValue = reNewValue;
     if (scrollRE < 0) {
-      putEvent(EVT_KEY_FIRST(KEY_MINUS));
+      putEvent(EVT_ROTARY_LEFT);
     }
     else {
-      putEvent(EVT_KEY_FIRST(KEY_PLUS)); 
+      putEvent(EVT_ROTARY_RIGHT);
     }
   }
 
   in = readTrims();
   for (i = 1; i < 4096; i <<= 1) {
-	if (in & i) TRACE("trim %d", enuk);
     keys[enuk++].input(in & i);
   }
 }
