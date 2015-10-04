@@ -1,5 +1,7 @@
 #!/bin/env python
 
+from __future__ import division, print_function
+
 curr = 0
 idx = 0
 byte = 0
@@ -10,12 +12,12 @@ def push4bits(val):
   curr += val << idx
   idx += 4
   if idx == 8:
-    print "0x%02X," % curr,
+    print("0x%02X," % curr, end=' ')
     idx = 0
     curr = 0
     byte += 1
     if byte % 16 == 0:
-      print
+      print()
 
 cluster = 0
 
@@ -27,8 +29,8 @@ def pushCluster(val):
    cluster += 1
 
 def pushFile(size):
-   sectors = size / 512
-   count = sectors / 8
+   sectors = size // 512
+   count = sectors // 8
    for i in range(count-1):
      pushCluster(cluster+1)
    pushCluster(0xFFF)
@@ -36,14 +38,14 @@ def pushFile(size):
 def pushDisk(eeprom, flash):
   global curr, idx, byte, cluster
   curr = idx = byte = cluster = 0
-  print "Disk with %dk EEPROM and %dk FLASH:" % (eeprom, flash)
+  print("Disk with %dk EEPROM and %dk FLASH:" % (eeprom, flash))
   pushCluster(0xFF8)
   pushCluster(0xFFF)
   pushFile(eeprom*1024)
   pushFile(flash*1024)
   while byte < 512:
     push4bits(0)
-  print
+  print()
 
 pushDisk(32, 512)
 pushDisk(64, 512)

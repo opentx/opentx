@@ -127,7 +127,7 @@ parser.add_argument("--reverse", help="Reversed char conversion (from number to 
 args =  parser.parse_args()
 
 if args.language not in translations:
-    parser.error(args.language  + ' is not a supported language. Try one of the supported ones: ' + str(translations.keys()))
+    parser.error(args.language  + ' is not a supported language. Try one of the supported ones: ' + str(list(translations.keys())))
     system.exit()
 
 if args.reverse:

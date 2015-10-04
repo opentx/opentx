@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import os
 import re
 import sys
@@ -38,9 +40,9 @@ def writeheader(filename,header):
         f = open(filename,'w')
         f.writelines(output)
         f.close()
-        print "added header to %s" %filename
-    except IOError,err:
-        print "something went wrong trying to add header to %s: %s" % (filename,err)
+        print("added header to %s" %filename)
+    except IOError as err:
+        print("something went wrong trying to add header to %s: %s" % (filename,err))
 
 def main(args=sys.argv):
     headerfile = open(args[1])

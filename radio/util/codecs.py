@@ -1,5 +1,7 @@
 #!/bin/env python
 
+from __future__ import print_function
+
 SIGN_BIT =       (0x80)      # Sign bit for a A-law byte.
 QUANT_MASK =     (0xf)       # Quantization field mask.
 SEG_SHIFT =      (4)         # Left shift for segment number.
@@ -47,5 +49,5 @@ def tableToString(name, table):
     result += ' };'
     return result
     
-print tableToString('alawTable', pcmTable(alaw2linear))
-print tableToString('ulawTable', pcmTable(ulaw2linear))
+print(tableToString('alawTable', pcmTable(alaw2linear)))
+print(tableToString('ulawTable', pcmTable(ulaw2linear)))

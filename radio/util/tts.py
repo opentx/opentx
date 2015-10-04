@@ -26,7 +26,18 @@
 # Portuguese : Romolo Manfredini
 # Spanish    : Romolo Manfredini (With the help of Jose Moreno)
 
-import os, sys, shutil, platform, subprocess, wave, zipfile, httplib, urllib
+from __future__ import print_function
+
+import os, sys, shutil, platform, subprocess, wave, zipfile
+
+try:
+    # Python 3
+    from http.client import HTTPConnection
+    from urllib.parse import urlencode
+except ImportError:
+    # Python 2
+    from httplib import HTTPConnection
+    from urllib import urlencode
 
 NO_ALTERNATE = 1024
 
@@ -53,7 +64,7 @@ def wavstrip(filename):
 	
     
 def generate(str, filename):
-    print filename, str
+    print(filename, str)
 
     if not str:
         str = " !"	#this is so blank wav files never exist!
@@ -67,7 +78,7 @@ def generate(str, filename):
             "speak not implemented with google tts engine"
             exit()
         else:
-            print "which speach engine?"
+            print("which speach engine?")
             exit()
     else:
         if "sapi" in sys.argv:
@@ -82,8 +93,8 @@ def generate(str, filename):
         elif "google" in sys.argv:
             ttsmp3 = "ttsfile.mp3"
             ttsfilename = "ttsfile.wav"
-            conn = httplib.HTTPConnection("translate.google.com")
-            params = urllib.urlencode({'ie': "UTF-8", 'tl': directory, 'q': str.encode("utf-8")})
+            conn = HTTPConnection("translate.google.com")
+            params = urlencode({'ie': "UTF-8", 'tl': directory, 'q': str.encode("utf-8")})
             headers = {"User-Agent": "Mozilla"}
             conn.request("GET", u"/translate_tts?%s" % params, headers=headers)
             # conn.request("GET", "/translate_tts?ie=UTF-8&tl=%s&q=%s" % (directory, urllib.urlencode(str)), headers={"User-Agent": "Mozilla"})
@@ -93,7 +104,7 @@ def generate(str, filename):
             conn.close()
             
         else:
-            print "which speach engine?"
+            print("which speach engine?")
             exit()                     
 
         wavstrip(ttsfilename)
@@ -771,7 +782,7 @@ if __name__ == "__main__":
         # tts.Volume = 40
         # tts.SetRate(1)
         if "list" in sys.argv:
-            print tts.GetVoiceNames()
+            print(tts.GetVoiceNames())
             exit()
     
     if "mulaw" in sys.argv:
@@ -887,7 +898,7 @@ if __name__ == "__main__":
         systemSounds, sounds = ttsCz()
         
     else:
-        print "which language?"
+        print("which language?")
         exit()                             
         
     if "csv" in sys.argv:

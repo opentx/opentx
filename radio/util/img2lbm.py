@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import division, print_function
+
 import sys
 from PyQt4 import Qt, QtGui
 
@@ -19,7 +21,7 @@ else:
 
 def writeSize(f, width, height):
     if lcdwidth > 255:
-        f.write("%d,%d,%d,%d,\n" % (width%256, width/256, height%256, height/256))
+        f.write("%d,%d,%d,%d,\n" % (width%256, width//256, height%256, height//256))
     else:
         f.write("%d,%d,\n" % (width, height))
     
@@ -27,7 +29,7 @@ if what == "1bit":
     rows = 1
     if len(sys.argv) > 5:
         rows = int(sys.argv[5])
-    writeSize(f, width, height/rows)
+    writeSize(f, width, height//rows)
     for y in range(0, height, 8):
         for x in range(width):
             value = 0
@@ -42,7 +44,7 @@ elif what == "4/4/4/4":
     for y in range(height):
         for x in range(width):
             pixel = image.pixel(x, y)
-            f.write("0x%1x%1x%1x%1x," % (Qt.qAlpha(pixel)/16, Qt.qRed(pixel)/16, Qt.qGreen(pixel)/16, Qt.qBlue(pixel)/16))
+            f.write("0x%1x%1x%1x%1x," % (Qt.qAlpha(pixel)//16, Qt.qRed(pixel)//16, Qt.qGreen(pixel)//16, Qt.qBlue(pixel)//16))
         f.write("\n")
 elif what == "5/6/5/8":
     colors = []
@@ -148,4 +150,3 @@ elif what == "22x38":
         f.write("\n")
 else:
     print("wrong argument", sys.argv[4])
-    

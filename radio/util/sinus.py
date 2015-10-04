@@ -1,5 +1,7 @@
 #!/bin/env python
 
+from __future__ import print_function
+
 import math
 
 samples = 1024
@@ -17,13 +19,13 @@ for i in range(samples):
         max = sample
     elif sample < min:
         min = sample
-    print "%d," % sample,
+    print("%d," % sample, end=' ')
     if i % 10 == 9:
-        print
+        print()
 
-print
-print 'Range is:', min, max
+print()
+print('Range is:', min, max)
 
 if max > 32767 or min < -32768:
-    print "Invalid range!"
+    print("Invalid range!")
         
