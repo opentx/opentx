@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 
 import sys
 import os
@@ -24,11 +25,11 @@ error = None
 def checkName(name):
   global warning
   if name in dups_name:
-    print "WARNING: Duplicate name %s found for constant %s" % (name, CONSTANT_VALUE)
+    print("WARNING: Duplicate name %s found for constant %s" % (name, CONSTANT_VALUE))
     warning = True
   dups_name.append(name)
   if name != name.lower():
-    print "WARNING: Name not in lower case %s found for constant %s" % (name, CONSTANT_VALUE)
+    print("WARNING: Name not in lower case %s found for constant %s" % (name, CONSTANT_VALUE))
     warning = True
 
 
@@ -46,9 +47,9 @@ def LEXP_MULTIPLE(nameFormat, descriptionFormat, valuesCount):
   exports_multiple.append( (CONSTANT_VALUE, nameFormat, descriptionFormat, valuesCount) )
 
 if len(sys.argv) < 3:
-  print "Error: not enough arguments!"
-  print "Usage:"
-  print " luaexport.py <version> <input txt> <output cpp> [<doc output>]"
+  print("Error: not enough arguments!")
+  print("Usage:")
+  print(" luaexport.py <version> <input txt> <output cpp> [<doc output>]")
 
 version = sys.argv[1]
 inputFile = sys.argv[2]
@@ -56,11 +57,11 @@ outputFile = sys.argv[3]
 docFile = None
 if len(sys.argv) >= 4:
   docFile = sys.argv[4]
-print "Version %s" % version
-print "Input file %s" % inputFile
-print "Output file %s" % outputFile
+print("Version %s" % version)
+print("Input file %s" % inputFile)
+print("Output file %s" % outputFile)
 if docFile:
-  print "Documentation file %s" % docFile
+  print("Documentation file %s" % docFile)
 
 inp = open(inputFile, "r")
 
@@ -75,7 +76,7 @@ while True:
   parts = line.split('LEXP')
   #print parts
   if len(parts) != 2:
-    print "Wrong line: %s" % line
+    print("Wrong line: %s" % line)
     continue
   cmd = 'LEXP' + parts[1]
   cnst = parts[0].rstrip(', ')
@@ -93,7 +94,7 @@ while True:
     # print cmd
     eval(cmd)
   except:
-    print "ERROR: problem with the definition: %s" % line
+    print("ERROR: problem with the definition: %s" % line)
     traceback.print_exc()
     error = True
 
@@ -130,7 +131,7 @@ exports.sort(key = lambda x: x[1])  #sort by name
 data = ["  {%s, \"%s\", \"%s\"}" % export for export in exports]
 out.write(",\n".join(data))
 out.write("\n};\n\n")
-print "Generated %d items in luaFields[]" % len(exports)
+print("Generated %d items in luaFields[]" % len(exports))
 
 out.write("""
 // The list of Lua fields that have a range of values
@@ -139,7 +140,7 @@ const LuaMultipleField luaMultipleFields[] = {
 data = ["  {%s, \"%s\", \"%s\", %d}" % export for export in exports_multiple]
 out.write(",\n".join(data))
 out.write("\n};\n\n")
-print "Generated %d items in luaMultipleFields[]" % len(exports_multiple)
+print("Generated %d items in luaMultipleFields[]" % len(exports_multiple))
 out.close()
 
 if docFile:

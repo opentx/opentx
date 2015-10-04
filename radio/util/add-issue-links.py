@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 
 import sys
 import os
@@ -43,7 +44,7 @@ while True:
       links = "(" + ", ".join(issue_links) + ")"
       line = "<li>" + line + " " + links + "</li>"
 
-    print line
+    print(line)
 
 
 inp.close()

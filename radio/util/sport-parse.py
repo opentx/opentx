@@ -3,6 +3,7 @@
 
 # This program parses sport.log files
 
+from __future__ import division, print_function
 
 import os
 import sys
@@ -28,28 +29,28 @@ quiet = False
 def ParseFlVSS(packet, dataId, prim, appId, data, crc):
   # if dataId != 0xa1: 
   #   return
-  print "packet: %s (%4d)" % (dump(packet), lineNumber) ,
+  print("packet: %s (%4d)" % (dump(packet), lineNumber), end=' ')
   cells = (data & 0xF0) >> 4
   battnumber = data & 0xF;
-  voltage1 = ((data & 0x000FFF00) >>  8) / 5
-  voltage2 = ((data & 0xFFF00000) >> 20) / 5
-  print " FLVSS: no cells: %d, cell: %d: voltages: %0.2f %0.2f"  % (cells, battnumber, voltage1/100.0, voltage2/100.0)    
+  voltage1 = ((data & 0x000FFF00) >>  8) // 5
+  voltage2 = ((data & 0xFFF00000) >> 20) // 5
+  print(" FLVSS: no cells: %d, cell: %d: voltages: %0.2f %0.2f"  % (cells, battnumber, voltage1/100., voltage2/100.))    
 
 def ParseRSSI(packet, dataId, prim, appId, data, crc):
-  print "packet: %s (%4d)" % (dump(packet), lineNumber) ,
-  print " RSSI: %d"  % (data & 0xFF)    
+  print("packet: %s (%4d)" % (dump(packet), lineNumber), end=' ')
+  print(" RSSI: %d"  % (data & 0xFF))    
 
 def ParseAdc(packet, dataId, prim, appId, data, crc):
-  print "packet: %s (%4d)" % (dump(packet), lineNumber) ,
-  print " A%d: %d"  % (dataId - 0xf102, data & 0xFF)    
+  print("packet: %s (%4d)" % (dump(packet), lineNumber), end=' ')
+  print(" A%d: %d"  % (dataId - 0xf102, data & 0xFF))    
 
 def ParseBatt(packet, dataId, prim, appId, data, crc):
-  print "packet: %s (%4d)" % (dump(packet), lineNumber) ,
-  print " Batt: %d"  % (data & 0xFF)    
+  print("packet: %s (%4d)" % (dump(packet), lineNumber), end=' ')
+  print(" Batt: %d"  % (data & 0xFF))    
 
 def ParseSWR(packet, dataId, prim, appId, data, crc):
-  print "packet: %s (%4d)" % (dump(packet), lineNumber) ,
-  print " SWR: %d"  % (data & 0xFF)    
+  print("packet: %s (%4d)" % (dump(packet), lineNumber), end=' ')
+  print(" SWR: %d"  % (data & 0xFF))    
 
 def ParseAirSpeed(packet, dataId, prim, appId, data, crc):
   print "packet: %s (%4d)" % (dump(packet), lineNumber) ,
@@ -77,7 +78,7 @@ def ParseSportPacket(packet):
   (dataId, prim, appId, data, crc) = struct.unpack('<BBHIB', packet)
   #print "dataId:%02x, prim:%02x, appId:%04x, data:%08x, crc:%02x)\n" % (dataId, prim, appId, data, crc)
   if prim != DATA_FRAME:
-    print "unknown prim: %02x for packet %s in line %s" % (prim, dump(packet), lineNumber)
+    print("unknown prim: %02x for packet %s in line %s" % (prim, dump(packet), lineNumber))
   #proces according to appId
   for (firstId, lastId, parser) in appIdParsers:
     if appId >= firstId and appId <= lastId:
@@ -85,8 +86,8 @@ def ParseSportPacket(packet):
       return
   #no parser found
   if not quiet:
-    print "\tdataId:%02x, prim:%02x, appId:%04x, data:%08x, crc:%02x)" % (dataId, prim, appId, data, crc)
-    print "\tparser for appId %02x not implemented" % appId
+    print("\tdataId:%02x, prim:%02x, appId:%04x, data:%08x, crc:%02x)" % (dataId, prim, appId, data, crc))
+    print("\tparser for appId %02x not implemented" % appId)
 
 def ParsePacket(packet):
   global lineNumber
@@ -104,7 +105,7 @@ def ParsePacket(packet):
       #print "buff after unstuff         %s" % dump(packet, 20)
     else:
       #missin data, wait for more data
-      print "unstuff missing data"
+      print("unstuff missing data")
       return
 
   #print "packet: %s" % dump(packet, 10)
@@ -113,11 +114,11 @@ def ParsePacket(packet):
     #print "\npacket: %s @%d" % (dump(packet), lineNumber)
     #check crc
     if not CheckSportCrc(packet):
-      print "error: wrong CRC for packet %s at line %d" % (dump(packet), lineNumber)
+      print("error: wrong CRC for packet %s at line %d" % (dump(packet), lineNumber))
     ParseSportPacket(packet)
   else:
     if len(packet) > 1:
-      print "warning: wrong length %s for packet %s at line %d" % (len(packet), dump(packet, 10), lineNumber)
+      print("warning: wrong length %s for packet %s at line %d" % (len(packet), dump(packet, 10), lineNumber))
 
 
 def ParseSportData(data):
@@ -169,7 +170,7 @@ while True:
   #print line
   parts = line.split(': ')
   if len(parts) < 2:
-    print "weird data: \"%s\" at line %d" % (line, lineNumber)
+    print("weird data: \"%s\" at line %d" % (line, lineNumber))
     continue
   sportData = parts[1].strip()
   # print "sd: %s" % sportData

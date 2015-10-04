@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 
-import os, sys, shutil, platform, getpass, subprocess, zipfile, ftplib, httplib, threading
+import os, sys, shutil, platform, getpass, subprocess, zipfile, ftplib, threading
+
+try:
+    # Python 3
+    from http.client import HTTPConnection
+except ImportError:
+    # Python 2
+    from httplib import HTTPConnection
 
 BINARY_DIR = "../build/"
 
@@ -52,7 +59,7 @@ def upload(binaries, ext, stamp):
     if not ftp:
         return
     
-    print "Zip creation..."
+    print("Zip creation...")
     zip_name = "release.zip"
     zip = zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED)
     for bin in binaries:
@@ -60,7 +67,7 @@ def upload(binaries, ext, stamp):
     zip.write(BINARY_DIR + stamp, stamp)
     zip.close()
     
-    print "FTP transfer..."
+    print("FTP transfer...")
     ftp_connection = ftplib.FTP(ftp_host, ftp_user, ftp_password)
     try:
         ftp_connection.delete(ftp_directory + zip_name)
@@ -71,11 +78,11 @@ def upload(binaries, ext, stamp):
     f.close()
     ftp_connection.quit()
     
-    print "ZIP extraction...",
-    http_connection = httplib.HTTPConnection("open9x.freehosting.com")
+    print("ZIP extraction...", end=' ')
+    http_connection = HTTPConnection("open9x.freehosting.com")
     http_connection.request("GET", "/binaries/uncompress.php")
     response = http_connection.getresponse()
-    print response.status, response.reason
+    print(response.status, response.reason)
     os.remove(zip_name)
 
 global_current = 0
@@ -117,13 +124,13 @@ def generate(hex, arg, extension, options, languages, maxsize):
                 ret = p.wait()
                 stderr = p.stderr.read()
                 global_current += 1
-                print "[%d/%d]" % (global_current, global_count), hex_file
+                print("[%d/%d]" % (global_current, global_count), hex_file)
                 if ret or "error" in stderr:
-                    print stderr
+                    print(stderr)
                     exit()
                 for line in stderr.split("\n"):
                     if "warning" in line:
-                        print "  ", line
+                        print("  ", line)
                 for line in p.stdout.readlines():
                     if line.startswith("Program:"):
                         parts = line.split(" ")
@@ -131,11 +138,11 @@ def generate(hex, arg, extension, options, languages, maxsize):
                             parts.remove("")
                         size = int(parts[1])
                         if size > maxsize:
-                            print "  ", line[:-1], "[NOT RELEASED]"
+                            print("  ", line[:-1], "[NOT RELEASED]")
                         else:
-                            print "  ", line,
+                            print("  ", line, end=' ')
                     if line.startswith("Data:"):
-                        print "  ", line,
+                        print("  ", line, end=' ')
             
             if size <= maxsize:
                 binary_name = hex_file + "." + extension
@@ -209,7 +216,7 @@ if __name__ == "__main__":
         shutil.rmtree("util", True)
         shutil.copytree("../util", "util")
         for lang in languages:
-            print "Directory %s creation..." % lang
+            print("Directory %s creation..." % lang)
             shutil.rmtree(lang, True)
             shutil.copytree("../src", lang)
     

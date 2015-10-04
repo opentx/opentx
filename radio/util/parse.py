@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import sys
 
 filename = sys.argv[1]
-print filename
+print(filename)
 fr = open(filename)
 fw = open(filename+".new", "w")
 ew = open(filename+".en", "w")
@@ -46,10 +48,10 @@ for line in fr.readlines():
 
       if str_rep in replacements.keys():
         if replacements[str_rep] != str:
-          print "!!!!! NON !!!!!"
+          print("!!!!! NON !!!!!")
       else: 
         replacements[str_rep] = str
-        print glob_str, "=>", str, str_rep
+        print(glob_str, "=>", str, str_rep)
         ew.write("#define " + str_rep[1:] + " "*(17-len(str_rep)) + '"%s"\n' % str)
         hw.write("extern const PROGMEM char %s[];\n" % str_rep)
         cw.write("const prog_char APM %s[] = %s;\n" % (str_rep, str_rep[1:]))

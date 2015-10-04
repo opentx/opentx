@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import sys, os
 
 for filename in sys.argv[1:]:
@@ -14,7 +16,7 @@ for filename in sys.argv[1:]:
         if line.startswith("#ifndef "):
             guard = line[8:]
             if lines[i+1].strip() == "#define %s" % guard:
-                print filename, ":", guard, "=>", newguard
+                print(filename, ":", guard, "=>", newguard)
                 lines[i] = "#ifndef %s\n" % newguard
                 lines[i+1] = "#define %s\n" % newguard
                 end = -1

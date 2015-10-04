@@ -1,9 +1,11 @@
 #!/bin/env python
 
+from __future__ import print_function
+
 import sys, glob
 
 def addLine(filename, newline, after):
-  print filename, newline
+  print(filename, newline)
   lines = file(filename, 'r').readlines()
   for i, line in enumerate(lines):
     if after in line:
@@ -14,7 +16,7 @@ def addLine(filename, newline, after):
 def modifyTranslations(constant, translation, after):
   for filename in glob.glob('translations/*.h.txt'):
     newline = "#define " + constant + " "*max(1, 23-len(constant)) + '"' + translation + '"'
-    addLine(filename, newline, after+" ") 
+    addLine(filename, newline, after+" ")
 
 def modifyDeclaration(constant, after):
   newline = "extern const pm_char S" + constant + "[];"
