@@ -159,6 +159,13 @@ void delay_01us(uint16_t nb);
   #define SD_CARD_PRESENT()       (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_PIN)
 #endif
 
+// EEPROM Emulation
+void eepromEmulationInit();
+void eepromEmulationStop();
+void eepromReadBlock(uint8_t * buffer, uint32_t address, uint32_t size);
+void eepromWriteBlock(uint8_t * buffer, uint32_t address, uint32_t size);
+
+
 // Flash Write driver
 #define FLASH_PAGESIZE 256
 void unlockFlash(void);

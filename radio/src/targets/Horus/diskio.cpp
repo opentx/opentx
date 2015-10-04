@@ -262,6 +262,8 @@ void sdInit(void)
       f_lseek(&g_telemetryFile, f_size(&g_telemetryFile)); // append
     }
 #endif
+
+    eepromEmulationInit();
   }
   else {
     TRACE("f_mount() failed");
@@ -271,6 +273,7 @@ void sdInit(void)
 void sdDone()
 {
   if (sdMounted()) {
+    eepromEmulationStop();
     audioQueue.stopSD();
 #if defined(SPORT_FILE_LOG)
     f_close(&g_telemetryFile);

@@ -245,20 +245,20 @@ void checkTrainerSettings()
   }
 }
 
-// TODO
-void eeDirty(uint8_t msk) { }
-uint8_t   s_eeDirtyMsk;
-tmr10ms_t s_eeDirtyTime10ms;
-void eeCheck(bool) { }
-ModelHeader modelHeaders[MAX_MODELS];
-void eeLoadModelHeaders() { }
-void eeLoadModelHeader(uint8_t id, ModelHeader *header) { }
-bool eeCopyModel(uint8_t dst, uint8_t src) { }
-void eeSwapModels(uint8_t id1, uint8_t id2) { }
-void eeDeleteModel(uint8_t idx) { }
-uint8_t eeFindEmptyModel(uint8_t id, bool down) { return 0; };
-void eeLoadModel(uint8_t id) { }
-bool eeModelExists(uint8_t id) { return true; }
-const pm_char * eeBackupModel(uint8_t i_fileSrc) { return NULL; }
-const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name) { return NULL; }
-void selectModel(uint8_t sub) { }
+// // TODO
+// void eeDirty(uint8_t msk) { }
+// uint8_t   s_eeDirtyMsk;
+// tmr10ms_t s_eeDirtyTime10ms;
+// void eeCheck(bool) { }
+// ModelHeader modelHeaders[MAX_MODELS];
+// void eeLoadModelHeaders() { }
+// void eeLoadModelHeader(uint8_t id, ModelHeader *header) { }
+// bool eeCopyModel(uint8_t dst, uint8_t src) { }
+// void eeSwapModels(uint8_t id1, uint8_t id2) { }
+// void eeDeleteModel(uint8_t idx) { }
+// uint8_t eeFindEmptyModel(uint8_t id, bool down) { return 0; };
+// void eeLoadModel(uint8_t id) { }
+// bool eeModelExists(uint8_t id) { return true; }
+// const pm_char * eeBackupModel(uint8_t i_fileSrc) { return NULL; }
+// const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name) { return NULL; }
+// void selectModel(uint8_t sub) { }
