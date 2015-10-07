@@ -61,10 +61,7 @@
 #define WARN_MEM     (!(g_eeGeneral.warnOpts & WARN_MEM_BIT))
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
-#if defined(PCBTARANIS)
-  #define EEPROM_VER             218
-  #define FIRST_CONV_EEPROM_VER  216
-#elif defined(PCBSKY9X)
+#if defined(CPUARM)
   #define EEPROM_VER             218
   #define FIRST_CONV_EEPROM_VER  216
 #elif defined(CPUM2560) || defined(CPUM2561)
@@ -110,7 +107,35 @@
 
 #define NUM_STICKS             4
 
-#if defined(PCBTARANIS)
+#if defined(PCBHORUS)
+  #define MAX_MODELS           60
+  #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES     9
+  #define MAX_MIXERS           64
+  #define MAX_EXPOS            64
+  #define NUM_LOGICAL_SWITCH   32 // number of custom switches
+  #define NUM_CFN              64 // number of functions assigned to switches
+  #define MAX_SCRIPTS          7
+  #define MAX_INPUTS           32
+  #define NUM_TRAINER          16
+  #define NUM_POTS             3
+  #define NUM_XPOTS            0
+  #define MAX_SENSORS          32
+#elif defined(PCBFLAMENCO)
+  #define MAX_MODELS           60
+  #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES     9
+  #define MAX_MIXERS           64
+  #define MAX_EXPOS            64
+  #define NUM_LOGICAL_SWITCH   32 // number of custom switches
+  #define NUM_CFN              64 // number of functions assigned to switches
+  #define MAX_SCRIPTS          7
+  #define MAX_INPUTS           32
+  #define NUM_TRAINER          16
+  #define NUM_POTS             3
+  #define NUM_XPOTS            0
+  #define MAX_SENSORS          32
+#elif defined(PCBTARANIS)
   #define MAX_MODELS           60
   #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
   #define MAX_FLIGHT_MODES     9
@@ -210,7 +235,27 @@ struct CurveInfo {
 extern CurveInfo curveInfo(uint8_t idx);
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBHORUS)
+  #define LEN_MODEL_NAME       12
+  #define LEN_TIMER_NAME       8
+  #define LEN_FLIGHT_MODE_NAME 10
+  #define LEN_EXPOMIX_NAME     6
+  #define LEN_CHANNEL_NAME     6
+  #define LEN_INPUT_NAME       4
+  #define MAX_CURVES           32
+  #define NUM_POINTS           512
+  #define CURVDATA             CurveInfo
+#elif defined(PCBFLAMENCO)
+  #define LEN_MODEL_NAME       12
+  #define LEN_TIMER_NAME       8
+  #define LEN_FLIGHT_MODE_NAME 10
+  #define LEN_EXPOMIX_NAME     6
+  #define LEN_CHANNEL_NAME     6
+  #define LEN_INPUT_NAME       4
+  #define MAX_CURVES           32
+  #define NUM_POINTS           512
+  #define CURVDATA             CurveInfo
+#elif defined(PCBTARANIS)
   #define LEN_MODEL_NAME       12
   #define LEN_TIMER_NAME       8
   #define LEN_FLIGHT_MODE_NAME 10
@@ -301,7 +346,18 @@ PACK(typedef struct {
   int8_t    value:6;
 }) FrSkyRSSIAlarm;
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO) || defined(PCBHORUS)
+enum MainViews {
+  VIEW_BLANK,
+  VIEW_TIMERS_ALTITUDE,
+  VIEW_CHANNELS,
+  VIEW_TELEM1,
+  VIEW_TELEM2,
+  VIEW_TELEM3,
+  VIEW_TELEM4,
+  VIEW_COUNT
+};
+#elif defined(PCBTARANIS)
 enum MainViews {
   VIEW_TIMERS,
   VIEW_INPUTS,
@@ -365,20 +421,45 @@ enum BeeperMode {
   #define swarnenable_t       uint8_t
 #endif
 
-#if defined(PCBTARANIS)
-  enum UartModes {
-    UART_MODE_NONE,
-    UART_MODE_TELEMETRY_MIRROR,
-    UART_MODE_TELEMETRY,
-    UART_MODE_SBUS_TRAINER,
-    // UART_MODE_CPPM_TRAINER,
-  #if defined(DEBUG)
-    UART_MODE_DEBUG,
-  #endif
-    UART_MODE_COUNT,
-    UART_MODE_MAX = UART_MODE_COUNT-1
-  };
+enum UartModes {
+#if defined(CLI) || defined(DEBUG)
+  UART_MODE_DEBUG,
+#else
+  UART_MODE_NONE,
+#endif
+  UART_MODE_TELEMETRY_MIRROR,
+  UART_MODE_TELEMETRY,
+  UART_MODE_SBUS_TRAINER,
+  // UART_MODE_CPPM_TRAINER,
+  UART_MODE_COUNT,
+  UART_MODE_MAX = UART_MODE_COUNT-1
+};
 
+#if defined(PCBHORUS)
+  #define LEN_SWITCH_NAME              3
+  #define LEN_ANA_NAME                 3
+  #define EXTRA_GENERAL_FIELDS \
+    EXTRA_GENERAL_FIELDS_ARM \
+    uint8_t  serial2Mode:6; \
+    uint8_t  spare:2; \
+    CustomFunctionData customFn[NUM_CFN]; \
+    uint32_t switchConfig; \
+    uint8_t  potsType; /*two bits for every pot*/\
+    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
+    char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME];
+#elif defined(PCBFLAMENCO)
+  #define LEN_SWITCH_NAME              3
+  #define LEN_ANA_NAME                 3
+  #define EXTRA_GENERAL_FIELDS \
+    EXTRA_GENERAL_FIELDS_ARM \
+    uint8_t  serial2Mode:6; \
+    uint8_t  spare:2; \
+    CustomFunctionData customFn[NUM_CFN]; \
+    uint32_t switchConfig; \
+    uint8_t  potsType; /*two bits for every pot*/\
+    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
+    char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME];
+#elif defined(PCBTARANIS)
   #define LEN_SWITCH_NAME              3
   #define LEN_ANA_NAME                 3
   #define LEN_BLUETOOTH_NAME           10
@@ -391,7 +472,6 @@ enum BeeperMode {
   #else
     #define BLUETOOTH_FIELDS
   #endif
-
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
     uint8_t  serial2Mode:6; \
@@ -442,7 +522,35 @@ PACK(typedef struct {
   int8_t  inputs[MAX_SCRIPT_INPUTS];
 }) ScriptData;
 
-#if defined(PCBTARANIS)
+enum PotsWarnMode {
+  POTS_WARN_OFF,
+  POTS_WARN_MANUAL,
+  POTS_WARN_AUTO
+};
+
+#if defined(PCBHORUS)
+  enum ModuleIndex {
+    EXTERNAL_MODULE,
+    TRAINER_MODULE,
+  };
+  enum TrainerMode {
+    TRAINER_MODE_MASTER,
+    TRAINER_MODE_SLAVE
+  };
+  #define MODELDATA_BITMAP  uint8_t bitmap;
+  #define MODELDATA_EXTRA   uint8_t externalModule:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
+#elif defined(PCBFLAMENCO)
+  enum ModuleIndex {
+    EXTERNAL_MODULE,
+    TRAINER_MODULE,
+  };
+  enum TrainerMode {
+    TRAINER_MODE_MASTER,
+    TRAINER_MODE_SLAVE
+  };
+  #define MODELDATA_BITMAP  uint8_t bitmap;
+  #define MODELDATA_EXTRA   uint8_t externalModule:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
+#elif defined(PCBTARANIS)
   enum ModuleIndex {
     INTERNAL_MODULE,
     EXTERNAL_MODULE,
@@ -454,11 +562,6 @@ PACK(typedef struct {
     TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
     TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
     TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
-  };
-  enum PotsWarnMode {
-    POTS_WARN_OFF,
-    POTS_WARN_MANUAL,
-    POTS_WARN_AUTO
   };
   #define IS_TRAINER_EXTERNAL_MODULE() (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
@@ -494,7 +597,7 @@ enum BacklightMode {
 
 #define XPOTS_MULTIPOS_COUNT 6
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 PACK(typedef struct {
   uint8_t count;
   uint8_t steps[XPOTS_MULTIPOS_COUNT-1];
@@ -720,7 +823,7 @@ PACK(typedef struct {
 #define CFN_GVAR_CST_MAX    125
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   enum SwitchConfig {
     SWITCH_NONE,
     SWITCH_TOGGLE,
@@ -815,7 +918,7 @@ PACK(typedef struct {
   #define MODE_CURVE         1
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 PACK(typedef struct {
   uint16_t mode:2;
   uint16_t scale:14;
@@ -876,7 +979,7 @@ PACK(typedef struct {
 #define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   #define limit_min_max_t     int16_t
   #define LIMIT_EXT_PERCENT   150
   #define LIMIT_EXT_MAX       (LIMIT_EXT_PERCENT*10)
@@ -900,7 +1003,7 @@ PACK(typedef struct {
   #define LIMIT_OFS_RESX(lim) calc1000toRESX(LIMIT_OFS(lim))
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 PACK(typedef struct {
   int32_t min:11;
   int32_t max:11;
@@ -943,7 +1046,7 @@ PACK(typedef struct {
 #define SLOW_STEP       10
 #define DELAY_MAX       (25*DELAY_STEP) /* 25 seconds */
 #define SLOW_MAX        (25*SLOW_STEP)  /* 25 seconds */
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 PACK(typedef struct {
   int16_t  weight:11;       // GV1=-1024, -GV1=1023
   uint16_t destCh:5;
@@ -1422,7 +1525,7 @@ PACK(typedef struct {
   ls_telemetry_value_t barMax;           // ditto for max display (would usually = ratio)
 }) FrSkyBarData;
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   #define NUM_LINE_ITEMS 3
 #else
   #define NUM_LINE_ITEMS 2
@@ -1432,7 +1535,7 @@ PACK(typedef struct {
   source_t sources[NUM_LINE_ITEMS];
 }) FrSkyLineData;
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 #define MAX_TELEM_SCRIPT_INPUTS  8
 PACK(typedef struct {
   char    file[LEN_SCRIPT_FILENAME];
@@ -1443,7 +1546,7 @@ PACK(typedef struct {
 typedef union {
   FrSkyBarData  bars[4];
   FrSkyLineData lines[4];
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   TelemetryScriptData script;
 #endif
 } FrSkyScreenData;
@@ -1602,7 +1705,7 @@ PACK(typedef struct {
   #define TRIMS_ARRAY_SIZE  5
   #define trim_t            int16_t
 #else
-  #if defined(PCBTARANIS)
+  #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
     PACK(typedef struct {
       int16_t  value:11;
       uint16_t mode:5;
@@ -1643,7 +1746,25 @@ enum SwitchSources {
 
   SWSRC_FIRST_SWITCH,
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  SWSRC_SA0 = SWSRC_FIRST_SWITCH,
+  SWSRC_SA1,
+  SWSRC_SA2,
+  SWSRC_SB0,
+  SWSRC_SB2,
+  SWSRC_SC0,
+  SWSRC_SC1,
+  SWSRC_SC2,
+  SWSRC_SC3,
+  SWSRC_SC4,
+  SWSRC_SC5,
+  SWSRC_SE0,
+  SWSRC_SE2,
+  SWSRC_SF0,
+  SWSRC_SF1,
+  SWSRC_SF2,
+  SWSRC_LAST_SWITCH = SWSRC_SF2,
+#elif defined(PCBTARANIS)
   SWSRC_SA0 = SWSRC_FIRST_SWITCH,
   SWSRC_SA1,
   SWSRC_SA2,
@@ -1809,7 +1930,12 @@ enum MixSources {
   MIXSRC_Ail,                           LUA_EXPORT("ail", "Aileron")
 
   MIXSRC_FIRST_POT,
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("sd", "Potentiometer D")
+  MIXSRC_SLIDER1,                       LUA_EXPORT("ls", "Left slider")
+  MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
+  MIXSRC_LAST_POT = MIXSRC_SLIDER2,
+#elif defined(PCBTARANIS)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
   MIXSRC_POT3,                          LUA_EXPORT("s3", "Potentiometer 3")
@@ -1864,7 +1990,13 @@ enum MixSources {
 
   MIXSRC_FIRST_SWITCH,
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
+  MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
+  MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
+  MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
+  MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
@@ -2109,7 +2241,11 @@ PACK(typedef struct {
 enum ThrottleSources {
   THROTTLE_SOURCE_THR,
   THROTTLE_SOURCE_FIRST_POT,
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBFLAMENCO)
+  THROTTLE_SOURCE_SD,
+  THROTTLE_SOURCE_LS,
+  THROTTLE_SOURCE_RS,
+#elif defined(PCBTARANIS) && defined(REV9E)
   THROTTLE_SOURCE_F1 = THROTTLE_SOURCE_FIRST_POT,
   THROTTLE_SOURCE_F2,
   THROTTLE_SOURCE_F3,

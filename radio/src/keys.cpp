@@ -36,15 +36,15 @@
 
 #include "opentx.h"
 
-uint8_t s_evt;
+evt_t s_evt;
 struct t_inactivity inactivity = {0};
 
 #if defined(CPUARM)
-uint8_t getEvent(bool trim)
+evt_t getEvent(bool trim)
 {
-  uint8_t evt = s_evt;
+  evt_t evt = s_evt;
   int8_t k = EVT_KEY_MASK(s_evt) - TRM_BASE;
-  bool trim_evt = (k>=0 && k<8);
+  bool trim_evt = (k>=0 && k<TRM_LAST-TRM_BASE+1);
 
   if (trim == trim_evt) {
     s_evt = 0;
@@ -55,9 +55,9 @@ uint8_t getEvent(bool trim)
   }
 }
 #else
-uint8_t getEvent()
+evt_t getEvent()
 {
-  uint8_t evt = s_evt;
+  evt_t evt = s_evt;
   s_evt = 0;
   return evt;
 }
@@ -70,26 +70,25 @@ void Key::input(bool val)
 {
   uint8_t t_vals = m_vals ;
   t_vals <<= 1 ;
-  if (val) t_vals |= 1; //portbit einschieben
+  if (val) t_vals |= 1;
   m_vals = t_vals ;
 
   m_cnt++;
 
-  if (m_state && m_vals==0) {  //gerade eben sprung auf 0
+  if (m_state && m_vals==0) {
     if (m_state != KSTATE_KILLED) {
       putEvent(EVT_KEY_BREAK(key()));
     }
     m_cnt   = 0;
     m_state = KSTATE_OFF;
   }
-  switch(m_state){
+  switch (m_state) {
     case KSTATE_OFF:
-      if (m_vals == FFVAL) { //gerade eben sprung auf ff
+      if (m_vals == FFVAL) {
         m_state = KSTATE_START;
         m_cnt   = 0;
       }
       break;
-      //fallthrough
     case KSTATE_START:
       putEvent(EVT_KEY_FIRST(key()));
       inactivity.counter = 0;

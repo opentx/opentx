@@ -39,7 +39,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#define PRINTF_BUFFER_SIZE    256
+#define PRINTF_BUFFER_SIZE    128
 
 void serialPutc(char c)
 {

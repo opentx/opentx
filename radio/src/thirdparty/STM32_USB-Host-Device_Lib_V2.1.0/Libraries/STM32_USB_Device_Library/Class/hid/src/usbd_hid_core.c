@@ -48,7 +48,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_hid_core.h"
-#include "../../../../../usbd_desc.h"
+
+#include "../../../../../../../targets/Flamenco/usbd_desc.h"
 #include "usbd_req.h"
 
 

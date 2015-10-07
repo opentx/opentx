@@ -43,7 +43,7 @@
 OS_TID cliTaskId;
 TaskStack<CLI_STACK_SIZE> cliStack;
 Fifo<256> cliRxFifo;
-uint8_t cliTracesEnabled = false;
+uint8_t cliTracesEnabled = true;
 
 typedef int (* CliFunction) (const char ** args);
 
@@ -66,7 +66,7 @@ void cliPrompt()
   serialPutc('>');
 }
 
-int toInt(const char ** argv, int index, int * val)
+int toLongLongInt(const char ** argv, int index, long long int * val)
 {
   if (*argv[index] == '\0') {
     return 0;
@@ -79,7 +79,7 @@ int toInt(const char ** argv, int index, int * val)
       s = &argv[index][2];
     }
     char * endptr = NULL;
-    *val = strtol(s, &endptr, base);
+    *val = strtoll(s, &endptr, base);
     if (*endptr == '\0')
       return 1;
     else {
@@ -87,6 +87,14 @@ int toInt(const char ** argv, int index, int * val)
       return -1;
     }
   }
+}
+
+int toInt(const char ** argv, int index, int * val)
+{
+  long long int lval = 0;
+  int result = toLongLongInt(argv, index, &lval);
+  *val = (int)lval;
+  return result;
 }
 
 int cliBeep(const char ** argv)
@@ -200,6 +208,33 @@ int cliVolume(const char ** argv)
   return 0;
 }
 
+#if defined(PCBFLAMENCO)
+int cliReadBQ24195(const char ** argv)
+{
+  int index = 0;
+  if (toInt(argv, 1, &index) > 0) {
+    serialPrint("BQ24195[%d] = 0x%02x", index, i2cReadBQ24195(index));
+  }
+  else {
+    serialPrint("%s: Invalid arguments \"%s\" \"%s\"", argv[0], argv[1]);
+  }
+  return 0;
+}
+
+int cliWriteBQ24195(const char ** argv)
+{
+  int index = 0;
+  int data = 0;
+  if (toInt(argv, 1, &index) > 0 && toInt(argv, 2, &data) > 0) {
+    i2cWriteBQ24195(index, data);
+  }
+  else {
+    serialPrint("%s: Invalid arguments \"%s\" \"%s\"", argv[0], argv[1], argv[2]);
+  }
+  return 0;
+}
+#endif
+
 const MemArea memAreas[] = {
   { "RCC", RCC, sizeof(RCC_TypeDef) },
   { "GPIOA", GPIOA, sizeof(GPIO_TypeDef) },
@@ -210,13 +245,14 @@ const MemArea memAreas[] = {
   { "GPIOF", GPIOF, sizeof(GPIO_TypeDef) },
   { "GPIOG", GPIOG, sizeof(GPIO_TypeDef) },
   { "USART1", USART1, sizeof(USART_TypeDef) },
+  { "USART2", USART2, sizeof(USART_TypeDef) },
   { "USART3", USART3, sizeof(USART_TypeDef) },
   { NULL, NULL, 0 },
 };
 
 int cliDisplay(const char ** argv)
 {
-  int address = 0;
+  long long int address = 0;
 
   for (const MemArea * area = memAreas; area->name != NULL; area++) {
     if (!strcmp(area->name, argv[1])) {
@@ -225,7 +261,26 @@ int cliDisplay(const char ** argv)
     }
   }
 
-  if (!strcmp(argv[1], "adc")) {
+  if (!strcmp(argv[1], "keys")) {
+    for (int i=0; i<TRM_BASE; i++) {
+      char name[8];
+      uint8_t len = STR_VKEYS[0];
+      strncpy(name, STR_VKEYS+1+len*i, len);
+      name[len] = '\0';
+      serialPrint("[%s] = %s", name, switchState(EnumKeys(i)) ? "on" : "off");
+    }
+    serialPrint("[Enc.]  = %d", rotencValue / 2);
+    for (int i=TRM_BASE; i<=TRM_LAST; i++) {
+      serialPrint("[Trim%d] = %s", i-TRM_BASE, switchState(EnumKeys(i)) ? "on" : "off");
+    }
+    for (int i=MIXSRC_FIRST_SWITCH; i<=MIXSRC_LAST_SWITCH; i++) {
+      mixsrc_t sw = i - MIXSRC_FIRST_SWITCH;
+      if (SWITCH_EXISTS(sw)) {
+        serialPrint("[S%c] = %s", 'A'+sw, (switchState((EnumKeys)(SW_BASE+(3*sw))) ? "down" : (switchState((EnumKeys)(SW_BASE+(3*sw)+1)) ? "mid" : "up")));
+      }
+    }
+  }
+  else if (!strcmp(argv[1], "adc")) {
     for (int i=0; i<NUMBER_ANALOG; i++) {
       serialPrint("adc[%d] = %04X", i, Analog_values[i]);
     }
@@ -240,7 +295,43 @@ int cliDisplay(const char ** argv)
     gettime(&utm);
     serialPrint("time = %4d-%02d-%02d %02d:%02d:%02d.%02d0", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100);
   }
-  else if (toInt(argv, 1, &address) > 0) {
+#if defined(PCBFLAMENCO)
+  else if (!strcmp(argv[1], "bq24195")) {
+    {
+      uint8_t reg = i2cReadBQ24195(0x00);
+      serialPrint(reg & 0x80 ? "HIZ enable" : "HIZ disable");
+    }
+    {
+      uint8_t reg = i2cReadBQ24195(0x08);
+      serialPrint(reg & 0x01 ? "VBatt < VSysMin" : "VBatt > VSysMin");
+      serialPrint(reg & 0x02 ? "Thermal sensor bad" : "Thermal sensor ok");
+      serialPrint(reg & 0x04 ? "Power ok" : "Power bad");
+      serialPrint(reg & 0x08 ? "Connected to charger" : "Not connected to charger");
+      const char * CHARGE_STATUS[] = { "Not Charging", "Precharge", "Fast Charging", "Charge done" };
+      serialPrint(CHARGE_STATUS[(reg & 0x30) >> 4]);
+      const char * INPUT_STATUS[] = { "Unknown input", "USB host input", "USB adapter port input", "OTG input" };
+      serialPrint(INPUT_STATUS[(reg & 0xC0) >> 6]);
+    }
+    {
+      uint8_t reg = i2cReadBQ24195(0x09);
+      if (reg & 0x80) serialPrint("Watchdog timer expiration");
+      uint8_t chargerFault = (reg & 0x30) >> 4;
+      if (chargerFault == 0x01)
+        serialPrint("Input fault");
+      else if (chargerFault == 0x02)
+        serialPrint("Thermal shutdown");
+      else if (chargerFault == 0x03)
+        serialPrint("Charge safety timer expiration");
+      if (reg & 0x08) serialPrint("Battery over voltage fault");
+      uint8_t ntcFault = (reg & 0x07);
+      if (ntcFault == 0x05)
+        serialPrint("NTC cold");
+      else if (ntcFault == 0x06)
+        serialPrint("NTC hot");
+    }
+  }
+#endif
+  else if (toLongLongInt(argv, 1, &address) > 0) {
     int size = 256;
     if (toInt(argv, 2, &size) >= 0) {
       dump((uint8_t *)address, size);
@@ -259,6 +350,10 @@ const CliCommand cliCommands[] = {
   { "stackinfo", cliStackInfo, "<tid>" },
   { "trace", cliTrace, "on | off" },
   { "volume", cliVolume, "<level>" },
+#if defined(PCBFLAMENCO)
+  { "read_bq24195", cliReadBQ24195, "<register>" },
+  { "write_bq24195", cliWriteBQ24195, "<register> <data>" },
+#endif
   { "help", cliHelp, "[<command>]" },
   { NULL, NULL, NULL }  /* sentinel */
 };

@@ -30,8 +30,8 @@
 #define __USBD_CDC_IF_TEMPLATE_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "usb_conf.h"
-#include "usbd_conf.h"
+#include "../../../../../../../targets/Flamenco/usb_conf.h"
+#include "../../../../../../../targets/Flamenco/usbd_conf.h"
 #include "usbd_cdc_core.h"
 
 /* Exported types ------------------------------------------------------------*/

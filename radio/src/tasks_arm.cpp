@@ -97,6 +97,9 @@ uint16_t getStackAvailable(void * address, uint16_t size)
     i++;
   }
   return i*4;
+#if defined(CLI)
+  cliStackPaint();
+#endif
 }
 
 template<int SIZE>

@@ -491,7 +491,7 @@ enum FrSkyDataState {
 #endif
 };
 
-#if defined(CPUARM)
+#if defined(CPUARM) || defined(PCBFLAMENCO)
   #define frskySendAlarms()
 #else
   #define SEND_RSSI_ALARMS  6

@@ -262,7 +262,11 @@ void generalDefault()
   g_eeGeneral.variant = EEPROM_VARIANT;
   g_eeGeneral.contrast = 25;
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  g_eeGeneral.vBatWarn = 33;
+  g_eeGeneral.vBatMin = -60; // 0 is 9.0V
+  g_eeGeneral.vBatMax = -78; // 0 is 12.0V
+#elif defined(PCBTARANIS)
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
   g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
 #endif
@@ -289,11 +293,15 @@ void generalDefault()
   g_eeGeneral.stickMode = DEFAULT_MODE-1;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  g_eeGeneral.templateSetup = 21; /* AETR */
+#elif defined(PCBTARANIS)
   g_eeGeneral.templateSetup = 17; /* TAER */
 #endif
 
-#if !defined(CPUM64)
+#if defined(PCBFLAMENCO)
+  g_eeGeneral.inactivityTimer = 50;
+#elif !defined(CPUM64)
   g_eeGeneral.backlightMode = e_backlight_mode_all;
   g_eeGeneral.lightAutoOff = 2;
   g_eeGeneral.inactivityTimer = 10;
@@ -963,6 +971,25 @@ void checkBacklight()
   }
 }
 
+#if defined(PCBFLAMENCO)
+void checkUsbChip()
+{
+  uint8_t reg = i2cReadBQ24195(0x00);
+  if (reg & 0x80) {
+    i2cWriteBQ24195(0x00, reg & 0x7F);
+  }
+}
+#endif
+
+void doLoopCommonActions()
+{
+  checkBacklight();
+
+#if defined(PCBFLAMENCO)
+  checkUsbChip();
+#endif
+}
+
 void backlightOn()
 {
   lightOffCounter = ((uint16_t)g_eeGeneral.lightAutoOff*250) << 1;
@@ -1058,7 +1085,7 @@ void doSplash()
       }
 #endif
 
-      checkBacklight();
+      doLoopCommonActions();
     }
   }
 }
@@ -1223,7 +1250,7 @@ void checkTHR()
       break;
     }
 
-    checkBacklight();
+    doLoopCommonActions();
 
     wdt_reset();
   }
@@ -1255,7 +1282,7 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
 
     if (keyDown()) return;  // wait for key release
 
-    checkBacklight();
+    doLoopCommonActions();
 
     wdt_reset();
 
@@ -1286,7 +1313,7 @@ int8_t trimGvar[NUM_STICKS] = { -1, -1, -1, -1 };
 #if defined(CPUARM)
 void checkTrims()
 {
-  uint8_t event = getEvent(true);
+  evt_t event = getEvent(true);
   if (event && !IS_KEY_BREAK(event)) {
     int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
 #else
@@ -2009,7 +2036,7 @@ void checkBattery()
   if (counter-- == 0) {
     counter = 10;
     int32_t instant_vbat = anaIn(TX_VOLTAGE);
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
     instant_vbat = (instant_vbat + instant_vbat*(g_eeGeneral.txVoltageCalibration)/128) * BATT_SCALE;
     instant_vbat >>= 11;
     instant_vbat += 2; // because of the diode
@@ -2382,7 +2409,11 @@ uint16_t stackAvailable()
 
 void opentxInit(OPENTX_INIT_ARGS)
 {
+  TRACE("opentxInit()");
+
+#if defined(EEPROM)
   eeReadAll();
+#endif
 
 #if defined(CPUARM)
   if (UNEXPECTED_SHUTDOWN()) {
@@ -2401,9 +2432,13 @@ void opentxInit(OPENTX_INIT_ARGS)
   }
 #endif
 
+  TRACE("setVolume()");
+
 #if defined(VOICE)
   setVolume(g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF);
 #endif
+
+  TRACE("audioQueue.start()");
 
 #if defined(CPUARM)
   audioQueue.start();
@@ -2431,10 +2466,12 @@ void opentxInit(OPENTX_INIT_ARGS)
     unexpectedShutdown = 1;
 #endif
 #if defined(CPUARM)
+    TRACE("eeLoadModel(g_eeGeneral.currModel)");
     eeLoadModel(g_eeGeneral.currModel);
 #endif
   }
   else {
+    TRACE("opentxStart()");
     opentxStart();
   }
 
@@ -2450,7 +2487,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif
   backlightOn();
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO)
   serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
 #endif
 
@@ -2462,9 +2499,12 @@ void opentxInit(OPENTX_INIT_ARGS)
   doMixerCalculations();
 #endif
 
+  TRACE("startPulses()");
   startPulses();
 
   wdt_enable(WDTO_500MS);
+
+  TRACE("opentxInit() end!");
 }
 
 #if !defined(SIMU)
@@ -2488,8 +2528,13 @@ int main(void)
 
   boardInit();
   
-#if defined(GUI) && !defined(PCBTARANIS)
+#if defined(GUI) && !defined(PCBTARANIS) && !defined(PCBFLAMENCO) && !defined(PCBHORUS)
+  // TODO remove this
   lcdInit();
+#endif
+
+#if defined(COLORLCD)
+  lcdColorsInit();
 #endif
 
   stackPaint();
@@ -2502,7 +2547,7 @@ int main(void)
 #endif
 
 #if defined(GUI) && !defined(PCBTARANIS)
-  lcdSetRefVolt(25);
+  // lcdSetRefVolt(25);
 #endif
 
 #if defined(PCBTARANIS)
@@ -2548,6 +2593,10 @@ int main(void)
 #else
 #if defined(CPUM2560)
   uint8_t shutdown_state = 0;
+#endif
+
+#if defined(PCBFLAMENCO)
+  menuEntryTime = get_tmr10ms() - 200;
 #endif
 
   while (1) {
@@ -2625,7 +2674,7 @@ uint32_t pwrCheck()
           lcdRefreshWait();
           lcd_clear();
           POPUP_CONFIRMATION("Confirm Shutdown");
-          uint8_t evt = getEvent(false);
+          evt_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
           lcdRefresh();
           if (s_warning_result == true) {

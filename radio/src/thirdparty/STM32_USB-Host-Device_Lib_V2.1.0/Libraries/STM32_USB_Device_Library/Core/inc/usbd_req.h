@@ -31,9 +31,9 @@
 #define __USB_REQUEST_H_
 
 /* Includes ------------------------------------------------------------------*/
+#include "../../../../../../targets/Flamenco/usbd_conf.h"
 #include  "usbd_def.h"
 #include  "usbd_core.h"
-#include  "usbd_conf.h"
 
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY

@@ -101,7 +101,7 @@ typedef const int16_t pm_int16_t;
 typedef const int8_t pm_int8_t;
 
 #if defined(CPUSTM32)
-extern GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog;
+extern GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpioi, gpioj;
 extern TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
 extern USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 extern RCC_TypeDef rcc;
@@ -114,6 +114,9 @@ extern DMA_TypeDef dma2;
 #undef GPIOE
 #undef GPIOF
 #undef GPIOG
+#undef GPIOH
+#undef GPIOI
+#undef GPIOJ
 #define GPIOA (&gpioa)
 #define GPIOB (&gpiob)
 #define GPIOC (&gpioc)
@@ -121,6 +124,9 @@ extern DMA_TypeDef dma2;
 #define GPIOE (&gpioe)
 #define GPIOF (&gpiof)
 #define GPIOG (&gpiog)
+#define GPIOH (&gpioh)
+#define GPIOI (&gpioi)
+#define GPIOJ (&gpioj)
 #undef TIM1
 #undef TIM2
 #undef TIM3
@@ -392,23 +398,24 @@ extern OS_MutexID audioMutex;
 
 #define CoInitOS(...)
 #define CoStartOS(...)
-#define CoCreateTask(...) (0)
-#define CoCreateMutex(...) PTHREAD_MUTEX_INITIALIZER
+#define CoCreateTask(...)              0
+#define CoCreateTaskEx(...)            0
+#define CoCreateMutex(...)             PTHREAD_MUTEX_INITIALIZER
 #define CoSetFlag(...)
 #define CoClearFlag(...)
 #define CoSetTmrCnt(...)
 #define CoEnterISR(...)
 #define CoExitISR(...)
 #define CoStartTmr(...)
-#define CoWaitForSingleFlag(...) 0
-#define CoEnterMutexSection(m) pthread_mutex_lock(&(m))
-#define CoLeaveMutexSection(m) pthread_mutex_unlock(&(m))
+#define CoWaitForSingleFlag(...)       0
+#define CoEnterMutexSection(m)         pthread_mutex_lock(&(m))
+#define CoLeaveMutexSection(m)         pthread_mutex_unlock(&(m))
 #define CoTickDelay(...)
-#define CoCreateFlag(...) 0
-#define CoGetOSTime(...) 0
+#define CoCreateFlag(...)              0
+#define CoGetOSTime(...)               0
 #define UART_Stop(...)
 #define UART3_Stop(...)
-#define USART_GetITStatus(...) 0
+#define USART_GetITStatus(...)         0
 
 #if defined(CPUSTM32)
 inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { }

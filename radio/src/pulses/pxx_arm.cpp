@@ -81,7 +81,7 @@ void crc(uint8_t data, unsigned int port)
   modulePulsesData[port].pxx.pcmCrc = (modulePulsesData[port].pxx.pcmCrc<<8) ^ (CRCTable[((modulePulsesData[port].pxx.pcmCrc>>8)^data) & 0xFF]);
 }
 
-#if defined(PCBTARANIS)
+#if !defined(PPM_PIN_HW_SERIAL)
 
 void putPcmPart(uint8_t value, unsigned int port)
 {

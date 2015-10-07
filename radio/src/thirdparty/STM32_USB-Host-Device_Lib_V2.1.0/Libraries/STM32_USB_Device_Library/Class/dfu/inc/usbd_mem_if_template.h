@@ -30,8 +30,7 @@
 #define __MEM_IF_MAL_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "usb_conf.h"
-
+#include "../../../../../../../targets/Flamenco/usb_conf.h"
 #include "usbd_dfu_mal.h"
 
 /* Exported types ------------------------------------------------------------*/

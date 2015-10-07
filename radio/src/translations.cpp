@@ -581,7 +581,7 @@ const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
   const pm_char STR_CONFIRMDELETE[] PROGMEM = TR_CONFIRMDELETE;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   const pm_char STR_BYTES[] PROGMEM = TR_BYTES;
   const pm_char STR_ANTENNAPROBLEM[] PROGMEM = TR_ANTENNAPROBLEM;
   const pm_char STR_MODULE[] PROGMEM = TR_MODULE;

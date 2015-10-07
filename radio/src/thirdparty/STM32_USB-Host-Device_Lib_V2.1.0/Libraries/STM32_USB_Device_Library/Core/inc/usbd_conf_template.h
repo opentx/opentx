@@ -30,7 +30,7 @@
 #define __USBD_CONF__H__
 
 /* Includes ------------------------------------------------------------------*/
-#include "usb_conf.h"
+#include "../../../../../../targets/Flamenco/usb_conf.h"
 
 /** @defgroup USB_CONF_Exported_Defines
   * @{

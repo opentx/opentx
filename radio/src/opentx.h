@@ -283,7 +283,11 @@
 #define RESXul     1024ul
 #define RESXl      1024l
 
-#if defined(PCBTARANIS)
+#if defined(PCBHORUS)
+  #include "targets/Horus/board_horus.h"
+#elif defined(PCBFLAMENCO)
+  #include "targets/Flamenco/board_flamenco.h"
+#elif defined(PCBTARANIS)
   #include "targets/taranis/board_taranis.h"
 #elif defined(PCBSKY9X)
   #include "targets/sky9x/board_sky9x.h"
@@ -333,7 +337,25 @@
   #include <avr/wdt.h>
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBHORUS)
+  #define NUM_SWITCHES     5 // 8 physical switches + 6 possible from 3POS
+  #define NUM_SW_SRCRAW    8
+  // #define SWSRC_THR     SWSRC_SF2
+  // #define SWSRC_GEA     SWSRC_SG2
+  // #define SWSRC_ID0     SWSRC_SA0
+  // #define SWSRC_ID1     SWSRC_SA1
+  // #define SWSRC_ID2     SWSRC_SA2
+  // #define SW_DSM2_BIND  SW_SH2
+#elif defined(PCBFLAMENCO)
+  #define NUM_SWITCHES     5 // 8 physical switches + 6 possible from 3POS
+  #define NUM_SW_SRCRAW    8
+  // #define SWSRC_THR     SWSRC_SF2
+  // #define SWSRC_GEA     SWSRC_SG2
+  // #define SWSRC_ID0     SWSRC_SA0
+  // #define SWSRC_ID1     SWSRC_SA1
+  // #define SWSRC_ID2     SWSRC_SA2
+  // #define SW_DSM2_BIND  SW_SH2
+#elif defined(PCBTARANIS)
   #if defined(REV9E)
     #define NUM_SWITCHES   18 // yes, it's a lot!
   #else
@@ -357,7 +379,11 @@
 #define NUM_PSWITCH        (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
 #define NUM_POTSSW         (NUM_XPOTS*6)
 
-#if defined(PCBTARANIS)
+// TODO in keys.h!
+#if defined(PCBHORUS)
+  #define KEY_PLUS         KEY_RIGHT
+  #define KEY_MINUS        KEY_LEFT
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
   #define KEY_RIGHT        KEY_PLUS
   #define KEY_LEFT         KEY_MINUS
   #define KEY_UP           KEY_PLUS
@@ -376,7 +402,15 @@
   #define memclear(p, s) memset(p, 0, s)
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBHORUS)
+  #define IS_POT_AVAILABLE(x)       (true)
+  #define IS_POT_MULTIPOS(x)        (x==0)
+  #define IS_POT_WITHOUT_DETENT(x)  (x==0)
+#elif defined(PCBFLAMENCO)
+  #define IS_POT_AVAILABLE(x)       (true)
+  #define IS_POT_MULTIPOS(x)        (x==0)
+  #define IS_POT_WITHOUT_DETENT(x)  (x==0)
+#elif defined(PCBTARANIS) && defined(REV9E)
   #define IS_SLIDER_AVAILABLE(x)    ((x)==SLIDER1 || (x)==SLIDER2 || (g_eeGeneral.slidersConfig & (0x01 << ((x)-SLIDER3))))
   #define IS_POT_AVAILABLE(x)       ((x)<POT1 || ((x)<=POT_LAST && ((g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=0)) || ((x)>=SLIDER1 && IS_SLIDER_AVAILABLE(x)))
   #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
@@ -450,6 +484,10 @@
   #define STICK_SCROLL_DISABLE()
 #endif
 
+#if defined(CLI)
+#include "cli.h"
+#endif
+
 #include "eeprom_common.h"
 
 #if defined(EEPROM_RLC)
@@ -486,7 +524,17 @@
   #define MAX_TRAINER_CHANNELS()            (8)
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_PPM))
+  #define IS_MODULE_XJT(idx)                ((g_model.externalModule==MODULE_TYPE_XJT) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))
+  #if defined(DSM2)
+    #define IS_MODULE_DSM2(idx)             (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_DSM2)
+  #else
+    #define IS_MODULE_DSM2(idx)             (false)
+  #endif
+  #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.externalModule])
+  #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS())
+#elif defined(PCBTARANIS)
   #if defined(TARANIS_INTERNAL_PPM)
     #define IS_MODULE_PPM(idx)              (idx==TRAINER_MODULE || (idx==INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type==MODULE_TYPE_PPM)|| (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
     #define IS_MODULE_XJT(idx)              (((idx==INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type==MODULE_TYPE_XJT)|| (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT)) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))
@@ -589,7 +637,9 @@ enum BaseCurves {
 
 #define THRCHK_DEADBAND 16
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  #define SPLASH_NEEDED() (true)
+#elif defined(PCBTARANIS)
   #define SPLASH_NEEDED() (g_eeGeneral.splashMode != 3)
 #elif defined(CPUARM)
   #define SPLASH_NEEDED() (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_DSM2 && !g_eeGeneral.splashMode)
@@ -599,13 +649,13 @@ enum BaseCurves {
 
 #if defined(FSPLASH)
   #define SPLASH_TIMEOUT  (g_eeGeneral.splashMode == 0 ? 60000/*infinite=10mn*/ : ((4*100) * (g_eeGeneral.splashMode & 0x03)))
-#elif defined(PCBTARANIS)
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   #define SPLASH_TIMEOUT  (g_eeGeneral.splashMode==-4 ? 1500 : (g_eeGeneral.splashMode<=0 ? (400-g_eeGeneral.splashMode*200) : (400-g_eeGeneral.splashMode*100)))
 #else
   #define SPLASH_TIMEOUT  (4*100)  // 4 seconds
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   #define IS_RE_NAVIGATION_ENABLE()   true
   #define NAVIGATION_RE_IDX()         0
 #elif defined(ROTARY_ENCODERS)
@@ -618,7 +668,7 @@ enum BaseCurves {
 
 #define HEART_TIMER_10MS     1
 #define HEART_TIMER_PULSES   2 // when multiple modules this is the first one
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   #define HEART_WDT_CHECK      (HEART_TIMER_10MS + (HEART_TIMER_PULSES << 0) + (HEART_TIMER_PULSES << 1))
 #else
   #define HEART_WDT_CHECK      (HEART_TIMER_10MS + HEART_TIMER_PULSES)
@@ -658,7 +708,7 @@ int zchar2str(char *dest, const char *src, int size);
 #include "keys.h"
 #include "pwr.h"
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 div_t switchInfo(int switchPosition);
 #endif
 
@@ -768,7 +818,7 @@ void logicalSwitchesReset();
   #define LS_RECURSIVE_EVALUATION_RESET() s_last_switch_used = 0
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   void getSwitchesPosition(bool startup);
 #else
   #define getSwitchesPosition(...)
@@ -777,7 +827,7 @@ void logicalSwitchesReset();
 extern swarnstate_t switches_states;
 swsrc_t getMovedSwitch();
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
   #define GET_MOVED_SOURCE_PARAMS uint8_t min
   int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS);
   #define GET_MOVED_SOURCE(min, max) getMovedSource(min)
@@ -793,7 +843,7 @@ swsrc_t getMovedSwitch();
   #define getFlightMode() 0
 #endif
 
-#if !defined(PCBTARANIS)
+#if !defined(VIRTUALINPUTS)
   uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx);
 #else
   #define getTrimFlightPhase(phase, idx) (phase)
@@ -809,7 +859,7 @@ swsrc_t getMovedSwitch();
 trim_t getRawTrimValue(uint8_t phase, uint8_t idx);
 int getTrimValue(uint8_t phase, uint8_t idx);
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 #else
   void setTrimValue(uint8_t phase, uint8_t idx, int trim);
@@ -988,7 +1038,17 @@ enum Analogs {
   STICK2,
   STICK3,
   STICK4,
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  POT1,
+  POT2,
+  POT_LAST = POT2,
+  SLIDER1,
+  SLIDER2,
+  SWITCHES1,
+  SWITCHES2,
+  SWITCHES3,
+  SWITCHES4,
+#elif defined(PCBTARANIS)
   POT1,
   POT2,
   POT3,
@@ -1027,6 +1087,7 @@ enum Analogs {
 };
 
 void checkBacklight();
+void doLoopCommonActions();
 
 #if defined(PCBSTD) && defined(VOICE) && !defined(SIMU)
   #define BACKLIGHT_ON()    (Voice.Backlight = 1)
@@ -1427,7 +1488,7 @@ enum AUDIO_SOUNDS {
 #if defined(CPUARM)
     AU_TRIM_END,
 #endif
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
     AU_STICK1_MIDDLE,
     AU_STICK2_MIDDLE,
     AU_STICK3_MIDDLE,
@@ -1549,7 +1610,7 @@ union ReusableBuffer
         int16_t loVals[NUM_STICKS+NUM_POTS];
         int16_t hiVals[NUM_STICKS+NUM_POTS];
         uint8_t state;
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
         struct {
           uint8_t stepsCount;
           int16_t steps[XPOTS_MULTIPOS_COUNT];
@@ -1698,7 +1759,7 @@ extern uint8_t s_frsky_view;
 #define EARTH_RADIUSKM ((uint32_t)6371)
 #define EARTH_RADIUS ((uint32_t)111194)
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 double gpsToDouble(bool neg, int16_t bp, int16_t ap);
 #endif
 void getGpsPilotPosition();

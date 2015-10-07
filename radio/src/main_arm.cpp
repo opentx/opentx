@@ -89,6 +89,7 @@ void checkSpeakerVolume()
   }
 }
 
+#if defined(EEPROM)
 void checkEeprom()
 {
   if (!usbPlugged()) {
@@ -98,38 +99,70 @@ void checkEeprom()
       eeCheck(false);
   }
 }
+#endif
 
-void perMain()
+#if defined(PCBFLAMENCO)
+void guiMain(evt_t evt)
 {
-#if defined(PCBSKY9X) && !defined(REVA)
-  calcConsumption();
-#endif
-  checkSpeakerVolume();
-  checkEeprom();
-  sdMountPoll();
-  writeLogs();
-  handleUsbConnection();
-  checkTrainerSettings();
-  checkBattery();
+  lcd_clear();
 
-  uint8_t evt = getEvent(false);
-  if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
-  checkBacklight();
-#if defined(NAVIGATION_STICKS)
-  uint8_t sticks_evt = getSticksNavigationEvent();
-  if (sticks_evt) evt = sticks_evt;
-#endif
-
-#if defined(USB_MASS_STORAGE)
-  if (usbPlugged()) {
-    // disable access to menus
-    lcd_clear();
-    menuMainView(0);
-    lcdRefresh();
-    return;
+#if defined(LUA)
+  uint32_t t0 = get_tmr10ms();
+  static uint32_t lastLuaTime = 0;
+  uint16_t interval = (lastLuaTime == 0 ? 0 : (t0 - lastLuaTime));
+  lastLuaTime = t0;
+  if (interval > maxLuaInterval) {
+    maxLuaInterval = interval;
   }
+
+  // run Lua scripts that don't use LCD (to use CPU time while LCD DMA is running)
+  luaTask(0, RUN_MIX_SCRIPT | RUN_FUNC_SCRIPT | RUN_TELEM_BG_SCRIPT, false);
+
+  // wait for LCD DMA to finish before continuing, because code from this point
+  // is allowed to change the contents of LCD buffer
+  //
+  // WARNING: make sure no code above this line does any change to the LCD display buffer!
+  //
+
+  bool scriptWasRun = luaTask(evt, RUN_STNDAL_SCRIPT, true);
+
+  t0 = get_tmr10ms() - t0;
+  if (t0 > maxLuaDuration) {
+    maxLuaDuration = t0;
+  }
+
+  if (!scriptWasRun)
 #endif
 
+  {
+    // normal GUI from menus
+    const char *warn = s_warning;
+    uint8_t menu = s_menu_count;
+    // lcd_clear();
+    if (menuEvent) {
+      m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
+      m_posHorz = 0;
+      evt = menuEvent;
+      menuEvent = 0;
+      AUDIO_MENUS();
+    }
+    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+    if (warn) DISPLAY_WARNING(evt);
+    if (menu) {
+      const char * result = displayMenu(evt);
+      if (result) {
+        menuHandler(result);
+        putEvent(EVT_MENU_UP);
+      }
+    }
+    drawStatusLine();
+  }
+
+  lcdRefresh();
+}
+#else
+void guiMain(evt_t evt)
+{
 #if defined(LUA)
   uint32_t t0 = get_tmr10ms();
   static uint32_t lastLuaTime = 0;
@@ -172,9 +205,11 @@ void perMain()
     // normal GUI from menus
     const char *warn = s_warning;
     uint8_t menu = s_menu_count;
+#if !defined(COLORLCD)
     if (refreshScreen) {
       lcd_clear();
     }
+#endif
     if (menuEvent) {
       m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
       m_posHorz = 0;
@@ -195,8 +230,54 @@ void perMain()
   }
 
   lcdRefresh();
+}
+#endif
 
-#if defined(REV9E) && !defined(SIMU)
+void perMain()
+{
+#if defined(PCBSKY9X) && !defined(REVA)
+  calcConsumption();
+#endif
+  checkSpeakerVolume();
+#if defined(EEPROM)
+  checkEeprom();
+#endif
+  sdMountPoll();
+  writeLogs();
+  handleUsbConnection();
+  checkTrainerSettings();
+  checkBattery();
+
+  evt_t evt = getEvent(false);
+  if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
+  doLoopCommonActions();
+#if defined(NAVIGATION_STICKS)
+  uint8_t sticks_evt = getSticksNavigationEvent();
+  if (sticks_evt) evt = sticks_evt;
+#endif
+
+#if defined(USB_MASS_STORAGE)
+  if (usbPlugged()) {
+    // disable access to menus
+    lcd_clear();
+    menuMainView(0);
+    lcdRefresh();
+    return;
+  }
+#endif
+
+#if defined(GUI)
+  guiMain(evt);
+#endif
+
+#if defined(PCBTARANIS)
+  if (requestScreenshot) {
+    requestScreenshot = false;
+    writeScreenshot();
+  }
+#endif
+
+#if defined(PCBTARANIS) && defined(REV9E) && !defined(SIMU)
   topLcdRefreshStart();
   setTopFirstTimer(getValue(MIXSRC_FIRST_TIMER+g_model.topLcdTimer));
   setTopSecondTimer(g_eeGeneral.globalTimer + sessionTimer);
@@ -206,15 +287,8 @@ void perMain()
   topLcdRefreshEnd();
 #endif
 
-#if defined(REV9E) && !defined(SIMU)
+#if defined(PCBTARANIS) && defined(REV9E) && !defined(SIMU)
   bluetoothWakeup();
-#endif
-
-#if defined(PCBTARANIS)
-  if (requestScreenshot) {
-    requestScreenshot = false;
-    writeScreenshot();
-  }
 #endif
 
 }

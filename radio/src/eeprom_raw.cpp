@@ -69,15 +69,15 @@ PACK(struct EepromFileHeader
   uint16_t size;
 });
 
-EepromHeader eepromHeader;
-EepromWriteState eepromWriteState = EEPROM_IDLE;
+EepromHeader eepromHeader __DMA;
+volatile EepromWriteState eepromWriteState = EEPROM_IDLE;
 uint8_t eepromWriteZoneIndex = FIRST_FILE_AVAILABLE;
 uint8_t eepromWriteFileIndex;
 uint16_t eepromWriteSize;
 uint8_t * eepromWriteSourceAddr;
 uint32_t eepromWriteDestinationAddr;
 uint16_t eepromFatAddr = 0;
-uint8_t eepromWriteBuffer[EEPROM_BUFFER_SIZE];
+uint8_t eepromWriteBuffer[EEPROM_BUFFER_SIZE] __DMA;
 
 void eepromWaitSpiComplete()
 {
@@ -424,6 +424,8 @@ void eepromFormat()
 
 void eeErase(bool warn)
 {
+  TRACE("eeErase()");
+
   generalDefault();
   modelDefault(0);
 
@@ -442,6 +444,10 @@ void eeErase(bool warn)
 void eepromWriteWait(EepromWriteState state/* = EEPROM_IDLE*/)
 {
   while (eepromWriteState != state) {
+#if defined(CPUSTM32)
+    // Waits a little bit for CS transitions
+    CoTickDelay(1/*2ms*/);
+#endif
     eepromWriteProcess();
 #ifdef SIMU
     sleep(5/*ms*/);

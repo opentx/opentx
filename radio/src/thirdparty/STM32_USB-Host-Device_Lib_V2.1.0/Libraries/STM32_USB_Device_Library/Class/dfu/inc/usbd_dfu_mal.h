@@ -30,8 +30,8 @@
 #define __DFU_MAL_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "usb_conf.h"
-
+#include "../../../../../../../targets/Flamenco/usb_conf.h"
+#include "../../../../../../../targets/Flamenco/usbd_conf.h"
 #include "usbd_conf.h"
 #include "usbd_dfu_core.h"
 

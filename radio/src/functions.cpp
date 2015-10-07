@@ -324,7 +324,7 @@ void evalFunctions()
             if (!isFunctionActive(FUNCTION_INSTANT_TRIM)) {
 #if defined(GUI)
               if (g_menuStack[0] == menuMainView
-#if defined(FRSKY)
+#if defined(FRSKY) && !defined(PCBFLAMENCO) && !defined(PCBHORUS)
                 || g_menuStack[0] == menuTelemetryFrsky
 #endif
 #if defined(PCBTARANIS)

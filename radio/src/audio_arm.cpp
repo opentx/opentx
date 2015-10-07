@@ -189,7 +189,7 @@ const char * const audioFilenames[] = {
   "midstck2",
   "midstck3",
   "midstck4",
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   "midpot1",
   "midpot2",
   "midslid1",
@@ -264,6 +264,8 @@ void referenceSystemAudioFiles()
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
       fn = *fno.lfname ? fno.lfname : fno.fname;
       uint8_t len = strlen(fn);
+
+      TRACE("%s", fn);
 
       // Eliminates directories / non wav files
       if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
@@ -520,6 +522,7 @@ void audioTask(void* pdata)
   setSampleRate(AUDIO_SAMPLE_RATE);
 
 #if defined(SDCARD)
+  TRACE("unexpectedShutdown = %d", unexpectedShutdown);
   if (!unexpectedShutdown) {
     sdInit();
     AUDIO_TADA();
@@ -1096,7 +1099,7 @@ void audioEvent(unsigned int index, unsigned int freq)
         case AU_STICK4_MIDDLE:
         case AU_POT1_MIDDLE:
         case AU_POT2_MIDDLE:
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
         case AU_SLIDER1_MIDDLE:
         case AU_SLIDER2_MIDDLE:
 #else

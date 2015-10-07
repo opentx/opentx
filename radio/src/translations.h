@@ -800,7 +800,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_CONFIRMDELETE[];
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   extern const pm_char STR_BYTES[];
   extern const pm_char STR_ANTENNAPROBLEM[];
   extern const pm_char STR_MODULE[];

@@ -52,7 +52,11 @@ extern "C" {
 }
 #endif
 
-#include "lua_exports.inc"   // this line must be after lua headers
+#if defined(PCBFLAMENCO)
+  #include "lua_exports_flamenco.inc"      // this line must be after lua headers
+#elif defined(PCBTARANIS)
+  #include "lua_exports_taranis.inc"  // this line must be after lua headers
+#endif
 
 #define lua_registernumber(L, n, i)    (lua_pushnumber(L, (i)), lua_setglobal(L, (n)))
 #define lua_registerint(L, n, i)       (lua_pushinteger(L, (i)), lua_setglobal(L, (n)))
@@ -463,7 +467,11 @@ static int luaLcdDrawTimer(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   int seconds = luaL_checkinteger(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
+#if defined(PCBFLAMENCO)
+  putsTimer(x, y, seconds, att|LEFT);
+#else
   putsTimer(x, y, seconds, att|LEFT, att);
+#endif
   return 0;
 }
 
@@ -530,6 +538,7 @@ static int luaLcdDrawSource(lua_State *L)
   return 0;
 }
 
+#if !defined(PCBFLAMENCO)
 static int luaLcdDrawPixmap(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -543,6 +552,7 @@ static int luaLcdDrawPixmap(lua_State *L)
   }
   return 0;
 }
+#endif
 
 static int luaLcdDrawRectangle(lua_State *L)
 {
@@ -586,6 +596,7 @@ static int luaLcdDrawGauge(lua_State *L)
   return 0;
 }
 
+#if !defined(PCBFLAMENCO)
 static int luaLcdDrawScreenTitle(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -599,6 +610,7 @@ static int luaLcdDrawScreenTitle(lua_State *L)
 
   return 0;
 }
+#endif
 
 static int luaLcdDrawCombobox(lua_State *L)
 {
@@ -652,7 +664,11 @@ static int luaModelGetInfo(lua_State *L)
 {
   lua_newtable(L);
   lua_pushtablezstring(L, "name", g_model.header.name);
+#if defined(PCBFLAMENCO)
+  lua_pushtableinteger(L, "bitmap", g_model.header.bitmap);
+#else
   lua_pushtablenzstring(L, "bitmap", g_model.header.bitmap);
+#endif
   return 1;
 }
 
@@ -668,8 +684,12 @@ static int luaModelSetInfo(lua_State *L)
       memcpy(modelHeaders[g_eeGeneral.currModel].name, g_model.header.name, sizeof(g_model.header.name));
     }
     else if (!strcmp(key, "bitmap")) {
+#if defined(PCBFLAMENCO)
+      g_model.header.bitmap = luaL_checkinteger(L, -1);
+#else
       const char * name = luaL_checkstring(L, -1);
       strncpy(g_model.header.bitmap, name, sizeof(g_model.header.bitmap));
+#endif
     }
   }
   eeDirty(EE_MODEL);
@@ -1456,6 +1476,26 @@ const luaR_value_entry opentxConstants[] = {
   { "MIDSIZE", MIDSIZE },
   { "SMLSIZE", SMLSIZE },
   { "INVERS", INVERS },
+#if defined(PCBFLAMENCO)
+  { "WHITE",        WHITE },
+  { "BLACK",        BLACK },
+  { "YELLOW",       YELLOW },
+  { "BLUE",         BLUE },
+  { "GREY_DEFAULT", GREY_DEFAULT },
+  { "DARKGREY",     DARKGREY },
+  { "RED",          RED },
+  { "LIGHTGREY",    LIGHTGREY },
+  { "WHITE_ON_BLACK",       WHITE_ON_BLACK },
+  { "RED_ON_BLACK",         RED_ON_BLACK },
+  { "BLUE_ON_BLACK",        BLUE_ON_BLACK },
+  { "GREY_ON_BLACK",        GREY_ON_BLACK },
+  { "LIGHTGREY_ON_BLACK",   LIGHTGREY_ON_BLACK },
+  { "YELLOW_ON_BLACK",      YELLOW_ON_BLACK },
+  { "WHITE_ON_DARKGREY",    WHITE_ON_DARKGREY },
+  { "WHITE_ON_BLUE",        WHITE_ON_BLUE },
+  { "BLACK_ON_YELLOW",      BLACK_ON_YELLOW },
+  { "LIGHTGREY_ON_YELLOW",  LIGHTGREY_ON_YELLOW },
+#endif
   { "BOLD", BOLD },
   { "BLINK", BLINK },
   { "FIXEDWIDTH", FIXEDWIDTH },
@@ -1473,11 +1513,15 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SA", MIXSRC_SA },
   { "MIXSRC_SB", MIXSRC_SB },
   { "MIXSRC_SC", MIXSRC_SC },
+#if defined(PCBTARANIS)
   { "MIXSRC_SD", MIXSRC_SD },
+#endif
   { "MIXSRC_SE", MIXSRC_SE },
   { "MIXSRC_SF", MIXSRC_SF },
+#if defined(PCBTARANIS)
   { "MIXSRC_SG", MIXSRC_SG },
   { "MIXSRC_SH", MIXSRC_SH },
+#endif
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
   { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
@@ -1553,8 +1597,10 @@ const luaL_Reg lcdLib[] = {
   { "drawChannel", luaLcdDrawChannel },
   { "drawSwitch", luaLcdDrawSwitch },
   { "drawSource", luaLcdDrawSource },
+#if !defined(PCBFLAMENCO)
   { "drawPixmap", luaLcdDrawPixmap },
   { "drawScreenTitle", luaLcdDrawScreenTitle },
+#endif
   { "drawCombobox", luaLcdDrawCombobox },
   { NULL, NULL }  /* sentinel */
 };
@@ -1945,12 +1991,12 @@ void luaDoOneRunStandalone(uint8_t evt)
           return;
         }
         else if (luaDisplayStatistics) {
-          lcd_hline(0, 7*FH-1, lcdLastPos+FW, ERASE);
+          lcd_hline(0, 7*FH-1, lcdLastPos+6, ERASE);
           lcd_puts(0, 7*FH, "GV Use: ");
           lcd_outdezAtt(lcdLastPos, 7*FH, luaGetMemUsed(), LEFT);
           lcd_putc(lcdLastPos, 7*FH, 'b');
-          lcd_hline(0, 7*FH-2, lcdLastPos+FW, FORCE);
-          lcd_vlineStip(lcdLastPos+FW, 7*FH-2, FH+2, SOLID, FORCE);
+          lcd_hline(0, 7*FH-2, lcdLastPos+6, FORCE);
+          lcd_vlineStip(lcdLastPos+6, 7*FH-2, FH+2, SOLID, FORCE);
         }
       }
     }
@@ -2021,8 +2067,12 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
     TelemetryScriptData & script = g_model.frsky.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
     filename = script.file;
 #endif
-    if ((scriptType & RUN_TELEM_FG_SCRIPT) && 
+    if ((scriptType & RUN_TELEM_FG_SCRIPT) &&
+#if defined(PCBFLAMENCO)
+        (g_menuStack[0]==menuMainView && sid.reference==SCRIPT_TELEMETRY_FIRST+g_eeGeneral.view-VIEW_TELEM1)) {
+#else
         (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {
+#endif
       lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
       lua_pushinteger(L, evt);
       inputsCount = 1;

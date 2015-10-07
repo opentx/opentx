@@ -65,7 +65,7 @@ inline void _beep(uint8_t b)
 
 void beep(uint8_t val);
 #else /* BUZZER */
-#define beep(...)
+inline void beep(uint8_t) { }
 #endif /* BUZZER */
 
 #if !defined(AUDIO)

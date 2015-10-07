@@ -38,14 +38,24 @@
 #define keys_h
 
 enum EnumKeys {
+#if defined(PCBHORUS)
   KEY_MENU,
   KEY_EXIT,
-#if defined(PCBTARANIS)
+  KEY_ENTER,
+  KEY_UP,
+  KEY_DOWN,
+  KEY_RIGHT,
+  KEY_LEFT,
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
+  KEY_MENU,
+  KEY_EXIT,
   KEY_ENTER,
   KEY_PAGE,
   KEY_PLUS,
   KEY_MINUS,
 #else
+  KEY_MENU,
+  KEY_EXIT,
   KEY_DOWN,
   KEY_UP,
   KEY_RIGHT,
@@ -62,6 +72,16 @@ enum EnumKeys {
   TRM_RH_DWN,
   TRM_RH_UP,
 
+#if defined(PCBHORUS)
+  TRM_LS_DWN,
+  TRM_LS_UP,
+  TRM_RS_DWN,
+  TRM_RS_UP,
+  TRM_LAST = TRM_RS_UP,
+#else
+  TRM_LAST = TRM_RH_UP,
+#endif
+
 #if ROTARY_ENCODERS > 0 || defined(ROTARY_ENCODER_NAVIGATION)
   BTN_REa,
 #endif
@@ -72,7 +92,24 @@ enum EnumKeys {
   NUM_KEYS,
   SW_BASE=NUM_KEYS,
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  SW_SA0=SW_BASE,
+  SW_SA1,
+  SW_SA2,
+  SW_SB0,
+  SW_SB2,
+  SW_SC0,
+  SW_SC1,
+  SW_SC2,
+  SW_SC3,
+  SW_SC4,
+  SW_SC5,
+  SW_SE0,
+  SW_SE2,
+  SW_SF0,
+  SW_SF1,
+  SW_SF2,
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   SW_SA0=SW_BASE,
   SW_SA1,
   SW_SA2,
@@ -145,26 +182,42 @@ enum EnumKeys {
 
 #define EVT_KEY_MASK(e)      ((e) & 0x1f)
 
+#if defined(PCBHORUS)
+#define _MSK_KEY_BREAK       0x0200
+#define _MSK_KEY_REPT        0x0400
+#define _MSK_KEY_FIRST       0x0600
+#define _MSK_KEY_LONG        0x0800
+#define _MSK_KEY_FLAGS       0x0e00
+#define EVT_ENTRY            0x1000
+#define EVT_ENTRY_UP         0x2000
+#define EVT_MENU_UP          0x4000
+#else
 #define _MSK_KEY_BREAK       0x20
 #define _MSK_KEY_REPT        0x40
 #define _MSK_KEY_FIRST       0x60
 #define _MSK_KEY_LONG        0x80
+#define _MSK_KEY_FLAGS       0xe0
+#define EVT_ENTRY            0xbf
+#define EVT_ENTRY_UP         0xbe
+#define EVT_MENU_UP          0xbd
+#endif
 
 #define EVT_KEY_BREAK(key)   ((key)|_MSK_KEY_BREAK)
 #define EVT_KEY_FIRST(key)   ((key)|_MSK_KEY_FIRST)
 #define EVT_KEY_REPT(key)    ((key)|_MSK_KEY_REPT)
 #define EVT_KEY_LONG(key)    ((key)|_MSK_KEY_LONG)
 
-#define IS_KEY_BREAK(evt)    (((evt)&0xe0) == _MSK_KEY_BREAK)
-#define IS_KEY_FIRST(evt)    (((evt)&0xe0) == _MSK_KEY_FIRST)
-#define IS_KEY_LONG(evt)     (((evt)&0xe0) == _MSK_KEY_LONG)
-#define IS_KEY_REPT(evt)     (((evt)&0xe0) == _MSK_KEY_REPT)
+#define IS_KEY_BREAK(evt)    (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_BREAK)
+#define IS_KEY_FIRST(evt)    (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_FIRST)
+#define IS_KEY_LONG(evt)     (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_LONG)
+#define IS_KEY_REPT(evt)     (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_REPT)
 
-#define EVT_ENTRY            0xbf
-#define EVT_ENTRY_UP         0xbe
-#define EVT_MENU_UP          0xbd
-
-#if defined(PCBTARANIS)
+#if defined(PCBHORUS)
+  #define EVT_ROTARY_BREAK   EVT_KEY_BREAK(KEY_ENTER)
+  #define EVT_ROTARY_LONG    EVT_KEY_LONG(KEY_ENTER)
+  #define EVT_ROTARY_LEFT    0xDF00
+  #define EVT_ROTARY_RIGHT   0xDE00
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   #define EVT_ROTARY_BREAK   EVT_KEY_BREAK(KEY_ENTER)
   #define EVT_ROTARY_LONG    EVT_KEY_LONG(KEY_ENTER)
 #else
@@ -174,7 +227,19 @@ enum EnumKeys {
   #define EVT_ROTARY_RIGHT   0xde
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBHORUS)
+  #define IS_ROTARY_LEFT(evt)   (evt==EVT_KEY_FIRST(KEY_MINUS) || evt==EVT_KEY_REPT(KEY_MINUS))
+  #define IS_ROTARY_RIGHT(evt)  (evt==EVT_KEY_FIRST(KEY_PLUS) || evt==EVT_KEY_REPT(KEY_PLUS))
+  #define IS_ROTARY_UP(evt)     (evt==EVT_KEY_FIRST(KEY_PLUS) || evt==EVT_KEY_REPT(KEY_PLUS))
+  #define IS_ROTARY_DOWN(evt)   (evt==EVT_KEY_FIRST(KEY_MINUS) || evt==EVT_KEY_REPT(KEY_MINUS))
+  #define IS_ROTARY_BREAK(evt)  (evt==EVT_KEY_BREAK(KEY_ENTER))
+  #define IS_ROTARY_LONG(evt)   (evt==EVT_KEY_LONG(KEY_ENTER))
+  #define IS_ROTARY_EVENT(evt)  (0)
+  #define CASE_EVT_ROTARY_BREAK /*case EVT_KEY_BREAK(KEY_ENTER):*/
+  #define CASE_EVT_ROTARY_LONG  /*case EVT_KEY_LONG(KEY_ENTER):*/
+  #define CASE_EVT_ROTARY_LEFT  case EVT_KEY_FIRST(KEY_MOVE_UP): case EVT_KEY_REPT(KEY_MOVE_UP):
+  #define CASE_EVT_ROTARY_RIGHT case EVT_KEY_FIRST(KEY_MOVE_DOWN): case EVT_KEY_REPT(KEY_MOVE_DOWN):
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
   #define IS_ROTARY_LEFT(evt)   (evt==EVT_KEY_FIRST(KEY_MINUS) || evt==EVT_KEY_REPT(KEY_MINUS))
   #define IS_ROTARY_RIGHT(evt)  (evt==EVT_KEY_FIRST(KEY_PLUS) || evt==EVT_KEY_REPT(KEY_PLUS))
   #define IS_ROTARY_UP(evt)     (evt==EVT_KEY_FIRST(KEY_PLUS) || evt==EVT_KEY_REPT(KEY_PLUS))
@@ -247,7 +312,13 @@ class Key
 
 extern Key keys[NUM_KEYS];
 
-extern uint8_t s_evt;
+#if defined(PCBHORUS)
+typedef uint16_t evt_t;
+#else
+typedef uint8_t evt_t;
+#endif
+
+extern evt_t s_evt;
 
 #define putEvent(evt) s_evt = evt
 
@@ -256,10 +327,10 @@ void killEvents(uint8_t enuk);
 
 #if defined(CPUARM)
   bool clearKeyEvents();
-  uint8_t getEvent(bool trim=false);
+  evt_t getEvent(bool trim=false);
 #else
   void clearKeyEvents();
-  uint8_t getEvent();
+  evt_t getEvent();
 #endif
 
 uint8_t keyDown();

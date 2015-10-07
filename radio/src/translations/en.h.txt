@@ -129,7 +129,9 @@
 
 #define LEN_RETA123            "\001"
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBFLAMENCO)
+  #define TR_RETA123           "RETA123LR"
+#elif defined(PCBTARANIS) && defined(REV9E)
   #define TR_RETA123           "RETA1234LRLR"
 #elif defined(PCBTARANIS) || defined(REVX)
   #define TR_RETA123           "RETA123LR"
@@ -443,8 +445,16 @@
 #define LEN_VSWASHTYPE         "\004"
 #define TR_VSWASHTYPE          "---\0""120\0""120X""140\0""90\0"
 
+#if defined(PCBHORUS)
+#define LEN_VKEYS              "\006"
+#define TR_VKEYS               "Menu\0 ""Exit\0 ""Enter\0""Up\0   ""Down\0 ""Right\0""Left"
+#elif defined(PCBTARANIS)
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               TR("Menu\0""Exit\0""Down\0""Up\0  ""Right""Left\0", "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus")
+#define TR_VKEYS               "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"
+#else
+#define LEN_VKEYS              "\005"
+#define TR_VKEYS               "Menu\0""Exit\0""Down\0""Up\0  ""Right""Left\0"
+#endif
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "REa""REb"
@@ -455,7 +465,10 @@
 #define TR_STICKS_VSRCRAW      TR("Rud\0""Ele\0""Thr\0""Ail\0", "\307Rud""\307Ele""\307Thr""\307Ail")
 #define TR_TRIMS_VSRCRAW       TR("TrmR""TrmE""TrmT""TrmA", "\313Rud""\313Ele""\313Thr""\313Ail")
  
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBFLAMENCO)
+  #define TR_POTS_VSRCRAW      "SD\0 ""LS\0 ""RS\0 "
+  #define TR_SW_VSRCRAW        "SA\0 ""SB\0 ""SC\0 ""SE\0 ""SF\0 "
+#elif defined(PCBTARANIS) && defined(REV9E)
   #define TR_POTS_VSRCRAW      "\310F1\0""\310F2\0""\310F3\0""\310F4\0""\311S1\0""\311S2\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0""\312SK\0""\312SL\0""\312SM\0""\312SN\0""\312SO\0""\312SP\0""\312SQ\0""\312SR\0"
 #elif defined(PCBTARANIS)
@@ -486,13 +499,17 @@
   #define TR_ROTENC_SWITCHES
 #endif
 
-#if !defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  #define TR_PHYS_SWITCHES     "SA\300""SA-""SA\301""SB\300""SB\301""SC1""SC2""SC3""SC4""SC5""SC6""SE\300""SE\301""SF\300""SF-""SF\301"
+#elif !defined(PCBTARANIS)
   #define TR_PHYS_SWITCHES     "THR""RUD""ELE""AIL""GEA""TRN"
 #endif
 
 #define TR_ON_ONE_SWITCHES     "ON\0""One"
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  #define TR_VSWITCHES         "---" TR_PHYS_SWITCHES TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
+#elif defined(PCBTARANIS)
   // only special switches here
   #define TR_VSWITCHES         "---" TR_TRIMS_SWITCHES TR_ON_ONE_SWITCHES
 #else
@@ -546,8 +563,8 @@
 
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
-  #define INDENT               "\007"
-  #define LEN_INDENT           1
+  #define INDENT               "   "
+  #define LEN_INDENT           3
   #define INDENT_WIDTH         12
   #define BREAKSPACE           "\036"
 #else
@@ -557,7 +574,7 @@
   #define BREAKSPACE           " "
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO)
   #define TR_ENTER             "[ENTER]"
 #else
   #define TR_ENTER             "[MENU]"
@@ -565,7 +582,9 @@
 
 #define TR_EXIT                "[EXIT]"
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  #define TR_POPUPS            TR_EXIT "\010" TR_ENTER
+#elif defined(PCBTARANIS)
   #define TR_POPUPS            TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER
 #else
   #define TR_POPUPS            TR_ENTER "\010" TR_EXIT
@@ -1031,7 +1050,11 @@
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
 #define TR_ABOUT_MARTIN_2      "Graphics designer"
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  #define TR_ABOUT_HARDWARE_1  "XXX"
+  #define TR_ABOUT_HARDWARE_2  "Hardware designer/producer"
+  #define TR_ABOUT_HARDWARE_3  ""
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   #define TR_ABOUT_HARDWARE_1  "FrSky"
   #define TR_ABOUT_HARDWARE_2  "Hardware designer/producer"
   #define TR_ABOUT_HARDWARE_3  "Firmware contributor"

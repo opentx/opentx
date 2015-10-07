@@ -75,7 +75,7 @@ enum EepromWriteState {
   EEPROM_END_WRITE
 };
 
-extern EepromWriteState eepromWriteState;
+extern volatile EepromWriteState eepromWriteState;
 inline bool eepromIsWriting()
 {
   return (eepromWriteState != EEPROM_IDLE);
