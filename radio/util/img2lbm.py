@@ -36,13 +36,21 @@ if what == "1bit":
                     value += 1 << z            
             f.write("0x%02x," % value)
         f.write("\n")
-elif what == "16bits":
+elif what == "4/4/4/4":
     colors = []
     f.write("%d,%d,\n" % (width, height))
     for y in range(height):
         for x in range(width):
             pixel = image.pixel(x, y)
             f.write("0x%1x%1x%1x%1x," % (Qt.qAlpha(pixel)/16, Qt.qRed(pixel)/16, Qt.qGreen(pixel)/16, Qt.qBlue(pixel)/16))
+        f.write("\n")
+elif what == "5/6/5":
+    colors = []
+    f.write("%d,%d,\n" % (width, height))
+    for y in range(height):
+        for x in range(width):
+            pixel = image.pixel(x, y)
+            f.write("0x%04x," % (((Qt.qRed(pixel) >> 3) << 11) + ((Qt.qGreen(pixel) >> 2) << 5) + ((Qt.qBlue(pixel) >> 3) << 0)))
         f.write("\n")
 elif what == "4bits":
     colors = []
@@ -60,6 +68,15 @@ elif what == "4bits":
                     value -= 1<<i
                 if (gray2 & (1<<(4+i))):
                     value -= 1<<(4+i)                    
+            f.write("0x%02x," % value)
+        f.write("\n")
+elif what == "8bits":
+    colors = []
+    writeSize(f, width, height)
+    for y in range(height):
+        for x in range(width):           
+            value = Qt.qGray(image.pixel(x, y))
+            value = 0x0f - (value >> 4)
             f.write("0x%02x," % value)
         f.write("\n")
 elif what == "03x05":

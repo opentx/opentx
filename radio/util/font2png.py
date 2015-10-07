@@ -3,11 +3,15 @@
 
 import sys
 from PyQt4 import Qt, QtGui
+import glob
 
 try:
   app = Qt.QApplication(sys.argv)
 except:
   pass
+
+for f in glob.glob("fonts/*.ttf"):
+    id = QtGui.QFontDatabase.addApplicationFont(f)
 
 chars = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz~ ≥→←↑↓    △Ⓘ"""
 
@@ -18,8 +22,16 @@ def getCharWidth(fontsize, metrics, index):
         return 1
     else:
         rect = metrics.boundingRect(chars[index])
-        return rect.width()
-    
+        return rect.width() + 1
+
+def getFontTopBottom(fontsize, metrics):
+    top, bottom = 0, 0
+    for i, c in enumerate(chars):
+         rect = metrics.boundingRect(chars[i])
+         top = min(top, rect.top())
+         bottom = max(bottom, rect.bottom())
+    return top, bottom
+
 def getFontWidth(fontsize, metrics):
     width = 0
     for i, c in enumerate(chars):
@@ -28,11 +40,15 @@ def getFontWidth(fontsize, metrics):
     
 def createFontBitmap(filename, fontname, fontsize, foreground, background, coordsfile=True):
     coords = [ ]
+    # font = QtGui.QFont(QtGui.QFontDatabase.applicationFontFamilies(id)[0])
     font = QtGui.QFont(fontname)
-    font.setPointSize(fontsize)
+    font.setPixelSize(fontsize)
+    font.setHintingPreference(QtGui.QFont.PreferNoHinting)
     metrics = QtGui.QFontMetrics(font)
     width = getFontWidth(fontsize, metrics)
-    image = QtGui.QImage(width, fontsize+4, QtGui.QImage.Format_RGB32)
+    top, bottom = getFontTopBottom(fontsize, metrics)
+    print top, bottom
+    image = QtGui.QImage(width, fontsize+1, QtGui.QImage.Format_RGB32)
     image.fill(background)
     painter = QtGui.QPainter()
     painter.begin(image)
@@ -48,7 +64,7 @@ def createFontBitmap(filename, fontname, fontsize, foreground, background, coord
             painter.drawPoint(width, fontsize);
         else:
             rect = metrics.boundingRect(c)
-            painter.drawText(width-rect.left(), fontsize+1, c)
+            painter.drawText(width-rect.left(), fontsize-2, c) # fontsize-bottom+1 -17 / 7
         width += getCharWidth(fontsize, metrics, i)
     coords.append(width)
     painter.end()
@@ -62,4 +78,4 @@ def createFontBitmap(filename, fontname, fontsize, foreground, background, coord
     return coords
 
 if len(sys.argv) == 4:
-    createFontBitmap(sys.argv[3], sys.argv[1], int(sys.argv[2]), QtGui.QColor(0x00, 0x00, 0x00), QtGui.QColor(0xFF, 0xFF, 0xFF))
+    createFontBitmap(sys.argv[3], sys.argv[1], float(sys.argv[2]), QtGui.QColor(0x00, 0x00, 0x00), QtGui.QColor(0xFF, 0xFF, 0xFF))
