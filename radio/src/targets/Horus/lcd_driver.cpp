@@ -1,14 +1,3 @@
-/**
-  ******************************************************************************
-  * @file    Project/lcd/lcd.c 
-  * @author  FrSky Application Team
-  * @Hardware version V0.2
-  * @date    11-July-2012
-  * @brief   This file provides LCD Init and botom drivers.
-  * *
-  ******************************************************************************
-*/
-
 #include "../../opentx.h"
 
 #define HBP  42
@@ -20,45 +9,22 @@
 #define HFP  3
 #define VFP  2
 
-#define  LCD_PIXEL_WIDTH    ((uint16_t)480)
-#define  LCD_PIXEL_HEIGHT   ((uint16_t)272)
-/**
-  * @brief  LCD Direction
-  */
+#define LCD_PIXEL_WIDTH    ((uint16_t)480)
+#define LCD_PIXEL_HEIGHT   ((uint16_t)272)
+
 #define LCD_DIR_HORIZONTAL       0x0000
 #define LCD_DIR_VERTICAL         0x0001
 
-/**
-  * @brief  LCD Layer
-  */
 #define LCD_BACKGROUND_LAYER     0x0000
 #define LCD_FOREGROUND_LAYER     0x0001
 
-/**
-  * @brief  The Touch panel connector for LCD panel addresses
-  */
-#define LCD_ADDR                   0x80
-#define ASSEMBLE_RGB(R ,G, B)    ((((R)& 0xF8) << 8) | (((G) & 0xFC) << 3) | (((B) & 0xF8) >> 3))
-
 #define LCD_BKLIGHT_PWM_FREQ    300
-#define ABS(X)  ((X) > 0 ? (X) : -(X))
 
-#define POLY_X(Z)              ((int32_t)((Points + Z)->X))
-#define POLY_Y(Z)              ((int32_t)((Points + Z)->Y))
+#define LCD_DEFAULT_FRAME_BUFFER       SDRAM_BANK_ADDR
+#define FRAME_BUFFER_OFFSET            ((uint32_t)0x100000)
 
-/* Global variables to set the written text color */
-static uint16_t CurrentTextColor   = 0x0000;
-static uint16_t CurrentBackColor   = 0xFFFF;
-
-/** @defgroup STM324x9I_EVAL_LCD_Private_Variables
-  * @{
-  */
-// static sFONT *LCD_Currentfonts;
-#define  LCD_DEFAULT_FRAME_BUFFER       SDRAM_BANK_ADDR
-#define  FRAME_BUFFER_OFFSET            ((uint32_t)0x100000)
-/* Default LCD configuration with LCD Layer 1 */
-static uint32_t CurrentFrameBuffer = LCD_DEFAULT_FRAME_BUFFER;
-static uint32_t CurrentLayer = LCD_BACKGROUND_LAYER;
+uint32_t CurrentFrameBuffer = LCD_DEFAULT_FRAME_BUFFER;
+uint32_t CurrentLayer = LCD_BACKGROUND_LAYER;
 
 #define NRST_LOW()   do { LCD_GPIO_NRST->BSRRH = LCD_GPIO_PIN_NRST; } while(0)
 #define NRST_HIGH()  do { LCD_GPIO_NRST->BSRRL = LCD_GPIO_PIN_NRST; } while(0)
@@ -423,28 +389,6 @@ void LCD_SetLayer(uint32_t Layerx)
   }
 }
 
-#define LCD_COLOR_WHITE          0xFFFF
-#define LCD_COLOR_RED            0xF800
-
-void LCD_DrawCircle(uint16_t Xpos, uint16_t Ypos, uint16_t Radius)
-{
-    int x = -Radius, y = 0, err = 2-2*Radius, e2;
-    do {
-        *(__IO uint16_t*) (CurrentFrameBuffer + (2*((Xpos-x) + LCD_PIXEL_WIDTH*(Ypos+y)))) = LCD_COLOR_RED;
-        *(__IO uint16_t*) (CurrentFrameBuffer + (2*((Xpos+x) + LCD_PIXEL_WIDTH*(Ypos+y)))) = LCD_COLOR_RED;
-        *(__IO uint16_t*) (CurrentFrameBuffer + (2*((Xpos+x) + LCD_PIXEL_WIDTH*(Ypos-y)))) = LCD_COLOR_RED;
-        *(__IO uint16_t*) (CurrentFrameBuffer + (2*((Xpos-x) + LCD_PIXEL_WIDTH*(Ypos-y)))) = LCD_COLOR_RED;
-
-        e2 = err;
-        if (e2 <= y) {
-            err += ++y*2+1;
-            if (-x == y && e2 <= x) e2 = 0;
-        }
-        if (e2 > x) err += ++x*2+1;
-    }
-    while (x <= 0);
-}
-
 void LCD_Clear(uint16_t Color)
 {
   uint16_t *index ;
@@ -475,33 +419,6 @@ void LCD_SetTransparency(uint8_t transparency)
   LTDC_ReloadConfig(LTDC_IMReload);
 }
 
-void LCD_SetColorKeying(uint32_t RGBValue)
-{
-  uint32_t tmp = 0;
-
-  LTDC_ColorKeying_InitTypeDef   LTDC_colorkeying_InitStruct;
-
-  /* configure the color Keying */
-  LTDC_colorkeying_InitStruct.LTDC_ColorKeyBlue = 0xFF & RGBValue;
-  tmp = (0xFF00 & RGBValue);
-  LTDC_colorkeying_InitStruct.LTDC_ColorKeyGreen = (tmp >> 8);
-  tmp = (0xFF0000 & RGBValue);
-  LTDC_colorkeying_InitStruct.LTDC_ColorKeyRed = (tmp >> 16);
-
-  if (CurrentLayer == LCD_BACKGROUND_LAYER)
-  {
-    /* Enable the color Keying for Layer1 */
-    LTDC_ColorKeyingConfig(LTDC_Layer1, &LTDC_colorkeying_InitStruct, ENABLE);
-    LTDC_ReloadConfig(LTDC_IMReload);
-  }
-  else
-  {
-    /* Enable the color Keying for Layer2 */
-    LTDC_ColorKeyingConfig(LTDC_Layer2, &LTDC_colorkeying_InitStruct, ENABLE);
-    LTDC_ReloadConfig(LTDC_IMReload);
-  }
-}
-
 void lcdInit(void)
 {
   /* Initialize the LCD */
@@ -515,15 +432,49 @@ void lcdInit(void)
   LCD_SetLayer(LCD_BACKGROUND_LAYER);
   LCD_Clear(0);
   LCD_SetTransparency(0);
-
+  
   /* Set Foreground layer */
   LCD_SetLayer(LCD_FOREGROUND_LAYER);
   LCD_Clear(0);
   LCD_SetTransparency(255);
 }
 
+void lcdDrawFullRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
+{
+  uint32_t addr = CurrentFrameBuffer + 2*(LCD_PIXEL_WIDTH*y + x);
+  uint16_t red = (0xF800 & color) >> 11;
+  uint16_t blue = 0x001F & color;
+  uint16_t green = (0x07E0 & color) >> 5;
+
+  /* configure DMA2D */
+  DMA2D_InitTypeDef DMA2D_InitStruct;
+  DMA2D_DeInit();
+  DMA2D_InitStruct.DMA2D_Mode = DMA2D_R2M;
+  DMA2D_InitStruct.DMA2D_CMode = DMA2D_RGB565;
+  DMA2D_InitStruct.DMA2D_OutputGreen = green;
+  DMA2D_InitStruct.DMA2D_OutputBlue = blue;
+  DMA2D_InitStruct.DMA2D_OutputRed = red;
+  DMA2D_InitStruct.DMA2D_OutputAlpha = 0x0F;
+  DMA2D_InitStruct.DMA2D_OutputMemoryAdd = addr;
+  DMA2D_InitStruct.DMA2D_OutputOffset = (LCD_PIXEL_WIDTH - w);
+  DMA2D_InitStruct.DMA2D_NumberOfLine = h;
+  DMA2D_InitStruct.DMA2D_PixelPerLine = w;
+  DMA2D_Init(&DMA2D_InitStruct);
+
+  /* Start Transfer */
+  DMA2D_StartTransfer();
+
+  /* Wait for CTC Flag activation */
+  while(DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET);
+}
 
 void lcdRefresh()
 {
-  memcpy((void *)(SDRAM_BANK_ADDR+FRAME_BUFFER_OFFSET), (void *)SDRAM_BANK_ADDR, 480*272*2);
+  LCD_SetTransparency(255);
+  if (CurrentLayer == LCD_BACKGROUND_LAYER)
+    LCD_SetLayer(LCD_FOREGROUND_LAYER);
+  else
+    LCD_SetLayer(LCD_BACKGROUND_LAYER);
+  LCD_SetTransparency(0);
+  // memcpy((void *)(SDRAM_BANK_ADDR+FRAME_BUFFER_OFFSET), (void *)SDRAM_BANK_ADDR, 480*272*2);
 }
