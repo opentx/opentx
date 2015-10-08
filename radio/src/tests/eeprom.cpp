@@ -37,7 +37,7 @@
 #include "gtests.h"
 
 #if !defined(PCBSKY9X)
-TEST(EEPROM, 100_random_writes)
+TEST(Eeprom, 100_random_writes)
 {
   eepromFile = NULL; // in memory
   RlcFile f;
@@ -60,7 +60,7 @@ TEST(EEPROM, 100_random_writes)
   }
 }
 
-TEST(EEPROM, test2)
+TEST(Eeprom, test2)
 {
   eepromFile = NULL; // in memory
   RlcFile f;
@@ -83,7 +83,7 @@ TEST(EEPROM, test2)
   EXPECT_EQ(sz, 300);
 }
 
-TEST(EEPROM, eeCheckImmediately)
+TEST(Eeprom, eeCheckImmediately)
 {
   eepromFile = NULL; // in memory
   // RlcFile f;
@@ -108,7 +108,7 @@ TEST(EEPROM, eeCheckImmediately)
   EXPECT_EQ(sz, 300);
 }
 
-TEST(EEPROM, copy)
+TEST(Eeprom, copy)
 {
   eepromFile = NULL; // in memory
 
@@ -133,7 +133,7 @@ TEST(EEPROM, copy)
   EXPECT_EQ(sz, 300);
 }
 
-TEST(EEPROM, rm)
+TEST(Eeprom, rm)
 {
   eepromFile = NULL; // in memory
 

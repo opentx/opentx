@@ -348,7 +348,7 @@ void *main_thread(void *)
   try {
 #endif
 
-#if defined(COLORLCD)
+#if defined(PCBHORUS)
     lcdColorsInit();
 #endif
 

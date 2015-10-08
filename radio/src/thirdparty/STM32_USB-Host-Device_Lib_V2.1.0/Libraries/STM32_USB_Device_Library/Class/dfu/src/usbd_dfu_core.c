@@ -64,7 +64,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_dfu_core.h"
 
-#include "../../../../../../../targets/Flamenco/usbd_desc.h"
+#include "usbd_desc.h"
 #include "usbd_req.h"
 #include "usb_bsp.h"
 

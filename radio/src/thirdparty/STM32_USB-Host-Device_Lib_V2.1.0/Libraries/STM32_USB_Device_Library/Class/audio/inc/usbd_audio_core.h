@@ -30,7 +30,7 @@
 #ifndef __USB_AUDIO_CORE_H_
 #define __USB_AUDIO_CORE_H_
 
-#include "../../../../../../../targets/Flamenco/usbd_desc.h"
+#include "usbd_desc.h"
 #include "usbd_ioreq.h"
 #include "usbd_req.h"
 

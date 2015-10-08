@@ -30,7 +30,7 @@
 #define __USB_CONF__H__
 
 /* Includes ------------------------------------------------------------------*/
-#include "../../../../../targets/Flamenco/usb_conf.h"
+#include "usb_conf.h"
 
 /** @addtogroup USB_OTG_DRIVER
   * @{

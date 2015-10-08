@@ -29,7 +29,7 @@
 #include "usb_core.h"
 #include "usb_hcd.h"
 
-#include "../../../../../targets/Flamenco/usb_conf.h"
+#include "usb_conf.h"
 #include "usb_bsp.h"
 
 

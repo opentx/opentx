@@ -144,7 +144,7 @@ extern display_t displayBuf[DISPLAY_BUF_SIZE];
 extern coord_t lcdLastPos;
 extern coord_t lcdNextPos;
 
-#define DISPLAY_BUFER_SIZE     (sizeof(display_t)*DISPLAY_BUF_SIZE)
+#define DISPLAY_BUFFER_SIZE     (sizeof(display_t)*DISPLAY_BUF_SIZE)
 #define DISPLAY_END            (displayBuf + DISPLAY_BUF_SIZE)
 #define ASSERT_IN_DISPLAY(p)   assert((p) >= displayBuf && (p) < DISPLAY_END)
 

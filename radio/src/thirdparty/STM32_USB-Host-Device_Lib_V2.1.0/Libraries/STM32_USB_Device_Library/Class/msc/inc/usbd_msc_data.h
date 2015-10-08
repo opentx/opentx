@@ -31,7 +31,7 @@
 #define _USBD_MSC_DATA_H_
 
 /* Includes ------------------------------------------------------------------*/
-#include "../../../../../../../targets/Flamenco/usbd_conf.h"
+#include "usbd_conf.h"
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
