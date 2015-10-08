@@ -116,80 +116,14 @@ void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdFlags fl
 #define FONT_MAX_HEIGHT 42
 void lcdPutFontPattern(coord_t x, coord_t y, const uint8_t * font, const uint16_t * spec, int index, LcdFlags flags)
 {
-  bool blink = false;
-  bool inv = false;
-  if (flags & BLINK) {
-    if (BLINK_ON_PHASE) {
-      if (flags & INVERS)
-        inv = true;
-      else {
-        blink = true;
-      }
-    }
-  }
-  else if (flags & INVERS) {
-    inv = true;
-  }
-
-  coord_t w = *((uint16_t *)font);
-  coord_t width = getFontPatternWidth(spec, index);
-  coord_t height = *(((uint16_t *)font)+1);
-
-  assert(height <= FONT_MAX_HEIGHT);
-
-  for (int i=0; i<width+2; i++) {
-    if (x < LCD_W) {
-      uint8_t b[FONT_MAX_HEIGHT] = { 0 };
-      if (i == 0) {
-        if (x==0 || !inv) {
-          lcdNextPos++;
-          continue;
-        }
-        else {
-          // we need to work on the previous x when INVERS
-          x--;
-        }
-      }
-      else if (i <= width) {
-        for (coord_t j=0; j<height; ++j) {
-          uint8_t p = *(font + 4 + j*w + spec[index] + i - 1);
-          b[j] = p;
-        }
-      }
-
-      for (int j=-1; j<=height; ++j) {
-        uint8_t plot;
-        if (j < 0 || j == height) {
-          plot = 0;
-          if (j<0 && !inv) continue;
-          if (y+j < 0) continue;
-        }
-        else {
-          plot = b[j];
-        }
-        if (inv) plot = !plot;
-        if (!blink) {
-          if (plot) {
-            lcdDrawTransparentPixel(x, y+j, plot, lcdColorTable[COLOR_IDX(flags)]);
-          }
-          // TODO needed?
-          // else if (flags & ERASEBG) {
-          //  lcdDrawPoint(x, y+j, 0x0FFF0000);
-          // }
-        }
-      }
-    }
-
-    x++;
-    lcdNextPos++;
-  }
-
-  lcdNextPos--;
+  coord_t offset = spec[index];
+  coord_t width = spec[index+1] - offset;
+  lcdDrawBitmapPattern(x, y, font, flags, offset, width);
+  lcdNextPos = x + width;
 }
 
 void lcd_putcAtt(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
 {
-  lcdNextPos = x-1;
   int fontindex = FONTSIZE(flags) >> 8;
   const pm_uchar * font = fontsTable[fontindex];
   const uint16_t * fontspecs = fontspecsTable[fontindex];
@@ -216,9 +150,9 @@ int getFontHeight(LcdFlags flags)
   return heightTable[FONTSIZE(flags) >> 8];
 }
 
-int getTextWidth(const pm_char *s, int len, LcdFlags flags)
+int getTextWidth(const pm_char * s, int len, LcdFlags flags)
 {
-  const uint16_t *specs = fontspecsTable[FONTSIZE(flags) >> 8];
+  const uint16_t * specs = fontspecsTable[FONTSIZE(flags) >> 8];
   int result = 0;
   for (int i=0; (len==0 || i<len) && (*s!='\0'); ++i) {
     char c;
@@ -236,18 +170,18 @@ void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags
 {
   int width = getTextWidth(s, len, flags);
   int height = getFontHeight(flags);
+  int fontindex = FONTSIZE(flags) >> 8;
+  const pm_uchar * font = fontsTable[fontindex];
+  const uint16_t * fontspecs = fontspecsTable[fontindex];
 
-  if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-    if ((COLOR_IDX(flags) == TEXT_COLOR_INDEX)) {
-      flags += TEXT_INVERTED_COLOR - TEXT_COLOR;
-      if (FONTSIZE(flags) == TINSIZE)
-        lcdDrawFilledRect(x-INVERT_HORZ_MARGIN+2, y-INVERT_VERT_MARGIN+2, width+2*INVERT_HORZ_MARGIN-5, INVERT_LINE_HEIGHT-7, TEXT_INVERTED_BGCOLOR);
-      else if (FONTSIZE(flags) == SMLSIZE)
-        lcdDrawFilledRect(x-INVERT_HORZ_MARGIN+1, y-INVERT_VERT_MARGIN, width+2*INVERT_HORZ_MARGIN-2, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-      else
-        lcdDrawFilledRect(x-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, width+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-    }
-    flags &= ~(INVERS|BLINK);
+  if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE) && (COLOR_IDX(flags) == TEXT_COLOR_INDEX)) {
+	flags += TEXT_INVERTED_COLOR - TEXT_COLOR;
+	if (FONTSIZE(flags) == TINSIZE)
+	  lcdDrawFilledRect(x-INVERT_HORZ_MARGIN+2, y-INVERT_VERT_MARGIN+2, width+2*INVERT_HORZ_MARGIN-5, INVERT_LINE_HEIGHT-7, TEXT_INVERTED_BGCOLOR);
+	else if (FONTSIZE(flags) == SMLSIZE)
+	  lcdDrawFilledRect(x-INVERT_HORZ_MARGIN+1, y-INVERT_VERT_MARGIN, width+2*INVERT_HORZ_MARGIN-2, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+	else
+	  lcdDrawFilledRect(x-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, width+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
   }
 
   char str[256];
@@ -272,7 +206,7 @@ void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags
       break;
     }
     else if (c >= 0x20) {
-      lcd_putcAtt(x, y, c, flags);
+      lcdPutFontPattern(x, y, font, fontspecs, getMappedChar(c), flags);
       x = lcdNextPos;
     }
     else if (c == 0x1F) {  // X-coord prefix

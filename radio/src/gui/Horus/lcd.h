@@ -238,7 +238,7 @@ void lcd_line(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID,
 #if !defined(SIMU)
 inline void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att)
 {
-  lcdFillRectangle(x, y, w, h, lcdColorTable[COLOR_IDX(att)]);
+  lcdDrawFilledRectDMA(x, y, w, h, lcdColorTable[COLOR_IDX(att)]);
 }
 #else
 void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att);
@@ -266,9 +266,10 @@ void lcdDrawFilledRectWithAttributes(coord_t x, scoord_t y, coord_t w, coord_t h
 void drawBlackOverlay();
 void lcd_rect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
 
-inline void lcd_square(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcd_rect(x, y, w, w, SOLID, att); }
-
-void lcdDrawTelemetryTopBar();
+inline void lcdDrawSquare(coord_t x, coord_t y, coord_t w, LcdFlags att=0)
+{
+  lcdDrawRect(x, y, w, w, att);
+}
 
 #define V_BAR(xx, yy, ll)    \
   lcd_vline(xx-1,yy-ll,ll);  \
@@ -283,10 +284,8 @@ void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdFlags fl
 
 #define lcdSetRefVolt(...)
 void lcdSetContrast();
-void lcdInit();
 #define lcdOff(...)
 
-void lcdRefresh();
 void lcdSendByte(uint8_t data);
 void lcdSend(const uint8_t * data, uint32_t size);
 void lcdSendString(const char * s);

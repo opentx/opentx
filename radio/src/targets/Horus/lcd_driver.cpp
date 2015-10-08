@@ -18,7 +18,7 @@
 #define LCD_BACKGROUND_LAYER     0x0000
 #define LCD_FOREGROUND_LAYER     0x0001
 
-#define LCD_BKLIGHT_PWM_FREQ    300
+#define LCD_BKLIGHT_PWM_FREQ     300
 
 #define LCD_DEFAULT_FRAME_BUFFER       SDRAM_BANK_ADDR
 #define FRAME_BUFFER_OFFSET            ((uint32_t)0x100000)
@@ -439,7 +439,7 @@ void lcdInit(void)
   LCD_SetTransparency(255);
 }
 
-void lcdDrawFullRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
+void lcdDrawFilledRectDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
   uint32_t addr = CurrentFrameBuffer + 2*(LCD_PIXEL_WIDTH*y + x);
   uint16_t red = (0xF800 & color) >> 11;
@@ -465,7 +465,7 @@ void lcdDrawFullRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t co
   DMA2D_StartTransfer();
 
   /* Wait for CTC Flag activation */
-  while(DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET);
+  while (DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET);
 }
 
 void lcdRefresh()
@@ -476,5 +476,4 @@ void lcdRefresh()
   else
     LCD_SetLayer(LCD_BACKGROUND_LAYER);
   LCD_SetTransparency(0);
-  // memcpy((void *)(SDRAM_BANK_ADDR+FRAME_BUFFER_OFFSET), (void *)SDRAM_BANK_ADDR, 480*272*2);
 }

@@ -250,7 +250,9 @@ void ledRed(void);
 void ledBlue(void);
 
 // LCD driver
-void lcdDrawFullRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color);
+void lcdInit(void);
+void lcdRefresh(void);
+void lcdDrawFilledRectDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color);
 
 // Backlight driver
 #define setBacklight(xx)

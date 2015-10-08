@@ -28,7 +28,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_req.h"
 
-#include "../../../../../../targets/Flamenco/usbd_desc.h"
+#include "usbd_desc.h"
 #include "usbd_ioreq.h"
 
 

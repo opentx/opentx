@@ -47,7 +47,7 @@ extern uint8_t s_current_protocol[NUM_MODULES];
 extern uint8_t s_pulses_paused;
 extern uint16_t failsafeCounter[NUM_MODULES];
 
-#if defined(PCBSKY9X)
+#if defined(PPM_PIN_HW_SERIAL)
 PACK(struct PpmPulsesData {
   uint16_t pulses[20];
   uint32_t index;

@@ -53,10 +53,10 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 #define BOX_CENTERY   (170 - FH - BOX_WIDTH/2)
 #define MARKER_WIDTH  5
 
-  lcd_square(centrex-BOX_WIDTH/2, BOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH, TEXT_COLOR);
+  lcdDrawSquare(centrex-BOX_WIDTH/2, BOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH, TEXT_COLOR);
   lcd_vlineStip(centrex, BOX_CENTERY-1, 3, SOLID, TEXT_COLOR);
   lcd_hlineStip(centrex-1, BOX_CENTERY, 3, SOLID, TEXT_COLOR);
-  lcd_square(centrex + (xval/((2*RESX)/(BOX_WIDTH-MARKER_WIDTH))) - MARKER_WIDTH/2, BOX_CENTERY - (yval/((2*RESX)/(BOX_WIDTH-MARKER_WIDTH))) - MARKER_WIDTH/2, MARKER_WIDTH, ROUND|TEXT_COLOR);
+  lcdDrawSquare(centrex + (xval/((2*RESX)/(BOX_WIDTH-MARKER_WIDTH))) - MARKER_WIDTH/2, BOX_CENTERY - (yval/((2*RESX)/(BOX_WIDTH-MARKER_WIDTH))) - MARKER_WIDTH/2, MARKER_WIDTH, ROUND|TEXT_COLOR);
 
 #undef BOX_CENTERY
 #undef MARKER_WIDTH

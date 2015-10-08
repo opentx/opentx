@@ -21,7 +21,7 @@ add_custom_target(commondeps
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${RADIO_SRC_DIRECTORY}/stamp-opentx.h)
 
 add_custom_target(lua_exports 
-  make PCB=TARANIS lua_exports.inc
+  make PCB=TARANIS lua_exports_taranis.inc
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 

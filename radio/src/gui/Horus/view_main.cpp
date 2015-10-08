@@ -138,7 +138,7 @@ void displayTrims(uint8_t phase)
         lcd_vline(xm, ym-1,  3);
       }
     }
-    lcd_square(xm-3, ym-3, 7, att);
+    lcdDrawSquare(xm-3, ym-3, 7, att);
   }
 }
 

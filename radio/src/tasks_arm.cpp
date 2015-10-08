@@ -197,7 +197,8 @@ void menusTask(void * pdata)
 
   BACKLIGHT_OFF();
 
-#if defined(PCBTARANIS)
+#if defined(COLORLCD)
+#elif defined(PCBTARANIS)
   displaySleepBitmap();
 #else
   lcd_clear();
