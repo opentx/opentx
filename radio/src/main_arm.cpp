@@ -202,31 +202,39 @@ void guiMain(evt_t evt)
   const bool refreshScreen = true;
 #endif
   {
-    // normal GUI from menus
-    const char *warn = s_warning;
-    uint8_t menu = s_menu_count;
-#if !defined(COLORLCD)
-    if (refreshScreen) {
-      lcd_clear();
+#if defined(PCBHORUS)
+    for (int i=0; i<2; i++) {
+#endif
+      // normal GUI from menus
+      const char *warn = s_warning;
+      uint8_t menu = s_menu_count;
+  #if !defined(COLORLCD)
+      if (refreshScreen) {
+        lcd_clear();
+      }
+  #endif
+      if (menuEvent) {
+        m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : -1;
+        m_posHorz = 0;
+        evt = menuEvent;
+        menuEvent = 0;
+        AUDIO_MENUS();
+      }
+      g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+      if (warn) DISPLAY_WARNING(evt);
+      if (menu) {
+        const char * result = displayMenu(evt);
+        if (result) {
+          menuHandler(result);
+          putEvent(EVT_MENU_UP);
+        }
+      }
+      drawStatusLine();
+#if defined(PCBHORUS)
+      if (menuEvent != EVT_ENTRY || menuEvent != EVT_ENTRY_UP)
+        break;
     }
 #endif
-    if (menuEvent) {
-      m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
-      m_posHorz = 0;
-      evt = menuEvent;
-      menuEvent = 0;
-      AUDIO_MENUS();
-    }
-    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
-    if (warn) DISPLAY_WARNING(evt);
-    if (menu) {
-      const char * result = displayMenu(evt);
-      if (result) {
-        menuHandler(result);
-        putEvent(EVT_MENU_UP);
-      }
-    }
-    drawStatusLine();
   }
 
   lcdRefresh();

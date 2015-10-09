@@ -216,7 +216,7 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
 #define INC(val, min, max) if (val<max) {val++;} else {val=min;}
 #define DEC(val, min, max) if (val>min) {val--;} else {val=max;}
 
-void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint16_t scrollbar_X, uint8_t flags)
+bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint16_t scrollbar_X, uint8_t flags)
 {
   vertpos_t l_posVert = m_posVert;
   horzpos_t l_posHorz = m_posHorz;
@@ -246,7 +246,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
     if (cc != curr) {
       chainMenu((MenuFuncP)pgm_read_adr(&menuTab[cc]));
-      return;
+      return false;
     }
   }
 
@@ -314,7 +314,6 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     case EVT_KEY_FIRST(KEY_LEFT):
     case EVT_KEY_REPT(KEY_LEFT):
       DEC(l_posHorz, 0, maxcol);
-      break;
       break;
 
     case EVT_ROTARY_RIGHT:
@@ -445,6 +444,8 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
   m_posVert = l_posVert;
   m_posHorz = l_posHorz;
+
+  return true;
 }
 
 void check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t rowcount, uint16_t scrollbar_X)

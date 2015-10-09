@@ -170,6 +170,7 @@ const uint8_t LBM_LUA_SCRIPTS_ICON[] = {
 const uint8_t LBM_TELEMETRY_ICON[] = {
 #include "../../bitmaps/Horus/mask_telemetry.lbm"
 };
+
 const uint8_t * const LBM_MODEL_ICONS[] = {
   LBM_MODEL_SETUP_ICON,
   CASE_HELI(LBM_HELI_ICON)
@@ -187,8 +188,28 @@ const uint8_t * const LBM_MODEL_ICONS[] = {
   LBM_TELEMETRY_ICON
 };
 
-const uint8_t LBM_BALL[] = {
-#include "../../bitmaps/Horus/mask_ball.lbm"
+const uint8_t LBM_TOP_POLYGON[] = {
+#include "../../bitmaps/Horus/mask_top_polygon.lbm"
+};
+
+const uint8_t LBM_DOT[] = {
+#include "../../bitmaps/Horus/mask_dot.lbm"
+};
+
+const uint8_t LBM_CURRENT_BG[] = {
+#include "../../bitmaps/Horus/mask_current_bg.lbm"
+};
+
+const uint8_t LBM_CURRENT_SHADOW[] = {
+#include "../../bitmaps/Horus/mask_index_shadow.lbm"
+};
+
+const uint8_t LBM_CURRENT_DOT[] = {
+#include "../../bitmaps/Horus/mask_current_dot.lbm"
+};
+
+const uint8_t LBM_MENU_MODEL[] = {
+#include "../../bitmaps/Horus/mask_menu_model.lbm"
 };
 
 #define MENU_ICONS_SPACING 34
@@ -197,17 +218,29 @@ void drawMenuTemplate(const char *name, evt_t event, int pageIndex, int pageCoun
 {
   // clear the screen
   lcdDrawFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+  lcdDrawFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP-MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
   lcdDrawFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR);
   lcdDrawFilledRect(0, MENU_BODY_TOP, LCD_W, MENU_BODY_HEIGHT, TEXT_BGCOLOR);
   lcdDrawFilledRect(0, MENU_FOOTER_TOP, LCD_W, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
 
-  lcdDrawFilledRect(58+pageIndex*MENU_ICONS_SPACING-11, 0, 36, MENU_HEADER_HEIGHT, TITLE_BGCOLOR);
+  lcdDrawBitmapPattern(0, 0, LBM_TOP_POLYGON, TITLE_BGCOLOR);
+
+  lcdDrawBitmapPattern(5, 5, LBM_MENU_MODEL, MENU_TITLE_COLOR);
+
+  if (m_posVert < 0) {
+    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-11, 0, LBM_CURRENT_BG, TITLE_BGCOLOR);
+    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-11, 0, LBM_CURRENT_SHADOW, TEXT_COLOR);
+    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_CURRENT_DOT, MENU_TITLE_COLOR);
+  }
+  else {
+    lcdDrawFilledRect(58+pageIndex*MENU_ICONS_SPACING-11, 0, 36, MENU_HEADER_HEIGHT, TITLE_BGCOLOR);
+    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_DOT, MENU_TITLE_COLOR);
+  }
 
   for (int i=0; i<pageCount; i++) {
     lcdDrawBitmapPattern(50+i*MENU_ICONS_SPACING, 7, LBM_MODEL_ICONS[i], MENU_TITLE_COLOR);
   }
 
-  lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_BALL, MENU_TITLE_COLOR);
 
   if (name) {
     // header

@@ -216,7 +216,7 @@ bool isInputSourceAvailable(int source);
 #define CURSOR_ON_LINE()         (m_posHorz<0)
 
 #define CHECK_FLAG_NO_SCREEN_INDEX   1
-void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint16_t scrollbar_X, uint8_t flags=0);
+bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint16_t scrollbar_X, uint8_t flags=0);
 void check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow, uint16_t scrollbar_X);
 void check_submenu_simple(check_event_t event, uint8_t maxrow, uint16_t scrollbar_X);
 void title(const pm_char * s);
@@ -235,8 +235,8 @@ void drawMenuTemplate(const char *title, evt_t event, int pageIndex=0, int pageC
 #define MENU(title, tab, menu, lines_count, scrollbar_X, ...) \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
   MENU_TAB(__VA_ARGS__); \
+  if (!MENU_CHECK(tab, menu, lines_count, scrollbar_X)) return; \
   drawMenuTemplate(title, event, menu, DIM(tab)); \
-  MENU_CHECK(tab, menu, lines_count, scrollbar_X)
 
 #define MENU_FLAGS(title, tab, menu, flags, lines_count, scrollbar_X, ...) \
   MENU_TAB(__VA_ARGS__); \
