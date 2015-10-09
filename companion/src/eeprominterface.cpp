@@ -1366,7 +1366,7 @@ void UnregisterFirmwares()
 
 void ShowEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound)
 {
-  std::bitset<NUM_ERRORS> errors(errorsFound);
+  std::bitset<NUM_ERRORS> errors((unsigned long long)errorsFound);
   QStringList errorsList;
 
   errorsList << QT_TRANSLATE_NOOP("EepromInterface", "Possible causes for this:");
@@ -1401,7 +1401,7 @@ void ShowEepromErrors(QWidget *parent, const QString &title, const QString &main
 
 void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound)
 {
-  std::bitset<NUM_ERRORS> errors(errorsFound);
+  std::bitset<NUM_ERRORS> errors((unsigned long long)errorsFound);
   QStringList warningsList;
   if (errors.test(WARNING_WRONG_FIRMWARE)) { warningsList << QT_TRANSLATE_NOOP("EepromInterface", "- Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"); }
 
