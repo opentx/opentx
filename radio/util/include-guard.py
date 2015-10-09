@@ -2,7 +2,8 @@
 
 from __future__ import print_function
 
-import sys, os
+import sys
+import os
 
 for filename in sys.argv[1:]:
     f = file(filename, "r")
@@ -15,10 +16,10 @@ for filename in sys.argv[1:]:
         line = line.strip()
         if line.startswith("#ifndef "):
             guard = line[8:]
-            if lines[i+1].strip() == "#define %s" % guard:
+            if lines[i + 1].strip() == "#define %s" % guard:
                 print(filename, ":", guard, "=>", newguard)
                 lines[i] = "#ifndef %s\n" % newguard
-                lines[i+1] = "#define %s\n" % newguard
+                lines[i + 1] = "#define %s\n" % newguard
                 end = -1
                 while not lines[end].strip().startswith("#endif"):
                     end -= 1
@@ -26,5 +27,4 @@ for filename in sys.argv[1:]:
                 f = file(filename, "w")
                 f.write("".join(lines))
                 f.close()
-                break 
-
+                break
