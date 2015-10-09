@@ -1186,7 +1186,7 @@ endif
 ifeq ($(PCB), HORUS)
   # HORUS radio
   ARCH = ARM
-  LCDSIZE = 320
+  LCDSIZE = 480
   GUIDIRECTORY = Horus
   FLAVOUR = HORUS
   LDSCRIPT = targets/Horus/stm32f4_flash.ld
@@ -1851,6 +1851,7 @@ ifeq ($(PCB), $(filter $(PCB), HORUS))
   MIDSIZE = 16
   DBLSIZE = 20
   XXLSIZE = 38
+  MASKFORMAT = 8bits
 else
   FONTNAME = Roboto
   TINSIZE = 5
@@ -1859,13 +1860,14 @@ else
   MIDSIZE = 11
   DBLSIZE = 14
   XXLSIZE = 38
+  MASKFORMAT = 4bits
 endif
 
 .PHONY: fonts
 fonts: $(FONTS)
 
 fonts/font_%size.lbm: fonts/font_%size.png
-	$(IMG2LBM) $^ $@ $(LCDSIZE) 8bits
+	$(IMG2LBM) $^ $@ $(LCDSIZE) $(MASKFORMAT)
 
 fonts/font_tinsize.png:
 	$(FONT2PNG) $(FONTNAME) $(TINSIZE) fonts/font_tinsize
@@ -1907,7 +1909,7 @@ bitmaps/Flamenco/%.lbm: bitmaps/Flamenco/%.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE) 4/4/4/4
 
 bitmaps/Horus/mask_%.lbm: bitmaps/Horus/mask_%.png
-	$(IMG2LBM) $^ $@ $(LCDSIZE) 8bits
+	$(IMG2LBM) $^ $@ $(LCDSIZE) $(MASKFORMAT)
 
 bitmaps/Horus/%.lbm: bitmaps/Horus/%.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE) 5/6/5
