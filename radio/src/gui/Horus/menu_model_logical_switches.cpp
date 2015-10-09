@@ -105,7 +105,7 @@ void menuModelLogicalSwitches(evt_t event)
   int sub = m_posVert;
   horzpos_t horz = m_posHorz;
 
-  if (horz>=0) {
+  if (sub>= 0 && horz>=0) {
     displayColumnHeader(STR_CSW_HEADERS, horz);
   }
 

@@ -82,13 +82,6 @@ void lcdDrawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
   }
 }
 
-void displayScreenIndex(uint8_t index, uint8_t count)
-{
-  // char str[10];
-  // sprintf(str, "%d/%d", index+1, count);
-  // lcd_putsAtt(LCD_W-8-getTextWidth(str), MENU_FOOTER_TOP, str, m_posVert < 0 ? INVERS : TEXT_COLOR);
-}
-
 void displayScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
 {
   lcdDrawVerticalLine(x, y, h, LINE_COLOR);
@@ -225,12 +218,12 @@ void drawMenuTemplate(const char *name, evt_t event, int pageIndex, int pageCoun
 
   lcdDrawBitmapPattern(0, 0, LBM_TOP_POLYGON, TITLE_BGCOLOR);
 
-  lcdDrawBitmapPattern(5, 5, LBM_MENU_MODEL, MENU_TITLE_COLOR);
+  lcdDrawBitmapPattern(5, 7, LBM_MENU_MODEL, MENU_TITLE_COLOR);
 
   if (m_posVert < 0) {
-    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-11, 0, LBM_CURRENT_BG, TITLE_BGCOLOR);
-    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-11, 0, LBM_CURRENT_SHADOW, TEXT_COLOR);
-    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_CURRENT_DOT, MENU_TITLE_COLOR);
+    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-12, 0, LBM_CURRENT_BG, TITLE_BGCOLOR);
+    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-12, 0, LBM_CURRENT_SHADOW, TEXT_COLOR);
+    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-1, MENU_TITLE_TOP-9, LBM_CURRENT_DOT, MENU_TITLE_COLOR);
   }
   else {
     lcdDrawFilledRect(58+pageIndex*MENU_ICONS_SPACING-11, 0, 36, MENU_HEADER_HEIGHT, TITLE_BGCOLOR);
@@ -238,17 +231,12 @@ void drawMenuTemplate(const char *name, evt_t event, int pageIndex, int pageCoun
   }
 
   for (int i=0; i<pageCount; i++) {
-    lcdDrawBitmapPattern(50+i*MENU_ICONS_SPACING, 7, LBM_MODEL_ICONS[i], MENU_TITLE_COLOR);
+    lcdDrawBitmapPattern((m_posVert < 0 && pageIndex == i) ? 49+i*MENU_ICONS_SPACING : 50+i*MENU_ICONS_SPACING, 7, LBM_MODEL_ICONS[i], MENU_TITLE_COLOR);
   }
-
 
   if (name) {
     // header
     title(name);
-  }
-
-  if (pageCount > 0) {
-    displayScreenIndex(pageIndex, pageCount);
   }
 }
 
