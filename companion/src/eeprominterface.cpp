@@ -1419,7 +1419,7 @@ unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int 
   std::bitset<NUM_ERRORS> errors;
 
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
-    std::bitset<NUM_ERRORS> result(eepromInterface->load(radioData, eeprom, size));
+    std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->load(radioData, eeprom, size));
     if (result.test(NO_ERROR)) {
       return result.to_ulong();
     } else {
@@ -1438,7 +1438,7 @@ unsigned long LoadBackup(RadioData &radioData, uint8_t *eeprom, int size, int in
   std::bitset<NUM_ERRORS> errors;
 
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
-    std::bitset<NUM_ERRORS> result(eepromInterface->loadBackup(radioData, eeprom, size, index));
+    std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->loadBackup(radioData, eeprom, size, index));
     if (result.test(NO_ERROR)) {
       return result.to_ulong();
     } else {
@@ -1458,7 +1458,7 @@ unsigned long LoadEepromXml(RadioData &radioData, QDomDocument &doc)
   std::bitset<NUM_ERRORS> errors;
 
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
-    std::bitset<NUM_ERRORS> result(eepromInterface->loadxml(radioData, doc));
+    std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->loadxml(radioData, doc));
     if (result.test(NO_ERROR)) {
       return result.to_ulong();
     } else {
