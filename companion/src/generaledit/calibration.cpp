@@ -1,7 +1,7 @@
 #include "calibration.h"
 #include "ui_calibration.h"
 
-void CalibrationPanel::setupSwitchConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type)
+void CalibrationPanel::setupSwitchConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type, bool threePos = true)
 {
   bool enabled = false;
 
@@ -18,7 +18,7 @@ void CalibrationPanel::setupSwitchConfig(int index, QLabel *label, AutoLineEdit 
   if (enabled) {
     type->addItem(tr("2 Positions Toggle"), GeneralSettings::SWITCH_TOGGLE);
     type->addItem(tr("2 Positions"), GeneralSettings::SWITCH_2POS);
-    type->addItem(tr("3 Positions"), GeneralSettings::SWITCH_3POS);
+    if (threePos) type->addItem(tr("3 Positions"), GeneralSettings::SWITCH_3POS);
     name->setField(generalSettings.switchName[index], 3, this);
     type->setField(generalSettings.switchConfig[index], this);
   }
@@ -130,9 +130,9 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
   setupSwitchConfig(2, ui->scLabel, ui->scName, ui->scType);
   setupSwitchConfig(3, ui->sdLabel, ui->sdName, ui->sdType);
   setupSwitchConfig(4, ui->seLabel, ui->seName, ui->seType);
-  setupSwitchConfig(5, ui->sfLabel, ui->sfName, ui->sfType);
+  setupSwitchConfig(5, ui->sfLabel, ui->sfName, ui->sfType, false);   //switch does not support 3POS
   setupSwitchConfig(6, ui->sgLabel, ui->sgName, ui->sgType);
-  setupSwitchConfig(7, ui->shLabel, ui->shName, ui->shType);
+  setupSwitchConfig(7, ui->shLabel, ui->shName, ui->shType, false);   //switch does not support 3POS
   setupSwitchConfig(8, ui->siLabel, ui->siName, ui->siType);
   setupSwitchConfig(9, ui->sjLabel, ui->sjName, ui->sjType);
   setupSwitchConfig(10, ui->skLabel, ui->skName, ui->skType);
