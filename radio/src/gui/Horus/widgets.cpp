@@ -116,95 +116,6 @@ void title(const pm_char * s)
   lcd_putsAtt(MENU_TITLE_LEFT, MENU_TITLE_TOP+2, s, MENU_TITLE_COLOR);
 }
 
-const uint8_t LBM_MODEL_SETUP_ICON[] = {
-#include "../../bitmaps/Horus/mask_model_setup.lbm"
-};
-
-const uint8_t LBM_HELI_ICON[] = {
-#include "../../bitmaps/Horus/mask_heli.lbm"
-};
-
-const uint8_t LBM_FLIGHT_MODES_ICON[] = {
-#include "../../bitmaps/Horus/mask_flight_modes.lbm"
-};
-
-const uint8_t LBM_INPUTS_ICON[] = {
-#include "../../bitmaps/Horus/mask_inputs.lbm"
-};
-
-const uint8_t LBM_MIXER_ICON[] = {
-#include "../../bitmaps/Horus/mask_mixer.lbm"
-};
-
-const uint8_t LBM_OUTPUTS_ICON[] = {
-#include "../../bitmaps/Horus/mask_outputs.lbm"
-};
-
-const uint8_t LBM_CURVES_ICON[] = {
-#include "../../bitmaps/Horus/mask_curves.lbm"
-};
-
-const uint8_t LBM_GVARS_ICON[] = {
-#include "../../bitmaps/Horus/mask_gvars.lbm"
-};
-
-const uint8_t LBM_LOGICAL_SWITCHES_ICON[] = {
-#include "../../bitmaps/Horus/mask_logical_switches.lbm"
-};
-
-const uint8_t LBM_SPECIAL_FUNCTIONS_ICON[] = {
-#include "../../bitmaps/Horus/mask_special_functions.lbm"
-};
-
-const uint8_t LBM_LUA_SCRIPTS_ICON[] = {
-#include "../../bitmaps/Horus/mask_lua_scripts.lbm"
-};
-
-const uint8_t LBM_TELEMETRY_ICON[] = {
-#include "../../bitmaps/Horus/mask_telemetry.lbm"
-};
-
-const uint8_t * const LBM_MODEL_ICONS[] = {
-  LBM_MODEL_SETUP_ICON,
-  CASE_HELI(LBM_HELI_ICON)
-  CASE_FLIGHT_MODES(LBM_FLIGHT_MODES_ICON)
-  LBM_INPUTS_ICON,
-  LBM_MIXER_ICON,
-  LBM_OUTPUTS_ICON,
-  CASE_CURVES(LBM_CURVES_ICON)
-  CASE_GVARS(LBM_GVARS_ICON)
-  LBM_LOGICAL_SWITCHES_ICON,
-  LBM_SPECIAL_FUNCTIONS_ICON,
-#if defined(LUA_MODEL_SCRIPTS)
-  LBM_LUA_SCRIPTS_ICON,
-#endif
-  LBM_TELEMETRY_ICON
-};
-
-const uint8_t LBM_TOP_POLYGON[] = {
-#include "../../bitmaps/Horus/mask_top_polygon.lbm"
-};
-
-const uint8_t LBM_DOT[] = {
-#include "../../bitmaps/Horus/mask_dot.lbm"
-};
-
-const uint8_t LBM_CURRENT_BG[] = {
-#include "../../bitmaps/Horus/mask_current_bg.lbm"
-};
-
-const uint8_t LBM_CURRENT_SHADOW[] = {
-#include "../../bitmaps/Horus/mask_index_shadow.lbm"
-};
-
-const uint8_t LBM_CURRENT_DOT[] = {
-#include "../../bitmaps/Horus/mask_current_dot.lbm"
-};
-
-const uint8_t LBM_MENU_MODEL[] = {
-#include "../../bitmaps/Horus/mask_menu_model.lbm"
-};
-
 #define MENU_ICONS_SPACING 34
 
 void drawMenuTemplate(const char *name, evt_t event, int pageIndex, int pageCount)
@@ -218,8 +129,6 @@ void drawMenuTemplate(const char *name, evt_t event, int pageIndex, int pageCoun
 
   lcdDrawBitmapPattern(0, 0, LBM_TOP_POLYGON, TITLE_BGCOLOR);
 
-  lcdDrawBitmapPattern(5, 7, LBM_MENU_MODEL, MENU_TITLE_COLOR);
-
   if (m_posVert < 0) {
     lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-12, 0, LBM_CURRENT_BG, TITLE_BGCOLOR);
     lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-12, 0, LBM_CURRENT_SHADOW, TEXT_COLOR);
@@ -230,8 +139,10 @@ void drawMenuTemplate(const char *name, evt_t event, int pageIndex, int pageCoun
     lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_DOT, MENU_TITLE_COLOR);
   }
 
+  lcdDrawBitmapPattern(5, 7, LBM_MODEL_ICONS[0], MENU_TITLE_COLOR);
+
   for (int i=0; i<pageCount; i++) {
-    lcdDrawBitmapPattern(50+i*MENU_ICONS_SPACING, 7, LBM_MODEL_ICONS[i], MENU_TITLE_COLOR);
+    lcdDrawBitmapPattern(50+i*MENU_ICONS_SPACING, 7, LBM_MODEL_ICONS[i+1], MENU_TITLE_COLOR);
   }
 
   if (name) {

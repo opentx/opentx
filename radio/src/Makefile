@@ -1225,7 +1225,7 @@ ifeq ($(PCB), HORUS)
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp sbus.cpp telemetry/telemetry.cpp
   CPPSRC += targets/Horus/pulses_driver.cpp targets/Horus/keys_driver.cpp targets/Horus/adc_driver.cpp targets/Horus/trainer_driver.cpp targets/Horus/audio_driver.cpp targets/Horus/serial2_driver.cpp targets/Horus/telemetry_driver.cpp
-  CPPSRC += gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp
+  CPPSRC += gui/$(GUIDIRECTORY)/bitmaps.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp
   SRC += targets/Horus/system_stm32f4xx.c
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/misc.c
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
@@ -1298,18 +1298,6 @@ ifeq ($(PCB), HORUS)
   CPPSRC += haptic.cpp
   CPPSRC += targets/Horus/haptic_driver.cpp
   EXTRABOARDSRC += 
-  
-  ifeq ($(TW8823_TRACES), YES)
-    CPPDEFS += -DTW8823_TRACES
-  endif
-
-  ifeq ($(TW8823_BITMAPS), YES)
-    CPPDEFS += -DTW8823_BITMAPS
-  endif
-
-  ifeq ($(TW8823_SERIAL), YES)
-    CPPDEFS += -DTW8823_SERIAL
-  endif
 endif
 
 CC      = $(TRGT)gcc
