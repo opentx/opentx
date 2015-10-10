@@ -63,7 +63,7 @@ class CalibrationPanel : public GeneralPanel
   protected:
     void setupPotConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type);
     void setupSliderConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type);
-    void setupSwitchConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type);
+    void setupSwitchConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type, bool threePos);
 
   private:
     Ui::Calibration *ui;

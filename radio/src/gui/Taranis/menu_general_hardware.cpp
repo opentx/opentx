@@ -93,6 +93,9 @@ enum menuGeneralHwItems {
   #define BLUETOOTH_ROWS
 #endif
 
+#define SWITCH_TYPE_MAX(sw)   ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+
+
 void menuGeneralHardware(uint8_t event)
 {
   MENU(STR_HARDWARE, menuTabGeneral, e_Hardware, ITEM_SETUP_HW_MAX, { LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0 });
@@ -201,7 +204,7 @@ void menuGeneralHardware(uint8_t event)
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.switchNames[index], LEN_SWITCH_NAME, event, m_posHorz == 0 ? attr : 0);
         else
           lcd_putsiAtt(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
-        config = selectMenuItem(HW_SETTINGS_COLUMN+5*FW, y, "", STR_SWTYPES, config, SWITCH_NONE, SWITCH_3POS, m_posHorz == 1 ? attr : 0, event);
+        config = selectMenuItem(HW_SETTINGS_COLUMN+5*FW, y, "", STR_SWTYPES, config, SWITCH_NONE, SWITCH_TYPE_MAX(index), m_posHorz == 1 ? attr : 0, event);
         if (attr && checkIncDec_Ret) {
           swconfig_t mask = (swconfig_t)0x03 << (2*index);
           g_eeGeneral.switchConfig = (g_eeGeneral.switchConfig & ~mask) | ((swconfig_t(config) & 0x03) << (2*index));

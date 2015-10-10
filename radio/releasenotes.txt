@@ -1,6 +1,11 @@
 <h2>Version 2.1.4 / <set date></h2>
 
-[AVR boards]
+[Taranis]
+<ul>
+<li>Switches SF and SH limited to 2-position type in Hardware setup (<a href=https://github.com/opentx/opentx/issues/2936>#2936</a>)</li>
+</ul>
+
+[ARM boards]
 <ul>
 <li>Fixed several problems with automatic playing of Physical and Logical Switches changes (eg LS15-on.wav, SG-mid.wav) (<a href=https://github.com/opentx/opentx/issues/2855>#2855</a>)</li>
 <li>Source selector did not work in Telemetry screen for Bars (<a href=https://github.com/opentx/opentx/issues/2843>#2843</a>)</li>
