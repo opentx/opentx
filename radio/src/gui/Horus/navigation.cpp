@@ -448,14 +448,14 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   return true;
 }
 
-void check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t rowcount, uint16_t scrollbar_X)
+bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t rowcount, uint16_t scrollbar_X)
 {
-  check(event, curr, menuTab, menuTabSize, 0, 0, rowcount, scrollbar_X);
+  return check(event, curr, menuTab, menuTabSize, 0, 0, rowcount, scrollbar_X);
 }
 
-void check_submenu_simple(check_event_t event, uint8_t rowcount, uint16_t scrollbar_X)
+bool check_submenu_simple(check_event_t event, uint8_t rowcount, uint16_t scrollbar_X)
 {
-  check_simple(event, 0, 0, 0, rowcount, scrollbar_X);
+  return check_simple(event, 0, 0, 0, rowcount, scrollbar_X);
 }
 
 void repeatLastCursorMove(evt_t event)

@@ -249,9 +249,6 @@ void title(const pm_char * s);
   MENU_TAB(__VA_ARGS__); \
   MENU_CHECK_FLAGS(title, tab, menu, flags, lines_count)
 
-#define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
-  check_simple(NULL, event, menu, tab, DIM(tab), lines_count);
-
 #define SIMPLE_MENU(title, tab, menu, lines_count) \
   check_simple(title, event, menu, tab, DIM(tab), lines_count)
 

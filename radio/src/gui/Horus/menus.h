@@ -217,46 +217,31 @@ bool isInputSourceAvailable(int source);
 
 #define CHECK_FLAG_NO_SCREEN_INDEX   1
 bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint16_t scrollbar_X, uint8_t flags=0);
-void check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow, uint16_t scrollbar_X);
-void check_submenu_simple(check_event_t event, uint8_t maxrow, uint16_t scrollbar_X);
-void title(const pm_char * s);
-#define TITLE(str) title(str)
+bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow, uint16_t scrollbar_X);
+bool check_submenu_simple(check_event_t event, uint8_t maxrow, uint16_t scrollbar_X);
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
-
-#define MENU_CHECK(tab, menu, lines_count, scrollbar_X) \
-  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count, scrollbar_X)
-
-#define MENU_CHECK_FLAGS(tab, menu, flags, lines_count, scrollbar_X) \
-  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count, scrollbar_X, flags)
 
 void drawMenuTemplate(const char *title, evt_t event, int pageIndex=0, int pageCount=0);
 
 #define MENU(title, tab, menu, lines_count, scrollbar_X, ...) \
+  MENU_TAB(__VA_ARGS__); \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
-  MENU_TAB(__VA_ARGS__); \
-  if (!MENU_CHECK(tab, menu, lines_count, scrollbar_X)) return; \
+  if (!check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count, scrollbar_X)) return; \
   drawMenuTemplate(title, event, menu, DIM(tab)); \
-
-#define MENU_FLAGS(title, tab, menu, flags, lines_count, scrollbar_X, ...) \
-  MENU_TAB(__VA_ARGS__); \
-  MENU_CHECK_FLAGS(tab, menu, flags, lines_count, scrollbar_X); \
-  TITLE(title)
-
-#define SIMPLE_MENU_NOTITLE(tab, menu, lines_count, scrollbar_X) \
-  check_simple(event, menu, tab, DIM(tab), lines_count, scrollbar_X);
 
 #define SIMPLE_MENU(title, tab, menu, lines_count, scrollbar_X) \
+  if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
+  if (!check_simple(event, menu, tab, DIM(tab), lines_count, scrollbar_X)) return; \
   drawMenuTemplate(title, event, menu, DIM(tab)); \
-  SIMPLE_MENU_NOTITLE(tab, menu, lines_count, scrollbar_X)
 
 #define SUBMENU(title, lines_count, scrollbar_X, ...) \
   MENU_TAB(__VA_ARGS__); \
-  drawMenuTemplate(title, event); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count, scrollbar_X)
+  if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count, scrollbar_X)) return; \
+  drawMenuTemplate(title, event);
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count, scrollbar_X) \
-  check_submenu_simple(event, lines_count, scrollbar_X);
+  if (!check_submenu_simple(event, lines_count, scrollbar_X)) return
 
 #define SIMPLE_SUBMENU(title, lines_count, scrollbar_X) \
   SIMPLE_SUBMENU_NOTITLE(lines_count, scrollbar_X); \
