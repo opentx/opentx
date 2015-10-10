@@ -3,7 +3,8 @@
 [AVR boards]
 <ul>
 <li>Fixed several problems with automatic playing of Physical and Logical Switches changes (eg LS15-on.wav, SG-mid.wav) (<a href=https://github.com/opentx/opentx/issues/2855>#2855</a>)</li>
-<li>Sorce selector did not work in Telemetry screen for Bars (<a href=https://github.com/opentx/opentx/issues/2843>#2843</a>)</li>
+<li>Source selector did not work in Telemetry screen for Bars (<a href=https://github.com/opentx/opentx/issues/2843>#2843</a>)</li>
+<li>Shortened screen-shot file name (<a href=https://github.com/opentx/opentx/issues/2934>#2934</a>)</li>
 </ul>
 
 
