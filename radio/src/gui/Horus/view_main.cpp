@@ -282,6 +282,10 @@ void onMainViewMenu(const char *result)
 
 void displayTelemetryScreen(int index, unsigned int evt);
 
+const uint16_t LBM_MAINVIEW_FLAT[] = {
+#include "../../bitmaps/Horus/mainview_flat.lbm"
+};
+
 void menuMainView(evt_t event)
 {
   // clear the screen
@@ -335,6 +339,8 @@ void menuMainView(evt_t event)
       break;
   }
 
+  lcdDrawBitmap(0, 0, LBM_MAINVIEW_FLAT);
+
 #if 0
   displayMainViewIndex();
 
@@ -350,7 +356,7 @@ void menuMainView(evt_t event)
   }
 #endif
 
-#if defined(GVARS)
+#if 0
   if (s_gvar_timer > 0) {
     s_gvar_timer--;
     displayMessageBox();

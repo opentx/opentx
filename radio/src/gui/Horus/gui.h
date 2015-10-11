@@ -40,10 +40,10 @@
 #define MENU_HEADER_HEIGHT    45
 #define MENU_TITLE_TOP        48
 #define MENU_TITLE_HEIGHT     21
-#define MENU_BODY_TOP         70
+#define MENU_BODY_TOP         69  // MENU_TITLE_TOP + MENU_TITLE_HEIGHT
 #define MENU_CONTENT_TOP      72
 #define MENU_BODY_HEIGHT      182
-#define MENU_FOOTER_TOP       251
+#define MENU_FOOTER_TOP       251 // MENU_BODY_TOP + MENU_BODY_HEIGHT
 #define MENU_FOOTER_HEIGHT    21
 
 #define MENU_TITLE_LEFT       6
