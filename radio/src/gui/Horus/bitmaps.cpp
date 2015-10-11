@@ -61,6 +61,48 @@ const uint8_t LBM_CURRENT_DOT[] = {
 };
 
 /*
+ *  Radio menu bitmaps
+ */
+
+const uint8_t LBM_MENU_RADIO[] = {
+#include "../../bitmaps/Horus/mask_menu_radio.lbm"
+};
+
+const uint8_t LBM_RADIO_SETUP_ICON[] = {
+#include "../../bitmaps/Horus/mask_radio_setup.lbm"
+};
+
+const uint8_t LBM_SD_BROWSER_ICON[] = {
+#include "../../bitmaps/Horus/mask_sd_browser.lbm"
+};
+
+const uint8_t LBM_GLOBAL_FUNCTIONS_ICON[] = {
+#include "../../bitmaps/Horus/mask_global_functions.lbm"
+};
+
+const uint8_t LBM_TRAINER_ICON[] = {
+#include "../../bitmaps/Horus/mask_trainer.lbm"
+};
+
+const uint8_t LBM_CALIBRATION_ICON[] = {
+#include "../../bitmaps/Horus/mask_calibration.lbm"
+};
+
+const uint8_t LBM_VERSION_ICON[] = {
+#include "../../bitmaps/Horus/mask_version.lbm"
+};
+
+const uint8_t * const LBM_RADIO_ICONS[] = {
+  LBM_MENU_RADIO,
+  LBM_RADIO_SETUP_ICON,
+  LBM_SD_BROWSER_ICON,
+  LBM_GLOBAL_FUNCTIONS_ICON,
+  LBM_TRAINER_ICON,
+  LBM_CALIBRATION_ICON,
+  LBM_VERSION_ICON
+};
+
+/*
  *  Model menu bitmaps
  */
 
