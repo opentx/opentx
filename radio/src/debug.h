@@ -40,6 +40,7 @@
 #include <inttypes.h>
 #include "rtc.h"
 #include "dump.h"
+#include "serial.h"
 #if defined(CLI)
 #include "cli.h"
 #endif
