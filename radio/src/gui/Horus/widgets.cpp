@@ -116,7 +116,7 @@ void title(const pm_char * s)
   lcd_putsAtt(MENU_TITLE_LEFT, MENU_TITLE_TOP+2, s, MENU_TITLE_COLOR);
 }
 
-#define MENU_ICONS_SPACING 34
+#define MENU_ICONS_SPACING 31
 
 void drawMenuTemplate(const char *name, evt_t event, int pageIndex, int pageCount)
 {
@@ -130,12 +130,10 @@ void drawMenuTemplate(const char *name, evt_t event, int pageIndex, int pageCoun
   lcdDrawBitmapPattern(0, 0, LBM_TOP_POLYGON, TITLE_BGCOLOR);
 
   if (m_posVert < 0) {
-    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-12, 0, LBM_CURRENT_BG, TITLE_BGCOLOR);
-    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-12, 0, LBM_CURRENT_SHADOW, TEXT_COLOR);
-    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_CURRENT_DOT, MENU_TITLE_COLOR);
+    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_BG, TITLE_BGCOLOR);
   }
   else {
-    lcdDrawFilledRect(58+pageIndex*MENU_ICONS_SPACING-11, 0, 36, MENU_HEADER_HEIGHT, TITLE_BGCOLOR);
+    lcdDrawFilledRect(58+pageIndex*MENU_ICONS_SPACING-9, 0, 32, MENU_HEADER_HEIGHT, TITLE_BGCOLOR);
     lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_DOT, MENU_TITLE_COLOR);
   }
 
@@ -145,6 +143,11 @@ void drawMenuTemplate(const char *name, evt_t event, int pageIndex, int pageCoun
 
   for (int i=0; i<pageCount; i++) {
     lcdDrawBitmapPattern(50+i*MENU_ICONS_SPACING, 7, icons[i+1], MENU_TITLE_COLOR);
+  }
+
+  if (m_posVert < 0) {
+    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_SHADOW, TEXT_COLOR);
+    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_CURRENT_DOT, MENU_TITLE_COLOR);
   }
 
   if (name) {
