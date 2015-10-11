@@ -73,9 +73,9 @@ volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value = 0;
 
 #if defined(PCBTARANIS)
 #if defined(REV9E)
-tmr10ms_t switchesMidposStart[6];
+tmr10ms_t switchesMidposStart[16];
 #else
-tmr10ms_t switchesMidposStart[16]; // TODO constant
+tmr10ms_t switchesMidposStart[6]; // TODO constant
 #endif
 uint64_t  switchesPos = 0;
 tmr10ms_t potsLastposStart[NUM_XPOTS];
