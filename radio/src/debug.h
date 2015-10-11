@@ -40,9 +40,10 @@
 #include <inttypes.h>
 #include "rtc.h"
 #include "dump.h"
-#include "serial.h"
 #if defined(CLI)
 #include "cli.h"
+#elif defined(CPUARM)
+#include "serial.h"
 #endif
 
 #if defined(__cplusplus)

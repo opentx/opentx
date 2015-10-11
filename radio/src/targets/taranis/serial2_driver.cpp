@@ -116,7 +116,11 @@ void serial2Stop()
 
 uint8_t serial2TracesEnabled()
 {
-  return (serial2Mode == 0);
+#if defined(DEBUG)
+  return (serial2Mode == UART_MODE_DEBUG);
+#else
+  return false;
+#endif
 }
 
 #if !defined(SIMU)
