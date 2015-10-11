@@ -118,7 +118,15 @@ add_subdirectory(shared)
 add_subdirectory(modeledit)
 add_subdirectory(generaledit)
 add_subdirectory(simulation)
-add_subdirectory(firmwares/opentx/simulator)
+
+SET (translation FR IT DE EN)
+foreach(TRANSLATIONS  ${translation})
+  set (SUFFIX "")
+  string(TOLOWER ${TRANSLATIONS} TRANSLATION_SUFFIX)
+  set(SUFFIX ${SUFFIX}-${TRANSLATION_SUFFIX})
+  add_subdirectory(firmwares/opentx/simulator/ ../build/simulator${SUFFIX})
+endforeach(TRANSLATIONS)
+
 add_subdirectory(qcustomplot)
 
 set(common_SRCS

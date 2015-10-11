@@ -1,26 +1,34 @@
+if (TRANSLATIONS STREQUAL "EN") 
+    set (SUFFIX "")
+    MESSAGE( "Generating -en")
+    else ()
+    MESSAGE( "Generating " ${SUFFIX})
+endif ()
+set(COMMON_DEFINITIONS ${COMMON_DEFINITIONS} TRANSLATIONS_${TRANSLATIONS})
+
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 
 set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/../../radio/src)
 
-add_custom_target(about_lbm_9x
+add_custom_target(about_lbm_9x${SUFFIX}
   make lbm PCB=9X
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
-add_custom_target(about_lbm_taranis
+add_custom_target(about_lbm_taranis${SUFFIX}
   make lbm PCB=TARANIS
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
-add_custom_target(commondeps
+add_custom_target(commondeps${SUFFIX}
   make stamp_header tra
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${RADIO_SRC_DIRECTORY}/stamp-opentx.h)
 
-add_custom_target(lua_exports 
+add_custom_target(lua_exports${SUFFIX} 
   make PCB=TARANIS lua_exports.inc
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
@@ -47,12 +55,6 @@ if(APPLE)
   # OS X compiler no longer automatically includes /Library/Frameworks in search path
   set(CMAKE_SHARED_LINKER_FLAGS -F/Library/Frameworks)
 endif(APPLE)
-
-if(DEFINED TRANSLATIONS)
-  set(COMMON_DEFINITIONS ${COMMON_DEFINITIONS} TRANSLATIONS_${TRANSLATIONS})
-  string(TOLOWER ${TRANSLATIONS} TRANSLATION_SUFFIX)
-  set(SUFFIX ${SUFFIX}-${TRANSLATION_SUFFIX})
-endif()
 
 set(COMMON_DEFINITIONS
   ${COMMON_DEFINITIONS}
@@ -177,7 +179,7 @@ target_include_directories(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${RADIO_
 target_compile_definitions(opentx-taranisx9e${SUFFIX}-simulator PRIVATE PCBTARANIS REVPLUS REV9E CPUARM CPUSTM32 STM32F40_41xxx EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
-add_custom_target(opentx-simulators
+add_custom_target(opentx-simulators${SUFFIX}
   DEPENDS ${OPENTX_LIBRARIES}
 )
 

@@ -65,19 +65,18 @@ void registerSimulators()
 SimulatorFactory *getSimulatorFactory(const QString &name)
 {
   QString simuName = name;
-  while(1) {
-    qDebug() << "searching" << simuName << "simulator";
-    foreach (QString name, registered_simulators.keys()) {
-      if (name.contains(simuName)) {
-        simuName = name;
-        return registered_simulators[simuName];
-      }
-    }
-    int pos = simuName.lastIndexOf('-');
-    if (pos <= 0)
-      break;
-    simuName = simuName.mid(0, pos);
+  QString simuLang = "-en";                                                       
+  if ((simuName.count('-') > 1)) {                                                
+    simuLang = simuName.mid(simuName.lastIndexOf('-'));                           
+    simuName = simuName.mid(0, simuName.indexOf('-', simuName.indexOf('-') + 1)); 
   }
+  if (simuLang != "-en") {                                                        
+    simuLang = simuName + simuLang;                                               
+    if (registered_simulators.find(simuLang) != registered_simulators.end())      
+      return registered_simulators[simuLang];                                     
+  }
+  if (registered_simulators.find(simuName) != registered_simulators.end())        
+    return registered_simulators[simuName];                                      
   return NULL;
 }
 
