@@ -238,7 +238,7 @@ int cliDisplay(const char ** argv)
   else if (!strcmp(argv[1], "time")) {
     struct gtm utm;
     gettime(&utm);
-    serialPrint("time = %4d-%02d-%02d %02d:%02d:%02d.%02d0,", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100);
+    serialPrint("time = %4d-%02d-%02d %02d:%02d:%02d.%02d0", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100);
   }
   else if (toInt(argv, 1, &address) > 0) {
     int size = 256;
