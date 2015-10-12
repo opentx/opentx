@@ -725,17 +725,10 @@ void checkSwitches()
           if (!(g_model.potsWarnEnabled & (1 << i))) {
             if (abs(g_model.potsWarnPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1) {
               lcd_putsiAtt(x, y, STR_VSRCRAW, NUM_STICKS+1+i, INVERS);
-              switch (i) {
-                case 0:
-                case 1:
-                case 2: 
-                  lcd_putcAtt(lcdNextPos, y, g_model.potsWarnPosition[i] > GET_LOWRES_POT_POSITION(i) ? 126 : 127, INVERS);
-                  break;
-                case 3:
-                case 4:
-                  lcd_putcAtt(lcdNextPos, y, g_model.potsWarnPosition[i] > GET_LOWRES_POT_POSITION(i) ? '\300' : '\301', INVERS);
-                  break;
-              }
+              if (IS_POT(POT1+i))
+                lcd_putcAtt(lcdNextPos, y, g_model.potsWarnPosition[i] > GET_LOWRES_POT_POSITION(i) ? 126 : 127, INVERS);
+              else
+                lcd_putcAtt(lcdNextPos, y, g_model.potsWarnPosition[i] > GET_LOWRES_POT_POSITION(i) ? '\300' : '\301', INVERS);
               x = lcdNextPos + 3;
             }
 
