@@ -944,8 +944,8 @@ void menuModelTelemetry(uint8_t event)
             putsTelemetryChannelValue(TELEM_BARS_COLMAX, y, barSource-1, convertBarTelemValue(barSource, 255-bar.barMax), (m_posHorz==2 ? attr : 0) | LEFT);
           }
 #endif
-          else if (attr) {
-            MOVE_CURSOR_FROM_HERE();
+          else if (attr && m_posHorz>0) {
+            m_posHorz = 0;
           }
           if (attr && (s_editMode>0 || p1valdiff)) {
             switch (m_posHorz) {
