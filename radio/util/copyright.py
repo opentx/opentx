@@ -13,9 +13,8 @@ def writeheader(filename, header):
     header should be a list of strings
     skip should be a regex
     """
-    f = open(filename,"r")
-    inpt =f.readlines()
-    f.close()
+    with open(filename, "r") as f:
+        inpt = f.readlines()
     output = []
 
     # comment out the next 3 lines if you don't wish to preserve shebangs
@@ -36,18 +35,16 @@ def writeheader(filename, header):
     for line in inpt:
         output.append(line)
     try:
-        f = open(filename,'w')
-        f.writelines(output)
-        f.close()
+        with open(filename, 'w') as f:
+            f.writelines(output)
         print("added header to %s" % filename)
     except IOError as err:
         print("something went wrong trying to add header to %s: %s" % (filename, err))
 
 
 def main(args=sys.argv):
-    headerfile = open(args[1])
-    header = headerfile.readlines()
-    headerfile.close()
+    with open(args[1]) as headerfile:
+        header = headerfile.readlines()
     writeheader(args[2], header)
 
 

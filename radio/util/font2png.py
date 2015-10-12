@@ -57,11 +57,10 @@ def createFontBitmap(filename, fontname, fontsize, foreground, background, coord
     painter.end()
     image.save(filename + ".png")
     if coordsfile:
-        f = file(filename + ".specs", "w")
-        f.write("{ ")
-        f.write(",".join(str(tmp) for tmp in coords))
-        f.write(" }")
-        f.close()
+        with open(filename + ".specs", "w") as f:
+            f.write("{ ")
+            f.write(",".join(str(tmp) for tmp in coords))
+            f.write(" }")
     return coords
 
 if len(sys.argv) == 4:
