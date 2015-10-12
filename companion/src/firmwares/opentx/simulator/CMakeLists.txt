@@ -1,7 +1,7 @@
 if (TRANSLATIONS STREQUAL "EN") 
     set (SUFFIX "")
     MESSAGE( "Generating -en")
-    else ()
+else ()
     MESSAGE( "Generating " ${SUFFIX})
 endif ()
 set(COMMON_DEFINITIONS ${COMMON_DEFINITIONS} TRANSLATIONS_${TRANSLATIONS})
