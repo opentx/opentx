@@ -2087,6 +2087,7 @@ clean_list :
 	$(REMOVE) bitmaps/*/*.lbm
 	$(REMOVE) bitmaps/*/*/*.lbm
 	$(REMOVE) fonts/*.lbm
+	$(REMOVE) fonts/font_*
 	$(REMOVE) fonts/*/*.lbm
 	$(REMOVE) lua_exports* lua_fields.txt
 	$(MAKE) -C targets/taranis/bootloader clean

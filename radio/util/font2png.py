@@ -11,7 +11,7 @@ except:
   pass
 
 for f in glob.glob("fonts/*.ttf"):
-    id = QtGui.QFontDatabase.addApplicationFont(f)
+    QtGui.QFontDatabase.addApplicationFont(f)
 
 chars = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz~ ≥→←↑↓    △Ⓘ"""
 
@@ -40,14 +40,12 @@ def getFontWidth(fontsize, metrics):
     
 def createFontBitmap(filename, fontname, fontsize, foreground, background, coordsfile=True):
     coords = [ ]
-    # font = QtGui.QFont(QtGui.QFontDatabase.applicationFontFamilies(id)[0])
     font = QtGui.QFont(fontname)
     font.setPixelSize(fontsize)
     font.setHintingPreference(QtGui.QFont.PreferNoHinting)
     metrics = QtGui.QFontMetrics(font)
     width = getFontWidth(fontsize, metrics)
     top, bottom = getFontTopBottom(fontsize, metrics)
-    print top, bottom
     image = QtGui.QImage(width, fontsize+1, QtGui.QImage.Format_RGB32)
     image.fill(background)
     painter = QtGui.QPainter()
