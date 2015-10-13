@@ -240,7 +240,7 @@ void LogicalSwitchesPanel::edited()
         updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.1);
         break;
       case LS_FAMILY_EDGE:
-        cswitchOffset2[i]->setSpecialValueText(tr("(no release)"));
+        cswitchOffset2[i]->setSpecialValueText(tr("(instant)"));
         if (sender() == cswitchOffset[i]) {
           model->logicalSw[i].val2 = TimToVal(cswitchOffset[i]->value());
           updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.0);
@@ -339,7 +339,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       populateSwitchCB(cswitchSource1[i], RawSwitch(model->logicalSw[i].val1), generalSettings, LogicalSwitchesContext);
       updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.0);
       updateTimerParam(cswitchOffset2[i], model->logicalSw[i].val2+model->logicalSw[i].val3, ValToTim(TimToVal(cswitchOffset[i]->value())-1));
-      cswitchOffset2[i]->setSpecialValueText(tr("(no release)"));
+      cswitchOffset2[i]->setSpecialValueText(tr("(instant)"));
       if (model->logicalSw[i].val3 == 0) {
         cswitchOffset2[i]->setSuffix(tr("(infinite)"));
       }
