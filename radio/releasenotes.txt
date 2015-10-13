@@ -3,6 +3,13 @@
 [Taranis]
 <ul>
 <li>Switches SF and SH limited to 2-position type in Hardware setup (<a href=https://github.com/opentx/opentx/issues/2936>#2936</a>)</li>
+<li>Fixed possible LCD freeze when line with bad coordinates was drawn by Lua script (<a href=https://github.com/opentx/opentx/issues/2925>#2925</a>)</li>
+<li>Added missing "midtrim" and "endtrim" to FR sound pack (<a href=https://github.com/opentx/opentx/issues/2912>#2912</a>)</li>
+<li>Improved display of Lua script errors (<a href=https://github.com/opentx/opentx/issues/1914>#1914</a>)</li>
+<li>Three position switch type removed from SH and SF switches (hw only supports 2POS type) (<a href=https://github.com/opentx/opentx/issues/2936>#2936</a>)</li>
+<li>Trainer mode fixes for X9E (<a href=https://github.com/opentx/opentx/issues/2913>#2913</a>)</li>
+<li>Fixed a bug that caused no servo movement when certain firmware option combinations were used (<a href=https://github.com/opentx/opentx/issues/2945>#2945</a>)</li>
+<li>Fixed missing arrows on RS, LS2, RS2 pot warnings on X9E (<a href=https://github.com/opentx/opentx/issues/2961>#2961</a>)</li>
 </ul>
 
 [ARM boards]
@@ -10,7 +17,20 @@
 <li>Fixed several problems with automatic playing of Physical and Logical Switches changes (eg LS15-on.wav, SG-mid.wav) (<a href=https://github.com/opentx/opentx/issues/2855>#2855</a>)</li>
 <li>Source selector did not work in Telemetry screen for Bars (<a href=https://github.com/opentx/opentx/issues/2843>#2843</a>)</li>
 <li>Shortened screen-shot file name (<a href=https://github.com/opentx/opentx/issues/2934>#2934</a>)</li>
+<li>PPM center was not working with DSM2 hack module (<a href=https://github.com/opentx/opentx/issues/2880>#2880</a>)</li>
+<li>Enabled PPM2 output on 9XR-PRO (<a href=https://github.com/opentx/opentx/issues/2870>#2870</a>)</li>
 </ul>
+
+[Sky9x / 9XR-PRO / AR9X]
+<ul>
+<li>Fixed navigation problem in Telemetry setup  (<a href=https://github.com/opentx/opentx/issues/2951>#2951</a>)</li>
+</ul>
+
+[AVR boards]
+<ul>
+<li>Mavlink build option was not working (<a href=https://github.com/opentx/opentx/issues/2950>#2950</a>)</li>
+</ul>
+
 
 
 <h2>Version 2.1.3 / 2015-09-09</h2>

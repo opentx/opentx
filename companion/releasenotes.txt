@@ -6,6 +6,11 @@
 <li>Top LCD Timer could not be selected for X9E  (<a href=https://github.com/opentx/opentx/issues/2850>#2850</a>)</li>
 <li>More informative error/info messages when openin eepe files (<a href=https://github.com/opentx/opentx/issues/2778>#2778</a>)</li>
 <li>Print model fix for curves (<a href=https://github.com/opentx/opentx/issues/2896>#2896</a>)</li>
+<li>Added missing special functions (bind, range check, set failsafe) (<a href=https://github.com/opentx/opentx/issues/2753>#2753</a>)</li>
+<li>Some defaults missing when changing telemetry formula, update propagation issues (<a href=https://github.com/opentx/opentx/issues/2928>#2928</a>)</li>
+<li>Fixed wrong import of Logical switches from OpenTX 2.0.x version (<a href=https://github.com/opentx/opentx/issues/2942>#2942</a>)</li>
+<li>Fixed a problem with updates path on Windows (<a href=https://github.com/opentx/opentx/issues/2876>#2876</a>)</li>
+<li>Edge representation unified (changed from "no release" to "instant") (<a href=https://github.com/opentx/opentx/issues/2837>#2837</a>)</li>
 </ul>
 
 
