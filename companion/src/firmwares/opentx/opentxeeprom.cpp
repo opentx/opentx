@@ -269,15 +269,18 @@ class SourcesConversionTable: public ConversionTable {
       }
 
       if (!afterrelease21March2013) {
-        for (int i=0; i<3; i++)
+        for (int i=0; i<3; i++) {
           addConversion(RawSource(SOURCE_TYPE_CYC, i), val++);
+        }
       }
 
-      for (int i=0; i<NUM_PPM_INPUTS(board, version); i++)
+      for (int i=0; i<NUM_PPM_INPUTS(board, version); i++) {
         addConversion(RawSource(SOURCE_TYPE_PPM, i), val++);
+      }
 
-      for (int i=0; i<MAX_CHANNELS(board, version); i++)
+      for (int i=0; i<MAX_CHANNELS(board, version); i++) {
         addConversion(RawSource(SOURCE_TYPE_CH, i), val++);
+      }
 
       if (!(flags & FLAG_NOTELEMETRY)) {
         if (IS_ARM(board) && version >= 217) {
@@ -296,8 +299,9 @@ class SourcesConversionTable: public ConversionTable {
         else  {
           if (afterrelease21March2013) {
             if ((board != BOARD_STOCK && (board!=BOARD_M128 || version<215)) || (variant & GVARS_VARIANT)) {
-              for (int i=0; i<MAX_GVARS(board, version); i++)
+              for (int i=0; i<MAX_GVARS(board, version); i++) {
                 addConversion(RawSource(SOURCE_TYPE_GVAR, i), val++);
+              }
             }
           }
 
@@ -1679,12 +1683,6 @@ class LogicalSwitchField: public TransformedField {
         internalField.Append(new SignedField<16>(v3));
         internalField.Append(new ConversionField< UnsignedField<8> >(csw.func, &functionsConversionTable, "Function"));
       }
-      else if (IS_ARM(board) && version >= 216) {
-        internalField.Append(new SignedField<8>(v1));
-        internalField.Append(new SignedField<16>(v2));
-        internalField.Append(new SignedField<16>(v3));
-        internalField.Append(new ConversionField< UnsignedField<8> >(csw.func, &functionsConversionTable, "Function"));
-      }
       else if (IS_ARM(board) && version >= 215) {
         internalField.Append(new SignedField<16>(v1));
         internalField.Append(new SignedField<16>(v2));
@@ -1785,7 +1783,7 @@ class LogicalSwitchField: public TransformedField {
         }
       }
       else if (csw.func != LS_FN_OFF) {
-        if (IS_ARM(board)) {
+        if (IS_ARM(board) && version >= 217) {
           sourcesConversionTable->importValue((uint32_t)v1, csw.val1);
         }
         else {
