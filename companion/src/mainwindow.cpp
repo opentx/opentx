@@ -298,7 +298,8 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
                                         QMessageBox::Yes | QMessageBox::No);
 
         if (ret == QMessageBox::Yes) {
-          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), qDir(g.updatesDir()).absoluteFilePath(QString(COMPANION_INSTALLER).arg(version)), tr("Executable (*.exe)"));
+          QDir dir(g.updatesDir());
+          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), dir.absoluteFilePath(QString(COMPANION_INSTALLER).arg(version)), tr("Executable (*.exe)"));
           if (!fileName.isEmpty()) {
             g.updatesDir(QFileInfo(fileName).dir().absolutePath());
             downloadDialog * dd = new downloadDialog(this, QString("%1/%2").arg(getCompanionUpdateBaseUrl()).arg(QString(COMPANION_INSTALLER).arg(version)), fileName);
