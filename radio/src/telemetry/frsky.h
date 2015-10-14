@@ -154,7 +154,7 @@
 #define POWERBOX_STATE_FIRST_ID   0x0b20
 #define POWERBOX_STATE_LAST_ID    0x0b2f
 #define POWERBOX_CNSP_FIRST_ID    0x0b30
-#define POWERBOX_CNS_LAST_ID      0x0b3f
+#define POWERBOX_CNSP_LAST_ID     0x0b3f
 #define RSSI_ID                   0xf101
 #define ADC1_ID                   0xf102
 #define ADC2_ID                   0xf103
@@ -366,7 +366,7 @@ struct FrskyData {
 #else
   #define IS_VALID_XJT_VERSION()      (1)
 #endif
-#define IS_HIDDEN_TELEMETRY_VALUE() ((appId == SP2UART_A_ID) || (appId == SP2UART_B_ID) || (appId == XJT_VERSION_ID) || ((appId == SWR_ID) && !IS_VALID_XJT_VERSION()))
+#define IS_HIDDEN_TELEMETRY_VALUE(id) ((id == SP2UART_A_ID) || (id == SP2UART_B_ID) || (id == XJT_VERSION_ID) || ((id == SWR_ID) && !IS_VALID_XJT_VERSION()))
 
 enum AlarmLevel {
   alarm_off = 0,

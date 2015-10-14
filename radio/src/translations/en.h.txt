@@ -1165,3 +1165,5 @@
 #define ZSTR_GPSALT            "GAlt"
 #define ZSTR_GPSDATETIME       "Date"
 #define ZSTR_GPS               "GPS"
+#define ZSTR_PBOX1             "PBx1"
+#define ZSTR_PBOX2             "PBx2"
