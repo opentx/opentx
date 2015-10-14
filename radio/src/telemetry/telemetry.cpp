@@ -480,13 +480,13 @@ int lastUsedTelemetryIndex()
   return -1;
 }
 
-void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
+void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
 {
   bool available = false;
 
   for (int index=0; index<MAX_SENSORS; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && (telemetrySensor.instance == instance || g_model.ignoreSensorIds)) {
+    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && telemetrySensor.subId == subId && (telemetrySensor.instance == instance || g_model.ignoreSensorIds)) {
       telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
       available = true;
       // we continue search here, because sensors can share the same id and instance
@@ -502,7 +502,7 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance
     switch (protocol) {
 #if defined(FRSKY_SPORT)
       case TELEM_PROTO_FRSKY_SPORT:
-        frskySportSetDefault(index, id, instance);
+        frskySportSetDefault(index, id, subId, instance);
         break;
 #endif
 #if defined(FRSKY)
