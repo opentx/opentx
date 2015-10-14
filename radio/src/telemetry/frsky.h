@@ -51,121 +51,129 @@
 #define FRSKY_D_AVERAGING         8
 
 // Enumerate FrSky packet codes
-#define LINKPKT                 0xfe
-#define USRPKT                  0xfd
-#define A11PKT                  0xfc
-#define A12PKT                  0xfb
-#define A21PKT                  0xfa
-#define A22PKT                  0xf9
-#define ALRM_REQUEST            0xf8
-#define RSSI1PKT                0xf7
-#define RSSI2PKT                0xf6
-#define RSSI_REQUEST            0xf1
+#define LINKPKT                   0xfe
+#define USRPKT                    0xfd
+#define A11PKT                    0xfc
+#define A12PKT                    0xfb
+#define A21PKT                    0xfa
+#define A22PKT                    0xf9
+#define ALRM_REQUEST              0xf8
+#define RSSI1PKT                  0xf7
+#define RSSI2PKT                  0xf6
+#define RSSI_REQUEST              0xf1
 
 
 // FrSky PRIM IDs (1 byte)
-#define DATA_FRAME              0x10
+#define DATA_FRAME                0x10
 
 // FrSky old DATA IDs (1 byte)
-#define GPS_ALT_BP_ID           0x01
-#define TEMP1_ID                0x02
-#define RPM_ID                  0x03
-#define FUEL_ID                 0x04
-#define TEMP2_ID                0x05
-#define VOLTS_ID                0x06
-#define GPS_ALT_AP_ID           0x09
-#define BARO_ALT_BP_ID          0x10
-#define GPS_SPEED_BP_ID         0x11
-#define GPS_LONG_BP_ID          0x12
-#define GPS_LAT_BP_ID           0x13
-#define GPS_COURS_BP_ID         0x14
-#define GPS_DAY_MONTH_ID        0x15
-#define GPS_YEAR_ID             0x16
-#define GPS_HOUR_MIN_ID         0x17
-#define GPS_SEC_ID              0x18
-#define GPS_SPEED_AP_ID         0x19
-#define GPS_LONG_AP_ID          0x1A
-#define GPS_LAT_AP_ID           0x1B
-#define GPS_COURS_AP_ID         0x1C
-#define BARO_ALT_AP_ID          0x21
-#define GPS_LONG_EW_ID          0x22
-#define GPS_LAT_NS_ID           0x23
-#define ACCEL_X_ID              0x24
-#define ACCEL_Y_ID              0x25
-#define ACCEL_Z_ID              0x26
-#define CURRENT_ID              0x28
-#define VARIO_ID                0x30
-#define VFAS_ID                 0x39
-#define VOLTS_BP_ID             0x3A
-#define VOLTS_AP_ID             0x3B
-#define FRSKY_LAST_ID           0x3F
-#define D_RSSI_ID               0xF0
-#define D_A1_ID                 0xF1
-#define D_A2_ID                 0xF2
+#define GPS_ALT_BP_ID             0x01
+#define TEMP1_ID                  0x02
+#define RPM_ID                    0x03
+#define FUEL_ID                   0x04
+#define TEMP2_ID                  0x05
+#define VOLTS_ID                  0x06
+#define GPS_ALT_AP_ID             0x09
+#define BARO_ALT_BP_ID            0x10
+#define GPS_SPEED_BP_ID           0x11
+#define GPS_LONG_BP_ID            0x12
+#define GPS_LAT_BP_ID             0x13
+#define GPS_COURS_BP_ID           0x14
+#define GPS_DAY_MONTH_ID          0x15
+#define GPS_YEAR_ID               0x16
+#define GPS_HOUR_MIN_ID           0x17
+#define GPS_SEC_ID                0x18
+#define GPS_SPEED_AP_ID           0x19
+#define GPS_LONG_AP_ID            0x1A
+#define GPS_LAT_AP_ID             0x1B
+#define GPS_COURS_AP_ID           0x1C
+#define BARO_ALT_AP_ID            0x21
+#define GPS_LONG_EW_ID            0x22
+#define GPS_LAT_NS_ID             0x23
+#define ACCEL_X_ID                0x24
+#define ACCEL_Y_ID                0x25
+#define ACCEL_Z_ID                0x26
+#define CURRENT_ID                0x28
+#define VARIO_ID                  0x30
+#define VFAS_ID                   0x39
+#define VOLTS_BP_ID               0x3A
+#define VOLTS_AP_ID               0x3B
+#define FRSKY_LAST_ID             0x3F
+#define D_RSSI_ID                 0xF0
+#define D_A1_ID                   0xF1
+#define D_A2_ID                   0xF2
 
-#define VFAS_D_HIPREC_OFFSET    2000
+#define VFAS_D_HIPREC_OFFSET      2000
  
 
 // FrSky new DATA IDs (2 bytes)
-#define ALT_FIRST_ID            0x0100
-#define ALT_LAST_ID             0x010f
-#define VARIO_FIRST_ID          0x0110
-#define VARIO_LAST_ID           0x011f
-#define CURR_FIRST_ID           0x0200
-#define CURR_LAST_ID            0x020f
-#define VFAS_FIRST_ID           0x0210
-#define VFAS_LAST_ID            0x021f
-#define CELLS_FIRST_ID          0x0300
-#define CELLS_LAST_ID           0x030f
-#define T1_FIRST_ID             0x0400
-#define T1_LAST_ID              0x040f
-#define T2_FIRST_ID             0x0410
-#define T2_LAST_ID              0x041f
-#define RPM_FIRST_ID            0x0500
-#define RPM_LAST_ID             0x050f
-#define FUEL_FIRST_ID           0x0600
-#define FUEL_LAST_ID            0x060f
-#define ACCX_FIRST_ID           0x0700
-#define ACCX_LAST_ID            0x070f
-#define ACCY_FIRST_ID           0x0710
-#define ACCY_LAST_ID            0x071f
-#define ACCZ_FIRST_ID           0x0720
-#define ACCZ_LAST_ID            0x072f
-#define GPS_LONG_LATI_FIRST_ID  0x0800
-#define GPS_LONG_LATI_LAST_ID   0x080f
-#define GPS_ALT_FIRST_ID        0x0820
-#define GPS_ALT_LAST_ID         0x082f
-#define GPS_SPEED_FIRST_ID      0x0830
-#define GPS_SPEED_LAST_ID       0x083f
-#define GPS_COURS_FIRST_ID      0x0840
-#define GPS_COURS_LAST_ID       0x084f
-#define GPS_TIME_DATE_FIRST_ID  0x0850
-#define GPS_TIME_DATE_LAST_ID   0x085f
-#define A3_FIRST_ID             0x0900
-#define A3_LAST_ID              0x090f
-#define A4_FIRST_ID             0x0910
-#define A4_LAST_ID              0x091f
-#define AIR_SPEED_FIRST_ID      0x0a00
-#define AIR_SPEED_LAST_ID       0x0a0f
-#define RSSI_ID                 0xf101
-#define ADC1_ID                 0xf102
-#define ADC2_ID                 0xf103
-#define SP2UART_A_ID            0xfd00
-#define SP2UART_B_ID            0xfd01
-#define BATT_ID                 0xf104
-#define SWR_ID                  0xf105
-#define XJT_VERSION_ID          0xf106
-#define FUEL_QTY_FIRST_ID       0x0a10
-#define FUEL_QTY_LAST_ID        0x0a1f
+#define ALT_FIRST_ID              0x0100
+#define ALT_LAST_ID               0x010f
+#define VARIO_FIRST_ID            0x0110
+#define VARIO_LAST_ID             0x011f
+#define CURR_FIRST_ID             0x0200
+#define CURR_LAST_ID              0x020f
+#define VFAS_FIRST_ID             0x0210
+#define VFAS_LAST_ID              0x021f
+#define CELLS_FIRST_ID            0x0300
+#define CELLS_LAST_ID             0x030f
+#define T1_FIRST_ID               0x0400
+#define T1_LAST_ID                0x040f
+#define T2_FIRST_ID               0x0410
+#define T2_LAST_ID                0x041f
+#define RPM_FIRST_ID              0x0500
+#define RPM_LAST_ID               0x050f
+#define FUEL_FIRST_ID             0x0600
+#define FUEL_LAST_ID              0x060f
+#define ACCX_FIRST_ID             0x0700
+#define ACCX_LAST_ID              0x070f
+#define ACCY_FIRST_ID             0x0710
+#define ACCY_LAST_ID              0x071f
+#define ACCZ_FIRST_ID             0x0720
+#define ACCZ_LAST_ID              0x072f
+#define GPS_LONG_LATI_FIRST_ID    0x0800
+#define GPS_LONG_LATI_LAST_ID     0x080f
+#define GPS_ALT_FIRST_ID          0x0820
+#define GPS_ALT_LAST_ID           0x082f
+#define GPS_SPEED_FIRST_ID        0x0830
+#define GPS_SPEED_LAST_ID         0x083f
+#define GPS_COURS_FIRST_ID        0x0840
+#define GPS_COURS_LAST_ID         0x084f
+#define GPS_TIME_DATE_FIRST_ID    0x0850
+#define GPS_TIME_DATE_LAST_ID     0x085f
+#define A3_FIRST_ID               0x0900
+#define A3_LAST_ID                0x090f
+#define A4_FIRST_ID               0x0910
+#define A4_LAST_ID                0x091f
+#define AIR_SPEED_FIRST_ID        0x0a00
+#define AIR_SPEED_LAST_ID         0x0a0f
+#define POWERBOX_BATT1_FIRST_ID   0x0b00
+#define POWERBOX_BATT1_LAST_ID    0x0b0f
+#define POWERBOX_BATT2_FIRST_ID   0x0b10
+#define POWERBOX_BATT2_LAST_ID    0x0b1f
+#define POWERBOX_STATE_FIRST_ID   0x0b20
+#define POWERBOX_STATE_LAST_ID    0x0b2f
+#define POWERBOX_CNSP_FIRST_ID    0x0b30
+#define POWERBOX_CNS_LAST_ID      0x0b3f
+#define RSSI_ID                   0xf101
+#define ADC1_ID                   0xf102
+#define ADC2_ID                   0xf103
+#define SP2UART_A_ID              0xfd00
+#define SP2UART_B_ID              0xfd01
+#define BATT_ID                   0xf104
+#define SWR_ID                    0xf105
+#define XJT_VERSION_ID            0xf106
+#define FUEL_QTY_FIRST_ID         0x0a10
+#define FUEL_QTY_LAST_ID          0x0a1f
 
 // Default sensor data IDs (Physical IDs + CRC)
-#define DATA_ID_VARIO            0x00 // 0
-#define DATA_ID_FLVSS            0xA1 // 1
-#define DATA_ID_FAS              0x22 // 2
-#define DATA_ID_GPS              0x83 // 3
-#define DATA_ID_RPM              0xE4 // 4
-#define DATA_ID_SP2UH            0x45 // 5
-#define DATA_ID_SP2UR            0xC6 // 6
+#define DATA_ID_VARIO             0x00 // 0
+#define DATA_ID_FLVSS             0xA1 // 1
+#define DATA_ID_FAS               0x22 // 2
+#define DATA_ID_GPS               0x83 // 3
+#define DATA_ID_RPM               0xE4 // 4
+#define DATA_ID_SP2UH             0x45 // 5
+#define DATA_ID_SP2UR             0xC6 // 6
 
 
 // Global Fr-Sky telemetry data variables
@@ -188,8 +196,8 @@ extern uint8_t telemetryState;
 #endif
 
 #if defined(CPUARM)
-#define TELEMETRY_AVERAGE_COUNT 3     // we actually average one more reading!
-#define RAW_FRSKY_MINMAX(v)     v.values[TELEMETRY_AVERAGE_COUNT-1]
+#define TELEMETRY_AVERAGE_COUNT   3     // we actually average one more reading!
+#define RAW_FRSKY_MINMAX(v)       v.values[TELEMETRY_AVERAGE_COUNT-1]
 class FrskyValueWithMin {
   public:
     uint8_t value;      // fitered value (average of last TELEMETRY_AVERAGE_COUNT+1 values)
@@ -199,7 +207,7 @@ class FrskyValueWithMin {
     void reset();
 };
 #else
-#define RAW_FRSKY_MINMAX(v)     v.value
+#define RAW_FRSKY_MINMAX(v)       v.value
 class FrskyValueWithMin {
   public:
     uint8_t value;
@@ -220,62 +228,62 @@ class FrskyValueWithMinMax: public FrskyValueWithMin {
 
 #elif defined(FRSKY_HUB)
 PACK(struct FrskySerialData {
-  int16_t  baroAltitudeOffset;//       spare reused
-  int16_t  gpsAltitude_bp;   // 0x01   before punct
-  int16_t  temperature1;     // 0x02   -20 .. 250 deg. celcius
-  uint16_t rpm;              // 0x03   0..60,000 revs. per minute
-  uint16_t fuelLevel;        // 0x04   0, 25, 50, 75, 100 percent
-  int16_t  temperature2;     // 0x05   -20 .. 250 deg. celcius
-  uint16_t volts;            // 0x06   1/500V increments (0..4.2V)
-  uint32_t distFromEarthAxis;//        2 spares reused
-  int16_t  gpsAltitude_ap;   // 0x01+8 after punct
-  uint8_t  cellVolts[12];    //        6 spares reused
-  int16_t  baroAltitude_bp;  // 0x10   0..9,999 meters
-  uint16_t gpsSpeed_bp;      // 0x11   before punct
-  uint16_t gpsLongitude_bp;  // 0x12   before punct
-  uint16_t gpsLatitude_bp;   // 0x13   before punct
-  uint16_t gpsCourse_bp;     // 0x14   before punct (0..359.99 deg. -- seemingly 2-decimal precision)
-  uint8_t  day;              // 0x15
-  uint8_t  month;            // 0x15
-  uint16_t year;             // 0x16
-  uint8_t  hour;             // 0x17
-  uint8_t  min;              // 0x17
-  uint16_t sec;              // 0x18
-  uint16_t gpsSpeed_ap;      // 0x11+8
-  uint16_t gpsLongitude_ap;  // 0x12+8
-  uint16_t gpsLatitude_ap;   // 0x13+8
-  uint16_t gpsCourse_ap;     // 0x14+8
-  uint32_t pilotLatitude;    //        2 spares reused
-  uint32_t pilotLongitude;   //        2 spares reused
-  uint16_t baroAltitude_ap;  // 0x21   after punct
-  uint16_t gpsLongitudeEW;   // 0x1A+8 East/West
-  uint16_t gpsLatitudeNS;    // 0x1B+8 North/South
-  int16_t  accelX;           // 0x24   1/256th gram (-8g ~ +8g)
-  int16_t  accelY;           // 0x25   1/256th gram (-8g ~ +8g)
-  int16_t  accelZ;           // 0x26   1/256th gram (-8g ~ +8g)
-  uint8_t  gpsDistNeeded:1;  //        1bits out of 16bits spare reused
-  int8_t   gpsFix:2;         //        2bits out of 16bits spare reused: -1=never fixed, 0=not fixed now, 1=fixed
-  uint8_t  openXsensor:1;    //        1bits out of 16bits spare reused: we receive data from the openXsensor
-  uint8_t  cellsCount:4;     //        4bits out of 16bits spare reused
-  uint8_t  minCellVolts;     //        8bits out of 16bits spare reused
-  uint16_t current;          // 0x28   Current
+  int16_t  baroAltitudeOffset;    //        spare reused
+  int16_t  gpsAltitude_bp;        // 0x01   before punct
+  int16_t  temperature1;          // 0x02   -20 .. 250 deg. celcius
+  uint16_t rpm;                   // 0x03   0..60,000 revs. per minute
+  uint16_t fuelLevel;             // 0x04   0, 25, 50, 75, 100 percent
+  int16_t  temperature2;          // 0x05   -20 .. 250 deg. celcius
+  uint16_t volts;                 // 0x06   1/500V increments (0..4.2V)
+  uint32_t distFromEarthAxis;     //        2 spares reused
+  int16_t  gpsAltitude_ap;        // 0x01+8 after punct
+  uint8_t  cellVolts[12];         //        6 spares reused
+  int16_t  baroAltitude_bp;       // 0x10   0..9,999 meters
+  uint16_t gpsSpeed_bp;           // 0x11   before punct
+  uint16_t gpsLongitude_bp;       // 0x12   before punct
+  uint16_t gpsLatitude_bp;        // 0x13   before punct
+  uint16_t gpsCourse_bp;          // 0x14   before punct (0..359.99 deg. -- seemingly 2-decimal precision)
+  uint8_t  day;                   // 0x15
+  uint8_t  month;                 // 0x15
+  uint16_t year;                  // 0x16
+  uint8_t  hour;                  // 0x17
+  uint8_t  min;                   // 0x17
+  uint16_t sec;                   // 0x18
+  uint16_t gpsSpeed_ap;           // 0x11+8
+  uint16_t gpsLongitude_ap;       // 0x12+8
+  uint16_t gpsLatitude_ap;        // 0x13+8
+  uint16_t gpsCourse_ap;          // 0x14+8
+  uint32_t pilotLatitude;         //        2 spares reused
+  uint32_t pilotLongitude;        //        2 spares reused
+  uint16_t baroAltitude_ap;       // 0x21   after punct
+  uint16_t gpsLongitudeEW;        // 0x1A+8 East/West
+  uint16_t gpsLatitudeNS;         // 0x1B+8 North/South
+  int16_t  accelX;                // 0x24   1/256th gram (-8g ~ +8g)
+  int16_t  accelY;                // 0x25   1/256th gram (-8g ~ +8g)
+  int16_t  accelZ;                // 0x26   1/256th gram (-8g ~ +8g)
+  uint8_t  gpsDistNeeded:1;       //        1bits out of 16bits spare reused
+  int8_t   gpsFix:2;              //        2bits out of 16bits spare reused: -1=never fixed, 0=not fixed now, 1=fixed
+  uint8_t  openXsensor:1;         //        1bits out of 16bits spare reused: we receive data from the openXsensor
+  uint8_t  cellsCount:4;          //        4bits out of 16bits spare reused
+  uint8_t  minCellVolts;          //        8bits out of 16bits spare reused
+  uint16_t current;               // 0x28   Current
   int16_t  spare[5];
   int32_t  varioAltitude_cm;
-  int16_t  varioSpeed;       // 0x30  Vertical speed in cm/s
+  int16_t  varioSpeed;            // 0x30  Vertical speed in cm/s
 
   uint16_t gpsDistance;
   int16_t  gpsAltitudeOffset;
   uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer
   uint8_t  minCellIdx;
   int16_t  cellsSum;
-  uint16_t currentConsumption; // 0x35 openXsensor only! Otherwise calculated by the Tx from current
+  uint16_t currentConsumption;    // 0x35 openXsensor only! Otherwise calculated by the Tx from current
   uint16_t currentPrescale;
-  uint16_t power;              // 0x37 openXsensor only! Otherwise calculated by the Tx from current and voltage
+  uint16_t power;                 // 0x37 openXsensor only! Otherwise calculated by the Tx from current and voltage
   int16_t  airSpeed;
 
-  uint16_t vfas;             // 0x39  Added to FrSky protocol for home made sensors with a better precision
-  uint16_t volts_bp;         // 0x3A
-  uint16_t volts_ap;         // 0x3B
+  uint16_t vfas;                  // 0x39  Added to FrSky protocol for home made sensors with a better precision
+  uint16_t volts_bp;              // 0x3A
+  uint16_t volts_ap;              // 0x3B
   // end of FrSky Hub data
 
   /* next fields must keep this order! */
@@ -298,7 +306,7 @@ PACK(struct FrskySerialData {
 });
 #elif defined(WS_HOW_HIGH)
 PACK(struct FrskySerialData {
-  int16_t  baroAltitude_bp;     // 0..9,999 meters
+  int16_t  baroAltitude_bp;       // 0..9,999 meters
   int16_t  baroAltitudeOffset;
   int16_t  minAltitude;
   int16_t  maxAltitude;
@@ -307,12 +315,12 @@ PACK(struct FrskySerialData {
   uint16_t power;
   uint16_t maxPower;
 #if defined(VARIO)
-  int16_t  varioSpeed;       // Vertical speed in cm/s
+  int16_t  varioSpeed;            // Vertical speed in cm/s
 #endif
 });
 #elif defined(VARIO)
 PACK(struct FrskySerialData {
-  int16_t  varioSpeed;       // Vertical speed in cm/s
+  int16_t  varioSpeed;            // Vertical speed in cm/s
   uint16_t currentConsumption;
   uint16_t currentPrescale;
   uint16_t power;
@@ -339,8 +347,8 @@ enum TelemAnas {
 
 #if defined(CPUARM)
 struct FrskyData {
-  FrskyValueWithMin swr; // TODO Min not needed
-  FrskyValueWithMin rssi; // TODO Min not needed
+  FrskyValueWithMin swr;          // TODO Min not needed
+  FrskyValueWithMin rssi;         // TODO Min not needed
   uint16_t xjtVersion;
   bool varioHighPrecision;
 };
