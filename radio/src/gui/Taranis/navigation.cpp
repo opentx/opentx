@@ -597,7 +597,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
   }
 
   if (scrollbar_X && linesCount > NUM_BODY_LINES) {
-    displayScrollbar(scrollbar_X, MENU_HEADER_HEIGHT, LCD_H-MENU_HEADER_HEIGHT, s_pgOfs, linesCount, NUM_BODY_LINES);
+    lcdDrawScrollbar(scrollbar_X, MENU_HEADER_HEIGHT, LCD_H-MENU_HEADER_HEIGHT, s_pgOfs, linesCount, NUM_BODY_LINES);
   }
 
   m_posVert = l_posVert;

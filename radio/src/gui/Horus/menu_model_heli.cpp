@@ -79,7 +79,7 @@ void menuModelHeli(evt_t event)
         break;
 
       case ITEM_HELI_ELE_WEIGHT:
-        lcd_puts(MENU_TITLE_LEFT+INDENT_WIDTH, y, STR_WEIGHT);
+        lcd_puts(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, STR_WEIGHT);
         lcd_outdezAtt(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.elevatorWeight, LEFT|attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, g_model.swashR.elevatorWeight, -100, 100);
         break;
@@ -91,7 +91,7 @@ void menuModelHeli(evt_t event)
         break;
 
       case ITEM_HELI_AIL_WEIGHT:
-        lcd_puts(MENU_TITLE_LEFT+INDENT_WIDTH, y, STR_WEIGHT);
+        lcd_puts(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, STR_WEIGHT);
         lcd_outdezAtt(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.aileronWeight, LEFT|attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, g_model.swashR.aileronWeight, -100, 100);
         break;
@@ -103,7 +103,7 @@ void menuModelHeli(evt_t event)
         break;
 
       case ITEM_HELI_COL_WEIGHT:
-        lcd_puts(MENU_TITLE_LEFT+INDENT_WIDTH, y, STR_WEIGHT);
+        lcd_puts(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, STR_WEIGHT);
         lcd_outdezAtt(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveWeight, LEFT|attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, g_model.swashR.collectiveWeight, -100, 100);
         break;

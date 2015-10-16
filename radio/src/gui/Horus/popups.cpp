@@ -156,13 +156,13 @@ const char * displayMenu(evt_t event)
   uint8_t display_count = min(s_menu_count, (uint16_t)MENU_MAX_LINES);
 
   int y = (LCD_H - (display_count*(FH+1))) / 2;
-  drawBlackOverlay();
+  // drawBlackOverlay();
   lcdDrawFilledRect(MENU_X, y, MENU_W, display_count * (FH+1), TEXT_BGCOLOR);
-  lcd_rect(MENU_X, y, MENU_W, display_count * (FH+1), SOLID, WARNING_COLOR);
+  lcdDrawRect(MENU_X, y, MENU_W, display_count * (FH+1) + 1, ALARM_COLOR);
 
   for (uint8_t i=0; i<display_count; i++) {
     if (i == s_menu_item) {
-      lcdDrawFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 18, TEXT_INVERTED_BGCOLOR);
+      lcdDrawFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, FH+1, TEXT_INVERTED_BGCOLOR);
       lcd_putsAtt(MENU_X+6, i*(FH+1) + y + 5, s_menu[i], TEXT_INVERTED_COLOR|s_menu_flags);
     }
     else {
@@ -171,7 +171,7 @@ const char * displayMenu(evt_t event)
   }
 
   if (s_menu_count > display_count) {
-    displayScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, MENU_MAX_LINES);
+    lcdDrawScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, MENU_MAX_LINES);
   }
 
   switch(event) {
@@ -216,7 +216,6 @@ const char * displayMenu(evt_t event)
         }
       }
       break;
-    CASE_EVT_ROTARY_BREAK
     case EVT_KEY_BREAK(KEY_ENTER):
       result = s_menu[s_menu_item];
       // no break

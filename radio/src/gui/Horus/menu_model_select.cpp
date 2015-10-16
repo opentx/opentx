@@ -248,18 +248,18 @@ void menuModelSelect(evt_t event)
     LcdFlags flags = 0;
     if (sub==k && s_copyMode == 0) {
       flags |= TEXT_INVERTED_COLOR;
-      lcdDrawFilledRect(MENU_TITLE_LEFT-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 150, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+      lcdDrawFilledRect(MENUS_MARGIN_LEFT-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 150, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
     }
 
     char str[20];
     strAppendDigits(str, k+1);
-    lcd_putsAtt(MENU_TITLE_LEFT, y, str, flags);
+    lcd_putsAtt(MENUS_MARGIN_LEFT, y, str, flags);
 
     if (s_copyMode == MOVE_MODE || (s_copyMode == COPY_MODE && s_copySrcRow >= 0)) {
       if (k == sub) {
         if (s_copyMode == COPY_MODE) {
           k = s_copySrcRow;
-          // lcd_rect(MENU_TITLE_LEFT-5, y-3, 170, 16, SOLID, YELLOW);
+          // lcd_rect(MENUS_MARGIN_LEFT-5, y-3, 170, 16, SOLID, YELLOW);
         }
         else {
           k = sub + s_copyTgtOfs;
@@ -285,7 +285,7 @@ void menuModelSelect(evt_t event)
     }
 
     if (s_copyMode && (vertpos_t)sub==i+s_pgOfs) {
-      lcd_rect(MENU_TITLE_LEFT-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 150, INVERT_LINE_HEIGHT, s_copyMode == COPY_MODE ? SOLID : DOTTED, WARNING_COLOR);
+      lcd_rect(MENUS_MARGIN_LEFT-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 150, INVERT_LINE_HEIGHT, s_copyMode == COPY_MODE ? SOLID : DOTTED, WARNING_COLOR);
     }
   }
 

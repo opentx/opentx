@@ -38,19 +38,20 @@
 #include <stdio.h>
 
 #define COLUMN_HEADER_X 150
+
 void displayHeader(const char *header)
 {
-  lcd_putsAtt(COLUMN_HEADER_X, MENU_FOOTER_TOP, header, HEADER_COLOR);
+  // TODO ? lcd_putsAtt(COLUMN_HEADER_X, MENU_FOOTER_TOP, header, HEADER_COLOR);
 }
 
 void displayColumnHeader(const char * const *headers, uint8_t index)
 {
-  displayHeader(headers[index]);
+  // TODO ? displayHeader(headers[index]);
 }
 
 void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 {
-#define BOX_CENTERY   (170 - FH - BOX_WIDTH/2)
+#define BOX_CENTERY   (220 - FH - BOX_WIDTH/2)
 #define MARKER_WIDTH  5
 
   lcdDrawSquare(centrex-BOX_WIDTH/2, BOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH, TEXT_COLOR);
@@ -82,7 +83,7 @@ void lcdDrawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
   }
 }
 
-void displayScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
+void lcdDrawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
 {
   lcdDrawVerticalLine(x, y, h, LINE_COLOR);
   coord_t yofs = (h*offset + count/2) / count;
@@ -103,22 +104,16 @@ void updateProgressBar(int num, int den)
 {
   if (num > 0 && den > 0) {
     int width = (200*num)/den;
-    lcd_hline(5, 6*FH+6, width, FORCE);
-    lcd_hline(5, 6*FH+7, width, FORCE);
-    lcd_hline(5, 6*FH+8, width, FORCE);
+    lcd_hline(5, 6*FH+6, width);
+    lcd_hline(5, 6*FH+7, width);
+    lcd_hline(5, 6*FH+8, width);
     lcdRefresh();
   }
 }
 
-void title(const pm_char * s)
-{
-  int width = getTextWidth(s);
-  lcd_putsAtt(MENU_TITLE_LEFT, MENU_TITLE_TOP+2, s, MENU_TITLE_COLOR);
-}
-
 #define MENU_ICONS_SPACING 31
 
-void drawMenuTemplate(const char *name, evt_t event, int pageIndex, int pageCount)
+void drawMenuTemplate(const char * name, evt_t event)
 {
   // clear the screen
   lcdDrawFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
@@ -130,29 +125,29 @@ void drawMenuTemplate(const char *name, evt_t event, int pageIndex, int pageCoun
   lcdDrawBitmapPattern(0, 0, LBM_TOP_POLYGON, TITLE_BGCOLOR);
 
   if (m_posVert < 0) {
-    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_BG, TITLE_BGCOLOR);
+    lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_BG, TITLE_BGCOLOR);
   }
   else {
-    lcdDrawFilledRect(58+pageIndex*MENU_ICONS_SPACING-9, 0, 32, MENU_HEADER_HEIGHT, TITLE_BGCOLOR);
-    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_DOT, MENU_TITLE_COLOR);
+    lcdDrawFilledRect(58+menuPageIndex*MENU_ICONS_SPACING-9, 0, 32, MENU_HEADER_HEIGHT, TITLE_BGCOLOR);
+    lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_DOT, MENU_TITLE_COLOR);
   }
 
   const uint8_t * const * icons = (g_menuPos[0] == 0 ? LBM_MODEL_ICONS : LBM_RADIO_ICONS);
 
   lcdDrawBitmapPattern(5, 7, icons[0], MENU_TITLE_COLOR);
 
-  for (int i=0; i<pageCount; i++) {
+  for (int i=0; i<menuPageCount; i++) {
     lcdDrawBitmapPattern(50+i*MENU_ICONS_SPACING, 7, icons[i+1], MENU_TITLE_COLOR);
   }
 
   if (m_posVert < 0) {
-    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_SHADOW, TEXT_COLOR);
-    lcdDrawBitmapPattern(58+pageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_CURRENT_DOT, MENU_TITLE_COLOR);
+    lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_SHADOW, TEXT_COLOR);
+    lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_CURRENT_DOT, MENU_TITLE_COLOR);
   }
 
   if (name) {
-    // header
-    title(name);
+    // must be done at the end so that we can write something at the right of the menu title
+    lcd_putsAtt(MENUS_MARGIN_LEFT, MENU_TITLE_TOP+2, name, MENU_TITLE_COLOR);
   }
 }
 

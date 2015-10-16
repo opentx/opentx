@@ -71,7 +71,7 @@ volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value = 0;
 
 #endif
 
-#if defined(PCBFLAMENCO) || defined(PCBHORUS)
+#if defined(PCBFLAMENCO)
 tmr10ms_t potsLastposStart[1];
 uint8_t   potsPos[1];
 tmr10ms_t switchesMidposStart[2];
@@ -178,7 +178,7 @@ void getSwitchesPosition(bool startup)
 }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
 #if defined(REV9E)
 tmr10ms_t switchesMidposStart[16];
 #else
@@ -697,7 +697,7 @@ swsrc_t getMovedSwitch()
     }
   }
 #endif
-#elif defined(PCBTARANIS)
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   for (int i=0; i<NUM_SWITCHES; i++) {
     if (SWITCH_EXISTS(i)) {
       swarnstate_t mask = ((swarnstate_t)0x03 << (i*2));

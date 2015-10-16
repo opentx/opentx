@@ -55,7 +55,8 @@ void drawPotsBars()
   for (x=LCD_W/2-9, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=9, i++) {
     if (IS_POT_AVAILABLE(i)) {
       len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
-      lcdDrawFilledRect(x, 170-FH-len, 5, len, TEXT_COLOR);
+      // TODO 220 constant
+      lcdDrawFilledRect(x, 220-FH-len, 5, len, TEXT_COLOR);
     }
   }
 }

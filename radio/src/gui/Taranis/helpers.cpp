@@ -68,6 +68,29 @@ bool isInputAvailable(int input)
   return false;
 }
 
+bool isChannelUsed(int channel)
+{
+  for (int i=0; i<MAX_MIXERS; ++i) {
+    MixData *md = mixAddress(i);
+    if (md->srcRaw == 0) return false;
+    if (md->destCh == channel) return true;
+    if (md->destCh > channel) return false;
+  }
+  return false;
+}
+
+int getChannelsUsed()
+{
+  int result = 0;
+  int lastCh = -1;
+  for (int i=0; i<MAX_MIXERS; ++i) {
+    MixData *md = mixAddress(i);
+    if (md->srcRaw == 0) return result;
+    if (md->destCh != lastCh) { ++result; lastCh = md->destCh; }
+  }
+  return result;
+}
+
 bool isSourceAvailable(int source)
 {
   if (source>=MIXSRC_FIRST_INPUT && source<=MIXSRC_LAST_INPUT) {
@@ -98,17 +121,11 @@ bool isSourceAvailable(int source)
 #endif
 
   if (source>=MIXSRC_CH1 && source<=MIXSRC_LAST_CH) {
-    uint8_t destCh = source-MIXSRC_CH1;
-    for (uint8_t i = 0; i < MAX_MIXERS; i++) {
-      MixData *md = mixAddress(i);
-      if (md->srcRaw == 0) return false;
-      if (md->destCh==destCh) return true;
-    }
-    return false;
+    return isChannelUsed(source-MIXSRC_CH1);
   }
 
   if (source>=MIXSRC_FIRST_LOGICAL_SWITCH && source<=MIXSRC_LAST_LOGICAL_SWITCH) {
-    LogicalSwitchData * cs = lswAddress(source-MIXSRC_SW1);
+    LogicalSwitchData * cs = lswAddress(source-MIXSRC_FIRST_LOGICAL_SWITCH);
     return (cs->func != LS_FUNC_NONE);
   }
 
@@ -225,6 +242,7 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
     return true;
   }
 
+#if NUM_XPOTS > 0
   if (swtch >= SWSRC_FIRST_MULTIPOS_SWITCH && swtch <= SWSRC_LAST_MULTIPOS_SWITCH) {
     int index = (swtch - SWSRC_FIRST_MULTIPOS_SWITCH) / XPOTS_MULTIPOS_COUNT;
     if (IS_POT_MULTIPOS(POT1+index)) {
@@ -235,6 +253,7 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
       return false;
     }
   }
+#endif
 
   if (swtch >= SWSRC_FIRST_LOGICAL_SWITCH && swtch <= SWSRC_LAST_LOGICAL_SWITCH) {
     if (context == GeneralCustomFunctionsContext) {

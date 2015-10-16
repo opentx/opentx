@@ -47,12 +47,12 @@ enum LogicalSwitchFields {
   LS_FIELD_LAST = LS_FIELD_COUNT-1
 };
 
-#define CSW_1ST_COLUMN  40
-#define CSW_2ND_COLUMN  85
-#define CSW_3RD_COLUMN  130
-#define CSW_4TH_COLUMN  185
-#define CSW_5TH_COLUMN  225
-#define CSW_6TH_COLUMN  270
+#define CSW_1ST_COLUMN  42
+#define CSW_2ND_COLUMN  90
+#define CSW_3RD_COLUMN  140
+#define CSW_4TH_COLUMN  200
+#define CSW_5TH_COLUMN  245
+#define CSW_6TH_COLUMN  300
 
 #define INCDEC_DECLARE_VARS(f)  uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
 #define INCDEC_SET_FLAG(f)      incdecFlag = (f)
@@ -131,7 +131,7 @@ void menuModelLogicalSwitches(evt_t event)
 
     // CSW name
     unsigned int sw = SWSRC_SW1+k;
-    putsSwitches(MENU_TITLE_LEFT, y, sw, (getSwitch(sw) ? 0/*BOLD*/ : 0) | ((sub==k && CURSOR_ON_LINE()) ? INVERS : 0));
+    putsSwitches(MENUS_MARGIN_LEFT, y, sw, (getSwitch(sw) ? 0/*BOLD*/ : 0) | ((sub==k && CURSOR_ON_LINE()) ? INVERS : 0));
 
     // CSW func
     lcd_putsiAtt(CSW_1ST_COLUMN, y, STR_VCSWFUNC, cs->func, horz==0 ? attr : 0);

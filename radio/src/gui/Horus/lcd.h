@@ -40,7 +40,7 @@
 #define LCD_W           480
 #define LCD_H           272
 
-#define BOX_WIDTH       61
+#define BOX_WIDTH       81
 #define coord_t         int
 #define scoord_t        int
 #define CENTER
@@ -55,10 +55,10 @@
 #define LCD_COLS        30
 
 #define BSS             0x00
-#define ERASE           0x00
-#define FORCE           0x00
+// #define ERASE           0x00
+// #define FORCE           0x00
 #define FIXEDWIDTH      0x00
-#define FILLWHITE      0x00
+// #define FILLWHITE       0x00
 #define BOLD            0x00
 
 /* lcd common flags */
@@ -128,6 +128,8 @@ enum LcdColorIndex
   WARNING_COLOR_INDEX,
   TEXT_DISABLE_COLOR_INDEX,
   CURVE_AXIS_COLOR_INDEX,
+  CURVE_COLOR_INDEX,
+  CURVE_CURSOR_COLOR_INDEX,
   HEADER_BGCOLOR_INDEX,
   TITLE_BGCOLOR_INDEX,
   LCD_COLOR_COUNT
@@ -153,6 +155,8 @@ void lcdColorsInit();
 #define WARNING_COLOR           COLOR(WARNING_COLOR_INDEX)
 #define TEXT_DISABLE_COLOR      COLOR(TEXT_DISABLE_COLOR_INDEX)
 #define CURVE_AXIS_COLOR        COLOR(CURVE_AXIS_COLOR_INDEX)
+#define CURVE_COLOR             COLOR(CURVE_COLOR_INDEX)
+#define CURVE_CURSOR_COLOR      COLOR(CURVE_CURSOR_COLOR_INDEX)
 #define TITLE_BGCOLOR           COLOR(TITLE_BGCOLOR_INDEX)
 #define HEADER_BGCOLOR          COLOR(HEADER_BGCOLOR_INDEX)
 
@@ -181,6 +185,8 @@ extern uint32_t CurrentFrameBuffer;
 #define DISPLAY_BUFFER_SIZE     (sizeof(display_t)*DISPLAY_BUF_SIZE)
 #define DISPLAY_END            (displayBuf + DISPLAY_BUF_SIZE)
 #define ASSERT_IN_DISPLAY(p)   assert((p) >= displayBuf && (p) < DISPLAY_END)
+
+extern coord_t lcdNextPos;
 
 void lcdStartScreen();
 void lcd_putc(coord_t x, coord_t y, const unsigned char c);

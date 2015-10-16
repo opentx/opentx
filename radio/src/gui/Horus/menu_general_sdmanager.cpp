@@ -348,10 +348,10 @@ void menuGeneralSdManager(evt_t _event)
       if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) {
         char s[SD_SCREEN_FILE_LENGTH+1+2];
         sprintf(s, "[%s]", reusableBuffer.sdmanager.lines[i]);
-        lcd_putsAtt(MENU_TITLE_LEFT, y, s, attr);
+        lcd_putsAtt(MENUS_MARGIN_LEFT, y, s, attr);
       }
       else {
-        lcd_putsAtt(MENU_TITLE_LEFT, y, reusableBuffer.sdmanager.lines[i], attr);
+        lcd_putsAtt(MENUS_MARGIN_LEFT, y, reusableBuffer.sdmanager.lines[i], attr);
       }
     }
   }

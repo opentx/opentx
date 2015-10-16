@@ -216,6 +216,9 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
 #define INC(val, min, max) if (val<max) {val++;} else {val=min;}
 #define DEC(val, min, max) if (val>min) {val--;} else {val=max;}
 
+uint8_t menuPageIndex;
+uint8_t menuPageCount;
+
 bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint16_t scrollbar_X, uint8_t flags)
 {
   vertpos_t l_posVert = m_posVert;
@@ -239,8 +242,10 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
         break;
 
       case EVT_KEY_BREAK(KEY_ENTER):
-        l_posVert = POS_VERT_INIT;
-        event = 0;
+        if (rowcount > 0) {
+          l_posVert = POS_VERT_INIT;
+          event = 0;
+        }
         break;
     }
 
@@ -248,12 +253,15 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       chainMenu((MenuFuncP)pgm_read_adr(&menuTab[cc]));
       return false;
     }
+
+    menuPageIndex = curr;
+    menuPageCount = menuTabSize;
   }
 
   switch(event)
   {
     case EVT_ENTRY:
-      l_posVert = -1;
+      l_posVert = (menuTab ? -1 : 0);
       l_posHorz = POS_HORZ_INIT(l_posVert);
       s_editMode = EDIT_MODE_INIT;
       break;
@@ -267,9 +275,8 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       if (s_editMode > 1) break;
       if (m_posHorz < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
         l_posHorz = 0;
-        break;
       }
-      if (READ_ONLY_UNLOCKED()) {
+      else if (READ_ONLY_UNLOCKED()) {
         s_editMode = (s_editMode<=0);
       }
       break;
@@ -280,7 +287,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       break;
 
     case EVT_KEY_BREAK(KEY_EXIT):
-      if (s_editMode>0) {
+      if (s_editMode > 0) {
         s_editMode = 0;
         break;
       }
@@ -288,7 +295,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       if (l_posHorz >= 0 && (COLATTR(l_posVert) & NAVIGATION_LINE_BY_LINE)) {
         l_posHorz = -1;
       }
-      else if (l_posVert >= 0) {
+      else if (menuTab && l_posVert >= 0) {
         l_posVert = -1;
         l_posHorz = 0;
 #if 0
@@ -313,6 +320,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
     case EVT_KEY_FIRST(KEY_LEFT):
     case EVT_KEY_REPT(KEY_LEFT):
+      if (s_editMode != 0) break;
       DEC(l_posHorz, 0, maxcol);
       break;
 
@@ -439,7 +447,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   }
 
   if (scrollbar_X && linesCount > NUM_BODY_LINES) {
-    displayScrollbar(scrollbar_X, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, s_pgOfs, linesCount, NUM_BODY_LINES);
+    lcdDrawScrollbar(scrollbar_X, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, s_pgOfs, linesCount, NUM_BODY_LINES);
   }
 
   m_posVert = l_posVert;

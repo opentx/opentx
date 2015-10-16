@@ -46,7 +46,7 @@
 #define MENU_FOOTER_TOP       251 // MENU_BODY_TOP + MENU_BODY_HEIGHT
 #define MENU_FOOTER_HEIGHT    21
 
-#define MENU_TITLE_LEFT       6
+#define MENUS_MARGIN_LEFT     6
 
 #define DEFAULT_SCROLLBAR_X   LCD_W-10
 #define DEFAULT_SCROLLBAR_Y   MENU_CONTENT_TOP
@@ -59,9 +59,15 @@
 #define INVERT_VERT_MARGIN    1
 #define INVERT_LINE_HEIGHT    18
 
+#define CURVE_SIDE_WIDTH      88
+#define CURVE_CENTER_X        (LCD_W-CURVE_SIDE_WIDTH-10)
+#define CURVE_CENTER_Y        159
+
+#define MENU_TITLE_NEXT_POS   (lcdNextPos + 10)
+
 void displaySplash();
 void displayScreenIndex(uint8_t index, uint8_t count);
-void displayScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
+void lcdDrawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 void drawHeader(int index);
 void drawFooter();
 #define drawStatusLine(...)

@@ -37,6 +37,14 @@
 #include "../../opentx.h"
 
 #define RADIO_SETUP_2ND_COLUMN  220
+#define YEAR_SEPARATOR_OFFSET   42
+#define MONTH_OFFSET            55
+#define MONTH_SEPARATOR_OFFSET  79
+#define DAY_OFFSET              91
+#define HOUR_SEPARATOR_OFFSET   26
+#define MINUTE_OFFSET           36
+#define MINUTE_SEPARATOR_OFFSET 63
+#define SECOND_OFFSET           75
 
 #define SLIDER_5POS(y, value, label, event, attr) { \
   int8_t tmp = value; \
@@ -92,7 +100,6 @@ enum menuGeneralSetupItems {
   // CASE_MAVLINK(ITEM_MAVLINK_BAUD)
   ITEM_SETUP_SWITCHES_DELAY,
   ITEM_SETUP_RX_CHANNEL_ORD,
-  ITEM_SETUP_STICK_MODE_LABELS,
   ITEM_SETUP_STICK_MODE,
   ITEM_SETUP_MAX
 };
@@ -119,7 +126,7 @@ void menuGeneralSetup(evt_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX, DEFAULT_SCROLLBAR_X, { 2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE, LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0, CASE_VARIO_CPUARM(LABEL(VARIO)) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) LABEL(ALARMS), 0, 0, 0, CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, CASE_MAVLINK(0) 0, 0, LABEL(TX_MODE), 0, 1/*to force edit mode*/ });
+  MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX, DEFAULT_SCROLLBAR_X, { 2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE, LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0, CASE_VARIO_CPUARM(LABEL(VARIO)) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) LABEL(ALARMS), 0, 0, 0, CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, CASE_MAVLINK(0) 0, 0, LABEL(TX_MODE), 1/*to force edit mode*/ });
 
   int sub = m_posVert;
 
@@ -138,8 +145,8 @@ void menuGeneralSetup(evt_t event)
           flags |= INVERS;
           lcdDrawFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 85, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
-        lcd_putsAtt(RADIO_SETUP_2ND_COLUMN+28, y, "-", flags);
-        lcd_putsAtt(RADIO_SETUP_2ND_COLUMN+53, y, "-", flags);
+        lcd_putsAtt(RADIO_SETUP_2ND_COLUMN+YEAR_SEPARATOR_OFFSET, y, "-", flags);
+        lcd_putsAtt(RADIO_SETUP_2ND_COLUMN+MONTH_SEPARATOR_OFFSET, y, "-", flags);
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (m_posHorz==j ? attr : 0);
           switch (j) {
@@ -148,7 +155,7 @@ void menuGeneralSetup(evt_t event)
               if (rowattr && s_editMode>0) t.tm_year = checkIncDec(event, t.tm_year, 112, 200, 0);
               break;
             case 1:
-              lcd_outdezNAtt(RADIO_SETUP_2ND_COLUMN+36, y, t.tm_mon+1, LEFT|flags|rowattr|LEADING0, 2);
+              lcd_outdezNAtt(RADIO_SETUP_2ND_COLUMN+MONTH_OFFSET, y, t.tm_mon+1, LEFT|flags|rowattr|LEADING0, 2);
               if (rowattr && s_editMode>0) t.tm_mon = checkIncDec(event, t.tm_mon, 0, 11, 0);
               break;
             case 2:
@@ -157,7 +164,7 @@ void menuGeneralSetup(evt_t event)
               int8_t dlim = (((((year%4==0) && (year%100!=0)) || (year%400==0)) && (t.tm_mon==1)) ? 1 : 0);
               static const pm_uint8_t dmon[] PROGMEM = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
               dlim += pgm_read_byte(&dmon[t.tm_mon]);
-              lcd_outdezNAtt(RADIO_SETUP_2ND_COLUMN+61, y, t.tm_mday, LEFT|flags|rowattr|LEADING0, 2);
+              lcd_outdezNAtt(RADIO_SETUP_2ND_COLUMN+DAY_OFFSET, y, t.tm_mday, LEFT|flags|rowattr|LEADING0, 2);
               if (rowattr && s_editMode>0) t.tm_mday = checkIncDec(event, t.tm_mday, 1, dlim, 0);
               break;
             }
@@ -177,8 +184,8 @@ void menuGeneralSetup(evt_t event)
           flags |= INVERS;
           lcdDrawFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 85, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
-        lcd_putsAtt(RADIO_SETUP_2ND_COLUMN+15, y, ":", flags);
-        lcd_putsAtt(RADIO_SETUP_2ND_COLUMN+35, y, ":", flags);
+        lcd_putsAtt(RADIO_SETUP_2ND_COLUMN+HOUR_SEPARATOR_OFFSET, y, ":", flags);
+        lcd_putsAtt(RADIO_SETUP_2ND_COLUMN+MINUTE_SEPARATOR_OFFSET, y, ":", flags);
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (m_posHorz==j ? attr : 0);
           switch (j) {
@@ -187,11 +194,11 @@ void menuGeneralSetup(evt_t event)
               if (rowattr && s_editMode>0) t.tm_hour = checkIncDec(event, t.tm_hour, 0, 23, 0);
               break;
             case 1:
-              lcd_outdezNAtt(RADIO_SETUP_2ND_COLUMN+20, y, t.tm_min, flags|rowattr|LEFT|LEADING0, 2);
+              lcd_outdezNAtt(RADIO_SETUP_2ND_COLUMN+MINUTE_OFFSET, y, t.tm_min, flags|rowattr|LEFT|LEADING0, 2);
               if (rowattr && s_editMode>0) t.tm_min = checkIncDec(event, t.tm_min, 0, 59, 0);
               break;
             case 2:
-              lcd_outdezNAtt(RADIO_SETUP_2ND_COLUMN+40, y, t.tm_sec, flags|rowattr|LEFT|LEADING0, 2);
+              lcd_outdezNAtt(RADIO_SETUP_2ND_COLUMN+SECOND_OFFSET, y, t.tm_sec, flags|rowattr|LEFT|LEADING0, 2);
               if (rowattr && s_editMode>0) t.tm_sec = checkIncDec(event, t.tm_sec, 0, 59, 0);
               break;
           }
@@ -489,20 +496,13 @@ void menuGeneralSetup(evt_t event)
         break;
       }
 
-      case ITEM_SETUP_STICK_MODE_LABELS:
-        lcd_putsLeft(y, NO_INDENT(STR_MODE));
-        for (int i=0; i<4; i++) {
-          // lcdDrawBitmap((6+4*i)*12, y, ...);
-        }
-        break;
-
       case ITEM_SETUP_STICK_MODE:
       {
         char s[2] = " ";
         s[0] = '1'+g_eeGeneral.stickMode;
-        lcd_putsAtt(INDENT_WIDTH, y, s, attr);
+        lcd_putsAtt(RADIO_SETUP_2ND_COLUMN, y, s, attr);
         for (uint8_t i=0; i<4; i++) {
-          putsMixerSource((6+4*i)*12, y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i));
+          putsMixerSource(RADIO_SETUP_2ND_COLUMN + 40 + 50*i, y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i));
         }
         if (attr && s_editMode>0) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickMode, 0, 3);

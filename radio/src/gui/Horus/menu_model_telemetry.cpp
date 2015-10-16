@@ -214,7 +214,7 @@ void menuModelSensor(evt_t event)
 
   SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, DEFAULT_SCROLLBAR_X, { 0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, 0 });
 
-  lcd_outdezAtt(MENU_TITLE_LEFT+getTextWidth(TR_MENUSENSOR)+5, MENU_FOOTER_TOP, s_currIdx+1, HEADER_COLOR|LEFT);
+  lcd_outdezAtt(MENUS_MARGIN_LEFT+getTextWidth(TR_MENUSENSOR)+5, MENU_FOOTER_TOP, s_currIdx+1, HEADER_COLOR|LEFT);
   putsTelemetryChannelValue(SENSOR_2ND_COLUMN, MENU_FOOTER_TOP, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), HEADER_COLOR|LEFT);
 
   int sub = m_posVert;
@@ -371,7 +371,7 @@ void menuModelSensor(evt_t event)
 
       case SENSOR_FIELD_PARAM4:
       {
-        putsStrIdx(MENU_TITLE_LEFT, y, NO_INDENT(STR_SOURCE), k-SENSOR_FIELD_PARAM1+1);
+        putsStrIdx(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_SOURCE), k-SENSOR_FIELD_PARAM1+1);
         int8_t & source = sensor->calc.sources[k-SENSOR_FIELD_PARAM1];
         if (attr) {
           source = checkIncDec(event, source, -MAX_SENSORS, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
@@ -461,7 +461,7 @@ void menuModelTelemetry(evt_t event)
 
     if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+MAX_SENSORS) {
       int index = k-ITEM_TELEMETRY_SENSOR1;
-      lcd_outdezAtt(MENU_TITLE_LEFT+INDENT_WIDTH, y, index+1, LEFT|attr, ":");
+      lcd_outdezAtt(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, index+1, LEFT|attr, ":");
       lcd_putsnAtt(60, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
       if (telemetryItems[index].isFresh()) {
         lcd_puts(100, y, "*");
@@ -500,7 +500,7 @@ void menuModelTelemetry(evt_t event)
         break;
 
       case ITEM_TELEMETRY_NEWSENSOR:
-        lcd_putsAtt(MENU_TITLE_LEFT+INDENT_WIDTH, y, NO_INDENT(STR_TELEMETRY_NEWSENSOR), attr);
+        lcd_putsAtt(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, NO_INDENT(STR_TELEMETRY_NEWSENSOR), attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
           int res = availableTelemetryIndex();
@@ -542,9 +542,9 @@ void menuModelTelemetry(evt_t event)
       case ITEM_TELEMETRY_VARIO_RANGE:
         lcd_putsLeft(y, STR_LIMIT);
         lcd_outdezAtt(TELEM_COL2, y, -10+g_model.frsky.varioMin, (m_posHorz<=0 ? attr : 0)|LEFT);
-        lcd_outdezAtt(TELEM_COL2+50, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0)|PREC1);
-        lcd_outdezAtt(TELEM_COL2+75, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0)|PREC1);
-        lcd_outdezAtt(TELEM_COL2+100, y, 10+g_model.frsky.varioMax, ((CURSOR_ON_LINE() || m_posHorz==3) ? attr : 0));
+        lcd_outdezAtt(TELEM_COL2+70, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0)|PREC1);
+        lcd_outdezAtt(TELEM_COL2+115, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0)|PREC1);
+        lcd_outdezAtt(TELEM_COL2+160, y, 10+g_model.frsky.varioMax, ((CURSOR_ON_LINE() || m_posHorz==3) ? attr : 0));
         if (attr && s_editMode>0) {
           switch (m_posHorz) {
             case 0:
@@ -590,7 +590,7 @@ void menuModelTelemetry(evt_t event)
       case ITEM_TELEMETRY_SCREEN_LABEL4:
       {
         uint8_t screenIndex = TELEMETRY_CURRENT_EDIT_SCREEN(k);
-        putsStrIdx(MENU_TITLE_LEFT, y, STR_SCREEN, screenIndex+1);
+        putsStrIdx(MENUS_MARGIN_LEFT, y, STR_SCREEN, screenIndex+1);
         TelemetryScreenType oldScreenType = TELEMETRY_SCREEN_TYPE(screenIndex);
         TelemetryScreenType newScreenType = (TelemetryScreenType)selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (m_posHorz==0 ? attr : 0), event);
         if (newScreenType != oldScreenType) {
@@ -665,17 +665,17 @@ void menuModelTelemetry(evt_t event)
         if (IS_BARS_SCREEN(screenIndex)) {
           FrSkyBarData & bar = g_model.frsky.screens[screenIndex].bars[lineIndex];
           source_t barSource = bar.source;
-          putsMixerSource(MENU_TITLE_LEFT+INDENT_WIDTH, y, barSource, (m_posHorz==0 ? attr : 0));
+          putsMixerSource(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, barSource, (m_posHorz==0 ? attr : 0));
           int barMax = getMaximumValue(barSource);
           int barMin = -barMax;
           if (barSource) {
             if (barSource <= MIXSRC_LAST_CH) {
-              putsChannelValue(MENU_TITLE_LEFT+INDENT_WIDTH+100, y, barSource, calc100toRESX(bar.barMin), (m_posHorz==1 ? attr : 0) | LEFT);
-              putsChannelValue(MENU_TITLE_LEFT+INDENT_WIDTH+200, y, barSource, calc100toRESX(bar.barMax), (m_posHorz==2 ? attr : 0) | LEFT);
+              putsChannelValue(MENUS_MARGIN_LEFT+INDENT_WIDTH+100, y, barSource, calc100toRESX(bar.barMin), (m_posHorz==1 ? attr : 0) | LEFT);
+              putsChannelValue(MENUS_MARGIN_LEFT+INDENT_WIDTH+200, y, barSource, calc100toRESX(bar.barMax), (m_posHorz==2 ? attr : 0) | LEFT);
             }
             else {
-              putsChannelValue(MENU_TITLE_LEFT+INDENT_WIDTH+100, y, barSource, bar.barMin, (m_posHorz==1 ? attr : 0) | LEFT);
-              putsChannelValue(MENU_TITLE_LEFT+INDENT_WIDTH+200, y, barSource, bar.barMax, (m_posHorz==2 ? attr : 0) | LEFT);
+              putsChannelValue(MENUS_MARGIN_LEFT+INDENT_WIDTH+100, y, barSource, bar.barMin, (m_posHorz==1 ? attr : 0) | LEFT);
+              putsChannelValue(MENUS_MARGIN_LEFT+INDENT_WIDTH+200, y, barSource, bar.barMax, (m_posHorz==2 ? attr : 0) | LEFT);
             }
           }
           else if (attr) {
@@ -711,7 +711,7 @@ void menuModelTelemetry(evt_t event)
           for (int c=0; c<NUM_LINE_ITEMS; c++) {
             LcdFlags cellAttr = (m_posHorz==c ? attr : 0);
             source_t & value = g_model.frsky.screens[screenIndex].lines[lineIndex].sources[c];
-            const coord_t pos[] = {MENU_TITLE_LEFT+INDENT_WIDTH, MENU_TITLE_LEFT+INDENT_WIDTH+100, MENU_TITLE_LEFT+INDENT_WIDTH+200};
+            const coord_t pos[] = {MENUS_MARGIN_LEFT+INDENT_WIDTH, MENUS_MARGIN_LEFT+INDENT_WIDTH+100, MENUS_MARGIN_LEFT+INDENT_WIDTH+200};
             putsMixerSource(pos[c], y, value, cellAttr);
             if (cellAttr && s_editMode>0) {
               CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, value, MIXSRC_LAST_TELEM, isSourceAvailable);

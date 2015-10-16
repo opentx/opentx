@@ -59,11 +59,12 @@ void lcdColorsInit()
   lcdColorTable[WARNING_COLOR_INDEX] = YELLOW;
   lcdColorTable[TEXT_DISABLE_COLOR_INDEX] = RGB(0x60, 0x60, 0x60);
   lcdColorTable[CURVE_AXIS_COLOR_INDEX] = BLUE;
+  lcdColorTable[CURVE_COLOR_INDEX] = BLACK;
+  lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = RED;
   lcdColorTable[TITLE_BGCOLOR_INDEX] = RED;
   lcdColorTable[HEADER_BGCOLOR_INDEX] = DARKRED;
 }
 
-coord_t lcdLastPos;
 coord_t lcdNextPos;
 
 #define FONT_CHARS_COUNT 103
@@ -174,14 +175,16 @@ void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags
   const pm_uchar * font = fontsTable[fontindex];
   const uint16_t * fontspecs = fontspecsTable[fontindex];
 
-  if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE) && (COLOR_IDX(flags) == TEXT_COLOR_INDEX)) {
-	flags += TEXT_INVERTED_COLOR - TEXT_COLOR;
-	if (FONTSIZE(flags) == TINSIZE)
-	  lcdDrawFilledRect(x-INVERT_HORZ_MARGIN+2, y-INVERT_VERT_MARGIN+2, width+2*INVERT_HORZ_MARGIN-5, INVERT_LINE_HEIGHT-7, TEXT_INVERTED_BGCOLOR);
-	else if (FONTSIZE(flags) == SMLSIZE)
-	  lcdDrawFilledRect(x-INVERT_HORZ_MARGIN+1, y-INVERT_VERT_MARGIN, width+2*INVERT_HORZ_MARGIN-2, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-	else
-	  lcdDrawFilledRect(x-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, width+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+  if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
+    if (COLOR_IDX(flags) == TEXT_COLOR_INDEX) {
+      flags += TEXT_INVERTED_COLOR - TEXT_COLOR;
+    }
+    if (FONTSIZE(flags) == TINSIZE)
+      lcdDrawFilledRect(x-INVERT_HORZ_MARGIN+2, y-INVERT_VERT_MARGIN+2, width+2*INVERT_HORZ_MARGIN-5, INVERT_LINE_HEIGHT-7, TEXT_INVERTED_BGCOLOR);
+    else if (FONTSIZE(flags) == SMLSIZE)
+      lcdDrawFilledRect(x-INVERT_HORZ_MARGIN+1, y-INVERT_VERT_MARGIN, width+2*INVERT_HORZ_MARGIN-2, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+    else
+      lcdDrawFilledRect(x-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, width+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
   }
 
   char str[256];
@@ -224,7 +227,6 @@ void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags
     }
     s++;
   }
-  lcdLastPos = x;
   lcdNextPos = x;
 }
 
@@ -245,7 +247,7 @@ void lcd_puts(coord_t x, coord_t y, const pm_char * s)
 
 void lcd_putsLeft(coord_t y, const pm_char * s)
 {
-  lcd_puts(MENU_TITLE_LEFT, y, s);
+  lcd_puts(MENUS_MARGIN_LEFT, y, s);
 }
 
 void lcd_putsCenter(coord_t y, const pm_char * s, LcdFlags attr)
@@ -486,7 +488,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
     lcd_putsiAtt(x, y, STR_VSRCRAW, 0, att); // TODO macro
   }
   else if (idx <= MIXSRC_LAST_INPUT) {
-    char s[32] = "\307";
+    char s[32] = "\323";
     if (ZEXIST(g_model.inputNames[idx-MIXSRC_FIRST_INPUT])) {
       zchar2str(s+1, g_model.inputNames[idx-MIXSRC_FIRST_INPUT], LEN_INPUT_NAME);
       s[1+LEN_INPUT_NAME] = '\0';
@@ -537,8 +539,8 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
     putsStrIdx(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
 #if 0
     if (ZEXIST(g_model.limitData[idx-MIXSRC_CH1].name) && (att & STREXPANDED)) {
-      lcd_putcAtt(lcdLastPos, y, ' ', att);
-      lcd_putsnAtt(lcdLastPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att);
+      lcd_putcAtt(lcdNextPos, y, ' ', att);
+      lcd_putsnAtt(lcdNextPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att);
     }
 #endif
   }
@@ -577,36 +579,55 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
 
 void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 {
-  if (idx == SWSRC_OFF)
+  if (idx == SWSRC_NONE) {
+    return lcd_putsiAtt(x, y, STR_VSWITCHES, 0, att);
+  }
+  else if (idx == SWSRC_OFF) {
     return lcd_putsiAtt(x, y, STR_OFFON, 0, att);
+  }
 
   char s[8];
   int pos = 0;
   if (idx < 0) {
     s[pos++] = '!';
+    idx = -idx;
   }
 
-  int absidx = abs(idx);
-
-#if defined(FLIGHT_MODES)
-  if (absidx >= SWSRC_FIRST_FLIGHT_MODE) {
-    return putsStrIdx(x, y, STR_FP, absidx-SWSRC_FIRST_FLIGHT_MODE, att, idx < 0 ? "!" : "");
-  }
-  else
-#endif
-  if (absidx >= SWSRC_FIRST_SWITCH && absidx <= SWSRC_LAST_SWITCH) {
-    div_t swinfo = switchInfo(absidx);
+  if (idx <= SWSRC_LAST_SWITCH) {
+    div_t swinfo = switchInfo(idx);
     if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
       pos = zchar2str(&s[pos], g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME);
-      s[pos++] = "\300-\301"[swinfo.rem];
-      s[pos] = '\0';
-      lcd_putsAtt(x, y, s, att);
-      return;
     }
+    else {
+      s[pos++] = 'S';
+      s[pos++] = 'A'+swinfo.quot;
+    }
+    s[pos++] = "\300-\301"[swinfo.rem];
+    s[pos] = '\0';
+    lcd_putsAtt(x, y, s, att);
   }
-
-  strAppend(&s[pos], STR_VSWITCHES+1+absidx*STR_VSWITCHES[0], STR_VSWITCHES[0]);
-  lcd_putsAtt(x, y, s, att);
+  /*else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
+    div_t swinfo = div(idx - SWSRC_FIRST_MULTIPOS_SWITCH, XPOTS_MULTIPOS_COUNT);
+    putsStrIdx(x, y, "S", swinfo.quot*10+swinfo.rem+11, att);
+  }*/
+  else if (idx <= SWSRC_LAST_TRIM) {
+    lcd_putsiAtt(x, y, STR_VSWITCHES, idx-SWSRC_FIRST_TRIM+1, att);
+  }
+  else if (idx <= SWSRC_LAST_LOGICAL_SWITCH) {
+    putsStrIdx(x, y, "L", idx-SWSRC_FIRST_LOGICAL_SWITCH+1, att);
+  }
+  else if (idx <= SWSRC_ONE) {
+    lcd_putsiAtt(x, y, STR_VSWITCHES, idx-SWSRC_ON+1+(2*NUM_STICKS), att);
+  }
+  else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
+    putsStrIdx(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
+  }
+  else if (idx == SWSRC_TELEMETRY_STREAMING) {
+    lcd_putsAtt(x, y, "Tele", att);
+  }
+  else {
+    lcd_putsnAtt(x, y, g_model.telemetrySensors[idx-SWSRC_FIRST_SENSOR].label, TELEM_LABEL_LEN, ZCHAR|att);
+  }
 }
 
 #if defined(FLIGHT_MODES)
@@ -627,12 +648,12 @@ void putsCurveRef(coord_t x, coord_t y, CurveRef &curve, LcdFlags att)
     switch (curve.type) {
       case CURVE_REF_DIFF:
         lcd_putsAtt(x, y, "D", att);
-        GVAR_MENU_ITEM(x+8, y, curve.value, -100, 100, LEFT|att, 0, 0);
+        GVAR_MENU_ITEM(lcdNextPos, y, curve.value, -100, 100, LEFT|att, 0, 0);
         break;
 
       case CURVE_REF_EXPO:
         lcd_putsAtt(x, y, "E", att);
-        GVAR_MENU_ITEM(x+8, y, curve.value, -100, 100, LEFT|att, 0, 0);
+        GVAR_MENU_ITEM(lcdNextPos, y, curve.value, -100, 100, LEFT|att, 0, 0);
         break;
 
       case CURVE_REF_FUNC:

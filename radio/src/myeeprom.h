@@ -1764,7 +1764,7 @@ enum SwitchSources {
   SWSRC_SF1,
   SWSRC_SF2,
   SWSRC_LAST_SWITCH = SWSRC_SF2,
-#elif defined(PCBTARANIS)
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   SWSRC_SA0 = SWSRC_FIRST_SWITCH,
   SWSRC_SA1,
   SWSRC_SA2,

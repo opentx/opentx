@@ -66,8 +66,8 @@ void menuModelGVars(evt_t event)
   for (int l=0; l<NUM_BODY_LINES; l++) {
     int i = l+s_pgOfs;
     coord_t y = MENU_CONTENT_TOP + l*FH;
-    if (g_model.gvars[i].popup) lcd_puts(MENU_TITLE_LEFT+25, y, "!");
-    putsStrIdx(MENU_TITLE_LEFT, y, STR_GV, i+1, ((sub==i && m_posHorz<0) ? INVERS : 0));
+    if (g_model.gvars[i].popup) lcd_puts(MENUS_MARGIN_LEFT+25, y, "!");
+    putsStrIdx(MENUS_MARGIN_LEFT, y, STR_GV, i+1, ((sub==i && m_posHorz<0) ? INVERS : 0));
 
     for (int j=0; j<1+MAX_FLIGHT_MODES; j++) {
       LcdFlags attr = ((sub==i && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
@@ -75,7 +75,7 @@ void menuModelGVars(evt_t event)
       switch(j)
       {
         case 0:
-          editName(MENU_TITLE_LEFT+30, y, g_model.gvars[i].name, LEN_GVAR_NAME, event, attr);
+          editName(MENUS_MARGIN_LEFT+30, y, g_model.gvars[i].name, LEN_GVAR_NAME, event, attr);
           break;
 
         default:

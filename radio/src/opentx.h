@@ -337,42 +337,23 @@
   #include <avr/wdt.h>
 #endif
 
-#if defined(PCBHORUS)
-  #define NUM_SWITCHES     5 // 8 physical switches + 6 possible from 3POS
-  #define NUM_SW_SRCRAW    8
-  // #define SWSRC_THR     SWSRC_SF2
-  // #define SWSRC_GEA     SWSRC_SG2
-  // #define SWSRC_ID0     SWSRC_SA0
-  // #define SWSRC_ID1     SWSRC_SA1
-  // #define SWSRC_ID2     SWSRC_SA2
-  // #define SW_DSM2_BIND  SW_SH2
-#elif defined(PCBFLAMENCO)
-  #define NUM_SWITCHES     5 // 8 physical switches + 6 possible from 3POS
-  #define NUM_SW_SRCRAW    8
-  // #define SWSRC_THR     SWSRC_SF2
-  // #define SWSRC_GEA     SWSRC_SG2
-  // #define SWSRC_ID0     SWSRC_SA0
-  // #define SWSRC_ID1     SWSRC_SA1
-  // #define SWSRC_ID2     SWSRC_SA2
-  // #define SW_DSM2_BIND  SW_SH2
-#elif defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  #define NUM_SWITCHES     5
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   #if defined(REV9E)
     #define NUM_SWITCHES   18 // yes, it's a lot!
   #else
     #define NUM_SWITCHES   8
   #endif
-  #define NUM_SW_SRCRAW    8
   #define SWSRC_THR        SWSRC_SF2
   #define SWSRC_GEA        SWSRC_SG2
   #define SWSRC_ID0        SWSRC_SA0
   #define SWSRC_ID1        SWSRC_SA1
   #define SWSRC_ID2        SWSRC_SA2
-  #define SW_DSM2_BIND     SW_SH2
 #else
   #define NUM_SWITCHES     7
   #define IS_3POS(sw)      ((sw) == 0)
   #define IS_MOMENTARY(sw) (sw == SWSRC_TRN)
-  #define NUM_SW_SRCRAW    1
   #define SW_DSM2_BIND     SW_TRN
 #endif
 

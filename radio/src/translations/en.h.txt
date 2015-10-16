@@ -501,7 +501,7 @@
 
 #if defined(PCBFLAMENCO)
   #define TR_PHYS_SWITCHES     "SA\300""SA-""SA\301""SB\300""SB\301""SC1""SC2""SC3""SC4""SC5""SC6""SE\300""SE\301""SF\300""SF-""SF\301"
-#elif !defined(PCBTARANIS)
+#elif !defined(PCBTARANIS) && !defined(PCBHORUS)
   #define TR_PHYS_SWITCHES     "THR""RUD""ELE""AIL""GEA""TRN"
 #endif
 
@@ -509,7 +509,7 @@
 
 #if defined(PCBFLAMENCO)
   #define TR_VSWITCHES         "---" TR_PHYS_SWITCHES TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
-#elif defined(PCBTARANIS)
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   // only special switches here
   #define TR_VSWITCHES         "---" TR_TRIMS_SWITCHES TR_ON_ONE_SWITCHES
 #else
@@ -574,7 +574,7 @@
   #define BREAKSPACE           " "
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   #define TR_ENTER             "[ENTER]"
 #else
   #define TR_ENTER             "[MENU]"

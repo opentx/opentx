@@ -55,10 +55,10 @@ point_t getPoint(uint8_t i)
   bool custom = (crv.type == CURVE_TYPE_CUSTOM);
   uint8_t count = 5+crv.points;
   if (i < count) {
-    result.x = X0-1-WCHART+i*WCHART*2/(count-1);
-    result.y = Y0 - (points[i]) * (WCHART-1) / 100;
+    result.x = CURVE_CENTER_X-1-CURVE_SIDE_WIDTH+i*CURVE_SIDE_WIDTH*2/(count-1);
+    result.y = CURVE_CENTER_Y - (points[i]) * (CURVE_SIDE_WIDTH-1) / 100;
     if (custom && i>0 && i<count-1)
-      result.x = X0-1-WCHART + (100 + (100 + points[count+i-1]) * (2*WCHART)) / 200;
+      result.x = CURVE_CENTER_X-1-CURVE_SIDE_WIDTH + (100 + (100 + points[count+i-1]) * (2*CURVE_SIDE_WIDTH)) / 200;
   }
   return result;
 }
@@ -143,14 +143,14 @@ void menuModelCurveOne(evt_t event)
 
   SIMPLE_SUBMENU(STR_MENUCURVE, 4 + 5+crv.points + (crv.type==CURVE_TYPE_CUSTOM ? 5+crv.points-2 : 0), 0);
 
-  lcd_outdezAtt(60, MENU_FOOTER_TOP, s_curveChan+1, LEFT);
+  lcd_outdezAtt(MENU_TITLE_NEXT_POS, MENU_TITLE_TOP+2, s_curveChan+1, LEFT|HEADER_COLOR);
 
-  lcd_putsLeft(MENU_HEADER_HEIGHT+1, STR_NAME);
-  editName(MENU_TITLE_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + FH, g_model.curveNames[s_curveChan], sizeof(g_model.curveNames[s_curveChan]), event, m_posVert==0);
+  lcd_putsLeft(MENU_CONTENT_TOP, STR_NAME);
+  editName(MENUS_MARGIN_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + FH, g_model.curveNames[s_curveChan], sizeof(g_model.curveNames[s_curveChan]), event, m_posVert==0);
 
   LcdFlags attr = (m_posVert==1 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
   lcd_putsLeft(MENU_CONTENT_TOP + 2*FH, "Type");
-  lcd_putsiAtt(MENU_TITLE_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + 3*FH, STR_CURVE_TYPES, crv.type, attr);
+  lcd_putsiAtt(MENUS_MARGIN_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + 3*FH, STR_CURVE_TYPES, crv.type, attr);
   if (attr) {
     uint8_t newType = checkIncDecModelZero(event, crv.type, CURVE_TYPE_LAST);
     if (newType != crv.type) {
@@ -167,7 +167,7 @@ void menuModelCurveOne(evt_t event)
 
   attr = (m_posVert==2 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
   lcd_putsLeft(MENU_CONTENT_TOP + 4*FH, STR_COUNT);
-  lcd_outdezAtt(MENU_TITLE_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + 5*FH, 5+crv.points, LEFT|attr, STR_PTS);
+  lcd_outdezAtt(MENUS_MARGIN_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + 5*FH, 5+crv.points, LEFT|attr, STR_PTS);
   if (attr) {
     int count = checkIncDecModel(event, crv.points, -3, 12); // 2pts - 17pts
     if (checkIncDec_Ret) {
@@ -187,7 +187,7 @@ void menuModelCurveOne(evt_t event)
   }
 
   lcd_putsLeft(MENU_CONTENT_TOP + 6*FH, STR_SMOOTH);
-  lcdDrawCheckBox(70, MENU_CONTENT_TOP + 6*FH, crv.smooth, m_posVert==3 ? INVERS : 0);
+  lcdDrawCheckBox(lcdNextPos + 10, MENU_CONTENT_TOP + 6*FH, crv.smooth, m_posVert==3 ? INVERS : 0);
   if (m_posVert==3) crv.smooth = checkIncDecModel(event, crv.smooth, 0, 1);
 
   switch(event) {
@@ -215,7 +215,7 @@ void menuModelCurveOne(evt_t event)
   lcd_putsAtt(115, MENU_FOOTER_TOP, "X", HEADER_COLOR);
   lcd_putsAtt(145, MENU_FOOTER_TOP, "Y", HEADER_COLOR);
 
-  coord_t posY = MENU_HEADER_HEIGHT+1;
+  coord_t posY = MENU_CONTENT_TOP;
   attr = (s_editMode > 0 ? INVERS|BLINK : INVERS);
   for (int i=0; i<5+crv.points; i++) {
     point_t point = getPoint(i);
@@ -233,9 +233,9 @@ void menuModelCurveOne(evt_t event)
     if (i>=pointsOfs && i<pointsOfs+NUM_BODY_LINES) {
       int8_t x = -100 + 200*i/(5+crv.points-1);
       if (crv.type==CURVE_TYPE_CUSTOM && i>0 && i<5+crv.points-1) x = points[5+crv.points+i-1];
-      lcd_outdezAtt(100,  posY, i+1, LEFT);
-      lcd_outdezAtt(115, posY, x, LEFT|(selectionMode==1?attr:0));
-      lcd_outdezAtt(145, posY, points[i], LEFT|(selectionMode==2?attr:0));
+      lcd_outdezAtt(110,  posY, i+1, LEFT);
+      lcd_outdezAtt(130, posY, x, LEFT|(selectionMode==1?attr:0));
+      lcd_outdezAtt(160, posY, points[i], LEFT|(selectionMode==2?attr:0));
       posY += FH;
     }
 
@@ -256,7 +256,7 @@ void menuModelCurveOne(evt_t event)
   }
 
   if (5+crv.points > NUM_BODY_LINES) {
-    displayScrollbar(167, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, pointsOfs, 5+crv.points, NUM_BODY_LINES);
+    lcdDrawScrollbar(167, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, pointsOfs, 5+crv.points, NUM_BODY_LINES);
   }
 }
 
@@ -270,14 +270,14 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t a
   switch (curve.type) {
     case CURVE_REF_DIFF:
     case CURVE_REF_EXPO:
-      curve.value = GVAR_MENU_ITEM(x+40, y, curve.value, -100, 100, m_posHorz==1 ? LEFT|attr : LEFT, 0, event);
+      curve.value = GVAR_MENU_ITEM(lcdNextPos+10, y, curve.value, -100, 100, m_posHorz==1 ? LEFT|attr : LEFT, 0, event);
       break;
     case CURVE_REF_FUNC:
-      lcd_putsiAtt(x+40, y, STR_VCURVEFUNC, curve.value, (m_posHorz==1 ? attr : 0));
+      lcd_putsiAtt(lcdNextPos+10, y, STR_VCURVEFUNC, curve.value, (m_posHorz==1 ? attr : 0));
       if (attr && m_posHorz==1) CHECK_INCDEC_MODELVAR_ZERO(event, curve.value, CURVE_BASE-1);
       break;
     case CURVE_REF_CUSTOM:
-      putsCurve(x+40, y, curve.value, (m_posHorz==1 ? attr : 0));
+      putsCurve(lcdNextPos+10, y, curve.value, (m_posHorz==1 ? attr : 0));
       if (attr && m_posHorz==1) {
         if (event==EVT_KEY_LONG(KEY_ENTER) && curve.value!=0) {
           s_curveChan = (curve.value<0 ? -curve.value-1 : curve.value-1);
@@ -311,7 +311,7 @@ void menuModelCurvesAll(evt_t event)
     uint8_t k = i + s_pgOfs;
     LcdFlags attr = (sub == k ? INVERS : 0);
     {
-      putsStrIdx(MENU_TITLE_LEFT, y, STR_CV, k+1, attr);
+      putsStrIdx(MENUS_MARGIN_LEFT, y, STR_CV, k+1, attr);
       editName(50, y, g_model.curveNames[k], sizeof(g_model.curveNames[k]), 0, 0);
       CurveInfo & crv = g_model.curves[k];
       lcd_outdezAtt(100, y, 5+crv.points, LEFT, STR_PTS);

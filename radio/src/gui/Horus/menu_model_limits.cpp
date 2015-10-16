@@ -65,15 +65,15 @@ enum LimitsItems {
 };
 
 #if defined(PPM_CENTER_ADJUSTABLE)
-  #define LIMITS_NAME_POS         44
-  #define LIMITS_OFFSET_POS       136
-  #define LIMITS_MIN_POS          175
-  #define LIMITS_DIRECTION_POS    177
-  #define LIMITS_MAX_POS          214
-  #define LIMITS_REVERT_POS       218
-  #define LIMITS_CURVE_POS        232
-  #define LIMITS_PPM_CENTER_POS   292
-  #define LIMITS_SYMETRICAL_POS   298
+  #define LIMITS_NAME_POS         52
+  #define LIMITS_OFFSET_POS       160
+  #define LIMITS_MIN_POS          220
+  #define LIMITS_DIRECTION_POS    240
+  #define LIMITS_MAX_POS          300
+  #define LIMITS_REVERT_POS       320
+  #define LIMITS_CURVE_POS        360
+  #define LIMITS_PPM_CENTER_POS   450
+  #define LIMITS_SYMETRICAL_POS   460
 #else
   #define LIMITS_NAME_POS         44
   #define LIMITS_OFFSET_POS       136
@@ -177,7 +177,7 @@ void menuModelLimits(evt_t event)
 
     int limit = (g_model.extendedLimits ? LIMIT_EXT_MAX : 1000);
 
-    putsChn(MENU_TITLE_LEFT, y, k+1, (sub==k && m_posHorz < 0) ? INVERS : 0);
+    putsChn(MENUS_MARGIN_LEFT, y, k+1, (sub==k && m_posHorz < 0) ? INVERS : 0);
     if (sub==k && m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
       killEvents(event);
       MENU_ADD_ITEM(STR_RESET);

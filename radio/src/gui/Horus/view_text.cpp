@@ -138,7 +138,7 @@ void menuTextView(evt_t event)
   }
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
-    lcd_puts(MENU_TITLE_LEFT, MENU_CONTENT_TOP + i*FH, s_text_screen[i]);
+    lcd_puts(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + i*FH, s_text_screen[i]);
   }
 
   char *title = s_text_file;
@@ -148,7 +148,7 @@ void menuTextView(evt_t event)
   lcd_putsCenter(MENU_FOOTER_TOP, title, HEADER_COLOR);
 
   if (lines_count > NUM_BODY_LINES) {
-    displayScrollbar(LCD_W-5, 30, MENU_FOOTER_TOP-34, s_pgOfs, lines_count, NUM_BODY_LINES);
+    lcdDrawScrollbar(LCD_W-5, 30, MENU_FOOTER_TOP-34, s_pgOfs, lines_count, NUM_BODY_LINES);
   }
 }
 

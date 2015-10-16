@@ -53,6 +53,13 @@ bool isTrimModeAvailable(int mode)
   return (mode < 0 || (mode%2) == 0 || (mode/2) != m_posVert);
 }
 
+#define FLIGHT_MODES_NAME_COLUMN      60
+#define FLIGHT_MODES_SWITCH_COLUMN    200
+#define FLIGHT_MODES_TRIMS_COLUMN     210
+#define FLIGHT_MODES_TRIM_WIDTH       25
+#define FLIGHT_MODES_FADEIN_COLUMN    400
+#define FLIGHT_MODES_FADEOUT_COLUMN   450
+
 void menuModelFlightModesAll(evt_t event)
 {
   MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, MAX_FLIGHT_MODES+1, DEFAULT_SCROLLBAR_X, { NAVIGATION_LINE_BY_LINE|(ITEM_FLIGHT_MODES_LAST-1), NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, 0});
@@ -101,21 +108,21 @@ void menuModelFlightModesAll(evt_t event)
 
     FlightModeData *p = flightModeAddress(k);
 
-    putsFlightMode(MENU_TITLE_LEFT, y, k+1, (getFlightMode()==k ? 0/*BOLD*/ : 0) | ((sub==k && m_posHorz<0) ? INVERS : 0));
+    putsFlightMode(MENUS_MARGIN_LEFT, y, k+1, (getFlightMode()==k ? 0/*BOLD*/ : 0) | ((sub==k && m_posHorz<0) ? INVERS : 0));
 
     for (int j=0; j<ITEM_FLIGHT_MODES_COUNT; j++) {
       LcdFlags attr = ((sub==k && posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       LcdFlags active = (attr && s_editMode>0) ;
       switch (j) {
         case ITEM_FLIGHT_MODES_NAME:
-          editName(45, y, p->name, sizeof(p->name), event, attr);
+          editName(FLIGHT_MODES_NAME_COLUMN, y, p->name, sizeof(p->name), event, attr);
           break;
 
         case ITEM_FLIGHT_MODES_SWITCH:
           if (k == 0)
-            lcd_puts(145, y, "N/A");
+            lcd_puts(FLIGHT_MODES_SWITCH_COLUMN, y, "N/A");
           else
-            putsSwitches(145, y, p->swtch, attr);
+            putsSwitches(FLIGHT_MODES_SWITCH_COLUMN, y, p->swtch, attr);
           if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
           break;
 
@@ -125,7 +132,7 @@ void menuModelFlightModesAll(evt_t event)
         case ITEM_FLIGHT_MODES_TRIM_AIL:
         {
           uint8_t t = j-ITEM_FLIGHT_MODES_TRIM_RUD;
-          putsTrimMode(155+j*15, y, k, t, attr);
+          putsTrimMode(FLIGHT_MODES_TRIMS_COLUMN+j*FLIGHT_MODES_TRIM_WIDTH, y, k, t, attr);
           if (active) {
             trim_t & v = p->trim[t];
             v.mode = checkIncDec(event, v.mode==TRIM_MODE_NONE ? -1 : v.mode, -1, k==0 ? 0 : 2*MAX_FLIGHT_MODES-1, EE_MODEL, isTrimModeAvailable);
@@ -134,12 +141,12 @@ void menuModelFlightModesAll(evt_t event)
         }
 
         case ITEM_FLIGHT_MODES_FADE_IN:
-          lcd_outdezAtt(272, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1);
+          lcd_outdezAtt(FLIGHT_MODES_FADEIN_COLUMN, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1);
           if (active) p->fadeIn = checkIncDec(event, p->fadeIn, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
           break;
 
         case ITEM_FLIGHT_MODES_FADE_OUT:
-          lcd_outdezAtt(300, y, (10/DELAY_STEP)*p->fadeOut, attr|PREC1);
+          lcd_outdezAtt(FLIGHT_MODES_FADEOUT_COLUMN, y, (10/DELAY_STEP)*p->fadeOut, attr|PREC1);
           if (active) p->fadeOut = checkIncDec(event, p->fadeOut, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
           break;
 

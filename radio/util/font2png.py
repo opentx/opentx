@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt4 import Qt, QtGui
+from PyQt4 import Qt, QtCore, QtGui
 import glob
 
 try:
@@ -13,7 +13,7 @@ except:
 for f in glob.glob("fonts/*.ttf"):
     QtGui.QFontDatabase.addApplicationFont(f)
 
-chars = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz~ ≥→←↑↓    △Ⓘ"""
+chars = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz~ ≥→←↑↓↗↘↙↖△"""
 
 def getCharWidth(fontsize, metrics, index):
     if index == 0:
@@ -46,7 +46,12 @@ def createFontBitmap(filename, fontname, fontsize, foreground, background, coord
     metrics = QtGui.QFontMetrics(font)
     width = getFontWidth(fontsize, metrics)
     top, bottom = getFontTopBottom(fontsize, metrics)
-    image = QtGui.QImage(width, fontsize+1, QtGui.QImage.Format_RGB32)
+    extraImage = QtGui.QImage("fonts/extra_%dpx.png" % (fontsize+1))
+    if extraImage.isNull():
+        extraWidth = 0
+    else:
+        extraWidth = extraImage.size().width()
+    image = QtGui.QImage(width + extraWidth, fontsize+1, QtGui.QImage.Format_RGB32)
     image.fill(background)
     painter = QtGui.QPainter()
     painter.begin(image)
@@ -64,6 +69,9 @@ def createFontBitmap(filename, fontname, fontsize, foreground, background, coord
             rect = metrics.boundingRect(c)
             painter.drawText(width-rect.left(), fontsize-2, c) # fontsize-bottom+1 -17 / 7
         width += getCharWidth(fontsize, metrics, i)
+    if extraWidth:
+        painter.drawImage(QtCore.QPoint(width, 0), extraImage)                             
+    
     coords.append(width)
     painter.end()
     image.save(filename + ".png")
@@ -71,6 +79,10 @@ def createFontBitmap(filename, fontname, fontsize, foreground, background, coord
       f = file(filename + ".specs", "w")
       f.write("{ ")
       f.write(",".join(str(tmp) for tmp in coords))
+      if extraWidth:
+          for w in (7, 20, 30, 41, 52, 57, 70, 80, 92, 104, 113, 126, 136):
+              f.write(", %d" % (int(coords[-1])+w))
+          # f.write(file("fonts/extra_%dpx.specs" % fontsize).read())
       f.write(" }")
       f.close()      
     return coords

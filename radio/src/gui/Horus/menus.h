@@ -49,14 +49,17 @@
 #endif
 
 #define MENUS_SCROLLBAR_WIDTH  2
-#define MENU_COLUMN2_X       180
-#define lcd_putsColumnLeft(x, y, str) lcd_puts((x > MENU_COLUMN2_X+MENU_TITLE_LEFT+68) ? MENU_COLUMN2_X+MENU_TITLE_LEFT : MENU_TITLE_LEFT, y, str)
+#define MENU_COLUMN2_X         280
+
+#define lcd_putsColumnLeft(x, y, str) lcd_puts((x > MENU_COLUMN2_X+MENUS_MARGIN_LEFT+68) ? MENU_COLUMN2_X+MENUS_MARGIN_LEFT : MENUS_MARGIN_LEFT, y, str)
 
 typedef int16_t vertpos_t;
 
 typedef evt_t & check_event_t;
 #define horzpos_t int8_t
 
+extern uint8_t menuPageIndex;
+extern uint8_t menuPageCount;
 extern vertpos_t m_posVert;
 extern horzpos_t m_posHorz;
 extern vertpos_t s_pgOfs;
@@ -189,8 +192,11 @@ int8_t checkIncDecMovedSwitch(int8_t val);
 #define CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, var, max, check) \
   var = checkIncDec(event, var, 0, max, EE_MODEL, check)
 
+bool isThrottleSourceAvailable(int source);
 bool isLogicalSwitchFunctionAvailable(int function);
 bool isAssignableFunctionAvailable(int function);
+bool isSourceAvailableInResetSpecialFunction(int index);
+bool isSourceAvailableInGlobalResetSpecialFunction(int index);
 bool isSwitchAvailableInLogicalSwitches(int swtch);
 bool isSwitchAvailableInCustomFunctions(int swtch);
 bool isSwitchAvailableInMixes(int swtch);
@@ -222,18 +228,18 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow, uint16_t scrollba
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
-void drawMenuTemplate(const char *title, evt_t event, int pageIndex=0, int pageCount=0);
+void drawMenuTemplate(const char *title, evt_t event);
 
 #define MENU(title, tab, menu, lines_count, scrollbar_X, ...) \
   MENU_TAB(__VA_ARGS__); \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
   if (!check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count, scrollbar_X)) return; \
-  drawMenuTemplate(title, event, menu, DIM(tab)); \
+  drawMenuTemplate(title, event); \
 
 #define SIMPLE_MENU(title, tab, menu, lines_count, scrollbar_X) \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
   if (!check_simple(event, menu, tab, DIM(tab), lines_count, scrollbar_X)) return; \
-  drawMenuTemplate(title, event, menu, DIM(tab)); \
+  drawMenuTemplate(title, event); \
 
 #define SUBMENU(title, lines_count, scrollbar_X, ...) \
   MENU_TAB(__VA_ARGS__); \

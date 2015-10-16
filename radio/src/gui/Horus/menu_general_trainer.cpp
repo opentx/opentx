@@ -37,7 +37,7 @@
 #include "../../opentx.h"
 
 #define TRAINER_COLUMN_WIDTH   60
-#define TRAINER_COLUMN_1       MENU_TITLE_LEFT+80
+#define TRAINER_COLUMN_1       MENUS_MARGIN_LEFT+80
 #define TRAINER_COLUMN_2       TRAINER_COLUMN_1+TRAINER_COLUMN_WIDTH
 #define TRAINER_COLUMN_3       TRAINER_COLUMN_2+TRAINER_COLUMN_WIDTH
 
@@ -58,9 +58,10 @@ void menuGeneralTrainer(evt_t event)
   uint8_t attr;
   uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
 
-  lcd_putsAtt(TRAINER_COLUMN_1, MENU_HEADER_HEIGHT+1, "Mode", HEADER_COLOR);
+  /* lcd_putsAtt(TRAINER_COLUMN_1, MENU_HEADER_HEIGHT+1, "Mode", HEADER_COLOR);
   lcd_putsAtt(TRAINER_COLUMN_2, MENU_HEADER_HEIGHT+1, "Weight", HEADER_COLOR);
   lcd_putsAtt(TRAINER_COLUMN_3, MENU_HEADER_HEIGHT+1, "Source", HEADER_COLOR);
+  */
 
   y = MENU_CONTENT_TOP + FH;
   int sub = m_posVert + 1;
@@ -69,7 +70,7 @@ void menuGeneralTrainer(evt_t event)
     uint8_t chan = channel_order(i);
     volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
 
-    putsMixerSource(MENU_TITLE_LEFT, y, MIXSRC_Rud-1+chan, ((sub==i && CURSOR_ON_LINE()) ? INVERS : 0));
+    putsMixerSource(MENUS_MARGIN_LEFT, y, MIXSRC_Rud-1+chan, ((sub==i && CURSOR_ON_LINE()) ? INVERS : 0));
 
     for (int j=0; j<3; j++) {
 
@@ -102,7 +103,7 @@ void menuGeneralTrainer(evt_t event)
 
   attr = (sub==6) ? INVERS : 0;
   if (attr) s_editMode = 0;
-  lcd_putsAtt(MENU_TITLE_LEFT, MENU_CONTENT_TOP + 6*FH, STR_CAL, attr);
+  lcd_putsAtt(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 6*FH, STR_CAL, attr);
   for (int i=0; i<4; i++) {
 #if defined (PPM_UNIT_PERCENT_PREC1)
     lcd_outdezAtt(TRAINER_COLUMN_1+i*TRAINER_COLUMN_WIDTH, MENU_CONTENT_TOP + 6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2, LEFT|PREC1);

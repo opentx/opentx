@@ -38,14 +38,14 @@
 
 uint8_t switchToMix(uint8_t source)
 {
-  #warning en double !
-  return 0;
+  div_t qr = div(source-1, 3);
+  return qr.quot+MIXSRC_FIRST_SWITCH;
 }
 
-int circularIncDec(int current, int incr, int min, int max, IsValueAvailable isValueAvailable)
+int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable)
 {
   do {
-    current += incr;
+    current += inc;
     if (current < min)
       current = max;
     else if (current > max)
@@ -111,6 +111,10 @@ bool isSourceAvailable(int source)
     return IS_POT_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
   }
 
+  if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH) {
+     return SWITCH_EXISTS(source-MIXSRC_FIRST_SWITCH);
+  }
+    
 #if !defined(HELI)
   if (source>=MIXSRC_CYC1 && source<=MIXSRC_CYC3)
     return false;
@@ -144,6 +148,14 @@ bool isSourceAvailable(int source)
   return true;
 }
 
+bool isSourceAvailableInGlobalFunctions(int source)
+{
+  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
+    return false;
+  }
+  return isSourceAvailable(source);
+}
+
 bool isSourceAvailableInCustomSwitches(int source)
 {
   bool result = isSourceAvailable(source);
@@ -160,23 +172,29 @@ bool isSourceAvailableInCustomSwitches(int source)
 
 bool isInputSourceAvailable(int source)
 {
-  if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
-    return true;
+  if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
+    return IS_POT_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
+  }
 
   if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
     return true;
 
-  if (source>=MIXSRC_TrimRud && source<MIXSRC_SW1)
+  if (source>=MIXSRC_FIRST_TRIM && source<=MIXSRC_LAST_TRIM)
     return true;
 
+  if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH)
+     return SWITCH_EXISTS(source-MIXSRC_FIRST_SWITCH);
+  
   if (source>=MIXSRC_FIRST_CH && source<=MIXSRC_LAST_CH)
     return true;
 
   if (source>=MIXSRC_FIRST_TRAINER && source<=MIXSRC_LAST_TRAINER)
     return true;
 
-  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM)
-    return isTelemetryFieldAvailable(source-MIXSRC_FIRST_TELEM);
+  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
+    div_t qr = div(source-MIXSRC_FIRST_TELEM, 3);
+    return isTelemetryFieldAvailable(qr.quot) && isTelemetryFieldComparisonAvailable(qr.quot);
+  }
 
   return false;
 }
@@ -190,30 +208,59 @@ enum SwitchContext
   MixesContext
 };
 
+bool isLogicalSwitchAvailable(int index)
+{
+  LogicalSwitchData * lsw = lswAddress(index);
+  return (lsw->func != LS_FUNC_NONE);
+}
+
 bool isSwitchAvailable(int swtch, SwitchContext context)
 {
-  uint32_t index = switchInfo(abs(swtch)).quot;
+  bool negative = false;
 
   if (swtch < 0) {
-    if (!IS_3POS(index))
-      return false;
+    negative = true;
     if (swtch == -SWSRC_ON || swtch == -SWSRC_ONE) {
       return false;
     }
     swtch = -swtch;
   }
 
-  if (swtch <= SWSRC_FIRST_SWITCH) {
+  if (swtch >= SWSRC_SA0 && swtch <= SWSRC_LAST_SWITCH) {
+    div_t swinfo = switchInfo(swtch);
+    if (!SWITCH_EXISTS(swinfo.quot)) {
+      return false;
+    }
+    if (!IS_3POS(swinfo.quot)) {
+      if (negative) {
+        return false;
+      }
+      if (IS_3POS_MIDDLE(swinfo.rem)) {
+        return false;
+      }
+    }
     return true;
   }
+
+#if NUM_XPOTS > 0
+  if (swtch >= SWSRC_FIRST_MULTIPOS_SWITCH && swtch <= SWSRC_LAST_MULTIPOS_SWITCH) {
+    int index = (swtch - SWSRC_FIRST_MULTIPOS_SWITCH) / XPOTS_MULTIPOS_COUNT;
+    if (IS_POT_MULTIPOS(POT1+index)) {
+      StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1+index];
+      return (calib->count >= ((swtch - SWSRC_FIRST_MULTIPOS_SWITCH) % XPOTS_MULTIPOS_COUNT));
+    }
+    else {
+      return false;
+    }
+  }
+#endif
 
   if (swtch >= SWSRC_FIRST_LOGICAL_SWITCH && swtch <= SWSRC_LAST_LOGICAL_SWITCH) {
     if (context == GeneralCustomFunctionsContext) {
       return false;
     }
     else if (context != LogicalSwitchesContext) {
-      LogicalSwitchData * cs = lswAddress(swtch-SWSRC_FIRST_LOGICAL_SWITCH);
-      return (cs->func != LS_FUNC_NONE);
+      return isLogicalSwitchAvailable(swtch - SWSRC_FIRST_LOGICAL_SWITCH);
     }
   }
 
@@ -233,6 +280,10 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
       FlightModeData * fm = flightModeAddress(swtch);
       return (fm->swtch != SWSRC_NONE);
     }
+  }
+
+  if (swtch >= SWSRC_FIRST_SENSOR && swtch <= SWSRC_LAST_SENSOR) {
+    return isTelemetryFieldAvailable(swtch - SWSRC_FIRST_SENSOR);
   }
 
   return true;
@@ -274,6 +325,14 @@ bool isSwitchAvailableInTimers(int swtch)
   return isSwitchAvailable(swtch, TimersContext);
 }
 
+bool isThrottleSourceAvailable(int source)
+{
+  if (source >= THROTTLE_SOURCE_FIRST_POT && source < THROTTLE_SOURCE_FIRST_POT+NUM_POTS && !IS_POT_AVAILABLE(POT1+source-THROTTLE_SOURCE_FIRST_POT))
+    return false;
+  else
+    return true;
+}
+
 bool isLogicalSwitchFunctionAvailable(int function)
 {
   return function != LS_FUNC_RANGE;
@@ -301,15 +360,14 @@ bool isAssignableFunctionAvailable(int function)
 #if !defined(HAPTIC)
     case FUNC_HAPTIC:
 #endif
+    case FUNC_RESERVE4:
 #if !defined(DANGEROUS_MODULE_FUNCTIONS)
     case FUNC_RANGECHECK:
     case FUNC_BIND:
-//    case FUNC_MODULE_OFF:
 #endif
 #if !defined(LUA)
     case FUNC_PLAY_SCRIPT:
 #endif
-    case FUNC_RESERVE4:
     case FUNC_RESERVE5:
       return false;
 
@@ -318,19 +376,39 @@ bool isAssignableFunctionAvailable(int function)
   }
 }
 
-bool isModuleAvailable(int module)
+bool isSourceAvailableInGlobalResetSpecialFunction(int index)
 {
-  if (module == MODULE_TYPE_NONE)
+  if (index >= FUNC_RESET_PARAM_FIRST_TELEM)
     return false;
-
-#if !defined(PXX)
-  if (module == MODULE_TYPE_XJT)
-    return false;
-#endif
-
-  return true;
+  else
+    return isSourceAvailableInResetSpecialFunction(index);
 }
 
+bool isSourceAvailableInResetSpecialFunction(int index)
+{
+  if (index >= FUNC_RESET_PARAM_FIRST_TELEM) {
+    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index-FUNC_RESET_PARAM_FIRST_TELEM];
+    return telemetrySensor.isAvailable();
+  }
+#if TIMERS < 3
+  else if (index == FUNC_RESET_TIMER3) {
+    return false;
+  }
+#endif
+#if TIMERS < 2
+  else if (index == FUNC_RESET_TIMER2) {
+    return false;
+  }
+#endif
+  else {
+    return true;
+  }
+}
+
+bool isModuleAvailable(int module)
+{
+  return true;
+}
 
 bool modelHasNotes()
 {
@@ -338,4 +416,16 @@ bool modelHasNotes()
   char *buf = strcat_modelname(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
   strcpy(buf, TEXT_EXT);
   return isFileAvailable(filename);
+}
+
+int getFirstAvailable(int min, int max, bool (*func)(int))
+{
+  int retval = 0;
+  for (int i = min; i <= max; i++) {
+    if ((*func)(i)) {
+      retval = i;
+      break;
+    }
+  }
+  return retval;
 }

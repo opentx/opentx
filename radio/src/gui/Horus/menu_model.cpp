@@ -35,11 +35,6 @@
 
 #include "../../opentx.h"
 
-// TODO elsewhere!
-#define WCHART 64
-#define X0     (LCD_W-WCHART-8)
-#define Y0     118
-
 enum EnumTabModel {
   // e_ModelSelect,
   e_ModelSetup,
@@ -80,11 +75,11 @@ extern uint8_t s_curveChan;
 
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t attr);
 
-#define MIXES_2ND_COLUMN    80
+#define MIXES_2ND_COLUMN    100
 
 uint8_t editDelay(const coord_t x, const coord_t y, const evt_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
 {
-  lcd_putsAtt(x+MENU_TITLE_LEFT, y, str, TEXT_COLOR);
+  lcd_putsAtt(x+MENUS_MARGIN_LEFT, y, str, TEXT_COLOR);
   lcd_outdezAtt(x+MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
   if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, delay, DELAY_MAX);
   return delay;
@@ -121,7 +116,7 @@ static int8_t s_copyTgtOfs;
 
 static uint8_t editNameCursorPos = 0;
 
-void editName(coord_t x, coord_t y, char *name, uint8_t size, evt_t event, uint8_t active)
+void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint8_t active)
 {
   uint8_t mode = 0;
   if (active && s_editMode <= 0) {
@@ -184,7 +179,7 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, evt_t event, uint8
       lcd_putsnAtt(x, y, name, size, ZCHAR | mode);
       coord_t w = (editNameCursorPos == 0 ? 0 : getTextWidth(name, editNameCursorPos, ZCHAR));
       char s[] = { idx2char(v), '\0' };
-      lcdDrawFilledRect(x+w, y-1, getTextWidth(s, 1)-1, 12, TEXT_INVERTED_BGCOLOR);
+      lcdDrawFilledRect(x+w, y-INVERT_VERT_MARGIN, getTextWidth(s, 1)-1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
       lcd_putsAtt(x+w, y, s, TEXT_INVERTED_COLOR);
     }
     else {

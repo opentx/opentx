@@ -37,10 +37,10 @@
 
 #define MODEL_CUSTOM_FUNC_1ST_COLUMN          50
 #define MODEL_CUSTOM_FUNC_2ND_COLUMN          100
-#define MODEL_CUSTOM_FUNC_2ND_COLUMN_EXT      150
-#define MODEL_CUSTOM_FUNC_3RD_COLUMN          200
-#define MODEL_CUSTOM_FUNC_4TH_COLUMN          286
-#define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF    290
+#define MODEL_CUSTOM_FUNC_2ND_COLUMN_EXT      180
+#define MODEL_CUSTOM_FUNC_3RD_COLUMN          300
+#define MODEL_CUSTOM_FUNC_4TH_COLUMN          440
+#define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF    450
 
 void onCustomFunctionsFileSelectionMenu(const char *result)
 {
@@ -141,7 +141,7 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
     coord_t y = MENU_CONTENT_TOP + i*FH;
     unsigned int k = i+s_pgOfs;
 
-    putsStrIdx(MENU_TITLE_LEFT, y, functions == g_model.customFn ? STR_SF : STR_GF, k+1, (sub==k && m_posHorz<0) ? INVERS : 0);
+    putsStrIdx(MENUS_MARGIN_LEFT, y, functions == g_model.customFn ? STR_SF : STR_GF, k+1, (sub==k && m_posHorz<0) ? INVERS : 0);
 
     CustomFunctionData *cfn = &functions[k];
     unsigned int func = CFN_FUNC(cfn);

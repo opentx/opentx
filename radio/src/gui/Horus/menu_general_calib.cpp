@@ -99,14 +99,14 @@ void menuCommonCalib(evt_t event)
     case 0:
       // START CALIBRATION
       if (!READ_ONLY()) {
-        lcd_putsCenter(MENU_HEADER_HEIGHT+FH, STR_MENUTOSTART);
+        lcd_putsCenter(MENU_CONTENT_TOP+FH, STR_MENUTOSTART);
       }
       break;
 
     case 1:
       // SET MIDPOINT
-      lcd_putsCenter(MENU_HEADER_HEIGHT+FH, STR_SETMIDPOINT, INVERS);
-      lcd_putsCenter(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
+      lcd_putsCenter(MENU_CONTENT_TOP+FH, STR_SETMIDPOINT, INVERS);
+      lcd_putsCenter(MENU_CONTENT_TOP+2*FH, STR_MENUWHENDONE);
 
       for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
@@ -122,8 +122,8 @@ void menuCommonCalib(evt_t event)
     case 2:
       // MOVE STICKS/POTS
       STICK_SCROLL_DISABLE();
-      lcd_putsCenter(MENU_HEADER_HEIGHT+FH, STR_MOVESTICKSPOTS, INVERS);
-      lcd_putsCenter(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
+      lcd_putsCenter(MENU_CONTENT_TOP+FH, STR_MOVESTICKSPOTS, INVERS);
+      lcd_putsCenter(MENU_CONTENT_TOP+2*FH, STR_MENUWHENDONE);
 
       for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i]) > 50) {
@@ -195,6 +195,8 @@ void menuCommonCalib(evt_t event)
 void menuGeneralCalib(evt_t event)
 {
   SIMPLE_MENU(STR_MENUCALIBRATION, menuTabGeneral, e_Calib, 0, DEFAULT_SCROLLBAR_X);
+
+  m_posVert = -1;
 
   if (menuEvent) {
     calibrationState = 0;
