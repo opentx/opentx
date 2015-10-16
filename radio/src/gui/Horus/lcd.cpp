@@ -428,38 +428,39 @@ void putsRtcTime(coord_t x, coord_t y, LcdFlags att)
   putsTimer(x, y, getValue(MIXSRC_TX_TIME), att);
 }
 
-void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
+void getTimerString(char * str, putstime_t tme, LcdFlags att)
 {
   div_t qr;
-
-  char str[10]; // "-00:00:00"
-  char *s = str;
-
-  att &= ~LEFT;
 
   if (tme < 0) {
     // TODO lcd_putcAtt(x - ((att & DBLSIZE) ? FW+2 : ((att & MIDSIZE) ? FW+0 : FWNUM)), y, '-', att);
     tme = -tme;
-    *s++ = '-';
+    *str++ = '-';
   }
 
   qr = div(tme, 60);
 
   if (att & TIMEHOUR) {
     div_t qr2 = div(qr.quot, 60);
-    *s++ = '0' + (qr2.quot/10);
-    *s++ = '0' + (qr2.quot%10);
-    *s++ = ':';
+    *str++ = '0' + (qr2.quot/10);
+    *str++ = '0' + (qr2.quot%10);
+    *str++ = ':';
     qr.quot = qr2.rem;
   }
 
-  *s++ = '0' + (qr.quot/10);
-  *s++ = '0' + (qr.quot%10);
-  *s++ = ':';
-  *s++ = '0' + (qr.rem/10);
-  *s++ = '0' + (qr.rem%10);
-  *s = '\0';
+  *str++ = '0' + (qr.quot/10);
+  *str++ = '0' + (qr.quot%10);
+  *str++ = ':';
+  *str++ = '0' + (qr.rem/10);
+  *str++ = '0' + (qr.rem%10);
+  *str = '\0';
+}
 
+void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
+{
+  char str[10]; // "-00:00:00"
+  getTimerString(str, tme, att);
+  att &= ~LEFT;
   lcd_putsAtt(x, y, str, att);
 }
 

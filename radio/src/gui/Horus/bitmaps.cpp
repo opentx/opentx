@@ -40,8 +40,8 @@
  *  Header bitmaps
  */
 
-const uint8_t LBM_TOP_POLYGON[] = {
-#include "../../bitmaps/Horus/mask_top_polygon.lbm"
+const uint8_t LBM_TOPMENU_POLYGON[] = {
+#include "../../bitmaps/Horus/mask_topmenu_polygon.lbm"
 };
 
 const uint8_t LBM_DOT[] = {
@@ -61,10 +61,30 @@ const uint8_t LBM_CURRENT_DOT[] = {
 };
 
 /*
+ * Main view bitmaps
+ */
+
+const uint8_t LBM_TOPMENU_OPENTX[] = {
+#include "../../bitmaps/Horus/mask_topmenu_opentx.lbm"
+};
+
+const uint8_t LBM_HTRIM_FRAME[] = {
+#include "../../bitmaps/Horus/mask_htrim_frame.lbm"
+};
+
+const uint8_t LBM_VTRIM_FRAME[] = {
+#include "../../bitmaps/Horus/mask_vtrim_frame.lbm"
+};
+
+const uint8_t LBM_TRIM_SHADOW[] = {
+#include "../../bitmaps/Horus/mask_trim_shadow.lbm"
+};
+
+/*
  *  Radio menu bitmaps
  */
 
-const uint8_t LBM_MENU_RADIO[] = {
+const uint8_t LBM_RADIO_ICON[] = {
 #include "../../bitmaps/Horus/mask_menu_radio.lbm"
 };
 
@@ -93,7 +113,7 @@ const uint8_t LBM_VERSION_ICON[] = {
 };
 
 const uint8_t * const LBM_RADIO_ICONS[] = {
-  LBM_MENU_RADIO,
+  LBM_RADIO_ICON,
   LBM_RADIO_SETUP_ICON,
   LBM_SD_BROWSER_ICON,
   LBM_GLOBAL_FUNCTIONS_ICON,
@@ -106,7 +126,7 @@ const uint8_t * const LBM_RADIO_ICONS[] = {
  *  Model menu bitmaps
  */
 
-const uint8_t LBM_MENU_MODEL[] = {
+const uint8_t LBM_MODEL_ICON[] = {
 #include "../../bitmaps/Horus/mask_menu_model.lbm"
 };
 
@@ -159,7 +179,7 @@ const uint8_t LBM_TELEMETRY_ICON[] = {
 };
 
 const uint8_t * const LBM_MODEL_ICONS[] = {
-  LBM_MENU_MODEL,
+  LBM_MODEL_ICON,
   LBM_MODEL_SETUP_ICON,
   CASE_HELI(LBM_HELI_ICON)
   CASE_FLIGHT_MODES(LBM_FLIGHT_MODES_ICON)

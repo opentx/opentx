@@ -75,11 +75,19 @@ void displayProgressBar(const char *label);
 void updateProgressBar(int num, int den);
 
 // Header bitmaps
-extern const uint8_t LBM_TOP_POLYGON[];
+extern const uint8_t LBM_TOPMENU_POLYGON[];
 extern const uint8_t LBM_DOT[];
 extern const uint8_t LBM_CURRENT_BG[];
 extern const uint8_t LBM_CURRENT_SHADOW[];
 extern const uint8_t LBM_CURRENT_DOT[];
+
+// Main view icons
+extern const uint8_t LBM_TOPMENU_OPENTX[];
+extern const uint8_t LBM_HTRIM_FRAME[];
+extern const uint8_t LBM_VTRIM_FRAME[];
+extern const uint8_t LBM_TRIM_SHADOW[];
+extern const uint8_t LBM_RADIO_ICON[];
+extern const uint8_t LBM_MODEL_ICON[];
 
 // Menu icons
 extern const uint8_t * const LBM_RADIO_ICONS[];

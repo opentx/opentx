@@ -49,6 +49,27 @@ void displayColumnHeader(const char * const *headers, uint8_t index)
   // TODO ? displayHeader(headers[index]);
 }
 
+const char * STR_MONTHS[] = { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
+#define DATETIME_SEPARATOR_X    425
+#define DATETIME_LINE1          9
+#define DATETIME_LINE2          23
+#define DATETIME_LEFT(s)        (LCD_W+DATETIME_SEPARATOR_X+8-getTextWidth(s, SMLSIZE))/2
+
+void lcdDrawTopmenuDatetime()
+{
+  lcdDrawVerticalLine(DATETIME_SEPARATOR_X, 7, 31, TEXT_INVERTED_COLOR);
+
+  struct gtm t;
+  gettime(&t);
+  char str[10];
+  sprintf(str, "%d %s", t.tm_mday, STR_MONTHS[t.tm_mon]);
+  lcd_putsAtt(DATETIME_LEFT(str), DATETIME_LINE1, str, SMLSIZE|TEXT_INVERTED_COLOR);
+
+  getTimerString(str, getValue(MIXSRC_TX_TIME));
+  lcd_putsAtt(DATETIME_LEFT(str), DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR);
+}
+
 void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 {
 #define BOX_CENTERY   (220 - FH - BOX_WIDTH/2)
@@ -122,7 +143,7 @@ void drawMenuTemplate(const char * name, evt_t event)
   lcdDrawFilledRect(0, MENU_BODY_TOP, LCD_W, MENU_BODY_HEIGHT, TEXT_BGCOLOR);
   lcdDrawFilledRect(0, MENU_FOOTER_TOP, LCD_W, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
 
-  lcdDrawBitmapPattern(0, 0, LBM_TOP_POLYGON, TITLE_BGCOLOR);
+  lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
 
   if (m_posVert < 0) {
     lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_BG, TITLE_BGCOLOR);
@@ -144,6 +165,8 @@ void drawMenuTemplate(const char * name, evt_t event)
     lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_SHADOW, TEXT_COLOR);
     lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_CURRENT_DOT, MENU_TITLE_COLOR);
   }
+
+  lcdDrawTopmenuDatetime();
 
   if (name) {
     // must be done at the end so that we can write something at the right of the menu title

@@ -1833,8 +1833,8 @@ translations/se.h: translations/se.h.txt
 
 ifeq ($(PCB), $(filter $(PCB), HORUS))
   FONTNAME = DejaVu\ Sans
-  TINSIZE = 5
-  SMLSIZE = 7
+  TINSIZE = 9
+  SMLSIZE = 13
   STDSIZE = 16
   MIDSIZE = 16
   DBLSIZE = 20

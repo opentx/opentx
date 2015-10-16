@@ -42,11 +42,14 @@
 #define RBOX_CENTERX  (LCD_W-LBOX_CENTERX)
 #define BITMAP_X      ((LCD_W-64)/2)
 #define BITMAP_Y      (LCD_H/2)
-#define TRIM_LH_X     (32+9)
-#define TRIM_LV_X     10
-#define TRIM_RV_X     (LCD_W-11)
-#define TRIM_RH_X     (LCD_W-32-9)
-#define TRIM_LEN 27
+
+#define TRIM_LH_X     90
+#define TRIM_LV_X     24
+#define TRIM_RV_X     (LCD_W-35)
+#define TRIM_RH_X     (LCD_W-95)
+#define TRIM_V_Y      135
+#define TRIM_H_Y      235
+#define TRIM_LEN      80
 
 void drawPotsBars()
 {
@@ -74,72 +77,117 @@ void doMainScreenGraphics()
   drawStick(RBOX_CENTERX, calibratedStick[CONVERT_MODE(3)], calibStickVert);
 }
 
-void displayTrims(uint8_t phase)
+void drawTrimSquare(coord_t x, coord_t y)
 {
+  lcdDrawFilledRect(x-2, y, 15, 15, TITLE_BGCOLOR);
+  lcdDrawBitmapPattern(x-2, y, LBM_TRIM_SHADOW, TEXT_COLOR);
+}
+
+void drawHorizontalTrimPosition(coord_t x, coord_t y, int16_t dir)
+{
+  drawTrimSquare(x, y);
+  if (dir >= 0) {
+    lcdDrawVerticalLine(x+8, y+3, 9, TEXT_INVERTED_COLOR);
+  }
+  if (dir <= 0) {
+    lcdDrawVerticalLine(x+2, y+3, 9, TEXT_INVERTED_COLOR);
+  }
+  // if (exttrim) {
+  //  lcdDrawVerticalLine(xm, ym, 9, TEXT_INVERTED_COLOR);
+  // }
+}
+
+void drawVerticalTrimPosition(coord_t x, coord_t y, int16_t dir)
+{
+  drawTrimSquare(x, y);
+  if (dir >= 0) {
+    lcdDrawHorizontalLine(x+1, y+4, 9, TEXT_INVERTED_COLOR);
+  }
+  if (dir <= 0) {
+    lcdDrawHorizontalLine(x+1, y+10, 9, TEXT_INVERTED_COLOR);
+  }
+  // if (exttrim) {
+  //   lcdDrawHorizontalLine(xm-1, ym,  3, TEXT_INVERTED_COLOR);
+  // }
+}
+
+void drawHorizontalStick(coord_t x, int val)
+{
+  for (int i=0; i<=160; i+=4) {
+    if (i==0 || i==80 || i==160)
+      lcdDrawVerticalLine(x+i, 250, 13, TEXT_COLOR);
+    else
+      lcdDrawVerticalLine(x+i, 252, 9, TEXT_COLOR);
+  }
+  drawHorizontalTrimPosition(x+TRIM_LEN+val*TRIM_LEN/RESX-4, TRIM_H_Y+16, val);
+}
+
+void drawVerticalStick(coord_t x, int val)
+{
+  for (int i=0; i<=160; i+=4) {
+    if (i==0 || i==80 || i==160)
+      lcdDrawHorizontalLine(x, 56+i, 13, TEXT_COLOR);
+    else
+      lcdDrawHorizontalLine(x+2, 56+i, 9, TEXT_COLOR);
+  }
+  drawVerticalTrimPosition(x, TRIM_V_Y+val*TRIM_LEN/RESX-6, val);
+}
+
+void drawSticks()
+{
+  drawVerticalStick(6, calibratedStick[1]);
+  drawHorizontalStick(TRIM_LH_X-TRIM_LEN+1, calibratedStick[0]);
+  drawVerticalStick(LCD_W-18, calibratedStick[2]);
+  drawHorizontalStick(TRIM_RH_X-TRIM_LEN+1, calibratedStick[3]);
+}
+
+void displayTrims(uint8_t flightMode)
+{
+  g_model.displayTrims = DISPLAY_TRIMS_ALWAYS;
+
   for (uint8_t i=0; i<4; i++) {
     static coord_t x[4] = {TRIM_LH_X, TRIM_LV_X, TRIM_RV_X, TRIM_RH_X};
-    static uint8_t vert[4] = {0,1,1,0};
-    coord_t xm, ym;
-    xm = x[CONVERT_MODE(i)];
+    static uint8_t vert[4] = {0, 1, 1, 0};
+    unsigned int stickIndex = CONVERT_MODE(i);
+    coord_t xm = x[stickIndex];
 
-    uint8_t att = ROUND;
-    int16_t val = getTrimValue(phase, i);
-
-    int16_t dir = val;
+    int32_t trim = getTrimValue(flightMode, i);
+    int32_t val = trim * TRIM_LEN / 125;
     bool exttrim = false;
-    if (val < -125 || val > 125) {
+    if (val < -(TRIM_LEN+1)) {
+      val = -(TRIM_LEN+1);
+      exttrim = true;
+    }
+    else if (val > (TRIM_LEN+1)) {
+      val = TRIM_LEN+1;
       exttrim = true;
     }
 
-    if (val < -(TRIM_LEN+1)*4) {
-      val = -(TRIM_LEN+1);
-    }
-    else if (val > (TRIM_LEN+1)*4) {
-      val = TRIM_LEN+1;
-    }
-    else {
-      val /= 4;
-    }
-
     if (vert[i]) {
-      ym = 31;
-      lcd_vline(xm, ym-TRIM_LEN, TRIM_LEN*2);
+      coord_t ym = TRIM_V_Y;
+      lcdDrawBitmapPattern(xm, ym-TRIM_LEN, LBM_VTRIM_FRAME, TEXT_COLOR);
       if (i!=2 || !g_model.thrTrim) {
-        lcd_vline(xm-1, ym-1,  3);
-        lcd_vline(xm+1, ym-1,  3);
+        // TODO
       }
       ym -= val;
-
-      // TODO lcdDrawFilledRect(xm-3, ym-3, 7, 7, SOLID, att);
-      if (dir >= 0) {
-        lcd_hline(xm-1, ym-1,  3);
-      }
-      if (dir <= 0) {
-        lcd_hline(xm-1, ym+1,  3);
-      }
-      if (exttrim) {
-        lcd_hline(xm-1, ym,  3);
+      drawVerticalTrimPosition(xm-1, ym-6, val);
+      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
+        if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
+          // TODO lcd_outdezAtt(trim>0 ? 100 : 200, xm-2, trim, TINSIZE|VERTICAL);
+        }
       }
     }
     else {
-      ym = 60;
-      lcd_hline(xm-TRIM_LEN, ym, TRIM_LEN*2);
-      lcd_hline(xm-1, ym-1,  3);
-      lcd_hline(xm-1, ym+1,  3);
+      coord_t ym = TRIM_H_Y;
+      lcdDrawBitmapPattern(xm-TRIM_LEN, ym, LBM_HTRIM_FRAME, TEXT_COLOR);
       xm += val;
-
-      // TODO lcdDrawFilledRect(xm-3, ym-3, 7, 7, SOLID, att);
-      if (dir >= 0) {
-        lcd_vline(xm+1, ym-1,  3);
-      }
-      if (dir <= 0) {
-        lcd_vline(xm-1, ym-1,  3);
-      }
-      if (exttrim) {
-        lcd_vline(xm, ym-1,  3);
+      drawHorizontalTrimPosition(xm-3, ym-2, val);
+      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
+        if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
+          lcd_outdezAtt((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+2, trim, TINSIZE);
+        }
       }
     }
-    lcdDrawSquare(xm-3, ym-3, 7, att);
   }
 }
 
@@ -287,6 +335,11 @@ const uint16_t LBM_MAINVIEW_FLAT[] = {
 #include "../../bitmaps/Horus/mainview_flat.lbm"
 };
 
+const uint16_t LBM_CORSAIR[] = {
+#include "../../bitmaps/Horus/corsair.lbm"
+};
+
+
 void menuMainView(evt_t event)
 {
   // clear the screen
@@ -340,7 +393,32 @@ void menuMainView(evt_t event)
       break;
   }
 
-  lcdDrawBitmap(0, 0, LBM_MAINVIEW_FLAT);
+  // lcdDrawBitmap(0, 0, LBM_MAINVIEW_FLAT);
+
+  // Header
+  lcdDrawFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+  lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
+  lcdDrawBitmapPattern(4, 10, LBM_TOPMENU_OPENTX, MENU_TITLE_COLOR);
+  lcdDrawTopmenuDatetime();
+
+  // Flight Mode Name
+  int mode = mixerCurrentFlightMode;
+  lcd_putsnAtt(212, 237, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|SMLSIZE);
+
+  // Sticks
+  drawSticks();
+
+  // Trims
+  displayTrims(mode);
+
+  // Model bitmap
+  lcdDrawBitmap(256, 104, LBM_CORSAIR);
+
+  // Model name
+  lcdDrawBitmapPattern(256, 62, LBM_MODEL_ICON, MENU_TITLE_COLOR);
+  lcd_putsAtt(293, 68, "MyPlane Name", SMLSIZE);
+  lcdDrawHorizontalLine(287, 85, 140, TITLE_BGCOLOR);
+
 
 #if 0
   displayMainViewIndex();

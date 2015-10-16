@@ -225,6 +225,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
 
 #define putstime_t int32_t
 
+void getTimerString(char * str, putstime_t tme, LcdFlags att=0);
 void putsRtcTime(coord_t x, coord_t y, LcdFlags att=0);
 void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
 
