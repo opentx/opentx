@@ -910,7 +910,7 @@ void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, LcdFl
   convertUnit(val, unit);
   lcd_outdezAtt(x, y, val, att & (~NO_UNIT));
   if (!(att & NO_UNIT) && unit != UNIT_RAW) {
-    lcd_putsiAtt(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, att & (INVERS | BOLD | BLINK));
+    lcd_putsiAtt(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, att & (INVERS | BOLD | BLINK | SMLSIZE));
   }
 }
 
