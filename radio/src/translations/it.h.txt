@@ -342,9 +342,9 @@
   #define LEN_VUNITSSYSTEM     TR("\006", "\011")
   #define TR_VUNITSSYSTEM      TR("Metric""Imper.", "Metriche\0""Imperiali")
   #define LEN_VTELEMUNIT_METR  "\003"
-  #define TR_VTELEMUNIT_METR   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
+  #define TR_VTELEMUNIT_METR   "V\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
-  #define TR_VTELEMUNIT_IMP    "v\0 ""A\0 ""m/s""-\0 ""kts""ft\0""@\0 ""%\0 ""mA\0""mAh""W\0 "
+  #define TR_VTELEMUNIT_IMP    "V\0 ""A\0 ""m/s""-\0 ""kts""ft\0""@\0 ""%\0 ""mA\0""mAh""W\0 "
 #else
   #if defined(IMPERIAL_UNITS)
     #define LENGTH_UNIT        LENGTH_UNIT_IMP
@@ -354,7 +354,7 @@
     #define SPEED_UNIT         SPEED_UNIT_METR
   #endif
   #define LEN_VTELEMUNIT       "\003"
-  #define TR_VTELEMUNIT        "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0""mAh""W\0 "
+  #define TR_VTELEMUNIT        "V\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0""mAh""W\0 "
 #endif
 
 #define STR_V                  (STR_VTELEMUNIT+1)
