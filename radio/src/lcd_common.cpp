@@ -666,7 +666,7 @@ void putsTimer(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att
 void putsVolts(xcoord_t x, uint8_t y, uint16_t volts, LcdFlags att)
 {
   lcd_outdezAtt(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
-  if (~att & NO_UNIT) lcd_putcAtt(lcdLastPos, y, 'v', att);
+  if (~att & NO_UNIT) lcd_putcAtt(lcdLastPos, y, 'V', att);
 }
 
 void putsVBat(xcoord_t x, uint8_t y, LcdFlags att)
@@ -1079,7 +1079,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
     case TELEM_TX_VOLTAGE-1:
       lcd_outdezAtt(x, y, val, (att|PREC1) & (~NO_UNIT));
       if (!(att & NO_UNIT))
-        lcd_putc(lcdLastPos/*+1*/, y, 'v');
+        lcd_putc(lcdLastPos/*+1*/, y, 'V');
       break;
   }
 }
