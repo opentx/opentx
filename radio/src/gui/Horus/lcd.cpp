@@ -820,7 +820,10 @@ void lcdDrawTransparentPixel(display_t * p, uint8_t opacity, uint16_t color)
 {
   ASSERT_IN_DISPLAY(p);
 
-  if (opacity != OPACITY_MAX) {
+  if (opacity == OPACITY_MAX) {
+    lcdDrawPixel(p, color);
+  }
+  else if (opacity != 0) {
     uint8_t bgWeight = OPACITY_MAX - opacity;
     COLOR_SPLIT(color, red, green, blue);
     COLOR_SPLIT(*p, bgRed, bgGreen, bgBlue);
@@ -828,9 +831,6 @@ void lcdDrawTransparentPixel(display_t * p, uint8_t opacity, uint16_t color)
     uint16_t g = (bgGreen * bgWeight + green * opacity) / OPACITY_MAX;
     uint16_t b = (bgBlue * bgWeight + blue * opacity) / OPACITY_MAX;
     lcdDrawPixel(p, COLOR_JOIN(r, g, b));
-  }
-  else if (opacity != 0) {
-    lcdDrawPixel(p, color);
   }
 }
 
@@ -850,11 +850,11 @@ void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
 
   display_t * p = PIXEL_PTR(x, y);
   display_t color = lcdColorTable[COLOR_IDX(att)];
+  uint8_t opacity = 0x0F - (att >> 24);
 
   while (w--) {
-    if (pat&1) {
-      *p = color;
-      // lcd_mask(p, mask, 0);
+    if (pat & 1) {
+      lcdDrawTransparentPixel(p, opacity, color);
       pat = (pat >> 1) | 0x80;
     }
     else {

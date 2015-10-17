@@ -331,6 +331,10 @@ void onMainViewMenu(const char *result)
 
 void displayTelemetryScreen(int index, unsigned int evt);
 
+const uint16_t LBM_MAINVIEW_BACKGROUND[] = {
+#include "../../bitmaps/Horus/background.lbm"
+};
+
 const uint16_t LBM_MAINVIEW_FLAT[] = {
 #include "../../bitmaps/Horus/mainview_flat.lbm"
 };
@@ -393,6 +397,7 @@ void menuMainView(evt_t event)
       break;
   }
 
+  lcdDrawBitmap(0, 0, LBM_MAINVIEW_BACKGROUND);
   // lcdDrawBitmap(0, 0, LBM_MAINVIEW_FLAT);
 
   // Header
@@ -411,13 +416,12 @@ void menuMainView(evt_t event)
   // Trims
   displayTrims(mode);
 
-  // Model bitmap
-  lcdDrawBitmap(256, 104, LBM_CORSAIR);
-
-  // Model name
-  lcdDrawBitmapPattern(256, 62, LBM_MODEL_ICON, MENU_TITLE_COLOR);
+  // Model panel
+  lcdDrawFilledRectWithAttributes(248, 58, 188, 158, SOLID, TEXT_BGCOLOR | (5<<24));
+  lcdDrawBitmapPattern(256, 62, LBM_MODEL_ICON, TITLE_BGCOLOR);
   lcd_putsAtt(293, 68, "MyPlane Name", SMLSIZE);
   lcdDrawHorizontalLine(287, 85, 140, TITLE_BGCOLOR);
+  lcdDrawBitmap(256, 104, LBM_CORSAIR);
 
 
 #if 0
