@@ -366,10 +366,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
         result += dist*dist;
 
         if (altItem) {
-          dist = abs(altItem->value);
-          uint8_t prec = g_model.telemetrySensors[sensor.dist.alt-1].prec;
-          if (prec > 0)
-            dist /= (prec==2 ? 100 : 10);
+          dist = abs(altItem->value) / g_model.telemetrySensors[sensor.dist.alt-1].getPrecDivisor();
           result += dist*dist;
         }
 
@@ -545,7 +542,7 @@ void TelemetrySensor::init(uint16_t id)
   init(label);
 }
 
-bool TelemetrySensor::isAvailable()
+bool TelemetrySensor::isAvailable() const
 {
   return ZLEN(label) > 0;
 }
@@ -622,7 +619,7 @@ int32_t TelemetrySensor::getValue(int32_t value, uint8_t unit, uint8_t prec) con
   return value;
 }
 
-bool TelemetrySensor::isConfigurable()
+bool TelemetrySensor::isConfigurable() const
 {
   if (type == TELEM_TYPE_CALCULATED) {
     if (formula >= TELEM_FORMULA_CELL) {
@@ -637,7 +634,7 @@ bool TelemetrySensor::isConfigurable()
   return true;
 }
 
-bool TelemetrySensor::isPrecConfigurable()
+bool TelemetrySensor::isPrecConfigurable() const
 {
   if (isConfigurable()) {
     return true;
@@ -648,4 +645,18 @@ bool TelemetrySensor::isPrecConfigurable()
   else {
     return false;
   }
+}
+
+uint32_t TelemetrySensor::getPrecMultiplier() const
+{
+  if (prec == 2) return 1;
+  if (prec == 1) return 10;
+  return 100;
+}
+
+uint32_t TelemetrySensor::getPrecDivisor() const
+{
+  if (prec == 2) return 100;
+  if (prec == 1) return 10;
+  return 1;
 }

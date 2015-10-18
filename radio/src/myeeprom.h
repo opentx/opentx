@@ -1313,10 +1313,12 @@ PACK(typedef struct {
   };
   void init(const char *label, uint8_t unit=UNIT_RAW, uint8_t prec=0);
   void init(uint16_t id);
-  bool isAvailable();
+  bool isAvailable() const;
   int32_t getValue(int32_t value, uint8_t unit, uint8_t prec) const;
-  bool isConfigurable();
-  bool isPrecConfigurable();
+  bool isConfigurable() const;
+  bool isPrecConfigurable() const;
+  uint32_t getPrecMultiplier() const;
+  uint32_t getPrecDivisor() const;
 }) TelemetrySensor;
 #endif
 
