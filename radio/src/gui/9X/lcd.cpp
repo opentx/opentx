@@ -1096,7 +1096,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
     case TELEM_TX_VOLTAGE-1:
       lcd_outdezAtt(x, y, val, (att|PREC1) & (~NO_UNIT));
       if (!(att & NO_UNIT))
-        lcd_putc(lcdLastPos/*+1*/, y, 'v');
+        lcd_putc(lcdLastPos/*+1*/, y, 'V');
       break;
   }
 }
