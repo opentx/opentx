@@ -47,10 +47,10 @@ void varioWakeup()
 
     int verticalSpeed = 0;
     if (g_model.frsky.varioSource) {
-      TelemetryItem & varioItem = telemetryItems[g_model.frsky.varioSource-1];
-      verticalSpeed = varioItem.value;
-      TelemetrySensor & sensor = g_model.telemetrySensors[g_model.frsky.varioSource-1];
-      if (sensor.prec != 2) verticalSpeed *= sensor.prec == 0 ? 100 : 10;
+      uint8_t item = g_model.frsky.varioSource-1;
+      if (item < MAX_SENSORS) {
+        verticalSpeed = telemetryItems[item].value * g_model.telemetrySensors[item].getPrecMultiplier();
+      }
     }
 
     int varioCenterMin = (int)g_model.frsky.varioCenterMin * 10 - 50;

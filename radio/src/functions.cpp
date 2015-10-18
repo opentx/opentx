@@ -367,8 +367,10 @@ void evalFunctions()
             }
 #if defined(CPUARM)
             if (CFN_PARAM(cfn)>=FUNC_RESET_PARAM_FIRST_TELEM) {
-              TelemetryItem * telemetryItem = & telemetryItems[CFN_PARAM(cfn)-FUNC_RESET_PARAM_FIRST_TELEM];
-              telemetryItem->clear();
+              uint8_t item = CFN_PARAM(cfn)-FUNC_RESET_PARAM_FIRST_TELEM;
+              if (item < MAX_SENSORS) {
+                telemetryItems[item].clear();
+              }
             }
 #endif
             break;

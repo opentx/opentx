@@ -196,7 +196,7 @@ static void luaGetValueAndPush(int src)
           break;
         default:
           if (telemetrySensor.prec > 0)
-            lua_pushnumber(L, float(value)/(telemetrySensor.prec == 2 ? 100.0 : 10.0));
+            lua_pushnumber(L, float(value)/telemetrySensor.getPrecDivisor());
           else
             lua_pushinteger(L, value);
           break;
