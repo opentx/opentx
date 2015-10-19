@@ -121,43 +121,43 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
   // Call setupPulses only after "rest" period has elapsed.
   // Must do this before toggle PORTB to keep timing accurate.
   if(IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])|| *((uint16_t*)pulses2MHzRPtr) == 0) {
-		if(!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
-		  OCR1A = SETUP_PULSES_DURATION;
+	  if(!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
+      OCR1A = SETUP_PULSES_DURATION;
 #if defined(CPUM2560) // CPUM2560 hardware toggled PPM out.
-		  OCR1B = OCR1A;
-		  if( g_model.pulsePol ) TCCR1A = (TCCR1A | (1<<COM1B1)) & ~(1<<COM1B0); // Set idle level.
-		  else TCCR1A |= 3<<COM1B0;
-		  TCCR1C = 1<<FOC1B;// Strobe FOC1B.
-		  TCCR1A = (TCCR1A | (1<<COM1B0)) & ~(1<<COM1B1);// Toggle OC1B on next match.
+      OCR1B = OCR1A;
+      if( g_model.pulsePol ) TCCR1A = (TCCR1A | (1<<COM1B1)) & ~(1<<COM1B0); // Set idle level.
+      else TCCR1A |= 3<<COM1B0;
+      TCCR1C = 1<<FOC1B;// Strobe FOC1B.
+      TCCR1A = (TCCR1A | (1<<COM1B0)) & ~(1<<COM1B1);// Toggle OC1B on next match.
 #endif
-		}
-		setupPulses(); // Does not sei() for setupPulsesPPM.
-		heartbeat |= HEART_TIMER_PULSES;
-		return;
+    }
+    setupPulses(); // Does not sei() for setupPulsesPPM.
+    heartbeat |= HEART_TIMER_PULSES;
+    return;
   }
 
-	if(s_current_protocol[0] != PROTO_NONE) {
+  if(s_current_protocol[0] != PROTO_NONE) {
 #if !defined(CPUM2560)
-	  // Original Bit-bang for PPM.
-	  if(g_ppmPulsePolarity) {
-	    PORTB |= (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
-	    g_ppmPulsePolarity = 0;
-	  } else {
-	    PORTB &= ~(1<<OUT_B_PPM);
-	    g_ppmPulsePolarity = 1;
-	  }
+    // Original Bit-bang for PPM.
+    if(g_ppmPulsePolarity) {
+      PORTB |= (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
+      g_ppmPulsePolarity = 0;
+    } else {
+      PORTB &= ~(1<<OUT_B_PPM);
+      g_ppmPulsePolarity = 1;
+    }
 #else // defined(CPUM2560)
-// CPUM2560 hardware toggled PPM out.
-	  if( *(uint16_t*)(pulses2MHzRPtr + sizeof(uint16_t)) == 0) // Look one step ahead to see if we are currently the "rest" period.
-	    OCR1B = 0xffff;// Prevent next compare match hence toggle.
-	  else OCR1B = *( (uint16_t*) pulses2MHzRPtr);
+    // CPUM2560 hardware toggled PPM out.
+    if( *(uint16_t*)(pulses2MHzRPtr + sizeof(uint16_t)) == 0) // Look one step ahead to see if we are currently the "rest" period.
+      OCR1B = 0xffff;// Prevent next compare match hence toggle.
+    else OCR1B = *( (uint16_t*) pulses2MHzRPtr);
 #endif
-	}
+    }
 
-	OCR1A = *( (uint16_t*) pulses2MHzRPtr); // Schedule next Timer1 interrupt vector (to this function).
-	pulses2MHzRPtr += sizeof(uint16_t); // Non PPM protocols use uint8_t pulse buffer.
+  OCR1A = *( (uint16_t*) pulses2MHzRPtr); // Schedule next Timer1 interrupt vector (to this function).
+  pulses2MHzRPtr += sizeof(uint16_t); // Non PPM protocols use uint8_t pulse buffer.
 
-	if(dt > g_tmr1Latency_max) g_tmr1Latency_max = dt;
+  if(dt > g_tmr1Latency_max) g_tmr1Latency_max = dt;
   if(dt < g_tmr1Latency_min) g_tmr1Latency_min = dt;
 }
 
