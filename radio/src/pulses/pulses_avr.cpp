@@ -121,7 +121,7 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
   // Call setupPulses only after "rest" period has elapsed.
   // Must do this before toggle PORTB to keep timing accurate.
   if(IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])|| *((uint16_t*)pulses2MHzRPtr) == 0) {
-	  if(!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
+    if(!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
       OCR1A = SETUP_PULSES_DURATION;
 #if defined(CPUM2560) // CPUM2560 hardware toggled PPM out.
       OCR1B = OCR1A;
