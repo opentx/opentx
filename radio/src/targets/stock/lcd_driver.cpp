@@ -150,17 +150,65 @@ void lcdSetRefVolt(uint8_t val)
 #endif
 }
 
+#if defined(LCD_ST7920)
+void lcdRefresh(){
+  lcdRefresh_ST7920(1);
+}
+
+uint8_t lcdRefresh_ST7920(uint8_t full)
+{
+#else
 void lcdRefresh()
 {
+#endif
   LCD_LOCK();
 #if defined(LCD_ST7920)
+  static uint8_t state;
+  uint8_t yst,yend;
   uint8_t x_addr = 0;
   uint8_t y_addr = 0;
   uint16_t line_offset = 0;
   uint8_t col_offset = 0;
-  uint16_t byte_offset = 0;
   uint8_t bit_count = 0;
-  for (uint8_t y=0; y<64; y++) {
+  uint8_t result;
+  uint8_t *p;
+  if(full!=0){
+    yst=0;
+    yend=64;
+    state=0;
+  } 
+  else{
+    switch (state){//Since writing to ST7920 is too slow we need to split it to five bands.
+     default:
+     case 0:
+       yst=0;
+       yend=13;
+       state=1;
+       break;
+     case 1:
+       yst=13;
+       yend=26;
+       state=2;
+       break;
+     case 2:
+       yst=26;
+       yend=39;
+       state=3;
+       break;
+     case 3:
+       yst=39;
+       yend=52;
+       state=4;
+       break;
+     case 4:
+       yst=52;
+       yend=64;
+       state=0;
+       break;
+    }
+  }
+  
+  for (uint8_t y=yst; y<yend; y++) {
     x_addr = 0;
     //Convert coordinates to weirdly-arranged 128x64 screen (the ST7920 is mapped for 256x32 displays)
     if (y > 31) {
@@ -170,20 +218,28 @@ void lcdRefresh()
     else {
       y_addr = y;
     }
-    lcdSendCtl( 0x80 | y_addr ); 	//Set Vertical Address
+    lcdSendCtl( 0x80 | y_addr );   //Set Vertical Address
     _delay_us(49);
-    lcdSendCtl( 0x80 | x_addr ); 	//Set Horizontal Address
+    lcdSendCtl( 0x80 | x_addr );   //Set Horizontal Address
     _delay_us(49);
-    PORTC_LCD_CTRL |= (1<<OUT_C_LCD_A0);	  //HIGH RS and LOW RW will put the LCD to
-    PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RnW);	//Write data register mode
+    PORTC_LCD_CTRL |= (1<<OUT_C_LCD_A0);    //HIGH RS and LOW RW will put the LCD to
+    PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RnW);  //Write data register mode
     bit_count = y & 0x07; //Count from 0 bis 7 -> 0=0, 1=1..7=7, 8=0, 9=1...
     col_offset = 1 << bit_count; //Build a value for a AND operation with the vorrect bitposition
     line_offset = ( y / 8 ) * 128; //On the ST7565 there are 8 lines with each 128 bytes width
     for (coord_t x=0; x<16; x++) { //Walk through 16 bytes form left to right (128 Pixel)
-      byte_offset = line_offset + ( x * 8 ); //Calculate the position of the first byte im array
-      // adressing the bytes sequential and shift the bits at the correct position, afterwards a OR operation to get all bits in one byte
-      // the position of the LSB is the left-most position of the byte to the ST7920
-      PORTA_LCD_DAT = (((displayBuf[byte_offset] & col_offset) >> bit_count) << 7) | (((displayBuf[byte_offset + 1] & col_offset) >> bit_count) << 6) | (((displayBuf[byte_offset + 2] & col_offset) >> bit_count ) << 5) | (((displayBuf[byte_offset + 3] & col_offset) >> bit_count ) << 4) | (((displayBuf[byte_offset + 4] & col_offset) >> bit_count ) << 3) | (((displayBuf[byte_offset + 5] & col_offset) >> bit_count ) << 2) | (((displayBuf[byte_offset + 6] & col_offset) >> bit_count ) << 1) | (((displayBuf[byte_offset + 7] & col_offset) >> bit_count ) << 0);
+      p=displayBuf + line_offset + ( x * 8 ); //Calculate the position of the first byte im array
+      // adressing the bytes sequential and set the bits at the correct position merging them with an OR operation to get all bits in one byte
+      // the position of the LSB is the right-most position of the byte to the ST7920
+    result = ((*p++ & col_offset)!=0?0x80:0); 
+    result|= ((*p++ & col_offset)!=0?0x40:0);
+    result|= ((*p++  & col_offset)!=0?0x20:0);
+    result|= ((*p++  & col_offset)!=0?0x10:0);
+    result|= ((*p++  & col_offset)!=0?0x08:0);
+    result|= ((*p++  & col_offset)!=0?0x04:0);
+    result|= ((*p++  & col_offset) !=0?0x02:0);
+    result|= ((*p++  & col_offset)!=0?0x01:0);
+    PORTA_LCD_DAT = result;
       PORTC_LCD_CTRL |= (1<<OUT_C_LCD_E);
       _delay_us(8);
       PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_E);
@@ -216,4 +272,8 @@ void lcdRefresh()
   }
 #endif  
   LCD_UNLOCK();
+#if defined(LCD_ST7920)
+  return state;
+#endif  
+
 }
