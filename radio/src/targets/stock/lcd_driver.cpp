@@ -218,9 +218,9 @@ void lcdRefresh()
     else {
       y_addr = y;
     }
-    lcdSendCtl( 0x80 | y_addr );   //Set Vertical Address
+    lcdSendCtl( 0x80 | y_addr );  //Set Vertical Address
     _delay_us(49);
-    lcdSendCtl( 0x80 | x_addr );   //Set Horizontal Address
+    lcdSendCtl( 0x80 | x_addr );  //Set Horizontal Address
     _delay_us(49);
     PORTC_LCD_CTRL |= (1<<OUT_C_LCD_A0);    //HIGH RS and LOW RW will put the LCD to
     PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RnW);  //Write data register mode
