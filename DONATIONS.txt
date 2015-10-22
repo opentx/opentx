@@ -26,7 +26,6 @@ Chris Guy
 Adrien Gravouille
 Thomas Black
 Marc Lucht
-Michel Baily
 Zdenek Trojanek
 Martin Hotar
 Stefan Grundevik
@@ -113,7 +112,6 @@ Erhard Werner
 Stig Jøran Moen
 Keith Hertzog
 Christophe Dauvergne
-Michel Baily
 Tauno Rautakorpi
 Sven Assmus
 Paul Dittman
@@ -417,7 +415,6 @@ Andrea Montefusco
 Paul Luby
 Donald L Webster
 Kenneth Frehafer 
-Peter McHenry 
 Matthias Hase 
 Markus Wolf
 Andrew Fazio
@@ -588,7 +585,6 @@ Dietmar Drees
 Jürgen Monden
 David Morgan
 Andrew Fernie
-Michel Baily
 Donald Burke
 Ronald Donker
 Fredie Singh
@@ -841,3 +837,5 @@ Dietmar Drees
 Bruce Jones
 Adil Busaidy
 Herman Hofman
+Jean Paul Michel (monthly)
+Peter McHenry
