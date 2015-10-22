@@ -239,6 +239,7 @@ extern CurveInfo curveInfo(uint8_t idx);
   #define LEN_MODEL_NAME       12
   #define LEN_TIMER_NAME       8
   #define LEN_FLIGHT_MODE_NAME 10
+  #define LEN_BITMAP_NAME      10
   #define LEN_EXPOMIX_NAME     6
   #define LEN_CHANNEL_NAME     6
   #define LEN_INPUT_NAME       4
@@ -1934,7 +1935,15 @@ enum MixSources {
   MIXSRC_Ail,                           LUA_EXPORT("ail", "Aileron")
 
   MIXSRC_FIRST_POT,
-#if defined(PCBFLAMENCO)
+#if defined(PCBHORUS)
+  MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
+  MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
+  MIXSRC_POT3,                          LUA_EXPORT("s3", "Potentiometer 3")
+  MIXSRC_FIRST_SLIDER,
+  MIXSRC_SLIDER1 = MIXSRC_FIRST_SLIDER, LUA_EXPORT("ls", "Left slider")
+  MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
+  MIXSRC_LAST_POT = MIXSRC_SLIDER2,
+#elif defined(PCBFLAMENCO)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("sd", "Potentiometer D")
   MIXSRC_SLIDER1,                       LUA_EXPORT("ls", "Left slider")
   MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")

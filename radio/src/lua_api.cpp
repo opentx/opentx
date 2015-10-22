@@ -52,10 +52,12 @@ extern "C" {
 }
 #endif
 
-#if defined(PCBFLAMENCO)
-  #include "lua_exports_flamenco.inc"      // this line must be after lua headers
+#if defined(PCBHORUS)
+  #include "lua_exports_horus.inc"      // this line must be after lua headers
+#elif defined(PCBFLAMENCO)
+  #include "lua_exports_flamenco.inc"   // this line must be after lua headers
 #elif defined(PCBTARANIS)
-  #include "lua_exports_taranis.inc"  // this line must be after lua headers
+  #include "lua_exports_taranis.inc"    // this line must be after lua headers
 #endif
 
 #define lua_registernumber(L, n, i)    (lua_pushnumber(L, (i)), lua_setglobal(L, (n)))
@@ -392,12 +394,14 @@ static int luaKillEvents(lua_State *L)
   return 0;
 }
 
+#if !defined(COLORLCD)
 static int luaGrey(lua_State *L)
 {
   int index = luaL_checkinteger(L, 1);
   lua_pushunsigned(L, GREY(index));
   return 1;
 }
+#endif
 
 static int luaGetGeneralSettings(lua_State *L)
 {
@@ -1465,7 +1469,9 @@ const luaL_Reg opentxLib[] = {
   { "defaultStick", luaDefaultStick },
   { "defaultChannel", luaDefaultChannel },
   { "killEvents", luaKillEvents },
+#if !defined(COLORLCD)
   { "GREY", luaGrey },
+#endif
   { NULL, NULL }  /* sentinel */
 };
 
@@ -1525,8 +1531,10 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
   { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
+#if !defined(PCBHORUS)
   { "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE) },
   { "EVT_PAGE_LONG", EVT_KEY_LONG(KEY_PAGE) },
+#endif
   { "EVT_ENTER_BREAK", EVT_KEY_BREAK(KEY_ENTER) },
   { "EVT_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
   { "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT) },
@@ -1536,8 +1544,10 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_MINUS_FIRST", EVT_KEY_FIRST(KEY_MINUS) },
   { "EVT_PLUS_REPT", EVT_KEY_REPT(KEY_PLUS) },
   { "EVT_MINUS_REPT", EVT_KEY_REPT(KEY_MINUS) },
+#if !defined(COLORLCD)
   { "FILL_WHITE", FILL_WHITE },
   { "GREY_DEFAULT", GREY_DEFAULT },
+#endif
   { "SOLID", SOLID },
   { "DOTTED", DOTTED },
   { "FORCE", FORCE },
@@ -1874,7 +1884,9 @@ char lua_warning_info[LUA_WARNING_INFO_LEN+1];
 
 void displayLuaError(const char * title)
 {
+#if !defined(COLORLCD)
   displayBox(title);
+#endif
   if (lua_warning_info[0]) {
     char * split = strstr(lua_warning_info, ": ");
     if (split) {
