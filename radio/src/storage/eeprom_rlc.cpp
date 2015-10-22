@@ -865,8 +865,8 @@ void RlcFile::flush()
 #if defined (EEPROM_PROGRESS_BAR)
 void RlcFile::DisplayProgressBar(uint8_t x)
 {
-  if (s_storageDirtyMsk || isWriting() || eeprom_buffer_size) {
-    uint8_t len = s_storageDirtyMsk ? 1 : limit((uint8_t)1, (uint8_t)(7 - (m_rlc_len/m_ratio)), (uint8_t)7);
+  if (storageDirtyMsk || isWriting() || eeprom_buffer_size) {
+    uint8_t len = storageDirtyMsk ? 1 : limit((uint8_t)1, (uint8_t)(7 - (m_rlc_len/m_ratio)), (uint8_t)7);
     drawFilledRect(x+1, 0, 5, FH, SOLID, ERASE);
     drawFilledRect(x+2, 7-len, 3, len);
   }
@@ -940,16 +940,16 @@ void storageCheck(bool immediately)
     eeFlush();
   }
 
-  if (s_storageDirtyMsk & EE_GENERAL) {
+  if (storageDirtyMsk & EE_GENERAL) {
     TRACE("eeprom write general");
-    s_storageDirtyMsk -= EE_GENERAL;
+    storageDirtyMsk -= EE_GENERAL;
     theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&g_eeGeneral, sizeof(EEGeneral), immediately);
     if (!immediately) return;
   }
 
-  if (s_storageDirtyMsk & EE_MODEL) {
+  if (storageDirtyMsk & EE_MODEL) {
     TRACE("eeprom write model");
-    s_storageDirtyMsk = 0;
+    storageDirtyMsk = 0;
     theFile.writeRlc(FILE_MODEL(g_eeGeneral.currModel), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), immediately);
   }
 }

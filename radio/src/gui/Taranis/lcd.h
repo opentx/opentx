@@ -227,7 +227,7 @@ void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_
 #define LCD_ICON(x, y, icon) lcd_bmp(x, y, icons, icon)
 
 void lcdSetRefVolt(unsigned char val);
-void lcd_clear();
+void lcdClear();
 void lcdSetContrast();
 
 #if defined(REVPLUS) && !defined(SIMU)

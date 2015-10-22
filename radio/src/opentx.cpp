@@ -1925,7 +1925,7 @@ void opentxClose()
 #endif
 
 #if !defined(PCBTARANIS)
-  if (s_storageDirtyMsk & EE_MODEL) {
+  if (storageDirtyMsk & EE_MODEL) {
     displayPopup(STR_SAVEMODEL);
   } 
 #endif
@@ -2607,10 +2607,10 @@ int main(void)
 
 #if defined(CPUM2560)
   // Time to switch off
-  lcd_clear();
+  lcdClear();
   displayPopup(STR_SHUTDOWN);
   opentxClose();
-  lcd_clear() ;
+  lcdClear() ;
   lcdRefresh() ;
   boardOff(); // Only turn power off if necessary
   wdt_disable();
@@ -2663,7 +2663,7 @@ uint32_t pwrCheck()
 #if defined(SHUTDOWN_CONFIRMATION)
         while (1) {
           lcdRefreshWait();
-          lcd_clear();
+          lcdClear();
           POPUP_CONFIRMATION("Confirm Shutdown");
           evt_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
@@ -2687,7 +2687,7 @@ uint32_t pwrCheck()
       else {
         lcdRefreshWait();
         unsigned index = pwrPressedDuration() / (PWR_PRESS_SHUTDOWN / 4);
-        lcd_clear();
+        lcdClear();
         lcd_bmp(76, 2, bmp_shutdown, index*60, 60);
         lcdRefresh();
         return e_power_press;

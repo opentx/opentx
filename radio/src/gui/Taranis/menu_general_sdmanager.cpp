@@ -98,7 +98,7 @@ void flashBootloader(const char * filename)
   uint8_t buffer[1024];
   UINT count;
 
-  lcd_clear();
+  lcdClear();
   displayProgressBar(STR_WRITING);
 
   static uint8_t unlocked = 0;
@@ -137,7 +137,7 @@ void flashSportDevice(ModuleIndex module, const char *filename)
   pausePulses();
   watchdogSetTimeout(60*60*100/*1h*/);
 
-  lcd_clear();
+  lcdClear();
   displayProgressBar(STR_WRITING);
 
   sportFirmwareUpdate(module, filename);

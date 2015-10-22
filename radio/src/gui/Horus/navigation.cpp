@@ -243,7 +243,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
       case EVT_KEY_BREAK(KEY_ENTER):
         if (rowcount > 0) {
-          l_posVert = POS_VERT_INIT;
+          l_posVert = MENU_FIRST_LINE_EDIT;
           event = 0;
         }
         break;
@@ -347,7 +347,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_REPT(KEY_DOWN):
       do {
-        INC(l_posVert, POS_VERT_INIT, rowcount-1);
+        INC(l_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
       s_editMode = 0; // if we go down, we must be in this mode
       l_posHorz = POS_HORZ_INIT(l_posVert);
@@ -376,7 +376,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_REPT(KEY_UP):
       do {
-        DEC(l_posVert, POS_VERT_INIT, rowcount-1);
+        DEC(l_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
 
       s_editMode = 0; // if we go up, we must be in this mode

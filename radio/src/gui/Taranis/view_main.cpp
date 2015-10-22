@@ -268,12 +268,13 @@ void displayTopBar()
     x -= 12;
   }
 
-  if (TRAINER_CONNECTED() && SLAVE_MODE()) {
-    LCD_NOTIF_ICON(x, ICON_TRAINEE);
-    x -= 12;
-  }
-  else if (TRAINER_CONNECTED() && !SLAVE_MODE()) {
-    LCD_NOTIF_ICON(x, ICON_TRAINER);
+  if (TRAINER_CONNECTED()) {
+    if (SLAVE_MODE()) {
+      LCD_NOTIF_ICON(x, ICON_TRAINEE);
+    }
+    else {
+      LCD_NOTIF_ICON(x, ICON_TRAINER);
+    }
     x -= 12;
   }
 
@@ -315,7 +316,7 @@ void displayTimers()
       TimerState & timerState = timersStates[i];
       TimerData & timerData = g_model.timers[i];
       uint8_t y = TIMERS_Y + i*TIMERS_H;
-      if (zlen(timerData.name, LEN_TIMER_NAME) > 0) {
+      if (ZLEN(timerData.name) > 0) {
         lcd_putsnAtt(TIMERS_X, y-7, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE);
       }
       else {

@@ -422,7 +422,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
   {
     case EVT_ENTRY:
       menuEntryTime = get_tmr10ms();
-      l_posVert = POS_VERT_INIT;
+      l_posVert = MENU_FIRST_LINE_EDIT;
       l_posHorz = POS_HORZ_INIT(l_posVert);
       SET_SCROLLBAR_X(LCD_W-1);
       s_editMode = EDIT_MODE_INIT;
@@ -462,7 +462,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
       }
       else
       {
-        uint8_t posVertInit = POS_VERT_INIT;
+        uint8_t posVertInit = MENU_FIRST_LINE_EDIT;
         if (s_pgOfs != 0 || l_posVert != posVertInit) {
           s_pgOfs = 0;
           l_posVert = posVertInit;
@@ -495,7 +495,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
       }
 
       do {
-        INC(l_posVert, POS_VERT_INIT, rowcount-1);
+        INC(l_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
 
       s_editMode = 0; // if we go down, we must be in this mode
@@ -526,7 +526,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
       }
 
       do {
-        DEC(l_posVert, POS_VERT_INIT, rowcount-1);
+        DEC(l_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
 
       s_editMode = 0; // if we go up, we must be in this mode
@@ -600,17 +600,21 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
     lcdDrawScrollbar(scrollbar_X, MENU_HEADER_HEIGHT, LCD_H-MENU_HEADER_HEIGHT, s_pgOfs, linesCount, NUM_BODY_LINES);
   }
 
+  if (name) {
+    title(name);
+  }
+  
   m_posVert = l_posVert;
   m_posHorz = l_posHorz;
 }
 
 
-void check_simple(const char *name, check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
+void check_simple(const char * name, check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
 {
   check(name, event, curr, menuTab, menuTabSize, 0, 0, rowcount);
 }
 
-void check_submenu_simple(const char *name, check_event_t event, uint8_t rowcount)
+void check_submenu_simple(const char * name, check_event_t event, uint8_t rowcount)
 {
   check_simple(name, event, 0, 0, 0, rowcount);
 }

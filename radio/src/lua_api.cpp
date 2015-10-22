@@ -417,7 +417,7 @@ static int luaLcdLock(lua_State *L)
 
 static int luaLcdClear(lua_State *L)
 {
-  if (luaLcdAllowed) lcd_clear();
+  if (luaLcdAllowed) lcdClear();
   return 0;
 }
 

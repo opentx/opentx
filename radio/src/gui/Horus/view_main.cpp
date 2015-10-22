@@ -36,13 +36,6 @@
 
 #include "../../opentx.h"
 
-#define BIGSIZE       MIDSIZE
-#define BAR_HEIGHT    (BOX_WIDTH-9)
-#define LBOX_CENTERX  (BOX_WIDTH/2 + 17)
-#define RBOX_CENTERX  (LCD_W-LBOX_CENTERX)
-#define BITMAP_X      ((LCD_W-64)/2)
-#define BITMAP_Y      (LCD_H/2)
-
 #define TRIM_LH_X     90
 #define TRIM_LV_X     24
 #define TRIM_RV_X     (LCD_W-35)
@@ -50,32 +43,6 @@
 #define TRIM_V_Y      135
 #define TRIM_H_Y      235
 #define TRIM_LEN      80
-
-void drawPotsBars()
-{
-  // Optimization by Mike Blandford
-  uint8_t x, i, len ;  // declare temporary variables
-  for (x=LCD_W/2-9, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=9, i++) {
-    if (IS_POT_AVAILABLE(i)) {
-      len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
-      // TODO 220 constant
-      lcdDrawSolidFilledRect(x, 220-FH-len, 5, len, TEXT_COLOR);
-    }
-  }
-}
-
-void doMainScreenGraphics()
-{
-  int16_t calibStickVert = calibratedStick[CONVERT_MODE(1)];
-  if (g_model.throttleReversed && CONVERT_MODE(1) == THR_STICK)
-    calibStickVert = -calibStickVert;
-  drawStick(LBOX_CENTERX, calibratedStick[CONVERT_MODE(0)], calibStickVert);
-
-  calibStickVert = calibratedStick[CONVERT_MODE(2)];
-  if (g_model.throttleReversed && CONVERT_MODE(2) == THR_STICK)
-    calibStickVert = -calibStickVert;
-  drawStick(RBOX_CENTERX, calibratedStick[CONVERT_MODE(3)], calibStickVert);
-}
 
 void drawTrimSquare(coord_t x, coord_t y)
 {
@@ -141,7 +108,7 @@ void drawSticks()
   drawHorizontalStick(TRIM_RH_X-TRIM_LEN+1, calibratedStick[3]);
 }
 
-void displayTrims(uint8_t flightMode)
+void drawTrims(uint8_t flightMode)
 {
   g_model.displayTrims = DISPLAY_TRIMS_ALWAYS;
 
@@ -191,32 +158,21 @@ void displayTrims(uint8_t flightMode)
   }
 }
 
-void displayTimers()
+void drawTimer(coord_t x, coord_t y, int index)
 {
-  // const int TIMERS_W = 56;
-  const int TIMERS_H = 30;
-  const int TIMERS_MARGIN = 16;
-  const int TIMERS_PADDING = 4;
-
-  for (int i=0; i<TIMERS; i++) {
-    if (g_model.timers[i].mode) {
-      TimerState & timerState = timersStates[i];
-      TimerData & timerData = g_model.timers[i];
-      int y = TIMERS_MARGIN + i*(TIMERS_H+TIMERS_MARGIN);
-      unsigned int len = zlen(timerData.name, LEN_TIMER_NAME);
-      LcdFlags color=TEXT_COLOR, bgColor=TEXT_BGCOLOR;
-      if (timerState.val < 0) {
-        color = ALARM_COLOR;
-      }
-      // TODO lcdDrawSolidFilledRect(TIMERS_MARGIN, y, TIMERS_W, TIMERS_H, SOLID, bgColor);
-      putsTimer(TIMERS_MARGIN+TIMERS_PADDING, y+12, abs(timerState.val), color|DBLSIZE|LEFT);
-      if (len > 0)
-        lcd_putsnAtt(TIMERS_MARGIN+TIMERS_PADDING, y+2, timerData.name, LEN_TIMER_NAME, color|ZCHAR);
-      else
-        putsTimerMode(TIMERS_MARGIN+TIMERS_PADDING, y+2, timerData.mode, color);
-    }
+  TimerData & timerData = g_model.timers[index];
+  TimerState & timerState = timersStates[index];
+  lcdDrawBitmapPattern(x, y, LBM_TIMER_BACKGROUND, TEXT_BGCOLOR);
+  if (timerData.start) {
+    lcdDrawBitmapPatternPie(x+2, y+3, LBM_RSCALE, TITLE_BGCOLOR, 0, timerState.val <= 0 ? 360 : 360*(timerData.start-timerState.val)/timerData.start);
   }
+  putsTimer(x+74, y+31, abs(timerState.val), TEXT_COLOR|DBLSIZE|LEFT);
+  if (ZLEN(timerData.name) > 0) {
+    lcd_putsnAtt(x+74, y+20, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE|TEXT_COLOR);
+  }
+  putsStrIdx(x+137, y+17, "TMR", 1, SMLSIZE|TEXT_COLOR);
 }
+
 
 void displayMainTelemetryFields()
 {
@@ -329,12 +285,6 @@ void onMainViewMenu(const char *result)
 #endif
 }
 
-void displayTelemetryScreen(int index, unsigned int evt);
-
-const uint16_t LBM_MAINVIEW_BACKGROUND[] = {
-#include "../../bitmaps/Horus/background.lbm"
-};
-
 const uint16_t LBM_MAINVIEW_FLAT[] = {
 #include "../../bitmaps/Horus/mainview_flat.lbm"
 };
@@ -343,13 +293,6 @@ const uint16_t LBM_CORSAIR[] = {
 #include "../../bitmaps/Horus/corsair.lbm"
 };
 
-const uint8_t LBM_TIMER_BACKGROUND[] = {
-#include "../../bitmaps/Horus/mask_timer_bg.lbm"
-};
-
-const uint8_t LBM_RSCALE[] = {
-#include "../../bitmaps/Horus/mask_rscale.lbm"
-};
 
 void menuMainView(evt_t event)
 {
@@ -412,6 +355,16 @@ void menuMainView(evt_t event)
   lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
   lcdDrawBitmapPattern(4, 10, LBM_TOPMENU_OPENTX, MENU_TITLE_COLOR);
   lcdDrawTopmenuDatetime();
+  if (1 || usbPlugged()) {
+    lcdDrawBitmapPattern(378, 8, LBM_TOPMENU_USB, MENU_TITLE_COLOR);
+  }
+  const uint8_t rssiBarsValue[] = { 30, 40, 50, 60, 80 };
+  const uint8_t rssiBarsHeight[] = { 5, 10, 15, 21, 31 };
+  for (unsigned int i=0; i<DIM(rssiBarsHeight); i++) {
+    uint8_t height = rssiBarsHeight[i];
+    lcdDrawSolidFilledRect(390+i*6, 38-height, 4, height, TELEMETRY_RSSI() >= rssiBarsValue[i] ? MENU_TITLE_COLOR : MENU_TITLE_DISABLE_COLOR);
+  }
+
 
   // Flight Mode Name
   int mode = mixerCurrentFlightMode;
@@ -426,37 +379,19 @@ void menuMainView(evt_t event)
   drawSticks();
 
   // Trims
-  displayTrims(mode);
+  drawTrims(mode);
 
   // Model panel
   lcdDrawFilledRect(248, 58, 188, 158, SOLID, TEXT_BGCOLOR | OPACITY(5));
   lcdDrawBitmapPattern(256, 62, LBM_MODEL_ICON, TITLE_BGCOLOR);
-  lcd_putsnAtt(293, 68, g_model.header.name, ZCHAR|SMLSIZE, LEN_MODEL_NAME);
+  lcd_putsnAtt(293, 68, g_model.header.name, LEN_MODEL_NAME, ZCHAR|SMLSIZE);
   lcdDrawSolidHorizontalLine(287, 85, 140, TITLE_BGCOLOR);
   lcdDrawBitmap(256, 104, LBM_CORSAIR);
 
   // Timer 1
-  if (g_model.timers[0].start) {
-    TimerState & timerState = timersStates[0];
-    lcdDrawBitmapPattern(58, 61, LBM_TIMER_BACKGROUND, TEXT_BGCOLOR);
-    lcdDrawBitmapPatternPie(60, 64, LBM_RSCALE, TITLE_BGCOLOR, 0, 360*timerState.val/g_model.timers[0].start);
-    putsTimer(125, 94, abs(timerState.val), TEXT_COLOR|DBLSIZE|LEFT);
+  if (g_model.timers[0].mode) {
+    drawTimer(50, 61, 0);
   }
-
-#if 0
-  displayMainViewIndex();
-
-  if (g_eeGeneral.view == VIEW_TIMERS_ALTITUDE) {
-    displayTimers();
-    displayMainTelemetryFields();
-  }
-  else if (g_eeGeneral.view == VIEW_CHANNELS) {
-    menuChannelsView(event);
-  }
-  else {
-    displayTelemetryScreen(g_eeGeneral.view - VIEW_TELEM1, event);
-  }
-#endif
 
 #if 0
   if (s_gvar_timer > 0) {

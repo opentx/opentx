@@ -64,8 +64,16 @@ const uint8_t LBM_CURRENT_DOT[] = {
  * Main view bitmaps
  */
 
+const uint16_t LBM_MAINVIEW_BACKGROUND[] = {
+#include "../../bitmaps/Horus/background.lbm"
+};
+
 const uint8_t LBM_TOPMENU_OPENTX[] = {
 #include "../../bitmaps/Horus/mask_topmenu_opentx.lbm"
+};
+
+const uint8_t LBM_TOPMENU_USB[] = {
+#include "../../bitmaps/Horus/mask_topmenu_usb.lbm"
 };
 
 const uint8_t LBM_HTRIM_FRAME[] = {
@@ -78,6 +86,14 @@ const uint8_t LBM_VTRIM_FRAME[] = {
 
 const uint8_t LBM_TRIM_SHADOW[] = {
 #include "../../bitmaps/Horus/mask_trim_shadow.lbm"
+};
+
+const uint8_t LBM_TIMER_BACKGROUND[] = {
+#include "../../bitmaps/Horus/mask_timer_bg.lbm"
+};
+
+const uint8_t LBM_RSCALE[] = {
+#include "../../bitmaps/Horus/mask_rscale.lbm"
 };
 
 /*

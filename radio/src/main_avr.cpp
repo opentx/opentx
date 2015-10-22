@@ -129,7 +129,7 @@ void perMain()
   const char *warn = s_warning;
   uint8_t menu = s_menu_count;
 
-  lcd_clear();
+  lcdClear();
   if (menuEvent) {
     m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
     m_posHorz = 0;

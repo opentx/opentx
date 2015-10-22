@@ -107,66 +107,7 @@ void checkEeprom()
 }
 #endif
 
-#if defined(PCBFLAMENCO)
-void guiMain(evt_t evt)
-{
-  lcd_clear();
-
-#if defined(LUA)
-  uint32_t t0 = get_tmr10ms();
-  static uint32_t lastLuaTime = 0;
-  uint16_t interval = (lastLuaTime == 0 ? 0 : (t0 - lastLuaTime));
-  lastLuaTime = t0;
-  if (interval > maxLuaInterval) {
-    maxLuaInterval = interval;
-  }
-
-  // run Lua scripts that don't use LCD (to use CPU time while LCD DMA is running)
-  luaTask(0, RUN_MIX_SCRIPT | RUN_FUNC_SCRIPT | RUN_TELEM_BG_SCRIPT, false);
-
-  // wait for LCD DMA to finish before continuing, because code from this point
-  // is allowed to change the contents of LCD buffer
-  //
-  // WARNING: make sure no code above this line does any change to the LCD display buffer!
-  //
-
-  bool scriptWasRun = luaTask(evt, RUN_STNDAL_SCRIPT, true);
-
-  t0 = get_tmr10ms() - t0;
-  if (t0 > maxLuaDuration) {
-    maxLuaDuration = t0;
-  }
-
-  if (!scriptWasRun)
-#endif
-
-  {
-    // normal GUI from menus
-    const char *warn = s_warning;
-    uint8_t menu = s_menu_count;
-    // lcd_clear();
-    if (menuEvent) {
-      m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
-      m_posHorz = 0;
-      evt = menuEvent;
-      menuEvent = 0;
-      AUDIO_MENUS();
-    }
-    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
-    if (warn) DISPLAY_WARNING(evt);
-    if (menu) {
-      const char * result = displayMenu(evt);
-      if (result) {
-        menuHandler(result);
-        putEvent(EVT_MENU_UP);
-      }
-    }
-    drawStatusLine();
-  }
-
-  lcdRefresh();
-}
-#else
+#if defined(GUI)
 void guiMain(evt_t evt)
 {
 #if defined(LUA)
@@ -192,40 +133,27 @@ void guiMain(evt_t evt)
   // run Lua scripts that use LCD
 
   bool standaloneScriptWasRun = luaTask(evt, RUN_STNDAL_SCRIPT, true);
-  bool refreshScreen = true;
   if (!standaloneScriptWasRun) {
-    refreshScreen = !luaTask(evt, RUN_TELEM_FG_SCRIPT, true);
+    luaTask(evt, RUN_TELEM_FG_SCRIPT, true);
   }
 
   t0 = get_tmr10ms() - t0;
   if (t0 > maxLuaDuration) {
     maxLuaDuration = t0;
   }
-
-  if (!standaloneScriptWasRun)
 #else
   lcdRefreshWait();   // WARNING: make sure no code above this line does any change to the LCD display buffer!
-  const bool refreshScreen = true;
+  const bool standaloneScriptWasRun = false;
 #endif
-  {
-#if defined(PCBHORUS)
-    for (int i=0; i<2; i++) {
+
+  if (!standaloneScriptWasRun) {
+    while (1) {
+#if !defined(COLORLCD)
+      lcdClear();
 #endif
       // normal GUI from menus
-      const char *warn = s_warning;
+      const char * warn = s_warning;
       uint8_t menu = s_menu_count;
-  #if !defined(COLORLCD)
-      if (refreshScreen) {
-        lcd_clear();
-      }
-  #endif
-      if (menuEvent) {
-        m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : -1;
-        m_posHorz = 0;
-        evt = menuEvent;
-        menuEvent = 0;
-        AUDIO_MENUS();
-      }
       g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
       if (warn) DISPLAY_WARNING(evt);
       if (menu) {
@@ -236,11 +164,22 @@ void guiMain(evt_t evt)
         }
       }
       drawStatusLine();
-#if defined(PCBHORUS)
-      if (menuEvent != EVT_ENTRY || menuEvent != EVT_ENTRY_UP)
+      if (menuEvent == EVT_ENTRY) {
+        m_posVert = -1;
+        m_posHorz = 0;
+        evt = menuEvent;
+        menuEvent = 0;
+      }
+      else if (menuEvent == EVT_ENTRY_UP) {
+        m_posVert = g_menuPos[g_menuStackPtr];
+        m_posHorz = 0;
+        evt = menuEvent;
+        menuEvent = 0;
+      }
+      else {
         break;
+      }
     }
-#endif
   }
 
   lcdRefresh();
@@ -271,7 +210,7 @@ void perMain()
 #if defined(USB_MASS_STORAGE)
   if (usbPlugged()) {
     // disable access to menus
-    lcd_clear();
+    lcdClear();
     menuMainView(0);
     lcdRefresh();
     return;
@@ -290,13 +229,13 @@ void perMain()
 #endif
 
 #if defined(PCBTARANIS) && defined(REV9E) && !defined(SIMU)
-  topLcdRefreshStart();
-  setTopFirstTimer(getValue(MIXSRC_FIRST_TIMER+g_model.topLcdTimer));
+  toplcdRefreshStart();
+  setTopFirstTimer(getValue(MIXSRC_FIRST_TIMER+g_model.toplcdTimer));
   setTopSecondTimer(g_eeGeneral.globalTimer + sessionTimer);
   setTopRssi(TELEMETRY_RSSI());
   setTopBatteryValue(g_vbat100mV);
   setTopBatteryState(GET_TXBATT_BARS(), IS_TXBATT_WARNING());
-  topLcdRefreshEnd();
+  toplcdRefreshEnd();
 #endif
 
 #if defined(PCBTARANIS) && defined(REV9E) && !defined(SIMU)

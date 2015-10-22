@@ -36,13 +36,13 @@
 
 #include "../opentx.h"
 
-uint8_t   s_storageDirtyMsk;
-tmr10ms_t s_storageDirtyTime10ms;
+uint8_t   storageDirtyMsk;
+tmr10ms_t storageDirtyTime10ms;
 
 void storageDirty(uint8_t msk)
 {
-  s_storageDirtyMsk |= msk;
-  s_storageDirtyTime10ms = get_tmr10ms() ;
+  storageDirtyMsk |= msk;
+  storageDirtyTime10ms = get_tmr10ms() ;
 }
 
 void preModelLoad()

@@ -255,7 +255,7 @@ void lcdDrawTelemetryTopBar();
 void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 
 void lcdSetRefVolt(unsigned char val);
-void lcd_clear();
+void lcdClear();
 void lcdSetContrast();
 void lcdInit();
 #define lcdOff()

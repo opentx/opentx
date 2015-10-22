@@ -49,10 +49,10 @@
   #define WRITE_DELAY_10MS 200
 #endif
 
-extern uint8_t   s_storageDirtyMsk;
-extern tmr10ms_t s_storageDirtyTime10ms;
+extern uint8_t   storageDirtyMsk;
+extern tmr10ms_t storageDirtyTime10ms;
 
-#define TIME_TO_WRITE() (s_storageDirtyMsk && (tmr10ms_t)(get_tmr10ms() - s_storageDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
+#define TIME_TO_WRITE() (storageDirtyMsk && (tmr10ms_t)(get_tmr10ms() - storageDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
 
 void storageEraseAll(bool warn);
 void storageFormat();

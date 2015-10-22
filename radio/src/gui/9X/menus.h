@@ -70,8 +70,6 @@ typedef void (*MenuFuncP)(uint8_t event);
 typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
 extern const MenuFuncP_PROGMEM menuTabModel[];
 extern const MenuFuncP_PROGMEM menuTabGeneral[];
-extern const MenuFuncP_PROGMEM menuTabFPV[];
-extern const MenuFuncP_PROGMEM menuTabTelemetry[];
 
 extern MenuFuncP g_menuStack[5];
 extern uint8_t g_menuPos[4];
@@ -274,17 +272,9 @@ void title(const pm_char * s);
 #define MENU_CHECK(tab, menu, lines_count) \
   check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, (lines_count)-1)
 
-#define MENU_CHECK_FLAGS(tab, menu, flags, lines_count) \
-  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, (lines_count)-1, flags)
-
 #define MENU(title, tab, menu, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
   MENU_CHECK(tab, menu, lines_count); \
-  TITLE(title)
-
-#define MENU_FLAGS(title, tab, menu, flags, lines_count, ...) \
-  MENU_TAB(__VA_ARGS__); \
-  MENU_CHECK_FLAGS(tab, menu, flags, lines_count); \
   TITLE(title)
 
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
@@ -343,9 +333,9 @@ int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, uint8_t
 
 void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uint8_t active);
 
-#define WARNING_TYPE_ASTERISK  0
-#define WARNING_TYPE_CONFIRM   1
-#define WARNING_TYPE_INPUT     2
+#define WARNING_TYPE_ASTERISK          0
+#define WARNING_TYPE_CONFIRM           1
+#define WARNING_TYPE_INPUT             2
 
 extern const pm_char * s_warning;
 extern const pm_char * s_warning_info;
@@ -353,12 +343,12 @@ extern uint8_t         s_warning_info_len;
 extern uint8_t         s_warning_result;
 extern uint8_t         s_warning_type;
 
-#define MENU_X   10
-#define MENU_Y   16
-#define MENU_W   LCD_W-(2*MENU_X)
-#define WARNING_LINE_LEN 20
-#define WARNING_LINE_X 16
-#define WARNING_LINE_Y 3*FH
+#define MENU_X                         10
+#define MENU_Y                         16
+#define MENU_W                         LCD_W-(2*MENU_X)
+#define WARNING_LINE_LEN               20
+#define WARNING_LINE_X                 16
+#define WARNING_LINE_Y                 3*FH
 
 void displayBox();
 void displayPopup(const pm_char * pstr);
@@ -380,9 +370,9 @@ void displayWarning(uint8_t event);
   #define WARNING_INFO_FLAGS           0
   #define SET_WARNING_INFO(...)
 #elif defined(CPUARM)
-  #define DISPLAY_WARNING       (*popupFunc)
-  #define POPUP_WARNING(s)      (s_warning = s, s_warning_info = 0, popupFunc = displayWarning)
-  #define POPUP_CONFIRMATION(s) (s_warning = s, s_warning_type = WARNING_TYPE_CONFIRM, s_warning_info = 0, popupFunc = displayWarning)
+  #define DISPLAY_WARNING              (*popupFunc)
+  #define POPUP_WARNING(s)             (s_warning = s, s_warning_info = 0, popupFunc = displayWarning)
+  #define POPUP_CONFIRMATION(s)        (s_warning = s, s_warning_type = WARNING_TYPE_CONFIRM, s_warning_info = 0, popupFunc = displayWarning)
   #define POPUP_INPUT(s, func, start, min, max) (s_warning = s, s_warning_type = WARNING_TYPE_INPUT, popupFunc = func, s_warning_input_value = start, s_warning_input_min = min, s_warning_input_max = max)
   #define WARNING_INFO_FLAGS    s_warning_info_flags
   #define SET_WARNING_INFO(info, len, flags) (s_warning_info = info, s_warning_info_len = len, s_warning_info_flags = flags)
@@ -454,7 +444,6 @@ void displayWarning(uint8_t event);
   #define MOVE_CURSOR_FROM_HERE()      REPEAT_LAST_CURSOR_MOVE()
 #endif
 
-#define POS_VERT_INIT                  0
 #define POS_HORZ_INIT(posVert)         0
 #define EDIT_MODE_INIT                 -1
 

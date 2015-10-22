@@ -72,7 +72,6 @@ typedef void (*MenuFuncP)(evt_t event);
 typedef void (*MenuFuncP_PROGMEM)(evt_t event);
 extern const MenuFuncP_PROGMEM menuTabModel[];
 extern const MenuFuncP_PROGMEM menuTabGeneral[];
-extern const MenuFuncP_PROGMEM menuTabTelemetry[];
 
 extern MenuFuncP g_menuStack[5];
 extern uint8_t g_menuPos[4];
@@ -85,14 +84,7 @@ void chainMenu(MenuFuncP newMenu);
 void pushMenu(MenuFuncP newMenu);
 /// return to last menu in menustack
 void popMenu();
-///deliver address of last menu which was popped from
-inline MenuFuncP lastPopMenu()
-{
-  return g_menuStack[g_menuStackPtr+1];
-}
 
-void drawPotsBars();
-void doMainScreenGraphics();
 void menuFirstCalib(evt_t event);
 
 void onMainViewMenu(const char *result);
@@ -141,7 +133,6 @@ extern int8_t s_editMode;       // global editmode
 #define TITLE_ROW      ((uint8_t)-1)
 #define HIDDEN_ROW     ((uint8_t)-2)
 
-typedef bool (*IsValueAvailable)(int);
 struct CheckIncDecStops {
   const int count;
   const int stops[];
@@ -345,9 +336,9 @@ void menuChannelsView(evt_t event);
 #define REPEAT_LAST_CURSOR_MOVE() { if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) putEvent(event); else m_posHorz = 0; }
 #define MOVE_CURSOR_FROM_HERE()   if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
 
-#define POS_VERT_INIT            (MAXCOL((uint16_t)0) >= HIDDEN_ROW ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? 2 : 1) : 0)
-#define POS_HORZ_INIT(posVert)   ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
-#define EDIT_MODE_INIT           0 // TODO enum
+#define MENU_FIRST_LINE_EDIT      (MAXCOL((uint16_t)0) >= HIDDEN_ROW ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? 2 : 1) : 0)
+#define POS_HORZ_INIT(posVert)    ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
+#define EDIT_MODE_INIT            0 // TODO enum
 
 typedef int (*FnFuncP) (int x);
 void DrawFunction(FnFuncP fn, int offset=0);

@@ -39,6 +39,7 @@
 
 #define NUM_BODY_LINES      (LCD_LINES-1)
 #define MENU_HEADER_HEIGHT  FH
+#define MENU_INIT_VPOS      0
 
 void displaySplash();
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);

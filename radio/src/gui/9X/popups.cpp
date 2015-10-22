@@ -71,7 +71,7 @@ void displayPopup(const pm_char * pstr)
 
 void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SOUND_ARG)
 {
-  lcd_clear();
+  lcdClear();
   lcd_img(2, 0, asterisk_lbm, 0, 0);
 
 #define MESSAGE_LCD_OFFSET   6*FW

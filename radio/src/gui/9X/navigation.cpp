@@ -474,7 +474,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 #if defined(CPUARM)
       menuEntryTime = get_tmr10ms();
 #endif
-      l_posVert = POS_VERT_INIT;
+      l_posVert = 0;
       l_posHorz = POS_HORZ_INIT(l_posVert);
       SET_SCROLLBAR_X(LCD_W-1);
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -510,8 +510,8 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     case EVT_ROTARY_LONG:
       if (s_editMode > 1) break;
       killEvents(event);
-      if (l_posVert != POS_VERT_INIT) {
-        l_posVert = POS_VERT_INIT;
+      if (l_posVert != 0) {
+        l_posVert = 0;
         s_editMode = EDIT_MODE_INIT;
         break;
       }
@@ -574,7 +574,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     case EVT_KEY_FIRST(KEY_DOWN): //inc
       if (s_editMode>0) break;
       do {
-        INC(l_posVert, POS_VERT_INIT, maxrow);
+        INC(l_posVert, 0, maxrow);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -617,7 +617,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       if (s_editMode>0) break;
 
       do {
-        DEC(l_posVert, POS_VERT_INIT, maxrow);
+        DEC(l_posVert, 0, maxrow);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
 
 #if defined(ROTARY_ENCODER_NAVIGATION)

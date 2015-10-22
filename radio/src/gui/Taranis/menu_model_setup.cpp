@@ -381,9 +381,9 @@ void menuModelSetup(uint8_t event)
 #if defined(REV9E)
       case ITEM_MODEL_TOP_LCD_TIMER:
         lcd_putsLeft(y, STR_TOPLCDTIMER);
-        putsStrIdx(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER, g_model.topLcdTimer+1, attr);
+        putsStrIdx(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER, g_model.toplcdTimer+1, attr);
         if (attr) {
-          g_model.topLcdTimer = checkIncDec(event, g_model.topLcdTimer, 0, TIMERS-1, EE_MODEL);
+          g_model.toplcdTimer = checkIncDec(event, g_model.toplcdTimer, 0, TIMERS-1, EE_MODEL);
         }
         break;
 #endif

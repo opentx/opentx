@@ -114,7 +114,7 @@ bool checkScreenshot(const QString & test)
 
 TEST(outdezNAtt, test_unsigned)
 {
-  lcd_clear();
+  lcdClear();
   lcd_outdezNAtt(0, 0, 65530, LEFT|UNSIGN);
   EXPECT_TRUE(checkScreenshot("unsigned")) << "Unsigned numbers will be bad displayed";
 }
@@ -122,7 +122,7 @@ TEST(outdezNAtt, test_unsigned)
 #if defined(CPUARM)
 TEST(outdezNAtt, testBigNumbers)
 {
-  lcd_clear();
+  lcdClear();
   lcd_outdezNAtt(0, 0, 1234567, LEFT);
   lcd_outdezNAtt(0, FH, -1234567, LEFT);
   EXPECT_TRUE(checkScreenshot("big_numbers"));
@@ -132,28 +132,28 @@ TEST(outdezNAtt, testBigNumbers)
 
 TEST(Lcd, Invers_0_0)
 {
-  lcd_clear();
+  lcdClear();
   lcd_putsAtt(0, 0, "Test", INVERS);
   EXPECT_TRUE(checkScreenshot("invers_0_0"));
 }
 
 TEST(Lcd, Invers_0_1)
 {
-  lcd_clear();
+  lcdClear();
   lcd_putsAtt(0, 1, "Test", INVERS);
   EXPECT_TRUE(checkScreenshot("invers_0_1"));
 }
 
 TEST(Lcd, Prec2_Left)
 {
-  lcd_clear();
+  lcdClear();
   lcd_outdezAtt(0, 0, 2, PREC2|LEFT);
   EXPECT_TRUE(checkScreenshot("prec2_left"));
 }
 
 TEST(Lcd, Prec2_Right)
 {
-  lcd_clear();
+  lcdClear();
   lcd_outdezAtt(LCD_W, LCD_H-FH, 2, PREC2);
   EXPECT_TRUE(checkScreenshot("prec2_right"));
 }
@@ -161,7 +161,7 @@ TEST(Lcd, Prec2_Right)
 #if defined(CPUARM)
 TEST(Lcd, Prec1_Dblsize_Invers)
 {
-  lcd_clear();
+  lcdClear();
   lcd_outdezAtt(LCD_W, 10, 51, PREC1|DBLSIZE|INVERS);
   EXPECT_TRUE(checkScreenshot("prec1_dblsize_invers"));
 }
@@ -169,14 +169,14 @@ TEST(Lcd, Prec1_Dblsize_Invers)
 
 TEST(Lcd, Line_Wrap)
 {
-  lcd_clear();
+  lcdClear();
   lcd_puts(LCD_W-10, 0, "TEST");
   EXPECT_TRUE(checkScreenshot("line_wrap"));
 }
 
 TEST(Lcd, DblsizeBottomRight)
 {
-  lcd_clear();
+  lcdClear();
   lcd_putsAtt(LCD_W-20, LCD_H-16, "TEST", DBLSIZE);
   EXPECT_TRUE(checkScreenshot("dblsize_bottom_right"));
 }
@@ -184,7 +184,7 @@ TEST(Lcd, DblsizeBottomRight)
 #if defined(CPUARM)
 TEST(Lcd, Smlsize_putsStrIdx)
 {
-  lcd_clear();
+  lcdClear();
   putsStrIdx(0, 0, "FM", 0, SMLSIZE);
   EXPECT_TRUE(checkScreenshot("smlsize_putsstridx"));
 }
@@ -192,7 +192,7 @@ TEST(Lcd, Smlsize_putsStrIdx)
 
 TEST(Lcd, vline)
 {
-  lcd_clear();
+  lcdClear();
   for (int x=0; x<100; x+=2) {
     lcd_vline(x, x/2, 12);
   }
@@ -202,7 +202,7 @@ TEST(Lcd, vline)
 #if defined(CPUARM)
 TEST(Lcd, vline_x_lt0)
 {
-  lcd_clear();
+  lcdClear();
   lcd_vline(50, -10, 12);
   lcd_vline(100, -10, 1);
   EXPECT_TRUE(checkScreenshot("vline_lt0"));
@@ -212,7 +212,7 @@ TEST(Lcd, vline_x_lt0)
 #if defined(CPUARM)
 TEST(Lcd, Smlsize)
 {
-  lcd_clear();
+  lcdClear();
   lcd_putsAtt(0, 0, "TESTgy,", SMLSIZE);
   lcd_putsAtt(10, 22, "TESTgy,", SMLSIZE|INVERS);
   drawFilledRect(8, 40, 100, 20);
@@ -229,7 +229,7 @@ TEST(Lcd, Smlsize)
 
 TEST(Lcd, Stdsize)
 {
-  lcd_clear();
+  lcdClear();
   lcd_putsAtt(0, 0, "TEST", 0);
   lcd_putsAtt(10, 22, "TEST", INVERS);
   drawFilledRect(8, 40, 100, 20);
@@ -246,7 +246,7 @@ TEST(Lcd, Stdsize)
 
 TEST(Lcd, Midsize)
 {
-  lcd_clear();
+  lcdClear();
   lcd_putsAtt(0, 0, "TEST", MIDSIZE);
   lcd_putsAtt(10, 22, "TEST", MIDSIZE|INVERS);
   drawFilledRect(8, 40, 100, 20);
@@ -263,7 +263,7 @@ TEST(Lcd, Midsize)
 
 TEST(Lcd, Dblsize)
 {
-  lcd_clear();
+  lcdClear();
   lcd_putsAtt(2, 10, "TST", DBLSIZE);
   lcd_putsAtt(42, 10, "TST", DBLSIZE|INVERS);
   drawFilledRect(80, 8, 46, 24);
@@ -282,7 +282,7 @@ TEST(Lcd, Dblsize)
 #if defined(PCBTARANIS)
 TEST(Lcd, DrawSwitch)
 {
-  lcd_clear();
+  lcdClear();
   putsSwitches(0,  10, SWSRC_SA0, 0);
   putsSwitches(30, 10, SWSRC_SA0, SMLSIZE);
   // putsSwitches(60, 10, SWSRC_SA0, MIDSIZE); missing arrows in this font
@@ -294,7 +294,7 @@ TEST(Lcd, DrawSwitch)
 #if defined(PCBTARANIS)
 TEST(Lcd, BMPWrapping)
 {
-  lcd_clear();
+  lcdClear();
   uint8_t bitmap[2+40*40/2];
   bmpLoad(bitmap, "./tests/plane.bmp", 40, 40);
   lcd_bmp(200, 0, bitmap);
@@ -308,7 +308,7 @@ TEST(Lcd, BMPWrapping)
 #if defined(PCBTARANIS)
 TEST(Lcd, lcdDrawHorizontalLine)
 {
-  lcd_clear();
+  lcdClear();
   lcdDrawHorizontalLine(0, 10, LCD_W, DOTTED);
   lcdDrawHorizontalLine(0, 20, LCD_W, SOLID);
   lcdDrawHorizontalLine(50, 30, LCD_W, 0xEE);    //too wide
@@ -321,7 +321,7 @@ TEST(Lcd, lcdDrawHorizontalLine)
 #if defined(PCBTARANIS)
 TEST(Lcd, lcdDrawVerticalLine)
 {
-  lcd_clear();
+  lcdClear();
   lcdDrawVerticalLine(10, 0, LCD_H, DOTTED);
   lcdDrawVerticalLine(20, 0, LCD_H, SOLID);
   lcdDrawVerticalLine(30, 30, LCD_H, 0xEE);    //too high
@@ -361,7 +361,7 @@ public:
 #if defined(PCBTARANIS)
 TEST(Lcd, lcd_bmpLoadAndDisplay)
 {
-  lcd_clear();
+  lcdClear();
   // Test proper BMP files, they should display correctly
   {
     TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(7, 32));
@@ -415,7 +415,7 @@ TEST(Lcd, lcdDrawLine)
   int start, length, xOffset;
   uint8_t pattern; 
 
-  lcd_clear();
+  lcdClear();
 
   start = 5;
   pattern = SOLID; 

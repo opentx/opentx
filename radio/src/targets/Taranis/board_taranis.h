@@ -347,10 +347,10 @@ void lcdOff(void);
 
 // Top LCD driver
 #if defined(REV9E)
-void topLcdInit(void);
-void topLcdOff(void);
-void topLcdRefreshStart(void);
-void topLcdRefreshEnd(void);
+void toplcdInit(void);
+void toplcdOff(void);
+void toplcdRefreshStart(void);
+void toplcdRefreshEnd(void);
 void setTopFirstTimer(int32_t value);
 void setTopSecondTimer(uint32_t value);
 void setTopRssi(uint32_t rssi);

@@ -42,7 +42,7 @@ const pm_uchar bmp_sleep[] PROGMEM = {
 
 void displaySleepBitmap()
 {
-  lcd_clear();
+  lcdClear();
   lcd_bmp(76, 2, bmp_sleep, 0, 60);
   lcdRefresh();
 }

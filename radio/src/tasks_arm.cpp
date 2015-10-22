@@ -192,7 +192,7 @@ void menusTask(void * pdata)
   }
 
 #if defined(PCBTARANIS) && defined(REV9E)
-  topLcdOff();
+  toplcdOff();
 #endif
 
   BACKLIGHT_OFF();
@@ -201,7 +201,7 @@ void menusTask(void * pdata)
 #elif defined(PCBTARANIS)
   displaySleepBitmap();
 #else
-  lcd_clear();
+  lcdClear();
   displayPopup(STR_SHUTDOWN);
 #endif
 

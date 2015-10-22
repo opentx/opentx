@@ -233,7 +233,7 @@ extern "C" void TIM8_BRK_TIM12_IRQHandler()
 }
 #endif
 
-void topLcdInit()
+void toplcdInit()
 {
   RCC_AHB1PeriphClockCmd(TOPLCD_RCC_AHB1Periph, ENABLE);
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -254,15 +254,15 @@ void topLcdInit()
   ht1621SendCommand(1, 0x01);
   ht1621SendCommand(1, 0x29);
 
-  topLcdRefreshStart();
-  topLcdRefreshEnd();
+  toplcdRefreshStart();
+  toplcdRefreshEnd();
 }
 
-void topLcdOff()
+void toplcdOff()
 {
   BL_OFF();
-  topLcdRefreshStart();
-  topLcdRefreshEnd();
+  toplcdRefreshStart();
+  toplcdRefreshEnd();
 }
 
 void setTopFirstTimer(int32_t value)
@@ -419,13 +419,13 @@ void setTopSecondTimer(uint32_t value)
   Ht1621Data1[3] |= 0x10; // "Operation Time"
 }
 
-void topLcdRefreshStart()
+void toplcdRefreshStart()
 {
   memset(Ht1621Data1, 0, sizeof(Ht1621Data1));
   memset(Ht1621Data2, 0, sizeof(Ht1621Data2));
 }
 
-void topLcdRefreshEnd()
+void toplcdRefreshEnd()
 {
   ht1621WrAllData(0, Ht1621Data1);
   ht1621WrAllData(1, Ht1621Data2);

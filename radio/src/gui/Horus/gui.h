@@ -64,6 +64,7 @@
 #define CURVE_CENTER_Y        159
 
 #define MENU_TITLE_NEXT_POS   (lcdNextPos + 10)
+#define MENU_INIT_VPOS        -1
 
 void displaySplash();
 void displayScreenIndex(uint8_t index, uint8_t count);
@@ -82,12 +83,16 @@ extern const uint8_t LBM_CURRENT_SHADOW[];
 extern const uint8_t LBM_CURRENT_DOT[];
 
 // Main view icons
+extern const uint16_t LBM_MAINVIEW_BACKGROUND[];
 extern const uint8_t LBM_TOPMENU_OPENTX[];
+extern const uint8_t LBM_TOPMENU_USB[];
 extern const uint8_t LBM_HTRIM_FRAME[];
 extern const uint8_t LBM_VTRIM_FRAME[];
 extern const uint8_t LBM_TRIM_SHADOW[];
 extern const uint8_t LBM_RADIO_ICON[];
 extern const uint8_t LBM_MODEL_ICON[];
+extern const uint8_t LBM_TIMER_BACKGROUND[];
+extern const uint8_t LBM_RSCALE[];
 
 // Menu icons
 extern const uint8_t * const LBM_RADIO_ICONS[];

@@ -39,6 +39,36 @@
 #define XPOT_DELTA 10
 #define XPOT_DELAY 10 /* cycles */
 
+#define BAR_HEIGHT    (BOX_WIDTH-9)
+#define LBOX_CENTERX  (BOX_WIDTH/2 + 17)
+#define RBOX_CENTERX  (LCD_W-LBOX_CENTERX)
+
+void drawPotsBars()
+{
+  // Optimization by Mike Blandford
+  uint8_t x, i, len ;  // declare temporary variables
+  for (x=LCD_W/2-9, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=9, i++) {
+    if (IS_POT_AVAILABLE(i)) {
+      len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
+      // TODO 220 constant
+      lcdDrawSolidFilledRect(x, 220-FH-len, 5, len, TEXT_COLOR);
+    }
+  }
+}
+
+void drawSticksPositions()
+{
+  int16_t calibStickVert = calibratedStick[CONVERT_MODE(1)];
+  if (g_model.throttleReversed && CONVERT_MODE(1) == THR_STICK)
+    calibStickVert = -calibStickVert;
+  drawStick(LBOX_CENTERX, calibratedStick[CONVERT_MODE(0)], calibStickVert);
+
+  calibStickVert = calibratedStick[CONVERT_MODE(2)];
+  if (g_model.throttleReversed && CONVERT_MODE(2) == THR_STICK)
+    calibStickVert = -calibStickVert;
+  drawStick(RBOX_CENTERX, calibratedStick[CONVERT_MODE(3)], calibStickVert);
+}
+
 void menuCommonCalib(evt_t event)
 {
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { // get low and high vals for sticks and trims
@@ -172,7 +202,7 @@ void menuCommonCalib(evt_t event)
       break;
   }
 
-  doMainScreenGraphics();
+  drawSticksPositions();
   drawPotsBars();
 
 #if 0

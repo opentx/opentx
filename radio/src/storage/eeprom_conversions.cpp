@@ -747,7 +747,7 @@ PACK(typedef struct {
 
   TelemetrySensor telemetrySensors[MAX_SENSORS];
 
-  TARANIS_REV9E_FIELD(uint8_t topLcdTimer)
+  TARANIS_REV9E_FIELD(uint8_t toplcdTimer)
 }) ModelData_v217;
 
 #if defined(PCBTARANIS)
@@ -1356,7 +1356,7 @@ void ConvertModel_217_to_218(ModelData & model)
     newModel.telemetrySensors[i] = oldModel.telemetrySensors[i];
   }
 #if defined(PCBTARANIS) && defined(REV9E)
-  newModel.topLcdTimer = oldModel.topLcdTimer;
+  newModel.toplcdTimer = oldModel.toplcdTimer;
 #endif
 }
 
@@ -1375,7 +1375,7 @@ void ConvertModel(int id, int version)
 
   uint8_t currModel = g_eeGeneral.currModel;
   g_eeGeneral.currModel = id;
-  s_storageDirtyMsk = EE_MODEL;
+  storageDirty(EE_MODEL);
   storageCheck(true);
   g_eeGeneral.currModel = currModel;
 }
@@ -1421,7 +1421,7 @@ bool eeConvert()
     version = 218;
     ConvertGeneralSettings_217_to_218(g_eeGeneral);
   }
-  s_storageDirtyMsk = EE_GENERAL;
+  storageDirty(EE_GENERAL);
   storageCheck(true);
 
 #if defined(COLORLCD)

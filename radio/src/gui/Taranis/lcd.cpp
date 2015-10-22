@@ -50,7 +50,7 @@ inline bool lcdIsPointOutside(coord_t x, coord_t y)
   return (x<0 || x>=LCD_W || y<0 || y>=LCD_H);
 }
 
-void lcd_clear()
+void lcdClear()
 {
   memset(displayBuf, 0, DISPLAY_BUFFER_SIZE);
 }

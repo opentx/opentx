@@ -341,7 +341,7 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   EXPECT_EQ(telemetryItems[0].valueMax, 2071);
 
   //display test
-  lcd_clear();
+  lcdClear();
   g_model.frsky.voltsSource = FRSKY_VOLTS_SOURCE_A1;
 }
 
@@ -416,7 +416,7 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
   EXPECT_EQ(telemetryItems[2].valueMax, 287);
 
   //display test
-  lcd_clear();
+  lcdClear();
   g_model.frsky.voltsSource = FRSKY_VOLTS_SOURCE_A1;
 }
 

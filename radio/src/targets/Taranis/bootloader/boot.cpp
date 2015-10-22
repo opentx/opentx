@@ -402,7 +402,7 @@ int main()
   lcdInit();
   backlightInit();
 
-  lcd_clear();
+  lcdClear();
   lcd_putsn(0, 0, (const char *)bootloaderVersion, 0); // trick to avoid bootloaderVersion to be optimized out ...
   lcd_putsLeft(0, BOOTLOADER_TITLE);
   lcd_invert_line(0);
@@ -427,7 +427,7 @@ int main()
       Tenms = 0;
 
       lcdRefreshWait();
-      lcd_clear();
+      lcdClear();
       lcd_putsLeft(0, BOOTLOADER_TITLE);
       lcd_invert_line(0);
 
@@ -686,7 +686,7 @@ int main()
 
     if (state == ST_REBOOT) {
       if (readKeys() == 0) {
-        lcd_clear();
+        lcdClear();
         lcdRefresh();
         lcdRefreshWait();
         RCC->CSR |= RCC_CSR_RMVF;   //clear the reset flags in RCC clock control & status register

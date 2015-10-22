@@ -2333,7 +2333,7 @@ PACK(typedef struct {
 
   ARM_FIELD(TelemetrySensor telemetrySensors[MAX_SENSORS])
   
-  TARANIS_REV9E_FIELD(uint8_t topLcdTimer)
+  TARANIS_REV9E_FIELD(uint8_t toplcdTimer)
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

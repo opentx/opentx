@@ -42,7 +42,7 @@ void backupEeprom()
   uint8_t buffer[1024];
   FIL file;
 
-  lcd_clear();
+  lcdClear();
   displayProgressBar(STR_WRITING);
 
   // reset unexpectedShutdown to prevent warning when user restores EEPROM backup

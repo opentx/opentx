@@ -54,6 +54,7 @@ void lcdColorsInit()
   lcdColorTable[SCROLLBOX_COLOR_INDEX] = RED;
   lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = DARKGREY;
   lcdColorTable[MENU_TITLE_COLOR_INDEX] = WHITE;
+  lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = RGB(130, 1, 5);
   lcdColorTable[HEADER_COLOR_INDEX] = DARKGREY;
   lcdColorTable[ALARM_COLOR_INDEX] = RED;
   lcdColorTable[WARNING_COLOR_INDEX] = YELLOW;
@@ -790,18 +791,18 @@ void lcdSetContrast()
   lcdSetRefVolt(g_eeGeneral.contrast);
 }
 
-void lcdDrawPixel(display_t * p, display_t value)
+inline void lcdDrawPixel(display_t * p, display_t value)
 {
   *p = value;
 }
 
-void lcdDrawPixel(coord_t x, coord_t y, display_t value)
+inline void lcdDrawPixel(coord_t x, coord_t y, display_t value)
 {
   display_t * p = PIXEL_PTR(x, y);
   lcdDrawPixel(p, value);
 }
 
-void lcdDrawTransparentPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t color)
+inline void lcdDrawTransparentPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t color)
 {
   display_t * p = PIXEL_PTR(x, y);
   lcdDrawTransparentPixel(p, opacity, color);
@@ -938,56 +939,66 @@ void lcdDrawCircle(int x0, int y0, int radius)
 
 #define PI 3.14159265
 
-void lcdDrawPie(int x0, int y0, int radius, int startAngle, int endAngle)
+bool evalSlopes(int * slopes, int startAngle, int endAngle)
 {
-  int slope1s, slope1e, slope2s, slope2e;
-
   if (startAngle >= 360 || endAngle <= 0)
-    return;
-
-  float angle1 = float(startAngle) * PI / 180;
-  float angle2 = float(endAngle) * PI / 180;
+    return false;
 
   if (startAngle == 0) {
-    slope1e = 100000;
-    slope2s = -100000;
-  }
-  else if (startAngle >= 180) {
-    slope1e = -100000;
-    slope2s = cos(angle1)*100/sin(angle1);
+    slopes[1] = 100000;
+    slopes[2] = -100000;
   }
   else {
-    slope1e = cos(angle1)*100/sin(angle1);
-    slope2s = -100000;
+    float angle1 = float(startAngle) * PI / 180;
+    if (startAngle >= 180) {
+      slopes[1] = -100000;
+      slopes[2] = cos(angle1) * 100 / sin(angle1);
+    }
+    else {
+      slopes[1] = cos(angle1) * 100 / sin(angle1);
+      slopes[2] = -100000;
+    }
   }
 
   if (endAngle == 360) {
-    slope1s = -100000;
-    slope2e = 100000;
-  }
-  else if (endAngle >= 180) {
-    slope1s = -100000;
-    slope2e = -cos(angle2)*100/sin(angle2);
+    slopes[0] = -100000;
+    slopes[3] = 100000;
   }
   else {
-    slope1s = cos(angle2)*100/sin(angle2);
-    slope2e = -100000;
+    float angle2 = float(endAngle) * PI / 180;
+    if (endAngle >= 180) {
+      slopes[0] = -100000;
+      slopes[3] = -cos(angle2) * 100 / sin(angle2);
+    }
+    else {
+      slopes[0] = cos(angle2) * 100 / sin(angle2);
+      slopes[3] = -100000;
+    }
   }
+
+  return true;
+}
+
+void lcdDrawPie(int x0, int y0, int radius, int startAngle, int endAngle)
+{
+  int slopes[4];
+  if (!evalSlopes(slopes, startAngle, endAngle))
+    return;
 
   for (int y=0; y<=radius; y++) {
     for (int x=0; x<=radius; x++) {
       if (x*x+y*y <= radius*radius) {
         int slope = (x==0 ? (y<0 ? -99000 : 99000) : y*100/x);
-        if (slope >= slope1s && slope < slope1e) {
+        if (slope >= slopes[0] && slope < slopes[1]) {
           lcdDrawPixel(x0+x, y0-y, WHITE);
         }
-        if (-slope >= slope1s && -slope < slope1e) {
+        if (-slope >= slopes[0] && -slope < slopes[1]) {
           lcdDrawPixel(x0+x, y0+y, WHITE);
         }
-        if (slope >= slope2s && slope < slope2e) {
+        if (slope >= slopes[2] && slope < slopes[3]) {
           lcdDrawPixel(x0-x, y0-y, WHITE);
         }
-        if (-slope >= slope2s && -slope < slope2e) {
+        if (-slope >= slopes[2] && -slope < slopes[3]) {
           lcdDrawPixel(x0-x, y0+y, WHITE);
         }
       }
@@ -1001,39 +1012,9 @@ void lcdDrawBitmapPie(int x0, int y0, const uint16_t * img, int startAngle, int 
   coord_t width = *q++;
   coord_t height = *q++;
 
-  int slope1s, slope1e, slope2s, slope2e;
-
-  if (startAngle >= 360 || endAngle <= 0)
+  int slopes[4];
+  if (!evalSlopes(slopes, startAngle, endAngle))
     return;
-
-  float angle1 = float(startAngle) * PI / 180;
-  float angle2 = float(endAngle) * PI / 180;
-
-  if (startAngle == 0) {
-    slope1e = 100000;
-    slope2s = -100000;
-  }
-  else if (startAngle >= 180) {
-    slope1e = -100000;
-    slope2s = cos(angle1)*100/sin(angle1);
-  }
-  else {
-    slope1e = cos(angle1)*100/sin(angle1);
-    slope2s = -100000;
-  }
-
-  if (endAngle == 360) {
-    slope1s = -100000;
-    slope2e = 100000;
-  }
-  else if (endAngle >= 180) {
-    slope1s = -100000;
-    slope2e = -cos(angle2)*100/sin(angle2);
-  }
-  else {
-    slope1s = cos(angle2)*100/sin(angle2);
-    slope2e = -100000;
-  }
 
   int w2 = width/2;
   int h2 = height/2;
@@ -1041,16 +1022,16 @@ void lcdDrawBitmapPie(int x0, int y0, const uint16_t * img, int startAngle, int 
   for (int y=h2-1; y>=0; y--) {
     for (int x=w2-1; x>=0; x--) {
       int slope = (x==0 ? (y<0 ? -99000 : 99000) : y*100/x);
-      if (slope >= slope1s && slope < slope1e) {
+      if (slope >= slopes[0] && slope < slopes[1]) {
         displayBuf[(y0+h2-y)*LCD_W + x0+w2+x] = q[(h2-y)*width + w2+x];
       }
-      if (-slope >= slope1s && -slope < slope1e) {
+      if (-slope >= slopes[0] && -slope < slopes[1]) {
         displayBuf[(y0+h2+y)*LCD_W + x0+w2+x] = q[(h2+y)*width + w2+x];
       }
-      if (slope >= slope2s && slope < slope2e) {
+      if (slope >= slopes[2] && slope < slopes[3]) {
         displayBuf[(y0+h2-y)*LCD_W + x0+w2-x] = q[(h2-y)*width + w2-x];
       }
-      if (-slope >= slope2s && -slope < slope2e) {
+      if (-slope >= slopes[2] && -slope < slopes[3]) {
         displayBuf[(y0+h2+y)*LCD_W + x0+w2-x] = q[(h2+y)*width + w2-x];
       }
     }
@@ -1063,41 +1044,11 @@ void lcdDrawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * img, LcdFla
   coord_t height = *(((uint16_t *)img)+1);
   const uint8_t * q = img+4;
 
-  int slope1s, slope1e, slope2s, slope2e;
-
-  if (startAngle >= 360 || endAngle <= 0)
+  int slopes[4];
+  if (!evalSlopes(slopes, startAngle, endAngle))
     return;
 
   display_t color = lcdColorTable[COLOR_IDX(flags)];
-
-  float angle1 = float(startAngle) * PI / 180;
-  float angle2 = float(endAngle) * PI / 180;
-
-  if (startAngle == 0) {
-    slope1e = 100000;
-    slope2s = -100000;
-  }
-  else if (startAngle >= 180) {
-    slope1e = -100000;
-    slope2s = cos(angle1)*100/sin(angle1);
-  }
-  else {
-    slope1e = cos(angle1)*100/sin(angle1);
-    slope2s = -100000;
-  }
-
-  if (endAngle == 360) {
-    slope1s = -100000;
-    slope2e = 100000;
-  }
-  else if (endAngle >= 180) {
-    slope1s = -100000;
-    slope2e = -cos(angle2)*100/sin(angle2);
-  }
-  else {
-    slope1s = cos(angle2)*100/sin(angle2);
-    slope2e = -100000;
-  }
 
   int w2 = width/2;
   int h2 = height/2;
@@ -1105,16 +1056,16 @@ void lcdDrawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * img, LcdFla
   for (int y=h2-1; y>=0; y--) {
     for (int x=w2-1; x>=0; x--) {
       int slope = (x==0 ? (y<0 ? -99000 : 99000) : y*100/x);
-      if (slope >= slope1s && slope < slope1e) {
+      if (slope >= slopes[0] && slope < slopes[1]) {
         lcdDrawTransparentPixel(x0+w2+x, y0+h2-y, q[(h2-y)*width + w2+x], color);
       }
-      if (-slope >= slope1s && -slope < slope1e) {
+      if (-slope >= slopes[0] && -slope < slopes[1]) {
         lcdDrawTransparentPixel(x0+w2+x, y0+h2+y, q[(h2+y)*width + w2+x], color);
       }
-      if (slope >= slope2s && slope < slope2e) {
+      if (slope >= slopes[2] && slope < slopes[3]) {
         lcdDrawTransparentPixel(x0+w2-x, y0+h2-y, q[(h2-y)*width + w2-x], color);
       }
-      if (-slope >= slope2s && -slope < slope2e) {
+      if (-slope >= slopes[2] && -slope < slopes[3]) {
         lcdDrawTransparentPixel(x0+w2-x, y0+h2+y, q[(h2+y)*width + w2-x], color);
       }
     }

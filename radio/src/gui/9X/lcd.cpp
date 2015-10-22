@@ -38,7 +38,7 @@
 
 display_t displayBuf[DISPLAY_BUFFER_SIZE];
 
-void lcd_clear()
+void lcdClear()
 {
   memset(displayBuf, 0, DISPLAY_BUFFER_SIZE);
 }

@@ -165,9 +165,9 @@ void storageCheck(bool immediately)
   //  eepromWriteWait();
   // }
 
-  if (s_storageDirtyMsk & EE_GENERAL) {
+  if (storageDirtyMsk & EE_GENERAL) {
     TRACE("eeprom write general");
-    s_storageDirtyMsk -= EE_GENERAL;
+    storageDirtyMsk -= EE_GENERAL;
     writeGeneralSettings();
     // if (immediately)
     //   eepromWriteWait();
@@ -175,9 +175,9 @@ void storageCheck(bool immediately)
       return;
   }
 
-  if (s_storageDirtyMsk & EE_MODEL) {
+  if (storageDirtyMsk & EE_MODEL) {
     TRACE("eeprom write model");
-    s_storageDirtyMsk -= EE_MODEL;
+    storageDirtyMsk -= EE_MODEL;
     const char * error = writeModel();
     if (error) {
       TRACE("writeModel error=%s", error);
