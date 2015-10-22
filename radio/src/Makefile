@@ -438,14 +438,14 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   OPT = s
   SDCARD = NO
   THR_TRACE = NO
-  INCDIRS += targets/stock
+  INCDIRS += targets/9x
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM64 -DEEPROM -DEEPROM_RLC -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
-  BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
+  BOARDSRC = main_avr.cpp targets/9x/board_stock.cpp
   EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/common_avr/telemetry_driver.cpp
   ifeq ($(GUI), YES)
-    EXTRABOARDSRC += targets/stock/lcd_driver.cpp
+    EXTRABOARDSRC += targets/9x/lcd_driver.cpp
   endif
-  EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
+  EEPROMSRC = storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
@@ -482,7 +482,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
 
   ifeq ($(VOICE), YES)
     CPPDEFS += -DVOICE
-    CPPSRC += targets/stock/voice.cpp
+    CPPSRC += targets/9x/voice.cpp
   endif
 
   ifeq ($(PWM_BACKLIGHT), YES)
@@ -521,10 +521,10 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   THR_TRACE = NO
   EEPROM_VARIANT += ${M128_VARIANT}
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM128 -DEEPROM -DEEPROM_RLC -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
-  INCDIRS += targets/stock
-  BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
-  EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
-  EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
+  INCDIRS += targets/9x
+  BOARDSRC = main_avr.cpp targets/9x/board_stock.cpp
+  EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/9x/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  EEPROMSRC = storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
@@ -561,7 +561,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
 
   ifeq ($(VOICE), YES)
     CPPDEFS += -DVOICE
-    CPPSRC += targets/stock/voice.cpp
+    CPPSRC += targets/9x/voice.cpp
   endif
 
   ifeq ($(PWM_BACKLIGHT), YES)
@@ -596,10 +596,10 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   THR_TRACE = YES
   EEPROM_VARIANT += ${M2561_VARIANT}
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM2561 -DEEPROM -DEEPROM_RLC -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
-  INCDIRS += targets/stock
-  BOARDSRC = main_avr.cpp targets/stock/board_stock.cpp
-  EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
-  EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
+  INCDIRS += targets/9x
+  BOARDSRC = main_avr.cpp targets/9x/board_stock.cpp
+  EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/9x/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  EEPROMSRC = storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
@@ -628,7 +628,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
 
   ifeq ($(VOICE), YES)
     CPPDEFS += -DVOICE
-    CPPSRC += targets/stock/voice.cpp
+    CPPSRC += targets/9x/voice.cpp
   endif
 
   ifeq ($(PWM_BACKLIGHT), YES)
@@ -669,10 +669,10 @@ ifeq ($(PCB), GRUVIN9X)
   SDCARD = NO
   BUZZER = NO
   THR_TRACE = YES
-  INCDIRS += targets/gruvin9x targets/stock $(FATFSDIR) $(FATFSDIR)/option
-  BOARDSRC = main_avr.cpp targets/gruvin9x/board_gruvin9x.cpp
-  EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
-  EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
+  INCDIRS += targets/Gruvin9x targets/9x $(FATFSDIR) $(FATFSDIR)/option
+  BOARDSRC = main_avr.cpp targets/Gruvin9x/board_gruvin9x.cpp
+  EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/9x/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  EEPROMSRC = storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += audio_avr.cpp haptic.cpp debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
@@ -680,9 +680,9 @@ ifeq ($(PCB), GRUVIN9X)
 
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DRTCLOCK -DSDCARD
-    CPPSRC += rtc.cpp sdcard.cpp logs.cpp targets/gruvin9x/rtc_driver.cpp
+    CPPSRC += rtc.cpp sdcard.cpp logs.cpp targets/Gruvin9x/rtc_driver.cpp
     GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_sdmanager.cpp
-    EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/gruvin9x/diskio.cpp
+    EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/Gruvin9x/diskio.cpp
   endif
 
   ifeq ($(BUZZER), YES)
@@ -692,7 +692,7 @@ ifeq ($(PCB), GRUVIN9X)
 
   ifeq ($(VOICE), YES)
     CPPDEFS += -DVOICE
-    CPPSRC += targets/gruvin9x/somo14d.cpp
+    CPPSRC += targets/Gruvin9x/somo14d.cpp
   endif
 
   # Enable extra rotary encoders (Gruvin9x board only)
@@ -715,25 +715,25 @@ ifeq ($(PCB), MEGA2560)
   BUZZER = YES
   THR_TRACE = YES
   PWRMANAGE = NO
-  INCDIRS += targets/mega2560 targets/stock $(FATFSDIR) $(FATFSDIR)/option
-  BOARDSRC = main_avr.cpp targets/mega2560/board_mega2560.cpp
-  EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
+  INCDIRS += targets/Mega2560 targets/9x $(FATFSDIR) $(FATFSDIR)/option
+  BOARDSRC = main_avr.cpp targets/Mega2560/board_mega2560.cpp
+  EEPROMSRC = storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += audio_avr.cpp debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
-  EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
+  EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/9x/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
          
   ifeq ($(PWRMANAGE), YES)
     CPPDEFS += -DPWRMANAGE
   endif
 
   ifeq ($(SDCARD), YES)
-    EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/gruvin9x/diskio.cpp
+    EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/Gruvin9x/diskio.cpp
     CPPDEFS += -DSDCARD -DRTCLOCK
     GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_sdmanager.cpp
-    CPPSRC += rtc.cpp sdcard.cpp logs.cpp targets/gruvin9x/rtc_driver.cpp
+    CPPSRC += rtc.cpp sdcard.cpp logs.cpp targets/Gruvin9x/rtc_driver.cpp
   endif
 
   ifeq ($(AUDIO), YES)
@@ -751,7 +751,7 @@ ifeq ($(PCB), MEGA2560)
 
   ifeq ($(VOICE), YES)
     CPPDEFS += -DVOICE
-    CPPSRC += targets/gruvin9x/somo14d.cpp
+    CPPSRC += targets/Gruvin9x/somo14d.cpp
   endif
   
   ifeq ($(HAPTIC), YES)
@@ -774,27 +774,27 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
     CPPDEFS = -Dat91sam3s8
     FLAVOUR = 9xrpro
     CPPDEFS += -DREVX
-    LDSCRIPT = targets/sky9x/sam3s8c_flash.ld
+    LDSCRIPT = targets/Sky9x/sam3s8c_flash.ld
   else ifeq ($(PCB), AR9X)
     CPPDEFS = -Dat91sam3s8
     FLAVOUR = ar9x
     CPPDEFS += -DAR9X
-    LDSCRIPT = targets/sky9x/sam3s8c_flash.ld
+    LDSCRIPT = targets/Sky9x/sam3s8c_flash.ld
   else ifeq ($(PCBREV), REVA)
     FLAVOUR = sky9x
     CPPDEFS += -DREVA
-    LDSCRIPT = targets/sky9x/sam3s2c_flash.ld
-    CPPSRC += targets/sky9x/coproc_driver.cpp
+    LDSCRIPT = targets/Sky9x/sam3s2c_flash.ld
+    CPPSRC += targets/Sky9x/coproc_driver.cpp
   else ifeq ($(PCBREV), REVB)
     FLAVOUR = sky9x
     CPPDEFS += -DREVB -DCOPROCESSOR
-    LDSCRIPT = targets/sky9x/sam3s4c_flash.ld
-    CPPSRC += targets/sky9x/coproc_driver.cpp
+    LDSCRIPT = targets/Sky9x/sam3s4c_flash.ld
+    CPPSRC += targets/Sky9x/coproc_driver.cpp
   else
     FLAVOUR = sky9x
     CPPDEFS += -DREVC -DCOPROCESSOR
-    LDSCRIPT = targets/sky9x/sam3s4c_flash.ld
-    CPPSRC += targets/sky9x/coproc_driver.cpp
+    LDSCRIPT = targets/Sky9x/sam3s4c_flash.ld
+    CPPSRC += targets/Sky9x/coproc_driver.cpp
   endif
   TRGT = arm-none-eabi-
   MCU = cortex-m3
@@ -806,25 +806,25 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
   CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DDSM2 -DDSM2_PPM -DPXX
   ifeq ($(PCB), SKY9X)
     CPPDEFS += -DROTARY_ENCODERS=1
-    CPPSRC += targets/sky9x/rotenc_driver.cpp
+    CPPSRC += targets/Sky9x/rotenc_driver.cpp
   endif
   ifeq ($(SPORT_FILE_LOG), YES)
     CPPDEFS += -DSPORT_FILE_LOG
   endif
-  INCDIRS += targets/sky9x $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
+  INCDIRS += targets/Sky9x $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_hardware.cpp gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
-  BOARDSRC = main_arm.cpp targets/sky9x/board_sky9x.cpp
-  EXTRABOARDSRC = targets/sky9x/lcd_driver.cpp
-  SRC += targets/sky9x/core_cm3.c targets/sky9x/board_lowlevel.c targets/sky9x/crt.c targets/sky9x/vectors_sam3s.c
+  BOARDSRC = main_arm.cpp targets/Sky9x/board_sky9x.cpp
+  EXTRABOARDSRC = targets/Sky9x/lcd_driver.cpp
+  SRC += targets/Sky9x/core_cm3.c targets/Sky9x/board_lowlevel.c targets/Sky9x/crt.c targets/Sky9x/vectors_sam3s.c
   SRC += $(COOSDIR)/kernel/core.c $(COOSDIR)/kernel/hook.c $(COOSDIR)/kernel/task.c $(COOSDIR)/kernel/event.c $(COOSDIR)/kernel/time.c $(COOSDIR)/kernel/timer.c $(COOSDIR)/kernel/flag.c $(COOSDIR)/kernel/mutex.c $(COOSDIR)/kernel/serviceReq.c $(COOSDIR)/portable/GCC/port.c $(COOSDIR)/portable/arch.c
-  SRC += targets/sky9x/usb/device/core/USBD_UDP.c targets/sky9x/usb/device/core/USBDDriver.c
-  SRC += targets/sky9x/usb/device/massstorage/MSDDriver.c targets/sky9x/usb/device/massstorage/MSDDStateMachine.c targets/sky9x/usb/device/massstorage/MSDLun.c targets/sky9x/usb/device/massstorage/MSDDriverDescriptors.c targets/sky9x/usb/device/massstorage/SBCMethods.c
-  SRC += targets/sky9x/usb/common/core/USBEndpointDescriptor.c targets/sky9x/usb/common/core/USBGenericRequest.c targets/sky9x/usb/common/core/USBFeatureRequest.c targets/sky9x/usb/common/core/USBInterfaceRequest.c targets/sky9x/usb/common/core/USBGetDescriptorRequest.c targets/sky9x/usb/common/core/USBSetAddressRequest.c targets/sky9x/usb/common/core/USBSetConfigurationRequest.c targets/sky9x/usb/common/core/USBConfigurationDescriptor.c targets/sky9x/usb/common/core/USBGenericDescriptor.c
-  SRC += targets/sky9x/MEDSdcard.c
-  EEPROMSRC = eeprom_common.cpp eeprom_raw.cpp eeprom_conversions.cpp
+  SRC += targets/Sky9x/usb/device/core/USBD_UDP.c targets/Sky9x/usb/device/core/USBDDriver.c
+  SRC += targets/Sky9x/usb/device/massstorage/MSDDriver.c targets/Sky9x/usb/device/massstorage/MSDDStateMachine.c targets/Sky9x/usb/device/massstorage/MSDLun.c targets/Sky9x/usb/device/massstorage/MSDDriverDescriptors.c targets/Sky9x/usb/device/massstorage/SBCMethods.c
+  SRC += targets/Sky9x/usb/common/core/USBEndpointDescriptor.c targets/Sky9x/usb/common/core/USBGenericRequest.c targets/Sky9x/usb/common/core/USBFeatureRequest.c targets/Sky9x/usb/common/core/USBInterfaceRequest.c targets/Sky9x/usb/common/core/USBGetDescriptorRequest.c targets/Sky9x/usb/common/core/USBSetAddressRequest.c targets/Sky9x/usb/common/core/USBSetConfigurationRequest.c targets/Sky9x/usb/common/core/USBConfigurationDescriptor.c targets/Sky9x/usb/common/core/USBGenericDescriptor.c
+  SRC += targets/Sky9x/MEDSdcard.c
+  EEPROMSRC = storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_raw.cpp storage/eeprom_conversions.cpp
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp pulses/dsm2_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp haptic.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp telemetry/telemetry.cpp
-  CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/serial2_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
+  CPPSRC += targets/Sky9x/telemetry_driver.cpp targets/Sky9x/serial2_driver.cpp targets/Sky9x/pwr_driver.cpp targets/Sky9x/adc_driver.cpp targets/Sky9x/eeprom_driver.cpp targets/Sky9x/pulses_driver.cpp targets/Sky9x/keys_driver.cpp targets/Sky9x/audio_driver.cpp targets/Sky9x/buzzer_driver.cpp targets/Sky9x/haptic_driver.cpp targets/Sky9x/sdcard_driver.cpp targets/Sky9x/massstorage.cpp
   CPPSRC += loadboot.cpp debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
   ifeq ($(SDCARD), YES)
@@ -832,7 +832,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
     INCDIRS += $(FATFSDIR) $(FATFSDIR)/option
     CPPSRC += sdcard.cpp logs.cpp
     GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_sdmanager.cpp
-    EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/sky9x/diskio.cpp
+    EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/Sky9x/diskio.cpp
   endif
   ifeq ($(BUZZER), YES)
     CPPDEFS += -DBUZZER
@@ -840,11 +840,11 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
   endif
   ifeq ($(RTCLOCK), YES)
     CPPDEFS += -DRTCLOCK
-    CPPSRC += rtc.cpp targets/sky9x/rtc_driver.cpp
+    CPPSRC += rtc.cpp targets/Sky9x/rtc_driver.cpp
   endif
   ifeq ($(BLUETOOTH), YES)
     CPPDEFS += -DBLUETOOTH
-    CPPSRC += targets/sky9x/bluetooth.cpp
+    CPPSRC += targets/Sky9x/bluetooth.cpp
   endif
   ifeq ($(DEBUG), YES)
     SRC += syscalls.c
@@ -867,7 +867,7 @@ ifeq ($(PCB), TARANIS)
       CPPDEFS += -DLCD_DUAL_BUFFER
     endif
     HAPTIC = YES
-    EXTRABOARDSRC += targets/taranis/bluetooth_driver.cpp
+    EXTRABOARDSRC += targets/Taranis/bluetooth_driver.cpp
   else ifeq ($(PCBREV), REVPLUS)
     MCU = cortex-m3
     FLAVOUR = taranis-plus
@@ -927,18 +927,18 @@ ifeq ($(PCB), TARANIS)
   PPM_CENTER_ADJUSTABLE = YES
   DSM2 = PPM
   CPPDEFS += -DPCBTARANIS -DCPUARM -DCPUSTM32 -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DEEPROM -DEEPROM_RLC -DAUDIO -DPXX
-  INCDIRS += targets/taranis $(THIRDPARTY) $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
+  INCDIRS += targets/Taranis $(THIRDPARTY) $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
   CPPDEFS += -DHSE_VALUE=12000000
   ifeq ($(PCBREV), REV9E)
     STM32LIBPATH = $(THIRDPARTY)/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries
     CPPDEFS += -DSTM32F4 -DSTM32F40_41xxx -DEEPROM_VARIANT=32768
     INCDIRS += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Include $(STM32LIBPATH)/CMSIS/Include $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/inc
-    LDSCRIPT = targets/taranis/stm32f4_flash.ld
+    LDSCRIPT = targets/Taranis/stm32f4_flash.ld
   else
     STM32LIBPATH= $(THIRDPARTY)/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries
     CPPDEFS += -DEEPROM_VARIANT=0
     INCDIRS += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/inc $(STM32LIBPATH)/CMSIS/Device/ST/STM32F2xx/Include $(STM32LIBPATH)/CMSIS/include
-    LDSCRIPT = targets/taranis/stm32f2_flash.ld
+    LDSCRIPT = targets/Taranis/stm32f2_flash.ld
   endif
   STM32USBPATH = $(THIRDPARTY)/STM32_USB-Host-Device_Lib_V2.1.0/Libraries
   INCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc
@@ -947,19 +947,19 @@ ifeq ($(PCB), TARANIS)
   INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
   INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/inc
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_hardware.cpp
-  BOARDSRC = main_arm.cpp targets/taranis/board_taranis.cpp
-  EXTRABOARDSRC += targets/taranis/configure_pins.cpp targets/taranis/lcd_driver.cpp targets/taranis/flash_driver.cpp targets/taranis/i2c_driver.cpp targets/taranis/aspi.c targets/taranis/delays.c serial.cpp
+  BOARDSRC = main_arm.cpp targets/Taranis/board_taranis.cpp
+  EXTRABOARDSRC += targets/Taranis/configure_pins.cpp targets/Taranis/lcd_driver.cpp targets/Taranis/flash_driver.cpp targets/Taranis/i2c_driver.cpp targets/Taranis/aspi.c targets/Taranis/delays.c serial.cpp
   SRC += $(COOSDIR)/kernel/core.c $(COOSDIR)/kernel/hook.c $(COOSDIR)/kernel/task.c $(COOSDIR)/kernel/event.c $(COOSDIR)/kernel/time.c $(COOSDIR)/kernel/timer.c $(COOSDIR)/kernel/flag.c $(COOSDIR)/kernel/mutex.c $(COOSDIR)/kernel/serviceReq.c $(COOSDIR)/portable/GCC/port.c $(COOSDIR)/portable/arch.c
-  SRC += targets/taranis/pwr_driver.c targets/taranis/usb_driver.c
-  EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp eeprom_conversions.cpp
+  SRC += targets/Taranis/pwr_driver.c targets/Taranis/usb_driver.c
+  EEPROMSRC = storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp storage/eeprom_conversions.cpp
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp sbus.cpp telemetry/telemetry.cpp
-  CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/serial2_driver.cpp targets/taranis/telemetry_driver.cpp
+  CPPSRC += targets/Taranis/pulses_driver.cpp targets/Taranis/keys_driver.cpp targets/Taranis/adc_driver.cpp targets/Taranis/trainer_driver.cpp targets/Taranis/audio_driver.cpp targets/Taranis/serial2_driver.cpp targets/Taranis/telemetry_driver.cpp
   CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp
   CPPSRC += loadboot.cpp
   ifeq ($(PCBREV), REV9E)
-    CPPSRC += targets/taranis/top_lcd_driver.cpp
-    SRC += targets/taranis/system_stm32f4xx.c
+    CPPSRC += targets/Taranis/top_lcd_driver.cpp
+    SRC += targets/Taranis/system_stm32f4xx.c
     SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/misc.c
     SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
     SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c
@@ -972,7 +972,7 @@ ifeq ($(PCB), TARANIS)
     SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
     SRC += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s
   else
-    SRC += targets/taranis/system_stm32f2xx.c
+    SRC += targets/Taranis/system_stm32f2xx.c
     SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/misc.c
     SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
     SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dbgmcu.c
@@ -985,29 +985,29 @@ ifeq ($(PCB), TARANIS)
     SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_usart.c
     SRC += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
   endif
-  SRC += targets/taranis/usb_bsp.c targets/taranis/usbd_desc.c
+  SRC += targets/Taranis/usb_bsp.c targets/Taranis/usbd_desc.c
   SRC += $(STM32USBPATH)/STM32_USB_OTG_Driver/src/usb_core.c
   SRC += $(STM32USBPATH)/STM32_USB_OTG_Driver/src/usb_dcd.c
   SRC += $(STM32USBPATH)/STM32_USB_OTG_Driver/src/usb_dcd_int.c
   SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Core/src/usbd_core.c
   SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Core/src/usbd_ioreq.c
   SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Core/src/usbd_req.c
-  EXTRABOARDSRC += targets/taranis/usbd_usr.cpp
+  EXTRABOARDSRC += targets/Taranis/usbd_usr.cpp
   SRC += syscalls.c
   ifeq ($(USB), JOYSTICK)
     CPPDEFS += -DUSB_JOYSTICK
-    SRC += targets/taranis/usbd_hid_joystick.c
+    SRC += targets/Taranis/usbd_hid_joystick.c
   else ifeq ($(USB), SERIAL)
     CPPDEFS += -DUSB_SERIAL
     SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c
-    EXTRABOARDSRC += targets/taranis/usbd_cdc.cpp
+    EXTRABOARDSRC += targets/Taranis/usbd_cdc.cpp
   else
     CPPDEFS += -DUSB_MASS_STORAGE
     SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c
     SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/src/usbd_msc_scsi.c
     SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
     SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
-    EXTRABOARDSRC += targets/taranis/usbd_storage_msd.cpp
+    EXTRABOARDSRC += targets/Taranis/usbd_storage_msd.cpp
   endif
   ifeq ($(NANO), YES)
     # use newlib-nano for linking
@@ -1035,8 +1035,8 @@ ifeq ($(PCB), TARANIS)
 	  CPPSRC += bin_allocator.cpp
 	endif
   endif
-  EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/taranis/diskio.cpp
-  CPPSRC += sdcard.cpp logs.cpp rtc.cpp targets/taranis/rtc_driver.cpp
+  EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/Taranis/diskio.cpp
+  CPPSRC += sdcard.cpp logs.cpp rtc.cpp targets/Taranis/rtc_driver.cpp
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_sdmanager.cpp gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
   CPPDEFS += -DSDCARD -DVOICE -DRTCLOCK
   INCDIRS += $(FATFSDIR) $(FATFSDIR)/option
@@ -1046,12 +1046,12 @@ ifeq ($(PCB), TARANIS)
   ifeq ($(HUBSAN), YES)
     CPPDEFS += -DHUBSAN
     CPPSRC += pulses/hubsan.cpp
-    CPPSRC += targets/taranis/a7105_driver.cpp
+    CPPSRC += targets/Taranis/a7105_driver.cpp
   endif
   ifeq ($(HAPTIC), YES)
     CPPDEFS += -DHAPTIC
     CPPSRC += haptic.cpp
-    CPPSRC += targets/taranis/haptic_driver.cpp
+    CPPSRC += targets/Taranis/haptic_driver.cpp
   endif
   ifeq ($(MIXERS_MONITOR), YES)
     CPPDEFS += -DMIXERS_MONITOR
@@ -1097,10 +1097,10 @@ ifeq ($(PCB), FLAMENCO)
   INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
   INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/inc
   BOARDSRC = main_arm.cpp targets/Flamenco/board_flamenco.cpp
-  EXTRABOARDSRC += targets/Flamenco/lcd_driver.cpp targets/Flamenco/delays.c targets/Flamenco/i2c_driver.cpp targets/taranis/configure_pins.cpp serial.cpp # targets/taranis/flash_driver.cpp 
+  EXTRABOARDSRC += targets/Flamenco/lcd_driver.cpp targets/Flamenco/delays.c targets/Flamenco/i2c_driver.cpp targets/Taranis/configure_pins.cpp serial.cpp # targets/Taranis/flash_driver.cpp 
   SRC += $(COOSDIR)/kernel/core.c $(COOSDIR)/kernel/hook.c $(COOSDIR)/kernel/task.c $(COOSDIR)/kernel/event.c $(COOSDIR)/kernel/time.c $(COOSDIR)/kernel/timer.c $(COOSDIR)/kernel/flag.c $(COOSDIR)/kernel/mutex.c $(COOSDIR)/kernel/serviceReq.c $(COOSDIR)/portable/GCC/port.c $(COOSDIR)/portable/arch.c
   SRC += targets/Flamenco/pwr_driver.c targets/Flamenco/usb_driver.c
-  EEPROMSRC = eeprom_common.cpp eeprom_raw.cpp
+  EEPROMSRC = storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_raw.cpp
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp sbus.cpp telemetry/telemetry.cpp
   CPPSRC += targets/Flamenco/tw8823_driver.cpp targets/Flamenco/pulses_driver.cpp targets/Flamenco/keys_driver.cpp targets/Flamenco/adc_driver.cpp targets/Flamenco/eeprom_driver.cpp targets/Flamenco/trainer_driver.cpp targets/Flamenco/audio_driver.cpp targets/Flamenco/serial2_driver.cpp targets/Flamenco/telemetry_driver.cpp
@@ -1157,7 +1157,7 @@ ifeq ($(PCB), FLAMENCO)
 
   EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/Flamenco/diskio.cpp
   CPPDEFS += -DSDCARD -DVOICE -DRTCLOCK
-  CPPSRC += sdcard.cpp rtc.cpp logs.cpp targets/taranis/rtc_driver.cpp
+  CPPSRC += sdcard.cpp rtc.cpp logs.cpp targets/Taranis/rtc_driver.cpp
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_sdmanager.cpp
   INCDIRS += $(FATFSDIR) $(FATFSDIR)/option
     
@@ -1219,7 +1219,7 @@ ifeq ($(PCB), HORUS)
   INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
   INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/inc
   BOARDSRC = main_arm.cpp targets/Horus/board_horus.cpp targets/Horus/led_driver.cpp
-  EXTRABOARDSRC += targets/Horus/lcd_driver.cpp targets/Horus/delays.c targets/Horus/i2c_driver.cpp targets/taranis/configure_pins.cpp serial.cpp # targets/taranis/flash_driver.cpp 
+  EXTRABOARDSRC += targets/Horus/lcd_driver.cpp targets/Horus/delays.c targets/Horus/i2c_driver.cpp targets/Taranis/configure_pins.cpp serial.cpp # targets/Taranis/flash_driver.cpp 
   SRC += $(COOSDIR)/kernel/core.c $(COOSDIR)/kernel/hook.c $(COOSDIR)/kernel/task.c $(COOSDIR)/kernel/event.c $(COOSDIR)/kernel/time.c $(COOSDIR)/kernel/timer.c $(COOSDIR)/kernel/flag.c $(COOSDIR)/kernel/mutex.c $(COOSDIR)/kernel/serviceReq.c $(COOSDIR)/portable/GCC/port.c $(COOSDIR)/portable/arch.c
   SRC += targets/Horus/pwr_driver.c targets/Horus/usb_driver.c targets/Horus/sdram_driver.c
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
@@ -1227,6 +1227,7 @@ ifeq ($(PCB), HORUS)
   CPPSRC += targets/Horus/pulses_driver.cpp targets/Horus/keys_driver.cpp targets/Horus/adc_driver.cpp targets/Horus/trainer_driver.cpp targets/Horus/audio_driver.cpp targets/Horus/serial2_driver.cpp targets/Horus/telemetry_driver.cpp
   CPPSRC += gui/$(GUIDIRECTORY)/bitmaps.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp
   SRC += targets/Horus/system_stm32f4xx.c
+  CPPSRC += storage/storage_common.cpp storage/sdcard_raw.cpp
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/misc.c
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c
@@ -1286,7 +1287,7 @@ ifeq ($(PCB), HORUS)
 
   EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/Horus/diskio.cpp
   CPPDEFS += -DSDCARD -DVOICE -DRTCLOCK
-  CPPSRC += sdcard.cpp rtc.cpp logs.cpp targets/taranis/rtc_driver.cpp
+  CPPSRC += sdcard.cpp rtc.cpp logs.cpp targets/Taranis/rtc_driver.cpp
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_sdmanager.cpp
   INCDIRS += $(FATFSDIR) $(FATFSDIR)/option
     
@@ -1332,6 +1333,9 @@ endif
 
 ifeq ($(GUI), YES)
   GUISRC = gui/$(GUIDIRECTORY)/helpers.cpp gui/$(GUIDIRECTORY)/navigation.cpp gui/$(GUIDIRECTORY)/popups.cpp gui/$(GUIDIRECTORY)/widgets.cpp gui/$(GUIDIRECTORY)/menus.cpp $(GUIMODELSRC) $(GUIGENERALSRC) gui/$(GUIDIRECTORY)/view_main.cpp gui/$(GUIDIRECTORY)/view_statistics.cpp
+  ifeq ($(ARCH), ARM)
+    GUISRC += gui/gui_helpers.cpp
+  endif
   CPPDEFS += -DGUI
 endif
 
@@ -1736,11 +1740,11 @@ endif
 
 # build bootloader
 ifeq ($(PCB), $(filter $(PCB), TARANIS))
-bootloader.lbm: targets/taranis/bootloader/bootloader_ramBoot.bin
+bootloader.lbm: targets/Taranis/bootloader/bootloader_ramBoot.bin
 	$(BIN2LBM) $^ $@
-.PHONY targets/taranis/bootloader/bootloader_ramBoot.bin:
+.PHONY targets/Taranis/bootloader/bootloader_ramBoot.bin:
 	@echo "Building bootloader..."
-	$(MAKE) -C targets/taranis/bootloader PCB=$(PCB) PCBREV=$(PCBREV) NANO=$(NANO) WARNINGS_AS_ERRORS=$(WARNINGS_AS_ERRORS)
+	$(MAKE) -C targets/Taranis/bootloader PCB=$(PCB) PCBREV=$(PCBREV) NANO=$(NANO) WARNINGS_AS_ERRORS=$(WARNINGS_AS_ERRORS)
 else ifeq ($(PCB), $(filter $(PCB), 9XRPRO AR9X))
 bootloader.lbm:
 	@echo "Fetching Mike's bootloader..."
@@ -1836,9 +1840,10 @@ ifeq ($(PCB), $(filter $(PCB), HORUS))
   TINSIZE = 9
   SMLSIZE = 13
   STDSIZE = 16
-  MIDSIZE = 16
-  DBLSIZE = 20
-  XXLSIZE = 38
+  MIDSIZE = 24
+  DBLSIZE = 32
+  DBLBOLD = True
+  XXLSIZE = 48
   MASKFORMAT = 8bits
 else
   FONTNAME = Roboto
@@ -1847,6 +1852,7 @@ else
   STDSIZE = 8
   MIDSIZE = 11
   DBLSIZE = 14
+  DBLBOLD = False
   XXLSIZE = 38
   MASKFORMAT = 4bits
 endif
@@ -1858,22 +1864,22 @@ fonts/font_%size.lbm: fonts/font_%size.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE) $(MASKFORMAT)
 
 fonts/font_tinsize.png:
-	$(FONT2PNG) $(FONTNAME) $(TINSIZE) fonts/font_tinsize
+	$(FONT2PNG) $(FONTNAME) $(TINSIZE) False fonts/font_tinsize
 
 fonts/font_smlsize.png:
-	$(FONT2PNG) $(FONTNAME) $(SMLSIZE) fonts/font_smlsize
+	$(FONT2PNG) $(FONTNAME) $(SMLSIZE) False fonts/font_smlsize
 
 fonts/font_stdsize.png:
-	$(FONT2PNG) $(FONTNAME) $(STDSIZE) fonts/font_stdsize
+	$(FONT2PNG) $(FONTNAME) $(STDSIZE) False fonts/font_stdsize
 
 fonts/font_midsize.png:
-	$(FONT2PNG) $(FONTNAME) $(MIDSIZE) fonts/font_midsize
+	$(FONT2PNG) $(FONTNAME) $(MIDSIZE) False fonts/font_midsize
 
 fonts/font_dblsize.png:
-	$(FONT2PNG) $(FONTNAME) $(DBLSIZE) fonts/font_dblsize
+	$(FONT2PNG) $(FONTNAME) $(DBLSIZE) $(DBLBOLD) fonts/font_dblsize
 
 fonts/font_xxlsize.png:
-	$(FONT2PNG) $(FONTNAME) $(XXLSIZE) fonts/font_xxlsize
+	$(FONT2PNG) $(FONTNAME) $(XXLSIZE) False fonts/font_xxlsize
 
 fonts/%.lbm: fonts/%.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE)
@@ -2090,7 +2096,7 @@ clean_list :
 	$(REMOVE) fonts/font_*
 	$(REMOVE) fonts/*/*.lbm
 	$(REMOVE) lua_exports* lua_fields.txt
-	$(MAKE) -C targets/taranis/bootloader clean
+	$(MAKE) -C targets/Taranis/bootloader clean
 
 #### Install
 

@@ -306,28 +306,28 @@ TEST(Lcd, BMPWrapping)
 #endif
 
 #if defined(PCBTARANIS)
-TEST(Lcd, lcd_hlineStip)
+TEST(Lcd, lcdDrawHorizontalLine)
 {
   lcd_clear();
-  lcd_hlineStip(0, 10, LCD_W, DOTTED);
-  lcd_hlineStip(0, 20, LCD_W, SOLID);
-  lcd_hlineStip(50, 30, LCD_W, 0xEE);    //too wide
-  lcd_hlineStip(50, LCD_H + 10, 20, SOLID);    //too low
-  lcd_hlineStip(250, 30, LCD_W, SOLID);    //x outside display
-  EXPECT_TRUE(checkScreenshot("lcd_hlineStip"));
+  lcdDrawHorizontalLine(0, 10, LCD_W, DOTTED);
+  lcdDrawHorizontalLine(0, 20, LCD_W, SOLID);
+  lcdDrawHorizontalLine(50, 30, LCD_W, 0xEE);    //too wide
+  lcdDrawHorizontalLine(50, LCD_H + 10, 20, SOLID);    //too low
+  lcdDrawHorizontalLine(250, 30, LCD_W, SOLID);    //x outside display
+  EXPECT_TRUE(checkScreenshot("lcdDrawHorizontalLine"));
 }
 #endif
 
 #if defined(PCBTARANIS)
-TEST(Lcd, lcd_vlineStip)
+TEST(Lcd, lcdDrawVerticalLine)
 {
   lcd_clear();
-  lcd_vlineStip(10, 0, LCD_H, DOTTED);
-  lcd_vlineStip(20, 0, LCD_H, SOLID);
-  lcd_vlineStip(30, 30, LCD_H, 0xEE);    //too high
-  lcd_vlineStip(40, LCD_H + 10, 20, SOLID);    //too low
-  lcd_vlineStip(250, LCD_H + 10, LCD_H, SOLID);    //x outside display
-  EXPECT_TRUE(checkScreenshot("lcd_vlineStip"));
+  lcdDrawVerticalLine(10, 0, LCD_H, DOTTED);
+  lcdDrawVerticalLine(20, 0, LCD_H, SOLID);
+  lcdDrawVerticalLine(30, 30, LCD_H, 0xEE);    //too high
+  lcdDrawVerticalLine(40, LCD_H + 10, 20, SOLID);    //too low
+  lcdDrawVerticalLine(250, LCD_H + 10, LCD_H, SOLID);    //x outside display
+  EXPECT_TRUE(checkScreenshot("lcdDrawVerticalLine"));
 }
 #endif
 
@@ -410,7 +410,7 @@ TEST(Lcd, lcd_bmpLoadAndDisplay)
 #endif
 
 #if defined(PCBTARANIS)
-TEST(Lcd, lcd_line)
+TEST(Lcd, lcdDrawLine)
 {
   int start, length, xOffset;
   uint8_t pattern; 
@@ -421,57 +421,57 @@ TEST(Lcd, lcd_line)
   pattern = SOLID; 
   length = 40;
   xOffset = 0;
-  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
-  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+  lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
   start = 10;
   pattern = DOTTED; 
   length = 40;
   xOffset = 0;
-  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
-  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+  lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
   start = 55;
   pattern = SOLID; 
   length = -40;
   xOffset = 80;
-  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
-  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+  lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
   start = 50;
   pattern = DOTTED; 
   length = -40;
   xOffset = 80;
-  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
-  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+  lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
   // 45 deg lines
-  lcd_line( 35, 40, 45, 40, SOLID, FORCE );
-  lcd_line( 40, 35, 40, 45, SOLID, FORCE );
+  lcdDrawLine( 35, 40, 45, 40, SOLID, FORCE );
+  lcdDrawLine( 40, 35, 40, 45, SOLID, FORCE );
 
-  lcd_line( 20, 40, 40, 20, SOLID, FORCE );
-  lcd_line( 40, 20, 60, 40, SOLID, FORCE );
-  lcd_line( 60, 40, 40, 60, SOLID, FORCE );
-  lcd_line( 40, 60, 20, 40, SOLID, FORCE );
+  lcdDrawLine( 20, 40, 40, 20, SOLID, FORCE );
+  lcdDrawLine( 40, 20, 60, 40, SOLID, FORCE );
+  lcdDrawLine( 60, 40, 40, 60, SOLID, FORCE );
+  lcdDrawLine( 40, 60, 20, 40, SOLID, FORCE );
 
-  lcd_line( 31, 39, 39, 31, SOLID, FORCE );
-  lcd_line( 41, 31, 49, 39, SOLID, FORCE );
-  lcd_line( 49, 41, 41, 49, SOLID, FORCE );
-  lcd_line( 39, 49, 31, 41, SOLID, FORCE );
+  lcdDrawLine( 31, 39, 39, 31, SOLID, FORCE );
+  lcdDrawLine( 41, 31, 49, 39, SOLID, FORCE );
+  lcdDrawLine( 49, 41, 41, 49, SOLID, FORCE );
+  lcdDrawLine( 39, 49, 31, 41, SOLID, FORCE );
 
   // slanted lines
-  lcd_line( 150, 10, 190, 10, SOLID, FORCE );
-  lcd_line( 150, 10, 190, 20, SOLID, FORCE );
-  lcd_line( 150, 10, 190, 30, SOLID, FORCE );
-  lcd_line( 150, 10, 190, 40, SOLID, FORCE );
-  lcd_line( 150, 10, 190, 50, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 190, 10, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 190, 20, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 190, 30, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 190, 40, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 190, 50, SOLID, FORCE );
 
-  lcd_line( 150, 10, 190, 50, SOLID, FORCE );
-  lcd_line( 150, 10, 180, 50, SOLID, FORCE );
-  lcd_line( 150, 10, 170, 50, SOLID, FORCE );
-  lcd_line( 150, 10, 160, 50, SOLID, FORCE );
-  lcd_line( 150, 10, 150, 50, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 190, 50, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 180, 50, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 170, 50, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 160, 50, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 150, 50, SOLID, FORCE );
 
-  EXPECT_TRUE(checkScreenshot("lcd_line"));
+  EXPECT_TRUE(checkScreenshot("lcdDrawLine"));
 }
 #endif

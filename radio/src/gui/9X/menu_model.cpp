@@ -199,10 +199,10 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
 
       if (c != v) {
         name[cur] = v;
-        eeDirty(EE_MODEL);
+        storageDirty(EE_MODEL);
       }
 
-      lcd_putcAtt(x+editNameCursorPos*FW, y, idx2char(v), ERASEBG|INVERS|FIXEDWIDTH);
+      lcdDrawChar(x+editNameCursorPos*FW, y, idx2char(v), ERASEBG|INVERS|FIXEDWIDTH);
     }
     else {
       cur = 0;

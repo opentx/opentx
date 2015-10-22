@@ -181,7 +181,7 @@ void onSdManagerMenu(const char *result)
       strcat(lfn, line);
     }
     if (strcmp(clipboard.data.sd.directory, lfn)) {  // prevent copying to the same directory
-      POPUP_WARNING(fileCopy(clipboard.data.sd.filename, clipboard.data.sd.directory, lfn));
+      POPUP_WARNING(sdCopyFile(clipboard.data.sd.filename, clipboard.data.sd.directory, lfn));
       REFRESH_FILES();
     }
   }
@@ -217,7 +217,7 @@ void onSdManagerMenu(const char *result)
   else if (result == STR_ASSIGN_BITMAP) {
     strAppendFilename(g_model.header.bitmap, line, sizeof(g_model.header.bitmap));
     memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   else if (result == STR_VIEW_TEXT) {
     getSelectionFullPath(lfn);
@@ -448,7 +448,7 @@ void menuGeneralSdManager(uint8_t _event)
     lcdNextPos = 0;
     LcdFlags attr = (index == i ? BSS|INVERS : BSS);
     if (reusableBuffer.sdmanager.lines[i][0]) {
-      if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[i])) { lcd_putcAtt(0, y, '[', s_editMode == EDIT_MODIFY_STRING ? 0 : attr); }
+      if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[i])) { lcdDrawChar(0, y, '[', s_editMode == EDIT_MODIFY_STRING ? 0 : attr); }
       if (s_editMode == EDIT_MODIFY_STRING && attr) {
         editName(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH-4, _event, attr, 0);
         if (s_editMode == 0) {
@@ -467,7 +467,7 @@ void menuGeneralSdManager(uint8_t _event)
       else {
         lcd_putsAtt(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], attr);
       }
-      if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[i])) { lcd_putcAtt(lcdNextPos, y, ']', s_editMode == EDIT_MODIFY_STRING ? 0 : attr); }
+      if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[i])) { lcdDrawChar(lcdNextPos, y, ']', s_editMode == EDIT_MODIFY_STRING ? 0 : attr); }
     }
   }
 

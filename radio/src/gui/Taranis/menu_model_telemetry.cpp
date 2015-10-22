@@ -367,7 +367,7 @@ void menuModelSensor(uint8_t event)
             lcd_putsLeft(y, STR_RATIO);
             if (attr) sensor->custom.ratio = checkIncDec(event, sensor->custom.ratio, 0, 30000, EE_MODEL|NO_INCDEC_MARKS|INCDEC_REP10);
             if (sensor->custom.ratio == 0)
-              lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
+              lcdDrawChar(SENSOR_2ND_COLUMN, y, '-', attr);
             else
               lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.ratio, LEFT|attr|PREC1);
             break;
@@ -416,7 +416,7 @@ void menuModelSensor(uint8_t event)
           source = checkIncDec(event, source, -MAX_SENSORS, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
         }
         if (source < 0) {
-          lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
+          lcdDrawChar(SENSOR_2ND_COLUMN, y, '-', attr);
           putsMixerSource(lcdNextPos, y, MIXSRC_FIRST_TELEM+3*(-1-source), attr);
         }
         else {
@@ -478,7 +478,7 @@ void onSensorMenu(const char *result)
         TelemetryItem & sourceItem = telemetryItems[index];
         TelemetryItem & newItem = telemetryItems[newIndex];
         newItem = sourceItem;
-        eeDirty(EE_MODEL);
+        storageDirty(EE_MODEL);
       } 
       else {
         POPUP_WARNING(STR_TELEMETRYFULL);
@@ -494,7 +494,7 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
   int screenIndex = TELEMETRY_CURRENT_SCREEN(sub);
 
   if (result == STR_UPDATE_LIST) {
-    if (!listSdFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), NULL)) {
+    if (!sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), NULL)) {
       POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
       s_menu_flags = 0;
     }
@@ -502,7 +502,7 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
   else {
     // The user choosed a file in the list
     memcpy(g_model.frsky.screens[screenIndex].script.file, result, sizeof(g_model.frsky.screens[screenIndex].script.file));
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
     LUA_LOAD_MODEL_SCRIPTS();
   }
 }
@@ -535,7 +535,7 @@ void menuModelTelemetry(uint8_t event)
     if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+MAX_SENSORS) {
       int index = k-ITEM_TELEMETRY_SENSOR1;
       lcd_outdezAtt(INDENT_WIDTH, y, index+1, LEFT|attr);
-      lcd_putcAtt(lcdLastPos, y, ':', attr);
+      lcdDrawChar(lcdLastPos, y, ':', attr);
       lcd_putsnAtt(3*FW, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
       if (telemetryItems[index].isFresh()) {
         lcd_putc(10*FW, y, '*');
@@ -734,7 +734,7 @@ void menuModelTelemetry(uint8_t event)
 
           if (m_posHorz==1 && attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
             s_editMode = 0;
-            if (listSdFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), g_model.frsky.screens[screenIndex].script.file)) {
+            if (sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), g_model.frsky.screens[screenIndex].script.file)) {
               menuHandler = onTelemetryScriptFileSelectionMenu;
             }
             else {

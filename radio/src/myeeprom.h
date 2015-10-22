@@ -47,7 +47,7 @@
   #define LUA_EXPORT(...)
   #define LUA_EXPORT_MULTIPLE(...)
   #define LUA_EXPORT_EXTRA(...)
-#endif 
+#endif
 
 #define WARN_THR_BIT  0x01
 #define WARN_BEP_BIT  0x80
@@ -446,7 +446,8 @@ enum UartModes {
     uint32_t switchConfig; \
     uint8_t  potsType; /*two bits for every pot*/\
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
-    char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME];
+    char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME]; \
+    char currModelFilename[10];
 #elif defined(PCBFLAMENCO)
   #define LEN_SWITCH_NAME              3
   #define LEN_ANA_NAME                 3
@@ -846,6 +847,9 @@ PACK(typedef struct {
   #define IS_TOGGLE(x)                (SWITCH_CONFIG(x) == SWITCH_TOGGLE)
   #define IS_3POS_MIDDLE(x)           ((x) == 1)
   #define SWITCH_WARNING_ALLOWED(x)   (SWITCH_EXISTS(x) && !IS_TOGGLE(x))
+#else
+  #define switchInfo(x)               ((x) >= 3 ? (x)-2 : 0)
+  #define SWITCH_EXISTS(x)            true
 #endif
 
 #define ALTERNATE_VIEW 0x10

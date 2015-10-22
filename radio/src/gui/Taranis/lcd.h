@@ -119,14 +119,14 @@
 #define LcdFlags             uint32_t
 
 #define display_t            uint8_t
-#define DISPLAY_BUF_SIZE     (LCD_W*LCD_H*4/8)
+#define DISPLAY_BUFFER_SIZE  (LCD_W*LCD_H*4/8)
 
 #if defined(REVPLUS) && defined(LCD_DUAL_BUFFER)
-  extern display_t displayBuf1[DISPLAY_BUF_SIZE];
-  extern display_t displayBuf2[DISPLAY_BUF_SIZE];
+  extern display_t displayBuf1[DISPLAY_BUFFER_SIZE];
+  extern display_t displayBuf2[DISPLAY_BUFFER_SIZE];
   extern display_t * displayBuf;
 #else
-  extern display_t displayBuf[DISPLAY_BUF_SIZE];
+  extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 #endif
 
 #if defined(REVPLUS) && !defined(LCD_DUAL_BUFFER) && !defined(SIMU)
@@ -138,8 +138,7 @@
 extern coord_t lcdLastPos;
 extern coord_t lcdNextPos;
 
-#define DISPLAY_BUFFER_SIZE    (sizeof(display_t)*DISPLAY_BUF_SIZE)
-#define DISPLAY_END            (displayBuf + DISPLAY_BUF_SIZE)
+#define DISPLAY_END            (displayBuf + DISPLAY_BUFFER_SIZE)
 #define ASSERT_IN_DISPLAY(p)   assert((p) >= displayBuf && (p) < DISPLAY_END)
 
 #if defined(BOOT)
@@ -149,7 +148,7 @@ typedef const char pm_char;
 #endif
 
 void lcd_putc(coord_t x, coord_t y, const unsigned char c);
-void lcd_putcAtt(coord_t x, coord_t y, const unsigned char c, LcdFlags mode);
+void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags mode);
 void lcd_putsAtt(coord_t x, coord_t y, const pm_char * s, LcdFlags mode);
 void lcd_putsiAtt(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags mode);
 void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s,unsigned char len, LcdFlags mode);
@@ -201,17 +200,17 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 void lcd_plot(coord_t x, coord_t y, LcdFlags att=0);
 void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att=0);
 void lcd_hline(coord_t x, coord_t y, coord_t w, LcdFlags att=0);
-void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
+void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
 void lcd_vline(coord_t x, scoord_t y, scoord_t h);
-void lcd_vlineStip(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
-void lcd_line(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
+void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
+void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
 
 void drawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
-void lcd_rect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
+void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
 
 void lcd_invert_line(int8_t line);
 #define lcd_status_line() lcd_invert_line(LCD_LINES-1)
-inline void lcd_square(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcd_rect(x, y, w, w, SOLID, att); }
+inline void lcd_square(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcdDrawRect(x, y, w, w, SOLID, att); }
 
 void displaySleepBitmap();
 
@@ -248,7 +247,7 @@ const char *writeScreenshot();
 
 #if defined(SIMU)
   extern bool lcd_refresh;
-  extern display_t lcd_buf[DISPLAY_BUF_SIZE];
+  extern display_t lcd_buf[DISPLAY_BUFFER_SIZE];
 #endif
 
 char *strAppend(char * dest, const char * source, int len=0);

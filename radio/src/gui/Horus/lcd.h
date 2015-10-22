@@ -139,6 +139,7 @@ extern uint16_t lcdColorTable[LCD_COLOR_COUNT];
 void lcdColorsInit();
 
 #define OPACITY_MAX 0x0F
+#define OPACITY(x)  ((x)<<24)
 
 #define COLOR(index)            ((index) << 16)
 #define TEXT_COLOR              COLOR(TEXT_COLOR_INDEX)
@@ -170,27 +171,26 @@ void lcdColorsInit();
 #define COLOR_JOIN(r, g, b) \
   (((r) << 11) + ((g) << 5) + (b))
 
-#define display_t            uint16_t
-#define DISPLAY_BUF_SIZE     (LCD_W*LCD_H)
+#define display_t              uint16_t
+#define DISPLAY_PIXELS_COUNT   (LCD_W*LCD_H)
+#define DISPLAY_BUFFER_SIZE     (sizeof(display_t)*DISPLAY_PIXELS_COUNT)
 
 #if defined(SIMU)
-extern display_t displayBuf[DISPLAY_BUF_SIZE];
+extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 #else
-extern uint32_t CurrentFrameBuffer;
-#define displayBuf         ((uint16_t *)CurrentFrameBuffer)
+extern uint32_t        CurrentFrameBuffer;
+#define displayBuf     ((uint16_t *)CurrentFrameBuffer)
 #endif
 
 #define lcdRefreshWait()
 
-#define DISPLAY_BUFFER_SIZE     (sizeof(display_t)*DISPLAY_BUF_SIZE)
-#define DISPLAY_END            (displayBuf + DISPLAY_BUF_SIZE)
-#define ASSERT_IN_DISPLAY(p)   assert((p) >= displayBuf && (p) < DISPLAY_END)
+
+#define DISPLAY_END             (displayBuf + DISPLAY_BUFFER_SIZE)
+#define ASSERT_IN_DISPLAY(p)    assert((p) >= displayBuf && (p) < DISPLAY_END)
 
 extern coord_t lcdNextPos;
 
-void lcdStartScreen();
-void lcd_putc(coord_t x, coord_t y, const unsigned char c);
-void lcd_putcAtt(coord_t x, coord_t y, const unsigned char c, LcdFlags attr=TEXT_COLOR);
+void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags attr=TEXT_COLOR);
 void lcd_putsAtt(coord_t x, coord_t y, const pm_char * s, LcdFlags attr=TEXT_COLOR);
 void lcd_putsiAtt(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags attr=TEXT_COLOR);
 void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s, unsigned char len, LcdFlags attr=TEXT_COLOR);
@@ -235,53 +235,55 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
 void lcdDrawTransparentPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t color);
 void lcdDrawTransparentPixel(display_t * p, uint8_t opacity, uint16_t color);
 void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att=0);
-void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att=0);
-void lcd_hline(coord_t x, coord_t y, coord_t w, LcdFlags att=0);
-void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
-void lcd_vline(coord_t x, scoord_t y, scoord_t h);
-void lcd_vlineStip(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
-void lcd_line(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
+void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
+void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
+void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
 
 #if !defined(SIMU)
-inline void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att)
+inline void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att)
 {
-  lcdDrawFilledRectDMA(x, y, w, h, lcdColorTable[COLOR_IDX(att)]);
+  lcdDrawSolidFilledRectDMA(x, y, w, h, lcdColorTable[COLOR_IDX(att)]);
 }
 #else
-void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att);
+void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att);
 #endif
 
-inline void lcdDrawHorizontalLine(coord_t x, scoord_t y, coord_t w, LcdFlags att)
+inline void lcdClear()
 {
-  lcdDrawFilledRect(x, y, w, 1, att);
+  lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, 0);
 }
 
-inline void lcdDrawVerticalLine(coord_t x, scoord_t y, coord_t h, LcdFlags att)
+inline void lcdDrawSolidHorizontalLine(coord_t x, scoord_t y, coord_t w, LcdFlags att)
 {
-  lcdDrawFilledRect(x, y, 1, h, att);
+  lcdDrawSolidFilledRect(x, y, w, 1, att);
 }
 
-inline void lcdDrawRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att)
+inline void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, coord_t h, LcdFlags att)
 {
-  lcdDrawVerticalLine(x, y, h, att);
-  lcdDrawVerticalLine(x+w-1, y, h, att);
-  lcdDrawHorizontalLine(x, y, w, att);
-  lcdDrawHorizontalLine(x, y+h-1, w, att);
+  if (h<0) { y+=h; h=-h; }
+  lcdDrawSolidFilledRect(x, y, 1, h, att);
 }
 
-void lcdDrawFilledRectWithAttributes(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att);
-void drawBlackOverlay();
-void lcd_rect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
+inline void lcdDrawSolidRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att)
+{
+  lcdDrawSolidVerticalLine(x, y, h, att);
+  lcdDrawSolidVerticalLine(x+w-1, y, h, att);
+  lcdDrawSolidHorizontalLine(x, y, w, att);
+  lcdDrawSolidHorizontalLine(x, y+h-1, w, att);
+}
+
+void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att);
+void lcdDrawBlackOverlay();
+void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
+void lcdDrawCircle(int x0, int y0, int radius);
+void lcdDrawPie(int x0, int y0, int radius, int angle1=0, int angle2=360);
+void lcdDrawBitmapPie(int x0, int y0, const uint16_t * img, int startAngle, int endAngle);
+void lcdDrawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * img, LcdFlags flags=0, int startAngle=0, int endAngle=360);
 
 inline void lcdDrawSquare(coord_t x, coord_t y, coord_t w, LcdFlags att=0)
 {
-  lcdDrawRect(x, y, w, w, att);
+  lcdDrawSolidRect(x, y, w, w, att);
 }
-
-#define V_BAR(xx, yy, ll)    \
-  lcd_vline(xx-1,yy-ll,ll);  \
-  lcd_vline(xx  ,yy-ll,ll);  \
-  lcd_vline(xx+1,yy-ll,ll);
 
 void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 
@@ -293,12 +295,6 @@ void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdFlags fl
 void lcdSetContrast();
 #define lcdOff(...)
 
-void lcdSendByte(uint8_t data);
-void lcdSend(const uint8_t * data, uint32_t size);
-void lcdSendString(const char * s);
-uint32_t lcdReceive(uint8_t * data, uint32_t len);
-void lcdClearRxBuffer();
-
 const pm_char * bmpLoad(uint8_t *dest, const char *filename, const unsigned int width, const unsigned int height);
 
 #if defined(BOOT)
@@ -309,23 +305,12 @@ const pm_char * bmpLoad(uint8_t *dest, const char *filename, const unsigned int 
 
 #ifdef SIMU
   extern bool lcd_refresh;
-  extern display_t lcd_buf[DISPLAY_BUF_SIZE];
+  extern display_t lcd_buf[DISPLAY_BUFFER_SIZE];
 #endif
 
 char *strAppend(char * dest, const char * source, int len=0);
 char *strSetCursor(char *dest, int position);
 char *strAppendDate(char * str, bool time=false);
 char *strAppendFilename(char * dest, const char * filename, const int size);
-
-#define BITMAP_IDX_SPLASH              0x00
-#define BITMAP_IDX_ALERT               0x01
-#define BITMAP_IDX_WARNING             0x02
-#define BITMAP_IDX_MESSAGE             0x03
-#define BITMAP_IDX_USB                 0x04
-#define BITMAP_IDX_STICKS_FIRST        0x05 // 4 bitmaps
-#define BITMAP_IDX_BATTERY_FIRST       0x09 // 5 bitmaps
-#define BITMAP_IDX_RSSI_FIRST          0x0E // 6 bitmaps
-#define BITMAP_IDX_CHECKBOX_FIRST      0x14 // 4 bitmaps
-#define BITMAP_IDX_MODEL_FIRST         0x80
 
 #endif // _LCD_H_

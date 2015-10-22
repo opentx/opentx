@@ -53,7 +53,6 @@ const pm_char * openLogs()
 {
   // Determine and set log file filename
   FRESULT result;
-  DIR folder;
   char filename[34]; // /LOGS/modelnamexxx-2013-01-01.log
 
   if (!sdMounted())
@@ -64,12 +63,9 @@ const pm_char * openLogs()
 
   // check and create folder here
   strcpy_P(filename, STR_LOGS_PATH);
-  result = f_opendir(&folder, filename);
-  if (result != FR_OK) {
-    if (result == FR_NO_PATH)
-      result = f_mkdir(filename);
-    if (result != FR_OK)
-      return SDCARD_ERROR(result);
+  const char * error = sdCheckAndCreateDirectory(filename);
+  if (error) {
+    return error;
   }
 
   filename[sizeof(LOGS_PATH)-1] = '/';

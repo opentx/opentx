@@ -81,7 +81,7 @@ void displayGaugesTelemetryScreen(FrSkyScreenData & screen)
       int y = GAUGE_MARGIN + i*(GAUGE_HEIGHT+GAUGE_MARGIN);
 
       // The black background
-      lcdDrawFilledRect(GAUGE_MARGIN, y, GAUGE_WIDTH, GAUGE_HEIGHT, TEXT_BGCOLOR);
+      lcdDrawSolidFilledRect(GAUGE_MARGIN, y, GAUGE_WIDTH, GAUGE_HEIGHT, TEXT_BGCOLOR);
 
       getvalue_t value = getValue(source);
       LcdFlags color = TEXT_COLOR;
@@ -98,7 +98,7 @@ void displayGaugesTelemetryScreen(FrSkyScreenData & screen)
         if (value < 0) {
           putsMixerSource(GAUGE_MARGIN+GAUGE_PADDING_HORZ, y+GAUGE_PADDING_VERT, source, ALARM_COLOR);
           putsTimer(GAUGE_MARGIN+GAUGE_WIDTH-VAL_WIDTH, y+GAUGE_PADDING_VERT+3, -value, LEFT|DBLSIZE|ALARM_COLOR);
-          // TODO lcdDrawFilledRect(GAUGE_MARGIN+GAUGE_PADDING_HORZ, y+15, BAR_WIDTH, 6, ALARM_BGCOLOR);
+          // TODO lcdDrawSolidFilledRect(GAUGE_MARGIN+GAUGE_PADDING_HORZ, y+15, BAR_WIDTH, 6, ALARM_BGCOLOR);
           continue;
         }
       }
@@ -110,19 +110,19 @@ void displayGaugesTelemetryScreen(FrSkyScreenData & screen)
       putsChannel(GAUGE_MARGIN+GAUGE_WIDTH-VAL_WIDTH, y+GAUGE_PADDING_VERT+3, source, LEFT|DBLSIZE|NO_UNIT|color);
 
       // The bar
-      // TODO lcdDrawFilledRect(GAUGE_MARGIN+GAUGE_PADDING_HORZ, y+15, BAR_WIDTH, 6, SOLID, color);
+      // TODO lcdDrawSolidFilledRect(GAUGE_MARGIN+GAUGE_PADDING_HORZ, y+15, BAR_WIDTH, 6, SOLID, color);
       //uint8_t thresholdX = 0;
       int width = barCoord(value, barMin, barMax, BAR_WIDTH-2);
       //uint8_t barShade = SOLID;
-      lcdDrawFilledRect(GAUGE_MARGIN+GAUGE_PADDING_HORZ+1, y+16, width, 4, TEXT_BGCOLOR);
+      lcdDrawSolidFilledRect(GAUGE_MARGIN+GAUGE_PADDING_HORZ+1, y+16, width, 4, TEXT_BGCOLOR);
 /*      for (uint8_t j=24; j<99; j+=25) {
         if (j>thresholdX || j>width) {
           lcd_vline(j*BAR_WIDTH/100+BAR_LEFT+1, y+1, barHeight);
         }
       }
       if (thresholdX) {
-        lcd_vlineStip(BAR_LEFT+1+thresholdX, y-2, barHeight+3, DOTTED);
-        lcd_hline(BAR_LEFT+thresholdX, y-2, 3);
+        lcdDrawVerticalLine(BAR_LEFT+1+thresholdX, y-2, barHeight+3, DOTTED);
+        lcdDrawSolidHorizontalLine(BAR_LEFT+thresholdX, y-2, 3);
       }
       */
     }
@@ -144,7 +144,7 @@ void displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         coord_t pos[] = { NUMBERS_MARGIN, (LCD_W-NUMBERS_W)/2, LCD_W-NUMBERS_MARGIN-NUMBERS_W };
         int x = pos[j];
         int y = NUMBERS_MARGIN + i*(NUMBERS_H+NUMBERS_MARGIN);
-        lcdDrawFilledRect(x, y, NUMBERS_W, NUMBERS_H, TEXT_BGCOLOR);
+        lcdDrawSolidFilledRect(x, y, NUMBERS_W, NUMBERS_H, TEXT_BGCOLOR);
         if (field >= MIXSRC_FIRST_TELEM) {
           TelemetryItem & telemetryItem = telemetryItems[(field-MIXSRC_FIRST_TELEM)/3]; // TODO macro to convert a source to a telemetry index
           if (!telemetryItem.isAvailable()) {

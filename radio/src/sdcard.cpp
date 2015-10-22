@@ -40,7 +40,25 @@
 
 #define LIST_NONE_SD_FILE  1
 
-bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, const char *selection, uint8_t flags=0)
+const char * sdCheckAndCreateDirectory(const char * path)
+{
+  DIR archiveFolder;
+
+  FRESULT result = f_opendir(&archiveFolder, path);
+  if (result != FR_OK) {
+    if (result == FR_NO_PATH)
+      result = f_mkdir(path);
+    if (result != FR_OK)
+      return SDCARD_ERROR(result);
+  }
+  else {
+    f_closedir(&archiveFolder);
+  }
+
+  return NULL;
+}
+
+bool sdListFiles(const char *path, const char *extension, const uint8_t maxlen, const char *selection, uint8_t flags=0)
 {
   FILINFO fno;
   DIR dir;
@@ -189,7 +207,7 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
 }
 
 #if defined(CPUARM) && defined(SDCARD)
-const char *fileCopy(const char *filename, const char *srcDir, const char *destDir)
+const char * sdCopyFile(const char * filename, const char * srcDir, const char * destDir)
 {
   FIL srcFile;
   FIL dstFile;

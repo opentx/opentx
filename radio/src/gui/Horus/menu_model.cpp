@@ -173,13 +173,13 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
 
       if (c != v) {
         name[cur] = v;
-        eeDirty(g_menuPos[0] == 0 ? EE_MODEL : EE_GENERAL);
+        storageDirty(g_menuPos[0] == 0 ? EE_MODEL : EE_GENERAL);
       }
 
       lcd_putsnAtt(x, y, name, size, ZCHAR | mode);
       coord_t w = (editNameCursorPos == 0 ? 0 : getTextWidth(name, editNameCursorPos, ZCHAR));
       char s[] = { idx2char(v), '\0' };
-      lcdDrawFilledRect(x+w, y-INVERT_VERT_MARGIN, getTextWidth(s, 1)-1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+      lcdDrawSolidFilledRect(x+w-1, y-INVERT_VERT_MARGIN, getTextWidth(s, 1)+1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
       lcd_putsAtt(x+w, y, s, TEXT_INVERTED_COLOR);
     }
     else {

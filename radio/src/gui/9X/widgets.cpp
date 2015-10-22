@@ -67,19 +67,19 @@ void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 {
   lcd_outdezAtt(LCD_W, 0, count, attr);
   coord_t x = 1+LCD_W-FW*(count>9 ? 3 : 2);
-  lcd_putcAtt(x, 0, '/', attr);
+  lcdDrawChar(x, 0, '/', attr);
   lcd_outdezAtt(x, 0, index+1, attr);
 }
 
 #if !defined(CPUM64)
 void lcdDrawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
 {
-  lcd_vlineStip(x, y, h, DOTTED);
+  lcdDrawVerticalLine(x, y, h, DOTTED);
   coord_t yofs = (h * offset) / count;
   coord_t yhgt = (h * visible) / count;
   if (yhgt + yofs > h)
     yhgt = h - yofs;
-  lcd_vlineStip(x, y + yofs, yhgt, SOLID, FORCE);
+  lcdDrawVerticalLine(x, y + yofs, yhgt, SOLID, FORCE);
 }
 #endif
 
@@ -149,7 +149,7 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
       value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, mixerCurrentFlightMode)*10 : delta);
     else
       value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, mixerCurrentFlightMode) : delta);
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 
   if (GV_IS_GV_VALUE(value, min, max)) {
@@ -169,7 +169,7 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
     if (idx < 0) {
       value = (int16_t) GV_CALC_VALUE_IDX_NEG(idx, delta);
       idx = -idx;
-      lcd_putcAtt(x-6, y, '-', attr);
+      lcdDrawChar(x-6, y, '-', attr);
     }
     else {
       value = (int16_t) GV_CALC_VALUE_IDX_POS(idx-1, delta);
@@ -193,7 +193,7 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
   if (invers && event == EVT_KEY_LONG(KEY_ENTER)) {
     s_editMode = !s_editMode;
     value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, mixerCurrentFlightMode) : delta);
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   if (GV_IS_GV_VALUE(value, min, max)) {
     if (attr & LEFT)
@@ -208,7 +208,7 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
     if (idx < 0) {
       value = (int16_t) GV_CALC_VALUE_IDX_NEG(idx, delta);
       idx = -idx;
-      lcd_putcAtt(x-6, y, '-', attr);
+      lcdDrawChar(x-6, y, '-', attr);
     }
     else {
       value = (int16_t) GV_CALC_VALUE_IDX_POS(idx, delta);

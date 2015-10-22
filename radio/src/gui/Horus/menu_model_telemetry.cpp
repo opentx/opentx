@@ -428,7 +428,7 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
   uint8_t screenIndex = TELEMETRY_CURRENT_EDIT_SCREEN(sub);
 
   if (result == STR_UPDATE_LIST) {
-    if (!listSdFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), NULL)) {
+    if (!sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), NULL)) {
       POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
       s_menu_flags = 0;
     }
@@ -436,7 +436,7 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
   else {
     // The user choosed a file in the list
     memcpy(g_model.frsky.screens[screenIndex].script.file, result, sizeof(g_model.frsky.screens[screenIndex].script.file));
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
     LUA_LOAD_MODEL_SCRIPTS();
   }
 }
@@ -610,7 +610,7 @@ void menuModelTelemetry(evt_t event)
 
           if (m_posHorz==1 && attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
             s_editMode = 0;
-            if (listSdFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), g_model.frsky.screens[screenIndex].script.file)) {
+            if (sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), g_model.frsky.screens[screenIndex].script.file)) {
               menuHandler = onTelemetryScriptFileSelectionMenu;
             }
             else {

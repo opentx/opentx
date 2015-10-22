@@ -362,9 +362,7 @@ void *main_thread(void *)
     g_menuStack[0] = menuMainView;
     g_menuStack[1] = menuModelSelect;
 
-#if defined(EEPROM)
-    eeReadAll(); // load general setup and selected model
-#endif
+    storageReadAll(); // load general setup and selected model
 
 #if defined(SIMU_DISKIO)
     f_mount(&g_FATFS_Obj, "", 1);
@@ -380,11 +378,6 @@ void *main_thread(void *)
 
     if (main_thread_running == 1) {
       opentxStart();
-    }
-    else {
-#if defined(CPUARM)
-      eeLoadModel(g_eeGeneral.currModel);
-#endif
     }
 
     s_current_protocol[0] = 0;
@@ -947,26 +940,37 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   return FR_OK;
 }
 
-FRESULT f_mkfs (const TCHAR *path, BYTE, UINT)
+FRESULT f_mkfs (const TCHAR * path, BYTE, UINT)
 {
   TRACE("Format SD...");
   return FR_OK;
 }
 
-FRESULT f_mkdir (const TCHAR*)
+FRESULT f_mkdir (const TCHAR * name)
 {
+  char * path = convertSimuPath(name);
+  if (mkdir(path, 0777)) {
+    TRACE("mkdir(%s) = error %d (%s)", path, errno, strerror(errno));
+    return FR_INVALID_NAME;
+  }
+  else {
+    TRACE("mkdir(%s) = OK", path);
+    return FR_OK;
+  }
   return FR_OK;
 }
 
-FRESULT f_unlink (const TCHAR* name)
+FRESULT f_unlink (const TCHAR * name)
 {
-  char *path = convertSimuPath(name);
+  char * path = convertSimuPath(name);
   if (unlink(path)) {
     TRACE("f_unlink(%s) = error %d (%s)", path, errno, strerror(errno));
     return FR_INVALID_NAME;
   }
-  TRACE("f_unlink(%s) = OK", path);
-  return FR_OK;
+  else {
+    TRACE("f_unlink(%s) = OK", path);
+    return FR_OK;
+  }
 }
 
 FRESULT f_rename(const TCHAR *oldname, const TCHAR *newname)
@@ -1222,10 +1226,8 @@ uint32_t sdGetSpeed()
 
 #endif // #if defined(SIMU_DISKIO)
 
-
-
 bool lcd_refresh = true;
-display_t lcd_buf[DISPLAY_BUF_SIZE];
+display_t lcd_buf[DISPLAY_BUFFER_SIZE];
 
 #if !defined(PCBFLAMENCO) && !defined(PCBHORUS)
 void lcdSetRefVolt(uint8_t val)

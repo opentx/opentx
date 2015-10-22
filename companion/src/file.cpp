@@ -36,7 +36,6 @@ eepromFatHeader(NULL)
 #define EEPROM_BLOCK_SIZE     (4*1024)
 #define EEPROM_MARK           0x84697771 /* thanks ;) */
 #define EEPROM_ZONE_SIZE      (8*1024)
-#define EEPROM_BUFFER_SIZE    256
 #define EEPROM_FAT_SIZE       128
 #define EEPROM_MAX_ZONES      (EEPROM_SIZE / EEPROM_ZONE_SIZE)
 #define EEPROM_MAX_FILES      (EEPROM_MAX_ZONES - 1)

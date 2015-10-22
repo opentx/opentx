@@ -48,28 +48,28 @@ int16_t     s_warning_input_max;
 
 void displayAlertBox()
 {
-  drawBlackOverlay();
-  lcdDrawFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  lcd_rect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, SOLID, ALARM_COLOR);
-  lcd_rect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, SOLID, ALARM_COLOR);
+  lcdDrawBlackOverlay();
+  lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
+  lcdDrawRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, SOLID, ALARM_COLOR);
+  lcdDrawRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, SOLID, ALARM_COLOR);
   // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_ALERT);
 }
 
 void displayWarningBox()
 {
-  drawBlackOverlay();
-  lcdDrawFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  lcd_rect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, SOLID, ALARM_COLOR);
-  lcd_rect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, SOLID, ALARM_COLOR);
+  lcdDrawBlackOverlay();
+  lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
+  lcdDrawRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, SOLID, ALARM_COLOR);
+  lcdDrawRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, SOLID, ALARM_COLOR);
   // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_WARNING);
 }
 
 void displayMessageBox()
 {
-  drawBlackOverlay();
-  lcdDrawFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  lcd_rect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, SOLID, WARNING_COLOR);
-  lcd_rect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, SOLID, WARNING_COLOR);
+  lcdDrawBlackOverlay();
+  lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
+  lcdDrawRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, SOLID, WARNING_COLOR);
+  lcdDrawRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, SOLID, WARNING_COLOR);
   // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_MESSAGE);
 }
 
@@ -152,17 +152,16 @@ void (*menuHandler)(const char *result);
 const char * displayMenu(evt_t event)
 {
   const char * result = NULL;
-
   uint8_t display_count = min(s_menu_count, (uint16_t)MENU_MAX_LINES);
-
   int y = (LCD_H - (display_count*(FH+1))) / 2;
-  // drawBlackOverlay();
-  lcdDrawFilledRect(MENU_X, y, MENU_W, display_count * (FH+1), TEXT_BGCOLOR);
-  lcdDrawRect(MENU_X, y, MENU_W, display_count * (FH+1) + 1, ALARM_COLOR);
+
+  lcdDrawBlackOverlay();
+  lcdDrawSolidFilledRect(MENU_X, y, MENU_W, display_count * (FH+1), TEXT_BGCOLOR);
+  lcdDrawSolidRect(MENU_X, y, MENU_W, display_count * (FH+1) + 1, ALARM_COLOR);
 
   for (uint8_t i=0; i<display_count; i++) {
     if (i == s_menu_item) {
-      lcdDrawFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, FH+1, TEXT_INVERTED_BGCOLOR);
+      lcdDrawSolidFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, FH+1, TEXT_INVERTED_BGCOLOR);
       lcd_putsAtt(MENU_X+6, i*(FH+1) + y + 5, s_menu[i], TEXT_INVERTED_COLOR|s_menu_flags);
     }
     else {

@@ -48,7 +48,7 @@ void menuStatisticsView(evt_t event)
 
     case EVT_KEY_LONG(KEY_MENU):
       g_eeGeneral.globalTimer = 0;
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
       sessionTimer = 0;
       break;
 
@@ -72,14 +72,14 @@ void menuStatisticsView(evt_t event)
   coord_t traceRd = (s_traceCnt < 0 ? s_traceWr : 0);
   const coord_t x = 4;
   const coord_t y = 200;
-  lcd_hlineStip(x-3, y, MAXTRACE+3+3, SOLID, TEXT_COLOR);
-  lcd_vlineStip(x, y-96, 96+3, SOLID, TEXT_COLOR);
+  lcdDrawHorizontalLine(x-3, y, MAXTRACE+3+3, SOLID, TEXT_COLOR);
+  lcdDrawVerticalLine(x, y-96, 96+3, SOLID, TEXT_COLOR);
 
   for (coord_t i=0; i<MAXTRACE; i+=6) {
-    lcd_vlineStip(x+i+6, y-1, 3, SOLID, TEXT_COLOR);
+    lcdDrawVerticalLine(x+i+6, y-1, 3, SOLID, TEXT_COLOR);
   }
   for (coord_t i=1; i<=MAXTRACE; i++) {
-    lcd_vlineStip(x+i, y-3*s_traceBuf[traceRd], 3*s_traceBuf[traceRd], SOLID, TEXT_COLOR);
+    lcdDrawVerticalLine(x+i, y-3*s_traceBuf[traceRd], 3*s_traceBuf[traceRd], SOLID, TEXT_COLOR);
     traceRd++;
     if (traceRd>=MAXTRACE) traceRd = 0;
     if (traceRd==s_traceWr) break;
@@ -103,7 +103,7 @@ void menuStatisticsDebug(evt_t event)
     case EVT_KEY_LONG(KEY_ENTER):
       g_eeGeneral.mAhUsed = 0;
       g_eeGeneral.globalTimer = 0;
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
       sessionTimer = 0;
       killEvents(event);
       AUDIO_KEYPAD_UP();
@@ -181,7 +181,7 @@ void menuTraceBuffer(evt_t event)
   uint8_t k = 0;
   int8_t sub = m_posVert;
 
-  lcd_putc(0, FH, '#');
+  lcdDrawChar(0, FH, '#', TEXT_COLOR);
   lcd_puts(4*10, FH, "Time");
   lcd_puts(14*10, FH, "Event");
   lcd_puts(20*10, FH, "Data");

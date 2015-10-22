@@ -102,7 +102,7 @@ void perMain()
     if (theFile.isWriting())
       theFile.nextWriteStep();
     else if (TIME_TO_WRITE())
-      eeCheck(false);
+      storageCheck(false);
   }
 
 #if defined(SDCARD)

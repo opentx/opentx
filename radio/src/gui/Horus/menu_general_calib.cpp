@@ -163,7 +163,7 @@ void menuCommonCalib(evt_t event)
       }
 #endif
       g_eeGeneral.chkSum = evalChkSum();
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
       reusableBuffer.calib.state = 4;
       break;
 

@@ -73,7 +73,7 @@ void menuChannelsView(evt_t event)
     if (isChannelUsed(ch)) {
       if (++index > skipCount) {
         // The black background
-        lcdDrawFilledRect(x, y, CHANNEL_WIDTH, CHANNEL_HEIGHT, TEXT_BGCOLOR);
+        lcdDrawSolidFilledRect(x, y, CHANNEL_WIDTH, CHANNEL_HEIGHT, TEXT_BGCOLOR);
 
         // The label
         unsigned int lenLabel = ZLEN(g_model.limitData[ch].name);
@@ -85,11 +85,11 @@ void menuChannelsView(evt_t event)
         int32_t val = channelOutputs[ch];
 
         // The bar
-        lcdDrawFilledRect(x+CHANNEL_PADDING_HORZ, y+15, BAR_WIDTH, 6, TEXT_INVERTED_BGCOLOR);
+        lcdDrawSolidFilledRect(x+CHANNEL_PADDING_HORZ, y+15, BAR_WIDTH, 6, TEXT_INVERTED_BGCOLOR);
         unsigned int lim = g_model.extendedLimits ? 640*2 : 512*2;
         unsigned int len = limit<unsigned int>(1, (abs(val) * BAR_WIDTH/2 + lim/2) / lim, BAR_WIDTH/2);
         unsigned int x0 = (val>0) ? x+CHANNEL_PADDING_HORZ-1+BAR_WIDTH/2 : x+CHANNEL_PADDING_HORZ+BAR_WIDTH/2+1-len;
-        lcdDrawFilledRect(x0, y+16, len, 4, TEXT_BGCOLOR);
+        lcdDrawSolidFilledRect(x0, y+16, len, 4, TEXT_BGCOLOR);
 
         y += CHANNEL_HEIGHT + CHANNEL_MARGIN;
         if (y >= 4*(CHANNEL_HEIGHT + CHANNEL_MARGIN)) {

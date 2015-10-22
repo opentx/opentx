@@ -193,29 +193,12 @@ swsrc_t checkIncDecMovedSwitch(swsrc_t val);
 #define CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, var, max, check) \
   var = checkIncDec(event, var, 0, max, EE_MODEL, check)
 
-bool isThrottleSourceAvailable(int source);
-bool isLogicalSwitchFunctionAvailable(int function);
-bool isAssignableFunctionAvailable(int function);
-bool isSourceAvailableInResetSpecialFunction(int index);
-bool isSourceAvailableInGlobalResetSpecialFunction(int index);
-bool isLogicalSwitchAvailable(int index);
-bool isSwitchAvailableInLogicalSwitches(int swtch);
-bool isSwitchAvailableInCustomFunctions(int swtch);
-bool isSwitchAvailableInMixes(int swtch);
-bool isSwitchAvailableInTimers(int swtch);
-bool isModuleAvailable(int module);
-int getFirstAvailable(int min, int max, bool (*func)(int));
 #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
 #define CHECK_INCDEC_SWITCH(event, var, min, max, flags, available) \
   var = checkIncDec(event, var, min, max, (flags)|INCDEC_SWITCH, available)
 #define CHECK_INCDEC_MODELSWITCH(event, var, min, max, available) \
   CHECK_INCDEC_SWITCH(event, var, min, max, EE_MODEL, available)
 
-bool isInputAvailable(int input);
-bool isSourceAvailable(int source);
-bool isSourceAvailableInGlobalFunctions(int source);
-bool isSourceAvailableInCustomSwitches(int source);
-bool isInputSourceAvailable(int source);
 #define CHECK_INCDEC_MODELSOURCE(event, var, min, max) \
   var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable)
 

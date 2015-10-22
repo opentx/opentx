@@ -37,6 +37,10 @@
 #ifndef _GUI_H_
 #define _GUI_H_
 
+#if defined(CPUARM)
+#include "gui_helpers.h"
+#endif
+
 #if defined(PCBHORUS)
   #include "Horus/gui.h"
 #elif defined(PCBFLAMENCO)

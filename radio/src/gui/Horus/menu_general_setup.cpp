@@ -122,11 +122,11 @@ void menuGeneralSetup(evt_t event)
   if (s_warning_result) {
     s_warning_result = 0;
     g_eeGeneral.fai = true;
-    eeDirty(EE_GENERAL);
+    storageDirty(EE_GENERAL);
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX, DEFAULT_SCROLLBAR_X, { 2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE, LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0, CASE_VARIO_CPUARM(LABEL(VARIO)) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) LABEL(ALARMS), 0, 0, 0, CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, CASE_MAVLINK(0) 0, 0, LABEL(TX_MODE), 1/*to force edit mode*/ });
+  MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX, DEFAULT_SCROLLBAR_X, { 2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE, LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0, CASE_VARIO_CPUARM(LABEL(VARIO)) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) LABEL(ALARMS), 0, 0, 0, CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, CASE_MAVLINK(0) 0, 0, 0, 0, 1/*to force edit mode*/ });
 
   int sub = m_posVert;
 
@@ -143,7 +143,7 @@ void menuGeneralSetup(evt_t event)
         LcdFlags flags = 0;
         if (attr && m_posHorz < 0) {
           flags |= INVERS;
-          lcdDrawFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 85, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+          lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 85, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
         lcd_putsAtt(RADIO_SETUP_2ND_COLUMN+YEAR_SEPARATOR_OFFSET, y, "-", flags);
         lcd_putsAtt(RADIO_SETUP_2ND_COLUMN+MONTH_SEPARATOR_OFFSET, y, "-", flags);
@@ -182,7 +182,7 @@ void menuGeneralSetup(evt_t event)
         LcdFlags flags = 0;
         if (attr && m_posHorz < 0) {
           flags |= INVERS;
-          lcdDrawFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 85, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+          lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 85, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
         lcd_putsAtt(RADIO_SETUP_2ND_COLUMN+HOUR_SEPARATOR_OFFSET, y, ":", flags);
         lcd_putsAtt(RADIO_SETUP_2ND_COLUMN+MINUTE_SEPARATOR_OFFSET, y, ":", flags);
@@ -215,7 +215,7 @@ void menuGeneralSetup(evt_t event)
         LcdFlags color = WHITE;
         if (attr && m_posHorz < 0) {
           color = BLACK;
-          lcdDrawFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 90, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+          lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 90, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
         putsVolts(RADIO_SETUP_2ND_COLUMN, y, 90+g_eeGeneral.vBatMin, color|(m_posHorz==0 ? attr : 0)|LEFT|NO_UNIT);
         lcd_puts(RADIO_SETUP_2ND_COLUMN+20, y, "-");
@@ -498,6 +498,7 @@ void menuGeneralSetup(evt_t event)
 
       case ITEM_SETUP_STICK_MODE:
       {
+        lcd_putsLeft(y, NO_INDENT(STR_MODE));
         char s[2] = " ";
         s[0] = '1'+g_eeGeneral.stickMode;
         lcd_putsAtt(RADIO_SETUP_2ND_COLUMN, y, s, attr);

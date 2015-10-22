@@ -269,7 +269,9 @@ int cliDisplay(const char ** argv)
       name[len] = '\0';
       serialPrint("[%s] = %s", name, switchState(EnumKeys(i)) ? "on" : "off");
     }
+#if defined(ROTARY_ENCODER_NAVIGATION)
     serialPrint("[Enc.]  = %d", rotencValue / 2);
+#endif
     for (int i=TRM_BASE; i<=TRM_LAST; i++) {
       serialPrint("[Trim%d] = %s", i-TRM_BASE, switchState(EnumKeys(i)) ? "on" : "off");
     }

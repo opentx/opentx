@@ -36,7 +36,7 @@
 
 #include "opentx.h"
 
-display_t displayBuf[DISPLAY_BUF_SIZE];
+display_t displayBuf[DISPLAY_BUFFER_SIZE];
 
 void lcd_clear()
 {
@@ -132,7 +132,7 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
   }
 }
 
-void lcd_putcAtt(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
+void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
 {
   const pm_uchar * q;
 
@@ -205,7 +205,7 @@ void lcd_putcAtt(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
 
 void lcd_putc(coord_t x, coord_t y, const unsigned char c)
 {
-  lcd_putcAtt(x, y, c, 0);
+  lcdDrawChar(x, y, c, 0);
 }
 
 void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags flags)
@@ -240,7 +240,7 @@ void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags
       break;
     }
     else if (c >= 0x20) {
-      lcd_putcAtt(x, y, c, flags);
+      lcdDrawChar(x, y, c, flags);
       x = lcdNextPos;
     }
     else if (c == 0x1F) {  //X-coord prefix
@@ -317,7 +317,7 @@ void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags flags)
     x -= FWNUM;
     char c = val & 0xf;
     c = c>9 ? c+'A'-10 : c+'0';
-    lcd_putcAtt(x, y, c, flags|(c>='A' ? CONDENSED : 0));
+    lcdDrawChar(x, y, c, flags|(c>='A' ? CONDENSED : 0));
     val >>= 4;
   }
 }
@@ -329,7 +329,7 @@ void lcd_outhex4(coord_t x, coord_t y, uint16_t val)
     x -= FWNUM;
     char c = val & 0xf;
     c = c>9 ? c+'A'-10 : c+'0';
-    lcd_putcAtt(x, y, c, c>='A' ? CONDENSED : 0);
+    lcdDrawChar(x, y, c, c>='A' ? CONDENSED : 0);
     val >>= 4;
   }
 }
@@ -430,7 +430,7 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
       if (c=='1' && i==len && xn>x+10) { x+=1; }
       if ((lcduint_t)val >= 1000) { x+=FWNUM; f &= ~DBLSIZE; }
     }
-    lcd_putcAtt(x, y, c, f);
+    lcdDrawChar(x, y, c, f);
     if (mode == i) {
       flags &= ~PREC2; // TODO not needed but removes 20bytes, could be improved for sure, check asm
       if (dblsize) {
@@ -449,7 +449,7 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
       }
       else if (xxlsize) {
         x -= 17;
-        lcd_putcAtt(x+2, y, '.', f);
+        lcdDrawChar(x+2, y, '.', f);
       }
       else if (midsize) {
         x -= 3;
@@ -472,7 +472,7 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
       }
       else {
         x -= 2;
-        lcd_putcAtt(x, y, '.', f);
+        lcdDrawChar(x, y, '.', f);
       }
     }
     if (dblsize && (lcduint_t)val >= 1000 && (lcduint_t)val < 10000) x-=2;
@@ -497,17 +497,17 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
       drawFilledRect(xn, y+2*FH-3, ln, 2);
     }
   }
-  if (neg) lcd_putcAtt(x, y, '-', flags);
+  if (neg) lcdDrawChar(x, y, '-', flags);
 }
 #endif
 
 void lcd_hline(coord_t x, coord_t y, coord_t w, LcdFlags att)
 {
-  lcd_hlineStip(x, y, w, 0xff, att);
+  lcdDrawHorizontalLine(x, y, w, 0xff, att);
 }
 
 #if defined(CPUARM) && !defined(BOOT)
-void lcd_line(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, LcdFlags att)
+void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, LcdFlags att)
 {
   int dx = x2-x1;      /* the horizontal distance of the line */
   int dy = y2-y1;      /* the vertical distance of the line */
@@ -553,16 +553,16 @@ void lcd_line(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, LcdFl
 
 void lcd_vline(coord_t x, scoord_t y, scoord_t h)
 {
-  lcd_vlineStip(x, y, h, SOLID);
+  lcdDrawVerticalLine(x, y, h, SOLID);
 }
 
-void lcd_rect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
+void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
-  lcd_vlineStip(x, y, h, pat);
-  lcd_vlineStip(x+w-1, y, h, pat);
+  lcdDrawVerticalLine(x, y, h, pat);
+  lcdDrawVerticalLine(x+w-1, y, h, pat);
   if (~att & ROUND) { x+=1; w-=2; }
-  lcd_hlineStip(x, y+h-1, w, pat);
-  lcd_hlineStip(x, y, w, pat);
+  lcdDrawHorizontalLine(x, y+h-1, w, pat);
+  lcdDrawHorizontalLine(x, y, w, pat);
 }
 
 #if !defined(BOOT)
@@ -570,15 +570,15 @@ void drawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, Lc
 {
 #if defined(CPUM64)
   for (scoord_t i=y; i<y+h; i++) {
-    lcd_hlineStip(x, i, w, pat, att);
+    lcdDrawHorizontalLine(x, i, w, pat, att);
     pat = (pat >> 1) + ((pat & 1) << 7);
   }
 #else
   for (scoord_t i=y; i<y+h; i++) {
     if ((att&ROUND) && (i==y || i==y+h-1))
-      lcd_hlineStip(x+1, i, w-2, pat, att);
+      lcdDrawHorizontalLine(x+1, i, w-2, pat, att);
     else
-      lcd_hlineStip(x, i, w, pat, att);
+      lcdDrawHorizontalLine(x, i, w, pat, att);
     pat = (pat >> 1) + ((pat & 1) << 7);
   }
 #endif
@@ -617,7 +617,7 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   }
 
   if (tme < 0) {
-    lcd_putcAtt(x - ((att & DBLSIZE) ? FW+2 : ((att & MIDSIZE) ? FW+0 : FWNUM)), y, '-', att);
+    lcdDrawChar(x - ((att & DBLSIZE) ? FW+2 : ((att & MIDSIZE) ? FW+0 : FWNUM)), y, '-', att);
     tme = -tme;
   }
 
@@ -635,10 +635,10 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   lcd_outdezNAtt(x, y, qr.quot, att|LEADING0|LEFT, 2);
 #if defined(CPUARM) && defined(RTCLOCK)
   if (att&TIMEBLINK)
-    lcd_putcAtt(lcdLastPos, y, separator, BLINK);
+    lcdDrawChar(lcdLastPos, y, separator, BLINK);
   else
 #endif
-  lcd_putcAtt(lcdLastPos, y, separator, att&att2);
+  lcdDrawChar(lcdLastPos, y, separator, att&att2);
   lcd_outdezNAtt(lcdNextPos, y, qr.rem, att2|LEADING0|LEFT, 2);
 }
 
@@ -646,7 +646,7 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att)
 {
   lcd_outdezAtt(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
-  if (~att & NO_UNIT) lcd_putcAtt(lcdLastPos, y, 'V', att);
+  if (~att & NO_UNIT) lcdDrawChar(lcdLastPos, y, 'V', att);
 }
 
 void putsVBat(coord_t x, coord_t y, LcdFlags att)
@@ -685,7 +685,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
     idx -= MIXSRC_FIRST_TELEM;
     div_t qr = div(idx, 3);
     lcd_putsnAtt(x, y, g_model.telemetrySensors[qr.quot].label, ZLEN(g_model.telemetrySensors[qr.quot].label), ZCHAR|att);
-    if (qr.rem) lcd_putcAtt(lcdLastPos, y, qr.rem==2 ? '+' : '-', att);
+    if (qr.rem) lcdDrawChar(lcdLastPos, y, qr.rem==2 ? '+' : '-', att);
   }
 #else
   else
@@ -715,7 +715,7 @@ void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
   if (idx == SWSRC_OFF)
     return lcd_putsiAtt(x, y, STR_OFFON, 0, att);
   if (idx < 0) {
-    lcd_putcAtt(x-2, y, '!', att);
+    lcdDrawChar(x-2, y, '!', att);
     idx = -idx;
   }
 #if defined(CPUARM) && defined(FLIGHT_MODES)
@@ -730,7 +730,7 @@ void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 {
   if (idx==0) { lcd_putsiAtt(x, y, STR_MMMINV, 0, att); return; }
-  if (idx < 0) { lcd_putcAtt(x-2, y, '!', att); idx = -idx; }
+  if (idx < 0) { lcdDrawChar(x-2, y, '!', att); idx = -idx; }
   if (att & CONDENSED)
     lcd_outdezNAtt(x+FW*1, y, idx-1, (att & ~CONDENSED), 1);
   else
@@ -741,7 +741,7 @@ void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 void putsCurve(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 {
   if (idx < 0) {
-    lcd_putcAtt(x-3, y, '!', att);
+    lcdDrawChar(x-3, y, '!', att);
     idx = -idx+CURVE_BASE-1;
   }
   if (idx < CURVE_BASE)
@@ -768,7 +768,7 @@ void putsTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att
   if (v > TRIM_EXTENDED_MAX) {
     uint8_t p = v - TRIM_EXTENDED_MAX - 1;
     if (p >= phase) p++;
-    lcd_putcAtt(x, y, '0'+p, att);
+    lcdDrawChar(x, y, '0'+p, att);
   }
   else {
     putsChnLetter(x, y, idx+1, att);
@@ -783,10 +783,10 @@ void putsRotaryEncoderMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, Lcd
   if (v > ROTARY_ENCODER_MAX) {
     uint8_t p = v - ROTARY_ENCODER_MAX - 1;
     if (p >= phase) p++;
-    lcd_putcAtt(x, y, '0'+p, att);
+    lcdDrawChar(x, y, '0'+p, att);
   }
   else {
-    lcd_putcAtt(x, y, 'a'+idx, att);
+    lcdDrawChar(x, y, 'a'+idx, att);
   }
 }
 #endif
@@ -816,7 +816,7 @@ void displayGpsCoord(coord_t x, coord_t y, char direction, int16_t bp, int16_t a
 {
     if (!direction) direction = '-';
     lcd_outdezAtt(x, y, bp / 100, att); // ddd before '.'
-    lcd_putcAtt(lcdLastPos, y, '@', att);
+    lcdDrawChar(lcdLastPos, y, '@', att);
     uint8_t mn = bp % 100; // TODO div_t
     if (g_eeGeneral.gpsFormat == 0) {
       lcd_outdezNAtt(lcdNextPos, y, mn, att|LEFT|LEADING0, 2); // mm before '.'
@@ -845,22 +845,22 @@ void displayDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags a
     x -= 42;
     att &= ~0x0F00; // TODO constant
     lcd_outdezNAtt(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
-    lcd_putcAtt(lcdLastPos-1, y, '-', att);
+    lcdDrawChar(lcdLastPos-1, y, '-', att);
     lcd_outdezNAtt(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);
-    lcd_putcAtt(lcdLastPos-1, y, '-', att);
+    lcdDrawChar(lcdLastPos-1, y, '-', att);
     lcd_outdezAtt(lcdNextPos-1, y, telemetryItem.datetime.year, att|LEFT);
     y += FH;
     lcd_outdezNAtt(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
-    lcd_putcAtt(lcdLastPos, y, ':', att);
+    lcdDrawChar(lcdLastPos, y, ':', att);
     lcd_outdezNAtt(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
-    lcd_putcAtt(lcdLastPos, y, ':', att);
+    lcdDrawChar(lcdLastPos, y, ':', att);
     lcd_outdezNAtt(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
   }
   else {
     lcd_outdezNAtt(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
-    lcd_putcAtt(lcdLastPos, y, ':', att);
+    lcdDrawChar(lcdLastPos, y, ':', att);
     lcd_outdezNAtt(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
-    lcd_putcAtt(lcdLastPos, y, ':', att);
+    lcdDrawChar(lcdLastPos, y, ':', att);
     lcd_outdezNAtt(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
   }
 }
@@ -1110,7 +1110,7 @@ void lcdSetContrast()
 #define LCD_BYTE_FILTER(p, keep, add) *(p) = (*(p) & (keep)) | (add)
 
 #if !defined(CPUARM)
-void lcd_putcAtt(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
+void lcdDrawChar(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 {
   uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
   const pm_uchar *q = &font_5x7[(c-0x20)*5];
@@ -1280,7 +1280,7 @@ void lcd_plot(coord_t x, coord_t y, LcdFlags att)
     lcd_mask(p, BITMASK(y%8), att);
 }
 
-void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
+void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
 {
   if (y >= LCD_H) return;
   if (x+w > LCD_W) { w = LCD_W - x; }
@@ -1300,7 +1300,7 @@ void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
 }
 
 #if defined(CPUM64)
-void lcd_vlineStip(coord_t x, int8_t y, int8_t h, uint8_t pat)
+void lcdDrawVerticalLine(coord_t x, int8_t y, int8_t h, uint8_t pat)
 {
   if (x >= LCD_W) return;
   if (h<0) { y+=h; h=-h; }
@@ -1333,7 +1333,7 @@ void lcd_vlineStip(coord_t x, int8_t y, int8_t h, uint8_t pat)
 }
 #else
 // allows the att parameter...
-void lcd_vlineStip(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att)
+void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att)
 {
   if (x >= LCD_W) return;
 #if defined(CPUARM)

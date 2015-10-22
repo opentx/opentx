@@ -213,7 +213,7 @@ void menuModelSetup(uint8_t event)
                 int8_t switchVal = checkIncDecMovedSwitch(val);
                 if (val != switchVal) {
                   timer->mode = switchVal + (TMRMODE_COUNT-1);
-                  eeDirty(EE_MODEL);
+                  storageDirty(EE_MODEL);
                 }
               }
 #endif
@@ -335,7 +335,7 @@ void menuModelSetup(uint8_t event)
             for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
               memclear(&g_model.flightModeData[i], TRIMS_ARRAY_SIZE);
             }
-            eeDirty(EE_MODEL);
+            storageDirty(EE_MODEL);
             AUDIO_WARNING1();
           }
         }
@@ -400,11 +400,11 @@ void menuModelSetup(uint8_t event)
               case EVT_KEY_BREAK(KEY_ENTER):
 #if defined(CPUM64)
                 g_model.switchWarningEnable ^= (1 << m_posHorz);
-                eeDirty(EE_MODEL);
+                storageDirty(EE_MODEL);
 #else
                 if (m_posHorz < NUM_SWITCHES-1) {
                   g_model.switchWarningEnable ^= (1 << m_posHorz);
-                  eeDirty(EE_MODEL);
+                  storageDirty(EE_MODEL);
                 }
 #endif
                 break;
@@ -414,14 +414,14 @@ void menuModelSetup(uint8_t event)
                 getMovedSwitch();
                 g_model.switchWarningState = switches_states;
                 AUDIO_WARNING1();
-                eeDirty(EE_MODEL);
+                storageDirty(EE_MODEL);
 #else
                 if (m_posHorz == NUM_SWITCHES-1) {
                   s_noHi = NO_HI_LEN;
                   getMovedSwitch();
                   g_model.switchWarningState = switches_states;
                   AUDIO_WARNING1();
-                  eeDirty(EE_MODEL);
+                  storageDirty(EE_MODEL);
                 }
 #endif
                 killEvents(event);
@@ -451,7 +451,7 @@ void menuModelSetup(uint8_t event)
             if (swactive)
               attr |= INVERS;
           }
-          lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+i*FW, y, (swactive || (attr & BLINK)) ? c : '-', attr);
+          lcdDrawChar(MODEL_SETUP_2ND_COLUMN+i*FW, y, (swactive || (attr & BLINK)) ? c : '-', attr);
 #if !defined(CPUM64)
           lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+(NUM_SWITCHES*FW), y, PSTR("<]"), (m_posHorz == NUM_SWITCHES-1 && !s_noHi) ? line : 0);
 #endif
@@ -471,7 +471,7 @@ void menuModelSetup(uint8_t event)
             if (READ_ONLY_UNLOCKED()) {
               s_editMode = 0;
               g_model.beepANACenter ^= ((BeepANACenter)1<<m_posHorz);
-              eeDirty(EE_MODEL);
+              storageDirty(EE_MODEL);
             }
           }
         }
@@ -576,7 +576,7 @@ void menuModelSetup(uint8_t event)
           lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT);
           lcd_putc(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, 'u');
           lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0);
-          lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, moduleData.ppmPulsePol ? '+' : '-', (CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0);
+          lcdDrawChar(MODEL_SETUP_2ND_COLUMN+10*FW, y, moduleData.ppmPulsePol ? '+' : '-', (CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0);
 
           if (attr && (editMode>0 || p1valdiff)) {
             switch (m_posHorz) {
@@ -729,7 +729,7 @@ void menuModelSetup(uint8_t event)
         lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, (int16_t)g_model.moduleData[1].ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT);
         lcd_putc(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, 'u');
         lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (g_model.moduleData[1].ppmDelay*50)+300, (m_posHorz < 0 || m_posHorz==1) ? attr : 0);
-        lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, g_model.moduleData[1].ppmPulsePol ? '+' : '-', (m_posHorz < 0 || m_posHorz==2) ? attr : 0);
+        lcdDrawChar(MODEL_SETUP_2ND_COLUMN+10*FW, y, g_model.moduleData[1].ppmPulsePol ? '+' : '-', (m_posHorz < 0 || m_posHorz==2) ? attr : 0);
         if (attr && (editMode>0 || p1valdiff)) {
           switch (m_posHorz) {
             case 0:
@@ -754,7 +754,7 @@ void menuModelSetup(uint8_t event)
           lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, (int16_t)g_model.ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT);
           lcd_putc(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, 'u');
           lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (g_model.ppmDelay*50)+300, (CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0);
-          lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, g_model.pulsePol ? '+' : '-', (CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0);
+          lcdDrawChar(MODEL_SETUP_2ND_COLUMN+10*FW, y, g_model.pulsePol ? '+' : '-', (CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0);
           if (attr && (editMode>0 || p1valdiff)) {
             switch (m_posHorz) {
               case 0:
@@ -821,7 +821,7 @@ void menuModelFailsafe(uint8_t event)
   if (event == EVT_KEY_LONG(KEY_ENTER) && s_editMode) {
     s_noHi = NO_HI_LEN;
     g_model.moduleData[g_moduleIdx].failsafeChannels[m_posVert] = channelOutputs[m_posVert];
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
     AUDIO_WARNING1();
     SEND_FAILSAFE_NOW(g_moduleIdx);
   }
@@ -876,7 +876,7 @@ void menuModelFailsafe(uint8_t event)
 #endif
 
       // Gauge
-      lcd_rect(x+COL_W-3-wbar-ofs, y, wbar+1, 6);
+      lcdDrawRect(x+COL_W-3-wbar-ofs, y, wbar+1, 6);
       uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
       uint8_t len = limit((uint8_t)1, uint8_t((abs(val) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
       coord_t x0 = (val>0) ? x+COL_W-ofs-3-wbar/2 : x+COL_W-ofs-2-wbar/2-len;

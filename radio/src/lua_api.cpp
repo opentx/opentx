@@ -439,7 +439,7 @@ static int luaLcdDrawLine(lua_State *L)
   int y2 = luaL_checkinteger(L, 4);
   int pat = luaL_checkinteger(L, 5);
   int flags = luaL_checkinteger(L, 6);
-  lcd_line(x1, y1, x2, y2, pat, flags);
+  lcdDrawLine(x1, y1, x2, y2, pat, flags);
   return 0;
 }
 
@@ -562,7 +562,7 @@ static int luaLcdDrawRectangle(lua_State *L)
   int w = luaL_checkinteger(L, 3);
   int h = luaL_checkinteger(L, 4);
   unsigned int flags = luaL_optunsigned(L, 5, 0);
-  lcd_rect(x, y, w, h, 0xff, flags);
+  lcdDrawRect(x, y, w, h, 0xff, flags);
   return 0;
 }
 
@@ -588,7 +588,7 @@ static int luaLcdDrawGauge(lua_State *L)
   int num = luaL_checkinteger(L, 5);
   int den = luaL_checkinteger(L, 6);
   // int flags = luaL_checkinteger(L, 7);
-  lcd_rect(x, y, w, h);
+  lcdDrawRect(x, y, w, h);
   uint8_t len = limit((uint8_t)1, uint8_t(w*num/den), uint8_t(w));
   for (int i=1; i<h-1; i++) {
     lcd_hline(x+1, y+i, len);
@@ -627,7 +627,7 @@ static int luaLcdDrawCombobox(lua_State *L)
   }
   if (flags & BLINK) {
     drawFilledRect(x, y, w-9, count*9+2, SOLID, ERASE);
-    lcd_rect(x, y, w-9, count*9+2);
+    lcdDrawRect(x, y, w-9, count*9+2);
     for (int i=0; i<count; i++) {
       lua_rawgeti(L, 4, i+1);
       const char * item = luaL_checkstring(L, -1);
@@ -635,7 +635,7 @@ static int luaLcdDrawCombobox(lua_State *L)
     }
     drawFilledRect(x+1, y+1+9*idx, w-11, 9);
     drawFilledRect(x+w-10, y, 10, 11, SOLID, ERASE);
-    lcd_rect(x+w-10, y, 10, 11);
+    lcdDrawRect(x+w-10, y, 10, 11);
   }
   else if (flags & INVERS) {
     drawFilledRect(x, y, w, 11);
@@ -646,7 +646,7 @@ static int luaLcdDrawCombobox(lua_State *L)
   }
   else {
     drawFilledRect(x, y, w, 11, SOLID, ERASE);
-    lcd_rect(x, y, w, 11);
+    lcdDrawRect(x, y, w, 11);
     drawFilledRect(x+w-10, y+1, 9, 9, SOLID);
     lua_rawgeti(L, 4, idx+1);
     const char * item = luaL_checkstring(L, -1);
@@ -692,7 +692,7 @@ static int luaModelSetInfo(lua_State *L)
 #endif
     }
   }
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
   return 0;
 }
 
@@ -736,7 +736,7 @@ static int luaModelSetModule(lua_State *L)
         module.channelsCount = luaL_checkinteger(L, -1) - 8;
       }
     }
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   return 0;
 }
@@ -789,7 +789,7 @@ static int luaModelSetTimer(lua_State *L)
         timer.persistent = luaL_checkinteger(L, -1);
       }
     }
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   return 0;
 }
@@ -1133,7 +1133,7 @@ static int luaModelSetLogicalSwitch(lua_State *L)
         sw->duration = luaL_checkinteger(L, -1);
       }
     }
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 
   return 0;
@@ -1238,7 +1238,7 @@ static int luaModelSetCustomFunction(lua_State *L)
         CFN_ACTIVE(cfn) = luaL_checkinteger(L, -1);
       }
     }
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 
   return 0;
@@ -1306,7 +1306,7 @@ static int luaModelSetOutput(lua_State *L)
           limit->curve = luaL_checkinteger(L, -1) + 1;
       }
     }
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 
   return 0;
@@ -1330,7 +1330,7 @@ static int luaModelSetGlobalVariable(lua_State *L)
   int value = luaL_checkinteger(L, 3);
   if (phase < MAX_FLIGHT_MODES && idx < MAX_GVARS && value >= -GVAR_MAX && value <= GVAR_MAX) {
     g_model.flightModeData[phase].gvars[idx] = value;
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   return 0;
 }
@@ -1996,7 +1996,7 @@ void luaDoOneRunStandalone(uint8_t evt)
           lcd_outdezAtt(lcdLastPos, 7*FH, luaGetMemUsed(), LEFT);
           lcd_putc(lcdLastPos, 7*FH, 'b');
           lcd_hline(0, 7*FH-2, lcdLastPos+6, FORCE);
-          lcd_vlineStip(lcdLastPos+6, 7*FH-2, FH+2, SOLID, FORCE);
+          lcdDrawVerticalLine(lcdLastPos+6, 7*FH-2, FH+2, SOLID, FORCE);
         }
       }
     }

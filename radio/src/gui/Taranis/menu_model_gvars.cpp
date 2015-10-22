@@ -41,17 +41,17 @@ void onGVARSMenu(const char *result)
 
   if (result == STR_ENABLE_POPUP) {
     g_model.gvars[sub].popup = true;
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   else if (result == STR_DISABLE_POPUP) {
     g_model.gvars[sub].popup = false;
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   else if (result == STR_CLEAR) {
     for (int i=0; i<MAX_FLIGHT_MODES; i++) {
       g_model.flightModeData[i].gvars[sub] = 0;
     }
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 }
 
@@ -115,7 +115,7 @@ void menuModelGVars(uint8_t event)
           if (attr) {
             if (event == EVT_KEY_LONG(KEY_ENTER)) {
               v = (v > GVAR_MAX ? 0 : GVAR_MAX+1);
-              eeDirty(EE_MODEL);
+              storageDirty(EE_MODEL);
             }
             else if (s_editMode>0) {
               v = checkIncDec(event, v, vmin, vmax, EE_MODEL);

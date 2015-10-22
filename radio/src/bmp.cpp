@@ -228,23 +228,19 @@ const char *writeScreenshot()
   FIL bmpFile;
   UINT written;
   char filename[42]; // /SCREENSHOTS/screen-2013-01-01-123540.bmp
-  DIR folder;
 
   // check and create folder here
   strcpy_P(filename, SCREENSHOTS_PATH);
-  FRESULT result = f_opendir(&folder, filename);
-  if (result != FR_OK) {
-    if (result == FR_NO_PATH)
-      result = f_mkdir(filename);
-    if (result != FR_OK)
-      return SDCARD_ERROR(result);
+  const char * error = sdCheckAndCreateDirectory(filename);
+  if (error) {
+    return error;
   }
 
   char *tmp = strAppend(&filename[sizeof(SCREENSHOTS_PATH)-1], "/screen");
   tmp = strAppendDate(tmp, true);
   strcpy(tmp, BITMAPS_EXT);
 
-  result = f_open(&bmpFile, filename, FA_CREATE_ALWAYS | FA_WRITE);
+  FRESULT result = f_open(&bmpFile, filename, FA_CREATE_ALWAYS | FA_WRITE);
   if (result != FR_OK) {
     return SDCARD_ERROR(result);
   }

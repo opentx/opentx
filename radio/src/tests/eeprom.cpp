@@ -44,7 +44,7 @@ TEST(Eeprom, 100_random_writes)
   uint8_t buf[1000];
   uint8_t buf2[1000];
 
-  eepromFormat();
+  storageFormat();
 
   for(int i=0; i<100; i++) {
     int size = rand()%800;
@@ -66,7 +66,7 @@ TEST(Eeprom, test2)
   RlcFile f;
   uint8_t buf[1000];
 
-  eepromFormat();
+  storageFormat();
 
   for(int i=0; i<1000; i++) buf[i]='6'+i%4;
 
@@ -83,19 +83,19 @@ TEST(Eeprom, test2)
   EXPECT_EQ(sz, 300);
 }
 
-TEST(Eeprom, eeCheckImmediately)
+TEST(Eeprom, storageCheckImmediately)
 {
   eepromFile = NULL; // in memory
   // RlcFile f;
   uint8_t buf[1000];
 
-  eepromFormat();
+  storageFormat();
 
   for(int i=0; i<1000; i++) buf[i]='6'+i%4;
 
   theFile.writeRlc(6, 6, buf, 300, false);
 
-  eeCheck(true);
+  storageCheck(true);
 
   theFile.openRd(6);
   uint16_t sz=0;
@@ -114,7 +114,7 @@ TEST(Eeprom, copy)
 
   uint8_t buf[1000];
 
-  eepromFormat();
+  storageFormat();
 
   for(int i=0; i<1000; i++) buf[i]='6'+i%4;
 
@@ -139,7 +139,7 @@ TEST(Eeprom, rm)
 
   uint8_t buf[1000];
 
-  eepromFormat();
+  storageFormat();
 
   for(int i=0; i<1000; i++) buf[i]='6'+i%4;
 

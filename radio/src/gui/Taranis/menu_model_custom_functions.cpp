@@ -67,7 +67,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
       strcpy(directory, SOUNDS_PATH);
       strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
     }
-    if (!listSdFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), NULL)) {
+    if (!sdListFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), NULL)) {
       POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
       s_menu_flags = 0;
     }
@@ -75,7 +75,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
   else {
     // The user choosed a file in the list
     memcpy(cfn->play.name, result, sizeof(cfn->play.name));
-    eeDirty(eeFlags);
+    storageDirty(eeFlags);
     if (func == FUNC_PLAY_SCRIPT) {
       LUA_LOAD_MODEL_SCRIPTS();
     }
@@ -103,21 +103,21 @@ void onCustomFunctionsMenu(const char *result)
   }
   else if (result == STR_PASTE) {
     *cfn = clipboard.data.cfn;
-    eeDirty(eeFlags);
+    storageDirty(eeFlags);
   }
   else if (result == STR_CLEAR) {
     memset(cfn, 0, sizeof(CustomFunctionData));
-    eeDirty(eeFlags);
+    storageDirty(eeFlags);
   }
   else if (result == STR_INSERT) {
     memmove(cfn+1, cfn, (NUM_CFN-sub-1)*sizeof(CustomFunctionData));
     memset(cfn, 0, sizeof(CustomFunctionData));
-    eeDirty(eeFlags);
+    storageDirty(eeFlags);
   }
   else if (result == STR_DELETE) {
     memmove(cfn, cfn+1, (NUM_CFN-sub-1)*sizeof(CustomFunctionData));
     memset(&g_model.customFn[NUM_CFN-1], 0, sizeof(CustomFunctionData));
-    eeDirty(eeFlags);
+    storageDirty(eeFlags);
   }
 }
 
@@ -128,22 +128,22 @@ void onAdjustGvarSourceLongEnterPress(const char * result)
   if (result == STR_CONSTANT) {
     CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_CONSTANT;
     CFN_PARAM(cfn) = 0;
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   else if (result == STR_MIXSOURCE) {
     CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_SOURCE;
     CFN_PARAM(cfn) = 0;
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   else if (result == STR_GLOBALVAR) {
     CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_GVAR;
     CFN_PARAM(cfn) = 0;
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   else if (result == STR_INCDEC) {
     CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_INC;
     CFN_PARAM(cfn) = 0;
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   else {
     onSourceLongEnterPress(result);
@@ -303,7 +303,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
                 strcpy(directory, SOUNDS_PATH);
                 strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
               }
-              if (listSdFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), cfn->play.name)) {
+              if (sdListFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), cfn->play.name)) {
                 menuHandler = onCustomFunctionsFileSelectionMenu;
               }
               else {
@@ -415,12 +415,12 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
               lcd_putsAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2, y, "1x", attr);
             }
             else if (CFN_PLAY_REPEAT(cfn) == CFN_PLAY_REPEAT_NOSTART) {
-              lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN-1, y, '!', attr);
+              lcdDrawChar(MODEL_CUSTOM_FUNC_4TH_COLUMN-1, y, '!', attr);
               lcd_putsAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2, y, "1x", attr);
             }
             else {
               lcd_outdezAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr);
-              lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, 's', attr);
+              lcdDrawChar(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, 's', attr);
             }
             if (active) CFN_PLAY_REPEAT(cfn) = checkIncDec(event, CFN_PLAY_REPEAT(cfn)==CFN_PLAY_REPEAT_NOSTART?-1:CFN_PLAY_REPEAT(cfn), -1, 60/CFN_PLAY_REPEAT_MUL, eeFlags);
           }

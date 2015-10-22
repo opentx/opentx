@@ -156,7 +156,6 @@ extern int8_t s_editMode;       // global editmode
 #define HIDDEN_ROW     ((uint8_t)-2)
 
 #if defined(CPUARM)
-typedef bool (*IsValueAvailable)(int);
 struct CheckIncDecStops {
   const int count;
   const int stops[];
@@ -224,13 +223,6 @@ int8_t checkIncDecMovedSwitch(int8_t val);
 #endif
 
 #if defined(CPUARM)
-  bool isLogicalSwitchFunctionAvailable(int function);
-  bool isAssignableFunctionAvailable(int function);
-  bool isSwitchAvailableInLogicalSwitches(int swtch);
-  bool isSwitchAvailableInCustomFunctions(int swtch);
-  bool isSwitchAvailableInMixes(int swtch);
-  bool isSwitchAvailableInTimers(int swtch);
-  bool isModuleAvailable(int module);
   #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
   #define CHECK_INCDEC_SWITCH(event, var, min, max, flags, available) \
     var = checkIncDec(event, var, min, max, (flags)|INCDEC_SWITCH, available)
@@ -251,11 +243,6 @@ int8_t checkIncDecMovedSwitch(int8_t val);
 #endif
 
 #if defined(CPUARM)
-  bool isInputAvailable(int input);
-  bool isSourceAvailable(int source);
-  bool isSourceAvailableInGlobalFunctions(int source);
-  bool isSourceAvailableInCustomSwitches(int source);
-  bool isInputSourceAvailable(int source);
   #define CHECK_INCDEC_MODELSOURCE(event, var, min, max) \
     var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable)
 #elif defined(AUTOSOURCE)

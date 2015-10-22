@@ -59,7 +59,7 @@ void drawPotsBars()
     if (IS_POT_AVAILABLE(i)) {
       len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
       // TODO 220 constant
-      lcdDrawFilledRect(x, 220-FH-len, 5, len, TEXT_COLOR);
+      lcdDrawSolidFilledRect(x, 220-FH-len, 5, len, TEXT_COLOR);
     }
   }
 }
@@ -79,7 +79,7 @@ void doMainScreenGraphics()
 
 void drawTrimSquare(coord_t x, coord_t y)
 {
-  lcdDrawFilledRect(x-2, y, 15, 15, TITLE_BGCOLOR);
+  lcdDrawSolidFilledRect(x-2, y, 15, 15, TITLE_BGCOLOR);
   lcdDrawBitmapPattern(x-2, y, LBM_TRIM_SHADOW, TEXT_COLOR);
 }
 
@@ -87,13 +87,13 @@ void drawHorizontalTrimPosition(coord_t x, coord_t y, int16_t dir)
 {
   drawTrimSquare(x, y);
   if (dir >= 0) {
-    lcdDrawVerticalLine(x+8, y+3, 9, TEXT_INVERTED_COLOR);
+    lcdDrawSolidVerticalLine(x+8, y+3, 9, TEXT_INVERTED_COLOR);
   }
   if (dir <= 0) {
-    lcdDrawVerticalLine(x+2, y+3, 9, TEXT_INVERTED_COLOR);
+    lcdDrawSolidVerticalLine(x+2, y+3, 9, TEXT_INVERTED_COLOR);
   }
   // if (exttrim) {
-  //  lcdDrawVerticalLine(xm, ym, 9, TEXT_INVERTED_COLOR);
+  //  lcdDrawSolidVerticalLine(xm, ym, 9, TEXT_INVERTED_COLOR);
   // }
 }
 
@@ -101,13 +101,13 @@ void drawVerticalTrimPosition(coord_t x, coord_t y, int16_t dir)
 {
   drawTrimSquare(x, y);
   if (dir >= 0) {
-    lcdDrawHorizontalLine(x+1, y+4, 9, TEXT_INVERTED_COLOR);
+    lcdDrawSolidHorizontalLine(x+1, y+4, 9, TEXT_INVERTED_COLOR);
   }
   if (dir <= 0) {
-    lcdDrawHorizontalLine(x+1, y+10, 9, TEXT_INVERTED_COLOR);
+    lcdDrawSolidHorizontalLine(x+1, y+10, 9, TEXT_INVERTED_COLOR);
   }
   // if (exttrim) {
-  //   lcdDrawHorizontalLine(xm-1, ym,  3, TEXT_INVERTED_COLOR);
+  //   lcdDrawSolidHorizontalLine(xm-1, ym,  3, TEXT_INVERTED_COLOR);
   // }
 }
 
@@ -115,20 +115,20 @@ void drawHorizontalStick(coord_t x, int val)
 {
   for (int i=0; i<=160; i+=4) {
     if (i==0 || i==80 || i==160)
-      lcdDrawVerticalLine(x+i, 250, 13, TEXT_COLOR);
+      lcdDrawSolidVerticalLine(x+i, 250, 13, TEXT_COLOR);
     else
-      lcdDrawVerticalLine(x+i, 252, 9, TEXT_COLOR);
+      lcdDrawSolidVerticalLine(x+i, 252, 9, TEXT_COLOR);
   }
-  drawHorizontalTrimPosition(x+TRIM_LEN+val*TRIM_LEN/RESX-4, TRIM_H_Y+16, val);
+  drawHorizontalTrimPosition(x+TRIM_LEN+val*TRIM_LEN/RESX-5, TRIM_H_Y+16, val);
 }
 
 void drawVerticalStick(coord_t x, int val)
 {
   for (int i=0; i<=160; i+=4) {
     if (i==0 || i==80 || i==160)
-      lcdDrawHorizontalLine(x, 56+i, 13, TEXT_COLOR);
+      lcdDrawSolidHorizontalLine(x, 56+i, 13, TEXT_COLOR);
     else
-      lcdDrawHorizontalLine(x+2, 56+i, 9, TEXT_COLOR);
+      lcdDrawSolidHorizontalLine(x+2, 56+i, 9, TEXT_COLOR);
   }
   drawVerticalTrimPosition(x, TRIM_V_Y+val*TRIM_LEN/RESX-6, val);
 }
@@ -208,7 +208,7 @@ void displayTimers()
       if (timerState.val < 0) {
         color = ALARM_COLOR;
       }
-      // TODO lcdDrawFilledRect(TIMERS_MARGIN, y, TIMERS_W, TIMERS_H, SOLID, bgColor);
+      // TODO lcdDrawSolidFilledRect(TIMERS_MARGIN, y, TIMERS_W, TIMERS_H, SOLID, bgColor);
       putsTimer(TIMERS_MARGIN+TIMERS_PADDING, y+12, abs(timerState.val), color|DBLSIZE|LEFT);
       if (len > 0)
         lcd_putsnAtt(TIMERS_MARGIN+TIMERS_PADDING, y+2, timerData.name, LEN_TIMER_NAME, color|ZCHAR);
@@ -241,7 +241,7 @@ void displayMainTelemetryFields()
         att |= PREC1;
       }
       att |= (item.isOld() ? ALARM_COLOR : TEXT_COLOR);
-      lcdDrawFilledRect(ALTITUDE_X, VOLTS_Y, ALTITUDE_W, ALTITUDE_H, TEXT_BGCOLOR);
+      lcdDrawSolidFilledRect(ALTITUDE_X, VOLTS_Y, ALTITUDE_W, ALTITUDE_H, TEXT_BGCOLOR);
       lcd_putsAtt(ALTITUDE_X+PADDING, VOLTS_Y+2, "Voltage", att);
       putsValueWithUnit(ALTITUDE_X+PADDING, VOLTS_Y+12, value, UNIT_VOLTS, DBLSIZE|LEFT|att);
     }
@@ -254,7 +254,7 @@ void displayMainTelemetryFields()
       TelemetrySensor & sensor = g_model.telemetrySensors[g_model.frsky.altitudeSource-1];
       if (sensor.prec) value /= sensor.prec == 2 ? 100 : 10;
       LcdFlags att = (item.isOld() ? ALARM_COLOR : TEXT_COLOR);
-      lcdDrawFilledRect(ALTITUDE_X, ALTITUDE_Y, ALTITUDE_W, ALTITUDE_H, TEXT_BGCOLOR);
+      lcdDrawSolidFilledRect(ALTITUDE_X, ALTITUDE_Y, ALTITUDE_W, ALTITUDE_H, TEXT_BGCOLOR);
       lcd_putsAtt(ALTITUDE_X+PADDING, ALTITUDE_Y+2, "Alt", att);
       putsValueWithUnit(ALTITUDE_X+PADDING, ALTITUDE_Y+12, value, UNIT_METERS, DBLSIZE|LEFT|att);
     }
@@ -276,10 +276,10 @@ void displayMainViewIndex()
   for (int i=VIEW_COUNT; i>=0; --i) {
     if (isViewAvailable(i)) {
       if (g_eeGeneral.view == i) {
-        lcdDrawFilledRect(x, MENU_FOOTER_TOP+17, 9, 9, TEXT_INVERTED_BGCOLOR);
+        lcdDrawSolidFilledRect(x, MENU_FOOTER_TOP+17, 9, 9, TEXT_INVERTED_BGCOLOR);
       }
       else {
-        lcdDrawRect(x+1, MENU_FOOTER_TOP+18, 7, 7, TEXT_COLOR);
+        lcdDrawSolidRect(x+1, MENU_FOOTER_TOP+18, 7, 7, TEXT_COLOR);
       }
       x -= 11;
     }
@@ -343,11 +343,18 @@ const uint16_t LBM_CORSAIR[] = {
 #include "../../bitmaps/Horus/corsair.lbm"
 };
 
+const uint8_t LBM_TIMER_BACKGROUND[] = {
+#include "../../bitmaps/Horus/mask_timer_bg.lbm"
+};
+
+const uint8_t LBM_RSCALE[] = {
+#include "../../bitmaps/Horus/mask_rscale.lbm"
+};
 
 void menuMainView(evt_t event)
 {
   // clear the screen
-  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
+  lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
 
   switch (event) {
     case EVT_ENTRY:
@@ -377,13 +384,13 @@ void menuMainView(evt_t event)
       break;
 
     case EVT_KEY_BREAK(KEY_DOWN):
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
       g_eeGeneral.view = circularIncDec(g_eeGeneral.view, +1, 0, VIEW_COUNT-1, isViewAvailable);
       break;
 
     case EVT_KEY_BREAK(KEY_UP):
       killEvents(event);
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
       g_eeGeneral.view = circularIncDec(g_eeGeneral.view, -1, 0, VIEW_COUNT-1, isViewAvailable);
       break;
 
@@ -401,14 +408,19 @@ void menuMainView(evt_t event)
   // lcdDrawBitmap(0, 0, LBM_MAINVIEW_FLAT);
 
   // Header
-  lcdDrawFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+  lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
   lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
   lcdDrawBitmapPattern(4, 10, LBM_TOPMENU_OPENTX, MENU_TITLE_COLOR);
   lcdDrawTopmenuDatetime();
 
   // Flight Mode Name
   int mode = mixerCurrentFlightMode;
-  lcd_putsnAtt(212, 237, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|SMLSIZE);
+  for (int i=0; i<MAX_FLIGHT_MODES; i++) {
+    lcdDrawSolidVerticalLine(LCD_W/2-20+5*i, 254, 13, TEXT_COLOR);
+  }
+  drawTrimSquare(LCD_W/2-25+5*mixerCurrentFlightMode, 253);
+  lcdDrawChar(LCD_W/2-23+5*mixerCurrentFlightMode, 254, '0'+mixerCurrentFlightMode, SMLSIZE|TEXT_INVERTED_COLOR);
+  lcd_putsnAtt(LCD_W/2-getTextWidth(g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|SMLSIZE)/2, 237, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|SMLSIZE);
 
   // Sticks
   drawSticks();
@@ -417,12 +429,19 @@ void menuMainView(evt_t event)
   displayTrims(mode);
 
   // Model panel
-  lcdDrawFilledRectWithAttributes(248, 58, 188, 158, SOLID, TEXT_BGCOLOR | (5<<24));
+  lcdDrawFilledRect(248, 58, 188, 158, SOLID, TEXT_BGCOLOR | OPACITY(5));
   lcdDrawBitmapPattern(256, 62, LBM_MODEL_ICON, TITLE_BGCOLOR);
-  lcd_putsAtt(293, 68, "MyPlane Name", SMLSIZE);
-  lcdDrawHorizontalLine(287, 85, 140, TITLE_BGCOLOR);
+  lcd_putsnAtt(293, 68, g_model.header.name, ZCHAR|SMLSIZE, LEN_MODEL_NAME);
+  lcdDrawSolidHorizontalLine(287, 85, 140, TITLE_BGCOLOR);
   lcdDrawBitmap(256, 104, LBM_CORSAIR);
 
+  // Timer 1
+  if (g_model.timers[0].start) {
+    TimerState & timerState = timersStates[0];
+    lcdDrawBitmapPattern(58, 61, LBM_TIMER_BACKGROUND, TEXT_BGCOLOR);
+    lcdDrawBitmapPatternPie(60, 64, LBM_RSCALE, TITLE_BGCOLOR, 0, 360*timerState.val/g_model.timers[0].start);
+    putsTimer(125, 94, abs(timerState.val), TEXT_COLOR|DBLSIZE|LEFT);
+  }
 
 #if 0
   displayMainViewIndex();

@@ -104,7 +104,7 @@ void menuCommonCalib(uint8_t event)
 
     case 3:
       g_eeGeneral.chkSum = evalChkSum();
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
       reusableBuffer.calib.state = 4;
       break;
 

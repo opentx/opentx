@@ -209,14 +209,14 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
 
       if (c != v) {
         name[cur] = v;
-        eeDirty(g_menuPos[0] == 0 ? EE_MODEL : EE_GENERAL);
+        storageDirty(g_menuPos[0] == 0 ? EE_MODEL : EE_GENERAL);
       }
 
       if (attr == ZCHAR) {
-        lcd_putcAtt(x+editNameCursorPos*FW, y, idx2char(v), ERASEBG|INVERS|FIXEDWIDTH);
+        lcdDrawChar(x+editNameCursorPos*FW, y, idx2char(v), ERASEBG|INVERS|FIXEDWIDTH);
       }
       else {
-        lcd_putcAtt(x+editNameCursorPos*FW, y, v, ERASEBG|INVERS|FIXEDWIDTH);
+        lcdDrawChar(x+editNameCursorPos*FW, y, v, ERASEBG|INVERS|FIXEDWIDTH);
       }
     }
     else {

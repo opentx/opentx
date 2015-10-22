@@ -200,7 +200,7 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
           AUDIO_KEYPAD_DOWN();
       }
     }
-    eeDirty(i_flags & (EE_GENERAL|EE_MODEL));
+    storageDirty(i_flags & (EE_GENERAL|EE_MODEL));
     checkIncDec_Ret = (newval > val ? 1 : -1);
   }
   else {

@@ -71,7 +71,7 @@ void DrawCurve(int offset=0)
   do {
     point_t point = getPoint(i++);
     if (point.x == 0) break;
-    lcdDrawFilledRect(point.x-offset, point.y-1, 3, 3, TEXT_COLOR); // do markup square
+    lcdDrawSolidFilledRect(point.x-offset, point.y-1, 3, 3, TEXT_COLOR); // do markup square
   } while(1);
 }
 
@@ -90,7 +90,7 @@ bool moveCurve(uint8_t index, int8_t shift)
     curveEnd[index++] += shift;
   }
 
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
   return true;
 }
 
@@ -212,8 +212,8 @@ void menuModelCurveOne(evt_t event)
     DrawCurve(6);
   }
 
-  lcd_putsAtt(115, MENU_FOOTER_TOP, "X", HEADER_COLOR);
-  lcd_putsAtt(145, MENU_FOOTER_TOP, "Y", HEADER_COLOR);
+  // lcd_putsAtt(115, MENU_FOOTER_TOP, "X", HEADER_COLOR);
+  // lcd_putsAtt(145, MENU_FOOTER_TOP, "Y", HEADER_COLOR);
 
   coord_t posY = MENU_CONTENT_TOP;
   attr = (s_editMode > 0 ? INVERS|BLINK : INVERS);
@@ -233,15 +233,15 @@ void menuModelCurveOne(evt_t event)
     if (i>=pointsOfs && i<pointsOfs+NUM_BODY_LINES) {
       int8_t x = -100 + 200*i/(5+crv.points-1);
       if (crv.type==CURVE_TYPE_CUSTOM && i>0 && i<5+crv.points-1) x = points[5+crv.points+i-1];
-      lcd_outdezAtt(110,  posY, i+1, LEFT);
-      lcd_outdezAtt(130, posY, x, LEFT|(selectionMode==1?attr:0));
-      lcd_outdezAtt(160, posY, points[i], LEFT|(selectionMode==2?attr:0));
+      lcd_outdezAtt(120,  posY, i+1, LEFT|TEXT_DISABLE_COLOR);
+      lcd_outdezAtt(150, posY, x, LEFT|(selectionMode==1?attr:0));
+      lcd_outdezAtt(200, posY, points[i], LEFT|(selectionMode==2?attr:0));
       posY += FH;
     }
 
     if (selectionMode > 0) {
       // do selection square
-      lcdDrawFilledRect(point.x-7, point.y-2, 5, 5, TEXT_INVERTED_BGCOLOR);
+      lcdDrawSolidFilledRect(point.x-7, point.y-2, 5, 5, TEXT_INVERTED_BGCOLOR);
       if (s_editMode > 0) {
         if (selectionMode == 1)
           CHECK_INCDEC_MODELVAR(event, points[5+crv.points+i-1], i==1 ? -100 : points[5+crv.points+i-2], i==5+crv.points-2 ? 100 : points[5+crv.points+i]);  // edit X
@@ -256,7 +256,7 @@ void menuModelCurveOne(evt_t event)
   }
 
   if (5+crv.points > NUM_BODY_LINES) {
-    lcdDrawScrollbar(167, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, pointsOfs, 5+crv.points, NUM_BODY_LINES);
+    lcdDrawScrollbar(250, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, pointsOfs, 5+crv.points, NUM_BODY_LINES);
   }
 }
 

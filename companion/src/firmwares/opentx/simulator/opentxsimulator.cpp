@@ -97,15 +97,18 @@ namespace NAMESPACE {
 #include "radio/src/pulses/pulses_avr.cpp"
 #endif
 
-#include "radio/src/eeprom_common.cpp"
 #if defined(EEPROM_RLC)
-#include "radio/src/eeprom_rlc.cpp"
-#else
-#include "radio/src/eeprom_raw.cpp"
+#include "radio/src/storage/eeprom_common.cpp"
+#include "radio/src/storage/eeprom_rlc.cpp"
+#elif defined(EEPROM)
+#include "radio/src/storage/eeprom_common.cpp"
+#include "radio/src/storage/eeprom_raw.cpp"
+#elif defined(SDCARD)
+#include "radio/src/storage/sdcard_raw.cpp"
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBSKY9X)
-#include "radio/src/eeprom_conversions.cpp"
+#include "radio/src/storage/eeprom_conversions.cpp"
 #endif
 
 #include "radio/src/opentx.cpp"
@@ -222,37 +225,37 @@ namespace NAMESPACE {
 #endif
 
 #if defined(PCBTARANIS)
-#include "radio/src/targets/taranis/board_taranis.cpp"
-#include "radio/src/targets/taranis/keys_driver.cpp"
-#include "radio/src/targets/taranis/audio_driver.cpp"
-#include "radio/src/targets/taranis/telemetry_driver.cpp"
-#include "radio/src/targets/taranis/haptic_driver.cpp"
+#include "radio/src/targets/Taranis/board_taranis.cpp"
+#include "radio/src/targets/Taranis/keys_driver.cpp"
+#include "radio/src/targets/Taranis/audio_driver.cpp"
+#include "radio/src/targets/Taranis/telemetry_driver.cpp"
+#include "radio/src/targets/Taranis/haptic_driver.cpp"
 #if defined(REV9E)
-#include "radio/src/targets/taranis/top_lcd_driver.cpp"
+#include "radio/src/targets/Taranis/top_lcd_driver.cpp"
 #endif
-#include "radio/src/targets/taranis/pulses_driver.cpp"
-#include "radio/src/targets/taranis/rtc_driver.cpp"
-#include "radio/src/targets/taranis/trainer_driver.cpp"
-#include "radio/src/targets/taranis/serial2_driver.cpp"
+#include "radio/src/targets/Taranis/pulses_driver.cpp"
+#include "radio/src/targets/Taranis/rtc_driver.cpp"
+#include "radio/src/targets/Taranis/trainer_driver.cpp"
+#include "radio/src/targets/Taranis/serial2_driver.cpp"
 #elif defined(PCBSKY9X)
-#include "radio/src/targets/sky9x/board_sky9x.cpp"
-#include "radio/src/targets/sky9x/telemetry_driver.cpp"
-#include "radio/src/targets/sky9x/pwr_driver.cpp"
-#include "radio/src/targets/sky9x/eeprom_driver.cpp"
-#include "radio/src/targets/sky9x/keys_driver.cpp"
-#include "radio/src/targets/sky9x/audio_driver.cpp"
-#include "radio/src/targets/sky9x/sdcard_driver.cpp"
-#include "radio/src/targets/sky9x/coproc_driver.cpp"
-#include "radio/src/targets/sky9x/haptic_driver.cpp"
-#include "radio/src/targets/sky9x/serial2_driver.cpp"
-#include "radio/src/targets/sky9x/pulses_driver.cpp"
+#include "radio/src/targets/Sky9x/board_sky9x.cpp"
+#include "radio/src/targets/Sky9x/telemetry_driver.cpp"
+#include "radio/src/targets/Sky9x/pwr_driver.cpp"
+#include "radio/src/targets/Sky9x/eeprom_driver.cpp"
+#include "radio/src/targets/Sky9x/keys_driver.cpp"
+#include "radio/src/targets/Sky9x/audio_driver.cpp"
+#include "radio/src/targets/Sky9x/sdcard_driver.cpp"
+#include "radio/src/targets/Sky9x/coproc_driver.cpp"
+#include "radio/src/targets/Sky9x/haptic_driver.cpp"
+#include "radio/src/targets/Sky9x/serial2_driver.cpp"
+#include "radio/src/targets/Sky9x/pulses_driver.cpp"
 #elif defined(PCBGRUVIN9X)
-#include "radio/src/targets/gruvin9x/board_gruvin9x.cpp"
-#include "radio/src/targets/gruvin9x/somo14d.cpp"
+#include "radio/src/targets/Gruvin9x/board_gruvin9x.cpp"
+#include "radio/src/targets/Gruvin9x/somo14d.cpp"
 #elif defined(PCBMEGA2560)
-#include "radio/src/targets/mega2560/board_mega2560.cpp"
+#include "radio/src/targets/Mega2560/board_mega2560.cpp"
 #else
-#include "radio/src/targets/stock/board_stock.cpp"
+#include "../../../../../radio/src/targets/9x/board_stock.cpp"
 #endif
 
 #include "radio/src/keys.cpp"
@@ -458,9 +461,9 @@ void OpenTxSimulator::wheelEvent(int steps)
 {
 #if defined(REV9E)
   if (steps == 255)
-    x9de_rotenc -= 2;
+    rotencValue -= 2;
   else
-    x9de_rotenc += 2;
+    rotencValue += 2;
 #elif defined(PCBSKY9X) && !defined(REVX)
   g_rotenc[0] += steps*4;
 #elif defined(PCBGRUVIN9X)

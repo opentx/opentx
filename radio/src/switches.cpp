@@ -847,7 +847,7 @@ void checkSwitches()
             if (++numWarnings < 7) {
               char c = "\300-\301"[(states & mask) >> (i*2)];
               putsMixerSource(x, y, MIXSRC_FIRST_SWITCH+i, attr);
-              lcd_putcAtt(lcdNextPos, y, c, attr);
+              lcdDrawChar(lcdNextPos, y, c, attr);
               x = lcdNextPos + 3;
             }
             else if (numWarnings == 7) {
@@ -876,9 +876,9 @@ void checkSwitches()
 #else
               lcd_putsiAtt(x, y, STR_VSRCRAW, NUM_STICKS+1+i, INVERS);
               if (IS_POT(POT1+i))
-                lcd_putcAtt(lcdNextPos, y, g_model.potsWarnPosition[i] > GET_LOWRES_POT_POSITION(i) ? 126 : 127, INVERS);
+                lcdDrawChar(lcdNextPos, y, g_model.potsWarnPosition[i] > GET_LOWRES_POT_POSITION(i) ? 126 : 127, INVERS);
               else
-                lcd_putcAtt(lcdNextPos, y, g_model.potsWarnPosition[i] > GET_LOWRES_POT_POSITION(i) ? '\300' : '\301', INVERS);
+                lcdDrawChar(lcdNextPos, y, g_model.potsWarnPosition[i] > GET_LOWRES_POT_POSITION(i) ? '\300' : '\301', INVERS);
 #endif
 #if defined(COLORLCD)
               if (++numWarnings < 6) {

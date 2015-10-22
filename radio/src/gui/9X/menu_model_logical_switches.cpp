@@ -196,7 +196,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
             INCDEC_SET_FLAG(EE_MODEL | INCDEC_REP10 | NO_INCDEC_MARKS);
             if (cs->v2 < v2_min || cs->v2 > v2_max) {
               cs->v2 = 0;
-              eeDirty(EE_MODEL);
+              storageDirty(EE_MODEL);
             }
           }
           else
@@ -419,7 +419,7 @@ void menuModelLogicalSwitches(uint8_t event)
           INCDEC_SET_FLAG(EE_MODEL | INCDEC_REP10 | NO_INCDEC_MARKS);
         if (cs->v2 < v2_min || cs->v2 > v2_max) {
           cs->v2 = 0;
-          eeDirty(EE_MODEL);
+          storageDirty(EE_MODEL);
         }
 #else
         if (cstate == LS_FAMILY_OFS) {
@@ -432,7 +432,7 @@ void menuModelLogicalSwitches(uint8_t event)
         }
         if (cs->v2 > v2_max) {
           cs->v2 = v2_max;
-          eeDirty(EE_MODEL);
+          storageDirty(EE_MODEL);
         }
 #endif
       }

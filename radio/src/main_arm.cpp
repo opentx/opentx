@@ -96,8 +96,14 @@ void checkEeprom()
     if (eepromIsWriting())
       eepromWriteProcess();
     else if (TIME_TO_WRITE())
-      eeCheck(false);
+      storageCheck(false);
   }
+}
+#else
+void checkEeprom()
+{
+  if (TIME_TO_WRITE())
+    storageCheck(false);
 }
 #endif
 
@@ -247,9 +253,7 @@ void perMain()
   calcConsumption();
 #endif
   checkSpeakerVolume();
-#if defined(EEPROM)
   checkEeprom();
-#endif
   sdMountPoll();
   writeLogs();
   handleUsbConnection();

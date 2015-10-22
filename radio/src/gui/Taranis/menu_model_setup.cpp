@@ -120,7 +120,7 @@ void copySelection(char *dst, const char *src, uint8_t size)
 void onModelSetupBitmapMenu(const char *result)
 {
   if (result == STR_UPDATE_LIST) {
-    if (!listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), NULL)) {
+    if (!sdListFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), NULL)) {
       POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
       s_menu_flags = 0;
     }
@@ -129,7 +129,7 @@ void onModelSetupBitmapMenu(const char *result)
     // The user choosed a bmp file in the list
     copySelection(g_model.header.bitmap, result, sizeof(g_model.header.bitmap));
     memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 }
 
@@ -157,7 +157,7 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
           swsrc_t switchVal = checkIncDecMovedSwitch(val);
           if (val != switchVal) {
             timer->mode = switchVal + (TMRMODE_COUNT-1);
-            eeDirty(EE_MODEL);
+            storageDirty(EE_MODEL);
           }
         }
 #endif
@@ -304,7 +304,7 @@ void menuModelSetup(uint8_t event)
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VCSWFUNC, 0, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
           s_editMode = 0;
-          if (listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), g_model.header.bitmap, LIST_NONE_SD_FILE)) {
+          if (sdListFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), g_model.header.bitmap, LIST_NONE_SD_FILE)) {
             menuHandler = onModelSetupBitmapMenu;
           }
           else {
@@ -402,7 +402,7 @@ void menuModelSetup(uint8_t event)
             for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
               memclear(&g_model.flightModeData[i], TRIMS_ARRAY_SIZE);
             }
-            eeDirty(EE_MODEL);
+            storageDirty(EE_MODEL);
             AUDIO_WARNING1();
           }
         }
@@ -494,7 +494,7 @@ void menuModelSetup(uint8_t event)
                   getMovedSwitch();
                   g_model.switchWarningState = switches_states;
                   AUDIO_WARNING1();
-                  eeDirty(EE_MODEL);
+                  storageDirty(EE_MODEL);
                 }
                 killEvents(event);
                 break;
@@ -510,11 +510,11 @@ void menuModelSetup(uint8_t event)
             div_t qr = div(current, 8);
             if (!READ_ONLY() && event==EVT_KEY_BREAK(KEY_ENTER) && line && l_posHorz==current) {
               g_model.switchWarningEnable ^= (1 << i);
-              eeDirty(EE_MODEL);
+              storageDirty(EE_MODEL);
             }
             uint8_t swactive = !(g_model.switchWarningEnable & (1<<i));
             c = "\300-\301"[states & 0x03];
-            lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+qr.rem*(2*FW+1), y+FH*qr.quot, 'A'+i, line && (m_posHorz==current) ? INVERS : 0);
+            lcdDrawChar(MODEL_SETUP_2ND_COLUMN+qr.rem*(2*FW+1), y+FH*qr.quot, 'A'+i, line && (m_posHorz==current) ? INVERS : 0);
             if (swactive) lcd_putc(lcdNextPos, y+FH*qr.quot, c);
             ++current;
           }
@@ -545,7 +545,7 @@ void menuModelSetup(uint8_t event)
         lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""Man\0""Auto"), g_model.potsWarnMode, (m_posHorz == 0) ? attr : 0);
         if (attr && (m_posHorz == 0)) {
           CHECK_INCDEC_MODELVAR(event, g_model.potsWarnMode, POTS_WARN_OFF, POTS_WARN_AUTO);
-          eeDirty(EE_MODEL);
+          storageDirty(EE_MODEL);
         }
 
         if (attr) {
@@ -557,12 +557,12 @@ void menuModelSetup(uint8_t event)
                 if (g_model.potsWarnMode == POTS_WARN_MANUAL) {
                   SAVE_POT_POSITION(m_posHorz-1);
                   AUDIO_WARNING1();
-                  eeDirty(EE_MODEL);
+                  storageDirty(EE_MODEL);
                 }
                 break;
               case EVT_KEY_BREAK(KEY_ENTER):
                 g_model.potsWarnEnabled ^= (1 << (m_posHorz-1));
-                eeDirty(EE_MODEL);
+                storageDirty(EE_MODEL);
                 break;
             }
           }
@@ -617,7 +617,7 @@ void menuModelSetup(uint8_t event)
             if (READ_ONLY_UNLOCKED()) {
               s_editMode = 0;
               g_model.beepANACenter ^= ((BeepANACenter)1<<m_posHorz);
-              eeDirty(EE_MODEL);
+              storageDirty(EE_MODEL);
             }
           }
         }
@@ -767,7 +767,7 @@ void menuModelSetup(uint8_t event)
           lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT);
           lcd_putc(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, 'u');
           lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0);
-          lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, moduleData.ppmPulsePol ? '+' : '-', (CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0);
+          lcdDrawChar(MODEL_SETUP_2ND_COLUMN+10*FW, y, moduleData.ppmPulsePol ? '+' : '-', (CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0);
 
           if (attr && s_editMode>0) {
             switch (m_posHorz) {
@@ -878,7 +878,7 @@ void menuModelFailsafe(uint8_t event)
     event = 0;
     if (s_editMode) {
       g_model.moduleData[g_moduleIdx].failsafeChannels[m_posVert] = channelOutputs[m_posVert];
-      eeDirty(EE_MODEL);
+      storageDirty(EE_MODEL);
       AUDIO_WARNING1();
       SEND_FAILSAFE_NOW(g_moduleIdx);
     }
@@ -890,7 +890,7 @@ void menuModelFailsafe(uint8_t event)
         failsafe = FAILSAFE_CHANNEL_NOPULSE;
       else
         failsafe = channelOutputs[m_posVert];
-      eeDirty(EE_MODEL);
+      storageDirty(EE_MODEL);
       AUDIO_WARNING1();
       SEND_FAILSAFE_NOW(g_moduleIdx);
     }
@@ -981,13 +981,13 @@ void menuModelFailsafe(uint8_t event)
       }
 
       // Gauge
-      lcd_rect(x+COL_W-3-wbar-ofs, y, wbar+1, 6);
+      lcdDrawRect(x+COL_W-3-wbar-ofs, y, wbar+1, 6);
       unsigned int lenChannel = limit((uint8_t)1, uint8_t((abs(channelValue) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
       unsigned int lenFailsafe = limit((uint8_t)1, uint8_t((abs(failsafeValue) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
       coord_t xChannel = (channelValue>0) ? x+COL_W-ofs-3-wbar/2 : x+COL_W-ofs-2-wbar/2-lenChannel;
       coord_t xFailsafe = (failsafeValue>0) ? x+COL_W-ofs-3-wbar/2 : x+COL_W-ofs-2-wbar/2-lenFailsafe;
-      lcd_hlineStip(xChannel, y+1, lenChannel, DOTTED, 0);
-      lcd_hlineStip(xChannel, y+2, lenChannel, DOTTED, 0);
+      lcdDrawHorizontalLine(xChannel, y+1, lenChannel, DOTTED, 0);
+      lcdDrawHorizontalLine(xChannel, y+2, lenChannel, DOTTED, 0);
       lcd_hline(xFailsafe, y+3, lenFailsafe);
       lcd_hline(xFailsafe, y+4, lenFailsafe);
 

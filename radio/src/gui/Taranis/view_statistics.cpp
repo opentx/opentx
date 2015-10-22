@@ -49,7 +49,7 @@ void menuStatisticsView(uint8_t event)
 
     case EVT_KEY_LONG(KEY_MENU):
       g_eeGeneral.globalTimer = 0;
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
       sessionTimer = 0;
       break;
 
@@ -125,7 +125,7 @@ void menuStatisticsDebug(uint8_t event)
     case EVT_KEY_LONG(KEY_ENTER):
       g_eeGeneral.mAhUsed = 0;
       g_eeGeneral.globalTimer = 0;
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
       sessionTimer = 0;
       killEvents(event);
       AUDIO_KEYPAD_UP();

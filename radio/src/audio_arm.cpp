@@ -290,7 +290,7 @@ char * getModelAudioPath(char * path)
 {
   strcpy(path, SOUNDS_PATH "/");
   strncpy(path+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-  char * result = strcat_modelname(path+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
+  char * result = strcat_currentmodelname(path+sizeof(SOUNDS_PATH));
   *result++ = '/';
   *result = '\0';
   return result;

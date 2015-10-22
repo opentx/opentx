@@ -22,7 +22,10 @@ def getCharWidth(fontsize, metrics, index):
         return 1
     else:
         rect = metrics.boundingRect(chars[index])
-        return rect.width() + 1
+        if fontsize >= 24:
+            return rect.width() + 3
+        else:
+            return rect.width() + 1
 
 def getFontTopBottom(fontsize, metrics):
     top, bottom = 0, 0
@@ -38,10 +41,11 @@ def getFontWidth(fontsize, metrics):
         width += getCharWidth(fontsize, metrics, i)
     return width
     
-def createFontBitmap(filename, fontname, fontsize, foreground, background, coordsfile=True):
+def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, background, coordsfile=True):
     coords = [ ]
     font = QtGui.QFont(fontname)
     font.setPixelSize(fontsize)
+    font.setBold(fontbold)
     font.setHintingPreference(QtGui.QFont.PreferNoHinting)
     metrics = QtGui.QFontMetrics(font)
     width = getFontWidth(fontsize, metrics)
@@ -67,7 +71,10 @@ def createFontBitmap(filename, fontname, fontsize, foreground, background, coord
             painter.drawPoint(width, fontsize);
         else:
             rect = metrics.boundingRect(c)
-            painter.drawText(width-rect.left(), fontsize-2, c) # fontsize-bottom+1 -17 / 7
+            if fontsize >= 24:
+                painter.drawText(width-rect.left()+1, fontsize-2, c) # fontsize-bottom+1 -17 / 7
+            else:
+                painter.drawText(width-rect.left(), fontsize-2, c) # fontsize-bottom+1 -17 / 7
         width += getCharWidth(fontsize, metrics, i)
     if extraWidth:
         painter.drawImage(QtCore.QPoint(width, 0), extraImage)                             
@@ -87,5 +94,5 @@ def createFontBitmap(filename, fontname, fontsize, foreground, background, coord
       f.close()      
     return coords
 
-if len(sys.argv) == 4:
-    createFontBitmap(sys.argv[3], sys.argv[1], float(sys.argv[2]), QtGui.QColor(0x00, 0x00, 0x00), QtGui.QColor(0xFF, 0xFF, 0xFF))
+if __name__ == "__main__":
+  createFontBitmap(sys.argv[4], sys.argv[1], float(sys.argv[2]), sys.argv[3] == "True", QtGui.QColor(0x00, 0x00, 0x00), QtGui.QColor(0xFF, 0xFF, 0xFF))

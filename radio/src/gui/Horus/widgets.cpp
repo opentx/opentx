@@ -58,7 +58,7 @@ const char * STR_MONTHS[] = { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "
 
 void lcdDrawTopmenuDatetime()
 {
-  lcdDrawVerticalLine(DATETIME_SEPARATOR_X, 7, 31, TEXT_INVERTED_COLOR);
+  lcdDrawSolidVerticalLine(DATETIME_SEPARATOR_X, 7, 31, TEXT_INVERTED_COLOR);
 
   struct gtm t;
   gettime(&t);
@@ -76,8 +76,8 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 #define MARKER_WIDTH  5
 
   lcdDrawSquare(centrex-BOX_WIDTH/2, BOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH, TEXT_COLOR);
-  lcd_vlineStip(centrex, BOX_CENTERY-1, 3, SOLID, TEXT_COLOR);
-  lcd_hlineStip(centrex-1, BOX_CENTERY, 3, SOLID, TEXT_COLOR);
+  lcdDrawVerticalLine(centrex, BOX_CENTERY-1, 3, SOLID, TEXT_COLOR);
+  lcdDrawHorizontalLine(centrex-1, BOX_CENTERY, 3, SOLID, TEXT_COLOR);
   lcdDrawSquare(centrex + (xval/((2*RESX)/(BOX_WIDTH-MARKER_WIDTH))) - MARKER_WIDTH/2, BOX_CENTERY - (yval/((2*RESX)/(BOX_WIDTH-MARKER_WIDTH))) - MARKER_WIDTH/2, MARKER_WIDTH, ROUND|TEXT_COLOR);
 
 #undef BOX_CENTERY
@@ -87,37 +87,37 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 void lcdDrawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
 {
   if (attr) {
-    lcdDrawFilledRect(x-1, y+2, 13, 13, TEXT_INVERTED_BGCOLOR);
-    lcdDrawFilledRect(x+1, y+4, 9, 9, TEXT_BGCOLOR);
+    lcdDrawSolidFilledRect(x-1, y+2, 13, 13, TEXT_INVERTED_BGCOLOR);
+    lcdDrawSolidFilledRect(x+1, y+4, 9, 9, TEXT_BGCOLOR);
     if (value) {
-      lcdDrawFilledRect(x+2, y+5, 7, 7, TEXT_INVERTED_BGCOLOR);
+      lcdDrawSolidFilledRect(x+2, y+5, 7, 7, TEXT_INVERTED_BGCOLOR);
     }
   }
   else {
     if (value) {
-      lcdDrawFilledRect(x+2, y+5, 7, 7, SCROLLBOX_COLOR);
-      lcdDrawRect(x, y+3, 11, 11, LINE_COLOR);
+      lcdDrawSolidFilledRect(x+2, y+5, 7, 7, SCROLLBOX_COLOR);
+      lcdDrawSolidRect(x, y+3, 11, 11, LINE_COLOR);
     }
     else {
-      lcdDrawRect(x, y+3, 11, 11, LINE_COLOR);
+      lcdDrawSolidRect(x, y+3, 11, 11, LINE_COLOR);
     }
   }
 }
 
 void lcdDrawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
 {
-  lcdDrawVerticalLine(x, y, h, LINE_COLOR);
+  lcdDrawSolidVerticalLine(x, y, h, LINE_COLOR);
   coord_t yofs = (h*offset + count/2) / count;
   coord_t yhgt = (h*visible + count/2) / count;
   if (yhgt + yofs > h)
     yhgt = h - yofs;
-  lcdDrawFilledRect(x-1, y + yofs, 3, yhgt, SCROLLBOX_COLOR);
+  lcdDrawSolidFilledRect(x-1, y + yofs, 3, yhgt, SCROLLBOX_COLOR);
 }
 
 void displayProgressBar(const char *label)
 {
   lcd_putsLeft(4*FH, label);
-  lcd_rect(3, 6*FH+4, 204, 7);
+  lcdDrawRect(3, 6*FH+4, 204, 7);
   lcdRefresh();
 }
 
@@ -125,9 +125,7 @@ void updateProgressBar(int num, int den)
 {
   if (num > 0 && den > 0) {
     int width = (200*num)/den;
-    lcd_hline(5, 6*FH+6, width);
-    lcd_hline(5, 6*FH+7, width);
-    lcd_hline(5, 6*FH+8, width);
+    lcdDrawSolidFilledRect(5, 6*FH+6, width, 3, LINE_COLOR);
     lcdRefresh();
   }
 }
@@ -137,11 +135,11 @@ void updateProgressBar(int num, int den)
 void drawMenuTemplate(const char * name, evt_t event)
 {
   // clear the screen
-  lcdDrawFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-  lcdDrawFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP-MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
-  lcdDrawFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR);
-  lcdDrawFilledRect(0, MENU_BODY_TOP, LCD_W, MENU_BODY_HEIGHT, TEXT_BGCOLOR);
-  lcdDrawFilledRect(0, MENU_FOOTER_TOP, LCD_W, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
+  lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+  lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP-MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
+  lcdDrawSolidFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR);
+  lcdDrawSolidFilledRect(0, MENU_BODY_TOP, LCD_W, MENU_BODY_HEIGHT, TEXT_BGCOLOR);
+  lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, LCD_W, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
 
   lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
 
@@ -149,7 +147,7 @@ void drawMenuTemplate(const char * name, evt_t event)
     lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_BG, TITLE_BGCOLOR);
   }
   else {
-    lcdDrawFilledRect(58+menuPageIndex*MENU_ICONS_SPACING-9, 0, 32, MENU_HEADER_HEIGHT, TITLE_BGCOLOR);
+    lcdDrawSolidFilledRect(58+menuPageIndex*MENU_ICONS_SPACING-9, 0, 32, MENU_HEADER_HEIGHT, TITLE_BGCOLOR);
     lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_DOT, MENU_TITLE_COLOR);
   }
 
@@ -199,12 +197,12 @@ int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, evt_t e
 void displaySlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
 {
   const int width = 50;
-  lcd_hlineStip(x, y+5, width, SOLID, TEXT_COLOR);
+  lcdDrawHorizontalLine(x, y+5, width, SOLID, TEXT_COLOR);
   if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) {
-    lcdDrawFilledRect(x+value*(width-5)/max, y, 5, 11, TEXT_INVERTED_BGCOLOR);
+    lcdDrawSolidFilledRect(x+value*(width-5)/max, y, 5, 11, TEXT_INVERTED_BGCOLOR);
   }
   else {
-    lcdDrawFilledRect(x+value*(width-5)/max, y, 5, 11, LINE_COLOR);
+    lcdDrawSolidFilledRect(x+value*(width-5)/max, y, 5, 11, LINE_COLOR);
   }
 }
 
@@ -227,7 +225,7 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
       value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, mixerCurrentFlightMode)*10 : delta);
     else
       value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, mixerCurrentFlightMode) : delta);
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 
   if (GV_IS_GV_VALUE(value, min, max)) {

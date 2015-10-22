@@ -325,7 +325,7 @@ void menuMainView(uint8_t event)
 #else
         g_eeGeneral.view ^= ALTERNATE_VIEW;
 #endif
-        eeDirty(EE_GENERAL);
+        storageDirty(EE_GENERAL);
         AUDIO_KEYPAD_UP();
       }
       break;
@@ -381,7 +381,7 @@ void menuMainView(uint8_t event)
     case EVT_KEY_BREAK(KEY_UP):
     case EVT_KEY_BREAK(KEY_DOWN):
       g_eeGeneral.view = (event == EVT_KEY_BREAK(KEY_UP) ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
       AUDIO_KEYPAD_UP();
       break;
 
@@ -451,7 +451,7 @@ void menuMainView(uint8_t event)
 
   if (view_base < VIEW_INPUTS) {
     // scroll bar
-    lcd_hlineStip(38, 34, 54, DOTTED);
+    lcdDrawHorizontalLine(38, 34, 54, DOTTED);
 #if defined(PCBSKY9X)
     lcd_hline(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
 #else
@@ -491,7 +491,7 @@ void menuMainView(uint8_t event)
           int8_t len = (abs(val) * WBAR2 + lim/2) / lim;
 
           if(len>WBAR2)  len = WBAR2;  // prevent bars from going over the end - comment for debugging
-          lcd_hlineStip(x0-WBAR2, y0, WBAR2*2+1, DOTTED);
+          lcdDrawHorizontalLine(x0-WBAR2, y0, WBAR2*2+1, DOTTED);
           lcd_vline(x0,y0-2,5);
           if (val>0)
             x0+=1;
@@ -567,7 +567,7 @@ void menuMainView(uint8_t event)
 
   // And ! in case of unexpected shutdown
   if (unexpectedShutdown) {
-    lcd_putcAtt(REBOOT_X, 0*FH, '!', INVERS);
+    lcdDrawChar(REBOOT_X, 0*FH, '!', INVERS);
   }
 
 #if defined(GVARS) && !defined(PCBSTD)

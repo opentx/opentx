@@ -288,15 +288,15 @@
 #elif defined(PCBFLAMENCO)
   #include "targets/Flamenco/board_flamenco.h"
 #elif defined(PCBTARANIS)
-  #include "targets/taranis/board_taranis.h"
+  #include "targets/Taranis/board_taranis.h"
 #elif defined(PCBSKY9X)
-  #include "targets/sky9x/board_sky9x.h"
+  #include "targets/Sky9x/board_sky9x.h"
 #elif defined(PCBGRUVIN9X)
-  #include "targets/gruvin9x/board_gruvin9x.h"
+  #include "targets/Gruvin9x/board_gruvin9x.h"
 #elif defined(PCBMEGA2560)
-  #include "targets/mega2560/board_mega2560.h"
+  #include "targets/Mega2560/board_mega2560.h"
 #else
-  #include "targets/stock/board_stock.h"
+  #include "targets/9x/board_stock.h"
 #endif
 
 #include "debug.h"
@@ -469,14 +469,8 @@
 #include "cli.h"
 #endif
 
-#include "eeprom_common.h"
-
-#if defined(EEPROM_RLC)
-  #include "eeprom_rlc.h"
-#else
-  #include "eeprom_raw.h"
-#endif
-
+#include "timers.h"
+#include "storage/storage.h"
 #include "pulses/pulses.h"
 
 #if defined(PCBTARANIS)
@@ -1530,11 +1524,11 @@ enum AUDIO_SOUNDS {
 #include "buzzer.h"
 
 #if defined(PCBSTD) && defined(VOICE)
-#include "targets/stock/voice.h"
+#include "targets/9x/voice.h"
 #endif
 
 #if defined(PCBGRUVIN9X) && defined(VOICE)
-#include "targets/gruvin9x/somo14d.h"
+#include "targets/Gruvin9x/somo14d.h"
 #endif
 
 #include "translations.h"
@@ -1630,8 +1624,13 @@ void convertUnit(getvalue_t & val, uint8_t & unit); // TODO check FORCEINLINE on
 uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
 char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defaultName=NULL, uint8_t defaultNameSize=0, uint8_t defaultIdx=0);
-#define strcat_modelname(dest, idx) strcat_zchar(dest, modelHeaders[idx].name, LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
 #define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.flightModeData[idx].name, LEN_FLIGHT_MODE_NAME, STR_FP, PSIZE(TR_FP), idx+1)
+#if defined(EEPROM)
+#define strcat_modelname(dest, idx) strcat_zchar(dest, modelHeaders[idx].name, LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
+#define strcat_currentmodelname(dest) strcat_modelname(dest, g_eeGeneral.currModel)
+#else
+#define strcat_currentmodelname(dest) strcat_zchar(dest, g_model.header.name, LEN_MODEL_NAME)
+#endif
 #define ZLEN(s) zlen(s, sizeof(s))
 #define ZEXIST(s) zexist(s, sizeof(s))
 #endif

@@ -87,11 +87,11 @@ void onLogicalSwitchesMenu(const char *result)
   }
   else if (result == STR_PASTE) {
     *cs = clipboard.data.csw;
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   else if (result == STR_CLEAR) {
     memset(cs, 0, sizeof(LogicalSwitchData));
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 }
 
@@ -252,7 +252,7 @@ void menuModelLogicalSwitches(evt_t event)
             getvalue_t x = getValue(v1_val);
             if (v1_val <= MIXSRC_LAST_CH)
               cs->v2 = calcRESXto100(x);
-            eeDirty(EE_MODEL);
+            storageDirty(EE_MODEL);
           }
           break;
         case LS_FIELD_V3:

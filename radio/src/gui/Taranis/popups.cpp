@@ -57,7 +57,7 @@ void        (*menuHandler)(const char *result);
 void displayBox(const char *title)
 {
   drawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
-  lcd_rect(10, 16, LCD_W-20, 40);
+  lcdDrawRect(10, 16, LCD_W-20, 40);
   lcd_putsn(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN);
   // could be a place for a s_warning_info
 }
@@ -131,7 +131,7 @@ const char * displayMenu(uint8_t event)
   uint8_t display_count = min<unsigned int>(s_menu_count, MENU_MAX_DISPLAY_LINES);
   uint8_t y = (display_count >= 5 ? MENU_Y - FH - 1 : MENU_Y);
   drawFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
-  lcd_rect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
+  lcdDrawRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
     lcd_putsAtt(MENU_X+6, i*(FH+1) + y + 2, s_menu[i+(s_menu_offset_type == MENU_OFFSET_INTERNAL ? s_menu_offset : 0)], s_menu_flags);

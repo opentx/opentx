@@ -61,7 +61,7 @@ void pushMenu(MenuFuncP newMenu)
   if (g_menuStackPtr == 0) {
     if (newMenu == menuGeneralSetup)
       g_menuPos[0] = 1;
-    if (newMenu == menuModelSelect)
+    if (newMenu == menuModelSetup)
       g_menuPos[0] = 0;
   }
   else {
@@ -80,7 +80,7 @@ void menuModelNotes(evt_t event)
 {
   if (event == EVT_ENTRY) {
     strcpy(s_text_file, MODELS_PATH "/");
-    char *buf = strcat_modelname(&s_text_file[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
+    char *buf = strcat_currentmodelname(&s_text_file[sizeof(MODELS_PATH)]);
     strcpy(buf, TEXT_EXT);
   }
 

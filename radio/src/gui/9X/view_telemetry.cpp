@@ -56,12 +56,12 @@ void displayRssiLine()
 #if !defined(CPUARM)
     rssi = min((uint8_t)99, frskyData.rssi[1].value);
     lcd_putsLeft(STATUS_BAR_Y, STR_TX); lcd_outdezNAtt(4*FW+1, STATUS_BAR_Y, rssi, LEADING0, 2);
-    lcd_rect(BAR_LEFT+1, 57, 38, 7);
+    lcdDrawRect(BAR_LEFT+1, 57, 38, 7);
     drawFilledRect(BAR_LEFT+1, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
 #endif
     rssi = min((uint8_t)99, TELEMETRY_RSSI());
     lcd_puts(104, STATUS_BAR_Y, STR_RX); lcd_outdezNAtt(105+4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
-    lcd_rect(65, 57, 38, 7);
+    lcdDrawRect(65, 57, 38, 7);
     uint8_t v = 4*rssi/11;
     drawFilledRect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
@@ -76,9 +76,9 @@ void displayGpsTime()
 {
   uint8_t att = (TELEMETRY_STREAMING() ? LEFT|LEADING0 : LEFT|LEADING0|BLINK);
   lcd_outdezNAtt(CENTER_OFS+6*FW+7, STATUS_BAR_Y, frskyData.hub.hour, att, 2);
-  lcd_putcAtt(CENTER_OFS+8*FW+4, STATUS_BAR_Y, ':', att);
+  lcdDrawChar(CENTER_OFS+8*FW+4, STATUS_BAR_Y, ':', att);
   lcd_outdezNAtt(CENTER_OFS+9*FW+2, STATUS_BAR_Y, frskyData.hub.min, att, 2);
-  lcd_putcAtt(CENTER_OFS+11*FW-1, STATUS_BAR_Y, ':', att);
+  lcdDrawChar(CENTER_OFS+11*FW-1, STATUS_BAR_Y, ':', att);
   lcd_outdezNAtt(CENTER_OFS+12*FW-3, STATUS_BAR_Y, frskyData.hub.sec, att, 2);
   lcd_status_line();
 }
@@ -261,7 +261,7 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
 #else
       lcd_putsiAtt(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
 #endif
-      lcd_rect(BAR_LEFT, y, BAR_WIDTH+1, barHeight+2);
+      lcdDrawRect(BAR_LEFT, y, BAR_WIDTH+1, barHeight+2);
 #if defined(CPUARM)
       getvalue_t value = getValue(source);
 #else
@@ -314,7 +314,7 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
       }
 
       if (thresholdX) {
-        lcd_vlineStip(BAR_LEFT+1+thresholdX, y-2, barHeight+3, DOTTED);
+        lcdDrawVerticalLine(BAR_LEFT+1+thresholdX, y-2, barHeight+3, DOTTED);
         lcd_hline(BAR_LEFT+thresholdX, y-2, 3);
       }
     }

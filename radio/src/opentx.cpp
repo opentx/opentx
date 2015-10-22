@@ -367,22 +367,22 @@ void defaultInputs()
     g_model.inputNames[i][3] = '\0';
 #endif
   }
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 #endif
 
 #if defined(TEMPLATES)
 inline void applyDefaultTemplate()
 {
-  applyTemplate(TMPL_SIMPLE_4CH); // calls eeDirty internally
+  applyTemplate(TMPL_SIMPLE_4CH); // calls storageDirty internally
 }
 #else
 void applyDefaultTemplate()
 {
 #if defined(VIRTUALINPUTS)
-  defaultInputs(); // calls eeDirty internally
+  defaultInputs(); // calls storageDirty internally
 #else
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 #endif
 
   for (int i=0; i<NUM_STICKS; i++) {
@@ -398,7 +398,7 @@ void applyDefaultTemplate()
 }
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module)
 {
   uint8_t modelId = g_model.header.modelId[module];
@@ -447,7 +447,7 @@ void modelDefault(uint8_t id)
   g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_PPM;
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(EEPROM)
   for (int i=0; i<NUM_MODULES; i++) {
     modelHeaders[id].modelId[i] = g_model.header.modelId[i] = id+1;
   }
@@ -602,7 +602,7 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim)
       break;
     }
   }
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
   return true;
 }
 #else
@@ -617,7 +617,7 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim)
   FlightModeData *p = flightModeAddress(phase);
   p->trim[idx] = trim;
 #endif
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 #endif
 
@@ -661,7 +661,7 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
   g_rotenc[idx] += inc;
   int16_t *value = &(flightModeAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
   *value = limit((int16_t)-1024, (int16_t)(*value + (inc * 8)), (int16_t)+1024);
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 #endif
 
@@ -669,11 +669,11 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 
 #if defined(PCBSTD)
   #define SET_GVAR_VALUE(idx, phase, value) \
-    (GVAR_VALUE(idx, phase) = value, eeDirty(EE_MODEL))
+    (GVAR_VALUE(idx, phase) = value, storageDirty(EE_MODEL))
 #else
   #define SET_GVAR_VALUE(idx, phase, value) \
     GVAR_VALUE(idx, phase) = value; \
-    eeDirty(EE_MODEL); \
+    storageDirty(EE_MODEL); \
     if (g_model.gvars[idx].popup) { \
       s_gvar_last = idx; \
       s_gvar_timer = GVAR_DISPLAY_TIME; \
@@ -1121,7 +1121,9 @@ void checkAll()
 #if defined(MODULE_ALWAYS_SEND_PULSES)
   startupWarningState = STARTUP_WARNING_THROTTLE;
 #else
-  checkTHR();
+  if (g_eeGeneral.chkSum == evalChkSum()) {
+    checkTHR();
+  }
   checkSwitches();
   checkFailsafe();
 #endif
@@ -1853,10 +1855,6 @@ void opentxStart()
   }
 #endif
 
-#if defined(CPUARM)
-  eeLoadModel(g_eeGeneral.currModel);
-#endif
-
 #if defined(GUI)
   checkAlarm();
   checkAll();
@@ -1867,7 +1865,6 @@ void opentxStart()
     chainMenu(menuFirstCalib);
   }
 #endif
-
 }
 
 #if defined(CPUARM) || defined(CPUM2560)
@@ -1899,11 +1896,11 @@ void opentxClose()
     if (sensor.type == TELEM_TYPE_CALCULATED) {
       if (sensor.persistent && sensor.persistentValue != telemetryItems[i].value) {
         sensor.persistentValue = telemetryItems[i].value;
-        eeDirty(EE_MODEL);
+        storageDirty(EE_MODEL);
       }
       else if (!sensor.persistent) {
         sensor.persistentValue = 0;
-        eeDirty(EE_MODEL);
+        storageDirty(EE_MODEL);
       }
     }
   }
@@ -1923,20 +1920,20 @@ void opentxClose()
         SAVE_POT_POSITION(i);
       }
     }
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 #endif
 
 #if !defined(PCBTARANIS)
-  if (s_eeDirtyMsk & EE_MODEL) {
+  if (s_storageDirtyMsk & EE_MODEL) {
     displayPopup(STR_SAVEMODEL);
   } 
 #endif
 
   g_eeGeneral.unexpectedShutdown = 0;
 
-  eeDirty(EE_GENERAL);
-  eeCheck(true);
+  storageDirty(EE_GENERAL);
+  storageCheck(true);
 
 #if defined(CPUARM)
   while (IS_PLAYING(ID_PLAY_BYE)) {
@@ -2265,7 +2262,7 @@ void instantTrim()
     }
   }
 
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
   AUDIO_WARNING2();
 }
 
@@ -2289,7 +2286,7 @@ void copySticksToOffset(uint8_t ch)
 #endif
   ld->offset = (ld->revert ? -zero : zero);
   resumeMixerCalculations();
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 
 void copyTrimsToOffset(uint8_t ch)
@@ -2314,7 +2311,7 @@ void copyTrimsToOffset(uint8_t ch)
   g_model.limitData[ch].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
 
   resumeMixerCalculations();
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 
 void moveTrimsToOffsets() // copy state of 3 primary to subtrim
@@ -2362,7 +2359,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 
   resumeMixerCalculations();
 
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
   AUDIO_WARNING2();
 }
 
@@ -2411,9 +2408,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 {
   TRACE("opentxInit()");
 
-#if defined(EEPROM)
-  eeReadAll();
-#endif
+  storageReadAll();
 
 #if defined(CPUARM)
   if (UNEXPECTED_SHUTDOWN()) {
@@ -2465,10 +2460,6 @@ void opentxInit(OPENTX_INIT_ARGS)
     // is done above on ARM
     unexpectedShutdown = 1;
 #endif
-#if defined(CPUARM)
-    TRACE("eeLoadModel(g_eeGeneral.currModel)");
-    eeLoadModel(g_eeGeneral.currModel);
-#endif
   }
   else {
     TRACE("opentxStart()");
@@ -2478,7 +2469,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #if defined(CPUARM) || defined(CPUM2560)
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
-    eeDirty(EE_GENERAL);
+    storageDirty(EE_GENERAL);
   }
 #endif
 
@@ -2554,7 +2545,7 @@ int main(void)
   displaySplash();
 #endif
 
-  sei(); // interrupts needed for telemetryInit and eeReadAll.
+  sei(); // interrupts needed now
 
 #if defined(FRSKY) && !defined(DSM2_SERIAL)
   telemetryInit();

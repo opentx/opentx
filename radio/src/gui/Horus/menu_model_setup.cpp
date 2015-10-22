@@ -106,7 +106,7 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, evt_t event)
 {
   TimerData * timer = &g_model.timers[timerIdx];
   if (attr && m_posHorz < 0) {
-	lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 80+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+	lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 80+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
   }
   putsStrIdx(MENUS_MARGIN_LEFT, y, STR_TIMER, timerIdx+1);
   putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, (m_posHorz<=0 ? attr : 0));
@@ -126,7 +126,7 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, evt_t event)
           int8_t switchVal = checkIncDecMovedSwitch(val);
           if (val != switchVal) {
             timer->mode = switchVal + (TMRMODE_COUNT-1);
-            eeDirty(EE_MODEL);
+            storageDirty(EE_MODEL);
           }
         }
 #endif
@@ -204,7 +204,6 @@ void menuModelSetup(evt_t event)
     switch(k) {
       case ITEM_MODEL_NAME:
         editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_MODELNAME, g_model.header.name, sizeof(g_model.header.name), event, attr);
-        memcpy(modelHeaders[g_eeGeneral.currModel].name, g_model.header.name, sizeof(g_model.header.name));
         break;
 
       case ITEM_MODEL_BITMAP:
@@ -291,7 +290,7 @@ void menuModelSetup(evt_t event)
             for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
               memclear(&g_model.flightModeData[i], TRIMS_ARRAY_SIZE);
             }
-            eeDirty(EE_MODEL);
+            storageDirty(EE_MODEL);
             AUDIO_WARNING1();
           }
         }
@@ -353,11 +352,11 @@ void menuModelSetup(evt_t event)
           getMovedSwitch();
           g_model.switchWarningState = switches_states;
           AUDIO_WARNING1();
-          eeDirty(EE_MODEL);
+          storageDirty(EE_MODEL);
         }
 
         if (attr && m_posHorz < 0) {
-          lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, NUM_SWITCHES*18+INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+          lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, NUM_SWITCHES*18+INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
 
         unsigned int newStates = 0;
@@ -365,7 +364,7 @@ void menuModelSetup(evt_t event)
           if (SWITCH_WARNING_ALLOWED(i)) {
             if (!READ_ONLY() && attr && l_posHorz==current) {
               // g_model.switchWarningEnable ^= (1 << i);
-              eeDirty(EE_MODEL);
+              storageDirty(EE_MODEL);
             }
             unsigned int state = ((g_model.switchWarningState >> (3*i)) & 0x07);
             LcdFlags color = (state > 0 ? TEXT_COLOR : TEXT_DISABLE_COLOR);
@@ -414,12 +413,12 @@ void menuModelSetup(evt_t event)
                 if (g_model.potsWarnMode == POTS_WARN_MANUAL) {
                   SAVE_POT_POSITION(m_posHorz-1);
                   AUDIO_WARNING1();
-                  eeDirty(EE_MODEL);
+                  storageDirty(EE_MODEL);
                 }
                 break;
               case EVT_KEY_BREAK(KEY_ENTER):
                 g_model.potsWarnEnabled ^= (1 << (m_posHorz-1));
-                eeDirty(EE_MODEL);
+                storageDirty(EE_MODEL);
                 break;
             }
           }
@@ -437,7 +436,7 @@ void menuModelSetup(evt_t event)
 
         if (attr && (m_posHorz == 0)) {
           CHECK_INCDEC_MODELVAR(event, g_model.potsWarnMode, POTS_WARN_OFF, POTS_WARN_AUTO);
-          eeDirty(EE_MODEL);
+          storageDirty(EE_MODEL);
         }
         break;
       }
@@ -445,11 +444,10 @@ void menuModelSetup(evt_t event)
       case ITEM_MODEL_BEEP_CENTER:
         lcd_putsLeft(y, STR_BEEPCTR);
         if (attr && m_posHorz < 0) {
-          lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, (NUM_STICKS+NUM_POTS)*11+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+          lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, (NUM_STICKS+NUM_POTS)*13+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
         for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
-          // TODO flash saving, \001 not needed in STR_RETA123
-          coord_t x = MODEL_SETUP_2ND_COLUMN+i*11;
+          coord_t x = MODEL_SETUP_2ND_COLUMN+i*13;
           LcdFlags flags = ((m_posHorz==i && attr) ? INVERS : 0);
           flags |= (g_model.beepANACenter & ((BeepANACenter)1<<i)) ? TEXT_COLOR : TEXT_DISABLE_COLOR;
           if (attr && m_posHorz < 0) flags |= INVERS;
@@ -460,7 +458,7 @@ void menuModelSetup(evt_t event)
             if (READ_ONLY_UNLOCKED()) {
               s_editMode = 0;
               g_model.beepANACenter ^= ((BeepANACenter)1<<m_posHorz);
-              eeDirty(EE_MODEL);
+              storageDirty(EE_MODEL);
             }
           }
         }
@@ -583,16 +581,8 @@ void menuModelSetup(evt_t event)
           }
           if (IS_MODULE_XJT(moduleIdx) || IS_MODULE_DSM2(moduleIdx)) {
             if (xOffsetBind) lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
-            if (attr && l_posHorz==0) {
-              if (s_editMode>0) {
-                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], IS_MODULE_DSM2(moduleIdx) ? 20 : 63);
-                if (checkIncDec_Ret) {
-                  modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx];
-                }
-              }
-              if (s_editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
-                checkModelIdUnique(g_eeGeneral.currModel, moduleIdx);
-              }
+            if (attr && l_posHorz==0 && s_editMode>0) {
+              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], IS_MODULE_DSM2(moduleIdx) ? 20 : 63);
             }
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
@@ -635,7 +625,7 @@ void menuModelSetup(evt_t event)
               }
             }
             else {
-              lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8, TEXT_COLOR);
+              lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8, TEXT_COLOR);
             }
           }
         }
@@ -659,7 +649,7 @@ void menuModelFailsafe(evt_t event)
   if (event == EVT_KEY_LONG(KEY_ENTER) && s_editMode) {
     s_noHi = NO_HI_LEN;
     g_model.moduleData[g_moduleIdx].failsafeChannels[m_posVert] = channelOutputs[m_posVert];
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
     AUDIO_WARNING1();
     SEND_FAILSAFE_NOW(g_moduleIdx);
   }
@@ -669,7 +659,7 @@ void menuModelFailsafe(evt_t event)
   #define COL_W   (LCD_W/2)
   const uint8_t SLIDER_W = 64;
   // Column separator
-  lcd_vline(LCD_W/2, FH, LCD_H-FH);
+  // TODO lcd_vline(LCD_W/2, FH, LCD_H-FH);
 
   if (m_posVert >= 16) {
     ch = 16;
@@ -724,15 +714,11 @@ void menuModelFailsafe(evt_t event)
 #endif
 
       // Gauge
-      lcd_rect(x+COL_W-3-wbar-ofs, y, wbar+1, 6);
+      lcdDrawRect(x+COL_W-3-wbar-ofs, y, wbar+1, 6);
       uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
       uint8_t len = limit((uint8_t)1, uint8_t((abs(val) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
       coord_t x0 = (val>0) ? x+COL_W-ofs-3-wbar/2 : x+COL_W-ofs-2-wbar/2-len;
-      lcd_hline(x0, y+1, len);
-      lcd_hline(x0, y+2, len);
-      lcd_hline(x0, y+3, len);
-      lcd_hline(x0, y+4, len);
-
+      lcdDrawSolidFilledRect(x0, y+1, len, 4, LINE_COLOR);
       ch++;
     }
   }

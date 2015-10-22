@@ -124,7 +124,7 @@ void menuGeneralSetup(uint8_t event)
   if (s_warning_result) {
     s_warning_result = 0;
     g_eeGeneral.fai = true;
-    eeDirty(EE_GENERAL);
+    storageDirty(EE_GENERAL);
   }
 #endif
 
@@ -251,7 +251,7 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_SPEAKER_PITCH:
         lcd_putsLeft( y, STR_SPKRPITCH);
-        lcd_putcAtt(RADIO_SETUP_2ND_COLUMN, y, '+', attr);
+        lcdDrawChar(RADIO_SETUP_2ND_COLUMN, y, '+', attr);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN+FW, y, g_eeGeneral.speakerPitch*15, attr|LEFT);
         lcd_putsAtt(lcdLastPos, y, "Hz", attr);
         if (attr) {
@@ -486,13 +486,13 @@ void menuGeneralSetup(uint8_t event)
         if (attr) {
           s_editMode = 0;
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickReverse, 0, 15);
-          lcd_rect(6*FW-1, y-1, 15*FW+2, 9);
+          lcdDrawRect(6*FW-1, y-1, 15*FW+2, 9);
         }
 #endif
         break;
 
       case ITEM_SETUP_STICK_MODE:
-        lcd_putcAtt(2*FW, y, '1'+g_eeGeneral.stickMode, attr);
+        lcdDrawChar(2*FW, y, '1'+g_eeGeneral.stickMode, attr);
         for (uint8_t i=0; i<4; i++) {
           putsStickName((6+4*i)*FW, y, pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
         }

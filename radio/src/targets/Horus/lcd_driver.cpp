@@ -439,7 +439,7 @@ void lcdInit(void)
   LCD_SetTransparency(255);
 }
 
-void lcdDrawFilledRectDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
+void lcdDrawSolidFilledRectDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
   uint32_t addr = CurrentFrameBuffer + 2*(LCD_PIXEL_WIDTH*y + x);
   uint16_t red = (0xF800 & color) >> 11;

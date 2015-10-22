@@ -409,7 +409,7 @@ void menuModelSensor(uint8_t event)
             lcd_putsLeft(y, STR_RATIO);
             if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.ratio, 0, 30000);
             if (sensor->custom.ratio == 0)
-              lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
+              lcdDrawChar(SENSOR_2ND_COLUMN, y, '-', attr);
             else
               lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.ratio, LEFT|attr|PREC1);
             break;
@@ -452,7 +452,7 @@ void menuModelSensor(uint8_t event)
           source = checkIncDec(event, source, -MAX_SENSORS, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
         }
         if (source < 0) {
-          lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
+          lcdDrawChar(SENSOR_2ND_COLUMN, y, '-', attr);
           putsMixerSource(lcdNextPos, y, MIXSRC_FIRST_TELEM+3*(-1-source), attr);
         }
         else {
@@ -511,7 +511,7 @@ void onSensorMenu(const char *result)
         TelemetryItem & sourceItem = telemetryItems[index];
         TelemetryItem & newItem = telemetryItems[newIndex];
         newItem = sourceItem;
-        eeDirty(EE_MODEL);
+        storageDirty(EE_MODEL);
       } 
       else {
         POPUP_WARNING(STR_TELEMETRYFULL);
@@ -569,7 +569,7 @@ void menuModelTelemetry(uint8_t event)
     if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+MAX_SENSORS) {
       int index = k-ITEM_TELEMETRY_SENSOR1;
       lcd_outdezAtt(INDENT_WIDTH, y, index+1, LEFT|attr);
-      lcd_putcAtt(lcdLastPos, y, ':', attr);
+      lcdDrawChar(lcdLastPos, y, ':', attr);
       lcd_putsnAtt(3*FW, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
       if (telemetryItems[index].isFresh()) {
         lcd_putc(16*FW, y, '*');

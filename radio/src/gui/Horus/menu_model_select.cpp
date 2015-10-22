@@ -56,24 +56,24 @@ void onModelSelectMenu(const char *result)
     s_copySrcRow = -1;
   }
   else if (result == STR_BACKUP_MODEL) {
-    eeCheck(true); // force writing of current model data before this is changed
+    storageCheck(true); // force writing of current model data before this is changed
     POPUP_WARNING(eeBackupModel(sub));
   }
   else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
-    if (!listSdFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
+    if (!sdListFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
       POPUP_WARNING(STR_NO_MODELS_ON_SD);
       s_menu_flags = 0;
     }
   }
   else if (result == STR_DELETE_MODEL) {
     POPUP_CONFIRMATION(STR_DELETEMODEL);
-    SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
+    // SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
   }
   else {
     // The user choosed a file on SD to restore
     POPUP_WARNING(eeRestoreModel(sub, (char *)result));
-    if (!s_warning && g_eeGeneral.currModel == sub)
-      eeLoadModel(sub);
+    // if (!s_warning && g_eeGeneral.currModel == sub)
+    //   eeLoadModel(sub);
   }
 }
 
@@ -115,12 +115,12 @@ void menuModelSelect(evt_t event)
         if (sub >= NUM_BODY_LINES) s_pgOfs = sub-(NUM_BODY_LINES-1);
         s_copyMode = 0;
         s_editMode = EDIT_MODE_INIT;
-        eeCheck(true);
+        storageCheck(true);
         break;
       case EVT_KEY_LONG(KEY_EXIT):
         if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && eeModelExists(sub)) {
           POPUP_CONFIRMATION(STR_DELETEMODEL);
-          SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
+          // SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
           killEvents(_event_);
           break;
         }
@@ -149,7 +149,7 @@ void menuModelSelect(evt_t event)
           }
         }
         else if (s_copyMode && (s_copyTgtOfs || s_copySrcRow>=0)) {
-          eeCheck(true); // force writing of current model data before this is changed
+          storageCheck(true); // force writing of current model data before this is changed
           uint8_t cur = (MAX_MODELS + sub + s_copyTgtOfs) % MAX_MODELS;
           if (s_copyMode == COPY_MODE) {
             if (!eeCopyModel(cur, s_copySrcRow)) {
@@ -170,7 +170,7 @@ void menuModelSelect(evt_t event)
 
           if (s_copySrcRow != g_eeGeneral.currModel) {
             g_eeGeneral.currModel = s_copySrcRow;
-            eeDirty(EE_GENERAL);
+            storageDirty(EE_GENERAL);
           }
 
           s_copyMode = 0;
@@ -248,7 +248,7 @@ void menuModelSelect(evt_t event)
     LcdFlags flags = 0;
     if (sub==k && s_copyMode == 0) {
       flags |= TEXT_INVERTED_COLOR;
-      lcdDrawFilledRect(MENUS_MARGIN_LEFT-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 150, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+      lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 150, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
     }
 
     char str[20];
@@ -259,7 +259,7 @@ void menuModelSelect(evt_t event)
       if (k == sub) {
         if (s_copyMode == COPY_MODE) {
           k = s_copySrcRow;
-          // lcd_rect(MENUS_MARGIN_LEFT-5, y-3, 170, 16, SOLID, YELLOW);
+          // lcdDrawRect(MENUS_MARGIN_LEFT-5, y-3, 170, 16, SOLID, YELLOW);
         }
         else {
           k = sub + s_copyTgtOfs;
@@ -274,7 +274,7 @@ void menuModelSelect(evt_t event)
     k %= MAX_MODELS;
 
     if (eeModelExists(k)) {
-      strcat_modelname(str, k);
+      // TODO strcat_modelname(str, k);
       lcd_putsAtt(POS_MODEL_NAME, y, str, flags);
       if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+s_pgOfs!=(vertpos_t)sub)) {
         lcd_puts(1, y, "*");
@@ -285,7 +285,7 @@ void menuModelSelect(evt_t event)
     }
 
     if (s_copyMode && (vertpos_t)sub==i+s_pgOfs) {
-      lcd_rect(MENUS_MARGIN_LEFT-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 150, INVERT_LINE_HEIGHT, s_copyMode == COPY_MODE ? SOLID : DOTTED, WARNING_COLOR);
+      lcdDrawRect(MENUS_MARGIN_LEFT-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 150, INVERT_LINE_HEIGHT, s_copyMode == COPY_MODE ? SOLID : DOTTED, WARNING_COLOR);
     }
   }
 

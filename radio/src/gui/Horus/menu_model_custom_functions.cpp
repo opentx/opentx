@@ -57,7 +57,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
       strcpy(directory, SOUNDS_PATH);
       strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
     }
-    if (!listSdFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cf->play.name), NULL)) {
+    if (!sdListFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cf->play.name), NULL)) {
       POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
       s_menu_flags = 0;
     }
@@ -65,7 +65,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
   else {
     // The user choosed a file in the list
     memcpy(cf->play.name, result, sizeof(cf->play.name));
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
     if (func == FUNC_PLAY_SCRIPT) {
       LUA_LOAD_MODEL_SCRIPTS();
     }
@@ -93,21 +93,21 @@ void onCustomFunctionsMenu(const char *result)
   }
   else if (result == STR_PASTE) {
     *cfn = clipboard.data.cfn;
-    eeDirty(eeFlags);
+    storageDirty(eeFlags);
   }
   else if (result == STR_CLEAR) {
     memset(cfn, 0, sizeof(CustomFunctionData));
-    eeDirty(eeFlags);
+    storageDirty(eeFlags);
   }
   else if (result == STR_INSERT) {
     memmove(cfn+1, cfn, (NUM_CFN-sub-1)*sizeof(CustomFunctionData));
     memset(cfn, 0, sizeof(CustomFunctionData));
-    eeDirty(eeFlags);
+    storageDirty(eeFlags);
   }
   else if (result == STR_DELETE) {
     memmove(cfn, cfn+1, (NUM_CFN-sub-1)*sizeof(CustomFunctionData));
     memset(&g_model.customFn[NUM_CFN-1], 0, sizeof(CustomFunctionData));
-    eeDirty(eeFlags);
+    storageDirty(eeFlags);
   }
 }
 
@@ -257,7 +257,7 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
                 strcpy(directory, SOUNDS_PATH);
                 strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
               }
-              if (listSdFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), cfn->play.name)) {
+              if (sdListFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), cfn->play.name)) {
                 menuHandler = onCustomFunctionsFileSelectionMenu;
               }
               else {

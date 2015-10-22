@@ -91,7 +91,7 @@ bool moveCurve(uint8_t index, int8_t shift)
     curveEnd[index++] += shift;
   }
 
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
   return true;
 }
 
@@ -99,7 +99,7 @@ void displayPresetChoice(uint8_t event)
 {
   displayWarning(event);
   lcd_outdezAtt(WARNING_LINE_X+FW*7, WARNING_LINE_Y, 45*s_warning_input_value/4, LEFT|INVERS);
-  lcd_putcAtt(lcdLastPos, WARNING_LINE_Y, '@', INVERS);
+  lcdDrawChar(lcdLastPos, WARNING_LINE_Y, '@', INVERS);
 
   if (s_warning_result) {
     s_warning_result = 0;

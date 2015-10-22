@@ -78,7 +78,7 @@ void saveTimers()
       TimerState *timerState = &timersStates[i];
       if (g_model.timers[i].value != (uint16_t)timerState->val) {
         g_model.timers[i].value = timerState->val;
-        eeDirty(EE_MODEL);
+        storageDirty(EE_MODEL);
       }
     }
   }
@@ -86,7 +86,7 @@ void saveTimers()
 #if defined(CPUARM) && !defined(REVA)
   if (sessionTimer > 0) {
     g_eeGeneral.globalTimer += sessionTimer;
-    eeDirty(EE_GENERAL);
+    storageDirty(EE_GENERAL);
     sessionTimer = 0;
   }
 #endif

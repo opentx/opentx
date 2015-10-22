@@ -131,7 +131,7 @@ void lcd_outdezFloat(uint8_t x, uint8_t y, float val, uint8_t precis, uint8_t mo
 	for (; i < 4; i++) {
 		c = (lnum % 10) + '0';
 		x1 -= xinc;
-		lcd_putcAtt(x1, y, c, mode);
+		lcdDrawChar(x1, y, c, mode);
 		lnum /= 10;
 		if (lnum == 0) {
 			break;
@@ -142,20 +142,20 @@ void lcd_outdezFloat(uint8_t x, uint8_t y, float val, uint8_t precis, uint8_t mo
 		x1 = x;
 		for (i = 0; i < 4; i++) {
 			x1 -= FW;
-			lcd_putcAtt(x1, y, '?', mode);
+			lcdDrawChar(x1, y, '?', mode);
 		}
 	} else {
 		if (val < 0) {
 			val = -val;
 			x1 -= xinc;
-			lcd_putcAtt(x1, y, '-', mode);
+			lcdDrawChar(x1, y, '-', mode);
 		}
 		if (precis)
 		{
 			uint8_t y_temp = y;
 			if (mode & DBLSIZE)
 				y_temp += FH;
-			lcd_putcAtt(x, y_temp, '.', (mode & (~DBLSIZE)));
+			lcdDrawChar(x, y_temp, '.', (mode & (~DBLSIZE)));
 			x -= (xinc / 2);
 		}
 		for (i = 0; i < precis; i++) {
@@ -163,7 +163,7 @@ void lcd_outdezFloat(uint8_t x, uint8_t y, float val, uint8_t precis, uint8_t mo
 			int a = val;
 			c = a + '0';
 			x += xinc;
-			lcd_putcAtt(x, y, c, mode);
+			lcdDrawChar(x, y, c, mode);
 			val -= a;
 		}
 	}
@@ -203,7 +203,7 @@ void mav_title(const pm_char * s, uint8_t index)
   displayScreenIndex(index, MAX_MAVLINK_MENU, INVERS);
   lcd_putc(7 * FW, 0, (mav_heartbeat > 0) ? '*' : ' ');
   if (telemetry_data.active)
-  	  lcd_putcAtt(8 * FW, 0, 'A', BLINK);
+  	  lcdDrawChar(8 * FW, 0, 'A', BLINK);
 }
 
 /*!	\brief Global info menu
@@ -444,7 +444,7 @@ void lcd_outhex2(uint8_t x, uint8_t y, uint8_t val) {
 		x -= FWNUM;
 		char c = val & 0xf;
 		c = c > 9 ? c + 'A' - 10 : c + '0';
-		lcd_putcAtt(x, y, c, c >= 'A' ? CONDENSED : 0);
+		lcdDrawChar(x, y, c, c >= 'A' ? CONDENSED : 0);
 		val >>= 4;
 	}
 }

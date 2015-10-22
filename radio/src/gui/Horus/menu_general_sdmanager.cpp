@@ -92,7 +92,7 @@ void onSdManagerMenu(const char *result)
   }
   else if (result == STR_PASTE) {
     f_getcwd(lfn, _MAX_LFN);
-    POPUP_WARNING(fileCopy(clipboard.data.sd.filename, clipboard.data.sd.directory, lfn));
+    POPUP_WARNING(sdCopyFile(clipboard.data.sd.filename, clipboard.data.sd.directory, lfn));
     REFRESH_FILES();
   }
   else if (result == STR_RENAME_FILE) {
@@ -132,7 +132,7 @@ void onSdManagerMenu(const char *result)
   else if (result == STR_ASSIGN_BITMAP) {
     strAppendFilename(g_model.header.bitmap, line, sizeof(g_model.header.bitmap));
     memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 #endif
   else if (result == STR_VIEW_TEXT) {

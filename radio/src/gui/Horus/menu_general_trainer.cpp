@@ -115,7 +115,7 @@ void menuGeneralTrainer(evt_t event)
   if (attr) {
     if (event==EVT_KEY_LONG(KEY_ENTER)){
       memcpy(g_eeGeneral.trainer.calib, ppmInput, sizeof(g_eeGeneral.trainer.calib));
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
       AUDIO_WARNING1();
     }
   }

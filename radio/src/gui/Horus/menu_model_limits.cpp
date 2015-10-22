@@ -144,7 +144,7 @@ void menuModelLimits(evt_t event)
     s_warning_result = 0;
     LimitData *ld = limitAddress(sub);
     ld->revert = !ld->revert;
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 
   for (int i=0; i<NUM_BODY_LINES; i++) {

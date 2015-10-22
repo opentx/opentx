@@ -63,7 +63,7 @@ FlightModesType editFlightModes(coord_t x, coord_t y, evt_t event, FlightModesTy
     if (s_editMode && event==EVT_KEY_BREAK(KEY_ENTER)) {
       s_editMode = 0;
       value ^= (1<<posHorz);
-      eeDirty(EE_MODEL);
+      storageDirty(EE_MODEL);
     }
   }
 
@@ -96,20 +96,20 @@ coord_t getYCoord(FnFuncP fn, coord_t x)
 
 void DrawFunction(FnFuncP fn, int offset)
 {
-  lcd_vlineStip(CURVE_CENTER_X-offset, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2, 0xee, CURVE_AXIS_COLOR);
-  lcd_hlineStip(CURVE_CENTER_X-CURVE_SIDE_WIDTH-offset, CURVE_CENTER_Y, CURVE_SIDE_WIDTH*2, 0xee, CURVE_AXIS_COLOR);
+  lcdDrawVerticalLine(CURVE_CENTER_X-offset, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2, 0xee, CURVE_AXIS_COLOR);
+  lcdDrawHorizontalLine(CURVE_CENTER_X-CURVE_SIDE_WIDTH-offset, CURVE_CENTER_Y, CURVE_SIDE_WIDTH*2, 0xee, CURVE_AXIS_COLOR);
 
   coord_t prev_yv = (coord_t)-1;
 
   for (int xv=-CURVE_SIDE_WIDTH; xv<=CURVE_SIDE_WIDTH; xv++) {
     coord_t yv = getYCoord(fn, xv);
     if (prev_yv != (coord_t)-1) {
-      if (abs((int8_t)yv-prev_yv) <= 1) {
+      if (abs(yv-prev_yv) <= 1) {
         lcdDrawPoint(CURVE_CENTER_X+xv-offset-1, prev_yv, CURVE_COLOR);
       }
       else {
         uint8_t tmp = (prev_yv < yv ? 0 : 1);
-        lcdDrawVerticalLine(CURVE_CENTER_X+xv-offset-1, yv+tmp, prev_yv-yv, CURVE_COLOR);
+        lcdDrawSolidVerticalLine(CURVE_CENTER_X+xv-offset-1, yv+tmp, prev_yv-yv, CURVE_COLOR);
       }
     }
     prev_yv = yv;
@@ -177,7 +177,7 @@ void deleteExpoMix(uint8_t expo, uint8_t idx)
     memclear(&g_model.mixData[MAX_MIXERS-1], sizeof(MixData));
   }
   resumeMixerCalculations();
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 
 // TODO avoid this global s_currCh on ARM boards ...
@@ -210,7 +210,7 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
     mix->weight = 100;
   }
   resumeMixerCalculations();
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 
 void copyExpoMix(uint8_t expo, uint8_t idx)
@@ -225,7 +225,7 @@ void copyExpoMix(uint8_t expo, uint8_t idx)
     memmove(mix+1, mix, (MAX_MIXERS-(idx+1))*sizeof(MixData));
   }
   resumeMixerCalculations();
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 
 void memswap(void *a, void *b, uint8_t size)
@@ -369,8 +369,8 @@ void menuModelExpoOne(evt_t event)
     x = divRound(x*CURVE_SIDE_WIDTH, RESX);
     y = getYCoord(expoFn, x);
 
-    lcd_vlineStip(CURVE_CENTER_X+x, y-3, 7, SOLID, CURVE_CURSOR_COLOR);
-    lcd_hlineStip(CURVE_CENTER_X+x-3, y, 7, SOLID, CURVE_CURSOR_COLOR);
+    lcdDrawVerticalLine(CURVE_CENTER_X+x, y-3, 7, SOLID, CURVE_CURSOR_COLOR);
+    lcdDrawHorizontalLine(CURVE_CENTER_X+x-3, y, 7, SOLID, CURVE_CURSOR_COLOR);
   }
 
   for (unsigned int k=0; k<NUM_BODY_LINES; k++) {
@@ -488,17 +488,16 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
     barMin = -101;
   if (barMax > 101)
     barMax = 101;
-  lcd_hlineStip(x-2, y, GAUGE_WIDTH+2, DOTTED);
-  lcd_hlineStip(x-2, y+GAUGE_HEIGHT, GAUGE_WIDTH+2, DOTTED);
-  lcd_vline(x-2, y+1, GAUGE_HEIGHT-1);
-  lcd_vline(x+GAUGE_WIDTH-1, y+1, GAUGE_HEIGHT-1);
+  lcdDrawHorizontalLine(x-2, y, GAUGE_WIDTH+2, DOTTED);
+  lcdDrawHorizontalLine(x-2, y+GAUGE_HEIGHT, GAUGE_WIDTH+2, DOTTED);
+  // lcdDrawSolidVerticalLine(x-2, y+1, GAUGE_HEIGHT-1);
+  // lcdDrawSolidVerticalLine(x+GAUGE_WIDTH-1, y+1, GAUGE_HEIGHT-1);
   if (barMin <= barMax) {
-    // TODO
-    // int8_t right = (barMax * GAUGE_WIDTH) / 200;
-    // int8_t left = ((barMin * GAUGE_WIDTH) / 200)-1;
-    // lcdDrawFilledRect(x+GAUGE_WIDTH/2+left, y+2, right-left, GAUGE_HEIGHT-3);
+    int8_t right = (barMax * GAUGE_WIDTH) / 200;
+    int8_t left = ((barMin * GAUGE_WIDTH) / 200)-1;
+    // lcdDrawSolidFilledRect(x+GAUGE_WIDTH/2+left, y+2, right-left, GAUGE_HEIGHT-3);
   }
-  lcd_vline(x+GAUGE_WIDTH/2-1, y, GAUGE_HEIGHT+1);
+  // lcdDrawSolidVerticalLine(x+GAUGE_WIDTH/2-1, y, GAUGE_HEIGHT+1);
 #if 0 // TODO
   if (barMin == -101) {
     for (uint8_t i=0; i<3; ++i) {
@@ -526,7 +525,7 @@ void menuModelMixOne(evt_t event)
   putsChn(MENU_TITLE_NEXT_POS, MENU_TITLE_TOP+2, md2->destCh+1, HEADER_COLOR);
 
   // The separation line between 2 columns
-  lcd_vlineStip(MENU_COLUMN2_X, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, SOLID, HEADER_COLOR);
+  lcdDrawVerticalLine(MENU_COLUMN2_X, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, SOLID, HEADER_COLOR);
 
   int8_t sub = m_posVert;
   int8_t editMode = s_editMode;
@@ -648,7 +647,7 @@ static uint8_t s_copySrcCh;
 
 void lineSurround(bool expo, coord_t y, LcdFlags flags=CURVE_AXIS_COLOR)
 {
-  lcd_rect(expo ? EXPO_LINE_SELECT_POS : MIX_LINE_SELECT_POS, y-INVERT_VERT_MARGIN, expo ? EXPO_LINE_SELECT_WIDTH : MIX_LINE_SELECT_WIDTH, INVERT_LINE_HEIGHT, (s_copyMode == COPY_MODE ? SOLID : DOTTED), flags);
+  lcdDrawRect(expo ? EXPO_LINE_SELECT_POS : MIX_LINE_SELECT_POS, y-INVERT_VERT_MARGIN, expo ? EXPO_LINE_SELECT_WIDTH : MIX_LINE_SELECT_WIDTH, INVERT_LINE_HEIGHT, (s_copyMode == COPY_MODE ? SOLID : DOTTED), flags);
 }
 
 void onExpoMixMenu(const char *result)
@@ -764,7 +763,7 @@ void menuModelExpoMix(uint8_t expo, evt_t event)
               swapExpoMix(expo, s_currIdx, s_copyTgtOfs > 0);
               s_copyTgtOfs += (s_copyTgtOfs < 0 ? +1 : -1);
             } while (s_copyTgtOfs != 0);
-            eeDirty(EE_MODEL);
+            storageDirty(EE_MODEL);
           }
           m_posVert = s_copySrcRow;
           s_copyTgtOfs = 0;
@@ -853,7 +852,7 @@ void menuModelExpoMix(uint8_t expo, evt_t event)
         else {
           // only swap the mix with its neighbor
           if (!swapExpoMix(expo, s_currIdx, IS_ROTARY_UP(event) || key==KEY_MOVE_UP)) break;
-          eeDirty(EE_MODEL);
+          storageDirty(EE_MODEL);
         }
 
         s_copyTgtOfs = next_ofs;

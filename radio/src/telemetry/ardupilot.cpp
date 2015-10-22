@@ -699,7 +699,7 @@ void menuTelemetryArduPilot8(uint8_t event)
 void title(char x)
 {
     lcd_putsAtt (0, 0, PSTR(" ARDU PILOT Mega ?/8 "), INVERS);
-    lcd_putcAtt(17*FW, 0*FH, x, INVERS);
+    lcdDrawChar(17*FW, 0*FH, x, INVERS);
 }
 
 void initval(uint8_t num, uint8_t pack, uint8_t val)

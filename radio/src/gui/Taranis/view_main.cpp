@@ -225,13 +225,13 @@ void displayTopBar()
   /* Tx voltage */
   putsVBat(BAR_X+2, BAR_Y+1, LEFT);
   batt_icon_x = lcdLastPos;
-  lcd_rect(batt_icon_x+FW, BAR_Y+1, 13, 7);
+  lcdDrawRect(batt_icon_x+FW, BAR_Y+1, 13, 7);
   lcd_vline(batt_icon_x+FW+13, BAR_Y+2, 5);
 
   if (TELEMETRY_STREAMING()) {
     /* RSSI */
     LCD_ICON(batt_icon_x+3*FW+3, BAR_Y, ICON_RSSI);
-    lcd_rect(batt_icon_x+5*FW, BAR_Y+1, 13, 7);
+    lcdDrawRect(batt_icon_x+5*FW, BAR_Y+1, 13, 7);
 
     /* Rx voltage */
     altitude_icon_x = batt_icon_x+7*FW+3;
@@ -323,7 +323,7 @@ void displayTimers()
       }
       putsTimer(TIMERS_X, y, timerState.val, TIMEHOUR|MIDSIZE|LEFT, TIMEHOUR|MIDSIZE|LEFT);
       if (timerData.persistent) {
-        lcd_putcAtt(TIMERS_R, y+1, 'P', SMLSIZE);
+        lcdDrawChar(TIMERS_R, y+1, 'P', SMLSIZE);
       }
       if (timerState.val < 0) {
         if (BLINK_ON_PHASE) {
@@ -400,7 +400,7 @@ void displaySwitch(coord_t x, coord_t y, int width, unsigned int index)
       }
     }
 
-    lcd_putcAtt(width==5 ? x+1 : x, y, 'A'+index, TINSIZE);
+    lcdDrawChar(width==5 ? x+1 : x, y, 'A'+index, TINSIZE);
     y += 6;
 
     if (val <= 0) {
@@ -508,7 +508,7 @@ void menuMainView(uint8_t event)
 #endif
 
     case EVT_KEY_BREAK(KEY_PAGE):
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
       g_eeGeneral.view += 1;
       if (g_eeGeneral.view >= VIEW_COUNT) {
         g_eeGeneral.view = 0;
@@ -604,7 +604,7 @@ void menuMainView(uint8_t event)
         drawFilledRect(x, y, 4, 8);
       }
       else {
-        lcd_rect(x, y, 4, 8);
+        lcdDrawRect(x, y, 4, 8);
       }
     }
   }
@@ -613,7 +613,7 @@ void menuMainView(uint8_t event)
   if (s_gvar_timer > 0) {
     s_gvar_timer--;
     drawFilledRect(BITMAP_X, BITMAP_Y, 64, 32, SOLID, ERASE);
-    lcd_rect(BITMAP_X, BITMAP_Y, 64, 32);
+    lcdDrawRect(BITMAP_X, BITMAP_Y, 64, 32);
     putsStrIdx(BITMAP_X+FW, BITMAP_Y+FH-1, STR_GV, s_gvar_last+1);
     lcd_putsnAtt(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
     lcd_putsAtt(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("[\010]"), BOLD);
