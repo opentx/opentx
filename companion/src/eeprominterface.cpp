@@ -797,7 +797,7 @@ QString CustomFunctionData::funcToString() const
   else if (func == FuncPlayScript)
     return QObject::tr("Play Script");
   else if (func == FuncLogs)
-    return QObject::tr("Start Logs");
+    return QObject::tr("SD Logs");
   else if (func == FuncVolume)
     return QObject::tr("Volume");
   else if (func == FuncBacklight)
