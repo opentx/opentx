@@ -102,6 +102,11 @@ ELSE( )
   LINK_DIRECTORIES( /usr/local/lib )
 ENDIF( )
 
+IF( MSVC )
+  MESSAGE( STATUS "Adding include C:/Programs/dirent/include for dirent.h" )
+  INCLUDE_DIRECTORIES( C:/programs/dirent/include )
+ENDIF( )
+
 set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/../../radio/src)
 set(SIMU_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/simulation)
 set(COMPANION_SRC_DIRECTORY ${PROJECT_SOURCE_DIR})
