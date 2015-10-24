@@ -1489,7 +1489,7 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
 void registerEEpromInterfaces();
 void unregisterEEpromInterfaces();
 void registerOpenTxFirmwares();
-void unregisterFirmwares();
+void unregisterOpenTxFirmwares();
 
 enum EepromLoadErrors {
   NO_ERROR,

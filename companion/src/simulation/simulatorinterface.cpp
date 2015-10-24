@@ -81,3 +81,9 @@ SimulatorFactory *getSimulatorFactory(const QString &name)
   return NULL;
 }
 
+void unregisterSimulators()
+{
+  foreach(SimulatorFactory *factory, registered_simulators) {
+    delete factory;
+  }
+}

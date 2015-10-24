@@ -130,5 +130,6 @@ class OpenTxFirmware: public Firmware {
 };
 
 void registerOpenTxFirmwares();
+void unregisterOpenTxFirmwares();
 
 #endif

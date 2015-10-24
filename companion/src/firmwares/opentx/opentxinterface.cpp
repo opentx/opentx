@@ -1436,3 +1436,9 @@ void registerOpenTxFirmwares()
   current_firmware_variant = default_firmware_variant;
 }
 
+void unregisterOpenTxFirmwares()
+{
+  foreach (Firmware * f, firmwares) {
+    delete f;
+  }
+}

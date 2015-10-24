@@ -1642,13 +1642,6 @@ QList<Firmware *> firmwares;
 Firmware * default_firmware_variant;
 Firmware * current_firmware_variant;
 
-void unregisterFirmwares()
-{
-  foreach (Firmware * f, firmwares) {
-    delete f;
-  }
-}
-
 void ShowEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound)
 {
   std::bitset<NUM_ERRORS> errors((unsigned long long)errorsFound);
