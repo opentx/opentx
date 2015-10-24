@@ -772,10 +772,12 @@ char *findTrueFileName(const char *path)
             strcat(result, res->d_name);
             TRACE("\tfound: %s", res->d_name);
             fileMap.insert(filemap_t:: value_type(path, result));
+            simu::closedir(dir);
             return result;  
           }
         }
       }
+      simu::closedir(dir);
     }
 #endif
   }
