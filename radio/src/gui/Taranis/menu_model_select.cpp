@@ -89,7 +89,7 @@ void menuModelSelect(uint8_t event)
     event = EVT_ENTRY_UP;
   }
 
-  uint8_t _event_ = (IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event) ? 0 : event);
+  uint8_t _event_ = ((event==EVT_KEY_BREAK(KEY_ENTER) || event==EVT_KEY_LONG(KEY_ENTER)) ? 0 : event);
 
   if ((s_copyMode && EVT_KEY_MASK(event) == KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT)) {
     _event_ -= KEY_EXIT;
@@ -209,10 +209,10 @@ void menuModelSelect(uint8_t event)
         killEvents(event);
         break;
 
-      case EVT_KEY_FIRST(KEY_MOVE_UP):
-      case EVT_KEY_REPT(KEY_MOVE_UP):
-      case EVT_KEY_FIRST(KEY_MOVE_DOWN):
-      case EVT_KEY_REPT(KEY_MOVE_DOWN):
+      case EVT_KEY_FIRST(KEY_UP):
+      case EVT_KEY_REPT(KEY_UP):
+      case EVT_KEY_FIRST(KEY_DOWN):
+      case EVT_KEY_REPT(KEY_DOWN):
         if (s_copyMode) {
           int8_t next_ofs = s_copyTgtOfs + oldSub - m_posVert;
           if (next_ofs == MAX_MODELS || next_ofs == -MAX_MODELS)
@@ -221,7 +221,7 @@ void menuModelSelect(uint8_t event)
           if (s_copySrcRow < 0 && s_copyMode==COPY_MODE) {
             s_copySrcRow = oldSub;
             // find a hole (in the first empty slot above / below)
-            sub = eeFindEmptyModel(s_copySrcRow, IS_ROTARY_DOWN(event) || event==EVT_KEY_FIRST(KEY_MOVE_DOWN));
+            sub = eeFindEmptyModel(s_copySrcRow, event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN));
             if (sub < 0) {
               // no free room for duplicating the model
               AUDIO_ERROR();

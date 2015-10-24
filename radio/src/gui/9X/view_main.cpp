@@ -191,7 +191,7 @@ void displayTimers()
     uint8_t len = zlen(g_model.timers[0].name, LEN_TIMER_NAME);
     if (len > 0) {
       xLabel += (LEN_TIMER_NAME-len)*FW;
-      lcd_putsnAtt(xLabel, FH*3, g_model.timers[0].name, len, ZCHAR);
+      lcdDrawTextWithLen(xLabel, FH*3, g_model.timers[0].name, len, ZCHAR);
     }
     else {
       putsTimerMode(xLabel, FH*3, g_model.timers[0].mode);
@@ -434,7 +434,7 @@ void menuMainView(uint8_t event)
   {
     // Flight Mode Name
     uint8_t mode = mixerCurrentFlightMode;
-    lcd_putsnAtt(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|PHASE_FLAGS);
+    lcdDrawTextWithLen(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|PHASE_FLAGS);
 
     // Model Name
     putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
@@ -575,8 +575,8 @@ void menuMainView(uint8_t event)
     s_gvar_timer--;
     s_warning = STR_GLOBAL_VAR;
     displayBox();
-    lcd_putsnAtt(16, 5*FH, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
-    lcd_putsAtt(16+7*FW, 5*FH, PSTR("[\010]"), BOLD);
+    lcdDrawTextWithLen(16, 5*FH, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
+    lcdDrawText(16+7*FW, 5*FH, PSTR("[\010]"), BOLD);
     lcd_outdezAtt(16+7*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), BOLD);
     s_warning = NULL;
   }
@@ -585,7 +585,7 @@ void menuMainView(uint8_t event)
 #if defined(DSM2)
   if (moduleFlag[0] == MODULE_BIND) {
     // Issue 98
-    lcd_putsAtt(15*FW, 0, PSTR("BIND"), 0);
+    lcdDrawText(15*FW, 0, PSTR("BIND"), 0);
   }
 #endif
 }

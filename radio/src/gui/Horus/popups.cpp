@@ -78,11 +78,11 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
   displayAlertBox();
 
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
-  lcd_putsAtt(WARNING_LINE_X, WARNING_LINE_Y, STR_WARNING, ALARM_COLOR|DBLSIZE);
-  lcd_putsAtt(WARNING_LINE_X, WARNING_LINE_Y+15, title, ALARM_COLOR|DBLSIZE);
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, STR_WARNING, ALARM_COLOR|DBLSIZE);
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+15, title, ALARM_COLOR|DBLSIZE);
 #else
-  lcd_putsAtt(WARNING_LINE_X, WARNING_LINE_Y, title, ALARM_COLOR|DBLSIZE);
-  lcd_putsAtt(WARNING_LINE_X, WARNING_LINE_Y+15, STR_WARNING, ALARM_COLOR|DBLSIZE);
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, title, ALARM_COLOR|DBLSIZE);
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+15, STR_WARNING, ALARM_COLOR|DBLSIZE);
 #endif
 
   if (t) lcd_puts(WARNING_LINE_X, WARNING_INFOLINE_Y, t);
@@ -99,7 +99,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 void displayPopup(const char *title)
 {
   displayMessageBox();
-  lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN, DBLSIZE|WARNING_COLOR);
+  lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN, DBLSIZE|WARNING_COLOR);
   lcdRefresh();
 }
 
@@ -110,24 +110,17 @@ void displayWarning(evt_t event)
     displayMessageBox();
   else
     displayWarningBox();
-  lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y, s_warning, WARNING_LINE_LEN, DBLSIZE | (s_warning_type == WARNING_TYPE_INPUT ? WARNING_COLOR : ALARM_COLOR));
+  lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y, s_warning, WARNING_LINE_LEN, DBLSIZE | (s_warning_type == WARNING_TYPE_INPUT ? WARNING_COLOR : ALARM_COLOR));
   if (s_warning_info) {
-    lcd_putsnAtt(WARNING_LINE_X, WARNING_INFOLINE_Y, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
+    lcdDrawTextWithLen(WARNING_LINE_X, WARNING_INFOLINE_Y, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
   }
   lcd_puts(WARNING_LINE_X, WARNING_INFOLINE_Y+12, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
   switch (event) {
-#if defined(ROTARY_ENCODER_NAVIGATION)
-    case EVT_ROTARY_BREAK:
-#endif
     case EVT_KEY_BREAK(KEY_ENTER):
       if (s_warning_type == WARNING_TYPE_ASTERISK)
         break;
       s_warning_result = true;
       // no break
-#if defined(ROTARY_ENCODER_NAVIGATION)
-    case EVT_ROTARY_LONG:
-      killEvents(event);
-#endif
     case EVT_KEY_BREAK(KEY_EXIT):
       s_warning = NULL;
       s_warning_type = WARNING_TYPE_ASTERISK;
@@ -162,23 +155,21 @@ const char * displayMenu(evt_t event)
   for (uint8_t i=0; i<display_count; i++) {
     if (i == s_menu_item) {
       lcdDrawSolidFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, FH+1, TEXT_INVERTED_BGCOLOR);
-      lcd_putsAtt(MENU_X+6, i*(FH+1) + y + 5, s_menu[i], TEXT_INVERTED_COLOR|s_menu_flags);
+      lcdDrawText(MENU_X+6, i*(FH+1) + y + 5, s_menu[i], TEXT_INVERTED_COLOR|s_menu_flags);
     }
     else {
-      lcd_putsAtt(MENU_X+6, i*(FH+1) + y + 5, s_menu[i], s_menu_flags);
+      lcdDrawText(MENU_X+6, i*(FH+1) + y + 5, s_menu[i], s_menu_flags);
     }
   }
 
   if (s_menu_count > display_count) {
-    lcdDrawScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, MENU_MAX_LINES);
+    drawScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, MENU_MAX_LINES);
   }
 
-  switch(event) {
-#if defined(ROTARY_ENCODER_NAVIGATION)
-    CASE_EVT_ROTARY_LEFT
-#endif
-    case EVT_KEY_FIRST(KEY_MOVE_UP):
-    case EVT_KEY_REPT(KEY_MOVE_UP):
+  switch (event) {
+    case EVT_ROTARY_LEFT:
+    case EVT_KEY_FIRST(KEY_UP):
+    case EVT_KEY_REPT(KEY_UP):
       if (s_menu_item > 0) {
         s_menu_item--;
       }
@@ -195,11 +186,9 @@ const char * displayMenu(evt_t event)
       }
       break;
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-    CASE_EVT_ROTARY_RIGHT
-#endif
-    case EVT_KEY_FIRST(KEY_MOVE_DOWN):
-    case EVT_KEY_REPT(KEY_MOVE_DOWN):
+    case EVT_ROTARY_RIGHT:
+    case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_REPT(KEY_DOWN):
       if (s_menu_item < display_count - 1 && s_menu_offset + s_menu_item + 1 < s_menu_count) {
         s_menu_item++;
       }
@@ -218,10 +207,6 @@ const char * displayMenu(evt_t event)
     case EVT_KEY_BREAK(KEY_ENTER):
       result = s_menu[s_menu_item];
       // no break
-#if defined(ROTARY_ENCODER_NAVIGATION)
-    CASE_EVT_ROTARY_LONG
-      killEvents(event);
-#endif
     case EVT_KEY_BREAK(KEY_EXIT):
       s_menu_count = 0;
       s_menu_item = 0;

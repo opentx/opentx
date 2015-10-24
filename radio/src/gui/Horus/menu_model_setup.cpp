@@ -102,11 +102,26 @@ void copySelection(char *dst, const char *src, uint8_t size)
     memcpy(dst, src, size);
 }
 
+void onModelSetupBitmapMenu(const char *result)
+{
+  if (result == STR_UPDATE_LIST) {
+    if (!sdListFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), NULL)) {
+      POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
+      s_menu_flags = 0;
+    }
+  }
+  else {
+    // The user choosed a bmp file in the list
+    copySelection(g_model.header.bitmap, result, sizeof(g_model.header.bitmap));
+    storageDirty(EE_MODEL);
+  }
+}
+
 void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, evt_t event)
 {
   TimerData * timer = &g_model.timers[timerIdx];
   if (attr && m_posHorz < 0) {
-	lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 80+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+    lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 90+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
   }
   putsStrIdx(MENUS_MARGIN_LEFT, y, STR_TIMER, timerIdx+1);
   putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, (m_posHorz<=0 ? attr : 0));
@@ -158,7 +173,7 @@ int getSwitchWarningsCount()
 void menuModelSetup(evt_t event)
 {
   horzpos_t l_posHorz = m_posHorz;
-  #define IF_EXTERNAL_MODULE_ON(x)          (g_model.externalModule == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
+  #define IF_EXTERNAL_MODULE_ON(x)          (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
   #define IF_TRAINER_ON(x)                  (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)(x) : HIDDEN_ROW)
   #define IF_EXTERNAL_MODULE_XJT(x)         (IS_MODULE_XJT(EXTERNAL_MODULE) ? (uint8_t)x : HIDDEN_ROW)
   #define IS_D8_RX(x)                       (g_model.moduleData[x].rfProtocol == RF_PROTO_D8)
@@ -208,8 +223,20 @@ void menuModelSetup(evt_t event)
 
       case ITEM_MODEL_BITMAP:
         lcd_putsLeft(y, STR_BITMAP);
-        lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.bitmap, LEFT|attr);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.bitmap, 3);
+        if (ZEXIST(g_model.header.bitmap))
+          lcdDrawTextWithLen(MODEL_SETUP_2ND_COLUMN, y, g_model.header.bitmap, sizeof(g_model.header.bitmap), attr);
+        else
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VCSWFUNC, 0, attr);
+        if (attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
+          s_editMode = 0;
+          if (sdListFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), g_model.header.bitmap, LIST_NONE_SD_FILE)) {
+            menuHandler = onModelSetupBitmapMenu;
+          }
+          else {
+            POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
+            s_menu_flags = 0;
+          }
+        }
         break;
 
       case ITEM_MODEL_TIMER1:
@@ -282,7 +309,7 @@ void menuModelSetup(evt_t event)
 
       case ITEM_MODEL_EXTENDED_TRIMS:
         ON_OFF_MENU_ITEM(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, m_posHorz<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
-        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+18, y, STR_RESET_BTN, m_posHorz>0  && !s_noHi ? attr : 0);
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN+18, y, STR_RESET_BTN, m_posHorz>0  && !s_noHi ? attr : 0);
         if (attr && m_posHorz>0) {
           s_editMode = 0;
           if (event==EVT_KEY_LONG(KEY_ENTER)) {
@@ -391,7 +418,7 @@ void menuModelSetup(evt_t event)
               max = 2;
             }
             s[2] = '\0';
-            lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+i*18, y, s, color|(m_posHorz==current ? attr : 0));
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN+i*18, y, s, color|(m_posHorz==current ? attr : 0));
             if (attr && m_posHorz==current) CHECK_INCDEC_MODELVAR_ZERO(event, state, max);
             newStates |= (state << (3*i));
             ++current;
@@ -423,13 +450,13 @@ void menuModelSetup(evt_t event)
             }
           }
         }
-        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""Man\0""Auto"), g_model.potsWarnMode, (m_posHorz == 0) ? attr : 0);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""Man\0""Auto"), g_model.potsWarnMode, (m_posHorz == 0) ? attr : 0);
         if (g_model.potsWarnMode) {
           coord_t x = MODEL_SETUP_2ND_COLUMN+30;
           for (int i=0; i<NUM_POTS; ++i) {
             LcdFlags flags = (((m_posHorz==i+1) && attr) ? INVERS : 0);
             flags |= (g_model.potsWarnEnabled & (1 << i)) ? TEXT_DISABLE_COLOR : TEXT_COLOR;
-            lcd_putsiAtt(x, y, STR_VSRCRAW, NUM_STICKS+1+i, flags);
+            lcdDrawTextAtIndex(x, y, STR_VSRCRAW, NUM_STICKS+1+i, flags);
             x += 20;
           }
         }
@@ -451,7 +478,7 @@ void menuModelSetup(evt_t event)
           LcdFlags flags = ((m_posHorz==i && attr) ? INVERS : 0);
           flags |= (g_model.beepANACenter & ((BeepANACenter)1<<i)) ? TEXT_COLOR : TEXT_DISABLE_COLOR;
           if (attr && m_posHorz < 0) flags |= INVERS;
-          lcd_putsiAtt(x, y, STR_RETA123, i, flags);
+          lcdDrawTextAtIndex(x, y, STR_RETA123, i, flags);
         }
         if (attr && CURSOR_ON_CELL) {
           if (event==EVT_KEY_BREAK(KEY_ENTER)) {
@@ -466,7 +493,7 @@ void menuModelSetup(evt_t event)
 
       case ITEM_MODEL_USE_GLOBAL_FUNCTIONS:
         lcd_putsLeft(y, "Use Global Funcs");
-        lcdDrawCheckBox(MODEL_SETUP_2ND_COLUMN, y, !g_model.noGlobalFunctions, attr);
+        drawCheckBox(MODEL_SETUP_2ND_COLUMN, y, !g_model.noGlobalFunctions, attr);
         if (attr) g_model.noGlobalFunctions = !checkIncDecModel(event, !g_model.noGlobalFunctions, 0, 1);
         break;
 
@@ -480,19 +507,19 @@ void menuModelSetup(evt_t event)
 
       case ITEM_MODEL_EXTERNAL_MODULE_MODE:
         lcd_putsLeft(y, STR_MODE);
-        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.externalModule, (m_posHorz==0 ? attr : 0));
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].type, (m_posHorz==0 ? attr : 0));
         if (IS_MODULE_XJT(EXTERNAL_MODULE))
-          lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+40, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (m_posHorz==1 ? attr : 0));
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+40, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (m_posHorz==1 ? attr : 0));
         else if (IS_MODULE_DSM2(EXTERNAL_MODULE))
-          lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+40, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (m_posHorz==1 ? attr : 0));
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+40, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (m_posHorz==1 ? attr : 0));
         if (attr && s_editMode>0) {
           switch (m_posHorz) {
             case 0:
-              g_model.externalModule = checkIncDec(event, g_model.externalModule, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-1, EE_MODEL, isModuleAvailable);
+              g_model.moduleData[EXTERNAL_MODULE].type = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-1, EE_MODEL, isModuleAvailable);
               if (checkIncDec_Ret) {
                 g_model.moduleData[EXTERNAL_MODULE].rfProtocol = 0;
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
-                if (g_model.externalModule == MODULE_TYPE_PPM)
+                if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM)
                   g_model.moduleData[EXTERNAL_MODULE].channelsCount = 0;
                 else
                   g_model.moduleData[EXTERNAL_MODULE].channelsCount = MAX_EXTERNAL_MODULE_CHANNELS();
@@ -532,7 +559,7 @@ void menuModelSetup(evt_t event)
                 break;
               case 1:
                 CHECK_INCDEC_MODELVAR(event, moduleData.channelsCount, -4, min<int8_t>(MAX_CHANNELS(moduleIdx), 32-8-moduleData.channelsStart));
-                if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.externalModule == MODULE_TYPE_PPM)
+                if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM)
                     || (k == ITEM_MODEL_TRAINER_CHANNELS)
                     )
                   SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
@@ -552,7 +579,7 @@ void menuModelSetup(evt_t event)
           lcd_putsLeft(y, STR_PPMFRAME);
           lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT, STR_MS);
           lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+70, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0, "us");
-          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+90, y, moduleData.ppmPulsePol ? "+" : "-", (CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0);
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN+90, y, moduleData.ppmPulsePol ? "+" : "-", (CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0);
 
           if (attr && s_editMode>0) {
             switch (m_posHorz) {
@@ -584,8 +611,8 @@ void menuModelSetup(evt_t event)
             if (attr && l_posHorz==0 && s_editMode>0) {
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], IS_MODULE_DSM2(moduleIdx) ? 20 : 63);
             }
-            lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
-            lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             uint8_t newFlag = 0;
             if (attr && l_posHorz>0 && s_editMode>0) {
               if (l_posHorz == 1)
@@ -606,8 +633,8 @@ void menuModelSetup(evt_t event)
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         lcd_putsLeft(y, TR_FAILSAFE);
         if (IS_MODULE_XJT(moduleIdx)) {
-          lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VFAILSAFE, moduleData.failsafeMode, m_posHorz==0 ? attr : 0);
-          if (moduleData.failsafeMode == FAILSAFE_CUSTOM) lcd_putsAtt(MODEL_SETUP_2ND_COLUMN + MODEL_SETUP_SET_FAILSAFE_OFS, y, STR_SET, m_posHorz==1 ? attr : 0);
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VFAILSAFE, moduleData.failsafeMode, m_posHorz==0 ? attr : 0);
+          if (moduleData.failsafeMode == FAILSAFE_CUSTOM) lcdDrawText(MODEL_SETUP_2ND_COLUMN + MODEL_SETUP_SET_FAILSAFE_OFS, y, STR_SET, m_posHorz==1 ? attr : 0);
           if (attr) {
             if (moduleData.failsafeMode != FAILSAFE_CUSTOM)
               m_posHorz = 0;
@@ -625,7 +652,7 @@ void menuModelSetup(evt_t event)
               }
             }
             else {
-              lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8, TEXT_COLOR);
+              lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-2, 8, TEXT_COLOR);
             }
           }
         }
@@ -654,7 +681,7 @@ void menuModelFailsafe(evt_t event)
     SEND_FAILSAFE_NOW(g_moduleIdx);
   }
 
-  SIMPLE_SUBMENU_NOTITLE(NUM_CHNOUT, 0);
+  SIMPLE_SUBMENU_NOTITLE(NUM_CHNOUT);
 
   #define COL_W   (LCD_W/2)
   const uint8_t SLIDER_W = 64;
@@ -691,7 +718,7 @@ void menuModelFailsafe(evt_t event)
       }
 
       if (lenLabel > 0)
-        lcd_putsnAtt(x+1-ofs, y, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR | SMLSIZE);
+        lcdDrawTextWithLen(x+1-ofs, y, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR | SMLSIZE);
       else
         putsChn(x+1-ofs, y, ch+1, SMLSIZE);
 

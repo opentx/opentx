@@ -1063,6 +1063,7 @@
 #define TR_SCALE               "Měřítko"
 #define TR_VIEW_CHANNELS       "Zobrazit kanály"
 #define TR_VIEW_NOTES          "Zobrazit poznámky"
+#define TR_MODEL_SELECT        "Model Select"
 #define TR_MODS_FORBIDDEN      "Změny nejsou povoleny!"
 #define TR_UNLOCKED            "Odemčeno"
 #define TR_ID                  "ID"

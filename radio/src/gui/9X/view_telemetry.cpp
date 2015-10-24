@@ -66,7 +66,7 @@ void displayRssiLine()
     drawFilledRect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
-    lcd_putsAtt(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
+    lcdDrawText(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
     lcd_status_line();
   }
 }
@@ -154,7 +154,7 @@ void displayVoltagesScreen()
 {
   // Volts / Amps / Watts / mAh
   uint8_t analog = 0;
-  lcd_putsiAtt(0, 2*FH, STR_AMPSRC, g_model.frsky.voltsSource+1, 0);
+  lcdDrawTextAtIndex(0, 2*FH, STR_AMPSRC, g_model.frsky.voltsSource+1, 0);
   switch (g_model.frsky.voltsSource) {
     case FRSKY_VOLTS_SOURCE_A1:
     case FRSKY_VOLTS_SOURCE_A2:
@@ -172,7 +172,7 @@ void displayVoltagesScreen()
   }
 
   if (g_model.frsky.currentSource) {
-    lcd_putsiAtt(0, 4*FH, STR_AMPSRC, g_model.frsky.currentSource, 0);
+    lcdDrawTextAtIndex(0, 4*FH, STR_AMPSRC, g_model.frsky.currentSource, 0);
     switch(g_model.frsky.currentSource) {
       case FRSKY_CURRENT_SOURCE_A1:
       case FRSKY_CURRENT_SOURCE_A2:
@@ -259,7 +259,7 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
 #if defined(CPUARM)
       putsMixerSource(0, y+barHeight-5, source, 0);
 #else
-      lcd_putsiAtt(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
+      lcdDrawTextAtIndex(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
 #endif
       lcdDrawRect(BAR_LEFT, y, BAR_WIDTH+1, barHeight+2);
 #if defined(CPUARM)
@@ -422,7 +422,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
           field = field-TELEM_TIMER1+TELEM_T1;
         }
 
-        lcd_putsiAtt(pos[j], 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
+        lcdDrawTextAtIndex(pos[j], 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
       }
     }
   }

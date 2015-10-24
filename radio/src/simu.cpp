@@ -269,9 +269,9 @@ void Open9xSim::updateKeysAndSwitches(bool start)
     KEY_Left,      KEY_LEFT,
     KEY_Up,        KEY_UP,
     KEY_Down,      KEY_DOWN,
-#endif
 #if defined(ROTARY_ENCODER_NAVIGATION)
     KEY_F,         BTN_REa,
+#endif
 #endif
   };
 
@@ -369,15 +369,23 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
 #endif
 
     updateKeysAndSwitches();
+
+#if defined(PCBHORUS)
+    extern rotenc_t rotencValue;
+    #define ROTENC_VALUE rotencValue
+#else
+    #define ROTENC_VALUE g_rotenc[0]
+#endif
     
-#if defined(ROTARY_ENCODER_NAVIGATION)
+#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBHORUS)
+    extern rotenc_t rotencValue;
     static bool rotencAction = false;
     if (getApp()->getKeyState(KEY_G)) {
-      if (!rotencAction) g_rotenc[0] += ROTARY_ENCODER_GRANULARITY;
+      if (!rotencAction) ROTENC_VALUE += ROTARY_ENCODER_GRANULARITY;
       rotencAction = true;
     }
     else if (getApp()->getKeyState(KEY_D)) {
-      if (!rotencAction) g_rotenc[0] -= ROTARY_ENCODER_GRANULARITY;
+      if (!rotencAction) ROTENC_VALUE -= ROTARY_ENCODER_GRANULARITY;
       rotencAction = true;
     }
     else {

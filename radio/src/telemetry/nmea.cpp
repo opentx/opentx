@@ -464,14 +464,14 @@ void menuTelemetryNMEA1(uint8_t event)
 
     if (rbuf[0][0]) {								// show always if data have been received
 	  lcdDrawChar   (  19*FW,   1*FH, sbuf[2], 0);				// satellites in view
-        lcd_putsnAtt  (   2*FW,   2*FH, &rbuf[0][0], 2, APSIZE);		// hours
+        lcdDrawTextWithLen  (   2*FW,   2*FH, &rbuf[0][0], 2, APSIZE);		// hours
         lcdDrawChar   (   6*FW,   2*FH, ':', DBLSIZE);			// ":"
-        lcd_putsnAtt  (   8*FW,   2*FH, &rbuf[0][2], 2, APSIZE);		// minutes
+        lcdDrawTextWithLen  (   8*FW,   2*FH, &rbuf[0][2], 2, APSIZE);		// minutes
         lcdDrawChar   (  12*FW,   2*FH, ':', DBLSIZE);			// ":"
-        lcd_putsnAtt  (  14*FW,   2*FH, &rbuf[0][4], 2, APSIZE);		// seconds
+        lcdDrawTextWithLen  (  14*FW,   2*FH, &rbuf[0][4], 2, APSIZE);		// seconds
     }
     else
-        lcd_putsAtt   (   2*FW,   2*FH, val_unknown, APSIZE);		// "?"
+        lcdDrawText   (   2*FW,   2*FH, val_unknown, APSIZE);		// "?"
 
     if ((show_timer == 1) && rbuf[0][0])  {					// show the Timer when data have been received
 
@@ -483,14 +483,14 @@ void menuTelemetryNMEA1(uint8_t event)
         lcd_puts      ( 2*FW,   4*FH, PSTR("Date"));			// show the UTC Date	
 
         if (rbuf[1][0])	{
-            lcd_putsnAtt( 2*FW,   5*FH, &rbuf[1][0], 2, APSIZE);		// year
+            lcdDrawTextWithLen( 2*FW,   5*FH, &rbuf[1][0], 2, APSIZE);		// year
             lcdDrawChar ( 6*FW,   5*FH, '/', DBLSIZE);			// "/" 
-            lcd_putsnAtt( 8*FW,   5*FH, &rbuf[1][2], 2, APSIZE);		// month
+            lcdDrawTextWithLen( 8*FW,   5*FH, &rbuf[1][2], 2, APSIZE);		// month
             lcdDrawChar (12*FW,   5*FH, '/', DBLSIZE);			// "/"
-            lcd_putsnAtt(14*FW,   5*FH, &rbuf[1][4], 2, APSIZE);		// day
+            lcdDrawTextWithLen(14*FW,   5*FH, &rbuf[1][4], 2, APSIZE);		// day
         }
         else
-            lcd_putsAtt   (   2*FW,   5*FH, val_unknown, APSIZE);		// "?"
+            lcdDrawText   (   2*FW,   5*FH, val_unknown, APSIZE);		// "?"
     }
 }
 
@@ -651,8 +651,8 @@ void menuTelemetryNMEA2(uint8_t event)
 		}
     }
     else {
-        lcd_putsAtt    (   2*FW,   2*FH, val_unknown, APSIZE);
-        lcd_putsAtt    (   2*FW,   5*FH, val_unknown, APSIZE);
+        lcdDrawText    (   2*FW,   2*FH, val_unknown, APSIZE);
+        lcdDrawText    (   2*FW,   5*FH, val_unknown, APSIZE);
     }
 }
 
@@ -694,15 +694,15 @@ void menuTelemetryNMEA3(uint8_t event)
             }
             i++;
         }
-        lcd_putsAtt   (   2*FW,   2*FH, VALSTR(0), APSIZE);		// speed over ground
+        lcdDrawText   (   2*FW,   2*FH, VALSTR(0), APSIZE);		// speed over ground
     }
     else
-        lcd_putsAtt   (   2*FW,   2*FH, val_unknown, APSIZE);
+        lcdDrawText   (   2*FW,   2*FH, val_unknown, APSIZE);
 
     lcdDrawChar   (  19*FW,   1*FH, sbuf[2], 0);			// satellites in view
 
     lcd_puts        (   1*FW,   4*FH, PSTR("Course over ground") );
-    lcd_putsAtt       (   2*FW,   5*FH, VALSTR(1), APSIZE);		// course over ground
+    lcdDrawText       (   2*FW,   5*FH, VALSTR(1), APSIZE);		// course over ground
 }
 
 
@@ -741,29 +741,29 @@ void menuTelemetryNMEA4(uint8_t event)
     {
         lcdDrawChar   (  13*FW,   1*FH, sbuf[0], 0);          // N or S
 	  lcdDrawChar   (  19*FW,   1*FH, sbuf[2], 0);				// satellites in view
-        lcd_putsnAtt  (   1*FW,   2*FH, rbuf[0], 2, APSIZE);
+        lcdDrawTextWithLen  (   1*FW,   2*FH, rbuf[0], 2, APSIZE);
         lcdDrawChar   (   5*FW,   2*FH, '@',0);
-        lcd_putsAtt   (   6*FW,   2*FH, &rbuf[0][2], APSIZE);	// minutes with small decimal point
+        lcdDrawText   (   6*FW,   2*FH, &rbuf[0][2], APSIZE);	// minutes with small decimal point
     }
     else
-        lcd_putsAtt   (   2*FW,   2*FH, val_unknown, APSIZE);
+        lcdDrawText   (   2*FW,   2*FH, val_unknown, APSIZE);
     lcd_puts        (   3*FW,   4*FH, PSTR("Longitude"));   // line 4 column 5
     // second buffer into line 5 column 2
     if (rbuf[0][0])
     {
         lcdDrawChar   (  13*FW,   4*FH, sbuf[1], 0);          // E or W
-        lcd_putsnAtt  (   0*FW,   5*FH, rbuf[1], 3, APSIZE);
+        lcdDrawTextWithLen  (   0*FW,   5*FH, rbuf[1], 3, APSIZE);
         lcdDrawChar   (   6*FW,   5*FH, '@',0);
-        lcd_putsAtt   (   7*FW,   5*FH, &rbuf[1][3], APSIZE);	// minutes with small decimal point
+        lcdDrawText   (   7*FW,   5*FH, &rbuf[1][3], APSIZE);	// minutes with small decimal point
 
     }
     else
-        lcd_putsAtt   (   2*FW,   5*FH, val_unknown, APSIZE);
+        lcdDrawText   (   2*FW,   5*FH, val_unknown, APSIZE);
 }
 
 void title(char x)
 {
-    lcd_putsAtt (0*FW, 0*FH, PSTR("  GPS NMEA data ?/4  "), INVERS);
+    lcdDrawText (0*FW, 0*FH, PSTR("  GPS NMEA data ?/4  "), INVERS);
     lcdDrawChar(16*FW, 0*FH, x, INVERS);
 }
 

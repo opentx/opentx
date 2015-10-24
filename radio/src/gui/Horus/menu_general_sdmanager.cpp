@@ -209,7 +209,13 @@ void menuGeneralSdManager(evt_t _event)
       break;
 
     case EVT_KEY_BREAK(KEY_ENTER):
-      if (s_editMode > 0) {
+      if (m_posVert < 0) {
+        if (reusableBuffer.sdmanager.count > 0) {
+          m_posVert = 0;
+        }
+        break;
+      }
+      else if (s_editMode > 0) {
         break;
       }
       else {
@@ -227,6 +233,9 @@ void menuGeneralSdManager(evt_t _event)
 
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(_event);
+      if (m_posVert < 0) {
+        break;
+      }
       if (s_editMode == 0) {
         char *line = reusableBuffer.sdmanager.lines[index];
         char *ext = getFileExtension(line, SD_SCREEN_FILE_LENGTH+1);
@@ -348,10 +357,10 @@ void menuGeneralSdManager(evt_t _event)
       if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) {
         char s[SD_SCREEN_FILE_LENGTH+1+2];
         sprintf(s, "[%s]", reusableBuffer.sdmanager.lines[i]);
-        lcd_putsAtt(MENUS_MARGIN_LEFT, y, s, attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, s, attr);
       }
       else {
-        lcd_putsAtt(MENUS_MARGIN_LEFT, y, reusableBuffer.sdmanager.lines[i], attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, reusableBuffer.sdmanager.lines[i], attr);
       }
     }
   }

@@ -142,7 +142,7 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
       mode = FIXEDWIDTH;
   }
 
-  lcd_putsnAtt(x, y, name, size, ZCHAR | mode);
+  lcdDrawTextWithLen(x, y, name, size, ZCHAR | mode);
 
   if (active) {
     uint8_t cur = editNameCursorPos;

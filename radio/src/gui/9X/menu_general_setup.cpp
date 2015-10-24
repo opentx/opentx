@@ -47,7 +47,7 @@ const pm_uchar sticks[] PROGMEM = {
 #if !defined(CPUM64)
   #define SLIDER_5POS(y, value, label, event, attr) { \
     int8_t tmp = value; \
-    displaySlider(RADIO_SETUP_2ND_COLUMN, y, 2+tmp, 4, attr); \
+    drawSlider(RADIO_SETUP_2ND_COLUMN, y, 2+tmp, 4, attr); \
     value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
   }
 #elif defined(GRAPHICS)
@@ -270,7 +270,7 @@ void menuGeneralSetup(uint8_t event)
       {
         lcd_putsLeft(y, STR_SPEAKER_VOLUME);
         uint8_t b = g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF;
-        displaySlider(RADIO_SETUP_2ND_COLUMN, y, b, VOLUME_LEVEL_MAX, attr);
+        drawSlider(RADIO_SETUP_2ND_COLUMN, y, b, VOLUME_LEVEL_MAX, attr);
         if (attr) {
           CHECK_INCDEC_GENVAR(event, b, 0, VOLUME_LEVEL_MAX);
           if (checkIncDec_Ret) {
@@ -306,7 +306,7 @@ void menuGeneralSetup(uint8_t event)
 #if defined(CPUARM)
         lcdDrawChar(RADIO_SETUP_2ND_COLUMN, y, '+', attr);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN+FW, y, g_eeGeneral.speakerPitch*15, attr|LEFT);
-        lcd_putsAtt(lcdLastPos, y, "Hz", attr);
+        lcdDrawText(lcdLastPos, y, "Hz", attr);
 #else
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.speakerPitch, attr|LEFT);
 #endif
@@ -326,19 +326,19 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_VARIO_PITCH:
         lcd_putsLeft(y, STR_PITCH_AT_ZERO);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10), attr|LEFT);
-        lcd_putsAtt(lcdLastPos, y, "Hz", attr);
+        lcdDrawText(lcdLastPos, y, "Hz", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioPitch, -40, 40);
         break;
       case ITEM_SETUP_VARIO_RANGE:
         lcd_putsLeft(y, STR_PITCH_AT_MAX);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)+VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10), attr|LEFT);
-        lcd_putsAtt(lcdLastPos, y, "Hz", attr);
+        lcdDrawText(lcdLastPos, y, "Hz", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRange, -80, 80);
         break;
       case ITEM_SETUP_VARIO_REPEAT:
         lcd_putsLeft(y, STR_REPEAT_AT_ZERO);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10), attr|LEFT);
-        lcd_putsAtt(lcdLastPos, y, STR_MS, attr);
+        lcdDrawText(lcdLastPos, y, STR_MS, attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRepeat, -30, 50);
         break;
 #endif
@@ -501,7 +501,7 @@ void menuGeneralSetup(uint8_t event)
 #if defined(CPUARM)
       case ITEM_SETUP_LANGUAGE:
         lcd_putsLeft(y, STR_VOICELANG);
-        lcd_putsAtt(RADIO_SETUP_2ND_COLUMN, y, currentLanguagePack->name, attr);
+        lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, currentLanguagePack->name, attr);
         if (attr) {
           currentLanguagePackIdx = checkIncDec(event, currentLanguagePackIdx, 0, DIM(languagePacks)-2, EE_GENERAL);
           if (checkIncDec_Ret) {
@@ -538,7 +538,7 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_SWITCHES_DELAY:
         lcd_putsLeft(y, STR_SWITCHES_DELAY);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, 10*SWITCHES_DELAY(), attr|LEFT);
-        lcd_putsAtt(lcdLastPos, y, STR_MS, attr);
+        lcdDrawText(lcdLastPos, y, STR_MS, attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchesDelay, -15, +15);
         break;
 #endif

@@ -76,11 +76,11 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 #define MESSAGE_LCD_OFFSET   60
 
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
-  lcd_putsAtt(MESSAGE_LCD_OFFSET, 0, STR_WARNING, DBLSIZE);
-  lcd_putsAtt(MESSAGE_LCD_OFFSET, 2*FH, title, DBLSIZE);
+  lcdDrawText(MESSAGE_LCD_OFFSET, 0, STR_WARNING, DBLSIZE);
+  lcdDrawText(MESSAGE_LCD_OFFSET, 2*FH, title, DBLSIZE);
 #else
-  lcd_putsAtt(MESSAGE_LCD_OFFSET, 0, title, DBLSIZE);
-  lcd_putsAtt(MESSAGE_LCD_OFFSET, 2*FH, STR_WARNING, DBLSIZE);
+  lcdDrawText(MESSAGE_LCD_OFFSET, 0, title, DBLSIZE);
+  lcdDrawText(MESSAGE_LCD_OFFSET, 2*FH, STR_WARNING, DBLSIZE);
 #endif
 
   drawFilledRect(MESSAGE_LCD_OFFSET, 0, LCD_W-MESSAGE_LCD_OFFSET, 32);
@@ -102,7 +102,7 @@ void displayWarning(uint8_t event)
   s_warning_result = false;
   displayBox(s_warning);
   if (s_warning_info) {
-    lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
+    lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y+FH, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
   }
   lcd_puts(WARNING_LINE_X, WARNING_LINE_Y+2*FH, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
   switch (event) {
@@ -134,17 +134,17 @@ const char * displayMenu(uint8_t event)
   lcdDrawRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
-    lcd_putsAtt(MENU_X+6, i*(FH+1) + y + 2, s_menu[i+(s_menu_offset_type == MENU_OFFSET_INTERNAL ? s_menu_offset : 0)], s_menu_flags);
+    lcdDrawText(MENU_X+6, i*(FH+1) + y + 2, s_menu[i+(s_menu_offset_type == MENU_OFFSET_INTERNAL ? s_menu_offset : 0)], s_menu_flags);
     if (i == s_menu_item) drawFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
   }
 
   if (s_menu_count > display_count) {
-    lcdDrawScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), s_menu_offset, s_menu_count, display_count);
+    drawScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), s_menu_offset, s_menu_count, display_count);
   }
 
   switch(event) {
-    case EVT_KEY_FIRST(KEY_MOVE_UP):
-    case EVT_KEY_REPT(KEY_MOVE_UP):
+    case EVT_KEY_FIRST(KEY_UP):
+    case EVT_KEY_REPT(KEY_UP):
       if (s_menu_item > 0) {
         s_menu_item--;
       }
@@ -161,8 +161,8 @@ const char * displayMenu(uint8_t event)
       }
       break;
 
-    case EVT_KEY_FIRST(KEY_MOVE_DOWN):
-    case EVT_KEY_REPT(KEY_MOVE_DOWN):
+    case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_REPT(KEY_DOWN):
       if (s_menu_item < display_count - 1 && s_menu_offset + s_menu_item + 1 < s_menu_count) {
         s_menu_item++;
       }
@@ -178,7 +178,6 @@ const char * displayMenu(uint8_t event)
         }
       }
       break;
-    CASE_EVT_ROTARY_BREAK
     case EVT_KEY_BREAK(KEY_ENTER):
       result = s_menu[s_menu_item + (s_menu_offset_type == MENU_OFFSET_INTERNAL ? s_menu_offset : 0)];
       // no break

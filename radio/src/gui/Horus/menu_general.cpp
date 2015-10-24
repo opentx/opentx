@@ -82,8 +82,8 @@ enum EnumTabDiag {
 
 const MenuFuncP_PROGMEM menuTabGeneral[] PROGMEM = {
   menuGeneralSetup,
-  CASE_SDCARD(menuGeneralSdManager)
-  CASE_CPUARM(menuGeneralCustomFunctions)
+  menuGeneralSdManager,
+  menuGeneralCustomFunctions,
   menuGeneralTrainer,
   menuGeneralCalib,
   menuGeneralVersion,

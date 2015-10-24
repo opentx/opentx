@@ -112,12 +112,12 @@ void menuTraceBuffer(uint8_t event);
 #endif
 
 #if !defined(CPUM64)
-  void displaySlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
+  void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
 #elif defined(GRAPHICS)
   void display5posSlider(coord_t x, coord_t y, uint8_t value, uint8_t attr);
-  #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
+  #define drawSlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
 #else
-  #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
+  #define drawSlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
 #endif
 
 #if defined(NAVIGATION_POT1)
@@ -419,26 +419,39 @@ void displayWarning(uint8_t event);
   extern char s_text_file[TEXT_FILENAME_MAXLEN];
   void menuTextView(uint8_t event);
   void pushMenuTextView(const char *filename);
-  bool modelHasNotes();
   void pushModelNotes();
 #endif
 
 #define LABEL(...)                     (uint8_t)-1
 
-#define KEY_MOVE_UP    KEY_UP
-#define KEY_MOVE_DOWN  KEY_DOWN
+#define KEY_ENTER                      KEY_MENU
+
 #define CURSOR_MOVED_LEFT(event)       (IS_ROTARY_LEFT(event) || EVT_KEY_MASK(event) == KEY_LEFT)
 #define CURSOR_MOVED_RIGHT(event)      (IS_ROTARY_RIGHT(event) || EVT_KEY_MASK(event) == KEY_RIGHT)
-#define CASE_EVT_ROTARY_MOVE_RIGHT     CASE_EVT_ROTARY_RIGHT
-#define CASE_EVT_ROTARY_MOVE_LEFT      CASE_EVT_ROTARY_LEFT
-#define IS_ROTARY_MOVE_RIGHT           IS_ROTARY_RIGHT
-#define IS_ROTARY_MOVE_LEFT            IS_ROTARY_LEFT
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
+  #define IS_ROTARY_LEFT(evt)          (evt == EVT_ROTARY_LEFT)
+  #define IS_ROTARY_RIGHT(evt)         (evt == EVT_ROTARY_RIGHT)
+  #define IS_ROTARY_BREAK(evt)         (evt == EVT_ROTARY_BREAK)
+  #define IS_ROTARY_LONG(evt)          (evt == EVT_ROTARY_LONG)
+  #define IS_ROTARY_EVENT(evt)         (EVT_KEY_MASK(evt) >= 0x0e)
+  #define CASE_EVT_ROTARY_BREAK        case EVT_ROTARY_BREAK:
+  #define CASE_EVT_ROTARY_LONG         case EVT_ROTARY_LONG:
+  #define CASE_EVT_ROTARY_LEFT         case EVT_ROTARY_LEFT:
+  #define CASE_EVT_ROTARY_RIGHT        case EVT_ROTARY_RIGHT:
   void repeatLastCursorMove(uint8_t event);
   #define REPEAT_LAST_CURSOR_MOVE()    { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else repeatLastCursorMove(event); }
   #define MOVE_CURSOR_FROM_HERE()      if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
 #else
+  #define IS_ROTARY_LEFT(evt)          (0)
+  #define IS_ROTARY_RIGHT(evt)         (0)
+  #define IS_ROTARY_BREAK(evt)         (0)
+  #define IS_ROTARY_LONG(evt)          (0)
+  #define IS_ROTARY_EVENT(evt)         (0)
+  #define CASE_EVT_ROTARY_BREAK
+  #define CASE_EVT_ROTARY_LONG
+  #define CASE_EVT_ROTARY_LEFT
+  #define CASE_EVT_ROTARY_RIGHT
   void repeatLastCursorMove(uint8_t event);
   #define REPEAT_LAST_CURSOR_MOVE()    repeatLastCursorMove(event)
   #define MOVE_CURSOR_FROM_HERE()      REPEAT_LAST_CURSOR_MOVE()

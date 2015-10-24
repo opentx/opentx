@@ -62,12 +62,15 @@ bool isTrimModeAvailable(int mode)
 
 void menuModelFlightModesAll(evt_t event)
 {
-  MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, MAX_FLIGHT_MODES+1, DEFAULT_SCROLLBAR_X, { NAVIGATION_LINE_BY_LINE|(ITEM_FLIGHT_MODES_LAST-1), NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, 0});
+  MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, MAX_FLIGHT_MODES+1, DEFAULT_SCROLLBAR_X, { NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, 0});
 
   int sub = m_posVert;
 
   horzpos_t posHorz = m_posHorz;
-  if (sub==0 && posHorz > 0) { posHorz += 1; }
+  if (sub==0 && posHorz == 1) {
+    REPEAT_LAST_CURSOR_MOVE();
+    posHorz = m_posHorz;
+  }
 
   if (sub<MAX_FLIGHT_MODES && posHorz>=0) {
     displayColumnHeader(STR_PHASES_HEADERS, posHorz);
@@ -119,11 +122,11 @@ void menuModelFlightModesAll(evt_t event)
           break;
 
         case ITEM_FLIGHT_MODES_SWITCH:
+          if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
           if (k == 0)
             lcd_puts(FLIGHT_MODES_SWITCH_COLUMN, y, "N/A");
           else
             putsSwitches(FLIGHT_MODES_SWITCH_COLUMN, y, p->swtch, attr);
-          if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
           break;
 
         case ITEM_FLIGHT_MODES_TRIM_RUD:
@@ -132,22 +135,22 @@ void menuModelFlightModesAll(evt_t event)
         case ITEM_FLIGHT_MODES_TRIM_AIL:
         {
           uint8_t t = j-ITEM_FLIGHT_MODES_TRIM_RUD;
-          putsTrimMode(FLIGHT_MODES_TRIMS_COLUMN+j*FLIGHT_MODES_TRIM_WIDTH, y, k, t, attr);
           if (active) {
             trim_t & v = p->trim[t];
             v.mode = checkIncDec(event, v.mode==TRIM_MODE_NONE ? -1 : v.mode, -1, k==0 ? 0 : 2*MAX_FLIGHT_MODES-1, EE_MODEL, isTrimModeAvailable);
           }
+          putsTrimMode(FLIGHT_MODES_TRIMS_COLUMN+j*FLIGHT_MODES_TRIM_WIDTH, y, k, t, attr);
           break;
         }
 
         case ITEM_FLIGHT_MODES_FADE_IN:
-          lcd_outdezAtt(FLIGHT_MODES_FADEIN_COLUMN, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1);
           if (active) p->fadeIn = checkIncDec(event, p->fadeIn, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
+          lcd_outdezAtt(FLIGHT_MODES_FADEIN_COLUMN, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1);
           break;
 
         case ITEM_FLIGHT_MODES_FADE_OUT:
-          lcd_outdezAtt(FLIGHT_MODES_FADEOUT_COLUMN, y, (10/DELAY_STEP)*p->fadeOut, attr|PREC1);
           if (active) p->fadeOut = checkIncDec(event, p->fadeOut, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
+          lcd_outdezAtt(FLIGHT_MODES_FADEOUT_COLUMN, y, (10/DELAY_STEP)*p->fadeOut, attr|PREC1);
           break;
 
       }

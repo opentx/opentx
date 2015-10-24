@@ -168,9 +168,9 @@ void menuStatisticsDebug(uint8_t event)
 
 #if defined(LUA)
   lcd_putsLeft(MENU_DEBUG_Y_LUA, "Lua scripts");
-  lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_LUA+1, "[Duration]", SMLSIZE);
+  lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_LUA+1, "[Duration]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_LUA, 10*maxLuaDuration, LEFT);
-  lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_LUA+1, "[Interval]", SMLSIZE);
+  lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_LUA+1, "[Interval]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_LUA, 10*maxLuaInterval, LEFT);
 #endif
 
@@ -188,13 +188,13 @@ void menuStatisticsDebug(uint8_t event)
 #endif
 
   lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
-  lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[M]", SMLSIZE);
+  lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[M]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, menusStack.available(), UNSIGN|LEFT);
-  lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[X]", SMLSIZE);
+  lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[X]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, mixerStack.available(), UNSIGN|LEFT);
-  lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[A]", SMLSIZE);
+  lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[A]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, audioStack.available(), UNSIGN|LEFT);
-  lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[I]", SMLSIZE);
+  lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[I]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stackAvailable(), UNSIGN|LEFT);
 
   lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);

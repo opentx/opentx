@@ -74,11 +74,7 @@
 /* lcd puts flags */
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */
-#if defined(CPUARM)
-  #define BSS           0x00
-#else
-  #define BSS           0x20
-#endif
+#define BSS             0x00
 #define ZCHAR           0x80
 
 /* lcd outdez flags */
@@ -149,9 +145,9 @@ typedef const char pm_char;
 
 void lcd_putc(coord_t x, coord_t y, const unsigned char c);
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags mode);
-void lcd_putsAtt(coord_t x, coord_t y, const pm_char * s, LcdFlags mode);
-void lcd_putsiAtt(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags mode);
-void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s,unsigned char len, LcdFlags mode);
+void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags mode);
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags mode);
+void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s,unsigned char len, LcdFlags mode);
 void lcd_puts(coord_t x, coord_t y, const pm_char * s);
 void lcd_putsn(coord_t x, coord_t y, const pm_char * s, unsigned char len);
 void lcd_putsLeft(coord_t y, const pm_char * s);

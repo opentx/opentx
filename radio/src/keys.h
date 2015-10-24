@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef keys_h
-#define keys_h
+#ifndef _KEYS_H_
+#define _KEYS_H_
 
 enum EnumKeys {
 #if defined(PCBHORUS)
@@ -217,7 +217,7 @@ enum EnumKeys {
   #define EVT_ROTARY_LONG    EVT_KEY_LONG(KEY_ENTER)
   #define EVT_ROTARY_LEFT    0xDF00
   #define EVT_ROTARY_RIGHT   0xDE00
-#elif defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
   #define EVT_ROTARY_BREAK   EVT_KEY_BREAK(KEY_ENTER)
   #define EVT_ROTARY_LONG    EVT_KEY_LONG(KEY_ENTER)
 #else
@@ -225,61 +225,6 @@ enum EnumKeys {
   #define EVT_ROTARY_LONG    0xce
   #define EVT_ROTARY_LEFT    0xdf
   #define EVT_ROTARY_RIGHT   0xde
-#endif
-
-#if defined(PCBHORUS)
-  #define IS_ROTARY_LEFT(evt)   (evt==EVT_KEY_FIRST(KEY_MINUS) || evt==EVT_KEY_REPT(KEY_MINUS))
-  #define IS_ROTARY_RIGHT(evt)  (evt==EVT_KEY_FIRST(KEY_PLUS) || evt==EVT_KEY_REPT(KEY_PLUS))
-  #define IS_ROTARY_UP(evt)     (evt==EVT_KEY_FIRST(KEY_PLUS) || evt==EVT_KEY_REPT(KEY_PLUS))
-  #define IS_ROTARY_DOWN(evt)   (evt==EVT_KEY_FIRST(KEY_MINUS) || evt==EVT_KEY_REPT(KEY_MINUS))
-  #define IS_ROTARY_BREAK(evt)  (evt==EVT_KEY_BREAK(KEY_ENTER))
-  #define IS_ROTARY_LONG(evt)   (evt==EVT_KEY_LONG(KEY_ENTER))
-  #define IS_ROTARY_EVENT(evt)  (0)
-  #define CASE_EVT_ROTARY_BREAK /*case EVT_KEY_BREAK(KEY_ENTER):*/
-  #define CASE_EVT_ROTARY_LONG  /*case EVT_KEY_LONG(KEY_ENTER):*/
-  #define CASE_EVT_ROTARY_LEFT  case EVT_KEY_FIRST(KEY_MOVE_UP): case EVT_KEY_REPT(KEY_MOVE_UP):
-  #define CASE_EVT_ROTARY_RIGHT case EVT_KEY_FIRST(KEY_MOVE_DOWN): case EVT_KEY_REPT(KEY_MOVE_DOWN):
-#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
-  #define IS_ROTARY_LEFT(evt)   (evt==EVT_KEY_FIRST(KEY_MINUS) || evt==EVT_KEY_REPT(KEY_MINUS))
-  #define IS_ROTARY_RIGHT(evt)  (evt==EVT_KEY_FIRST(KEY_PLUS) || evt==EVT_KEY_REPT(KEY_PLUS))
-  #define IS_ROTARY_UP(evt)     (evt==EVT_KEY_FIRST(KEY_PLUS) || evt==EVT_KEY_REPT(KEY_PLUS))
-  #define IS_ROTARY_DOWN(evt)   (evt==EVT_KEY_FIRST(KEY_MINUS) || evt==EVT_KEY_REPT(KEY_MINUS))
-  #define IS_ROTARY_BREAK(evt)  (evt==EVT_KEY_BREAK(KEY_ENTER))
-  #define IS_ROTARY_LONG(evt)   (evt==EVT_KEY_LONG(KEY_ENTER))
-  #define IS_ROTARY_EVENT(evt)  (0)
-  #define CASE_EVT_ROTARY_BREAK /*case EVT_KEY_BREAK(KEY_ENTER):*/
-  #define CASE_EVT_ROTARY_LONG  /*case EVT_KEY_LONG(KEY_ENTER):*/
-  #if defined(REV9E) && !defined(SIMU)
-    #define CASE_EVT_ROTARY_LEFT  case EVT_KEY_FIRST(KEY_MOVE_UP): case EVT_KEY_REPT(KEY_MOVE_UP):
-    #define CASE_EVT_ROTARY_RIGHT case EVT_KEY_FIRST(KEY_MOVE_DOWN): case EVT_KEY_REPT(KEY_MOVE_DOWN):
-  #else
-    #define CASE_EVT_ROTARY_LEFT  case EVT_KEY_FIRST(KEY_MOVE_DOWN): case EVT_KEY_REPT(KEY_MOVE_DOWN):
-    #define CASE_EVT_ROTARY_RIGHT case EVT_KEY_FIRST(KEY_MOVE_UP): case EVT_KEY_REPT(KEY_MOVE_UP):
-  #endif
-#elif defined(ROTARY_ENCODER_NAVIGATION)
-  #define IS_ROTARY_LEFT(evt)   (evt == EVT_ROTARY_LEFT)
-  #define IS_ROTARY_RIGHT(evt)  (evt == EVT_ROTARY_RIGHT)
-  #define IS_ROTARY_UP(evt)     IS_ROTARY_LEFT(evt)
-  #define IS_ROTARY_DOWN(evt)   IS_ROTARY_RIGHT(evt)
-  #define IS_ROTARY_BREAK(evt)  (evt == EVT_ROTARY_BREAK)
-  #define IS_ROTARY_LONG(evt)   (evt == EVT_ROTARY_LONG)
-  #define IS_ROTARY_EVENT(evt)  (EVT_KEY_MASK(evt) >= 0x0e)
-  #define CASE_EVT_ROTARY_BREAK case EVT_ROTARY_BREAK:
-  #define CASE_EVT_ROTARY_LONG  case EVT_ROTARY_LONG:
-  #define CASE_EVT_ROTARY_LEFT  case EVT_ROTARY_LEFT:
-  #define CASE_EVT_ROTARY_RIGHT case EVT_ROTARY_RIGHT:
-#else
-  #define IS_ROTARY_LEFT(evt)   (0)
-  #define IS_ROTARY_RIGHT(evt)  (0)
-  #define IS_ROTARY_UP(evt)     (0)
-  #define IS_ROTARY_DOWN(evt)   (0)
-  #define IS_ROTARY_BREAK(evt)  (0)
-  #define IS_ROTARY_LONG(evt)   (0)
-  #define IS_ROTARY_EVENT(evt)  (0)
-  #define CASE_EVT_ROTARY_BREAK
-  #define CASE_EVT_ROTARY_LONG
-  #define CASE_EVT_ROTARY_LEFT
-  #define CASE_EVT_ROTARY_RIGHT
 #endif
 
 class Key
@@ -335,4 +280,4 @@ void killEvents(uint8_t enuk);
 
 uint8_t keyDown();
 
-#endif
+#endif // _KEYS_H_

@@ -1065,6 +1065,7 @@
 #define TR_SCALE               "Scala"
 #define TR_VIEW_CHANNELS       "Vedi Canali"
 #define TR_VIEW_NOTES          "Vedi Note"
+#define TR_MODEL_SELECT        "Model Select"
 #define TR_MODS_FORBIDDEN      "Modifica proibita!"
 #define TR_UNLOCKED            "Sbloccato"
 #define TR_ID                  "ID"

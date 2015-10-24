@@ -208,7 +208,7 @@ void lcd_putc(coord_t x, coord_t y, const unsigned char c)
   lcdDrawChar(x, y, c, 0);
 }
 
-void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags flags)
+void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags flags)
 {
   const coord_t orig_x = x;
 #if defined(CPUARM)
@@ -283,17 +283,17 @@ void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags
 
 void lcd_putsn(coord_t x, coord_t y, const pm_char * s, uint8_t len)
 {
-  lcd_putsnAtt(x, y, s, len, 0);
+  lcdDrawTextWithLen(x, y, s, len, 0);
 }
 
-void lcd_putsAtt(coord_t x, coord_t y, const pm_char * s, LcdFlags flags)
+void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags flags)
 {
-  lcd_putsnAtt(x, y, s, 255, flags);
+  lcdDrawTextWithLen(x, y, s, 255, flags);
 }
 
 void lcd_puts(coord_t x, coord_t y, const pm_char * s)
 {
-  lcd_putsAtt(x, y, s, 0);
+  lcdDrawText(x, y, s, 0);
 }
 
 void lcd_putsLeft(coord_t y, const pm_char * s)
@@ -302,11 +302,11 @@ void lcd_putsLeft(coord_t y, const pm_char * s)
 }
 
 #if !defined(BOOT)
-void lcd_putsiAtt(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags flags)
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags flags)
 {
   uint8_t length;
   length = pgm_read_byte(s++);
-  lcd_putsnAtt(x, y, s+length*idx, length, flags & ~(BSS|ZCHAR));
+  lcdDrawTextWithLen(x, y, s+length*idx, length, flags & ~(BSS|ZCHAR));
 }
 
 #if defined(CPUARM)
@@ -656,14 +656,14 @@ void putsVBat(coord_t x, coord_t y, LcdFlags att)
 
 void putsStrIdx(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags att)
 {
-  lcd_putsAtt(x, y, str, att & ~LEADING0);
+  lcdDrawText(x, y, str, att & ~LEADING0);
   lcd_outdezNAtt(lcdNextPos, y, idx, att|LEFT, 2);
 }
 
 void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {
   if (idx < MIXSRC_THR)
-    lcd_putsiAtt(x, y, STR_VSRCRAW, idx, att);
+    lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx, att);
   else if (idx < MIXSRC_SW1)
     putsSwitches(x, y, idx-MIXSRC_THR+1+3*(1), att);
   else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH)
@@ -678,24 +678,24 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
     putsStrIdx(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
 #endif
   else if (idx < MIXSRC_FIRST_TELEM) {
-    lcd_putsiAtt(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-(MIXSRC_SW1-MIXSRC_THR)-NUM_LOGICAL_SWITCH-NUM_TRAINER-NUM_CHNOUT-MAX_GVARS, att);
+    lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-(MIXSRC_SW1-MIXSRC_THR)-NUM_LOGICAL_SWITCH-NUM_TRAINER-NUM_CHNOUT-MAX_GVARS, att);
   }
 #if defined(CPUARM)
   else {
     idx -= MIXSRC_FIRST_TELEM;
     div_t qr = div(idx, 3);
-    lcd_putsnAtt(x, y, g_model.telemetrySensors[qr.quot].label, ZLEN(g_model.telemetrySensors[qr.quot].label), ZCHAR|att);
+    lcdDrawTextWithLen(x, y, g_model.telemetrySensors[qr.quot].label, ZLEN(g_model.telemetrySensors[qr.quot].label), ZCHAR|att);
     if (qr.rem) lcdDrawChar(lcdLastPos, y, qr.rem==2 ? '+' : '-', att);
   }
 #else
   else
-    lcd_putsiAtt(x, y, STR_VTELEMCHNS, idx-MIXSRC_FIRST_TELEM+1, att);
+    lcdDrawTextAtIndex(x, y, STR_VTELEMCHNS, idx-MIXSRC_FIRST_TELEM+1, att);
 #endif
 }
 
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {
-  lcd_putsiAtt(x, y, STR_RETA123, idx-1, att);
+  lcdDrawTextAtIndex(x, y, STR_RETA123, idx-1, att);
 }
 
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
@@ -706,14 +706,14 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
     putsStrIdx(x, y, STR_MODEL, id+1, att|LEADING0);
   }
   else {
-    lcd_putsnAtt(x, y, name, sizeof(g_model.header.name), ZCHAR|att);
+    lcdDrawTextWithLen(x, y, name, sizeof(g_model.header.name), ZCHAR|att);
   }
 }
 
 void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 {
   if (idx == SWSRC_OFF)
-    return lcd_putsiAtt(x, y, STR_OFFON, 0, att);
+    return lcdDrawTextAtIndex(x, y, STR_OFFON, 0, att);
   if (idx < 0) {
     lcdDrawChar(x-2, y, '!', att);
     idx = -idx;
@@ -723,13 +723,13 @@ void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
     return putsStrIdx(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
   }
 #endif
-  return lcd_putsiAtt(x, y, STR_VSWITCHES, idx, att);
+  return lcdDrawTextAtIndex(x, y, STR_VSWITCHES, idx, att);
 }
 
 #if defined(FLIGHT_MODES)
 void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 {
-  if (idx==0) { lcd_putsiAtt(x, y, STR_MMMINV, 0, att); return; }
+  if (idx==0) { lcdDrawTextAtIndex(x, y, STR_MMMINV, 0, att); return; }
   if (idx < 0) { lcdDrawChar(x-2, y, '!', att); idx = -idx; }
   if (att & CONDENSED)
     lcd_outdezNAtt(x+FW*1, y, idx-1, (att & ~CONDENSED), 1);
@@ -745,7 +745,7 @@ void putsCurve(coord_t x, coord_t y, int8_t idx, LcdFlags att)
     idx = -idx+CURVE_BASE-1;
   }
   if (idx < CURVE_BASE)
-    lcd_putsiAtt(x, y, STR_VCURVEFUNC, idx, att);
+    lcdDrawTextAtIndex(x, y, STR_VCURVEFUNC, idx, att);
   else
     putsStrIdx(x, y, STR_CV, idx-CURVE_BASE+1, att);
 }
@@ -754,7 +754,7 @@ void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
 {
   if (mode >= 0) {
     if (mode < TMRMODE_COUNT)
-      return lcd_putsiAtt(x, y, STR_VTMRMODES, mode, att);
+      return lcdDrawTextAtIndex(x, y, STR_VTMRMODES, mode, att);
     else
       mode -= (TMRMODE_COUNT-1);
   }
@@ -808,7 +808,7 @@ void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlag
   // convertUnit(val, unit);
   lcd_outdezAtt(x, y, val, att & (~NO_UNIT));
   if (!(att & NO_UNIT) && unit != UNIT_RAW) {
-    lcd_putsiAtt(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
+    lcdDrawTextAtIndex(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
   }
 }
 
@@ -931,7 +931,7 @@ void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlag
   convertUnit(val, unit);
   lcd_outdezAtt(x, y, val, att & (~NO_UNIT));
   if (!(att & NO_UNIT) && unit != UNIT_RAW) {
-    lcd_putsiAtt(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
+    lcdDrawTextAtIndex(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
   }
 }
 

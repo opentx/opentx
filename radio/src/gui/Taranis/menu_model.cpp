@@ -148,7 +148,7 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
       mode = FIXEDWIDTH;
   }
 
-  lcd_putsnAtt(x, y, name, size, attr | mode);
+  lcdDrawTextWithLen(x, y, name, size, attr | mode);
   coord_t backupNextPos = lcdNextPos;
 
   if (active) {
@@ -157,8 +157,7 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
       int8_t c = name[cur];
       int8_t v = c;
 
-      if (IS_ROTARY_RIGHT(event) || IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP)
-          || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP)) {
+      if (event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP)) {
          if (attr == ZCHAR) {
            v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
            if (c <= 0) v = -v;

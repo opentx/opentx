@@ -512,7 +512,7 @@ void AudioQueue::start()
 #define CODEC_ID_PCM_ALAW   6
 #define CODEC_ID_PCM_MULAW  7
 
-#ifndef SIMU
+#if !defined(SIMU)
 void audioTask(void* pdata)
 {
   while (!audioQueue.started()) {
@@ -521,8 +521,9 @@ void audioTask(void* pdata)
 
   setSampleRate(AUDIO_SAMPLE_RATE);
 
-#if defined(SDCARD)
-  TRACE("unexpectedShutdown = %d", unexpectedShutdown);
+#if !defined(EEPROM)
+  AUDIO_TADA();
+#elif defined(SDCARD)
   if (!unexpectedShutdown) {
     sdInit();
     AUDIO_TADA();

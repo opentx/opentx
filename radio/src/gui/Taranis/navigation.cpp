@@ -173,7 +173,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
   }
 #endif
 
-  if (s_editMode>0 && (IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP))) {
+  if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_PLUS) || event==EVT_KEY_REPT(KEY_PLUS))) {
     do {
       if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
         newval += min(10, i_max-val);
@@ -192,7 +192,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       AUDIO_KEYPAD_UP();
     }
   }
-  else if (s_editMode>0 && (IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN))) {
+  else if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_MINUS) || event==EVT_KEY_REPT(KEY_MINUS))) {
     do {
       if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
         newval -= min(10, val-i_min);
@@ -212,7 +212,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
     }
   }
 
-  if (!READ_ONLY() && i_min==0 && i_max==1 && (event==EVT_KEY_BREAK(KEY_ENTER) || IS_ROTARY_BREAK(event))) {
+  if (!READ_ONLY() && i_min==0 && i_max==1 && event==EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = 0;
     newval = !val;
   }
@@ -249,7 +249,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
   }
 
   if (newval != val) {
-    if (!(i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && stops.contains(newval) && !IS_ROTARY_EVENT(event)) {
+    if (!(i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && stops.contains(newval)) {
       bool pause = (newval > val ? !stops.contains(newval+1) : !stops.contains(newval-1));
       if (pause) {
         pauseEvents(event); // delay before auto-repeat continues
@@ -474,7 +474,8 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
       }
       break;
 
-    CASE_EVT_ROTARY_MOVE_RIGHT
+    case EVT_KEY_FIRST(KEY_RIGHT):
+    case EVT_KEY_REPT(KEY_RIGHT):
       if (s_editMode != 0) break;
       if ((COLATTR(l_posVert) & NAVIGATION_LINE_BY_LINE)) {
         if (l_posHorz >= 0) {
@@ -489,8 +490,6 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
         }
         else {
           l_posHorz = 0;
-          if (!IS_ROTARY_MOVE_RIGHT(event))
-            break;
         }
       }
 
@@ -503,7 +502,8 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
       l_posHorz = POS_HORZ_INIT(l_posVert);
       break;
 
-    CASE_EVT_ROTARY_MOVE_LEFT
+    case EVT_KEY_FIRST(KEY_LEFT):
+    case EVT_KEY_REPT(KEY_LEFT):
       if (s_editMode != 0) break;
       if ((COLATTR(l_posVert) & NAVIGATION_LINE_BY_LINE)) {
         if (l_posHorz >= 0) {
@@ -511,18 +511,9 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
           break;
         }
       }
-      else {
-        if (l_posHorz > 0) {
-          l_posHorz--;
-          break;
-        }
-        else if (IS_ROTARY_MOVE_LEFT(event) && s_editMode == 0) {
-          l_posHorz = 0xff;
-        }
-        else {
-          l_posHorz = maxcol;
-          break;
-        }
+      else if (l_posHorz > 0) {
+        l_posHorz--;
+        break;
       }
 
       do {
@@ -546,7 +537,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
     if (horTab) {
       linesCount = 0;
       for (int i=0; i<rowcount; i++) {
-        if (i>=horTabMax || horTab[i] != HIDDEN_ROW) {
+        if (i>horTabMax || horTab[i] != HIDDEN_ROW) {
           linesCount++;
         }
       }
@@ -577,7 +568,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
           else {
             linesCount = s_pgOfs + NUM_BODY_LINES;
             for (int i=lastLine; i<rowcount; i++) {
-              if (i>=horTabMax || horTab[i] != HIDDEN_ROW) {
+              if (i>horTabMax || horTab[i] != HIDDEN_ROW) {
                 linesCount++;
               }
             }
@@ -597,7 +588,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
   }
 
   if (scrollbar_X && linesCount > NUM_BODY_LINES) {
-    lcdDrawScrollbar(scrollbar_X, MENU_HEADER_HEIGHT, LCD_H-MENU_HEADER_HEIGHT, s_pgOfs, linesCount, NUM_BODY_LINES);
+    drawScrollbar(scrollbar_X, MENU_HEADER_HEIGHT, LCD_H-MENU_HEADER_HEIGHT, s_pgOfs, linesCount, NUM_BODY_LINES);
   }
 
   if (name) {

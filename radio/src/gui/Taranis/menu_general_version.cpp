@@ -43,7 +43,7 @@ void backupEeprom()
   FIL file;
 
   lcdClear();
-  displayProgressBar(STR_WRITING);
+  drawProgressBar(STR_WRITING);
 
   // reset unexpectedShutdown to prevent warning when user restores EEPROM backup
   g_eeGeneral.unexpectedShutdown = 0;

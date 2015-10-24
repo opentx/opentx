@@ -99,7 +99,7 @@ void flashBootloader(const char * filename)
   UINT count;
 
   lcdClear();
-  displayProgressBar(STR_WRITING);
+  drawProgressBar(STR_WRITING);
 
   static uint8_t unlocked = 0;
   if (!unlocked) {
@@ -138,7 +138,7 @@ void flashSportDevice(ModuleIndex module, const char *filename)
   watchdogSetTimeout(60*60*100/*1h*/);
 
   lcdClear();
-  displayProgressBar(STR_WRITING);
+  drawProgressBar(STR_WRITING);
 
   sportFirmwareUpdate(module, filename);
 
@@ -465,7 +465,7 @@ void menuGeneralSdManager(uint8_t _event)
         }
       }
       else {
-        lcd_putsAtt(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], attr);
+        lcdDrawText(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], attr);
       }
       if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[i])) { lcdDrawChar(lcdNextPos, y, ']', s_editMode == EDIT_MODIFY_STRING ? 0 : attr); }
     }

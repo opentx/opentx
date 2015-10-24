@@ -236,7 +236,7 @@ extern CurveInfo curveInfo(uint8_t idx);
 #endif
 
 #if defined(PCBHORUS)
-  #define LEN_MODEL_NAME       12
+  #define LEN_MODEL_NAME       15
   #define LEN_TIMER_NAME       8
   #define LEN_FLIGHT_MODE_NAME 10
   #define LEN_BITMAP_NAME      10
@@ -539,8 +539,8 @@ enum PotsWarnMode {
     TRAINER_MODE_MASTER,
     TRAINER_MODE_SLAVE
   };
-  #define MODELDATA_BITMAP  uint8_t bitmap;
-  #define MODELDATA_EXTRA   uint8_t externalModule:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
+  #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
+  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
 #elif defined(PCBFLAMENCO)
   enum ModuleIndex {
     EXTERNAL_MODULE,
@@ -551,7 +551,7 @@ enum PotsWarnMode {
     TRAINER_MODE_SLAVE
   };
   #define MODELDATA_BITMAP  uint8_t bitmap;
-  #define MODELDATA_EXTRA   uint8_t externalModule:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
+  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
 #elif defined(PCBTARANIS)
   enum ModuleIndex {
     INTERNAL_MODULE,

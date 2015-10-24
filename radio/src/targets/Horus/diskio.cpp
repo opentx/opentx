@@ -248,9 +248,7 @@ void sdInit(void)
     return;
   }
 
-  TRACE("AVANT F_MOUNT");
   if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
-    TRACE("APRES F_MOUNT");
     // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
     sdGetFreeSectors();
 

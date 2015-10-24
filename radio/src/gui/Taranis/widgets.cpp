@@ -61,7 +61,7 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 
 void displayColumnHeader(const char * const *headers, uint8_t index)
 {
-  lcd_putsAtt(17*FW, 0, headers[index], 0);
+  lcdDrawText(17*FW, 0, headers[index], 0);
 }
 
 void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
@@ -82,7 +82,7 @@ void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
   lcd_outdezAtt(x, 0, index+1, attr);
 }
 
-void lcdDrawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
+void drawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
 {
   lcdDrawVerticalLine(x, y, h, DOTTED);
   coord_t yofs = (h * offset) / count;
@@ -101,12 +101,12 @@ void displayMenuBar(const MenuItem *menu, int index)
   drawFilledRect(0, 0, LCD_W, 32, SOLID, ERASE);
   drawFilledRect(0, 24, LCD_W, 7, SOLID, GREY_DEFAULT);
   lcd_bmp(1, 0, MAINMENU_LBM);
-  lcd_putsAtt(0, 24, menu[index].name, INVERS);
+  lcdDrawText(0, 24, menu[index].name, INVERS);
   lcdDrawRect(index*24, 0, 26, 24, SOLID, FORCE);
   lcdDrawHorizontalLine(0, 31, LCD_W, SOLID, FORCE);
 }
 
-void displayProgressBar(const char *label)
+void drawProgressBar(const char *label)
 {
   lcd_putsLeft(4*FH, label);
   lcdDrawRect(3, 6*FH+4, 204, 7);
@@ -137,13 +137,13 @@ void drawGauge(coord_t x, coord_t y, coord_t w, coord_t h, int32_t val, int32_t 
 
 void title(const pm_char * s)
 {
-  lcd_putsAtt(0, 0, s, INVERS);
+  lcdDrawText(0, 0, s, INVERS);
 }
 
 select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, const pm_char *values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, uint8_t event)
 {
   lcd_putsColumnLeft(x, y, label);
-  if (values) lcd_putsiAtt(x, y, values, value-min, attr);
+  if (values) lcdDrawTextAtIndex(x, y, values, value-min, attr);
   if (attr) value = checkIncDec(event, value, min, max, (g_menuPos[0] == 0) ? EE_MODEL : EE_GENERAL);
   return value;
 }
@@ -162,7 +162,7 @@ swsrc_t switchMenuItem(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, uint8
   return value;
 }
 
-void displaySlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
+void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
 {
   lcd_putc(x+(value*4*FW)/max, y, '$');
   lcd_hline(x, y+3, 5*FW-1, FORCE);
@@ -255,7 +255,7 @@ void drawStatusLine()
     }
 
     drawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID, ERASE);
-    lcd_putsAtt(5, LCD_H+1-statusLineHeight, statusLineMsg, BSS);
+    lcdDrawText(5, LCD_H+1-statusLineHeight, statusLineMsg, BSS);
     drawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID);
   }
 }

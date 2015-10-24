@@ -863,7 +863,7 @@ void RlcFile::flush()
 }
 
 #if defined (EEPROM_PROGRESS_BAR)
-void RlcFile::DisplayProgressBar(uint8_t x)
+void RlcFile::drawProgressBar(uint8_t x)
 {
   if (storageDirtyMsk || isWriting() || eeprom_buffer_size) {
     uint8_t len = storageDirtyMsk ? 1 : limit((uint8_t)1, (uint8_t)(7 - (m_rlc_len/m_ratio)), (uint8_t)7);

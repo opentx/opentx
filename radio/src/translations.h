@@ -769,6 +769,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_PREFLIGHT[];
   extern const pm_char STR_CHECKLIST[];
   extern const pm_char STR_VIEW_NOTES[];
+extern const pm_char STR_MODEL_SELECT[];
   extern const pm_char STR_RESET_SUBMENU[];
   extern const pm_char STR_LOWALARM[];
   extern const pm_char STR_CRITICALALARM[];

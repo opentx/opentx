@@ -75,7 +75,7 @@ void menuGeneralHardware(uint8_t event)
       case ITEM_SETUP_HW_STICK_RV_GAIN:
       case ITEM_SETUP_HW_STICK_RH_GAIN:
       {
-        lcd_putsiAtt(INDENT_WIDTH, y, PSTR("\002LVLHRVRH"), k-ITEM_SETUP_HW_STICK_LV_GAIN, 0);
+        lcdDrawTextAtIndex(INDENT_WIDTH, y, PSTR("\002LVLHRVRH"), k-ITEM_SETUP_HW_STICK_LV_GAIN, 0);
         lcd_puts(INDENT_WIDTH+3*FW, y, PSTR("Gain"));
         uint8_t mask = (1<<(k-ITEM_SETUP_HW_STICK_LV_GAIN));
         uint8_t val = (g_eeGeneral.sticksGain & mask ? 1 : 0);

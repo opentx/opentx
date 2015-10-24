@@ -150,17 +150,17 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
       LcdFlags active = (attr && s_editMode>0);
       switch (j) {
         case 0:
-          putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext.activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
+          putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext.activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           break;
 
         case 1:
           if (CFN_SWITCH(cfn)) {
-            lcd_putsiAtt(MODEL_CUSTOM_FUNC_2ND_COLUMN, y, STR_VFSWFUNC, func, attr);
             if (active) {
               func = CFN_FUNC(cfn) = checkIncDec(event, CFN_FUNC(cfn), 0, FUNC_MAX-1, eeFlags, isAssignableFunctionAvailable);
               if (checkIncDec_Ret) CFN_RESET(cfn);
             }
+            lcdDrawTextAtIndex(MODEL_CUSTOM_FUNC_2ND_COLUMN, y, STR_VFSWFUNC, func, attr);
           }
           else {
             j = 4; // skip other fields
@@ -212,7 +212,7 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
           int16_t val_max = 255;
           if (func == FUNC_RESET) {
             val_max = FUNC_RESET_PARAM_LAST;
-            lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VFSWRESET, CFN_PARAM(cfn), attr);
+            lcdDrawTextAtIndex(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VFSWRESET, CFN_PARAM(cfn), attr);
           }
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
           else if (func == FUNC_OVERRIDE_CHANNEL) {
@@ -223,7 +223,7 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
 #if defined(DANGEROUS_MODULE_FUNCTIONS)
           else if (func >= FUNC_RANGECHECK && func <= FUNC_MODULE_OFF) {
             val_max = NUM_MODULES-1;
-            lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, "\004Int.Ext.", CFN_PARAM(cfn), attr);
+            lcdDrawTextAtIndex(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, "\004Int.Ext.", CFN_PARAM(cfn), attr);
           }
 #endif
           else if (func == FUNC_SET_TIMER) {
@@ -232,7 +232,7 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
           }
           else if (func == FUNC_PLAY_SOUND) {
             val_max = AU_FRSKY_LAST-AU_FRSKY_FIRST-1;
-            lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_FUNCSOUNDS, val_displayed, attr);
+            lcdDrawTextAtIndex(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_FUNCSOUNDS, val_displayed, attr);
           }
 #if defined(HAPTIC)
           else if (func == FUNC_HAPTIC) {
@@ -244,9 +244,9 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
           else if (func == FUNC_PLAY_TRACK || func == FUNC_BACKGND_MUSIC || func == FUNC_PLAY_SCRIPT) {
             coord_t x = MODEL_CUSTOM_FUNC_3RD_COLUMN;
             if (ZEXIST(cfn->play.name))
-              lcd_putsnAtt(x, y, cfn->play.name, sizeof(cfn->play.name), attr);
+              lcdDrawTextWithLen(x, y, cfn->play.name, sizeof(cfn->play.name), attr);
             else
-              lcd_putsiAtt(x, y, STR_VCSWFUNC, 0, attr);
+              lcdDrawTextAtIndex(x, y, STR_VCSWFUNC, 0, attr);
             if (active && event==EVT_KEY_BREAK(KEY_ENTER)) {
               s_editMode = 0;
               char directory[256];
@@ -284,12 +284,12 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
               lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|PREC1|LEFT, "s");
             }
             else {
-              lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_MMMINV, 0, attr);
+              lcdDrawTextAtIndex(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_MMMINV, 0, attr);
             }
           }
 #if defined(REVPLUS)
           else if (func == FUNC_BACKLIGHT) {
-            displaySlider(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, CFN_PARAM(cfn), 100, attr);
+            drawSlider(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, CFN_PARAM(cfn), 100, attr);
             INCDEC_SET_FLAG(eeFlags | NO_INCDEC_MARKS);
             val_min = 0;
             val_max = 100;
@@ -315,7 +315,7 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
                 break;
               default: // FUNC_ADJUST_GVAR_INC
                 val_max = 1;
-                lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, PSTR("\003-=1+=1"), val_displayed, attr);
+                lcdDrawTextAtIndex(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, PSTR("\003-=1+=1"), val_displayed, attr);
                 break;
             }
 
@@ -341,20 +341,20 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
 
         case 4:
           if (HAS_ENABLE_PARAM(func)) {
-            lcdDrawCheckBox(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF, y, CFN_ACTIVE(cfn), attr);
             if (active) CFN_ACTIVE(cfn) = checkIncDec(event, CFN_ACTIVE(cfn), 0, 1, eeFlags);
+            drawCheckBox(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF, y, CFN_ACTIVE(cfn), attr);
           }
           else if (HAS_REPEAT_PARAM(func)) {
+            if (active) CFN_PLAY_REPEAT(cfn) = checkIncDec(event, CFN_PLAY_REPEAT(cfn)==CFN_PLAY_REPEAT_NOSTART?-1:CFN_PLAY_REPEAT(cfn), -1, 60/CFN_PLAY_REPEAT_MUL, eeFlags);
             if (CFN_PLAY_REPEAT(cfn) == 0) {
-              lcd_putsAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2, y, "1x", attr);
+              lcdDrawText(MODEL_CUSTOM_FUNC_4TH_COLUMN+2, y, "1x", attr);
             }
             else if (CFN_PLAY_REPEAT(cfn) == CFN_PLAY_REPEAT_NOSTART) {
-              lcd_putsAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN-1, y, "!1x", attr);
+              lcdDrawText(MODEL_CUSTOM_FUNC_4TH_COLUMN-1, y, "!1x", attr);
             }
             else {
               lcd_outdezAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+12, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr, "s");
             }
-            if (active) CFN_PLAY_REPEAT(cfn) = checkIncDec(event, CFN_PLAY_REPEAT(cfn)==CFN_PLAY_REPEAT_NOSTART?-1:CFN_PLAY_REPEAT(cfn), -1, 60/CFN_PLAY_REPEAT_MUL, eeFlags);
           }
           else if (attr) {
             REPEAT_LAST_CURSOR_MOVE();

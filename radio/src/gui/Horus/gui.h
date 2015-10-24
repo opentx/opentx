@@ -68,11 +68,11 @@
 
 void displaySplash();
 void displayScreenIndex(uint8_t index, uint8_t count);
-void lcdDrawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
+void drawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 void drawHeader(int index);
 void drawFooter();
 #define drawStatusLine(...)
-void displayProgressBar(const char *label);
+void drawProgressBar(const char *label);
 void updateProgressBar(int num, int den);
 
 // Header bitmaps

@@ -189,6 +189,8 @@ void storageCheck(bool immediately)
 
 void storageReadAll()
 {
+  sdInit();
+
   if (loadGeneralSettings() != NULL) {
     storageEraseAll(true);
     strcpy(g_eeGeneral.currModelFilename, "model.bin");

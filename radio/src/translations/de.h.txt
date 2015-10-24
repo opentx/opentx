@@ -1067,6 +1067,7 @@
 #define TR_SCALE               "Skalierer"
 #define TR_VIEW_CHANNELS       "Zeige Kanäle"
 #define TR_VIEW_NOTES          "Zeige Notizen"
+#define TR_MODEL_SELECT        "Model Select"
 #define TR_MODS_FORBIDDEN      "Veränderungen verboten!"
 #define TR_UNLOCKED            "Entsperrt"
 #define TR_ID                  "ID"

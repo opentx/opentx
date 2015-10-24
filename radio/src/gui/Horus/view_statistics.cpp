@@ -57,9 +57,9 @@ void menuStatisticsView(evt_t event)
       break;
   }
 
-  lcd_putsAtt(  10, MENU_CONTENT_TOP + FH*0, "\037\145TOT:\037\317BATT:", HEADER_COLOR);
-  lcd_putsAtt(  10, MENU_CONTENT_TOP + FH*1, "TM1:\037\145TM2:", HEADER_COLOR);
-  lcd_putsAtt(  10, MENU_CONTENT_TOP + FH*2, "THR:\037\145TH%:", HEADER_COLOR);
+  lcdDrawText(  10, MENU_CONTENT_TOP + FH*0, "\037\145TOT:\037\317BATT:", HEADER_COLOR);
+  lcdDrawText(  10, MENU_CONTENT_TOP + FH*1, "TM1:\037\145TM2:", HEADER_COLOR);
+  lcdDrawText(  10, MENU_CONTENT_TOP + FH*2, "THR:\037\145TH%:", HEADER_COLOR);
 
   putsTimer(    45, MENU_CONTENT_TOP + FH*1, timersStates[0].val);
   putsTimer(   140, MENU_CONTENT_TOP + FH*1, timersStates[1].val);
@@ -136,9 +136,9 @@ void menuStatisticsDebug(evt_t event)
 
 #if defined(LUA)
   lcd_putsLeft(MENU_DEBUG_Y_LUA, "Lua scripts");
-  lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_LUA+1, "[Duration]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_LUA+1, "[Duration]", HEADER_COLOR|SMLSIZE);
   lcd_outdezAtt(MENU_DEBUG_COL1_OFS+30, MENU_DEBUG_Y_LUA, 10*maxLuaDuration, LEFT);
-  lcd_putsAtt(MENU_DEBUG_COL1_OFS+60, MENU_DEBUG_Y_LUA+1, "[Interval]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(MENU_DEBUG_COL1_OFS+60, MENU_DEBUG_Y_LUA+1, "[Interval]", HEADER_COLOR|SMLSIZE);
   lcd_outdezAtt(MENU_DEBUG_COL1_OFS+90, MENU_DEBUG_Y_LUA, 10*maxLuaInterval, LEFT);
 #endif
 
@@ -146,11 +146,11 @@ void menuStatisticsDebug(evt_t event)
   lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT, "ms");
 
   lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
-  lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[Menus]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[Menus]", HEADER_COLOR|SMLSIZE);
   lcd_outdezAtt(MENU_DEBUG_COL1_OFS+30, MENU_DEBUG_Y_RTOS, menusStack.available(), LEFT);
-  lcd_putsAtt(MENU_DEBUG_COL1_OFS+60, MENU_DEBUG_Y_RTOS+1, "[Mix]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(MENU_DEBUG_COL1_OFS+60, MENU_DEBUG_Y_RTOS+1, "[Mix]", HEADER_COLOR|SMLSIZE);
   lcd_outdezAtt(MENU_DEBUG_COL1_OFS+90, MENU_DEBUG_Y_RTOS, mixerStack.available(), LEFT);
-  lcd_putsAtt(MENU_DEBUG_COL1_OFS+120, MENU_DEBUG_Y_RTOS+1, "[Audio]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(MENU_DEBUG_COL1_OFS+120, MENU_DEBUG_Y_RTOS+1, "[Audio]", HEADER_COLOR|SMLSIZE);
   lcd_outdezAtt(MENU_DEBUG_COL1_OFS+150, MENU_DEBUG_Y_RTOS, audioStack.available(), LEFT);
 
   lcd_putsCenter(7*FH+1, STR_MENUTORESET);

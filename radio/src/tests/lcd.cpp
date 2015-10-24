@@ -133,14 +133,14 @@ TEST(outdezNAtt, testBigNumbers)
 TEST(Lcd, Invers_0_0)
 {
   lcdClear();
-  lcd_putsAtt(0, 0, "Test", INVERS);
+  lcdDrawText(0, 0, "Test", INVERS);
   EXPECT_TRUE(checkScreenshot("invers_0_0"));
 }
 
 TEST(Lcd, Invers_0_1)
 {
   lcdClear();
-  lcd_putsAtt(0, 1, "Test", INVERS);
+  lcdDrawText(0, 1, "Test", INVERS);
   EXPECT_TRUE(checkScreenshot("invers_0_1"));
 }
 
@@ -177,7 +177,7 @@ TEST(Lcd, Line_Wrap)
 TEST(Lcd, DblsizeBottomRight)
 {
   lcdClear();
-  lcd_putsAtt(LCD_W-20, LCD_H-16, "TEST", DBLSIZE);
+  lcdDrawText(LCD_W-20, LCD_H-16, "TEST", DBLSIZE);
   EXPECT_TRUE(checkScreenshot("dblsize_bottom_right"));
 }
 
@@ -213,14 +213,14 @@ TEST(Lcd, vline_x_lt0)
 TEST(Lcd, Smlsize)
 {
   lcdClear();
-  lcd_putsAtt(0, 0, "TESTgy,", SMLSIZE);
-  lcd_putsAtt(10, 22, "TESTgy,", SMLSIZE|INVERS);
+  lcdDrawText(0, 0, "TESTgy,", SMLSIZE);
+  lcdDrawText(10, 22, "TESTgy,", SMLSIZE|INVERS);
   drawFilledRect(8, 40, 100, 20);
-  lcd_putsAtt(10, 42, "TESTgy,", SMLSIZE);
+  lcdDrawText(10, 42, "TESTgy,", SMLSIZE);
 
   bool invert = false;
   for(int i=0; i<3; i++) {
-    lcd_putsAtt(40+(4*i), 0+(4*i), "ABC", SMLSIZE|(invert?INVERS:0));  
+    lcdDrawText(40+(4*i), 0+(4*i), "ABC", SMLSIZE|(invert?INVERS:0));  
     invert = !invert;
   }
 
@@ -230,14 +230,14 @@ TEST(Lcd, Smlsize)
 TEST(Lcd, Stdsize)
 {
   lcdClear();
-  lcd_putsAtt(0, 0, "TEST", 0);
-  lcd_putsAtt(10, 22, "TEST", INVERS);
+  lcdDrawText(0, 0, "TEST", 0);
+  lcdDrawText(10, 22, "TEST", INVERS);
   drawFilledRect(8, 40, 100, 20);
-  lcd_putsAtt(10, 42, "TEST", 0);
+  lcdDrawText(10, 42, "TEST", 0);
 
   bool invert = false;
   for(int i=0; i<3; i++) {
-    lcd_putsAtt(40+(4*i), 0+(4*i), "ABC", (invert?INVERS:0));  
+    lcdDrawText(40+(4*i), 0+(4*i), "ABC", (invert?INVERS:0));  
     invert = !invert;
   }
 
@@ -247,14 +247,14 @@ TEST(Lcd, Stdsize)
 TEST(Lcd, Midsize)
 {
   lcdClear();
-  lcd_putsAtt(0, 0, "TEST", MIDSIZE);
-  lcd_putsAtt(10, 22, "TEST", MIDSIZE|INVERS);
+  lcdDrawText(0, 0, "TEST", MIDSIZE);
+  lcdDrawText(10, 22, "TEST", MIDSIZE|INVERS);
   drawFilledRect(8, 40, 100, 20);
-  lcd_putsAtt(10, 42, "TEST", MIDSIZE);
+  lcdDrawText(10, 42, "TEST", MIDSIZE);
 
   bool invert = false;
   for(int i=0; i<3; i++) {
-    lcd_putsAtt(40+(4*i), 0+(4*i), "ABC", MIDSIZE|(invert?INVERS:0));  
+    lcdDrawText(40+(4*i), 0+(4*i), "ABC", MIDSIZE|(invert?INVERS:0));  
     invert = !invert;
   }
 
@@ -264,14 +264,14 @@ TEST(Lcd, Midsize)
 TEST(Lcd, Dblsize)
 {
   lcdClear();
-  lcd_putsAtt(2, 10, "TST", DBLSIZE);
-  lcd_putsAtt(42, 10, "TST", DBLSIZE|INVERS);
+  lcdDrawText(2, 10, "TST", DBLSIZE);
+  lcdDrawText(42, 10, "TST", DBLSIZE|INVERS);
   drawFilledRect(80, 8, 46, 24);
-  lcd_putsAtt(82, 10, "TST", DBLSIZE);
+  lcdDrawText(82, 10, "TST", DBLSIZE);
 
   bool invert = false;
   for(int i=0; i<3; i++) {
-    lcd_putsAtt(10+(4*i), 30+(4*i), "ABC", DBLSIZE|(invert?INVERS:0));  
+    lcdDrawText(10+(4*i), 30+(4*i), "ABC", DBLSIZE|(invert?INVERS:0));  
     invert = !invert;
   }
 

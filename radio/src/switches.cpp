@@ -838,7 +838,7 @@ void checkSwitches()
               x += 20;
             }
             else if (numWarnings == 6) {
-              lcd_putsAtt(x, y, "...", ALARM_COLOR);
+              lcdDrawText(x, y, "...", ALARM_COLOR);
             }
           }
 #else
@@ -851,7 +851,7 @@ void checkSwitches()
               x = lcdNextPos + 3;
             }
             else if (numWarnings == 7) {
-              lcd_putsAtt(x, y, "...", 0);
+              lcdDrawText(x, y, "...", 0);
             }
           }
 #endif
@@ -874,7 +874,7 @@ void checkSwitches()
               strncpy(s, &STR_VSRCRAW[1+(NUM_STICKS+1+i)*STR_VSRCRAW[0]], STR_VSRCRAW[0]);
               s[int(STR_VSRCRAW[0])] = '\0';
 #else
-              lcd_putsiAtt(x, y, STR_VSRCRAW, NUM_STICKS+1+i, INVERS);
+              lcdDrawTextAtIndex(x, y, STR_VSRCRAW, NUM_STICKS+1+i, INVERS);
               if (IS_POT(POT1+i))
                 lcdDrawChar(lcdNextPos, y, g_model.potsWarnPosition[i] > GET_LOWRES_POT_POSITION(i) ? 126 : 127, INVERS);
               else
@@ -882,10 +882,10 @@ void checkSwitches()
 #endif
 #if defined(COLORLCD)
               if (++numWarnings < 6) {
-                lcd_putsAtt(x, y, s, ALARM_COLOR);
+                lcdDrawText(x, y, s, ALARM_COLOR);
               }
               else if (numWarnings == 6) {
-                lcd_putsAtt(x, y, "...", ALARM_COLOR);
+                lcdDrawText(x, y, "...", ALARM_COLOR);
               }
               x += 20;
 #else

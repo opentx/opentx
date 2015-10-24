@@ -176,7 +176,7 @@ void displayTrims(uint8_t phase)
   }
 }
 
-void displaySliders()
+void drawSliders()
 {
   for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; i++) {
 #if defined(REV9E)
@@ -317,7 +317,7 @@ void displayTimers()
       TimerData & timerData = g_model.timers[i];
       uint8_t y = TIMERS_Y + i*TIMERS_H;
       if (ZLEN(timerData.name) > 0) {
-        lcd_putsnAtt(TIMERS_X, y-7, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE);
+        lcdDrawTextWithLen(TIMERS_X, y-7, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE);
       }
       else {
         putsTimerMode(TIMERS_X, y-7, timerData.mode, SMLSIZE);
@@ -538,7 +538,7 @@ void menuMainView(uint8_t event)
 
   // Flight Mode Name
   int mode = mixerCurrentFlightMode;
-  lcd_putsnAtt(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|PHASE_FLAGS);
+  lcdDrawTextWithLen(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|PHASE_FLAGS);
 
   // Model Name
   putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
@@ -550,7 +550,7 @@ void menuMainView(uint8_t event)
   displayTopBar();
 
   // Sliders (Pots / Sliders)
-  displaySliders();
+  drawSliders();
 
   lcd_bmp(BITMAP_X, BITMAP_Y, modelBitmap);
 
@@ -616,8 +616,8 @@ void menuMainView(uint8_t event)
     drawFilledRect(BITMAP_X, BITMAP_Y, 64, 32, SOLID, ERASE);
     lcdDrawRect(BITMAP_X, BITMAP_Y, 64, 32);
     putsStrIdx(BITMAP_X+FW, BITMAP_Y+FH-1, STR_GV, s_gvar_last+1);
-    lcd_putsnAtt(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
-    lcd_putsAtt(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("[\010]"), BOLD);
+    lcdDrawTextWithLen(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
+    lcdDrawText(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("[\010]"), BOLD);
     lcd_outdezAtt(BITMAP_X+5*FW+FW/2, BITMAP_Y+2*FH+3, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), BOLD);
   }
 #endif

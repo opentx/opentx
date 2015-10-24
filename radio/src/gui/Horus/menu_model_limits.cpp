@@ -71,9 +71,9 @@ enum LimitsItems {
   #define LIMITS_DIRECTION_POS    240
   #define LIMITS_MAX_POS          300
   #define LIMITS_REVERT_POS       320
-  #define LIMITS_CURVE_POS        360
-  #define LIMITS_PPM_CENTER_POS   450
-  #define LIMITS_SYMETRICAL_POS   460
+  #define LIMITS_CURVE_POS        350
+  #define LIMITS_PPM_CENTER_POS   440
+  #define LIMITS_SYMETRICAL_POS   450
 #else
   #define LIMITS_NAME_POS         44
   #define LIMITS_OFFSET_POS       136
@@ -155,7 +155,7 @@ void menuModelLimits(evt_t event)
       // last line available - add the "copy trim menu" line
       uint8_t attr = (sub==NUM_CHNOUT) ? INVERS : 0;
       // TODO CENTER attribute
-      lcd_putsAtt(100, y, STR_TRIMS2OFFSETS, s_noHi ? 0 : attr);
+      lcdDrawText(100, y, STR_TRIMS2OFFSETS, s_noHi ? 0 : attr);
       if (attr) {
         s_editMode = 0;
         if (event==EVT_KEY_LONG(KEY_ENTER)) {
@@ -238,9 +238,9 @@ void menuModelLimits(evt_t event)
         {
           uint8_t revert = ld->revert;
 #if defined(PPM_CENTER_ADJUSTABLE)
-          lcd_putsAtt(LIMITS_REVERT_POS, y, revert ? "\177" : "\176", attr);
+          lcdDrawText(LIMITS_REVERT_POS, y, revert ? "\177" : "\176", attr);
 #else
-          lcd_putsiAtt(LIMITS_REVERT_POS, y, STR_MMMINV, revert, attr);
+          lcdDrawTextAtIndex(LIMITS_REVERT_POS, y, STR_MMMINV, revert, attr);
 #endif
           if (active) {
             uint8_t revert_new = checkIncDecModel(event, revert, 0, 1);
@@ -278,7 +278,7 @@ void menuModelLimits(evt_t event)
 
 #if defined(PPM_LIMITS_SYMETRICAL)
         case ITEM_LIMITS_SYMETRICAL:
-          lcd_putsAtt(LIMITS_SYMETRICAL_POS, y, ld->symetrical ? "=" : "\306", attr);
+          lcdDrawText(LIMITS_SYMETRICAL_POS, y, ld->symetrical ? "=" : "\306", attr);
           if (active) {
             CHECK_INCDEC_MODELVAR_ZERO(event, ld->symetrical, 1);
           }

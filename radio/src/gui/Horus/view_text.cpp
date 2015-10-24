@@ -148,7 +148,7 @@ void menuTextView(evt_t event)
   lcd_putsCenter(MENU_FOOTER_TOP, title, HEADER_COLOR);
 
   if (lines_count > NUM_BODY_LINES) {
-    lcdDrawScrollbar(LCD_W-5, 30, MENU_FOOTER_TOP-34, s_pgOfs, lines_count, NUM_BODY_LINES);
+    drawScrollbar(LCD_W-5, 30, MENU_FOOTER_TOP-34, s_pgOfs, lines_count, NUM_BODY_LINES);
   }
 }
 

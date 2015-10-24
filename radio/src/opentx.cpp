@@ -2427,13 +2427,9 @@ void opentxInit(OPENTX_INIT_ARGS)
   }
 #endif
 
-  TRACE("setVolume()");
-
 #if defined(VOICE)
   setVolume(g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF);
 #endif
-
-  TRACE("audioQueue.start()");
 
 #if defined(CPUARM)
   audioQueue.start();
@@ -2462,7 +2458,6 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif
   }
   else {
-    TRACE("opentxStart()");
     opentxStart();
   }
 
@@ -2490,12 +2485,9 @@ void opentxInit(OPENTX_INIT_ARGS)
   doMixerCalculations();
 #endif
 
-  TRACE("startPulses()");
   startPulses();
 
   wdt_enable(WDTO_500MS);
-
-  TRACE("opentxInit() end!");
 }
 
 #if !defined(SIMU)

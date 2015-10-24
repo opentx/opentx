@@ -1054,6 +1054,7 @@
 #define TR_SCALE               "Echelle"
 #define TR_VIEW_CHANNELS       "Voir Voies"
 #define TR_VIEW_NOTES          "Voir Notes"
+#define TR_MODEL_SELECT        "Model Select"
 #define TR_MODS_FORBIDDEN      "Modifications désactivées!"
 #define TR_UNLOCKED            "Déverrouillé"
 #define TR_ID                  "ID"

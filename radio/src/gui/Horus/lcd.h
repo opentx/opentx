@@ -139,8 +139,8 @@ enum LcdColorIndex
 extern uint16_t lcdColorTable[LCD_COLOR_COUNT];
 void lcdColorsInit();
 
-#define OPACITY_MAX 0x0F
-#define OPACITY(x)  ((x)<<24)
+#define OPACITY_MAX                    0x0F
+#define OPACITY(x)                     ((x)<<24)
 
 #define COLOR(index)                   ((index) << 16)
 #define TEXT_COLOR                     COLOR(TEXT_COLOR_INDEX)
@@ -163,7 +163,7 @@ void lcdColorsInit();
 #define TITLE_BGCOLOR                  COLOR(TITLE_BGCOLOR_INDEX)
 #define HEADER_BGCOLOR                 COLOR(HEADER_BGCOLOR_INDEX)
 
-#define COLOR_IDX(att) uint8_t((att) >> 16)
+#define COLOR_IDX(att)                 uint8_t((att) >> 16)
 
 #define COLOR_SPLIT(color, r, g, b) \
   uint16_t r = ((color) & 0xF800) >> 11; \
@@ -173,29 +173,28 @@ void lcdColorsInit();
 #define COLOR_JOIN(r, g, b) \
   (((r) << 11) + ((g) << 5) + (b))
 
-#define display_t              uint16_t
-#define DISPLAY_PIXELS_COUNT   (LCD_W*LCD_H)
-#define DISPLAY_BUFFER_SIZE     (sizeof(display_t)*DISPLAY_PIXELS_COUNT)
+#define display_t                      uint16_t
+#define DISPLAY_PIXELS_COUNT           (LCD_W*LCD_H)
+#define DISPLAY_BUFFER_SIZE            (sizeof(display_t)*DISPLAY_PIXELS_COUNT)
 
 #if defined(SIMU)
 extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 #else
-extern uint32_t        CurrentFrameBuffer;
-#define displayBuf     ((uint16_t *)CurrentFrameBuffer)
+extern uint32_t CurrentFrameBuffer;
+#define displayBuf                     ((uint16_t *)CurrentFrameBuffer)
 #endif
 
 #define lcdRefreshWait()
 
-
-#define DISPLAY_END             (displayBuf + DISPLAY_BUFFER_SIZE)
-#define ASSERT_IN_DISPLAY(p)    assert((p) >= displayBuf && (p) < DISPLAY_END)
+#define DISPLAY_END                    (displayBuf + DISPLAY_BUFFER_SIZE)
+#define ASSERT_IN_DISPLAY(p)           assert((p) >= displayBuf && (p) < DISPLAY_END)
 
 extern coord_t lcdNextPos;
 
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags attr=TEXT_COLOR);
-void lcd_putsAtt(coord_t x, coord_t y, const pm_char * s, LcdFlags attr=TEXT_COLOR);
-void lcd_putsiAtt(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags attr=TEXT_COLOR);
-void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s, unsigned char len, LcdFlags attr=TEXT_COLOR);
+void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags attr=TEXT_COLOR);
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags attr=TEXT_COLOR);
+void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s, unsigned char len, LcdFlags attr=TEXT_COLOR);
 void lcd_puts(coord_t x, coord_t y, const pm_char * s);
 void lcd_putsn(coord_t x, coord_t y, const pm_char * s, unsigned char len);
 void lcd_putsLeft(coord_t y, const pm_char * s);
@@ -300,9 +299,9 @@ void lcdSetContrast();
 const pm_char * bmpLoad(uint8_t *dest, const char *filename, const unsigned int width, const unsigned int height);
 
 #if defined(BOOT)
-  #define BLINK_ON_PHASE (0)
+  #define BLINK_ON_PHASE               (0)
 #else
-  #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
+  #define BLINK_ON_PHASE               (g_blinkTmr10ms & (1<<6))
 #endif
 
 #ifdef SIMU

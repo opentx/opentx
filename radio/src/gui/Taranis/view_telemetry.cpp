@@ -58,7 +58,7 @@ void displayRssiLine()
     drawFilledRect(BAR_LEFT+1, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
-    lcd_putsAtt(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
+    lcdDrawText(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
     lcd_status_line();
   }
 }

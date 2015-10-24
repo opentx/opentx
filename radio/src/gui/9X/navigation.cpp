@@ -551,7 +551,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       if (!horTab || s_editMode>0) break;
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-    CASE_EVT_ROTARY_MOVE_RIGHT
+    CASE_EVT_ROTARY_RIGHT
       if (s_editMode != 0) break;
       if (l_posHorz < maxcol) {
         l_posHorz++;
@@ -559,7 +559,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       }
       else {
         l_posHorz = 0;
-        if (!IS_ROTARY_MOVE_RIGHT(event))
+        if (!IS_ROTARY_RIGHT(event))
           break;
       }
 #else
@@ -592,13 +592,13 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       if (!horTab || s_editMode>0) break;
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-    CASE_EVT_ROTARY_MOVE_LEFT
+    CASE_EVT_ROTARY_LEFT
       if (s_editMode != 0) break;
       if (l_posHorz > 0) {
         l_posHorz--;
         break;
       }
-      else if (IS_ROTARY_MOVE_LEFT(event) && s_editMode == 0) {
+      else if (IS_ROTARY_LEFT(event) && s_editMode == 0) {
         l_posHorz = 0xff;
       }
       else {

@@ -58,9 +58,9 @@ void menuGeneralTrainer(evt_t event)
   uint8_t attr;
   uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
 
-  /* lcd_putsAtt(TRAINER_COLUMN_1, MENU_HEADER_HEIGHT+1, "Mode", HEADER_COLOR);
-  lcd_putsAtt(TRAINER_COLUMN_2, MENU_HEADER_HEIGHT+1, "Weight", HEADER_COLOR);
-  lcd_putsAtt(TRAINER_COLUMN_3, MENU_HEADER_HEIGHT+1, "Source", HEADER_COLOR);
+  /* lcdDrawText(TRAINER_COLUMN_1, MENU_HEADER_HEIGHT+1, "Mode", HEADER_COLOR);
+  lcdDrawText(TRAINER_COLUMN_2, MENU_HEADER_HEIGHT+1, "Weight", HEADER_COLOR);
+  lcdDrawText(TRAINER_COLUMN_3, MENU_HEADER_HEIGHT+1, "Source", HEADER_COLOR);
   */
 
   y = MENU_CONTENT_TOP + FH;
@@ -78,7 +78,7 @@ void menuGeneralTrainer(evt_t event)
 
       switch(j) {
         case 0:
-          lcd_putsiAtt(TRAINER_COLUMN_1, y, STR_TRNMODE, td->mode, attr);
+          lcdDrawTextAtIndex(TRAINER_COLUMN_1, y, STR_TRNMODE, td->mode, attr);
           if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
           break;
 
@@ -88,7 +88,7 @@ void menuGeneralTrainer(evt_t event)
           break;
 
         case 2:
-          lcd_putsiAtt(TRAINER_COLUMN_3, y, STR_TRNCHN, td->srcChn, attr);
+          lcdDrawTextAtIndex(TRAINER_COLUMN_3, y, STR_TRNCHN, td->srcChn, attr);
           if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->srcChn, 0, 3);
           break;
       }
@@ -103,7 +103,7 @@ void menuGeneralTrainer(evt_t event)
 
   attr = (sub==6) ? INVERS : 0;
   if (attr) s_editMode = 0;
-  lcd_putsAtt(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 6*FH, STR_CAL, attr);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 6*FH, STR_CAL, attr);
   for (int i=0; i<4; i++) {
 #if defined (PPM_UNIT_PERCENT_PREC1)
     lcd_outdezAtt(TRAINER_COLUMN_1+i*TRAINER_COLUMN_WIDTH, MENU_CONTENT_TOP + 6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2, LEFT|PREC1);

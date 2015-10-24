@@ -1084,6 +1084,7 @@
 #define TR_SCALE               "Schaal"
 #define TR_VIEW_CHANNELS       "Toon Kanalen"
 #define TR_VIEW_NOTES          "Toon Notities"
+#define TR_MODEL_SELECT        "Model Select"
 #define TR_MODS_FORBIDDEN      "Wijzigen niet toegestaan!"
 #define TR_UNLOCKED            "Vrijgegeven"
 #define TR_ID                  "ID"

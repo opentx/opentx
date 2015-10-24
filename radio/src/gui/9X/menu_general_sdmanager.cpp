@@ -292,7 +292,7 @@ void menuGeneralSdManager(uint8_t _event)
     uint8_t attr = (m_posVert-1-s_pgOfs == i ? BSS|INVERS : BSS);
     if (reusableBuffer.sdmanager.lines[i][0]) {
       if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcdDrawChar(0, y, '[', attr); }
-      lcd_putsAtt(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], attr);
+      lcdDrawText(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], attr);
       if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcdDrawChar(lcdNextPos, y, ']', attr); }
     }
   }

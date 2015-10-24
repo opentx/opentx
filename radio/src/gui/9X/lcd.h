@@ -164,9 +164,9 @@ typedef const char pm_char;
 
 void lcd_putc(coord_t x, coord_t y, const unsigned char c);
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags);
-void lcd_putsAtt(coord_t x, coord_t y, const pm_char * s, LcdFlags flags);
-void lcd_putsiAtt(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags flags);
-void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s,unsigned char len, LcdFlags flags);
+void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags flags);
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags flags);
+void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s,unsigned char len, LcdFlags flags);
 void lcd_puts(coord_t x, coord_t y, const pm_char * s);
 void lcd_putsn(coord_t x, coord_t y, const pm_char * s, unsigned char len);
 void lcd_putsLeft(coord_t y, const pm_char * s);

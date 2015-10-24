@@ -48,7 +48,6 @@
   #define MENU_COLUMNS         2
 #endif
 
-#define MENUS_SCROLLBAR_WIDTH  2
 #define MENU_COLUMN2_X         280
 
 #define lcd_putsColumnLeft(x, y, str) lcd_puts((x > MENU_COLUMN2_X+MENUS_MARGIN_LEFT+68) ? MENU_COLUMN2_X+MENUS_MARGIN_LEFT : MENUS_MARGIN_LEFT, y, str)
@@ -66,7 +65,7 @@ extern vertpos_t s_pgOfs;
 extern uint8_t s_noHi;
 extern uint8_t calibrationState;
 
-void lcdDrawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
+void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 
 typedef void (*MenuFuncP)(evt_t event);
 typedef void (*MenuFuncP_PROGMEM)(evt_t event);
@@ -107,7 +106,7 @@ void menuAboutView(evt_t event);
 void menuTraceBuffer(evt_t event);
 #endif
 
-void displaySlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
+void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
 
 void menuMainViewChannelsMonitor(evt_t event);
 void menuChannelsView(evt_t event);
@@ -200,36 +199,36 @@ int8_t checkIncDecMovedSwitch(int8_t val);
 #define CURSOR_ON_LINE()         (m_posHorz<0)
 
 #define CHECK_FLAG_NO_SCREEN_INDEX   1
-bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint16_t scrollbar_X, uint8_t flags=0);
-bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow, uint16_t scrollbar_X);
-bool check_submenu_simple(check_event_t event, uint8_t maxrow, uint16_t scrollbar_X);
+bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
+bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
+bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
-void drawMenuTemplate(const char *title, evt_t event);
+void drawMenuTemplate(const char *title, evt_t event, uint16_t scrollbar_X=0);
 
 #define MENU(title, tab, menu, lines_count, scrollbar_X, ...) \
   MENU_TAB(__VA_ARGS__); \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
-  if (!check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count, scrollbar_X)) return; \
-  drawMenuTemplate(title, event); \
+  if (!check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)) return; \
+  drawMenuTemplate(title, event, scrollbar_X); \
 
 #define SIMPLE_MENU(title, tab, menu, lines_count, scrollbar_X) \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
-  if (!check_simple(event, menu, tab, DIM(tab), lines_count, scrollbar_X)) return; \
-  drawMenuTemplate(title, event); \
+  if (!check_simple(event, menu, tab, DIM(tab), lines_count)) return; \
+  drawMenuTemplate(title, event, scrollbar_X); \
 
 #define SUBMENU(title, lines_count, scrollbar_X, ...) \
   MENU_TAB(__VA_ARGS__); \
-  if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count, scrollbar_X)) return; \
-  drawMenuTemplate(title, event);
+  if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return; \
+  drawMenuTemplate(title, event, scrollbar_X);
 
-#define SIMPLE_SUBMENU_NOTITLE(lines_count, scrollbar_X) \
-  if (!check_submenu_simple(event, lines_count, scrollbar_X)) return
+#define SIMPLE_SUBMENU_NOTITLE(lines_count) \
+  if (!check_submenu_simple(event, lines_count)) return
 
 #define SIMPLE_SUBMENU(title, lines_count, scrollbar_X) \
-  SIMPLE_SUBMENU_NOTITLE(lines_count, scrollbar_X); \
-  drawMenuTemplate(title, event)
+  SIMPLE_SUBMENU_NOTITLE(lines_count); \
+  drawMenuTemplate(title, event, scrollbar_X)
 
 typedef int select_menu_value_t;
 
@@ -310,35 +309,21 @@ extern void (*menuHandler)(const char *result);
 extern char s_text_file[TEXT_FILENAME_MAXLEN];
 void menuTextView(evt_t event);
 void pushMenuTextView(const char *filename);
-bool modelHasNotes();
 void pushModelNotes();
 
 void menuChannelsView(evt_t event);
 
 #define LABEL(...) (uint8_t)-1
 
-#define KEY_MOVE_UP    KEY_PLUS
-#define KEY_MOVE_DOWN  KEY_MINUS
+#define CURSOR_MOVED_LEFT(event)       (event==EVT_ROTARY_LEFT || EVT_KEY_MASK(event) == KEY_LEFT)
+#define CURSOR_MOVED_RIGHT(event)      (event==EVT_ROTARY_RIGHT || EVT_KEY_MASK(event) == KEY_RIGHT)
 
-#if defined(REV9E)
-  #define CURSOR_MOVED_LEFT(event)  (EVT_KEY_MASK(event) == KEY_MINUS)
-  #define CURSOR_MOVED_RIGHT(event) (EVT_KEY_MASK(event) == KEY_PLUS)
-#else
-  #define CURSOR_MOVED_LEFT(event)  (EVT_KEY_MASK(event) == KEY_PLUS)
-  #define CURSOR_MOVED_RIGHT(event) (EVT_KEY_MASK(event) == KEY_MINUS)
-#endif
+#define REPEAT_LAST_CURSOR_MOVE()      { if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) putEvent(event); else m_posHorz = 0; }
+#define MOVE_CURSOR_FROM_HERE()        if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
 
-#define CASE_EVT_ROTARY_MOVE_RIGHT CASE_EVT_ROTARY_LEFT
-#define CASE_EVT_ROTARY_MOVE_LEFT  CASE_EVT_ROTARY_RIGHT
-#define IS_ROTARY_MOVE_RIGHT       IS_ROTARY_LEFT
-#define IS_ROTARY_MOVE_LEFT        IS_ROTARY_RIGHT
-
-#define REPEAT_LAST_CURSOR_MOVE() { if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) putEvent(event); else m_posHorz = 0; }
-#define MOVE_CURSOR_FROM_HERE()   if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
-
-#define MENU_FIRST_LINE_EDIT      (MAXCOL((uint16_t)0) >= HIDDEN_ROW ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? 2 : 1) : 0)
-#define POS_HORZ_INIT(posVert)    ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
-#define EDIT_MODE_INIT            0 // TODO enum
+#define MENU_FIRST_LINE_EDIT           (MAXCOL((uint16_t)0) >= HIDDEN_ROW ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? 2 : 1) : 0)
+#define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
+#define EDIT_MODE_INIT                 0 // TODO enum
 
 typedef int (*FnFuncP) (int x);
 void DrawFunction(FnFuncP fn, int offset=0);

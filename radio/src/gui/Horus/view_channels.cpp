@@ -78,7 +78,7 @@ void menuChannelsView(evt_t event)
         // The label
         unsigned int lenLabel = ZLEN(g_model.limitData[ch].name);
         if (lenLabel > 0)
-          lcd_putsnAtt(x+CHANNEL_PADDING_HORZ, y+CHANNEL_PADDING_VERT, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR);
+          lcdDrawTextWithLen(x+CHANNEL_PADDING_HORZ, y+CHANNEL_PADDING_VERT, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR);
         else
           putsChn(x+CHANNEL_PADDING_HORZ, y+CHANNEL_PADDING_VERT, ch+1, 0);
 

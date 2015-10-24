@@ -182,13 +182,13 @@ void print_mav_mode(uint8_t x, uint8_t y, uint32_t custom_mode, uint8_t attr) //
 	uint8_t mode = (uint8_t) custom_mode;
 	switch (telemetry_data.type_autopilot) {
 	case MAVLINK_ARDUCOPTER:
-		lcd_putsiAtt(x,y,STR_MAVLINK_AC_MODES,mode,attr);
+		lcdDrawTextAtIndex(x,y,STR_MAVLINK_AC_MODES,mode,attr);
 		break;
 	case MAVLINK_ARDUPLANE:
-		lcd_putsiAtt(x,y,STR_MAVLINK_AP_MODES,ap_modes_lut[custom_mode],attr);
+		lcdDrawTextAtIndex(x,y,STR_MAVLINK_AP_MODES,ap_modes_lut[custom_mode],attr);
 		break;
 	default:
-		lcd_putsAtt (FW, y, PSTR("INV. MAV TYPE"), attr);
+		lcdDrawText (FW, y, PSTR("INV. MAV TYPE"), attr);
 		break;
 	}
 }
@@ -198,7 +198,7 @@ void print_mav_mode(uint8_t x, uint8_t y, uint32_t custom_mode, uint8_t attr) //
  */
 void mav_title(const pm_char * s, uint8_t index)
 {
-  lcd_putsAtt(0, 0, PSTR("MAVLINK"), INVERS);
+  lcdDrawText(0, 0, PSTR("MAVLINK"), INVERS);
   lcd_puts(10 * FW, 0, s);
   displayScreenIndex(index, MAX_MAVLINK_MENU, INVERS);
   lcd_putc(7 * FW, 0, (mav_heartbeat > 0) ? '*' : ' ');
@@ -236,9 +236,9 @@ void menuTelemetryMavlinkInfos(void) {
 */
 	if (telemetry_data.status) {
 
-		lcd_putsnAtt(x1, y, STR_MAVLINK_MODE, 4, 0);
+		lcdDrawTextWithLen(x1, y, STR_MAVLINK_MODE, 4, 0);
 		if (telemetry_data.active)
-			lcd_putsnAtt(x2, y, PSTR("A"), 1, 0);
+			lcdDrawTextWithLen(x2, y, PSTR("A"), 1, 0);
 		lcd_outdezAtt(xnum, y, telemetry_data.mode, 0);
 
 		y += FH;
@@ -298,7 +298,7 @@ void menuTelemetryMavlinkFlightMode(void) {
     x = 0;
 	
     if (telemetry_data.active)
-    	lcd_putsAtt (FW, y, STR_MAVLINK_ARMED, DBLSIZE);
+    	lcdDrawText (FW, y, STR_MAVLINK_ARMED, DBLSIZE);
 }
 
 /*!	\brief Batterystatus dislplay
@@ -400,9 +400,9 @@ void menuTelemetryMavlinkGPS(void) {
 	xnum2 = xnum + 11 * FWNUM;
 	y = FH;
 
-	lcd_putsnAtt(x1, y, STR_MAVLINK_GPS, 3, 0);
+	lcdDrawTextWithLen(x1, y, STR_MAVLINK_GPS, 3, 0);
 	if (telemetry_data.fix_type < 2) {
-		lcd_putsnAtt(xnum, y, STR_MAVLINK_NO_FIX, 6, 0);
+		lcdDrawTextWithLen(xnum, y, STR_MAVLINK_NO_FIX, 6, 0);
 	} else {
 		lcd_outdezNAtt(xnum, y, telemetry_data.fix_type, 0, 3);
 		lcd_puts(xnum, y, PSTR("D"));
@@ -419,19 +419,19 @@ void menuTelemetryMavlinkGPS(void) {
 	lcd_puts(x1, y, STR_MAVLINK_LAT);
 	lcd_outdezFloat(xnum, y, telemetry_data.loc_current.lat, 2);
 
-	lcd_putsnAtt(x2, y, STR_MAVLINK_LON, 3, 0);
+	lcdDrawTextWithLen(x2, y, STR_MAVLINK_LON, 3, 0);
 	lcd_outdezFloat(xnum2, y, telemetry_data.loc_current.lon, 2);
 
 	y += FH;
-	lcd_putsnAtt(x1, y, STR_MAVLINK_ALTITUDE, 3, 0);
+	lcdDrawTextWithLen(x1, y, STR_MAVLINK_ALTITUDE, 3, 0);
 	lcd_outdezAtt(xnum, y, telemetry_data.loc_current.gps_alt, 0);
 
 	y += FH;
-	lcd_putsnAtt(x1, y, STR_MAVLINK_COURSE, 6, 0);
+	lcdDrawTextWithLen(x1, y, STR_MAVLINK_COURSE, 6, 0);
 	lcd_outdezFloat(xnum, y, telemetry_data.course, 2);
 
 	y += FH;
-	lcd_putsnAtt(x1, y, PSTR("V"), 1, 0);
+	lcdDrawTextWithLen(x1, y, PSTR("V"), 1, 0);
 	lcd_outdezAtt(xnum, y, telemetry_data.v, 0);
 	//}
 }

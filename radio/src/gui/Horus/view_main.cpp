@@ -168,7 +168,7 @@ void drawTimer(coord_t x, coord_t y, int index)
   }
   putsTimer(x+74, y+31, abs(timerState.val), TEXT_COLOR|DBLSIZE|LEFT);
   if (ZLEN(timerData.name) > 0) {
-    lcd_putsnAtt(x+74, y+20, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE|TEXT_COLOR);
+    lcdDrawTextWithLen(x+74, y+20, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE|TEXT_COLOR);
   }
   putsStrIdx(x+137, y+17, "TMR", 1, SMLSIZE|TEXT_COLOR);
 }
@@ -198,7 +198,7 @@ void displayMainTelemetryFields()
       }
       att |= (item.isOld() ? ALARM_COLOR : TEXT_COLOR);
       lcdDrawSolidFilledRect(ALTITUDE_X, VOLTS_Y, ALTITUDE_W, ALTITUDE_H, TEXT_BGCOLOR);
-      lcd_putsAtt(ALTITUDE_X+PADDING, VOLTS_Y+2, "Voltage", att);
+      lcdDrawText(ALTITUDE_X+PADDING, VOLTS_Y+2, "Voltage", att);
       putsValueWithUnit(ALTITUDE_X+PADDING, VOLTS_Y+12, value, UNIT_VOLTS, DBLSIZE|LEFT|att);
     }
   }
@@ -211,7 +211,7 @@ void displayMainTelemetryFields()
       if (sensor.prec) value /= sensor.prec == 2 ? 100 : 10;
       LcdFlags att = (item.isOld() ? ALARM_COLOR : TEXT_COLOR);
       lcdDrawSolidFilledRect(ALTITUDE_X, ALTITUDE_Y, ALTITUDE_W, ALTITUDE_H, TEXT_BGCOLOR);
-      lcd_putsAtt(ALTITUDE_X+PADDING, ALTITUDE_Y+2, "Alt", att);
+      lcdDrawText(ALTITUDE_X+PADDING, ALTITUDE_Y+2, "Alt", att);
       putsValueWithUnit(ALTITUDE_X+PADDING, ALTITUDE_Y+12, value, UNIT_METERS, DBLSIZE|LEFT|att);
     }
   }
@@ -244,13 +244,15 @@ void displayMainViewIndex()
 
 void onMainViewMenu(const char *result)
 {
-  if (result == STR_RESET_TIMER1) {
+  if (result == STR_MODEL_SELECT) {
+    chainMenu(menuModelSelect);
+  }
+  else if (result == STR_RESET_TIMER1) {
     timerReset(0);
   }
   else if (result == STR_RESET_TIMER2) {
     timerReset(1);
   }
-#if defined(CPUARM)
   else if (result == STR_RESET_TIMER3) {
     timerReset(2);
   }
@@ -262,27 +264,20 @@ void onMainViewMenu(const char *result)
     MENU_ADD_ITEM(STR_RESET_TIMER1);
     MENU_ADD_ITEM(STR_RESET_TIMER2);
     MENU_ADD_ITEM(STR_RESET_TIMER3);
-#if defined(FRSKY)
     MENU_ADD_ITEM(STR_RESET_TELEMETRY);
-#endif
   }
-#endif
-#if defined(FRSKY)
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();
   }
-#endif
   else if (result == STR_RESET_FLIGHT) {
     flightReset();
   }
   else if (result == STR_STATISTICS) {
     chainMenu(menuStatisticsView);
   }
-#if defined(CPUARM)
   else if (result == STR_ABOUT_US) {
     chainMenu(menuAboutView);
   }
-#endif
 }
 
 const uint16_t LBM_MAINVIEW_FLAT[] = {
@@ -296,9 +291,6 @@ const uint16_t LBM_CORSAIR[] = {
 
 void menuMainView(evt_t event)
 {
-  // clear the screen
-  lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
-
   switch (event) {
     case EVT_ENTRY:
       killEvents(KEY_EXIT);
@@ -308,6 +300,7 @@ void menuMainView(evt_t event)
 
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
+      MENU_ADD_ITEM(STR_MODEL_SELECT);
       if (modelHasNotes()) {
         MENU_ADD_ITEM(STR_VIEW_NOTES);
       }
@@ -354,7 +347,7 @@ void menuMainView(evt_t event)
   lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
   lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
   lcdDrawBitmapPattern(4, 10, LBM_TOPMENU_OPENTX, MENU_TITLE_COLOR);
-  lcdDrawTopmenuDatetime();
+  drawTopmenuDatetime();
   if (1 || usbPlugged()) {
     lcdDrawBitmapPattern(378, 8, LBM_TOPMENU_USB, MENU_TITLE_COLOR);
   }
@@ -373,7 +366,7 @@ void menuMainView(evt_t event)
   }
   drawTrimSquare(LCD_W/2-25+5*mixerCurrentFlightMode, 253);
   lcdDrawChar(LCD_W/2-23+5*mixerCurrentFlightMode, 254, '0'+mixerCurrentFlightMode, SMLSIZE|TEXT_INVERTED_COLOR);
-  lcd_putsnAtt(LCD_W/2-getTextWidth(g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|SMLSIZE)/2, 237, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|SMLSIZE);
+  lcdDrawTextWithLen(LCD_W/2-getTextWidth(g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|SMLSIZE)/2, 237, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|SMLSIZE);
 
   // Sticks
   drawSticks();
@@ -384,7 +377,7 @@ void menuMainView(evt_t event)
   // Model panel
   lcdDrawFilledRect(248, 58, 188, 158, SOLID, TEXT_BGCOLOR | OPACITY(5));
   lcdDrawBitmapPattern(256, 62, LBM_MODEL_ICON, TITLE_BGCOLOR);
-  lcd_putsnAtt(293, 68, g_model.header.name, LEN_MODEL_NAME, ZCHAR|SMLSIZE);
+  lcdDrawTextWithLen(293, 68, g_model.header.name, LEN_MODEL_NAME, ZCHAR|SMLSIZE);
   lcdDrawSolidHorizontalLine(287, 85, 140, TITLE_BGCOLOR);
   lcdDrawBitmap(256, 104, LBM_CORSAIR);
 
@@ -398,7 +391,7 @@ void menuMainView(evt_t event)
     s_gvar_timer--;
     displayMessageBox();
     putsStrIdx(WARNING_LINE_X, WARNING_LINE_Y, STR_GV, s_gvar_last+1, DBLSIZE|YELLOW);
-    lcd_putsnAtt(WARNING_LINE_X+45, WARNING_LINE_Y, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, DBLSIZE|YELLOW|ZCHAR);
+    lcdDrawTextWithLen(WARNING_LINE_X+45, WARNING_LINE_Y, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, DBLSIZE|YELLOW|ZCHAR);
     lcd_outdezAtt(WARNING_LINE_X, WARNING_INFOLINE_Y, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), DBLSIZE|LEFT);
   }
 #endif

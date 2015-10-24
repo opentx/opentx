@@ -124,7 +124,7 @@ enum menuModelTelemetryItems {
 #endif
 #define VARIO_RANGE_ROWS  3
 
-#define TELEMETRY_TYPE_ROWS  (g_model.externalModule == MODULE_TYPE_PPM ? (uint8_t)0 : HIDDEN_ROW),
+#define TELEMETRY_TYPE_ROWS  (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM ? (uint8_t)0 : HIDDEN_ROW),
 
 #if defined(LUA)
   #define TELEMETRY_SCREEN_LINE(x) ((TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_NONE || TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_SCRIPT) ? HIDDEN_ROW : (uint8_t)2)
@@ -288,7 +288,7 @@ void menuModelSensor(evt_t event)
       case SENSOR_FIELD_UNIT:
         lcd_putsLeft(y, STR_UNIT);
         // TODO flash saving with selectMenuItem where I copied those 2 lines?
-        lcd_putsiAtt(SENSOR_2ND_COLUMN, y, STR_VTELEMUNIT, sensor->unit, attr);
+        lcdDrawTextAtIndex(SENSOR_2ND_COLUMN, y, STR_VTELEMUNIT, sensor->unit, attr);
         if (attr) {
           CHECK_INCDEC_MODELVAR_ZERO(event, sensor->unit, UNIT_MAX);
           if (checkIncDec_Ret) {
@@ -335,7 +335,7 @@ void menuModelSensor(evt_t event)
           lcd_putsLeft(y, "Ratio");
           if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.ratio, 0, 30000);
           if (sensor->custom.ratio == 0)
-            lcd_putsAtt(SENSOR_2ND_COLUMN, y, "-", attr);
+            lcdDrawText(SENSOR_2ND_COLUMN, y, "-", attr);
           else
             lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.ratio, LEFT|attr|PREC1);
           break;
@@ -377,7 +377,7 @@ void menuModelSensor(evt_t event)
           source = checkIncDec(event, source, -MAX_SENSORS, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
         }
         if (source < 0) {
-          lcd_putsAtt(SENSOR_2ND_COLUMN, y, "-", attr);
+          lcdDrawText(SENSOR_2ND_COLUMN, y, "-", attr);
           putsMixerSource(SENSOR_2ND_COLUMN+5, y, MIXSRC_FIRST_TELEM+3*(-1-source), attr);
         }
         else {
@@ -462,7 +462,7 @@ void menuModelTelemetry(evt_t event)
     if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+MAX_SENSORS) {
       int index = k-ITEM_TELEMETRY_SENSOR1;
       lcd_outdezAtt(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, index+1, LEFT|attr, ":");
-      lcd_putsnAtt(60, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
+      lcdDrawTextWithLen(60, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
       if (telemetryItems[index].isFresh()) {
         lcd_puts(100, y, "*");
       }
@@ -500,7 +500,7 @@ void menuModelTelemetry(evt_t event)
         break;
 
       case ITEM_TELEMETRY_NEWSENSOR:
-        lcd_putsAtt(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, NO_INDENT(STR_TELEMETRY_NEWSENSOR), attr);
+        lcdDrawText(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, NO_INDENT(STR_TELEMETRY_NEWSENSOR), attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
           int res = availableTelemetryIndex();
@@ -604,9 +604,9 @@ void menuModelTelemetry(evt_t event)
           // TODO better function name for ---
           // TODO function for these lines
           if (ZEXIST(scriptData.file))
-            lcd_putsnAtt(TELEM_SCRTYPE_COL+70, y, scriptData.file, sizeof(scriptData.file), (m_posHorz==1 ? attr : 0));
+            lcdDrawTextWithLen(TELEM_SCRTYPE_COL+70, y, scriptData.file, sizeof(scriptData.file), (m_posHorz==1 ? attr : 0));
           else
-            lcd_putsiAtt(TELEM_SCRTYPE_COL+70, y, STR_VCSWFUNC, 0, (m_posHorz==1 ? attr : 0));
+            lcdDrawTextAtIndex(TELEM_SCRTYPE_COL+70, y, STR_VCSWFUNC, 0, (m_posHorz==1 ? attr : 0));
 
           if (m_posHorz==1 && attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
             s_editMode = 0;

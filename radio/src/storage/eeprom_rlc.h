@@ -208,7 +208,7 @@ class RlcFile: public EFile
     uint16_t readRlc(uint8_t *buf, uint16_t i_len);
 
 #if defined (EEPROM_PROGRESS_BAR)
-    void DisplayProgressBar(uint8_t x);
+    void drawProgressBar(uint8_t x);
 #endif
 };
 
@@ -230,7 +230,7 @@ inline void eepromWriteProcess()
 }
 
 #if defined (EEPROM_PROGRESS_BAR)
-#define DISPLAY_PROGRESS_BAR(x) theFile.DisplayProgressBar(x)
+#define DISPLAY_PROGRESS_BAR(x) theFile.drawProgressBar(x)
 #else
 #define DISPLAY_PROGRESS_BAR(x)
 #endif

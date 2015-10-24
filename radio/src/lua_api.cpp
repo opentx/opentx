@@ -460,7 +460,7 @@ static int luaLcdDrawText(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   const char * s = luaL_checkstring(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
-  lcd_putsAtt(x, y, s, att);
+  lcdDrawText(x, y, s, att);
   return 0;
 }
 
@@ -635,7 +635,7 @@ static int luaLcdDrawCombobox(lua_State *L)
     for (int i=0; i<count; i++) {
       lua_rawgeti(L, 4, i+1);
       const char * item = luaL_checkstring(L, -1);
-      lcd_putsAtt(x+2, y+2+9*i, item, 0);
+      lcdDrawText(x+2, y+2+9*i, item, 0);
     }
     drawFilledRect(x+1, y+1+9*idx, w-11, 9);
     drawFilledRect(x+w-10, y, 10, 11, SOLID, ERASE);
@@ -646,7 +646,7 @@ static int luaLcdDrawCombobox(lua_State *L)
     drawFilledRect(x+w-9, y+1, 8, 9, SOLID, ERASE);
     lua_rawgeti(L, 4, idx+1);
     const char * item = luaL_checkstring(L, -1);
-    lcd_putsAtt(x+2, y+2, item, INVERS);
+    lcdDrawText(x+2, y+2, item, INVERS);
   }
   else {
     drawFilledRect(x, y, w, 11, SOLID, ERASE);
@@ -654,7 +654,7 @@ static int luaLcdDrawCombobox(lua_State *L)
     drawFilledRect(x+w-10, y+1, 9, 9, SOLID);
     lua_rawgeti(L, 4, idx+1);
     const char * item = luaL_checkstring(L, -1);
-    lcd_putsAtt(x+2, y+2, item, 0);
+    lcdDrawText(x+2, y+2, item, 0);
   }
 
   lcd_hline(x+w-8, y+3, 6);
@@ -1890,11 +1890,11 @@ void displayLuaError(const char * title)
   if (lua_warning_info[0]) {
     char * split = strstr(lua_warning_info, ": ");
     if (split) {
-      lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, split-lua_warning_info, SMLSIZE);
-      lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, split+2, lua_warning_info+LUA_WARNING_INFO_LEN-split, SMLSIZE);
+      lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, split-lua_warning_info, SMLSIZE);
+      lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, split+2, lua_warning_info+LUA_WARNING_INFO_LEN-split, SMLSIZE);
     }
     else {
-      lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, 40, SMLSIZE);
+      lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, 40, SMLSIZE);
     }
   }
 }

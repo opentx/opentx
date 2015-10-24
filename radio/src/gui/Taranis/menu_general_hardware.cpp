@@ -122,11 +122,11 @@ void menuGeneralHardware(uint8_t event)
       case ITEM_SETUP_HW_RS:
       {
         int idx = (k<=ITEM_SETUP_HW_STICK4 ? k-ITEM_SETUP_HW_STICK1 : k-ITEM_SETUP_HW_LS+MIXSRC_SLIDER1-MIXSRC_Rud);
-        lcd_putsiAtt(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
+        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
         if (ZEXIST(g_eeGeneral.anaNames[idx]) || attr)
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, event, attr);
         else
-          lcd_putsiAtt(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
+          lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
         break;
       }
 #if defined(REV9E)
@@ -135,11 +135,11 @@ void menuGeneralHardware(uint8_t event)
       {
         int idx = k - ITEM_SETUP_HW_LS2;
         uint8_t mask = (0x01 << idx);
-        lcd_putsiAtt(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+NUM_XPOTS+2+idx+1, m_posHorz < 0 ? attr : 0);
+        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+NUM_XPOTS+2+idx+1, m_posHorz < 0 ? attr : 0);
         if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+NUM_XPOTS+2+idx]) || (attr && m_posHorz == 0))
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+NUM_XPOTS+2+idx], LEN_ANA_NAME, event, attr && m_posHorz == 0);
         else
-          lcd_putsiAtt(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
+          lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
         uint8_t potType = (g_eeGeneral.slidersConfig & mask) >> idx;
         potType = selectMenuItem(HW_SETTINGS_COLUMN+5*FW, y, "", STR_SLIDERTYPES, potType, SLIDER_NONE, SLIDER_WITH_DETENT, m_posHorz == 1 ? attr : 0, event);
         g_eeGeneral.slidersConfig &= ~mask;
@@ -162,11 +162,11 @@ void menuGeneralHardware(uint8_t event)
         int idx = k - ITEM_SETUP_HW_POT1;
         uint8_t shift = (2*idx);
         uint8_t mask = (0x03 << shift);
-        lcd_putsiAtt(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+idx+1, m_posHorz < 0 ? attr : 0);
+        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+idx+1, m_posHorz < 0 ? attr : 0);
         if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+idx]) || (attr && m_posHorz == 0))
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+idx], LEN_ANA_NAME, event, attr && m_posHorz == 0);
         else
-          lcd_putsiAtt(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
+          lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
         uint8_t potType = (g_eeGeneral.potsConfig & mask) >> shift;
         potType = selectMenuItem(HW_SETTINGS_COLUMN+5*FW, y, "", STR_POTTYPES, potType, POT_NONE, POT_WITHOUT_DETENT, m_posHorz == 1 ? attr : 0, event);
         g_eeGeneral.potsConfig &= ~mask;
@@ -199,11 +199,11 @@ void menuGeneralHardware(uint8_t event)
       {
         int index = k-ITEM_SETUP_HW_SA;
         int config = SWITCH_CONFIG(index);
-        lcd_putsiAtt(INDENT_WIDTH, y, STR_VSRCRAW, MIXSRC_FIRST_SWITCH-MIXSRC_Rud+index+1, m_posHorz < 0 ? attr : 0);
+        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, MIXSRC_FIRST_SWITCH-MIXSRC_Rud+index+1, m_posHorz < 0 ? attr : 0);
         if (ZEXIST(g_eeGeneral.switchNames[index]) || (attr && m_posHorz == 0))
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.switchNames[index], LEN_SWITCH_NAME, event, m_posHorz == 0 ? attr : 0);
         else
-          lcd_putsiAtt(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
+          lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
         config = selectMenuItem(HW_SETTINGS_COLUMN+5*FW, y, "", STR_SWTYPES, config, SWITCH_NONE, SWITCH_TYPE_MAX(index), m_posHorz == 1 ? attr : 0, event);
         if (attr && checkIncDec_Ret) {
           swconfig_t mask = (swconfig_t)0x03 << (2*index);

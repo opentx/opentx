@@ -114,7 +114,7 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
   }
 #endif
 
-  if (s_editMode>0 && (IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP))) {
+  if (s_editMode>0 && event==EVT_ROTARY_RIGHT) {
     do {
       if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
         newval += min(10, i_max-val);
@@ -133,7 +133,7 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
       AUDIO_KEYPAD_UP();
     }
   }
-  else if (s_editMode>0 && (IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN))) {
+  else if (s_editMode>0 && event==EVT_ROTARY_LEFT) {
     do {
       if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
         newval -= min(10, val-i_min);
@@ -153,7 +153,7 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
     }
   }
 
-  if (!READ_ONLY() && i_min==0 && i_max==1 && (event==EVT_KEY_BREAK(KEY_ENTER) || IS_ROTARY_BREAK(event))) {
+  if (!READ_ONLY() && i_min==0 && i_max==1 && event==EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = 0;
     newval = !val;
   }
@@ -190,6 +190,7 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
   }
 
   if (newval != val) {
+#if 0
     if (!(i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && stops.contains(newval) && !IS_ROTARY_EVENT(event)) {
       bool pause = (newval > val ? !stops.contains(newval+1) : !stops.contains(newval-1));
       if (pause) {
@@ -200,6 +201,7 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
           AUDIO_KEYPAD_DOWN();
       }
     }
+#endif
     storageDirty(i_flags & (EE_GENERAL|EE_MODEL));
     checkIncDec_Ret = (newval > val ? 1 : -1);
   }
@@ -209,24 +211,22 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
   return newval;
 }
 
-#define CURSOR_NOT_ALLOWED_IN_ROW(row)   ((int8_t)MAXCOL(row) < 0)
-#define MAXCOL_RAW(row) (horTab ? pgm_read_byte(horTab+min<int>(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
-#define MAXCOL(row)     (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
-#define COLATTR(row)    (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
-#define INC(val, min, max) if (val<max) {val++;} else {val=min;}
-#define DEC(val, min, max) if (val>min) {val--;} else {val=max;}
+#define CURSOR_NOT_ALLOWED_IN_ROW(row) ((int8_t)MAXCOL(row) < 0)
+#define MAXCOL_RAW(row)                (horTab ? pgm_read_byte(horTab+min<int>(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
+#define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
+#define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
+#define INC(val, min, max)             if (val<max) {val++;} else {val=min;}
+#define DEC(val, min, max)             if (val>min) {val--;} else {val=max;}
 
 uint8_t menuPageIndex;
 uint8_t menuPageCount;
+uint16_t linesCount;
 
-bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint16_t scrollbar_X, uint8_t flags)
+bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
 {
-  vertpos_t l_posVert = m_posVert;
-  horzpos_t l_posHorz = m_posHorz;
+  uint8_t maxcol = MAXCOL(m_posVert);
 
-  uint8_t maxcol = MAXCOL(l_posVert);
-
-  if (menuTab && !calibrationState && l_posVert<0) {
+  if (menuTab && !calibrationState && m_posVert<0) {
     int cc = curr;
     switch (event) {
       case EVT_KEY_BREAK(KEY_RIGHT):
@@ -243,9 +243,14 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
       case EVT_KEY_BREAK(KEY_ENTER):
         if (rowcount > 0) {
-          l_posVert = MENU_FIRST_LINE_EDIT;
+          m_posVert = MENU_FIRST_LINE_EDIT;
           event = 0;
         }
+        break;
+
+      case EVT_KEY_BREAK(KEY_DOWN):
+      case EVT_KEY_BREAK(KEY_UP):
+        m_posHorz = -1;
         break;
     }
 
@@ -261,20 +266,20 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   switch(event)
   {
     case EVT_ENTRY:
-      l_posVert = (menuTab ? -1 : 0);
-      l_posHorz = POS_HORZ_INIT(l_posVert);
+      m_posVert = (menuTab ? -1 : MENU_FIRST_LINE_EDIT);
+      m_posHorz = POS_HORZ_INIT(0);
       s_editMode = EDIT_MODE_INIT;
       break;
 
     case EVT_ENTRY_UP:
       s_editMode = 0;
-      l_posHorz = POS_HORZ_INIT(l_posVert);
+      m_posHorz = POS_HORZ_INIT(m_posVert);
       break;
 
     case EVT_ROTARY_BREAK:
       if (s_editMode > 1) break;
       if (m_posHorz < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
-        l_posHorz = 0;
+        m_posHorz = 0;
       }
       else if (READ_ONLY_UNLOCKED()) {
         s_editMode = (s_editMode<=0);
@@ -292,18 +297,18 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
         break;
       }
 
-      if (l_posHorz >= 0 && (COLATTR(l_posVert) & NAVIGATION_LINE_BY_LINE)) {
-        l_posHorz = -1;
+      if (m_posHorz >= 0 && (COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE)) {
+        m_posHorz = -1;
       }
-      else if (menuTab && l_posVert >= 0) {
-        l_posVert = -1;
-        l_posHorz = 0;
+      else if (menuTab && m_posVert >= 0) {
+        m_posVert = -1;
+        m_posHorz = 0;
 #if 0
         int posVertInit = -1;
-        if (s_pgOfs != 0 || l_posVert != posVertInit) {
+        if (s_pgOfs != 0 || m_posVert != posVertInit) {
           s_pgOfs = 0;
-          l_posVert = posVertInit;
-          l_posHorz = POS_HORZ_INIT(l_posVert);
+          m_posVert = posVertInit;
+          m_posHorz = POS_HORZ_INIT(m_posVert);
         }
 #endif
       }
@@ -315,88 +320,94 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_REPT(KEY_RIGHT):
       if (s_editMode != 0) break;
-      INC(l_posHorz, 0, maxcol);
+      INC(m_posHorz, 0, maxcol);
       break;
 
     case EVT_KEY_FIRST(KEY_LEFT):
     case EVT_KEY_REPT(KEY_LEFT):
       if (s_editMode != 0) break;
-      DEC(l_posHorz, 0, maxcol);
+      DEC(m_posHorz, 0, maxcol);
       break;
 
     case EVT_ROTARY_RIGHT:
       if (s_editMode != 0) break;
-      if ((COLATTR(l_posVert) & NAVIGATION_LINE_BY_LINE)) {
-        if (l_posHorz >= 0) {
-          INC(l_posHorz, 0, maxcol);
+      if ((COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE)) {
+        if (m_posHorz >= 0) {
+          INC(m_posHorz, 0, maxcol);
           break;
         }
       }
-      else
-      {
-        if (l_posHorz < maxcol) {
-          l_posHorz++;
-          break;
-        }
-        else {
-          l_posHorz = 0;
-        }
+      else if (m_posHorz < maxcol) {
+        m_posHorz++;
+        break;
       }
-      // no break
+      do {
+        INC(m_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
+      } while (CURSOR_NOT_ALLOWED_IN_ROW(m_posVert));
+      m_posHorz = POS_HORZ_INIT(m_posVert);
+      break;
 
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_REPT(KEY_DOWN):
+    {
       do {
-        INC(l_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
-      } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
+        INC(m_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
+      } while (CURSOR_NOT_ALLOWED_IN_ROW(m_posVert));
       s_editMode = 0; // if we go down, we must be in this mode
-      l_posHorz = POS_HORZ_INIT(l_posVert);
+      uint8_t newmaxcol = MAXCOL(m_posVert);
+      if (m_posHorz < 0 || (m_posHorz==0 && maxcol==0) || m_posHorz > newmaxcol)
+        m_posHorz = POS_HORZ_INIT(m_posVert);
       break;
+    }
 
     case EVT_ROTARY_LEFT:
       if (s_editMode != 0) break;
-      if ((COLATTR(l_posVert) & NAVIGATION_LINE_BY_LINE)) {
-        if (l_posHorz >= 0) {
-          DEC(l_posHorz, 0, maxcol);
+      if ((COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE)) {
+        if (m_posHorz >= 0) {
+          DEC(m_posHorz, 0, maxcol);
           break;
         }
       }
+      else if (m_posHorz > 0) {
+        m_posHorz--;
+        break;
+      }
+      do {
+        DEC(m_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
+      } while (CURSOR_NOT_ALLOWED_IN_ROW(m_posVert));
+      if ((COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE))
+        m_posHorz = -1;
       else
-      {
-        if (l_posHorz > 0) {
-          l_posHorz--;
-          break;
-        }
-        else {
-          l_posHorz = 0xff;
-        }
-      }
-      // no break
+        m_posHorz = min((uint8_t)m_posHorz, MAXCOL(m_posVert));
+      break;
 
     case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_REPT(KEY_UP):
+    {
       do {
-        DEC(l_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
-      } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
-
+        DEC(m_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
+      } while (CURSOR_NOT_ALLOWED_IN_ROW(m_posVert));
       s_editMode = 0; // if we go up, we must be in this mode
-
-      if ((COLATTR(l_posVert) & NAVIGATION_LINE_BY_LINE))
-        l_posHorz = -1;
-      else
-        l_posHorz = min((uint8_t)l_posHorz, MAXCOL(l_posVert));
+      uint8_t newmaxcol = MAXCOL(m_posVert);
+      if (m_posHorz < 0 || (m_posHorz==0 && maxcol==0) || m_posHorz > newmaxcol) {
+        if ((COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE))
+          m_posHorz = -1;
+        else
+          m_posHorz = min((uint8_t)m_posHorz, newmaxcol);
+      }
 
       break;
+    }
   }
 
-  int linesCount = rowcount;
+  linesCount = rowcount;
 
-  if (l_posVert <= 0 || (l_posVert==1 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW) || (l_posVert==2 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW)) {
+  if (m_posVert <= MENU_FIRST_LINE_EDIT) {
     s_pgOfs = 0;
     if (horTab) {
       linesCount = 0;
       for (int i=0; i<rowcount; i++) {
-        if (i>=horTabMax || horTab[i] != HIDDEN_ROW) {
+        if (i>horTabMax || horTab[i] != HIDDEN_ROW) {
           linesCount++;
         }
       }
@@ -411,7 +422,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
             numLines++;
           }
         }
-        if (l_posVert < firstLine) {
+        if (m_posVert < firstLine) {
           s_pgOfs--;
         }
         else {
@@ -421,13 +432,13 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
               numLines++;
             }
           }
-          if (l_posVert >= lastLine) {
+          if (m_posVert >= lastLine) {
             s_pgOfs++;
           }
           else {
             linesCount = s_pgOfs + NUM_BODY_LINES;
             for (int i=lastLine; i<rowcount; i++) {
-              if (i>=horTabMax || horTab[i] != HIDDEN_ROW) {
+              if (i>horTabMax || horTab[i] != HIDDEN_ROW) {
                 linesCount++;
               }
             }
@@ -438,32 +449,25 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     }
   }
   else {
-    if (l_posVert>=NUM_BODY_LINES+s_pgOfs) {
-      s_pgOfs = l_posVert-NUM_BODY_LINES+1;
+    if (m_posVert>=NUM_BODY_LINES+s_pgOfs) {
+      s_pgOfs = m_posVert-NUM_BODY_LINES+1;
     }
-    else if (l_posVert<s_pgOfs) {
-      s_pgOfs = l_posVert;
+    else if (m_posVert<s_pgOfs) {
+      s_pgOfs = m_posVert;
     }
   }
-
-  if (scrollbar_X && linesCount > NUM_BODY_LINES) {
-    lcdDrawScrollbar(scrollbar_X, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, s_pgOfs, linesCount, NUM_BODY_LINES);
-  }
-
-  m_posVert = l_posVert;
-  m_posHorz = l_posHorz;
 
   return true;
 }
 
-bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t rowcount, uint16_t scrollbar_X)
+bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
 {
-  return check(event, curr, menuTab, menuTabSize, 0, 0, rowcount, scrollbar_X);
+  return check(event, curr, menuTab, menuTabSize, NULL, 0, rowcount);
 }
 
-bool check_submenu_simple(check_event_t event, uint8_t rowcount, uint16_t scrollbar_X)
+bool check_submenu_simple(check_event_t event, uint8_t rowcount)
 {
-  return check_simple(event, 0, 0, 0, rowcount, scrollbar_X);
+  return check_simple(event, 0, NULL, 0, rowcount);
 }
 
 void repeatLastCursorMove(evt_t event)

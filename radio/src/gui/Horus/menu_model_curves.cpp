@@ -150,7 +150,7 @@ void menuModelCurveOne(evt_t event)
 
   LcdFlags attr = (m_posVert==1 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
   lcd_putsLeft(MENU_CONTENT_TOP + 2*FH, "Type");
-  lcd_putsiAtt(MENUS_MARGIN_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + 3*FH, STR_CURVE_TYPES, crv.type, attr);
+  lcdDrawTextAtIndex(MENUS_MARGIN_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + 3*FH, STR_CURVE_TYPES, crv.type, attr);
   if (attr) {
     uint8_t newType = checkIncDecModelZero(event, crv.type, CURVE_TYPE_LAST);
     if (newType != crv.type) {
@@ -187,7 +187,7 @@ void menuModelCurveOne(evt_t event)
   }
 
   lcd_putsLeft(MENU_CONTENT_TOP + 6*FH, STR_SMOOTH);
-  lcdDrawCheckBox(lcdNextPos + 10, MENU_CONTENT_TOP + 6*FH, crv.smooth, m_posVert==3 ? INVERS : 0);
+  drawCheckBox(lcdNextPos + 10, MENU_CONTENT_TOP + 6*FH, crv.smooth, m_posVert==3 ? INVERS : 0);
   if (m_posVert==3) crv.smooth = checkIncDecModel(event, crv.smooth, 0, 1);
 
   switch(event) {
@@ -212,8 +212,8 @@ void menuModelCurveOne(evt_t event)
     DrawCurve(6);
   }
 
-  // lcd_putsAtt(115, MENU_FOOTER_TOP, "X", HEADER_COLOR);
-  // lcd_putsAtt(145, MENU_FOOTER_TOP, "Y", HEADER_COLOR);
+  // lcdDrawText(115, MENU_FOOTER_TOP, "X", HEADER_COLOR);
+  // lcdDrawText(145, MENU_FOOTER_TOP, "Y", HEADER_COLOR);
 
   coord_t posY = MENU_CONTENT_TOP;
   attr = (s_editMode > 0 ? INVERS|BLINK : INVERS);
@@ -256,13 +256,13 @@ void menuModelCurveOne(evt_t event)
   }
 
   if (5+crv.points > NUM_BODY_LINES) {
-    lcdDrawScrollbar(250, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, pointsOfs, 5+crv.points, NUM_BODY_LINES);
+    drawScrollbar(250, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, pointsOfs, 5+crv.points, NUM_BODY_LINES);
   }
 }
 
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t attr)
 {
-  lcd_putsiAtt(x, y, "\004DiffExpoFuncCstm", curve.type, (m_posHorz==0 ? attr : 0));
+  lcdDrawTextAtIndex(x, y, "\004DiffExpoFuncCstm", curve.type, (m_posHorz==0 ? attr : 0));
   if (attr && m_posHorz==0) {
     CHECK_INCDEC_MODELVAR_ZERO(event, curve.type, CURVE_REF_CUSTOM);
     if (checkIncDec_Ret) curve.value = 0;
@@ -273,7 +273,7 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t a
       curve.value = GVAR_MENU_ITEM(lcdNextPos+10, y, curve.value, -100, 100, m_posHorz==1 ? LEFT|attr : LEFT, 0, event);
       break;
     case CURVE_REF_FUNC:
-      lcd_putsiAtt(lcdNextPos+10, y, STR_VCURVEFUNC, curve.value, (m_posHorz==1 ? attr : 0));
+      lcdDrawTextAtIndex(lcdNextPos+10, y, STR_VCURVEFUNC, curve.value, (m_posHorz==1 ? attr : 0));
       if (attr && m_posHorz==1) CHECK_INCDEC_MODELVAR_ZERO(event, curve.value, CURVE_BASE-1);
       break;
     case CURVE_REF_CUSTOM:

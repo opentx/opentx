@@ -61,4 +61,6 @@ bool isSwitchAvailableInMixes(int swtch);
 bool isSwitchAvailableInTimers(int swtch);
 bool isModuleAvailable(int module);
 
+bool modelHasNotes();
+
 #endif // _GUI_HELPERS_H_

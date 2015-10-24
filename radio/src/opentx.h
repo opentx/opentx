@@ -360,21 +360,6 @@
 #define NUM_PSWITCH        (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
 #define NUM_POTSSW         (NUM_XPOTS*6)
 
-// TODO in keys.h!
-#if defined(PCBHORUS)
-  #define KEY_PLUS         KEY_RIGHT
-  #define KEY_MINUS        KEY_LEFT
-#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
-  #define KEY_RIGHT        KEY_PLUS
-  #define KEY_LEFT         KEY_MINUS
-  #define KEY_UP           KEY_PLUS
-  #define KEY_DOWN         KEY_MINUS
-#else
-  #define KEY_ENTER        KEY_MENU
-  #define KEY_PLUS         KEY_RIGHT
-  #define KEY_MINUS        KEY_LEFT
-#endif
-
 #include "myeeprom.h"
 
 #if defined(CPUM64)
@@ -500,14 +485,14 @@
 #endif
 
 #if defined(PCBFLAMENCO)
-  #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_PPM))
-  #define IS_MODULE_XJT(idx)                ((g_model.externalModule==MODULE_TYPE_XJT) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))
+  #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
+  #define IS_MODULE_XJT(idx)                ((g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))
   #if defined(DSM2)
-    #define IS_MODULE_DSM2(idx)             (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_DSM2)
+    #define IS_MODULE_DSM2(idx)             (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_DSM2)
   #else
     #define IS_MODULE_DSM2(idx)             (false)
   #endif
-  #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.externalModule])
+  #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.externalModule])
   #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS())
 #elif defined(PCBTARANIS)
   #if defined(TARANIS_INTERNAL_PPM)

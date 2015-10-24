@@ -108,7 +108,7 @@ void menuAboutView(uint8_t event);
 void menuTraceBuffer(uint8_t event);
 #endif
 
-void displaySlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
+void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
 
 void menuMainViewChannelsMonitor(uint8_t event);
 void menuChannelsView(uint8_t event);
@@ -327,7 +327,6 @@ void drawStatusLine();
 extern char s_text_file[TEXT_FILENAME_MAXLEN];
 void menuTextView(uint8_t event);
 void pushMenuTextView(const char *filename);
-bool modelHasNotes();
 void pushModelNotes();
 
 void menuChannelsView(uint8_t event);
@@ -335,23 +334,19 @@ void menuChannelsView(uint8_t event);
 #define LABEL(...) (uint8_t)-1
 
 #if defined(REV9E) && !defined(SIMU)
-  #define KEY_MOVE_UP                  KEY_MINUS
-  #define KEY_MOVE_DOWN                KEY_PLUS
-  #define CURSOR_MOVED_LEFT(event)     (EVT_KEY_MASK(event) == KEY_MINUS)
-  #define CURSOR_MOVED_RIGHT(event)    (EVT_KEY_MASK(event) == KEY_PLUS)
-  #define CASE_EVT_ROTARY_MOVE_RIGHT   CASE_EVT_ROTARY_RIGHT
-  #define CASE_EVT_ROTARY_MOVE_LEFT    CASE_EVT_ROTARY_LEFT
-  #define IS_ROTARY_MOVE_RIGHT         IS_ROTARY_RIGHT
-  #define IS_ROTARY_MOVE_LEFT          IS_ROTARY_LEFT
+  #define KEY_UP                       KEY_MINUS
+  #define KEY_DOWN                     KEY_PLUS
+  #define KEY_RIGHT                    KEY_PLUS
+  #define KEY_LEFT                     KEY_MINUS
+  #define CURSOR_MOVED_LEFT(event)     (EVT_KEY_MASK(event) == KEY_LEFT)
+  #define CURSOR_MOVED_RIGHT(event)    (EVT_KEY_MASK(event) == KEY_RIGHT)
 #else
-  #define KEY_MOVE_UP                  KEY_PLUS
-  #define KEY_MOVE_DOWN                KEY_MINUS
-  #define CURSOR_MOVED_LEFT(event)     (EVT_KEY_MASK(event) == KEY_PLUS)
-  #define CURSOR_MOVED_RIGHT(event)    (EVT_KEY_MASK(event) == KEY_MINUS)
-  #define CASE_EVT_ROTARY_MOVE_RIGHT   CASE_EVT_ROTARY_LEFT
-  #define CASE_EVT_ROTARY_MOVE_LEFT    CASE_EVT_ROTARY_RIGHT
-  #define IS_ROTARY_MOVE_RIGHT         IS_ROTARY_LEFT
-  #define IS_ROTARY_MOVE_LEFT          IS_ROTARY_RIGHT
+  #define KEY_UP                       KEY_PLUS
+  #define KEY_DOWN                     KEY_MINUS
+  #define KEY_RIGHT                    KEY_MINUS
+  #define KEY_LEFT                     KEY_PLUS
+  #define CURSOR_MOVED_LEFT(event)     (EVT_KEY_MASK(event) == KEY_LEFT)
+  #define CURSOR_MOVED_RIGHT(event)    (EVT_KEY_MASK(event) == KEY_RIGHT)
 #endif
 
 #define REPEAT_LAST_CURSOR_MOVE()      { if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) putEvent(event); else m_posHorz = 0; }
