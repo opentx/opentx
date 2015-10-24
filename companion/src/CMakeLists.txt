@@ -445,7 +445,11 @@ ENDIF()
 SET(CPACK_PACKAGE_NAME "companion${C9X_NAME_SUFFIX}")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Models and settings editor for the OpenTx open source firmware")
 string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE)
-SET( CPACK_STRIP_FILES TRUE )
+
+# The file stripping is deliberately disabled, with the stripped file we get 
+# very poor trace-backs from the users when they report Companion crash
+SET( CPACK_STRIP_FILES FALSE )
+
 find_program(DPKG_PROGRAM dpkg DOC "dpkg program of Debian-based systems")
 if(DPKG_PROGRAM)
   SET(CPACK_GENERATOR "DEB")
