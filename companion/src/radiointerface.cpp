@@ -411,7 +411,8 @@ QString findMassstoragePath(const QString &filename)
   }
 #else
   struct mount_entry *entry;
-  entry = read_file_system_list(true);
+  struct mount_entry *firstEntry;
+  firstEntry = entry = read_file_system_list(true);
   while (entry != NULL) {
     if (!drives.contains(entry->me_devname)) {
       drives.append(entry->me_devname);
@@ -426,11 +427,13 @@ QString findMassstoragePath(const QString &filename)
 #else
       if (QFile::exists(eepromfile)) {
 #endif
+        free_file_system_list(firstEntry);
         return eepromfile;
       }
     }
     entry = entry->me_next;
   }
+  free_file_system_list(firstEntry);
 #endif
 
   return QString();
