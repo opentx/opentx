@@ -27,7 +27,7 @@ namespace Ui {
 
 // TODO rename + move?
 class LcdWidget;
-class mySlider;
+class SliderWidget;
 
 #define SIMULATOR_FLAGS_NOTX              1
 #define SIMULATOR_FLAGS_STICK_MODE_LEFT   2
@@ -67,7 +67,7 @@ class SimulatorDialog : public QDialog
     QVector<QLabel *> potValues;
     QVector<QSlider *> sliders;
 
-    mySlider * trimHLeft, * trimVLeft, * trimHRight, * trimVRight;
+    SliderWidget * trimHLeft, * trimVLeft, * trimHRight, * trimVRight;
     QLabel * leftXPerc, * rightXPerc, * leftYPerc, * rightYPerc;
     QTabWidget * tabWidget;
     QVector<QLabel *> logicalSwitchLabels;

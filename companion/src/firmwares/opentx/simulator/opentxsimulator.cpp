@@ -559,7 +559,12 @@ void OpenTxSimulator::getTrims(Trims & trims)
 
 void OpenTxSimulator::wheelEvent(int steps)
 {
-#if defined(REV9E)
+#if defined(PCBHORUS) || defined(PCBFLAMENCO)
+  if (steps > 0)
+    rotencValue -= 2;
+  else
+    rotencValue += 2;
+#elif defined(REV9E)
   if (steps == 255)
     rotencValue -= 2;
   else

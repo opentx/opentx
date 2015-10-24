@@ -378,7 +378,6 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
 #endif
     
 #if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBHORUS)
-    extern rotenc_t rotencValue;
     static bool rotencAction = false;
     if (getApp()->getKeyState(KEY_G)) {
       if (!rotencAction) ROTENC_VALUE += ROTARY_ENCODER_GRANULARITY;

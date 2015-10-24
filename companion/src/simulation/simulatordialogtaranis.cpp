@@ -1,44 +1,54 @@
-#include "simulatordialog.h"
-#include "ui_simulatordialog-horus.h"
-#include "helpers.h"
+#include "ui_simulatordialog-taranis.h"
 
-uint32_t SimulatorDialogHorus::switchstatus = 0;
+uint32_t SimulatorDialogTaranis::switchstatus = 0;
 
-SimulatorDialogHorus::SimulatorDialogHorus(QWidget * parent, SimulatorInterface *simulator, unsigned int flags):
+SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterface *simulator, unsigned int flags):
   SimulatorDialog(parent, simulator, flags),
-  ui(new Ui::SimulatorDialogHorus)
+  ui(new Ui::SimulatorDialogTaranis)
 {
   QPolygon polygon;
 
-  lcdWidth = 480;
-  lcdHeight = 270;
-  lcdDepth = 16;
+  lcdWidth = 212;
+  lcdHeight = 64;
+  lcdDepth = 4;
 
-  initUi<Ui::SimulatorDialogHorus>(ui);
+  initUi<Ui::SimulatorDialogTaranis>(ui);
 
-  polygon.setPoints(6, 68, 83, 28, 45, 51, 32, 83, 32, 105, 45, 68, 83);
-  ui->rightbuttons->addArea(polygon, Qt::Key_Up, "9xcursup.png");
-  polygon.setPoints(6, 74, 90, 114, 51, 127, 80, 127, 106, 114, 130, 74, 90);
-  ui->rightbuttons->addArea(polygon, Qt::Key_Right, "9xcursmin.png");
-  polygon.setPoints(6, 68, 98, 28, 137, 51, 151, 83, 151, 105, 137, 68, 98);
-  ui->rightbuttons->addArea(polygon, Qt::Key_Down, "9xcursdown.png");
-  polygon.setPoints(6, 80, 90, 20, 51, 7, 80, 7, 106, 20, 130, 80, 90);
-  ui->rightbuttons->addArea(polygon, Qt::Key_Left, "9xcursplus.png");
-  ui->rightbuttons->addArea(5, 148, 39, 182, Qt::Key_Print, "9xcursphoto.png");
-
-  ui->leftbuttons->addArea(25, 60, 71, 81, Qt::Key_PageUp, "9xmenumenu.png");
-  ui->leftbuttons->addArea(25, 117, 71, 139, Qt::Key_Escape, "9xmenuexit.png");
+  polygon.setPoints(6, 20, 59, 27, 50, 45, 52, 56, 59, 50, 71, 26, 72);
+  ui->leftbuttons->addArea(polygon, Qt::Key_PageUp, "x9l1.png");
+  polygon.setPoints(6, 23, 107, 30, 99, 46, 100, 55, 106, 47, 117, 28, 117);
+  ui->leftbuttons->addArea(polygon, Qt::Key_PageDown, "x9l2.png");
+  polygon.setPoints(6, 24, 154, 32, 144, 46, 146, 57, 156, 46, 167, 29, 166);
+  ui->leftbuttons->addArea(polygon, Qt::Key_Escape, "x9l3.png");
+  ui->leftbuttons->addArea(90, 177, 118, 197, Qt::Key_Print, "x9l4.png");
+  polygon.setPoints(6, 64, 60, 71, 50, 90, 50, 100, 60, 90, 73, 72, 73);
+  ui->rightbuttons->addArea(polygon, Qt::Key_Plus, "x9r1.png");
+  polygon.setPoints(6, 63, 109, 73, 100, 88, 100, 98, 109, 88, 119, 72, 119);
+  ui->rightbuttons->addArea(polygon, Qt::Key_Minus, "x9r2.png");
+  polygon.setPoints(6, 63, 155, 72, 146, 90, 146, 98, 155, 88, 166, 72, 166);
+  ui->rightbuttons->addArea(polygon, Qt::Key_Enter, "x9r3.png");
 
   // install simulator TRACE hook
   simulator->installTraceHook(traceCb);
 
-  // TODO dialP_4 = ui->dialP_4;
-
   ui->lcd->setBackgroundColor(47, 123, 227);
 
-  //restore switches
-  if (g.simuSW())
+  // restore switches
+  if (g.simuSW()) {
     restoreSwitches();
+  }
+
+  for (int i=0; i<pots.count(); i++) {
+    if (flags & (SIMULATOR_FLAGS_S1_MULTI << i)) {
+      pots[i]->setValue(-1024);
+      pots[i]->setSingleStep(2048/5);
+      pots[i]->setPageStep(2048/5);
+    }
+    else if (!(flags & (SIMULATOR_FLAGS_S1 << i))) {
+      pots[i]->hide();
+      potLabels[i]->hide();
+    }
+  }
 
   ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
   ui->trimHR_R->setText(QString::fromUtf8(rightArrow));
@@ -69,24 +79,32 @@ SimulatorDialogHorus::SimulatorDialogHorus(QWidget * parent, SimulatorInterface 
   connect(ui->trimVL_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
 }
 
-SimulatorDialogHorus::~SimulatorDialogHorus()
+SimulatorDialogTaranis::~SimulatorDialogTaranis()
 {
   saveSwitches();
   delete ui;
 }
 
-void SimulatorDialogHorus::resetSH()
+
+void SimulatorDialogTaranis::resetSH()
 {
   ui->switchH->setValue(0);
 }
 
-void SimulatorDialogHorus::on_switchH_sliderReleased()
+void SimulatorDialogTaranis::on_switchH_sliderReleased()
 {
   QTimer::singleShot(400, this, SLOT(resetSH()));
 }
 
-void SimulatorDialogHorus::getValues()
+void SimulatorDialogTaranis::getValues()
 {
+  for (int i=0; i<pots.count(); i++) {
+    if (flags & (SIMULATOR_FLAGS_S1_MULTI << i)) {
+      int s1 = round((pots[i]->value()+1024)/(2048.0/5))*(2048.0/5)-1024;
+      pots[i]->setValue(s1);
+    }
+  }
+
   TxInputs inputs = {
     {
       int(1024*nodeLeft->getX()),  // LEFT HORZ
@@ -96,11 +114,11 @@ void SimulatorDialogHorus::getValues()
     },
 
     {
-      -ui->dialP_1->value(),
-      ui->dialP_2->value(),
-      0,
-      -ui->dialP_3->value(),
-      ui->dialP_4->value()
+      -pots[0]->value(),
+      pots[1]->value(),
+      ((flags && SIMULATOR_FLAGS_S3) ? pots[2]->value() : 0),
+      -sliders[0]->value(),
+      sliders[1]->value()
     },
 
     {
@@ -118,10 +136,9 @@ void SimulatorDialogHorus::getValues()
       buttonPressed == Qt::Key_PageUp,
       buttonPressed == Qt::Key_Escape,
       buttonPressed == Qt::Key_Enter,
-      buttonPressed == Qt::Key_Up,
-      buttonPressed == Qt::Key_Down,
-      buttonPressed == Qt::Key_Right,
-      buttonPressed == Qt::Key_Left
+      buttonPressed == Qt::Key_PageDown,
+      buttonPressed == Qt::Key_Plus,
+      buttonPressed == Qt::Key_Minus
     },
 
     middleButtonPressed,
@@ -141,7 +158,7 @@ void SimulatorDialogHorus::getValues()
   simulator->setValues(inputs);
 }
 
-void SimulatorDialogHorus::saveSwitches(void)
+void SimulatorDialogTaranis::saveSwitches(void)
 {
   // qDebug() << "SimulatorDialogTaranis::saveSwitches()";
   switchstatus=ui->switchA->value();
@@ -161,7 +178,7 @@ void SimulatorDialogHorus::saveSwitches(void)
   switchstatus+=ui->switchH->value();
 }
 
-void SimulatorDialogHorus::restoreSwitches(void)
+void SimulatorDialogTaranis::restoreSwitches(void)
 {
   // qDebug() << "SimulatorDialogTaranis::restoreSwitches()";
   ui->switchH->setValue(switchstatus & 0x3);
@@ -180,3 +197,5 @@ void SimulatorDialogHorus::restoreSwitches(void)
   switchstatus>>=2;
   ui->switchA->setValue(switchstatus & 0x3);
 }
+
+

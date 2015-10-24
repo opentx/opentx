@@ -34,8 +34,8 @@ SimulatorDialogFlamenco::SimulatorDialogFlamenco(QWidget * parent, SimulatorInte
   ui->trimVL_U->setText(QString::fromUtf8(upArrow));
   ui->trimVL_D->setText(QString::fromUtf8(downArrow));
 
-  connect(ui->cursor, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
-  connect(ui->menu, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
+  connect(ui->leftbuttons, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
+  connect(ui->rightbuttons, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
   connect(ui->trimHR_L, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
   connect(ui->trimHR_R, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
   connect(ui->trimVR_U, SIGNAL(pressed()), this, SLOT(onTrimPressed()));

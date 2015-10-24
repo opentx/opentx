@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>726</width>
-    <height>688</height>
+    <height>708</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -30,7 +30,16 @@
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>5</number>
+   </property>
+   <property name="topMargin">
+    <number>5</number>
+   </property>
+   <property name="rightMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
     <number>5</number>
    </property>
    <property name="spacing">
@@ -86,7 +95,7 @@
           <number>0</number>
          </property>
          <item row="0" column="0" rowspan="3">
-          <widget class="xcursorWidget" name="cursor" native="true">
+          <widget class="ButtonsWidget" name="leftbuttons" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -108,7 +117,7 @@
           </widget>
          </item>
          <item row="0" column="2" rowspan="3">
-          <widget class="xmenuWidget" name="menu" native="true">
+          <widget class="ButtonsWidget" name="rightbuttons" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -263,7 +272,16 @@
       <number>2</number>
      </property>
      <layout class="QGridLayout" name="gridLayout_8">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>5</number>
+      </property>
+      <property name="topMargin">
+       <number>5</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
        <number>5</number>
       </property>
       <property name="spacing">
@@ -298,7 +316,7 @@
              </widget>
             </item>
             <item alignment="Qt::AlignHCenter">
-             <widget class="mySlider" name="trimVLeft">
+             <widget class="SliderWidget" name="trimVLeft">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -902,7 +920,7 @@ QPushButton:checked {
            </widget>
           </item>
           <item>
-           <widget class="mySlider" name="trimHLeft">
+           <widget class="SliderWidget" name="trimHLeft">
             <property name="toolTip">
              <string>Right Double Click to Reset</string>
             </property>
@@ -991,7 +1009,7 @@ QPushButton:checked {
              </widget>
             </item>
             <item alignment="Qt::AlignHCenter">
-             <widget class="mySlider" name="trimVRight">
+             <widget class="SliderWidget" name="trimVRight">
               <property name="toolTip">
                <string>Right Double Click to Reset</string>
               </property>
@@ -1579,7 +1597,7 @@ QPushButton:checked {
            </widget>
           </item>
           <item>
-           <widget class="mySlider" name="trimHRight">
+           <widget class="SliderWidget" name="trimHRight">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1639,21 +1657,15 @@ QPushButton:checked {
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>mySlider</class>
+   <class>ButtonsWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">buttonswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SliderWidget</class>
    <extends>QSlider</extends>
-   <header location="global">myslider.h</header>
-  </customwidget>
-  <customwidget>
-   <class>xcursorWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">xcursorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>xmenuWidget</class>
-   <extends>QWidget</extends>
-   <header>xmenuwidget.h</header>
-   <container>1</container>
+   <header location="global">sliderwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources>

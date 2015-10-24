@@ -14,14 +14,16 @@
  *
  */
 
-#ifndef _LCD_WIDGET_H_
-#define _LCD_WIDGET_H_
+#ifndef _LCDWIDGET_H_
+#define _LCDWIDGET_H_
 
 #include <QWidget>
 #include "appdata.h"
 
-class LcdWidget : public QWidget {
+class LcdWidget : public QWidget
+{
   public:
+
     LcdWidget(QWidget * parent = 0):
       QWidget(parent),
       lcdBuf(NULL),
@@ -186,4 +188,4 @@ class LcdWidget : public QWidget {
 
 };
 
-#endif // _LCD_WIDGET_H_
+#endif // _LCDWIDGET_H_

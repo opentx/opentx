@@ -18,11 +18,9 @@ set(simulation_UIS
 
 set(simulation_HDRS
   simulatordialog.h
-  cursorwidget.h
-  menuwidget.h
-  xcursorwidget.h
-  xmenuwidget.h
-  myslider.h
+  # lcdwidget.h
+  buttonswidget.h
+  sliderwidget.h
   telemetrysimu.h
   trainersimu.h
   debugoutput.h
