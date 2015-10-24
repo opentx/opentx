@@ -217,6 +217,7 @@ SimulatorDialogTaranis::~SimulatorDialogTaranis()
   delete ui;
 }
 
+
 SimulatorDialog::~SimulatorDialog()
 {
   traceCallbackInstance = 0;
@@ -1134,3 +1135,6 @@ void SimulatorDialog::onjoystickAxisValueChanged(int axis, int value)
   }
 }
 #endif
+
+#include "simulatordialogflamenco.cpp"
+#include "simulatordialoghorus.cpp"

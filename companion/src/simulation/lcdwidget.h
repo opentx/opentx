@@ -14,15 +14,15 @@
  *
  */
 
-#ifndef lcd_widget_h
-#define lcd_widget_h
+#ifndef _LCD_WIDGET_H_
+#define _LCD_WIDGET_H_
 
 #include <QWidget>
 #include "appdata.h"
 
-class lcdWidget : public QWidget {
+class LcdWidget : public QWidget {
   public:
-    lcdWidget(QWidget * parent = 0):
+    LcdWidget(QWidget * parent = 0):
       QWidget(parent),
       lcdBuf(NULL),
       previousBuf(NULL),
@@ -30,10 +30,11 @@ class lcdWidget : public QWidget {
     {
     }
 
-    ~lcdWidget()
+    ~LcdWidget()
     {
-      if (previousBuf)
+      if (previousBuf) {
         free(previousBuf);
+      }
     }
 
     void setData(unsigned char *buf, int width, int height, int depth=1)
@@ -43,7 +44,7 @@ class lcdWidget : public QWidget {
       lcdHeight = height;
       lcdDepth = depth;
       if (depth >= 8)
-        lcdSize = (width * height) * (depth / 8);
+        lcdSize = (width * height) * ((depth+7) / 8);
       else
         lcdSize = (width * ((height+7)/8)) * depth;
       previousBuf = (unsigned char *)malloc(lcdSize);
@@ -109,7 +110,17 @@ class lcdWidget : public QWidget {
     {
       QRgb rgb;
 
-      if (lcdDepth >= 8) {
+      if (lcdDepth == 16) {
+        for (int x=0; x<lcdWidth; x++) {
+          for (int y=0; y<lcdHeight; y++) {
+            uint16_t z = ((uint16_t *)lcdBuf)[y * lcdWidth + x];
+            rgb = qRgb(255*((z&0xF800)>>11)/0x1F, 255*((z&0x07E0)>>5)/0x3F, 255*(z&0x001F)/0x1F);
+            p.setPen(rgb);
+            p.drawPoint(x, y);
+          }
+        }
+      }
+      else if (lcdDepth == 12) {
         for (int x=0; x<lcdWidth; x++) {
           for (int y=0; y<lcdHeight; y++) {
             uint16_t z = ((uint16_t *)lcdBuf)[y * lcdWidth + x];
@@ -175,4 +186,4 @@ class lcdWidget : public QWidget {
 
 };
 
-#endif
+#endif // _LCD_WIDGET_H_

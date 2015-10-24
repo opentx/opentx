@@ -35,56 +35,6 @@
 
 #include "../../opentx.h"
 
-#define POS_MODEL_NAME    35
-#define POS_MODEL_SIZE    170
-
-void onModelSelectMenu(const char *result)
-{
-  int sub = m_posVert;
-
-  if (result == STR_SELECT_MODEL || result == STR_CREATE_MODEL) {
-    selectModel(sub);
-  }
-  else if (result == STR_COPY_MODEL) {
-    s_copyMode = COPY_MODE;
-    s_copyTgtOfs = 0;
-    s_copySrcRow = -1;
-  }
-  else if (result == STR_MOVE_MODEL) {
-    s_copyMode = MOVE_MODE;
-    s_copyTgtOfs = 0;
-    s_copySrcRow = -1;
-  }
-  else if (result == STR_BACKUP_MODEL) {
-    storageCheck(true); // force writing of current model data before this is changed
-    POPUP_WARNING(eeBackupModel(sub));
-  }
-  else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
-    if (!sdListFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
-      POPUP_WARNING(STR_NO_MODELS_ON_SD);
-      s_menu_flags = 0;
-    }
-  }
-  else if (result == STR_DELETE_MODEL) {
-    POPUP_CONFIRMATION(STR_DELETEMODEL);
-    // SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
-  }
-  else {
-    // The user choosed a file on SD to restore
-    POPUP_WARNING(eeRestoreModel(sub, (char *)result));
-    // if (!s_warning && g_eeGeneral.currModel == sub)
-    //   eeLoadModel(sub);
-  }
-}
-
-char *strAppendModelSize(char *dest, int size)
-{
-  char s[8] = "---";
-  if (size) sprintf(s, "%d", size);
-  dest = strSetCursor(dest, POS_MODEL_SIZE-getTextWidth(s));
-  return strAppend(dest, s);
-}
-
 #define CATEGORIES_WIDTH 140
 
 void menuModelSelect(evt_t event)

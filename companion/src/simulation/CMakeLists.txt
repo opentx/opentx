@@ -9,6 +9,8 @@ set(simulation_SRCS
 set(simulation_UIS
   simulatordialog-9x.ui
   simulatordialog-taranis.ui
+  simulatordialog-horus.ui
+  simulatordialog-flamenco.ui
   telemetrysimu.ui
   trainersimu.ui
   debugoutput.ui

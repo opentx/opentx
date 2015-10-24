@@ -146,7 +146,7 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="lcdWidget" name="lcd" native="true">
+          <widget class="LcdWidget" name="lcd" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1735,7 +1735,7 @@ QPushButton:checked {
  </widget>
  <customwidgets>
   <customwidget>
-   <class>lcdWidget</class>
+   <class>LcdWidget</class>
    <extends>QWidget</extends>
    <header>lcdwidget.h</header>
    <container>1</container>

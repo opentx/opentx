@@ -19,7 +19,15 @@
 
 #include "simulatorinterface.h"
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBHORUS)
+  #define FLAVOUR "horus"
+  #define NAMESPACE HORUS
+  #define EEPROM_VARIANT 0
+#elif defined(PCBFLAMENCO)
+  #define FLAVOUR "flamenco"
+  #define NAMESPACE FLAMENCO
+  #define EEPROM_VARIANT 0
+#elif defined(PCBTARANIS) && defined(REV9E)
   #define FLAVOUR "taranisx9e"
   #define NAMESPACE TaranisX9E
   #define EEPROM_VARIANT 0x8000

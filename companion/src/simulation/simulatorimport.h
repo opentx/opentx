@@ -50,7 +50,7 @@ if (inputs.rotenc) pind |= 0x20;
 if (inputs.rotenc) PIOB->PIO_PDSR &= ~0x40; else PIOB->PIO_PDSR |= 0x40;
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBFLAMENCO) || (defined(PCBTARANIS) && defined(REV9E))
 if (inputs.rotenc) simuSetKey(KEY_ENTER, true);
 #endif
 #endif

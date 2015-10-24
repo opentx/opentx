@@ -21,10 +21,12 @@
 namespace Ui {
   class SimulatorDialog9X;
   class SimulatorDialogTaranis;
+  class SimulatorDialogFlamenco;
+  class SimulatorDialogHorus;
 }
 
 // TODO rename + move?
-class lcdWidget;
+class LcdWidget;
 class mySlider;
 
 #define SIMULATOR_FLAGS_NOTX              1
@@ -37,6 +39,8 @@ class mySlider;
 #define SIMULATOR_FLAGS_S2_MULTI        128
 #define SIMULATOR_FLAGS_S3_MULTI        256
 #define SIMULATOR_FLAGS_S4_MULTI        512 // reserved for the future
+
+void traceCb(const char * text);
 
 class SimulatorDialog : public QDialog
 {
@@ -56,7 +60,7 @@ class SimulatorDialog : public QDialog
     virtual void updateBeepButton() { }
 
     unsigned int flags;
-    lcdWidget * lcd;
+    LcdWidget * lcd;
     QGraphicsView * leftStick, * rightStick;
     QVector<QDial *> pots;
     QVector<QLabel *> potLabels;
@@ -198,6 +202,50 @@ class SimulatorDialogTaranis: public SimulatorDialog
 
   private:
     Ui::SimulatorDialogTaranis * ui;
+    static uint32_t switchstatus;
+
+  private slots:
+    void resetSH();
+    void on_switchH_sliderReleased();
+};
+
+class SimulatorDialogFlamenco: public SimulatorDialog
+{
+  Q_OBJECT
+
+  public:
+    explicit SimulatorDialogFlamenco(QWidget * parent, SimulatorInterface *simulator, unsigned int flags=0);
+    virtual ~SimulatorDialogFlamenco();
+
+  protected:
+    virtual void getValues();
+    void saveSwitches(void);
+    void restoreSwitches(void);
+
+  private:
+    Ui::SimulatorDialogFlamenco * ui;
+    static uint32_t switchstatus;
+
+  private slots:
+    void resetSH();
+    void on_switchH_sliderReleased();
+};
+
+class SimulatorDialogHorus: public SimulatorDialog
+{
+  Q_OBJECT
+
+  public:
+    explicit SimulatorDialogHorus(QWidget * parent, SimulatorInterface *simulator, unsigned int flags=0);
+    virtual ~SimulatorDialogHorus();
+
+  protected:
+    virtual void getValues();
+    void saveSwitches(void);
+    void restoreSwitches(void);
+
+  private:
+    Ui::SimulatorDialogHorus * ui;
     static uint32_t switchstatus;
 
   private slots:

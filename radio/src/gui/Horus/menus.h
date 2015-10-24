@@ -59,6 +59,7 @@ typedef evt_t & check_event_t;
 
 extern uint8_t menuPageIndex;
 extern uint8_t menuPageCount;
+extern uint16_t linesCount;
 extern vertpos_t m_posVert;
 extern horzpos_t m_posHorz;
 extern vertpos_t s_pgOfs;

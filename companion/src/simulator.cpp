@@ -160,7 +160,11 @@ int main(int argc, char *argv[])
     eepromFileName = QString("eeprom-%1.bin").arg(radioId);
     eepromFileName = eedir.filePath(eepromFileName.toAscii());
     SimulatorFactory *factory = getSimulatorFactory(firmwareId);
-    if (factory->type() == BOARD_TARANIS)
+    if (factory->type() == BOARD_HORUS)
+      dialog = new SimulatorDialogHorus(NULL, factory->create());
+    else if (factory->type() == BOARD_FLAMENCO)
+      dialog = new SimulatorDialogFlamenco(NULL, factory->create());
+    else if (factory->type() == BOARD_TARANIS)
       dialog = new SimulatorDialogTaranis(NULL, factory->create(), SIMULATOR_FLAGS_S1|SIMULATOR_FLAGS_S2);
     else
       dialog = new SimulatorDialog9X(NULL, factory->create());
