@@ -122,20 +122,16 @@ PACK(struct EepromFileHeader
 
 bool RleFile::searchFat()
 {
-  int bestFatIndex = -1;
+  eepromFatHeader = NULL;
+  uint32_t bestFatIndex = 0;
   for (int i=0; i<EEPROM_ZONE_SIZE/EEPROM_FAT_SIZE; i++) {
     EepromHeader * header = (EepromHeader *)(eeprom+i*EEPROM_FAT_SIZE);
     if (header->mark == EEPROM_MARK && (int)header->index >= bestFatIndex) {
-      bestFatIndex = i;
+      eepromFatHeader = header;
+      bestFatIndex = header->index;
     }
   }
-  if (bestFatIndex >= 0) {
-    eepromFatHeader = (EepromHeader *)(eeprom+bestFatIndex*EEPROM_FAT_SIZE);;
-    return true;
-  }
-  else {
-    return false;
-  }
+  return (eepromFatHeader != NULL);
 }
 
 bool RleFile::EeFsOpen(uint8_t *eeprom, int size, BoardEnum board)
