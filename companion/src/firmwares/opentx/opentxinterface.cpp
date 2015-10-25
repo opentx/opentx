@@ -799,7 +799,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case MixersMonitor:
       return id.contains("mixersmon") ? 1 : 0;
     case HasBatMeterRange:
-      return (IS_TARANIS(board) ? true : false);
+      return (IS_TARANIS(board) ? true : id.contains("battgraph"));
     case DangerousFunctions:
       return id.contains("danger") ? 1 : 0;
     default:
