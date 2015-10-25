@@ -9,6 +9,7 @@
 #include <QDoubleSpinBox>
 #include <QPushButton>
 #include <QTimeEdit>
+#include <QTableWidget>
 #ifdef PHONON
 #include <phonon/audiooutput.h>
 #include <phonon/mediaobject.h>
@@ -65,6 +66,9 @@ class CustomFunctionsPanel : public GenericPanel
     void populateFuncCB(QComboBox *b, unsigned int value);
     void populateGVmodeCB(QComboBox *b, unsigned int value);
     void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode=0);
+
+    void addTableCellWidget(QTableWidget * tableWidget, int row, int column, QWidget * widget);
+    void addTableCellLayout(QTableWidget * tableWidget, int row, int column, QLayout * layout);
 
     bool initialized;
     QSet<QString> tracksSet;

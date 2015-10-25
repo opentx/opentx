@@ -52,14 +52,6 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   clickOutput(NULL)
 #endif
 {
-  QGridLayout * gridLayout = new QGridLayout(this);
-
-  addLabel(gridLayout, tr("Switch"), 1);
-  addLabel(gridLayout, tr("Action"), 2);
-  addLabel(gridLayout, tr("Parameters"), 3);
-  addLabel(gridLayout, tr("Enable"), 4, true );
-  addEmptyLabel(gridLayout, 5 );
-
   lock = true;
   int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
 
@@ -89,6 +81,24 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
   CompanionIcon playIcon("play.png");
 
+  QTableWidget * tableWidget = new QTableWidget(this);
+  QVBoxLayout* layout = new QVBoxLayout();
+  layout->addWidget(tableWidget);
+  this->setLayout(layout);
+
+  tableWidget->setRowCount(num_fsw + 1);
+  tableWidget->setColumnCount(5);
+  tableWidget->setShowGrid(false);
+  tableWidget->verticalHeader()->setVisible(false);
+  tableWidget->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+  tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+  tableWidget->setSelectionMode(QAbstractItemView::NoSelection);
+
+  QStringList tableHeader;
+  tableHeader << "#" << tr("Switch") << tr("Action") << tr("Parameters") << tr("Enable");
+  tableWidget->setHorizontalHeaderLabels(tableHeader);
+
   for (int i=0; i<num_fsw; i++) {
     // The label
     QLabel * label = new QLabel(this);
@@ -101,7 +111,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
       label->setText(tr("GF%1").arg(i+1));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(fsw_customContextMenuRequested(QPoint)));
-    gridLayout->addWidget(label, i+1, 0);
+    addTableCellWidget(tableWidget, i, 0, label);
 
     // The switch
     fswtchSwtch[i] = new QComboBox(this);
@@ -109,17 +119,17 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     fswtchSwtch[i]->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
     fswtchSwtch[i]->setMaxVisibleItems(10);
     connect(fswtchSwtch[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
-    gridLayout->addWidget(fswtchSwtch[i], i+1, 1);
+    addTableCellWidget(tableWidget, i, 1, fswtchSwtch[i]);
 
     // The function
     fswtchFunc[i] = new QComboBox(this);
     fswtchFunc[i]->setProperty("index", i);
     connect(fswtchFunc[i], SIGNAL(currentIndexChanged(int)), this, SLOT(functionEdited()));
-    gridLayout->addWidget(fswtchFunc[i], i+1, 2);
+    addTableCellWidget(tableWidget, i, 2, fswtchFunc[i]);
 
     // The parameters
-    QHBoxLayout *paramLayout = new QHBoxLayout();
-    gridLayout->addLayout(paramLayout, i+1, 3);
+    QHBoxLayout * paramLayout = new QHBoxLayout();
+    addTableCellLayout(tableWidget, i, 3, paramLayout);
 
     fswtchGVmode[i] = new QComboBox(this);
     fswtchGVmode[i]->setProperty("index", i);
@@ -178,7 +188,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 #endif
 
     QHBoxLayout *repeatLayout = new QHBoxLayout();
-    gridLayout->addLayout(repeatLayout, i+1, 4);
+    addTableCellLayout(tableWidget, i, 4, repeatLayout);
     fswtchRepeat[i] = new RepeatComboBox(this, functions[i].repeatParam);
     repeatLayout->addWidget(fswtchRepeat[i], i+1);
     connect(fswtchRepeat[i], SIGNAL(modified()), this, SLOT(onChildModified()));
@@ -191,12 +201,26 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     connect(fswtchEnable[i], SIGNAL(stateChanged(int)), this, SLOT(customFunctionEdited()));
   }
 
-  // Push rows upward
-  addDoubleSpring(gridLayout, 5, num_fsw+1);
-
   disableMouseScrolling();
 
   lock = false;
+}
+
+
+void CustomFunctionsPanel::addTableCellWidget(QTableWidget * tableWidget, int row, int column, QWidget * widget)
+{
+  QHBoxLayout * layout = new QHBoxLayout();
+  layout->addWidget(widget);
+  QWidget * containerWidget = new QWidget(this);
+  containerWidget->setLayout(layout);
+  tableWidget->setCellWidget(row, column, containerWidget);
+}
+
+void CustomFunctionsPanel::addTableCellLayout(QTableWidget * tableWidget, int row, int column, QLayout * layout)
+{
+  QWidget * containerWidget = new QWidget(this);
+  containerWidget->setLayout(layout);
+  tableWidget->setCellWidget(row, column, containerWidget);
 }
 
 CustomFunctionsPanel::~CustomFunctionsPanel()
