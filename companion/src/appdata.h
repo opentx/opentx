@@ -25,7 +25,7 @@
 #include <QSettings>
 
 #define COMPANY "OpenTX"
-#define PRODUCT "Companion 2.1"
+#define PRODUCT "Companion 2.2"
 
 #define MAX_PROFILES 15
 #define MAX_JOYSTICKS 8
