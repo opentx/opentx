@@ -255,15 +255,8 @@ void ModulePanel::update()
     }
   }
   else if (IS_TARANIS(firmware->getBoard())) {
-    switch(model->trainerMode) {
-      case TRAINER_MASTER_JACK:
-        break;
-      case TRAINER_SLAVE_JACK:
-        mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
-        break;
-      default:
-        mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
-        break;
+    if (model->trainerMode == TRAINER_SLAVE_JACK) {
+      mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
     }
   }
   else if (model->trainerMode != TRAINER_MASTER_JACK) {
