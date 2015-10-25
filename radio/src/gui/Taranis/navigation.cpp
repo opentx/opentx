@@ -546,7 +546,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
     if (horTab) {
       linesCount = 0;
       for (int i=0; i<rowcount; i++) {
-        if (i>=horTabMax || horTab[i] != HIDDEN_ROW) {
+        if (i>horTabMax || horTab[i] != HIDDEN_ROW) {
           linesCount++;
         }
       }
@@ -577,7 +577,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
           else {
             linesCount = s_pgOfs + NUM_BODY_LINES;
             for (int i=lastLine; i<rowcount; i++) {
-              if (i>=horTabMax || horTab[i] != HIDDEN_ROW) {
+              if (i>horTabMax || horTab[i] != HIDDEN_ROW) {
                 linesCount++;
               }
             }
