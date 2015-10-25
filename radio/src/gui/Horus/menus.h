@@ -267,14 +267,14 @@ extern uint8_t         s_warning_type;
 
 #define MENU_X                 80
 #define MENU_W                 LCD_W-(2*MENU_X)
-#define POPUP_X                45
+#define POPUP_X                130
 #define POPUP_Y                70
-#define POPUP_W                LCD_W-(2*POPUP_X)
-#define POPUP_H                90
+#define POPUP_W                300
+#define POPUP_H                130
 #define WARNING_LINE_LEN       32
 #define WARNING_LINE_X         (POPUP_X+86)
 #define WARNING_LINE_Y         (POPUP_Y+9)
-#define WARNING_INFOLINE_Y     (WARNING_LINE_Y+43)
+#define WARNING_INFOLINE_Y     (WARNING_LINE_Y+64)
 
 void displayBox();
 void displayPopup(const char *title);

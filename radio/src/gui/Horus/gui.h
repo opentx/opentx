@@ -98,3 +98,5 @@ extern const uint8_t LBM_RSCALE[];
 extern const uint8_t * const LBM_RADIO_ICONS[];
 extern const uint8_t * const LBM_MODEL_ICONS[];
 
+extern const uint16_t LBM_ASTERISK[];
+

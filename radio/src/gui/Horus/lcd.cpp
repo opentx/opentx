@@ -143,7 +143,7 @@ uint8_t getStringInfo(const char *s)
 
 int getFontHeight(LcdFlags flags)
 {
-  static const int heightTable[16] = { 12, 10, 11, 14, 18, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12 };
+  static const int heightTable[16] = { 12, 10, 11, 14, 32, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12 };
   return heightTable[FONTSIZE(flags) >> 8];
 }
 

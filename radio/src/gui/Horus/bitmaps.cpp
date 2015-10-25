@@ -212,3 +212,6 @@ const uint8_t * const LBM_MODEL_ICONS[] = {
   LBM_TELEMETRY_ICON
 };
 
+const uint16_t LBM_ASTERISK[] = {
+#include "../../bitmaps/Horus/asterisk.lbm"
+};

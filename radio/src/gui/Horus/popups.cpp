@@ -52,7 +52,7 @@ void displayAlertBox()
   lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
   lcdDrawRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, SOLID, ALARM_COLOR);
   lcdDrawRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, SOLID, ALARM_COLOR);
-  // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_ALERT);
+  lcdDrawBitmap(POPUP_X-80, POPUP_Y-30, LBM_ASTERISK);
 }
 
 void displayWarningBox()
@@ -79,10 +79,10 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
   lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, STR_WARNING, ALARM_COLOR|DBLSIZE);
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+15, title, ALARM_COLOR|DBLSIZE);
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+25, title, ALARM_COLOR|DBLSIZE);
 #else
   lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, title, ALARM_COLOR|DBLSIZE);
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+15, STR_WARNING, ALARM_COLOR|DBLSIZE);
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+25, STR_WARNING, ALARM_COLOR|DBLSIZE);
 #endif
 
   if (t) lcd_puts(WARNING_LINE_X, WARNING_INFOLINE_Y, t);
