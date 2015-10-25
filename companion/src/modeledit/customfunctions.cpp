@@ -82,16 +82,16 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   CompanionIcon playIcon("play.png");
 
   QTableWidget * tableWidget = new QTableWidget(this);
-  QVBoxLayout* layout = new QVBoxLayout();
+  QVBoxLayout * layout = new QVBoxLayout();
   layout->addWidget(tableWidget);
   this->setLayout(layout);
 
   tableWidget->setRowCount(num_fsw + 1);
   tableWidget->setColumnCount(5);
+
   tableWidget->setShowGrid(false);
   tableWidget->verticalHeader()->setVisible(false);
   tableWidget->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-  tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
   tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
   tableWidget->setSelectionMode(QAbstractItemView::NoSelection);
 
@@ -116,7 +116,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     // The switch
     fswtchSwtch[i] = new QComboBox(this);
     fswtchSwtch[i]->setProperty("index", i);
-    fswtchSwtch[i]->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
+    fswtchSwtch[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     fswtchSwtch[i]->setMaxVisibleItems(10);
     connect(fswtchSwtch[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     addTableCellWidget(tableWidget, i, 1, fswtchSwtch[i]);
@@ -124,6 +124,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     // The function
     fswtchFunc[i] = new QComboBox(this);
     fswtchFunc[i]->setProperty("index", i);
+    fswtchFunc[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(fswtchFunc[i], SIGNAL(currentIndexChanged(int)), this, SLOT(functionEdited()));
     addTableCellWidget(tableWidget, i, 2, fswtchFunc[i]);
 
@@ -133,13 +134,13 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
     fswtchGVmode[i] = new QComboBox(this);
     fswtchGVmode[i]->setProperty("index", i);
+    fswtchGVmode[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(fswtchGVmode[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     paramLayout->addWidget(fswtchGVmode[i]);
 
     fswtchParamGV[i] = new QCheckBox(this);
     fswtchParamGV[i]->setProperty("index", i);
     fswtchParamGV[i]->setText("GV");
-    fswtchParamGV[i]->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
     connect(fswtchParamGV[i], SIGNAL(stateChanged(int)), this, SLOT(customFunctionEdited()));
     paramLayout->addWidget(fswtchParamGV[i]);
 
@@ -160,11 +161,13 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     fswtchParamT[i] = new QComboBox(this);
     fswtchParamT[i]->setProperty("index", i);
     paramLayout->addWidget(fswtchParamT[i]);
+    fswtchParamT[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(fswtchParamT[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
 
     fswtchParamArmT[i] = new QComboBox(this);
     fswtchParamArmT[i]->setProperty("index", i);
     fswtchParamArmT[i]->setEditable(true);
+    fswtchParamArmT[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     paramLayout->addWidget(fswtchParamArmT[i]);
 
     connect(fswtchParamArmT[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
@@ -187,16 +190,17 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     connect(playBT[i], SIGNAL(pressed()), this, SLOT(playMusic()));
 #endif
 
-    QHBoxLayout *repeatLayout = new QHBoxLayout();
+    QHBoxLayout * repeatLayout = new QHBoxLayout();
     addTableCellLayout(tableWidget, i, 4, repeatLayout);
     fswtchRepeat[i] = new RepeatComboBox(this, functions[i].repeatParam);
+    fswtchRepeat[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     repeatLayout->addWidget(fswtchRepeat[i], i+1);
     connect(fswtchRepeat[i], SIGNAL(modified()), this, SLOT(onChildModified()));
 
     fswtchEnable[i] = new QCheckBox(this);
     fswtchEnable[i]->setProperty("index", i);
     fswtchEnable[i]->setText(tr("ON"));
-    fswtchEnable[i]->setFixedWidth( 80 );
+    fswtchEnable[i]->setFixedWidth(200);
     repeatLayout->addWidget(fswtchEnable[i], i+1);
     connect(fswtchEnable[i], SIGNAL(stateChanged(int)), this, SLOT(customFunctionEdited()));
   }
@@ -204,6 +208,10 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   disableMouseScrolling();
 
   lock = false;
+
+  update();
+  tableWidget->resizeColumnsToContents();
+  tableWidget->setColumnWidth(3, 300);
 }
 
 
