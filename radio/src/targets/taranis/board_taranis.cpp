@@ -264,7 +264,7 @@ void checkTrainerSettings()
   uint8_t requiredTrainerMode = g_model.trainerMode;
   if (requiredTrainerMode != currentTrainerMode) {
     switch (currentTrainerMode) {
-      case TRAINER_MODE_MASTER:
+      case TRAINER_MODE_MASTER_TRAINER_JACK:
         stop_trainer_capture();
         break;
       case TRAINER_MODE_SLAVE:

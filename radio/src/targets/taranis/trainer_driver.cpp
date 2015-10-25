@@ -127,13 +127,15 @@ extern "C" void TIM3_IRQHandler()
   if ( (TRAINER_TIMER->DIER & TIM_DIER_CC3IE ) && ( TRAINER_TIMER->SR & TIM_SR_CC3IF ) ) {
     // capture mode on trainer jack
     capture = TRAINER_TIMER->CCR3 ;
-    doCapture = true;
+    if (currentTrainerMode == TRAINER_MODE_MASTER_TRAINER_JACK)
+      doCapture = true;
   }
 
   if ( ( TRAINER_TIMER->DIER & TIM_DIER_CC2IE ) && ( TRAINER_TIMER->SR & TIM_SR_CC2IF ) ) {
     // capture mode on heartbeat pin (external module)
     capture = TRAINER_TIMER->CCR2 ;
-    doCapture = true ;
+    if (currentTrainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
+      doCapture = true ;
   }
 
   if (doCapture) {
