@@ -5,11 +5,7 @@ import sys
 from PyQt4 import Qt, QtCore, QtGui
 import glob
 
-try:
-    app = Qt.QCoreApplication(sys.argv)
-except:
-    pass
-    # app = Qt.QCoreApplication(sys.argv)
+app = Qt.QApplication(sys.argv)
 
 for f in glob.glob("fonts/*.ttf"):
     QtGui.QFontDatabase.addApplicationFont(f)
