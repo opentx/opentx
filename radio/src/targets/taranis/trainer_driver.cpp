@@ -249,8 +249,10 @@ extern "C" void HEARTBEAT_USART_IRQHandler()
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     data = HEARTBEAT_USART->DR;
 
-    if (!(status & USART_FLAG_ERRORS))
-      sbusFifo.push(data);
+    if (!(status & USART_FLAG_ERRORS)) {
+      if (currentTrainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE)
+        sbusFifo.push(data);
+    }
 
     status = HEARTBEAT_USART->SR;
   }
