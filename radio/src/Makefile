@@ -393,8 +393,13 @@ endif
 
 IMG2LBM = -$(PYTHON) ../util/img2lbm.py
 BIN2LBM = -$(PYTHON) ../util/bin2lbm.py
-FONT2PNG = -$(PYTHON) ../util/font2png.py
+ifeq ($(OS), Windows_NT)
+  FONT2PNG = -$(PYTHON) ../util/font2png.py
+else
+  FONT2PNG = -xvfb-run --server-args="-screen 0 1024x768x24" $(PYTHON) ../util/font2png.py
+endif
 TRANSLATE = -$(PYTHON) ../util/translate.py
+
 VERSION = 2.2.0$(OPENTX_VERSION_SUFFIX)
 
 THIRDPARTY = thirdparty

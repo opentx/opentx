@@ -44,7 +44,9 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
     font.setPixelSize(fontsize)
     font.setBold(fontbold)
     font.setHintingPreference(QtGui.QFont.PreferNoHinting)
+    font.setStyleStrategy(QtGui.QFont.PreferAntialias)
     metrics = QtGui.QFontMetrics(font)
+    
     width = getFontWidth(fontsize, metrics)
     top, bottom = getFontTopBottom(fontsize, metrics)
     extraImage = QtGui.QImage("fonts/extra_%dpx.png" % (fontsize+1))
