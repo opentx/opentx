@@ -201,4 +201,18 @@ private:
 double toDecimalCoordinate(const QString & value);
 QStringList extractLatLon(const QString & position);
 
+class TableLayout
+{
+public:
+  TableLayout(QWidget * parent, int rowCount, const QStringList & headerLabels);
+  // ~TableLayout() ;
+
+  void addWidget(int row, int column, QWidget * widget);
+  void addLayout(int row, int column, QLayout * layout);
+
+  QTableWidget * getTableWidget() { return tableWidget; };
+private:
+  QTableWidget * tableWidget;  
+};
+
 #endif // HELPERS_H
