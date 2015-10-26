@@ -276,7 +276,7 @@ void displayTopBar()
     LCD_NOTIF_ICON(x, ICON_TRAINEE);
     x -= 12;
   }
-  else if (TRAINER_CONNECTED() && !SLAVE_MODE()) {
+  else if (TRAINER_CONNECTED() && !SLAVE_MODE() && IS_TRAINER_INPUT_VALID()) {
     LCD_NOTIF_ICON(x, ICON_TRAINER);
     x -= 12;
   }
