@@ -127,7 +127,7 @@ extern "C" void TIM3_IRQHandler()
   if ( (TRAINER_TIMER->DIER & TIM_DIER_CC3IE ) && ( TRAINER_TIMER->SR & TIM_SR_CC3IF ) ) {
     // capture mode on trainer jack
     capture = TRAINER_TIMER->CCR3 ;
-    if (currentTrainerMode == TRAINER_MODE_MASTER_TRAINER_JACK)
+    if (TRAINER_CONNECTED() && currentTrainerMode == TRAINER_MODE_MASTER_TRAINER_JACK)
       doCapture = true;
   }
 
