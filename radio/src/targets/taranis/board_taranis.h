@@ -143,7 +143,12 @@ void configure_pins( uint32_t pins, uint16_t config );
 extern uint16_t sessionTimer;
 
 #define SLAVE_MODE()         (g_model.trainerMode == TRAINER_MODE_SLAVE)
+
+#if defined(REV9E)
+#define TRAINER_CONNECTED()  (true)
+#else
 #define TRAINER_CONNECTED()  (GPIO_ReadInputDataBit(TRAINER_GPIO_DETECT, TRAINER_GPIO_PIN_DETECT) == Bit_RESET)
+#endif
 
 #ifdef __cplusplus
 extern "C" {
