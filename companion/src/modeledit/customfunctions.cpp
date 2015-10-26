@@ -84,6 +84,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   QTableWidget * tableWidget = new QTableWidget(this);
   QVBoxLayout * layout = new QVBoxLayout();
   layout->addWidget(tableWidget);
+  layout->setContentsMargins(0, 0, 0, 0);
   this->setLayout(layout);
 
   tableWidget->setRowCount(num_fsw + 1);
@@ -94,6 +95,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   tableWidget->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
   tableWidget->setSelectionMode(QAbstractItemView::NoSelection);
+  tableWidget->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
 
   QStringList tableHeader;
   tableHeader << "#" << tr("Switch") << tr("Action") << tr("Parameters") << tr("Enable");
@@ -219,13 +221,12 @@ void CustomFunctionsPanel::addTableCellWidget(QTableWidget * tableWidget, int ro
 {
   QHBoxLayout * layout = new QHBoxLayout();
   layout->addWidget(widget);
-  QWidget * containerWidget = new QWidget(this);
-  containerWidget->setLayout(layout);
-  tableWidget->setCellWidget(row, column, containerWidget);
+  addTableCellLayout(tableWidget, row, column, layout);
 }
 
 void CustomFunctionsPanel::addTableCellLayout(QTableWidget * tableWidget, int row, int column, QLayout * layout)
 {
+  layout->setContentsMargins(1, 3, 1, 3);
   QWidget * containerWidget = new QWidget(this);
   containerWidget->setLayout(layout);
   tableWidget->setCellWidget(row, column, containerWidget);
