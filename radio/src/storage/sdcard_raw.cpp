@@ -143,6 +143,7 @@ const char * loadModel(const char * filename)
 }
 
 const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
+const char RADIO_MODELSLIST_PATH[] = RADIO_PATH "/models.txt";
 
 const char * loadGeneralSettings()
 {
@@ -214,4 +215,176 @@ void storageFormat()
 {
   sdCheckAndCreateDirectory(RADIO_PATH);
   sdCheckAndCreateDirectory(MODELS_PATH);
+}
+
+struct StorageModelsList {
+  FIL file;
+};
+
+const char * storageOpenModelsList(StorageModelsList * storage)
+{
+  FRESULT result = f_open(&storage->file, RADIO_MODELSLIST_PATH, FA_OPEN_EXISTING | FA_READ);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+  return NULL;
+}
+
+bool storageReadNextLine(StorageModelsList * storage, char * line, int maxlen)
+{
+  char c;
+  unsigned int read;
+  int len=0;
+  while (1) {
+    FRESULT result = f_read(&storage->file, (uint8_t *)&c, 1, &read);
+    if (result != FR_OK || read != 1) {
+      line[len] = '\0';
+      return false;
+    }
+    if (c == '\n') {
+      if (len > 0) {
+        // we skip empty lines
+        line[len] = '\0';
+        return true;
+      }
+    }
+    else if (c != '\r' && len < maxlen) {
+      line[len++] = c;
+    }
+  }
+}
+
+int storageGetCategoryLength(const char * line)
+{
+  int len = strlen(line);
+  if (len > 2 && line[0] == '[' && line[len-1] == ']') {
+    return len-2;
+  }
+  else {
+    return 0;
+  }
+}
+
+bool storageReadNextCategory(StorageModelsList * storage, char * line, int maxlen)
+{
+  bool result = true;
+  while (result) {
+    result = storageReadNextLine(storage, line, maxlen);
+    int len = storageGetCategoryLength(line);
+    if (len > 0) {
+      memmove(line, &line[1], len);
+      line[len] = '\0';
+      return result;
+    }
+  }
+  line[0] = '\0';
+  return false;
+}
+
+bool storageSeekCategory(StorageModelsList * storage, int category)
+{
+  f_lseek(&storage->file, 0);
+  char line[256] = "";
+  int result = true;
+  for (int i=0; result && i<=category; i++) {
+    result = storageReadNextCategory(storage, line, sizeof(line)-1);
+  }
+  return line[0] != '\0';
+}
+
+bool storageReadNextModel(StorageModelsList * storage, char * line, int maxlen)
+{
+  bool result = true;
+  while (result) {
+    result = storageReadNextLine(storage, line, maxlen);
+    if (line[0] == '[')
+      return false;
+    else if (line[0] != '\0')
+      return result;
+  }
+  line[0] = '\0';
+  return false;
+}
+
+#define STORAGE_INSERT 1
+#define STORAGE_REMOVE 2
+#define STORAGE_RENAME 3
+
+const char * storageModifyModel(unsigned int operation, int category, int position, const char * name="")
+{
+  StorageModelsList storage;
+  FIL file;
+  const char * error = storageOpenModelsList(&storage);
+  if (error) {
+    return error;
+  }
+
+  {
+    FRESULT result = f_open(&file, RADIO_PATH "/models.tmp", FA_CREATE_ALWAYS | FA_WRITE);
+    if (result != FR_OK) {
+      return SDCARD_ERROR(result);
+    }
+  }
+
+  bool operationdone = false;
+  bool result = true;
+  int categoryindex = -1;
+  int modelindex = 0;
+
+  while (result) {
+    char line[256];
+    result = storageReadNextLine(&storage, line, sizeof(line)-1);
+    if (!operationdone) {
+      int len = storageGetCategoryLength(line);
+      if (len > 0) {
+        if (categoryindex++ == category) {
+          operationdone = true;
+          if (operation == STORAGE_INSERT) {
+            f_puts(name, &file);
+            f_putc('\n', &file);
+          }
+        }
+      }
+      else if (categoryindex == category) {
+        if (modelindex++ == position) {
+          operationdone = true;
+          if (operation == STORAGE_INSERT) {
+            f_puts(name, &file);
+            f_putc('\n', &file);
+          }
+          else if (operation == STORAGE_RENAME) {
+            f_puts(name, &file);
+            f_putc('\n', &file);
+            continue;
+          }
+        }
+      }
+    }
+    f_puts(line, &file);
+    f_putc('\n', &file);
+  }
+
+  if (!operationdone && categoryindex>=0 && operation==STORAGE_INSERT) {
+    f_puts(name, &file);
+    f_putc('\n', &file);
+  }
+
+  f_close(&file);
+  f_rename(RADIO_PATH "/models.tmp", RADIO_MODELSLIST_PATH);
+  return NULL;
+}
+
+const char * storageInsertModel(const char * name, int category, int position)
+{
+  return storageModifyModel(STORAGE_INSERT, category, position, name);
+}
+
+const char * storageRemoveModel(int category, int position)
+{
+  return storageModifyModel(STORAGE_REMOVE, category, position);
+}
+
+const char * storageRenameModel(const char * name, int category, int position)
+{
+  return storageModifyModel(STORAGE_RENAME, category, position, name);
 }

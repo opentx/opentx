@@ -38,13 +38,10 @@
 
 void menuStatisticsView(evt_t event)
 {
-  drawMenuTemplate("Statistics", event);
-
-  switch(event)
-  {
+  switch(event) {
     case EVT_KEY_FIRST(KEY_UP):
       chainMenu(menuStatisticsDebug);
-      break;
+      return;
 
     case EVT_KEY_LONG(KEY_MENU):
       g_eeGeneral.globalTimer = 0;
@@ -54,8 +51,10 @@ void menuStatisticsView(evt_t event)
 
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
-      break;
+      return;
   }
+
+  drawMenuTemplate("Statistics", event);
 
   lcdDrawText(  10, MENU_CONTENT_TOP + FH*0, "\037\145TOT:\037\317BATT:", HEADER_COLOR);
   lcdDrawText(  10, MENU_CONTENT_TOP + FH*1, "TM1:\037\145TM2:", HEADER_COLOR);

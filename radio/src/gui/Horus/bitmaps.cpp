@@ -212,6 +212,22 @@ const uint8_t * const LBM_MODEL_ICONS[] = {
   LBM_TELEMETRY_ICON
 };
 
+/*
+ *  Model selection screen bitmaps
+ */
+
+const uint8_t LBM_LIBRARY_ICON[] = {
+#include "../../bitmaps/Horus/mask_library.lbm"
+};
+
+const uint8_t LBM_LIBRARY_SLOT[] = {
+#include "../../bitmaps/Horus/mask_library_slot.lbm"
+};
+
+/*
+ * Other
+ */
+
 const uint16_t LBM_ASTERISK[] = {
 #include "../../bitmaps/Horus/asterisk.lbm"
 };

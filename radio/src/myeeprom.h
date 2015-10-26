@@ -119,7 +119,7 @@
   #define MAX_INPUTS           32
   #define NUM_TRAINER          16
   #define NUM_POTS             3
-  #define NUM_XPOTS            0
+  #define NUM_XPOTS            3
   #define MAX_SENSORS          32
 #elif defined(PCBFLAMENCO)
   #define MAX_MODELS           60
