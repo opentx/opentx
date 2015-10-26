@@ -96,6 +96,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
   tableWidget->setSelectionMode(QAbstractItemView::NoSelection);
   tableWidget->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
+  tableWidget->setStyleSheet("QTableWidget {background-color: transparent;}");
 
   QStringList tableHeader;
   tableHeader << "#" << tr("Switch") << tr("Action") << tr("Parameters") << tr("Enable");
