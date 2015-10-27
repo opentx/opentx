@@ -249,14 +249,14 @@ static int io_open (lua_State *L) {
   const char *md = luaL_optstring(L, 2, "r");
   LStream *p = newfile(L);
 #if defined(USE_FATFS)
-  BYTE mode;
-  if (strchr(md, 'w') || strchr(md, 'a'))
-    mode = FA_WRITE;
-  else
-    mode = FA_READ;
+  BYTE mode = FA_READ;
+  if (*md == 'w')
+    mode = FA_WRITE | FA_CREATE_ALWAYS;     // always create file and truncate it
+  else if (*md == 'a')
+    mode = FA_WRITE | FA_OPEN_ALWAYS;       // always open file (create it if necessary) 
   FRESULT result = f_open(&p->f, filename, mode);
-  if (result == FR_OK && strchr(md, 'a'))
-    result = f_lseek(&p->f, f_size(&p->f));
+  if (result == FR_OK && *md == 'a')
+    result = f_lseek(&p->f, f_size(&p->f));   // seek to the end of the file
   return result == FR_OK ? 1 : 0;
 #else
   const char *mode = md;  /* to traverse/check mode */
