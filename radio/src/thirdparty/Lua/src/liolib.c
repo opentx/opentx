@@ -19,6 +19,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #define liolib_c
 
@@ -183,14 +184,10 @@ static LStream *newprefile (lua_State *L) {
 
 #if !defined(USE_FATFS)
 static int aux_close (lua_State *L) {
-#if !defined(USE_FATFS)
   LStream *p = tolstream(L);
   lua_CFunction cf = p->closef;
   p->closef = NULL;  /* mark stream as closed */
   return (*cf)(L);  /* close it */
-#else
-  return 0;
-#endif
 }
 #endif
 
@@ -559,8 +556,9 @@ static int g_write (lua_State *L, FILE *f, int arg) {
   for (; nargs--; arg++) {
     if (lua_type(L, arg) == LUA_TNUMBER) {
       /* optimization: could be done exactly as for strings */
-      status = status &&
-          f_printf(f, LUA_NUMBER_FMT, lua_tonumber(L, arg)) > 0;
+      char s[LUAI_MAXNUMBER2STR];
+      sprintf(s, LUA_NUMBER_FMT, lua_tonumber(L, arg));
+      status = status && f_puts(s, f) > 0;
     }
     else {
       size_t l;
