@@ -627,7 +627,7 @@ Mode 4:
        <item row="10" column="2" colspan="2">
         <widget class="QPushButton" name="sdPathButton">
          <property name="text">
-          <string>Open Folder</string>
+          <string>Select Folder</string>
          </property>
         </widget>
        </item>
@@ -637,7 +637,7 @@ Mode 4:
           <string>The profile specific folder,  if set, will override general Backup folder</string>
          </property>
          <property name="text">
-          <string>Open Folder</string>
+          <string>Select Folder</string>
          </property>
         </widget>
        </item>
@@ -854,7 +854,7 @@ Mode 4:
        <item row="12" column="2" colspan="2">
         <widget class="QPushButton" name="backupPathButton">
          <property name="text">
-          <string>Open Folder</string>
+          <string>Select Folder</string>
          </property>
         </widget>
        </item>
@@ -874,14 +874,14 @@ Mode 4:
        <item row="0" column="2" colspan="2">
         <widget class="QPushButton" name="ge_pathButton">
          <property name="text">
-          <string>Find Executable</string>
+          <string>Select Executable</string>
          </property>
         </widget>
        </item>
        <item row="16" column="2" colspan="2">
         <widget class="QPushButton" name="libraryPathButton">
          <property name="text">
-          <string>Open Folder</string>
+          <string>Select Folder</string>
          </property>
         </widget>
        </item>
@@ -1001,7 +1001,7 @@ Mode 4:
        <item row="0" column="3">
         <widget class="QPushButton" name="snapshotPathButton">
          <property name="text">
-          <string>Open Folder</string>
+          <string>Select Folder</string>
          </property>
          <property name="flat">
           <bool>false</bool>
