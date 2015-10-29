@@ -842,3 +842,4 @@ Peter McHenry
 Julien lecoquierre
 Jean-Marie Clay
 Robert Nicoll
+Dan Nixon
