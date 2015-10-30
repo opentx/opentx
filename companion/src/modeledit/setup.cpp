@@ -306,6 +306,11 @@ void ModulePanel::update()
 
   ui->failsafesLayoutLabel->setVisible(mask & MASK_FAILSAFES);
   ui->failsafesFrame->setVisible(mask & MASK_FAILSAFES);
+
+  if (mask & MASK_CHANNELS_RANGE) {
+    ui->channelsStart->setMaximum(32 - ui->channelsCount->value());
+    ui->channelsCount->setMaximum(qMin(16, 32-ui->channelsStart->value()));
+  }
 }
 
 void ModulePanel::on_trainerMode_currentIndexChanged(int index)
