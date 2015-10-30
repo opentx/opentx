@@ -264,7 +264,7 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
       QDomDocument doc(ER9X_EEPROM_FILE_TYPE);
       bool xmlOK = doc.setContent(&file);
       if(xmlOK) {
-        std::bitset<NUM_ERRORS> errors(LoadEepromXml(radioData, doc));
+        std::bitset<NUM_ERRORS> errors((unsigned long long)LoadEepromXml(radioData, doc));
         if (errors.test(NO_ERROR)) {
           ui->modelsList->refreshList();
           if(resetCurrentFile) setCurrentFile(fileName);
@@ -295,7 +295,7 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
 
       file.close();
 
-      std::bitset<NUM_ERRORS> errors(LoadEeprom(radioData, eeprom, eeprom_size));
+      std::bitset<NUM_ERRORS> errors((unsigned long long)LoadEeprom(radioData, eeprom, eeprom_size));
       if (!errors.test(NO_ERROR)) {
         ShowEepromErrors(this, tr("Error"), tr("Invalid EEPROM File %1").arg(fileName), errors.to_ulong());
         return false;
@@ -333,9 +333,9 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
           return false;
       }
 
-      std::bitset<NUM_ERRORS> errorsEeprom(LoadEeprom(radioData, eeprom, eeprom_size));
+      std::bitset<NUM_ERRORS> errorsEeprom((unsigned long long)LoadEeprom(radioData, eeprom, eeprom_size));
       if (!errorsEeprom.test(NO_ERROR)) {
-        std::bitset<NUM_ERRORS> errorsBackup(LoadBackup(radioData, eeprom, eeprom_size, 0));
+        std::bitset<NUM_ERRORS> errorsBackup((unsigned long long)LoadBackup(radioData, eeprom, eeprom_size, 0));
         if (!errorsBackup.test(NO_ERROR)) {
           ShowEepromErrors(this, tr("Error"), tr("Invalid binary EEPROM File %1").arg(fileName), (errorsEeprom | errorsBackup).to_ulong());
           return false;
@@ -656,7 +656,7 @@ bool MdiChild::loadBackup()
         return false;
     }
 
-    std::bitset<NUM_ERRORS> errorsEeprom(LoadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index));
+    std::bitset<NUM_ERRORS> errorsEeprom((unsigned long long)LoadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index));
     if (!errorsEeprom.test(NO_ERROR)) {
       ShowEepromErrors(this, tr("Error"), tr("Invalid binary backup File %1").arg(fileName), (errorsEeprom).to_ulong());
       return false;
