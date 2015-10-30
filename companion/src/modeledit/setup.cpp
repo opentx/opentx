@@ -654,6 +654,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   if (firmware->getCapability(ModelTrainerEnable)) {
     modules[C9X_NUM_MODULES] = new ModulePanel(this, model, model.moduleData[C9X_NUM_MODULES], generalSettings, firmware, -1);
     ui->modulesLayout->addWidget(modules[C9X_NUM_MODULES]);
+    connect(modules[C9X_NUM_MODULES], SIGNAL(modified()), this, SLOT(onChildModified()));
   }
 
   disableMouseScrolling();
