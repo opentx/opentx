@@ -673,13 +673,13 @@ void menuModelFailsafe(uint8_t event)
 
   if (event == EVT_KEY_LONG(KEY_ENTER) && s_editMode) {
     s_noHi = NO_HI_LEN;
-    g_model.moduleData[g_moduleIdx].failsafeChannels[m_posVert] = channelOutputs[m_posVert];
+    g_model.moduleData[g_moduleIdx].failsafeChannels[m_posVert] = channelOutputs[m_posVert+g_model.moduleData[g_moduleIdx].channelsStart];
     eeDirty(EE_MODEL);
     AUDIO_WARNING1();
     SEND_FAILSAFE_NOW(g_moduleIdx);
   }
 
-  SIMPLE_SUBMENU_NOTITLE(NUM_CHNOUT);
+  SIMPLE_SUBMENU_NOTITLE(NUM_CHANNELS(g_moduleIdx));
 
   SET_SCROLLBAR_X(0);
 
@@ -688,10 +688,6 @@ void menuModelFailsafe(uint8_t event)
   const uint8_t SLIDER_W = 64;
   // Column separator
   lcd_vline(LCD_W/2, FH, LCD_H-FH);
-
-  if (m_posVert >= 16) {
-    ch = 16;
-  }
 #else
   #define COL_W   (LCD_W)
   const uint8_t SLIDER_W = 90;
@@ -712,59 +708,64 @@ void menuModelFailsafe(uint8_t event)
     // Channels
     for (uint8_t line=0; line<8; line++) {
       uint8_t y = 9+line*7;
-      int32_t val;
+      int32_t failsafeValue = 0;
+      bool failsafeEditable = false;
       uint8_t ofs = (col ? 0 : 1);
 
-      if (ch < g_model.moduleData[g_moduleIdx].channelsStart || ch >= NUM_CHANNELS(g_moduleIdx) + g_model.moduleData[g_moduleIdx].channelsStart)
-        val = 0;
-      else if (s_editMode && m_posVert == ch)
-        val = channelOutputs[ch];
-      else
-        val = g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line];
+      if (ch < NUM_CHANNELS(g_moduleIdx)) {
+        if (s_editMode && m_posVert == ch) {
+          failsafeValue = channelOutputs[ch+g_model.moduleData[g_moduleIdx].channelsStart];
+        }
+        else {
+          failsafeValue = g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line];
+        }
+        failsafeEditable = true;
+      }
 
+      if (failsafeEditable) {
 #if defined(PCBTARANIS)
-      // Channel name if present, number if not
-      uint8_t lenLabel = ZLEN(g_model.limitData[ch].name);
-      if (lenLabel > 4) {
-        newLongNames = longNames = true;
-      }
-
-      if (lenLabel > 0)
-        lcd_putsnAtt(x+1-ofs, y, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR | SMLSIZE);
-      else
+        // Channel name if present, number if not
+        uint8_t lenLabel = ZLEN(g_model.limitData[ch].name);
+        if (lenLabel > 4) {
+          newLongNames = longNames = true;
+        }
+  
+        if (lenLabel > 0)
+          lcd_putsnAtt(x+1-ofs, y, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR | SMLSIZE);
+        else
+          putsChn(x+1-ofs, y, ch+1, SMLSIZE);
+#else
         putsChn(x+1-ofs, y, ch+1, SMLSIZE);
-#else
-      putsChn(x+1-ofs, y, ch+1, SMLSIZE);
 #endif
-
-      // Value
-      LcdFlags flags = TINSIZE;
-      if (m_posVert == ch && !s_noHi) {
-        flags |= INVERS;
-        if (s_editMode)
-          flags |= BLINK;
-      }
+  
+        // failsafeValueue
+        LcdFlags flags = TINSIZE;
+        if (m_posVert == ch && !s_noHi) {
+          flags |= INVERS;
+          if (s_editMode)
+            flags |= BLINK;
+        }
 #if defined(PPM_UNIT_US)
-      uint8_t wbar = (longNames ? SLIDER_W-10 : SLIDER_W);
-      lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, PPM_CH_CENTER(ch)+val/2, flags);
+        uint8_t wbar = (longNames ? SLIDER_W-10 : SLIDER_W);
+        lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, PPM_CH_CENTER(ch)+failsafeValue/2, flags);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
-      uint8_t wbar = (longNames ? SLIDER_W-16 : SLIDER_W-6);
-      lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val), PREC1|flags);
+        uint8_t wbar = (longNames ? SLIDER_W-16 : SLIDER_W-6);
+        lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(failsafeValue), PREC1|flags);
 #else
-      uint8_t wbar = (longNames ? SLIDER_W-10 : SLIDER_W);
-      lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val)/10, flags);
+        uint8_t wbar = (longNames ? SLIDER_W-10 : SLIDER_W);
+        lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(failsafeValue)/10, flags);
 #endif
-
-      // Gauge
-      lcd_rect(x+COL_W-3-wbar-ofs, y, wbar+1, 6);
-      uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
-      uint8_t len = limit((uint8_t)1, uint8_t((abs(val) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
-      uint8_t x0 = (val>0) ? x+COL_W-ofs-3-wbar/2 : x+COL_W-ofs-2-wbar/2-len;
-      lcd_hline(x0, y+1, len);
-      lcd_hline(x0, y+2, len);
-      lcd_hline(x0, y+3, len);
-      lcd_hline(x0, y+4, len);
-
+  
+        // Gauge
+        lcd_rect(x+COL_W-3-wbar-ofs, y, wbar+1, 6);
+        uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
+        uint8_t len = limit((uint8_t)1, uint8_t((abs(failsafeValue) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
+        uint8_t x0 = (failsafeValue>0) ? x+COL_W-ofs-3-wbar/2 : x+COL_W-ofs-2-wbar/2-len;
+        lcd_hline(x0, y+1, len);
+        lcd_hline(x0, y+2, len);
+        lcd_hline(x0, y+3, len);
+        lcd_hline(x0, y+4, len);
+      }
       ch++;
     }
   }

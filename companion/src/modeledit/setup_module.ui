@@ -344,7 +344,7 @@
          <string/>
         </property>
         <property name="minimum">
-         <number>1</number>
+         <number>4</number>
         </property>
         <property name="maximum">
          <number>16</number>
