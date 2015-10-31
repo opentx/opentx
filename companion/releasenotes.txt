@@ -14,6 +14,9 @@
 <li>Alarms did not work if user started radio simulation several times (<a href=https://github.com/opentx/opentx/issues/2446>#2446</a>)</li>
 <li>Fixed endless loop in model compare (<a href=https://github.com/opentx/opentx/issues/2734>#2734</a>)</li>
 <li>Prevent user from opening 2.1 or higher EEPE (<a href=https://github.com/opentx/opentx/issues/2620>#2620</a>)</li>
+<li>Center beep checkbook for P3 was missing for some radios (<a href=https://github.com/opentx/opentx/issues/2707>#2707</a>)</li>
+<li>Corrected failsafe mapping when using Custom failsafe mode, D16 protocol and channel range different from from 1-8. 
+  Users with such setups are advised to re-check their failsafe settings (<a href=https://github.com/opentx/opentx/issues/2975>#2975</a>)</li>
 </ul>
 
 

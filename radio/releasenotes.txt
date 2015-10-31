@@ -4,6 +4,8 @@
 <ul>
 <li>Lua <i>model.insertInput()</i> could not add more than 32 inputs (<a href=https://github.com/opentx/opentx/issues/2084>#2084</a>)</li>
 <li>Fixed auto-source problem on radios with non-existing S3 pot (<a href=https://github.com/opentx/opentx/issues/2364>#2364</a>)</li>
+<li>Corrected failsafe mapping when using Custom failsafe mode, D16 protocol and channel range different from from 1-8. 
+  Users with such setups are advised to re-check their failsafe settings (<a href=https://github.com/opentx/opentx/issues/2975>#2975</a>)</li>
 </ul>
 
 [ARM Boards]
