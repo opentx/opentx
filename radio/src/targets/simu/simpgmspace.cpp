@@ -819,10 +819,10 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
     fil->fsize = tmp.st_size;
     fil->fptr = 0;
   }
-  fil->fs = (FATFS*)fopen(realPath, (flag & FA_WRITE) ? "wb+" : "rb+");
+  fil->fs = (FATFS*)fopen(realPath, (flag & FA_WRITE) ? ((flag & FA_CREATE_ALWAYS) ? "wb+" : "ab+") : "rb+");
   fil->fptr = 0;
   if (fil->fs) {
-    TRACE("f_open(%s) = %p", path, (FILE*)fil->fs);
+    TRACE("f_open(%s, %x) = %p", path, flag, (FILE*)fil->fs);
     return FR_OK;
   }
   TRACE("f_open(%s) = error %d (%s)", path, errno, strerror(errno));
@@ -854,6 +854,19 @@ FRESULT f_lseek (FIL* fil, DWORD offset)
   if (fil && fil->fs) fseek((FILE*)fil->fs, offset, SEEK_SET);
   fil->fptr = offset;
   return FR_OK;
+}
+
+UINT f_size(FIL* fil)
+{
+  if (fil && fil->fs) {
+    long curr = ftell((FILE*)fil->fs);
+    fseek((FILE*)fil->fs, 0, SEEK_END);
+    long size = ftell((FILE*)fil->fs);
+    fseek((FILE*)fil->fs, curr, SEEK_SET);
+    TRACE("f_size(%p) %u", fil->fs, size);
+    return size;
+  }
+  return 0;
 }
 
 FRESULT f_close (FIL * fil)
