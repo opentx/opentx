@@ -53,7 +53,7 @@ void registerSimulators()
   if (!simulatorsFound) {
 #if defined(__APPLE__)
     dir = QLibraryInfo::location(QLibraryInfo::PrefixPath) + "/Resources";
-#elif (!defined __GNUC__) || (defined __CYGWIN__)
+#elif (!defined __GNUC__) 
     char name[MAX_PATH];
     GetModuleFileName(NULL, name, MAX_PATH);
 	QString path(name);
