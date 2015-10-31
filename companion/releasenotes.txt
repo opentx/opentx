@@ -13,6 +13,13 @@ Notice: version 2.1.4 was sipped by the OpenTX team to avoid confusion with the 
 <li>Fixed wrong import of Logical switches from OpenTX 2.0.x version (<a href=https://github.com/opentx/opentx/issues/2942>#2942</a>)</li>
 <li>Fixed a problem with updates path on Windows (<a href=https://github.com/opentx/opentx/issues/2876>#2876</a>)</li>
 <li>Edge representation unified (changed from "no release" to "instant") (<a href=https://github.com/opentx/opentx/issues/2837>#2837</a>)</li>
+<li>Corrected failsafe mapping when using Custom failsafe mode, D16 protocol and channel range different from from 1-8. 
+  Users with such setups are advised to re-check their failsafe settings (<a href=https://github.com/opentx/opentx/issues/2975>#2975</a>)</li>
+<li>Various texts and translations corrections</li>
+<li>Various small bug-fixes: <a href=https://github.com/opentx/opentx/issues/2994>#2994</a>, 
+                             <a href=https://github.com/opentx/opentx/issues/3016>#3016</a>,
+                             <a href=https://github.com/opentx/opentx/issues/3012>#3012</a>
+</li>
 </ul>
 
 

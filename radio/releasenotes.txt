@@ -12,6 +12,11 @@ Notice: version 2.1.4 was sipped by the OpenTX team to avoid confusion with the 
 <li>Trainer mode fixes for X9E (<a href=https://github.com/opentx/opentx/issues/2913>#2913</a>)</li>
 <li>Fixed a bug that caused no servo movement when certain firmware option combinations were used (<a href=https://github.com/opentx/opentx/issues/2945>#2945</a>)</li>
 <li>Fixed missing arrows on RS, LS2, RS2 pot warnings on X9E (<a href=https://github.com/opentx/opentx/issues/2961>#2961</a>)</li>
+<li>Fixed erroneous haptic feedback when using high powered UHF RF modules (<a href=https://github.com/opentx/opentx/issues/2722>#2722</a>)</li>
+<li>The trainer icon will be shown only if valid PPM is received</li>
+<li>Several Lua io library fixes (<a href=https://github.com/opentx/opentx/issues/3001>#3001</a>, <a href=https://github.com/opentx/opentx/issues/3003>#3003</a>)</li>
+<li>Corrected failsafe mapping when using Custom failsafe mode, D16 protocol and channel range different from from 1-8. 
+  Users with such setups are advised to re-check their failsafe settings (<a href=https://github.com/opentx/opentx/issues/2975>#2975</a>)</li>
 </ul>
 
 [ARM boards]
@@ -26,11 +31,18 @@ Notice: version 2.1.4 was sipped by the OpenTX team to avoid confusion with the 
 [Sky9x / 9XR-PRO / AR9X]
 <ul>
 <li>Fixed navigation problem in Telemetry setup  (<a href=https://github.com/opentx/opentx/issues/2951>#2951</a>)</li>
+<li>Fixed: Model Restore broken (<a href=https://github.com/opentx/opentx/issues/2797>#2797</a>)</li>
+<li>Fixed battery indicator graphics (<a href=https://github.com/opentx/opentx/issues/2989>#2989</a>)</li>
 </ul>
 
 [AVR boards]
 <ul>
 <li>Mavlink build option was not working (<a href=https://github.com/opentx/opentx/issues/2950>#2950</a>)</li>
+</ul>
+
+[Mega2560]
+<ul>
+<li>Fixed : mixer update rate was too slow (<a href=https://github.com/opentx/opentx/issues/2750>#2750</a>)</li>
 </ul>
 
 
