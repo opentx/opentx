@@ -667,6 +667,7 @@ void menuModelSetup(uint8_t event)
         if (attr) {
           CHECK_INCDEC_MODELVAR(event, g_model.moduleData[0].rfProtocol, RF_PROTO_OFF, RF_PROTO_LAST);
           if (checkIncDec_Ret) {
+            g_model.moduleData[0].type = MODULE_TYPE_XJT;
             g_model.moduleData[0].channelsStart = 0;
             g_model.moduleData[0].channelsCount = 0;
           }
