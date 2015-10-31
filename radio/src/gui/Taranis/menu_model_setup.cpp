@@ -645,17 +645,14 @@ void menuModelSetup(uint8_t event)
               if (checkIncDec_Ret) {
                  g_model.moduleData[INTERNAL_MODULE].rfProtocol = 0;
                  g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;
-                 if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM)
-                   g_model.moduleData[INTERNAL_MODULE].channelsCount = 0;
-                 else
-                   g_model.moduleData[INTERNAL_MODULE].channelsCount = MAX_INTERNAL_MODULE_CHANNELS();
+                 g_model.moduleData[INTERNAL_MODULE].channelsCount = 0;
               }
               break;
             case 1:              
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST);
               if (checkIncDec_Ret) {
                 g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;
-                g_model.moduleData[INTERNAL_MODULE].channelsCount = MAX_INTERNAL_MODULE_CHANNELS();
+                g_model.moduleData[INTERNAL_MODULE].channelsCount = 0;
               }
             }
           }
@@ -696,10 +693,8 @@ void menuModelSetup(uint8_t event)
               if (checkIncDec_Ret) {
                 g_model.moduleData[EXTERNAL_MODULE].rfProtocol = 0;
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
-                if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM)
-                  g_model.moduleData[EXTERNAL_MODULE].channelsCount = 0;
-                else
-                  g_model.moduleData[EXTERNAL_MODULE].channelsCount = MAX_EXTERNAL_MODULE_CHANNELS();
+                g_model.moduleData[EXTERNAL_MODULE].channelsCount = 0;
+
               }
               break;
             case 1:
@@ -709,7 +704,7 @@ void menuModelSetup(uint8_t event)
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST);
               if (checkIncDec_Ret) {
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
-                g_model.moduleData[EXTERNAL_MODULE].channelsCount = MAX_EXTERNAL_MODULE_CHANNELS();
+                g_model.moduleData[EXTERNAL_MODULE].channelsCount = 0;
               }
           }
         }
