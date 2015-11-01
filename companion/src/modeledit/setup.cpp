@@ -137,6 +137,9 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
   QString label;
   if (moduleIdx < 0) {
     label = tr("Trainer Port");
+    if (generalSettings.hw_uartMode != UART_MODE_SBUS_TRAINER) {
+      ui->trainerMode->setItemData(TRAINER_MODE_MASTER_BATTERY_COMPARTMENT, 0, Qt::UserRole - 1);
+    }
     ui->trainerMode->setCurrentIndex(model.trainerMode);
     if (!IS_TARANIS(firmware->getBoard())) {
       ui->label_trainerMode->hide();
