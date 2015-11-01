@@ -193,12 +193,12 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
       spinbox->setDecimals(1);
       label->setProperty("index", i);
       spinbox->setProperty("index", i);
-      failsafeSpins << spinbox;
       ui->failsafesLayout->addWidget(label, 3*(i/8), i%8, Qt::AlignHCenter);
       ui->failsafesLayout->addWidget(combo, 1+3*(i/8), i%8, Qt::AlignHCenter);
       ui->failsafesLayout->addWidget(spinbox, 2+3*(i/8), i%8, Qt::AlignHCenter);
       failsafeGroups[i].combo = combo;
       failsafeGroups[i].spinbox = spinbox;
+      failsafeGroups[i].label = label;
       updateFailsafe(i);
       connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onFailsafeComboIndexChanged(int)));
       connect(spinbox, SIGNAL(valueChanged(double)), this, SLOT(onFailsafeSpinChanged(double)));
@@ -302,6 +302,14 @@ void ModulePanel::update()
     ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
     ui->failsafeMode->setCurrentIndex(module.failsafeMode);
     ui->failsafesFrame->setEnabled(module.failsafeMode == FAILSAFE_CUSTOM);
+    if (firmware->getCapability(ChannelsName) > 0) {
+      for(int i=0; i<maxChannels;i++) {
+        QString name = QString(model->limitData[i+module.channelsStart].name).trimmed();
+        if (!name.isEmpty()) {
+          failsafeGroups[i].label->setText(name);
+        }
+      }
+    }
   }
   else {
     mask = 0;

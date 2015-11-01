@@ -1300,7 +1300,6 @@ enum Capability {
   HasExpoNames,
   HasNoExpo,
   HasMixerNames,
-  HasChNames,
   HasCvNames,
   HasPxxCountry,
   HasPPMStart,
