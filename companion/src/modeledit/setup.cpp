@@ -308,6 +308,9 @@ void ModulePanel::update()
         if (!name.isEmpty()) {
           failsafeGroups[i].label->setText(name);
         }
+        else {
+          failsafeGroups[i].label->setText(QString::number(i+1));
+        }
       }
     }
   }
