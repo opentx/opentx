@@ -818,7 +818,7 @@ bool OpenTxFirmware::isTelemetrySourceAvailable(int source)
   return true;
 }
 
-int OpenTxEepromInterface::isAvailable(PulsesProtocol proto, int port)
+int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
 {
   if (IS_TARANIS(board)) {
     switch (port) {
