@@ -42,8 +42,8 @@
 #define TMR_NEGATIVE 2
 #define TMR_STOPPED  3
 
-#define TIMER_MAX     (32767)
-#define TIMER_MIN     (-32767-1)
+#define TIMER_MIN     (-0xffff/2)
+#define TIMER_MAX     (-TIMER_MIN-1)
 
 struct TimerState {
   uint16_t cnt;

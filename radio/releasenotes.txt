@@ -17,6 +17,7 @@
 <li>Added a warning about used receiver ID on model copy (<a href=https://github.com/opentx/opentx/issues/2187>#2187</a>)</li>
 <li>PPM center did not work with the DSM hack module (<a href=https://github.com/opentx/opentx/issues/2880>#2880</a>)</li>
 <li>Fixed: Edge Logical Switch could trigger right after the model was loaded or the radio turned on (<a href=https://github.com/opentx/opentx/issues/2728>#2728</a>)</li>
+<li>Prevent issue when timer reaches maximum</li>
 </ul>
 
 [All]
