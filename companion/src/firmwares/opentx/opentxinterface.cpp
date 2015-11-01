@@ -829,6 +829,8 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_PXX_XJT_D8:
           case PULSES_PXX_XJT_LR12:
             return 1;
+          case PULSES_PPM:
+            return id.contains("internalppm") ? 1 : 0;
           default:
             return 0;
         }
@@ -895,7 +897,7 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
       case PULSES_DSMX:
       case PULSES_LP45:
       case PULSES_DSM2:
-      case PULSES_PXX_DJT:
+      // case PULSES_PXX_DJT:     // Unavailable for now
       case PULSES_PPM16:
       case PULSES_PPMSIM:
         return 1;

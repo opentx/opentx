@@ -168,7 +168,7 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
 
   // The protocols available on this board
   for (int i=0; i<PULSES_PROTOCOL_LAST; i++) {
-    if (GetEepromInterface()->isAvailable((PulsesProtocol)i, moduleIdx)) {
+    if (firmware->isAvailable((PulsesProtocol)i, moduleIdx)) {
       ui->protocol->addItem(ModelPrinter::printModuleProtocol(i), (QVariant)i);
       if (i == module.protocol) ui->protocol->setCurrentIndex(ui->protocol->count()-1);
     }
