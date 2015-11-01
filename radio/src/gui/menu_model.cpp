@@ -670,10 +670,11 @@ void menuModelFailsafe(uint8_t event)
   static bool longNames = false;
   bool newLongNames = false;
   uint8_t ch = 0;
+  uint8_t channelStart = g_model.moduleData[g_moduleIdx].channelsStart;
 
   if (event == EVT_KEY_LONG(KEY_ENTER) && s_editMode) {
     s_noHi = NO_HI_LEN;
-    g_model.moduleData[g_moduleIdx].failsafeChannels[m_posVert] = channelOutputs[m_posVert+g_model.moduleData[g_moduleIdx].channelsStart];
+    g_model.moduleData[g_moduleIdx].failsafeChannels[m_posVert] = channelOutputs[m_posVert+channelStart];
     eeDirty(EE_MODEL);
     AUDIO_WARNING1();
     SEND_FAILSAFE_NOW(g_moduleIdx);
@@ -714,7 +715,7 @@ void menuModelFailsafe(uint8_t event)
 
       if (ch < NUM_CHANNELS(g_moduleIdx)) {
         if (s_editMode && m_posVert == ch) {
-          failsafeValue = channelOutputs[ch+g_model.moduleData[g_moduleIdx].channelsStart];
+          failsafeValue = channelOutputs[ch+channelStart];
         }
         else {
           failsafeValue = g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line];
@@ -725,13 +726,13 @@ void menuModelFailsafe(uint8_t event)
       if (failsafeEditable) {
 #if defined(PCBTARANIS)
         // Channel name if present, number if not
-        uint8_t lenLabel = ZLEN(g_model.limitData[ch].name);
+        uint8_t lenLabel = ZLEN(g_model.limitData[ch+channelStart].name);
         if (lenLabel > 4) {
           newLongNames = longNames = true;
         }
   
         if (lenLabel > 0)
-          lcd_putsnAtt(x+1-ofs, y, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR | SMLSIZE);
+          lcd_putsnAtt(x+1-ofs, y, g_model.limitData[ch+channelStart].name, sizeof(g_model.limitData[ch+channelStart].name), ZCHAR | SMLSIZE);
         else
           putsChn(x+1-ofs, y, ch+1, SMLSIZE);
 #else
