@@ -45,8 +45,6 @@ class OpenTxEepromInterface : public EEPROMInterface
 
     virtual int getSize(const GeneralSettings &);
 
-    virtual int isAvailable(PulsesProtocol proto, int port=0);
-
   protected:
 
     const char * getName();
@@ -122,6 +120,8 @@ class OpenTxFirmware: public Firmware {
     virtual int getCapability(const Capability);
 
     virtual bool isTelemetrySourceAvailable(int source);
+
+    virtual int isAvailable(PulsesProtocol proto, int port=0);
 
   protected:
 

@@ -1391,8 +1391,6 @@ class EEPROMInterface
 
     virtual int getSize(const GeneralSettings &) = 0;
 
-    virtual int isAvailable(PulsesProtocol proto, int port=0) = 0;
-
     virtual const int getEEpromSize() = 0;
 
     virtual const int getMaxModels() = 0;
@@ -1627,6 +1625,8 @@ class Firmware {
     virtual int getCapability(const Capability) = 0;
 
     virtual bool isTelemetrySourceAvailable(int source) = 0;
+
+    virtual int isAvailable(PulsesProtocol proto, int port=0) = 0;
 
   public:
     QList<const char *> languages;
