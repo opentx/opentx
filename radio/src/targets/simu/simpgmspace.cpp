@@ -1006,6 +1006,14 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
 
   // remove simuSdDirectory from the cwd
   strcpy(path, cwd + strlen(simuSdDirectory));
+
+  // convert backslashes to forward - issue #3024
+  for (int i = 0; path[i] != 0; i++) {
+    if (path[i] == '\\') {
+      path[i] = '/';
+    }
+  }
+
   TRACE("f_getcwd() = %s", path);
   return FR_OK;
 }
