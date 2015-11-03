@@ -64,12 +64,12 @@ const LanguagePack * LP_CONST languagePacks[] = {
   NULL
 };
 
-void menuGeneralSetup(evt_t event);
-void menuGeneralSdManager(evt_t event);
-void menuGeneralCustomFunctions(evt_t event);
-void menuGeneralTrainer(evt_t event);
-void menuGeneralVersion(evt_t event);
-void menuGeneralCalib(evt_t event);
+bool menuGeneralSetup(evt_t event);
+bool menuGeneralSdManager(evt_t event);
+bool menuGeneralCustomFunctions(evt_t event);
+bool menuGeneralTrainer(evt_t event);
+bool menuGeneralVersion(evt_t event);
+bool menuGeneralCalib(evt_t event);
 
 enum EnumTabDiag {
   e_Setup,
@@ -80,7 +80,7 @@ enum EnumTabDiag {
   e_Vers,
 };
 
-const MenuFuncP_PROGMEM menuTabGeneral[] PROGMEM = {
+const MenuFuncP menuTabGeneral[] PROGMEM = {
   menuGeneralSetup,
   menuGeneralSdManager,
   menuGeneralCustomFunctions,
@@ -89,7 +89,7 @@ const MenuFuncP_PROGMEM menuTabGeneral[] PROGMEM = {
   menuGeneralVersion,
 };
 
-void menuGeneralCustomFunctions(evt_t event)
+bool menuGeneralCustomFunctions(evt_t event)
 {
   MENU(STR_MENUGLOBALFUNCS, menuTabGeneral, e_GeneralCustomFunctions, NUM_CFN, DEFAULT_SCROLLBAR_X, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
   return menuCustomFunctions(event, g_eeGeneral.customFn, globalFunctionsContext);

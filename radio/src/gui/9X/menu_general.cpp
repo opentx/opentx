@@ -88,7 +88,7 @@ enum EnumTabDiag {
   e_Calib
 };
 
-const MenuFuncP_PROGMEM menuTabGeneral[] PROGMEM = {
+const MenuFuncP menuTabGeneral[] PROGMEM = {
   menuGeneralSetup,
   CASE_SDCARD(menuGeneralSdManager)
   CASE_CPUARM(menuGeneralCustomFunctions)

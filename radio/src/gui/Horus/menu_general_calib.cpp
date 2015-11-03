@@ -69,7 +69,7 @@ void drawSticksPositions()
   drawStick(RBOX_CENTERX, calibratedStick[CONVERT_MODE(3)], calibStickVert);
 }
 
-void menuCommonCalib(evt_t event)
+bool menuCommonCalib(evt_t event)
 {
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { // get low and high vals for sticks and trims
     int16_t vt = anaIn(i);
@@ -216,13 +216,15 @@ void menuCommonCalib(evt_t event)
       steps = calib->count + 1;
     }
     if (steps > 0 && steps <= XPOTS_MULTIPOS_COUNT) {
-      lcd_outdezAtt(LCD_W/2-2+(i-POT1)*5, LCD_H-6, steps, TINSIZE);
+      lcdDrawNumber(LCD_W/2-2+(i-POT1)*5, LCD_H-6, steps, TINSIZE);
     }
   }
 #endif
+
+  return true;
 }
 
-void menuGeneralCalib(evt_t event)
+bool menuGeneralCalib(evt_t event)
 {
   SIMPLE_MENU(STR_MENUCALIBRATION, menuTabGeneral, e_Calib, 0, DEFAULT_SCROLLBAR_X);
 
@@ -232,17 +234,18 @@ void menuGeneralCalib(evt_t event)
     calibrationState = 0;
   }
 
-  menuCommonCalib(READ_ONLY() ? 0 : event);
+  return menuCommonCalib(READ_ONLY() ? 0 : event);
 }
 
-void menuFirstCalib(evt_t event)
+bool menuFirstCalib(evt_t event)
 {
   if (event == EVT_KEY_BREAK(KEY_EXIT) || reusableBuffer.calib.state == 4) {
     calibrationState = 0;
     chainMenu(menuMainView);
+    return false;
   }
   else {
-    drawMenuTemplate(STR_MENUCALIBRATION, event);
-    menuCommonCalib(event);
+    drawScreenTemplate(STR_MENUCALIBRATION);
+    return menuCommonCalib(event);
   }
 }

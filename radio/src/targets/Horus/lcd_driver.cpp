@@ -9,22 +9,20 @@
 #define HFP  3
 #define VFP  2
 
-#define LCD_PIXEL_WIDTH    ((uint16_t)480)
-#define LCD_PIXEL_HEIGHT   ((uint16_t)272)
+#define LCD_DIR_HORIZONTAL             0x0000
+#define LCD_DIR_VERTICAL               0x0001
 
-#define LCD_DIR_HORIZONTAL       0x0000
-#define LCD_DIR_VERTICAL         0x0001
+#define LCD_FIRST_LAYER                0
+#define LCD_SECOND_LAYER               1
 
-#define LCD_BACKGROUND_LAYER     0x0000
-#define LCD_FOREGROUND_LAYER     0x0001
+#define LCD_BKLIGHT_PWM_FREQ           300
 
-#define LCD_BKLIGHT_PWM_FREQ     300
+#define LCD_FIRST_FRAME_BUFFER         SDRAM_BANK_ADDR
+#define LCD_SECOND_FRAME_BUFFER        (SDRAM_BANK_ADDR + DISPLAY_BUFFER_SIZE)
+#define LCD_BACKUP_FRAME_BUFFER        (SDRAM_BANK_ADDR + 2*DISPLAY_BUFFER_SIZE)
 
-#define LCD_DEFAULT_FRAME_BUFFER       SDRAM_BANK_ADDR
-#define FRAME_BUFFER_OFFSET            ((uint32_t)0x100000)
-
-uint32_t CurrentFrameBuffer = LCD_DEFAULT_FRAME_BUFFER;
-uint32_t CurrentLayer = LCD_BACKGROUND_LAYER;
+uint32_t CurrentFrameBuffer = LCD_FIRST_FRAME_BUFFER;
+uint32_t CurrentLayer = LCD_FIRST_LAYER;
 
 #define NRST_LOW()   do { LCD_GPIO_NRST->BSRRH = LCD_GPIO_PIN_NRST; } while(0)
 #define NRST_HIGH()  do { LCD_GPIO_NRST->BSRRL = LCD_GPIO_PIN_NRST; } while(0)
@@ -193,13 +191,13 @@ void LCD_Init_LTDC(void)
   /* Configure accumulated vertical back porch */
   LTDC_InitStruct.LTDC_AccumulatedVBP = VBP;
   /* Configure accumulated active width */
-  LTDC_InitStruct.LTDC_AccumulatedActiveW = LCD_PIXEL_WIDTH + HBP;
+  LTDC_InitStruct.LTDC_AccumulatedActiveW = LCD_W + HBP;
   /* Configure accumulated active height */
-  LTDC_InitStruct.LTDC_AccumulatedActiveH = LCD_PIXEL_HEIGHT + VBP;
+  LTDC_InitStruct.LTDC_AccumulatedActiveH = LCD_H + VBP;
   /* Configure total width */
-  LTDC_InitStruct.LTDC_TotalWidth = LCD_PIXEL_WIDTH + HBP + HFP;
+  LTDC_InitStruct.LTDC_TotalWidth = LCD_W + HBP + HFP;
   /* Configure total height */
-  LTDC_InitStruct.LTDC_TotalHeigh = LCD_PIXEL_HEIGHT + VBP + VFP;
+  LTDC_InitStruct.LTDC_TotalHeigh = LCD_H + VBP + VFP;
 
 // init ltdc
   LTDC_Init(&LTDC_InitStruct);
@@ -240,9 +238,9 @@ void LCD_LayerInit()
   Vertical start   = vertical synchronization + vertical back porch     = 4
   Vertical stop   = Vertical start + window height -1  = 4 + 320 -1      */
   LTDC_Layer_InitStruct.LTDC_HorizontalStart = HBP + 1;
-  LTDC_Layer_InitStruct.LTDC_HorizontalStop = (LCD_PIXEL_WIDTH + HBP);
+  LTDC_Layer_InitStruct.LTDC_HorizontalStop = (LCD_W + HBP);
   LTDC_Layer_InitStruct.LTDC_VerticalStart = VBP + 1;;
-  LTDC_Layer_InitStruct.LTDC_VerticalStop = (LCD_PIXEL_HEIGHT + VBP);
+  LTDC_Layer_InitStruct.LTDC_VerticalStop = (LCD_H + VBP);
 
   /* Pixel Format configuration*/
   LTDC_Layer_InitStruct.LTDC_PixelFormat = LTDC_Pixelformat_RGB565;
@@ -260,20 +258,20 @@ void LCD_LayerInit()
 
   /* the length of one line of pixels in bytes + 3 then :
   Line Lenth = Active high width x number of bytes per pixel + 3
-  Active high width         = LCD_PIXEL_WIDTH
+  Active high width         = LCD_W
   number of bytes per pixel = 2    (pixel_format : RGB565)
   */
-  LTDC_Layer_InitStruct.LTDC_CFBLineLength = ((LCD_PIXEL_WIDTH * 2) + 3);
+  LTDC_Layer_InitStruct.LTDC_CFBLineLength = ((LCD_W * 2) + 3);
   /* the pitch is the increment from the start of one line of pixels to the
   start of the next line in bytes, then :
   Pitch = Active high width x number of bytes per pixel */
-  LTDC_Layer_InitStruct.LTDC_CFBPitch = (LCD_PIXEL_WIDTH * 2);
+  LTDC_Layer_InitStruct.LTDC_CFBPitch = (LCD_W * 2);
 
   /* Configure the number of lines */
-  LTDC_Layer_InitStruct.LTDC_CFBLineNumber = LCD_PIXEL_HEIGHT;
+  LTDC_Layer_InitStruct.LTDC_CFBLineNumber = LCD_H;
 
   /* Start Address configuration : the LCD Frame buffer is defined on SDRAM w/ Offset */
-  LTDC_Layer_InitStruct.LTDC_CFBStartAdress = LCD_DEFAULT_FRAME_BUFFER;
+  LTDC_Layer_InitStruct.LTDC_CFBStartAdress = LCD_FIRST_FRAME_BUFFER;
 
   /* Initialize LTDC layer 1 */
   LTDC_LayerInit(LTDC_Layer1, &LTDC_Layer_InitStruct);
@@ -283,7 +281,7 @@ void LCD_LayerInit()
   LTDC_Layer_InitStruct.LTDC_BlendingFactor_2 = LTDC_BlendingFactor2_PAxCA;
 
   /* Start Address configuration : the LCD Frame buffer is defined on SDRAM w/ Offset */
-  LTDC_Layer_InitStruct.LTDC_CFBStartAdress = LCD_DEFAULT_FRAME_BUFFER + FRAME_BUFFER_OFFSET;
+  LTDC_Layer_InitStruct.LTDC_CFBStartAdress = LCD_FIRST_FRAME_BUFFER + DISPLAY_BUFFER_SIZE;
 
   /* Initialize LTDC layer 2 */
   LTDC_LayerInit(LTDC_Layer2, &LTDC_Layer_InitStruct);
@@ -377,25 +375,21 @@ void LCD_Init(void)
   */
 void LCD_SetLayer(uint32_t Layerx)
 {
-  if (Layerx == LCD_BACKGROUND_LAYER)
+  if (Layerx == LCD_FIRST_LAYER)
   {
-    CurrentFrameBuffer = LCD_DEFAULT_FRAME_BUFFER;
-    CurrentLayer = LCD_BACKGROUND_LAYER;
+    CurrentFrameBuffer = LCD_FIRST_FRAME_BUFFER;
+    CurrentLayer = LCD_FIRST_LAYER;
   }
   else
   {
-    CurrentFrameBuffer = LCD_DEFAULT_FRAME_BUFFER + FRAME_BUFFER_OFFSET;
-    CurrentLayer = LCD_FOREGROUND_LAYER;
+    CurrentFrameBuffer = LCD_FIRST_FRAME_BUFFER + DISPLAY_BUFFER_SIZE;
+    CurrentLayer = LCD_SECOND_LAYER;
   }
 }
 
 void LCD_Clear(uint16_t Color)
 {
-  uint16_t *index ;
-
-  /* erase memory */
-  for (index = (uint16_t *)CurrentFrameBuffer; index < (uint16_t *)(CurrentFrameBuffer+(FRAME_BUFFER_OFFSET)); index++)
-  {
+  for (uint16_t * index = (uint16_t *)CurrentFrameBuffer; index < (uint16_t *)(CurrentFrameBuffer+DISPLAY_BUFFER_SIZE); index++) {
     *index = Color;
   }
 }
@@ -408,12 +402,10 @@ void LCD_Clear(uint16_t Color)
   */
 void LCD_SetTransparency(uint8_t transparency)
 {
-  if (CurrentLayer == LCD_BACKGROUND_LAYER)
-  {
+  if (CurrentLayer == LCD_FIRST_LAYER) {
     LTDC_LayerAlpha(LTDC_Layer1, transparency);
   }
-  else
-  {
+  else {
     LTDC_LayerAlpha(LTDC_Layer2, transparency);
   }
   LTDC_ReloadConfig(LTDC_IMReload);
@@ -429,19 +421,19 @@ void lcdInit(void)
   LTDC_Cmd(ENABLE);
 
   /* Set Background layer */
-  LCD_SetLayer(LCD_BACKGROUND_LAYER);
+  LCD_SetLayer(LCD_FIRST_LAYER);
   LCD_Clear(0);
   LCD_SetTransparency(0);
   
   /* Set Foreground layer */
-  LCD_SetLayer(LCD_FOREGROUND_LAYER);
+  LCD_SetLayer(LCD_SECOND_LAYER);
   LCD_Clear(0);
   LCD_SetTransparency(255);
 }
 
 void lcdDrawSolidFilledRectDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
-  uint32_t addr = CurrentFrameBuffer + 2*(LCD_PIXEL_WIDTH*y + x);
+  uint32_t addr = CurrentFrameBuffer + 2*(LCD_W*y + x);
   uint16_t red = (0xF800 & color) >> 11;
   uint16_t blue = 0x001F & color;
   uint16_t green = (0x07E0 & color) >> 5;
@@ -456,7 +448,7 @@ void lcdDrawSolidFilledRectDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, u
   DMA2D_InitStruct.DMA2D_OutputRed = red;
   DMA2D_InitStruct.DMA2D_OutputAlpha = 0x0F;
   DMA2D_InitStruct.DMA2D_OutputMemoryAdd = addr;
-  DMA2D_InitStruct.DMA2D_OutputOffset = (LCD_PIXEL_WIDTH - w);
+  DMA2D_InitStruct.DMA2D_OutputOffset = (LCD_W - w);
   DMA2D_InitStruct.DMA2D_NumberOfLine = h;
   DMA2D_InitStruct.DMA2D_PixelPerLine = w;
   DMA2D_Init(&DMA2D_InitStruct);
@@ -468,12 +460,26 @@ void lcdDrawSolidFilledRectDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, u
   while (DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET);
 }
 
+void lcdStoreBackupBuffer()
+{
+  for (uint16_t * src = (uint16_t *)CurrentFrameBuffer, * dest = (uint16_t *)LCD_BACKUP_FRAME_BUFFER; src < (uint16_t *)(CurrentFrameBuffer+DISPLAY_BUFFER_SIZE); src++, dest++) {
+    *dest = *src;
+  }
+}
+
+void lcdRestoreBackupBuffer()
+{
+  for (uint16_t * dest = (uint16_t *)CurrentFrameBuffer, * src = (uint16_t *)LCD_BACKUP_FRAME_BUFFER; dest < (uint16_t *)(CurrentFrameBuffer+DISPLAY_BUFFER_SIZE); src++, dest++) {
+    *dest = *src;
+  }
+}
+
 void lcdRefresh()
 {
   LCD_SetTransparency(255);
-  if (CurrentLayer == LCD_BACKGROUND_LAYER)
-    LCD_SetLayer(LCD_FOREGROUND_LAYER);
+  if (CurrentLayer == LCD_FIRST_LAYER)
+    LCD_SetLayer(LCD_SECOND_LAYER);
   else
-    LCD_SetLayer(LCD_BACKGROUND_LAYER);
+    LCD_SetLayer(LCD_FIRST_LAYER);
   LCD_SetTransparency(0);
 }

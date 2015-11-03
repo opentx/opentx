@@ -1230,7 +1230,7 @@ ifeq ($(PCB), HORUS)
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp sbus.cpp telemetry/telemetry.cpp
   CPPSRC += targets/Horus/pulses_driver.cpp targets/Horus/keys_driver.cpp targets/Horus/adc_driver.cpp targets/Horus/trainer_driver.cpp targets/Horus/audio_driver.cpp targets/Horus/serial2_driver.cpp targets/Horus/telemetry_driver.cpp
-  CPPSRC += gui/$(GUIDIRECTORY)/bitmaps.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp
+  CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/bitmaps.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp
   SRC += targets/Horus/system_stm32f4xx.c
   CPPSRC += storage/storage_common.cpp storage/sdcard_raw.cpp
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/misc.c
@@ -1577,11 +1577,14 @@ ifeq ($(SIMU), YES)
   CPPDEFS += -DDEBUG
   CPPSRC += dump.cpp
 else ifeq ($(CLI), YES)
-  CPPDEFS += -DCLI -DDEBUG
+  CPPDEFS += -DCLI
   CPPSRC += cli.cpp dump.cpp
 else ifeq ($(DEBUG), YES)
-  CPPDEFS += -DDEBUG
   CPPSRC += dump.cpp
+endif
+
+ifeq ($(DEBUG), YES)
+  CPPDEFS += -DDEBUG
 endif
 
 ifeq ($(EEPROM_PROGRESS_BAR), YES)
@@ -1911,7 +1914,7 @@ bitmaps/Horus/mask_%.lbm: bitmaps/Horus/mask_%.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE) $(MASKFORMAT)
 
 bitmaps/Horus/%.lbm: bitmaps/Horus/%.png
-	$(IMG2LBM) $^ $@ $(LCDSIZE) 5/6/5
+	$(IMG2LBM) $^ $@ $(LCDSIZE) 5/6/5/8
 
 ifeq ($(OS),Windows_NT)
   PARSER = avr-cpp

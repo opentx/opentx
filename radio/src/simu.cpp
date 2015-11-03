@@ -454,8 +454,8 @@ void Open9xSim::setPixel(int x, int y, FXColor color)
 
 void Open9xSim::refreshDisplay()
 {
-  if (lcd_refresh) {
-    lcd_refresh = false;
+  if (simuLcdRefresh) {
+    simuLcdRefresh = false;
     FXColor offColor = isBacklightEnable() ? BL_COLOR : FXRGB(200, 200, 200);
 #if LCD_W == 128
     FXColor onColor = FXRGB(0, 0, 0);
@@ -463,19 +463,19 @@ void Open9xSim::refreshDisplay()
     for (int x=0; x<LCD_W; x++) {
       for (int y=0; y<LCD_H; y++) {
 #if defined(PCBHORUS)
-    	display_t z = lcd_buf[y * LCD_W + x];
+    	display_t z = simuLcdBuf[y * LCD_W + x];
     	if (1) {
           FXColor color = FXRGB(255*((z&0xF800)>>11)/0x1f, 255*((z&0x07E0)>>5)/0x3F, 255*(z&0x001F)/0x01F);
           setPixel(x, y, color);
     	}
 #elif defined(PCBFLAMENCO)
-        display_t z = lcd_buf[y * LCD_W + x];
+        display_t z = simuLcdBuf[y * LCD_W + x];
         if (1) {
           FXColor color = FXRGB(255*((z&0xF00)>>8)/0x0f, 255*((z&0x0F0)>>4)/0x0f, 255*(z&0x00F)/0x0f);
           setPixel(x, y, color);
         }
 #elif defined(PCBTARANIS)
-        display_t * p = &lcd_buf[y / 2 * LCD_W + x];
+        display_t * p = &simuLcdBuf[y / 2 * LCD_W + x];
         uint8_t z = (y & 1) ? (*p >> 4) : (*p & 0x0F);
         if (z) {
           FXColor color;
@@ -486,7 +486,7 @@ void Open9xSim::refreshDisplay()
           setPixel(x, y, color);
         }
 #else
-        if (lcd_buf[x+(y/8)*LCD_W] & (1<<(y%8))) {
+        if (simuLcdBuf[x+(y/8)*LCD_W] & (1<<(y%8))) {
           setPixel(x, y, onColor);
         }
 #endif

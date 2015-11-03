@@ -51,4 +51,9 @@
   #include "9X/gui.h"
 #endif
 
+#if defined(SIMU)
+extern bool simuLcdRefresh;
+extern display_t simuLcdBuf[DISPLAY_BUFFER_SIZE];
+#endif
+
 #endif // _GUI_H_

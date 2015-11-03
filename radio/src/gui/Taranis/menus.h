@@ -66,9 +66,8 @@ extern uint8_t calibrationState;
 void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 
 typedef void (*MenuFuncP)(uint8_t event);
-typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
-extern const MenuFuncP_PROGMEM menuTabModel[];
-extern const MenuFuncP_PROGMEM menuTabGeneral[];
+extern const MenuFuncP menuTabModel[];
+extern const MenuFuncP menuTabGeneral[];
 
 extern MenuFuncP g_menuStack[5];
 extern uint8_t g_menuPos[4];

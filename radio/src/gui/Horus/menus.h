@@ -50,7 +50,7 @@
 
 #define MENU_COLUMN2_X         280
 
-#define lcd_putsColumnLeft(x, y, str) lcd_puts((x > MENU_COLUMN2_X+MENUS_MARGIN_LEFT+68) ? MENU_COLUMN2_X+MENUS_MARGIN_LEFT : MENUS_MARGIN_LEFT, y, str)
+#define lcd_putsColumnLeft(x, y, str) lcdDrawText((x > MENU_COLUMN2_X+MENUS_MARGIN_LEFT+68) ? MENU_COLUMN2_X+MENUS_MARGIN_LEFT : MENUS_MARGIN_LEFT, y, str)
 
 typedef int16_t vertpos_t;
 
@@ -68,10 +68,9 @@ extern uint8_t calibrationState;
 
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 
-typedef void (*MenuFuncP)(evt_t event);
-typedef void (*MenuFuncP_PROGMEM)(evt_t event);
-extern const MenuFuncP_PROGMEM menuTabModel[];
-extern const MenuFuncP_PROGMEM menuTabGeneral[];
+typedef bool (*MenuFuncP)(evt_t event);
+extern const MenuFuncP menuTabModel[];
+extern const MenuFuncP menuTabGeneral[];
 
 extern MenuFuncP g_menuStack[5];
 extern uint8_t g_menuPos[4];
@@ -85,32 +84,27 @@ void pushMenu(MenuFuncP newMenu);
 /// return to last menu in menustack
 void popMenu();
 
-void menuFirstCalib(evt_t event);
+bool menuFirstCalib(evt_t event);
 
-void onMainViewMenu(const char *result);
-void menuMainView(evt_t event);
-void menuGeneralDiagAna(evt_t event);
-
-void menuTelemetryFrsky(evt_t event);
-void menuGeneralSetup(evt_t event);
-void menuGeneralCalib(evt_t event);
-void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext);
-
-void menuModelSelect(evt_t event);
-void menuModelSetup(evt_t event);
-void menuModelCustomFunctions(evt_t event);
-void menuStatisticsView(evt_t event);
-void menuStatisticsDebug(evt_t event);
-void menuAboutView(evt_t event);
+bool menuMainView(evt_t event);
+bool menuGeneralDiagAna(evt_t event);
+bool menuGeneralSetup(evt_t event);
+bool menuGeneralCalib(evt_t event);
+bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext);
+bool menuModelSelect(evt_t event);
+bool menuModelSetup(evt_t event);
+bool menuModelCustomFunctions(evt_t event);
+bool menuStatisticsView(evt_t event);
+bool menuStatisticsDebug(evt_t event);
+bool menuAboutView(evt_t event);
+bool menuMainViewChannelsMonitor(evt_t event);
+bool menuChannelsView(evt_t event);
+bool menuChannelsView(evt_t event);
+bool menuTextView(evt_t event);
 
 #if defined(DEBUG_TRACE_BUFFER)
 void menuTraceBuffer(evt_t event);
 #endif
-
-void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
-
-void menuMainViewChannelsMonitor(evt_t event);
-void menuChannelsView(evt_t event);
 
 extern int8_t checkIncDec_Ret;  // global helper vars
 
@@ -200,36 +194,40 @@ int8_t checkIncDecMovedSwitch(int8_t val);
 #define CURSOR_ON_LINE()         (m_posHorz<0)
 
 #define CHECK_FLAG_NO_SCREEN_INDEX   1
-bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
-bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
+bool navigate(evt_t event, int count, int rows, int columns=1);
+bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
+bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t menuTabSize, vertpos_t maxrow);
 bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
-void drawMenuTemplate(const char *title, evt_t event, uint16_t scrollbar_X=0);
+void drawShadow(coord_t x, coord_t y, coord_t w, coord_t h);
+void drawScreenTemplate(const char * title);
+void drawMenuTemplate(const char * title, uint16_t scrollbar_X=0);
+void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
 
 #define MENU(title, tab, menu, lines_count, scrollbar_X, ...) \
   MENU_TAB(__VA_ARGS__); \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
-  if (!check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)) return; \
-  drawMenuTemplate(title, event, scrollbar_X); \
+  if (!check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
+  drawMenuTemplate(title, scrollbar_X); \
 
 #define SIMPLE_MENU(title, tab, menu, lines_count, scrollbar_X) \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
-  if (!check_simple(event, menu, tab, DIM(tab), lines_count)) return; \
-  drawMenuTemplate(title, event, scrollbar_X); \
+  if (!check_simple(event, menu, tab, DIM(tab), lines_count)) return false; \
+  drawMenuTemplate(title, scrollbar_X); \
 
 #define SUBMENU(title, lines_count, scrollbar_X, ...) \
   MENU_TAB(__VA_ARGS__); \
-  if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return; \
-  drawMenuTemplate(title, event, scrollbar_X);
+  if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
+  drawMenuTemplate(title, scrollbar_X);
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  if (!check_submenu_simple(event, lines_count)) return
+  if (!check_submenu_simple(event, lines_count)) return false
 
 #define SIMPLE_SUBMENU(title, lines_count, scrollbar_X) \
   SIMPLE_SUBMENU_NOTITLE(lines_count); \
-  drawMenuTemplate(title, event, scrollbar_X)
+  drawMenuTemplate(title, scrollbar_X)
 
 typedef int select_menu_value_t;
 
@@ -250,7 +248,7 @@ int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, evt_t e
   #define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
 #else
   int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, evt_t event);
-  #define displayGVar(x, y, v, min, max) lcd_outdez8(x, y, v)
+  #define displayGVar(x, y, v, min, max) lcdDrawNumber(x, y, v)
 #endif
 
 void editName(coord_t x, coord_t y, char *name, uint8_t size, evt_t event, uint8_t active);
@@ -272,9 +270,9 @@ extern uint8_t         s_warning_type;
 #define POPUP_W                300
 #define POPUP_H                130
 #define WARNING_LINE_LEN       32
-#define WARNING_LINE_X         (POPUP_X+86)
+#define WARNING_LINE_X         (POPUP_X+76)
 #define WARNING_LINE_Y         (POPUP_Y+9)
-#define WARNING_INFOLINE_Y     (WARNING_LINE_Y+64)
+#define WARNING_INFOLINE_Y     (WARNING_LINE_Y+68)
 
 void displayBox();
 void displayPopup(const char *title);
@@ -308,11 +306,8 @@ extern void (*menuHandler)(const char *result);
 
 #define TEXT_FILENAME_MAXLEN  40
 extern char s_text_file[TEXT_FILENAME_MAXLEN];
-void menuTextView(evt_t event);
 void pushMenuTextView(const char *filename);
 void pushModelNotes();
-
-void menuChannelsView(evt_t event);
 
 #define LABEL(...) (uint8_t)-1
 

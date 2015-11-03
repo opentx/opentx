@@ -439,6 +439,7 @@ enum UartModes {
 #if defined(PCBHORUS)
   #define LEN_SWITCH_NAME              3
   #define LEN_ANA_NAME                 3
+  #define LEN_MODEL_FILENAME           16
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
     uint8_t  serial2Mode:6; \
@@ -448,7 +449,7 @@ enum UartModes {
     uint8_t  potsType; /*two bits for every pot*/\
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME]; \
-    char currModelFilename[10];
+    char currModelFilename[LEN_MODEL_FILENAME+1];
 #elif defined(PCBFLAMENCO)
   #define LEN_SWITCH_NAME              3
   #define LEN_ANA_NAME                 3

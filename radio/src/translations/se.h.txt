@@ -760,6 +760,7 @@
 #define TR_CURRENT             INDENT"Ampere"
 #define TR_SELECT_MODEL        "Välj Modell"
 #define TR_CREATE_MODEL        "Skapa Modell"
+#define TR_DUPLICATE_MODEL     "Duplicate Model"
 #define TR_COPY_MODEL          "Kopiera Modell"
 #define TR_MOVE_MODEL          "Flytta Modell"
 #define TR_BACKUP_MODEL        "Modell-backup"

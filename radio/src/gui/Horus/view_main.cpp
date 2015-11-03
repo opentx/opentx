@@ -36,13 +36,23 @@
 
 #include "../../opentx.h"
 
-#define TRIM_LH_X     90
-#define TRIM_LV_X     24
-#define TRIM_RV_X     (LCD_W-35)
-#define TRIM_RH_X     (LCD_W-95)
-#define TRIM_V_Y      135
-#define TRIM_H_Y      235
-#define TRIM_LEN      80
+#define TRIM_LH_X                      90
+#define TRIM_LV_X                      24
+#define TRIM_RV_X                      (LCD_W-35)
+#define TRIM_RH_X                      (LCD_W-95)
+#define TRIM_V_Y                       135
+#define TRIM_H_Y                       235
+#define TRIM_LEN                       80
+
+#define MODELPANEL_LEFT                240
+#define MODELPANEL_TOP                 68
+#define MODELPANEL_WIDTH               MODEL_BITMAP_WIDTH
+#define MODELPANEL_HEIGHT              135
+
+#define TIMER1PANEL_LEFT               46
+#define TIMER1PANEL_TOP                55
+#define TIMER2PANEL_LEFT               TIMER1PANEL_LEFT
+#define TIMER2PANEL_TOP                134
 
 void drawTrimSquare(coord_t x, coord_t y)
 {
@@ -140,7 +150,7 @@ void drawTrims(uint8_t flightMode)
       drawVerticalTrimPosition(xm-1, ym-6, val);
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          // TODO lcd_outdezAtt(trim>0 ? 100 : 200, xm-2, trim, TINSIZE|VERTICAL);
+          // TODO lcdDrawNumber(trim>0 ? 100 : 200, xm-2, trim, TINSIZE|VERTICAL);
         }
       }
     }
@@ -151,7 +161,7 @@ void drawTrims(uint8_t flightMode)
       drawHorizontalTrimPosition(xm-3, ym-2, val);
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcd_outdezAtt((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+2, trim, TINSIZE);
+          lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+2, trim, TINSIZE);
         }
       }
     }
@@ -166,11 +176,11 @@ void drawTimer(coord_t x, coord_t y, int index)
   if (timerData.start) {
     lcdDrawBitmapPatternPie(x+2, y+3, LBM_RSCALE, TITLE_BGCOLOR, 0, timerState.val <= 0 ? 360 : 360*(timerData.start-timerState.val)/timerData.start);
   }
-  putsTimer(x+74, y+31, abs(timerState.val), TEXT_COLOR|DBLSIZE|LEFT);
+  putsTimer(x+76, y+31, abs(timerState.val), TEXT_COLOR|DBLSIZE|LEFT);
   if (ZLEN(timerData.name) > 0) {
-    lcdDrawTextWithLen(x+74, y+20, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE|TEXT_COLOR);
+    lcdDrawTextWithLen(x+78, y+20, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE|TEXT_COLOR);
   }
-  putsStrIdx(x+137, y+17, "TMR", 1, SMLSIZE|TEXT_COLOR);
+  putsStrIdx(x+137, y+17, "TMR", index+1, SMLSIZE|TEXT_COLOR);
 }
 
 
@@ -280,22 +290,17 @@ void onMainViewMenu(const char *result)
   }
 }
 
-const uint16_t LBM_MAINVIEW_FLAT[] = {
-#include "../../bitmaps/Horus/mainview_flat.lbm"
-};
-
-const uint16_t LBM_CORSAIR[] = {
-#include "../../bitmaps/Horus/corsair.lbm"
-};
-
-
-void menuMainView(evt_t event)
+bool menuMainView(evt_t event)
 {
   switch (event) {
     case EVT_ENTRY:
       killEvents(KEY_EXIT);
       killEvents(KEY_UP);
       killEvents(KEY_DOWN);
+      break;
+
+    case EVT_ENTRY_UP:
+      LOAD_MODEL_BITMAP();
       break;
 
     case EVT_KEY_LONG(KEY_ENTER):
@@ -341,14 +346,13 @@ void menuMainView(evt_t event)
   }
 
   lcdDrawBitmap(0, 0, LBM_MAINVIEW_BACKGROUND);
-  // lcdDrawBitmap(0, 0, LBM_MAINVIEW_FLAT);
 
   // Header
   lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
   lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
   lcdDrawBitmapPattern(4, 10, LBM_TOPMENU_OPENTX, MENU_TITLE_COLOR);
   drawTopmenuDatetime();
-  if (1 || usbPlugged()) {
+  if (usbPlugged()) {
     lcdDrawBitmapPattern(378, 8, LBM_TOPMENU_USB, MENU_TITLE_COLOR);
   }
   const uint8_t rssiBarsValue[] = { 30, 40, 50, 60, 80 };
@@ -357,7 +361,6 @@ void menuMainView(evt_t event)
     uint8_t height = rssiBarsHeight[i];
     lcdDrawSolidFilledRect(390+i*6, 38-height, 4, height, TELEMETRY_RSSI() >= rssiBarsValue[i] ? MENU_TITLE_COLOR : MENU_TITLE_DISABLE_COLOR);
   }
-
 
   // Flight Mode Name
   int mode = mixerCurrentFlightMode;
@@ -375,15 +378,21 @@ void menuMainView(evt_t event)
   drawTrims(mode);
 
   // Model panel
-  lcdDrawFilledRect(248, 58, 188, 158, SOLID, TEXT_BGCOLOR | OPACITY(5));
-  lcdDrawBitmapPattern(256, 62, LBM_MODEL_ICON, TITLE_BGCOLOR);
-  lcdDrawTextWithLen(293, 68, g_model.header.name, LEN_MODEL_NAME, ZCHAR|SMLSIZE);
-  lcdDrawSolidHorizontalLine(287, 85, 140, TITLE_BGCOLOR);
-  lcdDrawBitmap(256, 104, LBM_CORSAIR);
+  lcdDrawFilledRect(MODELPANEL_LEFT, MODELPANEL_TOP, MODELPANEL_WIDTH, MODELPANEL_HEIGHT, SOLID, TEXT_BGCOLOR | OPACITY(5));
+  lcdDrawBitmapPattern(MODELPANEL_LEFT+6, MODELPANEL_TOP+4, LBM_MODEL_ICON, TITLE_BGCOLOR);
+  lcdDrawTextWithLen(MODELPANEL_LEFT+45, MODELPANEL_TOP+10, g_model.header.name, LEN_MODEL_NAME, ZCHAR|SMLSIZE);
+  lcdDrawSolidHorizontalLine(MODELPANEL_LEFT+39, MODELPANEL_TOP+27, MODELPANEL_WIDTH-48, TITLE_BGCOLOR);
+  int scale = getBitmapScale(modelBitmap, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT);
+  int width = getBitmapScaledSize(getBitmapWidth(modelBitmap), scale);
+  int height = getBitmapScaledSize(getBitmapHeight(modelBitmap), scale);
+  lcdDrawBitmap(MODELPANEL_LEFT+(MODEL_BITMAP_WIDTH-width)/2, MODELPANEL_TOP+MODELPANEL_HEIGHT-MODEL_BITMAP_HEIGHT/2-height/2, modelBitmap, 0, 0, scale);
 
-  // Timer 1
+  // Timers
   if (g_model.timers[0].mode) {
-    drawTimer(50, 61, 0);
+    drawTimer(TIMER1PANEL_LEFT, TIMER1PANEL_TOP, 0);
+  }
+  if (g_model.timers[1].mode) {
+    drawTimer(TIMER2PANEL_LEFT, TIMER2PANEL_TOP, 1);
   }
 
 #if 0
@@ -392,18 +401,20 @@ void menuMainView(evt_t event)
     displayMessageBox();
     putsStrIdx(WARNING_LINE_X, WARNING_LINE_Y, STR_GV, s_gvar_last+1, DBLSIZE|YELLOW);
     lcdDrawTextWithLen(WARNING_LINE_X+45, WARNING_LINE_Y, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, DBLSIZE|YELLOW|ZCHAR);
-    lcd_outdezAtt(WARNING_LINE_X, WARNING_INFOLINE_Y, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), DBLSIZE|LEFT);
+    lcdDrawNumber(WARNING_LINE_X, WARNING_INFOLINE_Y, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), DBLSIZE|LEFT);
   }
 #endif
+
+  return true;
 }
 
-void menuMainViewChannelsMonitor(evt_t event)
+bool menuMainViewChannelsMonitor(evt_t event)
 {
-  switch(event) {
+  switch (event) {
     case EVT_KEY_BREAK(KEY_EXIT):
       chainMenu(menuMainView);
       event = 0;
-      break;
+      return false;
   }
 
   return menuChannelsView(event);

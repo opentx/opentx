@@ -106,12 +106,14 @@ void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
 
 void drawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
 {
-  lcdDrawSolidVerticalLine(x, y, h, LINE_COLOR);
-  coord_t yofs = (h*offset + count/2) / count;
-  coord_t yhgt = (h*visible + count/2) / count;
-  if (yhgt + yofs > h)
-    yhgt = h - yofs;
-  lcdDrawSolidFilledRect(x-1, y + yofs, 3, yhgt, SCROLLBOX_COLOR);
+  if (visible < count) {
+    lcdDrawSolidVerticalLine(x, y, h, LINE_COLOR);
+    coord_t yofs = (h*offset + count/2) / count;
+    coord_t yhgt = (h*visible + count/2) / count;
+    if (yhgt + yofs > h)
+      yhgt = h - yofs;
+    lcdDrawSolidFilledRect(x-1, y + yofs, 3, yhgt, SCROLLBOX_COLOR);
+  }
 }
 
 void drawProgressBar(const char *label)
@@ -130,9 +132,38 @@ void updateProgressBar(int num, int den)
   }
 }
 
+void drawShadow(coord_t x, coord_t y, coord_t w, coord_t h)
+{
+  lcdDrawSolidVerticalLine(x+w, y+1, h, TEXT_COLOR);
+  lcdDrawSolidHorizontalLine(x+1, y+h, w, TEXT_COLOR);
+  lcdDrawSolidVerticalLine(x+w+1, y+2, h, LINE_COLOR);
+  lcdDrawSolidHorizontalLine(x+2, y+h+1, w, LINE_COLOR);
+}
+
+void drawScreenTemplate(const char * title)
+{
+  // Header
+  lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+  lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
+  drawTopmenuDatetime();
+
+  lcdDrawBitmapPattern(4, 10, LBM_TOPMENU_OPENTX, MENU_TITLE_COLOR);
+
+  if (title) {
+    // must be done at the end so that we can write something at the right of the menu title
+    lcdDrawText(50, 3, title, MENU_TITLE_COLOR|DBLSIZE);
+  }
+
+  // Body
+  lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, LCD_H-MENU_HEADER_HEIGHT-MENU_FOOTER_HEIGHT, TEXT_BGCOLOR);
+
+  // Footer
+  lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, LCD_W, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
+}
+
 #define MENU_ICONS_SPACING 31
 
-void drawMenuTemplate(const char * name, evt_t event, uint16_t scrollbar_X)
+void drawMenuTemplate(const char * name, uint16_t scrollbar_X)
 {
   // clear the screen
   lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
@@ -257,7 +288,7 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
     }
   }
   else {
-    lcd_outdezAtt(x, y, value, attr, "%");
+    lcdDrawNumber(x, y, value, attr, 0, NULL, "%");
     if (invers) value = checkIncDec(event, value, min, max, EE_MODEL | editflags);
   }
   return value;
@@ -266,7 +297,7 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
 int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, evt_t event)
 {
   if (attr & INVERS) value = checkIncDec(event, value, min, max, EE_MODEL);
-  lcd_outdezAtt(x, y, value, attr, "%");
+  lcdDrawNumber(x, y, value, attr, 0, NULL, "%");
   return value;
 }
 #endif

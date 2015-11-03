@@ -30,8 +30,8 @@
 
 #include "usb_bsp.h"
 
-#include "../Taranis/board_taranis.h"
-#include "../Taranis/usbd_conf.h"
+#include "board_taranis.h"
+#include "usbd_conf.h"
 
 extern uint32_t SystemCoreClock;
 

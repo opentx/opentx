@@ -36,7 +36,7 @@
 
 #include "../../opentx.h"
 
-void menuGeneralVersion(evt_t event)
+bool menuGeneralVersion(evt_t event)
 {
   SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, e_Vers, 1, DEFAULT_SCROLLBAR_X);
 
@@ -50,4 +50,6 @@ void menuGeneralVersion(evt_t event)
   // if (event == EVT_KEY_LONG(KEY_ENTER)) {
   //   backupEeprom();
   // }
+
+  return true;
 }

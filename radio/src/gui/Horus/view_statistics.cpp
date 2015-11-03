@@ -36,12 +36,12 @@
 
 #include "../../opentx.h"
 
-void menuStatisticsView(evt_t event)
+bool menuStatisticsView(evt_t event)
 {
   switch(event) {
     case EVT_KEY_FIRST(KEY_UP):
       chainMenu(menuStatisticsDebug);
-      return;
+      return false;
 
     case EVT_KEY_LONG(KEY_MENU):
       g_eeGeneral.globalTimer = 0;
@@ -51,10 +51,10 @@ void menuStatisticsView(evt_t event)
 
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
-      return;
+      return false;
   }
 
-  drawMenuTemplate("Statistics", event);
+  drawScreenTemplate("Statistics");
 
   lcdDrawText(  10, MENU_CONTENT_TOP + FH*0, "\037\145TOT:\037\317BATT:", HEADER_COLOR);
   lcdDrawText(  10, MENU_CONTENT_TOP + FH*1, "TM1:\037\145TM2:", HEADER_COLOR);
@@ -84,6 +84,8 @@ void menuStatisticsView(evt_t event)
     if (traceRd==s_traceWr) break;
   }
 #endif
+
+  return true;
 }
 
 #define MENU_DEBUG_COL1_OFS   (11*10-2)
@@ -93,10 +95,8 @@ void menuStatisticsView(evt_t event)
 #define MENU_DEBUG_Y_STACK    (MENU_CONTENT_TOP + 5*FH)
 #define MENU_DEBUG_Y_RTOS     (MENU_CONTENT_TOP + 6*FH)
 
-void menuStatisticsDebug(evt_t event)
+bool menuStatisticsDebug(evt_t event)
 {
-  drawMenuTemplate(STR_MENUDEBUG, event);
-
   switch(event)
   {
     case EVT_KEY_LONG(KEY_ENTER):
@@ -107,6 +107,7 @@ void menuStatisticsDebug(evt_t event)
       killEvents(event);
       AUDIO_KEYPAD_UP();
       break;
+
     case EVT_KEY_FIRST(KEY_ENTER):
 #if defined(LUA)
       maxLuaInterval = 0;
@@ -119,48 +120,52 @@ void menuStatisticsDebug(evt_t event)
 #if defined(DEBUG_TRACE_BUFFER)
     case EVT_KEY_FIRST(KEY_UP):
       pushMenu(menuTraceBuffer);
-      return;
+      return false;
 #endif
 
     case EVT_KEY_FIRST(KEY_DOWN):
       chainMenu(menuStatisticsView);
-      break;
+      return false;
+
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
-      break;
+      return false;
   }
 
+  drawScreenTemplate(STR_MENUDEBUG);
+
   lcd_putsLeft(MENU_DEBUG_Y_FREE_RAM, "Free Mem");
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, availableMemory(), LEFT, "b");
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, availableMemory(), LEFT, 0, NULL, "b");
 
 #if defined(LUA)
   lcd_putsLeft(MENU_DEBUG_Y_LUA, "Lua scripts");
   lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_LUA+1, "[Duration]", HEADER_COLOR|SMLSIZE);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS+30, MENU_DEBUG_Y_LUA, 10*maxLuaDuration, LEFT);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS+30, MENU_DEBUG_Y_LUA, 10*maxLuaDuration, LEFT);
   lcdDrawText(MENU_DEBUG_COL1_OFS+60, MENU_DEBUG_Y_LUA+1, "[Interval]", HEADER_COLOR|SMLSIZE);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS+90, MENU_DEBUG_Y_LUA, 10*maxLuaInterval, LEFT);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS+90, MENU_DEBUG_Y_LUA, 10*maxLuaInterval, LEFT);
 #endif
 
   lcd_putsLeft(MENU_DEBUG_Y_MIXMAX, STR_TMIXMAXMS);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT, "ms");
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT, 0, NULL, "ms");
 
   lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
   lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[Menus]", HEADER_COLOR|SMLSIZE);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS+30, MENU_DEBUG_Y_RTOS, menusStack.available(), LEFT);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS+30, MENU_DEBUG_Y_RTOS, menusStack.available(), LEFT);
   lcdDrawText(MENU_DEBUG_COL1_OFS+60, MENU_DEBUG_Y_RTOS+1, "[Mix]", HEADER_COLOR|SMLSIZE);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS+90, MENU_DEBUG_Y_RTOS, mixerStack.available(), LEFT);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS+90, MENU_DEBUG_Y_RTOS, mixerStack.available(), LEFT);
   lcdDrawText(MENU_DEBUG_COL1_OFS+120, MENU_DEBUG_Y_RTOS+1, "[Audio]", HEADER_COLOR|SMLSIZE);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS+150, MENU_DEBUG_Y_RTOS, audioStack.available(), LEFT);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS+150, MENU_DEBUG_Y_RTOS, audioStack.available(), LEFT);
 
   lcd_putsCenter(7*FH+1, STR_MENUTORESET);
   // lcd_status_line();
-}
 
+  return true;
+}
 
 #if defined(DEBUG_TRACE_BUFFER)
 #include "stamp-opentx.h"
 
-void menuTraceBuffer(evt_t event)
+bool menuTraceBuffer(evt_t event)
 {
   switch(event)
   {
@@ -171,6 +176,7 @@ void menuTraceBuffer(evt_t event)
   }
 
   SIMPLE_SUBMENU("Trace Buffer " VERS_STR, TRACE_BUFFER_LEN);
+
   /* RTC time */
   struct gtm t;
   gettime(&t);
@@ -181,16 +187,16 @@ void menuTraceBuffer(evt_t event)
   int8_t sub = m_posVert;
 
   lcdDrawChar(0, FH, '#', TEXT_COLOR);
-  lcd_puts(4*10, FH, "Time");
-  lcd_puts(14*10, FH, "Event");
-  lcd_puts(20*10, FH, "Data");
+  lcdDrawText(4*10, FH, "Time");
+  lcdDrawText(14*10, FH, "Event");
+  lcdDrawText(20*10, FH, "Data");
 
-  for (uint8_t i=0; i<LCD_LINES-2; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     y = 1 + (i+2)*FH;
     k = i+s_pgOfs;
 
-    //item
-    lcd_outdezAtt(0, y, k, LEFT | (sub==k ? INVERS : 0));
+    // item
+    lcdDrawNumber(0, y, k, LEFT | (sub==k ? INVERS : 0));
 
     const struct TraceElement * te = getTraceElement(k);
     if (te) {
@@ -198,7 +204,7 @@ void menuTraceBuffer(evt_t event)
       putstime_t tme = te->time % SECS_PER_DAY;
       putsTimer(4*10, y, tme, TIMEHOUR|LEFT);
       //event
-      lcd_outdezNAtt(14*10, y, te->event, LEADING0|LEFT, 3);
+      lcdDrawNumber(14*10, y, te->event, LEADING0|LEFT, 3);
       //data
       lcd_putsn  (20*10, y, "0x", 2);
       lcd_outhex4(22*10-2, y, (uint16_t)(te->data >> 16));
@@ -207,6 +213,6 @@ void menuTraceBuffer(evt_t event)
 
   }
 
-
+  return true;
 }
-#endif //#if defined(DEBUG_TRACE_BUFFER)
+#endif // defined(DEBUG_TRACE_BUFFER)

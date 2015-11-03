@@ -100,7 +100,11 @@ inline const pm_char * SDCARD_ERROR(FRESULT result)
   #define O9X_FOURCC 0x3178396F // o9x for gruvin9x/MEGA2560
 #endif
 
-const char *sdCopyFile(const char *filename, const char *srcDir, const char *destDir);
+bool isFileAvailable(const char * filename);
+bool findNextFileIndex(char * filename, const char * directory);
+
+const char * sdCopyFile(const char * src, const char * dest);
+const char * sdCopyFile(const char * filename, const char * srcDir, const char * destDir);
 
 #endif
 

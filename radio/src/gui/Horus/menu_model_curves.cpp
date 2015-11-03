@@ -97,7 +97,7 @@ bool moveCurve(uint8_t index, int8_t shift)
 void displayPresetChoice(evt_t event)
 {
   displayWarning(event);
-  lcd_outdezAtt(WARNING_LINE_X, WARNING_INFOLINE_Y-10, 45*s_warning_input_value/4, LEFT|INVERS, "@");
+  lcdDrawNumber(WARNING_LINE_X, WARNING_INFOLINE_Y-10, 45*s_warning_input_value/4, LEFT|INVERS, 0, NULL, "@");
 
   if (s_warning_result) {
     s_warning_result = 0;
@@ -135,7 +135,7 @@ void onCurveOneMenu(const char *result)
   }
 }
 
-void menuModelCurveOne(evt_t event)
+bool menuModelCurveOne(evt_t event)
 {
   static uint8_t pointsOfs = 0;
   CurveInfo & crv = g_model.curves[s_curveChan];
@@ -143,7 +143,7 @@ void menuModelCurveOne(evt_t event)
 
   SIMPLE_SUBMENU(STR_MENUCURVE, 4 + 5+crv.points + (crv.type==CURVE_TYPE_CUSTOM ? 5+crv.points-2 : 0), 0);
 
-  lcd_outdezAtt(MENU_TITLE_NEXT_POS, MENU_TITLE_TOP+2, s_curveChan+1, LEFT|HEADER_COLOR);
+  lcdDrawNumber(MENU_TITLE_NEXT_POS, MENU_TITLE_TOP+2, s_curveChan+1, LEFT|HEADER_COLOR);
 
   lcd_putsLeft(MENU_CONTENT_TOP, STR_NAME);
   editName(MENUS_MARGIN_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + FH, g_model.curveNames[s_curveChan], sizeof(g_model.curveNames[s_curveChan]), event, m_posVert==0);
@@ -167,7 +167,7 @@ void menuModelCurveOne(evt_t event)
 
   attr = (m_posVert==2 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
   lcd_putsLeft(MENU_CONTENT_TOP + 4*FH, STR_COUNT);
-  lcd_outdezAtt(MENUS_MARGIN_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + 5*FH, 5+crv.points, LEFT|attr, STR_PTS);
+  lcdDrawNumber(MENUS_MARGIN_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + 5*FH, 5+crv.points, LEFT|attr, 0, NULL, STR_PTS);
   if (attr) {
     int count = checkIncDecModel(event, crv.points, -3, 12); // 2pts - 17pts
     if (checkIncDec_Ret) {
@@ -233,9 +233,9 @@ void menuModelCurveOne(evt_t event)
     if (i>=pointsOfs && i<pointsOfs+NUM_BODY_LINES) {
       int8_t x = -100 + 200*i/(5+crv.points-1);
       if (crv.type==CURVE_TYPE_CUSTOM && i>0 && i<5+crv.points-1) x = points[5+crv.points+i-1];
-      lcd_outdezAtt(120,  posY, i+1, LEFT|TEXT_DISABLE_COLOR);
-      lcd_outdezAtt(150, posY, x, LEFT|(selectionMode==1?attr:0));
-      lcd_outdezAtt(200, posY, points[i], LEFT|(selectionMode==2?attr:0));
+      lcdDrawNumber(120,  posY, i+1, LEFT|TEXT_DISABLE_COLOR);
+      lcdDrawNumber(150, posY, x, LEFT|(selectionMode==1 ? attr : 0));
+      lcdDrawNumber(200, posY, points[i], LEFT|(selectionMode==2 ? attr : 0));
       posY += FH;
     }
 
@@ -255,9 +255,9 @@ void menuModelCurveOne(evt_t event)
     }
   }
 
-  if (5+crv.points > NUM_BODY_LINES) {
-    drawScrollbar(250, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, pointsOfs, 5+crv.points, NUM_BODY_LINES);
-  }
+  drawScrollbar(250, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, pointsOfs, 5+crv.points, NUM_BODY_LINES);
+
+  return true;
 }
 
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t attr)
@@ -291,7 +291,7 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t a
   }
 }
 
-void menuModelCurvesAll(evt_t event)
+bool menuModelCurvesAll(evt_t event)
 {
   SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, MAX_CURVES, DEFAULT_SCROLLBAR_X);
 
@@ -314,7 +314,7 @@ void menuModelCurvesAll(evt_t event)
       putsStrIdx(MENUS_MARGIN_LEFT, y, STR_CV, k+1, attr);
       editName(50, y, g_model.curveNames[k], sizeof(g_model.curveNames[k]), 0, 0);
       CurveInfo & crv = g_model.curves[k];
-      lcd_outdezAtt(100, y, 5+crv.points, LEFT, STR_PTS);
+      lcdDrawNumber(100, y, 5+crv.points, LEFT, 0, NULL, STR_PTS);
     }
   }
 
@@ -322,4 +322,6 @@ void menuModelCurvesAll(evt_t event)
     s_curveChan = sub;
     DrawCurve(23);
   }
+
+  return true;
 }

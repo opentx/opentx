@@ -325,12 +325,12 @@ void lcd_outdez8(coord_t x, coord_t y, int8_t val)
   lcd_outdezAtt(x, y, val);
 }
 
-void lcd_outdezAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags)
+void lcd_outdezAtt(coord_t x, coord_t y, int32_t val, LcdFlags flags)
 {
   lcd_outdezNAtt(x, y, val, flags);
 }
 
-void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t len)
+void lcd_outdezNAtt(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t len)
 {
   uint8_t fw = FWNUM;
   int8_t mode = MODE(flags);
@@ -356,7 +356,7 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
 
   if (mode != MODE(LEADING0)) {
     len = 1;
-    lcduint_t tmp = ((lcduint_t)val) / 10;
+    int32_t tmp = val / 10;
     while (tmp) {
       len++;
       tmp /= 10;
@@ -400,7 +400,7 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
   if (dblsize) x++;
 
   for (uint8_t i=1; i<=len; i++) {
-    div_t qr = div((lcduint_t)val, 10);
+    div_t qr = div(val, 10);
     char c = qr.rem + '0';
     LcdFlags f = flags;
     lcdDrawChar(x, y, c, f);
@@ -875,7 +875,7 @@ const pm_uint8_t bchunit_ar[] PROGMEM = {
   UNIT_DIST,    // GPS Alt
 };
 
-void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att)
+void putsValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att)
 {
   // convertUnit(val, unit);
   lcd_outdezAtt(x, y, val, att & (~NO_UNIT));
@@ -956,7 +956,7 @@ void displayGpsCoords(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFl
   }
 }
 
-void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t value, LcdFlags att)
+void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t value, LcdFlags att)
 {
   TelemetryItem & telemetryItem = telemetryItems[channel];
   TelemetrySensor & telemetrySensor = g_model.telemetrySensors[channel];
@@ -976,7 +976,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
   }
 }
 
-void putsChannelValue(coord_t x, coord_t y, source_t channel, lcdint_t value, LcdFlags att)
+void putsChannelValue(coord_t x, coord_t y, source_t channel, int32_t value, LcdFlags att)
 {
   if (channel >= MIXSRC_FIRST_TELEM) {
     channel = (channel-MIXSRC_FIRST_TELEM) / 3;

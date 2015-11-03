@@ -208,13 +208,13 @@ bool isSensorAvailable(int sensor)
 #define SENSOR_FILTER_ROWS     (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSOR_PERSISTENT_ROWS (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
 
-void menuModelSensor(evt_t event)
+bool menuModelSensor(evt_t event)
 {
   TelemetrySensor *sensor = &g_model.telemetrySensors[s_currIdx];
 
   SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, DEFAULT_SCROLLBAR_X, { 0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, 0 });
 
-  lcd_outdezAtt(MENUS_MARGIN_LEFT+getTextWidth(TR_MENUSENSOR)+5, MENU_FOOTER_TOP, s_currIdx+1, HEADER_COLOR|LEFT);
+  lcdDrawNumber(MENUS_MARGIN_LEFT+getTextWidth(TR_MENUSENSOR)+5, MENU_FOOTER_TOP, s_currIdx+1, HEADER_COLOR|LEFT);
   putsTelemetryChannelValue(SENSOR_2ND_COLUMN, MENU_FOOTER_TOP, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), HEADER_COLOR|LEFT);
 
   int sub = m_posVert;
@@ -252,7 +252,7 @@ void menuModelSensor(evt_t event)
         if (sensor->type == TELEM_TYPE_CUSTOM) {
           lcd_putsLeft(y, STR_ID);
           lcd_outhex4(SENSOR_2ND_COLUMN, y, sensor->id, LEFT|(m_posHorz==0 ? attr : 0));
-          lcd_outdezAtt(SENSOR_3RD_COLUMN, y, sensor->instance, LEFT|(m_posHorz==1 ? attr : 0));
+          lcdDrawNumber(SENSOR_3RD_COLUMN, y, sensor->instance, LEFT|(m_posHorz==1 ? attr : 0));
           if (attr) {
             switch (m_posHorz) {
               case 0:
@@ -337,7 +337,7 @@ void menuModelSensor(evt_t event)
           if (sensor->custom.ratio == 0)
             lcdDrawText(SENSOR_2ND_COLUMN, y, "-", attr);
           else
-            lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.ratio, LEFT|attr|PREC1);
+            lcdDrawNumber(SENSOR_2ND_COLUMN, y, sensor->custom.ratio, LEFT|attr|PREC1);
           break;
         }
         // no break
@@ -361,7 +361,7 @@ void menuModelSensor(evt_t event)
           lcd_putsLeft(y, NO_INDENT(STR_OFFSET));
           if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.offset, -30000, +30000);
           if (sensor->prec > 0) attr |= (sensor->prec == 2 ? PREC2 : PREC1);
-          lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.offset, LEFT|attr);
+          lcdDrawNumber(SENSOR_2ND_COLUMN, y, sensor->custom.offset, LEFT|attr);
           break;
         }
         // no break
@@ -400,6 +400,8 @@ void menuModelSensor(evt_t event)
 
     }
   }
+
+  return true;
 }
 
 void onSensorMenu(const char *result)
@@ -442,7 +444,7 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
 }
 #endif
 
-void menuModelTelemetry(evt_t event)
+bool menuModelTelemetry(evt_t event)
 {
   MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, DEFAULT_SCROLLBAR_X, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS USRDATA_ROWS CASE_VARIO(LABEL(Vario)) CASE_VARIO(0) CASE_VARIO(VARIO_RANGE_ROWS) LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), TELEMETRY_SCREEN_ROWS(2), TELEMETRY_SCREEN_ROWS(3) });
 
@@ -461,10 +463,10 @@ void menuModelTelemetry(evt_t event)
 
     if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+MAX_SENSORS) {
       int index = k-ITEM_TELEMETRY_SENSOR1;
-      lcd_outdezAtt(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, index+1, LEFT|attr, ":");
+      lcdDrawNumber(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, index+1, LEFT|attr, 0, NULL, ":");
       lcdDrawTextWithLen(60, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
       if (telemetryItems[index].isFresh()) {
-        lcd_puts(100, y, "*");
+        lcdDrawText(100, y, "*");
       }
       TelemetryItem & telemetryItem = telemetryItems[index];
       if (telemetryItem.isAvailable()) {
@@ -472,7 +474,7 @@ void menuModelTelemetry(evt_t event)
         putsTelemetryChannelValue(TELEM_COL2, y, index, getValue(MIXSRC_FIRST_TELEM+3*index), LEFT|color);
       }
       else {
-        lcd_puts(TELEM_COL2, y, "---"); // TODO shortcut
+        lcdDrawText(TELEM_COL2, y, "---"); // TODO shortcut
       }
       if (attr) {
         s_editMode = 0;
@@ -519,7 +521,7 @@ void menuModelTelemetry(evt_t event)
       case ITEM_TELEMETRY_RSSI_ALARM2: {
         uint8_t alarm = k-ITEM_TELEMETRY_RSSI_ALARM1;
         lcd_putsLeft(y, (alarm==0 ? STR_LOWALARM : STR_CRITICALALARM));
-        lcd_outdezNAtt(TELEM_COL2, y, getRssiAlarmValue(alarm), LEFT|attr, 3);
+        lcdDrawNumber(TELEM_COL2, y, getRssiAlarmValue(alarm), LEFT|attr, 3);
         if (attr && s_editMode>0) {
           CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[alarm].value, -30, 30);
         }
@@ -541,10 +543,10 @@ void menuModelTelemetry(evt_t event)
 
       case ITEM_TELEMETRY_VARIO_RANGE:
         lcd_putsLeft(y, STR_LIMIT);
-        lcd_outdezAtt(TELEM_COL2, y, -10+g_model.frsky.varioMin, (m_posHorz<=0 ? attr : 0)|LEFT);
-        lcd_outdezAtt(TELEM_COL2+70, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0)|PREC1);
-        lcd_outdezAtt(TELEM_COL2+115, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0)|PREC1);
-        lcd_outdezAtt(TELEM_COL2+160, y, 10+g_model.frsky.varioMax, ((CURSOR_ON_LINE() || m_posHorz==3) ? attr : 0));
+        lcdDrawNumber(TELEM_COL2, y, -10+g_model.frsky.varioMin, (m_posHorz<=0 ? attr : 0)|LEFT);
+        lcdDrawNumber(TELEM_COL2+70, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0)|PREC1);
+        lcdDrawNumber(TELEM_COL2+115, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0)|PREC1);
+        lcdDrawNumber(TELEM_COL2+160, y, 10+g_model.frsky.varioMax, ((CURSOR_ON_LINE() || m_posHorz==3) ? attr : 0));
         if (attr && s_editMode>0) {
           switch (m_posHorz) {
             case 0:
@@ -725,4 +727,6 @@ void menuModelTelemetry(evt_t event)
       }
     }
   }
+
+  return true;
 }

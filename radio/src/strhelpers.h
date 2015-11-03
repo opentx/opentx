@@ -34,26 +34,8 @@
  *
  */
 
-#include "../../opentx.h"
-
-const uint8_t LBM_SPLASH[] = {
-#include "../../bitmaps/Horus/splash.lbm"
-};
-
-#if defined(SPLASH)
-void displaySplash()
-{
-  lcdClear();
-
-  lcdDrawBitmap((LCD_W-256)/2, (LCD_H-256)/2, LBM_SPLASH);
-
-#if MENUS_LOCK == 1
-  if (readonly == false) {
-    lcdDrawSolidFilledRect((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 - 9, 50, (sizeof(TR_UNLOCKED)-1)*FW+16, 11, SOLID, ERASE|ROUND);
-    lcdDrawText((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 , 53, STR_UNLOCKED);
-  }
-#endif
-
-  lcdRefresh();
-}
-#endif
+char * strAppend(char * dest, const char * source, int len=0);
+char * strAppendNumber(char * dest, unsigned int number);
+char * strSetCursor(char * dest, int position);
+char * strAppendDate(char * str, bool time=false);
+char * strAppendFilename(char * dest, const char * filename, const int size);

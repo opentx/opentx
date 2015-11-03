@@ -36,7 +36,7 @@
 #include "../../opentx.h"
 
 uint8_t g_moduleIdx;
-void menuModelFailsafe(evt_t event);
+bool menuModelFailsafe(evt_t event);
 
 enum menuModelSetupItems {
   ITEM_MODEL_NAME,
@@ -113,6 +113,7 @@ void onModelSetupBitmapMenu(const char *result)
   else {
     // The user choosed a bmp file in the list
     copySelection(g_model.header.bitmap, result, sizeof(g_model.header.bitmap));
+    loadModelBitmap(g_model.header.bitmap, modelBitmap);
     storageDirty(EE_MODEL);
   }
 }
@@ -170,7 +171,7 @@ int getSwitchWarningsCount()
   return count;
 }
 
-void menuModelSetup(evt_t event)
+bool menuModelSetup(evt_t event)
 {
   horzpos_t l_posHorz = m_posHorz;
   #define IF_EXTERNAL_MODULE_ON(x)          (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
@@ -550,7 +551,7 @@ void menuModelSetup(evt_t event)
         lcd_putsLeft(y, STR_CHANNELRANGE);
         if ((int8_t)PORT_CHANNELS_ROWS(moduleIdx) >= 0) {
           putsStrIdx(MODEL_SETUP_2ND_COLUMN, y, STR_CH, moduleData.channelsStart+1, m_posHorz==0 ? attr : 0);
-          lcd_puts(MODEL_SETUP_2ND_COLUMN+30, y, "-");
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN+30, y, "-");
           putsStrIdx(MODEL_SETUP_2ND_COLUMN+40, y, STR_CH, moduleData.channelsStart+NUM_CHANNELS(moduleIdx), m_posHorz==1 ? attr : 0);
           if (attr && s_editMode>0) {
             switch (m_posHorz) {
@@ -577,8 +578,8 @@ void menuModelSetup(evt_t event)
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         if (IS_MODULE_PPM(moduleIdx)) {
           lcd_putsLeft(y, STR_PPMFRAME);
-          lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT, STR_MS);
-          lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+70, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0, "us");
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT, 0, NULL, STR_MS);
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+70, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0, 0, NULL, "us");
           lcdDrawText(MODEL_SETUP_2ND_COLUMN+90, y, moduleData.ppmPulsePol ? "+" : "-", (CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0);
 
           if (attr && s_editMode>0) {
@@ -607,7 +608,7 @@ void menuModelSetup(evt_t event)
             lcd_putsLeft(y, STR_RXNUM);
           }
           if (IS_MODULE_XJT(moduleIdx) || IS_MODULE_DSM2(moduleIdx)) {
-            if (xOffsetBind) lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
+            if (xOffsetBind) lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
             if (attr && l_posHorz==0 && s_editMode>0) {
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], IS_MODULE_DSM2(moduleIdx) ? 20 : 63);
             }
@@ -663,11 +664,13 @@ void menuModelSetup(evt_t event)
 
   if (IS_RANGECHECK_ENABLE()) {
     displayPopup("RSSI :");
-    lcd_outdezAtt(WARNING_LINE_X, WARNING_INFOLINE_Y, TELEMETRY_RSSI(), DBLSIZE|LEFT);
+    lcdDrawNumber(WARNING_LINE_X, WARNING_INFOLINE_Y, TELEMETRY_RSSI(), DBLSIZE|LEFT);
   }
+
+  return true;
 }
 
-void menuModelFailsafe(evt_t event)
+bool menuModelFailsafe(evt_t event)
 {
   static bool longNames = false;
   bool newLongNames = false;
@@ -731,13 +734,13 @@ void menuModelFailsafe(evt_t event)
       }
 #if defined(PPM_UNIT_US)
       uint8_t wbar = (longNames ? SLIDER_W-10 : SLIDER_W);
-      lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, PPM_CH_CENTER(ch)+val/2, flags);
+      lcdDrawNumber(x+COL_W-4-wbar-ofs, y, PPM_CH_CENTER(ch)+val/2, flags);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
       uint8_t wbar = (longNames ? SLIDER_W-16 : SLIDER_W-6);
-      lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val), PREC1|flags);
+      lcdDrawNumber(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val), PREC1|flags);
 #else
       uint8_t wbar = (longNames ? SLIDER_W-10 : SLIDER_W);
-      lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val)/10, flags);
+      lcdDrawNumber(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val)/10, flags);
 #endif
 
       // Gauge
@@ -751,4 +754,6 @@ void menuModelFailsafe(evt_t event)
   }
 
   longNames = newLongNames;
+
+  return true;
 }

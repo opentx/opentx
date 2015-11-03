@@ -191,20 +191,23 @@ int8_t STORAGE_Read (uint8_t lun,
                  uint32_t blk_addr,                       
                  uint16_t blk_len)
 {
-  if (SD_ReadMultiBlocksFIXED(buf, blk_addr, BLOCKSIZE, blk_len) != 0) {
-    return -1;
+
+  for (int retry=0; retry<3; retry++) {
+    if (SD_ReadMultiBlocks(buf, blk_addr, BLOCKSIZE, blk_len) != 0) {
+      continue;
+    }
+
+    SDTransferState State;
+
+    SD_Error Status = SD_WaitReadOperation(); // Check if the Transfer is finished
+
+    while((State = SD_GetStatus()) == SD_TRANSFER_BUSY); // BUSY, OK (DONE), ERROR (FAIL)
+
+    if ((State == SD_TRANSFER_OK) && (Status == SD_OK)) {
+      return 0;
+    }
   }
-
-  SDTransferState State;
-
-  SD_Error Status = SD_WaitReadOperation(); // Check if the Transfer is finished
-
-  while((State = SD_GetStatus()) == SD_TRANSFER_BUSY); // BUSY, OK (DONE), ERROR (FAIL)
-
-  if ((State == SD_TRANSFER_ERROR) || (Status != SD_OK))
-    return -1;
-
-  return 0;
+  return -1;
 }
 /**
   * @brief  Write data to the medium
@@ -220,7 +223,7 @@ int8_t STORAGE_Write (uint8_t lun,
                   uint32_t blk_addr,
                   uint16_t blk_len)
 {
-  if (SD_WriteMultiBlocksFIXED(buf, blk_addr, BLOCKSIZE, blk_len) != 0)
+  if (SD_WriteMultiBlocks(buf, blk_addr, BLOCKSIZE, blk_len) != 0)
     return -1;
 
   SDTransferState State;

@@ -117,7 +117,7 @@ void onLimitsMenu(const char *result)
   }
 }
 
-void menuModelLimits(evt_t event)
+bool menuModelLimits(evt_t event)
 {
   MENU(STR_MENULIMITS, menuTabModel, e_Limits, NUM_CHNOUT+1, DEFAULT_SCROLLBAR_X,
       { NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW,
@@ -130,9 +130,9 @@ void menuModelLimits(evt_t event)
 
   if (sub < NUM_CHNOUT) {
 #if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_UNIT_US)
-    lcd_outdezAtt(100, MENU_FOOTER_TOP, PPM_CH_CENTER(sub)+channelOutputs[sub]/2, HEADER_COLOR, STR_US);
+    lcdDrawNumber(100, MENU_FOOTER_TOP, PPM_CH_CENTER(sub)+channelOutputs[sub]/2, HEADER_COLOR, 0, NULL, STR_US);
 #else
-    lcd_outdezAtt(100, MENU_FOOTER_TOP, calcRESXto1000(channelOutputs[sub]), HEADER_COLOR|PREC1);
+    lcdDrawNumber(100, MENU_FOOTER_TOP, calcRESXto1000(channelOutputs[sub]), HEADER_COLOR|PREC1);
 #endif
   }
 
@@ -164,7 +164,7 @@ void menuModelLimits(evt_t event)
           moveTrimsToOffsets(); // if highlighted and menu pressed - move trims to offsets
         }
       }
-      return;
+      return true;
     }
 
     LimitData *ld = limitAddress(k);
@@ -173,7 +173,7 @@ void menuModelLimits(evt_t event)
     char swVal[2] = "-";  // '-', '<', '>'
     if ((channelOutputs[k] - v) > 50) swVal[0] = (ld->revert ? 127 : 126); // Switch to raw inputs?  - remove trim!
     if ((channelOutputs[k] - v) < -50) swVal[0] = (ld->revert ? 126 : 127);
-    lcd_puts(LIMITS_DIRECTION_POS, y, swVal);
+    lcdDrawText(LIMITS_DIRECTION_POS, y, swVal);
 
     int limit = (g_model.extendedLimits ? LIMIT_EXT_MAX : 1000);
 
@@ -203,9 +203,9 @@ void menuModelLimits(evt_t event)
           }
 
 #if defined(PPM_UNIT_US)
-          lcd_outdezAtt(LIMITS_OFFSET_POS, y, ((int32_t)ld->offset*128) / 25, attr|PREC1);
+          lcdDrawNumber(LIMITS_OFFSET_POS, y, ((int32_t)ld->offset*128) / 25, attr|PREC1);
 #else
-          lcd_outdezAtt(LIMITS_OFFSET_POS, y, ld->offset, attr|PREC1);
+          lcdDrawNumber(LIMITS_OFFSET_POS, y, ld->offset, attr|PREC1);
 #endif
           if (active) {
             ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL, NULL, stops1000);
@@ -221,7 +221,7 @@ void menuModelLimits(evt_t event)
             ld->min = GVAR_MENU_ITEM(LIMITS_MIN_POS, y, ld->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, attr|PREC1, 0, event);
             break;
           }
-          lcd_outdezAtt(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), attr|PREC1);
+          lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), attr|PREC1);
           if (active) ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0, EE_MODEL, NULL, stops1000);
           break;
 
@@ -230,7 +230,7 @@ void menuModelLimits(evt_t event)
             ld->max = GVAR_MENU_ITEM(LIMITS_MAX_POS, y, ld->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, attr|PREC1, 0, event);
             break;
           }
-          lcd_outdezAtt(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), attr|PREC1);
+          lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), attr|PREC1);
           if (active) ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->max+LIMITS_MIN_MAX_OFFSET, 0, +limit, EE_MODEL, NULL, stops1000);
           break;
 
@@ -269,7 +269,7 @@ void menuModelLimits(evt_t event)
 
 #if defined(PPM_CENTER_ADJUSTABLE)
         case ITEM_LIMITS_PPM_CENTER:
-          lcd_outdezAtt(LIMITS_PPM_CENTER_POS, y, PPM_CENTER+ld->ppmCenter, attr);
+          lcdDrawNumber(LIMITS_PPM_CENTER_POS, y, PPM_CENTER+ld->ppmCenter, attr);
           if (active) {
             CHECK_INCDEC_MODELVAR(event, ld->ppmCenter, -PPM_CENTER_MAX, +PPM_CENTER_MAX);
           }
@@ -287,4 +287,6 @@ void menuModelLimits(evt_t event)
       }
     }
   }
+
+  return true;
 }

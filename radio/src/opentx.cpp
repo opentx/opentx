@@ -55,9 +55,9 @@ ModelData  g_model;
 Clipboard clipboard;
 #endif
 
-#if defined(PCBTARANIS) && defined(SDCARD)
+#if (defined(PCBTARANIS) || defined(PCBHORUS)) && defined(SDCARD)
 uint8_t modelBitmap[MODEL_BITMAP_SIZE];
-void loadModelBitmap(char *name, uint8_t *bitmap)
+void loadModelBitmap(char * name, uint8_t * bitmap)
 {
   uint8_t len = zlen(name, LEN_BITMAP_NAME);
   if (len > 0) {
@@ -325,6 +325,10 @@ void generalDefault()
   memcpy(g_eeGeneral.bluetoothName, defaultName, sizeof(defaultName));
 #endif
 
+#if !defined(EEPROM)
+  strcpy(g_eeGeneral.currModelFilename, DEFAULT_MODEL_FILENAME);
+#endif
+
   g_eeGeneral.chkSum = 0xFFFF;
 }
 
@@ -417,17 +421,6 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
 }
 #endif
 
-#if defined(SDCARD)
-bool isFileAvailable(const char * filename)
-{
-  FILINFO info;
-  TCHAR lfn[_MAX_LFN + 1];
-  info.lfname = lfn;
-  info.lfsize = sizeof(lfn);
-  return f_stat(filename, &info) == FR_OK;
-}
-#endif
-
 void modelDefault(uint8_t id)
 {
   memset(&g_model, 0, sizeof(g_model));
@@ -465,6 +458,10 @@ void modelDefault(uint8_t id)
 #if defined(MAVLINK)
   g_model.mavlink.rc_rssi_scale = 15;
   g_model.mavlink.pc_rssi_en = 1;
+#endif
+
+#if !defined(EEPROM)
+  strcpy(g_model.header.name, "\015\361\374\373\364\033\034");
 #endif
 }
 
@@ -1172,7 +1169,7 @@ void checkLowEEPROM()
 {
   if (g_eeGeneral.disableMemoryWarning) return;
   if (EeFsGetFree() < 100) {
-    ALERT(STR_EEPROMWARN, STR_EEPROMLOWMEM, AU_ERROR);
+    ALERT(STR_STORAGE_WARNING, STR_EEPROMLOWMEM, AU_ERROR);
   }
 }
 #endif

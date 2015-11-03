@@ -146,7 +146,6 @@ void perMain()
     const char * result = displayMenu(evt);
     if (result) {
       menuHandler(result);
-      putEvent(EVT_MENU_UP);
     }
   }
 #endif

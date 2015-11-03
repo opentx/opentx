@@ -43,7 +43,7 @@
 
 #define TRAINER_CALIB_POS 12
 
-void menuGeneralTrainer(evt_t event)
+bool menuGeneralTrainer(evt_t event)
 {
   uint8_t y;
   bool slave = SLAVE_MODE();
@@ -52,7 +52,7 @@ void menuGeneralTrainer(evt_t event)
 
   if (slave) {
     lcd_putsCenter(5*FH, STR_SLAVE, TEXT_COLOR);
-    return;
+    return true;
   }
 
   uint8_t attr;
@@ -83,7 +83,7 @@ void menuGeneralTrainer(evt_t event)
           break;
 
         case 1:
-          lcd_outdezAtt(TRAINER_COLUMN_2, y, td->studWeight, LEFT|attr, "%");
+          lcdDrawNumber(TRAINER_COLUMN_2, y, td->studWeight, LEFT|attr, 0, NULL, "%");
           if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->studWeight, -125, 125);
           break;
 
@@ -98,7 +98,7 @@ void menuGeneralTrainer(evt_t event)
 
   attr = (sub==5) ? blink : 0;
   lcd_putsLeft(MENU_CONTENT_TOP + 5*FH, STR_MULTIPLIER);
-  lcd_outdezAtt(TRAINER_COLUMN_1, MENU_CONTENT_TOP + 5*FH, g_eeGeneral.PPM_Multiplier+10, LEFT|attr|PREC1);
+  lcdDrawNumber(TRAINER_COLUMN_1, MENU_CONTENT_TOP + 5*FH, g_eeGeneral.PPM_Multiplier+10, LEFT|attr|PREC1);
   if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
   attr = (sub==6) ? INVERS : 0;
@@ -106,9 +106,9 @@ void menuGeneralTrainer(evt_t event)
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 6*FH, STR_CAL, attr);
   for (int i=0; i<4; i++) {
 #if defined (PPM_UNIT_PERCENT_PREC1)
-    lcd_outdezAtt(TRAINER_COLUMN_1+i*TRAINER_COLUMN_WIDTH, MENU_CONTENT_TOP + 6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2, LEFT|PREC1);
+    lcdDrawNumber(TRAINER_COLUMN_1+i*TRAINER_COLUMN_WIDTH, MENU_CONTENT_TOP + 6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2, LEFT|PREC1);
 #else
-    lcd_outdezAtt(TRAINER_COLUMN_1+i*TRAINER_COLUMN_WIDTH, MENU_CONTENT_TOP + 6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5, LEFT);
+    lcdDrawNumber(TRAINER_COLUMN_1+i*TRAINER_COLUMN_WIDTH, MENU_CONTENT_TOP + 6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5, LEFT);
 #endif
   }
 
@@ -119,4 +119,6 @@ void menuGeneralTrainer(evt_t event)
       AUDIO_WARNING1();
     }
   }
+
+  return true;
 }

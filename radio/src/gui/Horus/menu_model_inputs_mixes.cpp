@@ -338,7 +338,7 @@ enum ExposFields {
 
 #define CURVE_ROWS 1
 
-void menuModelExpoOne(evt_t event)
+bool menuModelExpoOne(evt_t event)
 {
   ExpoData *ed = expoAddress(s_currIdx);
 
@@ -359,12 +359,12 @@ void menuModelExpoOne(evt_t event)
       if (ed->scale > 0) x = (x * 1024) / convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale);
     }
     else {
-      lcd_outdezAtt(CURVE_CENTER_X+CURVE_SIDE_WIDTH, CURVE_CENTER_Y+CURVE_SIDE_WIDTH-FH+6, calcRESXto1000(x), PREC1);
+      lcdDrawNumber(CURVE_CENTER_X+CURVE_SIDE_WIDTH, CURVE_CENTER_Y+CURVE_SIDE_WIDTH-FH+6, calcRESXto1000(x), PREC1);
     }
 
     x = limit(-1024, x, 1024);
     int y = limit<int>(-1024, expoFn(x), 1024);
-    lcd_outdezAtt(CURVE_CENTER_X-CURVE_SIDE_WIDTH, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, calcRESXto1000(y), LEFT|PREC1);
+    lcdDrawNumber(CURVE_CENTER_X-CURVE_SIDE_WIDTH, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, calcRESXto1000(y), LEFT|PREC1);
 
     x = divRound(x*CURVE_SIDE_WIDTH, RESX);
     y = getYCoord(expoFn, x);
@@ -444,6 +444,8 @@ void menuModelExpoOne(evt_t event)
     }
     y += FH;
   }
+
+  return true;
 }
 
 enum MixFields {
@@ -481,8 +483,8 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
   int barMin = offset - weight;
   int barMax = offset + weight;
   if (y > 15) {
-    lcd_outdezAtt(x-((barMin >= 0) ? 2 : 3), y-6, barMin, TINSIZE|LEFT);
-    lcd_outdezAtt(x+GAUGE_WIDTH+1, y-6, barMax, TINSIZE);
+    lcdDrawNumber(x-((barMin >= 0) ? 2 : 3), y-6, barMin, TINSIZE|LEFT);
+    lcdDrawNumber(x+GAUGE_WIDTH+1, y-6, barMax, TINSIZE);
   }
   if (barMin < -101)
     barMin = -101;
@@ -516,7 +518,7 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 #undef GAUGE_WIDTH
 #undef GAUGE_HEIGHT
 
-void menuModelMixOne(evt_t event)
+bool menuModelMixOne(evt_t event)
 {
   MixData *md2 = mixAddress(s_currIdx) ;
 
@@ -594,7 +596,7 @@ void menuModelMixOne(evt_t event)
       case MIX_FIELD_WARNING:
         lcd_putsColumnLeft(x+MIXES_2ND_COLUMN, y, STR_MIXWARNING);
         if (md2->mixWarn)
-          lcd_outdezAtt(x+MIXES_2ND_COLUMN, y, md2->mixWarn, attr|LEFT);
+          lcdDrawNumber(x+MIXES_2ND_COLUMN, y, md2->mixWarn, attr|LEFT);
         else
           lcdDrawText(x+MIXES_2ND_COLUMN, y, STR_OFF, attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, md2->mixWarn, 3);
@@ -617,6 +619,8 @@ void menuModelMixOne(evt_t event)
         break;
     }
   }
+
+  return true;
 }
 
 static uint8_t s_copySrcIdx;
@@ -709,7 +713,7 @@ void displayExpoInfos(coord_t y, ExpoData *ed)
     putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch);
   }
   if (ed->mode != 3) {
-    lcd_puts(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? "\176" : "\177");
+    lcdDrawText(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? "\176" : "\177");
   }
 }
 
@@ -725,7 +729,7 @@ void displayExpoLine(coord_t y, ExpoData *ed)
   }
 }
 
-void menuModelExpoMix(uint8_t expo, evt_t event)
+bool menuModelExpoMix(uint8_t expo, evt_t event)
 {
   int sub = m_posVert;
 
@@ -919,7 +923,7 @@ void menuModelExpoMix(uint8_t expo, evt_t event)
               cs[0] = 'S';
             if (md->delayUp || md->delayDown)
               cs[0] = (cs[0] =='S' ? '*' : 'D');
-            lcd_puts(MIX_LINE_DELAY_POS, y, cs);
+            lcdDrawText(MIX_LINE_DELAY_POS, y, cs);
           }
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
@@ -967,14 +971,16 @@ void menuModelExpoMix(uint8_t expo, evt_t event)
   }
 
   if (sub >= linesCount-1) m_posVert = linesCount-1;
+
+  return true;
 }
 
-void menuModelExposAll(evt_t event)
+bool menuModelExposAll(evt_t event)
 {
   return menuModelExpoMix(1, event);
 }
 
-void menuModelMixAll(evt_t event)
+bool menuModelMixAll(evt_t event)
 {
   return menuModelExpoMix(0, event);
 }

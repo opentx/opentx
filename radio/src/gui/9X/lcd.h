@@ -268,14 +268,4 @@ void lcdRefresh();
   #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
 #endif
 
-#if defined(SIMU)
-  extern bool lcd_refresh;
-  extern display_t lcd_buf[DISPLAY_BUFFER_SIZE];
-#endif
-
-char *strAppend(char * dest, const char * source, int len=0);
-char *strSetCursor(char *dest, int position);
-char *strAppendDate(char * str, bool time=false);
-char *strAppendFilename(char * dest, const char * filename, const int size);
-
 #endif

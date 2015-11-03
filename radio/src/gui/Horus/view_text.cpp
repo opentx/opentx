@@ -39,7 +39,7 @@
 #define TEXT_FILE_MAXSIZE     2048
 
 char s_text_file[TEXT_FILENAME_MAXLEN];
-char s_text_screen[LCD_LINES-1][LCD_COLS+1];
+char s_text_screen[NUM_BODY_LINES][LCD_COLS+1];
 
 void readTextFile(int & lines_count)
 {
@@ -56,13 +56,13 @@ void readTextFile(int & lines_count)
 
   result = f_open(&file, s_text_file, FA_OPEN_EXISTING | FA_READ);
   if (result == FR_OK) {
-    for (int i=0; i<TEXT_FILE_MAXSIZE && f_read(&file, &c, 1, &sz)==FR_OK && sz==1 && (lines_count==0 || current_line-s_pgOfs<LCD_LINES-1); i++) {
+    for (int i=0; i<TEXT_FILE_MAXSIZE && f_read(&file, &c, 1, &sz)==FR_OK && sz==1 && (lines_count==0 || current_line-s_pgOfs<NUM_BODY_LINES); i++) {
       if (c == '\n') {
         ++current_line;
         line_length = 0;
         escape = 0;
       }
-      else if (c!='\r' && current_line>=s_pgOfs && current_line-s_pgOfs<LCD_LINES-1 && line_length<LCD_COLS) {
+      else if (c!='\r' && current_line>=s_pgOfs && current_line-s_pgOfs<NUM_BODY_LINES && line_length<LCD_COLS) {
         if (c=='\\' && escape==0) {
           escape = 1;
           continue;
@@ -103,11 +103,11 @@ void readTextFile(int & lines_count)
   }
 }
 
-void menuTextView(evt_t event)
+bool menuTextView(evt_t event)
 {
   static int lines_count;
 
-  drawMenuTemplate("TEXT VIEWER", event);
+  drawMenuTemplate("TEXT VIEWER");
 
   switch (event) {
     case EVT_ENTRY:
@@ -138,7 +138,7 @@ void menuTextView(evt_t event)
   }
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
-    lcd_puts(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + i*FH, s_text_screen[i]);
+    lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + i*FH, s_text_screen[i]);
   }
 
   char *title = s_text_file;
@@ -147,9 +147,9 @@ void menuTextView(evt_t event)
 #endif
   lcd_putsCenter(MENU_FOOTER_TOP, title, HEADER_COLOR);
 
-  if (lines_count > NUM_BODY_LINES) {
-    drawScrollbar(LCD_W-5, 30, MENU_FOOTER_TOP-34, s_pgOfs, lines_count, NUM_BODY_LINES);
-  }
+  drawScrollbar(LCD_W-5, 30, MENU_FOOTER_TOP-34, s_pgOfs, lines_count, NUM_BODY_LINES);
+
+  return true;
 }
 
 void pushMenuTextView(const char *filename)

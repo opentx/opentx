@@ -42,7 +42,7 @@ uint8_t requestScreenshot = false;
 
 void handleUsbConnection()
 {
-#if defined(PCBTARANIS) && !defined(SIMU)
+#if defined(CPUSTM32) && !defined(SIMU)
   static bool usbStarted = false;
 
   if (!usbStarted && usbPlugged()) {
@@ -78,7 +78,7 @@ void handleUsbConnection()
   }
 #endif
   
-#endif //#if defined(PCBTARANIS) && !defined(SIMU)
+#endif // defined(CPUSTM32) && !defined(SIMU)
 }
 
 void checkSpeakerVolume()
@@ -107,7 +107,104 @@ void checkEeprom()
 }
 #endif
 
-#if defined(GUI)
+#if defined(GUI) && defined(COLORLCD)
+void guiMain(evt_t evt)
+{
+  bool refreshNeeded = false;
+
+#if defined(LUA)
+  uint32_t t0 = get_tmr10ms();
+  static uint32_t lastLuaTime = 0;
+  uint16_t interval = (lastLuaTime == 0 ? 0 : (t0 - lastLuaTime));
+  lastLuaTime = t0;
+  if (interval > maxLuaInterval) {
+    maxLuaInterval = interval;
+  }
+
+  // run Lua scripts that don't use LCD (to use CPU time while LCD DMA is running)
+  luaTask(0, RUN_MIX_SCRIPT | RUN_FUNC_SCRIPT | RUN_TELEM_BG_SCRIPT, false);
+
+  // wait for LCD DMA to finish before continuing, because code from this point 
+  // is allowed to change the contents of LCD buffer
+  // 
+  // WARNING: make sure no code above this line does any change to the LCD display buffer!
+  //
+  lcdRefreshWait();
+
+  // draw LCD from menus or from Lua script
+  // run Lua scripts that use LCD
+
+  bool standaloneScriptWasRun = luaTask(evt, RUN_STNDAL_SCRIPT, true);
+  if (!standaloneScriptWasRun) {
+    luaTask(evt, RUN_TELEM_FG_SCRIPT, true);
+    refreshNeeded = true;
+  }
+
+  t0 = get_tmr10ms() - t0;
+  if (t0 > maxLuaDuration) {
+    maxLuaDuration = t0;
+  }
+#else
+  lcdRefreshWait();   // WARNING: make sure no code above this line does any change to the LCD display buffer!
+  const bool standaloneScriptWasRun = false;
+#endif
+
+  if (!standaloneScriptWasRun) {
+    while (1) {
+      // normal GUI from menus
+      const char * warn = s_warning;
+      uint8_t menu = s_menu_count;
+
+      static bool popupDisplayed = false;
+      if (warn || menu) {
+        if (popupDisplayed == false) {
+          g_menuStack[g_menuStackPtr](EVT_REFRESH);
+          lcdDrawBlackOverlay();
+          lcdStoreBackupBuffer();
+        }
+        if (popupDisplayed == false || evt) {
+          lcdRestoreBackupBuffer();
+          if (warn) DISPLAY_WARNING(evt);
+          if (menu) {
+            const char * result = displayMenu(evt);
+            if (result) {
+              menuHandler(result);
+              evt = EVT_REFRESH;
+              continue;
+            }
+          }
+          refreshNeeded = true;
+          popupDisplayed = true;
+        }
+      }
+      else {
+        popupDisplayed = false;
+        refreshNeeded = g_menuStack[g_menuStackPtr](evt);
+      }
+
+      if (menuEvent == EVT_ENTRY) {
+        m_posVert = -1;
+        m_posHorz = 0;
+        evt = menuEvent;
+        menuEvent = 0;
+      }
+      else if (menuEvent == EVT_ENTRY_UP) {
+        m_posVert = g_menuPos[g_menuStackPtr];
+        m_posHorz = 0;
+        evt = menuEvent;
+        menuEvent = 0;
+      }
+      else {
+        break;
+      }
+    }
+  }
+
+  if (refreshNeeded) {
+    lcdRefresh();
+  }
+}
+#elif defined(GUI)
 void guiMain(evt_t evt)
 {
 #if defined(LUA)
@@ -147,39 +244,29 @@ void guiMain(evt_t evt)
 #endif
 
   if (!standaloneScriptWasRun) {
-    while (1) {
-#if !defined(COLORLCD)
-      lcdClear();
-#endif
-      // normal GUI from menus
-      const char * warn = s_warning;
-      uint8_t menu = s_menu_count;
-      g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
-      if (warn) DISPLAY_WARNING(evt);
-      if (menu) {
-        const char * result = displayMenu(evt);
-        if (result) {
-          menuHandler(result);
-          putEvent(EVT_MENU_UP);
-        }
-      }
-      drawStatusLine();
-      if (menuEvent == EVT_ENTRY) {
-        m_posVert = -1;
-        m_posHorz = 0;
-        evt = menuEvent;
-        menuEvent = 0;
-      }
-      else if (menuEvent == EVT_ENTRY_UP) {
-        m_posVert = g_menuPos[g_menuStackPtr];
-        m_posHorz = 0;
-        evt = menuEvent;
-        menuEvent = 0;
-      }
-      else {
-        break;
+    lcdClear();
+
+    // normal GUI from menus
+    const char * warn = s_warning;
+    uint8_t menu = s_menu_count;
+    if (menuEvent) {
+      m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
+      m_posHorz = 0;
+      evt = menuEvent;
+      menuEvent = 0;
+      AUDIO_MENUS();
+    }
+    
+    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+    if (warn) DISPLAY_WARNING(evt);
+    if (menu) {
+      const char * result = displayMenu(evt);
+      if (result) {
+        menuHandler(result);
       }
     }
+      
+    drawStatusLine();
   }
 
   lcdRefresh();

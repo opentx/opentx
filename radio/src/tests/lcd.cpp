@@ -72,11 +72,11 @@ void doPaint(QPainter & p)
 #endif
       for (int x=0; x<LCD_W; x++, idx++) {
 #if !defined(PCBTARANIS)
-        if (lcd_buf[idx] & mask) {
+        if (simuLcdBuf[idx] & mask) {
           p.drawPoint(x, y);
         }
 #else
-        unsigned int z = (y & 1) ? (lcd_buf[idx] >> 4) : (lcd_buf[idx] & 0x0F);
+        unsigned int z = (y & 1) ? (simuLcdBuf[idx] >> 4) : (simuLcdBuf[idx] & 0x0F);
         if (z) {
           if (z != previousDepth) {
             previousDepth = z;

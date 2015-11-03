@@ -28,14 +28,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "../../opentx.h"
 #include "../../thirdparty/FatFs/diskio.h"
-#include "../Taranis/board_taranis.h"
+#include "board_taranis.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
 #endif
 
 #include "usbd_msc_mem.h"
-#include "../Taranis/usb_conf.h"
+#include "usb_conf.h"
 
 #if defined(BOOT)
 #define STORAGE_LUN_NBR    2

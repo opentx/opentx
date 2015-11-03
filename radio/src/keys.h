@@ -190,7 +190,6 @@ enum EnumKeys {
 #define _MSK_KEY_FLAGS       0x0e00
 #define EVT_ENTRY            0x1000
 #define EVT_ENTRY_UP         0x2000
-#define EVT_MENU_UP          0x4000
 #else
 #define _MSK_KEY_BREAK       0x20
 #define _MSK_KEY_REPT        0x40
@@ -199,7 +198,6 @@ enum EnumKeys {
 #define _MSK_KEY_FLAGS       0xe0
 #define EVT_ENTRY            0xbf
 #define EVT_ENTRY_UP         0xbe
-#define EVT_MENU_UP          0xbd
 #endif
 
 #define EVT_KEY_BREAK(key)   ((key)|_MSK_KEY_BREAK)
@@ -225,6 +223,10 @@ enum EnumKeys {
   #define EVT_ROTARY_LONG    0xce
   #define EVT_ROTARY_LEFT    0xdf
   #define EVT_ROTARY_RIGHT   0xde
+#endif
+
+#if defined(COLORLCD)
+  #define EVT_REFRESH        0xDD00
 #endif
 
 class Key

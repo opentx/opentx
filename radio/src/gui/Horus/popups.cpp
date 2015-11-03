@@ -48,7 +48,7 @@ int16_t     s_warning_input_max;
 
 void displayAlertBox()
 {
-  lcdDrawBlackOverlay();
+  lcdClear();
   lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
   lcdDrawRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, SOLID, ALARM_COLOR);
   lcdDrawRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, SOLID, ALARM_COLOR);
@@ -57,7 +57,7 @@ void displayAlertBox()
 
 void displayWarningBox()
 {
-  lcdDrawBlackOverlay();
+  // lcdDrawBlackOverlay();
   lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
   lcdDrawRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, SOLID, ALARM_COLOR);
   lcdDrawRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, SOLID, ALARM_COLOR);
@@ -66,7 +66,7 @@ void displayWarningBox()
 
 void displayMessageBox()
 {
-  lcdDrawBlackOverlay();
+  // lcdDrawBlackOverlay();
   lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
   lcdDrawRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, SOLID, WARNING_COLOR);
   lcdDrawRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, SOLID, WARNING_COLOR);
@@ -85,9 +85,9 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
   lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+25, STR_WARNING, ALARM_COLOR|DBLSIZE);
 #endif
 
-  if (t) lcd_puts(WARNING_LINE_X, WARNING_INFOLINE_Y, t);
+  if (t) lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y, t);
   if (last) {
-    lcd_puts(WARNING_LINE_X, WARNING_INFOLINE_Y+12, last);
+    lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y+16, last);
     AUDIO_ERROR_MESSAGE(sound);
   }
 
@@ -98,7 +98,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 
 void displayPopup(const char *title)
 {
-  displayMessageBox();
+  // displayMessageBox();
   lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN, DBLSIZE|WARNING_COLOR);
   lcdRefresh();
 }
@@ -114,7 +114,7 @@ void displayWarning(evt_t event)
   if (s_warning_info) {
     lcdDrawTextWithLen(WARNING_LINE_X, WARNING_INFOLINE_Y, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
   }
-  lcd_puts(WARNING_LINE_X, WARNING_INFOLINE_Y+12, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
+  lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y+20, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
       if (s_warning_type == WARNING_TYPE_ASTERISK)
@@ -146,25 +146,6 @@ const char * displayMenu(evt_t event)
 {
   const char * result = NULL;
   uint8_t display_count = min(s_menu_count, (uint16_t)MENU_MAX_LINES);
-  int y = (LCD_H - (display_count*(FH+1))) / 2;
-
-  lcdDrawBlackOverlay();
-  lcdDrawSolidFilledRect(MENU_X, y, MENU_W, display_count * (FH+1), TEXT_BGCOLOR);
-  lcdDrawSolidRect(MENU_X, y, MENU_W, display_count * (FH+1) + 1, ALARM_COLOR);
-
-  for (uint8_t i=0; i<display_count; i++) {
-    if (i == s_menu_item) {
-      lcdDrawSolidFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, FH+1, TEXT_INVERTED_BGCOLOR);
-      lcdDrawText(MENU_X+6, i*(FH+1) + y + 5, s_menu[i], TEXT_INVERTED_COLOR|s_menu_flags);
-    }
-    else {
-      lcdDrawText(MENU_X+6, i*(FH+1) + y + 5, s_menu[i], s_menu_flags);
-    }
-  }
-
-  if (s_menu_count > display_count) {
-    drawScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, MENU_MAX_LINES);
-  }
 
   switch (event) {
     case EVT_ROTARY_LEFT:
@@ -213,6 +194,26 @@ const char * displayMenu(evt_t event)
       s_menu_flags = 0;
       s_menu_offset = 0;
       break;
+  }
+
+  int y = (LCD_H - (display_count*(FH+1))) / 2;
+
+  // lcdDrawBlackOverlay();
+  lcdDrawSolidFilledRect(MENU_X, y, MENU_W, display_count * (FH+1), TEXT_BGCOLOR);
+  lcdDrawSolidRect(MENU_X, y, MENU_W, display_count * (FH+1) + 1, ALARM_COLOR);
+
+  for (uint8_t i=0; i<display_count; i++) {
+    if (i == s_menu_item) {
+      lcdDrawSolidFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, FH+1, TEXT_INVERTED_BGCOLOR);
+      lcdDrawText(MENU_X+6, i*(FH+1) + y + 5, s_menu[i], TEXT_INVERTED_COLOR|s_menu_flags);
+    }
+    else {
+      lcdDrawText(MENU_X+6, i*(FH+1) + y + 5, s_menu[i], s_menu_flags);
+    }
+  }
+
+  if (s_menu_count > display_count) {
+    drawScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, MENU_MAX_LINES);
   }
 
   return result;

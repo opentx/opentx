@@ -63,6 +63,8 @@ const int8_t ana_direction[NUMBER_ANALOG] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 
 void adcInit()
 {
+  return ;
+
   // Enable clocks
   RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;
   RCC->AHB1ENR |= ADC_RCC_AHB1Periph_GPIO | RCC_AHB1ENR_DMA2EN;
@@ -93,6 +95,8 @@ void adcInit()
 
 void adcRead()
 {
+  return ;
+
   DMA2_Stream0->CR &= ~DMA_SxCR_EN ;              // Disable DMA
   ADC1->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR ) ;
   DMA2->LIFCR = DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 |DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0 ; // Write ones to clear bits

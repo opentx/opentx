@@ -222,7 +222,74 @@ uint8_t menuPageIndex;
 uint8_t menuPageCount;
 uint16_t linesCount;
 
-bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
+bool navigate(evt_t event, int count, int rows, int columns)
+{
+  int prevPosHorz = m_posHorz;
+  int prevPosVert = m_posVert;
+
+  int maxrow = ((count+columns-1) / columns) - 1;
+  int maxlastcol = count-maxrow*columns-1;
+  int maxcol = (m_posVert != maxrow ? columns-1 : maxlastcol);
+
+  switch (event) {
+    case EVT_KEY_FIRST(KEY_RIGHT):
+    case EVT_KEY_REPT(KEY_RIGHT):
+      INC(m_posHorz, 0, maxcol);
+      break;
+
+    case EVT_KEY_FIRST(KEY_LEFT):
+    case EVT_KEY_REPT(KEY_LEFT):
+      DEC(m_posHorz, 0, maxcol);
+      break;
+
+    case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_REPT(KEY_DOWN):
+      INC(m_posVert, 0, maxrow);
+      if (m_posVert == maxrow && m_posHorz > maxlastcol)  {
+        m_posHorz = maxlastcol;
+      }
+      break;
+
+    case EVT_KEY_FIRST(KEY_UP):
+    case EVT_KEY_REPT(KEY_UP):
+      DEC(m_posVert, 0, maxrow);
+      if (m_posVert == maxrow && m_posHorz > maxlastcol)  {
+        m_posHorz = maxlastcol;
+      }
+      break;
+
+    case EVT_ROTARY_LEFT:
+      if (m_posHorz > 0) {
+        m_posHorz--;
+      }
+      else {
+        DEC(m_posVert, 0, maxrow);
+        m_posHorz = (m_posVert != maxrow ? columns-1 : maxlastcol);
+      }
+      break;
+
+    case EVT_ROTARY_RIGHT:
+      if (m_posHorz < maxcol) {
+        m_posHorz++;
+      }
+      else {
+        INC(m_posVert, 0, maxrow);
+        m_posHorz = 0;
+      }
+      break;
+  }
+
+  if (s_pgOfs > m_posVert) {
+    s_pgOfs = m_posVert;
+  }
+  else if (s_pgOfs <= m_posVert - rows) {
+    s_pgOfs = m_posVert - rows + 1;
+  }
+
+  return (prevPosHorz != m_posHorz || prevPosVert != m_posVert);
+}
+
+bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t menuTabSize, const pm_uint8_t * horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
 {
   uint8_t maxcol = MAXCOL(m_posVert);
 

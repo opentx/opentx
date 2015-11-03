@@ -257,14 +257,12 @@
   #endif
   #define CONVERT_PTR_UINT(x) ((uint32_t)(uint64_t)(x))
   #define CONVERT_UINT_PTR(x) ((uint32_t*)(uint64_t)(x))
-  char *convertSimuPath(const char *path);
 #else
   #define FORCEINLINE inline __attribute__ ((always_inline))
   #define NOINLINE __attribute__ ((noinline))
   #define SIMU_SLEEP(x)
   #define CONVERT_PTR_UINT(x) ((uint32_t)(x))
   #define CONVERT_UINT_PTR(x) ((uint32_t *)(x))
-  #define convertSimuPath(x) (x)
 #endif
 
 #if !defined(CPUM64) && !defined(ACCURAT_THROTTLE_TIMER)
@@ -458,13 +456,21 @@
 #include "storage/storage.h"
 #include "pulses/pulses.h"
 
-#if defined(PCBTARANIS)
-  #define BITMAP_BUFFER_SIZE(width, height)   (2 + width * ((height+7)/8)*4)
+#if defined(PCBHORUS)
+  #define BITMAP_BUFFER_SIZE(width, height)   (4 + (width)*(height)*3)
+  #define MODEL_BITMAP_WIDTH  (3*64) // 171
+  #define MODEL_BITMAP_HEIGHT (3*32) // 101
+  #define MODEL_BITMAP_SIZE   BITMAP_BUFFER_SIZE(MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)
+  extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
+  void loadModelBitmap(char * name, uint8_t * bitmap);
+  #define LOAD_MODEL_BITMAP() loadModelBitmap(g_model.header.bitmap, modelBitmap)
+#elif defined(PCBTARANIS)
+  #define BITMAP_BUFFER_SIZE(width, height)   (2 + (width) * (((height)+7)/8)*4)
   #define MODEL_BITMAP_WIDTH  64
   #define MODEL_BITMAP_HEIGHT 32
   #define MODEL_BITMAP_SIZE   BITMAP_BUFFER_SIZE(MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)
   extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
-  void loadModelBitmap(char *name, uint8_t *bitmap);
+  void loadModelBitmap(char * name, uint8_t * bitmap);
   #define LOAD_MODEL_BITMAP() loadModelBitmap(g_model.header.bitmap, modelBitmap)
 #else
   #define LOAD_MODEL_BITMAP()
@@ -556,6 +562,7 @@ typedef struct {
   }
 } CustomFunctionsContext;
 
+#include "strhelpers.h"
 #include "gui/gui.h"
 
 #if defined(TEMPLATES)
@@ -597,7 +604,7 @@ enum BaseCurves {
 
 #define THRCHK_DEADBAND 16
 
-#if defined(PCBFLAMENCO)
+#if defined(COLORLCD)
   #define SPLASH_NEEDED() (true)
 #elif defined(PCBTARANIS)
   #define SPLASH_NEEDED() (g_eeGeneral.splashMode != 3)
@@ -1095,7 +1102,6 @@ void generalDefault();
 void modelDefault(uint8_t id);
 
 #if defined(CPUARM)
-bool isFileAvailable(const char * filename);
 void checkModelIdUnique(uint8_t index, uint8_t module);
 #endif
 
@@ -1410,8 +1416,8 @@ enum AUDIO_SOUNDS {
 #if defined(VOICE)
     AU_THROTTLE_ALERT,
     AU_SWITCH_ALERT,
-    AU_BAD_EEPROM,
-    AU_EEPROM_FORMATTING,
+    AU_BAD_RADIODATA,
+    AU_STORAGE_FORMAT,
 #endif
     AU_TX_BATTERY_LOW,
     AU_INACTIVITY,
@@ -1544,13 +1550,13 @@ extern void opentxClose();
 extern void opentxInit();
 
 // Re-useable byte array to save having multiple buffers
-#define SD_SCREEN_FILE_LENGTH (32)
+#define SD_SCREEN_FILE_LENGTH (64)
 union ReusableBuffer
 {
     // 275 bytes
     struct
     {
-        char listnames[LCD_LINES-1][LEN_MODEL_NAME];
+        char listnames[NUM_BODY_LINES][LEN_MODEL_NAME];
 #if !defined(CPUARM)
         uint16_t eepromfree;
 #endif
@@ -1584,7 +1590,7 @@ union ReusableBuffer
     // 274 bytes
     struct
     {
-        char lines[LCD_LINES-1][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
+        char lines[NUM_BODY_LINES][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
         uint32_t available;
         uint16_t offset;
         uint16_t count;
@@ -1598,7 +1604,7 @@ extern union ReusableBuffer reusableBuffer;
 void checkFlashOnBeep();
 
 #if defined(CPUARM)
-void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att);
+void putsValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att);
 #elif defined(FRSKY)
 void convertUnit(getvalue_t & val, uint8_t & unit); // TODO check FORCEINLINE on stock
 #else

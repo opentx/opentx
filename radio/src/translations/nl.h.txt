@@ -827,6 +827,7 @@
 #define TR_CURRENT             TR(INDENT "Stroom", INDENT "Stroombron")
 #define TR_SELECT_MODEL        "Kies Model"
 #define TR_CREATE_MODEL        "Nieuw Model"
+#define TR_DUPLICATE_MODEL     "Duplicate Model"
 #define TR_COPY_MODEL          "Kopieer Model"
 #define TR_MOVE_MODEL          "Verplaats Model"
 #define TR_BACKUP_MODEL        "Backup Model"

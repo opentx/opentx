@@ -34,6 +34,10 @@
  *
  */
 
+#define DEFAULT_CATEGORY         "Models"
+#define DEFAULT_MODEL_FILENAME   "model01.bin"
+
+const char * readModel(const char * filename, uint8_t * buffer, uint32_t size);
 const char * loadModel(const char * filename);
 
 

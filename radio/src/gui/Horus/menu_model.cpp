@@ -53,21 +53,21 @@ enum EnumTabModel {
   CASE_FRSKY(e_Telemetry)
 };
 
-void menuModelSelect(evt_t event);
-void menuModelSetup(evt_t event);
-void menuModelHeli(evt_t event);
-void menuModelFlightModesAll(evt_t event);
-void menuModelExposAll(evt_t event);
-void menuModelMixAll(evt_t event);
-void menuModelLimits(evt_t event);
-void menuModelCurvesAll(evt_t event);
-void menuModelCurveOne(evt_t event);
-void menuModelGVars(evt_t event);
-void menuModelLogicalSwitches(evt_t event);
-void menuModelCustomFunctions(evt_t event);
-void menuModelCustomScripts(evt_t event);
-void menuModelTelemetry(evt_t event);
-void menuModelExpoOne(evt_t event);
+bool menuModelSelect(evt_t event);
+bool menuModelSetup(evt_t event);
+bool menuModelHeli(evt_t event);
+bool menuModelFlightModesAll(evt_t event);
+bool menuModelExposAll(evt_t event);
+bool menuModelMixAll(evt_t event);
+bool menuModelLimits(evt_t event);
+bool menuModelCurvesAll(evt_t event);
+bool menuModelCurveOne(evt_t event);
+bool menuModelGVars(evt_t event);
+bool menuModelLogicalSwitches(evt_t event);
+bool menuModelCustomFunctions(evt_t event);
+bool menuModelCustomScripts(evt_t event);
+bool menuModelTelemetry(evt_t event);
+bool menuModelExpoOne(evt_t event);
 
 extern uint8_t s_curveChan;
 
@@ -80,13 +80,13 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t a
 uint8_t editDelay(const coord_t x, const coord_t y, const evt_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
 {
   lcdDrawText(x+MENUS_MARGIN_LEFT, y, str, TEXT_COLOR);
-  lcd_outdezAtt(x+MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
+  lcdDrawNumber(x+MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
   if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, delay, DELAY_MAX);
   return delay;
 }
 #define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(x, y, event, attr, str, delay)
 
-const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
+const MenuFuncP menuTabModel[] = {
 //   menuModelSelect,
   menuModelSetup,
   CASE_HELI(menuModelHeli)

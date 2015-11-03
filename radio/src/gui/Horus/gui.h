@@ -74,6 +74,8 @@ void drawFooter();
 #define drawStatusLine(...)
 void drawProgressBar(const char *label);
 void updateProgressBar(int num, int den);
+void drawTopmenuDatetime();
+
 
 // Header bitmaps
 extern const uint8_t LBM_TOPMENU_POLYGON[];
@@ -83,7 +85,7 @@ extern const uint8_t LBM_CURRENT_SHADOW[];
 extern const uint8_t LBM_CURRENT_DOT[];
 
 // Main view icons
-extern const uint16_t LBM_MAINVIEW_BACKGROUND[];
+extern const uint8_t LBM_MAINVIEW_BACKGROUND[];
 extern const uint8_t LBM_TOPMENU_OPENTX[];
 extern const uint8_t LBM_TOPMENU_USB[];
 extern const uint8_t LBM_HTRIM_FRAME[];
@@ -101,7 +103,12 @@ extern const uint8_t * const LBM_MODEL_ICONS[];
 // Model selection icons
 extern const uint8_t LBM_LIBRARY_ICON[];
 extern const uint8_t LBM_LIBRARY_SLOT[];
+extern const uint8_t LBM_LIBRARY_CURSOR[];
+extern const uint8_t LBM_SCORE0[];
+extern const uint8_t LBM_SCORE1[];
+extern const uint8_t LBM_STAR0[];
+extern const uint8_t LBM_STAR1[];
 
 // Other icons
-extern const uint16_t LBM_ASTERISK[];
+extern const uint8_t LBM_ASTERISK[];
 

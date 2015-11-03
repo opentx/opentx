@@ -104,15 +104,9 @@ extern "C" {
 #define PIN_PORTA                       0x0000
 #define PIN_PORTB                       0x0100
 #define PIN_PORTC                       0x0200
-#define PIN_PORTD                       0x0300
-#define PIN_PORTE                       0x0400
-#define PIN_PORTF                       0x0500
 #define PIN_PER_1                       0x0010
 #define PIN_PER_2                       0x0020
 #define PIN_PER_3                       0x0030
-#define PIN_PER_5                       0x0050
-#define PIN_PER_6                       0x0060
-#define PIN_PER_8                       0x0080
 #define PIN_OS25                        0x2000
 #define PIN_OS50                        0x4000
 #define PIN_OS100                       0x6000
@@ -241,7 +235,7 @@ void pwrOn(void);
 void pwrOff(void);
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
-#define UNEXPECTED_SHUTDOWN()   (g_eeGeneral.unexpectedShutdown)
+#define UNEXPECTED_SHUTDOWN()   (false) // (g_eeGeneral.unexpectedShutdown)
 
 // Led driver
 void ledInit(void);
@@ -253,6 +247,8 @@ void ledBlue(void);
 void lcdInit(void);
 void lcdRefresh(void);
 void lcdDrawSolidFilledRectDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color);
+void lcdStoreBackupBuffer(void);
+void lcdRestoreBackupBuffer(void);
 
 // Backlight driver
 #define setBacklight(xx)

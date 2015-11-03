@@ -809,6 +809,7 @@
 #define TR_CURRENT             TR (INDENT"Prąd",INDENT"Źródło Prądu")
 #define TR_SELECT_MODEL        "Wybór modelu"
 #define TR_CREATE_MODEL        "Nowy model"
+#define TR_DUPLICATE_MODEL     "Duplicate Model"
 #define TR_COPY_MODEL          "Skopiuj model"
 #define TR_MOVE_MODEL          "Przenieś model"
 #define TR_BACKUP_MODEL        "Zbackupuj model"

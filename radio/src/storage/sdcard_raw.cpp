@@ -116,16 +116,25 @@ const char * loadFile(const char * filename, uint8_t * data, uint16_t maxsize)
   return NULL;
 }
 
-const char * loadModel(const char * filename)
+void getModelPath(char * path, const char * filename)
 {
-  char path[256];
   strcpy(path, STR_MODELS_PATH);
   path[sizeof(MODELS_PATH)-1] = '/';
   strcpy(&path[sizeof(MODELS_PATH)], filename);
+}
 
+const char * readModel(const char * filename, uint8_t * buffer, uint32_t size)
+{
+  char path[256];
+  getModelPath(path, filename);
+  return loadFile(path, buffer, size);
+}
+
+const char * loadModel(const char * filename)
+{
   preModelLoad();
 
-  const char * error = loadFile(path, (uint8_t *)&g_model, sizeof(g_model));
+  const char * error = readModel(filename, (uint8_t *)&g_model, sizeof(g_model));
   if (error) {
     TRACE("loadModel error=%s", error);
   }
@@ -194,7 +203,6 @@ void storageReadAll()
 
   if (loadGeneralSettings() != NULL) {
     storageEraseAll(true);
-    strcpy(g_eeGeneral.currModelFilename, "model.bin");
   }
 
   stickMode = g_eeGeneral.stickMode;
@@ -211,10 +219,22 @@ void storageReadAll()
   loadModel(g_eeGeneral.currModelFilename);
 }
 
+void storageCreateModelsList()
+{
+  FIL file;
+
+  FRESULT result = f_open(&file, RADIO_MODELSLIST_PATH, FA_CREATE_ALWAYS | FA_WRITE);
+  if (result == FR_OK) {
+    f_puts("[" DEFAULT_CATEGORY "]\n" DEFAULT_MODEL_FILENAME "\n", &file);
+    f_close(&file);
+  }
+}
+
 void storageFormat()
 {
   sdCheckAndCreateDirectory(RADIO_PATH);
   sdCheckAndCreateDirectory(MODELS_PATH);
+  storageCreateModelsList();
 }
 
 struct StorageModelsList {
@@ -357,6 +377,10 @@ const char * storageModifyModel(unsigned int operation, int category, int positi
             f_putc('\n', &file);
             continue;
           }
+          else if (operation == STORAGE_REMOVE) {
+            TRACE("skip %s", line);
+            continue;
+          }
         }
       }
     }
@@ -370,6 +394,8 @@ const char * storageModifyModel(unsigned int operation, int category, int positi
   }
 
   f_close(&file);
+  f_unlink(RADIO_PATH "/models.old");
+  f_rename(RADIO_MODELSLIST_PATH, RADIO_PATH "/models.old");
   f_rename(RADIO_PATH "/models.tmp", RADIO_MODELSLIST_PATH);
   return NULL;
 }

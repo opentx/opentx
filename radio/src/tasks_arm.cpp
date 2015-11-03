@@ -52,7 +52,7 @@ OS_TID menusTaskId;
 TaskStack<MENUS_STACK_SIZE> _ALIGNED(8) menusStack;
 
 OS_TID mixerTaskId;
-TaskStack<MENUS_STACK_SIZE> mixerStack;
+TaskStack<MIXER_STACK_SIZE> mixerStack;
 
 OS_TID audioTaskId;
 TaskStack<AUDIO_STACK_SIZE> audioStack;
@@ -235,4 +235,4 @@ void tasksStart()
   CoStartOS();
 }
 
-#endif // #if !defined(SIMU)
+#endif // !defined(SIMU)

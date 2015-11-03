@@ -716,7 +716,7 @@ namespace simu {
 FATFS g_FATFS_Obj;
 #endif
 
-char *convertSimuPath(const char *path)
+char * convertSimuPath(const char *path)
 {
   static char result[1024];
   if (path[0] == '/' && strcmp(simuSdDirectory, "/") != 0)
@@ -975,11 +975,15 @@ FRESULT f_unlink (const TCHAR * name)
 
 FRESULT f_rename(const TCHAR *oldname, const TCHAR *newname)
 {
-  if (rename(oldname, newname) < 0) {
-    TRACE("f_rename(%s, %s) = error %d (%s)", oldname, newname, errno, strerror(errno));
+  char old[1024];
+  strcpy(old, convertSimuPath(oldname));
+  char * path = convertSimuPath(newname);
+
+  if (rename(old, path) < 0) {
+    TRACE("f_rename(%s, %s) = error %d (%s)", old, path, errno, strerror(errno));
     return FR_INVALID_NAME;
   }
-  TRACE("f_rename(%s, %s) = OK", oldname, newname);
+  TRACE("f_rename(%s, %s) = OK", old, path);
   return FR_OK;
 }
 
@@ -1226,8 +1230,8 @@ uint32_t sdGetSpeed()
 
 #endif // #if defined(SIMU_DISKIO)
 
-bool lcd_refresh = true;
-display_t lcd_buf[DISPLAY_BUFFER_SIZE];
+bool simuLcdRefresh = true;
+display_t simuLcdBuf[DISPLAY_BUFFER_SIZE];
 
 #if !defined(PCBFLAMENCO) && !defined(PCBHORUS)
 void lcdSetRefVolt(uint8_t val)
@@ -1251,8 +1255,19 @@ void lcdRefresh()
   TW8823_SendScreen();
 #endif
 
-  memcpy(lcd_buf, displayBuf, sizeof(lcd_buf));
-  lcd_refresh = true;
+  memcpy(simuLcdBuf, displayBuf, sizeof(simuLcdBuf));
+  simuLcdRefresh = true;
+}
+
+display_t simuLcdBackupBuf[DISPLAY_BUFFER_SIZE];
+void lcdStoreBackupBuffer()
+{
+  memcpy(simuLcdBackupBuf, displayBuf, sizeof(simuLcdBackupBuf));
+}
+
+void lcdRestoreBackupBuffer()
+{
+  memcpy(displayBuf, simuLcdBackupBuf, sizeof(displayBuf));
 }
 
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)

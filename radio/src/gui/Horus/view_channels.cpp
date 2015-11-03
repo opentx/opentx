@@ -39,7 +39,7 @@
 bool isChannelUsed(int channel);
 int getChannelsUsed();
 
-void menuChannelsView(evt_t event)
+bool menuChannelsView(evt_t event)
 {
   const int CHANNEL_MARGIN = 16;
   const int CHANNEL_HEIGHT = 25;
@@ -110,13 +110,15 @@ void menuChannelsView(evt_t event)
       // Value
 #if defined(PPM_UNIT_US)
       uint8_t wbar = (longNames ? 54 : 64);
-      lcd_outdezAtt(x+LCD_W/2-3-wbar-ofs, y+1, PPM_CH_CENTER(ch)+val/2, TINSIZE);
+      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, PPM_CH_CENTER(ch)+val/2, TINSIZE);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
       uint8_t wbar = (longNames ? 48 : 58);
-      lcd_outdezAtt(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1|TINSIZE);
+      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1|TINSIZE);
 #else
       uint8_t wbar = (longNames ? 54 : 64);
-      lcd_outdezAtt(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val)/10, TINSIZE); // G: Don't like the decimal part*
+      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val)/10, TINSIZE); // G: Don't like the decimal part*
 #endif
 #endif
+
+  return true;
 }

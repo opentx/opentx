@@ -72,7 +72,7 @@ void init5msTimer()
 {
   // Timer14
   RCC->APB1ENR |= RCC_APB1ENR_TIM14EN ;           // Enable clock
-  TIM14->ARR = 4999 ;     // 5mS
+  TIM14->ARR = 999 ;     // 5mS
   TIM14->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1 ;                // 1uS from 30MHz
   TIM14->CCER = 0 ;
   TIM14->CCMR1 = 0 ;
@@ -95,13 +95,18 @@ void interrupt5ms()
 {
   static uint32_t pre_scale ;       // Used to get 10 Hz counter
 
-  AUDIO_HEARTBEAT();
+  ++pre_scale;
+
+  if (pre_scale == 5 || pre_scale == 10) {
+    AUDIO_HEARTBEAT();
 
 #if defined(HAPTIC)
-  HAPTIC_HEARTBEAT();
+    HAPTIC_HEARTBEAT();
 #endif
 
-  if ( ++pre_scale >= 2 ) {
+  }
+
+  if ( pre_scale >= 10 ) {
     pre_scale = 0 ;
     per10ms();
   }
@@ -244,13 +249,3 @@ void checkTrainerSettings()
     }
   }
 }
-
-// TODO
-bool eeCopyModel(uint8_t dst, uint8_t src) { }
-void eeSwapModels(uint8_t id1, uint8_t id2) { }
-void eeDeleteModel(uint8_t idx) { }
-uint8_t eeFindEmptyModel(uint8_t id, bool down) { return 0; };
-bool eeModelExists(uint8_t id) { return true; }
-const pm_char * eeBackupModel(uint8_t i_fileSrc) { return NULL; }
-const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name) { return NULL; }
-void selectModel(uint8_t sub) { }

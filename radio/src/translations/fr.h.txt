@@ -797,6 +797,7 @@
 #define TR_CURRENT             TR(INDENT "Courant",INDENT "Source Courant")
 #define TR_SELECT_MODEL        "Sélect. Modèle"
 #define TR_CREATE_MODEL        "Créer Modèle"
+#define TR_DUPLICATE_MODEL     "Duplicate Model"
 #define TR_COPY_MODEL          "Copier Modèle"
 #define TR_MOVE_MODEL          "Déplacer Modèle"
 #define TR_BACKUP_MODEL        "Archiver Modèle"

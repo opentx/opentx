@@ -57,7 +57,7 @@ void onGVARSMenu(const char *result)
 
 #define GVARS_FM_COLUMN(p) (123 + (p)*24)
 
-void menuModelGVars(evt_t event)
+bool menuModelGVars(evt_t event)
 {
   MENU(STR_MENUGLOBALVARS, menuTabModel, e_GVars/* TODO, first2seconds ? CHECK_FLAG_NO_SCREEN_INDEX : 0*/, MAX_GVARS, DEFAULT_SCROLLBAR_X, { NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES});
 
@@ -66,7 +66,7 @@ void menuModelGVars(evt_t event)
   for (int l=0; l<NUM_BODY_LINES; l++) {
     int i = l+s_pgOfs;
     coord_t y = MENU_CONTENT_TOP + l*FH;
-    if (g_model.gvars[i].popup) lcd_puts(MENUS_MARGIN_LEFT+25, y, "!");
+    if (g_model.gvars[i].popup) lcdDrawText(MENUS_MARGIN_LEFT+25, y, "!");
     putsStrIdx(MENUS_MARGIN_LEFT, y, STR_GV, i+1, ((sub==i && m_posHorz<0) ? INVERS : 0));
 
     for (int j=0; j<1+MAX_FLIGHT_MODES; j++) {
@@ -91,9 +91,9 @@ void menuModelGVars(evt_t event)
           }
           else {
             if (abs(v) >= 1000)
-              lcd_outdezAtt(x, y+1, v, TINSIZE|attr);
+              lcdDrawNumber(x, y+1, v, TINSIZE|attr);
             else
-              lcd_outdezAtt(x, y, v, attr);
+              lcdDrawNumber(x, y, v, attr);
             vmin = -GVAR_MAX; vmax = GVAR_MAX;
           }
           if (attr) {
@@ -120,4 +120,6 @@ void menuModelGVars(evt_t event)
     MENU_ADD_ITEM(STR_CLEAR);
     menuHandler = onGVARSMenu;
   }
+
+  return true;
 }

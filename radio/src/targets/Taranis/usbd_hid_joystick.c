@@ -47,9 +47,9 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include "../Taranis/usbd_desc.h"
 #include "usbd_hid_core.h"
 #include "usbd_req.h"
+#include "usbd_desc.h"
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{

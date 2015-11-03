@@ -76,7 +76,7 @@ void pushMenu(MenuFuncP newMenu)
   menuEvent = EVT_ENTRY;
 }
 
-void menuModelNotes(evt_t event)
+bool menuModelNotes(evt_t event)
 {
   if (event == EVT_ENTRY) {
     strcpy(s_text_file, MODELS_PATH "/");
@@ -84,7 +84,7 @@ void menuModelNotes(evt_t event)
     strcpy(buf, TEXT_EXT);
   }
 
-  menuTextView(event);
+  return menuTextView(event);
 }
 
 void pushModelNotes()

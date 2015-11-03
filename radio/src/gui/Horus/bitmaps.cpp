@@ -64,7 +64,7 @@ const uint8_t LBM_CURRENT_DOT[] = {
  * Main view bitmaps
  */
 
-const uint16_t LBM_MAINVIEW_BACKGROUND[] = {
+const uint8_t LBM_MAINVIEW_BACKGROUND[] = {
 #include "../../bitmaps/Horus/background.lbm"
 };
 
@@ -224,10 +224,30 @@ const uint8_t LBM_LIBRARY_SLOT[] = {
 #include "../../bitmaps/Horus/mask_library_slot.lbm"
 };
 
+const uint8_t LBM_LIBRARY_CURSOR[] = {
+#include "../../bitmaps/Horus/mask_library_category_index.lbm"
+};
+
+const uint8_t LBM_SCORE0[] = {
+#include "../../bitmaps/Horus/mask_library_score_0.lbm"
+};
+
+const uint8_t LBM_SCORE1[] = {
+#include "../../bitmaps/Horus/mask_library_score_1.lbm"
+};
+
+const uint8_t LBM_STAR0[] = {
+#include "../../bitmaps/Horus/mask_library_star_0.lbm"
+};
+
+const uint8_t LBM_STAR1[] = {
+#include "../../bitmaps/Horus/mask_library_star_1.lbm"
+};
+
 /*
  * Other
  */
 
-const uint16_t LBM_ASTERISK[] = {
+const uint8_t LBM_ASTERISK[] = {
 #include "../../bitmaps/Horus/asterisk.lbm"
 };

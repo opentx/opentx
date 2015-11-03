@@ -760,6 +760,7 @@
 #define TR_CURRENT             INDENT"Amperes"
 #define TR_SELECT_MODEL        "Selec. Modelo"
 #define TR_CREATE_MODEL        "Criar Modelo"
+#define TR_DUPLICATE_MODEL     "Duplicate Model"
 #define TR_COPY_MODEL          "Copy Model"
 #define TR_MOVE_MODEL          "Move Model"
 #define TR_BACKUP_MODEL        "Salvar Modelo"

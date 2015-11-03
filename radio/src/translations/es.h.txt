@@ -760,6 +760,7 @@
 #define TR_CURRENT             INDENT"Actual"
 #define TR_SELECT_MODEL        "Selec Modelo"
 #define TR_CREATE_MODEL        "Crear Modelo"
+#define TR_DUPLICATE_MODEL     "Duplicate Model"
 #define TR_COPY_MODEL          "Copiar Modelo"
 #define TR_MOVE_MODEL          "Mover Modelo"
 #define TR_BACKUP_MODEL        "Copia Sgdad Mod."

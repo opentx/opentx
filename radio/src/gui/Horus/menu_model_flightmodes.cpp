@@ -60,7 +60,7 @@ bool isTrimModeAvailable(int mode)
 #define FLIGHT_MODES_FADEIN_COLUMN    400
 #define FLIGHT_MODES_FADEOUT_COLUMN   450
 
-void menuModelFlightModesAll(evt_t event)
+bool menuModelFlightModesAll(evt_t event)
 {
   MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, MAX_FLIGHT_MODES+1, DEFAULT_SCROLLBAR_X, { NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, 0});
 
@@ -106,7 +106,7 @@ void menuModelFlightModesAll(evt_t event)
       char s[32];
       sprintf(s, "Check FM%d Trims", mixerCurrentFlightMode);
       lcd_putsCenter(y, s, attr);
-      return;
+      return true;
     }
 
     FlightModeData *p = flightModeAddress(k);
@@ -124,7 +124,7 @@ void menuModelFlightModesAll(evt_t event)
         case ITEM_FLIGHT_MODES_SWITCH:
           if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
           if (k == 0)
-            lcd_puts(FLIGHT_MODES_SWITCH_COLUMN, y, "N/A");
+            lcdDrawText(FLIGHT_MODES_SWITCH_COLUMN, y, "N/A");
           else
             putsSwitches(FLIGHT_MODES_SWITCH_COLUMN, y, p->swtch, attr);
           break;
@@ -145,15 +145,17 @@ void menuModelFlightModesAll(evt_t event)
 
         case ITEM_FLIGHT_MODES_FADE_IN:
           if (active) p->fadeIn = checkIncDec(event, p->fadeIn, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
-          lcd_outdezAtt(FLIGHT_MODES_FADEIN_COLUMN, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1);
+          lcdDrawNumber(FLIGHT_MODES_FADEIN_COLUMN, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1);
           break;
 
         case ITEM_FLIGHT_MODES_FADE_OUT:
           if (active) p->fadeOut = checkIncDec(event, p->fadeOut, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
-          lcd_outdezAtt(FLIGHT_MODES_FADEOUT_COLUMN, y, (10/DELAY_STEP)*p->fadeOut, attr|PREC1);
+          lcdDrawNumber(FLIGHT_MODES_FADEOUT_COLUMN, y, (10/DELAY_STEP)*p->fadeOut, attr|PREC1);
           break;
 
       }
     }
   }
+
+  return true;
 }

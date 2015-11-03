@@ -147,6 +147,27 @@ int getFontHeight(LcdFlags flags)
   return heightTable[FONTSIZE(flags) >> 8];
 }
 
+int getBitmapScale(const uint8_t * bmp, int dstWidth, int dstHeight)
+{
+  int widthScale, heightScale;
+
+  int bmpWidth = getBitmapWidth(bmp);
+  int bmpHeight = getBitmapHeight(bmp);
+
+  if (bmpWidth == 0 || bmpHeight == 0)
+    return 0;
+
+  if (bmpWidth > dstWidth)
+    widthScale = -((bmpWidth+dstWidth-1) / dstWidth);
+  else
+    widthScale = (dstWidth / bmpWidth);
+  if (bmpHeight > dstHeight)
+    heightScale = -((bmpHeight+dstHeight-1) / dstHeight);
+  else
+    heightScale = (dstHeight / bmpHeight);
+  return min(widthScale, heightScale);
+}
+
 int getTextWidth(const pm_char * s, int len, LcdFlags flags)
 {
   const uint16_t * specs = fontspecsTable[FONTSIZE(flags) >> 8];
@@ -228,24 +249,14 @@ void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s, uint8_t len, Lc
   lcdNextPos = x;
 }
 
-void lcd_putsn(coord_t x, coord_t y, const pm_char * s, uint8_t len)
-{
-  lcdDrawTextWithLen(x, y, s, len, TEXT_COLOR);
-}
-
 void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags flags)
 {
   lcdDrawTextWithLen(x, y, s, 255, flags);
 }
 
-void lcd_puts(coord_t x, coord_t y, const pm_char * s)
-{
-  lcdDrawText(x, y, s, 0);
-}
-
 void lcd_putsLeft(coord_t y, const pm_char * s)
 {
-  lcd_puts(MENUS_MARGIN_LEFT, y, s);
+  lcdDrawText(MENUS_MARGIN_LEFT, y, s);
 }
 
 void lcd_putsCenter(coord_t y, const pm_char * s, LcdFlags attr)
@@ -277,17 +288,7 @@ void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags flags)
   lcdDrawText(x, y, s, flags);
 }
 
-void lcd_outdez8(coord_t x, coord_t y, int8_t val)
-{
-  lcd_outdezAtt(x, y, val);
-}
-
-void lcd_outdezAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, const char *suffix, const char *prefix)
-{
-  lcd_outdezNAtt(x, y, val, flags, 0, suffix, prefix);
-}
-
-void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, int len, const char *suffix, const char *prefix)
+void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t len, const char * prefix, const char * suffix)
 {
   char str[48+1]; // max=16 for the prefix, 16 chars for the number, 16 chars for the suffix
   char *s = str+32;
@@ -455,7 +456,7 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
 // TODO to be optimized with putsValueWithUnit
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att)
 {
-  lcd_outdezAtt(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)), (~att & NO_UNIT) ? "v" : NULL);
+  lcdDrawNumber(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)), 0, NULL, (~att & NO_UNIT) ? "v" : NULL);
 }
 
 void putsVBat(coord_t x, coord_t y, LcdFlags att)
@@ -477,7 +478,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, 0, att); // TODO macro
   }
   else if (idx <= MIXSRC_LAST_INPUT) {
-    char s[32] = "\323";
+    char s[32] = "\314";
     if (ZEXIST(g_model.inputNames[idx-MIXSRC_FIRST_INPUT])) {
       zchar2str(s+1, g_model.inputNames[idx-MIXSRC_FIRST_INPUT], LEN_INPUT_NAME);
       s[1+LEN_INPUT_NAME] = '\0';
@@ -713,16 +714,16 @@ const pm_uint8_t bchunit_ar[] PROGMEM = {
   UNIT_DIST,    // GPS Alt
 };
 
-void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att)
+void putsValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att)
 {
   // convertUnit(val, unit);
   if (!(att & NO_UNIT) && unit != UNIT_RAW) {
     char unitStr[8];
     strAppend(unitStr, STR_VTELEMUNIT+1+unit*STR_VTELEMUNIT[0], STR_VTELEMUNIT[0]);
-    lcd_outdezAtt(x, y, val, att, unitStr);
+    lcdDrawNumber(x, y, val, att, 0, NULL, unitStr);
   }
   else {
-    lcd_outdezAtt(x, y, val, att);
+    lcdDrawNumber(x, y, val, att);
   }
 }
 
@@ -734,7 +735,7 @@ void displayGpsCoords(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFl
 {
 }
 
-void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t value, LcdFlags att)
+void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t value, LcdFlags att)
 {
   TelemetryItem & telemetryItem = telemetryItems[channel];
   TelemetrySensor & telemetrySensor = g_model.telemetrySensors[channel];
@@ -755,7 +756,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
   }
 }
 
-void putsChannelValue(coord_t x, coord_t y, source_t channel, lcdint_t value, LcdFlags att)
+void putsChannelValue(coord_t x, coord_t y, source_t channel, int32_t value, LcdFlags att)
 {
   if (channel >= MIXSRC_FIRST_TELEM) {
     channel = (channel-MIXSRC_FIRST_TELEM) / 3;
@@ -765,20 +766,20 @@ void putsChannelValue(coord_t x, coord_t y, source_t channel, lcdint_t value, Lc
     putsTimer(x, y, value, att);
   }
   else if (channel == MIXSRC_TX_VOLTAGE) {
-    lcd_outdezAtt(x, y, value, att|PREC1);
+    lcdDrawNumber(x, y, value, att|PREC1);
   }
   else if (channel < MIXSRC_FIRST_CH) {
-    lcd_outdezAtt(x, y, calcRESXto100(value), att);
+    lcdDrawNumber(x, y, calcRESXto100(value), att);
   }
   else if (channel <= MIXSRC_LAST_CH) {
 #if defined(PPM_UNIT_PERCENT_PREC1)
-    lcd_outdezAtt(x, y, calcRESXto1000(value), att|PREC1);
+    lcdDrawNumber(x, y, calcRESXto1000(value), att|PREC1);
 #else
-    lcd_outdezAtt(x, y, calcRESXto100(value), att);
+    lcdDrawNumber(x, y, calcRESXto100(value), att);
 #endif
   }
   else {
-    lcd_outdezAtt(x, y, value, att);
+    lcdDrawNumber(x, y, value, att);
   }
 }
 
@@ -883,11 +884,10 @@ void lcdDrawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags 
 }
 
 #if !defined(BOOT)
-void lcdDrawBitmap(coord_t x, coord_t y, const uint16_t * img, coord_t offset, coord_t width)
+void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, coord_t width, int scale)
 {
-  const uint16_t * q = img;
-  coord_t w = *q++;
-  coord_t height = *q++;
+  int w = getBitmapWidth(bmp);
+  int height = getBitmapHeight(bmp);
 
   if (!width || width > w) {
     width = w;
@@ -897,12 +897,33 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint16_t * img, coord_t offset, c
     width = LCD_W-x;
   }
 
-  for (coord_t row=0; row<height; row++) {
-    display_t * p = &displayBuf[(row+y)*LCD_W + x];
-    q = img + 2 + row*w + offset;
-    for (coord_t col=0; col<width; col++) {
-      lcdDrawPixel(p, *q);
-      p++; q++;
+  if (scale == 0) {
+    scale = -1;
+  }
+
+  if (scale < 0) {
+    for (coord_t i=0, row=0; row<height; i+=1, row-=scale) {
+      display_t * p = &displayBuf[(y+i)*LCD_W + x];
+      const uint8_t * q = bmp + 4 + (row*w + offset) * 3;
+      for (coord_t col=0; col<width; col-=scale) {
+        lcdDrawTransparentPixel(p, *(q+2), *((uint16_t *)q));
+        p++; q-=3*scale;
+      }
+    }
+  }
+  else {
+    for (coord_t row=0; row<height; row++) {
+      for (int i=0; i<scale; i++) {
+        display_t * p = &displayBuf[(y+scale*row+i)*LCD_W + x];
+        const uint8_t * q = bmp + 4 + (row*w + offset) * 3;
+        for (coord_t col=0; col<width; col++) {
+          for (int j=0; j<scale; j++) {
+            lcdDrawTransparentPixel(p, *(q+2), *((uint16_t *)q));
+            p++;
+          }
+          q+=3;
+        }
+      }
     }
   }
 }
@@ -910,7 +931,7 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint16_t * img, coord_t offset, c
 
 void lcdDrawBlackOverlay()
 {
-  // lcdDrawFilledRect(0, 0, LCD_W, LCD_H, SOLID, TEXT_COLOR | (8<<24));
+  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, SOLID, TEXT_COLOR | (8<<24));
 }
 
 void lcdDrawCircle(int x0, int y0, int radius)

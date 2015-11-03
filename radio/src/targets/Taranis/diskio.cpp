@@ -81,7 +81,6 @@
 /*-----------------------------------------------------------------------*/
 #if !defined(BOOT)
 static OS_MutexID ioMutex;
-volatile int mutexCheck = 0;
 
 int ff_cre_syncobj (BYTE vol, _SYNC_t *mutex)
 {

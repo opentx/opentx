@@ -160,39 +160,11 @@ int cliTrace(const char ** argv)
 
 int cliStackInfo(const char ** argv)
 {
-  int tid = 0;
-  if (toInt(argv, 1, &tid) > 0) {
-    int available = 0;
-    int total = 0;
-    switch(tid) {
-      case MENU_TASK_INDEX:
-        total = menusStack.size();
-        available = menusStack.available();
-        break;
-      case MIXER_TASK_INDEX:
-        total = mixerStack.size();
-        available = mixerStack.available();
-        break;
-      case AUDIO_TASK_INDEX:
-        total = audioStack.size();
-        available = audioStack.available();
-        break;
-      case CLI_TASK_INDEX:
-        total = cliStack.size();
-        available = cliStack.available();
-        break;
-      case MAIN_TASK_INDEX:
-        total = stackAvailable();
-        available = stackSize();
-        break;
-      default:
-        break;
-    }
-    serialPrint("%d available (%d total)", available, total);
-  }
-  else {
-    serialPrint("%s: Invalid argument \"%s\"", argv[0], argv[1]);
-  }
+  serialPrint("[MAIN] %d available / %d", stackAvailable(), stackSize());
+  serialPrint("[MENUS] %d available / %d", menusStack.available(), menusStack.size());
+  serialPrint("[MIXER] %d available / %d", mixerStack.available(), mixerStack.size());
+  serialPrint("[AUDIO] %d available / %d", audioStack.available(), audioStack.size());
+  serialPrint("[CLI] %d available / %d", cliStack.available(), cliStack.size());
   return 0;
 }
 
@@ -269,7 +241,7 @@ int cliDisplay(const char ** argv)
       name[len] = '\0';
       serialPrint("[%s] = %s", name, switchState(EnumKeys(i)) ? "on" : "off");
     }
-#if defined(ROTARY_ENCODER_NAVIGATION)
+#if defined(ROTARY_ENCODER_NAVIGATION) || defined(REV9E) || defined(PCBHORUS) || defined(PCBFLAMENCO)
     serialPrint("[Enc.]  = %d", rotencValue / 2);
 #endif
     for (int i=TRM_BASE; i<=TRM_LAST; i++) {
@@ -342,6 +314,18 @@ int cliDisplay(const char ** argv)
   return 0;
 }
 
+int cliDebugVars(const char ** argv)
+{
+  extern unsigned int ioMutexReq, ioMutexRel;
+  extern unsigned int sdReadRetries;
+
+  serialPrint("ioMutexReq=%d", ioMutexReq);
+  serialPrint("ioMutexRel=%d", ioMutexRel);
+  serialPrint("sdReadRetries=%d", sdReadRetries);
+
+  return 0;
+}
+
 int cliHelp(const char ** argv);
 
 const CliCommand cliCommands[] = {
@@ -349,7 +333,7 @@ const CliCommand cliCommands[] = {
   { "ls", cliLs, "<directory>" },
   { "play", cliPlay, "<filename>" },
   { "print", cliDisplay, "<address> [<size>] | <what>" },
-  { "stackinfo", cliStackInfo, "<tid>" },
+  { "stackinfo", cliStackInfo, "" },
   { "trace", cliTrace, "on | off" },
   { "volume", cliVolume, "<level>" },
 #if defined(PCBFLAMENCO)
@@ -357,6 +341,7 @@ const CliCommand cliCommands[] = {
   { "write_bq24195", cliWriteBQ24195, "<register> <data>" },
 #endif
   { "help", cliHelp, "[<command>]" },
+  { "debugvars", cliDebugVars, "" },
   { NULL, NULL, NULL }  /* sentinel */
 };
 

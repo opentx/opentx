@@ -85,7 +85,7 @@ void menuGeneralVersion(uint8_t event)
 {
   if (s_warning_result) {
     s_warning_result = 0;
-    displayPopup(STR_EEPROMFORMATTING);
+    displayPopup(STR_STORAGE_FORMAT);
     storageEraseAll(false);
 #if !defined(SIMU)
     NVIC_SystemReset();

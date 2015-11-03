@@ -760,7 +760,9 @@
 #define TR_ALARMSDISABLED      "Alarms Disabled"
 #define TR_PRESSANYKEY         TR("\010Press any Key", "Press any Key")
 #define TR_BADEEPROMDATA       "Bad EEprom Data"
+#define TR_BAD_RADIO_DATA      "Bad Radio Data"
 #define TR_EEPROMFORMATTING    "Formatting EEPROM"
+#define TR_STORAGE_FORMAT      "Storage Preparation"
 #define TR_EEPROMOVERFLOW      "EEPROM overflow"
 #define TR_MENURADIOSETUP      "RADIO SETUP"
 #define TR_MENUDATEANDTIME     "DATE AND TIME"
@@ -824,6 +826,7 @@
 #define TR_CURRENT             TR(INDENT "Current",INDENT "Current Source")
 #define TR_SELECT_MODEL        "Select Model"
 #define TR_CREATE_MODEL        "Create Model"
+#define TR_DUPLICATE_MODEL     "Duplicate Model"
 #define TR_COPY_MODEL          "Copy Model"
 #define TR_MOVE_MODEL          "Move Model"
 #define TR_BACKUP_MODEL        "Backup Model"
@@ -835,6 +838,7 @@
 #define TR_INCOMPATIBLE        "Incompatible"
 #define TR_WARNING             "WARNING"
 #define TR_EEPROMWARN          "EEPROM"
+#define TR_STORAGE_WARNING     "STORAGE"
 #define TR_EEPROM_CONVERTING   "Converting EEPROM"
 #define TR_THROTTLEWARN        "THROTTLE"
 #define TR_ALARMSWARN          "ALARMS"

@@ -48,7 +48,6 @@
 #define CONTRAST_MAX  45
 
 #define lcdint_t      int32_t
-#define lcduint_t     uint32_t
 
 #define FW              6
 #define FWNUM           5
@@ -156,8 +155,8 @@ void lcd_putsLeft(coord_t y, const pm_char * s);
 
 void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 
-void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0, uint8_t len=0);
-void lcd_outdezAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0);
+void lcd_outdezNAtt(coord_t x, coord_t y, int32_t val, LcdFlags mode=0, uint8_t len=0);
+void lcd_outdezAtt(coord_t x, coord_t y, int32_t val, LcdFlags mode=0);
 void lcd_outdez8(coord_t x, coord_t y, int8_t val);
 
 void putsStrIdx(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags att=0);
@@ -180,9 +179,9 @@ void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att);
 void putsVBat(coord_t x, coord_t y, LcdFlags att);
 
 #if !defined(BOOT)
-void putsChannelValue(coord_t x, coord_t y, source_t channel, lcdint_t val, LcdFlags att=0);
+void putsChannelValue(coord_t x, coord_t y, source_t channel, int32_t val, LcdFlags att=0);
 void putsChannel(coord_t x, coord_t y, source_t channel, LcdFlags att=0);
-void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t val, LcdFlags att=0);
+void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t val, LcdFlags att=0);
 #endif
 
 #define putstime_t int32_t
@@ -232,23 +231,13 @@ void lcdSetContrast();
   void lcdRefresh();
 #endif
 
-const char *bmpLoad(uint8_t *dest, const char *filename, const unsigned int width, const unsigned int height);
-const char *writeScreenshot();
+const char * bmpLoad(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
+const char * writeScreenshot();
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE (0)
 #else
   #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
 #endif
-
-#if defined(SIMU)
-  extern bool lcd_refresh;
-  extern display_t lcd_buf[DISPLAY_BUFFER_SIZE];
-#endif
-
-char *strAppend(char * dest, const char * source, int len=0);
-char *strSetCursor(char *dest, int position);
-char *strAppendDate(char * str, bool time=false);
-char *strAppendFilename(char * dest, const char * filename, const int size);
 
 #endif // _LCD_H_

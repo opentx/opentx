@@ -53,10 +53,11 @@ void serialPutc(char c)
 void serialPrintf(const char * format, ...)
 {
   va_list arglist;
-  char tmp[PRINTF_BUFFER_SIZE];
+  char tmp[PRINTF_BUFFER_SIZE+1];
 
   va_start(arglist, format);
   vsnprintf(tmp, PRINTF_BUFFER_SIZE, format, arglist);
+  tmp[PRINTF_BUFFER_SIZE] = '\0';
   va_end(arglist);
 
   const char *t = tmp;

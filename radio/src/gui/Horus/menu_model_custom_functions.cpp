@@ -111,7 +111,7 @@ void onCustomFunctionsMenu(const char *result)
   }
 }
 
-void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext)
+bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext)
 {
   uint32_t sub = m_posVert;
 
@@ -217,7 +217,7 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
           else if (func == FUNC_OVERRIDE_CHANNEL) {
             val_min = -LIMIT_EXT_PERCENT; val_max = +LIMIT_EXT_PERCENT;
-            lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
+            lcdDrawNumber(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
           }
 #endif
 #if defined(DANGEROUS_MODULE_FUNCTIONS)
@@ -237,7 +237,7 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
 #if defined(HAPTIC)
           else if (func == FUNC_HAPTIC) {
             val_max = 3;
-            lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
+            lcdDrawNumber(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
           }
 #endif
 #if defined(SDCARD)
@@ -281,7 +281,7 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
           }
           else if (func == FUNC_LOGS) {
             if (val_displayed) {
-              lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|PREC1|LEFT, "s");
+              lcdDrawNumber(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|PREC1|LEFT, 0, NULL, "s");
             }
             else {
               lcdDrawTextAtIndex(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_MMMINV, 0, attr);
@@ -301,7 +301,7 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
               case FUNC_ADJUST_GVAR_CONSTANT:
                 val_displayed = (int16_t)CFN_PARAM(cfn);
                 val_min = -CFN_GVAR_CST_MAX; val_max = +CFN_GVAR_CST_MAX;
-                lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
+                lcdDrawNumber(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
                 break;
               case FUNC_ADJUST_GVAR_SOURCE:
                 val_max = MIXSRC_LAST_CH;
@@ -353,7 +353,7 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
               lcdDrawText(MODEL_CUSTOM_FUNC_4TH_COLUMN-1, y, "!1x", attr);
             }
             else {
-              lcd_outdezAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+12, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr, "s");
+              lcdDrawNumber(MODEL_CUSTOM_FUNC_4TH_COLUMN+12, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr, 0, NULL, "s");
             }
           }
           else if (attr) {
@@ -363,9 +363,11 @@ void menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
       }
     }
   }
+
+  return true;
 }
 
-void menuModelCustomFunctions(evt_t event)
+bool menuModelCustomFunctions(evt_t event)
 {
   MENU(STR_MENUCUSTOMFUNC, menuTabModel, e_CustomFunctions, NUM_CFN, DEFAULT_SCROLLBAR_X, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
   return menuCustomFunctions(event, g_model.customFn, modelFunctionsContext);
