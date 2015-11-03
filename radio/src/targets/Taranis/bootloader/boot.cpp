@@ -53,7 +53,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../Taranis/board_taranis.h"
+#include "../board_taranis.h"
 #include "storage/eeprom_rlc.h"
 #include "pwr.h"
 #include "gui/Taranis/lcd.h"
@@ -63,6 +63,7 @@
 #include "FatFs/diskio.h"
 #include "translations/en.h"
 #include "stamp-opentx.h"
+#include "strhelpers.h"
 
 #if defined(PCBTARANIS)
   #define BOOTLOADER_TITLE      " Taranis BootLoader - " VERS_STR
