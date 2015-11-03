@@ -259,12 +259,12 @@ DRESULT disk_ioctl (
 
   switch (ctrl) {
     case GET_SECTOR_COUNT : /* Get number of sectors on the disk (DWORD) */
-      *(DWORD*)buff = SDCardInfo.CardCapacity / BLOCK_SIZE;
+      *(DWORD*)buff = SDCardInfo.CardCapacity / SDCardInfo.CardBlockSize;
       res = RES_OK;
       break;
 
     case GET_SECTOR_SIZE :  /* Get R/W sector size (WORD) */
-      *(WORD*)buff = BLOCK_SIZE;
+      *(WORD*)buff = SDCardInfo.CardBlockSize;
       res = RES_OK;
       break;
   }
