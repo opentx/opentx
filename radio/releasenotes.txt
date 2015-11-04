@@ -1,6 +1,6 @@
 <h2>Version 2.1.5 / 2015-11-04</h2>
 
-Notice: version 2.1.4 was sipped by the OpenTX team to avoid confusion with the FrSky's official release of OpenTX 2.1.4
+Notice: version 2.1.4 was skipped by the OpenTX team to avoid confusion with the FrSky's official release of OpenTX 2.1.4
 
 [Taranis]
 <ul>
