@@ -1,6 +1,6 @@
 <h2>Version 2.1.5 / 2015-11-04</h2>
 
-Notice: version 2.1.4 was skipped by the OpenTX team to avoid confusion with the FrSky's official release of OpenTX 2.1.4
+Notice: version 2.1.4 was skipped by the OpenTX team to avoid confusion with FrSky's release of OpenTX 2.1.4
 
 <ul>
 <li>Fixed: changing any setting on the telemetry panel does not set the file as being modified (<a href=https://github.com/opentx/opentx/issues/2875>#2875</a>)</li>
