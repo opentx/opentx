@@ -720,7 +720,7 @@ FATFS g_FATFS_Obj;
 char * convertSimuPath(const char *path)
 {
   static char result[1024];
-  if (path[0] == '/' && strcmp(simuSdDirectory, "/") != 0)
+  if (((path[0] == '/') || (path[0] == '\\')) && (strcmp(simuSdDirectory, "/") != 0))
     sprintf(result, "%s%s", simuSdDirectory, path);
   else
     strcpy(result, path);
@@ -1044,6 +1044,7 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
 
   // remove simuSdDirectory from the cwd
   strcpy(path, cwd + strlen(simuSdDirectory));
+
   TRACE("f_getcwd() = %s", path);
   return FR_OK;
 }
