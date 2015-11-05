@@ -1,4 +1,4 @@
-<h2>Version 2.1.5 / 2015-11-04</h2>
+<h2>Version 2.1.5 / 2015-11-05</h2>
 
 Notice: version 2.1.4 was skipped by the OpenTX team to avoid confusion with FrSky's release of OpenTX 2.1.4
 
