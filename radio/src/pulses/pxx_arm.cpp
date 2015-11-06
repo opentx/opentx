@@ -231,32 +231,48 @@ void setupPulsesPXX(unsigned int port)
       }
       else {
         if (i < sendUpperChannels) {
-          int16_t failsafeValue = g_model.moduleData[port].failsafeChannels[8+i];
-          if (failsafeValue == FAILSAFE_CHANNEL_HOLD)
+          int channel = 8 + i;
+          int16_t failsafeValue = g_model.moduleData[port].failsafeChannels[channel];
+          if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
             pulseValue = 4095;
-          else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE)
+          }
+          else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
             pulseValue = 2048;
-          else
-            pulseValue = limit(2049, PPM_CH_CENTER(8+g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (failsafeValue * 512 / 682) + 3072, 4094);
+          }
+          else {
+            failsafeValue += 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+            pulseValue = limit(2049, (failsafeValue * 512 / 682) + 3072, 4094);
+          }
         }
         else {
           int16_t failsafeValue = g_model.moduleData[port].failsafeChannels[i];
-          if (failsafeValue == FAILSAFE_CHANNEL_HOLD)
+          if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
             pulseValue = 2047;
-          else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE)
+          }
+          else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
             pulseValue = 0;
-          else
-            pulseValue = limit(1, PPM_CH_CENTER(g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (failsafeValue * 512 / 682) + 1024, 2046);
+          }
+          else {
+            failsafeValue += 2*PPM_CH_CENTER(i) - 2*PPM_CENTER;
+            pulseValue = limit(1, (failsafeValue * 512 / 682) + 1024, 2046);
+          }
         }
       }
     }
     else {
-      if (i < sendUpperChannels)
-        pulseValue = limit(2049, PPM_CH_CENTER(8+g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (channelOutputs[8+g_model.moduleData[port].channelsStart+i] * 512 / 682) + 3072, 4094);
-      else if (i < NUM_CHANNELS(port))
-        pulseValue = limit(1, PPM_CH_CENTER(g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (channelOutputs[g_model.moduleData[port].channelsStart+i] * 512 / 682) + 1024, 2046);
-      else
+      if (i < sendUpperChannels) {
+        int channel = 8 + g_model.moduleData[port].channelsStart + i;
+        int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+        pulseValue = limit(2049, (value * 512 / 682) + 3072, 4094);
+      }
+      else if (i < NUM_CHANNELS(port)) {
+        int channel = g_model.moduleData[port].channelsStart + i;
+        int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+        pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
+      }
+      else {
         pulseValue = 1024;
+      }
     }
 
     if (i & 1) {
@@ -272,7 +288,7 @@ void setupPulsesPXX(unsigned int port)
   /* CRC16 */
   putPcmByte(0, port);
   pulseValue = modulePulsesData[port].pxx.pcmCrc;
-  putPcmByte(pulseValue>>8, port);
+  putPcmByte(pulseValue >> 8, port);
   putPcmByte(pulseValue, port);
 
   /* Sync */
