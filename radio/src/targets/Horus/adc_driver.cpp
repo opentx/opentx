@@ -44,7 +44,7 @@
 
 #define SAMPTIME                       2 // sample time = 28 cycles
 
-uint16_t Analog_values[NUMBER_ANALOG] __DMA;
+uint16_t adcValues[NUMBER_ANALOG] __DMA;
 
 static u16 SPIx_ReadWriteByte(uint16_t value)
 {
@@ -141,7 +141,7 @@ void adcInit()
   // Enable the DMA channel here, DMA2 stream 1, channel 2
   DMA2_Stream1->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
   DMA2_Stream1->PAR = (uint32_t) &ADC3->DR;
-  DMA2_Stream1->M0AR = (uint32_t) &Analog_values[MOUSE1];
+  DMA2_Stream1->M0AR = (uint32_t) &adcValues[MOUSE1];
   DMA2_Stream1->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 }
 
@@ -184,7 +184,7 @@ void adcRead()
   DMA2_Stream1->CR &= ~DMA_SxCR_EN;		// Disable DMA
   ADC3->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR );
   DMA2->LIFCR = DMA_LIFCR_CTCIF1 | DMA_LIFCR_CHTIF1 |DMA_LIFCR_CTEIF1 | DMA_LIFCR_CDMEIF1 | DMA_LIFCR_CFEIF1; // Write ones to clear bits
-  DMA2_Stream1->M0AR = (uint32_t) &Analog_values[MOUSE1];
+  DMA2_Stream1->M0AR = (uint32_t) &adcValues[MOUSE1];
   DMA2_Stream1->NDTR = 2;
   DMA2_Stream1->CR |= DMA_SxCR_EN;		// Enable DMA
   ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART;
@@ -204,7 +204,7 @@ void adcRead()
   for (uint32_t adcIndex=0; adcIndex<MOUSE1; adcIndex++) {
     ADC_CS_LOW();
     delay_01us(1);
-    Analog_values[adcIndex] = (0x0fff & SPIx_ReadWriteByte(*command++));
+    adcValues[adcIndex] = (0x0fff & SPIx_ReadWriteByte(*command++));
     ADC_CS_HIGH();
     delay_01us(1);
   }
@@ -220,5 +220,5 @@ void adcRead()
 
 uint16_t getAnalogValue(uint32_t value)
 {
-  return Analog_values[value];
+  return adcValues[value];
 }

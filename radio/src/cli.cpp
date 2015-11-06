@@ -260,7 +260,7 @@ int cliDisplay(const char ** argv)
   }
   else if (!strcmp(argv[1], "adc")) {
     for (int i=0; i<NUMBER_ANALOG; i++) {
-      serialPrint("adc[%d] = %04X", i, Analog_values[i]);
+      serialPrint("adc[%d] = %04X", i, adcValues[i]);
     }
   }
   else if (!strcmp(argv[1], "outputs")) {

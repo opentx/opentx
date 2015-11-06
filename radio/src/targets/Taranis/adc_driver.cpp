@@ -57,7 +57,7 @@
 #if defined(REV9E)
     #define NUMBER_ANALOG_ADC1      10
     #define NUMBER_ANALOG_ADC3      3
-    // mapping from Analog_values order to enum Analogs
+    // mapping from adcValues order to enum Analogs
     const uint8_t ana_mapping[NUMBER_ANALOG] = { 0 /*STICK1*/, 1 /*STICK2*/, 2 /*STICK3*/, 3 /*STICK4*/, 
                                                  10 /*POT1*/, 4 /*POT2*/, 5 /*POT3*/, 6 /*POT4*/,
                                                  11 /*SLIDER1*/, 12 /*SLIDER2*/, 7 /*SLIDER3*/, 8 /*SLIDER4*/,
@@ -66,7 +66,7 @@
     #define NUMBER_ANALOG_ADC1      10
 #endif
 
-uint16_t Analog_values[NUMBER_ANALOG] __DMA;
+uint16_t adcValues[NUMBER_ANALOG] __DMA;
 
 void adcInit()
 {
@@ -102,7 +102,7 @@ void adcInit()
 
   DMA2_Stream0->CR = DMA_SxCR_PL | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
   DMA2_Stream0->PAR = CONVERT_PTR_UINT(&ADC1->DR);
-  DMA2_Stream0->M0AR = CONVERT_PTR_UINT(Analog_values);
+  DMA2_Stream0->M0AR = CONVERT_PTR_UINT(adcValues);
   DMA2_Stream0->NDTR = NUMBER_ANALOG_ADC1;
   DMA2_Stream0->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 
@@ -118,7 +118,7 @@ void adcInit()
   // Enable the DMA channel here, DMA2 stream 1, channel 2
   DMA2_Stream1->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
   DMA2_Stream1->PAR = CONVERT_PTR_UINT(&ADC3->DR);
-  DMA2_Stream1->M0AR = CONVERT_PTR_UINT(Analog_values + NUMBER_ANALOG_ADC1);
+  DMA2_Stream1->M0AR = CONVERT_PTR_UINT(adcValues + NUMBER_ANALOG_ADC1);
   DMA2_Stream1->NDTR = NUMBER_ANALOG_ADC3;
   DMA2_Stream1->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 #endif
@@ -175,7 +175,7 @@ uint16_t getAnalogValue(uint32_t index)
   index = ana_mapping[index];
 #endif
   if (ana_direction[index] < 0)
-    return 4096 - Analog_values[index];
+    return 4096 - adcValues[index];
   else
-    return Analog_values[index];
+    return adcValues[index];
 }

@@ -36,7 +36,7 @@
 
 #include "../opentx.h"
 
-uint16_t Analog_values[NUMBER_ANALOG];
+uint16_t adcValues[NUMBER_ANALOG];
 
 #if defined(FRSKY_STICKS)
 const char ana_direction[NUMBER_ANALOG] = {1, 1, 0, 1 ,0 ,1 ,0, 0, 0};
@@ -99,17 +99,17 @@ void adcRead()
     x = padc->ADC_LCDR; // Clear DRSY flag
   }
   // Next bit may be done using the PDC
-  Analog_values[0] = ADC->ADC_CDR1;
-  Analog_values[1] = ADC->ADC_CDR2;
-  Analog_values[2] = ADC->ADC_CDR3;
-  Analog_values[3] = ADC->ADC_CDR4;
-  Analog_values[4] = ADC->ADC_CDR5;
-  Analog_values[5] = ADC->ADC_CDR9;
-  Analog_values[6] = ADC->ADC_CDR13;
-  Analog_values[7] = ADC->ADC_CDR14;
+  adcValues[0] = ADC->ADC_CDR1;
+  adcValues[1] = ADC->ADC_CDR2;
+  adcValues[2] = ADC->ADC_CDR3;
+  adcValues[3] = ADC->ADC_CDR4;
+  adcValues[4] = ADC->ADC_CDR5;
+  adcValues[5] = ADC->ADC_CDR9;
+  adcValues[6] = ADC->ADC_CDR13;
+  adcValues[7] = ADC->ADC_CDR14;
 
 #if !defined(REVA)
-  Analog_values[8] = ADC->ADC_CDR8 ;
+  adcValues[8] = ADC->ADC_CDR8 ;
 #endif
 
   temperature = (((int32_t)temperature * 7) + ((((int32_t)ADC->ADC_CDR15 - 838) * 621) >> 11)) >> 3; // Filter it
@@ -122,7 +122,7 @@ void adcRead()
   uint32_t i ;
   for (i=0; i<NUMBER_ANALOG; i++) {
     if (ana_direction[i]) {
-      Analog_values[i] = 4096-Analog_values[i];
+      adcValues[i] = 4096-adcValues[i];
     }
   }  
 #endif
@@ -130,5 +130,5 @@ void adcRead()
 
 uint16_t getAnalogValue(uint32_t value)
 {
-  return Analog_values[value];
+  return adcValues[value];
 }
