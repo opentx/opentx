@@ -1005,7 +1005,16 @@ enum Analogs {
   STICK2,
   STICK3,
   STICK4,
-#if defined(PCBFLAMENCO)
+#if defined(PCBHORUS)
+  POT1,
+  POT2,
+  POT3,
+  POT_LAST=POT3,
+  SLIDER1,
+  SLIDER2,
+  SLIDER3,
+  SLIDER4,
+#elif defined(PCBFLAMENCO)
   POT1,
   POT2,
   POT_LAST = POT2,
@@ -1049,6 +1058,10 @@ enum Analogs {
   TX_VOLTAGE,
 #if defined(PCBSKY9X) && !defined(REVA)
   TX_CURRENT,
+#endif
+#if defined(PCBHORUS)
+  MOUSE1,
+  MOUSE2,
 #endif
   NUMBER_ANALOG
 };

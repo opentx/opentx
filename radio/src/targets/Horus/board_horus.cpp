@@ -167,7 +167,7 @@ void boardInit()
   TRACE("Horus started :)");
 
   keysInit();
-  // adcInit();
+  adcInit();
   lcdInit();
   audioInit();
   i2cInit();

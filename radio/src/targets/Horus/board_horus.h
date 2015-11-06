@@ -77,39 +77,40 @@ extern "C" {
 }
 #endif
 
-#define FLASHSIZE          0x80000
-#define BOOTLOADER_SIZE    0x8000
-#define FIRMWARE_ADDRESS   0x08000000
+#define FLASHSIZE                      0x80000
+#define BOOTLOADER_SIZE                0x8000
+#define FIRMWARE_ADDRESS               0x08000000
 
-#define PERI1_FREQUENCY    45000000
-#define PERI2_FREQUENCY    90000000
-#define TIMER_MULT_APB1    4
-#define TIMER_MULT_APB2    2
+#define PERI1_FREQUENCY                45000000
+#define PERI2_FREQUENCY                90000000
+#define TIMER_MULT_APB1                4
+#define TIMER_MULT_APB2                2
 
-#define PIN_MODE_MASK      0x0003
-#define PIN_INPUT          0x0000
-#define PIN_OUTPUT         0x0001
-#define PIN_PERIPHERAL     0x0002
-#define PIN_ANALOG         0x0003
-#define PIN_PULL_MASK      0x000C
-#define PIN_PULLUP         0x0004
-#define PIN_NO_PULLUP      0x0000
-#define PIN_PULLDOWN       0x0008
-#define PIN_NO_PULLDOWN    0x0000
-#define PIN_PERI_MASK      0x00F0
-#define PIN_PUSHPULL       0x0000
-#define PIN_ODRAIN         0x8000
-#define PIN_PORT_MASK      0x0700
-#define PIN_SPEED_MASK     0x6000
-#define PIN_PORTA                       0x0000
-#define PIN_PORTB                       0x0100
-#define PIN_PORTC                       0x0200
-#define PIN_PER_1                       0x0010
-#define PIN_PER_2                       0x0020
-#define PIN_PER_3                       0x0030
-#define PIN_OS25                        0x2000
-#define PIN_OS50                        0x4000
-#define PIN_OS100                       0x6000
+#define PIN_MODE_MASK                  0x0003
+#define PIN_INPUT                      0x0000
+#define PIN_OUTPUT                     0x0001
+#define PIN_PERIPHERAL                 0x0002
+#define PIN_ANALOG                     0x0003
+#define PIN_PULL_MASK                  0x000C
+#define PIN_PULLUP                     0x0004
+#define PIN_NO_PULLUP                  0x0000
+#define PIN_PULLDOWN                   0x0008
+#define PIN_NO_PULLDOWN                0x0000
+#define PIN_PERI_MASK                  0x00F0
+#define PIN_PUSHPULL                   0x0000
+#define PIN_ODRAIN                     0x8000
+#define PIN_PORT_MASK                  0x0700
+#define PIN_SPEED_MASK                 0x6000
+#define PIN_PORTA                      0x0000
+#define PIN_PORTB                      0x0100
+#define PIN_PORTC                      0x0200
+#define PIN_PORTF                      0x0500
+#define PIN_PER_1                      0x0010
+#define PIN_PER_2                      0x0020
+#define PIN_PER_3                      0x0030
+#define PIN_OS25                       0x2000
+#define PIN_OS50                       0x4000
+#define PIN_OS100                      0x6000
 
 void configure_pins( uint32_t pins, uint16_t config );
 

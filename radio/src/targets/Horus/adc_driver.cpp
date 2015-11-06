@@ -36,87 +36,189 @@
 
 #include "../../opentx.h"
 
-#define STICK_LV    3
-#define STICK_LH    2
-#define STICK_RV    0
-#define STICK_RH    1
-#define POT_L       13
-#define POT_R       5
-#define SLIDE_L     9
-#define SLIDE_R     8
-#define SWITCHES1   11
-#define SWITCHES2   7
-#define SWITCHES3   10
-#define SWITCHES4   6
-#define BATTERY     14
+#define ADC_CS_HIGH()                  (ADC_SPI_GPIO->BSRRL = ADC_SPI_PIN_CS)
+#define ADC_CS_LOW()                   (ADC_SPI_GPIO->BSRRH = ADC_SPI_PIN_CS)
 
-// Sample time should exceed 1uS
-#define SAMPTIME    2   // sample time = 28 cycles
+#define RESETCMD                       0x4000
+#define MANUAL_MODE                    0x1000 // manual mode channel 0
+
+#define SAMPTIME                       2 // sample time = 28 cycles
 
 uint16_t Analog_values[NUMBER_ANALOG] __DMA;
 
-#define NUMBER_ANALOG_ADC1      13
+static u16 SPIx_ReadWriteByte(uint16_t value)
+{
+  while(SPI_I2S_GetFlagStatus(ADC_SPI,SPI_I2S_FLAG_TXE) == RESET);
+  SPI_I2S_SendData(ADC_SPI,value);
 
-#if 0
-const int8_t ana_direction[NUMBER_ANALOG] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-#endif
+  while(SPI_I2S_GetFlagStatus(ADC_SPI,SPI_I2S_FLAG_RXNE) ==RESET);
+  return SPI_I2S_ReceiveData(ADC_SPI);
+}
+
+static void ADS7952_Init()
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+  SPI_InitTypeDef SPI_InitStructure;
+
+  GPIO_InitStructure.GPIO_Pin = ADC_SPI_PIN_MISO|ADC_SPI_PIN_SCK|ADC_SPI_PIN_MOSI;
+  GPIO_InitStructure.GPIO_Speed =GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(ADC_SPI_GPIO, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = ADC_SPI_PIN_CS;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(ADC_SPI_GPIO, &GPIO_InitStructure);
+
+  GPIO_PinAFConfig(ADC_SPI_GPIO, ADC_SPI_PinSource_SCK, ADC_GPIO_AF);
+  GPIO_PinAFConfig(ADC_SPI_GPIO, ADC_SPI_PinSource_MISO, ADC_GPIO_AF);
+  GPIO_PinAFConfig(ADC_SPI_GPIO, ADC_SPI_PinSource_MOSI, ADC_GPIO_AF);
+
+  SPI_I2S_DeInit(ADC_SPI);
+
+  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+  SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
+  SPI_InitStructure.SPI_DataSize = SPI_DataSize_16b;
+  SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
+  SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
+  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8;
+  SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
+  SPI_InitStructure.SPI_CRCPolynomial = 7;
+  SPI_Init(ADC_SPI,&SPI_InitStructure);
+  SPI_Cmd(ADC_SPI,ENABLE);
+  SPI_I2S_ITConfig(ADC_SPI,SPI_I2S_IT_TXE,DISABLE);
+  SPI_I2S_ITConfig(ADC_SPI,SPI_I2S_IT_RXNE,DISABLE);
+
+  ADC_CS_HIGH();
+  delay_01us(1);
+  ADC_CS_LOW();
+  SPIx_ReadWriteByte(RESETCMD);
+  ADC_CS_HIGH();
+  delay_01us(1);
+  ADC_CS_LOW();
+  SPIx_ReadWriteByte(MANUAL_MODE);
+  ADC_CS_HIGH();
+    
+// SPIx_ReadWriteByte(ProgramReg_Auto2 );
+// ADC_CS_HIGH();
+
+// asm("nop");
+// ADC_CS_LOW();
+// SPIx_ReadWriteByte(AutoMode_2);
+// ADC_CS_HIGH();
+
+// asm("nop");
+// ADC_CS_LOW();
+// SPIx_ReadWriteByte(ContinuedSelectMode);
+// ADC_CS_HIGH();
+// asm("nop");
+}
 
 void adcInit()
 {
-  return ;
+  RCC_AHB1PeriphClockCmd(ADC_RCC_AHB1Periph, ENABLE);
+  RCC_APB2PeriphClockCmd(ADC_RCC_APB2Periph, ENABLE);
 
-  // Enable clocks
-  RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;
-  RCC->AHB1ENR |= ADC_RCC_AHB1Periph_GPIO | RCC_AHB1ENR_DMA2EN;
+  ADS7952_Init();
 
-  configure_pins(ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH |
-                 ADC_GPIO_PIN_POT_R1 | ADC_GPIO_SWITCHES_PIN_R3 | ADC_GPIO_SWITCHES_PIN_R4, PIN_ANALOG | PIN_PORTA);
-
-  configure_pins(ADC_GPIO_PIN_POT_R2 | ADC_GPIO_PIN_POT_L2, PIN_ANALOG | PIN_PORTB);
-
-  configure_pins(ADC_GPIO_PIN_POT_L1 | ADC_GPIO_SWITCHES_PIN_L3 | ADC_GPIO_SWITCHES_PIN_L4 | ADC_GPIO_PIN_BATT, PIN_ANALOG | PIN_PORTC);
-
-  ADC1->CR1 = ADC_CR1_SCAN;
-  ADC1->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
-  ADC1->SQR1 = (BATTERY<<0) + ((NUMBER_ANALOG_ADC1-1) << 20); // bits 23:20 = number of conversions
-  ADC1->SQR2 = (SLIDE_L<<0) + (SLIDE_R<<5) + (SWITCHES1<<10) + (SWITCHES2<<15) + (SWITCHES3<<20) + (SWITCHES4<<25); // conversions 7 to 12
-  ADC1->SQR3 = (STICK_LH<<0) + (STICK_LV<<5) + (STICK_RV<<10) + (STICK_RH<<15) + (POT_L<<20) + (POT_R<<25); // conversions 1 to 6
-  ADC1->SMPR1 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12) + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24);
-  ADC1->SMPR2 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12) + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24) + (SAMPTIME<<27) ;
-
-  ADC->CCR = 0 ; //ADC_CCR_ADCPRE_0 ;             // Clock div 2
-
-  DMA2_Stream0->CR = DMA_SxCR_PL | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
-  DMA2_Stream0->PAR = CONVERT_PTR_UINT(&ADC1->DR);
-  DMA2_Stream0->M0AR = CONVERT_PTR_UINT(Analog_values);
-  DMA2_Stream0->NDTR = NUMBER_ANALOG_ADC1;
-  DMA2_Stream0->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
+  configure_pins( ADC_GPIO_PIN_MOUSE1 | ADC_GPIO_PIN_MOUSE2, PIN_ANALOG | PIN_PORTF );
+	
+  ADC3->CR1 = ADC_CR1_SCAN;
+  ADC3->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
+  ADC3->SQR1 = (2-1) << 20; // NUMBER_ANALOG Channels
+  ADC3->SQR3 = ADC_IN_MOUSE1 + (ADC_IN_MOUSE2<<5);
+  ADC3->SMPR1 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12)
+								+ (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24);
+  ADC3->SMPR2 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12)
+								+ (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24) + (SAMPTIME<<27);
+  ADC->CCR = 0; // ADC_CCR_ADCPRE_0; Clock div 2
+	
+  // Enable the DMA channel here, DMA2 stream 1, channel 2
+  DMA2_Stream1->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
+  DMA2_Stream1->PAR = (uint32_t) &ADC3->DR;
+  DMA2_Stream1->M0AR = (uint32_t) &Analog_values[MOUSE1];
+  DMA2_Stream1->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 }
+
+#define SPI_STICK1                     0
+#define SPI_STICK2                     1
+#define SPI_STICK3                     2
+#define SPI_STICK4                     3
+#define SPI_POT1                       4
+#define SPI_POT2                       5
+#define SPI_POT3                       6
+#define SPI_SLIDER1                    7
+#define SPI_SLIDER2                    8
+#define SPI_TX_VOLTAGE                 9
+#define SPI_SLIDER3                    10
+#define SPI_SLIDER4                    11
+
+const uint16_t adcCommands[MOUSE1+2] =
+{
+  MANUAL_MODE | ( SPI_STICK1     << 7 ),
+  MANUAL_MODE | ( SPI_STICK2     << 7 ),
+  MANUAL_MODE | ( SPI_STICK3     << 7 ),
+  MANUAL_MODE | ( SPI_STICK4     << 7 ),
+  MANUAL_MODE | ( SPI_POT1       << 7 ),
+  MANUAL_MODE | ( SPI_POT2       << 7 ),
+  MANUAL_MODE | ( SPI_POT3       << 7 ),
+  MANUAL_MODE | ( SPI_SLIDER1    << 7 ),
+  MANUAL_MODE | ( SPI_SLIDER2    << 7 ),
+  MANUAL_MODE | ( SPI_SLIDER3    << 7 ),
+  MANUAL_MODE | ( SPI_SLIDER4    << 7 ),
+  MANUAL_MODE | ( SPI_TX_VOLTAGE << 7 ),
+  MANUAL_MODE | ( 0 << 7 ),
+  MANUAL_MODE | ( 0 << 7 )
+};
 
 void adcRead()
 {
-  return ;
+  const uint16_t * command = adcCommands;
 
-  DMA2_Stream0->CR &= ~DMA_SxCR_EN ;              // Disable DMA
-  ADC1->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR ) ;
-  DMA2->LIFCR = DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 |DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0 ; // Write ones to clear bits
-  DMA2_Stream0->CR |= DMA_SxCR_EN ;               // Enable DMA
-  ADC1->CR2 |= (uint32_t)ADC_CR2_SWSTART ;
-  for (unsigned int i=0; i<10000; i++) {
-    if (DMA2->LISR & DMA_LISR_TCIF0) {
+  // Start on chip ADC read
+  DMA2_Stream1->CR &= ~DMA_SxCR_EN;		// Disable DMA
+  ADC3->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR );
+  DMA2->LIFCR = DMA_LIFCR_CTCIF1 | DMA_LIFCR_CHTIF1 |DMA_LIFCR_CTEIF1 | DMA_LIFCR_CDMEIF1 | DMA_LIFCR_CFEIF1; // Write ones to clear bits
+  DMA2_Stream1->M0AR = (uint32_t) &Analog_values[MOUSE1];
+  DMA2_Stream1->NDTR = 2;
+  DMA2_Stream1->CR |= DMA_SxCR_EN;		// Enable DMA
+  ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART;
+
+  ADC_CS_LOW();
+  delay_01us(1);
+  SPIx_ReadWriteByte(*command++);	// Discard
+  ADC_CS_HIGH();
+  delay_01us(1);
+  
+  ADC_CS_LOW();
+  delay_01us(1);
+  SPIx_ReadWriteByte(*command++);	// Discard
+  ADC_CS_HIGH();
+  delay_01us(1);
+
+  for (uint32_t adcIndex=0; adcIndex<MOUSE1; adcIndex++) {
+    ADC_CS_LOW();
+    delay_01us(1);
+    Analog_values[adcIndex] = (0x0fff & SPIx_ReadWriteByte(*command++));
+    ADC_CS_HIGH();
+    delay_01us(1);
+  }
+
+  for (uint32_t i=0; i<20000; i++) {
+    if (DMA2->LISR & DMA_LISR_TCIF1) {
       break;
     }
   }
-  DMA2_Stream0->CR &= ~DMA_SxCR_EN ;              // Disable DMA
-}
 
-// TODO
-void adcStop()
-{
+  // On chip ADC read should have finished
 }
 
 uint16_t getAnalogValue(uint32_t value)
 {
-  // return Analog_values[ana_mapping[value]];
-  return 0; // Analog_values[value];
+  return Analog_values[value];
 }

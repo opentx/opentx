@@ -90,30 +90,22 @@
 #define KEYS_GPIOJ_PINS                 (SWITCHES_GPIO_PIN_D_H | TRIMS_GPIO_PIN_RVU | TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_RSD)
 
 // ADC
-#define ADC_RCC_AHB1Periph_GPIO         (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC)
-#define ADC_GPIO_STICKS                 GPIOA
-#define ADC_GPIO_PIN_STICK_LV           GPIO_Pin_0  // PA.00
-#define ADC_GPIO_PIN_STICK_LH           GPIO_Pin_1  // PA.01
-#define ADC_GPIO_PIN_STICK_RV           GPIO_Pin_2  // PA.02
-#define ADC_GPIO_PIN_STICK_RH           GPIO_Pin_3  // PA.03
-#define ADC_GPIO_POT_L1                 GPIOC
-#define ADC_GPIO_PIN_POT_L1             GPIO_Pin_3  // PC.03
-#define ADC_GPIO_POT_R1                 GPIOA
-#define ADC_GPIO_PIN_POT_R1             GPIO_Pin_5  // PA.05
-#define ADC_GPIO_POT_L2                 GPIOB
-#define ADC_GPIO_PIN_POT_L2             GPIO_Pin_1  // PB.01
-#define ADC_GPIO_POT_R2                 GPIOB
-#define ADC_GPIO_PIN_POT_R2             GPIO_Pin_0  // PB.00
-#define ADC_GPIO_SWITCHES_L3            GPIOC
-#define ADC_GPIO_SWITCHES_PIN_L3        GPIO_Pin_1  // PC.01
-#define ADC_GPIO_SWITCHES_R3            GPIOA
-#define ADC_GPIO_SWITCHES_PIN_R3        GPIO_Pin_7  // PA.07
-#define ADC_GPIO_SWITCHES_L4            GPIOC
-#define ADC_GPIO_SWITCHES_PIN_L4        GPIO_Pin_0  // PC.00
-#define ADC_GPIO_SWITCHES_R4            GPIOA
-#define ADC_GPIO_SWITCHES_PIN_R4        GPIO_Pin_6  // PA.06
-#define ADC_GPIO_BATT                   GPIOC
-#define ADC_GPIO_PIN_BATT               GPIO_Pin_4  // PC.04
+#define ADC_RCC_AHB1Periph              (RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_DMA2)
+#define ADC_RCC_APB2Periph              (RCC_APB2Periph_SPI4 | RCC_APB2Periph_ADC3)
+#define ADC_SPI                         SPI4
+#define ADC_GPIO_AF                     GPIO_AF_SPI4
+#define ADC_SPI_GPIO                    GPIOE
+#define ADC_SPI_PIN_SCK                 GPIO_Pin_2
+#define ADC_SPI_PIN_CS	                GPIO_Pin_4
+#define ADC_SPI_PIN_MOSI                GPIO_Pin_6
+#define ADC_SPI_PIN_MISO                GPIO_Pin_5
+#define ADC_SPI_PinSource_SCK           GPIO_PinSource2
+#define ADC_SPI_PinSource_MISO		GPIO_PinSource5
+#define ADC_SPI_PinSource_MOSI		GPIO_PinSource6
+#define ADC_GPIO_PIN_MOUSE1             GPIO_Pin_8 // PF.8 ADC3_IN6 J5 MOUSE_X
+#define ADC_GPIO_PIN_MOUSE2             GPIO_Pin_9 // PF.9 ADC3_IN7 J6 MOUSE_Y
+#define ADC_IN_MOUSE1                   6
+#define ADC_IN_MOUSE2                   7
 
 // Power
 #define PWR_RCC_AHB1Periph_GPIO         RCC_AHB1Periph_GPIOJ

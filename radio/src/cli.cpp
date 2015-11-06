@@ -44,8 +44,12 @@ OS_TID cliTaskId;
 TaskStack<CLI_STACK_SIZE> cliStack;
 Fifo<256> cliRxFifo;
 uint8_t cliTracesEnabled = true;
+// char cliLastLine[CLI_COMMAND_MAX_LEN+1];
 
 typedef int (* CliFunction) (const char ** args);
+int cliExecLine(char * line);
+int cliExecCommand(const char ** argv);
+int cliHelp(const char ** argv);
 
 struct CliCommand
 {
@@ -326,7 +330,27 @@ int cliDebugVars(const char ** argv)
   return 0;
 }
 
-int cliHelp(const char ** argv);
+int cliRepeat(const char ** argv)
+{
+  int interval = 0;
+  int counter = 0;
+  if (toInt(argv, 1, &interval) > 0 && argv[2]) {
+    interval *= 50;
+    counter = interval;
+    uint8_t c;
+    while (!cliRxFifo.pop(c) || !(c == '\r' || c == '\n' || c == ' ')) {
+      CoTickDelay(10); // 20ms
+      if (++counter >= interval) {
+        cliExecCommand(&argv[2]);
+        counter = 0;
+      }
+    }
+  }
+  else {
+    serialPrint("%s: Invalid arguments", argv[0]);
+  }
+  return 0;
+}
 
 const CliCommand cliCommands[] = {
   { "beep", cliBeep, "[<frequency>] [<duration>]" },
@@ -342,6 +366,7 @@ const CliCommand cliCommands[] = {
 #endif
   { "help", cliHelp, "[<command>]" },
   { "debugvars", cliDebugVars, "" },
+  { "repeat", cliRepeat, "<interval> <command>" },
   { NULL, NULL, NULL }  /* sentinel */
 };
 
@@ -423,6 +448,7 @@ void cliTask(void * pdata)
       // enter
       serialCrlf();
       line[pos] = '\0';
+      // strcpy(cliLastLine, line);
       cliExecLine(line);
       pos = 0;
       cliPrompt();
