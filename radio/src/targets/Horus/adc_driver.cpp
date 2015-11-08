@@ -140,8 +140,8 @@ void adcInit()
 	
   // Enable the DMA channel here, DMA2 stream 1, channel 2
   DMA2_Stream1->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
-  DMA2_Stream1->PAR = (uint32_t) &ADC3->DR;
-  DMA2_Stream1->M0AR = (uint32_t) &adcValues[MOUSE1];
+  DMA2_Stream1->PAR = CONVERT_PTR_UINT(&ADC3->DR);
+  DMA2_Stream1->M0AR = CONVERT_PTR_UINT(&adcValues[MOUSE1]);
   DMA2_Stream1->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 }
 
@@ -184,7 +184,7 @@ void adcRead()
   DMA2_Stream1->CR &= ~DMA_SxCR_EN;		// Disable DMA
   ADC3->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR );
   DMA2->LIFCR = DMA_LIFCR_CTCIF1 | DMA_LIFCR_CHTIF1 |DMA_LIFCR_CTEIF1 | DMA_LIFCR_CDMEIF1 | DMA_LIFCR_CFEIF1; // Write ones to clear bits
-  DMA2_Stream1->M0AR = (uint32_t) &adcValues[MOUSE1];
+  DMA2_Stream1->M0AR = CONVERT_PTR_UINT(&adcValues[MOUSE1]);
   DMA2_Stream1->NDTR = 2;
   DMA2_Stream1->CR |= DMA_SxCR_EN;		// Enable DMA
   ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART;
