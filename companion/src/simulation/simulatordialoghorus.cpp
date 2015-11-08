@@ -11,23 +11,23 @@ SimulatorDialogHorus::SimulatorDialogHorus(QWidget * parent, SimulatorInterface 
   QPolygon polygon;
 
   lcdWidth = 480;
-  lcdHeight = 270;
+  lcdHeight = 272;
   lcdDepth = 16;
 
   initUi<Ui::SimulatorDialogHorus>(ui);
 
   polygon.setPoints(6, 68, 83, 28, 45, 51, 32, 83, 32, 105, 45, 68, 83);
-  ui->rightbuttons->addArea(polygon, Qt::Key_Up, "9xcursup.png");
+  ui->rightbuttons->addArea(polygon, Qt::Key_Up, NULL);
   polygon.setPoints(6, 74, 90, 114, 51, 127, 80, 127, 106, 114, 130, 74, 90);
-  ui->rightbuttons->addArea(polygon, Qt::Key_Right, "9xcursmin.png");
+  ui->rightbuttons->addArea(polygon, Qt::Key_Right, NULL);
   polygon.setPoints(6, 68, 98, 28, 137, 51, 151, 83, 151, 105, 137, 68, 98);
-  ui->rightbuttons->addArea(polygon, Qt::Key_Down, "9xcursdown.png");
+  ui->rightbuttons->addArea(polygon, Qt::Key_Down, NULL);
   polygon.setPoints(6, 80, 90, 20, 51, 7, 80, 7, 106, 20, 130, 80, 90);
-  ui->rightbuttons->addArea(polygon, Qt::Key_Left, "9xcursplus.png");
-  ui->rightbuttons->addArea(5, 148, 39, 182, Qt::Key_Print, "9xcursphoto.png");
+  ui->rightbuttons->addArea(polygon, Qt::Key_Left, NULL);
+  ui->rightbuttons->addArea(5, 148, 39, 182, Qt::Key_Print, NULL);
 
-  ui->leftbuttons->addArea(25, 60, 71, 81, Qt::Key_PageUp, "9xmenumenu.png");
-  ui->leftbuttons->addArea(25, 117, 71, 139, Qt::Key_Escape, "9xmenuexit.png");
+  ui->leftbuttons->addArea(25, 60, 71, 81, Qt::Key_PageUp, NULL);
+  ui->leftbuttons->addArea(25, 117, 71, 139, Qt::Key_Escape, NULL);
 
   // install simulator TRACE hook
   simulator->installTraceHook(traceCb);

@@ -336,7 +336,7 @@ void SimulatorDialog::initUi(T * ui)
 
     QSlider * slider = new QSlider(tabWidget);
     slider->setEnabled(false);
-    slider->setMaximumSize(QSize(16777215, 18));
+    /*slider->setMaximumSize(QSize(16777215, 18));
     slider->setStyleSheet(QString::fromUtf8("QSlider::sub-page:horizontal:disabled {\n"
     "border-color: #999;\n"
     "}\n"
@@ -349,7 +349,7 @@ void SimulatorDialog::initUi(T * ui)
     "background: #0000CC;\n"
     "border: 1px solid #aaa;\n"
     "border-radius: 4px;\n"
-    "}"));
+    "}")); */
     slider->setMinimum(-1024);
     slider->setMaximum(1024);
     slider->setPageStep(128);

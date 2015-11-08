@@ -1289,7 +1289,7 @@ QPushButton:checked {
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/9xdt.png)</string>
+            <string notr="true">background:url(:/images/simulator/9X/9xdt.png)</string>
            </property>
           </widget>
          </item>
@@ -1308,7 +1308,7 @@ QPushButton:checked {
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/9xdl.png)</string>
+            <string notr="true">background:url(:/images/simulator/9X/9xdl.png)</string>
            </property>
           </widget>
          </item>
@@ -1327,7 +1327,7 @@ QPushButton:checked {
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/9xmenu.png)</string>
+            <string notr="true">background:url(:/images/simulator/9X/9xmenu.png)</string>
            </property>
           </widget>
          </item>
@@ -1362,7 +1362,7 @@ QPushButton:checked {
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/9xdb.png)</string>
+            <string notr="true">background:url(:/images/simulator/9X/9xdb.png)</string>
            </property>
           </widget>
          </item>
@@ -1381,7 +1381,7 @@ QPushButton:checked {
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/9xdr.png)</string>
+            <string notr="true">background:url(:/images/simulator/9X/9xdr.png)</string>
            </property>
           </widget>
          </item>
@@ -1403,7 +1403,7 @@ QPushButton:checked {
             <bool>true</bool>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/9xcurs.png);</string>
+            <string notr="true">background:url(:/images/simulator/9X/9xcurs.png);</string>
            </property>
           </widget>
          </item>

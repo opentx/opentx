@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>739</width>
-    <height>740</height>
+    <width>808</width>
+    <height>738</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,7 +18,7 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>739</width>
+    <width>808</width>
     <height>16777215</height>
    </size>
   </property>
@@ -55,7 +55,7 @@
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>570</width>
+       <width>700</width>
        <height>5</height>
       </size>
      </property>
@@ -83,17 +83,129 @@
      </property>
      <widget class="QWidget" name="simu">
       <attribute name="title">
-       <string>Forus Simulator</string>
+       <string>Horus Simulator</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+       <property name="horizontalSpacing">
+        <number>0</number>
+       </property>
        <item row="0" column="1">
-        <layout class="QGridLayout" name="gridLayout_3">
+        <layout class="QGridLayout" name="gridLayout_3" columnminimumwidth="147,480,147">
          <property name="sizeConstraint">
-          <enum>QLayout::SetMinimumSize</enum>
+          <enum>QLayout::SetFixedSize</enum>
          </property>
          <property name="spacing">
           <number>0</number>
          </property>
+         <item row="0" column="0" rowspan="3">
+          <widget class="ButtonsWidget" name="leftbuttons" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>147</width>
+             <height>292</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>147</width>
+             <height>292</height>
+            </size>
+           </property>
+           <property name="mouseTracking">
+            <bool>true</bool>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:url(:/images/simulator/Horus/left.png);</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2" rowspan="3">
+          <widget class="ButtonsWidget" name="rightbuttons" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>147</width>
+             <height>292</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>147</width>
+             <height>292</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:url(:/images/simulator/Horus/right.png)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QWidget" name="top" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>480</width>
+             <height>10</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>480</width>
+             <height>10</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:url(:/images/simulator/Horus/top.png)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QWidget" name="bottom" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>480</width>
+             <height>10</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>480</width>
+             <height>10</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:url(:/images/simulator/Horus/bottom.png)</string>
+           </property>
+          </widget>
+         </item>
          <item row="1" column="1">
           <widget class="LcdWidget" name="lcd" native="true">
            <property name="sizePolicy">
@@ -110,47 +222,6 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0" rowspan="3">
-          <widget class="ButtonsWidget" name="leftbuttons" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>89</width>
-             <height>186</height>
-            </size>
-           </property>
-           <property name="mouseTracking">
-            <bool>true</bool>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background:url(:/images/9xmenu.png);</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2" rowspan="3">
-          <widget class="ButtonsWidget" name="rightbuttons" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>128</width>
-             <height>186</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background:url(:/images/9xcurs.png)</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </item>
        <item row="0" column="0">
@@ -160,8 +231,8 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>40</width>
-           <height>20</height>
+           <width>20</width>
+           <height>292</height>
           </size>
          </property>
         </spacer>
@@ -173,28 +244,11 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>40</width>
-           <height>20</height>
+           <width>20</width>
+           <height>292</height>
           </size>
          </property>
         </spacer>
-       </item>
-       <item row="1" column="1">
-        <layout class="QHBoxLayout" name="horizontalLayout_8">
-         <item>
-          <spacer name="horizontalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>438</width>
-             <height>6</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
        </item>
       </layout>
      </widget>

@@ -16,17 +16,17 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, SimulatorInterface *simul
   initUi<Ui::SimulatorDialog9X>(ui);
 
   polygon.setPoints(6, 68, 83, 28, 45, 51, 32, 83, 32, 105, 45, 68, 83);
-  ui->leftbuttons->addArea(polygon, Qt::Key_Up, "9xcursup.png");
+  ui->leftbuttons->addArea(polygon, Qt::Key_Up, "9X/9xcursup.png");
   polygon.setPoints(6, 74, 90, 114, 51, 127, 80, 127, 106, 114, 130, 74, 90);
-  ui->leftbuttons->addArea(polygon, Qt::Key_Right, "9xcursmin.png");
+  ui->leftbuttons->addArea(polygon, Qt::Key_Right, "9X/9xcursmin.png");
   polygon.setPoints(6, 68, 98, 28, 137, 51, 151, 83, 151, 105, 137, 68, 98);
-  ui->leftbuttons->addArea(polygon, Qt::Key_Down, "9xcursdown.png");
+  ui->leftbuttons->addArea(polygon, Qt::Key_Down, "9X/9xcursdown.png");
   polygon.setPoints(6, 80, 90, 20, 51, 7, 80, 7, 106, 20, 130, 80, 90);
-  ui->leftbuttons->addArea(polygon, Qt::Key_Left, "9xcursplus.png");
-  ui->leftbuttons->addArea(5, 148, 39, 182, Qt::Key_Print, "9xcursphoto.png");
+  ui->leftbuttons->addArea(polygon, Qt::Key_Left, "9X/9xcursplus.png");
+  ui->leftbuttons->addArea(5, 148, 39, 182, Qt::Key_Print, "9X/9xcursphoto.png");
 
-  ui->rightbuttons->addArea(25, 60, 71, 81, Qt::Key_Enter, "9xmenumenu.png");
-  ui->rightbuttons->addArea(25, 117, 71, 139, Qt::Key_Escape, "9xmenuexit.png");
+  ui->rightbuttons->addArea(25, 60, 71, 81, Qt::Key_Enter, "9X/9xmenumenu.png");
+  ui->rightbuttons->addArea(25, 117, 71, 139, Qt::Key_Escape, "9X/9xmenuexit.png");
 
   // install simulator TRACE hook
   simulator->installTraceHook(traceCb);
@@ -107,10 +107,10 @@ void SimulatorDialog9X::setLightOn(bool enable)
     list << "bl" << "gr" << "rd" << "or" << "yl";
     bg = QString("-") + list[backLight];
   }
-  ui->top->setStyleSheet(QString("background:url(:/images/9xdt%1.png);").arg(bg));
-  ui->bottom->setStyleSheet(QString("background:url(:/images/9xdb%1.png);").arg(bg));
-  ui->left->setStyleSheet(QString("background:url(:/images/9xdl%1.png);").arg(bg));
-  ui->right->setStyleSheet(QString("background:url(:/images/9xdr%1.png);").arg(bg));
+  ui->top->setStyleSheet(QString("background:url(:/images/simulator/9X/9xdt%1.png);").arg(bg));
+  ui->bottom->setStyleSheet(QString("background:url(:/images/simulator/9X/9xdb%1.png);").arg(bg));
+  ui->left->setStyleSheet(QString("background:url(:/images/simulator/9X/9xdl%1.png);").arg(bg));
+  ui->right->setStyleSheet(QString("background:url(:/images/simulator/9X/9xdr%1.png);").arg(bg));
 }
 
 void SimulatorDialog9X::updateBeepButton()

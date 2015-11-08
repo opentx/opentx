@@ -15,18 +15,18 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterf
   initUi<Ui::SimulatorDialogTaranis>(ui);
 
   polygon.setPoints(6, 20, 59, 27, 50, 45, 52, 56, 59, 50, 71, 26, 72);
-  ui->leftbuttons->addArea(polygon, Qt::Key_PageUp, "x9l1.png");
+  ui->leftbuttons->addArea(polygon, Qt::Key_PageUp, "Taranis/x9l1.png");
   polygon.setPoints(6, 23, 107, 30, 99, 46, 100, 55, 106, 47, 117, 28, 117);
-  ui->leftbuttons->addArea(polygon, Qt::Key_PageDown, "x9l2.png");
+  ui->leftbuttons->addArea(polygon, Qt::Key_PageDown, "Taranis/x9l2.png");
   polygon.setPoints(6, 24, 154, 32, 144, 46, 146, 57, 156, 46, 167, 29, 166);
-  ui->leftbuttons->addArea(polygon, Qt::Key_Escape, "x9l3.png");
-  ui->leftbuttons->addArea(90, 177, 118, 197, Qt::Key_Print, "x9l4.png");
+  ui->leftbuttons->addArea(polygon, Qt::Key_Escape, "Taranis/x9l3.png");
+  ui->leftbuttons->addArea(90, 177, 118, 197, Qt::Key_Print, "Taranis/x9l4.png");
   polygon.setPoints(6, 64, 60, 71, 50, 90, 50, 100, 60, 90, 73, 72, 73);
-  ui->rightbuttons->addArea(polygon, Qt::Key_Plus, "x9r1.png");
+  ui->rightbuttons->addArea(polygon, Qt::Key_Plus, "Taranis/x9r1.png");
   polygon.setPoints(6, 63, 109, 73, 100, 88, 100, 98, 109, 88, 119, 72, 119);
-  ui->rightbuttons->addArea(polygon, Qt::Key_Minus, "x9r2.png");
+  ui->rightbuttons->addArea(polygon, Qt::Key_Minus, "Taranis/x9r2.png");
   polygon.setPoints(6, 63, 155, 72, 146, 90, 146, 98, 155, 88, 166, 72, 166);
-  ui->rightbuttons->addArea(polygon, Qt::Key_Enter, "x9r3.png");
+  ui->rightbuttons->addArea(polygon, Qt::Key_Enter, "Taranis/x9r3.png");
 
   // install simulator TRACE hook
   simulator->installTraceHook(traceCb);

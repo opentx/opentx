@@ -73,7 +73,9 @@ class ButtonsWidget : public QWidget
       
     void setBitmap(const char * bitmap)
     {
-      QWidget::setStyleSheet(QString("background:url(:/images/%1);").arg(bitmap));
+      if (bitmap) {
+        QWidget::setStyleSheet(QString("background:url(:/images/simulator/%1);").arg(bitmap));
+      }
     }
     
     virtual void mousePressEvent(QMouseEvent * event)
