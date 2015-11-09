@@ -345,9 +345,11 @@ bool menuMainView(evt_t event)
       break;
   }
 
+  // 23ms if 24bits per pixel (with transparency) 5/6/5/8
+  // 6ms if 16bits per pixel 5/6/5 no DMA
   TIME_MEASURE_START(backgroundbitmap);
   lcdDrawBitmap(0, 0, LBM_MAINVIEW_BACKGROUND);
-  TIME_MEASURE_STOP(backgroundbitmap); // 23ms
+  TIME_MEASURE_STOP(backgroundbitmap);
 
   // Header
   lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
