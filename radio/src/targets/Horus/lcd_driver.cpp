@@ -349,9 +349,6 @@ void LCD_ControlLight(uint16_t dutyCycle)
   */
 void LCD_Init(void)
 {
-  RCC_AHB1PeriphClockCmd(LCD_RCC_AHB1Periph, ENABLE);
-  RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph, ENABLE);
-
   /* Reset the LCD --------------------------------------------------------*/
   LCD_NRSTConfig();
   lcd_reset();
@@ -387,13 +384,6 @@ void LCD_SetLayer(uint32_t Layerx)
   }
 }
 
-void LCD_Clear(uint16_t Color)
-{
-  for (uint16_t * index = (uint16_t *)CurrentFrameBuffer; index < (uint16_t *)(CurrentFrameBuffer+DISPLAY_BUFFER_SIZE); index++) {
-    *index = Color;
-  }
-}
-
 /**
   * @brief  Configure the transparency.
   * @param  transparency: specifies the transparency,
@@ -422,12 +412,12 @@ void lcdInit(void)
 
   /* Set Background layer */
   LCD_SetLayer(LCD_FIRST_LAYER);
-  LCD_Clear(0);
+  // lcdClear();
   LCD_SetTransparency(0);
   
   /* Set Foreground layer */
   LCD_SetLayer(LCD_SECOND_LAYER);
-  LCD_Clear(0);
+  lcdClear();
   LCD_SetTransparency(255);
 }
 

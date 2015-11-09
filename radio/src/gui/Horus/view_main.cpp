@@ -345,7 +345,9 @@ bool menuMainView(evt_t event)
       break;
   }
 
+  TIME_MEASURE_START(backgroundbitmap);
   lcdDrawBitmap(0, 0, LBM_MAINVIEW_BACKGROUND);
+  TIME_MEASURE_STOP(backgroundbitmap); // 23ms
 
   // Header
   lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
@@ -378,7 +380,10 @@ bool menuMainView(evt_t event)
   drawTrims(mode);
 
   // Model panel
+  TIME_MEASURE_START(filledRect);
   lcdDrawFilledRect(MODELPANEL_LEFT, MODELPANEL_TOP, MODELPANEL_WIDTH, MODELPANEL_HEIGHT, SOLID, TEXT_BGCOLOR | OPACITY(5));
+  TIME_MEASURE_STOP(filledRect); // 9ms !
+
   lcdDrawBitmapPattern(MODELPANEL_LEFT+6, MODELPANEL_TOP+4, LBM_MODEL_ICON, TITLE_BGCOLOR);
   lcdDrawTextWithLen(MODELPANEL_LEFT+45, MODELPANEL_TOP+10, g_model.header.name, LEN_MODEL_NAME, ZCHAR|SMLSIZE);
   lcdDrawSolidHorizontalLine(MODELPANEL_LEFT+39, MODELPANEL_TOP+27, MODELPANEL_WIDTH-48, TITLE_BGCOLOR);

@@ -58,27 +58,22 @@ void watchdogInit(unsigned int duration)
 // Start TIMER7 at 2000000Hz
 void init2MhzTimer()
 {
-  // Now for timer 7
-  RCC->APB1ENR |= RCC_APB1ENR_TIM7EN ;            // Enable clock
-
-  TIM7->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1 ;       // 0.5 uS, 2 MHz
-  TIM7->ARR = 65535;
-  TIM7->CR2 = 0;
-  TIM7->CR1 = TIM_CR1_CEN;
+  TIMER_2MHz_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1 ;       // 0.5 uS, 2 MHz
+  TIMER_2MHz_TIMER->ARR = 65535;
+  TIMER_2MHz_TIMER->CR2 = 0;
+  TIMER_2MHz_TIMER->CR1 = TIM_CR1_CEN;
 }
 
 // Starts TIMER at 200Hz, 5mS period
 void init5msTimer()
 {
-  // Timer14
-  RCC->APB1ENR |= RCC_APB1ENR_TIM14EN ;           // Enable clock
-  TIM14->ARR = 999 ;     // 5mS
-  TIM14->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1 ;                // 1uS from 30MHz
-  TIM14->CCER = 0 ;
-  TIM14->CCMR1 = 0 ;
-  TIM14->EGR = 0 ;
-  TIM14->CR1 = 5 ;
-  TIM14->DIER |= 1 ;
+  INTERRUPT_5MS_TIMER->ARR = 999 ;     // 5mS
+  INTERRUPT_5MS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1 ;                // 1uS from 30MHz
+  INTERRUPT_5MS_TIMER->CCER = 0 ;
+  INTERRUPT_5MS_TIMER->CCMR1 = 0 ;
+  INTERRUPT_5MS_TIMER->EGR = 0 ;
+  INTERRUPT_5MS_TIMER->CR1 = 5 ;
+  INTERRUPT_5MS_TIMER->DIER |= 1 ;
   NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn) ;
   NVIC_SetPriority(TIM8_TRG_COM_TIM14_IRQn, 7);
 }
@@ -121,6 +116,7 @@ extern "C" void TIM8_TRG_COM_TIM14_IRQHandler()
   interrupt5ms() ;
 }
 
+#if 0
 void pinCheck(GPIO_TypeDef * gpio, uint32_t pin, uint32_t RCC_AHB1Periph)
 {
   GPIO_InitTypeDef GPIO_InitStruct;
@@ -141,15 +137,19 @@ void pinCheck(GPIO_TypeDef * gpio, uint32_t pin, uint32_t RCC_AHB1Periph)
     delay_01us(10);
   }
 }
+#endif
 
 void boardInit()
 {
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | LCD_RCC_AHB1Periph | KEYS_RCC_AHB1Periph_GPIO | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph, ENABLE);
+  RCC_APB1PeriphClockCmd(INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | I2C_RCC_APB1Periph | SERIAL_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph, ENABLE);
+  RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph, ENABLE);
+
   pwrInit();
   ledInit();
   delaysInit();
 
   ledRed();
-
 
   if (0) {
    // pinCheck(SERIAL_GPIO, SERIAL_GPIO_PIN_TX, SERIAL_RCC_AHB1Periph_GPIO);

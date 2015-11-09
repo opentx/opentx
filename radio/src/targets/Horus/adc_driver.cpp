@@ -121,9 +121,6 @@ static void ADS7952_Init()
 
 void adcInit()
 {
-  RCC_AHB1PeriphClockCmd(ADC_RCC_AHB1Periph, ENABLE);
-  RCC_APB2PeriphClockCmd(ADC_RCC_APB2Periph, ENABLE);
-
   ADS7952_Init();
 
   configure_pins( ADC_GPIO_PIN_MOUSE1 | ADC_GPIO_PIN_MOUSE2, PIN_ANALOG | PIN_PORTF );

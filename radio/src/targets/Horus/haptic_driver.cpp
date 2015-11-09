@@ -51,9 +51,6 @@ void hapticOn(uint32_t pwmPercent)
 
 void hapticInit(void)
 {
-  RCC_AHB1PeriphClockCmd(HAPTIC_RCC_AHB1Periph_GPIO, ENABLE);
-  RCC_APB2PeriphClockCmd(HAPTIC_RCC_APB2Periph_TIMER, ENABLE);
-
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = HAPTIC_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;

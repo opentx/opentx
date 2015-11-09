@@ -108,19 +108,19 @@
 #define ADC_IN_MOUSE2                   7
 
 // Power
-#define PWR_RCC_AHB1Periph_GPIO         RCC_AHB1Periph_GPIOJ
+#define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOJ
 #define PWR_GPIO                        GPIOJ
 #define PWR_GPIO_PIN_ON                 GPIO_Pin_0  // PJ.00
 #define PWR_GPIO_PIN_SWITCH             GPIO_Pin_1  // PJ.01
 
 // Led
-#define LED_RCC_AHB1Periph_GPIO         RCC_AHB1Periph_GPIOI
+#define LED_RCC_AHB1Periph              RCC_AHB1Periph_GPIOI
 #define LED_GPIO                        GPIOI
 #define LED_GPIO_PIN                    GPIO_Pin_5  // PI.05
 
 // Serial Port (DEBUG)
-#define SERIAL_RCC_AHB1Periph_GPIO      RCC_AHB1Periph_GPIOB
-#define SERIAL_RCC_APB1Periph_USART     RCC_APB1Periph_USART3
+#define SERIAL_RCC_AHB1Periph           RCC_AHB1Periph_GPIOB
+#define SERIAL_RCC_APB1Periph           RCC_APB1Periph_USART3
 #define SERIAL_GPIO                     GPIOB
 #define SERIAL_GPIO_PIN_TX              GPIO_Pin_10 // PB.10
 #define SERIAL_GPIO_PIN_RX              GPIO_Pin_11 // PB.11
@@ -132,8 +132,8 @@
 #define SERIAL_USART_IRQn               USART3_IRQn
 
 // Telemetry
-#define TELEMETRY_RCC_AHB1Periph_GPIO   RCC_AHB1Periph_GPIOD
-#define TELEMETRY_RCC_APB1Periph_USART  RCC_APB1Periph_USART2
+#define TELEMETRY_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
+#define TELEMETRY_RCC_APB1Periph        RCC_APB1Periph_USART2
 #define TELEMETRY_GPIO_DIR              GPIOD
 #define TELEMETRY_GPIO_PIN_DIR          GPIO_Pin_4  // PD.04
 #define TELEMETRY_GPIO                  GPIOD
@@ -189,8 +189,8 @@
 // Audio
 
 // I2C Bus: CAT5137
-#define I2C_RCC_AHB1Periph_GPIO         RCC_AHB1Periph_GPIOB
-#define I2C_RCC_APB1Periph_I2C          RCC_APB1Periph_I2C1
+#define I2C_RCC_AHB1Periph              RCC_AHB1Periph_GPIOB
+#define I2C_RCC_APB1Periph              RCC_APB1Periph_I2C1
 #define I2C                             I2C1
 #define I2C_GPIO                        GPIOB
 #define I2C_GPIO_PIN_SCL                GPIO_Pin_8  // PB.08
@@ -202,10 +202,10 @@
 #define I2C_ADDRESS_CAT5137             0x5C
 
 // Haptic
-#define HAPTIC_RCC_AHB1Periph_GPIO      RCC_AHB1Periph_GPIOA
+#define HAPTIC_RCC_AHB1Periph           RCC_AHB1Periph_GPIOA
+#define HAPTIC_RCC_APB2Periph           RCC_APB2ENR_TIM11EN
 #define HAPTIC_GPIO                     GPIOA
 #define HAPTIC_GPIO_PIN                 GPIO_Pin_2
-#define HAPTIC_RCC_APB2Periph_TIMER     RCC_APB2ENR_TIM11EN
 #define HAPTIC_GPIO_TIMER               TIM11
 #define HAPTIC_GPIO_AF                  GPIO_AF_TIM11
 #define HAPTIC_GPIO_PinSource           GPIO_PinSource2
