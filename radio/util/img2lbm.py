@@ -51,7 +51,8 @@ elif what == "5/6/5/8":
         for x in range(width):
             pixel = image.pixel(x, y)
             val = ((Qt.qRed(pixel) >> 3) << 11) + ((Qt.qGreen(pixel) >> 2) << 5) + ((Qt.qBlue(pixel) >> 3) << 0)
-            f.write("%d,%d,%d," % (val%256, val/256, Qt.qAlpha(pixel) >> 4))
+            # f.write("%d,%d,%d," % (val%256, val/256, Qt.qAlpha(pixel) >> 4))
+            f.write("%d,%d," % (val%256, val/256))
         f.write("\n")
 elif what == "4bits":
     colors = []

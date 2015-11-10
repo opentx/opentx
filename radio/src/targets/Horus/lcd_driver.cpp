@@ -424,13 +424,13 @@ void lcdInit(void)
 void lcdDrawSolidFilledRectDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
   uint32_t addr = CurrentFrameBuffer + 2*(LCD_W*y + x);
-  uint16_t red = (0xF800 & color) >> 11;
-  uint16_t blue = 0x001F & color;
-  uint16_t green = (0x07E0 & color) >> 5;
+  uint8_t red = (0xF800 & color) >> 11;
+  uint8_t blue = 0x001F & color;
+  uint8_t green = (0x07E0 & color) >> 5;
 
-  /* configure DMA2D */
-  DMA2D_InitTypeDef DMA2D_InitStruct;
   DMA2D_DeInit();
+
+  DMA2D_InitTypeDef DMA2D_InitStruct;
   DMA2D_InitStruct.DMA2D_Mode = DMA2D_R2M;
   DMA2D_InitStruct.DMA2D_CMode = DMA2D_RGB565;
   DMA2D_InitStruct.DMA2D_OutputGreen = green;
@@ -450,18 +450,84 @@ void lcdDrawSolidFilledRectDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, u
   while (DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET);
 }
 
+void lcdDrawBitmapDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint8_t * bitmap)
+{
+  uint32_t addr = CurrentFrameBuffer + 2*(LCD_W*y + x);
+
+  DMA2D_DeInit();
+
+  DMA2D_InitTypeDef DMA2D_InitStruct;
+  DMA2D_InitStruct.DMA2D_Mode = DMA2D_M2M;
+  DMA2D_InitStruct.DMA2D_CMode = DMA2D_RGB565;
+  DMA2D_InitStruct.DMA2D_OutputMemoryAdd = addr;
+  DMA2D_InitStruct.DMA2D_OutputGreen = 0;
+  DMA2D_InitStruct.DMA2D_OutputBlue = 0;
+  DMA2D_InitStruct.DMA2D_OutputRed = 0;
+  DMA2D_InitStruct.DMA2D_OutputAlpha = 0;
+  DMA2D_InitStruct.DMA2D_OutputOffset = (LCD_W - w);
+  DMA2D_InitStruct.DMA2D_NumberOfLine = h;
+  DMA2D_InitStruct.DMA2D_PixelPerLine = w;
+  DMA2D_Init(&DMA2D_InitStruct);
+
+  DMA2D_FG_InitTypeDef DMA2D_FG_InitStruct;
+  DMA2D_FG_StructInit(&DMA2D_FG_InitStruct);
+  DMA2D_FG_InitStruct.DMA2D_FGMA = CONVERT_PTR_UINT(bitmap);
+  DMA2D_FG_InitStruct.DMA2D_FGO = 0;
+  DMA2D_FG_InitStruct.DMA2D_FGCM = CM_RGB565;
+  DMA2D_FG_InitStruct.DMA2D_FGPFC_ALPHA_MODE = NO_MODIF_ALPHA_VALUE;
+  DMA2D_FG_InitStruct.DMA2D_FGPFC_ALPHA_VALUE = 0;
+  DMA2D_FGConfig(&DMA2D_FG_InitStruct);
+
+  /* Start Transfer */
+  DMA2D_StartTransfer();
+
+  /* Wait for CTC Flag activation */
+  while (DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET);
+}
+
+void DMAcopy(void * src, void * dest, int len)
+{
+  DMA2D_DeInit();
+
+    DMA2D_InitTypeDef DMA2D_InitStruct;
+    DMA2D_InitStruct.DMA2D_Mode = DMA2D_M2M;
+    DMA2D_InitStruct.DMA2D_CMode = DMA2D_RGB565;
+    DMA2D_InitStruct.DMA2D_OutputMemoryAdd = CONVERT_PTR_UINT(dest);
+    DMA2D_InitStruct.DMA2D_OutputGreen = 0;
+    DMA2D_InitStruct.DMA2D_OutputBlue = 0;
+    DMA2D_InitStruct.DMA2D_OutputRed = 0;
+    DMA2D_InitStruct.DMA2D_OutputAlpha = 0;
+    DMA2D_InitStruct.DMA2D_OutputOffset = 0;
+    DMA2D_InitStruct.DMA2D_NumberOfLine = LCD_H;
+    DMA2D_InitStruct.DMA2D_PixelPerLine = LCD_W;
+    DMA2D_Init(&DMA2D_InitStruct);
+
+    DMA2D_FG_InitTypeDef DMA2D_FG_InitStruct;
+    DMA2D_FG_StructInit(&DMA2D_FG_InitStruct);
+    DMA2D_FG_InitStruct.DMA2D_FGMA = CONVERT_PTR_UINT(src);
+    DMA2D_FG_InitStruct.DMA2D_FGO = 0;
+    DMA2D_FG_InitStruct.DMA2D_FGCM = CM_RGB565;
+    DMA2D_FG_InitStruct.DMA2D_FGPFC_ALPHA_MODE = NO_MODIF_ALPHA_VALUE;
+    DMA2D_FG_InitStruct.DMA2D_FGPFC_ALPHA_VALUE = 0;
+    DMA2D_FGConfig(&DMA2D_FG_InitStruct);
+
+    /* Start Transfer */
+    DMA2D_StartTransfer();
+
+    /* Wait for CTC Flag activation */
+    while (DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET);
+}
+
 void lcdStoreBackupBuffer()
 {
-  for (uint16_t * src = (uint16_t *)CurrentFrameBuffer, * dest = (uint16_t *)LCD_BACKUP_FRAME_BUFFER; src < (uint16_t *)(CurrentFrameBuffer+DISPLAY_BUFFER_SIZE); src++, dest++) {
-    *dest = *src;
-  }
+  uint16_t * src = (uint16_t *)CurrentFrameBuffer, * dest = (uint16_t *)LCD_BACKUP_FRAME_BUFFER;
+  DMAcopy(src, dest, DISPLAY_BUFFER_SIZE);
 }
 
 void lcdRestoreBackupBuffer()
 {
-  for (uint16_t * dest = (uint16_t *)CurrentFrameBuffer, * src = (uint16_t *)LCD_BACKUP_FRAME_BUFFER; dest < (uint16_t *)(CurrentFrameBuffer+DISPLAY_BUFFER_SIZE); src++, dest++) {
-    *dest = *src;
-  }
+  uint16_t * dest = (uint16_t *)CurrentFrameBuffer, * src = (uint16_t *)LCD_BACKUP_FRAME_BUFFER;
+  DMAcopy(src, dest, DISPLAY_BUFFER_SIZE);
 }
 
 void lcdRefresh()

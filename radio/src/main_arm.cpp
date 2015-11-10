@@ -160,7 +160,9 @@ void guiMain(evt_t evt)
         if (popupDisplayed == false) {
           g_menuStack[g_menuStackPtr](EVT_REFRESH);
           lcdDrawBlackOverlay();
+          TIME_MEASURE_START(storebackup);
           lcdStoreBackupBuffer();
+          TIME_MEASURE_STOP(storebackup);
         }
         if (popupDisplayed == false || evt) {
           lcdRestoreBackupBuffer();

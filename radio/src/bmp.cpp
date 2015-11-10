@@ -330,7 +330,7 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
   switch (depth) {
     case 32:
       for (int i=h-1; i>=0; i--) {
-        uint8_t * dst = ((uint8_t *)dest) + i*w*3;
+        uint8_t * dst = ((uint8_t *)dest) + i*w*2;
         for (unsigned int j=0; j<w; j++) {
           uint32_t pixel;
           result = f_read(&bmpFile, (uint8_t *)&pixel, 4, &read);
@@ -340,10 +340,10 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
           }
           *((uint16_t *)dst) = RGB((pixel>>24) & 0xff, (pixel>>16) & 0xff, (pixel>>8) & 0xff);
           dst += 2;
-          *dst++ = 0x0F;
         }
       }
       break;
+
     case 1:
       break;
 
@@ -355,13 +355,13 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
           f_close(&bmpFile);
           return SDCARD_ERROR(result);
         }
-        uint8_t * dst = ((uint8_t *)dest) + i*w*3;
+        uint8_t * dst = ((uint8_t *)dest) + i*w*2;
         for (uint32_t j=0; j<w; j++) {
           uint8_t index = (buf[j/2] >> ((j & 1) ? 0 : 4)) & 0x0F;
           uint8_t val = palette[index];
           *((uint16_t *)dst) = RGB(val, val, val);
           dst += 2;
-          *dst++ = 0x0F;
+          // *dst++ = 0x0F;
         }
       }
       break;

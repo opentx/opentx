@@ -400,14 +400,13 @@ void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlag
 #endif
 
 #if !defined(BOOT)
-void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
+void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att)
 {
   for (scoord_t i=y; i<y+h; i++) {
     if ((att&ROUND) && (i==y || i==y+h-1))
-      lcdDrawHorizontalLine(x+1, i, w-2, pat, att);
+      lcdDrawHorizontalLine(x+1, i, w-2, SOLID, att);
     else
-      lcdDrawHorizontalLine(x, i, w, pat, att);
-    pat = (pat >> 1) + ((pat & 1) << 7);
+      lcdDrawHorizontalLine(x, i, w, SOLID, att);
   }
 }
 #endif
@@ -847,15 +846,23 @@ void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlag
   display_t color = lcdColorTable[COLOR_IDX(att)];
   uint8_t opacity = 0x0F - (att >> 24);
 
-  while (w--) {
-    if (pat & 1) {
+  if (pat == SOLID) {
+    while (w--) {
       lcdDrawTransparentPixel(p, opacity, color);
-      pat = (pat >> 1) | 0x80;
+      p++;
     }
-    else {
-      pat = pat >> 1;
+  }
+  else {
+    while (w--) {
+      if (pat & 1) {
+        lcdDrawTransparentPixel(p, opacity, color);
+        pat = (pat >> 1) | 0x80;
+      }
+      else {
+        pat = pat >> 1;
+      }
+      p++;
     }
-    p++;
   }
 }
 
@@ -883,6 +890,13 @@ void lcdDrawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags 
   }
 }
 
+#if defined(SIMU)
+inline void lcdDrawBitmapDMA(coord_t x, coord_t y, coord_t width, coord_t height, const uint8_t * img)
+{
+  lcdDrawBitmap(x, y, img-4, 0, 0, -1);
+}
+#endif
+
 #if !defined(BOOT)
 void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, coord_t width, int scale)
 {
@@ -898,16 +912,15 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, co
   }
 
   if (scale == 0) {
-    scale = -1;
+    lcdDrawBitmapDMA(x, y, width, height, bmp+4);
   }
-
-  if (scale < 0) {
+  else if (scale < 0) {
     for (coord_t i=0, row=0; row<height; i+=1, row-=scale) {
       display_t * p = &displayBuf[(y+i)*LCD_W + x];
-      const uint8_t * q = bmp + 4 + (row*w + offset) * 3;
+      const uint8_t * q = bmp + 4 + (row*w + offset) * 2;
       for (coord_t col=0; col<width; col-=scale) {
-        lcdDrawTransparentPixel(p, *(q+2), *((uint16_t *)q));
-        p++; q-=3*scale;
+        lcdDrawPixel(p, *((uint16_t *)q));
+        p++; q-=2*scale;
       }
     }
   }
@@ -915,13 +928,13 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, co
     for (coord_t row=0; row<height; row++) {
       for (int i=0; i<scale; i++) {
         display_t * p = &displayBuf[(y+scale*row+i)*LCD_W + x];
-        const uint8_t * q = bmp + 4 + (row*w + offset) * 3;
+        const uint8_t * q = bmp + 4 + (row*w + offset) * 2;
         for (coord_t col=0; col<width; col++) {
           for (int j=0; j<scale; j++) {
-            lcdDrawTransparentPixel(p, *(q+2), *((uint16_t *)q));
+            lcdDrawPixel(p, *((uint16_t *)q));
             p++;
           }
-          q+=3;
+          q+=2;
         }
       }
     }
@@ -931,7 +944,7 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, co
 
 void lcdDrawBlackOverlay()
 {
-  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, SOLID, TEXT_COLOR | (8<<24));
+  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, TEXT_COLOR | (8<<24));
 }
 
 void lcdDrawCircle(int x0, int y0, int radius)

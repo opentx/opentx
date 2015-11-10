@@ -265,7 +265,7 @@ inline void lcdDrawSolidRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFla
   lcdDrawSolidHorizontalLine(x, y+h-1, w, att);
 }
 
-void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att);
+void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att);
 void lcdDrawBlackOverlay();
 void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
 void lcdDrawCircle(int x0, int y0, int radius);

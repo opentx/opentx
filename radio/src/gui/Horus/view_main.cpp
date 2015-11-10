@@ -347,6 +347,7 @@ bool menuMainView(evt_t event)
 
   // 23ms if 24bits per pixel (with transparency) 5/6/5/8
   // 6ms if 16bits per pixel 5/6/5 no DMA
+  // 1.2ms with the DMA
   TIME_MEASURE_START(backgroundbitmap);
   lcdDrawBitmap(0, 0, LBM_MAINVIEW_BACKGROUND);
   TIME_MEASURE_STOP(backgroundbitmap);
@@ -383,7 +384,7 @@ bool menuMainView(evt_t event)
 
   // Model panel
   TIME_MEASURE_START(filledRect);
-  lcdDrawFilledRect(MODELPANEL_LEFT, MODELPANEL_TOP, MODELPANEL_WIDTH, MODELPANEL_HEIGHT, SOLID, TEXT_BGCOLOR | OPACITY(5));
+  lcdDrawFilledRect(MODELPANEL_LEFT, MODELPANEL_TOP, MODELPANEL_WIDTH, MODELPANEL_HEIGHT, TEXT_BGCOLOR | OPACITY(5));
   TIME_MEASURE_STOP(filledRect); // 9ms !
 
   lcdDrawBitmapPattern(MODELPANEL_LEFT+6, MODELPANEL_TOP+4, LBM_MODEL_ICON, TITLE_BGCOLOR);
