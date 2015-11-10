@@ -537,14 +537,45 @@ void evalFunctions()
 #else
           case FUNC_PLAY_SOUND:
           {
+#if defined(AUDIO)
             tmr10ms_t tmr10ms = get_tmr10ms();
             uint8_t repeatParam = CFN_PLAY_REPEAT(cfn);
-            if (!functionsContext.lastFunctionTime[i] || (repeatParam && (signed)(tmr10ms-functionsContext.lastFunctionTime[i])>=1000*repeatParam)) {
+            if (!functionsContext.lastFunctionTime[i] || (repeatParam && (signed)(tmr10ms-functionsContext.lastFunctionTime[i])>=100*repeatParam)) {
               functionsContext.lastFunctionTime[i] = tmr10ms;
               AUDIO_PLAY(AU_FRSKY_FIRST+CFN_PARAM(cfn));
             }
+#else
+            // Instantiate a timer
+            tmr10ms_t tmr10ms = get_tmr10ms();
+
+            // Get the beep type option from the configuration
+            uint8_t beepType = CFN_PARAM(cfn);
+
+            // Get the repeat parameter for beepmodes that allow it
+            uint8_t repeatParam = CFN_PLAY_REPEAT(cfn);
+
+            // Schedule a timer based on the beepType.
+            // The functionsContext is cleared when a function stops being active, so we play a beep and set a lastFunctionTime,
+            // then ignore beeps until lastFunctionTime resets (the function flips off and back on)
+            switch(beepType) {
+            case BUZZER_SOUND_ONCE:
+              if (!functionsContext.lastFunctionTime[i] || (repeatParam && (signed)(tmr10ms-functionsContext.lastFunctionTime[i])>=1000*repeatParam)) {
+                functionsContext.lastFunctionTime[i] = tmr10ms;
+                AUDIO_PLAY(AU_FRSKY_FIRST);
+              }
+              break;
+            case BUZZER_SOUND_CONT:
+              if (!functionsContext.lastFunctionTime[i] || (signed)(tmr10ms-functionsContext.lastFunctionTime[i])>=100) {
+                functionsContext.lastFunctionTime[i] = tmr10ms;
+                AUDIO_PLAY(AU_FRSKY_FIRST);
+              }
+              break;
+            }
+#endif
             break;
           }
+
+
 #endif
 
 #if defined(FRSKY) && defined(VARIO)

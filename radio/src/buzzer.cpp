@@ -36,7 +36,7 @@
 
 #include "opentx.h"
 
-uint8_t g_beepCnt;
+uint8_t g_beepCnt; // The number of heartbeat ticks to buzz for
 uint8_t beepAgain = 0;
 uint8_t beepAgainOrig = 0;
 uint8_t beepOn = false;
@@ -67,4 +67,3 @@ void beep(uint8_t val)
     _beep(pgm_read_byte(beepTab+5*(2+g_eeGeneral.beepLength)+val));
   }
 }
-

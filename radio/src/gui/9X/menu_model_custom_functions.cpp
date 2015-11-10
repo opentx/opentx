@@ -105,6 +105,8 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
       uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
+
+      	// Render the switch id for the function
         case 0:
           putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext->activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
@@ -115,6 +117,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 #endif
           break;
 
+        // Render the first column (function action)
         case 1:
           if (CFN_SWITCH(cfn)) {
             lcd_putsiAtt(MODEL_CUSTOM_FUNC_2ND_COLUMN, y, STR_VFSWFUNC, func, attr);
@@ -135,6 +138,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           }
           break;
 
+        // Render the field right next to the function action (input type for trainer, channel to override for global override, etc)
         case 2:
         {
           int8_t maxParam = NUM_CHNOUT-1;
@@ -172,6 +176,14 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
             break;
           }
 #endif
+#if !defined(AUDIO)
+          else if (func == FUNC_PLAY_SOUND) {
+          	maxParam = 1;
+        	lcd_putsiAtt(lcdNextPos, y, STR_BUZZBEEPS, CFN_PARAM(cfn), attr);
+            if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_PARAM(cfn), maxParam);
+            break;
+          }
+#endif
           else if (attr) {
             REPEAT_LAST_CURSOR_MOVE();
           }
@@ -179,6 +191,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           break;
         }
 
+        // Render the second-to-last option (left of the active checkbox or time setting)
         case 3:
         {
           INCDEC_DECLARE_VARS(eeFlags);
@@ -354,6 +367,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           break;
         }
 
+        // Render the enable/disable checkbox or repeat time parameter
         case 4:
           if (HAS_ENABLE_PARAM(func)) {
             menu_lcd_onoff(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF, y, CFN_ACTIVE(cfn), attr);
@@ -364,17 +378,18 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 #endif
           }
           else if (HAS_REPEAT_PARAM(func)) {
-            if (CFN_PLAY_REPEAT(cfn) == 0) {
+            if (CFN_PLAY_REPEAT(cfn) == 0 && CFN_PARAM(cfn) != BUZZER_SOUND_CONT) {
               lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF+3, y, '-', attr);
             }
+            // Hide the repeat option for continuous sound, it doesn't apply/make sense there
+            else if (CFN_PARAM(cfn) != BUZZER_SOUND_CONT) {
+              lcd_outdezAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr);
+            }
 #if defined(CPUARM)
-            else if (CFN_PLAY_REPEAT(cfn) == CFN_PLAY_REPEAT_NOSTART) {
+            else {
               lcd_putsAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF, y, "!-", attr);
             }
 #endif
-            else {
-              lcd_outdezAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr);
-            }
 #if defined(CPUARM)
             if (active) CFN_PLAY_REPEAT(cfn) = checkIncDec(event, CFN_PLAY_REPEAT(cfn)==CFN_PLAY_REPEAT_NOSTART?-1:CFN_PLAY_REPEAT(cfn), -1, 60/CFN_PLAY_REPEAT_MUL, eeFlags);
 #else
