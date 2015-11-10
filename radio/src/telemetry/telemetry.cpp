@@ -647,14 +647,18 @@ bool TelemetrySensor::isPrecConfigurable() const
   }
 }
 
-uint32_t TelemetrySensor::getPrecMultiplier() const
+int32_t TelemetrySensor::getPrecMultiplier() const
 {
+  /*
+    Important: the return type must be signed, otherwise
+    mathematic operations with a negative telemetry value won't work
+  */
   if (prec == 2) return 1;
   if (prec == 1) return 10;
   return 100;
 }
 
-uint32_t TelemetrySensor::getPrecDivisor() const
+int32_t TelemetrySensor::getPrecDivisor() const
 {
   if (prec == 2) return 100;
   if (prec == 1) return 10;

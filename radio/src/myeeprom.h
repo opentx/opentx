@@ -1317,8 +1317,8 @@ PACK(typedef struct {
   int32_t getValue(int32_t value, uint8_t unit, uint8_t prec) const;
   bool isConfigurable() const;
   bool isPrecConfigurable() const;
-  uint32_t getPrecMultiplier() const;
-  uint32_t getPrecDivisor() const;
+  int32_t getPrecMultiplier() const;
+  int32_t getPrecDivisor() const;
 }) TelemetrySensor;
 #endif
 
