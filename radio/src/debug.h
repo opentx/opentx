@@ -78,8 +78,13 @@ void debugPrintf(const char * format, ...);
 #define TRACE_WARNING_WP(...) debugPrintf(__VA_ARGS__)
 #define TRACE_ERROR(...)      debugPrintf("-E- " __VA_ARGS__)
 
+#if defined(DEBUG) && !defined(SIMU)
 #define TIME_MEASURE_START(id) uint16_t t0 ## id = getTmr2MHz()
 #define TIME_MEASURE_STOP(id)  TRACE("Measure(" # id ") = %.1fus", float((uint16_t)(getTmr2MHz() - t0 ## id))/2)
+#else
+#define TIME_MEASURE_START(id)
+#define TIME_MEASURE_STOP(id)
+#endif
 
 #if defined(DEBUG_TRACE_BUFFER)
 
