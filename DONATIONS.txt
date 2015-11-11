@@ -845,3 +845,5 @@ Robert Nicoll
 Dan Nixon
 Ewald Moehring
 Giovanni Carnesecchi 
+Paul Dumsday
+Tadeusz Adamowski
