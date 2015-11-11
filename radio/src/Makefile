@@ -724,7 +724,7 @@ ifeq ($(PCB), MEGA2560)
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
   EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
-         
+
   ifeq ($(PWRMANAGE), YES)
     CPPDEFS += -DPWRMANAGE
   endif
@@ -743,7 +743,7 @@ ifeq ($(PCB), MEGA2560)
   else
     BUZZER = YES
   endif
-  
+
   ifeq ($(BUZZER), YES)
     CPPDEFS += -DBUZZER
     CPPSRC += buzzer.cpp
@@ -753,7 +753,7 @@ ifeq ($(PCB), MEGA2560)
     CPPDEFS += -DVOICE
     CPPSRC += targets/gruvin9x/somo14d.cpp
   endif
-  
+
   ifeq ($(HAPTIC), YES)
    CPPDEFS += -DHAPTIC
    CPPSRC += haptic.cpp
@@ -1157,7 +1157,7 @@ else ifeq ($(LCD), ERC12864FSF)
   CPPDEFS += -DLCD_ERC12864FSF
 else ifeq ($(LCD), ST7920)
   CPPDEFS += -DLCD_ST7920
-endif   
+endif
 
 ifeq ($(AUTOSWITCH), YES)
   CPPDEFS += -DAUTOSWITCH
@@ -1804,6 +1804,7 @@ clean_list :
 	$(REMOVE) fonts/*.lbm
 	$(REMOVE) fonts/*/*.lbm
 	$(REMOVE) lua_exports.txt lua_exports.inc lua_fields.txt
+	$(REMOVE) translations/*.h
 	$(MAKE) -C targets/taranis/bootloader clean
 
 #### Install
