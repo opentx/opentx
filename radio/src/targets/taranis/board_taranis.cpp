@@ -131,7 +131,11 @@ void boardInit()
   RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph | INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | I2C_RCC_APB1Periph | SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph, ENABLE);
   RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph | EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph, ENABLE);
 
+#if !defined(REV9E)
+  // some REV9E boards need that the pwrInit() is moved a little bit later
   pwrInit();
+#endif
+
   keysInit();
   adcInit();
   delaysInit();
@@ -179,6 +183,7 @@ void boardInit()
       else {
         if (pwr_on != 1) {
           pwr_on = 1;
+          pwrInit();
           backlightInit();
           haptic.play(15, 3, PLAY_NOW);
         }
@@ -191,6 +196,7 @@ void boardInit()
     }
   }
   else {
+    pwrInit();
     backlightInit();
   }
   topLcdInit();
