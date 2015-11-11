@@ -1,3 +1,11 @@
+<h2>Version 2.1.6 / 2015-11-11</h2>
+[Taranis]
+<ul>
+<li>Fix for some X9E units which could not shutdown properly</li>
+<li>Fixed a bug with negative altitudes in the Top bar (<a href=https://github.com/opentx/opentx/issues/3047>#3047</a>)</li>
+</ul>
+
+
 <h2>Version 2.1.5 / 2015-11-05</h2>
 
 Notice: version 2.1.4 was skipped by the OpenTX team to avoid confusion with FrSky's release of OpenTX 2.1.4
