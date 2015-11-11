@@ -320,13 +320,14 @@ int cliDisplay(const char ** argv)
 
 int cliDebugVars(const char ** argv)
 {
+#if defined(PCBHORUS)
   extern unsigned int ioMutexReq, ioMutexRel;
   extern unsigned int sdReadRetries;
 
   serialPrint("ioMutexReq=%d", ioMutexReq);
   serialPrint("ioMutexRel=%d", ioMutexRel);
   serialPrint("sdReadRetries=%d", sdReadRetries);
-
+#endif
   return 0;
 }
 
