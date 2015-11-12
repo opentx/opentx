@@ -560,20 +560,38 @@ int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t
   }
   else if (unit == UNIT_KTS) {
     if (destUnit == UNIT_KMH) {
-      // kts to km/h (1 knot = 1.85200 kilometers per hour)
+      // 1 knot = 1.85200 kilometers per hour
       value = (value * 1852) / 1000;
     }
     else if (destUnit == UNIT_MPH) {
-      // kts to mph (1 knot = 1.15077945 miles per hour)
+      // 1 knot = 1.15077945 miles per hour
       value = (value * 1151) / 1000;
     }
     else if (destUnit == UNIT_METERS_PER_SECOND) {
-      // kts to m/s (1 knot = 0.514444444 meters / second)
-      value = (value * 514) / 1000;
+      // 1 knot = 0.514444444 meters / second (divide with 1.94384449)
+      value = (value * 1000) / 1944;
     }
     else if (destUnit == UNIT_FEET_PER_SECOND) {
-      // kts to f/s  (1 knot = 1.68780986 feet per second)
+      // 1 knot = 1.68780986 feet per second
       value = (value * 1688) / 1000;
+    }
+  }
+  else if (unit == UNIT_KMH) {
+    if (destUnit == UNIT_KTS) {
+      // 1 km/h = 0.539956803 knots (divide with 1.85200)
+      value = (value * 1000) / 1852;
+    }
+    else if (destUnit == UNIT_MPH) {
+      // 1 km/h = 0.621371192 miles per hour (divide with 1.60934400)
+      value = (value * 1000) / 1609;
+    }
+    else if (destUnit == UNIT_METERS_PER_SECOND) {
+      // 1 km/h = 0.277777778 meters / second (or beter division with 3.6)
+      value = (value * 1000) / 3600;
+    }
+    else if (destUnit == UNIT_FEET_PER_SECOND) {
+      // (1 km/h = 0.911344415 feet per second
+      value = (value * 911) / 1000;
     }
   }
   else if (unit == UNIT_CELSIUS) {
