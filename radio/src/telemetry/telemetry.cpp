@@ -547,44 +547,51 @@ bool TelemetrySensor::isAvailable() const
   return ZLEN(label) > 0;
 }
 
+PACK(typedef struct {
+  uint8_t unitFrom;
+  uint8_t unitTo;
+  int16_t multiplier;
+  int16_t divisor;
+}) UnitConversionRule;
+
+const UnitConversionRule unitConversionTable[] = {
+  /* unitFrom     unitTo                    multiplier   divisor */
+  { UNIT_METERS,            UNIT_FEET,             105,   32},
+  { UNIT_METERS_PER_SECOND, UNIT_FEET_PER_SECOND,  105,   32},
+   
+  { UNIT_KTS, UNIT_KMH,                           1852, 1000}, // 1 knot = 1.85200 kilometers per hour
+  { UNIT_KTS, UNIT_MPH,                           1151, 1000}, // 1 knot = 1.15077945 miles per hour
+  { UNIT_KTS, UNIT_METERS_PER_SECOND,             1000, 1944}, // 1 knot = 0.514444444 meters / second (divide with 1.94384449)
+  { UNIT_KTS, UNIT_FEET_PER_SECOND,               1688, 1000}, // 1 knot = 1.68780986 feet per second
+  
+  { UNIT_KMH, UNIT_KTS,                           1000, 1852}, // 1 km/h = 0.539956803 knots (divide with 1.85200)
+  { UNIT_KMH, UNIT_MPH,                           1000, 1609}, // 1 km/h = 0.621371192 miles per hour (divide with 1.60934400)
+  { UNIT_KMH, UNIT_METERS_PER_SECOND,               10,   36}, // 1 km/h = 0.277777778 meters / second (divide with 3.6)
+  { UNIT_KMH, UNIT_FEET_PER_SECOND,                911, 1000}, // 1 km/h = 0.911344415 feet per second
+
+  { UNIT_MILLILITERS, UNIT_FLOZ, 100, 2957},
+  { 0, 0, 0, 0}   // termination
+};
+
 int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t destUnit, uint8_t destPrec)
 {
   for (int i=prec; i<destPrec; i++)
     value *= 10;
 
-  if (unit == UNIT_METERS || unit == UNIT_METERS_PER_SECOND) {
-    if (destUnit == UNIT_FEET || destUnit == UNIT_FEET_PER_SECOND) {
-      // m to ft *105/32
-      value = (value * 105) / 32;
-    }
-  }
-  else if (unit == UNIT_KTS) {
-    if (destUnit == UNIT_KMH) {
-      // kts to km/h (1 knot = 1.85200 kilometers per hour)
-      value = (value * 1852) / 1000;
-    }
-    else if (destUnit == UNIT_MPH) {
-      // kts to mph (1 knot = 1.15077945 miles per hour)
-      value = (value * 1151) / 1000;
-    }
-    else if (destUnit == UNIT_METERS_PER_SECOND) {
-      // kts to m/s (1 knot = 0.514444444 meters / second)
-      value = (value * 514) / 1000;
-    }
-    else if (destUnit == UNIT_FEET_PER_SECOND) {
-      // kts to f/s  (1 knot = 1.68780986 feet per second)
-      value = (value * 1688) / 1000;
-    }
-  }
-  else if (unit == UNIT_CELSIUS) {
+  if (unit == UNIT_CELSIUS) {
     if (destUnit == UNIT_FAHRENHEIT) {
       // T(°F) = T(°C)×1,8 + 32
-      value = 32 + (value*18)/10;
+      value = 32 + (value*18) / 10;
     }
   }
-  else if (unit == UNIT_MILLILITERS) {
-    if (destUnit == UNIT_FLOZ) {
-      value = (value * 100) / 2957;
+  else {
+    const UnitConversionRule * p = unitConversionTable;
+    while (p->divisor) {
+      if (p->unitFrom == unit && p->unitTo == destUnit) {
+        value = (value * (int32_t)p->multiplier) / (int32_t)p->divisor;
+        break;
+      }
+      ++p;
     }
   }
   
