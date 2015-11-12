@@ -50,8 +50,8 @@ void displayAlertBox()
 {
   lcdClear();
   lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  lcdDrawRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, SOLID, ALARM_COLOR);
-  lcdDrawRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, SOLID, ALARM_COLOR);
+  lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, ALARM_COLOR);
+  lcdDrawSolidRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, ALARM_COLOR);
   lcdDrawBitmap(POPUP_X-80, POPUP_Y-30, LBM_ASTERISK);
 }
 
@@ -59,8 +59,8 @@ void displayWarningBox()
 {
   // lcdDrawBlackOverlay();
   lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  lcdDrawRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, SOLID, ALARM_COLOR);
-  lcdDrawRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, SOLID, ALARM_COLOR);
+  lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, ALARM_COLOR);
+  lcdDrawSolidRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, ALARM_COLOR);
   // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_WARNING);
 }
 
@@ -68,8 +68,8 @@ void displayMessageBox()
 {
   // lcdDrawBlackOverlay();
   lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  lcdDrawRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, SOLID, WARNING_COLOR);
-  lcdDrawRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, SOLID, WARNING_COLOR);
+  lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, WARNING_COLOR);
+  lcdDrawSolidRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, WARNING_COLOR);
   // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_MESSAGE);
 }
 
