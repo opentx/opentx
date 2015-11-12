@@ -104,12 +104,50 @@ void hook(lua_State* L, lua_Debug *ar)
   }
 }
 
+#if defined(PCBTARANIS) && defined(REV9E)
+  #define RADIO "taranisx9e"
+#elif defined(PCBTARANIS) && defined(REVPLUS)
+  #define RADIO "taranisplus"
+#elif defined(PCBTARANIS)
+  #define RADIO "taranis"
+#else
+#error "Unknown board"
+#endif
+
+#if defined(SIMU)
+  #define RADIO_VERSION RADIO"-simu"
+#else
+  #define RADIO_VERSION RADIO
+#endif
+
+/*luadoc
+@function getVersion()
+
+Returns OpenTX version
+
+@retval string OpenTX version (ie "2.1.5")
+
+@retval list (available since OpenTX 2.1.7) returns two values:
+ * `string` OpenTX version (ie "2.1.5")
+ * `string` radio version (ie "Taranis", "TaranisPlus", if running in simulator the "-simu" is added)
+*/
 static int luaGetVersion(lua_State *L)
 {
   lua_pushstring(L, VERS_STR);
-  return 1;
+  lua_pushstring(L, RADIO_VERSION);
+  return 2;
 }
 
+/*luadoc
+@function getTime()
+
+Returns current system time
+
+@retval number current system time. Returned value is the 
+number of 10ms periods since the radio start. Example: 
+ *run time: 12.54 seconds, return value: 1254
+
+*/
 static int luaGetTime(lua_State *L)
 {
   lua_pushunsigned(L, get_tmr10ms());
@@ -128,6 +166,19 @@ static void luaPushDateTime(lua_State *L, uint32_t year, uint32_t mon, uint32_t 
   lua_pushtableinteger(L, "sec", sec);
 }
 
+/*luadoc
+@function getDateTime()
+
+Returns current system date and time that is kept by the RTC unit
+
+@retval table current date and time, table elements:
+ * `year` year
+ * `mon` month
+ * `day` day of month
+ * `hour` hours
+ * `min` minutes
+ * `sec` seconds
+*/
 static int luaGetDateTime(lua_State *L)
 {
   struct gtm utm;
@@ -301,7 +352,20 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags=
   return false;  // not found
 }
 
-// get a detailed info about particular field
+/*luadoc
+@function getFieldInfo(name)
+
+Returns detailed information about a field
+
+@param name  name of the field (string)
+
+@retval table information about requested field, table elements:
+ * `id` field identifier (number)
+ * `name` field name (string)
+ * `desc` field description (string)
+
+@retval nil the requested filed was not found
+*/
 static int luaGetFieldInfo(lua_State *L)
 {
   const char * what = luaL_checkstring(L, 1);
@@ -317,6 +381,33 @@ static int luaGetFieldInfo(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function getValue(name_or_id)
+
+Returns current value of the requested field. 
+
+@param name_or_id  identifier (number) or name (string) of the field
+
+@retval value current field value (number). Zero is returned for:
+ * non-existing fields
+ * for all telemetry fields when the telemetry stream is not received
+
+@retval table GPS position is returned in a table:
+ * `lat` latitude, positive is North (number)
+ * `lon` longitude, positive is East (number)
+
+@retval table GPS date/time is returned in a table, format is the same 
+as is returned from getDateTime()
+
+@retval table Cells are returned in a table 
+(except where no cells were detected in which 
+case the returned value is 0):
+ * table has one item for each detected cell
+ * each item name is a cell number (1 to number of cells)
+ * each item value is the current cell voltage
+
+@notice Getting a value by its numerical identifier is faster then by its name.
+*/
 static int luaGetValue(lua_State *L)
 {
   int src = 0;
@@ -336,6 +427,16 @@ static int luaGetValue(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function playFile(name)
+
+Plays a track with given name
+
+@param name (string) file name (including path) to play. If the path is not 
+absolute (name starts with the `/` character), then the given name is used relative to
+the current language path (example for English language: `/SOUNDS/en`)
+
+*/
 static int luaPlayFile(lua_State *L)
 {
   const char * filename = luaL_checkstring(L, 1);
@@ -1248,6 +1349,23 @@ static int luaModelGetOutput(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function model.setOutput(index, value)
+
+Sets current global variable value. See also model.getGlobalVariable()
+
+@param index  zero based output index, use 0 for CH1, 31 for CH32
+
+@param value  new value for output. The `value` is a table with following items:
+  * `name` name of the output (channel)
+  * `min` negative limit 
+  * `max` positive limit
+  * `offset` subtrim value
+  * `ppmCenter` ppm center value
+  * `symetrical` 1 for symmetric limits, 0 for normal
+  * `revert` 1 for inverted output, 0 for normal
+  * `curve` curve reference (zero based index, 0 means Curve 1)
+*/
 static int luaModelSetOutput(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
@@ -1292,6 +1410,29 @@ static int luaModelSetOutput(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function model.getGlobalVariable(index [, phase])
+
+Returns current global variable value. 
+See also model.setGlobalVariable()
+
+@notice a simple warning or notice
+
+@param index  zero based global variable index, use 0 for GV1, 8 for GV9
+
+@param phase  zero based phase index, use 0 for Phase 1, 5 for Phase 6
+
+@retval nil   requested global variable does not exist
+
+@retval number current value of global variable
+
+Example:
+
+```lua
+  -- get GV3 (index = 2) from flight phase 1 (phase = 0)
+  val = model.getGlobalVariable(2, 0)
+```
+*/
 static int luaModelGetGlobalVariable(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
@@ -1303,6 +1444,22 @@ static int luaModelGetGlobalVariable(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function model.setGlobalVariable(index, phase, value)
+
+Sets current global variable value. See also model.getGlobalVariable()
+
+@param index  zero based global variable index, use 0 for GV1, 8 for GV9
+
+@param phase  zero based phase index, use 0 for Phase 1, 5 for Phase 6
+   
+@param value  new value for global variable. Permitted range is
+from -1024 to 1024. 
+    
+
+@notice Global variable can only store integer values, 
+any floating point value is converted (todo check how) into integer value.
+*/
 static int luaModelSetGlobalVariable(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
