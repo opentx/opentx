@@ -781,7 +781,7 @@ void menuModelSetup(uint8_t event)
         else {
           horzpos_t l_posHorz = m_posHorz;
           coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
-          if (IS_MODULE_XJT(moduleIdx) && !HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[moduleIdx].rfProtocol)) {
+          if (IS_MODULE_XJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol == RF_PROTO_D8) {
             xOffsetBind = 0;
             lcd_putsLeft(y, INDENT "Receiver");
             if (attr) l_posHorz += 1;

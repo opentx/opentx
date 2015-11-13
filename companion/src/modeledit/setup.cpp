@@ -237,7 +237,8 @@ void ModulePanel::update()
       case PULSES_PXX_XJT_LR12:
       case PULSES_PXX_DJT:
         mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
-        if ((protocol==PULSES_PXX_XJT_X16) || (protocol==PULSES_PXX_XJT_LR12)) mask |= MASK_FAILSAFES | MASK_RX_NUMBER;
+        if (protocol==PULSES_PXX_XJT_X16) mask |= MASK_FAILSAFES | MASK_RX_NUMBER;
+        if (protocol==PULSES_PXX_XJT_LR12) mask |= MASK_RX_NUMBER;
         break;
       case PULSES_LP45:
       case PULSES_DSM2:

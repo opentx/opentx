@@ -2043,11 +2043,7 @@ enum RFProtocols {
 #endif
 };
 
-#if defined(MODULE_D16_EU_ONLY_SUPPORT)
-  #define HAS_RF_PROTOCOL_FAILSAFE(protocol) ((protocol) == RF_PROTO_X16)
-#else
-  #define HAS_RF_PROTOCOL_FAILSAFE(protocol) ((protocol) == RF_PROTO_X16 || (protocol) == RF_PROTO_LR12)
-#endif
+#define HAS_RF_PROTOCOL_FAILSAFE(protocol) ((protocol) == RF_PROTO_X16)
 
 enum DSM2Protocols {
   DSM2_PROTO_LP45,
