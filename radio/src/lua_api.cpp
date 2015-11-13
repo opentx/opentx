@@ -452,7 +452,7 @@ static int luaGetValue(lua_State *L)
 /*luadoc
 @function playFile(name)
 
-Plays a track with given name
+Plays a track with a given name
 
 @param name (string) file name (including path) to play. If the path is not 
 absolute (name starts with the `/` character), then the given name is used relative to
@@ -463,7 +463,7 @@ static int luaPlayFile(lua_State *L)
 {
   const char * filename = luaL_checkstring(L, 1);
   if (filename[0] != '/') {
-    // relative sound file path - use current languague dir for absolute path
+    // relative sound file path - use current language dir for absolute path
     char file[AUDIO_FILENAME_MAXLEN+1];
     char * str = getAudioPath(file);
     strncpy(str, filename, AUDIO_FILENAME_MAXLEN - (str-file));
@@ -476,6 +476,21 @@ static int luaPlayFile(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function playNumber(value, unit [, attributes])
+
+Plays a numerical value (text to speech)
+
+@param value (number) number to play. Value is interpreted as integer.
+
+@param unit (number) unit identifier (see table todo)
+
+@param attributes possible values:
+ * `0 or not present` plays integral part of the number (for a number 123 it plays 123)
+ * `PREC1` plays a number with one decimal place (for a number 123 it plays 12.3)
+ * `PREC2` plays a number with two decimal places (for a number 123 it plays 1.23)
+
+*/
 static int luaPlayNumber(lua_State *L)
 {
   int number = luaL_checkinteger(L, 1);
@@ -485,6 +500,18 @@ static int luaPlayNumber(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function playDuration(duration [, hourFormat])
+
+Plays a numerical value (text to speech)
+
+@param duration (number) number of seconds to play. Only integral part is used.
+
+@param hourFormat (number):
+ * `0 or not present` play format: minutes and seconds.
+ * `!= 0` play format: hours, minutes and seconds.
+
+*/
 static int luaPlayDuration(lua_State *L)
 {
   int duration = luaL_checkinteger(L, 1);
@@ -493,6 +520,27 @@ static int luaPlayDuration(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function playTone(frequency, duration, pause [, flags [, freqIncr]])
+
+Plays a tone
+
+@param frequency (number) tone frequency in Hz
+
+@param duration (number) length of the tone in (TODO units)
+
+@param pause (number) length of the pause in (TODO units)
+
+@param flags (number):
+ * `0 or not present` play with normal priority.
+ * `PLAY_BACKGROUND` play in background (built in vario function used this context)
+ * `PLAY_NOW` play immediately
+
+@param freqIncr (number) positive number increases the tone pitch (frequency with time),
+negative number decreases it. Bigger number has more effect
+
+@notice Minimum played frequency is 150Hz even if a lower value is specified.
+*/
 static int luaPlayTone(lua_State *L)
 {
   int frequency = luaL_checkinteger(L, 1);
@@ -504,6 +552,15 @@ static int luaPlayTone(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function killEvents(event)
+
+Cancels the key press propagation to the normal user interface algorithm.
+
+@param event (number) event to be suppressed
+
+@notice This function has currently no effect in OpenTX 2.1.x series
+*/
 static int luaKillEvents(lua_State *L)
 {
   int event = luaL_checkinteger(L, 1);
@@ -511,6 +568,14 @@ static int luaKillEvents(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function GREY()
+
+Returns gray value which can be used in lcd functions
+
+@retval (number) a value that represents amount of *greyness* (from 0 to 15)
+
+*/
 static int luaGrey(lua_State *L)
 {
   int index = luaL_checkinteger(L, 1);
@@ -518,6 +583,20 @@ static int luaGrey(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function getGeneralSettings()
+
+Returns (some of) the general radio settings
+
+@param index  zero based global variable index, use 0 for GV1, 8 for GV9
+
+@retval table with elements:
+ * `battMin` radio battery range - minimum value
+ * `battMax` radio battery range - maximum value
+ * `imperial` set to a value different from 0 if the radio is set to the
+ IMPERIAL units
+
+*/
 static int luaGetGeneralSettings(lua_State *L)
 {
   lua_newtable(L);
@@ -527,6 +606,11 @@ static int luaGetGeneralSettings(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function lcd.lock()
+
+@notice This function has no effect in OpenTX 2.1
+*/
 static int luaLcdLock(lua_State *L)
 {
   // disabled in opentx 2.1
@@ -534,12 +618,30 @@ static int luaLcdLock(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.clear()
+
+Erases all contents of LCD.
+
+@notice This function only works in stand-alone and telemetry scripts.
+*/
 static int luaLcdClear(lua_State *L)
 {
   if (luaLcdAllowed) lcd_clear();
   return 0;
 }
 
+/*luadoc
+@function lcd.drawPoint(x, y)
+
+Draws a single pixel on LCD
+
+@param x (positive number) x position, starts from 0 in top left corner. 
+
+@param y (positive number) y position, starts from 0 in top left corner and goes down.
+
+@notice Drawing on an existing black pixel produces white pixel (TODO check this!)
+*/
 static int luaLcdDrawPoint(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -549,6 +651,22 @@ static int luaLcdDrawPoint(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.drawLine(x1, y1, x2, y2, pattern, flags)
+
+Draws a straight line on LCD
+
+@param x1,y1 (positive numbers) starting coordinate
+
+@param x2,y2 (positive numbers) end coordinate
+
+@param pattern TODO
+
+@param flags TODO
+
+@notice If the start or the end of the line is outside the LCD dimensions, then the
+whole line will not be drawn (starting from OpenTX 2.1.5)
+*/
 static int luaLcdDrawLine(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
