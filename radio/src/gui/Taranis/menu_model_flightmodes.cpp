@@ -120,8 +120,10 @@ void menuModelFlightModesAll(uint8_t event)
           break;
 
         case ITEM_FLIGHT_MODES_SWITCH:
-          putsSwitches((5+LEN_FLIGHT_MODE_NAME)*FW+FW/2, y, p->swtch, attr);
-          if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
+          if (k>0) {
+            putsSwitches((5+LEN_FLIGHT_MODE_NAME)*FW+FW/2, y, p->swtch, attr);
+            if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
+          }
           break;
 
         case ITEM_FLIGHT_MODES_TRIM_RUD:
