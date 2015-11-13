@@ -167,7 +167,7 @@ Returns current system time
 
 @retval number current system time. Returned value is the 
 number of 10ms periods since the radio start. Example: 
- *run time: 12.54 seconds, return value: 1254
+run time: 12.54 seconds, return value: 1254
 
 */
 static int luaGetTime(lua_State *L)
@@ -425,7 +425,7 @@ as is returned from getDateTime()
 (except where no cells were detected in which 
 case the returned value is 0):
  * table has one item for each detected cell
- * each item name is a cell number (1 to number of cells)
+ * each item name is the cell number (1 to number of cells)
  * each item value is the current cell voltage
 
 @notice Getting a value by its numerical identifier is faster then by its name.
