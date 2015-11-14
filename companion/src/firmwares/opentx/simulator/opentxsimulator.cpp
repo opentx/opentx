@@ -133,6 +133,7 @@ namespace NAMESPACE {
 #include "radio/src/trainer_input.cpp"
 
 #if defined(PCBHORUS)
+#include "radio/src/bmp.cpp"
 #include "radio/src/gui/Horus/bitmaps.cpp"
 #include "radio/src/gui/Horus/fonts.cpp"
 #include "radio/src/gui/Horus/widgets.cpp"
@@ -310,6 +311,7 @@ namespace NAMESPACE {
 #include "radio/src/targets/Horus/pulses_driver.cpp"
 #include "radio/src/targets/Taranis/rtc_driver.cpp"
 #include "radio/src/targets/Horus/trainer_driver.cpp"
+#include "radio/src/targets/Horus/serial2_driver.cpp"
 #elif defined(PCBFLAMENCO)
 #include "radio/src/targets/Flamenco/board_flamenco.cpp"
 #include "radio/src/targets/Flamenco/keys_driver.cpp"
