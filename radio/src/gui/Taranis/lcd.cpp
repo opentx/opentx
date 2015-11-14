@@ -639,7 +639,7 @@ void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 
 void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
 {
-  if (idx == 0) {
+  if (idx == MIXSRC_NONE) {
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, 0, att); // TODO macro
   }
   else if (idx <= MIXSRC_LAST_INPUT) {

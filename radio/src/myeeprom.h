@@ -118,7 +118,7 @@
   #define MAX_SCRIPTS          7
   #define MAX_INPUTS           32
   #define NUM_TRAINER          16
-  #define NUM_POTS             3
+  #define NUM_POTS             7
   #define NUM_XPOTS            3
   #define MAX_SENSORS          32
 #elif defined(PCBFLAMENCO)
@@ -1943,7 +1943,9 @@ enum MixSources {
   MIXSRC_FIRST_SLIDER,
   MIXSRC_SLIDER1 = MIXSRC_FIRST_SLIDER, LUA_EXPORT("ls", "Left slider")
   MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
-  MIXSRC_LAST_POT = MIXSRC_SLIDER2,
+  MIXSRC_SLIDER3,                       LUA_EXPORT("ls2", "Left center slider")
+  MIXSRC_SLIDER4,                       LUA_EXPORT("rs2", "Right center slider")
+  MIXSRC_LAST_POT = MIXSRC_SLIDER4,
 #elif defined(PCBFLAMENCO)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("sd", "Potentiometer D")
   MIXSRC_SLIDER1,                       LUA_EXPORT("ls", "Left slider")
@@ -1971,7 +1973,7 @@ enum MixSources {
   MIXSRC_P2,
     MIXSRC_P3,
     MIXSRC_LAST_POT = MIXSRC_P3,
-  #endif
+#endif
 
 #if defined(PCBSKY9X)
   MIXSRC_REa,

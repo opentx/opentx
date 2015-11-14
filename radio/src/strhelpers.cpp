@@ -97,7 +97,7 @@ int zchar2str(char *dest, const char *src, int size)
 #endif
 
 #if defined(CPUARM)
-unsigned int effectiveLen(const char *str, unsigned int size)
+unsigned int effectiveLen(const char * str, unsigned int size)
 {
   while (size > 0) {
     if (str[size-1] != ' ')
@@ -107,7 +107,7 @@ unsigned int effectiveLen(const char *str, unsigned int size)
   return 0;
 }
 
-bool zexist(const char *str, uint8_t size)
+bool zexist(const char * str, uint8_t size)
 {
   for (int i=0; i<size; i++) {
     if (str[i] != 0)
@@ -116,7 +116,7 @@ bool zexist(const char *str, uint8_t size)
   return false;
 }
 
-uint8_t zlen(const char *str, uint8_t size)
+uint8_t zlen(const char * str, uint8_t size)
 {
   while (size > 0) {
     if (str[size-1] != 0)

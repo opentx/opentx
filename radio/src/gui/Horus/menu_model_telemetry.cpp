@@ -233,11 +233,13 @@ bool menuModelSensor(evt_t event)
     switch (k) {
 
       case SENSOR_FIELD_NAME:
-        editSingleName(SENSOR_2ND_COLUMN, y, STR_NAME, sensor->label, TELEM_LABEL_LEN, event, attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_NAME);
+        editName(SENSOR_2ND_COLUMN, y, sensor->label, TELEM_LABEL_LEN, event, attr);
         break;
 
       case SENSOR_FIELD_TYPE:
-        sensor->type = selectMenuItem(SENSOR_2ND_COLUMN, y, NO_INDENT(STR_TYPE), STR_VSENSORTYPES, sensor->type, 0, 1, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_TYPE));
+        sensor->type = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_VSENSORTYPES, sensor->type, 0, 1, attr, event);
         if (attr && checkIncDec_Ret) {
           sensor->instance = 0;
           if (sensor->type == TELEM_TYPE_CALCULATED) {
@@ -250,7 +252,7 @@ bool menuModelSensor(evt_t event)
 
       case SENSOR_FIELD_ID:
         if (sensor->type == TELEM_TYPE_CUSTOM) {
-          lcd_putsLeft(y, STR_ID);
+          lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ID);
           lcd_outhex4(SENSOR_2ND_COLUMN, y, sensor->id, LEFT|(m_posHorz==0 ? attr : 0));
           lcdDrawNumber(SENSOR_3RD_COLUMN, y, sensor->instance, LEFT|(m_posHorz==1 ? attr : 0));
           if (attr) {
@@ -266,7 +268,8 @@ bool menuModelSensor(evt_t event)
           }
         }
         else {
-          sensor->formula = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_FORMULA, STR_VFORMULAS, sensor->formula, 0, TELEM_FORMULA_LAST, attr, event);
+          lcdDrawText(MENUS_MARGIN_LEFT, y, STR_FORMULA);
+          sensor->formula = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_VFORMULAS, sensor->formula, 0, TELEM_FORMULA_LAST, attr, event);
           if (attr && checkIncDec_Ret) {
             sensor->param = 0;
             if (sensor->formula == TELEM_FORMULA_CELL) {
@@ -286,7 +289,7 @@ bool menuModelSensor(evt_t event)
         break;
 
       case SENSOR_FIELD_UNIT:
-        lcd_putsLeft(y, STR_UNIT);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_UNIT);
         // TODO flash saving with selectMenuItem where I copied those 2 lines?
         lcdDrawTextAtIndex(SENSOR_2ND_COLUMN, y, STR_VTELEMUNIT, sensor->unit, attr);
         if (attr) {
@@ -298,7 +301,8 @@ bool menuModelSensor(evt_t event)
         break;
 
       case SENSOR_FIELD_PRECISION:
-        sensor->prec = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_PRECISION, STR_VPREC, sensor->prec, 0, 2, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PRECISION);
+        sensor->prec = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_VPREC, sensor->prec, 0, 2, attr, event);
         if (attr && checkIncDec_Ret) {
           telemetryItems[s_currIdx].clear();
         }
@@ -307,7 +311,7 @@ bool menuModelSensor(evt_t event)
       case SENSOR_FIELD_PARAM1:
         if (sensor->type == TELEM_TYPE_CALCULATED) {
           if (sensor->formula == TELEM_FORMULA_CELL) {
-            lcd_putsLeft(y, STR_CELLSENSOR);
+            lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CELLSENSOR);
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->cell.source ? MIXSRC_FIRST_TELEM+3*(sensor->cell.source-1) : 0, attr);
             if (attr) {
               sensor->cell.source = checkIncDec(event, sensor->cell.source, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isCellsSensor);
@@ -315,7 +319,7 @@ bool menuModelSensor(evt_t event)
             break;
           }
           else if (sensor->formula == TELEM_FORMULA_DIST) {
-            lcd_putsLeft(y, "GPS sensor");
+            lcdDrawText(MENUS_MARGIN_LEFT, y, "GPS sensor");
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->dist.gps ? MIXSRC_FIRST_TELEM+3*(sensor->dist.gps-1) : 0, attr);
             if (attr) {
               sensor->dist.gps = checkIncDec(event, sensor->dist.gps, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isGPSSensor);
@@ -323,7 +327,7 @@ bool menuModelSensor(evt_t event)
             break;
           }
           else if (sensor->formula == TELEM_FORMULA_CONSUMPTION) {
-            lcd_putsLeft(y, "Amps sensor");
+            lcdDrawText(MENUS_MARGIN_LEFT, y, "Amps sensor");
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->consumption.source ? MIXSRC_FIRST_TELEM+3*(sensor->consumption.source-1) : 0, attr);
             if (attr) {
               sensor->consumption.source = checkIncDec(event, sensor->consumption.source, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isCurrentSensor);
@@ -332,7 +336,7 @@ bool menuModelSensor(evt_t event)
           }
         }
         else {
-          lcd_putsLeft(y, "Ratio");
+          lcdDrawText(MENUS_MARGIN_LEFT, y, "Ratio");
           if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.ratio, 0, 30000);
           if (sensor->custom.ratio == 0)
             lcdDrawText(SENSOR_2ND_COLUMN, y, "-", attr);
@@ -345,11 +349,12 @@ bool menuModelSensor(evt_t event)
       case SENSOR_FIELD_PARAM2:
         if (sensor->type == TELEM_TYPE_CALCULATED) {
           if (sensor->formula == TELEM_FORMULA_CELL) {
-            sensor->cell.index = selectMenuItem(SENSOR_2ND_COLUMN, y, "Cell index", "\007Lowest\0001\0     2\0     3\0     4\0     5\0     6\0     HighestDelta\0", sensor->cell.index, 0, 8, attr, event);
+            lcdDrawText(MENUS_MARGIN_LEFT, y, "Cell index");
+            sensor->cell.index = selectMenuItem(SENSOR_2ND_COLUMN, y, "\007Lowest\0001\0     2\0     3\0     4\0     5\0     6\0     HighestDelta\0", sensor->cell.index, 0, 8, attr, event);
             break;
           }
           else if (sensor->formula == TELEM_FORMULA_DIST) {
-            lcd_putsLeft(y, "Alt sensor");
+            lcdDrawText(MENUS_MARGIN_LEFT, y, "Alt sensor");
             putsMixerSource(SENSOR_2ND_COLUMN, y, sensor->dist.alt ? MIXSRC_FIRST_TELEM+3*(sensor->dist.alt-1) : 0, attr);
             if (attr) {
               sensor->dist.alt = checkIncDec(event, sensor->dist.alt, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isAltSensor);
@@ -358,7 +363,7 @@ bool menuModelSensor(evt_t event)
           }
         }
         else {
-          lcd_putsLeft(y, NO_INDENT(STR_OFFSET));
+          lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_OFFSET));
           if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.offset, -30000, +30000);
           if (sensor->prec > 0) attr |= (sensor->prec == 2 ? PREC2 : PREC1);
           lcdDrawNumber(SENSOR_2ND_COLUMN, y, sensor->custom.offset, LEFT|attr);
@@ -387,15 +392,18 @@ bool menuModelSensor(evt_t event)
       }
 
       case SENSOR_FIELD_AUTOOFFSET:
-        ON_OFF_MENU_ITEM(sensor->autoOffset, SENSOR_2ND_COLUMN, y, STR_AUTOOFFSET, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_AUTOOFFSET);
+        onoffMenuItem(sensor->autoOffset, SENSOR_2ND_COLUMN, y, attr, event);
         break;
         
       case SENSOR_FIELD_FILTER:
-        ON_OFF_MENU_ITEM(sensor->filter, SENSOR_2ND_COLUMN, y, STR_FILTER, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_FILTER);
+        onoffMenuItem(sensor->filter, SENSOR_2ND_COLUMN, y, attr, event);
         break;
         
       case SENSOR_FIELD_PERSISTENT:
-        ON_OFF_MENU_ITEM(sensor->persistent, SENSOR_2ND_COLUMN, y, NO_INDENT(STR_PERSISTENT), attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_PERSISTENT));
+        onoffMenuItem(sensor->persistent, SENSOR_2ND_COLUMN, y, attr, event);
         break;
 
     }
@@ -470,7 +478,7 @@ bool menuModelTelemetry(evt_t event)
       }
       TelemetryItem & telemetryItem = telemetryItems[index];
       if (telemetryItem.isAvailable()) {
-        LcdFlags color = telemetryItem.isOld() ? RED : WHITE;
+        LcdFlags color = telemetryItem.isOld() ? ALARM_COLOR : TEXT_COLOR;
         putsTelemetryChannelValue(TELEM_COL2, y, index, getValue(MIXSRC_FIRST_TELEM+3*index), LEFT|color);
       }
       else {
@@ -494,11 +502,12 @@ bool menuModelTelemetry(evt_t event)
 
     switch (k) {
       case ITEM_TELEMETRY_PROTOCOL_TYPE:
-        g_model.telemetryProtocol = selectMenuItem(TELEM_COL2, y, STR_TELEMETRY_TYPE, "\017FrSky S.PORT\0  FrSky D\0       FrSky D (cable)", g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, PROTOCOL_FRSKY_D, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TELEMETRY_TYPE);
+        g_model.telemetryProtocol = selectMenuItem(TELEM_COL2, y, "\017FrSky S.PORT\0  FrSky D\0       FrSky D (cable)", g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, PROTOCOL_FRSKY_D, attr, event);
         break;
 
       case ITEM_TELEMETRY_SENSORS_LABEL:
-        lcd_putsLeft(y, STR_TELEMETRY_SENSORS);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TELEMETRY_SENSORS);
         break;
 
       case ITEM_TELEMETRY_NEWSENSOR:
@@ -514,13 +523,13 @@ bool menuModelTelemetry(evt_t event)
         break;
 
       case ITEM_TELEMETRY_RSSI_LABEL:
-        lcd_putsLeft(y, PSTR("RSSI"));
+        lcdDrawText(MENUS_MARGIN_LEFT, y, PSTR("RSSI"));
         break;
 
       case ITEM_TELEMETRY_RSSI_ALARM1:
       case ITEM_TELEMETRY_RSSI_ALARM2: {
         uint8_t alarm = k-ITEM_TELEMETRY_RSSI_ALARM1;
-        lcd_putsLeft(y, (alarm==0 ? STR_LOWALARM : STR_CRITICALALARM));
+        lcdDrawText(MENUS_MARGIN_LEFT, y, (alarm==0 ? STR_LOWALARM : STR_CRITICALALARM));
         lcdDrawNumber(TELEM_COL2, y, getRssiAlarmValue(alarm), LEFT|attr, 3);
         if (attr && s_editMode>0) {
           CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[alarm].value, -30, 30);
@@ -530,11 +539,11 @@ bool menuModelTelemetry(evt_t event)
 
 #if defined(VARIO)
       case ITEM_TELEMETRY_VARIO_LABEL:
-        lcd_putsLeft(y, STR_VARIO);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_VARIO);
         break;
 
       case ITEM_TELEMETRY_VARIO_SOURCE:
-        lcd_putsLeft(y, STR_SOURCE);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SOURCE);
         putsMixerSource(TELEM_COL2, y, g_model.frsky.varioSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.varioSource-1) : 0, attr);
         if (attr) {
           g_model.frsky.varioSource = checkIncDec(event, g_model.frsky.varioSource, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
@@ -542,7 +551,7 @@ bool menuModelTelemetry(evt_t event)
         break;
 
       case ITEM_TELEMETRY_VARIO_RANGE:
-        lcd_putsLeft(y, STR_LIMIT);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_LIMIT);
         lcdDrawNumber(TELEM_COL2, y, -10+g_model.frsky.varioMin, (m_posHorz<=0 ? attr : 0)|LEFT);
         lcdDrawNumber(TELEM_COL2+70, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0)|PREC1);
         lcdDrawNumber(TELEM_COL2+115, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0)|PREC1);
@@ -567,11 +576,11 @@ bool menuModelTelemetry(evt_t event)
 #endif
 
       case ITEM_TELEMETRY_TOP_BAR_LABEL:
-        lcd_putsLeft(y, "Main Telemetry Fields");
+        lcdDrawText(MENUS_MARGIN_LEFT, y, "Main Telemetry Fields");
         break;
 
       case ITEM_TELEMETRY_TOP_BAR_VOLTAGE:
-        lcd_putsLeft(y, STR_VOLTAGE);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_VOLTAGE);
         putsMixerSource(TELEM_COL2, y, g_model.frsky.voltsSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.voltsSource-1) : 0, attr);
         if (attr) {
           g_model.frsky.voltsSource = checkIncDec(event, g_model.frsky.voltsSource, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isVoltsSensor);
@@ -579,7 +588,7 @@ bool menuModelTelemetry(evt_t event)
         break;
 
       case ITEM_TELEMETRY_TOP_BAR_ALTITUDE:
-        lcd_putsLeft(y, INDENT "Altitude Source");
+        lcdDrawText(MENUS_MARGIN_LEFT, y, INDENT "Altitude Source");
         putsMixerSource(TELEM_COL2, y, g_model.frsky.altitudeSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.altitudeSource-1) : 0, attr);
         if (attr) {
           g_model.frsky.altitudeSource = checkIncDec(event, g_model.frsky.altitudeSource, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isAltSensor);
@@ -594,7 +603,7 @@ bool menuModelTelemetry(evt_t event)
         uint8_t screenIndex = TELEMETRY_CURRENT_EDIT_SCREEN(k);
         putsStrIdx(MENUS_MARGIN_LEFT, y, STR_SCREEN, screenIndex+1);
         TelemetryScreenType oldScreenType = TELEMETRY_SCREEN_TYPE(screenIndex);
-        TelemetryScreenType newScreenType = (TelemetryScreenType)selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (m_posHorz==0 ? attr : 0), event);
+        TelemetryScreenType newScreenType = (TelemetryScreenType)selectMenuItem(TELEM_SCRTYPE_COL, y, STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (m_posHorz==0 ? attr : 0), event);
         if (newScreenType != oldScreenType) {
           g_model.frsky.screensType = (g_model.frsky.screensType & (~(0x03 << (2*screenIndex)))) | (newScreenType << (2*screenIndex));
           memset(&g_model.frsky.screens[screenIndex], 0, sizeof(g_model.frsky.screens[screenIndex]));

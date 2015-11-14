@@ -422,8 +422,12 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
       } while (CURSOR_NOT_ALLOWED_IN_ROW(m_posVert));
       s_editMode = 0; // if we go down, we must be in this mode
       uint8_t newmaxcol = MAXCOL(m_posVert);
-      if (m_posHorz < 0 || (m_posHorz==0 && maxcol==0) || m_posHorz > newmaxcol)
+      if (COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE) {
+        m_posHorz = -1;
+      }
+      else if (m_posHorz < 0 || m_posHorz > newmaxcol) {
         m_posHorz = POS_HORZ_INIT(m_posVert);
+      }
       break;
     }
 
@@ -442,7 +446,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
       do {
         DEC(m_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(m_posVert));
-      if ((COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE))
+      if (COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE)
         m_posHorz = -1;
       else
         m_posHorz = min((uint8_t)m_posHorz, MAXCOL(m_posVert));
@@ -456,18 +460,21 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
       } while (CURSOR_NOT_ALLOWED_IN_ROW(m_posVert));
       s_editMode = 0; // if we go up, we must be in this mode
       uint8_t newmaxcol = MAXCOL(m_posVert);
-      if (m_posHorz < 0 || (m_posHorz==0 && maxcol==0) || m_posHorz > newmaxcol) {
-        if ((COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE))
-          m_posHorz = -1;
-        else
-          m_posHorz = min((uint8_t)m_posHorz, newmaxcol);
+      if ((COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE)) {
+        m_posHorz = -1;
       }
-
+      else if (m_posHorz < 0) {
+        m_posHorz = POS_HORZ_INIT(m_posVert);
+      }
+      else if (m_posHorz > newmaxcol) {
+        m_posHorz = min((uint8_t)m_posHorz, newmaxcol);
+      }
       break;
     }
   }
 
   linesCount = rowcount;
+  int maxBodyLines =  (menuTab ? NUM_BODY_LINES : NUM_BODY_LINES+1);
 
   if (m_posVert <= MENU_FIRST_LINE_EDIT) {
     s_pgOfs = 0;
@@ -481,7 +488,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
     }
   }
   else if (horTab) {
-    if (rowcount > NUM_BODY_LINES) {
+    if (rowcount > maxBodyLines) {
       while (1) {
         vertpos_t firstLine = 0;
         for (int numLines=0; firstLine<rowcount && numLines<s_pgOfs; firstLine++) {
@@ -494,8 +501,8 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
         }
         else {
           vertpos_t lastLine = firstLine;
-          for (int numLines=0; lastLine<rowcount && numLines<NUM_BODY_LINES; lastLine++) {
-            if (lastLine>=horTabMax || horTab[lastLine] != HIDDEN_ROW) {
+          for (int numLines=0; lastLine<rowcount && numLines<maxBodyLines; lastLine++) {
+            if (lastLine >= horTabMax || horTab[lastLine] != HIDDEN_ROW) {
               numLines++;
             }
           }
@@ -503,9 +510,9 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
             s_pgOfs++;
           }
           else {
-            linesCount = s_pgOfs + NUM_BODY_LINES;
+            linesCount = s_pgOfs + maxBodyLines;
             for (int i=lastLine; i<rowcount; i++) {
-              if (i>horTabMax || horTab[i] != HIDDEN_ROW) {
+              if (i > horTabMax || horTab[i] != HIDDEN_ROW) {
                 linesCount++;
               }
             }
@@ -516,10 +523,10 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
     }
   }
   else {
-    if (m_posVert>=NUM_BODY_LINES+s_pgOfs) {
-      s_pgOfs = m_posVert-NUM_BODY_LINES+1;
+    if (m_posVert >= maxBodyLines + s_pgOfs) {
+      s_pgOfs = m_posVert-maxBodyLines+1;
     }
-    else if (m_posVert<s_pgOfs) {
+    else if (m_posVert < s_pgOfs) {
       s_pgOfs = m_posVert;
     }
   }

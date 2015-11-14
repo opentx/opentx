@@ -97,7 +97,7 @@ bool menuGeneralTrainer(evt_t event)
   }
 
   attr = (sub==5) ? blink : 0;
-  lcd_putsLeft(MENU_CONTENT_TOP + 5*FH, STR_MULTIPLIER);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 5*FH, STR_MULTIPLIER);
   lcdDrawNumber(TRAINER_COLUMN_1, MENU_CONTENT_TOP + 5*FH, g_eeGeneral.PPM_Multiplier+10, LEFT|attr|PREC1);
   if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 

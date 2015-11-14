@@ -134,21 +134,21 @@ bool menuStatisticsDebug(evt_t event)
 
   drawScreenTemplate(STR_MENUDEBUG);
 
-  lcd_putsLeft(MENU_DEBUG_Y_FREE_RAM, "Free Mem");
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_DEBUG_Y_FREE_RAM, "Free Mem");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, availableMemory(), LEFT, 0, NULL, "b");
 
 #if defined(LUA)
-  lcd_putsLeft(MENU_DEBUG_Y_LUA, "Lua scripts");
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_DEBUG_Y_LUA, "Lua scripts");
   lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_LUA+1, "[Duration]", HEADER_COLOR|SMLSIZE);
   lcdDrawNumber(MENU_DEBUG_COL1_OFS+30, MENU_DEBUG_Y_LUA, 10*maxLuaDuration, LEFT);
   lcdDrawText(MENU_DEBUG_COL1_OFS+60, MENU_DEBUG_Y_LUA+1, "[Interval]", HEADER_COLOR|SMLSIZE);
   lcdDrawNumber(MENU_DEBUG_COL1_OFS+90, MENU_DEBUG_Y_LUA, 10*maxLuaInterval, LEFT);
 #endif
 
-  lcd_putsLeft(MENU_DEBUG_Y_MIXMAX, STR_TMIXMAXMS);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_DEBUG_Y_MIXMAX, STR_TMIXMAXMS);
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT, 0, NULL, "ms");
 
-  lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
   lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[Menus]", HEADER_COLOR|SMLSIZE);
   lcdDrawNumber(MENU_DEBUG_COL1_OFS+30, MENU_DEBUG_Y_RTOS, menusStack.available(), LEFT);
   lcdDrawText(MENU_DEBUG_COL1_OFS+60, MENU_DEBUG_Y_RTOS+1, "[Mix]", HEADER_COLOR|SMLSIZE);

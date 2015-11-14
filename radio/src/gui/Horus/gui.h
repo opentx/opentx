@@ -59,9 +59,9 @@
 #define INVERT_VERT_MARGIN    1
 #define INVERT_LINE_HEIGHT    18
 
-#define CURVE_SIDE_WIDTH      88
-#define CURVE_CENTER_X        (LCD_W-CURVE_SIDE_WIDTH-10)
-#define CURVE_CENTER_Y        159
+#define CURVE_SIDE_WIDTH      100
+#define CURVE_CENTER_X        (LCD_W-CURVE_SIDE_WIDTH-7)
+#define CURVE_CENTER_Y        151
 
 #define MENU_TITLE_NEXT_POS   (lcdNextPos + 10)
 #define MENU_INIT_VPOS        -1
@@ -111,4 +111,6 @@ extern const uint8_t LBM_STAR1[];
 
 // Other icons
 extern const uint8_t LBM_ASTERISK[];
-
+extern const uint8_t LBM_POINT[];
+extern const uint8_t LBM_CURVE_POINT[];
+extern const uint8_t LBM_CURVE_POINT_CENTER[];

@@ -122,7 +122,7 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, evt_t event)
 {
   TimerData * timer = &g_model.timers[timerIdx];
   if (attr && m_posHorz < 0) {
-    lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 90+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+    lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN+1, 90+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
   }
   putsStrIdx(MENUS_MARGIN_LEFT, y, STR_TIMER, timerIdx+1);
   putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, (m_posHorz<=0 ? attr : 0));
@@ -219,11 +219,12 @@ bool menuModelSetup(evt_t event)
 
     switch(k) {
       case ITEM_MODEL_NAME:
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_MODELNAME, g_model.header.name, sizeof(g_model.header.name), event, attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODELNAME);
+        editName(MODEL_SETUP_2ND_COLUMN, y, g_model.header.name, sizeof(g_model.header.name), event, attr);
         break;
 
       case ITEM_MODEL_BITMAP:
-        lcd_putsLeft(y, STR_BITMAP);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BITMAP);
         if (ZEXIST(g_model.header.bitmap))
           lcdDrawTextWithLen(MODEL_SETUP_2ND_COLUMN, y, g_model.header.bitmap, sizeof(g_model.header.bitmap), attr);
         else
@@ -245,19 +246,23 @@ bool menuModelSetup(evt_t event)
         break;
 
       case ITEM_MODEL_TIMER1_NAME:
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER_NAME, g_model.timers[0].name, LEN_TIMER_NAME, event, attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TIMER_NAME);
+        editName(MODEL_SETUP_2ND_COLUMN, y, g_model.timers[0].name, LEN_TIMER_NAME, event, attr);
         break;
 
       case ITEM_MODEL_TIMER1_MINUTE_BEEP:
-        g_model.timers[0].minuteBeep = onoffMenuItem(g_model.timers[0].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MINUTEBEEP);
+        g_model.timers[0].minuteBeep = onoffMenuItem(g_model.timers[0].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_TIMER1_COUNTDOWN_BEEP:
-        g_model.timers[0].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[0].countdownBeep, 0, 2, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEPCOUNTDOWN);
+        g_model.timers[0].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VBEEPCOUNTDOWN, g_model.timers[0].countdownBeep, 0, 2, attr, event);
         break;
 
       case ITEM_MODEL_TIMER1_PERSISTENT:
-        g_model.timers[0].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, g_model.timers[0].persistent, 0, 2, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PERSISTENT);
+        g_model.timers[0].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VPERSISTENT, g_model.timers[0].persistent, 0, 2, attr, event);
         break;
 
 #if TIMERS > 1
@@ -266,19 +271,23 @@ bool menuModelSetup(evt_t event)
         break;
 
       case ITEM_MODEL_TIMER2_NAME:
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER_NAME, g_model.timers[1].name, LEN_TIMER_NAME, event, attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TIMER_NAME);
+        editName(MODEL_SETUP_2ND_COLUMN, y, g_model.timers[1].name, LEN_TIMER_NAME, event, attr);
         break;
 
       case ITEM_MODEL_TIMER2_MINUTE_BEEP:
-        g_model.timers[1].minuteBeep = onoffMenuItem(g_model.timers[1].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MINUTEBEEP);
+        g_model.timers[1].minuteBeep = onoffMenuItem(g_model.timers[1].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_TIMER2_COUNTDOWN_BEEP:
-        g_model.timers[1].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[1].countdownBeep, 0, 2, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEPCOUNTDOWN);
+        g_model.timers[1].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VBEEPCOUNTDOWN, g_model.timers[1].countdownBeep, 0, 2, attr, event);
         break;
 
       case ITEM_MODEL_TIMER2_PERSISTENT:
-        g_model.timers[1].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, g_model.timers[1].persistent, 0, 2, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PERSISTENT);
+        g_model.timers[1].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VPERSISTENT, g_model.timers[1].persistent, 0, 2, attr, event);
         break;
 #endif
 
@@ -288,28 +297,34 @@ bool menuModelSetup(evt_t event)
         break;
 
       case ITEM_MODEL_TIMER3_NAME:
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER_NAME, g_model.timers[2].name, LEN_TIMER_NAME, event, attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TIMER_NAME);
+        editName(MODEL_SETUP_2ND_COLUMN, y, g_model.timers[2].name, LEN_TIMER_NAME, event, attr);
         break;
 
       case ITEM_MODEL_TIMER3_MINUTE_BEEP:
-        g_model.timers[2].minuteBeep = onoffMenuItem(g_model.timers[2].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MINUTEBEEP);
+        g_model.timers[2].minuteBeep = onoffMenuItem(g_model.timers[2].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_TIMER3_COUNTDOWN_BEEP:
-        g_model.timers[2].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, g_model.timers[2].countdownBeep, 0, 2, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEPCOUNTDOWN);
+        g_model.timers[2].countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VBEEPCOUNTDOWN, g_model.timers[2].countdownBeep, 0, 2, attr, event);
         break;
 
       case ITEM_MODEL_TIMER3_PERSISTENT:
-        g_model.timers[2].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, g_model.timers[2].persistent, 0, 2, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PERSISTENT);
+        g_model.timers[2].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VPERSISTENT, g_model.timers[2].persistent, 0, 2, attr, event);
         break;
 #endif
 
       case ITEM_MODEL_EXTENDED_LIMITS:
-        ON_OFF_MENU_ITEM(g_model.extendedLimits, MODEL_SETUP_2ND_COLUMN, y, STR_ELIMITS, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ELIMITS);
+        onoffMenuItem(g_model.extendedLimits, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_EXTENDED_TRIMS:
-        ON_OFF_MENU_ITEM(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, m_posHorz<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ETRIMS);
+        onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, m_posHorz<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN+18, y, STR_RESET_BTN, m_posHorz>0  && !s_noHi ? attr : 0);
         if (attr && m_posHorz>0) {
           s_editMode = 0;
@@ -325,15 +340,17 @@ bool menuModelSetup(evt_t event)
         break;
 
       case ITEM_MODEL_DISPLAY_TRIMS:
-        g_model.displayTrims = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, "Display Trims", "\006No\0   ChangeYes", g_model.displayTrims, 0, 2, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_DISPLAY_TRIMS);
+        g_model.displayTrims = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, "\006No\0   ChangeYes", g_model.displayTrims, 0, 2, attr, event);
         break;
 
       case ITEM_MODEL_TRIM_INC:
-        g_model.trimInc = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_TRIMINC, STR_VTRIMINC, g_model.trimInc, -2, 2, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TRIMINC);
+        g_model.trimInc = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VTRIMINC, g_model.trimInc, -2, 2, attr, event);
         break;
 
       case ITEM_MODEL_THROTTLE_LABEL:
-        lcd_putsLeft(y, STR_THROTTLE_LABEL);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_THROTTLE_LABEL);
         break;
 
 #if 0
@@ -344,7 +361,7 @@ bool menuModelSetup(evt_t event)
 
       case ITEM_MODEL_THROTTLE_TRACE:
       {
-        lcd_putsLeft(y, STR_TTRACE);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TTRACE);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.thrTraceSrc, NUM_POTS+NUM_CHNOUT);
         uint8_t idx = g_model.thrTraceSrc + MIXSRC_Thr;
         if (idx > MIXSRC_Thr)
@@ -356,24 +373,27 @@ bool menuModelSetup(evt_t event)
       }
 
       case ITEM_MODEL_THROTTLE_TRIM:
-        ON_OFF_MENU_ITEM(g_model.thrTrim, MODEL_SETUP_2ND_COLUMN, y, STR_TTRIM, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TTRIM);
+        onoffMenuItem(g_model.thrTrim, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_PREFLIGHT_LABEL:
-        lcd_putsLeft(y, STR_PREFLIGHT);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PREFLIGHT);
         break;
 
       case ITEM_MODEL_CHECKLIST_DISPLAY:
-        ON_OFF_MENU_ITEM(g_model.displayChecklist, MODEL_SETUP_2ND_COLUMN, y, STR_CHECKLIST, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CHECKLIST);
+        onoffMenuItem(g_model.displayChecklist, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_THROTTLE_WARNING:
-        g_model.disableThrottleWarning = !onoffMenuItem(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEWARNING, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_THROTTLEWARNING);
+        g_model.disableThrottleWarning = !onoffMenuItem(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_SWITCHES_WARNING:
       {
-        lcd_putsLeft(y, STR_SWITCHWARNING);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SWITCHWARNING);
         if (!READ_ONLY() && attr && m_posHorz<0 && event==EVT_KEY_LONG(KEY_ENTER)) {
           killEvents(event);
           s_noHi = NO_HI_LEN;
@@ -431,7 +451,7 @@ bool menuModelSetup(evt_t event)
 
       case ITEM_MODEL_POT_WARNING:
       {
-        lcd_putsLeft(y, STR_POTWARNING);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_POTWARNING);
         if (attr) {
           if (m_posHorz) s_editMode = 0;
           if (!READ_ONLY() && m_posHorz) {
@@ -470,7 +490,7 @@ bool menuModelSetup(evt_t event)
       }
 
       case ITEM_MODEL_BEEP_CENTER:
-        lcd_putsLeft(y, STR_BEEPCTR);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEPCTR);
         if (attr && m_posHorz < 0) {
           lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, (NUM_STICKS+NUM_POTS)*13+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
@@ -493,21 +513,22 @@ bool menuModelSetup(evt_t event)
         break;
 
       case ITEM_MODEL_USE_GLOBAL_FUNCTIONS:
-        lcd_putsLeft(y, "Use Global Funcs");
+        lcdDrawText(MENUS_MARGIN_LEFT, y, "Use Global Funcs");
         drawCheckBox(MODEL_SETUP_2ND_COLUMN, y, !g_model.noGlobalFunctions, attr);
         if (attr) g_model.noGlobalFunctions = !checkIncDecModel(event, !g_model.noGlobalFunctions, 0, 1);
         break;
 
       case ITEM_MODEL_TRAINER_MODE:
-        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_MODE, STR_VTRAINERMODES, g_model.trainerMode, TRAINER_MODE_MASTER, TRAINER_MODE_SLAVE, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
+        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerMode, TRAINER_MODE_MASTER, TRAINER_MODE_SLAVE, attr, event);
         break;
 
       case ITEM_MODEL_EXTERNAL_MODULE_LABEL:
-        lcd_putsLeft(y, TR_EXTERNALRF);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, TR_EXTERNALRF);
         break;
 
       case ITEM_MODEL_EXTERNAL_MODULE_MODE:
-        lcd_putsLeft(y, STR_MODE);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].type, (m_posHorz==0 ? attr : 0));
         if (IS_MODULE_XJT(EXTERNAL_MODULE))
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+40, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (m_posHorz==1 ? attr : 0));
@@ -540,7 +561,7 @@ bool menuModelSetup(evt_t event)
         break;
 
       case ITEM_MODEL_TRAINER_LABEL:
-        lcd_putsLeft(y, STR_TRAINER);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TRAINER);
         break;
 
       case ITEM_MODEL_EXTERNAL_MODULE_CHANNELS:
@@ -548,7 +569,7 @@ bool menuModelSetup(evt_t event)
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
-        lcd_putsLeft(y, STR_CHANNELRANGE);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CHANNELRANGE);
         if ((int8_t)PORT_CHANNELS_ROWS(moduleIdx) >= 0) {
           putsStrIdx(MODEL_SETUP_2ND_COLUMN, y, STR_CH, moduleData.channelsStart+1, m_posHorz==0 ? attr : 0);
           lcdDrawText(MODEL_SETUP_2ND_COLUMN+30, y, "-");
@@ -577,7 +598,7 @@ bool menuModelSetup(evt_t event)
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         if (IS_MODULE_PPM(moduleIdx)) {
-          lcd_putsLeft(y, STR_PPMFRAME);
+          lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PPMFRAME);
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT, 0, NULL, STR_MS);
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+70, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0, 0, NULL, "us");
           lcdDrawText(MODEL_SETUP_2ND_COLUMN+90, y, moduleData.ppmPulsePol ? "+" : "-", (CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0);
@@ -601,11 +622,11 @@ bool menuModelSetup(evt_t event)
           coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
           if (IS_MODULE_XJT(moduleIdx) && IS_D8_RX(moduleIdx)) {
             xOffsetBind = 0;
-            lcd_putsLeft(y, INDENT "Receiver");
+            lcdDrawText(MENUS_MARGIN_LEFT, y, INDENT "Receiver");
             if (attr) l_posHorz += 1;
           }
           else {
-            lcd_putsLeft(y, STR_RXNUM);
+            lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RXNUM);
           }
           if (IS_MODULE_XJT(moduleIdx) || IS_MODULE_DSM2(moduleIdx)) {
             if (xOffsetBind) lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
@@ -632,7 +653,7 @@ bool menuModelSetup(evt_t event)
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
-        lcd_putsLeft(y, TR_FAILSAFE);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, TR_FAILSAFE);
         if (IS_MODULE_XJT(moduleIdx)) {
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VFAILSAFE, moduleData.failsafeMode, m_posHorz==0 ? attr : 0);
           if (moduleData.failsafeMode == FAILSAFE_CUSTOM) lcdDrawText(MODEL_SETUP_2ND_COLUMN + MODEL_SETUP_SET_FAILSAFE_OFS, y, STR_SET, m_posHorz==1 ? attr : 0);

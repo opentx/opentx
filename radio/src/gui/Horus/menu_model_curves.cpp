@@ -145,11 +145,11 @@ bool menuModelCurveOne(evt_t event)
 
   lcdDrawNumber(MENU_TITLE_NEXT_POS, MENU_TITLE_TOP+2, s_curveChan+1, LEFT|HEADER_COLOR);
 
-  lcd_putsLeft(MENU_CONTENT_TOP, STR_NAME);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, STR_NAME);
   editName(MENUS_MARGIN_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + FH, g_model.curveNames[s_curveChan], sizeof(g_model.curveNames[s_curveChan]), event, m_posVert==0);
 
   LcdFlags attr = (m_posVert==1 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
-  lcd_putsLeft(MENU_CONTENT_TOP + 2*FH, "Type");
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 2*FH, "Type");
   lcdDrawTextAtIndex(MENUS_MARGIN_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + 3*FH, STR_CURVE_TYPES, crv.type, attr);
   if (attr) {
     uint8_t newType = checkIncDecModelZero(event, crv.type, CURVE_TYPE_LAST);
@@ -166,7 +166,7 @@ bool menuModelCurveOne(evt_t event)
   }
 
   attr = (m_posVert==2 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
-  lcd_putsLeft(MENU_CONTENT_TOP + 4*FH, STR_COUNT);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 4*FH, STR_COUNT);
   lcdDrawNumber(MENUS_MARGIN_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + 5*FH, 5+crv.points, LEFT|attr, 0, NULL, STR_PTS);
   if (attr) {
     int count = checkIncDecModel(event, crv.points, -3, 12); // 2pts - 17pts
@@ -186,7 +186,7 @@ bool menuModelCurveOne(evt_t event)
     }
   }
 
-  lcd_putsLeft(MENU_CONTENT_TOP + 6*FH, STR_SMOOTH);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 6*FH, STR_SMOOTH);
   drawCheckBox(lcdNextPos + 10, MENU_CONTENT_TOP + 6*FH, crv.smooth, m_posVert==3 ? INVERS : 0);
   if (m_posVert==3) crv.smooth = checkIncDecModel(event, crv.smooth, 0, 1);
 

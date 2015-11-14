@@ -205,10 +205,10 @@ const char * displayMenu(evt_t event)
   for (uint8_t i=0; i<display_count; i++) {
     if (i == s_menu_item) {
       lcdDrawSolidFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, FH+1, TEXT_INVERTED_BGCOLOR);
-      lcdDrawText(MENU_X+6, i*(FH+1) + y + 5, s_menu[i], TEXT_INVERTED_COLOR|s_menu_flags);
+      lcdDrawText(MENU_X+6, i*(FH+1) + y + 4, s_menu[i], TEXT_INVERTED_COLOR|s_menu_flags);
     }
     else {
-      lcdDrawText(MENU_X+6, i*(FH+1) + y + 5, s_menu[i], s_menu_flags);
+      lcdDrawText(MENU_X+6, i*(FH+1) + y + 4, s_menu[i], s_menu_flags);
     }
   }
 

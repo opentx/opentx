@@ -40,10 +40,10 @@ bool menuGeneralVersion(evt_t event)
 {
   SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, e_Vers, 1, DEFAULT_SCROLLBAR_X);
 
-  lcd_putsLeft(MENU_CONTENT_TOP + FH, vers_stamp);
-  lcd_putsLeft(MENU_CONTENT_TOP + 2*FH, date_stamp);
-  lcd_putsLeft(MENU_CONTENT_TOP + 3*FH, time_stamp);
-  lcd_putsLeft(MENU_CONTENT_TOP + 4*FH, eeprom_stamp);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + FH, vers_stamp);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 2*FH, date_stamp);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 3*FH, time_stamp);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 4*FH, eeprom_stamp);
 
   // TODO EEPROM erase + backup
   // lcd_putsCenter(MENU_HEADER_HEIGHT+6*FH, STR_EEBACKUP);

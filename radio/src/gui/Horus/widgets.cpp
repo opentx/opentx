@@ -118,7 +118,7 @@ void drawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t co
 
 void drawProgressBar(const char *label)
 {
-  lcd_putsLeft(4*FH, label);
+  lcdDrawText(MENUS_MARGIN_LEFT, 4*FH, label);
   lcdDrawRect(3, 6*FH+4, 204, 7);
   lcdRefresh();
 }
@@ -162,6 +162,38 @@ void drawScreenTemplate(const char * title)
 }
 
 #define MENU_ICONS_SPACING 31
+
+void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X)
+{
+  // clear the screen
+  lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+  lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP-MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
+  lcdDrawSolidFilledRect(0, MENU_TITLE_TOP, LCD_W, LCD_H-MENU_TITLE_TOP, TEXT_BGCOLOR);
+
+  lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
+
+  lcdDrawSolidFilledRect(58+menuPageIndex*MENU_ICONS_SPACING-9, 0, 32, MENU_HEADER_HEIGHT, TITLE_BGCOLOR);
+
+  const uint8_t * const * icons = (g_menuPos[0] == 0 ? LBM_MODEL_ICONS : LBM_RADIO_ICONS);
+
+  lcdDrawBitmapPattern(5, 7, icons[0], MENU_TITLE_COLOR);
+
+  for (int i=0; i<menuPageCount; i++) {
+    lcdDrawBitmapPattern(50+i*MENU_ICONS_SPACING, 7, icons[i+1], MENU_TITLE_COLOR);
+  }
+
+  drawTopmenuDatetime();
+
+  if (name) {
+    // must be done at the end so that we can write something at the right of the menu title
+    lcdDrawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP+1, name, TEXT_COLOR);
+    lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT-4, MENU_TITLE_TOP+19, 220, 2, TITLE_BGCOLOR);
+  }
+
+  if (scrollbar_X && linesCount > NUM_BODY_LINES) {
+    drawScrollbar(scrollbar_X, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, s_pgOfs, linesCount, NUM_BODY_LINES);
+  }
+}
 
 void drawMenuTemplate(const char * name, uint16_t scrollbar_X)
 {
@@ -207,25 +239,23 @@ void drawMenuTemplate(const char * name, uint16_t scrollbar_X)
   }
 }
 
-select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, const pm_char *values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, evt_t event)
+select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char * values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, evt_t event)
 {
-  lcd_putsColumnLeft(x, y, label);
   if (attr) value = checkIncDec(event, value, min, max, (g_menuPos[0] == 0) ? EE_MODEL : EE_GENERAL);
   if (values) lcdDrawTextAtIndex(x, y, values, value-min, attr);
   return value;
 }
 
-uint8_t onoffMenuItem(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, evt_t event )
+uint8_t onoffMenuItem(uint8_t value, coord_t x, coord_t y, LcdFlags attr, evt_t event )
 {
   drawCheckBox(x, y, value, attr);
-  return selectMenuItem(x, y, label, NULL, value, 0, 1, attr, event);
+  return selectMenuItem(x, y, NULL, value, 0, 1, attr, event);
 }
 
 int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, evt_t event)
 {
-  lcd_putsColumnLeft(x, y, STR_SWITCH);
   if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
-  putsSwitches(x,  y, value, attr);
+  putsSwitches(x, y, value, attr);
   return value;
 }
 

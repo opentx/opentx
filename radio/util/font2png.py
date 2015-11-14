@@ -49,12 +49,12 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
     
     width = getFontWidth(fontsize, metrics)
     top, bottom = getFontTopBottom(fontsize, metrics)
-    extraImage = QtGui.QImage("fonts/extra_%dpx.png" % (fontsize+1))
+    extraImage = QtGui.QImage("fonts/extra_%dpx.png" % fontsize)
     if extraImage.isNull():
         extraWidth = 0
     else:
         extraWidth = extraImage.size().width()
-    image = QtGui.QImage(width + extraWidth, fontsize+1, QtGui.QImage.Format_RGB32)
+    image = QtGui.QImage(width + extraWidth, fontsize+2, QtGui.QImage.Format_RGB32)
     image.fill(background)
     painter = QtGui.QPainter()
     painter.begin(image)
@@ -73,7 +73,7 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
             if fontsize >= 24:
                 painter.drawText(width-rect.left()+1, fontsize-2, c) # fontsize-bottom+1 -17 / 7
             else:
-                painter.drawText(width-rect.left(), fontsize-2, c) # fontsize-bottom+1 -17 / 7
+                painter.drawText(width-rect.left(), fontsize-1, c) # fontsize-bottom+1 -17 / 7
         width += getCharWidth(fontsize, metrics, i)
     if extraWidth:
         painter.drawImage(QtCore.QPoint(width, 0), extraImage)                             

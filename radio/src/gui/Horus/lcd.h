@@ -191,7 +191,6 @@ void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags attr=TEXT_COL
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags attr=TEXT_COLOR);
 void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags attr=TEXT_COLOR);
 void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s, unsigned char len);
-void lcd_putsLeft(coord_t y, const pm_char * s);
 void lcd_putsCenter(coord_t y, const pm_char * s, LcdFlags attr=0);
 void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags=0, uint8_t len=0, const char * prefix=NULL, const char * suffix=NULL);
@@ -222,15 +221,35 @@ void getTimerString(char * str, putstime_t tme, LcdFlags att=0);
 void putsRtcTime(coord_t x, coord_t y, LcdFlags att=0);
 void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
 
-#define SOLID  0xff
-#define DOTTED 0x55
+#define SOLID   0xff
+#define DOTTED  0x55
+#define STASHED 0x70
 
-void lcdDrawTransparentPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t color);
+#define PIXEL_PTR(x, y) &displayBuf[(y)*LCD_W + (x)]
+
+
+inline void lcdDrawPixel(display_t * p, display_t value)
+{
+  *p = value;
+}
+
+inline void lcdDrawPixel(coord_t x, coord_t y, display_t value)
+{
+  display_t * p = PIXEL_PTR(x, y);
+  lcdDrawPixel(p, value);
+}
+
 void lcdDrawTransparentPixel(display_t * p, uint8_t opacity, uint16_t color);
 void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att=0);
 void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
 void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
 void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
+
+inline void lcdDrawTransparentPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t color)
+{
+  display_t * p = PIXEL_PTR(x, y);
+  lcdDrawTransparentPixel(p, opacity, color);
+}
 
 #if !defined(SIMU)
 inline void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att)

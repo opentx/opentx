@@ -42,8 +42,6 @@ display_t displayBuf[DISPLAY_BUFFER_SIZE];
 
 uint16_t lcdColorTable[LCD_COLOR_COUNT];
 
-#define PIXEL_PTR(x, y) &displayBuf[(y)*LCD_W + (x)]
-
 void lcdColorsInit()
 {
   lcdColorTable[TEXT_COLOR_INDEX] = BLACK;
@@ -59,8 +57,8 @@ void lcdColorsInit()
   lcdColorTable[ALARM_COLOR_INDEX] = RED;
   lcdColorTable[WARNING_COLOR_INDEX] = YELLOW;
   lcdColorTable[TEXT_DISABLE_COLOR_INDEX] = RGB(0x60, 0x60, 0x60);
-  lcdColorTable[CURVE_AXIS_COLOR_INDEX] = BLUE;
-  lcdColorTable[CURVE_COLOR_INDEX] = BLACK;
+  lcdColorTable[CURVE_AXIS_COLOR_INDEX] = RGB(180, 180, 180);
+  lcdColorTable[CURVE_COLOR_INDEX] = RED;
   lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = RED;
   lcdColorTable[TITLE_BGCOLOR_INDEX] = RED;
   lcdColorTable[HEADER_BGCOLOR_INDEX] = DARKRED;
@@ -80,12 +78,12 @@ char getMappedChar(unsigned char c)
     return c - 0xC0 + 96;
 }
 
-int getFontPatternWidth(const uint16_t *spec, int index)
+int getFontPatternWidth(const uint16_t * spec, int index)
 {
   return spec[index+1] - spec[index];
 }
 
-int getCharWidth(char c, const uint16_t *spec)
+int getCharWidth(char c, const uint16_t * spec)
 {
   return getFontPatternWidth(spec, getMappedChar(c));
 }
@@ -203,7 +201,7 @@ void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s, uint8_t len, Lc
     else if (FONTSIZE(flags) == SMLSIZE)
       lcdDrawSolidFilledRect(x-INVERT_HORZ_MARGIN+1, y-INVERT_VERT_MARGIN, width+2*INVERT_HORZ_MARGIN-2, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
     else
-      lcdDrawSolidFilledRect(x-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, width+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+      lcdDrawSolidFilledRect(x-INVERT_HORZ_MARGIN, y/*-INVERT_VERT_MARGIN*/, width+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
   }
 
   char str[256];
@@ -252,11 +250,6 @@ void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s, uint8_t len, Lc
 void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags flags)
 {
   lcdDrawTextWithLen(x, y, s, 255, flags);
-}
-
-void lcd_putsLeft(coord_t y, const pm_char * s)
-{
-  lcdDrawText(MENUS_MARGIN_LEFT, y, s);
 }
 
 void lcd_putsCenter(coord_t y, const pm_char * s, LcdFlags attr)
@@ -473,7 +466,7 @@ void putsStrIdx(coord_t x, coord_t y, const pm_char *str, int idx, LcdFlags att,
 
 void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {
-  if (idx == 0) {
+  if (idx == MIXSRC_NONE) {
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, 0, att); // TODO macro
   }
   else if (idx <= MIXSRC_LAST_INPUT) {
@@ -503,8 +496,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
       lcdDrawChar(x+20, y, 'a'+qr.rem, att);
     }
   }
-
-  else if (idx < MIXSRC_LAST_POT) {
+  else if (idx <= MIXSRC_LAST_POT) {
     idx = idx-MIXSRC_Rud;
     if (ZEXIST(g_eeGeneral.anaNames[idx]))
       lcdDrawTextWithLen(x, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, ZCHAR|att);
@@ -793,23 +785,6 @@ void lcdSetContrast()
   lcdSetRefVolt(g_eeGeneral.contrast);
 }
 
-inline void lcdDrawPixel(display_t * p, display_t value)
-{
-  *p = value;
-}
-
-inline void lcdDrawPixel(coord_t x, coord_t y, display_t value)
-{
-  display_t * p = PIXEL_PTR(x, y);
-  lcdDrawPixel(p, value);
-}
-
-inline void lcdDrawTransparentPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t color)
-{
-  display_t * p = PIXEL_PTR(x, y);
-  lcdDrawTransparentPixel(p, opacity, color);
-}
-
 void lcdDrawTransparentPixel(display_t * p, uint8_t opacity, uint16_t color)
 {
   ASSERT_IN_DISPLAY(p);
@@ -874,19 +849,29 @@ void lcdDrawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags 
   if (y<0) { h+=y; y=0; if (h<=0) return; }
   if (y+h > LCD_H) { h = LCD_H - y; }
 
-  if (pat==DOTTED && !(y%2)) {
-    pat = ~pat;
-  }
+  display_t color = lcdColorTable[COLOR_IDX(att)];
+  uint8_t opacity = 0x0F - (att >> 24);
 
-  while (h--) {
-    if (pat & 1) {
-      lcdDrawPoint(x, y, att);
-      pat = (pat >> 1) | 0x80;
+  if (pat == SOLID) {
+    while (h--) {
+      lcdDrawTransparentPixel(x, y, opacity, color);
+      y++;
     }
-    else {
-      pat = pat >> 1;
+  }
+  else {
+    if (pat==DOTTED && !(y%2)) {
+      pat = ~pat;
     }
-    y++;
+    while (h--) {
+      if (pat & 1) {
+        lcdDrawTransparentPixel(x, y, opacity, color);
+        pat = (pat >> 1) | 0x80;
+      }
+      else {
+        pat = pat >> 1;
+      }
+      y++;
+    }
   }
 }
 

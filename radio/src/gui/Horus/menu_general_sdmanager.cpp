@@ -47,13 +47,13 @@ bool menuGeneralSdManagerInfo(evt_t event)
 {
   SIMPLE_SUBMENU(STR_SD_INFO_TITLE, 1, DEFAULT_SCROLLBAR_X);
 
-  lcd_putsLeft(2*FH, STR_SD_TYPE);
+  lcdDrawText(MENUS_MARGIN_LEFT, 2*FH, STR_SD_TYPE);
   lcdDrawText(100, 2*FH, SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD);
 
-  lcd_putsLeft(3*FH, STR_SD_SIZE);
+  lcdDrawText(MENUS_MARGIN_LEFT, 3*FH, STR_SD_SIZE);
   lcdDrawNumber(100, 3*FH, sdGetSize(), LEFT, 0, NULL, "M");
 
-  lcd_putsLeft(4*FH, STR_SD_SECTORS);
+  lcdDrawText(MENUS_MARGIN_LEFT, 4*FH, STR_SD_SECTORS);
 #if defined(SD_GET_FREE_BLOCKNR)
   lcdDrawNumber(100, 4*FH, SD_GET_FREE_BLOCKNR()/1000, LEFT, 0, NULL, "/");
   lcdDrawNumber(150, 4*FH, sdGetNoSectors()/1000, LEFT);
@@ -61,7 +61,7 @@ bool menuGeneralSdManagerInfo(evt_t event)
   lcdDrawNumber(100, 4*FH, sdGetNoSectors()/1000, LEFT, 0, NULL, "k");
 #endif
 
-  lcd_putsLeft(5*FH, STR_SD_SPEED);
+  lcdDrawText(MENUS_MARGIN_LEFT, 5*FH, STR_SD_SPEED);
   lcdDrawNumber(100, 5*FH, SD_GET_SPEED()/1000, LEFT, 0, NULL, "kb/s");
 
   return true;

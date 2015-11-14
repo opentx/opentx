@@ -77,14 +77,12 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t a
 
 #define MIXES_2ND_COLUMN    100
 
-uint8_t editDelay(const coord_t x, const coord_t y, const evt_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
+uint8_t editDelay(const coord_t x, const coord_t y, const evt_t event, const uint8_t attr, uint8_t delay)
 {
-  lcdDrawText(x+MENUS_MARGIN_LEFT, y, str, TEXT_COLOR);
   lcdDrawNumber(x+MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
   if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, delay, DELAY_MAX);
   return delay;
 }
-#define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(x, y, event, attr, str, delay)
 
 const MenuFuncP menuTabModel[] = {
 //   menuModelSelect,
@@ -199,12 +197,6 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
     }
     editNameCursorPos = cur;
   }
-}
-
-void editSingleName(coord_t x, coord_t y, const pm_char *label, char *name, uint8_t size, evt_t event, uint8_t active)
-{
-  lcd_putsLeft(y, label);
-  editName(x, y, name, size, event, active);
 }
 
 static uint8_t s_currIdx;

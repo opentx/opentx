@@ -63,17 +63,18 @@ bool menuModelHeli(evt_t event)
 
     switch(k) {
       case ITEM_HELI_SWASHTYPE:
-        g_model.swashR.type = selectMenuItem(MODEL_HELI_2ND_COLUMN, y, STR_SWASHTYPE, STR_VSWASHTYPE, g_model.swashR.type, 0, SWASH_TYPE_MAX, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SWASHTYPE);
+        g_model.swashR.type = selectMenuItem(MODEL_HELI_2ND_COLUMN, y, STR_VSWASHTYPE, g_model.swashR.type, 0, SWASH_TYPE_MAX, attr, event);
         break;
 
       case ITEM_HELI_SWASHRING:
-        lcd_putsLeft(y, STR_SWASHRING);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SWASHRING);
         lcdDrawNumber(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.value, LEFT|attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.swashR.value, 100);
         break;
 
       case ITEM_HELI_ELE:
-        lcd_putsLeft(y, STR_ELEVATOR);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ELEVATOR);
         putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.elevatorSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.elevatorSource, 0, MIXSRC_LAST_CH);
         break;
@@ -85,7 +86,7 @@ bool menuModelHeli(evt_t event)
         break;
 
       case ITEM_HELI_AIL:
-        lcd_putsLeft(y, STR_AILERON);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_AILERON);
         putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.aileronSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.aileronSource, 0, MIXSRC_LAST_CH);
         break;
@@ -97,7 +98,7 @@ bool menuModelHeli(evt_t event)
         break;
 
       case ITEM_HELI_COL:
-        lcd_putsLeft(y, STR_COLLECTIVE);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_COLLECTIVE);
         putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH);
         break;

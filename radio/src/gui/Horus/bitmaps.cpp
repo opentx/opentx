@@ -251,3 +251,15 @@ const uint8_t LBM_STAR1[] = {
 const uint8_t LBM_ASTERISK[] = {
 #include "../../bitmaps/Horus/asterisk.lbm"
 };
+
+const uint8_t LBM_POINT[] = {
+#include "../../bitmaps/Horus/mask_point.lbm"
+};
+
+const uint8_t LBM_CURVE_POINT[] = {
+#include "../../bitmaps/Horus/mask_cvpoint.lbm"
+};
+
+const uint8_t LBM_CURVE_POINT_CENTER[] = {
+#include "../../bitmaps/Horus/mask_cvpoint_center.lbm"
+};

@@ -46,10 +46,10 @@
 #define MINUTE_SEPARATOR_OFFSET 63
 #define SECOND_OFFSET           75
 
-#define SLIDER_5POS(y, value, label, event, attr) { \
+#define SLIDER_5POS(y, value, event, attr) { \
   int8_t tmp = value; \
   drawSlider(RADIO_SETUP_2ND_COLUMN, y, 2+tmp, 4, attr); \
-  value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
+  value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, NULL, tmp, -2, +2, attr, event); \
 }
 
 #if defined(SPLASH) && !defined(FSPLASH)
@@ -139,7 +139,7 @@ bool menuGeneralSetup(evt_t event)
     switch(k) {
       case ITEM_SETUP_DATE:
       {
-        lcd_putsLeft(y, STR_DATE);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_DATE);
         LcdFlags flags = 0;
         if (attr && m_posHorz < 0) {
           flags |= INVERS;
@@ -178,7 +178,7 @@ bool menuGeneralSetup(evt_t event)
 
       case ITEM_SETUP_TIME:
       {
-        lcd_putsLeft(y, STR_TIME);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TIME);
         LcdFlags flags = 0;
         if (attr && m_posHorz < 0) {
           flags |= INVERS;
@@ -211,7 +211,7 @@ bool menuGeneralSetup(evt_t event)
 #if 0
       case ITEM_SETUP_BATT_RANGE:
       {
-        lcd_putsLeft(y, STR_BATTERY_RANGE);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATTERY_RANGE);
         LcdFlags color = WHITE;
         if (attr && m_posHorz < 0) {
           color = BLACK;
@@ -231,11 +231,12 @@ bool menuGeneralSetup(evt_t event)
 #endif
 
       case ITEM_SETUP_SOUND_LABEL:
-        lcd_putsLeft(y, STR_SOUND_LABEL);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SOUND_LABEL);
         break;
 
       case ITEM_SETUP_BEEP_MODE:
-        g_eeGeneral.beepMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_SPEAKER, STR_VBEEPMODE, g_eeGeneral.beepMode, -2, 1, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SPEAKER);
+        g_eeGeneral.beepMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_VBEEPMODE, g_eeGeneral.beepMode, -2, 1, attr, event);
 #if defined(FRSKY)
         if (attr && checkIncDec_Ret) frskySendAlarms();
 #endif
@@ -243,7 +244,7 @@ bool menuGeneralSetup(evt_t event)
 
       case ITEM_SETUP_SPEAKER_VOLUME:
       {
-        lcd_putsLeft(y, STR_SPEAKER_VOLUME);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SPEAKER_VOLUME);
         uint8_t b = g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF;
         drawSlider(RADIO_SETUP_2ND_COLUMN, y, b, VOLUME_LEVEL_MAX, attr);
         if (attr) {
@@ -256,21 +257,25 @@ bool menuGeneralSetup(evt_t event)
       }
 
       case ITEM_SETUP_BEEP_VOLUME:
-        SLIDER_5POS(y, g_eeGeneral.beepVolume, STR_BEEP_VOLUME, event, attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEP_VOLUME);
+        SLIDER_5POS(y, g_eeGeneral.beepVolume, event, attr);
         break;
       case ITEM_SETUP_WAV_VOLUME:
-        SLIDER_5POS(y, g_eeGeneral.wavVolume, STR_WAV_VOLUME, event, attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_WAV_VOLUME);
+        SLIDER_5POS(y, g_eeGeneral.wavVolume, event, attr);
         break;
       case ITEM_SETUP_BACKGROUND_VOLUME:
-        SLIDER_5POS(y, g_eeGeneral.backgroundVolume, STR_BG_VOLUME, event, attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BG_VOLUME);
+        SLIDER_5POS(y, g_eeGeneral.backgroundVolume, event, attr);
         break;
 
       case ITEM_SETUP_BEEP_LENGTH:
-        SLIDER_5POS(y, g_eeGeneral.beepLength, STR_BEEP_LENGTH, event, attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEP_LENGTH);
+        SLIDER_5POS(y, g_eeGeneral.beepLength, event, attr);
         break;
 
       case ITEM_SETUP_SPEAKER_PITCH:
-        lcd_putsLeft( y, STR_SPKRPITCH);
+        lcdDrawText(MENUS_MARGIN_LEFT,  y, STR_SPKRPITCH);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.speakerPitch*15, attr|LEFT, 0, "+", "Hz");
         if (attr) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 0, 20);
@@ -279,23 +284,24 @@ bool menuGeneralSetup(evt_t event)
 
 #if defined(VARIO)
       case ITEM_SETUP_VARIO_LABEL:
-        lcd_putsLeft(y, STR_VARIO);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_VARIO);
         break;
       case ITEM_SETUP_VARIO_VOLUME:
-        SLIDER_5POS(y, g_eeGeneral.varioVolume, TR_SPEAKER_VOLUME, event, attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, TR_SPEAKER_VOLUME);
+        SLIDER_5POS(y, g_eeGeneral.varioVolume, event, attr);
         break;
       case ITEM_SETUP_VARIO_PITCH:
-        lcd_putsLeft(y, STR_PITCH_AT_ZERO);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PITCH_AT_ZERO);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10), attr|LEFT, 0, NULL, "Hz");
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioPitch, -40, 40);
         break;
       case ITEM_SETUP_VARIO_RANGE:
-        lcd_putsLeft(y, STR_PITCH_AT_MAX);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PITCH_AT_MAX);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)+VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10), attr|LEFT, 0, NULL, "Hz");
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRange, -80, 80);
         break;
       case ITEM_SETUP_VARIO_REPEAT:
-        lcd_putsLeft(y, STR_REPEAT_AT_ZERO);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_REPEAT_AT_ZERO);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10), attr|LEFT, 0, NULL, STR_MS);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRepeat, -30, 50);
         break;
@@ -303,25 +309,28 @@ bool menuGeneralSetup(evt_t event)
 
 #if defined(HAPTIC)
       case ITEM_SETUP_HAPTIC_LABEL:
-        lcd_putsLeft(y, STR_HAPTIC_LABEL);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_HAPTIC_LABEL);
         break;
 
       case ITEM_SETUP_HAPTIC_MODE:
-        g_eeGeneral.hapticMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MODE, STR_VBEEPMODE, g_eeGeneral.hapticMode, -2, 1, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
+        g_eeGeneral.hapticMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_VBEEPMODE, g_eeGeneral.hapticMode, -2, 1, attr, event);
         break;
 
       case ITEM_SETUP_HAPTIC_LENGTH:
-        SLIDER_5POS(y, g_eeGeneral.hapticLength, STR_LENGTH, event, attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_LENGTH);
+        SLIDER_5POS(y, g_eeGeneral.hapticLength, event, attr);
         break;
 
       case ITEM_SETUP_HAPTIC_STRENGTH:
-        SLIDER_5POS(y, g_eeGeneral.hapticStrength, STR_HAPTICSTRENGTH, event, attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_HAPTICSTRENGTH);
+        SLIDER_5POS(y, g_eeGeneral.hapticStrength, event, attr);
         break;
 #endif
 
 #if 0
       case ITEM_SETUP_CONTRAST:
-        lcd_putsLeft(y, STR_CONTRAST);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CONTRAST);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.contrast, attr|LEFT);
         if (attr) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, CONTRAST_MIN, CONTRAST_MAX);
@@ -331,11 +340,11 @@ bool menuGeneralSetup(evt_t event)
 #endif
 
       case ITEM_SETUP_ALARMS_LABEL:
-        lcd_putsLeft(y, STR_ALARMS_LABEL);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ALARMS_LABEL);
         break;
 
       case ITEM_SETUP_BATTERY_WARNING:
-        lcd_putsLeft(y, STR_BATTERYWARNING);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATTERYWARNING);
         putsVolts(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.vBatWarn, attr|LEFT);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 27, 42); // 2.7-4.2V
         break;
@@ -343,62 +352,66 @@ bool menuGeneralSetup(evt_t event)
 #if 0
       case ITEM_SETUP_MEMORY_WARNING:
       {
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MEMORYWARNING);
         uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
-        g_eeGeneral.disableMemoryWarning = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, STR_MEMORYWARNING, attr, event);
+        g_eeGeneral.disableMemoryWarning = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, attr, event);
         break;
       }
 #endif
 
       case ITEM_SETUP_ALARM_WARNING:
       {
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ALARMWARNING);
         uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
-        g_eeGeneral.disableAlarmWarning = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, STR_ALARMWARNING, attr, event);
+        g_eeGeneral.disableAlarmWarning = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, attr, event);
         break;
       }
 
 #if defined(PCBSKY9X)
       case ITEM_SETUP_CAPACITY_WARNING:
-        lcd_putsLeft(y, STR_CAPAWARNING);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CAPAWARNING);
         putsValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.mAhWarn*50, UNIT_MAH, attr|LEFT) ;
-        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.mAhWarn, 0, 100);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.mAhWarn, 0, 100);
         break;
 #endif
 
 #if defined(PCBSKY9X)
       case ITEM_SETUP_TEMPERATURE_WARNING:
-        lcd_putsLeft(y, STR_TEMPWARNING);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TEMPWARNING);
         putsValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.temperatureWarn, UNIT_TEMPERATURE, attr|LEFT) ;
-        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureWarn, 0, 120); // 0 means no alarm
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureWarn, 0, 120); // 0 means no alarm
         break;
 #endif
 
       case ITEM_SETUP_INACTIVITY_ALARM:
-        lcd_putsLeft( y,STR_INACTIVITYALARM);
+        lcdDrawText(MENUS_MARGIN_LEFT,  y,STR_INACTIVITYALARM);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.inactivityTimer, attr|LEFT, 0, NULL, "m");
         if (attr) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
         break;
 
 #if 0
       case ITEM_SETUP_BACKLIGHT_LABEL:
-        lcd_putsLeft(y, STR_BACKLIGHT_LABEL);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BACKLIGHT_LABEL);
         break;
 
       case ITEM_SETUP_BACKLIGHT_MODE:
-        g_eeGeneral.backlightMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MODE, STR_VBLMODE, g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
+        g_eeGeneral.backlightMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_VBLMODE, g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
         break;
 
       case ITEM_SETUP_FLASH_BEEP:
-        g_eeGeneral.alarmsFlash = onoffMenuItem(g_eeGeneral.alarmsFlash, RADIO_SETUP_2ND_COLUMN, y, STR_ALARM, attr, event ) ;
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ALARM);
+        g_eeGeneral.alarmsFlash = onoffMenuItem(g_eeGeneral.alarmsFlash, RADIO_SETUP_2ND_COLUMN, y, attr, event ) ;
         break;
 
       case ITEM_SETUP_BACKLIGHT_DELAY:
-        lcd_putsLeft(y, STR_BLDELAY);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLDELAY);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.lightAutoOff*5, attr|LEFT, 0, NULL, "s");
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightAutoOff, 0, 600/5);
         break;
 
       case ITEM_SETUP_BRIGHTNESS:
-        lcd_putsLeft(y, STR_BRIGHTNESS);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BRIGHTNESS);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 100-g_eeGeneral.backlightBright, attr|LEFT) ;
         if (attr) {
           uint8_t b = 100 - g_eeGeneral.backlightBright;
@@ -408,7 +421,7 @@ bool menuGeneralSetup(evt_t event)
         break;
 
       case ITEM_SETUP_BACKLIGHT_COLOR:
-        lcd_putsLeft(y, STR_BLCOLOR);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLCOLOR);
         drawSlider(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.backlightColor, 20, attr);
         if (attr) g_eeGeneral.backlightColor = checkIncDec(event, g_eeGeneral.backlightColor, 0, 20, EE_GENERAL | NO_INCDEC_MARKS);
         break;
@@ -417,7 +430,7 @@ bool menuGeneralSetup(evt_t event)
 #if 0
       case ITEM_SETUP_DISABLE_SPLASH:
       {
-        lcd_putsLeft(y, STR_SPLASHSCREEN);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SPLASHSCREEN);
         if (SPLASH_NEEDED()) {
           lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, SPLASH_TIMEOUT/100, attr|LEFT, 0, NULL, "s");
         }
@@ -430,21 +443,23 @@ bool menuGeneralSetup(evt_t event)
 #endif
 
       case ITEM_SETUP_TIMEZONE:
-        lcd_putsLeft(y, STR_TIMEZONE);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TIMEZONE);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.timezone, attr|LEFT);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.timezone, -12, 12);
         break;
 
       case ITEM_SETUP_GPSFORMAT:
-        g_eeGeneral.gpsFormat = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_GPSCOORD, STR_GPSFORMAT, g_eeGeneral.gpsFormat, 0, 1, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_GPSCOORD);
+        g_eeGeneral.gpsFormat = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_GPSFORMAT, g_eeGeneral.gpsFormat, 0, 1, attr, event);
         break;
 
       case ITEM_SETUP_COUNTRYCODE:
-        g_eeGeneral.countryCode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_COUNTRYCODE, STR_COUNTRYCODES, g_eeGeneral.countryCode, 0, 2, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_COUNTRYCODE);
+        g_eeGeneral.countryCode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_COUNTRYCODES, g_eeGeneral.countryCode, 0, 2, attr, event);
         break;
 
       case ITEM_SETUP_LANGUAGE:
-        lcd_putsLeft(y, STR_VOICELANG);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_VOICELANG);
         lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, currentLanguagePack->name, attr);
         if (attr) {
           currentLanguagePackIdx = checkIncDec(event, currentLanguagePackIdx, 0, DIM(languagePacks)-2, EE_GENERAL);
@@ -456,12 +471,14 @@ bool menuGeneralSetup(evt_t event)
         break;
 
       case ITEM_SETUP_IMPERIAL:
-        g_eeGeneral.imperial = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_UNITSSYSTEM, STR_VUNITSSYSTEM, g_eeGeneral.imperial, 0, 1, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_UNITSSYSTEM);
+        g_eeGeneral.imperial = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_VUNITSSYSTEM, g_eeGeneral.imperial, 0, 1, attr, event);
         break;
 
 #if 0
       case ITEM_SETUP_FAI:
-        onoffMenuItem(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, PSTR("FAI Mode"), attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, PSTR("FAI Mode"));
+        onoffMenuItem(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, attr, event);
         if (attr && checkIncDec_Ret) {
           if (g_eeGeneral.fai)
             POPUP_WARNING(PSTR("FAI\001mode blocked!"));
@@ -473,19 +490,20 @@ bool menuGeneralSetup(evt_t event)
 
 #if defined(MAVLINK)
       case ITEM_MAVLINK_BAUD:
-        g_eeGeneral.mavbaud = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUD_LABEL, STR_MAVLINK_BAUDS, g_eeGeneral.mavbaud, 0, 7, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MAVLINK_BAUD_LABEL);
+        g_eeGeneral.mavbaud = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUDS, g_eeGeneral.mavbaud, 0, 7, attr, event);
         break;
 #endif
 
       case ITEM_SETUP_SWITCHES_DELAY:
-        lcd_putsLeft(y, STR_SWITCHES_DELAY);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SWITCHES_DELAY);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 10*SWITCHES_DELAY(), attr|LEFT, 0, NULL, STR_MS);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchesDelay, -15, +15);
         break;
 
       case ITEM_SETUP_RX_CHANNEL_ORD:
       {
-        lcd_putsLeft(y, STR_RXCHANNELORD); // RAET->AETR
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RXCHANNELORD); // RAET->AETR
         char s[5];
         for (uint8_t i=0; i<4; i++) {
           s[i] = STR_RETA123[channel_order(i+1)];
@@ -498,7 +516,7 @@ bool menuGeneralSetup(evt_t event)
 
       case ITEM_SETUP_STICK_MODE:
       {
-        lcd_putsLeft(y, NO_INDENT(STR_MODE));
+        lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_MODE));
         char s[2] = " ";
         s[0] = '1'+g_eeGeneral.stickMode;
         lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, s, attr);
