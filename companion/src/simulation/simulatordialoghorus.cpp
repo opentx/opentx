@@ -120,7 +120,7 @@ void SimulatorDialogHorus::getValues()
     {
       buttonPressed == Qt::Key_PageUp,
       buttonPressed == Qt::Key_Escape,
-      buttonPressed == Qt::Key_Enter,
+      buttonPressed == Qt::Key_Enter || middleButtonPressed,
       buttonPressed == Qt::Key_Up,
       buttonPressed == Qt::Key_Down,
       buttonPressed == Qt::Key_Right,
