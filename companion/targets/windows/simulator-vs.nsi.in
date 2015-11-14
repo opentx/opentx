@@ -12,7 +12,7 @@
 
   ;Name and file
   Name "OpenTX Simulator"
-  OutFile "simulator-windows-@C9X_VERSION@.exe"
+  OutFile "simulator-windows-@VERSION@.exe"
 
   ;Default installation folder
   InstallDir "$PROGRAMFILES\OpenTX"

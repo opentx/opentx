@@ -278,7 +278,7 @@ void MainWindow::closeUpdatesWaitDialog()
 void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 {
     QByteArray qba = reply->readAll();
-    int i = qba.indexOf("C9X_VERSION");
+    int i = qba.indexOf("VERSION");
     if (i>0) {
       QString version = qba.mid(i+14, qba.indexOf("\"", i+14)-i-14);
 
@@ -288,7 +288,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 
       int vnum = version2index(version);
 
-      QString c9xversion = QString(C9X_VERSION);
+      QString c9xversion = QString(VERSION);
       int c9xver = version2index(c9xversion);
 
       if (c9xver < vnum) {
@@ -899,7 +899,7 @@ void MainWindow::about()
     aboutStr.append("<br/><br/>");
     aboutStr.append(tr("If you've found this program useful, please support by <a href='%1'>donating</a>").arg(DONATE_STR));
     aboutStr.append("<br/><br/>");
-    aboutStr.append(QString("Version %1, %2").arg(C9X_VERSION).arg(__DATE__));
+    aboutStr.append(QString("Version %1, %2").arg(VERSION).arg(__DATE__));
     aboutStr.append("<br/><br/>");
     aboutStr.append(tr("Copyright OpenTX Team") + "<br/>&copy; 2011-2015<br/>");
     QMessageBox msgBox(this);
@@ -930,7 +930,7 @@ void MainWindow::updateMenus()
     updateLanguageActions();
     updateIconSizeActions();
     updateIconThemeActions();
-    setWindowTitle(tr("OpenTX Companion %1 - Radio: %2 - Profile: %3").arg(C9X_VERSION).arg(GetCurrentFirmware()->getName()).arg(g.profile[g.id()].name()));
+    setWindowTitle(tr("OpenTX Companion %1 - Radio: %2 - Profile: %3").arg(VERSION).arg(GetCurrentFirmware()->getName()).arg(g.profile[g.id()].name()));
 }
 
 MdiChild *MainWindow::createMdiChild()

@@ -1,4 +1,4 @@
 // Automatically generated file (CMake) - do not edit
 #define DATE_STR  "@DATE@"
 #define TIME_STR  "@TIME@"
-#define VERS_STR  "@C9X_VERSION@"
+#define VERS_STR  "@VERSION@"
