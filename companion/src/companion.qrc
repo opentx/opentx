@@ -12,6 +12,14 @@
     <file>images/simulator/Horus/bottom.png</file>
     <file>images/simulator/Horus/led.png</file>
     <file>images/simulator/Horus/border-right.png</file>
+    <file>images/simulator/Horus/left_btn1.png</file>
+    <file>images/simulator/Horus/left_btn2.png</file>
+    <file>images/simulator/Horus/left_scrnsht.png</file>
+    <file>images/simulator/Horus/right_btnU.png</file>
+    <file>images/simulator/Horus/right_btnL.png</file>
+    <file>images/simulator/Horus/right_btnD.png</file>
+    <file>images/simulator/Horus/right_btnR.png</file>
+    <file>images/simulator/Horus/right_ent.png</file>    
     <file>images/simulator/9X/9xdb.png</file>
     <file>images/simulator/9X/9xdl.png</file>
     <file>images/simulator/9X/9xdr.png</file>
