@@ -104,12 +104,72 @@ void hook(lua_State* L, lua_Debug *ar)
   }
 }
 
+#if defined(PCBTARANIS) && defined(REV9E)
+  #define RADIO "taranisx9e"
+#elif defined(PCBTARANIS) && defined(REVPLUS)
+  #define RADIO "taranisplus"
+#elif defined(PCBTARANIS)
+  #define RADIO "taranis"
+#else
+#error "Unknown board"
+#endif
+
+#if defined(SIMU)
+  #define RADIO_VERSION RADIO"-simu"
+#else
+  #define RADIO_VERSION RADIO
+#endif
+
+/*luadoc
+@function getVersion()
+
+Returns OpenTX version
+
+@retval string OpenTX version (ie "2.1.5")
+
+@retval list (available since OpenTX 2.1.7) returns two values:
+ * `string` OpenTX version (ie "2.1.5")
+ * `string` radio version: `taranisx9e`, `taranisplus` or `taranis`. 
+If running in simulator the "-simu" is added
+
+### Example
+
+This example also runs in OpenTX versions where the radio version was not available:
+
+```lua
+local function run(event)
+  local ver, radio = getVersion()
+  print("version: "..ver)
+  if radio then print ("radio: "..radio) end
+  return 1
+end
+
+return {  run=run }
+```
+Output of above script in simulator:
+```
+version: 2.1.7
+radio: taranis-simu
+Script finished with status 1
+```
+*/
 static int luaGetVersion(lua_State *L)
 {
   lua_pushstring(L, VERS_STR);
-  return 1;
+  lua_pushstring(L, RADIO_VERSION);
+  return 2;
 }
 
+/*luadoc
+@function getTime()
+
+Returns current system time
+
+@retval number current system time. Returned value is the 
+number of 10ms periods since the radio start. Example: 
+run time: 12.54 seconds, return value: 1254
+
+*/
 static int luaGetTime(lua_State *L)
 {
   lua_pushunsigned(L, get_tmr10ms());
@@ -128,6 +188,19 @@ static void luaPushDateTime(lua_State *L, uint32_t year, uint32_t mon, uint32_t 
   lua_pushtableinteger(L, "sec", sec);
 }
 
+/*luadoc
+@function getDateTime()
+
+Returns current system date and time that is kept by the RTC unit
+
+@retval table current date and time, table elements:
+ * `year` year
+ * `mon` month
+ * `day` day of month
+ * `hour` hours
+ * `min` minutes
+ * `sec` seconds
+*/
 static int luaGetDateTime(lua_State *L)
 {
   struct gtm utm;
@@ -301,7 +374,20 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags=
   return false;  // not found
 }
 
-// get a detailed info about particular field
+/*luadoc
+@function getFieldInfo(name)
+
+Returns detailed information about a field
+
+@param name  name of the field (string)
+
+@retval table information about requested field, table elements:
+ * `id` field identifier (number)
+ * `name` field name (string)
+ * `desc` field description (string)
+
+@retval nil the requested filed was not found
+*/
 static int luaGetFieldInfo(lua_State *L)
 {
   const char * what = luaL_checkstring(L, 1);
@@ -317,6 +403,33 @@ static int luaGetFieldInfo(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function getValue(name_or_id)
+
+Returns current value of the requested field. 
+
+@param name_or_id  identifier (number) or name (string) of the field
+
+@retval value current field value (number). Zero is returned for:
+ * non-existing fields
+ * for all telemetry fields when the telemetry stream is not received
+
+@retval table GPS position is returned in a table:
+ * `lat` latitude, positive is North (number)
+ * `lon` longitude, positive is East (number)
+
+@retval table GPS date/time is returned in a table, format is the same 
+as is returned from getDateTime()
+
+@retval table Cells are returned in a table 
+(except where no cells were detected in which 
+case the returned value is 0):
+ * table has one item for each detected cell
+ * each item name is the cell number (1 to number of cells)
+ * each item value is the current cell voltage
+
+@notice Getting a value by its numerical identifier is faster then by its name.
+*/
 static int luaGetValue(lua_State *L)
 {
   int src = 0;
@@ -336,11 +449,21 @@ static int luaGetValue(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function playFile(name)
+
+Plays a track with a given name
+
+@param name (string) file name (including path) to play. If the path is not 
+absolute (name starts with the `/` character), then the given name is used relative to
+the current language path (example for English language: `/SOUNDS/en`)
+
+*/
 static int luaPlayFile(lua_State *L)
 {
   const char * filename = luaL_checkstring(L, 1);
   if (filename[0] != '/') {
-    // relative sound file path - use current languague dir for absolute path
+    // relative sound file path - use current language dir for absolute path
     char file[AUDIO_FILENAME_MAXLEN+1];
     char * str = getAudioPath(file);
     strncpy(str, filename, AUDIO_FILENAME_MAXLEN - (str-file));
@@ -353,6 +476,21 @@ static int luaPlayFile(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function playNumber(value, unit [, attributes])
+
+Plays a numerical value (text to speech)
+
+@param value (number) number to play. Value is interpreted as integer.
+
+@param unit (number) unit identifier (see table todo)
+
+@param attributes possible values:
+ * `0 or not present` plays integral part of the number (for a number 123 it plays 123)
+ * `PREC1` plays a number with one decimal place (for a number 123 it plays 12.3)
+ * `PREC2` plays a number with two decimal places (for a number 123 it plays 1.23)
+
+*/
 static int luaPlayNumber(lua_State *L)
 {
   int number = luaL_checkinteger(L, 1);
@@ -362,6 +500,18 @@ static int luaPlayNumber(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function playDuration(duration [, hourFormat])
+
+Plays a numerical value (text to speech)
+
+@param duration (number) number of seconds to play. Only integral part is used.
+
+@param hourFormat (number):
+ * `0 or not present` play format: minutes and seconds.
+ * `!= 0` play format: hours, minutes and seconds.
+
+*/
 static int luaPlayDuration(lua_State *L)
 {
   int duration = luaL_checkinteger(L, 1);
@@ -370,6 +520,27 @@ static int luaPlayDuration(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function playTone(frequency, duration, pause [, flags [, freqIncr]])
+
+Plays a tone
+
+@param frequency (number) tone frequency in Hz
+
+@param duration (number) length of the tone in (TODO units)
+
+@param pause (number) length of the pause in (TODO units)
+
+@param flags (number):
+ * `0 or not present` play with normal priority.
+ * `PLAY_BACKGROUND` play in background (built in vario function used this context)
+ * `PLAY_NOW` play immediately
+
+@param freqIncr (number) positive number increases the tone pitch (frequency with time),
+negative number decreases it. Bigger number has more effect
+
+@notice Minimum played frequency is 150Hz even if a lower value is specified.
+*/
 static int luaPlayTone(lua_State *L)
 {
   int frequency = luaL_checkinteger(L, 1);
@@ -381,6 +552,15 @@ static int luaPlayTone(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function killEvents(event)
+
+Cancels the key press propagation to the normal user interface algorithm.
+
+@param event (number) event to be suppressed
+
+@notice This function has currently no effect in OpenTX 2.1.x series
+*/
 static int luaKillEvents(lua_State *L)
 {
   int event = luaL_checkinteger(L, 1);
@@ -388,6 +568,14 @@ static int luaKillEvents(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function GREY()
+
+Returns gray value which can be used in lcd functions
+
+@retval (number) a value that represents amount of *greyness* (from 0 to 15)
+
+*/
 static int luaGrey(lua_State *L)
 {
   int index = luaL_checkinteger(L, 1);
@@ -395,6 +583,20 @@ static int luaGrey(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function getGeneralSettings()
+
+Returns (some of) the general radio settings
+
+@param index  zero based global variable index, use 0 for GV1, 8 for GV9
+
+@retval table with elements:
+ * `battMin` radio battery range - minimum value
+ * `battMax` radio battery range - maximum value
+ * `imperial` set to a value different from 0 if the radio is set to the
+ IMPERIAL units
+
+*/
 static int luaGetGeneralSettings(lua_State *L)
 {
   lua_newtable(L);
@@ -404,6 +606,11 @@ static int luaGetGeneralSettings(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function lcd.lock()
+
+@notice This function has no effect in OpenTX 2.1
+*/
 static int luaLcdLock(lua_State *L)
 {
   // disabled in opentx 2.1
@@ -411,12 +618,30 @@ static int luaLcdLock(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.clear()
+
+Erases all contents of LCD.
+
+@notice This function only works in stand-alone and telemetry scripts.
+*/
 static int luaLcdClear(lua_State *L)
 {
   if (luaLcdAllowed) lcd_clear();
   return 0;
 }
 
+/*luadoc
+@function lcd.drawPoint(x, y)
+
+Draws a single pixel on LCD
+
+@param x (positive number) x position, starts from 0 in top left corner. 
+
+@param y (positive number) y position, starts from 0 in top left corner and goes down.
+
+@notice Drawing on an existing black pixel produces white pixel (TODO check this!)
+*/
 static int luaLcdDrawPoint(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -426,6 +651,22 @@ static int luaLcdDrawPoint(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.drawLine(x1, y1, x2, y2, pattern, flags)
+
+Draws a straight line on LCD
+
+@param x1,y1 (positive numbers) starting coordinate
+
+@param x2,y2 (positive numbers) end coordinate
+
+@param pattern TODO
+
+@param flags TODO
+
+@notice If the start or the end of the line is outside the LCD dimensions, then the
+whole line will not be drawn (starting from OpenTX 2.1.5)
+*/
 static int luaLcdDrawLine(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -1248,6 +1489,23 @@ static int luaModelGetOutput(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function model.setOutput(index, value)
+
+Sets current global variable value. See also model.getGlobalVariable()
+
+@param index  zero based output index, use 0 for CH1, 31 for CH32
+
+@param value  new value for output. The `value` is a table with following items:
+  * `name` name of the output (channel)
+  * `min` negative limit 
+  * `max` positive limit
+  * `offset` subtrim value
+  * `ppmCenter` ppm center value
+  * `symetrical` 1 for symmetric limits, 0 for normal
+  * `revert` 1 for inverted output, 0 for normal
+  * `curve` curve reference (zero based index, 0 means Curve 1)
+*/
 static int luaModelSetOutput(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
@@ -1292,6 +1550,29 @@ static int luaModelSetOutput(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function model.getGlobalVariable(index [, phase])
+
+Returns current global variable value. 
+See also model.setGlobalVariable()
+
+@notice a simple warning or notice
+
+@param index  zero based global variable index, use 0 for GV1, 8 for GV9
+
+@param phase  zero based phase index, use 0 for Phase 1, 5 for Phase 6
+
+@retval nil   requested global variable does not exist
+
+@retval number current value of global variable
+
+Example:
+
+```lua
+  -- get GV3 (index = 2) from flight phase 1 (phase = 0)
+  val = model.getGlobalVariable(2, 0)
+```
+*/
 static int luaModelGetGlobalVariable(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
@@ -1303,6 +1584,22 @@ static int luaModelGetGlobalVariable(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function model.setGlobalVariable(index, phase, value)
+
+Sets current global variable value. See also model.getGlobalVariable()
+
+@param index  zero based global variable index, use 0 for GV1, 8 for GV9
+
+@param phase  zero based phase index, use 0 for Phase 1, 5 for Phase 6
+   
+@param value  new value for global variable. Permitted range is
+from -1024 to 1024. 
+    
+
+@notice Global variable can only store integer values, 
+any floating point value is converted (todo check how) into integer value.
+*/
 static int luaModelSetGlobalVariable(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
