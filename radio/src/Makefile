@@ -1287,7 +1287,7 @@ ifeq ($(PCB), HORUS)
            $(LUADIR)/lobject.c $(LUADIR)/lopcodes.c $(LUADIR)/lparser.c $(LUADIR)/lstate.c $(LUADIR)/lstring.c $(LUADIR)/ltable.c $(LUADIR)/lrotable.c $(LUADIR)/ltm.c $(LUADIR)/lundump.c $(LUADIR)/lvm.c $(LUADIR)/lzio.c \
            $(LUADIR)/lbaselib.c $(LUADIR)/linit.c $(LUADIR)/lmathlib.c $(LUADIR)/lbitlib.c $(LUADIR)/loadlib.c $(LUADIR)/lauxlib.c $(LUADIR)/ltablib.c $(LUADIR)/lcorolib.c $(LUADIR)/liolib.c
     SRC += $(LUASRC) 
-    LUADEP = lua_exports_flamenco.inc
+    LUADEP = lua_exports_horus.inc
   endif           
 
   EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/Horus/diskio.cpp
@@ -1931,7 +1931,7 @@ lua_exports_taranis.inc: myeeprom.h ../util/luaexport.py
 
 lua_exports_horus.inc: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua_exports_horus.txt" 
-	@$(PARSER) -DPCBFLAMENCO -DCPUARM -DCPUSTM32 -DLUA -DEXPORT myeeprom.h | grep LEXP > lua_exports_horus.txt
+	@$(PARSER) -DPCBHORUS -DCPUARM -DCPUSTM32 -DLUA -DEXPORT myeeprom.h | grep LEXP > lua_exports_horus.txt
 	@echo "Parsing and generating C Lua exports in lua_exports_horus.inc"
 	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports_horus.txt lua_exports_horus.inc lua_fields_horus.txt
 	@rm lua_exports_horus.txt
