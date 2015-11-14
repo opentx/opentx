@@ -1943,8 +1943,8 @@ enum MixSources {
   MIXSRC_FIRST_SLIDER,
   MIXSRC_SLIDER1 = MIXSRC_FIRST_SLIDER, LUA_EXPORT("ls", "Left slider")
   MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
-  MIXSRC_SLIDER3,                       LUA_EXPORT("ls2", "Left center slider")
-  MIXSRC_SLIDER4,                       LUA_EXPORT("rs2", "Right center slider")
+  MIXSRC_SLIDER3,                       LUA_EXPORT("lcs", "Left center slider")
+  MIXSRC_SLIDER4,                       LUA_EXPORT("rcs", "Right center slider")
   MIXSRC_LAST_POT = MIXSRC_SLIDER4,
 #elif defined(PCBFLAMENCO)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("sd", "Potentiometer D")
