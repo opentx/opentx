@@ -45,6 +45,7 @@
 
 #if defined WIN32 || !defined __GNUC__
   #include <direct.h>
+  #define mkdir(s, f) _mkdir(s)
 #endif
 
 #if defined(SIMU_DISKIO)

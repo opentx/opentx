@@ -306,9 +306,9 @@ namespace NAMESPACE {
 #include "radio/src/targets/Horus/keys_driver.cpp"
 #include "radio/src/targets/Horus/audio_driver.cpp"
 #include "radio/src/targets/Horus/telemetry_driver.cpp"
-// #include "radio/src/targets/Horus/haptic_driver.cpp"
+#include "radio/src/targets/Horus/haptic_driver.cpp"
 #include "radio/src/targets/Horus/pulses_driver.cpp"
-// #include "radio/src/targets/Horus/rtc_driver.cpp"
+#include "radio/src/targets/Taranis/rtc_driver.cpp"
 #include "radio/src/targets/Horus/trainer_driver.cpp"
 #elif defined(PCBFLAMENCO)
 #include "radio/src/targets/Flamenco/board_flamenco.cpp"
@@ -318,7 +318,7 @@ namespace NAMESPACE {
 #include "radio/src/targets/Flamenco/eeprom_driver.cpp"
 // #include "radio/src/targets/Flamenco/haptic_driver.cpp"
 #include "radio/src/targets/Flamenco/pulses_driver.cpp"
-// #include "radio/src/targets/Flamenco/rtc_driver.cpp"
+#include "radio/src/targets/Flamenco/rtc_driver.cpp"
 #include "radio/src/targets/Flamenco/trainer_driver.cpp"
 #elif defined(PCBTARANIS)
 #include "radio/src/targets/Taranis/board_taranis.cpp"
