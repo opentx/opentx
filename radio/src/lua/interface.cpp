@@ -40,6 +40,11 @@
 #include "bin_allocator.h"
 #include "lua/lua_api.h"
  
+#if defined(LUA_COMPILER) && defined(SIMU)
+  #include <lundump.h>
+  #include <lstate.h>
+#endif
+
 #define PERMANENT_SCRIPTS_MAX_INSTRUCTIONS (10000/100)
 #define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (20000/100)
 #define SET_LUA_INSTRUCTIONS_COUNT(x)      (instructionsPercent=0, lua_sethook(L, hook, LUA_MASKCOUNT, x))
@@ -228,6 +233,44 @@ void luaFree(ScriptInternalData & sid)
   UNPROTECT_LUA();
 }
 
+#if defined(LUA_COMPILER) && defined(SIMU)
+static int luaDumpWriter(lua_State* L, const void* p, size_t size, void* u)
+{
+  UNUSED(L);
+  UINT written;
+  FRESULT result = f_write((FIL *)u, p, size, &written);
+  return (result != FR_OK && !written);
+}
+
+static void luaCompileAndSave(const char *filename)
+{
+  FIL D;
+  char bytecodeName[1024];
+  strcpy(bytecodeName, filename);
+  strcat(bytecodeName, "c");
+
+  if (f_stat(bytecodeName, 0) == FR_OK) {
+    return;   // compiled file already exists
+  }
+
+  if (f_open(&D, bytecodeName, FA_WRITE | FA_CREATE_ALWAYS) != FR_OK) {
+    TRACE("Could not open Lua bytecode output file %s", bytecodeName);
+    return;
+  }
+
+  PROTECT_LUA() {
+    if (luaL_loadfile(L, filename) == 0) {
+      lua_lock(L);
+      luaU_dump(L, getproto(L->top - 1), luaDumpWriter, &D, 1);
+      lua_unlock(L);
+      TRACE("Saved Lua bytecode to file %s", bytecodeName);
+    }
+  }
+  UNPROTECT_LUA();
+  f_close(&D);
+}
+#endif
+
 int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=NULL)
 {
   int init = 0;
@@ -243,6 +286,10 @@ int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs 
   if (luaState == INTERPRETER_PANIC) {
     return SCRIPT_PANIC;
   }
+
+#if defined(LUA_COMPILER) && defined(SIMU)
+  luaCompileAndSave(filename);
+#endif
 
   SET_LUA_INSTRUCTIONS_COUNT(MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
 

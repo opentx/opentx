@@ -379,6 +379,10 @@ WATCHDOG_TEST = NO
 # Values = NO, YES
 WARNINGS_AS_ERRORS = NO
 
+# Enable saving of Lua byte-code of all loaded scripts
+# Values = NO, YES
+LUA_COMPILER = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -1414,6 +1418,10 @@ endif
 
 ifeq ($(IRPROTOS), YES)
   CPPDEFS += -DIRPROTOS
+endif
+
+ifeq ($(LUA_COMPILER), YES)
+  CPPDEFS += -DLUA_COMPILER
 endif
 
 #---------------- Compiler Options C++ ----------------
