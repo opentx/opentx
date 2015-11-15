@@ -132,6 +132,8 @@ Returns OpenTX version
  * `string` radio version: `taranisx9e`, `taranisplus` or `taranis`. 
 If running in simulator the "-simu" is added
 
+@status current Introduced in 2.0.0, expanded in 2.1.7
+
 ### Example
 
 This example also runs in OpenTX versions where the radio version was not available:
@@ -163,12 +165,12 @@ static int luaGetVersion(lua_State *L)
 /*luadoc
 @function getTime()
 
-Returns current system time
+Returns the time since the radio was started in multiple of 10ms
 
-@retval number current system time. Returned value is the 
-number of 10ms periods since the radio start. Example: 
+@retval number Number of 10ms ticks since the radio was started Example: 
 run time: 12.54 seconds, return value: 1254
 
+@status current Introduced in 2.0.0
 */
 static int luaGetTime(lua_State *L)
 {
@@ -377,16 +379,18 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags=
 /*luadoc
 @function getFieldInfo(name)
 
-Returns detailed information about a field
+Returns detailed information about field (source)
 
-@param name  name of the field (string)
+@param name (string) name of the field
 
 @retval table information about requested field, table elements:
- * `id` field identifier (number)
- * `name` field name (string)
- * `desc` field description (string)
+ * `id`   (number) field identifier 
+ * `name` (string) field name 
+ * `desc` (string) field description 
 
-@retval nil the requested filed was not found
+@retval nil the requested field was not found
+
+@status current Introduced in 2.0.8
 */
 static int luaGetFieldInfo(lua_State *L)
 {
@@ -404,15 +408,26 @@ static int luaGetFieldInfo(lua_State *L)
 }
 
 /*luadoc
-@function getValue(name_or_id)
+@function getValue(source)
 
-Returns current value of the requested field. 
+Returns the value of a source. 
 
-@param name_or_id  identifier (number) or name (string) of the field
+The list of valid sources is available:
+* for OpenTX 2.0.x at http://downloads-20.open-tx.org/firmware/lua_fields.txt
+* for OpenTX 2.1.x at http://downloads-21.open-tx.org/firmware/lua_fields.txt
 
-@retval value current field value (number). Zero is returned for:
- * non-existing fields
- * for all telemetry fields when the telemetry stream is not received
+In OpenTX 2.1.x the telemetry sources no longer have a predefined name. 
+To get a telemetry value simply use its sensor name. For example:
+ * Altitude sensor has a name "Alt"
+ * to get the current altitude use the source "Alt"
+ * to get the minimum altitude use the source "Alt-", to get the maximum use "Alt+"
+
+@param source  can be an identifier (number) (which was obtained by the getFieldInfo())
+or a name (string) of the source.
+
+@retval value current source value (number). Zero is returned for:
+ * non-existing sources
+ * for all telemetry source when the telemetry stream is not received
 
 @retval table GPS position is returned in a table:
  * `lat` latitude, positive is North (number)
@@ -427,6 +442,8 @@ case the returned value is 0):
  * table has one item for each detected cell
  * each item name is the cell number (1 to number of cells)
  * each item value is the current cell voltage
+
+@status current Introduced in 2.0.0, changed in 2.1.0
 
 @notice Getting a value by its numerical identifier is faster then by its name.
 */
@@ -452,12 +469,13 @@ static int luaGetValue(lua_State *L)
 /*luadoc
 @function playFile(name)
 
-Plays a track with a given name
+Plays a file from the SD card 
 
-@param name (string) file name (including path) to play. If the path is not 
-absolute (name starts with the `/` character), then the given name is used relative to
-the current language path (example for English language: `/SOUNDS/en`)
+@param path (string) full path to wav file (i.e. “/SOUNDS/en/system/tada.wav”)
+Introduced in 2.1.0: If you use a relative path, the current language is appended
+to the path (example for English language: `/SOUNDS/en` is appended)
 
+@status current Introduced in 2.0.0, changed in 2.1.0
 */
 static int luaPlayFile(lua_State *L)
 {
@@ -485,11 +503,12 @@ Plays a numerical value (text to speech)
 
 @param unit (number) unit identifier (see table todo)
 
-@param attributes possible values:
+@param attributes (unsigned number) possible values:
  * `0 or not present` plays integral part of the number (for a number 123 it plays 123)
  * `PREC1` plays a number with one decimal place (for a number 123 it plays 12.3)
  * `PREC2` plays a number with two decimal places (for a number 123 it plays 1.23)
 
+@status current Introduced in 2.0.0
 */
 static int luaPlayNumber(lua_State *L)
 {
@@ -503,7 +522,7 @@ static int luaPlayNumber(lua_State *L)
 /*luadoc
 @function playDuration(duration [, hourFormat])
 
-Plays a numerical value (text to speech)
+Plays a time value (text to speech)
 
 @param duration (number) number of seconds to play. Only integral part is used.
 
@@ -511,6 +530,7 @@ Plays a numerical value (text to speech)
  * `0 or not present` play format: minutes and seconds.
  * `!= 0` play format: hours, minutes and seconds.
 
+@status current Introduced in 2.1.0
 */
 static int luaPlayDuration(lua_State *L)
 {
@@ -540,6 +560,8 @@ Plays a tone
 negative number decreases it. Bigger number has more effect
 
 @notice Minimum played frequency is 150Hz even if a lower value is specified.
+
+@status current Introduced in 2.1.0
 */
 static int luaPlayTone(lua_State *L)
 {
@@ -553,13 +575,17 @@ static int luaPlayTone(lua_State *L)
 }
 
 /*luadoc
-@function killEvents(event)
+@function killEvents(eventMask)
 
 Cancels the key press propagation to the normal user interface algorithm.
 
-@param event (number) event to be suppressed
+@param eventMask (number) events to be suppressed
+
+@status current Introduced in 2.0.0
 
 @notice This function has currently no effect in OpenTX 2.1.x series
+
+TODO table of events/masks
 */
 static int luaKillEvents(lua_State *L)
 {
@@ -588,13 +614,13 @@ static int luaGrey(lua_State *L)
 
 Returns (some of) the general radio settings
 
-@param index  zero based global variable index, use 0 for GV1, 8 for GV9
-
 @retval table with elements:
  * `battMin` radio battery range - minimum value
  * `battMax` radio battery range - maximum value
  * `imperial` set to a value different from 0 if the radio is set to the
  IMPERIAL units
+
+@status current Introduced in 2.0.6, `imperial` added in TODO
 
 */
 static int luaGetGeneralSettings(lua_State *L)
@@ -1051,6 +1077,17 @@ static unsigned int getInputsCount(unsigned int chn)
   return getInputsCountFromFirst(chn, getFirstInput(chn));
 }
 
+/*luadoc
+@function model.getInputsCount(input)
+
+Returns number of lines for given input 
+
+@param input (unsigned number) input number (use 0 for Input1)
+
+@retval number number of configured lines for given input
+
+@status current Introduced in 2.0.0
+*/
 static int luaModelGetInputsCount(lua_State *L)
 {
   unsigned int chn = luaL_checkunsigned(L, 1);
@@ -1059,6 +1096,26 @@ static int luaModelGetInputsCount(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function model.getInput(input, line)
+
+Returns input data for given input and line number 
+
+@param input (unsigned number) input number (use 0 for Input1)
+
+@param line  (unsigned number) input line (use 0 for first line)
+
+@retval nil requested input or line does not exist
+
+@retval table input data:
+ * `name` (string) input line name
+ * `source` (number) input source index
+ * `weight` (number) input weight 
+ * `offset` (number) input offset 
+ * `switch` (number) input switch index
+
+@status current Introduced in 2.0.0, `switch` added in TODO
+*/
 static int luaModelGetInput(lua_State *L)
 {
   unsigned int chn = luaL_checkunsigned(L, 1);
@@ -1080,6 +1137,19 @@ static int luaModelGetInput(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function model.insertInput(input, line, value)
+
+Inserts an Input at specified line
+
+@param input (unsigned number) input number (use 0 for Input1)
+
+@param line  (unsigned number) input line (use 0 for first line)
+
+@param value (table) input data, see model.getInput()
+
+@status current Introduced in 2.0.0, `switch` added in TODO
+*/
 static int luaModelInsertInput(lua_State *L)
 {
   unsigned int chn = luaL_checkunsigned(L, 1);
@@ -1119,6 +1189,17 @@ static int luaModelInsertInput(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function model.deleteInput(input, line)
+
+Delete line from specified input
+
+@param input (unsigned number) input number (use 0 for Input1)
+
+@param line  (unsigned number) input line (use 0 for first line)
+
+@status current Introduced in 2.0.0
+*/
 static int luaModelDeleteInput(lua_State *L)
 {
   unsigned int chn = luaL_checkunsigned(L, 1);
@@ -1134,12 +1215,26 @@ static int luaModelDeleteInput(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function model.deleteInputs()
+
+Delete all Inputs 
+
+@status current Introduced in 2.0.0
+*/
 static int luaModelDeleteInputs(lua_State *L)
 {
   clearInputs();
   return 0;
 }
 
+/*luadoc
+@function model.defaultInputs()
+
+Set all inputs to defaults
+
+@status current Introduced in 2.0.0
+*/
 static int luaModelDefaultInputs(lua_State *L)
 {
   defaultInputs();
@@ -1612,6 +1707,32 @@ static int luaModelSetGlobalVariable(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function popupInput(title, event, input, min, max)
+
+Raises a popup on screen that allows uses input
+
+@param title (string) text to display 
+
+@param event (number) the event variable that is passed in from the 
+Run function (key pressed)
+
+@param input (number) value that can be adjusted by the +/­- keys 
+
+@param min  (number) min value that input can reach (by pressing the -­ key)
+
+@param max  (number) max value that input can reach 
+
+@retval number result of the input adjustment
+
+@retval "OK" user pushed ENT key 
+
+@retval "CANCEL" user pushed EXIT key 
+
+@notice Use only from stand-alone and telemetry scripts.
+
+@status current Introduced in 2.0.0
+*/
 static int luaPopupInput(lua_State *L)
 {
   uint8_t event = luaL_checkinteger(L, 2);
@@ -1635,6 +1756,17 @@ static int luaPopupInput(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function defaultStick(channel)
+
+Get stick that is assigned to a channel. See Default Channel Order in General Settings.
+
+@param channel (number) channel number (0 means CH1)
+
+@retval number Stick assigned to this channel (from 0 to 3)
+
+@status current Introduced in 2.0.0
+*/
 static int luaDefaultStick(lua_State *L)
 {
   uint8_t channel = luaL_checkinteger(L, 1);
@@ -1642,6 +1774,19 @@ static int luaDefaultStick(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function defaultChannel(stick)
+
+Get channel assigned to stick. See Default Channel Order in General Settings 
+
+@param stick (number) stick number (from 0 to 3)
+
+@retval number channel assigned to this stick (from 0 to 3)
+
+@retval nil stick not found
+
+@status current Introduced in 2.0.0
+*/
 static int luaDefaultChannel(lua_State *L)
 {
   uint8_t stick = luaL_checkinteger(L, 1);
