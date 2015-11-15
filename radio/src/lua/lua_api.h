@@ -34,18 +34,42 @@
  *
  */
 
-#ifndef luaapi_h
-#define luaapi_h
-
-
-#define RUN_MIX_SCRIPT        (1 << 0)
-#define RUN_FUNC_SCRIPT       (1 << 1)
-#define RUN_TELEM_BG_SCRIPT   (1 << 2)
-#define RUN_TELEM_FG_SCRIPT   (1 << 3)
-#define RUN_STNDAL_SCRIPT     (1 << 4)
-
+#ifndef lua_api_h
+#define lua_api_h
 
 #if defined(LUA)
+
+#if !defined(SIMU)
+extern "C" {
+#endif
+  #include <lua.h>
+  #include <lauxlib.h>
+  #include <lualib.h>
+  #include <lrotable.h>
+#if !defined(SIMU)
+}
+#endif
+
+  extern lua_State *L;
+  extern bool luaLcdAllowed;
+
+  #define lua_registernumber(L, n, i)    (lua_pushnumber(L, (i)), lua_setglobal(L, (n)))
+  #define lua_registerint(L, n, i)       (lua_pushinteger(L, (i)), lua_setglobal(L, (n)))
+  #define lua_pushtablenil(L, k)         (lua_pushstring(L, (k)), lua_pushnil(L), lua_settable(L, -3))
+  #define lua_pushtableboolean(L, k, v)  (lua_pushstring(L, (k)), lua_pushboolean(L, (v)), lua_settable(L, -3))
+  #define lua_pushtableinteger(L, k, v)  (lua_pushstring(L, (k)), lua_pushinteger(L, (v)), lua_settable(L, -3))
+  #define lua_pushtablenumber(L, k, v)   (lua_pushstring(L, (k)), lua_pushnumber(L, (v)), lua_settable(L, -3))
+  #define lua_pushtablestring(L, k, v)   (lua_pushstring(L, (k)), lua_pushstring(L, (v)), lua_settable(L, -3))
+  #define lua_pushtablenzstring(L, k, v) { char tmp[sizeof(v)+1]; strncpy(tmp, (v), sizeof(v)); tmp[sizeof(v)] = '\0'; lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
+  #define lua_pushtablezstring(L, k, v)  { char tmp[sizeof(v)+1]; zchar2str(tmp, (v), sizeof(v)); lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
+  #define lua_registerlib(L, name, tab)  (luaL_newmetatable(L, name), luaL_setfuncs(L, tab, 0), lua_setglobal(L, name))
+
+  #define RUN_MIX_SCRIPT        (1 << 0)
+  #define RUN_FUNC_SCRIPT       (1 << 1)
+  #define RUN_TELEM_BG_SCRIPT   (1 << 2)
+  #define RUN_TELEM_FG_SCRIPT   (1 << 3)
+  #define RUN_STNDAL_SCRIPT     (1 << 4)
+
   struct ScriptInput {
     const char *name;
     uint8_t type;
@@ -98,11 +122,11 @@
   void luaExec(const char * filename);
   void luaError(uint8_t error, bool acknowledge=true);
   int luaGetMemUsed();
+  void luaGetValueAndPush(int src);
   #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
   uint8_t isTelemetryScriptAvailable(uint8_t index);
   #define LUA_LOAD_MODEL_SCRIPTS()   luaState |= INTERPRETER_RELOAD_PERMANENT_SCRIPTS
   #define LUA_LOAD_MODEL_SCRIPT(idx) luaState |= INTERPRETER_RELOAD_PERMANENT_SCRIPTS
-  #define LUA_STANDALONE_SCRIPT_RUNNING() (luaState == INTERPRETER_RUNNING_STANDALONE_SCRIPT)
   // Lua PROTECT/UNPROTECT
   #include <setjmp.h>
   struct our_longjmp {
@@ -119,10 +143,11 @@
 
   extern uint16_t maxLuaInterval;
   extern uint16_t maxLuaDuration;
-#else  // #if defined(LUA)
-  #define LUA_LOAD_MODEL_SCRIPTS()
-  #define LUA_LOAD_MODEL_SCRIPT(idx)
-  #define LUA_STANDALONE_SCRIPT_RUNNING() (0)
-#endif
 
-#endif // #ifndef luaapi_h
+#else  // #if defined(LUA)
+
+  #define LUA_LOAD_MODEL_SCRIPTS()
+
+#endif // #if defined(LUA)
+
+#endif // #ifndef lua_api_h

@@ -282,7 +282,10 @@ namespace NAMESPACE {
 #endif
 
 #if defined(LUA)
-#include "radio/src/lua_api.cpp"
+#include "radio/src/lua/interface.cpp"
+#include "radio/src/lua/api_general.cpp"
+#include "radio/src/lua/api_lcd.cpp"
+#include "radio/src/lua/api_model.cpp"
 #include "radio/src/thirdparty/Lua/src/lapi.c"
 #include "radio/src/thirdparty/Lua/src/lcode.c"
 #include "radio/src/thirdparty/Lua/src/lctype.c"
