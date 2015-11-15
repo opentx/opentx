@@ -1029,7 +1029,7 @@ ifeq ($(PCB), TARANIS)
            $(LUADIR)/lobject.c $(LUADIR)/lopcodes.c $(LUADIR)/lparser.c $(LUADIR)/lstate.c $(LUADIR)/lstring.c $(LUADIR)/ltable.c $(LUADIR)/lrotable.c $(LUADIR)/ltm.c $(LUADIR)/lundump.c $(LUADIR)/lvm.c $(LUADIR)/lzio.c \
            $(LUADIR)/lbaselib.c $(LUADIR)/linit.c $(LUADIR)/lmathlib.c $(LUADIR)/lbitlib.c $(LUADIR)/loadlib.c $(LUADIR)/lauxlib.c $(LUADIR)/ltablib.c $(LUADIR)/lcorolib.c $(LUADIR)/liolib.c
     SRC += $(LUASRC)
-    LUADEP = lua_exports.inc
+    LUADEP = lua/lua_exports.inc
 	ifeq ($(USE_BIN_ALLOCATOR), YES)
 	  CPPDEFS += -DUSE_BIN_ALLOCATOR
 	  CPPSRC += bin_allocator.cpp
@@ -1637,11 +1637,11 @@ else
   PARSER = gcc -E -x c++
 endif
 
-lua_exports.inc: myeeprom.h ../util/luaexport.py
+lua/lua_exports.inc: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua_exports.txt"
 	@$(PARSER) -DPCBTARANIS -DCPUARM -DCPUSTM32 -DLUA -DEXPORT myeeprom.h | grep LEXP > lua_exports.txt
-	@echo "Parsing and generating C Lua exports in lua_exports.inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports.txt lua_exports.inc lua_fields.txt
+	@echo "Parsing and generating C Lua exports in lua/lua_exports.inc"
+	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports.txt lua/lua_exports.inc lua_fields.txt
 	@rm lua_exports.txt
 
 # Eye candy.
@@ -1803,7 +1803,7 @@ clean_list :
 	$(REMOVE) bitmaps/*/*/*.lbm
 	$(REMOVE) fonts/*.lbm
 	$(REMOVE) fonts/*/*.lbm
-	$(REMOVE) lua_exports.txt lua_exports.inc lua_fields.txt
+	$(REMOVE) lua_exports.txt lua/lua_exports.inc lua_fields.txt
 	$(MAKE) -C targets/taranis/bootloader clean
 
 #### Install
