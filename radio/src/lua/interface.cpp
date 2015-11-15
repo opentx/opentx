@@ -37,7 +37,6 @@
 #include <ctype.h>
 #include <stdio.h>
 #include "opentx.h"
-#include "stamp-opentx.h"
 #include "bin_allocator.h"
 #include "lua/lua_api.h"
  
