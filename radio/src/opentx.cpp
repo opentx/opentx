@@ -412,11 +412,7 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
 #if defined(SDCARD)
 bool isFileAvailable(const char * filename)
 {
-  FILINFO info;
-  TCHAR lfn[_MAX_LFN + 1];
-  info.lfname = lfn;
-  info.lfsize = sizeof(lfn);
-  return f_stat(filename, &info) == FR_OK;
+  return f_stat(filename, 0) == FR_OK;
 }
 #endif
 
