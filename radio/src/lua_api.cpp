@@ -48,6 +48,11 @@ extern "C" {
   #include <lauxlib.h>
   #include <lualib.h>
   #include <lrotable.h>
+#ifdef SIMU
+  // these 2 are for the script compiler only
+  #include <lundump.h>
+  #include <lstate.h>
+#endif
 #if !defined(SIMU)
 }
 #endif
@@ -2078,6 +2083,43 @@ void luaFree(ScriptInternalData & sid)
   UNPROTECT_LUA();
 }
 
+#ifdef SIMU
+static int luaDumpWriter(lua_State* L, const void* p, size_t size, void* u)
+{
+  UNUSED(L);
+  UINT written;
+  FRESULT result = f_write((FIL *)u, p, size, &written);
+  return (result != FR_OK && !written);
+}
+
+static void luaCompileAndSave(const char *filename)
+{
+  FIL D;
+  char *srcfilename = (char *)malloc(strlen(filename) + 5);
+  if (srcfilename != 0) {
+    strcpy(srcfilename, filename);
+    strcat(srcfilename, ".src");
+    PROTECT_LUA() {
+      if (luaL_loadfile(L, srcfilename) == 0) {
+        if (f_open(&D, filename, FA_WRITE | FA_CREATE_ALWAYS) == FR_OK) {
+          lua_lock(L);
+          luaU_dump(L, getproto(L->top - 1), luaDumpWriter, &D, 1);
+          lua_unlock(L);
+          if (f_close(&D) != FR_OK) {
+            TRACE("Error closing bytecode output file %s", filename);
+          }
+        }
+        else {
+          TRACE("Could not open bytecode output file %s", filename);
+        }
+      }
+    }
+    UNPROTECT_LUA();
+    free(srcfilename);
+  }
+}
+#endif
+
 int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=NULL)
 {
   int init = 0;
@@ -2093,6 +2135,11 @@ int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs 
   if (luaState == INTERPRETER_PANIC) {
     return SCRIPT_PANIC;
   }
+
+#ifdef SIMU
+  // simulator only - see if file exists with .lua.src and compile it to .lua
+  luaCompileAndSave(filename);
+#endif
 
   SET_LUA_INSTRUCTIONS_COUNT(MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
 
