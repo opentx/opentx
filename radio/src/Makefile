@@ -1080,7 +1080,7 @@ ifeq ($(PCB), FLAMENCO)
   OPT = 2
   CPPDEFS += -DHSE_VALUE=12000000 -DCOLORLCD -DSTM32F40_41xxx
   BITMAPS += $(patsubst %.png,%.lbm,$(wildcard bitmaps/Flamenco/*.png))
-  FONTS = fonts/font_stdsize.lbm fonts/font_tinsize.lbm fonts/font_smlsize.lbm fonts/font_midsize.lbm fonts/font_dblsize.lbm fonts/font_xxlsize.lbm
+  FONTS = fonts/Flamenco/font_stdsize.lbm fonts/Flamenco/font_tinsize.lbm fonts/Flamenco/font_smlsize.lbm fonts/Flamenco/font_midsize.lbm fonts/Flamenco/font_dblsize.lbm fonts/Flamenco/font_xxlsize.lbm
   SDCARD = YES
   THR_TRACE = YES
   EXT = FRSKY_SPORT
@@ -1202,7 +1202,7 @@ ifeq ($(PCB), HORUS)
   OPT = 2
   CPPDEFS += -DHSE_VALUE=12000000 -DCOLORLCD -DSTM32F429_439xx
   BITMAPS += $(patsubst %.png,%.lbm,$(wildcard bitmaps/Horus/*.png))
-  FONTS = fonts/font_stdsize.lbm fonts/font_tinsize.lbm fonts/font_smlsize.lbm fonts/font_midsize.lbm fonts/font_dblsize.lbm fonts/font_xxlsize.lbm
+  FONTS = fonts/Horus/font_stdsize.lbm fonts/Horus/font_tinsize.lbm fonts/Horus/font_smlsize.lbm fonts/Horus/font_midsize.lbm fonts/Horus/font_dblsize.lbm fonts/Horus/font_xxlsize.lbm
   SDCARD = YES
   THR_TRACE = YES
   EXT = FRSKY_SPORT
@@ -1844,6 +1844,7 @@ translations/se.h: translations/se.h.txt
 	$(TRANSLATE) translations/se.h.txt translations/se.h se
 
 ifeq ($(PCB), $(filter $(PCB), HORUS))
+  FONTDIR = Horus
   FONTNAME = DejaVu\ Sans
   TINSIZE = 9
   SMLSIZE = 13
@@ -1854,6 +1855,7 @@ ifeq ($(PCB), $(filter $(PCB), HORUS))
   XXLSIZE = 48
   MASKFORMAT = 8bits
 else
+  FONTDIR = Flamenco
   FONTNAME = Roboto
   TINSIZE = 5
   SMLSIZE = 7
@@ -1868,26 +1870,26 @@ endif
 .PHONY: fonts
 fonts: $(FONTS)
 
-fonts/font_%size.lbm: fonts/font_%size.png
+fonts/$(FONTDIR)/font_%size.lbm: fonts/$(FONTDIR)/font_%size.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE) $(MASKFORMAT)
 
-fonts/font_tinsize.png:
-	$(FONT2PNG) $(FONTNAME) $(TINSIZE) False fonts/font_tinsize
+fonts/$(FONTDIR)/font_tinsize.png:
+	$(FONT2PNG) $(FONTNAME) $(TINSIZE) False fonts/$(FONTDIR)/font_tinsize
 
-fonts/font_smlsize.png:
-	$(FONT2PNG) $(FONTNAME) $(SMLSIZE) False fonts/font_smlsize
+fonts/$(FONTDIR)/font_smlsize.png:
+	$(FONT2PNG) $(FONTNAME) $(SMLSIZE) False fonts/$(FONTDIR)/font_smlsize
 
-fonts/font_stdsize.png:
-	$(FONT2PNG) $(FONTNAME) $(STDSIZE) False fonts/font_stdsize
+fonts/$(FONTDIR)/font_stdsize.png:
+	$(FONT2PNG) $(FONTNAME) $(STDSIZE) False fonts/$(FONTDIR)/font_stdsize
 
-fonts/font_midsize.png:
-	$(FONT2PNG) $(FONTNAME) $(MIDSIZE) False fonts/font_midsize
+fonts/$(FONTDIR)/font_midsize.png:
+	$(FONT2PNG) $(FONTNAME) $(MIDSIZE) False fonts/$(FONTDIR)/font_midsize
 
-fonts/font_dblsize.png:
-	$(FONT2PNG) $(FONTNAME) $(DBLSIZE) $(DBLBOLD) fonts/font_dblsize
+fonts/$(FONTDIR)/font_dblsize.png:
+	$(FONT2PNG) $(FONTNAME) $(DBLSIZE) $(DBLBOLD) fonts/$(FONTDIR)/font_dblsize
 
-fonts/font_xxlsize.png:
-	$(FONT2PNG) $(FONTNAME) $(XXLSIZE) False fonts/font_xxlsize
+fonts/$(FONTDIR)/font_xxlsize.png:
+	$(FONT2PNG) $(FONTNAME) $(XXLSIZE) False fonts/$(FONTDIR)/font_xxlsize
 
 fonts/%.lbm: fonts/%.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE)
@@ -2096,12 +2098,8 @@ clean_list :
 	$(REMOVE) allsrc.cpp
 	$(REMOVE) allsimusrc.cpp
 	$(REMOVE) stamp-opentx.h
-	$(REMOVE) *.lbm
 	$(REMOVE) bitmaps/*.lbm
 	$(REMOVE) bitmaps/*/*.lbm
-	$(REMOVE) bitmaps/*/*/*.lbm
-	$(REMOVE) fonts/*.lbm
-	$(REMOVE) fonts/font_*
 	$(REMOVE) fonts/*/*.lbm
 	$(REMOVE) lua_exports* lua_fields.txt
 	$(MAKE) -C targets/Taranis/bootloader clean
