@@ -55,7 +55,7 @@ void onGVARSMenu(const char *result)
   }
 }
 
-#define GVARS_FM_COLUMN(p) (123 + (p)*24)
+#define GVARS_FM_COLUMN(p) (160 + (p)*38)
 
 bool menuModelGVars(evt_t event)
 {
@@ -75,7 +75,7 @@ bool menuModelGVars(evt_t event)
       switch(j)
       {
         case 0:
-          editName(MENUS_MARGIN_LEFT+30, y, g_model.gvars[i].name, LEN_GVAR_NAME, event, attr);
+          editName(MENUS_MARGIN_LEFT+50, y, g_model.gvars[i].name, LEN_GVAR_NAME, event, attr);
           break;
 
         default:
