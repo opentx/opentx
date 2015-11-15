@@ -441,8 +441,8 @@ void cliTask(void * pdata)
     else if (c == 127) {
       // backspace
       if (pos) {
-	line[--pos] = '\0';
-	serialPutc(c);
+        line[--pos] = '\0';
+        serialPutc(c);
       }
     }
     else if (c == '\r' || c == '\n') {

@@ -137,6 +137,9 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
   QString label;
   if (moduleIdx < 0) {
     label = tr("Trainer Port");
+    if (generalSettings.hw_uartMode != UART_MODE_SBUS_TRAINER) {
+      ui->trainerMode->setItemData(TRAINER_MODE_MASTER_BATTERY_COMPARTMENT, 0, Qt::UserRole - 1);
+    }
     ui->trainerMode->setCurrentIndex(model.trainerMode);
     if (!IS_TARANIS(firmware->getBoard())) {
       ui->label_trainerMode->hide();
@@ -168,7 +171,7 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
 
   // The protocols available on this board
   for (int i=0; i<PULSES_PROTOCOL_LAST; i++) {
-    if (GetEepromInterface()->isAvailable((PulsesProtocol)i, moduleIdx)) {
+    if (firmware->isAvailable((PulsesProtocol)i, moduleIdx)) {
       ui->protocol->addItem(ModelPrinter::printModuleProtocol(i), (QVariant)i);
       if (i == module.protocol) ui->protocol->setCurrentIndex(ui->protocol->count()-1);
     }
@@ -190,12 +193,12 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
       spinbox->setDecimals(1);
       label->setProperty("index", i);
       spinbox->setProperty("index", i);
-      failsafeSpins << spinbox;
       ui->failsafesLayout->addWidget(label, 3*(i/8), i%8, Qt::AlignHCenter);
       ui->failsafesLayout->addWidget(combo, 1+3*(i/8), i%8, Qt::AlignHCenter);
       ui->failsafesLayout->addWidget(spinbox, 2+3*(i/8), i%8, Qt::AlignHCenter);
       failsafeGroups[i].combo = combo;
       failsafeGroups[i].spinbox = spinbox;
+      failsafeGroups[i].label = label;
       updateFailsafe(i);
       connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onFailsafeComboIndexChanged(int)));
       connect(spinbox, SIGNAL(valueChanged(double)), this, SLOT(onFailsafeSpinChanged(double)));
@@ -234,7 +237,8 @@ void ModulePanel::update()
       case PULSES_PXX_XJT_LR12:
       case PULSES_PXX_DJT:
         mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
-        if ((protocol==PULSES_PXX_XJT_X16) || (protocol==PULSES_PXX_XJT_LR12)) mask |= MASK_FAILSAFES | MASK_RX_NUMBER;
+        if (protocol==PULSES_PXX_XJT_X16) mask |= MASK_FAILSAFES | MASK_RX_NUMBER;
+        if (protocol==PULSES_PXX_XJT_LR12) mask |= MASK_RX_NUMBER;
         break;
       case PULSES_LP45:
       case PULSES_DSM2:
@@ -255,15 +259,8 @@ void ModulePanel::update()
     }
   }
   else if (IS_TARANIS(firmware->getBoard())) {
-    switch(model->trainerMode) {
-      case TRAINER_MASTER_JACK:
-        break;
-      case TRAINER_SLAVE_JACK:
-        mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
-        break;
-      default:
-        mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
-        break;
+    if (model->trainerMode == TRAINER_SLAVE_JACK) {
+      mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
     }
   }
   else if (model->trainerMode != TRAINER_MASTER_JACK) {
@@ -306,6 +303,17 @@ void ModulePanel::update()
     ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
     ui->failsafeMode->setCurrentIndex(module.failsafeMode);
     ui->failsafesFrame->setEnabled(module.failsafeMode == FAILSAFE_CUSTOM);
+    if (firmware->getCapability(ChannelsName) > 0) {
+      for(int i=0; i<maxChannels;i++) {
+        QString name = QString(model->limitData[i+module.channelsStart].name).trimmed();
+        if (!name.isEmpty()) {
+          failsafeGroups[i].label->setText(name);
+        }
+        else {
+          failsafeGroups[i].label->setText(QString::number(i+1));
+        }
+      }
+    }
   }
   else {
     mask = 0;
@@ -313,6 +321,11 @@ void ModulePanel::update()
 
   ui->failsafesLayoutLabel->setVisible(mask & MASK_FAILSAFES);
   ui->failsafesFrame->setVisible(mask & MASK_FAILSAFES);
+
+  if (mask & MASK_CHANNELS_RANGE) {
+    ui->channelsStart->setMaximum(32 - ui->channelsCount->value());
+    ui->channelsCount->setMaximum(qMin(16, 32-ui->channelsStart->value()));
+  }
 }
 
 void ModulePanel::on_trainerMode_currentIndexChanged(int index)
@@ -656,6 +669,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   if (firmware->getCapability(ModelTrainerEnable)) {
     modules[C9X_NUM_MODULES] = new ModulePanel(this, model, model.moduleData[C9X_NUM_MODULES], generalSettings, firmware, -1);
     ui->modulesLayout->addWidget(modules[C9X_NUM_MODULES]);
+    connect(modules[C9X_NUM_MODULES], SIGNAL(modified()), this, SLOT(onChildModified()));
   }
 
   disableMouseScrolling();

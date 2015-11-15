@@ -103,6 +103,11 @@ ELSE( )
   LINK_DIRECTORIES( /usr/local/lib )
 ENDIF( )
 
+IF( MSVC )
+  MESSAGE( STATUS "Adding include C:/Programs/dirent/include for dirent.h" )
+  INCLUDE_DIRECTORIES( C:/Programs/dirent/include )
+ENDIF( )
+
 set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/../../radio/src)
 set(SIMU_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/simulation)
 set(COMPANION_SRC_DIRECTORY ${PROJECT_SOURCE_DIR})
@@ -274,7 +279,6 @@ NOW(TIME)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h @ONLY)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/translations.qrc.in ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc @ONLY)
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/firmwares/opentx/stamp-opentx.h.in ${CMAKE_CURRENT_BINARY_DIR}/stamp-opentx.h @ONLY)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/companion.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/companion.desktop @ONLY)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/simulator.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/simulator.desktop @ONLY)
 
@@ -446,7 +450,11 @@ ENDIF()
 SET(CPACK_PACKAGE_NAME "companion${C9X_NAME_SUFFIX}")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Models and settings editor for the OpenTx open source firmware")
 string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE)
-SET( CPACK_STRIP_FILES TRUE )
+
+# The file stripping is deliberately disabled, with the stripped file we get 
+# very poor trace-backs from the users when they report Companion crash
+SET(CPACK_STRIP_FILES FALSE)
+
 find_program(DPKG_PROGRAM dpkg DOC "dpkg program of Debian-based systems")
 if(DPKG_PROGRAM)
   SET(CPACK_GENERATOR "DEB")

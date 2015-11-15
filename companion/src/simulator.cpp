@@ -180,6 +180,9 @@ int main(int argc, char *argv[])
 
   delete dialog;
 
+  unregisterSimulators();
+  unregisterOpenTxFirmwares();
+
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   SDL_Quit();
 #endif

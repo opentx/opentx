@@ -127,13 +127,15 @@ extern "C" void TIM3_IRQHandler()
   if ( (TRAINER_TIMER->DIER & TIM_DIER_CC3IE ) && ( TRAINER_TIMER->SR & TIM_SR_CC3IF ) ) {
     // capture mode on trainer jack
     capture = TRAINER_TIMER->CCR3 ;
-    doCapture = true;
+    if (TRAINER_CONNECTED() && currentTrainerMode == TRAINER_MODE_MASTER_TRAINER_JACK)
+      doCapture = true;
   }
 
   if ( ( TRAINER_TIMER->DIER & TIM_DIER_CC2IE ) && ( TRAINER_TIMER->SR & TIM_SR_CC2IF ) ) {
     // capture mode on heartbeat pin (external module)
     capture = TRAINER_TIMER->CCR2 ;
-    doCapture = true ;
+    if (currentTrainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
+      doCapture = true ;
   }
 
   if (doCapture) {
@@ -247,8 +249,10 @@ extern "C" void HEARTBEAT_USART_IRQHandler()
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     data = HEARTBEAT_USART->DR;
 
-    if (!(status & USART_FLAG_ERRORS))
-      sbusFifo.push(data);
+    if (!(status & USART_FLAG_ERRORS)) {
+      if (currentTrainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE)
+        sbusFifo.push(data);
+    }
 
     status = HEARTBEAT_USART->SR;
   }

@@ -745,6 +745,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     TelemetryCustomScreen * tab = new TelemetryCustomScreen(this, model, model.frsky.screens[i], generalSettings, firmware);
     ui->customScreens->addTab(tab, tr("Telemetry screen %1").arg(i+1));
     telemetryCustomScreens[i] = tab;
+    connect(tab, SIGNAL(modified()), this, SLOT(onModified()));
   }
 
   disableMouseScrolling();

@@ -45,6 +45,7 @@ class ModulePanel : public ModelPanel
   struct ChannelFailsafeWidgetsGroup {
     QComboBox * combo;
     QDoubleSpinBox * spinbox;
+    QLabel * label;
   };
 
     Q_OBJECT
@@ -75,7 +76,6 @@ class ModulePanel : public ModelPanel
     ModuleData & module;
     int moduleIdx;
     Ui::Module *ui;
-    QVector<QDoubleSpinBox *> failsafeSpins;
     ChannelFailsafeWidgetsGroup failsafeGroups[maxChannels];
 };
 

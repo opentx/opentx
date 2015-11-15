@@ -779,6 +779,12 @@ void putsSwitches(coord_t x, coord_t y, int32_t idx, LcdFlags att)
   else if (idx == SWSRC_TELEMETRY_STREAMING) {
     lcdDrawText(x, y, "Tele", att);
   }
+  else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
+    putsStrIdx(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
+  }
+  else if (idx == SWSRC_TELEMETRY_STREAMING) {
+    lcdDrawText(x, y, "Tele", att);
+  }
   else {
     lcdDrawTextWithLen(x, y, g_model.telemetrySensors[idx-SWSRC_FIRST_SENSOR].label, TELEM_LABEL_LEN, ZCHAR|att);
   }
@@ -958,6 +964,7 @@ void displayGpsCoords(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFl
 
 void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t value, LcdFlags att)
 {
+  if (channel >= MAX_SENSORS) return;     //Lua luaLcdDrawChannel() can call us with a bad value 
   TelemetryItem & telemetryItem = telemetryItems[channel];
   TelemetrySensor & telemetrySensor = g_model.telemetrySensors[channel];
   if (telemetrySensor.unit == UNIT_DATETIME) {

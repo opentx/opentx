@@ -1173,10 +1173,10 @@ extern const char vers_stamp[];
 #endif
 
 extern uint8_t              g_vbat100mV;
-#if defined(CPUARM)
-  #define GET_TXBATT_BARS() (min(10, 10 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin)))
+#if defined(PCBTARANIS)
+  #define GET_TXBATT_BARS() (limit<int8_t>(0, 10 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 10))
 #else
-  #define GET_TXBATT_BARS() (limit<uint8_t>(2, 20 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 20))
+  #define GET_TXBATT_BARS() (limit<int8_t>(2, 20 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 20))
 #endif
 #define IS_TXBATT_WARNING() (g_vbat100mV <= g_eeGeneral.vBatWarn)
 
@@ -1783,7 +1783,7 @@ void varioWakeup();
   extern void usbPluggedIn();
 #endif
 
-#include "lua_api.h"
+#include "lua/lua_api.h"
 
 #if defined(SDCARD)
 enum ClipboardType {

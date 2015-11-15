@@ -396,7 +396,7 @@
     #define SPEED_UNIT         SPEED_UNIT_METR
   #endif
   #define LEN_VTELEMUNIT       "\003"
-  #define TR_VTELEMUNIT        "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0""mAh""W\0 "
+  #define TR_VTELEMUNIT        "V\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0""mAh""W\0 "
 #endif
 
 #define STR_V                  (STR_VTELEMUNIT+1)

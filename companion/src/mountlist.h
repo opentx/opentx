@@ -49,4 +49,6 @@ struct mount_entry
 
 struct mount_entry *read_file_system_list (bool need_fs_type);
 
+void free_file_system_list(struct mount_entry * mount_list);
+
 #endif

@@ -57,7 +57,7 @@ QString ModelPrinter::printChannelName(int idx)
 QString ModelPrinter::printOutputName(int idx)
 {
   QString name = QString(model.limitData[idx].name).trimmed();
-  if (firmware->getCapability(HasChNames) && !name.isEmpty()) {
+  if (firmware->getCapability(ChannelsName) > 0 && !name.isEmpty()) {
     return name;
   }
   else {
@@ -313,7 +313,7 @@ QString ModelPrinter::printInputLine(const ExpoData & input)
 QString ModelPrinter::printMixerName(int curDest)
 {
   QString str = printChannelName(curDest-1) + " ";
-  if (firmware->getCapability(HasChNames)) {
+  if (firmware->getCapability(ChannelsName) > 0) {
     QString name = model.limitData[curDest-1].name;
     if (!name.isEmpty()) {
       name = QString("(") + name + QString(")");

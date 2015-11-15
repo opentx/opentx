@@ -118,6 +118,7 @@ class SimulatorFactory {
 };
 
 void registerSimulators();
+void unregisterSimulators();
 SimulatorFactory *getSimulatorFactory(const QString &name);
 extern QMap<QString, SimulatorFactory *> registered_simulators;
 

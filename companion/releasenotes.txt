@@ -1,4 +1,14 @@
-<h2>Version 2.1.4 / <set date></h2>
+<h2>Version 2.1.6 / 2015-11-11</h2>
+[Taranis]
+<ul>
+<li>Telemetry custom screen changes didn't emit modified signal (<a href=https://github.com/opentx/opentx/issues/3029>#3029</a>)</li>
+<li>Hide D8/LR12 when eu firmware option is selected</li>
+</ul>
+
+
+<h2>Version 2.1.5 / 2015-11-05</h2>
+
+Notice: version 2.1.4 was skipped by the OpenTX team to avoid confusion with FrSky's release of OpenTX 2.1.4
 
 <ul>
 <li>Fixed: changing any setting on the telemetry panel does not set the file as being modified (<a href=https://github.com/opentx/opentx/issues/2875>#2875</a>)</li>
@@ -11,8 +21,15 @@
 <li>Fixed wrong import of Logical switches from OpenTX 2.0.x version (<a href=https://github.com/opentx/opentx/issues/2942>#2942</a>)</li>
 <li>Fixed a problem with updates path on Windows (<a href=https://github.com/opentx/opentx/issues/2876>#2876</a>)</li>
 <li>Edge representation unified (changed from "no release" to "instant") (<a href=https://github.com/opentx/opentx/issues/2837>#2837</a>)</li>
+<li>Added channel names on failsafe sliders (<a href=https://github.com/opentx/opentx/issues/3021>#3021</a>)</li>
+<li>Corrected failsafe mapping when using Custom failsafe mode, D16 protocol and channel range different from from 1-8. 
+  Users with such setups are advised to re-check their failsafe settings (<a href=https://github.com/opentx/opentx/issues/2975>#2975</a>)</li>
+<li>Various texts and translations corrections</li>
+<li>Various small bug-fixes: <a href=https://github.com/opentx/opentx/issues/2994>#2994</a>, 
+                             <a href=https://github.com/opentx/opentx/issues/3016>#3016</a>,
+                             <a href=https://github.com/opentx/opentx/issues/3012>#3012</a>
+</li>
 </ul>
-
 
 
 <h2>Version 2.1.3 / 2015-09-09</h2>

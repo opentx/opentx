@@ -560,7 +560,7 @@ enum PotsWarnMode {
     TRAINER_MODULE
   };
   enum TrainerMode {
-    TRAINER_MODE_MASTER,
+    TRAINER_MODE_MASTER_TRAINER_JACK,
     TRAINER_MODE_SLAVE,
     TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
     TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
@@ -1426,10 +1426,12 @@ PACK(typedef struct {
   };
   void init(const char *label, uint8_t unit=UNIT_RAW, uint8_t prec=0);
   void init(uint16_t id);
-  bool isAvailable();
+  bool isAvailable() const;
   int32_t getValue(int32_t value, uint8_t unit, uint8_t prec) const;
-  bool isConfigurable();
-  bool isPrecConfigurable();
+  bool isConfigurable() const;
+  bool isPrecConfigurable() const;
+  int32_t getPrecMultiplier() const;
+  int32_t getPrecDivisor() const;
 }) TelemetrySensor;
 #endif
 
@@ -2201,11 +2203,7 @@ enum RFProtocols {
 #endif
 };
 
-#if defined(MODULE_D16_EU_ONLY_SUPPORT)
-  #define HAS_RF_PROTOCOL_FAILSAFE(protocol) ((protocol) == RF_PROTO_X16)
-#else
-  #define HAS_RF_PROTOCOL_FAILSAFE(protocol) ((protocol) == RF_PROTO_X16 || (protocol) == RF_PROTO_LR12)
-#endif
+#define HAS_RF_PROTOCOL_FAILSAFE(protocol) ((protocol) == RF_PROTO_X16)
 
 enum DSM2Protocols {
   DSM2_PROTO_LP45,

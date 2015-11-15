@@ -42,7 +42,7 @@
 #define RBOX_CENTERX  (3*LCD_W/4 - 10)
 #define MODELNAME_X   (2*FW-2)
 #define MODELNAME_Y   (0)
-#define PHASE_X       (6*FW)
+#define PHASE_X       (6*FW-1)
 #define PHASE_Y       (2*FH)
 #define PHASE_FLAGS   0
 #define VBATT_X       (6*FW)
@@ -206,13 +206,13 @@ void displayBattVoltage()
 {
 #if defined(BATTGRAPH)
   putsVBat(VBATT_X-8, VBATT_Y+1, 0);
-  drawFilledRect(VBATT_X-25, VBATT_Y+9, 22, 5);
-  lcd_vline(VBATT_X-3, VBATT_Y+10, 3);
+  drawFilledRect(VBATT_X-25, VBATT_Y+9, 21, 5);
+  lcd_vline(VBATT_X-4, VBATT_Y+10, 3);
   uint8_t count = GET_TXBATT_BARS();
   for (uint8_t i=0; i<count; i+=2)
     lcd_vline(VBATT_X-24+i, VBATT_Y+10, 3);
   if (!IS_TXBATT_WARNING() || BLINK_ON_PHASE)
-    drawFilledRect(VBATT_X-26, VBATT_Y, 25, 15);
+    drawFilledRect(VBATT_X-26, VBATT_Y, 24, 15);
 #else
   LcdFlags att = (IS_TXBATT_WARNING() ? BLINK|INVERS : 0) | BIGSIZE;
   putsVBat(VBATT_X-1, VBATT_Y, att|NO_UNIT);

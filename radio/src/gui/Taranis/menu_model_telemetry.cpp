@@ -164,12 +164,8 @@ enum SensorFields {
 
 bool isSensorUnit(int sensor, uint8_t unit)
 {
-  if (sensor == 0)
-    return true;
-
-  sensor -= 1;
-
-  return g_model.telemetrySensors[sensor].unit == unit;
+  if (sensor <= 0 || sensor > MAX_SENSORS ) return true;
+  return g_model.telemetrySensors[--sensor].unit == unit;
 }
 
 bool isCellsSensor(int sensor)
@@ -184,7 +180,7 @@ bool isGPSSensor(int sensor)
 
 bool isAltSensor(int sensor)
 {
-  return isSensorUnit(sensor, UNIT_DIST);
+  return isSensorUnit(sensor, UNIT_DIST) || isSensorUnit(sensor, UNIT_FEET);
 }
 
 bool isVoltsSensor(int sensor)

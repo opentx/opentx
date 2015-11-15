@@ -36,7 +36,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "OpenTX board based on Arduino MEGA2560"
-Date "18 jun 2015"
+Date "21 oct 2015"
 Rev "0"
 Comp "Copyright 2015 F. Aguerre"
 Comment1 ""
@@ -1057,13 +1057,13 @@ Text Label 5650 5850 2    42   ~ 0
 SW_Trn
 Text GLabel 4850 5850 2    42   Input ~ 0
 port L 7 (1)
-Text GLabel 4850 6250 2    42   Output ~ 0
+Text GLabel 4850 6250 2    42   Input ~ 0
 port B 3 (1)
 Text Label 5650 6250 2    42   ~ 0
 SD_MISO
 Text Label 6600 6250 2    42   ~ 0
 SD_MOSI
-Text GLabel 5800 6250 2    42   Input ~ 0
+Text GLabel 5800 6250 2    42   Output ~ 0
 port B 2 (1)
 Text GLabel 5800 6350 2    42   Input ~ 0
 port B 0 (1)
@@ -1278,7 +1278,7 @@ PPM_OUT
 Text GLabel 2100 4600 1    42   Output ~ 0
 port B 6 (0)
 Text GLabel 2000 4600 1    42   Input ~ 0
-port B 7 (0)
+port E 7 (0)
 Text Label 5650 4850 2    42   ~ 0
 LCD_DATA0
 Text GLabel 4850 4850 2    42   Output ~ 0
@@ -41110,7 +41110,7 @@ CA 3B B1 B4 D6 FB 76 3A 4D 11 32 4D 1E A1 3D 78 1C 8B 1E 14 74 10 57 46 8C 97 FB
 33 B3 93 2C A5 90 EC 7D 2B A5 BC 7A F5 EA E1 E1 5E 44 C8 BD 2E 90 84 08 60 87 C2 BB D7 FD 40 85 
 4A 52 6F 3D D0 6D 9E 6E 41 36 CA 77 04 97 99 83 92 6E D1 7C 20 6D 2C 33 D2 7F 5B 16 F2 83 51 39 
 A0 3F CF F3 A7 9F 7E FA CB 5F FE F5 EB D7 AF 45 64 59 96 6D DB F6 23 3E B3 52 CA B3 1B C5 00 F7 
-08 C0 CC FE 1F 15 4F 30 6D 3D C2 80 DE 00 00 00 00 49 45 4E 44 AE 42 60 82 00 $EndBitmap
+08 C0 CC FE 1F 15 4F 30 6D 3D C2 80 DE 00 00 00 00 49 45 4E 44 AE 42 60 82 04 $EndBitmap
 EndData
 $EndBitmap
 $Comp
@@ -41427,7 +41427,7 @@ Wire Wire Line
 Wire Wire Line
 	2100 4750 2100 4600
 Wire Wire Line
-	2000 4750 2000 4600
+	2000 4600 2000 5550
 Wire Wire Line
 	4700 4850 4850 4850
 Wire Wire Line
@@ -41863,4 +41863,8 @@ Wire Wire Line
 	5300 7500 5300 7600
 Wire Wire Line
 	4800 7500 5300 7500
+Wire Wire Line
+	2000 5550 2500 5550
+Text Notes 2550 5550 0    50   ~ 0
+Pin 9, can be soldered\nwith pin 8 (unused)
 $EndSCHEMATC

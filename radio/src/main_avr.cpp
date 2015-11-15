@@ -44,6 +44,9 @@ void perMain()
 #if defined(SIMU)
   doMixerCalculations();
 #endif
+#if defined(LCD_ST7920)
+  uint8_t lcdstate=0;
+#endif
   uint16_t t0 = getTmr16KHz();
   int16_t delta = (nextMixerEndTime - lastMixerDuration) - t0;
   if (delta > 0 && delta < MAX_MIXER_DELTA) {
@@ -129,31 +132,36 @@ void perMain()
   const char *warn = s_warning;
   uint8_t menu = s_menu_count;
 
-  lcdClear();
-  if (menuEvent) {
-    m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
-    m_posHorz = 0;
-    evt = menuEvent;
-    menuEvent = 0;
-    AUDIO_MENUS();
-  }
-  g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
-
-
-  if (warn) DISPLAY_WARNING(evt);
-#if defined(NAVIGATION_MENUS)
-  if (menu) {
-    const char * result = displayMenu(evt);
-    if (result) {
-      menuHandler(result);
+  if (IS_LCD_REFRESH_ALLOWED()) { // No need to redraw until lcdRefresh_ST7920(0) below completely refreshes the display.
+    lcdClear();
+    if (menuEvent) {
+      m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
+      m_posHorz = 0;
+      evt = menuEvent;
+      menuEvent = 0;
+      AUDIO_MENUS();
     }
-  }
+    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+
+    if (warn) DISPLAY_WARNING(evt);
+#if defined(NAVIGATION_MENUS)
+    if (menu) {
+      const char * result = displayMenu(evt);
+      if (result) {
+        menuHandler(result);
+      }
+    }
 #endif
-
-  drawStatusLine();
-
+    drawStatusLine();
+  }
+  
+#if defined(LCD_ST7920)
+  lcdstate = lcdRefresh_ST7920(0);
+#else
   lcdRefresh();
 #endif
+
+#endif // defined(GUI)
 
   if (SLAVE_MODE()) {
     JACK_PPM_OUT();

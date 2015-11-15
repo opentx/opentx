@@ -31,9 +31,9 @@ add_custom_target(commondeps
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${RADIO_SRC_DIRECTORY}/stamp-opentx.h)
 
 add_custom_target(lua_exports
-  COMMAND make PCB=TARANIS lua_exports_taranis.inc
-  COMMAND make PCB=FLAMENCO lua_exports_flamenco.inc
-  COMMAND make PCB=HORUS lua_exports_horus.inc
+  COMMAND make PCB=TARANIS lua/lua_exports_taranis.inc
+  COMMAND make PCB=FLAMENCO lua/lua_exports_flamenco.inc
+  COMMAND make PCB=HORUS lua/lua_exports_horus.inc
   DEPENDS ${RADIO_SRC_DIRECTORY}/myeeprom.h
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )

@@ -270,7 +270,7 @@ QString MultiModelPrinter::printLimits()
   columns.append("<table border='0' cellspacing='0' cellpadding='1' width='100%'>" \
                  "<tr>" \
                  " <td><b>" + tr("Channel") + "</b></td>" \
-                 " <td><b>" + (firmware->getCapability(HasChNames) ? tr("Name") : "") + "</b></td>" \
+                 " <td><b>" + (firmware->getCapability(ChannelsName) > 0 ? tr("Name") : "") + "</b></td>" \
                  " <td><b>" + tr("Offset") + "</b></td>" \
                  " <td><b>" + tr("Min") + "</b></td>" \
                  " <td><b>" + tr("Max") + "</b></td>" \

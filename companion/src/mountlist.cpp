@@ -922,4 +922,19 @@ read_file_system_list (bool need_fs_type)
   }
 }
 
+void free_file_system_list(struct mount_entry * mount_list)
+{
+  struct mount_entry * me;
+  while (mount_list)
+  {
+    me = mount_list->me_next;
+    free (mount_list->me_devname);
+    free (mount_list->me_mountdir);
+    if (mount_list->me_type_malloced)
+      free (mount_list->me_type);
+    free (mount_list);
+    mount_list = me;
+  }
+}
+
 #endif

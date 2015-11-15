@@ -60,11 +60,7 @@ const char * sdCheckAndCreateDirectory(const char * path)
 
 bool isFileAvailable(const char * path)
 {
-  FILINFO info;
-  TCHAR lfn[_MAX_LFN + 1];
-  info.lfname = lfn;
-  info.lfsize = sizeof(lfn);
-  return f_stat(path, &info) == FR_OK;
+  return f_stat(path, 0) == FR_OK;
 }
 
 bool isFileAvailable(const char * filename, const char * directory)

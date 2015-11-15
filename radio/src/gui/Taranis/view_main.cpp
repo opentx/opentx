@@ -236,22 +236,26 @@ void displayTopBar()
     /* Rx voltage */
     altitude_icon_x = batt_icon_x+7*FW+3;
     if (g_model.frsky.voltsSource) {
-      TelemetryItem & voltsItem = telemetryItems[g_model.frsky.voltsSource-1];
-      if (voltsItem.isAvailable()) {
-        putsTelemetryChannelValue(batt_icon_x+7*FW+2, BAR_Y+1, g_model.frsky.voltsSource-1, voltsItem.value, LEFT);
-        altitude_icon_x = lcdLastPos+1;
+      uint8_t item = g_model.frsky.voltsSource-1;
+      if (item < MAX_SENSORS) {
+        TelemetryItem & voltsItem = telemetryItems[item];
+        if (voltsItem.isAvailable()) {
+          putsTelemetryChannelValue(batt_icon_x+7*FW+2, BAR_Y+1, item, voltsItem.value, LEFT);
+          altitude_icon_x = lcdLastPos+1;
+        }
       }
     }
 
     /* Altitude */
     if (g_model.frsky.altitudeSource) {
-      TelemetryItem & altitudeItem = telemetryItems[g_model.frsky.altitudeSource-1];
-      if (altitudeItem.isAvailable()) {
-        LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
-        int32_t value = altitudeItem.value;
-        TelemetrySensor & sensor = g_model.telemetrySensors[g_model.frsky.altitudeSource-1];
-        if (sensor.prec) value /= sensor.prec == 2 ? 100 : 10;
-        putsValueWithUnit(altitude_icon_x+2*FW-1, BAR_Y+1, value, UNIT_METERS, LEFT);
+      uint8_t item = g_model.frsky.altitudeSource-1;
+      if (item < MAX_SENSORS) {
+        TelemetryItem & altitudeItem = telemetryItems[item];
+        if (altitudeItem.isAvailable()) {
+          LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
+          int32_t value = altitudeItem.value / g_model.telemetrySensors[item].getPrecDivisor();
+          putsValueWithUnit(altitude_icon_x+2*FW-1, BAR_Y+1, value, g_model.telemetrySensors[item].unit, LEFT);
+        }
       }
     }
   }
@@ -271,11 +275,12 @@ void displayTopBar()
   if (TRAINER_CONNECTED()) {
     if (SLAVE_MODE()) {
       LCD_NOTIF_ICON(x, ICON_TRAINEE);
+      x -= 12;
     }
-    else {
+    else if (IS_TRAINER_INPUT_VALID()) {
       LCD_NOTIF_ICON(x, ICON_TRAINER);
+      x -= 12;
     }
-    x -= 12;
   }
 
   if (isFunctionActive(FUNCTION_LOGS)) {

@@ -755,6 +755,22 @@ enum TelemetryCurrentSources {
   TELEMETRY_CURRENT_SOURCE_FAS
 };
 
+enum UartModes {
+  UART_MODE_NONE,
+  UART_MODE_TELEMETRY_MIRROR,
+  UART_MODE_TELEMETRY,
+  UART_MODE_SBUS_TRAINER,
+  UART_MODE_DEBUG
+};
+
+enum TrainerMode {
+  TRAINER_MODE_MASTER_TRAINER_JACK,
+  TRAINER_MODE_SLAVE,
+  TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
+  TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
+  TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
+};
+
 class FrSkyData {
   public:
     FrSkyData() { clear(); }
@@ -1284,7 +1300,6 @@ enum Capability {
   HasExpoNames,
   HasNoExpo,
   HasMixerNames,
-  HasChNames,
   HasCvNames,
   HasPxxCountry,
   HasPPMStart,
@@ -1375,8 +1390,6 @@ class EEPROMInterface
     virtual int getSize(const ModelData &) = 0;
 
     virtual int getSize(const GeneralSettings &) = 0;
-
-    virtual int isAvailable(PulsesProtocol proto, int port=0) = 0;
 
     virtual const int getEEpromSize() = 0;
 
@@ -1489,7 +1502,7 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
 void registerEEpromInterfaces();
 void unregisterEEpromInterfaces();
 void registerOpenTxFirmwares();
-void unregisterFirmwares();
+void unregisterOpenTxFirmwares();
 
 enum EepromLoadErrors {
   NO_ERROR,
@@ -1612,6 +1625,8 @@ class Firmware {
     virtual int getCapability(const Capability) = 0;
 
     virtual bool isTelemetrySourceAvailable(int source) = 0;
+
+    virtual int isAvailable(PulsesProtocol proto, int port=0) = 0;
 
   public:
     QList<const char *> languages;

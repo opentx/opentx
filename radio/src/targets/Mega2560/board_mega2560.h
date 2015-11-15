@@ -111,7 +111,7 @@ void sdPoll10ms(void);
 #  define INP_L_Trainer          7    
 
 // Servitudes driver
-#  define INP_B_PPM_IN           7
+//#define INP_E_PPM_IN           7    //reserved PPM_IN
 #  define OUT_B_PPM              6    
 #  define OUT_B_SIM_CTL          5    
 #  define OUT_B_BUZZER           4

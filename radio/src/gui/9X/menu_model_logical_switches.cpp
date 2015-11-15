@@ -185,7 +185,11 @@ void menuModelLogicalSwitchOne(uint8_t event)
         else {
 #if defined(FRSKY)
           if (v1_val >= MIXSRC_FIRST_TELEM) {
+#if defined(CPUARM)
+            putsChannelValue(CSWONE_2ND_COLUMN, y, v1_val, convertLswTelemValue(cs), attr|LEFT);
+#else
             putsTelemetryChannelValue(CSWONE_2ND_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), attr|LEFT);
+#endif
             v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
             if (cs->func == LS_FUNC_DIFFEGREATER)
               v2_min = -v2_max;
@@ -295,7 +299,11 @@ void menuModelLogicalSwitches(uint8_t event)
         uint8_t v1 = cs->v1;
         putsMixerSource(CSW_2ND_COLUMN, y, v1, 0);
         if (v1 >= MIXSRC_FIRST_TELEM) {
+#if defined(CPUARM)
+          putsChannelValue(CSW_3RD_COLUMN, y, v1, convertLswTelemValue(cs), LEFT);
+#else
           putsTelemetryChannelValue(CSW_3RD_COLUMN, y, v1 - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT);
+#endif
         }
         else {
           lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, LEFT);

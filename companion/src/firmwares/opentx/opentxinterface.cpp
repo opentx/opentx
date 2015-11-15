@@ -586,8 +586,6 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return (IS_TARANIS(board) ? 10 : 6);
     case GvarsName:
       return (IS_9X(board) ? 0 : 6);
-    case HasChNames:
-      return (IS_TARANIS(board) ? 1 : 0);
     case GvarsInCS:
     case HasFAIMode:
       return 1;
@@ -807,7 +805,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case MixersMonitor:
       return id.contains("mixersmon") ? 1 : 0;
     case HasBatMeterRange:
-      return (IS_TARANIS(board) ? true : false);
+      return (IS_TARANIS(board) ? true : id.contains("battgraph"));
     case DangerousFunctions:
       return id.contains("danger") ? 1 : 0;
     default:
@@ -826,7 +824,7 @@ bool OpenTxFirmware::isTelemetrySourceAvailable(int source)
   return true;
 }
 
-int OpenTxEepromInterface::isAvailable(PulsesProtocol proto, int port)
+int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
 {
   if (IS_TARANIS(board)) {
     switch (port) {
@@ -834,9 +832,12 @@ int OpenTxEepromInterface::isAvailable(PulsesProtocol proto, int port)
         switch (proto) {
           case PULSES_OFF:
           case PULSES_PXX_XJT_X16:
+            return 1;
           case PULSES_PXX_XJT_D8:
           case PULSES_PXX_XJT_LR12:
-            return 1;
+            return id.contains("eu") ? 0 : 1;
+          case PULSES_PPM:
+            return id.contains("internalppm") ? 1 : 0;
           default:
             return 0;
         }
@@ -903,7 +904,7 @@ int OpenTxEepromInterface::isAvailable(PulsesProtocol proto, int port)
       case PULSES_DSMX:
       case PULSES_LP45:
       case PULSES_DSM2:
-      case PULSES_PXX_DJT:
+      // case PULSES_PXX_DJT:     // Unavailable for now
       case PULSES_PPM16:
       case PULSES_PPMSIM:
         return 1;
@@ -1452,3 +1453,9 @@ void registerOpenTxFirmwares()
   current_firmware_variant = default_firmware_variant;
 }
 
+void unregisterOpenTxFirmwares()
+{
+  foreach (Firmware * f, firmwares) {
+    delete f;
+  }
+}
