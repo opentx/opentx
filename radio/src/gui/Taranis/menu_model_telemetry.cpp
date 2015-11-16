@@ -201,8 +201,8 @@ bool isSensorAvailable(int sensor)
     return isTelemetryFieldAvailable(abs(sensor) - 1);
 }
 
-#define SENSOR_2ND_COLUMN (12*FW)
-#define SENSOR_3RD_COLUMN (18*FW)
+#define SENSOR_2ND_COLUMN      (12*FW)
+#define SENSOR_3RD_COLUMN      (18*FW)
 
 #define SENSOR_UNIT_ROWS       ((sensor->type == TELEM_TYPE_CALCULATED && (sensor->formula == TELEM_FORMULA_DIST)) || sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSOR_PREC_ROWS       (sensor->isPrecConfigurable() && sensor->unit != UNIT_FAHRENHEIT  ? (uint8_t)0 : HIDDEN_ROW)
@@ -217,7 +217,7 @@ bool isSensorAvailable(int sensor)
 
 void menuModelSensor(uint8_t event)
 {
-  TelemetrySensor * sensor = & g_model.telemetrySensors[s_currIdx];
+  TelemetrySensor * sensor = &g_model.telemetrySensors[s_currIdx];
 
   SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, { 0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, SENSOR_AUTOOFFSET_ROWS, SENSOR_ONLYPOS_ROWS, SENSOR_FILTER_ROWS, SENSOR_PERSISTENT_ROWS, 0 });
   lcd_outdezAtt(PSIZE(TR_MENUSENSOR)*FW+1, 0, s_currIdx+1, INVERS|LEFT);
@@ -681,7 +681,6 @@ void menuModelTelemetry(uint8_t event)
           }
         }
         break;
-
 #endif
 
       case ITEM_TELEMETRY_TOP_BAR_LABEL:

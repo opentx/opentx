@@ -533,6 +533,7 @@ enum PotsWarnMode {
 
 #if defined(PCBHORUS)
   enum ModuleIndex {
+    INTERNAL_MODULE,
     EXTERNAL_MODULE,
     TRAINER_MODULE,
   };
