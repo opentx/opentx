@@ -393,6 +393,17 @@ static unsigned int getMixesCount(unsigned int chn)
   return getMixesCountFromFirst(chn, getFirstMix(chn));
 }
 
+/*luadoc
+@function model.getMixesCount(channel)
+
+Get the number of Mixer lines that the specified Channel has 
+
+@param channel (unsigned number) channel number (use 0 for CH1)
+
+@retval number number of mixes for requested channel
+
+@status current Introduced in 2.0.0
+*/
 static int luaModelGetMixesCount(lua_State *L)
 {
   unsigned int chn = luaL_checkunsigned(L, 1);
@@ -401,6 +412,36 @@ static int luaModelGetMixesCount(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function model.getMix(channel, line)
+
+Get configuration for specified Mix  
+
+@param channel (unsigned number) channel number (use 0 for CH1)
+
+@param line (unsigned number) mix number (use 0 for first line(mix))
+
+@retval nil requested channel or line does not exist
+
+@retval table mix data:
+ * `name` (string) mix line name
+ * `source` (number) source index
+ * `weight` (number) weight (1024 == 100%) value or GVAR1..9 = 4096..4011, -GVAR1..9 = 4095..4087
+ * `offset` (number) offset value or GVAR1..9 = 4096..4011, -GVAR1..9 = 4095..4087
+ * `switch` (number) switch index
+ * `multiplex` (number) multiplex (0 = ADD, 1 = MULTIPLY, 2 = REPLACE)
+ * `curveType` (number) curve type (function, expo, custom curve)
+ * `curveValue` (number) curve index
+ * `flightModes` (number) bit-mask of active flight modes
+ * `carryTrim` (boolean) carry trim
+ * `mixWarn` (number) warning (0 = off, 1 = 1 beep, .. 3 = 3 beeps)
+ * `delayUp` (number) delay up (time in 1/10 s)
+ * `delayDown` (number) delay down
+ * `speedUp` (number) speed up
+ * `speedDown` (number) speed down
+
+@status current Introduced in 2.0.0, parameters below `multiplex` added in 2.0.13
+*/
 static int luaModelGetMix(lua_State *L)
 {
   unsigned int chn = luaL_checkunsigned(L, 1);
@@ -432,6 +473,19 @@ static int luaModelGetMix(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function model.insertMix(channel, line, value)
+
+Insert a mixer line into Channel   
+
+@param channel (unsigned number) channel number (use 0 for CH1)
+
+@param line (unsigned number) mix number (use 0 for first line(mix))
+
+@param value (table) see model.getMix() for table format
+
+@status current Introduced in 2.0.0, parameters below `multiplex` added in 2.0.13
+*/
 static int luaModelInsertMix(lua_State *L)
 {
   unsigned int chn = luaL_checkunsigned(L, 1);
@@ -501,6 +555,17 @@ static int luaModelInsertMix(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function model.deleteMix(channel, line)
+
+Delete mixer line from specified Channel  
+
+@param channel (unsigned number) channel number (use 0 for CH1)
+
+@param line (unsigned number) mix number (use 0 for first line(mix))
+
+@status current Introduced in 2.0.0
+*/
 static int luaModelDeleteMix(lua_State *L)
 {
   unsigned int chn = luaL_checkunsigned(L, 1);
@@ -516,12 +581,39 @@ static int luaModelDeleteMix(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function model.deleteMixes()
+
+Removes **all** lines from **all** channels 
+
+@status current Introduced in 2.0.0
+*/
 static int luaModelDeleteMixes(lua_State *L)
 {
   memset(g_model.mixData, 0, sizeof(g_model.mixData));
   return 0;
 }
 
+/*luadoc
+@function model.getLogicalSwitch(switch)
+
+Get Logical Switch parameters
+
+@param switch (unsigned number) logical switch number (use 0 for LS1)
+
+@retval nil requested logical switch does not exist
+
+@retval table logical switch data:
+ * `func` (number) function index
+ * `v1` (number) V1 value (index)
+ * `v2` (number) V2 value (index or value)
+ * `v3` (number) V3 value (index or value)
+ * `and` (number) AND switch index
+ * `delay` (number) delay (time in 1/10 s)
+ * `duration` (number) duration (time in 1/10 s)
+
+@status current Introduced in 2.0.0
+*/
 static int luaModelGetLogicalSwitch(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
@@ -542,6 +634,17 @@ static int luaModelGetLogicalSwitch(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function model.setLogicalSwitch(switch, value)
+
+Set Logical Switch parameters 
+
+@param switch (unsigned number) logical switch number (use 0 for LS1)
+
+@param value (table) see model.getLogicalSwitch() for table format
+
+@status current Introduced in 2.0.0
+*/
 static int luaModelSetLogicalSwitch(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
@@ -580,6 +683,29 @@ static int luaModelSetLogicalSwitch(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function model.getCurve(curve)
+
+Get Curve parameters
+
+@param curve (unsigned number) curve number (use 0 for Curve1)
+
+@retval nil requested curve does not exist
+
+@retval table curve data:
+ * `name` (string) name
+ * `type` (number) type
+ * `smooth` (boolean) smooth
+ * `points` (number) number of points (0 = 5 points, 4 = 9points)
+ * `y` (table) table of Y values:
+   * `key` is point number (zero based)
+   * `value` is y value
+ * `x` (table) **only included for custom curve type**:
+   * `key` is point number (zero based)
+   * `value` is x value
+
+@status current Introduced in 2.0.12
+*/
 static int luaModelGetCurve(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
