@@ -48,7 +48,7 @@
 #define PERMANENT_SCRIPTS_MAX_INSTRUCTIONS (10000/100)
 #define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (20000/100)
 #define SET_LUA_INSTRUCTIONS_COUNT(x)      (instructionsPercent=0, lua_sethook(L, hook, LUA_MASKCOUNT, x))
-#define LUA_WARNING_INFO_LEN 64
+#define LUA_WARNING_INFO_LEN               64
 
 lua_State *L = NULL;
 uint8_t luaState = 0;
@@ -59,7 +59,7 @@ ScriptInternalData standaloneScript = { SCRIPT_NOFILE, 0 };
 uint16_t maxLuaInterval = 0;
 uint16_t maxLuaDuration = 0;
 bool luaLcdAllowed;
-static int instructionsPercent = 0;
+int instructionsPercent = 0;
 char lua_warning_info[LUA_WARNING_INFO_LEN+1];
 struct our_longjmp * global_lj = 0;
 
@@ -464,15 +464,17 @@ void luaLoadPermanentScripts()
 
 void displayLuaError(const char * title)
 {
+#if !defined(COLORLCD)
   displayBox(title);
+#endif
   if (lua_warning_info[0]) {
     char * split = strstr(lua_warning_info, ": ");
     if (split) {
-      lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, split-lua_warning_info, SMLSIZE);
-      lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, split+2, lua_warning_info+LUA_WARNING_INFO_LEN-split, SMLSIZE);
+      lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, split-lua_warning_info, SMLSIZE);
+      lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, split+2, lua_warning_info+LUA_WARNING_INFO_LEN-split, SMLSIZE);
     }
     else {
-      lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, 40, SMLSIZE);
+      lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, 40, SMLSIZE);
     }
   }
 }
@@ -581,12 +583,12 @@ void luaDoOneRunStandalone(uint8_t evt)
           return;
         }
         else if (luaDisplayStatistics) {
-          lcd_hline(0, 7*FH-1, lcdLastPos+FW, ERASE);
+          lcd_hline(0, 7*FH-1, lcdLastPos+6, ERASE);
           lcd_puts(0, 7*FH, "GV Use: ");
           lcd_outdezAtt(lcdLastPos, 7*FH, luaGetMemUsed(), LEFT);
           lcd_putc(lcdLastPos, 7*FH, 'b');
-          lcd_hline(0, 7*FH-2, lcdLastPos+FW, FORCE);
-          lcd_vlineStip(lcdLastPos+FW, 7*FH-2, FH+2, SOLID, FORCE);
+          lcd_hline(0, 7*FH-2, lcdLastPos+6, FORCE);
+          lcdDrawVerticalLine(lcdLastPos+6, 7*FH-2, FH+2, SOLID, FORCE);
         }
       }
     }
@@ -657,8 +659,12 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
     TelemetryScriptData & script = g_model.frsky.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
     filename = script.file;
 #endif
-    if ((scriptType & RUN_TELEM_FG_SCRIPT) && 
+    if ((scriptType & RUN_TELEM_FG_SCRIPT) &&
+#if defined(PCBFLAMENCO)
+        (g_menuStack[0]==menuMainView && sid.reference==SCRIPT_TELEMETRY_FIRST+g_eeGeneral.view-VIEW_TELEM1)) {
+#else
         (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {
+#endif
       lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
       lua_pushinteger(L, evt);
       inputsCount = 1;

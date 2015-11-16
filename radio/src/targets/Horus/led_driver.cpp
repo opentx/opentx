@@ -38,7 +38,7 @@
 
 void ledInit()
 {
-  RCC_AHB1PeriphClockCmd(LED_RCC_AHB1Periph_GPIO, ENABLE);
+  RCC_AHB1PeriphClockCmd(LED_RCC_AHB1Periph, ENABLE);
 
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = LED_GPIO_PIN;
@@ -51,7 +51,7 @@ void ledInit()
 
 void ledOff()
 {
-  RCC_AHB1PeriphClockCmd(LED_RCC_AHB1Periph_GPIO, DISABLE);
+  RCC_AHB1PeriphClockCmd(LED_RCC_AHB1Periph, DISABLE);
 }
 
 void ledRed()

@@ -177,7 +177,7 @@ void menuModelPhaseOne(uint8_t event)
           putsFlightMode(11*FW, y, p+1, posHorz==1 ? attr : 0);
         }
         else {
-          lcd_putsAtt(11*FW, y, STR_OWN, posHorz==1 ? attr : 0);
+          lcdDrawText(11*FW, y, STR_OWN, posHorz==1 ? attr : 0);
         }
         if (attr && s_currIdx>0 && posHorz==1 && (editMode>0 || p1valdiff)) {
           if (v < GVAR_MAX) v = GVAR_MAX;
@@ -253,7 +253,7 @@ void menuModelFlightModesAll(uint8_t event)
     FlightModeData *p = flightModeAddress(i);
     putsFlightMode(0, y, i+1, att|(getFlightMode()==i ? BOLD : 0));
 
-    lcd_putsnAtt(4*FW+NAME_OFS, y, p->name, sizeof(p->name), ZCHAR);
+    lcdDrawTextWithLen(4*FW+NAME_OFS, y, p->name, sizeof(p->name), ZCHAR);
     if (i == 0) {
       lcd_puts((5+LEN_FLIGHT_MODE_NAME)*FW+SWITCH_OFS, y, STR_DEFAULT);
     }

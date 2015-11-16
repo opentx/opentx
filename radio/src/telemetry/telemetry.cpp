@@ -455,7 +455,7 @@ void delTelemetryIndex(uint8_t index)
 {
   memclear(&g_model.telemetrySensors[index], sizeof(TelemetrySensor));
   telemetryItems[index].clear();
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 
 int availableTelemetryIndex()

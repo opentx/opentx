@@ -270,5 +270,5 @@ void applyTemplate(uint8_t idx)
 
     }
 
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
 }

@@ -23,8 +23,8 @@
 #include "file.h"
 #include "appdata.h"
 
-#define OPENTX_FIRMWARE_DOWNLOADS        "http://downloads-21.open-tx.org/firmware"
-#define OPENTX_NIGHT_FIRMWARE_DOWNLOADS  "http://downloads-21.open-tx.org/nightly/firmware"
+#define OPENTX_FIRMWARE_DOWNLOADS        "http://downloads-22.open-tx.org/firmware"
+#define OPENTX_NIGHT_FIRMWARE_DOWNLOADS  "http://downloads-22.open-tx.org/nightly/firmware"
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -75,6 +75,10 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for 9XR-PRO";
     case BOARD_AR9X:
       return "OpenTX for ar9x board / 9X";
+    case BOARD_FLAMENCO:
+      return "OpenTX for Flamenco experimental";
+    case BOARD_HORUS:
+      return "OpenTX for FrSky Horus";
     default:
       return "OpenTX for an unknown board";
   }
@@ -98,6 +102,8 @@ const int OpenTxEepromInterface::getEEpromSize()
     case BOARD_TARANIS:
     case BOARD_TARANIS_PLUS:
     case BOARD_TARANIS_X9E:
+    case BOARD_FLAMENCO:
+    case BOARD_HORUS:
       return EESIZE_TARANIS;
     default:
       return 0;
@@ -403,6 +409,8 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
       case BOARD_SKY9X:
       case BOARD_AR9X:
       case BOARD_9XRPRO:
+      case BOARD_FLAMENCO:
+      case BOARD_HORUS:
         version = 218;
         break;
       case BOARD_GRUVIN9X:
@@ -1430,6 +1438,14 @@ void registerOpenTxFirmwares()
   firmware = new OpenTxFirmware("opentx-taranisx9e", QObject::tr("FrSky Taranis X9E"), BOARD_TARANIS_X9E);
   firmware->addOption("shutdownconfirm", QObject::tr("Confirmation before radio shutdown"));
   addOpenTxTaranisOptions(firmware);
+  addOpenTxCommonOptions(firmware);
+  firmwares.push_back(firmware);
+
+  /* Horus board */
+  firmware = new OpenTxFirmware("opentx-horus", QObject::tr("FrSky Horus"), BOARD_HORUS);
+  firmware->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
+  firmware->addOption("nogvars", QObject::tr("Disable Global variables"));
+  firmware->addOption("lua", QObject::tr("Support for Lua model scripts"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 

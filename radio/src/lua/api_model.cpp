@@ -64,7 +64,7 @@ static int luaModelSetInfo(lua_State *L)
       strncpy(g_model.header.bitmap, name, sizeof(g_model.header.bitmap));
     }
   }
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
   return 0;
 }
 
@@ -108,7 +108,7 @@ static int luaModelSetModule(lua_State *L)
         module.channelsCount = luaL_checkinteger(L, -1) - 8;
       }
     }
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   return 0;
 }
@@ -161,7 +161,7 @@ static int luaModelSetTimer(lua_State *L)
         timer.persistent = luaL_checkinteger(L, -1);
       }
     }
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   return 0;
 }
@@ -574,7 +574,7 @@ static int luaModelSetLogicalSwitch(lua_State *L)
         sw->duration = luaL_checkinteger(L, -1);
       }
     }
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 
   return 0;
@@ -679,7 +679,7 @@ static int luaModelSetCustomFunction(lua_State *L)
         CFN_ACTIVE(cfn) = luaL_checkinteger(L, -1);
       }
     }
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 
   return 0;
@@ -764,7 +764,7 @@ static int luaModelSetOutput(lua_State *L)
           limit->curve = luaL_checkinteger(L, -1) + 1;
       }
     }
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 
   return 0;
@@ -827,7 +827,7 @@ static int luaModelSetGlobalVariable(lua_State *L)
   int value = luaL_checkinteger(L, 3);
   if (phase < MAX_FLIGHT_MODES && idx < MAX_GVARS && value >= -GVAR_MAX && value <= GVAR_MAX) {
     g_model.flightModeData[phase].gvars[idx] = value;
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
   return 0;
 }

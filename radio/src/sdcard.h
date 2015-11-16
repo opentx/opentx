@@ -41,6 +41,7 @@
 
 #define ROOT_PATH           "/"
 #define MODELS_PATH         ROOT_PATH "MODELS"      // no trailing slash = important
+#define RADIO_PATH          ROOT_PATH "RADIO"       // no trailing slash = important
 #define LOGS_PATH           ROOT_PATH "LOGS"
 #define SCREENSHOTS_PATH    ROOT_PATH "SCREENSHOTS"
 #define SOUNDS_PATH         ROOT_PATH "SOUNDS/en"
@@ -79,9 +80,10 @@ void writeLogs();
 uint32_t sdGetNoSectors();
 uint32_t sdGetSize();
 uint32_t sdGetFreeSectors();
+const char * sdCheckAndCreateDirectory(const char * path);
 
 #if !defined(BOOT)
-inline const pm_char *SDCARD_ERROR(FRESULT result)
+inline const pm_char * SDCARD_ERROR(FRESULT result)
 {
   if (result == FR_NOT_READY)
     return STR_NO_SDCARD;
@@ -98,7 +100,11 @@ inline const pm_char *SDCARD_ERROR(FRESULT result)
   #define O9X_FOURCC 0x3178396F // o9x for gruvin9x/MEGA2560
 #endif
 
-const char *fileCopy(const char *filename, const char *srcDir, const char *destDir);
+bool isFileAvailable(const char * filename);
+bool findNextFileIndex(char * filename, const char * directory);
+
+const char * sdCopyFile(const char * src, const char * dest);
+const char * sdCopyFile(const char * filename, const char * srcDir, const char * destDir);
 
 #endif
 

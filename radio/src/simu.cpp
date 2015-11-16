@@ -63,8 +63,10 @@ class Open9xSim: public FXMainWindow
     Open9xSim(){};
     Open9xSim(FXApp* a);
     ~Open9xSim();
+    void updateKeysAndSwitches(bool start=false);
     long onKeypress(FXObject*,FXSelector,void*);
     long onTimeout(FXObject*,FXSelector,void*);
+    void createBitmap(int index, uint16_t *data, int x, int y, int w, int h);
     void makeSnapshot(const FXDrawable* drawable);
     void doEvents();
     void refreshDisplay();
@@ -93,7 +95,7 @@ Open9xSim::Open9xSim(FXApp* a):
   FXMainWindow(a, "OpenTX Simu", NULL, NULL, DECOR_ALL, 20, 90, 0, 0)
 {
   firstTime = true;
-  memset(displayBuf, 0, DISPLAY_BUFER_SIZE);
+  memset(displayBuf, 0, DISPLAY_BUFFER_SIZE);
   bmp = new FXPPMImage(getApp(),NULL,IMAGE_OWNED|IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP, W2, H2);
 
 #if defined(SIMU_AUDIO)
@@ -137,7 +139,9 @@ Open9xSim::Open9xSim(FXApp* a):
   
   bmf = new FXImageFrame(this,bmp);
 
-  getApp()->addTimeout(this,2,100);
+  updateKeysAndSwitches(true);
+
+  getApp()->addTimeout(this, 2, 100);
 }
 
 Open9xSim::~Open9xSim()
@@ -161,6 +165,31 @@ Open9xSim::~Open9xSim()
 #if defined(SIMU_AUDIO)
   SDL_Quit();
 #endif
+}
+
+void Open9xSim::createBitmap(int index, uint16_t *data, int x, int y, int w, int h)
+{
+  FXPNGImage snapshot(getApp(), NULL, IMAGE_OWNED, w, h);
+
+  for (int i=0; i<w; i++) {
+    for (int j=0; j<h; j++) {
+      display_t z = data[(y+j) * LCD_W + (x+i)];
+      FXColor color = FXRGB(255*((z&0xF00)>>8)/0x0f, 255*((z&0x0F0)>>4)/0x0f, 255*(z&0x00F)/0x0f);
+      snapshot.setPixel(i, j, color);
+    }
+  }
+
+  FXFileStream stream;
+  char buf[32];
+  sprintf(buf,"%02d.png", index);
+  if (stream.open(buf, FXStreamSave)) {
+    snapshot.savePixels(stream);
+    stream.close();
+    TRACE("Bitmap %d (w=%d, h=%d) created", index, w, h);
+  }
+  else {
+    TRACE("Bitmap %d (w=%d, h=%d) error", index, w, h);
+  }
 }
 
 void Open9xSim::makeSnapshot(const FXDrawable* drawable)
@@ -215,30 +244,120 @@ long Open9xSim::onKeypress(FXObject*,FXSelector,void*v)
   return 0;
 }
 
+void Open9xSim::updateKeysAndSwitches(bool start)
+{
+  static int keys1[] = {
+#if defined(PCBHORUS)
+    KEY_Page_Up,   KEY_MENU,
+    KEY_Return,    KEY_ENTER,
+    KEY_BackSpace, KEY_EXIT,
+    KEY_Up,        KEY_UP,
+    KEY_Down,      KEY_DOWN,
+    KEY_Right,     KEY_RIGHT,
+    KEY_Left,      KEY_LEFT,
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
+    KEY_Page_Up,   KEY_MENU,
+    KEY_Page_Down, KEY_PAGE,
+    KEY_Return,    KEY_ENTER,
+    KEY_BackSpace, KEY_EXIT,
+    KEY_Up,        KEY_PLUS,
+    KEY_Down,      KEY_MINUS,
+#else
+    KEY_Return,    KEY_MENU,
+    KEY_BackSpace, KEY_EXIT,
+    KEY_Right,     KEY_RIGHT,
+    KEY_Left,      KEY_LEFT,
+    KEY_Up,        KEY_UP,
+    KEY_Down,      KEY_DOWN,
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    KEY_F,         BTN_REa,
+#endif
+#endif
+  };
+
+  for (unsigned int i=0; i<DIM(keys1); i+=2) {
+    simuSetKey(keys1[i+1], start ? false : getApp()->getKeyState(keys1[i]));
+  }
+
+#ifdef __APPLE__
+  // gruvin: Can't use Function keys on the Mac -- too many other app conflicts.
+  //         The ordering of these keys, Q/W,E/R,T/Y,U/I matches the on screen 
+  //         order of trim sliders
+  static FXuint trimKeys[] = { KEY_E, KEY_R, KEY_U, KEY_I, KEY_R, KEY_E, KEY_Y, KEY_T, KEY_Q, KEY_W };
+#else
+  static FXuint trimKeys[] = { KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8 };
+#endif
+
+  for (unsigned i=0; i<DIM(trimKeys); i++) {
+    simuSetTrim(i, getApp()->getKeyState(trimKeys[i]));
+  }
+
+#define SWITCH_KEY(key, swtch, states) \
+  static bool state##key = 0; \
+  static int8_t state_##swtch = 2; \
+  static int8_t inc_##swtch = 1; \
+  if (getApp()->getKeyState(KEY_##key)) { \
+    if (!state##key) { \
+      state_##swtch = (state_##swtch+inc_##swtch); \
+      if (state_##swtch == 1+states) inc_##swtch = -1; \
+      else if (state_##swtch == 2) inc_##swtch = 1; \
+      state##key = true; \
+    } \
+  } \
+  else { \
+    state##key = false; \
+  } \
+  simuSetSwitch(swtch, state_##swtch-states);
+
+#if defined(PCBFLAMENCO)
+  SWITCH_KEY(A, 0, 3);
+  SWITCH_KEY(B, 1, 2);
+  // SWITCH_KEY(C, 2, 3);
+  // SWITCH_KEY(D, 3, 3);
+  SWITCH_KEY(E, 4, 2);
+  SWITCH_KEY(F, 5, 3);
+#elif defined(PCBTARANIS) && defined(REV9E)
+  SWITCH_KEY(A, 0, 3);
+  SWITCH_KEY(B, 1, 3);
+  SWITCH_KEY(C, 2, 3);
+  SWITCH_KEY(D, 3, 3);
+  SWITCH_KEY(E, 4, 3);
+  SWITCH_KEY(F, 5, 3);
+  SWITCH_KEY(G, 6, 3);
+  SWITCH_KEY(H, 7, 3);
+  SWITCH_KEY(I, 8, 3);
+  SWITCH_KEY(J, 9, 3);
+  SWITCH_KEY(K, 10, 3);
+  SWITCH_KEY(L, 11, 3);
+  SWITCH_KEY(M, 12, 3);
+  SWITCH_KEY(N, 13, 3);
+  SWITCH_KEY(O, 14, 3);
+  SWITCH_KEY(P, 15, 3);
+  SWITCH_KEY(Q, 16, 3);
+  SWITCH_KEY(R, 17, 3);
+#elif defined(PCBTARANIS)
+  SWITCH_KEY(A, 0, 3);
+  SWITCH_KEY(B, 1, 3);
+  SWITCH_KEY(C, 2, 3);
+  SWITCH_KEY(D, 3, 3);
+  SWITCH_KEY(E, 4, 3);
+  SWITCH_KEY(F, 5, 2);
+  SWITCH_KEY(G, 6, 3);
+  SWITCH_KEY(H, 7, 2);
+#else
+  SWITCH_KEY(1, 0, 2);
+  SWITCH_KEY(2, 1, 2);
+  SWITCH_KEY(3, 2, 2);
+  SWITCH_KEY(4, 3, 3);
+  SWITCH_KEY(5, 4, 2);
+  SWITCH_KEY(6, 5, 2);
+  SWITCH_KEY(7, 6, 2);
+#endif
+}
+
 long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
 {
-  if(hasFocus()) {
-    static int keys1[]={
-#if defined(PCBTARANIS)
-      KEY_Page_Up,   KEY_MENU,
-      KEY_Page_Down, KEY_PAGE,
-      KEY_Return,    KEY_ENTER,
-      KEY_BackSpace, KEY_EXIT,
-      KEY_Up,        KEY_PLUS,
-      KEY_Down,      KEY_MINUS,
-#else
-      KEY_Return,    KEY_MENU,
-      KEY_BackSpace, KEY_EXIT,
-      KEY_Right,     KEY_RIGHT,
-      KEY_Left,      KEY_LEFT,
-      KEY_Up,        KEY_UP,
-      KEY_Down,      KEY_DOWN,
-#endif
-#if defined(ROTARY_ENCODER_NAVIGATION)
-      KEY_F,  BTN_REa,
-#endif
-    };
-
+  if (hasFocus()) {
 #if defined(PCBSKY9X) && !defined(REVX)
     Coproc_temp = 23;
     Coproc_maxtemp = 28;
@@ -249,55 +368,29 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
     maxTemperature = 42;
 #endif
 
-    for (unsigned int i=0; i<DIM(keys1); i+=2) {
-      simuSetKey(keys1[i+1], getApp()->getKeyState(keys1[i]));
-    }
+    updateKeysAndSwitches();
 
-#ifdef __APPLE__
-    // gruvin: Can't use Function keys on the Mac -- too many other app conflicts.
-    //         The ordering of these keys, Q/W,E/R,T/Y,U/I matches the on screen 
-    //         order of trim sliders
-    static FXuint trimKeys[] = { KEY_E, KEY_R, KEY_U, KEY_I, KEY_R, KEY_E, KEY_Y, KEY_T, KEY_Q, KEY_W };
+#if defined(PCBHORUS)
+    extern rotenc_t rotencValue;
+    #define ROTENC_VALUE rotencValue
 #else
-    static FXuint trimKeys[] = { KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8 };
+    #define ROTENC_VALUE g_rotenc[0]
 #endif
-
-    for (unsigned i=0; i<DIM(trimKeys); i++) {
-      simuSetTrim(i, getApp()->getKeyState(trimKeys[i]));
-    }
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
+    
+#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBHORUS)
     static bool rotencAction = false;
     if (getApp()->getKeyState(KEY_G)) {
-      if (!rotencAction) g_rotenc[0] += ROTARY_ENCODER_GRANULARITY;
+      if (!rotencAction) ROTENC_VALUE += ROTARY_ENCODER_GRANULARITY;
       rotencAction = true;
     }
     else if (getApp()->getKeyState(KEY_D)) {
-      if (!rotencAction) g_rotenc[0] -= ROTARY_ENCODER_GRANULARITY;
+      if (!rotencAction) ROTENC_VALUE -= ROTARY_ENCODER_GRANULARITY;
       rotencAction = true;
     }
     else {
       rotencAction = false;
     }
 #endif
-
-#define SWITCH_KEY(key, swtch, states) \
-    static bool state##key = 0; \
-    static int8_t state_##swtch = 2; \
-    static int8_t inc_##swtch = 1; \
-    if (getApp()->getKeyState(KEY_##key)) { \
-      if (!state##key) { \
-        state_##swtch = (state_##swtch+inc_##swtch); \
-        if (state_##swtch >= 1+states) inc_##swtch = -1; \
-        else if (state_##swtch <= 2) inc_##swtch = 1; \
-        /* TRACE("switch " #swtch ": state: %d, inc: %d", state_##swtch, inc_##swtch); */ \
-        state##key = true; \
-      } \
-    } \
-    else { \
-      state##key = false; \
-    } \
-    simuSetSwitch(swtch, state_##swtch-states);
 
 #if defined(PCBTARANIS) && defined(REV9E)
     SWITCH_KEY(A, 0, 3);
@@ -337,7 +430,7 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
     SWITCH_KEY(7, 6, 2);
 #endif
   }
-
+  
   per10ms();
   refreshDisplay();
   getApp()->addTimeout(this, 2, 10);
@@ -361,16 +454,28 @@ void Open9xSim::setPixel(int x, int y, FXColor color)
 
 void Open9xSim::refreshDisplay()
 {
-  if (lcd_refresh) {
-    lcd_refresh = false;
+  if (simuLcdRefresh) {
+    simuLcdRefresh = false;
     FXColor offColor = isBacklightEnable() ? BL_COLOR : FXRGB(200, 200, 200);
 #if LCD_W == 128
     FXColor onColor = FXRGB(0, 0, 0);
 #endif
     for (int x=0; x<LCD_W; x++) {
       for (int y=0; y<LCD_H; y++) {
-#if defined(PCBTARANIS)
-        display_t * p = &lcd_buf[y / 2 * LCD_W + x];
+#if defined(PCBHORUS)
+    	display_t z = simuLcdBuf[y * LCD_W + x];
+    	if (1) {
+          FXColor color = FXRGB(255*((z&0xF800)>>11)/0x1f, 255*((z&0x07E0)>>5)/0x3F, 255*(z&0x001F)/0x01F);
+          setPixel(x, y, color);
+    	}
+#elif defined(PCBFLAMENCO)
+        display_t z = simuLcdBuf[y * LCD_W + x];
+        if (1) {
+          FXColor color = FXRGB(255*((z&0xF00)>>8)/0x0f, 255*((z&0x0F0)>>4)/0x0f, 255*(z&0x00F)/0x0f);
+          setPixel(x, y, color);
+        }
+#elif defined(PCBTARANIS)
+        display_t * p = &simuLcdBuf[y / 2 * LCD_W + x];
         uint8_t z = (y & 1) ? (*p >> 4) : (*p & 0x0F);
         if (z) {
           FXColor color;
@@ -381,7 +486,7 @@ void Open9xSim::refreshDisplay()
           setPixel(x, y, color);
         }
 #else
-        if (lcd_buf[x+(y/8)*LCD_W] & (1<<(y%8))) {
+        if (simuLcdBuf[x+(y/8)*LCD_W] & (1<<(y%8))) {
           setPixel(x, y, onColor);
         }
 #endif
@@ -459,7 +564,7 @@ uint16_t anaIn(uint8_t chan)
     return th9xSim->sliders[chan]->getValue();
   else if (chan<NUM_STICKS+NUM_POTS)
     return th9xSim->knobs[chan-NUM_STICKS]->getValue();
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO)
   else if (chan == TX_VOLTAGE)
     return 1000;
 #elif defined(PCBSKY9X)
@@ -476,4 +581,9 @@ uint16_t anaIn(uint8_t chan)
 #endif
   else
     return 0;
+}
+
+void createBitmap(int index, uint16_t *data, int x, int y, int w, int h)
+{
+  th9xSim->createBitmap(index, data, x, y, w, h);
 }

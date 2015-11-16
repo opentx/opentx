@@ -211,8 +211,8 @@ void menuTelemetryJeti(uint8_t event)
   lcdDrawTelemetryTopBar();
 
   for (uint8_t i=0; i<16; i++) {
-    lcd_putcAtt((i+2)*FW, 3*FH, jetiRxBuffer[i], BSS);
-    lcd_putcAtt((i+2)*FW, 4*FH, jetiRxBuffer[i+16], BSS);
+    lcdDrawChar((i+2)*FW, 3*FH, jetiRxBuffer[i], BSS);
+    lcdDrawChar((i+2)*FW, 4*FH, jetiRxBuffer[i+16], BSS);
   }
 
   if (event == EVT_KEY_FIRST(KEY_EXIT)) {

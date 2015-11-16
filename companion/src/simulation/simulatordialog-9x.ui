@@ -30,7 +30,16 @@
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>5</number>
+   </property>
+   <property name="topMargin">
+    <number>5</number>
+   </property>
+   <property name="rightMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
     <number>5</number>
    </property>
    <property name="spacing">
@@ -66,7 +75,16 @@
       <number>2</number>
      </property>
      <layout class="QGridLayout" name="gridLayout_8">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>5</number>
+      </property>
+      <property name="topMargin">
+       <number>5</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
        <number>5</number>
       </property>
       <property name="spacing">
@@ -399,7 +417,7 @@ QPushButton:checked {
            </widget>
           </item>
           <item>
-           <widget class="mySlider" name="trimHLeft">
+           <widget class="SliderWidget" name="trimHLeft">
             <property name="toolTip">
              <string>Right Double Click to Reset</string>
             </property>
@@ -463,7 +481,7 @@ QPushButton:checked {
            </widget>
           </item>
           <item>
-           <widget class="mySlider" name="trimVLeft">
+           <widget class="SliderWidget" name="trimVLeft">
             <property name="toolTip">
              <string>Right Double Click to Reset</string>
             </property>
@@ -868,7 +886,7 @@ QPushButton:checked {
            </widget>
           </item>
           <item>
-           <widget class="mySlider" name="trimHRight">
+           <widget class="SliderWidget" name="trimHRight">
             <property name="toolTip">
              <string>Right Double Click to Reset</string>
             </property>
@@ -932,7 +950,7 @@ QPushButton:checked {
            </widget>
           </item>
           <item>
-           <widget class="mySlider" name="trimVRight">
+           <widget class="SliderWidget" name="trimVRight">
             <property name="toolTip">
              <string>Right Double Click to Reset</string>
             </property>
@@ -990,7 +1008,16 @@ QPushButton:checked {
            <number>2</number>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_10">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>2</number>
+           </property>
+           <property name="topMargin">
+            <number>2</number>
+           </property>
+           <property name="rightMargin">
+            <number>2</number>
+           </property>
+           <property name="bottomMargin">
             <number>2</number>
            </property>
            <item>
@@ -1020,7 +1047,7 @@ QPushButton:checked {
          </spacer>
         </item>
         <item row="2" column="0">
-         <widget class="myQDial" name="pot0">
+         <widget class="DialWidget" name="pot0">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -1077,7 +1104,7 @@ QPushButton:checked {
          </spacer>
         </item>
         <item row="5" column="0">
-         <widget class="myQDial" name="pot1">
+         <widget class="DialWidget" name="pot1">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -1137,7 +1164,7 @@ QPushButton:checked {
          </spacer>
         </item>
         <item row="8" column="0">
-         <widget class="myQDial" name="pot2">
+         <widget class="DialWidget" name="pot2">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -1262,7 +1289,7 @@ QPushButton:checked {
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/9xdt.png)</string>
+            <string notr="true">background:url(:/images/simulator/9X/9xdt.png)</string>
            </property>
           </widget>
          </item>
@@ -1281,12 +1308,12 @@ QPushButton:checked {
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/9xdl.png)</string>
+            <string notr="true">background:url(:/images/simulator/9X/9xdl.png)</string>
            </property>
           </widget>
          </item>
          <item row="0" column="4" rowspan="3">
-          <widget class="menuWidget" name="menu" native="true">
+          <widget class="ButtonsWidget" name="rightbuttons" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1300,12 +1327,12 @@ QPushButton:checked {
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/9xmenu.png)</string>
+            <string notr="true">background:url(:/images/simulator/9X/9xmenu.png)</string>
            </property>
           </widget>
          </item>
          <item row="1" column="2">
-          <widget class="lcdWidget" name="lcd" native="true">
+          <widget class="LcdWidget" name="lcd" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1335,29 +1362,7 @@ QPushButton:checked {
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/9xdb.png)</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0" rowspan="3">
-          <widget class="cursorWidget" name="cursor" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>128</width>
-             <height>186</height>
-            </size>
-           </property>
-           <property name="mouseTracking">
-            <bool>true</bool>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background:url(:/images/9xcurs.png);</string>
+            <string notr="true">background:url(:/images/simulator/9X/9xdb.png)</string>
            </property>
           </widget>
          </item>
@@ -1376,7 +1381,29 @@ QPushButton:checked {
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/9xdr.png)</string>
+            <string notr="true">background:url(:/images/simulator/9X/9xdr.png)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" rowspan="3">
+          <widget class="ButtonsWidget" name="leftbuttons" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>128</width>
+             <height>186</height>
+            </size>
+           </property>
+           <property name="mouseTracking">
+            <bool>true</bool>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:url(:/images/simulator/9X/9xcurs.png);</string>
            </property>
           </widget>
          </item>
@@ -1469,32 +1496,26 @@ QPushButton:checked {
  </widget>
  <customwidgets>
   <customwidget>
-   <class>lcdWidget</class>
+   <class>LcdWidget</class>
    <extends>QWidget</extends>
    <header>lcdwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>mySlider</class>
+   <class>SliderWidget</class>
    <extends>QSlider</extends>
-   <header location="global">myslider.h</header>
+   <header location="global">sliderwidget.h</header>
   </customwidget>
   <customwidget>
-   <class>cursorWidget</class>
-   <extends>QWidget</extends>
-   <header>cursorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>menuWidget</class>
-   <extends>QWidget</extends>
-   <header>menuwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>myQDial</class>
+   <class>DialWidget</class>
    <extends>QDial</extends>
-   <header location="global">myqdial.h</header>
+   <header location="global">dialwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ButtonsWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">buttonswidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

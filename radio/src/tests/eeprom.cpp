@@ -37,14 +37,14 @@
 #include "gtests.h"
 
 #if !defined(PCBSKY9X)
-TEST(EEPROM, 100_random_writes)
+TEST(Eeprom, 100_random_writes)
 {
   eepromFile = NULL; // in memory
   RlcFile f;
   uint8_t buf[1000];
   uint8_t buf2[1000];
 
-  eepromFormat();
+  storageFormat();
 
   for(int i=0; i<100; i++) {
     int size = rand()%800;
@@ -60,13 +60,13 @@ TEST(EEPROM, 100_random_writes)
   }
 }
 
-TEST(EEPROM, test2)
+TEST(Eeprom, test2)
 {
   eepromFile = NULL; // in memory
   RlcFile f;
   uint8_t buf[1000];
 
-  eepromFormat();
+  storageFormat();
 
   for(int i=0; i<1000; i++) buf[i]='6'+i%4;
 
@@ -83,19 +83,19 @@ TEST(EEPROM, test2)
   EXPECT_EQ(sz, 300);
 }
 
-TEST(EEPROM, eeCheckImmediately)
+TEST(Eeprom, storageCheckImmediately)
 {
   eepromFile = NULL; // in memory
   // RlcFile f;
   uint8_t buf[1000];
 
-  eepromFormat();
+  storageFormat();
 
   for(int i=0; i<1000; i++) buf[i]='6'+i%4;
 
   theFile.writeRlc(6, 6, buf, 300, false);
 
-  eeCheck(true);
+  storageCheck(true);
 
   theFile.openRd(6);
   uint16_t sz=0;
@@ -108,13 +108,13 @@ TEST(EEPROM, eeCheckImmediately)
   EXPECT_EQ(sz, 300);
 }
 
-TEST(EEPROM, copy)
+TEST(Eeprom, copy)
 {
   eepromFile = NULL; // in memory
 
   uint8_t buf[1000];
 
-  eepromFormat();
+  storageFormat();
 
   for(int i=0; i<1000; i++) buf[i]='6'+i%4;
 
@@ -133,13 +133,13 @@ TEST(EEPROM, copy)
   EXPECT_EQ(sz, 300);
 }
 
-TEST(EEPROM, rm)
+TEST(Eeprom, rm)
 {
   eepromFile = NULL; // in memory
 
   uint8_t buf[1000];
 
-  eepromFormat();
+  storageFormat();
 
   for(int i=0; i<1000; i++) buf[i]='6'+i%4;
 

@@ -152,8 +152,8 @@ const char * const audioFilenames[] = {
   "bye",
   "thralert",
   "swalert",
-  "eebad",
-  "eeformat",
+  "baddata",
+  "format",
   "lowbatt",
   "inactiv",
   "a1_org",
@@ -189,7 +189,7 @@ const char * const audioFilenames[] = {
   "midstck2",
   "midstck3",
   "midstck4",
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   "midpot1",
   "midpot2",
   "midslid1",
@@ -265,6 +265,8 @@ void referenceSystemAudioFiles()
       fn = *fno.lfname ? fno.lfname : fno.fname;
       uint8_t len = strlen(fn);
 
+      TRACE("%s", fn);
+
       // Eliminates directories / non wav files
       if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
 
@@ -288,7 +290,7 @@ char * getModelAudioPath(char * path)
 {
   strcpy(path, SOUNDS_PATH "/");
   strncpy(path+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-  char * result = strcat_modelname(path+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
+  char * result = strcat_currentmodelname(path+sizeof(SOUNDS_PATH));
   *result++ = '/';
   *result = '\0';
   return result;
@@ -510,7 +512,7 @@ void AudioQueue::start()
 #define CODEC_ID_PCM_ALAW   6
 #define CODEC_ID_PCM_MULAW  7
 
-#ifndef SIMU
+#if !defined(SIMU)
 void audioTask(void* pdata)
 {
   while (!audioQueue.started()) {
@@ -519,7 +521,9 @@ void audioTask(void* pdata)
 
   setSampleRate(AUDIO_SAMPLE_RATE);
 
-#if defined(SDCARD)
+#if !defined(EEPROM)
+  AUDIO_TADA();
+#elif defined(SDCARD)
   if (!unexpectedShutdown) {
     sdInit();
     AUDIO_TADA();
@@ -1096,7 +1100,7 @@ void audioEvent(unsigned int index, unsigned int freq)
         case AU_STICK4_MIDDLE:
         case AU_POT1_MIDDLE:
         case AU_POT2_MIDDLE:
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
         case AU_SLIDER1_MIDDLE:
         case AU_SLIDER2_MIDDLE:
 #else

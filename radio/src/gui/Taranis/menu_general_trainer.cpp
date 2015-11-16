@@ -70,7 +70,7 @@ void menuGeneralTrainer(uint8_t event)
 
       switch(j) {
         case 0:
-          lcd_putsiAtt(4*FW, y, STR_TRNMODE, td->mode, attr);
+          lcdDrawTextAtIndex(4*FW, y, STR_TRNMODE, td->mode, attr);
           if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
           break;
 
@@ -80,7 +80,7 @@ void menuGeneralTrainer(uint8_t event)
           break;
 
         case 2:
-          lcd_putsiAtt(12*FW, y, STR_TRNCHN, td->srcChn, attr);
+          lcdDrawTextAtIndex(12*FW, y, STR_TRNCHN, td->srcChn, attr);
           if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->srcChn, 0, 3);
           break;
       }
@@ -95,7 +95,7 @@ void menuGeneralTrainer(uint8_t event)
 
   attr = (sub==6) ? INVERS : 0;
   if (attr) s_editMode = 0;
-  lcd_putsAtt(0*FW, MENU_HEADER_HEIGHT+1+6*FH, STR_CAL, attr);
+  lcdDrawText(0*FW, MENU_HEADER_HEIGHT+1+6*FH, STR_CAL, attr);
   for (int i=0; i<4; i++) {
     uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
 #if defined (PPM_UNIT_PERCENT_PREC1)
@@ -108,7 +108,7 @@ void menuGeneralTrainer(uint8_t event)
   if (attr) {
     if (event==EVT_KEY_LONG(KEY_ENTER)){
       memcpy(g_eeGeneral.trainer.calib, ppmInput, sizeof(g_eeGeneral.trainer.calib));
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
       AUDIO_WARNING1();
     }
   }

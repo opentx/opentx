@@ -13,7 +13,7 @@
 
   ;Name and file
   Name "OpenTX companion"
-  OutFile "companion-windows-v@C9X_VERSION@.exe"
+  OutFile "companion-windows-v@VERSION@.exe"
 
   ;Default installation folder
   InstallDir "$PROGRAMFILES\OpenTX companion"

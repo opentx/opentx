@@ -47,6 +47,11 @@ class Fifo
     {
     }
 
+    void clear()
+    {
+      widx = ridx = 0;
+    }
+
     void push(uint8_t byte) {
       uint32_t next = (widx+1) & (N-1);
       if (next != ridx) {

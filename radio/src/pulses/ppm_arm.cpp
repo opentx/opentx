@@ -61,7 +61,7 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
   PpmPulsesData * ppmPulsesData = (port == TRAINER_MODULE ? &trainerPulsesData.ppm : &modulePulsesData[port].ppm);
   uint16_t * ptr = ppmPulsesData->pulses;
 
-#if defined(PCBSKY9X)
+#if defined(PPM_PIN_HW_SERIAL)
   ppmPulsesData->index = 0;
 #else
   ppmPulsesData->ptr = ptr;

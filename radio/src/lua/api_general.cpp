@@ -40,7 +40,13 @@
 #include "stamp-opentx.h"
 #include "lua/lua_api.h"
 
-#include "lua/lua_exports.inc"   // this line must be after lua headers
+#if defined(PCBHORUS)
+#include "lua/lua_exports_horus.inc"   // this line must be after lua headers
+#elif defined(PCBFLAMENCO)
+#include "lua/lua_exports_flamenco.inc"
+#elif defined(PCBTARANIS)
+#include "lua/lua_exports_taranis.inc"
+#endif
 
 #if defined(PCBTARANIS) && defined(REV9E)
   #define RADIO "taranisx9e"

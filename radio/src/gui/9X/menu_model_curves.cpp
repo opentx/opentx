@@ -98,7 +98,7 @@ bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
   for (uint8_t i=0; i<custom-2; i++)
     crv[custom+i] = -100 + ((200 * (i+1) + custom/2) / (custom-1)) ;
 
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
   return true;
 }
 
@@ -129,7 +129,7 @@ void menuModelCurveOne(uint8_t event)
           m_posHorz = -4;
         for (uint8_t i=0; i<crv.points; i++)
           crv.crv[i] = (i-(crv.points/2)) * int8_t(m_posHorz) * 50 / (crv.points-1);
-        eeDirty(EE_MODEL);
+        storageDirty(EE_MODEL);
         killEvents(event);
       }
       break;
@@ -189,7 +189,7 @@ void menuModelCurveOne(uint8_t event)
   lcd_putsLeft(7*FH, STR_TYPE);
   uint8_t attr = (s_editMode <= 0 ? INVERS : 0);
   lcd_outdezAtt(5*FW-2, 7*FH, crv.points, LEFT|attr);
-  lcd_putsAtt(lcdLastPos, 7*FH, crv.custom ? PSTR("pt'") : PSTR("pt"), attr);
+  lcdDrawText(lcdLastPos, 7*FH, crv.custom ? PSTR("pt'") : PSTR("pt"), attr);
 
   DrawCurve();
 
@@ -207,7 +207,7 @@ void menuModelCurveOne(uint8_t event)
     if (crv.custom && i>0 && i<crv.points-1) x = crv.crv[crv.points+i-1];
     lcd_puts(7, 2*FH, PSTR("x=")); lcd_outdezAtt(7+2*FW, 2*FH, x, LEFT);
     lcd_puts(7, 3*FH, PSTR("y=")); lcd_outdezAtt(7+2*FW, 3*FH, crv.crv[i], LEFT);
-    lcd_rect(3, 1*FH+4, 7*FW-2, 3*FH-2);
+    lcdDrawRect(3, 1*FH+4, 7*FW-2, 3*FH-2);
 
     if (p1valdiff || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP))
       CHECK_INCDEC_MODELVAR(event, crv.crv[i], -100, 100);  // edit Y on up/down

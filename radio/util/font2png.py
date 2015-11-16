@@ -2,14 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt4 import Qt, QtGui
+from PyQt4 import Qt, QtCore, QtGui
+import glob
 
-try:
-  app = Qt.QApplication(sys.argv)
-except:
-  pass
+app = Qt.QApplication(sys.argv)
 
-chars = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz~ ≥→←↑↓    △Ⓘ"""
+for f in glob.glob("fonts/*.ttf"):
+    QtGui.QFontDatabase.addApplicationFont(f)
+
+chars = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz~ ≥→←↑↓↗↘↙↖△"""
 
 def getCharWidth(fontsize, metrics, index):
     if index == 0:
@@ -18,21 +19,42 @@ def getCharWidth(fontsize, metrics, index):
         return 1
     else:
         rect = metrics.boundingRect(chars[index])
-        return rect.width()
-    
+        if fontsize >= 24:
+            return rect.width() + 3
+        else:
+            return rect.width() + 1
+
+def getFontTopBottom(fontsize, metrics):
+    top, bottom = 0, 0
+    for i, c in enumerate(chars):
+         rect = metrics.boundingRect(chars[i])
+         top = min(top, rect.top())
+         bottom = max(bottom, rect.bottom())
+    return top, bottom
+
 def getFontWidth(fontsize, metrics):
     width = 0
     for i, c in enumerate(chars):
         width += getCharWidth(fontsize, metrics, i)
     return width
     
-def createFontBitmap(filename, fontname, fontsize, foreground, background, coordsfile=True):
+def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, background, coordsfile=True):
     coords = [ ]
     font = QtGui.QFont(fontname)
-    font.setPointSize(fontsize)
+    font.setPixelSize(fontsize)
+    font.setBold(fontbold)
+    font.setHintingPreference(QtGui.QFont.PreferNoHinting)
+    font.setStyleStrategy(QtGui.QFont.PreferAntialias)
     metrics = QtGui.QFontMetrics(font)
+    
     width = getFontWidth(fontsize, metrics)
-    image = QtGui.QImage(width, fontsize+4, QtGui.QImage.Format_RGB32)
+    top, bottom = getFontTopBottom(fontsize, metrics)
+    extraImage = QtGui.QImage("fonts/extra_%dpx.png" % fontsize)
+    if extraImage.isNull():
+        extraWidth = 0
+    else:
+        extraWidth = extraImage.size().width()
+    image = QtGui.QImage(width + extraWidth, fontsize+2, QtGui.QImage.Format_RGB32)
     image.fill(background)
     painter = QtGui.QPainter()
     painter.begin(image)
@@ -48,8 +70,14 @@ def createFontBitmap(filename, fontname, fontsize, foreground, background, coord
             painter.drawPoint(width, fontsize);
         else:
             rect = metrics.boundingRect(c)
-            painter.drawText(width-rect.left(), fontsize+1, c)
+            if fontsize >= 24:
+                painter.drawText(width-rect.left()+1, fontsize-2, c) # fontsize-bottom+1 -17 / 7
+            else:
+                painter.drawText(width-rect.left(), fontsize-1, c) # fontsize-bottom+1 -17 / 7
         width += getCharWidth(fontsize, metrics, i)
+    if extraWidth:
+        painter.drawImage(QtCore.QPoint(width, 0), extraImage)                             
+    
     coords.append(width)
     painter.end()
     image.save(filename + ".png")
@@ -57,9 +85,13 @@ def createFontBitmap(filename, fontname, fontsize, foreground, background, coord
       f = file(filename + ".specs", "w")
       f.write("{ ")
       f.write(",".join(str(tmp) for tmp in coords))
+      if extraWidth:
+          for i in range(1, 14):
+              f.write(", %d" % (int(coords[-1])+i*(extraWidth/12)))
+          # f.write(file("fonts/extra_%dpx.specs" % fontsize).read())
       f.write(" }")
       f.close()      
     return coords
 
-if len(sys.argv) == 4:
-    createFontBitmap(sys.argv[3], sys.argv[1], int(sys.argv[2]), QtGui.QColor(0x00, 0x00, 0x00), QtGui.QColor(0xFF, 0xFF, 0xFF))
+if __name__ == "__main__":
+  createFontBitmap(sys.argv[4], sys.argv[1], float(sys.argv[2]), sys.argv[3] == "True", QtGui.QColor(0x00, 0x00, 0x00), QtGui.QColor(0xFF, 0xFF, 0xFF))

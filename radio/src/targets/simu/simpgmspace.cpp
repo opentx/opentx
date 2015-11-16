@@ -45,6 +45,7 @@
 
 #if defined WIN32 || !defined __GNUC__
   #include <direct.h>
+  #define mkdir(s, f) _mkdir(s)
 #endif
 
 #if defined(SIMU_DISKIO)
@@ -64,7 +65,7 @@ int g_snapshot_idx = 0;
 
 #if defined(CPUSTM32)
 uint32_t Peri1_frequency, Peri2_frequency;
-GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog;
+GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpioi, gpioj;
 TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
 RCC_TypeDef rcc;
 DMA_Stream_TypeDef dma2_stream2, dma2_stream6;
@@ -152,7 +153,13 @@ void simuSetKey(uint8_t key, bool state)
   switch (key) {
     KEY_CASE(KEY_MENU, KEYS_GPIO_REG_MENU, KEYS_GPIO_PIN_MENU)
     KEY_CASE(KEY_EXIT, KEYS_GPIO_REG_EXIT, KEYS_GPIO_PIN_EXIT)
-#if defined(PCBTARANIS)
+#if defined(PCBHORUS)
+    KEY_CASE(KEY_ENTER, KEYS_GPIO_REG_ENTER, KEYS_GPIO_PIN_ENTER)
+    KEY_CASE(KEY_RIGHT, KEYS_GPIO_REG_RIGHT, KEYS_GPIO_PIN_RIGHT)
+    KEY_CASE(KEY_LEFT, KEYS_GPIO_REG_LEFT, KEYS_GPIO_PIN_LEFT)
+    KEY_CASE(KEY_UP, KEYS_GPIO_REG_UP, KEYS_GPIO_PIN_UP)
+    KEY_CASE(KEY_DOWN, KEYS_GPIO_REG_DOWN, KEYS_GPIO_PIN_DOWN)
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
     KEY_CASE(KEY_ENTER, KEYS_GPIO_REG_ENTER, KEYS_GPIO_PIN_ENTER)
     KEY_CASE(KEY_PAGE, KEYS_GPIO_REG_PAGE, KEYS_GPIO_PIN_PAGE)
     KEY_CASE(KEY_MINUS, KEYS_GPIO_REG_MINUS, KEYS_GPIO_PIN_MINUS)
@@ -186,6 +193,12 @@ void simuSetTrim(uint8_t trim, bool state)
     TRIM_CASE(5, TRIMS_GPIO_REG_RVU, TRIMS_GPIO_PIN_RVU)
     TRIM_CASE(6, TRIMS_GPIO_REG_RHL, TRIMS_GPIO_PIN_RHL)
     TRIM_CASE(7, TRIMS_GPIO_REG_RHR, TRIMS_GPIO_PIN_RHR)
+#if defined(HORUS)
+    TRIM_CASE(8, TRIMS_GPIO_REG_LSU, TRIMS_GPIO_PIN_LSU)
+    TRIM_CASE(9, TRIMS_GPIO_REG_LSD, TRIMS_GPIO_PIN_RVU)
+    TRIM_CASE(10, TRIMS_GPIO_REG_RSU, TRIMS_GPIO_PIN_RHL)
+    TRIM_CASE(11, TRIMS_GPIO_REG_RSD, TRIMS_GPIO_PIN_RHR)
+#endif
   }
 }
 
@@ -194,7 +207,14 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
 {
   // TRACE("simuSetSwitch(%d, %d)", swtch, state);
   switch (swtch) {
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBFLAMENCO)
+    // SWITCH_3_CASE(0, SWITCHES_GPIO_REG_A_L, SWITCHES_GPIO_REG_A_H, SWITCHES_GPIO_PIN_A_L, SWITCHES_GPIO_PIN_A_H)
+    // SWITCH_CASE(1, SWITCHES_GPIO_REG_B, SWITCHES_GPIO_PIN_B)
+    // SWITCH_3_CASE(2, SWITCHES_GPIO_REG_C_L, SWITCHES_GPIO_REG_C_H, SWITCHES_GPIO_PIN_C_L, SWITCHES_GPIO_PIN_C_H)
+    // SWITCH_3_CASE(3, SWITCHES_GPIO_REG_D_L, SWITCHES_GPIO_REG_D_H, SWITCHES_GPIO_PIN_D_L, SWITCHES_GPIO_PIN_D_H)
+    // SWITCH_CASE(4, SWITCHES_GPIO_REG_E, SWITCHES_GPIO_PIN_E)
+    // SWITCH_3_CASE(5, SWITCHES_GPIO_REG_F_H, SWITCHES_GPIO_REG_F_L, SWITCHES_GPIO_PIN_F_H, SWITCHES_GPIO_PIN_F_L)
+#elif defined(PCBTARANIS) && defined(REV9E)
     SWITCH_3_CASE(0,  SWITCHES_GPIO_REG_A_L, SWITCHES_GPIO_REG_A_H, SWITCHES_GPIO_PIN_A_L, SWITCHES_GPIO_PIN_A_H)
     SWITCH_3_CASE(1,  SWITCHES_GPIO_REG_B_L, SWITCHES_GPIO_REG_B_H, SWITCHES_GPIO_PIN_B_L, SWITCHES_GPIO_PIN_B_H)
     SWITCH_3_CASE(2,  SWITCHES_GPIO_REG_C_L, SWITCHES_GPIO_REG_C_H, SWITCHES_GPIO_PIN_C_L, SWITCHES_GPIO_PIN_C_H)
@@ -213,7 +233,7 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
     SWITCH_3_CASE(15, SWITCHES_GPIO_REG_P_L, SWITCHES_GPIO_REG_P_H, SWITCHES_GPIO_PIN_P_L, SWITCHES_GPIO_PIN_P_H)
     SWITCH_3_CASE(16, SWITCHES_GPIO_REG_Q_L, SWITCHES_GPIO_REG_Q_H, SWITCHES_GPIO_PIN_Q_L, SWITCHES_GPIO_PIN_Q_H)
     SWITCH_3_CASE(17, SWITCHES_GPIO_REG_R_L, SWITCHES_GPIO_REG_R_H, SWITCHES_GPIO_PIN_R_L, SWITCHES_GPIO_PIN_R_H)
-#elif defined(PCBTARANIS)
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
     SWITCH_3_CASE(0,  SWITCHES_GPIO_REG_A_L, SWITCHES_GPIO_REG_A_H, SWITCHES_GPIO_PIN_A_L, SWITCHES_GPIO_PIN_A_H)
     SWITCH_3_CASE(1,  SWITCHES_GPIO_REG_B_L, SWITCHES_GPIO_REG_B_H, SWITCHES_GPIO_PIN_B_L, SWITCHES_GPIO_PIN_B_H)
     SWITCH_3_CASE(2,  SWITCHES_GPIO_REG_C_L, SWITCHES_GPIO_REG_C_H, SWITCHES_GPIO_PIN_C_L, SWITCHES_GPIO_PIN_C_H)
@@ -271,7 +291,7 @@ uint16_t getTmr16KHz()
   return get_tmr10ms() * 160;
 }
 
-#if !defined(PCBTARANIS)
+#if !defined(PCBTARANIS) && !defined(PCBHORUS)
 bool eeprom_thread_running = true;
 void *eeprom_write_function(void *)
 {
@@ -329,6 +349,10 @@ void *main_thread(void *)
   try {
 #endif
 
+#if defined(PCBHORUS)
+    lcdColorsInit();
+#endif
+
 #if defined(CPUARM)
     stackPaint();
 #endif
@@ -339,7 +363,7 @@ void *main_thread(void *)
     g_menuStack[0] = menuMainView;
     g_menuStack[1] = menuModelSelect;
 
-    eeReadAll(); // load general setup and selected model
+    storageReadAll(); // load general setup and selected model
 
 #if defined(SIMU_DISKIO)
     f_mount(&g_FATFS_Obj, "", 1);
@@ -356,13 +380,12 @@ void *main_thread(void *)
     if (main_thread_running == 1) {
       opentxStart();
     }
-    else {
-#if defined(CPUARM)
-      eeLoadModel(g_eeGeneral.currModel);
-#endif
-    }
 
     s_current_protocol[0] = 0;
+
+#if defined(PCBFLAMENCO)
+    menuEntryTime = get_tmr10ms() - 200;
+#endif
 
     while (main_thread_running) {
 #if defined(CPUARM)
@@ -603,7 +626,7 @@ void StartEepromThread(const char *filename)
   sem_init(eeprom_write_sem, 0, 0);
 #endif
 
-#if !defined(PCBTARANIS)
+#if !defined(PCBTARANIS) && !defined(PCBHORUS)
   eeprom_thread_running = true;
   assert(!pthread_create(&eeprom_thread_pid, NULL, &eeprom_write_function, NULL));
 #endif
@@ -611,7 +634,7 @@ void StartEepromThread(const char *filename)
 
 void StopEepromThread()
 {
-#if !defined(PCBTARANIS)
+#if !defined(PCBTARANIS) && !defined(PCBFLAMENCO) && !defined(PCBHORUS)
   eeprom_thread_running = false;
   sem_post(eeprom_write_sem);
   pthread_join(eeprom_thread_pid, NULL);
@@ -640,7 +663,7 @@ void eepromReadBlock (uint8_t * pointer_ram, uint32_t pointer_eeprom, uint32_t s
   }
 }
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO)
 void eepromWriteBlock(uint8_t * pointer_ram, uint32_t pointer_eeprom, uint32_t size)
 {
   assert(size);
@@ -694,7 +717,7 @@ namespace simu {
 FATFS g_FATFS_Obj;
 #endif
 
-char *convertSimuPath(const char *path)
+char * convertSimuPath(const char *path)
 {
   static char result[1024];
   if (path[0] == '/' && strcmp(simuSdDirectory, "/") != 0)
@@ -933,35 +956,50 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   return FR_OK;
 }
 
-FRESULT f_mkfs (const TCHAR *path, BYTE, UINT)
+FRESULT f_mkfs (const TCHAR * path, BYTE, UINT)
 {
   TRACE("Format SD...");
   return FR_OK;
 }
 
-FRESULT f_mkdir (const TCHAR*)
+FRESULT f_mkdir (const TCHAR * name)
 {
+  char * path = convertSimuPath(name);
+  if (mkdir(path, 0777)) {
+    TRACE("mkdir(%s) = error %d (%s)", path, errno, strerror(errno));
+    return FR_INVALID_NAME;
+  }
+  else {
+    TRACE("mkdir(%s) = OK", path);
+    return FR_OK;
+  }
   return FR_OK;
 }
 
-FRESULT f_unlink (const TCHAR* name)
+FRESULT f_unlink (const TCHAR * name)
 {
-  char *path = convertSimuPath(name);
+  char * path = convertSimuPath(name);
   if (unlink(path)) {
     TRACE("f_unlink(%s) = error %d (%s)", path, errno, strerror(errno));
     return FR_INVALID_NAME;
   }
-  TRACE("f_unlink(%s) = OK", path);
-  return FR_OK;
+  else {
+    TRACE("f_unlink(%s) = OK", path);
+    return FR_OK;
+  }
 }
 
 FRESULT f_rename(const TCHAR *oldname, const TCHAR *newname)
 {
-  if (rename(oldname, newname) < 0) {
-    TRACE("f_rename(%s, %s) = error %d (%s)", oldname, newname, errno, strerror(errno));
+  char old[1024];
+  strcpy(old, convertSimuPath(oldname));
+  char * path = convertSimuPath(newname);
+
+  if (rename(old, path) < 0) {
+    TRACE("f_rename(%s, %s) = error %d (%s)", old, path, errno, strerror(errno));
     return FR_INVALID_NAME;
   }
-  TRACE("f_rename(%s, %s) = OK", oldname, newname);
+  TRACE("f_rename(%s, %s) = OK", old, path);
   return FR_OK;
 }
 
@@ -1208,14 +1246,14 @@ uint32_t sdGetSpeed()
 
 #endif // #if defined(SIMU_DISKIO)
 
+bool simuLcdRefresh = true;
+display_t simuLcdBuf[DISPLAY_BUFFER_SIZE];
 
-
-bool lcd_refresh = true;
-display_t lcd_buf[DISPLAY_BUF_SIZE];
-
+#if !defined(PCBFLAMENCO) && !defined(PCBHORUS)
 void lcdSetRefVolt(uint8_t val)
 {
 }
+#endif
 
 void adcPrepareBandgap()
 {
@@ -1229,11 +1267,26 @@ void lcdOff()
 
 void lcdRefresh()
 {
-  memcpy(lcd_buf, displayBuf, sizeof(lcd_buf));
-  lcd_refresh = true;
+#if defined(PCBFLAMENCO)
+  TW8823_SendScreen();
+#endif
+
+  memcpy(simuLcdBuf, displayBuf, sizeof(simuLcdBuf));
+  simuLcdRefresh = true;
 }
 
-#if defined(PCBTARANIS)
+display_t simuLcdBackupBuf[DISPLAY_BUFFER_SIZE];
+void lcdStoreBackupBuffer()
+{
+  memcpy(simuLcdBackupBuf, displayBuf, sizeof(simuLcdBackupBuf));
+}
+
+void lcdRestoreBackupBuffer()
+{
+  memcpy(displayBuf, simuLcdBackupBuf, sizeof(displayBuf));
+}
+
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 void pwrInit() { }
 void pwrOff() { }
 #if defined(REV9E)
@@ -1290,3 +1343,8 @@ void turnBacklightOff(void)
 
 #endif  // #if defined(PCBTARANIS)
 
+#if defined(PCBFLAMENCO)
+void i2cWriteTW8823(unsigned char, unsigned char) { }
+uint8_t i2cReadBQ24195(uint8_t) { return 0; }
+void i2cWriteBQ24195(uint8_t, uint8_t) { }
+#endif

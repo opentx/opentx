@@ -91,7 +91,7 @@ bool moveCurve(uint8_t index, int8_t shift)
     curveEnd[index++] += shift;
   }
 
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
   return true;
 }
 
@@ -99,7 +99,7 @@ void displayPresetChoice(uint8_t event)
 {
   displayWarning(event);
   lcd_outdezAtt(WARNING_LINE_X+FW*7, WARNING_LINE_Y, 45*s_warning_input_value/4, LEFT|INVERS);
-  lcd_putcAtt(lcdLastPos, WARNING_LINE_Y, '@', INVERS);
+  lcdDrawChar(lcdLastPos, WARNING_LINE_Y, '@', INVERS);
 
   if (s_warning_result) {
     s_warning_result = 0;
@@ -154,7 +154,7 @@ void menuModelCurveOne(uint8_t event)
 
   uint8_t attr = (m_posVert==1 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
   lcd_putsLeft(3*FH+1, STR_TYPE);
-  lcd_putsiAtt(INDENT_WIDTH, 4*FH+1, STR_CURVE_TYPES, crv.type, attr);
+  lcdDrawTextAtIndex(INDENT_WIDTH, 4*FH+1, STR_CURVE_TYPES, crv.type, attr);
   if (attr) {
     uint8_t newType = checkIncDecModelZero(event, crv.type, CURVE_TYPE_LAST);
     if (newType != crv.type) {
@@ -172,7 +172,7 @@ void menuModelCurveOne(uint8_t event)
   attr = (m_posVert==2 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
   lcd_putsLeft(5*FH+1, STR_COUNT);
   lcd_outdezAtt(INDENT_WIDTH, 6*FH+1, 5+crv.points, LEFT|attr);
-  lcd_putsAtt(lcdLastPos, 6*FH+1, STR_PTS, attr);
+  lcdDrawText(lcdLastPos, 6*FH+1, STR_PTS, attr);
   if (attr) {
     int8_t count = checkIncDecModel(event, crv.points, -3, 12); // 2pts - 17pts
     if (checkIncDec_Ret) {
@@ -260,7 +260,7 @@ void menuModelCurveOne(uint8_t event)
 
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, uint8_t attr)
 {
-  lcd_putsiAtt(x, y, "\004DiffExpoFuncCstm", curve.type, m_posHorz==0 ? attr : 0);
+  lcdDrawTextAtIndex(x, y, "\004DiffExpoFuncCstm", curve.type, m_posHorz==0 ? attr : 0);
   if (attr && m_posHorz==0) {
     CHECK_INCDEC_MODELVAR_ZERO(event, curve.type, CURVE_REF_CUSTOM);
     if (checkIncDec_Ret) curve.value = 0;
@@ -271,7 +271,7 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, uint8_t
       curve.value = GVAR_MENU_ITEM(x+5*FW, y, curve.value, -100, 100, m_posHorz==1 ? LEFT|attr : LEFT, 0, event);
       break;
     case CURVE_REF_FUNC:
-      lcd_putsiAtt(x+5*FW, y, STR_VCURVEFUNC, curve.value, m_posHorz==1 ? attr : 0);
+      lcdDrawTextAtIndex(x+5*FW, y, STR_VCURVEFUNC, curve.value, m_posHorz==1 ? attr : 0);
       if (attr && m_posHorz==1) CHECK_INCDEC_MODELVAR_ZERO(event, curve.value, CURVE_BASE-1);
       break;
     case CURVE_REF_CUSTOM:
@@ -313,7 +313,7 @@ void menuModelCurvesAll(uint8_t event)
       editName(4*FW, y, g_model.curveNames[k], sizeof(g_model.curveNames[k]), 0, 0);
       CurveInfo & crv = g_model.curves[k];
       lcd_outdezAtt(11*FW, y, 5+crv.points, LEFT);
-      lcd_putsAtt(lcdLastPos, y, STR_PTS, 0);
+      lcdDrawText(lcdLastPos, y, STR_PTS, 0);
     }
   }
 

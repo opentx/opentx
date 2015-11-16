@@ -341,12 +341,12 @@ void putsMavlinParams(uint8_t x, uint8_t y, uint8_t idx, uint8_t att) {
 		const pm_char * s = getParamId(idx);
 		char c;
 		while ((c = pgm_read_byte(s++))) {
-			lcd_putcAtt(x, y, (c == '_' ? ' ' : c), 0);
+			lcdDrawChar(x, y, (c == '_' ? ' ' : c), 0);
 			x += FW;
 		}
 		if (idx < NB_PID_PARAMS) {
 			x = 11 * FW;
-			lcd_putcAtt(x, y, "PI"[idx & 0x01], att);
+			lcdDrawChar(x, y, "PI"[idx & 0x01], att);
 		}
 	}
 }

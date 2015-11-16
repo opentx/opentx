@@ -257,14 +257,12 @@
   #endif
   #define CONVERT_PTR_UINT(x) ((uint32_t)(uint64_t)(x))
   #define CONVERT_UINT_PTR(x) ((uint32_t*)(uint64_t)(x))
-  char *convertSimuPath(const char *path);
 #else
   #define FORCEINLINE inline __attribute__ ((always_inline))
   #define NOINLINE __attribute__ ((noinline))
   #define SIMU_SLEEP(x)
   #define CONVERT_PTR_UINT(x) ((uint32_t)(x))
   #define CONVERT_UINT_PTR(x) ((uint32_t *)(x))
-  #define convertSimuPath(x) (x)
 #endif
 
 #if !defined(CPUM64) && !defined(ACCURAT_THROTTLE_TIMER)
@@ -283,16 +281,20 @@
 #define RESXul     1024ul
 #define RESXl      1024l
 
-#if defined(PCBTARANIS)
-  #include "targets/taranis/board_taranis.h"
+#if defined(PCBHORUS)
+  #include "targets/Horus/board_horus.h"
+#elif defined(PCBFLAMENCO)
+  #include "targets/Flamenco/board_flamenco.h"
+#elif defined(PCBTARANIS)
+  #include "targets/Taranis/board_taranis.h"
 #elif defined(PCBSKY9X)
-  #include "targets/sky9x/board_sky9x.h"
+  #include "targets/Sky9x/board_sky9x.h"
 #elif defined(PCBGRUVIN9X)
-  #include "targets/gruvin9x/board_gruvin9x.h"
+  #include "targets/Gruvin9x/board_gruvin9x.h"
 #elif defined(PCBMEGA2560)
-  #include "targets/mega2560/board_mega2560.h"
+  #include "targets/Mega2560/board_mega2560.h"
 #else
-  #include "targets/stock/board_stock.h"
+  #include "targets/9x/board_stock.h"
 #endif
 
 #include "debug.h"
@@ -333,40 +335,28 @@
   #include <avr/wdt.h>
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  #define NUM_SWITCHES     5
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   #if defined(REV9E)
     #define NUM_SWITCHES   18 // yes, it's a lot!
   #else
     #define NUM_SWITCHES   8
   #endif
-  #define NUM_SW_SRCRAW    8
   #define SWSRC_THR        SWSRC_SF2
   #define SWSRC_GEA        SWSRC_SG2
   #define SWSRC_ID0        SWSRC_SA0
   #define SWSRC_ID1        SWSRC_SA1
   #define SWSRC_ID2        SWSRC_SA2
-  #define SW_DSM2_BIND     SW_SH2
 #else
   #define NUM_SWITCHES     7
   #define IS_3POS(sw)      ((sw) == 0)
   #define IS_MOMENTARY(sw) (sw == SWSRC_TRN)
-  #define NUM_SW_SRCRAW    1
   #define SW_DSM2_BIND     SW_TRN
 #endif
 
 #define NUM_PSWITCH        (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
 #define NUM_POTSSW         (NUM_XPOTS*6)
-
-#if defined(PCBTARANIS)
-  #define KEY_RIGHT        KEY_PLUS
-  #define KEY_LEFT         KEY_MINUS
-  #define KEY_UP           KEY_PLUS
-  #define KEY_DOWN         KEY_MINUS
-#else
-  #define KEY_ENTER        KEY_MENU
-  #define KEY_PLUS         KEY_RIGHT
-  #define KEY_MINUS        KEY_LEFT
-#endif
 
 #include "myeeprom.h"
 
@@ -376,7 +366,15 @@
   #define memclear(p, s) memset(p, 0, s)
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBHORUS)
+  #define IS_POT_AVAILABLE(x)       (true)
+  #define IS_POT_MULTIPOS(x)        (x==0)
+  #define IS_POT_WITHOUT_DETENT(x)  (x==0)
+#elif defined(PCBFLAMENCO)
+  #define IS_POT_AVAILABLE(x)       (true)
+  #define IS_POT_MULTIPOS(x)        (x==0)
+  #define IS_POT_WITHOUT_DETENT(x)  (x==0)
+#elif defined(PCBTARANIS) && defined(REV9E)
   #define IS_SLIDER_AVAILABLE(x)    ((x)==SLIDER1 || (x)==SLIDER2 || (g_eeGeneral.slidersConfig & (0x01 << ((x)-SLIDER3))))
   #define IS_POT_AVAILABLE(x)       ((x)<POT1 || ((x)<=POT_LAST && ((g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=0)) || ((x)>=SLIDER1 && IS_SLIDER_AVAILABLE(x)))
   #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
@@ -450,23 +448,29 @@
   #define STICK_SCROLL_DISABLE()
 #endif
 
-#include "eeprom_common.h"
-
-#if defined(EEPROM_RLC)
-  #include "eeprom_rlc.h"
-#else
-  #include "eeprom_raw.h"
+#if defined(CLI)
+#include "cli.h"
 #endif
 
+#include "timers.h"
+#include "storage/storage.h"
 #include "pulses/pulses.h"
 
-#if defined(PCBTARANIS)
-  #define BITMAP_BUFFER_SIZE(width, height)   (2 + width * ((height+7)/8)*4)
+#if defined(PCBHORUS)
+  #define BITMAP_BUFFER_SIZE(width, height)   (4 + (width)*(height)*3)
+  #define MODEL_BITMAP_WIDTH  (3*64) // 171
+  #define MODEL_BITMAP_HEIGHT (3*32) // 101
+  #define MODEL_BITMAP_SIZE   BITMAP_BUFFER_SIZE(MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)
+  extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
+  void loadModelBitmap(char * name, uint8_t * bitmap);
+  #define LOAD_MODEL_BITMAP() loadModelBitmap(g_model.header.bitmap, modelBitmap)
+#elif defined(PCBTARANIS)
+  #define BITMAP_BUFFER_SIZE(width, height)   (2 + (width) * (((height)+7)/8)*4)
   #define MODEL_BITMAP_WIDTH  64
   #define MODEL_BITMAP_HEIGHT 32
   #define MODEL_BITMAP_SIZE   BITMAP_BUFFER_SIZE(MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)
   extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
-  void loadModelBitmap(char *name, uint8_t *bitmap);
+  void loadModelBitmap(char * name, uint8_t * bitmap);
   #define LOAD_MODEL_BITMAP() loadModelBitmap(g_model.header.bitmap, modelBitmap)
 #else
   #define LOAD_MODEL_BITMAP()
@@ -486,7 +490,17 @@
   #define MAX_TRAINER_CHANNELS()            (8)
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
+  #define IS_MODULE_XJT(idx)                ((g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))
+  #if defined(DSM2)
+    #define IS_MODULE_DSM2(idx)             (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_DSM2)
+  #else
+    #define IS_MODULE_DSM2(idx)             (false)
+  #endif
+  #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.externalModule])
+  #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS())
+#elif defined(PCBTARANIS)
   #if defined(TARANIS_INTERNAL_PPM)
     #define IS_MODULE_PPM(idx)              (idx==TRAINER_MODULE || (idx==INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type==MODULE_TYPE_PPM)|| (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
     #define IS_MODULE_XJT(idx)              (((idx==INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type==MODULE_TYPE_XJT)|| (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT)) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))
@@ -548,6 +562,7 @@ typedef struct {
   }
 } CustomFunctionsContext;
 
+#include "strhelpers.h"
 #include "gui/gui.h"
 
 #if defined(TEMPLATES)
@@ -589,7 +604,9 @@ enum BaseCurves {
 
 #define THRCHK_DEADBAND 16
 
-#if defined(PCBTARANIS)
+#if defined(COLORLCD)
+  #define SPLASH_NEEDED() (true)
+#elif defined(PCBTARANIS)
   #define SPLASH_NEEDED() (g_eeGeneral.splashMode != 3)
 #elif defined(CPUARM)
   #define SPLASH_NEEDED() (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_DSM2 && !g_eeGeneral.splashMode)
@@ -599,13 +616,13 @@ enum BaseCurves {
 
 #if defined(FSPLASH)
   #define SPLASH_TIMEOUT  (g_eeGeneral.splashMode == 0 ? 60000/*infinite=10mn*/ : ((4*100) * (g_eeGeneral.splashMode & 0x03)))
-#elif defined(PCBTARANIS)
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   #define SPLASH_TIMEOUT  (g_eeGeneral.splashMode==-4 ? 1500 : (g_eeGeneral.splashMode<=0 ? (400-g_eeGeneral.splashMode*200) : (400-g_eeGeneral.splashMode*100)))
 #else
   #define SPLASH_TIMEOUT  (4*100)  // 4 seconds
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   #define IS_RE_NAVIGATION_ENABLE()   true
   #define NAVIGATION_RE_IDX()         0
 #elif defined(ROTARY_ENCODERS)
@@ -618,7 +635,7 @@ enum BaseCurves {
 
 #define HEART_TIMER_10MS     1
 #define HEART_TIMER_PULSES   2 // when multiple modules this is the first one
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   #define HEART_WDT_CHECK      (HEART_TIMER_10MS + (HEART_TIMER_PULSES << 0) + (HEART_TIMER_PULSES << 1))
 #else
   #define HEART_WDT_CHECK      (HEART_TIMER_10MS + HEART_TIMER_PULSES)
@@ -658,7 +675,7 @@ int zchar2str(char *dest, const char *src, int size);
 #include "keys.h"
 #include "pwr.h"
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 div_t switchInfo(int switchPosition);
 #endif
 
@@ -768,7 +785,7 @@ void logicalSwitchesReset();
   #define LS_RECURSIVE_EVALUATION_RESET() s_last_switch_used = 0
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   void getSwitchesPosition(bool startup);
 #else
   #define getSwitchesPosition(...)
@@ -777,7 +794,7 @@ void logicalSwitchesReset();
 extern swarnstate_t switches_states;
 swsrc_t getMovedSwitch();
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
   #define GET_MOVED_SOURCE_PARAMS uint8_t min
   int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS);
   #define GET_MOVED_SOURCE(min, max) getMovedSource(min)
@@ -793,7 +810,7 @@ swsrc_t getMovedSwitch();
   #define getFlightMode() 0
 #endif
 
-#if !defined(PCBTARANIS)
+#if !defined(VIRTUALINPUTS)
   uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx);
 #else
   #define getTrimFlightPhase(phase, idx) (phase)
@@ -809,7 +826,7 @@ swsrc_t getMovedSwitch();
 trim_t getRawTrimValue(uint8_t phase, uint8_t idx);
 int getTrimValue(uint8_t phase, uint8_t idx);
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 #else
   void setTrimValue(uint8_t phase, uint8_t idx, int trim);
@@ -988,7 +1005,26 @@ enum Analogs {
   STICK2,
   STICK3,
   STICK4,
-#if defined(PCBTARANIS)
+#if defined(PCBHORUS)
+  POT1,
+  POT2,
+  POT3,
+  POT_LAST=POT3,
+  SLIDER1,
+  SLIDER2,
+  SLIDER3,
+  SLIDER4,
+#elif defined(PCBFLAMENCO)
+  POT1,
+  POT2,
+  POT_LAST = POT2,
+  SLIDER1,
+  SLIDER2,
+  SWITCHES1,
+  SWITCHES2,
+  SWITCHES3,
+  SWITCHES4,
+#elif defined(PCBTARANIS)
   POT1,
   POT2,
   POT3,
@@ -1023,10 +1059,15 @@ enum Analogs {
 #if defined(PCBSKY9X) && !defined(REVA)
   TX_CURRENT,
 #endif
+#if defined(PCBHORUS)
+  MOUSE1,
+  MOUSE2,
+#endif
   NUMBER_ANALOG
 };
 
 void checkBacklight();
+void doLoopCommonActions();
 
 #if defined(PCBSTD) && defined(VOICE) && !defined(SIMU)
   #define BACKLIGHT_ON()    (Voice.Backlight = 1)
@@ -1074,7 +1115,6 @@ void generalDefault();
 void modelDefault(uint8_t id);
 
 #if defined(CPUARM)
-bool isFileAvailable(const char * filename);
 void checkModelIdUnique(uint8_t index, uint8_t module);
 #endif
 
@@ -1389,8 +1429,8 @@ enum AUDIO_SOUNDS {
 #if defined(VOICE)
     AU_THROTTLE_ALERT,
     AU_SWITCH_ALERT,
-    AU_BAD_EEPROM,
-    AU_EEPROM_FORMATTING,
+    AU_BAD_RADIODATA,
+    AU_STORAGE_FORMAT,
 #endif
     AU_TX_BATTERY_LOW,
     AU_INACTIVITY,
@@ -1427,7 +1467,7 @@ enum AUDIO_SOUNDS {
 #if defined(CPUARM)
     AU_TRIM_END,
 #endif
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
     AU_STICK1_MIDDLE,
     AU_STICK2_MIDDLE,
     AU_STICK3_MIDDLE,
@@ -1488,11 +1528,11 @@ enum AUDIO_SOUNDS {
 #include "buzzer.h"
 
 #if defined(PCBSTD) && defined(VOICE)
-#include "targets/stock/voice.h"
+#include "targets/9x/voice.h"
 #endif
 
 #if defined(PCBGRUVIN9X) && defined(VOICE)
-#include "targets/gruvin9x/somo14d.h"
+#include "targets/Gruvin9x/somo14d.h"
 #endif
 
 #include "translations.h"
@@ -1523,13 +1563,13 @@ extern void opentxClose();
 extern void opentxInit();
 
 // Re-useable byte array to save having multiple buffers
-#define SD_SCREEN_FILE_LENGTH (32)
+#define SD_SCREEN_FILE_LENGTH (64)
 union ReusableBuffer
 {
     // 275 bytes
     struct
     {
-        char listnames[LCD_LINES-1][LEN_MODEL_NAME];
+        char listnames[NUM_BODY_LINES][LEN_MODEL_NAME];
 #if !defined(CPUARM)
         uint16_t eepromfree;
 #endif
@@ -1549,7 +1589,7 @@ union ReusableBuffer
         int16_t loVals[NUM_STICKS+NUM_POTS];
         int16_t hiVals[NUM_STICKS+NUM_POTS];
         uint8_t state;
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
         struct {
           uint8_t stepsCount;
           int16_t steps[XPOTS_MULTIPOS_COUNT];
@@ -1563,7 +1603,7 @@ union ReusableBuffer
     // 274 bytes
     struct
     {
-        char lines[LCD_LINES-1][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
+        char lines[NUM_BODY_LINES][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
         uint32_t available;
         uint16_t offset;
         uint16_t count;
@@ -1577,7 +1617,7 @@ extern union ReusableBuffer reusableBuffer;
 void checkFlashOnBeep();
 
 #if defined(CPUARM)
-void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att);
+void putsValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att);
 #elif defined(FRSKY)
 void convertUnit(getvalue_t & val, uint8_t & unit); // TODO check FORCEINLINE on stock
 #else
@@ -1588,8 +1628,13 @@ void convertUnit(getvalue_t & val, uint8_t & unit); // TODO check FORCEINLINE on
 uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
 char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defaultName=NULL, uint8_t defaultNameSize=0, uint8_t defaultIdx=0);
-#define strcat_modelname(dest, idx) strcat_zchar(dest, modelHeaders[idx].name, LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
 #define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.flightModeData[idx].name, LEN_FLIGHT_MODE_NAME, STR_FP, PSIZE(TR_FP), idx+1)
+#if defined(EEPROM)
+#define strcat_modelname(dest, idx) strcat_zchar(dest, modelHeaders[idx].name, LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
+#define strcat_currentmodelname(dest) strcat_modelname(dest, g_eeGeneral.currModel)
+#else
+#define strcat_currentmodelname(dest) strcat_zchar(dest, g_model.header.name, LEN_MODEL_NAME)
+#endif
 #define ZLEN(s) zlen(s, sizeof(s))
 #define ZEXIST(s) zexist(s, sizeof(s))
 #endif
@@ -1698,7 +1743,7 @@ extern uint8_t s_frsky_view;
 #define EARTH_RADIUSKM ((uint32_t)6371)
 #define EARTH_RADIUS ((uint32_t)111194)
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 double gpsToDouble(bool neg, int16_t bp, int16_t ap);
 #endif
 void getGpsPilotPosition();

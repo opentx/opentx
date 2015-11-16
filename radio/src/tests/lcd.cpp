@@ -72,11 +72,11 @@ void doPaint(QPainter & p)
 #endif
       for (int x=0; x<LCD_W; x++, idx++) {
 #if !defined(PCBTARANIS)
-        if (lcd_buf[idx] & mask) {
+        if (simuLcdBuf[idx] & mask) {
           p.drawPoint(x, y);
         }
 #else
-        unsigned int z = (y & 1) ? (lcd_buf[idx] >> 4) : (lcd_buf[idx] & 0x0F);
+        unsigned int z = (y & 1) ? (simuLcdBuf[idx] >> 4) : (simuLcdBuf[idx] & 0x0F);
         if (z) {
           if (z != previousDepth) {
             previousDepth = z;
@@ -114,7 +114,7 @@ bool checkScreenshot(const QString & test)
 
 TEST(outdezNAtt, test_unsigned)
 {
-  lcd_clear();
+  lcdClear();
   lcd_outdezNAtt(0, 0, 65530, LEFT|UNSIGN);
   EXPECT_TRUE(checkScreenshot("unsigned")) << "Unsigned numbers will be bad displayed";
 }
@@ -122,7 +122,7 @@ TEST(outdezNAtt, test_unsigned)
 #if defined(CPUARM)
 TEST(outdezNAtt, testBigNumbers)
 {
-  lcd_clear();
+  lcdClear();
   lcd_outdezNAtt(0, 0, 1234567, LEFT);
   lcd_outdezNAtt(0, FH, -1234567, LEFT);
   EXPECT_TRUE(checkScreenshot("big_numbers"));
@@ -132,28 +132,28 @@ TEST(outdezNAtt, testBigNumbers)
 
 TEST(Lcd, Invers_0_0)
 {
-  lcd_clear();
-  lcd_putsAtt(0, 0, "Test", INVERS);
+  lcdClear();
+  lcdDrawText(0, 0, "Test", INVERS);
   EXPECT_TRUE(checkScreenshot("invers_0_0"));
 }
 
 TEST(Lcd, Invers_0_1)
 {
-  lcd_clear();
-  lcd_putsAtt(0, 1, "Test", INVERS);
+  lcdClear();
+  lcdDrawText(0, 1, "Test", INVERS);
   EXPECT_TRUE(checkScreenshot("invers_0_1"));
 }
 
 TEST(Lcd, Prec2_Left)
 {
-  lcd_clear();
+  lcdClear();
   lcd_outdezAtt(0, 0, 2, PREC2|LEFT);
   EXPECT_TRUE(checkScreenshot("prec2_left"));
 }
 
 TEST(Lcd, Prec2_Right)
 {
-  lcd_clear();
+  lcdClear();
   lcd_outdezAtt(LCD_W, LCD_H-FH, 2, PREC2);
   EXPECT_TRUE(checkScreenshot("prec2_right"));
 }
@@ -161,7 +161,7 @@ TEST(Lcd, Prec2_Right)
 #if defined(CPUARM)
 TEST(Lcd, Prec1_Dblsize_Invers)
 {
-  lcd_clear();
+  lcdClear();
   lcd_outdezAtt(LCD_W, 10, 51, PREC1|DBLSIZE|INVERS);
   EXPECT_TRUE(checkScreenshot("prec1_dblsize_invers"));
 }
@@ -169,22 +169,22 @@ TEST(Lcd, Prec1_Dblsize_Invers)
 
 TEST(Lcd, Line_Wrap)
 {
-  lcd_clear();
+  lcdClear();
   lcd_puts(LCD_W-10, 0, "TEST");
   EXPECT_TRUE(checkScreenshot("line_wrap"));
 }
 
 TEST(Lcd, DblsizeBottomRight)
 {
-  lcd_clear();
-  lcd_putsAtt(LCD_W-20, LCD_H-16, "TEST", DBLSIZE);
+  lcdClear();
+  lcdDrawText(LCD_W-20, LCD_H-16, "TEST", DBLSIZE);
   EXPECT_TRUE(checkScreenshot("dblsize_bottom_right"));
 }
 
 #if defined(CPUARM)
 TEST(Lcd, Smlsize_putsStrIdx)
 {
-  lcd_clear();
+  lcdClear();
   putsStrIdx(0, 0, "FM", 0, SMLSIZE);
   EXPECT_TRUE(checkScreenshot("smlsize_putsstridx"));
 }
@@ -192,7 +192,7 @@ TEST(Lcd, Smlsize_putsStrIdx)
 
 TEST(Lcd, vline)
 {
-  lcd_clear();
+  lcdClear();
   for (int x=0; x<100; x+=2) {
     lcd_vline(x, x/2, 12);
   }
@@ -202,7 +202,7 @@ TEST(Lcd, vline)
 #if defined(CPUARM)
 TEST(Lcd, vline_x_lt0)
 {
-  lcd_clear();
+  lcdClear();
   lcd_vline(50, -10, 12);
   lcd_vline(100, -10, 1);
   EXPECT_TRUE(checkScreenshot("vline_lt0"));
@@ -212,15 +212,15 @@ TEST(Lcd, vline_x_lt0)
 #if defined(CPUARM)
 TEST(Lcd, Smlsize)
 {
-  lcd_clear();
-  lcd_putsAtt(0, 0, "TESTgy,", SMLSIZE);
-  lcd_putsAtt(10, 22, "TESTgy,", SMLSIZE|INVERS);
+  lcdClear();
+  lcdDrawText(0, 0, "TESTgy,", SMLSIZE);
+  lcdDrawText(10, 22, "TESTgy,", SMLSIZE|INVERS);
   drawFilledRect(8, 40, 100, 20);
-  lcd_putsAtt(10, 42, "TESTgy,", SMLSIZE);
+  lcdDrawText(10, 42, "TESTgy,", SMLSIZE);
 
   bool invert = false;
   for(int i=0; i<3; i++) {
-    lcd_putsAtt(40+(4*i), 0+(4*i), "ABC", SMLSIZE|(invert?INVERS:0));  
+    lcdDrawText(40+(4*i), 0+(4*i), "ABC", SMLSIZE|(invert?INVERS:0));  
     invert = !invert;
   }
 
@@ -229,15 +229,15 @@ TEST(Lcd, Smlsize)
 
 TEST(Lcd, Stdsize)
 {
-  lcd_clear();
-  lcd_putsAtt(0, 0, "TEST", 0);
-  lcd_putsAtt(10, 22, "TEST", INVERS);
+  lcdClear();
+  lcdDrawText(0, 0, "TEST", 0);
+  lcdDrawText(10, 22, "TEST", INVERS);
   drawFilledRect(8, 40, 100, 20);
-  lcd_putsAtt(10, 42, "TEST", 0);
+  lcdDrawText(10, 42, "TEST", 0);
 
   bool invert = false;
   for(int i=0; i<3; i++) {
-    lcd_putsAtt(40+(4*i), 0+(4*i), "ABC", (invert?INVERS:0));  
+    lcdDrawText(40+(4*i), 0+(4*i), "ABC", (invert?INVERS:0));  
     invert = !invert;
   }
 
@@ -246,15 +246,15 @@ TEST(Lcd, Stdsize)
 
 TEST(Lcd, Midsize)
 {
-  lcd_clear();
-  lcd_putsAtt(0, 0, "TEST", MIDSIZE);
-  lcd_putsAtt(10, 22, "TEST", MIDSIZE|INVERS);
+  lcdClear();
+  lcdDrawText(0, 0, "TEST", MIDSIZE);
+  lcdDrawText(10, 22, "TEST", MIDSIZE|INVERS);
   drawFilledRect(8, 40, 100, 20);
-  lcd_putsAtt(10, 42, "TEST", MIDSIZE);
+  lcdDrawText(10, 42, "TEST", MIDSIZE);
 
   bool invert = false;
   for(int i=0; i<3; i++) {
-    lcd_putsAtt(40+(4*i), 0+(4*i), "ABC", MIDSIZE|(invert?INVERS:0));  
+    lcdDrawText(40+(4*i), 0+(4*i), "ABC", MIDSIZE|(invert?INVERS:0));  
     invert = !invert;
   }
 
@@ -263,15 +263,15 @@ TEST(Lcd, Midsize)
 
 TEST(Lcd, Dblsize)
 {
-  lcd_clear();
-  lcd_putsAtt(2, 10, "TST", DBLSIZE);
-  lcd_putsAtt(42, 10, "TST", DBLSIZE|INVERS);
+  lcdClear();
+  lcdDrawText(2, 10, "TST", DBLSIZE);
+  lcdDrawText(42, 10, "TST", DBLSIZE|INVERS);
   drawFilledRect(80, 8, 46, 24);
-  lcd_putsAtt(82, 10, "TST", DBLSIZE);
+  lcdDrawText(82, 10, "TST", DBLSIZE);
 
   bool invert = false;
   for(int i=0; i<3; i++) {
-    lcd_putsAtt(10+(4*i), 30+(4*i), "ABC", DBLSIZE|(invert?INVERS:0));  
+    lcdDrawText(10+(4*i), 30+(4*i), "ABC", DBLSIZE|(invert?INVERS:0));  
     invert = !invert;
   }
 
@@ -282,7 +282,7 @@ TEST(Lcd, Dblsize)
 #if defined(PCBTARANIS)
 TEST(Lcd, DrawSwitch)
 {
-  lcd_clear();
+  lcdClear();
   putsSwitches(0,  10, SWSRC_SA0, 0);
   putsSwitches(30, 10, SWSRC_SA0, SMLSIZE);
   // putsSwitches(60, 10, SWSRC_SA0, MIDSIZE); missing arrows in this font
@@ -294,7 +294,7 @@ TEST(Lcd, DrawSwitch)
 #if defined(PCBTARANIS)
 TEST(Lcd, BMPWrapping)
 {
-  lcd_clear();
+  lcdClear();
   uint8_t bitmap[2+40*40/2];
   bmpLoad(bitmap, "./tests/plane.bmp", 40, 40);
   lcd_bmp(200, 0, bitmap);
@@ -306,28 +306,28 @@ TEST(Lcd, BMPWrapping)
 #endif
 
 #if defined(PCBTARANIS)
-TEST(Lcd, lcd_hlineStip)
+TEST(Lcd, lcdDrawHorizontalLine)
 {
-  lcd_clear();
-  lcd_hlineStip(0, 10, LCD_W, DOTTED);
-  lcd_hlineStip(0, 20, LCD_W, SOLID);
-  lcd_hlineStip(50, 30, LCD_W, 0xEE);    //too wide
-  lcd_hlineStip(50, LCD_H + 10, 20, SOLID);    //too low
-  lcd_hlineStip(250, 30, LCD_W, SOLID);    //x outside display
-  EXPECT_TRUE(checkScreenshot("lcd_hlineStip"));
+  lcdClear();
+  lcdDrawHorizontalLine(0, 10, LCD_W, DOTTED);
+  lcdDrawHorizontalLine(0, 20, LCD_W, SOLID);
+  lcdDrawHorizontalLine(50, 30, LCD_W, 0xEE);    //too wide
+  lcdDrawHorizontalLine(50, LCD_H + 10, 20, SOLID);    //too low
+  lcdDrawHorizontalLine(250, 30, LCD_W, SOLID);    //x outside display
+  EXPECT_TRUE(checkScreenshot("lcdDrawHorizontalLine"));
 }
 #endif
 
 #if defined(PCBTARANIS)
-TEST(Lcd, lcd_vlineStip)
+TEST(Lcd, lcdDrawVerticalLine)
 {
-  lcd_clear();
-  lcd_vlineStip(10, 0, LCD_H, DOTTED);
-  lcd_vlineStip(20, 0, LCD_H, SOLID);
-  lcd_vlineStip(30, 30, LCD_H, 0xEE);    //too high
-  lcd_vlineStip(40, LCD_H + 10, 20, SOLID);    //too low
-  lcd_vlineStip(250, LCD_H + 10, LCD_H, SOLID);    //x outside display
-  EXPECT_TRUE(checkScreenshot("lcd_vlineStip"));
+  lcdClear();
+  lcdDrawVerticalLine(10, 0, LCD_H, DOTTED);
+  lcdDrawVerticalLine(20, 0, LCD_H, SOLID);
+  lcdDrawVerticalLine(30, 30, LCD_H, 0xEE);    //too high
+  lcdDrawVerticalLine(40, LCD_H + 10, 20, SOLID);    //too low
+  lcdDrawVerticalLine(250, LCD_H + 10, LCD_H, SOLID);    //x outside display
+  EXPECT_TRUE(checkScreenshot("lcdDrawVerticalLine"));
 }
 #endif
 
@@ -361,7 +361,7 @@ public:
 #if defined(PCBTARANIS)
 TEST(Lcd, lcd_bmpLoadAndDisplay)
 {
-  lcd_clear();
+  lcdClear();
   // Test proper BMP files, they should display correctly
   {
     TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(7, 32));
@@ -410,68 +410,68 @@ TEST(Lcd, lcd_bmpLoadAndDisplay)
 #endif
 
 #if defined(PCBTARANIS)
-TEST(Lcd, lcd_line)
+TEST(Lcd, lcdDrawLine)
 {
   int start, length, xOffset;
   uint8_t pattern; 
 
-  lcd_clear();
+  lcdClear();
 
   start = 5;
   pattern = SOLID; 
   length = 40;
   xOffset = 0;
-  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
-  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+  lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
   start = 10;
   pattern = DOTTED; 
   length = 40;
   xOffset = 0;
-  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
-  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+  lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
   start = 55;
   pattern = SOLID; 
   length = -40;
   xOffset = 80;
-  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
-  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+  lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
   start = 50;
   pattern = DOTTED; 
   length = -40;
   xOffset = 80;
-  lcd_line(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
-  lcd_line(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
+  lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
+  lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
   // 45 deg lines
-  lcd_line( 35, 40, 45, 40, SOLID, FORCE );
-  lcd_line( 40, 35, 40, 45, SOLID, FORCE );
+  lcdDrawLine( 35, 40, 45, 40, SOLID, FORCE );
+  lcdDrawLine( 40, 35, 40, 45, SOLID, FORCE );
 
-  lcd_line( 20, 40, 40, 20, SOLID, FORCE );
-  lcd_line( 40, 20, 60, 40, SOLID, FORCE );
-  lcd_line( 60, 40, 40, 60, SOLID, FORCE );
-  lcd_line( 40, 60, 20, 40, SOLID, FORCE );
+  lcdDrawLine( 20, 40, 40, 20, SOLID, FORCE );
+  lcdDrawLine( 40, 20, 60, 40, SOLID, FORCE );
+  lcdDrawLine( 60, 40, 40, 60, SOLID, FORCE );
+  lcdDrawLine( 40, 60, 20, 40, SOLID, FORCE );
 
-  lcd_line( 31, 39, 39, 31, SOLID, FORCE );
-  lcd_line( 41, 31, 49, 39, SOLID, FORCE );
-  lcd_line( 49, 41, 41, 49, SOLID, FORCE );
-  lcd_line( 39, 49, 31, 41, SOLID, FORCE );
+  lcdDrawLine( 31, 39, 39, 31, SOLID, FORCE );
+  lcdDrawLine( 41, 31, 49, 39, SOLID, FORCE );
+  lcdDrawLine( 49, 41, 41, 49, SOLID, FORCE );
+  lcdDrawLine( 39, 49, 31, 41, SOLID, FORCE );
 
   // slanted lines
-  lcd_line( 150, 10, 190, 10, SOLID, FORCE );
-  lcd_line( 150, 10, 190, 20, SOLID, FORCE );
-  lcd_line( 150, 10, 190, 30, SOLID, FORCE );
-  lcd_line( 150, 10, 190, 40, SOLID, FORCE );
-  lcd_line( 150, 10, 190, 50, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 190, 10, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 190, 20, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 190, 30, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 190, 40, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 190, 50, SOLID, FORCE );
 
-  lcd_line( 150, 10, 190, 50, SOLID, FORCE );
-  lcd_line( 150, 10, 180, 50, SOLID, FORCE );
-  lcd_line( 150, 10, 170, 50, SOLID, FORCE );
-  lcd_line( 150, 10, 160, 50, SOLID, FORCE );
-  lcd_line( 150, 10, 150, 50, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 190, 50, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 180, 50, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 170, 50, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 160, 50, SOLID, FORCE );
+  lcdDrawLine( 150, 10, 150, 50, SOLID, FORCE );
 
-  EXPECT_TRUE(checkScreenshot("lcd_line"));
+  EXPECT_TRUE(checkScreenshot("lcdDrawLine"));
 }
 #endif

@@ -54,22 +54,22 @@
 #define SWITCHES_GPIO_PIN_H             GPIO_Pin_7  // PG.07
 
 // Trims
-#define TRIMS_GPIO_REG_LHL              GPIOC->IDR
-#define TRIMS_GPIO_PIN_LHL              GPIO_Pin_0  // PC.00
-#define TRIMS_GPIO_REG_LHR              GPIOI->IDR
-#define TRIMS_GPIO_PIN_LHR              GPIO_Pin_4  // PI.04
-#define TRIMS_GPIO_REG_LVD              GPIOG->IDR
-#define TRIMS_GPIO_PIN_LVD              GPIO_Pin_12 // PG.12
-#define TRIMS_GPIO_REG_LVU              GPIOJ->IDR
-#define TRIMS_GPIO_PIN_LVU              GPIO_Pin_14 // PJ.14
-#define TRIMS_GPIO_REG_RVD              GPIOJ->IDR
-#define TRIMS_GPIO_PIN_RVD              GPIO_Pin_13 // PJ.13
-#define TRIMS_GPIO_REG_RHL              GPIOD->IDR
-#define TRIMS_GPIO_PIN_RHL              GPIO_Pin_3  // PD.03
+#define TRIMS_GPIO_REG_RHL              GPIOC->IDR
+#define TRIMS_GPIO_PIN_RHL              GPIO_Pin_0  // PC.00
+#define TRIMS_GPIO_REG_RHR              GPIOI->IDR
+#define TRIMS_GPIO_PIN_RHR              GPIO_Pin_4  // PI.04
+#define TRIMS_GPIO_REG_RVD              GPIOG->IDR
+#define TRIMS_GPIO_PIN_RVD              GPIO_Pin_12 // PG.12
 #define TRIMS_GPIO_REG_RVU              GPIOJ->IDR
-#define TRIMS_GPIO_PIN_RVU              GPIO_Pin_12 // PJ.12
-#define TRIMS_GPIO_REG_RHR              GPIOD->IDR
-#define TRIMS_GPIO_PIN_RHR              GPIO_Pin_7  // PD.07
+#define TRIMS_GPIO_PIN_RVU              GPIO_Pin_14 // PJ.14
+#define TRIMS_GPIO_REG_LVD              GPIOJ->IDR
+#define TRIMS_GPIO_PIN_LVD              GPIO_Pin_13 // PJ.13
+#define TRIMS_GPIO_REG_LHL              GPIOD->IDR
+#define TRIMS_GPIO_PIN_LHL              GPIO_Pin_3  // PD.03
+#define TRIMS_GPIO_REG_LVU              GPIOJ->IDR
+#define TRIMS_GPIO_PIN_LVU              GPIO_Pin_12 // PJ.12
+#define TRIMS_GPIO_REG_LHR              GPIOD->IDR
+#define TRIMS_GPIO_PIN_LHR              GPIO_Pin_7  // PD.07
 #define TRIMS_GPIO_REG_RSD              GPIOJ->IDR
 #define TRIMS_GPIO_PIN_RSD              GPIO_Pin_8  // PJ.08
 #define TRIMS_GPIO_REG_RSU              GPIOD->IDR
@@ -81,54 +81,46 @@
 
 // Index of all keys
 #define KEYS_GPIOB_PINS                 (SWITCHES_GPIO_PIN_B_L | SWITCHES_GPIO_PIN_C_H | TRIMS_GPIO_PIN_LSD | TRIMS_GPIO_PIN_LSU)
-#define KEYS_GPIOC_PINS                 (KEYS_GPIO_PIN_MENU | KEYS_GPIO_PIN_ENTER | KEYS_GPIO_PIN_RIGHT | TRIMS_GPIO_PIN_LHL)
-#define KEYS_GPIOD_PINS                 (SWITCHES_GPIO_PIN_C_L | TRIMS_GPIO_PIN_RHL | TRIMS_GPIO_PIN_RHR | TRIMS_GPIO_PIN_RSU)
+#define KEYS_GPIOC_PINS                 (KEYS_GPIO_PIN_MENU | KEYS_GPIO_PIN_ENTER | KEYS_GPIO_PIN_RIGHT | TRIMS_GPIO_PIN_RHL)
+#define KEYS_GPIOD_PINS                 (SWITCHES_GPIO_PIN_C_L | TRIMS_GPIO_PIN_LHL | TRIMS_GPIO_PIN_LHR | TRIMS_GPIO_PIN_RSU)
 #define KEYS_GPIOE_PINS                 (SWITCHES_GPIO_PIN_E_L)
-#define KEYS_GPIOG_PINS                 (KEYS_GPIO_PIN_UP | SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L | SWITCHES_GPIO_PIN_H | TRIMS_GPIO_PIN_LVD)
+#define KEYS_GPIOG_PINS                 (KEYS_GPIO_PIN_UP | SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L | SWITCHES_GPIO_PIN_H | TRIMS_GPIO_PIN_RVD)
 #define KEYS_GPIOH_PINS                 (SWITCHES_GPIO_PIN_A_L | SWITCHES_GPIO_PIN_B_H | SWITCHES_GPIO_PIN_E_H | SWITCHES_GPIO_PIN_F | ENC_GPIO_PIN_A | ENC_GPIO_PIN_B)
-#define KEYS_GPIOI_PINS                 (KEYS_GPIO_PIN_EXIT | KEYS_GPIO_PIN_LEFT | KEYS_GPIO_PIN_DOWN | SWITCHES_GPIO_PIN_A_H | TRIMS_GPIO_PIN_LHR)
-#define KEYS_GPIOJ_PINS                 (SWITCHES_GPIO_PIN_D_H | TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_RVD | TRIMS_GPIO_PIN_RVU | TRIMS_GPIO_PIN_RSD)
+#define KEYS_GPIOI_PINS                 (KEYS_GPIO_PIN_EXIT | KEYS_GPIO_PIN_LEFT | KEYS_GPIO_PIN_DOWN | SWITCHES_GPIO_PIN_A_H | TRIMS_GPIO_PIN_RHR)
+#define KEYS_GPIOJ_PINS                 (SWITCHES_GPIO_PIN_D_H | TRIMS_GPIO_PIN_RVU | TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_RSD)
 
 // ADC
-#define ADC_RCC_AHB1Periph_GPIO         (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC)
-#define ADC_GPIO_STICKS                 GPIOA
-#define ADC_GPIO_PIN_STICK_LV           GPIO_Pin_0  // PA.00
-#define ADC_GPIO_PIN_STICK_LH           GPIO_Pin_1  // PA.01
-#define ADC_GPIO_PIN_STICK_RV           GPIO_Pin_2  // PA.02
-#define ADC_GPIO_PIN_STICK_RH           GPIO_Pin_3  // PA.03
-#define ADC_GPIO_POT_L1                 GPIOC
-#define ADC_GPIO_PIN_POT_L1             GPIO_Pin_3  // PC.03
-#define ADC_GPIO_POT_R1                 GPIOA
-#define ADC_GPIO_PIN_POT_R1             GPIO_Pin_5  // PA.05
-#define ADC_GPIO_POT_L2                 GPIOB
-#define ADC_GPIO_PIN_POT_L2             GPIO_Pin_1  // PB.01
-#define ADC_GPIO_POT_R2                 GPIOB
-#define ADC_GPIO_PIN_POT_R2             GPIO_Pin_0  // PB.00
-#define ADC_GPIO_SWITCHES_L3            GPIOC
-#define ADC_GPIO_SWITCHES_PIN_L3        GPIO_Pin_1  // PC.01
-#define ADC_GPIO_SWITCHES_R3            GPIOA
-#define ADC_GPIO_SWITCHES_PIN_R3        GPIO_Pin_7  // PA.07
-#define ADC_GPIO_SWITCHES_L4            GPIOC
-#define ADC_GPIO_SWITCHES_PIN_L4        GPIO_Pin_0  // PC.00
-#define ADC_GPIO_SWITCHES_R4            GPIOA
-#define ADC_GPIO_SWITCHES_PIN_R4        GPIO_Pin_6  // PA.06
-#define ADC_GPIO_BATT                   GPIOC
-#define ADC_GPIO_PIN_BATT               GPIO_Pin_4  // PC.04
+#define ADC_RCC_AHB1Periph              (RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_DMA2)
+#define ADC_RCC_APB2Periph              (RCC_APB2Periph_SPI4 | RCC_APB2Periph_ADC3)
+#define ADC_SPI                         SPI4
+#define ADC_GPIO_AF                     GPIO_AF_SPI4
+#define ADC_SPI_GPIO                    GPIOE
+#define ADC_SPI_PIN_SCK                 GPIO_Pin_2
+#define ADC_SPI_PIN_CS	                GPIO_Pin_4
+#define ADC_SPI_PIN_MOSI                GPIO_Pin_6
+#define ADC_SPI_PIN_MISO                GPIO_Pin_5
+#define ADC_SPI_PinSource_SCK           GPIO_PinSource2
+#define ADC_SPI_PinSource_MISO		GPIO_PinSource5
+#define ADC_SPI_PinSource_MOSI		GPIO_PinSource6
+#define ADC_GPIO_PIN_MOUSE1             GPIO_Pin_8 // PF.8 ADC3_IN6 J5 MOUSE_X
+#define ADC_GPIO_PIN_MOUSE2             GPIO_Pin_9 // PF.9 ADC3_IN7 J6 MOUSE_Y
+#define ADC_IN_MOUSE1                   6
+#define ADC_IN_MOUSE2                   7
 
 // Power
-#define PWR_RCC_AHB1Periph_GPIO         RCC_AHB1Periph_GPIOJ
+#define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOJ
 #define PWR_GPIO                        GPIOJ
 #define PWR_GPIO_PIN_ON                 GPIO_Pin_0  // PJ.00
 #define PWR_GPIO_PIN_SWITCH             GPIO_Pin_1  // PJ.01
 
 // Led
-#define LED_RCC_AHB1Periph_GPIO         RCC_AHB1Periph_GPIOI
+#define LED_RCC_AHB1Periph              RCC_AHB1Periph_GPIOI
 #define LED_GPIO                        GPIOI
 #define LED_GPIO_PIN                    GPIO_Pin_5  // PI.05
 
 // Serial Port (DEBUG)
-#define SERIAL_RCC_AHB1Periph_GPIO      RCC_AHB1Periph_GPIOB
-#define SERIAL_RCC_APB1Periph_USART     RCC_APB1Periph_USART3
+#define SERIAL_RCC_AHB1Periph           RCC_AHB1Periph_GPIOB
+#define SERIAL_RCC_APB1Periph           RCC_APB1Periph_USART3
 #define SERIAL_GPIO                     GPIOB
 #define SERIAL_GPIO_PIN_TX              GPIO_Pin_10 // PB.10
 #define SERIAL_GPIO_PIN_RX              GPIO_Pin_11 // PB.11
@@ -140,8 +132,8 @@
 #define SERIAL_USART_IRQn               USART3_IRQn
 
 // Telemetry
-#define TELEMETRY_RCC_AHB1Periph_GPIO   RCC_AHB1Periph_GPIOD
-#define TELEMETRY_RCC_APB1Periph_USART  RCC_APB1Periph_USART2
+#define TELEMETRY_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
+#define TELEMETRY_RCC_APB1Periph        RCC_APB1Periph_USART2
 #define TELEMETRY_GPIO_DIR              GPIOD
 #define TELEMETRY_GPIO_PIN_DIR          GPIO_Pin_4  // PD.04
 #define TELEMETRY_GPIO                  GPIOD
@@ -197,8 +189,8 @@
 // Audio
 
 // I2C Bus: CAT5137
-#define I2C_RCC_AHB1Periph_GPIO         RCC_AHB1Periph_GPIOB
-#define I2C_RCC_APB1Periph_I2C          RCC_APB1Periph_I2C1
+#define I2C_RCC_AHB1Periph              RCC_AHB1Periph_GPIOB
+#define I2C_RCC_APB1Periph              RCC_APB1Periph_I2C1
 #define I2C                             I2C1
 #define I2C_GPIO                        GPIOB
 #define I2C_GPIO_PIN_SCL                GPIO_Pin_8  // PB.08
@@ -210,10 +202,10 @@
 #define I2C_ADDRESS_CAT5137             0x5C
 
 // Haptic
-#define HAPTIC_RCC_AHB1Periph_GPIO      RCC_AHB1Periph_GPIOA
+#define HAPTIC_RCC_AHB1Periph           RCC_AHB1Periph_GPIOA
+#define HAPTIC_RCC_APB2Periph           RCC_APB2ENR_TIM11EN
 #define HAPTIC_GPIO                     GPIOA
 #define HAPTIC_GPIO_PIN                 GPIO_Pin_2
-#define HAPTIC_RCC_APB2Periph_TIMER     RCC_APB2ENR_TIM11EN
 #define HAPTIC_GPIO_TIMER               TIM11
 #define HAPTIC_GPIO_AF                  GPIO_AF_TIM11
 #define HAPTIC_GPIO_PinSource           GPIO_PinSource2

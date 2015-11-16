@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 
   QStringList strl = QApplication::arguments();
   if (strl.contains("--version")) {
-    printf("%s\n", C9X_VERSION);
+    printf("%s\n", VERSION);
     fflush(stdout);
     exit(0);
   }

@@ -13,6 +13,16 @@ add_custom_target(about_lbm_taranis
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
+add_custom_target(about_lbm_flamenco
+  make lbm PCB=FLAMENCO
+  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+)
+
+add_custom_target(about_lbm_horus
+  make lbm PCB=HORUS
+  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+)
+
 add_custom_target(commondeps
   make stamp_header tra
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
@@ -20,8 +30,11 @@ add_custom_target(commondeps
 
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${RADIO_SRC_DIRECTORY}/stamp-opentx.h)
 
-add_custom_target(lua_exports 
-  make PCB=TARANIS lua_exports.inc
+add_custom_target(lua_exports
+  COMMAND make PCB=TARANIS lua/lua_exports_taranis.inc
+  COMMAND make PCB=FLAMENCO lua/lua_exports_flamenco.inc
+  COMMAND make PCB=HORUS lua/lua_exports_horus.inc
+  DEPENDS ${RADIO_SRC_DIRECTORY}/myeeprom.h
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
@@ -84,6 +97,7 @@ add_library(opentx-ar9x${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranis${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranisplus${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranisx9e${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
+add_library(opentx-horus${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 
 add_dependencies(opentx-9x${SUFFIX}-simulator about_lbm_9x commondeps)
 add_dependencies(opentx-9xr${SUFFIX}-simulator about_lbm_9x commondeps)
@@ -97,6 +111,7 @@ add_dependencies(opentx-ar9x${SUFFIX}-simulator about_lbm_9x commondeps)
 add_dependencies(opentx-taranis${SUFFIX}-simulator about_lbm_taranis commondeps lua_exports)
 add_dependencies(opentx-taranisplus${SUFFIX}-simulator about_lbm_taranis commondeps lua_exports)
 add_dependencies(opentx-taranisx9e${SUFFIX}-simulator about_lbm_taranis commondeps lua_exports)
+add_dependencies(opentx-horus${SUFFIX}-simulator about_lbm_horus commondeps lua_exports)
 
 set(OPENTX_LIBRARIES
   opentx-9x${SUFFIX}-simulator
@@ -111,6 +126,7 @@ set(OPENTX_LIBRARIES
   opentx-taranis${SUFFIX}-simulator
   opentx-taranisplus${SUFFIX}-simulator
   opentx-taranisx9e${SUFFIX}-simulator
+  opentx-horus${SUFFIX}-simulator
 )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -118,64 +134,69 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 # 9X with ATmega64
-target_include_directories(opentx-9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/stock)
-target_compile_definitions(opentx-9x${SUFFIX}-simulator PRIVATE PCBSTD PCB9X CPUM64 EEPROM_RLC ${COMMON_DEFINITIONS})
+target_include_directories(opentx-9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/9x)
+target_compile_definitions(opentx-9x${SUFFIX}-simulator PRIVATE PCBSTD PCB9X CPUM64 EEPROM EEPROM_RLC ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-9x${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # 9XR with ATmega64
-target_include_directories(opentx-9xr${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/stock)
-target_compile_definitions(opentx-9xr${SUFFIX}-simulator PRIVATE PCBSTD PCB9XR CPUM64 EEPROM_RLC ${COMMON_DEFINITIONS})
+target_include_directories(opentx-9xr${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/9x)
+target_compile_definitions(opentx-9xr${SUFFIX}-simulator PRIVATE PCBSTD PCB9XR CPUM64 EEPROM EEPROM_RLC ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-9xr${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # 9X with ATmega128
-target_include_directories(opentx-9x128${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/stock)
-target_compile_definitions(opentx-9x128${SUFFIX}-simulator PRIVATE PCBSTD PCB9X CPUM128 EEPROM_RLC ${COMMON_DEFINITIONS})
+target_include_directories(opentx-9x128${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/9x)
+target_compile_definitions(opentx-9x128${SUFFIX}-simulator PRIVATE PCBSTD PCB9X CPUM128 EEPROM EEPROM_RLC ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-9x128${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # 9XR with ATmega128
-target_include_directories(opentx-9xr128${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/stock)
-target_compile_definitions(opentx-9xr128${SUFFIX}-simulator PRIVATE PCBSTD PCB9XR CPUM128 EEPROM_RLC ${COMMON_DEFINITIONS})
+target_include_directories(opentx-9xr128${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/9x)
+target_compile_definitions(opentx-9xr128${SUFFIX}-simulator PRIVATE PCBSTD PCB9XR CPUM128 EEPROM EEPROM_RLC ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-9xr128${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Gruvin9x
-target_include_directories(opentx-gruvin9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/gruvin9x)
-target_compile_definitions(opentx-gruvin9x${SUFFIX}-simulator PRIVATE PCBGRUVIN9X CPUM2560 EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
+target_include_directories(opentx-gruvin9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Gruvin9x)
+target_compile_definitions(opentx-gruvin9x${SUFFIX}-simulator PRIVATE PCBGRUVIN9X CPUM2560 EEPROM EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-gruvin9x${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Mega2560
-target_include_directories(opentx-mega2560${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/mega2560)
-target_compile_definitions(opentx-mega2560${SUFFIX}-simulator PRIVATE PCBMEGA2560 CPUM2560 EEPROM_RLC SDCARD ROTARY_ENCODERS=2 ${COMMON_DEFINITIONS})
+target_include_directories(opentx-mega2560${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Mega2560)
+target_compile_definitions(opentx-mega2560${SUFFIX}-simulator PRIVATE PCBMEGA2560 CPUM2560 EEPROM EEPROM_RLC SDCARD ROTARY_ENCODERS=2 ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-mega2560${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Sky9x
-target_include_directories(opentx-sky9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/sky9x)
-target_compile_definitions(opentx-sky9x${SUFFIX}-simulator PRIVATE PCBSKY9X CPUARM VOICE SDCARD ${COMMON_DEFINITIONS})
+target_include_directories(opentx-sky9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Sky9x)
+target_compile_definitions(opentx-sky9x${SUFFIX}-simulator PRIVATE PCBSKY9X CPUARM VOICE EEPROM SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-sky9x${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # 9XR-PRO
-target_include_directories(opentx-9xrpro${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/sky9x)
-target_compile_definitions(opentx-9xrpro${SUFFIX}-simulator PRIVATE PCBSKY9X REVX CPUARM VOICE SDCARD ${COMMON_DEFINITIONS})
+target_include_directories(opentx-9xrpro${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Sky9x)
+target_compile_definitions(opentx-9xrpro${SUFFIX}-simulator PRIVATE PCBSKY9X REVX CPUARM VOICE EEPROM SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-9xrpro${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # AR9X
-target_include_directories(opentx-ar9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/sky9x)
-target_compile_definitions(opentx-ar9x${SUFFIX}-simulator PRIVATE PCBSKY9X AR9X CPUARM VOICE SDCARD ${COMMON_DEFINITIONS})
+target_include_directories(opentx-ar9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Sky9x)
+target_compile_definitions(opentx-ar9x${SUFFIX}-simulator PRIVATE PCBSKY9X AR9X CPUARM VOICE EEPROM SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-ar9x${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Taranis standard
-target_include_directories(opentx-taranis${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/taranis)
-target_compile_definitions(opentx-taranis${SUFFIX}-simulator PRIVATE PCBTARANIS CPUARM CPUSTM32 EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
+target_include_directories(opentx-taranis${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Taranis)
+target_compile_definitions(opentx-taranis${SUFFIX}-simulator PRIVATE PCBTARANIS CPUARM CPUSTM32 EEPROM EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-taranis${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Taranis Plus 
-target_include_directories(opentx-taranisplus${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/taranis)
-target_compile_definitions(opentx-taranisplus${SUFFIX}-simulator PRIVATE PCBTARANIS REVPLUS CPUARM CPUSTM32 EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
+target_include_directories(opentx-taranisplus${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Taranis)
+target_compile_definitions(opentx-taranisplus${SUFFIX}-simulator PRIVATE PCBTARANIS REVPLUS CPUARM CPUSTM32 EEPROM EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-taranisplus${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Taranis X9E
-target_include_directories(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/taranis)
-target_compile_definitions(opentx-taranisx9e${SUFFIX}-simulator PRIVATE PCBTARANIS REVPLUS REV9E CPUARM CPUSTM32 STM32F40_41xxx EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
+target_include_directories(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Taranis)
+target_compile_definitions(opentx-taranisx9e${SUFFIX}-simulator PRIVATE PCBTARANIS REVPLUS REV9E CPUARM CPUSTM32 STM32F40_41xxx EEPROM EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
+
+# Horus
+target_include_directories(opentx-horus${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Horus)
+target_compile_definitions(opentx-horus${SUFFIX}-simulator PRIVATE PCBHORUS CPUARM CPUSTM32 STM32F40_41xxx COLORLCD VOICE SDCARD ${COMMON_DEFINITIONS})
+target_link_libraries(opentx-horus${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 add_custom_target(opentx-simulators
   DEPENDS ${OPENTX_LIBRARIES}

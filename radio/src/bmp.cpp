@@ -36,7 +36,8 @@
 
 #include "opentx.h"
 
-const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const unsigned int width, const unsigned int height)
+#if defined(PCBTARANIS)
+const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint16_t height)
 {
   FIL bmpFile;
   UINT read;
@@ -203,6 +204,177 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const unsigned int w
   f_close(&bmpFile);
   return 0;
 }
+#elif defined(PCBHORUS)
+const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint16_t height)
+{
+  FIL bmpFile;
+  UINT read;
+  uint8_t palette[16];
+  uint8_t bmpBuf[LCD_W]; /* maximum with LCD_W */
+  uint8_t *buf = &bmpBuf[0];
+
+  if (width > LCD_W) {
+    return STR_INCOMPATIBLE;
+  }
+
+  FRESULT result = f_open(&bmpFile, filename, FA_OPEN_EXISTING | FA_READ);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  if (f_size(&bmpFile) < 14) {
+    f_close(&bmpFile);
+    return STR_INCOMPATIBLE;
+  }
+
+  result = f_read(&bmpFile, buf, 14, &read);
+  if (result != FR_OK || read != 14) {
+    f_close(&bmpFile);
+    return SDCARD_ERROR(result);
+  }
+
+  if (buf[0] != 'B' || buf[1] != 'M') {
+    f_close(&bmpFile);
+    return STR_INCOMPATIBLE;
+  }
+
+  uint32_t fsize  = *((uint32_t *)&buf[2]);
+  uint32_t hsize  = *((uint32_t *)&buf[10]); /* header size */
+
+  uint32_t len = limit((uint32_t)4, (uint32_t)(hsize-14), (uint32_t)32);
+  result = f_read(&bmpFile, buf, len, &read);
+  if (result != FR_OK || read != len) {
+    f_close(&bmpFile);
+    return SDCARD_ERROR(result);
+  }
+
+  uint32_t ihsize = *((uint32_t *)&buf[0]); /* more header size */
+
+  /* invalid header size */
+  if (ihsize + 14 > hsize) {
+    f_close(&bmpFile);
+    return STR_INCOMPATIBLE;
+  }
+
+  /* sometimes file size is set to some headers size, set a real size in that case */
+  if (fsize == 14 || fsize == ihsize + 14)
+    fsize = f_size(&bmpFile) - 2;
+
+  /* declared file size less than header size */
+  if (fsize <= hsize) {
+    f_close(&bmpFile);
+    return STR_INCOMPATIBLE;
+  }
+
+  uint32_t w, h;
+
+  switch (ihsize){
+    case  40: // windib
+    case  56: // windib v3
+    case  64: // OS/2 v2
+    case 108: // windib v4
+    case 124: // windib v5
+      w  = *((uint32_t *)&buf[4]);
+      h = *((uint32_t *)&buf[8]);
+      buf += 12;
+      break;
+    case  12: // OS/2 v1
+      w  = *((uint16_t *)&buf[4]);
+      h = *((uint16_t *)&buf[6]);
+      buf += 8;
+      break;
+    default:
+      f_close(&bmpFile);
+      return STR_INCOMPATIBLE;
+  }
+
+  if (*((uint16_t *)&buf[0]) != 1) { /* planes */
+    f_close(&bmpFile);
+    return STR_INCOMPATIBLE;
+  }
+
+  if (w > width || h > height) {
+    f_close(&bmpFile);
+    return STR_INCOMPATIBLE;
+  }
+
+  uint16_t depth = *((uint16_t *)&buf[2]);
+
+  buf = &bmpBuf[0];
+
+  if (depth == 4) {
+    if (f_lseek(&bmpFile, hsize-64) != FR_OK || f_read(&bmpFile, buf, 64, &read) != FR_OK || read != 64) {
+      f_close(&bmpFile);
+      return SDCARD_ERROR(result);
+    }
+    for (uint8_t i=0; i<16; i++) {
+      palette[i] = buf[4*i];
+    }
+  }
+  else {
+    if (f_lseek(&bmpFile, hsize) != FR_OK) {
+      f_close(&bmpFile);
+      return SDCARD_ERROR(result);
+    }
+  }
+
+  uint16_t * dest = (uint16_t *)bmp;
+
+  *dest++ = w;
+  *dest++ = h;
+
+  memset(dest, 0, BITMAP_BUFFER_SIZE(w, h) - 4);
+
+  uint32_t rowSize;
+
+  switch (depth) {
+    case 32:
+      for (int i=h-1; i>=0; i--) {
+        uint8_t * dst = ((uint8_t *)dest) + i*w*2;
+        for (unsigned int j=0; j<w; j++) {
+          uint32_t pixel;
+          result = f_read(&bmpFile, (uint8_t *)&pixel, 4, &read);
+          if (result != FR_OK || read != 4) {
+            f_close(&bmpFile);
+            return SDCARD_ERROR(result);
+          }
+          *((uint16_t *)dst) = RGB((pixel>>24) & 0xff, (pixel>>16) & 0xff, (pixel>>8) & 0xff);
+          dst += 2;
+        }
+      }
+      break;
+
+    case 1:
+      break;
+
+    case 4:
+      rowSize = ((4*w+31)/32)*4;
+      for (int32_t i=h-1; i>=0; i--) {
+        result = f_read(&bmpFile, buf, rowSize, &read);
+        if (result != FR_OK || read != rowSize) {
+          f_close(&bmpFile);
+          return SDCARD_ERROR(result);
+        }
+        uint8_t * dst = ((uint8_t *)dest) + i*w*2;
+        for (uint32_t j=0; j<w; j++) {
+          uint8_t index = (buf[j/2] >> ((j & 1) ? 0 : 4)) & 0x0F;
+          uint8_t val = palette[index];
+          *((uint16_t *)dst) = RGB(val, val, val);
+          dst += 2;
+          // *dst++ = 0x0F;
+        }
+      }
+      break;
+
+    default:
+      f_close(&bmpFile);
+      return STR_INCOMPATIBLE;
+  }
+
+  f_close(&bmpFile);
+  return 0;
+}
+#endif
 
 const uint8_t bmpHeader[] = {
   0x42, 0x4d, 0xF8, 0x1A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x76, 0x00, 0x00, 0x00, 0x28, 0x00,
@@ -228,23 +400,19 @@ const char *writeScreenshot()
   FIL bmpFile;
   UINT written;
   char filename[42]; // /SCREENSHOTS/screen-2013-01-01-123540.bmp
-  DIR folder;
 
   // check and create folder here
   strcpy_P(filename, SCREENSHOTS_PATH);
-  FRESULT result = f_opendir(&folder, filename);
-  if (result != FR_OK) {
-    if (result == FR_NO_PATH)
-      result = f_mkdir(filename);
-    if (result != FR_OK)
-      return SDCARD_ERROR(result);
+  const char * error = sdCheckAndCreateDirectory(filename);
+  if (error) {
+    return error;
   }
 
-  char *tmp = strAppend(&filename[sizeof(SCREENSHOTS_PATH)-1], "/screen");
+  char * tmp = strAppend(&filename[sizeof(SCREENSHOTS_PATH)-1], "/screen");
   tmp = strAppendDate(tmp, true);
   strcpy(tmp, BITMAPS_EXT);
 
-  result = f_open(&bmpFile, filename, FA_CREATE_ALWAYS | FA_WRITE);
+  FRESULT result = f_open(&bmpFile, filename, FA_CREATE_ALWAYS | FA_WRITE);
   if (result != FR_OK) {
     return SDCARD_ERROR(result);
   }

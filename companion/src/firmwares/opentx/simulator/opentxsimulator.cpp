@@ -40,7 +40,11 @@
 #define AUTOSWITCH
 #define GRAPHICS
 #define CURVES
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO) || defined(PCBHORUS)
+#define RTCLOCK
+#define XCURVES
+#define VIRTUALINPUTS
+#elif defined(PCBTARANIS)
   #define RTCLOCK
   #define XCURVES
   #define VIRTUALINPUTS
@@ -97,15 +101,19 @@ namespace NAMESPACE {
 #include "radio/src/pulses/pulses_avr.cpp"
 #endif
 
-#include "radio/src/eeprom_common.cpp"
+#include "radio/src/storage/storage_common.cpp"
 #if defined(EEPROM_RLC)
-#include "radio/src/eeprom_rlc.cpp"
-#else
-#include "radio/src/eeprom_raw.cpp"
+#include "radio/src/storage/eeprom_common.cpp"
+#include "radio/src/storage/eeprom_rlc.cpp"
+#elif defined(EEPROM)
+#include "radio/src/storage/eeprom_common.cpp"
+#include "radio/src/storage/eeprom_raw.cpp"
+#elif defined(SDCARD)
+#include "radio/src/storage/sdcard_raw.cpp"
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBSKY9X)
-#include "radio/src/eeprom_conversions.cpp"
+#include "radio/src/storage/eeprom_conversions.cpp"
 #endif
 
 #include "radio/src/opentx.cpp"
@@ -124,7 +132,80 @@ namespace NAMESPACE {
 #include "radio/src/vario.cpp"
 #include "radio/src/trainer_input.cpp"
 
-#if defined(PCBTARANIS)
+#if defined(PCBHORUS)
+#include "radio/src/bmp.cpp"
+#include "radio/src/gui/Horus/bitmaps.cpp"
+#include "radio/src/gui/Horus/fonts.cpp"
+#include "radio/src/gui/Horus/widgets.cpp"
+#include "radio/src/gui/Horus/navigation.cpp"
+#include "radio/src/gui/Horus/popups.cpp"
+#include "radio/src/gui/Horus/helpers.cpp"
+#include "radio/src/gui/Horus/menus.cpp"
+#include "radio/src/gui/Horus/menu_model.cpp"
+#include "radio/src/gui/Horus/menu_model_select.cpp"
+#include "radio/src/gui/Horus/menu_model_setup.cpp"
+#include "radio/src/gui/Horus/menu_model_heli.cpp"
+#include "radio/src/gui/Horus/menu_model_flightmodes.cpp"
+#include "radio/src/gui/Horus/menu_model_inputs_mixes.cpp"
+#include "radio/src/gui/Horus/menu_model_curves.cpp"
+#include "radio/src/gui/Horus/menu_model_logical_switches.cpp"
+#include "radio/src/gui/Horus/menu_model_custom_functions.cpp"
+// #include "radio/src/gui/Horus/menu_model_custom_scripts.cpp"
+#include "radio/src/gui/Horus/menu_model_gvars.cpp"
+#include "radio/src/gui/Horus/menu_model_limits.cpp"
+#include "radio/src/gui/Horus/menu_model_telemetry.cpp"
+#include "radio/src/gui/Horus/menu_general.cpp"
+#include "radio/src/gui/Horus/menu_general_setup.cpp"
+#include "radio/src/gui/Horus/menu_general_sdmanager.cpp"
+#include "radio/src/gui/Horus/menu_general_trainer.cpp"
+#include "radio/src/gui/Horus/menu_general_version.cpp"
+// #include "radio/src/gui/Horus/menu_general_hardware.cpp"
+#include "radio/src/gui/Horus/menu_general_calib.cpp"
+#include "radio/src/gui/Horus/view_main.cpp"
+#include "radio/src/gui/Horus/view_statistics.cpp"
+#include "radio/src/gui/Horus/view_channels.cpp"
+#include "radio/src/gui/Horus/view_telemetry.cpp"
+#include "radio/src/gui/Horus/view_text.cpp"
+#include "radio/src/gui/Horus/view_about.cpp"
+#include "radio/src/gui/Horus/lcd.cpp"
+#include "radio/src/gui/Horus/splash.cpp"
+#elif defined(PCBFLAMENCO)
+#include "radio/src/gui/Flamenco/fonts.cpp"
+#include "radio/src/gui/Flamenco/widgets.cpp"
+#include "radio/src/gui/Flamenco/navigation.cpp"
+#include "radio/src/gui/Flamenco/popups.cpp"
+#include "radio/src/gui/Flamenco/helpers.cpp"
+#include "radio/src/gui/Flamenco/menus.cpp"
+#include "radio/src/gui/Flamenco/menu_model.cpp"
+#include "radio/src/gui/Flamenco/menu_model_select.cpp"
+#include "radio/src/gui/Flamenco/menu_model_setup.cpp"
+#include "radio/src/gui/Flamenco/menu_model_heli.cpp"
+#include "radio/src/gui/Flamenco/menu_model_flightmodes.cpp"
+#include "radio/src/gui/Flamenco/menu_model_inputs_mixes.cpp"
+#include "radio/src/gui/Flamenco/menu_model_curves.cpp"
+#include "radio/src/gui/Flamenco/menu_model_logical_switches.cpp"
+#include "radio/src/gui/Flamenco/menu_model_custom_functions.cpp"
+// #include "radio/src/gui/Flamenco/menu_model_custom_scripts.cpp"
+#include "radio/src/gui/Flamenco/menu_model_gvars.cpp"
+#include "radio/src/gui/Flamenco/menu_model_limits.cpp"
+#include "radio/src/gui/Flamenco/menu_model_telemetry.cpp"
+#include "radio/src/gui/Flamenco/menu_general.cpp"
+#include "radio/src/gui/Flamenco/menu_general_setup.cpp"
+#include "radio/src/gui/Flamenco/menu_general_sdmanager.cpp"
+#include "radio/src/gui/Flamenco/menu_general_trainer.cpp"
+#include "radio/src/gui/Flamenco/menu_general_version.cpp"
+// #include "radio/src/gui/Flamenco/menu_general_hardware.cpp"
+#include "radio/src/gui/Flamenco/menu_general_calib.cpp"
+#include "radio/src/gui/Flamenco/view_main.cpp"
+#include "radio/src/gui/Flamenco/view_statistics.cpp"
+#include "radio/src/gui/Flamenco/view_channels.cpp"
+#include "radio/src/gui/Flamenco/view_telemetry.cpp"
+#include "radio/src/gui/Flamenco/view_text.cpp"
+#include "radio/src/gui/Flamenco/view_about.cpp"
+#include "radio/src/gui/Flamenco/lcd.cpp"
+#include "radio/src/gui/Flamenco/splash.cpp"
+#include "radio/src/targets/Flamenco/tw8823_driver.cpp"
+#elif defined(PCBTARANIS)
 #include "radio/src/bmp.cpp"
 #include "radio/src/gui/Taranis/fonts.cpp"
 #include "radio/src/gui/Taranis/widgets.cpp"
@@ -221,38 +302,62 @@ namespace NAMESPACE {
 #include "radio/src/buzzer.cpp"
 #endif
 
-#if defined(PCBTARANIS)
-#include "radio/src/targets/taranis/board_taranis.cpp"
-#include "radio/src/targets/taranis/keys_driver.cpp"
-#include "radio/src/targets/taranis/audio_driver.cpp"
-#include "radio/src/targets/taranis/telemetry_driver.cpp"
-#include "radio/src/targets/taranis/haptic_driver.cpp"
+#if defined(PCBHORUS)
+#include "radio/src/targets/Horus/board_horus.cpp"
+#include "radio/src/targets/Horus/keys_driver.cpp"
+#include "radio/src/targets/Horus/audio_driver.cpp"
+#include "radio/src/targets/Horus/telemetry_driver.cpp"
+#include "radio/src/targets/Horus/haptic_driver.cpp"
+#include "radio/src/targets/Horus/pulses_driver.cpp"
+#include "radio/src/targets/Taranis/rtc_driver.cpp"
+#include "radio/src/targets/Horus/trainer_driver.cpp"
+#include "radio/src/targets/Horus/serial2_driver.cpp"
+#elif defined(PCBFLAMENCO)
+#include "radio/src/targets/Flamenco/board_flamenco.cpp"
+#include "radio/src/targets/Flamenco/keys_driver.cpp"
+#include "radio/src/targets/Flamenco/audio_driver.cpp"
+#include "radio/src/targets/Flamenco/telemetry_driver.cpp"
+#include "radio/src/targets/Flamenco/eeprom_driver.cpp"
+// #include "radio/src/targets/Flamenco/haptic_driver.cpp"
+#include "radio/src/targets/Flamenco/pulses_driver.cpp"
+#include "radio/src/targets/Flamenco/rtc_driver.cpp"
+#include "radio/src/targets/Flamenco/trainer_driver.cpp"
+#elif defined(PCBTARANIS)
+#include "radio/src/targets/Taranis/board_taranis.cpp"
+#include "radio/src/targets/Taranis/keys_driver.cpp"
+#include "radio/src/targets/Taranis/audio_driver.cpp"
+#include "radio/src/targets/Taranis/telemetry_driver.cpp"
+#include "radio/src/targets/Taranis/haptic_driver.cpp"
 #if defined(REV9E)
-#include "radio/src/targets/taranis/top_lcd_driver.cpp"
+#include "radio/src/targets/Taranis/top_lcd_driver.cpp"
 #endif
-#include "radio/src/targets/taranis/pulses_driver.cpp"
-#include "radio/src/targets/taranis/rtc_driver.cpp"
-#include "radio/src/targets/taranis/trainer_driver.cpp"
-#include "radio/src/targets/taranis/serial2_driver.cpp"
+#include "radio/src/targets/Taranis/pulses_driver.cpp"
+#include "radio/src/targets/Taranis/rtc_driver.cpp"
+#include "radio/src/targets/Taranis/trainer_driver.cpp"
+#include "radio/src/targets/Taranis/serial2_driver.cpp"
 #elif defined(PCBSKY9X)
-#include "radio/src/targets/sky9x/board_sky9x.cpp"
-#include "radio/src/targets/sky9x/telemetry_driver.cpp"
-#include "radio/src/targets/sky9x/pwr_driver.cpp"
-#include "radio/src/targets/sky9x/eeprom_driver.cpp"
-#include "radio/src/targets/sky9x/keys_driver.cpp"
-#include "radio/src/targets/sky9x/audio_driver.cpp"
-#include "radio/src/targets/sky9x/sdcard_driver.cpp"
-#include "radio/src/targets/sky9x/coproc_driver.cpp"
-#include "radio/src/targets/sky9x/haptic_driver.cpp"
-#include "radio/src/targets/sky9x/serial2_driver.cpp"
-#include "radio/src/targets/sky9x/pulses_driver.cpp"
+#include "radio/src/targets/Sky9x/board_sky9x.cpp"
+#include "radio/src/targets/Sky9x/telemetry_driver.cpp"
+#include "radio/src/targets/Sky9x/pwr_driver.cpp"
+#include "radio/src/targets/Sky9x/eeprom_driver.cpp"
+#include "radio/src/targets/Sky9x/keys_driver.cpp"
+#include "radio/src/targets/Sky9x/audio_driver.cpp"
+#include "radio/src/targets/Sky9x/sdcard_driver.cpp"
+#include "radio/src/targets/Sky9x/coproc_driver.cpp"
+#include "radio/src/targets/Sky9x/haptic_driver.cpp"
+#include "radio/src/targets/Sky9x/serial2_driver.cpp"
+#include "radio/src/targets/Sky9x/pulses_driver.cpp"
 #elif defined(PCBGRUVIN9X)
-#include "radio/src/targets/gruvin9x/board_gruvin9x.cpp"
-#include "radio/src/targets/gruvin9x/somo14d.cpp"
+#include "radio/src/targets/Gruvin9x/board_gruvin9x.cpp"
+#include "radio/src/targets/Gruvin9x/somo14d.cpp"
 #elif defined(PCBMEGA2560)
-#include "radio/src/targets/mega2560/board_mega2560.cpp"
+#include "radio/src/targets/Mega2560/board_mega2560.cpp"
 #else
-#include "radio/src/targets/stock/board_stock.cpp"
+#include "radio/src/targets/9x/board_stock.cpp"
+#endif
+
+#if defined(CPUARM)
+#include "radio/src/gui/gui_helpers.cpp"
 #endif
 
 #include "radio/src/keys.cpp"
@@ -459,11 +564,16 @@ void OpenTxSimulator::getTrims(Trims & trims)
 
 void OpenTxSimulator::wheelEvent(int steps)
 {
-#if defined(REV9E)
-  if (steps == 255)
-    x9de_rotenc -= 2;
+#if defined(PCBHORUS) || defined(PCBFLAMENCO)
+  if (steps > 0)
+    rotencValue -= 2;
   else
-    x9de_rotenc += 2;
+    rotencValue += 2;
+#elif defined(REV9E)
+  if (steps == 255)
+    rotencValue -= 2;
+  else
+    rotencValue += 2;
 #elif defined(PCBSKY9X) && !defined(REVX)
   g_rotenc[0] += steps*4;
 #elif defined(PCBGRUVIN9X)
@@ -526,7 +636,11 @@ class OpenTxSimulatorFactory: public SimulatorFactory
 
     virtual BoardEnum type()
     {
-#if defined(PCBTARANIS)
+#if defined(PCBHORUS)
+      return BOARD_HORUS;
+#elif defined(PCBFLAMENCO)
+      return BOARD_FLAMENCO;
+#elif defined(PCBTARANIS)
       return BOARD_TARANIS;
 #else
       return BOARD_STOCK;

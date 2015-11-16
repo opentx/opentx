@@ -50,7 +50,7 @@ if (inputs.rotenc) pind |= 0x20;
 if (inputs.rotenc) PIOB->PIO_PDSR &= ~0x40; else PIOB->PIO_PDSR |= 0x40;
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBFLAMENCO) || (defined(PCBTARANIS) && defined(REV9E))
 if (inputs.rotenc) simuSetKey(KEY_ENTER, true);
 #endif
 #endif
@@ -80,9 +80,9 @@ for (int fm=0; fm<MAX_FLIGHT_MODES; fm++) {
 
 #ifdef LCDCHANGED_IMPORT
 #undef LCDCHANGED_IMPORT
-if (lcd_refresh) {
+if (simuLcdRefresh) {
   lightEnable = isBacklightEnable();
-  lcd_refresh = false;
+  simuLcdRefresh = false;
   return true;
 }
 return false;
@@ -98,7 +98,7 @@ return true;
 
 #ifdef GETLCD_IMPORT
 #undef GETLCD_IMPORT
-return (::uint8_t *)lcd_buf;
+return (::uint8_t *)simuLcdBuf;
 #endif
 
 #ifdef GETERROR_IMPORT

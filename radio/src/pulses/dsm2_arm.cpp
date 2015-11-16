@@ -51,7 +51,7 @@ uint8_t  dsm2BindTimer = DSM2_BIND_TIMEOUT;
 
 #define BITLEN_DSM2          (8*2) //125000 Baud => 8uS per bit
 
-#if defined(PCBTARANIS)
+#if !defined(PPM_PIN_HW_SERIAL)
 void _send_1(uint8_t v)
 {
   if (modulePulsesData[EXTERNAL_MODULE].dsm2.index == 0)
@@ -129,7 +129,7 @@ void setupPulsesDSM2(unsigned int port)
 {
   static uint8_t dsmDat[2+6*2]={0xFF,0x00, 0x00,0xAA, 0x05,0xFF, 0x09,0xFF, 0x0D,0xFF, 0x13,0x54, 0x14,0xAA};
 
-#if defined(PCBSKY9X)
+#if defined(PPM_PIN_HW_SERIAL)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
 #else
@@ -139,7 +139,7 @@ void setupPulsesDSM2(unsigned int port)
 
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
 
-#if defined(PCBTARANIS)
+#if !defined(PPM_PIN_HW_SERIAL)
   modulePulsesData[EXTERNAL_MODULE].dsm2.value = 100;
   *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.value;
 #endif
@@ -156,7 +156,7 @@ void setupPulsesDSM2(unsigned int port)
       break;
   }
 
-#if defined(PCBTARANIS)
+#if !defined(PPM_PIN_HW_SERIAL)
   if (moduleFlag[port] == MODULE_BIND)
     dsmDat[0] |= DSM2_SEND_BIND;
   else if (moduleFlag[port] == MODULE_RANGECHECK)

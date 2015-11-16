@@ -300,5 +300,5 @@ void frskyDSetDefault(int index, uint16_t id)
     telemetrySensor.init(id);
   }
 
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }

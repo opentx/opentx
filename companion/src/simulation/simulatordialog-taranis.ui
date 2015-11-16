@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>739</width>
-    <height>658</height>
+    <height>695</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -30,7 +30,16 @@
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>5</number>
+   </property>
+   <property name="topMargin">
+    <number>5</number>
+   </property>
+   <property name="rightMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
     <number>5</number>
    </property>
    <property name="spacing">
@@ -86,7 +95,7 @@
           <number>0</number>
          </property>
          <item row="0" column="0" rowspan="3">
-          <widget class="xcursorWidget" name="cursor" native="true">
+          <widget class="ButtonsWidget" name="leftbuttons" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -103,7 +112,7 @@
             <bool>true</bool>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/x9l0.png);</string>
+            <string notr="true">background:url(:/images/simulator/Taranis/x9l0.png);</string>
            </property>
           </widget>
          </item>
@@ -122,12 +131,12 @@
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/x9t0.png)</string>
+            <string notr="true">background:url(:/images/simulator/Taranis/x9t0.png)</string>
            </property>
           </widget>
          </item>
          <item row="0" column="2" rowspan="3">
-          <widget class="xmenuWidget" name="menu" native="true">
+          <widget class="ButtonsWidget" name="rightbuttons" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -141,12 +150,12 @@
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/x9r0.png)</string>
+            <string notr="true">background:url(:/images/simulator/Taranis/x9r0.png)</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="lcdWidget" name="lcd" native="true">
+          <widget class="LcdWidget" name="lcd" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -176,7 +185,7 @@
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:url(:/images/x9b0.png)</string>
+            <string notr="true">background:url(:/images/simulator/Taranis/x9b0.png)</string>
            </property>
           </widget>
          </item>
@@ -864,7 +873,7 @@
         <item row="0" column="8" rowspan="2" colspan="2">
          <layout class="QGridLayout" name="gridLayout_10">
           <item row="0" column="1">
-           <widget class="myQDial" name="pot1">
+           <widget class="DialWidget" name="pot1">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
@@ -904,7 +913,7 @@
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="myQDial" name="pot3">
+           <widget class="DialWidget" name="pot3">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -935,7 +944,7 @@
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="myQDial" name="pot2">
+           <widget class="DialWidget" name="pot2">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -966,7 +975,7 @@
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="myQDial" name="pot0">
+           <widget class="DialWidget" name="pot0">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
@@ -1248,7 +1257,7 @@ QPushButton:checked {
              </widget>
             </item>
             <item alignment="Qt::AlignHCenter">
-             <widget class="mySlider" name="trimVLeft">
+             <widget class="SliderWidget" name="trimVLeft">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -1320,7 +1329,7 @@ QPushButton:checked {
            </widget>
           </item>
           <item>
-           <widget class="mySlider" name="trimHLeft">
+           <widget class="SliderWidget" name="trimHLeft">
             <property name="toolTip">
              <string>Right Double Click to Reset</string>
             </property>
@@ -1420,7 +1429,7 @@ QPushButton:checked {
              </widget>
             </item>
             <item alignment="Qt::AlignHCenter">
-             <widget class="mySlider" name="trimVRight">
+             <widget class="SliderWidget" name="trimVRight">
               <property name="toolTip">
                <string>Right Double Click to Reset</string>
               </property>
@@ -1638,7 +1647,7 @@ QPushButton:checked {
            </widget>
           </item>
           <item>
-           <widget class="mySlider" name="trimHRight">
+           <widget class="SliderWidget" name="trimHRight">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1735,32 +1744,26 @@ QPushButton:checked {
  </widget>
  <customwidgets>
   <customwidget>
-   <class>lcdWidget</class>
+   <class>LcdWidget</class>
    <extends>QWidget</extends>
    <header>lcdwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>mySlider</class>
+   <class>ButtonsWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">buttonswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SliderWidget</class>
    <extends>QSlider</extends>
-   <header location="global">myslider.h</header>
+   <header location="global">sliderwidget.h</header>
   </customwidget>
   <customwidget>
-   <class>xcursorWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">xcursorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>xmenuWidget</class>
-   <extends>QWidget</extends>
-   <header>xmenuwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>myQDial</class>
+   <class>DialWidget</class>
    <extends>QDial</extends>
-   <header location="global">myqdial.h</header>
+   <header location="global">dialwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources>

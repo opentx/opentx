@@ -604,8 +604,28 @@ AppData::AppData()
     for (int i=0; i<MAX_JOYSTICKS; i++)
         joystick[i].init( i );
 
-    // Copy existing 2.0.16 settings if present
     QSettings settings(COMPANY, PRODUCT);
+
+    // Copy existing 2.1 settings if present
+    if (profile[0].name().isEmpty())
+    {
+        QSettings settings21("OpenTX", "Companion 2.1");
+
+        QStringList keys = settings21.allKeys();
+        for (QStringList::iterator i=keys.begin(); i!=keys.end(); i++)
+        {
+            if (settings21.value(*i) != QString("") && settings21.value(*i) != QString("Start Menu Folder"))
+            {
+                settings.setValue(*i, settings21.value(*i));
+            }
+        }
+
+        //Reload profiles
+        for (int i=0; i<MAX_PROFILES; i++)
+            profile[i].init( i );
+    }
+
+    // Copy existing 2.0 settings if present
     if (profile[0].name().isEmpty())
     {
         QSettings settings20("OpenTX", "Companion 2.0");

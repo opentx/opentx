@@ -386,6 +386,8 @@ SD_Error SD_WaitWriteOperation(void);
 }
 #endif
 
+extern SD_CardInfo SDCardInfo;
+
 #endif /* __STM32F4_DISCOVERY_SDIO_SD_H */
 /**
   * @}

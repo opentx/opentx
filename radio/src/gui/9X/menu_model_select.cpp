@@ -58,11 +58,11 @@ void onModelSelectMenu(const char *result)
   }
 #if defined(SDCARD)
   else if (result == STR_BACKUP_MODEL) {
-    eeCheck(true); // force writing of current model data before this is changed
+    storageCheck(true); // force writing of current model data before this is changed
     POPUP_WARNING(eeBackupModel(sub));
   }
   else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
-    if (!listSdFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
+    if (!sdListFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
       POPUP_WARNING(STR_NO_MODELS_ON_SD);
       s_menu_flags = 0;
     }
@@ -132,7 +132,7 @@ void menuModelSelect(uint8_t event)
         if (sub >= LCD_LINES-1) s_pgOfs = sub-LCD_LINES+2;
         s_copyMode = 0;
         s_editMode = EDIT_MODE_INIT;
-        eeCheck(true);
+        storageCheck(true);
         break;
 
       case EVT_KEY_LONG(KEY_EXIT):
@@ -200,7 +200,7 @@ void menuModelSelect(uint8_t event)
         }
         else if (s_copyMode && (s_copyTgtOfs || s_copySrcRow>=0)) {
           displayPopup(s_copyMode==COPY_MODE ? STR_COPYINGMODEL : STR_MOVINGMODEL);
-          eeCheck(true); // force writing of current model data before this is changed
+          storageCheck(true); // force writing of current model data before this is changed
 
           uint8_t cur = (MAX_MODELS + sub + s_copyTgtOfs) % MAX_MODELS;
 
@@ -223,7 +223,7 @@ void menuModelSelect(uint8_t event)
 
           if (s_copySrcRow != g_eeGeneral.currModel) {
             g_eeGeneral.currModel = s_copySrcRow;
-            eeDirty(EE_GENERAL);
+            storageDirty(EE_GENERAL);
           }
 
           s_copyMode = 0;
@@ -290,10 +290,10 @@ void menuModelSelect(uint8_t event)
         // no break
 #endif
 
-      case EVT_KEY_FIRST(KEY_MOVE_UP):
-      case EVT_KEY_REPT(KEY_MOVE_UP):
-      case EVT_KEY_FIRST(KEY_MOVE_DOWN):
-      case EVT_KEY_REPT(KEY_MOVE_DOWN):
+      case EVT_KEY_FIRST(KEY_UP):
+      case EVT_KEY_REPT(KEY_UP):
+      case EVT_KEY_FIRST(KEY_DOWN):
+      case EVT_KEY_REPT(KEY_DOWN):
         if (s_copyMode) {
           int8_t next_ofs = s_copyTgtOfs + oldSub - m_posVert;
           if (next_ofs == MAX_MODELS || next_ofs == -MAX_MODELS)
@@ -302,7 +302,7 @@ void menuModelSelect(uint8_t event)
           if (s_copySrcRow < 0 && s_copyMode==COPY_MODE) {
             s_copySrcRow = oldSub;
             // find a hole (in the first empty slot above / below)
-            sub = eeFindEmptyModel(s_copySrcRow, IS_ROTARY_DOWN(event) || event==EVT_KEY_FIRST(KEY_MOVE_DOWN));
+            sub = eeFindEmptyModel(s_copySrcRow, IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_DOWN));
             if (sub < 0) {
               // no free room for duplicating the model
               AUDIO_ERROR();
@@ -370,7 +370,7 @@ void menuModelSelect(uint8_t event)
 
     if (s_copyMode && (vertpos_t)sub==i+s_pgOfs) {
       drawFilledRect(9, y, MODELSEL_W-1-9, 7);
-      lcd_rect(8, y-1, MODELSEL_W-1-7, 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
+      lcdDrawRect(8, y-1, MODELSEL_W-1-7, 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
     }
   }
 }

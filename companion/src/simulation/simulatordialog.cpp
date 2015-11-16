@@ -1,9 +1,10 @@
 #include "simulatordialog.h"
-#include "ui_simulatordialog-9x.h"
-#include "ui_simulatordialog-taranis.h"
+#include "appdata.h"
+#include "lcdwidget.h"
 #include <iostream>
 #include "helpers.h"
 #include "simulatorinterface.h"
+#include "sliderwidget.h"
 
 #define GBALL_SIZE  20
 #define RESX        1024
@@ -47,6 +48,11 @@ void SimulatorDialog::updateDebugOutput()
   traceMutex.unlock();
 }
 
+void SimulatorDialog::wheelEvent (QWheelEvent *event)
+{
+  simulator->wheelEvent(event->delta() > 0 ? 1 : -1);
+}
+
 SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, unsigned int flags):
   QDialog(parent),
   flags(flags),
@@ -68,153 +74,6 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   new QShortcut(QKeySequence(Qt::Key_F5), this, SLOT(openTrainerSimulator()));
   new QShortcut(QKeySequence(Qt::Key_F6), this, SLOT(openDebugOutput()));
   traceCallbackInstance = this;
-}
-
-uint32_t SimulatorDialog9X::switchstatus = 0;
-
-SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, SimulatorInterface *simulator, unsigned int flags):
-  SimulatorDialog(parent, simulator, flags),
-  ui(new Ui::SimulatorDialog9X),
-  beepShow(0)
-{
-  lcdWidth = 128;
-  lcdHeight = 64;
-  lcdDepth = 1;
-
-  initUi<Ui::SimulatorDialog9X>(ui);
-
-  // install simulator TRACE hook
-  simulator->installTraceHook(traceCb);
-
-  backLight = g.backLight();
-  if (backLight > 4) backLight = 0;
-  switch (backLight) {
-    case 1:
-      ui->lcd->setBackgroundColor(166,247,159);
-      break;
-    case 2:
-      ui->lcd->setBackgroundColor(247,159,166);
-      break;
-    case 3:
-      ui->lcd->setBackgroundColor(255,195,151);
-      break;
-    case 4:
-      ui->lcd->setBackgroundColor(247,242,159);
-      break;
-    default:
-      ui->lcd->setBackgroundColor(159,165,247);
-      break;
-  }
-
-  //restore switches
-  if (g.simuSW())
-    restoreSwitches();
-
-  ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
-  ui->trimHR_R->setText(QString::fromUtf8(rightArrow));
-  ui->trimVR_U->setText(QString::fromUtf8(upArrow));
-  ui->trimVR_D->setText(QString::fromUtf8(downArrow));
-  ui->trimHL_L->setText(QString::fromUtf8(leftArrow));
-  ui->trimHL_R->setText(QString::fromUtf8(rightArrow));
-  ui->trimVL_U->setText(QString::fromUtf8(upArrow));
-  ui->trimVL_D->setText(QString::fromUtf8(downArrow));
-  for (int i=0; i<pots.count(); i++) {
-    pots[i]->setProperty("index", i);
-    connect(pots[i], SIGNAL(valueChanged(int)), this, SLOT(dialChanged(int)));
-  }
-  connect(ui->cursor, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
-  connect(ui->menu, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
-  connect(ui->trimHR_L, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimHR_R, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimVR_U, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimVR_D, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimHL_R, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimHL_L, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimVL_U, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimVL_D, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimHR_L, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimHR_R, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimVR_U, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimVR_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimHL_R, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimHL_L, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimVL_U, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimVL_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
-}
-
-SimulatorDialog9X::~SimulatorDialog9X()
-{
-  saveSwitches();
-  delete ui;
-}
-
-uint32_t SimulatorDialogTaranis::switchstatus = 0;
-
-SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterface *simulator, unsigned int flags):
-  SimulatorDialog(parent, simulator, flags),
-  ui(new Ui::SimulatorDialogTaranis)
-{
-  lcdWidth = 212;
-  lcdHeight = 64;
-  lcdDepth = 4;
-  
-  initUi<Ui::SimulatorDialogTaranis>(ui);
-
-  // install simulator TRACE hook
-  simulator->installTraceHook(traceCb);
-
-  ui->lcd->setBackgroundColor(47, 123, 227);
-
-  // restore switches
-  if (g.simuSW()) {
-    restoreSwitches();
-  }
-
-  for (int i=0; i<pots.count(); i++) {
-    if (flags & (SIMULATOR_FLAGS_S1_MULTI << i)) {
-      pots[i]->setValue(-1024);
-      pots[i]->setSingleStep(2048/5);
-      pots[i]->setPageStep(2048/5);
-    }
-    else if (!(flags & (SIMULATOR_FLAGS_S1 << i))) {
-      pots[i]->hide();
-      potLabels[i]->hide();
-    }
-  }
-  
-  ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
-  ui->trimHR_R->setText(QString::fromUtf8(rightArrow));
-  ui->trimVR_U->setText(QString::fromUtf8(upArrow));
-  ui->trimVR_D->setText(QString::fromUtf8(downArrow));
-  ui->trimHL_L->setText(QString::fromUtf8(leftArrow));
-  ui->trimHL_R->setText(QString::fromUtf8(rightArrow));
-  ui->trimVL_U->setText(QString::fromUtf8(upArrow));
-  ui->trimVL_D->setText(QString::fromUtf8(downArrow));
-
-  connect(ui->cursor, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
-  connect(ui->menu, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
-  connect(ui->trimHR_L, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimHR_R, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimVR_U, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimVR_D, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimHL_R, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimHL_L, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimVL_U, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimVL_D, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimHR_L, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimHR_R, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimVR_U, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimVR_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimHL_R, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimHL_L, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimVL_U, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimVL_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
-}
-
-SimulatorDialogTaranis::~SimulatorDialogTaranis()
-{
-  saveSwitches();
-  delete ui;
 }
 
 SimulatorDialog::~SimulatorDialog()
@@ -242,17 +101,6 @@ void SimulatorDialog::mouseReleaseEvent(QMouseEvent *event)
   if (event->button() == Qt::MidButton) {
     middleButtonPressed = false;
   }
-}
-
-void SimulatorDialog9X::dialChanged(int value)
-{
-  int index = sender()->property("index").toInt();
-  potValues[index]->setText(QString("%1 %").arg((value*100)/1024));
-}
-
-void SimulatorDialog::wheelEvent (QWheelEvent *event)
-{
-  simulator->wheelEvent(event->delta() > 0 ? 1 : -1);
 }
 
 void SimulatorDialog::onTrimPressed()
@@ -488,7 +336,7 @@ void SimulatorDialog::initUi(T * ui)
 
     QSlider * slider = new QSlider(tabWidget);
     slider->setEnabled(false);
-    slider->setMaximumSize(QSize(16777215, 18));
+    /*slider->setMaximumSize(QSize(16777215, 18));
     slider->setStyleSheet(QString::fromUtf8("QSlider::sub-page:horizontal:disabled {\n"
     "border-color: #999;\n"
     "}\n"
@@ -501,7 +349,7 @@ void SimulatorDialog::initUi(T * ui)
     "background: #0000CC;\n"
     "border: 1px solid #aaa;\n"
     "border-radius: 4px;\n"
-    "}"));
+    "}")); */
     slider->setMinimum(-1024);
     slider->setMaximum(1024);
     slider->setPageStep(128);
@@ -596,36 +444,6 @@ void SimulatorDialog::onButtonPressed(int value)
   }
   else {
     buttonPressed = value;
-  }
-}
-
-void SimulatorDialog9X::setLightOn(bool enable)
-{
-  QString bg = "";
-  if (enable) {
-    QStringList list;
-    list << "bl" << "gr" << "rd" << "or" << "yl";
-    bg = QString("-") + list[backLight];
-  }
-  ui->top->setStyleSheet(QString("background:url(:/images/9xdt%1.png);").arg(bg));
-  ui->bottom->setStyleSheet(QString("background:url(:/images/9xdb%1.png);").arg(bg));
-  ui->left->setStyleSheet(QString("background:url(:/images/9xdl%1.png);").arg(bg));
-  ui->right->setStyleSheet(QString("background:url(:/images/9xdr%1.png);").arg(bg));
-}
-
-void SimulatorDialog9X::updateBeepButton()
-{
-  #define CBEEP_ON  "QLabel { background-color: #FF364E }"
-  #define CBEEP_OFF "QLabel { }"
-
-  if (beepVal) {
-    beepShow = 20;
-  }
-
-  ui->label_beep->setStyleSheet(beepShow ? CBEEP_ON : CBEEP_OFF);
-
-  if (beepShow) {
-    beepShow--;
   }
 }
 
@@ -726,211 +544,6 @@ void SimulatorDialog::setTrims()
   trimVLeft->setRange(trimMin, trimMax);  trimVLeft->setValue(trims.values[1]);
   trimVRight->setRange(trimMin, trimMax); trimVRight->setValue(trims.values[2]);
   trimHRight->setRange(trimMin, trimMax); trimHRight->setValue(trims.values[3]);
-}
-
-void SimulatorDialog9X::getValues()
-{
-  TxInputs inputs = {
-    {
-      int(1024*nodeLeft->getX()),  // LEFT HORZ
-      int(-1024*nodeLeft->getY()),  // LEFT VERT
-      int(-1024*nodeRight->getY()), // RGHT VERT
-      int(1024*nodeRight->getX())   // RGHT HORZ
-    },
-
-    {
-      pots[0]->value(),
-      pots[1]->value(),
-      pots[2]->value()
-    },
-
-    {
-      ui->switchTHR->isChecked(),
-      ui->switchRUD->isChecked(),
-      ui->switchELE->isChecked(),
-      ui->switchID2->isChecked() ? 1 : (ui->switchID1->isChecked() ? 0 : -1),
-      ui->switchAIL->isChecked(),
-      ui->switchGEA->isChecked(),
-      ui->switchTRN->isDown(),
-      0, 0, 0
-    },
-
-    {
-      buttonPressed == Qt::Key_Enter,
-      buttonPressed == Qt::Key_Escape,
-      buttonPressed == Qt::Key_Down,
-      buttonPressed == Qt::Key_Up,
-      buttonPressed == Qt::Key_Right,
-      buttonPressed == Qt::Key_Left,
-    },
-
-    middleButtonPressed,
-        
-    {
-      trimPressed == TRIM_LH_L,
-      trimPressed == TRIM_LH_R,
-      trimPressed == TRIM_LV_DN,
-      trimPressed == TRIM_LV_UP,
-      trimPressed == TRIM_RV_DN,
-      trimPressed == TRIM_RV_UP,
-      trimPressed == TRIM_RH_L,
-      trimPressed == TRIM_RH_R
-    }
-  };
-
-  simulator->setValues(inputs);
-}
-
-void SimulatorDialog9X::saveSwitches(void)
-{
-  // qDebug() << "SimulatorDialog9X::saveSwitches()";
-  switchstatus=ui->switchTHR->isChecked();
-  switchstatus<<=1;
-  switchstatus+=(ui->switchRUD->isChecked()&0x1);
-  switchstatus<<=1;
-  switchstatus+=(ui->switchID2->isChecked()&0x1);
-  switchstatus<<=1;
-  switchstatus+=(ui->switchID1->isChecked()&0x1);
-  switchstatus<<=1;
-  switchstatus+=(ui->switchID0->isChecked()&0x1);
-  switchstatus<<=1;
-  switchstatus+=(ui->switchGEA->isChecked()&0x1);
-  switchstatus<<=1;
-  switchstatus+=(ui->switchELE->isChecked()&0x1);
-  switchstatus<<=1;
-  switchstatus+=(ui->switchAIL->isChecked()&0x1);
-}
-
-void SimulatorDialog9X::restoreSwitches(void)
-{
-  // qDebug() << "SimulatorDialog9X::restoreSwitches()";
-  ui->switchAIL->setChecked(switchstatus & 0x1);
-  switchstatus >>=1;
-  ui->switchELE->setChecked(switchstatus & 0x1);
-  switchstatus >>=1;
-  ui->switchGEA->setChecked(switchstatus & 0x1);
-  switchstatus >>=1;
-  ui->switchID0->setChecked(switchstatus & 0x1);
-  switchstatus >>=1;
-  ui->switchID1->setChecked(switchstatus & 0x1);
-  switchstatus >>=1;
-  ui->switchID2->setChecked(switchstatus & 0x1);
-  switchstatus >>=1;
-  ui->switchRUD->setChecked(switchstatus & 0x1);
-  switchstatus >>=1;
-  ui->switchTHR->setChecked(switchstatus & 0x1);
-}
-
-void SimulatorDialogTaranis::resetSH()
-{
-  ui->switchH->setValue(0);
-}
-
-void SimulatorDialogTaranis::on_switchH_sliderReleased()
-{
-  QTimer::singleShot(400, this, SLOT(resetSH()));
-}
-
-void SimulatorDialogTaranis::getValues()
-{
-  for (int i=0; i<pots.count(); i++) {
-    if (flags & (SIMULATOR_FLAGS_S1_MULTI << i)) {
-      int s1 = round((pots[i]->value()+1024)/(2048.0/5))*(2048.0/5)-1024;
-      pots[i]->setValue(s1);
-    }
-  }
-
-  TxInputs inputs = {
-    {
-      int(1024*nodeLeft->getX()),  // LEFT HORZ
-      int(-1024*nodeLeft->getY()),  // LEFT VERT
-      int(-1024*nodeRight->getY()), // RGHT VERT
-      int(1024*nodeRight->getX())  // RGHT HORZ
-    },
-
-    {
-      -pots[0]->value(),
-      pots[1]->value(),
-      ((flags && SIMULATOR_FLAGS_S3) ? pots[2]->value() : 0),
-      -sliders[0]->value(),
-      sliders[1]->value()
-    },
-
-    {
-      ui->switchA->value() - 1,
-      ui->switchB->value() - 1,
-      ui->switchC->value() - 1,
-      ui->switchD->value() - 1,
-      ui->switchE->value() - 1,
-      ui->switchF->value(),
-      ui->switchG->value() - 1,
-      ui->switchH->value(), 0, 0
-    },
-
-    {
-      buttonPressed == Qt::Key_PageUp,
-      buttonPressed == Qt::Key_Escape,
-      buttonPressed == Qt::Key_Enter,
-      buttonPressed == Qt::Key_PageDown,
-      buttonPressed == Qt::Key_Plus,
-      buttonPressed == Qt::Key_Minus
-    },
-
-    middleButtonPressed,
-    
-    {
-      trimPressed == TRIM_LH_L,
-      trimPressed == TRIM_LH_R,
-      trimPressed == TRIM_LV_DN,
-      trimPressed == TRIM_LV_UP,
-      trimPressed == TRIM_RV_DN,
-      trimPressed == TRIM_RV_UP,
-      trimPressed == TRIM_RH_L,
-      trimPressed == TRIM_RH_R
-    }
-  };
-
-  simulator->setValues(inputs);
-}
-
-void SimulatorDialogTaranis::saveSwitches(void)
-{
-  // qDebug() << "SimulatorDialogTaranis::saveSwitches()";
-  switchstatus=ui->switchA->value();
-  switchstatus<<=2;
-  switchstatus+=ui->switchB->value();
-  switchstatus<<=2;
-  switchstatus+=ui->switchC->value();
-  switchstatus<<=2;
-  switchstatus+=ui->switchD->value();
-  switchstatus<<=2;
-  switchstatus+=ui->switchE->value();
-  switchstatus<<=2;
-  switchstatus+=ui->switchF->value();
-  switchstatus<<=2;
-  switchstatus+=ui->switchG->value();
-  switchstatus<<=2;
-  switchstatus+=ui->switchH->value();
-}
-
-void SimulatorDialogTaranis::restoreSwitches(void)
-{
-  // qDebug() << "SimulatorDialogTaranis::restoreSwitches()";
-  ui->switchH->setValue(switchstatus & 0x3);
-  switchstatus>>=2;
-  ui->switchG->setValue(switchstatus & 0x3);
-  switchstatus>>=2;
-  ui->switchF->setValue(switchstatus & 0x3);
-  switchstatus>>=2;
-  ui->switchE->setValue(switchstatus & 0x3);
-  switchstatus>>=2;
-  ui->switchD->setValue(switchstatus & 0x3);
-  switchstatus>>=2;
-  ui->switchC->setValue(switchstatus & 0x3);
-  switchstatus>>=2;
-  ui->switchB->setValue(switchstatus & 0x3);
-  switchstatus>>=2;
-  ui->switchA->setValue(switchstatus & 0x3);
 }
 
 inline int chVal(int val)
@@ -1134,3 +747,8 @@ void SimulatorDialog::onjoystickAxisValueChanged(int axis, int value)
   }
 }
 #endif
+
+#include "simulatordialog9x.cpp"
+#include "simulatordialogtaranis.cpp"
+#include "simulatordialogflamenco.cpp"
+#include "simulatordialoghorus.cpp"

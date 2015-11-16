@@ -5,39 +5,54 @@
     <file>../../CREDITS.txt</file>
     <file>../../DONATIONS.txt</file>
     <file>../releasenotes.txt</file>
-    <file>images/9xdb.png</file>
-    <file>images/9xdl.png</file>
-    <file>images/9xdr.png</file>
-    <file>images/9xdt.png</file>
-    <file>images/9xdb-bl.png</file>
-    <file>images/9xdl-bl.png</file>
-    <file>images/9xdr-bl.png</file>
-    <file>images/9xdt-bl.png</file>
-    <file>images/9xdb-gr.png</file>
-    <file>images/9xdl-gr.png</file>
-    <file>images/9xdr-gr.png</file>
-    <file>images/9xdt-gr.png</file>
-    <file>images/9xdb-or.png</file>
-    <file>images/9xdl-or.png</file>
-    <file>images/9xdr-or.png</file>
-    <file>images/9xdt-or.png</file>
-    <file>images/9xdb-yl.png</file>
-    <file>images/9xdl-yl.png</file>
-    <file>images/9xdr-yl.png</file>
-    <file>images/9xdt-yl.png</file>
-    <file>images/9xdb-rd.png</file>
-    <file>images/9xdl-rd.png</file>
-    <file>images/9xdr-rd.png</file>
-    <file>images/9xdt-rd.png</file>
-    <file>images/9xmenu.png</file>
-    <file>images/9xmenumenu.png</file>
-    <file>images/9xmenuexit.png</file>
-    <file>images/9xcurs.png</file>
-    <file>images/9xcursup.png</file>
-    <file>images/9xcursplus.png</file>
-    <file>images/9xcursmin.png</file>
-    <file>images/9xcursdown.png</file>
-    <file>images/9xcursphoto.png</file>
+    <file>images/simulator/Horus/middle.png</file>
+    <file>images/simulator/Horus/left.png</file>
+    <file>images/simulator/Horus/right.png</file>
+    <file>images/simulator/Horus/top.png</file>
+    <file>images/simulator/Horus/bottom.png</file>
+    <file>images/simulator/Horus/led.png</file>
+    <file>images/simulator/Horus/border-right.png</file>
+    <file>images/simulator/Horus/left_btn1.png</file>
+    <file>images/simulator/Horus/left_btn2.png</file>
+    <file>images/simulator/Horus/left_scrnsht.png</file>
+    <file>images/simulator/Horus/right_btnU.png</file>
+    <file>images/simulator/Horus/right_btnL.png</file>
+    <file>images/simulator/Horus/right_btnD.png</file>
+    <file>images/simulator/Horus/right_btnR.png</file>
+    <file>images/simulator/Horus/right_ent.png</file>    
+    <file>images/simulator/9X/9xdb.png</file>
+    <file>images/simulator/9X/9xdl.png</file>
+    <file>images/simulator/9X/9xdr.png</file>
+    <file>images/simulator/9X/9xdt.png</file>
+    <file>images/simulator/9X/9xdb-bl.png</file>
+    <file>images/simulator/9X/9xdl-bl.png</file>
+    <file>images/simulator/9X/9xdr-bl.png</file>
+    <file>images/simulator/9X/9xdt-bl.png</file>
+    <file>images/simulator/9X/9xdb-gr.png</file>
+    <file>images/simulator/9X/9xdl-gr.png</file>
+    <file>images/simulator/9X/9xdr-gr.png</file>
+    <file>images/simulator/9X/9xdt-gr.png</file>
+    <file>images/simulator/9X/9xdb-or.png</file>
+    <file>images/simulator/9X/9xdl-or.png</file>
+    <file>images/simulator/9X/9xdr-or.png</file>
+    <file>images/simulator/9X/9xdt-or.png</file>
+    <file>images/simulator/9X/9xdb-yl.png</file>
+    <file>images/simulator/9X/9xdl-yl.png</file>
+    <file>images/simulator/9X/9xdr-yl.png</file>
+    <file>images/simulator/9X/9xdt-yl.png</file>
+    <file>images/simulator/9X/9xdb-rd.png</file>
+    <file>images/simulator/9X/9xdl-rd.png</file>
+    <file>images/simulator/9X/9xdr-rd.png</file>
+    <file>images/simulator/9X/9xdt-rd.png</file>
+    <file>images/simulator/9X/9xmenu.png</file>
+    <file>images/simulator/9X/9xmenumenu.png</file>
+    <file>images/simulator/9X/9xmenuexit.png</file>
+    <file>images/simulator/9X/9xcurs.png</file>
+    <file>images/simulator/9X/9xcursup.png</file>
+    <file>images/simulator/9X/9xcursplus.png</file>
+    <file>images/simulator/9X/9xcursmin.png</file>
+    <file>images/simulator/9X/9xcursdown.png</file>
+    <file>images/simulator/9X/9xcursphoto.png</file>
     <file>images/screenshot.png</file>
     <file>images/splash-9x.png</file>
     <file>images/splash-9xrpro.png</file>
@@ -47,18 +62,18 @@
     <file>images/maps.png</file>
     <file>images/track.png</file>
     <file>images/track0.png</file>
-    <file>images/x9b0.png</file>
-    <file>images/x9l0.png</file>
-    <file>images/x9l1.png</file>
-    <file>images/x9l2.png</file>
-    <file>images/x9l3.png</file>
-    <file>images/x9l4.png</file>
-    <file>images/x9r0.png</file>
-    <file>images/x9r1.png</file>
-    <file>images/x9r2.png</file>
-    <file>images/x9r3.png</file>
-    <file>images/x9s0.png</file>
-    <file>images/x9t0.png</file>
+    <file>images/simulator/Taranis/x9b0.png</file>
+    <file>images/simulator/Taranis/x9l0.png</file>
+    <file>images/simulator/Taranis/x9l1.png</file>
+    <file>images/simulator/Taranis/x9l2.png</file>
+    <file>images/simulator/Taranis/x9l3.png</file>
+    <file>images/simulator/Taranis/x9l4.png</file>
+    <file>images/simulator/Taranis/x9r0.png</file>
+    <file>images/simulator/Taranis/x9r1.png</file>
+    <file>images/simulator/Taranis/x9r2.png</file>
+    <file>images/simulator/Taranis/x9r3.png</file>
+    <file>images/simulator/Taranis/x9s0.png</file>
+    <file>images/simulator/Taranis/x9t0.png</file>
     <file>images/taranison.png</file>    
     <file>images/wizard/ailerons.png</file>
     <file>images/wizard/airbrakes.png</file>

@@ -56,17 +56,17 @@ void displayRssiLine()
 #if !defined(CPUARM)
     rssi = min((uint8_t)99, frskyData.rssi[1].value);
     lcd_putsLeft(STATUS_BAR_Y, STR_TX); lcd_outdezNAtt(4*FW+1, STATUS_BAR_Y, rssi, LEADING0, 2);
-    lcd_rect(BAR_LEFT+1, 57, 38, 7);
+    lcdDrawRect(BAR_LEFT+1, 57, 38, 7);
     drawFilledRect(BAR_LEFT+1, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
 #endif
     rssi = min((uint8_t)99, TELEMETRY_RSSI());
     lcd_puts(104, STATUS_BAR_Y, STR_RX); lcd_outdezNAtt(105+4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
-    lcd_rect(65, 57, 38, 7);
+    lcdDrawRect(65, 57, 38, 7);
     uint8_t v = 4*rssi/11;
     drawFilledRect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
-    lcd_putsAtt(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
+    lcdDrawText(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
     lcd_status_line();
   }
 }
@@ -76,9 +76,9 @@ void displayGpsTime()
 {
   uint8_t att = (TELEMETRY_STREAMING() ? LEFT|LEADING0 : LEFT|LEADING0|BLINK);
   lcd_outdezNAtt(CENTER_OFS+6*FW+7, STATUS_BAR_Y, frskyData.hub.hour, att, 2);
-  lcd_putcAtt(CENTER_OFS+8*FW+4, STATUS_BAR_Y, ':', att);
+  lcdDrawChar(CENTER_OFS+8*FW+4, STATUS_BAR_Y, ':', att);
   lcd_outdezNAtt(CENTER_OFS+9*FW+2, STATUS_BAR_Y, frskyData.hub.min, att, 2);
-  lcd_putcAtt(CENTER_OFS+11*FW-1, STATUS_BAR_Y, ':', att);
+  lcdDrawChar(CENTER_OFS+11*FW-1, STATUS_BAR_Y, ':', att);
   lcd_outdezNAtt(CENTER_OFS+12*FW-3, STATUS_BAR_Y, frskyData.hub.sec, att, 2);
   lcd_status_line();
 }
@@ -154,7 +154,7 @@ void displayVoltagesScreen()
 {
   // Volts / Amps / Watts / mAh
   uint8_t analog = 0;
-  lcd_putsiAtt(0, 2*FH, STR_AMPSRC, g_model.frsky.voltsSource+1, 0);
+  lcdDrawTextAtIndex(0, 2*FH, STR_AMPSRC, g_model.frsky.voltsSource+1, 0);
   switch (g_model.frsky.voltsSource) {
     case FRSKY_VOLTS_SOURCE_A1:
     case FRSKY_VOLTS_SOURCE_A2:
@@ -172,7 +172,7 @@ void displayVoltagesScreen()
   }
 
   if (g_model.frsky.currentSource) {
-    lcd_putsiAtt(0, 4*FH, STR_AMPSRC, g_model.frsky.currentSource, 0);
+    lcdDrawTextAtIndex(0, 4*FH, STR_AMPSRC, g_model.frsky.currentSource, 0);
     switch(g_model.frsky.currentSource) {
       case FRSKY_CURRENT_SOURCE_A1:
       case FRSKY_CURRENT_SOURCE_A2:
@@ -259,9 +259,9 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
 #if defined(CPUARM)
       putsMixerSource(0, y+barHeight-5, source, 0);
 #else
-      lcd_putsiAtt(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
+      lcdDrawTextAtIndex(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
 #endif
-      lcd_rect(BAR_LEFT, y, BAR_WIDTH+1, barHeight+2);
+      lcdDrawRect(BAR_LEFT, y, BAR_WIDTH+1, barHeight+2);
 #if defined(CPUARM)
       getvalue_t value = getValue(source);
 #else
@@ -314,7 +314,7 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
       }
 
       if (thresholdX) {
-        lcd_vlineStip(BAR_LEFT+1+thresholdX, y-2, barHeight+3, DOTTED);
+        lcdDrawVerticalLine(BAR_LEFT+1+thresholdX, y-2, barHeight+3, DOTTED);
         lcd_hline(BAR_LEFT+thresholdX, y-2, 3);
       }
     }
@@ -422,7 +422,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
           field = field-TELEM_TIMER1+TELEM_T1;
         }
 
-        lcd_putsiAtt(pos[j], 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
+        lcdDrawTextAtIndex(pos[j], 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
       }
     }
   }

@@ -45,7 +45,7 @@ const pm_uchar * const splash_lbm = splashdata+4;
 
 void displaySplash()
 {
-  lcd_clear();
+  lcdClear();
   lcd_bmp(0, 0, splash_lbm);
 
 #if MENUS_LOCK == 1

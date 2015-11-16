@@ -2,9 +2,6 @@
 
 void i2cInit(void)
 {
-  RCC_AHB1PeriphClockCmd(I2C_RCC_AHB1Periph_GPIO, ENABLE);
-  RCC_APB1PeriphClockCmd(I2C_RCC_APB1Periph_I2C, ENABLE);
-
   GPIO_PinAFConfig(I2C_GPIO, I2C_GPIO_PinSource_SCL, I2C_GPIO_AF);
   GPIO_PinAFConfig(I2C_GPIO, I2C_GPIO_PinSource_SDA, I2C_GPIO_AF);
 

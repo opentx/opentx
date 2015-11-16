@@ -52,7 +52,7 @@ OS_TID menusTaskId;
 TaskStack<MENUS_STACK_SIZE> _ALIGNED(8) menusStack;
 
 OS_TID mixerTaskId;
-TaskStack<MENUS_STACK_SIZE> mixerStack;
+TaskStack<MIXER_STACK_SIZE> mixerStack;
 
 OS_TID audioTaskId;
 TaskStack<AUDIO_STACK_SIZE> audioStack;
@@ -97,6 +97,9 @@ uint16_t getStackAvailable(void * address, uint16_t size)
     i++;
   }
   return i*4;
+#if defined(CLI)
+  cliStackPaint();
+#endif
 }
 
 template<int SIZE>
@@ -189,15 +192,16 @@ void menusTask(void * pdata)
   }
 
 #if defined(PCBTARANIS) && defined(REV9E)
-  topLcdOff();
+  toplcdOff();
 #endif
 
   BACKLIGHT_OFF();
 
-#if defined(PCBTARANIS)
+#if defined(COLORLCD)
+#elif defined(PCBTARANIS)
   displaySleepBitmap();
 #else
-  lcd_clear();
+  lcdClear();
   displayPopup(STR_SHUTDOWN);
 #endif
 
@@ -231,4 +235,4 @@ void tasksStart()
   CoStartOS();
 }
 
-#endif // #if !defined(SIMU)
+#endif // !defined(SIMU)

@@ -788,7 +788,13 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     }
     BoardEnum board = GetCurrentFirmware()->getBoard();
     SimulatorDialog * sd;
-    if (IS_TARANIS(board)) {
+    if (board == BOARD_HORUS) {
+      sd = new SimulatorDialogHorus(parent, si, flags);
+    }
+    else if (board == BOARD_FLAMENCO) {
+      sd = new SimulatorDialogFlamenco(parent, si, flags);
+    }
+    else if (IS_TARANIS(board)) {
       for (int i=0; i<GetCurrentFirmware()->getCapability(Pots); i++) {
         if (radioData.generalSettings.isPotAvailable(i)) {
           flags |= (SIMULATOR_FLAGS_S1 << i);

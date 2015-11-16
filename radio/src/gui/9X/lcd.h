@@ -135,17 +135,16 @@
 #endif
 
 #define display_t            uint8_t
-#define DISPLAY_BUF_SIZE     (LCD_W*((LCD_H+7)/8))
+#define DISPLAY_BUFFER_SIZE  (LCD_W*((LCD_H+7)/8))
 
-extern display_t displayBuf[DISPLAY_BUF_SIZE];
+extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 
 #define lcdRefreshWait()
 
 extern coord_t lcdLastPos;
 extern coord_t lcdNextPos;
 
-#define DISPLAY_BUFER_SIZE     (sizeof(display_t)*DISPLAY_BUF_SIZE)
-#define DISPLAY_END            (displayBuf + DISPLAY_BUF_SIZE)
+#define DISPLAY_END            (displayBuf + DISPLAY_BUFFER_SIZE)
 #define ASSERT_IN_DISPLAY(p)   assert((p) >= displayBuf && (p) < DISPLAY_END)
 
 #if defined(PCBSTD) && defined(VOICE)
@@ -164,10 +163,10 @@ typedef const char pm_char;
 #endif
 
 void lcd_putc(coord_t x, coord_t y, const unsigned char c);
-void lcd_putcAtt(coord_t x, coord_t y, const unsigned char c, LcdFlags mode);
-void lcd_putsAtt(coord_t x, coord_t y, const pm_char * s, LcdFlags mode);
-void lcd_putsiAtt(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags mode);
-void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s,unsigned char len, LcdFlags mode);
+void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags);
+void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags flags);
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags flags);
+void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s,unsigned char len, LcdFlags flags);
 void lcd_puts(coord_t x, coord_t y, const pm_char * s);
 void lcd_putsn(coord_t x, coord_t y, const pm_char * s, unsigned char len);
 void lcd_putsLeft(coord_t y, const pm_char * s);
@@ -227,24 +226,24 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 void lcd_plot(coord_t x, coord_t y, LcdFlags att=0);
 void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att=0);
 void lcd_hline(coord_t x, coord_t y, coord_t w, LcdFlags att=0);
-void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
+void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
 void lcd_vline(coord_t x, scoord_t y, scoord_t h);
 #if defined(CPUM64)
-  void lcd_vlineStip(coord_t x, scoord_t y, int8_t h, uint8_t pat);
+  void lcdDrawVerticalLine(coord_t x, scoord_t y, int8_t h, uint8_t pat);
 #else
-  void lcd_vlineStip(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
+  void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
 #endif
 
 #if defined(CPUARM)
-  void lcd_line(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
+  void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
 #endif
 
 void drawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
-void lcd_rect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
+void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
 
 void lcd_invert_line(int8_t line);
 #define lcd_status_line() lcd_invert_line(LCD_LINES-1)
-inline void lcd_square(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcd_rect(x, y, w, w, SOLID, att); }
+inline void lcd_square(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcdDrawRect(x, y, w, w, SOLID, att); }
 
 void lcdDrawTelemetryTopBar();
 
@@ -256,7 +255,7 @@ void lcdDrawTelemetryTopBar();
 void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 
 void lcdSetRefVolt(unsigned char val);
-void lcd_clear();
+void lcdClear();
 void lcdSetContrast();
 void lcdInit();
 #define lcdOff()
@@ -275,15 +274,5 @@ uint8_t	lcdRefresh_ST7920(uint8_t full);
 #else
   #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
 #endif
-
-#if defined(SIMU)
-  extern bool lcd_refresh;
-  extern display_t lcd_buf[DISPLAY_BUF_SIZE];
-#endif
-
-char *strAppend(char * dest, const char * source, int len=0);
-char *strSetCursor(char *dest, int position);
-char *strAppendDate(char * str, bool time=false);
-char *strAppendFilename(char * dest, const char * filename, const int size);
 
 #endif

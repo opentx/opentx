@@ -9,6 +9,8 @@ set(simulation_SRCS
 set(simulation_UIS
   simulatordialog-9x.ui
   simulatordialog-taranis.ui
+  simulatordialog-horus.ui
+  simulatordialog-flamenco.ui
   telemetrysimu.ui
   trainersimu.ui
   debugoutput.ui
@@ -16,11 +18,9 @@ set(simulation_UIS
 
 set(simulation_HDRS
   simulatordialog.h
-  cursorwidget.h
-  menuwidget.h
-  xcursorwidget.h
-  xmenuwidget.h
-  myslider.h
+  # lcdwidget.h
+  buttonswidget.h
+  sliderwidget.h
   telemetrysimu.h
   trainersimu.h
   debugoutput.h

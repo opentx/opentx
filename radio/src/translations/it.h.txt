@@ -808,6 +808,7 @@
 #define TR_CURRENT             TR(INDENT "Corrente",INDENT "Corrente")
 #define TR_SELECT_MODEL        "Scegli Memo."
 #define TR_CREATE_MODEL        "Crea Modello"
+#define TR_DUPLICATE_MODEL     "Duplicate Model"
 #define TR_COPY_MODEL          "Copia Modello"
 #define TR_MOVE_MODEL          "Sposta Modello"
 #define TR_BACKUP_MODEL        "Salva Modello"
@@ -1065,6 +1066,7 @@
 #define TR_SCALE               "Scala"
 #define TR_VIEW_CHANNELS       "Vedi Canali"
 #define TR_VIEW_NOTES          "Vedi Note"
+#define TR_MODEL_SELECT        "Model Select"
 #define TR_MODS_FORBIDDEN      "Modifica proibita!"
 #define TR_UNLOCKED            "Sbloccato"
 #define TR_ID                  "ID"

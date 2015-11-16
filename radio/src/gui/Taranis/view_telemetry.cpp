@@ -54,11 +54,11 @@ void displayRssiLine()
     lcd_hline(0, 55, 212, 0); // separator
     uint8_t rssi = min((uint8_t)99, TELEMETRY_RSSI());
     lcd_putsn(0, STATUS_BAR_Y, STR_RX, 2); lcd_outdezNAtt(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
-    lcd_rect(BAR_LEFT, 57, 78, 7);
+    lcdDrawRect(BAR_LEFT, 57, 78, 7);
     drawFilledRect(BAR_LEFT+1, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
-    lcd_putsAtt(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
+    lcdDrawText(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
     lcd_status_line();
   }
 }
@@ -94,7 +94,7 @@ void displayGaugesTelemetryScreen(FrSkyScreenData & screen)
     if (source && barMax > barMin) {
       int y = barHeight+6+i*(barHeight+6);
       putsMixerSource(0, y+barHeight-5, source, 0);
-      lcd_rect(BAR_LEFT, y, BAR_WIDTH+1, barHeight+2);
+      lcdDrawRect(BAR_LEFT, y, BAR_WIDTH+1, barHeight+2);
       getvalue_t value = getValue(source);
       putsChannel(BAR_LEFT+2+BAR_WIDTH, y+barHeight-5, source, LEFT);
       uint8_t thresholdX = 0;
@@ -107,7 +107,7 @@ void displayGaugesTelemetryScreen(FrSkyScreenData & screen)
         }
       }
       if (thresholdX) {
-        lcd_vlineStip(BAR_LEFT+1+thresholdX, y-2, barHeight+3, DOTTED);
+        lcdDrawVerticalLine(BAR_LEFT+1+thresholdX, y-2, barHeight+3, DOTTED);
         lcd_hline(BAR_LEFT+thresholdX, y-2, 3);
       }
     }

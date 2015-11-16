@@ -48,7 +48,6 @@
 #define CONTRAST_MAX  45
 
 #define lcdint_t      int32_t
-#define lcduint_t     uint32_t
 
 #define FW              6
 #define FWNUM           5
@@ -74,11 +73,7 @@
 /* lcd puts flags */
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */
-#if defined(CPUARM)
-  #define BSS           0x00
-#else
-  #define BSS           0x20
-#endif
+#define BSS             0x00
 #define ZCHAR           0x80
 
 /* lcd outdez flags */
@@ -119,14 +114,14 @@
 #define LcdFlags             uint32_t
 
 #define display_t            uint8_t
-#define DISPLAY_BUF_SIZE     (LCD_W*LCD_H*4/8)
+#define DISPLAY_BUFFER_SIZE  (LCD_W*LCD_H*4/8)
 
 #if defined(REVPLUS) && defined(LCD_DUAL_BUFFER)
-  extern display_t displayBuf1[DISPLAY_BUF_SIZE];
-  extern display_t displayBuf2[DISPLAY_BUF_SIZE];
+  extern display_t displayBuf1[DISPLAY_BUFFER_SIZE];
+  extern display_t displayBuf2[DISPLAY_BUFFER_SIZE];
   extern display_t * displayBuf;
 #else
-  extern display_t displayBuf[DISPLAY_BUF_SIZE];
+  extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 #endif
 
 #if defined(REVPLUS) && !defined(LCD_DUAL_BUFFER) && !defined(SIMU)
@@ -138,8 +133,7 @@
 extern coord_t lcdLastPos;
 extern coord_t lcdNextPos;
 
-#define DISPLAY_BUFER_SIZE     (sizeof(display_t)*DISPLAY_BUF_SIZE)
-#define DISPLAY_END            (displayBuf + DISPLAY_BUF_SIZE)
+#define DISPLAY_END            (displayBuf + DISPLAY_BUFFER_SIZE)
 #define ASSERT_IN_DISPLAY(p)   assert((p) >= displayBuf && (p) < DISPLAY_END)
 
 #if defined(BOOT)
@@ -149,10 +143,10 @@ typedef const char pm_char;
 #endif
 
 void lcd_putc(coord_t x, coord_t y, const unsigned char c);
-void lcd_putcAtt(coord_t x, coord_t y, const unsigned char c, LcdFlags mode);
-void lcd_putsAtt(coord_t x, coord_t y, const pm_char * s, LcdFlags mode);
-void lcd_putsiAtt(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags mode);
-void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s,unsigned char len, LcdFlags mode);
+void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags mode);
+void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags mode);
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags mode);
+void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s,unsigned char len, LcdFlags mode);
 void lcd_puts(coord_t x, coord_t y, const pm_char * s);
 void lcd_putsn(coord_t x, coord_t y, const pm_char * s, unsigned char len);
 void lcd_putsLeft(coord_t y, const pm_char * s);
@@ -161,8 +155,8 @@ void lcd_putsLeft(coord_t y, const pm_char * s);
 
 void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 
-void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0, uint8_t len=0);
-void lcd_outdezAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0);
+void lcd_outdezNAtt(coord_t x, coord_t y, int32_t val, LcdFlags mode=0, uint8_t len=0);
+void lcd_outdezAtt(coord_t x, coord_t y, int32_t val, LcdFlags mode=0);
 void lcd_outdez8(coord_t x, coord_t y, int8_t val);
 
 void putsStrIdx(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags att=0);
@@ -185,9 +179,9 @@ void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att);
 void putsVBat(coord_t x, coord_t y, LcdFlags att);
 
 #if !defined(BOOT)
-void putsChannelValue(coord_t x, coord_t y, source_t channel, lcdint_t val, LcdFlags att=0);
+void putsChannelValue(coord_t x, coord_t y, source_t channel, int32_t val, LcdFlags att=0);
 void putsChannel(coord_t x, coord_t y, source_t channel, LcdFlags att=0);
-void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t val, LcdFlags att=0);
+void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t val, LcdFlags att=0);
 #endif
 
 #define putstime_t int32_t
@@ -201,17 +195,17 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 void lcd_plot(coord_t x, coord_t y, LcdFlags att=0);
 void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att=0);
 void lcd_hline(coord_t x, coord_t y, coord_t w, LcdFlags att=0);
-void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
+void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
 void lcd_vline(coord_t x, scoord_t y, scoord_t h);
-void lcd_vlineStip(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
-void lcd_line(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
+void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
+void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
 
 void drawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
-void lcd_rect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
+void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
 
 void lcd_invert_line(int8_t line);
 #define lcd_status_line() lcd_invert_line(LCD_LINES-1)
-inline void lcd_square(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcd_rect(x, y, w, w, SOLID, att); }
+inline void lcd_square(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcdDrawRect(x, y, w, w, SOLID, att); }
 
 void displaySleepBitmap();
 
@@ -228,7 +222,7 @@ void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_
 #define LCD_ICON(x, y, icon) lcd_bmp(x, y, icons, icon)
 
 void lcdSetRefVolt(unsigned char val);
-void lcd_clear();
+void lcdClear();
 void lcdSetContrast();
 
 #if defined(REVPLUS) && !defined(SIMU)
@@ -237,23 +231,13 @@ void lcdSetContrast();
   void lcdRefresh();
 #endif
 
-const char *bmpLoad(uint8_t *dest, const char *filename, const unsigned int width, const unsigned int height);
-const char *writeScreenshot();
+const char * bmpLoad(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
+const char * writeScreenshot();
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE (0)
 #else
   #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
 #endif
-
-#if defined(SIMU)
-  extern bool lcd_refresh;
-  extern display_t lcd_buf[DISPLAY_BUF_SIZE];
-#endif
-
-char *strAppend(char * dest, const char * source, int len=0);
-char *strSetCursor(char *dest, int position);
-char *strAppendDate(char * str, bool time=false);
-char *strAppendFilename(char * dest, const char * filename, const int size);
 
 #endif // _LCD_H_

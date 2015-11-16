@@ -178,7 +178,7 @@
       <field type="int16_t" name="sue_waypoint_goal_x">Serial UDB Extra Current Waypoint Goal X</field>
       <field type="int16_t" name="sue_waypoint_goal_y">Serial UDB Extra Current Waypoint Goal Y</field>
       <field type="int16_t" name="sue_waypoint_goal_z">Serial UDB Extra Current Waypoint Goal Z</field>
-      <field type="int16_t" name="sue_memory_stack_free">Serial UDB Extra Stack Memory Free</field>
+      <field type="int16_t" name="sue_memory_taskStackFree">Serial UDB Extra Stack Memory Free</field>
     </message>  
     <message id="172" name="SERIAL_UDB_EXTRA_F4">
       <description>Backwards compatible version of SERIAL_UDB_EXTRA F4: format</description>

@@ -31,7 +31,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usb_conf.h"
-
 #include "usbd_conf.h"
 #include "usbd_dfu_core.h"
 

@@ -500,8 +500,8 @@ extern const pm_char STR_THROTTLENOTIDLE[];
 extern const pm_char STR_ALARMSDISABLED[];
 extern const pm_char STR_PRESSANYKEY[];
 #define LEN_PRESSANYKEY PSIZE(TR_PRESSANYKEY)
-extern const pm_char STR_BADEEPROMDATA[];
-extern const pm_char STR_EEPROMFORMATTING[];
+extern const pm_char STR_BAD_RADIO_DATA[];
+extern const pm_char STR_STORAGE_FORMAT[];
 extern const pm_char STR_EEPROMOVERFLOW[];
 extern const pm_char STR_TRIMS2OFFSETS[];
 extern const pm_char STR_MENURADIOSETUP[];
@@ -598,6 +598,7 @@ extern const pm_char STR_CURRENT[];
 #if defined(NAVIGATION_MENUS)
   extern const pm_char STR_SELECT_MODEL[];
   extern const pm_char STR_CREATE_MODEL[];
+extern const pm_char STR_DUPLICATE_MODEL[];
   extern const pm_char STR_COPY_MODEL[];
   extern const pm_char STR_MOVE_MODEL[];
   extern const pm_char STR_DELETE_MODEL[];
@@ -635,7 +636,7 @@ extern const pm_char STR_RESET_BTN[];
 #endif
 
 extern const pm_char STR_WARNING[];
-extern const pm_char STR_EEPROMWARN[];
+extern const pm_char STR_STORAGE_WARNING[];
 extern const pm_char STR_EEPROM_CONVERTING[];
 extern const pm_char STR_THROTTLEWARN[];
 extern const pm_char STR_ALARMSWARN[];
@@ -769,6 +770,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_PREFLIGHT[];
   extern const pm_char STR_CHECKLIST[];
   extern const pm_char STR_VIEW_NOTES[];
+extern const pm_char STR_MODEL_SELECT[];
   extern const pm_char STR_RESET_SUBMENU[];
   extern const pm_char STR_LOWALARM[];
   extern const pm_char STR_CRITICALALARM[];
@@ -800,7 +802,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_CONFIRMDELETE[];
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   extern const pm_char STR_BYTES[];
   extern const pm_char STR_ANTENNAPROBLEM[];
   extern const pm_char STR_MODULE[];

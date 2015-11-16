@@ -81,7 +81,7 @@ void crc(uint8_t data, unsigned int port)
   modulePulsesData[port].pxx.pcmCrc = (modulePulsesData[port].pxx.pcmCrc<<8) ^ (CRCTable[((modulePulsesData[port].pxx.pcmCrc>>8)^data) & 0xFF]);
 }
 
-#if defined(PCBTARANIS)
+#if !defined(PPM_PIN_HW_SERIAL)
 
 void putPcmPart(uint8_t value, unsigned int port)
 {
@@ -231,8 +231,7 @@ void setupPulsesPXX(unsigned int port)
       }
       else {
         if (i < sendUpperChannels) {
-          int channel = 8 + i;
-          int16_t failsafeValue = g_model.moduleData[port].failsafeChannels[channel];
+          int16_t failsafeValue = g_model.moduleData[port].failsafeChannels[8+i];
           if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
             pulseValue = 4095;
           }
@@ -240,7 +239,7 @@ void setupPulsesPXX(unsigned int port)
             pulseValue = 2048;
           }
           else {
-            failsafeValue += 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+            failsafeValue += 2*PPM_CH_CENTER(8+g_model.moduleData[port].channelsStart+i) - 2*PPM_CENTER;
             pulseValue = limit(2049, (failsafeValue * 512 / 682) + 3072, 4094);
           }
         }
@@ -253,7 +252,7 @@ void setupPulsesPXX(unsigned int port)
             pulseValue = 0;
           }
           else {
-            failsafeValue += 2*PPM_CH_CENTER(i) - 2*PPM_CENTER;
+            failsafeValue += 2*PPM_CH_CENTER(g_model.moduleData[port].channelsStart+i) - 2*PPM_CENTER;
             pulseValue = limit(1, (failsafeValue * 512 / 682) + 1024, 2046);
           }
         }

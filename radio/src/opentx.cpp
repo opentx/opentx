@@ -55,9 +55,9 @@ ModelData  g_model;
 Clipboard clipboard;
 #endif
 
-#if defined(PCBTARANIS) && defined(SDCARD)
+#if (defined(PCBTARANIS) || defined(PCBHORUS)) && defined(SDCARD)
 uint8_t modelBitmap[MODEL_BITMAP_SIZE];
-void loadModelBitmap(char *name, uint8_t *bitmap)
+void loadModelBitmap(char * name, uint8_t * bitmap)
 {
   uint8_t len = zlen(name, LEN_BITMAP_NAME);
   if (len > 0) {
@@ -262,7 +262,11 @@ void generalDefault()
   g_eeGeneral.variant = EEPROM_VARIANT;
   g_eeGeneral.contrast = 25;
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  g_eeGeneral.vBatWarn = 33;
+  g_eeGeneral.vBatMin = -60; // 0 is 9.0V
+  g_eeGeneral.vBatMax = -78; // 0 is 12.0V
+#elif defined(PCBTARANIS)
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
   g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
 #endif
@@ -289,11 +293,15 @@ void generalDefault()
   g_eeGeneral.stickMode = DEFAULT_MODE-1;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  g_eeGeneral.templateSetup = 21; /* AETR */
+#elif defined(PCBTARANIS)
   g_eeGeneral.templateSetup = 17; /* TAER */
 #endif
 
-#if !defined(CPUM64)
+#if defined(PCBFLAMENCO)
+  g_eeGeneral.inactivityTimer = 50;
+#elif !defined(CPUM64)
   g_eeGeneral.backlightMode = e_backlight_mode_all;
   g_eeGeneral.lightAutoOff = 2;
   g_eeGeneral.inactivityTimer = 10;
@@ -315,6 +323,10 @@ void generalDefault()
 #if defined(PCBTARANIS) && defined(REV9E)
   const int8_t defaultName[] = { 20, -1, -18, -1, -14, -9, -19 };
   memcpy(g_eeGeneral.bluetoothName, defaultName, sizeof(defaultName));
+#endif
+
+#if !defined(EEPROM)
+  strcpy(g_eeGeneral.currModelFilename, DEFAULT_MODEL_FILENAME);
 #endif
 
   g_eeGeneral.chkSum = 0xFFFF;
@@ -359,22 +371,22 @@ void defaultInputs()
     g_model.inputNames[i][3] = '\0';
 #endif
   }
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 #endif
 
 #if defined(TEMPLATES)
 inline void applyDefaultTemplate()
 {
-  applyTemplate(TMPL_SIMPLE_4CH); // calls eeDirty internally
+  applyTemplate(TMPL_SIMPLE_4CH); // calls storageDirty internally
 }
 #else
 void applyDefaultTemplate()
 {
 #if defined(VIRTUALINPUTS)
-  defaultInputs(); // calls eeDirty internally
+  defaultInputs(); // calls storageDirty internally
 #else
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 #endif
 
   for (int i=0; i<NUM_STICKS; i++) {
@@ -390,7 +402,7 @@ void applyDefaultTemplate()
 }
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module)
 {
   uint8_t modelId = g_model.header.modelId[module];
@@ -406,13 +418,6 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
       }
     }
   }
-}
-#endif
-
-#if defined(SDCARD)
-bool isFileAvailable(const char * filename)
-{
-  return f_stat(filename, 0) == FR_OK;
 }
 #endif
 
@@ -435,7 +440,7 @@ void modelDefault(uint8_t id)
   g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_PPM;
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(EEPROM)
   for (int i=0; i<NUM_MODULES; i++) {
     modelHeaders[id].modelId[i] = g_model.header.modelId[i] = id+1;
   }
@@ -453,6 +458,10 @@ void modelDefault(uint8_t id)
 #if defined(MAVLINK)
   g_model.mavlink.rc_rssi_scale = 15;
   g_model.mavlink.pc_rssi_en = 1;
+#endif
+
+#if !defined(EEPROM)
+  strcpy(g_model.header.name, "\015\361\374\373\364\033\034");
 #endif
 }
 
@@ -590,7 +599,7 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim)
       break;
     }
   }
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
   return true;
 }
 #else
@@ -605,7 +614,7 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim)
   FlightModeData *p = flightModeAddress(phase);
   p->trim[idx] = trim;
 #endif
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 #endif
 
@@ -649,7 +658,7 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
   g_rotenc[idx] += inc;
   int16_t *value = &(flightModeAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
   *value = limit((int16_t)-1024, (int16_t)(*value + (inc * 8)), (int16_t)+1024);
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 #endif
 
@@ -657,11 +666,11 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 
 #if defined(PCBSTD)
   #define SET_GVAR_VALUE(idx, phase, value) \
-    (GVAR_VALUE(idx, phase) = value, eeDirty(EE_MODEL))
+    (GVAR_VALUE(idx, phase) = value, storageDirty(EE_MODEL))
 #else
   #define SET_GVAR_VALUE(idx, phase, value) \
     GVAR_VALUE(idx, phase) = value; \
-    eeDirty(EE_MODEL); \
+    storageDirty(EE_MODEL); \
     if (g_model.gvars[idx].popup) { \
       s_gvar_last = idx; \
       s_gvar_timer = GVAR_DISPLAY_TIME; \
@@ -959,6 +968,25 @@ void checkBacklight()
   }
 }
 
+#if defined(PCBFLAMENCO)
+void checkUsbChip()
+{
+  uint8_t reg = i2cReadBQ24195(0x00);
+  if (reg & 0x80) {
+    i2cWriteBQ24195(0x00, reg & 0x7F);
+  }
+}
+#endif
+
+void doLoopCommonActions()
+{
+  checkBacklight();
+
+#if defined(PCBFLAMENCO)
+  checkUsbChip();
+#endif
+}
+
 void backlightOn()
 {
   lightOffCounter = ((uint16_t)g_eeGeneral.lightAutoOff*250) << 1;
@@ -1020,7 +1048,11 @@ void doSplash()
       if (!(g_eeGeneral.splashMode & 0x04)) {
 #endif
 
+#if defined(COLORLCD)
+      if (keyDown()) return;
+#else
       if (keyDown() || inputsMoved()) return;
+#endif
 
 #if defined(FSPLASH)
       }
@@ -1054,7 +1086,7 @@ void doSplash()
       }
 #endif
 
-      checkBacklight();
+      doLoopCommonActions();
     }
   }
 }
@@ -1090,7 +1122,9 @@ void checkAll()
 #if defined(MODULE_ALWAYS_SEND_PULSES)
   startupWarningState = STARTUP_WARNING_THROTTLE;
 #else
-  checkTHR();
+  if (g_eeGeneral.chkSum == evalChkSum()) {
+    checkTHR();
+  }
   checkSwitches();
   checkFailsafe();
 #endif
@@ -1139,7 +1173,7 @@ void checkLowEEPROM()
 {
   if (g_eeGeneral.disableMemoryWarning) return;
   if (EeFsGetFree() < 100) {
-    ALERT(STR_EEPROMWARN, STR_EEPROMLOWMEM, AU_ERROR);
+    ALERT(STR_STORAGE_WARNING, STR_EEPROMLOWMEM, AU_ERROR);
   }
 }
 #endif
@@ -1219,7 +1253,7 @@ void checkTHR()
       break;
     }
 
-    checkBacklight();
+    doLoopCommonActions();
 
     wdt_reset();
   }
@@ -1251,7 +1285,7 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
 
     if (keyDown()) return;  // wait for key release
 
-    checkBacklight();
+    doLoopCommonActions();
 
     wdt_reset();
 
@@ -1282,7 +1316,7 @@ int8_t trimGvar[NUM_STICKS] = { -1, -1, -1, -1 };
 #if defined(CPUARM)
 void checkTrims()
 {
-  uint8_t event = getEvent(true);
+  evt_t event = getEvent(true);
   if (event && !IS_KEY_BREAK(event)) {
     int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
 #else
@@ -1822,10 +1856,6 @@ void opentxStart()
   }
 #endif
 
-#if defined(CPUARM)
-  eeLoadModel(g_eeGeneral.currModel);
-#endif
-
 #if defined(GUI)
   checkAlarm();
   checkAll();
@@ -1836,7 +1866,6 @@ void opentxStart()
     chainMenu(menuFirstCalib);
   }
 #endif
-
 }
 
 #if defined(CPUARM) || defined(CPUM2560)
@@ -1868,11 +1897,11 @@ void opentxClose()
     if (sensor.type == TELEM_TYPE_CALCULATED) {
       if (sensor.persistent && sensor.persistentValue != telemetryItems[i].value) {
         sensor.persistentValue = telemetryItems[i].value;
-        eeDirty(EE_MODEL);
+        storageDirty(EE_MODEL);
       }
       else if (!sensor.persistent) {
         sensor.persistentValue = 0;
-        eeDirty(EE_MODEL);
+        storageDirty(EE_MODEL);
       }
     }
   }
@@ -1892,20 +1921,20 @@ void opentxClose()
         SAVE_POT_POSITION(i);
       }
     }
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 #endif
 
 #if !defined(PCBTARANIS)
-  if (s_eeDirtyMsk & EE_MODEL) {
+  if (storageDirtyMsk & EE_MODEL) {
     displayPopup(STR_SAVEMODEL);
   } 
 #endif
 
   g_eeGeneral.unexpectedShutdown = 0;
 
-  eeDirty(EE_GENERAL);
-  eeCheck(true);
+  storageDirty(EE_GENERAL);
+  storageCheck(true);
 
 #if defined(CPUARM)
   while (IS_PLAYING(ID_PLAY_BYE)) {
@@ -2005,7 +2034,7 @@ void checkBattery()
   if (counter-- == 0) {
     counter = 10;
     int32_t instant_vbat = anaIn(TX_VOLTAGE);
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
     instant_vbat = (instant_vbat + instant_vbat*(g_eeGeneral.txVoltageCalibration)/128) * BATT_SCALE;
     instant_vbat >>= 11;
     instant_vbat += 2; // because of the diode
@@ -2234,7 +2263,7 @@ void instantTrim()
     }
   }
 
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
   AUDIO_WARNING2();
 }
 
@@ -2258,7 +2287,7 @@ void copySticksToOffset(uint8_t ch)
 #endif
   ld->offset = (ld->revert ? -zero : zero);
   resumeMixerCalculations();
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 
 void copyTrimsToOffset(uint8_t ch)
@@ -2283,7 +2312,7 @@ void copyTrimsToOffset(uint8_t ch)
   g_model.limitData[ch].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
 
   resumeMixerCalculations();
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 
 void moveTrimsToOffsets() // copy state of 3 primary to subtrim
@@ -2331,7 +2360,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 
   resumeMixerCalculations();
 
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
   AUDIO_WARNING2();
 }
 
@@ -2378,7 +2407,9 @@ uint16_t stackAvailable()
 
 void opentxInit(OPENTX_INIT_ARGS)
 {
-  eeReadAll();
+  TRACE("opentxInit()");
+
+  storageReadAll();
 
 #if defined(CPUARM)
   if (UNEXPECTED_SHUTDOWN()) {
@@ -2426,9 +2457,6 @@ void opentxInit(OPENTX_INIT_ARGS)
     // is done above on ARM
     unexpectedShutdown = 1;
 #endif
-#if defined(CPUARM)
-    eeLoadModel(g_eeGeneral.currModel);
-#endif
   }
   else {
     opentxStart();
@@ -2437,7 +2465,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #if defined(CPUARM) || defined(CPUM2560)
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
-    eeDirty(EE_GENERAL);
+    storageDirty(EE_GENERAL);
   }
 #endif
 
@@ -2446,7 +2474,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif
   backlightOn();
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO)
   serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
 #endif
 
@@ -2484,8 +2512,13 @@ int main(void)
 
   boardInit();
   
-#if defined(GUI) && !defined(PCBTARANIS)
+#if defined(GUI) && !defined(PCBTARANIS) && !defined(PCBFLAMENCO) && !defined(PCBHORUS)
+  // TODO remove this
   lcdInit();
+#endif
+
+#if defined(COLORLCD)
+  lcdColorsInit();
 #endif
 
   stackPaint();
@@ -2498,14 +2531,14 @@ int main(void)
 #endif
 
 #if defined(GUI) && !defined(PCBTARANIS)
-  lcdSetRefVolt(25);
+  // lcdSetRefVolt(25);
 #endif
 
 #if defined(PCBTARANIS)
   displaySplash();
 #endif
 
-  sei(); // interrupts needed for telemetryInit and eeReadAll.
+  sei(); // interrupts needed now
 
 #if defined(FRSKY) && !defined(DSM2_SERIAL)
   telemetryInit();
@@ -2546,6 +2579,10 @@ int main(void)
   uint8_t shutdown_state = 0;
 #endif
 
+#if defined(PCBFLAMENCO)
+  menuEntryTime = get_tmr10ms() - 200;
+#endif
+
   while (1) {
 #if defined(CPUM2560)
     if ((shutdown_state=pwrCheck()) > e_power_trainer)
@@ -2563,10 +2600,10 @@ int main(void)
 
 #if defined(CPUM2560)
   // Time to switch off
-  lcd_clear();
+  lcdClear();
   displayPopup(STR_SHUTDOWN);
   opentxClose();
-  lcd_clear() ;
+  lcdClear() ;
   lcdRefresh() ;
   boardOff(); // Only turn power off if necessary
   wdt_disable();
@@ -2619,9 +2656,9 @@ uint32_t pwrCheck()
 #if defined(SHUTDOWN_CONFIRMATION)
         while (1) {
           lcdRefreshWait();
-          lcd_clear();
+          lcdClear();
           POPUP_CONFIRMATION("Confirm Shutdown");
-          uint8_t evt = getEvent(false);
+          evt_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
           lcdRefresh();
           if (s_warning_result == true) {
@@ -2643,7 +2680,7 @@ uint32_t pwrCheck()
       else {
         lcdRefreshWait();
         unsigned index = pwrPressedDuration() / (PWR_PRESS_SHUTDOWN / 4);
-        lcd_clear();
+        lcdClear();
         lcd_bmp(76, 2, bmp_shutdown, index*60, 60);
         lcdRefresh();
         return e_power_press;

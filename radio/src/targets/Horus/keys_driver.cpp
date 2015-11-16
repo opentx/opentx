@@ -207,8 +207,6 @@ bool switchState(EnumKeys enuk)
 
 void keysInit()
 {
-  RCC_AHB1PeriphClockCmd(KEYS_RCC_AHB1Periph_GPIO, ENABLE);
-
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;

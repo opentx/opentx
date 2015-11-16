@@ -17,8 +17,7 @@
 /*-----------------------------------------------------------------------*/
 #if !defined(BOOT)
 static OS_MutexID ioMutex;
-volatile int mutexCheck = 0;
-
+unsigned int ioMutexReq = 0, ioMutexRel = 0;
 int ff_cre_syncobj (BYTE vol, _SYNC_t *mutex)
 {
   *mutex = ioMutex;
@@ -27,11 +26,13 @@ int ff_cre_syncobj (BYTE vol, _SYNC_t *mutex)
 
 int ff_req_grant (_SYNC_t mutex)
 {
+  ioMutexReq += 1;
   return CoEnterMutexSection(mutex) == E_OK;
 }
 
 void ff_rel_grant (_SYNC_t mutex)
 {
+  ioMutexRel += 1;
   CoLeaveMutexSection(mutex);
 }
 
@@ -87,7 +88,7 @@ DSTATUS disk_status (
   return(stat);
 }
 
-
+unsigned int sdReadRetries = 0;
 
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
@@ -99,56 +100,78 @@ DRESULT disk_read (
         UINT count              /* Number of sectors to read (1..255) */
 )
 {
-	SD_Error Status;
+  DRESULT res = RES_OK;
+  SD_Error Status;
 
-	// TRACE("disk_read %d %p %10d %d\n",drv,buff,sector,count);
+  // TRACE("disk_read %d %p %10d %d", drv, buff, sector, count);
 	
-	if (SD_Detect() != SD_PRESENT)
-		return(RES_NOTRDY);
+  if (SD_Detect() != SD_PRESENT) {
+    TRACE("SD_Detect() != SD_PRESENT");
+    return RES_NOTRDY;
+  }
 
-	if ((DWORD)buff & 3) // DMA Alignment failure, do single up to aligned buffer
-	{
-		DRESULT res = RES_OK;
-		DWORD scratch[BLOCK_SIZE / 4]; // Alignment assured, you'll need a sufficiently big stack
+  if ((DWORD)buff & 3) // DMA Alignment failure, do single up to aligned buffer
+  {
+    TRACE("DMA Alignment failure, align buffer");
 
-		while(count--)
-		{
-			res = disk_read(drv, (BYTE *)scratch, sector++, 1);
+    DWORD scratch[BLOCK_SIZE / 4]; // Alignment assured, you'll need a sufficiently big stack
 
-			if (res != RES_OK) {
-			  TRACE("disk_read() status=%d", res);
-			  break;
-			}
+    while(count--) {
+      res = disk_read(drv, (BYTE *)scratch, sector++, 1);
 
-			memcpy(buff, scratch, BLOCK_SIZE);
+      if (res != RES_OK) {
+        TRACE("disk_read() status=%d", res);
+        break;
+      }
 
-			buff += BLOCK_SIZE;
-		}
+      memcpy(buff, scratch, BLOCK_SIZE);
 
-		return(res);
-	}
+      buff += BLOCK_SIZE;
+    }
 
-  Status = SD_ReadMultiBlocksFIXED(buff, sector, BLOCK_SIZE, count); // 4GB Compliant
+    return res;
+  }
 
-	if (Status == SD_OK)
-	{
-		SDTransferState State;
+  for (int retry=0; retry<3; retry++) {
+    res = RES_OK;
 
-		Status = SD_WaitReadOperation(); // Check if the Transfer is finished
+    if (count == 1) {
+      Status = SD_ReadBlock(buff, sector, BLOCK_SIZE); // 4GB Compliant
+    }
+    else {
+      Status = SD_ReadMultiBlocks(buff, sector, BLOCK_SIZE, count); // 4GB Compliant
+    }
 
-		while((State = SD_GetStatus()) == SD_TRANSFER_BUSY); // BUSY, OK (DONE), ERROR (FAIL)
+#if defined(SD_DMA_MODE)
+    if (Status == SD_OK) {
+      SDTransferState State;
 
-		if ((State == SD_TRANSFER_ERROR) || (Status != SD_OK)) {
-		  TRACE("SD_ReadMultiBlocksFIXED() wait error (State=%d Status=%d)", State, Status);
-	          return(RES_ERROR);
-		}
-		else
-			return(RES_OK);
-	}
-	else {
-          TRACE("SD_ReadMultiBlocksFIXED() error (Status=%d)", Status);
-	  return(RES_ERROR);
-	}
+      Status = SD_WaitReadOperation(); // Check if the Transfer is finished
+
+      while ((State = SD_GetStatus()) == SD_TRANSFER_BUSY); // BUSY, OK (DONE), ERROR (FAIL)
+
+      if (State == SD_TRANSFER_ERROR)  {
+        TRACE("State=SD_TRANSFER_ERROR");
+        res = RES_ERROR;
+      }
+      else if (Status != SD_OK) {
+        TRACE("Status(WaitRead)=%d", Status);
+        res = RES_ERROR;
+      }
+    }
+    else {
+      TRACE("Status(ReadBlock)=%d", Status);
+      res = RES_ERROR;
+    }
+#endif
+
+    if (res == RES_OK)
+      break;
+
+    sdReadRetries += 1;
+  }
+
+  return res;
 }
 
 /*-----------------------------------------------------------------------*/
@@ -163,15 +186,15 @@ DRESULT disk_write (
 )
 {
 	SD_Error Status;
+	DRESULT res = RES_OK;
 
-	// TRACE("disk_write %d %p %10d %d\n",drv,buff,sector,count);
+	// TRACE("disk_write %d %p %10d %d", drv, buff, sector, count);
 	
 	if (SD_Detect() != SD_PRESENT)
 		return(RES_NOTRDY);
 
 	if ((DWORD)buff & 3) // DMA Alignment failure, do single up to aligned buffer
 	{
-		DRESULT res = RES_OK;
 		DWORD scratch[BLOCK_SIZE / 4]; // Alignment assured, you'll need a sufficiently big stack
 
 		while(count--)
@@ -181,7 +204,7 @@ DRESULT disk_write (
 			res = disk_write(drv, (BYTE *)scratch, sector++, 1);
 
 			if (res != RES_OK)
-				break;
+			  break;
 
 			buff += BLOCK_SIZE;
 		}
@@ -189,7 +212,12 @@ DRESULT disk_write (
 		return(res);
 	}
 
-  Status = SD_WriteMultiBlocksFIXED((uint8_t *)buff, sector, BLOCK_SIZE, count); // 4GB Compliant
+	if (count == 1) {
+	  Status = SD_WriteBlock((uint8_t *)buff, sector*BLOCK_SIZE, BLOCK_SIZE); // 4GB Compliant
+	}
+	else {
+	  Status = SD_WriteMultiBlocks((uint8_t *)buff, sector, BLOCK_SIZE, count); // 4GB Compliant
+	}
 
 	if (Status == SD_OK)
 	{
@@ -200,12 +228,14 @@ DRESULT disk_write (
 		while((State = SD_GetStatus()) == SD_TRANSFER_BUSY); // BUSY, OK (DONE), ERROR (FAIL)
 
 		if ((State == SD_TRANSFER_ERROR) || (Status != SD_OK))
-			return(RES_ERROR);
-		else
-			return(RES_OK);
+		  res = RES_ERROR;
 	}
-	else
-		return(RES_ERROR);
+	else {
+		res = RES_ERROR;
+	}
+
+	// TRACE("result=%d", res);
+	return res;
 }
 #endif /* _READONLY */
 
@@ -221,7 +251,25 @@ DRESULT disk_ioctl (
         void *buff              /* Buffer to send/receive control data */
 )
 {
-        return RES_OK;
+  DRESULT res;
+
+  if (drv) return RES_PARERR;
+
+  res = RES_ERROR;
+
+  switch (ctrl) {
+    case GET_SECTOR_COUNT : /* Get number of sectors on the disk (DWORD) */
+      *(DWORD*)buff = SDCardInfo.CardCapacity / SDCardInfo.CardBlockSize;
+      res = RES_OK;
+      break;
+
+    case GET_SECTOR_SIZE :  /* Get R/W sector size (WORD) */
+      *(WORD*)buff = SDCardInfo.CardBlockSize;
+      res = RES_OK;
+      break;
+  }
+
+  return res;
 }
 
 // TODO everything here should not be in the driver layer ...
@@ -231,15 +279,6 @@ FATFS g_FATFS_Obj;
 FIL g_telemetryFile = {0};
 #endif
 
-#if defined(BOOT)
-void sdInit(void)
-{
-  if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
-    f_chdir("/");
-  }
-}
-#else
-// TODO shouldn't be there!
 void sdInit(void)
 {
   ioMutex = CoCreateMutex();
@@ -248,9 +287,7 @@ void sdInit(void)
     return;
   }
 
-  TRACE("AVANT F_MOUNT");
   if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
-    TRACE("APRES F_MOUNT");
     // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
     sdGetFreeSectors();
 
@@ -278,7 +315,6 @@ void sdDone()
     f_mount(NULL, "", 0); // unmount SD
   }
 }
-#endif
 
 uint32_t sdMounted()
 {

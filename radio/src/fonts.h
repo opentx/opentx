@@ -37,6 +37,13 @@
 #ifndef fonts_h
 #define fonts_h
 
+#if defined(COLORLCD)
+
+extern const uint16_t *fontspecsTable[16];
+extern const pm_uchar *fontsTable[16];
+
+#else
+
 extern const pm_uchar font_5x7[];
 extern const pm_uchar font_10x14[];
 
@@ -53,6 +60,8 @@ extern const pm_uchar font_22x38_num[];
 extern const pm_uchar font_5x7_extra[];
 extern const pm_uchar font_10x14_extra[];
 extern const pm_uchar font_4x6_extra[];
+#endif
+
 #endif
 
 #endif

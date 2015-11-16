@@ -41,7 +41,7 @@ FIL g_oLogFile = {0};
 const pm_char * g_logError = NULL;
 uint8_t logDelay;
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   #define get2PosState(sw) (switchState(SW_ ## sw ## 0) ? -1 : 1)
 #else
   #define get2PosState(sw) (switchState(SW_ ## sw) ? -1 : 1)
@@ -49,11 +49,10 @@ uint8_t logDelay;
 
 #define get3PosState(sw) (switchState(SW_ ## sw ## 0) ? -1 : (switchState(SW_ ## sw ## 2) ? 1 : 0))
 
-const pm_char *openLogs()
+const pm_char * openLogs()
 {
   // Determine and set log file filename
   FRESULT result;
-  DIR folder;
   char filename[34]; // /LOGS/modelnamexxx-2013-01-01.log
 
   if (!sdMounted())
@@ -64,12 +63,9 @@ const pm_char *openLogs()
 
   // check and create folder here
   strcpy_P(filename, STR_LOGS_PATH);
-  result = f_opendir(&folder, filename);
-  if (result != FR_OK) {
-    if (result == FR_NO_PATH)
-      result = f_mkdir(filename);
-    if (result != FR_OK)
-      return SDCARD_ERROR(result);
+  const char * error = sdCheckAndCreateDirectory(filename);
+  if (error) {
+    return error;
   }
 
   filename[sizeof(LOGS_PATH)-1] = '/';
@@ -330,7 +326,14 @@ void writeLogs()
         f_printf(&g_oLogFile, "%d,", calibratedStick[i]);
       }
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+      int result = f_printf(&g_oLogFile, "%d,%d,%d,%d\n",
+          get3PosState(SA),
+          get3PosState(SB),
+          // get3PosState(SC),
+          get2PosState(SE),
+          get3PosState(SF));
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
       int result = f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d\n",
           get3PosState(SA),
           get3PosState(SB),

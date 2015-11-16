@@ -50,5 +50,7 @@ extern TaskStack<CLI_STACK_SIZE> cliStack;
 #endif
 
 void cliStart();
+void cliStackPaint();
+uint32_t cliStackFree();
 
 #endif // _CLI_H_

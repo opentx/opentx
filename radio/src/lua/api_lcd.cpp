@@ -60,7 +60,7 @@ Erases all contents of LCD.
 */
 static int luaLcdClear(lua_State *L)
 {
-  if (luaLcdAllowed) lcd_clear();
+  if (luaLcdAllowed) lcdClear();
   return 0;
 }
 
@@ -109,7 +109,7 @@ static int luaLcdDrawLine(lua_State *L)
   int y2 = luaL_checkinteger(L, 4);
   int pat = luaL_checkinteger(L, 5);
   int flags = luaL_checkinteger(L, 6);
-  lcd_line(x1, y1, x2, y2, pat, flags);
+  lcdDrawLine(x1, y1, x2, y2, pat, flags);
   return 0;
 }
 
@@ -126,7 +126,7 @@ static int luaLcdDrawText(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   const char * s = luaL_checkstring(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
-  lcd_putsAtt(x, y, s, att);
+  lcdDrawText(x, y, s, att);
   return 0;
 }
 
@@ -137,7 +137,11 @@ static int luaLcdDrawTimer(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   int seconds = luaL_checkinteger(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
+#if defined(PCBFLAMENCO)
+  putsTimer(x, y, seconds, att|LEFT);
+#else
   putsTimer(x, y, seconds, att|LEFT, att);
+#endif
   return 0;
 }
 
@@ -204,6 +208,7 @@ static int luaLcdDrawSource(lua_State *L)
   return 0;
 }
 
+#if !defined(COLORLCD)
 static int luaLcdDrawPixmap(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -217,6 +222,7 @@ static int luaLcdDrawPixmap(lua_State *L)
   }
   return 0;
 }
+#endif
 
 static int luaLcdDrawRectangle(lua_State *L)
 {
@@ -226,7 +232,7 @@ static int luaLcdDrawRectangle(lua_State *L)
   int w = luaL_checkinteger(L, 3);
   int h = luaL_checkinteger(L, 4);
   unsigned int flags = luaL_optunsigned(L, 5, 0);
-  lcd_rect(x, y, w, h, 0xff, flags);
+  lcdDrawRect(x, y, w, h, 0xff, flags);
   return 0;
 }
 
@@ -252,7 +258,7 @@ static int luaLcdDrawGauge(lua_State *L)
   int num = luaL_checkinteger(L, 5);
   int den = luaL_checkinteger(L, 6);
   // int flags = luaL_checkinteger(L, 7);
-  lcd_rect(x, y, w, h);
+  lcdDrawRect(x, y, w, h);
   uint8_t len = limit((uint8_t)1, uint8_t(w*num/den), uint8_t(w));
   for (int i=1; i<h-1; i++) {
     lcd_hline(x+1, y+i, len);
@@ -260,6 +266,7 @@ static int luaLcdDrawGauge(lua_State *L)
   return 0;
 }
 
+#if !defined(COLORLCD)
 static int luaLcdDrawScreenTitle(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -273,6 +280,7 @@ static int luaLcdDrawScreenTitle(lua_State *L)
 
   return 0;
 }
+#endif
 
 static int luaLcdDrawCombobox(lua_State *L)
 {
@@ -289,30 +297,30 @@ static int luaLcdDrawCombobox(lua_State *L)
   }
   if (flags & BLINK) {
     drawFilledRect(x, y, w-9, count*9+2, SOLID, ERASE);
-    lcd_rect(x, y, w-9, count*9+2);
+    lcdDrawRect(x, y, w-9, count*9+2);
     for (int i=0; i<count; i++) {
       lua_rawgeti(L, 4, i+1);
       const char * item = luaL_checkstring(L, -1);
-      lcd_putsAtt(x+2, y+2+9*i, item, 0);
+      lcdDrawText(x+2, y+2+9*i, item, 0);
     }
     drawFilledRect(x+1, y+1+9*idx, w-11, 9);
     drawFilledRect(x+w-10, y, 10, 11, SOLID, ERASE);
-    lcd_rect(x+w-10, y, 10, 11);
+    lcdDrawRect(x+w-10, y, 10, 11);
   }
   else if (flags & INVERS) {
     drawFilledRect(x, y, w, 11);
     drawFilledRect(x+w-9, y+1, 8, 9, SOLID, ERASE);
     lua_rawgeti(L, 4, idx+1);
     const char * item = luaL_checkstring(L, -1);
-    lcd_putsAtt(x+2, y+2, item, INVERS);
+    lcdDrawText(x+2, y+2, item, INVERS);
   }
   else {
     drawFilledRect(x, y, w, 11, SOLID, ERASE);
-    lcd_rect(x, y, w, 11);
+    lcdDrawRect(x, y, w, 11);
     drawFilledRect(x+w-10, y+1, 9, 9, SOLID);
     lua_rawgeti(L, 4, idx+1);
     const char * item = luaL_checkstring(L, -1);
-    lcd_putsAtt(x+2, y+2, item, 0);
+    lcdDrawText(x+2, y+2, item, 0);
   }
 
   lcd_hline(x+w-8, y+3, 6);

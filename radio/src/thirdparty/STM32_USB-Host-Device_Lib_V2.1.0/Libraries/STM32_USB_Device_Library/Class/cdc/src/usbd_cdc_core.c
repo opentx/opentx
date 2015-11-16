@@ -64,7 +64,8 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include "usbd_cdc_core.h"
+#include "../inc/usbd_cdc_core.h"
+
 #include "usbd_desc.h"
 #include "usbd_req.h"
 

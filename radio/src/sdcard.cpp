@@ -40,7 +40,89 @@
 
 #define LIST_NONE_SD_FILE  1
 
-bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, const char *selection, uint8_t flags=0)
+const char * sdCheckAndCreateDirectory(const char * path)
+{
+  DIR archiveFolder;
+
+  FRESULT result = f_opendir(&archiveFolder, path);
+  if (result != FR_OK) {
+    if (result == FR_NO_PATH)
+      result = f_mkdir(path);
+    if (result != FR_OK)
+      return SDCARD_ERROR(result);
+  }
+  else {
+    f_closedir(&archiveFolder);
+  }
+
+  return NULL;
+}
+
+bool isFileAvailable(const char * path)
+{
+  return f_stat(path, 0) == FR_OK;
+}
+
+bool isFileAvailable(const char * filename, const char * directory)
+{
+  char path[256];
+  char * pos = strAppend(path, directory);
+  *pos = '/';
+  strAppend(pos+1, filename);
+  return isFileAvailable(path);
+}
+
+#define LEN_FILE_EXTENSION 4
+char * getFileExtension(char * filename, int size=0)
+{
+  int len = strlen(filename);
+  if (size != 0 && size < len) {
+    len = size;
+  }
+  for (int i=len; i>=len-LEN_FILE_EXTENSION; --i) {
+    if (filename[i] == '.') {
+      return &filename[i];
+    }
+  }
+  return NULL;
+}
+
+char * getFileIndex(char * filename, unsigned int & value)
+{
+  value = 0;
+  char * pos = getFileExtension(filename);
+  if (!pos || pos == filename)
+    return NULL;
+  while (pos > filename) {
+    pos--;
+    char c = *pos;
+    if (c >= '0' && c <= '9') {
+      value = (value * 10) + (c - '\0');
+    }
+    else {
+      return pos+1;
+    }
+  }
+  return filename;
+}
+
+bool findNextFileIndex(char * filename, const char * directory)
+{
+  unsigned int index;
+  char * pos = getFileIndex(filename, index);
+  char extension[LEN_FILE_EXTENSION+1];
+  strncpy(extension, getFileExtension(filename), sizeof(extension));
+  do {
+    pos = strAppendNumber(pos, ++index);
+    strAppend(pos, extension);
+    if (!isFileAvailable(filename, directory)) {
+      return true;
+    }
+  } while (index < 99);
+  return false;
+}
+
+bool sdListFiles(const char *path, const char *extension, const uint8_t maxlen, const char *selection, uint8_t flags=0)
 {
   FILINFO fno;
   DIR dir;
@@ -189,29 +271,20 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
 }
 
 #if defined(CPUARM) && defined(SDCARD)
-const char *fileCopy(const char *filename, const char *srcDir, const char *destDir)
+const char * sdCopyFile(const char * srcPath, const char * destPath)
 {
   FIL srcFile;
-  FIL dstFile;
+  FIL destFile;
   char buf[256];
   UINT read = sizeof(buf);
   UINT written = sizeof(buf);
 
-  char path[2*CLIPBOARD_PATH_LEN+1];
-  char *tmp = strAppend(path, srcDir, CLIPBOARD_PATH_LEN);
-  *tmp++ = '/';
-  strAppend(tmp, filename, CLIPBOARD_PATH_LEN);
-
-  FRESULT result = f_open(&srcFile, path, FA_OPEN_EXISTING | FA_READ);
+  FRESULT result = f_open(&srcFile, srcPath, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
     return SDCARD_ERROR(result);
   }
 
-  tmp = strAppend(path, destDir, CLIPBOARD_PATH_LEN);
-  *tmp++ = '/';
-  strAppend(tmp, filename, CLIPBOARD_PATH_LEN);
-
-  result = f_open(&dstFile, path, FA_CREATE_ALWAYS | FA_WRITE);
+  result = f_open(&destFile, destPath, FA_CREATE_ALWAYS | FA_WRITE);
   if (result != FR_OK) {
     f_close(&srcFile);
     return SDCARD_ERROR(result);
@@ -220,11 +293,11 @@ const char *fileCopy(const char *filename, const char *srcDir, const char *destD
   while (result==FR_OK && read==sizeof(buf) && written==sizeof(buf)) {
     result = f_read(&srcFile, buf, sizeof(buf), &read);
     if (result == FR_OK) {
-      result = f_write(&dstFile, buf, read, &written);
+      result = f_write(&destFile, buf, read, &written);
     }
   }
 
-  f_close(&dstFile);
+  f_close(&destFile);
   f_close(&srcFile);
 
   if (result != FR_OK) {
@@ -233,7 +306,22 @@ const char *fileCopy(const char *filename, const char *srcDir, const char *destD
 
   return NULL;
 }
-#endif // #if defined(PCBTARANIS)
+
+const char * sdCopyFile(const char * srcFilename, const char * srcDir, const char * destFilename, const char * destDir)
+{
+  char srcPath[2*CLIPBOARD_PATH_LEN+1];
+  char * tmp = strAppend(srcPath, srcDir, CLIPBOARD_PATH_LEN);
+  *tmp++ = '/';
+  strAppend(tmp, srcFilename, CLIPBOARD_PATH_LEN);
+
+  char destPath[2*CLIPBOARD_PATH_LEN+1];
+  tmp = strAppend(destPath, destDir, CLIPBOARD_PATH_LEN);
+  *tmp++ = '/';
+  strAppend(tmp, destFilename, CLIPBOARD_PATH_LEN);
+
+  return sdCopyFile(srcPath, destPath);
+}
+#endif // defined(CPUARM) && defined(SDCARD)
 
 
 #if !defined(SIMU) || defined(SIMU_DISKIO)

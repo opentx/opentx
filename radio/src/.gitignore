@@ -19,6 +19,7 @@
 /allsimusrc.cpp
 /BMP
 /traces
+/RADIO
 /MODELS
 /FIRMWARES
 /EEPROMS
@@ -27,4 +28,5 @@
 /gtests.d
 /lua_exports*
 /lua_fields*
+.directory
 

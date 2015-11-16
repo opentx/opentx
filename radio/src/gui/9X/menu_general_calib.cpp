@@ -75,7 +75,7 @@ void menuCommonCalib(uint8_t event)
 
     case 1:
       // SET MIDPOINT
-      lcd_putsAtt(0*FW, MENU_HEADER_HEIGHT+FH, STR_SETMIDPOINT, INVERS);
+      lcdDrawText(0*FW, MENU_HEADER_HEIGHT+FH, STR_SETMIDPOINT, INVERS);
       lcd_putsLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
@@ -88,7 +88,7 @@ void menuCommonCalib(uint8_t event)
     case 2:
       // MOVE STICKS/POTS
       STICK_SCROLL_DISABLE();
-      lcd_putsAtt(0*FW, MENU_HEADER_HEIGHT+FH, STR_MOVESTICKSPOTS, INVERS);
+      lcdDrawText(0*FW, MENU_HEADER_HEIGHT+FH, STR_MOVESTICKSPOTS, INVERS);
       lcd_putsLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
@@ -104,7 +104,7 @@ void menuCommonCalib(uint8_t event)
 
     case 3:
       g_eeGeneral.chkSum = evalChkSum();
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
       reusableBuffer.calib.state = 4;
       break;
 

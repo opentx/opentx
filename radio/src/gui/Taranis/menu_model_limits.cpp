@@ -136,7 +136,7 @@ void menuModelLimits(uint8_t event)
     s_warning_result = 0;
     LimitData *ld = limitAddress(sub);
     ld->revert = !ld->revert;
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
   }
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
@@ -146,7 +146,7 @@ void menuModelLimits(uint8_t event)
     if (k==NUM_CHNOUT) {
       // last line available - add the "copy trim menu" line
       uint8_t attr = (sub==NUM_CHNOUT) ? INVERS : 0;
-      lcd_putsAtt(CENTER_OFS, y, STR_TRIMS2OFFSETS, s_noHi ? 0 : attr);
+      lcdDrawText(CENTER_OFS, y, STR_TRIMS2OFFSETS, s_noHi ? 0 : attr);
       if (attr) {
         s_editMode = 0;
         if (event==EVT_KEY_LONG(KEY_ENTER)) {
@@ -229,9 +229,9 @@ void menuModelLimits(uint8_t event)
         {
           uint8_t revert = ld->revert;
 #if defined(PPM_CENTER_ADJUSTABLE)
-          lcd_putcAtt(LIMITS_REVERT_POS, y, revert ? 127 : 126, attr);
+          lcdDrawChar(LIMITS_REVERT_POS, y, revert ? 127 : 126, attr);
 #else
-          lcd_putsiAtt(LIMITS_REVERT_POS, y, STR_MMMINV, revert, attr);
+          lcdDrawTextAtIndex(LIMITS_REVERT_POS, y, STR_MMMINV, revert, attr);
 #endif
           if (active) {
             uint8_t revert_new = checkIncDecModel(event, revert, 0, 1);
@@ -269,7 +269,7 @@ void menuModelLimits(uint8_t event)
 
 #if defined(PPM_LIMITS_SYMETRICAL)
         case ITEM_LIMITS_SYMETRICAL:
-          lcd_putcAtt(LCD_W-FW-MENUS_SCROLLBAR_WIDTH, y, ld->symetrical ? '=' : '\306', attr);
+          lcdDrawChar(LCD_W-FW-MENUS_SCROLLBAR_WIDTH, y, ld->symetrical ? '=' : '\306', attr);
           if (active) {
             CHECK_INCDEC_MODELVAR_ZERO(event, ld->symetrical, 1);
           }

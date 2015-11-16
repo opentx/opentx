@@ -97,7 +97,7 @@ int zchar2str(char *dest, const char *src, int size)
 #endif
 
 #if defined(CPUARM)
-unsigned int effectiveLen(const char *str, unsigned int size)
+unsigned int effectiveLen(const char * str, unsigned int size)
 {
   while (size > 0) {
     if (str[size-1] != ' ')
@@ -107,7 +107,7 @@ unsigned int effectiveLen(const char *str, unsigned int size)
   return 0;
 }
 
-bool zexist(const char *str, uint8_t size)
+bool zexist(const char * str, uint8_t size)
 {
   for (int i=0; i<size; i++) {
     if (str[i] != 0)
@@ -116,7 +116,7 @@ bool zexist(const char *str, uint8_t size)
   return false;
 }
 
-uint8_t zlen(const char *str, uint8_t size)
+uint8_t zlen(const char * str, uint8_t size)
 {
   while (size > 0) {
     if (str[size-1] != 0)
@@ -161,8 +161,7 @@ char *strcat_zchar(char * dest, const char * name, uint8_t size, const char *def
 #endif
 #endif
 
-#if defined(COLORLCD)
-char *strAppendDigits(char *dest, int value)
+char * strAppendNumber(char * dest, unsigned int value)
 {
   div_t qr = div(value, 10);
   *dest++ = '0' + qr.quot;
@@ -170,10 +169,9 @@ char *strAppendDigits(char *dest, int value)
   *dest = '\0';
   return dest;
 }
-#endif
 
 #if defined(CPUARM) || defined(SDCARD)
-char *strAppend(char *dest, const char *source, int len)
+char * strAppend(char * dest, const char * source, int len)
 {
   while ((*dest++ = *source++)) {
     if (--len == 0) {
@@ -184,7 +182,7 @@ char *strAppend(char *dest, const char *source, int len)
   return dest - 1;
 }
 
-char *strSetCursor(char *dest, int position)
+char * strSetCursor(char * dest, int position)
 {
   *dest++ = 0x1F;
   *dest++ = position;
@@ -192,7 +190,7 @@ char *strSetCursor(char *dest, int position)
   return dest;
 }
 
-char *strAppendFilename(char *dest, const char *filename, const int size)
+char * strAppendFilename(char *dest, const char *filename, const int size)
 {
   memset(dest, 0, size);
   for (int i=0; i<size; i++) {
@@ -202,18 +200,6 @@ char *strAppendFilename(char *dest, const char *filename, const int size)
     *dest++ = c;
   }
   return dest;
-}
-
-#define LEN_FILE_EXTENSION 4
-char *getFileExtension(char *filename, int size)
-{
-  int len = min<int>(size, strlen(filename));
-  for (int i=len; i>=len-LEN_FILE_EXTENSION; --i) {
-    if (filename[i] == '.') {
-      return &filename[i];
-    }
-  }
-  return NULL;
 }
 
 #if defined(RTCLOCK)

@@ -50,7 +50,7 @@ void menuStatisticsView(uint8_t event)
 #if defined(CPUARM)
     case EVT_KEY_LONG(KEY_MENU):
       g_eeGeneral.globalTimer = 0;
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
       sessionTimer = 0;
       break;
 #endif
@@ -110,7 +110,7 @@ void menuStatisticsDebug(uint8_t event)
     case EVT_KEY_LONG(KEY_ENTER):
       g_eeGeneral.mAhUsed = 0;
       g_eeGeneral.globalTimer = 0;
-      eeDirty(EE_GENERAL);
+      storageDirty(EE_GENERAL);
 #if defined(PCBSKY9X)
       Current_used = 0;
 #endif
@@ -174,13 +174,13 @@ void menuStatisticsDebug(uint8_t event)
   lcd_putsLeft(MENU_DEBUG_Y_COPROC, STR_COPROC_TEMP);
 
   if (Coproc_read==0) {
-    lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, PSTR("Co Proc NACK"),INVERS);
+    lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, PSTR("Co Proc NACK"),INVERS);
   }
   else if (Coproc_read==0x81) {
-    lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, PSTR("Inst.TinyApp"),INVERS);
+    lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, PSTR("Inst.TinyApp"),INVERS);
   }
   else if (Coproc_read<3) {
-    lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, PSTR("Upgr.TinyApp"),INVERS);
+    lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, PSTR("Upgr.TinyApp"),INVERS);
   }
   else {
     putsValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, Coproc_temp, UNIT_TEMPERATURE, LEFT);

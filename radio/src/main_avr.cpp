@@ -105,7 +105,7 @@ void perMain()
     if (theFile.isWriting())
       theFile.nextWriteStep();
     else if (TIME_TO_WRITE())
-      eeCheck(false);
+      storageCheck(false);
   }
 
 #if defined(SDCARD)
@@ -113,11 +113,11 @@ void perMain()
   writeLogs();
 #endif
 
-  uint8_t evt = getEvent();
+  evt_t evt = getEvent();
   evt = checkTrim(evt);
 
   if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
-  checkBacklight();
+  doLoopCommonActions();
 
 #if defined(FRSKY) || defined(MAVLINK)
   telemetryWakeup();
@@ -132,37 +132,36 @@ void perMain()
   const char *warn = s_warning;
   uint8_t menu = s_menu_count;
 
-  if(IS_LCD_REFRESH_ALLOWED()){//No need to redraw until lcdRefresh_ST7920(0) below completely refreshes the display.
-      lcd_clear();
-      if (menuEvent) {
-        m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
-        m_posHorz = 0;
-        evt = menuEvent;
-        menuEvent = 0;
-        AUDIO_MENUS();
-      }
-      g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+  if (IS_LCD_REFRESH_ALLOWED()) { // No need to redraw until lcdRefresh_ST7920(0) below completely refreshes the display.
+    lcdClear();
+    if (menuEvent) {
+      m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
+      m_posHorz = 0;
+      evt = menuEvent;
+      menuEvent = 0;
+      AUDIO_MENUS();
+    }
+    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
 
-
-      if (warn) DISPLAY_WARNING(evt);
+    if (warn) DISPLAY_WARNING(evt);
 #if defined(NAVIGATION_MENUS)
-      if (menu) {
-        const char * result = displayMenu(evt);
-        if (result) {
-          menuHandler(result);
-          putEvent(EVT_MENU_UP);
-        }
+    if (menu) {
+      const char * result = displayMenu(evt);
+      if (result) {
+        menuHandler(result);
       }
+    }
 #endif
-      drawStatusLine();
+    drawStatusLine();
   }
+  
 #if defined(LCD_ST7920)
-  lcdstate=lcdRefresh_ST7920(0);
+  lcdstate = lcdRefresh_ST7920(0);
 #else
   lcdRefresh();
 #endif
 
-#endif
+#endif // defined(GUI)
 
   if (SLAVE_MODE()) {
     JACK_PPM_OUT();

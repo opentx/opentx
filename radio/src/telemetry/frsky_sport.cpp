@@ -294,7 +294,7 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t instance)
     telemetrySensor.init(id);
   }
 
-  eeDirty(EE_MODEL);
+  storageDirty(EE_MODEL);
 }
 
 #if defined(PCBTARANIS)

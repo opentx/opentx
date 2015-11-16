@@ -46,8 +46,6 @@ void uart3Setup(unsigned int baudrate)
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  RCC_AHB1PeriphClockCmd(SERIAL_RCC_AHB1Periph_GPIO, ENABLE);
-
   GPIO_PinAFConfig(SERIAL_GPIO, SERIAL_GPIO_PinSource_RX, SERIAL_GPIO_AF);
   GPIO_PinAFConfig(SERIAL_GPIO, SERIAL_GPIO_PinSource_TX, SERIAL_GPIO_AF);
 
@@ -57,8 +55,6 @@ void uart3Setup(unsigned int baudrate)
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(SERIAL_GPIO, &GPIO_InitStructure);
-  
-  RCC_APB1PeriphClockCmd(SERIAL_RCC_APB1Periph_USART, ENABLE);
   
   USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;

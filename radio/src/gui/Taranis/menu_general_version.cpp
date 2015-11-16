@@ -42,24 +42,19 @@ void backupEeprom()
   uint8_t buffer[1024];
   FIL file;
 
-  lcd_clear();
-  displayProgressBar(STR_WRITING);
+  lcdClear();
+  drawProgressBar(STR_WRITING);
 
   // reset unexpectedShutdown to prevent warning when user restores EEPROM backup
   g_eeGeneral.unexpectedShutdown = 0;
-  eeDirty(EE_GENERAL);
-  eeCheck(true);
+  storageDirty(EE_GENERAL);
+  storageCheck(true);
 
   // create the directory if needed...
-  DIR folder;
-  FRESULT result = f_opendir(&folder, EEPROMS_PATH);
-  if (result != FR_OK) {
-    if (result == FR_NO_PATH)
-      result = f_mkdir(EEPROMS_PATH);
-    if (result != FR_OK) {
-      POPUP_WARNING(SDCARD_ERROR(result));
-      return;
-    }
+  const char * error = sdCheckAndCreateDirectory(EEPROMS_PATH);
+  if (error) {
+    POPUP_WARNING(error);
+    return;
   }
 
   // prepare the filename...
@@ -82,16 +77,16 @@ void backupEeprom()
 
   //set back unexpectedShutdown
   g_eeGeneral.unexpectedShutdown = 1;
-  eeDirty(EE_GENERAL);
-  eeCheck(true);
+  storageDirty(EE_GENERAL);
+  storageCheck(true);
 }
 
 void menuGeneralVersion(uint8_t event)
 {
   if (s_warning_result) {
     s_warning_result = 0;
-    displayPopup(STR_EEPROMFORMATTING);
-    eeErase(false);
+    displayPopup(STR_STORAGE_FORMAT);
+    storageEraseAll(false);
 #if !defined(SIMU)
     NVIC_SystemReset();
 #else

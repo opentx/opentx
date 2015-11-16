@@ -201,8 +201,8 @@ bool isSensorAvailable(int sensor)
     return isTelemetryFieldAvailable(abs(sensor) - 1);
 }
 
-#define SENSOR_2ND_COLUMN (12*FW)
-#define SENSOR_3RD_COLUMN (18*FW)
+#define SENSOR_2ND_COLUMN      (12*FW)
+#define SENSOR_3RD_COLUMN      (18*FW)
 
 #define SENSOR_UNIT_ROWS       ((sensor->type == TELEM_TYPE_CALCULATED && (sensor->formula == TELEM_FORMULA_DIST)) || sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSOR_PREC_ROWS       (sensor->isPrecConfigurable() && sensor->unit != UNIT_FAHRENHEIT  ? (uint8_t)0 : HIDDEN_ROW)
@@ -217,7 +217,7 @@ bool isSensorAvailable(int sensor)
 
 void menuModelSensor(uint8_t event)
 {
-  TelemetrySensor * sensor = & g_model.telemetrySensors[s_currIdx];
+  TelemetrySensor * sensor = &g_model.telemetrySensors[s_currIdx];
 
   SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, { 0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, SENSOR_AUTOOFFSET_ROWS, SENSOR_ONLYPOS_ROWS, SENSOR_FILTER_ROWS, SENSOR_PERSISTENT_ROWS, 0 });
   lcd_outdezAtt(PSIZE(TR_MENUSENSOR)*FW+1, 0, s_currIdx+1, INVERS|LEFT);
@@ -298,7 +298,7 @@ void menuModelSensor(uint8_t event)
       case SENSOR_FIELD_UNIT:
         lcd_putsLeft(y, STR_UNIT);
         // TODO flash saving with selectMenuItem where I copied those 2 lines?
-        lcd_putsiAtt(SENSOR_2ND_COLUMN, y, STR_VTELEMUNIT, sensor->unit, attr);
+        lcdDrawTextAtIndex(SENSOR_2ND_COLUMN, y, STR_VTELEMUNIT, sensor->unit, attr);
         if (attr) {
           CHECK_INCDEC_MODELVAR_ZERO(event, sensor->unit, UNIT_MAX);
           if (checkIncDec_Ret) {
@@ -363,7 +363,7 @@ void menuModelSensor(uint8_t event)
             lcd_putsLeft(y, STR_RATIO);
             if (attr) sensor->custom.ratio = checkIncDec(event, sensor->custom.ratio, 0, 30000, EE_MODEL|NO_INCDEC_MARKS|INCDEC_REP10);
             if (sensor->custom.ratio == 0)
-              lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
+              lcdDrawChar(SENSOR_2ND_COLUMN, y, '-', attr);
             else
               lcd_outdezAtt(SENSOR_2ND_COLUMN, y, sensor->custom.ratio, LEFT|attr|PREC1);
             break;
@@ -412,7 +412,7 @@ void menuModelSensor(uint8_t event)
           source = checkIncDec(event, source, -MAX_SENSORS, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
         }
         if (source < 0) {
-          lcd_putcAtt(SENSOR_2ND_COLUMN, y, '-', attr);
+          lcdDrawChar(SENSOR_2ND_COLUMN, y, '-', attr);
           putsMixerSource(lcdNextPos, y, MIXSRC_FIRST_TELEM+3*(-1-source), attr);
         }
         else {
@@ -474,7 +474,7 @@ void onSensorMenu(const char *result)
         TelemetryItem & sourceItem = telemetryItems[index];
         TelemetryItem & newItem = telemetryItems[newIndex];
         newItem = sourceItem;
-        eeDirty(EE_MODEL);
+        storageDirty(EE_MODEL);
       } 
       else {
         POPUP_WARNING(STR_TELEMETRYFULL);
@@ -490,7 +490,7 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
   int screenIndex = TELEMETRY_CURRENT_SCREEN(sub);
 
   if (result == STR_UPDATE_LIST) {
-    if (!listSdFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), NULL)) {
+    if (!sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), NULL)) {
       POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
       s_menu_flags = 0;
     }
@@ -498,7 +498,7 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
   else {
     // The user choosed a file in the list
     memcpy(g_model.frsky.screens[screenIndex].script.file, result, sizeof(g_model.frsky.screens[screenIndex].script.file));
-    eeDirty(EE_MODEL);
+    storageDirty(EE_MODEL);
     LUA_LOAD_MODEL_SCRIPTS();
   }
 }
@@ -513,7 +513,7 @@ void menuModelTelemetry(uint8_t event)
     }
   }
   
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), CASE_CPUARM(TELEMETRY_SCREEN_ROWS(2)) CASE_CPUARM(TELEMETRY_SCREEN_ROWS(3)) });
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), TELEMETRY_SCREEN_ROWS(2), TELEMETRY_SCREEN_ROWS(3) });
 
   int sub = m_posVert;
 
@@ -531,8 +531,8 @@ void menuModelTelemetry(uint8_t event)
     if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+MAX_SENSORS) {
       int index = k-ITEM_TELEMETRY_SENSOR1;
       lcd_outdezAtt(INDENT_WIDTH, y, index+1, LEFT|attr);
-      lcd_putcAtt(lcdLastPos, y, ':', attr);
-      lcd_putsnAtt(3*FW, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
+      lcdDrawChar(lcdLastPos, y, ':', attr);
+      lcdDrawTextWithLen(3*FW, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
       if (telemetryItems[index].isFresh()) {
         lcd_putc(10*FW, y, '*');
       }
@@ -545,7 +545,7 @@ void menuModelTelemetry(uint8_t event)
         if (isOld) lcd_putc(lcdLastPos, y, ']');
       }
       else {
-        lcd_putsAtt(TELEM_COL2, y, "---", 0); // TODO shortcut
+        lcdDrawText(TELEM_COL2, y, "---", 0); // TODO shortcut
       }
       TelemetrySensor * sensor = & g_model.telemetrySensors[index];
       if (sensor->type == TELEM_TYPE_CUSTOM && !g_model.ignoreSensorIds) {
@@ -575,14 +575,14 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_SENSORS_LABEL:
         lcd_putsLeft(y, STR_TELEMETRY_SENSORS);
-        lcd_putsAtt(TELEM_COL2, y, STR_VALUE, 0);
+        lcdDrawText(TELEM_COL2, y, STR_VALUE, 0);
         if (!g_model.ignoreSensorIds) {
-          lcd_putsAtt(TELEM_COL3, y, STR_ID, 0);
+          lcdDrawText(TELEM_COL3, y, STR_ID, 0);
         }
         break;
 
       case ITEM_TELEMETRY_DISCOVER_SENSORS:
-        lcd_putsAtt(0, y, allowNewSensors ? STR_STOP_DISCOVER_SENSORS : STR_DISCOVER_SENSORS, attr);
+        lcdDrawText(0, y, allowNewSensors ? STR_STOP_DISCOVER_SENSORS : STR_DISCOVER_SENSORS, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
           allowNewSensors = !allowNewSensors;
@@ -590,7 +590,7 @@ void menuModelTelemetry(uint8_t event)
         break;
 
       case ITEM_TELEMETRY_NEW_SENSOR:
-        lcd_putsAtt(0, y, STR_TELEMETRY_NEWSENSOR, attr);
+        lcdDrawText(0, y, STR_TELEMETRY_NEWSENSOR, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
           int res = availableTelemetryIndex();
@@ -605,7 +605,7 @@ void menuModelTelemetry(uint8_t event)
         break;
 
       case ITEM_TELEMETRY_DELETE_ALL_SENSORS:
-        lcd_putsAtt(0, y, STR_DELETE_ALL_SENSORS, attr);
+        lcdDrawText(0, y, STR_DELETE_ALL_SENSORS, attr);
         if (attr)
           s_editMode = 0;
         if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
@@ -666,7 +666,7 @@ void menuModelTelemetry(uint8_t event)
         lcd_putsLeft(y, STR_CENTER);
         lcd_outdezAtt(TELEM_COL2, y, -5+g_model.frsky.varioCenterMin, (m_posHorz==0 ? attr : 0)|PREC1|LEFT);
         lcd_outdezAtt(TELEM_COL2+7*FW, y, 5+g_model.frsky.varioCenterMax, (m_posHorz==1 ? attr : 0)|PREC1|LEFT);
-        lcd_putsiAtt(TELEM_COL3, y, STR_VVARIOCENTER, g_model.frsky.varioCenterSilent, (m_posHorz==2 ? attr : 0));
+        lcdDrawTextAtIndex(TELEM_COL3, y, STR_VVARIOCENTER, g_model.frsky.varioCenterSilent, (m_posHorz==2 ? attr : 0));
         if (attr && s_editMode>0) {
           switch (m_posHorz) {
             case 0:
@@ -681,7 +681,6 @@ void menuModelTelemetry(uint8_t event)
           }
         }
         break;
-
 #endif
 
       case ITEM_TELEMETRY_TOP_BAR_LABEL:
@@ -724,13 +723,13 @@ void menuModelTelemetry(uint8_t event)
           // TODO better function name for ---
           // TODO function for these lines
           if (ZEXIST(scriptData.file))
-            lcd_putsnAtt(TELEM_SCRTYPE_COL+7*FW, y, scriptData.file, sizeof(scriptData.file), (m_posHorz==1 ? attr : 0));
+            lcdDrawTextWithLen(TELEM_SCRTYPE_COL+7*FW, y, scriptData.file, sizeof(scriptData.file), (m_posHorz==1 ? attr : 0));
           else
-            lcd_putsiAtt(TELEM_SCRTYPE_COL+7*FW, y, STR_VCSWFUNC, 0, (m_posHorz==1 ? attr : 0));
+            lcdDrawTextAtIndex(TELEM_SCRTYPE_COL+7*FW, y, STR_VCSWFUNC, 0, (m_posHorz==1 ? attr : 0));
 
           if (m_posHorz==1 && attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
             s_editMode = 0;
-            if (listSdFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), g_model.frsky.screens[screenIndex].script.file)) {
+            if (sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), g_model.frsky.screens[screenIndex].script.file)) {
               menuHandler = onTelemetryScriptFileSelectionMenu;
             }
             else {
