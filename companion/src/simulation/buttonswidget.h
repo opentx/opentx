@@ -15,7 +15,7 @@
  */
 
 #ifndef _BUTTONSWIDGET_H_
-#define	_BUTTONSWIDGET_H_
+#define _BUTTONSWIDGET_H_
 
 #include <QWidget>
 #include <QtGui>
