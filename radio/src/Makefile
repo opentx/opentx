@@ -1645,7 +1645,12 @@ else
   PARSER = gcc -E -x c++
 endif
 
-lua_exports.inc: myeeprom.h ../util/luaexport.py
+.PHONY: lua_exports.inc
+lua_exports.inc: lua/lua_exports.inc lua_fields.txt
+
+lua/lua_exports.inc lua_fields.txt: lua_exports.dummy
+
+lua_exports.dummy: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua_exports.txt"
 	@$(PARSER) -DPCBTARANIS -DCPUARM -DCPUSTM32 -DLUA -DEXPORT myeeprom.h | grep LEXP > lua_exports.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports.inc"
