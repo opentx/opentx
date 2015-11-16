@@ -110,7 +110,7 @@
       </sizepolicy>
      </property>
      <property name="toolTip">
-      <string>Allows Companion to write to older version of the firmware</string>
+      <string>Saves a dated copy of your eeprom to the backup folder you specified in the Companion settings before writing the current model to the radio.</string>
      </property>
      <property name="text">
       <string>Backup before Write</string>
