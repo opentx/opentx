@@ -242,15 +242,15 @@ static int luaDumpWriter(lua_State* L, const void* p, size_t size, void* u)
   return (result != FR_OK && !written);
 }
 
-static void luaCompileAndSave(const char *filename)
+static void luaCompileAndSave(const char *bytecodeName)
 {
   FIL D;
-  char bytecodeName[1024];
-  strcpy(bytecodeName, filename);
-  strcat(bytecodeName, "c");
+  char srcName[1024];
+  strcpy(srcName, bytecodeName);
+  strcat(srcName, ".src");
 
-  if (f_stat(bytecodeName, 0) == FR_OK) {
-    return;   // compiled file already exists
+  if (f_stat(srcName, 0) != FR_OK) {
+    return;   // no source to compile
   }
 
   if (f_open(&D, bytecodeName, FA_WRITE | FA_CREATE_ALWAYS) != FR_OK) {
@@ -259,7 +259,7 @@ static void luaCompileAndSave(const char *filename)
   }
 
   PROTECT_LUA() {
-    if (luaL_loadfile(L, filename) == 0) {
+    if (luaL_loadfile(L, srcName) == 0) {
       lua_lock(L);
       luaU_dump(L, getproto(L->top - 1), luaDumpWriter, &D, 1);
       lua_unlock(L);
