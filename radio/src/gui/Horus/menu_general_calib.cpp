@@ -46,7 +46,7 @@
 void drawPotsBars()
 {
   // Optimization by Mike Blandford
-  uint8_t x, i, len ;  // declare temporary variables
+  unsigned int x, i, len ;  // declare temporary variables
   for (x=LCD_W/2-9, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=9, i++) {
     if (IS_POT_AVAILABLE(i)) {
       len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
