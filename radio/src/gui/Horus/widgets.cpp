@@ -190,8 +190,8 @@ void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X)
     lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT-4, MENU_TITLE_TOP+19, 220, 2, TITLE_BGCOLOR);
   }
 
-  if (scrollbar_X && linesCount > NUM_BODY_LINES) {
-    drawScrollbar(scrollbar_X, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, s_pgOfs, linesCount, NUM_BODY_LINES);
+  if (scrollbar_X && linesCount > NUM_BODY_LINES+1) {
+    drawScrollbar(scrollbar_X, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H+MENU_FOOTER_HEIGHT, s_pgOfs, linesCount, NUM_BODY_LINES+1);
   }
 }
 

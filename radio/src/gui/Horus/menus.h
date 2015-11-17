@@ -225,7 +225,7 @@ void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
 
 #define SIMPLE_SUBMENU(title, lines_count, scrollbar_X) \
   SIMPLE_SUBMENU_NOTITLE(lines_count); \
-  drawMenuTemplate(title, scrollbar_X)
+  drawSubmenuTemplate(title, scrollbar_X)
 
 typedef int select_menu_value_t;
 

@@ -133,9 +133,8 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
   }
 
   if (active) {
-    uint8_t cur = editNameCursorPos;
     if (s_editMode > 0) {
-      int8_t c = name[cur];
+      int8_t c = name[editNameCursorPos];
       int8_t v = c;
 
       if (event==EVT_ROTARY_RIGHT || event==EVT_ROTARY_LEFT) {
@@ -145,25 +144,25 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
 
       switch (event) {
         case EVT_KEY_BREAK(KEY_LEFT):
-          if (cur>0) cur--;
+          if (editNameCursorPos>0) editNameCursorPos--;
           break;
 
         case EVT_KEY_BREAK(KEY_RIGHT):
-          if (cur<size-1) cur++;
+          if (editNameCursorPos<size-1) editNameCursorPos++;
           break;
 
-        case EVT_ROTARY_BREAK:
+        case EVT_KEY_BREAK(KEY_ENTER):
           if (s_editMode == EDIT_MODIFY_FIELD) {
             s_editMode = EDIT_MODIFY_STRING;
-            cur = 0;
+            editNameCursorPos = 0;
           }
-          else if (cur<size-1)
-            cur++;
+          else if (editNameCursorPos<size-1)
+            editNameCursorPos++;
           else
             s_editMode = 0;
           break;
 
-        case EVT_ROTARY_LONG:
+        case EVT_KEY_LONG(KEY_ENTER):
           if (v==0) {
             s_editMode = 0;
             killEvents(event);
@@ -182,20 +181,19 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
       }
 
       if (c != v) {
-        name[cur] = v;
+        name[editNameCursorPos] = v;
         storageDirty(g_menuPos[0] == 0 ? EE_MODEL : EE_GENERAL);
       }
 
       lcdDrawTextWithLen(x, y, name, size, ZCHAR | flags);
       coord_t w = (editNameCursorPos == 0 ? 0 : getTextWidth(name, editNameCursorPos, ZCHAR));
-      char s[] = { idx2char(v), '\0' };
+      char s[] = { idx2char(name[editNameCursorPos]), '\0' };
       lcdDrawSolidFilledRect(x+w-1, y-INVERT_VERT_MARGIN, getTextWidth(s, 1)+1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
       lcdDrawText(x+w, y, s, TEXT_INVERTED_COLOR);
     }
     else {
-      cur = 0;
+      editNameCursorPos = 0;
     }
-    editNameCursorPos = cur;
   }
 }
 

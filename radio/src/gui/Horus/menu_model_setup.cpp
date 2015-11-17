@@ -319,12 +319,12 @@ bool menuModelSetup(evt_t event)
 
       case ITEM_MODEL_EXTENDED_LIMITS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ELIMITS);
-        onoffMenuItem(g_model.extendedLimits, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        g_model.extendedLimits = onoffMenuItem(g_model.extendedLimits, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_EXTENDED_TRIMS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ETRIMS);
-        onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, m_posHorz<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
+        g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, m_posHorz<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN+18, y, STR_RESET_BTN, m_posHorz>0  && !s_noHi ? attr : 0);
         if (attr && m_posHorz>0) {
           s_editMode = 0;
@@ -374,7 +374,7 @@ bool menuModelSetup(evt_t event)
 
       case ITEM_MODEL_THROTTLE_TRIM:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TTRIM);
-        onoffMenuItem(g_model.thrTrim, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        g_model.thrTrim = onoffMenuItem(g_model.thrTrim, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_PREFLIGHT_LABEL:
@@ -383,7 +383,7 @@ bool menuModelSetup(evt_t event)
 
       case ITEM_MODEL_CHECKLIST_DISPLAY:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CHECKLIST);
-        onoffMenuItem(g_model.displayChecklist, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        g_model.displayChecklist = onoffMenuItem(g_model.displayChecklist, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_THROTTLE_WARNING:

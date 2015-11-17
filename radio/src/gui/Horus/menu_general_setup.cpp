@@ -478,7 +478,7 @@ bool menuGeneralSetup(evt_t event)
 #if 0
       case ITEM_SETUP_FAI:
         lcdDrawText(MENUS_MARGIN_LEFT, y, PSTR("FAI Mode"));
-        onoffMenuItem(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, attr, event);
+        g_eeGeneral.fai = onoffMenuItem(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, attr, event);
         if (attr && checkIncDec_Ret) {
           if (g_eeGeneral.fai)
             POPUP_WARNING(PSTR("FAI\001mode blocked!"));
