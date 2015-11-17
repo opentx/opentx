@@ -57,7 +57,6 @@ void displayAlertBox()
 
 void displayWarningBox()
 {
-  // lcdDrawBlackOverlay();
   lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
   lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, ALARM_COLOR);
   lcdDrawSolidRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, ALARM_COLOR);
@@ -66,7 +65,6 @@ void displayWarningBox()
 
 void displayMessageBox()
 {
-  // lcdDrawBlackOverlay();
   lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
   lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, WARNING_COLOR);
   lcdDrawSolidRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, WARNING_COLOR);
@@ -198,7 +196,6 @@ const char * displayMenu(evt_t event)
 
   int y = (LCD_H - (display_count*(FH+1))) / 2;
 
-  // lcdDrawBlackOverlay();
   lcdDrawSolidFilledRect(MENU_X, y, MENU_W, display_count * (FH+1), TEXT_BGCOLOR);
   lcdDrawSolidRect(MENU_X, y, MENU_W, display_count * (FH+1) + 1, ALARM_COLOR);
 
