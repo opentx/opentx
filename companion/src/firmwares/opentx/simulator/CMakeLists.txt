@@ -36,6 +36,7 @@ macro(add_truetype_font_target radio name font size)
     COMMAND ../util/font2png.py ${font} ${size} False ${target}
     WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
   )
+  add_custom_target(ttf_${radio}_${name})
 endmacro(add_truetype_font_target)
 
 add_truetype_font_target(Horus tinsize "DejaVu Sans" 9)
@@ -48,6 +49,7 @@ add_truetype_font_target(Horus xxlsize "DejaVu Sans" 48)
 add_bitmaps_target(lbm_horus_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/Horus/????[^_]*.png" 480 5/6/5/8)
 add_bitmaps_target(lbm_horus_masks ${RADIO_SRC_DIRECTORY}/bitmaps/Horus/mask_*.png 480 8bits)
 add_bitmaps_target(lbm_horus_fonts ${RADIO_SRC_DIRECTORY}/fonts/Horus/*.png 480 8bits)
+add_dependencies(lbm_horus_fonts ttf_Horus_tinsize ttf_Horus_smlsize ttf_Horus_stdsize ttf_Horus_midsize ttf_Horus_dblsize ttf_Horus_xxlsize)
 add_dependencies(lbm_horus_bitmaps lbm_horus_masks lbm_horus_fonts)
 
 file(GLOB translations ${RADIO_SRC_DIRECTORY}/translations/*.h.txt)
