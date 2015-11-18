@@ -247,7 +247,7 @@ int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, evt_t e
   #define displayGVar(x, y, v, min, max) lcdDrawNumber(x, y, v)
 #endif
 
-void editName(coord_t x, coord_t y, char *name, uint8_t size, evt_t event, uint8_t active);
+void editName(coord_t x, coord_t y, char *name, uint8_t size, evt_t event, uint8_t active, LcdFlags flags=ZCHAR);
 
 #define WARNING_TYPE_ASTERISK  0
 #define WARNING_TYPE_CONFIRM   1
@@ -318,6 +318,6 @@ void pushModelNotes();
 #define EDIT_MODE_INIT                 0 // TODO enum
 
 typedef int (*FnFuncP) (int x);
-void DrawFunction(FnFuncP fn, int offset=0);
+void drawFunction(FnFuncP fn, int offset=0);
 
 #endif // _MENUS_H_

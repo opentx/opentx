@@ -37,7 +37,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include "opentx.h"
-#include "stamp-opentx.h"
+#include "stamp.h"
 #include "lua/lua_api.h"
 
 #if defined(PCBHORUS)
@@ -108,7 +108,7 @@ Script finished with status 1
 */
 static int luaGetVersion(lua_State *L)
 {
-  lua_pushstring(L, VERS_STR);
+  lua_pushstring(L, VERSION);
   lua_pushstring(L, RADIO_VERSION);
   return 2;
 }

@@ -135,6 +135,7 @@ namespace NAMESPACE {
 #if defined(PCBHORUS)
 #include "radio/src/bmp.cpp"
 #include "radio/src/gui/Horus/bitmaps.cpp"
+#include "radio/src/gui/Horus/curves.cpp"
 #include "radio/src/gui/Horus/fonts.cpp"
 #include "radio/src/gui/Horus/widgets.cpp"
 #include "radio/src/gui/Horus/navigation.cpp"

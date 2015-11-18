@@ -460,6 +460,6 @@ void displayWarning(uint8_t event);
 #define EDIT_MODE_INIT                 -1
 
 typedef int16_t (*FnFuncP) (int16_t x);
-void DrawFunction(FnFuncP fn, uint8_t offset=0);
+void drawFunction(FnFuncP fn, uint8_t offset=0);
 
 #endif // _MENUS_H_

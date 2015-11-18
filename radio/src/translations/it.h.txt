@@ -807,6 +807,9 @@
 #define TR_VOLTAGE             TR(INDENT "Voltagg.",INDENT "Voltaggio")
 #define TR_CURRENT             TR(INDENT "Corrente",INDENT "Corrente")
 #define TR_SELECT_MODEL        "Scegli Memo."
+#define TR_CREATE_CATEGORY     "Create Category"
+#define TR_RENAME_CATEGORY     "Rename Category"
+#define TR_DELETE_CATEGORY     "Delete Category"
 #define TR_CREATE_MODEL        "Crea Modello"
 #define TR_DUPLICATE_MODEL     "Duplicate Model"
 #define TR_COPY_MODEL          "Copia Modello"

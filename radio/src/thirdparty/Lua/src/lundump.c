@@ -233,7 +233,7 @@ Closure* luaU_undump (lua_State* L, ZIO* Z, Mbuffer* buff, const char* name)
 }
 
 #define MYINT(s)	(s[0]-'0')
-#define VERSION		MYINT(LUA_VERSION_MAJOR)*16+MYINT(LUA_VERSION_MINOR)
+#define VERSION_INT		MYINT(LUA_VERSION_MAJOR)*16+MYINT(LUA_VERSION_MINOR)
 #define FORMAT		0		/* this is the official format */
 
 /*
@@ -246,7 +246,7 @@ void luaU_header (lu_byte* h)
  int x=1;
  memcpy(h,LUA_SIGNATURE,sizeof(LUA_SIGNATURE)-sizeof(char));
  h+=sizeof(LUA_SIGNATURE)-sizeof(char);
- *h++=cast_byte(VERSION);
+ *h++=cast_byte(VERSION_INT);
  *h++=cast_byte(FORMAT);
  *h++=cast_byte(*(char*)&x);			/* endianness */
  *h++=cast_byte(sizeof(int));

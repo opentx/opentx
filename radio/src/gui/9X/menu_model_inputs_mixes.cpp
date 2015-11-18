@@ -82,7 +82,7 @@ int16_t expoFn(int16_t x)
   return anas[ed->chn];
 }
 
-void DrawFunction(FnFuncP fn, uint8_t offset)
+void drawFunction(FnFuncP fn, uint8_t offset)
 {
   lcdDrawVerticalLine(X0-offset, 0, LCD_H, 0xee);
   lcdDrawHorizontalLine(X0-WCHART-offset, Y0, WCHART*2, 0xee);
@@ -368,7 +368,7 @@ void menuModelExpoOne(uint8_t event)
     y += FH;
   }
 
-  DrawFunction(expoFn);
+  drawFunction(expoFn);
 
   int16_t x512 = calibratedStick[ed->chn];
   lcd_outdezAtt(LCD_W-8, 6*FH, calcRESXto100(x512), 0);

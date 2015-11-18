@@ -114,21 +114,25 @@ static int8_t s_copyTgtOfs;
 
 static uint8_t editNameCursorPos = 0;
 
-void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint8_t active)
+void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint8_t active, LcdFlags flags)
 {
-  uint8_t flags = 0;
   if (active && s_editMode <= 0) {
-    flags = INVERS;
+    flags |= INVERS;
   }
 
   if (!active || s_editMode <= 0) {
-    uint8_t len = zlen(name, size);
-    if (len == 0) {
-      char tmp[] = "---";
-      lcdDrawTextWithLen(x, y, tmp, size, flags);
+    if (flags & ZCHAR) {
+      uint8_t len = zlen(name, size);
+      if (len == 0) {
+        char tmp[] = "---";
+        lcdDrawTextWithLen(x, y, tmp, size, flags-ZCHAR);
+      }
+      else {
+        lcdDrawTextWithLen(x, y, name, len, flags);
+      }
     }
     else {
-      lcdDrawTextWithLen(x, y, name, len, ZCHAR | flags);
+      lcdDrawText(x, y, name, flags);
     }
   }
 
@@ -138,8 +142,13 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
       int8_t v = c;
 
       if (event==EVT_ROTARY_RIGHT || event==EVT_ROTARY_LEFT) {
-        v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
-        if (c <= 0) v = -v;
+        if (flags & ZCHAR) {
+          v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
+          if (c <= 0) v = -v;
+        }
+        else {
+          v = checkIncDec(event, abs(v), '0', 'z', 0);
+        }
       }
 
       switch (event) {
@@ -163,7 +172,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
           break;
 
         case EVT_KEY_LONG(KEY_ENTER):
-          if (v==0) {
+          if (v == ((flags & ZCHAR) ? 0 : ' ')) {
             s_editMode = 0;
             killEvents(event);
             break;
@@ -172,10 +181,20 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
 
         case EVT_KEY_LONG(KEY_LEFT):
         case EVT_KEY_LONG(KEY_RIGHT):
-          if (v>=-26 && v<=26) {
-            v = -v; // toggle case
-            if (event==EVT_KEY_LONG(KEY_LEFT))
-              killEvents(KEY_LEFT);
+          if (flags & ZCHAR) {
+            if (v>=-26 && v<=26) {
+              v = -v; // toggle case
+              if (event==EVT_KEY_LONG(KEY_LEFT))
+                killEvents(KEY_LEFT);
+            }
+          }
+          else {
+            if (v>='A' && v<='Z') {
+              v = 'a'+v-'A'; // toggle case
+            }
+            else if (v>='a' && v<='z') {
+              v = 'A'+v-'a'; // toggle case
+            }
           }
           break;
       }
@@ -185,10 +204,10 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
         storageDirty(g_menuPos[0] == 0 ? EE_MODEL : EE_GENERAL);
       }
 
-      lcdDrawTextWithLen(x, y, name, size, ZCHAR | flags);
-      coord_t w = (editNameCursorPos == 0 ? 0 : getTextWidth(name, editNameCursorPos, ZCHAR));
-      char s[] = { idx2char(name[editNameCursorPos]), '\0' };
-      lcdDrawSolidFilledRect(x+w-1, y-INVERT_VERT_MARGIN, getTextWidth(s, 1)+1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+      lcdDrawTextWithLen(x, y, name, size, flags);
+      coord_t w = (editNameCursorPos == 0 ? 0 : getTextWidth(name, editNameCursorPos, flags));
+      char s[] = { (flags & ZCHAR) ? idx2char(name[editNameCursorPos]) : name[editNameCursorPos], '\0' };
+      lcdDrawSolidFilledRect(x+w-1, y-INVERT_VERT_MARGIN, getTextWidth(s, 1, flags)+1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
       lcdDrawText(x+w, y, s, TEXT_INVERTED_COLOR);
     }
     else {

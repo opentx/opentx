@@ -37,34 +37,36 @@
 #include "lcd.h"
 #include "menus.h"
 
-#define MENU_HEADER_HEIGHT    45
-#define MENU_TITLE_TOP        48
-#define MENU_TITLE_HEIGHT     21
-#define MENU_BODY_TOP         69  // MENU_TITLE_TOP + MENU_TITLE_HEIGHT
-#define MENU_CONTENT_TOP      72
-#define MENU_BODY_HEIGHT      182
-#define MENU_FOOTER_TOP       251 // MENU_BODY_TOP + MENU_BODY_HEIGHT
-#define MENU_FOOTER_HEIGHT    21
+#define MENU_HEADER_HEIGHT             45
+#define MENU_TITLE_TOP                 48
+#define MENU_TITLE_HEIGHT              21
+#define MENU_BODY_TOP                  69  // MENU_TITLE_TOP + MENU_TITLE_HEIGHT
+#define MENU_CONTENT_TOP               72
+#define MENU_BODY_HEIGHT               182
+#define MENU_FOOTER_TOP                251 // MENU_BODY_TOP + MENU_BODY_HEIGHT
+#define MENU_FOOTER_HEIGHT             21
 
-#define MENUS_MARGIN_LEFT     6
+#define MENUS_MARGIN_LEFT              6
 
-#define DEFAULT_SCROLLBAR_X   LCD_W-10
-#define DEFAULT_SCROLLBAR_Y   MENU_CONTENT_TOP
-#define DEFAULT_SCROLLBAR_H   (MENU_FOOTER_TOP - DEFAULT_SCROLLBAR_Y - 6)
+#define DEFAULT_SCROLLBAR_X            LCD_W-10
+#define DEFAULT_SCROLLBAR_Y            MENU_CONTENT_TOP
+#define DEFAULT_SCROLLBAR_H            (MENU_FOOTER_TOP - DEFAULT_SCROLLBAR_Y - 6)
 
-#define NUM_BODY_LINES        9
-#define FH                    20
+#define NUM_BODY_LINES                 9
+#define FH                             20
 
-#define INVERT_HORZ_MARGIN    3
-#define INVERT_VERT_MARGIN    1
-#define INVERT_LINE_HEIGHT    18
+#define INVERT_HORZ_MARGIN             3
+#define INVERT_VERT_MARGIN             1
+#define INVERT_LINE_HEIGHT             18
 
-#define CURVE_SIDE_WIDTH      100
-#define CURVE_CENTER_X        (LCD_W-CURVE_SIDE_WIDTH-7)
-#define CURVE_CENTER_Y        151
+#define CURVE_SIDE_WIDTH               100
+#define CURVE_CENTER_X                 (LCD_W-CURVE_SIDE_WIDTH-7)
+#define CURVE_CENTER_Y                 151
+#define CURVE_COORD_WIDTH              36
+#define CURVE_COORD_HEIGHT             17
 
-#define MENU_TITLE_NEXT_POS   (lcdNextPos + 10)
-#define MENU_INIT_VPOS        -1
+#define MENU_TITLE_NEXT_POS            (lcdNextPos + 10)
+#define MENU_INIT_VPOS                 -1
 
 void displaySplash();
 void displayScreenIndex(uint8_t index, uint8_t count);
@@ -76,6 +78,13 @@ void drawProgressBar(const char *label);
 void updateProgressBar(int num, int den);
 void drawTopmenuDatetime();
 
+// Curve functions
+coord_t getCurveYCoord(FnFuncP fn, coord_t x);
+void drawFunction(FnFuncP fn, int offset);
+void drawCurveVerticalScale(int x);
+void drawCurveHorizontalScale();
+void drawCurveCoord(int x, int y, const char * text, bool active=false);
+void drawCurvePoint(int x, int y, LcdFlags color);
 
 // Header bitmaps
 extern const uint8_t LBM_TOPMENU_POLYGON[];
@@ -114,3 +123,4 @@ extern const uint8_t LBM_ASTERISK[];
 extern const uint8_t LBM_POINT[];
 extern const uint8_t LBM_CURVE_POINT[];
 extern const uint8_t LBM_CURVE_POINT_CENTER[];
+extern const uint8_t LBM_CURVE_COORD_SHADOW[];

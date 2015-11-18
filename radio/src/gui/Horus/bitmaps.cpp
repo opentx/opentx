@@ -263,3 +263,7 @@ const uint8_t LBM_CURVE_POINT[] = {
 const uint8_t LBM_CURVE_POINT_CENTER[] = {
 #include "../../bitmaps/Horus/mask_cvpoint_center.lbm"
 };
+
+const uint8_t LBM_CURVE_COORD_SHADOW[] = {
+#include "../../bitmaps/Horus/mask_coord_shadow.lbm"
+};

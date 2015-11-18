@@ -828,6 +828,9 @@
 #define TR_VOLTAGE             TR(INDENT "Voltage",INDENT "Voltage Source")
 #define TR_CURRENT             TR(INDENT "Current",INDENT "Current Source")
 #define TR_SELECT_MODEL        "Select Model"
+#define TR_CREATE_CATEGORY     "Create Category"
+#define TR_RENAME_CATEGORY     "Rename Category"
+#define TR_DELETE_CATEGORY     "Delete Category"
 #define TR_CREATE_MODEL        "Create Model"
 #define TR_DUPLICATE_MODEL     "Duplicate Model"
 #define TR_COPY_MODEL          "Copy Model"

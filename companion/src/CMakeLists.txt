@@ -12,6 +12,7 @@ MESSAGE(STATUS "OpenTX Companion ${VERSION}")
 CMAKE_MINIMUM_REQUIRED( VERSION 2.8.12 )
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+include(Macros)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   SET(C9X_NAME_SUFFIX ${VERSION_MAJOR}${VERSION_MINOR})
@@ -247,32 +248,6 @@ set(companion_RCS
   companion.qrc
   ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
 )
-
-MACRO (TODAY RESULT)
-    IF (WIN32)
-        EXECUTE_PROCESS(COMMAND "cmd" " /C date /T" OUTPUT_VARIABLE ${RESULT})
-        string(REGEX REPLACE "(..)/(..)/(....).*" "\\1.\\2.\\3" ${RESULT} ${${RESULT}})
-    ELSEIF(UNIX)
-        EXECUTE_PROCESS(COMMAND "date" "+%d/%m/%Y" OUTPUT_VARIABLE ${RESULT})
-        string(REGEX REPLACE "(..)/(..)/(....).*" "\\1.\\2.\\3" ${RESULT} ${${RESULT}})
-    ELSE (WIN32)
-        MESSAGE(SEND_ERROR "date not implemented")
-        SET(${RESULT} 00.00.0000)
-    ENDIF (WIN32)
-ENDMACRO (TODAY)
-
-MACRO (NOW RESULT)
-    IF (WIN32)
-        EXECUTE_PROCESS(COMMAND "cmd" " /C time /T" OUTPUT_VARIABLE ${RESULT})
-        string(REGEX REPLACE "(..):(..).*" "\\1:\\2:00" ${RESULT} ${${RESULT}})
-    ELSEIF(UNIX)
-        EXECUTE_PROCESS(COMMAND "date" "+%H:%M:%S" OUTPUT_VARIABLE ${RESULT})
-        string(REGEX REPLACE "(..):(..):(..).*" "\\1:\\2:\\3" ${RESULT} ${${RESULT}})
-    ELSE (WIN32)
-        MESSAGE(SEND_ERROR "time not implemented")
-        SET(${RESULT} 00:00:00)
-    ENDIF (WIN32)
-ENDMACRO (NOW)
 
 TODAY(DATE)
 NOW(TIME)

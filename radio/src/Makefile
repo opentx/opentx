@@ -1234,7 +1234,7 @@ ifeq ($(PCB), HORUS)
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp sbus.cpp telemetry/telemetry.cpp
   CPPSRC += targets/Horus/pulses_driver.cpp targets/Horus/keys_driver.cpp targets/Horus/adc_driver.cpp targets/Horus/trainer_driver.cpp targets/Horus/audio_driver.cpp targets/Horus/serial2_driver.cpp targets/Horus/telemetry_driver.cpp
-  CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/bitmaps.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp
+  CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/curves.cpp gui/$(GUIDIRECTORY)/bitmaps.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp
   SRC += targets/Horus/system_stm32f4xx.c
   CPPSRC += storage/storage_common.cpp storage/sdcard_raw.cpp
   SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/misc.c
@@ -1784,11 +1784,10 @@ lss: $(TARGET).lss
 sym: $(TARGET).sym
 
 # Build stamp-file
-stamp_header:
-	@echo "// Automatically generated file (Makefile) - do not edit" > stamp-opentx.h
-	@echo "#define DATE_STR \"`date +%Y-%m-%d | tr -d '\r\n'`\"" >> stamp-opentx.h
-	@echo "#define TIME_STR \"`date +%H:%M:%S | tr -d '\r\n'`\"" >> stamp-opentx.h
-	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.h
+stamp.h:
+	@echo "#define DATE    \"`date +%Y-%m-%d | tr -d '\r\n'`\"" > stamp.h
+	@echo "#define TIME    \"`date +%H:%M:%S | tr -d '\r\n'`\"" >> stamp.h
+	@echo "#define VERSION \"$(VERSION)\"" >> stamp.h
 
 opentx-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx.txt
@@ -2005,7 +2004,7 @@ ifeq ($(SIMU_DISKIO), YES)
   SIMUDEFS += -DSIMU_DISKIO
 endif
 
-simu: $(LUADEP) stamp_header allsimusrc.cpp Makefile simu.cpp targets/simu/simpgmspace.cpp *.h tra lbm eeprom.bin
+simu: $(LUADEP) stamp.h allsimusrc.cpp Makefile simu.cpp targets/simu/simpgmspace.cpp *.h tra lbm eeprom.bin
 	g++ $(CPPFLAGS) $(SIMUCPPFLAGS) $(INCFLAGS) simu.cpp allsimusrc.cpp $(LUASRC) targets/simu/simpgmspace.cpp -MD $(SIMUDEFS) -O0 -o simu $(FOXINC) $(FOXLIB) $(AUDIOINC) $(AUDIOLIB) -pthread -fexceptions
 
 eeprom.bin:
@@ -2105,7 +2104,7 @@ clean_list :
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp
 	$(REMOVE) allsimusrc.cpp
-	$(REMOVE) stamp-opentx.h
+	$(REMOVE) stamp.h
 	$(REMOVE) bitmaps/*.lbm
 	$(REMOVE) bitmaps/*/*.lbm
 	$(REMOVE) fonts/*/*.lbm

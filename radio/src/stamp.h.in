@@ -1,0 +1,3 @@
+#define DATE    "@DATE@"
+#define TIME    "@TIME@"
+#define VERSION "@VERSION@"

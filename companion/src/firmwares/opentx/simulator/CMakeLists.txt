@@ -3,40 +3,87 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 
 set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/../../radio/src)
 
-add_custom_target(about_lbm_9x
-  make lbm PCB=9X
-  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
-)
+macro(add_bitmaps_target targetname filter width format) 
+  file(GLOB bitmaps ${filter})
+  foreach(bitmap ${bitmaps})
+    get_filename_component(target ${bitmap} NAME_WE)
+    get_filename_component(path ${bitmap} DIRECTORY)
+    set(target ${path}/${target}.lbm)
+    add_custom_command(
+      OUTPUT ${target}
+      COMMAND python ../util/img2lbm.py ${bitmap} ${target} ${width} ${format}
+      DEPENDS ${bitmap}
+      WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+    )
+    list(APPEND bitmaps_files ${target})
+  endforeach()
+  add_custom_target(${targetname} DEPENDS ${bitmaps_files})
+endmacro(add_bitmaps_target)
 
-add_custom_target(about_lbm_taranis
-  make lbm PCB=TARANIS
-  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
-)
+add_bitmaps_target(lbm_xbm_1bit ${RADIO_SRC_DIRECTORY}/bitmaps/*.xbm 128 1bit)
+add_bitmaps_target(lbm_fonts_1bit ${RADIO_SRC_DIRECTORY}/fonts/std/*.png 128 "")
+add_bitmaps_target(lbm_9x_bitmaps ${RADIO_SRC_DIRECTORY}/bitmaps/9X/*.png 128 1bit)
+add_bitmaps_target(lbm_taranis_bitmaps ${RADIO_SRC_DIRECTORY}/bitmaps/Taranis/*.png 212 4bits)
 
-add_custom_target(about_lbm_flamenco
-  make lbm PCB=FLAMENCO
-  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
-)
+add_dependencies(lbm_9x_bitmaps lbm_fonts_1bit lbm_xbm_1bit)
+add_dependencies(lbm_taranis_bitmaps lbm_fonts_1bit lbm_xbm_1bit)
 
-add_custom_target(about_lbm_horus
-  make lbm PCB=HORUS
-  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
-)
+macro(add_truetype_font_target radio name font size)
+  set(target ${RADIO_SRC_DIRECTORY}/fonts/${radio}/font_${name})
+  add_custom_command(
+    OUTPUT ${target}.png
+    OUTPUT ${target}.specs
+    COMMAND ../util/font2png.py ${font} ${size} False ${target}
+    WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+  )
+endmacro(add_truetype_font_target)
 
-add_custom_target(commondeps
-  make stamp_header tra
-  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
-)
+add_truetype_font_target(Horus tinsize "DejaVu Sans" 9)
+add_truetype_font_target(Horus smlsize "DejaVu Sans" 13)
+add_truetype_font_target(Horus stdsize "DejaVu Sans" 16)
+add_truetype_font_target(Horus midsize "DejaVu Sans" 24)
+add_truetype_font_target(Horus dblsize "DejaVu Sans" 32)
+add_truetype_font_target(Horus xxlsize "DejaVu Sans" 48)
 
-set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${RADIO_SRC_DIRECTORY}/stamp-opentx.h)
+add_bitmaps_target(lbm_horus_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/Horus/????[^_]*.png" 480 5/6/5/8)
+add_bitmaps_target(lbm_horus_masks ${RADIO_SRC_DIRECTORY}/bitmaps/Horus/mask_*.png 480 8bits)
+add_bitmaps_target(lbm_horus_fonts ${RADIO_SRC_DIRECTORY}/fonts/Horus/*.png 480 8bits)
+add_dependencies(lbm_horus_bitmaps lbm_horus_masks lbm_horus_fonts)
 
-add_custom_target(lua_exports
-  COMMAND make PCB=TARANIS lua/lua_exports_taranis.inc
-  COMMAND make PCB=FLAMENCO lua/lua_exports_flamenco.inc
-  COMMAND make PCB=HORUS lua/lua_exports_horus.inc
-  DEPENDS ${RADIO_SRC_DIRECTORY}/myeeprom.h
-  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
-)
+file(GLOB translations ${RADIO_SRC_DIRECTORY}/translations/*.h.txt)
+foreach(translation ${translations})
+  get_filename_component(language ${translation} NAME_WE)
+  get_filename_component(path ${translation} DIRECTORY)
+  set(target ${path}/${language}.h)
+  add_custom_command(
+    OUTPUT ${target}
+    COMMAND python ../util/translate.py ${translation} ${target} ${language}
+    DEPENDS ${translation}
+    WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+  )
+  list(APPEND translations_files ${target})
+endforeach()
+
+add_custom_target(firmware_translations DEPENDS ${translations_files})
+
+TODAY(DATE)
+NOW(TIME)
+
+configure_file(${RADIO_SRC_DIRECTORY}/stamp.h.in ${RADIO_SRC_DIRECTORY}/stamp.h @ONLY)
+
+macro(add_lua_export_target target)
+  string(TOUPPER ${target} pcbdefine)
+  add_custom_command(
+    OUTPUT ${RADIO_SRC_DIRECTORY}/lua/lua_exports_${target}.inc
+    COMMAND ${CMAKE_C_COMPILER} -E -DPCB${pcbdefine} -DCPUARM -DCPUSTM32 -DLUA -DEXPORT myeeprom.h | grep LEXP > lua/lua_exports_${target}.txt
+    COMMAND python ../util/luaexport.py ${VERSION} lua/lua_exports_${target}.txt lua/lua_exports_${target}.inc lua/lua_fields_${target}.txt
+    WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+  )
+  add_custom_target(lua_export_${target} DEPENDS ${RADIO_SRC_DIRECTORY}/lua/lua_exports_${target}.inc)
+endmacro(add_lua_export_target)
+
+add_lua_export_target(taranis)
+add_lua_export_target(horus)
 
 set(OPENTX_SRC_FILES
   opentxsimulator.cpp
@@ -99,19 +146,22 @@ add_library(opentx-taranisplus${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-taranisx9e${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 add_library(opentx-horus${SUFFIX}-simulator SHARED ${OPENTX_SRC_FILES})
 
-add_dependencies(opentx-9x${SUFFIX}-simulator about_lbm_9x commondeps)
-add_dependencies(opentx-9xr${SUFFIX}-simulator about_lbm_9x commondeps)
-add_dependencies(opentx-9x128${SUFFIX}-simulator about_lbm_9x commondeps)
-add_dependencies(opentx-9xr128${SUFFIX}-simulator about_lbm_9x commondeps)
-add_dependencies(opentx-gruvin9x${SUFFIX}-simulator about_lbm_9x commondeps)
-add_dependencies(opentx-mega2560${SUFFIX}-simulator about_lbm_9x commondeps)
-add_dependencies(opentx-sky9x${SUFFIX}-simulator about_lbm_9x commondeps)
-add_dependencies(opentx-9xrpro${SUFFIX}-simulator about_lbm_9x commondeps)
-add_dependencies(opentx-ar9x${SUFFIX}-simulator about_lbm_9x commondeps)
-add_dependencies(opentx-taranis${SUFFIX}-simulator about_lbm_taranis commondeps lua_exports)
-add_dependencies(opentx-taranisplus${SUFFIX}-simulator about_lbm_taranis commondeps lua_exports)
-add_dependencies(opentx-taranisx9e${SUFFIX}-simulator about_lbm_taranis commondeps lua_exports)
-add_dependencies(opentx-horus${SUFFIX}-simulator about_lbm_horus commondeps lua_exports)
+set(dependencies_9x lbm_9x_bitmaps firmware_translations)
+add_dependencies(opentx-9x${SUFFIX}-simulator ${dependencies_9x})
+add_dependencies(opentx-9xr${SUFFIX}-simulator ${dependencies_9x})
+add_dependencies(opentx-9x128${SUFFIX}-simulator ${dependencies_9x})
+add_dependencies(opentx-9xr128${SUFFIX}-simulator ${dependencies_9x})
+add_dependencies(opentx-gruvin9x${SUFFIX}-simulator ${dependencies_9x})
+add_dependencies(opentx-mega2560${SUFFIX}-simulator ${dependencies_9x})
+add_dependencies(opentx-sky9x${SUFFIX}-simulator ${dependencies_9x})
+add_dependencies(opentx-9xrpro${SUFFIX}-simulator ${dependencies_9x})
+add_dependencies(opentx-ar9x${SUFFIX}-simulator ${dependencies_9x})
+set(dependencies_taranis lbm_taranis_bitmaps lua_export_taranis firmware_translations)
+add_dependencies(opentx-taranis${SUFFIX}-simulator ${dependencies_taranis})
+add_dependencies(opentx-taranisplus${SUFFIX}-simulator ${dependencies_taranis})
+add_dependencies(opentx-taranisx9e${SUFFIX}-simulator ${dependencies_taranis})
+
+add_dependencies(opentx-horus${SUFFIX}-simulator lbm_horus_bitmaps lbm_horus_fonts firmware_translations lua_export_horus)
 
 set(OPENTX_LIBRARIES
   opentx-9x${SUFFIX}-simulator

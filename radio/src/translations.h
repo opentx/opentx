@@ -597,8 +597,11 @@ extern const pm_char STR_CURRENT[];
 
 #if defined(NAVIGATION_MENUS)
   extern const pm_char STR_SELECT_MODEL[];
+  extern const pm_char STR_CREATE_CATEGORY[];
+  extern const pm_char STR_RENAME_CATEGORY[];
+extern const pm_char STR_DELETE_CATEGORY[];
   extern const pm_char STR_CREATE_MODEL[];
-extern const pm_char STR_DUPLICATE_MODEL[];
+  extern const pm_char STR_DUPLICATE_MODEL[];
   extern const pm_char STR_COPY_MODEL[];
   extern const pm_char STR_MOVE_MODEL[];
   extern const pm_char STR_DELETE_MODEL[];

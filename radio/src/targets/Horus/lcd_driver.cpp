@@ -298,11 +298,6 @@ void LCD_LayerInit()
   LTDC_DitherCmd(ENABLE);
 }
 
-static inline long divRoundClosest(const long n, const long d)
-{
-    return ((n < 0) ^ (d < 0)) ? ((n - d/2)/d) : ((n + d/2)/d);
-}
-
 void LCD_ControlLight(uint16_t dutyCycle)
 {
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;

@@ -65,7 +65,7 @@ point_t getPoint(uint8_t i)
 
 void DrawCurve(uint8_t offset=0)
 {
-  DrawFunction(curveFn, offset);
+  drawFunction(curveFn, offset);
 
   uint8_t i = 0;
   do {

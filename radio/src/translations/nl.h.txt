@@ -826,6 +826,9 @@
 #define TR_VOLTAGE             TR(INDENT "Spg", INDENT "Spanningsbron")  //9XR-Pro
 #define TR_CURRENT             TR(INDENT "Stroom", INDENT "Stroombron")
 #define TR_SELECT_MODEL        "Kies Model"
+#define TR_CREATE_CATEGORY     "Create Category"
+#define TR_RENAME_CATEGORY     "Rename Category"
+#define TR_DELETE_CATEGORY     "Delete Category"
 #define TR_CREATE_MODEL        "Nieuw Model"
 #define TR_DUPLICATE_MODEL     "Duplicate Model"
 #define TR_COPY_MODEL          "Kopieer Model"

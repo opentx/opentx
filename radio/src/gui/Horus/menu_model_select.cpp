@@ -43,11 +43,13 @@
 enum ModelSelectMode {
   MODE_SELECT_CATEGORY,
   MODE_SELECT_MODEL,
+  MODE_RENAME_CATEGORY,
 };
 
 uint8_t selectMode;
 uint8_t currentCategory;
 char selectedFilename[LEN_MODEL_FILENAME+1];
+char selectedCategory[LEN_MODEL_FILENAME+1];
 
 void drawCategory(coord_t y, const char * name, bool selected)
 {
@@ -82,6 +84,19 @@ void drawModel(coord_t x, coord_t y, const char * name, bool selected)
   if (selectMode == MODE_SELECT_MODEL && selected) {
     lcdDrawSolidRect(x, y, MODELCELL_WIDTH, MODELCELL_HEIGHT, TITLE_BGCOLOR);
     drawShadow(x, y, MODELCELL_WIDTH, MODELCELL_HEIGHT);
+  }
+}
+
+void onCategorySelectMenu(const char * result)
+{
+  if (result == STR_CREATE_CATEGORY) {
+    storageAppendCategory("Category");
+  }
+  else if (result == STR_RENAME_CATEGORY) {
+    selectMode = MODE_RENAME_CATEGORY;
+  }
+  else if (result == STR_DELETE_CATEGORY) {
+    storageRemoveCategory(currentCategory--);
   }
 }
 
@@ -160,8 +175,16 @@ bool menuModelSelect(evt_t event)
       break;
 
     case EVT_KEY_LONG(KEY_ENTER):
-      killEvents(event);
-      if (selectMode == MODE_SELECT_MODEL) {
+      if (selectMode == MODE_SELECT_CATEGORY) {
+        killEvents(event);
+        MENU_ADD_ITEM(STR_CREATE_CATEGORY);
+        MENU_ADD_ITEM(STR_RENAME_CATEGORY);
+        if (currentCategory > 0)
+          MENU_ADD_ITEM(STR_DELETE_CATEGORY);
+        menuHandler = onCategorySelectMenu;
+      }
+      else if (selectMode == MODE_SELECT_MODEL) {
+        killEvents(event);
         ModelHeader header;
         const char * error = readModel(selectedFilename, (uint8_t *)&header, sizeof(header));
         if (!error) {
@@ -204,8 +227,25 @@ bool menuModelSelect(evt_t event)
       if (!result)
         break;
       if (y < LCD_H) {
-        drawCategory(y, line, currentCategory==index);
+        if (selectMode == MODE_RENAME_CATEGORY && currentCategory == index) {
+          s_editMode = EDIT_MODIFY_STRING;
+          lcdDrawSolidFilledRect(0, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH, INVERT_LINE_HEIGHT, TEXT_BGCOLOR);
+          editName(MENUS_MARGIN_LEFT, y, selectedCategory, LEN_MODEL_FILENAME, event, 1, 0);
+          if (s_editMode == 0 || event == EVT_KEY_BREAK(KEY_EXIT)) {
+            storageRenameCategory(currentCategory, selectedCategory);
+            selectMode = MODE_SELECT_CATEGORY;
+            putEvent(EVT_REFRESH);
+          }
+        }
+        else {
+          if (currentCategory == index) {
+            memcpy(selectedCategory, line, sizeof(selectedCategory));
+          }
+          drawCategory(y, line, currentCategory==index);
+        }
       }
+
+
       y += FH;
       index++;
     }

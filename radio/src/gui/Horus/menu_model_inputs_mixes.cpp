@@ -79,67 +79,6 @@ int expoFn(int x)
   return anas[ed->chn];
 }
 
-int divRound(int num, int den)
-{
-  if (num < 0)
-    return (num - den/2) / den;
-  else
-    return (num + den/2) / den;
-}
-
-coord_t getYCoord(FnFuncP fn, coord_t x)
-{
-  return limit(0, CURVE_CENTER_Y - divRound(fn(divRound(x * RESX, CURVE_SIDE_WIDTH)) * CURVE_SIDE_WIDTH, RESX), LCD_H-1);
-}
-
-void DrawFunction(FnFuncP fn, int offset)
-{
-  int left = CURVE_CENTER_X-offset-CURVE_SIDE_WIDTH;
-  int right = CURVE_CENTER_X-offset+CURVE_SIDE_WIDTH;
-  int center = CURVE_CENTER_X-offset;
-
-  // Axis
-  lcdDrawSolidHorizontalLine(left, CURVE_CENTER_Y, CURVE_SIDE_WIDTH*2+1, CURVE_AXIS_COLOR);
-  lcdDrawSolidVerticalLine(center, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2, CURVE_AXIS_COLOR);
-
-  // Extra lines
-  lcdDrawVerticalLine(left+CURVE_SIDE_WIDTH/2, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2, STASHED, CURVE_AXIS_COLOR);
-  lcdDrawVerticalLine(right-CURVE_SIDE_WIDTH/2, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2, STASHED, CURVE_AXIS_COLOR);
-  lcdDrawHorizontalLine(left, CURVE_CENTER_Y-CURVE_SIDE_WIDTH/2, CURVE_SIDE_WIDTH*2+1, STASHED, CURVE_AXIS_COLOR);
-  lcdDrawHorizontalLine(left, CURVE_CENTER_Y+CURVE_SIDE_WIDTH/2, CURVE_SIDE_WIDTH*2+1, STASHED, CURVE_AXIS_COLOR);
-
-  // Outside border
-  lcdDrawSolidVerticalLine(left, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2, TEXT_COLOR);
-  lcdDrawSolidVerticalLine(right, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2, TEXT_COLOR);
-  lcdDrawSolidHorizontalLine(left, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2+1, TEXT_COLOR);
-  lcdDrawSolidHorizontalLine(left, CURVE_CENTER_Y+CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2+1, TEXT_COLOR);
-
-  // Horizontal / Vertical scale
-  for (int i=0; i<=20; i++) {
-    lcdDrawSolidHorizontalLine(left-15, CURVE_CENTER_Y-CURVE_SIDE_WIDTH+i*CURVE_SIDE_WIDTH/10, 10, TEXT_COLOR);
-    lcdDrawSolidVerticalLine(left+i*CURVE_SIDE_WIDTH/10, CURVE_CENTER_Y+CURVE_SIDE_WIDTH+5, 10, TEXT_COLOR);
-  }
-
-  coord_t prev_yv = (coord_t)-1;
-
-  for (int xv=-CURVE_SIDE_WIDTH; xv<=CURVE_SIDE_WIDTH; xv+=1) {
-    coord_t yv = getYCoord(fn, xv);
-    if (prev_yv != (coord_t)-1) {
-      if (prev_yv < yv) {
-        for (int y=prev_yv; y<=yv; y+=1) {
-          lcdDrawBitmapPattern(CURVE_CENTER_X+xv-offset-2, y-2, LBM_POINT, TEXT_COLOR);
-        }
-      }
-      else {
-        for (int y=yv; y<=prev_yv; y+=1) {
-          lcdDrawBitmapPattern(CURVE_CENTER_X+xv-offset-2, y-2, LBM_POINT, TEXT_COLOR);
-        }
-      }
-    }
-    prev_yv = yv;
-  }
-}
-
 int getLinesCount(uint8_t expo)
 {
   int lastch = -1;
@@ -371,7 +310,10 @@ bool menuModelExpoOne(evt_t event)
 
   coord_t y = MENU_CONTENT_TOP;
 
-  DrawFunction(expoFn);
+  drawFunction(expoFn);
+
+  drawCurveHorizontalScale();
+  drawCurveVerticalScale(CURVE_CENTER_X-CURVE_SIDE_WIDTH-15);
 
   {
     char textx[5];
@@ -390,20 +332,18 @@ bool menuModelExpoOne(evt_t event)
     int y = limit<int>(-1024, expoFn(x), 1024);
     sprintf(texty, "%d", calcRESXto100(y));
 
-    x = divRound(x*CURVE_SIDE_WIDTH, RESX);
-    y = getYCoord(expoFn, x);
+    x = divRoundClosest(x*CURVE_SIDE_WIDTH, RESX);
+    y = getCurveYCoord(expoFn, x);
 
     lcdDrawSolidFilledRect(CURVE_CENTER_X+x, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, 2, 2*CURVE_SIDE_WIDTH+2, CURVE_CURSOR_COLOR);
     lcdDrawSolidFilledRect(CURVE_CENTER_X-CURVE_SIDE_WIDTH-2, y-1, 2*CURVE_SIDE_WIDTH+2, 2, CURVE_CURSOR_COLOR);
     lcdDrawBitmapPattern(CURVE_CENTER_X+x-4, y-4, LBM_CURVE_POINT, CURVE_CURSOR_COLOR);
     lcdDrawBitmapPattern(CURVE_CENTER_X+x-4, y-4, LBM_CURVE_POINT_CENTER, TEXT_BGCOLOR);
 
-    int left = (x < -30 ? CURVE_CENTER_X+x : (x > 30 ? CURVE_CENTER_X+x-34 : CURVE_CENTER_X-17+x/2));
-    lcdDrawSolidFilledRect(left, CURVE_CENTER_Y+CURVE_SIDE_WIDTH+2, 36, 17, CURVE_CURSOR_COLOR);
-    lcdDrawText(left+3+(35-getTextWidth(textx, SMLSIZE))/2, CURVE_CENTER_Y+CURVE_SIDE_WIDTH+3, textx, LEFT|SMLSIZE|TEXT_BGCOLOR);
-    int top = (y < CURVE_CENTER_Y-8 ? y-1 : (y > CURVE_CENTER_Y+8 ? y-16 : CURVE_CENTER_Y-8+(y-CURVE_CENTER_Y)/2));
-    lcdDrawSolidFilledRect(CURVE_CENTER_X-CURVE_SIDE_WIDTH-37, top, 36, 17, CURVE_CURSOR_COLOR);
-    lcdDrawText(CURVE_CENTER_X-CURVE_SIDE_WIDTH-34+(35-getTextWidth(texty, SMLSIZE))/2, top+1, texty, LEFT|SMLSIZE|TEXT_BGCOLOR);
+    int left = limit(CURVE_CENTER_X-CURVE_SIDE_WIDTH, CURVE_CENTER_X-CURVE_COORD_WIDTH/2+x, CURVE_CENTER_X+CURVE_SIDE_WIDTH-CURVE_COORD_WIDTH+2);
+    drawCurveCoord(left, CURVE_CENTER_Y+CURVE_SIDE_WIDTH+2, textx);
+    int top = limit(CURVE_CENTER_Y-CURVE_SIDE_WIDTH-1, -CURVE_COORD_HEIGHT/2+y, CURVE_CENTER_Y+CURVE_SIDE_WIDTH-CURVE_COORD_HEIGHT+1);
+    drawCurveCoord(CURVE_CENTER_X-CURVE_SIDE_WIDTH-37, top, texty);
   }
 
   for (int i=0; i<NUM_BODY_LINES+1; i++) {

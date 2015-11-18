@@ -326,11 +326,16 @@ bool storageReadNextModel(StorageModelsList * storage, char * line, int maxlen)
   return false;
 }
 
-#define STORAGE_INSERT 1
-#define STORAGE_REMOVE 2
-#define STORAGE_RENAME 3
+enum StorageOperation {
+  STORAGE_INSERT_MODEL,
+  STORAGE_REMOVE_MODEL,
+  STORAGE_RENAME_MODEL,
+  STORAGE_INSERT_CATEGORY,
+  STORAGE_RENAME_CATEGORY,
+  STORAGE_REMOVE_CATEGORY
+};
 
-const char * storageModifyModel(unsigned int operation, int category, int position, const char * name="")
+const char * storageModifyLine(unsigned int operation, int category, int position, const char * name="")
 {
   StorageModelsList storage;
   FIL file;
@@ -357,27 +362,42 @@ const char * storageModifyModel(unsigned int operation, int category, int positi
     if (!operationdone) {
       int len = storageGetCategoryLength(line);
       if (len > 0) {
-        if (categoryindex++ == category) {
-          operationdone = true;
-          if (operation == STORAGE_INSERT) {
+        if (category >= 0) {
+          if (categoryindex == category && operation == STORAGE_INSERT_MODEL) {
             f_puts(name, &file);
             f_putc('\n', &file);
+            operationdone = true;
+          }
+          categoryindex++;
+          if (categoryindex == category) {
+            if (operation == STORAGE_RENAME_CATEGORY) {
+              f_puts("[", &file);
+              f_puts(name, &file);
+              f_puts("]", &file);
+              f_putc('\n', &file);
+              operationdone = true;
+              continue;
+            }
+            else if (operation == STORAGE_REMOVE_CATEGORY) {
+              operationdone = true;
+              continue;
+            }
           }
         }
       }
       else if (categoryindex == category) {
         if (modelindex++ == position) {
           operationdone = true;
-          if (operation == STORAGE_INSERT) {
+          if (operation == STORAGE_INSERT_MODEL) {
             f_puts(name, &file);
             f_putc('\n', &file);
           }
-          else if (operation == STORAGE_RENAME) {
+          else if (operation == STORAGE_RENAME_MODEL) {
             f_puts(name, &file);
             f_putc('\n', &file);
             continue;
           }
-          else if (operation == STORAGE_REMOVE) {
+          else if (operation == STORAGE_REMOVE_MODEL) {
             TRACE("skip %s", line);
             continue;
           }
@@ -388,10 +408,20 @@ const char * storageModifyModel(unsigned int operation, int category, int positi
     f_putc('\n', &file);
   }
 
-  if (!operationdone && categoryindex>=0 && operation==STORAGE_INSERT) {
-    f_puts(name, &file);
-    f_putc('\n', &file);
+  if (!operationdone) {
+    if (categoryindex>=0 && operation==STORAGE_INSERT_MODEL) {
+      f_puts(name, &file);
+      f_putc('\n', &file);
+    }
+    else if (operation==STORAGE_INSERT_CATEGORY) {
+      f_puts("[", &file);
+      f_puts(name, &file);
+      f_puts("]", &file);
+      f_putc('\n', &file);
+    }
   }
+
+
 
   f_close(&file);
   f_unlink(RADIO_PATH "/models.old");
@@ -400,17 +430,32 @@ const char * storageModifyModel(unsigned int operation, int category, int positi
   return NULL;
 }
 
+const char * storageAppendCategory(const char * name)
+{
+  return storageModifyLine(STORAGE_INSERT_CATEGORY, -1, -1, name);
+}
+
+const char * storageRenameCategory(int category, const char * name)
+{
+  return storageModifyLine(STORAGE_RENAME_CATEGORY, category, -1, name);
+}
+
+const char * storageRemoveCategory(int category)
+{
+  return storageModifyLine(STORAGE_REMOVE_CATEGORY, category, -1);
+}
+
 const char * storageInsertModel(const char * name, int category, int position)
 {
-  return storageModifyModel(STORAGE_INSERT, category, position, name);
+  return storageModifyLine(STORAGE_INSERT_MODEL, category, position, name);
 }
 
 const char * storageRemoveModel(int category, int position)
 {
-  return storageModifyModel(STORAGE_REMOVE, category, position);
+  return storageModifyLine(STORAGE_REMOVE_MODEL, category, position);
 }
 
 const char * storageRenameModel(const char * name, int category, int position)
 {
-  return storageModifyModel(STORAGE_RENAME, category, position, name);
+  return storageModifyLine(STORAGE_RENAME_MODEL, category, position, name);
 }
