@@ -62,11 +62,11 @@
 #include "FatFs/ff.h"
 #include "FatFs/diskio.h"
 #include "translations/en.h"
-#include "stamp-opentx.h"
+#include "stamp.h"
 #include "strhelpers.h"
 
 #if defined(PCBTARANIS)
-  #define BOOTLOADER_TITLE      " Taranis BootLoader - " VERS_STR
+  #define BOOTLOADER_TITLE      " Taranis BootLoader - " VERSION
   #if defined(REV9E)
     #define BOOT_KEY_UP		KEY_MINUS
     #define BOOT_KEY_DOWN	KEY_PLUS
@@ -80,7 +80,7 @@
   #define BOOT_KEY_EXIT		KEY_EXIT
   #define DISPLAY_CHAR_WIDTH	35
 #elif defined(PCBSKY9X)
-  #define BOOTLOADER_TITLE      "Sky9x Boot Loader - " VERS_STR
+  #define BOOTLOADER_TITLE      "Sky9x Boot Loader - " VERSION
 #endif
 
 const uint8_t bootloaderVersion[] __attribute__ ((section(".version"), used)) =

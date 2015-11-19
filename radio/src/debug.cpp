@@ -97,7 +97,7 @@ const struct TraceElement * getTraceElement(uint16_t idx)
 
 void dumpTraceBuffer()
 {
-  TRACE("Dump of Trace Buffer (" VERS_STR " " DATE_STR " " TIME_STR "):");
+  TRACE("Dump of Trace Buffer (" VERSION " " DATE " " TIME "):");
   TRACE("#   Time                     Event  Data");
   for(int n = 0; n < TRACE_BUFFER_LEN; ++n) {
     struct gtm tp;

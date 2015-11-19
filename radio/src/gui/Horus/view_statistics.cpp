@@ -175,7 +175,7 @@ bool menuTraceBuffer(evt_t event)
       break;
   }
 
-  SIMPLE_SUBMENU("Trace Buffer " VERS_STR, TRACE_BUFFER_LEN);
+  SIMPLE_SUBMENU("Trace Buffer " VERSION, TRACE_BUFFER_LEN);
 
   /* RTC time */
   struct gtm t;

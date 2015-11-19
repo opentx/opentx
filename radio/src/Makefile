@@ -1789,12 +1789,6 @@ stamp.h:
 	@echo "#define TIME    \"`date +%H:%M:%S | tr -d '\r\n'`\"" >> stamp.h
 	@echo "#define VERSION \"$(VERSION)\"" >> stamp.h
 
-opentx-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx.txt
-	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.txt
-	@cat stamp-opentx.txt
-
 translations/en.h: translations/en.h.txt
 	@echo
 	@echo "Create English language specific header files"
