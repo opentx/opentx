@@ -1747,11 +1747,11 @@ all: begin gccversion sizebefore build sizeafter end
 
 # Change the build target to build a HEX file or a library.
 ifeq ($(ARCH), AVR)
-  build: stamp_header tra lbm allsrc.cpp elf remallsrc hex
+  build: stamp.h tra lbm allsrc.cpp elf remallsrc hex
 else ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X TARANIS))
-  build: stamp_header tra lbm bootloader.lbm $(LUADEP) allsrc.cpp elf remallsrc bin
+  build: stamp.h tra lbm bootloader.lbm $(LUADEP) allsrc.cpp elf remallsrc bin
 else
-  build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
+  build: stamp.h tra lbm allsrc.cpp elf remallsrc bin
 endif
 
 # build bootloader
