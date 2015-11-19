@@ -77,7 +77,7 @@ macro(add_lua_export_target target)
   string(TOUPPER ${target} pcbdefine)
   add_custom_command(
     OUTPUT ${RADIO_SRC_DIRECTORY}/lua/lua_exports_${target}.inc
-    COMMAND ${CMAKE_C_COMPILER} -E -DPCB${pcbdefine} -DCPUARM -DCPUSTM32 -DLUA -DEXPORT myeeprom.h | grep LEXP > lua/lua_exports_${target}.txt
+    COMMAND ${CMAKE_C_COMPILER} -E -DPCB${pcbdefine} -DCPUARM -DCPUSTM32 -DLUA -DEXPORT ${INTTYPES_INCLUDE_OPTION} myeeprom.h | grep LEXP > lua/lua_exports_${target}.txt
     COMMAND python ../util/luaexport.py ${VERSION} lua/lua_exports_${target}.txt lua/lua_exports_${target}.inc lua/lua_fields_${target}.txt
     WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
   )
