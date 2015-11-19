@@ -439,20 +439,6 @@ bool isMenuAvailable(int index)
   }
 }
 
-#define GRAPHICAL_MENUS 0
-
-#if GRAPHICAL_MENUS == 1
-  #define DECLARE_MAIN_MENU()       static int currentMenuIndex = -1
-  #define INIT_MAIN_MENU()          currentMenuIndex = -1
-  #define IS_MAIN_MENU_DISPLAYED()  currentMenuIndex > 0
-  #define TOGGLE_MAIN_MENU()        currentMenuIndex = -currentMenuIndex
-#else
-  #define DECLARE_MAIN_MENU()
-  #define INIT_MAIN_MENU()
-  #define IS_MAIN_MENU_DISPLAYED()  0
-  #define TOGGLE_MAIN_MENU()
-#endif
-
 int getSwitchCount()
 {
   int count = 0;
@@ -466,14 +452,11 @@ int getSwitchCount()
 
 void menuMainView(uint8_t event)
 {
-  DECLARE_MAIN_MENU();
-
   STICK_SCROLL_DISABLE();
 
   switch(event) {
 
     case EVT_ENTRY:
-      INIT_MAIN_MENU();
       killEvents(KEY_EXIT);
       killEvents(KEY_UP);
       killEvents(KEY_DOWN);
@@ -496,20 +479,12 @@ void menuMainView(uint8_t event)
 
 #if MENUS_LOCK != 2/*no menus*/
     case EVT_KEY_BREAK(KEY_MENU):
-#if GRAPHICAL_MENUS == 1
-      TOGGLE_MAIN_MENU();
-#else
       pushMenu(menuModelSelect);
-#endif
       break;
 
     case EVT_KEY_LONG(KEY_MENU):
-#if GRAPHICAL_MENUS == 1
-      pushMenu(lastPopMenu());
-#else
       pushMenu(menuGeneralSetup);
       killEvents(event);
-#endif
       break;
 #endif
 
@@ -529,11 +504,8 @@ void menuMainView(uint8_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
-      if (IS_MAIN_MENU_DISPLAYED()) {
-        TOGGLE_MAIN_MENU();
-      }
 #if defined(GVARS)
-      else if (s_gvar_timer > 0) {
+      if (s_gvar_timer > 0) {
         s_gvar_timer = 0;
       }
 #endif
@@ -624,27 +596,6 @@ void menuMainView(uint8_t event)
     lcdDrawTextWithLen(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
     lcdDrawText(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("[\010]"), BOLD);
     lcd_outdezAtt(BITMAP_X+5*FW+FW/2, BITMAP_Y+2*FH+3, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), BOLD);
-  }
-#endif
-
-#if GRAPHICAL_MENUS > 0
-  if (IS_MAIN_MENU_DISPLAYED()) {
-    displayMenuBar(MAIN_MENU, currentMenuIndex-1);
-    switch (event) {
-      case EVT_KEY_FIRST(KEY_MINUS):
-        currentMenuIndex = circularIncDec(currentMenuIndex, +1, 1, DIM(MAIN_MENU), isMenuAvailable);
-        break;
-
-      case EVT_KEY_FIRST(KEY_PLUS):
-        currentMenuIndex = circularIncDec(currentMenuIndex, -1, 1, DIM(MAIN_MENU), isMenuAvailable);
-        break;
-
-      case EVT_KEY_FIRST(KEY_ENTER):
-        killEvents(event);
-        pushMenu(MAIN_MENU[currentMenuIndex-1].action);
-        TOGGLE_MAIN_MENU();
-        break;
-    }
   }
 #endif
 }

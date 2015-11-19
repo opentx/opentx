@@ -923,7 +923,7 @@ ifeq ($(PCB), TARANIS)
   endif
   TRGT = arm-none-eabi-
   OPT = s
-  BITMAPS += $(patsubst %.png,%.lbm,$(wildcard bitmaps/Taranis/*.png)) bitmaps/Taranis/mainmenu.lbm
+  BITMAPS += $(patsubst %.png,%.lbm,$(wildcard bitmaps/Taranis/*.png))
   SDCARD = YES
   THR_TRACE = YES
   EXT = FRSKY_SPORT
@@ -1906,9 +1906,6 @@ bitmaps/9X/%.lbm: bitmaps/9X/%.png
 
 bitmaps/Taranis/%.lbm: bitmaps/Taranis/%.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE) 4bits
-
-bitmaps/Taranis/mainmenu.png: ../util/taranisicons.py $(wildcard bitmaps/Taranis/std/*.png)
-	@$(PYTHON) ../util/taranisicons.py
 
 bitmaps/Flamenco/%.lbm: bitmaps/Flamenco/%.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE) 4/4/4/4

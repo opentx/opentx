@@ -92,20 +92,6 @@ void drawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t co
   lcdDrawVerticalLine(x, y + yofs, yhgt, SOLID, FORCE);
 }
 
-const pm_uchar MAINMENU_LBM[] PROGMEM = {
-  #include "bitmaps/Taranis/mainmenu.lbm"
-};
-
-void displayMenuBar(const MenuItem *menu, int index)
-{
-  drawFilledRect(0, 0, LCD_W, 32, SOLID, ERASE);
-  drawFilledRect(0, 24, LCD_W, 7, SOLID, GREY_DEFAULT);
-  lcd_bmp(1, 0, MAINMENU_LBM);
-  lcdDrawText(0, 24, menu[index].name, INVERS);
-  lcdDrawRect(index*24, 0, 26, 24, SOLID, FORCE);
-  lcdDrawHorizontalLine(0, 31, LCD_W, SOLID, FORCE);
-}
-
 void drawProgressBar(const char *label)
 {
   lcd_putsLeft(4*FH, label);
