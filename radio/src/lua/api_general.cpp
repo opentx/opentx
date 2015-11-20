@@ -524,8 +524,11 @@ TODO table of events/masks
 */
 static int luaKillEvents(lua_State *L)
 {
-  int event = luaL_checkinteger(L, 1);
-  killEvents(event);
+  uint8_t key = EVT_KEY_MASK(luaL_checkinteger(L, 1));
+  // prevent killing ENT and EXIT
+  if (key != KEY_EXIT && key != KEY_ENTER) {
+    killEvents(key);
+  }
   return 0;
 }
 

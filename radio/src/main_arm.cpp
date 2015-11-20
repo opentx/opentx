@@ -155,7 +155,17 @@ void perMain()
   bool standaloneScriptWasRun = luaTask(evt, RUN_STNDAL_SCRIPT, true);
   bool refreshScreen = true;
   if (!standaloneScriptWasRun) {
-    refreshScreen = !luaTask(evt, RUN_TELEM_FG_SCRIPT, true);
+    if (luaTask(evt, RUN_TELEM_FG_SCRIPT, true)) {
+      // the telemetry screen is active
+      refreshScreen = false;
+      // filter out keys that are used by the telemetry scripts
+      // PLUS, MINUS and MENU (all events)
+      // ENT (leave long press for telemetry reset menu)
+      uint8_t key = EVT_KEY_MASK(evt);
+      if (key == KEY_PLUS || key == KEY_MINUS || key == KEY_MENU || (key == KEY_ENTER && !EVT_KEY_LONG(evt))) {
+        evt = 0;
+      }
+    } 
   }
 
   t0 = get_tmr10ms() - t0;
