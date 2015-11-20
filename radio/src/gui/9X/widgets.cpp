@@ -72,7 +72,7 @@ void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 }
 
 #if !defined(CPUM64)
-void drawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
+void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
 {
   lcdDrawVerticalLine(x, y, h, DOTTED);
   coord_t yofs = (h * offset) / count;

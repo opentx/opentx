@@ -68,9 +68,13 @@
 #define MENU_TITLE_NEXT_POS            (lcdNextPos + 10)
 #define MENU_INIT_VPOS                 -1
 
+#define MENU_ICONS_SPACING             31
+#define SUBMENU_LINE_WIDTH             230
+
 void displaySplash();
 void displayScreenIndex(uint8_t index, uint8_t count);
-void drawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
+void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
+void drawHorizontalScrollbar(coord_t x, coord_t y, coord_t w, uint16_t offset, uint16_t count, uint8_t visible);
 void drawHeader(int index);
 void drawFooter();
 #define drawStatusLine(...)

@@ -151,7 +151,7 @@ void menuTextView(uint8_t event)
   lcd_invert_line(0);
 
   if (lines_count > LCD_LINES-1) {
-    drawScrollbar(LCD_W-1, FH, LCD_H-FH, s_pgOfs, lines_count, LCD_LINES-1);
+    drawVerticalScrollbar(LCD_W-1, FH, LCD_H-FH, s_pgOfs, lines_count, LCD_LINES-1);
   }
 }
 

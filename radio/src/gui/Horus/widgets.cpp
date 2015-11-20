@@ -104,7 +104,7 @@ void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
   }
 }
 
-void drawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
+void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
 {
   if (visible < count) {
     lcdDrawSolidVerticalLine(x, y, h, LINE_COLOR);
@@ -113,6 +113,18 @@ void drawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t co
     if (yhgt + yofs > h)
       yhgt = h - yofs;
     lcdDrawSolidFilledRect(x-1, y + yofs, 3, yhgt, SCROLLBOX_COLOR);
+  }
+}
+
+void drawHorizontalScrollbar(coord_t x, coord_t y, coord_t w, uint16_t offset, uint16_t count, uint8_t visible)
+{
+  if (visible < count) {
+    lcdDrawSolidHorizontalLine(x, y, w, LINE_COLOR);
+    coord_t xofs = (w*offset + count/2) / count;
+    coord_t xhgt = (w*visible + count/2) / count;
+    if (xhgt + xofs > w)
+      xhgt = w - xofs;
+    lcdDrawSolidFilledRect(x+xofs, y-1, xhgt, 3, SCROLLBOX_COLOR);
   }
 }
 
@@ -161,8 +173,6 @@ void drawScreenTemplate(const char * title)
   lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, LCD_W, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
 }
 
-#define MENU_ICONS_SPACING 31
-
 void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X)
 {
   // clear the screen
@@ -187,11 +197,11 @@ void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X)
   if (name) {
     // must be done at the end so that we can write something at the right of the menu title
     lcdDrawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP+1, name, TEXT_COLOR);
-    lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT-4, MENU_TITLE_TOP+19, 220, 2, TITLE_BGCOLOR);
+    lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT-4, MENU_TITLE_TOP+20, SUBMENU_LINE_WIDTH, 2, TITLE_BGCOLOR);
   }
 
   if (scrollbar_X && linesCount > NUM_BODY_LINES+1) {
-    drawScrollbar(scrollbar_X, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H+MENU_FOOTER_HEIGHT, s_pgOfs, linesCount, NUM_BODY_LINES+1);
+    drawVerticalScrollbar(scrollbar_X, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H+MENU_FOOTER_HEIGHT, s_pgOfs, linesCount, NUM_BODY_LINES+1);
   }
 }
 
@@ -235,7 +245,7 @@ void drawMenuTemplate(const char * name, uint16_t scrollbar_X)
   }
 
   if (scrollbar_X && linesCount > NUM_BODY_LINES) {
-    drawScrollbar(scrollbar_X, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, s_pgOfs, linesCount, NUM_BODY_LINES);
+    drawVerticalScrollbar(scrollbar_X, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, s_pgOfs, linesCount, NUM_BODY_LINES);
   }
 }
 

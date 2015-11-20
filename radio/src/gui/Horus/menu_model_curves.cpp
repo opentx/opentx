@@ -135,24 +135,35 @@ void onCurveOneMenu(const char *result)
   }
 }
 
+#define MODEL_CURVE_ONE_2ND_COLUMN        130
+
+enum MenuModelCurveOneItems {
+  ITEM_CURVE_NAME,
+  ITEM_CURVE_TYPE,
+  ITEM_CURVE_POINTS,
+  ITEM_CURVE_SMOOTH,
+  ITEM_CURVE_COORDS1,
+  ITEM_CURVE_COORDS2,
+};
+
 bool menuModelCurveOne(evt_t event)
 {
   static uint8_t pointsOfs = 0;
   CurveInfo & crv = g_model.curves[s_curveChan];
   int8_t * points = curveAddress(s_curveChan);
 
-  SIMPLE_SUBMENU(STR_MENUCURVE, 4 + 5+crv.points + (crv.type==CURVE_TYPE_CUSTOM ? 5+crv.points-2 : 0), 0);
+  SUBMENU(STR_MENUCURVE, crv.type==CURVE_TYPE_CUSTOM ? 6 : 5, 0, { 0, 0, 0, 0, uint8_t(5+crv.points-1), uint8_t(5+crv.points-1) });
 
   lcdDrawNumber(MENU_TITLE_NEXT_POS, MENU_TITLE_TOP+1, s_curveChan+1, LEFT|TEXT_COLOR);
 
   // Curve name
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, STR_NAME);
-  editName(MENUS_MARGIN_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + FH, g_model.curveNames[s_curveChan], sizeof(g_model.curveNames[s_curveChan]), event, m_posVert==0);
+  editName(MODEL_CURVE_ONE_2ND_COLUMN, MENU_CONTENT_TOP, g_model.curveNames[s_curveChan], sizeof(g_model.curveNames[s_curveChan]), event, m_posVert==ITEM_CURVE_NAME);
 
   // Curve type
-  LcdFlags attr = (m_posVert==1 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 2*FH, "Type");
-  lcdDrawTextAtIndex(MENUS_MARGIN_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + 3*FH, STR_CURVE_TYPES, crv.type, attr);
+  LcdFlags attr = (m_posVert==ITEM_CURVE_TYPE ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + FH, "Type");
+  lcdDrawTextAtIndex(MODEL_CURVE_ONE_2ND_COLUMN, MENU_CONTENT_TOP + FH, STR_CURVE_TYPES, crv.type, attr);
   if (attr) {
     uint8_t newType = checkIncDecModelZero(event, crv.type, CURVE_TYPE_LAST);
     if (newType != crv.type) {
@@ -168,9 +179,9 @@ bool menuModelCurveOne(evt_t event)
   }
 
   // Curve points count
-  attr = (m_posVert==2 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 4*FH, STR_COUNT);
-  lcdDrawNumber(MENUS_MARGIN_LEFT+INDENT_WIDTH, MENU_CONTENT_TOP + 5*FH, 5+crv.points, LEFT|attr, 0, NULL, STR_PTS);
+  attr = (m_posVert==ITEM_CURVE_POINTS ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 2*FH, STR_COUNT);
+  lcdDrawNumber(MODEL_CURVE_ONE_2ND_COLUMN, MENU_CONTENT_TOP + 2*FH, 5+crv.points, LEFT|attr, 0, NULL, STR_PTS);
   if (attr) {
     int count = checkIncDecModel(event, crv.points, -3, 12); // 2pts - 17pts
     if (checkIncDec_Ret) {
@@ -190,16 +201,16 @@ bool menuModelCurveOne(evt_t event)
   }
 
   // Curve smooth
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 6*FH, STR_SMOOTH);
-  drawCheckBox(lcdNextPos + 10, MENU_CONTENT_TOP + 6*FH, crv.smooth, m_posVert==3 ? INVERS : 0);
-  if (m_posVert==3) crv.smooth = checkIncDecModel(event, crv.smooth, 0, 1);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 3*FH, STR_SMOOTH);
+  drawCheckBox(MODEL_CURVE_ONE_2ND_COLUMN, MENU_CONTENT_TOP + 3*FH, crv.smooth, m_posVert==ITEM_CURVE_SMOOTH ? INVERS : 0);
+  if (m_posVert==ITEM_CURVE_SMOOTH) crv.smooth = checkIncDecModel(event, crv.smooth, 0, 1);
 
   switch(event) {
     case EVT_ENTRY:
       pointsOfs = 0;
       break;
     case EVT_KEY_LONG(KEY_ENTER):
-      if (m_posVert > 1) {
+      if (m_posVert > ITEM_CURVE_POINTS) {
         killEvents(event);
         MENU_ADD_ITEM(STR_CURVE_PRESET);
         MENU_ADD_ITEM(STR_MIRROR);
@@ -212,35 +223,30 @@ bool menuModelCurveOne(evt_t event)
       killEvents(event);
   }
 
-  if (m_posVert >= 0) {
-    DrawCurve();
-    drawCurveHorizontalScale();
-    if (m_posVert < 4) drawCurveVerticalScale(CURVE_CENTER_X-CURVE_SIDE_WIDTH-15);
-  }
+  DrawCurve();
+  drawCurveHorizontalScale();
+  if (m_posVert < ITEM_CURVE_COORDS1) drawCurveVerticalScale(CURVE_CENTER_X-CURVE_SIDE_WIDTH-15);
 
-  coord_t posY = MENU_CONTENT_TOP;
+  coord_t posX = 47;
   attr = (s_editMode > 0 ? INVERS|BLINK : INVERS);
   for (int i=0; i<5+crv.points; i++) {
     point_t point = getPoint(i);
     uint8_t selectionMode = 0;
-    if (crv.type==CURVE_TYPE_CUSTOM) {
-      if (m_posVert==4+2*i || (i==5+crv.points-1 && m_posVert==4+5+crv.points+5+crv.points-2-1))
+    if (m_posHorz == i) {
+      if (m_posVert == ITEM_CURVE_COORDS2)
         selectionMode = 2;
-      else if (i>0 && m_posVert==3+2*i)
+      else if (m_posVert == ITEM_CURVE_COORDS1)
         selectionMode = 1;
-    }
-    else if (m_posVert == 4+i) {
-      selectionMode = 2;
     }
 
     int8_t x = -100 + 200*i/(5+crv.points-1);
     if (crv.type==CURVE_TYPE_CUSTOM && i>0 && i<5+crv.points-1) x = points[5+crv.points+i-1];
 
-    if (i>=pointsOfs && i<pointsOfs+NUM_BODY_LINES) {
-      lcdDrawNumber(120,  posY, i+1, LEFT|TEXT_DISABLE_COLOR);
-      lcdDrawNumber(150, posY, x, LEFT|(selectionMode==1 ? attr : 0));
-      lcdDrawNumber(200, posY, points[i], LEFT|(selectionMode==2 ? attr : 0));
-      posY += FH;
+    if (i>=pointsOfs && i<pointsOfs+5) {
+      lcdDrawNumber(posX, MENU_CONTENT_TOP + 5*FH, i+1, TEXT_DISABLE_COLOR);
+      lcdDrawNumber(posX, MENU_CONTENT_TOP + 6*FH+2, x, (selectionMode==1 ? attr : 0));
+      lcdDrawNumber(posX, MENU_CONTENT_TOP + 7*FH+6, points[i], (selectionMode==2 ? attr : 0));
+      posX += 45;
     }
 
     if (selectionMode > 0) {
@@ -281,15 +287,17 @@ bool menuModelCurveOne(evt_t event)
       }
       if (i < pointsOfs)
         pointsOfs = i;
-      else if (i > pointsOfs+NUM_BODY_LINES-1)
-        pointsOfs = i-NUM_BODY_LINES+1;
+      else if (i > pointsOfs+5-1)
+        pointsOfs = i-5+1;
     }
     else {
       drawCurvePoint(point.x-3, point.y-4, TEXT_COLOR);
     }
   }
 
-  drawScrollbar(240, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H+MENU_FOOTER_HEIGHT, pointsOfs, 5+crv.points, NUM_BODY_LINES+1);
+  lcdDrawHorizontalLine(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 6*FH - 1, SUBMENU_LINE_WIDTH, DOTTED, CURVE_AXIS_COLOR);
+  lcdDrawHorizontalLine(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 7*FH + 2, SUBMENU_LINE_WIDTH, DOTTED, CURVE_AXIS_COLOR);
+  drawHorizontalScrollbar(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 9*FH - 1, SUBMENU_LINE_WIDTH, pointsOfs, 5+crv.points, 5);
 
   return true;
 }

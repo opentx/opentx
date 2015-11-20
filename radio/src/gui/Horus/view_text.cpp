@@ -147,7 +147,7 @@ bool menuTextView(evt_t event)
 #endif
   lcd_putsCenter(MENU_FOOTER_TOP, title, HEADER_COLOR);
 
-  drawScrollbar(LCD_W-5, 30, MENU_FOOTER_TOP-34, s_pgOfs, lines_count, NUM_BODY_LINES);
+  drawVerticalScrollbar(LCD_W-5, 30, MENU_FOOTER_TOP-34, s_pgOfs, lines_count, NUM_BODY_LINES);
 
   return true;
 }

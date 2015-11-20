@@ -46,7 +46,7 @@ void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 
 #if !defined(CPUM64)
   #define DEFAULT_SCROLLBAR_X (LCD_W-1)
-  void drawScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
+  void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 #endif
 
 #define SET_SCROLLBAR_X(x)

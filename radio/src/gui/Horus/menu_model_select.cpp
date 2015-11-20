@@ -287,7 +287,7 @@ bool menuModelSelect(evt_t event)
         putEvent(EVT_REFRESH);
       }
     }
-    drawScrollbar(DEFAULT_SCROLLBAR_X, MENU_HEADER_HEIGHT+7, MENU_FOOTER_TOP-MENU_HEADER_HEIGHT-15, s_pgOfs, (index+1)/2, 3);
+    drawVerticalScrollbar(DEFAULT_SCROLLBAR_X, MENU_HEADER_HEIGHT+7, MENU_FOOTER_TOP-MENU_HEADER_HEIGHT-15, s_pgOfs, (index+1)/2, 3);
   }
 
   return true;
