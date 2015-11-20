@@ -42,7 +42,9 @@
 /*luadoc
 @function lcd.lock()
 
-@notice This function has no effect in OpenTX 2.1
+@status depreciated since 2.1
+
+@notice This function has no effect in OpenTX 2.1 and will be removed in 2.2
 */
 static int luaLcdLock(lua_State *L)
 {
@@ -54,7 +56,9 @@ static int luaLcdLock(lua_State *L)
 /*luadoc
 @function lcd.clear()
 
-Erases all contents of LCD.
+Clears the LCD screen 
+
+@status current Introduced in 2.0.0
 
 @notice This function only works in stand-alone and telemetry scripts.
 */
@@ -67,13 +71,17 @@ static int luaLcdClear(lua_State *L)
 /*luadoc
 @function lcd.drawPoint(x, y)
 
-Draws a single pixel on LCD
+Draws a single pixel at (x,y) position
 
-@param x (positive number) x position, starts from 0 in top left corner. 
+@param x (positive number) x position
 
-@param y (positive number) y position, starts from 0 in top left corner and goes down.
+@param y (positive number) y position
 
-@notice Drawing on an existing black pixel produces white pixel (TODO check this!)
+@notice Taranis has an LCD display width of 212 pixels and height of 64 pixels.
+Position (0,0) is at top left. Y axis is negative, top line is 0, 
+bottom line is 63. Drawing on an existing black pixel produces white pixel (TODO check this!)
+
+@status current Introduced in 2.0.0
 */
 static int luaLcdDrawPoint(lua_State *L)
 {
@@ -99,6 +107,8 @@ Draws a straight line on LCD
 
 @notice If the start or the end of the line is outside the LCD dimensions, then the
 whole line will not be drawn (starting from OpenTX 2.1.5)
+
+@status current Introduced in 2.0.0
 */
 static int luaLcdDrawLine(lua_State *L)
 {
@@ -113,12 +123,43 @@ static int luaLcdDrawLine(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.getLastPos()
+
+Returns the last x position from previous output
+
+@retval number (integer) x position
+
+@status current Introduced in 2.0.0
+*/
 static int luaLcdGetLastPos(lua_State *L)
 {
   lua_pushinteger(L, lcdLastPos);
   return 1;
 }
 
+/*luadoc
+@function lcd.drawText(x, y, text [, flags])
+
+Draws a text beginning at (x,y)
+
+@param x,y (positive numbers) starting coordinate
+
+@param text (string) text to display
+
+@param flags (unsigned number) drawing flags. All values can be
+combined together using the + character. ie BLINK + DBLSIZE.
+See the Appendix for available characters in each font set.
+ * `0 or not specified` normal font
+ * `XXLSIZE` jumbo sized font
+ * `DBLSIZE` double size font
+ * `MIDSIZE` mid sized font
+ * `SMLSIZE` small font
+ * `INVERS` inverted display
+ * `BLINK` blinking text
+
+@status current Introduced in 2.0.0
+*/
 static int luaLcdDrawText(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -130,6 +171,22 @@ static int luaLcdDrawText(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.drawTimer(x, y, value [, flags])
+
+Display a value formatted as time at (x,y) 
+
+@param x,y (positive numbers) starting coordinate
+
+@param value (number) time in seconds
+
+@param flags (unsigned number) drawing flags:
+ * `0 or not specified` normal representation (minutes and seconds)
+ * `TIMEHOUR` display hours
+ * other general LCD flag also apply
+
+@status current Introduced in 2.0.0
+*/
 static int luaLcdDrawTimer(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -145,6 +202,23 @@ static int luaLcdDrawTimer(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.drawNumber(x, y, value [, flags])
+
+Display a number at (x,y) 
+
+@param x,y (positive numbers) starting coordinate
+
+@param value (number) value to display
+
+@param flags (unsigned number) drawing flags: 
+ * `0 or not specified` normal representation 
+ * `PREC1` display with one decimal place (number 386 is displayed as 38.6)
+ * `PREC2` display with tow decimal places (number 386 is displayed as 3.86)
+ * other general LCD flag also apply
+
+@status current Introduced in 2.0.0
+*/
 static int luaLcdDrawNumber(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -163,6 +237,20 @@ static int luaLcdDrawNumber(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.drawChannel(x, y, source, flags)
+
+Display a telemetry value at (x,y)
+
+@param x,y (positive numbers) starting coordinate
+
+@param source can be a source identifier (number) or a source name (string).
+See getValue()
+
+@param flags (unsigned number) drawing flags
+
+@status current Introduced in 2.0.6, changed in 2.1.0 (only telemetry sources are valid)
+*/
 static int luaLcdDrawChannel(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -186,6 +274,20 @@ static int luaLcdDrawChannel(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.drawSwitch(x, y, switch, flags)
+
+Draws a text representation of switch at (x,y)
+
+@param x,y (positive numbers) starting coordinate
+
+@param switch (number) number of switch to display, negative number 
+displays negated switch
+
+@param flags (unsigned number) drawing flags, only SMLSIZE, BLINK and INVERS.
+
+@status current Introduced in 2.0.0
+*/
 static int luaLcdDrawSwitch(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -197,6 +299,19 @@ static int luaLcdDrawSwitch(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.drawSource(x, y, source [, flags])
+
+Displays the name of the corresponding input as defined by the source at (x,y)  
+
+@param x,y (positive numbers) starting coordinate
+
+@param source (number) source index
+
+@param flags (unsigned number) drawing flags
+
+@status current Introduced in 2.0.0
+*/
 static int luaLcdDrawSource(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -208,6 +323,19 @@ static int luaLcdDrawSource(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.drawPixmap(x, y, name)
+
+Draws a bitmap at (x,y)  
+
+@param x,y (positive numbers) starting coordinate
+
+@param name (string) full path to the bitmap on SD card (i.e. “/BMP/test.bmp”)
+
+@notice Only available on monochrome screens
+
+@status current Introduced in 2.0.0
+*/
 #if !defined(COLORLCD)
 static int luaLcdDrawPixmap(lua_State *L)
 {
@@ -224,6 +352,21 @@ static int luaLcdDrawPixmap(lua_State *L)
 }
 #endif
 
+/*luadoc
+@function lcd.drawRectangle(x, y, w, h [, flags])
+
+Draws a rectangle from top left corner (x,y) of specified width and height 
+
+@param x,y (positive numbers) top left corner position
+
+@param w (number) width in pixels
+
+@param h (number) height in pixels
+
+@param flags (unsigned number) drawing flags
+
+@status current Introduced in 2.0.0
+*/
 static int luaLcdDrawRectangle(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -236,6 +379,21 @@ static int luaLcdDrawRectangle(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.drawFilledRectangle(x, y, w, h [, flags])
+
+Draws a solid rectangle from top left corner (x,y) of specified width and height 
+
+@param x,y (positive numbers) top left corner position
+
+@param w (number) width in pixels
+
+@param h (number) height in pixels
+
+@param flags (unsigned number) drawing flags
+
+@status current Introduced in 2.0.0
+*/
 static int luaLcdDrawFilledRectangle(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -248,6 +406,25 @@ static int luaLcdDrawFilledRectangle(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.drawGauge(x, y, w, h, fill, maxfill)
+
+Draws a simple gauge that is filled based upon fill value
+
+@param x,y (positive numbers) top left corner position
+
+@param w (number) width in pixels
+
+@param h (number) height in pixels
+
+@param fill (number) amount of fill to apply
+
+@param maxfill (number) total value of fill
+
+@param flags (unsigned number) drawing flags
+
+@status current Introduced in 2.0.0
+*/
 static int luaLcdDrawGauge(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -266,6 +443,22 @@ static int luaLcdDrawGauge(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.drawScreenTitle(title, page, pages)
+
+Draws a title bar
+
+@param title (string) text for the title
+
+@param page (number) page number
+
+@param pages (number) total number of pages. Only used as indicator on
+the right side of title bar. (i.e. idx=2, cnt=5, display `2/5`)
+
+@notice Only available on monochrome screens
+
+@status current Introduced in 2.0.0
+*/
 #if !defined(COLORLCD)
 static int luaLcdDrawScreenTitle(lua_State *L)
 {
@@ -282,6 +475,28 @@ static int luaLcdDrawScreenTitle(lua_State *L)
 }
 #endif
 
+/*luadoc
+@function lcd.drawCombobox(x, y, w, list, idx [, flags])
+
+Draws a combo box
+
+@param x,y (positive numbers) top left corner position
+
+@param w (number) width of combo box in pixels
+
+@param list (table) combo box elements, each element is a string
+
+@param idx (integer) index of entry to highlight
+
+@param page (number) page number
+
+@param flags (unsigned number) drawing flags, the flags can not be combined:
+ * `BLINK` combo box is expanded
+ * `INVERS` combo box collapsed, text inversed
+ * `0 or not present` combo box collapsed, text normal
+
+@status current Introduced in 2.0.0
+*/
 static int luaLcdDrawCombobox(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
