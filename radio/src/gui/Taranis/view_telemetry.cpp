@@ -230,6 +230,7 @@ void menuTelemetryFrsky(uint8_t event)
 
   switch (event) {
     case EVT_KEY_FIRST(KEY_EXIT):
+    case EVT_KEY_LONG(KEY_EXIT):
       killEvents(event);
       chainMenu(menuMainView);
       break;

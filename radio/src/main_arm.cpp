@@ -160,10 +160,15 @@ void perMain()
       refreshScreen = false;
       // filter out keys that are used by the telemetry scripts
       // PLUS, MINUS and MENU (all events)
-      // ENT (leave long press for telemetry reset menu)
+      // ENT (short)
+      // EXIT (short)
       uint8_t key = EVT_KEY_MASK(evt);
-      if (key == KEY_PLUS || key == KEY_MINUS || key == KEY_MENU || (key == KEY_ENTER && !EVT_KEY_LONG(evt))) {
-        evt = 0;
+      if (evt) {
+        if (key == KEY_PLUS || key == KEY_MINUS || key == KEY_MENU || 
+           (!IS_KEY_LONG(evt) && (key == KEY_ENTER || key == KEY_EXIT))) {
+          // TRACE("Telemetry script event 0x%02x killed", evt);
+          evt = 0;
+        }
       }
     } 
   }
