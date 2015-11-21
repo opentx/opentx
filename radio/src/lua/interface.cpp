@@ -479,10 +479,10 @@ void displayLuaError(const char * title)
 
 void displayAcknowledgeLuaError(uint8_t event)
 {
-  s_warning_result = false;
-  displayLuaError(s_warning);
+  warningResult = false;
+  displayLuaError(warningText);
   if (event == EVT_KEY_BREAK(KEY_EXIT)) {
-    s_warning = NULL;
+    warningText = NULL;
   }
 }
 
@@ -519,7 +519,7 @@ void luaError(uint8_t error, bool acknowledge)
   }
 
   if (acknowledge) {
-    s_warning = errorTitle;
+    warningText = errorTitle;
     popupFunc = displayAcknowledgeLuaError;
   }
   else {

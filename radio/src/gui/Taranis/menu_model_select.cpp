@@ -72,7 +72,7 @@ void onModelSelectMenu(const char *result)
     // The user choosed a file on SD to restore
     eeCheck(true);
     POPUP_WARNING(eeRestoreModel(sub, (char *)result));
-    if (!s_warning && g_eeGeneral.currModel == sub) {
+    if (!warningText && g_eeGeneral.currModel == sub) {
       eeLoadModel(sub);
     }
   }
@@ -80,8 +80,8 @@ void onModelSelectMenu(const char *result)
 
 void menuModelSelect(uint8_t event)
 {
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     eeCheck(true);
     eeDeleteModel(menuVerticalPosition); // delete file
     s_copyMode = 0;

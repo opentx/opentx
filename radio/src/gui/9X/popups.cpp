@@ -36,17 +36,17 @@
 
 #include "../../opentx.h"
 
-const pm_char * s_warning = NULL;
-const pm_char * s_warning_info;
+const pm_char * warningText = NULL;
+const pm_char * warningInfoText;
 uint8_t         s_warning_info_len;
-uint8_t         s_warning_type;
-uint8_t         s_warning_result = 0;
+uint8_t         warningType;
+uint8_t         warningResult = 0;
 
 #if defined(CPUARM)
 uint8_t         s_warning_info_flags = ZCHAR;
-int16_t         s_warning_input_value;
-int16_t         s_warning_input_min;
-int16_t         s_warning_input_max;
+int16_t         warningInputValue;
+int16_t         warningInputValueMin;
+int16_t         warningInputValueMax;
 #endif
 
 void displayBox()
@@ -54,18 +54,18 @@ void displayBox()
   drawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
   lcd_rect(10, 16, LCD_W-20, 40);
 #if defined(CPUARM)
-  lcd_putsn(WARNING_LINE_X, WARNING_LINE_Y, s_warning, WARNING_LINE_LEN);
+  lcd_putsn(WARNING_LINE_X, WARNING_LINE_Y, warningText, WARNING_LINE_LEN);
 #else
-  lcd_puts(WARNING_LINE_X, WARNING_LINE_Y, s_warning);
+  lcd_puts(WARNING_LINE_X, WARNING_LINE_Y, warningText);
 #endif
-  // could be a place for a s_warning_info
+  // could be a place for a warningInfoText
 }
 
 void displayPopup(const pm_char * pstr)
 {
-  s_warning = pstr;
+  warningText = pstr;
   displayBox();
-  s_warning = NULL;
+  warningText = NULL;
   lcdRefresh();
 }
 
@@ -100,34 +100,34 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 
 void displayWarning(uint8_t event)
 {
-  s_warning_result = false;
+  warningResult = false;
   displayBox();
-  if (s_warning_info) {
-    lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
+  if (warningInfoText) {
+    lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH, warningInfoText, s_warning_info_len, WARNING_INFO_FLAGS);
   }
-  lcd_puts(WARNING_LINE_X, WARNING_LINE_Y+2*FH, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
+  lcd_puts(WARNING_LINE_X, WARNING_LINE_Y+2*FH, warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
   switch (event) {
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_BREAK:
 #endif
     case EVT_KEY_BREAK(KEY_ENTER):
-      if (s_warning_type == WARNING_TYPE_ASTERISK)
+      if (warningType == WARNING_TYPE_ASTERISK)
         break;
-      s_warning_result = true;
+      warningResult = true;
       // no break
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_LONG:
       killEvents(event);
 #endif
     case EVT_KEY_BREAK(KEY_EXIT):
-      s_warning = NULL;
-      s_warning_type = WARNING_TYPE_ASTERISK;
+      warningText = NULL;
+      warningType = WARNING_TYPE_ASTERISK;
       break;
 #if defined(CPUARM)
     default:
-      if (s_warning_type != WARNING_TYPE_INPUT) break;
+      if (warningType != WARNING_TYPE_INPUT) break;
       s_editMode = EDIT_MODIFY_FIELD;
-      s_warning_input_value = checkIncDec(event, s_warning_input_value, s_warning_input_min, s_warning_input_max);
+      warningInputValue = checkIncDec(event, warningInputValue, warningInputValueMin, warningInputValueMax);
       s_editMode = EDIT_SELECT_FIELD;
       break;
 #endif

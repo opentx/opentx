@@ -132,8 +132,8 @@ void menuModelLimits(uint8_t event)
     displayColumnHeader(STR_LIMITS_HEADERS, menuHorizontalPosition);
   }
 
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     LimitData *ld = limitAddress(sub);
     ld->revert = !ld->revert;
     eeDirty(EE_MODEL);

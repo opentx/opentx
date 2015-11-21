@@ -121,8 +121,8 @@ void menuGeneralSdManager(uint8_t _event)
   fno.lfsize = sizeof(lfn);
 
 #if defined(SDCARD)
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     displayPopup(STR_FORMATTING);
     closeLogs();
 #if defined(PCBSKY9X)

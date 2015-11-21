@@ -98,15 +98,15 @@ bool moveCurve(uint8_t index, int8_t shift)
 void displayPresetChoice(uint8_t event)
 {
   displayWarning(event);
-  lcd_outdezAtt(WARNING_LINE_X+FW*7, WARNING_LINE_Y, 45*s_warning_input_value/4, LEFT|INVERS);
+  lcd_outdezAtt(WARNING_LINE_X+FW*7, WARNING_LINE_Y, 45*warningInputValue/4, LEFT|INVERS);
   lcd_putcAtt(lcdLastPos, WARNING_LINE_Y, '@', INVERS);
 
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     CurveInfo & crv = g_model.curves[s_curveChan];
     int8_t * points = curveAddress(s_curveChan);
     for (uint8_t i=0; i<5+crv.points; i++)
-      points[i] = (i-((5+crv.points)/2)) * s_warning_input_value * 50 / (4+crv.points);
+      points[i] = (i-((5+crv.points)/2)) * warningInputValue * 50 / (4+crv.points);
     if (crv.type == CURVE_TYPE_CUSTOM) {
       for (int i=0; i<3+crv.points; i++)
         points[crv.points+i] = -100 + ((i+1)*200) / (4+crv.points);

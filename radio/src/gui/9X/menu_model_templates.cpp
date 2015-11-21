@@ -43,8 +43,8 @@ void menuModelTemplates(uint8_t event)
   uint8_t sub = menuVerticalPosition - 1;
 
   if (sub < TMPL_COUNT) {
-    if (s_warning_result) {
-      s_warning_result = 0;
+    if (warningResult) {
+      warningResult = 0;
       applyTemplate(sub);
       AUDIO_WARNING2();
     }

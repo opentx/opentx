@@ -2624,11 +2624,11 @@ uint32_t pwrCheck()
           uint8_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
           lcdRefresh();
-          if (s_warning_result == true) {
+          if (warningResult == true) {
             pwr_check_state = PWR_CHECK_OFF;
             return e_power_off;
           }
-          else if (!s_warning) {
+          else if (!warningText) {
             // shutdown has been cancelled
             pwr_check_state = PWR_CHECK_PAUSED;
             return e_power_on;

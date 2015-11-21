@@ -121,8 +121,8 @@ void menuGeneralSetup(uint8_t event)
 #endif
 
 #if defined(FAI_CHOICE)
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     g_eeGeneral.fai = true;
     eeDirty(EE_GENERAL);
   }

@@ -112,8 +112,8 @@ void menuStatisticsDebug(uint8_t event)
   TITLE(STR_MENUDEBUG);
 
 #if defined(WATCHDOG_TEST)
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     // do a user requested watchdog test
     TRACE("Performing watchdog test");
     pausePulses();

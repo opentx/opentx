@@ -36,15 +36,15 @@
 
 #include "../../opentx.h"
 
-const char *s_warning = NULL;
-const char *s_warning_info;
+const char *warningText = NULL;
+const char *warningInfoText;
 uint8_t     s_warning_info_len;
-uint8_t     s_warning_type;
-uint8_t     s_warning_result = 0;
+uint8_t     warningType;
+uint8_t     warningResult = 0;
 uint8_t     s_warning_info_flags = ZCHAR;
-int16_t     s_warning_input_value;
-int16_t     s_warning_input_min;
-int16_t     s_warning_input_max;
+int16_t     warningInputValue;
+int16_t     warningInputValueMin;
+int16_t     warningInputValueMax;
 void        (*popupFunc)(uint8_t event) = NULL;
 const char *popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t     s_menu_item = 0;
@@ -58,7 +58,7 @@ void displayBox(const char *title)
   drawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
   lcd_rect(10, 16, LCD_W-20, 40);
   lcd_putsn(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN);
-  // could be a place for a s_warning_info
+  // could be a place for a warningInfoText
 }
 
 void displayPopup(const char *title)
@@ -98,26 +98,26 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 
 void displayWarning(uint8_t event)
 {
-  s_warning_result = false;
-  displayBox(s_warning);
-  if (s_warning_info) {
-    lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
+  warningResult = false;
+  displayBox(warningText);
+  if (warningInfoText) {
+    lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH, warningInfoText, s_warning_info_len, WARNING_INFO_FLAGS);
   }
-  lcd_puts(WARNING_LINE_X, WARNING_LINE_Y+2*FH, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
+  lcd_puts(WARNING_LINE_X, WARNING_LINE_Y+2*FH, warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
-      if (s_warning_type == WARNING_TYPE_ASTERISK)
+      if (warningType == WARNING_TYPE_ASTERISK)
         break;
-      s_warning_result = true;
+      warningResult = true;
       // no break
     case EVT_KEY_BREAK(KEY_EXIT):
-      s_warning = NULL;
-      s_warning_type = WARNING_TYPE_ASTERISK;
+      warningText = NULL;
+      warningType = WARNING_TYPE_ASTERISK;
       break;
     default:
-      if (s_warning_type != WARNING_TYPE_INPUT) break;
+      if (warningType != WARNING_TYPE_INPUT) break;
       s_editMode = EDIT_MODIFY_FIELD;
-      s_warning_input_value = checkIncDec(event, s_warning_input_value, s_warning_input_min, s_warning_input_max);
+      warningInputValue = checkIncDec(event, warningInputValue, warningInputValueMin, warningInputValueMax);
       s_editMode = EDIT_SELECT_FIELD;
       break;
   }

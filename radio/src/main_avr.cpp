@@ -129,7 +129,7 @@ void perMain()
 #endif
 
 #if defined(GUI)
-  const char *warn = s_warning;
+  const char *warn = warningText;
   bool popupMenuActive = (popupMenuNoItems > 0);
 
   if(IS_LCD_REFRESH_ALLOWED()){//No need to redraw until lcdRefresh_ST7920(0) below completely refreshes the display.

@@ -298,11 +298,11 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
 #define WARNING_TYPE_CONFIRM   1
 #define WARNING_TYPE_INPUT     2
 
-extern const pm_char * s_warning;
-extern const pm_char * s_warning_info;
+extern const pm_char * warningText;
+extern const pm_char * warningInfoText;
 extern uint8_t         s_warning_info_len;
-extern uint8_t         s_warning_result;
-extern uint8_t         s_warning_type;
+extern uint8_t         warningResult;
+extern uint8_t         warningType;
 
 #define MENU_X            30
 #define MENU_Y            16
@@ -316,17 +316,17 @@ void displayPopup(const char *title);
 void displayWarning(uint8_t event);
 
 extern void (*popupFunc)(uint8_t event);
-extern int16_t s_warning_input_value;
-extern int16_t s_warning_input_min;
-extern int16_t s_warning_input_max;
+extern int16_t warningInputValue;
+extern int16_t warningInputValueMin;
+extern int16_t warningInputValueMax;
 extern uint8_t s_warning_info_flags;
 
 #define DISPLAY_WARNING       (*popupFunc)
-#define POPUP_WARNING(s)      (s_warning = s, s_warning_info = 0, popupFunc = displayWarning)
-#define POPUP_CONFIRMATION(s) (s_warning = s, s_warning_type = WARNING_TYPE_CONFIRM, s_warning_info = 0, popupFunc = displayWarning)
-#define POPUP_INPUT(s, func, start, min, max) (s_warning = s, s_warning_type = WARNING_TYPE_INPUT, popupFunc = func, s_warning_input_value = start, s_warning_input_min = min, s_warning_input_max = max)
+#define POPUP_WARNING(s)      (warningText = s, warningInfoText = 0, popupFunc = displayWarning)
+#define POPUP_CONFIRMATION(s) (warningText = s, warningType = WARNING_TYPE_CONFIRM, warningInfoText = 0, popupFunc = displayWarning)
+#define POPUP_INPUT(s, func, start, min, max) (warningText = s, warningType = WARNING_TYPE_INPUT, popupFunc = func, warningInputValue = start, warningInputValueMin = min, warningInputValueMax = max)
 #define WARNING_INFO_FLAGS    s_warning_info_flags
-#define SET_WARNING_INFO(info, len, flags) (s_warning_info = info, s_warning_info_len = len, s_warning_info_flags = flags)
+#define SET_WARNING_INFO(info, len, flags) (warningInfoText = info, s_warning_info_len = len, s_warning_info_flags = flags)
 
 #define NAVIGATION_MENUS
 #define POPUP_MENU_ADD_ITEM(s) do { popupMenuOffsetType = MENU_OFFSET_INTERNAL; if (popupMenuNoItems < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuNoItems++] = s; } while (0)

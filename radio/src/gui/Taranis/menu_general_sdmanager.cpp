@@ -245,8 +245,8 @@ void onSdManagerMenu(const char *result)
 
 void menuGeneralSdManager(uint8_t _event)
 {
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     displayPopup(STR_FORMATTING);
     closeLogs();
     audioQueue.stopSD();

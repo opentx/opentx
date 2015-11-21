@@ -189,7 +189,7 @@ void perMain()
 #endif
   {
     // normal GUI from menus
-    const char *warn = s_warning;
+    const char *warn = warningText;
     bool popupMenuActive = (popupMenuNoItems > 0);
     if (refreshScreen) {
       lcd_clear();

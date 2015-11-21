@@ -524,8 +524,8 @@ void onSensorMenu(const char *result)
 void menuModelTelemetry(uint8_t event)
 {
 #if defined(CPUARM)
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     for (int i=0; i<MAX_SENSORS; i++) {
       delTelemetryIndex(i);
     }

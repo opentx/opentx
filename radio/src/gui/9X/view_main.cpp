@@ -573,12 +573,12 @@ void menuMainView(uint8_t event)
 #if defined(GVARS) && !defined(PCBSTD)
   if (s_gvar_timer > 0) {
     s_gvar_timer--;
-    s_warning = STR_GLOBAL_VAR;
+    warningText = STR_GLOBAL_VAR;
     displayBox();
     lcd_putsnAtt(16, 5*FH, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
     lcd_putsAtt(16+7*FW, 5*FH, PSTR("[\010]"), BOLD);
     lcd_outdezAtt(16+7*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), BOLD);
-    s_warning = NULL;
+    warningText = NULL;
   }
 #endif
 
