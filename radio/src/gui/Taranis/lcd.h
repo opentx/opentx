@@ -74,11 +74,6 @@
 /* lcd puts flags */
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */
-#if defined(CPUARM)
-  #define BSS           0x00
-#else
-  #define BSS           0x20
-#endif
 #define ZCHAR           0x80
 
 /* lcd outdez flags */

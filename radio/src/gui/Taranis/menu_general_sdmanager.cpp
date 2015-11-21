@@ -446,7 +446,7 @@ void menuGeneralSdManager(uint8_t _event)
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     lcdNextPos = 0;
-    LcdFlags attr = (index == i ? BSS|INVERS : BSS);
+    LcdFlags attr = (index == i ? INVERS : 0);
     if (reusableBuffer.sdmanager.lines[i][0]) {
       if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[i])) { lcd_putcAtt(0, y, '[', s_editMode == EDIT_MODIFY_STRING ? 0 : attr); }
       if (s_editMode == EDIT_MODIFY_STRING && attr) {

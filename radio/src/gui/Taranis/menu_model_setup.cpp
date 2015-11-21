@@ -583,7 +583,7 @@ void menuModelSetup(uint8_t event)
               }
 
               // TODO add a new function
-              lcd_putsnAtt(x, y, STR_VSRCRAW+2+STR_VSRCRAW[0]*(NUM_STICKS+1+i), STR_VSRCRAW[0]-1, flags & ~(BSS|ZCHAR));
+              lcd_putsnAtt(x, y, STR_VSRCRAW+2+STR_VSRCRAW[0]*(NUM_STICKS+1+i), STR_VSRCRAW[0]-1, flags & ~ZCHAR);
               x = lcdNextPos+3;
             }
           }

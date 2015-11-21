@@ -255,7 +255,7 @@ void drawStatusLine()
     }
 
     drawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID, ERASE);
-    lcd_putsAtt(5, LCD_H+1-statusLineHeight, statusLineMsg, BSS);
+    lcd_putsAtt(5, LCD_H+1-statusLineHeight, statusLineMsg, 0);
     drawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID);
   }
 }
