@@ -39,5 +39,6 @@
 
 const char * readModel(const char * filename, uint8_t * buffer, uint32_t size);
 const char * loadModel(const char * filename);
+const char * createModel(int category);
 
 

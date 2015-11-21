@@ -180,7 +180,12 @@ void guiMain(evt_t evt)
         }
       }
       else {
-        popupDisplayed = false;
+        if (popupDisplayed) {
+          if (evt == 0) {
+            evt = EVT_REFRESH;
+          }
+          popupDisplayed = false;
+        }
         refreshNeeded = g_menuStack[g_menuStackPtr](evt);
       }
 

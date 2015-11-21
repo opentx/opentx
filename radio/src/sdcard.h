@@ -101,7 +101,7 @@ inline const pm_char * SDCARD_ERROR(FRESULT result)
 #endif
 
 bool isFileAvailable(const char * filename);
-bool findNextFileIndex(char * filename, const char * directory);
+int findNextFileIndex(char * filename, const char * directory);
 
 const char * sdCopyFile(const char * src, const char * dest);
 const char * sdCopyFile(const char * filename, const char * srcDir, const char * destDir);

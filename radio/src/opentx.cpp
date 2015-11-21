@@ -461,7 +461,9 @@ void modelDefault(uint8_t id)
 #endif
 
 #if !defined(EEPROM)
-  strcpy(g_model.header.name, "\015\361\374\373\364\033\034");
+  strcpy(g_model.header.name, "\015\361\374\373\364");
+  g_model.header.name[5] = '\033' + id/10;
+  g_model.header.name[6] = '\033' + id%10;
 #endif
 }
 

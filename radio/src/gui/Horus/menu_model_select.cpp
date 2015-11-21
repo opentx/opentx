@@ -36,7 +36,6 @@
 #include "../../opentx.h"
 
 #define CATEGORIES_WIDTH               140
-
 #define MODELCELL_WIDTH                153
 #define MODELCELL_HEIGHT               61
 
@@ -54,10 +53,10 @@ char selectedCategory[LEN_MODEL_FILENAME+1];
 void drawCategory(coord_t y, const char * name, bool selected)
 {
   if (selected) {
-    lcdDrawSolidFilledRect(0, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH, INVERT_LINE_HEIGHT, HEADER_BGCOLOR);
+    lcdDrawSolidFilledRect(0, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH, INVERT_LINE_HEIGHT+2, HEADER_BGCOLOR);
     lcdDrawBitmapPattern(CATEGORIES_WIDTH-12, y, LBM_LIBRARY_CURSOR, MENU_TITLE_COLOR);
     if (selectMode == MODE_SELECT_CATEGORY) {
-      drawShadow(0, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH, INVERT_LINE_HEIGHT);
+      drawShadow(0, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH, INVERT_LINE_HEIGHT+2);
     }
   }
   lcdDrawText(MENUS_MARGIN_LEFT, y, name, MENU_TITLE_COLOR);
@@ -81,7 +80,7 @@ void drawModel(coord_t x, coord_t y, const char * name, bool selected)
     lcdDrawBitmap(x+5, y+24, modelBitmap, 0, 0, getBitmapScale(modelBitmap, 64, 32));
   }
   lcdDrawSolidHorizontalLine(x+5, y+19, 143, LINE_COLOR);
-  if (selectMode == MODE_SELECT_MODEL && selected) {
+  if (selected) {
     lcdDrawSolidRect(x, y, MODELCELL_WIDTH, MODELCELL_HEIGHT, TITLE_BGCOLOR);
     drawShadow(x, y, MODELCELL_WIDTH, MODELCELL_HEIGHT);
   }
@@ -89,8 +88,14 @@ void drawModel(coord_t x, coord_t y, const char * name, bool selected)
 
 void onCategorySelectMenu(const char * result)
 {
-  if (result == STR_CREATE_CATEGORY) {
-    storageAppendCategory("Category");
+  if (result == STR_CREATE_MODEL) {
+    storageCheck(true);
+    createModel(currentCategory);
+    selectMode = MODE_SELECT_MODEL;
+    m_posVert = 255;
+  }
+  else if (result == STR_CREATE_CATEGORY) {
+    storageInsertCategory("Category", -1);
   }
   else if (result == STR_RENAME_CATEGORY) {
     selectMode = MODE_RENAME_CATEGORY;
@@ -105,6 +110,7 @@ void onModelSelectMenu(const char * result)
   if (result == STR_SELECT_MODEL) {
     memcpy(g_eeGeneral.currModelFilename, selectedFilename, LEN_MODEL_FILENAME);
     storageDirty(EE_GENERAL);
+    storageCheck(true);
     loadModel(g_eeGeneral.currModelFilename);
     chainMenu(menuMainView);
   }
@@ -177,6 +183,7 @@ bool menuModelSelect(evt_t event)
     case EVT_KEY_LONG(KEY_ENTER):
       if (selectMode == MODE_SELECT_CATEGORY) {
         killEvents(event);
+        MENU_ADD_ITEM(STR_CREATE_MODEL);
         MENU_ADD_ITEM(STR_CREATE_CATEGORY);
         MENU_ADD_ITEM(STR_RENAME_CATEGORY);
         if (currentCategory > 0)
@@ -244,8 +251,6 @@ bool menuModelSelect(evt_t event)
           drawCategory(y, line, currentCategory==index);
         }
       }
-
-
       y += FH;
       index++;
     }
@@ -261,15 +266,16 @@ bool menuModelSelect(evt_t event)
   if (!error) {
     bool result = storageSeekCategory(&storage, currentCategory);
     coord_t y = MENU_HEADER_HEIGHT+7;
-    int index = 0;
+    int count = 0;
     while (result) {
       char line[LEN_MODEL_FILENAME+1];
       result = storageReadNextModel(&storage, line, LEN_MODEL_FILENAME);
-      if (!result)
+      if (!result) {
         break;
-      if (index >= s_pgOfs*2 && index < (s_pgOfs+3)*2) {
-        bool selected = (m_posVert*2+m_posHorz==index);
-        if (index & 1) {
+      }
+      if (count >= s_pgOfs*2 && count < (s_pgOfs+3)*2) {
+        bool selected = (selectMode==MODE_SELECT_MODEL && m_posVert*2+m_posHorz==count);
+        if (count & 1) {
           drawModel(CATEGORIES_WIDTH+MENUS_MARGIN_LEFT+162, y, line, selected);
           y += 66;
         }
@@ -280,14 +286,14 @@ bool menuModelSelect(evt_t event)
           memcpy(selectedFilename, line, sizeof(selectedFilename));
         }
       }
-      index++;
+      count++;
     }
     if (selectMode == MODE_SELECT_MODEL) {
-      if (navigate(event, index, 3, 2)) {
+      if (navigate(event, count, 3, 2)) {
         putEvent(EVT_REFRESH);
       }
     }
-    drawVerticalScrollbar(DEFAULT_SCROLLBAR_X, MENU_HEADER_HEIGHT+7, MENU_FOOTER_TOP-MENU_HEADER_HEIGHT-15, s_pgOfs, (index+1)/2, 3);
+    drawVerticalScrollbar(DEFAULT_SCROLLBAR_X, MENU_HEADER_HEIGHT+7, MENU_FOOTER_TOP-MENU_HEADER_HEIGHT-15, s_pgOfs, (count+1)/2, 3);
   }
 
   return true;

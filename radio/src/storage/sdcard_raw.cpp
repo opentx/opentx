@@ -171,18 +171,13 @@ const char * writeGeneralSettings()
 
 void storageCheck(bool immediately)
 {
-  // if (immediately) {
-  //  eepromWriteWait();
-  // }
-
   if (storageDirtyMsk & EE_GENERAL) {
     TRACE("eeprom write general");
     storageDirtyMsk -= EE_GENERAL;
-    writeGeneralSettings();
-    // if (immediately)
-    //   eepromWriteWait();
-    // else
-      return;
+    const char * error = writeGeneralSettings();
+    if (error) {
+      TRACE("writeGeneralSettings error=%s", error);
+    }
   }
 
   if (storageDirtyMsk & EE_MODEL) {
@@ -192,8 +187,6 @@ void storageCheck(bool immediately)
     if (error) {
       TRACE("writeModel error=%s", error);
     }
-    // if (immediately)
-    //  eepromWriteWait();
   }
 }
 
@@ -430,9 +423,9 @@ const char * storageModifyLine(unsigned int operation, int category, int positio
   return NULL;
 }
 
-const char * storageAppendCategory(const char * name)
+const char * storageInsertCategory(const char * name, int position)
 {
-  return storageModifyLine(STORAGE_INSERT_CATEGORY, -1, -1, name);
+  return storageModifyLine(STORAGE_INSERT_CATEGORY, position, -1, name);
 }
 
 const char * storageRenameCategory(int category, const char * name)
@@ -458,4 +451,27 @@ const char * storageRemoveModel(int category, int position)
 const char * storageRenameModel(const char * name, int category, int position)
 {
   return storageModifyLine(STORAGE_RENAME_MODEL, category, position, name);
+}
+
+const char * createModel(int category)
+{
+  preModelLoad();
+
+  char filename[LEN_MODEL_FILENAME+1];
+  memset(filename, 0, sizeof(filename));
+  strcpy(filename, "Model.bin");
+
+  int index = findNextFileIndex(filename, MODELS_PATH);
+  if (index > 0) {
+    modelDefault(index);
+    TRACE("filename=%s", filename);
+    memcpy(g_eeGeneral.currModelFilename, filename, sizeof(g_eeGeneral.currModelFilename));
+    storageDirty(EE_GENERAL);
+    storageDirty(EE_MODEL);
+    storageCheck(true);
+    storageInsertModel(filename, category, -1);
+  }
+  postModelLoad(true);
+
+  return NULL;
 }

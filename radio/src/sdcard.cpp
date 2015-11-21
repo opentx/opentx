@@ -106,20 +106,20 @@ char * getFileIndex(char * filename, unsigned int & value)
   return filename;
 }
 
-bool findNextFileIndex(char * filename, const char * directory)
+int findNextFileIndex(char * filename, const char * directory)
 {
   unsigned int index;
-  char * pos = getFileIndex(filename, index);
+  char * indexPos = getFileIndex(filename, index);
   char extension[LEN_FILE_EXTENSION+1];
   strncpy(extension, getFileExtension(filename), sizeof(extension));
   do {
-    pos = strAppendNumber(pos, ++index);
+    char * pos = strAppendNumber(indexPos, ++index);
     strAppend(pos, extension);
     if (!isFileAvailable(filename, directory)) {
-      return true;
+      return index;
     }
   } while (index < 99);
-  return false;
+  return 0;
 }
 
 bool sdListFiles(const char *path, const char *extension, const uint8_t maxlen, const char *selection, uint8_t flags=0)

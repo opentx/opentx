@@ -231,6 +231,11 @@ bool navigate(evt_t event, int count, int rows, int columns)
   int maxlastcol = count-maxrow*columns-1;
   int maxcol = (m_posVert != maxrow ? columns-1 : maxlastcol);
 
+  if (m_posVert > maxrow) {
+    m_posVert = maxrow;
+    m_posHorz = maxlastcol;
+  }
+
   switch (event) {
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_REPT(KEY_RIGHT):

@@ -175,7 +175,7 @@ int getTextWidth(const pm_char * s, int len, LcdFlags flags)
     if (flags & ZCHAR)
       c = idx2char(*s);
     else
-      c = pgm_read_byte(s);
+      c = *s;
     if (c == '\0')
       break;
     result += getCharWidth(c, specs);

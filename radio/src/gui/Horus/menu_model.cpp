@@ -205,10 +205,10 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
       }
 
       lcdDrawTextWithLen(x, y, name, size, flags);
-      coord_t w = (editNameCursorPos == 0 ? 0 : getTextWidth(name, editNameCursorPos, flags));
+      coord_t left = (editNameCursorPos == 0 ? 0 : getTextWidth(name, editNameCursorPos, flags));
       char s[] = { (flags & ZCHAR) ? idx2char(name[editNameCursorPos]) : name[editNameCursorPos], '\0' };
-      lcdDrawSolidFilledRect(x+w-1, y-INVERT_VERT_MARGIN, getTextWidth(s, 1, flags)+1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-      lcdDrawText(x+w, y, s, TEXT_INVERTED_COLOR);
+      lcdDrawSolidFilledRect(x+left-1, y-INVERT_VERT_MARGIN, getTextWidth(s, 1)+1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+      lcdDrawText(x+left, y, s, TEXT_INVERTED_COLOR);
     }
     else {
       editNameCursorPos = 0;
