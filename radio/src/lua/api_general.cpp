@@ -525,8 +525,9 @@ TODO table of events/masks
 static int luaKillEvents(lua_State *L)
 {
   uint8_t key = EVT_KEY_MASK(luaL_checkinteger(L, 1));
-  // prevent killing ENT and EXIT
-  if (key != KEY_EXIT && key != KEY_ENTER) {
+  // prevent killing PAGE, ENT and EXIT (only in telemetry scripts)
+  // todo add which tpye of scrip is running before p_call()
+  if (key != KEY_EXIT && key != KEY_ENTER && key != KEY_PAGE) {
     killEvents(key);
   }
   return 0;
