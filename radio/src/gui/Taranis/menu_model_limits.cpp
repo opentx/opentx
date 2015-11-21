@@ -171,10 +171,10 @@ void menuModelLimits(uint8_t event)
     putsChn(0, y, k+1, (sub==k && m_posHorz < 0) ? INVERS : 0);
     if (sub==k && m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
       killEvents(event);
-      MENU_ADD_ITEM(STR_RESET);
-      MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
-      MENU_ADD_ITEM(STR_COPY_STICKS_TO_OFS);
-      menuHandler = onLimitsMenu;
+      POPUP_MENU_ADD_ITEM(STR_RESET);
+      POPUP_MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
+      POPUP_MENU_ADD_ITEM(STR_COPY_STICKS_TO_OFS);
+      popupMenuHandler = onLimitsMenu;
     }
 
     for (int j=0; j<ITEM_LIMITS_COUNT; j++) {

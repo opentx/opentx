@@ -46,12 +46,14 @@ void popMenu()
   assert(g_menuStackPtr>0);
   g_menuStackPtr = g_menuStackPtr-1;
   menuEvent = EVT_ENTRY_UP;
+  TRACE("popMenu(%d)", g_menuStackPtr);
 }
 
 void chainMenu(MenuFuncP newMenu)
 {
   g_menuStack[g_menuStackPtr] = newMenu;
   menuEvent = EVT_ENTRY;
+  TRACE("chainMenu(%d, %p)", g_menuStackPtr, newMenu);
 }
 
 void pushMenu(MenuFuncP newMenu)
@@ -74,6 +76,7 @@ void pushMenu(MenuFuncP newMenu)
 
   g_menuStack[g_menuStackPtr] = newMenu;
   menuEvent = EVT_ENTRY;
+  TRACE("pushMenu(%d, %p)", g_menuStackPtr, newMenu);
 }
 
 void menuModelNotes(uint8_t event)

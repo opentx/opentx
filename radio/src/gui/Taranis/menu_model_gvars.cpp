@@ -130,10 +130,10 @@ void menuModelGVars(uint8_t event)
   if (m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER)) {
     killEvents(event);
     if (g_model.gvars[sub].popup)
-      MENU_ADD_ITEM(STR_DISABLE_POPUP);
+      POPUP_MENU_ADD_ITEM(STR_DISABLE_POPUP);
     else
-      MENU_ADD_ITEM(STR_ENABLE_POPUP);
-    MENU_ADD_ITEM(STR_CLEAR);
-    menuHandler = onGVARSMenu;
+      POPUP_MENU_ADD_ITEM(STR_ENABLE_POPUP);
+    POPUP_MENU_ADD_ITEM(STR_CLEAR);
+    popupMenuHandler = onGVARSMenu;
   }
 }

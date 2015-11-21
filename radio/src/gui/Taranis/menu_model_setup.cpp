@@ -122,7 +122,6 @@ void onModelSetupBitmapMenu(const char *result)
   if (result == STR_UPDATE_LIST) {
     if (!listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), NULL)) {
       POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
-      s_menu_flags = 0;
     }
   }
   else {
@@ -304,11 +303,10 @@ void menuModelSetup(uint8_t event)
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
           s_editMode = 0;
           if (listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), g_model.header.bitmap, LIST_NONE_SD_FILE)) {
-            menuHandler = onModelSetupBitmapMenu;
+            popupMenuHandler = onModelSetupBitmapMenu;
           }
           else {
             POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
-            s_menu_flags = 0;
           }
         }
         break;

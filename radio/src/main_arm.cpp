@@ -99,6 +99,10 @@ void checkEeprom()
   }
 }
 
+bool inMenu = false;
+
+bool inPopupMenu = false;
+
 void perMain()
 {
 #if defined(PCBSKY9X) && !defined(REVA)
@@ -186,24 +190,48 @@ void perMain()
   {
     // normal GUI from menus
     const char *warn = s_warning;
-    uint8_t menu = s_menu_count;
+    bool popupMenuActive = (popupMenuNoItems > 0);
     if (refreshScreen) {
       lcd_clear();
     }
     if (menuEvent) {
+      // we have a popupMenuActive entry or exit event 
       m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
       m_posHorz = 0;
       evt = menuEvent;
+      if (menuEvent == EVT_ENTRY_UP) {
+        TRACE("menuEvent EVT_ENTRY_UP");
+      }
+      else if (menuEvent == EVT_MENU_UP) {
+        TRACE("menuEvent EVT_MENU_UP");
+      }
+      else if (menuEvent == EVT_ENTRY) {
+        TRACE("menuEvent EVT_ENTRY");
+      }
+      else {
+        TRACE("menuEvent 0x%02x", menuEvent);
+      }
       menuEvent = 0;
       AUDIO_MENUS();
     }
-    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+    g_menuStack[g_menuStackPtr]((warn || popupMenuActive) ? 0 : evt);
     if (warn) DISPLAY_WARNING(evt);
-    if (menu) {
-      const char * result = displayMenu(evt);
+    if (popupMenuActive) {
+      if (!inMenu) {
+        TRACE("Popup Menu started");
+        inMenu = true;
+      }
+      const char * result = displayPopupMenu(evt);
       if (result) {
-        menuHandler(result);
+        TRACE("popupMenuHandler(%s)", result);
+        popupMenuHandler(result);
         putEvent(EVT_MENU_UP);
+      }
+    }
+    else {
+      if (inMenu) {
+        TRACE("Popup Menu ended");
+        inMenu = false;
       }
     }
     drawStatusLine();

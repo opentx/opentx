@@ -130,7 +130,7 @@ void perMain()
 
 #if defined(GUI)
   const char *warn = s_warning;
-  uint8_t menu = s_menu_count;
+  bool popupMenuActive = (popupMenuNoItems > 0);
 
   if(IS_LCD_REFRESH_ALLOWED()){//No need to redraw until lcdRefresh_ST7920(0) below completely refreshes the display.
       lcd_clear();
@@ -141,15 +141,15 @@ void perMain()
         menuEvent = 0;
         AUDIO_MENUS();
       }
-      g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+      g_menuStack[g_menuStackPtr]((warn || popupMenuActive) ? 0 : evt);
 
 
       if (warn) DISPLAY_WARNING(evt);
 #if defined(NAVIGATION_MENUS)
-      if (menu) {
-        const char * result = displayMenu(evt);
+      if (popupMenuActive) {
+        const char * result = displayPopupMenu(evt);
         if (result) {
-          menuHandler(result);
+          popupMenuHandler(result);
           putEvent(EVT_MENU_UP);
         }
       }

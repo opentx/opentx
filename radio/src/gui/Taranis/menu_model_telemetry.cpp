@@ -492,7 +492,6 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
   if (result == STR_UPDATE_LIST) {
     if (!listSdFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), NULL)) {
       POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
-      s_menu_flags = 0;
     }
   }
   else {
@@ -556,10 +555,10 @@ void menuModelTelemetry(uint8_t event)
         s_currIdx = index;
         if (event == EVT_KEY_LONG(KEY_ENTER)) {
           killEvents(event);
-          MENU_ADD_ITEM(STR_EDIT);
-          MENU_ADD_ITEM(STR_COPY);
-          MENU_ADD_ITEM(STR_DELETE);
-          menuHandler = onSensorMenu;
+          POPUP_MENU_ADD_ITEM(STR_EDIT);
+          POPUP_MENU_ADD_ITEM(STR_COPY);
+          POPUP_MENU_ADD_ITEM(STR_DELETE);
+          popupMenuHandler = onSensorMenu;
         }
         else if (event == EVT_KEY_BREAK(KEY_ENTER)) {
           pushMenu(menuModelSensor);
@@ -731,11 +730,10 @@ void menuModelTelemetry(uint8_t event)
           if (m_posHorz==1 && attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
             s_editMode = 0;
             if (listSdFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), g_model.frsky.screens[screenIndex].script.file)) {
-              menuHandler = onTelemetryScriptFileSelectionMenu;
+              popupMenuHandler = onTelemetryScriptFileSelectionMenu;
             }
             else {
               POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
-              s_menu_flags = 0;
             }
           }
         }

@@ -62,7 +62,6 @@ void onModelSelectMenu(const char *result)
   else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
     if (!listSdFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
       POPUP_WARNING(STR_NO_MODELS_ON_SD);
-      s_menu_flags = 0;
     }
   }
   else if (result == STR_DELETE_MODEL) {
@@ -178,23 +177,23 @@ void menuModelSelect(uint8_t event)
           killEvents(event);
           if (g_eeGeneral.currModel != sub) {
             if (eeModelExists(sub)) {
-              MENU_ADD_ITEM(STR_SELECT_MODEL);
-              MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
-              MENU_ADD_ITEM(STR_COPY_MODEL);
-              MENU_ADD_ITEM(STR_MOVE_MODEL);
-              MENU_ADD_ITEM(STR_DELETE_MODEL);
+              POPUP_MENU_ADD_ITEM(STR_SELECT_MODEL);
+              POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
+              POPUP_MENU_ADD_ITEM(STR_COPY_MODEL);
+              POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
+              POPUP_MENU_ADD_ITEM(STR_DELETE_MODEL);
             }
             else {
-              MENU_ADD_ITEM(STR_CREATE_MODEL);
-              MENU_ADD_ITEM(STR_RESTORE_MODEL);
+              POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
+              POPUP_MENU_ADD_ITEM(STR_RESTORE_MODEL);
             }
           }
           else {
-            MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
-            MENU_ADD_ITEM(STR_COPY_MODEL);
-            MENU_ADD_ITEM(STR_MOVE_MODEL);
+            POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
+            POPUP_MENU_ADD_ITEM(STR_COPY_MODEL);
+            POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
           }
-          menuHandler = onModelSelectMenu;
+          popupMenuHandler = onModelSelectMenu;
         }
         else if (eeModelExists(sub)) {
           s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);

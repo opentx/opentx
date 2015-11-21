@@ -139,28 +139,27 @@ void (*popupFunc)(uint8_t event) = NULL;
 #endif
 
 #if defined(NAVIGATION_MENUS)
-const char *s_menu[MENU_MAX_LINES];
+const char *popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t s_menu_item = 0;
-uint16_t s_menu_count = 0;
-uint8_t s_menu_flags = 0;
-uint16_t s_menu_offset = 0;
-void (*menuHandler)(const char *result);
-const char * displayMenu(uint8_t event)
+uint16_t popupMenuNoItems = 0;
+uint16_t popupMenuOffset = 0;
+void (*popupMenuHandler)(const char *result);
+const char * displayPopupMenu(uint8_t event)
 {
   const char * result = NULL;
 
-  uint8_t display_count = min<uint8_t>(s_menu_count, MENU_MAX_LINES);
+  uint8_t display_count = min<uint8_t>(popupMenuNoItems, POPUP_MENU_MAX_LINES);
   uint8_t y = (display_count >= 5 ? MENU_Y - FH - 1 : MENU_Y);
   drawFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
   lcd_rect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
-    lcd_putsAtt(MENU_X+6, i*(FH+1) + y + 2, s_menu[i], s_menu_flags);
+    lcd_putsAtt(MENU_X+6, i*(FH+1) + y + 2, popupMenuItems[i], 0);
     if (i == s_menu_item) drawFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
   }
 
-  if (s_menu_count > display_count) {
-    displayScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, MENU_MAX_LINES);
+  if (popupMenuNoItems > display_count) {
+    displayScrollbar(MENU_X+MENU_W-1, y+1, POPUP_MENU_MAX_LINES * (FH+1), popupMenuOffset, popupMenuNoItems, POPUP_MENU_MAX_LINES);
   }
 
   switch(event) {
@@ -173,16 +172,16 @@ const char * displayMenu(uint8_t event)
         s_menu_item--;
       }
 #if defined(SDCARD)
-      else if (s_menu_offset > 0) {
-        s_menu_offset--;
+      else if (popupMenuOffset > 0) {
+        popupMenuOffset--;
         result = STR_UPDATE_LIST;
       }
 #endif
       else {
         s_menu_item = display_count - 1;
 #if defined(SDCARD)
-        if (s_menu_count > MENU_MAX_LINES) {
-          s_menu_offset = s_menu_count - display_count;
+        if (popupMenuNoItems > POPUP_MENU_MAX_LINES) {
+          popupMenuOffset = popupMenuNoItems - display_count;
           result = STR_UPDATE_LIST;
         }
 #endif
@@ -194,20 +193,20 @@ const char * displayMenu(uint8_t event)
 #endif
     case EVT_KEY_FIRST(KEY_MOVE_DOWN):
     case EVT_KEY_REPT(KEY_MOVE_DOWN):
-      if (s_menu_item < display_count - 1 && s_menu_offset + s_menu_item + 1 < s_menu_count) {
+      if (s_menu_item < display_count - 1 && popupMenuOffset + s_menu_item + 1 < popupMenuNoItems) {
         s_menu_item++;
       }
 #if defined(SDCARD)
-      else if (s_menu_count > s_menu_offset + display_count) {
-        s_menu_offset++;
+      else if (popupMenuNoItems > popupMenuOffset + display_count) {
+        popupMenuOffset++;
         result = STR_UPDATE_LIST;
       }
 #endif
       else {
         s_menu_item = 0;
 #if defined(SDCARD)
-        if (s_menu_offset) {
-          s_menu_offset = 0;
+        if (popupMenuOffset) {
+          popupMenuOffset = 0;
           result = STR_UPDATE_LIST;
         }
 #endif
@@ -215,17 +214,16 @@ const char * displayMenu(uint8_t event)
       break;
     CASE_EVT_ROTARY_BREAK
     case EVT_KEY_BREAK(KEY_ENTER):
-      result = s_menu[s_menu_item];
+      result = popupMenuItems[s_menu_item];
       // no break
 #if defined(ROTARY_ENCODER_NAVIGATION)
     CASE_EVT_ROTARY_LONG
       killEvents(event);
 #endif
     case EVT_KEY_BREAK(KEY_EXIT):
-      s_menu_count = 0;
+      popupMenuNoItems = 0;
       s_menu_item = 0;
-      s_menu_flags = 0;
-      s_menu_offset = 0;
+      popupMenuOffset = 0;
       break;
   }
 

@@ -830,13 +830,13 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
           else {
             event = 0;
             s_copyMode = 0;
-            MENU_ADD_ITEM(STR_EDIT);
-            MENU_ADD_ITEM(STR_INSERT_BEFORE);
-            MENU_ADD_ITEM(STR_INSERT_AFTER);
-            MENU_ADD_ITEM(STR_COPY);
-            MENU_ADD_ITEM(STR_MOVE);
-            MENU_ADD_ITEM(STR_DELETE);
-            menuHandler = onExpoMixMenu;
+            POPUP_MENU_ADD_ITEM(STR_EDIT);
+            POPUP_MENU_ADD_ITEM(STR_INSERT_BEFORE);
+            POPUP_MENU_ADD_ITEM(STR_INSERT_AFTER);
+            POPUP_MENU_ADD_ITEM(STR_COPY);
+            POPUP_MENU_ADD_ITEM(STR_MOVE);
+            POPUP_MENU_ADD_ITEM(STR_DELETE);
+            popupMenuHandler = onExpoMixMenu;
           }
 #else
           if (s_currCh) {

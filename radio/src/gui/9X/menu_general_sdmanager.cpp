@@ -176,8 +176,8 @@ void menuGeneralSdManager(uint8_t _event)
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(_event);
       if (m_posVert == 0) {
-        MENU_ADD_ITEM(STR_SD_INFO);
-        MENU_ADD_ITEM(STR_SD_FORMAT);
+        POPUP_MENU_ADD_ITEM(STR_SD_INFO);
+        POPUP_MENU_ADD_ITEM(STR_SD_FORMAT);
       }
       else
       {
@@ -188,19 +188,19 @@ void menuGeneralSdManager(uint8_t _event)
         int len = strlen(ext) - 4;
         ext += len;
         /* TODO if (!strcasecmp(ext, MODELS_EXT)) {
-          s_menu[s_menu_count++] = STR_LOAD_FILE;
+          popupMenuItems[popupMenuNoItems++] = STR_LOAD_FILE;
         }
         else */ if (!strcasecmp(ext, SOUNDS_EXT)) {
-          MENU_ADD_ITEM(STR_PLAY_FILE);
+          POPUP_MENU_ADD_ITEM(STR_PLAY_FILE);
         }
 #endif
         if (!READ_ONLY()) {
-          MENU_ADD_ITEM(STR_DELETE_FILE);
-          // MENU_ADD_ITEM(STR_RENAME_FILE);  TODO: Implement
-          // MENU_ADD_ITEM(STR_COPY_FILE);    TODO: Implement
+          POPUP_MENU_ADD_ITEM(STR_DELETE_FILE);
+          // POPUP_MENU_ADD_ITEM(STR_RENAME_FILE);  TODO: Implement
+          // POPUP_MENU_ADD_ITEM(STR_COPY_FILE);    TODO: Implement
         }
       }
-      menuHandler = onSdManagerMenu;
+      popupMenuHandler = onSdManagerMenu;
       break;
   }
 

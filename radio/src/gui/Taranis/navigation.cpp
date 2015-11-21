@@ -273,40 +273,40 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       
       if (i_min <= MIXSRC_FIRST_INPUT && i_max >= MIXSRC_FIRST_INPUT) {
         if (getFirstAvailable(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable) != MIXSRC_NONE) {
-          MENU_ADD_ITEM(STR_MENU_INPUTS);
+          POPUP_MENU_ADD_ITEM(STR_MENU_INPUTS);
         }
       }
 #if defined(LUA_MODEL_SCRIPTS)
       if (i_min <= MIXSRC_FIRST_LUA && i_max >= MIXSRC_FIRST_LUA) {
         if (getFirstAvailable(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable) != MIXSRC_NONE) {
-          MENU_ADD_ITEM(STR_MENU_LUA);
+          POPUP_MENU_ADD_ITEM(STR_MENU_LUA);
         }
       }
 #endif
-      if (i_min <= MIXSRC_FIRST_STICK && i_max >= MIXSRC_FIRST_STICK)      MENU_ADD_ITEM(STR_MENU_STICKS);
-      if (i_min <= MIXSRC_FIRST_POT && i_max >= MIXSRC_FIRST_POT)          MENU_ADD_ITEM(STR_MENU_POTS);
-      if (i_min <= MIXSRC_MAX && i_max >= MIXSRC_MAX)                      MENU_ADD_ITEM(STR_MENU_MAX);
+      if (i_min <= MIXSRC_FIRST_STICK && i_max >= MIXSRC_FIRST_STICK)      POPUP_MENU_ADD_ITEM(STR_MENU_STICKS);
+      if (i_min <= MIXSRC_FIRST_POT && i_max >= MIXSRC_FIRST_POT)          POPUP_MENU_ADD_ITEM(STR_MENU_POTS);
+      if (i_min <= MIXSRC_MAX && i_max >= MIXSRC_MAX)                      POPUP_MENU_ADD_ITEM(STR_MENU_MAX);
 #if defined(HELI)
-      if (i_min <= MIXSRC_FIRST_HELI && i_max >= MIXSRC_FIRST_HELI)        MENU_ADD_ITEM(STR_MENU_HELI);
+      if (i_min <= MIXSRC_FIRST_HELI && i_max >= MIXSRC_FIRST_HELI)        POPUP_MENU_ADD_ITEM(STR_MENU_HELI);
 #endif
-      if (i_min <= MIXSRC_FIRST_TRIM && i_max >= MIXSRC_FIRST_TRIM)        MENU_ADD_ITEM(STR_MENU_TRIMS);
-      if (i_min <= MIXSRC_FIRST_SWITCH && i_max >= MIXSRC_FIRST_SWITCH)    MENU_ADD_ITEM(STR_MENU_SWITCHES);
-      if (i_min <= MIXSRC_FIRST_TRAINER && i_max >= MIXSRC_FIRST_TRAINER)  MENU_ADD_ITEM(STR_MENU_TRAINER);
-      if (i_min <= MIXSRC_FIRST_CH && i_max >= MIXSRC_FIRST_CH)            MENU_ADD_ITEM(STR_MENU_CHANNELS);
+      if (i_min <= MIXSRC_FIRST_TRIM && i_max >= MIXSRC_FIRST_TRIM)        POPUP_MENU_ADD_ITEM(STR_MENU_TRIMS);
+      if (i_min <= MIXSRC_FIRST_SWITCH && i_max >= MIXSRC_FIRST_SWITCH)    POPUP_MENU_ADD_ITEM(STR_MENU_SWITCHES);
+      if (i_min <= MIXSRC_FIRST_TRAINER && i_max >= MIXSRC_FIRST_TRAINER)  POPUP_MENU_ADD_ITEM(STR_MENU_TRAINER);
+      if (i_min <= MIXSRC_FIRST_CH && i_max >= MIXSRC_FIRST_CH)            POPUP_MENU_ADD_ITEM(STR_MENU_CHANNELS);
       if (i_min <= MIXSRC_FIRST_GVAR && i_max >= MIXSRC_FIRST_GVAR && isValueAvailable(MIXSRC_FIRST_GVAR)) {
-        MENU_ADD_ITEM(STR_MENU_GVARS);
+        POPUP_MENU_ADD_ITEM(STR_MENU_GVARS);
       }
       
       if (i_min <= MIXSRC_FIRST_TELEM && i_max >= MIXSRC_FIRST_TELEM) {
         for (int i = 0; i < MAX_SENSORS; i++) {
           TelemetrySensor * sensor = & g_model.telemetrySensors[i];
           if (sensor->isAvailable()) {
-            MENU_ADD_ITEM(STR_MENU_TELEMETRY);
+            POPUP_MENU_ADD_ITEM(STR_MENU_TELEMETRY);
             break;
           }
         }
       }
-      menuHandler = onSourceLongEnterPress;
+      popupMenuHandler = onSourceLongEnterPress;
     }
     if (checkIncDecSelection != 0) {
       newval = checkIncDecSelection;
@@ -319,19 +319,19 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
     if (event == EVT_KEY_LONG(KEY_ENTER)) {
       killEvents(event);
       checkIncDecSelection = SWSRC_NONE;
-      if (i_min <= SWSRC_FIRST_SWITCH && i_max >= SWSRC_LAST_SWITCH)       MENU_ADD_ITEM(STR_MENU_SWITCHES);
-      if (i_min <= SWSRC_FIRST_TRIM && i_max >= SWSRC_LAST_TRIM)           MENU_ADD_ITEM(STR_MENU_TRIMS);
+      if (i_min <= SWSRC_FIRST_SWITCH && i_max >= SWSRC_LAST_SWITCH)       POPUP_MENU_ADD_ITEM(STR_MENU_SWITCHES);
+      if (i_min <= SWSRC_FIRST_TRIM && i_max >= SWSRC_LAST_TRIM)           POPUP_MENU_ADD_ITEM(STR_MENU_TRIMS);
       if (i_min <= SWSRC_FIRST_LOGICAL_SWITCH && i_max >= SWSRC_LAST_LOGICAL_SWITCH) {
         for (int i = 0; i < NUM_LOGICAL_SWITCH; i++) {
           if (isValueAvailable && isValueAvailable(SWSRC_FIRST_LOGICAL_SWITCH+i)) {
-            MENU_ADD_ITEM(STR_MENU_LOGICAL_SWITCHES);
+            POPUP_MENU_ADD_ITEM(STR_MENU_LOGICAL_SWITCHES);
             break;
           }
         }
       }
-      if (isValueAvailable && isValueAvailable(SWSRC_ON))                  MENU_ADD_ITEM(STR_MENU_OTHER);
-      if (isValueAvailable && isValueAvailable(-newval))                   MENU_ADD_ITEM(STR_MENU_INVERT);
-      menuHandler = onSwitchLongEnterPress;
+      if (isValueAvailable && isValueAvailable(SWSRC_ON))                  POPUP_MENU_ADD_ITEM(STR_MENU_OTHER);
+      if (isValueAvailable && isValueAvailable(-newval))                   POPUP_MENU_ADD_ITEM(STR_MENU_INVERT);
+      popupMenuHandler = onSwitchLongEnterPress;
       s_editMode = EDIT_MODIFY_FIELD;
     }
     if (checkIncDecSelection != 0) {
@@ -379,9 +379,9 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
         if (menuTab == menuTabModel) {
           killEvents(event);
           if (modelHasNotes()) {
-            MENU_ADD_SD_ITEM(STR_VIEW_CHANNELS);
-            MENU_ADD_ITEM(STR_VIEW_NOTES);
-            menuHandler = onLongMenuPress;
+            POPUP_MENU_ADD_SD_ITEM(STR_VIEW_CHANNELS);
+            POPUP_MENU_ADD_ITEM(STR_VIEW_NOTES);
+            popupMenuHandler = onLongMenuPress;
           }
           else {
             pushMenu(menuChannelsView);

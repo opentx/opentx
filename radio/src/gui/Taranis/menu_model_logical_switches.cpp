@@ -110,12 +110,12 @@ void menuModelLogicalSwitches(uint8_t event)
     killEvents(event);
     LogicalSwitchData * cs = lswAddress(sub);
     if (cs->func)
-      MENU_ADD_ITEM(STR_COPY);
+      POPUP_MENU_ADD_ITEM(STR_COPY);
     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
-      MENU_ADD_ITEM(STR_PASTE);
+      POPUP_MENU_ADD_ITEM(STR_PASTE);
     if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw)
-      MENU_ADD_ITEM(STR_CLEAR);
-    menuHandler = onLogicalSwitchesMenu;
+      POPUP_MENU_ADD_ITEM(STR_CLEAR);
+    popupMenuHandler = onLogicalSwitchesMenu;
   }
 
   for (int i=0; i<NUM_BODY_LINES; ++i) {

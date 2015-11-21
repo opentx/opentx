@@ -250,9 +250,9 @@ void menuTelemetryFrsky(uint8_t event)
 
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
-      MENU_ADD_ITEM(STR_RESET_TELEMETRY);
-      MENU_ADD_ITEM(STR_RESET_FLIGHT);
-      menuHandler = onMainViewMenu;
+      POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+      POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
+      popupMenuHandler = onMainViewMenu;
       break;
   }
 

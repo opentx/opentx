@@ -262,12 +262,12 @@ void onMainViewMenu(const char *result)
     pushModelNotes();
   }
   else if (result == STR_RESET_SUBMENU) {
-    MENU_ADD_ITEM(STR_RESET_FLIGHT);
-    MENU_ADD_ITEM(STR_RESET_TIMER1);
-    MENU_ADD_ITEM(STR_RESET_TIMER2);
-    MENU_ADD_ITEM(STR_RESET_TIMER3);
+    POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TIMER1);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TIMER3);
 #if defined(FRSKY)
-    MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
 #endif
   }
 #endif
@@ -336,26 +336,26 @@ void menuMainView(uint8_t event)
 
 #if defined(CPUARM)
       if (modelHasNotes()) {
-        MENU_ADD_ITEM(STR_VIEW_NOTES);
+        POPUP_MENU_ADD_ITEM(STR_VIEW_NOTES);
       }
 #endif
 
 #if defined(CPUARM)
-      MENU_ADD_ITEM(STR_RESET_SUBMENU);
+      POPUP_MENU_ADD_ITEM(STR_RESET_SUBMENU);
 #else
-      MENU_ADD_ITEM(STR_RESET_TIMER1);
-      MENU_ADD_ITEM(STR_RESET_TIMER2);
+      POPUP_MENU_ADD_ITEM(STR_RESET_TIMER1);
+      POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
 #if defined(FRSKY)
-      MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+      POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
 #endif
-      MENU_ADD_ITEM(STR_RESET_FLIGHT);
+      POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
 #endif
 
-      MENU_ADD_ITEM(STR_STATISTICS);
+      POPUP_MENU_ADD_ITEM(STR_STATISTICS);
 #if defined(CPUARM)
-      MENU_ADD_ITEM(STR_ABOUT_US);
+      POPUP_MENU_ADD_ITEM(STR_ABOUT_US);
 #endif
-      menuHandler = onMainViewMenu;
+      popupMenuHandler = onMainViewMenu;
       break;
 #endif
 

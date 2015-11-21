@@ -42,7 +42,6 @@ void onModelCustomScriptMenu(const char *result)
   if (result == STR_UPDATE_LIST) {
     if (!listSdFiles(SCRIPTS_MIXES_PATH, SCRIPTS_EXT, sizeof(sd.file), NULL)) {
       POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
-      s_menu_flags = 0;
     }
   }
   else {
@@ -89,11 +88,10 @@ void menuModelCustomScriptOne(uint8_t event)
       if (attr && event==EVT_KEY_BREAK(KEY_ENTER) && !READ_ONLY()) {
         s_editMode = 0;
         if (listSdFiles(SCRIPTS_MIXES_PATH, SCRIPTS_EXT, sizeof(sd.file), sd.file, LIST_NONE_SD_FILE)) {
-          menuHandler = onModelCustomScriptMenu;
+          popupMenuHandler = onModelCustomScriptMenu;
         }
         else {
           POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
-          s_menu_flags = 0;
         }
       }
     }

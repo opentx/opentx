@@ -276,9 +276,9 @@ void menuGeneralSdManager(uint8_t _event)
     case EVT_KEY_LONG(KEY_MENU):
       if (!READ_ONLY() && s_editMode == 0) {
         killEvents(_event);
-        MENU_ADD_ITEM(STR_SD_INFO);
-        MENU_ADD_ITEM(STR_SD_FORMAT);
-        menuHandler = onSdManagerMenu;
+        POPUP_MENU_ADD_ITEM(STR_SD_INFO);
+        POPUP_MENU_ADD_ITEM(STR_SD_FORMAT);
+        popupMenuHandler = onSdManagerMenu;
       }
       break;
 
@@ -313,43 +313,43 @@ void menuGeneralSdManager(uint8_t _event)
         }
         if (ext) {
           if (!strcasecmp(ext, SOUNDS_EXT)) {
-            MENU_ADD_ITEM(STR_PLAY_FILE);
+            POPUP_MENU_ADD_ITEM(STR_PLAY_FILE);
           }
           else if (!strcasecmp(ext, BITMAPS_EXT)) {
             if (!READ_ONLY() && (ext-line) <= (int)sizeof(g_model.header.bitmap)) {
-              MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
+              POPUP_MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
             }
           }
           else if (!strcasecmp(ext, TEXT_EXT)) {
-            MENU_ADD_ITEM(STR_VIEW_TEXT);
+            POPUP_MENU_ADD_ITEM(STR_VIEW_TEXT);
           }
 #if defined(LUA)
           else if (!strcasecmp(ext, SCRIPTS_EXT)) {
-            MENU_ADD_ITEM(STR_EXECUTE_FILE);
+            POPUP_MENU_ADD_ITEM(STR_EXECUTE_FILE);
           }
 #endif
           else if (!READ_ONLY() && !strcasecmp(ext, FIRMWARE_EXT)) {
             TCHAR lfn[_MAX_LFN + 1];
             getSelectionFullPath(lfn);
             if (isBootloader(lfn)) {
-              MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);
+              POPUP_MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);
             }
           }
           else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
-            MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
-            MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
+            POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+            POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
           }
         }
         if (!READ_ONLY()) {
           if (IS_FILE(line)) // it's a file
-            MENU_ADD_ITEM(STR_COPY_FILE);
+            POPUP_MENU_ADD_ITEM(STR_COPY_FILE);
           if (clipboard.type == CLIPBOARD_TYPE_SD_FILE)
-            MENU_ADD_ITEM(STR_PASTE);
-          MENU_ADD_ITEM(STR_RENAME_FILE);
+            POPUP_MENU_ADD_ITEM(STR_PASTE);
+          POPUP_MENU_ADD_ITEM(STR_RENAME_FILE);
           if (IS_FILE(line))
-            MENU_ADD_ITEM(STR_DELETE_FILE);
+            POPUP_MENU_ADD_ITEM(STR_DELETE_FILE);
         }
-        menuHandler = onSdManagerMenu;
+        popupMenuHandler = onSdManagerMenu;
       }
       break;
   }

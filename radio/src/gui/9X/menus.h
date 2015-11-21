@@ -409,23 +409,22 @@ void displayWarning(uint8_t event);
 
 #if defined(SDCARD) || (defined(ROTARY_ENCODER_NAVIGATION) && !defined(CPUM64))
   #define NAVIGATION_MENUS
-  #define MENU_ADD_ITEM(s) s_menu[s_menu_count++] = s
-  #define MENU_MAX_LINES               6
-  #define MENU_MAX_DISPLAY_LINES       MENU_MAX_LINES
+  #define POPUP_MENU_ADD_ITEM(s) popupMenuItems[popupMenuNoItems++] = s
+  #define POPUP_MENU_MAX_LINES               6
+  #define MENU_MAX_DISPLAY_LINES       POPUP_MENU_MAX_LINES
   #if defined(SDCARD)
-    #define MENU_ADD_SD_ITEM(s)        MENU_ADD_ITEM(s)
+    #define POPUP_MENU_ADD_SD_ITEM(s)        POPUP_MENU_ADD_ITEM(s)
   #else
-    #define MENU_ADD_SD_ITEM(s)
+    #define POPUP_MENU_ADD_SD_ITEM(s)
   #endif
   #define MENU_LINE_LENGTH             (LEN_MODEL_NAME+1)
-  extern const char *s_menu[MENU_MAX_LINES];
-  extern uint16_t s_menu_count;
-  extern uint8_t s_menu_flags;
-  extern uint16_t s_menu_offset;
-  const char * displayMenu(uint8_t event);
-  extern void (*menuHandler)(const char *result);
+  extern const char *popupMenuItems[POPUP_MENU_MAX_LINES];
+  extern uint16_t popupMenuNoItems;
+  extern uint16_t popupMenuOffset;
+  const char * displayPopupMenu(uint8_t event);
+  extern void (*popupMenuHandler)(const char *result);
 #else
-  #define s_menu_count 0
+  #define popupMenuNoItems 0
 #endif
 
 #if defined(SDCARD)

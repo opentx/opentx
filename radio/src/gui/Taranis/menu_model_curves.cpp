@@ -203,10 +203,10 @@ void menuModelCurveOne(uint8_t event)
     case EVT_KEY_LONG(KEY_ENTER):
       if (m_posVert > 1) {
         killEvents(event);
-        MENU_ADD_ITEM(STR_CURVE_PRESET);
-        MENU_ADD_ITEM(STR_MIRROR);
-        MENU_ADD_ITEM(STR_CLEAR);
-        menuHandler = onCurveOneMenu;
+        POPUP_MENU_ADD_ITEM(STR_CURVE_PRESET);
+        POPUP_MENU_ADD_ITEM(STR_MIRROR);
+        POPUP_MENU_ADD_ITEM(STR_CLEAR);
+        popupMenuHandler = onCurveOneMenu;
       }
       break;
     case EVT_KEY_LONG(KEY_MENU):
