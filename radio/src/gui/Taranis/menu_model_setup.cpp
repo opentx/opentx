@@ -391,11 +391,11 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODEL_EXTENDED_TRIMS:
         ON_OFF_MENU_ITEM(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, menuHorizontalPosition<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
-        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_RESET_BTN, menuHorizontalPosition>0  && !s_noHi ? attr : 0);
+        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_RESET_BTN, (menuHorizontalPosition>0  && !NO_HIGHLIGHT()) ? attr : 0);
         if (attr && menuHorizontalPosition>0) {
           s_editMode = 0;
           if (event==EVT_KEY_LONG(KEY_ENTER)) {
-            s_noHi = NO_HI_LEN;
+            START_NO_HIGHLIGHT();
             for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
               memclear(&g_model.flightModeData[i], TRIMS_ARRAY_SIZE);
             }
@@ -487,7 +487,7 @@ void menuModelSetup(uint8_t event)
 
               case EVT_KEY_LONG(KEY_ENTER):
                 if (menuHorizontalPosition < 0) {
-                  s_noHi = NO_HI_LEN;
+                  START_NO_HIGHLIGHT();
                   getMovedSwitch();
                   g_model.switchWarningState = switches_states;
                   AUDIO_WARNING1();

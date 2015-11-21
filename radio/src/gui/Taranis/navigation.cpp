@@ -40,7 +40,7 @@ vertpos_t menuVerticalOffset;
 vertpos_t menuVerticalPosition;
 horzpos_t menuHorizontalPosition;
 int8_t s_editMode;
-uint8_t s_noHi;
+uint8_t noHighlightCounter;
 uint8_t calibrationState;
 int checkIncDecSelection = 0;
 

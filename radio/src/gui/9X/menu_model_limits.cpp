@@ -135,11 +135,11 @@ void menuModelLimits(uint8_t event)
     if (k==NUM_CHNOUT) {
       // last line available - add the "copy trim menu" line
       uint8_t attr = (sub==NUM_CHNOUT) ? INVERS : 0;
-      lcd_putsAtt(CENTER_OFS, y, STR_TRIMS2OFFSETS, s_noHi ? 0 : attr);
+      lcd_putsAtt(CENTER_OFS, y, STR_TRIMS2OFFSETS, NO_HIGHLIGHT() ? 0 : attr);
       if (attr) {
         s_editMode = 0;
         if (event==EVT_KEY_LONG(KEY_ENTER)) {
-          s_noHi = NO_HI_LEN;
+          START_NO_HIGHLIGHT();
           killEvents(event);
           moveTrimsToOffsets(); // if highlighted and menu pressed - move trims to offsets
         }

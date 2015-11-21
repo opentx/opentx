@@ -37,8 +37,6 @@
 #ifndef _MENUS_H_
 #define _MENUS_H_
 
-#define NO_HI_LEN  25
-
 #if defined(TRANSLATIONS_FR)
   #define MENU_COLUMNS         1
 #else
@@ -60,8 +58,12 @@ extern tmr10ms_t menuEntryTime;
 extern vertpos_t menuVerticalPosition;
 extern horzpos_t menuHorizontalPosition;
 extern vertpos_t menuVerticalOffset;
-extern uint8_t s_noHi;
 extern uint8_t calibrationState;
+
+// Temporary no highlight
+extern uint8_t noHighlightCounter;
+#define NO_HIGHLIGHT()        (noHighlightCounter > 0)
+#define START_NO_HIGHLIGHT()  do { noHighlightCounter = 25; } while(0)
 
 void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 

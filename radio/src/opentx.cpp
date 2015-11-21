@@ -151,7 +151,7 @@ void per10ms()
 #if defined(GUI)
   if (lightOffCounter) lightOffCounter--;
   if (flashCounter) flashCounter--;
-  if (s_noHi) s_noHi--;
+  if (noHighlightCounter) noHighlightCounter--;
 #endif
 
   if (trimsCheckTimer) trimsCheckTimer--;

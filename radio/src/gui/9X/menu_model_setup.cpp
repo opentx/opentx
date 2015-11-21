@@ -327,11 +327,11 @@ void menuModelSetup(uint8_t event)
         ON_OFF_MENU_ITEM(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, attr, event);
 #else
         ON_OFF_MENU_ITEM(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, menuHorizontalPosition<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
-        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_RESET_BTN, menuHorizontalPosition>0  && !s_noHi ? attr : 0);
+        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_RESET_BTN, (menuHorizontalPosition>0  && !NO_HIGHLIGHT()) ? attr : 0);
         if (attr && menuHorizontalPosition>0) {
           s_editMode = 0;
           if (event==EVT_KEY_LONG(KEY_ENTER)) {
-            s_noHi = NO_HI_LEN;
+            START_NO_HIGHLIGHT();
             for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
               memclear(&g_model.flightModeData[i], TRIMS_ARRAY_SIZE);
             }
@@ -417,7 +417,7 @@ void menuModelSetup(uint8_t event)
                 eeDirty(EE_MODEL);
 #else
                 if (menuHorizontalPosition == NUM_SWITCHES-1) {
-                  s_noHi = NO_HI_LEN;
+                  START_NO_HIGHLIGHT();
                   getMovedSwitch();
                   g_model.switchWarningState = switches_states;
                   AUDIO_WARNING1();
@@ -453,7 +453,7 @@ void menuModelSetup(uint8_t event)
           }
           lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+i*FW, y, (swactive || (attr & BLINK)) ? c : '-', attr);
 #if !defined(CPUM64)
-          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+(NUM_SWITCHES*FW), y, PSTR("<]"), (menuHorizontalPosition == NUM_SWITCHES-1 && !s_noHi) ? line : 0);
+          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+(NUM_SWITCHES*FW), y, PSTR("<]"), (menuHorizontalPosition == NUM_SWITCHES-1 && !NO_HIGHLIGHT()) ? line : 0);
 #endif
         }
         break;
@@ -819,7 +819,7 @@ void menuModelFailsafe(uint8_t event)
   uint8_t ch = 0;
 
   if (event == EVT_KEY_LONG(KEY_ENTER) && s_editMode) {
-    s_noHi = NO_HI_LEN;
+    START_NO_HIGHLIGHT();
     g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition] = channelOutputs[menuVerticalPosition];
     eeDirty(EE_MODEL);
     AUDIO_WARNING1();
@@ -859,7 +859,7 @@ void menuModelFailsafe(uint8_t event)
 
       // Value
       LcdFlags flags = TINSIZE;
-      if (menuVerticalPosition == ch && !s_noHi) {
+      if (menuVerticalPosition == ch && !NO_HIGHLIGHT()) {
         flags |= INVERS;
         if (s_editMode)
           flags |= BLINK;

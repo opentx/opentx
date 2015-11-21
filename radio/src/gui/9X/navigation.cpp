@@ -38,7 +38,7 @@
 
 vertpos_t menuVerticalOffset;
 int8_t s_editMode;
-uint8_t s_noHi;
+uint8_t noHighlightCounter;
 uint8_t calibrationState;
 vertpos_t menuVerticalPosition;
 horzpos_t menuHorizontalPosition;
