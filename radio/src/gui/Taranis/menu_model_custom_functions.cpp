@@ -175,7 +175,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    int k = i+s_pgOfs;
+    int k = i+menuVerticalOffset;
 
     putsStrIdx(0, y, functions == g_model.customFn ? STR_SF : STR_GF, k+1, (sub==k && menuHorizontalPosition<0) ? INVERS : 0);
 

@@ -60,7 +60,7 @@ typedef uint8_t check_event_t;
 
 extern vertpos_t menuVerticalPosition;
 extern horzpos_t menuHorizontalPosition;
-extern vertpos_t s_pgOfs;
+extern vertpos_t menuVerticalOffset;
 extern uint8_t s_noHi;
 extern uint8_t calibrationState;
 

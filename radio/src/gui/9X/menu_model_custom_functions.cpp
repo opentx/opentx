@@ -96,7 +96,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+s_pgOfs;
+    uint8_t k = i+menuVerticalOffset;
 
     CustomFunctionData *cfn = &functions[k];
     uint8_t func = CFN_FUNC(cfn);

@@ -78,7 +78,7 @@ void menuModelGVars(uint8_t event)
   int sub = menuVerticalPosition;
 
   for (int l=0; l<LCD_LINES-1; l++) {
-    int i = l+s_pgOfs;
+    int i = l+menuVerticalOffset;
     coord_t y = MENU_HEADER_HEIGHT + 1 + l*FH;
 
     if (g_model.gvars[i].popup) lcd_putc(3*FW, y, '!');

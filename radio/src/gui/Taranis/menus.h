@@ -59,7 +59,7 @@ extern tmr10ms_t menuEntryTime;
 
 extern vertpos_t menuVerticalPosition;
 extern horzpos_t menuHorizontalPosition;
-extern vertpos_t s_pgOfs;
+extern vertpos_t menuVerticalOffset;
 extern uint8_t s_noHi;
 extern uint8_t calibrationState;
 

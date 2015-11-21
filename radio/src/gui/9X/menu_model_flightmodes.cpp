@@ -98,7 +98,7 @@ void menuModelPhaseOne(uint8_t event)
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
-    int8_t i = k + s_pgOfs;
+    int8_t i = k + menuVerticalOffset;
     if (s_currIdx == 0 && i>=ITEM_MODEL_PHASE_SWITCH) i += ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH;
     uint8_t attr = (sub==i ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
 #else
@@ -244,7 +244,7 @@ void menuModelFlightModesAll(uint8_t event)
   uint8_t att;
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
 #if defined(CPUARM)
-    int8_t y = 1 + (1+i-s_pgOfs)*FH;
+    int8_t y = 1 + (1+i-menuVerticalOffset)*FH;
     if (y<1*FH+1 || y>(LCD_LINES-1)*FH+1) continue;
 #else
     uint8_t y = 1 + (i+1)*FH;
@@ -275,7 +275,7 @@ void menuModelFlightModesAll(uint8_t event)
   }
 
 #if defined(CPUARM)
-  if (s_pgOfs != MAX_FLIGHT_MODES-(LCD_LINES-2)) return;
+  if (menuVerticalOffset != MAX_FLIGHT_MODES-(LCD_LINES-2)) return;
 #endif
 
   lcd_putsLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);

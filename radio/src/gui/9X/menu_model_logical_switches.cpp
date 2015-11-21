@@ -108,7 +108,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
-    uint8_t i = k + s_pgOfs;
+    uint8_t i = k + menuVerticalOffset;
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     uint8_t cstate = lswFamily(cs->func);
     switch(i) {
@@ -264,7 +264,7 @@ void menuModelLogicalSwitches(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     y = 1 + (i+1)*FH;
-    k = i+s_pgOfs;
+    k = i+menuVerticalOffset;
     LogicalSwitchData * cs = lswAddress(k);
 
     // CSW name
@@ -330,7 +330,7 @@ void menuModelLogicalSwitches(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    k = i+s_pgOfs;
+    k = i+menuVerticalOffset;
     uint8_t attr = (sub==k ? ((s_editMode>0) ? BLINK|INVERS : INVERS)  : 0);
     uint8_t attr1 = (horz==1 ? attr : 0);
     uint8_t attr2 = (horz==2 ? attr : 0);

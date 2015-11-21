@@ -36,7 +36,7 @@
 
 #include "../../opentx.h"
 
-vertpos_t s_pgOfs;
+vertpos_t menuVerticalOffset;
 int8_t s_editMode;
 uint8_t s_noHi;
 uint8_t calibrationState;
@@ -633,7 +633,7 @@ void check(check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, ui
 #if defined(CPUARM)
   int linesCount = maxrow;
   if (l_posVert == 0 || (l_posVert==1 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW) || (l_posVert==2 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW)) {
-    s_pgOfs = 0;
+    menuVerticalOffset = 0;
     if (horTab) {
       linesCount = 0;
       for (int i=0; i<maxrow; i++) {
@@ -647,13 +647,13 @@ void check(check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, ui
     if (maxrow > maxLines) {
       while (1) {
         vertpos_t firstLine = 0;
-        for (int numLines=0; firstLine<maxrow && numLines<s_pgOfs; firstLine++) {
+        for (int numLines=0; firstLine<maxrow && numLines<menuVerticalOffset; firstLine++) {
           if (firstLine>=horTabMax || horTab[firstLine+1] != HIDDEN_ROW) {
             numLines++;
           }
         }
         if (l_posVert <= firstLine) {
-          s_pgOfs--;
+          menuVerticalOffset--;
         }
         else {
           vertpos_t lastLine = firstLine;
@@ -663,10 +663,10 @@ void check(check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, ui
             }
           }
           if (l_posVert > lastLine) {
-            s_pgOfs++;
+            menuVerticalOffset++;
           }
           else {
-            linesCount = s_pgOfs + maxLines;
+            linesCount = menuVerticalOffset + maxLines;
             for (int i=lastLine; i<maxrow; i++) {
               if (i>=horTabMax || horTab[i] != HIDDEN_ROW) {
                 linesCount++;
@@ -680,15 +680,15 @@ void check(check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, ui
   }
 #else
   if (l_posVert<1) {
-    s_pgOfs=0;
+    menuVerticalOffset=0;
   }
 #endif
   else {
-    if (l_posVert>maxLines+s_pgOfs) {
-      s_pgOfs = l_posVert-maxLines;
+    if (l_posVert>maxLines+menuVerticalOffset) {
+      menuVerticalOffset = l_posVert-maxLines;
     }
-    else if (l_posVert<=s_pgOfs) {
-      s_pgOfs = l_posVert-1;
+    else if (l_posVert<=menuVerticalOffset) {
+      menuVerticalOffset = l_posVert-1;
     }
   }
 
@@ -696,10 +696,10 @@ void check(check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, ui
   menuHorizontalPosition = l_posHorz;
 #if !defined(CPUM64)
   // cosmetics on 9x
-  if (s_pgOfs > 0) {
+  if (menuVerticalOffset > 0) {
     l_posVert--;
-    if (l_posVert == s_pgOfs && CURSOR_NOT_ALLOWED_IN_ROW(l_posVert)) {
-      s_pgOfs = l_posVert-1;
+    if (l_posVert == menuVerticalOffset && CURSOR_NOT_ALLOWED_IN_ROW(l_posVert)) {
+      menuVerticalOffset = l_posVert-1;
     }
   }
 #endif

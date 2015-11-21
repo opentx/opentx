@@ -232,7 +232,7 @@ void menuTraceBuffer(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-2; i++) {
     y = 1 + (i+2)*FH;
-    k = i+s_pgOfs;
+    k = i+menuVerticalOffset;
 
     //item
     lcd_outdezAtt(0, y, k, LEFT | (sub==k ? INVERS : 0));

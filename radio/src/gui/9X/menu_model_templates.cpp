@@ -57,7 +57,7 @@ void menuModelTemplates(uint8_t event)
   coord_t y = MENU_HEADER_HEIGHT + 1;
   uint8_t k = 0;
   for (uint8_t i=0; i<LCD_LINES-1 && k<TMPL_COUNT; i++) {
-    k = i+s_pgOfs;
+    k = i+menuVerticalOffset;
     lcd_outdezNAtt(3*FW, y, k, (sub==k ? INVERS : 0)|LEADING0, 2);
     lcd_putsiAtt(4*FW, y, STR_VTEMPLATES, k, (sub==k ? INVERS  : 0));
     y+=FH;

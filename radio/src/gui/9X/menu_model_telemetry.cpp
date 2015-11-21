@@ -288,7 +288,7 @@ void menuModelSensor(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i + s_pgOfs;
+    uint8_t k = i + menuVerticalOffset;
 
     for (int j=0; j<k; j++) {
       if (mstate_tab[j+1] == HIDDEN_ROW)
@@ -548,7 +548,7 @@ void menuModelTelemetry(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i + s_pgOfs;
+    uint8_t k = i + menuVerticalOffset;
 #if defined(CPUARM)
     for (int j=0; j<=k; j++) {
       if (mstate_tab[j+1] == HIDDEN_ROW)

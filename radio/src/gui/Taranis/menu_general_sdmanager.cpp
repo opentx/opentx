@@ -150,7 +150,7 @@ void getSelectionFullPath(char *lfn)
 {
   f_getcwd(lfn, _MAX_LFN);
   strcat(lfn, PSTR("/"));
-  strcat(lfn, reusableBuffer.sdmanager.lines[menuVerticalPosition - s_pgOfs]);
+  strcat(lfn, reusableBuffer.sdmanager.lines[menuVerticalPosition - menuVerticalOffset]);
 }
 
 void onSdManagerMenu(const char *result)
@@ -159,7 +159,7 @@ void onSdManagerMenu(const char *result)
 
   // TODO possible buffer overflows here!
 
-  uint8_t index = menuVerticalPosition-s_pgOfs;
+  uint8_t index = menuVerticalPosition-menuVerticalOffset;
   char *line = reusableBuffer.sdmanager.lines[index];
 
   if (result == STR_SD_INFO) {
@@ -264,7 +264,7 @@ void menuGeneralSdManager(uint8_t _event)
   uint8_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabGeneral, e_Sd, reusableBuffer.sdmanager.count);
 
-  int index = menuVerticalPosition-s_pgOfs;
+  int index = menuVerticalPosition-menuVerticalOffset;
 
   switch(_event) {
     case EVT_ENTRY:
@@ -293,7 +293,7 @@ void menuGeneralSdManager(uint8_t _event)
       else {
         if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[index])) {
           f_chdir(reusableBuffer.sdmanager.lines[index]);
-          s_pgOfs = 0;
+          menuVerticalOffset = 0;
           menuVerticalPosition = 1;
           index = 1;
           REFRESH_FILES();
@@ -354,7 +354,7 @@ void menuGeneralSdManager(uint8_t _event)
       break;
   }
 
-  if (reusableBuffer.sdmanager.offset != s_pgOfs) {
+  if (reusableBuffer.sdmanager.offset != menuVerticalOffset) {
     FILINFO fno;
     DIR dir;
     char *fn;   /* This function is assuming non-Unicode cfg. */
@@ -362,15 +362,15 @@ void menuGeneralSdManager(uint8_t _event)
     fno.lfname = lfn;
     fno.lfsize = sizeof(lfn);
     
-    if (s_pgOfs == 0) {
+    if (menuVerticalOffset == 0) {
       reusableBuffer.sdmanager.offset = 0;
       memset(reusableBuffer.sdmanager.lines, 0, sizeof(reusableBuffer.sdmanager.lines));
     }
-    else if (s_pgOfs == reusableBuffer.sdmanager.count-7) {
-      reusableBuffer.sdmanager.offset = s_pgOfs;
+    else if (menuVerticalOffset == reusableBuffer.sdmanager.count-7) {
+      reusableBuffer.sdmanager.offset = menuVerticalOffset;
       memset(reusableBuffer.sdmanager.lines, 0, sizeof(reusableBuffer.sdmanager.lines));
     }
-    else if (s_pgOfs > reusableBuffer.sdmanager.offset) {
+    else if (menuVerticalOffset > reusableBuffer.sdmanager.offset) {
       memmove(reusableBuffer.sdmanager.lines[0], reusableBuffer.sdmanager.lines[1], 6*sizeof(reusableBuffer.sdmanager.lines[0]));
       memset(reusableBuffer.sdmanager.lines[6], 0xff, SD_SCREEN_FILE_LENGTH);
       NODE_TYPE(reusableBuffer.sdmanager.lines[6]) = 1;
@@ -399,7 +399,7 @@ void menuGeneralSdManager(uint8_t _event)
 
         bool isfile = !(fno.fattrib & AM_DIR);
 
-        if (s_pgOfs == 0) {
+        if (menuVerticalOffset == 0) {
           for (int i=0; i<NUM_BODY_LINES; i++) {
             char *line = reusableBuffer.sdmanager.lines[i];
             if (line[0] == '\0' || isFilenameLower(isfile, fn, line)) {
@@ -411,7 +411,7 @@ void menuGeneralSdManager(uint8_t _event)
             }
           }
         }
-        else if (reusableBuffer.sdmanager.offset == s_pgOfs) {
+        else if (reusableBuffer.sdmanager.offset == menuVerticalOffset) {
           for (int8_t i=6; i>=0; i--) {
             char *line = reusableBuffer.sdmanager.lines[i];
             if (line[0] == '\0' || isFilenameGreater(isfile, fn, line)) {
@@ -423,7 +423,7 @@ void menuGeneralSdManager(uint8_t _event)
             }
           }
         }
-        else if (s_pgOfs > reusableBuffer.sdmanager.offset) {
+        else if (menuVerticalOffset > reusableBuffer.sdmanager.offset) {
           if (isFilenameGreater(isfile, fn, reusableBuffer.sdmanager.lines[5]) && isFilenameLower(isfile, fn, reusableBuffer.sdmanager.lines[6])) {
             memset(reusableBuffer.sdmanager.lines[6], 0, sizeof(reusableBuffer.sdmanager.lines[0]));
             strcpy(reusableBuffer.sdmanager.lines[6], fn);
@@ -441,7 +441,7 @@ void menuGeneralSdManager(uint8_t _event)
     }
   }
 
-  reusableBuffer.sdmanager.offset = s_pgOfs;
+  reusableBuffer.sdmanager.offset = menuVerticalOffset;
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;

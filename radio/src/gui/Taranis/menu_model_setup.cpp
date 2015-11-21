@@ -279,7 +279,7 @@ void menuModelSetup(uint8_t event)
 
   for (int i=0; i<NUM_BODY_LINES; ++i) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+s_pgOfs;
+    uint8_t k = i+menuVerticalOffset;
     for (int j=0; j<=k; j++) {
       if (mstate_tab[j] == HIDDEN_ROW)
         k++;
@@ -456,9 +456,9 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_POTS_WARNING2:
         if (i==0) {
           if (CURSOR_MOVED_LEFT(event))
-            s_pgOfs--;
+            menuVerticalOffset--;
           else
-            s_pgOfs++;
+            menuVerticalOffset++;
         }
         break;
 #endif
@@ -468,9 +468,9 @@ void menuModelSetup(uint8_t event)
 #if defined(REV9E)
         if (i>=NUM_BODY_LINES-2 && getSwitchWarningsCount() > 8*(NUM_BODY_LINES-i)) {
           if (CURSOR_MOVED_LEFT(event))
-            s_pgOfs--;
+            menuVerticalOffset--;
           else
-            s_pgOfs++;
+            menuVerticalOffset++;
           break;
         }
 #endif
@@ -531,9 +531,9 @@ void menuModelSetup(uint8_t event)
 #if defined(REV9E)
         if (i==NUM_BODY_LINES-1 && g_model.potsWarnMode) {
           if (CURSOR_MOVED_LEFT(event))
-            s_pgOfs--;
+            menuVerticalOffset--;
           else
-            s_pgOfs++;
+            menuVerticalOffset++;
           break;
         }
 #endif

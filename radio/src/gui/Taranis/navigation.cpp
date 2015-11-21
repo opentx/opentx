@@ -36,7 +36,7 @@
 
 #include "../../opentx.h"
 
-vertpos_t s_pgOfs;
+vertpos_t menuVerticalOffset;
 vertpos_t menuVerticalPosition;
 horzpos_t menuHorizontalPosition;
 int8_t s_editMode;
@@ -463,8 +463,8 @@ void check(const char *name, check_event_t event, uint8_t curr, const menuHandle
       else
       {
         uint8_t posVertInit = POS_VERT_INIT;
-        if (s_pgOfs != 0 || l_posVert != posVertInit) {
-          s_pgOfs = 0;
+        if (menuVerticalOffset != 0 || l_posVert != posVertInit) {
+          menuVerticalOffset = 0;
           l_posVert = posVertInit;
           l_posHorz = POS_HORZ_INIT(l_posVert);
         }
@@ -542,7 +542,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const menuHandle
   int linesCount = rowcount;
 
   if (l_posVert == 0 || (l_posVert==1 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW) || (l_posVert==2 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW)) {
-    s_pgOfs = 0;
+    menuVerticalOffset = 0;
     if (horTab) {
       linesCount = 0;
       for (int i=0; i<rowcount; i++) {
@@ -556,13 +556,13 @@ void check(const char *name, check_event_t event, uint8_t curr, const menuHandle
     if (rowcount > NUM_BODY_LINES) {
       while (1) {
         vertpos_t firstLine = 0;
-        for (int numLines=0; firstLine<rowcount && numLines<s_pgOfs; firstLine++) {
+        for (int numLines=0; firstLine<rowcount && numLines<menuVerticalOffset; firstLine++) {
           if (firstLine>=horTabMax || horTab[firstLine] != HIDDEN_ROW) {
             numLines++;
           }
         }
         if (l_posVert < firstLine) {
-          s_pgOfs--;
+          menuVerticalOffset--;
         }
         else {
           vertpos_t lastLine = firstLine;
@@ -572,10 +572,10 @@ void check(const char *name, check_event_t event, uint8_t curr, const menuHandle
             }
           }
           if (l_posVert >= lastLine) {
-            s_pgOfs++;
+            menuVerticalOffset++;
           }
           else {
-            linesCount = s_pgOfs + NUM_BODY_LINES;
+            linesCount = menuVerticalOffset + NUM_BODY_LINES;
             for (int i=lastLine; i<rowcount; i++) {
               if (i>horTabMax || horTab[i] != HIDDEN_ROW) {
                 linesCount++;
@@ -588,16 +588,16 @@ void check(const char *name, check_event_t event, uint8_t curr, const menuHandle
     }
   }
   else {
-    if (l_posVert>=NUM_BODY_LINES+s_pgOfs) {
-      s_pgOfs = l_posVert-NUM_BODY_LINES+1;
+    if (l_posVert>=NUM_BODY_LINES+menuVerticalOffset) {
+      menuVerticalOffset = l_posVert-NUM_BODY_LINES+1;
     }
-    else if (l_posVert<s_pgOfs) {
-      s_pgOfs = l_posVert;
+    else if (l_posVert<menuVerticalOffset) {
+      menuVerticalOffset = l_posVert;
     }
   }
 
   if (scrollbar_X && linesCount > NUM_BODY_LINES) {
-    displayScrollbar(scrollbar_X, MENU_HEADER_HEIGHT, LCD_H-MENU_HEADER_HEIGHT, s_pgOfs, linesCount, NUM_BODY_LINES);
+    displayScrollbar(scrollbar_X, MENU_HEADER_HEIGHT, LCD_H-MENU_HEADER_HEIGHT, menuVerticalOffset, linesCount, NUM_BODY_LINES);
   }
 
   if (name) {

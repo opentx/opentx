@@ -128,7 +128,7 @@ void menuModelSelect(uint8_t event)
   {
       case EVT_ENTRY:
         menuVerticalPosition = sub = g_eeGeneral.currModel;
-        if (sub >= LCD_LINES-1) s_pgOfs = sub-LCD_LINES+2;
+        if (sub >= LCD_LINES-1) menuVerticalOffset = sub-LCD_LINES+2;
         s_copyMode = 0;
         s_editMode = EDIT_MODE_INIT;
         eeCheck(true);
@@ -332,7 +332,7 @@ void menuModelSelect(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+s_pgOfs;
+    uint8_t k = i+menuVerticalOffset;
 
     lcd_outdezNAtt(3*FW+2, y, k+1, LEADING0+((!s_copyMode && sub==k) ? INVERS : 0), 2);
 
@@ -363,11 +363,11 @@ void menuModelSelect(uint8_t event)
       putsModelName(4*FW, y, name, k, 0);
       lcd_outdezAtt(20*FW, y, eeModelSize(k), 0);
 #endif
-      if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+s_pgOfs!=(vertpos_t)sub))
+      if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+menuVerticalOffset!=(vertpos_t)sub))
         lcd_putc(1, y, '*');
     }
 
-    if (s_copyMode && (vertpos_t)sub==i+s_pgOfs) {
+    if (s_copyMode && (vertpos_t)sub==i+menuVerticalOffset) {
       drawFilledRect(9, y, MODELSEL_W-1-9, 7);
       lcd_rect(8, y-1, MODELSEL_W-1-7, 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
     }

@@ -306,7 +306,7 @@ void menuModelCurvesAll(uint8_t event)
 
   for (int i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    int k = i + s_pgOfs;
+    int k = i + menuVerticalOffset;
     LcdFlags attr = (sub == k ? INVERS : 0);
     {
       putsStrIdx(0, y, STR_CV, k+1, attr);

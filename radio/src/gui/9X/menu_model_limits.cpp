@@ -130,7 +130,7 @@ void menuModelLimits(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+s_pgOfs;
+    uint8_t k = i+menuVerticalOffset;
 
     if (k==NUM_CHNOUT) {
       // last line available - add the "copy trim menu" line

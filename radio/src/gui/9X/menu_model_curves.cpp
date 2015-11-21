@@ -249,7 +249,7 @@ void menuModelCurvesAll(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i + s_pgOfs;
+    uint8_t k = i + menuVerticalOffset;
     uint8_t attr = (sub == k ? INVERS : 0);
 #if defined(GVARS) && defined(PCBSTD)
     if (k >= MAX_CURVES) {

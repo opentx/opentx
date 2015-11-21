@@ -120,7 +120,7 @@ void menuModelLogicalSwitches(uint8_t event)
 
   for (int i=0; i<NUM_BODY_LINES; ++i) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    k = i+s_pgOfs;
+    k = i+menuVerticalOffset;
     LcdFlags attr = (sub==k ? ((s_editMode>0) ? BLINK|INVERS : INVERS)  : 0);
     LcdFlags attr1 = (horz==1 ? attr : 0);
     LcdFlags attr2 = (horz==2 ? attr : 0);

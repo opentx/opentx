@@ -506,7 +506,7 @@ void menuTelemetryMavlinkSetup(uint8_t event) {
 
 	for (uint8_t i=0; i<LCD_LINES-1; i++) {
 		uint8_t y = 1 + 1*FH + i*FH;
-		uint8_t k = i+s_pgOfs;
+		uint8_t k = i+menuVerticalOffset;
 		uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
 		uint8_t attr = (sub == k ? blink : 0);
 		switch(k) {	

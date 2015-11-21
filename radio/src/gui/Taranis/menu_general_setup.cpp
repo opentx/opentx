@@ -134,7 +134,7 @@ void menuGeneralSetup(uint8_t event)
 
   for (unsigned int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+s_pgOfs;
+    uint8_t k = i+menuVerticalOffset;
     uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     uint8_t attr = (sub == k ? blink : 0);
 
