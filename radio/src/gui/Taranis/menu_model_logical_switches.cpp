@@ -75,7 +75,7 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lat
 
 void onLogicalSwitchesMenu(const char *result)
 {
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
   LogicalSwitchData * cs = lswAddress(sub);
 
   if (result == STR_COPY) {
@@ -99,8 +99,8 @@ void menuModelLogicalSwitches(uint8_t event)
   MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_LOGICAL_SWITCH, { NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/ });
 
   int k = 0;
-  int sub = m_posVert;
-  horzpos_t horz = m_posHorz;
+  int sub = menuVerticalPosition;
+  horzpos_t horz = menuHorizontalPosition;
 
   if (horz>=0) {
     displayColumnHeader(STR_CSW_HEADERS, horz);

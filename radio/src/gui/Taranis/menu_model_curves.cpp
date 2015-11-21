@@ -150,9 +150,9 @@ void menuModelCurveOne(uint8_t event)
   lcd_outdezAtt(PSIZE(TR_MENUCURVE)*FW+1, 0, s_curveChan+1, INVERS|LEFT);
 
   lcd_putsLeft(FH+1, STR_NAME);
-  editName(INDENT_WIDTH, 2*FH+1, g_model.curveNames[s_curveChan], sizeof(g_model.curveNames[s_curveChan]), event, m_posVert==0);
+  editName(INDENT_WIDTH, 2*FH+1, g_model.curveNames[s_curveChan], sizeof(g_model.curveNames[s_curveChan]), event, menuVerticalPosition==0);
 
-  uint8_t attr = (m_posVert==1 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
+  uint8_t attr = (menuVerticalPosition==1 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
   lcd_putsLeft(3*FH+1, STR_TYPE);
   lcd_putsiAtt(INDENT_WIDTH, 4*FH+1, STR_CURVE_TYPES, crv.type, attr);
   if (attr) {
@@ -169,7 +169,7 @@ void menuModelCurveOne(uint8_t event)
     }
   }
 
-  attr = (m_posVert==2 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
+  attr = (menuVerticalPosition==2 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
   lcd_putsLeft(5*FH+1, STR_COUNT);
   lcd_outdezAtt(INDENT_WIDTH, 6*FH+1, 5+crv.points, LEFT|attr);
   lcd_putsAtt(lcdLastPos, 6*FH+1, STR_PTS, attr);
@@ -192,8 +192,8 @@ void menuModelCurveOne(uint8_t event)
   }
 
   lcd_putsLeft(7*FH+1, STR_SMOOTH);
-  menu_lcd_onoff(7*FW, 7*FH+1, crv.smooth, m_posVert==3 ? INVERS : 0);
-  if (m_posVert==3) crv.smooth = checkIncDecModel(event, crv.smooth, 0, 1);
+  menu_lcd_onoff(7*FW, 7*FH+1, crv.smooth, menuVerticalPosition==3 ? INVERS : 0);
+  if (menuVerticalPosition==3) crv.smooth = checkIncDecModel(event, crv.smooth, 0, 1);
 
   switch(event) {
     case EVT_ENTRY:
@@ -201,7 +201,7 @@ void menuModelCurveOne(uint8_t event)
       SET_SCROLLBAR_X(0);
       break;
     case EVT_KEY_LONG(KEY_ENTER):
-      if (m_posVert > 1) {
+      if (menuVerticalPosition > 1) {
         killEvents(event);
         POPUP_MENU_ADD_ITEM(STR_CURVE_PRESET);
         POPUP_MENU_ADD_ITEM(STR_MIRROR);
@@ -222,12 +222,12 @@ void menuModelCurveOne(uint8_t event)
     point_t point = getPoint(i);
     uint8_t selectionMode = 0;
     if (crv.type==CURVE_TYPE_CUSTOM) {
-      if (m_posVert==4+2*i || (i==5+crv.points-1 && m_posVert==4+5+crv.points+5+crv.points-2-1))
+      if (menuVerticalPosition==4+2*i || (i==5+crv.points-1 && menuVerticalPosition==4+5+crv.points+5+crv.points-2-1))
         selectionMode = 2;
-      else if (i>0 && m_posVert==3+2*i)
+      else if (i>0 && menuVerticalPosition==3+2*i)
         selectionMode = 1;
     }
-    else if (m_posVert == 4+i) {
+    else if (menuVerticalPosition == 4+i) {
       selectionMode = 2;
     }
 
@@ -260,23 +260,23 @@ void menuModelCurveOne(uint8_t event)
 
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, uint8_t attr)
 {
-  lcd_putsiAtt(x, y, "\004DiffExpoFuncCstm", curve.type, m_posHorz==0 ? attr : 0);
-  if (attr && m_posHorz==0) {
+  lcd_putsiAtt(x, y, "\004DiffExpoFuncCstm", curve.type, menuHorizontalPosition==0 ? attr : 0);
+  if (attr && menuHorizontalPosition==0) {
     CHECK_INCDEC_MODELVAR_ZERO(event, curve.type, CURVE_REF_CUSTOM);
     if (checkIncDec_Ret) curve.value = 0;
   }
   switch (curve.type) {
     case CURVE_REF_DIFF:
     case CURVE_REF_EXPO:
-      curve.value = GVAR_MENU_ITEM(x+5*FW, y, curve.value, -100, 100, m_posHorz==1 ? LEFT|attr : LEFT, 0, event);
+      curve.value = GVAR_MENU_ITEM(x+5*FW, y, curve.value, -100, 100, menuHorizontalPosition==1 ? LEFT|attr : LEFT, 0, event);
       break;
     case CURVE_REF_FUNC:
-      lcd_putsiAtt(x+5*FW, y, STR_VCURVEFUNC, curve.value, m_posHorz==1 ? attr : 0);
-      if (attr && m_posHorz==1) CHECK_INCDEC_MODELVAR_ZERO(event, curve.value, CURVE_BASE-1);
+      lcd_putsiAtt(x+5*FW, y, STR_VCURVEFUNC, curve.value, menuHorizontalPosition==1 ? attr : 0);
+      if (attr && menuHorizontalPosition==1) CHECK_INCDEC_MODELVAR_ZERO(event, curve.value, CURVE_BASE-1);
       break;
     case CURVE_REF_CUSTOM:
-      putsCurve(x+5*FW+2, y, curve.value, m_posHorz==1 ? attr : 0);
-      if (attr && m_posHorz==1) {
+      putsCurve(x+5*FW+2, y, curve.value, menuHorizontalPosition==1 ? attr : 0);
+      if (attr && menuHorizontalPosition==1) {
         if (event==EVT_KEY_LONG(KEY_ENTER) && curve.value!=0) {
           s_curveChan = (curve.value<0 ? -curve.value-1 : curve.value-1);
           pushMenu(menuModelCurveOne);
@@ -293,7 +293,7 @@ void menuModelCurvesAll(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, MAX_CURVES);
 
-  int  sub = m_posVert;
+  int  sub = menuVerticalPosition;
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):

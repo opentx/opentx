@@ -100,7 +100,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
 
   SUBMENU_NOTITLE(LS_FIELD_COUNT, {0, 0, 1, 0 /*, 0...*/});
 
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
 
   INCDEC_DECLARE_VARS(EE_MODEL);
 
@@ -169,9 +169,9 @@ void menuModelLogicalSwitchOne(uint8_t event)
           v2_max = 122;
         }
         else if (cstate == LS_FAMILY_EDGE) {
-          putsEdgeDelayParam(CSWONE_2ND_COLUMN, y, cs, m_posHorz==0 ? attr : 0, m_posHorz==1 ? attr : 0);
+          putsEdgeDelayParam(CSWONE_2ND_COLUMN, y, cs, menuHorizontalPosition==0 ? attr : 0, menuHorizontalPosition==1 ? attr : 0);
           if (s_editMode <= 0) continue;
-          if (attr && m_posHorz==1) {
+          if (attr && menuHorizontalPosition==1) {
             CHECK_INCDEC_MODELVAR(event, cs->v3, -1, 222 - cs->v2);
             break;
           }
@@ -247,7 +247,7 @@ void menuModelLogicalSwitches(uint8_t event)
 
   coord_t y = 0;
   uint8_t k = 0;
-  int8_t sub = m_posVert - 1;
+  int8_t sub = menuVerticalPosition - 1;
 
   switch (event) {
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -325,8 +325,8 @@ void menuModelLogicalSwitches(uint8_t event)
   MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_LOGICAL_SWITCH+1, {0, NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/});
 
   uint8_t   k = 0;
-  int8_t    sub = m_posVert - 1;
-  horzpos_t horz = m_posHorz;
+  int8_t    sub = menuVerticalPosition - 1;
+  horzpos_t horz = menuHorizontalPosition;
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;

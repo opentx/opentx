@@ -36,7 +36,7 @@
 
 #include "../../opentx.h"
 
-#define REFRESH_FILES()        do { reusableBuffer.sdmanager.offset = 65535; m_posVert = 0; } while(0)
+#define REFRESH_FILES()        do { reusableBuffer.sdmanager.offset = 65535; menuVerticalPosition = 0; } while(0)
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
 #define IS_DIRECTORY(fname)    ((bool)(!NODE_TYPE(fname)))
 #define IS_FILE(fname)         ((bool)(NODE_TYPE(fname)))
@@ -150,7 +150,7 @@ void getSelectionFullPath(char *lfn)
 {
   f_getcwd(lfn, _MAX_LFN);
   strcat(lfn, PSTR("/"));
-  strcat(lfn, reusableBuffer.sdmanager.lines[m_posVert - s_pgOfs]);
+  strcat(lfn, reusableBuffer.sdmanager.lines[menuVerticalPosition - s_pgOfs]);
 }
 
 void onSdManagerMenu(const char *result)
@@ -159,7 +159,7 @@ void onSdManagerMenu(const char *result)
 
   // TODO possible buffer overflows here!
 
-  uint8_t index = m_posVert-s_pgOfs;
+  uint8_t index = menuVerticalPosition-s_pgOfs;
   char *line = reusableBuffer.sdmanager.lines[index];
 
   if (result == STR_SD_INFO) {
@@ -259,12 +259,12 @@ void menuGeneralSdManager(uint8_t _event)
     }
   }
 
-  int lastPos = m_posVert;
+  int lastPos = menuVerticalPosition;
 
   uint8_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabGeneral, e_Sd, reusableBuffer.sdmanager.count);
 
-  int index = m_posVert-s_pgOfs;
+  int index = menuVerticalPosition-s_pgOfs;
 
   switch(_event) {
     case EVT_ENTRY:
@@ -294,7 +294,7 @@ void menuGeneralSdManager(uint8_t _event)
         if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[index])) {
           f_chdir(reusableBuffer.sdmanager.lines[index]);
           s_pgOfs = 0;
-          m_posVert = 1;
+          menuVerticalPosition = 1;
           index = 1;
           REFRESH_FILES();
           killEvents(_event);
@@ -473,7 +473,7 @@ void menuGeneralSdManager(uint8_t _event)
 
   char *ext = getFileExtension(reusableBuffer.sdmanager.lines[index], SD_SCREEN_FILE_LENGTH+1);
   if (ext && !strcasecmp(ext, BITMAPS_EXT)) {
-    if (lastPos != m_posVert) {
+    if (lastPos != menuVerticalPosition) {
       if (bmpLoad(modelBitmap, reusableBuffer.sdmanager.lines[index], MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
         memcpy(modelBitmap, logo_taranis, MODEL_BITMAP_SIZE);
       }

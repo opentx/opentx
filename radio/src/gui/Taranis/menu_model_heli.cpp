@@ -53,7 +53,7 @@ void menuModelHeli(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUHELISETUP, menuTabModel, e_Heli, ITEM_HELI_MAX);
 
-  int sub = m_posVert;
+  int sub = menuVerticalPosition;
 
   for (unsigned int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;

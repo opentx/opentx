@@ -502,7 +502,7 @@ void menuTelemetryMavlinkSetup(uint8_t event) {
 	
 	MENU(STR_MAVMENUSETUP_TITLE, menuTabModel, e_MavSetup, ITEM_MAVLINK_MAX + 1, {0, 0, 1/*to force edit mode*/});
 	
-	uint8_t sub = m_posVert - 1;
+	uint8_t sub = menuVerticalPosition - 1;
 
 	for (uint8_t i=0; i<LCD_LINES-1; i++) {
 		uint8_t y = 1 + 1*FH + i*FH;

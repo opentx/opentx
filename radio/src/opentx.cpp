@@ -1997,7 +1997,7 @@ void checkBattery()
   static uint8_t counter = 0;
 #if defined(GUI) && !defined(COLORLCD)
   // TODO not the right menu I think ...
-  if (g_menuStack[g_menuStackPtr] == menuGeneralDiagAna) {
+  if (menuHandlers[menuLevel] == menuGeneralDiagAna) {
     g_vbat100mV = 0;
     counter = 0;
   }
@@ -2491,9 +2491,9 @@ int main(void)
   stackPaint();
 
 #if defined(GUI)
-  g_menuStack[0] = menuMainView;
+  menuHandlers[0] = menuMainView;
   #if MENUS_LOCK != 2/*no menus*/
-    g_menuStack[1] = menuModelSelect;
+    menuHandlers[1] = menuModelSelect;
   #endif
 #endif
 

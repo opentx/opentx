@@ -196,8 +196,8 @@ void perMain()
     }
     if (menuEvent) {
       // we have a popupMenuActive entry or exit event 
-      m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
-      m_posHorz = 0;
+      menuVerticalPosition = (menuEvent == EVT_ENTRY_UP) ? menuVerticalPositions[menuLevel] : 0;
+      menuHorizontalPosition = 0;
       evt = menuEvent;
       if (menuEvent == EVT_ENTRY_UP) {
         TRACE("menuEvent EVT_ENTRY_UP");
@@ -214,7 +214,7 @@ void perMain()
       menuEvent = 0;
       AUDIO_MENUS();
     }
-    g_menuStack[g_menuStackPtr]((warn || popupMenuActive) ? 0 : evt);
+    menuHandlers[menuLevel]((warn || popupMenuActive) ? 0 : evt);
     if (warn) DISPLAY_WARNING(evt);
     if (popupMenuActive) {
       if (!inMenu) {

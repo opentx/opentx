@@ -284,7 +284,7 @@ void menuModelSensor(uint8_t event)
 
   putsTelemetryChannelValue(SENSOR_2ND_COLUMN, 0, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), LEFT);
 
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
@@ -318,10 +318,10 @@ void menuModelSensor(uint8_t event)
       case SENSOR_FIELD_ID:
         if (sensor->type == TELEM_TYPE_CUSTOM) {
           lcd_putsLeft(y, STR_ID);
-          lcd_outhex4(SENSOR_2ND_COLUMN, y, sensor->id, LEFT|(m_posHorz==0 ? attr : 0));
-          lcd_outdezAtt(SENSOR_3RD_COLUMN, y, sensor->instance, LEFT|(m_posHorz==1 ? attr : 0));
+          lcd_outhex4(SENSOR_2ND_COLUMN, y, sensor->id, LEFT|(menuHorizontalPosition==0 ? attr : 0));
+          lcd_outdezAtt(SENSOR_3RD_COLUMN, y, sensor->instance, LEFT|(menuHorizontalPosition==1 ? attr : 0));
           if (attr) {
-            switch (m_posHorz) {
+            switch (menuHorizontalPosition) {
               case 0:
                 CHECK_INCDEC_MODELVAR_ZERO(event, sensor->id, 0xffff);
                 break;
@@ -487,7 +487,7 @@ void menuModelSensor(uint8_t event)
 
 void onSensorMenu(const char *result)
 {
-  uint8_t index = m_posVert - 1 - ITEM_TELEMETRY_SENSOR1;
+  uint8_t index = menuVerticalPosition - 1 - ITEM_TELEMETRY_SENSOR1;
 
   if (index < MAX_SENSORS) {
     if (result == STR_EDIT) {
@@ -497,9 +497,9 @@ void onSensorMenu(const char *result)
       delTelemetryIndex(index);
       index += 1;
       if (index<MAX_SENSORS && isTelemetryFieldAvailable(index))
-        m_posVert += 1;
+        menuVerticalPosition += 1;
       else
-        m_posVert = 1+ITEM_TELEMETRY_NEW_SENSOR;
+        menuVerticalPosition = 1+ITEM_TELEMETRY_NEW_SENSOR;
     }
     else if (result == STR_COPY) {
       int newIndex = availableTelemetryIndex();
@@ -534,7 +534,7 @@ void menuModelTelemetry(uint8_t event)
 
   MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, TELEMETRY_TYPE_ROWS CHANNELS_ROWS RSSI_ROWS SENSORS_ROWS USRDATA_ROWS CASE_VARIO(LABEL(Vario)) CASE_VARIO(0) CASE_VARIO(VARIO_RANGE_ROWS) TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), CASE_CPUARM(TELEMETRY_SCREEN_ROWS(2)) CASE_CPUARM(TELEMETRY_SCREEN_ROWS(3))});
 
-  uint8_t sub = m_posVert - 1;
+  uint8_t sub = menuVerticalPosition - 1;
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_DOWN):
@@ -663,10 +663,10 @@ void menuModelTelemetry(uint8_t event)
       case ITEM_TELEMETRY_A1_RANGE:
       case ITEM_TELEMETRY_A2_RANGE:
         lcd_putsLeft(y, STR_RANGE);
-        putsTelemetryChannelValue(TELEM_COL2, y, dest, 255-channel.offset, (m_posHorz<=0 ? attr : 0)|NO_UNIT|LEFT);
-        lcd_putsiAtt(lcdLastPos, y, STR_VTELEMUNIT, channel.type, m_posHorz!=0 ? attr : 0);
+        putsTelemetryChannelValue(TELEM_COL2, y, dest, 255-channel.offset, (menuHorizontalPosition<=0 ? attr : 0)|NO_UNIT|LEFT);
+        lcd_putsiAtt(lcdLastPos, y, STR_VTELEMUNIT, channel.type, menuHorizontalPosition!=0 ? attr : 0);
         if (attr && (s_editMode>0 || p1valdiff)) {
-          if (m_posHorz == 0) {
+          if (menuHorizontalPosition == 0) {
             uint16_t ratio = checkIncDec(event, channel.ratio, 0, 256, EE_MODEL);
             if (checkIncDec_Ret) {
               if (ratio == 127 && channel.multiplier > 0) {
@@ -700,13 +700,13 @@ void menuModelTelemetry(uint8_t event)
       {
         uint8_t alarm = ((k==ITEM_TELEMETRY_A1_ALARM1 || k==ITEM_TELEMETRY_A2_ALARM1) ? 0 : 1);
         lcd_putsLeft(y, STR_ALARM);
-        lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ALARM_LEVEL(ch, alarm), m_posHorz<=0 ? attr : 0);
-        lcd_putsiAtt(TELEM_COL2+4*FW, y, STR_VALARMFN, ALARM_GREATER(ch, alarm), (CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0);
-        putsTelemetryChannelValue(TELEM_COL2+6*FW, y, dest, channel.alarms_value[alarm], ((CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0) | LEFT);
+        lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ALARM_LEVEL(ch, alarm), menuHorizontalPosition<=0 ? attr : 0);
+        lcd_putsiAtt(TELEM_COL2+4*FW, y, STR_VALARMFN, ALARM_GREATER(ch, alarm), (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
+        putsTelemetryChannelValue(TELEM_COL2+6*FW, y, dest, channel.alarms_value[alarm], ((CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0) | LEFT);
 
         if (attr && (s_editMode>0 || p1valdiff)) {
           uint8_t t;
-          switch (m_posHorz) {
+          switch (menuHorizontalPosition) {
            case 0:
              t = ALARM_LEVEL(ch, alarm);
              channel.alarms_level = (channel.alarms_level & ~(3<<(2*alarm))) + (checkIncDecModel(event, t, 0, 3) << (2*alarm));
@@ -735,12 +735,12 @@ void menuModelTelemetry(uint8_t event)
       case ITEM_TELEMETRY_RSSI_ALARM2: {
         uint8_t alarm = k-ITEM_TELEMETRY_RSSI_ALARM1;
         lcd_putsLeft(y, STR_ALARM);
-        lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ((2+alarm+g_model.frsky.rssiAlarms[alarm].level)%4), m_posHorz<=0 ? attr : 0);
+        lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ((2+alarm+g_model.frsky.rssiAlarms[alarm].level)%4), menuHorizontalPosition<=0 ? attr : 0);
         lcd_putc(TELEM_COL2+4*FW, y, '<');
-        lcd_outdezNAtt(TELEM_COL2+6*FW, y, getRssiAlarmValue(alarm), LEFT|(m_posHorz!=0 ? attr : 0), 3);
+        lcd_outdezNAtt(TELEM_COL2+6*FW, y, getRssiAlarmValue(alarm), LEFT|(menuHorizontalPosition!=0 ? attr : 0), 3);
 
         if (attr && (s_editMode>0 || p1valdiff)) {
-          switch (m_posHorz) {
+          switch (menuHorizontalPosition) {
             case 0:
               CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[alarm].level, -3, 2); // circular (saves flash)
               break;
@@ -815,10 +815,10 @@ void menuModelTelemetry(uint8_t event)
       case ITEM_TELEMETRY_VARIO_RANGE:
         lcd_putsLeft(y, STR_LIMIT);
 #if defined(PCBSTD)
-        lcd_outdezAtt(TELEM_COL2, y, 5+g_model.frsky.varioCenterMax, (m_posHorz==0 ? attr : 0)|PREC1|LEFT);
-        lcd_outdezAtt(TELEM_COL2+8*FW, y, 10+g_model.frsky.varioMax, (m_posHorz==1 ? attr : 0));
+        lcd_outdezAtt(TELEM_COL2, y, 5+g_model.frsky.varioCenterMax, (menuHorizontalPosition==0 ? attr : 0)|PREC1|LEFT);
+        lcd_outdezAtt(TELEM_COL2+8*FW, y, 10+g_model.frsky.varioMax, (menuHorizontalPosition==1 ? attr : 0));
         if (attr && (s_editMode>0 || p1valdiff)) {
-          switch (m_posHorz) {
+          switch (menuHorizontalPosition) {
             case 0:
               CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMax, -15, +15);
               break;
@@ -828,12 +828,12 @@ void menuModelTelemetry(uint8_t event)
           }
         }
 #else
-        lcd_outdezAtt(TELEM_COL2, y, -10+g_model.frsky.varioMin, (m_posHorz<=0 ? attr : 0)|LEFT);
-        lcd_outdezAtt(TELEM_COL2+7*FW-2, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0)|PREC1);
-        lcd_outdezAtt(TELEM_COL2+10*FW, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0)|PREC1);
-        lcd_outdezAtt(TELEM_COL2+13*FW+2, y, 10+g_model.frsky.varioMax, ((CURSOR_ON_LINE() || m_posHorz==3) ? attr : 0));
+        lcd_outdezAtt(TELEM_COL2, y, -10+g_model.frsky.varioMin, (menuHorizontalPosition<=0 ? attr : 0)|LEFT);
+        lcd_outdezAtt(TELEM_COL2+7*FW-2, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0)|PREC1);
+        lcd_outdezAtt(TELEM_COL2+10*FW, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0)|PREC1);
+        lcd_outdezAtt(TELEM_COL2+13*FW+2, y, 10+g_model.frsky.varioMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==3) ? attr : 0));
         if (attr && (s_editMode>0 || p1valdiff)) {
-          switch (m_posHorz) {
+          switch (menuHorizontalPosition) {
             case 0:
               CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioMin, -7, 7);
               break;
@@ -861,7 +861,7 @@ void menuModelTelemetry(uint8_t event)
         uint8_t screenIndex = TELEMETRY_CURRENT_SCREEN(k);
         putsStrIdx(0*FW, y, STR_SCREEN, screenIndex+1);
         TelemetryScreenType oldScreenType = TELEMETRY_SCREEN_TYPE(screenIndex);
-        TelemetryScreenType newScreenType = (TelemetryScreenType)selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (m_posHorz==0 ? attr : 0), event);
+        TelemetryScreenType newScreenType = (TelemetryScreenType)selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (menuHorizontalPosition==0 ? attr : 0), event);
         if (newScreenType != oldScreenType) {
           g_model.frsky.screensType = (g_model.frsky.screensType & (~(0x03 << (2*screenIndex)))) | (newScreenType << (2*screenIndex));
           memset(&g_model.frsky.screens[screenIndex], 0, sizeof(g_model.frsky.screens[screenIndex]));
@@ -926,29 +926,29 @@ void menuModelTelemetry(uint8_t event)
           FrSkyBarData & bar = g_model.frsky.screens[screenIndex].bars[lineIndex];
           source_t barSource = bar.source;
 #if defined(CPUARM)
-          putsMixerSource(TELEM_COL1, y, barSource, m_posHorz==0 ? attr : 0);
+          putsMixerSource(TELEM_COL1, y, barSource, menuHorizontalPosition==0 ? attr : 0);
           if (barSource) {
             if (barSource <= MIXSRC_LAST_CH) {
-              putsChannelValue(TELEM_BARS_COLMIN, y, barSource, calc100toRESX(bar.barMin), (m_posHorz==1 ? attr : 0) | LEFT);
-              putsChannelValue(TELEM_BARS_COLMAX, y, barSource, calc100toRESX(bar.barMax), (m_posHorz==2 ? attr : 0) | LEFT);
+              putsChannelValue(TELEM_BARS_COLMIN, y, barSource, calc100toRESX(bar.barMin), (menuHorizontalPosition==1 ? attr : 0) | LEFT);
+              putsChannelValue(TELEM_BARS_COLMAX, y, barSource, calc100toRESX(bar.barMax), (menuHorizontalPosition==2 ? attr : 0) | LEFT);
             }
             else {
-              putsChannelValue(TELEM_BARS_COLMIN, y, barSource, bar.barMin, (m_posHorz==1 ? attr : 0) | LEFT);
-              putsChannelValue(TELEM_BARS_COLMAX, y, barSource, bar.barMax, (m_posHorz==2 ? attr : 0) | LEFT);
+              putsChannelValue(TELEM_BARS_COLMIN, y, barSource, bar.barMin, (menuHorizontalPosition==1 ? attr : 0) | LEFT);
+              putsChannelValue(TELEM_BARS_COLMAX, y, barSource, bar.barMax, (menuHorizontalPosition==2 ? attr : 0) | LEFT);
             }
           }
 #else
-          lcd_putsiAtt(TELEM_COL1, y, STR_VTELEMCHNS, barSource, m_posHorz==0 ? attr : 0);
+          lcd_putsiAtt(TELEM_COL1, y, STR_VTELEMCHNS, barSource, menuHorizontalPosition==0 ? attr : 0);
           if (barSource) {
-            putsTelemetryChannelValue(TELEM_BARS_COLMIN, y, barSource-1, convertBarTelemValue(barSource, bar.barMin), (m_posHorz==1 ? attr : 0) | LEFT);
-            putsTelemetryChannelValue(TELEM_BARS_COLMAX, y, barSource-1, convertBarTelemValue(barSource, 255-bar.barMax), (m_posHorz==2 ? attr : 0) | LEFT);
+            putsTelemetryChannelValue(TELEM_BARS_COLMIN, y, barSource-1, convertBarTelemValue(barSource, bar.barMin), (menuHorizontalPosition==1 ? attr : 0) | LEFT);
+            putsTelemetryChannelValue(TELEM_BARS_COLMAX, y, barSource-1, convertBarTelemValue(barSource, 255-bar.barMax), (menuHorizontalPosition==2 ? attr : 0) | LEFT);
           }
 #endif
-          else if (attr && m_posHorz>0) {
-            m_posHorz = 0;
+          else if (attr && menuHorizontalPosition>0) {
+            menuHorizontalPosition = 0;
           }
           if (attr && (s_editMode>0 || p1valdiff)) {
-            switch (m_posHorz) {
+            switch (menuHorizontalPosition) {
               case 0:
 #if defined(CPUARM)
                 bar.source = CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, barSource, MIXSRC_LAST_TELEM, isSourceAvailable);
@@ -985,7 +985,7 @@ void menuModelTelemetry(uint8_t event)
 #endif
         {
           for (uint8_t c=0; c<NUM_LINE_ITEMS; c++) {
-            uint8_t cellAttr = (m_posHorz==c ? attr : 0);
+            uint8_t cellAttr = (menuHorizontalPosition==c ? attr : 0);
             source_t & value = g_model.frsky.screens[screenIndex].lines[lineIndex].sources[c];
             uint8_t pos[] = {INDENT_WIDTH, TELEM_COL2};
 #if defined(CPUARM)
@@ -1000,7 +1000,7 @@ void menuModelTelemetry(uint8_t event)
             }
 #endif
           }
-          if (attr && m_posHorz == NUM_LINE_ITEMS) {
+          if (attr && menuHorizontalPosition == NUM_LINE_ITEMS) {
             REPEAT_LAST_CURSOR_MOVE();
           }
         }

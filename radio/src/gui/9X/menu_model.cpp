@@ -122,7 +122,7 @@ static int8_t s_copySrcRow;
 static int8_t s_copyTgtOfs;
 
 #if defined(CPUM64)
-  #define editNameCursorPos m_posHorz
+  #define editNameCursorPos menuHorizontalPosition
 #else
   static uint8_t editNameCursorPos = 0;
 #endif

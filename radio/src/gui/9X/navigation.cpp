@@ -40,8 +40,8 @@ vertpos_t s_pgOfs;
 int8_t s_editMode;
 uint8_t s_noHi;
 uint8_t calibrationState;
-vertpos_t m_posVert;
-horzpos_t m_posHorz;
+vertpos_t menuVerticalPosition;
+horzpos_t menuHorizontalPosition;
 
 #if defined(NAVIGATION_POT1)
 int16_t p1valdiff;
@@ -350,10 +350,10 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max)
 tmr10ms_t menuEntryTime;
 #endif
 
-void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
+void check(check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
 {
-  vertpos_t l_posVert = m_posVert;
-  horzpos_t l_posHorz = m_posHorz;
+  vertpos_t l_posVert = menuVerticalPosition;
+  horzpos_t l_posHorz = menuHorizontalPosition;
 
   uint8_t maxcol = MAXCOL(l_posVert);
 
@@ -441,7 +441,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       }
 
       if (cc != curr) {
-        chainMenu((MenuFuncP)pgm_read_adr(&menuTab[cc]));
+        chainMenu((menuHandlerFunc)pgm_read_adr(&menuTab[cc]));
       }
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -692,8 +692,8 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     }
   }
 
-  m_posVert = l_posVert;
-  m_posHorz = l_posHorz;
+  menuVerticalPosition = l_posVert;
+  menuHorizontalPosition = l_posHorz;
 #if !defined(CPUM64)
   // cosmetics on 9x
   if (s_pgOfs > 0) {
@@ -705,7 +705,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 #endif
 }
 
-void check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow)
+void check_simple(check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow)
 {
   check(event, curr, menuTab, menuTabSize, 0, 0, maxrow);
 }
@@ -721,6 +721,6 @@ void repeatLastCursorMove(uint8_t event)
     putEvent(event);
   }
   else {
-    m_posHorz = 0;
+    menuHorizontalPosition = 0;
   }
 }

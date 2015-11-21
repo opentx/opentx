@@ -40,7 +40,7 @@
 
 void onModelSelectMenu(const char *result)
 {
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
 
   if (result == STR_SELECT_MODEL || result == STR_CREATE_MODEL) {
     selectModel(sub);
@@ -83,7 +83,7 @@ void menuModelSelect(uint8_t event)
   if (s_warning_result) {
     s_warning_result = 0;
     eeCheck(true);
-    eeDeleteModel(m_posVert); // delete file
+    eeDeleteModel(menuVerticalPosition); // delete file
     s_copyMode = 0;
     event = EVT_ENTRY_UP;
   }
@@ -94,18 +94,18 @@ void menuModelSelect(uint8_t event)
     _event_ -= KEY_EXIT;
   }
 
-  int8_t oldSub = m_posVert;
+  int8_t oldSub = menuVerticalPosition;
 
   check_submenu_simple(NULL, _event_, MAX_MODELS);
 
   if (s_editMode > 0) s_editMode = 0;
 
-  int sub = m_posVert;
+  int sub = menuVerticalPosition;
 
   switch (event)
   {
       case EVT_ENTRY:
-        m_posVert = sub = g_eeGeneral.currModel;
+        menuVerticalPosition = sub = g_eeGeneral.currModel;
         if (sub >= NUM_BODY_LINES) s_pgOfs = sub-(NUM_BODY_LINES-1);
         s_copyMode = 0;
         s_editMode = EDIT_MODE_INIT;
@@ -121,12 +121,12 @@ void menuModelSelect(uint8_t event)
         // no break
       case EVT_KEY_BREAK(KEY_EXIT):
         if (s_copyMode) {
-          sub = m_posVert = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow;
+          sub = menuVerticalPosition = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow;
           s_copyMode = 0;
         }
         else {
-          if (m_posVert != g_eeGeneral.currModel) {
-            sub = m_posVert = g_eeGeneral.currModel;
+          if (menuVerticalPosition != g_eeGeneral.currModel) {
+            sub = menuVerticalPosition = g_eeGeneral.currModel;
             s_pgOfs = 0;
           }
           else if (event != EVT_KEY_LONG(KEY_EXIT)) {
@@ -213,7 +213,7 @@ void menuModelSelect(uint8_t event)
       case EVT_KEY_FIRST(KEY_MOVE_DOWN):
       case EVT_KEY_REPT(KEY_MOVE_DOWN):
         if (s_copyMode) {
-          int8_t next_ofs = s_copyTgtOfs + oldSub - m_posVert;
+          int8_t next_ofs = s_copyTgtOfs + oldSub - menuVerticalPosition;
           if (next_ofs == MAX_MODELS || next_ofs == -MAX_MODELS)
             next_ofs = 0;
 
@@ -228,7 +228,7 @@ void menuModelSelect(uint8_t event)
               s_copyMode = 0;
             }
             next_ofs = 0;
-            m_posVert = sub;
+            menuVerticalPosition = sub;
           }
           s_copyTgtOfs = next_ofs;
         }

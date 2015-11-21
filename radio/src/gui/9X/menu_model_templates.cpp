@@ -40,7 +40,7 @@ void menuModelTemplates(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUTEMPLATES, menuTabModel, e_Templates, 1+TMPL_COUNT);
 
-  uint8_t sub = m_posVert - 1;
+  uint8_t sub = menuVerticalPosition - 1;
 
   if (sub < TMPL_COUNT) {
     if (s_warning_result) {

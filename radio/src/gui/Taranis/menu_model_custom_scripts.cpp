@@ -72,7 +72,7 @@ void menuModelCustomScriptOne(uint8_t event)
 
   SUBMENU_NOTITLE(3+scriptInputsOutputs[s_currIdx].inputsCount, { 0, 0, LABEL(inputs), 0/*repeated*/ });
 
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
 
   for (int k=0; k<LCD_LINES-1; k++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
@@ -140,7 +140,7 @@ void menuModelCustomScripts(uint8_t event)
   MENU(STR_MENUCUSTOMSCRIPTS, menuTabModel, e_CustomScripts, MAX_SCRIPTS, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });
 
   coord_t y;
-  int8_t  sub = m_posVert;
+  int8_t  sub = menuVerticalPosition;
 
   if (event == EVT_KEY_FIRST(KEY_ENTER)) {
     s_currIdx = sub;

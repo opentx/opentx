@@ -37,8 +37,8 @@
 #include "../../opentx.h"
 
 vertpos_t s_pgOfs;
-vertpos_t m_posVert;
-horzpos_t m_posHorz;
+vertpos_t menuVerticalPosition;
+horzpos_t menuHorizontalPosition;
 int8_t s_editMode;
 uint8_t s_noHi;
 uint8_t calibrationState;
@@ -365,10 +365,10 @@ void onLongMenuPress(const char *result)
 
 tmr10ms_t menuEntryTime;
 
-void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
+void check(const char *name, check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
 {
-  vertpos_t l_posVert = m_posVert;
-  horzpos_t l_posHorz = m_posHorz;
+  vertpos_t l_posVert = menuVerticalPosition;
+  horzpos_t l_posHorz = menuHorizontalPosition;
 
   uint8_t maxcol = MAXCOL(l_posVert);
 
@@ -406,7 +406,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
     }
 
     if (!calibrationState && cc != curr) {
-      chainMenu((MenuFuncP)pgm_read_adr(&menuTab[cc]));
+      chainMenu((menuHandlerFunc)pgm_read_adr(&menuTab[cc]));
     }
 
     if (!(flags&CHECK_FLAG_NO_SCREEN_INDEX)) {
@@ -437,7 +437,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
 
     case EVT_ROTARY_BREAK:
       if (s_editMode > 1) break;
-      if (m_posHorz < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
+      if (menuHorizontalPosition < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
         l_posHorz = 0;
         break;
       }
@@ -604,12 +604,12 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
     title(name);
   }
 
-  m_posVert = l_posVert;
-  m_posHorz = l_posHorz;
+  menuVerticalPosition = l_posVert;
+  menuHorizontalPosition = l_posHorz;
 }
 
 
-void check_simple(const char *name, check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
+void check_simple(const char *name, check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
 {
   check(name, event, curr, menuTab, menuTabSize, 0, 0, rowcount);
 }
@@ -625,6 +625,6 @@ void repeatLastCursorMove(uint8_t event)
     putEvent(event);
   }
   else {
-    m_posHorz = 0;
+    menuHorizontalPosition = 0;
   }
 }

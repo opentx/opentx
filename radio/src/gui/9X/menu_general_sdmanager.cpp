@@ -76,7 +76,7 @@ void onSdManagerMenu(const char *result)
 {
   TCHAR lfn[_MAX_LFN+1];
 
-  uint8_t index = m_posVert-1-s_pgOfs;
+  uint8_t index = menuVerticalPosition-1-s_pgOfs;
   if (result == STR_SD_INFO) {
     pushMenu(menuGeneralSdManagerInfo);
   }
@@ -91,7 +91,7 @@ void onSdManagerMenu(const char *result)
     strncpy(statusLineMsg, reusableBuffer.sdmanager.lines[index], 13);
     strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), STR_REMOVED);
     showStatusLine();
-    if ((uint16_t)m_posVert == reusableBuffer.sdmanager.count) m_posVert--;
+    if ((uint16_t)menuVerticalPosition == reusableBuffer.sdmanager.count) menuVerticalPosition--;
     reusableBuffer.sdmanager.offset = s_pgOfs-1;
   }
 #if defined(CPUARM)
@@ -157,32 +157,32 @@ void menuGeneralSdManager(uint8_t _event)
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_ENTER):
     {
-      if (m_posVert > 0) {
-        vertpos_t index = m_posVert-1-s_pgOfs;
+      if (menuVerticalPosition > 0) {
+        vertpos_t index = menuVerticalPosition-1-s_pgOfs;
         if (!reusableBuffer.sdmanager.lines[index][SD_SCREEN_FILE_LENGTH+1]) {
           f_chdir(reusableBuffer.sdmanager.lines[index]);
           s_pgOfs = 0;
-          m_posVert = 1;
+          menuVerticalPosition = 1;
           reusableBuffer.sdmanager.offset = 65535;
           killEvents(_event);
           break;
         }
       }
-      if (!IS_ROTARY_BREAK(_event) || m_posVert==0)
+      if (!IS_ROTARY_BREAK(_event) || menuVerticalPosition==0)
         break;
       // no break;
     }
 
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(_event);
-      if (m_posVert == 0) {
+      if (menuVerticalPosition == 0) {
         POPUP_MENU_ADD_ITEM(STR_SD_INFO);
         POPUP_MENU_ADD_ITEM(STR_SD_FORMAT);
       }
       else
       {
 #if defined(CPUARM)
-        uint8_t index = m_posVert-1-s_pgOfs;
+        uint8_t index = menuVerticalPosition-1-s_pgOfs;
         // TODO duplicated code for finding extension
         char * ext = reusableBuffer.sdmanager.lines[index];
         int len = strlen(ext) - 4;
@@ -289,7 +289,7 @@ void menuGeneralSdManager(uint8_t _event)
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     lcdNextPos = 0;
-    uint8_t attr = (m_posVert-1-s_pgOfs == i ? BSS|INVERS : BSS);
+    uint8_t attr = (menuVerticalPosition-1-s_pgOfs == i ? BSS|INVERS : BSS);
     if (reusableBuffer.sdmanager.lines[i][0]) {
       if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(0, y, '[', attr); }
       lcd_putsAtt(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], attr);

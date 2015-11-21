@@ -48,11 +48,11 @@
 #if defined(CPUARM) && defined(SDCARD)
 void onCustomFunctionsFileSelectionMenu(const char *result)
 {
-  int  sub = m_posVert - 1;
+  int  sub = menuVerticalPosition - 1;
   CustomFunctionData * cfn;
   uint8_t eeFlags;
 
-  if (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions) {
+  if (menuHandlers[menuLevel] == menuModelCustomFunctions) {
     cfn = &g_model.customFn[sub];
     eeFlags = EE_MODEL;
   }
@@ -86,7 +86,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
 
 void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
 {
-  int8_t sub = m_posVert - 1;
+  int8_t sub = menuVerticalPosition - 1;
 
 #if defined(CPUARM)
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
@@ -101,7 +101,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
     CustomFunctionData *cfn = &functions[k];
     uint8_t func = CFN_FUNC(cfn);
     for (uint8_t j=0; j<5; j++) {
-      uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+      uint8_t attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
@@ -128,7 +128,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           }
           else {
             j = 4; // skip other fields
-            if (sub==k && m_posHorz > 0) {
+            if (sub==k && menuHorizontalPosition > 0) {
               REPEAT_LAST_CURSOR_MOVE();
             }
           }

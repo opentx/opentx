@@ -58,36 +58,36 @@ typedef uint8_t check_event_t;
   extern tmr10ms_t menuEntryTime;
 #endif
 
-extern vertpos_t m_posVert;
-extern horzpos_t m_posHorz;
+extern vertpos_t menuVerticalPosition;
+extern horzpos_t menuHorizontalPosition;
 extern vertpos_t s_pgOfs;
 extern uint8_t s_noHi;
 extern uint8_t calibrationState;
 
 void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 
-typedef void (*MenuFuncP)(uint8_t event);
+typedef void (*menuHandlerFunc)(uint8_t event);
 typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
 extern const MenuFuncP_PROGMEM menuTabModel[];
 extern const MenuFuncP_PROGMEM menuTabGeneral[];
 extern const MenuFuncP_PROGMEM menuTabFPV[];
 extern const MenuFuncP_PROGMEM menuTabTelemetry[];
 
-extern MenuFuncP g_menuStack[5];
-extern uint8_t g_menuPos[4];
-extern uint8_t g_menuStackPtr;
+extern menuHandlerFunc menuHandlers[5];
+extern uint8_t menuVerticalPositions[4];
+extern uint8_t menuLevel;
 extern uint8_t menuEvent;
 
 /// goto given Menu, but substitute current menu in menuStack
-void chainMenu(MenuFuncP newMenu);
+void chainMenu(menuHandlerFunc newMenu);
 /// goto given Menu, store current menu in menuStack
-void pushMenu(MenuFuncP newMenu);
+void pushMenu(menuHandlerFunc newMenu);
 /// return to last menu in menustack
 void popMenu();
 ///deliver address of last menu which was popped from
-inline MenuFuncP lastPopMenu()
+inline menuHandlerFunc lastPopMenu()
 {
-  return g_menuStack[g_menuStackPtr+1];
+  return menuHandlers[menuLevel+1];
 }
 
 void drawPotsBars();
@@ -271,8 +271,8 @@ int8_t checkIncDecMovedSwitch(int8_t val);
 #define NAVIGATION_LINE_BY_LINE  0
 #define CURSOR_ON_LINE()         (0)
 
-void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow);
-void check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
+void check(check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow);
+void check_simple(check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
 void check_submenu_simple(check_event_t event, uint8_t maxrow);
 
 void title(const pm_char * s);
@@ -459,7 +459,7 @@ void displayWarning(uint8_t event);
 #if defined(ROTARY_ENCODER_NAVIGATION)
   void repeatLastCursorMove(uint8_t event);
   #define REPEAT_LAST_CURSOR_MOVE()    { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else repeatLastCursorMove(event); }
-  #define MOVE_CURSOR_FROM_HERE()      if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
+  #define MOVE_CURSOR_FROM_HERE()      if (menuHorizontalPosition > 0) REPEAT_LAST_CURSOR_MOVE()
 #else
   void repeatLastCursorMove(uint8_t event);
   #define REPEAT_LAST_CURSOR_MOVE()    repeatLastCursorMove(event)

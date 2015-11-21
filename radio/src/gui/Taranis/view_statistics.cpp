@@ -223,7 +223,7 @@ void menuTraceBuffer(uint8_t event)
 
   uint8_t y = 0;
   uint8_t k = 0;
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
 
   lcd_putc(0, FH, '#');
   lcd_puts(4*FW, FH, "Time");

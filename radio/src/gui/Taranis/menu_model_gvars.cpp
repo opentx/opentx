@@ -37,7 +37,7 @@
 
 void onGVARSMenu(const char *result)
 {
-  int sub = m_posVert;
+  int sub = menuVerticalPosition;
 
   if (result == STR_ENABLE_POPUP) {
     g_model.gvars[sub].popup = true;
@@ -75,17 +75,17 @@ void menuModelGVars(uint8_t event)
 
   MENU_FLAGS(menuTitle, menuTabModel, e_GVars, first2seconds ? CHECK_FLAG_NO_SCREEN_INDEX : 0, MAX_GVARS, { NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES });
 
-  int sub = m_posVert;
+  int sub = menuVerticalPosition;
 
   for (int l=0; l<LCD_LINES-1; l++) {
     int i = l+s_pgOfs;
     coord_t y = MENU_HEADER_HEIGHT + 1 + l*FH;
 
     if (g_model.gvars[i].popup) lcd_putc(3*FW, y, '!');
-    putsStrIdx(0, y, STR_GV, i+1, (sub==i && m_posHorz<0) ? INVERS : 0);
+    putsStrIdx(0, y, STR_GV, i+1, (sub==i && menuHorizontalPosition<0) ? INVERS : 0);
 
     for (int j=0; j<1+MAX_FLIGHT_MODES; j++) {
-      LcdFlags attr = ((sub==i && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+      LcdFlags attr = ((sub==i && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       coord_t x = GVARS_FM_COLUMN(j-1);
 
       switch(j)
@@ -127,7 +127,7 @@ void menuModelGVars(uint8_t event)
     }
   }
 
-  if (m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER)) {
+  if (menuHorizontalPosition < 0 && event==EVT_KEY_LONG(KEY_ENTER)) {
     killEvents(event);
     if (g_model.gvars[sub].popup)
       POPUP_MENU_ADD_ITEM(STR_DISABLE_POPUP);

@@ -56,7 +56,7 @@ void menuGeneralTrainer(uint8_t event)
   lcd_puts(3*FW, MENU_HEADER_HEIGHT+1, STR_MODESRC);
 
   y = MENU_HEADER_HEIGHT + 1 + FH;
-  int sub = m_posVert + 1;
+  int sub = menuVerticalPosition + 1;
 
   for (int i=1; i<=NUM_STICKS; i++) {
     uint8_t chan = channel_order(i);
@@ -66,7 +66,7 @@ void menuGeneralTrainer(uint8_t event)
 
     for (int j=0; j<3; j++) {
 
-      attr = ((sub==i && m_posHorz==j) ? blink : 0);
+      attr = ((sub==i && menuHorizontalPosition==j) ? blink : 0);
 
       switch(j) {
         case 0:

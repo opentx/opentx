@@ -90,7 +90,7 @@ void menuModelPhaseOne(uint8_t event)
   #define PHASE_ONE_FIRST_LINE (1+1*FH)
 #endif
 
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
   int8_t editMode = s_editMode;
 
 #if defined(GVARS) && !defined(PCBSTD)
@@ -116,8 +116,8 @@ void menuModelPhaseOne(uint8_t event)
       case ITEM_MODEL_PHASE_TRIMS:
         lcd_putsLeft(y, STR_TRIMS);
         for (uint8_t t=0; t<NUM_STICKS; t++) {
-          putsTrimMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, m_posHorz==t ? attr : 0);
-          if (attr && m_posHorz==t && ((editMode>0) || p1valdiff)) {
+          putsTrimMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, menuHorizontalPosition==t ? attr : 0);
+          if (attr && menuHorizontalPosition==t && ((editMode>0) || p1valdiff)) {
             int16_t v = getRawTrimValue(s_currIdx, t);
             if (v < TRIM_EXTENDED_MAX) v = TRIM_EXTENDED_MAX;
             v = checkIncDec(event, v, TRIM_EXTENDED_MAX, TRIM_EXTENDED_MAX+MAX_FLIGHT_MODES-1, EE_MODEL);
@@ -133,8 +133,8 @@ void menuModelPhaseOne(uint8_t event)
       case ITEM_MODEL_PHASE_ROTARY_ENCODERS:
         lcd_putsLeft(y, STR_ROTARY_ENCODER);
         for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
-          putsRotaryEncoderMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, m_posHorz==t ? attr : 0);
-          if (attr && m_posHorz==t && ((editMode>0) || p1valdiff)) {
+          putsRotaryEncoderMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, menuHorizontalPosition==t ? attr : 0);
+          if (attr && menuHorizontalPosition==t && ((editMode>0) || p1valdiff)) {
             int16_t v = flightModeAddress(s_currIdx)->rotaryEncoders[t];
             if (v < ROTARY_ENCODER_MAX) v = ROTARY_ENCODER_MAX;
             v = checkIncDec(event, v, ROTARY_ENCODER_MAX, ROTARY_ENCODER_MAX+MAX_FLIGHT_MODES-1, EE_MODEL);
@@ -163,7 +163,7 @@ void menuModelPhaseOne(uint8_t event)
       default:
       {
         uint8_t idx = i-ITEM_MODEL_PHASE_GV1;
-        uint8_t posHorz = m_posHorz;
+        uint8_t posHorz = menuHorizontalPosition;
         if (attr && posHorz > 0 && s_currIdx==0) posHorz++;
 
         putsStrIdx(INDENT_WIDTH, y, STR_GV, idx+1);
@@ -223,7 +223,7 @@ void menuModelFlightModesAll(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, 1+MAX_FLIGHT_MODES+1);
 
-  int8_t sub = m_posVert - 1;
+  int8_t sub = menuVerticalPosition - 1;
 
   switch (event) {
     CASE_EVT_ROTARY_BREAK
