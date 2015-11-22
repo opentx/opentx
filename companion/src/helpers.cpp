@@ -1001,3 +1001,38 @@ QStringList extractLatLon(const QString & position)
   }
   return result;
 }
+
+TableLayout::TableLayout(QWidget * parent, int rowCount, const QStringList & headerLabels)
+{
+  tableWidget = new QTableWidget(parent);
+  QVBoxLayout * layout = new QVBoxLayout();
+  layout->addWidget(tableWidget);
+  layout->setContentsMargins(0, 0, 0, 0);
+  parent->setLayout(layout);
+
+  tableWidget->setRowCount(rowCount);
+  tableWidget->setColumnCount(headerLabels.size());
+  tableWidget->setShowGrid(false);
+  tableWidget->verticalHeader()->setVisible(false);
+  tableWidget->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+  tableWidget->setSelectionMode(QAbstractItemView::NoSelection);
+  tableWidget->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
+  tableWidget->setStyleSheet("QTableWidget {background-color: transparent;}");
+  tableWidget->setHorizontalHeaderLabels(headerLabels);
+}
+
+void TableLayout::addWidget(int row, int column, QWidget * widget)
+{
+  QHBoxLayout * layout = new QHBoxLayout(tableWidget);
+  layout->addWidget(widget);
+  addLayout(row, column, layout);
+}
+
+void TableLayout::addLayout(int row, int column, QLayout * layout)
+{
+  layout->setContentsMargins(1, 3, 1, 3);
+  QWidget * containerWidget = new QWidget(tableWidget);
+  containerWidget->setLayout(layout);
+  tableWidget->setCellWidget(row, column, containerWidget);
+}
