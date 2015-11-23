@@ -142,6 +142,7 @@ void (*popupFunc)(uint8_t event) = NULL;
 const char *popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t s_menu_item = 0;
 uint16_t popupMenuNoItems = 0;
+uint8_t s_menu_flags = 0;
 uint16_t popupMenuOffset = 0;
 void (*popupMenuHandler)(const char *result);
 const char * displayPopupMenu(uint8_t event)
@@ -154,7 +155,7 @@ const char * displayPopupMenu(uint8_t event)
   lcd_rect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
-    lcd_putsAtt(MENU_X+6, i*(FH+1) + y + 2, popupMenuItems[i], 0);
+    lcd_putsAtt(MENU_X+6, i*(FH+1) + y + 2, popupMenuItems[i], s_menu_flags);
     if (i == s_menu_item) drawFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
   }
 
@@ -223,6 +224,7 @@ const char * displayPopupMenu(uint8_t event)
     case EVT_KEY_BREAK(KEY_EXIT):
       popupMenuNoItems = 0;
       s_menu_item = 0;
+      s_menu_flags = 0;
       popupMenuOffset = 0;
       break;
   }
