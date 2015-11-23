@@ -302,7 +302,7 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
 
 extern const pm_char * warningText;
 extern const pm_char * warningInfoText;
-extern uint8_t         s_warning_info_len;
+extern uint8_t         warningInfoLength;
 extern uint8_t         warningResult;
 extern uint8_t         warningType;
 
@@ -328,7 +328,7 @@ extern uint8_t warningInfoFlags;
 #define POPUP_CONFIRMATION(s) (warningText = s, warningType = WARNING_TYPE_CONFIRM, warningInfoText = 0, popupFunc = displayWarning)
 #define POPUP_INPUT(s, func, start, min, max) (warningText = s, warningType = WARNING_TYPE_INPUT, popupFunc = func, warningInputValue = start, warningInputValueMin = min, warningInputValueMax = max)
 #define WARNING_INFO_FLAGS    warningInfoFlags
-#define SET_WARNING_INFO(info, len, flags) (warningInfoText = info, s_warning_info_len = len, warningInfoFlags = flags)
+#define SET_WARNING_INFO(info, len, flags) (warningInfoText = info, warningInfoLength = len, warningInfoFlags = flags)
 
 #define NAVIGATION_MENUS
 #define POPUP_MENU_ADD_ITEM(s) do { popupMenuOffsetType = MENU_OFFSET_INTERNAL; if (popupMenuNoItems < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuNoItems++] = s; } while (0)

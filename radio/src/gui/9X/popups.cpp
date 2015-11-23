@@ -38,7 +38,7 @@
 
 const pm_char * warningText = NULL;
 const pm_char * warningInfoText;
-uint8_t         s_warning_info_len;
+uint8_t         warningInfoLength;
 uint8_t         warningType;
 uint8_t         warningResult = 0;
 
@@ -103,7 +103,7 @@ void displayWarning(uint8_t event)
   warningResult = false;
   displayBox();
   if (warningInfoText) {
-    lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH, warningInfoText, s_warning_info_len, WARNING_INFO_FLAGS);
+    lcd_putsnAtt(WARNING_LINE_X, WARNING_LINE_Y+FH, warningInfoText, warningInfoLength, WARNING_INFO_FLAGS);
   }
   lcd_puts(WARNING_LINE_X, WARNING_LINE_Y+2*FH, warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
   switch (event) {
