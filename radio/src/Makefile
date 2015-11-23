@@ -399,7 +399,12 @@ IMG2LBM = -$(PYTHON) ../util/img2lbm.py
 BIN2LBM = -$(PYTHON) ../util/bin2lbm.py
 FONT2PNG = -$(PYTHON) ../util/font2png.py
 TRANSLATE = -$(PYTHON) ../util/translate.py
-VERSION = 2.1.6$(OPENTX_VERSION_SUFFIX)
+
+VERSION_MAJOR = 2
+VERSION_MINOR = 1
+VERSION_REVISION  = 6
+
+VERSION = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_REVISION)$(OPENTX_VERSION_SUFFIX)
 
 THIRDPARTY = thirdparty
 COOSDIR = $(THIRDPARTY)/CoOS
@@ -1538,6 +1543,10 @@ stamp_header:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d | tr -d '\r\n'`\"" >> stamp-opentx.h
 	@echo "#define TIME_STR \"`date +%H:%M:%S | tr -d '\r\n'`\"" >> stamp-opentx.h
 	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.h
+	@echo "" >> stamp-opentx.h
+	@echo "#define VERSION_MAJOR     $(VERSION_MAJOR)" >> stamp-opentx.h
+	@echo "#define VERSION_MINOR     $(VERSION_MINOR)" >> stamp-opentx.h
+	@echo "#define VERSION_REVISION  $(VERSION_REVISION)" >> stamp-opentx.h
 
 opentx-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx.txt
