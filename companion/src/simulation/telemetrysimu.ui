@@ -6,355 +6,555 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>331</width>
-    <height>384</height>
+    <width>541</width>
+    <height>464</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Telemetry Simulator</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <property name="bottomMargin">
-    <number>6</number>
+  <widget class="QLabel" name="label_25">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>410</y>
+     <width>252</width>
+     <height>26</height>
+    </rect>
    </property>
-   <item row="3" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="0">
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="12" column="0">
-      <widget class="QLabel" name="label_12">
-       <property name="toolTip">
-        <string>Vario Altitude</string>
-       </property>
-       <property name="text">
-        <string>V-ALT</string>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="0">
-      <widget class="QLabel" name="label_11">
-       <property name="toolTip">
-        <string>Vario Vertical Speed</string>
-       </property>
-       <property name="text">
-        <string>V-VSPD</string>
-       </property>
-      </widget>
-     </item>
-     <item row="12" column="1">
-      <widget class="QLineEdit" name="valt"/>
-     </item>
-     <item row="11" column="1">
-      <widget class="QLineEdit" name="vspeed"/>
-     </item>
-     <item row="5" column="3">
-      <widget class="QLineEdit" name="gps_alt"/>
-     </item>
-     <item row="12" column="2">
-      <widget class="QLabel" name="label_15">
-       <property name="text">
-        <string>ACCZ</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="2">
-      <widget class="QLabel" name="label_23">
-       <property name="toolTip">
-        <string>GPS Time</string>
-       </property>
-       <property name="text">
-        <string>GPS-T</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="3">
-      <widget class="QLineEdit" name="gps_time"/>
-     </item>
-     <item row="10" column="2">
-      <widget class="QLabel" name="label_13">
-       <property name="text">
-        <string>ACCX</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="3">
-      <widget class="QLineEdit" name="accx"/>
-     </item>
-     <item row="3" column="3">
-      <widget class="QLineEdit" name="cells"/>
-     </item>
-     <item row="2" column="3">
-      <widget class="QLineEdit" name="curr"/>
-     </item>
-     <item row="6" column="3">
-      <widget class="QLineEdit" name="gps_speed"/>
-     </item>
-     <item row="9" column="2">
-      <widget class="QLabel" name="label_24">
-       <property name="toolTip">
-        <string>GPS Lat/Lon</string>
-       </property>
-       <property name="text">
-        <string>GPS-LL</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QLabel" name="label_17">
-       <property name="toolTip">
-        <string>VFAS</string>
-       </property>
-       <property name="text">
-        <string>FAS-V</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="2">
-      <widget class="QLabel" name="label_21">
-       <property name="toolTip">
-        <string>GPS Speed</string>
-       </property>
-       <property name="text">
-        <string>GPS-S</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QLabel" name="label_19">
-       <property name="text">
-        <string>CELLS</string>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="3">
-      <widget class="QLineEdit" name="accy"/>
-     </item>
-     <item row="7" column="3">
-      <widget class="QLineEdit" name="gps_course"/>
-     </item>
-     <item row="1" column="3">
-      <widget class="QLineEdit" name="vfas"/>
-     </item>
-     <item row="11" column="2">
-      <widget class="QLabel" name="label_14">
-       <property name="text">
-        <string>ACCY</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="2">
-      <widget class="QLabel" name="label_22">
-       <property name="toolTip">
-        <string>GPS Course</string>
-       </property>
-       <property name="text">
-        <string>GPS-C</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="3">
-      <widget class="QLineEdit" name="gps_latlon"/>
-     </item>
-     <item row="12" column="3">
-      <widget class="QLineEdit" name="accz"/>
-     </item>
-     <item row="5" column="2">
-      <widget class="QLabel" name="label_20">
-       <property name="toolTip">
-        <string>GPS Altitude</string>
-       </property>
-       <property name="text">
-        <string>GPS-A</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QLabel" name="label_18">
-       <property name="toolTip">
-        <string>CURRENT</string>
-       </property>
-       <property name="text">
-        <string>FAS-C</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="Swr">
-       <property name="text">
-        <string>30</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>RSSI</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="Rssi">
-       <property name="text">
-        <string>75</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>SWR</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="2">
-      <widget class="QLabel" name="label_16">
-       <property name="toolTip">
-        <string>FR_ID_AIR_SPEED</string>
-       </property>
-       <property name="text">
-        <string>ASPD</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="3">
-      <widget class="QLineEdit" name="aspeed"/>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="A1"/>
-     </item>
-     <item row="4" column="1">
-      <widget class="QLineEdit" name="A2"/>
-     </item>
-     <item row="5" column="1">
-      <widget class="QLineEdit" name="A3"/>
-     </item>
-     <item row="6" column="1">
-      <widget class="QLineEdit" name="A4"/>
-     </item>
-     <item row="7" column="1">
-      <widget class="QLineEdit" name="T1"/>
-     </item>
-     <item row="8" column="1">
-      <widget class="QLineEdit" name="T2"/>
-     </item>
-     <item row="9" column="1">
-      <widget class="QLineEdit" name="rpm"/>
-     </item>
-     <item row="10" column="1">
-      <widget class="QLineEdit" name="fuel"/>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>A1</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>A2</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_6">
-       <property name="text">
-        <string>A3</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>A4</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="label_8">
-       <property name="toolTip">
-        <string>Temperature 1</string>
-       </property>
-       <property name="text">
-        <string>T1</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="label_9">
-       <property name="toolTip">
-        <string>Temperature 2</string>
-       </property>
-       <property name="text">
-        <string>T2</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>RPM</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="0">
-      <widget class="QLabel" name="label_10">
-       <property name="text">
-        <string>FUEL</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QCheckBox" name="Simulate">
-       <property name="toolTip">
-        <string>When enabled, sends any non-blank values as simulated telemetry data.</string>
-       </property>
-       <property name="text">
-        <string>simulate</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="label_26">
-       <property name="text">
-        <string>Instance</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QLineEdit" name="Instance">
-       <property name="text">
-        <string>2</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_25">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Start with &lt;span style=&quot; font-style:italic;&quot;&gt;0x&lt;/span&gt; for hex, &lt;span style=&quot; font-style:italic;&quot;&gt;0&lt;/span&gt; for octal, otherwise decimal.&lt;br/&gt;Numeric entry only. Blank values are not sent.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </item>
-  </layout>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Start with &lt;span style=&quot; font-style:italic;&quot;&gt;0x&lt;/span&gt; for hex, &lt;span style=&quot; font-style:italic;&quot;&gt;0&lt;/span&gt; for octal, otherwise decimal.&lt;br/&gt;Numeric entry only. Blank values are not sent.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="Simulate">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>410</y>
+     <width>101</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>When enabled, sends any non-blank values as simulated telemetry data.</string>
+   </property>
+   <property name="text">
+    <string>Simulate</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>30</y>
+     <width>37</width>
+     <height>341</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="col1">
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>RSSI</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>SWR</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>A1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>A2</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>A3</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_7">
+      <property name="text">
+       <string>A4</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_8">
+      <property name="toolTip">
+       <string>Temperature 1</string>
+      </property>
+      <property name="text">
+       <string>T1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLabel" name="label_9">
+      <property name="toolTip">
+       <string>Temperature 2</string>
+      </property>
+      <property name="text">
+       <string>T2</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>RPM</string>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="0">
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>FUEL</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="0">
+     <widget class="QLabel" name="label_11">
+      <property name="toolTip">
+       <string>Vario Vertical Speed</string>
+      </property>
+      <property name="text">
+       <string>V-VSPD</string>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="0">
+     <widget class="QLabel" name="label_12">
+      <property name="toolTip">
+       <string>Vario Altitude</string>
+      </property>
+      <property name="text">
+       <string>V-ALT</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>30</y>
+     <width>56</width>
+     <height>351</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="col2">
+    <item row="8" column="0">
+     <widget class="QLineEdit" name="rpm_inst"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLineEdit" name="a1_inst"/>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLineEdit" name="a4_inst"/>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLineEdit" name="rssi_inst"/>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLineEdit" name="t1_inst"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLineEdit" name="a2_inst"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLineEdit" name="a3_inst"/>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLineEdit" name="t2_inst"/>
+    </item>
+    <item row="9" column="0">
+     <widget class="QLineEdit" name="fuel_inst"/>
+    </item>
+    <item row="10" column="0">
+     <widget class="QLineEdit" name="vvspd_inst"/>
+    </item>
+    <item row="11" column="0">
+     <widget class="QLineEdit" name="valt_inst"/>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLineEdit" name="swr_inst"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>30</y>
+     <width>135</width>
+     <height>351</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="col3">
+    <item row="0" column="0">
+     <widget class="QLineEdit" name="Rssi">
+      <property name="text">
+       <string>75</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLineEdit" name="Swr">
+      <property name="text">
+       <string>30</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLineEdit" name="A1"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLineEdit" name="A2"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLineEdit" name="A3"/>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLineEdit" name="A4"/>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLineEdit" name="T1"/>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLineEdit" name="T2"/>
+    </item>
+    <item row="8" column="0">
+     <widget class="QLineEdit" name="rpm"/>
+    </item>
+    <item row="9" column="0">
+     <widget class="QLineEdit" name="fuel"/>
+    </item>
+    <item row="10" column="0">
+     <widget class="QLineEdit" name="vspeed"/>
+    </item>
+    <item row="11" column="0">
+     <widget class="QLineEdit" name="valt"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>30</y>
+     <width>35</width>
+     <height>341</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="col4">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_17">
+      <property name="toolTip">
+       <string>VFAS</string>
+      </property>
+      <property name="text">
+       <string>FAS-V</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_18">
+      <property name="toolTip">
+       <string>CURRENT</string>
+      </property>
+      <property name="text">
+       <string>FAS-C</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_19">
+      <property name="text">
+       <string>CELLS</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_16">
+      <property name="toolTip">
+       <string>FR_ID_AIR_SPEED</string>
+      </property>
+      <property name="text">
+       <string>ASPD</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_20">
+      <property name="toolTip">
+       <string>GPS Altitude</string>
+      </property>
+      <property name="text">
+       <string>GPS-A</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_21">
+      <property name="toolTip">
+       <string>GPS Speed</string>
+      </property>
+      <property name="text">
+       <string>GPS-S</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_22">
+      <property name="toolTip">
+       <string>GPS Course</string>
+      </property>
+      <property name="text">
+       <string>GPS-C</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLabel" name="label_23">
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;GPS Time dd-MM-yyyy hh:mm:ss&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>GPS-T</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
+     <widget class="QLabel" name="label_24">
+      <property name="toolTip">
+       <string>GPS Lat/Lon</string>
+      </property>
+      <property name="text">
+       <string>GPS-LL</string>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="0">
+     <widget class="QLabel" name="label_13">
+      <property name="text">
+       <string>ACCX</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="0">
+     <widget class="QLabel" name="label_14">
+      <property name="text">
+       <string>ACCY</string>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="0">
+     <widget class="QLabel" name="label_15">
+      <property name="text">
+       <string>ACCZ</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>30</y>
+     <width>56</width>
+     <height>351</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="col5">
+    <item row="0" column="0">
+     <widget class="QLineEdit" name="fasv_inst"/>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLineEdit" name="fasc_inst"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLineEdit" name="cells_inst"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLineEdit" name="aspd_inst"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLineEdit" name="gpsa_inst"/>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLineEdit" name="gpss_inst"/>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLineEdit" name="gpsc_inst"/>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLineEdit" name="gpst_inst"/>
+    </item>
+    <item row="8" column="0">
+     <widget class="QLineEdit" name="gpsll_inst"/>
+    </item>
+    <item row="9" column="0">
+     <widget class="QLineEdit" name="accx_inst"/>
+    </item>
+    <item row="10" column="0">
+     <widget class="QLineEdit" name="accy_inst"/>
+    </item>
+    <item row="11" column="0">
+     <widget class="QLineEdit" name="accz_inst"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>390</x>
+     <y>30</y>
+     <width>135</width>
+     <height>351</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="col6">
+    <item row="0" column="0">
+     <widget class="QLineEdit" name="vfas"/>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLineEdit" name="curr"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLineEdit" name="cells"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLineEdit" name="aspeed"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLineEdit" name="gps_alt"/>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLineEdit" name="gps_speed"/>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLineEdit" name="gps_course"/>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLineEdit" name="gps_time"/>
+    </item>
+    <item row="8" column="0">
+     <widget class="QLineEdit" name="gps_latlon"/>
+    </item>
+    <item row="9" column="0">
+     <widget class="QLineEdit" name="accx"/>
+    </item>
+    <item row="10" column="0">
+     <widget class="QLineEdit" name="accy"/>
+    </item>
+    <item row="11" column="0">
+     <widget class="QLineEdit" name="accz"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="label_26">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>10</y>
+     <width>46</width>
+     <height>13</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Instance:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_27">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>10</y>
+     <width>46</width>
+     <height>13</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Instance:</string>
+   </property>
+  </widget>
  </widget>
  <tabstops>
-  <tabstop>Simulate</tabstop>
+  <tabstop>rssi_inst</tabstop>
   <tabstop>Rssi</tabstop>
+  <tabstop>fasv_inst</tabstop>
+  <tabstop>vfas</tabstop>
+  <tabstop>swr_inst</tabstop>
   <tabstop>Swr</tabstop>
+  <tabstop>fasc_inst</tabstop>
+  <tabstop>curr</tabstop>
+  <tabstop>a1_inst</tabstop>
+  <tabstop>A1</tabstop>
+  <tabstop>cells_inst</tabstop>
+  <tabstop>cells</tabstop>
+  <tabstop>a2_inst</tabstop>
+  <tabstop>A2</tabstop>
+  <tabstop>aspd_inst</tabstop>
+  <tabstop>aspeed</tabstop>
+  <tabstop>a3_inst</tabstop>
+  <tabstop>A3</tabstop>
+  <tabstop>gpsa_inst</tabstop>
+  <tabstop>gps_alt</tabstop>
+  <tabstop>a4_inst</tabstop>
+  <tabstop>A4</tabstop>
+  <tabstop>gpss_inst</tabstop>
+  <tabstop>gps_speed</tabstop>
+  <tabstop>t1_inst</tabstop>
+  <tabstop>T1</tabstop>
+  <tabstop>gpsc_inst</tabstop>
+  <tabstop>gps_course</tabstop>
+  <tabstop>t2_inst</tabstop>
+  <tabstop>T2</tabstop>
+  <tabstop>gpst_inst</tabstop>
+  <tabstop>gps_time</tabstop>
+  <tabstop>rpm_inst</tabstop>
+  <tabstop>rpm</tabstop>
+  <tabstop>gpsll_inst</tabstop>
+  <tabstop>gps_latlon</tabstop>
+  <tabstop>fuel_inst</tabstop>
+  <tabstop>fuel</tabstop>
+  <tabstop>accx_inst</tabstop>
+  <tabstop>accx</tabstop>
+  <tabstop>vvspd_inst</tabstop>
+  <tabstop>vspeed</tabstop>
+  <tabstop>accy_inst</tabstop>
+  <tabstop>accy</tabstop>
+  <tabstop>valt_inst</tabstop>
+  <tabstop>valt</tabstop>
+  <tabstop>accz_inst</tabstop>
+  <tabstop>accz</tabstop>
+  <tabstop>Simulate</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -209,6 +209,9 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterf
   connect(ui->trimHL_L, SIGNAL(released()), this, SLOT(onTrimReleased()));
   connect(ui->trimVL_U, SIGNAL(released()), this, SLOT(onTrimReleased()));
   connect(ui->trimVL_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->telemSim, SIGNAL(released()), this, SLOT(openTelemetrySimulator()));
+  connect(ui->trainerSim, SIGNAL(released()), this, SLOT(openTrainerSimulator()));
+  connect(ui->debugConsole, SIGNAL(released()), this, SLOT(openDebugOutput()));
 }
 
 SimulatorDialogTaranis::~SimulatorDialogTaranis()
