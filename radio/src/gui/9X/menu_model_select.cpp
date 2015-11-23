@@ -64,7 +64,7 @@ void onModelSelectMenu(const char *result)
   else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
     if (!listSdFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
       POPUP_WARNING(STR_NO_MODELS_ON_SD);
-      s_menu_flags = 0;
+      popupMenuFlags = 0;
     }
   }
 #endif
