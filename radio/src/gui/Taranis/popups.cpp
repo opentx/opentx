@@ -41,7 +41,7 @@ const char *warningInfoText;
 uint8_t     s_warning_info_len;
 uint8_t     warningType;
 uint8_t     warningResult = 0;
-uint8_t     s_warning_info_flags = ZCHAR;
+uint8_t     warningInfoFlags = ZCHAR;
 int16_t     warningInputValue;
 int16_t     warningInputValueMin;
 int16_t     warningInputValueMax;

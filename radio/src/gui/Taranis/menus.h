@@ -321,14 +321,14 @@ extern void (*popupFunc)(uint8_t event);
 extern int16_t warningInputValue;
 extern int16_t warningInputValueMin;
 extern int16_t warningInputValueMax;
-extern uint8_t s_warning_info_flags;
+extern uint8_t warningInfoFlags;
 
 #define DISPLAY_WARNING       (*popupFunc)
 #define POPUP_WARNING(s)      (warningText = s, warningInfoText = 0, popupFunc = displayWarning)
 #define POPUP_CONFIRMATION(s) (warningText = s, warningType = WARNING_TYPE_CONFIRM, warningInfoText = 0, popupFunc = displayWarning)
 #define POPUP_INPUT(s, func, start, min, max) (warningText = s, warningType = WARNING_TYPE_INPUT, popupFunc = func, warningInputValue = start, warningInputValueMin = min, warningInputValueMax = max)
-#define WARNING_INFO_FLAGS    s_warning_info_flags
-#define SET_WARNING_INFO(info, len, flags) (warningInfoText = info, s_warning_info_len = len, s_warning_info_flags = flags)
+#define WARNING_INFO_FLAGS    warningInfoFlags
+#define SET_WARNING_INFO(info, len, flags) (warningInfoText = info, s_warning_info_len = len, warningInfoFlags = flags)
 
 #define NAVIGATION_MENUS
 #define POPUP_MENU_ADD_ITEM(s) do { popupMenuOffsetType = MENU_OFFSET_INTERNAL; if (popupMenuNoItems < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuNoItems++] = s; } while (0)
