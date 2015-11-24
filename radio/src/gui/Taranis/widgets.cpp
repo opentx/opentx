@@ -144,7 +144,7 @@ select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, c
 {
   lcd_putsColumnLeft(x, y, label);
   if (values) lcd_putsiAtt(x, y, values, value-min, attr);
-  if (attr) value = checkIncDec(event, value, min, max, (g_menuPos[0] == 0) ? EE_MODEL : EE_GENERAL);
+  if (attr) value = checkIncDec(event, value, min, max, (menuVerticalPositions[0] == 0) ? EE_MODEL : EE_GENERAL);
   return value;
 }
 
@@ -255,7 +255,7 @@ void drawStatusLine()
     }
 
     drawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID, ERASE);
-    lcd_putsAtt(5, LCD_H+1-statusLineHeight, statusLineMsg, BSS);
+    lcd_putsAtt(5, LCD_H+1-statusLineHeight, statusLineMsg, 0);
     drawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID);
   }
 }

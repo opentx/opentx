@@ -60,16 +60,16 @@ enum FlightModesItems {
 
 bool isTrimModeAvailable(int mode)
 {
-  return (mode < 0 || (mode%2) == 0 || (mode/2) != m_posVert);
+  return (mode < 0 || (mode%2) == 0 || (mode/2) != menuVerticalPosition);
 }
 
 void menuModelFlightModesAll(uint8_t event)
 {
   MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, MAX_FLIGHT_MODES+1, { NAVIGATION_LINE_BY_LINE|(ITEM_FLIGHT_MODES_LAST-1), NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, 0 });
 
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
 
-  horzpos_t posHorz = m_posHorz;
+  horzpos_t posHorz = menuHorizontalPosition;
   if (sub==0 && posHorz > 0) { posHorz += 1; }
 
   if (sub<MAX_FLIGHT_MODES && posHorz>=0) {
@@ -78,7 +78,7 @@ void menuModelFlightModesAll(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+s_pgOfs;
+    uint8_t k = i+menuVerticalOffset;
 
     if (k==MAX_FLIGHT_MODES) {
       // last line available - add the "check trims" line
@@ -109,7 +109,7 @@ void menuModelFlightModesAll(uint8_t event)
 
     FlightModeData *p = flightModeAddress(k);
 
-    putsFlightMode(0, y, k+1, (getFlightMode()==k ? BOLD : 0) | ((sub==k && m_posHorz<0) ? INVERS : 0));
+    putsFlightMode(0, y, k+1, (getFlightMode()==k ? BOLD : 0) | ((sub==k && menuHorizontalPosition<0) ? INVERS : 0));
 
     for (uint8_t j=0; j<ITEM_FLIGHT_MODES_COUNT; j++) {
       uint8_t attr = ((sub==k && posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);

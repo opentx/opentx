@@ -524,8 +524,12 @@ TODO table of events/masks
 */
 static int luaKillEvents(lua_State *L)
 {
-  int event = luaL_checkinteger(L, 1);
-  killEvents(event);
+  uint8_t key = EVT_KEY_MASK(luaL_checkinteger(L, 1));
+  // prevent killing PAGE, ENT and EXIT (only in telemetry scripts)
+  // todo add which tpye of scrip is running before p_call()
+  if (key != KEY_EXIT && key != KEY_ENTER && key != KEY_PAGE) {
+    killEvents(key);
+  }
   return 0;
 }
 
@@ -597,23 +601,23 @@ Run function (key pressed)
 static int luaPopupInput(lua_State *L)
 {
   uint8_t event = luaL_checkinteger(L, 2);
-  s_warning_input_value = luaL_checkinteger(L, 3);
-  s_warning_input_min = luaL_checkinteger(L, 4);
-  s_warning_input_max = luaL_checkinteger(L, 5);
-  s_warning = luaL_checkstring(L, 1);
-  s_warning_type = WARNING_TYPE_INPUT;
+  warningInputValue = luaL_checkinteger(L, 3);
+  warningInputValueMin = luaL_checkinteger(L, 4);
+  warningInputValueMax = luaL_checkinteger(L, 5);
+  warningText = luaL_checkstring(L, 1);
+  warningType = WARNING_TYPE_INPUT;
   displayWarning(event);
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     lua_pushstring(L, "OK");
   }
-  else if (!s_warning) {
+  else if (!warningText) {
     lua_pushstring(L, "CANCEL");
   }
   else {
-    lua_pushinteger(L, s_warning_input_value);
+    lua_pushinteger(L, warningInputValue);
   }
-  s_warning = NULL;
+  warningText = NULL;
   return 1;
 }
 
