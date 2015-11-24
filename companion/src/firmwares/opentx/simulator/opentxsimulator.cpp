@@ -507,7 +507,7 @@ uint8_t OpenTxSimulator::getSensorInstance(uint16_t id)
     }
   }
 #endif
-  return SBUS_MAX_FRAME_SIZE;
+  return 0;
 }
 
 void OpenTxSimulator::setTrainerInput(unsigned int inputNumber, ::int16_t value)

@@ -5,6 +5,8 @@
 #include <QCloseEvent>
 #include <QDialog>
 #include <QTimer>
+#include <QDateTime>
+#include <QtCore/qmath.h>
 #include "simulatorinterface.h"
 
 #define INSTANCE 2
@@ -32,7 +34,12 @@ class TelemetrySimulator : public QDialog
     QTimer * timer;
     SimulatorInterface *simulator;
     void generateTelemetryFrame();
+  
+  private slots:
+    void onTimerEvent();
 
+
+  private: // private classes follow
     class FlvssEmulator
     {
     public:
@@ -55,12 +62,26 @@ class TelemetrySimulator : public QDialog
     class GPSEmulator
     {
     public:
+      GPSEmulator();
+      uint32_t getNextPacketData(uint32_t packetType);
+      void setGPSDateTime(QString dateTime);
+      void setGPSLatLon(QString latLon);
+      void setGPSCourse(QString course);
+      void setGPSSpeed(QString speed);
+      void setGPSAltitude(QString altitude);
+    private:
+      QDateTime dt;
+      bool sendLat;
+      bool sendDate;
+      float lat;
+      float lon;
+      int32_t course;
+      int32_t speed;
+      int32_t altitude;
+      uint32_t nextDataIndex;
       uint32_t encodeLatLon(float latLon, bool isLat);
       uint32_t encodeDateTime(uint8_t yearOrHour, uint8_t monthOrMinute, uint8_t dayOrSecond, bool isDate);
     };
-
-  private slots:
-    void onTimerEvent();
 
 };
 
