@@ -68,11 +68,11 @@ struct LuaField {
 /*luadoc
 @function getVersion()
 
-Returns OpenTX version
+Return OpenTX version
 
 @retval string OpenTX version (ie "2.1.5")
 
-@retval list (available since OpenTX 2.1.7) returns two values:
+@retval list (available since 2.1.7) returns two values:
  * `string` OpenTX version (ie "2.1.5")
  * `string` radio version: `taranisx9e`, `taranisplus` or `taranis`. 
 If running in simulator the "-simu" is added
@@ -93,7 +93,7 @@ end
 
 return {  run=run }
 ```
-Output of above script in simulator:
+Output of the above script in simulator:
 ```
 version: 2.1.7
 radio: taranis-simu
@@ -110,7 +110,7 @@ static int luaGetVersion(lua_State *L)
 /*luadoc
 @function getTime()
 
-Returns the time since the radio was started in multiple of 10ms
+Return the time since the radio was started in multiple of 10ms
 
 @retval number Number of 10ms ticks since the radio was started Example: 
 run time: 12.54 seconds, return value: 1254
@@ -138,15 +138,15 @@ static void luaPushDateTime(lua_State *L, uint32_t year, uint32_t mon, uint32_t 
 /*luadoc
 @function getDateTime()
 
-Returns current system date and time that is kept by the RTC unit
+Return current system date and time that is kept by the RTC unit
 
 @retval table current date and time, table elements:
- * `year` year
- * `mon` month
- * `day` day of month
- * `hour` hours
- * `min` minutes
- * `sec` seconds
+ * `year` (number) year
+ * `mon` (number) month
+ * `day` (number) day of month
+ * `hour` (number) hours
+ * `min` (number) minutes
+ * `sec` (number) seconds
 */
 static int luaGetDateTime(lua_State *L)
 {
@@ -317,7 +317,7 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags=
 /*luadoc
 @function getFieldInfo(name)
 
-Returns detailed information about field (source)
+Return detailed information about field (source)
 
 @param name (string) name of the field
 
@@ -355,7 +355,7 @@ The list of valid sources is available:
 * for OpenTX 2.1.x at http://downloads-21.open-tx.org/firmware/lua_fields.txt
 
 In OpenTX 2.1.x the telemetry sources no longer have a predefined name. 
-To get a telemetry value simply use its sensor name. For example:
+To get a telemetry value simply use it's sensor name. For example:
  * Altitude sensor has a name "Alt"
  * to get the current altitude use the source "Alt"
  * to get the minimum altitude use the source "Alt-", to get the maximum use "Alt+"
@@ -368,18 +368,17 @@ or a name (string) of the source.
  * for all telemetry source when the telemetry stream is not received
 
 @retval table GPS position is returned in a table:
- * `lat` latitude, positive is North (number)
- * `lon` longitude, positive is East (number)
+ * `lat` (number) latitude, positive is North 
+ * `lon` (number) longitude, positive is East
 
-@retval table GPS date/time is returned in a table, format is the same 
-as is returned from getDateTime()
+@retval table GPS date/time, see getDateTime()
 
 @retval table Cells are returned in a table 
 (except where no cells were detected in which 
 case the returned value is 0):
- * table has one item for each detected cell
- * each item name is the cell number (1 to number of cells)
- * each item value is the current cell voltage
+ * table has one item for each detected cell:
+  * key (number) cell number (1 to number of cells)
+  * value (number) current cell voltage
 
 @status current Introduced in 2.0.0, changed in 2.1.0
 
@@ -407,11 +406,11 @@ static int luaGetValue(lua_State *L)
 /*luadoc
 @function playFile(name)
 
-Plays a file from the SD card 
+Play a file from the SD card 
 
 @param path (string) full path to wav file (i.e. “/SOUNDS/en/system/tada.wav”)
 Introduced in 2.1.0: If you use a relative path, the current language is appended
-to the path (example for English language: `/SOUNDS/en` is appended)
+to the path (example: for English language: `/SOUNDS/en` is appended)
 
 @status current Introduced in 2.0.0, changed in 2.1.0
 */
@@ -435,7 +434,7 @@ static int luaPlayFile(lua_State *L)
 /*luadoc
 @function playNumber(value, unit [, attributes])
 
-Plays a numerical value (text to speech)
+Play a numerical value (text to speech)
 
 @param value (number) number to play. Value is interpreted as integer.
 
@@ -460,7 +459,7 @@ static int luaPlayNumber(lua_State *L)
 /*luadoc
 @function playDuration(duration [, hourFormat])
 
-Plays a time value (text to speech)
+Play a time value (text to speech)
 
 @param duration (number) number of seconds to play. Only integral part is used.
 
@@ -481,7 +480,7 @@ static int luaPlayDuration(lua_State *L)
 /*luadoc
 @function playTone(frequency, duration, pause [, flags [, freqIncr]])
 
-Plays a tone
+Play a tone
 
 @param frequency (number) tone frequency in Hz
 
@@ -513,15 +512,13 @@ static int luaPlayTone(lua_State *L)
 }
 
 /*luadoc
-@function killEvents(eventMask)
+@function killEvents(key)
 
-Cancels the key press propagation to the normal user interface algorithm.
+Stops key state machine.
 
-@param eventMask (number) events to be suppressed
+@param key (number) key to be killed, can also include event type (only key part is used)
 
 @status current Introduced in 2.0.0
-
-@notice This function has currently no effect in OpenTX 2.1.x series
 
 TODO table of events/masks
 */
@@ -535,7 +532,7 @@ static int luaKillEvents(lua_State *L)
 /*luadoc
 @function GREY()
 
-Returns gray value which can be used in lcd functions
+Returns gray value which can be used in LCD functions
 
 @retval (number) a value that represents amount of *greyness* (from 0 to 15)
 
@@ -553,9 +550,9 @@ static int luaGrey(lua_State *L)
 Returns (some of) the general radio settings
 
 @retval table with elements:
- * `battMin` radio battery range - minimum value
- * `battMax` radio battery range - maximum value
- * `imperial` set to a value different from 0 if the radio is set to the
+ * `battMin` (number) radio battery range - minimum value
+ * `battMax` (number) radio battery range - maximum value
+ * `imperial` (number) set to a value different from 0 if the radio is set to the
  IMPERIAL units
 
 @status current Introduced in 2.0.6, `imperial` added in TODO
@@ -574,7 +571,7 @@ static int luaGetGeneralSettings(lua_State *L)
 /*luadoc
 @function popupInput(title, event, input, min, max)
 
-Raises a popup on screen that allows uses input
+Raises a pop-up on screen that allows uses input
 
 @param title (string) text to display 
 

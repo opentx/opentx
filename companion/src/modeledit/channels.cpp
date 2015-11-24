@@ -7,7 +7,7 @@
 #include <QCheckBox>
 #include <QDoubleSpinBox>
 
-LimitsGroup::LimitsGroup(Firmware * firmware, QGridLayout *gridLayout, int row, int col, int & value, int min, int max, int deflt):
+LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout *tableLayout, int row, int col, int & value, int min, int max, int deflt):
   firmware(firmware),
   spinbox(new QDoubleSpinBox()),
   value(value),
@@ -45,8 +45,10 @@ LimitsGroup::LimitsGroup(Firmware * firmware, QGridLayout *gridLayout, int row, 
   horizontalLayout->addWidget(gv);
   QComboBox * cb = new QComboBox();
   horizontalLayout->addWidget(cb);
+  cb->setSizeAdjustPolicy(QComboBox::AdjustToContents);
   horizontalLayout->addWidget(spinbox);
-  gridLayout->addLayout(horizontalLayout, row, col, 1, 1);
+  spinbox->setMinimumWidth(80);
+  tableLayout->addLayout(row, col, horizontalLayout);
   gvarGroup = new GVarGroup(gv, spinbox, cb, value, deflt, min, max, displayStep, allowGVars);
 }
 
@@ -74,55 +76,51 @@ void LimitsGroup::updateMinMax(int max)
 Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware)
 {
-  QGridLayout * gridLayout = new QGridLayout(this);
-  bool minimize = false;
+  int channelNameMaxLen = firmware->getCapability(ChannelsName);
 
-  int col = 1;
-  if (firmware->getCapability(ChannelsName)) {
-    minimize=true;
-    addLabel(gridLayout, tr("Name"), col++);
+  QStringList headerLabels;
+  headerLabels << "#";
+  if (channelNameMaxLen > 0) {
+    headerLabels << tr("Name");
   }
-  addLabel(gridLayout, tr("Subtrim"), col++, minimize);
-  addLabel(gridLayout, tr("Min"), col++, minimize);
-  addLabel(gridLayout, tr("Max"), col++, minimize);
-  addLabel(gridLayout, tr("Direction"), col++, minimize);
+  headerLabels << tr("Subtrim") << tr("Min") << tr("Max") << tr("Direction");
   if (IS_TARANIS(GetEepromInterface()->getBoard()))
-    addLabel(gridLayout, tr("Curve"), col++, minimize);
+    headerLabels << tr("Curve");
   if (firmware->getCapability(PPMCenter))
-    addLabel(gridLayout, tr("PPM Center"), col++, minimize);
+    headerLabels << tr("PPM Center");
   if (firmware->getCapability(SYMLimits))
-    addLabel(gridLayout, tr("Linear Subtrim"), col++, true);
+    headerLabels << tr("Linear Subtrim");
+  TableLayout * tableLayout = new TableLayout(this, firmware->getCapability(LogicalSwitches), headerLabels);
 
   for (int i=0; i<firmware->getCapability(Outputs); i++) {
-    col = 0;
+    int col = 0;
 
     // Channel label
     QLabel *label = new QLabel(this);
-    label->setText(tr("Channel %1").arg(i+1));
+    label->setText(tr("CH%1").arg(i+1));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
-    gridLayout->addWidget(label, i+1, col++, 1, 1);
+    tableLayout->addWidget(i, col++, label);
 
     // Channel name
-    int nameLen = firmware->getCapability(ChannelsName);
-    if (nameLen > 0) {
+    if (channelNameMaxLen > 0) {
       QLineEdit * name = new QLineEdit(this);
       name->setProperty("index", i);
-      name->setMaxLength(nameLen);
+      name->setMaxLength(channelNameMaxLen);
       QRegExp rx(CHAR_FOR_NAMES_REGEX);
       name->setValidator(new QRegExpValidator(rx, this));
       name->setText(model.limitData[i].name);
       connect(name, SIGNAL(editingFinished()), this, SLOT(nameEdited()));
-      gridLayout->addWidget(name, i+1, col++, 1, 1);
+      tableLayout->addWidget(i, col++, name);
     }
 
     // Channel offset
-    limitsGroups << new LimitsGroup(firmware, gridLayout, i+1, col++, model.limitData[i].offset, -1000, 1000, 0);
+    limitsGroups << new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].offset, -1000, 1000, 0);
 
     // Channel min
-    limitsGroups << new LimitsGroup(firmware, gridLayout, i+1, col++, model.limitData[i].min, -model.getChannelsMax()*10, 0, -1000);
+    limitsGroups << new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].min, -model.getChannelsMax()*10, 0, -1000);
 
     // Channel max
-    limitsGroups << new LimitsGroup(firmware, gridLayout, i+1, col++, model.limitData[i].max, 0, model.getChannelsMax()*10, 1000);
+    limitsGroups << new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].max, 0, model.getChannelsMax()*10, 1000);
 
     // Channel inversion
     QComboBox * invCB = new QComboBox(this);
@@ -130,7 +128,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     invCB->setProperty("index", i);
     invCB->setCurrentIndex((model.limitData[i].revert) ? 1 : 0);
     connect(invCB, SIGNAL(currentIndexChanged(int)), this, SLOT(invEdited()));
-    gridLayout->addWidget(invCB, i+1, col++, 1, 1);
+    tableLayout->addWidget(i, col++, invCB);
 
     // Curve
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
@@ -142,7 +140,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
       }
       curveCB->setCurrentIndex(model.limitData[i].curve.value+numcurves);
       connect(curveCB, SIGNAL(currentIndexChanged(int)), this, SLOT(curveEdited()));
-      gridLayout->addWidget(curveCB, i+1, col++, 1, 1);
+      tableLayout->addWidget(i, col++, curveCB);
     }
 
     // PPM center
@@ -157,7 +155,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
       center->setValue(1500);
       center->setValue(model.limitData[i].ppmCenter + 1500);
       connect(center, SIGNAL(editingFinished()), this, SLOT(ppmcenterEdited()));
-      gridLayout->addWidget(center, i+1, col++, 1, 1);
+      tableLayout->addWidget(i, col++, center);
     }
 
     // Symetrical limits
@@ -166,14 +164,12 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
       symlimits->setProperty("index", i);
       symlimits->setChecked(model.limitData[i].symetrical);
       connect(symlimits, SIGNAL(toggled(bool)), this, SLOT(symlimitsEdited()));
-      gridLayout->addWidget(symlimits, i+1, col++, 1, 1);
+      tableLayout->addWidget(i, col++, symlimits);
     }
   }
 
-  // Push the rows up
-  addVSpring(gridLayout, 0,firmware->getCapability(Outputs)+1);
-
   disableMouseScrolling();
+  tableLayout->getTableWidget()->resizeColumnsToContents();
 }
 
 Channels::~Channels()

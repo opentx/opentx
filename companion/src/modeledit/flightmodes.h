@@ -41,6 +41,8 @@ class FlightModePanel : public ModelPanel
     void phaseGVPopupToggled(bool checked);
     void phaseREValue_editingFinished();
     void phaseREUse_currentIndexChanged(int index);
+    void name_customContextMenuRequested(const QPoint & pos);
+    void fmClear();
 
   private:
     Ui::FlightMode *ui;
