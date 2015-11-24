@@ -1547,11 +1547,13 @@ stamp_header:
 	@echo "#define VERSION_MAJOR     $(VERSION_MAJOR)" >> stamp-opentx.h
 	@echo "#define VERSION_MINOR     $(VERSION_MINOR)" >> stamp-opentx.h
 	@echo "#define VERSION_REVISION  $(VERSION_REVISION)" >> stamp-opentx.h
+	@echo "#define GIT_STR \"$(shell git rev-parse HEAD)\"" >> stamp-opentx.h
 
 opentx-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx.txt
 	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx.txt
 	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.txt
+	@echo "#define GIT_STR \"$(shell git rev-parse HEAD)\"" >> stamp-opentx.txt
 	@cat stamp-opentx.txt
 
 translations/en.h: translations/en.h.txt
