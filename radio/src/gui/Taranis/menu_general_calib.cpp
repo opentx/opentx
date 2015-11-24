@@ -221,7 +221,7 @@ void menuFirstCalib(uint8_t event)
   }
   else {
     lcd_putsCenter(0*FH, MENUCALIBRATION);
-    lcd_invert_line(0);
+    lcdInvertLine(0);
     menuCommonCalib(event);
   }
 }

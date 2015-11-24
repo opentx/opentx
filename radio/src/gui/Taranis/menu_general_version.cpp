@@ -100,7 +100,7 @@ void menuGeneralVersion(uint8_t event)
 
   lcd_putsLeft(MENU_HEADER_HEIGHT+5*FH+1, STR_EEBACKUP);
   lcd_putsLeft(MENU_HEADER_HEIGHT+6*FH+1, STR_FACTORYRESET);
-  drawFilledRect(0, MENU_HEADER_HEIGHT+5*FH, LCD_W, 2*FH+1, SOLID);
+  lcdDrawFilledRect(0, MENU_HEADER_HEIGHT+5*FH, LCD_W, 2*FH+1, SOLID);
 
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
     backupEeprom();

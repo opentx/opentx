@@ -835,7 +835,7 @@ void menuModelFailsafe(uint8_t event)
   ch = 8 * (m_posVert / 8);
 
   lcd_putsCenter(0*FH, FAILSAFESET);
-  lcd_invert_line(0);
+  lcdInvertLine(0);
 
   uint8_t col = 0;
 
@@ -880,10 +880,10 @@ void menuModelFailsafe(uint8_t event)
       uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
       uint8_t len = limit((uint8_t)1, uint8_t((abs(val) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
       coord_t x0 = (val>0) ? x+COL_W-ofs-3-wbar/2 : x+COL_W-ofs-2-wbar/2-len;
-      lcd_hline(x0, y+1, len);
-      lcd_hline(x0, y+2, len);
-      lcd_hline(x0, y+3, len);
-      lcd_hline(x0, y+4, len);
+      lcdDrawSolidHorizontalLine(x0, y+1, len);
+      lcdDrawSolidHorizontalLine(x0, y+2, len);
+      lcdDrawSolidHorizontalLine(x0, y+3, len);
+      lcdDrawSolidHorizontalLine(x0, y+4, len);
 
       ch++;
     }

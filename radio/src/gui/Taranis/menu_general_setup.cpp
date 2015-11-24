@@ -165,7 +165,7 @@ void menuGeneralSetup(uint8_t event)
             }
           }
         }
-        if (attr && m_posHorz < 0) drawFilledRect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
+        if (attr && m_posHorz < 0) lcdDrawFilledRect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
         if (attr && checkIncDec_Ret) {
           g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
         }
@@ -191,7 +191,7 @@ void menuGeneralSetup(uint8_t event)
               break;
           }
         }
-        if (attr && m_posHorz < 0) drawFilledRect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
+        if (attr && m_posHorz < 0) lcdDrawFilledRect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
         if (attr && checkIncDec_Ret)
           g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
         break;
@@ -201,7 +201,7 @@ void menuGeneralSetup(uint8_t event)
         putsVolts(RADIO_SETUP_2ND_COLUMN, y,  90+g_eeGeneral.vBatMin, (m_posHorz==0 ? attr : 0)|LEFT|NO_UNIT);
         lcd_putc(lcdLastPos, y, '-');
         putsVolts(lcdLastPos+FW, y, 120+g_eeGeneral.vBatMax, (m_posHorz>0 ? attr : 0)|LEFT|NO_UNIT);
-        if (attr && m_posHorz < 0) drawFilledRect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
+        if (attr && m_posHorz < 0) lcdDrawFilledRect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
         if (attr && s_editMode>0) {
           if (m_posHorz==0)
             CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMin, -50, g_eeGeneral.vBatMax+29); // min=4.0V
@@ -478,7 +478,7 @@ void menuGeneralSetup(uint8_t event)
           lcd_img((6+4*i)*FW, y, sticks, i, 0);
 #if defined(FRSKY_STICKS)
           if (g_eeGeneral.stickReverse & (1<<i)) {
-            drawFilledRect((6+4*i)*FW, y, 3*FW, FH-1);
+            lcdDrawFilledRect((6+4*i)*FW, y, 3*FW, FH-1);
           }
 #endif
         }

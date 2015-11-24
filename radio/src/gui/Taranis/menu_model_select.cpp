@@ -241,7 +241,7 @@ void menuModelSelect(uint8_t event)
   lcd_puts(21*FW, 0, STR_BYTES);
 
   displayScreenIndex(e_ModelSelect, DIM(menuTabModel), 0);
-  drawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
+  lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
   TITLE(STR_MENUMODELSEL);
 
@@ -277,7 +277,7 @@ void menuModelSelect(uint8_t event)
     }
 
     if (s_copyMode && (vertpos_t)sub==i+s_pgOfs) {
-      drawFilledRect(9, y, MODELSEL_W-1-9, 7);
+      lcdDrawFilledRect(9, y, MODELSEL_W-1-9, 7);
       lcdDrawRect(8, y-1, MODELSEL_W-1-7, 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
     }
   }

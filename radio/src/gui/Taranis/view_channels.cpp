@@ -74,10 +74,10 @@ void menuChannelsView(uint8_t event)
 #endif
   lcd_putsCenter(0*FH, CHANNELS_MONITOR);
 
-  lcd_invert_line(0);
+  lcdInvertLine(0);
 
   // Column separator
-  lcd_vline(LCD_W/2, FH, LCD_H-FH);
+  lcdDrawSolidVerticalLine(LCD_W/2, FH, LCD_H-FH);
 
   for (uint8_t col=0; col<2; col++) {
 

@@ -390,10 +390,12 @@ bool menuMainView(evt_t event)
   lcdDrawBitmapPattern(MODELPANEL_LEFT+6, MODELPANEL_TOP+4, LBM_MODEL_ICON, TITLE_BGCOLOR);
   lcdDrawTextWithLen(MODELPANEL_LEFT+45, MODELPANEL_TOP+10, g_model.header.name, LEN_MODEL_NAME, ZCHAR|SMLSIZE);
   lcdDrawSolidHorizontalLine(MODELPANEL_LEFT+39, MODELPANEL_TOP+27, MODELPANEL_WIDTH-48, TITLE_BGCOLOR);
+#if 0
   int scale = getBitmapScale(modelBitmap, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT);
   int width = getBitmapScaledSize(getBitmapWidth(modelBitmap), scale);
   int height = getBitmapScaledSize(getBitmapHeight(modelBitmap), scale);
   lcdDrawBitmap(MODELPANEL_LEFT+(MODEL_BITMAP_WIDTH-width)/2, MODELPANEL_TOP+MODELPANEL_HEIGHT-MODEL_BITMAP_HEIGHT/2-height/2, modelBitmap, 0, 0, scale);
+#endif
 
   // Timers
   if (g_model.timers[0].mode) {

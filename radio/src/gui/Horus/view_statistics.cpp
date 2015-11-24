@@ -157,7 +157,7 @@ bool menuStatisticsDebug(evt_t event)
   lcdDrawNumber(MENU_DEBUG_COL1_OFS+150, MENU_DEBUG_Y_RTOS, audioStack.available(), LEFT);
 
   lcd_putsCenter(7*FH+1, STR_MENUTORESET);
-  // lcd_status_line();
+  // lcdInvertLastLine();
 
   return true;
 }

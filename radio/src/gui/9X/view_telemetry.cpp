@@ -51,7 +51,7 @@ uint8_t s_frsky_view = 0;
 void displayRssiLine()
 {
   if (TELEMETRY_STREAMING()) {
-    lcd_hline(0, 55, 128, 0); // separator
+    lcdDrawSolidHorizontalLine(0, 55, 128, 0); // separator
     uint8_t rssi;
 #if !defined(CPUARM)
     rssi = min((uint8_t)99, frskyData.rssi[1].value);
@@ -67,7 +67,7 @@ void displayRssiLine()
   }
   else {
     lcdDrawText(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
-    lcd_status_line();
+    lcdInvertLastLine();
   }
 }
 
@@ -80,7 +80,7 @@ void displayGpsTime()
   lcd_outdezNAtt(CENTER_OFS+9*FW+2, STATUS_BAR_Y, frskyData.hub.min, att, 2);
   lcdDrawChar(CENTER_OFS+11*FW-1, STATUS_BAR_Y, ':', att);
   lcd_outdezNAtt(CENTER_OFS+12*FW-3, STATUS_BAR_Y, frskyData.hub.sec, att, 2);
-  lcd_status_line();
+  lcdInvertLastLine();
 }
 
 void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
@@ -96,14 +96,14 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
       lcd_vline(lcdLastPos, y, 2);
       uint16_t ss = ap * 6;
       lcd_outdezNAtt(lcdLastPos+3, y, ss / 1000, LEFT|LEADING0, 2); // ''
-      lcd_plot(lcdLastPos, y+FH-2, 0); // small decimal point
+      lcdDrawPoint(lcdLastPos, y+FH-2, 0); // small decimal point
       lcd_outdezNAtt(lcdLastPos+2, y, ss % 1000, LEFT|LEADING0, 3); // ''
       lcd_vline(lcdLastPos, y, 2);
       lcd_vline(lcdLastPos+2, y, 2);
     }
     else {
       lcd_outdezNAtt(lcdLastPos+FW, y, mn, LEFT|LEADING0, 2); // mm before '.'
-      lcd_plot(lcdLastPos, y+FH-2, 0); // small decimal point
+      lcdDrawPoint(lcdLastPos, y+FH-2, 0); // small decimal point
       lcd_outdezNAtt(lcdLastPos+2, y, ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
       lcd_putc(lcdLastPos+1, y, direction);
     }
@@ -315,7 +315,7 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
 
       if (thresholdX) {
         lcdDrawVerticalLine(BAR_LEFT+1+thresholdX, y-2, barHeight+3, DOTTED);
-        lcd_hline(BAR_LEFT+thresholdX, y-2, 3);
+        lcdDrawSolidHorizontalLine(BAR_LEFT+thresholdX, y-2, 3);
       }
     }
     else {
@@ -373,7 +373,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
       }
     }
   }
-  lcd_status_line();
+  lcdInvertLastLine();
   return fields_count;
 }
 #else
@@ -426,7 +426,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
       }
     }
   }
-  lcd_status_line();
+  lcdInvertLastLine();
   return fields_count;
 }
 #endif

@@ -283,7 +283,7 @@ extern CurveInfo curveInfo(uint8_t idx);
   #define CURVDATA             int8_t
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBSKY9X)
+#if defined(PCBTARANIS) || defined(PCBSKY9X) || defined(PCBHORUS)
   #define NUM_MODULES          2
 #else
   #define NUM_MODULES          1

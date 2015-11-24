@@ -717,7 +717,7 @@ bool menuModelFailsafe(evt_t event)
   }
 
   // TODO lcd_putsCenter(0, FAILSAFESET);
-  // TODO lcd_invert_line(0);
+  // TODO lcdInvertLine(0);
 
   for (int col=0; col<2; col++) {
     coord_t x = col*COL_W+1;

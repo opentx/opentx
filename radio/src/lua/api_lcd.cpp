@@ -88,7 +88,7 @@ static int luaLcdDrawPoint(lua_State *L)
   if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
-  lcd_plot(x, y);
+  lcdDrawPoint(x, y);
   return 0;
 }
 
@@ -402,7 +402,7 @@ static int luaLcdDrawFilledRectangle(lua_State *L)
   int w = luaL_checkinteger(L, 3);
   int h = luaL_checkinteger(L, 4);
   unsigned int flags = luaL_optunsigned(L, 5, 0);
-  drawFilledRect(x, y, w, h, SOLID, flags);
+  lcdDrawFilledRect(x, y, w, h, SOLID, flags);
   return 0;
 }
 
@@ -438,7 +438,7 @@ static int luaLcdDrawGauge(lua_State *L)
   lcdDrawRect(x, y, w, h);
   uint8_t len = limit((uint8_t)1, uint8_t(w*num/den), uint8_t(w));
   for (int i=1; i<h-1; i++) {
-    lcd_hline(x+1, y+i, len);
+    lcdDrawSolidHorizontalLine(x+1, y+i, len);
   }
   return 0;
 }
@@ -468,12 +468,14 @@ static int luaLcdDrawScreenTitle(lua_State *L)
   int cnt = luaL_checkinteger(L, 3);
 
   if (cnt) displayScreenIndex(idx-1, cnt, 0);
-  drawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
+  lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
   title(str);
 
   return 0;
 }
 #endif
+
+#if defined(PCBTARANIS)
 
 /*luadoc
 @function lcd.drawCombobox(x, y, w, list, idx [, flags])
@@ -511,39 +513,40 @@ static int luaLcdDrawCombobox(lua_State *L)
     // TODO error
   }
   if (flags & BLINK) {
-    drawFilledRect(x, y, w-9, count*9+2, SOLID, ERASE);
+    lcdDrawFilledRect(x, y, w-9, count*9+2, SOLID, ERASE);
     lcdDrawRect(x, y, w-9, count*9+2);
     for (int i=0; i<count; i++) {
       lua_rawgeti(L, 4, i+1);
       const char * item = luaL_checkstring(L, -1);
       lcdDrawText(x+2, y+2+9*i, item, 0);
     }
-    drawFilledRect(x+1, y+1+9*idx, w-11, 9);
-    drawFilledRect(x+w-10, y, 10, 11, SOLID, ERASE);
+    lcdDrawFilledRect(x+1, y+1+9*idx, w-11, 9);
+    lcdDrawFilledRect(x+w-10, y, 10, 11, SOLID, ERASE);
     lcdDrawRect(x+w-10, y, 10, 11);
   }
   else if (flags & INVERS) {
-    drawFilledRect(x, y, w, 11);
-    drawFilledRect(x+w-9, y+1, 8, 9, SOLID, ERASE);
+    lcdDrawFilledRect(x, y, w, 11);
+    lcdDrawFilledRect(x+w-9, y+1, 8, 9, SOLID, ERASE);
     lua_rawgeti(L, 4, idx+1);
     const char * item = luaL_checkstring(L, -1);
     lcdDrawText(x+2, y+2, item, INVERS);
   }
   else {
-    drawFilledRect(x, y, w, 11, SOLID, ERASE);
+    lcdDrawFilledRect(x, y, w, 11, SOLID, ERASE);
     lcdDrawRect(x, y, w, 11);
-    drawFilledRect(x+w-10, y+1, 9, 9, SOLID);
+    lcdDrawFilledRect(x+w-10, y+1, 9, 9, SOLID);
     lua_rawgeti(L, 4, idx+1);
     const char * item = luaL_checkstring(L, -1);
     lcdDrawText(x+2, y+2, item, 0);
   }
 
-  lcd_hline(x+w-8, y+3, 6);
-  lcd_hline(x+w-8, y+5, 6);
-  lcd_hline(x+w-8, y+7, 6);
+  lcdDrawSolidHorizontalLine(x+w-8, y+3, 6);
+  lcdDrawSolidHorizontalLine(x+w-8, y+5, 6);
+  lcdDrawSolidHorizontalLine(x+w-8, y+7, 6);
 
   return 0;
 }
+#endif
 
 const luaL_Reg lcdLib[] = {
   { "lock", luaLcdLock },
@@ -562,6 +565,8 @@ const luaL_Reg lcdLib[] = {
   { "drawSource", luaLcdDrawSource },
   { "drawPixmap", luaLcdDrawPixmap },
   { "drawScreenTitle", luaLcdDrawScreenTitle },
+#if defined(PCBTARANIS)
   { "drawCombobox", luaLcdDrawCombobox },
+#endif
   { NULL, NULL }  /* sentinel */
 };

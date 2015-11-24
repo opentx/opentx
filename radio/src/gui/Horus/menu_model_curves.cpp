@@ -233,10 +233,19 @@ bool menuModelCurveOne(evt_t event)
     point_t point = getPoint(i);
     uint8_t selectionMode = 0;
     if (m_posHorz == i) {
-      if (m_posVert == ITEM_CURVE_COORDS2)
+      if (m_posVert == ITEM_CURVE_COORDS1)
+        selectionMode = (crv.type==CURVE_TYPE_CUSTOM ? 1 : 2);
+      else if (m_posVert == ITEM_CURVE_COORDS2)
         selectionMode = 2;
-      else if (m_posVert == ITEM_CURVE_COORDS1)
-        selectionMode = 1;
+    }
+
+    if (selectionMode == 1) {
+      if (m_posHorz == 0) {
+        REPEAT_LAST_CURSOR_MOVE(1);
+      }
+      else if (m_posHorz == 4+crv.points) {
+        REPEAT_LAST_CURSOR_MOVE(3+crv.points);
+      }
     }
 
     int8_t x = -100 + 200*i/(5+crv.points-1);

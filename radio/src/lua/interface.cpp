@@ -479,7 +479,7 @@ void displayLuaError(const char * title)
   }
 }
 
-void displayAcknowledgeLuaError(uint8_t event)
+void displayAcknowledgeLuaError(evt_t event)
 {
   s_warning_result = false;
   displayLuaError(s_warning);
@@ -583,12 +583,15 @@ void luaDoOneRunStandalone(uint8_t evt)
           return;
         }
         else if (luaDisplayStatistics) {
-          lcd_hline(0, 7*FH-1, lcdLastPos+6, ERASE);
+#if defined(COLORLCD)
+#else
+          lcdDrawSolidHorizontalLine(0, 7*FH-1, lcdLastPos+6, ERASE);
           lcd_puts(0, 7*FH, "GV Use: ");
           lcd_outdezAtt(lcdLastPos, 7*FH, luaGetMemUsed(), LEFT);
           lcd_putc(lcdLastPos, 7*FH, 'b');
-          lcd_hline(0, 7*FH-2, lcdLastPos+6, FORCE);
+          lcdDrawSolidHorizontalLine(0, 7*FH-2, lcdLastPos+6, FORCE);
           lcdDrawVerticalLine(lcdLastPos+6, 7*FH-2, FH+2, SOLID, FORCE);
+#endif
         }
       }
     }

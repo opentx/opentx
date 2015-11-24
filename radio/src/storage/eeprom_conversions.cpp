@@ -1435,9 +1435,9 @@ bool eeConvert()
   for (uint8_t id=0; id<MAX_MODELS; id++) {
 #if defined(COLORLCD)
 #elif LCD_W >= 212
-    lcd_hline(61, 6*FH+5, 10+id*2, FORCE);
+    lcdDrawSolidHorizontalLine(61, 6*FH+5, 10+id*2, FORCE);
 #else
-    lcd_hline(11, 6*FH+5, 10+(id*3)/2, FORCE);
+    lcdDrawSolidHorizontalLine(11, 6*FH+5, 10+(id*3)/2, FORCE);
 #endif
     lcdRefresh();
     if (eeModelExists(id)) {

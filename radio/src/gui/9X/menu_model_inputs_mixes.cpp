@@ -93,7 +93,7 @@ void drawFunction(FnFuncP fn, uint8_t offset)
     coord_t yv = (LCD_H-1) - (((uint16_t)RESX + fn(xv * (RESX/WCHART))) / 2 * (LCD_H-1) / RESX);
     if (prev_yv != (coord_t)-1) {
       if (abs((int8_t)yv-prev_yv) <= 1) {
-        lcd_plot(X0+xv-offset-1, prev_yv, FORCE);
+        lcdDrawPoint(X0+xv-offset-1, prev_yv, FORCE);
       }
       else {
         uint8_t tmp = (prev_yv < yv ? 0 : 1);
@@ -384,7 +384,7 @@ void menuModelExpoOne(uint8_t event)
 #endif
 
   lcd_vline(x512, y512-3, 3*2+1);
-  lcd_hline(x512-3, y512, 3*2+1);
+  lcdDrawSolidHorizontalLine(x512-3, y512, 3*2+1);
 }
 
 enum MixFields {
@@ -447,14 +447,14 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
   lcd_vline(x+GAUGE_WIDTH/2-1, y, GAUGE_HEIGHT+1);
   if (barMin == -101) {
     for (uint8_t i=0; i<3; ++i) {
-      lcd_plot(x+i, y+4-i);
-      lcd_plot(x+3+i, y+4-i);
+      lcdDrawPoint(x+i, y+4-i);
+      lcdDrawPoint(x+3+i, y+4-i);
     }
   }
   if (barMax == 101) {
     for (uint8_t i=0; i<3; ++i) {
-      lcd_plot(x+GAUGE_WIDTH-8+i, y+4-i);
-      lcd_plot(x+GAUGE_WIDTH-5+i, y+4-i);
+      lcdDrawPoint(x+GAUGE_WIDTH-8+i, y+4-i);
+      lcdDrawPoint(x+GAUGE_WIDTH-5+i, y+4-i);
     }
   }
 }

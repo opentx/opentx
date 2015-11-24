@@ -120,9 +120,9 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
         if (inv) plot = !plot;
         if (!blink) {
           if (flags & VERTICAL)
-            lcd_plot(y+j, LCD_H-x, plot ? FORCE : ERASE);
+            lcdDrawPoint(y+j, LCD_H-x, plot ? FORCE : ERASE);
           else
-            lcd_plot(x, y+j, plot ? FORCE : ERASE);
+            lcdDrawPoint(x, y+j, plot ? FORCE : ERASE);
         }
       }
     }
@@ -457,14 +457,14 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
       }
       else if (smlsize) {
         x -= 2;
-        lcd_plot(x+1, y+5);
+        lcdDrawPoint(x+1, y+5);
         if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
           lcd_vline(x+1, y, 7);
         }
       }
       else if (tinsize) {
         x--;
-        lcd_plot(x-1, y+4);
+        lcdDrawPoint(x-1, y+4);
         if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
           lcd_vline(x-1, y-1, 7);
         }
@@ -489,8 +489,8 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
         lcd_vline(xn, y, 12);
         lcd_vline(xn+1, y, 12);
       }
-      lcd_hline(xn, y+9, 2);
-      lcd_hline(xn, y+10, 2);
+      lcdDrawSolidHorizontalLine(xn, y+9, 2);
+      lcdDrawSolidHorizontalLine(xn, y+10, 2);
     }
     else {
       // TODO needed on CPUAVR? y &= ~0x07;
@@ -501,7 +501,7 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
 }
 #endif
 
-void lcd_hline(coord_t x, coord_t y, coord_t w, LcdFlags att)
+void lcdDrawSolidHorizontalLine(coord_t x, coord_t y, coord_t w, LcdFlags att)
 {
   lcdDrawHorizontalLine(x, y, w, 0xff, att);
 }
@@ -529,7 +529,7 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
         py += sdy;
       }
       if ((1<<(px%8)) & pat) {
-        lcd_plot(px, py, att);
+        lcdDrawPoint(px, py, att);
       }
       px += sdx;
     }
@@ -543,7 +543,7 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
         px += sdx;
       }
       if ((1<<(py%8)) & pat) {
-        lcd_plot(px, py, att);
+        lcdDrawPoint(px, py, att);
       }
       py += sdy;
     }
@@ -593,7 +593,7 @@ void lcdDrawTelemetryTopBar()
     att = (timersStates[0].val<0 ? BLINK : 0);
     putsTimer(17*FW+5*FWNUM+1, 0, timersStates[0].val, att, att);
   }
-  lcd_invert_line(0);
+  lcdInvertLine(0);
 }
 
 #if defined(CPUARM) && defined(RTCLOCK)
@@ -824,7 +824,7 @@ void displayGpsCoord(coord_t x, coord_t y, char direction, int16_t bp, int16_t a
       if (seconds) {
         uint16_t ss = ap * 6 / 10;
         lcd_outdezNAtt(lcdLastPos+3, y, ss / 100, att|LEFT|LEADING0, 2); // ''
-        lcd_plot(lcdLastPos, y+FH-2, 0); // small decimal point
+        lcdDrawPoint(lcdLastPos, y+FH-2, 0); // small decimal point
         lcd_outdezNAtt(lcdLastPos+2, y, ss % 100, att|LEFT|LEADING0, 2); // ''
         lcd_vline(lcdLastPos, y, 2);
         lcd_vline(lcdLastPos+2, y, 2);
@@ -833,7 +833,7 @@ void displayGpsCoord(coord_t x, coord_t y, char direction, int16_t bp, int16_t a
     }
     else {
       lcd_outdezNAtt(lcdLastPos+FW, y, mn, att|LEFT|LEADING0, 2); // mm before '.'
-      lcd_plot(lcdLastPos, y+FH-2, 0); // small decimal point
+      lcdDrawPoint(lcdLastPos, y+FH-2, 0); // small decimal point
       lcd_outdezNAtt(lcdLastPos+2, y, ap, att|LEFT|UNSIGN|LEADING0, 4); // after '.'
       lcd_putc(lcdLastPos+1, y, direction);
     }
@@ -1262,7 +1262,7 @@ void lcdDrawChar(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 }
 #endif
 
-void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
+void lcdMaskPoint(uint8_t *p, uint8_t mask, LcdFlags att)
 {
   ASSERT_IN_DISPLAY(p);
 
@@ -1274,11 +1274,11 @@ void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
     *p ^= mask;
 }
 
-void lcd_plot(coord_t x, coord_t y, LcdFlags att)
+void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att)
 {
   uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
   if (p<DISPLAY_END)
-    lcd_mask(p, BITMASK(y%8), att);
+    lcdMaskPoint(p, BITMASK(y%8), att);
 }
 
 void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
@@ -1290,7 +1290,7 @@ void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlag
   uint8_t msk = BITMASK(y%8);
   while (w--) {
     if(pat&1) {
-      lcd_mask(p, msk, att);
+      lcdMaskPoint(p, msk, att);
       pat = (pat >> 1) | 0x80;
     }
     else {
@@ -1357,23 +1357,23 @@ void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlag
     h -= 8-y;
     if (h < 0)
       msk -= ~(BITMASK(8+h)-1);
-    lcd_mask(p, msk & pat, att);
+    lcdMaskPoint(p, msk & pat, att);
     p += LCD_W;
   }
   while (h>=8) {
     ASSERT_IN_DISPLAY(p);
-    lcd_mask(p, pat, att);
+    lcdMaskPoint(p, pat, att);
     p += LCD_W;
     h -= 8;
   }
   if (h>0) {
     ASSERT_IN_DISPLAY(p);
-    lcd_mask(p, (BITMASK(h)-1) & pat, att);
+    lcdMaskPoint(p, (BITMASK(h)-1) & pat, att);
   }
 }
 #endif
 
-void lcd_invert_line(int8_t y)
+void lcdInvertLine(int8_t y)
 {
   uint8_t *p  = &displayBuf[y * LCD_W];
   for (coord_t x=0; x<LCD_W; x++) {

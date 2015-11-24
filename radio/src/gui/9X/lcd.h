@@ -223,9 +223,9 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 #define SOLID  0xff
 #define DOTTED 0x55
 
-void lcd_plot(coord_t x, coord_t y, LcdFlags att=0);
-void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att=0);
-void lcd_hline(coord_t x, coord_t y, coord_t w, LcdFlags att=0);
+void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att=0);
+void lcdMaskPoint(uint8_t *p, uint8_t mask, LcdFlags att=0);
+void lcdDrawSolidHorizontalLine(coord_t x, coord_t y, coord_t w, LcdFlags att=0);
 void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
 void lcd_vline(coord_t x, scoord_t y, scoord_t h);
 #if defined(CPUM64)
@@ -241,9 +241,9 @@ void lcd_vline(coord_t x, scoord_t y, scoord_t h);
 void drawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
 void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
 
-void lcd_invert_line(int8_t line);
-#define lcd_status_line() lcd_invert_line(LCD_LINES-1)
-inline void lcd_square(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcdDrawRect(x, y, w, w, SOLID, att); }
+void lcdInvertLine(int8_t line);
+#define lcdInvertLastLine() lcdInvertLine(LCD_LINES-1)
+inline void lcdDrawSquare(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcdDrawRect(x, y, w, w, SOLID, att); }
 
 void lcdDrawTelemetryTopBar();
 

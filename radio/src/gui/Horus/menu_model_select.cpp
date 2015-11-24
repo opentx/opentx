@@ -76,8 +76,12 @@ void drawModel(coord_t x, coord_t y, const char * name, bool selected)
     for (int i=0; i<4; i++) {
       lcdDrawBitmapPattern(x+104+i*11, y+25, LBM_SCORE0, TITLE_BGCOLOR);
     }
-    loadModelBitmap(header.bitmap, modelBitmap);
-    lcdDrawBitmap(x+5, y+24, modelBitmap, 0, 0, getBitmapScale(modelBitmap, 64, 32));
+    if (loadModelBitmap(header.bitmap, modelBitmap)) {
+      lcdDrawBitmap(x+5, y+24, modelBitmap, 0, 0, getBitmapScale(modelBitmap, 64, 32));
+    }
+    else {
+      lcdDrawBitmapPattern(x+5, y+23, LBM_LIBRARY_SLOT, TEXT_COLOR);
+    }
   }
   lcdDrawSolidHorizontalLine(x+5, y+19, 143, LINE_COLOR);
   if (selected) {
@@ -99,6 +103,8 @@ void onCategorySelectMenu(const char * result)
   }
   else if (result == STR_RENAME_CATEGORY) {
     selectMode = MODE_RENAME_CATEGORY;
+    s_editMode = EDIT_MODIFY_STRING;
+    editNameCursorPos = 0;
   }
   else if (result == STR_DELETE_CATEGORY) {
     storageRemoveCategory(currentCategory--);
@@ -235,7 +241,6 @@ bool menuModelSelect(evt_t event)
         break;
       if (y < LCD_H) {
         if (selectMode == MODE_RENAME_CATEGORY && currentCategory == index) {
-          s_editMode = EDIT_MODIFY_STRING;
           lcdDrawSolidFilledRect(0, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH, INVERT_LINE_HEIGHT, TEXT_BGCOLOR);
           editName(MENUS_MARGIN_LEFT, y, selectedCategory, LEN_MODEL_FILENAME, event, 1, 0);
           if (s_editMode == 0 || event == EVT_KEY_BREAK(KEY_EXIT)) {
@@ -246,7 +251,8 @@ bool menuModelSelect(evt_t event)
         }
         else {
           if (currentCategory == index) {
-            memcpy(selectedCategory, line, sizeof(selectedCategory));
+            memset(selectedCategory, 0, sizeof(selectedCategory));
+            strncpy(selectedCategory, line, sizeof(selectedCategory));
           }
           drawCategory(y, line, currentCategory==index);
         }
@@ -256,6 +262,7 @@ bool menuModelSelect(evt_t event)
     }
     if (selectMode == MODE_SELECT_CATEGORY) {
       if (navigate(event, index, 9)) {
+        TRACE("Refresh 1");
         putEvent(EVT_REFRESH);
         currentCategory = m_posVert;
       }
@@ -289,7 +296,12 @@ bool menuModelSelect(evt_t event)
       count++;
     }
     if (selectMode == MODE_SELECT_MODEL) {
-      if (navigate(event, count, 3, 2)) {
+      if (count == 0) {
+        selectMode = MODE_SELECT_CATEGORY;
+        m_posVert = currentCategory;
+        putEvent(EVT_REFRESH);
+      }
+      else if (navigate(event, count, 3, 2)) {
         putEvent(EVT_REFRESH);
       }
     }

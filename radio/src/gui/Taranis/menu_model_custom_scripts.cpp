@@ -124,7 +124,7 @@ void menuModelCustomScriptOne(uint8_t event)
   }
 
   if (scriptInputsOutputs[s_currIdx].outputsCount > 0) {
-    lcd_vline(SCRIPT_ONE_3RD_COLUMN_POS-4, FH+1, LCD_H-FH-1);
+    lcdDrawSolidVerticalLine(SCRIPT_ONE_3RD_COLUMN_POS-4, FH+1, LCD_H-FH-1);
     lcd_puts(SCRIPT_ONE_3RD_COLUMN_POS, FH+1, STR_OUTPUTS);
 
     for (int i=0; i<scriptInputsOutputs[s_currIdx].outputsCount; i++) {

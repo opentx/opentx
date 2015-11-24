@@ -140,7 +140,7 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
   putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, m_posHorz==0 ? attr : 0);
 
   putsTimer(MODEL_SETUP_2ND_COLUMN+5*FW-2+5*FWNUM+1, y, timer->start, m_posHorz==1 ? attr : 0, m_posHorz==2 ? attr : 0);
-  if (attr && m_posHorz < 0) drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);
+  if (attr && m_posHorz < 0) lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);
   if (attr && s_editMode>0) {
     div_t qr = div(timer->start, 60);
     switch (m_posHorz) {
@@ -521,9 +521,9 @@ void menuModelSetup(uint8_t event)
         }
         if (attr && m_posHorz < 0) {
 #if defined(REV9E)
-          drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 8*(2*FW+1), 1+FH*((current+7)/8));
+          lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 8*(2*FW+1), 1+FH*((current+7)/8));
 #else
-          drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, current*(2*FW+1), FH+1);
+          lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, current*(2*FW+1), FH+1);
 #endif
         }
         break;
@@ -592,9 +592,9 @@ void menuModelSetup(uint8_t event)
         }
         if (attr && m_posHorz < 0) {
 #if defined(REV9E)
-          drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-FH-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, 2*FH+1);
+          lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-FH-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, 2*FH+1);
 #else
-          drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);
+          lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);
 #endif
         }
         break;
@@ -845,7 +845,7 @@ void menuModelSetup(uint8_t event)
               }
             }
             else {
-              drawFilledRect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
+              lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
             }
           }
         }
@@ -900,10 +900,10 @@ void menuModelFailsafe(uint8_t event)
   #define COL_W   (LCD_W/2)
   const uint8_t SLIDER_W = 64;
   // Column separator
-  lcd_vline(LCD_W/2, FH, LCD_H-FH);
+  lcdDrawSolidVerticalLine(LCD_W/2, FH, LCD_H-FH);
 
   lcd_putsCenter(0*FH, FAILSAFESET);
-  lcd_invert_line(0);
+  lcdInvertLine(0);
 
   unsigned int lim = g_model.extendedLimits ? 640*2 : 512*2;
 
@@ -982,8 +982,8 @@ void menuModelFailsafe(uint8_t event)
         coord_t xFailsafe = (failsafeValue>0) ? x+COL_W-ofs-3-wbar/2 : x+COL_W-ofs-2-wbar/2-lenFailsafe;
         lcdDrawHorizontalLine(xChannel, y+1, lenChannel, DOTTED, 0);
         lcdDrawHorizontalLine(xChannel, y+2, lenChannel, DOTTED, 0);
-        lcd_hline(xFailsafe, y+3, lenFailsafe);
-        lcd_hline(xFailsafe, y+4, lenFailsafe);
+        lcdDrawSolidHorizontalLine(xFailsafe, y+3, lenFailsafe);
+        lcdDrawSolidHorizontalLine(xFailsafe, y+4, lenFailsafe);
       }     
       ch++;
     }

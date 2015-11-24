@@ -92,7 +92,7 @@ void menuModelFlightModesAll(uint8_t event)
             killEvents(event);
           }
           else {
-            lcd_status_line();
+            lcdInvertLastLine();
             s_editMode = 0;
           }
         }

@@ -128,21 +128,21 @@ void displayTrims(uint8_t phase)
 
     if (vert[i]) {
       ym = 31;
-      lcd_vline(xm, ym-TRIM_LEN, TRIM_LEN*2);
+      lcdDrawSolidVerticalLine(xm, ym-TRIM_LEN, TRIM_LEN*2);
       if (i!=2 || !g_model.thrTrim) {
-        lcd_vline(xm-1, ym-1,  3);
-        lcd_vline(xm+1, ym-1,  3);
+        lcdDrawSolidVerticalLine(xm-1, ym-1,  3);
+        lcdDrawSolidVerticalLine(xm+1, ym-1,  3);
       }
       ym -= val;
-      drawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
+      lcdDrawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
       if (trim >= 0) {
-        lcd_hline(xm-1, ym-1,  3);
+        lcdDrawSolidHorizontalLine(xm-1, ym-1,  3);
       }
       if (trim <= 0) {
-        lcd_hline(xm-1, ym+1,  3);
+        lcdDrawSolidHorizontalLine(xm-1, ym+1,  3);
       }
       if (exttrim) {
-        lcd_hline(xm-1, ym,  3);
+        lcdDrawSolidHorizontalLine(xm-1, ym,  3);
       }
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
@@ -152,19 +152,19 @@ void displayTrims(uint8_t phase)
     }
     else {
       ym = 60;
-      lcd_hline(xm-TRIM_LEN, ym, TRIM_LEN*2);
-      lcd_hline(xm-1, ym-1,  3);
-      lcd_hline(xm-1, ym+1,  3);
+      lcdDrawSolidHorizontalLine(xm-TRIM_LEN, ym, TRIM_LEN*2);
+      lcdDrawSolidHorizontalLine(xm-1, ym-1,  3);
+      lcdDrawSolidHorizontalLine(xm-1, ym+1,  3);
       xm += val;
-      drawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
+      lcdDrawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
       if (trim >= 0) {
-        lcd_vline(xm+1, ym-1,  3);
+        lcdDrawSolidVerticalLine(xm+1, ym-1,  3);
       }
       if (trim <= 0) {
-        lcd_vline(xm-1, ym-1,  3);
+        lcdDrawSolidVerticalLine(xm-1, ym-1,  3);
       }
       if (exttrim) {
-        lcd_vline(xm, ym-1,  3);
+        lcdDrawSolidVerticalLine(xm, ym-1,  3);
       }
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
@@ -172,7 +172,7 @@ void displayTrims(uint8_t phase)
         }
       }
     }
-    lcd_square(xm-3, ym-3, 7, att);
+    lcdDrawSquare(xm-3, ym-3, 7, att);
   }
 }
 
@@ -188,12 +188,12 @@ void drawSliders()
     coord_t x = ((i==POT1 || i==SLIDER1) ? 3 : LCD_W-5);
     int8_t y = (i>=SLIDER1 ? LCD_H/2+1 : 1);
 #endif
-    lcd_vline(x, y, LCD_H/2-2);
-    lcd_vline(x+1, y, LCD_H/2-2);
+    lcdDrawSolidVerticalLine(x, y, LCD_H/2-2);
+    lcdDrawSolidVerticalLine(x+1, y, LCD_H/2-2);
     y += LCD_H/2-4;
     y -= ((calibratedStick[i]+RESX)*(LCD_H/2-4)/(RESX*2));  // calculate once per loop
-    lcd_vline(x-1, y, 2);
-    lcd_vline(x+2, y, 2);
+    lcdDrawSolidVerticalLine(x-1, y, 2);
+    lcdDrawSolidVerticalLine(x+2, y, 2);
   }
 }
 
@@ -208,14 +208,14 @@ void drawSliders()
 void displayTopBarGauge(coord_t x, int count, bool blinking=false)
 {
   if (!blinking || BLINK_ON_PHASE)
-    drawFilledRect(x+1, BAR_Y+2, 11, 5, SOLID, ERASE);
+    lcdDrawFilledRect(x+1, BAR_Y+2, 11, 5, SOLID, ERASE);
   for (int i=0; i<count; i+=2)
-    lcd_vline(x+2+i, BAR_Y+3, 3);
+    lcdDrawSolidVerticalLine(x+2+i, BAR_Y+3, 3);
 }
 
 #define LCD_NOTIF_ICON(x, icon) \
  lcd_bmp(x, BAR_Y, icons, icon); \
- lcd_hline(x, BAR_Y+8, 11)
+ lcdDrawSolidHorizontalLine(x, BAR_Y+8, 11)
 
 void displayTopBar()
 {
@@ -226,7 +226,7 @@ void displayTopBar()
   putsVBat(BAR_X+2, BAR_Y+1, LEFT);
   batt_icon_x = lcdLastPos;
   lcdDrawRect(batt_icon_x+FW, BAR_Y+1, 13, 7);
-  lcd_vline(batt_icon_x+FW+13, BAR_Y+2, 5);
+  lcdDrawSolidVerticalLine(batt_icon_x+FW+13, BAR_Y+2, 5);
 
   if (TELEMETRY_STREAMING()) {
     /* RSSI */
@@ -302,7 +302,7 @@ void displayTopBar()
   putsRtcTime(BAR_TIME_X, BAR_Y+1, LEFT|TIMEBLINK);
 
   /* The background */
-  drawFilledRect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY(12)|ROUND);
+  lcdDrawFilledRect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY(12)|ROUND);
 
   /* The inside of the Batt gauge */
   displayTopBarGauge(batt_icon_x+FW, GET_TXBATT_BARS(), IS_TXBATT_WARNING());
@@ -333,7 +333,7 @@ void displayTimers()
       }
       if (timerState.val < 0) {
         if (BLINK_ON_PHASE) {
-          drawFilledRect(TIMERS_X-7, y-8, 60, 20);
+          lcdDrawFilledRect(TIMERS_X-7, y-8, 60, 20);
         }
       }
     }
@@ -396,12 +396,12 @@ void displaySwitch(coord_t x, coord_t y, int width, unsigned int index)
     int val = getValue(MIXSRC_FIRST_SWITCH+index);
 
     if (val >= 0) {
-      lcd_hline(x, y, width);
-      lcd_hline(x, y+2, width);
+      lcdDrawSolidHorizontalLine(x, y, width);
+      lcdDrawSolidHorizontalLine(x, y+2, width);
       y += 4;
       if (val > 0) {
-        lcd_hline(x, y, width);
-        lcd_hline(x, y+2, width);
+        lcdDrawSolidHorizontalLine(x, y, width);
+        lcdDrawSolidHorizontalLine(x, y+2, width);
         y += 4;
       }
     }
@@ -410,11 +410,11 @@ void displaySwitch(coord_t x, coord_t y, int width, unsigned int index)
     y += 6;
 
     if (val <= 0) {
-      lcd_hline(x, y, width);
-      lcd_hline(x, y+2, width);
+      lcdDrawSolidHorizontalLine(x, y, width);
+      lcdDrawSolidHorizontalLine(x, y+2, width);
       if (val < 0) {
-        lcd_hline(x, y+4, width);
-        lcd_hline(x, y+6, width);
+        lcdDrawSolidHorizontalLine(x, y+4, width);
+        lcdDrawSolidHorizontalLine(x, y+6, width);
       }
     }
   }
@@ -575,11 +575,11 @@ void menuMainView(uint8_t event)
       uint8_t x = TRIM_RH_X - TRIM_LEN + qr.rem*5 + (qr.rem >= 5 ? 3 : 0);
       LogicalSwitchData * cs = lswAddress(sw);
       if (cs->func == LS_FUNC_NONE) {
-        lcd_hline(x, y+6, 4);
-        lcd_hline(x, y+7, 4);
+        lcdDrawSolidHorizontalLine(x, y+6, 4);
+        lcdDrawSolidHorizontalLine(x, y+7, 4);
       }
       else if (getSwitch(SWSRC_SW1+sw)) {
-        drawFilledRect(x, y, 4, 8);
+        lcdDrawFilledRect(x, y, 4, 8);
       }
       else {
         lcdDrawRect(x, y, 4, 8);
@@ -590,7 +590,7 @@ void menuMainView(uint8_t event)
 #if defined(GVARS)
   if (s_gvar_timer > 0) {
     s_gvar_timer--;
-    drawFilledRect(BITMAP_X, BITMAP_Y, 64, 32, SOLID, ERASE);
+    lcdDrawFilledRect(BITMAP_X, BITMAP_Y, 64, 32, SOLID, ERASE);
     lcdDrawRect(BITMAP_X, BITMAP_Y, 64, 32);
     putsStrIdx(BITMAP_X+FW, BITMAP_Y+FH-1, STR_GV, s_gvar_last+1);
     lcdDrawTextWithLen(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);

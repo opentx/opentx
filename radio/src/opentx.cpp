@@ -57,7 +57,7 @@ Clipboard clipboard;
 
 #if (defined(PCBTARANIS) || defined(PCBHORUS)) && defined(SDCARD)
 uint8_t modelBitmap[MODEL_BITMAP_SIZE];
-void loadModelBitmap(char * name, uint8_t * bitmap)
+bool loadModelBitmap(char * name, uint8_t * bitmap)
 {
   uint8_t len = zlen(name, LEN_BITMAP_NAME);
   if (len > 0) {
@@ -65,7 +65,7 @@ void loadModelBitmap(char * name, uint8_t * bitmap)
     strncpy(lfn+sizeof(BITMAPS_PATH), name, len);
     strcpy(lfn+sizeof(BITMAPS_PATH)+len, BITMAPS_EXT);
     if (bmpLoad(bitmap, lfn, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT) == 0) {
-      return;
+      return true;
     }
   }
 
@@ -73,6 +73,8 @@ void loadModelBitmap(char * name, uint8_t * bitmap)
   // In all error cases, we set the default logo
   memcpy(bitmap, logo_taranis, MODEL_BITMAP_SIZE);
 #endif
+
+  return false;
 }
 #endif
 

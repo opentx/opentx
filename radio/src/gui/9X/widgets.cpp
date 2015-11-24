@@ -40,10 +40,10 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 {
 #define BOX_CENTERY   (LCD_H-9-BOX_WIDTH/2)
 #define MARKER_WIDTH  5
-  lcd_square(centrex-BOX_WIDTH/2, BOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
+  lcdDrawSquare(centrex-BOX_WIDTH/2, BOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
   lcd_vline(centrex, BOX_CENTERY-1, 3);
-  lcd_hline(centrex-1, BOX_CENTERY, 3);
-  lcd_square(centrex + (xval/((2*RESX)/(BOX_WIDTH-MARKER_WIDTH))) - MARKER_WIDTH/2, BOX_CENTERY - (yval/((2*RESX)/(BOX_WIDTH-MARKER_WIDTH))) - MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
+  lcdDrawSolidHorizontalLine(centrex-1, BOX_CENTERY, 3);
+  lcdDrawSquare(centrex + (xval/((2*RESX)/(BOX_WIDTH-MARKER_WIDTH))) - MARKER_WIDTH/2, BOX_CENTERY - (yval/((2*RESX)/(BOX_WIDTH-MARKER_WIDTH))) - MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
 #undef BOX_CENTERY
 #undef MARKER_WIDTH
 }
@@ -56,7 +56,7 @@ void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
   if (attr)
     drawFilledRect(x, y, 7, 7);
   else
-    lcd_square(x, y, 7);
+    lcdDrawSquare(x, y, 7);
 #else
   /* ON / OFF version */
   lcdDrawTextAtIndex(x, y, STR_OFFON, value, attr ? INVERS:0) ;
@@ -118,14 +118,14 @@ int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, uint8_t
 void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
 {
   lcd_putc(x+(value*4*FW)/max, y, '$');
-  lcd_hline(x, y+3, 5*FW-1, FORCE);
+  lcdDrawSolidHorizontalLine(x, y+3, 5*FW-1, FORCE);
   if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) drawFilledRect(x, y, 5*FW-1, FH-1);
 }
 #elif defined(GRAPHICS)
 void display5posSlider(coord_t x, coord_t y, uint8_t value, uint8_t attr)
 {
   lcd_putc(x+2*FW+(value*FW), y, '$');
-  lcd_hline(x, y+3, 5*FW-1, SOLID);
+  lcdDrawSolidHorizontalLine(x, y+3, 5*FW-1, SOLID);
   if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) drawFilledRect(x, y, 5*FW-1, FH-1);
 }
 #endif

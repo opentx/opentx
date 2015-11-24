@@ -51,15 +51,15 @@ uint8_t s_frsky_view = 0;
 void displayRssiLine()
 {
   if (TELEMETRY_STREAMING()) {
-    lcd_hline(0, 55, 212, 0); // separator
+    lcdDrawSolidHorizontalLine(0, 55, 212, 0); // separator
     uint8_t rssi = min((uint8_t)99, TELEMETRY_RSSI());
     lcd_putsn(0, STATUS_BAR_Y, STR_RX, 2); lcd_outdezNAtt(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcdDrawRect(BAR_LEFT, 57, 78, 7);
-    drawFilledRect(BAR_LEFT+1, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+    lcdDrawFilledRect(BAR_LEFT+1, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
     lcdDrawText(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
-    lcd_status_line();
+    lcdInvertLastLine();
   }
 }
 
@@ -100,15 +100,15 @@ void displayGaugesTelemetryScreen(FrSkyScreenData & screen)
       uint8_t thresholdX = 0;
       int width = barCoord(value, barMin, barMax);
       uint8_t barShade = SOLID;
-      drawFilledRect(BAR_LEFT+1, y+1, width, barHeight, barShade);
+      lcdDrawFilledRect(BAR_LEFT+1, y+1, width, barHeight, barShade);
       for (uint8_t j=24; j<99; j+=25) {
         if (j>thresholdX || j>width) {
-          lcd_vline(j*BAR_WIDTH/100+BAR_LEFT+1, y+1, barHeight);
+          lcdDrawSolidVerticalLine(j*BAR_WIDTH/100+BAR_LEFT+1, y+1, barHeight);
         }
       }
       if (thresholdX) {
         lcdDrawVerticalLine(BAR_LEFT+1+thresholdX, y-2, barHeight+3, DOTTED);
-        lcd_hline(BAR_LEFT+thresholdX, y-2, 3);
+        lcdDrawSolidHorizontalLine(BAR_LEFT+thresholdX, y-2, 3);
       }
     }
     else {
@@ -129,8 +129,8 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         fields_count++;
       }
       if (i==3) {
-        lcd_vline(69, 8, 48);
-        lcd_vline(141, 8, 48);
+        lcdDrawSolidVerticalLine(69, 8, 48);
+        lcdDrawSolidVerticalLine(141, 8, 48);
         if (!TELEMETRY_STREAMING()) {
           displayRssiLine();
           return fields_count;
@@ -165,7 +165,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
       }
     }
   }
-  lcd_status_line();
+  lcdInvertLastLine();
   return fields_count;
 }
 

@@ -413,7 +413,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuFuncP 
       displayScreenIndex(curr, menuTabSize, 0);
     }
 
-    drawFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, SOLID, FILL_WHITE|GREY_DEFAULT);
+    lcdDrawFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, SOLID, FILL_WHITE|GREY_DEFAULT);
   }
 
   DISPLAY_PROGRESS_BAR(menuTab ? lcdLastPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);

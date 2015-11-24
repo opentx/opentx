@@ -629,9 +629,9 @@ int main()
         }
 
         lcdDrawRect( 3, 6*FH+4, 204, 7);
-        lcd_hline(5, 6*FH+6, progress, FORCE);
-        lcd_hline(5, 6*FH+7, progress, FORCE);
-        lcd_hline(5, 6*FH+8, progress, FORCE);
+        lcdDrawSolidHorizontalLine(5, 6*FH+6, progress, FORCE);
+        lcdDrawSolidHorizontalLine(5, 6*FH+7, progress, FORCE);
+        lcdDrawSolidHorizontalLine(5, 6*FH+8, progress, FORCE);
 
         fr = f_read(&FlashFile, (BYTE *)Block_buffer, sizeof(Block_buffer), &BlockCount);
         if (BlockCount == 0) {

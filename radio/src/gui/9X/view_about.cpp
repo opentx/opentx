@@ -83,7 +83,7 @@ void menuAboutView(uint8_t event)
   }
 
   lcdDrawText(17, 0, STR_ABOUTUS, DBLSIZE|INVERS);
-  lcd_hline(17, 16, LCD_W-17);
+  lcdDrawSolidHorizontalLine(17, 16, LCD_W-17);
   lcd_img(8, 0, about_bmp, 0);
   LcdFlags att = 0;
 

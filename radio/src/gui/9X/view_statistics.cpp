@@ -72,7 +72,7 @@ void menuStatisticsView(uint8_t event)
   coord_t traceRd = (s_traceCnt < 0 ? s_traceWr : 0);
   const coord_t x = 5;
   const coord_t y = 60;
-  lcd_hline(x-3, y, MAXTRACE+3+3);
+  lcdDrawSolidHorizontalLine(x-3, y, MAXTRACE+3+3);
   lcd_vline(x, y-32, 32+3);
 
   for (coord_t i=0; i<MAXTRACE; i+=6) {
@@ -217,5 +217,5 @@ void menuStatisticsDebug(uint8_t event)
 #endif
 
   lcd_puts(4*FW, 7*FH+1, STR_MENUTORESET);
-  lcd_status_line();
+  lcdInvertLastLine();
 }

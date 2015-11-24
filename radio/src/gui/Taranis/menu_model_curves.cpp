@@ -72,7 +72,7 @@ void DrawCurve(uint8_t offset=0)
     point_t point = getPoint(i);
     i++;
     if (point.x == 0) break;
-    drawFilledRect(point.x-offset, point.y-1, 3, 3, SOLID, FORCE); // do markup square
+    lcdDrawFilledRect(point.x-offset, point.y-1, 3, 3, SOLID, FORCE); // do markup square
   } while(1);
 }
 
@@ -144,7 +144,7 @@ void menuModelCurveOne(uint8_t event)
   int8_t * points = curveAddress(s_curveChan);
 
   lcd_puts(9*FW, 0, TR_PT "\003X\006Y");
-  drawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
+  lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
   SIMPLE_SUBMENU(STR_MENUCURVE, 4 + 5+crv.points + (crv.type==CURVE_TYPE_CUSTOM ? 5+crv.points-2 : 0));
   lcd_outdezAtt(PSIZE(TR_MENUCURVE)*FW+1, 0, s_curveChan+1, INVERS|LEFT);
@@ -242,8 +242,8 @@ void menuModelCurveOne(uint8_t event)
 
     if (selectionMode > 0) {
       // do selection square
-      drawFilledRect(point.x-FW-1, point.y-2, 5, 5, SOLID, FORCE);
-      drawFilledRect(point.x-FW, point.y-1, 3, 3, SOLID);
+      lcdDrawFilledRect(point.x-FW-1, point.y-2, 5, 5, SOLID, FORCE);
+      lcdDrawFilledRect(point.x-FW, point.y-1, 3, 3, SOLID);
       if (s_editMode > 0) {
         if (selectionMode == 1)
           CHECK_INCDEC_MODELVAR(event, points[5+crv.points+i-1], i==1 ? -100 : points[5+crv.points+i-2], i==5+crv.points-2 ? 100 : points[5+crv.points+i]);  // edit X

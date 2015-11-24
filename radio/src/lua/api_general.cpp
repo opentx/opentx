@@ -54,7 +54,10 @@
   #define RADIO "taranisplus"
 #elif defined(PCBTARANIS)
   #define RADIO "taranis"
-#else
+#elif defined(PCBHORUS)
+  #define RADIO "horus"
+#elif defined(PCBFLAMENCO)
+  #define RADIO "flamenco"
 #error "Unknown board"
 #endif
 
@@ -719,11 +722,9 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
   { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
+#if defined(PCBTARANIS)
   { "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE) },
   { "EVT_PAGE_LONG", EVT_KEY_LONG(KEY_PAGE) },
-  { "EVT_ENTER_BREAK", EVT_KEY_BREAK(KEY_ENTER) },
-  { "EVT_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
-  { "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT) },
   { "EVT_PLUS_BREAK", EVT_KEY_BREAK(KEY_PLUS) },
   { "EVT_MINUS_BREAK", EVT_KEY_BREAK(KEY_MINUS) },
   { "EVT_PLUS_FIRST", EVT_KEY_FIRST(KEY_PLUS) },
@@ -732,11 +733,15 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_MINUS_REPT", EVT_KEY_REPT(KEY_MINUS) },
   { "FILL_WHITE", FILL_WHITE },
   { "GREY_DEFAULT", GREY_DEFAULT },
-  { "SOLID", SOLID },
-  { "DOTTED", DOTTED },
   { "FORCE", FORCE },
   { "ERASE", ERASE },
   { "ROUND", ROUND },
+#endif
+  { "EVT_ENTER_BREAK", EVT_KEY_BREAK(KEY_ENTER) },
+  { "EVT_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
+  { "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT) },
+  { "SOLID", SOLID },
+  { "DOTTED", DOTTED },
   { "LCD_W", LCD_W },
   { "LCD_H", LCD_H },
   { "PLAY_NOW", PLAY_NOW },

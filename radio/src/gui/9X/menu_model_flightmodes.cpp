@@ -281,6 +281,6 @@ void menuModelFlightModesAll(uint8_t event)
   lcd_putsLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);
   putsFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, mixerCurrentFlightMode+1);
   if (sub==MAX_FLIGHT_MODES && !trimsCheckTimer) {
-    lcd_status_line();
+    lcdInvertLastLine();
   }
 }

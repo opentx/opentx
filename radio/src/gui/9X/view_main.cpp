@@ -126,13 +126,13 @@ void displayTrims(uint8_t phase)
 #if !defined(CPUM64) || !defined(FRSKY)
       drawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
       if (dir >= 0) {
-        lcd_hline(xm-1, ym-1,  3);
+        lcdDrawSolidHorizontalLine(xm-1, ym-1,  3);
       }
       if (dir <= 0) {
-        lcd_hline(xm-1, ym+1,  3);
+        lcdDrawSolidHorizontalLine(xm-1, ym+1,  3);
       }
       if (exttrim) {
-        lcd_hline(xm-1, ym,  3);
+        lcdDrawSolidHorizontalLine(xm-1, ym,  3);
       }
 #endif
 #if defined(CPUARM)
@@ -145,9 +145,9 @@ void displayTrims(uint8_t phase)
     }
     else {
       ym = 60;
-      lcd_hline(xm-TRIM_LEN, ym, TRIM_LEN*2);
-      lcd_hline(xm-1, ym-1,  3);
-      lcd_hline(xm-1, ym+1,  3);
+      lcdDrawSolidHorizontalLine(xm-TRIM_LEN, ym, TRIM_LEN*2);
+      lcdDrawSolidHorizontalLine(xm-1, ym-1,  3);
+      lcdDrawSolidHorizontalLine(xm-1, ym+1,  3);
       xm += val;
 #if !defined(CPUM64) || !defined(FRSKY)
       drawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
@@ -169,7 +169,7 @@ void displayTrims(uint8_t phase)
       }
 #endif
     }
-    lcd_square(xm-3, ym-3, 7, att);
+    lcdDrawSquare(xm-3, ym-3, 7, att);
   }
 }
 
@@ -453,9 +453,9 @@ void menuMainView(uint8_t event)
     // scroll bar
     lcdDrawHorizontalLine(38, 34, 54, DOTTED);
 #if defined(PCBSKY9X)
-    lcd_hline(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
+    lcdDrawSolidHorizontalLine(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
 #else
-    lcd_hline((g_eeGeneral.view & ALTERNATE_VIEW) ? 64 : 38, 34, 26, SOLID);
+    lcdDrawSolidHorizontalLine((g_eeGeneral.view & ALTERNATE_VIEW) ? 64 : 38, 34, 26, SOLID);
 #endif
 
     for (uint8_t i=0; i<8; i++) {
@@ -497,8 +497,8 @@ void menuMainView(uint8_t event)
             x0+=1;
           else
             x0-=len;
-          lcd_hline(x0,y0+1,len);
-          lcd_hline(x0,y0-1,len);
+          lcdDrawSolidHorizontalLine(x0,y0+1,len);
+          lcdDrawSolidHorizontalLine(x0,y0-1,len);
           break;
       }
     }

@@ -165,7 +165,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
           else {
             j = 4; // skip other fields
             if (sub==k && m_posHorz > 0) {
-              REPEAT_LAST_CURSOR_MOVE();
+              REPEAT_LAST_CURSOR_MOVE(0);
             }
           }
           break;
@@ -198,7 +198,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
             break;
           }
           else if (attr) {
-            REPEAT_LAST_CURSOR_MOVE();
+            REPEAT_LAST_CURSOR_MOVE(0);
           }
           if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_CH_INDEX(cfn), maxParam);
           break;
@@ -330,7 +330,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
           }
 #endif
           else if (attr) {
-            REPEAT_LAST_CURSOR_MOVE();
+            REPEAT_LAST_CURSOR_MOVE(0);
           }
 
           if (active) {
@@ -357,7 +357,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
             }
           }
           else if (attr) {
-            REPEAT_LAST_CURSOR_MOVE();
+            REPEAT_LAST_CURSOR_MOVE(0);
           }
           break;
       }

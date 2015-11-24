@@ -842,7 +842,7 @@ bool menuModelTelemetry(evt_t event)
             }
           }
           if (attr && m_posHorz == NUM_LINE_ITEMS) {
-            REPEAT_LAST_CURSOR_MOVE();
+            REPEAT_LAST_CURSOR_MOVE(0);
           }
         }
         break;

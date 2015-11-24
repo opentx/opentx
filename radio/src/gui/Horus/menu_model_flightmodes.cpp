@@ -68,7 +68,7 @@ bool menuModelFlightModesAll(evt_t event)
 
   horzpos_t posHorz = m_posHorz;
   if (sub==0 && posHorz == 1) {
-    REPEAT_LAST_CURSOR_MOVE();
+    REPEAT_LAST_CURSOR_MOVE(0);
     posHorz = m_posHorz;
   }
 
