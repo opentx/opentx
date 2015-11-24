@@ -406,7 +406,7 @@ int main()
   lcdClear();
   lcd_putsn(0, 0, (const char *)bootloaderVersion, 0); // trick to avoid bootloaderVersion to be optimized out ...
   lcd_putsLeft(0, BOOTLOADER_TITLE);
-  lcd_invert_line(0);
+  lcdInvertLine(0);
   lcdRefresh();
 
   keysInit();
@@ -430,7 +430,7 @@ int main()
       lcdRefreshWait();
       lcdClear();
       lcd_putsLeft(0, BOOTLOADER_TITLE);
-      lcd_invert_line(0);
+      lcdInvertLine(0);
 
       uint8_t event = getEvent();
 
@@ -449,7 +449,7 @@ int main()
         lcd_putsLeft(2*FH, "\010Write Firmware");
         lcd_putsLeft(3*FH, "\010Restore EEPROM");
         lcd_putsLeft(4*FH, "\010Exit");
-        lcd_invert_line(2+vpos);
+        lcdInvertLine(2+vpos);
         lcd_putsLeft(7*FH, INDENT "Or plug in a USB cable for mass storage");
         if (event == EVT_KEY_FIRST(BOOT_KEY_DOWN)) {
           vpos == 2 ? vpos = 0 : vpos = vpos+1;
@@ -587,7 +587,7 @@ int main()
           vpos = 0;
         }
 
-        lcd_invert_line(2 + vpos);
+        lcdInvertLine(2 + vpos);
       }
 
       else if (state == ST_FLASH_CHECK) {

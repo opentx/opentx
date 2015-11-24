@@ -2096,6 +2096,7 @@ clean_list :
 	$(REMOVE) allsrc.cpp
 	$(REMOVE) allsimusrc.cpp
 	$(REMOVE) stamp.h
+	$(REMOVE) *.lbm
 	$(REMOVE) bitmaps/*.lbm
 	$(REMOVE) bitmaps/*/*.lbm
 	$(REMOVE) fonts/*/*.lbm
