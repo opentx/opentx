@@ -29,8 +29,8 @@
   <widget class="QCheckBox" name="Simulate">
    <property name="geometry">
     <rect>
-     <x>330</x>
-     <y>410</y>
+     <x>30</x>
+     <y>0</y>
      <width>101</width>
      <height>31</height>
     </rect>
@@ -47,11 +47,11 @@
     <string>Simulate</string>
    </property>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="layoutWidget1">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>30</y>
+     <y>50</y>
      <width>37</width>
      <height>341</height>
     </rect>
@@ -139,7 +139,7 @@
     <item row="10" column="0">
      <widget class="QLabel" name="label_11">
       <property name="toolTip">
-       <string>Vario Vertical Speed</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vario Vertical Speed (m/s * 100)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
        <string>V-VSPD</string>
@@ -149,7 +149,7 @@
     <item row="11" column="0">
      <widget class="QLabel" name="label_12">
       <property name="toolTip">
-       <string>Vario Altitude</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vario Altitude (meters * 100)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
        <string>V-ALT</string>
@@ -158,11 +158,11 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="layoutWidget2">
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>30</y>
+     <y>50</y>
      <width>56</width>
      <height>351</height>
     </rect>
@@ -206,11 +206,11 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="layoutWidget3">
    <property name="geometry">
     <rect>
      <x>120</x>
-     <y>30</y>
+     <y>50</y>
      <width>135</width>
      <height>351</height>
     </rect>
@@ -262,11 +262,11 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="layoutWidget4">
    <property name="geometry">
     <rect>
      <x>280</x>
-     <y>30</y>
+     <y>50</y>
      <width>35</width>
      <height>341</height>
     </rect>
@@ -294,6 +294,9 @@
     </item>
     <item row="2" column="0">
      <widget class="QLabel" name="label_19">
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Lipo Voltage (optionally by cell - c1, c2, c3, ...)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
       <property name="text">
        <string>CELLS</string>
       </property>
@@ -352,7 +355,7 @@
     <item row="8" column="0">
      <widget class="QLabel" name="label_24">
       <property name="toolTip">
-       <string>GPS Lat/Lon</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;GPS 'lat, lon' in decimal degrees&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
        <string>GPS-LL</string>
@@ -382,11 +385,11 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="layoutWidget5">
    <property name="geometry">
     <rect>
      <x>320</x>
-     <y>30</y>
+     <y>50</y>
      <width>56</width>
      <height>351</height>
     </rect>
@@ -430,11 +433,11 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="layoutWidget6">
    <property name="geometry">
     <rect>
      <x>390</x>
-     <y>30</y>
+     <y>50</y>
      <width>135</width>
      <height>351</height>
     </rect>
@@ -482,7 +485,7 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>10</y>
+     <y>30</y>
      <width>46</width>
      <height>13</height>
     </rect>
@@ -495,7 +498,7 @@
    <property name="geometry">
     <rect>
      <x>320</x>
-     <y>10</y>
+     <y>30</y>
      <width>46</width>
      <height>13</height>
     </rect>

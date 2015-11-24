@@ -99,15 +99,6 @@ void checkEeprom()
   }
 }
 
-bool eventIsKilled(uint8_t event)
-{
-  event = EVT_KEY_MASK(event);
-  if (event < (int)DIM(keys)) {
-    return keys[event].isKilled();
-  }
-  return false;
-}
-
 void perMain()
 {
 #if defined(PCBSKY9X) && !defined(REVA)
@@ -191,9 +182,7 @@ void perMain()
       menuEvent = 0;
       AUDIO_MENUS();
     }
-    if (!eventIsKilled(evt)) { // fixes issue #2469
-      g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
-    }
+    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
     if (warn) DISPLAY_WARNING(evt);
     if (menu) {
       const char * result = displayMenu(evt);

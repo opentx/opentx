@@ -242,7 +242,6 @@ class Key
     bool state()       { return m_vals > 0; }
     void pauseEvents() { m_state = KSTATE_PAUSE; m_cnt = 0; }
     void killEvents()  { m_state = KSTATE_KILLED; }
-    bool isKilled() { return (m_state == KSTATE_KILLED); }
     EnumKeys key() const;
 };
 
