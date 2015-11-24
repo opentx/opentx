@@ -194,7 +194,7 @@ TEST(Lcd, vline)
 {
   lcdClear();
   for (int x=0; x<100; x+=2) {
-    lcd_vline(x, x/2, 12);
+    lcdDrawSolidVerticalLine(x, x/2, 12);
   }
   EXPECT_TRUE(checkScreenshot("vline"));
 }
@@ -203,8 +203,8 @@ TEST(Lcd, vline)
 TEST(Lcd, vline_x_lt0)
 {
   lcdClear();
-  lcd_vline(50, -10, 12);
-  lcd_vline(100, -10, 1);
+  lcdDrawSolidVerticalLine(50, -10, 12);
+  lcdDrawSolidVerticalLine(100, -10, 1);
   EXPECT_TRUE(checkScreenshot("vline_lt0"));
 }
 #endif
@@ -215,7 +215,7 @@ TEST(Lcd, Smlsize)
   lcdClear();
   lcdDrawText(0, 0, "TESTgy,", SMLSIZE);
   lcdDrawText(10, 22, "TESTgy,", SMLSIZE|INVERS);
-  drawFilledRect(8, 40, 100, 20);
+  lcdDrawFilledRect(8, 40, 100, 20);
   lcdDrawText(10, 42, "TESTgy,", SMLSIZE);
 
   bool invert = false;
@@ -232,7 +232,7 @@ TEST(Lcd, Stdsize)
   lcdClear();
   lcdDrawText(0, 0, "TEST", 0);
   lcdDrawText(10, 22, "TEST", INVERS);
-  drawFilledRect(8, 40, 100, 20);
+  lcdDrawFilledRect(8, 40, 100, 20);
   lcdDrawText(10, 42, "TEST", 0);
 
   bool invert = false;
@@ -249,7 +249,7 @@ TEST(Lcd, Midsize)
   lcdClear();
   lcdDrawText(0, 0, "TEST", MIDSIZE);
   lcdDrawText(10, 22, "TEST", MIDSIZE|INVERS);
-  drawFilledRect(8, 40, 100, 20);
+  lcdDrawFilledRect(8, 40, 100, 20);
   lcdDrawText(10, 42, "TEST", MIDSIZE);
 
   bool invert = false;
@@ -266,7 +266,7 @@ TEST(Lcd, Dblsize)
   lcdClear();
   lcdDrawText(2, 10, "TST", DBLSIZE);
   lcdDrawText(42, 10, "TST", DBLSIZE|INVERS);
-  drawFilledRect(80, 8, 46, 24);
+  lcdDrawFilledRect(80, 8, 46, 24);
   lcdDrawText(82, 10, "TST", DBLSIZE);
 
   bool invert = false;

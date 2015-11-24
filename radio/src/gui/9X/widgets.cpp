@@ -41,7 +41,7 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 #define BOX_CENTERY   (LCD_H-9-BOX_WIDTH/2)
 #define MARKER_WIDTH  5
   lcdDrawSquare(centrex-BOX_WIDTH/2, BOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
-  lcd_vline(centrex, BOX_CENTERY-1, 3);
+  lcdDrawSolidVerticalLine(centrex, BOX_CENTERY-1, 3);
   lcdDrawSolidHorizontalLine(centrex-1, BOX_CENTERY, 3);
   lcdDrawSquare(centrex + (xval/((2*RESX)/(BOX_WIDTH-MARKER_WIDTH))) - MARKER_WIDTH/2, BOX_CENTERY - (yval/((2*RESX)/(BOX_WIDTH-MARKER_WIDTH))) - MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
 #undef BOX_CENTERY
@@ -54,7 +54,7 @@ void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
   if (value)
     lcd_putc(x+1, y, '#');
   if (attr)
-    drawFilledRect(x, y, 7, 7);
+    lcdDrawFilledRect(x, y, 7, 7);
   else
     lcdDrawSquare(x, y, 7);
 #else
@@ -119,14 +119,14 @@ void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
 {
   lcd_putc(x+(value*4*FW)/max, y, '$');
   lcdDrawSolidHorizontalLine(x, y+3, 5*FW-1, FORCE);
-  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) drawFilledRect(x, y, 5*FW-1, FH-1);
+  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcdDrawFilledRect(x, y, 5*FW-1, FH-1);
 }
 #elif defined(GRAPHICS)
 void display5posSlider(coord_t x, coord_t y, uint8_t value, uint8_t attr)
 {
   lcd_putc(x+2*FW+(value*FW), y, '$');
   lcdDrawSolidHorizontalLine(x, y+3, 5*FW-1, SOLID);
-  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) drawFilledRect(x, y, 5*FW-1, FH-1);
+  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcdDrawFilledRect(x, y, 5*FW-1, FH-1);
 }
 #endif
 
@@ -255,9 +255,9 @@ void drawStatusLine()
       statusLineTime = 0;
     }
 
-    drawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID, ERASE);
+    lcdDrawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID, ERASE);
     lcdDrawText(5, LCD_H+1-statusLineHeight, statusLineMsg, BSS);
-    drawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID);
+    lcdDrawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID);
   }
 }
 #endif

@@ -710,7 +710,7 @@ bool menuModelFailsafe(evt_t event)
   #define COL_W   (LCD_W/2)
   const uint8_t SLIDER_W = 64;
   // Column separator
-  // TODO lcd_vline(LCD_W/2, FH, LCD_H-FH);
+  // TODO lcdDrawSolidVerticalLine(LCD_W/2, FH, LCD_H-FH);
 
   if (m_posVert >= 16) {
     ch = 16;

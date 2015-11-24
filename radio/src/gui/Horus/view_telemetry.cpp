@@ -117,7 +117,7 @@ void displayGaugesTelemetryScreen(FrSkyScreenData & screen)
       lcdDrawSolidFilledRect(GAUGE_MARGIN+GAUGE_PADDING_HORZ+1, y+16, width, 4, TEXT_BGCOLOR);
 /*      for (uint8_t j=24; j<99; j+=25) {
         if (j>thresholdX || j>width) {
-          lcd_vline(j*BAR_WIDTH/100+BAR_LEFT+1, y+1, barHeight);
+          lcdDrawSolidVerticalLine(j*BAR_WIDTH/100+BAR_LEFT+1, y+1, barHeight);
         }
       }
       if (thresholdX) {

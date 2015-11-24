@@ -72,7 +72,7 @@ void DrawCurve(uint8_t offset=0)
     point_t point = getPoint(i);
     i++;
     if (point.x == 0) break;
-    drawFilledRect(point.x-offset, point.y-1, 3, 3, SOLID, FORCE); // do markup square
+    lcdDrawFilledRect(point.x-offset, point.y-1, 3, 3, SOLID, FORCE); // do markup square
   } while(1);
 }
 
@@ -199,8 +199,8 @@ void menuModelCurveOne(uint8_t event)
 
     if (s_editMode==1 || !BLINK_ON_PHASE) {
       // do selection square
-      drawFilledRect(point.x-1, point.y-2, 5, 5, SOLID, FORCE);
-      drawFilledRect(point.x, point.y-1, 3, 3, SOLID);
+      lcdDrawFilledRect(point.x-1, point.y-2, 5, 5, SOLID, FORCE);
+      lcdDrawFilledRect(point.x, point.y-1, 3, 3, SOLID);
     }
 
     int8_t x = -100 + 200*i/(crv.points-1);

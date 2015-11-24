@@ -459,14 +459,14 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
         x -= 2;
         lcdDrawPoint(x+1, y+5);
         if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcd_vline(x+1, y, 7);
+          lcdDrawSolidVerticalLine(x+1, y, 7);
         }
       }
       else if (tinsize) {
         x--;
         lcdDrawPoint(x-1, y+4);
         if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcd_vline(x-1, y-1, 7);
+          lcdDrawSolidVerticalLine(x-1, y-1, 7);
         }
         x--;
       }
@@ -486,15 +486,15 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
   if (xn) {
     if (midsize) {
       if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-        lcd_vline(xn, y, 12);
-        lcd_vline(xn+1, y, 12);
+        lcdDrawSolidVerticalLine(xn, y, 12);
+        lcdDrawSolidVerticalLine(xn+1, y, 12);
       }
       lcdDrawSolidHorizontalLine(xn, y+9, 2);
       lcdDrawSolidHorizontalLine(xn, y+10, 2);
     }
     else {
       // TODO needed on CPUAVR? y &= ~0x07;
-      drawFilledRect(xn, y+2*FH-3, ln, 2);
+      lcdDrawFilledRect(xn, y+2*FH-3, ln, 2);
     }
   }
   if (neg) lcdDrawChar(x, y, '-', flags);
@@ -551,7 +551,7 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
 }
 #endif
 
-void lcd_vline(coord_t x, scoord_t y, scoord_t h)
+void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h)
 {
   lcdDrawVerticalLine(x, y, h, SOLID);
 }
@@ -566,7 +566,7 @@ void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFla
 }
 
 #if !defined(BOOT)
-void drawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
+void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
 #if defined(CPUM64)
   for (scoord_t i=y; i<y+h; i++) {
@@ -820,14 +820,14 @@ void displayGpsCoord(coord_t x, coord_t y, char direction, int16_t bp, int16_t a
     uint8_t mn = bp % 100; // TODO div_t
     if (g_eeGeneral.gpsFormat == 0) {
       lcd_outdezNAtt(lcdNextPos, y, mn, att|LEFT|LEADING0, 2); // mm before '.'
-      lcd_vline(lcdLastPos, y, 2);
+      lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
       if (seconds) {
         uint16_t ss = ap * 6 / 10;
         lcd_outdezNAtt(lcdLastPos+3, y, ss / 100, att|LEFT|LEADING0, 2); // ''
         lcdDrawPoint(lcdLastPos, y+FH-2, 0); // small decimal point
         lcd_outdezNAtt(lcdLastPos+2, y, ss % 100, att|LEFT|LEADING0, 2); // ''
-        lcd_vline(lcdLastPos, y, 2);
-        lcd_vline(lcdLastPos+2, y, 2);
+        lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
+        lcdDrawSolidVerticalLine(lcdLastPos+2, y, 2);
       }
       lcd_putc(lcdLastPos+2, y, direction);
     }

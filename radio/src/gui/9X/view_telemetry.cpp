@@ -57,13 +57,13 @@ void displayRssiLine()
     rssi = min((uint8_t)99, frskyData.rssi[1].value);
     lcd_putsLeft(STATUS_BAR_Y, STR_TX); lcd_outdezNAtt(4*FW+1, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcdDrawRect(BAR_LEFT+1, 57, 38, 7);
-    drawFilledRect(BAR_LEFT+1, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+    lcdDrawFilledRect(BAR_LEFT+1, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
 #endif
     rssi = min((uint8_t)99, TELEMETRY_RSSI());
     lcd_puts(104, STATUS_BAR_Y, STR_RX); lcd_outdezNAtt(105+4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcdDrawRect(65, 57, 38, 7);
     uint8_t v = 4*rssi/11;
-    drawFilledRect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+    lcdDrawFilledRect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
     lcdDrawText(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
@@ -93,13 +93,13 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
     if (g_eeGeneral.gpsFormat == 0) {
       lcd_putc(lcdLastPos+FWNUM, y, direction);
       lcd_outdezNAtt(lcdLastPos+FW+FW+1, y, mn, LEFT|LEADING0, 2); // mm before '.'
-      lcd_vline(lcdLastPos, y, 2);
+      lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
       uint16_t ss = ap * 6;
       lcd_outdezNAtt(lcdLastPos+3, y, ss / 1000, LEFT|LEADING0, 2); // ''
       lcdDrawPoint(lcdLastPos, y+FH-2, 0); // small decimal point
       lcd_outdezNAtt(lcdLastPos+2, y, ss % 1000, LEFT|LEADING0, 3); // ''
-      lcd_vline(lcdLastPos, y, 2);
-      lcd_vline(lcdLastPos+2, y, 2);
+      lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
+      lcdDrawSolidVerticalLine(lcdLastPos+2, y, 2);
     }
     else {
       lcd_outdezNAtt(lcdLastPos+FW, y, mn, LEFT|LEADING0, 2); // mm before '.'
@@ -206,7 +206,7 @@ void displayVoltagesScreen()
       lcd_outdezNAtt(LCD_W, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
       y += 1*FH;
     }
-    lcd_vline(LCD_W-3*FW-2, 8, 47);
+    lcdDrawSolidVerticalLine(LCD_W-3*FW-2, 8, 47);
   }
 #endif
 
@@ -305,11 +305,11 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
       }
 #endif
 
-      drawFilledRect(BAR_LEFT+1, y+1, width, barHeight, barShade);
+      lcdDrawFilledRect(BAR_LEFT+1, y+1, width, barHeight, barShade);
 
       for (uint8_t j=24; j<99; j+=25) {
         if (j>thresholdX || j>width) {
-          lcd_vline(j*BAR_WIDTH/100+BAR_LEFT+1, y+1, barHeight);
+          lcdDrawSolidVerticalLine(j*BAR_WIDTH/100+BAR_LEFT+1, y+1, barHeight);
         }
       }
 
@@ -338,7 +338,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         fields_count++;
       }
       if (i==3) {
-        lcd_vline(63, 8, 48);
+        lcdDrawSolidVerticalLine(63, 8, 48);
         if (!TELEMETRY_STREAMING()) {
           displayRssiLine();
           return fields_count;
@@ -388,7 +388,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         fields_count++;
       }
       if (i==3) {
-        lcd_vline(63, 8, 48);
+        lcdDrawSolidVerticalLine(63, 8, 48);
         if (TELEMETRY_STREAMING()) {
 #if defined(FRSKY_HUB)
           if (field == TELEM_ACC) {

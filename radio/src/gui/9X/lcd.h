@@ -227,7 +227,7 @@ void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att=0);
 void lcdMaskPoint(uint8_t *p, uint8_t mask, LcdFlags att=0);
 void lcdDrawSolidHorizontalLine(coord_t x, coord_t y, coord_t w, LcdFlags att=0);
 void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
-void lcd_vline(coord_t x, scoord_t y, scoord_t h);
+void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h);
 #if defined(CPUM64)
   void lcdDrawVerticalLine(coord_t x, scoord_t y, int8_t h, uint8_t pat);
 #else
@@ -238,7 +238,7 @@ void lcd_vline(coord_t x, scoord_t y, scoord_t h);
   void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
 #endif
 
-void drawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
+void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
 void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
 
 void lcdInvertLine(int8_t line);
@@ -248,9 +248,9 @@ inline void lcdDrawSquare(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcd
 void lcdDrawTelemetryTopBar();
 
 #define V_BAR(xx, yy, ll)    \
-  lcd_vline(xx-1,yy-ll,ll);  \
-  lcd_vline(xx  ,yy-ll,ll);  \
-  lcd_vline(xx+1,yy-ll,ll)
+  lcdDrawSolidVerticalLine(xx-1,yy-ll,ll);  \
+  lcdDrawSolidVerticalLine(xx  ,yy-ll,ll);  \
+  lcdDrawSolidVerticalLine(xx+1,yy-ll,ll)
 
 void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 

@@ -557,7 +557,7 @@ void menuGeneralSetup(uint8_t event)
           lcd_img((6+4*i)*FW, y, sticks, i, 0);
 #if defined(FRSKY_STICKS)
           if (g_eeGeneral.stickReverse & (1<<i)) {
-            drawFilledRect((6+4*i)*FW, y, 3*FW, FH-1);
+            lcdDrawFilledRect((6+4*i)*FW, y, 3*FW, FH-1);
           }
 #endif
         }

@@ -97,7 +97,7 @@ void drawFunction(FnFuncP fn, uint8_t offset)
       }
       else {
         uint8_t tmp = (prev_yv < yv ? 0 : 1);
-        lcd_vline(X0+xv-offset-1, yv+tmp, prev_yv-yv);
+        lcdDrawSolidVerticalLine(X0+xv-offset-1, yv+tmp, prev_yv-yv);
       }
     }
     prev_yv = yv;
@@ -383,7 +383,7 @@ void menuModelExpoOne(uint8_t event)
   y512 = (LCD_H-1) - (uint16_t)((y512+RESX)/2) * (LCD_H-1) / RESX;
 #endif
 
-  lcd_vline(x512, y512-3, 3*2+1);
+  lcdDrawSolidVerticalLine(x512, y512-3, 3*2+1);
   lcdDrawSolidHorizontalLine(x512-3, y512, 3*2+1);
 }
 
@@ -437,14 +437,14 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
     barMax = 101;
   lcdDrawHorizontalLine(x-2, y, GAUGE_WIDTH+2, DOTTED);
   lcdDrawHorizontalLine(x-2, y+GAUGE_HEIGHT, GAUGE_WIDTH+2, DOTTED);
-  lcd_vline(x-2, y+1, GAUGE_HEIGHT-1);
-  lcd_vline(x+GAUGE_WIDTH-1, y+1, GAUGE_HEIGHT-1);
+  lcdDrawSolidVerticalLine(x-2, y+1, GAUGE_HEIGHT-1);
+  lcdDrawSolidVerticalLine(x+GAUGE_WIDTH-1, y+1, GAUGE_HEIGHT-1);
   if (barMin <= barMax) {
     int8_t right = (barMax * GAUGE_WIDTH) / 200;
     int8_t left = ((barMin * GAUGE_WIDTH) / 200)-1;
-    drawFilledRect(x+GAUGE_WIDTH/2+left, y+2, right-left, GAUGE_HEIGHT-3);
+    lcdDrawFilledRect(x+GAUGE_WIDTH/2+left, y+2, right-left, GAUGE_HEIGHT-3);
   }
-  lcd_vline(x+GAUGE_WIDTH/2-1, y, GAUGE_HEIGHT+1);
+  lcdDrawSolidVerticalLine(x+GAUGE_WIDTH/2-1, y, GAUGE_HEIGHT+1);
   if (barMin == -101) {
     for (uint8_t i=0; i<3; ++i) {
       lcdDrawPoint(x+i, y+4-i);
@@ -482,7 +482,7 @@ void menuModelMixOne(uint8_t event)
 #endif
 
 #if MENU_COLUMNS > 1
-  lcd_vline(MENU_COLUMN2_X-4, FH+1, LCD_H-FH-1);
+  lcdDrawSolidVerticalLine(MENU_COLUMN2_X-4, FH+1, LCD_H-FH-1);
 #endif
 
   int8_t sub = m_posVert;
@@ -967,7 +967,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             }
             if (cur == sub) {
               /* invert the raw when it's the current one */
-              drawFilledRect(expo ? EXPO_LINE_SELECT_POS+1 : 23, y, expo ? (LCD_W-EXPO_LINE_SELECT_POS-2) : (LCD_W-24), 7);
+              lcdDrawFilledRect(expo ? EXPO_LINE_SELECT_POS+1 : 23, y, expo ? (LCD_W-EXPO_LINE_SELECT_POS-2) : (LCD_W-24), 7);
             }
           }
         }

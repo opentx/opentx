@@ -369,7 +369,7 @@ void menuModelSelect(uint8_t event)
     }
 
     if (s_copyMode && (vertpos_t)sub==i+s_pgOfs) {
-      drawFilledRect(9, y, MODELSEL_W-1-9, 7);
+      lcdDrawFilledRect(9, y, MODELSEL_W-1-9, 7);
       lcdDrawRect(8, y-1, MODELSEL_W-1-7, 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
     }
   }

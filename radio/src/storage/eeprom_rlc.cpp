@@ -867,8 +867,8 @@ void RlcFile::drawProgressBar(uint8_t x)
 {
   if (storageDirtyMsk || isWriting() || eeprom_buffer_size) {
     uint8_t len = storageDirtyMsk ? 1 : limit((uint8_t)1, (uint8_t)(7 - (m_rlc_len/m_ratio)), (uint8_t)7);
-    drawFilledRect(x+1, 0, 5, FH, SOLID, ERASE);
-    drawFilledRect(x+2, 7-len, 3, len);
+    lcdDrawFilledRect(x+1, 0, 5, FH, SOLID, ERASE);
+    lcdDrawFilledRect(x+2, 7-len, 3, len);
   }
 }
 #endif

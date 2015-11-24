@@ -51,7 +51,7 @@ int16_t         s_warning_input_max;
 
 void displayBox()
 {
-  drawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
+  lcdDrawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
   lcdDrawRect(10, 16, LCD_W-20, 40);
 #if defined(CPUARM)
   lcd_putsn(WARNING_LINE_X, WARNING_LINE_Y, s_warning, WARNING_LINE_LEN);
@@ -84,7 +84,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
   lcdDrawText(MESSAGE_LCD_OFFSET, 2*FH, STR_WARNING, DBLSIZE);
 #endif
 
-  drawFilledRect(0, 0, LCD_W, 32);
+  lcdDrawFilledRect(0, 0, LCD_W, 32);
   if (t) lcd_putsLeft(5*FH, t);
   if (last) {
     lcd_putsLeft(7*FH, last);
@@ -151,12 +151,12 @@ const char * displayMenu(uint8_t event)
 
   uint8_t display_count = min<uint8_t>(s_menu_count, MENU_MAX_LINES);
   uint8_t y = (display_count >= 5 ? MENU_Y - FH - 1 : MENU_Y);
-  drawFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
+  lcdDrawFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
   lcdDrawRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
     lcdDrawText(MENU_X+6, i*(FH+1) + y + 2, s_menu[i], s_menu_flags);
-    if (i == s_menu_item) drawFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
+    if (i == s_menu_item) lcdDrawFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
   }
 
   if (s_menu_count > display_count) {
