@@ -456,26 +456,6 @@
 #include "storage/storage.h"
 #include "pulses/pulses.h"
 
-#if defined(PCBHORUS)
-  #define BITMAP_BUFFER_SIZE(width, height)   (4 + (width)*(height)*3)
-  #define MODEL_BITMAP_WIDTH  (3*64) // 171
-  #define MODEL_BITMAP_HEIGHT (3*32) // 101
-  #define MODEL_BITMAP_SIZE   BITMAP_BUFFER_SIZE(MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)
-  extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
-  bool loadModelBitmap(char * name, uint8_t * bitmap);
-  #define LOAD_MODEL_BITMAP() loadModelBitmap(g_model.header.bitmap, modelBitmap)
-#elif defined(PCBTARANIS)
-  #define BITMAP_BUFFER_SIZE(width, height)   (2 + (width) * (((height)+7)/8)*4)
-  #define MODEL_BITMAP_WIDTH  64
-  #define MODEL_BITMAP_HEIGHT 32
-  #define MODEL_BITMAP_SIZE   BITMAP_BUFFER_SIZE(MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)
-  extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
-  bool loadModelBitmap(char * name, uint8_t * bitmap);
-  #define LOAD_MODEL_BITMAP() loadModelBitmap(g_model.header.bitmap, modelBitmap)
-#else
-  #define LOAD_MODEL_BITMAP()
-#endif
-
 #if defined(XCURVES)
   void loadCurves();
   #define LOAD_MODEL_CURVES() loadCurves()
