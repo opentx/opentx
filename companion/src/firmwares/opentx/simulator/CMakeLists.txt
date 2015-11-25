@@ -70,6 +70,7 @@ add_custom_target(firmware_translations DEPENDS ${translations_files})
 
 TODAY(DATE)
 NOW(TIME)
+GIT_ID(GIT_STR)
 
 configure_file(${RADIO_SRC_DIRECTORY}/stamp.h.in ${RADIO_SRC_DIRECTORY}/stamp.h @ONLY)
 

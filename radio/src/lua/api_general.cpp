@@ -81,22 +81,28 @@ Return OpenTX version
 
 @retval string OpenTX version (ie "2.1.5")
 
-@retval list (available since 2.1.7) returns two values:
- * `string` OpenTX version (ie "2.1.5")
- * `string` radio version: `taranisx9e`, `taranisplus` or `taranis`. 
+@retval multiple (available since 2.1.7) returns 5 values:
+ * (string) OpenTX version (ie "2.1.5")
+ * (string) radio version: `taranisx9e`, `taranisplus` or `taranis`. 
 If running in simulator the "-simu" is added
+ * (number) major version (ie 2 if version 2.1.5)
+ * (number) minor version (ie 1 if version 2.1.5)
+ * (number) revison number (ie 5 if version 2.1.5)
 
 @status current Introduced in 2.0.0, expanded in 2.1.7
 
 ### Example
 
-This example also runs in OpenTX versions where the radio version was not available:
+This example also runs in OpenTX versions where the function returned only one value:
 
 ```lua
 local function run(event)
-  local ver, radio = getVersion()
+  local ver, radio, maj, minor, rev = getVersion()
   print("version: "..ver)
   if radio then print ("radio: "..radio) end
+  if maj then print ("maj: "..maj) end
+  if minor then print ("minor: "..minor) end
+  if rev then print ("rev: "..rev) end
   return 1
 end
 
@@ -106,14 +112,19 @@ Output of the above script in simulator:
 ```
 version: 2.1.7
 radio: taranis-simu
-Script finished with status 1
+maj: 2
+minor: 1
+rev: 7
 ```
 */
 static int luaGetVersion(lua_State *L)
 {
   lua_pushstring(L, VERSION);
   lua_pushstring(L, RADIO_VERSION);
-  return 2;
+  lua_pushnumber(L, VERSION_MAJOR);
+  lua_pushnumber(L, VERSION_MINOR);
+  lua_pushnumber(L, VERSION_REVISION);
+  return 5;
 }
 
 /*luadoc
@@ -168,20 +179,15 @@ static int luaGetDateTime(lua_State *L)
 static void luaPushLatLon(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
 /* result is lua table containing members ["lat"] and ["lon"] as lua_Number (doubles) in decimal degrees */
 {
-  lua_Number lat = 0.0;
-  lua_Number lon = 0.0;
   uint32_t gpsLat = 0;
   uint32_t gpsLon = 0;
-
   telemetryItem.gps.extractLatitudeLongitude(&gpsLat, &gpsLon); /* close, but not the format we want */
-  lat = gpsLat / 1000000.0;
-  if (telemetryItem.gps.latitudeNS == 'S') lat = -lat;
-  lon = gpsLon / 1000000.0;
-  if (telemetryItem.gps.longitudeEW == 'W') lon = -lon;
 
-  lua_createtable(L, 0, 2);
-  lua_pushtablenumber(L, "lat", lat);
-  lua_pushtablenumber(L, "lon", lon);
+  lua_createtable(L, 0, 4);
+  lua_pushtablenumber(L, "lat", gpsLat / ((telemetryItem.gps.latitudeNS == 'S') ? -1000000.0 : 1000000.0));
+  lua_pushtablenumber(L, "pilot-lat", telemetryItem.pilotLatitude / ((telemetryItem.gps.latitudeNS == 'S') ? -1000000.0 : 1000000.0));
+  lua_pushtablenumber(L, "lon", gpsLon / ((telemetryItem.gps.longitudeEW == 'W') ? -1000000.0 : 1000000.0));
+  lua_pushtablenumber(L, "pilot-lon", telemetryItem.pilotLongitude / ((telemetryItem.gps.longitudeEW == 'W') ? -1000000.0 : 1000000.0));
 }
 
 static void luaPushTelemetryDateTime(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
@@ -379,6 +385,8 @@ or a name (string) of the source.
 @retval table GPS position is returned in a table:
  * `lat` (number) latitude, positive is North 
  * `lon` (number) longitude, positive is East
+ * `pilot-lat` (number) pilot latitude, positive is North 
+ * `pilot-lon` (number) pilot longitude, positive is East
 
 @retval table GPS date/time, see getDateTime()
 
