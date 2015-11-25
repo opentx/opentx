@@ -123,6 +123,7 @@ static int luaLcdDrawLine(lua_State *L)
   return 0;
 }
 
+#if !defined(COLORLCD)
 /*luadoc
 @function lcd.getLastPos()
 
@@ -137,6 +138,7 @@ static int luaLcdGetLastPos(lua_State *L)
   lua_pushinteger(L, lcdLastPos);
   return 1;
 }
+#endif
 
 /*luadoc
 @function lcd.drawText(x, y, text [, flags])
@@ -194,7 +196,7 @@ static int luaLcdDrawTimer(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   int seconds = luaL_checkinteger(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
-#if defined(PCBFLAMENCO)
+#if defined(COLORLCD)
   putsTimer(x, y, seconds, att|LEFT);
 #else
   putsTimer(x, y, seconds, att|LEFT, att);
@@ -323,6 +325,7 @@ static int luaLcdDrawSource(lua_State *L)
   return 0;
 }
 
+#if !defined(COLORLCD)
 /*luadoc
 @function lcd.drawPixmap(x, y, name)
 
@@ -336,7 +339,6 @@ Draws a bitmap at (x,y)
 
 @status current Introduced in 2.0.0
 */
-#if !defined(COLORLCD)
 static int luaLcdDrawPixmap(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -406,6 +408,7 @@ static int luaLcdDrawFilledRectangle(lua_State *L)
   return 0;
 }
 
+#if !defined(COLORLCD)
 /*luadoc
 @function lcd.drawGauge(x, y, w, h, fill, maxfill)
 
@@ -437,12 +440,12 @@ static int luaLcdDrawGauge(lua_State *L)
   // int flags = luaL_checkinteger(L, 7);
   lcdDrawRect(x, y, w, h);
   uint8_t len = limit((uint8_t)1, uint8_t(w*num/den), uint8_t(w));
-  for (int i=1; i<h-1; i++) {
-    lcdDrawSolidHorizontalLine(x+1, y+i, len);
-  }
+  lcdDrawSolidFilledRect(x+1, y+1, len, h-2);
   return 0;
 }
+#endif
 
+#if !defined(COLORLCD)
 /*luadoc
 @function lcd.drawScreenTitle(title, page, pages)
 
@@ -459,7 +462,6 @@ the right side of title bar. (i.e. idx=2, cnt=5, display `2/5`)
 
 @status current Introduced in 2.0.0
 */
-#if !defined(COLORLCD)
 static int luaLcdDrawScreenTitle(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -475,8 +477,7 @@ static int luaLcdDrawScreenTitle(lua_State *L)
 }
 #endif
 
-#if defined(PCBTARANIS)
-
+#if !defined(COLORLCD)
 /*luadoc
 @function lcd.drawCombobox(x, y, w, list, idx [, flags])
 
@@ -551,21 +552,21 @@ static int luaLcdDrawCombobox(lua_State *L)
 const luaL_Reg lcdLib[] = {
   { "lock", luaLcdLock },
   { "clear", luaLcdClear },
-  { "getLastPos", luaLcdGetLastPos },
   { "drawPoint", luaLcdDrawPoint },
   { "drawLine", luaLcdDrawLine },
   { "drawRectangle", luaLcdDrawRectangle },
   { "drawFilledRectangle", luaLcdDrawFilledRectangle },
-  { "drawGauge", luaLcdDrawGauge },
   { "drawText", luaLcdDrawText },
   { "drawTimer", luaLcdDrawTimer },
   { "drawNumber", luaLcdDrawNumber },
   { "drawChannel", luaLcdDrawChannel },
   { "drawSwitch", luaLcdDrawSwitch },
   { "drawSource", luaLcdDrawSource },
+#if !defined(COLORLCD)
+  { "getLastPos", luaLcdGetLastPos },
+  { "drawGauge", luaLcdDrawGauge },
   { "drawPixmap", luaLcdDrawPixmap },
   { "drawScreenTitle", luaLcdDrawScreenTitle },
-#if defined(PCBTARANIS)
   { "drawCombobox", luaLcdDrawCombobox },
 #endif
   { NULL, NULL }  /* sentinel */

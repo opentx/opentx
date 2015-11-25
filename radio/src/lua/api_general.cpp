@@ -538,6 +538,7 @@ static int luaKillEvents(lua_State *L)
   return 0;
 }
 
+#if !defined(COLORLCD)
 /*luadoc
 @function GREY()
 
@@ -552,6 +553,7 @@ static int luaGrey(lua_State *L)
   lua_pushunsigned(L, GREY(index));
   return 1;
 }
+#endif
 
 /*luadoc
 @function getGeneralSettings()
@@ -686,7 +688,9 @@ const luaL_Reg opentxLib[] = {
   { "defaultStick", luaDefaultStick },
   { "defaultChannel", luaDefaultChannel },
   { "killEvents", luaKillEvents },
+#if !defined(COLORLCD)
   { "GREY", luaGrey },
+#endif
   { NULL, NULL }  /* sentinel */
 };
 

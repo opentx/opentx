@@ -393,13 +393,13 @@ void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlag
 #endif
 
 #if !defined(BOOT)
-void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att)
+void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
   for (scoord_t i=y; i<y+h; i++) {
     if ((att&ROUND) && (i==y || i==y+h-1))
-      lcdDrawHorizontalLine(x+1, i, w-2, SOLID, att);
+      lcdDrawHorizontalLine(x+1, i, w-2, pat, att);
     else
-      lcdDrawHorizontalLine(x, i, w, SOLID, att);
+      lcdDrawHorizontalLine(x, i, w, pat, att);
   }
 }
 #endif
@@ -483,7 +483,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 
   else if (idx <= MIXSRC_LAST_LUA) {
     div_t qr = div(idx-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
-#if defined(LUA_MODEL_SCRIPTS)
+#if defined(LUA_MODEL_SCRIPTS) && !defined(COLORLCD)
     if (qr.quot < MAX_SCRIPTS && qr.rem < scriptInputsOutputs[qr.quot].outputsCount) {
       lcdDrawChar(x+2, y+1, '1'+qr.quot, TINSIZE);
       lcdDrawSolidFilledRect(x, y, 7, 7);
@@ -929,7 +929,7 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, co
 
 void lcdDrawBlackOverlay()
 {
-  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, TEXT_COLOR | (8<<24));
+  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, SOLID, TEXT_COLOR | (8<<24));
 }
 
 void lcdDrawCircle(int x0, int y0, int radius)

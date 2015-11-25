@@ -80,7 +80,9 @@ static int luaModelSetInfo(lua_State *L)
     if (!strcmp(key, "name")) {
       const char * name = luaL_checkstring(L, -1);
       str2zchar(g_model.header.name, name, sizeof(g_model.header.name));
+#if defined(EEPROM)
       memcpy(modelHeaders[g_eeGeneral.currModel].name, g_model.header.name, sizeof(g_model.header.name));
+#endif
     }
     else if (!strcmp(key, "bitmap")) {
       const char * name = luaL_checkstring(L, -1);
@@ -153,7 +155,10 @@ static int luaModelSetModule(lua_State *L)
         module.rfProtocol = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "modelId")) {
-        g_model.header.modelId[idx] = modelHeaders[g_eeGeneral.currModel].modelId[idx] = luaL_checkinteger(L, -1);
+        g_model.header.modelId[idx] = luaL_checkinteger(L, -1);
+#if defined(EEPROM)
+        modelHeaders[g_eeGeneral.currModel].modelId[idx] = g_model.header.modelId[idx];
+#endif
       }
       else if (!strcmp(key, "firstChannel")) {
         module.channelsStart = luaL_checkinteger(L, -1);

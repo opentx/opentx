@@ -546,7 +546,7 @@ void luaExec(const char *filename)
   }
 }
 
-void luaDoOneRunStandalone(uint8_t evt)
+void luaDoOneRunStandalone(evt_t evt)
 {
   static uint8_t luaDisplayStatistics = false;
 
@@ -663,7 +663,7 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
     filename = script.file;
 #endif
     if ((scriptType & RUN_TELEM_FG_SCRIPT) &&
-#if defined(PCBFLAMENCO)
+#if defined(COLORLCD)
         (g_menuStack[0]==menuMainView && sid.reference==SCRIPT_TELEMETRY_FIRST+g_eeGeneral.view-VIEW_TELEM1)) {
 #else
         (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {
