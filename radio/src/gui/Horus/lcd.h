@@ -189,10 +189,10 @@ extern coord_t lcdNextPos;
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags attr=TEXT_COLOR);
 void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags attr=TEXT_COLOR);
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags attr=TEXT_COLOR);
-void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags attr=TEXT_COLOR);
-void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s, unsigned char len);
+void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags attr=TEXT_COLOR);
+void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, unsigned char len);
 void lcd_putsCenter(coord_t y, const pm_char * s, LcdFlags attr=0);
-void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
+void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags=0, uint8_t len=0, const char * prefix=NULL, const char * suffix=NULL);
 
 void putsStrIdx(coord_t x, coord_t y, const pm_char *str, int idx, LcdFlags att=0, const char *prefix="");
@@ -284,7 +284,7 @@ inline void lcdDrawSolidRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFla
   lcdDrawSolidHorizontalLine(x, y+h-1, w, att);
 }
 
-void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att);
+void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att);
 void lcdDrawBlackOverlay();
 void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
 void lcdDrawCircle(int x0, int y0, int radius);

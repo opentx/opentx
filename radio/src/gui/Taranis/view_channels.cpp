@@ -100,20 +100,20 @@ void menuChannelsView(uint8_t event)
       }
 
       if (lenLabel > 0)
-        lcdDrawTextWithLen(x+1-ofs, y, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR | SMLSIZE);
+        lcdDrawSizedText(x+1-ofs, y, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR | SMLSIZE);
       else
         putsChn(x+1-ofs, y, ch+1, SMLSIZE);
 
       // Value
 #if defined(PPM_UNIT_US)
       uint8_t wbar = (longNames ? 54 : 64);
-      lcd_outdezAtt(x+LCD_W/2-3-wbar-ofs, y+1, PPM_CH_CENTER(ch)+val/2, TINSIZE);
+      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, PPM_CH_CENTER(ch)+val/2, TINSIZE);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
       uint8_t wbar = (longNames ? 48 : 58);
-      lcd_outdezAtt(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1|TINSIZE);
+      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1|TINSIZE);
 #else
       uint8_t wbar = (longNames ? 54 : 64);
-      lcd_outdezAtt(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val)/10, TINSIZE); // G: Don't like the decimal part*
+      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val)/10, TINSIZE); // G: Don't like the decimal part*
 #endif
 
       // Gauge

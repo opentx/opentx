@@ -371,9 +371,9 @@ void menuModelExpoOne(uint8_t event)
   drawFunction(expoFn);
 
   int16_t x512 = calibratedStick[ed->chn];
-  lcd_outdezAtt(LCD_W-8, 6*FH, calcRESXto100(x512), 0);
+  lcdDrawNumber(LCD_W-8, 6*FH, calcRESXto100(x512), 0);
   int16_t y512 = expoFn(x512);
-  lcd_outdezAtt(LCD_W-8-6*FW, 1*FH, calcRESXto100(y512), 0);
+  lcdDrawNumber(LCD_W-8-6*FW, 1*FH, calcRESXto100(y512), 0);
 
 #if defined(CPUARM)
   x512 = X0+x512/(RESX/WCHART);
@@ -424,11 +424,11 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
   int barMax = offset + weight;
   if (y > 15) {
 #if defined(CPUARM)
-    lcd_outdezAtt(x-((barMin >= 0) ? 2 : 3), y-6, barMin, TINSIZE|LEFT);
-    lcd_outdezAtt(x+GAUGE_WIDTH+1, y-6, barMax, TINSIZE);
+    lcdDrawNumber(x-((barMin >= 0) ? 2 : 3), y-6, barMin, TINSIZE|LEFT);
+    lcdDrawNumber(x+GAUGE_WIDTH+1, y-6, barMax, TINSIZE);
 #else
-    lcd_outdezAtt(x-((barMin >= 0) ? 2 : 3), y-8, barMin, LEFT);
-    lcd_outdezAtt(x+GAUGE_WIDTH+1, y-8, barMax);
+    lcdDrawNumber(x-((barMin >= 0) ? 2 : 3), y-8, barMin, LEFT);
+    lcdDrawNumber(x+GAUGE_WIDTH+1, y-8, barMax);
 #endif
   }
   if (barMin < -101)
@@ -544,7 +544,7 @@ void menuModelMixOne(uint8_t event)
         lcdDrawTextAtIndex((not_stick ? COLUMN_X+MIXES_2ND_COLUMN : COLUMN_X+6*FW-3), y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, m_posHorz==0 ? attr : 0);
         if (attr && m_posHorz==0 && (not_stick || editMode>0)) md2->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_AIL);
         if (!not_stick) {
-          lcd_puts(COLUMN_X+MIXES_2ND_COLUMN, y, STR_DREX);
+          lcdDrawText(COLUMN_X+MIXES_2ND_COLUMN, y, STR_DREX);
           menu_lcd_onoff(COLUMN_X+MIXES_2ND_COLUMN+DREX_CHBOX_OFFSET, y, !md2->noExpo, m_posHorz==1 ? attr : 0);
           if (attr && m_posHorz==1 && editMode>0) md2->noExpo = !checkIncDecModel(event, !md2->noExpo, 0, 1);
         }
@@ -599,7 +599,7 @@ void menuModelMixOne(uint8_t event)
       case MIX_FIELD_WARNING:
         lcd_putsColumnLeft(COLUMN_X+MIXES_2ND_COLUMN, y, STR_MIXWARNING);
         if (md2->mixWarn)
-          lcd_outdezAtt(COLUMN_X+MIXES_2ND_COLUMN, y, md2->mixWarn, attr|LEFT);
+          lcdDrawNumber(COLUMN_X+MIXES_2ND_COLUMN, y, md2->mixWarn, attr|LEFT);
         else
           lcdDrawText(COLUMN_X+MIXES_2ND_COLUMN, y, STR_OFF, attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, md2->mixWarn, 3);
@@ -708,7 +708,7 @@ void displayMixInfos(coord_t y, MixData *md)
 void displayMixLine(coord_t y, MixData *md)
 {
   if (md->name[0]) {
-    lcdDrawTextWithLen(EXPO_LINE_NAME_POS, y, md->name, sizeof(md->name), ZCHAR);
+    lcdDrawSizedText(EXPO_LINE_NAME_POS, y, md->name, sizeof(md->name), ZCHAR);
   }
   else {
     displayMixInfos(y, md);
@@ -734,7 +734,7 @@ void displayExpoLine(coord_t y, ExpoData *ed)
   displayExpoInfos(y, ed);
 
   if (ed->name[0]) {
-    lcdDrawTextWithLen(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR);
+    lcdDrawSizedText(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR);
   }
 }
 #else
@@ -898,8 +898,8 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
       break;
   }
 
-  lcd_outdezAtt(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXER))+FW+FW/2, 0, getExpoMixCount(expo));
-  lcd_puts(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXER))+FW+FW/2, 0, expo ? STR_MAX(MAX_EXPOS) : STR_MAX(MAX_MIXERS));
+  lcdDrawNumber(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXER))+FW+FW/2, 0, getExpoMixCount(expo));
+  lcdDrawText(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXER))+FW+FW/2, 0, expo ? STR_MAX(MAX_EXPOS) : STR_MAX(MAX_MIXERS));
 
   SIMPLE_MENU(expo ? STR_MENUINPUTS : STR_MIXER, menuTabModel, expo ? e_InputsAll : e_MixAll, s_maxLines);
 
@@ -941,7 +941,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             ed->weight = GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr | (isExpoActive(i) ? BOLD : 0), 0, event);
             displayExpoLine(y, ed);
             if (ed->mode!=3) {
-              lcd_putc(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
+              lcdDrawChar(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
             }
           }
           else {
@@ -958,7 +958,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
               cs = 'S';
             if (md->delayUp || md->delayDown)
               cs = (cs =='S' ? '*' : 'D');
-            lcd_putc(MIX_LINE_DELAY_POS, y, cs);
+            lcdDrawChar(MIX_LINE_DELAY_POS, y, cs);
           }
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {

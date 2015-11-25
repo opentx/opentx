@@ -73,16 +73,16 @@ enum LogicalSwitchFields {
 #if defined(CPUARM)
 void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lattr, uint8_t rattr)
 {
-  lcd_putc(x-4, y, '[');
-  lcd_outdezAtt(x, y, lswTimerValue(cs->v2), LEFT|PREC1|lattr);
-  lcd_putc(lcdLastPos, y, ':');
+  lcdDrawChar(x-4, y, '[');
+  lcdDrawNumber(x, y, lswTimerValue(cs->v2), LEFT|PREC1|lattr);
+  lcdDrawChar(lcdLastPos, y, ':');
   if (cs->v3 < 0)
     lcdDrawText(lcdLastPos+3, y, "<<", rattr);
   else if (cs->v3 == 0)
     lcdDrawText(lcdLastPos+3, y, "--", rattr);
   else
-    lcd_outdezAtt(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|rattr);
-  lcd_putc(lcdLastPos, y, ']');
+    lcdDrawNumber(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|rattr);
+  lcdDrawChar(lcdLastPos, y, ']');
 }
 #endif
 
@@ -140,7 +140,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
           v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
         }
         else if (cstate == LS_FAMILY_TIMER) {
-          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT|PREC1|attr);
+          lcdDrawNumber(CSWONE_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT|PREC1|attr);
           v1_min = -128;
           v1_max = 122;
         }
@@ -164,7 +164,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
           v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
         }
         else if (cstate == LS_FAMILY_TIMER) {
-          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1|attr);
+          lcdDrawNumber(CSWONE_2ND_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1|attr);
           v2_min = -128;
           v2_max = 122;
         }
@@ -207,7 +207,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
 #endif
           {
             v2_min = -LIMIT_EXT_PERCENT; v2_max = +LIMIT_EXT_PERCENT;
-            lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cs->v2, LEFT|attr);
+            lcdDrawNumber(CSWONE_2ND_COLUMN, y, cs->v2, LEFT|attr);
           }
         }
 
@@ -224,7 +224,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
       case LS_FIELD_DURATION:
         lcd_putsLeft(y, STR_DURATION);
         if (cs->duration > 0)
-          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cs->duration, attr|PREC1|LEFT);
+          lcdDrawNumber(CSWONE_2ND_COLUMN, y, cs->duration, attr|PREC1|LEFT);
         else
           lcdDrawTextAtIndex(CSWONE_2ND_COLUMN, y, STR_MMMINV, 0, attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, cs->duration, MAX_LS_DURATION);
@@ -232,7 +232,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
       case LS_FIELD_DELAY:
         lcd_putsLeft(y, STR_DELAY);
         if (cs->delay > 0)
-          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cs->delay, attr|PREC1|LEFT);
+          lcdDrawNumber(CSWONE_2ND_COLUMN, y, cs->delay, attr|PREC1|LEFT);
         else
           lcdDrawTextAtIndex(CSWONE_2ND_COLUMN, y, STR_MMMINV, 0, attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, cs->delay, MAX_LS_DELAY);
@@ -292,8 +292,8 @@ void menuModelLogicalSwitches(uint8_t event)
         putsEdgeDelayParam(CSW_3RD_COLUMN, y, cs, 0, 0);
       }
       else if (cstate == LS_FAMILY_TIMER) {
-        lcd_outdezAtt(CSW_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT|PREC1);
-        lcd_outdezAtt(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1);
+        lcdDrawNumber(CSW_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT|PREC1);
+        lcdDrawNumber(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1);
       }
       else {
         uint8_t v1 = cs->v1;
@@ -306,7 +306,7 @@ void menuModelLogicalSwitches(uint8_t event)
 #endif
         }
         else {
-          lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, LEFT);
+          lcdDrawNumber(CSW_3RD_COLUMN, y, cs->v2, LEFT);
         }
       }
 
@@ -388,8 +388,8 @@ void menuModelLogicalSwitches(uint8_t event)
       INCDEC_ENABLE_CHECK(isSourceAvailable);
     }
     else if (cstate == LS_FAMILY_TIMER) {
-      lcd_outdezAtt(CSW_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT|PREC1|attr1);
-      lcd_outdezAtt(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1|attr2);
+      lcdDrawNumber(CSW_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT|PREC1|attr1);
+      lcdDrawNumber(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1|attr2);
       v1_min = v2_min = -128;
       v1_max = v2_max = 122;
       INCDEC_SET_FLAG(EE_MODEL);
@@ -445,7 +445,7 @@ void menuModelLogicalSwitches(uint8_t event)
 #endif
       }
       else {
-        lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, LEFT|attr2);
+        lcdDrawNumber(CSW_3RD_COLUMN, y, cs->v2, LEFT|attr2);
 #if defined(CPUARM) && defined(GVARS)
         if (v1_val >= MIXSRC_GVAR1) {
           v2_min = -1024; v2_max = +1024;
@@ -462,7 +462,7 @@ void menuModelLogicalSwitches(uint8_t event)
         v2_min = -128; v2_max = 127;
       }
       else {
-        lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, LEFT|attr2);
+        lcdDrawNumber(CSW_3RD_COLUMN, y, cs->v2, LEFT|attr2);
         v2_min = -LIMIT_EXT_PERCENT; v2_max = +LIMIT_EXT_PERCENT;
       }
 #endif
@@ -482,19 +482,19 @@ void menuModelLogicalSwitches(uint8_t event)
 #if defined(CPUARM)
     // CSW duration
     if (cs->duration > 0)
-      lcd_outdezAtt(CSW_5TH_COLUMN, y, cs->duration, (horz==LS_FIELD_DURATION ? attr : 0)|PREC1|LEFT);
+      lcdDrawNumber(CSW_5TH_COLUMN, y, cs->duration, (horz==LS_FIELD_DURATION ? attr : 0)|PREC1|LEFT);
     else
       lcdDrawTextAtIndex(CSW_5TH_COLUMN, y, STR_MMMINV, 0, horz==LS_FIELD_DURATION ? attr : 0);
 
     // CSW delay
     if (cstate == LS_FAMILY_EDGE) {
-      lcd_puts(CSW_6TH_COLUMN, y, STR_NA);
+      lcdDrawText(CSW_6TH_COLUMN, y, STR_NA);
       if (attr && horz == LS_FIELD_DELAY) {
         REPEAT_LAST_CURSOR_MOVE();
       }
     }
     else if (cs->delay > 0) {
-      lcd_outdezAtt(CSW_6TH_COLUMN, y, cs->delay, (horz==LS_FIELD_DELAY ? attr : 0)|PREC1|LEFT);
+      lcdDrawNumber(CSW_6TH_COLUMN, y, cs->delay, (horz==LS_FIELD_DELAY ? attr : 0)|PREC1|LEFT);
     }
     else {
       lcdDrawTextAtIndex(CSW_6TH_COLUMN, y, STR_MMMINV, 0, horz==LS_FIELD_DELAY ? attr : 0);

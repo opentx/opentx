@@ -318,9 +318,9 @@ void menuModelSelect(uint8_t event)
   }
 
 #if !defined(PCBSKY9X)
-  lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
+  lcdDrawText(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
   if (event) reusableBuffer.modelsel.eepromfree = EeFsGetFree();
-  lcd_outdezAtt(17*FW, 0, reusableBuffer.modelsel.eepromfree, 0);
+  lcdDrawNumber(17*FW, 0, reusableBuffer.modelsel.eepromfree, 0);
 #endif
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -335,13 +335,13 @@ void menuModelSelect(uint8_t event)
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i+s_pgOfs;
 
-    lcd_outdezNAtt(3*FW+2, y, k+1, LEADING0+((!s_copyMode && sub==k) ? INVERS : 0), 2);
+    lcdDrawNumber(3*FW+2, y, k+1, LEADING0+((!s_copyMode && sub==k) ? INVERS : 0), 2);
 
     if (s_copyMode == MOVE_MODE || (s_copyMode == COPY_MODE && s_copySrcRow >= 0)) {
       if (k == sub) {
         if (s_copyMode == COPY_MODE) {
           k = s_copySrcRow;
-          lcd_putc(MODELSEL_W-FW, y, '+');
+          lcdDrawChar(MODELSEL_W-FW, y, '+');
         }
         else {
           k = sub + s_copyTgtOfs;
@@ -362,10 +362,10 @@ void menuModelSelect(uint8_t event)
       char * name = reusableBuffer.modelsel.listnames[i];
       if (event) eeLoadModelName(k, name);
       putsModelName(4*FW, y, name, k, 0);
-      lcd_outdezAtt(20*FW, y, eeModelSize(k), 0);
+      lcdDrawNumber(20*FW, y, eeModelSize(k), 0);
 #endif
       if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+s_pgOfs!=(vertpos_t)sub))
-        lcd_putc(1, y, '*');
+        lcdDrawChar(1, y, '*');
     }
 
     if (s_copyMode && (vertpos_t)sub==i+s_pgOfs) {

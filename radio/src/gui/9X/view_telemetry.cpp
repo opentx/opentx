@@ -55,12 +55,12 @@ void displayRssiLine()
     uint8_t rssi;
 #if !defined(CPUARM)
     rssi = min((uint8_t)99, frskyData.rssi[1].value);
-    lcd_putsLeft(STATUS_BAR_Y, STR_TX); lcd_outdezNAtt(4*FW+1, STATUS_BAR_Y, rssi, LEADING0, 2);
+    lcd_putsLeft(STATUS_BAR_Y, STR_TX); lcdDrawNumber(4*FW+1, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcdDrawRect(BAR_LEFT+1, 57, 38, 7);
     lcdDrawFilledRect(BAR_LEFT+1, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
 #endif
     rssi = min((uint8_t)99, TELEMETRY_RSSI());
-    lcd_puts(104, STATUS_BAR_Y, STR_RX); lcd_outdezNAtt(105+4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
+    lcdDrawText(104, STATUS_BAR_Y, STR_RX); lcdDrawNumber(105+4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcdDrawRect(65, 57, 38, 7);
     uint8_t v = 4*rssi/11;
     lcdDrawFilledRect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
@@ -75,11 +75,11 @@ void displayRssiLine()
 void displayGpsTime()
 {
   uint8_t att = (TELEMETRY_STREAMING() ? LEFT|LEADING0 : LEFT|LEADING0|BLINK);
-  lcd_outdezNAtt(CENTER_OFS+6*FW+7, STATUS_BAR_Y, frskyData.hub.hour, att, 2);
+  lcdDrawNumber(CENTER_OFS+6*FW+7, STATUS_BAR_Y, frskyData.hub.hour, att, 2);
   lcdDrawChar(CENTER_OFS+8*FW+4, STATUS_BAR_Y, ':', att);
-  lcd_outdezNAtt(CENTER_OFS+9*FW+2, STATUS_BAR_Y, frskyData.hub.min, att, 2);
+  lcdDrawNumber(CENTER_OFS+9*FW+2, STATUS_BAR_Y, frskyData.hub.min, att, 2);
   lcdDrawChar(CENTER_OFS+11*FW-1, STATUS_BAR_Y, ':', att);
-  lcd_outdezNAtt(CENTER_OFS+12*FW-3, STATUS_BAR_Y, frskyData.hub.sec, att, 2);
+  lcdDrawNumber(CENTER_OFS+12*FW-3, STATUS_BAR_Y, frskyData.hub.sec, att, 2);
   lcdInvertLastLine();
 }
 
@@ -87,30 +87,30 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
 {
   if (frskyData.hub.gpsFix >= 0) {
     if (!direction) direction = '-';
-    lcd_outdezAtt(TELEM_2ND_COLUMN, y, bp / 100, LEFT); // ddd before '.'
-    lcd_putc(lcdLastPos, y, '@');
+    lcdDrawNumber(TELEM_2ND_COLUMN, y, bp / 100, LEFT); // ddd before '.'
+    lcdDrawChar(lcdLastPos, y, '@');
     uint8_t mn = bp % 100; // TODO div_t
     if (g_eeGeneral.gpsFormat == 0) {
-      lcd_putc(lcdLastPos+FWNUM, y, direction);
-      lcd_outdezNAtt(lcdLastPos+FW+FW+1, y, mn, LEFT|LEADING0, 2); // mm before '.'
+      lcdDrawChar(lcdLastPos+FWNUM, y, direction);
+      lcdDrawNumber(lcdLastPos+FW+FW+1, y, mn, LEFT|LEADING0, 2); // mm before '.'
       lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
       uint16_t ss = ap * 6;
-      lcd_outdezNAtt(lcdLastPos+3, y, ss / 1000, LEFT|LEADING0, 2); // ''
+      lcdDrawNumber(lcdLastPos+3, y, ss / 1000, LEFT|LEADING0, 2); // ''
       lcdDrawPoint(lcdLastPos, y+FH-2, 0); // small decimal point
-      lcd_outdezNAtt(lcdLastPos+2, y, ss % 1000, LEFT|LEADING0, 3); // ''
+      lcdDrawNumber(lcdLastPos+2, y, ss % 1000, LEFT|LEADING0, 3); // ''
       lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
       lcdDrawSolidVerticalLine(lcdLastPos+2, y, 2);
     }
     else {
-      lcd_outdezNAtt(lcdLastPos+FW, y, mn, LEFT|LEADING0, 2); // mm before '.'
+      lcdDrawNumber(lcdLastPos+FW, y, mn, LEFT|LEADING0, 2); // mm before '.'
       lcdDrawPoint(lcdLastPos, y+FH-2, 0); // small decimal point
-      lcd_outdezNAtt(lcdLastPos+2, y, ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
-      lcd_putc(lcdLastPos+1, y, direction);
+      lcdDrawNumber(lcdLastPos+2, y, ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
+      lcdDrawChar(lcdLastPos+1, y, direction);
     }
   }
   else {
     // no fix
-    lcd_puts(TELEM_2ND_COLUMN, y, STR_VCSWFUNC+1/*----*/);
+    lcdDrawText(TELEM_2ND_COLUMN, y, STR_VCSWFUNC+1/*----*/);
   }
 }
 #elif !defined(CPUARM)
@@ -129,8 +129,8 @@ void displayVoltageScreenLine(uint8_t y, uint8_t index)
   putsStrIdx(0, y, STR_A, index+1, 0);
   if (TELEMETRY_STREAMING()) {
     putsTelemetryChannelValue(3*FW+6*FW+4, y-FH, index+TELEM_A1-1, frskyData.analog[index].value, DBLSIZE);
-    lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannelValue(17*FW, y-FH, index+TELEM_A1-1, frskyData.analog[index].min, NO_UNIT);
-    lcd_putc(12*FW, y, '>');      putsTelemetryChannelValue(17*FW, y, index+TELEM_A1-1, frskyData.analog[index].max, NO_UNIT);
+    lcdDrawChar(12*FW-1, y-FH, '<'); putsTelemetryChannelValue(17*FW, y-FH, index+TELEM_A1-1, frskyData.analog[index].min, NO_UNIT);
+    lcdDrawChar(12*FW, y, '>');      putsTelemetryChannelValue(17*FW, y, index+TELEM_A1-1, frskyData.analog[index].max, NO_UNIT);
   }
 }
 #endif
@@ -203,7 +203,7 @@ void displayVoltagesScreen()
 #else
       uint8_t attr = PREC2;
 #endif
-      lcd_outdezNAtt(LCD_W, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
+      lcdDrawNumber(LCD_W, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
       y += 1*FH;
     }
     lcdDrawSolidVerticalLine(LCD_W-3*FW-2, 8, 47);
@@ -229,10 +229,10 @@ void displayAfterFlightScreen()
   }
   // Rssi
   lcd_putsLeft(line, STR_MINRSSI);
-  lcd_puts(TELEM_2ND_COLUMN, line, STR_TX);
-  lcd_outdezNAtt(TELEM_2ND_COLUMN+3*FW, line, frskyData.rssi[1].min, LEFT|LEADING0, 2);
-  lcd_puts(TELEM_2ND_COLUMN+6*FW, line, STR_RX);
-  lcd_outdezNAtt(TELEM_2ND_COLUMN+9*FW, line, frskyData.rssi[0].min, LEFT|LEADING0, 2);
+  lcdDrawText(TELEM_2ND_COLUMN, line, STR_TX);
+  lcdDrawNumber(TELEM_2ND_COLUMN+3*FW, line, frskyData.rssi[1].min, LEFT|LEADING0, 2);
+  lcdDrawText(TELEM_2ND_COLUMN+6*FW, line, STR_RX);
+  lcdDrawNumber(TELEM_2ND_COLUMN+9*FW, line, frskyData.rssi[0].min, LEFT|LEADING0, 2);
 }
 #endif
 
@@ -393,9 +393,9 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
 #if defined(FRSKY_HUB)
           if (field == TELEM_ACC) {
             lcd_putsLeft(STATUS_BAR_Y, STR_ACCEL);
-            lcd_outdezNAtt(4*FW, STATUS_BAR_Y, frskyData.hub.accelX, LEFT|PREC2);
-            lcd_outdezNAtt(10*FW, STATUS_BAR_Y, frskyData.hub.accelY, LEFT|PREC2);
-            lcd_outdezNAtt(16*FW, STATUS_BAR_Y, frskyData.hub.accelZ, LEFT|PREC2);
+            lcdDrawNumber(4*FW, STATUS_BAR_Y, frskyData.hub.accelX, LEFT|PREC2);
+            lcdDrawNumber(10*FW, STATUS_BAR_Y, frskyData.hub.accelY, LEFT|PREC2);
+            lcdDrawNumber(16*FW, STATUS_BAR_Y, frskyData.hub.accelZ, LEFT|PREC2);
             break;
           }
 #endif
@@ -555,7 +555,7 @@ void menuTelemetryFrsky(uint8_t event)
   }
 
   lcdDrawTelemetryTopBar();
-  lcd_puts(8*FW, 3*FH, "No Telemetry Screens");
+  lcdDrawText(8*FW, 3*FH, "No Telemetry Screens");
   displayRssiLine();
 #else
   if (!displayTelemetryScreen()) {

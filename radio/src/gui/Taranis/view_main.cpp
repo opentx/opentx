@@ -146,7 +146,7 @@ void displayTrims(uint8_t phase)
       }
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcd_outdezAtt(trim>0 ? 22 : 54, xm-2, -abs(trim), TINSIZE|VERTICAL);
+          lcdDrawNumber(trim>0 ? 22 : 54, xm-2, -abs(trim), TINSIZE|VERTICAL);
         }
       }
     }
@@ -168,7 +168,7 @@ void displayTrims(uint8_t phase)
       }
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcd_outdezAtt((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -11 : 20), ym-2, -abs(trim), TINSIZE);
+          lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -11 : 20), ym-2, -abs(trim), TINSIZE);
         }
       }
     }
@@ -322,7 +322,7 @@ void displayTimers()
       TimerData & timerData = g_model.timers[i];
       uint8_t y = TIMERS_Y + i*TIMERS_H;
       if (ZLEN(timerData.name) > 0) {
-        lcdDrawTextWithLen(TIMERS_X, y-7, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE);
+        lcdDrawSizedText(TIMERS_X, y-7, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE);
       }
       else {
         putsTimerMode(TIMERS_X, y-7, timerData.mode, SMLSIZE);
@@ -515,7 +515,7 @@ void menuMainView(uint8_t event)
 
   // Flight Mode Name
   int mode = mixerCurrentFlightMode;
-  lcdDrawTextWithLen(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|PHASE_FLAGS);
+  lcdDrawSizedText(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|PHASE_FLAGS);
 
   // Model Name
   putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
@@ -568,7 +568,7 @@ void menuMainView(uint8_t event)
   }
   else {
     // Logical Switches
-    lcd_puts(TRIM_RH_X - TRIM_LEN/2 + 5, 6*FH-1, "LS 1-32");
+    lcdDrawText(TRIM_RH_X - TRIM_LEN/2 + 5, 6*FH-1, "LS 1-32");
     for (int sw=0; sw<NUM_LOGICAL_SWITCH; ++sw) {
       div_t qr = div(sw, 10);
       uint8_t y = 13 + 11 * qr.quot;
@@ -593,9 +593,9 @@ void menuMainView(uint8_t event)
     lcdDrawFilledRect(BITMAP_X, BITMAP_Y, 64, 32, SOLID, ERASE);
     lcdDrawRect(BITMAP_X, BITMAP_Y, 64, 32);
     putsStrIdx(BITMAP_X+FW, BITMAP_Y+FH-1, STR_GV, s_gvar_last+1);
-    lcdDrawTextWithLen(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
+    lcdDrawSizedText(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
     lcdDrawText(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("[\010]"), BOLD);
-    lcd_outdezAtt(BITMAP_X+5*FW+FW/2, BITMAP_Y+2*FH+3, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), BOLD);
+    lcdDrawNumber(BITMAP_X+5*FW+FW/2, BITMAP_Y+2*FH+3, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), BOLD);
   }
 #endif
 }

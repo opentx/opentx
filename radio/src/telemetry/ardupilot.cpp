@@ -512,10 +512,10 @@ void menuTelemetryArduPilot1(uint8_t event)
     initval (1, PACK_POS, LON);
 // title of the screen
     title ('1');
-    lcd_puts  (5*FW, 1*FH, PSTR(" Latitude"));   // line 1 column 5
+    lcdDrawText(5*FW, 1*FH, PSTR(" Latitude"));   // line 1 column 5
 // first buffer into line 2 column 2
     lcdDrawText (2*FW, 2*FH, VALSTR(0), APSIZE);
-    lcd_puts  (5*FW, 4*FH, PSTR(" Longitude"));  // line 4 column 5
+    lcdDrawText(5*FW, 4*FH, PSTR(" Longitude"));  // line 4 column 5
 // second buffer into line 5 column 2
     lcdDrawText (1*FW, 5*FH, VALSTR(1), APSIZE);
 }
@@ -538,9 +538,9 @@ void menuTelemetryArduPilot2(uint8_t event)
     initval (0, PACK_POS, SPD);
     initval (1, PACK_POS, CRT);
     title ('2');  
-    lcd_puts  (1*FW, 1*FH, PSTR(" Ground speed"));    
+    lcdDrawText(1*FW, 1*FH, PSTR(" Ground speed"));    
     lcdDrawText (2*FW, 2*FH, VALSTR(0), APSIZE);
-    lcd_puts  (1*FW, 4*FH, PSTR(" Climb rate") );
+    lcdDrawText(1*FW, 4*FH, PSTR(" Climb rate") );
     lcdDrawText (2*FW, 5*FH, VALSTR(1), APSIZE);
 }
 
@@ -562,9 +562,9 @@ void menuTelemetryArduPilot3(uint8_t event)
     initval (0, PACK_POS, ALT);
     initval (1, PACK_POS, ALH);
     title ('3');  
-    lcd_puts  (1*FW, 1*FH, PSTR(" Altitude"));    
+    lcdDrawText(1*FW, 1*FH, PSTR(" Altitude"));    
     lcdDrawText (2*FW, 2*FH, VALSTR(0), APSIZE);
-    lcd_puts  (1*FW, 4*FH, PSTR(" Altitude Hold") );
+    lcdDrawText(1*FW, 4*FH, PSTR(" Altitude Hold") );
     lcdDrawText (2*FW, 5*FH, VALSTR(1), APSIZE);
 }
 
@@ -586,9 +586,9 @@ void menuTelemetryArduPilot4(uint8_t event)
     initval (0, PACK_POS, CRS);
     initval (1, PACK_POS, BER);
     title ('4'); 
-    lcd_puts  (1*FW, 1*FH, PSTR(" Course"));    
+    lcdDrawText(1*FW, 1*FH, PSTR(" Course"));    
     lcdDrawText (2*FW, 2*FH, VALSTR(0), APSIZE);
-    lcd_puts  (1*FW, 4*FH, PSTR(" Bearing"));
+    lcdDrawText(1*FW, 4*FH, PSTR(" Bearing"));
     lcdDrawText (2*FW, 5*FH, VALSTR(1), APSIZE);
 }
 
@@ -612,9 +612,9 @@ void menuTelemetryArduPilot5(uint8_t event)
     initval (0, PACK_POS, WPN);
     initval (1, PACK_POS, DST);
     title ('5'); 
-    lcd_puts  (1*FW, 1*FH, PSTR(" Way Point # "));    
+    lcdDrawText(1*FW, 1*FH, PSTR(" Way Point # "));    
     lcdDrawText (2*FW, 2*FH, VALSTR(0), APSIZE);
-    lcd_puts  (1*FW, 4*FH, PSTR(" Distance "));
+    lcdDrawText(1*FW, 4*FH, PSTR(" Distance "));
     lcdDrawText (2*FW, 5*FH, VALSTR(1), APSIZE);
 }
 
@@ -638,9 +638,9 @@ void menuTelemetryArduPilot6(uint8_t event)
     initval (0, PACK_ATT, ASP);
     initval (1, PACK_ATT, THH);
     title ('6'); 
-    lcd_puts  (1*FW, 1*FH, PSTR(" Air Speed "));    
+    lcdDrawText(1*FW, 1*FH, PSTR(" Air Speed "));    
     lcdDrawText (2*FW, 2*FH, VALSTR(0), APSIZE);
-    lcd_puts  (1*FW, 4*FH, PSTR(" Climb Rate "));
+    lcdDrawText(1*FW, 4*FH, PSTR(" Climb Rate "));
     lcdDrawText (2*FW, 5*FH, VALSTR(1), APSIZE);
 }
 
@@ -664,9 +664,9 @@ void menuTelemetryArduPilot7(uint8_t event)
     initval (0, PACK_ATT, RLL);
     initval (1, PACK_ATT, PCH);
     title ('7'); 
-    lcd_puts  (1*FW, 1*FH, PSTR(" Roll Angle"));   
+    lcdDrawText(1*FW, 1*FH, PSTR(" Roll Angle"));   
     lcdDrawText (2*FW, 2*FH, VALSTR(0), APSIZE);
-    lcd_puts  (1*FW, 4*FH, PSTR(" Pitch Angle"));
+    lcdDrawText(1*FW, 4*FH, PSTR(" Pitch Angle"));
     lcdDrawText (2*FW, 5*FH, VALSTR(1), APSIZE);
 }
 
@@ -690,9 +690,9 @@ void menuTelemetryArduPilot8(uint8_t event)
     initval (0, PACK_MOD, MOD);
     initval (1, PACK_WPC, WPC);
     title ('8');
-    lcd_puts  (1*FW, 1*FH, PSTR(" ArduPilot Mode"));
+    lcdDrawText(1*FW, 1*FH, PSTR(" ArduPilot Mode"));
     lcdDrawText (2*FW, 2*FH, VALSTR(0), APSIZE);
-    lcd_puts  (1*FW, 4*FH, PSTR(" RTL Distance"));
+    lcdDrawText(1*FW, 4*FH, PSTR(" RTL Distance"));
     lcdDrawText (2*FW, 5*FH, VALSTR(1), APSIZE);
 }
 

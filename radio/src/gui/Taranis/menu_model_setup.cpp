@@ -299,7 +299,7 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_BITMAP:
         lcd_putsLeft(y, STR_BITMAP);
         if (ZEXIST(g_model.header.bitmap))
-          lcdDrawTextWithLen(MODEL_SETUP_2ND_COLUMN, y, g_model.header.bitmap, sizeof(g_model.header.bitmap), attr);
+          lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.header.bitmap, sizeof(g_model.header.bitmap), attr);
         else
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VCSWFUNC, 0, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
@@ -514,7 +514,7 @@ void menuModelSetup(uint8_t event)
             uint8_t swactive = !(g_model.switchWarningEnable & (1<<i));
             c = "\300-\301"[states & 0x03];
             lcdDrawChar(MODEL_SETUP_2ND_COLUMN+qr.rem*(2*FW+1), y+FH*qr.quot, 'A'+i, line && (m_posHorz==current) ? INVERS : 0);
-            if (swactive) lcd_putc(lcdNextPos, y+FH*qr.quot, c);
+            if (swactive) lcdDrawChar(lcdNextPos, y+FH*qr.quot, c);
             ++current;
           }
           states >>= 2;
@@ -585,7 +585,7 @@ void menuModelSetup(uint8_t event)
               }
 
               // TODO add a new function
-              lcdDrawTextWithLen(x, y, STR_VSRCRAW+2+STR_VSRCRAW[0]*(NUM_STICKS+1+i), STR_VSRCRAW[0]-1, flags & ~(BSS|ZCHAR));
+              lcdDrawSizedText(x, y, STR_VSRCRAW+2+STR_VSRCRAW[0]*(NUM_STICKS+1+i), STR_VSRCRAW[0]-1, flags & ~(BSS|ZCHAR));
               x = lcdNextPos+3;
             }
           }
@@ -723,9 +723,9 @@ void menuModelSetup(uint8_t event)
         lcd_putsLeft(y, STR_CHANNELRANGE);
         if ((int8_t)PORT_CHANNELS_ROWS(moduleIdx) >= 0) {
           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_CH, m_posHorz==0 ? attr : 0);
-          lcd_outdezAtt(lcdLastPos, y, moduleData.channelsStart+1, LEFT | (m_posHorz==0 ? attr : 0));
-          lcd_putc(lcdLastPos, y, '-');
-          lcd_outdezAtt(lcdLastPos + FW+1, y, moduleData.channelsStart+NUM_CHANNELS(moduleIdx), LEFT | (m_posHorz==1 ? attr : 0));
+          lcdDrawNumber(lcdLastPos, y, moduleData.channelsStart+1, LEFT | (m_posHorz==0 ? attr : 0));
+          lcdDrawChar(lcdLastPos, y, '-');
+          lcdDrawNumber(lcdLastPos + FW+1, y, moduleData.channelsStart+NUM_CHANNELS(moduleIdx), LEFT | (m_posHorz==1 ? attr : 0));
           if (attr && s_editMode>0) {
             switch (m_posHorz) {
               case 0:
@@ -758,10 +758,10 @@ void menuModelSetup(uint8_t event)
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         if (IS_MODULE_PPM(moduleIdx)) {
           lcd_putsLeft(y, STR_PPMFRAME);
-          lcd_puts(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);
-          lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT);
-          lcd_putc(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, 'u');
-          lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0);
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT);
+          lcdDrawChar(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, 'u');
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || m_posHorz==1) ? attr : 0);
           lcdDrawChar(MODEL_SETUP_2ND_COLUMN+10*FW, y, moduleData.ppmPulsePol ? '+' : '-', (CURSOR_ON_LINE() || m_posHorz==2) ? attr : 0);
 
           if (attr && s_editMode>0) {
@@ -790,7 +790,7 @@ void menuModelSetup(uint8_t event)
             lcd_putsLeft(y, STR_RXNUM);
           }
           if (IS_MODULE_XJT(moduleIdx) || IS_MODULE_DSM2(moduleIdx)) {
-            if (xOffsetBind) lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
+            if (xOffsetBind) lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
             if (attr && l_posHorz==0) {
               if (s_editMode>0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], IS_MODULE_DSM2(moduleIdx) ? 20 : 63);
@@ -857,7 +857,7 @@ void menuModelSetup(uint8_t event)
 #if defined(PXX)
   if (IS_RANGECHECK_ENABLE()) {
     displayPopup("RSSI: ");
-    lcd_outdezAtt(16+4*FW, 5*FH, TELEMETRY_RSSI(), BOLD);
+    lcdDrawNumber(16+4*FW, 5*FH, TELEMETRY_RSSI(), BOLD);
   }
 #endif
 }
@@ -931,7 +931,7 @@ void menuModelFailsafe(uint8_t event)
         }
 
         if (lenLabel > 0)
-          lcdDrawTextWithLen(x+1-ofs, y, g_model.limitData[ch+channelStart].name, sizeof(g_model.limitData[ch+channelStart].name), ZCHAR | SMLSIZE);
+          lcdDrawSizedText(x+1-ofs, y, g_model.limitData[ch+channelStart].name, sizeof(g_model.limitData[ch+channelStart].name), ZCHAR | SMLSIZE);
         else
           putsChn(x+1-ofs, y, ch+1, SMLSIZE);
 
@@ -966,11 +966,11 @@ void menuModelFailsafe(uint8_t event)
         }
         else {
 #if defined(PPM_UNIT_US)
-          lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, PPM_CH_CENTER(ch)+failsafeValue/2, flags);
+          lcdDrawNumber(x+COL_W-4-wbar-ofs, y, PPM_CH_CENTER(ch)+failsafeValue/2, flags);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
-          lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(failsafeValue), PREC1|flags);
+          lcdDrawNumber(x+COL_W-4-wbar-ofs, y, calcRESXto1000(failsafeValue), PREC1|flags);
 #else
-          lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(failsafeValue)/10, flags);
+          lcdDrawNumber(x+COL_W-4-wbar-ofs, y, calcRESXto1000(failsafeValue)/10, flags);
 #endif
         }
   

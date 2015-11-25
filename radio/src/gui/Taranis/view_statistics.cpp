@@ -58,7 +58,7 @@ void menuStatisticsView(uint8_t event)
       break;
   }
 
-  lcd_puts(  1*FW, FH*0, STR_TOTTM1TM2THRTHP);
+  lcdDrawText(  1*FW, FH*0, STR_TOTTM1TM2THRTHP);
   putsTimer(    5*FW+5*FWNUM+1, FH*1, timersStates[0].val, 0, 0);
   putsTimer(   12*FW+5*FWNUM+1, FH*1, timersStates[1].val, 0, 0);
 
@@ -67,11 +67,11 @@ void menuStatisticsView(uint8_t event)
 
   putsTimer(   12*FW+5*FWNUM+1, FH*0, sessionTimer, 0, 0);
   
-  lcd_puts(    24*FW, FH*0, "TOT");
+  lcdDrawText(    24*FW, FH*0, "TOT");
   putsTimer(   28*FW+5*FWNUM+1, FH*0, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
   
   if (TIMERS == 3) {
-    lcd_puts(    24*FW, FH*1, "TM3");
+    lcdDrawText(    24*FW, FH*1, "TM3");
     putsTimer(   28*FW+5*FWNUM+1, FH*1, timersStates[2].val, TIMEHOUR, 0);
   }
 
@@ -163,41 +163,41 @@ void menuStatisticsDebug(uint8_t event)
   }
 
   lcd_putsLeft(MENU_DEBUG_Y_FREE_RAM, "Free Mem");
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, availableMemory(), LEFT);
-  lcd_puts(lcdLastPos, MENU_DEBUG_Y_FREE_RAM, "b");
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, availableMemory(), LEFT);
+  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_FREE_RAM, "b");
 
 #if defined(LUA)
   lcd_putsLeft(MENU_DEBUG_Y_LUA, "Lua scripts");
   lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_LUA+1, "[Duration]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_LUA, 10*maxLuaDuration, LEFT);
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_LUA, 10*maxLuaDuration, LEFT);
   lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_LUA+1, "[Interval]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_LUA, 10*maxLuaInterval, LEFT);
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_LUA, 10*maxLuaInterval, LEFT);
 #endif
 
   lcd_putsLeft(MENU_DEBUG_Y_MIXMAX, STR_TMIXMAXMS);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
-  lcd_puts(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
+  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
 
 #if defined(USB_SERIAL)
   lcd_putsLeft(MENU_DEBUG_Y_USB, "Usb");
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_USB, charsWritten, LEFT);
-  lcd_puts(lcdLastPos, MENU_DEBUG_Y_USB, " ");
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_USB, APP_Rx_ptr_in, LEFT);
-  lcd_puts(lcdLastPos, MENU_DEBUG_Y_USB, " ");
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_USB, usbWraps, LEFT);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_USB, charsWritten, LEFT);
+  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_USB, " ");
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_USB, APP_Rx_ptr_in, LEFT);
+  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_USB, " ");
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_USB, usbWraps, LEFT);
 #endif
 
   lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
   lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[M]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, menusStack.available(), UNSIGN|LEFT);
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, menusStack.available(), UNSIGN|LEFT);
   lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[X]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, mixerStack.available(), UNSIGN|LEFT);
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, mixerStack.available(), UNSIGN|LEFT);
   lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[A]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, audioStack.available(), UNSIGN|LEFT);
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, audioStack.available(), UNSIGN|LEFT);
   lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[I]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stackAvailable(), UNSIGN|LEFT);
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, stackAvailable(), UNSIGN|LEFT);
 
-  lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);
+  lcdDrawText(3*FW, 7*FH+1, STR_MENUTORESET);
   lcdInvertLastLine();
 }
 
@@ -225,17 +225,17 @@ void menuTraceBuffer(uint8_t event)
   uint8_t k = 0;
   int8_t sub = m_posVert;
 
-  lcd_putc(0, FH, '#');
-  lcd_puts(4*FW, FH, "Time");
-  lcd_puts(14*FW, FH, "Event");
-  lcd_puts(20*FW, FH, "Data");
+  lcdDrawChar(0, FH, '#');
+  lcdDrawText(4*FW, FH, "Time");
+  lcdDrawText(14*FW, FH, "Event");
+  lcdDrawText(20*FW, FH, "Data");
 
   for (uint8_t i=0; i<LCD_LINES-2; i++) {
     y = 1 + (i+2)*FH;
     k = i+s_pgOfs;
 
     //item
-    lcd_outdezAtt(0, y, k, LEFT | (sub==k ? INVERS : 0));
+    lcdDrawNumber(0, y, k, LEFT | (sub==k ? INVERS : 0));
 
     const struct TraceElement * te = getTraceElement(k);
     if (te) {
@@ -243,11 +243,11 @@ void menuTraceBuffer(uint8_t event)
       putstime_t tme = te->time % SECS_PER_DAY;
       putsTimer(4*FW, y, tme, TIMEHOUR|LEFT, TIMEHOUR|LEFT);
       //event
-      lcd_outdezNAtt(14*FW, y, te->event, LEADING0|LEFT, 3);
+      lcdDrawNumber(14*FW, y, te->event, LEADING0|LEFT, 3);
       //data
-      lcd_putsn  (20*FW, y, "0x", 2);
-      lcd_outhex4(22*FW-2, y, (uint16_t)(te->data >> 16));
-      lcd_outhex4(25*FW, y, (uint16_t)(te->data & 0xFFFF));
+      lcdDrawSizedText  (20*FW, y, "0x", 2);
+      lcdDrawHexNumber(22*FW-2, y, (uint16_t)(te->data >> 16));
+      lcdDrawHexNumber(25*FW, y, (uint16_t)(te->data & 0xFFFF));
     }
 
   }

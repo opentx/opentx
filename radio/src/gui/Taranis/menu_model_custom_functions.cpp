@@ -258,14 +258,14 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
             }
             else {
               TelemetrySensor * sensor = & g_model.telemetrySensors[param-FUNC_RESET_PARAM_FIRST_TELEM];
-              lcdDrawTextWithLen(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, sensor->label, TELEM_LABEL_LEN, attr|ZCHAR);
+              lcdDrawSizedText(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, sensor->label, TELEM_LABEL_LEN, attr|ZCHAR);
             }
             if (active) INCDEC_ENABLE_CHECK(functionsContext == &globalFunctionsContext ? isSourceAvailableInGlobalResetSpecialFunction : isSourceAvailableInResetSpecialFunction);
           }
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
           else if (func == FUNC_OVERRIDE_CHANNEL) {
             val_min = -LIMIT_EXT_PERCENT; val_max = +LIMIT_EXT_PERCENT;
-            lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
+            lcdDrawNumber(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
           }
 #endif
           else if (func >= FUNC_SET_FAILSAFE && func <= FUNC_BIND) {
@@ -283,14 +283,14 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 #if defined(HAPTIC)
           else if (func == FUNC_HAPTIC) {
             val_max = 3;
-            lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
+            lcdDrawNumber(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
           }
 #endif
 #if defined(SDCARD)
           else if (func == FUNC_PLAY_TRACK || func == FUNC_BACKGND_MUSIC || func == FUNC_PLAY_SCRIPT) {
             coord_t x = MODEL_CUSTOM_FUNC_3RD_COLUMN;
             if (ZEXIST(cfn->play.name))
-              lcdDrawTextWithLen(x, y, cfn->play.name, sizeof(cfn->play.name), attr);
+              lcdDrawSizedText(x, y, cfn->play.name, sizeof(cfn->play.name), attr);
             else
               lcdDrawTextAtIndex(x, y, STR_VCSWFUNC, 0, attr);
             if (active && event==EVT_KEY_BREAK(KEY_ENTER)) {
@@ -332,8 +332,8 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           }
           else if (func == FUNC_LOGS) {
             if (val_displayed) {
-              lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|PREC1|LEFT);
-              lcd_putc(lcdLastPos, y, 's');
+              lcdDrawNumber(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|PREC1|LEFT);
+              lcdDrawChar(lcdLastPos, y, 's');
             }
             else {
               lcdDrawTextAtIndex(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_MMMINV, 0, attr);
@@ -353,7 +353,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
               case FUNC_ADJUST_GVAR_CONSTANT:
                 val_displayed = (int16_t)CFN_PARAM(cfn);
                 val_min = -CFN_GVAR_CST_MAX; val_max = +CFN_GVAR_CST_MAX;
-                lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
+                lcdDrawNumber(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
                 break;
               case FUNC_ADJUST_GVAR_SOURCE:
                 val_max = MIXSRC_LAST_CH;
@@ -374,7 +374,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
                   lcdDrawText(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, "-=", attr);
                 else
                   lcdDrawText(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, "+=", attr);
-                lcd_outdezAtt(lcdNextPos, y, abs(val_displayed), attr|LEFT);
+                lcdDrawNumber(lcdNextPos, y, abs(val_displayed), attr|LEFT);
 #endif
                 val_max = 1;
                 lcdDrawTextAtIndex(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, PSTR("\003-=1+=1"), val_displayed, attr);
@@ -419,7 +419,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
               lcdDrawText(MODEL_CUSTOM_FUNC_4TH_COLUMN+2, y, "1x", attr);
             }
             else {
-              lcd_outdezAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr);
+              lcdDrawNumber(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr);
               lcdDrawChar(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, 's', attr);
             }
             if (active) CFN_PLAY_REPEAT(cfn) = checkIncDec(event, CFN_PLAY_REPEAT(cfn)==CFN_PLAY_REPEAT_NOSTART?-1:CFN_PLAY_REPEAT(cfn), -1, 60/CFN_PLAY_REPEAT_MUL, eeFlags);

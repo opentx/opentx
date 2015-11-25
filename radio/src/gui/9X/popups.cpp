@@ -54,9 +54,9 @@ void displayBox()
   lcdDrawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
   lcdDrawRect(10, 16, LCD_W-20, 40);
 #if defined(CPUARM)
-  lcd_putsn(WARNING_LINE_X, WARNING_LINE_Y, s_warning, WARNING_LINE_LEN);
+  lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, s_warning, WARNING_LINE_LEN);
 #else
-  lcd_puts(WARNING_LINE_X, WARNING_LINE_Y, s_warning);
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, s_warning);
 #endif
   // could be a place for a s_warning_info
 }
@@ -103,9 +103,9 @@ void displayWarning(uint8_t event)
   s_warning_result = false;
   displayBox();
   if (s_warning_info) {
-    lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y+FH, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
+    lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
   }
-  lcd_puts(WARNING_LINE_X, WARNING_LINE_Y+2*FH, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
   switch (event) {
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_BREAK:

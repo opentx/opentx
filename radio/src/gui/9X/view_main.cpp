@@ -138,7 +138,7 @@ void displayTrims(uint8_t phase)
 #if defined(CPUARM)
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcd_outdezAtt(dir>0 ? 22 : 54, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
+          lcdDrawNumber(dir>0 ? 22 : 54, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
         }
       }
 #endif
@@ -164,7 +164,7 @@ void displayTrims(uint8_t phase)
 #if defined(CPUARM)
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcd_outdezAtt((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(dir>0 ? -11 : 20), ym-2, -abs(dir/5), TINSIZE);
+          lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(dir>0 ? -11 : 20), ym-2, -abs(dir/5), TINSIZE);
         }
       }
 #endif
@@ -191,7 +191,7 @@ void displayTimers()
     uint8_t len = zlen(g_model.timers[0].name, LEN_TIMER_NAME);
     if (len > 0) {
       xLabel += (LEN_TIMER_NAME-len)*FW;
-      lcdDrawTextWithLen(xLabel, FH*3, g_model.timers[0].name, len, ZCHAR);
+      lcdDrawSizedText(xLabel, FH*3, g_model.timers[0].name, len, ZCHAR);
     }
     else {
       putsTimerMode(xLabel, FH*3, g_model.timers[0].mode);
@@ -216,7 +216,7 @@ void displayBattVoltage()
 #else
   LcdFlags att = (IS_TXBATT_WARNING() ? BLINK|INVERS : 0) | BIGSIZE;
   putsVBat(VBATT_X-1, VBATT_Y, att|NO_UNIT);
-  lcd_putc(VBATT_X, VBATTUNIT_Y, 'V');
+  lcdDrawChar(VBATT_X, VBATTUNIT_Y, 'V');
 #endif
 }
 
@@ -434,7 +434,7 @@ void menuMainView(uint8_t event)
   {
     // Flight Mode Name
     uint8_t mode = mixerCurrentFlightMode;
-    lcdDrawTextWithLen(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|PHASE_FLAGS);
+    lcdDrawSizedText(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|PHASE_FLAGS);
 
     // Model Name
     putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
@@ -474,11 +474,11 @@ void menuMainView(uint8_t event)
           x0 = (i%4*9+3)*FW/2;
           y0 = i/4*FH+40;
 #if defined(PPM_UNIT_US)
-          lcd_outdezAtt(x0+4*FW , y0, PPM_CH_CENTER(chan)+val/2, 0);
+          lcdDrawNumber(x0+4*FW , y0, PPM_CH_CENTER(chan)+val/2, 0);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
-          lcd_outdezAtt(x0+4*FW , y0, calcRESXto1000(val), PREC1);
+          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val), PREC1);
 #else
-          lcd_outdezAtt(x0+4*FW , y0, calcRESXto1000(val)/10, 0); // G: Don't like the decimal part*
+          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val)/10, 0); // G: Don't like the decimal part*
 #endif
           break;
 
@@ -562,7 +562,7 @@ void menuMainView(uint8_t event)
 #endif
     putsTimer(33+FW+2+10*FWNUM-4, FH*5, timersStates[1].val, DBLSIZE, DBLSIZE);
     putsTimerMode(timersStates[1].val >= 0 ? TMR2_LBL_COL : TMR2_LBL_COL-7, FH*6, g_model.timers[1].mode);
-    // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
+    // lcdDrawNumber(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
 
   // And ! in case of unexpected shutdown
@@ -575,9 +575,9 @@ void menuMainView(uint8_t event)
     s_gvar_timer--;
     s_warning = STR_GLOBAL_VAR;
     displayBox();
-    lcdDrawTextWithLen(16, 5*FH, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
+    lcdDrawSizedText(16, 5*FH, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
     lcdDrawText(16+7*FW, 5*FH, PSTR("[\010]"), BOLD);
-    lcd_outdezAtt(16+7*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), BOLD);
+    lcdDrawNumber(16+7*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), BOLD);
     s_warning = NULL;
   }
 #endif

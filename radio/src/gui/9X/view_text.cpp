@@ -147,7 +147,7 @@ void menuTextView(uint8_t event)
 #else
   // TODO?
 #endif
-  lcd_puts(LCD_W/2-strlen(title)*FW/2, 0, title);
+  lcdDrawText(LCD_W/2-strlen(title)*FW/2, 0, title);
   lcdInvertLine(0);
 
   if (lines_count > LCD_LINES-1) {

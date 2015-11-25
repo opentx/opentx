@@ -52,7 +52,7 @@ void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
 {
 #if defined(GRAPHICS)
   if (value)
-    lcd_putc(x+1, y, '#');
+    lcdDrawChar(x+1, y, '#');
   if (attr)
     lcdDrawFilledRect(x, y, 7, 7);
   else
@@ -65,10 +65,10 @@ void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
 
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 {
-  lcd_outdezAtt(LCD_W, 0, count, attr);
+  lcdDrawNumber(LCD_W, 0, count, attr);
   coord_t x = 1+LCD_W-FW*(count>9 ? 3 : 2);
   lcdDrawChar(x, 0, '/', attr);
-  lcd_outdezAtt(x, 0, index+1, attr);
+  lcdDrawNumber(x, 0, index+1, attr);
 }
 
 #if !defined(CPUM64)
@@ -117,14 +117,14 @@ int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, uint8_t
 #if !defined(CPUM64)
 void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
 {
-  lcd_putc(x+(value*4*FW)/max, y, '$');
+  lcdDrawChar(x+(value*4*FW)/max, y, '$');
   lcdDrawSolidHorizontalLine(x, y+3, 5*FW-1, FORCE);
   if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcdDrawFilledRect(x, y, 5*FW-1, FH-1);
 }
 #elif defined(GRAPHICS)
 void display5posSlider(coord_t x, coord_t y, uint8_t value, uint8_t attr)
 {
-  lcd_putc(x+2*FW+(value*FW), y, '$');
+  lcdDrawChar(x+2*FW+(value*FW), y, '$');
   lcdDrawSolidHorizontalLine(x, y+3, 5*FW-1, SOLID);
   if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcdDrawFilledRect(x, y, 5*FW-1, FH-1);
 }
@@ -177,7 +177,7 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
     putsStrIdx(x, y, STR_GV, idx, attr);
   }
   else {
-    lcd_outdezAtt(x, y, value, attr);
+    lcdDrawNumber(x, y, value, attr);
     if (invers) value = checkIncDec(event, value, min, max, EE_MODEL | editflags);
   }
   return value;
@@ -217,7 +217,7 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
     putsStrIdx(x, y, STR_GV, idx, attr);
   }
   else {
-    lcd_outdezAtt(x, y, value, attr);
+    lcdDrawNumber(x, y, value, attr);
     if (invers) value = checkIncDec(event, value, min, max, EE_MODEL);
   }
   return value;
@@ -225,7 +225,7 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
 #else
 int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)
 {
-  lcd_outdezAtt(x, y, value, attr);
+  lcdDrawNumber(x, y, value, attr);
   if (attr&INVERS) value = checkIncDec(event, value, min, max, EE_MODEL);
   return value;
 }

@@ -162,30 +162,26 @@ typedef const unsigned char pm_uchar;
 typedef const char pm_char;
 #endif
 
-void lcd_putc(coord_t x, coord_t y, const unsigned char c);
+void lcdDrawChar(coord_t x, coord_t y, const unsigned char c);
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags);
 void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags flags);
-void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags flags);
-void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s,unsigned char len, LcdFlags flags);
-void lcd_puts(coord_t x, coord_t y, const pm_char * s);
-void lcd_putsn(coord_t x, coord_t y, const pm_char * s, unsigned char len);
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags flags);
+void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, unsigned char len, LcdFlags flags);
+void lcdDrawText(coord_t x, coord_t y, const pm_char * s);
+void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, unsigned char len);
 void lcd_putsLeft(coord_t y, const pm_char * s);
 
-#if defined(COLORLCD)
-  void lcd_putsCenter(coord_t y, const pm_char * s, LcdFlags attr=0);
-#else
-  #define lcd_putsCenter(y, s) lcd_puts((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
-#endif
+#define lcd_putsCenter(y, s) lcdDrawText((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
 
 #if defined(CPUARM)
-  void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
+  void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 #else
-  void lcd_outhex4(coord_t x, coord_t y, uint16_t val);
+  void lcdDrawHexNumber(coord_t x, coord_t y, uint16_t val);
 #endif
 
-void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0, uint8_t len=0);
-void lcd_outdezAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0);
-void lcd_outdez8(coord_t x, coord_t y, int8_t val);
+void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags mode, uint8_t len);
+void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0);
+void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val);
 
 void putsStrIdx(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags att=0);
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);

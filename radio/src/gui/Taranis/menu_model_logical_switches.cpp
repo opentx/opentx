@@ -61,16 +61,16 @@ enum LogicalSwitchFields {
 
 void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lattr, uint8_t rattr)
 {
-  lcd_putc(x-4, y, '[');
-  lcd_outdezAtt(x, y, lswTimerValue(cs->v2), LEFT|PREC1|lattr);
-  lcd_putc(lcdLastPos, y, ':');
+  lcdDrawChar(x-4, y, '[');
+  lcdDrawNumber(x, y, lswTimerValue(cs->v2), LEFT|PREC1|lattr);
+  lcdDrawChar(lcdLastPos, y, ':');
   if (cs->v3 < 0)
     lcdDrawText(lcdLastPos+3, y, "<<", rattr);
   else if (cs->v3 == 0)
     lcdDrawText(lcdLastPos+3, y, "--", rattr);
   else
-    lcd_outdezAtt(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|rattr);
-  lcd_putc(lcdLastPos, y, ']');
+    lcdDrawNumber(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|rattr);
+  lcdDrawChar(lcdLastPos, y, ']');
 }
 
 void onLogicalSwitchesMenu(const char *result)
@@ -170,8 +170,8 @@ void menuModelLogicalSwitches(uint8_t event)
       INCDEC_ENABLE_CHECK(isSourceAvailable);
     }
     else if (cstate == LS_FAMILY_TIMER) {
-      lcd_outdezAtt(CSW_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT|PREC1|attr1);
-      lcd_outdezAtt(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1|attr2);
+      lcdDrawNumber(CSW_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT|PREC1|attr1);
+      lcdDrawNumber(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1|attr2);
       v1_min = v2_min = -128;
       v1_max = v2_max = 122;
       INCDEC_SET_FLAG(EE_MODEL);
@@ -203,19 +203,19 @@ void menuModelLogicalSwitches(uint8_t event)
 
     // CSW duration
     if (cs->duration > 0)
-      lcd_outdezAtt(CSW_5TH_COLUMN, y, cs->duration, (horz==LS_FIELD_DURATION ? attr : 0)|PREC1|LEFT);
+      lcdDrawNumber(CSW_5TH_COLUMN, y, cs->duration, (horz==LS_FIELD_DURATION ? attr : 0)|PREC1|LEFT);
     else
       lcdDrawTextAtIndex(CSW_5TH_COLUMN, y, STR_MMMINV, 0, horz==LS_FIELD_DURATION ? attr : 0);
 
     // CSW delay
     if (cstate == LS_FAMILY_EDGE) {
-      lcd_puts(CSW_6TH_COLUMN, y, STR_NA);
+      lcdDrawText(CSW_6TH_COLUMN, y, STR_NA);
       if (attr && horz == LS_FIELD_DELAY) {
         REPEAT_LAST_CURSOR_MOVE();
       }
     }
     else if (cs->delay > 0) {
-      lcd_outdezAtt(CSW_6TH_COLUMN, y, cs->delay, (horz==LS_FIELD_DELAY ? attr : 0)|PREC1|LEFT);
+      lcdDrawNumber(CSW_6TH_COLUMN, y, cs->delay, (horz==LS_FIELD_DELAY ? attr : 0)|PREC1|LEFT);
     }
     else {
       lcdDrawTextAtIndex(CSW_6TH_COLUMN, y, STR_MMMINV, 0, horz==LS_FIELD_DELAY ? attr : 0);

@@ -45,7 +45,7 @@ void menuGeneralVersion(uint8_t event)
 #if defined(COPROCESSOR)
   if (Coproc_valid == 1) {
      lcd_putsLeft(6*FH, PSTR("CoPr:"));
-     lcd_outdez8(10*FW, 6*FH, Coproc_read);
+     lcdDraw8bitsNumber(10*FW, 6*FH, Coproc_read);
   }
   else {
      lcd_putsLeft(6*FH, PSTR("CoPr: ---"));

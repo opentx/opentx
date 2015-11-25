@@ -464,11 +464,11 @@ void menuTelemetryNMEA1(uint8_t event)
 
     if (rbuf[0][0]) {								// show always if data have been received
 	  lcdDrawChar   (  19*FW,   1*FH, sbuf[2], 0);				// satellites in view
-        lcdDrawTextWithLen  (   2*FW,   2*FH, &rbuf[0][0], 2, APSIZE);		// hours
+        lcdDrawSizedText  (   2*FW,   2*FH, &rbuf[0][0], 2, APSIZE);		// hours
         lcdDrawChar   (   6*FW,   2*FH, ':', DBLSIZE);			// ":"
-        lcdDrawTextWithLen  (   8*FW,   2*FH, &rbuf[0][2], 2, APSIZE);		// minutes
+        lcdDrawSizedText  (   8*FW,   2*FH, &rbuf[0][2], 2, APSIZE);		// minutes
         lcdDrawChar   (  12*FW,   2*FH, ':', DBLSIZE);			// ":"
-        lcdDrawTextWithLen  (  14*FW,   2*FH, &rbuf[0][4], 2, APSIZE);		// seconds
+        lcdDrawSizedText  (  14*FW,   2*FH, &rbuf[0][4], 2, APSIZE);		// seconds
     }
     else
         lcdDrawText   (   2*FW,   2*FH, val_unknown, APSIZE);		// "?"
@@ -483,11 +483,11 @@ void menuTelemetryNMEA1(uint8_t event)
         lcd_puts      ( 2*FW,   4*FH, PSTR("Date"));			// show the UTC Date	
 
         if (rbuf[1][0])	{
-            lcdDrawTextWithLen( 2*FW,   5*FH, &rbuf[1][0], 2, APSIZE);		// year
+            lcdDrawSizedText( 2*FW,   5*FH, &rbuf[1][0], 2, APSIZE);		// year
             lcdDrawChar ( 6*FW,   5*FH, '/', DBLSIZE);			// "/" 
-            lcdDrawTextWithLen( 8*FW,   5*FH, &rbuf[1][2], 2, APSIZE);		// month
+            lcdDrawSizedText( 8*FW,   5*FH, &rbuf[1][2], 2, APSIZE);		// month
             lcdDrawChar (12*FW,   5*FH, '/', DBLSIZE);			// "/"
-            lcdDrawTextWithLen(14*FW,   5*FH, &rbuf[1][4], 2, APSIZE);		// day
+            lcdDrawSizedText(14*FW,   5*FH, &rbuf[1][4], 2, APSIZE);		// day
         }
         else
             lcdDrawText   (   2*FW,   5*FH, val_unknown, APSIZE);		// "?"
@@ -593,7 +593,7 @@ void menuTelemetryNMEA2(uint8_t event)
         lcd_puts         (   17*FW,   6*FH, PSTR("OFF") );
 
 
-    lcd_outdezNAtt(  20*FW,   4*FH, home_alt, PREC1, 6);		// display home_alt, small characters 
+    lcdDrawNumber(  20*FW,   4*FH, home_alt, PREC1, 6);		// display home_alt, small characters 
 
     if (xpack[0] != PACK_GGA)
         ggareceived = 0;
@@ -635,17 +635,17 @@ void menuTelemetryNMEA2(uint8_t event)
 	  if (sbuf[1]>0x30)	 {							// & GGA has FIX > 0
 
 
-	        lcd_outdezNAtt(  10*FW,   2*FH, rel_alt, DBLSIZE|PREC1, 7);	// altitude
+	        lcdDrawNumber(  10*FW,   2*FH, rel_alt, DBLSIZE|PREC1, 7);	// altitude
 	
 		  if (home_alt >= 0) 
-			  lcd_outdezNAtt(  20*FW,   2*FH, (max_alt-home_alt), PREC1, 6);	// display small characters
+			  lcdDrawNumber(  20*FW,   2*FH, (max_alt-home_alt), PREC1, 6);	// display small characters
 		  else
-			  lcd_outdezNAtt(  20*FW,   2*FH, max_alt, PREC1, 6);			// display small characters
+			  lcdDrawNumber(  20*FW,   2*FH, max_alt, PREC1, 6);			// display small characters
 	
 
 	        lcdDrawChar   (  11*FW,   3*FH, sbuf[0], 0);				// dimension [m]
 
-      	  lcd_outdezNAtt(  10*FW,   5*FH, lift_alt, DBLSIZE|PREC1, 6);	// lift
+      	  lcdDrawNumber(  10*FW,   5*FH, lift_alt, DBLSIZE|PREC1, 6);	// lift
 	        lcdDrawChar   (  11*FW,   6*FH, sbuf[0], 0);				// dimension [m/S]
       	  lcd_puts    (  12*FW,   6*FH, PSTR("/S") );
 		}
@@ -741,7 +741,7 @@ void menuTelemetryNMEA4(uint8_t event)
     {
         lcdDrawChar   (  13*FW,   1*FH, sbuf[0], 0);          // N or S
 	  lcdDrawChar   (  19*FW,   1*FH, sbuf[2], 0);				// satellites in view
-        lcdDrawTextWithLen  (   1*FW,   2*FH, rbuf[0], 2, APSIZE);
+        lcdDrawSizedText  (   1*FW,   2*FH, rbuf[0], 2, APSIZE);
         lcdDrawChar   (   5*FW,   2*FH, '@',0);
         lcdDrawText   (   6*FW,   2*FH, &rbuf[0][2], APSIZE);	// minutes with small decimal point
     }
@@ -752,7 +752,7 @@ void menuTelemetryNMEA4(uint8_t event)
     if (rbuf[0][0])
     {
         lcdDrawChar   (  13*FW,   4*FH, sbuf[1], 0);          // E or W
-        lcdDrawTextWithLen  (   0*FW,   5*FH, rbuf[1], 3, APSIZE);
+        lcdDrawSizedText  (   0*FW,   5*FH, rbuf[1], 3, APSIZE);
         lcdDrawChar   (   6*FW,   5*FH, '@',0);
         lcdDrawText   (   7*FW,   5*FH, &rbuf[1][3], APSIZE);	// minutes with small decimal point
 

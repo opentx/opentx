@@ -46,7 +46,7 @@ void menuGeneralDiagKeys(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUDIAG, menuTabGeneral, e_Keys, 1);
 
-  lcd_puts(14*FW, MENU_HEADER_HEIGHT+2*FH, STR_VTRIM);
+  lcdDrawText(14*FW, MENU_HEADER_HEIGHT+2*FH, STR_VTRIM);
 
   for(uint8_t i=0; i<9; i++) {
     coord_t y;
@@ -74,7 +74,7 @@ void menuGeneralDiagKeys(uint8_t event)
   for(uint8_t i=0; i<DIM(g_rotenc); i++) {
     coord_t y = MENU_HEADER_HEIGHT /* ??? + 1 ??? */ + i*FH;
     lcdDrawTextAtIndex(14*FW, y, STR_VRENCODERS, i, 0);
-    lcd_outdezNAtt(18*FW, y, g_rotenc[i], LEFT|(switchState((EnumKeys)(BTN_REa+i)) ? INVERS : 0));
+    lcdDrawNumber(18*FW, y, g_rotenc[i], LEFT|(switchState((EnumKeys)(BTN_REa+i)) ? INVERS : 0));
   }
 #endif
 

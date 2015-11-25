@@ -119,10 +119,10 @@ void menuModelLimits(uint8_t event)
 
   if (sub < NUM_CHNOUT) {
 #if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_UNIT_US)
-    lcd_outdezAtt(13*FW, 0, PPM_CH_CENTER(sub)+channelOutputs[sub]/2, 0);
-    lcd_puts(13*FW, 0, STR_US);
+    lcdDrawNumber(13*FW, 0, PPM_CH_CENTER(sub)+channelOutputs[sub]/2, 0);
+    lcdDrawText(13*FW, 0, STR_US);
 #else
-    lcd_outdezAtt(13*FW, 0, calcRESXto1000(channelOutputs[sub]), PREC1);
+    lcdDrawNumber(13*FW, 0, calcRESXto1000(channelOutputs[sub]), PREC1);
 #endif
   }
 
@@ -164,7 +164,7 @@ void menuModelLimits(uint8_t event)
     char swVal = '-';  // '-', '<', '>'
     if ((channelOutputs[k] - v) > 50) swVal = (ld->revert ? 127 : 126); // Switch to raw inputs?  - remove trim!
     if ((channelOutputs[k] - v) < -50) swVal = (ld->revert ? 126 : 127);
-    lcd_putc(LIMITS_DIRECTION_POS, y, swVal);
+    lcdDrawChar(LIMITS_DIRECTION_POS, y, swVal);
 
     int limit = (g_model.extendedLimits ? LIMIT_EXT_MAX : 1000);
 
@@ -194,9 +194,9 @@ void menuModelLimits(uint8_t event)
           }
 
 #if defined(PPM_UNIT_US)
-          lcd_outdezAtt(LIMITS_OFFSET_POS, y, ((int32_t)ld->offset*128) / 25, attr|PREC1);
+          lcdDrawNumber(LIMITS_OFFSET_POS, y, ((int32_t)ld->offset*128) / 25, attr|PREC1);
 #else
-          lcd_outdezAtt(LIMITS_OFFSET_POS, y, ld->offset, attr|PREC1);
+          lcdDrawNumber(LIMITS_OFFSET_POS, y, ld->offset, attr|PREC1);
 #endif
           if (active) {
             ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL, NULL, stops1000);
@@ -212,7 +212,7 @@ void menuModelLimits(uint8_t event)
             ld->min = GVAR_MENU_ITEM(LIMITS_MIN_POS, y, ld->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, MIN_MAX_ATTR, 0, event);
             break;
           }
-          lcd_outdezAtt(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);
+          lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);
           if (active) ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0, EE_MODEL, NULL, stops1000);
           break;
 
@@ -221,7 +221,7 @@ void menuModelLimits(uint8_t event)
             ld->max = GVAR_MENU_ITEM(LIMITS_MAX_POS, y, ld->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, MIN_MAX_ATTR, 0, event);
             break;
           }
-          lcd_outdezAtt(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);
+          lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);
           if (active) ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->max+LIMITS_MIN_MAX_OFFSET, 0, +limit, EE_MODEL, NULL, stops1000);
           break;
 
@@ -260,7 +260,7 @@ void menuModelLimits(uint8_t event)
 
 #if defined(PPM_CENTER_ADJUSTABLE)
         case ITEM_LIMITS_PPM_CENTER:
-          lcd_outdezAtt(LIMITS_PPM_CENTER_POS, y, PPM_CENTER+ld->ppmCenter, attr);
+          lcdDrawNumber(LIMITS_PPM_CENTER_POS, y, PPM_CENTER+ld->ppmCenter, attr);
           if (active) {
             CHECK_INCDEC_MODELVAR(event, ld->ppmCenter, -PPM_CENTER_MAX, +PPM_CENTER_MAX);
           }

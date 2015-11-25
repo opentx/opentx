@@ -259,7 +259,7 @@ bool menuModelSensor(evt_t event)
       case SENSOR_FIELD_ID:
         if (sensor->type == TELEM_TYPE_CUSTOM) {
           lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ID);
-          lcd_outhex4(SENSOR_2ND_COLUMN, y, sensor->id, LEFT|(m_posHorz==0 ? attr : 0));
+          lcdDrawHexNumber(SENSOR_2ND_COLUMN, y, sensor->id, LEFT|(m_posHorz==0 ? attr : 0));
           lcdDrawNumber(SENSOR_3RD_COLUMN, y, sensor->instance, LEFT|(m_posHorz==1 ? attr : 0));
           if (attr) {
             switch (m_posHorz) {
@@ -538,7 +538,7 @@ bool menuModelTelemetry(evt_t event)
     if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+MAX_SENSORS) {
       int index = k-ITEM_TELEMETRY_SENSOR1;
       lcdDrawNumber(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, index+1, LEFT|attr, 0, NULL, ":");
-      lcdDrawTextWithLen(60, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
+      lcdDrawSizedText(60, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
       if (telemetryItems[index].isFresh()) {
         lcdDrawText(100, y, "*");
       }
@@ -728,7 +728,7 @@ bool menuModelTelemetry(evt_t event)
           // TODO better function name for ---
           // TODO function for these lines
           if (ZEXIST(scriptData.file))
-            lcdDrawTextWithLen(TELEM_COL3, y, scriptData.file, sizeof(scriptData.file), (m_posHorz==1 ? attr : 0));
+            lcdDrawSizedText(TELEM_COL3, y, scriptData.file, sizeof(scriptData.file), (m_posHorz==1 ? attr : 0));
           else
             lcdDrawTextAtIndex(TELEM_COL3, y, STR_VCSWFUNC, 0, (m_posHorz==1 ? attr : 0));
 

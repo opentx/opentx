@@ -203,12 +203,12 @@ void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
 }
 #endif
 
-void lcd_putc(coord_t x, coord_t y, const unsigned char c)
+void lcdDrawChar(coord_t x, coord_t y, const unsigned char c)
 {
   lcdDrawChar(x, y, c, 0);
 }
 
-void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags flags)
+void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags flags)
 {
   const coord_t orig_x = x;
 #if defined(CPUARM)
@@ -281,24 +281,24 @@ void lcdDrawTextWithLen(coord_t x, coord_t y, const pm_char * s, uint8_t len, Lc
 #endif
 }
 
-void lcd_putsn(coord_t x, coord_t y, const pm_char * s, uint8_t len)
+void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len)
 {
-  lcdDrawTextWithLen(x, y, s, len, 0);
+  lcdDrawSizedText(x, y, s, len, 0);
 }
 
 void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags flags)
 {
-  lcdDrawTextWithLen(x, y, s, 255, flags);
+  lcdDrawSizedText(x, y, s, 255, flags);
 }
 
-void lcd_puts(coord_t x, coord_t y, const pm_char * s)
+void lcdDrawText(coord_t x, coord_t y, const pm_char * s)
 {
   lcdDrawText(x, y, s, 0);
 }
 
 void lcd_putsLeft(coord_t y, const pm_char * s)
 {
-  lcd_puts(0, y, s);
+  lcdDrawText(0, y, s);
 }
 
 #if !defined(BOOT)
@@ -306,11 +306,11 @@ void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s,uint8_t idx, Lcd
 {
   uint8_t length;
   length = pgm_read_byte(s++);
-  lcdDrawTextWithLen(x, y, s+length*idx, length, flags & ~(BSS|ZCHAR));
+  lcdDrawSizedText(x, y, s+length*idx, length, flags & ~(BSS|ZCHAR));
 }
 
 #if defined(CPUARM)
-void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags flags)
+void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags flags)
 {
   x += FWNUM*4+1;
   for (int i=0; i<4; i++) {
@@ -322,7 +322,7 @@ void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags flags)
   }
 }
 #else
-void lcd_outhex4(coord_t x, coord_t y, uint16_t val)
+void lcdDrawHexNumber(coord_t x, coord_t y, uint16_t val)
 {
   x += FWNUM*4+1;
   for(int i=0; i<4; i++) {
@@ -335,17 +335,17 @@ void lcd_outhex4(coord_t x, coord_t y, uint16_t val)
 }
 #endif
 
-void lcd_outdez8(coord_t x, coord_t y, int8_t val)
+void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val)
 {
-  lcd_outdezAtt(x, y, val);
+  lcdDrawNumber(x, y, val);
 }
 
-void lcd_outdezAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags)
+void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags)
 {
-  lcd_outdezNAtt(x, y, val, flags);
+  lcdDrawNumber(x, y, val, flags, 0);
 }
 
-void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t len)
+void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t len)
 {
   uint8_t fw = FWNUM;
   int8_t mode = MODE(flags);
@@ -632,20 +632,20 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 #else
 #define separator ':'
 #endif
-  lcd_outdezNAtt(x, y, qr.quot, att|LEADING0|LEFT, 2);
+  lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
 #if defined(CPUARM) && defined(RTCLOCK)
   if (att&TIMEBLINK)
     lcdDrawChar(lcdLastPos, y, separator, BLINK);
   else
 #endif
   lcdDrawChar(lcdLastPos, y, separator, att&att2);
-  lcd_outdezNAtt(lcdNextPos, y, qr.rem, att2|LEADING0|LEFT, 2);
+  lcdDrawNumber(lcdNextPos, y, qr.rem, att2|LEADING0|LEFT, 2);
 }
 
 // TODO to be optimized with putsValueWithUnit
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att)
 {
-  lcd_outdezAtt(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
+  lcdDrawNumber(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
   if (~att & NO_UNIT) lcdDrawChar(lcdLastPos, y, 'V', att);
 }
 
@@ -657,7 +657,7 @@ void putsVBat(coord_t x, coord_t y, LcdFlags att)
 void putsStrIdx(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags att)
 {
   lcdDrawText(x, y, str, att & ~LEADING0);
-  lcd_outdezNAtt(lcdNextPos, y, idx, att|LEFT, 2);
+  lcdDrawNumber(lcdNextPos, y, idx, att|LEFT, 2);
 }
 
 void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
@@ -684,7 +684,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
   else {
     idx -= MIXSRC_FIRST_TELEM;
     div_t qr = div(idx, 3);
-    lcdDrawTextWithLen(x, y, g_model.telemetrySensors[qr.quot].label, ZLEN(g_model.telemetrySensors[qr.quot].label), ZCHAR|att);
+    lcdDrawSizedText(x, y, g_model.telemetrySensors[qr.quot].label, ZLEN(g_model.telemetrySensors[qr.quot].label), ZCHAR|att);
     if (qr.rem) lcdDrawChar(lcdLastPos, y, qr.rem==2 ? '+' : '-', att);
   }
 #else
@@ -706,7 +706,7 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
     putsStrIdx(x, y, STR_MODEL, id+1, att|LEADING0);
   }
   else {
-    lcdDrawTextWithLen(x, y, name, sizeof(g_model.header.name), ZCHAR|att);
+    lcdDrawSizedText(x, y, name, sizeof(g_model.header.name), ZCHAR|att);
   }
 }
 
@@ -732,7 +732,7 @@ void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)
   if (idx==0) { lcdDrawTextAtIndex(x, y, STR_MMMINV, 0, att); return; }
   if (idx < 0) { lcdDrawChar(x-2, y, '!', att); idx = -idx; }
   if (att & CONDENSED)
-    lcd_outdezNAtt(x+FW*1, y, idx-1, (att & ~CONDENSED), 1);
+    lcdDrawNumber(x+FW*1, y, idx-1, (att & ~CONDENSED), 1);
   else
     putsStrIdx(x, y, STR_FP, idx-1, att);
 }
@@ -806,7 +806,7 @@ const pm_uint8_t bchunit_ar[] PROGMEM = {
 void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att)
 {
   // convertUnit(val, unit);
-  lcd_outdezAtt(x, y, val, att & (~NO_UNIT));
+  lcdDrawNumber(x, y, val, att & (~NO_UNIT));
   if (!(att & NO_UNIT) && unit != UNIT_RAW) {
     lcdDrawTextAtIndex(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
   }
@@ -815,27 +815,27 @@ void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlag
 void displayGpsCoord(coord_t x, coord_t y, char direction, int16_t bp, int16_t ap, LcdFlags att, bool seconds=true)
 {
     if (!direction) direction = '-';
-    lcd_outdezAtt(x, y, bp / 100, att); // ddd before '.'
+    lcdDrawNumber(x, y, bp / 100, att); // ddd before '.'
     lcdDrawChar(lcdLastPos, y, '@', att);
     uint8_t mn = bp % 100; // TODO div_t
     if (g_eeGeneral.gpsFormat == 0) {
-      lcd_outdezNAtt(lcdNextPos, y, mn, att|LEFT|LEADING0, 2); // mm before '.'
+      lcdDrawNumber(lcdNextPos, y, mn, att|LEFT|LEADING0, 2); // mm before '.'
       lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
       if (seconds) {
         uint16_t ss = ap * 6 / 10;
-        lcd_outdezNAtt(lcdLastPos+3, y, ss / 100, att|LEFT|LEADING0, 2); // ''
+        lcdDrawNumber(lcdLastPos+3, y, ss / 100, att|LEFT|LEADING0, 2); // ''
         lcdDrawPoint(lcdLastPos, y+FH-2, 0); // small decimal point
-        lcd_outdezNAtt(lcdLastPos+2, y, ss % 100, att|LEFT|LEADING0, 2); // ''
+        lcdDrawNumber(lcdLastPos+2, y, ss % 100, att|LEFT|LEADING0, 2); // ''
         lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
         lcdDrawSolidVerticalLine(lcdLastPos+2, y, 2);
       }
-      lcd_putc(lcdLastPos+2, y, direction);
+      lcdDrawChar(lcdLastPos+2, y, direction);
     }
     else {
-      lcd_outdezNAtt(lcdLastPos+FW, y, mn, att|LEFT|LEADING0, 2); // mm before '.'
+      lcdDrawNumber(lcdLastPos+FW, y, mn, att|LEFT|LEADING0, 2); // mm before '.'
       lcdDrawPoint(lcdLastPos, y+FH-2, 0); // small decimal point
-      lcd_outdezNAtt(lcdLastPos+2, y, ap, att|LEFT|UNSIGN|LEADING0, 4); // after '.'
-      lcd_putc(lcdLastPos+1, y, direction);
+      lcdDrawNumber(lcdLastPos+2, y, ap, att|LEFT|UNSIGN|LEADING0, 4); // after '.'
+      lcdDrawChar(lcdLastPos+1, y, direction);
     }
 }
 
@@ -844,24 +844,24 @@ void displayDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags a
   if (att & DBLSIZE) {
     x -= 42;
     att &= ~0x0F00; // TODO constant
-    lcd_outdezNAtt(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
+    lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdLastPos-1, y, '-', att);
-    lcd_outdezNAtt(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);
+    lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);
     lcdDrawChar(lcdLastPos-1, y, '-', att);
-    lcd_outdezAtt(lcdNextPos-1, y, telemetryItem.datetime.year, att|LEFT);
+    lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.year, att|LEFT);
     y += FH;
-    lcd_outdezNAtt(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
+    lcdDrawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdLastPos, y, ':', att);
-    lcd_outdezNAtt(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdLastPos, y, ':', att);
-    lcd_outdezNAtt(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
   }
   else {
-    lcd_outdezNAtt(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
+    lcdDrawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdLastPos, y, ':', att);
-    lcd_outdezNAtt(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdLastPos, y, ':', att);
-    lcd_outdezNAtt(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
   }
 }
 
@@ -910,13 +910,13 @@ void putsChannelValue(coord_t x, coord_t y, source_t channel, lcdint_t value, Lc
     putsTimer(x, y, value, att, att);
   }
   else if (channel == MIXSRC_TX_VOLTAGE) {
-    lcd_outdezAtt(x, y, value, att|PREC1);
+    lcdDrawNumber(x, y, value, att|PREC1);
   }
   else {
     if (channel <= MIXSRC_LAST_CH) {
       value = calcRESXto100(value);
     }
-    lcd_outdezAtt(x, y, value, att);
+    lcdDrawNumber(x, y, value, att);
   }
 }
 
@@ -930,7 +930,7 @@ void putsChannel(coord_t x, coord_t y, source_t channel, LcdFlags att)
 void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att)
 {
   convertUnit(val, unit);
-  lcd_outdezAtt(x, y, val, att & (~NO_UNIT));
+  lcdDrawNumber(x, y, val, att & (~NO_UNIT));
   if (!(att & NO_UNIT) && unit != UNIT_RAW) {
     lcdDrawTextAtIndex(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
   }
@@ -1095,9 +1095,9 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
       break;
 
     case TELEM_TX_VOLTAGE-1:
-      lcd_outdezAtt(x, y, val, (att|PREC1) & (~NO_UNIT));
+      lcdDrawNumber(x, y, val, (att|PREC1) & (~NO_UNIT));
       if (!(att & NO_UNIT))
-        lcd_putc(lcdLastPos/*+1*/, y, 'V');
+        lcdDrawChar(lcdLastPos/*+1*/, y, 'V');
       break;
   }
 }

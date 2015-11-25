@@ -53,7 +53,7 @@ void displayRssiLine()
   if (TELEMETRY_STREAMING()) {
     lcdDrawSolidHorizontalLine(0, 55, 212, 0); // separator
     uint8_t rssi = min((uint8_t)99, TELEMETRY_RSSI());
-    lcd_putsn(0, STATUS_BAR_Y, STR_RX, 2); lcd_outdezNAtt(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
+    lcdDrawSizedText(0, STATUS_BAR_Y, STR_RX, 2); lcdDrawNumber(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcdDrawRect(BAR_LEFT, 57, 78, 7);
     lcdDrawFilledRect(BAR_LEFT+1, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
@@ -273,6 +273,6 @@ void menuTelemetryFrsky(uint8_t event)
   }
 
   lcdDrawTelemetryTopBar();
-  lcd_puts(8*FW, 3*FH, "No Telemetry Screens");
+  lcdDrawText(8*FW, 3*FH, "No Telemetry Screens");
   displayRssiLine();
 }

@@ -206,9 +206,9 @@ bool menuTraceBuffer(evt_t event)
       //event
       lcdDrawNumber(14*10, y, te->event, LEADING0|LEFT, 3);
       //data
-      lcd_putsn  (20*10, y, "0x", 2);
-      lcd_outhex4(22*10-2, y, (uint16_t)(te->data >> 16));
-      lcd_outhex4(25*10, y, (uint16_t)(te->data & 0xFFFF));
+      lcdDrawSizedText  (20*10, y, "0x", 2);
+      lcdDrawHexNumber(22*10-2, y, (uint16_t)(te->data >> 16));
+      lcdDrawHexNumber(25*10, y, (uint16_t)(te->data & 0xFFFF));
     }
 
   }

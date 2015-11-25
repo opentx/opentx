@@ -67,7 +67,7 @@ void menuModelHeli(uint8_t event)
 
       case ITEM_HELI_SWASHRING:
         lcd_putsLeft(y, STR_SWASHRING);
-        lcd_outdezAtt(HELI_PARAM_OFS, y, g_model.swashR.value,  LEFT|attr);
+        lcdDrawNumber(HELI_PARAM_OFS, y, g_model.swashR.value,  LEFT|attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.swashR.value, 100);
         break;
 

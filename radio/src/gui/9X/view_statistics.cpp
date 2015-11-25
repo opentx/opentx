@@ -59,7 +59,7 @@ void menuStatisticsView(uint8_t event)
       break;
   }
 
-  lcd_puts(  1*FW, FH*0, STR_TOTTM1TM2THRTHP);
+  lcdDrawText(  1*FW, FH*0, STR_TOTTM1TM2THRTHP);
   putsTimer(    5*FW+5*FWNUM+1, FH*1, timersStates[0].val, 0, 0);
   putsTimer(   12*FW+5*FWNUM+1, FH*1, timersStates[1].val, 0, 0);
 
@@ -144,10 +144,10 @@ void menuStatisticsDebug(uint8_t event)
 
 #if defined(PCBSKY9X)
   if ((ResetReason&RSTC_SR_RSTTYP) == (2<<8)) {
-    lcd_puts(LCD_W-8*FW, 0*FH, "WATCHDOG");
+    lcdDrawText(LCD_W-8*FW, 0*FH, "WATCHDOG");
   }
   else if (unexpectedShutdown) {
-    lcd_puts(LCD_W-13*FW, 0*FH, "UNEXP.SHTDOWN");
+    lcdDrawText(LCD_W-13*FW, 0*FH, "UNEXP.SHTDOWN");
   }
 #endif
 
@@ -156,7 +156,7 @@ void menuStatisticsDebug(uint8_t event)
   lcd_putsLeft(MENU_DEBUG_Y_CURRENT, STR_CPU_CURRENT);
   putsValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_CURRENT, getCurrent(), UNIT_MILLIAMPS, LEFT);
   uint32_t current_scale = 488 + g_eeGeneral.txCurrentCalibration;
-  lcd_putc(MENU_DEBUG_COL2_OFS, MENU_DEBUG_Y_CURRENT, '>');
+  lcdDrawChar(MENU_DEBUG_COL2_OFS, MENU_DEBUG_Y_CURRENT, '>');
   putsValueWithUnit(MENU_DEBUG_COL2_OFS+FW+1, MENU_DEBUG_Y_CURRENT, Current_max*10*current_scale/8192, UNIT_RAW, LEFT);
   // consumption
   lcd_putsLeft(MENU_DEBUG_Y_MAH, STR_CPU_MAH);
@@ -166,7 +166,7 @@ void menuStatisticsDebug(uint8_t event)
 #if defined(PCBSKY9X)
   lcd_putsLeft(MENU_DEBUG_Y_CPU_TEMP, STR_CPU_TEMP);
   putsValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_CPU_TEMP, getTemperature(), UNIT_TEMPERATURE, LEFT);
-  lcd_putc(MENU_DEBUG_COL2_OFS, MENU_DEBUG_Y_CPU_TEMP, '>');
+  lcdDrawChar(MENU_DEBUG_COL2_OFS, MENU_DEBUG_Y_CPU_TEMP, '>');
   putsValueWithUnit(MENU_DEBUG_COL2_OFS+FW+1, MENU_DEBUG_Y_CPU_TEMP, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_TEMPERATURE, LEFT);
 #endif
 
@@ -190,32 +190,32 @@ void menuStatisticsDebug(uint8_t event)
 
 #if defined(CPUARM)
   lcd_putsLeft(MENU_DEBUG_Y_MIXMAX, STR_TMIXMAXMS);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
-  lcd_puts(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
+  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
 #endif
 
 #if defined(CPUARM)
   lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+2, menusStack.available(), UNSIGN|LEFT|TINSIZE);
-  lcd_puts(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS+2, mixerStack.available(), UNSIGN|LEFT|TINSIZE);
-  lcd_puts(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS+2, audioStack.available(), UNSIGN|LEFT|TINSIZE);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+2, menusStack.available(), UNSIGN|LEFT|TINSIZE);
+  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS+2, mixerStack.available(), UNSIGN|LEFT|TINSIZE);
+  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS+2, audioStack.available(), UNSIGN|LEFT|TINSIZE);
 #endif
 
 #if !defined(CPUARM)
   lcd_putsLeft(1*FH, STR_TMR1LATMAXUS);
-  lcd_outdez8(MENU_DEBUG_COL1_OFS , 1*FH, g_tmr1Latency_max/2 );
+  lcdDraw8bitsNumber(MENU_DEBUG_COL1_OFS , 1*FH, g_tmr1Latency_max/2 );
   lcd_putsLeft(2*FH, STR_TMR1LATMINUS);
-  lcd_outdez8(MENU_DEBUG_COL1_OFS , 2*FH, g_tmr1Latency_min/2 );
+  lcdDraw8bitsNumber(MENU_DEBUG_COL1_OFS , 2*FH, g_tmr1Latency_min/2 );
   lcd_putsLeft(3*FH, STR_TMR1JITTERUS);
-  lcd_outdez8(MENU_DEBUG_COL1_OFS , 3*FH, (g_tmr1Latency_max - g_tmr1Latency_min) /2 );
+  lcdDraw8bitsNumber(MENU_DEBUG_COL1_OFS , 3*FH, (g_tmr1Latency_max - g_tmr1Latency_min) /2 );
   lcd_putsLeft(4*FH, STR_TMIXMAXMS);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 4*FH, DURATION_MS_PREC2(maxMixerDuration), PREC2);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, 4*FH, DURATION_MS_PREC2(maxMixerDuration), PREC2);
   lcd_putsLeft(5*FH, STR_FREESTACKMINB);
-  lcd_outdezAtt(14*FW, 5*FH, stackAvailable(), UNSIGN) ;
+  lcdDrawNumber(14*FW, 5*FH, stackAvailable(), UNSIGN) ;
 #endif
 
-  lcd_puts(4*FW, 7*FH+1, STR_MENUTORESET);
+  lcdDrawText(4*FW, 7*FH+1, STR_MENUTORESET);
   lcdInvertLastLine();
 }

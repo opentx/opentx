@@ -91,8 +91,8 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, uint8_t
 #if MENU_COLUMNS > 1
 uint8_t editDelay(const coord_t x, const coord_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
 {
-  lcd_puts(x, y, str);
-  lcd_outdezAtt(x+MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
+  lcdDrawText(x, y, str);
+  lcdDrawNumber(x+MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
   if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, delay, DELAY_MAX);
   return delay;
 }
@@ -101,7 +101,7 @@ uint8_t editDelay(const coord_t x, const coord_t y, const uint8_t event, const u
 uint8_t editDelay(const coord_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
 {
   lcd_putsLeft(y, str);
-  lcd_outdezAtt(MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
+  lcdDrawNumber(MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
   if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, delay, DELAY_MAX);
   return delay;
 }
@@ -148,7 +148,7 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
       mode = FIXEDWIDTH;
   }
 
-  lcdDrawTextWithLen(x, y, name, size, attr | mode);
+  lcdDrawSizedText(x, y, name, size, attr | mode);
   coord_t backupNextPos = lcdNextPos;
 
   if (active) {

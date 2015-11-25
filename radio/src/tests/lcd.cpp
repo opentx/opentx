@@ -115,7 +115,7 @@ bool checkScreenshot(const QString & test)
 TEST(outdezNAtt, test_unsigned)
 {
   lcdClear();
-  lcd_outdezNAtt(0, 0, 65530, LEFT|UNSIGN);
+  lcdDrawNumber(0, 0, 65530, LEFT|UNSIGN);
   EXPECT_TRUE(checkScreenshot("unsigned")) << "Unsigned numbers will be bad displayed";
 }
 
@@ -123,8 +123,8 @@ TEST(outdezNAtt, test_unsigned)
 TEST(outdezNAtt, testBigNumbers)
 {
   lcdClear();
-  lcd_outdezNAtt(0, 0, 1234567, LEFT);
-  lcd_outdezNAtt(0, FH, -1234567, LEFT);
+  lcdDrawNumber(0, 0, 1234567, LEFT);
+  lcdDrawNumber(0, FH, -1234567, LEFT);
   EXPECT_TRUE(checkScreenshot("big_numbers"));
 }
 #endif // #if defined(CPUARM)
@@ -147,14 +147,14 @@ TEST(Lcd, Invers_0_1)
 TEST(Lcd, Prec2_Left)
 {
   lcdClear();
-  lcd_outdezAtt(0, 0, 2, PREC2|LEFT);
+  lcdDrawNumber(0, 0, 2, PREC2|LEFT);
   EXPECT_TRUE(checkScreenshot("prec2_left"));
 }
 
 TEST(Lcd, Prec2_Right)
 {
   lcdClear();
-  lcd_outdezAtt(LCD_W, LCD_H-FH, 2, PREC2);
+  lcdDrawNumber(LCD_W, LCD_H-FH, 2, PREC2);
   EXPECT_TRUE(checkScreenshot("prec2_right"));
 }
 
@@ -162,7 +162,7 @@ TEST(Lcd, Prec2_Right)
 TEST(Lcd, Prec1_Dblsize_Invers)
 {
   lcdClear();
-  lcd_outdezAtt(LCD_W, 10, 51, PREC1|DBLSIZE|INVERS);
+  lcdDrawNumber(LCD_W, 10, 51, PREC1|DBLSIZE|INVERS);
   EXPECT_TRUE(checkScreenshot("prec1_dblsize_invers"));
 }
 #endif
@@ -170,7 +170,7 @@ TEST(Lcd, Prec1_Dblsize_Invers)
 TEST(Lcd, Line_Wrap)
 {
   lcdClear();
-  lcd_puts(LCD_W-10, 0, "TEST");
+  lcdDrawText(LCD_W-10, 0, "TEST");
   EXPECT_TRUE(checkScreenshot("line_wrap"));
 }
 

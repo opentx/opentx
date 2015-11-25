@@ -55,22 +55,22 @@ void menuGeneralDiagAna(uint8_t event)
     coord_t y = MENU_HEADER_HEIGHT + 1 + (i/3)*FH;
     const uint8_t x_coord[] = {0, 70, 154};
     uint8_t x = x_coord[i%3];
-    lcd_outdezNAtt(x, y, i+1, LEADING0|LEFT, 2);
-    lcd_putc(x+2*FW-2, y, ':');
+    lcdDrawNumber(x, y, i+1, LEADING0|LEFT, 2);
+    lcdDrawChar(x+2*FW-2, y, ':');
 #else
     coord_t y = MENU_HEADER_HEIGHT + 1 + (i/2)*FH;
     uint8_t x = i&1 ? 64+5 : 0;
     putsStrIdx(x, y, PSTR("A"), i+1);
-    lcd_putc(lcdNextPos, y, ':');
+    lcdDrawChar(lcdNextPos, y, ':');
 #endif
-    lcd_outhex4(x+3*FW-1, y, anaIn(i));
-    lcd_outdez8(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+    lcdDrawHexNumber(x+3*FW-1, y, anaIn(i));
+    lcdDraw8bitsNumber(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
   }
 
 #if !defined(CPUARM)
   // Display raw BandGap result (debug)
-  lcd_puts(64+5, MENU_HEADER_HEIGHT+1+3*FH, STR_BG);
-  lcd_outdezAtt(64+5+6*FW-3, 1+4*FH, BandGap, 0);
+  lcdDrawText(64+5, MENU_HEADER_HEIGHT+1+3*FH, STR_BG);
+  lcdDrawNumber(64+5+6*FW-3, 1+4*FH, BandGap, 0);
 #endif
 
 #if defined(PCBSKY9X)
@@ -86,7 +86,7 @@ void menuGeneralDiagAna(uint8_t event)
   static uint16_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8; // running average, sourced directly (to avoid unending debate :P)
   uint32_t batCalV = ((uint32_t)adcBatt*1390 + (10*(int32_t)adcBatt*g_eeGeneral.txVoltageCalibration)/8) / BandGap;
-  lcd_outdezNAtt(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, PREC2|(m_posVert==1 ? INVERS : 0));
+  lcdDrawNumber(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, PREC2|(m_posVert==1 ? INVERS : 0));
 #else
   lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
   putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, g_vbat100mV, (m_posVert==1 ? INVERS : 0));

@@ -46,14 +46,14 @@ void menuGeneralTrainer(uint8_t event)
   MENU(STR_MENUTRAINER, menuTabGeneral, e_Trainer, (slave ? 0 : 6), { 2, 2, 2, 2, 0/*, 0*/ });
 
   if (slave) {
-    lcd_puts(7*FW, 4*FH, STR_SLAVE);
+    lcdDrawText(7*FW, 4*FH, STR_SLAVE);
     return;
   }
 
   LcdFlags attr;
   LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
 
-  lcd_puts(3*FW, MENU_HEADER_HEIGHT+1, STR_MODESRC);
+  lcdDrawText(3*FW, MENU_HEADER_HEIGHT+1, STR_MODESRC);
 
   y = MENU_HEADER_HEIGHT + 1 + FH;
   int sub = m_posVert + 1;
@@ -75,7 +75,7 @@ void menuGeneralTrainer(uint8_t event)
           break;
 
         case 1:
-          lcd_outdezAtt(11*FW, y, td->studWeight, attr);
+          lcdDrawNumber(11*FW, y, td->studWeight, attr);
           if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->studWeight, -125, 125);
           break;
 
@@ -90,7 +90,7 @@ void menuGeneralTrainer(uint8_t event)
 
   attr = (sub==5) ? blink : 0;
   lcd_putsLeft(MENU_HEADER_HEIGHT+1+5*FH, STR_MULTIPLIER);
-  lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, MENU_HEADER_HEIGHT+1+5*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
+  lcdDrawNumber(LEN_MULTIPLIER*FW+3*FW, MENU_HEADER_HEIGHT+1+5*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
   if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
   attr = (sub==6) ? INVERS : 0;
@@ -99,9 +99,9 @@ void menuGeneralTrainer(uint8_t event)
   for (int i=0; i<4; i++) {
     uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
 #if defined (PPM_UNIT_PERCENT_PREC1)
-    lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
+    lcdDrawNumber(x, MENU_HEADER_HEIGHT+1+6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
 #else
-    lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5, 0);
+    lcdDrawNumber(x, MENU_HEADER_HEIGHT+1+6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5, 0);
 #endif
   }
 

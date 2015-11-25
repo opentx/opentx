@@ -125,10 +125,10 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
       uint8_t len = zlen(name, size);
       if (len == 0) {
         char tmp[] = "---";
-        lcdDrawTextWithLen(x, y, tmp, size, flags-ZCHAR);
+        lcdDrawSizedText(x, y, tmp, size, flags-ZCHAR);
       }
       else {
-        lcdDrawTextWithLen(x, y, name, len, flags);
+        lcdDrawSizedText(x, y, name, len, flags);
       }
     }
     else {
@@ -204,7 +204,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
         storageDirty(g_menuPos[0] == 0 ? EE_MODEL : EE_GENERAL);
       }
 
-      lcdDrawTextWithLen(x, y, name, size, flags);
+      lcdDrawSizedText(x, y, name, size, flags);
       coord_t left = (editNameCursorPos == 0 ? 0 : getTextWidth(name, editNameCursorPos, flags));
       char s[] = { (flags & ZCHAR) ? idx2char(name[editNameCursorPos]) : name[editNameCursorPos], '\0' };
       lcdDrawSolidFilledRect(x+left-1, y-INVERT_VERT_MARGIN, getTextWidth(s, 1)+1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);

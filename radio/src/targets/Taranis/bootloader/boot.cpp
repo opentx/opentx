@@ -404,7 +404,7 @@ int main()
   backlightInit();
 
   lcdClear();
-  lcd_putsn(0, 0, (const char *)bootloaderVersion, 0); // trick to avoid bootloaderVersion to be optimized out ...
+  lcdDrawSizedText(0, 0, (const char *)bootloaderVersion, 0); // trick to avoid bootloaderVersion to be optimized out ...
   lcd_putsLeft(0, BOOTLOADER_TITLE);
   lcdInvertLine(0);
   lcdRefresh();
@@ -540,7 +540,7 @@ int main()
           else {
             x = 0;
           }
-          lcdDrawTextWithLen(INDENT_WIDTH, 16 + FH * i, &Filenames[i][x], DISPLAY_CHAR_WIDTH, 0);
+          lcdDrawSizedText(INDENT_WIDTH, 16 + FH * i, &Filenames[i][x], DISPLAY_CHAR_WIDTH, 0);
         }
 
         if (event == EVT_KEY_REPT(BOOT_KEY_DOWN) || event == EVT_KEY_FIRST(BOOT_KEY_DOWN)) {

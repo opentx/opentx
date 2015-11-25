@@ -650,7 +650,7 @@ void displayHeaderChannelName(uint8_t ch)
 {
   uint8_t len = zlen(g_model.limitData[ch-1].name, sizeof(g_model.limitData[ch-1].name));
   if (len) {
-    lcdDrawTextWithLen(COLUMN_HEADER_X, MENU_FOOTER_TOP, g_model.limitData[ch-1].name, len, HEADER_COLOR|ZCHAR);
+    lcdDrawSizedText(COLUMN_HEADER_X, MENU_FOOTER_TOP, g_model.limitData[ch-1].name, len, HEADER_COLOR|ZCHAR);
   }
 }
 
@@ -666,7 +666,7 @@ void displayMixInfos(coord_t y, MixData *md)
 void displayMixLine(coord_t y, MixData *md)
 {
   if (md->name[0])
-    lcdDrawTextWithLen(EXPO_LINE_NAME_POS, y, md->name, sizeof(md->name), ZCHAR);
+    lcdDrawSizedText(EXPO_LINE_NAME_POS, y, md->name, sizeof(md->name), ZCHAR);
   displayMixInfos(y, md);
   displayFlightModes(MIX_LINE_FM_POS, y, md->flightModes, 0);
 }
@@ -690,7 +690,7 @@ void displayExpoLine(coord_t y, ExpoData *ed)
   displayFlightModes(EXPO_LINE_FM_POS, y, ed->flightModes, 0);
 
   if (ed->name[0]) {
-    lcdDrawTextWithLen(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR);
+    lcdDrawSizedText(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR);
   }
 }
 

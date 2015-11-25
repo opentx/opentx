@@ -470,11 +470,11 @@ void displayLuaError(const char * title)
   if (lua_warning_info[0]) {
     char * split = strstr(lua_warning_info, ": ");
     if (split) {
-      lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, split-lua_warning_info, SMLSIZE);
-      lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, split+2, lua_warning_info+LUA_WARNING_INFO_LEN-split, SMLSIZE);
+      lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, split-lua_warning_info, SMLSIZE);
+      lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, split+2, lua_warning_info+LUA_WARNING_INFO_LEN-split, SMLSIZE);
     }
     else {
-      lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, 40, SMLSIZE);
+      lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, 40, SMLSIZE);
     }
   }
 }
@@ -586,9 +586,9 @@ void luaDoOneRunStandalone(uint8_t evt)
 #if defined(COLORLCD)
 #else
           lcdDrawSolidHorizontalLine(0, 7*FH-1, lcdLastPos+6, ERASE);
-          lcd_puts(0, 7*FH, "GV Use: ");
-          lcd_outdezAtt(lcdLastPos, 7*FH, luaGetMemUsed(), LEFT);
-          lcd_putc(lcdLastPos, 7*FH, 'b');
+          lcdDrawText(0, 7*FH, "GV Use: ");
+          lcdDrawNumber(lcdLastPos, 7*FH, luaGetMemUsed(), LEFT);
+          lcdDrawChar(lcdLastPos, 7*FH, 'b');
           lcdDrawSolidHorizontalLine(0, 7*FH-2, lcdLastPos+6, FORCE);
           lcdDrawVerticalLine(lcdLastPos+6, 7*FH-2, FH+2, SOLID, FORCE);
 #endif

@@ -226,7 +226,7 @@ bool menuModelSetup(evt_t event)
       case ITEM_MODEL_BITMAP:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BITMAP);
         if (ZEXIST(g_model.header.bitmap))
-          lcdDrawTextWithLen(MODEL_SETUP_2ND_COLUMN, y, g_model.header.bitmap, sizeof(g_model.header.bitmap), attr);
+          lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.header.bitmap, sizeof(g_model.header.bitmap), attr);
         else
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VCSWFUNC, 0, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
@@ -742,7 +742,7 @@ bool menuModelFailsafe(evt_t event)
       }
 
       if (lenLabel > 0)
-        lcdDrawTextWithLen(x+1-ofs, y, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR | SMLSIZE);
+        lcdDrawSizedText(x+1-ofs, y, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR | SMLSIZE);
       else
         putsChn(x+1-ofs, y, ch+1, SMLSIZE);
 

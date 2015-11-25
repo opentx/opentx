@@ -83,7 +83,7 @@ void menuModelCustomScriptOne(uint8_t event)
     if (i == ITEM_MODEL_CUSTOMSCRIPT_FILE) {
       lcd_putsLeft(y, STR_SCRIPT);
       if (ZEXIST(sd.file))
-        lcdDrawTextWithLen(SCRIPT_ONE_2ND_COLUMN_POS, y, sd.file, sizeof(sd.file), attr);
+        lcdDrawSizedText(SCRIPT_ONE_2ND_COLUMN_POS, y, sd.file, sizeof(sd.file), attr);
       else
         lcdDrawTextAtIndex(SCRIPT_ONE_2ND_COLUMN_POS, y, STR_VCSWFUNC, 0, attr);
       if (attr && event==EVT_KEY_BREAK(KEY_ENTER) && !READ_ONLY()) {
@@ -106,9 +106,9 @@ void menuModelCustomScriptOne(uint8_t event)
     }
     else if (i <= ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInputsOutputs[s_currIdx].inputsCount) {
       int inputIdx = i-ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL-1;
-      lcdDrawTextWithLen(INDENT_WIDTH, y, scriptInputsOutputs[s_currIdx].inputs[inputIdx].name, 10, 0);
+      lcdDrawSizedText(INDENT_WIDTH, y, scriptInputsOutputs[s_currIdx].inputs[inputIdx].name, 10, 0);
       if (scriptInputsOutputs[s_currIdx].inputs[inputIdx].type == 0) {
-        lcd_outdezAtt(SCRIPT_ONE_2ND_COLUMN_POS, y, g_model.scriptsData[s_currIdx].inputs[inputIdx]+scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, attr|LEFT);
+        lcdDrawNumber(SCRIPT_ONE_2ND_COLUMN_POS, y, g_model.scriptsData[s_currIdx].inputs[inputIdx]+scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, attr|LEFT);
         if (attr) {
           CHECK_INCDEC_MODELVAR(event, g_model.scriptsData[s_currIdx].inputs[inputIdx], scriptInputsOutputs[s_currIdx].inputs[inputIdx].min-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, scriptInputsOutputs[s_currIdx].inputs[inputIdx].max-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def);
         }
@@ -125,19 +125,19 @@ void menuModelCustomScriptOne(uint8_t event)
 
   if (scriptInputsOutputs[s_currIdx].outputsCount > 0) {
     lcdDrawSolidVerticalLine(SCRIPT_ONE_3RD_COLUMN_POS-4, FH+1, LCD_H-FH-1);
-    lcd_puts(SCRIPT_ONE_3RD_COLUMN_POS, FH+1, STR_OUTPUTS);
+    lcdDrawText(SCRIPT_ONE_3RD_COLUMN_POS, FH+1, STR_OUTPUTS);
 
     for (int i=0; i<scriptInputsOutputs[s_currIdx].outputsCount; i++) {
       putsMixerSource(SCRIPT_ONE_3RD_COLUMN_POS+INDENT_WIDTH, FH+1+FH+i*FH, MIXSRC_FIRST_LUA+(s_currIdx*MAX_SCRIPT_OUTPUTS)+i, 0);
-      lcd_outdezNAtt(SCRIPT_ONE_3RD_COLUMN_POS+11*FW+3, FH+1+FH+i*FH, calcRESXto1000(scriptInputsOutputs[s_currIdx].outputs[i].value), PREC1);
+      lcdDrawNumber(SCRIPT_ONE_3RD_COLUMN_POS+11*FW+3, FH+1+FH+i*FH, calcRESXto1000(scriptInputsOutputs[s_currIdx].outputs[i].value), PREC1);
     }
   }
 }
 
 void menuModelCustomScripts(uint8_t event)
 {
-  lcd_outdezAtt(19*FW, 0, luaGetMemUsed(), 0);
-  lcd_puts(19*FW+1, 0, STR_BYTES);
+  lcdDrawNumber(19*FW, 0, luaGetMemUsed(), 0);
+  lcdDrawText(19*FW+1, 0, STR_BYTES);
 
   MENU(STR_MENUCUSTOMSCRIPTS, menuTabModel, e_CustomScripts, MAX_SCRIPTS, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });
 
@@ -159,17 +159,17 @@ void menuModelCustomScripts(uint8_t event)
 
     // LUA script
     if (ZEXIST(sd.file)) {
-      lcdDrawTextWithLen(5*FW, y, sd.file, sizeof(sd.file), 0);
+      lcdDrawSizedText(5*FW, y, sd.file, sizeof(sd.file), 0);
       switch (scriptInternalData[scriptIndex].state) {
         case SCRIPT_SYNTAX_ERROR:
-          lcd_puts(30*FW+2, y, "(error)");
+          lcdDrawText(30*FW+2, y, "(error)");
           break;
         case SCRIPT_KILLED:
-          lcd_puts(29*FW+2, y, "(killed)");
+          lcdDrawText(29*FW+2, y, "(killed)");
           break;
         default:
-          lcd_outdezAtt(34*FW, y, luaGetCpuUsed(scriptIndex));
-          lcd_putc(34*FW, y, '%');
+          lcdDrawNumber(34*FW, y, luaGetCpuUsed(scriptIndex));
+          lcdDrawChar(34*FW, y, '%');
           break;
       }
       scriptIndex++;
@@ -179,6 +179,6 @@ void menuModelCustomScripts(uint8_t event)
     }
 
     // Script name
-    lcdDrawTextWithLen(16*FW, y, sd.name, sizeof(sd.name), ZCHAR);
+    lcdDrawSizedText(16*FW, y, sd.name, sizeof(sd.name), ZCHAR);
   }
 }

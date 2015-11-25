@@ -198,7 +198,7 @@ void menuCommonCalib(uint8_t event)
       steps = calib->count + 1;
     }
     if (steps > 0 && steps <= XPOTS_MULTIPOS_COUNT) {
-      lcd_outdezAtt(LCD_W/2-2+(i-POT1)*5, LCD_H-6, steps, TINSIZE);
+      lcdDrawNumber(LCD_W/2-2+(i-POT1)*5, LCD_H-6, steps, TINSIZE);
     }
   }
 #endif

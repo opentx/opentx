@@ -47,7 +47,7 @@
 
 #define MENUS_SCROLLBAR_WIDTH          2
 #define MENU_COLUMN2_X                 (8 + LCD_W / 2)
-#define lcd_putsColumnLeft(x, y, str)  lcd_puts((x > (LCD_W-10*FW-MENUS_SCROLLBAR_WIDTH)) ? MENU_COLUMN2_X : 0, y, str)
+#define lcd_putsColumnLeft(x, y, str)  lcdDrawText((x > (LCD_W-10*FW-MENUS_SCROLLBAR_WIDTH)) ? MENU_COLUMN2_X : 0, y, str)
 
 // Menus related stuff ...
 typedef uint16_t vertpos_t;
@@ -260,7 +260,7 @@ swsrc_t switchMenuItem(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, uint8
   #define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
 #else
   int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event);
-  #define displayGVar(x, y, v, min, max) lcd_outdez8(x, y, v)
+  #define displayGVar(x, y, v, min, max) lcdDraw8bitsNumber(x, y, v)
 #endif
 
 void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uint8_t active, uint8_t attr=ZCHAR);

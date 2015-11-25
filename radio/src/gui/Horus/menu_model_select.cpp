@@ -71,7 +71,7 @@ void drawModel(coord_t x, coord_t y, const char * name, bool selected)
     lcdDrawBitmapPattern(x+5, y+23, LBM_LIBRARY_SLOT, TEXT_COLOR);
   }
   else {
-    lcdDrawTextWithLen(x+5, y+2, header.name, LEN_MODEL_NAME, ZCHAR|TEXT_COLOR);
+    lcdDrawSizedText(x+5, y+2, header.name, LEN_MODEL_NAME, ZCHAR|TEXT_COLOR);
     putsTimer(x+104, y+41, 0, TEXT_COLOR|LEFT);
     for (int i=0; i<4; i++) {
       lcdDrawBitmapPattern(x+104+i*11, y+25, LBM_SCORE0, TITLE_BGCOLOR);

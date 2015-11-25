@@ -58,7 +58,7 @@ void menuModelTemplates(uint8_t event)
   uint8_t k = 0;
   for (uint8_t i=0; i<LCD_LINES-1 && k<TMPL_COUNT; i++) {
     k = i+s_pgOfs;
-    lcd_outdezNAtt(3*FW, y, k, (sub==k ? INVERS : 0)|LEADING0, 2);
+    lcdDrawNumber(3*FW, y, k, (sub==k ? INVERS : 0)|LEADING0, 2);
     lcdDrawTextAtIndex(4*FW, y, STR_VTEMPLATES, k, (sub==k ? INVERS  : 0));
     y+=FH;
   }

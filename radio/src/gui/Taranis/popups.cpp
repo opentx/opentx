@@ -58,7 +58,7 @@ void displayBox(const char *title)
 {
   lcdDrawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
   lcdDrawRect(10, 16, LCD_W-20, 40);
-  lcd_putsn(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN);
+  lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN);
   // could be a place for a s_warning_info
 }
 
@@ -84,9 +84,9 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 #endif
 
   lcdDrawFilledRect(MESSAGE_LCD_OFFSET, 0, LCD_W-MESSAGE_LCD_OFFSET, 32);
-  if (t) lcd_puts(MESSAGE_LCD_OFFSET, 5*FH, t);
+  if (t) lcdDrawText(MESSAGE_LCD_OFFSET, 5*FH, t);
   if (last) {
-    lcd_puts(MESSAGE_LCD_OFFSET, 7*FH, last);
+    lcdDrawText(MESSAGE_LCD_OFFSET, 7*FH, last);
     AUDIO_ERROR_MESSAGE(sound);
   }
 
@@ -102,9 +102,9 @@ void displayWarning(uint8_t event)
   s_warning_result = false;
   displayBox(s_warning);
   if (s_warning_info) {
-    lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y+FH, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
+    lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
   }
-  lcd_puts(WARNING_LINE_X, WARNING_LINE_Y+2*FH, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
       if (s_warning_type == WARNING_TYPE_ASTERISK)

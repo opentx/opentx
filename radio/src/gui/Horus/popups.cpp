@@ -97,7 +97,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 void displayPopup(const char *title)
 {
   // displayMessageBox();
-  lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN, DBLSIZE|WARNING_COLOR);
+  lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN, DBLSIZE|WARNING_COLOR);
   lcdRefresh();
 }
 
@@ -108,9 +108,9 @@ void displayWarning(evt_t event)
     displayMessageBox();
   else
     displayWarningBox();
-  lcdDrawTextWithLen(WARNING_LINE_X, WARNING_LINE_Y, s_warning, WARNING_LINE_LEN, DBLSIZE | (s_warning_type == WARNING_TYPE_INPUT ? WARNING_COLOR : ALARM_COLOR));
+  lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, s_warning, WARNING_LINE_LEN, DBLSIZE | (s_warning_type == WARNING_TYPE_INPUT ? WARNING_COLOR : ALARM_COLOR));
   if (s_warning_info) {
-    lcdDrawTextWithLen(WARNING_LINE_X, WARNING_INFOLINE_Y, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
+    lcdDrawSizedText(WARNING_LINE_X, WARNING_INFOLINE_Y, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
   }
   lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y+20, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
   switch (event) {

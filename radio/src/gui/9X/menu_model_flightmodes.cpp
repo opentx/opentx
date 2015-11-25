@@ -42,7 +42,7 @@ void displayFlightModes(coord_t x, coord_t y, FlightModesType value)
   do {
     --p;
     if (!(value & (1<<p)))
-      lcd_putc(x, y, '0'+p);
+      lcdDrawChar(x, y, '0'+p);
     x -= FWNUM;
   } while (p!=0);
 }
@@ -189,7 +189,7 @@ void menuModelPhaseOne(uint8_t event)
         }
 
         uint8_t p = getGVarFlightPhase(s_currIdx, idx);
-        lcd_outdezAtt(21*FW, y, GVAR_VALUE(idx, p), posHorz==2 ? attr : 0);
+        lcdDrawNumber(21*FW, y, GVAR_VALUE(idx, p), posHorz==2 ? attr : 0);
         if (attr && posHorz==2 && ((editMode>0) || p1valdiff)) {
           GVAR_VALUE(idx, p) = checkIncDec(event, GVAR_VALUE(idx, p), -GVAR_LIMIT, GVAR_LIMIT, EE_MODEL);
         }
@@ -253,9 +253,9 @@ void menuModelFlightModesAll(uint8_t event)
     FlightModeData *p = flightModeAddress(i);
     putsFlightMode(0, y, i+1, att|(getFlightMode()==i ? BOLD : 0));
 
-    lcdDrawTextWithLen(4*FW+NAME_OFS, y, p->name, sizeof(p->name), ZCHAR);
+    lcdDrawSizedText(4*FW+NAME_OFS, y, p->name, sizeof(p->name), ZCHAR);
     if (i == 0) {
-      lcd_puts((5+LEN_FLIGHT_MODE_NAME)*FW+SWITCH_OFS, y, STR_DEFAULT);
+      lcdDrawText((5+LEN_FLIGHT_MODE_NAME)*FW+SWITCH_OFS, y, STR_DEFAULT);
     }
     else {
       putsSwitches((5+LEN_FLIGHT_MODE_NAME)*FW+SWITCH_OFS, y, p->swtch, 0);
@@ -270,7 +270,7 @@ void menuModelFlightModesAll(uint8_t event)
     }
 
     if (p->fadeIn || p->fadeOut) {
-      lcd_putc(LCD_W-FW-MENUS_SCROLLBAR_WIDTH, y, (p->fadeIn && p->fadeOut) ? '*' : (p->fadeIn ? 'I' : 'O'));
+      lcdDrawChar(LCD_W-FW-MENUS_SCROLLBAR_WIDTH, y, (p->fadeIn && p->fadeOut) ? '*' : (p->fadeIn ? 'I' : 'O'));
     }
   }
 

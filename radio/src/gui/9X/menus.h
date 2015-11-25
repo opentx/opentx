@@ -114,9 +114,9 @@ void menuTraceBuffer(uint8_t event);
   void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
 #elif defined(GRAPHICS)
   void display5posSlider(coord_t x, coord_t y, uint8_t value, uint8_t attr);
-  #define drawSlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
+  #define drawSlider(x, y, value, max, attr) lcdDrawNumber(x, y, value, attr|LEFT)
 #else
-  #define drawSlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
+  #define drawSlider(x, y, value, max, attr) lcdDrawNumber(x, y, value, attr|LEFT)
 #endif
 
 #if defined(NAVIGATION_POT1)
@@ -327,7 +327,7 @@ int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, uint8_t
   #define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
 #else
   int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event);
-  #define displayGVar(x, y, v, min, max) lcd_outdez8(x, y, v)
+  #define displayGVar(x, y, v, min, max) lcdDraw8bitsNumber(x, y, v)
 #endif
 
 void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uint8_t active);

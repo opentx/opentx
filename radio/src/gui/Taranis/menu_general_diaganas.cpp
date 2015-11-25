@@ -47,16 +47,16 @@ void menuGeneralDiagAna(uint8_t event)
     coord_t y = MENU_HEADER_HEIGHT + 1 + (i/3)*FH;
     const uint8_t x_coord[] = {0, 70, 154};
     uint8_t x = x_coord[i%3];
-    lcd_outdezNAtt(x, y, i+1, LEADING0|LEFT, 2);
-    lcd_putc(x+2*FW-2, y, ':');
+    lcdDrawNumber(x, y, i+1, LEADING0|LEFT, 2);
+    lcdDrawChar(x+2*FW-2, y, ':');
 #else
     coord_t y = MENU_HEADER_HEIGHT + 1 + (i/2)*FH;
     uint8_t x = i&1 ? 64+5 : 0;
     putsStrIdx(x, y, PSTR("A"), i+1);
-    lcd_putc(lcdNextPos, y, ':');
+    lcdDrawChar(lcdNextPos, y, ':');
 #endif
-    lcd_outhex4(x+3*FW-1, y, anaIn(i));
-    lcd_outdez8(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+    lcdDrawHexNumber(x+3*FW-1, y, anaIn(i));
+    lcdDraw8bitsNumber(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
   }
 
   lcd_putsLeft(MENU_HEADER_HEIGHT+1+5*FH, STR_BATT_CALIB);

@@ -244,7 +244,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
           else if (func == FUNC_PLAY_TRACK || func == FUNC_BACKGND_MUSIC || func == FUNC_PLAY_SCRIPT) {
             coord_t x = MODEL_CUSTOM_FUNC_3RD_COLUMN;
             if (ZEXIST(cfn->play.name))
-              lcdDrawTextWithLen(x, y, cfn->play.name, sizeof(cfn->play.name), attr);
+              lcdDrawSizedText(x, y, cfn->play.name, sizeof(cfn->play.name), attr);
             else
               lcdDrawTextAtIndex(x, y, STR_VCSWFUNC, 0, attr);
             if (active && event==EVT_KEY_BREAK(KEY_ENTER)) {

@@ -37,10 +37,10 @@
 
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value)
 {
-  lcd_puts(x, y, STR_FP);
+  lcdDrawText(x, y, STR_FP);
   x = lcdNextPos + 1;
   for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
-    lcd_putc(x, y, ((value & (1<<p)) ? '-' : '0'+p));
+    lcdDrawChar(x, y, ((value & (1<<p)) ? '-' : '0'+p));
     x += 5;
   }
 }
@@ -141,12 +141,12 @@ void menuModelFlightModesAll(uint8_t event)
         }
 
         case ITEM_FLIGHT_MODES_FADE_IN:
-          lcd_outdezAtt(32*FW-2, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1);
+          lcdDrawNumber(32*FW-2, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1);
           if (active) p->fadeIn = checkIncDec(event, p->fadeIn, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
           break;
 
         case ITEM_FLIGHT_MODES_FADE_OUT:
-          lcd_outdezAtt(35*FW, y, (10/DELAY_STEP)*p->fadeOut, attr|PREC1);
+          lcdDrawNumber(35*FW, y, (10/DELAY_STEP)*p->fadeOut, attr|PREC1);
           if (active) p->fadeOut = checkIncDec(event, p->fadeOut, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
           break;
 

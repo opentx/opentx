@@ -81,7 +81,7 @@ void menuModelGVars(uint8_t event)
     int i = l+s_pgOfs;
     coord_t y = MENU_HEADER_HEIGHT + 1 + l*FH;
 
-    if (g_model.gvars[i].popup) lcd_putc(3*FW, y, '!');
+    if (g_model.gvars[i].popup) lcdDrawChar(3*FW, y, '!');
     putsStrIdx(0, y, STR_GV, i+1, (sub==i && m_posHorz<0) ? INVERS : 0);
 
     for (int j=0; j<1+MAX_FLIGHT_MODES; j++) {
@@ -107,9 +107,9 @@ void menuModelGVars(uint8_t event)
           }
           else {
             if (abs(v) >= 100)
-              lcd_outdezAtt(x, y+1, v, attr | TINSIZE);
+              lcdDrawNumber(x, y+1, v, attr | TINSIZE);
             else
-              lcd_outdezAtt(x, y, v, attr);
+              lcdDrawNumber(x, y, v, attr);
             vmin = -GVAR_MAX; vmax = GVAR_MAX;
           }
           if (attr) {

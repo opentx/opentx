@@ -233,7 +233,7 @@ static int luaLcdDrawNumber(lua_State *L)
     n = val * 10;
   else
     n = val;
-  lcd_outdezAtt(x, y, n, att);
+  lcdDrawNumber(x, y, n, att);
   return 0;
 }
 
