@@ -1,3 +1,8 @@
 #define DATE    "@DATE@"
 #define TIME    "@TIME@"
 #define VERSION "@VERSION@"
+
+#define VERSION_MAJOR     @VERSION_MAJOR@
+#define VERSION_MINOR     @VERSION_MINOR@
+#define VERSION_REVISION  @VERSION_REVISION@
+#define GIT_STR           "@GIT_STR@"

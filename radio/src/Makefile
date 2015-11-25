@@ -404,7 +404,11 @@ else
 endif
 TRANSLATE = -$(PYTHON) ../util/translate.py
 
-VERSION = 2.2.0$(OPENTX_VERSION_SUFFIX)
+VERSION_MAJOR = 2
+VERSION_MINOR = 2
+VERSION_REVISION = 0
+
+VERSION = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_REVISION)$(OPENTX_VERSION_SUFFIX)
 
 THIRDPARTY = thirdparty
 COOSDIR = $(THIRDPARTY)/CoOS
@@ -1036,7 +1040,7 @@ ifeq ($(PCB), TARANIS)
     CPPSRC += lua/interface.cpp lua/api_general.cpp lua/api_lcd.cpp lua/api_model.cpp
     LUASRC = $(LUADIR)/lapi.c $(LUADIR)/lcode.c $(LUADIR)/lctype.c $(LUADIR)/ldebug.c $(LUADIR)/ldo.c $(LUADIR)/ldump.c $(LUADIR)/lfunc.c $(LUADIR)/lgc.c $(LUADIR)/llex.c $(LUADIR)/lmem.c \
            $(LUADIR)/lobject.c $(LUADIR)/lopcodes.c $(LUADIR)/lparser.c $(LUADIR)/lstate.c $(LUADIR)/lstring.c $(LUADIR)/ltable.c $(LUADIR)/lrotable.c $(LUADIR)/ltm.c $(LUADIR)/lundump.c $(LUADIR)/lvm.c $(LUADIR)/lzio.c \
-           $(LUADIR)/lbaselib.c $(LUADIR)/linit.c $(LUADIR)/lmathlib.c $(LUADIR)/lbitlib.c $(LUADIR)/loadlib.c $(LUADIR)/lauxlib.c $(LUADIR)/ltablib.c $(LUADIR)/lcorolib.c $(LUADIR)/liolib.c
+           $(LUADIR)/lbaselib.c $(LUADIR)/linit.c $(LUADIR)/lmathlib.c $(LUADIR)/lbitlib.c $(LUADIR)/loadlib.c $(LUADIR)/lauxlib.c $(LUADIR)/ltablib.c $(LUADIR)/lcorolib.c $(LUADIR)/liolib.c $(LUADIR)/lstrlib.c
     SRC += $(LUASRC)
     LUADEP = lua/lua_exports_taranis.inc
 	ifeq ($(USE_BIN_ALLOCATOR), YES)
@@ -1785,9 +1789,23 @@ sym: $(TARGET).sym
 
 # Build stamp-file
 stamp.h:
+	@echo "// Automatically generated file (Makefile) - do not edit" > stamp.h
 	@echo "#define DATE    \"`date +%Y-%m-%d | tr -d '\r\n'`\"" > stamp.h
 	@echo "#define TIME    \"`date +%H:%M:%S | tr -d '\r\n'`\"" >> stamp.h
 	@echo "#define VERSION \"$(VERSION)\"" >> stamp.h
+	@echo "" >> stamp.h
+	@echo "#define VERSION_MAJOR     $(VERSION_MAJOR)" >> stamp.h
+	@echo "#define VERSION_MINOR     $(VERSION_MINOR)" >> stamp.h
+	@echo "#define VERSION_REVISION  $(VERSION_REVISION)" >> stamp.h
+	@echo "#define GIT_STR           \"$(shell git rev-parse HEAD)\"" >> stamp.h
+
+opentx-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.txt
+	@echo "#define GIT_STR \"$(shell git rev-parse HEAD)\"" >> stamp-opentx.txt
+	@cat stamp-opentx.txt
+
 
 translations/en.h: translations/en.h.txt
 	@echo
