@@ -43,7 +43,7 @@
 
 struct MenuItem {
   const char *name;
-  const menuHandlerFunc action;
+  const MenuHandlerFunc action;
 };
 
 int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable=NULL);

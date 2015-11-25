@@ -36,7 +36,7 @@
 
 #include "../../opentx.h"
 
-menuHandlerFunc menuHandlers[5];
+MenuHandlerFunc menuHandlers[5];
 uint8_t menuEvent = 0;
 uint8_t menuVerticalPositions[4];
 uint8_t menuLevel = 0;
@@ -49,14 +49,14 @@ void popMenu()
   TRACE("popMenu(%d)", menuLevel);
 }
 
-void chainMenu(menuHandlerFunc newMenu)
+void chainMenu(MenuHandlerFunc newMenu)
 {
   menuHandlers[menuLevel] = newMenu;
   menuEvent = EVT_ENTRY;
   TRACE("chainMenu(%d, %p)", menuLevel, newMenu);
 }
 
-void pushMenu(menuHandlerFunc newMenu)
+void pushMenu(MenuHandlerFunc newMenu)
 {
   killEvents(KEY_ENTER);
 
