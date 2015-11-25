@@ -261,6 +261,7 @@ MAVLINK_HELPER uint8_t mavlink_parse_char(uint8_t chan, uint8_t c, mavlink_messa
 	mavlink_message_t* rxmsg = mavlink_get_channel_buffer(chan); ///< The currently decoded message
 	mavlink_status_t* status = mavlink_get_channel_status(chan); ///< The current decode status
 	int bufferIndex = 0;
+	int checker = 0;
 
 	status->msg_received = 0;
 
@@ -278,13 +279,13 @@ MAVLINK_HELPER uint8_t mavlink_parse_char(uint8_t chan, uint8_t c, mavlink_messa
 		break;
 
 	case MAVLINK_PARSE_STATE_GOT_STX:
-			if (status->msg_received 
+		checker = status->msg_received; 
 /* Support shorter buffers than the
    default maximum packet size */
 #if (MAVLINK_MAX_PAYLOAD_LEN < 255)
-				|| c > MAVLINK_MAX_PAYLOAD_LEN
+		checker = checker || c > MAVLINK_MAX_PAYLOAD_LEN;
 #endif
-				)
+		if (checker)
 		{
 			status->buffer_overrun++;
 			status->parse_error++;
