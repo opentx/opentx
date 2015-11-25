@@ -420,6 +420,7 @@ void displayWarning(uint8_t event);
     #define POPUP_MENU_ADD_SD_ITEM(s)
   #endif
   #define MENU_LINE_LENGTH             (LEN_MODEL_NAME+1)
+  #define POPUP_MENU_ITEMS_FROM_BSS()  (popupMenuFlags = BSS)
   extern const char *popupMenuItems[POPUP_MENU_MAX_LINES];
   extern uint16_t popupMenuNoItems;
   extern uint8_t popupMenuFlags;

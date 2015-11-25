@@ -97,9 +97,7 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
   }
 
   popupMenuNoItems = 0;
-#if !defined(CPUARM)
-  popupMenuFlags = BSS;
-#endif
+  POPUP_MENU_ITEMS_FROM_BSS();
 
   FRESULT res = f_opendir(&dir, path);        /* Open the directory */
   if (res == FR_OK) {
