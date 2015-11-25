@@ -285,7 +285,7 @@ MAVLINK_HELPER uint8_t mavlink_parse_char(uint8_t chan, uint8_t c, mavlink_messa
 #if (MAVLINK_MAX_PAYLOAD_LEN < 255)
 		checker = checker || c > MAVLINK_MAX_PAYLOAD_LEN;
 #endif
-		if (checker){
+		if (checker) {
 			status->buffer_overrun++;
 			status->parse_error++;
 			status->msg_received = 0;
