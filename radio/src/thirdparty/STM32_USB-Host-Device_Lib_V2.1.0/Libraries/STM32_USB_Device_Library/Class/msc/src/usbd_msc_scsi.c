@@ -446,8 +446,7 @@ static int8_t SCSI_StartStopUnit(uint8_t lun, uint8_t *params)
 #else
   check_lun = (lun < 1); 
 #endif
-  if (check_lun)
-  {
+  if (check_lun){
     if (params[4] & 1) {
       // lun to be active
       lunReady[lun] = 1 ;
