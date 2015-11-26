@@ -137,7 +137,7 @@ void menuGeneralSetup(uint8_t event)
   struct gtm t;
   gettime(&t);
 
-  if ((m_posVert==ITEM_SETUP_DATE+1 || m_posVert==ITEM_SETUP_TIME+1) &&
+  if ((menuVerticalPosition==ITEM_SETUP_DATE+1 || menuVerticalPosition==ITEM_SETUP_TIME+1) &&
       (s_editMode>0) &&
       (event==EVT_KEY_FIRST(KEY_ENTER) || event==EVT_KEY_FIRST(KEY_EXIT) || IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event))) {
     // set the date and time into RTC chip
@@ -146,8 +146,8 @@ void menuGeneralSetup(uint8_t event)
 #endif
 
 #if defined(FAI_CHOICE)
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     g_eeGeneral.fai = true;
     storageDirty(EE_GENERAL);
   }
@@ -155,11 +155,11 @@ void menuGeneralSetup(uint8_t event)
 
   MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX+1, {0, CASE_RTCLOCK(2) CASE_RTCLOCK(2) CASE_BATTGRAPH(1) LABEL(SOUND), CASE_AUDIO(0) CASE_BUZZER(0) CASE_VOICE(0) CASE_CPUARM(0) CASE_CPUARM(0) CASE_CPUARM(0) 0, CASE_AUDIO(0) CASE_VARIO_CPUARM(LABEL(VARIO)) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) 0, LABEL(ALARMS), 0, CASE_CAPACITY(0) CASE_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, CASE_CPUARM(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, CASE_SPLASH_PARAM(0) CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) CASE_CPUARM(0) CASE_CPUARM(0) IF_FAI_CHOICE(0) CASE_MAVLINK(0) CASE_CPUARM(0) 0, COL_TX_MODE, 1/*to force edit mode*/});
 
-  uint8_t sub = m_posVert - 1;
+  uint8_t sub = menuVerticalPosition - 1;
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+s_pgOfs;
+    uint8_t k = i+menuVerticalOffset;
     uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     uint8_t attr = (sub == k ? blink : 0);
 
@@ -169,7 +169,7 @@ void menuGeneralSetup(uint8_t event)
         lcd_putsLeft(y, STR_DATE);
         lcdDrawChar(RADIO_SETUP_DATE_COLUMN, y, '-'); lcdDrawChar(RADIO_SETUP_DATE_COLUMN+3*FW-2, y, '-');
         for (uint8_t j=0; j<3; j++) {
-          uint8_t rowattr = (m_posHorz==j ? attr : 0);
+          uint8_t rowattr = (menuHorizontalPosition==j ? attr : 0);
           switch (j) {
             case 0:
               lcdDrawNumber(RADIO_SETUP_DATE_COLUMN, y, t.tm_year+1900, rowattr);
@@ -200,7 +200,7 @@ void menuGeneralSetup(uint8_t event)
         lcd_putsLeft(y, STR_TIME);
         lcdDrawChar(RADIO_SETUP_TIME_COLUMN+1, y, ':'); lcdDrawChar(RADIO_SETUP_TIME_COLUMN+3*FW-2, y, ':');
         for (uint8_t j=0; j<3; j++) {
-          uint8_t rowattr = (m_posHorz==j ? attr : 0);
+          uint8_t rowattr = (menuHorizontalPosition==j ? attr : 0);
           switch (j) {
             case 0:
               lcdDrawNumber(RADIO_SETUP_TIME_COLUMN, y, t.tm_hour, rowattr|LEADING0, 2);
@@ -224,11 +224,11 @@ void menuGeneralSetup(uint8_t event)
 #if defined(BATTGRAPH)
       case ITEM_SETUP_BATT_RANGE:
         lcd_putsLeft(y, STR_BATTERY_RANGE);
-        putsVolts(RADIO_SETUP_2ND_COLUMN, y,  90+g_eeGeneral.vBatMin, (m_posHorz==0 ? attr : 0)|LEFT|NO_UNIT);
+        putsVolts(RADIO_SETUP_2ND_COLUMN, y,  90+g_eeGeneral.vBatMin, (menuHorizontalPosition==0 ? attr : 0)|LEFT|NO_UNIT);
         lcdDrawChar(lcdLastPos, y, '-');
-        putsVolts(lcdLastPos+FW, y, 120+g_eeGeneral.vBatMax, (m_posHorz>0 ? attr : 0)|LEFT|NO_UNIT);
+        putsVolts(lcdLastPos+FW, y, 120+g_eeGeneral.vBatMax, (menuHorizontalPosition>0 ? attr : 0)|LEFT|NO_UNIT);
         if (attr && s_editMode>0) {
-          if (m_posHorz==0)
+          if (menuHorizontalPosition==0)
             CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMin, -50, g_eeGeneral.vBatMax+29); // min=4.0V
           else
             CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMax, g_eeGeneral.vBatMin-29, +40); // max=16.0V

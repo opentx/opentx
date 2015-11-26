@@ -50,7 +50,7 @@ enum FlightModesItems {
 
 bool isTrimModeAvailable(int mode)
 {
-  return (mode < 0 || (mode%2) == 0 || (mode/2) != m_posVert);
+  return (mode < 0 || (mode%2) == 0 || (mode/2) != menuVerticalPosition);
 }
 
 #define FLIGHT_MODES_NAME_COLUMN      60
@@ -64,12 +64,12 @@ bool menuModelFlightModesAll(evt_t event)
 {
   MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, MAX_FLIGHT_MODES+1, DEFAULT_SCROLLBAR_X, { NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, 0});
 
-  int sub = m_posVert;
+  int sub = menuVerticalPosition;
 
-  horzpos_t posHorz = m_posHorz;
+  horzpos_t posHorz = menuHorizontalPosition;
   if (sub==0 && posHorz == 1) {
     REPEAT_LAST_CURSOR_MOVE(0);
-    posHorz = m_posHorz;
+    posHorz = menuHorizontalPosition;
   }
 
   if (sub<MAX_FLIGHT_MODES && posHorz>=0) {
@@ -78,7 +78,7 @@ bool menuModelFlightModesAll(evt_t event)
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
-    int k = i+s_pgOfs;
+    int k = i+menuVerticalOffset;
 
     if (k==MAX_FLIGHT_MODES) {
       // last line available - add the "check trims" line
@@ -111,7 +111,7 @@ bool menuModelFlightModesAll(evt_t event)
 
     FlightModeData *p = flightModeAddress(k);
 
-    putsFlightMode(MENUS_MARGIN_LEFT, y, k+1, (getFlightMode()==k ? 0/*BOLD*/ : 0) | ((sub==k && m_posHorz<0) ? INVERS : 0));
+    putsFlightMode(MENUS_MARGIN_LEFT, y, k+1, (getFlightMode()==k ? 0/*BOLD*/ : 0) | ((sub==k && menuHorizontalPosition<0) ? INVERS : 0));
 
     for (int j=0; j<ITEM_FLIGHT_MODES_COUNT; j++) {
       LcdFlags attr = ((sub==k && posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);

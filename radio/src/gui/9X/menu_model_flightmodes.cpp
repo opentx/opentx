@@ -90,7 +90,7 @@ void menuModelPhaseOne(uint8_t event)
   #define PHASE_ONE_FIRST_LINE (1+1*FH)
 #endif
 
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
   int8_t editMode = s_editMode;
 
 #if defined(GVARS) && !defined(PCBSTD)
@@ -98,7 +98,7 @@ void menuModelPhaseOne(uint8_t event)
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
-    int8_t i = k + s_pgOfs;
+    int8_t i = k + menuVerticalOffset;
     if (s_currIdx == 0 && i>=ITEM_MODEL_PHASE_SWITCH) i += ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH;
     uint8_t attr = (sub==i ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
 #else
@@ -116,8 +116,8 @@ void menuModelPhaseOne(uint8_t event)
       case ITEM_MODEL_PHASE_TRIMS:
         lcd_putsLeft(y, STR_TRIMS);
         for (uint8_t t=0; t<NUM_STICKS; t++) {
-          putsTrimMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, m_posHorz==t ? attr : 0);
-          if (attr && m_posHorz==t && ((editMode>0) || p1valdiff)) {
+          putsTrimMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, menuHorizontalPosition==t ? attr : 0);
+          if (attr && menuHorizontalPosition==t && ((editMode>0) || p1valdiff)) {
             int16_t v = getRawTrimValue(s_currIdx, t);
             if (v < TRIM_EXTENDED_MAX) v = TRIM_EXTENDED_MAX;
             v = checkIncDec(event, v, TRIM_EXTENDED_MAX, TRIM_EXTENDED_MAX+MAX_FLIGHT_MODES-1, EE_MODEL);
@@ -133,8 +133,8 @@ void menuModelPhaseOne(uint8_t event)
       case ITEM_MODEL_PHASE_ROTARY_ENCODERS:
         lcd_putsLeft(y, STR_ROTARY_ENCODER);
         for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
-          putsRotaryEncoderMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, m_posHorz==t ? attr : 0);
-          if (attr && m_posHorz==t && ((editMode>0) || p1valdiff)) {
+          putsRotaryEncoderMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, menuHorizontalPosition==t ? attr : 0);
+          if (attr && menuHorizontalPosition==t && ((editMode>0) || p1valdiff)) {
             int16_t v = flightModeAddress(s_currIdx)->rotaryEncoders[t];
             if (v < ROTARY_ENCODER_MAX) v = ROTARY_ENCODER_MAX;
             v = checkIncDec(event, v, ROTARY_ENCODER_MAX, ROTARY_ENCODER_MAX+MAX_FLIGHT_MODES-1, EE_MODEL);
@@ -163,7 +163,7 @@ void menuModelPhaseOne(uint8_t event)
       default:
       {
         uint8_t idx = i-ITEM_MODEL_PHASE_GV1;
-        uint8_t posHorz = m_posHorz;
+        uint8_t posHorz = menuHorizontalPosition;
         if (attr && posHorz > 0 && s_currIdx==0) posHorz++;
 
         putsStrIdx(INDENT_WIDTH, y, STR_GV, idx+1);
@@ -223,7 +223,7 @@ void menuModelFlightModesAll(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, 1+MAX_FLIGHT_MODES+1);
 
-  int8_t sub = m_posVert - 1;
+  int8_t sub = menuVerticalPosition - 1;
 
   switch (event) {
     CASE_EVT_ROTARY_BREAK
@@ -244,7 +244,7 @@ void menuModelFlightModesAll(uint8_t event)
   uint8_t att;
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
 #if defined(CPUARM)
-    int8_t y = 1 + (1+i-s_pgOfs)*FH;
+    int8_t y = 1 + (1+i-menuVerticalOffset)*FH;
     if (y<1*FH+1 || y>(LCD_LINES-1)*FH+1) continue;
 #else
     uint8_t y = 1 + (i+1)*FH;
@@ -275,7 +275,7 @@ void menuModelFlightModesAll(uint8_t event)
   }
 
 #if defined(CPUARM)
-  if (s_pgOfs != MAX_FLIGHT_MODES-(LCD_LINES-2)) return;
+  if (menuVerticalOffset != MAX_FLIGHT_MODES-(LCD_LINES-2)) return;
 #endif
 
   lcd_putsLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);

@@ -99,7 +99,7 @@ uint8_t editDelay(const coord_t y, const uint8_t event, const uint8_t attr, cons
 }
 #define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
 
-const MenuFuncP menuTabModel[] PROGMEM = {
+const MenuHandlerFunc menuTabModel[] PROGMEM = {
   menuModelSelect,
   menuModelSetup,
   CASE_HELI(menuModelHeli)
@@ -122,7 +122,7 @@ static int8_t s_copySrcRow;
 static int8_t s_copyTgtOfs;
 
 #if defined(CPUM64)
-  #define editNameCursorPos m_posHorz
+  #define editNameCursorPos menuHorizontalPosition
 #else
   static uint8_t editNameCursorPos = 0;
 #endif

@@ -56,13 +56,13 @@ void readTextFile(int & lines_count)
 
   result = f_open(&file, s_text_file, FA_OPEN_EXISTING | FA_READ);
   if (result == FR_OK) {
-    for (int i=0; i<TEXT_FILE_MAXSIZE && f_read(&file, &c, 1, &sz)==FR_OK && sz==1 && (lines_count==0 || current_line-s_pgOfs<NUM_BODY_LINES); i++) {
+    for (int i=0; i<TEXT_FILE_MAXSIZE && f_read(&file, &c, 1, &sz)==FR_OK && sz==1 && (lines_count==0 || current_line-menuVerticalOffset<NUM_BODY_LINES); i++) {
       if (c == '\n') {
         ++current_line;
         line_length = 0;
         escape = 0;
       }
-      else if (c!='\r' && current_line>=s_pgOfs && current_line-s_pgOfs<NUM_BODY_LINES && line_length<LCD_COLS) {
+      else if (c!='\r' && current_line>=menuVerticalOffset && current_line-menuVerticalOffset<NUM_BODY_LINES && line_length<LCD_COLS) {
         if (c=='\\' && escape==0) {
           escape = 1;
           continue;
@@ -89,7 +89,7 @@ void readTextFile(int & lines_count)
           c = 0x1D; //tab
         }
         escape = 0;
-        s_text_screen[current_line-s_pgOfs][line_length++] = c;
+        s_text_screen[current_line-menuVerticalOffset][line_length++] = c;
       }
     }
     if (c != '\n') {
@@ -111,24 +111,24 @@ bool menuTextView(evt_t event)
 
   switch (event) {
     case EVT_ENTRY:
-      s_pgOfs = 0;
+      menuVerticalOffset = 0;
       lines_count = 0;
       readTextFile(lines_count);
       break;
 
     case EVT_KEY_FIRST(KEY_UP):
-      if (s_pgOfs == 0)
+      if (menuVerticalOffset == 0)
         break;
       else
-        s_pgOfs--;
+        menuVerticalOffset--;
       readTextFile(lines_count);
       break;
 
     case EVT_KEY_FIRST(KEY_DOWN):
-      if (s_pgOfs+NUM_BODY_LINES >= lines_count)
+      if (menuVerticalOffset+NUM_BODY_LINES >= lines_count)
         break;
       else
-        ++s_pgOfs;
+        ++menuVerticalOffset;
       readTextFile(lines_count);
       break;
 
@@ -147,7 +147,7 @@ bool menuTextView(evt_t event)
 #endif
   lcd_putsCenter(MENU_FOOTER_TOP, title, HEADER_COLOR);
 
-  drawVerticalScrollbar(LCD_W-5, 30, MENU_FOOTER_TOP-34, s_pgOfs, lines_count, NUM_BODY_LINES);
+  drawVerticalScrollbar(LCD_W-5, 30, MENU_FOOTER_TOP-34, menuVerticalOffset, lines_count, NUM_BODY_LINES);
 
   return true;
 }

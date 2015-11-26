@@ -80,7 +80,7 @@ enum EnumTabDiag {
   e_Vers,
 };
 
-const MenuFuncP menuTabGeneral[] PROGMEM = {
+const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
   menuGeneralSetup,
   menuGeneralSdManager,
   menuGeneralCustomFunctions,

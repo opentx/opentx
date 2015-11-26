@@ -359,9 +359,9 @@ void *main_thread(void *)
     
     s_current_protocol[0] = 255;
 
-    g_menuStackPtr = 0;
-    g_menuStack[0] = menuMainView;
-    g_menuStack[1] = menuModelSelect;
+    menuLevel = 0;
+    menuHandlers[0] = menuMainView;
+    menuHandlers[1] = menuModelSelect;
 
     storageReadAll(); // load general setup and selected model
 

@@ -129,26 +129,26 @@ void perMain()
 #endif
 
 #if defined(GUI)
-  const char *warn = s_warning;
-  uint8_t menu = s_menu_count;
+  const char *warn = warningText;
+  bool popupMenuActive = (popupMenuNoItems > 0);
 
   if (IS_LCD_REFRESH_ALLOWED()) { // No need to redraw until lcdRefresh_ST7920(0) below completely refreshes the display.
     lcdClear();
     if (menuEvent) {
-      m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
-      m_posHorz = 0;
+      menuVerticalPosition = menuEvent == EVT_ENTRY_UP ? menuVerticalPositions[menuLevel] : 0;
+      menuHorizontalPosition = 0;
       evt = menuEvent;
       menuEvent = 0;
       AUDIO_MENUS();
     }
-    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+    menuHandlers[menuLevel]((warn || popupMenuActive) ? 0 : evt);
 
     if (warn) DISPLAY_WARNING(evt);
 #if defined(NAVIGATION_MENUS)
-    if (menu) {
-      const char * result = displayMenu(evt);
+    if (popupMenuActive) {
+      const char * result = displayPopupMenu(evt);
       if (result) {
-        menuHandler(result);
+        popupMenuHandler(result);
       }
     }
 #endif

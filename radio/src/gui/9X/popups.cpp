@@ -36,17 +36,17 @@
 
 #include "../../opentx.h"
 
-const pm_char * s_warning = NULL;
-const pm_char * s_warning_info;
-uint8_t         s_warning_info_len;
-uint8_t         s_warning_type;
-uint8_t         s_warning_result = 0;
+const pm_char * warningText = NULL;
+const pm_char * warningInfoText;
+uint8_t         warningInfoLength;
+uint8_t         warningType;
+uint8_t         warningResult = 0;
 
 #if defined(CPUARM)
-uint8_t         s_warning_info_flags = ZCHAR;
-int16_t         s_warning_input_value;
-int16_t         s_warning_input_min;
-int16_t         s_warning_input_max;
+uint8_t         warningInfoFlags = ZCHAR;
+int16_t         warningInputValue;
+int16_t         warningInputValueMin;
+int16_t         warningInputValueMax;
 #endif
 
 void displayBox()
@@ -54,18 +54,18 @@ void displayBox()
   lcdDrawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
   lcdDrawRect(10, 16, LCD_W-20, 40);
 #if defined(CPUARM)
-  lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, s_warning, WARNING_LINE_LEN);
+  lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, warningText, WARNING_LINE_LEN);
 #else
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, s_warning);
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, warningText);
 #endif
-  // could be a place for a s_warning_info
+  // could be a place for a warningInfoText
 }
 
 void displayPopup(const pm_char * pstr)
 {
-  s_warning = pstr;
+  warningText = pstr;
   displayBox();
-  s_warning = NULL;
+  warningText = NULL;
   lcdRefresh();
 }
 
@@ -100,34 +100,34 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 
 void displayWarning(uint8_t event)
 {
-  s_warning_result = false;
+  warningResult = false;
   displayBox();
-  if (s_warning_info) {
-    lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
+  if (warningInfoText) {
+    lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH, warningInfoText, warningInfoLength, WARNING_INFO_FLAGS);
   }
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH, warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
   switch (event) {
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_BREAK:
 #endif
     case EVT_KEY_BREAK(KEY_ENTER):
-      if (s_warning_type == WARNING_TYPE_ASTERISK)
+      if (warningType == WARNING_TYPE_ASTERISK)
         break;
-      s_warning_result = true;
+      warningResult = true;
       // no break
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_LONG:
       killEvents(event);
 #endif
     case EVT_KEY_BREAK(KEY_EXIT):
-      s_warning = NULL;
-      s_warning_type = WARNING_TYPE_ASTERISK;
+      warningText = NULL;
+      warningType = WARNING_TYPE_ASTERISK;
       break;
 #if defined(CPUARM)
     default:
-      if (s_warning_type != WARNING_TYPE_INPUT) break;
+      if (warningType != WARNING_TYPE_INPUT) break;
       s_editMode = EDIT_MODIFY_FIELD;
-      s_warning_input_value = checkIncDec(event, s_warning_input_value, s_warning_input_min, s_warning_input_max);
+      warningInputValue = checkIncDec(event, warningInputValue, warningInputValueMin, warningInputValueMax);
       s_editMode = EDIT_SELECT_FIELD;
       break;
 #endif
@@ -139,28 +139,28 @@ void (*popupFunc)(uint8_t event) = NULL;
 #endif
 
 #if defined(NAVIGATION_MENUS)
-const char *s_menu[MENU_MAX_LINES];
+const char *popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t s_menu_item = 0;
-uint16_t s_menu_count = 0;
-uint8_t s_menu_flags = 0;
-uint16_t s_menu_offset = 0;
-void (*menuHandler)(const char *result);
-const char * displayMenu(uint8_t event)
+uint16_t popupMenuNoItems = 0;
+uint8_t popupMenuFlags = 0;
+uint16_t popupMenuOffset = 0;
+void (*popupMenuHandler)(const char *result);
+const char * displayPopupMenu(uint8_t event)
 {
   const char * result = NULL;
 
-  uint8_t display_count = min<uint8_t>(s_menu_count, MENU_MAX_LINES);
+  uint8_t display_count = min<uint8_t>(popupMenuNoItems, POPUP_MENU_MAX_LINES);
   uint8_t y = (display_count >= 5 ? MENU_Y - FH - 1 : MENU_Y);
   lcdDrawFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
   lcdDrawRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
-    lcdDrawText(MENU_X+6, i*(FH+1) + y + 2, s_menu[i], s_menu_flags);
+    lcdDrawText(MENU_X+6, i*(FH+1) + y + 2, popupMenuItems[i], popupMenuFlags);
     if (i == s_menu_item) lcdDrawFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
   }
 
-  if (s_menu_count > display_count) {
-    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, MENU_MAX_LINES);
+  if (popupMenuNoItems > display_count) {
+    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, POPUP_MENU_MAX_LINES * (FH+1), popupMenuOffset, popupMenuNoItems, POPUP_MENU_MAX_LINES);
   }
 
   switch(event) {
@@ -173,16 +173,16 @@ const char * displayMenu(uint8_t event)
         s_menu_item--;
       }
 #if defined(SDCARD)
-      else if (s_menu_offset > 0) {
-        s_menu_offset--;
+      else if (popupMenuOffset > 0) {
+        popupMenuOffset--;
         result = STR_UPDATE_LIST;
       }
 #endif
       else {
         s_menu_item = display_count - 1;
 #if defined(SDCARD)
-        if (s_menu_count > MENU_MAX_LINES) {
-          s_menu_offset = s_menu_count - display_count;
+        if (popupMenuNoItems > POPUP_MENU_MAX_LINES) {
+          popupMenuOffset = popupMenuNoItems - display_count;
           result = STR_UPDATE_LIST;
         }
 #endif
@@ -194,20 +194,20 @@ const char * displayMenu(uint8_t event)
 #endif
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_REPT(KEY_DOWN):
-      if (s_menu_item < display_count - 1 && s_menu_offset + s_menu_item + 1 < s_menu_count) {
+      if (s_menu_item < display_count - 1 && popupMenuOffset + s_menu_item + 1 < popupMenuNoItems) {
         s_menu_item++;
       }
 #if defined(SDCARD)
-      else if (s_menu_count > s_menu_offset + display_count) {
-        s_menu_offset++;
+      else if (popupMenuNoItems > popupMenuOffset + display_count) {
+        popupMenuOffset++;
         result = STR_UPDATE_LIST;
       }
 #endif
       else {
         s_menu_item = 0;
 #if defined(SDCARD)
-        if (s_menu_offset) {
-          s_menu_offset = 0;
+        if (popupMenuOffset) {
+          popupMenuOffset = 0;
           result = STR_UPDATE_LIST;
         }
 #endif
@@ -215,17 +215,17 @@ const char * displayMenu(uint8_t event)
       break;
     CASE_EVT_ROTARY_BREAK
     case EVT_KEY_BREAK(KEY_ENTER):
-      result = s_menu[s_menu_item];
+      result = popupMenuItems[s_menu_item];
       // no break
 #if defined(ROTARY_ENCODER_NAVIGATION)
     CASE_EVT_ROTARY_LONG
       killEvents(event);
 #endif
     case EVT_KEY_BREAK(KEY_EXIT):
-      s_menu_count = 0;
+      popupMenuNoItems = 0;
       s_menu_item = 0;
-      s_menu_flags = 0;
-      s_menu_offset = 0;
+      popupMenuFlags = 0;
+      popupMenuOffset = 0;
       break;
   }
 

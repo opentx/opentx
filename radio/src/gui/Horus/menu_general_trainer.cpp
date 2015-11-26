@@ -64,7 +64,7 @@ bool menuGeneralTrainer(evt_t event)
   */
 
   y = MENU_CONTENT_TOP + FH;
-  int sub = m_posVert + 1;
+  int sub = menuVerticalPosition + 1;
 
   for (int i=1; i<=NUM_STICKS; i++) {
     uint8_t chan = channel_order(i);
@@ -74,7 +74,7 @@ bool menuGeneralTrainer(evt_t event)
 
     for (int j=0; j<3; j++) {
 
-      attr = ((sub==i && m_posHorz==j) ? blink : 0);
+      attr = ((sub==i && menuHorizontalPosition==j) ? blink : 0);
 
       switch(j) {
         case 0:

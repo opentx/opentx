@@ -36,9 +36,9 @@
 
 #include "../../opentx.h"
 
-vertpos_t s_pgOfs;
-vertpos_t m_posVert;
-horzpos_t m_posHorz;
+vertpos_t menuVerticalOffset;
+vertpos_t menuVerticalPosition;
+horzpos_t menuHorizontalPosition;
 int8_t s_editMode;
 uint8_t s_noHi;
 uint8_t calibrationState; // TODO rename this variable
@@ -224,81 +224,81 @@ uint16_t linesCount;
 
 bool navigate(evt_t event, int count, int rows, int columns)
 {
-  int prevPosHorz = m_posHorz;
-  int prevPosVert = m_posVert;
+  int prevPosHorz = menuHorizontalPosition;
+  int prevPosVert = menuVerticalPosition;
 
   int maxrow = ((count+columns-1) / columns) - 1;
   int maxlastcol = count-maxrow*columns-1;
-  int maxcol = (m_posVert != maxrow ? columns-1 : maxlastcol);
+  int maxcol = (menuVerticalPosition != maxrow ? columns-1 : maxlastcol);
 
-  if (m_posVert > maxrow) {
-    m_posVert = maxrow;
-    m_posHorz = maxlastcol;
+  if (menuVerticalPosition > maxrow) {
+    menuVerticalPosition = maxrow;
+    menuHorizontalPosition = maxlastcol;
   }
 
   switch (event) {
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_REPT(KEY_RIGHT):
-      INC(m_posHorz, 0, maxcol);
+      INC(menuHorizontalPosition, 0, maxcol);
       break;
 
     case EVT_KEY_FIRST(KEY_LEFT):
     case EVT_KEY_REPT(KEY_LEFT):
-      DEC(m_posHorz, 0, maxcol);
+      DEC(menuHorizontalPosition, 0, maxcol);
       break;
 
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_REPT(KEY_DOWN):
-      INC(m_posVert, 0, maxrow);
-      if (m_posVert == maxrow && m_posHorz > maxlastcol)  {
-        m_posHorz = maxlastcol;
+      INC(menuVerticalPosition, 0, maxrow);
+      if (menuVerticalPosition == maxrow && menuHorizontalPosition > maxlastcol)  {
+        menuHorizontalPosition = maxlastcol;
       }
       break;
 
     case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_REPT(KEY_UP):
-      DEC(m_posVert, 0, maxrow);
-      if (m_posVert == maxrow && m_posHorz > maxlastcol)  {
-        m_posHorz = maxlastcol;
+      DEC(menuVerticalPosition, 0, maxrow);
+      if (menuVerticalPosition == maxrow && menuHorizontalPosition > maxlastcol)  {
+        menuHorizontalPosition = maxlastcol;
       }
       break;
 
     case EVT_ROTARY_LEFT:
-      if (m_posHorz > 0) {
-        m_posHorz--;
+      if (menuHorizontalPosition > 0) {
+        menuHorizontalPosition--;
       }
       else {
-        DEC(m_posVert, 0, maxrow);
-        m_posHorz = (m_posVert != maxrow ? columns-1 : maxlastcol);
+        DEC(menuVerticalPosition, 0, maxrow);
+        menuHorizontalPosition = (menuVerticalPosition != maxrow ? columns-1 : maxlastcol);
       }
       break;
 
     case EVT_ROTARY_RIGHT:
-      if (m_posHorz < maxcol) {
-        m_posHorz++;
+      if (menuHorizontalPosition < maxcol) {
+        menuHorizontalPosition++;
       }
       else {
-        INC(m_posVert, 0, maxrow);
-        m_posHorz = 0;
+        INC(menuVerticalPosition, 0, maxrow);
+        menuHorizontalPosition = 0;
       }
       break;
   }
 
-  if (s_pgOfs > m_posVert) {
-    s_pgOfs = m_posVert;
+  if (menuVerticalOffset > menuVerticalPosition) {
+    menuVerticalOffset = menuVerticalPosition;
   }
-  else if (s_pgOfs <= m_posVert - rows) {
-    s_pgOfs = m_posVert - rows + 1;
+  else if (menuVerticalOffset <= menuVerticalPosition - rows) {
+    menuVerticalOffset = menuVerticalPosition - rows + 1;
   }
 
-  return (prevPosHorz != m_posHorz || prevPosVert != m_posVert);
+  return (prevPosHorz != menuHorizontalPosition || prevPosVert != menuVerticalPosition);
 }
 
-bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t menuTabSize, const pm_uint8_t * horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
+bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t * horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
 {
-  uint8_t maxcol = MAXCOL(m_posVert);
+  uint8_t maxcol = MAXCOL(menuVerticalPosition);
 
-  if (menuTab && !calibrationState && m_posVert<0) {
+  if (menuTab && !calibrationState && menuVerticalPosition<0) {
     int cc = curr;
     switch (event) {
       case EVT_KEY_BREAK(KEY_RIGHT):
@@ -315,19 +315,19 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
 
       case EVT_KEY_BREAK(KEY_ENTER):
         if (rowcount > 0) {
-          m_posVert = MENU_FIRST_LINE_EDIT;
+          menuVerticalPosition = MENU_FIRST_LINE_EDIT;
           event = 0;
         }
         break;
 
       case EVT_KEY_BREAK(KEY_DOWN):
       case EVT_KEY_BREAK(KEY_UP):
-        m_posHorz = -1;
+        menuHorizontalPosition = -1;
         break;
     }
 
     if (cc != curr) {
-      chainMenu((MenuFuncP)pgm_read_adr(&menuTab[cc]));
+      chainMenu((MenuHandlerFunc)pgm_read_adr(&menuTab[cc]));
       return false;
     }
 
@@ -338,20 +338,20 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
   switch(event)
   {
     case EVT_ENTRY:
-      m_posVert = (menuTab ? -1 : MENU_FIRST_LINE_EDIT);
-      m_posHorz = POS_HORZ_INIT(0);
+      menuVerticalPosition = (menuTab ? -1 : MENU_FIRST_LINE_EDIT);
+      menuHorizontalPosition = POS_HORZ_INIT(0);
       s_editMode = EDIT_MODE_INIT;
       break;
 
     case EVT_ENTRY_UP:
       s_editMode = 0;
-      m_posHorz = POS_HORZ_INIT(m_posVert);
+      menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
       break;
 
     case EVT_ROTARY_BREAK:
       if (s_editMode > 1) break;
-      if (m_posHorz < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
-        m_posHorz = 0;
+      if (menuHorizontalPosition < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
+        menuHorizontalPosition = 0;
       }
       else if (READ_ONLY_UNLOCKED()) {
         s_editMode = (s_editMode<=0);
@@ -369,18 +369,18 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
         break;
       }
 
-      if (m_posHorz >= 0 && (COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE)) {
-        m_posHorz = -1;
+      if (menuHorizontalPosition >= 0 && (COLATTR(menuVerticalPosition) & NAVIGATION_LINE_BY_LINE)) {
+        menuHorizontalPosition = -1;
       }
-      else if (menuTab && m_posVert >= 0) {
-        m_posVert = -1;
-        m_posHorz = 0;
+      else if (menuTab && menuVerticalPosition >= 0) {
+        menuVerticalPosition = -1;
+        menuHorizontalPosition = 0;
 #if 0
         int posVertInit = -1;
-        if (s_pgOfs != 0 || m_posVert != posVertInit) {
-          s_pgOfs = 0;
-          m_posVert = posVertInit;
-          m_posHorz = POS_HORZ_INIT(m_posVert);
+        if (menuVerticalOffset != 0 || menuVerticalPosition != posVertInit) {
+          menuVerticalOffset = 0;
+          menuVerticalPosition = posVertInit;
+          menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
         }
 #endif
       }
@@ -392,87 +392,87 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_REPT(KEY_RIGHT):
       if (s_editMode != 0) break;
-      INC(m_posHorz, 0, maxcol);
+      INC(menuHorizontalPosition, 0, maxcol);
       break;
 
     case EVT_KEY_FIRST(KEY_LEFT):
     case EVT_KEY_REPT(KEY_LEFT):
       if (s_editMode != 0) break;
-      DEC(m_posHorz, 0, maxcol);
+      DEC(menuHorizontalPosition, 0, maxcol);
       break;
 
     case EVT_ROTARY_RIGHT:
       if (s_editMode != 0) break;
-      if ((COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE)) {
-        if (m_posHorz >= 0) {
-          INC(m_posHorz, 0, maxcol);
+      if ((COLATTR(menuVerticalPosition) & NAVIGATION_LINE_BY_LINE)) {
+        if (menuHorizontalPosition >= 0) {
+          INC(menuHorizontalPosition, 0, maxcol);
           break;
         }
       }
-      else if (m_posHorz < maxcol) {
-        m_posHorz++;
+      else if (menuHorizontalPosition < maxcol) {
+        menuHorizontalPosition++;
         break;
       }
       do {
-        INC(m_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
-      } while (CURSOR_NOT_ALLOWED_IN_ROW(m_posVert));
-      m_posHorz = POS_HORZ_INIT(m_posVert);
+        INC(menuVerticalPosition, MENU_FIRST_LINE_EDIT, rowcount-1);
+      } while (CURSOR_NOT_ALLOWED_IN_ROW(menuVerticalPosition));
+      menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
       break;
 
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_REPT(KEY_DOWN):
     {
       do {
-        INC(m_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
-      } while (CURSOR_NOT_ALLOWED_IN_ROW(m_posVert));
+        INC(menuVerticalPosition, MENU_FIRST_LINE_EDIT, rowcount-1);
+      } while (CURSOR_NOT_ALLOWED_IN_ROW(menuVerticalPosition));
       s_editMode = 0; // if we go down, we must be in this mode
-      uint8_t newmaxcol = MAXCOL(m_posVert);
-      if (COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE) {
-        m_posHorz = -1;
+      uint8_t newmaxcol = MAXCOL(menuVerticalPosition);
+      if (COLATTR(menuVerticalPosition) & NAVIGATION_LINE_BY_LINE) {
+        menuHorizontalPosition = -1;
       }
-      else if (m_posHorz < 0 || m_posHorz > newmaxcol) {
-        m_posHorz = POS_HORZ_INIT(m_posVert);
+      else if (menuHorizontalPosition < 0 || menuHorizontalPosition > newmaxcol) {
+        menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
       }
       break;
     }
 
     case EVT_ROTARY_LEFT:
       if (s_editMode != 0) break;
-      if ((COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE)) {
-        if (m_posHorz >= 0) {
-          DEC(m_posHorz, 0, maxcol);
+      if ((COLATTR(menuVerticalPosition) & NAVIGATION_LINE_BY_LINE)) {
+        if (menuHorizontalPosition >= 0) {
+          DEC(menuHorizontalPosition, 0, maxcol);
           break;
         }
       }
-      else if (m_posHorz > 0) {
-        m_posHorz--;
+      else if (menuHorizontalPosition > 0) {
+        menuHorizontalPosition--;
         break;
       }
       do {
-        DEC(m_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
-      } while (CURSOR_NOT_ALLOWED_IN_ROW(m_posVert));
-      if (COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE)
-        m_posHorz = -1;
+        DEC(menuVerticalPosition, MENU_FIRST_LINE_EDIT, rowcount-1);
+      } while (CURSOR_NOT_ALLOWED_IN_ROW(menuVerticalPosition));
+      if (COLATTR(menuVerticalPosition) & NAVIGATION_LINE_BY_LINE)
+        menuHorizontalPosition = -1;
       else
-        m_posHorz = min((uint8_t)m_posHorz, MAXCOL(m_posVert));
+        menuHorizontalPosition = min((uint8_t)menuHorizontalPosition, MAXCOL(menuVerticalPosition));
       break;
 
     case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_REPT(KEY_UP):
     {
       do {
-        DEC(m_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
-      } while (CURSOR_NOT_ALLOWED_IN_ROW(m_posVert));
+        DEC(menuVerticalPosition, MENU_FIRST_LINE_EDIT, rowcount-1);
+      } while (CURSOR_NOT_ALLOWED_IN_ROW(menuVerticalPosition));
       s_editMode = 0; // if we go up, we must be in this mode
-      uint8_t newmaxcol = MAXCOL(m_posVert);
-      if ((COLATTR(m_posVert) & NAVIGATION_LINE_BY_LINE)) {
-        m_posHorz = -1;
+      uint8_t newmaxcol = MAXCOL(menuVerticalPosition);
+      if ((COLATTR(menuVerticalPosition) & NAVIGATION_LINE_BY_LINE)) {
+        menuHorizontalPosition = -1;
       }
-      else if (m_posHorz < 0) {
-        m_posHorz = POS_HORZ_INIT(m_posVert);
+      else if (menuHorizontalPosition < 0) {
+        menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
       }
-      else if (m_posHorz > newmaxcol) {
-        m_posHorz = min((uint8_t)m_posHorz, newmaxcol);
+      else if (menuHorizontalPosition > newmaxcol) {
+        menuHorizontalPosition = min((uint8_t)menuHorizontalPosition, newmaxcol);
       }
       break;
     }
@@ -481,8 +481,8 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
   linesCount = rowcount;
   int maxBodyLines =  (menuTab ? NUM_BODY_LINES : NUM_BODY_LINES+1);
 
-  if (m_posVert <= MENU_FIRST_LINE_EDIT) {
-    s_pgOfs = 0;
+  if (menuVerticalPosition <= MENU_FIRST_LINE_EDIT) {
+    menuVerticalOffset = 0;
     if (horTab) {
       linesCount = 0;
       for (int i=0; i<rowcount; i++) {
@@ -496,13 +496,13 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
     if (rowcount > maxBodyLines) {
       while (1) {
         vertpos_t firstLine = 0;
-        for (int numLines=0; firstLine<rowcount && numLines<s_pgOfs; firstLine++) {
+        for (int numLines=0; firstLine<rowcount && numLines<menuVerticalOffset; firstLine++) {
           if (firstLine>=horTabMax || horTab[firstLine] != HIDDEN_ROW) {
             numLines++;
           }
         }
-        if (m_posVert < firstLine) {
-          s_pgOfs--;
+        if (menuVerticalPosition < firstLine) {
+          menuVerticalOffset--;
         }
         else {
           vertpos_t lastLine = firstLine;
@@ -511,11 +511,11 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
               numLines++;
             }
           }
-          if (m_posVert >= lastLine) {
-            s_pgOfs++;
+          if (menuVerticalPosition >= lastLine) {
+            menuVerticalOffset++;
           }
           else {
-            linesCount = s_pgOfs + maxBodyLines;
+            linesCount = menuVerticalOffset + maxBodyLines;
             for (int i=lastLine; i<rowcount; i++) {
               if (i > horTabMax || horTab[i] != HIDDEN_ROW) {
                 linesCount++;
@@ -528,18 +528,18 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP * menuTab, uint8_t
     }
   }
   else {
-    if (m_posVert >= maxBodyLines + s_pgOfs) {
-      s_pgOfs = m_posVert-maxBodyLines+1;
+    if (menuVerticalPosition >= maxBodyLines + menuVerticalOffset) {
+      menuVerticalOffset = menuVerticalPosition-maxBodyLines+1;
     }
-    else if (m_posVert < s_pgOfs) {
-      s_pgOfs = m_posVert;
+    else if (menuVerticalPosition < menuVerticalOffset) {
+      menuVerticalOffset = menuVerticalPosition;
     }
   }
 
   return true;
 }
 
-bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
+bool check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
 {
   return check(event, curr, menuTab, menuTabSize, NULL, 0, rowcount);
 }
@@ -555,6 +555,6 @@ void repeatLastCursorMove(evt_t event)
     putEvent(event);
   }
   else {
-    m_posHorz = 0;
+    menuHorizontalPosition = 0;
   }
 }

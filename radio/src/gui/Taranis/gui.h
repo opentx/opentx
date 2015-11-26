@@ -52,7 +52,7 @@ bool loadModelBitmap(char * name, uint8_t * bitmap);
 
 struct MenuItem {
   const char *name;
-  const MenuFuncP action;
+  const MenuHandlerFunc action;
 };
 
 int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable=NULL);

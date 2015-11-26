@@ -36,15 +36,21 @@
 
 #include "../../opentx.h"
 
-const char *s_warning = NULL;
-const char *s_warning_info;
-uint8_t     s_warning_info_len;
-uint8_t     s_warning_type;
-uint8_t     s_warning_result = 0;
-uint8_t     s_warning_info_flags = ZCHAR;
-int16_t     s_warning_input_value;
-int16_t     s_warning_input_min;
-int16_t     s_warning_input_max;
+const char *warningText = NULL;
+const char *warningInfoText;
+uint8_t     warningInfoLength;
+uint8_t     warningType;
+uint8_t     warningResult = 0;
+uint8_t     warningInfoFlags = ZCHAR;
+int16_t     warningInputValue;
+int16_t     warningInputValueMin;
+int16_t     warningInputValueMax;
+void (*popupFunc)(evt_t event) = NULL;
+const char *popupMenuItems[POPUP_MENU_MAX_LINES];
+uint8_t s_menu_item = 0;
+uint16_t popupMenuNoItems = 0;
+uint16_t popupMenuOffset = 0;
+void (*popupMenuHandler)(const char *result);
 
 void displayAlertBox()
 {
@@ -103,47 +109,39 @@ void displayPopup(const char *title)
 
 void displayWarning(evt_t event)
 {
-  s_warning_result = false;
-  if (s_warning_type == WARNING_TYPE_INPUT)
+  warningResult = false;
+  if (warningType == WARNING_TYPE_INPUT)
     displayMessageBox();
   else
     displayWarningBox();
-  lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, s_warning, WARNING_LINE_LEN, DBLSIZE | (s_warning_type == WARNING_TYPE_INPUT ? WARNING_COLOR : ALARM_COLOR));
-  if (s_warning_info) {
-    lcdDrawSizedText(WARNING_LINE_X, WARNING_INFOLINE_Y, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
+  lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, warningText, WARNING_LINE_LEN, DBLSIZE | (warningType == WARNING_TYPE_INPUT ? WARNING_COLOR : ALARM_COLOR));
+  if (warningInfoText) {
+    lcdDrawSizedText(WARNING_LINE_X, WARNING_INFOLINE_Y, warningInfoText, warningInfoLength, WARNING_INFO_FLAGS);
   }
-  lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y+20, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
+  lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y+20, warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
-      if (s_warning_type == WARNING_TYPE_ASTERISK)
+      if (warningType == WARNING_TYPE_ASTERISK)
         break;
-      s_warning_result = true;
+      warningResult = true;
       // no break
     case EVT_KEY_BREAK(KEY_EXIT):
-      s_warning = NULL;
-      s_warning_type = WARNING_TYPE_ASTERISK;
+      warningText = NULL;
+      warningType = WARNING_TYPE_ASTERISK;
       break;
     default:
-      if (s_warning_type != WARNING_TYPE_INPUT) break;
+      if (warningType != WARNING_TYPE_INPUT) break;
       s_editMode = EDIT_MODIFY_FIELD;
-      s_warning_input_value = checkIncDec(event, s_warning_input_value, s_warning_input_min, s_warning_input_max);
+      warningInputValue = checkIncDec(event, warningInputValue, warningInputValueMin, warningInputValueMax);
       s_editMode = EDIT_SELECT_FIELD;
       break;
   }
 }
 
-void (*popupFunc)(evt_t event) = NULL;
-
-const char *s_menu[MENU_MAX_LINES];
-uint8_t s_menu_item = 0;
-uint16_t s_menu_count = 0;
-uint8_t s_menu_flags = 0;
-uint16_t s_menu_offset = 0;
-void (*menuHandler)(const char *result);
 const char * displayMenu(evt_t event)
 {
   const char * result = NULL;
-  uint8_t display_count = min(s_menu_count, (uint16_t)MENU_MAX_LINES);
+  uint8_t display_count = min(popupMenuNoItems, (uint16_t)POPUP_MENU_MAX_LINES);
 
   switch (event) {
     case EVT_ROTARY_LEFT:
@@ -152,14 +150,14 @@ const char * displayMenu(evt_t event)
       if (s_menu_item > 0) {
         s_menu_item--;
       }
-      else if (s_menu_offset > 0) {
-        s_menu_offset--;
+      else if (popupMenuOffset > 0) {
+        popupMenuOffset--;
         result = STR_UPDATE_LIST;
       }
       else {
         s_menu_item = display_count - 1;
-        if (s_menu_count > MENU_MAX_LINES) {
-          s_menu_offset = s_menu_count - display_count;
+        if (popupMenuNoItems > POPUP_MENU_MAX_LINES) {
+          popupMenuOffset = popupMenuNoItems - display_count;
           result = STR_UPDATE_LIST;
         }
       }
@@ -168,29 +166,28 @@ const char * displayMenu(evt_t event)
     case EVT_ROTARY_RIGHT:
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_REPT(KEY_DOWN):
-      if (s_menu_item < display_count - 1 && s_menu_offset + s_menu_item + 1 < s_menu_count) {
+      if (s_menu_item < display_count - 1 && popupMenuOffset + s_menu_item + 1 < popupMenuNoItems) {
         s_menu_item++;
       }
-      else if (s_menu_count > s_menu_offset + display_count) {
-        s_menu_offset++;
+      else if (popupMenuNoItems > popupMenuOffset + display_count) {
+        popupMenuOffset++;
         result = STR_UPDATE_LIST;
       }
       else {
         s_menu_item = 0;
-        if (s_menu_offset) {
-          s_menu_offset = 0;
+        if (popupMenuOffset) {
+          popupMenuOffset = 0;
           result = STR_UPDATE_LIST;
         }
       }
       break;
     case EVT_KEY_BREAK(KEY_ENTER):
-      result = s_menu[s_menu_item];
+      result = popupMenuItems[s_menu_item];
       // no break
     case EVT_KEY_BREAK(KEY_EXIT):
-      s_menu_count = 0;
+      popupMenuNoItems = 0;
       s_menu_item = 0;
-      s_menu_flags = 0;
-      s_menu_offset = 0;
+      popupMenuOffset = 0;
       break;
   }
 
@@ -202,15 +199,15 @@ const char * displayMenu(evt_t event)
   for (uint8_t i=0; i<display_count; i++) {
     if (i == s_menu_item) {
       lcdDrawSolidFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, FH+1, TEXT_INVERTED_BGCOLOR);
-      lcdDrawText(MENU_X+6, i*(FH+1) + y + 4, s_menu[i], TEXT_INVERTED_COLOR|s_menu_flags);
+      lcdDrawText(MENU_X+6, i*(FH+1) + y + 4, popupMenuItems[i], TEXT_INVERTED_COLOR);
     }
     else {
-      lcdDrawText(MENU_X+6, i*(FH+1) + y + 4, s_menu[i], s_menu_flags);
+      lcdDrawText(MENU_X+6, i*(FH+1) + y + 4, popupMenuItems[i], 0);
     }
   }
 
-  if (s_menu_count > display_count) {
-    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, MENU_MAX_LINES);
+  if (popupMenuNoItems > display_count) {
+    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, POPUP_MENU_MAX_LINES * (FH+1), popupMenuOffset, popupMenuNoItems, POPUP_MENU_MAX_LINES);
   }
 
   return result;

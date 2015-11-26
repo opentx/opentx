@@ -88,7 +88,7 @@ enum EnumTabDiag {
   e_Calib
 };
 
-const MenuFuncP menuTabGeneral[] = {
+const MenuHandlerFunc menuTabGeneral[] = {
   menuGeneralSetup,
   menuGeneralSdManager,
   menuGeneralCustomFunctions,

@@ -36,43 +36,43 @@
 
 #include "../../opentx.h"
 
-MenuFuncP g_menuStack[5];
+MenuHandlerFunc menuHandlers[5];
 uint8_t menuEvent = 0;
-uint8_t g_menuPos[4];
-uint8_t g_menuStackPtr = 0;
+uint8_t menuVerticalPositions[4];
+uint8_t menuLevel = 0;
 
 void popMenu()
 {
-  assert(g_menuStackPtr>0);
-  g_menuStackPtr = g_menuStackPtr-1;
+  assert(menuLevel>0);
+  menuLevel = menuLevel-1;
   menuEvent = EVT_ENTRY_UP;
 }
 
-void chainMenu(MenuFuncP newMenu)
+void chainMenu(MenuHandlerFunc newMenu)
 {
-  g_menuStack[g_menuStackPtr] = newMenu;
+  menuHandlers[menuLevel] = newMenu;
   menuEvent = EVT_ENTRY;
 }
 
-void pushMenu(MenuFuncP newMenu)
+void pushMenu(MenuHandlerFunc newMenu)
 {
   killEvents(KEY_ENTER);
 
-  if (g_menuStackPtr == 0) {
+  if (menuLevel == 0) {
     if (newMenu == menuGeneralSetup)
-      g_menuPos[0] = 1;
+      menuVerticalPositions[0] = 1;
     if (newMenu == menuModelSelect)
-      g_menuPos[0] = 0;
+      menuVerticalPositions[0] = 0;
   }
   else {
-    g_menuPos[g_menuStackPtr] = m_posVert;
+    menuVerticalPositions[menuLevel] = menuVerticalPosition;
   }
 
-  g_menuStackPtr++;
+  menuLevel++;
 
-  assert(g_menuStackPtr < DIM(g_menuStack));
+  assert(menuLevel < DIM(menuHandlers));
 
-  g_menuStack[g_menuStackPtr] = newMenu;
+  menuHandlers[menuLevel] = newMenu;
   menuEvent = EVT_ENTRY;
 }
 

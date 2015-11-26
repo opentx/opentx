@@ -301,7 +301,7 @@ bool isSwitchAvailableInLogicalSwitches(int swtch)
 
 bool isSwitchAvailableInCustomFunctions(int swtch)
 {
-  if (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions)
+  if (menuHandlers[menuLevel] == menuModelCustomFunctions)
     return isSwitchAvailable(swtch, ModelCustomFunctionsContext);
   else
     return isSwitchAvailable(swtch, GeneralCustomFunctionsContext);
@@ -346,7 +346,7 @@ bool isLogicalSwitchFunctionAvailable(int function)
 bool isAssignableFunctionAvailable(int function)
 {
 #if defined(OVERRIDE_CHANNEL_FUNCTION) || defined(GVARS)
-  bool modelFunctions = (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions);
+  bool modelFunctions = (menuHandlers[menuLevel] == menuModelCustomFunctions);
 #endif
 
   switch (function) {

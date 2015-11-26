@@ -108,7 +108,7 @@ uint8_t editDelay(const coord_t y, const uint8_t event, const uint8_t attr, cons
 #define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
 #endif
 
-const MenuFuncP menuTabModel[] = {
+const MenuHandlerFunc menuTabModel[] = {
   menuModelSelect,
   menuModelSetup,
   CASE_HELI(menuModelHeli)
@@ -208,7 +208,7 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
 
       if (c != v) {
         name[cur] = v;
-        storageDirty(g_menuPos[0] == 0 ? EE_MODEL : EE_GENERAL);
+        storageDirty(menuVerticalPositions[0] == 0 ? EE_MODEL : EE_GENERAL);
       }
 
       if (attr == ZCHAR) {

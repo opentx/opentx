@@ -53,11 +53,11 @@ bool menuModelHeli(evt_t event)
 {
   SIMPLE_MENU(STR_MENUHELISETUP, menuTabModel, e_Heli, ITEM_HELI_MAX, DEFAULT_SCROLLBAR_X);
 
-  int sub = m_posVert;
+  int sub = menuVerticalPosition;
 
   for (unsigned int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
-    int k = i+s_pgOfs;
+    int k = i+menuVerticalOffset;
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);
 

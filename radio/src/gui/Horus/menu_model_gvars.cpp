@@ -37,7 +37,7 @@
 
 void onGVARSMenu(const char *result)
 {
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
 
   if (result == STR_ENABLE_POPUP) {
     g_model.gvars[sub].popup = true;
@@ -61,16 +61,16 @@ bool menuModelGVars(evt_t event)
 {
   MENU(STR_MENUGLOBALVARS, menuTabModel, e_GVars/* TODO, first2seconds ? CHECK_FLAG_NO_SCREEN_INDEX : 0*/, MAX_GVARS, DEFAULT_SCROLLBAR_X, { NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES});
 
-  int sub = m_posVert;
+  int sub = menuVerticalPosition;
 
   for (int l=0; l<NUM_BODY_LINES; l++) {
-    int i = l+s_pgOfs;
+    int i = l+menuVerticalOffset;
     coord_t y = MENU_CONTENT_TOP + l*FH;
     if (g_model.gvars[i].popup) lcdDrawText(MENUS_MARGIN_LEFT+25, y, "!");
-    putsStrIdx(MENUS_MARGIN_LEFT, y, STR_GV, i+1, ((sub==i && m_posHorz<0) ? INVERS : 0));
+    putsStrIdx(MENUS_MARGIN_LEFT, y, STR_GV, i+1, ((sub==i && menuHorizontalPosition<0) ? INVERS : 0));
 
     for (int j=0; j<1+MAX_FLIGHT_MODES; j++) {
-      LcdFlags attr = ((sub==i && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+      LcdFlags attr = ((sub==i && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       coord_t x = GVARS_FM_COLUMN(j-1);
       switch(j)
       {
@@ -111,14 +111,14 @@ bool menuModelGVars(evt_t event)
     }
   }
 
-  if (m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER)) {
+  if (menuHorizontalPosition < 0 && event==EVT_KEY_LONG(KEY_ENTER)) {
     killEvents(event);
     if (g_model.gvars[sub].popup)
-      MENU_ADD_ITEM(STR_DISABLE_POPUP);
+      POPUP_MENU_ADD_ITEM(STR_DISABLE_POPUP);
     else
-      MENU_ADD_ITEM(STR_ENABLE_POPUP);
-    MENU_ADD_ITEM(STR_CLEAR);
-    menuHandler = onGVARSMenu;
+      POPUP_MENU_ADD_ITEM(STR_ENABLE_POPUP);
+    POPUP_MENU_ADD_ITEM(STR_CLEAR);
+    popupMenuHandler = onGVARSMenu;
   }
 
   return true;

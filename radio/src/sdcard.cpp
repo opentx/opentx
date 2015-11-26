@@ -134,9 +134,9 @@ bool sdListFiles(const char *path, const char *extension, const uint8_t maxlen, 
 #endif
 
 #if defined(PCBTARANIS)
-  s_menu_offset_type = MENU_OFFSET_EXTERNAL;
+  popupMenuOffsetType = MENU_OFFSET_EXTERNAL;
 #endif
-  static uint16_t s_last_menu_offset = 0;
+  static uint16_t lastpopupMenuOffset = 0;
 
 #if defined(CPUARM)
   static uint8_t s_last_flags;
@@ -157,19 +157,19 @@ bool sdListFiles(const char *path, const char *extension, const uint8_t maxlen, 
   }
 #endif
 
-  if (s_menu_offset == 0) {
-    s_last_menu_offset = 0;
+  if (popupMenuOffset == 0) {
+    lastpopupMenuOffset = 0;
     memset(reusableBuffer.modelsel.menu_bss, 0, sizeof(reusableBuffer.modelsel.menu_bss));
   }
-  else if (s_menu_offset == s_menu_count - MENU_MAX_DISPLAY_LINES) {
-    s_last_menu_offset = 0xffff;
+  else if (popupMenuOffset == popupMenuNoItems - MENU_MAX_DISPLAY_LINES) {
+    lastpopupMenuOffset = 0xffff;
     memset(reusableBuffer.modelsel.menu_bss, 0, sizeof(reusableBuffer.modelsel.menu_bss));
   }
-  else if (s_menu_offset == s_last_menu_offset) {
+  else if (popupMenuOffset == lastpopupMenuOffset) {
     // should not happen, only there because of Murphy's law
     return true;
   }
-  else if (s_menu_offset > s_last_menu_offset) {
+  else if (popupMenuOffset > lastpopupMenuOffset) {
     memmove(reusableBuffer.modelsel.menu_bss[0], reusableBuffer.modelsel.menu_bss[1], (MENU_MAX_DISPLAY_LINES-1)*MENU_LINE_LENGTH);
     memset(reusableBuffer.modelsel.menu_bss[MENU_MAX_DISPLAY_LINES-1], 0xff, MENU_LINE_LENGTH);
   }
@@ -178,22 +178,22 @@ bool sdListFiles(const char *path, const char *extension, const uint8_t maxlen, 
     memset(reusableBuffer.modelsel.menu_bss[0], 0, MENU_LINE_LENGTH);
   }
 
-  s_menu_count = 0;
-  s_menu_flags = BSS;
+  popupMenuNoItems = 0;
+  POPUP_MENU_ITEMS_FROM_BSS();
 
   FRESULT res = f_opendir(&dir, path);        /* Open the directory */
   if (res == FR_OK) {
 
     if (flags & LIST_NONE_SD_FILE) {
-      s_menu_count++;
+      popupMenuNoItems++;
       if (selection) {
-        s_last_menu_offset++;
+        lastpopupMenuOffset++;
       }
-      else if (s_menu_offset==0 || s_menu_offset < s_last_menu_offset) {
+      else if (popupMenuOffset==0 || popupMenuOffset < lastpopupMenuOffset) {
         char *line = reusableBuffer.modelsel.menu_bss[0];
         memset(line, 0, MENU_LINE_LENGTH);
         strcpy(line, "---");
-        s_menu[0] = line;
+        popupMenuItems[0] = line;
       }
     }
 
@@ -210,12 +210,12 @@ bool sdListFiles(const char *path, const char *extension, const uint8_t maxlen, 
       uint8_t len = strlen(fn);
       if (len < 5 || len > maxlen+4 || strcasecmp(fn+len-4, extension) || (fno.fattrib & AM_DIR)) continue;
 
-      s_menu_count++;
+      popupMenuNoItems++;
       fn[len-4] = '\0';
 
-      if (s_menu_offset == 0) {
+      if (popupMenuOffset == 0) {
         if (selection && strncasecmp(fn, selection, maxlen) < 0) {
-          s_last_menu_offset++;
+          lastpopupMenuOffset++;
         }
         else {
           for (uint8_t i=0; i<MENU_MAX_DISPLAY_LINES; i++) {
@@ -228,12 +228,12 @@ bool sdListFiles(const char *path, const char *extension, const uint8_t maxlen, 
             }
           }
         }
-        for (uint8_t i=0; i<min(s_menu_count, (uint16_t)MENU_MAX_DISPLAY_LINES); i++) {
-          s_menu[i] = reusableBuffer.modelsel.menu_bss[i];
+        for (uint8_t i=0; i<min(popupMenuNoItems, (uint16_t)MENU_MAX_DISPLAY_LINES); i++) {
+          popupMenuItems[i] = reusableBuffer.modelsel.menu_bss[i];
         }
 
       }
-      else if (s_last_menu_offset == 0xffff) {
+      else if (lastpopupMenuOffset == 0xffff) {
         for (int i=MENU_MAX_DISPLAY_LINES-1; i>=0; i--) {
           char *line = reusableBuffer.modelsel.menu_bss[i];
           if (line[0] == '\0' || strcasecmp(fn, line) > 0) {
@@ -243,11 +243,11 @@ bool sdListFiles(const char *path, const char *extension, const uint8_t maxlen, 
             break;
           }
         }
-        for (uint8_t i=0; i<min(s_menu_count, (uint16_t)MENU_MAX_DISPLAY_LINES); i++) {
-          s_menu[i] = reusableBuffer.modelsel.menu_bss[i];
+        for (uint8_t i=0; i<min(popupMenuNoItems, (uint16_t)MENU_MAX_DISPLAY_LINES); i++) {
+          popupMenuItems[i] = reusableBuffer.modelsel.menu_bss[i];
         }
       }
-      else if (s_menu_offset > s_last_menu_offset) {
+      else if (popupMenuOffset > lastpopupMenuOffset) {
         if (strcasecmp(fn, reusableBuffer.modelsel.menu_bss[MENU_MAX_DISPLAY_LINES-2]) > 0 && strcasecmp(fn, reusableBuffer.modelsel.menu_bss[MENU_MAX_DISPLAY_LINES-1]) < 0) {
           memset(reusableBuffer.modelsel.menu_bss[MENU_MAX_DISPLAY_LINES-1], 0, MENU_LINE_LENGTH);
           strcpy(reusableBuffer.modelsel.menu_bss[MENU_MAX_DISPLAY_LINES-1], fn);
@@ -262,12 +262,12 @@ bool sdListFiles(const char *path, const char *extension, const uint8_t maxlen, 
     }
   }
 
-  if (s_menu_offset > 0)
-    s_last_menu_offset = s_menu_offset;
+  if (popupMenuOffset > 0)
+    lastpopupMenuOffset = popupMenuOffset;
   else
-    s_menu_offset = s_last_menu_offset;
+    popupMenuOffset = lastpopupMenuOffset;
 
-  return s_menu_count;
+  return popupMenuNoItems;
 }
 
 #if defined(CPUARM) && defined(SDCARD)
