@@ -7,6 +7,8 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QtCore/qmath.h>
+#include <QFileDialog>
+#include <QDebug>
 #include "simulatorinterface.h"
 
 #define INSTANCE 2
@@ -30,13 +32,48 @@ class TelemetrySimulator : public QDialog
     virtual void showEvent(QShowEvent *event);
 
   private:
+    class LogPlaybackController
+    {
+    public:
+      LogPlaybackController::LogPlaybackController(Ui::TelemetrySimulator * ui);
+      void addColumnHash(QString key);
+      void loadLogFile();
+      void play();
+      void stop();
+      void rewind();
+      void stepForward();
+      void stepBack();
+    private:
+      Ui::TelemetrySimulator * ui;
+      struct SETTEXT_INFO {
+        QString key;
+        uint32_t index;
+      } settext_info;
+      QStringList csvRecords;
+      QStringList columnNames;
+      QHash<QString, SETTEXT_INFO> settextHash;
+      uint32_t recordIndex;
+      void setUiDataValues();
+      QString convertFeetToMeters100(QString input);
+      QString convertLogDate(QString input);
+      QString convertGPS(QString input);
+    };
+
+private:
     Ui::TelemetrySimulator * ui;
     QTimer * timer;
     SimulatorInterface *simulator;
     void generateTelemetryFrame();
+    TelemetrySimulator::LogPlaybackController *logPlayback;
   
   private slots:
     void onTimerEvent();
+    void onLoadLogFile();
+    void onPlay();
+    void onRewind();
+    void onStepForward();
+    void onStepBack();
+    void onStop();
 
 
   private: // private classes follow

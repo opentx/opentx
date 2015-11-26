@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>541</width>
-    <height>464</height>
+    <width>555</width>
+    <height>578</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QLabel" name="label_25">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>410</y>
+     <x>140</x>
+     <y>490</y>
      <width>252</width>
      <height>26</height>
     </rect>
@@ -29,7 +29,7 @@
   <widget class="QCheckBox" name="Simulate">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>20</x>
      <y>0</y>
      <width>101</width>
      <height>31</height>
@@ -47,226 +47,11 @@
     <string>Simulate</string>
    </property>
   </widget>
-  <widget class="QWidget" name="layoutWidget1">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>50</y>
-     <width>37</width>
-     <height>341</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="col1">
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>RSSI</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>SWR</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>A1</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>A2</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="label_6">
-      <property name="text">
-       <string>A3</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLabel" name="label_7">
-      <property name="text">
-       <string>A4</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="0">
-     <widget class="QLabel" name="label_8">
-      <property name="toolTip">
-       <string>Temperature 1</string>
-      </property>
-      <property name="text">
-       <string>T1</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="0">
-     <widget class="QLabel" name="label_9">
-      <property name="toolTip">
-       <string>Temperature 2</string>
-      </property>
-      <property name="text">
-       <string>T2</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="0">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>RPM</string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="0">
-     <widget class="QLabel" name="label_10">
-      <property name="text">
-       <string>FUEL</string>
-      </property>
-     </widget>
-    </item>
-    <item row="10" column="0">
-     <widget class="QLabel" name="label_11">
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vario Vertical Speed (m/s * 100)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="text">
-       <string>V-VSPD</string>
-      </property>
-     </widget>
-    </item>
-    <item row="11" column="0">
-     <widget class="QLabel" name="label_12">
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vario Altitude (meters * 100)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="text">
-       <string>V-ALT</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget2">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>50</y>
-     <width>56</width>
-     <height>351</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="col2">
-    <item row="8" column="0">
-     <widget class="QLineEdit" name="rpm_inst"/>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLineEdit" name="a1_inst"/>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLineEdit" name="a4_inst"/>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLineEdit" name="rssi_inst"/>
-    </item>
-    <item row="6" column="0">
-     <widget class="QLineEdit" name="t1_inst"/>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLineEdit" name="a2_inst"/>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLineEdit" name="a3_inst"/>
-    </item>
-    <item row="7" column="0">
-     <widget class="QLineEdit" name="t2_inst"/>
-    </item>
-    <item row="9" column="0">
-     <widget class="QLineEdit" name="fuel_inst"/>
-    </item>
-    <item row="10" column="0">
-     <widget class="QLineEdit" name="vvspd_inst"/>
-    </item>
-    <item row="11" column="0">
-     <widget class="QLineEdit" name="valt_inst"/>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLineEdit" name="swr_inst"/>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget3">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>50</y>
-     <width>135</width>
-     <height>351</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="col3">
-    <item row="0" column="0">
-     <widget class="QLineEdit" name="Rssi">
-      <property name="text">
-       <string>75</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLineEdit" name="Swr">
-      <property name="text">
-       <string>30</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLineEdit" name="A1"/>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLineEdit" name="A2"/>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLineEdit" name="A3"/>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLineEdit" name="A4"/>
-    </item>
-    <item row="6" column="0">
-     <widget class="QLineEdit" name="T1"/>
-    </item>
-    <item row="7" column="0">
-     <widget class="QLineEdit" name="T2"/>
-    </item>
-    <item row="8" column="0">
-     <widget class="QLineEdit" name="rpm"/>
-    </item>
-    <item row="9" column="0">
-     <widget class="QLineEdit" name="fuel"/>
-    </item>
-    <item row="10" column="0">
-     <widget class="QLineEdit" name="vspeed"/>
-    </item>
-    <item row="11" column="0">
-     <widget class="QLineEdit" name="valt"/>
-    </item>
-   </layout>
-  </widget>
   <widget class="QWidget" name="layoutWidget4">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>50</y>
+     <x>270</x>
+     <y>100</y>
      <width>35</width>
      <height>341</height>
     </rect>
@@ -388,8 +173,8 @@
   <widget class="QWidget" name="layoutWidget5">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>50</y>
+     <x>310</x>
+     <y>100</y>
      <width>56</width>
      <height>351</height>
     </rect>
@@ -436,8 +221,8 @@
   <widget class="QWidget" name="layoutWidget6">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>50</y>
+     <x>380</x>
+     <y>100</y>
      <width>135</width>
      <height>351</height>
     </rect>
@@ -485,7 +270,7 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>30</y>
+     <y>80</y>
      <width>46</width>
      <height>13</height>
     </rect>
@@ -497,8 +282,8 @@
   <widget class="QLabel" name="label_27">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>30</y>
+     <x>310</x>
+     <y>80</y>
      <width>46</width>
      <height>13</height>
     </rect>
@@ -506,6 +291,410 @@
    <property name="text">
     <string>Instance:</string>
    </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>121</x>
+     <y>100</y>
+     <width>135</width>
+     <height>381</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QDoubleSpinBox" name="rxbt">
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <double>13.199999999999999</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>5.200000000000000</double>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QSpinBox" name="Rssi">
+      <property name="value">
+       <number>75</number>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QSpinBox" name="Swr">
+      <property name="value">
+       <number>30</number>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLineEdit" name="A1"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLineEdit" name="A2"/>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLineEdit" name="A3"/>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLineEdit" name="A4"/>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLineEdit" name="T1"/>
+    </item>
+    <item row="8" column="0">
+     <widget class="QLineEdit" name="T2"/>
+    </item>
+    <item row="9" column="0">
+     <widget class="QLineEdit" name="rpm"/>
+    </item>
+    <item row="10" column="0">
+     <widget class="QLineEdit" name="fuel"/>
+    </item>
+    <item row="11" column="0">
+     <widget class="QLineEdit" name="vspeed"/>
+    </item>
+    <item row="12" column="0">
+     <widget class="QLineEdit" name="valt"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>100</y>
+     <width>56</width>
+     <height>381</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <widget class="QLineEdit" name="rxbt_inst"/>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLineEdit" name="rssi_inst"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLineEdit" name="swr_inst"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLineEdit" name="a1_inst"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLineEdit" name="a2_inst"/>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLineEdit" name="a3_inst"/>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLineEdit" name="a4_inst"/>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLineEdit" name="t1_inst"/>
+    </item>
+    <item row="8" column="0">
+     <widget class="QLineEdit" name="t2_inst"/>
+    </item>
+    <item row="9" column="0">
+     <widget class="QLineEdit" name="rpm_inst"/>
+    </item>
+    <item row="10" column="0">
+     <widget class="QLineEdit" name="fuel_inst"/>
+    </item>
+    <item row="11" column="0">
+     <widget class="QLineEdit" name="vvspd_inst"/>
+    </item>
+    <item row="12" column="0">
+     <widget class="QLineEdit" name="valt_inst"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>100</y>
+     <width>37</width>
+     <height>371</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_28">
+      <property name="text">
+       <string>RxBt</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>RSSI</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>SWR</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>A1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>A2</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>A3</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_7">
+      <property name="text">
+       <string>A4</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLabel" name="label_8">
+      <property name="toolTip">
+       <string>Temperature 1</string>
+      </property>
+      <property name="text">
+       <string>T1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
+     <widget class="QLabel" name="label_9">
+      <property name="toolTip">
+       <string>Temperature 2</string>
+      </property>
+      <property name="text">
+       <string>T2</string>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="0">
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>RPM</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="0">
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>FUEL</string>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="0">
+     <widget class="QLabel" name="label_11">
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vario Vertical Speed (m/s * 100)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>V-VSPD</string>
+      </property>
+     </widget>
+    </item>
+    <item row="12" column="0">
+     <widget class="QLabel" name="label_12">
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vario Altitude (meters * 100)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>V-ALT</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QPushButton" name="loadLogFile">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>40</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Load Log File</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="logFileLabel">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>40</y>
+     <width>201</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>No Log File Currently Loaded</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>40</y>
+     <width>201</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_4">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetMinimumSize</enum>
+    </property>
+    <item row="0" column="2">
+     <widget class="QPushButton" name="play">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>30</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>&gt;</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="4">
+     <widget class="QPushButton" name="stop">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>30</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>X</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="rewind">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>30</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>&lt;-</string>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+      <property name="default">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QPushButton" name="stepForward">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>30</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>|&gt;</string>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="stepBack">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>30</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>&lt;|</string>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <tabstops>

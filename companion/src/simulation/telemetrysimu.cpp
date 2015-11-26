@@ -11,9 +11,19 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
 {
   ui->setupUi(this);
 
+
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
   timer->start(10);
+
+  connect(ui->loadLogFile, SIGNAL(released()), this, SLOT(onLoadLogFile()));
+  connect(ui->play, SIGNAL(released()), this, SLOT(onPlay()));
+  connect(ui->rewind, SIGNAL(released()), this, SLOT(onRewind()));
+  connect(ui->stepForward, SIGNAL(released()), this, SLOT(onStepForward()));
+  connect(ui->stepBack, SIGNAL(released()), this, SLOT(onStepBack()));
+  connect(ui->stop, SIGNAL(released()), this, SLOT(onStop()));
+
+  logPlayback = new LogPlaybackController(ui);
 }
 
 TelemetrySimulator::~TelemetrySimulator()
@@ -28,6 +38,37 @@ void TelemetrySimulator::onTimerEvent()
     generateTelemetryFrame();
   }
 }
+
+void TelemetrySimulator::onLoadLogFile()
+{
+  logPlayback->loadLogFile();
+}
+
+void TelemetrySimulator::onPlay()
+{
+  logPlayback->play();
+}
+
+void TelemetrySimulator::onRewind()
+{
+  logPlayback->rewind();
+}
+
+void TelemetrySimulator::onStepForward()
+{
+  logPlayback->stepForward();
+}
+
+void TelemetrySimulator::onStepBack()
+{
+  logPlayback->stepBack();
+}
+
+void TelemetrySimulator::onStop()
+{
+  logPlayback->stop();
+}
+
 
 void TelemetrySimulator::closeEvent(QCloseEvent *event)
 {
@@ -63,6 +104,8 @@ void TelemetrySimulator::showEvent(QShowEvent *event)
   ui->gpsc_inst->setText(QString::number(simulator->getSensorInstance(GPS_COURS_FIRST_ID)));
   ui->gpst_inst->setText(QString::number(simulator->getSensorInstance(GPS_TIME_DATE_FIRST_ID)));
   ui->gpsll_inst->setText(QString::number(simulator->getSensorInstance(GPS_LONG_LATI_FIRST_ID)));
+  ui->rxbt_inst->setText(QString::number(simulator->getSensorInstance(BATT_ID)));
+  ui->rxbt->setValue(5.2);
 }
 
 void setSportPacketCrc(uint8_t * packet)
@@ -236,6 +279,11 @@ void TelemetrySimulator::generateTelemetryFrame()
       }
       break;
 
+    case 25:
+      if (ui->rxbt->text().length()) {
+        generateSportPacket(buffer, ui->rxbt_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, BATT_ID, LIMIT<uint32_t>(0, ui->rxbt->value() * 19.39, 0xFFFFFFFF));
+      }
+      break;
     default:
       item = 0;
       return;
@@ -421,4 +469,154 @@ void TelemetrySimulator::GPSEmulator::setGPSSpeed(QString speed)
 void TelemetrySimulator::GPSEmulator::setGPSAltitude(QString altitude)
 {
   this->altitude = altitude.toInt();
+}
+
+TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySimulator * ui)
+{
+  TelemetrySimulator::LogPlaybackController::ui = ui;
+}
+
+void TelemetrySimulator::LogPlaybackController::loadLogFile()
+{
+  QString logFileNameAndPath = QFileDialog::getOpenFileName(NULL, tr("Log File"), ".", tr("LOG Files (*.csv)"));
+  QFileInfo fileInfo(logFileNameAndPath);
+  QFile file(logFileNameAndPath);
+  if (!file.open(QIODevice::ReadOnly)) {
+    ui->logFileLabel->setText(tr("ERROR - invalid file"));
+    return;
+  }
+  csvRecords.clear();
+  ui->play->setEnabled(true);
+  ui->rewind->setEnabled(true);
+  ui->stepBack->setEnabled(true);
+  ui->stepForward->setEnabled(true);
+  ui->stop->setEnabled(true);
+  while (!file.atEnd()) {
+    QByteArray line = file.readLine();
+    csvRecords.append(line.simplified());
+  }
+  if (csvRecords.count() > 1) {
+    columnNames.clear();
+    QStringList keys = csvRecords[0].split(',');
+    // override the first two column names
+    keys[0] = "LogDate";
+    keys[1] = "LogTime";
+    Q_FOREACH(QString key, keys) {
+      columnNames.append(key.simplified());
+    }
+    settextHash.clear();
+    recordIndex = 1;
+  }
+  ui->logFileLabel->setText(QFileInfo(logFileNameAndPath).fileName());
+  addColumnHash("Alt(ft)");
+  addColumnHash("GAlt(ft)");
+  addColumnHash("GSpd(kts)");
+  addColumnHash("Hdg(@)");
+  addColumnHash("Tmp1(@C)");
+  addColumnHash("Cels(gRe)");
+  addColumnHash("Date");
+  addColumnHash("VSpd(m/s)");
+  addColumnHash("GPS");
+  rewind();
+  return;
+}
+
+void TelemetrySimulator::LogPlaybackController::addColumnHash(QString key)
+{
+  if (columnNames.contains(key)) {
+    settext_info.key = key;
+    settext_info.index = columnNames.indexOf(key);
+    settextHash.insert(key, settext_info);
+  }
+}
+
+void TelemetrySimulator::LogPlaybackController::play()
+{
+}
+
+void TelemetrySimulator::LogPlaybackController::stop()
+{
+}
+
+void TelemetrySimulator::LogPlaybackController::rewind()
+{
+  recordIndex = 1;
+  ui->stop->setChecked(true);
+  setUiDataValues();
+}
+
+void TelemetrySimulator::LogPlaybackController::stepForward()
+{
+  if (recordIndex < csvRecords.count() -1) {
+    recordIndex++;
+    ui->stop->setChecked(true);
+    setUiDataValues();
+  }
+}
+
+void TelemetrySimulator::LogPlaybackController::stepBack()
+{
+  if (recordIndex > 1) {
+    recordIndex--;
+    ui->stop->setChecked(true);
+    setUiDataValues();
+  }
+}
+
+QString TelemetrySimulator::LogPlaybackController::convertFeetToMeters100(QString input)
+{
+  float meters100 = input.toFloat() * 30.48;
+  return QString::number(qFloor(meters100 + .5));
+}
+
+QString TelemetrySimulator::LogPlaybackController::convertLogDate(QString input)
+{
+  QStringList dateTime = input.simplified().split(' ');
+  qDebug() << dateTime[0] << dateTime[1];
+  QStringList dateParts = dateTime[0].split('-'); // input as yy-mm-dd
+  // output is dd-MM-yyyy hh:mm:ss
+  QString localDateString = dateParts[2] + "-" + dateParts[1] + "-20" + dateParts[0] + " " + dateTime[1];
+  QString format("dd-MM-yyyy hh:mm:ss");
+  QDateTime utcDate = QDateTime::fromString(localDateString, format).toTimeSpec(Qt::UTC);
+  return utcDate.toString(format);
+}
+
+QString TelemetrySimulator::LogPlaybackController::convertGPS(QString input)
+{
+  // input format is 0DDmm.mmmmH ???
+  return "Not yet implemented";
+}
+
+void TelemetrySimulator::LogPlaybackController::setUiDataValues()
+{
+  QStringList columnData = csvRecords[recordIndex].split(',');
+  Q_FOREACH(SETTEXT_INFO info, settextHash) {
+    if (info.key.startsWith("GPS")) {
+      ui->gps_latlon->setText(convertGPS(columnData[info.index]));
+    }
+    else if (info.key.startsWith("Alt(ft)")) {
+      ui->valt->setText(convertFeetToMeters100(columnData[info.index]));
+    }
+    else if (info.key.startsWith("GAlt(ft)")) {
+      ui->gps_alt->setText(convertFeetToMeters100(columnData[info.index]));
+    }
+    else if (info.key.startsWith("GSpd(kts)")) {
+      ui->gps_speed->setText(QString::number(columnData[info.index].toFloat() * 1000));
+    }
+    else if (info.key.startsWith("Hdg(@)")) {
+      ui->gps_course->setText(QString::number(columnData[info.index].toFloat() * 100));
+    }
+    else if (info.key.startsWith("Tmp1(@C)")) {
+      ui->T1->setText(QString::number(columnData[info.index].toFloat()));
+    }
+    else if (info.key.startsWith("Cels(gRe)")) {
+      ui->cells->setText(QString::number(columnData[info.index].toFloat()));
+    }
+    else if (info.key.startsWith("Date")) {
+      ui->gps_time->setText(convertLogDate(columnData[info.index]));
+    }
+    else if (info.key.startsWith("VSpd(m/s)")) {
+      ui->vspeed->setText(QString::number(columnData[info.index].toFloat() * 100));
+    }
+  }
 }
