@@ -9,6 +9,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #define lstrlib_c
 
@@ -975,7 +976,7 @@ static int str_format (lua_State *L) {
 /* }====================================================== */
 
 
-static const luaL_Reg strlib[] = {
+const luaL_Reg strlib[] = {
   {"byte", str_byte},
   {"char", str_char},
   {"dump", str_dump},
@@ -993,7 +994,7 @@ static const luaL_Reg strlib[] = {
   {NULL, NULL}
 };
 
-
+#if 0
 static void createmetatable (lua_State *L) {
   lua_createtable(L, 0, 1);  /* table to be metatable for strings */
   lua_pushliteral(L, "");  /* dummy string */
@@ -1014,4 +1015,4 @@ LUAMOD_API int luaopen_string (lua_State *L) {
   createmetatable(L);
   return 1;
 }
-
+#endif

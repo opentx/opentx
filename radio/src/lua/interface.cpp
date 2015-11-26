@@ -479,10 +479,10 @@ void displayLuaError(const char * title)
 
 void displayAcknowledgeLuaError(uint8_t event)
 {
-  s_warning_result = false;
-  displayLuaError(s_warning);
+  warningResult = false;
+  displayLuaError(warningText);
   if (event == EVT_KEY_BREAK(KEY_EXIT)) {
-    s_warning = NULL;
+    warningText = NULL;
   }
 }
 
@@ -519,7 +519,7 @@ void luaError(uint8_t error, bool acknowledge)
   }
 
   if (acknowledge) {
-    s_warning = errorTitle;
+    warningText = errorTitle;
     popupFunc = displayAcknowledgeLuaError;
   }
   else {
@@ -658,7 +658,7 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
     filename = script.file;
 #endif
     if ((scriptType & RUN_TELEM_FG_SCRIPT) && 
-        (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {
+        (menuHandlers[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {
       lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
       lua_pushinteger(L, evt);
       inputsCount = 1;

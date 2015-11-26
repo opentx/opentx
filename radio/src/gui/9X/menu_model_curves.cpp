@@ -117,7 +117,7 @@ void menuModelCurveOne(uint8_t event)
     CASE_EVT_ROTARY_BREAK
     case EVT_KEY_BREAK(KEY_ENTER):
       if (s_editMode <= 0)
-        m_posHorz = 0;
+        menuHorizontalPosition = 0;
       if (s_editMode == 1 && crv.custom)
         s_editMode = 2;
       else
@@ -125,10 +125,10 @@ void menuModelCurveOne(uint8_t event)
       break;
     case EVT_KEY_LONG(KEY_ENTER):
       if (s_editMode <= 0) {
-        if (int8_t(++m_posHorz) > 4)
-          m_posHorz = -4;
+        if (int8_t(++menuHorizontalPosition) > 4)
+          menuHorizontalPosition = -4;
         for (uint8_t i=0; i<crv.points; i++)
-          crv.crv[i] = (i-(crv.points/2)) * int8_t(m_posHorz) * 50 / (crv.points-1);
+          crv.crv[i] = (i-(crv.points/2)) * int8_t(menuHorizontalPosition) * 50 / (crv.points-1);
         eeDirty(EE_MODEL);
         killEvents(event);
       }
@@ -136,7 +136,7 @@ void menuModelCurveOne(uint8_t event)
     case EVT_KEY_BREAK(KEY_EXIT):
       if (s_editMode > 0) {
         if (--s_editMode == 0)
-          m_posHorz = 0;
+          menuHorizontalPosition = 0;
       }
       else {
         popMenu();
@@ -146,7 +146,7 @@ void menuModelCurveOne(uint8_t event)
     /* CASE_EVT_ROTARY_LEFT */
     case EVT_KEY_REPT(KEY_LEFT):
     case EVT_KEY_FIRST(KEY_LEFT):
-      if (s_editMode==1 && m_posHorz>0) m_posHorz--;
+      if (s_editMode==1 && menuHorizontalPosition>0) menuHorizontalPosition--;
       if (s_editMode <= 0) {
         if (crv.custom) {
           moveCurve(s_curveChan, -crv.points+2);
@@ -164,7 +164,7 @@ void menuModelCurveOne(uint8_t event)
     /* CASE_EVT_ROTARY_RIGHT */
     case EVT_KEY_REPT(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_RIGHT):
-      if (s_editMode==1 && m_posHorz<(crv.points-1)) m_posHorz++;
+      if (s_editMode==1 && menuHorizontalPosition<(crv.points-1)) menuHorizontalPosition++;
       if (s_editMode <= 0) {
         if (!crv.custom) {
           moveCurve(s_curveChan, crv.points-2, crv.points);
@@ -194,7 +194,7 @@ void menuModelCurveOne(uint8_t event)
   DrawCurve();
 
   if (s_editMode>0) {
-    uint8_t i = m_posHorz;
+    uint8_t i = menuHorizontalPosition;
     point_t point = getPoint(i);
 
     if (s_editMode==1 || !BLINK_ON_PHASE) {
@@ -232,7 +232,7 @@ void menuModelCurvesAll(uint8_t event)
   SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVES);
 #endif
 
-  int8_t  sub = m_posVert - 1;
+  int8_t  sub = menuVerticalPosition - 1;
 
   switch (event) {
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -249,7 +249,7 @@ void menuModelCurvesAll(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i + s_pgOfs;
+    uint8_t k = i + menuVerticalOffset;
     uint8_t attr = (sub == k ? INVERS : 0);
 #if defined(GVARS) && defined(PCBSTD)
     if (k >= MAX_CURVES) {

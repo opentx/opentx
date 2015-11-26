@@ -203,16 +203,17 @@ static int io_close (lua_State *L) {
 #endif
 }
 
-#if !defined(USE_FATFS)
 static int f_gc (lua_State *L) {
 #if !defined(USE_FATFS)
   LStream *p = tolstream(L);
   if (!isclosed(p) && p->f != NULL)
     aux_close(L);  /* ignore closed and incompletely open files */
 #endif
+  f_close(tofile(L));  // no need to check if file was already closed (fatfs will not close it if p->f->fs is 0)
   return 0;
 }
 
+#if !defined(USE_FATFS)
 /*
 ** function to close regular files
 */
@@ -659,31 +660,27 @@ const luaL_Reg iolib[] = {
   {NULL, NULL}
 };
 
-#if !defined(USE_FATFS)
-
 /*
 ** methods for file handles
 */
 static const luaL_Reg flib[] = {
-  {"close", io_close},
-  {"flush", f_flush},
-  {"lines", f_lines},
-  {"read", io_read},
-  {"seek", f_seek},
-  {"setvbuf", f_setvbuf},
-  {"write", f_write},
-  {"__gc", f_gc},
-  {"__tostring", f_tostring},
+  // {"close", io_close},
+  // {"flush", f_flush},
+  // {"lines", f_lines},
+  // {"read", io_read},
+  // {"seek", f_seek},
+  // {"setvbuf", f_setvbuf},
+  // {"write", f_write},
+  {"__gc", f_gc},     // we define only garbage collector to close any leftover open files
+  // {"__tostring", f_tostring},
   {NULL, NULL}
 };
-
-#endif
 
 static void createmeta (lua_State *L) {
   luaL_newmetatable(L, LUA_FILEHANDLE);  /* create metatable for file handles */
   lua_pushvalue(L, -1);  /* push metatable */
-  // lua_setfield(L, -2, "__index");  /* metatable.__index = metatable */
-  // luaL_setfuncs(L, flib, 0);  /* add file methods to new metatable */
+  lua_setfield(L, -2, "__index");  /* metatable.__index = metatable */
+  luaL_setfuncs(L, flib, 0);  /* add file methods to new metatable */
   lua_pop(L, 1);  /* pop new metatable */
 }
 

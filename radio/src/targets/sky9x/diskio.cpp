@@ -1314,7 +1314,7 @@ DRESULT disk_read (
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
 
-extern const char * s_warning;
+extern const char * warningText;
 
 DRESULT disk_write (
                                         BYTE drv,                       /* Physical drive nmuber (0) */

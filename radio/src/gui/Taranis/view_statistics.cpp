@@ -112,8 +112,8 @@ void menuStatisticsDebug(uint8_t event)
   TITLE(STR_MENUDEBUG);
 
 #if defined(WATCHDOG_TEST)
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     // do a user requested watchdog test
     TRACE("Performing watchdog test");
     pausePulses();
@@ -223,7 +223,7 @@ void menuTraceBuffer(uint8_t event)
 
   uint8_t y = 0;
   uint8_t k = 0;
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
 
   lcd_putc(0, FH, '#');
   lcd_puts(4*FW, FH, "Time");
@@ -232,7 +232,7 @@ void menuTraceBuffer(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-2; i++) {
     y = 1 + (i+2)*FH;
-    k = i+s_pgOfs;
+    k = i+menuVerticalOffset;
 
     //item
     lcd_outdezAtt(0, y, k, LEFT | (sub==k ? INVERS : 0));

@@ -315,6 +315,7 @@ namespace NAMESPACE {
 #include "radio/src/thirdparty/Lua/src/ltablib.c"
 #include "radio/src/thirdparty/Lua/src/lcorolib.c"
 #include "radio/src/thirdparty/Lua/src/liolib.c"
+#include "radio/src/thirdparty/Lua/src/lstrlib.c"
 #endif
 
 int16_t g_anas[NUM_STICKS+NUM_POTS];

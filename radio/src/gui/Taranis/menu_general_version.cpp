@@ -88,8 +88,8 @@ void backupEeprom()
 
 void menuGeneralVersion(uint8_t event)
 {
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     displayPopup(STR_EEPROMFORMATTING);
     eeErase(false);
 #if !defined(SIMU)

@@ -75,7 +75,7 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lat
 
 void onLogicalSwitchesMenu(const char *result)
 {
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
   LogicalSwitchData * cs = lswAddress(sub);
 
   if (result == STR_COPY) {
@@ -99,8 +99,8 @@ void menuModelLogicalSwitches(uint8_t event)
   MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_LOGICAL_SWITCH, { NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/ });
 
   int k = 0;
-  int sub = m_posVert;
-  horzpos_t horz = m_posHorz;
+  int sub = menuVerticalPosition;
+  horzpos_t horz = menuHorizontalPosition;
 
   if (horz>=0) {
     displayColumnHeader(STR_CSW_HEADERS, horz);
@@ -110,17 +110,17 @@ void menuModelLogicalSwitches(uint8_t event)
     killEvents(event);
     LogicalSwitchData * cs = lswAddress(sub);
     if (cs->func)
-      MENU_ADD_ITEM(STR_COPY);
+      POPUP_MENU_ADD_ITEM(STR_COPY);
     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
-      MENU_ADD_ITEM(STR_PASTE);
+      POPUP_MENU_ADD_ITEM(STR_PASTE);
     if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw)
-      MENU_ADD_ITEM(STR_CLEAR);
-    menuHandler = onLogicalSwitchesMenu;
+      POPUP_MENU_ADD_ITEM(STR_CLEAR);
+    popupMenuHandler = onLogicalSwitchesMenu;
   }
 
   for (int i=0; i<NUM_BODY_LINES; ++i) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    k = i+s_pgOfs;
+    k = i+menuVerticalOffset;
     LcdFlags attr = (sub==k ? ((s_editMode>0) ? BLINK|INVERS : INVERS)  : 0);
     LcdFlags attr1 = (horz==1 ? attr : 0);
     LcdFlags attr2 = (horz==2 ? attr : 0);

@@ -225,20 +225,11 @@ void lcd_putsnAtt(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags
   uint32_t fontsize = FONTSIZE(flags);
   bool setx = false;
   while (len--) {
-    unsigned char c;
-    switch (flags & (BSS+ZCHAR)) {
-      case BSS:
-        c = *s;
-        break;
-#if !defined(BOOT)
-      case ZCHAR:
-        c = idx2char(*s);
-        break;
+#if defined(BOOT)
+    unsigned char c = *s;
+#else
+    unsigned char c = (flags & ZCHAR) ? idx2char(*s) : *s;
 #endif
-      default:
-        c = pgm_read_byte(s);
-        break;
-    }
 
     if (setx) {
       x = c;
@@ -305,7 +296,7 @@ void lcd_putsLeft(coord_t y, const pm_char * s)
 void lcd_putsiAtt(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags flags)
 {
   uint8_t length = pgm_read_byte(s++);
-  lcd_putsnAtt(x, y, s+length*idx, length, flags & ~(BSS|ZCHAR));
+  lcd_putsnAtt(x, y, s+length*idx, length, flags & ~ZCHAR);
 }
 
 void lcd_outhex4(coord_t x, coord_t y, uint32_t val, LcdFlags flags)

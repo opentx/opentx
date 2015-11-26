@@ -79,24 +79,24 @@ void menuGeneralDiagAna(uint8_t event)
   adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8;
   uint32_t batCalV = (adcBatt + adcBatt*(g_eeGeneral.txVoltageCalibration)/128) * 4191;
   batCalV /= 55296;
-  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT+1+4*FH, batCalV, (m_posVert==1 ? INVERS : 0));
+  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT+1+4*FH, batCalV, (menuVerticalPosition==1 ? INVERS : 0));
 #elif defined(PCBGRUVIN9X)
   lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
   // Gruvin wants 2 decimal places and instant update of volts calib field when button pressed
   static uint16_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8; // running average, sourced directly (to avoid unending debate :P)
   uint32_t batCalV = ((uint32_t)adcBatt*1390 + (10*(int32_t)adcBatt*g_eeGeneral.txVoltageCalibration)/8) / BandGap;
-  lcd_outdezNAtt(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, PREC2|(m_posVert==1 ? INVERS : 0));
+  lcd_outdezNAtt(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, PREC2|(menuVerticalPosition==1 ? INVERS : 0));
 #else
   lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
-  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, g_vbat100mV, (m_posVert==1 ? INVERS : 0));
+  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, g_vbat100mV, (menuVerticalPosition==1 ? INVERS : 0));
 #endif
-  if (m_posVert==1) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
+  if (menuVerticalPosition==1) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
 
 #if defined(TX_CAPACITY_MEASUREMENT)
   lcd_putsLeft(6*FH+1, STR_CURRENT_CALIB);
-  putsValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, 6*FH+1, getCurrent(), UNIT_MILLIAMPS, (m_posVert==2 ? INVERS : 0)) ;
-  if (m_posVert==2) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txCurrentCalibration, -49, 49);
+  putsValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, 6*FH+1, getCurrent(), UNIT_MILLIAMPS, (menuVerticalPosition==2 ? INVERS : 0)) ;
+  if (menuVerticalPosition==2) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txCurrentCalibration, -49, 49);
 #endif
 
 #if defined(PCBSKY9X)
@@ -109,7 +109,7 @@ void menuGeneralDiagAna(uint8_t event)
   #endif
 
   lcd_putsLeft(TEMP_CALIB_POS, STR_TEMP_CALIB);
-  putsValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, TEMP_CALIB_POS, getTemperature(), UNIT_TEMPERATURE, (m_posVert==TEMP_CALIB_MENU_POS ? INVERS : 0)) ;
-  if (m_posVert==TEMP_CALIB_MENU_POS) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
+  putsValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, TEMP_CALIB_POS, getTemperature(), UNIT_TEMPERATURE, (menuVerticalPosition==TEMP_CALIB_MENU_POS ? INVERS : 0)) ;
+  if (menuVerticalPosition==TEMP_CALIB_MENU_POS) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
 #endif
 }

@@ -43,11 +43,11 @@
 
 void onCustomFunctionsFileSelectionMenu(const char *result)
 {
-  int  sub = m_posVert;
+  int  sub = menuVerticalPosition;
   CustomFunctionData * cfn;
   uint8_t eeFlags;
 
-  if (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions) {
+  if (menuHandlers[menuLevel] == menuModelCustomFunctions) {
     cfn = &g_model.customFn[sub];
     eeFlags = EE_MODEL;
   }
@@ -69,7 +69,6 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
     }
     if (!listSdFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), NULL)) {
       POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
-      s_menu_flags = 0;
     }
   }
   else {
@@ -84,11 +83,11 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
 
 void onCustomFunctionsMenu(const char *result)
 {
-  int sub = m_posVert;
+  int sub = menuVerticalPosition;
   CustomFunctionData * cfn;
   uint8_t eeFlags;
 
-  if (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions) {
+  if (menuHandlers[menuLevel] == menuModelCustomFunctions) {
     cfn = &g_model.customFn[sub];
     eeFlags = EE_MODEL;
   }
@@ -123,7 +122,7 @@ void onCustomFunctionsMenu(const char *result)
 
 void onAdjustGvarSourceLongEnterPress(const char * result)
 {
-  CustomFunctionData * cfn = &g_model.customFn[m_posVert];
+  CustomFunctionData * cfn = &g_model.customFn[menuVerticalPosition];
 
   if (result == STR_CONSTANT) {
     CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_CONSTANT;
@@ -152,38 +151,38 @@ void onAdjustGvarSourceLongEnterPress(const char * result)
 
 void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
 {
-  int sub = m_posVert;
+  int sub = menuVerticalPosition;
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
-  if (m_posHorz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+  if (menuHorizontalPosition<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
     killEvents(event);
     CustomFunctionData *cfn = &functions[sub];
     if (!CFN_EMPTY(cfn))
-      MENU_ADD_ITEM(STR_COPY);
+      POPUP_MENU_ADD_ITEM(STR_COPY);
     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_FUNCTION)
-      MENU_ADD_ITEM(STR_PASTE);
+      POPUP_MENU_ADD_ITEM(STR_PASTE);
     if (!CFN_EMPTY(cfn) && CFN_EMPTY(&functions[NUM_CFN-1]))
-      MENU_ADD_ITEM(STR_INSERT);
+      POPUP_MENU_ADD_ITEM(STR_INSERT);
     if (!CFN_EMPTY(cfn))
-      MENU_ADD_ITEM(STR_CLEAR);
+      POPUP_MENU_ADD_ITEM(STR_CLEAR);
     for (int i=sub+1; i<NUM_CFN; i++) {
       if (!CFN_EMPTY(&functions[i])) {
-        MENU_ADD_ITEM(STR_DELETE);
+        POPUP_MENU_ADD_ITEM(STR_DELETE);
         break;
       }
     }
-    menuHandler = onCustomFunctionsMenu;
+    popupMenuHandler = onCustomFunctionsMenu;
   }
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    int k = i+s_pgOfs;
+    int k = i+menuVerticalOffset;
 
-    putsStrIdx(0, y, functions == g_model.customFn ? STR_SF : STR_GF, k+1, (sub==k && m_posHorz<0) ? INVERS : 0);
+    putsStrIdx(0, y, functions == g_model.customFn ? STR_SF : STR_GF, k+1, (sub==k && menuHorizontalPosition<0) ? INVERS : 0);
 
     CustomFunctionData *cfn = &functions[k];
     uint8_t func = CFN_FUNC(cfn);
     for (uint8_t j=0; j<5; j++) {
-      uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+      uint8_t attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && s_editMode>0);
       switch (j) {
         case 0:
@@ -204,7 +203,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           }
           else {
             j = 4; // skip other fields
-            if (sub==k && m_posHorz > 0) {
+            if (sub==k && menuHorizontalPosition > 0) {
               REPEAT_LAST_CURSOR_MOVE();
             }
           }
@@ -304,11 +303,10 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
                 strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
               }
               if (listSdFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), cfn->play.name)) {
-                menuHandler = onCustomFunctionsFileSelectionMenu;
+                popupMenuHandler = onCustomFunctionsFileSelectionMenu;
               }
               else {
                 POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
-                s_menu_flags = 0;
               }
             }
             break;
@@ -391,14 +389,14 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
             if (func == FUNC_ADJUST_GVAR && attr && event==EVT_KEY_LONG(KEY_ENTER)) {
               killEvents(event);
               if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_CONSTANT)
-                MENU_ADD_ITEM(STR_CONSTANT);
+                POPUP_MENU_ADD_ITEM(STR_CONSTANT);
               if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_SOURCE)
-                MENU_ADD_ITEM(STR_MIXSOURCE);
+                POPUP_MENU_ADD_ITEM(STR_MIXSOURCE);
               if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_GVAR)
-                MENU_ADD_ITEM(STR_GLOBALVAR);
+                POPUP_MENU_ADD_ITEM(STR_GLOBALVAR);
               if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_INC)
-                MENU_ADD_ITEM(STR_INCDEC);
-              menuHandler = onAdjustGvarSourceLongEnterPress;
+                POPUP_MENU_ADD_ITEM(STR_INCDEC);
+              popupMenuHandler = onAdjustGvarSourceLongEnterPress;
               s_editMode = EDIT_MODIFY_FIELD;
             }
           }

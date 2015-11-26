@@ -335,9 +335,9 @@ void *main_thread(void *)
     
     s_current_protocol[0] = 255;
 
-    g_menuStackPtr = 0;
-    g_menuStack[0] = menuMainView;
-    g_menuStack[1] = menuModelSelect;
+    menuLevel = 0;
+    menuHandlers[0] = menuMainView;
+    menuHandlers[1] = menuModelSelect;
 
     eeReadAll(); // load general setup and selected model
 
@@ -822,7 +822,7 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
   fil->fs = (FATFS*)fopen(realPath, (flag & FA_WRITE) ? ((flag & FA_CREATE_ALWAYS) ? "wb+" : "ab+") : "rb+");
   fil->fptr = 0;
   if (fil->fs) {
-    TRACE("f_open(%s, %x) = %p", path, flag, (FILE*)fil->fs);
+    TRACE("f_open(%s, %x) = %p (FIL %p)", path, flag, fil->fs, fil);
     return FR_OK;
   }
   TRACE("f_open(%s) = error %d (%s)", path, errno, strerror(errno));
@@ -871,8 +871,9 @@ UINT f_size(FIL* fil)
 
 FRESULT f_close (FIL * fil)
 {
-  if (fil && fil->fs) {
-    TRACE("f_close(%p)", (FILE*)fil->fs);
+  assert(fil);
+  TRACE("f_close(%p) (FIL:%p)", fil->fs, fil);
+  if (fil->fs) {
     fclose((FILE*)fil->fs);
     fil->fs = NULL;
   }
