@@ -212,9 +212,45 @@ void guiMain(evt_t evt)
   }
 }
 #elif defined(GUI)
+
+void handleGui(uint8_t event) {
+  // if Lua standalone, run it and don't clear the screen (Lua will do it)
+  // else if Lua telemetry view, run it and don't clear the screen
+  // else clear scren and show normal menus 
+#if defined(LUA)
+  if (luaTask(event, RUN_STNDAL_SCRIPT, true)) {
+    // standalone script is active
+  }
+  else if (luaTask(event, RUN_TELEM_FG_SCRIPT, true)) {
+    // the telemetry screen is active
+    // prevent events from keys MENU, UP, DOWN, ENT(short) and EXIT(short) from reaching the normal menus,
+    // so Lua telemetry script can fully use them
+    if (event) {
+      uint8_t key = EVT_KEY_MASK(event);
+      // no need to filter out MENU and ENT(short), because they are not used by menuTelemetryFrsky()
+      if (key == KEY_PLUS || key == KEY_MINUS || (!IS_KEY_LONG(event) && key == KEY_EXIT)) {
+        // TRACE("Telemetry script event 0x%02x killed", event);
+        event = 0;
+      }
+    }
+    menuHandlers[menuLevel](event);
+    // todo     drawStatusLine(); here???
+  }
+  else 
+#endif
+  {
+    lcdClear();
+    menuHandlers[menuLevel](event);
+    drawStatusLine();
+  }
+}
+
+bool inPopupMenu = false;
+
 void guiMain(evt_t evt)
 {
 #if defined(LUA)
+  // TODO better lua stopwatch
   uint32_t t0 = get_tmr10ms();
   static uint32_t lastLuaTime = 0;
   uint16_t interval = (lastLuaTime == 0 ? 0 : (t0 - lastLuaTime));
@@ -226,6 +262,12 @@ void guiMain(evt_t evt)
   // run Lua scripts that don't use LCD (to use CPU time while LCD DMA is running)
   luaTask(0, RUN_MIX_SCRIPT | RUN_FUNC_SCRIPT | RUN_TELEM_BG_SCRIPT, false);
 
+  t0 = get_tmr10ms() - t0;
+  if (t0 > maxLuaDuration) {
+    maxLuaDuration = t0;
+  }
+#endif //#if defined(LUA)
+
   // wait for LCD DMA to finish before continuing, because code from this point 
   // is allowed to change the contents of LCD buffer
   // 
@@ -233,47 +275,52 @@ void guiMain(evt_t evt)
   //
   lcdRefreshWait();
 
-  // draw LCD from menus or from Lua script
-  // run Lua scripts that use LCD
-
-  bool standaloneScriptWasRun = luaTask(evt, RUN_STNDAL_SCRIPT, true);
-  if (!standaloneScriptWasRun) {
-    luaTask(evt, RUN_TELEM_FG_SCRIPT, true);
+  if (menuEvent) {
+    // we have a popupMenuActive entry or exit event 
+    menuVerticalPosition = (menuEvent == EVT_ENTRY_UP) ? menuVerticalPositions[menuLevel] : 0;
+    menuHorizontalPosition = 0;
+    evt = menuEvent;
+    if (menuEvent == EVT_ENTRY_UP) {
+      TRACE("menuEvent EVT_ENTRY_UP");
+    }
+    // else if (menuEvent == EVT_MENU_UP) {
+    //   TRACE("menuEvent EVT_MENU_UP");
+    // }
+    else if (menuEvent == EVT_ENTRY) {
+      TRACE("menuEvent EVT_ENTRY");
+    }
+    else {
+      TRACE("menuEvent 0x%02x", menuEvent);
+    }
+    menuEvent = 0;
+    AUDIO_MENUS();
   }
 
-  t0 = get_tmr10ms() - t0;
-  if (t0 > maxLuaDuration) {
-    maxLuaDuration = t0;
+  if (warningText) {
+    // show warning on top of the normal menus
+    handleGui(0); // suppress events, they are handled by the warning
+    DISPLAY_WARNING(evt);
   }
-#else
-  lcdRefreshWait();   // WARNING: make sure no code above this line does any change to the LCD display buffer!
-  const bool standaloneScriptWasRun = false;
-#endif
-
-  if (!standaloneScriptWasRun) {
-    lcdClear();
-
-    // normal GUI from menus
-    const char * warn = warningText;
-    uint8_t menu = popupMenuNoItems;
-    if (menuEvent) {
-      menuVerticalPosition = menuEvent == EVT_ENTRY_UP ? menuVerticalPositions[menuLevel] : 0;
-      menuHorizontalPosition = 0;
-      evt = menuEvent;
-      menuEvent = 0;
-      AUDIO_MENUS();
+  else if (popupMenuNoItems > 0) {
+    // popup menu is active display it on top of normal menus 
+    handleGui(0); // suppress events, they are handled by the popup
+    if (!inPopupMenu) {
+      TRACE("Popup Menu started");
+      inPopupMenu = true;
     }
-    
-    menuHandlers[menuLevel]((warn || menu) ? 0 : evt);
-    if (warn) DISPLAY_WARNING(evt);
-    if (menu) {
-      const char * result = displayPopupMenu(evt);
-      if (result) {
-        popupMenuHandler(result);
-      }
+    const char * result = displayPopupMenu(evt);
+    if (result) {
+      TRACE("popupMenuHandler(%s)", result);
+      popupMenuHandler(result);
     }
-      
-    drawStatusLine();
+  }
+  else {
+    // normal menus
+    if (inPopupMenu) {
+      TRACE("Popup Menu ended");
+      inPopupMenu = false;
+    }
+    handleGui(evt);
   }
 
   lcdRefresh();
