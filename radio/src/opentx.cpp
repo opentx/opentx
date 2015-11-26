@@ -69,7 +69,10 @@ bool loadModelBitmap(char * name, uint8_t * bitmap)
     }
   }
 
-#if !defined(COLORLCD)
+#if defined(COLORLCD)
+  // TODO only the first bytes can be set to 0
+  memset(bitmap, 0, MODEL_BITMAP_SIZE);
+#else
   // In all error cases, we set the default logo
   memcpy(bitmap, logo_taranis, MODEL_BITMAP_SIZE);
 #endif

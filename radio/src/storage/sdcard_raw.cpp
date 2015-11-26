@@ -414,8 +414,6 @@ const char * storageModifyLine(unsigned int operation, int category, int positio
     }
   }
 
-
-
   f_close(&file);
   f_unlink(RADIO_PATH "/models.old");
   f_rename(RADIO_MODELSLIST_PATH, RADIO_PATH "/models.old");

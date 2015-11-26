@@ -123,7 +123,6 @@ void storageEraseAll(bool warn)
   MESSAGE(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, NULL, AU_STORAGE_FORMAT);
 
   storageFormat();
-  storageDirty(EE_GENERAL);
-  storageDirty(EE_MODEL);
+  storageDirty(EE_GENERAL|EE_MODEL);
   storageCheck(true);
 }

@@ -896,6 +896,10 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, co
     width = LCD_W-x;
   }
 
+  if (width == 0 || height == 0) {
+    return;
+  }
+
   if (scale == 0) {
     lcdDrawBitmapDMA(x, y, width, height, bmp+4);
   }
