@@ -100,7 +100,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
   clearKeyEvents();
 }
 
-void displayPopup(const char *title)
+void displayPopup(const char * title)
 {
   // displayMessageBox();
   lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN, DBLSIZE|WARNING_COLOR);
@@ -138,7 +138,7 @@ void displayWarning(evt_t event)
   }
 }
 
-const char * displayMenu(evt_t event)
+const char * displayPopupMenu(evt_t event)
 {
   const char * result = NULL;
   uint8_t display_count = min(popupMenuNoItems, (uint16_t)POPUP_MENU_MAX_LINES);

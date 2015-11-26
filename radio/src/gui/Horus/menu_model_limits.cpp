@@ -155,7 +155,7 @@ bool menuModelLimits(evt_t event)
       // last line available - add the "copy trim menu" line
       uint8_t attr = (sub==NUM_CHNOUT) ? INVERS : 0;
       // TODO CENTER attribute
-      lcdDrawText(100, y, STR_TRIMS2OFFSETS, s_noHi ? 0 : attr);
+      lcdDrawText(100, y, STR_TRIMS2OFFSETS, noHighlightCounter ? 0 : attr);
       if (attr) {
         s_editMode = 0;
         if (event==EVT_KEY_LONG(KEY_ENTER)) {
