@@ -110,7 +110,7 @@ bool menuGeneralSetup(evt_t event)
   struct gtm t;
   gettime(&t);
 
-  if ((m_posVert==ITEM_SETUP_DATE || m_posVert==ITEM_SETUP_TIME) &&
+  if ((menuVerticalPosition==ITEM_SETUP_DATE || menuVerticalPosition==ITEM_SETUP_TIME) &&
       (s_editMode>0) &&
       (event==EVT_KEY_FIRST(KEY_ENTER) || event==EVT_KEY_BREAK(KEY_ENTER) || event==EVT_KEY_LONG(KEY_ENTER) || event==EVT_KEY_FIRST(KEY_EXIT))) {
     // set the date and time into RTC chip
@@ -119,8 +119,8 @@ bool menuGeneralSetup(evt_t event)
 #endif
 
 #if defined(FAI_CHOICE)
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     g_eeGeneral.fai = true;
     storageDirty(EE_GENERAL);
   }
@@ -128,11 +128,11 @@ bool menuGeneralSetup(evt_t event)
 
   MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX, DEFAULT_SCROLLBAR_X, { 2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE, LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0, CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) LABEL(ALARMS), 0, 0, 0, CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, CASE_MAVLINK(0) 0, 0, 0, 0, 1/*to force edit mode*/ });
 
-  int sub = m_posVert;
+  int sub = menuVerticalPosition;
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
-    int k = i+s_pgOfs;
+    int k = i+menuVerticalOffset;
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);
 
@@ -141,14 +141,14 @@ bool menuGeneralSetup(evt_t event)
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_DATE);
         LcdFlags flags = 0;
-        if (attr && m_posHorz < 0) {
+        if (attr && menuHorizontalPosition < 0) {
           flags |= INVERS;
           lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 85, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
         lcdDrawText(RADIO_SETUP_2ND_COLUMN+YEAR_SEPARATOR_OFFSET, y, "-", flags);
         lcdDrawText(RADIO_SETUP_2ND_COLUMN+MONTH_SEPARATOR_OFFSET, y, "-", flags);
         for (uint8_t j=0; j<3; j++) {
-          uint8_t rowattr = (m_posHorz==j ? attr : 0);
+          uint8_t rowattr = (menuHorizontalPosition==j ? attr : 0);
           switch (j) {
             case 0:
               lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, t.tm_year+1900, LEFT|flags|rowattr);
@@ -180,14 +180,14 @@ bool menuGeneralSetup(evt_t event)
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TIME);
         LcdFlags flags = 0;
-        if (attr && m_posHorz < 0) {
+        if (attr && menuHorizontalPosition < 0) {
           flags |= INVERS;
           lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 85, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
         lcdDrawText(RADIO_SETUP_2ND_COLUMN+HOUR_SEPARATOR_OFFSET, y, ":", flags);
         lcdDrawText(RADIO_SETUP_2ND_COLUMN+MINUTE_SEPARATOR_OFFSET, y, ":", flags);
         for (uint8_t j=0; j<3; j++) {
-          uint8_t rowattr = (m_posHorz==j ? attr : 0);
+          uint8_t rowattr = (menuHorizontalPosition==j ? attr : 0);
           switch (j) {
             case 0:
               if (rowattr && s_editMode>0) t.tm_hour = checkIncDec(event, t.tm_hour, 0, 23, 0);
@@ -213,15 +213,15 @@ bool menuGeneralSetup(evt_t event)
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATTERY_RANGE);
         LcdFlags color = WHITE;
-        if (attr && m_posHorz < 0) {
+        if (attr && menuHorizontalPosition < 0) {
           color = BLACK;
           lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 90, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
-        putsVolts(RADIO_SETUP_2ND_COLUMN, y, 90+g_eeGeneral.vBatMin, color|(m_posHorz==0 ? attr : 0)|LEFT|NO_UNIT);
+        putsVolts(RADIO_SETUP_2ND_COLUMN, y, 90+g_eeGeneral.vBatMin, color|(menuHorizontalPosition==0 ? attr : 0)|LEFT|NO_UNIT);
         lcdDrawText(RADIO_SETUP_2ND_COLUMN+20, y, "-");
-        putsVolts(RADIO_SETUP_2ND_COLUMN+28, y, 120+g_eeGeneral.vBatMax, color|(m_posHorz>0 ? attr : 0)|LEFT|NO_UNIT);
+        putsVolts(RADIO_SETUP_2ND_COLUMN+28, y, 120+g_eeGeneral.vBatMax, color|(menuHorizontalPosition>0 ? attr : 0)|LEFT|NO_UNIT);
         if (attr && s_editMode>0) {
-          if (m_posHorz==0)
+          if (menuHorizontalPosition==0)
             CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMin, -50, g_eeGeneral.vBatMax+29); // min=4.0V
           else
             CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMax, g_eeGeneral.vBatMin-29, +40); // max=16.0V

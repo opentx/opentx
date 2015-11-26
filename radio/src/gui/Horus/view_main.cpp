@@ -270,11 +270,11 @@ void onMainViewMenu(const char *result)
     pushModelNotes();
   }
   else if (result == STR_RESET_SUBMENU) {
-    MENU_ADD_ITEM(STR_RESET_FLIGHT);
-    MENU_ADD_ITEM(STR_RESET_TIMER1);
-    MENU_ADD_ITEM(STR_RESET_TIMER2);
-    MENU_ADD_ITEM(STR_RESET_TIMER3);
-    MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+    POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TIMER1);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TIMER3);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
   }
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();
@@ -305,14 +305,14 @@ bool menuMainView(evt_t event)
 
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
-      MENU_ADD_ITEM(STR_MODEL_SELECT);
+      POPUP_MENU_ADD_ITEM(STR_MODEL_SELECT);
       if (modelHasNotes()) {
-        MENU_ADD_ITEM(STR_VIEW_NOTES);
+        POPUP_MENU_ADD_ITEM(STR_VIEW_NOTES);
       }
-      MENU_ADD_ITEM(STR_RESET_SUBMENU);
-      MENU_ADD_ITEM(STR_STATISTICS);
-      MENU_ADD_ITEM(STR_ABOUT_US);
-      menuHandler = onMainViewMenu;
+      POPUP_MENU_ADD_ITEM(STR_RESET_SUBMENU);
+      POPUP_MENU_ADD_ITEM(STR_STATISTICS);
+      POPUP_MENU_ADD_ITEM(STR_ABOUT_US);
+      popupMenuHandler = onMainViewMenu;
       break;
 
     case EVT_KEY_BREAK(KEY_MENU):

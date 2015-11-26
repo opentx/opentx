@@ -184,7 +184,7 @@ bool menuTraceBuffer(evt_t event)
 
   uint8_t y = 0;
   uint8_t k = 0;
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
 
   lcdDrawChar(0, FH, '#', TEXT_COLOR);
   lcdDrawText(4*10, FH, "Time");
@@ -193,7 +193,7 @@ bool menuTraceBuffer(evt_t event)
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     y = 1 + (i+2)*FH;
-    k = i+s_pgOfs;
+    k = i+menuVerticalOffset;
 
     // item
     lcdDrawNumber(0, y, k, LEFT | (sub==k ? INVERS : 0));

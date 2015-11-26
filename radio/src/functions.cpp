@@ -323,13 +323,13 @@ void evalFunctions()
             newActiveFunctions |= (1 << FUNCTION_INSTANT_TRIM);
             if (!isFunctionActive(FUNCTION_INSTANT_TRIM)) {
 #if defined(GUI)
-              if (g_menuStack[0] == menuMainView
+              if (menuHandlers[0] == menuMainView
 #if defined(FRSKY) && !defined(PCBFLAMENCO) && !defined(PCBHORUS)
-                || g_menuStack[0] == menuTelemetryFrsky
+                || menuHandlers[0] == menuTelemetryFrsky
 #endif
 #if defined(PCBTARANIS)
-                || g_menuStack[0] == menuMainViewChannelsMonitor
-                || g_menuStack[0] == menuChannelsView
+                || menuHandlers[0] == menuMainViewChannelsMonitor
+                || menuHandlers[0] == menuChannelsView
 #endif
               )
 #endif

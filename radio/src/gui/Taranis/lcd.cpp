@@ -225,20 +225,11 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
   uint32_t fontsize = FONTSIZE(flags);
   bool setx = false;
   while (len--) {
-    unsigned char c;
-    switch (flags & (BSS+ZCHAR)) {
-      case BSS:
-        c = *s;
-        break;
-#if !defined(BOOT)
-      case ZCHAR:
-        c = idx2char(*s);
-        break;
+#if defined(BOOT)
+    unsigned char c = *s;
+#else
+    unsigned char c = (flags & ZCHAR) ? idx2char(*s) : *s;
 #endif
-      default:
-        c = pgm_read_byte(s);
-        break;
-    }
 
     if (setx) {
       x = c;
@@ -305,7 +296,7 @@ void lcd_putsLeft(coord_t y, const pm_char * s)
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags flags)
 {
   uint8_t length = pgm_read_byte(s++);
-  lcdDrawSizedText(x, y, s+length*idx, length, flags & ~(BSS|ZCHAR));
+  lcdDrawSizedText(x, y, s+length*idx, length, flags & ~ZCHAR);
 }
 
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags flags)

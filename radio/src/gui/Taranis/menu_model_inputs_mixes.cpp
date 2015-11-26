@@ -44,7 +44,7 @@ FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModes
 {
   lcd_putsColumnLeft(x, y, STR_FLMODE);
 
-  int posHorz = m_posHorz;
+  int posHorz = menuHorizontalPosition;
 
   for (int p=0; p<MAX_FLIGHT_MODES; p++) {
     LcdFlags flags = 0;
@@ -320,12 +320,12 @@ void menuModelExpoOne(uint8_t event)
 
   SET_SCROLLBAR_X(EXPO_ONE_2ND_COLUMN+10*FW);
 
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
 
   coord_t y = MENU_HEADER_HEIGHT + 1;
 
   for (unsigned int k=0; k<NUM_BODY_LINES; k++) {
-    int i = k + s_pgOfs;
+    int i = k + menuVerticalOffset;
     for (int j=0; j<=i; ++j) {
       if (j<(int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {
         ++i;
@@ -389,7 +389,7 @@ void menuModelExpoOne(uint8_t event)
         uint8_t not_stick = (ed->srcRaw > MIXSRC_Ail);
         int8_t carryTrim = -ed->carryTrim;
         lcd_putsLeft(y, STR_TRIM);
-        lcdDrawTextAtIndex(EXPO_ONE_2ND_COLUMN, y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, m_posHorz==0 ? attr : 0);
+        lcdDrawTextAtIndex(EXPO_ONE_2ND_COLUMN, y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, menuHorizontalPosition==0 ? attr : 0);
         if (attr) ed->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_AIL);
         break;
     }
@@ -504,7 +504,7 @@ void menuModelMixOne(uint8_t event)
   SET_SCROLLBAR_X(0);
 #endif
 
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
   int8_t editMode = s_editMode;
 
   for (int k=0; k<MENU_COLUMNS*(LCD_LINES-1); k++) {
@@ -521,7 +521,7 @@ void menuModelMixOne(uint8_t event)
     int8_t i = k;
     
 #if MENU_COLUMNS < 2
-    i = i + s_pgOfs;
+    i = i + menuVerticalOffset;
 #endif
 
     LcdFlags attr = (sub==i ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
@@ -623,7 +623,7 @@ static uint8_t s_copySrcCh;
 
 void onExpoMixMenu(const char *result)
 {
-  bool expo = (g_menuStack[g_menuStackPtr] == menuModelExposAll);
+  bool expo = (menuHandlers[menuLevel] == menuModelExposAll);
   uint8_t chn = (expo ? expoAddress(s_currIdx)->chn+1 : mixAddress(s_currIdx)->destCh+1);
 
   if (result == STR_EDIT) {
@@ -632,7 +632,7 @@ void onExpoMixMenu(const char *result)
   else if (result == STR_INSERT_BEFORE || result == STR_INSERT_AFTER) {
     if (!reachExpoMixCountLimit(expo)) {
       s_currCh = chn;
-      if (result == STR_INSERT_AFTER) { s_currIdx++; m_posVert++; }
+      if (result == STR_INSERT_AFTER) { s_currIdx++; menuVerticalPosition++; }
       insertExpoMix(expo, s_currIdx);
       pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
     }
@@ -641,7 +641,7 @@ void onExpoMixMenu(const char *result)
     s_copyMode = (result == STR_COPY ? COPY_MODE : MOVE_MODE);
     s_copySrcIdx = s_currIdx;
     s_copySrcCh = chn;
-    s_copySrcRow = m_posVert;
+    s_copySrcRow = menuVerticalPosition;
   }
   else if (result == STR_DELETE) {
     deleteExpoMix(expo, s_currIdx);
@@ -701,7 +701,7 @@ void displayExpoLine(coord_t y, ExpoData *ed)
 
 void menuModelExpoMix(uint8_t expo, uint8_t event)
 {
-  uint8_t sub = m_posVert;
+  uint8_t sub = menuVerticalPosition;
 
   if (s_editMode > 0)
     s_editMode = 0;
@@ -736,7 +736,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             } while (s_copyTgtOfs != 0);
             storageDirty(EE_MODEL);
           }
-          m_posVert = s_copySrcRow;
+          menuVerticalPosition = s_copySrcRow;
           s_copyTgtOfs = 0;
         }
         s_copyMode = 0;
@@ -776,13 +776,13 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
           else {
             event = 0;
             s_copyMode = 0;
-            MENU_ADD_ITEM(STR_EDIT);
-            MENU_ADD_ITEM(STR_INSERT_BEFORE);
-            MENU_ADD_ITEM(STR_INSERT_AFTER);
-            MENU_ADD_ITEM(STR_COPY);
-            MENU_ADD_ITEM(STR_MOVE);
-            MENU_ADD_ITEM(STR_DELETE);
-            menuHandler = onExpoMixMenu;
+            POPUP_MENU_ADD_ITEM(STR_EDIT);
+            POPUP_MENU_ADD_ITEM(STR_INSERT_BEFORE);
+            POPUP_MENU_ADD_ITEM(STR_INSERT_AFTER);
+            POPUP_MENU_ADD_ITEM(STR_COPY);
+            POPUP_MENU_ADD_ITEM(STR_MOVE);
+            POPUP_MENU_ADD_ITEM(STR_DELETE);
+            popupMenuHandler = onExpoMixMenu;
           }
         }
       }
@@ -792,7 +792,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
       if (s_copyMode && !s_copyTgtOfs) {
         if (reachExpoMixCountLimit(expo)) break;
         s_currCh = chn;
-        if (event == EVT_KEY_LONG(KEY_RIGHT)) { s_currIdx++; m_posVert++; }
+        if (event == EVT_KEY_LONG(KEY_RIGHT)) { s_currIdx++; menuVerticalPosition++; }
         insertExpoMix(expo, s_currIdx);
         pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
         s_copyMode = 0;
@@ -812,7 +812,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
           if (reachExpoMixCountLimit(expo)) break;
           copyExpoMix(expo, s_currIdx);
           if (key==KEY_DOWN) s_currIdx++;
-          else if (sub-s_pgOfs >= 6) s_pgOfs++;
+          else if (sub-menuVerticalOffset >= 6) menuVerticalOffset++;
         }
         else if (next_ofs==0 && s_copyMode==COPY_MODE) {
           // delete the mix
@@ -866,16 +866,16 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
     }
   }
 
-  sub = m_posVert;
+  sub = menuVerticalPosition;
   s_currCh = 0;
   int cur = 0;
   int i = 0;
 
   for (int ch=1; ch<=(expo ? NUM_INPUTS : NUM_CHNOUT); ch++) {
     void *pointer = NULL; MixData * &md = (MixData * &)pointer; ExpoData * &ed = (ExpoData * &)pointer;
-    coord_t y = MENU_HEADER_HEIGHT+1+(cur-s_pgOfs)*FH;
+    coord_t y = MENU_HEADER_HEIGHT+1+(cur-menuVerticalOffset)*FH;
     if (expo ? (i<MAX_EXPOS && (ed=expoAddress(i))->chn+1 == ch && EXPO_VALID(ed)) : (i<MAX_MIXERS && (md=mixAddress(i))->srcRaw && md->destCh+1 == ch)) {
-      if (cur-s_pgOfs >= 0 && cur-s_pgOfs < NUM_BODY_LINES) {
+      if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
         if (expo) {
           putsMixerSource(0, y, ch, 0);
         }
@@ -886,19 +886,19 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
       uint8_t mixCnt = 0;
       do {
         if (s_copyMode) {
-          if (s_copyMode == MOVE_MODE && cur-s_pgOfs >= 0 && cur-s_pgOfs < NUM_BODY_LINES && s_copySrcCh == ch && s_copyTgtOfs != 0 && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
+          if (s_copyMode == MOVE_MODE && cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES && s_copySrcCh == ch && s_copyTgtOfs != 0 && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
             lcdDrawRect(expo ? 18 : 22, y-1, expo ? LCD_W-18 : LCD_W-22, 9, DOTTED);
             cur++; y+=FH;
           }
           if (s_currIdx == i) {
-            sub = m_posVert = cur;
+            sub = menuVerticalPosition = cur;
             s_currCh = ch;
           }
         }
         else if (sub == cur) {
           s_currIdx = i;
         }
-        if (cur-s_pgOfs >= 0 && cur-s_pgOfs < NUM_BODY_LINES) {
+        if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
           uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
           if (expo) {
             GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr | (isExpoActive(i) ? BOLD : 0), 0, 0);
@@ -936,7 +936,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         }
         cur++; y+=FH; mixCnt++; i++; if (expo) ed++; else md++;
       } while (expo ? (i<MAX_EXPOS && ed->chn+1 == ch && EXPO_VALID(ed)) : (i<MAX_MIXERS && md->srcRaw && md->destCh+1 == ch));
-      if (s_copyMode == MOVE_MODE && cur-s_pgOfs >= 0 && cur-s_pgOfs < NUM_BODY_LINES && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
+      if (s_copyMode == MOVE_MODE && cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
         lcdDrawRect(expo ? EXPO_LINE_SELECT_POS : 22, y-1, expo ? LCD_W-EXPO_LINE_SELECT_POS : LCD_W-22, 9, DOTTED);
         cur++; y+=FH;
       }
@@ -950,7 +950,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
           attr = INVERS;
         }
       }
-      if (cur-s_pgOfs >= 0 && cur-s_pgOfs < NUM_BODY_LINES) {
+      if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
         if (expo) {
           putsMixerSource(0, y, ch, attr);
         }
@@ -965,7 +965,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
     }
   }
   s_maxLines = cur;
-  if (sub >= s_maxLines-1) m_posVert = s_maxLines-1;
+  if (sub >= s_maxLines-1) menuVerticalPosition = s_maxLines-1;
 }
 
 void menuModelExposAll(uint8_t event)

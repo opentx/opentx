@@ -84,7 +84,7 @@ uint8_t editDelay(const coord_t x, const coord_t y, const evt_t event, const uin
   return delay;
 }
 
-const MenuFuncP menuTabModel[] = {
+const MenuHandlerFunc menuTabModel[] = {
 //   menuModelSelect,
   menuModelSetup,
   CASE_HELI(menuModelHeli)
@@ -201,7 +201,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
 
       if (c != v) {
         name[editNameCursorPos] = v;
-        storageDirty(g_menuPos[0] == 0 ? EE_MODEL : EE_GENERAL);
+        storageDirty(menuVerticalPositions[0] == 0 ? EE_MODEL : EE_GENERAL);
       }
 
       lcdDrawSizedText(x, y, name, size, flags);

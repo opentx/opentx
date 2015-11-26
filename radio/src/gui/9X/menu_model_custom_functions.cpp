@@ -48,11 +48,11 @@
 #if defined(CPUARM) && defined(SDCARD)
 void onCustomFunctionsFileSelectionMenu(const char *result)
 {
-  int  sub = m_posVert - 1;
+  int  sub = menuVerticalPosition - 1;
   CustomFunctionData * cfn;
   uint8_t eeFlags;
 
-  if (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions) {
+  if (menuHandlers[menuLevel] == menuModelCustomFunctions) {
     cfn = &g_model.customFn[sub];
     eeFlags = EE_MODEL;
   }
@@ -74,7 +74,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
     }
     if (!sdListFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), NULL)) {
       POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
-      s_menu_flags = 0;
+      popupMenuFlags = 0;
     }
   }
   else {
@@ -87,7 +87,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
 
 void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
 {
-  int8_t sub = m_posVert - 1;
+  int8_t sub = menuVerticalPosition - 1;
 
 #if defined(CPUARM)
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
@@ -97,12 +97,12 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+s_pgOfs;
+    uint8_t k = i+menuVerticalOffset;
 
     CustomFunctionData *cfn = &functions[k];
     uint8_t func = CFN_FUNC(cfn);
     for (uint8_t j=0; j<5; j++) {
-      uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+      uint8_t attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
@@ -129,7 +129,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           }
           else {
             j = 4; // skip other fields
-            if (sub==k && m_posHorz > 0) {
+            if (sub==k && menuHorizontalPosition > 0) {
               REPEAT_LAST_CURSOR_MOVE();
             }
           }
@@ -245,11 +245,11 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
                 strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
               }
               if (sdListFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), cfn->play.name)) {
-                menuHandler = onCustomFunctionsFileSelectionMenu;
+                popupMenuHandler = onCustomFunctionsFileSelectionMenu;
               }
               else {
                 POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
-                s_menu_flags = 0;
+                popupMenuFlags = 0;
               }
             }
             break;

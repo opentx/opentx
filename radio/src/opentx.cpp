@@ -153,7 +153,7 @@ void per10ms()
 #if defined(GUI)
   if (lightOffCounter) lightOffCounter--;
   if (flashCounter) flashCounter--;
-  if (s_noHi) s_noHi--;
+  if (noHighlightCounter) noHighlightCounter--;
 #endif
 
   if (trimsCheckTimer) trimsCheckTimer--;
@@ -2030,7 +2030,7 @@ void checkBattery()
   static uint8_t counter = 0;
 #if defined(GUI) && !defined(COLORLCD)
   // TODO not the right menu I think ...
-  if (g_menuStack[g_menuStackPtr] == menuGeneralDiagAna) {
+  if (menuHandlers[menuLevel] == menuGeneralDiagAna) {
     g_vbat100mV = 0;
     counter = 0;
   }
@@ -2528,9 +2528,9 @@ int main(void)
   stackPaint();
 
 #if defined(GUI)
-  g_menuStack[0] = menuMainView;
+  menuHandlers[0] = menuMainView;
   #if MENUS_LOCK != 2/*no menus*/
-    g_menuStack[1] = menuModelSelect;
+    menuHandlers[1] = menuModelSelect;
   #endif
 #endif
 
@@ -2665,11 +2665,11 @@ uint32_t pwrCheck()
           evt_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
           lcdRefresh();
-          if (s_warning_result == true) {
+          if (warningResult == true) {
             pwr_check_state = PWR_CHECK_OFF;
             return e_power_off;
           }
-          else if (!s_warning) {
+          else if (!warningText) {
             // shutdown has been cancelled
             pwr_check_state = PWR_CHECK_PAUSED;
             return e_power_on;

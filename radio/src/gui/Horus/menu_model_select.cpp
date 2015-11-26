@@ -96,7 +96,7 @@ void onCategorySelectMenu(const char * result)
     storageCheck(true);
     createModel(currentCategory);
     selectMode = MODE_SELECT_MODEL;
-    m_posVert = 255;
+    menuVerticalPosition = 255;
   }
   else if (result == STR_CREATE_CATEGORY) {
     storageInsertCategory("Category", -1);
@@ -137,20 +137,20 @@ void onModelSelectMenu(const char * result)
   }
 }
 
-#define MODEL_INDEX()       (m_posVert*2+m_posHorz)
+#define MODEL_INDEX()       (menuVerticalPosition*2+menuHorizontalPosition)
 
 bool menuModelSelect(evt_t event)
 {
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     int modelIndex = MODEL_INDEX();
     storageRemoveModel(currentCategory, modelIndex);
     s_copyMode = 0;
     event = EVT_REFRESH;
     if (modelIndex > 0) {
       modelIndex--;
-      m_posVert = modelIndex / 2;
-      m_posHorz = modelIndex & 1;
+      menuVerticalPosition = modelIndex / 2;
+      menuHorizontalPosition = modelIndex & 1;
     }
   }
 
@@ -161,7 +161,7 @@ bool menuModelSelect(evt_t event)
 
     case EVT_ENTRY:
       selectMode = MODE_SELECT_CATEGORY;
-      currentCategory = m_posVert = 0;
+      currentCategory = menuVerticalPosition = 0;
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
@@ -171,7 +171,7 @@ bool menuModelSelect(evt_t event)
           return false;
         case MODE_SELECT_MODEL:
           selectMode = MODE_SELECT_CATEGORY;
-          m_posVert = currentCategory;
+          menuVerticalPosition = currentCategory;
           break;
       }
       break;
@@ -181,7 +181,7 @@ bool menuModelSelect(evt_t event)
       switch (selectMode) {
         case MODE_SELECT_CATEGORY:
           selectMode = MODE_SELECT_MODEL;
-          m_posVert = 0;
+          menuVerticalPosition = 0;
           break;
       }
       break;
@@ -189,27 +189,27 @@ bool menuModelSelect(evt_t event)
     case EVT_KEY_LONG(KEY_ENTER):
       if (selectMode == MODE_SELECT_CATEGORY) {
         killEvents(event);
-        MENU_ADD_ITEM(STR_CREATE_MODEL);
-        MENU_ADD_ITEM(STR_CREATE_CATEGORY);
-        MENU_ADD_ITEM(STR_RENAME_CATEGORY);
+        POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
+        POPUP_MENU_ADD_ITEM(STR_CREATE_CATEGORY);
+        POPUP_MENU_ADD_ITEM(STR_RENAME_CATEGORY);
         if (currentCategory > 0)
-          MENU_ADD_ITEM(STR_DELETE_CATEGORY);
-        menuHandler = onCategorySelectMenu;
+          POPUP_MENU_ADD_ITEM(STR_DELETE_CATEGORY);
+        popupMenuHandler = onCategorySelectMenu;
       }
       else if (selectMode == MODE_SELECT_MODEL) {
         killEvents(event);
         ModelHeader header;
         const char * error = readModel(selectedFilename, (uint8_t *)&header, sizeof(header));
         if (!error) {
-          MENU_ADD_ITEM(STR_SELECT_MODEL);
-          MENU_ADD_ITEM(STR_DUPLICATE_MODEL);
+          POPUP_MENU_ADD_ITEM(STR_SELECT_MODEL);
+          POPUP_MENU_ADD_ITEM(STR_DUPLICATE_MODEL);
         }
-        // MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
-        // MENU_ADD_ITEM(STR_MOVE_MODEL);
-        MENU_ADD_ITEM(STR_DELETE_MODEL);
-        // MENU_ADD_ITEM(STR_CREATE_MODEL);
-        // MENU_ADD_ITEM(STR_RESTORE_MODEL);
-        menuHandler = onModelSelectMenu;
+        // POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
+        // POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
+        POPUP_MENU_ADD_ITEM(STR_DELETE_MODEL);
+        // POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
+        // POPUP_MENU_ADD_ITEM(STR_RESTORE_MODEL);
+        popupMenuHandler = onModelSelectMenu;
       }
       break;
   }
@@ -264,7 +264,7 @@ bool menuModelSelect(evt_t event)
       if (navigate(event, index, 9)) {
         TRACE("Refresh 1");
         putEvent(EVT_REFRESH);
-        currentCategory = m_posVert;
+        currentCategory = menuVerticalPosition;
       }
     }
   }
@@ -280,8 +280,8 @@ bool menuModelSelect(evt_t event)
       if (!result) {
         break;
       }
-      if (count >= s_pgOfs*2 && count < (s_pgOfs+3)*2) {
-        bool selected = (selectMode==MODE_SELECT_MODEL && m_posVert*2+m_posHorz==count);
+      if (count >= menuVerticalOffset*2 && count < (menuVerticalOffset+3)*2) {
+        bool selected = (selectMode==MODE_SELECT_MODEL && menuVerticalPosition*2+menuHorizontalPosition==count);
         if (count & 1) {
           drawModel(CATEGORIES_WIDTH+MENUS_MARGIN_LEFT+162, y, line, selected);
           y += 66;
@@ -298,14 +298,14 @@ bool menuModelSelect(evt_t event)
     if (selectMode == MODE_SELECT_MODEL) {
       if (count == 0) {
         selectMode = MODE_SELECT_CATEGORY;
-        m_posVert = currentCategory;
+        menuVerticalPosition = currentCategory;
         putEvent(EVT_REFRESH);
       }
       else if (navigate(event, count, 3, 2)) {
         putEvent(EVT_REFRESH);
       }
     }
-    drawVerticalScrollbar(DEFAULT_SCROLLBAR_X, MENU_HEADER_HEIGHT+7, MENU_FOOTER_TOP-MENU_HEADER_HEIGHT-15, s_pgOfs, (count+1)/2, 3);
+    drawVerticalScrollbar(DEFAULT_SCROLLBAR_X, MENU_HEADER_HEIGHT+7, MENU_FOOTER_TOP-MENU_HEADER_HEIGHT-15, menuVerticalOffset, (count+1)/2, 3);
   }
 
   return true;

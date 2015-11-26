@@ -83,7 +83,7 @@ enum mavlink_menu_ {
 };
 
 //! \brief Pointer array to mavlink settings menus.
-const MenuFuncP menuTabMav[] PROGMEM = {
+const MenuHandlerFunc menuTabMav[] PROGMEM = {
   menuTelemetryMavlinkSetup
 };
 

@@ -228,7 +228,7 @@ bool menuGeneralCalib(evt_t event)
 {
   SIMPLE_MENU(STR_MENUCALIBRATION, menuTabGeneral, e_Calib, 0, DEFAULT_SCROLLBAR_X);
 
-  m_posVert = -1;
+  menuVerticalPosition = -1;
 
   if (menuEvent) {
     calibrationState = 0;

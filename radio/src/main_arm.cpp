@@ -152,13 +152,13 @@ void guiMain(evt_t evt)
   if (!standaloneScriptWasRun) {
     while (1) {
       // normal GUI from menus
-      const char * warn = s_warning;
-      uint8_t menu = s_menu_count;
+      const char * warn = warningText;
+      uint8_t menu = popupMenuNoItems;
 
       static bool popupDisplayed = false;
       if (warn || menu) {
         if (popupDisplayed == false) {
-          g_menuStack[g_menuStackPtr](EVT_REFRESH);
+          menuHandlers[menuLevel](EVT_REFRESH);
           lcdDrawBlackOverlay();
           TIME_MEASURE_START(storebackup);
           lcdStoreBackupBuffer();
@@ -168,9 +168,9 @@ void guiMain(evt_t evt)
           lcdRestoreBackupBuffer();
           if (warn) DISPLAY_WARNING(evt);
           if (menu) {
-            const char * result = displayMenu(evt);
+            const char * result = displayPopupMenu(evt);
             if (result) {
-              menuHandler(result);
+              popupMenuHandler(result);
               evt = EVT_REFRESH;
               continue;
             }
@@ -186,18 +186,18 @@ void guiMain(evt_t evt)
           }
           popupDisplayed = false;
         }
-        refreshNeeded = g_menuStack[g_menuStackPtr](evt);
+        refreshNeeded = menuHandlers[menuLevel](evt);
       }
 
       if (menuEvent == EVT_ENTRY) {
-        m_posVert = -1;
-        m_posHorz = 0;
+        menuVerticalPosition = -1;
+        menuHorizontalPosition = 0;
         evt = menuEvent;
         menuEvent = 0;
       }
       else if (menuEvent == EVT_ENTRY_UP) {
-        m_posVert = g_menuPos[g_menuStackPtr];
-        m_posHorz = 0;
+        menuVerticalPosition = menuVerticalPositions[menuLevel];
+        menuHorizontalPosition = 0;
         evt = menuEvent;
         menuEvent = 0;
       }
@@ -254,22 +254,22 @@ void guiMain(evt_t evt)
     lcdClear();
 
     // normal GUI from menus
-    const char * warn = s_warning;
-    uint8_t menu = s_menu_count;
+    const char * warn = warningText;
+    uint8_t menu = popupMenuNoItems;
     if (menuEvent) {
-      m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
-      m_posHorz = 0;
+      menuVerticalPosition = menuEvent == EVT_ENTRY_UP ? menuVerticalPositions[menuLevel] : 0;
+      menuHorizontalPosition = 0;
       evt = menuEvent;
       menuEvent = 0;
       AUDIO_MENUS();
     }
     
-    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+    menuHandlers[menuLevel]((warn || menu) ? 0 : evt);
     if (warn) DISPLAY_WARNING(evt);
     if (menu) {
-      const char * result = displayMenu(evt);
+      const char * result = displayPopupMenu(evt);
       if (result) {
-        menuHandler(result);
+        popupMenuHandler(result);
       }
     }
       

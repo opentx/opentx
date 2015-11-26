@@ -40,11 +40,11 @@ void menuModelTemplates(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUTEMPLATES, menuTabModel, e_Templates, 1+TMPL_COUNT);
 
-  uint8_t sub = m_posVert - 1;
+  uint8_t sub = menuVerticalPosition - 1;
 
   if (sub < TMPL_COUNT) {
-    if (s_warning_result) {
-      s_warning_result = 0;
+    if (warningResult) {
+      warningResult = 0;
       applyTemplate(sub);
       AUDIO_WARNING2();
     }
@@ -57,7 +57,7 @@ void menuModelTemplates(uint8_t event)
   coord_t y = MENU_HEADER_HEIGHT + 1;
   uint8_t k = 0;
   for (uint8_t i=0; i<LCD_LINES-1 && k<TMPL_COUNT; i++) {
-    k = i+s_pgOfs;
+    k = i+menuVerticalOffset;
     lcdDrawNumber(3*FW, y, k, (sub==k ? INVERS : 0)|LEADING0, 2);
     lcdDrawTextAtIndex(4*FW, y, STR_VTEMPLATES, k, (sub==k ? INVERS  : 0));
     y+=FH;

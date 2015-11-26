@@ -1554,7 +1554,7 @@ union ReusableBuffer
         uint16_t eepromfree;
 #endif
 #if defined(SDCARD)
-        char menu_bss[MENU_MAX_LINES][MENU_LINE_LENGTH];
+        char menu_bss[POPUP_MENU_MAX_LINES][MENU_LINE_LENGTH];
         char mainname[45]; // because reused for SD backup / restore, max backup filename 44 chars: "/MODELS/MODEL0134353-2014-06-19-04-51-27.bin"
 #else
         char mainname[LEN_MODEL_NAME];

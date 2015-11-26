@@ -62,8 +62,8 @@ int main(int argc, char **argv)
   QCoreApplication app(argc, argv);
   simuInit();
   StartEepromThread(NULL);
-  g_menuStackPtr = 0;
-  g_menuStack[0] = menuMainView;
+  menuLevel = 0;
+  menuHandlers[0] = menuMainView;
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

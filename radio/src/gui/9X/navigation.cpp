@@ -36,12 +36,12 @@
 
 #include "../../opentx.h"
 
-vertpos_t s_pgOfs;
+vertpos_t menuVerticalOffset;
 int8_t s_editMode;
-uint8_t s_noHi;
+uint8_t noHighlightCounter;
 uint8_t calibrationState;
-vertpos_t m_posVert;
-horzpos_t m_posHorz;
+vertpos_t menuVerticalPosition;
+horzpos_t menuHorizontalPosition;
 
 #if defined(NAVIGATION_POT1)
 int16_t p1valdiff;
@@ -350,10 +350,10 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max)
 tmr10ms_t menuEntryTime;
 #endif
 
-void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
+void check(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
 {
-  vertpos_t l_posVert = m_posVert;
-  horzpos_t l_posHorz = m_posHorz;
+  vertpos_t l_posVert = menuVerticalPosition;
+  horzpos_t l_posHorz = menuHorizontalPosition;
 
   uint8_t maxcol = MAXCOL(l_posVert);
 
@@ -441,7 +441,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       }
 
       if (cc != curr) {
-        chainMenu((MenuFuncP)pgm_read_adr(&menuTab[cc]));
+        chainMenu((MenuHandlerFunc)pgm_read_adr(&menuTab[cc]));
       }
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -633,7 +633,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 #if defined(CPUARM)
   int linesCount = maxrow;
   if (l_posVert == 0 || (l_posVert==1 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW) || (l_posVert==2 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW)) {
-    s_pgOfs = 0;
+    menuVerticalOffset = 0;
     if (horTab) {
       linesCount = 0;
       for (int i=0; i<maxrow; i++) {
@@ -647,13 +647,13 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     if (maxrow > maxLines) {
       while (1) {
         vertpos_t firstLine = 0;
-        for (int numLines=0; firstLine<maxrow && numLines<s_pgOfs; firstLine++) {
+        for (int numLines=0; firstLine<maxrow && numLines<menuVerticalOffset; firstLine++) {
           if (firstLine>=horTabMax || horTab[firstLine+1] != HIDDEN_ROW) {
             numLines++;
           }
         }
         if (l_posVert <= firstLine) {
-          s_pgOfs--;
+          menuVerticalOffset--;
         }
         else {
           vertpos_t lastLine = firstLine;
@@ -663,10 +663,10 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
             }
           }
           if (l_posVert > lastLine) {
-            s_pgOfs++;
+            menuVerticalOffset++;
           }
           else {
-            linesCount = s_pgOfs + maxLines;
+            linesCount = menuVerticalOffset + maxLines;
             for (int i=lastLine; i<maxrow; i++) {
               if (i>=horTabMax || horTab[i] != HIDDEN_ROW) {
                 linesCount++;
@@ -680,32 +680,32 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   }
 #else
   if (l_posVert<1) {
-    s_pgOfs=0;
+    menuVerticalOffset=0;
   }
 #endif
   else {
-    if (l_posVert>maxLines+s_pgOfs) {
-      s_pgOfs = l_posVert-maxLines;
+    if (l_posVert>maxLines+menuVerticalOffset) {
+      menuVerticalOffset = l_posVert-maxLines;
     }
-    else if (l_posVert<=s_pgOfs) {
-      s_pgOfs = l_posVert-1;
+    else if (l_posVert<=menuVerticalOffset) {
+      menuVerticalOffset = l_posVert-1;
     }
   }
 
-  m_posVert = l_posVert;
-  m_posHorz = l_posHorz;
+  menuVerticalPosition = l_posVert;
+  menuHorizontalPosition = l_posHorz;
 #if !defined(CPUM64)
   // cosmetics on 9x
-  if (s_pgOfs > 0) {
+  if (menuVerticalOffset > 0) {
     l_posVert--;
-    if (l_posVert == s_pgOfs && CURSOR_NOT_ALLOWED_IN_ROW(l_posVert)) {
-      s_pgOfs = l_posVert-1;
+    if (l_posVert == menuVerticalOffset && CURSOR_NOT_ALLOWED_IN_ROW(l_posVert)) {
+      menuVerticalOffset = l_posVert-1;
     }
   }
 #endif
 }
 
-void check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow)
+void check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow)
 {
   check(event, curr, menuTab, menuTabSize, 0, 0, maxrow);
 }
@@ -721,6 +721,6 @@ void repeatLastCursorMove(uint8_t event)
     putEvent(event);
   }
   else {
-    m_posHorz = 0;
+    menuHorizontalPosition = 0;
   }
 }

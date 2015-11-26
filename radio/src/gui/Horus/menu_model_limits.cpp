@@ -98,7 +98,7 @@ enum LimitsItems {
 
 void onLimitsMenu(const char *result)
 {
-  uint8_t ch = m_posVert - 1;
+  uint8_t ch = menuVerticalPosition - 1;
 
   if (result == STR_RESET) {
     LimitData *ld = limitAddress(ch);
@@ -126,7 +126,7 @@ bool menuModelLimits(evt_t event)
         NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW, NAVIGATION_LINE_BY_LINE|ITEM_LIMITS_MAXROW,
         0 });
 
-  uint32_t sub = m_posVert;
+  uint32_t sub = menuVerticalPosition;
 
   if (sub < NUM_CHNOUT) {
 #if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_UNIT_US)
@@ -136,12 +136,12 @@ bool menuModelLimits(evt_t event)
 #endif
   }
 
-  if (sub<NUM_CHNOUT && m_posHorz>=0) {
-    displayColumnHeader(STR_LIMITS_HEADERS, m_posHorz);
+  if (sub<NUM_CHNOUT && menuHorizontalPosition>=0) {
+    displayColumnHeader(STR_LIMITS_HEADERS, menuHorizontalPosition);
   }
 
-  if (s_warning_result) {
-    s_warning_result = 0;
+  if (warningResult) {
+    warningResult = 0;
     LimitData *ld = limitAddress(sub);
     ld->revert = !ld->revert;
     storageDirty(EE_MODEL);
@@ -149,7 +149,7 @@ bool menuModelLimits(evt_t event)
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
-    uint8_t k = i+s_pgOfs;
+    uint8_t k = i+menuVerticalOffset;
 
     if (k==NUM_CHNOUT) {
       // last line available - add the "copy trim menu" line
@@ -159,7 +159,7 @@ bool menuModelLimits(evt_t event)
       if (attr) {
         s_editMode = 0;
         if (event==EVT_KEY_LONG(KEY_ENTER)) {
-          s_noHi = NO_HI_LEN;
+          START_NO_HIGHLIGHT();
           killEvents(event);
           moveTrimsToOffsets(); // if highlighted and menu pressed - move trims to offsets
         }
@@ -177,17 +177,17 @@ bool menuModelLimits(evt_t event)
 
     int limit = (g_model.extendedLimits ? LIMIT_EXT_MAX : 1000);
 
-    putsChn(MENUS_MARGIN_LEFT, y, k+1, (sub==k && m_posHorz < 0) ? INVERS : 0);
-    if (sub==k && m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+    putsChn(MENUS_MARGIN_LEFT, y, k+1, (sub==k && menuHorizontalPosition < 0) ? INVERS : 0);
+    if (sub==k && menuHorizontalPosition < 0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
       killEvents(event);
-      MENU_ADD_ITEM(STR_RESET);
-      MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
-      MENU_ADD_ITEM(STR_COPY_STICKS_TO_OFS);
-      menuHandler = onLimitsMenu;
+      POPUP_MENU_ADD_ITEM(STR_RESET);
+      POPUP_MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
+      POPUP_MENU_ADD_ITEM(STR_COPY_STICKS_TO_OFS);
+      popupMenuHandler = onLimitsMenu;
     }
 
     for (uint8_t j=0; j<ITEM_LIMITS_COUNT; j++) {
-      uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+      uint8_t attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && s_editMode>0) ;
       if (active) STICK_SCROLL_DISABLE();
       switch(j)
