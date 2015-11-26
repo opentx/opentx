@@ -1788,6 +1788,9 @@ lss: $(TARGET).lss
 sym: $(TARGET).sym
 
 # Build stamp-file
+.PHONY : stamp.h
+.PHONY : opentx-stamp
+
 stamp.h:
 	@echo "// Automatically generated file (Makefile) - do not edit" > stamp.h
 	@echo "#define DATE    \"`date +%Y-%m-%d | tr -d '\r\n'`\"" > stamp.h
