@@ -2507,7 +2507,7 @@ int main(void)
 
   sei(); // interrupts needed for telemetryInit and eeReadAll.
 
-#if defined(FRSKY) && !defined(DSM2_SERIAL)
+#if !defined(CPUARM) && defined(FRSKY) && !defined(DSM2_SERIAL)
   telemetryInit();
 #endif
 

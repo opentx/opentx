@@ -1235,6 +1235,10 @@ void lcdRefresh()
   lcd_refresh = true;
 }
 
+void telemetryPortInit()
+{
+}
+
 #if defined(PCBTARANIS)
 void pwrInit() { }
 void pwrOff() { }
