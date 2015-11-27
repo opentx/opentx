@@ -439,13 +439,14 @@ extern uint8_t lunReady[] ;
 static int8_t SCSI_StartStopUnit(uint8_t lun, uint8_t *params)
 {
   MSC_BOT_DataLen = 0;
-  
+  int check_lun;  
+
 #if defined(BOOT)
-  if (lun < 2) 
+  check_lun = (lun < 2); 
 #else
-  if (lun < 1) 
+  check_lun = (lun < 1); 
 #endif
-    {
+  if (check_lun) {
     if (params[4] & 1) {
       // lun to be active
       lunReady[lun] = 1 ;

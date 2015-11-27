@@ -85,12 +85,17 @@ struct SportTxBuffer
   uint32_t count;
 } sportTxBuffer;
 
+void telemetryPortSetDirectionOutput()
+{
+  TELEMETRY_GPIO_DIR->BSRRL = TELEMETRY_GPIO_PIN_DIR;     // output enable
+  TELEMETRY_USART->CR1 &= ~USART_CR1_RE;           // turn off receiver
+}
+
 void sportSendBuffer(uint8_t *buffer, uint32_t count)
 {
-  sportTxBuffer.ptr = buffer ;
-  sportTxBuffer.count = count ;
-  TELEMETRY_GPIO_DIR->BSRRL = TELEMETRY_GPIO_PIN_DIR ;     // output enable
-  TELEMETRY_USART->CR1 &= ~USART_CR1_RE ;           // turn off receiver
+  sportTxBuffer.ptr = buffer;
+  sportTxBuffer.count = count;
+  telemetryPortSetDirectionOutput();
   TELEMETRY_USART->CR1 |= USART_CR1_TXEIE ;
 }
 

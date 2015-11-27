@@ -34,27 +34,22 @@
  *
  */
 
-#include "lcd.h"
-#include "menus.h"
+#include "gtests.h"
 
-#define DEFAULT_SCROLLBAR_X  (LCD_W-1)
-#define NUM_BODY_LINES       (LCD_LINES-1)
-#define MENU_HEADER_HEIGHT   FH
+#if defined(CROSSFIRE)
+TEST(Crossfire, createCrossfireFrame)
+{
+  int16_t pulsesStart[NUM_TRAINER];
+  uint8_t crossfire[CROSSFIRE_FRAME_LEN];
 
-struct MenuItem {
-  const char *name;
-  const MenuHandlerFunc action;
-};
+  memset(crossfire, 0, sizeof(crossfire));
+  for (int i=0; i<NUM_TRAINER; i++) {
+    pulsesStart[i] = -1024 + (2048 / NUM_TRAINER) * i;
+  }
 
-int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable=NULL);
-void displaySplash();
-void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
-void displayScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
-void displayMenuBar(const MenuItem *menu, int index);
-void displayProgressBar(const char *label);
-void updateProgressBar(int num, int den);
-void drawGauge(coord_t x, coord_t y, coord_t w, coord_t h, int32_t val, int32_t max);
+  createCrossfireFrame(crossfire, pulsesStart);
 
-extern coord_t scrollbar_X;
-#define SET_SCROLLBAR_X(x) scrollbar_X = (x);
+  // TODO check
+}
+#endif
 

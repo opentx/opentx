@@ -67,26 +67,26 @@ extern uint8_t noHighlightCounter;
 
 void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 
-typedef void (*menuHandlerFunc)(uint8_t event);
+typedef void (*MenuHandlerFunc)(uint8_t event);
 typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
 extern const MenuFuncP_PROGMEM menuTabModel[];
 extern const MenuFuncP_PROGMEM menuTabGeneral[];
 extern const MenuFuncP_PROGMEM menuTabFPV[];
 extern const MenuFuncP_PROGMEM menuTabTelemetry[];
 
-extern menuHandlerFunc menuHandlers[5];
+extern MenuHandlerFunc menuHandlers[5];
 extern uint8_t menuVerticalPositions[4];
 extern uint8_t menuLevel;
 extern uint8_t menuEvent;
 
 /// goto given Menu, but substitute current menu in menuStack
-void chainMenu(menuHandlerFunc newMenu);
+void chainMenu(MenuHandlerFunc newMenu);
 /// goto given Menu, store current menu in menuStack
-void pushMenu(menuHandlerFunc newMenu);
+void pushMenu(MenuHandlerFunc newMenu);
 /// return to last menu in menustack
 void popMenu();
 ///deliver address of last menu which was popped from
-inline menuHandlerFunc lastPopMenu()
+inline MenuHandlerFunc lastPopMenu()
 {
   return menuHandlers[menuLevel+1];
 }
@@ -228,8 +228,8 @@ bool isInputSourceAvailable(int source);
 #define CURSOR_ON_LINE()         (menuHorizontalPosition<0)
 
 #define CHECK_FLAG_NO_SCREEN_INDEX   1
-void check(const char *title, check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
-void check_simple(const char *title, check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
+void check(const char *title, check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
+void check_simple(const char *title, check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
 void check_submenu_simple(const char *title, check_event_t event, uint8_t maxrow);
 
 void title(const pm_char * s);

@@ -68,26 +68,26 @@ extern uint8_t noHighlightCounter;
 
 void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 
-typedef void (*menuHandlerFunc)(uint8_t event);
+typedef void (*MenuHandlerFunc)(uint8_t event);
 typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
 extern const MenuFuncP_PROGMEM menuTabModel[];
 extern const MenuFuncP_PROGMEM menuTabGeneral[];
 extern const MenuFuncP_PROGMEM menuTabFPV[];
 extern const MenuFuncP_PROGMEM menuTabTelemetry[];
 
-extern menuHandlerFunc menuHandlers[5];
+extern MenuHandlerFunc menuHandlers[5];
 extern uint8_t menuVerticalPositions[4];
 extern uint8_t menuLevel;
 extern uint8_t menuEvent;
 
 /// goto given Menu, but substitute current menu in menuStack
-void chainMenu(menuHandlerFunc newMenu);
+void chainMenu(MenuHandlerFunc newMenu);
 /// goto given Menu, store current menu in menuStack
-void pushMenu(menuHandlerFunc newMenu);
+void pushMenu(MenuHandlerFunc newMenu);
 /// return to last menu in menustack
 void popMenu();
 ///deliver address of last menu which was popped from
-inline menuHandlerFunc lastPopMenu()
+inline MenuHandlerFunc lastPopMenu()
 {
   return menuHandlers[menuLevel+1];
 }
@@ -273,8 +273,8 @@ int8_t checkIncDecMovedSwitch(int8_t val);
 #define NAVIGATION_LINE_BY_LINE  0
 #define CURSOR_ON_LINE()         (0)
 
-void check(check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow);
-void check_simple(check_event_t event, uint8_t curr, const menuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
+void check(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow);
+void check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
 void check_submenu_simple(check_event_t event, uint8_t maxrow);
 
 void title(const pm_char * s);
