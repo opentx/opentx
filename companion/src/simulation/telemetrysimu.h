@@ -8,7 +8,7 @@
 #include <QDateTime>
 #include <QtCore/qmath.h>
 #include <QFileDialog>
-#include <QDebug>
+//#include <QDebug>
 #include "simulatorinterface.h"
 
 #define INSTANCE 2
@@ -17,6 +17,10 @@ namespace Ui {
   class TelemetrySimulator;
 }
 
+static QStringList const COLNAMES = QStringList() << "Alt(ft)" << "GAlt(ft)"
+  << "GSpd(kts)" << "Hdg(@)" << "Tmp1(@C)" << "Cels(gRe)" << "Date" << "VSpd(m/s)" << "GPS";
+
+static float const SPEEDS[] = { 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 5 };
 
 class TelemetrySimulator : public QDialog
 {
@@ -25,7 +29,6 @@ class TelemetrySimulator : public QDialog
   public:
     explicit TelemetrySimulator(QWidget * parent, SimulatorInterface * simulator);
     virtual ~TelemetrySimulator();
-
 
   protected:
     virtual void closeEvent(QCloseEvent *event);
@@ -36,44 +39,55 @@ class TelemetrySimulator : public QDialog
     {
     public:
       LogPlaybackController::LogPlaybackController(Ui::TelemetrySimulator * ui);
-      void addColumnHash(QString key);
+      void addColumnHash(QString key, uint32_t functionIndex);
       void loadLogFile();
       void play();
       void stop();
       void rewind();
       void stepForward();
       void stepBack();
+      void updatePositionLabel(int32_t percentage);
+      void setUiDataValues();
+      float logFrequency; // in seconds
     private:
       Ui::TelemetrySimulator * ui;
       struct SETTEXT_INFO {
-        QString key;
-        uint32_t index;
+        uint32_t functionIndex;
+        uint32_t dataIndex;
       } settext_info;
       QStringList csvRecords;
       QStringList columnNames;
       QHash<QString, SETTEXT_INFO> settextHash;
       uint32_t recordIndex;
-      void setUiDataValues();
       QString convertFeetToMeters100(QString input);
       QString convertLogDate(QString input);
       QString convertGPS(QString input);
+      float convertDegMin(QString input);
+      bool stepping;
+      void calcLogFrequency();
+      int32_t replayRate;
     };
 
 private:
     Ui::TelemetrySimulator * ui;
     QTimer * timer;
+    QTimer * logTimer;
     SimulatorInterface *simulator;
     void generateTelemetryFrame();
     TelemetrySimulator::LogPlaybackController *logPlayback;
   
   private slots:
     void onTimerEvent();
+    void onLogTimerEvent();
     void onLoadLogFile();
     void onPlay();
     void onRewind();
     void onStepForward();
     void onStepBack();
     void onStop();
+    void onPositionIndicatorReleased();
+    void onPositionIndicatorChanged(int value);
+    void onReplayRateChanged(int value);
 
 
   private: // private classes follow
