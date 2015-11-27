@@ -213,7 +213,7 @@ DRESULT disk_write (
 	}
 
 	if (count == 1) {
-	  Status = SD_WriteBlock((uint8_t *)buff, sector*BLOCK_SIZE, BLOCK_SIZE); // 4GB Compliant
+	  Status = SD_WriteBlock((uint8_t *)buff, sector, BLOCK_SIZE); // 4GB Compliant
 	}
 	else {
 	  Status = SD_WriteMultiBlocks((uint8_t *)buff, sector, BLOCK_SIZE, count); // 4GB Compliant

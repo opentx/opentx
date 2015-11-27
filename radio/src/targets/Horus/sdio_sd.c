@@ -1624,10 +1624,11 @@ OPTIMIZE("O0") SD_Error SD_WriteBlock(uint8_t *writebuff, uint32_t WriteAddr, ui
   SDIO_DMACmd(ENABLE);
 #endif
 
-  if (CardType == SDIO_HIGH_CAPACITY_SD_CARD)
-  {
+  if (CardType == SDIO_HIGH_CAPACITY_SD_CARD) {
     BlockSize = 512;
-    WriteAddr /= 512;
+  }
+  else {
+    WriteAddr *= 512;
   }
 
   /* Set Block Size for Card */
@@ -1751,10 +1752,11 @@ OPTIMIZE("O0") SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint32_t WriteAd
   SD_LowLevel_DMA_TxConfig((uint32_t *)writebuff, (NumberOfBlocks * BlockSize));
   SDIO_DMACmd(ENABLE);
 
-  if (CardType == SDIO_HIGH_CAPACITY_SD_CARD)
-  {
+  if (CardType == SDIO_HIGH_CAPACITY_SD_CARD) {
     BlockSize = 512;
-    WriteAddr /= 512;
+  }
+  else {
+    WriteAddr *= 512;
   }
 
   /* Set Block Size for Card */

@@ -126,3 +126,21 @@ void storageReadAll()
 
   eeLoadModel(g_eeGeneral.currModel);
 }
+
+void storageEraseAll(bool warn)
+{
+  TRACE("storageEraseAll()");
+
+  generalDefault();
+  modelDefault(0);
+
+  if (warn) {
+    ALERT(STR_STORAGE_WARNING, STR_BAD_RADIO_DATA, AU_BAD_RADIODATA);
+  }
+
+  MESSAGE(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, NULL, AU_STORAGE_FORMAT);
+
+  storageFormat();
+  storageDirty(EE_GENERAL|EE_MODEL);
+  storageCheck(true);
+}

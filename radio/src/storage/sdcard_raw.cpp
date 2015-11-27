@@ -36,6 +36,13 @@
 
 #include "../opentx.h"
 
+void getModelPath(char * path, const char * filename)
+{
+  strcpy(path, STR_MODELS_PATH);
+  path[sizeof(MODELS_PATH)-1] = '/';
+  strcpy(&path[sizeof(MODELS_PATH)], filename);
+}
+
 const char * writeFile(const char * filename, const uint8_t * data, uint16_t size)
 {
   FIL file;
@@ -71,9 +78,7 @@ const char * writeFile(const char * filename, const uint8_t * data, uint16_t siz
 const char * writeModel()
 {
   char path[256];
-  strcpy(path, STR_MODELS_PATH);
-  path[sizeof(MODELS_PATH)-1] = '/';
-  strAppend(&path[sizeof(MODELS_PATH)], g_eeGeneral.currModelFilename, sizeof(g_eeGeneral.currModelFilename));
+  getModelPath(path, g_eeGeneral.currModelFilename);
   return writeFile(path, (uint8_t *)&g_model, sizeof(g_model));
 }
 
@@ -114,13 +119,6 @@ const char * loadFile(const char * filename, uint8_t * data, uint16_t maxsize)
 
   f_close(&file);
   return NULL;
-}
-
-void getModelPath(char * path, const char * filename)
-{
-  strcpy(path, STR_MODELS_PATH);
-  path[sizeof(MODELS_PATH)-1] = '/';
-  strcpy(&path[sizeof(MODELS_PATH)], filename);
 }
 
 const char * readModel(const char * filename, uint8_t * buffer, uint32_t size)
@@ -457,12 +455,11 @@ const char * createModel(int category)
 
   char filename[LEN_MODEL_FILENAME+1];
   memset(filename, 0, sizeof(filename));
-  strcpy(filename, "Model.bin");
+  strcpy(filename, "model.bin");
 
   int index = findNextFileIndex(filename, MODELS_PATH);
   if (index > 0) {
     modelDefault(index);
-    TRACE("filename=%s", filename);
     memcpy(g_eeGeneral.currModelFilename, filename, sizeof(g_eeGeneral.currModelFilename));
     storageDirty(EE_GENERAL);
     storageDirty(EE_MODEL);
@@ -472,4 +469,22 @@ const char * createModel(int category)
   postModelLoad(true);
 
   return NULL;
+}
+
+void storageEraseAll(bool warn)
+{
+  TRACE("storageEraseAll()");
+
+  generalDefault();
+  modelDefault(1);
+
+  if (warn) {
+    ALERT(STR_STORAGE_WARNING, STR_BAD_RADIO_DATA, AU_BAD_RADIODATA);
+  }
+
+  MESSAGE(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, NULL, AU_STORAGE_FORMAT);
+
+  storageFormat();
+  storageDirty(EE_GENERAL|EE_MODEL);
+  storageCheck(true);
 }
