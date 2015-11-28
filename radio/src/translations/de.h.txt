@@ -107,8 +107,8 @@
 #define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM?""CRSF"
 
 #if defined(MODULE_D16_EU_ONLY_SUPPORT)
-  #define LEN_XJT_PROTOCOLS    "\006"
-  #define TR_XJT_PROTOCOLS     "AUS\0  ""D16-EU"
+  #define LEN_XJT_PROTOCOLS    "\007"
+  #define TR_XJT_PROTOCOLS     "AUS\0   ""D16-EU\0""D8\0    ""LR12-EU"
 #else
   #define LEN_XJT_PROTOCOLS    "\004"
   #define TR_XJT_PROTOCOLS     "AUS\0""X16\0""D8\0 ""LR12"
