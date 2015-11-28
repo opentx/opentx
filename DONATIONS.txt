@@ -854,3 +854,4 @@ John Curran
 Gerald Thiel 
 Jürg Bingisser
 George Emer
+Jerzy Manarczyk
