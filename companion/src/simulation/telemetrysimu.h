@@ -34,7 +34,7 @@ class TelemetrySimulator : public QDialog
     class LogPlaybackController
     {
     public:
-      LogPlaybackController::LogPlaybackController(Ui::TelemetrySimulator * ui);
+      LogPlaybackController(Ui::TelemetrySimulator * ui);
       void loadLogFile();
       void play();
       void stop();
