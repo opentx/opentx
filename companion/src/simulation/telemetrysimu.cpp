@@ -519,6 +519,17 @@ TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySi
 {
   TelemetrySimulator::LogPlaybackController::ui = ui;
   stepping = false;
+  // initialize the map - TODO: how should this be localized?
+  colToFuncMap.clear();
+  colToFuncMap.insert("Alt(ft)", ALT_FEET);
+  colToFuncMap.insert("GAlt(ft)", GALT_FEET);
+  colToFuncMap.insert("GSpd(kts)", GSPD_KNTS);
+  colToFuncMap.insert("Hdg(@)", HDG_DEG);
+  colToFuncMap.insert("Tmp1(@C)", T1_DEGC);
+  colToFuncMap.insert("Cels(gRe)", CELS_GRE);
+  colToFuncMap.insert("Date", DATE);
+  colToFuncMap.insert("VSpd(m/s)", VSPD_MS);
+  colToFuncMap.insert("GPS", GPS);
 }
 
 void TelemetrySimulator::LogPlaybackController::calcLogFrequency()
@@ -567,24 +578,28 @@ void TelemetrySimulator::LogPlaybackController::loadLogFile()
     Q_FOREACH(QString key, keys) {
       columnNames.append(key.simplified());
     }
-    settextHash.clear();
+    supportedCols.clear();
     recordIndex = 1;
     calcLogFrequency();
   }
   ui->logFileLabel->setText(QFileInfo(logFileNameAndPath).fileName());
-  for (uint32_t i = 0; i < COLNAMES.size(); i++) {
-    addColumnHash(COLNAMES[i], i);
+  // iterate through all known mappings and add those that are used
+  QMapIterator<QString, CONVERT_TYPE> it(colToFuncMap);
+  while (it.hasNext()) {
+    it.next();
+    addColumnHash(it.key(), it.value());
   }
   rewind();
   return;
 }
 
-void TelemetrySimulator::LogPlaybackController::addColumnHash(QString key, uint32_t functionIndex)
+void TelemetrySimulator::LogPlaybackController::addColumnHash(QString key, CONVERT_TYPE functionIndex)
 {
+  DATA_TO_FUNC_XREF dfx;
   if (columnNames.contains(key)) {
-    settext_info.functionIndex = functionIndex;
-    settext_info.dataIndex = columnNames.indexOf(key);
-    settextHash.insert(key, settext_info);
+    dfx.functionIndex = functionIndex;
+    dfx.dataIndex = columnNames.indexOf(key);
+    supportedCols.append(dfx);
   }
 }
 
@@ -684,33 +699,33 @@ void TelemetrySimulator::LogPlaybackController::updatePositionLabel(int32_t perc
 void TelemetrySimulator::LogPlaybackController::setUiDataValues()
 {
   QStringList columnData = csvRecords[recordIndex].split(',');
-  Q_FOREACH(SETTEXT_INFO info, settextHash) {
+  Q_FOREACH(DATA_TO_FUNC_XREF info, supportedCols) {
     switch (info.functionIndex) {
-    case 0:
+    case ALT_FEET:
       ui->valt->setText(convertFeetToMeters100(columnData[info.dataIndex]));
       break;
-    case 1:
+    case GALT_FEET:
       ui->gps_alt->setText(convertFeetToMeters100(columnData[info.dataIndex]));
       break;
-    case 2:
+    case GSPD_KNTS:
       ui->gps_speed->setText(QString::number(columnData[info.dataIndex].toFloat() * 1000));
       break;
-    case 3:
+    case HDG_DEG:
       ui->gps_course->setText(QString::number(columnData[info.dataIndex].toFloat() * 100));
       break;
-    case 4:
+    case T1_DEGC:
       ui->T1->setText(QString::number(columnData[info.dataIndex].toFloat()));
       break;
-    case 5:
+    case CELS_GRE:
       ui->cells->setText(QString::number(columnData[info.dataIndex].toFloat()));
       break;
-    case 6:
+    case DATE:
       ui->gps_time->setText(convertLogDate(columnData[info.dataIndex]));
       break;
-    case 7:
+    case VSPD_MS:
       ui->vspeed->setText(QString::number(columnData[info.dataIndex].toFloat() * 100));
       break;
-    case 8:
+    case GPS:
       ui->gps_latlon->setText(convertGPS(columnData[info.dataIndex]));
       break;
     }

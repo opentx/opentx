@@ -8,19 +8,15 @@
 #include <QDateTime>
 #include <QtCore/qmath.h>
 #include <QFileDialog>
-//#include <QDebug>
+// #include <QDebug>
 #include "simulatorinterface.h"
 
-#define INSTANCE 2
+static float const SPEEDS[] = { 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 5 };
 
 namespace Ui {
   class TelemetrySimulator;
 }
 
-static QStringList const COLNAMES = QStringList() << "Alt(ft)" << "GAlt(ft)"
-  << "GSpd(kts)" << "Hdg(@)" << "Tmp1(@C)" << "Cels(gRe)" << "Date" << "VSpd(m/s)" << "GPS";
-
-static float const SPEEDS[] = { 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 5 };
 
 class TelemetrySimulator : public QDialog
 {
@@ -39,7 +35,6 @@ class TelemetrySimulator : public QDialog
     {
     public:
       LogPlaybackController::LogPlaybackController(Ui::TelemetrySimulator * ui);
-      void addColumnHash(QString key, uint32_t functionIndex);
       void loadLogFile();
       void play();
       void stop();
@@ -50,18 +45,31 @@ class TelemetrySimulator : public QDialog
       void setUiDataValues();
       float logFrequency; // in seconds
     private:
+      enum CONVERT_TYPE {
+        ALT_FEET,
+        GALT_FEET,
+        GSPD_KNTS,
+        HDG_DEG,
+        T1_DEGC,
+        CELS_GRE,
+        DATE,
+        VSPD_MS,
+        GPS
+      };
+      QMap<QString, CONVERT_TYPE> colToFuncMap; // contains all 'known' column headings and how they are to be processed
       Ui::TelemetrySimulator * ui;
-      struct SETTEXT_INFO {
-        uint32_t functionIndex;
+      struct DATA_TO_FUNC_XREF {
+        CONVERT_TYPE functionIndex;
         uint32_t dataIndex;
-      } settext_info;
-      QStringList csvRecords;
+      };
+      QStringList csvRecords; // contents of the log file (one string per line);
       QStringList columnNames;
-      QHash<QString, SETTEXT_INFO> settextHash;
+      QList<DATA_TO_FUNC_XREF> supportedCols;
       uint32_t recordIndex;
       QString convertFeetToMeters100(QString input);
       QString convertLogDate(QString input);
       QString convertGPS(QString input);
+      void addColumnHash(QString key, CONVERT_TYPE functionIndex);
       float convertDegMin(QString input);
       bool stepping;
       void calcLogFrequency();
