@@ -68,6 +68,7 @@
 
 #if defined(CPUARM)
   #define FRSKY_SPORT
+  #include "radio/src/crc16.cpp"
 #endif
 
 #if defined (PCBTARANIS)
