@@ -68,7 +68,6 @@
 
 #if defined(CPUARM)
   #define FRSKY_SPORT
-  #include "radio/src/crc16.cpp"
 #endif
 
 #if defined (PCBTARANIS)
@@ -91,6 +90,7 @@ namespace NAMESPACE {
 #include "radio/src/telemetry/telemetry.cpp"
 #include "radio/src/telemetry/frsky_sport.cpp"
 #include "radio/src/sbus.cpp"
+#include "radio/src/crc16.cpp"
 #else
 #include "radio/src/main_avr.cpp"
 #include "radio/src/audio_avr.cpp"
