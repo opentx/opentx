@@ -11,14 +11,13 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
 {
   ui->setupUi(this);
 
-
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
-  timer->start(10);
 
   logTimer = new QTimer(this);
   connect(logTimer, SIGNAL(timeout()), this, SLOT(onLogTimerEvent()));
 
+  connect(ui->Simulate, SIGNAL(clicked(bool)), this, SLOT(onSimulateToggled(bool)));
   connect(ui->loadLogFile, SIGNAL(released()), this, SLOT(onLoadLogFile()));
   connect(ui->play, SIGNAL(released()), this, SLOT(onPlay()));
   connect(ui->rewind, SIGNAL(clicked()), this, SLOT(onRewind()));
@@ -28,6 +27,11 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
   connect(ui->positionIndicator, SIGNAL(sliderReleased()), this, SLOT(onPositionIndicatorReleased()));
   connect(ui->positionIndicator, SIGNAL(valueChanged(int)), this, SLOT(onPositionIndicatorChanged(int)));
   connect(ui->replayRate, SIGNAL(valueChanged(int)), this, SLOT(onReplayRateChanged(int)));
+
+  ui->A1->setSpecialValueText(" ");
+  ui->A2->setSpecialValueText(" ");
+  ui->A3->setSpecialValueText(" ");
+  ui->A4->setSpecialValueText(" ");
 
   logPlayback = new LogPlaybackController(ui);
 }
@@ -39,27 +43,26 @@ TelemetrySimulator::~TelemetrySimulator()
   delete ui;
 }
 
-void TelemetrySimulator::onLogTimerEvent()
+void TelemetrySimulator::onSimulateToggled(bool isChecked)
 {
-  if (isVisible()) {
-    logPlayback->stepForward();
+  if (isChecked) {
+    timer->start(10);
   }
   else {
-    logTimer->stop();
+    timer->stop();
   }
+}
+
+
+void TelemetrySimulator::onLogTimerEvent()
+{
+  logPlayback->stepForward();
 }
 
 
 void TelemetrySimulator::onTimerEvent()
 {
-  if (ui->Simulate->isChecked()) {
-  }
-  if (isVisible()) {
-    generateTelemetryFrame();
-  }
-  else {
-    timer->stop();
-  }
+  generateTelemetryFrame();
 }
 
 void TelemetrySimulator::onLoadLogFile()
@@ -116,14 +119,15 @@ void TelemetrySimulator::onReplayRateChanged(int value)
 
 void TelemetrySimulator::closeEvent(QCloseEvent *event)
 {
-  ui->Simulate->setChecked(false);
+  timer->stop();
+  logTimer->stop();
   event->accept();
 }
 
 void TelemetrySimulator::showEvent(QShowEvent *event)
 {
-  ui->Simulate->setChecked(true);
 
+  ui->rxbt_inst->setText(QString::number(simulator->getSensorInstance(BATT_ID)));
   ui->rssi_inst->setText(QString::number(simulator->getSensorInstance(RSSI_ID)));
   ui->swr_inst->setText(QString::number(simulator->getSensorInstance(SWR_ID)));
   ui->a1_inst->setText(QString::number(simulator->getSensorInstance(ADC1_ID)));
@@ -137,9 +141,6 @@ void TelemetrySimulator::showEvent(QShowEvent *event)
   ui->aspd_inst->setText(QString::number(simulator->getSensorInstance(AIR_SPEED_FIRST_ID)));
   ui->vvspd_inst->setText(QString::number(simulator->getSensorInstance(VARIO_FIRST_ID)));
   ui->valt_inst->setText(QString::number(simulator->getSensorInstance(ALT_FIRST_ID)));
-  ui->accx_inst->setText(QString::number(simulator->getSensorInstance(ACCX_FIRST_ID)));
-  ui->accy_inst->setText(QString::number(simulator->getSensorInstance(ACCY_FIRST_ID)));
-  ui->accz_inst->setText(QString::number(simulator->getSensorInstance(ACCZ_FIRST_ID)));
   ui->fasv_inst->setText(QString::number(simulator->getSensorInstance(VFAS_FIRST_ID)));
   ui->fasc_inst->setText(QString::number(simulator->getSensorInstance(CURR_FIRST_ID)));
   ui->cells_inst->setText(QString::number(simulator->getSensorInstance(CELLS_FIRST_ID)));
@@ -148,8 +149,12 @@ void TelemetrySimulator::showEvent(QShowEvent *event)
   ui->gpsc_inst->setText(QString::number(simulator->getSensorInstance(GPS_COURS_FIRST_ID)));
   ui->gpst_inst->setText(QString::number(simulator->getSensorInstance(GPS_TIME_DATE_FIRST_ID)));
   ui->gpsll_inst->setText(QString::number(simulator->getSensorInstance(GPS_LONG_LATI_FIRST_ID)));
-  ui->rxbt_inst->setText(QString::number(simulator->getSensorInstance(BATT_ID)));
-  ui->rxbt->setValue(5.2);
+  ui->accx_inst->setText(QString::number(simulator->getSensorInstance(ACCX_FIRST_ID)));
+  ui->accy_inst->setText(QString::number(simulator->getSensorInstance(ACCY_FIRST_ID)));
+  ui->accz_inst->setText(QString::number(simulator->getSensorInstance(ACCZ_FIRST_ID)));
+
+  ui->Simulate->setChecked(true);
+  onSimulateToggled(true); // not sure why this doesn't fire automatically
 }
 
 void setSportPacketCrc(uint8_t * packet)
@@ -203,23 +208,23 @@ void TelemetrySimulator::generateTelemetryFrame()
     break;
 
   case 3:
-    if (ui->A1->text().length())
-      generateSportPacket(buffer, ui->a1_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ADC1_ID, LIMIT<uint32_t>(0, ui->A1->text().toInt(&ok, 0), 0xFF));
+    if (ui->A1->value() > 0)
+      generateSportPacket(buffer, ui->a1_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ADC1_ID, LIMIT<uint32_t>(0, ui->A1->value() * 19.39, 0xFF));
     break;
 
   case 4:
-    if (ui->A2->text().length())
-      generateSportPacket(buffer, ui->a2_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ADC2_ID, LIMIT<uint32_t>(0, ui->A2->text().toInt(&ok, 0), 0xFF));
+    if (ui->A2->value() > 0)
+      generateSportPacket(buffer, ui->a2_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ADC2_ID, LIMIT<uint32_t>(0, ui->A2->value() * 19.39, 0xFF));
     break;
 
   case 5:
-    if (ui->A3->text().length())
-      generateSportPacket(buffer, ui->a3_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A3_FIRST_ID, LIMIT<uint32_t>(0, ui->A3->text().toInt(&ok, 0), 0xFFFFFFFF));
+    if (ui->A3->value() > 0)
+      generateSportPacket(buffer, ui->a3_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A3_FIRST_ID, LIMIT<uint32_t>(0, ui->A3->value() * 100, 0xFFFFFFFF));
     break;
 
   case 6:
-    if (ui->A4->text().length())
-      generateSportPacket(buffer, ui->a4_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A4_FIRST_ID, LIMIT<uint32_t>(0, ui->A4->text().toInt(&ok, 0), 0xFFFFFFFF));
+    if (ui->A4->value() > 0)
+      generateSportPacket(buffer, ui->a4_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A4_FIRST_ID, LIMIT<uint32_t>(0, ui->A4->value() * 100, 0xFFFFFFFF));
     break;
 
   case 7:
@@ -521,15 +526,22 @@ TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySi
   stepping = false;
   // initialize the map - TODO: how should this be localized?
   colToFuncMap.clear();
+  colToFuncMap.insert("RxBt(V)", RXBT_V);
+  colToFuncMap.insert("RSSI(dB)", RSSI);
+  colToFuncMap.insert("SWR", SWR);
+  colToFuncMap.insert("A1", A1);
+  colToFuncMap.insert("A2", A2);
+  colToFuncMap.insert("A3", A3);
+  colToFuncMap.insert("A4", A4);
   colToFuncMap.insert("Alt(ft)", ALT_FEET);
   colToFuncMap.insert("GAlt(ft)", GALT_FEET);
   colToFuncMap.insert("GSpd(kts)", GSPD_KNTS);
-  colToFuncMap.insert("Hdg(@)", HDG_DEG);
+  colToFuncMap.insert("Hdg(@)", GHDG_DEG);
   colToFuncMap.insert("Tmp1(@C)", T1_DEGC);
   colToFuncMap.insert("Cels(gRe)", CELS_GRE);
-  colToFuncMap.insert("Date", DATE);
+  colToFuncMap.insert("Date", GDATE);
   colToFuncMap.insert("VSpd(m/s)", VSPD_MS);
-  colToFuncMap.insert("GPS", GPS);
+  colToFuncMap.insert("GPS", G_LATLON);
 }
 
 void TelemetrySimulator::LogPlaybackController::calcLogFrequency()
@@ -539,8 +551,20 @@ void TelemetrySimulator::LogPlaybackController::calcLogFrequency()
   float lastTotalMinutes = -3600;
   for (int i = 1; (i < 20) && (i < csvRecords.count()); i++)
   {
-    float hours = csvRecords[i].split(',')[1].split(':')[0].toFloat();
-    float minutes = csvRecords[i].split(',')[1].split(':')[1].toFloat();
+    float hours;
+    float minutes;
+    switch (csvRecords[i].split(',')[1].split(':').count()) {
+      case 2:
+        hours = csvRecords[i].split(',')[1].split(':')[0].toFloat();
+        minutes = csvRecords[i].split(',')[1].split(':')[1].toFloat();
+        break;
+      case 3:
+        hours = csvRecords[i].split(',')[1].split(':')[1].toFloat();
+        minutes = csvRecords[i].split(',')[1].split(':')[2].toFloat();
+        break;
+      default:
+        hours = minutes = 0;
+    }
     float totalMinutes = (hours * 60) + minutes;
     float newFrequency = totalMinutes - lastTotalMinutes;
     if ((newFrequency > 0) && (newFrequency < logFrequency)) {
@@ -657,7 +681,13 @@ QString TelemetrySimulator::LogPlaybackController::convertFeetToMeters100(QStrin
 QString TelemetrySimulator::LogPlaybackController::convertLogDate(QString input)
 {
   QStringList dateTime = input.simplified().split(' ');
+  if (dateTime.size() < 2) {
+    return ""; // invalid format
+  }
   QStringList dateParts = dateTime[0].split('-'); // input as yy-mm-dd
+  if (dateParts.size() < 3) {
+    return ""; // invalid format
+  }
   // output is dd-MM-yyyy hh:mm:ss
   QString localDateString = dateParts[2] + "-" + dateParts[1] + "-20" + dateParts[0] + " " + dateTime[1];
   QString format("dd-MM-yyyy hh:mm:ss");
@@ -678,6 +708,9 @@ QString TelemetrySimulator::LogPlaybackController::convertGPS(QString input)
 {
   // input format is DDmm.mmmmH DDDmm.mmmmH (longitude latitude - degrees (2 places) minutes (2 places) decimal minutes (4 places)) 
   QStringList lonLat = input.simplified().split(' ');
+  if (lonLat.count() < 2) {
+    return ""; // invalid format
+  }
   float lon = convertDegMin(lonLat[0]);
   float lat = convertDegMin(lonLat[1]);
   return QString::number(lat) + ", " + QString::number(lon);
@@ -701,33 +734,73 @@ void TelemetrySimulator::LogPlaybackController::setUiDataValues()
   QStringList columnData = csvRecords[recordIndex].split(',');
   Q_FOREACH(DATA_TO_FUNC_XREF info, supportedCols) {
     switch (info.functionIndex) {
-    case ALT_FEET:
-      ui->valt->setText(convertFeetToMeters100(columnData[info.dataIndex]));
-      break;
-    case GALT_FEET:
-      ui->gps_alt->setText(convertFeetToMeters100(columnData[info.dataIndex]));
-      break;
-    case GSPD_KNTS:
-      ui->gps_speed->setText(QString::number(columnData[info.dataIndex].toFloat() * 1000));
-      break;
-    case HDG_DEG:
-      ui->gps_course->setText(QString::number(columnData[info.dataIndex].toFloat() * 100));
-      break;
-    case T1_DEGC:
-      ui->T1->setText(QString::number(columnData[info.dataIndex].toFloat()));
-      break;
-    case CELS_GRE:
-      ui->cells->setText(QString::number(columnData[info.dataIndex].toFloat()));
-      break;
-    case DATE:
-      ui->gps_time->setText(convertLogDate(columnData[info.dataIndex]));
-      break;
-    case VSPD_MS:
-      ui->vspeed->setText(QString::number(columnData[info.dataIndex].toFloat() * 100));
-      break;
-    case GPS:
-      ui->gps_latlon->setText(convertGPS(columnData[info.dataIndex]));
-      break;
+      case RXBT_V:
+        ui->rxbt->setValue(columnData[info.dataIndex].toDouble());
+        break;
+      case RSSI:
+        ui->Rssi->setValue(columnData[info.dataIndex].toInt());
+        break;
+      case SWR:
+        ui->Swr->setValue(columnData[info.dataIndex].toInt());
+        break;
+      case A1:
+        ui->A1->setValue(columnData[info.dataIndex].toFloat());
+        break;
+      case A2:
+        ui->A2->setValue(columnData[info.dataIndex].toFloat());
+        break;
+      case A3:
+        ui->A3->setValue(columnData[info.dataIndex].toUInt());
+        break;
+      case A4:
+        ui->A4->setValue(columnData[info.dataIndex].toUInt());
+        break;
+      case T1_DEGC:
+        ui->T1->setText(QString::number(columnData[info.dataIndex].toFloat()));
+        break;
+      case T2_DEGC:
+        ui->T2->setText(QString::number(columnData[info.dataIndex].toFloat()));
+        break;
+      case RPM:
+        break;
+      case FUEL:
+        break;
+      case VSPD_MS:
+        ui->vspeed->setText(QString::number(columnData[info.dataIndex].toFloat() * 100));
+        break;
+      case ALT_FEET:
+        ui->valt->setText(convertFeetToMeters100(columnData[info.dataIndex]));
+        break;
+      case FASV:
+        break;
+      case FASC:
+        break;
+      case CELS_GRE:
+        ui->cells->setText(QString::number(columnData[info.dataIndex].toFloat()));
+        break;
+      case ASPD:
+        break;
+      case GALT_FEET:
+        ui->gps_alt->setText(convertFeetToMeters100(columnData[info.dataIndex]));
+        break;
+      case GSPD_KNTS:
+        ui->gps_speed->setText(QString::number(columnData[info.dataIndex].toFloat() * 1000));
+        break;
+      case GHDG_DEG:
+        ui->gps_course->setText(QString::number(columnData[info.dataIndex].toFloat() * 100));
+        break;
+      case GDATE:
+        ui->gps_time->setText(convertLogDate(columnData[info.dataIndex]));
+        break;
+      case G_LATLON:
+        ui->gps_latlon->setText(convertGPS(columnData[info.dataIndex]));
+        break;
+      case ACCX:
+        break;
+      case ACCY:
+        break;
+      case ACCZ:
+        break;
     }
   }
 }

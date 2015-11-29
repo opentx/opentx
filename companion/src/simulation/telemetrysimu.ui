@@ -333,16 +333,44 @@
      </widget>
     </item>
     <item row="3" column="0">
-     <widget class="QLineEdit" name="A1"/>
+     <widget class="QDoubleSpinBox" name="A1">
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <double>13.199999999999999</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+     </widget>
     </item>
     <item row="4" column="0">
-     <widget class="QLineEdit" name="A2"/>
+     <widget class="QDoubleSpinBox" name="A2">
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <double>13.199999999999999</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+     </widget>
     </item>
     <item row="5" column="0">
-     <widget class="QLineEdit" name="A3"/>
+     <widget class="QSpinBox" name="A3">
+      <property name="maximum">
+       <number>16777215</number>
+      </property>
+     </widget>
     </item>
     <item row="6" column="0">
-     <widget class="QLineEdit" name="A4"/>
+     <widget class="QSpinBox" name="A4">
+      <property name="maximum">
+       <number>16777215</number>
+      </property>
+     </widget>
     </item>
     <item row="7" column="0">
      <widget class="QLineEdit" name="T1"/>

@@ -1,7 +1,6 @@
 #ifndef telemetrysimu_h
 #define telemetrysimu_h
 
-
 #include <QCloseEvent>
 #include <QDialog>
 #include <QTimer>
@@ -46,15 +45,31 @@ class TelemetrySimulator : public QDialog
       float logFrequency; // in seconds
     private:
       enum CONVERT_TYPE {
+        RXBT_V,
+        RSSI,
+        SWR,
+        A1,
+        A2,
+        A3,
+        A4,
+        T1_DEGC,
+        T2_DEGC,
+        RPM,
+        FUEL,
+        VSPD_MS,
         ALT_FEET,
+        FASV,
+        FASC,
+        CELS_GRE,
+        ASPD,
         GALT_FEET,
         GSPD_KNTS,
-        HDG_DEG,
-        T1_DEGC,
-        CELS_GRE,
-        DATE,
-        VSPD_MS,
-        GPS
+        GHDG_DEG,
+        GDATE,
+        G_LATLON,
+        ACCX,
+        ACCY,
+        ACCZ,
       };
       QMap<QString, CONVERT_TYPE> colToFuncMap; // contains all 'known' column headings and how they are to be processed
       Ui::TelemetrySimulator * ui;
@@ -85,6 +100,7 @@ private:
     TelemetrySimulator::LogPlaybackController *logPlayback;
   
   private slots:
+    void onSimulateToggled(bool isChecked);
     void onTimerEvent();
     void onLogTimerEvent();
     void onLoadLogFile();
