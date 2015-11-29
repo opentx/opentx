@@ -206,6 +206,7 @@ bool isSwitchAvailableInCustomFunctions(int swtch);
 bool isSwitchAvailableInMixes(int swtch);
 bool isSwitchAvailableInTimers(int swtch);
 bool isModuleAvailable(int module);
+bool isRfProtocolAvailable(int protocol);
 int getFirstAvailable(int min, int max, bool (*func)(int));
 #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
 #define CHECK_INCDEC_SWITCH(event, var, min, max, flags, available) \

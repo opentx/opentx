@@ -824,9 +824,9 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
         switch (proto) {
           case PULSES_OFF:
           case PULSES_PXX_XJT_X16:
+          case PULSES_PXX_XJT_LR12:
             return 1;
           case PULSES_PXX_XJT_D8:
-          case PULSES_PXX_XJT_LR12:
             return id.contains("eu") ? 0 : 1;
           case PULSES_PPM:
             return id.contains("internalppm") ? 1 : 0;
