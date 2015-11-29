@@ -84,8 +84,8 @@ const FrSkySportSensor sportSensors[] = {
   { GPS_LONG_LATI_FIRST_ID, GPS_LONG_LATI_LAST_ID, 0, ZSTR_GPS, UNIT_GPS, 0 },
   { FUEL_QTY_FIRST_ID, FUEL_QTY_LAST_ID, 0, ZSTR_FUEL, UNIT_MILLILITERS, 2 },
   { GPS_COURS_FIRST_ID, GPS_COURS_LAST_ID, 0, ZSTR_HDG, UNIT_DEGREE, 2 },
-  { POWERBOX_BATT1_FIRST_ID, POWERBOX_BATT1_LAST_ID, 0, ZSTR_PBOX1, UNIT_VOLTS, 2 },
-  { POWERBOX_BATT2_FIRST_ID, POWERBOX_BATT2_LAST_ID, 0, ZSTR_PBOX2, UNIT_VOLTS, 2 },
+  { POWERBOX_BATT1_FIRST_ID, POWERBOX_BATT1_LAST_ID, 0, ZSTR_PBOX1, UNIT_VOLTS, 3 },
+  { POWERBOX_BATT2_FIRST_ID, POWERBOX_BATT2_LAST_ID, 0, ZSTR_PBOX2, UNIT_VOLTS, 3 },
   { POWERBOX_BATT1_FIRST_ID, POWERBOX_BATT1_LAST_ID, 1, ZSTR_PBOX1, UNIT_AMPS, 2 },
   { POWERBOX_BATT2_FIRST_ID, POWERBOX_BATT2_LAST_ID, 1, ZSTR_PBOX2, UNIT_AMPS, 2 },
   { POWERBOX_CNSP_FIRST_ID, POWERBOX_CNSP_LAST_ID, 0, ZSTR_PBOX1, UNIT_MAH, 0 },
@@ -190,14 +190,14 @@ void processSportPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t d
     uint8_t cellsCount = (data & 0xF0) >> 4;
     uint8_t cellIndex = (data & 0x0F);
     uint32_t mask = (cellsCount << 24) + (cellIndex << 16);
-    setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, id, 0, instance, mask + (((data & 0x000FFF00) >> 8) / 5), unit, precision);
+    setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, id, subId, instance, mask + (((data & 0x000FFF00) >> 8) / 5), unit, precision);
     if (cellIndex+1 < cellsCount) {
       mask += (1 << 16);
-      setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, id, 0, instance, mask + (((data & 0xFFF00000) >> 20) / 5), unit, precision);
+      setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, id, subId, instance, mask + (((data & 0xFFF00000) >> 20) / 5), unit, precision);
     }
   }
   else {
-    setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, id, 0, instance, data, unit, precision);
+    setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, id, subId, instance, data, unit, precision);
   }
 }
 
