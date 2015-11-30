@@ -90,6 +90,14 @@ const FrSkySportSensor sportSensors[] = {
   { POWERBOX_BATT2_FIRST_ID, POWERBOX_BATT2_LAST_ID, 1, ZSTR_PBOX2, UNIT_AMPS, 2 },
   { POWERBOX_CNSP_FIRST_ID, POWERBOX_CNSP_LAST_ID, 0, ZSTR_PBOX1, UNIT_MAH, 0 },
   { POWERBOX_CNSP_FIRST_ID, POWERBOX_CNSP_LAST_ID, 1, ZSTR_PBOX2, UNIT_MAH, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 0, ZSTR_RX1_FAILSAFE, UNIT_RAW, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 1, ZSTR_RX1_LOSTFRAME, UNIT_RAW, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 2, ZSTR_RX2_FAILSAFE, UNIT_RAW, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 3, ZSTR_RX2_LOSTFRAME, UNIT_RAW, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 4, ZSTR_RX1_CONN_LOST, UNIT_RAW, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 5, ZSTR_RX2_CONN_LOST, UNIT_RAW, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 6, ZSTR_RX1_NO_SIGNAL, UNIT_RAW, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 7, ZSTR_RX2_NO_SIGNAL, UNIT_RAW, 0 },
   { 0, 0, 0, NULL, UNIT_RAW, 0 } // sentinel
 };
 
@@ -268,8 +276,14 @@ void processSportPacket(uint8_t * packet)
           processSportPacket(id, 1, instance, data >> 16);
         }
         else if (id >= POWERBOX_STATE_FIRST_ID && id <= POWERBOX_STATE_LAST_ID) {
-          // TODO
-          processSportPacket(id, 0, instance, data);
+          processSportPacket(id, 0, instance, bool(data & 0x0080000));
+          processSportPacket(id, 1, instance, bool(data & 0x0100000));
+          processSportPacket(id, 2, instance, bool(data & 0x0200000));
+          processSportPacket(id, 3, instance, bool(data & 0x0400000));
+          processSportPacket(id, 4, instance, bool(data & 0x0800000));
+          processSportPacket(id, 5, instance, bool(data & 0x1000000));
+          processSportPacket(id, 6, instance, bool(data & 0x2000000));
+          processSportPacket(id, 7, instance, bool(data & 0x4000000));
         }
         else {
           processSportPacket(id, 0, instance, data);
