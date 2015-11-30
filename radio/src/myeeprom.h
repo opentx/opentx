@@ -1959,14 +1959,14 @@ enum MixSources {
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
   MIXSRC_POT3,                          LUA_EXPORT("s3", "Potentiometer 3")
   #if defined(REV9E)
-    MIXSRC_POT4,                        LUA_EXPORT("s4", "Potentiometer 4")
+    MIXSRC_POT4,                        LUA_EXPORT("s4", "Potentiometer 4 (X9E only)")
   #endif
   MIXSRC_FIRST_SLIDER,
   MIXSRC_SLIDER1 = MIXSRC_FIRST_SLIDER, LUA_EXPORT("ls", "Left slider")
   MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
   #if defined(REV9E)
-    MIXSRC_SLIDER3,                     LUA_EXPORT("ls2", "Left center slider")
-    MIXSRC_SLIDER4,                     LUA_EXPORT("rs2", "Right center slider")
+    MIXSRC_SLIDER3,                     LUA_EXPORT("lcs", "Left center slider (X9E only)")
+    MIXSRC_SLIDER4,                     LUA_EXPORT("rcs", "Right center slider (X9E only)")
     MIXSRC_LAST_POT = MIXSRC_SLIDER4,
   #else
     MIXSRC_LAST_POT = MIXSRC_SLIDER2,
@@ -2025,16 +2025,16 @@ enum MixSources {
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
 #if defined(REV9E)
-  MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
-  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
-  MIXSRC_SK,                        LUA_EXPORT("sk", "Switch K")
-  MIXSRC_SL,                        LUA_EXPORT("sl", "Switch L")
-  MIXSRC_SM,                        LUA_EXPORT("sm", "Switch M")
-  MIXSRC_SN,                        LUA_EXPORT("sn", "Switch N")
-  MIXSRC_SO,                        LUA_EXPORT("so", "Switch O")
-  MIXSRC_SP,                        LUA_EXPORT("sp", "Switch P")
-  MIXSRC_SQ,                        LUA_EXPORT("sq", "Switch Q")
-  MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R")
+  MIXSRC_SI,                        LUA_EXPORT("si", "Switch I (X9E only)")
+  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J (X9E only)")
+  MIXSRC_SK,                        LUA_EXPORT("sk", "Switch K (X9E only)")
+  MIXSRC_SL,                        LUA_EXPORT("sl", "Switch L (X9E only)")
+  MIXSRC_SM,                        LUA_EXPORT("sm", "Switch M (X9E only)")
+  MIXSRC_SN,                        LUA_EXPORT("sn", "Switch N (X9E only)")
+  MIXSRC_SO,                        LUA_EXPORT("so", "Switch O (X9E only)")
+  MIXSRC_SP,                        LUA_EXPORT("sp", "Switch P (X9E only)")
+  MIXSRC_SQ,                        LUA_EXPORT("sq", "Switch Q (X9E only)")
+  MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R (X9E only)")
   MIXSRC_LAST_SWITCH = MIXSRC_SR,
 #else
   MIXSRC_LAST_SWITCH = MIXSRC_SH,
