@@ -81,7 +81,7 @@ class TelemetrySimulator : public QDialog
       QStringList columnNames;
       QList<DATA_TO_FUNC_XREF> supportedCols;
       uint32_t recordIndex;
-      QString convertFeetToMeters100(QString input);
+      float convertFeetToMeters(QString input);
       QString convertLogDate(QString input);
       QString convertGPS(QString input);
       void addColumnHash(QString key, CONVERT_TYPE functionIndex);
@@ -118,7 +118,7 @@ private:
     class FlvssEmulator
     {
     public:
-        uint32_t setAllCells_GetNextPair(QString cellValues);
+        uint32_t setAllCells_GetNextPair(float cellValues[6]);
         static const uint32_t MAXCELLS = 6;
     private:
       void encodeAllCells();
@@ -141,18 +141,18 @@ private:
       uint32_t getNextPacketData(uint32_t packetType);
       void setGPSDateTime(QString dateTime);
       void setGPSLatLon(QString latLon);
-      void setGPSCourse(QString course);
-      void setGPSSpeed(QString speed);
-      void setGPSAltitude(QString altitude);
+      void setGPSCourse(float course);
+      void setGPSSpeedKMH(float speed);
+      void setGPSAltitude(float altitude);
     private:
       QDateTime dt;
       bool sendLat;
       bool sendDate;
       float lat;
       float lon;
-      int32_t course;
-      int32_t speed;
-      int32_t altitude;
+      float course;
+      float speedKNTS;
+      float altitude; // in meters
       uint32_t nextDataIndex;
       uint32_t encodeLatLon(float latLon, bool isLat);
       uint32_t encodeDateTime(uint8_t yearOrHour, uint8_t monthOrMinute, uint8_t dayOrSecond, bool isDate);

@@ -32,6 +32,8 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
   ui->A2->setSpecialValueText(" ");
   ui->A3->setSpecialValueText(" ");
   ui->A4->setSpecialValueText(" ");
+  ui->rpm->setSpecialValueText(" ");
+  ui->fuel->setSpecialValueText(" ");
 
   logPlayback = new LogPlaybackController(ui);
 }
@@ -191,148 +193,160 @@ void TelemetrySimulator::generateTelemetryFrame()
   memset(buffer, 0, sizeof(buffer));
 
   switch (item++) {
-  case 0:
-    if (ui->Rssi->text().length())
-      generateSportPacket(buffer, ui->rssi_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, RSSI_ID, LIMIT<uint32_t>(0, ui->Rssi->text().toInt(&ok, 0), 0xFF));
-    break;
-
-  case 1:
+    case 0:
 #if defined(XJT_VERSION_ID)
-    generateSportPacket(buffer, 1, DATA_FRAME, XJT_VERSION_ID, 11);
+      generateSportPacket(buffer, 1, DATA_FRAME, XJT_VERSION_ID, 11);
 #endif
     break;
 
-  case 2:
-    if (ui->Swr->text().length())
-      generateSportPacket(buffer, ui->swr_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, SWR_ID, LIMIT<uint32_t>(0, ui->Swr->text().toInt(&ok, 0), 0xFFFF));
-    break;
+    case 1:
+      if (ui->rxbt->text().length()) {
+        generateSportPacket(buffer, ui->rxbt_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, BATT_ID, LIMIT<uint32_t>(0, ui->rxbt->value() * 19.39, 0xFFFFFFFF));
+      }
+      break;
 
-  case 3:
-    if (ui->A1->value() > 0)
-      generateSportPacket(buffer, ui->a1_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ADC1_ID, LIMIT<uint32_t>(0, ui->A1->value() * 19.39, 0xFF));
-    break;
+    case 2:
+      if (ui->Rssi->text().length())
+        generateSportPacket(buffer, ui->rssi_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, RSSI_ID, LIMIT<uint32_t>(0, ui->Rssi->text().toInt(&ok, 0), 0xFF));
+      break;
 
-  case 4:
-    if (ui->A2->value() > 0)
-      generateSportPacket(buffer, ui->a2_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ADC2_ID, LIMIT<uint32_t>(0, ui->A2->value() * 19.39, 0xFF));
-    break;
+    case 3:
+      if (ui->Swr->text().length())
+        generateSportPacket(buffer, ui->swr_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, SWR_ID, LIMIT<uint32_t>(0, ui->Swr->text().toInt(&ok, 0), 0xFFFF));
+      break;
 
-  case 5:
-    if (ui->A3->value() > 0)
-      generateSportPacket(buffer, ui->a3_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A3_FIRST_ID, LIMIT<uint32_t>(0, ui->A3->value() * 100, 0xFFFFFFFF));
-    break;
+    case 4:
+      if (ui->A1->value() > 0)
+        generateSportPacket(buffer, ui->a1_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ADC1_ID, LIMIT<uint32_t>(0, ui->A1->value() * 19.39, 0xFF));
+      break;
 
-  case 6:
-    if (ui->A4->value() > 0)
-      generateSportPacket(buffer, ui->a4_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A4_FIRST_ID, LIMIT<uint32_t>(0, ui->A4->value() * 100, 0xFFFFFFFF));
-    break;
+    case 5:
+      if (ui->A2->value() > 0)
+        generateSportPacket(buffer, ui->a2_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ADC2_ID, LIMIT<uint32_t>(0, ui->A2->value() * 19.39, 0xFF));
+      break;
 
-  case 7:
-    if (ui->T1->text().length())
-      generateSportPacket(buffer, ui->t1_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, T1_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->T1->text().toInt(&ok, 0), 0x7FFFFFFF));
-    break;
+    case 6:
+      if (ui->A3->value() > 0)
+        generateSportPacket(buffer, ui->a3_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A3_FIRST_ID, LIMIT<uint32_t>(0, ui->A3->value() * 100, 0xFFFFFFFF));
+      break;
 
-  case 8:
-    if (ui->T2->text().length())
-      generateSportPacket(buffer, ui->t2_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, T2_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->T2->text().toInt(&ok, 0), 0x7FFFFFFF));
-    break;
+    case 7:
+      if (ui->A4->value() > 0)
+        generateSportPacket(buffer, ui->a4_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A4_FIRST_ID, LIMIT<uint32_t>(0, ui->A4->value() * 100, 0xFFFFFFFF));
+      break;
 
-  case 9:
-    if (ui->rpm->text().length())
-      generateSportPacket(buffer, ui->rpm_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, RPM_FIRST_ID, LIMIT<uint32_t>(0, ui->rpm->text().toInt(&ok, 0), 0xFFFF));
-    break;
+    case 8:
+      if (ui->T1->value() != 0)
+        generateSportPacket(buffer, ui->t1_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, T1_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->T1->value(), 0x7FFFFFFF));
+      break;
 
-  case 10:
-    if (ui->fuel->text().length())
-      generateSportPacket(buffer, ui->fuel_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, FUEL_FIRST_ID, LIMIT<uint32_t>(0, ui->fuel->text().toInt(&ok, 0), 0xFFFF));
-    break;
+    case 9:
+      if (ui->T2->value() != 0)
+        generateSportPacket(buffer, ui->t2_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, T2_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->T2->value(), 0x7FFFFFFF));
+      break;
 
-  case 11:
-    if (ui->aspeed->text().length())
-      generateSportPacket(buffer, ui->aspd_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, AIR_SPEED_FIRST_ID, LIMIT<uint32_t>(0, ui->aspeed->text().toInt(&ok, 0), 0xFFFFFFFF));
-    break;
+    case 10:
+      if (ui->rpm->value() > 0)
+        generateSportPacket(buffer, ui->rpm_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, RPM_FIRST_ID, LIMIT<uint32_t>(0, ui->rpm->value(), 0xFFFF));
+      break;
 
-  case 12:
-    if (ui->vspeed->text().length())
-      generateSportPacket(buffer, ui->vvspd_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, VARIO_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->vspeed->text().toInt(&ok, 0), 0x7FFFFFFF));
-    break;
+    case 11:
+      if (ui->fuel->value() > 0)
+        generateSportPacket(buffer, ui->fuel_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, FUEL_FIRST_ID, LIMIT<uint32_t>(0, ui->fuel->value(), 0xFFFF));
+      break;
 
-  case 13:
-    if (ui->valt->text().length())
-      generateSportPacket(buffer, ui->valt_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ALT_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->valt->text().toInt(&ok, 0), 0x7FFFFFFF));
-    break;
+    case 12:
+      if (ui->vspeed->value() != 0)
+        generateSportPacket(buffer, ui->vvspd_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, VARIO_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->vspeed->value() * 100, 0x7FFFFFFF));
+      break;
 
-  case 14:
-    if (ui->accx->text().length())
-      generateSportPacket(buffer, ui->accx_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ACCX_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->accx->text().toInt(&ok, 0), 0x7FFFFFFF));
-    break;
+    case 13:
+      if (ui->valt->value() != 0)
+        generateSportPacket(buffer, ui->valt_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ALT_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->valt->value() * 100, 0x7FFFFFFF));
+      break;
 
-  case 15:
-    if (ui->accy->text().length())
-      generateSportPacket(buffer, ui->accy_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ACCY_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->accy->text().toInt(&ok, 0), 0x7FFFFFFF));
-    break;
+    case 14:
+      if (ui->vfas->value() != 0)
+        generateSportPacket(buffer, ui->fasv_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, VFAS_FIRST_ID, LIMIT<uint32_t>(0, ui->vfas->value() * 100, 0xFFFFFFFF));
+      break;
 
-  case 16:
-    if (ui->accz->text().length())
-      generateSportPacket(buffer, ui->accz_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ACCZ_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->accz->text().toInt(&ok, 0), 0x7FFFFFFF));
-    break;
+    case 15:
+      if (ui->curr->value() != 0)
+        generateSportPacket(buffer, ui->fasc_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, CURR_FIRST_ID, LIMIT<uint32_t>(0, ui->curr->value() * 10, 0xFFFFFFFF));
+      break;
 
-  case 17:
-    if (ui->vfas->text().length())
-      generateSportPacket(buffer, ui->fasv_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, VFAS_FIRST_ID, LIMIT<uint32_t>(0, ui->vfas->text().toInt(&ok, 0), 0xFFFFFFFF));
-    break;
+    case 16:
+      float cellValues[FlvssEmulator::MAXCELLS];
+      if (ui->cell1->value() > 0.009) { // ??? cell1 returning non-zero value when spin box is zero!
+        cellValues[0] = ui->cell1->value();
+        cellValues[1] = ui->cell2->value();
+        cellValues[2] = ui->cell3->value();
+        cellValues[3] = ui->cell4->value();
+        cellValues[4] = ui->cell5->value();
+        cellValues[5] = ui->cell6->value();
+        generateSportPacket(buffer, ui->cells_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, CELLS_FIRST_ID, flvss->setAllCells_GetNextPair(cellValues));
+      }
+      else {
+        cellValues[0] = 0;
+        flvss->setAllCells_GetNextPair(cellValues);
+      }
+      break;
 
-  case 18:
-    if (ui->curr->text().length())
-      generateSportPacket(buffer, ui->fasc_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, CURR_FIRST_ID, LIMIT<uint32_t>(0, ui->curr->text().toInt(&ok, 0), 0xFFFFFFFF));
-    break;
+    case 17:
+      if (ui->aspeed->value() > 0)
+        generateSportPacket(buffer, ui->aspd_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, AIR_SPEED_FIRST_ID, LIMIT<uint32_t>(0, ui->aspeed->value() * 10, 0xFFFFFFFF));
+      break;
 
-  case 19:
-    if (ui->cells->text().length()) {
-      generateSportPacket(buffer, ui->cells_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, CELLS_FIRST_ID, flvss->setAllCells_GetNextPair(ui->cells->text()));
-    }
-    break;
+    case 18:
+      if (ui->gps_alt->value() != 0) {
+        gps->setGPSAltitude(ui->gps_alt->value());
+        generateSportPacket(buffer, ui->gpsa_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, GPS_ALT_FIRST_ID, gps->getNextPacketData(GPS_ALT_FIRST_ID));
+      }
+      break;
 
-  case 20:
-    if (ui->gps_alt->text().length()) {
-      gps->setGPSAltitude(ui->gps_alt->text());
-      generateSportPacket(buffer, ui->gpsa_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, GPS_ALT_FIRST_ID, gps->getNextPacketData(GPS_ALT_FIRST_ID));
-    }
-    break;
+    case 19:
+      if (ui->gps_speed->value() > 0) {
+        gps->setGPSSpeedKMH(ui->gps_speed->value());
+        generateSportPacket(buffer, ui->gpss_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, GPS_SPEED_FIRST_ID, gps->getNextPacketData(GPS_SPEED_FIRST_ID));
+      }
+      break;
 
-  case 21:
-    if (ui->gps_speed->text().length()) {
-      gps->setGPSSpeed(ui->gps_speed->text());
-      generateSportPacket(buffer, ui->gpss_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, GPS_SPEED_FIRST_ID, gps->getNextPacketData(GPS_SPEED_FIRST_ID));
-    }
-    break;
+    case 20:
+      if (ui->gps_course->value() != 0) {
+        gps->setGPSCourse(ui->gps_course->value());
+        generateSportPacket(buffer, ui->gpsc_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, GPS_COURS_FIRST_ID, gps->getNextPacketData(GPS_COURS_FIRST_ID));
+      }
+      break;
 
-  case 22:
-    if (ui->gps_course->text().length()) {
-      gps->setGPSCourse(ui->gps_course->text());
-      generateSportPacket(buffer, ui->gpsc_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, GPS_COURS_FIRST_ID, gps->getNextPacketData(GPS_COURS_FIRST_ID));
-    }
-    break;
-
-    case 23:
+    case 21:
       if (ui->gps_time->text().length()) {
         gps->setGPSDateTime(ui->gps_time->text());
         generateSportPacket(buffer, ui->gpst_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, GPS_TIME_DATE_FIRST_ID, gps->getNextPacketData(GPS_TIME_DATE_FIRST_ID));
       }
       break;
 
-    case 24:
+    case 22:
       if (ui->gps_latlon->text().length()) {
         gps->setGPSLatLon(ui->gps_latlon->text());
         generateSportPacket(buffer, ui->gpsll_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, GPS_LONG_LATI_FIRST_ID, gps->getNextPacketData(GPS_LONG_LATI_FIRST_ID));
       }
       break;
 
-    case 25:
-      if (ui->rxbt->text().length()) {
-        generateSportPacket(buffer, ui->rxbt_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, BATT_ID, LIMIT<uint32_t>(0, ui->rxbt->value() * 19.39, 0xFFFFFFFF));
-      }
+    case 23:
+        if (ui->accx->value() != 0)
+          generateSportPacket(buffer, ui->accx_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ACCX_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->accx->value() * 100, 0x7FFFFFFF));
+        break;
+
+    case 24:
+      if (ui->accy->value() != 0)
+        generateSportPacket(buffer, ui->accy_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ACCY_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->accy->value() * 100, 0x7FFFFFFF));
       break;
+
+    case 25:
+      if (ui->accz->value() != 0)
+        generateSportPacket(buffer, ui->accz_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ACCZ_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->accz->value() * 100, 0x7FFFFFFF));
+      break;
+
     default:
       item = 0;
       return;
@@ -383,21 +397,24 @@ void TelemetrySimulator::FlvssEmulator::splitIntoCells(float totalVolts)
   numCells = numCells > MAXCELLS ? MAXCELLS : numCells; // force into valid cell count in case of input out of range
 }
 
-uint32_t TelemetrySimulator::FlvssEmulator::setAllCells_GetNextPair(QString cellValues)
+uint32_t TelemetrySimulator::FlvssEmulator::setAllCells_GetNextPair(float cellValues[6])
 {
-  // parse the cell values into floats
   numCells = 0;
-  QStringList valueList = cellValues.split(",");
-  if (valueList.count() == 1) {
-    splitIntoCells(valueList[0].toFloat());
-  }
-  else {
-    for (int i = 0; i < MAXCELLS; i++) {
-      if (i < valueList.count()) {
-        cellFloats[i] = valueList[i].toFloat();
-        numCells++;
+  for (int i = 0; i < MAXCELLS; i++) {
+    if ((i == 0) && (cellValues[0] > 4.2)) {
+      splitIntoCells(cellValues[0]);
+      break;
+    }
+    if (cellValues[i] > 0) {
+      cellFloats[i] = cellValues[i];
+      numCells++;
+    }
+    else {
+      // zero marks the last cell
+      for (int x = i; x < MAXCELLS; x++) {
+        cellFloats[x] = 0;
       }
-      else cellFloats[i] = 0;
+      break;
     }
   }
 
@@ -472,13 +489,13 @@ uint32_t TelemetrySimulator::GPSEmulator::getNextPacketData(uint32_t packetType)
     return sendDate ? encodeDateTime(dt.date().year() - 2000, dt.date().month(), dt.date().day(), true) : encodeDateTime(dt.time().hour(), dt.time().minute(), dt.time().second(), false);
     break;
   case GPS_ALT_FIRST_ID:
-    return altitude;
+    return (uint32_t) (altitude * 100);
     break;
   case GPS_SPEED_FIRST_ID:
-    return speed;
+    return speedKNTS * 1000;
     break;
   case GPS_COURS_FIRST_ID:
-    return course;
+    return course * 100;
     break;
   }
   return 0;
@@ -505,19 +522,19 @@ void TelemetrySimulator::GPSEmulator::setGPSLatLon(QString latLon)
   }
 }
 
-void TelemetrySimulator::GPSEmulator::setGPSCourse(QString course)
+void TelemetrySimulator::GPSEmulator::setGPSCourse(float course)
 {
-  this->course = course.toInt();
+  this->course = course;
 }
 
-void TelemetrySimulator::GPSEmulator::setGPSSpeed(QString speed)
+void TelemetrySimulator::GPSEmulator::setGPSSpeedKMH(float speedKMH)
 {
-  this->speed = speed.toInt();
+  this->speedKNTS = speedKMH * 0.539957;
 }
 
-void TelemetrySimulator::GPSEmulator::setGPSAltitude(QString altitude)
+void TelemetrySimulator::GPSEmulator::setGPSAltitude(float altitude)
 {
-  this->altitude = altitude.toInt();
+  this->altitude = altitude;
 }
 
 TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySimulator * ui)
@@ -538,6 +555,9 @@ TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySi
   colToFuncMap.insert("GSpd(kts)", GSPD_KNTS);
   colToFuncMap.insert("Hdg(@)", GHDG_DEG);
   colToFuncMap.insert("Tmp1(@C)", T1_DEGC);
+  colToFuncMap.insert("Tmp2(@C)", T2_DEGC);
+  colToFuncMap.insert("RPM(rpm)", RPM);
+  colToFuncMap.insert("Fuel(%)", RPM);
   colToFuncMap.insert("Cels(gRe)", CELS_GRE);
   colToFuncMap.insert("Date", GDATE);
   colToFuncMap.insert("VSpd(m/s)", VSPD_MS);
@@ -672,10 +692,10 @@ void TelemetrySimulator::LogPlaybackController::stepBack()
   stepping = false;
 }
 
-QString TelemetrySimulator::LogPlaybackController::convertFeetToMeters100(QString input)
+float TelemetrySimulator::LogPlaybackController::convertFeetToMeters(QString input)
 {
-  float meters100 = input.toFloat() * 30.48;
-  return QString::number(qFloor(meters100 + .5));
+  float meters100 = input.toFloat() * 0.3048;
+  return qFloor(meters100 + .005);
 }
 
 QString TelemetrySimulator::LogPlaybackController::convertLogDate(QString input)
@@ -756,38 +776,40 @@ void TelemetrySimulator::LogPlaybackController::setUiDataValues()
         ui->A4->setValue(columnData[info.dataIndex].toUInt());
         break;
       case T1_DEGC:
-        ui->T1->setText(QString::number(columnData[info.dataIndex].toFloat()));
+        ui->T1->setValue(columnData[info.dataIndex].toInt());
         break;
       case T2_DEGC:
-        ui->T2->setText(QString::number(columnData[info.dataIndex].toFloat()));
+        ui->T2->setValue(columnData[info.dataIndex].toInt());
         break;
       case RPM:
+        ui->rpm->setValue(columnData[info.dataIndex].toInt());
         break;
       case FUEL:
+        ui->fuel->setValue(columnData[info.dataIndex].toInt());
         break;
       case VSPD_MS:
-        ui->vspeed->setText(QString::number(columnData[info.dataIndex].toFloat() * 100));
+        ui->vspeed->setValue(columnData[info.dataIndex].toFloat());
         break;
       case ALT_FEET:
-        ui->valt->setText(convertFeetToMeters100(columnData[info.dataIndex]));
+        ui->valt->setValue(convertFeetToMeters(columnData[info.dataIndex]));
         break;
       case FASV:
         break;
       case FASC:
         break;
       case CELS_GRE:
-        ui->cells->setText(QString::number(columnData[info.dataIndex].toFloat()));
+        ui->cell1->setValue(columnData[info.dataIndex].toFloat());
         break;
       case ASPD:
         break;
       case GALT_FEET:
-        ui->gps_alt->setText(convertFeetToMeters100(columnData[info.dataIndex]));
+        ui->gps_alt->setValue(convertFeetToMeters(columnData[info.dataIndex]));
         break;
       case GSPD_KNTS:
-        ui->gps_speed->setText(QString::number(columnData[info.dataIndex].toFloat() * 1000));
+        ui->gps_speed->setValue(columnData[info.dataIndex].toFloat());
         break;
       case GHDG_DEG:
-        ui->gps_course->setText(QString::number(columnData[info.dataIndex].toFloat() * 100));
+        ui->gps_course->setValue(columnData[info.dataIndex].toFloat());
         break;
       case GDATE:
         ui->gps_time->setText(convertLogDate(columnData[info.dataIndex]));
