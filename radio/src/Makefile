@@ -1038,7 +1038,11 @@ ifeq ($(PCB), TARANIS)
            $(LUADIR)/lobject.c $(LUADIR)/lopcodes.c $(LUADIR)/lparser.c $(LUADIR)/lstate.c $(LUADIR)/lstring.c $(LUADIR)/ltable.c $(LUADIR)/lrotable.c $(LUADIR)/ltm.c $(LUADIR)/lundump.c $(LUADIR)/lvm.c $(LUADIR)/lzio.c \
            $(LUADIR)/lbaselib.c $(LUADIR)/linit.c $(LUADIR)/lmathlib.c $(LUADIR)/lbitlib.c $(LUADIR)/loadlib.c $(LUADIR)/lauxlib.c $(LUADIR)/ltablib.c $(LUADIR)/lcorolib.c $(LUADIR)/liolib.c $(LUADIR)/lstrlib.c
     SRC += $(LUASRC)
-    LUADEP = lua_exports.inc
+    ifeq ($(PCBREV), REV9E) 
+      LUADEP = lua_exports_taranis_x9e.inc
+    else
+      LUADEP = lua_exports_taranis.inc
+    endif
 	ifeq ($(USE_BIN_ALLOCATOR), YES)
 	  CPPDEFS += -DUSE_BIN_ALLOCATOR
 	  CPPSRC += bin_allocator.cpp
@@ -1657,17 +1661,20 @@ else
   PARSER = gcc -E -x c++
 endif
 
-.PHONY: lua_exports.inc
-lua_exports.inc: lua/lua_exports.inc lua_fields.txt
+lua_exports_taranis.inc: OUT = taranis
+lua_exports_taranis.inc: CPPDEFS = -DPCBTARANIS -DLUA
+lua_exports_taranis.inc: lua_exports.dummy
 
-lua/lua_exports.inc lua_fields.txt: lua_exports.dummy
+lua_exports_taranis_x9e.inc: OUT = taranis_x9e
+lua_exports_taranis_x9e.inc: CPPDEFS = -DPCBTARANIS -DREVPLUS -DREV9E -DLUA
+lua_exports_taranis_x9e.inc: lua_exports.dummy
 
 lua_exports.dummy: myeeprom.h ../util/luaexport.py
-	@echo "Generating a list of Lua exported constants in lua_exports.txt"
-	@$(PARSER) -DEXPORT $(CPPDEFS) myeeprom.h | grep LEXP > lua_exports.txt
-	@echo "Parsing and generating C Lua exports in lua/lua_exports.inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports.txt lua/lua_exports.inc lua_fields.txt
-	@rm lua_exports.txt
+	@echo "Generating a list of Lua exported constants in lua_exports_$(OUT).txt"
+	@$(PARSER) -DEXPORT $(CPPDEFS) myeeprom.h | grep LEXP > lua_exports_$(OUT).txt
+	@echo "Parsing and generating C Lua exports in lua/lua_exports_$(OUT).inc"
+	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports_$(OUT).txt lua/lua_exports_$(OUT).inc lua_fields_$(OUT).txt
+	@rm lua_exports_$(OUT).txt
 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on
@@ -1829,7 +1836,7 @@ clean_list :
 	$(REMOVE) fonts/*.lbm
 	$(REMOVE) fonts/*/*.lbm
 	$(REMOVE) translations/*.h
-	$(REMOVE) lua_exports.txt lua/lua_exports.inc lua_fields.txt
+	$(REMOVE) lua_exports*.txt lua/lua_exports*.inc lua_fields*.txt
 	$(MAKE) -C targets/taranis/bootloader clean
 
 #### Install

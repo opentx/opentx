@@ -14,7 +14,13 @@ source ./version.sh
 
 DESTDIR=/var/www/html/downloads-${version}/nightly/companion
 
+# clean radio source
+cd opentx/radio/src
+make clean
+
 # create companion rpm
+rm -rf $DIR/companion-build/
+mkdir -p $DIR/companion-build/
 cd $DIR/companion-build/
 cmake ../opentx/companion/src
 make package
