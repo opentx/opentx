@@ -325,6 +325,10 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags=
 
 Return detailed information about field (source)
 
+The list of valid sources is available:
+* for OpenTX 2.0.x at http://downloads-20.open-tx.org/firmware/lua_fields.txt
+* for OpenTX 2.1.x at http://downloads-21.open-tx.org/firmware/lua_fields.txt
+
 @param name (string) name of the field
 
 @retval table information about requested field, table elements:
@@ -454,6 +458,65 @@ Play a numerical value (text to speech)
  * `PREC2` plays a number with two decimal places (for a number 123 it plays 1.23)
 
 @status current Introduced in 2.0.0
+
+@notice 2.0 Only - automatic conversion of units for distance, speed, and temperature.
+
+OpenTX 2.0:
+
+| Unit  | Sound | File (.wav) | Automatic conversion rules  |
+| --- | --- | --- | --- |
+| 0 |   |   |   |
+| 1 | Volts | 116 |   |
+| 2 | Amps  | 118 |   |
+| 3 | Meters per Second | 120 |   |
+| 4 | *missing file*  | 122 |   |
+| 5 | Kilometers per Hour / Miles per Hour  | 124 / 142 | Input value is KPH  |
+| 6 | Meters / Feet | 126 / 140 | Input value is meters |
+| 7 | Degrees | 128 | Input value is celsius, converted to Fahrenheit for Imperial  |
+| 8 | Percent | 130 |   |
+| 9 | Milliamps | 132 |   |
+| 10  | Milliamp Hours  | 134 |   |
+| 11  | Watts | 136 |   |
+| 12  | DB  | 138 |   |
+| 13  | Feet  | 140 |   |
+| 14  | Kilometers per Hour / Miles per Hour  | 124 / 142 | Input value is in Knots, converted to KPH or MPH  |
+| 15  | Hours | 144 |   |
+| 16  | Minutes | 146 |   |
+| 17  | Seconds | 148 |   |
+| 18  | RPM | 150 |   |
+| 19  | Gee | 152 |   |
+| 20  | Degrees | 128 |   |
+
+    
+OpenTX 2.1:
+
+| 2.1 Unit  | Sound | Sound File (.wav) |   
+| --- | --- | --- |   
+| 1 | Volts | 116 |   
+| 2 | Amps  | 118 |   
+| 3 | Milliamps | 120 |   
+| 4 | Knots | 122 |   
+| 5 | Meters per Second | 124 |   
+| 6 | Feet per Second | 126 |   
+| 7 | Kilometers per Hour | 128 |   
+| 8 | Miles per Hour  | 130 |   
+| 9 | Meters  | 132 |   
+| 10  | Feet  | 134 |   
+| 11  | Degrees Celsius | 136 |   
+| 12  | Degrees Fahrenheit  | 138 |   
+| 13  | Percent | 140 |   
+| 14  | Milliamp Hours  | 142 |   
+| 15  | Watts | 144 |   
+| 16  | DB  | 146 |   
+| 17  | RPM | 148 |   
+| 18  | Gee | 150 |   
+| 19  | Degrees | 152 |   
+| 20  | Milliliters | 154 |   
+| 21  | Fluid Ounces  | 156 |   
+| 22  | Hours | 158 |   
+| 23  | Minutes | 160 |   
+| 24  | Seconds | 162 |   
+
 */
 static int luaPlayNumber(lua_State *L)
 {
