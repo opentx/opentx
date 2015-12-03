@@ -16,12 +16,14 @@ cd ~opentx/release-$version/
 cd opentx/radio/src
 make clean
 make opentx-stamp
-# make lua fields for X9E which has most fields
-make lua_exports.inc PCB=TARANIS PCBREV=REV9E
 
 # create the sources tgz in the release directory
 cd ../../..
 tar czf ./opentx.tgz opentx/radio/src opentx/radio/util
+
+# make lua fields for X9E which has most fields
+cd opentx/radio/src
+make lua_exports.inc PCB=TARANIS PCBREV=REV9E
 
 # copy the stamp and the release-notes to the http server
 cd ~opentx/release-$version/
