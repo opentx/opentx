@@ -7,11 +7,10 @@ set -x
 # make sure we are in the good directory
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd $DIR
+source ./version.sh
 
 # pull the latest changes
 ./update-repo.sh
-
-source ./version.sh
 
 DESTDIR=/var/www/html/downloads-${version}/nightly/companion
 

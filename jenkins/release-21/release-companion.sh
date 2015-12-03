@@ -12,10 +12,6 @@ cd ~opentx/release-$version/
 # pull the latest changes
 ./update-repo.sh
 
-# retrieve the version number (now done in version.sh)
-#cd opentx/radio/src
-#line=`grep "VERSION = " Makefile`
-#release=`expr "$line" : 'VERSION = \([0-9\.]*\).*'`
 
 # create companion rpm
 cd ~opentx/release-$version/companion-build/

@@ -16,9 +16,6 @@ source ./version.sh
 cd opentx/radio/src
 make clean
 make stamp.h
-# new system (see below)
-#make lua/lua_exports_taranis.inc lua/lua_exports_horus.inc lua/lua_exports_flamenco.inc
-
 
 # create the sources tgz in the release directory
 cd ../../..
@@ -40,7 +37,6 @@ cp opentx/radio/src/lua_fields*.txt /var/www/html/downloads-$version/nightly/fir
 make -C opentx/radio/src clean
 make -C opentx/radio/src lua/lua_exports_flamenco.inc PCB=FLAMENCO
 cp opentx/radio/src/lua_fields*.txt /var/www/html/downloads-$version/nightly/firmware/
-
 
 
 # erase all previous builds
