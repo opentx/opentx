@@ -484,7 +484,7 @@
        <string>Temperature 1</string>
       </property>
       <property name="text">
-       <string>T1</string>
+       <string>Tmp1</string>
       </property>
      </widget>
     </item>
@@ -517,7 +517,7 @@
        <string>Temperature 2</string>
       </property>
       <property name="text">
-       <string>T2</string>
+       <string>Tmp2</string>
       </property>
      </widget>
     </item>
@@ -561,7 +561,7 @@
     <item row="11" column="0">
      <widget class="QLabel" name="label_10">
       <property name="text">
-       <string>FUEL</string>
+       <string>Fuel</string>
       </property>
      </widget>
     </item>
@@ -588,7 +588,7 @@
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vario Vertical Speed (m/s * 100)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
-       <string>V-VSPD</string>
+       <string>VSpd</string>
       </property>
      </widget>
     </item>
@@ -624,7 +624,7 @@
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vario Altitude (meters * 100)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
-       <string>V-ALT</string>
+       <string>Alt</string>
       </property>
      </widget>
     </item>
@@ -650,13 +650,13 @@
     <item row="13" column="3">
      <widget class="QLabel" name="label_49">
       <property name="text">
-       <string>meter/sec.</string>
+       <string>meters</string>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>371</x>
@@ -679,7 +679,7 @@
        <string>VFAS</string>
       </property>
       <property name="text">
-       <string>FAS-V</string>
+       <string>VFAS</string>
       </property>
      </widget>
     </item>
@@ -715,7 +715,7 @@
        <string>CURRENT</string>
       </property>
       <property name="text">
-       <string>FAS-C</string>
+       <string>Curr</string>
       </property>
      </widget>
     </item>
@@ -751,7 +751,7 @@
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Lipo Voltage (optionally by cell - c1, c2, c3, ...)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
-       <string>CELLS</string>
+       <string>Cels</string>
       </property>
      </widget>
     </item>
@@ -813,7 +813,7 @@
        <string>FR_ID_AIR_SPEED</string>
       </property>
       <property name="text">
-       <string>ASPD</string>
+       <string>ASpd</string>
       </property>
      </widget>
     </item>
@@ -849,7 +849,7 @@
        <string>GPS Altitude</string>
       </property>
       <property name="text">
-       <string>GPS-A</string>
+       <string>GAlt</string>
       </property>
      </widget>
     </item>
@@ -885,7 +885,7 @@
        <string>GPS Speed</string>
       </property>
       <property name="text">
-       <string>GPS-S</string>
+       <string>GSpd</string>
       </property>
      </widget>
     </item>
@@ -921,7 +921,7 @@
        <string>GPS Course</string>
       </property>
       <property name="text">
-       <string>GPS-C</string>
+       <string>Hdg</string>
       </property>
      </widget>
     </item>
@@ -957,7 +957,7 @@
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;GPS Time dd-MM-yyyy hh:mm:ss&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
-       <string>GPS-T</string>
+       <string>Date</string>
       </property>
      </widget>
     </item>
@@ -980,7 +980,7 @@
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;GPS 'lat, lon' in decimal degrees&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
-       <string>GPS-LL</string>
+       <string>GPS</string>
       </property>
      </widget>
     </item>
@@ -1000,7 +1000,7 @@
     <item row="11" column="0">
      <widget class="QLabel" name="label_13">
       <property name="text">
-       <string>ACCX</string>
+       <string>AccX</string>
       </property>
      </widget>
     </item>
@@ -1033,7 +1033,7 @@
     <item row="12" column="0">
      <widget class="QLabel" name="label_14">
       <property name="text">
-       <string>ACCY</string>
+       <string>AccY</string>
       </property>
      </widget>
     </item>
@@ -1066,7 +1066,7 @@
     <item row="13" column="0">
      <widget class="QLabel" name="label_15">
       <property name="text">
-       <string>ACCZ</string>
+       <string>AccZ</string>
       </property>
      </widget>
     </item>
@@ -1100,54 +1100,69 @@
   </widget>
  </widget>
  <tabstops>
+  <tabstop>Simulate</tabstop>
+  <tabstop>loadLogFile</tabstop>
+  <tabstop>replayRate</tabstop>
+  <tabstop>rewind</tabstop>
+  <tabstop>stepBack</tabstop>
+  <tabstop>play</tabstop>
+  <tabstop>stepForward</tabstop>
+  <tabstop>stop</tabstop>
+  <tabstop>rxbt_inst</tabstop>
+  <tabstop>rxbt</tabstop>
   <tabstop>rssi_inst</tabstop>
   <tabstop>Rssi</tabstop>
-  <tabstop>fasv_inst</tabstop>
-  <tabstop>vfas</tabstop>
   <tabstop>swr_inst</tabstop>
   <tabstop>Swr</tabstop>
-  <tabstop>fasc_inst</tabstop>
-  <tabstop>curr</tabstop>
   <tabstop>a1_inst</tabstop>
   <tabstop>A1</tabstop>
-  <tabstop>cells_inst</tabstop>
   <tabstop>a2_inst</tabstop>
   <tabstop>A2</tabstop>
-  <tabstop>aspd_inst</tabstop>
-  <tabstop>aspeed</tabstop>
   <tabstop>a3_inst</tabstop>
   <tabstop>A3</tabstop>
-  <tabstop>gpsa_inst</tabstop>
-  <tabstop>gps_alt</tabstop>
   <tabstop>a4_inst</tabstop>
   <tabstop>A4</tabstop>
-  <tabstop>gpss_inst</tabstop>
-  <tabstop>gps_speed</tabstop>
   <tabstop>t1_inst</tabstop>
   <tabstop>T1</tabstop>
-  <tabstop>gpsc_inst</tabstop>
-  <tabstop>gps_course</tabstop>
   <tabstop>t2_inst</tabstop>
   <tabstop>T2</tabstop>
-  <tabstop>gpst_inst</tabstop>
-  <tabstop>gps_time</tabstop>
   <tabstop>rpm_inst</tabstop>
   <tabstop>rpm</tabstop>
-  <tabstop>gpsll_inst</tabstop>
-  <tabstop>gps_latlon</tabstop>
   <tabstop>fuel_inst</tabstop>
   <tabstop>fuel</tabstop>
-  <tabstop>accx_inst</tabstop>
-  <tabstop>accx</tabstop>
   <tabstop>vvspd_inst</tabstop>
   <tabstop>vspeed</tabstop>
-  <tabstop>accy_inst</tabstop>
-  <tabstop>accy</tabstop>
   <tabstop>valt_inst</tabstop>
   <tabstop>valt</tabstop>
+  <tabstop>fasv_inst</tabstop>
+  <tabstop>vfas</tabstop>
+  <tabstop>fasc_inst</tabstop>
+  <tabstop>curr</tabstop>
+  <tabstop>cells_inst</tabstop>
+  <tabstop>cell1</tabstop>
+  <tabstop>cell2</tabstop>
+  <tabstop>cell3</tabstop>
+  <tabstop>cell4</tabstop>
+  <tabstop>cell5</tabstop>
+  <tabstop>cell6</tabstop>
+  <tabstop>aspd_inst</tabstop>
+  <tabstop>aspeed</tabstop>
+  <tabstop>gpsa_inst</tabstop>
+  <tabstop>gps_alt</tabstop>
+  <tabstop>gpss_inst</tabstop>
+  <tabstop>gps_speed</tabstop>
+  <tabstop>gpsc_inst</tabstop>
+  <tabstop>gps_course</tabstop>
+  <tabstop>gpst_inst</tabstop>
+  <tabstop>gps_time</tabstop>
+  <tabstop>gpsll_inst</tabstop>
+  <tabstop>gps_latlon</tabstop>
+  <tabstop>accx_inst</tabstop>
+  <tabstop>accx</tabstop>
+  <tabstop>accy_inst</tabstop>
+  <tabstop>accy</tabstop>
   <tabstop>accz_inst</tabstop>
   <tabstop>accz</tabstop>
-  <tabstop>Simulate</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -11,6 +11,11 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
 {
   ui->setupUi(this);
 
+  QPoint dialogCenter = mapToGlobal(rect().center());
+  QPoint parentWindowCenter = parent->window()->mapToGlobal(
+    parent->window()->rect().center());
+  move(parentWindowCenter - dialogCenter);
+
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
 
@@ -227,12 +232,12 @@ void TelemetrySimulator::generateTelemetryFrame()
 
     case 6:
       if (ui->A3->value() > 0)
-        generateSportPacket(buffer, ui->a3_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A3_FIRST_ID, LIMIT<uint32_t>(0, ui->A3->value() * 100, 0xFFFFFFFF));
+        generateSportPacket(buffer, ui->a3_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A3_FIRST_ID, LIMIT<uint32_t>(0, ui->A3->value() * 100.0, 0xFFFFFFFF));
       break;
 
     case 7:
       if (ui->A4->value() > 0)
-        generateSportPacket(buffer, ui->a4_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A4_FIRST_ID, LIMIT<uint32_t>(0, ui->A4->value() * 100, 0xFFFFFFFF));
+        generateSportPacket(buffer, ui->a4_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A4_FIRST_ID, LIMIT<uint32_t>(0, ui->A4->value() * 100.0, 0xFFFFFFFF));
       break;
 
     case 8:
@@ -257,26 +262,26 @@ void TelemetrySimulator::generateTelemetryFrame()
 
     case 12:
       if (ui->vspeed->value() != 0)
-        generateSportPacket(buffer, ui->vvspd_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, VARIO_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->vspeed->value() * 100, 0x7FFFFFFF));
+        generateSportPacket(buffer, ui->vvspd_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, VARIO_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->vspeed->value() * 100.0, 0x7FFFFFFF));
       break;
 
     case 13:
       if (ui->valt->value() != 0)
-        generateSportPacket(buffer, ui->valt_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ALT_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->valt->value() * 100, 0x7FFFFFFF));
+        generateSportPacket(buffer, ui->valt_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ALT_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->valt->value() * 100.0, 0x7FFFFFFF));
       break;
 
     case 14:
       if (ui->vfas->value() != 0)
-        generateSportPacket(buffer, ui->fasv_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, VFAS_FIRST_ID, LIMIT<uint32_t>(0, ui->vfas->value() * 100, 0xFFFFFFFF));
+        generateSportPacket(buffer, ui->fasv_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, VFAS_FIRST_ID, LIMIT<uint32_t>(0, ui->vfas->value() * 100.0, 0xFFFFFFFF));
       break;
 
     case 15:
       if (ui->curr->value() != 0)
-        generateSportPacket(buffer, ui->fasc_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, CURR_FIRST_ID, LIMIT<uint32_t>(0, ui->curr->value() * 10, 0xFFFFFFFF));
+        generateSportPacket(buffer, ui->fasc_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, CURR_FIRST_ID, LIMIT<uint32_t>(0, ui->curr->value() * 10.0, 0xFFFFFFFF));
       break;
 
     case 16:
-      float cellValues[FlvssEmulator::MAXCELLS];
+      double cellValues[FlvssEmulator::MAXCELLS];
       if (ui->cell1->value() > 0.009) { // ??? cell1 returning non-zero value when spin box is zero!
         cellValues[0] = ui->cell1->value();
         cellValues[1] = ui->cell2->value();
@@ -294,7 +299,7 @@ void TelemetrySimulator::generateTelemetryFrame()
 
     case 17:
       if (ui->aspeed->value() > 0)
-        generateSportPacket(buffer, ui->aspd_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, AIR_SPEED_FIRST_ID, LIMIT<uint32_t>(0, ui->aspeed->value() * 10, 0xFFFFFFFF));
+        generateSportPacket(buffer, ui->aspd_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, AIR_SPEED_FIRST_ID, LIMIT<uint32_t>(0, ui->aspeed->value() * 10.0, 0xFFFFFFFF));
       break;
 
     case 18:
@@ -334,17 +339,17 @@ void TelemetrySimulator::generateTelemetryFrame()
 
     case 23:
         if (ui->accx->value() != 0)
-          generateSportPacket(buffer, ui->accx_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ACCX_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->accx->value() * 100, 0x7FFFFFFF));
+          generateSportPacket(buffer, ui->accx_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ACCX_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->accx->value() * 100.0, 0x7FFFFFFF));
         break;
 
     case 24:
       if (ui->accy->value() != 0)
-        generateSportPacket(buffer, ui->accy_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ACCY_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->accy->value() * 100, 0x7FFFFFFF));
+        generateSportPacket(buffer, ui->accy_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ACCY_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->accy->value() * 100.0, 0x7FFFFFFF));
       break;
 
     case 25:
       if (ui->accz->value() != 0)
-        generateSportPacket(buffer, ui->accz_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ACCZ_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->accz->value() * 100, 0x7FFFFFFF));
+        generateSportPacket(buffer, ui->accz_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ACCZ_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->accz->value() * 100.0, 0x7FFFFFFF));
       break;
 
     default:
@@ -358,7 +363,7 @@ void TelemetrySimulator::generateTelemetryFrame()
     onTimerEvent();
 }
 
-uint32_t TelemetrySimulator::FlvssEmulator::encodeCellPair(uint8_t cellNum, uint8_t firstCellNo, float cell1, float cell2)
+uint32_t TelemetrySimulator::FlvssEmulator::encodeCellPair(uint8_t cellNum, uint8_t firstCellNo, double cell1, double cell2)
 {
   uint16_t cell1Data = cell1 * 500.0;
   uint16_t cell2Data = cell2 * 500.0;
@@ -382,11 +387,11 @@ void TelemetrySimulator::FlvssEmulator::encodeAllCells()
   if (numCells > 4) cellData3 = encodeCellPair(numCells, 4, cellFloats[4], cellFloats[5]); else cellData3 = 0;
 }
 
-void TelemetrySimulator::FlvssEmulator::splitIntoCells(float totalVolts)
+void TelemetrySimulator::FlvssEmulator::splitIntoCells(double totalVolts)
 {
   numCells = qFloor((totalVolts / 3.7) + .5);
-  float avgVolts = totalVolts / numCells;
-  float remainder = (totalVolts - (avgVolts * numCells));
+  double avgVolts = totalVolts / numCells;
+  double remainder = (totalVolts - (avgVolts * numCells));
     for (int i = 0; (i < numCells) && ( i < MAXCELLS); i++) {
     cellFloats[i] = avgVolts;
   }
@@ -397,7 +402,7 @@ void TelemetrySimulator::FlvssEmulator::splitIntoCells(float totalVolts)
   numCells = numCells > MAXCELLS ? MAXCELLS : numCells; // force into valid cell count in case of input out of range
 }
 
-uint32_t TelemetrySimulator::FlvssEmulator::setAllCells_GetNextPair(float cellValues[6])
+uint32_t TelemetrySimulator::FlvssEmulator::setAllCells_GetNextPair(double cellValues[6])
 {
   numCells = 0;
   for (int i = 0; i < MAXCELLS; i++) {
@@ -418,7 +423,7 @@ uint32_t TelemetrySimulator::FlvssEmulator::setAllCells_GetNextPair(float cellVa
     }
   }
 
-  // encode the float values into telemetry format
+  // encode the double values into telemetry format
   encodeAllCells();
 
   // return the value for the current pair 
@@ -451,7 +456,7 @@ TelemetrySimulator::GPSEmulator::GPSEmulator()
 }
 
 
-uint32_t TelemetrySimulator::GPSEmulator::encodeLatLon(float latLon, bool isLat)
+uint32_t TelemetrySimulator::GPSEmulator::encodeLatLon(double latLon, bool isLat)
 {
   uint32_t data = (uint32_t)((latLon < 0 ? -latLon : latLon) * 60 * 10000) & 0x3FFFFFFF;
   if (isLat == false) {
@@ -517,22 +522,22 @@ void TelemetrySimulator::GPSEmulator::setGPSLatLon(QString latLon)
   lon = 0.0;
   if (coords.length() > 1)
   {
-    lat = coords[0].toFloat();
-    lon = coords[1].toFloat();
+    lat = coords[0].toDouble();
+    lon = coords[1].toDouble();
   }
 }
 
-void TelemetrySimulator::GPSEmulator::setGPSCourse(float course)
+void TelemetrySimulator::GPSEmulator::setGPSCourse(double course)
 {
   this->course = course;
 }
 
-void TelemetrySimulator::GPSEmulator::setGPSSpeedKMH(float speedKMH)
+void TelemetrySimulator::GPSEmulator::setGPSSpeedKMH(double speedKMH)
 {
   this->speedKNTS = speedKMH * 0.539957;
 }
 
-void TelemetrySimulator::GPSEmulator::setGPSAltitude(float altitude)
+void TelemetrySimulator::GPSEmulator::setGPSAltitude(double altitude)
 {
   this->altitude = altitude;
 }
@@ -550,43 +555,59 @@ TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySi
   colToFuncMap.insert("A2", A2);
   colToFuncMap.insert("A3", A3);
   colToFuncMap.insert("A4", A4);
-  colToFuncMap.insert("Alt(ft)", ALT_FEET);
-  colToFuncMap.insert("GAlt(ft)", GALT_FEET);
-  colToFuncMap.insert("GSpd(kts)", GSPD_KNTS);
-  colToFuncMap.insert("Hdg(@)", GHDG_DEG);
   colToFuncMap.insert("Tmp1(@C)", T1_DEGC);
+  colToFuncMap.insert("Tmp1(@F)", T1_DEGF);
   colToFuncMap.insert("Tmp2(@C)", T2_DEGC);
+  colToFuncMap.insert("Tmp2(@F)", T2_DEGF);
   colToFuncMap.insert("RPM(rpm)", RPM);
-  colToFuncMap.insert("Fuel(%)", RPM);
-  colToFuncMap.insert("Cels(gRe)", CELS_GRE);
-  colToFuncMap.insert("Date", GDATE);
+  colToFuncMap.insert("Fuel(%)", FUEL);
   colToFuncMap.insert("VSpd(m/s)", VSPD_MS);
+  colToFuncMap.insert("VSpd(f/s)", VSPD_FS);
+  colToFuncMap.insert("Alt(ft)", ALT_FEET);
+  colToFuncMap.insert("Alt(m)", ALT_METERS);
+  colToFuncMap.insert("VFAS(V)", FASV);
+  colToFuncMap.insert("Curr(A)", FASC);
+  colToFuncMap.insert("Cels(gRe)", CELS_GRE);
+  colToFuncMap.insert("ASpd(kmh)", ASPD_KMH);
+  colToFuncMap.insert("ASpd(mph)", ASPD_MPH);
+  colToFuncMap.insert("GAlt(ft)", GALT_FEET);
+  colToFuncMap.insert("GAlt(m)", GALT_METERS);
+  colToFuncMap.insert("GSpd(kts)", GSPD_KNTS);
+  colToFuncMap.insert("GSpd(kmh)", GSPD_KMH);
+  colToFuncMap.insert("GSpd(mph)", GSPD_MPH);
+  colToFuncMap.insert("Hdg(@)", GHDG_DEG);
+  colToFuncMap.insert("Date", GDATE);
   colToFuncMap.insert("GPS", G_LATLON);
+  colToFuncMap.insert("AccX(g)", ACCX);
+  colToFuncMap.insert("AccY(g)", ACCY);
+  colToFuncMap.insert("AccZ(g)", ACCZ);
+  
+  // ACCX Y and Z
 }
 
 void TelemetrySimulator::LogPlaybackController::calcLogFrequency()
 {
   // examine up to 20 rows to determine log frequency in seconds
   logFrequency = 25.5; // default value
-  float lastTotalMinutes = -3600;
+  double lastTotalMinutes = -3600;
   for (int i = 1; (i < 20) && (i < csvRecords.count()); i++)
   {
-    float hours;
-    float minutes;
+    double hours;
+    double minutes;
     switch (csvRecords[i].split(',')[1].split(':').count()) {
       case 2:
-        hours = csvRecords[i].split(',')[1].split(':')[0].toFloat();
-        minutes = csvRecords[i].split(',')[1].split(':')[1].toFloat();
+        hours = csvRecords[i].split(',')[1].split(':')[0].toDouble();
+        minutes = csvRecords[i].split(',')[1].split(':')[1].toDouble();
         break;
       case 3:
-        hours = csvRecords[i].split(',')[1].split(':')[1].toFloat();
-        minutes = csvRecords[i].split(',')[1].split(':')[2].toFloat();
+        hours = csvRecords[i].split(',')[1].split(':')[1].toDouble();
+        minutes = csvRecords[i].split(',')[1].split(':')[2].toDouble();
         break;
       default:
         hours = minutes = 0;
     }
-    float totalMinutes = (hours * 60) + minutes;
-    float newFrequency = totalMinutes - lastTotalMinutes;
+    double totalMinutes = (hours * 60) + minutes;
+    double newFrequency = totalMinutes - lastTotalMinutes;
     if ((newFrequency > 0) && (newFrequency < logFrequency)) {
       logFrequency = newFrequency;
     }
@@ -692,9 +713,9 @@ void TelemetrySimulator::LogPlaybackController::stepBack()
   stepping = false;
 }
 
-float TelemetrySimulator::LogPlaybackController::convertFeetToMeters(QString input)
+double TelemetrySimulator::LogPlaybackController::convertFeetToMeters(QString input)
 {
-  float meters100 = input.toFloat() * 0.3048;
+  double meters100 = input.toDouble() * 0.3048;
   return qFloor(meters100 + .005);
 }
 
@@ -715,11 +736,11 @@ QString TelemetrySimulator::LogPlaybackController::convertLogDate(QString input)
   return utcDate.toString(format);
 }
 
-float TelemetrySimulator::LogPlaybackController::convertDegMin(QString input)
+double TelemetrySimulator::LogPlaybackController::convertDegMin(QString input)
 {
-  float fInput = input.mid(0, input.length() - 1).toFloat();
-  float degrees = qFloor(fInput / 100.0);
-  float minutes = fInput - (degrees * 100);
+  double fInput = input.mid(0, input.length() - 1).toDouble();
+  double degrees = qFloor(fInput / 100.0);
+  double minutes = fInput - (degrees * 100);
   int32_t sign = ((input.endsWith('E')) || (input.endsWith('N'))) ? 1 : -1;
   return (degrees + (minutes / 60)) * sign;
 }
@@ -731,8 +752,8 @@ QString TelemetrySimulator::LogPlaybackController::convertGPS(QString input)
   if (lonLat.count() < 2) {
     return ""; // invalid format
   }
-  float lon = convertDegMin(lonLat[0]);
-  float lat = convertDegMin(lonLat[1]);
+  double lon = convertDegMin(lonLat[0]);
+  double lat = convertDegMin(lonLat[1]);
   return QString::number(lat) + ", " + QString::number(lon);
 }
 
@@ -745,8 +766,13 @@ void TelemetrySimulator::LogPlaybackController::updatePositionLabel(int32_t perc
     }
   }
   ui->positionLabel->setText("Row " + QString::number(recordIndex) + " of " + QString::number(csvRecords.count() - 1));
-  uint32_t posPercent = (recordIndex / (float)(csvRecords.count() - 1)) * 100;
+  uint32_t posPercent = (recordIndex / (double)(csvRecords.count() - 1)) * 100;
   ui->positionIndicator->setValue(posPercent);
+}
+
+double TelemetrySimulator::LogPlaybackController::convertFahrenheitToCelsius(QString input)
+{
+  return (input.toDouble() - 32.0) * 0.5556;
 }
 
 void TelemetrySimulator::LogPlaybackController::setUiDataValues()
@@ -758,58 +784,86 @@ void TelemetrySimulator::LogPlaybackController::setUiDataValues()
         ui->rxbt->setValue(columnData[info.dataIndex].toDouble());
         break;
       case RSSI:
-        ui->Rssi->setValue(columnData[info.dataIndex].toInt());
+        qDebug() << "Setting RSSI to " << columnData[info.dataIndex].toDouble();
+        ui->Rssi->setValue(columnData[info.dataIndex].toDouble());
         break;
       case SWR:
-        ui->Swr->setValue(columnData[info.dataIndex].toInt());
+        ui->Swr->setValue(columnData[info.dataIndex].toDouble());
         break;
       case A1:
-        ui->A1->setValue(columnData[info.dataIndex].toFloat());
+        ui->A1->setValue(columnData[info.dataIndex].toDouble());
         break;
       case A2:
-        ui->A2->setValue(columnData[info.dataIndex].toFloat());
+        ui->A2->setValue(columnData[info.dataIndex].toDouble());
         break;
       case A3:
-        ui->A3->setValue(columnData[info.dataIndex].toUInt());
+        ui->A3->setValue(columnData[info.dataIndex].toDouble());
         break;
       case A4:
-        ui->A4->setValue(columnData[info.dataIndex].toUInt());
+        ui->A4->setValue(columnData[info.dataIndex].toDouble());
         break;
       case T1_DEGC:
-        ui->T1->setValue(columnData[info.dataIndex].toInt());
+        ui->T1->setValue(columnData[info.dataIndex].toDouble());
         break;
       case T2_DEGC:
-        ui->T2->setValue(columnData[info.dataIndex].toInt());
+        ui->T2->setValue(columnData[info.dataIndex].toDouble());
+        break;
+      case T1_DEGF:
+        ui->T1->setValue(convertFahrenheitToCelsius(columnData[info.dataIndex]));
+        break;
+      case T2_DEGF:
+        ui->T2->setValue(convertFahrenheitToCelsius(columnData[info.dataIndex]));
         break;
       case RPM:
-        ui->rpm->setValue(columnData[info.dataIndex].toInt());
+        ui->rpm->setValue(columnData[info.dataIndex].toDouble());
         break;
       case FUEL:
-        ui->fuel->setValue(columnData[info.dataIndex].toInt());
+        ui->fuel->setValue(columnData[info.dataIndex].toDouble());
         break;
       case VSPD_MS:
-        ui->vspeed->setValue(columnData[info.dataIndex].toFloat());
+        ui->vspeed->setValue(columnData[info.dataIndex].toDouble());
+        break;
+      case VSPD_FS:
+        ui->vspeed->setValue(columnData[info.dataIndex].toDouble() * 0.3048);
         break;
       case ALT_FEET:
         ui->valt->setValue(convertFeetToMeters(columnData[info.dataIndex]));
         break;
+      case ALT_METERS:
+        ui->valt->setValue(columnData[info.dataIndex].toDouble());
+        break;
       case FASV:
+        ui->vfas->setValue(columnData[info.dataIndex].toDouble());
         break;
       case FASC:
+        ui->curr->setValue(columnData[info.dataIndex].toDouble());
         break;
       case CELS_GRE:
-        ui->cell1->setValue(columnData[info.dataIndex].toFloat());
+        ui->cell1->setValue(columnData[info.dataIndex].toDouble());
         break;
-      case ASPD:
+      case ASPD_KMH:
+        ui->aspeed->setValue(columnData[info.dataIndex].toDouble());
+        break;
+      case ASPD_MPH:
+        ui->aspeed->setValue(columnData[info.dataIndex].toDouble() * 1.60934);
         break;
       case GALT_FEET:
         ui->gps_alt->setValue(convertFeetToMeters(columnData[info.dataIndex]));
         break;
+      case GALT_METERS:
+        ui->gps_alt->setValue(columnData[info.dataIndex].toDouble());
+        break;
       case GSPD_KNTS:
-        ui->gps_speed->setValue(columnData[info.dataIndex].toFloat());
+        ui->gps_speed->setValue(columnData[info.dataIndex].toDouble() * 1.852);
+        break;
+      case GSPD_KMH:
+        ui->gps_speed->setValue(columnData[info.dataIndex].toDouble());
+        break;
+      case GSPD_MPH:
+        ui->gps_speed->setValue(columnData[info.dataIndex].toDouble() * 1.60934);
         break;
       case GHDG_DEG:
-        ui->gps_course->setValue(columnData[info.dataIndex].toFloat());
+        ui->gps_course->setValue(columnData[info.dataIndex].toDouble());
         break;
       case GDATE:
         ui->gps_time->setText(convertLogDate(columnData[info.dataIndex]));
@@ -818,10 +872,13 @@ void TelemetrySimulator::LogPlaybackController::setUiDataValues()
         ui->gps_latlon->setText(convertGPS(columnData[info.dataIndex]));
         break;
       case ACCX:
+        ui->accx->setValue(columnData[info.dataIndex].toDouble());
         break;
       case ACCY:
+        ui->accy->setValue(columnData[info.dataIndex].toDouble());
         break;
       case ACCZ:
+        ui->accz->setValue(columnData[info.dataIndex].toDouble());
         break;
     }
   }
