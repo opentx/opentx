@@ -63,7 +63,7 @@ void TelemetrySimulator::onSimulateToggled(bool isChecked)
 
 void TelemetrySimulator::onLogTimerEvent()
 {
-  logPlayback->stepForward();
+  logPlayback->stepForward(false);
 }
 
 
@@ -79,42 +79,56 @@ void TelemetrySimulator::onLoadLogFile()
 
 void TelemetrySimulator::onPlay()
 {
-  logTimer->start(logPlayback->logFrequency * 1000 / SPEEDS[ui->replayRate->value()]);
-  logPlayback->play();
+  if (logPlayback->isReady()) {
+    logTimer->start(logPlayback->logFrequency * 1000 / SPEEDS[ui->replayRate->value()]);
+    logPlayback->play();
+  }
 }
 
 void TelemetrySimulator::onRewind()
 {
-  logTimer->stop();
-  logPlayback->rewind();
+  if (logPlayback->isReady()) {
+    logTimer->stop();
+    logPlayback->rewind();
+  }
 }
 
 void TelemetrySimulator::onStepForward()
 {
-  logTimer->stop();
-  logPlayback->stepForward();
+  if (logPlayback->isReady()) {
+    logTimer->stop();
+    logPlayback->stepForward(true);
+  }
 }
 
 void TelemetrySimulator::onStepBack()
 {
-  logTimer->stop();
-  logPlayback->stepBack();
+  if (logPlayback->isReady()) {
+    logTimer->stop();
+    logPlayback->stepBack();
+  }
 }
 
 void TelemetrySimulator::onStop()
 {
-  logTimer->stop();
-  logPlayback->stop();
+  if (logPlayback->isReady()) {
+    logTimer->stop();
+    logPlayback->stop();
+  }
 }
 
 void TelemetrySimulator::onPositionIndicatorReleased()
 {
-  logPlayback->setUiDataValues();
+  if (logPlayback->isReady()) {
+    logPlayback->setUiDataValues();
+  }
 }
 
 void TelemetrySimulator::onPositionIndicatorChanged(int value)
 {
-  logPlayback->updatePositionLabel(value);
+  if (logPlayback->isReady()) {
+    logPlayback->updatePositionLabel(value);
+  }
 }
 
 void TelemetrySimulator::onReplayRateChanged(int value)
@@ -138,7 +152,9 @@ void TelemetrySimulator::showEvent(QShowEvent *event)
   ui->rssi_inst->setText(QString::number(simulator->getSensorInstance(RSSI_ID)));
   ui->swr_inst->setText(QString::number(simulator->getSensorInstance(SWR_ID)));
   ui->a1_inst->setText(QString::number(simulator->getSensorInstance(ADC1_ID)));
+  ui->A1_ratio->setValue(simulator->getSensorRatio(ADC1_ID) / 10.0);
   ui->a2_inst->setText(QString::number(simulator->getSensorInstance(ADC2_ID)));
+  ui->A2_ratio->setValue(simulator->getSensorRatio(ADC2_ID) / 10.0);
   ui->a3_inst->setText(QString::number(simulator->getSensorInstance(A3_FIRST_ID)));
   ui->a4_inst->setText(QString::number(simulator->getSensorInstance(A4_FIRST_ID)));
   ui->t1_inst->setText(QString::number(simulator->getSensorInstance(T1_FIRST_ID)));
@@ -222,12 +238,12 @@ void TelemetrySimulator::generateTelemetryFrame()
 
     case 4:
       if (ui->A1->value() > 0)
-        generateSportPacket(buffer, ui->a1_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ADC1_ID, LIMIT<uint32_t>(0, ui->A1->value() * 19.39, 0xFF));
+        generateSportPacket(buffer, ui->a1_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ADC1_ID, LIMIT<uint32_t>(0, ui->A1->value() * 255.0 / ui->A1_ratio->value(), 0xFF));
       break;
 
     case 5:
       if (ui->A2->value() > 0)
-        generateSportPacket(buffer, ui->a2_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ADC2_ID, LIMIT<uint32_t>(0, ui->A2->value() * 19.39, 0xFF));
+        generateSportPacket(buffer, ui->a2_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ADC2_ID, LIMIT<uint32_t>(0, ui->A2->value() * 255.0 / ui->A2_ratio->value(), 0xFF));
       break;
 
     case 6:
@@ -615,8 +631,23 @@ void TelemetrySimulator::LogPlaybackController::calcLogFrequency()
   }
 }
 
+bool TelemetrySimulator::LogPlaybackController::isReady()
+{
+  return csvRecords.count() > 1;
+}
+
 void TelemetrySimulator::LogPlaybackController::loadLogFile()
 {
+  // reset the playback ui
+  ui->play->setEnabled(false);
+  ui->rewind->setEnabled(false);
+  ui->stepBack->setEnabled(false);
+  ui->stepForward->setEnabled(false);
+  ui->stop->setEnabled(false);
+  ui->positionIndicator->setEnabled(false);
+  ui->replayRate->setEnabled(false);
+  ui->positionLabel->setText("Row 0 of 0");
+
   QString logFileNameAndPath = QFileDialog::getOpenFileName(NULL, tr("Log File"), ".", tr("LOG Files (*.csv)"));
   QFileInfo fileInfo(logFileNameAndPath);
   QFile file(logFileNameAndPath);
@@ -625,11 +656,6 @@ void TelemetrySimulator::LogPlaybackController::loadLogFile()
     return;
   }
   csvRecords.clear();
-  ui->play->setEnabled(true);
-  ui->rewind->setEnabled(true);
-  ui->stepBack->setEnabled(true);
-  ui->stepForward->setEnabled(true);
-  ui->stop->setEnabled(true);
   while (!file.atEnd()) {
     QByteArray line = file.readLine();
     csvRecords.append(line.simplified());
@@ -643,6 +669,13 @@ void TelemetrySimulator::LogPlaybackController::loadLogFile()
     Q_FOREACH(QString key, keys) {
       columnNames.append(key.simplified());
     }
+    ui->play->setEnabled(true);
+    ui->rewind->setEnabled(true);
+    ui->stepBack->setEnabled(true);
+    ui->stepForward->setEnabled(true);
+    ui->stop->setEnabled(true);
+    ui->positionIndicator->setEnabled(true);
+    ui->replayRate->setEnabled(true);
     supportedCols.clear();
     recordIndex = 1;
     calcLogFrequency();
@@ -686,12 +719,14 @@ void TelemetrySimulator::LogPlaybackController::rewind()
   stepping = false;
 }
 
-void TelemetrySimulator::LogPlaybackController::stepForward()
+void TelemetrySimulator::LogPlaybackController::stepForward(bool focusOnStop)
 {
   stepping = true;
   if (recordIndex < (csvRecords.count() - 1)) {
     recordIndex++;
-    ui->stop->setChecked(true);
+    if (focusOnStop) {
+      ui->stop->setChecked(true);
+    }
     updatePositionLabel(-1);
     setUiDataValues();
   }
@@ -784,7 +819,6 @@ void TelemetrySimulator::LogPlaybackController::setUiDataValues()
         ui->rxbt->setValue(columnData[info.dataIndex].toDouble());
         break;
       case RSSI:
-        qDebug() << "Setting RSSI to " << columnData[info.dataIndex].toDouble();
         ui->Rssi->setValue(columnData[info.dataIndex].toDouble());
         break;
       case SWR:

@@ -101,6 +101,8 @@ class SimulatorInterface
 
     virtual uint8_t getSensorInstance(uint16_t id) = 0;
 
+    virtual uint16_t getSensorRatio(uint16_t id) = 0;
+
     virtual void setTrainerInput(unsigned int inputNumber, int16_t value) = 0;
 
     virtual void installTraceHook(void (*callback)(const char *)) = 0;

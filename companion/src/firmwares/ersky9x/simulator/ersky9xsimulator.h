@@ -56,6 +56,8 @@ class Ersky9xSimulator : public SimulatorInterface {
 
     virtual uint8_t getSensorInstance(uint16_t id) { return 0; };
 
+    virtual uint16_t getSensorRatio(uint16_t id) { return 0; };
+
     virtual void setTrainerInput(unsigned int inputNumber, int16_t value) {};
 
   protected:

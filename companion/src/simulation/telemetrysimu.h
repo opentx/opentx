@@ -1,8 +1,6 @@
 #ifndef telemetrysimu_h
 #define telemetrysimu_h
 
-#include <QDebug>
-
 #include <QCloseEvent>
 #include <QDialog>
 #include <QTimer>
@@ -36,11 +34,12 @@ class TelemetrySimulator : public QDialog
     {
     public:
       LogPlaybackController(Ui::TelemetrySimulator * ui);
+      bool isReady();
       void loadLogFile();
       void play();
       void stop();
       void rewind();
-      void stepForward();
+      void stepForward(bool focusOnStop);
       void stepBack();
       void updatePositionLabel(int32_t percentage);
       void setUiDataValues();
