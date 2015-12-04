@@ -20,10 +20,18 @@ add_custom_target(commondeps
 
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${RADIO_SRC_DIRECTORY}/stamp-opentx.h)
 
-add_custom_target(lua_exports 
-  make PCB=TARANIS lua_exports.inc
-  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
-)
+macro(add_lua_export_target target)
+  add_custom_command(
+    OUTPUT ${RADIO_SRC_DIRECTORY}/lua/lua_exports_${target}.inc
+    COMMAND ${CMAKE_C_COMPILER} -E ${ARGN} -DEXPORT ${INTTYPES_INCLUDE_OPTION} myeeprom.h | grep LEXP > lua_exports_${target}.txt
+    COMMAND python ../util/luaexport.py ${C9X_VERSION} lua_exports_${target}.txt lua/lua_exports_${target}.inc lua_fields_${target}.txt
+    WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+  )
+  add_custom_target(lua_export_${target} DEPENDS ${RADIO_SRC_DIRECTORY}/lua/lua_exports_${target}.inc)
+endmacro(add_lua_export_target)
+
+add_lua_export_target(taranis -DPCBTARANIS -DLUA)
+add_lua_export_target(taranis_x9e -DPCBTARANIS -DREVPLUS -DREV9E -DLUA)
 
 set(OPENTX_SRC_FILES
   opentxsimulator.cpp
@@ -94,9 +102,9 @@ add_dependencies(opentx-mega2560${SUFFIX}-simulator about_lbm_9x commondeps)
 add_dependencies(opentx-sky9x${SUFFIX}-simulator about_lbm_9x commondeps)
 add_dependencies(opentx-9xrpro${SUFFIX}-simulator about_lbm_9x commondeps)
 add_dependencies(opentx-ar9x${SUFFIX}-simulator about_lbm_9x commondeps)
-add_dependencies(opentx-taranis${SUFFIX}-simulator about_lbm_taranis commondeps lua_exports)
-add_dependencies(opentx-taranisplus${SUFFIX}-simulator about_lbm_taranis commondeps lua_exports)
-add_dependencies(opentx-taranisx9e${SUFFIX}-simulator about_lbm_taranis commondeps lua_exports)
+add_dependencies(opentx-taranis${SUFFIX}-simulator about_lbm_taranis commondeps lua_export_taranis)
+add_dependencies(opentx-taranisplus${SUFFIX}-simulator about_lbm_taranis commondeps lua_export_taranis)
+add_dependencies(opentx-taranisx9e${SUFFIX}-simulator about_lbm_taranis commondeps lua_export_taranis_x9e)
 
 set(OPENTX_LIBRARIES
   opentx-9x${SUFFIX}-simulator
