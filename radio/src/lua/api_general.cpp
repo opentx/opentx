@@ -40,14 +40,15 @@
 #include "stamp-opentx.h"
 #include "lua/lua_api.h"
 
-#include "lua/lua_exports.inc"   // this line must be after lua headers
-
 #if defined(PCBTARANIS) && defined(REV9E)
   #define RADIO "taranisx9e"
+  #include "lua/lua_exports_taranis_x9e.inc"   // this line must be after lua headers
 #elif defined(PCBTARANIS) && defined(REVPLUS)
   #define RADIO "taranisplus"
+  #include "lua/lua_exports_taranis.inc"   // this line must be after lua headers
 #elif defined(PCBTARANIS)
   #define RADIO "taranis"
+  #include "lua/lua_exports_taranis.inc"   // this line must be after lua headers
 #else
 #error "Unknown board"
 #endif
