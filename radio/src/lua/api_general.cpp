@@ -328,7 +328,9 @@ Return detailed information about field (source)
 
 The list of valid sources is available:
 * for OpenTX 2.0.x at http://downloads-20.open-tx.org/firmware/lua_fields.txt
-* for OpenTX 2.1.x at http://downloads-21.open-tx.org/firmware/lua_fields.txt
+* for OpenTX 2.1.x at http://downloads-21.open-tx.org/firmware/lua_fields.txt (depreciated)
+* for OpenTX 2.1.x Taranis and Tranis Plus at http://downloads-21.open-tx.org/firmware/lua_fields_taranis.txt
+* for OpenTX 2.1.x Taranis X9E at http://downloads-21.open-tx.org/firmware/lua_fields_taranis_x9e.txt
 
 @param name (string) name of the field
 

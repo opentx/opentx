@@ -1661,20 +1661,19 @@ else
   PARSER = gcc -E -x c++
 endif
 
-lua_exports_taranis.inc: OUT = taranis
-lua_exports_taranis.inc: CPPDEFS = -DPCBTARANIS -DLUA
-lua_exports_taranis.inc: lua_exports.dummy
+lua_exports_taranis.inc: myeeprom.h ../util/luaexport.py
+	@echo "Generating a list of Lua exported constants in lua_exports_taranis.txt"
+	@$(PARSER) -DEXPORT -DPCBTARANIS -DLUA myeeprom.h | grep LEXP > lua_exports_taranis.txt
+	@echo "Parsing and generating C Lua exports in lua/lua_exports_taranis.inc"
+	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports_taranis.txt lua/lua_exports_taranis.inc lua_fields_taranis.txt
+	@rm lua_exports_taranis.txt
 
-lua_exports_taranis_x9e.inc: OUT = taranis_x9e
-lua_exports_taranis_x9e.inc: CPPDEFS = -DPCBTARANIS -DREVPLUS -DREV9E -DLUA
-lua_exports_taranis_x9e.inc: lua_exports.dummy
-
-lua_exports.dummy: myeeprom.h ../util/luaexport.py
-	@echo "Generating a list of Lua exported constants in lua_exports_$(OUT).txt"
-	@$(PARSER) -DEXPORT $(CPPDEFS) myeeprom.h | grep LEXP > lua_exports_$(OUT).txt
-	@echo "Parsing and generating C Lua exports in lua/lua_exports_$(OUT).inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports_$(OUT).txt lua/lua_exports_$(OUT).inc lua_fields_$(OUT).txt
-	@rm lua_exports_$(OUT).txt
+lua_exports_taranis_x9e.inc: myeeprom.h ../util/luaexport.py
+	@echo "Generating a list of Lua exported constants in lua_exports_taranis_x9e.txt"
+	@$(PARSER) -DEXPORT -DPCBTARANIS -DREVPLUS -DREV9E -DLUA myeeprom.h | grep LEXP > lua_exports_taranis_x9e.txt
+	@echo "Parsing and generating C Lua exports in lua/lua_exports_taranis_x9e.inc"
+	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports_taranis_x9e.txt lua/lua_exports_taranis_x9e.inc lua_fields_taranis_x9e.txt
+	@rm lua_exports_taranis_x9e.txt
 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on

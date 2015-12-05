@@ -93,6 +93,7 @@ ADD_CUSTOM_COMMAND(
 
 IF( MSVC )
   SET(CMAKE_CXX_FLAGS "/EHsc /LD")
+  set(INTTYPES_INCLUDE_OPTION -IC:/Programs/msinttypes)
   INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/winbuild C:/Programs/pthreads/Pre-built.2/include C:/Programs/msinttypes)
   LINK_DIRECTORIES( C:/Programs/pthreads/Pre-built.2/lib/ )
   SET( PTHREAD_LIBRARY pthreadVC2.lib )
