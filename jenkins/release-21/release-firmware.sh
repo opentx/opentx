@@ -21,15 +21,15 @@ make opentx-stamp
 cd ../../..
 tar czf ./opentx.tgz opentx/radio/src opentx/radio/util
 
-# make lua fields for X9E which has most fields
+# make lua fields for all radio variants
 cd opentx/radio/src
-make lua_exports.inc PCB=TARANIS PCBREV=REV9E
+make lua_exports_taranis.inc lua_exports_taranis_x9e.inc
 
 # copy the stamp and the release-notes to the http server
 cd ~opentx/release-$version/
 cp opentx/radio/src/stamp-opentx.txt /var/www/html/downloads-$version/firmware/
 cp opentx/radio/releasenotes.txt /var/www/html/downloads-$version/firmware/
-cp opentx/radio/src/lua_fields.txt /var/www/html/downloads-$version/firmware/
+cp opentx/radio/src/lua_fields_*.txt /var/www/html/downloads-$version/firmware/
 
 # erase all previous builds
 rm -f /var/www/html/downloads-$version/firmware/binaries/opentx*.hex

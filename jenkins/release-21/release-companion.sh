@@ -12,8 +12,13 @@ cd ~opentx/release-$version/
 # pull the latest changes
 ./update-repo.sh
 
+# clean radio source
+cd opentx/radio/src
+make clean
 
 # create companion rpm
+rm -rf ~opentx/release-$version/companion-build/
+mkdir -p ~opentx/release-$version/companion-build/
 cd ~opentx/release-$version/companion-build/
 cmake ../opentx/companion/src
 make package
