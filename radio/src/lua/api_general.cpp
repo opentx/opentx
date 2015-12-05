@@ -428,6 +428,27 @@ static int luaGetValue(lua_State *L)
   return 1;
 }
 
+
+/*luadoc
+@function getFlightMode()
+
+Return the current flight mode
+
+@retval multiple returns 2 values:
+ * (number) current flight mode number (0 - 7)
+ * (string) current flight mode name
+
+@status current Introduced in 2.1.7
+*/
+static int luaGetFlightMode(lua_State *L)
+{
+  lua_pushnumber(L, mixerCurrentFlightMode);
+  char name[sizeof(g_model.flightModeData[0].name)+1];
+  zchar2str(name, g_model.flightModeData[mixerCurrentFlightMode].name, sizeof(g_model.flightModeData[0].name));
+  lua_pushstring(L, name);
+  return 2;
+}
+
 /*luadoc
 @function playFile(name)
 
@@ -759,6 +780,7 @@ const luaL_Reg opentxLib[] = {
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getValue", luaGetValue },
   { "getFieldInfo", luaGetFieldInfo },
+  { "getFlightMode", luaGetFlightMode },
   { "playFile", luaPlayFile },
   { "playNumber", luaPlayNumber },
   { "playDuration", luaPlayDuration },
