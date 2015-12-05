@@ -89,7 +89,7 @@ class TelemetrySimulator : public QDialog
       QStringList csvRecords; // contents of the log file (one string per line);
       QStringList columnNames;
       QList<DATA_TO_FUNC_XREF> supportedCols;
-      uint32_t recordIndex;
+      int32_t recordIndex;
       double convertFeetToMeters(QString input);
       double convertFahrenheitToCelsius(QString input);
       QString convertLogDate(QString input);

@@ -408,10 +408,10 @@ void TelemetrySimulator::FlvssEmulator::splitIntoCells(double totalVolts)
   numCells = qFloor((totalVolts / 3.7) + .5);
   double avgVolts = totalVolts / numCells;
   double remainder = (totalVolts - (avgVolts * numCells));
-    for (int i = 0; (i < numCells) && ( i < MAXCELLS); i++) {
+    for (uint32_t i = 0; (i < numCells) && ( i < MAXCELLS); i++) {
     cellFloats[i] = avgVolts;
   }
-  for (int i = numCells; i < MAXCELLS; i++) {
+  for (uint32_t i = numCells; i < MAXCELLS; i++) {
     cellFloats[i] = 0;
   }
   cellFloats[0] += remainder;
@@ -421,7 +421,7 @@ void TelemetrySimulator::FlvssEmulator::splitIntoCells(double totalVolts)
 uint32_t TelemetrySimulator::FlvssEmulator::setAllCells_GetNextPair(double cellValues[6])
 {
   numCells = 0;
-  for (int i = 0; i < MAXCELLS; i++) {
+  for (uint32_t i = 0; i < MAXCELLS; i++) {
     if ((i == 0) && (cellValues[0] > 4.2)) {
       splitIntoCells(cellValues[0]);
       break;
@@ -432,7 +432,7 @@ uint32_t TelemetrySimulator::FlvssEmulator::setAllCells_GetNextPair(double cellV
     }
     else {
       // zero marks the last cell
-      for (int x = i; x < MAXCELLS; x++) {
+      for (uint32_t x = i; x < MAXCELLS; x++) {
         cellFloats[x] = 0;
       }
       break;
@@ -568,9 +568,13 @@ TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySi
   colToFuncMap.insert("RSSI(dB)", RSSI);
   colToFuncMap.insert("SWR", SWR);
   colToFuncMap.insert("A1", A1);
+  colToFuncMap.insert("A1(V)", A1);
   colToFuncMap.insert("A2", A2);
+  colToFuncMap.insert("A2(V)", A2);
   colToFuncMap.insert("A3", A3);
+  colToFuncMap.insert("A3(V)", A3);
   colToFuncMap.insert("A4", A4);
+  colToFuncMap.insert("A4(V)", A4);
   colToFuncMap.insert("Tmp1(@C)", T1_DEGC);
   colToFuncMap.insert("Tmp1(@F)", T1_DEGF);
   colToFuncMap.insert("Tmp2(@C)", T2_DEGC);
