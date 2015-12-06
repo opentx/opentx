@@ -15,4 +15,3 @@ function upload() {
 upload release-20
 upload nightly-21
 upload release-21
-upload nightly-22
