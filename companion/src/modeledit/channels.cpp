@@ -76,6 +76,8 @@ void LimitsGroup::updateMinMax(int max)
 Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware)
 {
+  Stopwatch s1("Channels");
+
   int channelNameMaxLen = firmware->getCapability(ChannelsName);
 
   QStringList headerLabels;
@@ -91,6 +93,8 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
   if (firmware->getCapability(SYMLimits))
     headerLabels << tr("Linear Subtrim");
   TableLayout * tableLayout = new TableLayout(this, firmware->getCapability(LogicalSwitches), headerLabels);
+
+  s1.report("header");
 
   for (int i=0; i<firmware->getCapability(Outputs); i++) {
     int col = 0;
@@ -167,10 +171,12 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
       tableLayout->addWidget(i, col++, symlimits);
     }
   }
+  s1.report("add elements");
 
   disableMouseScrolling();
   tableLayout->resizeColumnsToContents();
   tableLayout->pushRowsUp(firmware->getCapability(Outputs)+1);
+  s1.report("end");
 }
 
 Channels::~Channels()

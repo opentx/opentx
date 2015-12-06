@@ -179,11 +179,16 @@ void MdiChild::modelEdit()
     QApplication::setOverrideCursor(Qt::WaitCursor);
     checkAndInitModel( row );
     ModelData &model = radioData.models[row - 1];
+    gStopwatch.restart();
+    gStopwatch.report("ModelEdit creation");
     ModelEdit *t = new ModelEdit(this, radioData, (row - 1), GetCurrentFirmware()/*firmware*/);
+    gStopwatch.report("ModelEdit created");
     t->setWindowTitle(tr("Editing model %1: ").arg(row) + model.name);
     connect(t, SIGNAL(modified()), this, SLOT(setModified()));
+    gStopwatch.report("STARTING MODEL EDIT");
     t->show();
     QApplication::restoreOverrideCursor();
+    gStopwatch.report("ModelEdit shown");
   }
 }
 
