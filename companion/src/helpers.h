@@ -2,6 +2,8 @@
 #define HELPERS_H
 
 #include <QtGui>
+#include <QTableWidget>
+#include <QGridLayout>
 #include "eeprominterface.h"
 
 extern const QColor colors[C9X_MAX_CURVES];
@@ -210,9 +212,16 @@ public:
   void addWidget(int row, int column, QWidget * widget);
   void addLayout(int row, int column, QLayout * layout);
 
-  QTableWidget * getTableWidget() { return tableWidget; };
+  void resizeColumnsToContents();
+  void setColumnWidth(int col, int width);
+  void pushRowsUp(int row); 
+
 private:
-  QTableWidget * tableWidget;  
+#if defined(TABLE_LAYOUT)
+  QTableWidget * tableWidget; 
+#else
+  QGridLayout * gridWidget; 
+#endif
 };
 
 #endif // HELPERS_H

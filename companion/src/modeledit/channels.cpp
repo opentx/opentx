@@ -169,7 +169,8 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
   }
 
   disableMouseScrolling();
-  tableLayout->getTableWidget()->resizeColumnsToContents();
+  tableLayout->resizeColumnsToContents();
+  tableLayout->pushRowsUp(firmware->getCapability(Outputs)+1);
 }
 
 Channels::~Channels()

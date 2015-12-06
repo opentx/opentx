@@ -126,7 +126,8 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
   disableMouseScrolling();
   lock = false;
   update();
-  tableLayout->getTableWidget()->resizeColumnsToContents();
+  tableLayout->resizeColumnsToContents();
+  tableLayout->pushRowsUp(firmware->getCapability(LogicalSwitches)+1);
 }
 
 LogicalSwitchesPanel::~LogicalSwitchesPanel()
