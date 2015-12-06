@@ -16,4 +16,3 @@ function download() {
 download release-20
 download nightly-21
 download release-21
-download nightly-22

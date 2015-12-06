@@ -1,5 +1,17 @@
+<h2>Version 2.1.6 / todo</h2>
+
+<ul>
+<li>Lua 'execute' failed in non-root directory (in Simulator) (<a href=https://github.com/opentx/opentx/issues/3024>#3024</a>)</li>
+<li>Header line always visible in Outputs, Logical Switches and Special Functions (<a href=https://github.com/opentx/opentx/issues/2861>#2861</a>)</li>
+<li>LR12 changes: removed option for remote failsafe configuration, added in EU firmware variant</li>
+<li>Added Clear option to the flight mode context menu (right click on the Name label) (<a href=https://github.com/opentx/opentx/issues/3026>#3026</a>)</li>
+<li>Various texts and translations corrections</li>
+</ul>
+
+
+
 <h2>Version 2.1.6 / 2015-11-11</h2>
-[Taranis]
+
 <ul>
 <li>Telemetry custom screen changes didn't emit modified signal (<a href=https://github.com/opentx/opentx/issues/3029>#3029</a>)</li>
 <li>Hide D8/LR12 when eu firmware option is selected</li>

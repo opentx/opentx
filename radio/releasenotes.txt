@@ -1,3 +1,29 @@
+<h2>Version 2.1.7 / todo</h2>
+
+[Taranis]
+<ul>
+<li>Added Crossfire (inverted serial) protocol on S.PORT pin in the module bay (<a href=https://github.com/opentx/opentx/issues/2894>#2894</a>)</li>
+<li>Added telemetry unit conversions from km/h (<a href=https://github.com/opentx/opentx/issues/3059>#3059</a>)</li>
+<li>LR12 changes: removed option for remote failsafe configuration, added in EU firmware variant</li>
+</ul>
+
+[Lua]
+<ul>
+<li>Enhanced luaGetVersion(): return the radio type (<a href=https://github.com/opentx/opentx/issues/2947>#2947</a>), returns version as numbers (<a href=https://github.com/opentx/opentx/issues/3095>#3095</a>)</li>
+<li>Allow usage of PLUS, MINUS, MENU and ENT(short) and EXIT(short) keys in telemetry scripts (<a href=https://github.com/opentx/opentx/issues/2469>#2469</a>)</li>
+<li>Lua string library added (<a href=https://github.com/opentx/opentx/issues/3095>#3095</a>)</li>
+<li>Fixed: Close any Lua open files when radio powers off (<a href=https://github.com/opentx/opentx/issues/3062>#3062</a>)</li>
+<li>getValue() now also returns pilot position (<a href=https://github.com/opentx/opentx/issues/2921>#2921</a>)</li>
+<li>Added additional Taranis X9E fields</li>
+</ul>
+
+[ARM]
+<ul>
+<li>Fixed: Wrong telemetry unit and precision was used for V2 in logical switches (Taranis not affected) (<a href=https://github.com/opentx/opentx/issues/3071>#3071</a>)</li>
+</ul>
+
+
+
 <h2>Version 2.1.6 / 2015-11-11</h2>
 [Taranis]
 <ul>
