@@ -45,9 +45,7 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout *tableLayout, int row,
   horizontalLayout->addWidget(gv);
   QComboBox * cb = new QComboBox();
   horizontalLayout->addWidget(cb);
-  cb->setSizeAdjustPolicy(QComboBox::AdjustToContents);
   horizontalLayout->addWidget(spinbox);
-  spinbox->setMinimumWidth(80);
   tableLayout->addLayout(row, col, horizontalLayout);
   gvarGroup = new GVarGroup(gv, spinbox, cb, value, deflt, min, max, displayStep, allowGVars);
 }

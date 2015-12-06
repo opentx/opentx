@@ -46,9 +46,9 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     QHBoxLayout *v1Layout = new QHBoxLayout();
     cswitchSource1[i] = new QComboBox(this);
     cswitchSource1[i]->setProperty("index",i);
-    cswitchSource1[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(cswitchSource1[i], SIGNAL(currentIndexChanged(int)), this, SLOT(v1Edited(int)));
     v1Layout->addWidget(cswitchSource1[i]);
+    cswitchSource1[i]->setVisible(false);
     cswitchValue[i] = new QDoubleSpinBox(this);
     cswitchValue[i]->setMaximum(channelsMax);
     cswitchValue[i]->setMinimum(-channelsMax);
@@ -64,7 +64,6 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     QHBoxLayout *v2Layout = new QHBoxLayout();
     cswitchSource2[i] = new QComboBox(this);
     cswitchSource2[i]->setProperty("index", i);
-    cswitchSource2[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(cswitchSource2[i], SIGNAL(currentIndexChanged(int)), this, SLOT(v2Edited(int)));
     v2Layout->addWidget(cswitchSource2[i]);
     cswitchSource2[i]->setVisible(false);
@@ -97,7 +96,6 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     // AND
     cswitchAnd[i] = new QComboBox(this);
     cswitchAnd[i]->setProperty("index", i);
-    cswitchAnd[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(cswitchAnd[i], SIGNAL(currentIndexChanged(int)), this, SLOT(andEdited(int)));
     tableLayout->addWidget(i, 4, cswitchAnd[i]);
 

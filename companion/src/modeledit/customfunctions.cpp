@@ -107,7 +107,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     fswtchSwtch[i] = new QComboBox(this);
     fswtchSwtch[i]->setProperty("index", i);
     populateSwitchCB(fswtchSwtch[i], functions[i].swtch, generalSettings, model ? SpecialFunctionsContext : GlobalFunctionsContext);
-    fswtchSwtch[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+    fswtchSwtch[i]->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
     fswtchSwtch[i]->setMaxVisibleItems(10);
     connect(fswtchSwtch[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     tableLayout->addWidget(i, 1, fswtchSwtch[i]);
@@ -117,7 +117,6 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     fswtchFunc[i] = new QComboBox(this);
     fswtchFunc[i]->setProperty("index", i);
     populateFuncCB(fswtchFunc[i], functions[i].func);
-    fswtchFunc[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(fswtchFunc[i], SIGNAL(currentIndexChanged(int)), this, SLOT(functionEdited()));
     tableLayout->addWidget(i, 2, fswtchFunc[i]);
     // s1.report("func");
@@ -136,6 +135,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     fswtchParamGV[i] = new QCheckBox(this);
     fswtchParamGV[i]->setProperty("index", i);
     fswtchParamGV[i]->setText("GV");
+    fswtchParamGV[i]->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
     connect(fswtchParamGV[i], SIGNAL(stateChanged(int)), this, SLOT(customFunctionEdited()));
     paramLayout->addWidget(fswtchParamGV[i]);
 
@@ -189,7 +189,6 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     QHBoxLayout * repeatLayout = new QHBoxLayout();
     tableLayout->addLayout(i, 4, repeatLayout);
     fswtchRepeat[i] = new RepeatComboBox(this, functions[i].repeatParam);
-    fswtchRepeat[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     repeatLayout->addWidget(fswtchRepeat[i], i+1);
     connect(fswtchRepeat[i], SIGNAL(modified()), this, SLOT(onChildModified()));
 
