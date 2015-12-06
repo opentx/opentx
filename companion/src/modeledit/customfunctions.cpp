@@ -180,6 +180,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
 #ifdef PHONON
     playBT[i] = new QPushButton(this);
+    playBT[i]->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     playBT[i]->setProperty("index", i);
     playBT[i]->setIcon(playIcon);
     paramLayout->addWidget(playBT[i]);
