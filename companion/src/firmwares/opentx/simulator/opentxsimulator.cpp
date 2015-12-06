@@ -40,11 +40,11 @@
 #define AUTOSWITCH
 #define GRAPHICS
 #define CURVES
-#if defined(PCBFLAMENCO) || defined(PCBHORUS)
-#define RTCLOCK
-#define XCURVES
-#define VIRTUALINPUTS
-#elif defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  #define RTCLOCK
+  #define XCURVES
+  #define VIRTUALINPUTS
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   #define RTCLOCK
   #define XCURVES
   #define VIRTUALINPUTS
@@ -151,7 +151,7 @@ namespace NAMESPACE {
 #include "radio/src/gui/Horus/menu_model_curves.cpp"
 #include "radio/src/gui/Horus/menu_model_logical_switches.cpp"
 #include "radio/src/gui/Horus/menu_model_custom_functions.cpp"
-// #include "radio/src/gui/Horus/menu_model_custom_scripts.cpp"
+#include "radio/src/gui/Horus/menu_model_custom_scripts.cpp"
 #include "radio/src/gui/Horus/menu_model_gvars.cpp"
 #include "radio/src/gui/Horus/menu_model_limits.cpp"
 #include "radio/src/gui/Horus/menu_model_telemetry.cpp"

@@ -115,7 +115,7 @@
   #define MAX_EXPOS            64
   #define NUM_LOGICAL_SWITCH   32 // number of custom switches
   #define NUM_CFN              64 // number of functions assigned to switches
-  #define MAX_SCRIPTS          7
+  #define MAX_SCRIPTS          9
   #define MAX_INPUTS           32
   #define NUM_TRAINER          16
   #define NUM_POTS             7

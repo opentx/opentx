@@ -144,6 +144,11 @@ extern "C" {
   extern uint16_t maxLuaInterval;
   extern uint16_t maxLuaDuration;
 
+  #if defined(PCBTARANIS)
+    #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER && (key) != KEY_PAGE)
+  #elif defined(PCBHORUS)
+    #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER)
+  #endif
 #else  // #if defined(LUA)
 
   #define LUA_LOAD_MODEL_SCRIPTS()

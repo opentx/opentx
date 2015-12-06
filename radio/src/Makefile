@@ -1161,13 +1161,14 @@ ifeq ($(PCB), FLAMENCO)
   ifneq ($(LUA), NO)
     ifeq ($(LUA), YES)
       CPPDEFS += -DLUA_MODEL_SCRIPTS
+      GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_custom_scripts.cpp
     endif
     CPPDEFS += -DLUA
     INCDIRS += $(LUADIR)
     CPPSRC += lua/interface.cpp lua/api_general.cpp lua/api_lcd.cpp lua/api_model.cpp
     LUASRC = $(LUADIR)/lapi.c $(LUADIR)/lcode.c $(LUADIR)/lctype.c $(LUADIR)/ldebug.c $(LUADIR)/ldo.c $(LUADIR)/ldump.c $(LUADIR)/lfunc.c $(LUADIR)/lgc.c $(LUADIR)/llex.c $(LUADIR)/lmem.c \
            $(LUADIR)/lobject.c $(LUADIR)/lopcodes.c $(LUADIR)/lparser.c $(LUADIR)/lstate.c $(LUADIR)/lstring.c $(LUADIR)/ltable.c $(LUADIR)/lrotable.c $(LUADIR)/ltm.c $(LUADIR)/lundump.c $(LUADIR)/lvm.c $(LUADIR)/lzio.c \
-           $(LUADIR)/lbaselib.c $(LUADIR)/linit.c $(LUADIR)/lmathlib.c $(LUADIR)/lbitlib.c $(LUADIR)/loadlib.c $(LUADIR)/lauxlib.c $(LUADIR)/ltablib.c $(LUADIR)/lcorolib.c $(LUADIR)/liolib.c
+           $(LUADIR)/lbaselib.c $(LUADIR)/linit.c $(LUADIR)/lmathlib.c $(LUADIR)/lbitlib.c $(LUADIR)/loadlib.c $(LUADIR)/lauxlib.c $(LUADIR)/ltablib.c $(LUADIR)/lcorolib.c $(LUADIR)/liolib.c $(LUADIR)/lstrlib.c
     SRC += $(LUASRC) 
     LUADEP = lua/lua_exports_flamenco.inc
   endif           
@@ -1291,13 +1292,14 @@ ifeq ($(PCB), HORUS)
   ifneq ($(LUA), NO)
     ifeq ($(LUA), YES)
       CPPDEFS += -DLUA_MODEL_SCRIPTS
+      GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_custom_scripts.cpp
     endif
     CPPDEFS += -DLUA
     INCDIRS += $(LUADIR)
 	  CPPSRC += lua/interface.cpp lua/api_general.cpp lua/api_lcd.cpp lua/api_model.cpp
     LUASRC = $(LUADIR)/lapi.c $(LUADIR)/lcode.c $(LUADIR)/lctype.c $(LUADIR)/ldebug.c $(LUADIR)/ldo.c $(LUADIR)/ldump.c $(LUADIR)/lfunc.c $(LUADIR)/lgc.c $(LUADIR)/llex.c $(LUADIR)/lmem.c \
            $(LUADIR)/lobject.c $(LUADIR)/lopcodes.c $(LUADIR)/lparser.c $(LUADIR)/lstate.c $(LUADIR)/lstring.c $(LUADIR)/ltable.c $(LUADIR)/lrotable.c $(LUADIR)/ltm.c $(LUADIR)/lundump.c $(LUADIR)/lvm.c $(LUADIR)/lzio.c \
-           $(LUADIR)/lbaselib.c $(LUADIR)/linit.c $(LUADIR)/lmathlib.c $(LUADIR)/lbitlib.c $(LUADIR)/loadlib.c $(LUADIR)/lauxlib.c $(LUADIR)/ltablib.c $(LUADIR)/lcorolib.c $(LUADIR)/liolib.c
+           $(LUADIR)/lbaselib.c $(LUADIR)/linit.c $(LUADIR)/lmathlib.c $(LUADIR)/lbitlib.c $(LUADIR)/loadlib.c $(LUADIR)/lauxlib.c $(LUADIR)/ltablib.c $(LUADIR)/lcorolib.c $(LUADIR)/liolib.c $(LUADIR)/lstrlib.c
     SRC += $(LUASRC) 
     LUADEP = lua/lua_exports_horus.inc
   endif           

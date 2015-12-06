@@ -40,23 +40,24 @@
 #include "lua/lua_api.h"
 
 /*luadoc
-@function lcd.lock()
+@function lcd.refresh()
 
-@status depreciated since 2.1
+Refresh the LCD screen
 
-@notice This function has no effect in OpenTX 2.1 and will be removed in 2.2
+@status current Introduced in 2.2.0
+
+@notice This function only works in stand-alone and telemetry scripts.
 */
-static int luaLcdLock(lua_State *L)
+static int luaLcdRefresh(lua_State *L)
 {
-  // disabled in opentx 2.1
-  // TODO: remove this function completely in opentx 2.2
+  if (luaLcdAllowed) lcdRefresh();
   return 0;
 }
 
 /*luadoc
 @function lcd.clear()
 
-Clears the LCD screen 
+Clear the LCD screen 
 
 @status current Introduced in 2.0.0
 
@@ -68,10 +69,11 @@ static int luaLcdClear(lua_State *L)
   return 0;
 }
 
+
 /*luadoc
 @function lcd.drawPoint(x, y)
 
-Draws a single pixel at (x,y) position
+Draw a single pixel at (x,y) position
 
 @param x (positive number) x position
 
@@ -95,7 +97,7 @@ static int luaLcdDrawPoint(lua_State *L)
 /*luadoc
 @function lcd.drawLine(x1, y1, x2, y2, pattern, flags)
 
-Draws a straight line on LCD
+Draw a straight line on LCD
 
 @param x1,y1 (positive numbers) starting coordinate
 
@@ -143,7 +145,7 @@ static int luaLcdGetLastPos(lua_State *L)
 /*luadoc
 @function lcd.drawText(x, y, text [, flags])
 
-Draws a text beginning at (x,y)
+Draw a text beginning at (x,y)
 
 @param x,y (positive numbers) starting coordinate
 
@@ -279,7 +281,7 @@ static int luaLcdDrawChannel(lua_State *L)
 /*luadoc
 @function lcd.drawSwitch(x, y, switch, flags)
 
-Draws a text representation of switch at (x,y)
+Draw a text representation of switch at (x,y)
 
 @param x,y (positive numbers) starting coordinate
 
@@ -329,7 +331,7 @@ static int luaLcdDrawSource(lua_State *L)
 /*luadoc
 @function lcd.drawPixmap(x, y, name)
 
-Draws a bitmap at (x,y)  
+Draw a bitmap at (x,y)  
 
 @param x,y (positive numbers) starting coordinate
 
@@ -357,7 +359,7 @@ static int luaLcdDrawPixmap(lua_State *L)
 /*luadoc
 @function lcd.drawRectangle(x, y, w, h [, flags])
 
-Draws a rectangle from top left corner (x,y) of specified width and height 
+Draw a rectangle from top left corner (x,y) of specified width and height 
 
 @param x,y (positive numbers) top left corner position
 
@@ -384,7 +386,7 @@ static int luaLcdDrawRectangle(lua_State *L)
 /*luadoc
 @function lcd.drawFilledRectangle(x, y, w, h [, flags])
 
-Draws a solid rectangle from top left corner (x,y) of specified width and height 
+Draw a solid rectangle from top left corner (x,y) of specified width and height 
 
 @param x,y (positive numbers) top left corner position
 
@@ -412,7 +414,7 @@ static int luaLcdDrawFilledRectangle(lua_State *L)
 /*luadoc
 @function lcd.drawGauge(x, y, w, h, fill, maxfill)
 
-Draws a simple gauge that is filled based upon fill value
+Draw a simple gauge that is filled based upon fill value
 
 @param x,y (positive numbers) top left corner position
 
@@ -449,7 +451,7 @@ static int luaLcdDrawGauge(lua_State *L)
 /*luadoc
 @function lcd.drawScreenTitle(title, page, pages)
 
-Draws a title bar
+Draw a title bar
 
 @param title (string) text for the title
 
@@ -481,7 +483,7 @@ static int luaLcdDrawScreenTitle(lua_State *L)
 /*luadoc
 @function lcd.drawCombobox(x, y, w, list, idx [, flags])
 
-Draws a combo box
+Draw a combo box
 
 @param x,y (positive numbers) top left corner position
 
@@ -550,7 +552,7 @@ static int luaLcdDrawCombobox(lua_State *L)
 #endif
 
 const luaL_Reg lcdLib[] = {
-  { "lock", luaLcdLock },
+  { "refresh", luaLcdRefresh },
   { "clear", luaLcdClear },
   { "drawPoint", luaLcdDrawPoint },
   { "drawLine", luaLcdDrawLine },

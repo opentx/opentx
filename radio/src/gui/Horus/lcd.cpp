@@ -480,21 +480,17 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
     }
     lcdDrawText(x, y, s, att);
   }
-
   else if (idx <= MIXSRC_LAST_LUA) {
+#if defined(LUA_MODEL_SCRIPTS)
     div_t qr = div(idx-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
-#if defined(LUA_MODEL_SCRIPTS) && !defined(COLORLCD)
     if (qr.quot < MAX_SCRIPTS && qr.rem < scriptInputsOutputs[qr.quot].outputsCount) {
-      lcdDrawChar(x+2, y+1, '1'+qr.quot, TINSIZE);
-      lcdDrawSolidFilledRect(x, y, 7, 7);
-      lcdDrawSizedText(x+8, y, scriptInputsOutputs[qr.quot].outputs[qr.rem].name, att & STREXPANDED ? 9 : 4, att);
+      char s[32] = "\322";
+      s[1] = '1'+qr.quot;
+      strncpy(&s[2], scriptInputsOutputs[qr.quot].outputs[qr.rem].name, 32-2);
+      s[31] = '\0';
+      lcdDrawText(x, y, s, att);
     }
-    else
 #endif
-    {
-      putsStrIdx(x, y, "LUA", qr.quot+1, att);
-      lcdDrawChar(x+20, y, 'a'+qr.rem, att);
-    }
   }
   else if (idx <= MIXSRC_LAST_POT) {
     idx = idx-MIXSRC_Rud;
@@ -533,8 +529,9 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
   else {
     idx -= MIXSRC_FIRST_TELEM;
     div_t qr = div(idx, 3);
-    char s[sizeof(g_model.telemetrySensors[qr.quot].label)+2];
-    int pos = zchar2str(s, g_model.telemetrySensors[qr.quot].label, sizeof(g_model.telemetrySensors[qr.quot].label));
+    char s[32];
+    s[0] = '\321';
+    int pos = 1 + zchar2str(&s[1], g_model.telemetrySensors[qr.quot].label, sizeof(g_model.telemetrySensors[qr.quot].label));
     if (qr.rem) s[pos++] = (qr.rem==2 ? '+' : '-');
     s[pos] = '\0';
     lcdDrawText(x, y, s, att);
