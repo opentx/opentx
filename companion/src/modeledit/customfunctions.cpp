@@ -196,8 +196,9 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   lock = false;
 
   update();
-  tableLayout->getTableWidget()->resizeColumnsToContents();
-  tableLayout->getTableWidget()->setColumnWidth(3, 300);
+  tableLayout->resizeColumnsToContents();
+  tableLayout->setColumnWidth(3, 300);
+  tableLayout->pushRowsUp(num_fsw+1);
 }
 
 
