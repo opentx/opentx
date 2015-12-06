@@ -39,11 +39,14 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout *tableLayout, int row,
   }
   
   spinbox->setSingleStep(displayStep*internalStep);
+  spinbox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
   QHBoxLayout * horizontalLayout = new QHBoxLayout();
   QCheckBox * gv = new QCheckBox(QObject::tr("GV"));
+  gv->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   horizontalLayout->addWidget(gv);
   QComboBox * cb = new QComboBox();
+  cb->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   horizontalLayout->addWidget(cb);
   horizontalLayout->addWidget(spinbox);
   tableLayout->addLayout(row, col, horizontalLayout);
