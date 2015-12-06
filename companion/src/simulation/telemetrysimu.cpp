@@ -149,6 +149,7 @@ void TelemetrySimulator::showEvent(QShowEvent *event)
 {
 
   ui->rxbt_inst->setText(QString::number(simulator->getSensorInstance(BATT_ID)));
+  ui->rxbt_ratio->setValue(simulator->getSensorRatio(ADC1_ID) / 10.0);
   ui->rssi_inst->setText(QString::number(simulator->getSensorInstance(RSSI_ID)));
   ui->swr_inst->setText(QString::number(simulator->getSensorInstance(SWR_ID)));
   ui->a1_inst->setText(QString::number(simulator->getSensorInstance(ADC1_ID)));
@@ -222,7 +223,7 @@ void TelemetrySimulator::generateTelemetryFrame()
 
     case 1:
       if (ui->rxbt->text().length()) {
-        generateSportPacket(buffer, ui->rxbt_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, BATT_ID, LIMIT<uint32_t>(0, ui->rxbt->value() * 19.39, 0xFFFFFFFF));
+        generateSportPacket(buffer, ui->rxbt_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, BATT_ID, LIMIT<uint32_t>(0, ui->rxbt->value() * 255.0 / ui->rxbt_ratio->value(), 0xFFFFFFFF));
       }
       break;
 
