@@ -43,8 +43,7 @@ void RepeatComboBox::update()
 
 CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware):
   GenericPanel(parent, model, generalSettings, firmware),
-  functions(model ? model->customFn : generalSettings.customFn),
-  initialized(false)
+  functions(model ? model->customFn : generalSettings.customFn)
 #if defined(PHONON)
   ,
   phononCurrent(-1),
@@ -52,6 +51,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   clickOutput(NULL)
 #endif
 {
+  Stopwatch s1("CustomFunctionsPanel - populate"); 
   lock = true;
   int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
 
@@ -67,6 +67,8 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     }
   }
 
+  s1.report("get tracks");
+
   if (IS_TARANIS(firmware->getBoard())) {
     scriptsSet = getFilesSet(g.profile[g.id()].sdPath() + "/SCRIPTS", QStringList() << "*.lua", firmware->getCapability(VoicesMaxLength));
     for (int i=0; i<num_fsw; i++) {
@@ -78,6 +80,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
       }
     }
   }
+  s1.report("get scripts");
 
   CompanionIcon playIcon("play.png");
 
@@ -98,21 +101,26 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(fsw_customContextMenuRequested(QPoint)));
     tableLayout->addWidget(i, 0, label);
+    // s1.report("label");
 
     // The switch
     fswtchSwtch[i] = new QComboBox(this);
     fswtchSwtch[i]->setProperty("index", i);
+    populateSwitchCB(fswtchSwtch[i], functions[i].swtch, generalSettings, model ? SpecialFunctionsContext : GlobalFunctionsContext);
     fswtchSwtch[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     fswtchSwtch[i]->setMaxVisibleItems(10);
     connect(fswtchSwtch[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     tableLayout->addWidget(i, 1, fswtchSwtch[i]);
+    // s1.report("switch");
 
     // The function
     fswtchFunc[i] = new QComboBox(this);
     fswtchFunc[i]->setProperty("index", i);
+    populateFuncCB(fswtchFunc[i], functions[i].func);
     fswtchFunc[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(fswtchFunc[i], SIGNAL(currentIndexChanged(int)), this, SLOT(functionEdited()));
     tableLayout->addWidget(i, 2, fswtchFunc[i]);
+    // s1.report("func");
 
     // The parameters
     QHBoxLayout * paramLayout = new QHBoxLayout();
@@ -120,6 +128,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
     fswtchGVmode[i] = new QComboBox(this);
     fswtchGVmode[i]->setProperty("index", i);
+    populateGVmodeCB(fswtchGVmode[i], functions[i].adjustMode);
     fswtchGVmode[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(fswtchGVmode[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     paramLayout->addWidget(fswtchGVmode[i]);
@@ -146,6 +155,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
     fswtchParamT[i] = new QComboBox(this);
     fswtchParamT[i]->setProperty("index", i);
+    populateFuncParamCB(fswtchParamT[i], functions[i].func, functions[i].param, functions[i].adjustMode);
     paramLayout->addWidget(fswtchParamT[i]);
     fswtchParamT[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(fswtchParamT[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
@@ -190,17 +200,21 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     repeatLayout->addWidget(fswtchEnable[i], i+1);
     connect(fswtchEnable[i], SIGNAL(stateChanged(int)), this, SLOT(customFunctionEdited()));
   }
+  s1.report("add items");
 
   disableMouseScrolling();
+  s1.report("disableMouseScrolling");
 
   lock = false;
 
   update();
+  s1.report("update");
   tableLayout->resizeColumnsToContents();
+  s1.report("resizeColumnsToContents");
   tableLayout->setColumnWidth(3, 300);
   tableLayout->pushRowsUp(num_fsw+1);
+  s1.report("end");
 }
-
 
 CustomFunctionsPanel::~CustomFunctionsPanel()
 {
@@ -522,15 +536,8 @@ void CustomFunctionsPanel::update()
   lock = true;
   int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
   for (int i=0; i<num_fsw; i++) {
-    if (!initialized) {
-      populateSwitchCB(fswtchSwtch[i], functions[i].swtch, generalSettings, model ? SpecialFunctionsContext : GlobalFunctionsContext);
-      populateFuncCB(fswtchFunc[i], functions[i].func);
-      populateGVmodeCB(fswtchGVmode[i], functions[i].adjustMode);
-      populateFuncParamCB(fswtchParamT[i], functions[i].func, functions[i].param, functions[i].adjustMode);
-    }
     refreshCustomFunction(i);
   }
-  initialized = true;
   lock = false;
 }
 

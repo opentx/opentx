@@ -11,6 +11,8 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
   ModelPanel(parent, model, generalSettings, firmware),
   selectedSwitch(0)
 {
+  Stopwatch s1("LogicalSwitchesPanel"); 
+
   int channelsMax = model.getChannelsMax(true);
 
   QStringList headerLabels;
@@ -20,6 +22,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
   }
   TableLayout * tableLayout = new TableLayout(this, firmware->getCapability(LogicalSwitches), headerLabels);
 
+  s1.report("header");
 
   lock = true;
   for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
@@ -123,11 +126,14 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     }
   }
 
+  s1.report("added elements");
+
   disableMouseScrolling();
   lock = false;
   update();
   tableLayout->resizeColumnsToContents();
   tableLayout->pushRowsUp(firmware->getCapability(LogicalSwitches)+1);
+  s1.report("end");
 }
 
 LogicalSwitchesPanel::~LogicalSwitchesPanel()

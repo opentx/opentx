@@ -12,6 +12,8 @@
 #include "simulatorinterface.h"
 #include "firmwareinterface.h"
 
+Stopwatch gStopwatch("global");
+
 const QColor colors[C9X_MAX_CURVES] = {
   QColor(0,0,127),
   QColor(0,127,0),
@@ -1009,7 +1011,6 @@ TableLayout::TableLayout(QWidget * parent, int rowCount, const QStringList & hea
   tableWidget->setColumnCount(headerLabels.size());
   tableWidget->setShowGrid(false);
   tableWidget->verticalHeader()->setVisible(false);
-  tableWidget->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
   tableWidget->setSelectionMode(QAbstractItemView::NoSelection);
   tableWidget->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
