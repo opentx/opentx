@@ -41,11 +41,13 @@
 #include "lua/lua_api.h"
 
 #if defined(PCBHORUS)
-#include "lua/lua_exports_horus.inc"   // this line must be after lua headers
+  #include "lua/lua_exports_horus.inc"   // this line must be after lua headers
 #elif defined(PCBFLAMENCO)
-#include "lua/lua_exports_flamenco.inc"
+  #include "lua/lua_exports_flamenco.inc"
+#elif defined(PCBTARANIS) && defined(REV9E)
+  #include "lua/lua_exports_taranis_x9e.inc"
 #elif defined(PCBTARANIS)
-#include "lua/lua_exports_taranis.inc"
+  #include "lua/lua_exports_taranis.inc"
 #endif
 
 #if defined(PCBTARANIS) && defined(REV9E)
@@ -336,7 +338,9 @@ Return detailed information about field (source)
 
 The list of valid sources is available:
 * for OpenTX 2.0.x at http://downloads-20.open-tx.org/firmware/lua_fields.txt
-* for OpenTX 2.1.x at http://downloads-21.open-tx.org/firmware/lua_fields.txt
+* for OpenTX 2.1.x at http://downloads-21.open-tx.org/firmware/lua_fields.txt (depreciated)
+* for OpenTX 2.1.x Taranis and Taranis Plus at http://downloads-21.open-tx.org/firmware/lua_fields_taranis.txt
+* for OpenTX 2.1.x Taranis X9E at http://downloads-21.open-tx.org/firmware/lua_fields_taranis_x9e.txt
 
 @param name (string) name of the field
 

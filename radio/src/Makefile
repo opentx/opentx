@@ -1042,7 +1042,11 @@ ifeq ($(PCB), TARANIS)
            $(LUADIR)/lobject.c $(LUADIR)/lopcodes.c $(LUADIR)/lparser.c $(LUADIR)/lstate.c $(LUADIR)/lstring.c $(LUADIR)/ltable.c $(LUADIR)/lrotable.c $(LUADIR)/ltm.c $(LUADIR)/lundump.c $(LUADIR)/lvm.c $(LUADIR)/lzio.c \
            $(LUADIR)/lbaselib.c $(LUADIR)/linit.c $(LUADIR)/lmathlib.c $(LUADIR)/lbitlib.c $(LUADIR)/loadlib.c $(LUADIR)/lauxlib.c $(LUADIR)/ltablib.c $(LUADIR)/lcorolib.c $(LUADIR)/liolib.c $(LUADIR)/lstrlib.c
     SRC += $(LUASRC)
+    ifeq ($(PCBREV), REV9E) 
+      LUADEP = lua/lua_exports_taranis_x9e.inc
+    else
     LUADEP = lua/lua_exports_taranis.inc
+    endif
 	ifeq ($(USE_BIN_ALLOCATOR), YES)
 	  CPPDEFS += -DUSE_BIN_ALLOCATOR
 	  CPPSRC += bin_allocator.cpp
@@ -1290,7 +1294,7 @@ ifeq ($(PCB), HORUS)
     endif
     CPPDEFS += -DLUA
     INCDIRS += $(LUADIR)
-	CPPSRC += lua/interface.cpp lua/api_general.cpp lua/api_lcd.cpp lua/api_model.cpp
+	  CPPSRC += lua/interface.cpp lua/api_general.cpp lua/api_lcd.cpp lua/api_model.cpp
     LUASRC = $(LUADIR)/lapi.c $(LUADIR)/lcode.c $(LUADIR)/lctype.c $(LUADIR)/ldebug.c $(LUADIR)/ldo.c $(LUADIR)/ldump.c $(LUADIR)/lfunc.c $(LUADIR)/lgc.c $(LUADIR)/llex.c $(LUADIR)/lmem.c \
            $(LUADIR)/lobject.c $(LUADIR)/lopcodes.c $(LUADIR)/lparser.c $(LUADIR)/lstate.c $(LUADIR)/lstring.c $(LUADIR)/ltable.c $(LUADIR)/lrotable.c $(LUADIR)/ltm.c $(LUADIR)/lundump.c $(LUADIR)/lvm.c $(LUADIR)/lzio.c \
            $(LUADIR)/lbaselib.c $(LUADIR)/linit.c $(LUADIR)/lmathlib.c $(LUADIR)/lbitlib.c $(LUADIR)/loadlib.c $(LUADIR)/lauxlib.c $(LUADIR)/ltablib.c $(LUADIR)/lcorolib.c $(LUADIR)/liolib.c
@@ -1755,7 +1759,7 @@ ifeq ($(ARCH), AVR)
 else ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X TARANIS))
   build: stamp.h tra lbm bootloader.lbm $(LUADEP) allsrc.cpp elf remallsrc bin
 else
-  build: stamp.h tra lbm allsrc.cpp elf remallsrc bin
+  build: stamp.h tra lbm $(LUADEP) allsrc.cpp elf remallsrc bin
 endif
 
 # build bootloader
@@ -1944,25 +1948,32 @@ else
 endif
 
 lua/lua_exports_taranis.inc: myeeprom.h ../util/luaexport.py
-	@echo "Generating a list of Lua exported constants in lua_exports_taranis.txt"
-	@$(PARSER) -DEXPORT $(CPPDEFS) myeeprom.h | grep LEXP > lua_exports_taranis.txt
+	@echo "Generating a list of Lua exported constants in lua/lua_exports_taranis.txt"
+	@$(PARSER) -DEXPORT -DPCBTARANIS -DLUA myeeprom.h | grep LEXP > lua/lua_exports_taranis.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_taranis.inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports_taranis.txt lua/lua_exports_taranis.inc lua_fields_taranis.txt
-	@rm lua_exports_taranis.txt
+	@$(PYTHON) ../util/luaexport.py $(VERSION) lua/lua_exports_taranis.txt lua/lua_exports_taranis.inc lua/lua_fields_taranis.txt
+	@rm lua/lua_exports_taranis.txt
+
+lua/lua_exports_taranis_x9e.inc: myeeprom.h ../util/luaexport.py
+	@echo "Generating a list of Lua exported constants in lua/lua_exports_taranis_x9e.txt"
+	@$(PARSER) -DEXPORT -DPCBTARANIS -DREVPLUS -DREV9E -DLUA myeeprom.h | grep LEXP > lua/lua_exports_taranis_x9e.txt
+	@echo "Parsing and generating C Lua exports in lua/lua_exports_taranis_x9e.inc"
+	@$(PYTHON) ../util/luaexport.py $(VERSION) lua/lua_exports_taranis_x9e.txt lua/lua_exports_taranis_x9e.inc lua/lua_fields_taranis_x9e.txt
+	@rm lua/lua_exports_taranis_x9e.txt
 
 lua/lua_exports_horus.inc: myeeprom.h ../util/luaexport.py
-	@echo "Generating a list of Lua exported constants in lua_exports_horus.txt" 
-	@$(PARSER) -DEXPORT $(CPPDEFS) myeeprom.h | grep LEXP > lua_exports_horus.txt
+	@echo "Generating a list of Lua exported constants in lua/lua_exports_horus.txt" 
+	@$(PARSER) -DEXPORT -DPCBHORUS -DLUA myeeprom.h | grep LEXP > lua/lua_exports_horus.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_horus.inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports_horus.txt lua/lua_exports_horus.inc lua_fields_horus.txt
-	@rm lua_exports_horus.txt
+	@$(PYTHON) ../util/luaexport.py $(VERSION) lua/lua_exports_horus.txt lua/lua_exports_horus.inc lua/lua_fields_horus.txt
+	@rm lua/lua_exports_horus.txt
 
 lua/lua_exports_flamenco.inc: myeeprom.h ../util/luaexport.py
-	@echo "Generating a list of Lua exported constants in lua_exports_flamenco.txt" 
-	@$(PARSER) -DEXPORT $(CPPDEFS) myeeprom.h | grep LEXP > lua_exports_flamenco.txt
+	@echo "Generating a list of Lua exported constants in lua/lua_exports_flamenco.txt" 
+	@$(PARSER) -DEXPORT -DPCBFLAMENCO -DLUA myeeprom.h | grep LEXP > lua/lua_exports_flamenco.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_flamenco.inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports_flamenco.txt lua/lua_exports_flamenco.inc lua_fields_flamenco.txt
-	@rm lua_exports_flamenco.txt
+	@$(PYTHON) ../util/luaexport.py $(VERSION) lua/lua_exports_flamenco.txt lua/lua_exports_flamenco.inc lua/lua_fields_flamenco.txt
+	@rm lua/lua_exports_flamenco.txt
 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on
@@ -2122,7 +2133,7 @@ clean_list :
 	$(REMOVE) bitmaps/*/*.lbm
 	$(REMOVE) fonts/*/*.lbm
 	$(REMOVE) translations/*.h
-	$(REMOVE) lua_exports*.txt lua_fields*.txt lua/lua_exports*.inc
+	$(REMOVE) lua/lua_exports*.txt lua/lua_fields*.txt lua/lua_exports*.inc
 	$(MAKE) -C targets/Taranis/bootloader clean
 
 #### Install

@@ -36,7 +36,7 @@ macro(add_truetype_font_target radio name font size)
     COMMAND ../util/font2png.py ${font} ${size} False ${target}
     WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
   )
-  add_custom_target(ttf_${radio}_${name})
+  add_custom_target(ttf_${radio}_${name} DEPENDS ${target}.png ${target}.specs)
 endmacro(add_truetype_font_target)
 
 add_truetype_font_target(Horus tinsize "DejaVu Sans" 9)
@@ -75,18 +75,18 @@ GIT_ID(GIT_STR)
 configure_file(${RADIO_SRC_DIRECTORY}/stamp.h.in ${RADIO_SRC_DIRECTORY}/stamp.h @ONLY)
 
 macro(add_lua_export_target target)
-  string(TOUPPER ${target} pcbdefine)
   add_custom_command(
     OUTPUT ${RADIO_SRC_DIRECTORY}/lua/lua_exports_${target}.inc
-    COMMAND ${CMAKE_C_COMPILER} -E -DPCB${pcbdefine} -DCPUARM -DCPUSTM32 -DLUA -DEXPORT ${INTTYPES_INCLUDE_OPTION} myeeprom.h | grep LEXP > lua/lua_exports_${target}.txt
+    COMMAND ${CMAKE_C_COMPILER} -E ${ARGN} -DEXPORT ${INTTYPES_INCLUDE_OPTION} myeeprom.h | grep LEXP > lua/lua_exports_${target}.txt
     COMMAND python ../util/luaexport.py ${VERSION} lua/lua_exports_${target}.txt lua/lua_exports_${target}.inc lua/lua_fields_${target}.txt
     WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
   )
   add_custom_target(lua_export_${target} DEPENDS ${RADIO_SRC_DIRECTORY}/lua/lua_exports_${target}.inc)
 endmacro(add_lua_export_target)
 
-add_lua_export_target(taranis)
-add_lua_export_target(horus)
+add_lua_export_target(taranis -DPCBTARANIS -DLUA)
+add_lua_export_target(taranis_x9e -DPCBTARANIS -DREVPLUS -DREV9E -DLUA)
+add_lua_export_target(horus -DPCBHORUS -DLUA)
 
 set(OPENTX_SRC_FILES
   opentxsimulator.cpp
@@ -159,10 +159,10 @@ add_dependencies(opentx-mega2560${SUFFIX}-simulator ${dependencies_9x})
 add_dependencies(opentx-sky9x${SUFFIX}-simulator ${dependencies_9x})
 add_dependencies(opentx-9xrpro${SUFFIX}-simulator ${dependencies_9x})
 add_dependencies(opentx-ar9x${SUFFIX}-simulator ${dependencies_9x})
-set(dependencies_taranis lbm_taranis_bitmaps lua_export_taranis firmware_translations stamp)
-add_dependencies(opentx-taranis${SUFFIX}-simulator ${dependencies_taranis})
-add_dependencies(opentx-taranisplus${SUFFIX}-simulator ${dependencies_taranis})
-add_dependencies(opentx-taranisx9e${SUFFIX}-simulator ${dependencies_taranis})
+set(dependencies_taranis lbm_taranis_bitmaps firmware_translations stamp)
+add_dependencies(opentx-taranis${SUFFIX}-simulator ${dependencies_taranis} lua_export_taranis)
+add_dependencies(opentx-taranisplus${SUFFIX}-simulator ${dependencies_taranis} lua_export_taranis)
+add_dependencies(opentx-taranisx9e${SUFFIX}-simulator ${dependencies_taranis} lua_export_taranis_x9e)
 
 add_dependencies(opentx-horus${SUFFIX}-simulator lbm_horus_bitmaps lbm_horus_fonts firmware_translations lua_export_horus)
 
