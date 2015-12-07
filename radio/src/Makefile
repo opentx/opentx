@@ -388,17 +388,10 @@ LUA_COMPILER = NO
 # Define programs and commands.
 SHELL = sh
 
-# Make sure python is Python 2
-ifeq ($(findstring Python 2,$(shell python --version 2>&1)), Python 2)
-  PYTHON := python
-else
-  PYTHON := python2
-endif
-
-IMG2LBM = -$(PYTHON) ../util/img2lbm.py
-BIN2LBM = -$(PYTHON) ../util/bin2lbm.py
-FONT2PNG = -$(PYTHON) ../util/font2png.py
-TRANSLATE = -$(PYTHON) ../util/translate.py
+IMG2LBM = -python ../util/img2lbm.py
+BIN2LBM = -python ../util/bin2lbm.py
+FONT2PNG = -python ../util/font2png.py
+TRANSLATE = -python ../util/translate.py
 
 VERSION_MAJOR = 2
 VERSION_MINOR = 1
@@ -1653,7 +1646,7 @@ bitmaps/Taranis/%.lbm: bitmaps/Taranis/%.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE) 4bits
 
 bitmaps/Taranis/mainmenu.png: ../util/taranisicons.py $(wildcard bitmaps/Taranis/std/*.png)
-	@$(PYTHON) ../util/taranisicons.py
+	@python ../util/taranisicons.py
 
 ifeq ($(OS),Windows_NT)
   PARSER = avr-cpp
@@ -1672,7 +1665,7 @@ lua_exports_taranis_x9e.inc: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua_exports_taranis_x9e.txt"
 	@$(PARSER) -DEXPORT -DPCBTARANIS -DREVPLUS -DREV9E -DLUA myeeprom.h | grep LEXP > lua_exports_taranis_x9e.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_taranis_x9e.inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports_taranis_x9e.txt lua/lua_exports_taranis_x9e.inc lua_fields_taranis_x9e.txt
+	@python ../util/luaexport.py $(VERSION) lua_exports_taranis_x9e.txt lua/lua_exports_taranis_x9e.inc lua_fields_taranis_x9e.txt
 	@rm lua_exports_taranis_x9e.txt
 
 # Eye candy.
