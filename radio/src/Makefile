@@ -388,21 +388,14 @@ LUA_COMPILER = NO
 # Define programs and commands.
 SHELL = sh
 
-# Make sure python is Python 2
-ifeq ($(findstring Python 2,$(shell python --version 2>&1)), Python 2)
-  PYTHON := python
-else
-  PYTHON := python2
-endif
-
-IMG2LBM = -$(PYTHON) ../util/img2lbm.py
-BIN2LBM = -$(PYTHON) ../util/bin2lbm.py
+IMG2LBM = -python ../util/img2lbm.py
+BIN2LBM = -python ../util/bin2lbm.py
 ifeq ($(OS), Windows_NT)
-  FONT2PNG = -$(PYTHON) ../util/font2png.py
+  FONT2PNG = -python ../util/font2png.py
 else
-  FONT2PNG = -xvfb-run --server-args="-screen 0 1024x768x24" $(PYTHON) ../util/font2png.py
+  FONT2PNG = -xvfb-run --server-args="-screen 0 1024x768x24" python ../util/font2png.py
 endif
-TRANSLATE = -$(PYTHON) ../util/translate.py
+TRANSLATE = -python ../util/translate.py
 
 VERSION_MAJOR = 2
 VERSION_MINOR = 2
@@ -1953,28 +1946,28 @@ lua/lua_exports_taranis.inc: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua/lua_exports_taranis.txt"
 	@$(PARSER) -DEXPORT -DPCBTARANIS -DLUA -DVIRTUALINPUTS myeeprom.h | grep LEXP > lua/lua_exports_taranis.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_taranis.inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua/lua_exports_taranis.txt lua/lua_exports_taranis.inc lua/lua_fields_taranis.txt
+	@python ../util/luaexport.py $(VERSION) lua/lua_exports_taranis.txt lua/lua_exports_taranis.inc lua/lua_fields_taranis.txt
 	@rm lua/lua_exports_taranis.txt
 
 lua/lua_exports_taranis_x9e.inc: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua/lua_exports_taranis_x9e.txt"
 	@$(PARSER) -DEXPORT -DPCBTARANIS -DREVPLUS -DREV9E -DLUA -DVIRTUALINPUTS myeeprom.h | grep LEXP > lua/lua_exports_taranis_x9e.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_taranis_x9e.inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua/lua_exports_taranis_x9e.txt lua/lua_exports_taranis_x9e.inc lua/lua_fields_taranis_x9e.txt
+	@python ../util/luaexport.py $(VERSION) lua/lua_exports_taranis_x9e.txt lua/lua_exports_taranis_x9e.inc lua/lua_fields_taranis_x9e.txt
 	@rm lua/lua_exports_taranis_x9e.txt
 
 lua/lua_exports_horus.inc: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua/lua_exports_horus.txt" 
 	@$(PARSER) -DEXPORT -DPCBHORUS -DLUA -DVIRTUALINPUTS myeeprom.h | grep LEXP > lua/lua_exports_horus.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_horus.inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua/lua_exports_horus.txt lua/lua_exports_horus.inc lua/lua_fields_horus.txt
+	@python ../util/luaexport.py $(VERSION) lua/lua_exports_horus.txt lua/lua_exports_horus.inc lua/lua_fields_horus.txt
 	@rm lua/lua_exports_horus.txt
 
 lua/lua_exports_flamenco.inc: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua/lua_exports_flamenco.txt" 
 	@$(PARSER) -DEXPORT -DPCBFLAMENCO -DLUA -DVIRTUALINPUTS myeeprom.h | grep LEXP > lua/lua_exports_flamenco.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_flamenco.inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua/lua_exports_flamenco.txt lua/lua_exports_flamenco.inc lua/lua_fields_flamenco.txt
+	@python ../util/luaexport.py $(VERSION) lua/lua_exports_flamenco.txt lua/lua_exports_flamenco.inc lua/lua_fields_flamenco.txt
 	@rm lua/lua_exports_flamenco.txt
 
 # Eye candy.
