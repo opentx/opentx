@@ -84,7 +84,7 @@ class TelemetrySimulator : public QDialog
       Ui::TelemetrySimulator * ui;
       struct DATA_TO_FUNC_XREF {
         CONVERT_TYPE functionIndex;
-        uint32_t dataIndex;
+        int32_t dataIndex;
       };
       QStringList csvRecords; // contents of the log file (one string per line);
       QStringList columnNames;
@@ -92,11 +92,12 @@ class TelemetrySimulator : public QDialog
       int32_t recordIndex;
       double convertFeetToMeters(QString input);
       double convertFahrenheitToCelsius(QString input);
-      QString convertLogDate(QString input);
+      QString convertGPSDate(QString input);
       QString convertGPS(QString input);
       void addColumnHash(QString key, CONVERT_TYPE functionIndex);
       double convertDegMin(QString input);
       bool stepping;
+      QDateTime parseTransmittterTimestamp(QString row);
       void calcLogFrequency();
       int32_t replayRate;
     };
@@ -119,7 +120,6 @@ private:
     void onStepForward();
     void onStepBack();
     void onStop();
-    void onPositionIndicatorReleased();
     void onPositionIndicatorChanged(int value);
     void onReplayRateChanged(int value);
 

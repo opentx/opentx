@@ -29,7 +29,6 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
   connect(ui->stepForward, SIGNAL(clicked()), this, SLOT(onStepForward()));
   connect(ui->stepBack, SIGNAL(clicked()), this, SLOT(onStepBack()));
   connect(ui->stop, SIGNAL(clicked()), this, SLOT(onStop()));
-  connect(ui->positionIndicator, SIGNAL(sliderReleased()), this, SLOT(onPositionIndicatorReleased()));
   connect(ui->positionIndicator, SIGNAL(valueChanged(int)), this, SLOT(onPositionIndicatorChanged(int)));
   connect(ui->replayRate, SIGNAL(valueChanged(int)), this, SLOT(onReplayRateChanged(int)));
 
@@ -39,6 +38,10 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
   ui->A4->setSpecialValueText(" ");
   ui->rpm->setSpecialValueText(" ");
   ui->fuel->setSpecialValueText(" ");
+
+  ui->rxbt_ratio->setEnabled(false);
+  ui->A1_ratio->setEnabled(false);
+  ui->A2_ratio->setEnabled(false);
 
   logPlayback = new LogPlaybackController(ui);
 }
@@ -74,6 +77,7 @@ void TelemetrySimulator::onTimerEvent()
 
 void TelemetrySimulator::onLoadLogFile()
 {
+  onStop(); // in case we are in playback mode
   logPlayback->loadLogFile();
 }
 
@@ -117,17 +121,11 @@ void TelemetrySimulator::onStop()
   }
 }
 
-void TelemetrySimulator::onPositionIndicatorReleased()
-{
-  if (logPlayback->isReady()) {
-    logPlayback->setUiDataValues();
-  }
-}
-
 void TelemetrySimulator::onPositionIndicatorChanged(int value)
 {
   if (logPlayback->isReady()) {
     logPlayback->updatePositionLabel(value);
+    logPlayback->setUiDataValues();
   }
 }
 
@@ -606,33 +604,40 @@ TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySi
   // ACCX Y and Z
 }
 
+QDateTime TelemetrySimulator::LogPlaybackController::parseTransmittterTimestamp(QString row)
+{
+  QStringList rowParts = row.simplified().split(',');
+  if (rowParts.size() < 2) {
+    return QDateTime();
+  }
+  QString datePart = rowParts[0];
+  QString timePart = rowParts[1];
+  QDateTime result;
+  QString format("yyyy-MM-dd hh:mm:ss.zzz"); // assume this format
+  // hour can be 'missing'
+  if (timePart.count(":") < 2) {
+    timePart = "00:" + timePart;
+  }
+  if (datePart.contains("/")) {
+    format = "MM/dd/yyyy hh:mm:ss.z";
+  }
+  return QDateTime::fromString(datePart + " " + timePart, format);
+}
+
 void TelemetrySimulator::LogPlaybackController::calcLogFrequency()
 {
   // examine up to 20 rows to determine log frequency in seconds
   logFrequency = 25.5; // default value
-  double lastTotalMinutes = -3600;
+  QDateTime lastTime;
   for (int i = 1; (i < 20) && (i < csvRecords.count()); i++)
   {
-    double hours;
-    double minutes;
-    switch (csvRecords[i].split(',')[1].split(':').count()) {
-      case 2:
-        hours = csvRecords[i].split(',')[1].split(':')[0].toDouble();
-        minutes = csvRecords[i].split(',')[1].split(':')[1].toDouble();
-        break;
-      case 3:
-        hours = csvRecords[i].split(',')[1].split(':')[1].toDouble();
-        minutes = csvRecords[i].split(',')[1].split(':')[2].toDouble();
-        break;
-      default:
-        hours = minutes = 0;
+    QDateTime logTime = parseTransmittterTimestamp(csvRecords[i]);
+    // ugh - no timespan in this Qt version
+    double timeDiff = (logTime.toMSecsSinceEpoch() - lastTime.toMSecsSinceEpoch()) / 1000.0;
+    if ((timeDiff > 0) && (timeDiff < logFrequency)) {
+      logFrequency = timeDiff;
     }
-    double totalMinutes = (hours * 60) + minutes;
-    double newFrequency = totalMinutes - lastTotalMinutes;
-    if ((newFrequency > 0) && (newFrequency < logFrequency)) {
-      logFrequency = newFrequency;
-    }
-    lastTotalMinutes = totalMinutes;
+    lastTime = logTime;
   }
 }
 
@@ -651,7 +656,10 @@ void TelemetrySimulator::LogPlaybackController::loadLogFile()
   ui->stop->setEnabled(false);
   ui->positionIndicator->setEnabled(false);
   ui->replayRate->setEnabled(false);
-  ui->positionLabel->setText("Row 0 of 0");
+  ui->positionLabel->setText("Row #\nTimestamp");
+
+  // clear existing data
+  csvRecords.clear();
 
   QString logFileNameAndPath = QFileDialog::getOpenFileName(NULL, tr("Log File"), ".", tr("LOG Files (*.csv)"));
   QFileInfo fileInfo(logFileNameAndPath);
@@ -660,7 +668,6 @@ void TelemetrySimulator::LogPlaybackController::loadLogFile()
     ui->logFileLabel->setText(tr("ERROR - invalid file"));
     return;
   }
-  csvRecords.clear();
   while (!file.atEnd()) {
     QByteArray line = file.readLine();
     csvRecords.append(line.simplified());
@@ -759,7 +766,7 @@ double TelemetrySimulator::LogPlaybackController::convertFeetToMeters(QString in
   return qFloor(meters100 + .005);
 }
 
-QString TelemetrySimulator::LogPlaybackController::convertLogDate(QString input)
+QString TelemetrySimulator::LogPlaybackController::convertGPSDate(QString input)
 {
   QStringList dateTime = input.simplified().split(' ');
   if (dateTime.size() < 2) {
@@ -800,14 +807,20 @@ QString TelemetrySimulator::LogPlaybackController::convertGPS(QString input)
 void TelemetrySimulator::LogPlaybackController::updatePositionLabel(int32_t percentage)
 {
   if ((percentage > 0) && (!stepping)) {
-    recordIndex = qFloor(csvRecords.count() * percentage / 100);
+    recordIndex = qFloor((double)csvRecords.count() / 100.0 * percentage);
     if (recordIndex == 0) {
       recordIndex = 1; // record 0 is column labels
     }
   }
-  ui->positionLabel->setText("Row " + QString::number(recordIndex) + " of " + QString::number(csvRecords.count() - 1));
-  uint32_t posPercent = (recordIndex / (double)(csvRecords.count() - 1)) * 100;
-  ui->positionIndicator->setValue(posPercent);
+  // format the transmitter date info
+  QDateTime transmitterTimestamp = parseTransmittterTimestamp(csvRecords[recordIndex]);
+  QString format("yyyy-MM-dd hh:mm:ss.z");
+  ui->positionLabel->setText("Row " + QString::number(recordIndex) + " of " + QString::number(csvRecords.count() - 1)
+              + "\n" + transmitterTimestamp.toString(format));
+  if (percentage < 0) { // did we step past a threshold?
+    uint32_t posPercent = (recordIndex / (double)(csvRecords.count() - 1)) * 100;
+    ui->positionIndicator->setValue(posPercent);
+  }
 }
 
 double TelemetrySimulator::LogPlaybackController::convertFahrenheitToCelsius(QString input)
@@ -819,7 +832,8 @@ void TelemetrySimulator::LogPlaybackController::setUiDataValues()
 {
   QStringList columnData = csvRecords[recordIndex].split(',');
   Q_FOREACH(DATA_TO_FUNC_XREF info, supportedCols) {
-    switch (info.functionIndex) {
+    if (info.dataIndex < columnData.size()) {
+      switch (info.functionIndex) {
       case RXBT_V:
         ui->rxbt->setValue(columnData[info.dataIndex].toDouble());
         break;
@@ -905,7 +919,7 @@ void TelemetrySimulator::LogPlaybackController::setUiDataValues()
         ui->gps_course->setValue(columnData[info.dataIndex].toDouble());
         break;
       case GDATE:
-        ui->gps_time->setText(convertLogDate(columnData[info.dataIndex]));
+        ui->gps_time->setText(convertGPSDate(columnData[info.dataIndex]));
         break;
       case G_LATLON:
         ui->gps_latlon->setText(convertGPS(columnData[info.dataIndex]));
@@ -919,6 +933,10 @@ void TelemetrySimulator::LogPlaybackController::setUiDataValues()
       case ACCZ:
         ui->accz->setValue(columnData[info.dataIndex].toDouble());
         break;
+      }
+    }
+    else {
+      // file is corrupt - shut down with open logs, or log format changed mid-day
     }
   }
 }

@@ -6,9 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>944</width>
-    <height>594</height>
+    <width>759</width>
+    <height>539</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>Telemetry Simulator</string>
@@ -37,20 +42,28 @@
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>120</x>
      <y>10</y>
-     <width>571</width>
+     <width>621</width>
      <height>111</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>8</pointsize>
+    </font>
    </property>
    <property name="title">
     <string>Replay SD Log File</string>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+   </property>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>30</y>
+      <x>410</x>
+      <y>10</y>
       <width>201</width>
       <height>33</height>
      </rect>
@@ -225,6 +238,11 @@
       <height>21</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
     <property name="text">
      <string>No Log File Currently Loaded</string>
     </property>
@@ -241,6 +259,9 @@
     <property name="text">
      <string>Load</string>
     </property>
+    <property name="autoDefault">
+     <bool>false</bool>
+    </property>
    </widget>
    <widget class="QScrollBar" name="positionIndicator">
     <property name="enabled">
@@ -248,8 +269,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>70</y>
+      <x>410</x>
+      <y>50</y>
       <width>201</width>
       <height>16</height>
      </rect>
@@ -292,6 +313,11 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
     <property name="text">
      <string>Replay rate (1/5 -&gt; 5x)</string>
     </property>
@@ -302,17 +328,23 @@
    <widget class="QLabel" name="positionLabel">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>90</y>
+      <x>410</x>
+      <y>70</y>
       <width>191</width>
-      <height>20</height>
+      <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
     </property>
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>Row #</string>
+     <string>Row # 
+Timestamp</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -322,102 +354,31 @@
   <widget class="QWidget" name="layoutWidget1">
    <property name="geometry">
     <rect>
-     <x>12</x>
-     <y>128</y>
-     <width>921</width>
-     <height>448</height>
+     <x>10</x>
+     <y>130</y>
+     <width>741</width>
+     <height>401</height>
     </rect>
    </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="3" column="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <widget class="QDoubleSpinBox" name="A1">
-        <property name="decimals">
-         <number>2</number>
-        </property>
-        <property name="maximum">
-         <double>16777215.000000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>0.100000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QDoubleSpinBox" name="A1_ratio">
-        <property name="decimals">
-         <number>2</number>
-        </property>
-        <property name="maximum">
-         <double>16777215.000000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>0.100000000000000</double>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="3" column="3">
-     <widget class="QLabel" name="label_43">
-      <property name="text">
-       <string>V / ratio</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="6">
-     <widget class="QDoubleSpinBox" name="cell4">
-      <property name="singleStep">
-       <double>0.100000000000000</double>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="7">
-     <widget class="QDoubleSpinBox" name="cell5">
-      <property name="singleStep">
-       <double>0.100000000000000</double>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QSpinBox" name="Swr">
-      <property name="value">
-       <number>30</number>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="4">
-     <widget class="QLabel" name="label_19">
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="text">
-       <string>Cels</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="5">
-     <widget class="QLineEdit" name="cells_inst"/>
-    </item>
+   <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <widget class="QLabel" name="label_28">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>RxBt</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="2">
-     <widget class="QSpinBox" name="A4">
-      <property name="maximum">
-       <number>16777215</number>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="6">
-     <widget class="QDoubleSpinBox" name="cell1">
-      <property name="singleStep">
-       <double>0.100000000000000</double>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="rxbt_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
       </property>
      </widget>
     </item>
@@ -425,6 +386,11 @@
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QDoubleSpinBox" name="rxbt">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
         <property name="decimals">
          <number>2</number>
         </property>
@@ -441,6 +407,11 @@
       </item>
       <item>
        <widget class="QDoubleSpinBox" name="rxbt_ratio">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
         <property name="decimals">
          <number>2</number>
         </property>
@@ -454,28 +425,49 @@
       </item>
      </layout>
     </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="rxbt_inst"/>
-    </item>
-    <item row="10" column="3">
-     <widget class="QLabel" name="label_47">
+    <item row="0" column="3">
+     <widget class="QLabel" name="label_41">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>%</string>
+       <string>V / ratio</string>
       </property>
      </widget>
     </item>
-    <item row="10" column="4">
-     <widget class="QLabel" name="label_13">
+    <item row="0" column="4">
+     <widget class="QLabel" name="label_17">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
       <property name="text">
-       <string>AccX</string>
+       <string>VFAS</string>
       </property>
      </widget>
     </item>
-    <item row="10" column="5">
-     <widget class="QLineEdit" name="accx_inst"/>
+    <item row="0" column="5">
+     <widget class="QLineEdit" name="fasv_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
     </item>
-    <item row="10" column="6" colspan="3">
-     <widget class="QDoubleSpinBox" name="accx">
+    <item row="0" column="6">
+     <widget class="QDoubleSpinBox" name="vfas">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="decimals">
        <number>2</number>
       </property>
@@ -490,30 +482,96 @@
       </property>
      </widget>
     </item>
-    <item row="10" column="9">
-     <widget class="QLabel" name="label_37">
+    <item row="0" column="7">
+     <widget class="QLabel" name="label_25">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>G</string>
+       <string>Volts</string>
       </property>
      </widget>
     </item>
-    <item row="11" column="0">
-     <widget class="QLabel" name="label_11">
+    <item row="1" column="0">
+     <widget class="QLabel" name="label">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>RSSI</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="rssi_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QSpinBox" name="Rssi">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="value">
+       <number>75</number>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="3">
+     <widget class="QLabel" name="label_42">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Db</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="4">
+     <widget class="QLabel" name="label_18">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="toolTip">
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
-       <string>VSpd</string>
+       <string>Curr</string>
       </property>
      </widget>
     </item>
-    <item row="11" column="1">
-     <widget class="QLineEdit" name="vvspd_inst"/>
+    <item row="1" column="5">
+     <widget class="QLineEdit" name="fasc_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
     </item>
-    <item row="11" column="2">
-     <widget class="QDoubleSpinBox" name="vspeed">
+    <item row="1" column="6">
+     <widget class="QDoubleSpinBox" name="curr">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="decimals">
-       <number>2</number>
+       <number>1</number>
       </property>
       <property name="minimum">
        <double>-16777215.000000000000000</double>
@@ -526,67 +584,266 @@
       </property>
      </widget>
     </item>
-    <item row="9" column="4">
-     <widget class="QLabel" name="label_24">
+    <item row="1" column="7">
+     <widget class="QLabel" name="label_29">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Amps</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>SWR</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="swr_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="QSpinBox" name="Swr">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="value">
+       <number>30</number>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="4">
+     <widget class="QLabel" name="label_19">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="toolTip">
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
-       <string>GPS</string>
+       <string>Cels</string>
       </property>
      </widget>
     </item>
-    <item row="9" column="5">
-     <widget class="QLineEdit" name="gpsll_inst"/>
+    <item row="2" column="5">
+     <widget class="QLineEdit" name="cells_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
     </item>
-    <item row="9" column="6" colspan="3">
-     <widget class="QLineEdit" name="gps_latlon"/>
+    <item row="2" column="6" rowspan="2">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QDoubleSpinBox" name="cell1">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QDoubleSpinBox" name="cell2">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QDoubleSpinBox" name="cell3">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QDoubleSpinBox" name="cell4">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QDoubleSpinBox" name="cell5">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QDoubleSpinBox" name="cell6">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
-    <item row="9" column="9">
-     <widget class="QLabel" name="label_36">
+    <item row="2" column="7">
+     <widget class="QLabel" name="label_31">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>Lat,Lon (dec.deg.)</string>
+       <string>Volts</string>
       </property>
      </widget>
     </item>
-    <item row="10" column="0">
-     <widget class="QLabel" name="label_10">
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>Fuel</string>
+       <string>A1</string>
       </property>
      </widget>
     </item>
-    <item row="10" column="1">
-     <widget class="QLineEdit" name="fuel_inst"/>
-    </item>
-    <item row="10" column="2">
-     <widget class="QSpinBox" name="fuel">
-      <property name="maximum">
-       <number>65535</number>
+    <item row="3" column="1">
+     <widget class="QLineEdit" name="a1_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
       </property>
      </widget>
     </item>
-    <item row="3" column="8">
-     <widget class="QDoubleSpinBox" name="cell6">
-      <property name="singleStep">
-       <double>0.100000000000000</double>
+    <item row="3" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QDoubleSpinBox" name="A1">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="decimals">
+         <number>2</number>
+        </property>
+        <property name="maximum">
+         <double>16777215.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QDoubleSpinBox" name="A1_ratio">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="decimals">
+         <number>2</number>
+        </property>
+        <property name="maximum">
+         <double>16777215.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="3" column="3">
+     <widget class="QLabel" name="label_43">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>V / ratio</string>
       </property>
      </widget>
     </item>
     <item row="4" column="0">
      <widget class="QLabel" name="label_4">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>A2</string>
       </property>
      </widget>
     </item>
     <item row="4" column="1">
-     <widget class="QLineEdit" name="a2_inst"/>
+     <widget class="QLineEdit" name="a2_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
     </item>
     <item row="4" column="2">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QDoubleSpinBox" name="A2">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
         <property name="decimals">
          <number>2</number>
         </property>
@@ -600,6 +857,11 @@
       </item>
       <item>
        <widget class="QDoubleSpinBox" name="A2_ratio">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
         <property name="decimals">
          <number>2</number>
         </property>
@@ -615,13 +877,260 @@
     </item>
     <item row="4" column="3">
      <widget class="QLabel" name="label_44">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>V / ratio</string>
       </property>
      </widget>
     </item>
+    <item row="4" column="4">
+     <widget class="QLabel" name="label_16">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>ASpd</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="5">
+     <widget class="QLineEdit" name="aspd_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="6">
+     <widget class="QDoubleSpinBox" name="aspeed">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="decimals">
+       <number>2</number>
+      </property>
+      <property name="minimum">
+       <double>-16777215.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>16777215.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="7">
+     <widget class="QLabel" name="label_32">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>KmH</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_6">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>A3</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QLineEdit" name="a3_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="2">
+     <widget class="QSpinBox" name="A3">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="maximum">
+       <number>16777215</number>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="4">
+     <widget class="QLabel" name="label_20">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>GAlt</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="5">
+     <widget class="QLineEdit" name="gpsa_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="6">
+     <widget class="QDoubleSpinBox" name="gps_alt">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="decimals">
+       <number>2</number>
+      </property>
+      <property name="minimum">
+       <double>-16777215.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>16777215.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="7">
+     <widget class="QLabel" name="label_33">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Meters</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_7">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>A4</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1">
+     <widget class="QLineEdit" name="a4_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="2">
+     <widget class="QSpinBox" name="A4">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="maximum">
+       <number>16777215</number>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="4">
+     <widget class="QLabel" name="label_21">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>GSpd</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="5">
+     <widget class="QLineEdit" name="gpss_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="6">
+     <widget class="QDoubleSpinBox" name="gps_speed">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>-16777215.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>16777215.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="7">
+     <widget class="QLabel" name="label_34">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>KmH</string>
+      </property>
+     </widget>
+    </item>
     <item row="7" column="0">
      <widget class="QLabel" name="label_8">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="toolTip">
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
@@ -631,10 +1140,21 @@
      </widget>
     </item>
     <item row="7" column="1">
-     <widget class="QLineEdit" name="t1_inst"/>
+     <widget class="QLineEdit" name="t1_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
     </item>
     <item row="7" column="2">
      <widget class="QSpinBox" name="T1">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="minimum">
        <number>-16777215</number>
       </property>
@@ -648,6 +1168,11 @@
     </item>
     <item row="7" column="3">
      <widget class="QLabel" name="label_45">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>Deg. C</string>
       </property>
@@ -655,6 +1180,11 @@
     </item>
     <item row="7" column="4">
      <widget class="QLabel" name="label_22">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="toolTip">
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
@@ -664,10 +1194,21 @@
      </widget>
     </item>
     <item row="7" column="5">
-     <widget class="QLineEdit" name="gpsc_inst"/>
+     <widget class="QLineEdit" name="gpsc_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
     </item>
-    <item row="7" column="6" colspan="3">
+    <item row="7" column="6">
      <widget class="QDoubleSpinBox" name="gps_course">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="decimals">
        <number>2</number>
       </property>
@@ -682,257 +1223,13 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="7">
-     <widget class="QDoubleSpinBox" name="cell2">
-      <property name="singleStep">
-       <double>0.100000000000000</double>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="8">
-     <widget class="QDoubleSpinBox" name="cell3">
-      <property name="singleStep">
-       <double>0.100000000000000</double>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="9">
-     <widget class="QLabel" name="label_31">
-      <property name="text">
-       <string>Volts</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>A1</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="a1_inst"/>
-    </item>
-    <item row="6" column="1">
-     <widget class="QLineEdit" name="a4_inst"/>
-    </item>
-    <item row="6" column="4">
-     <widget class="QLabel" name="label_21">
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="text">
-       <string>GSpd</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="5">
-     <widget class="QLineEdit" name="gpss_inst"/>
-    </item>
-    <item row="6" column="6" colspan="3">
-     <widget class="QDoubleSpinBox" name="gps_speed">
-      <property name="decimals">
-       <number>1</number>
-      </property>
-      <property name="minimum">
-       <double>-16777215.000000000000000</double>
-      </property>
-      <property name="maximum">
-       <double>16777215.000000000000000</double>
-      </property>
-      <property name="singleStep">
-       <double>0.100000000000000</double>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="9">
-     <widget class="QLabel" name="label_34">
-      <property name="text">
-       <string>KmH</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="5">
-     <widget class="QLineEdit" name="gpst_inst"/>
-    </item>
-    <item row="8" column="6" colspan="3">
-     <widget class="QLineEdit" name="gps_time"/>
-    </item>
-    <item row="8" column="9">
-     <widget class="QLabel" name="label_40">
-      <property name="text">
-       <string>dd-MM-yyyy hh:mm:ss</string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="0">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>RPM</string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="1">
-     <widget class="QLineEdit" name="rpm_inst"/>
-    </item>
-    <item row="9" column="2">
-     <widget class="QSpinBox" name="rpm">
-      <property name="maximum">
-       <number>65535</number>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="3">
-     <widget class="QLabel" name="label_50">
-      <property name="text">
-       <string>RPM</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="2">
-     <widget class="QSpinBox" name="A3">
-      <property name="maximum">
-       <number>16777215</number>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="4">
-     <widget class="QLabel" name="label_20">
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="text">
-       <string>GAlt</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="5">
-     <widget class="QLineEdit" name="gpsa_inst"/>
-    </item>
-    <item row="5" column="6" colspan="3">
-     <widget class="QDoubleSpinBox" name="gps_alt">
-      <property name="decimals">
-       <number>2</number>
-      </property>
-      <property name="minimum">
-       <double>-16777215.000000000000000</double>
-      </property>
-      <property name="maximum">
-       <double>16777215.000000000000000</double>
-      </property>
-      <property name="singleStep">
-       <double>0.100000000000000</double>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="9">
-     <widget class="QLabel" name="label_33">
-      <property name="text">
-       <string>Meters</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="0">
-     <widget class="QLabel" name="label_7">
-      <property name="text">
-       <string>A4</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="4">
-     <widget class="QLabel" name="label_18">
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="text">
-       <string>Curr</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="5">
-     <widget class="QLineEdit" name="fasc_inst"/>
-    </item>
-    <item row="1" column="6" colspan="3">
-     <widget class="QDoubleSpinBox" name="curr">
-      <property name="decimals">
-       <number>1</number>
-      </property>
-      <property name="minimum">
-       <double>-16777215.000000000000000</double>
-      </property>
-      <property name="maximum">
-       <double>16777215.000000000000000</double>
-      </property>
-      <property name="singleStep">
-       <double>0.100000000000000</double>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="9">
-     <widget class="QLabel" name="label_29">
-      <property name="text">
-       <string>Amps</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>SWR</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="swr_inst"/>
-    </item>
-    <item row="4" column="4">
-     <widget class="QLabel" name="label_16">
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="text">
-       <string>ASpd</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="5">
-     <widget class="QLineEdit" name="aspd_inst"/>
-    </item>
-    <item row="4" column="6" colspan="3">
-     <widget class="QDoubleSpinBox" name="aspeed">
-      <property name="decimals">
-       <number>2</number>
-      </property>
-      <property name="minimum">
-       <double>-16777215.000000000000000</double>
-      </property>
-      <property name="maximum">
-       <double>16777215.000000000000000</double>
-      </property>
-      <property name="singleStep">
-       <double>0.100000000000000</double>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="9">
-     <widget class="QLabel" name="label_32">
-      <property name="text">
-       <string>KmH</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLabel" name="label_6">
-      <property name="text">
-       <string>A3</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QLineEdit" name="a3_inst"/>
-    </item>
-    <item row="7" column="9">
+    <item row="7" column="7">
      <widget class="QLabel" name="label_35">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>Degrees</string>
       </property>
@@ -940,6 +1237,11 @@
     </item>
     <item row="8" column="0">
      <widget class="QLabel" name="label_9">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="toolTip">
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
@@ -949,10 +1251,21 @@
      </widget>
     </item>
     <item row="8" column="1">
-     <widget class="QLineEdit" name="t2_inst"/>
+     <widget class="QLineEdit" name="t2_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
     </item>
     <item row="8" column="2">
      <widget class="QSpinBox" name="T2">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="minimum">
        <number>-16777215</number>
       </property>
@@ -963,6 +1276,11 @@
     </item>
     <item row="8" column="3">
      <widget class="QLabel" name="label_46">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>Deg. C</string>
       </property>
@@ -970,6 +1288,11 @@
     </item>
     <item row="8" column="4">
      <widget class="QLabel" name="label_23">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="toolTip">
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
@@ -978,25 +1301,199 @@
       </property>
      </widget>
     </item>
-    <item row="12" column="3">
-     <widget class="QLabel" name="label_49">
-      <property name="text">
-       <string>Meters</string>
+    <item row="8" column="5">
+     <widget class="QLineEdit" name="gpst_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
       </property>
      </widget>
     </item>
-    <item row="12" column="4">
-     <widget class="QLabel" name="label_15">
-      <property name="text">
-       <string>AccZ</string>
+    <item row="8" column="6">
+     <widget class="QLineEdit" name="gps_time">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
       </property>
      </widget>
     </item>
-    <item row="12" column="5">
-     <widget class="QLineEdit" name="accz_inst"/>
+    <item row="8" column="7">
+     <widget class="QLabel" name="label_40">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>dd-MM-yyyy hh:mm:ss</string>
+      </property>
+     </widget>
     </item>
-    <item row="12" column="6" colspan="3">
-     <widget class="QDoubleSpinBox" name="accz">
+    <item row="9" column="0">
+     <widget class="QLabel" name="label_5">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>RPM</string>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="1">
+     <widget class="QLineEdit" name="rpm_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="2">
+     <widget class="QSpinBox" name="rpm">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="maximum">
+       <number>65535</number>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="3">
+     <widget class="QLabel" name="label_50">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>RPM</string>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="4">
+     <widget class="QLabel" name="label_24">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>GPS</string>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="5">
+     <widget class="QLineEdit" name="gpsll_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="6">
+     <widget class="QLineEdit" name="gps_latlon">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="7">
+     <widget class="QLabel" name="label_36">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Lat,Lon (dec.deg.)</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="0">
+     <widget class="QLabel" name="label_10">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Fuel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="1">
+     <widget class="QLineEdit" name="fuel_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="2">
+     <widget class="QSpinBox" name="fuel">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="maximum">
+       <number>65535</number>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="3">
+     <widget class="QLabel" name="label_47">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>%</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="4">
+     <widget class="QLabel" name="label_13">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>AccX</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="5">
+     <widget class="QLineEdit" name="accx_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="6">
+     <widget class="QDoubleSpinBox" name="accx">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="decimals">
        <number>2</number>
       </property>
@@ -1011,46 +1508,70 @@
       </property>
      </widget>
     </item>
-    <item row="12" column="9">
-     <widget class="QLabel" name="label_39">
+    <item row="10" column="7">
+     <widget class="QLabel" name="label_37">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>G</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="9">
-     <widget class="QLabel" name="label_25">
+    <item row="11" column="0">
+     <widget class="QLabel" name="label_11">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
       <property name="text">
-       <string>Volts</string>
+       <string>VSpd</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>RSSI</string>
+    <item row="11" column="1">
+     <widget class="QLineEdit" name="vvspd_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="rssi_inst"/>
-    </item>
-    <item row="1" column="2">
-     <widget class="QSpinBox" name="Rssi">
-      <property name="value">
-       <number>75</number>
+    <item row="11" column="2">
+     <widget class="QDoubleSpinBox" name="vspeed">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
       </property>
-     </widget>
-    </item>
-    <item row="1" column="3">
-     <widget class="QLabel" name="label_42">
-      <property name="text">
-       <string>Db</string>
+      <property name="decimals">
+       <number>2</number>
+      </property>
+      <property name="minimum">
+       <double>-16777215.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>16777215.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
       </property>
      </widget>
     </item>
     <item row="11" column="3">
      <widget class="QLabel" name="label_48">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>Meter/Sec.</string>
       </property>
@@ -1058,16 +1579,32 @@
     </item>
     <item row="11" column="4">
      <widget class="QLabel" name="label_14">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>AccY</string>
       </property>
      </widget>
     </item>
     <item row="11" column="5">
-     <widget class="QLineEdit" name="accy_inst"/>
+     <widget class="QLineEdit" name="accy_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
     </item>
-    <item row="11" column="6" colspan="3">
+    <item row="11" column="6">
      <widget class="QDoubleSpinBox" name="accy">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="decimals">
        <number>2</number>
       </property>
@@ -1082,8 +1619,13 @@
       </property>
      </widget>
     </item>
-    <item row="11" column="9">
+    <item row="11" column="7">
      <widget class="QLabel" name="label_38">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>G</string>
       </property>
@@ -1091,6 +1633,11 @@
     </item>
     <item row="12" column="0">
      <widget class="QLabel" name="label_12">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="toolTip">
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
@@ -1100,10 +1647,21 @@
      </widget>
     </item>
     <item row="12" column="1">
-     <widget class="QLineEdit" name="valt_inst"/>
+     <widget class="QLineEdit" name="valt_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
     </item>
     <item row="12" column="2">
      <widget class="QDoubleSpinBox" name="valt">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="decimals">
        <number>2</number>
       </property>
@@ -1118,28 +1676,46 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="3">
-     <widget class="QLabel" name="label_41">
+    <item row="12" column="3">
+     <widget class="QLabel" name="label_49">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>V / ratio</string>
+       <string>Meters</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="4">
-     <widget class="QLabel" name="label_17">
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <item row="12" column="4">
+     <widget class="QLabel" name="label_15">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
       </property>
       <property name="text">
-       <string>VFAS</string>
+       <string>AccZ</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="5">
-     <widget class="QLineEdit" name="fasv_inst"/>
+    <item row="12" column="5">
+     <widget class="QLineEdit" name="accz_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
     </item>
-    <item row="0" column="6" colspan="3">
-     <widget class="QDoubleSpinBox" name="vfas">
+    <item row="12" column="6">
+     <widget class="QDoubleSpinBox" name="accz">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
       <property name="decimals">
        <number>2</number>
       </property>
@@ -1151,6 +1727,18 @@
       </property>
       <property name="singleStep">
        <double>0.100000000000000</double>
+      </property>
+     </widget>
+    </item>
+    <item row="12" column="7">
+     <widget class="QLabel" name="label_39">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>G</string>
       </property>
      </widget>
     </item>
@@ -1165,16 +1753,20 @@
   <tabstop>stepBack</tabstop>
   <tabstop>play</tabstop>
   <tabstop>stepForward</tabstop>
+  <tabstop>stop</tabstop>
   <tabstop>rxbt_inst</tabstop>
   <tabstop>rxbt</tabstop>
+  <tabstop>rxbt_ratio</tabstop>
   <tabstop>rssi_inst</tabstop>
   <tabstop>Rssi</tabstop>
   <tabstop>swr_inst</tabstop>
   <tabstop>Swr</tabstop>
   <tabstop>a1_inst</tabstop>
   <tabstop>A1</tabstop>
+  <tabstop>A1_ratio</tabstop>
   <tabstop>a2_inst</tabstop>
   <tabstop>A2</tabstop>
+  <tabstop>A2_ratio</tabstop>
   <tabstop>a3_inst</tabstop>
   <tabstop>A3</tabstop>
   <tabstop>a4_inst</tabstop>
