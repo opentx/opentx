@@ -12,6 +12,8 @@
 #include "simulatorinterface.h"
 #include "firmwareinterface.h"
 
+Stopwatch gStopwatch("global");
+
 const QColor colors[C9X_MAX_CURVES] = {
   QColor(0,0,127),
   QColor(0,127,0),
@@ -998,6 +1000,7 @@ QStringList extractLatLon(const QString & position)
 
 TableLayout::TableLayout(QWidget * parent, int rowCount, const QStringList & headerLabels)
 {
+#if defined(TABLE_LAYOUT)
   tableWidget = new QTableWidget(parent);
   QVBoxLayout * layout = new QVBoxLayout();
   layout->addWidget(tableWidget);
@@ -1008,25 +1011,78 @@ TableLayout::TableLayout(QWidget * parent, int rowCount, const QStringList & hea
   tableWidget->setColumnCount(headerLabels.size());
   tableWidget->setShowGrid(false);
   tableWidget->verticalHeader()->setVisible(false);
-  tableWidget->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
   tableWidget->setSelectionMode(QAbstractItemView::NoSelection);
   tableWidget->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
   tableWidget->setStyleSheet("QTableWidget {background-color: transparent;}");
   tableWidget->setHorizontalHeaderLabels(headerLabels);
+#else
+  gridWidget = new QGridLayout(parent);
+
+  int col = 0;
+  foreach(QString text, headerLabels) {
+    QLabel *label = new QLabel();
+    label->setFrameShape(QFrame::Panel);
+    label->setFrameShadow(QFrame::Raised);
+    label->setMidLineWidth(0);
+    label->setAlignment(Qt::AlignCenter);
+    label->setMargin(5);
+    label->setText(text);
+    // if (!minimize)
+    //   label->setMinimumWidth(100);
+    gridWidget->addWidget(label, 0, col++);
+  }
+#endif
 }
 
 void TableLayout::addWidget(int row, int column, QWidget * widget)
 {
+#if defined(TABLE_LAYOUT)
   QHBoxLayout * layout = new QHBoxLayout(tableWidget);
   layout->addWidget(widget);
   addLayout(row, column, layout);
+#else
+  gridWidget->addWidget(widget, row + 1, column);
+#endif
 }
 
 void TableLayout::addLayout(int row, int column, QLayout * layout)
 {
+#if defined(TABLE_LAYOUT)
   layout->setContentsMargins(1, 3, 1, 3);
   QWidget * containerWidget = new QWidget(tableWidget);
   containerWidget->setLayout(layout);
   tableWidget->setCellWidget(row, column, containerWidget);
+#else
+  gridWidget->addLayout(layout, row + 1, column);
+#endif
+}
+
+void TableLayout::resizeColumnsToContents() 
+{
+#if defined(TABLE_LAYOUT)
+  tableWidget->resizeColumnsToContents();
+#else
+#endif
+}
+
+void TableLayout::setColumnWidth(int col, int width) 
+{
+#if defined(TABLE_LAYOUT)
+  tableWidget->setColumnWidth(col, width);
+#else
+#endif
+}
+
+void TableLayout::pushRowsUp(int row) 
+{
+#if defined(TABLE_LAYOUT)
+#else
+  // Push the rows up
+  QSpacerItem * spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  gridWidget->addItem(spacer, row, 0);
+#endif
+  // Push rows upward
+  // addDoubleSpring(gridLayout, 5, num_fsw+1);
+
 }

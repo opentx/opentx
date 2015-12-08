@@ -39,15 +39,16 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout *tableLayout, int row,
   }
   
   spinbox->setSingleStep(displayStep*internalStep);
+  spinbox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
   QHBoxLayout * horizontalLayout = new QHBoxLayout();
   QCheckBox * gv = new QCheckBox(QObject::tr("GV"));
+  gv->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   horizontalLayout->addWidget(gv);
   QComboBox * cb = new QComboBox();
+  cb->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   horizontalLayout->addWidget(cb);
-  cb->setSizeAdjustPolicy(QComboBox::AdjustToContents);
   horizontalLayout->addWidget(spinbox);
-  spinbox->setMinimumWidth(80);
   tableLayout->addLayout(row, col, horizontalLayout);
   gvarGroup = new GVarGroup(gv, spinbox, cb, value, deflt, min, max, displayStep, allowGVars);
 }
@@ -76,6 +77,8 @@ void LimitsGroup::updateMinMax(int max)
 Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware)
 {
+  Stopwatch s1("Channels");
+
   int channelNameMaxLen = firmware->getCapability(ChannelsName);
 
   QStringList headerLabels;
@@ -91,6 +94,8 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
   if (firmware->getCapability(SYMLimits))
     headerLabels << tr("Linear Subtrim");
   TableLayout * tableLayout = new TableLayout(this, firmware->getCapability(LogicalSwitches), headerLabels);
+
+  s1.report("header");
 
   for (int i=0; i<firmware->getCapability(Outputs); i++) {
     int col = 0;
@@ -167,9 +172,12 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
       tableLayout->addWidget(i, col++, symlimits);
     }
   }
+  s1.report("add elements");
 
   disableMouseScrolling();
-  tableLayout->getTableWidget()->resizeColumnsToContents();
+  tableLayout->resizeColumnsToContents();
+  tableLayout->pushRowsUp(firmware->getCapability(Outputs)+1);
+  s1.report("end");
 }
 
 Channels::~Channels()

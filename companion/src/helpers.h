@@ -2,6 +2,9 @@
 #define HELPERS_H
 
 #include <QtGui>
+#include <QTableWidget>
+#include <QGridLayout>
+#include <QDebug>
 #include "eeprominterface.h"
 
 extern const QColor colors[C9X_MAX_CURVES];
@@ -210,9 +213,51 @@ public:
   void addWidget(int row, int column, QWidget * widget);
   void addLayout(int row, int column, QLayout * layout);
 
-  QTableWidget * getTableWidget() { return tableWidget; };
+  void resizeColumnsToContents();
+  void setColumnWidth(int col, int width);
+  void pushRowsUp(int row); 
+
 private:
-  QTableWidget * tableWidget;  
+#if defined(TABLE_LAYOUT)
+  QTableWidget * tableWidget; 
+#else
+  QGridLayout * gridWidget; 
+#endif
 };
+
+
+class Stopwatch
+{
+public:
+  Stopwatch(const QString & name) :
+    name(name), total(0) {
+    timer.start();
+  };
+  ~Stopwatch() {};
+
+  void restart() {
+    total = 0;
+    timer.restart();
+  };
+
+  void report() {
+    qint64 elapsed = timer.restart();
+    total += elapsed;
+    qDebug() << name << QString("%1 ms [%2 ms]").arg(elapsed).arg(total);
+  };
+
+  void report(const QString & text) {
+    qint64 elapsed = timer.restart();
+    total += elapsed;
+    qDebug() << name << text << QString("%1 ms [%2 ms]").arg(elapsed).arg(total);
+  };
+
+private:
+  QString name;
+  QElapsedTimer timer;
+  qint64 total;
+};
+
+extern Stopwatch gStopwatch;
 
 #endif // HELPERS_H

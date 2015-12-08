@@ -33,6 +33,12 @@ IF(DEBUG_IMPORT)
     MESSAGE( STATUS "EEPROM import debugging enabled" )
 ENDIF(DEBUG_IMPORT)
 
+OPTION(TABLE_LAYOUT "Use QTableWidget for grid layouts") # Disabled by default
+IF(TABLE_LAYOUT)
+    ADD_DEFINITIONS( -DTABLE_LAYOUT)
+    MESSAGE( STATUS "Using QTableWidget" )
+ENDIF(TABLE_LAYOUT)
+
 MESSAGE( STATUS "Looking for XercesC " )
 FIND_PACKAGE(XercesC)
 IF ( XERCESC_FOUND )
