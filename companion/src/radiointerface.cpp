@@ -138,7 +138,7 @@ QStringList getWriteFirmwareArgs(const QString &filename)
   else if (eepromInterface->getBoard() == BOARD_SKY9X) {
     return getSambaArgs(QString("send_file {Flash} \"") + filename + "\" 0x400000 0\n" + "FLASH::ScriptGPNMV 2\n");
   }
-  else if (eepromInterface->getBoard() == BOARD_9XRPRO) {
+  else if (eepromInterface->getBoard() == BOARD_9XRPRO || eepromInterface->getBoard() == BOARD_AR9X) {
     return getSambaArgs(QString("send_file {Flash} \"") + filename + "\" 0x400000 0\n" + "FLASH::ScriptGPNMV 2\n");
   }
   else {
