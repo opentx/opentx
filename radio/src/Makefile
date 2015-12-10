@@ -52,7 +52,7 @@ DELAY = 5
 # PCB version
 # Values: 9X, 9X128, 9X2561, 9XR, 9XR128, 9XR2561, GRUVIN9X, MEGA2560, SKY9X, 9XRPRO, AR9X, TARANIS
 # Old values STD and STD128 are mapped to 9X and 9X128 for compatibility
-PCB = 9XRPRO
+PCB = 9X
 
 # PCB revision
 PCBREV =
@@ -103,7 +103,7 @@ NAVIGATION = NO
 
 # Switches automatic selection
 # Values = YES, NO
-AUTOSWITCH = YES
+AUTOSWITCH = NO
 
 # Stock sticks replaced by FrSky ones
 # Values = YES, NO
@@ -111,7 +111,7 @@ FRSKY_STICKS = NO
 
 # Sources automatic selection
 # Values = YES, NO
-AUTOSOURCE = YES
+AUTOSOURCE = NO
 
 # Double keys support (+/- means invert, +/up means max, -/dwn means min, up/down means reset to default)
 # Values = YES, NO
@@ -150,7 +150,7 @@ SP22 = NO
 
 # Fade Backlight using PWM
 # Values = YES, NO
-PWM_BACKLIGHT = YES
+PWM_BACKLIGHT = NO
 
 # SPLASH on START
 # Values = YES, NO, FIXED
@@ -159,7 +159,7 @@ SPLASH = $(GUI)
 # GRAPHICS (sliders / checkboxes / bold / batt graph)
 GRAPHICS = YES
 BOLD = YES
-BATTGRAPH = YES
+BATTGRAPH = NO
 
 # FONT TYPE
 # Values = STD, SQT5
@@ -167,7 +167,7 @@ FONT = STD
 
 # PPM center adjustable
 # Values = YES, NO
-PPM_CENTER_ADJUSTABLE = YES
+PPM_CENTER_ADJUSTABLE = NO
 
 # PPM symmetrical limits
 # Values = YES, NO
@@ -183,7 +183,7 @@ OVERRIDE_CHANNEL_FUNCTION = YES
 
 # Dangerous functions available in Custom Functions (range test, bind, module off)
 # Values = YES, NO
-DANGEROUS_MODULE_FUNCTIONS = YES
+DANGEROUS_MODULE_FUNCTIONS = NO
 
 # FrSky Hub
 # Values = YES, NO
@@ -221,7 +221,7 @@ HARDWARE_VOLUME = YES
 
 # BLUETOOTH
 # Values = YES, NO
-BLUETOOTH = YES
+BLUETOOTH = NO
 
 # PXX (FrSky PCM) protocol
 PXX = NO
@@ -256,15 +256,15 @@ UNITS = METRIC
 
 # Default Tx Mode
 # Values = NO / 1 / 2 / 3 / 4
-DEFAULT_MODE = 2
+DEFAULT_MODE = NO
 
 # EEPROM_PROGRESS_BAR
 # Values = YES, NO
-EEPROM_PROGRESS_BAR = YES
+EEPROM_PROGRESS_BAR = NO
 
 # Shutdown confirmation (for boards which have soft power)
 # Values = NO, YES
-SHUTDOWN_CONFIRMATION = YES
+SHUTDOWN_CONFIRMATION = NO
 
 # Activates the DEBUG Mode (all boards)
 # On G9X V4 board, when VOICE=NO:
@@ -279,11 +279,11 @@ CLI = NO
 
 # Activate writing of SPORT telemetry received data to sport.log file
 # Values = YES, NO
-SPORT_FILE_LOG = YES
+SPORT_FILE_LOG = NO
 
 # Timers Count
 # Values = 1, 2, 3 (on ARM boards)
-TIMERS = 3
+TIMERS = 2
 
 # Flight Modes
 # Values = YES, NO
@@ -295,7 +295,7 @@ CURVES = YES
 
 # Global Vars
 # Values = YES, NO
-GVARS = YES
+GVARS = NO
 
 # Enable another 3 positions switch to replace a pot
 # Values = NO, POT1, POT2, POT3,
@@ -303,7 +303,7 @@ GVARS = YES
 
 # Lua interpreter embedded
 # Values = NO, NO_MODEL_SCRIPTS, YES
-LUA = YES
+LUA = NO
 
 # Menu Lock modes
 # Values = NO, READONLY, NOMENUS
@@ -321,7 +321,7 @@ USB = JOYSTICK
 # YES - Adds mixers output view to Channels monitor screen,
 # pressing [ENT] switches between views.
 # NO - classic Channels monitor
-MIXERS_MONITOR = YES
+MIXERS_MONITOR = NO
 
 # Use newlib-nano
 # Values = NO, YES
@@ -381,7 +381,7 @@ WARNINGS_AS_ERRORS = NO
 
 # Enable saving of Lua byte-code of all loaded scripts
 # Values = NO, YES
-LUA_COMPILER = YES
+LUA_COMPILER = NO
 
 #------- END BUILD OPTIONS ---------------------------
 
@@ -784,12 +784,6 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
     FLAVOUR = 9xrpro
     CPPDEFS += -DREVX
     LDSCRIPT = targets/sky9x/sam3s8c_flash.ld
-  ifeq ($(NANO), YES)
-    # use newlib-nano for linking
-    NEWLIB_NANO_FLAGS = --specs=nano.specs -u _printf_float
-    CPPDEFS += -DNANO
-  endif
-
   else ifeq ($(PCB), AR9X)
     CPPDEFS = -Dat91sam3s8
     FLAVOUR = ar9x
