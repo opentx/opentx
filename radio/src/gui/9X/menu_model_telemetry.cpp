@@ -606,7 +606,7 @@ void menuModelTelemetry(uint8_t event)
     switch (k) {
 #if defined(CPUARM)
       case ITEM_TELEMETRY_PROTOCOL_TYPE:
-        g_model.telemetryProtocol = selectMenuItem(TELEM_COL2, y, STR_TELEMETRY_TYPE, "\017FrSky S.PORT\0  FrSky D\0       FrSky D (cable)", g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, CASE_PCBSKY9X(PROTOCOL_FRSKY_D_SECONDARY) attr, event);
+        g_model.telemetryProtocol = selectMenuItem(TELEM_COL2, y, STR_TELEMETRY_TYPE, "\017FrSky S.PORT\0  FrSky D\0       FrSky D (inv)\0 FrSky D (cable)", g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, CASE_PCBSKY9X(PROTOCOL_FRSKY_D_SECONDARY) attr, event);
         break;
 #endif
 

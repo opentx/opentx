@@ -69,7 +69,7 @@ FrskyData frskyData;
 
 #if defined(CPUARM)
 uint8_t telemetryProtocol = 255;
-#define IS_FRSKY_D_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_D)
+#define IS_FRSKY_D_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_D || telemetryProtocol == PROTOCOL_FRSKY_D_INVERTED)
 #define IS_FRSKY_SPORT_PROTOCOL()  (telemetryProtocol == PROTOCOL_FRSKY_SPORT)
 #else
 #define IS_FRSKY_D_PROTOCOL()     (true)
@@ -613,7 +613,7 @@ void telemetryReset()
 // we don't reset the telemetry here as we would also reset the consumption after model load
 void telemetryInit(uint8_t protocol)
 {
-  if (protocol == PROTOCOL_FRSKY_D) {
+  if (protocol == PROTOCOL_FRSKY_D || protocol == PROTOCOL_FRSKY_D_INVERTED) {
     telemetryPortInit(FRSKY_D_BAUDRATE);
   }
 #if defined(PCBTARANIS)
@@ -629,6 +629,14 @@ void telemetryInit(uint8_t protocol)
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE);
   }
+
+#if defined(REVX)
+  if (g_model.telemetryProtocol == PROTOCOL_FRSKY_D_INVERTED) {
+    setMFP();
+  } else {
+    clearMFP();
+  }
+#endif
 }
 #else
 void telemetryInit()
