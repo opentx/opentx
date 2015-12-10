@@ -856,6 +856,8 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
   ifeq ($(RTCLOCK), YES)
     CPPDEFS += -DRTCLOCK
     CPPSRC += rtc.cpp targets/sky9x/rtc_driver.cpp
+  else ifeq ($(PCB), SKY9X)
+    CPPSRC += targets/sky9x/rtc_driver.cpp
   endif
   ifeq ($(BLUETOOTH), YES)
     CPPDEFS += -DBLUETOOTH
