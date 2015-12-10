@@ -301,9 +301,6 @@ GVARS = YES
 # Values = NO, POT1, POT2, POT3,
 3POS = NO
 
-# On the 9XR pro, enable additional 3POS switches for RUD / THR
-MORE_3POS = YES
-
 # Lua interpreter embedded
 # Values = NO, NO_MODEL_SCRIPTS, YES
 LUA = YES
@@ -787,9 +784,6 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
     FLAVOUR = 9xrpro
     CPPDEFS += -DREVX
     LDSCRIPT = targets/sky9x/sam3s8c_flash.ld
-    ifeq ($(MORE_3POS), YES)
-      CPPDEFS += -DMORE_3POS
-    endif
   ifeq ($(NANO), YES)
     # use newlib-nano for linking
     NEWLIB_NANO_FLAGS = --specs=nano.specs -u _printf_float
