@@ -162,6 +162,7 @@ void setupPulsesDSM2(unsigned int port)
   else if (moduleFlag[port] == MODULE_RANGECHECK)
     dsmDat[0] |= DSM2_SEND_RANGECHECK;
 #else
+#if defined(PCBSKY9X) // TODO needed?
   if (dsm2BindTimer > 0) {
     dsm2BindTimer--;
     if (switchState(SW_DSM2_BIND)) {
@@ -169,7 +170,9 @@ void setupPulsesDSM2(unsigned int port)
       dsmDat[0] |= DSM2_SEND_BIND;
     }
   }
-  else if (moduleFlag[port] == MODULE_RANGECHECK) {
+  else
+#endif
+  if (moduleFlag[port] == MODULE_RANGECHECK) {
     dsmDat[0] |= DSM2_SEND_RANGECHECK;
   }
   else {

@@ -226,6 +226,27 @@ const MemArea memAreas[] = {
   { NULL, NULL, 0 },
 };
 
+int cliSet(const char ** argv)
+{
+  if (!strcmp(argv[1], "rtc")) {
+    struct gtm t;
+    int year, month, day, hour, minute, second;
+    if (toInt(argv, 2, &year) > 0 && toInt(argv, 3, &month) > 0 && toInt(argv, 4, &day) > 0 && toInt(argv, 5, &hour) > 0 && toInt(argv, 6, &minute) > 0 && toInt(argv, 7, &second) > 0) {
+      t.tm_year = year-1900;
+      t.tm_mon = month-1;
+      t.tm_mday = day;
+      t.tm_hour = hour;
+      t.tm_min = minute;
+      t.tm_sec = second;
+      rtcSetTime(&t);
+    }
+    else {
+      serialPrint("%s: Invalid arguments \"%s\" \"%s\"", argv[0], argv[1], argv[2]);
+    }
+  }
+  return 0;
+}
+
 int cliDisplay(const char ** argv)
 {
   long long int address = 0;
@@ -246,7 +267,7 @@ int cliDisplay(const char ** argv)
       serialPrint("[%s] = %s", name, switchState(EnumKeys(i)) ? "on" : "off");
     }
 #if defined(ROTARY_ENCODER_NAVIGATION) || defined(REV9E) || defined(PCBHORUS) || defined(PCBFLAMENCO)
-    serialPrint("[Enc.]  = %d", rotencValue / 2);
+    serialPrint("[Enc.] = %d", rotencValue / 2);
 #endif
     for (int i=TRM_BASE; i<=TRM_LAST; i++) {
       serialPrint("[Trim%d] = %s", i-TRM_BASE, switchState(EnumKeys(i)) ? "on" : "off");
@@ -268,10 +289,10 @@ int cliDisplay(const char ** argv)
       serialPrint("outputs[%d] = %04X", i, channelOutputs[i]);
     }
   }
-  else if (!strcmp(argv[1], "time")) {
+  else if (!strcmp(argv[1], "rtc")) {
     struct gtm utm;
     gettime(&utm);
-    serialPrint("time = %4d-%02d-%02d %02d:%02d:%02d.%02d0", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100);
+    serialPrint("rtc = %4d-%02d-%02d %02d:%02d:%02d.%02d0", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100);
   }
 #if defined(PCBFLAMENCO)
   else if (!strcmp(argv[1], "bq24195")) {
@@ -358,6 +379,7 @@ const CliCommand cliCommands[] = {
   { "ls", cliLs, "<directory>" },
   { "play", cliPlay, "<filename>" },
   { "print", cliDisplay, "<address> [<size>] | <what>" },
+  { "set", cliSet, "<what> <value>" },
   { "stackinfo", cliStackInfo, "" },
   { "trace", cliTrace, "on | off" },
   { "volume", cliVolume, "<level>" },

@@ -323,7 +323,7 @@ bool menuModelSetup(evt_t event)
       case ITEM_MODEL_EXTENDED_TRIMS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ETRIMS);
         g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, menuHorizontalPosition<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
-        lcdDrawText(MODEL_SETUP_2ND_COLUMN+18, y, STR_RESET_BTN, menuHorizontalPosition>0  && !noHighlightCounter ? attr : 0);
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN+18, y, STR_RESET_BTN, menuHorizontalPosition>0  && !NO_HIGHLIGHT() ? attr : 0);
         if (attr && menuHorizontalPosition>0) {
           s_editMode = 0;
           if (event==EVT_KEY_LONG(KEY_ENTER)) {
@@ -746,7 +746,7 @@ bool menuModelFailsafe(evt_t event)
 
       // Value
       LcdFlags flags = TINSIZE;
-      if (menuVerticalPosition == ch && !noHighlightCounter) {
+      if (menuVerticalPosition == ch && !NO_HIGHLIGHT()) {
         flags |= INVERS;
         if (s_editMode)
           flags |= BLINK;

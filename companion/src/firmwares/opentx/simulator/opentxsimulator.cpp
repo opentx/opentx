@@ -485,8 +485,7 @@ bool OpenTxSimulator::timer10ms()
 
 ::uint8_t * OpenTxSimulator::getLcd()
 {
-#define GETLCD_IMPORT
-#include "simulatorimport.h"
+  return (::uint8_t *)simuLcdBuf;
 }
 
 bool OpenTxSimulator::lcdChanged(bool & lightEnable)

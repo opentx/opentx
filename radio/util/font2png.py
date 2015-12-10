@@ -49,8 +49,10 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
     
     width = getFontWidth(fontsize, metrics)
     top, bottom = getFontTopBottom(fontsize, metrics)
-    extraImage = QtGui.QImage("fonts/extra_%dpx.png" % fontsize)
+    extraFilename = "fonts/extra_%dpx.png" % fontsize
+    extraImage = QtGui.QImage(extraFilename)
     if extraImage.isNull():
+        print "No extra font file", extraFilename
         extraWidth = 0
     else:
         extraWidth = extraImage.size().width()

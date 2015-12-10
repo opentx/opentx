@@ -1277,16 +1277,19 @@ void lcdRefresh()
   simuLcdRefresh = true;
 }
 
+#if !defined(PCBFLAMENCO)
 display_t simuLcdBackupBuf[DISPLAY_BUFFER_SIZE];
 void lcdStoreBackupBuffer()
 {
   memcpy(simuLcdBackupBuf, displayBuf, sizeof(simuLcdBackupBuf));
 }
 
-void lcdRestoreBackupBuffer()
+bool lcdRestoreBackupBuffer()
 {
   memcpy(displayBuf, simuLcdBackupBuf, sizeof(displayBuf));
+  return true;
 }
+#endif
 
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 void pwrInit() { }

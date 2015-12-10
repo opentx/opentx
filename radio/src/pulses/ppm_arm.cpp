@@ -61,11 +61,7 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
   PpmPulsesData * ppmPulsesData = (port == TRAINER_MODULE ? &trainerPulsesData.ppm : &modulePulsesData[port].ppm);
   uint16_t * ptr = ppmPulsesData->pulses;
 
-#if defined(PPM_PIN_HW_SERIAL)
-  ppmPulsesData->index = 0;
-#else
   ppmPulsesData->ptr = ptr;
-#endif
 
   int32_t rest = 22500u * 2;
   rest += (int32_t(g_model.moduleData[port].ppmFrameLength)) * 1000;

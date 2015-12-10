@@ -519,10 +519,11 @@ void lcdStoreBackupBuffer()
   DMAcopy(src, dest, DISPLAY_BUFFER_SIZE);
 }
 
-void lcdRestoreBackupBuffer()
+bool lcdRestoreBackupBuffer()
 {
   uint16_t * dest = (uint16_t *)CurrentFrameBuffer, * src = (uint16_t *)LCD_BACKUP_FRAME_BUFFER;
   DMAcopy(src, dest, DISPLAY_BUFFER_SIZE);
+  return true;
 }
 
 void lcdRefresh()

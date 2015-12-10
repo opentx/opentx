@@ -448,6 +448,9 @@
 #if defined(PCBHORUS)
 #define LEN_VKEYS              "\006"
 #define TR_VKEYS               "Menu\0 ""Exit\0 ""Enter\0""Up\0   ""Down\0 ""Right\0""Left"
+#elif defined(PCBFLAMENCO)
+#define LEN_VKEYS              "\005"
+#define TR_VKEYS               "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"
 #elif defined(PCBTARANIS)
 #define LEN_VKEYS              "\005"
 #define TR_VKEYS               "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"

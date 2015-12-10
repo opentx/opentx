@@ -165,7 +165,7 @@ void guiMain(evt_t evt)
           TIME_MEASURE_STOP(storebackup);
         }
         if (popupDisplayed == false || evt) {
-          lcdRestoreBackupBuffer();
+          popupDisplayed = lcdRestoreBackupBuffer();
           if (warn) DISPLAY_WARNING(evt);
           if (menu) {
             const char * result = displayPopupMenu(evt);
@@ -176,7 +176,6 @@ void guiMain(evt_t evt)
             }
           }
           refreshNeeded = true;
-          popupDisplayed = true;
         }
       }
       else {

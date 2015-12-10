@@ -46,7 +46,14 @@ enum EnumKeys {
   KEY_DOWN,
   KEY_RIGHT,
   KEY_LEFT,
-#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
+#elif defined(PCBFLAMENCO)
+  KEY_MENU,
+  KEY_EXIT,
+  KEY_ENTER,
+  KEY_PAGE,
+  KEY_PLUS, // TODO remove
+  KEY_MINUS, // TODO remove
+#elif defined(PCBTARANIS)
   KEY_MENU,
   KEY_EXIT,
   KEY_ENTER,
@@ -259,7 +266,7 @@ class Key
 
 extern Key keys[NUM_KEYS];
 
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
 typedef uint16_t evt_t;
 #else
 typedef uint8_t evt_t;

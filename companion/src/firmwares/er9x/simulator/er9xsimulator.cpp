@@ -172,8 +172,7 @@ bool Er9xSimulator::timer10ms()
 
 uint8_t * Er9xSimulator::getLcd()
 {
-#define GETLCD_IMPORT
-#include "simulatorimport.h"
+  return (::uint8_t *)simuLcdBuf;
 }
 
 bool Er9xSimulator::lcdChanged(bool & lightEnable)

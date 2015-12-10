@@ -194,8 +194,7 @@ bool Ersky9xSimulator::timer10ms()
 
 uint8_t * Ersky9xSimulator::getLcd()
 {
-#define GETLCD_IMPORT
-#include "simulatorimport.h"
+  return (::uint8_t *)simuLcdBuf;
 }
 
 bool Ersky9xSimulator::lcdChanged(bool & lightEnable)

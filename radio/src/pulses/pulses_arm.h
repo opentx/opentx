@@ -47,11 +47,12 @@ extern uint8_t s_current_protocol[NUM_MODULES];
 extern uint8_t s_pulses_paused;
 extern uint16_t failsafeCounter[NUM_MODULES];
 
-#if defined(PPM_PIN_HW_SERIAL)
 PACK(struct PpmPulsesData {
   uint16_t pulses[20];
-  uint32_t index;
+  uint16_t * ptr;
 });
+
+#if defined(PPM_PIN_HW_SERIAL)
 PACK(struct PxxPulsesData {
   uint8_t  pulses[64];
   uint8_t  *ptr;
@@ -68,10 +69,6 @@ PACK(struct Dsm2PulsesData {
   uint8_t  serialBitCount;
 });
 #else
-PACK(struct PpmPulsesData {
-  uint16_t pulses[20];
-  uint16_t *ptr;
-});
 PACK(struct PxxPulsesData {
   uint16_t pulses[400];
   uint16_t *ptr;

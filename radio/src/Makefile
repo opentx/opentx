@@ -1090,7 +1090,7 @@ ifeq ($(PCB), FLAMENCO)
   TRGT = arm-none-eabi-
   MCU  = cortex-m4
   OPT = 2
-  CPPDEFS += -DHSE_VALUE=12000000 -DCOLORLCD -DSTM32F40_41xxx
+  CPPDEFS += -DHSE_VALUE=12000000 -DCOLORLCD -DSTM32F40_41xxx -DPPM_PIN_HW_SERIAL
   BITMAPS += $(patsubst %.png,%.lbm,$(wildcard bitmaps/Flamenco/*.png))
   FONTS = fonts/Flamenco/font_stdsize.lbm fonts/Flamenco/font_tinsize.lbm fonts/Flamenco/font_smlsize.lbm fonts/Flamenco/font_midsize.lbm fonts/Flamenco/font_dblsize.lbm fonts/Flamenco/font_xxlsize.lbm
   SDCARD = YES
@@ -1887,7 +1887,7 @@ else
   FONTNAME = Roboto
   TINSIZE = 5
   SMLSIZE = 7
-  STDSIZE = 8
+  STDSIZE = 11
   MIDSIZE = 11
   DBLSIZE = 14
   DBLBOLD = False

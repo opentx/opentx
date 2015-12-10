@@ -470,17 +470,7 @@
   #define MAX_TRAINER_CHANNELS()            (8)
 #endif
 
-#if defined(PCBFLAMENCO)
-  #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
-  #define IS_MODULE_XJT(idx)                ((g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))
-  #if defined(DSM2)
-    #define IS_MODULE_DSM2(idx)             (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_DSM2)
-  #else
-    #define IS_MODULE_DSM2(idx)             (false)
-  #endif
-  #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.externalModule])
-  #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS())
-#elif defined(PCBTARANIS)
+#if defined(PCBTARANIS)
   #if defined(TARANIS_INTERNAL_PPM)
     #define IS_MODULE_PPM(idx)              (idx==TRAINER_MODULE || (idx==INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type==MODULE_TYPE_PPM)|| (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
     #define IS_MODULE_XJT(idx)              (((idx==INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type==MODULE_TYPE_XJT)|| (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT)) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))

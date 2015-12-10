@@ -96,11 +96,6 @@ per10ms();
 return true;
 #endif
 
-#ifdef GETLCD_IMPORT
-#undef GETLCD_IMPORT
-return (::uint8_t *)simuLcdBuf;
-#endif
-
 #ifdef GETERROR_IMPORT
 #undef GETERROR_IMPORT
 return main_thread_error;
