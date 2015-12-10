@@ -87,8 +87,9 @@ PACK(struct Dsm2PulsesData {
 });
 #endif
 
-#define CROSSFIRE_BAUDRATE   200000
-#define CROSSFIRE_FRAME_LEN  25
+#define CROSSFIRE_BAUDRATE             200000
+#define CROSSFIRE_FRAME_LEN            25
+#define CROSSFIRE_CHANNELS_COUNT       16
 PACK(struct CrossfirePulsesData {
   uint8_t pulses[CROSSFIRE_FRAME_LEN];
 });
