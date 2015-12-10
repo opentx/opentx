@@ -686,7 +686,6 @@ void menuModelSetup(uint8_t event)
                 g_model.moduleData[EXTERNAL_MODULE].rfProtocol = 0;
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
                 g_model.moduleData[EXTERNAL_MODULE].channelsCount = 0;
-
               }
               break;
             case 1:
