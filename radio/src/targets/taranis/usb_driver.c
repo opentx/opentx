@@ -34,26 +34,52 @@
  *
  */
 
-#ifndef _GUI_H_
-#define _GUI_H_
+#include "../taranis/board_taranis.h"
+#include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_dcd_int.h"
 
-#if defined(CPUARM)
-#include "gui_helpers.h"
+int usbPlugged(void)
+{
+  // debounce
+  static uint8_t debounced_state = 0;
+  static uint8_t last_state = 0;
+
+  if (GPIO_ReadInputDataBit(USB_GPIO, USB_GPIO_PIN_VBUS)) {
+    if (last_state) {
+      debounced_state = 1;
+    }
+    last_state = 1;
+  }
+  else {
+    if (!last_state) {
+      debounced_state = 0;
+    }
+    last_state = 0;
+  }
+  return debounced_state;
+}
+
+USB_OTG_CORE_HANDLE USB_OTG_dev;
+
+void OTG_FS_IRQHandler(void)
+{
+  USBD_OTG_ISR_Handler(&USB_OTG_dev);
+}
+
+void usbInit(void)
+{
+#if defined(USB_JOYSTICK)
+  // initialize USB as HID device
+  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_HID_cb, &USR_cb);
+#elif defined(USB_SERIAL)
+  // initialize USB as CDC device (virtual serial port)
+  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_CDC_cb, &USR_cb);
+#elif defined(USB_MASS_STORAGE)
+  // initialize USB as MSC device
+  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_MSC_cb, &USR_cb);
 #endif
+}
 
-#if defined(PCBHORUS)
-  #include "horus/gui.h"
-#elif defined(PCBFLAMENCO)
-  #include "flamenco/gui.h"
-#elif defined(PCBTARANIS)
-  #include "taranis/gui.h"
-#else
-  #include "9x/gui.h"
-#endif
-
-#if defined(SIMU)
-extern bool simuLcdRefresh;
-extern display_t simuLcdBuf[DISPLAY_BUFFER_SIZE];
-#endif
-
-#endif // _GUI_H_
+void usbDeInit(void)
+{
+  USBD_DeInit(&USB_OTG_dev);
+}

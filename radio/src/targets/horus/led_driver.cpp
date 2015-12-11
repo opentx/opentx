@@ -34,26 +34,34 @@
  *
  */
 
-#ifndef _GUI_H_
-#define _GUI_H_
+#include "../horus/board_horus.h"
 
-#if defined(CPUARM)
-#include "gui_helpers.h"
-#endif
+void ledInit()
+{
+  RCC_AHB1PeriphClockCmd(LED_RCC_AHB1Periph, ENABLE);
 
-#if defined(PCBHORUS)
-  #include "horus/gui.h"
-#elif defined(PCBFLAMENCO)
-  #include "flamenco/gui.h"
-#elif defined(PCBTARANIS)
-  #include "taranis/gui.h"
-#else
-  #include "9x/gui.h"
-#endif
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = LED_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(LED_GPIO, &GPIO_InitStructure);
+}
 
-#if defined(SIMU)
-extern bool simuLcdRefresh;
-extern display_t simuLcdBuf[DISPLAY_BUFFER_SIZE];
-#endif
+void ledOff()
+{
+  RCC_AHB1PeriphClockCmd(LED_RCC_AHB1Periph, DISABLE);
+}
 
-#endif // _GUI_H_
+void ledRed()
+{
+  ledInit();
+  GPIO_SetBits(LED_GPIO, LED_GPIO_PIN);
+}
+
+void ledBlue()
+{
+  ledInit();
+  GPIO_ResetBits(LED_GPIO, LED_GPIO_PIN);
+}

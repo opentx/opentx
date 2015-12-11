@@ -40,11 +40,11 @@
 #if defined(COLORLCD)
 #elif defined(PCBTARANIS)
   const pm_uchar asterisk_lbm[] PROGMEM = {
-    #include "bitmaps/Taranis/asterisk.lbm"
+    #include "bitmaps/taranis/asterisk.lbm"
   };
 #else
   const pm_uchar asterisk_lbm[] PROGMEM = {
-    #include "bitmaps/9X/asterisk.lbm"
+    #include "bitmaps/9x/asterisk.lbm"
   };
 #endif
 
@@ -2623,7 +2623,7 @@ int main(void)
 #define PWR_PRESS_SHUTDOWN             300 // 3s
 
 const pm_uchar bmp_shutdown[] PROGMEM = {
-  #include "../../bitmaps/Taranis/shutdown.lbm"
+  #include "../../bitmaps/taranis/shutdown.lbm"
 };
 
 uint32_t pwr_press_time = 0;

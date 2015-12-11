@@ -282,17 +282,17 @@
 #define RESXl      1024l
 
 #if defined(PCBHORUS)
-  #include "targets/Horus/board_horus.h"
+  #include "targets/horus/board_horus.h"
 #elif defined(PCBFLAMENCO)
-  #include "targets/Flamenco/board_flamenco.h"
+  #include "targets/flamenco/board_flamenco.h"
 #elif defined(PCBTARANIS)
-  #include "targets/Taranis/board_taranis.h"
+  #include "targets/taranis/board_taranis.h"
 #elif defined(PCBSKY9X)
-  #include "targets/Sky9x/board_sky9x.h"
+  #include "targets/sky9x/board_sky9x.h"
 #elif defined(PCBGRUVIN9X)
-  #include "targets/Gruvin9x/board_gruvin9x.h"
+  #include "targets/gruvin9x/board_gruvin9x.h"
 #elif defined(PCBMEGA2560)
-  #include "targets/Mega2560/board_mega2560.h"
+  #include "targets/mega2560/board_mega2560.h"
 #else
   #include "targets/9x/board_stock.h"
 #endif
@@ -1502,7 +1502,7 @@ enum AUDIO_SOUNDS {
 #endif
 
 #if defined(PCBGRUVIN9X) && defined(VOICE)
-#include "targets/Gruvin9x/somo14d.h"
+#include "targets/gruvin9x/somo14d.h"
 #endif
 
 #include "translations.h"

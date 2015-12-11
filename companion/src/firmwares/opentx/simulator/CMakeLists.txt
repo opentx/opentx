@@ -22,8 +22,8 @@ endmacro(add_bitmaps_target)
 
 add_bitmaps_target(lbm_xbm_1bit ${RADIO_SRC_DIRECTORY}/bitmaps/*.xbm 128 1bit)
 add_bitmaps_target(lbm_fonts_1bit ${RADIO_SRC_DIRECTORY}/fonts/std/*.png 128 "")
-add_bitmaps_target(lbm_9x_bitmaps ${RADIO_SRC_DIRECTORY}/bitmaps/9X/*.png 128 1bit)
-add_bitmaps_target(lbm_taranis_bitmaps ${RADIO_SRC_DIRECTORY}/bitmaps/Taranis/*.png 212 4bits)
+add_bitmaps_target(lbm_9x_bitmaps ${RADIO_SRC_DIRECTORY}/bitmaps/9x/*.png 128 1bit)
+add_bitmaps_target(lbm_taranis_bitmaps ${RADIO_SRC_DIRECTORY}/bitmaps/taranis/*.png 212 4bits)
 
 add_dependencies(lbm_9x_bitmaps lbm_fonts_1bit lbm_xbm_1bit)
 add_dependencies(lbm_taranis_bitmaps lbm_fonts_1bit lbm_xbm_1bit)
@@ -39,16 +39,16 @@ macro(add_truetype_font_target radio name font size)
   add_custom_target(ttf_${radio}_${name} DEPENDS ${target}.png ${target}.specs)
 endmacro(add_truetype_font_target)
 
-add_truetype_font_target(Horus tinsize "DejaVu Sans" 9)
-add_truetype_font_target(Horus smlsize "DejaVu Sans" 13)
-add_truetype_font_target(Horus stdsize "DejaVu Sans" 16)
-add_truetype_font_target(Horus midsize "DejaVu Sans" 24)
-add_truetype_font_target(Horus dblsize "DejaVu Sans" 32)
-add_truetype_font_target(Horus xxlsize "DejaVu Sans" 48)
+add_truetype_font_target(horus tinsize "DejaVu Sans" 9)
+add_truetype_font_target(horus smlsize "DejaVu Sans" 13)
+add_truetype_font_target(horus stdsize "DejaVu Sans" 16)
+add_truetype_font_target(horus midsize "DejaVu Sans" 24)
+add_truetype_font_target(horus dblsize "DejaVu Sans" 32)
+add_truetype_font_target(horus xxlsize "DejaVu Sans" 48)
 
-add_bitmaps_target(lbm_horus_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/Horus/????[^_]*.png" 480 5/6/5/8)
-add_bitmaps_target(lbm_horus_masks ${RADIO_SRC_DIRECTORY}/bitmaps/Horus/mask_*.png 480 8bits)
-add_bitmaps_target(lbm_horus_fonts ${RADIO_SRC_DIRECTORY}/fonts/Horus/*.png 480 8bits)
+add_bitmaps_target(lbm_horus_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/horus/????[^_]*.png" 480 5/6/5/8)
+add_bitmaps_target(lbm_horus_masks ${RADIO_SRC_DIRECTORY}/bitmaps/horus/mask_*.png 480 8bits)
+add_bitmaps_target(lbm_horus_fonts ${RADIO_SRC_DIRECTORY}/fonts/horus/*.png 480 8bits)
 add_dependencies(lbm_horus_fonts ttf_Horus_tinsize ttf_Horus_smlsize ttf_Horus_stdsize ttf_Horus_midsize ttf_Horus_dblsize ttf_Horus_xxlsize)
 add_dependencies(lbm_horus_bitmaps lbm_horus_masks lbm_horus_fonts)
 
@@ -207,47 +207,47 @@ target_compile_definitions(opentx-9xr128${SUFFIX}-simulator PRIVATE PCBSTD PCB9X
 target_link_libraries(opentx-9xr128${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Gruvin9x
-target_include_directories(opentx-gruvin9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Gruvin9x)
+target_include_directories(opentx-gruvin9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/gruvin9x)
 target_compile_definitions(opentx-gruvin9x${SUFFIX}-simulator PRIVATE PCBGRUVIN9X CPUM2560 EEPROM EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-gruvin9x${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Mega2560
-target_include_directories(opentx-mega2560${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Mega2560)
+target_include_directories(opentx-mega2560${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/mega2560)
 target_compile_definitions(opentx-mega2560${SUFFIX}-simulator PRIVATE PCBMEGA2560 CPUM2560 EEPROM EEPROM_RLC SDCARD ROTARY_ENCODERS=2 ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-mega2560${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Sky9x
-target_include_directories(opentx-sky9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Sky9x)
+target_include_directories(opentx-sky9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/sky9x)
 target_compile_definitions(opentx-sky9x${SUFFIX}-simulator PRIVATE PCBSKY9X CPUARM VOICE EEPROM SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-sky9x${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # 9XR-PRO
-target_include_directories(opentx-9xrpro${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Sky9x)
+target_include_directories(opentx-9xrpro${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/sky9x)
 target_compile_definitions(opentx-9xrpro${SUFFIX}-simulator PRIVATE PCBSKY9X REVX CPUARM VOICE EEPROM SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-9xrpro${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # AR9X
-target_include_directories(opentx-ar9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Sky9x)
+target_include_directories(opentx-ar9x${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/sky9x)
 target_compile_definitions(opentx-ar9x${SUFFIX}-simulator PRIVATE PCBSKY9X AR9X CPUARM VOICE EEPROM SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-ar9x${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Taranis standard
-target_include_directories(opentx-taranis${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Taranis)
+target_include_directories(opentx-taranis${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/taranis)
 target_compile_definitions(opentx-taranis${SUFFIX}-simulator PRIVATE PCBTARANIS CPUARM CPUSTM32 EEPROM EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-taranis${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Taranis Plus 
-target_include_directories(opentx-taranisplus${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Taranis)
+target_include_directories(opentx-taranisplus${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/taranis)
 target_compile_definitions(opentx-taranisplus${SUFFIX}-simulator PRIVATE PCBTARANIS REVPLUS CPUARM CPUSTM32 EEPROM EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-taranisplus${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Taranis X9E
-target_include_directories(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Taranis)
+target_include_directories(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/taranis)
 target_compile_definitions(opentx-taranisx9e${SUFFIX}-simulator PRIVATE PCBTARANIS REVPLUS REV9E CPUARM CPUSTM32 STM32F40_41xxx EEPROM EEPROM_RLC VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Horus
-target_include_directories(opentx-horus${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/Horus)
+target_include_directories(opentx-horus${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/horus)
 target_compile_definitions(opentx-horus${SUFFIX}-simulator PRIVATE PCBHORUS CPUARM CPUSTM32 STM32F40_41xxx COLORLCD VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-horus${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 

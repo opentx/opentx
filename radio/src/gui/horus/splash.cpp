@@ -34,26 +34,26 @@
  *
  */
 
-#ifndef _GUI_H_
-#define _GUI_H_
+#include "../../opentx.h"
 
-#if defined(CPUARM)
-#include "gui_helpers.h"
+const uint8_t LBM_SPLASH[] = {
+#include "../../bitmaps/horus/splash.lbm"
+};
+
+#if defined(SPLASH)
+void displaySplash()
+{
+  lcdClear();
+
+  lcdDrawBitmap((LCD_W-256)/2, (LCD_H-256)/2, LBM_SPLASH);
+
+#if MENUS_LOCK == 1
+  if (readonly == false) {
+    lcdDrawSolidFilledRect((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 - 9, 50, (sizeof(TR_UNLOCKED)-1)*FW+16, 11, SOLID, ERASE|ROUND);
+    lcdDrawText((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 , 53, STR_UNLOCKED);
+  }
 #endif
 
-#if defined(PCBHORUS)
-  #include "horus/gui.h"
-#elif defined(PCBFLAMENCO)
-  #include "flamenco/gui.h"
-#elif defined(PCBTARANIS)
-  #include "taranis/gui.h"
-#else
-  #include "9x/gui.h"
+  lcdRefresh();
+}
 #endif
-
-#if defined(SIMU)
-extern bool simuLcdRefresh;
-extern display_t simuLcdBuf[DISPLAY_BUFFER_SIZE];
-#endif
-
-#endif // _GUI_H_

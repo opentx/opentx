@@ -34,26 +34,20 @@
  *
  */
 
-#ifndef _GUI_H_
-#define _GUI_H_
+#include "../9x/lcd.h"
+#include "../9x/menus.h"
 
-#if defined(CPUARM)
-#include "gui_helpers.h"
+#define NUM_BODY_LINES                 (LCD_LINES-1)
+#define MENU_HEADER_HEIGHT             FH
+#define MENU_INIT_VPOS                 0
+#define DEFAULT_SCROLLBAR_X            (LCD_W-1)
+
+void displaySplash();
+void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
+
+#if !defined(CPUM64)
+  void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 #endif
 
-#if defined(PCBHORUS)
-  #include "horus/gui.h"
-#elif defined(PCBFLAMENCO)
-  #include "flamenco/gui.h"
-#elif defined(PCBTARANIS)
-  #include "taranis/gui.h"
-#else
-  #include "9x/gui.h"
-#endif
-
-#if defined(SIMU)
-extern bool simuLcdRefresh;
-extern display_t simuLcdBuf[DISPLAY_BUFFER_SIZE];
-#endif
-
-#endif // _GUI_H_
+#define SET_SCROLLBAR_X(x)
+#define LOAD_MODEL_BITMAP()
