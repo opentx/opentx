@@ -78,13 +78,13 @@ extern "C" {
   #include "usbd_msc_core.h"
   #include "usbd_hid_core.h"
   #include "usbd_usr.h"
-  #include "../taranis/usbd_desc.h"
-  #include "../taranis/usb_conf.h"
-  #include "../taranis/usbd_conf.h"
+  #include "usbd_desc.h"
+  #include "usb_conf.h"
+  #include "usbd_conf.h"
 #endif
 
-#include "../taranis/hal.h"
-#include "../taranis/aspi.h"
+#include "hal.h"
+#include "aspi.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 }

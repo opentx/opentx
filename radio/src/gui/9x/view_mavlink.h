@@ -43,7 +43,7 @@
 #ifndef _VIEW_MAVLINK_H_
 #define _VIEW_MAVLINK_H_
 
-#include "../9x/menus.h"
+#include "menus.h"
 #include "opentx.h"
 #include "telemetry/mavlink.h"
 #include "targets/common_avr/serial_driver.h"

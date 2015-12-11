@@ -34,7 +34,7 @@
  *
  */
 
-#include "../taranis/board_taranis.h"
+#include "board_taranis.h"
 
 void delaysInit(void)
 {

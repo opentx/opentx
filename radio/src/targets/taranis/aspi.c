@@ -10,7 +10,7 @@
   ******************************************************************************
 */
 
-#include "../taranis/board_taranis.h"
+#include "board_taranis.h"
 
 /**
 **********send command to lcd**************

@@ -1284,10 +1284,10 @@ void lcdStoreBackupBuffer()
   memcpy(simuLcdBackupBuf, displayBuf, sizeof(simuLcdBackupBuf));
 }
 
-bool lcdRestoreBackupBuffer()
+int lcdRestoreBackupBuffer()
 {
   memcpy(displayBuf, simuLcdBackupBuf, sizeof(displayBuf));
-  return true;
+  return 1;
 }
 #endif
 

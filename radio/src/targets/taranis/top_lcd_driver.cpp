@@ -34,7 +34,7 @@
  *
  */
 
-#include "../taranis/board_taranis.h"
+#include "board_taranis.h"
 
 #define CS1_HIGH()     TOPLCD_GPIO->BSRRL = TOPLCD_GPIO_PIN_CS1
 #define CS1_LOW()      TOPLCD_GPIO->BSRRH = TOPLCD_GPIO_PIN_CS1

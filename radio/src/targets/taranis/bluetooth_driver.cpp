@@ -10,7 +10,7 @@
 
 #include "string.h"
 #include "../../fifo.h"
-#include "../taranis/board_taranis.h"
+#include "board_taranis.h"
 
 Fifo<64> btTxFifo;
 Fifo<64> btRxFifo;

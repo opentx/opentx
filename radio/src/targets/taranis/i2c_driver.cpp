@@ -1,4 +1,4 @@
-#include "../taranis/board_taranis.h"
+#include "board_taranis.h"
 
 void eepromPageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite);
 void eepromWaitEepromStandbyState(void);
