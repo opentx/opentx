@@ -280,9 +280,8 @@ extern "C" void PWM_IRQHandler(void)
         break;
 
       default:
-        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = modulePulsesData[EXTERNAL_MODULE].ppm.pulses[modulePulsesData[EXTERNAL_MODULE].ppm.index++]; // Period in half uS
-        if (modulePulsesData[EXTERNAL_MODULE].ppm.pulses[modulePulsesData[EXTERNAL_MODULE].ppm.index] == 0) {
-          modulePulsesData[EXTERNAL_MODULE].ppm.index = 0;
+        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = *modulePulsesData[EXTERNAL_MODULE].ppm.ptr++;
+        if (*modulePulsesData[EXTERNAL_MODULE].ppm.ptr == 0) {
           setupPulses(EXTERNAL_MODULE);
         }
         break;
@@ -292,9 +291,8 @@ extern "C" void PWM_IRQHandler(void)
 
 #if !defined(REVA)
   if (reason & PWM_ISR1_CHID1) {
-    pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = modulePulsesData[EXTRA_MODULE].ppm.pulses[modulePulsesData[EXTRA_MODULE].ppm.index++] ;  // Period in half uS
-    if (modulePulsesData[EXTRA_MODULE].ppm.pulses[modulePulsesData[EXTRA_MODULE].ppm.index] == 0) {
-      modulePulsesData[EXTRA_MODULE].ppm.index = 0;
+    pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = *modulePulsesData[EXTERNAL_MODULE].ppm.ptr++;
+    if (*modulePulsesData[EXTERNAL_MODULE].ppm.ptr == 0) {
       setupPulsesPPM(EXTRA_MODULE);
     }
   }
