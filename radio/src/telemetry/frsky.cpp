@@ -70,10 +70,9 @@ FrskyData frskyData;
 #if defined(CPUARM)
 uint8_t telemetryProtocol = 255;
 #if defined(REVX)
-#define IS_FRSKY_D_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_D || telemetryProtocol == PROTOCOL_FRSKY_D_INVERTED)
-#else
-#define IS_FRSKY_D_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_D)
+uint8_t serialInversion = 0;
 #endif
+#define IS_FRSKY_D_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_D)
 #define IS_FRSKY_SPORT_PROTOCOL()  (telemetryProtocol == PROTOCOL_FRSKY_SPORT)
 #else
 #define IS_FRSKY_D_PROTOCOL()     (true)
@@ -287,7 +286,14 @@ void telemetryWakeup()
 {
 #if defined(CPUARM)
   uint8_t requiredTelemetryProtocol = MODEL_TELEMETRY_PROTOCOL();
+#if defined(REVX)
+  uint8_t requiredSerialInversion = g_model.moduleData[EXTERNAL_MODULE].invertedSerial;
+  if (telemetryProtocol != requiredTelemetryProtocol
+    || serialInversion != requiredSerialInversion) {
+    serialInversion = requiredSerialInversion;
+#else
   if (telemetryProtocol != requiredTelemetryProtocol) {
+#endif
     telemetryInit(requiredTelemetryProtocol);
     telemetryProtocol = requiredTelemetryProtocol;
   }
@@ -620,12 +626,6 @@ void telemetryInit(uint8_t protocol)
   if (protocol == PROTOCOL_FRSKY_D) {
     telemetryPortInit(FRSKY_D_BAUDRATE);
   }
-#if defined(REVX)
-  else if (protocol == PROTOCOL_FRSKY_D_INVERTED) {
-    telemetryPortInit(FRSKY_D_BAUDRATE);
-    setMFP();
-  }
-#endif
 #if defined(PCBTARANIS)
   else if (protocol == PROTOCOL_PULSES_CROSSFIRE) {
     telemetryPortInit(CROSSFIRE_BAUDRATE);
@@ -641,7 +641,10 @@ void telemetryInit(uint8_t protocol)
   }
 
 #if defined(REVX)
-  if (g_model.telemetryProtocol != PROTOCOL_FRSKY_D_INVERTED) {
+  if (serialInversion) {
+    setMFP();
+  }
+  else {
     clearMFP();
   }
 #endif

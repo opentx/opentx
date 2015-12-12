@@ -1083,6 +1083,8 @@
 #define TR_ONLYPOSITIVE        "Positivo"
 #define TR_FILTER              "Filtro"
 #define TR_TELEMETRYFULL       "Tutti gli slot sono pieni!"
+//TODO: translation
+#define TR_INVERTED_SERIAL     INDENT "Invert"
 #define TR_IGNORE_INSTANCE     TR(INDENT "No inst.","Ignora instanza")
 #define TR_DISCOVER_SENSORS    INDENT "Cerca nuovi sensori"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Ferma ricerca.."
