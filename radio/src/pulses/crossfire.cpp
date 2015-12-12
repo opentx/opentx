@@ -48,7 +48,7 @@ void createCrossfireFrame(uint8_t * frame, int16_t * pulses)
 
   uint32_t bits = 0;
   uint8_t bitsavailable = 0;
-  for (int i=0; i<NUM_TRAINER; i++) {
+  for (int i=0; i<CROSSFIRE_CHANNELS_COUNT; i++) {
     bits |= (CROSSFIRE_CH_CENTER + (((pulses[i]) * 4) / 5)) << bitsavailable;
     bitsavailable += CROSSFIRE_CH_BITS;
     while (bitsavailable >= 8) {

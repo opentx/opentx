@@ -845,6 +845,7 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_LP45:
           case PULSES_DSM2:
           case PULSES_DSMX:
+          case PULSES_CROSSFIRE:
             return 1;
           default:
             return 0;
