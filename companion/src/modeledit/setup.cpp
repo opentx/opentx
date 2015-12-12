@@ -249,7 +249,7 @@ void ModulePanel::update()
         break;
       case PULSES_CROSSFIRE:
         mask |= MASK_CHANNELS_RANGE;
-        module.channelsCount = 12;
+        module.channelsCount = 16;
         break;
       case PULSES_PPM:
         mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT;
