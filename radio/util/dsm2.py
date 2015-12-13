@@ -1,21 +1,25 @@
+from __future__ import print_function
+
 BITLEN_DSM2 = 16
 
+
 def sendByteDsm2(b):
-    print "%02x:" % b,
+    print("%02x:" % b, end=' ')
     lev = 0
     len = BITLEN_DSM2
     for i in range(9):
         nlev = b & 1
-        if (lev == nlev):
-          len += BITLEN_DSM2
+        if lev == nlev:
+            len += BITLEN_DSM2
         else:
-          print len, 
-          # _send_1(nlev ? len-5 : len+3);
-          len  = BITLEN_DSM2
-          lev  = nlev
-        b = (b>>1) | 0x80
+            print(len, end=' ')
+            # _send_1(nlev ? len-5 : len+3);
+            len = BITLEN_DSM2
+            lev = nlev
+        b = (b >> 1) | 0x80
     # _send_1(len+BITLEN_DSM2+3); // 2 stop bits
-    print len+BITLEN_DSM2
+    print(len + BITLEN_DSM2)
+
 
 sendByteDsm2(24)
 sendByteDsm2(17)

@@ -5,11 +5,12 @@ import sys
 from PyQt4 import Qt, QtGui
 
 try:
-  app = Qt.QApplication(sys.argv)
+    app = Qt.QApplication(sys.argv)
 except:
-  pass
+    pass
 
 chars = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz~ ≥→←↑↓    △Ⓘ"""
+
 
 def getCharWidth(fontsize, metrics, index):
     if index == 0:
@@ -19,20 +20,22 @@ def getCharWidth(fontsize, metrics, index):
     else:
         rect = metrics.boundingRect(chars[index])
         return rect.width()
-    
+
+
 def getFontWidth(fontsize, metrics):
     width = 0
     for i, c in enumerate(chars):
         width += getCharWidth(fontsize, metrics, i)
     return width
-    
+
+
 def createFontBitmap(filename, fontname, fontsize, foreground, background, coordsfile=True):
-    coords = [ ]
+    coords = []
     font = QtGui.QFont(fontname)
     font.setPointSize(fontsize)
     metrics = QtGui.QFontMetrics(font)
     width = getFontWidth(fontsize, metrics)
-    image = QtGui.QImage(width, fontsize+4, QtGui.QImage.Format_RGB32)
+    image = QtGui.QImage(width, fontsize + 4, QtGui.QImage.Format_RGB32)
     image.fill(background)
     painter = QtGui.QPainter()
     painter.begin(image)
@@ -45,20 +48,19 @@ def createFontBitmap(filename, fontname, fontsize, foreground, background, coord
         if i == 0:
             pass
         elif i == 14 and fontsize <= 8:
-            painter.drawPoint(width, fontsize);
+            painter.drawPoint(width, fontsize)
         else:
             rect = metrics.boundingRect(c)
-            painter.drawText(width-rect.left(), fontsize+1, c)
+            painter.drawText(width - rect.left(), fontsize + 1, c)
         width += getCharWidth(fontsize, metrics, i)
     coords.append(width)
     painter.end()
     image.save(filename + ".png")
     if coordsfile:
-      f = file(filename + ".specs", "w")
-      f.write("{ ")
-      f.write(",".join(str(tmp) for tmp in coords))
-      f.write(" }")
-      f.close()      
+        with open(filename + ".specs", "w") as f:
+            f.write("{ ")
+            f.write(",".join(str(tmp) for tmp in coords))
+            f.write(" }")
     return coords
 
 if len(sys.argv) == 4:
