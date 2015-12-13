@@ -422,7 +422,8 @@ PACK(typedef struct {
   int8_t  rfProtocol:4;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
-  uint8_t failsafeMode;
+  uint8_t failsafeMode:7;
+  uint8_t invertedSerial:1; // telemetry serial inverted from standard
   int16_t failsafeChannels[NUM_CHNOUT];
   int8_t  ppmDelay:6;
   uint8_t ppmPulsePol:1;

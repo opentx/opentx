@@ -1035,6 +1035,7 @@
 #define TR_ONLYPOSITIVE        "Positive"
 #define TR_FILTER              "Filter"
 #define TR_TELEMETRYFULL       "All telemetry slots full!"
+#define TR_INVERTED_SERIAL     INDENT "Invert"
 #define TR_IGNORE_INSTANCE     INDENT "Ignore instance"
 #define TR_DISCOVER_SENSORS    INDENT "Discover new sensors"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Stop discovery"

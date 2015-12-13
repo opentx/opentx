@@ -1102,6 +1102,8 @@
 #define TR_ONLYPOSITIVE        "Geen Negatief"
 #define TR_FILTER              "Filter aktief"
 #define TR_TELEMETRYFULL       "Telemetrie slots vol!"
+//TODO: translation
+#define TR_INVERTED_SERIAL     INDENT "Invert"
 #define TR_IGNORE_INSTANCE     TR(INDENT "Neg. ID ","Negeer ID's")
 #define TR_DISCOVER_SENSORS    INDENT "Ontdek nieuwe sensors"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Stop ontdekking"

@@ -1521,6 +1521,11 @@ enum AUDIO_SOUNDS {
 #include "rtc.h"
 #endif
 
+#if defined(REVX)
+void setMFP();
+void clearMFP();
+#endif
+
 #if defined(CPUARM)
 extern uint8_t requiredSpeakerVolume;
 #endif
