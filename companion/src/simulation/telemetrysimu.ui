@@ -940,7 +940,7 @@ Timestamp</string>
        </font>
       </property>
       <property name="text">
-       <string>KmH</string>
+       <string>knots</string>
       </property>
      </widget>
     </item>
@@ -1120,7 +1120,7 @@ Timestamp</string>
        </font>
       </property>
       <property name="text">
-       <string>KmH</string>
+       <string>km/h</string>
       </property>
      </widget>
     </item>
@@ -1282,7 +1282,7 @@ Timestamp</string>
        </font>
       </property>
       <property name="text">
-       <string>Deg. C</string>
+       <string>°C</string>
       </property>
      </widget>
     </item>
@@ -1573,7 +1573,7 @@ Timestamp</string>
        </font>
       </property>
       <property name="text">
-       <string>Meter/Sec.</string>
+       <string>m/s</string>
       </property>
      </widget>
     </item>
