@@ -1951,28 +1951,28 @@ endif
 
 lua/lua_exports_taranis.inc: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua/lua_exports_taranis.txt"
-	@$(PARSER) -DEXPORT -DPCBTARANIS -DLUA myeeprom.h | grep LEXP > lua/lua_exports_taranis.txt
+	@$(PARSER) -DEXPORT -DPCBTARANIS -DLUA -DVIRTUALINPUTS myeeprom.h | grep LEXP > lua/lua_exports_taranis.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_taranis.inc"
 	@$(PYTHON) ../util/luaexport.py $(VERSION) lua/lua_exports_taranis.txt lua/lua_exports_taranis.inc lua/lua_fields_taranis.txt
 	@rm lua/lua_exports_taranis.txt
 
 lua/lua_exports_taranis_x9e.inc: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua/lua_exports_taranis_x9e.txt"
-	@$(PARSER) -DEXPORT -DPCBTARANIS -DREVPLUS -DREV9E -DLUA myeeprom.h | grep LEXP > lua/lua_exports_taranis_x9e.txt
+	@$(PARSER) -DEXPORT -DPCBTARANIS -DREVPLUS -DREV9E -DLUA -DVIRTUALINPUTS myeeprom.h | grep LEXP > lua/lua_exports_taranis_x9e.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_taranis_x9e.inc"
 	@$(PYTHON) ../util/luaexport.py $(VERSION) lua/lua_exports_taranis_x9e.txt lua/lua_exports_taranis_x9e.inc lua/lua_fields_taranis_x9e.txt
 	@rm lua/lua_exports_taranis_x9e.txt
 
 lua/lua_exports_horus.inc: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua/lua_exports_horus.txt" 
-	@$(PARSER) -DEXPORT -DPCBHORUS -DLUA myeeprom.h | grep LEXP > lua/lua_exports_horus.txt
+	@$(PARSER) -DEXPORT -DPCBHORUS -DLUA -DVIRTUALINPUTS myeeprom.h | grep LEXP > lua/lua_exports_horus.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_horus.inc"
 	@$(PYTHON) ../util/luaexport.py $(VERSION) lua/lua_exports_horus.txt lua/lua_exports_horus.inc lua/lua_fields_horus.txt
 	@rm lua/lua_exports_horus.txt
 
 lua/lua_exports_flamenco.inc: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua/lua_exports_flamenco.txt" 
-	@$(PARSER) -DEXPORT -DPCBFLAMENCO -DLUA myeeprom.h | grep LEXP > lua/lua_exports_flamenco.txt
+	@$(PARSER) -DEXPORT -DPCBFLAMENCO -DLUA -DVIRTUALINPUTS myeeprom.h | grep LEXP > lua/lua_exports_flamenco.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_flamenco.inc"
 	@$(PYTHON) ../util/luaexport.py $(VERSION) lua/lua_exports_flamenco.txt lua/lua_exports_flamenco.inc lua/lua_fields_flamenco.txt
 	@rm lua/lua_exports_flamenco.txt
