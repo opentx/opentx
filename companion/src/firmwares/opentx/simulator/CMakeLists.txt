@@ -30,8 +30,8 @@ macro(add_lua_export_target target)
   add_custom_target(lua_export_${target} DEPENDS ${RADIO_SRC_DIRECTORY}/lua/lua_exports_${target}.inc)
 endmacro(add_lua_export_target)
 
-add_lua_export_target(taranis -DPCBTARANIS -DLUA)
-add_lua_export_target(taranis_x9e -DPCBTARANIS -DREVPLUS -DREV9E -DLUA)
+add_lua_export_target(taranis -DPCBTARANIS -DLUA -DVIRTUALINPUTS)
+add_lua_export_target(taranis_x9e -DPCBTARANIS -DREVPLUS -DREV9E -DLUA -DVIRTUALINPUTS)
 
 set(OPENTX_SRC_FILES
   opentxsimulator.cpp
