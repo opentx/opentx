@@ -183,14 +183,14 @@ inline bool isTelemetryFieldComparisonAvailable(int index)
   return (sensor.id != 0);
 }
 
-void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec);
+void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec);
 void delTelemetryIndex(uint8_t index);
 int availableTelemetryIndex();
 int lastUsedTelemetryIndex();
 int32_t getTelemetryValue(uint8_t index, uint8_t & prec);
 int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t destUnit, uint8_t destPrec);
 
-void frskySportSetDefault(int index, uint16_t type, uint8_t instance);
+void frskySportSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance);
 void frskyDSetDefault(int index, uint16_t id);
 
 #define IS_DISTANCE_UNIT(unit)         ((unit) == UNIT_METERS || (unit) == UNIT_FEET)

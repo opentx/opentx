@@ -1287,7 +1287,7 @@ PACK(typedef struct {
   uint8_t  logs:1;
   uint8_t  persistent:1;
   uint8_t  onlyPositive:1;
-  uint8_t  spare:3;
+  uint8_t  subId:3;
   union {
     PACK(struct {
       uint16_t ratio;
