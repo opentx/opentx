@@ -216,7 +216,7 @@ void setupPulsesPXX(unsigned int port)
   putPcmByte(0, port);
 
   /* PPM */
-  static uint32_t pass[NUM_MODULES] = { MODULES_INIT(0) };
+  static uint8_t pass[NUM_MODULES] = { MODULES_INIT(0) };
   int sendUpperChannels = 0;
   if (pass[port]++ & 0x01) {
     sendUpperChannels = g_model.moduleData[port].channelsCount;
@@ -231,7 +231,7 @@ void setupPulsesPXX(unsigned int port)
       }
       else {
         if (i < sendUpperChannels) {
-          int16_t failsafeValue = g_model.moduleData[port].failsafeChannels[8+g_model.moduleData[port].channelsStart+i];
+          int16_t failsafeValue = g_model.moduleData[port].failsafeChannels[8+i];
           if (failsafeValue == FAILSAFE_CHANNEL_HOLD)
             chan = 4095;
           else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE)
@@ -240,7 +240,7 @@ void setupPulsesPXX(unsigned int port)
             chan = limit(2049, PPM_CH_CENTER(8+g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (failsafeValue * 512 / 682) + 3072, 4094);
         }
         else {
-          int16_t failsafeValue = g_model.moduleData[port].failsafeChannels[g_model.moduleData[port].channelsStart+i];
+          int16_t failsafeValue = g_model.moduleData[port].failsafeChannels[i];
           if (failsafeValue == FAILSAFE_CHANNEL_HOLD)
             chan = 2047;
           else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE)

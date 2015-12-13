@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "eeprominterface.h"
+#include "modelprinter.h"
 
 class GVarGroup;
 class CurveGroup;
@@ -14,7 +15,8 @@ namespace Ui {
 class ExpoDialog : public QDialog {
     Q_OBJECT
   public:
-    ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expodata, GeneralSettings & generalSettings, Firmware * firmware, char * inputName);
+    ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expodata, GeneralSettings & generalSettings, 
+                Firmware * firmware, QString & inputName);
     ~ExpoDialog();
 
   protected:
@@ -30,10 +32,11 @@ class ExpoDialog : public QDialog {
     GeneralSettings & generalSettings;
     Firmware * firmware;
     ExpoData * ed;
-    char * inputName;
+    QString & inputName;
     GVarGroup * gvWeightGroup;
     GVarGroup * gvOffsetGroup;
     CurveGroup * curveGroup;
+    ModelPrinter modelPrinter;
 };
 
 #endif // EXPODIALOG_H

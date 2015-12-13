@@ -15,6 +15,9 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
 {
   ui->setupUi(this);
 
+  ui->labelName->setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(ui->labelName, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(name_customContextMenuRequested(const QPoint &)));
+
   int modesCount = firmware->getCapability(FlightModes);
 
   // Phase name
@@ -56,7 +59,11 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   }
     
   // The trims
-  QString labels[] = { tr("Rud"), tr("Ele"), tr("Thr"), tr("Ail") }; // TODO is elsewhere for sure
+  QString labels[NUM_STICKS]; 
+  for(int i=0; i < NUM_STICKS; i++) {
+    labels[i] = AnalogString(i);
+  }
+
 
   trimsLabel << ui->trim1Label << ui->trim2Label << ui->trim3Label << ui->trim4Label;
   trimsUse << ui->trim1Use << ui->trim2Use << ui->trim3Use << ui->trim4Use;
@@ -419,6 +426,29 @@ void FlightModePanel::phaseTrimSlider_valueChanged()
     trimsValue[trim]->setValue(value);
     lock = false;
     emit modified();
+  }
+}
+
+void FlightModePanel::name_customContextMenuRequested(const QPoint & pos)
+{
+    QLabel *label = (QLabel *)sender();
+    QPoint globalPos = label->mapToGlobal(pos);
+    QMenu contextMenu;
+    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Clear"),this,SLOT(fmClear()),tr("Clear"));
+    contextMenu.exec(globalPos);
+}
+
+void FlightModePanel::fmClear()
+{
+  int res = QMessageBox::question(this, "Companion", tr("Clear all current Flight Mode properties?"), QMessageBox::Yes | QMessageBox::No);
+  if (res == QMessageBox::Yes) {
+    phase.clear();
+    for(int i=0; i < 4; ++i) {
+      model->setTrimValue(phaseIdx, i, 0);
+    }
+    update();
+    emit modified();
+    emit nameModified();
   }
 }
 

@@ -87,10 +87,18 @@ PACK(struct Dsm2PulsesData {
 });
 #endif
 
+#define CROSSFIRE_BAUDRATE             200000
+#define CROSSFIRE_FRAME_LEN            25
+#define CROSSFIRE_CHANNELS_COUNT       16
+PACK(struct CrossfirePulsesData {
+  uint8_t pulses[CROSSFIRE_FRAME_LEN];
+});
+
 union ModulePulsesData {
   PxxPulsesData pxx;
   Dsm2PulsesData dsm2;
   PpmPulsesData ppm;
+  CrossfirePulsesData crossfire;
 };
 
 union TrainerPulsesData {
@@ -104,6 +112,8 @@ void setupPulses(unsigned int port);
 void setupPulsesDSM2(unsigned int port);
 void setupPulsesPXX(unsigned int port);
 void setupPulsesPPM(unsigned int port);
+
+void createCrossfireFrame(uint8_t * frame, int16_t * pulses);
 
 #if defined(HUBSAN)
 void Hubsan_Init();

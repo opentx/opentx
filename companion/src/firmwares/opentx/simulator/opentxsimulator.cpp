@@ -15,7 +15,6 @@
  */
 
 #include "opentxsimulator.h"
-#include <QDebug>
 #include <stdio.h>
 #include <exception>
 #include <map>
@@ -41,14 +40,15 @@
 #define GRAPHICS
 #define CURVES
 #if defined(PCBTARANIS)
-#define RTCLOCK
-#define XCURVES
-#define VIRTUALINPUTS
-#define LUA
-#define LUA_MODEL_SCRIPTS
+  #define RTCLOCK
+  #define XCURVES
+  #define VIRTUALINPUTS
+  #define LUA
+  #define LUA_MODEL_SCRIPTS
+  #define LUAINPUTS 
 #else
-#define BUZZER
-#define TEMPLATES
+  #define BUZZER
+  #define TEMPLATES
 #endif
 #define BOLD_FONT
 #define HAPTIC
@@ -61,17 +61,17 @@
 #endif
 
 #if defined(PCBSKY9X) && !defined(REVX)
-#define ROTARY_ENCODERS 1
+  #define ROTARY_ENCODERS 1
 #elif defined(PCBGRUVIN9X)
-#define ROTARY_ENCODERS 2
+  #define ROTARY_ENCODERS 2
 #endif
 
 #if defined(CPUARM)
-#define FRSKY_SPORT
+  #define FRSKY_SPORT
 #endif
 
 #if defined (PCBTARANIS)
-#define MIXERS_MONITOR
+  #define MIXERS_MONITOR
 #endif
 
 #undef min
@@ -90,6 +90,7 @@ namespace NAMESPACE {
 #include "radio/src/telemetry/telemetry.cpp"
 #include "radio/src/telemetry/frsky_sport.cpp"
 #include "radio/src/sbus.cpp"
+#include "radio/src/crc16.cpp"
 #else
 #include "radio/src/main_avr.cpp"
 #include "radio/src/audio_avr.cpp"
@@ -121,6 +122,7 @@ namespace NAMESPACE {
 #include "radio/src/stamp.cpp"
 #include "radio/src/maths.cpp"
 #include "radio/src/vario.cpp"
+#include "radio/src/trainer_input.cpp"
 
 #if defined(PCBTARANIS)
 #include "radio/src/bmp.cpp"
@@ -227,12 +229,11 @@ namespace NAMESPACE {
 #include "radio/src/targets/taranis/haptic_driver.cpp"
 #if defined(REV9E)
 #include "radio/src/targets/taranis/top_lcd_driver.cpp"
-#include "radio/src/targets/taranis/rotenc_driver.cpp"
 #endif
 #include "radio/src/targets/taranis/pulses_driver.cpp"
 #include "radio/src/targets/taranis/rtc_driver.cpp"
 #include "radio/src/targets/taranis/trainer_driver.cpp"
-#include "radio/src/targets/taranis/uart3_driver.cpp"
+#include "radio/src/targets/taranis/serial2_driver.cpp"
 #elif defined(PCBSKY9X)
 #include "radio/src/targets/sky9x/board_sky9x.cpp"
 #include "radio/src/targets/sky9x/telemetry_driver.cpp"
@@ -243,7 +244,7 @@ namespace NAMESPACE {
 #include "radio/src/targets/sky9x/sdcard_driver.cpp"
 #include "radio/src/targets/sky9x/coproc_driver.cpp"
 #include "radio/src/targets/sky9x/haptic_driver.cpp"
-#include "radio/src/targets/sky9x/second_serial_driver.cpp"
+#include "radio/src/targets/sky9x/serial2_driver.cpp"
 #include "radio/src/targets/sky9x/pulses_driver.cpp"
 #elif defined(PCBGRUVIN9X)
 #include "radio/src/targets/gruvin9x/board_gruvin9x.cpp"
@@ -259,24 +260,32 @@ namespace NAMESPACE {
 #include "radio/src/targets/simu/simpgmspace.cpp"
 #include "radio/src/translations.cpp"
 #include "radio/src/telemetry/frsky.cpp"
-#include "radio/src/telemetry/frsky_d.cpp"
+#if defined(CPUARM)
+  #include "radio/src/telemetry/frsky_d_arm.cpp"
+#else
+  #include "radio/src/telemetry/frsky_d.cpp"
+#endif
 #include "radio/src/translations/tts_en.cpp"
 
 #if defined(CPUARM)
 #include "radio/src/translations/tts_cz.cpp"
 #include "radio/src/translations/tts_de.cpp"
 #include "radio/src/translations/tts_es.cpp"
-#include "radio/src/translations/tts_se.cpp"
-#include "radio/src/translations/tts_it.cpp"
 #include "radio/src/translations/tts_fr.cpp"
-#include "radio/src/translations/tts_pt.cpp"
-#include "radio/src/translations/tts_sk.cpp"
-#include "radio/src/translations/tts_pl.cpp"
 #include "radio/src/translations/tts_hu.cpp"
+#include "radio/src/translations/tts_it.cpp"
+#include "radio/src/translations/tts_nl.cpp"
+#include "radio/src/translations/tts_pl.cpp"
+#include "radio/src/translations/tts_pt.cpp"
+#include "radio/src/translations/tts_se.cpp"
+#include "radio/src/translations/tts_sk.cpp"
 #endif
 
 #if defined(LUA)
-#include "radio/src/lua_api.cpp"
+#include "radio/src/lua/interface.cpp"
+#include "radio/src/lua/api_general.cpp"
+#include "radio/src/lua/api_lcd.cpp"
+#include "radio/src/lua/api_model.cpp"
 #include "radio/src/thirdparty/Lua/src/lapi.c"
 #include "radio/src/thirdparty/Lua/src/lcode.c"
 #include "radio/src/thirdparty/Lua/src/lctype.c"
@@ -307,6 +316,7 @@ namespace NAMESPACE {
 #include "radio/src/thirdparty/Lua/src/ltablib.c"
 #include "radio/src/thirdparty/Lua/src/lcorolib.c"
 #include "radio/src/thirdparty/Lua/src/liolib.c"
+#include "radio/src/thirdparty/Lua/src/lstrlib.c"
 #endif
 
 int16_t g_anas[NUM_STICKS+NUM_POTS];
@@ -485,6 +495,36 @@ void OpenTxSimulator::sendTelemetry(::uint8_t * data, unsigned int len)
 #if defined(FRSKY_SPORT)
   processSportPacket(data);
 #endif
+}
+
+uint8_t OpenTxSimulator::getSensorInstance(uint16_t id)
+{
+#if defined(FRSKY_SPORT)
+  for (int i = 0; i<MAX_SENSORS; i++) {
+    if (isTelemetryFieldAvailable(i)) {
+      TelemetrySensor * sensor = &g_model.telemetrySensors[i];
+      if (sensor->id == id) {
+        return sensor->instance;
+      }
+    }
+  }
+#endif
+  return 0;
+}
+
+uint16_t OpenTxSimulator::getSensorRatio(uint16_t id)
+{
+#if defined(FRSKY_SPORT)
+  for (int i = 0; i<MAX_SENSORS; i++) {
+    if (isTelemetryFieldAvailable(i)) {
+      TelemetrySensor * sensor = &g_model.telemetrySensors[i];
+      if (sensor->id == id) {
+        return sensor->custom.ratio;
+      }
+    }
+  }
+#endif
+  return 0;
 }
 
 void OpenTxSimulator::setTrainerInput(unsigned int inputNumber, ::int16_t value)

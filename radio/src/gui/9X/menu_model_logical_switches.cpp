@@ -100,7 +100,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
 
   SUBMENU_NOTITLE(LS_FIELD_COUNT, {0, 0, 1, 0 /*, 0...*/});
 
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
 
   INCDEC_DECLARE_VARS(EE_MODEL);
 
@@ -108,7 +108,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
-    uint8_t i = k + s_pgOfs;
+    uint8_t i = k + menuVerticalOffset;
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     uint8_t cstate = lswFamily(cs->func);
     switch(i) {
@@ -140,8 +140,9 @@ void menuModelLogicalSwitchOne(uint8_t event)
           v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
         }
         else if (cstate == LS_FAMILY_TIMER) {
-          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, v1_val+1, LEFT|attr);
-          v1_max = 99;
+          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT|PREC1|attr);
+          v1_min = -128;
+          v1_max = 122;
         }
         else {
           v1_val = (uint8_t)cs->v1;
@@ -163,13 +164,14 @@ void menuModelLogicalSwitchOne(uint8_t event)
           v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
         }
         else if (cstate == LS_FAMILY_TIMER) {
-          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cs->v2+1, LEFT|attr);
-          v2_max = 99;
+          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1|attr);
+          v2_min = -128;
+          v2_max = 122;
         }
         else if (cstate == LS_FAMILY_EDGE) {
-          putsEdgeDelayParam(CSWONE_2ND_COLUMN, y, cs, m_posHorz==0 ? attr : 0, m_posHorz==1 ? attr : 0);
+          putsEdgeDelayParam(CSWONE_2ND_COLUMN, y, cs, menuHorizontalPosition==0 ? attr : 0, menuHorizontalPosition==1 ? attr : 0);
           if (s_editMode <= 0) continue;
-          if (attr && m_posHorz==1) {
+          if (attr && menuHorizontalPosition==1) {
             CHECK_INCDEC_MODELVAR(event, cs->v3, -1, 222 - cs->v2);
             break;
           }
@@ -183,7 +185,11 @@ void menuModelLogicalSwitchOne(uint8_t event)
         else {
 #if defined(FRSKY)
           if (v1_val >= MIXSRC_FIRST_TELEM) {
+#if defined(CPUARM)
+            putsChannelValue(CSWONE_2ND_COLUMN, y, v1_val, convertLswTelemValue(cs), attr|LEFT);
+#else
             putsTelemetryChannelValue(CSWONE_2ND_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), attr|LEFT);
+#endif
             v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
             if (cs->func == LS_FUNC_DIFFEGREATER)
               v2_min = -v2_max;
@@ -241,7 +247,7 @@ void menuModelLogicalSwitches(uint8_t event)
 
   coord_t y = 0;
   uint8_t k = 0;
-  int8_t sub = m_posVert - 1;
+  int8_t sub = menuVerticalPosition - 1;
 
   switch (event) {
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -258,7 +264,7 @@ void menuModelLogicalSwitches(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     y = 1 + (i+1)*FH;
-    k = i+s_pgOfs;
+    k = i+menuVerticalOffset;
     LogicalSwitchData * cs = lswAddress(k);
 
     // CSW name
@@ -286,14 +292,18 @@ void menuModelLogicalSwitches(uint8_t event)
         putsEdgeDelayParam(CSW_3RD_COLUMN, y, cs, 0, 0);
       }
       else if (cstate == LS_FAMILY_TIMER) {
-        lcd_outdezAtt(CSW_2ND_COLUMN, y, cs->v1+1, LEFT);
-        lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2+1, LEFT);
+        lcd_outdezAtt(CSW_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT|PREC1);
+        lcd_outdezAtt(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1);
       }
       else {
         uint8_t v1 = cs->v1;
         putsMixerSource(CSW_2ND_COLUMN, y, v1, 0);
         if (v1 >= MIXSRC_FIRST_TELEM) {
+#if defined(CPUARM)
+          putsChannelValue(CSW_3RD_COLUMN, y, v1, convertLswTelemValue(cs), LEFT);
+#else
           putsTelemetryChannelValue(CSW_3RD_COLUMN, y, v1 - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT);
+#endif
         }
         else {
           lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, LEFT);
@@ -315,12 +325,12 @@ void menuModelLogicalSwitches(uint8_t event)
   MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_LOGICAL_SWITCH+1, {0, NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/});
 
   uint8_t   k = 0;
-  int8_t    sub = m_posVert - 1;
-  horzpos_t horz = m_posHorz;
+  int8_t    sub = menuVerticalPosition - 1;
+  horzpos_t horz = menuHorizontalPosition;
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    k = i+s_pgOfs;
+    k = i+menuVerticalOffset;
     uint8_t attr = (sub==k ? ((s_editMode>0) ? BLINK|INVERS : INVERS)  : 0);
     uint8_t attr1 = (horz==1 ? attr : 0);
     uint8_t attr2 = (horz==2 ? attr : 0);

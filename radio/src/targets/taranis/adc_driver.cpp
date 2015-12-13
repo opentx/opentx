@@ -45,7 +45,7 @@
 #define SAMPTIME    2   // sample time = 28 cycles
 
 #if defined(REV9E)
-  const int8_t ana_direction[NUMBER_ANALOG] = {1,1,-1,1,  1,-1,1,-1, -1,-1-1,-1,  1};
+  const int8_t ana_direction[NUMBER_ANALOG] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
 #elif defined(REVPLUS)
   const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,1,  1};
 #elif defined(REV4a)
@@ -66,7 +66,7 @@
     #define NUMBER_ANALOG_ADC1      10
 #endif
 
-uint16_t Analog_values[NUMBER_ANALOG];
+uint16_t Analog_values[NUMBER_ANALOG] __DMA;
 
 void adcInit()
 {
@@ -165,6 +165,12 @@ void adcStop()
 
 uint16_t getAnalogValue(uint32_t index)
 {
+  if (IS_POT(index) && !IS_POT_AVAILABLE(index)) {
+    // Use fixed analog value for non-existing and/or non-connected pots.
+    // Non-connected analog inputs will slightly follow the adjacent connected analog inputs, 
+    // which produces ghost readings on these inputs.
+    return 0;
+  }
 #if defined(REV9E)
   index = ana_mapping[index];
 #endif

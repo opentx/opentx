@@ -42,7 +42,7 @@
 #define RBOX_CENTERX  (3*LCD_W/4 - 10)
 #define MODELNAME_X   (2*FW-2)
 #define MODELNAME_Y   (0)
-#define PHASE_X       (6*FW)
+#define PHASE_X       (6*FW-1)
 #define PHASE_Y       (2*FH)
 #define PHASE_FLAGS   0
 #define VBATT_X       (6*FW)
@@ -206,15 +206,15 @@ void displayBattVoltage()
 {
 #if defined(BATTGRAPH)
   putsVBat(VBATT_X-8, VBATT_Y+1, 0);
-  drawFilledRect(VBATT_X-25, VBATT_Y+9, 22, 5);
-  lcd_vline(VBATT_X-3, VBATT_Y+10, 3);
-  uint8_t count = limit<uint8_t>(2, 20 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 20);
+  drawFilledRect(VBATT_X-25, VBATT_Y+9, 21, 5);
+  lcd_vline(VBATT_X-4, VBATT_Y+10, 3);
+  uint8_t count = GET_TXBATT_BARS();
   for (uint8_t i=0; i<count; i+=2)
     lcd_vline(VBATT_X-24+i, VBATT_Y+10, 3);
-  if (g_vbat100mV > g_eeGeneral.vBatWarn || BLINK_ON_PHASE)
-    drawFilledRect(VBATT_X-26, VBATT_Y, 25, 15);
+  if (!IS_TXBATT_WARNING() || BLINK_ON_PHASE)
+    drawFilledRect(VBATT_X-26, VBATT_Y, 24, 15);
 #else
-  LcdFlags att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | BIGSIZE;
+  LcdFlags att = (IS_TXBATT_WARNING() ? BLINK|INVERS : 0) | BIGSIZE;
   putsVBat(VBATT_X-1, VBATT_Y, att|NO_UNIT);
   lcd_putc(VBATT_X, VBATTUNIT_Y, 'V');
 #endif
@@ -223,11 +223,11 @@ void displayBattVoltage()
 #if defined(PCBSKY9X)
 void displayVoltageOrAlarm()
 {
-  if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
+  if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
     putsValueWithUnit(6*FW-1, 2*FH, getTemperature(), UNIT_TEMPERATURE, BLINK|INVERS|DBLSIZE);
   }
-  else if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
-    putsValueWithUnit(7*FW-1, 2*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.currentCalib)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE);
+  else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
+    putsValueWithUnit(7*FW-1, 2*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.txCurrentCalibration)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE);
   }
   else {
     displayBattVoltage();
@@ -262,12 +262,12 @@ void onMainViewMenu(const char *result)
     pushModelNotes();
   }
   else if (result == STR_RESET_SUBMENU) {
-    MENU_ADD_ITEM(STR_RESET_FLIGHT);
-    MENU_ADD_ITEM(STR_RESET_TIMER1);
-    MENU_ADD_ITEM(STR_RESET_TIMER2);
-    MENU_ADD_ITEM(STR_RESET_TIMER3);
+    POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TIMER1);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TIMER3);
 #if defined(FRSKY)
-    MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
 #endif
   }
 #endif
@@ -336,26 +336,26 @@ void menuMainView(uint8_t event)
 
 #if defined(CPUARM)
       if (modelHasNotes()) {
-        MENU_ADD_ITEM(STR_VIEW_NOTES);
+        POPUP_MENU_ADD_ITEM(STR_VIEW_NOTES);
       }
 #endif
 
 #if defined(CPUARM)
-      MENU_ADD_ITEM(STR_RESET_SUBMENU);
+      POPUP_MENU_ADD_ITEM(STR_RESET_SUBMENU);
 #else
-      MENU_ADD_ITEM(STR_RESET_TIMER1);
-      MENU_ADD_ITEM(STR_RESET_TIMER2);
+      POPUP_MENU_ADD_ITEM(STR_RESET_TIMER1);
+      POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
 #if defined(FRSKY)
-      MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+      POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
 #endif
-      MENU_ADD_ITEM(STR_RESET_FLIGHT);
+      POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
 #endif
 
-      MENU_ADD_ITEM(STR_STATISTICS);
+      POPUP_MENU_ADD_ITEM(STR_STATISTICS);
 #if defined(CPUARM)
-      MENU_ADD_ITEM(STR_ABOUT_US);
+      POPUP_MENU_ADD_ITEM(STR_ABOUT_US);
 #endif
-      menuHandler = onMainViewMenu;
+      popupMenuHandler = onMainViewMenu;
       break;
 #endif
 
@@ -573,12 +573,12 @@ void menuMainView(uint8_t event)
 #if defined(GVARS) && !defined(PCBSTD)
   if (s_gvar_timer > 0) {
     s_gvar_timer--;
-    s_warning = STR_GLOBAL_VAR;
+    warningText = STR_GLOBAL_VAR;
     displayBox();
     lcd_putsnAtt(16, 5*FH, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
     lcd_putsAtt(16+7*FW, 5*FH, PSTR("[\010]"), BOLD);
     lcd_outdezAtt(16+7*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), BOLD);
-    s_warning = NULL;
+    warningText = NULL;
   }
 #endif
 

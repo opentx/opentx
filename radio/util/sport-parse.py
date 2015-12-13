@@ -51,12 +51,17 @@ def ParseSWR(packet, dataId, prim, appId, data, crc):
   print "packet: %s (%4d)" % (dump(packet), lineNumber) ,
   print " SWR: %d"  % (data & 0xFF)    
 
+def ParseAirSpeed(packet, dataId, prim, appId, data, crc):
+  print "packet: %s (%4d)" % (dump(packet), lineNumber) ,
+  print " Aspd: %.1f km/h"  % (data/10.0)    
+
 appIdParsers = ( 
   (0x0300, 0x030f, ParseFlVSS),
   (0xf101, 0xf101, ParseRSSI),
   (0xf102, 0xf103, ParseAdc),
   (0xf104, 0xf104, ParseBatt),
   (0xf105, 0xf105, ParseSWR),
+  (0x0a00, 0x0a0f, ParseAirSpeed),
 )
 
 def dump(data, maxLen = None):

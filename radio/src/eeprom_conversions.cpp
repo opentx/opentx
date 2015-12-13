@@ -139,7 +139,6 @@ enum Mix216Sources {
   MIXSRC216_FIRST_TELEM,
 };
 
-
 enum Telemetry216Source {
   TELEM216_NONE,
   TELEM216_TX_VOLTAGE,
@@ -627,7 +626,7 @@ PACK(typedef struct {
   int8_t    currModel;
   uint8_t   contrast;
   uint8_t   vBatWarn;
-  int8_t    vBatCalib;
+  int8_t    txVoltageCalibration;
   int8_t    backlightMode;
   TrainerData trainer;
   uint8_t   view;            // index of view in main screen
@@ -660,7 +659,7 @@ PACK(typedef struct {
   int8_t    vBatMin;
   int8_t    vBatMax;
   uint8_t   backlightBright;
-  int8_t    currentCalib;
+  int8_t    txCurrentCalibration;
   int8_t    temperatureWarn;
   uint8_t   mAhWarn;
   uint16_t  mAhUsed;
@@ -831,10 +830,10 @@ int ConvertSwitch_216_to_217(int swtch)
   if (swtch < 0)
     return -ConvertSwitch_216_to_217(-swtch);
 
-  if (swtch >= SWSRC_SF0)
+  if (swtch > SWSRC_SF0)
     swtch += 1;
 
-  if (swtch >= SWSRC_SH0)
+  if (swtch > SWSRC_SH0)
     swtch += 1;
 
   return swtch;
@@ -909,7 +908,7 @@ void ConvertModel_216_to_217(ModelData &model)
     if (oldModel.timers[i].mode >= TMRMODE_COUNT)
       timer.mode = TMRMODE_COUNT + ConvertSwitch_216_to_217(oldModel.timers[i].mode - TMRMODE_COUNT + 1) - 1;
     else
-      timer.mode = oldModel.timers[i].mode;
+      timer.mode = ConvertSwitch_216_to_217(oldModel.timers[i].mode);
     timer.start = oldModel.timers[i].start;
     timer.countdownBeep = oldModel.timers[i].countdownBeep;
     timer.minuteBeep = oldModel.timers[i].minuteBeep;
@@ -918,7 +917,7 @@ void ConvertModel_216_to_217(ModelData &model)
   }
   newModel.telemetryProtocol = oldModel.telemetryProtocol;
   newModel.thrTrim = oldModel.thrTrim;
-  newModel.trimInc = oldModel.trimInc - 2;
+  newModel.trimInc = oldModel.trimInc;
   newModel.disableThrottleWarning = oldModel.disableThrottleWarning;
   newModel.displayChecklist = oldModel.displayChecklist;
   newModel.extendedLimits = oldModel.extendedLimits;
@@ -998,10 +997,14 @@ void ConvertModel_216_to_217(ModelData &model)
         sw.v2 = ConvertSource_216_to_217((uint8_t)sw.v2);
       }
     }
-    else if (cstate == LS_FAMILY_BOOL) {
+    else if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
       sw.v1 = ConvertSwitch_216_to_217(sw.v1);
       sw.v2 = ConvertSwitch_216_to_217(sw.v2);
     }
+    else if (cstate == LS_FAMILY_EDGE) {
+      sw.v1 = ConvertSwitch_216_to_217(sw.v1);
+    }
+    sw.andsw = ConvertSwitch_216_to_217(sw.andsw);
   }
   for (int i=0; i<NUM_CFN; i++) {
     CustomFunctionData & fn = newModel.customFn[i];
@@ -1032,7 +1035,7 @@ void ConvertModel_216_to_217(ModelData &model)
     newModel.moduleData[i].rfProtocol = oldModel.moduleData[i].rfProtocol;
     newModel.moduleData[i].channelsStart = oldModel.moduleData[i].channelsStart;
     newModel.moduleData[i].channelsCount = oldModel.moduleData[i].channelsCount;
-    newModel.moduleData[i].failsafeMode = oldModel.moduleData[i].failsafeMode;
+    newModel.moduleData[i].failsafeMode = oldModel.moduleData[i].failsafeMode + 1;
     for (int j=0; j<NUM_CHNOUT; j++) {
       newModel.moduleData[i].failsafeChannels[j] = oldModel.moduleData[i].failsafeChannels[j];
     }
@@ -1041,6 +1044,9 @@ void ConvertModel_216_to_217(ModelData &model)
     newModel.moduleData[i].ppmPulsePol = oldModel.moduleData[i].ppmPulsePol;
   }
 
+#if defined(PCBTARANIS)
+  newModel.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_XJT;
+#endif
   newModel.moduleData[EXTERNAL_MODULE].type = oldModel.externalModule;
 
 #if defined(PCBTARANIS)
@@ -1074,12 +1080,16 @@ bool eeConvert()
 {
   const char *msg = NULL;
 
+#if defined(REV9E)
+  return false;
+#else
   if (g_eeGeneral.version == 216) {
     msg = PSTR("EEprom Data v216");
   }
   else {
     return false;
   }
+#endif
 
   int conversionVersionStart = g_eeGeneral.version;
 

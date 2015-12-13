@@ -52,7 +52,7 @@ void timerReset(uint8_t idx)
 }
 
 #if defined(CPUARM)
-void timerSet(int idx, int16_t val)
+void timerSet(int idx, int val)
 {
   TimerState & timerState = timersStates[idx];
   timerState.state = TMR_OFF; // is changed to RUNNING dep from mode
@@ -102,18 +102,18 @@ void saveTimers()
 void evalTimers(int16_t throttle, uint8_t tick10ms)
 {
   for (uint8_t i=0; i<TIMERS; i++) {
-    int8_t tm = g_model.timers[i].mode;
-    uint16_t tv = g_model.timers[i].start;
+    int8_t timerMode = g_model.timers[i].mode;
+    tmrstart_t timerStart = g_model.timers[i].start;
     TimerState * timerState = &timersStates[i];
 
-    if (tm) {
-      if ((timerState->state == TMR_OFF) && (tm != TMRMODE_THR_TRG)) {
+    if (timerMode) {
+      if ((timerState->state == TMR_OFF) && (timerMode != TMRMODE_THR_TRG)) {
         timerState->state = TMR_RUNNING;
         timerState->cnt = 0;
         timerState->sum = 0;
       }
 
-      if (tm == TMRMODE_THR_REL) {
+      if (timerMode == TMRMODE_THR_REL) {
         timerState->cnt++;
         timerState->sum += throttle;
       }
@@ -123,16 +123,16 @@ void evalTimers(int16_t throttle, uint8_t tick10ms)
         if (timerState->val == TIMER_MIN) break;
 
         timerState->val_10ms -= 100 ;
-        int16_t newTimerVal = timerState->val;
-        if (tv) newTimerVal = tv - newTimerVal;
+        tmrval_t newTimerVal = timerState->val;
+        if (timerStart) newTimerVal = timerStart - newTimerVal;
 
-        if (tm == TMRMODE_ABS) {
+        if (timerMode == TMRMODE_ABS) {
           newTimerVal++;
         }
-        else if (tm == TMRMODE_THR) {
+        else if (timerMode == TMRMODE_THR) {
           if (throttle) newTimerVal++;
         }
-        else if (tm == TMRMODE_THR_REL) {
+        else if (timerMode == TMRMODE_THR_REL) {
           // @@@ open.20.fsguruh: why so complicated? we have already a s_sum field; use it for the half seconds (not showable) as well
           // check for s_cnt[i]==0 is not needed because we are shure it is at least 1
   #if defined(ACCURAT_THROTTLE_TIMER)
@@ -146,63 +146,64 @@ void evalTimers(int16_t throttle, uint8_t tick10ms)
             timerState->sum -= 32*timerState->cnt;
           }
   #endif
-          timerState->cnt=0;
+          timerState->cnt = 0;
         }
-        else if (tm == TMRMODE_THR_TRG) {
+        else if (timerMode == TMRMODE_THR_TRG) {
           // we can't rely on (throttle || newTimerVal > 0) as a detection if timer should be running
           // because having persistent timer brakes this rule
           if ((throttle > THR_TRG_TRESHOLD) && timerState->state == TMR_OFF) {
             timerState->state = TMR_RUNNING;  // start timer running
             timerState->cnt = 0;
             timerState->sum = 0;
-            TRACE("Timer[%d] THr triggered", i);
+            // TRACE("Timer[%d] THr triggered", i);
           }
           if (timerState->state != TMR_OFF) newTimerVal++;
         }
         else {
-          if (tm > 0) tm -= (TMRMODE_COUNT-1);
-          if (getSwitch(tm))
+          if (timerMode > 0) timerMode -= (TMRMODE_COUNT-1);
+          if (getSwitch(timerMode)) {
             newTimerVal++;
+          }
         }
 
         switch (timerState->state) {
           case TMR_RUNNING:
-            if (tv && newTimerVal>=(int16_t)tv) {
+            if (timerStart && newTimerVal>=(tmrval_t)timerStart) {
               AUDIO_TIMER_00(g_model.timers[i].countdownBeep);
               timerState->state = TMR_NEGATIVE;
-              TRACE("Timer[%d] negative", i);
+              // TRACE("Timer[%d] negative", i);
             }
             break;
           case TMR_NEGATIVE:
-            if (newTimerVal >= (int16_t)tv + MAX_ALERT_TIME) {
+            if (newTimerVal >= (tmrval_t)timerStart + MAX_ALERT_TIME) {
               timerState->state = TMR_STOPPED;
-              TRACE("Timer[%d] stopped state at %d", i, newTimerVal);
+              // TRACE("Timer[%d] stopped state at %d", i, newTimerVal);
             }
             break;
         }
 
-        if (tv) newTimerVal = tv - newTimerVal; // if counting backwards - display backwards
+        if (timerStart) newTimerVal = timerStart - newTimerVal; // if counting backwards - display backwards
 
         if (newTimerVal != timerState->val) {
           timerState->val = newTimerVal;
           if (timerState->state == TMR_RUNNING) {
             if (g_model.timers[i].countdownBeep && g_model.timers[i].start) {
-              if (newTimerVal==30) { 
+              if (newTimerVal == 30) {
                 AUDIO_TIMER_30(); 
-                TRACE("Timer[%d] 30s announcement", i); 
+                // TRACE("Timer[%d] 30s announcement", i);
               }
-              if (newTimerVal==20) { 
+              if (newTimerVal == 20) {
                 AUDIO_TIMER_20();
-                TRACE("Timer[%d] 20s announcement", i); 
+                // TRACE("Timer[%d] 20s announcement", i);
               }
-              if (newTimerVal<=10) {
+              if (newTimerVal <= 10) {
                 AUDIO_TIMER_LT10(g_model.timers[i].countdownBeep, newTimerVal);
-                TRACE("Timer[%d] %ds announcement", i, newTimerVal);
+                // TRACE("Timer[%d] %ds announcement", i, newTimerVal);
               }
             }
             if (g_model.timers[i].minuteBeep && (newTimerVal % 60)==0) {
               AUDIO_TIMER_MINUTE(newTimerVal);
-              TRACE("Timer[%d] %d minute announcement", i, newTimerVal/60);
+              // TRACE("Timer[%d] %d minute announcement", i, newTimerVal/60);
             }
           }
         }

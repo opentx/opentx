@@ -107,6 +107,17 @@ uint32_t isFirmwareStart(const void * buffer)
 {
   const uint32_t * block = (const uint32_t *)buffer;
 
+#if defined(REV9E)
+  if ((block[0] & 0xFFFC0000) != 0x10000000 && (block[0] & 0xFFFC0000) != 0x20000000) {
+    return 0;
+  }
+  if ((block[1] & 0xFFF00000) != 0x08000000) {
+    return 0;
+  }
+  if ((block[2] & 0xFFF00000) != 0x08000000) {
+    return 0;
+  }
+#else
   if ((block[0] & 0xFFFC0000) != 0x20000000) {
     return 0;
   }
@@ -116,6 +127,7 @@ uint32_t isFirmwareStart(const void * buffer)
   if ((block[2] & 0xFFF00000) != 0x08000000) {
     return 0;
   }
+#endif
   return 1;
 }
 

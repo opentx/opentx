@@ -60,6 +60,7 @@ class TelemetryCustomScreen: public ModelPanel
 
   private slots:
     void on_screenType_currentIndexChanged(int index);
+    void scriptNameEdited();
     void customFieldChanged(int index);
     void barSourceChanged(int index);
     void barMinChanged(double value);
@@ -88,7 +89,7 @@ class TelemetrySensorPanel: public ModelPanel
     void update();
 
   signals:
-    void nameModified();
+    void dataModified();
 
   protected slots:
     void on_name_editingFinished();
@@ -117,7 +118,7 @@ class TelemetryPanel : public ModelPanel
 
   private slots:
     void on_telemetryProtocol_currentIndexChanged(int index);
-    void onAnalogModified();
+    void onModified();
     void on_frskyProtoCB_currentIndexChanged(int index);
     void on_bladesCount_editingFinished();
     void on_rssiAlarm1CB_currentIndexChanged(int index);

@@ -1,10 +1,12 @@
 #include "board_taranis.h"
 
-void I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite);
-void I2C_EE_WaitEepromStandbyState(void);
+void eepromPageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite);
+void eepromWaitEepromStandbyState(void);
 
-void eepromInit(void)
+void i2cInit()
 {
+  I2C_DeInit(I2C);
+
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = I2C_GPIO_PIN_WP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -36,10 +38,19 @@ void eepromInit(void)
 }
 
 #define I2C_TIMEOUT_MAX 1000
-bool I2C_CheckEventTimeout(uint32_t event)
+bool I2C_WaitEvent(uint32_t event)
 {
   uint32_t timeout = I2C_TIMEOUT_MAX;
   while (!I2C_CheckEvent(I2C, event)) {
+    if ((timeout--) == 0) return false;
+  }
+  return true;
+}
+
+bool I2C_WaitEventCleared(uint32_t event)
+{
+  uint32_t timeout = I2C_TIMEOUT_MAX;
+  while (I2C_CheckEvent(I2C, event)) {
     if ((timeout--) == 0) return false;
   }
   return true;
@@ -53,32 +64,33 @@ bool I2C_CheckEventTimeout(uint32_t event)
   * @param  NumByteToRead : number of bytes to read from the EEPROM.
   * @retval None
   */
-void eepromReadBlock(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRead)
+bool I2C_EE_ReadBlock(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRead)
 {
-  while (I2C_CheckEvent(I2C, I2C_FLAG_BUSY));
+  if (!I2C_WaitEventCleared(I2C_FLAG_BUSY))
+    return false;
 
   I2C_GenerateSTART(I2C, ENABLE);
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_MODE_SELECT))
-    return;
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT))
+    return false;
 
   I2C_Send7bitAddress(I2C, I2C_ADDRESS_EEPROM, I2C_Direction_Transmitter);
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
-    return;
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
+    return false;
 
   I2C_SendData(I2C, (uint8_t)((ReadAddr & 0xFF00) >> 8));
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
-    return;
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
+    return false;
   I2C_SendData(I2C, (uint8_t)(ReadAddr & 0x00FF));
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_TRANSMITTED))
-    return;
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTED))
+    return false;
 
   I2C_GenerateSTART(I2C, ENABLE);
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_MODE_SELECT))
-    return;
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT))
+    return false;
 
   I2C_Send7bitAddress(I2C, I2C_ADDRESS_EEPROM, I2C_Direction_Receiver);
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED))
-    return;
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED))
+    return false;
 
   if (NumByteToRead > 1) {
     I2C_AcknowledgeConfig(I2C, ENABLE);
@@ -88,13 +100,21 @@ void eepromReadBlock(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRead
     if (NumByteToRead == 1) {
       I2C_AcknowledgeConfig(I2C, DISABLE);
     }
-    if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_RECEIVED))
-      return;
+    if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_RECEIVED))
+      return false;
     *pBuffer++ = I2C_ReceiveData(I2C);
     NumByteToRead--;
   }
 
   I2C_GenerateSTOP(I2C, ENABLE);
+  return true;
+}
+
+void eepromReadBlock(uint8_t* pBuffer, uint32_t ReadAddr, uint32_t NumByteToRead)
+{
+  while (!I2C_EE_ReadBlock(pBuffer, ReadAddr, NumByteToRead)) {
+    i2cInit();
+  }
 }
 
 /**
@@ -105,21 +125,23 @@ void eepromReadBlock(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRead
   * @param  NumByteToWrite : number of bytes to write to the EEPROM.
   * @retval None
   */
-void eepromWriteBlock(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteToWrite)
+void eepromWriteBlock(uint8_t* pBuffer, uint32_t WriteAddr, uint32_t NumByteToWrite)
 {
   uint8_t offset = WriteAddr % I2C_FLASH_PAGESIZE;
   uint8_t count = I2C_FLASH_PAGESIZE - offset;
-  if (NumByteToWrite < I2C_FLASH_PAGESIZE)
+  if (NumByteToWrite < count) {
     count = NumByteToWrite;
+  }
   while (count > 0) {
-    I2C_EE_PageWrite(pBuffer, WriteAddr, count);
-    I2C_EE_WaitEepromStandbyState();
+    eepromPageWrite(pBuffer, WriteAddr, count);
+    eepromWaitEepromStandbyState();
     WriteAddr += count;
     pBuffer += count;
     NumByteToWrite -= count;
     count = I2C_FLASH_PAGESIZE;
-    if (NumByteToWrite < I2C_FLASH_PAGESIZE)
+    if (NumByteToWrite < I2C_FLASH_PAGESIZE) {
       count = NumByteToWrite;
+    }
   }
 }
 
@@ -132,37 +154,46 @@ void eepromWriteBlock(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteToWr
   * @param  NumByteToWrite : number of bytes to write to the EEPROM.
   * @retval None
   */
-void I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite)
+bool I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite)
 {
-  while (I2C_CheckEvent(I2C, I2C_FLAG_BUSY));
+  if (!I2C_WaitEventCleared(I2C_FLAG_BUSY))
+    return false;
 
   I2C_GenerateSTART(I2C, ENABLE);
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_MODE_SELECT))
-    return;
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT))
+    return false;
 
   I2C_Send7bitAddress(I2C, I2C_ADDRESS_EEPROM, I2C_Direction_Transmitter);
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
-    return;
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
+    return false;
 
   I2C_SendData(I2C, (uint8_t)((WriteAddr & 0xFF00) >> 8));
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
-    return;
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
+    return false;
   I2C_SendData(I2C, (uint8_t)(WriteAddr & 0x00FF));
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
-    return;
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
+    return false;
 
   /* While there is data to be written */
   while (NumByteToWrite--) {
     I2C_SendData(I2C, *pBuffer);
-    if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
-      return;
+    if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
+      return false;
     pBuffer++;
   }
 
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_TRANSMITTED))
-    return;
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTED))
+    return false;
 
   I2C_GenerateSTOP(I2C, ENABLE);
+  return true;
+}
+
+void eepromPageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite)
+{
+  while (!I2C_EE_PageWrite(pBuffer, WriteAddr, NumByteToWrite)) {
+    i2cInit();
+  }
 }
 
 /**
@@ -170,44 +201,55 @@ void I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWri
   * @param  None
   * @retval None
   */
-void I2C_EE_WaitEepromStandbyState(void)
+bool I2C_EE_WaitEepromStandbyState(void)
 {
   do {
     I2C_GenerateSTART(I2C, ENABLE);
-    if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_MODE_SELECT))
-      return;
+    if (!I2C_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT))
+      return false;
 
     I2C_Send7bitAddress(I2C, I2C_ADDRESS_EEPROM, I2C_Direction_Transmitter);
-  } while (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));
+  } while (!I2C_WaitEvent(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));
 
   I2C_GenerateSTOP(I2C, ENABLE);
+  return true;
 }
 
+void eepromWaitEepromStandbyState(void)
+{
+  while (!I2C_EE_WaitEepromStandbyState()) {
+    i2cInit();
+  }
+}
+
+#if !defined(BOOT)
 void setVolume(uint8_t volume)
 {
   if (volume > VOLUME_LEVEL_MAX) {
     volume = VOLUME_LEVEL_MAX;
   }
 
-  while (I2C_CheckEvent(I2C, I2C_FLAG_BUSY));
+  if (!I2C_WaitEventCleared(I2C_FLAG_BUSY))
+    return;
 
   I2C_GenerateSTART(I2C, ENABLE);
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_MODE_SELECT))
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT))
     return;
 
   I2C_Send7bitAddress(I2C, I2C_ADDRESS_CAT5137, I2C_Direction_Transmitter);
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
     return;
 
   I2C_SendData(I2C, 0);
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
     return;
-  I2C_SendData(I2C, volume);
-  if (!I2C_CheckEventTimeout(I2C_EVENT_MASTER_BYTE_TRANSMITTED))
+  I2C_SendData(I2C, volumeScale[volume]);
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTED))
     return;
 
   I2C_GenerateSTOP(I2C, ENABLE);
 }
+#endif
 
 #if 0
 uint8_t I2C_read_volume()

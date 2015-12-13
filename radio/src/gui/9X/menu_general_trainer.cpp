@@ -60,11 +60,11 @@ void menuGeneralTrainer(uint8_t event)
       uint8_t chan = channel_order(i);
       volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
 
-      putsMixerSource(0, y, MIXSRC_Rud-1+chan, (m_posVert==i && CURSOR_ON_LINE()) ? INVERS : 0);
+      putsMixerSource(0, y, MIXSRC_Rud-1+chan, (menuVerticalPosition==i && CURSOR_ON_LINE()) ? INVERS : 0);
 
       for (uint8_t j=0; j<3; j++) {
 
-        attr = ((m_posVert==i && m_posHorz==j) ? blink : 0);
+        attr = ((menuVerticalPosition==i && menuHorizontalPosition==j) ? blink : 0);
 
         switch(j) {
           case 0:
@@ -86,26 +86,26 @@ void menuGeneralTrainer(uint8_t event)
       y += FH;
     }
 
-    attr = (m_posVert==5) ? blink : 0;
+    attr = (menuVerticalPosition==5) ? blink : 0;
     lcd_putsLeft(MENU_HEADER_HEIGHT+1+5*FH, STR_MULTIPLIER);
     lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, MENU_HEADER_HEIGHT+1+5*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
     if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
-    attr = (m_posVert==6) ? INVERS : 0;
+    attr = (menuVerticalPosition==6) ? INVERS : 0;
     if (attr) s_editMode = 0;
     lcd_putsAtt(0*FW, MENU_HEADER_HEIGHT+1+6*FH, STR_CAL, attr);
     for (uint8_t i=0; i<4; i++) {
       uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
 #if defined (PPM_UNIT_PERCENT_PREC1)
-      lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
+      lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
 #else
-      lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])/5, 0);
+      lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5, 0);
 #endif
     }
 
     if (attr) {
       if (event==EVT_KEY_LONG(KEY_ENTER)){
-        memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
+        memcpy(g_eeGeneral.trainer.calib, ppmInput, sizeof(g_eeGeneral.trainer.calib));
         eeDirty(EE_GENERAL);
         AUDIO_WARNING1();
       }

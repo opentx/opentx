@@ -186,7 +186,19 @@ bool displayTelemetryScreen()
 {
 #if defined(LUA)
   if (TELEMETRY_SCREEN_TYPE(s_frsky_view) == TELEMETRY_SCREEN_TYPE_SCRIPT) {
-    return true;
+    uint8_t state = isTelemetryScriptAvailable(s_frsky_view);
+    switch (state) {
+      case SCRIPT_OK:
+        return true;  // contents will be drawed by Lua Task
+      case SCRIPT_NOFILE:
+        return false;  // requested lua telemetry screen not available
+      case SCRIPT_SYNTAX_ERROR:
+      case SCRIPT_PANIC:
+      case SCRIPT_KILLED:
+        luaError(state, false);
+        return true;
+    }
+    return false;
   }
 #endif
 
@@ -218,6 +230,7 @@ void menuTelemetryFrsky(uint8_t event)
 
   switch (event) {
     case EVT_KEY_FIRST(KEY_EXIT):
+    case EVT_KEY_LONG(KEY_EXIT):
       killEvents(event);
       chainMenu(menuMainView);
       break;
@@ -237,9 +250,9 @@ void menuTelemetryFrsky(uint8_t event)
 
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
-      MENU_ADD_ITEM(STR_RESET_TELEMETRY);
-      MENU_ADD_ITEM(STR_RESET_FLIGHT);
-      menuHandler = onMainViewMenu;
+      POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+      POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
+      popupMenuHandler = onMainViewMenu;
       break;
   }
 

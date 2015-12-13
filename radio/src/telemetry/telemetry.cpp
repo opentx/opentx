@@ -1,6 +1,7 @@
 #include "../opentx.h"
 
 TelemetryItem telemetryItems[MAX_SENSORS];
+uint8_t allowNewSensors;
 
 void TelemetryItem::gpsReceived()
 {
@@ -83,7 +84,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
         datetime.timestate = 1;
       }
 #if defined(RTCLOCK)
-      if (g_eeGeneral.adjustRTC && (datetime.datestate == 1)) {
+      if (g_eeGeneral.adjustRTC && datetime.datestate == 1) {
         struct gtm t;
         gettime(&t);
         if (abs((t.tm_hour-datetime.hour)*3600 + (t.tm_min-datetime.min)*60 + (t.tm_sec-datetime.sec)) > 20) {
@@ -179,7 +180,9 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     newVal = 0;
   }
   else if (unit == UNIT_RPMS) {
-    newVal = (newVal * sensor.custom.offset) / sensor.custom.ratio;
+    if (sensor.custom.ratio != 0) {
+      newVal = (newVal * sensor.custom.offset) / sensor.custom.ratio;
+    }
   }
   else {
     newVal = sensor.getValue(newVal, unit, prec);
@@ -363,10 +366,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
         result += dist*dist;
 
         if (altItem) {
-          dist = abs(altItem->value);
-          uint8_t prec = g_model.telemetrySensors[sensor.dist.alt-1].prec;
-          if (prec > 0)
-            dist /= (prec==2 ? 100 : 10);
+          dist = abs(altItem->value) / g_model.telemetrySensors[sensor.dist.alt-1].getPrecDivisor();
           result += dist*dist;
         }
 
@@ -480,20 +480,21 @@ int lastUsedTelemetryIndex()
   return -1;
 }
 
-bool isSensorAvailableInResetSpecialFunction(int index)
-{
-  TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index-FUNC_RESET_PARAM_FIRST_TELEM];
-  return telemetrySensor.isAvailable();
-}
-
 void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
 {
+  bool available = false;
+
   for (int index=0; index<MAX_SENSORS; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && telemetrySensor.instance == instance) {
-     telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
-     return;
+    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && (telemetrySensor.instance == instance || g_model.ignoreSensorIds)) {
+      telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
+      available = true;
+      // we continue search here, because sensors can share the same id and instance
     }
+  }
+
+  if (available || !allowNewSensors) {
+    return;
   }
   
   int index = availableTelemetryIndex();
@@ -519,13 +520,16 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t instance
   }
 }
 
-void TelemetrySensor::init(const char *label, uint8_t unit, uint8_t prec)
+void TelemetrySensor::init(const char * label, uint8_t unit, uint8_t prec)
 {
   memclear(this->label, TELEM_LABEL_LEN);
   strncpy(this->label, label, TELEM_LABEL_LEN);
   this->unit = unit;
+  if (prec > 1 && (IS_DISTANCE_UNIT(unit) || IS_SPEED_UNIT(unit))) {
+    // 2 digits precision is not needed here
+    prec = 1;
+  }
   this->prec = prec;
-  // this->inputFlags = inputFlags;
 }
 
 void TelemetrySensor::init(uint16_t id)
@@ -538,41 +542,56 @@ void TelemetrySensor::init(uint16_t id)
   init(label);
 }
 
-bool TelemetrySensor::isAvailable()
+bool TelemetrySensor::isAvailable() const
 {
   return ZLEN(label) > 0;
 }
+
+PACK(typedef struct {
+  uint8_t unitFrom;
+  uint8_t unitTo;
+  int16_t multiplier;
+  int16_t divisor;
+}) UnitConversionRule;
+
+const UnitConversionRule unitConversionTable[] = {
+  /* unitFrom     unitTo                    multiplier   divisor */
+  { UNIT_METERS,            UNIT_FEET,             105,   32},
+  { UNIT_METERS_PER_SECOND, UNIT_FEET_PER_SECOND,  105,   32},
+   
+  { UNIT_KTS, UNIT_KMH,                           1852, 1000}, // 1 knot = 1.85200 kilometers per hour
+  { UNIT_KTS, UNIT_MPH,                           1151, 1000}, // 1 knot = 1.15077945 miles per hour
+  { UNIT_KTS, UNIT_METERS_PER_SECOND,             1000, 1944}, // 1 knot = 0.514444444 meters / second (divide with 1.94384449)
+  { UNIT_KTS, UNIT_FEET_PER_SECOND,               1688, 1000}, // 1 knot = 1.68780986 feet per second
+  
+  { UNIT_KMH, UNIT_KTS,                           1000, 1852}, // 1 km/h = 0.539956803 knots (divide with 1.85200)
+  { UNIT_KMH, UNIT_MPH,                           1000, 1609}, // 1 km/h = 0.621371192 miles per hour (divide with 1.60934400)
+  { UNIT_KMH, UNIT_METERS_PER_SECOND,               10,   36}, // 1 km/h = 0.277777778 meters / second (divide with 3.6)
+  { UNIT_KMH, UNIT_FEET_PER_SECOND,                911, 1000}, // 1 km/h = 0.911344415 feet per second
+
+  { UNIT_MILLILITERS, UNIT_FLOZ, 100, 2957},
+  { 0, 0, 0, 0}   // termination
+};
 
 int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t destUnit, uint8_t destPrec)
 {
   for (int i=prec; i<destPrec; i++)
     value *= 10;
 
-  if (unit == UNIT_METERS || unit == UNIT_METERS_PER_SECOND) {
-    if (destUnit == UNIT_FEET || destUnit == UNIT_FEET_PER_SECOND) {
-      // m to ft *105/32
-      value = (value * 105) / 32;
-    }
-  }
-  else if (unit == UNIT_KTS) {
-    if (destUnit == UNIT_KMH) {
-      // kts to km/h
-      value = (value * 1852) / 1000;
-    }
-    else if (destUnit == UNIT_MPH) {
-      // kts to mph
-      value = (value * 23) / 20;
-    }
-  }
-  else if (unit == UNIT_CELSIUS) {
+  if (unit == UNIT_CELSIUS) {
     if (destUnit == UNIT_FAHRENHEIT) {
       // T(°F) = T(°C)×1,8 + 32
-      value = 32 + (value*18)/10;
+      value = 32 + (value*18) / 10;
     }
   }
-  else if (unit == UNIT_MILLILITERS) {
-    if (destUnit == UNIT_FLOZ) {
-      value = (value * 100) / 2957;
+  else {
+    const UnitConversionRule * p = unitConversionTable;
+    while (p->divisor) {
+      if (p->unitFrom == unit && p->unitTo == destUnit) {
+        value = (value * (int32_t)p->multiplier) / (int32_t)p->divisor;
+        break;
+      }
+      ++p;
     }
   }
   
@@ -599,16 +618,15 @@ int32_t TelemetrySensor::getValue(int32_t value, uint8_t unit, uint8_t prec) con
 
   if (type == TELEM_TYPE_CUSTOM) {
     value += custom.offset;
-    if (value < 0 && unit >= UNIT_VOLTS && unit <= UNIT_MPH) {
+    if (value < 0 && onlyPositive) {
       value = 0;
     }
-
   }
 
   return value;
 }
 
-bool TelemetrySensor::isConfigurable()
+bool TelemetrySensor::isConfigurable() const
 {
   if (type == TELEM_TYPE_CALCULATED) {
     if (formula >= TELEM_FORMULA_CELL) {
@@ -623,7 +641,7 @@ bool TelemetrySensor::isConfigurable()
   return true;
 }
 
-bool TelemetrySensor::isPrecConfigurable()
+bool TelemetrySensor::isPrecConfigurable() const
 {
   if (isConfigurable()) {
     return true;
@@ -634,4 +652,22 @@ bool TelemetrySensor::isPrecConfigurable()
   else {
     return false;
   }
+}
+
+int32_t TelemetrySensor::getPrecMultiplier() const
+{
+  /*
+    Important: the return type must be signed, otherwise
+    mathematic operations with a negative telemetry value won't work
+  */
+  if (prec == 2) return 1;
+  if (prec == 1) return 10;
+  return 100;
+}
+
+int32_t TelemetrySensor::getPrecDivisor() const
+{
+  if (prec == 2) return 100;
+  if (prec == 1) return 10;
+  return 1;
 }

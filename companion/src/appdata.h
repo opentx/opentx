@@ -125,10 +125,10 @@ class Profile: protected CompStoreObj
     QString _stickPotCalib;
     QString _timeStamp;
     QString _trainerCalib;
-    int     _currentCalib;
+    int     _txCurrentCalibration;
     int     _gsStickMode;
     int     _ppmMultiplier;
-    int     _vBatCalib;
+    int     _txVoltageCalibration;
     int     _vBatWarn;
     int     _vBatMin;
     int     _vBatMax;
@@ -156,10 +156,10 @@ class Profile: protected CompStoreObj
     QString stickPotCalib() const;
     QString timeStamp() const;
     QString trainerCalib() const;
-    int     currentCalib() const;
+    int     txCurrentCalibration() const;
     int     gsStickMode() const;
     int     ppmMultiplier() const;
-    int     vBatCalib() const;
+    int     txVoltageCalibration() const;
     int     vBatWarn() const;
     int     vBatMin() const;
     int     vBatMax() const;
@@ -186,10 +186,10 @@ class Profile: protected CompStoreObj
     void stickPotCalib (const QString);
     void timeStamp     (const QString);
     void trainerCalib  (const QString);
-    void currentCalib  (const int);
+    void txCurrentCalibration  (const int);
     void gsStickMode   (const int);
     void ppmMultiplier (const int);
-    void vBatCalib     (const int);
+    void txVoltageCalibration     (const int);
     void vBatWarn      (const int);
     void vBatMin       (const int);
     void vBatMax       (const int);
@@ -216,6 +216,8 @@ class AppData: protected CompStoreObj
   BOOL_PROPERTY(outputDisplayDetails, false)
   BOOL_PROPERTY(backupOnFlash, true)
   BOOL_PROPERTY(checkHardwareCompatibility, true)
+  BOOL_PROPERTY(useCompanionNightlyBuilds, false)
+  BOOL_PROPERTY(useFirmwareNightlyBuilds, false)
 
   // All the global variables
   public:
@@ -240,6 +242,7 @@ class AppData: protected CompStoreObj
     QString _programmer;
     QString _sambaLocation;
     QString _sambaPort;
+    QString _lastSimulator;
 
     QString _backupDir;
     QString _gePath;
@@ -290,6 +293,7 @@ class AppData: protected CompStoreObj
     QString programmer();
     QString sambaLocation();
     QString sambaPort();
+    QString lastSimulator();
 
     QString backupDir();
     QString gePath();
@@ -339,6 +343,7 @@ class AppData: protected CompStoreObj
     void programmer      (const QString);
     void sambaLocation   (const QString);
     void sambaPort       (const QString);
+    void lastSimulator   (const QString);
 
     void backupDir       (const QString);
     void gePath          (const QString);

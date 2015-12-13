@@ -91,10 +91,10 @@ STM32USBPATH = ../../../thirdparty/STM32_USB-Host-Device_Lib_V2.1.0/Libraries
 #
 ifeq ($(PCB), TARANIS)
   ARCH = ARM
-  LDSCRIPT = ../stm32_ramBoot.ld
+  LDSCRIPT = ../stm32_ramboot.ld
   TRGT = arm-none-eabi-
   CPPDEFS += -DHSE_VALUE=12000000
-  CPPDEFS += -DPCBTARANIS -DEEPROM_RLC
+  CPPDEFS += -DPCBTARANIS -DEEPROM_RLC -DUSB_MASS_STORAGE
   FULL_PRJ = $(PROJECT)_ramBoot
   ifeq ($(PCBREV), REV9E)
     CPPDEFS += -DSTM32F40_41xxx
@@ -109,6 +109,8 @@ ifeq ($(PCB), TARANIS)
   EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc
   EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Core/inc
   EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/inc
+  EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
+  EXTRAINCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/inc
   EXTRAINCDIRS += .. ../../.. ../../../fonts/std
   ifeq ($(PCBREV), REV4a)
     CPPDEFS += -DREV4a
@@ -179,10 +181,6 @@ CPPSRC = ../lcd_driver.cpp \
 	../../../strhelpers.cpp \
 	boot.cpp
 
-ifeq ($(PCBREV), REV9E)
-  CPPSRC += ../rotenc_driver.cpp
-endif
-
 # List ASM source files here
 
 ifeq ($(PCBREV), REV9E)
@@ -241,6 +239,11 @@ endif
 CPFLAGS = $(MCFLAGS) $(OPT) -gdwarf-2 -mthumb -fomit-frame-pointer -Wall -Wstrict-prototypes -fverbose-asm $(DEFS)
 LDFLAGS = $(MCFLAGS) -mthumb -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(FULL_PRJ).map,--cref,--no-warn-mismatch,--gc-sections $(LIBDIR) $(NEWLIB_NANO_FLAGS)
 CPPFLAGS = $(MCFLAGS) $(OPT) -gdwarf-2 -mthumb -fomit-frame-pointer -fdata-sections -ffunction-sections -Wall -fverbose-asm $(DEFS)
+
+ifeq ($(WARNINGS_AS_ERRORS), YES)
+  CPFLAGS  += -Werror
+  CPPFLAGS += -Werror
+endif
 
 CPPFLAGS += $(CPPDEFS)
 CPFLAGS += $(CPPDEFS)

@@ -77,6 +77,7 @@ class MdiChild : public QWidget
     void viableModelSelected(bool viable);
     void eepromInterfaceChanged();
     void setEEpromAvail(int eavail);
+    int getCurrentRow() const;
 
   signals:
     void copyAvailable(bool val);

@@ -11,19 +11,18 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
   ModelPanel(parent, model, generalSettings, firmware),
   selectedSwitch(0)
 {
+  Stopwatch s1("LogicalSwitchesPanel"); 
+
   int channelsMax = model.getChannelsMax(true);
 
-  QGridLayout * gridLayout = new QGridLayout(this);
-
-  int col = 1;
-  addLabel(gridLayout, tr("Function"), col++);
-  addLabel(gridLayout, tr("V1"), col++);
-  addLabel(gridLayout, tr("V2"), col++);
-  addLabel(gridLayout, tr("AND Switch"), col++);
+  QStringList headerLabels;
+  headerLabels << "#" << tr("Function") << tr("V1") << tr("V2") << tr("AND Switch");
   if (firmware->getCapability(LogicalSwitchesExt)) {
-    addLabel(gridLayout, tr("Duration"), col++);
-    addLabel(gridLayout, tr("Delay"), col++);
+    headerLabels << tr("Duration") << tr("Delay");
   }
+  TableLayout * tableLayout = new TableLayout(this, firmware->getCapability(LogicalSwitches), headerLabels);
+
+  s1.report("header");
 
   lock = true;
   for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
@@ -35,19 +34,20 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     label->setMouseTracking(true);
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(csw_customContextMenuRequested(QPoint)));
-    gridLayout->addWidget(label, i+1, 0);
+    tableLayout->addWidget(i, 0, label);
 
     // The function
     csw[i] = new QComboBox(this);
     csw[i]->setProperty("index", i);
     connect(csw[i], SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
-    gridLayout->addWidget(csw[i], i+1, 1);
+    tableLayout->addWidget(i, 1, csw[i]);
 
     // V1
+    QHBoxLayout *v1Layout = new QHBoxLayout();
     cswitchSource1[i] = new QComboBox(this);
     cswitchSource1[i]->setProperty("index",i);
     connect(cswitchSource1[i], SIGNAL(currentIndexChanged(int)), this, SLOT(v1Edited(int)));
-    gridLayout->addWidget(cswitchSource1[i], i+1, 2);
+    v1Layout->addWidget(cswitchSource1[i]);
     cswitchSource1[i]->setVisible(false);
     cswitchValue[i] = new QDoubleSpinBox(this);
     cswitchValue[i]->setMaximum(channelsMax);
@@ -56,8 +56,9 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     cswitchValue[i]->setDecimals(0);
     cswitchValue[i]->setProperty("index", i);
     connect(cswitchValue[i], SIGNAL(valueChanged(double)), this, SLOT(edited()));
-    gridLayout->addWidget(cswitchValue[i], i+1, 2);
+    v1Layout->addWidget(cswitchValue[i]);
     cswitchValue[i]->setVisible(false);
+    tableLayout->addLayout(i, 2, v1Layout);
 
     // V2
     QHBoxLayout *v2Layout = new QHBoxLayout();
@@ -90,13 +91,13 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     connect(cswitchTOffset[i],SIGNAL(editingFinished()),this,SLOT(edited()));
     v2Layout->addWidget(cswitchTOffset[i]);
     cswitchTOffset[i]->setVisible(false);
-    gridLayout->addLayout(v2Layout, i+1, 3);
+    tableLayout->addLayout(i, 3, v2Layout);
 
     // AND
     cswitchAnd[i] = new QComboBox(this);
     cswitchAnd[i]->setProperty("index", i);
     connect(cswitchAnd[i], SIGNAL(currentIndexChanged(int)), this, SLOT(andEdited(int)));
-    gridLayout->addWidget(cswitchAnd[i], i+1, 4);
+    tableLayout->addWidget(i, 4, cswitchAnd[i]);
 
     if (firmware->getCapability(LogicalSwitchesExt)) {
       // Duration
@@ -108,7 +109,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
       cswitchDuration[i]->setAccelerated(true);
       cswitchDuration[i]->setDecimals(1);
       connect(cswitchDuration[i], SIGNAL(valueChanged(double)), this, SLOT(durationEdited(double)));
-      gridLayout->addWidget(cswitchDuration[i], i+1, 5);
+      tableLayout->addWidget(i, 5, cswitchDuration[i]);
 
       // Delay
       cswitchDelay[i] = new QDoubleSpinBox(this);
@@ -119,15 +120,18 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
       cswitchDelay[i]->setAccelerated(true);
       cswitchDelay[i]->setDecimals(1);
       connect(cswitchDelay[i], SIGNAL(valueChanged(double)), this, SLOT(delayEdited(double)));
-      gridLayout->addWidget(cswitchDelay[i], i+1, 6);
+      tableLayout->addWidget(i, 6, cswitchDelay[i]);
     }
   }
-  // Push rows upward
-  addVSpring(gridLayout,0,firmware->getCapability(LogicalSwitches)+1);
+
+  s1.report("added elements");
 
   disableMouseScrolling();
-
   lock = false;
+  update();
+  tableLayout->resizeColumnsToContents();
+  tableLayout->pushRowsUp(firmware->getCapability(LogicalSwitches)+1);
+  s1.report("end");
 }
 
 LogicalSwitchesPanel::~LogicalSwitchesPanel()
@@ -240,7 +244,7 @@ void LogicalSwitchesPanel::edited()
         updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.1);
         break;
       case LS_FAMILY_EDGE:
-        cswitchOffset2[i]->setSpecialValueText(tr("(no release)"));
+        cswitchOffset2[i]->setSpecialValueText(tr("(instant)"));
         if (sender() == cswitchOffset[i]) {
           model->logicalSw[i].val2 = TimToVal(cswitchOffset[i]->value());
           updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.0);
@@ -309,7 +313,10 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
         int maxTime = round(range.max);
         int value = round(range.step*model->logicalSw[i].val2 + range.offset);
         cswitchTOffset[i]->setMaximumTime(QTimeS(maxTime));
-        cswitchTOffset[i]->setDisplayFormat((maxTime>=3600)?"hh:mm:ss":"mm:ss");
+        QString format = (maxTime>=3600) ? "hh:mm:ss" : "mm:ss";
+        if (!range.unit.isEmpty())
+          format += QString("' [%1]'").arg(range.unit);
+        cswitchTOffset[i]->setDisplayFormat(format);
         cswitchTOffset[i]->setTime(QTimeS(value));
       }
       else {
@@ -336,7 +343,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       populateSwitchCB(cswitchSource1[i], RawSwitch(model->logicalSw[i].val1), generalSettings, LogicalSwitchesContext);
       updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.0);
       updateTimerParam(cswitchOffset2[i], model->logicalSw[i].val2+model->logicalSw[i].val3, ValToTim(TimToVal(cswitchOffset[i]->value())-1));
-      cswitchOffset2[i]->setSpecialValueText(tr("(no release)"));
+      cswitchOffset2[i]->setSpecialValueText(tr("(instant)"));
       if (model->logicalSw[i].val3 == 0) {
         cswitchOffset2[i]->setSuffix(tr("(infinite)"));
       }

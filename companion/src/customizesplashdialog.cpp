@@ -3,8 +3,8 @@
 #include "flashfirmwaredialog.h"
 #include "appdata.h"
 #include "helpers.h"
-#include "splashlibrary.h"
 #include "firmwareinterface.h"
+#include "splashlibrarydialog.h"
 
 //*** Side Class ***
 
@@ -233,7 +233,7 @@ void customizeSplashDialog::on_rightLibraryButton_clicked(){libraryButton_clicke
 void customizeSplashDialog::libraryButton_clicked( Side side )
 {
   QString fileName;
-  splashLibrary *ld = new splashLibrary(this,&fileName);
+  SplashLibraryDialog *ld = new SplashLibraryDialog(this,&fileName);
   ld->exec();
   if (!fileName.isEmpty()) {
     if (!side.displayImage( fileName, UNDEFINED ))

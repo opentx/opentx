@@ -62,9 +62,9 @@ void menuGeneralDiagAna(uint8_t event)
   lcd_putsLeft(MENU_HEADER_HEIGHT+1+5*FH, STR_BATT_CALIB);
   static int32_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8;
-  uint32_t batCalV = (adcBatt + (adcBatt*g_eeGeneral.vBatCalib)/128) * BATT_SCALE;
+  uint32_t batCalV = (adcBatt + (adcBatt*g_eeGeneral.txVoltageCalibration)/128) * BATT_SCALE;
   batCalV >>= 11;
   batCalV += 2; // because of the diode
   putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT+1+5*FH, batCalV, s_editMode > 0 ? BLINK|INVERS : INVERS);
-  if (s_editMode > 0) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatCalib, -127, 127);
+  if (s_editMode > 0) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
 }

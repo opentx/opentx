@@ -123,23 +123,23 @@ QString SensorData::unitString() const
     case UNIT_FEET:
       return QObject::tr("f");
     case UNIT_CELSIUS:
-      return QObject::tr("°C");
+      return QObject::trUtf8("°C");
     case UNIT_FAHRENHEIT:
-      return QObject::tr("%F");
+      return QObject::trUtf8("°F");
     case UNIT_PERCENT:
       return QObject::tr("%");
     case UNIT_MAH:
       return QObject::tr("mAh");
     case UNIT_WATTS:
       return QObject::tr("W");
-    case UNIT_DBM:
+    case UNIT_DB:
       return QObject::tr("dB");
     case UNIT_RPMS:
       return QObject::tr("rpms");
     case UNIT_G:
       return QObject::tr("g");
     case UNIT_DEGREE:
-      return QObject::tr("°");
+      return QObject::trUtf8("°");
     case UNIT_HOURS:
       return QObject::tr("hours");
     case UNIT_MINUTES:
@@ -156,9 +156,17 @@ QString SensorData::unitString() const
 bool RawSource::isTimeBased() const
 {
   if (IS_ARM(GetCurrentFirmware()->getBoard()))
-    return false;
+    return (type == SOURCE_TYPE_SPECIAL && index > 0);
   else
     return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2 || index==TELEMETRY_SOURCE_TIMER3));
+}
+
+float RawSourceRange::getValue(int value)
+{
+  if (IS_ARM(GetCurrentFirmware()->getBoard()))
+    return float(value) * step;
+  else
+    return min + float(value) * step;
 }
 
 RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSettings & settings, unsigned int flags) const
@@ -386,6 +394,25 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
       result.min = -result.max;
       break;
 
+    case SOURCE_TYPE_SPECIAL:
+      if (index == 0)  {  //Batt
+        result.step = 0.1;
+        result.decimals = 1;
+        result.max = 25.5;
+        result.unit = QObject::tr("V");
+      }
+      else if (index == 1) {   //Time
+        result.step = 1;
+        result.max = 24*60 - 1;
+        result.unit = QObject::tr("h:m");
+      }
+      else {      // Timers 1 - 3
+        result.step = singleprec ? 5 : 1;
+        result.max = singleprec ? 255*5 : 60*60;
+        result.unit = singleprec ? QObject::tr("m:s") : QObject::tr("h:m:s");
+      }
+      break;
+
     default:
       if (model) {
         result.max = model->getChannelsMax(true);
@@ -405,7 +432,7 @@ QString AnalogString(int index)
 {
   static const QString sticks[]  = { QObject::tr("Rud"), QObject::tr("Ele"), QObject::tr("Thr"), QObject::tr("Ail") };
   static const QString pots9X[]  = { QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3") };
-  static const QString potsTaranisX9E[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("S4"), QObject::tr("LS"), QObject::tr("RS"), QObject::tr("LS2"), QObject::tr("RS2") };
+  static const QString potsTaranisX9E[] = { QObject::tr("F1"), QObject::tr("F2"), QObject::tr("F3"), QObject::tr("F4"), QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS") };
   static const QString potsTaranis[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("LS"), QObject::tr("RS") };
   if (index < 4)
     return CHECK_IN_ARRAY(sticks, index);
@@ -454,7 +481,7 @@ QString RawSource::toString(const ModelData * model) const
     QObject::tr("L21"), QObject::tr("L22"), QObject::tr("L23"), QObject::tr("L24"), QObject::tr("L25"), QObject::tr("L26"), QObject::tr("L27"), QObject::tr("L28"), QObject::tr("L29"), QObject::tr("L30"),
     QObject::tr("L31"), QObject::tr("L32")
   };
-  
+
   if (index<0) {
     return QObject::tr("----");
   }
@@ -501,11 +528,26 @@ QString RawSource::toString(const ModelData * model) const
         return CHECK_IN_ARRAY(telemetry, index);
       }
     case SOURCE_TYPE_GVAR:
-      return QObject::tr("GV%1").arg(index+1);      
+      return QObject::tr("GV%1").arg(index+1);
     default:
       return QObject::tr("----");
   }
 }
+
+bool RawSource::isPot() const
+{
+  return (type == SOURCE_TYPE_STICK &&
+          index >= NUM_STICKS &&
+          index < NUM_STICKS+GetCurrentFirmware()->getCapability(Pots));
+}
+
+bool RawSource::isSlider() const
+{
+  return (type == SOURCE_TYPE_STICK &&
+          index >= NUM_STICKS+GetCurrentFirmware()->getCapability(Pots) &&
+          index < NUM_STICKS+GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders));
+}
+
 
 QString SwitchUp(const char sw)
 {
@@ -519,7 +561,7 @@ QString SwitchDn(const char sw)
   return QString::fromUtf8(result);
 }
 
-QString RawSwitch::toString()
+QString RawSwitch::toString() const
 {
   static const QString switches9X[] = {
     QString("THR"), QString("RUD"), QString("ELE"),
@@ -617,7 +659,7 @@ QString RawSwitch::toString()
   }
 }
 
-QString CurveReference::toString()
+QString CurveReference::toString() const
 {
   if (value == 0) {
     return "----";
@@ -636,7 +678,7 @@ QString CurveReference::toString()
   }
 }
 
-CSFunctionFamily LogicalSwitchData::getFunctionFamily()
+CSFunctionFamily LogicalSwitchData::getFunctionFamily() const
 {
   if (func == LS_FN_EDGE)
     return LS_FAMILY_EDGE;
@@ -652,7 +694,7 @@ CSFunctionFamily LogicalSwitchData::getFunctionFamily()
     return LS_FAMILY_VCOMP;
 }
 
-unsigned int LogicalSwitchData::getRangeFlags()
+unsigned int LogicalSwitchData::getRangeFlags() const
 {
   if (func == LS_FN_DPOS)
     return RANGE_DELTA_FUNCTION;
@@ -662,7 +704,7 @@ unsigned int LogicalSwitchData::getRangeFlags()
     return 0;
 }
 
-QString LogicalSwitchData::funcToString()
+QString LogicalSwitchData::funcToString() const
 {
   switch (func) {
     case LS_FN_OFF:
@@ -712,123 +754,6 @@ QString LogicalSwitchData::funcToString()
   }
 }
 
-QString LogicalSwitchData::toString(const ModelData & model, const GeneralSettings & settings)
-{
-  QString result = "";
-
-  if (!func)
-    return result;
-
-  if (andsw!=0) {
-    result +="( ";
-  }
-  switch (getFunctionFamily()) {
-    case LS_FAMILY_EDGE:
-      result += QObject::tr("Edge(%1, [%2:%3])").arg(RawSwitch(val1).toString()).arg(ValToTim(val2)).arg(ValToTim(val2+val3));
-      break;
-    case LS_FAMILY_STICKY:
-      result += QObject::tr("Sticky(%1, %2)").arg(RawSwitch(val1).toString()).arg(RawSwitch(val2).toString());
-      break;
-    case LS_FAMILY_TIMER:
-      result += QObject::tr("Timer(%1, %2)").arg(ValToTim(val1)).arg(ValToTim(val2));
-      break;
-    case LS_FAMILY_VOFS: {
-      RawSource source = RawSource(val1);
-      RawSourceRange range = source.getRange(&model, settings);
-      QString res;
-      if (val1)
-        res += source.toString(&model);
-      else
-        res += "0";
-      res.remove(" ");
-      if (func == LS_FN_APOS || func == LS_FN_ANEG)
-        res = "|" + res + "|";
-      else if (func == LS_FN_DAPOS)
-        res = "|d(" + res + ")|";
-      else if (func == LS_FN_DPOS) result = "d(" + res + ")";
-      result += res;
-
-      if (func == LS_FN_APOS || func == LS_FN_VPOS || func == LS_FN_DPOS || func == LS_FN_DAPOS)
-        result += " &gt; ";
-      else if (func == LS_FN_ANEG || func == LS_FN_VNEG)
-        result += " &lt; ";
-      else if (func == LS_FN_VALMOSTEQUAL)
-        result += " ~ ";
-      else
-        result += " missing";
-      result += QString::number(range.step * (val2 /*TODO+ source.getRawOffset(model)*/) + range.offset);
-      break;
-    }
-    case LS_FAMILY_VBOOL:
-      result += RawSwitch(val1).toString();
-      switch (func) {
-        case LS_FN_AND:
-          result += " AND ";
-          break;
-        case LS_FN_OR:
-          result += " OR ";
-          break;
-        case LS_FN_XOR:
-          result += " XOR ";
-          break;
-       default:
-          result += " bar ";
-          break;
-      }
-      result += RawSwitch(val2).toString();
-      break;
-
-    case LS_FAMILY_VCOMP:
-      if (val1)
-        result += RawSource(val1).toString(&model);
-      else
-        result += "0";
-      switch (func) {
-        case LS_FN_EQUAL:
-        case LS_FN_VEQUAL:
-          result += " = ";
-          break;
-        case LS_FN_NEQUAL:
-          result += " != ";
-          break;
-        case LS_FN_GREATER:
-          result += " &gt; ";
-          break;
-        case LS_FN_LESS:
-          result += " &lt; ";
-          break;
-        case LS_FN_EGREATER:
-          result += " &gt;= ";
-          break;
-        case LS_FN_ELESS:
-          result += " &lt;= ";
-          break;
-        default:
-          result += " foo ";
-          break;
-      }
-      if (val2)
-        result += RawSource(val2).toString(&model);
-      else
-        result += "0";
-      break;
-  }
-
-  if (andsw!=0) {
-    result +=" ) AND ";
-    result += RawSwitch(andsw).toString();
-  }
-
-  if (GetCurrentFirmware()->getCapability(LogicalSwitchesExt)) {
-    if (duration)
-      result += QObject::tr(" Duration (%1s)").arg(duration/10.0);
-    if (delay)
-      result += QObject::tr(" Delay (%1s)").arg(delay/10.0);
-  }
-
-  return result;
-}
-
 void CustomFunctionData::clear()
 {
   memset(this, 0, sizeof(CustomFunctionData));
@@ -837,7 +762,7 @@ void CustomFunctionData::clear()
   }
 }
 
-QString CustomFunctionData::funcToString()
+QString CustomFunctionData::funcToString() const
 {
   if (func >= FuncOverrideCH1 && func <= FuncOverrideCH32)
     return QObject::tr("Override %1").arg(RawSource(SOURCE_TYPE_CH, func).toString());
@@ -856,7 +781,7 @@ QString CustomFunctionData::funcToString()
   else if (func == FuncPlaySound)
     return QObject::tr("Play Sound");
   else if (func == FuncPlayHaptic)
-    return QObject::tr("Play Haptic");
+    return QObject::tr("Haptic");
   else if (func == FuncReset)
     return QObject::tr("Reset");
   else if (func >= FuncSetTimer1 && func <= FuncSetTimer3)
@@ -872,7 +797,7 @@ QString CustomFunctionData::funcToString()
   else if (func == FuncPlayScript)
     return QObject::tr("Play Script");
   else if (func == FuncLogs)
-    return QObject::tr("Start Logs");
+    return QObject::tr("SD Logs");
   else if (func == FuncVolume)
     return QObject::tr("Volume");
   else if (func == FuncBacklight)
@@ -885,46 +810,106 @@ QString CustomFunctionData::funcToString()
     return QObject::tr("Background Music Pause");
   else if (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast)
     return QObject::tr("Adjust GV%1").arg(func-FuncAdjustGV1+1);
+  else if (func == FuncSetFailsafeInternalModule)
+    return QObject::tr("SetFailsafe Int. Module");
+  else if (func == FuncSetFailsafeExternalModule)
+    return QObject::tr("SetFailsafe Ext. Module");
+  else if (func == FuncRangeCheckInternalModule)
+    return QObject::tr("RangeCheck Int. Module");
+  else if (func == FuncRangeCheckExternalModule)
+    return QObject::tr("RangeCheck Ext. Module");
+  else if (func == FuncBindInternalModule)
+    return QObject::tr("Bind Int. Module");
+  else if (func == FuncBindExternalModule)
+    return QObject::tr("Bind Ext. Module");
   else {
     return QString("???"); // Highlight unknown functions with output of question marks.(BTW should not happen that we do not know what a function is)
   }
 }
 
-QString CustomFunctionData::paramToString()
+void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox * b, unsigned int value = 0)
+{
+  int val = 0;
+  Firmware * firmware = GetCurrentFirmware();
+  BoardEnum board = GetEepromInterface()->getBoard();
+
+  b->addItem(QObject::tr("Timer1"), val++);
+  b->addItem(QObject::tr("Timer2"), val++);
+  if (IS_ARM(board)) {
+    b->addItem( QObject::tr("Timer3"), val++);
+  }
+  b->addItem(QObject::tr("Flight"), val++);
+  b->addItem(QObject::tr("Telemetry"), val++);
+  int reCount = firmware->getCapability(RotaryEncoders);
+  if (reCount == 1) {
+    b->addItem(QObject::tr("Rotary Encoder"), val++);
+  }
+  else if (reCount == 2) {
+    b->addItem(QObject::tr("REa"), val++);
+    b->addItem(QObject::tr("REb"), val++);
+  }
+  if ((int)value < b->count()) {
+    b->setCurrentIndex(value);
+  }
+  if (model && IS_ARM(board)) {
+    for (int i=0; i<C9X_MAX_SENSORS; ++i) {
+      if (model->sensorData[i].isAvailable()) {
+        RawSource item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i);
+        b->addItem(item.toString(model), val+i);
+        if ((int)value == val+i) {
+          b->setCurrentIndex(b->count()-1);
+        }
+      }
+    }
+  }
+}
+
+void CustomFunctionData::populatePlaySoundParams(QStringList & qs)
+{
+  qs <<"Beep 1" << "Beep 2" << "Beep 3" << "Warn1" << "Warn2" << "Cheep" << "Ratata" << "Tick" << "Siren" << "Ring" ;
+  qs << "SciFi" << "Robot" << "Chirp" << "Tada" << "Crickt"  << "AlmClk"  ;
+}
+
+void CustomFunctionData::populateHapticParams(QStringList & qs)
+{
+  qs << "0" << "1" << "2" << "3";
+}
+
+QString CustomFunctionData::paramToString(const ModelData * model) const
 {
   QStringList qs;
   if (func <= FuncInstantTrim) {
     return QString("%1").arg(param);
   }
+  else if (func==FuncLogs) {
+    return QString("%1").arg(param/10.0) + QObject::tr("s");
+  }
   else if (func==FuncPlaySound) {
-    qs <<"Beep 1" << "Beep 2" << "Beep 3" << "Warn1" << "Warn2" << "Cheep" << "Ratata" << "Tick" << "Siren" << "Ring" ;
-    qs << "SciFi" << "Robot" << "Chirp" << "Tada" << "Crickt"  << "AlmClk"  ;
+    CustomFunctionData::populatePlaySoundParams(qs);
     if (param>=0 && param<(int)qs.count())
       return qs.at(param);
     else
       return QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
   else if (func==FuncPlayHaptic) {
-    qs << "0" << "1" << "2" << "3";
+    CustomFunctionData::populateHapticParams(qs);
     if (param>=0 && param<(int)qs.count())
       return qs.at(param);
     else
       return QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
   else if (func==FuncReset) {
-    qs.append( QObject::tr("Timer1"));
-    qs.append( QObject::tr("Timer2"));
-    qs.append( QObject::tr("Timer3"));
-    qs.append( QObject::tr("All"));
-    qs.append( QObject::tr("Telemetry"));
-    if (param>=0 && param<(int)qs.count())
-      return qs.at(param);
+    QComboBox cb;
+    CustomFunctionData::populateResetParams(model, &cb);
+    int pos = cb.findData(param);
+    if (pos >= 0)
+      return cb.itemText(pos);
     else
       return QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
   else if ((func==FuncVolume)|| (func==FuncPlayValue)) {
     RawSource item(param);
-    return item.toString();
+    return item.toString(model);
   }
   else if ((func==FuncPlayPrompt) || (func==FuncPlayBoth)) {
     if ( GetCurrentFirmware()->getCapability(VoicesAsNumbers)) {
@@ -934,54 +919,87 @@ QString CustomFunctionData::paramToString()
       return paramarm;
     }
   }
-  else if ((func>FuncBackgroundMusicPause) && (func<FuncCount)) {
+  else if ((func>=FuncAdjustGV1) && (func<FuncCount)) {
     switch (adjustMode) {
       case 0:
         return QObject::tr("Value ")+QString("%1").arg(param);
-        break;
       case 1:
-        return RawSource(param).toString();
-        break;
       case 2:
         return RawSource(param).toString();
-        break;
       case 3:
-        if (param==0) {
-          return QObject::tr("Decr:")+QString(" -1");
-        }
-        else {
-          return QObject::tr("Incr:")+QString(" +1");
-        }
-        break;
-      default:
-        return "";
+        if (param==0) return QObject::tr("Decr:") + " -1";
+        else          return QObject::tr("Incr:") + " +1";
     }
   }
   return "";
 }
 
-QString CustomFunctionData::repeatToString()
+QString CustomFunctionData::repeatToString() const
 {
-  if (repeatParam==0) {
-    return QObject::tr("No repeat");
+  if (repeatParam == -1) {
+    return QObject::tr("played once, not during startup");
+  }
+  else if (repeatParam == 0) {
+    return "";
   }
   else {
-    unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 5 : 10;
-    return QObject::tr("%1 sec").arg(step*repeatParam);
+    unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 1 : 10;
+    return QObject::tr("repeat(%1s)").arg(step*repeatParam);
   }
 }
 
-QString LimitData::minToString()
+QString CustomFunctionData::enabledToString() const
+{
+  if ((func>=FuncOverrideCH1 && func<=FuncOverrideCH32) ||
+      (func>=FuncAdjustGV1 && func<=FuncAdjustGVLast) ||
+      (func==FuncReset) ||
+      (func>=FuncSetTimer1 && func<=FuncSetTimer2) ||
+      (func==FuncVolume) ||
+      (func <= FuncInstantTrim)) {
+    if (!enabled) {
+      return QObject::tr("DISABLED");
+    }
+  }
+  return "";
+}
+
+CurveData::CurveData()
+{
+  clear(5);
+}
+
+void CurveData::clear(int count)
+{
+  memset(this, 0, sizeof(CurveData));
+  this->count = count;
+}
+
+bool CurveData::isEmpty() const
+{
+  for (int i=0; i<count; i++) {
+    if (points[i].y != 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+QString LimitData::minToString() const
 {
   return QString::number((qreal)min/10);
 }
 
-QString LimitData::maxToString()
+QString LimitData::maxToString() const
 {
   return QString::number((qreal)max/10);
 }
 
-QString LimitData::offsetToString()
+QString LimitData::revertToString() const
+{
+  return revert ? QObject::tr("INV") : QObject::tr("NOR");
+}
+
+QString LimitData::offsetToString() const
 {
   return QString::number((qreal)offset/10, 'f', 1);
 }
@@ -1016,6 +1034,18 @@ bool GeneralSettings::switchSourceAllowedTaranis(int index) const
   return switchConfig[index] != SWITCH_NONE;
 }
 
+bool GeneralSettings::isPotAvailable(int index) const
+{
+  if (index<0 || index>GetCurrentFirmware()->getCapability(Pots)) return false;
+  return potConfig[index] != POT_NONE;
+}
+
+bool GeneralSettings::isSliderAvailable(int index) const
+{
+  if (index<0 || index>GetCurrentFirmware()->getCapability(Sliders)) return false;
+  return sliderConfig[index] != SLIDER_NONE;
+}
+
 GeneralSettings::GeneralSettings()
 {
   memset(this, 0, sizeof(GeneralSettings));
@@ -1044,9 +1074,18 @@ GeneralSettings::GeneralSettings()
     switchConfig[6] = SWITCH_3POS;
     switchConfig[7] = SWITCH_TOGGLE;
   }
+  else {
+    for (int i=0; i<3; i++) {
+      potConfig[i] = POT_WITHOUT_DETENT;
+    }
+  }
 
   if (IS_ARM(board)) {
     speakerVolume = 12;
+  }
+
+  if (IS_TARANIS_X9E(board)) {
+    strcpy(bluetoothName, "Taranis");
   }
 
   templateSetup = g.profile[g.id()].channelOrder();
@@ -1059,8 +1098,8 @@ GeneralSettings::GeneralSettings()
   }
   else {
     QString t_trainercalib=g.profile[g.id()].trainerCalib();
-    int8_t t_vBatCalib=(int8_t)g.profile[g.id()].vBatCalib();
-    int8_t t_currentCalib=(int8_t)g.profile[g.id()].currentCalib();
+    int8_t t_txVoltageCalibration=(int8_t)g.profile[g.id()].txVoltageCalibration();
+    int8_t t_txCurrentCalibration=(int8_t)g.profile[g.id()].txCurrentCalibration();
     int8_t t_PPM_Multiplier=(int8_t)g.profile[g.id()].ppmMultiplier();
     uint8_t t_stickMode=(uint8_t)g.profile[g.id()].gsStickMode();
     uint8_t t_vBatWarn=(uint8_t)g.profile[g.id()].vBatWarn();
@@ -1094,8 +1133,8 @@ GeneralSettings::GeneralSettings()
         if (ok)
           trainer.calib[i]=byte16;
       }
-      currentCalib=t_currentCalib;
-      vBatCalib=t_vBatCalib;
+      txCurrentCalibration=t_txCurrentCalibration;
+      txVoltageCalibration=t_txVoltageCalibration;
       vBatWarn=t_vBatWarn;
       PPM_Multiplier=t_PPM_Multiplier;
       stickMode = t_stickMode;
@@ -1264,6 +1303,52 @@ bool ModelData::isInputValid(const unsigned int idx) const
   return false;
 }
 
+bool ModelData::hasExpos(uint8_t inputIdx) const
+{
+  for (int i=0; i<C9X_MAX_EXPOS; i++) {
+    const ExpoData & expo = expoData[i];
+    if (expo.chn==inputIdx && expo.mode!=0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool ModelData::hasMixes(uint8_t channelIdx) const
+{
+  channelIdx += 1;
+  for (int i=0; i<C9X_MAX_MIXERS; i++) {
+    if (mixData[i].destCh == channelIdx) {
+      return true;
+    }
+  }
+  return false;
+}
+
+QVector<const ExpoData *> ModelData::expos(int input) const
+{
+  QVector<const ExpoData *> result;
+  for (int i=0; i<C9X_MAX_EXPOS; i++) {
+    const ExpoData * ed = &expoData[i];
+    if ((int)ed->chn==input && ed->mode!=0) {
+      result << ed;
+    }
+  }
+  return result;
+}
+
+QVector<const MixData *> ModelData::mixes(int channel) const
+{
+  QVector<const MixData *> result;
+  for (int i=0; i<C9X_MAX_MIXERS; i++) {
+    const MixData * md = &mixData[i];
+    if ((int)md->destCh == channel+1) {
+      result << md;
+    }
+  }
+  return result;
+}
+
 void ModelData::removeInput(const int idx)
 {
   unsigned int chn = expoData[idx].chn;
@@ -1313,12 +1398,16 @@ void ModelData::clear()
   moduleData[2].ppmDelay = 300;
   int board = GetEepromInterface()->getBoard();
   if (IS_TARANIS(board)) {
-    moduleData[0].protocol=PXX_XJT_X16;
-    moduleData[1].protocol=OFF;
+    moduleData[0].protocol = PULSES_PXX_XJT_X16;
+    moduleData[1].protocol = PULSES_OFF;
+  }
+  else if (IS_SKY9X(board)) {
+    moduleData[0].protocol = PULSES_PPM;
+    moduleData[1].protocol = PULSES_PPM;
   }
   else {
-    moduleData[0].protocol=PPM;
-    moduleData[1].protocol=OFF;      
+    moduleData[0].protocol = PULSES_PPM;
+    moduleData[1].protocol = PULSES_OFF;
   }
   for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     flightModeData[i].clear();
@@ -1343,9 +1432,37 @@ void ModelData::clear()
     sensorData[i].clear();
 }
 
-bool ModelData::isempty()
+bool ModelData::isEmpty() const
 {
   return !used;
+}
+
+QString removeAccents(const QString & str)
+{
+  QString result = str;
+
+  // UTF-8 ASCII Table
+  const QString tA[] = { "á", "â", "ã", "à", "ä" };
+  const QString tE[] = { "é", "è", "ê", "ě" };
+  const QString tI[] = { "í" };
+  const QString tO[] = { "ó", "ô", "õ", "ö" };
+  const QString tU[] = { "ú", "ü" };
+  const QString tC[] = { "ç" };
+  const QString tY[] = { "ý" };
+  const QString tS[] = { "š" };
+  const QString tR[] = { "ř" };
+
+  for (unsigned int i = 0; i < DIM(tA); i++) result.replace(tA[i], "a");
+  for (unsigned int i = 0; i < DIM(tE); i++) result.replace(tE[i], "e");
+  for (unsigned int i = 0; i < DIM(tI); i++) result.replace(tI[i], "i");
+  for (unsigned int i = 0; i < DIM(tO); i++) result.replace(tO[i], "o");
+  for (unsigned int i = 0; i < DIM(tU); i++) result.replace(tU[i], "u");
+  for (unsigned int i = 0; i < DIM(tC); i++) result.replace(tC[i], "c");
+  for (unsigned int i = 0; i < DIM(tY); i++) result.replace(tY[i], "y");
+  for (unsigned int i = 0; i < DIM(tS); i++) result.replace(tS[i], "s");
+  for (unsigned int i = 0; i < DIM(tR); i++) result.replace(tR[i], "r");
+
+  return result;
 }
 
 void ModelData::setDefaultInputs(const GeneralSettings & settings)
@@ -1357,7 +1474,7 @@ void ModelData::setDefaultInputs(const GeneralSettings & settings)
       expo->mode = INPUT_MODE_BOTH;
       expo->srcRaw = settings.getDefaultSource(i);
       expo->weight = 100;
-      strncpy(inputNames[i], expo->srcRaw.toString(this).toLatin1().constData(), sizeof(inputNames[i])-1);
+      strncpy(inputNames[i], removeAccents(expo->srcRaw.toString(this)).toLatin1().constData(), sizeof(inputNames[i])-1);
     }
   }
 }
@@ -1503,7 +1620,8 @@ void registerEEpromInterfaces()
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_SKY9X));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_9XRPRO));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS));
-  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_PLUS));  
+  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_PLUS));
+  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_X9E));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_GRUVIN9X));
   eepromInterfaces.push_back(new Ersky9xInterface());
@@ -1516,7 +1634,7 @@ void unregisterEEpromInterfaces()
   foreach(EEPROMInterface * intf, eepromInterfaces) {
     // qDebug() << "UnregisterEepromInterfaces(): deleting " <<  QString::number( reinterpret_cast<uint64_t>(intf), 16 );
     delete intf;
-  } 
+  }
   OpenTxEepromCleanup();
 }
 
@@ -1524,42 +1642,116 @@ QList<Firmware *> firmwares;
 Firmware * default_firmware_variant;
 Firmware * current_firmware_variant;
 
-void unregisterFirmwares()
+void ShowEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound)
 {
-  foreach (Firmware * f, firmwares) {
-    delete f;
+  std::bitset<NUM_ERRORS> errors((unsigned long long)errorsFound);
+  QStringList errorsList;
+
+  errorsList << QT_TRANSLATE_NOOP("EepromInterface", "Possible causes for this:");
+
+  if (errors.test(UNSUPPORTED_NEWER_VERSION)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is from a newer version of OpenTX"); }
+  if (errors.test(NOT_OPENTX)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is not from OpenTX"); }
+  if (errors.test(NOT_TH9X)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is not from Th9X"); }
+  if (errors.test(NOT_GRUVIN9X)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is not from Gruvin9X"); }
+  if (errors.test(NOT_ERSKY9X)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is not from ErSky9X"); }
+  if (errors.test(NOT_ER9X)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is not from Er9X"); }
+  if (errors.test(WRONG_SIZE)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom size is invalid"); }
+  if (errors.test(WRONG_FILE_SYSTEM)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom file system is invalid"); }
+  if (errors.test(UNKNOWN_BOARD)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is from a unknown board"); }
+  if (errors.test(WRONG_BOARD)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom is from the wrong board"); }
+  if (errors.test(BACKUP_NOT_SUPPORTED)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Eeprom backup not supported"); }
+
+  if (errors.test(UNKNOWN_ERROR)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Something that couldn't be guessed, sorry"); }
+
+  if (errors.test(HAS_WARNINGS)) {
+    errorsList << QT_TRANSLATE_NOOP("EepromInterface", "Warning:");
+    if (errors.test(WARNING_WRONG_FIRMWARE)) { errorsList << QT_TRANSLATE_NOOP("EepromInterface", "- Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"); }
   }
+
+  QMessageBox msgBox(parent);
+  msgBox.setWindowTitle(title);
+  msgBox.setIcon(QMessageBox::Critical);
+  msgBox.setText(mainMessage);
+  msgBox.setInformativeText(errorsList.join("\n"));
+  msgBox.setStandardButtons(QMessageBox::Ok);
+  msgBox.exec();
 }
 
-bool loadEEprom(RadioData &radioData, const uint8_t *eeprom, const int size)
+void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound)
 {
-  foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
-    if (eepromInterface->load(radioData, eeprom, size))
-      return true;
-  }
+  std::bitset<NUM_ERRORS> errors((unsigned long long)errorsFound);
+  QStringList warningsList;
+  if (errors.test(WARNING_WRONG_FIRMWARE)) { warningsList << QT_TRANSLATE_NOOP("EepromInterface", "- Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"); }
+  if (errors.test(OLD_VERSION)) { warningsList << QT_TRANSLATE_NOOP("EepromInterface", "- Your eeprom is from an old version of OpenTX, upgrading!\n You should 'save as' to keep the old file as a backup."); }
 
-  return false;
+  QMessageBox msgBox(parent);
+  msgBox.setWindowTitle(title);
+  msgBox.setIcon(QMessageBox::Warning);
+  msgBox.setText(QT_TRANSLATE_NOOP("EepromInterface", "Warnings!"));
+  msgBox.setInformativeText(warningsList.join("\n"));
+  msgBox.setStandardButtons(QMessageBox::Ok);
+  msgBox.exec();
 }
 
-bool loadBackup(RadioData &radioData, uint8_t *eeprom, int size, int index)
+unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int size)
 {
+  std::bitset<NUM_ERRORS> errors;
+
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
-    if (eepromInterface->loadBackup(radioData, eeprom, size, index))
-      return true;
+    std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->load(radioData, eeprom, size));
+    if (result.test(NO_ERROR)) {
+      return result.to_ulong();
+    }
+    else {
+      errors |= result;
+    }
   }
 
-  return false;
+  if (errors.none()) {
+    errors.set(UNKNOWN_ERROR);
+  }
+  return errors.to_ulong();
+}
+
+unsigned long LoadBackup(RadioData & radioData, uint8_t * eeprom, int size, int index)
+{
+  std::bitset<NUM_ERRORS> errors;
+
+  foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
+    std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->loadBackup(radioData, eeprom, size, index));
+    if (result.test(NO_ERROR)) {
+      return result.to_ulong();
+    }
+    else {
+      errors |= result;
+    }
+  }
+
+  if (errors.none()) {
+    errors.set(UNKNOWN_ERROR);
+  }
+  return errors.to_ulong();
 }
 
 
-bool loadEEpromXml(RadioData &radioData, QDomDocument &doc)
+unsigned long LoadEepromXml(RadioData & radioData, QDomDocument & doc)
 {
+  std::bitset<NUM_ERRORS> errors;
+
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
-    if (eepromInterface->loadxml(radioData, doc))
-      return true;
+    std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->loadxml(radioData, doc));
+    if (result.test(NO_ERROR)) {
+      return result.to_ulong();
+    }
+    else {
+      errors |= result;
+    }
   }
 
-  return false;
+  if (errors.none()) {
+    errors.set(UNKNOWN_ERROR);
+  }
+  return errors.to_ulong();
 }
 
 QString getBoardName(BoardEnum board)
@@ -1581,6 +1773,8 @@ QString getBoardName(BoardEnum board)
       return "Sky9x";
     case BOARD_9XRPRO:
       return "9XR-PRO";
+    case BOARD_AR9X:
+      return "AR9X";
     default:
       return "Unknown";
   }

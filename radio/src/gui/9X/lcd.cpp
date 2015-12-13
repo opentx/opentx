@@ -181,7 +181,7 @@ void lcd_putcAtt(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
     lcdPutPattern(x, y, q, 5, 6, flags);
   }
   else if (fontsize == TINSIZE) {
-    q = &font_3x5[((uint16_t)c-0x2d)*3];
+    q = &font_3x5[((uint16_t)c-0x20)*3];
     lcdPutPattern(x, y, q, 3, 5, flags);
   }
 #if defined(BOLD_FONT)
@@ -587,7 +587,7 @@ void drawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, Lc
 void lcdDrawTelemetryTopBar()
 {
   putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
-  uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
+  uint8_t att = (IS_TXBATT_WARNING() ? BLINK : 0);
   putsVBat(14*FW,0,att);
   if (g_model.timers[0].mode) {
     att = (timersStates[0].val<0 ? BLINK : 0);
@@ -646,7 +646,7 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att)
 {
   lcd_outdezAtt(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
-  if (~att & NO_UNIT) lcd_putcAtt(lcdLastPos, y, 'v', att);
+  if (~att & NO_UNIT) lcd_putcAtt(lcdLastPos, y, 'V', att);
 }
 
 void putsVBat(coord_t x, coord_t y, LcdFlags att)
@@ -881,6 +881,7 @@ void displayGpsCoords(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFl
 
 void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t value, LcdFlags att)
 {
+  if (channel >= MAX_SENSORS) return;
   TelemetryItem & telemetryItem = telemetryItems[channel];
   TelemetrySensor & telemetrySensor = g_model.telemetrySensors[channel];
   if (telemetrySensor.unit == UNIT_DATETIME) {
@@ -1096,7 +1097,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
     case TELEM_TX_VOLTAGE-1:
       lcd_outdezAtt(x, y, val, (att|PREC1) & (~NO_UNIT));
       if (!(att & NO_UNIT))
-        lcd_putc(lcdLastPos/*+1*/, y, 'v');
+        lcd_putc(lcdLastPos/*+1*/, y, 'V');
       break;
   }
 }

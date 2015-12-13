@@ -50,6 +50,7 @@ class GeneralEdit : public QDialog
     Firmware * firmware;
     QVector<GenericPanel *> panels;
     void addTab(GenericPanel *panel, QString text);
+    void closeEvent(QCloseEvent *event);
 
 };
 

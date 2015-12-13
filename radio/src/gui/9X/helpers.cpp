@@ -86,6 +86,14 @@ bool isSourceAvailable(int source)
   return true;
 }
 
+bool isSourceAvailableInGlobalFunctions(int source)
+{
+  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
+    return false;
+  }
+  return isSourceAvailable(source);
+}
+
 bool isSourceAvailableInCustomSwitches(int source)
 {
   bool result = isSourceAvailable(source);
@@ -132,7 +140,7 @@ enum SwitchContext
 bool isSwitchAvailable(int swtch, SwitchContext context)
 {
   if (swtch < 0) {
-    if (swtch == -SWSRC_ON || swtch == -SWSRC_One) {
+    if (swtch == -SWSRC_ON || swtch == -SWSRC_ONE) {
       return false;
     }
     swtch = -swtch;
@@ -148,7 +156,7 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
     }
   }
 
-  if (context != ModelCustomFunctionsContext && context != GeneralCustomFunctionsContext && (swtch == SWSRC_ON || swtch == SWSRC_One)) {
+  if (context != ModelCustomFunctionsContext && context != GeneralCustomFunctionsContext && (swtch == SWSRC_ON || swtch == SWSRC_ONE)) {
     return false;
   }
 
@@ -176,7 +184,7 @@ bool isSwitchAvailableInLogicalSwitches(int swtch)
 
 bool isSwitchAvailableInCustomFunctions(int swtch)
 {
-  if (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions)
+  if (menuHandlers[menuLevel] == menuModelCustomFunctions)
     return isSwitchAvailable(swtch, ModelCustomFunctionsContext);
   else
     return isSwitchAvailable(swtch, GeneralCustomFunctionsContext);
@@ -212,7 +220,7 @@ bool isLogicalSwitchFunctionAvailable(int function)
 
 bool isAssignableFunctionAvailable(int function)
 {
-  bool modelFunctions = (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions);
+  bool modelFunctions = (menuHandlers[menuLevel] == menuModelCustomFunctions);
 
   switch (function) {
     case FUNC_OVERRIDE_CHANNEL:
@@ -230,11 +238,10 @@ bool isAssignableFunctionAvailable(int function)
 #if !defined(HAPTIC)
     case FUNC_HAPTIC:
 #endif
-    case FUNC_PLAY_DIFF:
+    case FUNC_RESERVE4:
 #if !defined(DANGEROUS_MODULE_FUNCTIONS)
     case FUNC_RANGECHECK:
     case FUNC_BIND:
-    case FUNC_MODULE_OFF:
 #endif
     case FUNC_PLAY_SCRIPT:
     case FUNC_RESERVE5:

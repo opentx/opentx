@@ -41,8 +41,8 @@ uint8_t s_current_protocol[NUM_MODULES] = { MODULES_INIT(255) };
 uint16_t failsafeCounter[NUM_MODULES] = { MODULES_INIT(100) };
 uint8_t moduleFlag[NUM_MODULES] = { 0 };
 
-ModulePulsesData modulePulsesData[NUM_MODULES];
-TrainerPulsesData trainerPulsesData;
+ModulePulsesData modulePulsesData[NUM_MODULES] __DMA;
+TrainerPulsesData trainerPulsesData __DMA;
 
 void setupPulses(unsigned int port)
 {
@@ -99,6 +99,11 @@ void setupPulses(unsigned int port)
           }
           break;
 #endif
+#if defined(PCBTARANIS) && defined(CROSSFIRE)
+        case MODULE_TYPE_CROSSFIRE:
+          required_protocol = PROTO_CROSSFIRE;
+          break;
+#endif
         default:
           required_protocol = PROTO_NONE;
           break;
@@ -110,9 +115,12 @@ void setupPulses(unsigned int port)
     required_protocol = PROTO_NONE;
   }
 
+#if 0
+  // will need an EEPROM conversion
   if (moduleFlag[port] == MODULE_OFF) {
     required_protocol = PROTO_NONE;
   }
+#endif
 
   if (s_current_protocol[port] != required_protocol) {
 
@@ -125,6 +133,11 @@ void setupPulses(unsigned int port)
       case PROTO_DSM2_DSM2:
       case PROTO_DSM2_DSMX:
         disable_dsm2(port);
+        break;
+#endif
+#if defined(CROSSFIRE)
+      case PROTO_CROSSFIRE:
+        disable_crossfire(port);
         break;
 #endif
       case PROTO_PPM:
@@ -148,9 +161,15 @@ void setupPulses(unsigned int port)
         init_dsm2(port);
         break;
 #endif
+#if defined(CROSSFIRE)
+      case PROTO_CROSSFIRE:
+        init_crossfire(port);
+        break;
+#endif
       case PROTO_PPM:
         init_ppm(port);
         break;
+
       default:
         init_no_pulses(port);
         break;
@@ -168,6 +187,17 @@ void setupPulses(unsigned int port)
     case PROTO_DSM2_DSMX:
       setupPulsesDSM2(port);
       break;
+#endif
+#if defined(CROSSFIRE)
+    case PROTO_CROSSFIRE:
+    {
+      if (telemetryProtocol == PROTOCOL_PULSES_CROSSFIRE) {
+        uint8_t * crossfire = modulePulsesData[port].crossfire.pulses;
+        createCrossfireFrame(crossfire, &channelOutputs[g_model.moduleData[port].channelsStart]);
+        sportSendBuffer(crossfire, CROSSFIRE_FRAME_LEN);
+      }
+      break;
+    }
 #endif
     case PROTO_PPM:
       setupPulsesPPM(port);

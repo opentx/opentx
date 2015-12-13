@@ -36,6 +36,17 @@
 
 #include "../../opentx.h"
 
+const pm_uchar bmp_sleep[] PROGMEM = {
+  #include "../../bitmaps/Taranis/sleep.lbm"
+};
+
+void displaySleepBitmap()
+{
+  lcd_clear();
+  lcd_bmp(76, 2, bmp_sleep, 0, 60);
+  lcdRefresh();
+}
+
 void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 {
 #define BOX_CENTERY   (LCD_H-BOX_WIDTH/2-10)
@@ -62,19 +73,6 @@ void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
   else
     lcd_square(x, y, 7);
 }
-
-#if defined(REV9E)
-void displayShutdownProgress(uint32_t progress)
-{
-  lcd_clear();
-  lcd_putsLeft(LCD_H/2-20, STR_POWEROFF);
-  drawFilledRect((LCD_W-44)/2, LCD_H/2-5, 28, 10, SOLID, ERASE);
-  lcd_rect((LCD_W-44)/2, LCD_H/2-5, 28, 10);
-  for (int i=(progress/100); i>=0; i--) {
-    drawFilledRect((LCD_W-44)/2+3+i*8, LCD_H/2-3, 6, 6, SOLID);
-  }
-}
-#endif
 
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 {
@@ -126,6 +124,17 @@ void updateProgressBar(int num, int den)
   }
 }
 
+void drawGauge(coord_t x, coord_t y, coord_t w, coord_t h, int32_t val, int32_t max)
+{
+  lcd_rect(x, y, w+1, h);
+  drawFilledRect(x+1, y+1, w-1, 4, SOLID, ERASE);
+  coord_t len = limit((uint8_t)1, uint8_t((abs(val) * w/2 + max/2) / max), uint8_t(w/2));
+  coord_t x0 = (val>0) ? x+w/2 : x+1+w/2-len;
+  for (coord_t i=h-2; i>0; i--) {
+    lcd_hline(x0, y+i, len);
+  }
+}
+
 void title(const pm_char * s)
 {
   lcd_putsAtt(0, 0, s, INVERS);
@@ -135,7 +144,7 @@ select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, c
 {
   lcd_putsColumnLeft(x, y, label);
   if (values) lcd_putsiAtt(x, y, values, value-min, attr);
-  if (attr) value = checkIncDec(event, value, min, max, (g_menuPos[0] == 0) ? EE_MODEL : EE_GENERAL);
+  if (attr) value = checkIncDec(event, value, min, max, (menuVerticalPositions[0] == 0) ? EE_MODEL : EE_GENERAL);
   return value;
 }
 
@@ -246,7 +255,7 @@ void drawStatusLine()
     }
 
     drawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID, ERASE);
-    lcd_putsAtt(5, LCD_H+1-statusLineHeight, statusLineMsg, BSS);
+    lcd_putsAtt(5, LCD_H+1-statusLineHeight, statusLineMsg, 0);
     drawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID);
   }
 }

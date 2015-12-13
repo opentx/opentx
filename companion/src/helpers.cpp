@@ -12,6 +12,8 @@
 #include "simulatorinterface.h"
 #include "firmwareinterface.h"
 
+Stopwatch gStopwatch("global");
+
 const QColor colors[C9X_MAX_CURVES] = {
   QColor(0,0,127),
   QColor(0,127,0),
@@ -47,44 +49,6 @@ const QColor colors[C9X_MAX_CURVES] = {
   QColor(255,127,0),
 };
 
-QString getPhaseName(int val, const char * phasename)
-{
-  if (!val) return "---";
-  if (!phasename) {
-    return QString(val < 0 ? "!" : "") + QObject::tr("FM%1").arg(abs(val) - 1);
-  }
-  else {
-    QString phaseName;
-    phaseName.append(phasename);
-    if (phaseName.isEmpty()) {
-      return QString(val < 0 ? "!" : "") + QObject::tr("FM%1").arg(abs(val) - 1);
-    }
-    else {
-      return QString(val < 0 ? "!" : "") + phaseName;
-    }
-  }
-}
-
-QString getInputStr(ModelData * model, int index)
-{
-  QString result;
-
-  if (GetCurrentFirmware()->getCapability(VirtualInputs)) {
-    if (strlen(model->inputNames[index]) > 0) {
-      result = QObject::tr("[I%1]").arg(index+1);
-      result += QString(model->inputNames[index]);
-    }
-    else {
-      result = QObject::tr("Input%1").arg(index+1, 2, 10, QChar('0'));
-    }
-  }
-  else {
-    result = RawSource(SOURCE_TYPE_STICK, index).toString(model);
-  }
-
-  return result;
-}
-
 void populateGvSourceCB(QComboBox *b, int value)
 {
   QString strings[] = { QObject::tr("---"), QObject::tr("Rud Trim"), QObject::tr("Ele Trim"), QObject::tr("Thr Trim"), QObject::tr("Ail Trim"), QObject::tr("Rot Enc"), QObject::tr("Rud"), QObject::tr("Ele"), QObject::tr("Thr"), QObject::tr("Ail"), QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3")};
@@ -95,18 +59,35 @@ void populateGvSourceCB(QComboBox *b, int value)
   b->setCurrentIndex(value);
 }
 
-QString getProtocolStr(const int proto)
+void populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current)
 {
-  static const char *strings[] = { "OFF",
-                                   "PPM",
-                                   "Silverlit A", "Silverlit B", "Silverlit C",
-                                   "CTP1009",
-                                   "LP45", "DSM2", "DSMX",
-                                   "PPM16", "PPMsim",
-                                   "FrSky XJT - D16", "FrSky XJT - D8", "FrSky XJT - LR12", "FrSky DJT",
-  };
+  b->clear();
+  b->addItem("----");
 
-  return CHECK_IN_ARRAY(strings, proto);
+  bool added = false;
+  // Convert set into list and sort it alphabetically case insensitive
+  QStringList list = QStringList::fromSet(set);
+  qSort(list.begin(), list.end(), caseInsensitiveLessThan);
+  foreach (QString entry, list) {
+    b->addItem(entry);
+    if (entry == current) {
+      b->setCurrentIndex(b->count()-1);
+      added = true;
+    }
+  }
+
+  if (!added && !current.isEmpty()) {
+    b->addItem(current);
+    b->setCurrentIndex(b->count()-1);
+  }
+}
+
+void getFileComboBoxValue(QComboBox * b, char * dest, int length)
+{
+  memset(dest, 0, length+1);
+  if (b->currentText() != "----") {
+    strncpy(dest, b->currentText().toAscii(), length);
+  }
 }
 
 void populatePhasesCB(QComboBox *b, int value)
@@ -562,8 +543,11 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
   }
 
   if (flags & POPULATE_SOURCES) {
-    for (int i=0; i<4+GetCurrentFirmware()->getCapability(Pots); i++) {
+    for (int i=0; i<NUM_STICKS+GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders); i++) {
       item = RawSource(SOURCE_TYPE_STICK, i);
+      // skip unavailable pots and sliders
+      if (item.isPot() && !generalSettings.isPotAvailable(i-NUM_STICKS)) continue;
+      if (item.isSlider() && !generalSettings.isSliderAvailable(i-NUM_STICKS-GetCurrentFirmware()->getCapability(Pots))) continue;
       b->addItem(item.toString(model), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
@@ -635,7 +619,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
         if (item == source) b->setCurrentIndex(b->count()-1);
       }
       for (int i=0; i<C9X_MAX_SENSORS; ++i) {
-        if (model->sensorData[i].isAvailable()) {
+        if (model && model->sensorData[i].isAvailable()) {    //this conditon must be false if we populate Global Functions where model = 0
           for (int j=0; j<3; ++j) {
             item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i+j);
             b->addItem(item.toString(model), item.toValue());
@@ -647,8 +631,6 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
     }
     else {
       for (int i=0; i<(flags & POPULATE_TELEMETRYEXT ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_COUNT); i++) {
-        if (i==TELEMETRY_SOURCE_RSSI_TX && IS_TARANIS(board))
-          continue;
         if (i==TELEMETRY_SOURCE_TX_TIME && !GetCurrentFirmware()->getCapability(RtcTime))
           continue;
         if (i==TELEMETRY_SOURCE_SWR && !GetCurrentFirmware()->getCapability(SportTelemetry))
@@ -760,134 +742,6 @@ QString getFrSkySrc(int index)
   return RawSource(SOURCE_TYPE_TELEMETRY, index-1).toString();
 }
 
-QString getTrimInc(ModelData * g_model)
-{
-  switch (g_model->trimInc) {
-    case -2:
-      return QObject::tr("Exponential");
-    case -1:
-      return QObject::tr("Extra Fine");
-    case 0:
-      return QObject::tr("Fine");
-    case 1:
-      return QObject::tr("Medium");
-    case 2:
-      return QObject::tr("Coarse");
-    default:
-      return QObject::tr("Unknown");
-  }
-}
-
-QString getTimerStr(TimerData & timer)
-{
-  QString result = QObject::tr("%1:%2").arg(timer.val/60, 2, 10, QChar('0')).arg(timer.val%60, 2, 10, QChar('0'));
-  result += QString(", ") + timer.mode.toString();
-  if (timer.persistent)
-    result += QObject::tr(", Persistent");
-  if (timer.minuteBeep)
-    result += QObject::tr(", MinuteBeep");
-  if (timer.countdownBeep == 1)
-    result += QObject::tr(", CountDown(Beeps)");
-  else if (timer.countdownBeep == 2)
-    result += QObject::tr(", CountDown(Voice)");
-  return result;
-}
-
-QString getProtocol(ModuleData & module)
-{
-  QString str = getProtocolStr(module.protocol);
-
-  if (module.protocol == PPM)
-    str.append(QObject::tr(": Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4").arg(module.channelsStart+1).arg(module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString()));
-  else
-    str.append(QObject::tr(": Channel start: %1, %2 Channels").arg(module.channelsStart+1).arg(module.channelsCount));
-  return str;
-}
-
-QString getTrainerMode(const int trainermode, ModuleData & module)
-{
-  QString result;
-  switch (trainermode) {
-    case 1:
-      result=QObject::tr("Slave/Jack")+QObject::tr(": Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4").arg(module.channelsStart+1).arg(module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString());
-      break;
-    case 2:
-      result=QObject::tr("Master/SBUS Module");
-      break;
-    case 3:
-      result=QObject::tr("Master/CPPM Module");
-      break;
-    case 4:
-      result=QObject::tr("Master/SBUS in battery compartment");
-      break;
-    default:
-      result=QObject::tr("Master/Jack");
-  }
-  return result;
-}
-
-QString getPhasesStr(unsigned int phases, ModelData * model)
-{
-  int numphases = GetCurrentFirmware()->getCapability(FlightModes);
-
-  if (numphases && phases) {
-    QString str;
-    int count = 0;
-    if (phases == (unsigned int)(1<<numphases) - 1) {
-      str = QObject::tr("None");
-    }
-    if (phases) {
-      for (int i=0; i<numphases;i++) {
-        if (!(phases & (1<<i))) {
-          if (count++ > 0) str += QString(", ");
-          str += getPhaseName(i+1, model->flightModeData[i].name);
-        }
-      }
-    }
-    if (count > 1)
-      return QObject::tr("Flight modes(%1)").arg(str);
-    else
-      return QObject::tr("Flight mode(%1)").arg(str);
-  }
-  else {
-    return "";
-  }
-}
-
-QString getCenterBeepStr(ModelData * g_model)
-{
-  QStringList strl;
-  if (g_model->beepANACenter & 0x01)
-    strl << QObject::tr("Rudder");
-  if (g_model->beepANACenter & 0x02)
-    strl << QObject::tr("Elevator");
-  if (g_model->beepANACenter & 0x04)
-    strl << QObject::tr("Throttle");
-  if (g_model->beepANACenter & 0x08)
-    strl << QObject::tr("Aileron");
-  if (IS_TARANIS(GetCurrentFirmware()->getBoard())) {
-    if (g_model->beepANACenter & 0x10)
-      strl << "S1";
-    if (g_model->beepANACenter & 0x20)
-      strl << "S2";
-    if (g_model->beepANACenter & 0x40)
-      strl << "S3";
-    if (g_model->beepANACenter & 0x80)
-      strl << "LS";
-    if (g_model->beepANACenter & 0x100)
-      strl << "RS";
-  }
-  else {
-    if (g_model->beepANACenter & 0x10)
-      strl << "P1";
-    if (g_model->beepANACenter & 0x20)
-      strl << "P2";
-    if (g_model->beepANACenter & 0x40)
-      strl << "P3";
-  }
-  return strl.join(", ");
-}
-
 QString getTheme()
 {
   int theme_set = g.theme();
@@ -938,7 +792,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     SimulatorDialog * sd;
     if (IS_TARANIS(board)) {
       for (int i=0; i<GetCurrentFirmware()->getCapability(Pots); i++) {
-        if (radioData.generalSettings.potConfig[i] != GeneralSettings::POT_NONE) {
+        if (radioData.generalSettings.isPotAvailable(i)) {
           flags |= (SIMULATOR_FLAGS_S1 << i);
           if (radioData.generalSettings.potConfig[1] == GeneralSettings::POT_MULTIPOS_SWITCH ) {
             flags |= (SIMULATOR_FLAGS_S1_MULTI << i);
@@ -985,22 +839,38 @@ QPixmap makePixMap( QImage image, QString firmwareType )
   return(QPixmap::fromImage(image));
 }
 
-int version2index(QString version)
+int version2index(const QString & version)
 {
-  QStringList parts = version.split('.');
-  int result = 0;
-  if (parts.size() > 2)
-    result = parts[2].toInt();
+  int result = 999;
+  QStringList parts = version.split("N");
   if (parts.size() > 1)
-    result += 100 * parts[1].toInt();
+    result = parts[1].toInt(); // nightly build
+  parts = parts[0].split('.');
+  if (parts.size() > 2)
+    result += 1000 * parts[2].toInt();
+  if (parts.size() > 1)
+    result += 100000 * parts[1].toInt();
   if (parts.size() > 0)
-    result += 10000 * parts[0].toInt();
+    result += 10000000 * parts[0].toInt();
   return result;
 }
 
 QString index2version(int index)
 {
-  if (index >= 19900) {
+  if (index >= 19900000) {
+    int nightly = index % 1000;
+    index /= 1000;
+    int revision = index % 100;
+    index /= 100;
+    int minor = index % 100;
+    int major = index / 100;
+    QString result = QString("%1.%2.%3").arg(major).arg(minor).arg(revision);
+    if (nightly > 0 && nightly < 999) {
+      result += QString("N%1").arg(nightly);
+    }
+    return result;
+  }
+  else if (index >= 19900) {
     int revision = index % 100;
     index /= 100;
     int minor = index % 100;
@@ -1018,7 +888,7 @@ int qunlink(const QString & fileName)
   return unlink(ba.constData());
 }
 
-QString generateProcessUniqueTempFileName(const QString &fileName)
+QString generateProcessUniqueTempFileName(const QString & fileName)
 {
   QString sanitizedFileName = fileName;
   sanitizedFileName.remove('/');
@@ -1059,4 +929,160 @@ QSet<QString> getFilesSet(const QString &path, const QStringList &filter, int ma
 bool caseInsensitiveLessThan(const QString &s1, const QString &s2)
 {
   return s1.toLower() < s2.toLower();
+}
+
+bool GpsGlitchFilter::isGlitch(double latitude, double longitude) 
+{
+  if ((fabs(latitude) < 0.1) && (fabs(longitude) < 0.1)) {
+    return true;
+  }
+
+  if (lastValid) {
+    if (fabs(latitude - lastLat) > 0.01) {
+      // qDebug() << "GpsGlitchFilter(): latitude glitch " << latitude << lastLat;
+      if ( ++glitchCount < 10) {
+        return true; 
+      }
+    }
+    if (fabs(longitude - lastLon) > 0.01) {
+      // qDebug() << "GpsGlitchFilter(): longitude glitch " << longitude << lastLon;
+      if ( ++glitchCount < 10) {
+        return true; 
+      }
+    }
+  }
+  lastLat = latitude;
+  lastLon = longitude;
+  lastValid = true;
+  glitchCount = 0;
+  return false;
+}
+
+bool GpsLatLonFilter::isValid(const QString & latitude, const QString & longitude)
+{
+  if (lastLat == latitude) {
+    return false;
+  }
+  if (lastLon == longitude) {
+    return false;
+  }
+  lastLat = latitude;
+  lastLon = longitude;
+  return true;
+}
+
+double toDecimalCoordinate(const QString & value) 
+{
+  if (value.isEmpty()) return 0.0;
+  double temp = int(value.left(value.length()-1).toDouble() / 100);
+  double result = temp + (value.left(value.length() - 1).toDouble() - temp * 100) / 60.0;
+  QChar direction = value.at(value.size()-1);
+  if ((direction == 'S') || (direction == 'W')) {
+    result = -result;
+  }
+  return result;
+}
+
+QStringList extractLatLon(const QString & position)
+{
+  QStringList result;
+  QStringList parts = position.split(' ');
+  if (parts.size() != 2) {
+    result.append(""); 
+    result.append(""); 
+  }
+  else {
+    result.append(parts.at(1).trimmed());
+    result.append(parts.at(0).trimmed());
+  }
+  return result;
+}
+
+TableLayout::TableLayout(QWidget * parent, int rowCount, const QStringList & headerLabels)
+{
+#if defined(TABLE_LAYOUT)
+  tableWidget = new QTableWidget(parent);
+  QVBoxLayout * layout = new QVBoxLayout();
+  layout->addWidget(tableWidget);
+  layout->setContentsMargins(0, 0, 0, 0);
+  parent->setLayout(layout);
+
+  tableWidget->setRowCount(rowCount);
+  tableWidget->setColumnCount(headerLabels.size());
+  tableWidget->setShowGrid(false);
+  tableWidget->verticalHeader()->setVisible(false);
+  tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+  tableWidget->setSelectionMode(QAbstractItemView::NoSelection);
+  tableWidget->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
+  tableWidget->setStyleSheet("QTableWidget {background-color: transparent;}");
+  tableWidget->setHorizontalHeaderLabels(headerLabels);
+#else
+  gridWidget = new QGridLayout(parent);
+
+  int col = 0;
+  foreach(QString text, headerLabels) {
+    QLabel *label = new QLabel();
+    label->setFrameShape(QFrame::Panel);
+    label->setFrameShadow(QFrame::Raised);
+    label->setMidLineWidth(0);
+    label->setAlignment(Qt::AlignCenter);
+    label->setMargin(5);
+    label->setText(text);
+    // if (!minimize)
+    //   label->setMinimumWidth(100);
+    gridWidget->addWidget(label, 0, col++);
+  }
+#endif
+}
+
+void TableLayout::addWidget(int row, int column, QWidget * widget)
+{
+#if defined(TABLE_LAYOUT)
+  QHBoxLayout * layout = new QHBoxLayout(tableWidget);
+  layout->addWidget(widget);
+  addLayout(row, column, layout);
+#else
+  gridWidget->addWidget(widget, row + 1, column);
+#endif
+}
+
+void TableLayout::addLayout(int row, int column, QLayout * layout)
+{
+#if defined(TABLE_LAYOUT)
+  layout->setContentsMargins(1, 3, 1, 3);
+  QWidget * containerWidget = new QWidget(tableWidget);
+  containerWidget->setLayout(layout);
+  tableWidget->setCellWidget(row, column, containerWidget);
+#else
+  gridWidget->addLayout(layout, row + 1, column);
+#endif
+}
+
+void TableLayout::resizeColumnsToContents() 
+{
+#if defined(TABLE_LAYOUT)
+  tableWidget->resizeColumnsToContents();
+#else
+#endif
+}
+
+void TableLayout::setColumnWidth(int col, int width) 
+{
+#if defined(TABLE_LAYOUT)
+  tableWidget->setColumnWidth(col, width);
+#else
+#endif
+}
+
+void TableLayout::pushRowsUp(int row) 
+{
+#if defined(TABLE_LAYOUT)
+#else
+  // Push the rows up
+  QSpacerItem * spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  gridWidget->addItem(spacer, row, 0);
+#endif
+  // Push rows upward
+  // addDoubleSpring(gridLayout, 5, num_fsw+1);
+
 }

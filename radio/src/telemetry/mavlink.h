@@ -43,10 +43,8 @@
 #define MAVLINK_COMM_NUM_BUFFERS 1
 
 #include "GCS_MAVLink/include_v1.0/mavlink_types.h"
-#include "serial.h"
+#include "targets/common_avr/serial_driver.h"
 #include "opentx.h"
-#include "serial.h"
-//#include "include/mavlink_helpers.h"
 
 extern mavlink_system_t mavlink_system;
 
@@ -62,7 +60,7 @@ extern void SERIAL_send_uart_bytes(const uint8_t * buf, uint16_t len);
 #define MAVLINK_END_UART_SEND(chan,len) SERIAL_end_uart_send()
 #define MAVLINK_SEND_UART_BYTES(chan,buf,len) SERIAL_send_uart_bytes(buf,len)
 
-#include "../GCS_MAVLink/include_v1.0/ardupilotmega/mavlink.h"
+#include "GCS_MAVLink/include_v1.0/ardupilotmega/mavlink.h"
 
 //#define MAVLINK_PARAMS
 //#define DUMP_RX_TX

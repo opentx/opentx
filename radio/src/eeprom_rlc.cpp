@@ -262,6 +262,12 @@ void eepromFormat()
 {
   ENABLE_SYNC_WRITE(true);
 
+#ifdef SIMU
+  // write zero to the end of the new EEPROM file to set it's proper size
+  uint8_t dummy = 0;
+  eepromWriteBlock(&dummy, EESIZE-1, 1);
+#endif
+
   memclear(&eeFs, sizeof(eeFs));
   eeFs.version  = EEFS_VERS;
   eeFs.mySize   = sizeof(eeFs);
@@ -282,28 +288,6 @@ void eepromFormat()
 
 bool eepromOpen()
 {
-#if 0
-  ALERT("!!START!!", "START", AU_ERROR);
-
-  static uint16_t mybuffer[2048];
-
-  for (int i=0; i<2048; i++) {
-    mybuffer[i] = i;
-  }
-
-  eepromWriteBlock((uint8_t *)mybuffer, 0, sizeof(mybuffer));
-
-  eepromReadBlock((uint8_t *)mybuffer, 0, sizeof(mybuffer));
-
-  for (int i=0; i<2048; i++) {
-    if (mybuffer[i] != i) {
-      ALERT("!!ERROR!!", "ERROR", AU_ERROR);
-    }
-  }
-
-  ALERT("!!OK!!", "OK", AU_ERROR);
-#endif
-
   eepromReadBlock((uint8_t *)&eeFs, 0, sizeof(eeFs));
 
 #ifdef SIMU
@@ -893,12 +877,6 @@ void RlcFile::DisplayProgressBar(uint8_t x)
 }
 #endif
 
-#if defined(PCBSTD)
-  #define CHECK_EEPROM_VARIANT() (g_eeGeneral.variant == EEPROM_VARIANT)
-#else
-  #define CHECK_EEPROM_VARIANT() (1)
-#endif
-
 // For conversions ...
 #if defined(CPUARM)
 void loadGeneralSettings()
@@ -921,13 +899,17 @@ bool eeLoadGeneral()
   theFile.openRlc(FILE_GENERAL);
   if (theFile.readRlc((uint8_t*)&g_eeGeneral, 1) == 1 && g_eeGeneral.version == EEPROM_VER) {
     theFile.openRlc(FILE_GENERAL);
-    if (theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral)) <= sizeof(EEGeneral) && CHECK_EEPROM_VARIANT()) {
+    if (theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral)) <= sizeof(EEGeneral) && g_eeGeneral.variant == EEPROM_VARIANT) {
       return true;
     }
   }
 
 #if defined(PCBTARANIS)
-  if (g_eeGeneral.version != EEPROM_VER) {
+  if (g_eeGeneral.variant != EEPROM_VARIANT) {
+    TRACE("EEPROM variant %d instead of %d", g_eeGeneral.variant, EEPROM_VARIANT);
+    return false;
+  }
+  else if (g_eeGeneral.version != EEPROM_VER) {
     TRACE("EEPROM version %d instead of %d", g_eeGeneral.version, EEPROM_VER);
     if (!eeConvert()) {
       return false;
@@ -1032,6 +1014,7 @@ void eeLoadModel(uint8_t id)
     LOAD_MODEL_BITMAP();
     LUA_LOAD_MODEL_SCRIPTS();
     SEND_FAILSAFE_1S();
+    PLAY_MODEL_NAME();
   }
 }
 

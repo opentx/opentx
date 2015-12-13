@@ -36,11 +36,10 @@
 
 #include "opentx.h"
 
-#define MENUS_STACK_SIZE    2000
-#define MIXER_STACK_SIZE    500
-#define AUDIO_STACK_SIZE    500
-#define BT_STACK_SIZE       500
-#define DEBUG_STACK_SIZE    500
+#define MENUS_STACK_SIZE       2000
+#define MIXER_STACK_SIZE       500
+#define AUDIO_STACK_SIZE       500
+#define BLUETOOTH_STACK_SIZE   500
 
 #if defined(_MSC_VER)
   #define _ALIGNED(x) __declspec(align(x))
@@ -49,77 +48,84 @@
 #endif
 
 OS_TID menusTaskId;
-// stack must be aligned to 8 bytes otherwise printf for %f does not work!
-OS_STK _ALIGNED(8) menusStack[MENUS_STACK_SIZE];
+// menus stack must be aligned to 8 bytes otherwise printf for %f does not work!
+TaskStack<MENUS_STACK_SIZE> _ALIGNED(8) menusStack;
 
 OS_TID mixerTaskId;
-OS_STK mixerStack[MIXER_STACK_SIZE];
+TaskStack<MENUS_STACK_SIZE> mixerStack;
 
 OS_TID audioTaskId;
-OS_STK audioStack[AUDIO_STACK_SIZE];
+TaskStack<AUDIO_STACK_SIZE> audioStack;
 
 #if defined(BLUETOOTH)
 OS_TID btTaskId;
-OS_STK btStack[BT_STACK_SIZE];
-#endif
-
-#if defined(DEBUG)
-OS_TID debugTaskId;
-OS_STK debugStack[DEBUG_STACK_SIZE];
+TaskStack<BLUETOOTH_STACK_SIZE> bluetoothStack;
 #endif
 
 OS_MutexID audioMutex;
 OS_MutexID mixerMutex;
 
-void stack_paint()
+enum TaskIndex {
+  MENU_TASK_INDEX,
+  MIXER_TASK_INDEX,
+  AUDIO_TASK_INDEX,
+  CLI_TASK_INDEX,
+  BLUETOOTH_TASK_INDEX,
+  TASK_INDEX_COUNT,
+  MAIN_TASK_INDEX = 255
+};
+
+template<int SIZE>
+void TaskStack<SIZE>::paint()
 {
-  for (uint32_t i=0; i<MENUS_STACK_SIZE; i++)
-    menusStack[i] = 0x55555555;
-  for (uint32_t i=0; i<MIXER_STACK_SIZE; i++)
-    mixerStack[i] = 0x55555555;
-  for (uint32_t i=0; i<AUDIO_STACK_SIZE; i++)
-    audioStack[i] = 0x55555555;
+  for (uint32_t i=0; i<SIZE; i++) {
+    stack[i] = 0x55555555;
+  }
 }
 
-uint32_t stack_free(uint32_t tid)
+template<int SIZE>
+uint16_t TaskStack<SIZE>::size()
 {
-  OS_STK *stack;
-  uint32_t size;
+  return SIZE*4;
+}
 
-  switch(tid) {
-    case 0:
-      stack = menusStack;
-      size = MENUS_STACK_SIZE;
-      break;
-    case 1:
-      stack = mixerStack;
-      size = MIXER_STACK_SIZE;
-      break;
-    case 2:
-      stack = audioStack;
-      size = AUDIO_STACK_SIZE;
-      break;
-#if defined(PCBTARANIS)
-    case 255:
-  #if defined(SIMU)
-      return 1024;
-  #else
-      // main stack
-      stack = (OS_STK *)&_main_stack_start;
-      size = ((unsigned char *)&_estack - (unsigned char *)&_main_stack_start) / 4;
-  #endif
-      break;
-#endif
-    default:
-      return 0;
+uint16_t getStackAvailable(void * address, uint16_t size)
+{
+  uint32_t * array = (uint32_t *)address;
+  uint16_t i = 0;
+  while (i < size && array[i] == 0x55555555) {
+    i++;
   }
-
-  uint32_t i=0;
-  for (; i<size; i++)
-    if (stack[i] != 0x55555555)
-      break;
   return i*4;
 }
+
+template<int SIZE>
+uint16_t TaskStack<SIZE>::available()
+{
+  return getStackAvailable(stack, SIZE);
+}
+
+void stackPaint()
+{
+  menusStack.paint();
+  mixerStack.paint();
+  audioStack.paint();
+#if defined(CLI)
+  cliStack.paint();
+#endif
+}
+
+#if defined(CPUSTM32) && !defined(SIMU)
+uint16_t stackSize()
+{
+  return ((unsigned char *)&_estack - (unsigned char *)&_main_stack_start) / 4;
+}
+
+uint16_t stackAvailable()
+{
+  return getStackAvailable(&_main_stack_start, stackSize());
+}
+#endif
 
 #if !defined(SIMU)
 
@@ -159,7 +165,18 @@ void menusTask(void * pdata)
 {
   opentxInit();
 
+#if defined(PCBTARANIS) && defined(REV9E)
+  while (1) {
+    uint32_t pwr_check = pwrCheck();
+    if (pwr_check == e_power_off) {
+      break;
+    }
+    else if (pwr_check == e_power_press) {
+      continue;
+    }
+#else
   while (pwrCheck() != e_power_off) {
+#endif
     U64 start = CoGetOSTime();
     perMain();
     // TODO remove completely massstorage from sky9x firmware
@@ -171,24 +188,21 @@ void menusTask(void * pdata)
     }
   }
 
-  lcd_clear();
-  displayPopup(STR_SHUTDOWN);
-
-  opentxClose();
-
-  lcd_clear();
-  lcdRefresh();
-  lcdOff();
-  BACKLIGHT_OFF();
-#if defined(REV9E)
+#if defined(PCBTARANIS) && defined(REV9E)
   topLcdOff();
 #endif
 
-#if !defined(SIMU)
-  SysTick->CTRL = 0; // turn off systick
+  BACKLIGHT_OFF();
+
+#if defined(PCBTARANIS)
+  displaySleepBitmap();
+#else
+  lcd_clear();
+  displayPopup(STR_SHUTDOWN);
 #endif
 
-  pwrOff(); // Only turn power off if necessary
+  opentxClose();
+  boardOff(); // Only turn power off if necessary
 }
 
 extern void audioTask(void* pdata);
@@ -197,17 +211,17 @@ void tasksStart()
 {
   CoInitOS();
 
-#if defined(CPUARM) && defined(DEBUG) && !defined(SIMU)
-  debugTaskId = CoCreateTaskEx(debugTask, NULL, 10, &debugStack[DEBUG_STACK_SIZE-1], DEBUG_STACK_SIZE, 1, false);
+#if defined(CLI)
+  cliStart();
 #endif
 
 #if defined(BLUETOOTH)
-  btTaskId = CoCreateTask(btTask, NULL, 15, &btStack[BT_STACK_SIZE-1], BT_STACK_SIZE);
+  btTaskId = CoCreateTask(btTask, NULL, 15, &bluetoothStack.stack[BLUETOOTH_STACK_SIZE-1], BLUETOOTH_STACK_SIZE);
 #endif
 
-  mixerTaskId = CoCreateTask(mixerTask, NULL, 5, &mixerStack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
-  menusTaskId = CoCreateTask(menusTask, NULL, 10, &menusStack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
-  audioTaskId = CoCreateTask(audioTask, NULL, 7, &audioStack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
+  mixerTaskId = CoCreateTask(mixerTask, NULL, 5, &mixerStack.stack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
+  menusTaskId = CoCreateTask(menusTask, NULL, 10, &menusStack.stack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
+  audioTaskId = CoCreateTask(audioTask, NULL, 7, &audioStack.stack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
 
 #if !defined(SIMU)
   audioMutex = CoCreateMutex();

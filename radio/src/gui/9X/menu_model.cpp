@@ -36,7 +36,7 @@
 #include "../../opentx.h"
 
 #if defined(MAVLINK)
-#include "view_mavlink.h"
+#include "gui/9X/view_mavlink.h"
 #endif
 
 // TODO elsewhere!
@@ -122,7 +122,7 @@ static int8_t s_copySrcRow;
 static int8_t s_copyTgtOfs;
 
 #if defined(CPUM64)
-  #define editNameCursorPos m_posHorz
+  #define editNameCursorPos menuHorizontalPosition
 #else
   static uint8_t editNameCursorPos = 0;
 #endif

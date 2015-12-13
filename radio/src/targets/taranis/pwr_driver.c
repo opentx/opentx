@@ -37,11 +37,11 @@
 #include "board_taranis.h"
 #include "../../pwr.h"
 
-extern volatile uint32_t g_tmr10ms;
-#define get_tmr10ms() g_tmr10ms
-
 void pwrInit()
 {
+  // if any changes are done to the PWR PIN or pwrOn() function
+  // then the same changes must be done in _bootStart()
+
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = PWR_GPIO_PIN_ON;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
@@ -72,24 +72,41 @@ void pwrInit()
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_Init(TRAINER_GPIO_DETECT, &GPIO_InitStructure);
 
-  // Soft power ON
-  GPIO_SetBits(PWR_GPIO, PWR_GPIO_PIN_ON);
+  pwrOn();
+}
 
-#if defined(REV9E)
-  while (pwrPressed()) ;
-#endif
+void pwrOn()
+{
+  GPIO_SetBits(PWR_GPIO, PWR_GPIO_PIN_ON);
 }
 
 void pwrOff()
 {
   GPIO_ResetBits(PWR_GPIO, PWR_GPIO_PIN_ON);
-#if defined(REV9E)
-  // 9E needs watchdog reset because CPU is still running while the power
-  // key is held pressed by the user
-  while (1) {
+
+  // disable interrupts
+ __disable_irq();
+
+  while(1) {
     wdt_reset();
-  }
+#if defined(REV9E)
+    // 9E needs watchdog reset because CPU is still running while 
+    // the power key is held pressed by the user.
+    // The power key should be released by now, but we must make sure
+    if (!pwrPressed()) {
+      // Put the CPU into sleep to reduce the consumption,
+      // it might help with the RTC reset issue
+      PWR->CR |= PWR_CR_CWUF;
+      /* Select STANDBY mode */
+      PWR->CR |= PWR_CR_PDDS;
+      /* Set SLEEPDEEP bit of Cortex System Control Register */
+      SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+      /* Request Wait For Event */
+      __WFE();
+    }
 #endif
+  }
+  //this function must not return!
 }
 
 #if defined(REV9E)
@@ -97,36 +114,9 @@ uint32_t pwrPressed()
 {
   return GPIO_ReadInputDataBit(PWR_GPIO, PWR_GPIO_PIN_SWITCH) == Bit_RESET;
 }
-#if !defined(BOOT)
-uint32_t pwrPressTime = 0;
-uint32_t pwrPressedDuration()
-{
-  if (pwrPressTime == 0) {
-    return 0;
-  }
-  else {
-    return get_tmr10ms() - pwrPressTime;
-  }
-}
-uint32_t pwrCheck()
-{
-  if (pwrPressed()) {
-    if (pwrPressTime == 0) {
-      pwrPressTime = get_tmr10ms();
-    }
-    else {
-      if (get_tmr10ms() - pwrPressTime > 250) {
-        return e_power_off;
-      }
-    }
-  }
-  else {
-    pwrPressTime = 0;
-  }
-  return e_power_on;
-}
 #endif
-#else
+
+#if !defined(REV9E)
 uint32_t pwrCheck()
 {
 #if defined(SIMU)

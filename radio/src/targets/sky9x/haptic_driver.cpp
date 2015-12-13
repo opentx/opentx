@@ -50,8 +50,9 @@ void hapticOn( uint32_t pwmPercent )
 
   pwmptr = PWM ;
 
-  if (pwmPercent > 100)
+  if (pwmPercent > 100) {
     pwmPercent = 100 ;
+  }
 
   pwmptr->PWM_CH_NUM[2].PWM_CDTYUPD = pwmPercent ;                // Duty
   pwmptr->PWM_ENA = PWM_ENA_CHID2 ;                                               // Enable channel 2

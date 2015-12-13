@@ -54,6 +54,7 @@
 #endif
 #include "simulatordialog.h"
 #include "eeprominterface.h"
+#include "appdata.h"
 
 #if defined WIN32 || !defined __GNUC__
 #include <windows.h>
@@ -123,34 +124,29 @@ int main(int argc, char *argv[])
   registerSimulators();
   registerOpenTxFirmwares();
 
-  QMessageBox msgBox;
-  msgBox.setWindowTitle("Radio type");
-  msgBox.setText("Which radio type do you want to simulate?");
-  msgBox.setIcon(QMessageBox::Question);
-
-  foreach(SimulatorFactory *factory, registered_simulators) {
-    QPushButton *button = msgBox.addButton(factory->name(), QMessageBox::ActionRole);
-    button->adjustSize();
-    button->setProperty("name", factory->name());
-  }
-  msgBox.adjustSize();
-
-  QPushButton *exitButton = msgBox.addButton(QMessageBox::Close);
-
   eedir = QDir(QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation));
   if (!eedir.exists("OpenTX")) {
     eedir.mkdir("OpenTX");
   }
   eedir.cd("OpenTX");
 
-  msgBox.exec();
-  
-  QAbstractButton *button = msgBox.clickedButton();
-  if (button == exitButton) {
-    return 0;
+  QStringList firmwareIds;
+  int currentIdx = 0;
+  foreach(SimulatorFactory *factory, registered_simulators) {
+    firmwareIds << factory->name();
+    if (factory->name() == g.lastSimulator()) {
+      currentIdx = firmwareIds.size() - 1;
+    }
   }
-  else {
-    QString firmwareId = button->property("name").toString();
+
+  bool ok;
+  QString firmwareId = QInputDialog::getItem(0, QObject::tr("Radio type"), 
+                                                QObject::tr("Which radio type do you want to simulate?"),
+                                                firmwareIds, currentIdx, false, &ok);
+  if (ok && !firmwareId.isEmpty()) {
+    if (firmwareId != g.lastSimulator()) {
+      g.lastSimulator(firmwareId);
+    }
     QString radioId;
     int pos = firmwareId.indexOf("-");
     if (pos > 0) {
@@ -165,9 +161,12 @@ int main(int argc, char *argv[])
     eepromFileName = eedir.filePath(eepromFileName.toAscii());
     SimulatorFactory *factory = getSimulatorFactory(firmwareId);
     if (factory->type() == BOARD_TARANIS)
-      dialog = new SimulatorDialogTaranis(NULL, factory->create());
+      dialog = new SimulatorDialogTaranis(NULL, factory->create(), SIMULATOR_FLAGS_S1|SIMULATOR_FLAGS_S2);
     else
       dialog = new SimulatorDialog9X(NULL, factory->create());
+  }
+  else {
+    return 0;
   }
 
   dialog->show();
@@ -176,6 +175,9 @@ int main(int argc, char *argv[])
   int result = app.exec();
 
   delete dialog;
+
+  unregisterSimulators();
+  unregisterOpenTxFirmwares();
 
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   SDL_Quit();

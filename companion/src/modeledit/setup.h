@@ -45,6 +45,7 @@ class ModulePanel : public ModelPanel
   struct ChannelFailsafeWidgetsGroup {
     QComboBox * combo;
     QDoubleSpinBox * spinbox;
+    QLabel * label;
   };
 
     Q_OBJECT
@@ -75,7 +76,6 @@ class ModulePanel : public ModelPanel
     ModuleData & module;
     int moduleIdx;
     Ui::Module *ui;
-    QVector<QDoubleSpinBox *> failsafeSpins;
     ChannelFailsafeWidgetsGroup failsafeGroups[maxChannels];
 };
 
@@ -101,6 +101,7 @@ class SetupPanel : public ModelPanel
     void on_throttleWarning_toggled(bool checked);
     void on_throttleReverse_toggled(bool checked);
     void on_displayText_toggled(bool checked);
+    void on_gfEnabled_toggled(bool checked);
     void on_image_currentIndexChanged(int index);
     void on_trimIncrement_currentIndexChanged(int index);
     void onBeepCenterToggled(bool checked);

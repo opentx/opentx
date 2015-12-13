@@ -1,5 +1,5 @@
-#ifndef LOGSDIALOG_H
-#define LOGSDIALOG_H
+#ifndef _LOGSDIALOG_H_
+#define _LOGSDIALOG_H_
 
 #include <QtCore>
 #include <QtGui>
@@ -37,16 +37,16 @@ struct plotsCollection {
 };
 
 namespace Ui {
-    class logsDialog;
+  class LogsDialog;
 }
 
-class logsDialog : public QDialog
+class LogsDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-  explicit logsDialog(QWidget *parent = 0);
-  ~logsDialog();
+  explicit LogsDialog(QWidget *parent = 0);
+  ~LogsDialog();
 
 private slots:
   void titleDoubleClick(QMouseEvent *evt, QCPPlotTitle *title);
@@ -64,10 +64,9 @@ private slots:
 
 private:
   QList<QStringList> csvlog;
-  Ui::logsDialog *ui;
+  Ui::LogsDialog *ui;
   QCPAxisRect *axisRect;
   QCPLegend *rightLegend;
-  bool cvsFileParse();
   bool plotLock;
   QString logFilename;
 
@@ -76,6 +75,14 @@ private:
 
   double yAxesRatios[AXES_LIMIT];
   minMax yAxesRanges[AXES_LIMIT];
+
+  bool cvsFileParse();
+  QList<QStringList> filterGePoints(const QList<QStringList> & input);
+  void exportToGoogleEarth();
+  QDateTime getRecordTimeStamp(int index);
+  QString generateDuration(const QDateTime & start, const QDateTime & end);
+  void setFlightSessions();
+
 };
 
-#endif // LOGSDIALOG_H
+#endif // _LOGSDIALOG_H_

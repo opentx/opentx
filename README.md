@@ -1,8 +1,9 @@
-﻿##OpenTX Next Branch
+﻿##OpenTX 2.1 Branch
 
-You have found your way to the GitHub repository site for the OpenTX Next Branch. This code branch holds the source code for the ongoing development.    
+[![Build Status](https://travis-ci.org/opentx/opentx.svg?branch=master)](https://travis-ci.org/opentx/opentx)
+[![Join the chat at https://gitter.im/opentx/opentx](https://img.shields.io/badge/%E2%8A%AA%20GITTER%20-JOIN%20CHAT%20%E2%86%92-brightgreen.svg?style=flat)](https://gitter.im/opentx/opentx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Donate using Paypal](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DJ9MASSKVW8WN)
 
-The stable release code is not here, it is in the master branch.  
-Under no circumstances build and use software from this branch for real world application. At times you will be more or less guaranteed to crash your plane and destroy all your model settings.  
+The ongoing development on 2.1.x is done in this branch.
 
 Refer to the opentx.wiki for information about setting up the tool chains for building OpenTX and OpenTX Companion as well as other development related issues.

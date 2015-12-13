@@ -67,7 +67,13 @@ void menuStatisticsView(uint8_t event)
 
   putsTimer(   12*FW+5*FWNUM+1, FH*0, sessionTimer, 0, 0);
   
-  putsTimer(21*FW+5*FWNUM+1, 0*FH, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
+  lcd_puts(    24*FW, FH*0, "TOT");
+  putsTimer(   28*FW+5*FWNUM+1, FH*0, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
+  
+  if (TIMERS == 3) {
+    lcd_puts(    24*FW, FH*1, "TM3");
+    putsTimer(   28*FW+5*FWNUM+1, FH*1, timersStates[2].val, TIMEHOUR, 0);
+  }
 
 #if defined(THRTRACE)
   coord_t traceRd = (s_traceCnt < 0 ? s_traceWr : 0);
@@ -92,12 +98,27 @@ void menuStatisticsView(uint8_t event)
 #define MENU_DEBUG_Y_MIXMAX   (2*FH-3)
 #define MENU_DEBUG_Y_LUA      (3*FH-2)
 #define MENU_DEBUG_Y_FREE_RAM (4*FH-1)
-#define MENU_DEBUG_Y_STACK    (5*FH)
+#define MENU_DEBUG_Y_USB      (5*FH)
 #define MENU_DEBUG_Y_RTOS     (6*FH)
+
+#if defined(USB_SERIAL)
+  extern uint16_t usbWraps;
+  extern uint16_t charsWritten;
+  extern "C" volatile uint32_t APP_Rx_ptr_in;
+#endif
 
 void menuStatisticsDebug(uint8_t event)
 {
   TITLE(STR_MENUDEBUG);
+
+#if defined(WATCHDOG_TEST)
+  if (warningResult) {
+    warningResult = 0;
+    // do a user requested watchdog test
+    TRACE("Performing watchdog test");
+    pausePulses();
+  }
+#endif
 
   switch(event)
   {
@@ -130,10 +151,19 @@ void menuStatisticsDebug(uint8_t event)
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
       break;
+#if defined(WATCHDOG_TEST)
+    case EVT_KEY_LONG(KEY_MENU):
+      {
+        POPUP_CONFIRMATION("Test the watchdog?");
+        const char * w = "The radio will reset!";
+        SET_WARNING_INFO(w, strlen(w), 0);
+      }
+      break;
+#endif
   }
 
   lcd_putsLeft(MENU_DEBUG_Y_FREE_RAM, "Free Mem");
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, getAvailableMemory(), LEFT);
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, availableMemory(), LEFT);
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_FREE_RAM, "b");
 
 #if defined(LUA)
@@ -148,15 +178,24 @@ void menuStatisticsDebug(uint8_t event)
   lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
 
+#if defined(USB_SERIAL)
+  lcd_putsLeft(MENU_DEBUG_Y_USB, "Usb");
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_USB, charsWritten, LEFT);
+  lcd_puts(lcdLastPos, MENU_DEBUG_Y_USB, " ");
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_USB, APP_Rx_ptr_in, LEFT);
+  lcd_puts(lcdLastPos, MENU_DEBUG_Y_USB, " ");
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_USB, usbWraps, LEFT);
+#endif
+
   lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
   lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[M]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(0), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, menusStack.available(), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[X]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(1), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, mixerStack.available(), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[A]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(2), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, audioStack.available(), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[I]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(255), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stackAvailable(), UNSIGN|LEFT);
 
   lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);
   lcd_status_line();
@@ -184,7 +223,7 @@ void menuTraceBuffer(uint8_t event)
 
   uint8_t y = 0;
   uint8_t k = 0;
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
 
   lcd_putc(0, FH, '#');
   lcd_puts(4*FW, FH, "Time");
@@ -193,7 +232,7 @@ void menuTraceBuffer(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-2; i++) {
     y = 1 + (i+2)*FH;
-    k = i+s_pgOfs;
+    k = i+menuVerticalOffset;
 
     //item
     lcd_outdezAtt(0, y, k, LEFT | (sub==k ? INVERS : 0));

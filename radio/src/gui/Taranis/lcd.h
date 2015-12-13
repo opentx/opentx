@@ -74,11 +74,6 @@
 /* lcd puts flags */
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */
-#if defined(CPUARM)
-  #define BSS           0x00
-#else
-  #define BSS           0x20
-#endif
 #define ZCHAR           0x80
 
 /* lcd outdez flags */
@@ -167,7 +162,7 @@ void lcd_outdez8(coord_t x, coord_t y, int8_t val);
 
 void putsStrIdx(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags att=0);
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
-void putsSwitches(coord_t x, coord_t y, int8_t swtch, LcdFlags att=0);
+void putsSwitches(coord_t x, coord_t y, int32_t swtch, LcdFlags att=0);
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
 void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att=0);
 void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
@@ -175,7 +170,7 @@ void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 void putsCurveRef(coord_t x, coord_t y, CurveRef &curve, LcdFlags att);
 #endif
 void putsCurve(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
-void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att=0);
+void putsTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att=0);
 void putsTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
 
 #define putsChn(x, y, idx, att) putsMixerSource(x, y, MIXSRC_CH1+idx-1, att)
@@ -213,6 +208,8 @@ void lcd_invert_line(int8_t line);
 #define lcd_status_line() lcd_invert_line(LCD_LINES-1)
 inline void lcd_square(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcd_rect(x, y, w, w, SOLID, att); }
 
+void displaySleepBitmap();
+
 void lcdDrawTelemetryTopBar();
 
 #define V_BAR(xx, yy, ll)    \
@@ -228,8 +225,6 @@ void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_
 void lcdSetRefVolt(unsigned char val);
 void lcd_clear();
 void lcdSetContrast();
-void lcdInit();
-void lcdOff();
 
 #if defined(REVPLUS) && !defined(SIMU)
   void lcdRefresh(bool wait=true);

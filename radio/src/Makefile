@@ -50,7 +50,7 @@ DELAY = 5
 #----------- BUILD OPTIONS ---------------------------
 
 # PCB version
-# Values: 9X, 9X128, 9X2561, 9XR, 9XR128, 9XR2561, GRUVIN9X, MEGA2560, SKY9X, 9XRPRO, TARANIS
+# Values: 9X, 9X128, 9X2561, 9XR, 9XR128, 9XR2561, GRUVIN9X, MEGA2560, SKY9X, 9XRPRO, AR9X, TARANIS
 # Old values STD and STD128 are mapped to 9X and 9X128 for compatibility
 PCB = 9X
 
@@ -214,6 +214,11 @@ VARIO = YES
 # default = YES (means enabled when available)
 RTCLOCK = YES
 
+# Hardware volume
+# Values = YES, NO
+# default = YES (AR9X board doesn't have a hardware volume control as delivered but it can be fitted optionally)
+HARDWARE_VOLUME = YES
+
 # BLUETOOTH
 # Values = YES, NO
 BLUETOOTH = NO
@@ -238,7 +243,7 @@ TX_CADDY = NO
 IRPROTOS = NO
 
 # TRANSLATIONS
-# Values = cz, de, en, fi, fr, it, se, es, pl, pt
+# Values = cz, de, en, fi, fr, it, se, es, pl, pt, nl
 TRANSLATIONS = EN
 
 # TTS
@@ -257,12 +262,20 @@ DEFAULT_MODE = NO
 # Values = YES, NO
 EEPROM_PROGRESS_BAR = NO
 
+# Shutdown confirmation (for boards which have soft power)
+# Values = NO, YES
+SHUTDOWN_CONFIRMATION = NO
+
 # Activates the DEBUG Mode (all boards)
 # On G9X V4 board, when VOICE=NO:
 #  PORTH:7 --> Transition LOW to HIGH = start of setupPulses(). Transition HIGH to LOW = end of setupPulses().
 #  PORTH:6 --> LOW->HIGH = start of mixer calcs. HIGH->LOW, end of mixer calcs.
 # Values = YES, NO
 DEBUG = NO
+
+# Activate Command Line Interpreter
+# Values = NO, YES
+CLI = NO
 
 # Activate writing of SPORT telemetry received data to sport.log file
 # Values = YES, NO
@@ -297,9 +310,10 @@ LUA = NO
 MENUS_LOCK = NO
 
 # USB options in the main image
-# Values = JOYSTICK, MASSSTORAGE
+# Values = JOYSTICK, MASSSTORAGE, SERIAL
 # JOYSTICK: The TX will appear as a joystick
 # MASSSTORAGE: The TX will appear as a drive
+# SERIAL: The TX will appear as a serial port
 USB = JOYSTICK
 
 # Mixers monitor view added to Channels monitor one
@@ -318,7 +332,6 @@ NANO = NO
 # YES - use our bin based allocator
 # NO - use default Lua allocator
 USE_BIN_ALLOCATOR = NO
-
 
 # Enable trace of events into Trace Buffer for debugging purposes
 # Activating any of these options also activates DEBUG and DEBUG_TRACE_BUFFER
@@ -343,6 +356,10 @@ LCD_DUAL_BUFFER = NO
 # Values = NO, YES
 TARANIS_INTERNAL_PPM = NO
 
+# Support for D16-EU only (no D8, no LR12 which are not EU compatible)
+# Value = NO, YES
+SUPPORT_D16_EU_ONLY = NO
+
 # Enable disk IO simulation in simulator
 # Simulator will use FatFs module and simulated IO layer that
 # uses "./sdcard.image" file as image of SD card.
@@ -353,6 +370,18 @@ SIMU_DISKIO = NO
 # Enable audio in simulator
 # Values = NO, YES
 SIMU_AUDIO = NO
+
+# Enable Watchdog test (DANGEROUS)
+# Values = NO, YES
+WATCHDOG_TEST = NO
+
+# Treat compiler warnings as errors
+# Values = NO, YES
+WARNINGS_AS_ERRORS = NO
+
+# Enable saving of Lua byte-code of all loaded scripts
+# Values = NO, YES
+LUA_COMPILER = NO
 
 #------- END BUILD OPTIONS ---------------------------
 
@@ -370,7 +399,12 @@ IMG2LBM = -$(PYTHON) ../util/img2lbm.py
 BIN2LBM = -$(PYTHON) ../util/bin2lbm.py
 FONT2PNG = -$(PYTHON) ../util/font2png.py
 TRANSLATE = -$(PYTHON) ../util/translate.py
-VERSION = 2.0.99
+
+VERSION_MAJOR = 2
+VERSION_MINOR = 1
+VERSION_REVISION = 6
+
+VERSION = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_REVISION)$(OPENTX_VERSION_SUFFIX)
 
 THIRDPARTY = thirdparty
 COOSDIR = $(THIRDPARTY)/CoOS
@@ -384,7 +418,7 @@ LUADEP =
 DEBUG_TRACE_BUFFER = NO
 
 # MCU name
-ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO TARANIS))
+ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO AR9X TARANIS))
   $(error Sorry, the PCB $(PCB) is not supported yet in OpenTX)
 endif
 
@@ -739,15 +773,21 @@ ifeq ($(PCB), MEGA2560)
   CPPDEFS += -DROTARY_ENCODERS=${ROTARY_ENCODERS}
 endif
 
-ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
+ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
   # 9x/9XR radio with a sky9x replacement board
   GUIDIRECTORY = 9X
   ARCH = ARM
   LCDSIZE = 128
   CPPDEFS = -Dat91sam3s4
   ifeq ($(PCB), 9XRPRO)
+    CPPDEFS = -Dat91sam3s8
     FLAVOUR = 9xrpro
     CPPDEFS += -DREVX
+    LDSCRIPT = targets/sky9x/sam3s8c_flash.ld
+  else ifeq ($(PCB), AR9X)
+    CPPDEFS = -Dat91sam3s8
+    FLAVOUR = ar9x
+    CPPDEFS += -DAR9X
     LDSCRIPT = targets/sky9x/sam3s8c_flash.ld
   else ifeq ($(PCBREV), REVA)
     FLAVOUR = sky9x
@@ -771,7 +811,8 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   SDCARD = YES
   BUZZER = NO
   THR_TRACE = YES
-  CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DDSM2 -DDSM2_PPM
+  EXT = FRSKY_SPORT
+  CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DDSM2 -DDSM2_PPM -DPXX
   ifeq ($(PCB), SKY9X)
     CPPDEFS += -DROTARY_ENCODERS=1
     CPPSRC += targets/sky9x/rotenc_driver.cpp
@@ -792,7 +833,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   EEPROMSRC = eeprom_common.cpp eeprom_raw.cpp eeprom_conversions.cpp
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp pulses/dsm2_arm.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp haptic.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp telemetry/telemetry.cpp
-  CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/second_serial_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
+  CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/serial2_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
   CPPSRC += loadboot.cpp debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
   ifeq ($(SDCARD), YES)
@@ -815,7 +856,10 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
     CPPSRC += targets/sky9x/bluetooth.cpp
   endif
   ifeq ($(DEBUG), YES)
-    SRC += targets/sky9x/syscalls.c
+    SRC += syscalls.c
+  endif
+  ifeq ($(HARDWARE_VOLUME), NO)
+    CPPDEFS += -DNO_HARDWARE_VOLUME
   endif
 endif
 
@@ -874,7 +918,9 @@ ifeq ($(PCB), TARANIS)
   ifeq ($(TARANIS_INTERNAL_PPM), YES)
     CPPDEFS += -DTARANIS_INTERNAL_PPM
   endif
-  LDSCRIPT = targets/taranis/stm32_flash_bl.ld
+  ifeq ($(SUPPORT_D16_EU_ONLY), YES)
+    CPPDEFS += -DMODULE_D16_EU_ONLY_SUPPORT
+  endif
   TRGT = arm-none-eabi-
   OPT = s
   BITMAPS += $(patsubst %.png,%.lbm,$(wildcard bitmaps/Taranis/*.png)) bitmaps/Taranis/mainmenu.lbm
@@ -889,58 +935,64 @@ ifeq ($(PCB), TARANIS)
   PPM_LIMITS_SYMETRICAL = YES
   PPM_CENTER_ADJUSTABLE = YES
   DSM2 = PPM
-  CPPDEFS += -DPCBTARANIS -DCPUARM -DCPUSTM32 -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DEEPROM_RLC -DEEPROM_VARIANT=0 -DAUDIO -DPXX
+  CPPDEFS += -DPCBTARANIS -DCPUARM -DCPUSTM32 -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DEEPROM_RLC -DAUDIO -DPXX -DSBUS -DCROSSFIRE
   INCDIRS += targets/taranis $(THIRDPARTY) $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
   CPPDEFS += -DHSE_VALUE=12000000
   ifeq ($(PCBREV), REV9E)
     STM32LIBPATH = $(THIRDPARTY)/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries
-    CPPDEFS += -DSTM32F40_41xxx
+    CPPDEFS += -DSTM32F4 -DSTM32F40_41xxx -DEEPROM_VARIANT=32768
     INCDIRS += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Include $(STM32LIBPATH)/CMSIS/Include $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/inc
+    LDSCRIPT = targets/taranis/stm32f4_flash.ld
   else
     STM32LIBPATH= $(THIRDPARTY)/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries
+    CPPDEFS += -DEEPROM_VARIANT=0
     INCDIRS += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/inc $(STM32LIBPATH)/CMSIS/Device/ST/STM32F2xx/Include $(STM32LIBPATH)/CMSIS/include
+    LDSCRIPT = targets/taranis/stm32f2_flash.ld
   endif
   STM32USBPATH = $(THIRDPARTY)/STM32_USB-Host-Device_Lib_V2.1.0/Libraries
-  INCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc $(STM32USBPATH)/STM32_USB_Device_Library/Core/inc
-  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/inc $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Core/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
+  INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/inc
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_hardware.cpp
   BOARDSRC = main_arm.cpp targets/taranis/board_taranis.cpp
-  EXTRABOARDSRC += targets/taranis/configure_pins.cpp targets/taranis/lcd_driver.cpp targets/taranis/flash_driver.cpp targets/taranis/i2c_driver.cpp targets/taranis/aspi.c targets/taranis/delays.c
+  EXTRABOARDSRC += targets/taranis/configure_pins.cpp targets/taranis/lcd_driver.cpp targets/taranis/flash_driver.cpp targets/taranis/i2c_driver.cpp targets/taranis/aspi.c targets/taranis/delays.c serial.cpp
   SRC += $(COOSDIR)/kernel/core.c $(COOSDIR)/kernel/hook.c $(COOSDIR)/kernel/task.c $(COOSDIR)/kernel/event.c $(COOSDIR)/kernel/time.c $(COOSDIR)/kernel/timer.c $(COOSDIR)/kernel/flag.c $(COOSDIR)/kernel/mutex.c $(COOSDIR)/kernel/serviceReq.c $(COOSDIR)/portable/GCC/port.c $(COOSDIR)/portable/arch.c
   SRC += targets/taranis/pwr_driver.c targets/taranis/usb_driver.c
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp eeprom_conversions.cpp
-  PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
+  PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp pulses/crossfire.cpp
   CPPSRC += tasks_arm.cpp audio_arm.cpp sbus.cpp telemetry/telemetry.cpp
-  CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/uart3_driver.cpp targets/taranis/telemetry_driver.cpp
+  CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/serial2_driver.cpp targets/taranis/telemetry_driver.cpp
   CPPSRC += bmp.cpp gui/$(GUIDIRECTORY)/view_channels.cpp gui/$(GUIDIRECTORY)/view_about.cpp gui/$(GUIDIRECTORY)/view_text.cpp debug.cpp
   CPPSRC += loadboot.cpp
   ifeq ($(PCBREV), REV9E)
-    EXTRABOARDSRC += targets/taranis/top_lcd_driver.cpp
-	SRC += targets/taranis/system_stm32f4xx.c
-	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/misc.c
-	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
-	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c
-	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
-	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
-	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_i2c.c
-	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c
-	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rtc.c
-	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_pwr.c
-	SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
-	SRC += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s
+    CPPSRC += targets/taranis/top_lcd_driver.cpp
+    SRC += targets/taranis/system_stm32f4xx.c
+    SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/misc.c
+    SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
+    SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c
+    SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
+    SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
+    SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_i2c.c
+    SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c
+    SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rtc.c
+    SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_pwr.c
+    SRC += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
+    SRC += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s
   else
-	SRC += targets/taranis/system_stm32f2xx.c
-	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/misc.c
-	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
-	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dbgmcu.c
-	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
-	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c
-	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_i2c.c
-	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dma.c
-	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rtc.c
-	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_pwr.c
-	SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_usart.c
-	SRC += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
+    SRC += targets/taranis/system_stm32f2xx.c
+    SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/misc.c
+    SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
+    SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dbgmcu.c
+    SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
+    SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c
+    SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_i2c.c
+    SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dma.c
+    SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rtc.c
+    SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_pwr.c
+    SRC += $(STM32LIBPATH)/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_usart.c
+    SRC += $(STM32LIBPATH)/CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
   endif
   SRC += targets/taranis/usb_bsp.c targets/taranis/usbd_desc.c
   SRC += $(STM32USBPATH)/STM32_USB_OTG_Driver/src/usb_core.c
@@ -950,10 +1002,14 @@ ifeq ($(PCB), TARANIS)
   SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Core/src/usbd_ioreq.c
   SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Core/src/usbd_req.c
   EXTRABOARDSRC += targets/taranis/usbd_usr.cpp
-  SRC += targets/sky9x/syscalls.c
+  SRC += syscalls.c
   ifeq ($(USB), JOYSTICK)
     CPPDEFS += -DUSB_JOYSTICK
     SRC += targets/taranis/usbd_hid_joystick.c
+  else ifeq ($(USB), SERIAL)
+    CPPDEFS += -DUSB_SERIAL
+    SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c
+    EXTRABOARDSRC += targets/taranis/usbd_cdc.cpp
   else
     CPPDEFS += -DUSB_MASS_STORAGE
     SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c
@@ -977,12 +1033,16 @@ ifeq ($(PCB), TARANIS)
     endif
     CPPDEFS += -DLUA
     INCDIRS += $(LUADIR)
-    CPPSRC += lua_api.cpp
+    CPPSRC += lua/interface.cpp lua/api_general.cpp lua/api_lcd.cpp lua/api_model.cpp
     LUASRC = $(LUADIR)/lapi.c $(LUADIR)/lcode.c $(LUADIR)/lctype.c $(LUADIR)/ldebug.c $(LUADIR)/ldo.c $(LUADIR)/ldump.c $(LUADIR)/lfunc.c $(LUADIR)/lgc.c $(LUADIR)/llex.c $(LUADIR)/lmem.c \
            $(LUADIR)/lobject.c $(LUADIR)/lopcodes.c $(LUADIR)/lparser.c $(LUADIR)/lstate.c $(LUADIR)/lstring.c $(LUADIR)/ltable.c $(LUADIR)/lrotable.c $(LUADIR)/ltm.c $(LUADIR)/lundump.c $(LUADIR)/lvm.c $(LUADIR)/lzio.c \
-           $(LUADIR)/lbaselib.c $(LUADIR)/linit.c $(LUADIR)/lmathlib.c $(LUADIR)/lbitlib.c $(LUADIR)/loadlib.c $(LUADIR)/lauxlib.c $(LUADIR)/ltablib.c $(LUADIR)/lcorolib.c $(LUADIR)/liolib.c
+           $(LUADIR)/lbaselib.c $(LUADIR)/linit.c $(LUADIR)/lmathlib.c $(LUADIR)/lbitlib.c $(LUADIR)/loadlib.c $(LUADIR)/lauxlib.c $(LUADIR)/ltablib.c $(LUADIR)/lcorolib.c $(LUADIR)/liolib.c $(LUADIR)/lstrlib.c
     SRC += $(LUASRC)
-    LUADEP = lua_exports.inc
+    ifeq ($(PCBREV), REV9E) 
+      LUADEP = lua_exports_taranis_x9e.inc
+    else
+      LUADEP = lua_exports_taranis.inc
+    endif
 	ifeq ($(USE_BIN_ALLOCATOR), YES)
 	  CPPDEFS += -DUSE_BIN_ALLOCATOR
 	  CPPSRC += bin_allocator.cpp
@@ -1009,8 +1069,8 @@ ifeq ($(PCB), TARANIS)
   ifeq ($(MIXERS_MONITOR), YES)
     CPPDEFS += -DMIXERS_MONITOR
   endif
-  ifeq ($(PCBREV), REV9E)
-    CPPSRC += targets/taranis/rotenc_driver.cpp
+  ifeq ($(WATCHDOG_TEST), YES)
+    CPPDEFS += -DWATCHDOG_TEST
   endif
 endif
 
@@ -1037,8 +1097,8 @@ FORMAT = ihex
 TARGET = opentx
 
 # List C++ source files here. (C dependencies are automatically generated.)
-ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO TARANIS))
-  TTS_SRC = translations/tts_cz.cpp translations/tts_de.cpp translations/tts_en.cpp translations/tts_es.cpp translations/tts_fr.cpp translations/tts_it.cpp translations/tts_pt.cpp translations/tts_sk.cpp translations/tts_se.cpp translations/tts_pl.cpp translations/tts_hu.cpp
+ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X TARANIS))
+  TTS_SRC = translations/tts_cz.cpp translations/tts_de.cpp translations/tts_en.cpp translations/tts_es.cpp translations/tts_fr.cpp translations/tts_it.cpp translations/tts_nl.cpp translations/tts_pt.cpp translations/tts_sk.cpp translations/tts_se.cpp translations/tts_pl.cpp translations/tts_hu.cpp
 else
   STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
   TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
@@ -1049,7 +1109,7 @@ ifeq ($(GUI), YES)
   CPPDEFS += -DGUI
 endif
 
-CPPSRC += opentx.cpp functions.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp $(GUISRC) $(EEPROMSRC) timers.cpp
+CPPSRC += opentx.cpp functions.cpp strhelpers.cpp $(PULSESSRC) switches.cpp curves.cpp mixer.cpp stamp.cpp $(GUISRC) $(EEPROMSRC) timers.cpp trainer_input.cpp
 
 ifeq ($(GUI), YES)
   GUISRC += gui/$(GUIDIRECTORY)/lcd.cpp gui/$(GUIDIRECTORY)/splash.cpp gui/$(GUIDIRECTORY)/fonts.cpp
@@ -1229,9 +1289,10 @@ ifeq ($(EXT), JETI)
 endif
 
 ifeq ($(EXT), MAVLINK)
- CPPDEFS += -DMAVLINK
- CPPSRC += telemetry/mavlink.cpp gui/$(GUIDIRECTORY)/view_mavlink.cpp serial.cpp
- EEPROM_VARIANT += ${MAVLINK_VARIANT}
+  CPPDEFS += -DMAVLINK
+  INCDIRS += thirdparty targets/common_avr/
+  CPPSRC += telemetry/mavlink.cpp gui/$(GUIDIRECTORY)/view_mavlink.cpp targets/common_avr/serial_driver.cpp
+  EEPROM_VARIANT += ${MAVLINK_VARIANT}
 endif
 
 ifeq ($(EXT), TELEMETREZ)
@@ -1240,11 +1301,17 @@ endif
 
 ifeq ($(EXT), $(filter $(EXT), FRSKY FRSKY_SPORT TELEMETREZ))
   CPPDEFS += -DFRSKY
-  ifeq ($(EXT), FRSKY_SPORT)
-    CPPSRC += telemetry/frsky.cpp telemetry/frsky_sport.cpp telemetry/frsky_d.cpp
-    CPPDEFS += -DFRSKY_SPORT
+
+  ifeq ($(ARCH), ARM)
+    CPPSRC += telemetry/frsky.cpp telemetry/frsky_d_arm.cpp
   else
     CPPSRC += telemetry/frsky.cpp telemetry/frsky_d.cpp
+  endif
+
+  ifeq ($(EXT), FRSKY_SPORT)
+    CPPSRC += telemetry/frsky_sport.cpp
+    CPPSRC += crc16.cpp
+    CPPDEFS += -DFRSKY_SPORT
   endif
 
   CPPSRC += gui/$(GUIDIRECTORY)/view_telemetry.cpp
@@ -1272,12 +1339,23 @@ ifeq ($(EXT), $(filter $(EXT), FRSKY FRSKY_SPORT TELEMETREZ))
   EEPROM_VARIANT += ${FRSKY_VARIANT}
 endif
 
-ifeq ($(DEBUG), YES)
+ifeq ($(SIMU), YES)
   CPPDEFS += -DDEBUG
+  CPPSRC += dump.cpp
+else ifeq ($(CLI), YES)
+  CPPDEFS += -DCLI -DDEBUG
+  CPPSRC += cli.cpp dump.cpp
+else ifeq ($(DEBUG), YES)
+  CPPDEFS += -DDEBUG
+  CPPSRC += dump.cpp
 endif
 
 ifeq ($(EEPROM_PROGRESS_BAR), YES)
   CPPDEFS += -DEEPROM_PROGRESS_BAR
+endif
+
+ifeq ($(SHUTDOWN_CONFIRMATION), YES)
+  CPPDEFS += -DSHUTDOWN_CONFIRMATION
 endif
 
 RUN_FROM_FLASH = 1
@@ -1352,6 +1430,10 @@ ifeq ($(IRPROTOS), YES)
   CPPDEFS += -DIRPROTOS
 endif
 
+ifeq ($(LUA_COMPILER), YES)
+  CPPDEFS += -DLUA_COMPILER
+endif
+
 #---------------- Compiler Options C++ ----------------
 #  -g*:          generate debugging information
 #  -O*:          optimization level
@@ -1366,6 +1448,10 @@ CPPFLAGS += -fno-exceptions
 CPPFLAGS += -Wno-strict-aliasing
 CPPFLAGS += -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits
 INCFLAGS = $(patsubst %,-I%,$(INCDIRS))
+
+ifeq ($(WARNINGS_AS_ERRORS), YES)
+  CPPFLAGS += -Werror
+endif
 
 MATH_LIB = -lm
 
@@ -1421,7 +1507,7 @@ all: begin gccversion sizebefore build sizeafter end
 # Change the build target to build a HEX file or a library.
 ifeq ($(ARCH), AVR)
   build: stamp_header tra lbm allsrc.cpp elf remallsrc hex
-else ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO TARANIS))
+else ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X TARANIS))
   build: stamp_header tra lbm bootloader.lbm $(LUADEP) allsrc.cpp elf remallsrc bin
 else
   build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
@@ -1433,8 +1519,8 @@ bootloader.lbm: targets/taranis/bootloader/bootloader_ramBoot.bin
 	$(BIN2LBM) $^ $@
 .PHONY targets/taranis/bootloader/bootloader_ramBoot.bin:
 	@echo "Building bootloader..."
-	$(MAKE) -C targets/taranis/bootloader PCB=$(PCB) PCBREV=$(PCBREV) NANO=$(NANO)
-else ifeq ($(PCB), 9XRPRO)
+	$(MAKE) -C targets/taranis/bootloader PCB=$(PCB) PCBREV=$(PCBREV) NANO=$(NANO) WARNINGS_AS_ERRORS=$(WARNINGS_AS_ERRORS)
+else ifeq ($(PCB), $(filter $(PCB), 9XRPRO AR9X))
 bootloader.lbm:
 	@echo "Fetching Mike's bootloader..."
 	wget http://ersky9x.googlecode.com/svn/trunk/src/bootloader/bootflash8.lbm
@@ -1446,7 +1532,7 @@ bootloader.lbm:
 	mv bootflash4.lbm $@
 endif
 
-tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
+tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/nl.h translations/pl.h translations/pt.h translations/se.h
 lbm: fonts bitmaps
 
 elf: $(TARGET).elf
@@ -1462,11 +1548,17 @@ stamp_header:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d | tr -d '\r\n'`\"" >> stamp-opentx.h
 	@echo "#define TIME_STR \"`date +%H:%M:%S | tr -d '\r\n'`\"" >> stamp-opentx.h
 	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.h
+	@echo "" >> stamp-opentx.h
+	@echo "#define VERSION_MAJOR     $(VERSION_MAJOR)" >> stamp-opentx.h
+	@echo "#define VERSION_MINOR     $(VERSION_MINOR)" >> stamp-opentx.h
+	@echo "#define VERSION_REVISION  $(VERSION_REVISION)" >> stamp-opentx.h
+	@echo "#define GIT_STR \"$(shell git rev-parse HEAD)\"" >> stamp-opentx.h
 
 opentx-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx.txt
 	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx.txt
 	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.txt
+	@echo "#define GIT_STR \"$(shell git rev-parse HEAD)\"" >> stamp-opentx.txt
 	@cat stamp-opentx.txt
 
 translations/en.h: translations/en.h.txt
@@ -1503,6 +1595,11 @@ translations/it.h: translations/it.h.txt
 	@echo
 	@echo "Create Italian language specific header files"
 	$(TRANSLATE) translations/it.h.txt translations/it.h it
+
+translations/nl.h: translations/nl.h.txt
+	@echo
+	@echo "Create Nederlands language specific header files"
+	$(TRANSLATE) translations/nl.h.txt translations/nl.h nl
 
 translations/pl.h: translations/pl.h.txt
 	@echo
@@ -1564,12 +1661,19 @@ else
   PARSER = gcc -E -x c++
 endif
 
-lua_exports.inc: myeeprom.h ../util/luaexport.py
-	@echo "Generating a list of Lua exported constants in lua_exports.txt"
-	@$(PARSER) -DPCBTARANIS -DCPUARM -DCPUSTM32 -DLUA -DEXPORT myeeprom.h | grep LEXP > lua_exports.txt
-	@echo "Parsing and generating C Lua exports in lua_exports.inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports.txt lua_exports.inc lua_fields.txt
-	@rm lua_exports.txt
+lua_exports_taranis.inc: myeeprom.h ../util/luaexport.py
+	@echo "Generating a list of Lua exported constants in lua_exports_taranis.txt"
+	@$(PARSER) -DEXPORT -DPCBTARANIS -DLUA myeeprom.h | grep LEXP > lua_exports_taranis.txt
+	@echo "Parsing and generating C Lua exports in lua/lua_exports_taranis.inc"
+	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports_taranis.txt lua/lua_exports_taranis.inc lua_fields_taranis.txt
+	@rm lua_exports_taranis.txt
+
+lua_exports_taranis_x9e.inc: myeeprom.h ../util/luaexport.py
+	@echo "Generating a list of Lua exported constants in lua_exports_taranis_x9e.txt"
+	@$(PARSER) -DEXPORT -DPCBTARANIS -DREVPLUS -DREV9E -DLUA myeeprom.h | grep LEXP > lua_exports_taranis_x9e.txt
+	@echo "Parsing and generating C Lua exports in lua/lua_exports_taranis_x9e.inc"
+	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports_taranis_x9e.txt lua/lua_exports_taranis_x9e.inc lua_fields_taranis_x9e.txt
+	@rm lua_exports_taranis_x9e.txt
 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on
@@ -1730,7 +1834,8 @@ clean_list :
 	$(REMOVE) bitmaps/*/*/*.lbm
 	$(REMOVE) fonts/*.lbm
 	$(REMOVE) fonts/*/*.lbm
-	$(REMOVE) lua_exports.txt lua_exports.inc lua_fields.txt
+	$(REMOVE) translations/*.h
+	$(REMOVE) lua_exports*.txt lua/lua_exports*.inc lua_fields*.txt
 	$(MAKE) -C targets/taranis/bootloader clean
 
 #### Install
@@ -1768,15 +1873,16 @@ endif
 
 #### GOOGLE TESTS
 
-GTEST_DIR = ../gtest-1.6.0
+GTEST_INCDIR = /usr/include/gtest
+GTEST_SRCDIR = /usr/src/gtest/
 
 # Where to find user code.
 USER_DIR = ./
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
-GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
-                $(GTEST_DIR)/include/gtest/internal/*.h
+GTEST_HEADERS = $(GTEST_INCDIR)/*.h \
+                $(GTEST_INCDIR)/internal/*.h
 
 # House-keeping build targets.
 
@@ -1784,25 +1890,14 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 
 # Usually you shouldn't tweak such internal variables, indicated by a
 # trailing _.
-GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
+GTEST_SRCS = $(GTEST_SRCDIR)/src/*.cc $(GTEST_HEADERS)
 
 # For simplicity and to avoid depending on Google Test's
 # implementation details, the dependencies specified below are
 # conservative and not optimized.  This is fine as Google Test
 # compiles fast and for ordinary users its source rarely changes.
-gtest-all.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include -c \
-            $(GTEST_DIR)/src/gtest-all.cc
-
-gtest_main.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include -c \
-            $(GTEST_DIR)/src/gtest_main.cc
-
-gtest.a : gtest-all.o
-	$(AR) $(ARFLAGS) $@ $^
-
-gtest_main.a : gtest-all.o gtest_main.o
-	$(AR) $(ARFLAGS) $@ $^
+gtest-all.o : $(GTEST_SRCS)
+	$(CXX) $(CPPFLAGS) -I$(GTEST_SRCDIR) -I$(GTEST_INCDIR) -c $(GTEST_SRCDIR)/src/gtest-all.cc
 
 # Builds a sample test.  A test should link with either gtest.a or
 # gtest_main.a, depending on whether it defines its own main()
@@ -1811,6 +1906,6 @@ gtest_main.a : gtest-all.o gtest_main.o
 #use all .cpp files from tests/ dir
 GTEST_TESTS_SRCS = $(shell find tests/ -type f -name '*.cpp')
 
-gtests: allsimusrc.cpp $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp *.h gtest_main.a
-	g++ -std=gnu++0x $(CPPFLAGS) $(SIMUCPPFLAGS) allsimusrc.cpp $(LUASRC) $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp -I$(GTEST_DIR) ${INCFLAGS} -I$(GTEST_DIR)/include -I/usr/include/qt4 -o gtests -lpthread -MD -DSIMU -lQtCore -lQtGui gtest_main.a -fexceptions
+gtests: allsimusrc.cpp $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp *.h tests/gtests.h gtest-all.o
+	g++ -std=gnu++0x $(CPPFLAGS) $(SIMUCPPFLAGS) allsimusrc.cpp $(LUASRC) $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp ${INCFLAGS} -I$(GTEST_INCDIR) -I/usr/include/qt4 -o gtests -lpthread -MD -DSIMU -lQtCore -lQtGui gtest-all.o -fexceptions
 

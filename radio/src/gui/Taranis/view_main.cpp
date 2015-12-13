@@ -110,8 +110,8 @@ void displayTrims(uint8_t phase)
     xm = x[stickIndex];
 
     uint32_t att = ROUND;
-    int32_t val = getTrimValue(phase, i);
-    int32_t dir = val;
+    int32_t trim = getTrimValue(phase, i);
+    int32_t val = trim;
     bool exttrim = false;
     if (val < TRIM_MIN || val > TRIM_MAX) {
       exttrim = true;
@@ -135,18 +135,18 @@ void displayTrims(uint8_t phase)
       }
       ym -= val;
       drawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
-      if (dir >= 0) {
+      if (trim >= 0) {
         lcd_hline(xm-1, ym-1,  3);
       }
-      if (dir <= 0) {
+      if (trim <= 0) {
         lcd_hline(xm-1, ym+1,  3);
       }
       if (exttrim) {
         lcd_hline(xm-1, ym,  3);
       }
-      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
+      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcd_outdezAtt(dir>0 ? 22 : 54, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
+          lcd_outdezAtt(trim>0 ? 22 : 54, xm-2, -abs(trim), TINSIZE|VERTICAL);
         }
       }
     }
@@ -157,18 +157,18 @@ void displayTrims(uint8_t phase)
       lcd_hline(xm-1, ym+1,  3);
       xm += val;
       drawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
-      if (dir >= 0) {
+      if (trim >= 0) {
         lcd_vline(xm+1, ym-1,  3);
       }
-      if (dir <= 0) {
+      if (trim <= 0) {
         lcd_vline(xm-1, ym-1,  3);
       }
       if (exttrim) {
         lcd_vline(xm, ym-1,  3);
       }
-      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
+      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcd_outdezAtt((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(dir>0 ? -11 : 20), ym-2, -abs(dir/5), TINSIZE);
+          lcd_outdezAtt((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -11 : 20), ym-2, -abs(trim), TINSIZE);
         }
       }
     }
@@ -209,7 +209,6 @@ void displayTopBarGauge(coord_t x, int count, bool blinking=false)
 {
   if (!blinking || BLINK_ON_PHASE)
     drawFilledRect(x+1, BAR_Y+2, 11, 5, SOLID, ERASE);
-  count = min(10, count);
   for (int i=0; i<count; i+=2)
     lcd_vline(x+2+i, BAR_Y+3, 3);
 }
@@ -237,22 +236,26 @@ void displayTopBar()
     /* Rx voltage */
     altitude_icon_x = batt_icon_x+7*FW+3;
     if (g_model.frsky.voltsSource) {
-      TelemetryItem & voltsItem = telemetryItems[g_model.frsky.voltsSource-1];
-      if (voltsItem.isAvailable()) {
-        putsTelemetryChannelValue(batt_icon_x+7*FW+2, BAR_Y+1, g_model.frsky.voltsSource-1, voltsItem.value, LEFT);
-        altitude_icon_x = lcdLastPos+1;
+      uint8_t item = g_model.frsky.voltsSource-1;
+      if (item < MAX_SENSORS) {
+        TelemetryItem & voltsItem = telemetryItems[item];
+        if (voltsItem.isAvailable()) {
+          putsTelemetryChannelValue(batt_icon_x+7*FW+2, BAR_Y+1, item, voltsItem.value, LEFT);
+          altitude_icon_x = lcdLastPos+1;
+        }
       }
     }
 
     /* Altitude */
     if (g_model.frsky.altitudeSource) {
-      TelemetryItem & altitudeItem = telemetryItems[g_model.frsky.altitudeSource-1];
-      if (altitudeItem.isAvailable()) {
-        LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
-        int32_t value = altitudeItem.value;
-        TelemetrySensor & sensor = g_model.telemetrySensors[g_model.frsky.altitudeSource-1];
-        if (sensor.prec) value /= sensor.prec == 2 ? 100 : 10;
-        putsValueWithUnit(altitude_icon_x+2*FW-1, BAR_Y+1, value, UNIT_METERS, LEFT);
+      uint8_t item = g_model.frsky.altitudeSource-1;
+      if (item < MAX_SENSORS) {
+        TelemetryItem & altitudeItem = telemetryItems[item];
+        if (altitudeItem.isAvailable()) {
+          LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
+          int32_t value = altitudeItem.value / g_model.telemetrySensors[item].getPrecDivisor();
+          putsValueWithUnit(altitude_icon_x+2*FW-1, BAR_Y+1, value, g_model.telemetrySensors[item].unit, LEFT);
+        }
       }
     }
   }
@@ -273,7 +276,7 @@ void displayTopBar()
     LCD_NOTIF_ICON(x, ICON_TRAINEE);
     x -= 12;
   }
-  else if (TRAINER_CONNECTED() && !SLAVE_MODE()) {
+  else if (TRAINER_CONNECTED() && !SLAVE_MODE() && IS_TRAINER_INPUT_VALID()) {
     LCD_NOTIF_ICON(x, ICON_TRAINER);
     x -= 12;
   }
@@ -300,8 +303,7 @@ void displayTopBar()
   drawFilledRect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY(12)|ROUND);
 
   /* The inside of the Batt gauge */
-  int count = 10 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin);
-  displayTopBarGauge(batt_icon_x+FW, count, g_vbat100mV <= g_eeGeneral.vBatWarn);
+  displayTopBarGauge(batt_icon_x+FW, GET_TXBATT_BARS(), IS_TXBATT_WARNING());
 
   /* The inside of the RSSI gauge */
   if (TELEMETRY_RSSI() > 0) {
@@ -366,11 +368,11 @@ void onMainViewMenu(const char *result)
     pushModelNotes();
   }
   else if (result == STR_RESET_SUBMENU) {
-    MENU_ADD_ITEM(STR_RESET_FLIGHT);
-    MENU_ADD_ITEM(STR_RESET_TIMER1);
-    MENU_ADD_ITEM(STR_RESET_TIMER2);
-    MENU_ADD_ITEM(STR_RESET_TIMER3);
-    MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+    POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TIMER1);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TIMER3);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
   }
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();
@@ -482,12 +484,12 @@ void menuMainView(uint8_t event)
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
       if (modelHasNotes()) {
-        MENU_ADD_ITEM(STR_VIEW_NOTES);
+        POPUP_MENU_ADD_ITEM(STR_VIEW_NOTES);
       }
-      MENU_ADD_ITEM(STR_RESET_SUBMENU);
-      MENU_ADD_ITEM(STR_STATISTICS);
-      MENU_ADD_ITEM(STR_ABOUT_US);
-      menuHandler = onMainViewMenu;
+      POPUP_MENU_ADD_ITEM(STR_RESET_SUBMENU);
+      POPUP_MENU_ADD_ITEM(STR_STATISTICS);
+      POPUP_MENU_ADD_ITEM(STR_ABOUT_US);
+      popupMenuHandler = onMainViewMenu;
       break;
 
 #if MENUS_LOCK != 2/*no menus*/

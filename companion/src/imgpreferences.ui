@@ -344,7 +344,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
-            <widget class="QToolButton" name="splashLibraryButton">
+            <widget class="QToolButton" name="SplashLibraryDialogButton">
              <property name="text">
               <string>...</string>
              </property>
@@ -455,7 +455,7 @@
   <tabstop>splashincludeCB</tabstop>
   <tabstop>SplashFileName</tabstop>
   <tabstop>SplashSelect</tabstop>
-  <tabstop>splashLibraryButton</tabstop>
+  <tabstop>SplashLibraryDialogButton</tabstop>
   <tabstop>clearImageButton</tabstop>
   <tabstop>InvertPixels</tabstop>
   <tabstop>buttonBox</tabstop>

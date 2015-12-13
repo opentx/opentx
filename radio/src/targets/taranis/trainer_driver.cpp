@@ -40,13 +40,13 @@ extern Fifo<32> sbusFifo;
 
 #define setupTrainerPulses() setupPulsesPPM(TRAINER_MODULE)
 
-// Trainer PPM oputput PC9, Timer 3 channel 4, (Alternate Function 2)
+// Trainer PPM output PC9, Timer 3 channel 4, (Alternate Function 2)
 void init_trainer_ppm()
 {
   trainerPulsesData.ppm.ptr = trainerPulsesData.ppm.pulses;
 
   configure_pins( TRAINER_GPIO_PIN_OUT, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_2 | PIN_OS25) ;
-  configure_pins( TRAINER_GPIO_PIN_IN, PIN_PORTA | PIN_INPUT ) ;
+
   TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN ;
 
   // setupTrainerPulses() is also configuring registers,
@@ -121,43 +121,25 @@ void stop_trainer_capture()
 extern "C" void TIM3_IRQHandler()
 {
   uint16_t capture = 0;
-  static uint16_t lastCapt ;
-  uint16_t val ;
   bool doCapture = false ;
 
   // What mode? in or out?
   if ( (TRAINER_TIMER->DIER & TIM_DIER_CC3IE ) && ( TRAINER_TIMER->SR & TIM_SR_CC3IF ) ) {
     // capture mode on trainer jack
     capture = TRAINER_TIMER->CCR3 ;
-    doCapture = true;
+    if (TRAINER_CONNECTED() && currentTrainerMode == TRAINER_MODE_MASTER_TRAINER_JACK)
+      doCapture = true;
   }
 
   if ( ( TRAINER_TIMER->DIER & TIM_DIER_CC2IE ) && ( TRAINER_TIMER->SR & TIM_SR_CC2IF ) ) {
     // capture mode on heartbeat pin (external module)
     capture = TRAINER_TIMER->CCR2 ;
-    doCapture = true ;
+    if (currentTrainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
+      doCapture = true ;
   }
 
   if (doCapture) {
-    val = (uint16_t)(capture - lastCapt) / 2 ;
-    lastCapt = capture;
-
-    // We process g_ppmInsright here to make servo movement as smooth as possible
-    //    while under trainee control
-    if (val>4000 && val<19000) { // G: Prioritize reset pulse. (Needed when less than 16 incoming pulses)
-      ppmInState = 1; // triggered
-    }
-    else {
-      if (ppmInState>0 && ppmInState<=16) {
-        if (val>800 && val<2200) {
-          ppmInValid = PPM_IN_VALID_TIMEOUT;
-          g_ppmIns[ppmInState++ - 1] = (int16_t)(val - 1500)*(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
-        }
-        else {
-          ppmInState = 0; // not triggered
-        }
-      }
-    }
+    captureTrainerPulses(capture);
   }
 
   // PPM out compare interrupt
@@ -267,8 +249,10 @@ extern "C" void HEARTBEAT_USART_IRQHandler()
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     data = HEARTBEAT_USART->DR;
 
-    if (!(status & USART_FLAG_ERRORS))
-      sbusFifo.push(data);
+    if (!(status & USART_FLAG_ERRORS)) {
+      if (currentTrainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE)
+        sbusFifo.push(data);
+    }
 
     status = HEARTBEAT_USART->SR;
   }

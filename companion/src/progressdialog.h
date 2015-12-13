@@ -18,7 +18,7 @@ public:
   ProgressDialog(QWidget *parent, const QString &label, const QIcon &icon, bool forceOpen=false);
   ~ProgressDialog();
 
-  ProgressWidget *progress();
+  ProgressWidget * progress();
 
 private slots:
   void on_closeButton_clicked();

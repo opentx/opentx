@@ -51,31 +51,7 @@ enum SlovakPrompts {
   SK_PROMPT_CELYCH = SK_PROMPT_NUMBERS_BASE+116,
   SK_PROMPT_MINUS = SK_PROMPT_NUMBERS_BASE+117,
 
-  SK_PROMPT_UNITS_BASE = 118,
-  SK_PROMPT_VOLTS = SK_PROMPT_UNITS_BASE+UNIT_VOLTS, //(jeden)volt,(dva)volty,(pet)voltu,(desetina)voltu
-  SK_PROMPT_AMPS = SK_PROMPT_UNITS_BASE+(UNIT_AMPS*4),
-  SK_PROMPT_METERS_PER_SECOND = SK_PROMPT_UNITS_BASE+(UNIT_METERS_PER_SECOND*4),
-  SK_PROMPT_SPARE1 = SK_PROMPT_UNITS_BASE+(UNIT_RAW*4),
-  SK_PROMPT_KMH = SK_PROMPT_UNITS_BASE+(UNIT_SPEED*4),
-  SK_PROMPT_METERS = SK_PROMPT_UNITS_BASE+(UNIT_DIST*4),
-  SK_PROMPT_DEGREES = SK_PROMPT_UNITS_BASE+(UNIT_TEMPERATURE*4),
-  SK_PROMPT_PERCENT = SK_PROMPT_UNITS_BASE+(UNIT_PERCENT*4),
-  SK_PROMPT_MILLIAMPS = SK_PROMPT_UNITS_BASE+(UNIT_MILLIAMPS*4),
-  SK_PROMPT_MAH = SK_PROMPT_UNITS_BASE+(UNIT_MAH*4),
-  SK_PROMPT_WATTS = SK_PROMPT_UNITS_BASE+(UNIT_WATTS*4),
-  SK_PROMPT_DB = SK_PROMPT_UNITS_BASE+(UNIT_DBM*4),
-  SK_PROMPT_FEET = SK_PROMPT_UNITS_BASE+(UNIT_FEET*4),
-  SK_PROMPT_KTS = SK_PROMPT_UNITS_BASE+(UNIT_KTS*4),
-  SK_PROMPT_HOURS = SK_PROMPT_UNITS_BASE+(UNIT_HOURS*4),
-  SK_PROMPT_MINUTES = SK_PROMPT_UNITS_BASE+(UNIT_MINUTES*4),
-  SK_PROMPT_SECONDS = SK_PROMPT_UNITS_BASE+(UNIT_SECONDS*4),
-  SK_PROMPT_RPMS = SK_PROMPT_UNITS_BASE+(UNIT_RPMS*4),
-  SK_PROMPT_G = SK_PROMPT_UNITS_BASE+(UNIT_G*4),
-#if defined(CPUARM)
-  SK_PROMPT_MILLILITERS = SK_PROMPT_UNITS_BASE+(UNIT_MILLILITERS*4),
-  SK_PROMPT_FLOZ = SK_PROMPT_UNITS_BASE+(UNIT_FLOZ*4),
-  SK_PROMPT_FEET_PER_SECOND = SK_PROMPT_UNITS_BASE+(UNIT_FEET_PER_SECOND*4),
-#endif
+  SK_PROMPT_UNITS_BASE = 118, //(jeden)volt,(dva)volty,(pet)voltu,(desetina)voltu
 
 };
 
@@ -152,12 +128,37 @@ I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 
   int16_t tmp = number;
   
+#if defined(CPUARM) 
+  switch(unit) {
+    case 0:
+      break;
+    case 6:
+    case 8:
+    case 10:
+    case 14:
+    case 17:
+    case 21:
+    case 22:
+    case 23:
+    case 24:
+      att = ZENSKY;
+      break;
+    case 13:
+    case 18:
+      att = STREDNI;
+      break;
+    default:
+      att = MUZSKY;
+      break;
+  }
+#else
   switch(unit) {
     case 0:
       break;
     case 4:
     case 10:
     case 13:
+    case 14:
     case 15:
     case 16:
     case 17:
@@ -172,6 +173,7 @@ I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       att = MUZSKY;
       break;
   }
+#endif
 
   if ((number == 1) && (att == MUZSKY)) {
     PUSH_NUMBER_PROMPT(SK_PROMPT_JEDEN);

@@ -131,6 +131,14 @@ bool isSourceAvailable(int source)
   return true;
 }
 
+bool isSourceAvailableInGlobalFunctions(int source)
+{
+  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
+    return false;
+  }
+  return isSourceAvailable(source);
+}
+
 bool isSourceAvailableInCustomSwitches(int source)
 {
   bool result = isSourceAvailable(source);
@@ -191,22 +199,30 @@ bool isLogicalSwitchAvailable(int index)
 
 bool isSwitchAvailable(int swtch, SwitchContext context)
 {
-  uint32_t index = switchInfo(abs(swtch)).quot;
+  bool negative = false;
 
   if (swtch < 0) {
-    if (!IS_3POS(index))
-      return false;
-    if (swtch == -SWSRC_ON || swtch == -SWSRC_One) {
+    negative = true;
+    if (swtch == -SWSRC_ON || swtch == -SWSRC_ONE) {
       return false;
     }
     swtch = -swtch;
   }
 
   if (swtch >= SWSRC_SA0 && swtch <= SWSRC_LAST_SWITCH) {
-    if (!SWITCH_EXISTS(index))
+    div_t swinfo = switchInfo(swtch);
+    if (!SWITCH_EXISTS(swinfo.quot)) {
       return false;
-    if ((swtch-SWSRC_SA1)%3 == 0)
-      return IS_3POS(index);
+    }
+    if (!IS_3POS(swinfo.quot)) {
+      if (negative) {
+        return false;
+      }
+      if (IS_3POS_MIDDLE(swinfo.rem)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   if (swtch >= SWSRC_FIRST_MULTIPOS_SWITCH && swtch <= SWSRC_LAST_MULTIPOS_SWITCH) {
@@ -229,7 +245,7 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
     }
   }
 
-  if (context != ModelCustomFunctionsContext && context != GeneralCustomFunctionsContext && (swtch == SWSRC_ON || swtch == SWSRC_One)) {
+  if (context != ModelCustomFunctionsContext && context != GeneralCustomFunctionsContext && (swtch == SWSRC_ON || swtch == SWSRC_ONE)) {
     return false;
   }
 
@@ -257,7 +273,7 @@ bool isSwitchAvailableInLogicalSwitches(int swtch)
 
 bool isSwitchAvailableInCustomFunctions(int swtch)
 {
-  if (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions)
+  if (menuHandlers[menuLevel] == menuModelCustomFunctions)
     return isSwitchAvailable(swtch, ModelCustomFunctionsContext);
   else
     return isSwitchAvailable(swtch, GeneralCustomFunctionsContext);
@@ -288,7 +304,7 @@ bool isSwitchAvailableInTimers(int swtch)
 
 bool isThrottleSourceAvailable(int source)
 {
-  if (source == THROTTLE_SOURCE_S3 && !IS_POT_AVAILABLE(POT3))
+  if (source >= THROTTLE_SOURCE_FIRST_POT && source < THROTTLE_SOURCE_FIRST_POT+NUM_POTS && !IS_POT_AVAILABLE(POT1+source-THROTTLE_SOURCE_FIRST_POT))
     return false;
   else
     return true;
@@ -301,7 +317,9 @@ bool isLogicalSwitchFunctionAvailable(int function)
 
 bool isAssignableFunctionAvailable(int function)
 {
-  bool modelFunctions = (g_menuStack[g_menuStackPtr] == menuModelCustomFunctions);
+#if defined(OVERRIDE_CHANNEL_FUNCTION) || defined(GVARS)
+  bool modelFunctions = (menuHandlers[menuLevel] == menuModelCustomFunctions);
+#endif
 
   switch (function) {
     case FUNC_OVERRIDE_CHANNEL:
@@ -319,11 +337,10 @@ bool isAssignableFunctionAvailable(int function)
 #if !defined(HAPTIC)
     case FUNC_HAPTIC:
 #endif
-    case FUNC_PLAY_DIFF:
+    case FUNC_RESERVE4:
 #if !defined(DANGEROUS_MODULE_FUNCTIONS)
     case FUNC_RANGECHECK:
     case FUNC_BIND:
-    case FUNC_MODULE_OFF:
 #endif
 #if !defined(LUA)
     case FUNC_PLAY_SCRIPT:
@@ -336,8 +353,47 @@ bool isAssignableFunctionAvailable(int function)
   }
 }
 
+bool isSourceAvailableInGlobalResetSpecialFunction(int index)
+{
+  if (index >= FUNC_RESET_PARAM_FIRST_TELEM)
+    return false;
+  else
+    return isSourceAvailableInResetSpecialFunction(index);
+}
+
+bool isSourceAvailableInResetSpecialFunction(int index)
+{
+  if (index >= FUNC_RESET_PARAM_FIRST_TELEM) {
+    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index-FUNC_RESET_PARAM_FIRST_TELEM];
+    return telemetrySensor.isAvailable();
+  }
+#if TIMERS < 3
+  else if (index == FUNC_RESET_TIMER3) {
+    return false;
+  }
+#endif
+#if TIMERS < 2
+  else if (index == FUNC_RESET_TIMER2) {
+    return false;
+  }
+#endif
+  else {
+    return true;
+  }
+}
+
 bool isModuleAvailable(int module)
 {
+  return true;
+}
+
+bool isRfProtocolAvailable(int protocol)
+{
+#if defined(MODULE_D16_EU_ONLY_SUPPORT)
+  if (protocol == RF_PROTO_D8) {
+    return false;
+  }
+#endif
   return true;
 }
 

@@ -22,7 +22,7 @@
 #if defined(PCBTARANIS) && defined(REV9E)
   #define FLAVOUR "taranisx9e"
   #define NAMESPACE TaranisX9E
-  #define EEPROM_VARIANT 0
+  #define EEPROM_VARIANT 0x8000
 #elif defined(PCBTARANIS) && defined(REVPLUS)
   #define FLAVOUR "taranisplus"
   #define NAMESPACE TaranisPlus
@@ -34,6 +34,10 @@
 #elif defined(PCBSKY9X) && defined(REVX)
   #define FLAVOUR "9xrpro"
   #define NAMESPACE Sky9xPro
+  #define EEPROM_VARIANT 0
+#elif defined(PCBSKY9X) && defined(AR9X)
+  #define FLAVOUR "ar9x"
+  #define NAMESPACE Ar9x
   #define EEPROM_VARIANT 0
 #elif defined(PCBSKY9X)
   #define FLAVOUR "sky9x"
@@ -117,6 +121,10 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface {
     virtual const char * getError();
 
     virtual void sendTelemetry(uint8_t * data, unsigned int len);
+
+    virtual uint8_t getSensorInstance(uint16_t id);
+
+    virtual uint16_t getSensorRatio(uint16_t id);
 
     virtual void setTrainerInput(unsigned int inputNumber, int16_t value);
 

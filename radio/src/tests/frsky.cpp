@@ -122,7 +122,74 @@ TEST(FrSky, FrskyValueWithMinAveraging)
     EXPECT_EQ(testVal.value, expected[testPos++]);
   }
 }
-#endif
+
+TEST(FrSky, Vfas_0x39_HiPrecision)
+{
+  MODEL_RESET();
+  TELEMETRY_RESET();
+  EXPECT_EQ(telemetryItems[0].value, 0);
+
+  allowNewSensors = true;
+
+  // normal precision, resolution 0.1V
+  processHubPacket(VFAS_ID, 1234);  // set value of 123.4V
+  EXPECT_EQ(telemetryItems[0].value, 12340);      // stored value has resolution of 0.01V
+
+  // now high precision, resolution 0.01V
+  processHubPacket(VFAS_ID, VFAS_D_HIPREC_OFFSET);  // set value of 0V
+  EXPECT_EQ(telemetryItems[0].value, 0);
+  processHubPacket(VFAS_ID, VFAS_D_HIPREC_OFFSET + 12345);  // set value of 123.45V
+  EXPECT_EQ(telemetryItems[0].value, 12345);
+  processHubPacket(VFAS_ID, VFAS_D_HIPREC_OFFSET + 30012);  // set value of 300.12V
+  EXPECT_EQ(telemetryItems[0].value, 30012);
+}
+
+TEST(FrSky, HubAltNegative)
+{
+  MODEL_RESET();
+  TELEMETRY_RESET();
+  EXPECT_EQ(telemetryItems[0].value, 0);
+
+  allowNewSensors = true;
+
+  // altimeter auto offset
+  processHubPacket(BARO_ALT_BP_ID, 0);
+  processHubPacket(BARO_ALT_AP_ID, 0);
+  EXPECT_EQ(telemetryItems[0].value, 0);
+
+  // low precision altimeter, bp always less than 10
+  processHubPacket(BARO_ALT_BP_ID, 12);  // set value of 12.3m
+  processHubPacket(BARO_ALT_AP_ID, 3);
+  EXPECT_EQ(telemetryItems[0].value, 123);      // altitude stored has resolution of 0.1m
+
+  processHubPacket(BARO_ALT_BP_ID, -12);  // set value of -12.3m
+  processHubPacket(BARO_ALT_AP_ID, 3);
+  EXPECT_EQ(telemetryItems[0].value, -123);
+
+  // hi precision altimeter, bp can be two decimals
+  MODEL_RESET();
+  TELEMETRY_RESET();
+
+  // altimeter auto offset
+  processHubPacket(BARO_ALT_BP_ID, 0);
+  processHubPacket(BARO_ALT_AP_ID, 0);
+  EXPECT_EQ(telemetryItems[0].value, 0);
+
+  // first trigger hi precision, by setting AP above 9
+  processHubPacket(BARO_ALT_BP_ID, -1);  // set value of -1.35m
+  processHubPacket(BARO_ALT_AP_ID, 35);
+  EXPECT_EQ(telemetryItems[0].value, -13); 
+
+  processHubPacket(BARO_ALT_BP_ID, 12);  // set value of 12.35m
+  processHubPacket(BARO_ALT_AP_ID, 35);
+  EXPECT_EQ(telemetryItems[0].value, 123); 
+
+  // now test with the AP less than 10 to check if hiprecision is still active
+  processHubPacket(BARO_ALT_BP_ID, 12);  // set value of 12.05m
+  processHubPacket(BARO_ALT_AP_ID, 05);
+  EXPECT_EQ(telemetryItems[0].value, 120); 
+}
+#endif  // #if defined(FRSKY) && defined(CPUARM)
 
 #if defined(FRSKY_SPORT)
 TEST(FrSkySPORT, checkCrc)
@@ -163,6 +230,7 @@ void generateSportCellPacket(uint8_t * packet, uint8_t cells, uint8_t battnumber
 
 TEST(FrSkySPORT, FrSkyDCells)
 {
+  MODEL_RESET();
   TELEMETRY_RESET();
   uint8_t pkt1[] = { 0x7E, 0x98, 0x10, 0x06, 0x00, 0x07, 0xD0, 0x00, 0x00, 0x12 };
   EXPECT_EQ(checkSportPacket(pkt1+1), true);

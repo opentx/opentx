@@ -99,7 +99,8 @@ void eepromEraseBlock(uint32_t address, bool blocking=true)
   // TRACE("eepromEraseBlock(%d)", address);
 
 #if defined(SIMU)
-  static uint8_t erasedBlock[EEPROM_BLOCK_SIZE] = { 0xff };
+  static uint8_t erasedBlock[EEPROM_BLOCK_SIZE]; // can't be on the stack!
+  memset(erasedBlock, 0xff, sizeof(erasedBlock));
   eeprom_pointer = address;
   eeprom_buffer_data = erasedBlock;
   eeprom_buffer_size = EEPROM_BLOCK_SIZE;
@@ -170,6 +171,7 @@ bool eepromOpen()
     eepromRead(eepromFatAddr, (uint8_t *)&eepromHeader, sizeof(eepromHeader.mark) + sizeof(eepromHeader.index));
     if (eepromHeader.mark == EEPROM_MARK && eepromHeader.index >= bestFatIndex) {
       bestFatAddr = eepromFatAddr;
+      bestFatIndex = eepromHeader.index;
     }
     eepromFatAddr += EEPROM_FAT_SIZE;
   }
@@ -368,6 +370,17 @@ void eeLoadModel(uint8_t id)
 
     restoreTimers();
 
+#if defined(CPUARM)
+    for (int i=0; i<MAX_SENSORS; i++) {
+      TelemetrySensor & sensor = g_model.telemetrySensors[i];
+      if (sensor.type == TELEM_TYPE_CALCULATED && sensor.persistent) {
+        telemetryItems[i].value = sensor.persistentValue;
+      }
+    }
+#endif
+
+    LOAD_MODEL_CURVES();
+
     resumeMixerCalculations();
     // TODO pulses should be started after mixer calculations ...
 
@@ -380,8 +393,8 @@ void eeLoadModel(uint8_t id)
 #endif
 
     LOAD_MODEL_BITMAP();
-
     SEND_FAILSAFE_1S();
+    PLAY_MODEL_NAME();
   }
 }
 
@@ -441,6 +454,8 @@ void eeCheck(bool immediately)
   if (immediately) {
     eepromWriteWait();
   }
+
+  assert(eepromWriteState == EEPROM_IDLE);
 
   if (s_eeDirtyMsk & EE_GENERAL) {
     TRACE("eeprom write general");
@@ -685,22 +700,25 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   eepromEraseBlock(address+EEPROM_BLOCK_SIZE);
 
   // write header
-  EepromFileHeader header = { uint16_t(i_fileDst+1), size };
-  eepromWrite(address, (uint8_t *)&header, sizeof(header));
-  address += sizeof(header);
+  EepromFileHeader * header = (EepromFileHeader *)eepromWriteBuffer;
+  header->fileIndex = i_fileDst+1;
+  header->size = size;
+
+  int offset = 4;
 
   // write model
-  while (size > 0) {
-    uint16_t blockSize = min<uint16_t>(size, EEPROM_BUFFER_SIZE);
-    result = f_read(&restoreFile, eepromWriteBuffer, blockSize, &read);
+  do {
+    uint16_t blockSize = min<uint16_t>(size, EEPROM_BUFFER_SIZE-offset);
+    result = f_read(&restoreFile, eepromWriteBuffer+offset, blockSize, &read);
     if (result != FR_OK || read != blockSize) {
       f_close(&g_oLogFile);
       return SDCARD_ERROR(result);
     }
-    eepromWrite(address, eepromWriteBuffer, blockSize);
+    eepromWrite(address, eepromWriteBuffer, blockSize+offset);
     size -= blockSize;
-    address += blockSize;
-  }
+    address += EEPROM_BUFFER_SIZE;
+    offset = 0;
+  } while (size > 0);
 
   // write FAT
   eepromHeader.files[i_fileDst+1].exists = 1;

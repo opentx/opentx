@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>700</width>
-    <height>584</height>
+    <width>782</width>
+    <height>694</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1104,6 +1104,60 @@ p, li { white-space: pre-wrap; }
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
+     <item row="14" column="1">
+      <widget class="QComboBox" name="stickmodeCB">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="statusTip">
+        <string/>
+       </property>
+       <property name="whatsThis">
+        <string>Mode selection:
+
+Mode 1:
+  Left stick:  Elevator, Rudder
+  Right stick:  Throttle, Aileron
+
+Mode 2:
+  Left stick:  Throttle, Rudder
+  Right stick:  Elevator, Aileron
+
+Mode 3:
+  Left stick:  Elevator, Aileron
+  Right stick:  Throttle, Rudder
+
+Mode 4:
+  Left stick:  Throttle, Aileron
+  Right stick:  Elevator, Rudder
+
+</string>
+       </property>
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>Mode 1 (RUD ELE THR AIL)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Mode 2 (RUD THR ELE AIL)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Mode 3 (AIL ELE THR RUD)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Mode 4 (AIL THR ELE RUD)</string>
+        </property>
+       </item>
+      </widget>
+     </item>
      <item row="15" column="1">
       <widget class="QComboBox" name="channelorderCB">
        <property name="toolTip">
@@ -1240,60 +1294,6 @@ p, li { white-space: pre-wrap; }
        </item>
       </widget>
      </item>
-     <item row="14" column="1">
-      <widget class="QComboBox" name="stickmodeCB">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="statusTip">
-        <string/>
-       </property>
-       <property name="whatsThis">
-        <string>Mode selection:
-
-Mode 1:
-  Left stick:  Elevator, Rudder
-  Right stick:  Throttle, Aileron
-
-Mode 2:
-  Left stick:  Throttle, Rudder
-  Right stick:  Elevator, Aileron
-
-Mode 3:
-  Left stick:  Elevator, Aileron
-  Right stick:  Throttle, Rudder
-
-Mode 4:
-  Left stick:  Throttle, Aileron
-  Right stick:  Elevator, Rudder
-
-</string>
-       </property>
-       <property name="currentIndex">
-        <number>1</number>
-       </property>
-       <item>
-        <property name="text">
-         <string>Mode 1 (RUD ELE THR AIL)</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Mode 2 (RUD THR ELE AIL)</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Mode 3 (AIL ELE THR RUD)</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Mode 4 (AIL THR ELE RUD)</string>
-        </property>
-       </item>
-      </widget>
-     </item>
      <item row="14" column="0">
       <widget class="QLabel" name="label_14">
        <property name="text">
@@ -1358,7 +1358,7 @@ p, li { white-space: pre-wrap; }
         <number>0</number>
        </property>
        <property name="maximum">
-        <number>300</number>
+        <number>1000</number>
        </property>
        <property name="singleStep">
         <number>10</number>
@@ -1430,25 +1430,6 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_12">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Beeper Mode</string>
-       </property>
-      </widget>
-     </item>
      <item row="12" column="0">
       <widget class="QLabel" name="label_11">
        <property name="sizePolicy">
@@ -1484,25 +1465,6 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="text">
         <string>Inactivity Timer</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_beeperlen">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Beeper Length</string>
        </property>
       </widget>
      </item>
@@ -1675,76 +1637,6 @@ p, li { white-space: pre-wrap; }
        <property name="text">
         <string>MAVLink Baud Rate</string>
        </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_hapticmode">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Haptic Mode</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1" colspan="2">
-      <widget class="QComboBox" name="beeperCB">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>22</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="statusTip">
-        <string/>
-       </property>
-       <property name="whatsThis">
-        <string>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</string>
-       </property>
-       <item>
-        <property name="text">
-         <string>Quiet</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Alarms Only</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>No Keys</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>All</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item row="2" column="1" colspan="2">
@@ -2191,47 +2083,6 @@ p, li { white-space: pre-wrap; }
        </item>
       </widget>
      </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QComboBox" name="beeperlenCB">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>22</height>
-        </size>
-       </property>
-       <item>
-        <property name="text">
-         <string>X-Short</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Short</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Normal</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Long</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>X-Long</string>
-        </property>
-       </item>
-      </widget>
-     </item>
      <item row="17" column="1">
       <widget class="QComboBox" name="gpsFormatCB">
        <item>
@@ -2278,6 +2129,155 @@ p, li { white-space: pre-wrap; }
         </size>
        </property>
       </spacer>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_hapticmode">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Haptic Mode</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_beeperlen">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Beeper Length</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_12">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Beeper Mode</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="beeperCB">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="statusTip">
+        <string/>
+       </property>
+       <property name="whatsThis">
+        <string>Beeper volume
+
+0 - Quiet.  No beeps at all.
+1 - No Keys.  Normal beeps but menu keys do not beep.
+2 - Normal.
+3 - Loud.
+4 - Extra loud.</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>Quiet</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Alarms Only</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>No Keys</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>All</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="beeperlenCB">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>22</height>
+        </size>
+       </property>
+       <item>
+        <property name="text">
+         <string>X-Short</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Short</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Normal</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Long</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>X-Long</string>
+        </property>
+       </item>
+      </widget>
      </item>
     </layout>
    </item>

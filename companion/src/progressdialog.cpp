@@ -23,7 +23,7 @@ ProgressDialog::~ProgressDialog()
   delete ui;
 }
 
-ProgressWidget *ProgressDialog::progress()
+ProgressWidget * ProgressDialog::progress()
 {
   return ui->outputProgress;
 }
@@ -31,6 +31,7 @@ ProgressWidget *ProgressDialog::progress()
 void ProgressDialog::on_closeButton_clicked()
 {
   if (!locked) {
+    ui->outputProgress->stop();
     close();
   }
 }

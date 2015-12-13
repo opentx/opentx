@@ -288,8 +288,9 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
     if (getApp()->getKeyState(KEY_##key)) { \
       if (!state##key) { \
         state_##swtch = (state_##swtch+inc_##swtch); \
-        if (state_##swtch == 1+states) inc_##swtch = -1; \
-        else if (state_##swtch == 2) inc_##swtch = 1; \
+        if (state_##swtch >= 1+states) inc_##swtch = -1; \
+        else if (state_##swtch <= 2) inc_##swtch = 1; \
+        /* TRACE("switch " #swtch ": state: %d, inc: %d", state_##swtch, inc_##swtch); */ \
         state##key = true; \
       } \
     } \
@@ -302,9 +303,9 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
     SWITCH_KEY(A, 0, 3);
     SWITCH_KEY(B, 1, 3);
     SWITCH_KEY(C, 2, 3);
-    SWITCH_KEY(D, 3, 2);
+    SWITCH_KEY(D, 3, 3);
     SWITCH_KEY(E, 4, 3);
-    SWITCH_KEY(F, 5, 3);
+    SWITCH_KEY(F, 5, 2);
     SWITCH_KEY(G, 6, 3);
     SWITCH_KEY(H, 7, 2);
     SWITCH_KEY(I, 8, 3);

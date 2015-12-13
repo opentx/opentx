@@ -88,7 +88,7 @@ t_Open9xExpoData_v201::operator ExpoData ()
   ExpoData c9x;
   c9x.mode = mode;
   c9x.chn = chn;
-  if (expo!=0 && curve!=0) {
+  if (expo != 0 && curve != 0) {
     EEPROMWarnings.push_back(::QObject::tr("Simultaneous usage of expo and curves is no longer supported in OpenTX"));
   }
   else {
@@ -101,14 +101,14 @@ t_Open9xExpoData_v201::operator ExpoData ()
   }
   c9x.swtch = open9xStockToSwitch(swtch);
   if (negPhase) {
-    c9x.phases= 1 << (phase -1);
+    c9x.flightModes = 1 << (phase -1);
   }
-  else if (phase==0) {
-    c9x.phases=0;
+  else if (phase == 0) {
+    c9x.flightModes = 0;
   }
   else {
-    c9x.phases=63;
-    c9x.phases &= ~(1 << (phase -1));
+    c9x.flightModes = 63;
+    c9x.flightModes &= ~(1 << (phase -1));
   }  
   c9x.weight = weight;
   return c9x;
@@ -121,7 +121,7 @@ t_Open9xExpoData_v211::operator ExpoData ()
   c9x.chn = chn;
   // TODO c9x.curve
   c9x.swtch = open9xStockToSwitch(swtch);
-  c9x.phases = phases;
+  c9x.flightModes = phases;
   c9x.weight = weight;
   return c9x;
 }
@@ -129,8 +129,8 @@ t_Open9xExpoData_v211::operator ExpoData ()
 t_Open9xLimitData_v201::operator LimitData ()
 {
   LimitData c9x;
-  c9x.min = 10*(min-100);
-  c9x.max = 10*(max+100);
+  c9x.min = 10 * (min - 100);
+  c9x.max = 10 * (max + 100);
   c9x.revert = revert;
   c9x.offset = offset;
   return c9x;
@@ -139,12 +139,12 @@ t_Open9xLimitData_v201::operator LimitData ()
 t_Open9xLimitData_v211::operator LimitData ()
 {
   LimitData c9x;
-  c9x.min = 10*(min-100);
-  c9x.max = 10*(max+100);
+  c9x.min = 10 * (min - 100);
+  c9x.max = 10 * (max + 100);
   c9x.revert = revert;
   c9x.offset = offset;
-  c9x.symetrical=symetrical;
-  c9x.ppmCenter=ppmCenter;
+  c9x.symetrical = symetrical;
+  c9x.ppmCenter = ppmCenter;
   return c9x;
 }
 
@@ -197,13 +197,13 @@ t_Open9xMixData_v201::operator MixData ()
   c9x.mltpx = (MltpxValue)mltpx;
   c9x.mixWarn = mixWarn;
 
-  if (phase<0) {
-    c9x.phases= 1 << (-phase -1);
-  } else if (phase==0) {
-    c9x.phases=0;
+  if (phase < 0) {
+    c9x.flightModes = 1 << (-phase -1);
+  } else if (phase == 0) {
+    c9x.flightModes = 0;
   } else {
-    c9x.phases=63;
-    c9x.phases &= ~(1 << (phase -1));
+    c9x.flightModes = 63;
+    c9x.flightModes &= ~(1 << (phase -1));
   }  
   c9x.sOffset = sOffset;
   return c9x;
@@ -258,13 +258,13 @@ t_Open9xMixData_v203::operator MixData ()
   c9x.mltpx = (MltpxValue)mltpx;
   c9x.mixWarn = mixWarn;
 
-  if (phase<0) {
-    c9x.phases= 1 << (-phase -1);
-  } else if (phase==0) {
-    c9x.phases=0;
+  if (phase < 0) {
+    c9x.flightModes = 1 << (-phase -1);
+  } else if (phase == 0) {
+    c9x.flightModes = 0;
   } else {
-    c9x.phases=63;
-    c9x.phases &= ~(1 << (phase -1));
+    c9x.flightModes = 63;
+    c9x.flightModes &= ~(1 << (phase -1));
   } 
   c9x.sOffset = sOffset;
   return c9x;
@@ -319,15 +319,15 @@ t_Open9xMixData_v205::operator MixData ()
     c9x.mltpx = (MltpxValue)mltpx;
     c9x.mixWarn = mixWarn;
 
-    if (phase<0) {
-      c9x.phases= 1 << (-phase -1);
+    if (phase < 0) {
+      c9x.flightModes = 1 << (-phase -1);
     }
-    else if (phase==0) {
-      c9x.phases=0;
+    else if (phase == 0) {
+      c9x.flightModes = 0;
     }
     else {
-      c9x.phases=63;
-      c9x.phases &= ~(1 << (phase -1));
+      c9x.flightModes = 63;
+      c9x.flightModes &= ~(1 << (phase -1));
     }
     c9x.sOffset = sOffset;
   }
@@ -339,7 +339,7 @@ t_Open9xMixData_v209::operator MixData ()
   MixData c9x;
 
   if (srcRaw) {
-    c9x.destCh = destCh+1;
+    c9x.destCh = destCh + 1;
     c9x.swtch = open9xStockToSwitch(swtch);
 
     if (srcRaw == 0) {
@@ -386,15 +386,15 @@ t_Open9xMixData_v209::operator MixData ()
     c9x.mltpx = (MltpxValue)mltpx;
     c9x.mixWarn = mixWarn;
 
-    if (phase<0) {
-      c9x.phases= 1 << (-phase -1);
+    if (phase < 0) {
+      c9x.flightModes = 1 << (-phase -1);
     }
-    else if (phase==0) {
-      c9x.phases=0;
+    else if (phase ==0 ) {
+      c9x.flightModes = 0;
     }
     else {
-      c9x.phases=63;
-      c9x.phases &= ~(1 << (phase -1));
+      c9x.flightModes = 63;
+      c9x.flightModes &= ~(1 << (phase -1));
     }
     c9x.sOffset = sOffset;
   }
@@ -406,7 +406,7 @@ t_Open9xMixData_v211::operator MixData ()
   MixData c9x;
 
   if (srcRaw) {
-    c9x.destCh = destCh+1;
+    c9x.destCh = destCh + 1;
     c9x.swtch = open9xStockToSwitch(swtch);
 
     if (srcRaw == 0) {
@@ -453,7 +453,7 @@ t_Open9xMixData_v211::operator MixData ()
     c9x.noExpo = noExpo;
     c9x.mltpx = (MltpxValue)mltpx;
     c9x.mixWarn = mixWarn;
-    c9x.phases = phases;
+    c9x.flightModes = phases;
     c9x.sOffset = sOffset;
   }
   return c9x;
@@ -603,8 +603,8 @@ t_Open9xCustomFunctionData_v203::operator CustomFunctionData ()
   CustomFunctionData c9x;
   c9x.swtch = open9xStockToSwitch(swtch);
   if (func < 16) {
-    c9x.enabled=param & 0x01;
-    c9x.param = (param>>1)<<1;
+    c9x.enabled = param & 0x01;
+    c9x.param = (param>>1) << 1;
     c9x.func = (AssignFunc)(func);
   } else {
     c9x.param = param;
@@ -730,7 +730,7 @@ t_Open9xTimerData_v202::operator TimerData ()
 FrSkyRSSIAlarm t_Open9xFrSkyRSSIAlarm::get(int index)
 {
   FrSkyRSSIAlarm c9x;
-  c9x.level = (2+index+level) % 4;
+  c9x.level = (2 + index + level) % 4;
   c9x.value = value + 50;
   return c9x;
 }
@@ -840,7 +840,7 @@ t_Open9xFrSkyData_v204::operator FrSkyData ()
   c9x.channels[0] = channels[0];
   c9x.channels[1] = channels[1];
   c9x.usrProto = usrProto;
-  c9x.blades = blades+2;
+  c9x.blades = blades + 2;
   c9x.screens[0].type = 1;
   for (int i=0; i<4; i++)
     c9x.screens[0].body.bars[i] = bars[i];
@@ -853,7 +853,7 @@ t_Open9xFrSkyData_v205::operator FrSkyData ()
   c9x.channels[0] = channels[0];
   c9x.channels[1] = channels[1];
   c9x.usrProto = usrProto;
-  c9x.blades = blades+2;
+  c9x.blades = blades + 2;
   c9x.screens[0].type = 1;
   for (int i=0; i<4; i++)
     c9x.screens[0].body.bars[i] = bars[i];
@@ -869,7 +869,7 @@ t_Open9xFrSkyData_v208::operator FrSkyData ()
   c9x.channels[1] = channels[1];
   c9x.usrProto = usrProto;
   c9x.voltsSource = voltsSource;
-  c9x.blades = blades+2;
+  c9x.blades = blades + 2;
   c9x.currentSource=currentSource;
   c9x.screens[0].type = 1;
   for (int i=0; i<4; i++)
@@ -886,7 +886,7 @@ t_Open9xFrSkyData_v210::operator FrSkyData ()
   c9x.channels[1] = channels[1];
   c9x.usrProto = usrProto;
   c9x.voltsSource = voltsSource;
-  c9x.blades = blades+2;
+  c9x.blades = blades + 2;
   c9x.currentSource=currentSource;
 
   int lines_screen_index = 0;
@@ -917,16 +917,16 @@ t_Open9xModelData_v201::operator ModelData ()
   c9x.timers[1] = timer2;
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 2:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -991,16 +991,16 @@ t_Open9xModelData_v202::operator ModelData ()
   c9x.timers[1] = timer2;
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 2:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -1067,16 +1067,16 @@ t_Open9xModelData_v203::operator ModelData ()
   c9x.timers[1] = timer2;
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 2:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -1141,16 +1141,16 @@ t_Open9xModelData_v204::operator ModelData ()
   c9x.timers[1] = timer2;
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 2:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -1217,19 +1217,19 @@ t_Open9xModelData_v205::operator ModelData ()
     c9x.timers[i] = timers[i];
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 2:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     case 4:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -1295,19 +1295,19 @@ t_Open9xModelData_v208::operator ModelData ()
     c9x.timers[i] = timers[i];
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     case 2:
-      c9x.moduleData[0].protocol = PPMSIM;
+      c9x.moduleData[0].protocol = PULSES_PPMSIM;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 4:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -1381,19 +1381,19 @@ t_Open9xModelData_v209::operator ModelData ()
     c9x.timers[i] = timers[i];
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     case 2:
-      c9x.moduleData[0].protocol = PPMSIM;
+      c9x.moduleData[0].protocol = PULSES_PPMSIM;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 4:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -1468,19 +1468,19 @@ t_Open9xModelData_v210::operator ModelData ()
     c9x.timers[i] = timers[i];
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     case 2:
-      c9x.moduleData[0].protocol = PPMSIM;
+      c9x.moduleData[0].protocol = PULSES_PPMSIM;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 4:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -1556,19 +1556,19 @@ t_Open9xModelData_v211::operator ModelData ()
     c9x.timers[i] = timers[i];
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     case 2:
-      c9x.moduleData[0].protocol = PPMSIM;
+      c9x.moduleData[0].protocol = PULSES_PPMSIM;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 4:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);

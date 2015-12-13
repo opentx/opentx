@@ -227,7 +227,7 @@ const char *writeScreenshot()
 {
   FIL bmpFile;
   UINT written;
-  char filename[48]; // /SCREENSHOTS/screenshot-2013-01-01-12-35-40.bmp
+  char filename[42]; // /SCREENSHOTS/screen-2013-01-01-123540.bmp
   DIR folder;
 
   // check and create folder here
@@ -240,7 +240,7 @@ const char *writeScreenshot()
       return SDCARD_ERROR(result);
   }
 
-  char *tmp = strAppend(&filename[sizeof(SCREENSHOTS_PATH)-1], "/screenshot");
+  char *tmp = strAppend(&filename[sizeof(SCREENSHOTS_PATH)-1], "/screen");
   tmp = strAppendDate(tmp, true);
   strcpy(tmp, BITMAPS_EXT);
 

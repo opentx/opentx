@@ -21,14 +21,15 @@ class CalibrationPanel : public GeneralPanel
     // virtual void update();
 
   private slots:
-    void on_battCalibDSB_editingFinished();
+    void on_txVoltageCalibration_editingFinished();
     void on_PPM1_editingFinished();
     void on_PPM2_editingFinished();
     void on_PPM3_editingFinished();
     void on_PPM4_editingFinished();
     void on_PPM_MultiplierDSB_editingFinished();
 
-    void on_CurrentCalib_SB_editingFinished();
+    void on_txCurrentCalibration_editingFinished();
+    void on_bluetoothEnable_stateChanged(int);
 
     void on_ana1Neg_editingFinished();
     void on_ana2Neg_editingFinished();
@@ -62,7 +63,7 @@ class CalibrationPanel : public GeneralPanel
   protected:
     void setupPotConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type);
     void setupSliderConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type);
-    void setupSwitchConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type);
+    void setupSwitchConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type, bool threePos);
 
   private:
     Ui::Calibration *ui;

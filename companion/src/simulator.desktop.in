@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=Simulator @C9X_VERSION@
+GenericName=Transmitter Simulator App
+Comment=The Ultimate Transmitter Simulator
+Icon=@COMPANION_NAME@
+Exec='@SIMULATOR_NAME@'
+Terminal=false
+StartupNotify=false
+Categories=Application

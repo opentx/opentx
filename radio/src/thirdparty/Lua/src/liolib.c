@@ -19,6 +19,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #define liolib_c
 
@@ -183,14 +184,10 @@ static LStream *newprefile (lua_State *L) {
 
 #if !defined(USE_FATFS)
 static int aux_close (lua_State *L) {
-#if !defined(USE_FATFS)
   LStream *p = tolstream(L);
   lua_CFunction cf = p->closef;
   p->closef = NULL;  /* mark stream as closed */
   return (*cf)(L);  /* close it */
-#else
-  return 0;
-#endif
 }
 #endif
 
@@ -206,16 +203,17 @@ static int io_close (lua_State *L) {
 #endif
 }
 
-#if !defined(USE_FATFS)
 static int f_gc (lua_State *L) {
 #if !defined(USE_FATFS)
   LStream *p = tolstream(L);
   if (!isclosed(p) && p->f != NULL)
     aux_close(L);  /* ignore closed and incompletely open files */
 #endif
+  f_close(tofile(L));  // no need to check if file was already closed (fatfs will not close it if p->f->fs is 0)
   return 0;
 }
 
+#if !defined(USE_FATFS)
 /*
 ** function to close regular files
 */
@@ -249,14 +247,14 @@ static int io_open (lua_State *L) {
   const char *md = luaL_optstring(L, 2, "r");
   LStream *p = newfile(L);
 #if defined(USE_FATFS)
-  BYTE mode;
-  if (strchr(md, 'w') || strchr(md, 'a'))
-    mode = FA_WRITE;
-  else
-    mode = FA_READ;
+  BYTE mode = FA_READ;
+  if (*md == 'w')
+    mode = FA_WRITE | FA_CREATE_ALWAYS;     // always create file and truncate it
+  else if (*md == 'a')
+    mode = FA_WRITE | FA_OPEN_ALWAYS;       // always open file (create it if necessary) 
   FRESULT result = f_open(&p->f, filename, mode);
-  if (result == FR_OK && strchr(md, 'a'))
-    result = f_lseek(&p->f, f_size(&p->f));
+  if (result == FR_OK && *md == 'a')
+    result = f_lseek(&p->f, f_size(&p->f));   // seek to the end of the file
   return result == FR_OK ? 1 : 0;
 #else
   const char *mode = md;  /* to traverse/check mode */
@@ -559,8 +557,9 @@ static int g_write (lua_State *L, FILE *f, int arg) {
   for (; nargs--; arg++) {
     if (lua_type(L, arg) == LUA_TNUMBER) {
       /* optimization: could be done exactly as for strings */
-      status = status &&
-          f_printf(f, LUA_NUMBER_FMT, lua_tonumber(L, arg)) > 0;
+      char s[LUAI_MAXNUMBER2STR];
+      sprintf(s, LUA_NUMBER_FMT, lua_tonumber(L, arg));
+      status = status && f_puts(s, f) > 0;
     }
     else {
       size_t l;
@@ -661,31 +660,27 @@ const luaL_Reg iolib[] = {
   {NULL, NULL}
 };
 
-#if !defined(USE_FATFS)
-
 /*
 ** methods for file handles
 */
 static const luaL_Reg flib[] = {
-  {"close", io_close},
-  {"flush", f_flush},
-  {"lines", f_lines},
-  {"read", io_read},
-  {"seek", f_seek},
-  {"setvbuf", f_setvbuf},
-  {"write", f_write},
-  {"__gc", f_gc},
-  {"__tostring", f_tostring},
+  // {"close", io_close},
+  // {"flush", f_flush},
+  // {"lines", f_lines},
+  // {"read", io_read},
+  // {"seek", f_seek},
+  // {"setvbuf", f_setvbuf},
+  // {"write", f_write},
+  {"__gc", f_gc},     // we define only garbage collector to close any leftover open files
+  // {"__tostring", f_tostring},
   {NULL, NULL}
 };
-
-#endif
 
 static void createmeta (lua_State *L) {
   luaL_newmetatable(L, LUA_FILEHANDLE);  /* create metatable for file handles */
   lua_pushvalue(L, -1);  /* push metatable */
-  // lua_setfield(L, -2, "__index");  /* metatable.__index = metatable */
-  // luaL_setfuncs(L, flib, 0);  /* add file methods to new metatable */
+  lua_setfield(L, -2, "__index");  /* metatable.__index = metatable */
+  luaL_setfuncs(L, flib, 0);  /* add file methods to new metatable */
   lua_pop(L, 1);  /* pop new metatable */
 }
 

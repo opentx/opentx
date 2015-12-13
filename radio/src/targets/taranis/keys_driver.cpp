@@ -98,7 +98,29 @@ uint8_t keyDown()
 }
 
 #if defined(REV9E)
-extern rotenc_t x9de_rotenc; 
+uint32_t Rotary_position;
+rotenc_t x9de_rotenc;
+void checkRotaryEncoder()
+{
+  register uint32_t dummy ;
+
+   dummy = ENC_GPIO->IDR;   // Read Rotary encoder
+   dummy >>= 12;            // quick & dirty!
+   dummy &= 0x03;
+   if ( dummy != ( Rotary_position & 0x03 ) )
+   {
+      if ( ( Rotary_position & 0x01 ) ^ ( ( dummy & 0x02) >> 1 ) )
+      {
+         --x9de_rotenc;
+      }
+      else
+      {
+         ++x9de_rotenc;
+      }
+      Rotary_position &= ~0x03 ;
+      Rotary_position |= dummy ;
+   }
+}
 #endif
 
 /* TODO common to ARM */
@@ -111,18 +133,38 @@ void readKeysAndTrims()
   }
 
 #if defined(REV9E) && !defined(SIMU)
+  #define X9E_RE_TIMEOUT 5
   static rotenc_t rePreviousValue;
   rotenc_t reNewValue = (x9de_rotenc / 2);
+  static int timeout = X9E_RE_TIMEOUT;
+  static int lastkey = 0;
   int8_t scrollRE = reNewValue - rePreviousValue;
   if (scrollRE) {
     rePreviousValue = reNewValue;
+    timeout = X9E_RE_TIMEOUT;
     if (scrollRE < 0) {
+      if (lastkey != KEY_MINUS) {
+        putEvent(EVT_KEY_BREAK(lastkey));
+      }
       putEvent(EVT_KEY_FIRST(KEY_MINUS));
+      lastkey = KEY_MINUS;
     }
     else {
-      putEvent(EVT_KEY_FIRST(KEY_PLUS)); 
+      if (lastkey != KEY_PLUS) {
+        putEvent(EVT_KEY_BREAK(lastkey));
+      }
+      putEvent(EVT_KEY_FIRST(KEY_PLUS));
+      lastkey = KEY_PLUS; 
     }
   }
+  else if (timeout > 0) {
+    timeout--;
+  }
+  else if (lastkey && timeout == 0) {
+    putEvent(EVT_KEY_BREAK(lastkey));
+    lastkey = 0;
+  }
+    
 #endif
 
   in = readTrims();
@@ -131,18 +173,15 @@ void readKeysAndTrims()
   }
 }
 
-#if !defined(BOOT)
-
-#define ADD_2POS_CASE(x) \
-    case SW_S ## x ## 0: \
+#if defined(REV9E)
+  #define ADD_2POS_CASE(x) \
+    case SW_S ## x ## 2: \
       xxx = SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
       break; \
-    case SW_S ## x ## 2: \
+    case SW_S ## x ## 0: \
       xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
       break
-
-#if defined(REV9E)
-#define ADD_3POS_CASE(x, i) \
+  #define ADD_3POS_CASE(x, i) \
     case SW_S ## x ## 0: \
       xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       break; \
@@ -152,9 +191,16 @@ void readKeysAndTrims()
     case SW_S ## x ## 2: \
       xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       break
-#define ADD_3POS_INVERTED_CASE(x, i) ADD_3POS_CASE(x, i)
+  #define ADD_3POS_INVERTED_CASE(x, i) ADD_3POS_CASE(x, i)
 #else
-#define ADD_3POS_CASE(x, i) \
+  #define ADD_2POS_CASE(x) \
+    case SW_S ## x ## 0: \
+      xxx = SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
+      break; \
+    case SW_S ## x ## 2: \
+      xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
+      break
+  #define ADD_3POS_CASE(x, i) \
     case SW_S ## x ## 0: \
       xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
       if (IS_3POS(i)) { \
@@ -170,7 +216,7 @@ void readKeysAndTrims()
         xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       } \
       break
-#define ADD_3POS_INVERTED_CASE(x, i) \
+  #define ADD_3POS_INVERTED_CASE(x, i) \
     case SW_S ## x ## 0: \
       xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
       if (IS_3POS(i)) { \
@@ -188,6 +234,7 @@ void readKeysAndTrims()
       break
 #endif
 
+#if !defined(BOOT)
 bool switchState(EnumKeys enuk)
 {
   register uint32_t xxx = 0;
@@ -198,17 +245,9 @@ bool switchState(EnumKeys enuk)
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
-#if defined(REV9E)
-    ADD_2POS_CASE(D);
-#else
     ADD_3POS_CASE(D, 3);
-#endif
     ADD_3POS_INVERTED_CASE(E, 4);
-#if defined(REV9E)
-    ADD_3POS_CASE(F, 5);
-#else
     ADD_2POS_CASE(F);
-#endif
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);
 #if defined(REV9E)
@@ -233,38 +272,46 @@ bool switchState(EnumKeys enuk)
 }
 #endif
 
-#if !defined(SIMU)
 void keysInit()
 {
-    GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
 
-    GPIO_InitStructure.GPIO_Pin = KEYS_GPIOA_PINS;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
+#if defined(KEYS_GPIOA_PINS)
+  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOA_PINS;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+#endif
 
-    GPIO_InitStructure.GPIO_Pin = KEYS_GPIOB_PINS;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
+#if defined(KEYS_GPIOB_PINS)
+  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOB_PINS;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+#endif
 
-    GPIO_InitStructure.GPIO_Pin = KEYS_GPIOC_PINS;
-    GPIO_Init(GPIOC, &GPIO_InitStructure);
+#if defined(KEYS_GPIOC_PINS)
+  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOC_PINS;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+#endif
 
-    GPIO_InitStructure.GPIO_Pin = KEYS_GPIOD_PINS;
-    GPIO_Init(GPIOD, &GPIO_InitStructure);
+#if defined(KEYS_GPIOD_PINS)
+  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOD_PINS;
+  GPIO_Init(GPIOD, &GPIO_InitStructure);
+#endif
 
-    GPIO_InitStructure.GPIO_Pin = KEYS_GPIOE_PINS;
-    GPIO_Init(GPIOE, &GPIO_InitStructure);
+#if defined(KEYS_GPIOE_PINS)
+  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOE_PINS;
+  GPIO_Init(GPIOE, &GPIO_InitStructure);
+#endif
 
 #if defined(KEYS_GPIOF_PINS)
-    GPIO_InitStructure.GPIO_Pin = KEYS_GPIOF_PINS;
-    GPIO_Init(GPIOF, &GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOF_PINS;
+  GPIO_Init(GPIOF, &GPIO_InitStructure);
 #endif
 
 #if defined(KEYS_GPIOG_PINS)
-    GPIO_InitStructure.GPIO_Pin = KEYS_GPIOG_PINS;
-    GPIO_Init(GPIOG, &GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOG_PINS;
+  GPIO_Init(GPIOG, &GPIO_InitStructure);
 #endif
 }
-#endif

@@ -42,7 +42,7 @@ enum ModuleFlag
   MODULE_NORMAL_MODE,
   MODULE_RANGECHECK,
   MODULE_BIND,
-  MODULE_OFF,
+  // MODULE_OFF, // will need an EEPROM conversion
 };
 
 #if defined(CPUARM) // (PXX) || defined(DSM2)

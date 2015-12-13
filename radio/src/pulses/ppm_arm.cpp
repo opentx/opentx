@@ -58,7 +58,15 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
     pwmptr->PWM_CH_NUM[pwmCh].PWM_CMR |= 0x00000200 ;   // CPOL
 #endif
 
-  uint16_t * ptr = (port == TRAINER_MODULE ? trainerPulsesData.ppm.pulses : modulePulsesData[port].ppm.pulses);
+  PpmPulsesData * ppmPulsesData = (port == TRAINER_MODULE ? &trainerPulsesData.ppm : &modulePulsesData[port].ppm);
+  uint16_t * ptr = ppmPulsesData->pulses;
+
+#if defined(PCBSKY9X)
+  ppmPulsesData->index = 0;
+#else
+  ppmPulsesData->ptr = ptr;
+#endif
+
   int32_t rest = 22500u * 2;
   rest += (int32_t(g_model.moduleData[port].ppmFrameLength)) * 1000;
   for (uint32_t i=firstCh; i<lastCh; i++) {
@@ -81,10 +89,11 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
   else if (port == EXTERNAL_MODULE) {
     set_external_ppm_parameters(rest, ppmDelay, !g_model.moduleData[EXTERNAL_MODULE].ppmPulsePol);
   }
+#endif
+
 #if defined(TARANIS_INTERNAL_PPM)
   else if (port == INTERNAL_MODULE) {
     set_internal_ppm_parameters(rest, ppmDelay, !g_model.moduleData[INTERNAL_MODULE].ppmPulsePol);
   }
-#endif   // #if defined(TARANIS_INTERNAL_PPM)
-#endif
+#endif // #if defined(TARANIS_INTERNAL_PPM)
 }

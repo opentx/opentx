@@ -5,7 +5,8 @@
 
 InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
-  expoInserted(false)
+  expoInserted(false),
+  modelPrinter(firmware, generalSettings, model)
 {
   inputsCount = firmware->getCapability(VirtualInputs);
   if (inputsCount == 0)
@@ -135,18 +136,18 @@ QString InputsPanel::getInputText(int dest, bool * new_ch)
   QString str;
   if (new_ch) *new_ch = 0;
   if (dest < 0) {
-    str = getInputStr(model, -dest-1);
+    str = modelPrinter.printInputName(-dest-1);
     if (new_ch) *new_ch = 1;
   }
   else {
-    ExpoData *md = &model->expoData[dest];
+    ExpoData & input = model->expoData[dest];
 
-    if ((dest == 0) || (model->expoData[dest-1].chn != md->chn)) {
+    if ((dest == 0) || (model->expoData[dest-1].chn != input.chn)) {
       if (new_ch) *new_ch = 1;
       if (firmware->getCapability(VirtualInputs))
-        str = QString("%1").arg(getInputStr(model, md->chn), -10, ' ');
+        str += QString("%1").arg(modelPrinter.printInputName(input.chn), -10, ' ');
       else
-        str = getInputStr(model, md->chn);
+        str = modelPrinter.printInputName(input.chn);
     }
     else {
       if (firmware->getCapability(VirtualInputs))
@@ -154,39 +155,10 @@ QString InputsPanel::getInputText(int dest, bool * new_ch)
       else
         str = "   ";
     }
-
-    switch (md->mode) {
-      case (1): str += " <-"; break;
-      case (2): str += " ->"; break;
-      default:  str += "   "; break;
-    }
-
-    str += " " + tr("Weight(%1)").arg(getGVarString(md->weight));
-    if (md->offset) str += " " + tr("Offset(%1)").arg(getGVarString(md->offset));
-
-    if (firmware->getCapability(VirtualInputs)) {
-      str += " " + tr("Source(%1)").arg(md->srcRaw.toString(model));
-      if (md->carryTrim>0) {
-        str += " " + tr("NoTrim");
-      }
-      else if (md->carryTrim<0) {
-        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString(model);
-      }
-    }
-
-    if (md->curve.value) str += " " +  md->curve.toString();
-
-    QString phasesStr = getPhasesStr(md->phases, model);
-    if (!phasesStr.isEmpty()) str += " " + phasesStr;
-
-    if (md->swtch.type != SWITCH_TYPE_NONE) str += " " + tr("Switch(%1)").arg(md->swtch.toString());
-
-    if (firmware->getCapability(HasExpoNames)) {
-      QString expoName = md->name;
-      if (!expoName.isEmpty()) str += QString(" [%1]").arg(expoName);
-    }
+    str.replace(" ", "&nbsp;");
+    str += modelPrinter.printInputLine(input);
   }
-  return Qt::escape(str).replace(" ", "&nbsp;");
+  return str;
 }
 
 bool InputsPanel::gm_insertExpo(int idx)
@@ -216,19 +188,18 @@ void InputsPanel::gm_openExpo(int index)
     if(index<0 || index>=C9X_MAX_EXPOS) return;
 
     ExpoData mixd(model->expoData[index]);
-    char inputName[4+1];
     emit modified();
     update();
-    
-    if (firmware->getCapability(VirtualInputs)) {
-      strcpy(inputName, model->inputNames[mixd.chn]);
-    }
+
+    QString inputName;
+    if (firmware->getCapability(VirtualInputs))
+      inputName = model->inputNames[mixd.chn];
 
     ExpoDialog *g = new ExpoDialog(this, *model, &mixd, generalSettings, firmware, inputName);
     if (g->exec())  {
       model->expoData[index] = mixd;
       if (firmware->getCapability(VirtualInputs))
-        strcpy(model->inputNames[mixd.chn], inputName);
+        strncpy(model->inputNames[mixd.chn], inputName.toAscii().data(), 4);
       emit modified();
       update();
     }

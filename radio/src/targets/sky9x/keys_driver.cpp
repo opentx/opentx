@@ -63,9 +63,9 @@ uint32_t readKeys()
     result |= 0x02 << KEY_UP;
   if (x & KEYS_GPIO_PIN_DOWN)
     result |= 0x02 << KEY_DOWN;
-  if (KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
+  if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
     result |= 0x02 << KEY_EXIT;
-  if (KEYS_GPIO_REG_MENU & 0x000000040)
+  if (~KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
     result |= 0x02 << KEY_MENU;
 #else
   if (x & KEYS_GPIO_PIN_RIGHT)
@@ -78,7 +78,7 @@ uint32_t readKeys()
     result |= 0x02 << KEY_DOWN;
   if (x & KEYS_GPIO_PIN_EXIT)
     result |= 0x02 << KEY_EXIT;
-  if (KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
+  if (~KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
     result |= 0x02 << KEY_MENU;
 #endif
 
@@ -130,7 +130,7 @@ void readKeysAndTrims()
 #endif
 
   uint8_t enuk = KEY_MENU;
-  uint8_t in = ~readKeys();
+  uint8_t in = readKeys();
   for (i = 1; i < 7; i++) {
     keys[enuk].input(in & (1 << i));
     ++enuk;

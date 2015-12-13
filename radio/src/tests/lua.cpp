@@ -35,17 +35,12 @@
  */
 
 #include <math.h>
-#include <gtest/gtest.h>
 #include "gtests.h"
 
 #if defined(LUA)
 
 #define SWAP_DEFINED
 #include "opentx.h"
-
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
 
 extern const char * zchar2string(const char * zstring, int size);
 #define EXPECT_ZSTREQ(c_string, z_string)   EXPECT_STREQ(c_string, zchar2string(z_string, sizeof(z_string)))
@@ -135,7 +130,7 @@ TEST(Lua, testModelInputs)
 
   // add one line on Input4
   luaExecStr("model.insertInput(3, 0, {name='test1', source=MIXSRC_Thr, weight=56, offset=3, switch=2})");
-  EXPECT_EQ(3, g_model.expoData[0].chn);
+  EXPECT_EQ(3, (int)g_model.expoData[0].chn);
   EXPECT_ZSTREQ("test1", g_model.expoData[0].name);
   EXPECT_EQ(MIXSRC_Thr, g_model.expoData[0].srcRaw);
   EXPECT_EQ(56, g_model.expoData[0].weight);
@@ -144,14 +139,14 @@ TEST(Lua, testModelInputs)
 
   // add another one before existing line on Input4
   luaExecStr("model.insertInput(3, 0, {name='test2', source=MIXSRC_Rud, weight=-56})");
-  EXPECT_EQ(3, g_model.expoData[0].chn);
+  EXPECT_EQ(3, (int)g_model.expoData[0].chn);
   EXPECT_ZSTREQ("test2", g_model.expoData[0].name);
   EXPECT_EQ(MIXSRC_Rud, g_model.expoData[0].srcRaw);
   EXPECT_EQ(-56, g_model.expoData[0].weight);
   EXPECT_EQ(0, g_model.expoData[0].offset);
   EXPECT_EQ(0, g_model.expoData[0].swtch);
 
-  EXPECT_EQ(3, g_model.expoData[1].chn);
+  EXPECT_EQ(3, (int)g_model.expoData[1].chn);
   EXPECT_ZSTREQ("test1", g_model.expoData[1].name);
   EXPECT_EQ(MIXSRC_Thr, g_model.expoData[1].srcRaw);
   EXPECT_EQ(56, g_model.expoData[1].weight);
@@ -160,21 +155,21 @@ TEST(Lua, testModelInputs)
 
   // add another line after existing lines on Input4
   luaExecStr("model.insertInput(3, model.getInputsCount(3), {name='test3', source=MIXSRC_Ail, weight=100})");
-  EXPECT_EQ(3, g_model.expoData[0].chn);
+  EXPECT_EQ(3, (int)g_model.expoData[0].chn);
   EXPECT_ZSTREQ("test2", g_model.expoData[0].name);
   EXPECT_EQ(MIXSRC_Rud, g_model.expoData[0].srcRaw);
   EXPECT_EQ(-56, g_model.expoData[0].weight);
   EXPECT_EQ(0, g_model.expoData[0].offset);
   EXPECT_EQ(0, g_model.expoData[0].swtch);
 
-  EXPECT_EQ(3, g_model.expoData[1].chn);
+  EXPECT_EQ(3, (int)g_model.expoData[1].chn);
   EXPECT_ZSTREQ("test1", g_model.expoData[1].name);
   EXPECT_EQ(MIXSRC_Thr, g_model.expoData[1].srcRaw);
   EXPECT_EQ(56, g_model.expoData[1].weight);
   EXPECT_EQ(3, g_model.expoData[1].offset);
   EXPECT_EQ(2, g_model.expoData[1].swtch);
 
-  EXPECT_EQ(3, g_model.expoData[2].chn);
+  EXPECT_EQ(3, (int)g_model.expoData[2].chn);
   EXPECT_ZSTREQ("test3", g_model.expoData[2].name);
   EXPECT_EQ(MIXSRC_Ail, g_model.expoData[2].srcRaw);
   EXPECT_EQ(100, g_model.expoData[2].weight);

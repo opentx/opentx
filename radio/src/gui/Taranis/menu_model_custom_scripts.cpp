@@ -42,7 +42,6 @@ void onModelCustomScriptMenu(const char *result)
   if (result == STR_UPDATE_LIST) {
     if (!listSdFiles(SCRIPTS_MIXES_PATH, SCRIPTS_EXT, sizeof(sd.file), NULL)) {
       POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
-      s_menu_flags = 0;
     }
   }
   else {
@@ -73,11 +72,11 @@ void menuModelCustomScriptOne(uint8_t event)
 
   SUBMENU_NOTITLE(3+scriptInputsOutputs[s_currIdx].inputsCount, { 0, 0, LABEL(inputs), 0/*repeated*/ });
 
-  int8_t sub = m_posVert;
+  int8_t sub = menuVerticalPosition;
 
   for (int k=0; k<LCD_LINES-1; k++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
-    int i = k + s_pgOfs;
+    int i = k + menuVerticalOffset;
     LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
     if (i == ITEM_MODEL_CUSTOMSCRIPT_FILE) {
@@ -89,11 +88,10 @@ void menuModelCustomScriptOne(uint8_t event)
       if (attr && event==EVT_KEY_BREAK(KEY_ENTER) && !READ_ONLY()) {
         s_editMode = 0;
         if (listSdFiles(SCRIPTS_MIXES_PATH, SCRIPTS_EXT, sizeof(sd.file), sd.file, LIST_NONE_SD_FILE)) {
-          menuHandler = onModelCustomScriptMenu;
+          popupMenuHandler = onModelCustomScriptMenu;
         }
         else {
           POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
-          s_menu_flags = 0;
         }
       }
     }
@@ -114,9 +112,9 @@ void menuModelCustomScriptOne(uint8_t event)
         }
       }
       else {
-        putsMixerSource(SCRIPT_ONE_2ND_COLUMN_POS, y, g_model.scriptsData[s_currIdx].inputs[inputIdx]+scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, attr);
+        uint8_t *source = (uint8_t *)&g_model.scriptsData[s_currIdx].inputs[inputIdx];
+        putsMixerSource(SCRIPT_ONE_2ND_COLUMN_POS, y, *source + scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, attr);
         if (attr) {
-          uint8_t *source = (uint8_t *)&g_model.scriptsData[s_currIdx].inputs[inputIdx];
           CHECK_INCDEC_MODELSOURCE(event, *source, scriptInputsOutputs[s_currIdx].inputs[inputIdx].min-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, scriptInputsOutputs[s_currIdx].inputs[inputIdx].max-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def);
         }
       }
@@ -142,7 +140,7 @@ void menuModelCustomScripts(uint8_t event)
   MENU(STR_MENUCUSTOMSCRIPTS, menuTabModel, e_CustomScripts, MAX_SCRIPTS, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });
 
   coord_t y;
-  int8_t  sub = m_posVert;
+  int8_t  sub = menuVerticalPosition;
 
   if (event == EVT_KEY_FIRST(KEY_ENTER)) {
     s_currIdx = sub;

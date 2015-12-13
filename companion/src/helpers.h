@@ -2,6 +2,9 @@
 #define HELPERS_H
 
 #include <QtGui>
+#include <QTableWidget>
+#include <QGridLayout>
+#include <QDebug>
 #include "eeprominterface.h"
 
 extern const QColor colors[C9X_MAX_CURVES];
@@ -26,6 +29,8 @@ extern const QColor colors[C9X_MAX_CURVES];
 #define TRIM_MODE_NONE  0x1F  // 0b11111
 
 void populateGvSourceCB(QComboBox *b, int value);
+void populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current);
+void getFileComboBoxValue(QComboBox * b, char * dest, int length);
 void populateRotEncCB(QComboBox *b, int value, int renumber);
 
 QString getTheme();
@@ -98,8 +103,6 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
 
 void populatePhasesCB(QComboBox *b, int value);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
-QString getProtocolStr(const int proto);
-QString getPhasesStr(unsigned int phases, ModelData * model);
 
 #define POPULATE_NONE           (1<<0)
 #define POPULATE_SOURCES        (1<<1)
@@ -117,16 +120,8 @@ QString getPhasesStr(unsigned int phases, ModelData * model);
 // void populateGVarCB(QComboBox *b, int value, int min, int max,int pgvars=5); //TODO: Clean Up
 void populateGVCB(QComboBox *b, int value);
 void populateSourceCB(QComboBox *b, const RawSource &source, const GeneralSettings generalSettings, const ModelData * model, unsigned int flags);
-QString getPhaseName(int val, const char * phasename=NULL);
-QString getInputStr(ModelData * model, int index);
 QString image2qstring(QImage image);
 int findmult(float value, float base);
-
-QString getTrimInc(ModelData * g_model);
-QString getTimerStr(TimerData & timer);
-QString getProtocol(ModuleData & module);
-QString getTrainerMode(const int trainermode, ModuleData & module);
-QString getCenterBeepStr(ModelData * g_model);
 
 /* FrSky helpers */
 QString getFrSkyAlarmType(int alarm);
@@ -160,7 +155,7 @@ QVector<T> findWidgets(QObject * object, const QString & name)
 // Format a pixmap to fit on the radio using a specific firmware
 QPixmap makePixMap( QImage image, QString firmwareType );
 
-int version2index(QString version);
+int version2index(const QString & version);
 QString index2version(int index);
 
 class QTimeS : public QTime
@@ -180,5 +175,89 @@ QString getSoundsPath(const GeneralSettings &generalSettings);
 QSet<QString> getFilesSet(const QString &path, const QStringList &filter, int maxLen);
 
 bool caseInsensitiveLessThan(const QString &s1, const QString &s2);
+
+
+class GpsGlitchFilter
+{
+public:
+  GpsGlitchFilter() : lastValid(false), glitchCount(0) {};
+  bool isGlitch(double latitude, double longitude);
+
+private:
+  bool lastValid;
+  int glitchCount;
+  double lastLat;
+  double lastLon;
+};
+
+class GpsLatLonFilter
+{
+public:
+  GpsLatLonFilter() {};
+  bool isValid(const QString & latitude, const QString & longitude);
+  
+private:
+  QString lastLat;
+  QString lastLon;
+};
+
+double toDecimalCoordinate(const QString & value);
+QStringList extractLatLon(const QString & position);
+
+class TableLayout
+{
+public:
+  TableLayout(QWidget * parent, int rowCount, const QStringList & headerLabels);
+  // ~TableLayout() ;
+
+  void addWidget(int row, int column, QWidget * widget);
+  void addLayout(int row, int column, QLayout * layout);
+
+  void resizeColumnsToContents();
+  void setColumnWidth(int col, int width);
+  void pushRowsUp(int row); 
+
+private:
+#if defined(TABLE_LAYOUT)
+  QTableWidget * tableWidget; 
+#else
+  QGridLayout * gridWidget; 
+#endif
+};
+
+
+class Stopwatch
+{
+public:
+  Stopwatch(const QString & name) :
+    name(name), total(0) {
+    timer.start();
+  };
+  ~Stopwatch() {};
+
+  void restart() {
+    total = 0;
+    timer.restart();
+  };
+
+  void report() {
+    qint64 elapsed = timer.restart();
+    total += elapsed;
+    qDebug() << name << QString("%1 ms [%2 ms]").arg(elapsed).arg(total);
+  };
+
+  void report(const QString & text) {
+    qint64 elapsed = timer.restart();
+    total += elapsed;
+    qDebug() << name << text << QString("%1 ms [%2 ms]").arg(elapsed).arg(total);
+  };
+
+private:
+  QString name;
+  QElapsedTimer timer;
+  qint64 total;
+};
+
+extern Stopwatch gStopwatch;
 
 #endif // HELPERS_H

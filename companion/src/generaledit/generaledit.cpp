@@ -21,7 +21,6 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * fir
   this->setWindowIcon(CompanionIcon("open.png"));
 
   QString firmware_id = g.profile[g.id()].fwType();
-  ui->tabWidget->setCurrentIndex( g.generalEditTab() );
   QString name=g.profile[g.id()].name();
   if (name.isEmpty()) {
     ui->calstore_PB->setDisabled(true);
@@ -44,11 +43,18 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * fir
   }
   addTab(new TrainerPanel(this, generalSettings, firmware), tr("Trainer"));
   addTab(new CalibrationPanel(this, generalSettings, firmware), tr("Hardware / Calibration"));
+
+  ui->tabWidget->setCurrentIndex( g.generalEditTab() );
 }
 
 GeneralEdit::~GeneralEdit()
 {
   delete ui;
+}
+
+void GeneralEdit::closeEvent(QCloseEvent *event)
+{
+  g.generalEditTab(ui->tabWidget->currentIndex());
 }
 
 void GeneralEdit::addTab(GenericPanel *panel, QString text)
@@ -70,7 +76,6 @@ void GeneralEdit::onTabModified()
 void GeneralEdit::on_tabWidget_currentChanged(int index)
 {
   panels[index]->update();
-  g.generalEditTab(index);
 }
 
 void GeneralEdit::on_calretrieve_PB_clicked()
@@ -83,8 +88,8 @@ void GeneralEdit::on_calretrieve_PB_clicked()
   }
   else {
     QString trainercalib = g.profile[profile_id].trainerCalib();
-    int8_t vBatCalib = (int8_t)g.profile[profile_id].vBatCalib();
-    int8_t currentCalib = (int8_t)g.profile[profile_id].currentCalib();
+    int8_t txVoltageCalibration = (int8_t)g.profile[profile_id].txVoltageCalibration();
+    int8_t txCurrentCalibration = (int8_t)g.profile[profile_id].txCurrentCalibration();
     int8_t PPM_Multiplier = (int8_t)g.profile[profile_id].ppmMultiplier();
     uint8_t GSStickMode = (uint8_t)g.profile[profile_id].gsStickMode();
     uint8_t vBatWarn = (uint8_t)g.profile[profile_id].vBatWarn();
@@ -118,8 +123,8 @@ void GeneralEdit::on_calretrieve_PB_clicked()
         if (ok)
           generalSettings.trainer.calib[i]=byte16;
       }
-      generalSettings.currentCalib=currentCalib;
-      generalSettings.vBatCalib=vBatCalib;
+      generalSettings.txCurrentCalibration=txCurrentCalibration;
+      generalSettings.txVoltageCalibration=txVoltageCalibration;
       generalSettings.vBatWarn=vBatWarn;
       if (GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
         generalSettings.vBatMin = (int8_t) g.profile[profile_id].vBatMin();
@@ -220,8 +225,8 @@ void GeneralEdit::on_calstore_PB_clicked()
       calib.append(QString("%1").arg((uint16_t)generalSettings.trainer.calib[i], 4, 16, QChar('0')));
     }
     g.profile[profile_id].trainerCalib( calib );
-    g.profile[profile_id].vBatCalib( generalSettings.vBatCalib );
-    g.profile[profile_id].currentCalib( generalSettings.currentCalib );
+    g.profile[profile_id].txVoltageCalibration( generalSettings.txVoltageCalibration );
+    g.profile[profile_id].txCurrentCalibration( generalSettings.txCurrentCalibration );
     g.profile[profile_id].vBatWarn( generalSettings.vBatWarn );
     if (GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
       g.profile[profile_id].vBatMin( generalSettings.vBatMin );

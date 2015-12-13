@@ -1,13 +1,43 @@
 PROJECT( companion )
 
-SET( C9X_VERSION_MAJOR "2" )
-SET( C9X_VERSION_MINOR "0" )
-SET( C9X_VERSION_REVISION "99" )
-SET( C9X_VERSION ${C9X_VERSION_MAJOR}.${C9X_VERSION_MINOR}.${C9X_VERSION_REVISION} )
+SET(C9X_VERSION_MAJOR "2")
+SET(C9X_VERSION_MINOR "1")
+SET(C9X_VERSION_REVISION "6")
+SET(C9X_VERSION_SUFFIX $ENV{OPENTX_VERSION_SUFFIX})
 
-CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
+SET(C9X_VERSION ${C9X_VERSION_MAJOR}.${C9X_VERSION_MINOR}.${C9X_VERSION_REVISION}${C9X_VERSION_SUFFIX})
+MESSAGE(STATUS "OpenTX Companion ${C9X_VERSION}")
+
+CMAKE_MINIMUM_REQUIRED( VERSION 2.8.12 )
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  SET(C9X_NAME_SUFFIX ${C9X_VERSION_MAJOR}${C9X_VERSION_MINOR})
+  SET(COMPANION_NAME "companion${C9X_NAME_SUFFIX}")
+  SET(SIMULATOR_NAME "simulator${C9X_NAME_SUFFIX}")
+  SET( SIMULATOR_LIB_PATH ${CMAKE_INSTALL_PREFIX}/lib/companion${C9X_NAME_SUFFIX} )
+ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  SET(COMPANION_NAME "companion")
+  SET(SIMULATOR_NAME "simulator")
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+OPTION(ALLOW_NIGHTLY_BUILDS "Allow nightly builds download / update") # Disabled by default 
+IF(ALLOW_NIGHTLY_BUILDS)
+	ADD_DEFINITIONS(-DALLOW_NIGHTLY_BUILDS)
+ENDIF(ALLOW_NIGHTLY_BUILDS)
+
+OPTION(DEBUG_IMPORT "Turn on debug output for EEPROM import") # Disabled by default
+IF(DEBUG_IMPORT)
+    ADD_DEFINITIONS( -DDEBUG_MODEL_IMPORT)
+    MESSAGE( STATUS "EEPROM import debugging enabled" )
+ENDIF(DEBUG_IMPORT)
+
+OPTION(TABLE_LAYOUT "Use QTableWidget for grid layouts") # Disabled by default
+IF(TABLE_LAYOUT)
+    ADD_DEFINITIONS( -DTABLE_LAYOUT)
+    MESSAGE( STATUS "Using QTableWidget" )
+ENDIF(TABLE_LAYOUT)
 
 MESSAGE( STATUS "Looking for XercesC " )
 FIND_PACKAGE(XercesC)
@@ -38,7 +68,7 @@ ELSE()
     MESSAGE( "SDL not found! Joysticks support will be disabled. Simulator audio will not work." )
 ENDIF()
 
-FIND_PACKAGE(Qt4 4.8.4 REQUIRED)
+FIND_PACKAGE(Qt4 4.8.1 REQUIRED)
 SET( QT_USE_QTNETWORK True )
 SET( QT_USE_QTXML True )
 INCLUDE( ${QT_USE_FILE} )
@@ -69,6 +99,7 @@ ADD_CUSTOM_COMMAND(
 
 IF( MSVC )
   SET(CMAKE_CXX_FLAGS "/EHsc /LD")
+  set(INTTYPES_INCLUDE_OPTION -IC:/Programs/msinttypes)
   INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/winbuild C:/Programs/pthreads/Pre-built.2/include C:/Programs/msinttypes)
   LINK_DIRECTORIES( C:/Programs/pthreads/Pre-built.2/lib/ )
   SET( PTHREAD_LIBRARY pthreadVC2.lib )
@@ -76,6 +107,11 @@ ELSE( )
   SET( PTHREAD_LIBRARY pthread )
   ADD_DEFINITIONS( -Wall )
   LINK_DIRECTORIES( /usr/local/lib )
+ENDIF( )
+
+IF( MSVC )
+  MESSAGE( STATUS "Adding include C:/Programs/dirent/include for dirent.h" )
+  INCLUDE_DIRECTORIES( C:/programs/dirent/include )
 ENDIF( )
 
 set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/../../radio/src)
@@ -134,8 +170,11 @@ set(companion_SRCS
   apppreferencesdialog.cpp
   fwpreferencesdialog.cpp
   burnconfigdialog.cpp
+  multimodelprinter.cpp
   comparedialog.cpp
   contributorsdialog.cpp
+  releasenotesdialog.cpp
+  releasenotesfirmwaredialog.cpp
   customizesplashdialog.cpp
   radiointerface.cpp
   progresswidget.cpp
@@ -146,10 +185,11 @@ set(companion_SRCS
   flashfirmwaredialog.cpp
   flasheepromdialog.cpp
   printdialog.cpp
+  modelprinter.cpp
   fusesdialog.cpp
   logsdialog.cpp
   downloaddialog.cpp
-  splashlibrary.cpp
+  splashlibrarydialog.cpp
   mainwindow.cpp
   companion.cpp
   radionotfound.cpp
@@ -166,8 +206,10 @@ set(companion_MOC_HDRS
   fusesdialog.h
   logsdialog.h
   contributorsdialog.h
+  releasenotesdialog.h
+  releasenotesfirmwaredialog.h
   customizesplashdialog.h
-  splashlibrary.h
+  splashlibrarydialog.h
   splashlabel.h
   progresswidget.h
   progressdialog.h
@@ -183,6 +225,8 @@ set(companion_MOC_HDRS
   radionotfound.h
   helpers.h
   wizarddialog.h
+  modelprinter.h
+  multimodelprinter.h
 )
 
 set(companion_UIS
@@ -195,9 +239,9 @@ set(companion_UIS
   burnconfigdialog.ui
   downloaddialog.ui
   printdialog.ui
-  contributorsdialog.ui
+  htmldialog.ui
   customizesplashdialog.ui
-  splashlibrary.ui
+  splashlibrarydialog.ui
   progresswidget.ui
   progressdialog.ui
   flashfirmwaredialog.ui
@@ -241,7 +285,8 @@ NOW(TIME)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h @ONLY)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/translations.qrc.in ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc @ONLY)
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/firmwares/opentx/stamp-opentx.h.in ${CMAKE_CURRENT_BINARY_DIR}/stamp-opentx.h @ONLY)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/companion.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/companion.desktop @ONLY)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/simulator.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/simulator.desktop @ONLY)
 
 IF( WIN32 )
   SET( companion_SRCS ${companion_SRCS} icon.rc )
@@ -253,7 +298,7 @@ ENDIF( )
 INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
 INCLUDE_DIRECTORIES( ${CMAKE_SOURCE_DIR} )
 
-SET( LANGUAGES he pl pt ru de fr it sv cs fi nl)
+SET( LANGUAGES he pl pt ru de fr es it sv cs fi nl)
 FOREACH( language ${LANGUAGES} )
   SET( companion_TS ${companion_TS} translations/companion_${language}.ts )
 ENDFOREACH( language )
@@ -267,14 +312,14 @@ QT4_ADD_RESOURCES( companion_SRCS ${companion_RCS} )
 ADD_DEFINITIONS( -DQT_TRANSLATIONS_DIR="${QT_TRANSLATIONS_DIR}" )
 
 IF( APPLE )
-    ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE ${companion_SRCS} ${companion_QM} )
+    ADD_EXECUTABLE( ${COMPANION_NAME} MACOSX_BUNDLE ${companion_SRCS} ${companion_QM} )
     # OS X compiler no longer automatically includes /Library/Frameworks in search path
     SET( CMAKE_EXE_LINKER_FLAGS -F/Library/Frameworks )
 ELSE( )
-    ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${companion_SRCS} ${companion_QM} )
+    ADD_EXECUTABLE( ${COMPANION_NAME} WIN32 ${companion_SRCS} ${companion_QM} )
 ENDIF( )
 
-target_link_libraries(companion generaledit modeledit simulation common qcustomplot shared ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+target_link_libraries(${COMPANION_NAME} generaledit modeledit simulation common qcustomplot shared ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
 
 ############# Standalone simu ###############
 
@@ -297,33 +342,34 @@ if(WIN32)
 endif()
 
 if(APPLE)
-  add_executable(simulator MACOSX_BUNDLE ${simu_SRCS})
+  add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${simu_SRCS})
 else()
-  add_executable(simulator WIN32 ${simu_SRCS})
+  add_executable(${SIMULATOR_NAME} WIN32 ${simu_SRCS})
 endif()
 
-target_link_libraries(simulator simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} ${OPENTX_SIMULATOR_LIBS})
+target_link_libraries(${SIMULATOR_NAME} simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} ${OPENTX_SIMULATOR_LIBS})
 
 ############# Packaging ####################
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    INSTALL( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
-    INSTALL( TARGETS simulator DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
-    INSTALL( FILES companion.desktop DESTINATION share/applications )
-    INSTALL( FILES images/linuxicons/16x16/companion.png    DESTINATION /usr/share/icons/hicolor/16x16/apps )
-    INSTALL( FILES images/linuxicons/22x22/companion.png    DESTINATION /usr/share/icons/hicolor/22x22/apps )
-    INSTALL( FILES images/linuxicons/24x24/companion.png    DESTINATION /usr/share/icons/hicolor/24x24/apps )
-    INSTALL( FILES images/linuxicons/32x32/companion.png    DESTINATION /usr/share/icons/hicolor/32x32/apps )
-    INSTALL( FILES images/linuxicons/48x48/companion.png    DESTINATION /usr/share/icons/hicolor/48x48/apps )
-    INSTALL( FILES images/linuxicons/128x128/companion.png  DESTINATION /usr/share/icons/hicolor/128x128/apps )
-    INSTALL( FILES images/linuxicons/256x256/companion.png  DESTINATION /usr/share/icons/hicolor/256x256/apps )
-    INSTALL( FILES images/linuxicons/512x512/companion.png  DESTINATION /usr/share/icons/hicolor/512x512/apps )
-    INSTALL( FILES images/linuxicons/scalable/companion.svg DESTINATION /usr/share/icons/hicolor/scalable/apps )
-    INSTALL( FILES ../targets/linux/45-companion-taranis.rules DESTINATION /etc/udev/rules.d/ )
+    INSTALL( TARGETS ${COMPANION_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
+    INSTALL( TARGETS ${SIMULATOR_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
+    INSTALL( FILES ${CMAKE_CURRENT_BINARY_DIR}/companion.desktop DESTINATION share/applications RENAME companion${C9X_NAME_SUFFIX}.desktop)
+    INSTALL( FILES ${CMAKE_CURRENT_BINARY_DIR}/simulator.desktop DESTINATION share/applications RENAME simulator${C9X_NAME_SUFFIX}.desktop)
+    INSTALL( FILES images/linuxicons/16x16/companion.png    DESTINATION /usr/share/icons/hicolor/16x16/apps    RENAME companion${C9X_NAME_SUFFIX}.png )
+    INSTALL( FILES images/linuxicons/22x22/companion.png    DESTINATION /usr/share/icons/hicolor/22x22/apps    RENAME companion${C9X_NAME_SUFFIX}.png )
+    INSTALL( FILES images/linuxicons/24x24/companion.png    DESTINATION /usr/share/icons/hicolor/24x24/apps    RENAME companion${C9X_NAME_SUFFIX}.png )
+    INSTALL( FILES images/linuxicons/32x32/companion.png    DESTINATION /usr/share/icons/hicolor/32x32/apps    RENAME companion${C9X_NAME_SUFFIX}.png )
+    INSTALL( FILES images/linuxicons/48x48/companion.png    DESTINATION /usr/share/icons/hicolor/48x48/apps    RENAME companion${C9X_NAME_SUFFIX}.png )
+    INSTALL( FILES images/linuxicons/128x128/companion.png  DESTINATION /usr/share/icons/hicolor/128x128/apps  RENAME companion${C9X_NAME_SUFFIX}.png )
+    INSTALL( FILES images/linuxicons/256x256/companion.png  DESTINATION /usr/share/icons/hicolor/256x256/apps  RENAME companion${C9X_NAME_SUFFIX}.png )
+    INSTALL( FILES images/linuxicons/512x512/companion.png  DESTINATION /usr/share/icons/hicolor/512x512/apps  RENAME companion${C9X_NAME_SUFFIX}.png )
+    INSTALL( FILES images/linuxicons/scalable/companion.svg DESTINATION /usr/share/icons/hicolor/scalable/apps RENAME companion${C9X_NAME_SUFFIX}.svg )
+    INSTALL( FILES ../targets/linux/45-companion-taranis.rules DESTINATION /lib/udev/rules.d RENAME 45-companion${C9X_NAME_SUFFIX}-taranis.rules)
     # Linux specific code
     SET(OperatingSystem "Linux")
 ELSE (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    INSTALL( TARGETS ${PROJECT_NAME} DESTINATION ${QT_BINARY_DIR} )
+    INSTALL( TARGETS ${COMPANION_NAME} DESTINATION ${QT_BINARY_DIR} )
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 IF( WIN32 )
@@ -345,51 +391,51 @@ IF( WIN32 )
     "C:/Programs/NSIS"
   )
 
-  ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/companionInstall.exe
+  ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/companion-windows.exe
                      COMMAND "${NSIS_EXE}" ARGS companion.nsi
                      DEPENDS companion simulator opentx-simulators ${PROJECT_BINARY_DIR}/companion.nsi
                      COMMENT "Companion Windows NSIS Installer")
 
-  ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/simulatorInstall.exe
+  ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/simulator-install.exe
                      COMMAND "${NSIS_EXE}" ARGS simulator.nsi
                      DEPENDS simulator opentx-simulators ${PROJECT_BINARY_DIR}/simulator.nsi
                      COMMENT "Simulator Windows NSIS Installer")
 
   ADD_CUSTOM_TARGET( installer
-    DEPENDS ${PROJECT_BINARY_DIR}/companionInstall.exe
-    DEPENDS ${PROJECT_BINARY_DIR}/simulatorInstall.exe
+    DEPENDS ${PROJECT_BINARY_DIR}/companion-windows.exe
+    DEPENDS ${PROJECT_BINARY_DIR}/simulator-windows.exe
     SOURCES ${PROJECT_BINARY_DIR}/companion.nsi
     SOURCES ${PROJECT_BINARY_DIR}/simulator.nsi
   )
 ENDIF( )
 
 IF( APPLE )
-    SET(MACOSX_BUNDLE_ICON_FILE iconmac.icns)
+  SET(MACOSX_BUNDLE_ICON_FILE iconmac.icns)
   IF( CMAKE_GENERATOR STREQUAL Xcode )
     SET( WORK_DIR ${CMAKE_BINARY_DIR}/Debug )
   ELSE( )
     SET( WORK_DIR ${PROJECT_BINARY_DIR} )
   ENDIF()
 
-  ADD_CUSTOM_TARGET( addframeworks ALL
+  ADD_CUSTOM_TARGET( addframeworks
                      COMMAND mkdir -p companion.app/Contents/Frameworks
                      COMMAND mkdir -p companion.app/Contents/Resources
                      COMMAND mkdir -p companion.app/Contents/translations
                      COMMAND rsync ${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE} companion.app/Contents/Resources/${MACOSX_BUNDLE_ICON_FILE} # Copy the icon files
-                     #COMMAND rsync ${PROJECT_SOURCE_DIR}/../targets/mac/lib* companion.app/Contents/Frameworks
-                     #COMMAND rsync ${PROJECT_SOURCE_DIR}/../targets/mac/libcrypto.1.0.0.dylib companion.app/Contents/Frameworks
                      COMMAND rsync -r --exclude=.svn  ${PROJECT_SOURCE_DIR}/../targets/mac/qt_menu.nib companion.app/Contents/Resources/
                      COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion.app/Contents/translations
+                     COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion.app/Contents/translations
+                     COMMAND rsync -r ${XSD_INCLUDE_DIR}/.. companion.app/Contents/Frameworks/
+                     COMMAND rsync -r /Library/Frameworks/SDL.framework companion.app/Contents/Frameworks/
                      COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app
+                     COMMAND install_name_tool -change @rpath/SDL.framework/Versions/A/SDL @executable_path/../Frameworks/SDL.framework/Versions/A/SDL companion.app/Contents/MacOS/companion
                      WORKING_DIRECTORY ${WORK_DIR}
-                     DEPENDS ${PROJECT_NAME} )
-
+                     DEPENDS ${COMPANION_NAME} )
 
   ADD_CUSTOM_TARGET( makedmg
                      COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app -dmg -no-plugins
                      WORKING_DIRECTORY ${WORK_DIR}
-                     DEPENDS addframeworks )
-
+                     DEPENDS addframeworks opentx-simulators-bundle)
 ENDIF( )
 
 ADD_CUSTOM_TARGET( stamp
@@ -399,7 +445,7 @@ ADD_CUSTOM_TARGET( stamp
 IF( LUPDATE_FOUND )
   ADD_CUSTOM_TARGET( translations
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMAND ${LUPDATE_EXECUTABLE} ${CMAKE_SOURCE_DIR} -ts ${companion_TS}
+    COMMAND ${LUPDATE_EXECUTABLE} ${CMAKE_SOURCE_DIR} -no-obsolete -ts ${companion_TS}
   )
 ELSE()
   ADD_CUSTOM_TARGET( translations
@@ -407,9 +453,14 @@ ELSE()
   )
 ENDIF()
 
-SET(CPACK_PACKAGE_NAME "COMPANION")
+SET(CPACK_PACKAGE_NAME "companion${C9X_NAME_SUFFIX}")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Models and settings editor for the OpenTx open source firmware")
 string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE)
+
+# The file stripping is deliberately disabled, with the stripped file we get 
+# very poor trace-backs from the users when they report Companion crash
+SET( CPACK_STRIP_FILES FALSE )
+
 find_program(DPKG_PROGRAM dpkg DOC "dpkg program of Debian-based systems")
 if(DPKG_PROGRAM)
   SET(CPACK_GENERATOR "DEB")

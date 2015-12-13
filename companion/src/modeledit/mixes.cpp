@@ -6,7 +6,8 @@
 MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   mixInserted(false), 
-  highlightedSource(0)
+  highlightedSource(0),
+  modelPrinter(firmware, generalSettings, model)
 {
   QGridLayout * mixesLayout = new QGridLayout(this);
 
@@ -43,40 +44,21 @@ MixesPanel::~MixesPanel()
 {
 }
 
-QString MixesPanel::getChannelLabel(int curDest)
-{
-  QString str;
-  str = QObject::tr("CH%1").arg(curDest);
-  // TODO not nice, Qt brings a function for that, I don't remember right now
-  (str.length() < 4) ? str.append("  ") : str.append(" ");
-  if (firmware->getCapability(HasChNames)) {
-    QString name = model->limitData[curDest-1].name;
-    if (!name.isEmpty()) {
-      name = QString("(") + name + QString(")");
-    }
-    name.append("        ");
-    str += name.left(8);
-  }
-  return Qt::escape(str);
-}
-
 void MixesPanel::update()
 {
   // curDest -> destination channel
   // i -> mixer number
-  QByteArray qba;
   MixerlistWidget->clear();
   firstLine = true;
   unsigned int curDest = 0;
-  int i;
   unsigned int outputs = firmware->getCapability(Outputs);
 
-  for (i=0; i<firmware->getCapability(Mixes); i++) {
-    MixData *md = &model->mixData[i];
-    // qDebug() << "md->destCh: " << md->destCh;
-    if (md->destCh==0 || md->destCh>outputs) continue;
+  for (int i=0; i<firmware->getCapability(Mixes); i++) {
+    MixData & mix = model->mixData[i];
+    // qDebug() << "mix.destCh: " << mix.destCh;
+    if (mix.destCh == 0 || mix.destCh>outputs) continue;
     QString str = "";
-    while (curDest < md->destCh-1) {
+    while (curDest < mix.destCh-1) {
       curDest++;
       AddMixerLine(-curDest);
     }
@@ -139,24 +121,24 @@ bool MixesPanel::AddMixerLine(int dest)
 QString MixesPanel::getMixerText(int dest, bool * new_ch)
 {
   QString str;
-  if (new_ch) *new_ch = 0;
+  bool newChannel = false;
   if (dest < 0) {
-    str = getChannelLabel(-dest);
-    //highlight channell if needed
+    str = modelPrinter.printMixerName(-dest);
+    //highlight channel if needed
     if (-dest == (int)highlightedSource) {
       str = "<b>" + str + "</b>";
     }
-    if (new_ch) *new_ch = 1;
+    newChannel = true;
   }
   else {
-    MixData *md = &model->mixData[dest];
-    //md->destCh from 1 to 32
-    str = getChannelLabel(md->destCh);
+    MixData & mix = model->mixData[dest];
+    //mix->destCh from 1 to 32
+    str = modelPrinter.printMixerName(mix.destCh);
 
-    if ((dest == 0) || (model->mixData[dest-1].destCh != md->destCh)) {
-      if (new_ch) *new_ch = 1;
-      //highlight channell if needed
-      if (md->destCh == highlightedSource) {
+    if ((dest == 0) || (model->mixData[dest-1].destCh != mix.destCh)) {
+      newChannel = true;
+      //highlight channel if needed
+      if (mix.destCh == highlightedSource) {
         str = "<b>" + str + "</b>";
       }
     }
@@ -164,199 +146,155 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
       str.fill(' ');
     }
 
-    switch (md->mltpx) {
-      case (1): str += " *"; break;
-      case (2): str += " R"; break;
-      default:  str += "  "; break;
-    };
-
-    // highlight source if needed
-    if ( (md->srcRaw.type == SOURCE_TYPE_CH) && (md->srcRaw.index+1 == (int)highlightedSource) ) {
-      str += " <b>" + Qt::escape(md->srcRaw.toString(model)) + "</b>";
-    }
-    else {
-      str += " " + Qt::escape(md->srcRaw.toString(model));
-    }
-
-    str += " " + Qt::escape(tr("Weight(%1)").arg(getGVarString(md->weight, true)));
-
-    QString phasesStr = getPhasesStr(md->phases, model);
-    if (!phasesStr.isEmpty()) str += " " + Qt::escape(phasesStr);
-
-    if (md->swtch.type != SWITCH_TYPE_NONE) {
-      str += " " + Qt::escape(tr("Switch(%1)").arg(md->swtch.toString()));
-    }
-
-    if (md->carryTrim > 0)
-      str += " " + Qt::escape(tr("NoTrim"));
-    else if (md->carryTrim<0)
-      str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString(model);
-
-    if (firmware->getCapability(HasNoExpo) && md->noExpo) str += " " + Qt::escape(tr("No DR/Expo"));
-    if (md->sOffset)     str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(md->sOffset)));
-    if (md->curve.value) str += " " + Qt::escape(md->curve.toString());
-
-    int scale = firmware->getCapability(SlowScale);
-    if (scale == 0)
-      scale = 1;
-    if (md->delayDown || md->delayUp)
-      str += Qt::escape(tr(" Delay(u%1:d%2)").arg((double)md->delayUp/scale).arg((double)md->delayDown/scale));
-    if (md->speedDown || md->speedUp)
-      str += Qt::escape(tr(" Slow(u%1:d%2)").arg((double)md->speedUp/scale).arg((double)md->speedDown/scale));
-    if (md->mixWarn)  str += Qt::escape(tr(" Warn(%1)").arg(md->mixWarn));
-    if (firmware->getCapability(HasMixerNames)) {
-      QString MixerName;
-      MixerName.append(md->name);
-      if (!MixerName.isEmpty()) {
-        str += " " + Qt::escape(QString("(%1)").arg(MixerName));
-      }
-    }
+    str += modelPrinter.printMixerLine(mix, !newChannel, highlightedSource);
   }
+  if (new_ch) *new_ch = newChannel;
   return str.replace(" ", "&nbsp;");
 }
 
 bool MixesPanel::gm_insertMix(int idx)
 {
-    if (idx<0 || idx>=firmware->getCapability(Mixes) || model->mixData[firmware->getCapability(Mixes)-1].destCh > 0) {
-      QMessageBox::information(this, "companion", tr("Not enough available mixers!"));
-      return false;
-    }
+  if (idx < 0 || idx >= firmware->getCapability(Mixes) || model->mixData[firmware->getCapability(Mixes)-1].destCh > 0) {
+    QMessageBox::information(this, "companion", tr("Not enough available mixers!"));
+    return false;
+  }
 
-    int i = model->mixData[idx].destCh;
-    memmove(&model->mixData[idx+1],&model->mixData[idx],
-        (firmware->getCapability(Mixes)-(idx+1))*sizeof(MixData) );
-    memset(&model->mixData[idx],0,sizeof(MixData));
-    model->mixData[idx].srcRaw = RawSource(SOURCE_TYPE_NONE);
-    model->mixData[idx].destCh = i;
-    model->mixData[idx].weight = 100;
-    return true;
+  int i = model->mixData[idx].destCh;
+  memmove(&model->mixData[idx+1], &model->mixData[idx],
+          (firmware->getCapability(Mixes)-(idx+1)) * sizeof(MixData) );
+  memset(&model->mixData[idx], 0, sizeof(MixData));
+  model->mixData[idx].srcRaw = RawSource(SOURCE_TYPE_NONE);
+  model->mixData[idx].destCh = i;
+  model->mixData[idx].weight = 100;
+  return true;
 }
 
 void MixesPanel::gm_deleteMix(int index)
 {
-    memmove(&model->mixData[index],&model->mixData[index+1],
-            (firmware->getCapability(Mixes)-(index+1))*sizeof(MixData));
-    memset(&model->mixData[firmware->getCapability(Mixes)-1],0,sizeof(MixData));
+  memmove(&model->mixData[index], &model->mixData[index+1],
+          (firmware->getCapability(Mixes)-(index+1)) * sizeof(MixData));
+  memset(&model->mixData[firmware->getCapability(Mixes)-1], 0, sizeof(MixData));
 }
 
 void MixesPanel::gm_openMix(int index)
 {
-    if(index<0 || index>=firmware->getCapability(Mixes)) return;
+  if(index < 0 || index>=firmware->getCapability(Mixes)) return;
 
-    MixData mixd(model->mixData[index]);
+  MixData mixd(model->mixData[index]);
+  emit modified();
+  update();
+
+  MixerDialog *g = new MixerDialog(this, *model, &mixd, generalSettings, firmware);
+  if(g->exec()) {
+    model->mixData[index] = mixd;
     emit modified();
     update();
-
-    MixerDialog *g = new MixerDialog(this, *model, &mixd, generalSettings, firmware);
-    if(g->exec()) {
-      model->mixData[index] = mixd;
-      emit modified();
-      update();
-    } else {
-      if (mixInserted) {
-        gm_deleteMix(index);
-      }
-      mixInserted=false;
-      emit modified();
-      update();
+  } 
+  else {
+    if (mixInserted) {
+      gm_deleteMix(index);
     }
+    mixInserted = false;
+    emit modified();
+    update();
+  }
 }
 
 int MixesPanel::getMixerIndex(unsigned int dch)
 {
-    int i = 0;
-    while ((model->mixData[i].destCh<=dch) && (model->mixData[i].destCh) && (i<firmware->getCapability(Mixes))) i++;
-    if(i==firmware->getCapability(Mixes)) return -1;
-    return i;
+  int i = 0;
+  while ((model->mixData[i].destCh <= dch) && (model->mixData[i].destCh) && (i < firmware->getCapability(Mixes))) i++;
+  if (i == firmware->getCapability(Mixes)) return -1;
+  return i;
 }
 
 void MixesPanel::mixerlistWidget_doubleClicked(QModelIndex index)
 {
-    int idx= MixerlistWidget->item(index.row())->data(Qt::UserRole).toByteArray().at(0);
-    if (idx<0) {
-        int i = -idx;
-        idx = getMixerIndex(i); //get mixer index to insert
-        if (!gm_insertMix(idx))
-          return;
-        model->mixData[idx].destCh = i;
-        mixInserted=true;
-    } else {
-      mixInserted=false;
-    }
-    gm_openMix(idx);
+  int idx = MixerlistWidget->item(index.row())->data(Qt::UserRole).toByteArray().at(0);
+  if (idx<0) {
+    int i = -idx;
+    idx = getMixerIndex(i); //get mixer index to insert
+    if (!gm_insertMix(idx)) return;
+    model->mixData[idx].destCh = i;
+    mixInserted = true;
+  } 
+  else {
+    mixInserted = false;
+  }
+  gm_openMix(idx);
 }
 
 void MixesPanel::mixersDeleteList(QList<int> list)
 {
-    qSort(list.begin(), list.end());
+  qSort(list.begin(), list.end());
 
-    int iDec = 0;
-    foreach(int idx, list) {
-      gm_deleteMix(idx-iDec);
-      iDec++;
-    }
+  int iDec = 0;
+  foreach(int idx, list) {
+    gm_deleteMix(idx - iDec);
+    iDec++;
+  }
 }
 
 QList<int> MixesPanel::createMixListFromSelected()
 {
-    QList<int> list;
-    foreach(QListWidgetItem *item, MixerlistWidget->selectedItems()) {
-      int idx= item->data(Qt::UserRole).toByteArray().at(0);
-      if(idx>=0 && idx<firmware->getCapability(Mixes)) list << idx;
-    }
-    return list;
+  QList<int> list;
+  foreach(QListWidgetItem *item, MixerlistWidget->selectedItems()) {
+    int idx= item->data(Qt::UserRole).toByteArray().at(0);
+    if(idx >= 0 && idx<firmware->getCapability(Mixes)) list << idx;
+  }
+  return list;
 }
 
 // TODO duplicated code
 void MixesPanel::setSelectedByMixList(QList<int> list)
 {
-    for(int i=0; i<MixerlistWidget->count(); i++) {
-      int t = MixerlistWidget->item(i)->data(Qt::UserRole).toByteArray().at(0);
-      if(list.contains(t))
-          MixerlistWidget->item(i)->setSelected(true);
+  for(int i=0; i<MixerlistWidget->count(); i++) {
+    int t = MixerlistWidget->item(i)->data(Qt::UserRole).toByteArray().at(0);
+    if(list.contains(t)) {
+      MixerlistWidget->item(i)->setSelected(true);
     }
+  }
 }
 
 
 void MixesPanel::mixersDelete(bool ask)
 {
-    QList<int> list = createMixListFromSelected();
-    if(list.isEmpty()) return;
+  QList<int> list = createMixListFromSelected();
+  if(list.isEmpty()) return;
 
-    QMessageBox::StandardButton ret = QMessageBox::No;
+  QMessageBox::StandardButton ret = QMessageBox::No;
 
-    if(ask)
-      ret = QMessageBox::warning(this, "companion",
-               tr("Delete Selected Mixes?"),
-               QMessageBox::Yes | QMessageBox::No);
+  if(ask) {
+    ret = QMessageBox::warning(this, "companion",
+             tr("Delete Selected Mixes?"),
+             QMessageBox::Yes | QMessageBox::No);
+  }
 
-
-    if ((ret == QMessageBox::Yes) || (!ask)) {
-      mixersDeleteList(list);
-      emit modified();
-      update();
-    }
+  if ((ret == QMessageBox::Yes) || (!ask)) {
+    mixersDeleteList(list);
+    emit modified();
+    update();
+  }
 }
 
 void MixesPanel::mixersCut()
 {
-    mixersCopy();
-    mixersDelete(false);
+  mixersCopy();
+  mixersDelete(false);
 }
 
 void MixesPanel::mixersCopy()
 {
+  QList<int> list = createMixListFromSelected();
 
-    QList<int> list = createMixListFromSelected();
+  QByteArray mxData;
+  foreach(int idx, list) {
+    mxData.append((char*)&model->mixData[idx], sizeof(MixData));
+  }
 
-    QByteArray mxData;
-    foreach(int idx, list) {
-      mxData.append((char*)&model->mixData[idx],sizeof(MixData));
-    }
-
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion-mix", mxData);
-    QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setData("application/x-companion-mix", mxData);
+  QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
 void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
@@ -365,10 +303,11 @@ void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
     int idx; // mixer index
     int dch;
 
-    if(destIdx<0) {
+    if (destIdx < 0) {
       dch = -destIdx;
       idx = getMixerIndex(dch) - 1; //get mixer index to insert
-    } else {
+    }
+    else {
       idx = destIdx;
       dch = model->mixData[idx].destCh;
     }
@@ -376,14 +315,13 @@ void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
     QByteArray mxData = mimeData->data("application/x-companion-mix");
 
     int i = 0;
-    while(i<mxData.size()) {
+    while (i < mxData.size()) {
       idx++;
-      if(idx==firmware->getCapability(Mixes)) break;
+      if (idx == firmware->getCapability(Mixes)) break;
+      if (!gm_insertMix(idx)) break;
 
-      if (!gm_insertMix(idx))
-        break;
-      MixData *md = &model->mixData[idx];
-      memcpy(md,mxData.mid(i,sizeof(MixData)).constData(),sizeof(MixData));
+      MixData * md = &model->mixData[idx];
+      memcpy(md, mxData.mid(i, sizeof(MixData)).constData(), sizeof(MixData));
       md->destCh = dch;
       i += sizeof(MixData);
     }
@@ -396,34 +334,35 @@ void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
 
 void MixesPanel::mixersPaste()
 {
-    const QClipboard *clipboard = QApplication::clipboard();
-    const QMimeData *mimeData = clipboard->mimeData();
-    QListWidgetItem *item = MixerlistWidget->currentItem();
-    if (item)
-      pasteMixerMimeData(mimeData, item->data(Qt::UserRole).toByteArray().at(0));
+  const QClipboard *clipboard = QApplication::clipboard();
+  const QMimeData *mimeData = clipboard->mimeData();
+  QListWidgetItem *item = MixerlistWidget->currentItem();
+  if (item) {
+    pasteMixerMimeData(mimeData, item->data(Qt::UserRole).toByteArray().at(0));
+  }
 }
 
 void MixesPanel::mixersDuplicate()
 {
-    mixersCopy();
-    mixersPaste();
+  mixersCopy();
+  mixersPaste();
 }
 
 void MixesPanel::mixerOpen()
 {
-    int idx = MixerlistWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
-    if(idx<0) {
-      int i = -idx;
-      idx = getMixerIndex(i); //get mixer index to insert
-      if (!gm_insertMix(idx))
-        return;
-      model->mixData[idx].destCh = i;
-      mixInserted=true;
-    } else {
-      mixInserted=false;
-    }
+  int idx = MixerlistWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
+  if(idx < 0) {
+    int i = -idx;
+    idx = getMixerIndex(i); //get mixer index to insert
+    if (!gm_insertMix(idx)) return;
+    model->mixData[idx].destCh = i;
+    mixInserted = true;
+  } 
+  else {
+    mixInserted = false;
+  }
 
-    gm_openMix(idx);
+  gm_openMix(idx);
 }
 
 void MixesPanel::mixerHighlight()
@@ -446,135 +385,137 @@ void MixesPanel::mixerHighlight()
 
 void MixesPanel::mixerAdd()
 {
-    if (!MixerlistWidget->currentItem())
-      return;
-    int index = MixerlistWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
+  if (!MixerlistWidget->currentItem()) return;
 
-    if(index<0) {  // if empty then return relavent index
-      int i = -index;
-      index = getMixerIndex(i); //get mixer index to insert
-      if (!gm_insertMix(index))
-        return;
-      model->mixData[index].destCh = i;
-      mixInserted=true;
-    } else {
-      index++;
-      if (!gm_insertMix(index))
-        return;
-      model->mixData[index].destCh = model->mixData[index-1].destCh;
-      mixInserted=true;
-    }
-    gm_openMix(index);
+  int index = MixerlistWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
+
+  if(index < 0) {  // if empty then return relavent index
+    int i = -index;
+    index = getMixerIndex(i); //get mixer index to insert
+    if (!gm_insertMix(index)) return;
+    model->mixData[index].destCh = i;
+    mixInserted = true;
+  } 
+  else {
+    index++;
+    if (!gm_insertMix(index)) return;
+    model->mixData[index].destCh = model->mixData[index-1].destCh;
+    mixInserted = true;
+  }
+  gm_openMix(index);
 }
 
 void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
 {
-    QPoint globalPos = MixerlistWidget->mapToGlobal(pos);
+  QPoint globalPos = MixerlistWidget->mapToGlobal(pos);
 
-    const QClipboard *clipboard = QApplication::clipboard();
-    const QMimeData *mimeData = clipboard->mimeData();
-    bool hasData = mimeData->hasFormat("application/x-companion-mix");
+  const QClipboard *clipboard = QApplication::clipboard();
+  const QMimeData *mimeData = clipboard->mimeData();
+  bool hasData = mimeData->hasFormat("application/x-companion-mix");
 
-    QMenu contextMenu;
-    contextMenu.addAction(CompanionIcon("add.png"), tr("&Add"),this,SLOT(mixerAdd()),tr("Ctrl+A"));
-    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(mixerOpen()),tr("Enter"));
-    contextMenu.addAction(CompanionIcon("fuses.png"), tr("&Toggle highlight"),this,SLOT(mixerHighlight()),tr("Ctrl+T"));
-    contextMenu.addSeparator();
-    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(mixersDelete()),tr("Delete"));
-    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(mixersCopy()),tr("Ctrl+C"));
-    contextMenu.addAction(CompanionIcon("cut.png"), tr("C&ut"),this,SLOT(mixersCut()),tr("Ctrl+X"));
-    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(mixersPaste()),tr("Ctrl+V"))->setEnabled(hasData);
-    contextMenu.addAction(CompanionIcon("duplicate.png"), tr("Du&plicate"),this,SLOT(mixersDuplicate()),tr("Ctrl+U"));
-    contextMenu.addSeparator();
-    contextMenu.addAction(CompanionIcon("moveup.png"), tr("Move Up"),this,SLOT(moveMixUp()),tr("Ctrl+Up"));
-    contextMenu.addAction(CompanionIcon("movedown.png"), tr("Move Down"),this,SLOT(moveMixDown()),tr("Ctrl+Down"));
+  QMenu contextMenu;
+  contextMenu.addAction(CompanionIcon("add.png"),       tr("&Add"), this,              SLOT(mixerAdd()),        tr("Ctrl+A"));
+  contextMenu.addAction(CompanionIcon("edit.png"),      tr("&Edit"), this,             SLOT(mixerOpen()),       tr("Enter"));
+  contextMenu.addAction(CompanionIcon("fuses.png"),     tr("&Toggle highlight"), this, SLOT(mixerHighlight()),  tr("Ctrl+T"));
+  contextMenu.addSeparator();
+  contextMenu.addAction(CompanionIcon("clear.png"),     tr("&Delete"), this,           SLOT(mixersDelete()),    tr("Delete"));
+  contextMenu.addAction(CompanionIcon("copy.png"),      tr("&Copy"), this,             SLOT(mixersCopy()),      tr("Ctrl+C"));
+  contextMenu.addAction(CompanionIcon("cut.png"),       tr("C&ut"), this,              SLOT(mixersCut()),       tr("Ctrl+X"));
+  contextMenu.addAction(CompanionIcon("paste.png"),     tr("&Paste"), this,            SLOT(mixersPaste()),     tr("Ctrl+V"))->setEnabled(hasData);
+  contextMenu.addAction(CompanionIcon("duplicate.png"), tr("Du&plicate"), this,        SLOT(mixersDuplicate()), tr("Ctrl+U"));
+  contextMenu.addSeparator();
+  contextMenu.addAction(CompanionIcon("moveup.png"),    tr("Move Up"), this,           SLOT(moveMixUp()),       tr("Ctrl+Up"));
+  contextMenu.addAction(CompanionIcon("movedown.png"),  tr("Move Down"), this,         SLOT(moveMixDown()),     tr("Ctrl+Down"));
 
-    contextMenu.exec(globalPos);
+  contextMenu.exec(globalPos);
 }
 
 void MixesPanel::mimeMixerDropped(int index, const QMimeData *data, Qt::DropAction /*action*/)
 {
-    int idx= MixerlistWidget->item(index > 0 ? index-1 : 0)->data(Qt::UserRole).toByteArray().at(0);
-    //qDebug() << "MixesPanel::mimeMixerDropped()" << index << data;
-    pasteMixerMimeData(data, idx);
+  int idx= MixerlistWidget->item(index > 0 ? index-1 : 0)->data(Qt::UserRole).toByteArray().at(0);
+  //qDebug() << "MixesPanel::mimeMixerDropped()" << index << data;
+  pasteMixerMimeData(data, idx);
 }
 
 void MixesPanel::mixesEdited()
 {
-    emit modified();
+  emit modified();
 }
 
 void MixesPanel::mixerlistWidget_KeyPress(QKeyEvent *event)
 {
-    if(event->matches(QKeySequence::SelectAll)) mixerAdd();  //Ctrl A
-    if(event->matches(QKeySequence::Delete))    mixersDelete();
-    if(event->matches(QKeySequence::Copy))      mixersCopy();
-    if(event->matches(QKeySequence::Cut))       mixersCut();
-    if(event->matches(QKeySequence::Paste))     mixersPaste();
-    if(event->matches(QKeySequence::Underline)) mixersDuplicate();
-    if(event->matches(QKeySequence::AddTab))    mixerHighlight();
+  if(event->matches(QKeySequence::SelectAll)) mixerAdd();  //Ctrl A
+  if(event->matches(QKeySequence::Delete))    mixersDelete();
+  if(event->matches(QKeySequence::Copy))      mixersCopy();
+  if(event->matches(QKeySequence::Cut))       mixersCut();
+  if(event->matches(QKeySequence::Paste))     mixersPaste();
+  if(event->matches(QKeySequence::Underline)) mixersDuplicate();
+  if(event->matches(QKeySequence::AddTab))    mixerHighlight();
 
-    if(event->key()==Qt::Key_Return || event->key()==Qt::Key_Enter) mixerOpen();
-    if(event->matches(QKeySequence::MoveToNextLine))
-        MixerlistWidget->setCurrentRow(MixerlistWidget->currentRow()+1);
-    if(event->matches(QKeySequence::MoveToPreviousLine))
-        MixerlistWidget->setCurrentRow(MixerlistWidget->currentRow()-1);
+  if(event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) mixerOpen();
+
+  if(event->matches(QKeySequence::MoveToNextLine)) {
+    MixerlistWidget->setCurrentRow(MixerlistWidget->currentRow()+1);
+  }
+  if(event->matches(QKeySequence::MoveToPreviousLine)) {
+    MixerlistWidget->setCurrentRow(MixerlistWidget->currentRow()-1);
+  }
 }
 
 int MixesPanel::gm_moveMix(int idx, bool dir) //true=inc=down false=dec=up
 {
-    if(idx>firmware->getCapability(Mixes) || (idx==firmware->getCapability(Mixes) && dir)) return idx;
+  if(idx > firmware->getCapability(Mixes) || (idx == firmware->getCapability(Mixes) && dir)) return idx;
 
-    MixData &src=model->mixData[idx];
+  MixData &src=model->mixData[idx];
 
-    if (idx==0 && !dir) {
-        //special case: topmost mixer moving up
-        if (src.destCh > 1) src.destCh--;
-        return idx;  
-    }
+  if (idx == 0 && !dir) {
+    //special case: topmost mixer moving up
+    if (src.destCh > 1) src.destCh--;
+    return idx;  
+  }
 
-    int tdx = dir ? idx+1 : idx-1;
-    MixData &tgt=model->mixData[tdx];
+  int tdx = dir ? idx+1 : idx-1;
+  MixData & tgt = model->mixData[tdx];
 
-    unsigned int outputs = firmware->getCapability(Outputs);
-    if((src.destCh==0) || (src.destCh>outputs) || (tgt.destCh>outputs)) return idx;
+  unsigned int outputs = firmware->getCapability(Outputs);
+  if(src.destCh == 0 || src.destCh > outputs || tgt.destCh > outputs) return idx;
 
-    if (tgt.destCh!=src.destCh) {
-        if ((dir)  && (src.destCh<outputs)) src.destCh++;
-        if ((!dir) && (src.destCh>0)) src.destCh--;
-        return idx;
-    }
+  if (tgt.destCh != src.destCh) {
+    if (dir  && src.destCh < outputs) src.destCh++;
+    if (!dir && src.destCh > 0)       src.destCh--;
+    return idx;
+  }
 
-    //flip between idx and tgt
-    MixData temp;
-    memcpy(&temp,&src,sizeof(MixData));
-    memcpy(&src,&tgt,sizeof(MixData));
-    memcpy(&tgt,&temp,sizeof(MixData));
-    return tdx;
+  //flip between idx and tgt
+  MixData temp;
+  memcpy(&temp, &src, sizeof(MixData));
+  memcpy(&src, &tgt, sizeof(MixData));
+  memcpy(&tgt, &temp, sizeof(MixData));
+  return tdx;
 }
 
 void MixesPanel::moveMixUp()
 {
-    QList<int> list = createMixListFromSelected();
-    QList<int> highlightList;
-    foreach(int idx, list) {
-      highlightList << gm_moveMix(idx, false);
-    }
-    emit modified();
-    update();
-    setSelectedByMixList(highlightList);
+  QList<int> list = createMixListFromSelected();
+  QList<int> highlightList;
+  foreach(int idx, list) {
+    highlightList << gm_moveMix(idx, false);
+  }
+  emit modified();
+  update();
+  setSelectedByMixList(highlightList);
 }
 
 void MixesPanel::moveMixDown()
 {
-    QList<int> list = createMixListFromSelected();
-    QList<int> highlightList;
-    foreach(int idx, list) {
-      highlightList << gm_moveMix(idx, true);
-    }
-    emit modified();
-    update();
-    setSelectedByMixList(highlightList);
+  QList<int> list = createMixListFromSelected();
+  QList<int> highlightList;
+  foreach(int idx, list) {
+    highlightList << gm_moveMix(idx, true);
+  }
+  emit modified();
+  update();
+  setSelectedByMixList(highlightList);
 }
 
 void MixesPanel::clearMixes()

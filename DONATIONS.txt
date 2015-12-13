@@ -1,3 +1,15 @@
+<a href="http://frsky-rc.com">FrSky (monthly)</a>
+<a href="http://alofthobbies.com">Aloft Hobbies</a>
+<a href="http://jonathan.it">Jonathan Modellismo</a>
+<a href="http://wstech.de">WsTech</a>
+<a href="http://aviomotive.com">Aviomotive</a>
+<a href="http://boltrc.com">BoltRC</a>
+<a href="http://aerialtechhobbies.com">Aerial Tech Hobbies</a>
+<a href="http://litepilots.com">LitePilots</a>
+<a href="http://openpilot.com">David Ankers (OpenPilot)</a>
+<a href="http://3drobotics.com">3D Robotics</a>
+<a href="http://rcstudio.cz">RC Studio (monthly)</a>
+
 Mario Sette
 Felice Baratto
 Alessandro Mari
@@ -14,11 +26,10 @@ Chris Guy
 Adrien Gravouille
 Thomas Black
 Marc Lucht
-Michel Baily
 Zdenek Trojanek
 Martin Hotar
-[Devo] Stefan Grundevik
-[Devo] Fabio Eboli
+Stefan Grundevik
+Fabio Eboli
 Federico Zotti
 Albin Esbjörnsson
 Kilian Hüttenhofer
@@ -37,7 +48,6 @@ R. Scott Page
 Johan Cronje
 Renato Aranghelovici
 Jeffrey Irvin
-Aloft Hobbies
 John Rodgers
 Kenneth Crump
 Damjan Adamic
@@ -80,7 +90,6 @@ Christian Schulz
 Gregory J Shepherd
 Michael Shellim
 Ming Wang
-R. Scott Page
 Bernard Lukaschek
 Nigel Chippindale
 Mike Perkins
@@ -93,7 +102,6 @@ Heinrich Illig
 Michael Collins
 Michael Manning
 Craig Lorentz
-Jonathan Modellismo - jonathan.it
 André Lasseret
 Felipe Alexandre de Oliveira
 Brian Harris
@@ -104,7 +112,6 @@ Erhard Werner
 Stig Jøran Moen
 Keith Hertzog
 Christophe Dauvergne
-Michel Baily
 Tauno Rautakorpi
 Sven Assmus
 Paul Dittman
@@ -121,7 +128,6 @@ Christophe Rodriguez
 Larisa Filocamo
 Hartmut Sahm
 Åke Brodin
-Aloft Hobbies - www.alofthobbies.com
 Ted Moss
 Filippos Tigarakis
 Chewytm
@@ -169,16 +175,13 @@ Willie Swanepoel
 Satoru Sasaki
 Tyler Darby
 Nicholas Crego
-Keith Hertzog
 Johan Moelich
 Timo Esser
-Dean Church (monthly)
-Brian Paddock (monthly)
+Brian Paddock
 Jean Pierre Parisy
 Norbert Martsch
 Jean-Marie Guitard
-Mike Perkins
-Tilman Baumann (monthly)
+Tilman Baumann
 Fred Larssen
 Ari Aalto
 Robert Sams 
@@ -189,7 +192,7 @@ Paul Robinson
 Dave Matison
 Mike Matheny
 Pino Agostino
-Graham Boucher (monthly)
+Graham Boucher
 Nelson Noura
 Joel Allamy
 Philip David Martin
@@ -199,8 +202,7 @@ Blake Spilman
 Timothy Pelletier
 Glen Roe (ShowMaster)
 Jan Van Ooteghem
-David Ankers - Special thanks here to the OpenPilot project!
-Lawrence Christensen (monthly)
+Lawrence Christensen
 Leo Duflou
 Bruce Wood
 Arnd Feige
@@ -253,13 +255,12 @@ Terry McKinley
 Марков Алексей
 Offer Shmuely
 Ian Lobley
-Keith Hertzog
 Stéphane Fortas
 Peter Mitrik
 Thomas Majewski
 ANF King
 Henrik Hammarström
-Kenneth Lilja (monthly)
+Kenneth Lilja
 R Wells
 Uwe Jordt
 Harald Wilczak
@@ -272,7 +273,6 @@ Miguel Villalpando
 Kim Dong Hoon 
 Terry McKinley
 Walter Bell
-wsTech - http://wstech.de
 Clinton Linck
 Josep Clodas Sola 
 Thierry Martin
@@ -306,7 +306,6 @@ Henry Deucker
 Christian Fuchs
 Arold Reinders
 Robert Miller
-Aviomotive - www.aviomotive.com
 Mark Gaskievicz
 Roland Müller
 Frank Gewalt
@@ -320,7 +319,6 @@ Steve Coley
 Sean Cull
 Roberto Orsello
 David Finger
-FrSky - www.frsky-rc.com (monthly)
 Jean-Marie Oddo
 Mike Matheny
 Glen Roe (Showmaster)
@@ -347,7 +345,6 @@ Sven Assmus
 Markus Eberl
 Nicholas Field
 Harald Wilczak
-Michel Baily
 John Grepps
 Anthony Burbidge
 Sherba Baine
@@ -359,7 +356,6 @@ Aaron Stringer
 Alan J Wasserman
 Wolfgang Rauser
 Samuel Cook
-BoltRC - www.boltrc.com
 Friedrich Ipolt
 Barrington Cole 
 Charles Lakins
@@ -404,7 +400,6 @@ Colin Rycroft
 Emanuel Stassar
 Michael Gregory
 Robert Russell
-Gordon Stahl
 Felix Kaiser
 Joshua Bardwell
 Davd Goodall
@@ -420,20 +415,16 @@ Andrea Montefusco
 Paul Luby
 Donald L Webster
 Kenneth Frehafer 
-Peter McHenry 
 Matthias Hase 
 Markus Wolf
 Andrew Fazio
 Stefan Künst
 Stephen Adams
-Arold Reinders
 Tauno Rautakorpi
 Frank Houvenaghel
-Aerial Tech Hobbies - www.aerialtechhobbies.com
 George Neusse
 Andreja Rusjakovski
 Axel Stöckle
-Mike Perkins
 Erwin Störrle
 Rodger Hopper
 Fernando Cesar
@@ -489,7 +480,6 @@ Robert Ferguson
 CY Enterprise 
 Michel Stathakis Neto
 Beat Zurflueh
-Heinrich Illig
 Portstate Pty Ltd
 Jens Hoffmann
 Ricardo Santos
@@ -504,7 +494,6 @@ Cecil Porter
 Robert Canavan
 Greg Higginbottom
 Tim Walker
-Thos. O'Meara Photography 
 Spis Ltd/TurboNote
 Patricia Cox
 Matthew Lukes
@@ -586,3 +575,286 @@ John Lipscomb
 Norbert Wenke
 Erik Frieberg
 Raimo Ruotsalainen
+Brian Harris
+Sebastian Blüml 
+Efisio Maxia
+Jeff Theobald
+Anthony Rizzo
+Rodney Huddleston
+Dietmar Drees
+Jürgen Monden
+David Morgan
+Andrew Fernie
+Donald Burke
+Ronald Donker
+Fredie Singh
+Patrizio Simoncini
+Harald Gabler
+Michael Brown
+Julien Gérard
+Alexandre d'Alton
+Peter Mergaerts
+Jan Houwers
+Christian Grandjean
+Roger Bergevin
+NorthSide
+Sigmund Martinsen
+Lionel Lafraise
+Gisli Ofeigsson 
+The Gruvin9x Project
+Manuel McLure
+Fernando Rimoldi
+Hiltenkamp Stephan
+Sandeep Kishore Jain
+Greg Parker 
+Norman Maaß
+Adriano Del Ben
+Justin Poole
+Kenneth Harrison
+Eugene LaFaille
+John O'Shaughnessy
+Uwe Jordt
+Stuart Olson
+Frédéric Devillard
+Cheung Leo
+Peter Webster
+Jean-Claude Bachetta
+Delfin Perena
+Sae-wook Yoon
+Focus on Excellence
+Jeffery Golias
+Nick Milton
+Paul Zasso
+Reidar Johannes Lillebotn
+Handley William
+Luke Williams
+Michael Shellim
+Brian Spearing
+Derek Foster
+Pasi Pitkänen
+Lexington S Morley
+Jeff Roberson
+Volkov Victor
+Bryan Anderson
+Daniel Garber
+Pavel Stein 
+Ravi Gupta
+Patrick Tuxbury
+Mark Deverell
+John Capell 
+Neil McVean
+Matthew Elyash
+Kerry Cochrell
+Willem Aandewiel 
+Reg Bell
+Jean Chenoz
+Philippe Grand
+Tauno Rautakorpi
+Jeff Dillingham
+Brad Kelley
+Shaun Currier
+Danilo Schiara
+John Hennig
+RK Custom Homes
+James Houck
+Piet Teekens
+Tommy Widenflycht
+Johan Petrus Theophilus
+Maria van Melis
+Ralph Gustafson
+Paul Luby
+Andrew Duncan
+Stephen Crowther
+Edward Glover
+Kelly Byrd
+Brad Curtis
+Wolfgang Kuhl
+John Beidl
+Roy Nixon
+Glen Roe
+CY Enterprise
+Evening Shade Pottery
+Gilles Dando
+Patrick Richard
+Justin Altemeier
+Constant Dupuis
+Tony Kenward
+Pierre Rondel
+Ernest Luguera Sanchez
+Adam Brackney
+Joe Baker
+单 雷平
+Ben Fay
+Chris Monk
+Stan von Miller
+Christian Krebs
+Michel Motte
+Graziano Rampinelli
+Joe Baker
+Jean-Philippe Laurent
+Romain Rouzaud
+Michel Garbarino
+Henri Mirra
+Otto Fröhlich
+Thomas Cramer
+Anthony Trombetta
+Fernando Rimoldi
+Dietmar Drees
+Michal Kowalski
+Ivan Correa
+Modellbau
+Massimo Luigi Stara
+Graham Baldwin
+Tomasz Rejman
+Wolfgang Lang
+John Greenwood
+Till von Reumont
+Paul Pereira Brunner 
+Donald L Singer
+Junsun Lee
+Guy Lamaison
+Erwin Dulken
+Mike H Dailey
+Jon Cammarata
+Martin Krueger
+Adolfo Perogio
+Sylvain Techer
+Wes Warner
+Kevin Caldwell
+Ali Ersan Gur
+Hans-Rudolf Riniker
+Sébastien Boutard
+Jean Chessé 
+Mike H Dailey 
+Don Polk
+Roberto Orsello
+Borovikov Dmitriy
+John Lipscomb
+Peter Glassey
+Joseph Kramer
+F.Javier Martinez Velasco
+Claudio Piccinini
+John Jackson
+John Beech
+Rene TraaJohn Jackson
+Sebastien Charpentier (monthly)
+Nigel Hendriks
+Frédéric Devillard
+Albert Herzog
+Anindya Mukerjee
+Kenny Stanberry
+Tauno Rautakorpi
+Mathias Krapp
+Fernando Rimoldi
+Wolfgang Rauser
+Richard Shagam
+Stephen Bailey
+DK-System
+Casa Kuxtal
+Christopher Potts
+Douglas George
+Michael Banks
+Jon Wiltshire
+David Green
+Guy Willems
+Xavier Mestelan Pinon
+Maik Gottschalk 
+Scott Sparks
+John Dunning
+RAD51
+Ron Powell 
+Alain Labonne
+Carol Sills
+Franck Aßmann
+Larry Anderson
+Mikael Wallbäck
+Wes Warner
+Christoffer H Henni
+Donna Bayer
+Garry Ogilvie
+Karlheinz Sirsch
+Fred Larssen
+Rob Coppock 
+Franz Josef Hahn
+Serge Ribault
+Tanguy Le Moign
+Barrett Powell
+Patrice Lafeuille
+Martin Blume
+Marek Kopyto
+Marco Lange
+Gary Nix
+Jack Oliphant
+John Lever 
+Adolphe Montefiore
+Steven De Weerdt
+Håkan Berggen
+Ayelet Egosi
+Jean-Frederic Gaudreault
+Jim Wagner
+Lee Scott
+Roger Keatley
+Sherman Lovell
+Hugh Caldwell
+JB Fisher Company
+Michels Bernhard 
+Pietro Rossin
+Carsten Wache
+Brock White 
+Steven Poretz
+David Huelster
+Gordon Stahl (monthly)
+John Mathison
+Richard Duczmal
+Gregory Barron
+Marcel Fischer
+Klas Mälman
+Viljo Liukku
+Eric Smith
+Sven Assmus
+Luke Mole
+NorthSide
+Hannes Mössler 
+James Kaufman
+Ravi Gupta
+Lexington S Morley
+Ralph Segar 
+Frédéric Devillard
+Cory Theurer
+Valentinos Zachariou
+Garrett Paquette 
+Heung Jin Choi
+Kerry Cochrell
+Doug Miller
+Andrzej Weydmann
+Chair-man.nl
+Eric Beier	
+Jay Warren
+Marian Matej 
+Alastair Smith
+Timothy Senecal
+Dietmar Drees
+Bruce Jones
+Adil Busaidy
+Herman Hofman
+Jean Paul Michel
+Peter McHenry
+Julien lecoquierre
+Jean-Marie Clay
+Robert Nicoll
+Dan Nixon
+Ewald Moehring
+Giovanni Carnesecchi 
+Paul Dumsday
+Tadeusz Adamowski
+Andrew Newton
+Neil Horne
+Kerstin Appelqvist
+John Curran
+Gerald Thiel 
+Jürg Bingisser
+George Emer
+Jerzy Manarczyk
+Gerard Braakhuis
+Nicolas Leblond
+Burt Pickard-Richardson

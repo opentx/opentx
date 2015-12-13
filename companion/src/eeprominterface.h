@@ -22,24 +22,26 @@
 #include <QStringList>
 #include <QList>
 #include <QtXml>
+#include <QComboBox>
 #include <iostream>
+#include <bitset>
 #include "constants.h"
 #include "simulatorinterface.h"
 
-#define EESIZE_STOCK          2048
-#define EESIZE_M128           4096
-#define EESIZE_GRUVIN9X       4096
-#define EESIZE_TARANIS        (32*1024)
-#define EESIZE_SKY9X          (128*4096)
-#define EESIZE_9XRPRO         (128*4096)
-#define EESIZE_RLC_MAX        EESIZE_TARANIS
+#define EESIZE_STOCK           2048
+#define EESIZE_M128            4096
+#define EESIZE_GRUVIN9X        4096
+#define EESIZE_TARANIS         (32*1024)
+#define EESIZE_SKY9X           (128*4096)
+#define EESIZE_9XRPRO          (128*4096)
+#define EESIZE_MAX             EESIZE_9XRPRO
 
 QString getBoardName(BoardEnum board);
 
 #define IS_9X(board)           (board==BOARD_STOCK || board==BOARD_M128)
 #define IS_STOCK(board)        (board==BOARD_STOCK)
 #define IS_2560(board)         (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
-#define IS_SKY9X(board)        (board==BOARD_SKY9X || board==BOARD_9XRPRO)
+#define IS_SKY9X(board)        (board==BOARD_SKY9X || board==BOARD_9XRPRO || board==BOARD_AR9X)
 #define IS_9XRPRO(board)       (board==BOARD_9XRPRO)
 #define IS_TARANIS(board)      (board==BOARD_TARANIS  || board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)
 #define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)
@@ -182,19 +184,6 @@ extern const char downArrow[];
 class ModelData;
 class GeneralSettings;
 
-enum ThrottleSource {
-  THROTTLE_SOURCE_THR,
-  THROTTLE_SOURCE_P1,
-  THROTTLE_SOURCE_P2,
-  THROTTLE_SOURCE_P3,
-  THROTTLE_SOURCE_S1 = THROTTLE_SOURCE_P1,
-  THROTTLE_SOURCE_S2,
-  THROTTLE_SOURCE_S3,
-  THROTTLE_SOURCE_LS,
-  THROTTLE_SOURCE_RS,
-  THROTTLE_SOURCE_FIRST_CHANNEL,
-};
-
 enum TelemetrySource {
   TELEMETRY_SOURCE_TX_BATT,
   TELEMETRY_SOURCE_TX_TIME,
@@ -292,9 +281,7 @@ class RawSourceRange
     {
     }
 
-    float getValue(int value) {
-      return min + float(value) * step;
-    }
+    float getValue(int value);
 
     int decimals;
     double min;
@@ -346,6 +333,8 @@ class RawSource {
     }
 
     bool isTimeBased() const;
+    bool isPot() const;
+    bool isSlider() const;
 
     RawSourceType type;
     int index;
@@ -390,7 +379,7 @@ class RawSwitch {
       return index >= 0 ? (type * 256 + index) : -(type * 256 - index);
     }
 
-    QString toString();
+    QString toString() const;
 
     bool operator== ( const RawSwitch& other) {
       return (this->type == other.type) && (this->index == other.index);
@@ -426,7 +415,7 @@ class CurveReference {
     CurveRefType type;
     int value;
 
-    QString toString();
+    QString toString() const;
 };
 
 enum InputMode {
@@ -444,7 +433,7 @@ class ExpoData {
     unsigned int mode;
     unsigned int chn;
     RawSwitch swtch;
-    unsigned int phases;        // -5=!FP4, 0=normal, 5=FP4
+    unsigned int flightModes;        // -5=!FP4, 0=normal, 5=FP4
     int  weight;
     int offset;
     CurveReference curve;
@@ -467,14 +456,14 @@ class CurveData {
       CURVE_TYPE_LAST = CURVE_TYPE_CUSTOM
     };
 
-    CurveData() { clear(5); }
-
+    CurveData();
+    void clear(int count);
+    bool isEmpty() const;
     CurveType type;
     bool smooth;
     int  count;
     CurvePoint points[C9X_MAX_POINTS];
     char name[6+1];
-    void clear(int count) { memset(this, 0, sizeof(CurveData)); this->count = count; }
 };
 
 class LimitData {
@@ -488,9 +477,10 @@ class LimitData {
     bool  symetrical;
     char  name[6+1];
     CurveReference curve;
-    QString minToString();
-    QString maxToString();
-    QString offsetToString();
+    QString minToString() const;
+    QString maxToString() const;
+    QString offsetToString() const;
+    QString revertToString() const;
     void clear();
 };
 
@@ -518,7 +508,7 @@ class MixData {
     bool noExpo;
     MltpxValue mltpx;          // multiplex method 0=+ 1=* 2=replace
     unsigned int mixWarn;           // mixer warning
-    unsigned int phases;             // -5=!FP4, 0=normal, 5=FP4
+    unsigned int flightModes;             // -5=!FP4, 0=normal, 5=FP4
     int    sOffset;
     char   name[MIXDATA_NAME_LEN+1];
 
@@ -575,10 +565,9 @@ class LogicalSwitchData { // Logical Switches data
     unsigned int duration;
     int andsw;
     void clear() { memset(this, 0, sizeof(LogicalSwitchData)); }
-    CSFunctionFamily getFunctionFamily();
-    unsigned int getRangeFlags();
-    QString funcToString();
-    QString toString(const ModelData & model, const GeneralSettings & settings);
+    CSFunctionFamily getFunctionFamily() const;
+    unsigned int getRangeFlags() const;
+    QString funcToString() const;
 };
 
 enum AssignFunc {
@@ -609,6 +598,12 @@ enum AssignFunc {
   FuncBackgroundMusicPause,
   FuncAdjustGV1,
   FuncAdjustGVLast = FuncAdjustGV1+C9X_MAX_GVARS-1,
+  FuncSetFailsafeInternalModule,
+  FuncSetFailsafeExternalModule,
+  FuncRangeCheckInternalModule,
+  FuncRangeCheckExternalModule,
+  FuncBindInternalModule,
+  FuncBindExternalModule,
   FuncCount,
   FuncReserve = -1
 };
@@ -624,10 +619,15 @@ class CustomFunctionData { // Function Switches data
     unsigned int adjustMode;
     int repeatParam;
     void clear();
-    QString funcToString();
-    QString paramToString();
-    QString repeatToString();
-    QStringList toStringList();
+    QString funcToString() const;
+    QString paramToString(const ModelData * model) const;
+    QString repeatToString() const;
+    QString enabledToString() const;
+
+    static void populateResetParams(const ModelData * model, QComboBox * b, unsigned int value);
+    static void populatePlaySoundParams(QStringList & qs);
+    static void populateHapticParams(QStringList & qs);
+
 };
 
 class FlightModeData {
@@ -755,6 +755,22 @@ enum TelemetryCurrentSources {
   TELEMETRY_CURRENT_SOURCE_FAS
 };
 
+enum UartModes {
+  UART_MODE_NONE,
+  UART_MODE_TELEMETRY_MIRROR,
+  UART_MODE_TELEMETRY,
+  UART_MODE_SBUS_TRAINER,
+  UART_MODE_DEBUG
+};
+
+enum TrainerMode {
+  TRAINER_MODE_MASTER_TRAINER_JACK,
+  TRAINER_MODE_SLAVE,
+  TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
+  TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
+  TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
+};
+
 class FrSkyData {
   public:
     FrSkyData() { clear(); }
@@ -767,6 +783,7 @@ class FrSkyData {
     FrSkyScreenData screens[4];
     FrSkyRSSIAlarm rssiAlarms[2];
     unsigned int varioSource;
+    bool varioCenterSilent;
     int varioMin;
     int varioCenterMin;    // if increment in 0.2m/s = 3.0m/s max
     int varioCenterMax;
@@ -774,6 +791,7 @@ class FrSkyData {
     bool mAhPersistent;
     unsigned int storedMah;
     int fasOffset;
+    bool ignoreSensorIds;
 
     void clear();
 };
@@ -790,6 +808,12 @@ class MavlinkData {
 
 class TimerData {
   public:
+    enum CountDownMode {
+      COUNTDOWN_SILENT,
+      COUNTDOWN_BEEPS,
+      COUNTDOWN_VOICE,
+      COUNTDOWN_HAPTIC
+    };
     TimerData() { clear(); }
     RawSwitch    mode;
     char         name[TIMER_NAME_LEN+1];
@@ -801,23 +825,32 @@ class TimerData {
     void clear() { memset(this, 0, sizeof(TimerData)); mode = RawSwitch(SWITCH_TYPE_TIMER_MODE, 0); }
 };
 
-enum Protocol {
-  OFF,
-  PPM,
-  SILV_A,
-  SILV_B,
-  SILV_C,
-  CTP1009,
-  LP45,
-  DSM2,
-  DSMX,
-  PPM16,
-  PPMSIM,
-  PXX_XJT_X16,
-  PXX_XJT_D8,
-  PXX_XJT_LR12,
-  PXX_DJT,
-  PROTO_LAST
+enum PulsesProtocol {
+  PULSES_OFF,
+  PULSES_PPM,
+  PULSES_SILV_A,
+  PULSES_SILV_B,
+  PULSES_SILV_C,
+  PULSES_CTP1009,
+  PULSES_LP45,
+  PULSES_DSM2,
+  PULSES_DSMX,
+  PULSES_PPM16,
+  PULSES_PPMSIM,
+  PULSES_PXX_XJT_X16,
+  PULSES_PXX_XJT_D8,
+  PULSES_PXX_XJT_LR12,
+  PULSES_PXX_DJT,
+  PULSES_CROSSFIRE,
+  PULSES_PROTOCOL_LAST
+};
+
+enum TrainerProtocol {
+  TRAINER_MASTER_JACK,
+  TRAINER_SLAVE_JACK,
+  TRAINER_MASTER_SBUS_MODULE,
+  TRAINER_MASTER_CPPM_MODULE,
+  TRAINER_MASTER_SBUS_BATT_COMPARTMENT
 };
 
 class ModuleData {
@@ -825,16 +858,17 @@ class ModuleData {
     ModuleData() { clear(); }
     unsigned int modelId;
     int          protocol;
+    int          subprotocol;
     unsigned int channelsStart;
     int          channelsCount; // 0=8 channels
     unsigned int failsafeMode;
     int          failsafeChannels[C9X_NUM_CHNOUT];
     int          ppmDelay;
     bool         ppmPulsePol;           // false = positive
-    bool         ppmOutputType;         // false = open drain, true = push pull 
+    bool         ppmOutputType;         // false = open drain, true = push pull
     int          ppmFrameLength;
     void clear() { memset(this, 0, sizeof(ModuleData)); }
-    QString polarityToString() { return ppmPulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); }
+    QString polarityToString() const { return ppmPulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); } // TODO ModelPrinter
 };
 
 #define C9X_MAX_SCRIPTS       7
@@ -903,7 +937,7 @@ class SensorData {
       UNIT_PERCENT,
       UNIT_MAH,
       UNIT_WATTS,
-      UNIT_DBM,
+      UNIT_DB,
       UNIT_RPMS,
       UNIT_G,
       UNIT_DEGREE,
@@ -940,10 +974,11 @@ class SensorData {
     bool filter;
     bool logs;
     bool persistent;
+    bool onlyPositive;
 
     // for custom sensors
     unsigned int ratio;
-    unsigned int offset;
+    int offset;
 
     // for consumption
     unsigned int amps;
@@ -975,6 +1010,11 @@ class ModelData {
     void removeInput(const int idx);
 
     bool isInputValid(const unsigned int idx) const;
+    bool hasExpos(uint8_t inputIdx) const;
+    bool hasMixes(uint8_t output) const;
+
+    QVector<const ExpoData *> expos(int input) const;
+    QVector<const MixData *> mixes(int channel) const;
 
     bool      used;
     char      name[12+1];
@@ -1025,8 +1065,10 @@ class ModelData {
 
     SensorData sensorData[C9X_MAX_SENSORS];
 
+    unsigned int toplcdTimer;
+
     void clear();
-    bool isempty();
+    bool isEmpty() const;
     void setDefaultInputs(const GeneralSettings & settings);
     void setDefaultMixes(const GeneralSettings & settings);
     void setDefaultValues(unsigned int id, const GeneralSettings & settings);
@@ -1110,7 +1152,8 @@ class GeneralSettings {
     unsigned int  currModel; // 0..15
     unsigned int   contrast;
     unsigned int   vBatWarn;
-    int    vBatCalib;
+    int    txVoltageCalibration;
+    int    txCurrentCalibration;
     int    vBatMin;
     int    vBatMax;
     int   backlightMode;
@@ -1158,12 +1201,13 @@ class GeneralSettings {
     int     speakerVolume;
     unsigned int   backlightBright;
     int switchesDelay;
-    int    currentCalib;
     int    temperatureCalib;
     int    temperatureWarn;
     unsigned int mAhWarn;
     unsigned int mAhUsed;
     unsigned int globalTimer;
+    bool bluetoothEnable;
+    char bluetoothName[10+1];
     unsigned int btBaudrate;
     unsigned int sticksGain;
     unsigned int rotarySteps;
@@ -1204,6 +1248,8 @@ class GeneralSettings {
     static SwitchInfo switchInfoFromSwitchPositionTaranis(unsigned int index);
     bool switchPositionAllowedTaranis(int index) const;
     bool switchSourceAllowedTaranis(int index) const;
+    bool isPotAvailable(int index) const;
+    bool isSliderAvailable(int index) const;
 };
 
 class RadioData {
@@ -1255,7 +1301,6 @@ enum Capability {
   HasExpoNames,
   HasNoExpo,
   HasMixerNames,
-  HasChNames,
   HasCvNames,
   HasPxxCountry,
   HasPPMStart,
@@ -1285,7 +1330,7 @@ enum Capability {
   PPMCenter,
   PPMUnitMicroseconds,
   SYMLimits,
-  HasCurrentCalibration,
+  HastxCurrentCalibration,
   HasVolume,
   HasBrightness,
   PerModelTimers,
@@ -1297,6 +1342,8 @@ enum Capability {
   LCDWidth,
   GetThrSwitch,
   HasDisplayText,
+  HasTopLcd,
+  GlobalFunctions,
   VirtualInputs,
   TrainerInputs,
   RtcTime,
@@ -1315,7 +1362,8 @@ enum Capability {
   HasInputDiff,
   HasMixerExpo,
   MixersMonitor,
-  HasBatMeterRange
+  HasBatMeterRange,
+  DangerousFunctions,
 };
 
 class SimulatorInterface;
@@ -1332,19 +1380,17 @@ class EEPROMInterface
 
     inline BoardEnum getBoard() { return board; }
 
-    virtual bool load(RadioData &radioData, const uint8_t *eeprom, int size) = 0;
+    virtual unsigned long load(RadioData &radioData, const uint8_t *eeprom, int size) = 0;
 
-    virtual bool loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index) = 0;
+    virtual unsigned long loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index) = 0;
 
-    virtual bool loadxml(RadioData &radioData, QDomDocument &doc) = 0;
+    virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc) = 0;
 
     virtual int save(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, uint8_t version=0) = 0;
 
-    virtual int getSize(ModelData &) = 0;
+    virtual int getSize(const ModelData &) = 0;
 
-    virtual int getSize(GeneralSettings &) = 0;
-
-    virtual int isAvailable(Protocol proto, int port=0) = 0;
+    virtual int getSize(const GeneralSettings &) = 0;
 
     virtual const int getEEpromSize() = 0;
 
@@ -1457,11 +1503,37 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
 void registerEEpromInterfaces();
 void unregisterEEpromInterfaces();
 void registerOpenTxFirmwares();
-void unregisterFirmwares();
+void unregisterOpenTxFirmwares();
 
-bool loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
-bool loadEEprom(RadioData &radioData, const uint8_t *eeprom, int size);
-bool loadEEpromXml(RadioData &radioData, QDomDocument &doc);
+enum EepromLoadErrors {
+  NO_ERROR,
+
+  UNKNOWN_ERROR,
+  UNSUPPORTED_NEWER_VERSION,
+  WRONG_SIZE,
+  WRONG_FILE_SYSTEM,
+  NOT_OPENTX,
+  NOT_TH9X,
+  NOT_GRUVIN9X,
+  NOT_ERSKY9X,
+  NOT_ER9X,
+  UNKNOWN_BOARD,
+  WRONG_BOARD,
+  BACKUP_NOT_SUPPORTED,
+
+  HAS_WARNINGS,
+  OLD_VERSION,
+  WARNING_WRONG_FIRMWARE,
+
+  NUM_ERRORS
+};
+
+void ShowEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound);
+void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound);
+
+unsigned long LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
+unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, int size);
+unsigned long LoadEepromXml(RadioData &radioData, QDomDocument &doc);
 
 struct Option {
   const char * name;
@@ -1554,6 +1626,8 @@ class Firmware {
     virtual int getCapability(const Capability) = 0;
 
     virtual bool isTelemetrySourceAvailable(int source) = 0;
+
+    virtual int isAvailable(PulsesProtocol proto, int port=0) = 0;
 
   public:
     QList<const char *> languages;

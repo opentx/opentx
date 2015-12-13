@@ -78,13 +78,14 @@ ModelsListWidget::ModelsListWidget(QWidget *parent):
 
 void ModelsListWidget::ShowContextMenu(const QPoint& pos)
 {
-    QPoint globalPos = this->mapToGlobal(pos);
-
+  QPoint globalPos = this->mapToGlobal(pos);
+  QMenu contextMenu;
+  if (((MdiChild *)parent())->getCurrentRow() > 0) {
+    // context menu for model
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
     bool hasData = mimeData->hasFormat("application/x-companion");
 
-    QMenu contextMenu;
     contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(EditModel()));
     contextMenu.addAction(CompanionIcon("open.png"), tr("&Restore from backup"),this,SLOT(LoadBackup()));
     contextMenu.addAction(CompanionIcon("wizard.png"), tr("&Model Wizard"),this,SLOT(OpenWizard()));
@@ -100,7 +101,12 @@ void ModelsListWidget::ShowContextMenu(const QPoint& pos)
     contextMenu.addAction(CompanionIcon("print.png"), tr("P&rint model"),this, SLOT(print()),QKeySequence(tr("Ctrl+P")));
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("simulate.png"), tr("&Simulate model"),this, SLOT(simulate()),tr("Alt+S"));
-    contextMenu.exec(globalPos);
+  }
+  else {
+    // context menu for radio settings
+    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(EditModel()));
+  }
+  contextMenu.exec(globalPos);
 }
 
 void ModelsListWidget::EditModel()
@@ -137,7 +143,7 @@ void ModelsListWidget::setdefault()
 {
   if (currentRow()==0) return;
   unsigned int currModel = currentRow() - 1;
-  if (!radioData->models[currModel].isempty() && radioData->generalSettings.currModel != currModel) {
+  if (!radioData->models[currModel].isEmpty() && radioData->generalSettings.currModel != currModel) {
     radioData->generalSettings.currModel = currModel;
     refreshList();
     ((MdiChild *)parent())->setModified();
@@ -289,7 +295,7 @@ void ModelsListWidget::refreshList()
     {
       QString item = QString().sprintf("%02d: ", i+1);
        
-      if (!radioData->models[i].isempty()) {
+      if (!radioData->models[i].isEmpty()) {
         if (eepromInterface && IS_SKY9X(eepromInterface->getBoard())) {
           if (radioData->models[i].name[0]==0) {
             QString modelname="Model";
@@ -357,7 +363,7 @@ void ModelsListWidget::deleteSelected(bool ask=true)
     QMessageBox::StandardButton ret = QMessageBox::Yes;
     if(ask) {
       foreach(QModelIndex index, this->selectionModel()->selectedIndexes()) {
-        if  (index.row()>0 && !radioData->models[index.row()-1].isempty()) {
+        if  (index.row()>0 && !radioData->models[index.row()-1].isEmpty()) {
           isModel=true;
           selModel=index.row()-1;
         }
@@ -459,7 +465,7 @@ void ModelsListWidget::doPaste(QByteArray *gmData, int index)
       i += sizeof(GeneralSettings);
     }
     else { //model data
-      if (!radioData->models[id-1].isempty()) {
+      if (!radioData->models[id-1].isEmpty()) {
         ret = QMessageBox::question(this, "Companion", tr("You are pasting on an not empty model, are you sure?"),
                 QMessageBox::Yes | QMessageBox::No);
         if (ret == QMessageBox::Yes) {
@@ -515,7 +521,7 @@ void ModelsListWidget::duplicate()
     {
         ModelData *model = &radioData->models[i-1];
         while(i<GetEepromInterface()->getMaxModels()) {
-          if (radioData->models[i].isempty()) {
+          if (radioData->models[i].isEmpty()) {
             radioData->models[i] = *model;
             ((MdiChild *)parent())->setModified();
             break;
@@ -575,7 +581,7 @@ void ModelsListWidget::viableModelSelected(int idx)
   else if (idx<1)
     ((MdiChild*)parent())->viableModelSelected(false);
   else
-    ((MdiChild*)parent())->viableModelSelected(!radioData->models[currentRow()-1].isempty());
+    ((MdiChild*)parent())->viableModelSelected(!radioData->models[currentRow()-1].isEmpty());
 }
 
 

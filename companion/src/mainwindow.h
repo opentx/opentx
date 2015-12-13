@@ -76,29 +76,31 @@ class MainWindow : public QMainWindow
     MainWindow();
 
   protected:
+    QString getCompanionUpdateBaseUrl();
     void dowloadLastFirmwareUpdate();
     void startFirmwareDownload();
     void closeEvent(QCloseEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
+    void setLanguage(const QString & langString);
 
   private slots:
     void openDocURL();
 
-    void setLanguage(QString langString);
-    void setSysLanguage() {setLanguage("");};
-    void setCZLanguage() {setLanguage("cs_CZ");};
-    void setDELanguage() {setLanguage("de_DE");};
-    void setENLanguage() {setLanguage("en");};
-    void setFILanguage() {setLanguage("fi_FI");};
-    void setFRLanguage() {setLanguage("fr_FR");};
-    void setITLanguage() {setLanguage("it_IT");};
-    void setHELanguage() {setLanguage("he_IL");};
-    void setPLLanguage() {setLanguage("pl_PL");};
-    void setPTLanguage() {setLanguage("pt_PT");};
-    void setRULanguage() {setLanguage("ru_RU");};
-    void setSELanguage() {setLanguage("sv_SE");};
-    void setNLLanguage() {setLanguage("nl_NL");};
+    void setSysLanguage() { setLanguage("");      };
+    void setCZLanguage()  { setLanguage("cs_CZ"); };
+    void setDELanguage()  { setLanguage("de_DE"); };
+    void setENLanguage()  { setLanguage("en");    };
+    void setFILanguage()  { setLanguage("fi_FI"); };
+    void setFRLanguage()  { setLanguage("fr_FR"); };
+    void setITLanguage()  { setLanguage("it_IT"); };
+    void setHELanguage()  { setLanguage("he_IL"); };
+    void setPLLanguage()  { setLanguage("pl_PL"); };
+    void setESLanguage()  { setLanguage("es_ES"); };
+    void setPTLanguage()  { setLanguage("pt_PT"); };
+    void setRULanguage()  { setLanguage("ru_RU"); };
+    void setSELanguage()  { setLanguage("sv_SE"); };
+    void setNLLanguage()  { setLanguage("nl_NL"); };
 
     void setTheme(int index);
     void setClassicTheme()   {setTheme(0);};
@@ -155,7 +157,6 @@ class MainWindow : public QMainWindow
     void loadBackup();
     void appPrefs();
     void fwPrefs();
-    void updateSdsyncAction();
     void updateMenus();
     void createProfile();
     MdiChild *createMdiChild();
@@ -261,19 +262,22 @@ class MainWindow : public QMainWindow
     QAction *normalIconAct;
     QAction *bigIconAct;
     QAction *hugeIconAct;
+
     QAction *sysLangAct;
-    QAction *englishLangAct;
     QAction *czechLangAct;
     QAction *germanLangAct;
-    QAction *frenchLangAct;
+    QAction *englishLangAct;
     QAction *finnishLangAct;
+    QAction *frenchLangAct;
     QAction *italianLangAct;
-    QAction *hebrewLangAct;
+    // QAction *hebrewLangAct;
     QAction *polishLangAct;
-    QAction *portugueseLangAct;
+    // QAction *portugueseLangAct;
+    QAction *spanishLangAct;
     QAction *swedishLangAct;
-    QAction *russianLangAct;
-    QAction *dutchLangAct;
+    // QAction *russianLangAct;
+    // QAction *dutchLangAct;
+
     QAction *openDocURLAct;
 };
 

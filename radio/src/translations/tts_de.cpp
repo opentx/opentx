@@ -145,7 +145,7 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   PUSH_NUMBER_PROMPT(DE_PROMPT_NULL+number);
 
   if (unit) {
-    PUSH_NUMBER_PROMPT(DE_PROMPT_UNITS_BASE+unit-1);
+    PUSH_NUMBER_PROMPT(DE_PROMPT_UNITS_BASE+unit);
   }
 }
 

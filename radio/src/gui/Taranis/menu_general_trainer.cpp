@@ -56,7 +56,7 @@ void menuGeneralTrainer(uint8_t event)
   lcd_puts(3*FW, MENU_HEADER_HEIGHT+1, STR_MODESRC);
 
   y = MENU_HEADER_HEIGHT + 1 + FH;
-  int sub = m_posVert + 1;
+  int sub = menuVerticalPosition + 1;
 
   for (int i=1; i<=NUM_STICKS; i++) {
     uint8_t chan = channel_order(i);
@@ -66,7 +66,7 @@ void menuGeneralTrainer(uint8_t event)
 
     for (int j=0; j<3; j++) {
 
-      attr = ((sub==i && m_posHorz==j) ? blink : 0);
+      attr = ((sub==i && menuHorizontalPosition==j) ? blink : 0);
 
       switch(j) {
         case 0:
@@ -99,15 +99,15 @@ void menuGeneralTrainer(uint8_t event)
   for (int i=0; i<4; i++) {
     uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
 #if defined (PPM_UNIT_PERCENT_PREC1)
-    lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
+    lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
 #else
-    lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])/5, 0);
+    lcd_outdezAtt(x, MENU_HEADER_HEIGHT+1+6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5, 0);
 #endif
   }
 
   if (attr) {
     if (event==EVT_KEY_LONG(KEY_ENTER)){
-      memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
+      memcpy(g_eeGeneral.trainer.calib, ppmInput, sizeof(g_eeGeneral.trainer.calib));
       eeDirty(EE_GENERAL);
       AUDIO_WARNING1();
     }

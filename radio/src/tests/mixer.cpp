@@ -62,6 +62,7 @@
 
 TEST(Trims, throttleTrim)
 {
+  SYSTEM_RESET();
   MODEL_RESET();
   modelDefault(0);
   g_model.thrTrim = 1;
@@ -1061,7 +1062,7 @@ TEST(Trainer, UnpluggedTest)
   g_model.mixData[0].weight = 100;
   g_model.mixData[0].delayUp = DELAY_STEP*5;
   g_model.mixData[0].delayDown = DELAY_STEP*5;
-  ppmInValid = 0;
-  g_ppmIns[0] = 1024;
+  ppmInputValidityTimer = 0;
+  ppmInput[0] = 1024;
   CHECK_DELAY(0, 5000);
 }

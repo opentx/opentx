@@ -52,5 +52,5 @@
   const pm_char time_stamp[] PROGMEM =   "TIME\037\050: " TIME_STR;
   const pm_char eeprom_stamp[] PROGMEM = "EEPR\037\050: " EEPROM_STR;
 #else
-  const pm_char vers_stamp[] PROGMEM = "VERS\037\033: " "opentx-" FLAVOUR "-" VERS_STR "\036DATE\037\033: " DATE_STR"\036TIME\037\033: " TIME_STR "\036EEPR\037\033: " EEPROM_STR;
+  const pm_char vers_stamp[] PROGMEM = "FW\037\033: " "opentx-" FLAVOUR "\036VERS\037\033: " VERS_STR "\036DATE\037\033: " DATE_STR"\036TIME\037\033: " TIME_STR "\036EEPR\037\033: " EEPROM_STR;
 #endif

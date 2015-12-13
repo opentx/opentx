@@ -69,7 +69,7 @@ PACK(typedef struct t_Gruvin9xGeneral_v103 {
   uint8_t   currModel; //0..15
   uint8_t   contrast;
   uint8_t   vBatWarn;
-  int8_t    vBatCalib;
+  int8_t    txVoltageCalibration;
   int8_t    lightSw;
   Gruvin9xTrainerData_v103 trainer;
   uint8_t   view;      //index of subview in main scrren
@@ -106,7 +106,7 @@ PACK(typedef struct t_Gruvin9xGeneral_v104 {
   uint8_t   currModel; //0..15
   uint8_t   contrast;
   uint8_t   vBatWarn;
-  int8_t    vBatCalib;
+  int8_t    txVoltageCalibration;
   int8_t    lightSw;
   Gruvin9xTrainerData_v104 trainer;
   uint8_t   view;      //index of subview in main scrren

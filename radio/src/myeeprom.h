@@ -41,12 +41,10 @@
 
 #if defined(EXPORT)
   #define LUA_EXPORT(...)                     LEXP(__VA_ARGS__)
-  #define LUA_EXPORT_TELEMETRY(...)           LEXP_TELEMETRY(__VA_ARGS__)
   #define LUA_EXPORT_MULTIPLE(...)            LEXP_MULTIPLE(__VA_ARGS__)
   #define LUA_EXPORT_EXTRA(...)               LEXP_EXTRA(__VA_ARGS__)
 #else 
   #define LUA_EXPORT(...)
-  #define LUA_EXPORT_TELEMETRY(...)
   #define LUA_EXPORT_MULTIPLE(...)
   #define LUA_EXPORT_EXTRA(...)
 #endif 
@@ -65,10 +63,10 @@
 
 #if defined(PCBTARANIS)
   #define EEPROM_VER             217
-  #define FIRST_CONV_EEPROM_VER  215
+  #define FIRST_CONV_EEPROM_VER  216
 #elif defined(PCBSKY9X)
   #define EEPROM_VER             217
-  #define FIRST_CONV_EEPROM_VER  215
+  #define FIRST_CONV_EEPROM_VER  216
 #elif defined(CPUM2560) || defined(CPUM2561)
   #define EEPROM_VER             217
   #define FIRST_CONV_EEPROM_VER  EEPROM_VER
@@ -118,7 +116,7 @@
   #define MAX_FLIGHT_MODES     9
   #define MAX_MIXERS           64
   #define MAX_EXPOS            64
-  #define NUM_LOGICAL_SWITCH   32 // number of custom switches
+  #define NUM_LOGICAL_SWITCH   32 // number of logical switches
   #define NUM_CFN              64 // number of functions assigned to switches
   #define MAX_SCRIPTS          7
   #define MAX_INPUTS           32
@@ -205,7 +203,7 @@ PACK(typedef struct {
 }) CurveInfo;
 #else
 struct CurveInfo {
-  int8_t *crv;
+  int8_t * crv;
   uint8_t points;
   bool custom;
 };
@@ -330,7 +328,7 @@ enum BeeperMode {
 #if defined(CPUARM)
   #define EXTRA_GENERAL_FIELDS_ARM \
   uint8_t  backlightBright; \
-  int8_t   currentCalib; \
+  int8_t   txCurrentCalibration; \
   int8_t   temperatureWarn; \
   uint8_t  mAhWarn; \
   uint16_t mAhUsed; \
@@ -381,13 +379,22 @@ enum BeeperMode {
     UART_MODE_MAX = UART_MODE_COUNT-1
   };
 
-  #define LEN_SWITCH_NAME  3
-  #define LEN_ANA_NAME     3
+  #define LEN_SWITCH_NAME              3
+  #define LEN_ANA_NAME                 3
+  #define LEN_BLUETOOTH_NAME           10
+  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER/* || g_eeGeneral.serial2Mode==UART_MODE_CPPM_TRAINER*/)
 
-  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.uart3Mode==UART_MODE_SBUS_TRAINER/* || g_eeGeneral.uart3Mode==UART_MODE_CPPM_TRAINER*/)
+  #if defined(REV9E)
+    #define BLUETOOTH_FIELDS \
+      uint8_t bluetoothEnable; \
+      char bluetoothName[LEN_BLUETOOTH_NAME];
+  #else
+    #define BLUETOOTH_FIELDS
+  #endif
+
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
-    uint8_t  uart3Mode:6; \
+    uint8_t  serial2Mode:6; \
     uint8_t  slidersConfig:2; \
     uint8_t  potsConfig; /*two bits for every pot*/\
     uint8_t  backlightColor; \
@@ -395,7 +402,8 @@ enum BeeperMode {
     CustomFunctionData customFn[NUM_CFN]; \
     swconfig_t switchConfig; \
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
-    char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME];
+    char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME]; \
+    BLUETOOTH_FIELDS
 #elif defined(CPUARM)
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
@@ -425,11 +433,12 @@ PACK(typedef struct {
 #define SET_DEFAULT_PPM_FRAME_LENGTH(idx) g_model.moduleData[idx].ppmFrameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
 
 #define LEN_SCRIPT_FILENAME    8
+#define LEN_SCRIPT_NAME        8
 #define MAX_SCRIPT_INPUTS      8
 #define MAX_SCRIPT_OUTPUTS     6
 PACK(typedef struct {
   char    file[LEN_SCRIPT_FILENAME];
-  char    name[8];
+  char    name[LEN_SCRIPT_NAME];
   int8_t  inputs[MAX_SCRIPT_INPUTS];
 }) ScriptData;
 
@@ -440,7 +449,7 @@ PACK(typedef struct {
     TRAINER_MODULE
   };
   enum TrainerMode {
-    TRAINER_MODE_MASTER,
+    TRAINER_MODE_MASTER_TRAINER_JACK,
     TRAINER_MODE_SLAVE,
     TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
     TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
@@ -511,9 +520,9 @@ enum Functions {
   FUNC_ADJUST_GVAR,
 #if defined(CPUARM)
   FUNC_VOLUME,
+  FUNC_SET_FAILSAFE,
   FUNC_RANGECHECK,
   FUNC_BIND,
-  FUNC_MODULE_OFF,
 #endif
   // then the other functions
   FUNC_FIRST_WITHOUT_ENABLE,
@@ -524,7 +533,7 @@ enum Functions {
 #endif
   FUNC_PLAY_VALUE,
 #if defined(CPUARM)
-  FUNC_PLAY_DIFF,
+  FUNC_RESERVE4,
   FUNC_PLAY_SCRIPT,
   FUNC_RESERVE5,
   FUNC_BACKGND_MUSIC,
@@ -732,6 +741,7 @@ PACK(typedef struct {
   #define SWITCH_EXISTS(x)            (SWITCH_CONFIG(x) != SWITCH_NONE)
   #define IS_3POS(x)                  (SWITCH_CONFIG(x) == SWITCH_3POS)
   #define IS_TOGGLE(x)                (SWITCH_CONFIG(x) == SWITCH_TOGGLE)
+  #define IS_3POS_MIDDLE(x)           ((x) == 1)
   #define SWITCH_WARNING_ALLOWED(x)   (SWITCH_EXISTS(x) && !IS_TOGGLE(x))
 #endif
 
@@ -744,7 +754,7 @@ PACK(typedef struct {
   int8_t    currModel;
   uint8_t   contrast;
   uint8_t   vBatWarn;
-  int8_t    vBatCalib;
+  int8_t    txVoltageCalibration;
   int8_t    backlightMode;
   TrainerData trainer;
   uint8_t   view;            // index of view in main screen
@@ -955,10 +965,10 @@ PACK(typedef struct {
   uint8_t  destCh:5;
   uint8_t  mixWarn:3;         // mixer warning
   uint16_t flightModes:9;
-  uint8_t  curveMode:1;
-  uint8_t  noExpo:1;
-  int8_t   carryTrim:3;
-  uint8_t  mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint16_t  curveMode:1;
+  uint16_t  noExpo:1;
+  int16_t   carryTrim:3;
+  uint16_t  mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
   int16_t  weight;
   int8_t   swtch;
   int8_t   curveParam;
@@ -1152,7 +1162,7 @@ enum TelemetryUnit {
   UNIT_PERCENT,
   UNIT_MAH,
   UNIT_WATTS,
-  UNIT_DBM,
+  UNIT_DB,
   UNIT_RPMS,
   UNIT_G,
   UNIT_DEGREE,
@@ -1193,7 +1203,7 @@ enum TelemetryUnit {
   UNIT_A1A2_MAX = UNIT_MILLIAMPS,
   UNIT_MAH,
   UNIT_WATTS,
-  UNIT_DBM,
+  UNIT_DB,
   UNIT_FEET,
   UNIT_KTS,
   UNIT_HOURS,
@@ -1260,7 +1270,7 @@ enum TelemetrySensorFormula
 
 PACK(typedef struct {
   union {
-    uint16_t id;                     // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
+    uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
     uint16_t persistentValue;
   };
   union {
@@ -1275,7 +1285,8 @@ PACK(typedef struct {
   uint8_t  filter:1;
   uint8_t  logs:1;
   uint8_t  persistent:1;
-  uint8_t  spare:4;
+  uint8_t  onlyPositive:1;
+  uint8_t  spare:3;
   union {
     PACK(struct {
       uint16_t ratio;
@@ -1302,10 +1313,12 @@ PACK(typedef struct {
   };
   void init(const char *label, uint8_t unit=UNIT_RAW, uint8_t prec=0);
   void init(uint16_t id);
-  bool isAvailable();
+  bool isAvailable() const;
   int32_t getValue(int32_t value, uint8_t unit, uint8_t prec) const;
-  bool isConfigurable();
-  bool isPrecConfigurable();
+  bool isConfigurable() const;
+  bool isPrecConfigurable() const;
+  int32_t getPrecMultiplier() const;
+  int32_t getPrecDivisor() const;
 }) TelemetrySensor;
 #endif
 
@@ -1316,50 +1329,50 @@ enum TelemetrySource {
   TELEM_TIMER1,
   TELEM_TIMER2,
   TELEM_TIMER_MAX=TELEM_TIMER2,
-  TELEM_RSSI_TX,        
-  TELEM_RSSI_RX,                  LUA_EXPORT_TELEMETRY("rssi", "RSSI [more is better]")
-  TELEM_A_FIRST,        
-  TELEM_A1=TELEM_A_FIRST,         LUA_EXPORT_TELEMETRY("a1", "A1 analogue value [units as configured]")
-  TELEM_A2,                       LUA_EXPORT_TELEMETRY("a2", "A2 analogue value [units as configured]")
-  TELEM_A_LAST=TELEM_A2,        
-  TELEM_ALT,                      LUA_EXPORT_TELEMETRY("altitude", "Variometer altitude [meters]")
-  TELEM_RPM,                      LUA_EXPORT_TELEMETRY("rpm", "Rotational speed [revolutions per minute]")
-  TELEM_FUEL,                     LUA_EXPORT_TELEMETRY("fuel", "Fuel level [percent]")
-  TELEM_T1,                       LUA_EXPORT_TELEMETRY("temp1", "Temperature 1 [degrees celsius]")
-  TELEM_T2,                       LUA_EXPORT_TELEMETRY("temp2", "Temperature 2 [degrees celsius]")
-  TELEM_SPEED,                    LUA_EXPORT_TELEMETRY("gps-speed", "GPS speed [knots]")
-  TELEM_DIST,                     LUA_EXPORT_TELEMETRY("distance", "GPS distance [meters]")
-  TELEM_GPSALT,                   LUA_EXPORT_TELEMETRY("gps-altitude", "GPS altitude [meters]")
-  TELEM_CELL,                     LUA_EXPORT_TELEMETRY("cell-min", "LiPo sensor - lowest current cell voltage [volts]")
-  TELEM_CELLS_SUM,                LUA_EXPORT_TELEMETRY("cell-sum", "LiPo sensor - current summ of all cell voltages [volts]")
-  TELEM_VFAS,                     LUA_EXPORT_TELEMETRY("vfas", "Current sensor - voltage [volts]")
-  TELEM_CURRENT,                  LUA_EXPORT_TELEMETRY("current", "Current sensor - current [ampers]")
-  TELEM_CONSUMPTION,              LUA_EXPORT_TELEMETRY("consumption", "Current sensor - consumption [mili amper hours]")
-  TELEM_POWER,                    LUA_EXPORT_TELEMETRY("power", "Current sensor - power [wats]")
-  TELEM_ACCx,                     LUA_EXPORT_TELEMETRY("accx", "G sensor - acceleration in X axis [g]")
-  TELEM_ACCy,                     LUA_EXPORT_TELEMETRY("accy", "G sensor - acceleration in Y axis [g]")
-  TELEM_ACCz,                     LUA_EXPORT_TELEMETRY("accz", "G sensor - acceleration in Z axis [g]")
-  TELEM_HDG,                      LUA_EXPORT_TELEMETRY("heading", "GPS heading [degrees]")
-  TELEM_VSPEED,                   LUA_EXPORT_TELEMETRY("vertical-speed", "Variometer vertical speed [m/s]")
-  TELEM_ASPEED,                   LUA_EXPORT_TELEMETRY("air-speed", "Air speed [knots]")
-  TELEM_DTE,                      LUA_EXPORT_TELEMETRY("dte", "Total energy [???]")
+  TELEM_RSSI_TX,
+  TELEM_RSSI_RX,
+  TELEM_A_FIRST,
+  TELEM_A1=TELEM_A_FIRST,
+  TELEM_A2,
+  TELEM_A_LAST=TELEM_A2,
+  TELEM_ALT,
+  TELEM_RPM,
+  TELEM_FUEL,
+  TELEM_T1,
+  TELEM_T2,
+  TELEM_SPEED,
+  TELEM_DIST,
+  TELEM_GPSALT,
+  TELEM_CELL,
+  TELEM_CELLS_SUM,
+  TELEM_VFAS,
+  TELEM_CURRENT,
+  TELEM_CONSUMPTION,
+  TELEM_POWER,
+  TELEM_ACCx,
+  TELEM_ACCy,
+  TELEM_ACCz,
+  TELEM_HDG,
+  TELEM_VSPEED,
+  TELEM_ASPEED,
+  TELEM_DTE,
   TELEM_MIN_A_FIRST,
-  TELEM_MIN_A1=TELEM_MIN_A_FIRST, LUA_EXPORT_TELEMETRY("a1-min", "A1 analogue value minimum [units as configured]")
-  TELEM_MIN_A2,                   LUA_EXPORT_TELEMETRY("a2-min", "A2 analogue value minimum [units as configured]")
+  TELEM_MIN_A1=TELEM_MIN_A_FIRST,
+  TELEM_MIN_A2,
   TELEM_MIN_A_LAST=TELEM_MIN_A2,
-  TELEM_MIN_ALT,                  LUA_EXPORT_TELEMETRY("altitude-min", "Lowest altitude [meters]")
-  TELEM_MAX_ALT,                  LUA_EXPORT_TELEMETRY("altitude-max", "Highest altitude [meters]")
-  TELEM_MAX_RPM,                  LUA_EXPORT_TELEMETRY("rpm-max", "Highest rotational speed [revolutions per minute] [meters]")
-  TELEM_MAX_T1,                   LUA_EXPORT_TELEMETRY("temp1-max", "Highest temperature 1 [degrees celsius]")
-  TELEM_MAX_T2,                   LUA_EXPORT_TELEMETRY("temp2-max", "Highest temperature 2 [degrees celsius]")
-  TELEM_MAX_SPEED,                LUA_EXPORT_TELEMETRY("gps-speed-max", "Highest GPS speed [knots]")
-  TELEM_MAX_DIST,                 LUA_EXPORT_TELEMETRY("distance-max", "Biggest GPS distance [meters]")
-  TELEM_MAX_ASPEED,               LUA_EXPORT_TELEMETRY("air-speed-max", "Highest air speed [knots]")
-  TELEM_MIN_CELL,                 LUA_EXPORT_TELEMETRY("cell-min-min", "LiPo sensor - all time lowest cell voltage [volts]")
-  TELEM_MIN_CELLS_SUM,            LUA_EXPORT_TELEMETRY("cell-sum-min", "LiPo sensor - all time lowest summ of all cell voltages [volts]")
-  TELEM_MIN_VFAS,                 LUA_EXPORT_TELEMETRY("vfas-min", "Current sensor - lowest voltage [volts]")
-  TELEM_MAX_CURRENT,              LUA_EXPORT_TELEMETRY("current-max", "Current sensor - highest current [ampers]")
-  TELEM_MAX_POWER,                LUA_EXPORT_TELEMETRY("power-max", "Current sensor - highest power [wats]")
+  TELEM_MIN_ALT,
+  TELEM_MAX_ALT,
+  TELEM_MAX_RPM,
+  TELEM_MAX_T1,
+  TELEM_MAX_T2,
+  TELEM_MAX_SPEED,
+  TELEM_MAX_DIST,
+  TELEM_MAX_ASPEED,
+  TELEM_MIN_CELL,
+  TELEM_MIN_CELLS_SUM,
+  TELEM_MIN_VFAS,
+  TELEM_MAX_CURRENT,
+  TELEM_MAX_POWER,
   TELEM_ACC,
   TELEM_GPS_TIME,
   TELEM_CSW_MAX = TELEM_MAX_POWER,
@@ -1738,7 +1751,7 @@ enum SwitchSources {
   SWSRC_LAST_LOGICAL_SWITCH = SWSRC_FIRST_LOGICAL_SWITCH+NUM_LOGICAL_SWITCH-1,
 
   SWSRC_ON,
-  SWSRC_One,
+  SWSRC_ONE,
 
 #if defined(CPUARM)
   SWSRC_FIRST_FLIGHT_MODE,
@@ -1753,12 +1766,13 @@ enum SwitchSources {
   SWSRC_FIRST = -SWSRC_LAST,
 
 #if defined(CPUARM)
-  SWSRC_LAST_IN_LOGICAL_SWITCHES = SWSRC_LAST_FLIGHT_MODE,
-  SWSRC_LAST_IN_MIXES = SWSRC_LAST_FLIGHT_MODE,
+  SWSRC_LAST_IN_LOGICAL_SWITCHES = SWSRC_COUNT-1,
+  SWSRC_LAST_IN_MIXES = SWSRC_COUNT-1,
 #else
   SWSRC_LAST_IN_LOGICAL_SWITCHES = SWSRC_LAST_LOGICAL_SWITCH,
   SWSRC_LAST_IN_MIXES = SWSRC_LAST_LOGICAL_SWITCH,
 #endif
+
   SWSRC_FIRST_IN_LOGICAL_SWITCHES = -SWSRC_LAST_IN_LOGICAL_SWITCHES,
   SWSRC_FIRST_IN_MIXES = -SWSRC_LAST_IN_MIXES,
 
@@ -1779,24 +1793,25 @@ enum MixSources {
 #endif
 
   MIXSRC_FIRST_STICK,
-  MIXSRC_Rud = MIXSRC_FIRST_STICK, LUA_EXPORT("rud", "Rudder")
-  MIXSRC_Ele,                      LUA_EXPORT("ele", "Elevator")
-  MIXSRC_Thr,                      LUA_EXPORT("thr", "Throttle")
-  MIXSRC_Ail,                      LUA_EXPORT("ail", "Aileron")
+  MIXSRC_Rud = MIXSRC_FIRST_STICK,      LUA_EXPORT("rud", "Rudder")
+  MIXSRC_Ele,                           LUA_EXPORT("ele", "Elevator")
+  MIXSRC_Thr,                           LUA_EXPORT("thr", "Throttle")
+  MIXSRC_Ail,                           LUA_EXPORT("ail", "Aileron")
 
   MIXSRC_FIRST_POT,
 #if defined(PCBTARANIS)
-  MIXSRC_POT1 = MIXSRC_FIRST_POT, LUA_EXPORT("s1", "Potentiometer 1")
-  MIXSRC_POT2,                    LUA_EXPORT("s2", "Potentiometer 2")
-  MIXSRC_POT3,                    LUA_EXPORT("s3", "Potentiometer 3")
+  MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
+  MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
+  MIXSRC_POT3,                          LUA_EXPORT("s3", "Potentiometer 3")
   #if defined(REV9E)
-    MIXSRC_POT4,                  LUA_EXPORT("s4", "Potentiometer 4")
+    MIXSRC_POT4,                        LUA_EXPORT("s4", "Potentiometer 4 (X9E only)")
   #endif
-  MIXSRC_SLIDER1,                 LUA_EXPORT("ls", "Left slider")
-  MIXSRC_SLIDER2,                 LUA_EXPORT("rs", "Right slider")
+  MIXSRC_FIRST_SLIDER,
+  MIXSRC_SLIDER1 = MIXSRC_FIRST_SLIDER, LUA_EXPORT("ls", "Left slider")
+  MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
   #if defined(REV9E)
-    MIXSRC_SLIDER3,               LUA_EXPORT("ls2", "Left center slider")
-    MIXSRC_SLIDER4,               LUA_EXPORT("rs2", "Right center slider")
+    MIXSRC_SLIDER3,                     LUA_EXPORT("lcs", "Left center slider (X9E only)")
+    MIXSRC_SLIDER4,                     LUA_EXPORT("rcs", "Right center slider (X9E only)")
     MIXSRC_LAST_POT = MIXSRC_SLIDER4,
   #else
     MIXSRC_LAST_POT = MIXSRC_SLIDER2,
@@ -1849,16 +1864,16 @@ enum MixSources {
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
 #if defined(REV9E)
-  MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
-  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
-  MIXSRC_SK,                        LUA_EXPORT("sk", "Switch K")
-  MIXSRC_SL,                        LUA_EXPORT("sl", "Switch L")
-  MIXSRC_SM,                        LUA_EXPORT("sm", "Switch M")
-  MIXSRC_SN,                        LUA_EXPORT("sn", "Switch N")
-  MIXSRC_SO,                        LUA_EXPORT("so", "Switch O")
-  MIXSRC_SP,                        LUA_EXPORT("sp", "Switch P")
-  MIXSRC_SQ,                        LUA_EXPORT("sq", "Switch Q")
-  MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R")
+  MIXSRC_SI,                        LUA_EXPORT("si", "Switch I (X9E only)")
+  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J (X9E only)")
+  MIXSRC_SK,                        LUA_EXPORT("sk", "Switch K (X9E only)")
+  MIXSRC_SL,                        LUA_EXPORT("sl", "Switch L (X9E only)")
+  MIXSRC_SM,                        LUA_EXPORT("sm", "Switch M (X9E only)")
+  MIXSRC_SN,                        LUA_EXPORT("sn", "Switch N (X9E only)")
+  MIXSRC_SO,                        LUA_EXPORT("so", "Switch O (X9E only)")
+  MIXSRC_SP,                        LUA_EXPORT("sp", "Switch P (X9E only)")
+  MIXSRC_SQ,                        LUA_EXPORT("sq", "Switch Q (X9E only)")
+  MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R (X9E only)")
   MIXSRC_LAST_SWITCH = MIXSRC_SR,
 #else
   MIXSRC_LAST_SWITCH = MIXSRC_SH,
@@ -1908,17 +1923,17 @@ enum MixSources {
   MIXSRC_LAST_GVAR = MIXSRC_FIRST_GVAR+MAX_GVARS-1,
 
 #if defined(CPUARM)
-  MIXSRC_TX_VOLTAGE,                        LUA_EXPORT_TELEMETRY("tx-voltage", "Transmitter battery voltage [volts]")
-  MIXSRC_TX_TIME,                           LUA_EXPORT_TELEMETRY("clock", "RTC clock [minutes from midnight]")
+  MIXSRC_TX_VOLTAGE,                        LUA_EXPORT("tx-voltage", "Transmitter battery voltage [volts]")
+  MIXSRC_TX_TIME,                           LUA_EXPORT("clock", "RTC clock [minutes from midnight]")
   MIXSRC_RESERVE1,
   MIXSRC_RESERVE2,
   MIXSRC_RESERVE3,
   MIXSRC_RESERVE4,
   MIXSRC_RESERVE5,
   MIXSRC_FIRST_TIMER,
-  MIXSRC_TIMER1 = MIXSRC_FIRST_TIMER,       LUA_EXPORT_TELEMETRY("timer1", "Timer 1 value [seconds]")
-  MIXSRC_TIMER2,                            LUA_EXPORT_TELEMETRY("timer2", "Timer 2 value [seconds]")
-  MIXSRC_TIMER3,                            LUA_EXPORT_TELEMETRY("timer3", "Timer 3 value [seconds]")
+  MIXSRC_TIMER1 = MIXSRC_FIRST_TIMER,       LUA_EXPORT("timer1", "Timer 1 value [seconds]")
+  MIXSRC_TIMER2,                            LUA_EXPORT("timer2", "Timer 2 value [seconds]")
+  MIXSRC_TIMER3,                            LUA_EXPORT("timer3", "Timer 3 value [seconds]")
   MIXSRC_LAST_TIMER = MIXSRC_TIMER3,
 #endif
 
@@ -1950,7 +1965,11 @@ enum TimerModes {
 enum CountDownModes {
   COUNTDOWN_SILENT,
   COUNTDOWN_BEEPS,
-  COUNTDOWN_VOICE
+  COUNTDOWN_VOICE,
+#if defined(CPUARM) && defined(HAPTIC)
+  COUNTDOWN_HAPTIC,
+#endif
+  COUNTDOWN_COUNT
 };
 
 #if defined(CPUARM)
@@ -2001,6 +2020,9 @@ enum Protocols {
   PROTO_DSM2_DSM2,
   PROTO_DSM2_DSMX,
 #endif
+#if defined(CROSSFIRE)
+  PROTO_CROSSFIRE,
+#endif
 #if defined(IRPROTOS)
   // we will need 4 bytes for proto :(
   PROTO_SILV,
@@ -2020,6 +2042,8 @@ enum RFProtocols {
   RF_PROTO_LAST = RF_PROTO_LR12
 };
 
+#define HAS_RF_PROTOCOL_FAILSAFE(protocol) ((protocol) == RF_PROTO_X16)
+
 enum DSM2Protocols {
   DSM2_PROTO_LP45,
   DSM2_PROTO_DSM2,
@@ -2032,6 +2056,9 @@ enum ModuleTypes {
   MODULE_TYPE_XJT,
 #if defined(DSM2)
   MODULE_TYPE_DSM2,
+#endif
+#if defined(CROSSFIRE)
+  MODULE_TYPE_CROSSFIRE,
 #endif
   MODULE_TYPE_COUNT
 };
@@ -2047,10 +2074,10 @@ enum FailsafeModes {
   FAILSAFE_LAST = FAILSAFE_RECEIVER
 };
 
-#if defined(FRSKY) || !defined(PCBSTD)
-  #define TELEMETRY_DATA FrSkyData frsky;
-#elif defined(MAVLINK)
+#if defined(MAVLINK)
   #define TELEMETRY_DATA MavlinkData mavlink;
+#elif defined(FRSKY) || !defined(PCBSTD)
+  #define TELEMETRY_DATA FrSkyData frsky;
 #else
   #define TELEMETRY_DATA
 #endif
@@ -2069,14 +2096,24 @@ PACK(typedef struct {
 
 enum ThrottleSources {
   THROTTLE_SOURCE_THR,
-#if defined(PCBTARANIS)
+  THROTTLE_SOURCE_FIRST_POT,
+#if defined(PCBTARANIS) && defined(REV9E)
+  THROTTLE_SOURCE_F1 = THROTTLE_SOURCE_FIRST_POT,
+  THROTTLE_SOURCE_F2,
+  THROTTLE_SOURCE_F3,
+  THROTTLE_SOURCE_F4,
   THROTTLE_SOURCE_S1,
+  THROTTLE_SOURCE_S2,
+  THROTTLE_SOURCE_LS,
+  THROTTLE_SOURCE_RS,
+#elif defined(PCBTARANIS)
+  THROTTLE_SOURCE_S1 = THROTTLE_SOURCE_FIRST_POT,
   THROTTLE_SOURCE_S2,
   THROTTLE_SOURCE_S3,
   THROTTLE_SOURCE_LS,
   THROTTLE_SOURCE_RS,
 #else
-  THROTTLE_SOURCE_P1,
+  THROTTLE_SOURCE_P1 = THROTTLE_SOURCE_FIRST_POT,
   THROTTLE_SOURCE_P2,
   THROTTLE_SOURCE_P3,
 #endif
@@ -2088,7 +2125,8 @@ enum TelemetryType
   PROTOCOL_TELEMETRY_FIRST,
   PROTOCOL_FRSKY_SPORT = PROTOCOL_TELEMETRY_FIRST,
   PROTOCOL_FRSKY_D,
-  PROTOCOL_FRSKY_D_SECONDARY
+  PROTOCOL_FRSKY_D_SECONDARY,
+  PROTOCOL_PULSES_CROSSFIRE
 };
 
 enum DisplayTrims
@@ -2107,7 +2145,7 @@ PACK(typedef struct {
   AVR_FIELD(int8_t    ppmNCH:4)
   ARM_FIELD(uint8_t   noGlobalFunctions:1)
   ARM_FIELD(uint8_t   displayTrims:2)
-  ARM_FIELD(uint8_t   spare2:1)
+  ARM_FIELD(uint8_t   ignoreSensorIds:1)
   int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
   ARM_FIELD(uint8_t displayChecklist:1)
@@ -2130,8 +2168,9 @@ PACK(typedef struct {
   FlightModeData flightModeData[MAX_FLIGHT_MODES];
 
   AVR_FIELD(int8_t ppmFrameLength)     // 0=22.5ms  (10ms-30ms) 0.5ms increments
-  uint8_t   thrTraceSrc;
-  
+
+  uint8_t thrTraceSrc;
+
   swarnstate_t  switchWarningState;
   swarnenable_t switchWarningEnable;
 

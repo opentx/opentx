@@ -74,9 +74,10 @@ extern "C" {
 #endif
 
 #if !defined(SIMU)
-  #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc/usbd_msc_core.h"
-  #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc/usbd_hid_core.h"
-  #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc/usbd_usr.h"
+  #include "usbd_cdc_core.h"
+  #include "usbd_msc_core.h"
+  #include "usbd_hid_core.h"
+  #include "usbd_usr.h"
   #include "usbd_desc.h"
   #include "usb_conf.h"
   #include "usbd_conf.h"
@@ -142,7 +143,12 @@ void configure_pins( uint32_t pins, uint16_t config );
 extern uint16_t sessionTimer;
 
 #define SLAVE_MODE()         (g_model.trainerMode == TRAINER_MODE_SLAVE)
+
+#if defined(REV9E)
+#define TRAINER_CONNECTED()  (true)
+#else
 #define TRAINER_CONNECTED()  (GPIO_ReadInputDataBit(TRAINER_GPIO_DETECT, TRAINER_GPIO_PIN_DETECT) == Bit_RESET)
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -204,6 +210,8 @@ void init_pxx( uint32_t module_index );
 void disable_pxx( uint32_t module_index );
 void init_dsm2( uint32_t module_index );
 void disable_dsm2( uint32_t module_index );
+void init_crossfire( uint32_t module_index );
+void disable_crossfire( uint32_t module_index );
 
 // Trainer driver
 void init_trainer_ppm(void);
@@ -236,8 +244,9 @@ void checkRotaryEncoder(void);
 void watchdogInit(unsigned int duration);
 #define wdt_enable(x)   watchdogInit(1500)
 #define wdt_reset()     IWDG->KR = 0xAAAA
-#define WAS_RESET_BY_WATCHDOG()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
-#define WAS_RESET_BY_SOFTWARE()   (RCC->CSR & RCC_CSR_SFTRSTF)
+#define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)
+#define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
+#define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF | RCC_CSR_SFTRSTF))
 #endif
 
 // ADC driver
@@ -254,6 +263,7 @@ extern "C" {
 // Power driver
 void pwrInit(void);
 uint32_t pwrCheck(void);
+void pwrOn(void);
 void pwrOff(void);
 #if defined(REV9E)
 uint32_t pwrPressed(void);
@@ -262,6 +272,7 @@ uint32_t pwrPressedDuration(void);
 #define UNEXPECTED_SHUTDOWN()   (g_eeGeneral.unexpectedShutdown)
 
 // Backlight driver
+void backlightInit(void);
 #if defined(REVPLUS)
   void turnBacklightOn(uint8_t level, uint8_t color);
   void turnBacklightOff(void);
@@ -279,25 +290,24 @@ uint32_t pwrPressedDuration(void);
 // USB driver
 int usbPlugged(void);
 void usbInit(void);
-void usbStart(void);
-#if defined(USB_JOYSTICK)
-void usbStop(void);
-#endif
+void usbDeInit(void);
+void usbSerialPutc(uint8_t c);
 
 #if defined(__cplusplus) && !defined(SIMU)
 }
 #endif
 
-// EEPROM driver
-void eepromInit(void);
-void eepromReadBlock(uint8_t * buffer, uint16_t address, uint16_t size);
-void eepromWriteBlock(uint8_t * buffer, uint16_t address, uint16_t size);
+// I2C driver: EEPROM + Audio Volume
+void i2cInit(void);
+void eepromReadBlock(uint8_t * buffer, uint32_t address, uint32_t size);
+void eepromWriteBlock(uint8_t * buffer, uint32_t address, uint32_t size);
 
 // Debug driver
 void debugPutc(const char c);
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate);
+void telemetryPortSetDirectionOutput(void);
 void sportSendBuffer(uint8_t *buffer, uint32_t count);
 
 // Audio driver
@@ -320,30 +330,39 @@ void hapticOff(void);
   void hapticOn(void);
 #endif
 
-// SERIAL_USART driver
-#define DEBUG_BAUDRATE      115200
-void uart3Init(unsigned int mode, unsigned int protocol);
-void uart3Putc(const char c);
-#define telemetrySecondPortInit(protocol) uart3Init(UART_MODE_TELEMETRY, protocol)
-void uart3SbusInit(void);
-void uart3Stop(void);
+// Second serial port driver
+#define DEBUG_BAUDRATE                 115200
+void serial2Init(unsigned int mode, unsigned int protocol);
+void serial2Putc(char c);
+#define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
+void serial2SbusInit(void);
+void serial2Stop(void);
 
 // BT driver
-int bt_open(void);
-int bt_write(const void *buffer, int len);
-int bt_read(void *buffer, int len);
-void bt_wakeup(void);
+#define BLUETOOTH_DEFAULT_BAUDRATE     115200
+#define BLUETOOTH_FACTORY_BAUDRATE     9600
+uint8_t bluetoothReady(void);
+void bluetoothInit(uint32_t baudrate);
+void bluetoothWrite(const void * buffer, int len);
+void bluetoothWriteString(const char * str);
+int bluetoothRead(void * buffer, int len);
+void bluetoothWakeup(void);
+
+// LCD driver
+void lcdInit(void);
+void lcdInitFinish(void);
+void lcdOff(void);
 
 // Top LCD driver
 #if defined(REV9E)
 void topLcdInit(void);
-void topLcdOff();
+void topLcdOff(void);
 void topLcdRefreshStart(void);
 void topLcdRefreshEnd(void);
-void setTopFirstTimer(uint32_t value);
+void setTopFirstTimer(int32_t value);
 void setTopSecondTimer(uint32_t value);
 void setTopRssi(uint32_t rssi);
-void setTopBatteryState(uint32_t state);
+void setTopBatteryState(int state, uint8_t blinking);
 void setTopBatteryValue(uint32_t volts);
 #endif
 

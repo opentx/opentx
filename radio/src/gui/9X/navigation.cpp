@@ -36,12 +36,12 @@
 
 #include "../../opentx.h"
 
-vertpos_t s_pgOfs;
+vertpos_t menuVerticalOffset;
 int8_t s_editMode;
-uint8_t s_noHi;
+uint8_t noHighlightCounter;
 uint8_t calibrationState;
-vertpos_t m_posVert;
-horzpos_t m_posHorz;
+vertpos_t menuVerticalPosition;
+horzpos_t menuHorizontalPosition;
 
 #if defined(NAVIGATION_POT1)
 int16_t p1valdiff;
@@ -81,19 +81,28 @@ INIT_STOPS(stopsSwitch, 15, SWSRC_FIRST, CATEGORY_END(-SWSRC_FIRST_LOGICAL_SWITC
 
 int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
-  int16_t newval = val;
+  int newval = val;
 
 #if defined(DBLKEYS)
   uint8_t in = KEYS_PRESSED();
   if (!(i_flags & NO_DBLKEYS) && (EVT_KEY_MASK(event))) {
     bool dblkey = true;
-    if (DBLKEYS_PRESSED_RGT_LFT(in))
-      newval = -val;
+    if (DBLKEYS_PRESSED_RGT_LFT(in)) {
+      if (!isValueAvailable || isValueAvailable(-val)) {
+        newval = -val;
+      }
+    }
     else if (DBLKEYS_PRESSED_RGT_UP(in)) {
-      newval = (i_max > 100 ? 100 : i_max);
+      newval = (i_max > stops.max() ? stops.max() : i_max);
+      while (isValueAvailable && !isValueAvailable(newval) && newval>i_min) {
+    	--newval;
+      }
     }
     else if (DBLKEYS_PRESSED_LFT_DWN(in)) {
-      newval = (i_min < -100 ? -100 : i_min);
+      newval = (i_min < stops.min() ? stops.min() : i_min);
+      while (isValueAvailable && !isValueAvailable(newval) && newval<i_max) {
+        ++newval;
+      }
     }
     else if (DBLKEYS_PRESSED_UP_DWN(in)) {
       newval = 0;
@@ -113,12 +122,37 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
 #endif
 
   if (event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_RIGHT) || (s_editMode>0 && (IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP)))) {
-    newval++;
-    AUDIO_KEYPAD_UP();
+	do {
+	  newval++;
+	} while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
+
+	if (newval > i_max) {
+	  newval = val;
+	  killEvents(event);
+	  AUDIO_WARNING2();
+	}
+	else {
+	  AUDIO_KEYPAD_UP();
+	}
   }
   else if (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_REPT(KEY_LEFT) || (s_editMode>0 && (IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN)))) {
-    newval--;
-    AUDIO_KEYPAD_DOWN();
+	do {
+	  if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
+		newval -= min(10, val-i_min);
+	  }
+	  else {
+		newval--;
+	  }
+	} while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
+
+	if (newval < i_min) {
+	  newval = val;
+	  killEvents(event);
+	  AUDIO_WARNING2();
+	}
+	else {
+	  AUDIO_KEYPAD_DOWN();
+	}
   }
 
   if (!READ_ONLY() && i_min==0 && i_max==1 && (event==EVT_KEY_BREAK(KEY_ENTER) || IS_ROTARY_BREAK(event))) {
@@ -316,10 +350,10 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max)
 tmr10ms_t menuEntryTime;
 #endif
 
-void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
+void check(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
 {
-  vertpos_t l_posVert = m_posVert;
-  horzpos_t l_posHorz = m_posHorz;
+  vertpos_t l_posVert = menuVerticalPosition;
+  horzpos_t l_posHorz = menuHorizontalPosition;
 
   uint8_t maxcol = MAXCOL(l_posVert);
 
@@ -407,7 +441,7 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       }
 
       if (cc != curr) {
-        chainMenu((MenuFuncP)pgm_read_adr(&menuTab[cc]));
+        chainMenu((MenuHandlerFunc)pgm_read_adr(&menuTab[cc]));
       }
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -594,58 +628,84 @@ void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       break;
   }
 
+  uint8_t maxLines = menuTab ? LCD_LINES-1 : LCD_LINES-2;
+
 #if defined(CPUARM)
-  if (l_posVert<1) {
-    s_pgOfs=0;
-  }
-  else if (menuTab && horTab) {
-    vertpos_t realPosVert = l_posVert;
-    vertpos_t realPgOfs = s_pgOfs;
-    vertpos_t realMaxrow = maxrow;
-    for (vertpos_t i=1; i<=maxrow; i++) {
-      if (MAXCOL(i) == HIDDEN_ROW) {
-        realMaxrow--;
-        if (i < l_posVert)
-          realPosVert--;
-        if (i < s_pgOfs)
-          realPgOfs--;
+  int linesCount = maxrow;
+  if (l_posVert == 0 || (l_posVert==1 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW) || (l_posVert==2 && MAXCOL(vertpos_t(0)) >= HIDDEN_ROW && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW)) {
+    menuVerticalOffset = 0;
+    if (horTab) {
+      linesCount = 0;
+      for (int i=0; i<maxrow; i++) {
+        if (i>=horTabMax || horTab[i] != HIDDEN_ROW) {
+          linesCount++;
+        }
       }
     }
-    if (realPosVert>(LCD_LINES-1)+realPgOfs) realPgOfs = realPosVert-(LCD_LINES-1);
-    else if (realPosVert<1+realPgOfs) realPgOfs = realPosVert-1;
-    s_pgOfs = realPgOfs;
-    for (vertpos_t i=1; i<=realPgOfs; i++) {
-      if (MAXCOL(i) == HIDDEN_ROW) {
-        s_pgOfs++;
+  }
+  else if (horTab) {
+    if (maxrow > maxLines) {
+      while (1) {
+        vertpos_t firstLine = 0;
+        for (int numLines=0; firstLine<maxrow && numLines<menuVerticalOffset; firstLine++) {
+          if (firstLine>=horTabMax || horTab[firstLine+1] != HIDDEN_ROW) {
+            numLines++;
+          }
+        }
+        if (l_posVert <= firstLine) {
+          menuVerticalOffset--;
+        }
+        else {
+          vertpos_t lastLine = firstLine;
+          for (int numLines=0; lastLine<maxrow && numLines<maxLines; lastLine++) {
+            if (lastLine>=horTabMax || horTab[lastLine+1] != HIDDEN_ROW) {
+              numLines++;
+            }
+          }
+          if (l_posVert > lastLine) {
+            menuVerticalOffset++;
+          }
+          else {
+            linesCount = menuVerticalOffset + maxLines;
+            for (int i=lastLine; i<maxrow; i++) {
+              if (i>=horTabMax || horTab[i] != HIDDEN_ROW) {
+                linesCount++;
+              }
+            }
+            break;
+          }
+        }
       }
     }
-    maxrow = realMaxrow;
-  }
-  else {
-    uint8_t max = menuTab ? LCD_LINES-1 : LCD_LINES-2;
-    if (l_posVert>max+s_pgOfs) s_pgOfs = l_posVert-max;
-    else if (l_posVert<1+s_pgOfs) s_pgOfs = l_posVert-1;
   }
 #else
-  uint8_t max = menuTab ? LCD_LINES-1 : LCD_LINES-2;
-  if (l_posVert<1) s_pgOfs=0;
-  else if (l_posVert>max+s_pgOfs) s_pgOfs = l_posVert-max;
-  else if (l_posVert<1+s_pgOfs) s_pgOfs = l_posVert-1;
+  if (l_posVert<1) {
+    menuVerticalOffset=0;
+  }
 #endif
-  m_posVert = l_posVert;
-  m_posHorz = l_posHorz;
+  else {
+    if (l_posVert>maxLines+menuVerticalOffset) {
+      menuVerticalOffset = l_posVert-maxLines;
+    }
+    else if (l_posVert<=menuVerticalOffset) {
+      menuVerticalOffset = l_posVert-1;
+    }
+  }
+
+  menuVerticalPosition = l_posVert;
+  menuHorizontalPosition = l_posHorz;
 #if !defined(CPUM64)
   // cosmetics on 9x
-  if (s_pgOfs > 0) {
+  if (menuVerticalOffset > 0) {
     l_posVert--;
-    if (l_posVert == s_pgOfs && CURSOR_NOT_ALLOWED_IN_ROW(l_posVert)) {
-      s_pgOfs = l_posVert-1;
+    if (l_posVert == menuVerticalOffset && CURSOR_NOT_ALLOWED_IN_ROW(l_posVert)) {
+      menuVerticalOffset = l_posVert-1;
     }
   }
 #endif
 }
 
-void check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow)
+void check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow)
 {
   check(event, curr, menuTab, menuTabSize, 0, 0, maxrow);
 }
@@ -661,6 +721,6 @@ void repeatLastCursorMove(uint8_t event)
     putEvent(event);
   }
   else {
-    m_posHorz = 0;
+    menuHorizontalPosition = 0;
   }
 }

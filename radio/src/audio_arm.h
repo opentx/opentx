@@ -67,6 +67,8 @@ struct AudioBuffer {
   uint8_t  state;
 };
 
+extern AudioBuffer audioBuffers[AUDIO_BUFFER_COUNT];
+
 enum FragmentTypes {
   FRAGMENT_EMPTY,
   FRAGMENT_TONE,
@@ -197,14 +199,14 @@ class AudioQueue {
 
     inline AudioBuffer * getNextFilledBuffer()
     {
-      if (buffers[bufferRIdx].state == AUDIO_BUFFER_PLAYING) {
-        buffers[bufferRIdx].state = AUDIO_BUFFER_FREE;
+      if (audioBuffers[bufferRIdx].state == AUDIO_BUFFER_PLAYING) {
+        audioBuffers[bufferRIdx].state = AUDIO_BUFFER_FREE;
         bufferRIdx = nextBufferIdx(bufferRIdx);
       }
 
       uint8_t idx = bufferRIdx;
       do {
-        AudioBuffer * buffer = &buffers[idx];
+        AudioBuffer * buffer = &audioBuffers[idx];
         if (buffer->state == AUDIO_BUFFER_FILLED) {
           buffer->state = AUDIO_BUFFER_PLAYING;
           bufferRIdx = idx;
@@ -219,7 +221,7 @@ class AudioQueue {
     bool filledAtleast(int noBuffers) {
       int count = 0;
       for(int n= 0; n<AUDIO_BUFFER_COUNT; ++n) {
-        if (buffers[n].state == AUDIO_BUFFER_FILLED) {
+        if (audioBuffers[n].state == AUDIO_BUFFER_FILLED) {
           if (++count >= noBuffers) {
             return true;
           }
@@ -243,7 +245,6 @@ class AudioQueue {
     ToneContext  priorityContext;
     ToneContext  varioContext;
 
-    AudioBuffer buffers[AUDIO_BUFFER_COUNT];
     uint8_t bufferRIdx;
     uint8_t bufferWIdx;
 
@@ -254,7 +255,7 @@ class AudioQueue {
 
     inline AudioBuffer * getEmptyBuffer()
     {
-      AudioBuffer * buffer = &buffers[bufferWIdx];
+      AudioBuffer * buffer = &audioBuffers[bufferWIdx];
       if (buffer->state == AUDIO_BUFFER_FREE)
         return buffer;
       else
@@ -305,8 +306,15 @@ void audioStart();
 #define AUDIO_ERROR()            AUDIO_BUZZER(audioEvent(AU_ERROR), beep(4))
 #define AUDIO_TIMER_30()         AUDIO_BUZZER(audioEvent(AU_TIMER_30), { beepAgain=2; beep(2); })
 #define AUDIO_TIMER_20()         AUDIO_BUZZER(audioEvent(AU_TIMER_20), { beepAgain=1; beep(2); })
+
+#if defined(HAPTIC)
+#define AUDIO_TIMER_LT10(m, x)   do { if (m==COUNTDOWN_VOICE) playNumber(x, 0, 0, 0); else if (m==COUNTDOWN_HAPTIC) haptic.event(AU_TIMER_LT10); else AUDIO_BUZZER(audioEvent(AU_TIMER_LT10), beep(2)); } while(0)
+#define AUDIO_TIMER_00(m)        do { if (m==COUNTDOWN_VOICE) playNumber(0, 0, 0, 0); else if (m==COUNTDOWN_HAPTIC) haptic.event(AU_TIMER_00); else AUDIO_BUZZER(audioEvent(AU_TIMER_00), beep(3)); } while(0)
+#else
 #define AUDIO_TIMER_LT10(m, x)   do { if (m==COUNTDOWN_VOICE) playNumber(x, 0, 0, 0); else AUDIO_BUZZER(audioEvent(AU_TIMER_LT10), beep(2)); } while(0)
 #define AUDIO_TIMER_00(m)        do { if (m==COUNTDOWN_VOICE) playNumber(0, 0, 0, 0); else AUDIO_BUZZER(audioEvent(AU_TIMER_00), beep(3)); } while(0)
+#endif
+
 #define AUDIO_INACTIVITY()       AUDIO_BUZZER(audioEvent(AU_INACTIVITY), beep(3))
 #define AUDIO_MIX_WARNING(x)     AUDIO_BUZZER(audioEvent(AU_MIX_WARNING_1+x-1), beep(1))
 #define AUDIO_POT_MIDDLE(x)      AUDIO_BUZZER(audioEvent(AU_STICK1_MIDDLE+x), beep(2))
@@ -330,6 +338,8 @@ void audioStart();
 #define AUDIO_RXBATT_RED()       audioEvent(AU_RXBATT_RED)
 #define AUDIO_TELEMETRY_LOST()   audioEvent(AU_TELEMETRY_LOST)
 #define AUDIO_TELEMETRY_BACK()   audioEvent(AU_TELEMETRY_BACK)
+#define AUDIO_TRAINER_LOST()     audioEvent(AU_TRAINER_LOST)
+#define AUDIO_TRAINER_BACK()     audioEvent(AU_TRAINER_BACK)
 
 #define AUDIO_HEARTBEAT()
 
@@ -372,6 +382,7 @@ void pushPrompt(uint16_t prompt, uint8_t id=0);
   #define PLAY_SWITCH_MOVED(sw)         playModelEvent(SWITCH_AUDIO_CATEGORY, sw)
   #define PLAY_LOGICAL_SWITCH_OFF(sw)   playModelEvent(LOGICAL_SWITCH_AUDIO_CATEGORY, sw, AUDIO_EVENT_OFF)
   #define PLAY_LOGICAL_SWITCH_ON(sw)    playModelEvent(LOGICAL_SWITCH_AUDIO_CATEGORY, sw, AUDIO_EVENT_ON)
+  #define PLAY_MODEL_NAME()             playModelName()
   #define START_SILENCE_PERIOD()        timeAutomaticPromptsSilence = get_tmr10ms()
   #define IS_SILENCE_PERIOD_ELAPSED()   (get_tmr10ms()-timeAutomaticPromptsSilence > 50)
 #else
@@ -380,6 +391,7 @@ void pushPrompt(uint16_t prompt, uint8_t id=0);
   #define PLAY_SWITCH_MOVED(sw)
   #define PLAY_LOGICAL_SWITCH_OFF(sw)
   #define PLAY_LOGICAL_SWITCH_ON(sw)
+  #define PLAY_MODEL_NAME()
   #define START_SILENCE_PERIOD()
 #endif
 

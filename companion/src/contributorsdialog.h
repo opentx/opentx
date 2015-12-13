@@ -2,30 +2,22 @@
 #define CONTRIBUTORSDIALOG_H
 
 #include <QDialog>
-#include "eeprominterface.h"
-#include "downloaddialog.h"
 
 namespace Ui {
-    class contributorsDialog;
+  class HtmlDialog;
 }
 
-class contributorsDialog : public QDialog
+class ContributorsDialog : public QDialog
 {
-    Q_OBJECT
-public:
-    explicit contributorsDialog(QWidget *parent = 0, int contest = 0, QString rnurl = QString() );
-    ~contributorsDialog();
+  Q_OBJECT
 
-private:
-    Ui::contributorsDialog *ui;
-    QNetworkAccessManager *manager;
+  public:
+    explicit ContributorsDialog(QWidget * parent = 0);
+    ~ContributorsDialog();
 
-    void showEvent ( QShowEvent * );
-
-private slots:
-    void forceClose();
-    void replyFinished(QNetworkReply * reply);   
-    
+  private:
+    Ui::HtmlDialog * ui;
+    QString formatTable(const QString & title, const QStringList & names, int colums);
 };
 
 #endif // CONTRIBUTORSDIALOG_H

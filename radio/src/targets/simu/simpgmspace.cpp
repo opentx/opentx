@@ -103,8 +103,10 @@ sem_t *eeprom_write_sem;
 
 void simuInit()
 {
-  for (int i = 0; i <= 17; i++)
+  for (int i = 0; i <= 17; i++) {
     simuSetSwitch(i, 0);
+    simuSetKey(i, false);  // a little dirty, but setting keys that don't exist is perfectly OK here
+  }
 }
 
 #define NEG_CASE(sw_or_key, pin, mask) \
@@ -117,31 +119,31 @@ void simuInit()
       break;
 
 #if defined(CPUARM)
-#if defined(PCBTARANIS)
-#define SWITCH_CASE NEG_CASE
-#else
-#define SWITCH_CASE POS_CASE
-#endif
-#define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
+  #if defined(PCBTARANIS) && !defined(REV9E)
+    #define SWITCH_CASE NEG_CASE
+  #else
+    #define SWITCH_CASE POS_CASE
+  #endif
+  #define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
     case swtch: \
       if ((int)state < 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
       if ((int)state > 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
       break;
-#define KEY_CASE NEG_CASE
-#define TRIM_CASE KEY_CASE
+  #define KEY_CASE NEG_CASE
+  #define TRIM_CASE NEG_CASE
 #else
-#if defined(PCBMEGA2560)
-#define SWITCH_CASE POS_CASE
-#else
-#define SWITCH_CASE NEG_CASE
-#endif
-#define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
+  #if defined(PCBMEGA2560)
+    #define SWITCH_CASE POS_CASE
+  #else
+    #define SWITCH_CASE NEG_CASE
+  #endif
+  #define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
     case swtch: \
       if ((int)state >= 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
       if ((int)state <= 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
       break;
-#define KEY_CASE POS_CASE
-#define TRIM_CASE KEY_CASE
+  #define KEY_CASE POS_CASE
+  #define TRIM_CASE KEY_CASE
 #endif
 
 void simuSetKey(uint8_t key, bool state)
@@ -196,9 +198,9 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
     SWITCH_3_CASE(0,  SWITCHES_GPIO_REG_A_L, SWITCHES_GPIO_REG_A_H, SWITCHES_GPIO_PIN_A_L, SWITCHES_GPIO_PIN_A_H)
     SWITCH_3_CASE(1,  SWITCHES_GPIO_REG_B_L, SWITCHES_GPIO_REG_B_H, SWITCHES_GPIO_PIN_B_L, SWITCHES_GPIO_PIN_B_H)
     SWITCH_3_CASE(2,  SWITCHES_GPIO_REG_C_L, SWITCHES_GPIO_REG_C_H, SWITCHES_GPIO_PIN_C_L, SWITCHES_GPIO_PIN_C_H)
-    SWITCH_CASE(3,  SWITCHES_GPIO_REG_D, SWITCHES_GPIO_PIN_D)
+    SWITCH_3_CASE(3,  SWITCHES_GPIO_REG_D_L, SWITCHES_GPIO_REG_D_H, SWITCHES_GPIO_PIN_D_L, SWITCHES_GPIO_PIN_D_H)
     SWITCH_3_CASE(4,  SWITCHES_GPIO_REG_E_L, SWITCHES_GPIO_REG_E_H, SWITCHES_GPIO_PIN_E_L, SWITCHES_GPIO_PIN_E_H)
-    SWITCH_3_CASE(5,  SWITCHES_GPIO_REG_F_L, SWITCHES_GPIO_REG_F_H, SWITCHES_GPIO_PIN_F_L, SWITCHES_GPIO_PIN_F_H)
+    SWITCH_CASE(5, SWITCHES_GPIO_REG_F, SWITCHES_GPIO_PIN_F)
     SWITCH_3_CASE(6,  SWITCHES_GPIO_REG_G_L, SWITCHES_GPIO_REG_G_H, SWITCHES_GPIO_PIN_G_L, SWITCHES_GPIO_PIN_G_H)
     SWITCH_CASE(7, SWITCHES_GPIO_REG_H, SWITCHES_GPIO_PIN_H)
     SWITCH_3_CASE(8,  SWITCHES_GPIO_REG_I_L, SWITCHES_GPIO_REG_I_H, SWITCHES_GPIO_PIN_I_L, SWITCHES_GPIO_PIN_I_H)
@@ -328,14 +330,14 @@ void *main_thread(void *)
 #endif
 
 #if defined(CPUARM)
-    stack_paint();
+    stackPaint();
 #endif
     
     s_current_protocol[0] = 255;
 
-    g_menuStackPtr = 0;
-    g_menuStack[0] = menuMainView;
-    g_menuStack[1] = menuModelSelect;
+    menuLevel = 0;
+    menuHandlers[0] = menuMainView;
+    menuHandlers[1] = menuModelSelect;
 
     eeReadAll(); // load general setup and selected model
 
@@ -412,7 +414,21 @@ void StartMainThread(bool tests)
   pthread_mutex_init(&audioMutex, NULL);
 #endif
 
-  g_tmr10ms = 1;      // must be non-zero otherwise some SF functions (that use this timer as a marker when it was last executed) will be executed twice on startup
+  /*
+    g_tmr10ms must be non-zero otherwise some SF functions (that use this timer as a marker when it was last executed) 
+    will be executed twice on startup. Normal radio does not see this issue because g_tmr10ms is already a big number
+    before the first call to the Special Functions. Not so in the simulator.
+
+    There is another issue, some other function static variables depend on this value. If simulator is started 
+    multiple times in one Companion session, they are set to their initial values only first time the simulator
+    is started. Therefore g_tmr10ms must also be set to non-zero value only the first time, then it must be left
+    alone to continue from the previous simulator session value. See the issue #2446
+
+  */
+  if (g_tmr10ms == 0) {
+    g_tmr10ms = 1;
+  }
+  
 #if defined(RTCLOCK)
   g_rtcTime = time(0);
 #endif
@@ -610,7 +626,7 @@ void StopEepromThread()
   if (fp) fclose(fp);
 }
 
-void eepromReadBlock (uint8_t * pointer_ram, uint16_t pointer_eeprom, uint16_t size)
+void eepromReadBlock (uint8_t * pointer_ram, uint32_t pointer_eeprom, uint32_t size)
 {
   assert(size);
 
@@ -625,7 +641,7 @@ void eepromReadBlock (uint8_t * pointer_ram, uint16_t pointer_eeprom, uint16_t s
 }
 
 #if defined(PCBTARANIS)
-void eepromWriteBlock(uint8_t * pointer_ram, uint16_t pointer_eeprom, uint16_t size)
+void eepromWriteBlock(uint8_t * pointer_ram, uint32_t pointer_eeprom, uint32_t size)
 {
   assert(size);
 
@@ -641,12 +657,10 @@ void eepromWriteBlock(uint8_t * pointer_ram, uint16_t pointer_eeprom, uint16_t s
 
 #endif
 
-#if !defined(CPUARM)
-uint16_t stack_free()
+uint16_t stackAvailable()
 {
   return 500;
 }
-#endif
 
 #if 0
 static void EeFsDump(){
@@ -683,7 +697,7 @@ FATFS g_FATFS_Obj;
 char *convertSimuPath(const char *path)
 {
   static char result[1024];
-  if (path[0] == '/' && strcmp(simuSdDirectory, "/") != 0)
+  if (((path[0] == '/') || (path[0] == '\\')) && (strcmp(simuSdDirectory, "/") != 0))
     sprintf(result, "%s%s", simuSdDirectory, path);
   else
     strcpy(result, path);
@@ -746,7 +760,11 @@ char *findTrueFileName(const char *path)
       for (;;) {
         struct simu::dirent * res = simu::readdir(dir);
         if (res == 0) break;
+#if defined(__APPLE__)
+        if ((res->d_type == DT_REG) || (res->d_type == DT_LNK)) {
+#else
         if ((res->d_type == simu::DT_REG) || (res->d_type == simu::DT_LNK)) {
+#endif
           // TRACE("comparing with: %s", res->d_name);
           if (!strcasecmp(fileName.c_str(), res->d_name)) {
             strcpy(result, dirName.c_str());
@@ -754,10 +772,12 @@ char *findTrueFileName(const char *path)
             strcat(result, res->d_name);
             TRACE("\tfound: %s", res->d_name);
             fileMap.insert(filemap_t:: value_type(path, result));
+            simu::closedir(dir);
             return result;  
           }
         }
       }
+      simu::closedir(dir);
     }
 #endif
   }
@@ -799,10 +819,10 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
     fil->fsize = tmp.st_size;
     fil->fptr = 0;
   }
-  fil->fs = (FATFS*)fopen(realPath, (flag & FA_WRITE) ? "wb+" : "rb+");
+  fil->fs = (FATFS*)fopen(realPath, (flag & FA_WRITE) ? ((flag & FA_CREATE_ALWAYS) ? "wb+" : "ab+") : "rb+");
   fil->fptr = 0;
   if (fil->fs) {
-    TRACE("f_open(%s) = %p", path, (FILE*)fil->fs);
+    TRACE("f_open(%s, %x) = %p (FIL %p)", path, flag, fil->fs, fil);
     return FR_OK;
   }
   TRACE("f_open(%s) = error %d (%s)", path, errno, strerror(errno));
@@ -836,10 +856,24 @@ FRESULT f_lseek (FIL* fil, DWORD offset)
   return FR_OK;
 }
 
-FRESULT f_close (FIL * fil)
+UINT f_size(FIL* fil)
 {
   if (fil && fil->fs) {
-    TRACE("f_close(%p)", (FILE*)fil->fs);
+    long curr = ftell((FILE*)fil->fs);
+    fseek((FILE*)fil->fs, 0, SEEK_END);
+    long size = ftell((FILE*)fil->fs);
+    fseek((FILE*)fil->fs, curr, SEEK_SET);
+    TRACE("f_size(%p) %u", fil->fs, size);
+    return size;
+  }
+  return 0;
+}
+
+FRESULT f_close (FIL * fil)
+{
+  assert(fil);
+  TRACE("f_close(%p) (FIL:%p)", fil->fs, fil);
+  if (fil->fs) {
     fclose((FILE*)fil->fs);
     fil->fs = NULL;
   }
@@ -911,14 +945,24 @@ FRESULT f_mkdir (const TCHAR*)
   return FR_OK;
 }
 
-FRESULT f_unlink (const TCHAR*)
+FRESULT f_unlink (const TCHAR* name)
 {
+  char *path = convertSimuPath(name);
+  if (unlink(path)) {
+    TRACE("f_unlink(%s) = error %d (%s)", path, errno, strerror(errno));
+    return FR_INVALID_NAME;
+  }
+  TRACE("f_unlink(%s) = OK", path);
   return FR_OK;
 }
 
 FRESULT f_rename(const TCHAR *oldname, const TCHAR *newname)
 {
-  TRACE("f_rename(%s, %s)", oldname, newname);
+  if (rename(oldname, newname) < 0) {
+    TRACE("f_rename(%s, %s) = error %d (%s)", oldname, newname, errno, strerror(errno));
+    return FR_INVALID_NAME;
+  }
+  TRACE("f_rename(%s, %s) = OK", oldname, newname);
   return FR_OK;
 }
 
@@ -948,7 +992,23 @@ int f_printf (FIL *fil, const TCHAR * format, ...)
 
 FRESULT f_getcwd (TCHAR *path, UINT sz_path)
 {
-  strcpy(path, ".");
+  char cwd[1024];
+  if (!getcwd(cwd, 1024)) {
+    TRACE("f_getcwd() = getcwd() error %d (%s)", errno, strerror(errno));
+    strcpy(path, ".");
+    return FR_NO_PATH;
+  }
+
+  if (strlen(cwd) < strlen(simuSdDirectory)) {
+    TRACE("f_getcwd() = logic error strlen(cwd) < strlen(simuSdDirectory):  cwd: \"%s\",  simuSdDirectory: \"%s\"", cwd, simuSdDirectory);
+    strcpy(path, ".");
+    return FR_NO_PATH;
+  }
+
+  // remove simuSdDirectory from the cwd
+  strcpy(path, cwd + strlen(simuSdDirectory));
+
+  TRACE("f_getcwd() = %s", path);
   return FR_OK;
 }
 
@@ -1175,11 +1235,18 @@ void lcdRefresh()
   lcd_refresh = true;
 }
 
+void telemetryPortInit()
+{
+}
+
 #if defined(PCBTARANIS)
 void pwrInit() { }
-uint32_t pwrCheck() { return true; }
 void pwrOff() { }
-void usbStart() { }
+#if defined(REV9E)
+uint32_t pwrPressed() { return false; }
+#else
+uint32_t pwrCheck() { return true; }
+#endif
 int usbPlugged() { return false; }
 void USART_DeInit(USART_TypeDef* ) { }
 ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { return SUCCESS; }

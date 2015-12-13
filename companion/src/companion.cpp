@@ -53,6 +53,7 @@
   #undef main
 #endif
 #include "mainwindow.h"
+#include "version.h"
 #include "eeprominterface.h"
 #include "appdata.h"
 
@@ -86,6 +87,13 @@ int main(int argc, char *argv[])
   app.setOrganizationName("OpenTX");
   app.setOrganizationDomain("open-tx.org");
   app.setAttribute(Qt::AA_DontShowIconsInMenus, false);
+
+  QStringList strl = QApplication::arguments();
+  if (strl.contains("--version")) {
+    printf("%s\n", C9X_VERSION);
+    fflush(stdout);
+    exit(0);
+  }
 
 #ifdef __APPLE__
   app.setStyle(new MyProxyStyle);
@@ -123,10 +131,10 @@ int main(int argc, char *argv[])
   }
 
   QString splashScreen;
-  if ( g.profile[g.id()].fwType().contains("taranis"))     splashScreen = ":/images/splasht.png";
-  else if ( g.profile[g.id()].fwType().contains("9xrpro")) splashScreen = ":/images/splashp.png";
-  else if ( g.profile[g.id()].fwType().contains("9xr"))    splashScreen = ":/images/splashr.png";
-  else  splashScreen = ":/images/splash.png";
+  if ( g.profile[g.id()].fwType().contains("taranis"))     splashScreen = ":/images/splash-taranis.png";
+  else if ( g.profile[g.id()].fwType().contains("9xrpro")) splashScreen = ":/images/splash-9xrpro.png";
+  else if ( g.profile[g.id()].fwType().contains("9xr"))    splashScreen = ":/images/splash-9xr.png";
+  else  splashScreen = ":/images/splash-9x.png";
 
   QPixmap pixmap = QPixmap(splashScreen);
   QSplashScreen *splash = new QSplashScreen(pixmap);
@@ -148,7 +156,8 @@ int main(int argc, char *argv[])
   delete splash;
   delete mainWin;
 
-  unregisterFirmwares();
+  unregisterSimulators();
+  unregisterOpenTxFirmwares();
   unregisterEEpromInterfaces();
 
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)

@@ -1,7 +1,7 @@
 #include "calibration.h"
 #include "ui_calibration.h"
 
-void CalibrationPanel::setupSwitchConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type)
+void CalibrationPanel::setupSwitchConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type, bool threePos = true)
 {
   bool enabled = false;
 
@@ -18,7 +18,7 @@ void CalibrationPanel::setupSwitchConfig(int index, QLabel *label, AutoLineEdit 
   if (enabled) {
     type->addItem(tr("2 Positions Toggle"), GeneralSettings::SWITCH_TOGGLE);
     type->addItem(tr("2 Positions"), GeneralSettings::SWITCH_2POS);
-    type->addItem(tr("3 Positions"), GeneralSettings::SWITCH_3POS);
+    if (threePos) type->addItem(tr("3 Positions"), GeneralSettings::SWITCH_3POS);
     name->setField(generalSettings.switchName[index], 3, this);
     type->setField(generalSettings.switchConfig[index], this);
   }
@@ -34,6 +34,7 @@ void CalibrationPanel::setupPotConfig(int index, QLabel *label, AutoLineEdit *na
   bool enabled = false;
 
   if (IS_TARANIS_X9E(firmware->getBoard()) && index < 4) {
+    label->setText(RawSource(SOURCE_TYPE_STICK, index+NUM_STICKS).toString());
     enabled = true;
   }
   else if (IS_TARANIS_PLUS(firmware->getBoard()) && index < 3) {
@@ -68,6 +69,10 @@ void CalibrationPanel::setupSliderConfig(int index, QLabel *label, AutoLineEdit 
   }
   else if (IS_TARANIS_X9E(firmware->getBoard()) && index < 4) {
     enabled = true;
+  }
+
+  if (IS_TARANIS_X9E(firmware->getBoard())) {
+    label->setText(RawSource(SOURCE_TYPE_STICK, index+NUM_STICKS+4).toString());
   }
 
   if (enabled) {
@@ -125,9 +130,9 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
   setupSwitchConfig(2, ui->scLabel, ui->scName, ui->scType);
   setupSwitchConfig(3, ui->sdLabel, ui->sdName, ui->sdType);
   setupSwitchConfig(4, ui->seLabel, ui->seName, ui->seType);
-  setupSwitchConfig(5, ui->sfLabel, ui->sfName, ui->sfType);
+  setupSwitchConfig(5, ui->sfLabel, ui->sfName, ui->sfType, false);   //switch does not support 3POS
   setupSwitchConfig(6, ui->sgLabel, ui->sgName, ui->sgType);
-  setupSwitchConfig(7, ui->shLabel, ui->shName, ui->shType);
+  setupSwitchConfig(7, ui->shLabel, ui->shName, ui->shType, false);   //switch does not support 3POS
   setupSwitchConfig(8, ui->siLabel, ui->siName, ui->siType);
   setupSwitchConfig(9, ui->sjLabel, ui->sjName, ui->sjType);
   setupSwitchConfig(10, ui->skLabel, ui->skName, ui->skType);
@@ -154,7 +159,24 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
     ui->serialPortLabel->hide();
   }
 
+  if (!IS_SKY9X(firmware->getBoard())) {
+    ui->txCurrentCalibration->hide();
+    ui->txCurrentCalibrationLabel->hide();
+  }
+
+  if (IS_TARANIS_X9E(firmware->getBoard())) {
+    ui->bluetoothEnable->setChecked(generalSettings.bluetoothEnable);
+    ui->bluetoothName->setField(generalSettings.bluetoothName, 10, this);
+  }
+  else {
+    ui->bluetoothLabel->hide();
+    ui->bluetoothEnable->hide();
+    ui->bluetoothName->hide();
+  }
+
   disableMouseScrolling();
+
+  setValues();
 }
 
 CalibrationPanel::~CalibrationPanel()
@@ -197,16 +219,22 @@ void CalibrationPanel::on_PPM4_editingFinished()
 }
 
 
-void CalibrationPanel::on_CurrentCalib_SB_editingFinished()
+void CalibrationPanel::on_txCurrentCalibration_editingFinished()
 {
-  generalSettings.currentCalib = ui->CurrentCalib_SB->value();
+  generalSettings.txCurrentCalibration = ui->txCurrentCalibration->value();
+  emit modified();
+}
+
+void CalibrationPanel::on_bluetoothEnable_stateChanged(int)
+{
+  generalSettings.bluetoothEnable = ui->bluetoothEnable->isChecked();
   emit modified();
 }
 
 void CalibrationPanel::setValues()
 {
-  ui->battCalibDSB->setValue((double)generalSettings.vBatCalib/10);
-  ui->CurrentCalib_SB->setValue((double)generalSettings.currentCalib);
+  ui->txVoltageCalibration->setValue((double)generalSettings.txVoltageCalibration/10);
+  ui->txCurrentCalibration->setValue((double)generalSettings.txCurrentCalibration);
 
   ui->ana1Neg->setValue(generalSettings.calibSpanNeg[0]);
   ui->ana2Neg->setValue(generalSettings.calibSpanNeg[1]);
@@ -242,9 +270,9 @@ void CalibrationPanel::setValues()
   ui->PPM_MultiplierDSB->setValue((qreal)(generalSettings.PPM_Multiplier+10)/10);
 }
 
-void CalibrationPanel::on_battCalibDSB_editingFinished()
+void CalibrationPanel::on_txVoltageCalibration_editingFinished()
 {
-  generalSettings.vBatCalib = ui->battCalibDSB->value()*10;
+  generalSettings.txVoltageCalibration = ui->txVoltageCalibration->value()*10;
   emit modified();
 }
 

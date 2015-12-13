@@ -47,7 +47,7 @@ uint8_t link_counter = 0;
 #define FRSKY_RX_PACKET_SIZE   19
 uint8_t frskyRxBuffer[FRSKY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 
-#if !defined(PCBTARANIS)
+#if !defined(CPUARM)
 uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];
 #endif
 
@@ -165,8 +165,21 @@ NOINLINE void processSerialData(uint8_t data)
 #endif
 
 #if defined(PCBTARANIS)
-    if (g_eeGeneral.uart3Mode == UART_MODE_TELEMETRY_MIRROR) {
-      uart3Putc(data);
+    if (g_eeGeneral.serial2Mode == UART_MODE_TELEMETRY_MIRROR) {
+      serial2Putc(data);
+    }
+#endif
+
+#if defined(PCBTARANIS) && defined(REV9E) && !defined(SIMU)
+    #define BLUETOOTH_BUFFER_LENGTH     20
+    static uint8_t bluetoothBuffer[BLUETOOTH_BUFFER_LENGTH];
+    static uint8_t bluetoothIndex = 0;
+    bluetoothBuffer[bluetoothIndex++] = data;
+    if (bluetoothIndex == BLUETOOTH_BUFFER_LENGTH) {
+      if (bluetoothReady()) {
+        bluetoothWrite(bluetoothBuffer, BLUETOOTH_BUFFER_LENGTH);
+      }
+      bluetoothIndex = 0;
     }
 #endif
 
@@ -271,8 +284,8 @@ void telemetryWakeup()
 #if defined(CPUARM)
   uint8_t requiredTelemetryProtocol = MODEL_TELEMETRY_PROTOCOL();
   if (telemetryProtocol != requiredTelemetryProtocol) {
+    telemetryInit(requiredTelemetryProtocol);
     telemetryProtocol = requiredTelemetryProtocol;
-    telemetryInit();
   }
 #endif
 
@@ -310,7 +323,7 @@ void telemetryWakeup()
   }
 #endif
 
-#if !defined(PCBTARANIS)
+#if !defined(CPUARM)
   if (IS_FRSKY_D_PROTOCOL()) {
     // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
     static uint8_t frskyTxDelay = 5;
@@ -570,38 +583,59 @@ void telemetryReset()
 #endif
 #endif
 
-#if defined(CPUARM) && defined(SIMU) && !defined(COMPANION)
-  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, RSSI_ID, 25, 75, UNIT_RAW, 0);
-  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, SWR_ID, 25, 5, UNIT_RAW, 0);
-  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, T1_FIRST_ID, 5, 100, UNIT_CELSIUS, 0);
-  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, T1_FIRST_ID+0x10, 5, 200, UNIT_CELSIUS, 0);
-  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ALT_FIRST_ID, 1, 1000, UNIT_METERS, 2);
-  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, CELLS_FIRST_ID, 2, 0x80280220, UNIT_CELLS, 0);
-  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, CURR_FIRST_ID, 3, 100, UNIT_AMPS, 2);
-  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, RPM_FIRST_ID, 5, 3600, UNIT_RPMS, 0);
-  setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, FUEL_QTY_FIRST_ID, 11, 1000, UNIT_MILLILITERS, 2);
+/*Add some default sensor values to the simulator*/
+#if defined(CPUARM) && defined(SIMU)
+  for (int i=0; i<MAX_SENSORS; i++) {
+    const TelemetrySensor & sensor = g_model.telemetrySensors[i];
+    switch (sensor.id)
+    {
+      case RSSI_ID:
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, RSSI_ID, sensor.instance , 75, UNIT_RAW, 0);
+        break;
+      case ADC1_ID:
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ADC1_ID, sensor.instance, 100, UNIT_RAW, 0);
+        break;
+      case ADC2_ID:
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ADC2_ID, sensor.instance, 245, UNIT_RAW, 0);
+        break;
+      case SWR_ID:
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, SWR_ID, sensor.instance, 30, UNIT_RAW, 0);
+        break;
+      case BATT_ID:
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, BATT_ID, sensor.instance, 100, UNIT_RAW, 0);
+        break;
+    }
+  }
 #endif
 }
 
-void telemetryInit(void)
-{
 #if defined(CPUARM)
-  if (telemetryProtocol == PROTOCOL_FRSKY_D) {
+// we don't reset the telemetry here as we would also reset the consumption after model load
+void telemetryInit(uint8_t protocol)
+{
+  if (protocol == PROTOCOL_FRSKY_D) {
     telemetryPortInit(FRSKY_D_BAUDRATE);
   }
-  else if (telemetryProtocol==PROTOCOL_FRSKY_D_SECONDARY) {
+#if defined(PCBTARANIS)
+  else if (protocol == PROTOCOL_PULSES_CROSSFIRE) {
+    telemetryPortInit(CROSSFIRE_BAUDRATE);
+    telemetryPortSetDirectionOutput();
+  }
+#endif
+  else if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
     telemetryPortInit(0);
-    telemetrySecondPortInit(PROTOCOL_FRSKY_D_SECONDARY);
+    serial2TelemetryInit(PROTOCOL_FRSKY_D_SECONDARY);
   }
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE);
   }
-#elif !defined(SIMU)
-  telemetryPortInit();
-#endif
-
-  // we don't reset the telemetry here as we would also reset the consumption after model load
 }
+#else
+void telemetryInit()
+{
+  telemetryPortInit();
+}
+#endif
 
 #if defined(CPUARM)
 #elif defined(FRSKY_HUB)

@@ -44,6 +44,9 @@ void perMain()
 #if defined(SIMU)
   doMixerCalculations();
 #endif
+#if defined(LCD_ST7920)
+  uint8_t lcdstate=0;
+#endif
   uint16_t t0 = getTmr16KHz();
   int16_t delta = (nextMixerEndTime - lastMixerDuration) - t0;
   if (delta > 0 && delta < MAX_MIXER_DELTA) {
@@ -126,34 +129,39 @@ void perMain()
 #endif
 
 #if defined(GUI)
-  const char *warn = s_warning;
-  uint8_t menu = s_menu_count;
+  const char *warn = warningText;
+  bool popupMenuActive = (popupMenuNoItems > 0);
 
-  lcd_clear();
-  if (menuEvent) {
-    m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
-    m_posHorz = 0;
-    evt = menuEvent;
-    menuEvent = 0;
-    AUDIO_MENUS();
-  }
-  g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+  if(IS_LCD_REFRESH_ALLOWED()){//No need to redraw until lcdRefresh_ST7920(0) below completely refreshes the display.
+      lcd_clear();
+      if (menuEvent) {
+        menuVerticalPosition = menuEvent == EVT_ENTRY_UP ? menuVerticalPositions[menuLevel] : 0;
+        menuHorizontalPosition = 0;
+        evt = menuEvent;
+        menuEvent = 0;
+        AUDIO_MENUS();
+      }
+      menuHandlers[menuLevel]((warn || popupMenuActive) ? 0 : evt);
 
 
-  if (warn) DISPLAY_WARNING(evt);
+      if (warn) DISPLAY_WARNING(evt);
 #if defined(NAVIGATION_MENUS)
-  if (menu) {
-    const char * result = displayMenu(evt);
-    if (result) {
-      menuHandler(result);
-      putEvent(EVT_MENU_UP);
-    }
+      if (popupMenuActive) {
+        const char * result = displayPopupMenu(evt);
+        if (result) {
+          popupMenuHandler(result);
+          putEvent(EVT_MENU_UP);
+        }
+      }
+#endif
+      drawStatusLine();
   }
+#if defined(LCD_ST7920)
+  lcdstate=lcdRefresh_ST7920(0);
+#else
+  lcdRefresh();
 #endif
 
-  drawStatusLine();
-
-  lcdRefresh();
 #endif
 
   if (SLAVE_MODE()) {

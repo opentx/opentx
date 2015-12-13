@@ -68,10 +68,6 @@ void menuStatisticsView(uint8_t event)
 
   putsTimer(   12*FW+5*FWNUM+1, FH*0, sessionTimer, 0, 0);
   
-#if defined(CPUARM)
-  putsTimer(21*FW+5*FWNUM+1, 0*FH, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
-#endif
-
 #if defined(THRTRACE)
   coord_t traceRd = (s_traceCnt < 0 ? s_traceWr : 0);
   const coord_t x = 5;
@@ -155,11 +151,11 @@ void menuStatisticsDebug(uint8_t event)
   }
 #endif
 
-#if defined(PCBSKY9X) && !defined(REVA)
+#if defined(TX_CAPACITY_MEASUREMENT)
   // current
   lcd_putsLeft(MENU_DEBUG_Y_CURRENT, STR_CPU_CURRENT);
   putsValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_CURRENT, getCurrent(), UNIT_MILLIAMPS, LEFT);
-  uint32_t current_scale = 488 + g_eeGeneral.currentCalib;
+  uint32_t current_scale = 488 + g_eeGeneral.txCurrentCalibration;
   lcd_putc(MENU_DEBUG_COL2_OFS, MENU_DEBUG_Y_CURRENT, '>');
   putsValueWithUnit(MENU_DEBUG_COL2_OFS+FW+1, MENU_DEBUG_Y_CURRENT, Current_max*10*current_scale/8192, UNIT_RAW, LEFT);
   // consumption
@@ -198,13 +194,13 @@ void menuStatisticsDebug(uint8_t event)
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS, stack_free(0), UNSIGN|LEFT);
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+2, menusStack.available(), UNSIGN|LEFT|TINSIZE);
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(1), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS+2, mixerStack.available(), UNSIGN|LEFT|TINSIZE);
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
-  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(2), UNSIGN|LEFT);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS+2, audioStack.available(), UNSIGN|LEFT|TINSIZE);
 #endif
 
 #if !defined(CPUARM)
@@ -217,9 +213,9 @@ void menuStatisticsDebug(uint8_t event)
   lcd_putsLeft(4*FH, STR_TMIXMAXMS);
   lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 4*FH, DURATION_MS_PREC2(maxMixerDuration), PREC2);
   lcd_putsLeft(5*FH, STR_FREESTACKMINB);
-  lcd_outdezAtt(14*FW, 5*FH, stack_free(), UNSIGN) ;
+  lcd_outdezAtt(14*FW, 5*FH, stackAvailable(), UNSIGN) ;
 #endif
 
-  lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);
+  lcd_puts(4*FW, 7*FH+1, STR_MENUTORESET);
   lcd_status_line();
 }

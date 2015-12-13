@@ -44,29 +44,40 @@ void handleUsbConnection()
 {
 #if defined(PCBTARANIS) && !defined(SIMU)
   static bool usbStarted = false;
+
   if (!usbStarted && usbPlugged()) {
+    usbStarted = true;
+
+    /*
+      We used to initialize USB peripheral and driver here.
+      According to my tests this is way too late. The USB peripheral
+      therefore does not have enough information to start responding to 
+      USB host request, which causes very slow USB device recognition, 
+      multiple USB device resets, etc...
+
+      If we want to change the USB profile, the procedure is simple:
+        * USB cable must be disconnected
+        * call usbDeInit();
+        * call usbUnit(); which initializes USB with the new profile. 
+          Obviously the usbInit() should be modified to have a runtime
+          selection of the USB profile.
+    */
+
 #if defined(USB_MASS_STORAGE)
     opentxClose();
-#endif
-    usbStart();
-#if defined(USB_MASS_STORAGE)
     usbPluggedIn();
 #endif
-    usbStarted = true;
+  }
+  if (usbStarted && !usbPlugged()) {
+    usbStarted = false;
   }
   
 #if defined(USB_JOYSTICK)
-  if (usbStarted) {
-    if (!usbPlugged()) {
-      //disable USB
-      usbStop();
-      usbStarted = false;
-    }
-    else {
-      usbJoystickUpdate();
-    }
+  if (usbStarted ) {
+    usbJoystickUpdate();
   }
 #endif
+  
 #endif //#if defined(PCBTARANIS) && !defined(SIMU)
 }
 
@@ -88,6 +99,40 @@ void checkEeprom()
   }
 }
 
+void handleGui(uint8_t event) {
+  // if Lua standalone, run it and don't clear the screen (Lua will do it)
+  // else if Lua telemetry view, run it and don't clear the screen
+  // else clear scren and show normal menus 
+#if defined(LUA)
+  if (luaTask(event, RUN_STNDAL_SCRIPT, true)) {
+    // standalone script is active
+  }
+  else if (luaTask(event, RUN_TELEM_FG_SCRIPT, true)) {
+    // the telemetry screen is active
+    // prevent events from keys MENU, UP, DOWN, ENT(short) and EXIT(short) from reaching the normal menus,
+    // so Lua telemetry script can fully use them
+    if (event) {
+      uint8_t key = EVT_KEY_MASK(event);
+      // no need to filter out MENU and ENT(short), because they are not used by menuTelemetryFrsky()
+      if (key == KEY_PLUS || key == KEY_MINUS || (!IS_KEY_LONG(event) && key == KEY_EXIT)) {
+        // TRACE("Telemetry script event 0x%02x killed", event);
+        event = 0;
+      }
+    }
+    menuHandlers[menuLevel](event);
+    // todo     drawStatusLine(); here???
+  }
+  else 
+#endif
+  {
+    lcd_clear();
+    menuHandlers[menuLevel](event);
+    drawStatusLine();
+  }
+}
+
+bool inPopupMenu = false;
+
 void perMain()
 {
 #if defined(PCBSKY9X) && !defined(REVA)
@@ -101,17 +146,10 @@ void perMain()
   checkTrainerSettings();
   checkBattery();
 
-  uint8_t evt = getEvent(false);
-  if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
-  checkBacklight();
-#if defined(NAVIGATION_STICKS)
-  uint8_t sticks_evt = getSticksNavigationEvent();
-  if (sticks_evt) evt = sticks_evt;
-#endif
-
 #if defined(USB_MASS_STORAGE)
   if (usbPlugged()) {
     // disable access to menus
+    lcdRefreshWait();
     lcd_clear();
     menuMainView(0);
     lcdRefresh();
@@ -120,6 +158,7 @@ void perMain()
 #endif
 
 #if defined(LUA)
+  // TODO better lua stopwatch
   uint32_t t0 = get_tmr10ms();
   static uint32_t lastLuaTime = 0;
   uint16_t interval = (lastLuaTime == 0 ? 0 : (t0 - lastLuaTime));
@@ -131,6 +170,12 @@ void perMain()
   // run Lua scripts that don't use LCD (to use CPU time while LCD DMA is running)
   luaTask(0, RUN_MIX_SCRIPT | RUN_FUNC_SCRIPT | RUN_TELEM_BG_SCRIPT, false);
 
+  t0 = get_tmr10ms() - t0;
+  if (t0 > maxLuaDuration) {
+    maxLuaDuration = t0;
+  }
+#endif //#if defined(LUA)
+
   // wait for LCD DMA to finish before continuing, because code from this point 
   // is allowed to change the contents of LCD buffer
   // 
@@ -138,50 +183,67 @@ void perMain()
   //
   lcdRefreshWait();
 
-  // draw LCD from menus or from Lua script
-  // run Lua scripts that use LCD 
-  bool scriptWasRun = luaTask(evt, RUN_TELEM_FG_SCRIPT | RUN_STNDAL_SCRIPT, true);
-
-  t0 = get_tmr10ms() - t0;
-  if (t0 > maxLuaDuration) {
-    maxLuaDuration = t0;
-  }
-
-  if (!scriptWasRun)
-  {
-#else
-  lcdRefreshWait();   // WARNING: make sure no code above this line does any change to the LCD display buffer!
-  {
-#endif
-    // normal GUI from menus
-    const char *warn = s_warning;
-    uint8_t menu = s_menu_count;
-    lcd_clear();
-    if (menuEvent) {
-      m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
-      m_posHorz = 0;
-      evt = menuEvent;
-      menuEvent = 0;
-      AUDIO_MENUS();
+  // get event
+  uint8_t evt;
+  if (menuEvent) {
+    // we have a popupMenuActive entry or exit event 
+    menuVerticalPosition = (menuEvent == EVT_ENTRY_UP) ? menuVerticalPositions[menuLevel] : 0;
+    menuHorizontalPosition = 0;
+    evt = menuEvent;
+    if (menuEvent == EVT_ENTRY_UP) {
+      TRACE("menuEvent EVT_ENTRY_UP");
     }
-    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
-    if (warn) DISPLAY_WARNING(evt);
-    if (menu) {
-      const char * result = displayMenu(evt);
-      if (result) {
-        menuHandler(result);
-        putEvent(EVT_MENU_UP);
-      }
+    else if (menuEvent == EVT_MENU_UP) {
+      TRACE("menuEvent EVT_MENU_UP");
     }
-    drawStatusLine();
+    else if (menuEvent == EVT_ENTRY) {
+      TRACE("menuEvent EVT_ENTRY");
+    }
+    else {
+      TRACE("menuEvent 0x%02x", menuEvent);
+    }
+    menuEvent = 0;
+    AUDIO_MENUS();
+  }
+  else {
+    evt = getEvent(false);
+    if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
+    checkBacklight();
+#if defined(NAVIGATION_STICKS)
+    uint8_t sticks_evt = getSticksNavigationEvent();
+    if (sticks_evt) evt = sticks_evt;
+#endif
   }
 
-#if defined(REV9E) && !defined(SIMU)
-  uint32_t pwr_pressed_duration = pwrPressedDuration();
-  if (pwr_pressed_duration > 0) {
-    displayShutdownProgress(pwr_pressed_duration);
+  if (warningText) {
+    // show warning on top of the normal menus
+    handleGui(0); // suppress events, they are handled by the warning
+    DISPLAY_WARNING(evt);
   }
-#endif
+  else if (popupMenuNoItems > 0) {
+    // popup menu is active display it on top of normal menus 
+    handleGui(0); // suppress events, they are handled by the popup
+    if (!inPopupMenu) {
+      TRACE("Popup Menu started");
+      inPopupMenu = true;
+    }
+    const char * result = displayPopupMenu(evt);
+    if (result) {
+      TRACE("popupMenuHandler(%s)", result);
+      popupMenuHandler(result);
+      putEvent(EVT_MENU_UP);
+      // todo should we handle this event immediately??
+      // handleGui(EVT_MENU_UP)
+    }
+  }
+  else {
+    // normal menus
+    if (inPopupMenu) {
+      TRACE("Popup Menu ended");
+      inPopupMenu = false;
+    }
+    handleGui(evt);
+  }
 
   lcdRefresh();
 
@@ -191,13 +253,12 @@ void perMain()
   setTopSecondTimer(g_eeGeneral.globalTimer + sessionTimer);
   setTopRssi(TELEMETRY_RSSI());
   setTopBatteryValue(g_vbat100mV);
-  int state = 5 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin);
-  setTopBatteryState(state);
+  setTopBatteryState(GET_TXBATT_BARS(), IS_TXBATT_WARNING());
   topLcdRefreshEnd();
 #endif
 
 #if defined(REV9E) && !defined(SIMU)
-  bt_wakeup();
+  bluetoothWakeup();
 #endif
 
 #if defined(PCBTARANIS)

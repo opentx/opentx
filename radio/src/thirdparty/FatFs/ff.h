@@ -238,7 +238,11 @@ TCHAR* f_gets (TCHAR* buff, int len, FIL* fp);						/* Get a string from the fil
 #define f_eof(fp) ((int)((fp)->fptr == (fp)->fsize))
 #define f_error(fp) ((fp)->err)
 #define f_tell(fp) ((fp)->fptr)
-#define f_size(fp) ((fp)->fsize)
+#if !defined(SIMU)
+	#define f_size(fp) ((fp)->fsize)
+#else
+	UINT f_size(FIL* fil);
+#endif 
 
 #ifndef EOF
 #define EOF (-1)

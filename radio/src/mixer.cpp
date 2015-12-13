@@ -262,7 +262,11 @@ getvalue_t getValue(mixsrc_t i)
   }
 #endif
 
+#if defined(LUAINPUTS)
   else if (i<=MIXSRC_LAST_POT) return calibratedStick[i-MIXSRC_Rud];
+#else
+  else if (i>=MIXSRC_FIRST_STICK && i<=MIXSRC_LAST_POT) return calibratedStick[i-MIXSRC_Rud];
+#endif 
 
 #if defined(PCBGRUVIN9X) || defined(PCBMEGA2560) || defined(ROTARY_ENCODERS)
   else if (i<=MIXSRC_LAST_ROTARY_ENCODER) return getRotaryEncoder(i-MIXSRC_REa);
@@ -295,7 +299,7 @@ getvalue_t getValue(mixsrc_t i)
   else if (i<MIXSRC_SW1) return getSwitch(SWSRC_THR+i-MIXSRC_THR) ? 1024 : -1024;
 #endif
   else if (i<=MIXSRC_LAST_LOGICAL_SWITCH) return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH+i-MIXSRC_FIRST_LOGICAL_SWITCH) ? 1024 : -1024;
-  else if (i<=MIXSRC_LAST_TRAINER) { int16_t x = g_ppmIns[i-MIXSRC_FIRST_TRAINER]; if (i<MIXSRC_FIRST_TRAINER+NUM_CAL_PPM) { x-= g_eeGeneral.trainer.calib[i-MIXSRC_FIRST_TRAINER]; } return x*2; }
+  else if (i<=MIXSRC_LAST_TRAINER) { int16_t x = ppmInput[i-MIXSRC_FIRST_TRAINER]; if (i<MIXSRC_FIRST_TRAINER+NUM_CAL_PPM) { x-= g_eeGeneral.trainer.calib[i-MIXSRC_FIRST_TRAINER]; } return x*2; }
   else if (i<=MIXSRC_LAST_CH) return ex_chans[i-MIXSRC_CH1];
 
 #if defined(GVARS)
@@ -373,16 +377,10 @@ void evalInputs(uint8_t mode)
 {
   BeepANACenter anaCenter = 0;
 
-#if defined(HELI)
+#if defined(HELI) && !defined(VIRTUALINPUTS)
   uint16_t d = 0;
   if (g_model.swashR.value) {
-#if defined(VIRTUALINPUTS)
-    int ele = (int16_t)anaIn(ELE_STICK);
-    int ail = (int16_t)anaIn(AIL_STICK);
-    uint32_t v = (ele*ele) + (ail*ail);
-#else
     uint32_t v = (int32_t(calibratedStick[ELE_STICK])*calibratedStick[ELE_STICK] + int32_t(calibratedStick[AIL_STICK])*calibratedStick[AIL_STICK]);
-#endif
     uint32_t q = calc100toRESX(g_model.swashR.value);
     q *= q;
     if (v > q) {
@@ -463,12 +461,12 @@ void evalInputs(uint8_t mode)
       }
 #endif
 
-      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER+ch) && ppmInValid) {
+      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER+ch) && IS_TRAINER_INPUT_VALID()) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
           uint8_t chStud = td->srcChn;
-          int32_t vStud  = (g_ppmIns[chStud]- g_eeGeneral.trainer.calib[chStud]);
+          int32_t vStud  = (ppmInput[chStud]- g_eeGeneral.trainer.calib[chStud]);
           vStud *= td->studWeight;
           vStud /= 50;
           switch (td->mode) {
@@ -484,15 +482,14 @@ void evalInputs(uint8_t mode)
         }
       }
 
-#if defined(HELI)
-      if (d && (ch==ELE_STICK || ch==AIL_STICK)) {
-        v = (int32_t(v) * calc100toRESX(g_model.swashR.value)) / int32_t(d);
-      }
-#endif
-
 #if defined(VIRTUALINPUTS)
       calibratedStick[ch] = v;
 #else
+  #if defined(HELI)
+      if (d && (ch==ELE_STICK || ch==AIL_STICK)) {
+        v = (int32_t(v) * calc100toRESX(g_model.swashR.value)) / int32_t(d);
+      }
+  #endif
       rawAnas[ch] = v;
       anas[ch] = v; // set values for mixer
 #endif
@@ -515,13 +512,13 @@ void evalInputs(uint8_t mode)
 }
 
 #if defined(VIRTUALINPUTS)
-int getStickTrimValue(int stick, int value)
+int getStickTrimValue(int stick, int stickValue)
 {
   int trim = trims[stick];
   if (stick == THR_STICK) {
     if (g_model.thrTrim) {
       int trimMin = g_model.extendedTrims ? 2*TRIM_EXTENDED_MIN : 2*TRIM_MIN;
-      trim = ((g_model.throttleReversed ? (trim+trimMin) : (trim-trimMin)) * (RESX-value)) >> (RESX_SHIFT+1);
+      trim = ((g_model.throttleReversed ? (trim+trimMin) : (trim-trimMin)) * (RESX-stickValue)) >> (RESX_SHIFT+1);
     }
     if (g_model.throttleReversed) {
       trim = -trim;
@@ -530,12 +527,12 @@ int getStickTrimValue(int stick, int value)
   return trim;
 }
 
-int getSourceTrimValue(int source, int value=0)
+int getSourceTrimValue(int source, int stickValue=0)
 {
   if (source >= MIXSRC_Rud && source <= MIXSRC_Ail)
-    return getStickTrimValue(source - MIXSRC_Rud, value);
+    return getStickTrimValue(source - MIXSRC_Rud, stickValue);
   else if (source >= MIXSRC_FIRST_INPUT && source <= MIXSRC_LAST_INPUT)
-    return getStickTrimValue(virtualInputsTrims[source - MIXSRC_FIRST_INPUT], value);
+    return getStickTrimValue(virtualInputsTrims[source - MIXSRC_FIRST_INPUT], stickValue);
   else
     return 0;
 }
@@ -670,7 +667,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
 #define MIXER_LINE_DISABLE()   (mixCondition = true, mixEnabled = 0)
 
-      if (mixEnabled && md->srcRaw >= MIXSRC_FIRST_TRAINER && md->srcRaw <= MIXSRC_LAST_TRAINER && !ppmInValid) {
+      if (mixEnabled && md->srcRaw >= MIXSRC_FIRST_TRAINER && md->srcRaw <= MIXSRC_LAST_TRAINER && !IS_TRAINER_INPUT_VALID()) {
         MIXER_LINE_DISABLE();
       }
 
@@ -1136,7 +1133,7 @@ void evalMixes(uint8_t tick10ms)
     }
   }
 
-#if defined(PCBGRUVIN9X) && defined(DEBUG) && !defined(VOICE)
+#if defined(PCBMEGA2560) || defined(PCBGRUVIN9X) && defined(DEBUG) && !defined(VOICE)
   PORTH &= ~0x40; // PORTH:6 HIGH->LOW signals end of mixer interrupt
 #endif
 }

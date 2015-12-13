@@ -49,25 +49,25 @@ void readTextFile(int & lines_count)
   unsigned int sz;
   int line_length = 0;
   int escape = 0;
-  char escape_chars[2];
+  char escape_chars[4] = {0};
   int current_line = 0;
 
   memset(s_text_screen, 0, sizeof(s_text_screen));
 
   result = f_open(&file, s_text_file, FA_OPEN_EXISTING | FA_READ);
   if (result == FR_OK) {
-    for (int i=0; i<TEXT_FILE_MAXSIZE && f_read(&file, &c, 1, &sz)==FR_OK && sz==1 && (lines_count==0 || current_line-s_pgOfs<LCD_LINES-1); i++) {
+    for (int i=0; i<TEXT_FILE_MAXSIZE && f_read(&file, &c, 1, &sz)==FR_OK && sz==1 && (lines_count==0 || current_line-menuVerticalOffset<LCD_LINES-1); i++) {
       if (c == '\n') {
         ++current_line;
         line_length = 0;
         escape = 0;
       }
-      else if (c!='\r' && current_line>=s_pgOfs && current_line-s_pgOfs<LCD_LINES-1 && line_length<LCD_COLS) {
+      else if (c!='\r' && current_line>=menuVerticalOffset && current_line-menuVerticalOffset<LCD_LINES-1 && line_length<LCD_COLS) {
         if (c=='\\' && escape==0) {
           escape = 1;
           continue;
         }
-        else if (c!='\\' && escape>0 && escape<3) {
+        else if (c!='\\' && escape>0 && escape<4) {
           escape_chars[escape-1] = c;
           if (escape == 2 && !strncmp(escape_chars, "up", 2)) {
             c = '\300';
@@ -75,6 +75,13 @@ void readTextFile(int & lines_count)
           }
           else if (escape == 2 && !strncmp(escape_chars, "dn", 2)) {
             c = '\301';
+            escape = 0;
+          }
+          else if (escape == 3) {
+            int val = atoi(escape_chars);
+            if (val >= 200 && val < 225) {
+              c = '\200' + val-200;
+            }
             escape = 0;
           }
           else {
@@ -89,7 +96,7 @@ void readTextFile(int & lines_count)
           c = 0x1D; //tab
         }
         escape = 0;
-        s_text_screen[current_line-s_pgOfs][line_length++] = c;
+        s_text_screen[current_line-menuVerticalOffset][line_length++] = c;
       }
     }
     if (c != '\n') {
@@ -109,24 +116,24 @@ void menuTextView(uint8_t event)
 
   switch (event) {
     case EVT_ENTRY:
-      s_pgOfs = 0;
+      menuVerticalOffset = 0;
       lines_count = 0;
       readTextFile(lines_count);
       break;
 
     case EVT_KEY_FIRST(KEY_UP):
-      if (s_pgOfs == 0)
+      if (menuVerticalOffset == 0)
         break;
       else
-        s_pgOfs--;
+        menuVerticalOffset--;
       readTextFile(lines_count);
       break;
 
     case EVT_KEY_FIRST(KEY_DOWN):
-      if (s_pgOfs+LCD_LINES-1 >= lines_count)
+      if (menuVerticalOffset+LCD_LINES-1 >= lines_count)
         break;
       else
-        ++s_pgOfs;
+        ++menuVerticalOffset;
       readTextFile(lines_count);
       break;
 
@@ -149,7 +156,7 @@ void menuTextView(uint8_t event)
   lcd_invert_line(0);
 
   if (lines_count > LCD_LINES-1) {
-    displayScrollbar(LCD_W-1, FH, LCD_H-FH, s_pgOfs, lines_count, LCD_LINES-1);
+    displayScrollbar(LCD_W-1, FH, LCD_H-FH, menuVerticalOffset, lines_count, LCD_LINES-1);
   }
 }
 

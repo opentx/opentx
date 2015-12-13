@@ -160,12 +160,12 @@ t_Open9xArmExpoData_v208::operator ExpoData ()
   }
   c9x.swtch = open9xArmToSwitch(swtch);
   if (phase<0) {
-    c9x.phases= 1 << (-phase -1);
+    c9x.flightModes= 1 << (-phase -1);
   } else if (phase==0) {
-    c9x.phases=0;
+    c9x.flightModes=0;
   } else {
-    c9x.phases=63;
-    c9x.phases &= ~(1 << (phase -1));
+    c9x.flightModes=63;
+    c9x.flightModes &= ~(1 << (phase -1));
   }  
   c9x.weight = weight;
   return c9x;
@@ -190,14 +190,14 @@ t_Open9xArmExpoData_v210::operator ExpoData ()
   }
   c9x.swtch = open9xArmToSwitch(swtch);
   if (phase<0) {
-    c9x.phases= 1 << (-phase -1);
+    c9x.flightModes= 1 << (-phase -1);
   }
   else if (phase==0) {
-    c9x.phases=0;
+    c9x.flightModes=0;
   }
   else {
-    c9x.phases=63;
-    c9x.phases &= ~(1 << (phase -1));
+    c9x.flightModes=63;
+    c9x.flightModes &= ~(1 << (phase -1));
   }  
   c9x.weight = weight;
   getEEPROMZString(c9x.name, name, sizeof(name));
@@ -213,7 +213,7 @@ t_Open9xArmExpoData_v212::operator ExpoData ()
   // TODO c9x.curveMode=curveMode;
   // c9x.curveParam=curveParam;
   c9x.swtch = open9xArmToSwitch(swtch);
-  c9x.phases= phases;
+  c9x.flightModes= phases;
   c9x.weight = weight;
   getEEPROMZString(c9x.name, name, sizeof(name));
   return c9x;
@@ -292,14 +292,14 @@ t_Open9xArmMixData_v208::operator MixData ()
     c9x.mixWarn = mixWarn;
 
     if (phase<0) {
-      c9x.phases= 1 << (-phase -1);
+      c9x.flightModes= 1 << (-phase -1);
     }
     else if (phase==0) {
-      c9x.phases=0;
+      c9x.flightModes=0;
     }
     else {
-      c9x.phases=511;
-      c9x.phases &= ~(1 << (phase -1));
+      c9x.flightModes=511;
+      c9x.flightModes &= ~(1 << (phase -1));
     }
 
     c9x.sOffset = sOffset;
@@ -358,14 +358,14 @@ t_Open9xArmMixData_v209::operator MixData ()
     c9x.mixWarn = mixWarn;
 
     if (phase<0) {
-      c9x.phases= 1 << (-phase -1);
+      c9x.flightModes= 1 << (-phase -1);
     }
     else if (phase==0) {
-      c9x.phases=0;
+      c9x.flightModes=0;
     }
     else {
-      c9x.phases=511;
-      c9x.phases &= ~(1 << (phase -1));
+      c9x.flightModes=511;
+      c9x.flightModes &= ~(1 << (phase -1));
     }
 
     c9x.sOffset = sOffset;
@@ -424,14 +424,14 @@ t_Open9xArmMixData_v210::operator MixData ()
     c9x.mixWarn = mixWarn;
 
     if (phase<0) {
-      c9x.phases= 1 << (-phase -1);
+      c9x.flightModes= 1 << (-phase -1);
     }
     else if (phase==0) {
-      c9x.phases=0;
+      c9x.flightModes=0;
     }
     else {
-      c9x.phases=511;
-      c9x.phases &= ~(1 << (phase -1));
+      c9x.flightModes=511;
+      c9x.flightModes &= ~(1 << (phase -1));
     }
 
     c9x.sOffset = sOffset;
@@ -493,7 +493,7 @@ t_Open9xArmMixData_v212::operator MixData ()
     c9x.noExpo = noExpo;
     c9x.mltpx = (MltpxValue)mltpx;
     c9x.mixWarn = mixWarn;
-    c9x.phases = phases;
+    c9x.flightModes = phases;
     c9x.sOffset = sOffset;
     getEEPROMZString(c9x.name, name, sizeof(name));
   }
@@ -716,19 +716,19 @@ t_Open9xArmModelData_v208::operator ModelData ()
     c9x.timers[i] = timers[i];
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     case 2:
-      c9x.moduleData[0].protocol = PPMSIM;
+      c9x.moduleData[0].protocol = PULSES_PPMSIM;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 4:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -799,19 +799,19 @@ t_Open9xArmModelData_v209::operator ModelData ()
     c9x.timers[i] = timers[i];
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     case 2:
-      c9x.moduleData[0].protocol = PPMSIM;
+      c9x.moduleData[0].protocol = PULSES_PPMSIM;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 4:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -883,19 +883,19 @@ t_Open9xArmModelData_v210::operator ModelData ()
     c9x.timers[i] = timers[i];
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     case 2:
-      c9x.moduleData[0].protocol = PPMSIM;
+      c9x.moduleData[0].protocol = PULSES_PPMSIM;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 4:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -967,19 +967,19 @@ t_Open9xArmModelData_v211::operator ModelData ()
     c9x.timers[i] = timers[i];
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     case 2:
-      c9x.moduleData[0].protocol = PPMSIM;
+      c9x.moduleData[0].protocol = PULSES_PPMSIM;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 4:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
@@ -1054,19 +1054,19 @@ t_Open9xArmModelData_v212::operator ModelData ()
   }
   switch(protocol) {
     case 1:
-      c9x.moduleData[0].protocol = PPM16;
+      c9x.moduleData[0].protocol = PULSES_PPM16;
       break;
     case 2:
-      c9x.moduleData[0].protocol = PPMSIM;
+      c9x.moduleData[0].protocol = PULSES_PPMSIM;
       break;
     case 3:
-      c9x.moduleData[0].protocol = PXX_DJT;
+      c9x.moduleData[0].protocol = PULSES_PXX_DJT;
       break;
     case 4:
-      c9x.moduleData[0].protocol = DSM2;
+      c9x.moduleData[0].protocol = PULSES_DSM2;
       break;
     default:
-      c9x.moduleData[0].protocol = PPM;
+      c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);

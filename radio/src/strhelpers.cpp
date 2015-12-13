@@ -245,16 +245,14 @@ char * strAppendDate(char * str, bool time)
     div_t qr = div(utm.tm_hour, 10);
     str[13] = '0' + qr.rem;
     str[12] = '0' + qr.quot;
-    str[14] = '-';
     qr = div(utm.tm_min, 10);
-    str[16] = '0' + qr.rem;
-    str[15] = '0' + qr.quot;
-    str[17] = '-';
+    str[15] = '0' + qr.rem;
+    str[14] = '0' + qr.quot;
     qr = div(utm.tm_sec, 10);
-    str[19] = '0' + qr.rem;
-    str[18] = '0' + qr.quot;
-    str[20] = '\0';
-    return &str[20];
+    str[17] = '0' + qr.rem;
+    str[16] = '0' + qr.quot;
+    str[18] = '\0';
+    return &str[18];
   }
   else {
     str[11] = '\0';

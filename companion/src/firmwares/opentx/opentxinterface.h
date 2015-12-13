@@ -1,6 +1,6 @@
 /*
  * Author - Bertrand Songis <bsongis@gmail.com>
- * 
+ *
  * Based on th9x -> http://code.google.com/p/th9x/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -19,8 +19,6 @@
 
 #include "eeprominterface.h"
 
-#define OPENTX_FIRMWARE_DOWNLOADS    "http://downloads-21.open-tx.org/firmware"
-
 class RleFile;
 
 class OpenTxEepromInterface : public EEPROMInterface
@@ -35,25 +33,23 @@ class OpenTxEepromInterface : public EEPROMInterface
 
     virtual const int getMaxModels();
 
-    virtual bool load(RadioData &, const uint8_t *eeprom, int size);
+    virtual unsigned long load(RadioData &, const uint8_t *eeprom, int size);
 
-    virtual bool loadBackup(RadioData &, uint8_t *eeprom, int esize, int index);
-    
-    virtual bool loadxml(RadioData &radioData, QDomDocument &doc);
+    virtual unsigned long loadBackup(RadioData &, uint8_t *eeprom, int esize, int index);
+
+    virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc);
 
     virtual int save(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, uint8_t version=0);
 
-    virtual int getSize(ModelData &);
+    virtual int getSize(const ModelData &);
 
-    virtual int getSize(GeneralSettings &);
-    
-    virtual int isAvailable(Protocol proto, int port=0);
-    
+    virtual int getSize(const GeneralSettings &);
+
   protected:
 
     const char * getName();
 
-    bool checkVersion(unsigned int version);
+    EepromLoadErrors checkVersion(unsigned int version);
 
     bool checkVariant(unsigned int version, unsigned int variant);
 
@@ -89,30 +85,32 @@ class OpenTxFirmware: public Firmware {
       Firmware(id, name, board, new OpenTxEepromInterface(board))
     {
       addLanguage("en");
+      addLanguage("cz");
+      addLanguage("de");
+      addLanguage("es");
       addLanguage("fr");
       addLanguage("it");
-      addLanguage("de");
-      addLanguage("se");
-      addLanguage("cz");
-      addLanguage("es");
+      addLanguage("nl");
       addLanguage("pl");
       addLanguage("pt");
+      addLanguage("se");
 
       addTTSLanguage("en");
-      addTTSLanguage("fr");
-      addTTSLanguage("it");
-      addTTSLanguage("de");
-      addTTSLanguage("se");
       addTTSLanguage("cz");
-      addTTSLanguage("sk");
+      addTTSLanguage("de");
+      addTTSLanguage("es");
+      addTTSLanguage("fr");
+      addTTSLanguage("hu");
+      addTTSLanguage("it");
+      addTTSLanguage("nl");
       addTTSLanguage("pl");
       addTTSLanguage("pt");
-      addTTSLanguage("es");
-      addTTSLanguage("hu");
+      addTTSLanguage("se");
+      addTTSLanguage("sk");
     }
 
     virtual Firmware * getFirmwareVariant(const QString & id);
-    
+
     virtual QString getStampUrl();
 
     virtual QString getReleaseNotesUrl();
@@ -122,9 +120,16 @@ class OpenTxFirmware: public Firmware {
     virtual int getCapability(const Capability);
 
     virtual bool isTelemetrySourceAvailable(int source);
-    
+
+    virtual int isAvailable(PulsesProtocol proto, int port=0);
+
+  protected:
+
+    QString getFirmwareBaseUrl();
+
 };
 
 void registerOpenTxFirmwares();
+void unregisterOpenTxFirmwares();
 
 #endif

@@ -115,23 +115,26 @@ void joystickDialog::on_cancelButton_clicked() {
   this->close();
 }
 
-void joystickDialog::on_okButton_clicked() {
-  int sticks[8]={0,0,0,0,0,0,0,0};
+void joystickDialog::on_okButton_clicked()
+{
+  int stickAssignments[MAX_JOYSTICKS] = {0};
   foreach(QComboBox *cb, findChildren<QComboBox *>(QRegExp("jsmapCB_[0-9]+"))) {
-    sticks[cb->currentIndex()]++;
-  }
-  bool duplicated=false;
-  for (int i=1; i<8;i++) {
-    if (sticks[i]>1) {
-      duplicated=true;
+    int mappedValue = cb->currentIndex() - 1;
+    // qDebug() << "cb->currentIndex()" << mappedValue;
+    if (mappedValue >= 0 && mappedValue < MAX_JOYSTICKS) {
+      stickAssignments[mappedValue]++;
     }
   }
-  if (duplicated) {
-    QMessageBox::critical(this, tr("Error"), tr("Duplicated stick assignement"));
-    return;
+
+  for (int i=0; i<MAX_JOYSTICKS; i++) {
+    if (stickAssignments[i] > 1) {
+      QMessageBox::critical(this, tr("Error"), tr("Duplicated stick assignment"));
+      return;
+    }
   }
+
   joystick->close();
-  for (int i=0; i<8;i++) {
+  for (int i=0; i<MAX_JOYSTICKS; i++) {
     g.joystick[i].remove();
   }
   QCheckBox * ib[]={ui->ChInv_1, ui->ChInv_2, ui->ChInv_3, ui->ChInv_4, ui->ChInv_5, ui->ChInv_6, ui->ChInv_7, ui->ChInv_8};
@@ -139,7 +142,7 @@ void joystickDialog::on_okButton_clicked() {
     int axe=cb->objectName().mid(cb->objectName().lastIndexOf("_")+1).toInt()-1;
     int stick=cb->currentIndex() - 1;
     qDebug() << "joystick mapping " << cb->objectName() <<"axe:" << axe << "stick:" << stick;
-    if (stick >= 0) {
+    if (stick >= 0 && stick < MAX_JOYSTICKS) {
       g.joystick[stick].stick_axe( axe );
       g.joystick[stick].stick_max( jscal[axe][2] );
       g.joystick[stick].stick_med( jscal[axe][1] );

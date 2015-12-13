@@ -1,11 +1,14 @@
-Bertrand Songis
-Romolo Manfredini
-André Bernet
+Bertrand Songis (bsongis)
+André Bernet (kilrah)
 Michael Blandford
+Damjan Adamic (projectkk2glider)
+Franck Aguerre (jivarofad)
+Romolo Manfredini (romoloman)
+Martin Hotař (mhotar)
+
 Rob Thomson
-Bryan J. Rentoul (aka Gruvin)
-Cameron Weeks
-Martin Hotař
+Bryan J. Rentoul (gruvin)
+Cameron Weeks (th9xer)
 Andreas Weitl
 Kjell Kernen
 Gabriel Birkus
@@ -13,10 +16,4 @@ Jean-Pierre Parisy
 Karl Szmutny
 Michal Hlavinka
 Pat Mackenzie
-Michael Byrne (logos and official splashes)
-Severino Anedda (splash screens)
-Grootwitbaas - 9xforums.com (mac)
-Adrian Amberg (splash screens)
-Wallaguest1 - 9xforums.com (splash screens)
-HC1969 - 9xforums.com (splash screens)
-
+Michael Byrne

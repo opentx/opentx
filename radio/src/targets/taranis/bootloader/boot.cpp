@@ -66,8 +66,13 @@
 
 #if defined(PCBTARANIS)
   #define BOOTLOADER_TITLE      " Taranis BootLoader - " VERS_STR
-  #define BOOT_KEY_UP		KEY_PLUS
-  #define BOOT_KEY_DOWN		KEY_MINUS
+  #if defined(REV9E)
+    #define BOOT_KEY_UP		KEY_MINUS
+    #define BOOT_KEY_DOWN	KEY_PLUS
+  #else
+    #define BOOT_KEY_UP         KEY_PLUS
+    #define BOOT_KEY_DOWN       KEY_MINUS
+  #endif
   #define BOOT_KEY_LEFT		KEY_MENU
   #define BOOT_KEY_RIGHT	KEY_PAGE
   #define BOOT_KEY_MENU		KEY_ENTER
@@ -118,7 +123,6 @@ TCHAR backupFilename[60];
 
 uint32_t Master_frequency;
 volatile uint8_t Tenms;
-uint8_t EE_timer;
 
 FIL FlashFile;
 DIR Dj;
@@ -153,45 +157,6 @@ extern void usbPluggedIn();
 #if defined(REV9E)
 typedef int32_t rotenc_t;
 extern rotenc_t x9de_rotenc;
-#endif
-
-/*----------------------------------------------------------------------------
- *         Global functions
- *----------------------------------------------------------------------------*/
-
-#if defined(PCBSKY9X)
-// Starts TIMER0 at full speed (MCK/2) for delay timing
-// @ 36MHz this is 18MHz
-// This was 6 MHz, we may need to slow it to TIMER_CLOCK2 (MCK/8=4.5 MHz)
-void start_timer0()
-{
-  register Tc *ptc;
-
-  PMC->PMC_PCER0 |= 0x00800000L;		// Enable peripheral clock to TC0
-
-  ptc = TC0;// Tc block 0 (TC0-2)
-  ptc->TC_BCR = 0;// No sync
-  ptc->TC_BMR = 2;
-  ptc->TC_CHANNEL[0].TC_CMR = 0x00008001;// Waveform mode MCK/8 for 36MHz osc.(Upset be write below)
-  ptc->TC_CHANNEL[0].TC_RC = 0xFFF0;
-  ptc->TC_CHANNEL[0].TC_RA = 0;
-  ptc->TC_CHANNEL[0].TC_CMR = 0x00008040;// 0000 0000 0000 0000 1000 0000 0100 0000, stop at regC, 18MHz
-  ptc->TC_CHANNEL[0].TC_CCR = 5;// Enable clock and trigger it (may only need trigger)
-}
-
-void stop_timer0( void )
-{
-  TC0->TC_CHANNEL[0].TC_CCR = TC_CCR0_CLKDIS;		// Disable clock
-}
-
-void delay2ms()
-{
-  TC0->TC_CHANNEL[0].TC_CCR = 5;// Enable clock and trigger it (may only need trigger)
-  while ( TC0->TC_CHANNEL[0].TC_CV < 36000 )// 2mS, Value depends on MCK/2 (used 18MHz)
-  {
-    // Wait
-  }
-}
 #endif
 
 void interrupt10ms(void)
@@ -433,78 +398,32 @@ int main()
 #endif
 
   pwrInit();
-
-#if defined(PCBSKY9X)
-  MATRIX->CCFG_SYSIO |= 0x000000F0L;		// Disable syspins, enable B4,5,6,7
-#endif
-
-#if defined(PCBSKY9X)
-  init_SDcard();
-  PIOC->PIO_PER = PIO_PC25;		// Enable bit C25 (USB-detect)
-  start_timer0();
-#endif
-
-#if defined(PCBTARANIS)
   delaysInit();               //needed for lcdInit()
-#endif 
   lcdInit();
+  backlightInit();
 
-#if defined(PCBSKY9X)
-  extern uint8_t OptrexDisplay;
-  OptrexDisplay = 1;
-#endif
   lcd_clear();
+  lcd_putsn(0, 0, (const char *)bootloaderVersion, 0); // trick to avoid bootloaderVersion to be optimized out ...
   lcd_putsLeft(0, BOOTLOADER_TITLE);
   lcd_invert_line(0);
   lcdRefresh();
-#if defined(PCBSKY9X)
-  OptrexDisplay = 0;
-  lcdRefresh();
-#endif
 
-#if defined(PCBTARANIS)
-#if defined(REVPLUS)
-  turnBacklightOn(0, 0);
-#endif
   keysInit();
-  eepromInit();
-#endif
+  i2cInit();
 
   __enable_irq();
   init10msTimer();
-
-#if defined(PCBSKY9X)
-  EblockAddress = -1;
-  init_spi();
-#endif
-
-#if defined(PCBSKY9X)
-  LockBits = readLockBits();
-  if (LockBits) {
-    clearLockBits();
-  }
-#endif
 
 #if defined(PCBTARANIS)
   // SD card detect pin
   sdInit();
   usbInit();
-  usbStart();
 #endif
 
   for (;;) {
     wdt_reset();
 
     if (Tenms) {
-
-      if (EE_timer) {
-        if (--EE_timer == 0) {
-#if defined(PCBSKY9X)
-          writeBlock();
-#endif
-        }
-      }
-
       Tenms = 0;
 
       lcdRefreshWait();

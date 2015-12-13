@@ -51,12 +51,8 @@
 
 #if defined(PCBSKY9X)
   #include "AT91SAM3S4.h"
-#elif defined(PCBTARANIS) && defined(REV9E)
-  #include "stm32f4xx.h"
-  #include "stm32f4xx_gpio.h"
-#elif defined(PCBTARANIS)
-  #include "stm32f2xx.h"
-  #include "stm32f2xx_gpio.h"
+#else
+  #include "board_taranis.h"
 #endif
 
 #if defined(PCBTARANIS)
@@ -93,46 +89,76 @@ const uint8_t BootCode[] = {
 __attribute__ ((section(".bootrodata"), used))
 void _bootStart()
 {
-  // turn soft power ON now
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;          // Enable portD clock
-  GPIOD->BSRRL = 1;
-  GPIOD->MODER = (GPIOD->MODER & 0xFFFFFFFC) | 1;
+#if defined(REV9E)
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN | RCC_AHB1ENR_GPIOGEN | RCC_AHB1ENR_GPIODEN;
+#else
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN | RCC_AHB1ENR_GPIOEEN | RCC_AHB1ENR_GPIODEN;
+#endif
 
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN; 		// Enable portC clock
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN; 		// Enable portE clock
+  // these two NOPs are needed (see STM32F errata sheet) before the peripheral 
+  // register can be written after the peripheral clock was enabled
+  __ASM volatile ("nop");
+  __ASM volatile ("nop");
 
+  // Turn soft power ON now, but only if we got started because of the watchdog
+  // or software reset. If the radio was started by user pressing the power button
+  // then that button is providing power and we don't need to enable it here.
+  //
+  // If we were to turn it on here indiscriminately, then the radio can go into the 
+  // power on/off loop after being powered off by the user. (issue #2790)
+  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    GPIOD->BSRRL = 1;                                  // set PWR_GPIO_PIN_ON pin to 1
+    GPIOD->MODER = (GPIOD->MODER & 0xFFFFFFFC) | 1;    // General purpose output mode
+  }
+
+  // TRIMS_GPIO_PIN_LHR is on PG0 on 9XE and on PE3 on Taranis
+  // TRIMS_GPIO_PIN_RHL is on PC1 on all versions
+  // turn on pull-ups on trim keys 
   GPIOC->PUPDR = 0x00000004;
+#if defined(REV9E)
+  GPIOG->PUPDR = 0x00000001;
+#else
   GPIOE->PUPDR = 0x00000040;
+#endif
 
-  uint32_t i;
-  for (i = 0; i < 50000; i += 1) {
+  // wait for inputs to stabilize
+  for (uint32_t i = 0; i < 50000; i += 1) {
     bwdt_reset();
   }
 
-  if ((GPIOE->IDR & 0x00000008) == 0) {
-    if ((GPIOC->IDR & 0x00000002) == 0) {
-      // Bootloader needed
-      const uint8_t *src;
-      uint8_t *dest;
-      uint32_t size;
-
+  // now the second part of power on sequence
+  // If we got here and the radio was not started by the watchdog/software reset,
+  // then we must have a power button pressed. If not then we are in power on/off loop
+  // and to terminate it, just wait here without turning on PWR pin. The power supply will
+  // eventually exhaust and the radio will turn off.
+  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    // wait here until the power key is pressed
+    while (GPIOD->IDR & PWR_GPIO_PIN_SWITCH) {
       bwdt_reset();
-      size = sizeof(BootCode);
-      src = BootCode;
-      dest = (uint8_t *) 0x20000000;
-
-      for (; size; size -= 1) {
-        *dest++ = *src++;
-      }
-      // Could check for a valid copy to RAM here
-      // Go execute bootloader
-      bwdt_reset();
-
-      uint32_t address = *(uint32_t *) 0x20000004;
-
-      ((void (*)(void)) (address))();		// Go execute the loaded application
-
     }
+  }
+
+  if (!(TRIMS_GPIO_REG_LHR & TRIMS_GPIO_PIN_LHR) && !(TRIMS_GPIO_REG_RHL & TRIMS_GPIO_PIN_RHL)) {
+    // Bootloader needed
+    const uint8_t *src;
+    uint8_t *dest;
+    uint32_t size;
+
+    bwdt_reset();
+    size = sizeof(BootCode);
+    src = BootCode;
+    dest = (uint8_t *) 0x20000000;
+
+    for (; size; size -= 1) {
+      *dest++ = *src++;
+    }
+    // Could check for a valid copy to RAM here
+    // Go execute bootloader
+    bwdt_reset();
+
+    uint32_t address = *(uint32_t *) 0x20000004;
+
+    ((void (*)(void)) (address))();		// Go execute the loaded application
   }
 
 // run_application() ;

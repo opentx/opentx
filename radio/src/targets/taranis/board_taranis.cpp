@@ -112,27 +112,39 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
   interrupt5ms() ;
 }
 
+#if defined(REV9E)
+  #define PWR_PRESS_DURATION_MIN       200 // 2s
+  #define PWR_PRESS_DURATION_MAX       500 // 5s
+
+  const pm_uchar bmp_startup[] PROGMEM = {
+    #include "../../bitmaps/Taranis/startup.lbm"
+  };
+
+  const pm_uchar bmp_lock[] PROGMEM = {
+    #include "../../bitmaps/Taranis/lock.lbm"
+  };
+#endif
+
 void boardInit()
 {
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph | INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph | HEARTBEAT_RCC_AHB1Periph, ENABLE);
   RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph | INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | I2C_RCC_APB1Periph | SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph, ENABLE);
   RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph | EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph, ENABLE);
 
+#if !defined(REV9E)
+  // some REV9E boards need that the pwrInit() is moved a little bit later
   pwrInit();
+#endif
+
   keysInit();
   adcInit();
   delaysInit();
   lcdInit();    // delaysInit() must be called before
-
-#if defined(REV9E)
-  topLcdInit();
-#endif
-
   audioInit();
   init2MhzTimer();
   init5msTimer();
   __enable_irq();
-  eepromInit();
+  i2cInit();
   usbInit();
   
 #if defined(HAPTIC)  
@@ -140,15 +152,78 @@ void boardInit()
 #endif
 
 #if defined(REV9E)
-  rotencInit();
-  bt_open();
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
 #endif
 
 #if defined(DEBUG)
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
 #endif
-}
+
+#if defined(REV9E)
+  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    lcd_clear();
+    lcd_bmp(76, 2, bmp_lock, 0, 60);
+    lcdRefresh();
+    lcdRefreshWait();
+
+    tmr10ms_t start = get_tmr10ms();
+    tmr10ms_t duration = 0;
+    uint8_t pwr_on = 0;
+    while (pwrPressed()) {
+      duration = get_tmr10ms() - start;
+      if (duration < PWR_PRESS_DURATION_MIN) {
+        unsigned index = duration / (PWR_PRESS_DURATION_MIN / 4);
+        lcd_clear();
+        lcd_bmp(76, 2, bmp_startup, index*60, 60);
+      }
+      else if (duration >= PWR_PRESS_DURATION_MAX) {
+        displaySleepBitmap();
+        turnBacklightOff();
+      }
+      else {
+        if (pwr_on != 1) {
+          pwr_on = 1;
+          pwrInit();
+          backlightInit();
+          haptic.play(15, 3, PLAY_NOW);
+        }
+      }
+      lcdRefresh();
+      lcdRefreshWait();
+    }
+    if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
+      boardOff();
+    }
+  }
+  else {
+    pwrInit();
+    backlightInit();
+  }
+  topLcdInit();
+#else
+  backlightInit();
 #endif
+}
+
+void boardOff()
+{
+  BACKLIGHT_OFF();
+#if defined(REV9E)
+  topLcdOff();
+#endif
+
+#if defined(REV9E)
+  while (pwrPressed()) {
+    wdt_reset();
+  }
+#endif
+
+  lcdOff();
+  SysTick->CTRL = 0; // turn off systick
+  pwrOff();
+}
+
+#endif   // #if !defined(SIMU)
 
 
 #if defined(USB_JOYSTICK) && !defined(SIMU)
@@ -195,7 +270,7 @@ void checkTrainerSettings()
   uint8_t requiredTrainerMode = g_model.trainerMode;
   if (requiredTrainerMode != currentTrainerMode) {
     switch (currentTrainerMode) {
-      case TRAINER_MODE_MASTER:
+      case TRAINER_MODE_MASTER_TRAINER_JACK:
         stop_trainer_capture();
         break;
       case TRAINER_MODE_SLAVE:
@@ -208,7 +283,7 @@ void checkTrainerSettings()
         stop_sbus_on_heartbeat_capture() ;
         break;
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        uart3Stop();
+        serial2Stop();
     }
 
     currentTrainerMode = requiredTrainerMode;
@@ -223,8 +298,8 @@ void checkTrainerSettings()
          init_sbus_on_heartbeat_capture() ;
          break;
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        if (g_eeGeneral.uart3Mode == UART_MODE_SBUS_TRAINER) {
-          uart3SbusInit();
+        if (g_eeGeneral.serial2Mode == UART_MODE_SBUS_TRAINER) {
+          serial2SbusInit();
           break;
         }
         // no break
