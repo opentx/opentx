@@ -16,13 +16,13 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="maximumSize">
+  <property name="minimumSize">
    <size>
     <width>960</width>
     <height>850</height>
    </size>
   </property>
-  <property name="minimumSize">
+  <property name="maximumSize">
    <size>
     <width>960</width>
     <height>850</height>
@@ -36,345 +36,13 @@
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
-   <property name="leftMargin">
-    <number>5</number>
-   </property>
-   <property name="topMargin">
-    <number>5</number>
-   </property>
-   <property name="rightMargin">
-    <number>5</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>5</number>
    </property>
    <property name="spacing">
     <number>0</number>
    </property>
-   <item row="1" column="0" colspan="2">
-    <spacer name="horizontalSpacer_4">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Minimum</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>700</width>
-       <height>5</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="3" column="0">
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="simu">
-      <attribute name="title">
-       <string>Horus Simulator</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_5">
-       <property name="topMargin">
-        <number>5</number>
-       </property>
-       <property name="bottomMargin">
-        <number>5</number>
-       </property>
-       <property name="horizontalSpacing">
-        <number>0</number>
-       </property>
-       <item row="0" column="1">
-        <layout class="QGridLayout" name="gridLayout_3">
-         <property name="sizeConstraint">
-          <enum>QLayout::SetFixedSize</enum>
-         </property>
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <item row="0" column="0" rowspan="3">
-          <widget class="ButtonsWidget" name="leftbuttons" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>147</width>
-             <height>292</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>147</width>
-             <height>292</height>
-            </size>
-           </property>
-           <property name="mouseTracking">
-            <bool>true</bool>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background:url(:/images/simulator/Horus/left.png);</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QWidget" name="top" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>480</width>
-             <height>9</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>480</width>
-             <height>9</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>5</pointsize>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background:url(:/images/simulator/Horus/top.png)</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="LcdWidget" name="lcd" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>480</width>
-             <height>272</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>480</width>
-             <height>272</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>5</pointsize>
-            </font>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QWidget" name="bottom" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>480</width>
-             <height>11</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>480</width>
-             <height>11</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>5</pointsize>
-             <kerning>false</kerning>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background:url(:/images/simulator/Horus/bottom.png)</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" rowspan="3">
-          <widget class="ButtonsWidget" name="led" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>24</width>
-             <height>292</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>24</width>
-             <height>292</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background:url(:/images/simulator/Horus/led.png)</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3" rowspan="3">
-          <widget class="ButtonsWidget" name="borderRight" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>27</width>
-             <height>292</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>27</width>
-             <height>292</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background:url(:/images/simulator/Horus/border-right.png)</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="4" rowspan="3">
-          <widget class="ButtonsWidget" name="rightbuttons" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>147</width>
-             <height>292</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>147</width>
-             <height>292</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background:url(:/images/simulator/Horus/right.png)</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="0" column="2">
-        <spacer name="horizontalSpacer_5">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>292</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="0">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>292</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="outputs">
-      <attribute name="title">
-       <string>O&amp;utputs</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_7">
-       <item row="0" column="0">
-        <layout class="QGridLayout" name="logicalSwitchesLayout"/>
-       </item>
-       <item row="1" column="0">
-        <layout class="QGridLayout" name="channelsLayout"/>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="outputs2">
-      <attribute name="title">
-       <string>Ou&amp;tputs2</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <layout class="QGridLayout" name="logicalSwitchesLayout2"/>
-       </item>
-       <item>
-        <layout class="QGridLayout" name="channelsLayout2"/>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="misc">
-      <attribute name="title">
-       <string>&amp;Gvars</string>
-      </attribute>
-      <widget class="QWidget" name="gridLayoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>691</width>
-         <height>231</height>
-        </rect>
-       </property>
-       <layout class="QGridLayout" name="gvarsLayout"/>
-      </widget>
-     </widget>
-    </widget>
-   </item>
-   <item row="0" column="0">
+   <item row="1" column="0">
     <widget class="QFrame" name="controlFrame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -404,16 +72,7 @@
       <number>2</number>
      </property>
      <layout class="QGridLayout" name="gridLayout_8">
-      <property name="leftMargin">
-       <number>5</number>
-      </property>
-      <property name="topMargin">
-       <number>5</number>
-      </property>
-      <property name="rightMargin">
-       <number>5</number>
-      </property>
-      <property name="bottomMargin">
+      <property name="margin">
        <number>5</number>
       </property>
       <property name="spacing">
@@ -1778,6 +1437,354 @@ QPushButton:checked {
       </item>
      </layout>
     </widget>
+   </item>
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="teleSim">
+       <property name="text">
+        <string>PF4 - Telemetry Simulator</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="trainerSim">
+       <property name="text">
+        <string>PF5 - Trainer Simulator</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="debugConsole">
+       <property name="text">
+        <string>PF6 - Debug Console Window</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="simu">
+      <attribute name="title">
+       <string>Horus Simulator</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+       <property name="horizontalSpacing">
+        <number>0</number>
+       </property>
+       <item row="0" column="1">
+        <layout class="QGridLayout" name="gridLayout_3">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetFixedSize</enum>
+         </property>
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item row="0" column="0" rowspan="3">
+          <widget class="ButtonsWidget" name="leftbuttons" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>147</width>
+             <height>292</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>147</width>
+             <height>292</height>
+            </size>
+           </property>
+           <property name="mouseTracking">
+            <bool>true</bool>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:url(:/images/simulator/Horus/left.png);</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QWidget" name="top" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>480</width>
+             <height>9</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>480</width>
+             <height>9</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>5</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:url(:/images/simulator/Horus/top.png)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="LcdWidget" name="lcd" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>480</width>
+             <height>272</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>480</width>
+             <height>272</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>5</pointsize>
+            </font>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QWidget" name="bottom" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>480</width>
+             <height>11</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>480</width>
+             <height>11</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>5</pointsize>
+             <kerning>false</kerning>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:url(:/images/simulator/Horus/bottom.png)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" rowspan="3">
+          <widget class="ButtonsWidget" name="led" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>24</width>
+             <height>292</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>24</width>
+             <height>292</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:url(:/images/simulator/Horus/led.png)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3" rowspan="3">
+          <widget class="ButtonsWidget" name="borderRight" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>27</width>
+             <height>292</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>27</width>
+             <height>292</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:url(:/images/simulator/Horus/border-right.png)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="4" rowspan="3">
+          <widget class="ButtonsWidget" name="rightbuttons" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>147</width>
+             <height>292</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>147</width>
+             <height>292</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:url(:/images/simulator/Horus/right.png)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="2">
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>292</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="0">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>292</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="outputs">
+      <attribute name="title">
+       <string>O&amp;utputs</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_7">
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="logicalSwitchesLayout"/>
+       </item>
+       <item row="1" column="0">
+        <layout class="QGridLayout" name="channelsLayout"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="outputs2">
+      <attribute name="title">
+       <string>Ou&amp;tputs2</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <layout class="QGridLayout" name="logicalSwitchesLayout2"/>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="channelsLayout2"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="misc">
+      <attribute name="title">
+       <string>&amp;Gvars</string>
+      </attribute>
+      <widget class="QWidget" name="gridLayoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>691</width>
+         <height>231</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gvarsLayout"/>
+      </widget>
+     </widget>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <spacer name="horizontalSpacer_4">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Minimum</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>700</width>
+       <height>5</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
