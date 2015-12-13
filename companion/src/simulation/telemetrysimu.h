@@ -7,7 +7,7 @@
 #include <QDateTime>
 #include <QtCore/qmath.h>
 #include <QFileDialog>
-// #include <QDebug>
+
 #include "simulatorinterface.h"
 
 static double const SPEEDS[] = { 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 5 };
