@@ -147,7 +147,7 @@ void TelemetrySimulator::showEvent(QShowEvent *event)
 {
 
   ui->rxbt_inst->setText(QString::number(simulator->getSensorInstance(BATT_ID)));
-  ui->rxbt_ratio->setValue(simulator->getSensorRatio(ADC1_ID) / 10.0);
+  ui->rxbt_ratio->setValue(simulator->getSensorRatio(BATT_ID) / 10.0);
   ui->rssi_inst->setText(QString::number(simulator->getSensorInstance(RSSI_ID)));
   ui->swr_inst->setText(QString::number(simulator->getSensorInstance(SWR_ID)));
   ui->a1_inst->setText(QString::number(simulator->getSensorInstance(ADC1_ID)));
@@ -618,8 +618,8 @@ QDateTime TelemetrySimulator::LogPlaybackController::parseTransmittterTimestamp(
   if (timePart.count(":") < 2) {
     timePart = "00:" + timePart;
   }
-  if (datePart.contains("/")) {
-    format = "MM/dd/yyyy hh:mm:ss.z";
+  if (datePart.contains("/")) { // happens when csv is edited by Excel
+    format = "M/d/yyyy hh:mm:ss.z";
   }
   return QDateTime::fromString(datePart + " " + timePart, format);
 }
