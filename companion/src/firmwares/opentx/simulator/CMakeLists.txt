@@ -49,7 +49,7 @@ add_truetype_font_target(horus xxlsize "DejaVu Sans" 48)
 add_bitmaps_target(lbm_horus_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/horus/????[^_]*.png" 480 5/6/5/8)
 add_bitmaps_target(lbm_horus_masks ${RADIO_SRC_DIRECTORY}/bitmaps/horus/mask_*.png 480 8bits)
 add_bitmaps_target(lbm_horus_fonts ${RADIO_SRC_DIRECTORY}/fonts/horus/*.png 480 8bits)
-add_dependencies(lbm_horus_fonts ttf_Horus_tinsize ttf_Horus_smlsize ttf_Horus_stdsize ttf_Horus_midsize ttf_Horus_dblsize ttf_Horus_xxlsize)
+add_dependencies(lbm_horus_fonts ttf_horus_tinsize ttf_horus_smlsize ttf_horus_stdsize ttf_horus_midsize ttf_horus_dblsize ttf_horus_xxlsize)
 add_dependencies(lbm_horus_bitmaps lbm_horus_masks lbm_horus_fonts)
 
 file(GLOB translations ${RADIO_SRC_DIRECTORY}/translations/*.h.txt)
