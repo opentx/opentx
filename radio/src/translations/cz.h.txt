@@ -1086,6 +1086,8 @@
 #define TR_ONLYPOSITIVE        "Jen kladné"
 #define TR_FILTER              "Filtr"
 #define TR_TELEMETRYFULL       "Všechny sloty jsou plné!"
+//TODO: translation
+#define TR_INVERTED_SERIAL     INDENT "Invert"
 #define TR_IGNORE_INSTANCE     INDENT "Ignoruj chyby ID"
 #define TR_DISCOVER_SENSORS    INDENT "Detekovat nové senzory"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Zastavit autodetekci"
