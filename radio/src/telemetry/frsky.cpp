@@ -666,5 +666,14 @@ void frskyUpdateCells(void)
         frskyData.hub.minCell = frskyData.hub.minCellVolts;
     }
   }
+
+#if defined(REVX)
+  if (serialInversion) {
+    setMFP();
+  }
+  else {
+    clearMFP();
+  }
+#endif
 }
 #endif
