@@ -6,3 +6,6 @@ radio/src/bootloader/bootloader_ramBoot*
 *.lbm
 *.o
 /doc/
+*.stamp
+radio/src/lua/lua_fields_*.txt
+radio/src/lua/lua_exports_*.txt
