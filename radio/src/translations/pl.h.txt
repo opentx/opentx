@@ -1085,7 +1085,7 @@
 #define TR_FILTER              "Filtr"
 #define TR_TELEMETRYFULL       "Wszyskie miejsca zajęte!"
 //TODO: translation
-#define TR_INVERTED SERIAL     INDENT "Invert"
+#define TR_INVERTED SERIAL     INDENT "Odwróć"
 #define TR_IGNORE_INSTANCE     INDENT "Ignoruj przypadek"
 #define TR_DISCOVER_SENSORS    INDENT "Znajdź nowe czujniki"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Szukanie STOP "
