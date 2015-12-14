@@ -69,6 +69,9 @@ FrskyData frskyData;
 
 #if defined(CPUARM)
 uint8_t telemetryProtocol = 255;
+#if defined(REVX)
+uint8_t serialInversion = 0;
+#endif
 #define IS_FRSKY_D_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_D)
 #define IS_FRSKY_SPORT_PROTOCOL()  (telemetryProtocol == PROTOCOL_FRSKY_SPORT)
 #else
@@ -283,7 +286,13 @@ void telemetryWakeup()
 {
 #if defined(CPUARM)
   uint8_t requiredTelemetryProtocol = MODEL_TELEMETRY_PROTOCOL();
-  if (telemetryProtocol != requiredTelemetryProtocol) {
+#if defined(REVX)
+  uint8_t requiredSerialInversion = g_model.moduleData[EXTERNAL_MODULE].invertedSerial;
+  if (telemetryProtocol != requiredTelemetryProtocol || serialInversion != requiredSerialInversion) {
+    serialInversion = requiredSerialInversion;
+#else
+   if (telemetryProtocol != requiredTelemetryProtocol) {
+#endif
     telemetryProtocol = requiredTelemetryProtocol;
     telemetryInit();
   }
@@ -648,5 +657,14 @@ void frskyUpdateCells(void)
         frskyData.hub.minCell = frskyData.hub.minCellVolts;
     }
   }
+
+#if defined(REVX)
+  if (serialInversion) {
+    setMFP();
+  }
+  else {
+    clearMFP();
+  }
+#endif
 }
 #endif

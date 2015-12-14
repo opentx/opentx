@@ -1077,6 +1077,7 @@
 #define TR_ONLYPOSITIVE        "Positive"
 #define TR_FILTER              "Filtrage"
 #define TR_TELEMETRYFULL       "Plus de capteurs libres!"
+#define TR_INVERTED_SERIAL     INDENT "Inverti"
 #define TR_IGNORE_INSTANCE     TR(INDENT "Ign. inst.",INDENT "Ignorer instance")
 #define TR_DISCOVER_SENSORS    INDENT "Découvrir capteurs"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Terminer découverte"
