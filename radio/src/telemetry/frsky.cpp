@@ -640,7 +640,7 @@ void telemetryInit(uint8_t protocol)
     telemetryPortInit(FRSKY_SPORT_BAUDRATE);
   }
 
-#if defined(REVX)
+#if defined(REVX) && !defined(SIMU)
   if (serialInversion) {
     setMFP();
   }
