@@ -940,7 +940,7 @@ Timestamp</string>
        </font>
       </property>
       <property name="text">
-       <string>knots</string>
+       <string>km/h</string>
       </property>
      </widget>
     </item>

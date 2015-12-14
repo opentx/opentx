@@ -66,6 +66,7 @@ class TelemetrySimulator : public QDialog
         FASV,
         FASC,
         CELS_GRE,
+        ASPD_KTS,
         ASPD_KMH,
         ASPD_MPH,
         GALT_FEET,

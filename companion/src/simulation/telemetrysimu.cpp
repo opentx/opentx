@@ -314,7 +314,7 @@ void TelemetrySimulator::generateTelemetryFrame()
 
     case 17:
       if (ui->aspeed->value() > 0)
-        generateSportPacket(buffer, ui->aspd_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, AIR_SPEED_FIRST_ID, LIMIT<uint32_t>(0, ui->aspeed->value() * 10.0, 0xFFFFFFFF));
+        generateSportPacket(buffer, ui->aspd_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, AIR_SPEED_FIRST_ID, LIMIT<uint32_t>(0, ui->aspeed->value() * 5.39957, 0xFFFFFFFF));
       break;
 
     case 18:
@@ -587,6 +587,7 @@ TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySi
   colToFuncMap.insert("VFAS(V)", FASV);
   colToFuncMap.insert("Curr(A)", FASC);
   colToFuncMap.insert("Cels(gRe)", CELS_GRE);
+  colToFuncMap.insert("ASpd(kts)", ASPD_KTS);
   colToFuncMap.insert("ASpd(kmh)", ASPD_KMH);
   colToFuncMap.insert("ASpd(mph)", ASPD_MPH);
   colToFuncMap.insert("GAlt(ft)", GALT_FEET);
@@ -893,6 +894,9 @@ void TelemetrySimulator::LogPlaybackController::setUiDataValues()
         break;
       case CELS_GRE:
         ui->cell1->setValue(columnData[info.dataIndex].toDouble());
+        break;
+      case ASPD_KTS:
+        ui->aspeed->setValue(columnData[info.dataIndex].toDouble() * 1.8520008892119);
         break;
       case ASPD_KMH:
         ui->aspeed->setValue(columnData[info.dataIndex].toDouble());
