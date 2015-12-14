@@ -8,12 +8,14 @@ import glob
 
 def addLine(filename, newline, after):
     print(filename, newline)
-    lines = file(filename, 'r').readlines()
+    with open(filename, 'r') as f:
+        lines = f.readlines()
     for i, line in enumerate(lines):
         if after in line:
             lines.insert(i + 1, newline + '\n')
             break
-    file(filename, 'w').writelines(lines)
+    with open(filename, 'w') as f:
+        f.writelines(lines)
 
 
 def modifyTranslations(constant, translation, after):

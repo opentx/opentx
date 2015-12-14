@@ -6,9 +6,8 @@ import sys
 import os
 
 for filename in sys.argv[1:]:
-    f = file(filename, "r")
-    lines = f.readlines()
-    f.close()
+    with open(filename, "r") as f:
+        lines = f.readlines()
 
     newguard = "_" + os.path.basename(filename).upper().replace(".", "_") + "_"
 
@@ -24,7 +23,6 @@ for filename in sys.argv[1:]:
                 while not lines[end].strip().startswith("#endif"):
                     end -= 1
                 lines[end] = "#endif // %s\n" % newguard
-                f = file(filename, "w")
-                f.write("".join(lines))
-                f.close()
+                with open(filename, "w") as f:
+                    f.write("".join(lines))
                 break
