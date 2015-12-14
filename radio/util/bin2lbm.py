@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 
+from __future__ import division
 import sys
 
 filename = sys.argv[1]
 fileout = sys.argv[2]
 
-fr = open(filename, "rb")
-fw = open(fileout, "w")
+# Read entire file
+with open(filename, "rb") as fr:
+    sts = fr.read()
+# Parse into chunks of 16 bytes
+sts = [sts[i * 16:(i + 1) * 16] for i in range(len(sts) // 16)]
 
-st = fr.read(16)
-
-while st:
-  for b in st:
-    fw.write("0x%02x," % ord(b))
-  fw.write("\n")
-  st = fr.read(16)
-
-fw.write("\n") 
-fw.close()
+with open(fileout, "w") as fw:
+    for st in sts:
+        for b in st:
+            fw.write("0x%02x," % ord(b))
+        fw.write("\n")
+    fw.write("\n")

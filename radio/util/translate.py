@@ -3,9 +3,8 @@
 
 # Imports
 import argparse
-import os
-import os.path
 import codecs
+import sys
 
 translations = {'cz': [('\\200', u'á'),
                        ('\\201', u'č'),
@@ -55,7 +54,7 @@ translations = {'cz': [('\\200', u'á'),
 
                 'it': [('\\200', u'à'),
                        ('\\201', u'ù')],
-                
+
                 'pl': [('\\200', u'ą'),
                        ('\\201', u'ć'),
                        ('\\202', u'ę'),
@@ -98,7 +97,7 @@ translations = {'cz': [('\\200', u'á'),
                        ('\\222', u'Õ'),
                        ('\\223', u'õ'),
                        ('\\224', u'Ú'),
-                       ('\\225', u'ú'),],
+                       ('\\225', u'ú'), ],
 
                 'se': [('\\200', u'å'),
                        ('\\201', u'ä'),
@@ -106,7 +105,7 @@ translations = {'cz': [('\\200', u'á'),
                        ('\\203', u'Å'),
                        ('\\204', u'Ä'),
                        ('\\205', u'Ö')],
-                       
+
                 'en': [],
 
                 'nl': [],
@@ -115,8 +114,7 @@ translations = {'cz': [('\\200', u'á'),
                         ('\\173', u'~'),
                         ('\\036', u'\\n'),
                         ('\\035', u'\\t')],
-
-               }
+                }
 
 # Take care of command line options
 parser = argparse.ArgumentParser(description='Encoder for open9x translations')
@@ -124,18 +122,18 @@ parser.add_argument('input', action="store", help="Input file name")
 parser.add_argument('output', action="store", help="Output file name")
 parser.add_argument('language', action="store", help="Two letter language identifier")
 parser.add_argument("--reverse", help="Reversed char conversion (from number to char)", action="store_true")
-args =  parser.parse_args()
+args = parser.parse_args()
 
 if args.language not in translations:
-    parser.error(args.language  + ' is not a supported language. Try one of the supported ones: ' + str(translations.keys()))
-    system.exit()
+    parser.error(args.language + ' is not a supported language. Try one of the supported ones: ' + str(list(translations.keys())))
+    sys.exit()
 
 if args.reverse:
     for translation in translations:
         translations[translation] = [(after, before) for (before, after) in translations[translation]]
 
 # Read the input file into a buffer
-in_file = codecs.open( args.input, "r", "utf-8" )
+in_file = codecs.open(args.input, "r", "utf-8")
 
 # Write the result to a temporary file
 out_file = codecs.open(args.output, 'w', 'utf-8')
@@ -156,9 +154,7 @@ for line in in_file.readlines():
                 c = "\\%03o" % (ord(c) - ord('0') + 27)
             after = after + c
         line = line[:32] + after + line[-2:]
-    out_file.write(line)                 
+    out_file.write(line)
 
 out_file.close()
 in_file.close()
-
-
