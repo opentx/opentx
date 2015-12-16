@@ -1116,6 +1116,8 @@
 #define TR_ONLYPOSITIVE        "Positiv"
 #define TR_FILTER              "Filter"
 #define TR_TELEMETRYFULL       "Alla telemetriplatser upptagna!"
+//TODO: translation
+#define TR_INVERTED_SERIAL     INDENT "Invert"
 #define TR_IGNORE_INSTANCE     TR(INDENT "Inst.fel", INDENT "Hantera Instansfel")
 #define TR_DISCOVER_SENSORS    INDENT "Sök nya sensorer"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Avbryt sökning"
