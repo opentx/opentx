@@ -238,6 +238,7 @@ int cliSet(const char ** argv)
       t.tm_hour = hour;
       t.tm_min = minute;
       t.tm_sec = second;
+      g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
       rtcSetTime(&t);
     }
     else {
