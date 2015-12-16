@@ -442,6 +442,7 @@ if(ARCH STREQUAL ARM)
     ppm_arm.cpp
     pxx_arm.cpp
     dsm2_arm.cpp
+    multi_arm.cpp
     crossfire.cpp
     )
 else()
