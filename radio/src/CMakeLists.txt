@@ -382,7 +382,7 @@ if(ARCH STREQUAL ARM)
     set(TARGET_SRC ${TARGET_SRC} haptic_driver.cpp)
   endif()
   add_definitions(-DCPUARM)
-  add_definitions(-DFRSKY -DFRSKY_SPORT -DFRSKY_HUB -DGPS -DPXX -DDSM2)
+  add_definitions(-DFRSKY -DFRSKY_SPORT -DFRSKY_HUB -DGPS -DPXX -DDSM2 -DMULTIMODULE)
   include_directories(targets/${TARGET_DIR} ${THIRDPARTY_DIR})
   include_directories(${COOS_DIR} ${COOS_DIR}/kernel ${COOS_DIR}/portable)
   foreach(LANGUAGE cz de en es fr it pt sk se pl hu) # TODO add nl
@@ -442,6 +442,7 @@ if(ARCH STREQUAL ARM)
     ppm_arm.cpp
     pxx_arm.cpp
     dsm2_arm.cpp
+    multi_arm.cpp
     crossfire.cpp
     )
 else()
