@@ -556,6 +556,10 @@ void frskyUpdateCells(void);
 #if defined(CROSSFIRE)
     if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE)
       return PROTOCOL_PULSES_CROSSFIRE;
+#endif    
+#ifdef MULTIMODULE
+    else if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE)
+      return PROTOCOL_FRSKY_D;
 #endif
     if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM)
       return g_model.telemetryProtocol;

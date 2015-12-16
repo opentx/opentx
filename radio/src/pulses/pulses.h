@@ -84,6 +84,13 @@ enum ModuleFlag
   #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (0)
 #endif
 
+#if defined(MULTIMODULE)
+  #define IS_MULTIMODULE_PROTOCOL(protocol)  (protocol==PROTO_MULTIMODULE)
+#else
+  #define IS_MULTIMODULE_PROTOCOL(protocol)  (0)
+#endif
+
+
 #if defined(CPUARM)
   #include "pulses_arm.h"
 #else

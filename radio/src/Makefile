@@ -228,7 +228,11 @@ PXX = NO
 
 # DSM2 (Spektrum) protocol
 # Values = NO, SERIAL, PPM
-DSM2 = NO
+DSM2 = PPM
+
+# Multimodule support
+# (http://www.rcgroups.com/forums/showthread.php?t=2165676)
+MULTIMODULE = NO
 
 # HUBSAN protocol
 # Values = NO, YES
@@ -1051,6 +1055,9 @@ ifeq ($(PCB), TARANIS)
   ifeq ($(DSM2), PPM)
     CPPSRC += pulses/dsm2_arm.cpp
   endif
+  ifeq ($(MULTIMODULE), YES)
+    CPPSRC += pulses/multi_arm.cpp
+  endif
   ifeq ($(HUBSAN), YES)
     CPPDEFS += -DHUBSAN
     CPPSRC += pulses/hubsan.cpp
@@ -1415,6 +1422,10 @@ endif
 
 ifeq ($(DSM2), PPM)
   CPPDEFS += -DDSM2 -DDSM2_PPM
+endif
+
+ifeq ($(MULTIMODULE), YES)
+  CPPDEFS += -DMULTIMODULE
 endif
 
 ifeq ($(TX_CADDY), YES)

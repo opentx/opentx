@@ -422,7 +422,8 @@ PACK(typedef struct {
   int8_t  rfProtocol:4;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
-  uint8_t failsafeMode:7;
+  uint8_t failsafeMode:3;
+  uint8_t subType:3;
   uint8_t invertedSerial:1; // telemetry serial inverted from standard
   int16_t failsafeChannels[NUM_CHNOUT];
   int8_t  ppmDelay:6;
@@ -2024,6 +2025,9 @@ enum Protocols {
 #if defined(CROSSFIRE)
   PROTO_CROSSFIRE,
 #endif
+#if defined(MULTIMODULE)
+  PROTO_MULTIMODULE,
+#endif
 #if defined(IRPROTOS)
   // we will need 4 bytes for proto :(
   PROTO_SILV,
@@ -2052,6 +2056,27 @@ enum DSM2Protocols {
   DSM2_PROTO_DSMX,
 };
 
+
+// rfProtcol is currently a signed int
+enum MultiModuleRFProtocols {
+    MM_RF_PROTO_FLYSKY=-8,
+    MM_RF_PROTO_FIRST=MM_RF_PROTO_FLYSKY,
+    MM_RF_PROTO_HUBSAN,
+    MM_RF_PROTO_FRSKY_D8,
+    MM_RF_PROTO_HISKY,
+    MM_RF_PROTO_V2X2,
+    MM_RF_PROTO_DSM2,
+    MM_RF_PROTO_DEVO,
+    MM_RF_PROTO_YD717,
+    MM_RF_PROTO_V977,
+    MM_RF_PROTO_SYMAX,
+    MM_RF_PROTO_SLT,
+    MM_RF_PROTO_CX10,
+    MM_RF_PROTO_CG023,
+    MM_RF_PROTO_BAYANG,
+    MM_RF_PROTO_LAST= MM_RF_PROTO_BAYANG
+};
+
 enum ModuleTypes {
   MODULE_TYPE_NONE = 0,
   MODULE_TYPE_PPM,
@@ -2061,6 +2086,9 @@ enum ModuleTypes {
 #endif
 #if defined(CROSSFIRE)
   MODULE_TYPE_CROSSFIRE,
+#endif
+#if defined(MULTIMODULE)
+  MODULE_TYPE_MULTIMODULE,
 #endif
   MODULE_TYPE_COUNT
 };
