@@ -47,7 +47,8 @@
 #include <QFileInfo>
 #include <QSplashScreen>
 #include <QThread>
-#include <iostream>
+#include <QDebug>
+#include <QTextStream>
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   #include <SDL.h>
   #undef main
@@ -55,6 +56,7 @@
 #include "simulatordialog.h"
 #include "eeprominterface.h"
 #include "appdata.h"
+#include "qxtcommandoptions.h"
 
 #if defined WIN32 || !defined __GNUC__
 #include <windows.h>
@@ -90,9 +92,6 @@ int main(int argc, char *argv[])
   app.setStyle(new MyProxyStyle);
 #endif
 
-  QString dir;
-  if (argc) dir = QFileInfo(argv[0]).canonicalPath() + "/lang";
-
   /* QTranslator companionTranslator;
   companionTranslator.load(":/companion_" + locale);
   QTranslator qtTranslator;
@@ -112,7 +111,8 @@ int main(int argc, char *argv[])
     sdlFlags |= SDL_INIT_AUDIO;
   #endif
   if (SDL_Init(sdlFlags) < 0) {
-    fprintf(stderr, "ERROR: couldn't initialize SDL: %s\n", SDL_GetError());
+    QTextStream stream(stderr);
+    stream << "WARNING: couldn't initialize SDL: " << SDL_GetError() << endl;
   }
 #endif
 
@@ -139,10 +139,39 @@ int main(int argc, char *argv[])
     }
   }
 
-  bool ok;
-  QString firmwareId = QInputDialog::getItem(0, QObject::tr("Radio type"), 
+  QxtCommandOptions options;
+  options.add("radio", "radio to simulate", QxtCommandOptions::ValueRequired);
+  options.alias("radio", "r");
+  options.add("help", "show this help text");
+  options.alias("help", "h");
+  options.parse(QCoreApplication::arguments());
+  if(options.count("help") || options.showUnrecognizedWarning()) {
+    options.showUsage();
+    // list all available radios
+    QTextStream stream(stdout);
+    stream << endl << "Available radios:" << endl;
+    foreach(QString name, firmwareIds) {
+      stream << "\t" << name << endl;
+    }
+    return 1;
+  }
+
+
+  bool ok = false;
+  QString firmwareId;
+  if (options.count("radio") == 1) {
+    firmwareId = options.value("radio").toString();
+    if (firmwareIds.contains(firmwareId)) {
+      ok = true;
+    }
+  }
+  if (!ok) {
+    firmwareId = QInputDialog::getItem(0, QObject::tr("Radio type"), 
                                                 QObject::tr("Which radio type do you want to simulate?"),
                                                 firmwareIds, currentIdx, false, &ok);
+  }
+  qDebug() << "firmwareId" << firmwareId;
+
   if (ok && !firmwareId.isEmpty()) {
     if (firmwareId != g.lastSimulator()) {
       g.lastSimulator(firmwareId);
@@ -156,10 +185,26 @@ int main(int argc, char *argv[])
         radioId = radioId.mid(0, pos);
       }
     }
+    qDebug() << "radioId" << radioId;
     current_firmware_variant = GetFirmware(firmwareId);
-    eepromFileName = QString("eeprom-%1.bin").arg(radioId);
-    eepromFileName = eedir.filePath(eepromFileName.toAscii());
+    qDebug() << "current_firmware_variant" << current_firmware_variant->getName();
+
+    if (options.positional().isEmpty()) {
+      eepromFileName = QString("eeprom-%1.bin").arg(radioId);
+      eepromFileName = eedir.filePath(eepromFileName.toAscii());
+    }
+    else {
+      eepromFileName = options.positional()[0];
+    }
+    qDebug() << "eepromFileName" << eepromFileName;
+    // TODO display used eeprom filename somewhere
+
     SimulatorFactory *factory = getSimulatorFactory(firmwareId);
+    if (!factory) {
+      QTextStream stream(stderr);
+      stream << "factory not found" << endl;
+      return 2;
+    }
     if (factory->type() == BOARD_HORUS)
       dialog = new SimulatorDialogHorus(NULL, factory->create());
     else if (factory->type() == BOARD_FLAMENCO)
