@@ -77,6 +77,7 @@ SimulatorFactory *getSimulatorFactory(const QString &name)
     foreach (QString name, registered_simulators.keys()) {
       if (name.contains(simuName)) {
         simuName = name;
+        qDebug() << "found" << simuName;
         return registered_simulators[simuName];
       }
     }
