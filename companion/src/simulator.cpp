@@ -146,9 +146,11 @@ int main(int argc, char *argv[])
   options.alias("help", "h");
   options.parse(QCoreApplication::arguments());
   if(options.count("help") || options.showUnrecognizedWarning()) {
+    QTextStream stream(stdout);
+    stream << "Usage: simulator [OPTION]... [EEPROM.BIN FILE] "<< endl;
+    stream << "Options:" << endl;
     options.showUsage();
     // list all available radios
-    QTextStream stream(stdout);
     stream << endl << "Available radios:" << endl;
     foreach(QString name, firmwareIds) {
       stream << "\t" << name << endl;
