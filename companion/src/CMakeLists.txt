@@ -91,6 +91,8 @@ ELSE()
   MESSAGE( "QT lupdate not found!" )
 ENDIF()
 
+ADD_DEFINITIONS(-DQXT_STATIC)
+
 ADD_CUSTOM_COMMAND(
   COMMAND ${XSDCXX_EXECUTABLE} cxx-tree --root-element-all --generate-serialization --output-dir ${PROJECT_BINARY_DIR}/ ${PROJECT_SOURCE_DIR}/radio.xsd
   OUTPUT ${PROJECT_BINARY_DIR}/radio.hxx ${PROJECT_BINARY_DIR}/radio.cxx
