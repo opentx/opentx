@@ -80,6 +80,14 @@ class MyProxyStyle : public QProxyStyle
  };
 #endif
 
+
+void showMessage(const QString & message, enum QMessageBox::Icon icon = QMessageBox::NoIcon) {
+  QMessageBox msgBox;
+  msgBox.setText(message);
+  msgBox.setIcon(icon);
+  msgBox.exec();
+}
+
 int main(int argc, char *argv[])
 {
   Q_INIT_RESOURCE(companion);
@@ -111,8 +119,7 @@ int main(int argc, char *argv[])
     sdlFlags |= SDL_INIT_AUDIO;
   #endif
   if (SDL_Init(sdlFlags) < 0) {
-    QTextStream stream(stderr);
-    stream << "WARNING: couldn't initialize SDL: " << SDL_GetError() << endl;
+    showMessage(QObject::tr("WARNING: couldn't initialize SDL:\n%1").arg(SDL_GetError()), QMessageBox::Warning);
   }
 #endif
 
@@ -146,13 +153,18 @@ int main(int argc, char *argv[])
   options.alias("help", "h");
   options.parse(QCoreApplication::arguments());
   if(options.count("help") || options.showUnrecognizedWarning()) {
-    options.showUsage();
+    QString msg;
+    QTextStream stream(&msg);
+    stream << "Usage: simulator [OPTION]... [EEPROM.BIN FILE] " << endl << endl;
+    stream << "Options:" << endl;
+    options.showUsage(false, stream);
     // list all available radios
-    QTextStream stream(stdout);
     stream << endl << "Available radios:" << endl;
     foreach(QString name, firmwareIds) {
       stream << "\t" << name << endl;
     }
+    // display
+    showMessage(msg, QMessageBox::Information);
     return 1;
   }
 
@@ -201,8 +213,7 @@ int main(int argc, char *argv[])
 
     SimulatorFactory *factory = getSimulatorFactory(firmwareId);
     if (!factory) {
-      QTextStream stream(stderr);
-      stream << "factory not found" << endl;
+      showMessage(QObject::tr("ERROR: Simulator %1 not found").arg(firmwareId), QMessageBox::Critical);
       return 2;
     }
     if (factory->type() == BOARD_HORUS)
