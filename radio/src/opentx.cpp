@@ -2547,7 +2547,7 @@ int main(void)
 
   sei(); // interrupts needed now
 
-#if defined(FRSKY) && !defined(DSM2_SERIAL)
+#if !defined(CPUARM) && defined(FRSKY) && !defined(DSM2_SERIAL)
   telemetryInit();
 #endif
 

@@ -293,8 +293,8 @@ void telemetryWakeup()
 #else
    if (telemetryProtocol != requiredTelemetryProtocol) {
 #endif
+    telemetryInit(requiredTelemetryProtocol);
     telemetryProtocol = requiredTelemetryProtocol;
-    telemetryInit();
   }
 #endif
 
@@ -618,13 +618,20 @@ void telemetryReset()
 #endif
 }
 
-void telemetryInit(void)
-{
 #if defined(CPUARM)
-  if (telemetryProtocol == PROTOCOL_FRSKY_D) {
+// we don't reset the telemetry here as we would also reset the consumption after model load
+void telemetryInit(uint8_t protocol)
+{
+  if (protocol == PROTOCOL_FRSKY_D) {
     telemetryPortInit(FRSKY_D_BAUDRATE);
   }
-  else if (telemetryProtocol==PROTOCOL_FRSKY_D_SECONDARY) {
+#if defined(PCBTARANIS)
+  else if (protocol == PROTOCOL_PULSES_CROSSFIRE) {
+    telemetryPortInit(CROSSFIRE_BAUDRATE);
+    telemetryPortSetDirectionOutput();
+  }
+#endif
+  else if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
     telemetryPortInit(0);
     serial2TelemetryInit(PROTOCOL_FRSKY_D_SECONDARY);
   }
@@ -640,12 +647,13 @@ void telemetryInit(void)
     clearMFP();
   }
 #endif
-#elif !defined(SIMU)
-  telemetryPortInit();
-#endif
-
-  // we don't reset the telemetry here as we would also reset the consumption after model load
 }
+#else
+void telemetryInit()
+{
+  telemetryPortInit();
+}
+#endif
 
 #if defined(CPUARM)
 #elif defined(FRSKY_HUB)

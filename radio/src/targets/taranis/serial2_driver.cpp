@@ -105,7 +105,7 @@ void serial2Putc(char c)
 
 void serial2SbusInit()
 {
-  uart3Setup(100000);
+  uart3Setup(SBUS_BAUDRATE);
   SERIAL_USART->CR1 |= USART_CR1_M | USART_CR1_PCE ;
 }
 

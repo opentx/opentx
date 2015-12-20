@@ -6,7 +6,7 @@
 #include "appdata.h"
 #include "modelprinter.h"
 
-TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget *prevFocus):
+TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus):
   ModelPanel(parent, model, generalSettings, firmware),
   timer(timer),
   ui(new Ui::Timer)
@@ -246,6 +246,10 @@ void ModulePanel::update()
         mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER;
         module.channelsCount = 6;
         max_rx_num = 20;
+        break;
+      case PULSES_CROSSFIRE:
+        mask |= MASK_CHANNELS_RANGE;
+        module.channelsCount = 16;
         break;
       case PULSES_PPM:
         mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT;
