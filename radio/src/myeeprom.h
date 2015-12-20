@@ -2197,13 +2197,9 @@ enum Protocols {
 enum RFProtocols {
   RF_PROTO_OFF = -1,
   RF_PROTO_X16,
-#if defined(MODULE_D16_EU_ONLY_SUPPORT)
-  RF_PROTO_LAST = RF_PROTO_X16
-#else
   RF_PROTO_D8,
   RF_PROTO_LR12,
   RF_PROTO_LAST = RF_PROTO_LR12
-#endif
 };
 
 #define HAS_RF_PROTOCOL_FAILSAFE(protocol) ((protocol) == RF_PROTO_X16)

@@ -415,6 +415,16 @@ bool isModuleAvailable(int module)
   return true;
 }
 
+bool isRfProtocolAvailable(int protocol)
+{
+#if defined(MODULE_D16_EU_ONLY_SUPPORT)
+  if (protocol == RF_PROTO_D8) {
+    return false;
+  }
+#endif
+  return true;
+}
+
 bool modelHasNotes()
 {
   char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";

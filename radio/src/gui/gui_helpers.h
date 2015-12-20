@@ -60,6 +60,7 @@ bool isSwitchAvailableInCustomFunctions(int swtch);
 bool isSwitchAvailableInMixes(int swtch);
 bool isSwitchAvailableInTimers(int swtch);
 bool isModuleAvailable(int module);
+bool isRfProtocolAvailable(int protocol);
 
 bool modelHasNotes();
 
