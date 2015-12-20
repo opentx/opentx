@@ -2183,6 +2183,9 @@ enum Protocols {
   PROTO_DSM2_DSM2,
   PROTO_DSM2_DSMX,
 #endif
+#if defined(CROSSFIRE)
+  PROTO_CROSSFIRE,
+#endif
 #if defined(IRPROTOS)
   // we will need 4 bytes for proto :(
   PROTO_SILV,
@@ -2216,6 +2219,9 @@ enum ModuleTypes {
   MODULE_TYPE_XJT,
 #if defined(DSM2)
   MODULE_TYPE_DSM2,
+#endif
+#if defined(CROSSFIRE)
+  MODULE_TYPE_CROSSFIRE,
 #endif
   MODULE_TYPE_COUNT
 };
@@ -2286,7 +2292,8 @@ enum TelemetryType
   PROTOCOL_TELEMETRY_FIRST,
   PROTOCOL_FRSKY_SPORT = PROTOCOL_TELEMETRY_FIRST,
   PROTOCOL_FRSKY_D,
-  PROTOCOL_FRSKY_D_SECONDARY
+  PROTOCOL_FRSKY_D_SECONDARY,
+  PROTOCOL_PULSES_CROSSFIRE
 };
 
 enum DisplayTrims

@@ -99,6 +99,11 @@ void setupPulses(unsigned int port)
           }
           break;
 #endif
+#if defined(PCBTARANIS) && defined(CROSSFIRE)
+        case MODULE_TYPE_CROSSFIRE:
+          required_protocol = PROTO_CROSSFIRE;
+          break;
+#endif
         default:
           required_protocol = PROTO_NONE;
           break;
@@ -130,6 +135,11 @@ void setupPulses(unsigned int port)
         disable_dsm2(port);
         break;
 #endif
+#if defined(CROSSFIRE)
+      case PROTO_CROSSFIRE:
+        disable_crossfire(port);
+        break;
+#endif
       case PROTO_PPM:
         disable_ppm(port);
         break;
@@ -151,9 +161,15 @@ void setupPulses(unsigned int port)
         init_dsm2(port);
         break;
 #endif
+#if defined(CROSSFIRE)
+      case PROTO_CROSSFIRE:
+        init_crossfire(port);
+        break;
+#endif
       case PROTO_PPM:
         init_ppm(port);
         break;
+
       default:
         init_no_pulses(port);
         break;
@@ -171,6 +187,17 @@ void setupPulses(unsigned int port)
     case PROTO_DSM2_DSMX:
       setupPulsesDSM2(port);
       break;
+#endif
+#if defined(CROSSFIRE)
+    case PROTO_CROSSFIRE:
+    {
+      if (telemetryProtocol == PROTOCOL_PULSES_CROSSFIRE) {
+        uint8_t * crossfire = modulePulsesData[port].crossfire.pulses;
+        createCrossfireFrame(crossfire, &channelOutputs[g_model.moduleData[port].channelsStart]);
+        sportSendBuffer(crossfire, CROSSFIRE_FRAME_LEN);
+      }
+      break;
+    }
 #endif
     case PROTO_PPM:
       setupPulsesPPM(port);

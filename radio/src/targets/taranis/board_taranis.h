@@ -210,6 +210,8 @@ void init_pxx( uint32_t module_index );
 void disable_pxx( uint32_t module_index );
 void init_dsm2( uint32_t module_index );
 void disable_dsm2( uint32_t module_index );
+void init_crossfire( uint32_t module_index );
+void disable_crossfire( uint32_t module_index );
 
 // Trainer driver
 void init_trainer_ppm(void);
@@ -305,6 +307,7 @@ void debugPutc(const char c);
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate);
+void telemetryPortSetDirectionOutput(void);
 void sportSendBuffer(uint8_t *buffer, uint32_t count);
 
 // Audio driver

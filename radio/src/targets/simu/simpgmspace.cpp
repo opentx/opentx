@@ -1277,6 +1277,10 @@ void lcdRefresh()
   simuLcdRefresh = true;
 }
 
+void telemetryPortInit()
+{
+}
+
 #if !defined(PCBFLAMENCO)
 display_t simuLcdBackupBuf[DISPLAY_BUFFER_SIZE];
 void lcdStoreBackupBuffer()

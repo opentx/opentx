@@ -528,7 +528,14 @@ void sportFirmwareUpdate(ModuleIndex module, const char *filename);
 #endif
 void telemetryWakeup(void);
 void telemetryReset();
+
+#if defined(CPUARM)
+extern uint8_t telemetryProtocol;
+void telemetryInit(uint8_t protocol);
+#else
 void telemetryInit(void);
+#endif
+
 void telemetryInterrupt10ms(void);
 
 #if defined(CPUARM)
@@ -544,7 +551,18 @@ void frskyUpdateCells(void);
 #endif
 
 #if defined(PCBTARANIS)
-  #define MODEL_TELEMETRY_PROTOCOL() ((g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? g_model.telemetryProtocol : PROTOCOL_FRSKY_SPORT)
+  inline uint8_t modelTelemetryProtocol()
+  {
+#if defined(CROSSFIRE)
+    if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE)
+      return PROTOCOL_PULSES_CROSSFIRE;
+#endif
+    if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM)
+      return g_model.telemetryProtocol;
+    else
+      return PROTOCOL_FRSKY_SPORT;
+  }
+  #define MODEL_TELEMETRY_PROTOCOL() modelTelemetryProtocol()
 #elif defined(CPUARM)
   #define MODEL_TELEMETRY_PROTOCOL() g_model.telemetryProtocol
 #endif
