@@ -1383,7 +1383,8 @@ enum TelemetrySensorFormula
   TELEM_FORMULA_LAST = TELEM_FORMULA_DIST
 };
 
-PACK(typedef struct {
+PACK(class TelemetrySensor {
+  public:
   union {
     uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
     uint16_t persistentValue;
@@ -1434,7 +1435,7 @@ PACK(typedef struct {
   bool isPrecConfigurable() const;
   int32_t getPrecMultiplier() const;
   int32_t getPrecDivisor() const;
-}) TelemetrySensor;
+}) ;
 #endif
 
 #if !defined(CPUARM)

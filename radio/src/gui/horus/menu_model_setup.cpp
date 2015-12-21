@@ -94,14 +94,6 @@ enum menuModelSetupItems {
 #define MODEL_SETUP_RANGE_OFS         40
 #define MODEL_SETUP_SET_FAILSAFE_OFS  60
 
-void copySelection(char *dst, const char *src, uint8_t size)
-{
-  if (memcmp(src, "---", 3) == 0)
-    memset(dst, 0, size);
-  else
-    memcpy(dst, src, size);
-}
-
 void onModelSetupBitmapMenu(const char *result)
 {
   if (result == STR_UPDATE_LIST) {

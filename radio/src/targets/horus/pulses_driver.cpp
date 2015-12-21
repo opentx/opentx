@@ -92,6 +92,14 @@ void disable_no_pulses(uint32_t port)
   TIM1->CR1 &= ~TIM_CR1_CEN ;
 }
 
+void init_crossfire(uint32_t port)
+{
+}
+
+void disable_crossfire(uint32_t port)
+{
+}
+
 void init_pxx(uint32_t port)
 {
   EXTERNAL_MODULE_ON();

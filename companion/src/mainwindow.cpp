@@ -822,7 +822,7 @@ void MainWindow::writeBackup()
   cd->exec();
 }
 
-int MainWindow::getFileType(const QString &fullFileName)
+int MainWindow::getFileType(const QString & fullFileName)
 {
     if(QFileInfo(fullFileName).suffix().toUpper()=="HEX")  return FILE_TYPE_HEX;
     if(QFileInfo(fullFileName).suffix().toUpper()=="BIN")  return FILE_TYPE_BIN;

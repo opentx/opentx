@@ -39,16 +39,12 @@
 
 #if defined(LUA)
 
-#if !defined(SIMU)
 extern "C" {
-#endif
   #include <lua.h>
   #include <lauxlib.h>
   #include <lualib.h>
   #include <lrotable.h>
-#if !defined(SIMU)
 }
-#endif
 
   extern lua_State *L;
   extern bool luaLcdAllowed;
@@ -149,10 +145,13 @@ extern "C" {
   #elif defined(PCBHORUS)
     #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER)
   #endif
+  struct LuaField {
+    uint16_t id;
+    char desc[50];
+  };
+  bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags=0);
 #else  // #if defined(LUA)
-
   #define LUA_LOAD_MODEL_SCRIPTS()
-
 #endif // #if defined(LUA)
 
 #endif // #ifndef lua_api_h

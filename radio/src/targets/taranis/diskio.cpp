@@ -34,13 +34,9 @@
  *
  */
 
-#include <string.h>
+#include "../../opentx.h"
 #include "../../thirdparty/FatFs/diskio.h"
 #include "../../thirdparty/FatFs/ff.h"
-#include "../../thirdparty/CoOS/kernel/CoOS.h"
-#include "../../debug.h"
-#include "board_taranis.h"
-#include "hal.h"
 
 /* Definitions for MMC/SDC command */
 #define CMD0    (0x40+0)        /* GO_IDLE_STATE */

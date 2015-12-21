@@ -184,19 +184,19 @@ class MainWindow : public QMainWindow
     void updateLanguageActions();
     void updateIconThemeActions();
 
-    int getFileType(const QString &fullFileName);
+    int getFileType(const QString & fullFileName);
     QString Theme;
     QString ISize;
-    QString strippedName(const QString &fullFileName);
+    QString strippedName(const QString & fullFileName);
 
     MdiChild *activeMdiChild();
-    QMdiSubWindow *findMdiChild(const QString &fileName);
+    QMdiSubWindow *findMdiChild(const QString & fileName);
     int getEpromVersion(QString fileName);
 
-    bool readEepromFromRadio(const QString &filename);
-    bool writeEepromToRadio(const QString &filename);
-    bool readFirmwareFromRadio(const QString &filename);
-    bool writeFirmwareToRadio(const QString &filename);
+    bool readEepromFromRadio(const QString & filename);
+    bool writeEepromToRadio(const QString & filename);
+    bool readFirmwareFromRadio(const QString & filename);
+    bool writeFirmwareToRadio(const QString & filename);
 
     QMdiArea *mdiArea;
     QSignalMapper *windowMapper;

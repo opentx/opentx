@@ -242,8 +242,8 @@ void checkRotaryEncoder(void);
 #if !defined(SIMU)
 #define wdt_disable()
 void watchdogInit(unsigned int duration);
-#define wdt_enable(x)   watchdogInit(1500)
-#define wdt_reset()     IWDG->KR = 0xAAAA
+#define wdt_enable(x)                         watchdogInit(1500)
+#define wdt_reset()                           IWDG->KR = 0xAAAA
 #define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)
 #define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
 #define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF | RCC_CSR_SFTRSTF))
@@ -252,7 +252,7 @@ void watchdogInit(unsigned int duration);
 // ADC driver
 void adcInit(void);
 void adcRead(void);
-inline uint16_t getAnalogValue(uint32_t value);
+uint16_t getAnalogValue(uint32_t value);
 
 #define BATT_SCALE    150
 
@@ -372,6 +372,7 @@ void setTopBatteryValue(uint32_t volts);
 void usbJoystickUpdate(void);
 #endif
 
+extern uint8_t currentTrainerMode;
 void checkTrainerSettings(void);
 
 #endif

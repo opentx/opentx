@@ -36,36 +36,6 @@
 
 #include "../../opentx.h"
 
-#if defined(CPUARM)
-extern LP_CONST LanguagePack czLanguagePack;
-extern LP_CONST LanguagePack enLanguagePack;
-extern LP_CONST LanguagePack esLanguagePack;
-extern LP_CONST LanguagePack frLanguagePack;
-extern LP_CONST LanguagePack deLanguagePack;
-extern LP_CONST LanguagePack itLanguagePack;
-extern LP_CONST LanguagePack plLanguagePack;
-extern LP_CONST LanguagePack ptLanguagePack;
-extern LP_CONST LanguagePack skLanguagePack;
-extern LP_CONST LanguagePack seLanguagePack;
-extern LP_CONST LanguagePack huLanguagePack;
-
-const LanguagePack * LP_CONST languagePacks[] = {
-  // alphabetical order
-  &czLanguagePack,
-  &deLanguagePack,
-  &enLanguagePack,
-  &esLanguagePack,
-  &frLanguagePack,
-  &huLanguagePack,
-  &itLanguagePack,
-  &plLanguagePack,
-  &ptLanguagePack,
-  &seLanguagePack,
-  &skLanguagePack,
-  NULL
-};
-#endif
-
 void menuGeneralSetup(uint8_t event);
 void menuGeneralSdManager(uint8_t event);
 void menuGeneralCustomFunctions(uint8_t event);

@@ -34,6 +34,7 @@
  *
  */
 
+#include <stdio.h>
 #include "../../opentx.h"
 
 #define REFRESH_FILES()        do { reusableBuffer.sdmanager.offset = 65535; lastBitmap = -1; } while (0)

@@ -34,6 +34,8 @@
  *
  */
 
+#include "../../opentx.h"
+
 coord_t getCurveYCoord(FnFuncP fn, coord_t x)
 {
   return limit(0, CURVE_CENTER_Y - divRoundClosest(fn(divRoundClosest(x * RESX, CURVE_SIDE_WIDTH)) * CURVE_SIDE_WIDTH, RESX), LCD_H-1);

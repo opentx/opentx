@@ -34,6 +34,8 @@
  *
  */
 
+#include <math.h>
+#include <stdio.h>
 #include "../../opentx.h"
 
 #if defined(SIMU)
@@ -608,7 +610,6 @@ void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
   }
 }
 
-#if defined(FLIGHT_MODES)
 void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 {
   if (idx==0) {
@@ -618,7 +619,6 @@ void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)
     putsStrIdx(x, y, STR_FP, abs(idx)-1, att);
   }
 }
-#endif
 
 void putsCurveRef(coord_t x, coord_t y, CurveRef &curve, LcdFlags att)
 {

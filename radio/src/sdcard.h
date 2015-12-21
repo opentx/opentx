@@ -92,6 +92,9 @@ inline const pm_char * SDCARD_ERROR(FRESULT result)
 }
 #endif
 
+#define LEN_FILE_EXTENSION             4
+char * getFileExtension(char * filename, int size=0);
+
 #if defined(PCBTARANIS)
   #define O9X_FOURCC 0x3378396F // o9x for Taranis
 #elif defined(PCBSKY9X)
@@ -104,7 +107,10 @@ bool isFileAvailable(const char * filename);
 int findNextFileIndex(char * filename, const char * directory);
 
 const char * sdCopyFile(const char * src, const char * dest);
-const char * sdCopyFile(const char * filename, const char * srcDir, const char * destDir);
+const char * sdCopyFile(const char * srcFilename, const char * srcDir, const char * destFilename, const char * destDir);
+
+#define LIST_NONE_SD_FILE   1
+bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen, const char * selection, uint8_t flags=0);
 
 #endif
 

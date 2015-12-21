@@ -29,12 +29,12 @@
 #pragma     data_alignment = 4 
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 
-#include "opentx.h"
+#include "../../opentx.h"
 
 extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
-#include "../horus/usb_conf.h"
+#include "usb_conf.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/

@@ -137,7 +137,7 @@ bool menuModelLimits(evt_t event)
   }
 
   if (sub<NUM_CHNOUT && menuHorizontalPosition>=0) {
-    displayColumnHeader(STR_LIMITS_HEADERS, menuHorizontalPosition);
+    drawColumnHeader(STR_LIMITS_HEADERS, menuHorizontalPosition);
   }
 
   if (warningResult) {

@@ -59,7 +59,7 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 #undef MARKER_WIDTH
 }
 
-void displayColumnHeader(const char * const *headers, uint8_t index)
+void drawColumnHeader(const char * const *headers, uint8_t index)
 {
   lcdDrawText(17*FW, 0, headers[index], 0);
 }

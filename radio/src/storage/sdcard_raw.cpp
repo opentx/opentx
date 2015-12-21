@@ -228,10 +228,6 @@ void storageFormat()
   storageCreateModelsList();
 }
 
-struct StorageModelsList {
-  FIL file;
-};
-
 const char * storageOpenModelsList(StorageModelsList * storage)
 {
   FRESULT result = f_open(&storage->file, RADIO_MODELSLIST_PATH, FA_OPEN_EXISTING | FA_READ);

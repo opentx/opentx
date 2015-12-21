@@ -73,7 +73,7 @@ void menuModelFlightModesAll(uint8_t event)
   if (sub==0 && posHorz > 0) { posHorz += 1; }
 
   if (sub<MAX_FLIGHT_MODES && posHorz>=0) {
-    displayColumnHeader(STR_PHASES_HEADERS, posHorz);
+    drawColumnHeader(STR_PHASES_HEADERS, posHorz);
   }
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {

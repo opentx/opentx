@@ -45,13 +45,28 @@
 #define BITMAP_BUFFER_SIZE(width, height)   (2 + (width) * (((height)+7)/8)*4)
 #define MODEL_BITMAP_WIDTH             64
 #define MODEL_BITMAP_HEIGHT            32
+
+#define WCHART                         (LCD_H/2)
+#define X0                             (LCD_W-WCHART-2)
+#define Y0                             (LCD_H/2)
+
+#define MENUS_SCROLLBAR_WIDTH          2
+#define MENU_COLUMN2_X                 (8 + LCD_W / 2)
+
+#if MENU_COLUMNS < 2
+  #define MIXES_2ND_COLUMN             (18*FW)
+#else
+  #define MIXES_2ND_COLUMN             (9*FW)
+#endif
+
 #define MODEL_BITMAP_SIZE              BITMAP_BUFFER_SIZE(MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)
-extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
-bool loadModelBitmap(char * name, uint8_t * bitmap);
 #define LOAD_MODEL_BITMAP()            loadModelBitmap(g_model.header.bitmap, modelBitmap)
 
+extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
+bool loadModelBitmap(char * name, uint8_t * bitmap);
+
 struct MenuItem {
-  const char *name;
+  const char * name;
   const MenuHandlerFunc action;
 };
 
@@ -63,7 +78,11 @@ void displayMenuBar(const MenuItem *menu, int index);
 void drawProgressBar(const char *label);
 void updateProgressBar(int num, int den);
 void drawGauge(coord_t x, coord_t y, coord_t w, coord_t h, int32_t val, int32_t max);
+void drawColumnHeader(const char * const * headers, uint8_t index);
+void drawStick(coord_t centrex, int16_t xval, int16_t yval);
 
 extern coord_t scrollbar_X;
 #define SET_SCROLLBAR_X(x) scrollbar_X = (x);
+
+extern const pm_uchar sticks[] PROGMEM;
 

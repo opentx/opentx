@@ -724,15 +724,48 @@ extern const pm_char STR_BLCOLOR[];
 #endif
 
   struct LanguagePack {
-    const char *id;
-    const char *name;
+    const char * id;
+    const char * name;
     void (*playNumber)(getvalue_t number, uint8_t unit, uint8_t flags, uint8_t id);
     void (*playDuration)(int seconds, uint8_t flags, uint8_t id);
   };
-  extern const LanguagePack * LP_CONST languagePacks[];
+
   extern const LanguagePack * currentLanguagePack;
   extern uint8_t currentLanguagePackIdx;
+
+  extern LP_CONST LanguagePack czLanguagePack;
+  extern LP_CONST LanguagePack enLanguagePack;
+  extern LP_CONST LanguagePack esLanguagePack;
+  extern LP_CONST LanguagePack frLanguagePack;
+  extern LP_CONST LanguagePack deLanguagePack;
+  extern LP_CONST LanguagePack itLanguagePack;
+  extern LP_CONST LanguagePack plLanguagePack;
+  extern LP_CONST LanguagePack ptLanguagePack;
+  extern LP_CONST LanguagePack skLanguagePack;
+  extern LP_CONST LanguagePack seLanguagePack;
+  extern LP_CONST LanguagePack huLanguagePack;
+
+  static const LanguagePack * LP_CONST languagePacks[] = {
+    // alphabetical order
+    &czLanguagePack,
+    &deLanguagePack,
+    &enLanguagePack,
+    &esLanguagePack,
+    &frLanguagePack,
+    &huLanguagePack,
+    &itLanguagePack,
+    &plLanguagePack,
+    &ptLanguagePack,
+    &seLanguagePack,
+    &skLanguagePack,
+    NULL
+  };
+
+#if defined(SIMU)
   #define LANGUAGE_PACK_DECLARE(lng, name) LP_CONST LanguagePack lng ## LanguagePack = { #lng, name, lng ## _ ## playNumber, lng ## _ ## playDuration }
+#else
+  #define LANGUAGE_PACK_DECLARE(lng, name) extern LP_CONST LanguagePack lng ## LanguagePack = { #lng, name, lng ## _ ## playNumber, lng ## _ ## playDuration }
+#endif
   #define LANGUAGE_PACK_DECLARE_DEFAULT(lng, name) LANGUAGE_PACK_DECLARE(lng, name); const LanguagePack * currentLanguagePack = & lng ## LanguagePack; uint8_t currentLanguagePackIdx
   inline PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t flags) { currentLanguagePack->playNumber(number, unit, flags, id); }
   inline PLAY_FUNCTION(playDuration, int seconds, uint8_t flags) { currentLanguagePack->playDuration(seconds, flags, id); }
@@ -773,7 +806,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_PREFLIGHT[];
   extern const pm_char STR_CHECKLIST[];
   extern const pm_char STR_VIEW_NOTES[];
-extern const pm_char STR_MODEL_SELECT[];
+  extern const pm_char STR_MODEL_SELECT[];
   extern const pm_char STR_RESET_SUBMENU[];
   extern const pm_char STR_LOWALARM[];
   extern const pm_char STR_CRITICALALARM[];

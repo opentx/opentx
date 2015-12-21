@@ -33,6 +33,7 @@
  *
  */
 
+#include <stdio.h>
 #include "../../opentx.h"
 
 enum FlightModesItems {
@@ -73,7 +74,7 @@ bool menuModelFlightModesAll(evt_t event)
   }
 
   if (sub<MAX_FLIGHT_MODES && posHorz>=0) {
-    displayColumnHeader(STR_PHASES_HEADERS, posHorz);
+    drawColumnHeader(STR_PHASES_HEADERS, posHorz);
   }
 
   for (int i=0; i<NUM_BODY_LINES; i++) {

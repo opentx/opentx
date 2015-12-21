@@ -35,47 +35,9 @@
 
 #include "../../opentx.h"
 
-enum EnumTabModel {
-  // e_ModelSelect,
-  e_ModelSetup,
-  CASE_HELI(e_Heli)
-  CASE_FLIGHT_MODES(e_FlightModesAll)
-  e_InputsAll,
-  e_MixAll,
-  e_Limits,
-  CASE_CURVES(e_CurvesAll)
-  CASE_GVARS(e_GVars)
-  e_LogicalSwitches,
-  e_CustomFunctions,
-#if defined(LUA_MODEL_SCRIPTS)
-  e_CustomScripts,
-#endif
-  CASE_FRSKY(e_Telemetry)
-};
-
-bool menuModelSelect(evt_t event);
-bool menuModelSetup(evt_t event);
-bool menuModelHeli(evt_t event);
-bool menuModelFlightModesAll(evt_t event);
-bool menuModelExposAll(evt_t event);
-bool menuModelMixAll(evt_t event);
-bool menuModelLimits(evt_t event);
-bool menuModelCurvesAll(evt_t event);
-bool menuModelCurveOne(evt_t event);
-bool menuModelGVars(evt_t event);
-bool menuModelLogicalSwitches(evt_t event);
-bool menuModelCustomFunctions(evt_t event);
-bool menuModelCustomScripts(evt_t event);
-bool menuModelTelemetry(evt_t event);
-bool menuModelExpoOne(evt_t event);
-
 extern uint8_t s_curveChan;
 
-#define FlightModesType uint16_t
-
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t attr);
-
-#define MIXES_2ND_COLUMN    100
 
 uint8_t editDelay(const coord_t x, const coord_t y, const evt_t event, const uint8_t attr, uint8_t delay)
 {
@@ -84,35 +46,11 @@ uint8_t editDelay(const coord_t x, const coord_t y, const evt_t event, const uin
   return delay;
 }
 
-const MenuHandlerFunc menuTabModel[] = {
-//   menuModelSelect,
-  menuModelSetup,
-  CASE_HELI(menuModelHeli)
-  CASE_FLIGHT_MODES(menuModelFlightModesAll)
-  menuModelExposAll,
-  menuModelMixAll,
-  menuModelLimits,
-  CASE_CURVES(menuModelCurvesAll)
-#if defined(GVARS) && defined(FLIGHT_MODES)
-  CASE_GVARS(menuModelGVars)
-#endif
-  menuModelLogicalSwitches,
-  menuModelCustomFunctions,
-#if defined(LUA_MODEL_SCRIPTS)
-  menuModelCustomScripts,
-#endif
-  CASE_FRSKY(menuModelTelemetry)
-  CASE_MAVLINK(menuTelemetryMavlinkSetup)
-  CASE_TEMPLATES(menuModelTemplates)
-};
+uint8_t s_copyMode = 0;
+int8_t s_copySrcRow;
+int8_t s_copyTgtOfs;
 
-#define COPY_MODE 1
-#define MOVE_MODE 2
-static uint8_t s_copyMode = 0;
-static int8_t s_copySrcRow;
-static int8_t s_copyTgtOfs;
-
-static uint8_t editNameCursorPos = 0;
+uint8_t editNameCursorPos = 0;
 
 void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint8_t active, LcdFlags flags)
 {
@@ -216,4 +154,12 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
   }
 }
 
-static uint8_t s_currIdx;
+uint8_t s_currIdx;
+
+void copySelection(char * dst, const char * src, uint8_t size)
+{
+  if (memcmp(src, "---", 3) == 0)
+    memset(dst, 0, size);
+  else
+    memcpy(dst, src, size);
+}

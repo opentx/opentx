@@ -491,7 +491,7 @@ enum FrSkyDataState {
 #endif
 };
 
-#if defined(CPUARM) || defined(PCBFLAMENCO)
+#if defined(CPUARM)
   #define frskySendAlarms()
 #else
   #define SEND_RSSI_ALARMS  6
@@ -549,6 +549,8 @@ void frskySetCellsCount(uint8_t cellscount);
 void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts);
 void frskyUpdateCells(void);
 #endif
+
+void processSerialData(uint8_t data);
 
 #if defined(PCBTARANIS)
   inline uint8_t modelTelemetryProtocol()

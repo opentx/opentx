@@ -178,7 +178,7 @@ void menuStatisticsDebug(uint8_t event)
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
   lcdDrawText(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
 
-#if defined(USB_SERIAL)
+#if !defined(SIMU) && defined(USB_SERIAL)
   lcd_putsLeft(MENU_DEBUG_Y_USB, "Usb");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_USB, charsWritten, LEFT);
   lcdDrawText(lcdLastPos, MENU_DEBUG_Y_USB, " ");

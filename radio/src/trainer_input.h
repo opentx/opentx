@@ -34,10 +34,10 @@
  *
  */
 
-#ifndef trainer_input_h
-#define trainer_input_h
+#ifndef _TRAINER_INPUT_H_
+#define _TRAINER_INPUT_H_
 
-#include "myeeprom.h"
+#include "opentx.h"
 
 // Trainer input channels
 extern int16_t ppmInput[NUM_TRAINER];
@@ -86,4 +86,4 @@ inline void captureTrainerPulses(uint16_t capture)
   }
 }
 
-#endif
+#endif // _TRAINER_INPUT_H_

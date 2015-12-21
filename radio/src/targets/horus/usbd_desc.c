@@ -26,12 +26,12 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include "../horus/usbd_desc.h"
+#include "usbd_desc.h"
 
 #include <string.h>
 
-#include "../horus/board_horus.h"
-#include "../horus/usbd_conf.h"
+#include "board_horus.h"
+#include "usbd_conf.h"
 #include "usbd_core.h"
 #include "usbd_req.h"
 #include "usb_regs.h"

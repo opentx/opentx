@@ -48,8 +48,8 @@ endif()
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}
-  ${PROJECT_SOURCE_DIR}/../..
   ${COMPANION_SRC_DIRECTORY}
+  ${COMPANION_SRC_DIRECTORY}/simulation
   ${RADIO_SRC_DIRECTORY}/fonts/std
 )
 

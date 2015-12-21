@@ -33,6 +33,7 @@
  *
  */
 
+#include <stdio.h>
 #include "../../opentx.h"
 
 uint8_t s_curveChan;

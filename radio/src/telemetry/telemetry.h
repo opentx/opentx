@@ -37,6 +37,8 @@
 #ifndef TELEMETRY_H
 #define TELEMETRY_H
 
+extern Fifo<512> telemetryFifo;
+
 enum TelemetryProtocol
 {
   TELEM_PROTO_FRSKY_D,
@@ -166,6 +168,8 @@ class TelemetryItem
 
 extern TelemetryItem telemetryItems[MAX_SENSORS];
 extern uint8_t allowNewSensors;
+
+bool isGPSSensor(int sensor);
 
 inline bool isTelemetryFieldAvailable(int index)
 {

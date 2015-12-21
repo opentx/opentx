@@ -37,14 +37,12 @@
 #include "../../opentx.h"
 #include <stdio.h>
 
-#define COLUMN_HEADER_X 150
-
-void displayHeader(const char *header)
+void drawHeader(const char * header)
 {
   // TODO ? lcdDrawText(COLUMN_HEADER_X, MENU_FOOTER_TOP, header, HEADER_COLOR);
 }
 
-void displayColumnHeader(const char * const *headers, uint8_t index)
+void drawColumnHeader(const char * const * headers, uint8_t index)
 {
   // TODO ? displayHeader(headers[index]);
 }

@@ -54,11 +54,6 @@ enum LogicalSwitchFields {
 #define CSW_5TH_COLUMN  (26*FW+3)
 #define CSW_6TH_COLUMN  (31*FW+1)
 
-#define INCDEC_DECLARE_VARS(f)  uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
-#define INCDEC_SET_FLAG(f)      incdecFlag = (f)
-#define INCDEC_ENABLE_CHECK(fn) isValueAvailable = fn
-#define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
-
 void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lattr, uint8_t rattr)
 {
   lcdDrawChar(x-4, y, '[');
@@ -103,7 +98,7 @@ void menuModelLogicalSwitches(uint8_t event)
   horzpos_t horz = menuHorizontalPosition;
 
   if (horz>=0) {
-    displayColumnHeader(STR_CSW_HEADERS, horz);
+    drawColumnHeader(STR_CSW_HEADERS, horz);
   }
 
   if (horz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {

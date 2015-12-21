@@ -1,0 +1,569 @@
+option(PCB "Radio type")
+option(HELI "Heli menu" ON)
+option(FLIGHT_MODES "Flight Modes" ON)
+option(CURVES "Curves" ON)
+option(GVARS "Global variables")
+option(LUA "Lua scripts")
+option(GUI "GUI enabled" ON)
+option(SPLASH "Splash enabled" ON)
+option(PPM_UNIT "PPM display unit (US/PERCENT_PREC1/PERCENT_PREC0)" PERCENT_PREC0)
+option(PPM_CENTER_ADJUSTABLE "PPM center adjustable" OFF)
+option(PPM_LIMITS_SYMETRICAL "PPM limits symetrical" OFF)
+option(OVERRIDE_CHANNEL_FUNCTION "OverrideChannel function available" OFF)
+option(DANGEROUS_MODULE_FUNCTIONS "Dangerous module functions (RangeCheck / Bind / Module OFF, etc.) available" OFF)
+option(FAI "Competition mode (no telemetry)" OFF)
+option(AUTOSOURCE "Automatic source detection in menus" ON)
+option(AUTOSWITCH "Automatic switch detection in menus" ON)
+
+set(OPT s)
+
+enable_language(ASM)
+
+set(THIRDPARTY_DIR thirdparty)
+set(LUA_DIR ${THIRDPARTY_DIR}/Lua/src)
+set(COOS_DIR ${THIRDPARTY_DIR}/CoOS)
+set(FATFS_DIR ${THIRDPARTY_DIR}/FatFs)
+set(RADIO_BIN_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+add_subdirectory(translations)
+add_subdirectory(bitmaps/9x)
+add_subdirectory(bitmaps/taranis)
+add_subdirectory(bitmaps/horus)
+add_subdirectory(lua)
+
+set(FIRMWARE_DEPENDENCIES firmware_translations)
+
+if(PCB STREQUAL HORUS)
+  include_directories(${RADIO_SRC_DIRECTORY}/fonts/horus)
+  set(CPU_TYPE STM32F4)
+  set(HSE_VALUE 12000000)
+  set(GUI_DIR horus)
+  set(TARGET_DIR horus)
+  set(SDCARD YES)
+  set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
+  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} horus_bitmaps)
+  set(LUA_EXPORT lua_export_horus)
+  add_definitions(-DFLAVOUR="horus")
+  add_definitions(-DPCBHORUS -DCOLORLCD -DSTM32F429_439xx)
+  add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
+  add_definitions(-DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DVARIO)
+  set(EEPROM SDCARD)
+  set(HAPTIC YES)
+  set(SRC ${SRC} bmp.cpp debug.cpp)
+  set(GUI_SRC
+    ${GUI_SRC}
+    curves.cpp
+    bitmaps.cpp
+    view_channels.cpp
+    view_about.cpp
+    view_text.cpp
+    view_telemetry.cpp # TODO remove it
+    )
+  set(SRC ${SRC} targets/taranis/rtc_driver.cpp)
+  set(TARGET_SRC ${TARGET_SRC} board_horus.cpp)
+  set(FIRMWARE_TARGET_SRC
+    ${FIRMWARE_TARGET_SRC}
+    sdio_sd.c
+    lcd_driver.cpp
+    delays.c
+    i2c_driver.cpp
+    usb_driver.c
+    pwr_driver.c
+    sdram_driver.c
+    led_driver.cpp
+    )
+  set(STM32LIB_SRC
+    STM32F4xx_StdPeriph_Driver/src/misc.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_i2c.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rtc.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_pwr.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_sdio.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_fmc.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_ltdc.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma2d.c
+    )
+elseif(PCB STREQUAL TARANIS)
+  option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
+  option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
+  option(TARANIS_INTERNAL_PPM "Taranis internal module hack to output PPM" OFF)
+  if(PCBREV STREQUAL REV9E)
+    set(CPU_TYPE STM32F4)
+    set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
+    add_definitions(-DSTM32F40_41xxx -DEEPROM_VARIANT=32768)
+    add_definitions(-DREVPLUS -DREV9E)
+    add_definitions(-DFLAVOUR="taranis-x9e")
+    set(HAPTIC YES)
+    set(LUA_EXPORT lua_export_taranis_x9e)
+  elseif(PCBREV STREQUAL REVPLUS)
+    set(CPU_TYPE STM32F2)
+    set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
+    add_definitions(-DEEPROM_VARIANT=0)
+    add_definitions(-DREVPLUS)
+    add_definitions(-DFLAVOUR="taranis-plus")
+    set(HAPTIC YES)
+    set(LUA_EXPORT lua_export_taranis)
+  else()
+    set(CPU_TYPE STM32F2)
+    set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
+    add_definitions(-DEEPROM_VARIANT=0)
+    add_definitions(-DFLAVOUR="taranis")
+    set(HAPTIC NO)
+    set(LUA_EXPORT lua_export_taranis)
+  endif()
+  set(HSE_VALUE 12000000)
+  add_definitions(-DPCBTARANIS)
+  add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
+  add_definitions(-DDBLKEYS -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DVARIO)
+  set(EEPROM EEPROM_RLC)
+  set(GUI_DIR taranis)
+  set(TARGET_DIR taranis)
+  set(SDCARD YES)
+  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} taranis_bitmaps)
+  set(SRC ${SRC} bmp.cpp debug.cpp)
+  set(GUI_SRC ${GUI_SRC} menu_general_diagkeys.cpp menu_general_diaganas.cpp menu_general_hardware.cpp view_channels.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
+  set(TARGET_SRC ${TARGET_SRC} board_taranis.cpp rtc_driver.cpp)
+  set(FIRMWARE_TARGET_SRC
+    ${FIRMWARE_TARGET_SRC}
+    lcd_driver.cpp
+    delays.c
+    i2c_driver.cpp
+    usb_driver.c
+    pwr_driver.c
+    configure_pins.cpp
+    flash_driver.cpp
+    aspi.c
+    )
+  if(LCD_DUAL_BUFFER)
+    add_definitions(-DLCD_DUAL_BUFFER)
+  endif()
+  if(TARANIS_INTERNAL_PPM)
+    add_definitions(-DTARANIS_INTERNAL_PPM)
+  endif()
+else()
+  message(FATAL_ERROR "Unknown PCB '${PCB}'")
+endif()
+
+if(CPU_TYPE STREQUAL STM32F4)
+  set(MCU cortex-m4)
+  set(CPU_FAMILY STM32)
+  set(STM32LIB_DIR ${THIRDPARTY_DIR}/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries)
+  include_directories(${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/inc)
+  include_directories(${STM32LIB_DIR}/CMSIS/Device/ST/STM32F4xx/Include)
+  include_directories(${STM32LIB_DIR}/CMSIS/include)
+  set(STM32LIB_SRC
+    ${STM32LIB_SRC}
+    CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s
+    )
+  set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} system_stm32f4xx.c)
+endif()
+
+if(CPU_TYPE STREQUAL STM32F2)
+  set(MCU cortex-m3)
+  set(CPU_FAMILY STM32)
+  set(STM32LIB_DIR ${THIRDPARTY_DIR}/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries)
+  include_directories(${STM32LIB_DIR}/STM32F2xx_StdPeriph_Driver/inc)
+  include_directories(${STM32LIB_DIR}/CMSIS/Device/ST/STM32F2xx/Include)
+  include_directories(${STM32LIB_DIR}/CMSIS/include)
+  set(STM32LIB_SRC
+    ${STM32LIB_SRC}
+    CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
+    STM32F2xx_StdPeriph_Driver/src/misc.c
+    STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
+    STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dbgmcu.c
+    STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
+    STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c
+    STM32F2xx_StdPeriph_Driver/src/stm32f2xx_i2c.c
+    STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dma.c
+    STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rtc.c
+    STM32F2xx_StdPeriph_Driver/src/stm32f2xx_pwr.c
+    STM32F2xx_StdPeriph_Driver/src/stm32f2xx_usart.c
+    )
+  set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} system_stm32f2xx.c)
+endif()
+
+if(CPU_FAMILY STREQUAL STM32)
+  option(USB "USB option (JOYSTICK/MASSSTORAGE/SERIAL)" JOYSTICK)
+  set(ARCH ARM)
+  set(STM32USB_DIR ${THIRDPARTY_DIR}/STM32_USB-Host-Device_Lib_V2.1.0/Libraries)
+  add_definitions(-DCPUSTM32)
+  add_definitions(-DFRSKY -DFRSKY_SPORT -DFRSKY_HUB -DGPS -DPXX -DDSM2 -DSBUS -DCROSSFIRE)
+  include_directories(${STM32USB_DIR}/STM32_USB_OTG_Driver/inc)
+  include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Core/inc)
+  include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Class/msc/inc)
+  include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Class/hid/inc)
+  include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Class/cdc/inc)
+  set(STM32USB_SRC
+    STM32_USB_OTG_Driver/src/usb_core.c
+    STM32_USB_OTG_Driver/src/usb_dcd.c
+    STM32_USB_OTG_Driver/src/usb_dcd_int.c
+    STM32_USB_Device_Library/Core/src/usbd_core.c
+    STM32_USB_Device_Library/Core/src/usbd_ioreq.c
+    STM32_USB_Device_Library/Core/src/usbd_req.c
+    )
+  set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} usb_bsp.c usbd_desc.c usbd_usr.cpp)
+  if(${EEPROM} STREQUAL SDCARD)
+    set(SRC ${SRC} storage/storage_common.cpp storage/sdcard_raw.cpp)
+  elseif(${EEPROM} STREQUAL EEPROM_RLC)
+    set(SRC ${SRC} storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp storage/eeprom_conversions.cpp)
+    add_definitions(-DEEPROM -DEEPROM_RLC)
+  else()
+    set(SRC ${SRC} storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_raw.cpp storage/eeprom_conversions.cpp)
+    add_definitions(-DEEPROM)
+  endif()
+  if(USB STREQUAL SERIAL)
+    add_definitions(-DUSB_SERIAL)
+    set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} usbd_cdc.cpp)
+    set(STM32USB_SRC ${STM32USB_SRC} STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c)
+  elseif(USB STREQUAL MASSSTORAGE)
+    add_definitions(-DUSB_MASS_STORAGE)
+    set(STM32USB_SRC
+      ${STM32USB_SRC}
+      STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c
+      STM32_USB_Device_Library/Class/msc/src/usbd_msc_scsi.c
+      STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
+      STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
+      )
+    set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} usbd_storage_msd.cpp)
+  else()
+    add_definitions(-DUSB_JOYSTICK)
+    set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} usbd_hid_joystick.c)
+  endif()
+  set(FIRMWARE_SRC
+    ${FIRMWARE_SRC}
+    serial.cpp
+    ${FATFS_DIR}/ff.c
+    ${FATFS_DIR}/fattime.c
+    ${FATFS_DIR}/option/ccsbcs.c
+    ${COOS_DIR}/kernel/core.c
+    ${COOS_DIR}/kernel/hook.c
+    ${COOS_DIR}/kernel/task.c
+    ${COOS_DIR}/kernel/event.c
+    ${COOS_DIR}/kernel/time.c
+    ${COOS_DIR}/kernel/timer.c
+    ${COOS_DIR}/kernel/flag.c
+    ${COOS_DIR}/kernel/mutex.c
+    ${COOS_DIR}/kernel/serviceReq.c
+    ${COOS_DIR}/portable/GCC/port.c
+    ${COOS_DIR}/portable/arch.c
+    syscalls.c
+    targets/taranis/configure_pins.cpp
+    )
+  foreach(FILE ${STM32LIB_SRC})
+    set(FIRMWARE_SRC ${FIRMWARE_SRC} ${STM32LIB_DIR}/${FILE})
+  endforeach()
+  foreach(FILE ${STM32USB_SRC})
+    set(FIRMWARE_SRC ${FIRMWARE_SRC} ${STM32USB_DIR}/${FILE})
+  endforeach()
+endif()
+
+if(ARCH STREQUAL ARM)
+  option(TIMERS "Timers count" 2)
+  option(SPORT_FILE_LOG "S.PORT Logs on SD card" OFF)
+  option(TRACE_SD_CARD "SD Logs" OFF)
+  option(TRACE_FATFS "FatFS Logs" OFF)
+  option(TRACE_AUDIO "Audio Logs" OFF)
+  option(DEBUG_TRACE_BUFFER "Debug Trace Screen" OFF)
+  option(SUPPORT_D16_EU_ONLY "XJT module only supports D16-EU and LR12-EU" OFF) # TODO rename to XJT_EU_ONLY
+  if(TIMERS EQUAL 3)
+    add_definitions(-DTIMERS=3)
+  else()
+    add_definitions(-DTIMERS=2)
+  endif()
+  if(SPORT_FILE_LOG)
+    add_definitions(-DSPORT_FILE_LOG)
+  endif()
+  if(TRACE_SD_CARD)
+    add_definitions(-DTRACE_SD_CARD)
+    # DEBUG = YES
+    # DEBUG_TRACE_BUFFER = YES
+  endif()
+  if(TRACE_FATFS)
+    add_definitions(-DTRACE_FATFS)
+    # DEBUG = YES
+    # DEBUG_TRACE_BUFFER = YES
+  endif()
+  if(TRACE_AUDIO)
+    add_definitions(-DTRACE_AUDIO)
+    # DEBUG = YES
+    # DEBUG_TRACE_BUFFER = YES
+  endif()
+  if(DEBUG_TRACE_BUFFER)
+    add_definitions(-DDEBUG_TRACE_BUFFER)
+  endif()
+  if(SUPPORT_D16_EU_ONLY)
+    add_definitions(-DMODULE_D16_EU_ONLY_SUPPORT)
+  endif()
+  if(HAPTIC)
+    add_definitions(-DHAPTIC)
+    set(SRC ${SRC} haptic.cpp)
+    set(TARGET_SRC ${TARGET_SRC} haptic_driver.cpp)
+  endif()
+  add_definitions(-DCPUARM)
+  include_directories(targets/${TARGET_DIR} ${THIRDPARTY_DIR})
+  include_directories(${COOS_DIR} ${COOS_DIR}/kernel ${COOS_DIR}/portable)
+  foreach(LANGUAGE cz de en es fr it pt sk se pl hu) # TODO add nl
+    set(SRC ${SRC} translations/tts_${LANGUAGE}.cpp)
+    string(TOUPPER LANGUAGE_UPPER LANGUAGE)
+    if(TRANSLATIONS STREQUAL LANGUAGE_CAPITALIZED)
+      add_definitions(-DTRANSLATIONS_${LANGUAGE_UPPER})
+    endif()
+  endforeach()
+  set(SRC
+    ${SRC}
+    main_arm.cpp
+    tasks_arm.cpp
+    audio_arm.cpp
+    sbus.cpp
+    telemetry/telemetry.cpp
+    telemetry/frsky.cpp
+    telemetry/frsky_d_arm.cpp
+    telemetry/frsky_sport.cpp
+    telemetry/telemetry.cpp
+    crc16.cpp
+    vario.cpp
+    )
+  set(FIRMWARE_TARGET_SRC
+    ${FIRMWARE_TARGET_SRC}
+    diskio.cpp
+  )
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    pulses_driver.cpp
+    keys_driver.cpp
+    adc_driver.cpp
+    trainer_driver.cpp
+    audio_driver.cpp
+    serial2_driver.cpp
+    telemetry_driver.cpp
+    )
+  set(PULSES_SRC
+    pulses_arm.cpp
+    ppm_arm.cpp
+    pxx_arm.cpp
+    dsm2_arm.cpp
+    crossfire.cpp
+    )
+endif()
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/bitmaps/${GUI_DIR})
+
+if(NOT LUA STREQUAL OFF)
+  add_definitions(-DLUA)
+  include_directories(${LUA_DIR})
+  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${LUA_EXPORT})
+  if(LUA STREQUAL ON)
+    add_definitions(-DLUA_MODEL_SCRIPTS)
+    set(GUI_SRC ${GUI_SRC} menu_model_custom_scripts.cpp)
+  endif()
+  set(SRC ${SRC} lua/interface.cpp lua/api_general.cpp lua/api_lcd.cpp lua/api_model.cpp)
+  set(LUA_SRC
+    lapi.c
+    lcode.c
+    lctype.c
+    ldebug.c
+    ldo.c
+    ldump.c
+    lfunc.c
+    lgc.c
+    llex.c
+    lmem.c
+    lobject.c
+    lopcodes.c
+    lparser.c
+    lstate.c
+    lstring.c
+    ltable.c
+    lrotable.c
+    ltm.c
+    lundump.c
+    lvm.c
+    lzio.c
+    lbaselib.c
+    linit.c
+    lmathlib.c
+    lbitlib.c
+    loadlib.c
+    lauxlib.c
+    ltablib.c
+    lcorolib.c
+    liolib.c
+    lstrlib.c
+    )
+  foreach(FILE ${LUA_SRC})
+    set(SRC ${SRC} ${LUA_DIR}/${FILE})
+  endforeach()
+endif()
+
+if(HELI)
+  add_definitions(-DHELI)
+  set(GUI_SRC ${GUI_SRC} menu_model_heli.cpp)
+endif()
+
+if(FLIGHT_MODES)
+  add_definitions(-DFLIGHT_MODES)
+  set(GUI_SRC ${GUI_SRC} menu_model_flightmodes.cpp)
+endif()
+
+if(CURVES)
+  add_definitions(-DCURVES)
+  set(GUI_SRC ${GUI_SRC} menu_model_curves.cpp)
+endif()
+
+if(GVARS)
+  add_definitions(-DGVARS)
+  set(GUI_SRC ${GUI_SRC} menu_model_gvars.cpp)
+endif()
+
+if(FAI STREQUAL YES)
+  add_definitions(-DFAI)
+elseif(FAI STREQUAL CHOICE)
+  add_definitions(-DFAI_CHOICE)
+endif()
+
+if(AUTOSOURCE)
+  add_definitions(-DAUTOSOURCE)
+endif()
+
+if(AUTOSWITCH)
+  add_definitions(-DAUTOSWITCH)
+endif()
+
+if(SDCARD STREQUAL YES)
+  add_definitions(-DSDCARD)
+  set(SRC ${SRC} sdcard.cpp rtc.cpp logs.cpp)
+  set(GUI_SRC ${GUI_SRC} menu_general_sdmanager.cpp)
+  include_directories(${FATFS_DIR} ${FATFS_DIR}/option)
+endif()
+
+if(SHUTDOWN_CONFIRMATION)
+  add_definitions(-DSHUTDOWN_CONFIRMATION)
+endif()
+
+if(PPM_UNIT STREQUAL US)
+  add_definitions(-DPPM_UNIT_US)
+elseif(PPM_UNIT STREQUAL PERCENT_PREC1)
+  add_definitions(-DPPM_UNIT_PERCENT_PREC1)
+else()
+  add_definitions(-DPPM_UNIT_PERCENT_PREC0)
+endif()
+
+if(PPM_CENTER_ADJUSTABLE)
+  add_definitions(-DPPM_CENTER_ADJUSTABLE)
+endif()
+
+if(PPM_LIMITS_SYMETRICAL)
+  add_definitions(-DPPM_LIMITS_SYMETRICAL)
+endif()
+
+if(OVERRIDE_CHANNEL_FUNCTION)
+  add_definitions(-DOVERRIDE_CHANNEL_FUNCTION)
+endif()
+
+if(DANGEROUS_MODULE_FUNCTIONS)
+  add_definitions(-DDANGEROUS_MODULE_FUNCTIONS)
+endif()
+
+set(GUI_SRC
+  ${GUI_SRC}
+  lcd.cpp
+  splash.cpp
+  fonts.cpp
+  helpers.cpp
+  navigation.cpp
+  popups.cpp
+  widgets.cpp
+  menus.cpp
+  )
+
+set(GUI_SRC
+  ${GUI_SRC}
+  menu_model.cpp
+  menu_model_select.cpp
+  menu_model_setup.cpp
+  menu_model_inputs_mixes.cpp
+  menu_model_limits.cpp
+  menu_model_logical_switches.cpp
+  menu_model_custom_functions.cpp
+  menu_model_telemetry.cpp
+  menu_general.cpp
+  menu_general_setup.cpp
+  menu_general_trainer.cpp
+  menu_general_version.cpp
+  menu_general_calib.cpp
+  view_main.cpp
+  view_statistics.cpp
+  )
+
+set(SRC
+  ${SRC}
+  opentx.cpp
+  functions.cpp
+  strhelpers.cpp
+  switches.cpp
+  curves.cpp
+  mixer.cpp
+  stamp.cpp
+  timers.cpp
+  trainer_input.cpp
+  )
+
+if(SPLASH)
+  add_definitions(-DSPLASH)
+endif()
+
+if(GUI)
+  add_definitions(-DGUI)
+  set(SRC
+    ${SRC}
+    keys.cpp
+    maths.cpp
+    translations.cpp
+    gui/gui_helpers.cpp
+    )
+  foreach(FILE ${GUI_SRC})
+    set(SRC ${SRC} gui/${GUI_DIR}/${FILE})
+  endforeach()
+endif()
+
+foreach(FILE ${TARGET_SRC})
+  set(SRC ${SRC} targets/${TARGET_DIR}/${FILE})
+endforeach()
+
+foreach(FILE ${FIRMWARE_TARGET_SRC})
+  set(FIRMWARE_SRC ${FIRMWARE_SRC} targets/${TARGET_DIR}/${FILE})
+endforeach()
+
+foreach(FILE ${PULSES_SRC})
+  set(SRC ${SRC} pulses/${FILE})
+endforeach()
+
+add_subdirectory(targets/simu)
+
+include(CMakeForceCompiler)
+cmake_force_c_compiler(arm-none-eabi-gcc GNU)
+cmake_force_cxx_compiler(arm-none-eabi-gcc GNU)
+set(CMAKE_ASM_COMPILER arm-none-eabi-as)
+
+set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
+
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_VERSION 1)
+set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> -o <OBJECT> <SOURCE>")
+
+set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=opentx.lst -DRUN_FROM_FLASH=1 -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -Wall -fno-exceptions -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits -fdata-sections -ffunction-sections")
+set(CMAKE_C_FLAGS "${COMMON_FLAGS} -Wimplicit")
+set(CMAKE_CXX_FLAGS "${COMMON_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=opentx.map,--cref,--no-warn-mismatch,--gc-sections")
+
+add_executable(firmware ${SRC} ${FIRMWARE_SRC})
+add_dependencies(firmware ${FIRMWARE_DEPENDENCIES})

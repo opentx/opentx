@@ -444,7 +444,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   OPT = s
   SDCARD = NO
   THR_TRACE = NO
-  INCDIRS += targets/9x
+  INCDIRS += targets/9x bitmaps bitmaps/9x
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM64 -DEEPROM -DEEPROM_RLC -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   BOARDSRC = main_avr.cpp targets/9x/board_stock.cpp
   EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/common_avr/telemetry_driver.cpp
@@ -527,7 +527,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   THR_TRACE = NO
   EEPROM_VARIANT += ${M128_VARIANT}
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM128 -DEEPROM -DEEPROM_RLC -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
-  INCDIRS += targets/9x
+  INCDIRS += targets/9x bitmaps bitmaps/9x
   BOARDSRC = main_avr.cpp targets/9x/board_stock.cpp
   EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/9x/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp
@@ -602,7 +602,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   THR_TRACE = YES
   EEPROM_VARIANT += ${M2561_VARIANT}
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM2561 -DEEPROM -DEEPROM_RLC -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
-  INCDIRS += targets/9x
+  INCDIRS += targets/9x bitmaps bitmaps/9x
   BOARDSRC = main_avr.cpp targets/9x/board_stock.cpp
   EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/9x/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp
@@ -675,7 +675,7 @@ ifeq ($(PCB), GRUVIN9X)
   SDCARD = NO
   BUZZER = NO
   THR_TRACE = YES
-  INCDIRS += targets/gruvin9x targets/9x $(FATFSDIR) $(FATFSDIR)/option
+  INCDIRS += targets/gruvin9x targets/9x bitmaps bitmaps/9x $(FATFSDIR) $(FATFSDIR)/option
   BOARDSRC = main_avr.cpp targets/gruvin9x/board_gruvin9x.cpp
   EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/9x/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp
@@ -721,7 +721,7 @@ ifeq ($(PCB), MEGA2560)
   BUZZER = YES
   THR_TRACE = YES
   PWRMANAGE = NO
-  INCDIRS += targets/mega2560 targets/9x $(FATFSDIR) $(FATFSDIR)/option
+  INCDIRS += targets/mega2560 targets/9x bitmaps bitmaps/9x $(FATFSDIR) $(FATFSDIR)/option
   BOARDSRC = main_avr.cpp targets/mega2560/board_mega2560.cpp
   EEPROMSRC = storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp
   PULSESSRC = pulses/pulses_avr.cpp
@@ -817,7 +817,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
   ifeq ($(SPORT_FILE_LOG), YES)
     CPPDEFS += -DSPORT_FILE_LOG
   endif
-  INCDIRS += targets/sky9x $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
+  INCDIRS += targets/sky9x bitmaps bitmaps/9x $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_hardware.cpp gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
   BOARDSRC = main_arm.cpp targets/sky9x/board_sky9x.cpp
   EXTRABOARDSRC = targets/sky9x/lcd_driver.cpp
@@ -935,7 +935,7 @@ ifeq ($(PCB), TARANIS)
   PPM_CENTER_ADJUSTABLE = YES
   DSM2 = PPM
   CPPDEFS += -DPCBTARANIS -DCPUARM -DCPUSTM32 -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DEEPROM -DEEPROM_RLC -DAUDIO -DPXX -DSBUS -DCROSSFIRE
-  INCDIRS += targets/taranis $(THIRDPARTY) $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
+  INCDIRS += targets/taranis bitmaps bitmaps/taranis $(THIRDPARTY) $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
   CPPDEFS += -DHSE_VALUE=12000000
   ifeq ($(PCBREV), REV9E)
     STM32LIBPATH = $(THIRDPARTY)/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries
@@ -1100,7 +1100,7 @@ ifeq ($(PCB), FLAMENCO)
   TIMERS = 2
   CPPDEFS += -DTIMERS=$(TIMERS)
   CPPDEFS += -DPCBFLAMENCO -DCPUARM -DCPUSTM32 -DEEPROM -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DEEPROM_VARIANT=0 -DAUDIO -DPXX
-  INCDIRS += targets/flamenco $(THIRDPARTY) $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
+  INCDIRS += targets/flamenco bitmaps/flamenco $(THIRDPARTY) $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
   INCDIRS += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/inc $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Include $(STM32LIBPATH)/CMSIS/include
   STM32USBPATH = $(THIRDPARTY)/STM32_USB-Host-Device_Lib_V2.1.0/Libraries
   INCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc
@@ -1223,7 +1223,7 @@ ifeq ($(PCB), HORUS)
   TIMERS = 2
   CPPDEFS += -DTIMERS=$(TIMERS)
   CPPDEFS += -DPCBHORUS -DCPUARM -DCPUSTM32 -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DEEPROM_VARIANT=0 -DAUDIO -DPXX
-  INCDIRS += targets/horus $(THIRDPARTY) $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
+  INCDIRS += targets/horus bitmaps/horus fonts/horus $(THIRDPARTY) $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
   INCDIRS += $(STM32LIBPATH)/STM32F4xx_StdPeriph_Driver/inc $(STM32LIBPATH)/CMSIS/Device/ST/STM32F4xx/Include $(STM32LIBPATH)/CMSIS/include
   STM32USBPATH = $(THIRDPARTY)/STM32_USB-Host-Device_Lib_V2.1.0/Libraries
   INCDIRS += $(STM32USBPATH)/STM32_USB_OTG_Driver/inc
@@ -2026,7 +2026,7 @@ ifeq ($(SIMU_DISKIO), YES)
 endif
 
 simu: $(LUADEP) stamp.h allsimusrc.cpp Makefile simu.cpp targets/simu/simpgmspace.cpp *.h tra lbm eeprom.bin
-	g++ $(CPPFLAGS) $(SIMUCPPFLAGS) $(INCFLAGS) simu.cpp allsimusrc.cpp $(LUASRC) targets/simu/simpgmspace.cpp -MD $(SIMUDEFS) -O0 -o simu $(FOXINC) $(FOXLIB) $(AUDIOINC) $(AUDIOLIB) -pthread -fexceptions
+	gcc $(CPPFLAGS) $(SIMUCPPFLAGS) $(INCFLAGS) simu.cpp allsimusrc.cpp $(LUASRC) targets/simu/simpgmspace.cpp -MD $(SIMUDEFS) -O0 -o simu $(FOXINC) $(FOXLIB) $(AUDIOINC) $(AUDIOLIB) -pthread -fexceptions -lstdc++ -lm
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048
@@ -2203,5 +2203,5 @@ gtest-all.o : $(GTEST_SRCS)
 GTEST_TESTS_SRCS = $(shell find tests/ -type f -name '*.cpp')
 
 gtests: allsimusrc.cpp $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp *.h tests/gtests.h gtest-all.o
-	g++ -std=gnu++0x $(CPPFLAGS) $(SIMUCPPFLAGS) allsimusrc.cpp $(LUASRC) $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp ${INCFLAGS} -I$(GTEST_INCDIR) -I/usr/include/qt4 -o gtests -lpthread -MD -DSIMU -lQtCore -lQtGui gtest-all.o -fexceptions
+	gcc -std=gnu++0x $(CPPFLAGS) $(SIMUCPPFLAGS) allsimusrc.cpp $(LUASRC) $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp ${INCFLAGS} -I$(GTEST_INCDIR) -I/usr/include/qt4 -o gtests -lpthread -MD -DSIMU -lQtCore -lQtGui gtest-all.o -fexceptions -lstdc++ -lm
 

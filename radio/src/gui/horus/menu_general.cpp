@@ -36,59 +36,6 @@
 
 #include "../../opentx.h"
 
-extern LP_CONST LanguagePack czLanguagePack;
-extern LP_CONST LanguagePack enLanguagePack;
-extern LP_CONST LanguagePack esLanguagePack;
-extern LP_CONST LanguagePack frLanguagePack;
-extern LP_CONST LanguagePack deLanguagePack;
-extern LP_CONST LanguagePack itLanguagePack;
-extern LP_CONST LanguagePack plLanguagePack;
-extern LP_CONST LanguagePack ptLanguagePack;
-extern LP_CONST LanguagePack skLanguagePack;
-extern LP_CONST LanguagePack seLanguagePack;
-extern LP_CONST LanguagePack huLanguagePack;
-
-const LanguagePack * LP_CONST languagePacks[] = {
-  // alphabetical order
-  &czLanguagePack,
-  &deLanguagePack,
-  &enLanguagePack,
-  &esLanguagePack,
-  &frLanguagePack,
-  &huLanguagePack,
-  &itLanguagePack,
-  &plLanguagePack,
-  &ptLanguagePack,
-  &seLanguagePack,
-  &skLanguagePack,
-  NULL
-};
-
-bool menuGeneralSetup(evt_t event);
-bool menuGeneralSdManager(evt_t event);
-bool menuGeneralCustomFunctions(evt_t event);
-bool menuGeneralTrainer(evt_t event);
-bool menuGeneralVersion(evt_t event);
-bool menuGeneralCalib(evt_t event);
-
-enum EnumTabDiag {
-  e_Setup,
-  e_Sd,
-  e_GeneralCustomFunctions,
-  e_Trainer,
-  e_Calib,
-  e_Vers,
-};
-
-const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
-  menuGeneralSetup,
-  menuGeneralSdManager,
-  menuGeneralCustomFunctions,
-  menuGeneralTrainer,
-  menuGeneralCalib,
-  menuGeneralVersion,
-};
-
 bool menuGeneralCustomFunctions(evt_t event)
 {
   MENU(STR_MENUGLOBALFUNCS, menuTabGeneral, e_GeneralCustomFunctions, NUM_CFN, DEFAULT_SCROLLBAR_X, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });

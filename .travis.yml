@@ -11,4 +11,4 @@ install:
 
 script:
   - radio/util/commit-tests.sh
-  - mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug ../companion/src && cmake --build .
+  - mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=TARANIS .. && cmake --build .

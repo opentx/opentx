@@ -36,17 +36,6 @@
 
 #include "opentx.h"
 
-#define MENUS_STACK_SIZE       2000
-#define MIXER_STACK_SIZE       500
-#define AUDIO_STACK_SIZE       500
-#define BLUETOOTH_STACK_SIZE   500
-
-#if defined(_MSC_VER)
-  #define _ALIGNED(x) __declspec(align(x))
-#elif defined(__GNUC__)
-  #define _ALIGNED(x) __attribute__ ((aligned(x)))
-#endif
-
 OS_TID menusTaskId;
 // menus stack must be aligned to 8 bytes otherwise printf for %f does not work!
 TaskStack<MENUS_STACK_SIZE> _ALIGNED(8) menusStack;
@@ -100,12 +89,6 @@ uint16_t getStackAvailable(void * address, uint16_t size)
 #if defined(CLI)
   cliStackPaint();
 #endif
-}
-
-template<int SIZE>
-uint16_t TaskStack<SIZE>::available()
-{
-  return getStackAvailable(stack, SIZE);
 }
 
 void stackPaint()

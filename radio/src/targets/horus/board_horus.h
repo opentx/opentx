@@ -180,6 +180,8 @@ void init_pxx( uint32_t module_index );
 void disable_pxx( uint32_t module_index );
 void init_dsm2( uint32_t module_index );
 void disable_dsm2( uint32_t module_index );
+void init_crossfire( uint32_t module_index );
+void disable_crossfire( uint32_t module_index );
 
 // Trainer driver
 void init_trainer_ppm(void);
@@ -217,7 +219,7 @@ void watchdogInit(unsigned int duration);
 // ADC driver
 void adcInit(void);
 void adcRead(void);
-inline uint16_t getAnalogValue(uint32_t value);
+uint16_t getAnalogValue(uint32_t value);
 
 #if defined(REV3)
   #define BATT_SCALE    120

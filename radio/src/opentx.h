@@ -1262,7 +1262,7 @@ void applyDefaultTemplate();
 
 void incSubtrim(uint8_t idx, int16_t inc);
 void instantTrim();
-FORCEINLINE void evalTrims();
+void evalTrims();
 void copyTrimsToOffset(uint8_t ch);
 void copySticksToOffset(uint8_t ch);
 void moveTrimsToOffsets();
@@ -1613,6 +1613,7 @@ void convertUnit(getvalue_t & val, uint8_t & unit); // TODO check FORCEINLINE on
 #if defined(CPUARM)
 uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
+unsigned int effectiveLen(const char * str, unsigned int size);
 char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defaultName=NULL, uint8_t defaultNameSize=0, uint8_t defaultIdx=0);
 #define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.flightModeData[idx].name, LEN_FLIGHT_MODE_NAME, STR_FP, PSIZE(TR_FP), idx+1)
 #if defined(EEPROM)
