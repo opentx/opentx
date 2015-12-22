@@ -63,7 +63,6 @@ void menuTelemetryMavlinkGPS(void);
 void lcd_outhex2(uint8_t x, uint8_t y, uint8_t val);
 void menuTelemetryMavlinkDump(uint8_t event);
 #endif
-void menuTelemetryMavlinkSetup(uint8_t event);
 
 /*!	\brief Mavlink menu enumerator
  *	\details Used to create a readable case statement for the

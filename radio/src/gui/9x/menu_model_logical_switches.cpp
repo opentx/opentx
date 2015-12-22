@@ -54,23 +54,6 @@ enum LogicalSwitchFields {
 #define CSW_4TH_COLUMN  (18*FW+2)
 
 #if defined(CPUARM)
-  #define INCDEC_DECLARE_VARS(f)  uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
-  #define INCDEC_SET_FLAG(f)      incdecFlag = (f)
-  #define INCDEC_ENABLE_CHECK(fn) isValueAvailable = fn
-  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
-#elif defined(CPUM64)
-  #define INCDEC_DECLARE_VARS(f)
-  #define INCDEC_SET_FLAG(f)
-  #define INCDEC_ENABLE_CHECK(fn)
-  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, EE_MODEL)
-#else
-  #define INCDEC_DECLARE_VARS(f)  uint8_t incdecFlag = (f)
-  #define INCDEC_SET_FLAG(f)      incdecFlag = (f)
-  #define INCDEC_ENABLE_CHECK(fn)
-  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag)
-#endif
-
-#if defined(CPUARM)
 void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lattr, uint8_t rattr)
 {
   lcdDrawChar(x-4, y, '[');

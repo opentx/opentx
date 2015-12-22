@@ -209,8 +209,10 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
 
 #if defined(CPUARM)
   #define putstime_t int32_t
+  #define FlightModesType uint16_t
 #else
   #define putstime_t int16_t
+  #define FlightModesType uint8_t
 #endif
 
 void putsRtcTime(coord_t x, coord_t y, LcdFlags att);

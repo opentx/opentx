@@ -423,7 +423,7 @@
   typedef uint32_t mixsrc_t;
   typedef int32_t swsrc_t;
 #else
-  #define tmr10ms_t uint16_t
+  typedef uint16_t tmr10ms_t;
   extern volatile tmr10ms_t g_tmr10ms;
   extern inline uint16_t get_tmr10ms()
   {

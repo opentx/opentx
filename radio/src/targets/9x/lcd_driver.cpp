@@ -115,7 +115,7 @@ const static pm_uchar lcdInitSequence[] PROGMEM =
 #endif
 };
 
-inline void lcdInit()
+void lcdInit()
 {
   LCD_LOCK();
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RES);  //LCD reset
