@@ -975,74 +975,7 @@ void checkAll();
 #include "sbus.h"
 #endif
 
-extern void backlightOn();
-
-enum Analogs {
-  STICK1,
-  STICK2,
-  STICK3,
-  STICK4,
-#if defined(PCBHORUS)
-  POT1,
-  POT2,
-  POT3,
-  POT_LAST=POT3,
-  SLIDER1,
-  SLIDER2,
-  SLIDER3,
-  SLIDER4,
-#elif defined(PCBFLAMENCO)
-  POT1,
-  POT2,
-  POT_LAST = POT2,
-  SLIDER1,
-  SLIDER2,
-  SWITCHES1,
-  SWITCHES2,
-  SWITCHES3,
-  SWITCHES4,
-#elif defined(PCBTARANIS)
-  POT1,
-  POT2,
-  POT3,
-  #if defined(REV9E)
-    POT4,
-    POT_LAST = POT4,
-  #else
-    POT_LAST = POT3,
-  #endif
-  SLIDER1,
-  SLIDER2,
-  #if defined(REV9E)
-    SLIDER3,
-    SLIDER4,
-  #endif
-#else
-  POT1,
-  POT2,
-  POT3,
-  POT_LAST = POT3,
-#endif
-#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
-  // When the mod is applied, ADC7 is connected to 14051's X pin and TX_VOLTAGE
-  // is connected to 14051's X0 pin (one of the multiplexed inputs). TX_VOLTAGE
-  // value is filled in by processMultiplexAna().
-
-  // This shifts TX_VOLTAGE from 7 to 8 and makes X14051 take the 7th position
-  // corresponding to ADC7.
-  X14051,
-#endif
-  TX_VOLTAGE,
-#if defined(PCBSKY9X) && !defined(REVA)
-  TX_CURRENT,
-#endif
-#if defined(PCBHORUS)
-  MOUSE1,
-  MOUSE2,
-#endif
-  NUMBER_ANALOG
-};
-
+void backlightOn();
 void checkBacklight();
 void doLoopCommonActions();
 

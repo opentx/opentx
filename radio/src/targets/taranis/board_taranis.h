@@ -155,6 +155,7 @@ extern "C" {
 #endif
 void delaysInit(void);
 void delay_01us(uint16_t nb);
+void delay(uint32_t ms);
 #ifdef __cplusplus
 }
 #endif
@@ -250,8 +251,32 @@ void watchdogInit(unsigned int duration);
 #endif
 
 // ADC driver
+enum Analogs {
+  STICK1,
+  STICK2,
+  STICK3,
+  STICK4,
+  POT1,
+  POT2,
+  POT3,
+  #if defined(REV9E)
+    POT4,
+    POT_LAST = POT4,
+  #else
+    POT_LAST = POT3,
+  #endif
+  SLIDER1,
+  SLIDER2,
+  #if defined(REV9E)
+    SLIDER3,
+    SLIDER4,
+  #endif
+  TX_VOLTAGE,
+  NUMBER_ANALOG
+};
 void adcInit(void);
 void adcRead(void);
+extern uint16_t adcValues[NUMBER_ANALOG];
 uint16_t getAnalogValue(uint32_t value);
 
 #define BATT_SCALE    150

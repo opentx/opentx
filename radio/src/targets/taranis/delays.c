@@ -55,3 +55,10 @@ void delay_01us(uint16_t nb)
   while(TIM13->CNT < nb);
   TIM13->CR1 = 0x02;
 }
+
+void delay(uint32_t ms)
+{
+  while(ms--) {
+    delay_01us(10000);
+  }
+}

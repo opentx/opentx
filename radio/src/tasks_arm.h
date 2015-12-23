@@ -62,7 +62,10 @@ class TaskStack
   public:
     TaskStack() { }
     void paint();
-    uint16_t size();
+    uint16_t size()
+    {
+      return SIZE * 4;
+    }
     uint16_t available()
     {
       return getStackAvailable(stack, SIZE);

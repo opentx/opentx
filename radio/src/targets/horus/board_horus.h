@@ -217,6 +217,25 @@ void watchdogInit(unsigned int duration);
 #endif
 
 // ADC driver
+enum Analogs {
+  STICK1,
+  STICK2,
+  STICK3,
+  STICK4,
+  POT1,
+  POT2,
+  POT3,
+  POT_LAST=POT3,
+  SLIDER1,
+  SLIDER2,
+  SLIDER3,
+  SLIDER4,
+  TX_VOLTAGE,
+  MOUSE1,
+  MOUSE2,
+  NUMBER_ANALOG
+};
+
 void adcInit(void);
 void adcRead(void);
 uint16_t getAnalogValue(uint32_t value);

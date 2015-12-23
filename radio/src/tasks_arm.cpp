@@ -72,12 +72,6 @@ void TaskStack<SIZE>::paint()
   }
 }
 
-template<int SIZE>
-uint16_t TaskStack<SIZE>::size()
-{
-  return SIZE*4;
-}
-
 uint16_t getStackAvailable(void * address, uint16_t size)
 {
   uint32_t * array = (uint32_t *)address;

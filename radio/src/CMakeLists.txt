@@ -28,6 +28,7 @@ add_subdirectory(translations)
 add_subdirectory(bitmaps)
 add_subdirectory(lua)
 
+set(EEPROM_VARIANT  0)
 set(GVARS_VARIANT   1)
 set(FRSKY_VARIANT   2)
 set(3POS_VARIANT    4)
@@ -93,6 +94,7 @@ if(PCB STREQUAL HORUS)
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma2d.c
     )
 elseif(PCB STREQUAL TARANIS)
+  option(PCBREV "PCB Revision" REVPLUS)
   option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
   option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
   option(TARANIS_INTERNAL_PPM "Taranis internal module hack to output PPM" OFF)
@@ -132,6 +134,7 @@ elseif(PCB STREQUAL TARANIS)
   set(SRC ${SRC} bmp.cpp)
   set(GUI_SRC ${GUI_SRC} menu_general_diagkeys.cpp menu_general_diaganas.cpp menu_general_hardware.cpp view_channels.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
   set(TARGET_SRC ${TARGET_SRC} board_taranis.cpp rtc_driver.cpp)
+  set(FIRMWARE_SRC ${FIRMWARE_SRC} loadboot.cpp)
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
     lcd_driver.cpp
@@ -154,7 +157,6 @@ elseif(PCB STREQUAL 9X OR PCB STREQUAL 9XR)
   set(MCU atmega64)
   string(TOLOWER ${PCB} FLAVOUR)
   set(EEPROM_VARIANT_NEEDED ON)
-  set(EEPROM_VARIANT 0)
   set(EEPROM EEPROM_RLC)
   set(GUI_DIR 9x)
   set(TARGET_DIR 9x)
@@ -276,6 +278,8 @@ endif()
 
 if(ARCH STREQUAL ARM)
   option(TIMERS "Timers count" 2)
+  option(CLI "Command Line Interface" OFF)
+  option(DEBUG "Debug mode" OFF)
   option(SPORT_FILE_LOG "S.PORT Logs on SD card" OFF)
   option(TRACE_SD_CARD "Traces SD enabled" OFF)
   option(TRACE_FATFS "Traces FatFS enabled" OFF)
@@ -292,21 +296,30 @@ if(ARCH STREQUAL ARM)
   endif()
   if(TRACE_SD_CARD)
     add_definitions(-DTRACE_SD_CARD)
-    # DEBUG = YES
-    # DEBUG_TRACE_BUFFER = YES
+    set(DEBUG ON)
+    set(DEBUG_TRACE_BUFFER ON)
   endif()
   if(TRACE_FATFS)
     add_definitions(-DTRACE_FATFS)
-    # DEBUG = YES
-    # DEBUG_TRACE_BUFFER = YES
+    set(DEBUG ON)
+    set(DEBUG_TRACE_BUFFER ON)
   endif()
   if(TRACE_AUDIO)
     add_definitions(-DTRACE_AUDIO)
-    # DEBUG = YES
-    # DEBUG_TRACE_BUFFER = YES
+    set(DEBUG ON)
+    set(DEBUG_TRACE_BUFFER ON)
   endif()
   if(DEBUG_TRACE_BUFFER)
     add_definitions(-DDEBUG_TRACE_BUFFER)
+  endif()
+  if(CLI)
+    add_definitions(-DCLI)
+    set(SRC ${SRC} cli.cpp dump.cpp)
+  elseif(DEBUG)
+    set(SRC ${SRC} dump.cpp)
+  endif()
+  if(DEBUG)
+    add_definitions(-DDEBUG)
   endif()
   if(SUPPORT_D16_EU_ONLY)
     add_definitions(-DMODULE_D16_EU_ONLY_SUPPORT)
@@ -409,7 +422,7 @@ else()
     include_directories(${THIRDPARTY} targets/common_avr)
     set(SRC ${SRC} telemetry/mavlink.cpp targets/common_avr/serial_driver.cpp)
     set(GUI_SRC ${GUI_SRC} view_mavlink.cpp)
-    MATH(EXPR EEPROM_VARIANT ${EEPROM_VARIANT}+${MAVLINK_VARIANT})
+    math(EXPR EEPROM_VARIANT ${EEPROM_VARIANT}+${MAVLINK_VARIANT})
   elseif(EXT STREQUAL TELEMETREZ)
     add_definitions(-DTELEMETREZ)
     set(SRC ${SRC} telemetry/jeti.cpp)
@@ -442,7 +455,7 @@ else()
       add_definitions(-DVARIO)
       set(SRC ${SRC} vario.cpp)
     endif()
-    MATH(EXPR EEPROM_VARIANT ${EEPROM_VARIANT}+${FRSKY_VARIANT})
+    math(EXPR EEPROM_VARIANT ${EEPROM_VARIANT}+${FRSKY_VARIANT})
   endif()
   add_definitions(-DTIMERS=2)
   if(EEPROM_VARIANT_NEEDED)
@@ -538,7 +551,7 @@ endif()
 
 if(GVARS)
   add_definitions(-DGVARS)
-  MATH(EXPR EEPROM_VARIANT ${EEPROM_VARIANT}+${GVARS_VARIANT})
+  math(EXPR EEPROM_VARIANT ${EEPROM_VARIANT}+${GVARS_VARIANT})
 endif()
 
 if(FAI STREQUAL YES)
@@ -656,13 +669,30 @@ if(ARCH STREQUAL ARM)
   set(CMAKE_SYSTEM_VERSION 1)
   set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> -o <OBJECT> <SOURCE>")
 
-  set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=opentx.lst -DRUN_FROM_FLASH=1 -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -fno-exceptions -fdata-sections -ffunction-sections ${WARNING_FLAGS}")
+  set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=opentx.lst -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -fno-exceptions -fdata-sections -ffunction-sections ${WARNING_FLAGS}")
   set(CMAKE_C_FLAGS "${COMMON_FLAGS} -Wimplicit")
   set(CMAKE_CXX_FLAGS "${COMMON_FLAGS}")
   set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=opentx.map,--cref,--no-warn-mismatch,--gc-sections")
 
-  add_executable(firmware.bin ${SRC})
-  add_dependencies(firmware.bin ${FIRMWARE_DEPENDENCIES})
+  if(PCB STREQUAL TARANIS)
+    add_subdirectory(targets/${TARGET_DIR}/bootloader)
+    add_custom_command(
+      OUTPUT bootloader.bin bootloader.lbm
+      COMMAND arm-none-eabi-objcopy -O binary targets/${TARGET_DIR}/bootloader/bootloader.elf bootloader.bin
+      COMMAND python ${RADIO_DIRECTORY}/util/bin2lbm.py bootloader.bin bootloader.lbm
+      DEPENDS bootloader.elf
+      )
+    add_custom_target(bootloader DEPENDS bootloader.lbm)
+    set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)
+  endif()
+
+  add_executable(firmware.elf ${SRC} ${FIRMWARE_HEADERS})
+  add_dependencies(firmware.elf ${FIRMWARE_DEPENDENCIES})
+
+  add_custom_target(firmware.bin
+    COMMAND arm-none-eabi-objcopy -O binary firmware.elf firmware.bin
+    DEPENDS firmware.elf
+    )
 else()
   cmake_force_c_compiler(avr-gcc GNU)
   cmake_force_cxx_compiler(avr-gcc GNU)
@@ -688,7 +718,7 @@ else()
     )
 
   add_custom_target(firmware.bin
-    COMMAND avr-objcopy -O binary firmware.elf firmware.hex
+    COMMAND avr-objcopy -O binary firmware.elf firmware.bin
     DEPENDS firmware.elf
     )
 
@@ -696,7 +726,6 @@ else()
     COMMAND avr-size --mcu=${MCU} --format=avr firmware.elf
     DEPENDS firmware.hex
     )
-
 endif()
 
 add_custom_target(firmware.lss
