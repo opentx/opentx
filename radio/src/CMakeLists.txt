@@ -732,3 +732,11 @@ add_custom_target(firmware.lss
   COMMAND avr-objdump -h -S firmware.elf > firmware.lss
   DEPENDS firmware.elf
   )
+
+if(CPU_FAMILY STREQUAL STM32)
+  add_custom_target(flash
+    COMMAND dfu-util --alt 0 --dfuse-address 0x08000000 -D firmware.bin
+    DEPENDS firmware.bin
+  )
+endif()
+
