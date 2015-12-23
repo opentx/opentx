@@ -65,12 +65,7 @@
 #define USBD_SERIALNUMBER_FS_STRING         "00000000001B"
 
 
-#if defined(BOOT)
-  #define USBD_PID                        0x5720
-  #define USBD_PRODUCT_FS_STRING          "FrSky Taranis Bootloader"
-  #define USBD_CONFIGURATION_FS_STRING    "MSC Config"
-  #define USBD_INTERFACE_FS_STRING        "MSC Interface"
-#elif defined(USB_JOYSTICK)
+#if defined(USB_JOYSTICK)
   #define USBD_PID                        0x5710
   #define USBD_PRODUCT_FS_STRING          "FrSky Taranis Joystick"
   #define USBD_CONFIGURATION_FS_STRING    "HID Config"

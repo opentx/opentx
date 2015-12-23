@@ -37,17 +37,6 @@
 #include "opentx.h"
 #include "timers.h"
 
-#if defined(COLORLCD)
-#elif defined(PCBTARANIS)
-  const pm_uchar asterisk_lbm[] PROGMEM = {
-    #include "bitmaps/taranis/asterisk.lbm"
-  };
-#else
-  const pm_uchar asterisk_lbm[] PROGMEM = {
-    #include "bitmaps/9x/asterisk.lbm"
-  };
-#endif
-
 EEGeneral  g_eeGeneral;
 ModelData  g_model;
 
@@ -1600,7 +1589,7 @@ uint16_t s_cnt_samples_thr_10s;
 uint16_t s_sum_samples_thr_10s;
 #endif
 
-FORCEINLINE void evalTrims()
+void evalTrims()
 {
   uint8_t phase = mixerCurrentFlightMode;
   for (uint8_t i=0; i<NUM_STICKS; i++) {

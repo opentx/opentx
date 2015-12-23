@@ -68,9 +68,7 @@ extern uint8_t noHighlightCounter;
 
 void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 
-typedef void (*MenuHandlerFunc)(uint8_t event);
-extern const MenuHandlerFunc menuTabModel[];
-extern const MenuHandlerFunc menuTabGeneral[];
+typedef void (* MenuHandlerFunc)(uint8_t event);
 
 extern MenuHandlerFunc menuHandlers[5];
 extern uint8_t menuVerticalPositions[4];
@@ -93,18 +91,95 @@ void drawPotsBars();
 void doMainScreenGraphics();
 void menuFirstCalib(uint8_t event);
 
-void onMainViewMenu(const char *result);
+void onMainViewMenu(const char * result);
 void menuMainView(uint8_t event);
-void menuGeneralDiagAna(uint8_t event);
-#if defined(FRSKY)
 void menuTelemetryFrsky(uint8_t event);
-#endif
-void menuGeneralSetup(uint8_t event);
-void menuGeneralCalib(uint8_t event);
+void menuTelemetryMavlinkSetup(uint8_t event);
+
 void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext);
 
+enum EnumTabDiag {
+  e_Setup,
+  CASE_SDCARD(e_Sd)
+  CASE_CPUARM(e_GeneralCustomFunctions)
+  e_Trainer,
+  e_Vers,
+  e_Keys,
+  e_Ana,
+  CASE_CPUARM(e_Hardware)
+  e_Calib
+};
+
+void menuGeneralSetup(uint8_t event);
+void menuGeneralSdManager(uint8_t event);
+void menuGeneralCustomFunctions(uint8_t event);
+void menuGeneralTrainer(uint8_t event);
+void menuGeneralVersion(uint8_t event);
+void menuGeneralDiagKeys(uint8_t event);
+void menuGeneralDiagAna(uint8_t event);
+void menuGeneralHardware(uint8_t event);
+void menuGeneralCalib(uint8_t event);
+
+static const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
+  menuGeneralSetup,
+  CASE_SDCARD(menuGeneralSdManager)
+  CASE_CPUARM(menuGeneralCustomFunctions)
+  menuGeneralTrainer,
+  menuGeneralVersion,
+  menuGeneralDiagKeys,
+  menuGeneralDiagAna,
+  CASE_CPUARM(menuGeneralHardware)
+  menuGeneralCalib
+};
+
+enum EnumTabModel {
+  e_ModelSelect,
+  e_ModelSetup,
+  CASE_HELI(e_Heli)
+  CASE_FLIGHT_MODES(e_FlightModesAll)
+  e_InputsAll,
+  e_MixAll,
+  e_Limits,
+  CASE_CURVES(e_CurvesAll)
+  e_LogicalSwitches,
+  e_CustomFunctions,
+  CASE_FRSKY(e_Telemetry)
+  CASE_MAVLINK(e_MavSetup)
+  CASE_TEMPLATES(e_Templates)
+};
+
 void menuModelSelect(uint8_t event);
+void menuModelSetup(uint8_t event);
+void menuModelHeli(uint8_t event);
+void menuModelFlightModesAll(uint8_t event);
+void menuModelExposAll(uint8_t event);
+void menuModelMixAll(uint8_t event);
+void menuModelLimits(uint8_t event);
+void menuModelCurvesAll(uint8_t event);
+void menuModelCurveOne(uint8_t event);
+void menuModelGVars(uint8_t event);
+void menuModelLogicalSwitches(uint8_t event);
 void menuModelCustomFunctions(uint8_t event);
+void menuModelTelemetry(uint8_t event);
+void menuModelTemplates(uint8_t event);
+void menuModelExpoOne(uint8_t event);
+
+static const MenuHandlerFunc menuTabModel[] PROGMEM = {
+  menuModelSelect,
+  menuModelSetup,
+  CASE_HELI(menuModelHeli)
+  CASE_FLIGHT_MODES(menuModelFlightModesAll)
+  menuModelExposAll,
+  menuModelMixAll,
+  menuModelLimits,
+  CASE_CURVES(menuModelCurvesAll)
+  menuModelLogicalSwitches,
+  menuModelCustomFunctions,
+  CASE_FRSKY(menuModelTelemetry)
+  CASE_MAVLINK(menuTelemetryMavlinkSetup)
+  CASE_TEMPLATES(menuModelTemplates)
+};
+
 void menuStatisticsView(uint8_t event);
 void menuStatisticsDebug(uint8_t event);
 void menuAboutView(uint8_t event);
@@ -135,20 +210,37 @@ void menuTraceBuffer(uint8_t event);
 
 extern int8_t checkIncDec_Ret;  // global helper vars
 
-#define EDIT_SELECT_MENU   -1
-#define EDIT_SELECT_FIELD  0
-#define EDIT_MODIFY_FIELD  1
-#define EDIT_MODIFY_STRING 2
+#define EDIT_SELECT_MENU               -1
+#define EDIT_SELECT_FIELD              0
+#define EDIT_MODIFY_FIELD              1
+#define EDIT_MODIFY_STRING             2
 extern int8_t s_editMode;       // global editmode
 
 // checkIncDec flags
-#define EE_GENERAL      0x01
-#define EE_MODEL        0x02
-#define NO_INCDEC_MARKS 0x04
-#define INCDEC_SWITCH   0x08
-#define INCDEC_SOURCE   0x10
-#define INCDEC_REP10    0x40
-#define NO_DBLKEYS      0x80
+#define EE_GENERAL                     0x01
+#define EE_MODEL                       0x02
+#define NO_INCDEC_MARKS                0x04
+#define INCDEC_SWITCH                  0x08
+#define INCDEC_SOURCE                  0x10
+#define INCDEC_REP10                   0x40
+#define NO_DBLKEYS                     0x80
+
+#if defined(CPUARM)
+  #define INCDEC_DECLARE_VARS(f)       uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
+  #define INCDEC_SET_FLAG(f)           incdecFlag = (f)
+  #define INCDEC_ENABLE_CHECK(fn)      isValueAvailable = fn
+  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
+#elif defined(CPUM64)
+  #define INCDEC_DECLARE_VARS(f)
+  #define INCDEC_SET_FLAG(f)
+  #define INCDEC_ENABLE_CHECK(fn)
+  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, EE_MODEL)
+#else
+  #define INCDEC_DECLARE_VARS(f)       uint8_t incdecFlag = (f)
+  #define INCDEC_SET_FLAG(f)           incdecFlag = (f)
+  #define INCDEC_ENABLE_CHECK(fn)
+  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag)
+#endif
 
 // mawrow special values
 #define TITLE_ROW      ((uint8_t)-1)
@@ -334,6 +426,15 @@ int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, uint8_t
 
 void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uint8_t active);
 
+#if defined(CPUM64)
+#define editSingleName(x, y, label, name, size, event, active) editName(x, y, name, size, event, active)
+#else
+void editSingleName(coord_t x, coord_t y, const pm_char *label, char *name, uint8_t size, uint8_t event, uint8_t active);
+#endif
+
+uint8_t editDelay(const coord_t y, const uint8_t event, const uint8_t attr, const pm_char * str, uint8_t delay);
+#define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
+
 #define WARNING_TYPE_ASTERISK          0
 #define WARNING_TYPE_CONFIRM           1
 #define WARNING_TYPE_INPUT             2
@@ -343,6 +444,14 @@ extern const pm_char * warningInfoText;
 extern uint8_t         warningInfoLength;
 extern uint8_t         warningResult;
 extern uint8_t         warningType;
+
+#define COPY_MODE                      1
+#define MOVE_MODE                      2
+extern uint8_t s_copyMode;
+extern int8_t s_copySrcRow;
+extern int8_t s_copyTgtOfs;
+extern uint8_t s_currIdx;
+extern uint8_t s_curveChan;
 
 #define MENU_X                         10
 #define MENU_Y                         16
@@ -464,5 +573,7 @@ void displayWarning(uint8_t event);
 
 typedef int16_t (*FnFuncP) (int16_t x);
 void drawFunction(FnFuncP fn, uint8_t offset=0);
+
+uint8_t switchToMix(uint8_t source);
 
 #endif // _MENUS_H_

@@ -36,6 +36,8 @@
 
 #include "../opentx.h"
 
+#if defined(CPUARM)
+
 int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable)
 {
   do {
@@ -444,3 +446,5 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
   }
   return retval;
 }
+
+#endif

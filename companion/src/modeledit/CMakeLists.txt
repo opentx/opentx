@@ -1,4 +1,8 @@
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(
+  ${CMAKE_SOURCE_DIR}
+  ${COMPANION_SRC_DIRECTORY}
+  ${CMAKE_CURRENT_BINARY_DIR}
+)
 
 set(modeledit_NAMES
   modeledit

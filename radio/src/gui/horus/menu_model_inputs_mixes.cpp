@@ -33,6 +33,7 @@
  *
  */
 
+#include <stdio.h>
 #include "../../opentx.h"
 
 #define EXPO_ONE_2ND_COLUMN 110

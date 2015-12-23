@@ -67,6 +67,10 @@ void displayPopup(const char *title)
   lcdRefresh();
 }
 
+const pm_uchar asterisk_lbm[] PROGMEM = {
+#include "asterisk.lbm"
+};
+
 void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SOUND_ARG)
 {
   lcdClear();

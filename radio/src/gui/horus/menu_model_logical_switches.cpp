@@ -33,6 +33,7 @@
  *
  */
 
+#include <stdio.h>
 #include "../../opentx.h"
 
 enum LogicalSwitchFields {
@@ -53,11 +54,6 @@ enum LogicalSwitchFields {
 #define CSW_4TH_COLUMN  200
 #define CSW_5TH_COLUMN  245
 #define CSW_6TH_COLUMN  300
-
-#define INCDEC_DECLARE_VARS(f)  uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
-#define INCDEC_SET_FLAG(f)      incdecFlag = (f)
-#define INCDEC_ENABLE_CHECK(fn) isValueAvailable = fn
-#define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
 
 void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lattr, uint8_t rattr)
 {
@@ -106,7 +102,7 @@ bool menuModelLogicalSwitches(evt_t event)
   horzpos_t horz = menuHorizontalPosition;
 
   if (sub>= 0 && horz>=0) {
-    displayColumnHeader(STR_CSW_HEADERS, horz);
+    drawColumnHeader(STR_CSW_HEADERS, horz);
   }
 
   if (horz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {

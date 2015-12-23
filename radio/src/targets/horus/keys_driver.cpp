@@ -105,7 +105,7 @@ uint8_t keyDown()
   return readKeys();
 }
 
-rotenc_t rotencValue;
+int32_t rotencValue;
 void checkRotaryEncoder()
 {
   static uint32_t Rotary_position;

@@ -34,8 +34,8 @@
  *
  */
 
-#include "../horus/lcd.h"
-#include "../horus/menus.h"
+#include "lcd.h"
+#include "menus.h"
 
 #define MENU_HEADER_HEIGHT             45
 #define MENU_TITLE_TOP                 48
@@ -84,11 +84,15 @@ void displayScreenIndex(uint8_t index, uint8_t count);
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 void drawHorizontalScrollbar(coord_t x, coord_t y, coord_t w, uint16_t offset, uint16_t count, uint8_t visible);
 void drawHeader(int index);
+void drawColumnHeader(const char * const * headers, uint8_t index);
 void drawFooter();
 #define drawStatusLine(...)
 void drawProgressBar(const char *label);
 void updateProgressBar(int num, int den);
 void drawTopmenuDatetime();
+void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X);
+void drawStick(coord_t centrex, int16_t xval, int16_t yval);
+void drawSticks();
 
 // Curve functions
 coord_t getCurveYCoord(FnFuncP fn, coord_t x);

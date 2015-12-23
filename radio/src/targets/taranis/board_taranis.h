@@ -155,6 +155,7 @@ extern "C" {
 #endif
 void delaysInit(void);
 void delay_01us(uint16_t nb);
+void delay(uint32_t ms);
 #ifdef __cplusplus
 }
 #endif
@@ -242,17 +243,41 @@ void checkRotaryEncoder(void);
 #if !defined(SIMU)
 #define wdt_disable()
 void watchdogInit(unsigned int duration);
-#define wdt_enable(x)   watchdogInit(1500)
-#define wdt_reset()     IWDG->KR = 0xAAAA
+#define wdt_enable(x)                         watchdogInit(1500)
+#define wdt_reset()                           IWDG->KR = 0xAAAA
 #define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)
 #define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
 #define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF | RCC_CSR_SFTRSTF))
 #endif
 
 // ADC driver
+enum Analogs {
+  STICK1,
+  STICK2,
+  STICK3,
+  STICK4,
+  POT1,
+  POT2,
+  POT3,
+  #if defined(REV9E)
+    POT4,
+    POT_LAST = POT4,
+  #else
+    POT_LAST = POT3,
+  #endif
+  SLIDER1,
+  SLIDER2,
+  #if defined(REV9E)
+    SLIDER3,
+    SLIDER4,
+  #endif
+  TX_VOLTAGE,
+  NUMBER_ANALOG
+};
 void adcInit(void);
 void adcRead(void);
-inline uint16_t getAnalogValue(uint32_t value);
+extern uint16_t adcValues[NUMBER_ANALOG];
+uint16_t getAnalogValue(uint32_t value);
 
 #define BATT_SCALE    150
 
@@ -372,6 +397,7 @@ void setTopBatteryValue(uint32_t volts);
 void usbJoystickUpdate(void);
 #endif
 
+extern uint8_t currentTrainerMode;
 void checkTrainerSettings(void);
 
 #endif

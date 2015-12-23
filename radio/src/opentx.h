@@ -423,7 +423,7 @@
   typedef uint32_t mixsrc_t;
   typedef int32_t swsrc_t;
 #else
-  #define tmr10ms_t uint16_t
+  typedef uint16_t tmr10ms_t;
   extern volatile tmr10ms_t g_tmr10ms;
   extern inline uint16_t get_tmr10ms()
   {
@@ -975,74 +975,7 @@ void checkAll();
 #include "sbus.h"
 #endif
 
-extern void backlightOn();
-
-enum Analogs {
-  STICK1,
-  STICK2,
-  STICK3,
-  STICK4,
-#if defined(PCBHORUS)
-  POT1,
-  POT2,
-  POT3,
-  POT_LAST=POT3,
-  SLIDER1,
-  SLIDER2,
-  SLIDER3,
-  SLIDER4,
-#elif defined(PCBFLAMENCO)
-  POT1,
-  POT2,
-  POT_LAST = POT2,
-  SLIDER1,
-  SLIDER2,
-  SWITCHES1,
-  SWITCHES2,
-  SWITCHES3,
-  SWITCHES4,
-#elif defined(PCBTARANIS)
-  POT1,
-  POT2,
-  POT3,
-  #if defined(REV9E)
-    POT4,
-    POT_LAST = POT4,
-  #else
-    POT_LAST = POT3,
-  #endif
-  SLIDER1,
-  SLIDER2,
-  #if defined(REV9E)
-    SLIDER3,
-    SLIDER4,
-  #endif
-#else
-  POT1,
-  POT2,
-  POT3,
-  POT_LAST = POT3,
-#endif
-#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
-  // When the mod is applied, ADC7 is connected to 14051's X pin and TX_VOLTAGE
-  // is connected to 14051's X0 pin (one of the multiplexed inputs). TX_VOLTAGE
-  // value is filled in by processMultiplexAna().
-
-  // This shifts TX_VOLTAGE from 7 to 8 and makes X14051 take the 7th position
-  // corresponding to ADC7.
-  X14051,
-#endif
-  TX_VOLTAGE,
-#if defined(PCBSKY9X) && !defined(REVA)
-  TX_CURRENT,
-#endif
-#if defined(PCBHORUS)
-  MOUSE1,
-  MOUSE2,
-#endif
-  NUMBER_ANALOG
-};
-
+void backlightOn();
 void checkBacklight();
 void doLoopCommonActions();
 
@@ -1262,7 +1195,7 @@ void applyDefaultTemplate();
 
 void incSubtrim(uint8_t idx, int16_t inc);
 void instantTrim();
-FORCEINLINE void evalTrims();
+void evalTrims();
 void copyTrimsToOffset(uint8_t ch);
 void copySticksToOffset(uint8_t ch);
 void moveTrimsToOffsets();
@@ -1613,6 +1546,7 @@ void convertUnit(getvalue_t & val, uint8_t & unit); // TODO check FORCEINLINE on
 #if defined(CPUARM)
 uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
+unsigned int effectiveLen(const char * str, unsigned int size);
 char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defaultName=NULL, uint8_t defaultNameSize=0, uint8_t defaultIdx=0);
 #define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.flightModeData[idx].name, LEN_FLIGHT_MODE_NAME, STR_FP, PSIZE(TR_FP), idx+1)
 #if defined(EEPROM)

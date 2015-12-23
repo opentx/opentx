@@ -35,59 +35,6 @@
 
 #include "../../opentx.h"
 
-// TODO elsewhere!
-#define WCHART (LCD_H/2)
-#define X0     (LCD_W-WCHART-2)
-#define Y0     (LCD_H/2)
-
-enum EnumTabModel {
-  e_ModelSelect,
-  e_ModelSetup,
-  CASE_HELI(e_Heli)
-  CASE_FLIGHT_MODES(e_FlightModesAll)
-  e_InputsAll,
-  e_MixAll,
-  e_Limits,
-  CASE_CURVES(e_CurvesAll)
-  CASE_GVARS(e_GVars)
-  e_LogicalSwitches,
-  e_CustomFunctions,
-#if defined(LUA_MODEL_SCRIPTS)
-  e_CustomScripts,
-#endif
-  CASE_FRSKY(e_Telemetry)
-  CASE_MAVLINK(e_MavSetup)
-  CASE_TEMPLATES(e_Templates)
-};
-
-void menuModelSelect(uint8_t event);
-void menuModelSetup(uint8_t event);
-void menuModelHeli(uint8_t event);
-void menuModelFlightModesAll(uint8_t event);
-void menuModelExposAll(uint8_t event);
-void menuModelMixAll(uint8_t event);
-void menuModelLimits(uint8_t event);
-void menuModelCurvesAll(uint8_t event);
-void menuModelCurveOne(uint8_t event);
-void menuModelGVars(uint8_t event);
-void menuModelLogicalSwitches(uint8_t event);
-void menuModelCustomFunctions(uint8_t event);
-void menuModelCustomScripts(uint8_t event);
-void menuModelTelemetry(uint8_t event);
-void menuModelExpoOne(uint8_t event);
-
-extern uint8_t s_curveChan;
-
-#define FlightModesType uint16_t
-
-void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, uint8_t attr);
-
-#if MENU_COLUMNS < 2
-  #define MIXES_2ND_COLUMN  (18*FW)
-#else
-  #define MIXES_2ND_COLUMN    (9*FW)
-#endif
-
 #if MENU_COLUMNS > 1
 uint8_t editDelay(const coord_t x, const coord_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
 {
@@ -96,7 +43,6 @@ uint8_t editDelay(const coord_t x, const coord_t y, const uint8_t event, const u
   if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, delay, DELAY_MAX);
   return delay;
 }
-#define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(x, y, event, attr, str, delay)
 #else
 uint8_t editDelay(const coord_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
 {
@@ -105,38 +51,15 @@ uint8_t editDelay(const coord_t y, const uint8_t event, const uint8_t attr, cons
   if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, delay, DELAY_MAX);
   return delay;
 }
-#define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
 #endif
-
-const MenuHandlerFunc menuTabModel[] = {
-  menuModelSelect,
-  menuModelSetup,
-  CASE_HELI(menuModelHeli)
-  CASE_FLIGHT_MODES(menuModelFlightModesAll)
-  menuModelExposAll,
-  menuModelMixAll,
-  menuModelLimits,
-  CASE_CURVES(menuModelCurvesAll)
-#if defined(GVARS) && defined(FLIGHT_MODES)
-  CASE_GVARS(menuModelGVars)
-#endif
-  menuModelLogicalSwitches,
-  menuModelCustomFunctions,
-#if defined(LUA_MODEL_SCRIPTS)
-  menuModelCustomScripts,
-#endif
-  CASE_FRSKY(menuModelTelemetry)
-  CASE_MAVLINK(menuTelemetryMavlinkSetup)
-  CASE_TEMPLATES(menuModelTemplates)
-};
 
 #define COPY_MODE 1
 #define MOVE_MODE 2
-static uint8_t s_copyMode = 0;
-static int8_t s_copySrcRow;
-static int8_t s_copyTgtOfs;
+uint8_t s_copyMode = 0;
+int8_t s_copySrcRow;
+int8_t s_copyTgtOfs;
 
-static uint8_t editNameCursorPos = 0;
+uint8_t editNameCursorPos = 0;
 
 void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uint8_t active, uint8_t attr)
 {
@@ -232,4 +155,4 @@ void editSingleName(coord_t x, coord_t y, const pm_char *label, char *name, uint
   editName(x, y, name, size, event, active);
 }
 
-static uint8_t s_currIdx;
+uint8_t s_currIdx;

@@ -180,6 +180,8 @@ void init_pxx( uint32_t module_index );
 void disable_pxx( uint32_t module_index );
 void init_dsm2( uint32_t module_index );
 void disable_dsm2( uint32_t module_index );
+void init_crossfire( uint32_t module_index );
+void disable_crossfire( uint32_t module_index );
 
 // Trainer driver
 void init_trainer_ppm(void);
@@ -202,6 +204,7 @@ uint32_t readTrims(void);
 #define DBLKEYS_PRESSED_UP_DWN(in)  ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
 #define DBLKEYS_PRESSED_RGT_UP(in)  ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
 #define DBLKEYS_PRESSED_LFT_DWN(in) ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
+extern int32_t rotencValue;
 void checkRotaryEncoder(void);
 
 // WDT driver
@@ -215,9 +218,28 @@ void watchdogInit(unsigned int duration);
 #endif
 
 // ADC driver
+enum Analogs {
+  STICK1,
+  STICK2,
+  STICK3,
+  STICK4,
+  POT1,
+  POT2,
+  POT3,
+  POT_LAST=POT3,
+  SLIDER1,
+  SLIDER2,
+  SLIDER3,
+  SLIDER4,
+  TX_VOLTAGE,
+  MOUSE1,
+  MOUSE2,
+  NUMBER_ANALOG
+};
+extern uint16_t adcValues[NUMBER_ANALOG];
 void adcInit(void);
 void adcRead(void);
-inline uint16_t getAnalogValue(uint32_t value);
+uint16_t getAnalogValue(uint32_t value);
 
 #if defined(REV3)
   #define BATT_SCALE    120

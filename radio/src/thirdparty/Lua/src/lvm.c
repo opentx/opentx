@@ -145,7 +145,6 @@ void luaV_gettable (lua_State *L, const TValue *t, TValue *key, StkId val) {
       /* else will try the tag method */
     }
     else if (ttisnil(tm = luaT_gettmbyobj(L, t, TM_INDEX))) {
-      TRACE("ERREUR ICI");
       luaG_typeerror(L, t, "index");
     }
     if (ttisfunction(tm) || ttislightfunction(tm)) {

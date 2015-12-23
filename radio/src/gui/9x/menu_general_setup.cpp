@@ -37,7 +37,7 @@
 #include "../../opentx.h"
 
 const pm_uchar sticks[] PROGMEM = {
-#include "../../bitmaps/sticks.lbm"
+#include "sticks.lbm"
 };
 
 #define RADIO_SETUP_2ND_COLUMN  (LCD_W-6*FW-3-MENUS_SCROLLBAR_WIDTH)

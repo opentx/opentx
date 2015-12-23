@@ -71,11 +71,6 @@
 
 #define FIND_FIELD_DESC  0x01
 
-struct LuaField {
-  uint16_t id;
-  char desc[50];
-};
-
 /*luadoc
 @function getVersion()
 
@@ -255,7 +250,7 @@ void luaGetValueAndPush(int src)
 /**
   Return field data for a given field name
 */
-bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags=0)
+bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
 {
   // TODO better search method (binary lookup)
   for (unsigned int n=0; n<DIM(luaSingleFields); ++n) {

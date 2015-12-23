@@ -109,20 +109,17 @@ Open9xSim::Open9xSim(FXApp* a):
   for (int i=0; i<4; i++) {
     switch (i) {
 #define L LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|LAYOUT_FIX_X|LAYOUT_FIX_Y
-#undef X0
-#define X0 10
-#define Y0 10
       case 0:
-        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_HORIZONTAL,X0+0,Y0+100,100,20);
+        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_HORIZONTAL,10,110,100,20);
         break;
       case 1:
-        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_VERTICAL,X0+100,Y0+0,20,100);
+        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_VERTICAL,110,10,20,100);
         break;
       case 2:
-        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_VERTICAL,X0+120,Y0+0,20,100);
+        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_VERTICAL,130,10,20,100);
         break;
       case 3:
-        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_HORIZONTAL,X0+140,Y0+100,100,20);
+        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_HORIZONTAL,150,110,100,20);
         break;
       default:;
     }

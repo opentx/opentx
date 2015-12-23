@@ -49,10 +49,6 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-uint8_t serial2TracesEnabled();
-#if defined(__cplusplus)
-}
-#endif
 
 #if defined(SIMU)
 typedef void (*traceCallbackFunc)(const char * text);
@@ -61,11 +57,17 @@ void debugPrintf(const char * format, ...);
 #elif defined(DEBUG) && defined(CLI) && defined(USB_SERIAL)
 #define debugPrintf(...) do { if (cliTracesEnabled) serialPrintf(__VA_ARGS__); } while(0)
 #elif defined(DEBUG) && defined(CLI)
+uint8_t serial2TracesEnabled();
 #define debugPrintf(...) do { if (serial2TracesEnabled() && cliTracesEnabled) serialPrintf(__VA_ARGS__); } while(0)
 #elif defined(DEBUG) && defined(CPUARM)
+uint8_t serial2TracesEnabled();
 #define debugPrintf(...) do { if (serial2TracesEnabled()) serialPrintf(__VA_ARGS__); } while(0)
 #else
 #define debugPrintf(...)
+#endif
+
+#if defined(__cplusplus)
+}
 #endif
 
 #define TRACE(...)            do { debugPrintf(__VA_ARGS__); debugPrintf("\r\n"); } while(0)

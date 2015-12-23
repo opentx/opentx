@@ -228,6 +228,21 @@ void disable_dsm2(uint32_t port);
 #define isBacklightEnable()            (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
 
 // ADC driver
+enum Analogs {
+  STICK1,
+  STICK2,
+  STICK3,
+  STICK4,
+  POT1,
+  POT2,
+  POT3,
+  POT_LAST = POT3,
+  TX_VOLTAGE,
+#if !defined(REVA)
+  TX_CURRENT,
+#endif
+  NUMBER_ANALOG
+};
 void adcInit();
 void adcRead(void);
 inline uint16_t getAnalogValue(uint32_t value);

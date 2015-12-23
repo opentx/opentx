@@ -37,51 +37,51 @@
 #include "../../opentx.h"
 
 const uint16_t font_tinsize_specs[] PROGMEM =
-#include "../../fonts/horus/font_tinsize.specs"
+#include "font_tinsize.specs"
 ;
 
 const pm_uchar font_tinsize[] PROGMEM = {
-#include "fonts/horus/font_tinsize.lbm"
+#include "font_tinsize.lbm"
 };
 
 const uint16_t font_smlsize_specs[] PROGMEM =
-#include "../../fonts/horus/font_smlsize.specs"
+#include "font_smlsize.specs"
 ;
 
 const pm_uchar font_smlsize[] PROGMEM = {
-#include "fonts/horus/font_smlsize.lbm"
+#include "font_smlsize.lbm"
 };
 
 const uint16_t font_stdsize_specs[] PROGMEM =
-#include "../../fonts/horus/font_stdsize.specs"
+#include "font_stdsize.specs"
 ;
 
 const pm_uchar font_stdsize[] PROGMEM = {
-#include "fonts/horus/font_stdsize.lbm"
+#include "font_stdsize.lbm"
 };
 
 const uint16_t font_midsize_specs[] PROGMEM =
-#include "../../fonts/horus/font_midsize.specs"
+#include "font_midsize.specs"
 ;
 
 const pm_uchar font_midsize[] PROGMEM = {
-#include "fonts/horus/font_midsize.lbm"
+#include "font_midsize.lbm"
 };
 
 const uint16_t font_dblsize_specs[] PROGMEM =
-#include "../../fonts/horus/font_dblsize.specs"
+#include "font_dblsize.specs"
 ;
 
 const pm_uchar font_dblsize[] PROGMEM = {
-#include "fonts/horus/font_dblsize.lbm"
+#include "font_dblsize.lbm"
 };
 
 const uint16_t font_xxlsize_specs[] PROGMEM =
-#include "../../fonts/horus/font_xxlsize.specs"
+#include "font_xxlsize.specs"
 ;
 
 const pm_uchar font_xxlsize[] PROGMEM = {
-#include "fonts/horus/font_xxlsize.lbm"
+#include "font_xxlsize.lbm"
 };
 
 const uint16_t *fontspecsTable[16] = { font_stdsize_specs, font_tinsize_specs, font_smlsize_specs, font_midsize_specs, font_dblsize_specs, font_xxlsize_specs };

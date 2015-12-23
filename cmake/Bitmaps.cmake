@@ -1,0 +1,25 @@
+macro(add_bitmaps_target targetname filter width format)
+  file(GLOB bitmaps ${filter})
+  foreach(bitmap ${bitmaps})
+    get_filename_component(target ${bitmap} NAME_WE)
+    set(target ${target}.lbm)
+    add_custom_command(
+      OUTPUT ${target}
+      COMMAND python ${RADIO_DIRECTORY}/util/img2lbm.py ${bitmap} ${target} ${width} ${format}
+      DEPENDS ${bitmap}
+    )
+    list(APPEND bitmaps_files ${target})
+  endforeach()
+  add_custom_target(${targetname} DEPENDS ${bitmaps_files})
+endmacro(add_bitmaps_target)
+
+macro(add_truetype_font_target radio name font size)
+  set(target ${RADIO_SRC_DIRECTORY}/fonts/${radio}/font_${name})
+  add_custom_command(
+    OUTPUT ${target}.png
+    OUTPUT ${target}.specs
+    COMMAND ${RADIO_DIRECTORY}/util/font2png.py ${font} ${size} False ${target}
+    WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+  )
+  add_custom_target(ttf_${radio}_${name} DEPENDS ${target}.png ${target}.specs)
+endmacro(add_truetype_font_target)

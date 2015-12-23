@@ -39,57 +39,6 @@
 #include "gui/9x/view_mavlink.h"
 #endif
 
-// TODO elsewhere!
-#define WCHART (LCD_H/2)
-#define X0     (LCD_W-WCHART-2)
-#define Y0     (LCD_H/2)
-
-enum EnumTabModel {
-  e_ModelSelect,
-  e_ModelSetup,
-  CASE_HELI(e_Heli)
-  CASE_FLIGHT_MODES(e_FlightModesAll)
-  e_InputsAll,
-  e_MixAll,
-  e_Limits,
-  CASE_CURVES(e_CurvesAll)
-  e_LogicalSwitches,
-  e_CustomFunctions,
-  CASE_FRSKY(e_Telemetry)
-  CASE_MAVLINK(e_MavSetup)
-  CASE_TEMPLATES(e_Templates)
-};
-
-void menuModelSelect(uint8_t event);
-void menuModelSetup(uint8_t event);
-void menuModelHeli(uint8_t event);
-void menuModelFlightModesAll(uint8_t event);
-void menuModelExposAll(uint8_t event);
-void menuModelMixAll(uint8_t event);
-void menuModelLimits(uint8_t event);
-void menuModelCurvesAll(uint8_t event);
-void menuModelCurveOne(uint8_t event);
-void menuModelGVars(uint8_t event);
-void menuModelLogicalSwitches(uint8_t event);
-void menuModelCustomFunctions(uint8_t event);
-void menuModelTelemetry(uint8_t event);
-void menuModelTemplates(uint8_t event);
-void menuModelExpoOne(uint8_t event);
-
-extern uint8_t s_curveChan;
-
-#if defined(CPUARM)
-  #define FlightModesType uint16_t
-#else
-  #define FlightModesType uint8_t
-#endif
-
-#if LCD_W >= 212
-  #define MIXES_2ND_COLUMN  (18*FW)
-#else
-  #define MIXES_2ND_COLUMN  (12*FW)
-#endif
-
 uint8_t editDelay(const coord_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
 {
   lcd_putsLeft(y, str);
@@ -97,29 +46,10 @@ uint8_t editDelay(const coord_t y, const uint8_t event, const uint8_t attr, cons
   if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, delay, DELAY_MAX);
   return delay;
 }
-#define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
 
-const MenuHandlerFunc menuTabModel[] PROGMEM = {
-  menuModelSelect,
-  menuModelSetup,
-  CASE_HELI(menuModelHeli)
-  CASE_FLIGHT_MODES(menuModelFlightModesAll)
-  menuModelExposAll,
-  menuModelMixAll,
-  menuModelLimits,
-  CASE_CURVES(menuModelCurvesAll)
-  menuModelLogicalSwitches,
-  menuModelCustomFunctions,
-  CASE_FRSKY(menuModelTelemetry)
-  CASE_MAVLINK(menuTelemetryMavlinkSetup)
-  CASE_TEMPLATES(menuModelTemplates)
-};
-
-#define COPY_MODE 1
-#define MOVE_MODE 2
-static uint8_t s_copyMode = 0;
-static int8_t s_copySrcRow;
-static int8_t s_copyTgtOfs;
+uint8_t s_copyMode = 0;
+int8_t s_copySrcRow;
+int8_t s_copyTgtOfs;
 
 #if defined(CPUM64)
   #define editNameCursorPos menuHorizontalPosition
@@ -211,9 +141,7 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
   }
 }
 
-#if defined(CPUM64)
-#define editSingleName(x, y, label, name, size, event, active) editName(x, y, name, size, event, active)
-#else
+#if !defined(CPUM64)
 void editSingleName(coord_t x, coord_t y, const pm_char *label, char *name, uint8_t size, uint8_t event, uint8_t active)
 {
   lcd_putsLeft(y, label);
@@ -221,4 +149,4 @@ void editSingleName(coord_t x, coord_t y, const pm_char *label, char *name, uint
 }
 #endif
 
-static uint8_t s_currIdx;
+uint8_t s_currIdx;

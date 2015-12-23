@@ -47,6 +47,8 @@
 #endif
 
 #define MENU_COLUMN2_X         280
+#define MIXES_2ND_COLUMN       100
+#define COLUMN_HEADER_X        150
 
 typedef int16_t vertpos_t;
 
@@ -69,8 +71,6 @@ extern uint8_t noHighlightCounter;
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 
 typedef bool (*MenuHandlerFunc)(evt_t event);
-extern const MenuHandlerFunc menuTabModel[];
-extern const MenuHandlerFunc menuTabGeneral[];
 
 extern MenuHandlerFunc menuHandlers[5];
 extern uint8_t menuVerticalPositions[4];
@@ -84,16 +84,90 @@ void pushMenu(MenuHandlerFunc newMenu);
 /// return to last menu in menustack
 void popMenu();
 
-bool menuFirstCalib(evt_t event);
+enum EnumTabModel {
+  // e_ModelSelect,
+  e_ModelSetup,
+  CASE_HELI(e_Heli)
+  CASE_FLIGHT_MODES(e_FlightModesAll)
+  e_InputsAll,
+  e_MixAll,
+  e_Limits,
+  CASE_CURVES(e_CurvesAll)
+  CASE_GVARS(e_GVars)
+  e_LogicalSwitches,
+  e_CustomFunctions,
+#if defined(LUA_MODEL_SCRIPTS)
+  e_CustomScripts,
+#endif
+  CASE_FRSKY(e_Telemetry)
+};
 
-bool menuMainView(evt_t event);
-bool menuGeneralDiagAna(evt_t event);
+bool menuModelSetup(evt_t event);
+bool menuModelHeli(evt_t event);
+bool menuModelFlightModesAll(evt_t event);
+bool menuModelExposAll(evt_t event);
+bool menuModelMixAll(evt_t event);
+bool menuModelLimits(evt_t event);
+bool menuModelCurvesAll(evt_t event);
+bool menuModelCurveOne(evt_t event);
+bool menuModelGVars(evt_t event);
+bool menuModelLogicalSwitches(evt_t event);
+bool menuModelCustomFunctions(evt_t event);
+bool menuModelCustomScripts(evt_t event);
+bool menuModelTelemetry(evt_t event);
+bool menuModelExpoOne(evt_t event);
+
+const MenuHandlerFunc menuTabModel[] = {
+//   menuModelSelect,
+  menuModelSetup,
+  CASE_HELI(menuModelHeli)
+  CASE_FLIGHT_MODES(menuModelFlightModesAll)
+  menuModelExposAll,
+  menuModelMixAll,
+  menuModelLimits,
+  CASE_CURVES(menuModelCurvesAll)
+#if defined(GVARS) && defined(FLIGHT_MODES)
+  CASE_GVARS(menuModelGVars)
+#endif
+  menuModelLogicalSwitches,
+  menuModelCustomFunctions,
+#if defined(LUA_MODEL_SCRIPTS)
+  menuModelCustomScripts,
+#endif
+  CASE_FRSKY(menuModelTelemetry)
+  CASE_MAVLINK(menuTelemetryMavlinkSetup)
+  CASE_TEMPLATES(menuModelTemplates)
+};
+
+enum EnumTabDiag {
+  e_Setup,
+  e_Sd,
+  e_GeneralCustomFunctions,
+  e_Trainer,
+  e_Calib,
+  e_Vers,
+};
+
 bool menuGeneralSetup(evt_t event);
+bool menuGeneralSdManager(evt_t event);
+bool menuGeneralCustomFunctions(evt_t event);
+bool menuGeneralTrainer(evt_t event);
+bool menuGeneralVersion(evt_t event);
 bool menuGeneralCalib(evt_t event);
+
+static const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
+  menuGeneralSetup,
+  menuGeneralSdManager,
+  menuGeneralCustomFunctions,
+  menuGeneralTrainer,
+  menuGeneralCalib,
+  menuGeneralVersion,
+};
+
+bool menuFirstCalib(evt_t event);
+bool menuMainView(evt_t event);
 bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext);
 bool menuModelSelect(evt_t event);
-bool menuModelSetup(evt_t event);
-bool menuModelCustomFunctions(evt_t event);
 bool menuStatisticsView(evt_t event);
 bool menuStatisticsDebug(evt_t event);
 bool menuAboutView(evt_t event);
@@ -105,6 +179,8 @@ bool menuTextView(evt_t event);
 #if defined(DEBUG_TRACE_BUFFER)
 void menuTraceBuffer(evt_t event);
 #endif
+
+typedef uint16_t FlightModesType;
 
 extern int8_t checkIncDec_Ret;  // global helper vars
 
@@ -190,10 +266,15 @@ int8_t checkIncDecMovedSwitch(int8_t val);
 #define CHECK_INCDEC_GENVAR(event, var, min, max) \
   var = checkIncDecGen(event, var, min, max)
 
-#define NAVIGATION_LINE_BY_LINE  0x40
-#define CURSOR_ON_LINE()         (menuHorizontalPosition<0)
+#define NAVIGATION_LINE_BY_LINE        0x40
+#define CURSOR_ON_LINE()               (menuHorizontalPosition<0)
 
-#define CHECK_FLAG_NO_SCREEN_INDEX   1
+#define INCDEC_DECLARE_VARS(f)         uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
+#define INCDEC_SET_FLAG(f)             incdecFlag = (f)
+#define INCDEC_ENABLE_CHECK(fn)        isValueAvailable = fn
+#define CHECK_INCDEC_PARAM(event, var, min, max) \
+                                       checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
+
 bool navigate(evt_t event, int count, int rows, int columns=1);
 bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
 bool check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, vertpos_t maxrow);
@@ -249,7 +330,13 @@ int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, evt_t e
   #define displayGVar(x, y, v, min, max) lcdDrawNumber(x, y, v)
 #endif
 
+extern uint8_t editNameCursorPos;
 void editName(coord_t x, coord_t y, char *name, uint8_t size, evt_t event, uint8_t active, LcdFlags flags=ZCHAR);
+
+uint8_t editDelay(const coord_t x, const coord_t y, const evt_t event, const uint8_t attr, uint8_t delay);
+void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t attr);
+
+extern uint8_t s_curveChan;
 
 #define WARNING_TYPE_ASTERISK  0
 #define WARNING_TYPE_CONFIRM   1
@@ -260,6 +347,14 @@ extern const pm_char * warningInfoText;
 extern uint8_t         warningInfoLength;
 extern uint8_t         warningResult;
 extern uint8_t         warningType;
+
+#define COPY_MODE 1
+#define MOVE_MODE 2
+extern uint8_t s_copyMode;
+
+extern int8_t s_copySrcRow;
+extern int8_t s_copyTgtOfs;
+extern uint8_t s_currIdx;
 
 #define MENU_X                 80
 #define MENU_W                 LCD_W-(2*MENU_X)
@@ -272,11 +367,12 @@ extern uint8_t         warningType;
 #define WARNING_LINE_Y         (POPUP_Y+9)
 #define WARNING_INFOLINE_Y     (WARNING_LINE_Y+68)
 
-void displayBox();
-void displayPopup(const char *title);
+void copySelection(char * dst, const char * src, uint8_t size);
+
+void displayPopup(const char * title);
 void displayWarning(evt_t event);
 
-extern void (*popupFunc)(evt_t event);
+extern void (* popupFunc)(evt_t event);
 extern int16_t warningInputValue;
 extern int16_t warningInputValueMin;
 extern int16_t warningInputValueMax;
@@ -321,5 +417,7 @@ void pushModelNotes();
 
 typedef int (*FnFuncP) (int x);
 void drawFunction(FnFuncP fn, int offset=0);
+
+uint8_t switchToMix(uint8_t source);
 
 #endif // _MENUS_H_

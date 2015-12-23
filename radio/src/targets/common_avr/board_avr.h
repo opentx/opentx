@@ -35,6 +35,27 @@
  */
 
 // ADC driver
+enum Analogs {
+  STICK1,
+  STICK2,
+  STICK3,
+  STICK4,
+  POT1,
+  POT2,
+  POT3,
+  POT_LAST = POT3,
+#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
+  // When the mod is applied, ADC7 is connected to 14051's X pin and TX_VOLTAGE
+  // is connected to 14051's X0 pin (one of the multiplexed inputs). TX_VOLTAGE
+  // value is filled in by processMultiplexAna().
+
+  // This shifts TX_VOLTAGE from 7 to 8 and makes X14051 take the 7th position
+  // corresponding to ADC7.
+  X14051,
+#endif
+  TX_VOLTAGE,
+  NUMBER_ANALOG
+};
 void adcInit();
 void adcPrepareBandgap();
 void getADC();

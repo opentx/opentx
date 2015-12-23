@@ -36,9 +36,7 @@
 
 #include <stdint.h>
 #include "diskio.h"
-#include "ff.h"
-
-#define LIST_NONE_SD_FILE  1
+#include "opentx.h"
 
 const char * sdCheckAndCreateDirectory(const char * path)
 {
@@ -72,8 +70,7 @@ bool isFileAvailable(const char * filename, const char * directory)
   return isFileAvailable(path);
 }
 
-#define LEN_FILE_EXTENSION 4
-char * getFileExtension(char * filename, int size=0)
+char * getFileExtension(char * filename, int size)
 {
   int len = strlen(filename);
   if (size != 0 && size < len) {
@@ -122,11 +119,11 @@ int findNextFileIndex(char * filename, const char * directory)
   return 0;
 }
 
-bool sdListFiles(const char *path, const char *extension, const uint8_t maxlen, const char *selection, uint8_t flags=0)
+bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen, const char * selection, uint8_t flags)
 {
   FILINFO fno;
   DIR dir;
-  char *fn;   /* This function is assuming non-Unicode cfg. */
+  char * fn;   /* This function is assuming non-Unicode cfg. */
 #if _USE_LFN
   TCHAR lfn[_MAX_LFN + 1];
   fno.lfname = lfn;

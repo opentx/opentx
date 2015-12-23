@@ -45,9 +45,7 @@
  *
  ****************************************************************************/
 
-#if !defined(SIMU)
-
-#include <stdint.h>
+#include "opentx.h"
 
 #if defined(PCBSKY9X)
   #include "AT91SAM3S4.h"
@@ -188,4 +186,3 @@ void _bootStart()
 }
 #endif
 
-#endif

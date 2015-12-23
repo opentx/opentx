@@ -34,16 +34,29 @@
  *
  */
 
-#include "../9x/lcd.h"
-#include "../9x/menus.h"
+#include "lcd.h"
+#include "menus.h"
+
+extern const pm_uchar sticks[] PROGMEM;
 
 #define NUM_BODY_LINES                 (LCD_LINES-1)
 #define MENU_HEADER_HEIGHT             FH
 #define MENU_INIT_VPOS                 0
 #define DEFAULT_SCROLLBAR_X            (LCD_W-1)
 
+#define WCHART                         (LCD_H/2)
+#define X0                             (LCD_W-WCHART-2)
+#define Y0                             (LCD_H/2)
+
+#if LCD_W >= 212
+  #define MIXES_2ND_COLUMN             (18*FW)
+#else
+  #define MIXES_2ND_COLUMN             (12*FW)
+#endif
+
 void displaySplash();
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
+void drawStick(coord_t centrex, int16_t xval, int16_t yval);
 
 #if !defined(CPUM64)
   void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);

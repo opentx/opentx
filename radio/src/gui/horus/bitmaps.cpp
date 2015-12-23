@@ -41,23 +41,23 @@
  */
 
 const uint8_t LBM_TOPMENU_POLYGON[] = {
-#include "../../bitmaps/horus/mask_topmenu_polygon.lbm"
+#include "mask_topmenu_polygon.lbm"
 };
 
 const uint8_t LBM_DOT[] = {
-#include "../../bitmaps/horus/mask_dot.lbm"
+#include "mask_dot.lbm"
 };
 
 const uint8_t LBM_CURRENT_BG[] = {
-#include "../../bitmaps/horus/mask_current_bg.lbm"
+#include "mask_current_bg.lbm"
 };
 
 const uint8_t LBM_CURRENT_SHADOW[] = {
-#include "../../bitmaps/horus/mask_current_shadow.lbm"
+#include "mask_current_shadow.lbm"
 };
 
 const uint8_t LBM_CURRENT_DOT[] = {
-#include "../../bitmaps/horus/mask_current_dot.lbm"
+#include "mask_current_dot.lbm"
 };
 
 /*
@@ -65,35 +65,35 @@ const uint8_t LBM_CURRENT_DOT[] = {
  */
 
 const uint8_t LBM_MAINVIEW_BACKGROUND[] = {
-#include "../../bitmaps/horus/background.lbm"
+#include "background.lbm"
 };
 
 const uint8_t LBM_TOPMENU_OPENTX[] = {
-#include "../../bitmaps/horus/mask_topmenu_opentx.lbm"
+#include "mask_topmenu_opentx.lbm"
 };
 
 const uint8_t LBM_TOPMENU_USB[] = {
-#include "../../bitmaps/horus/mask_topmenu_usb.lbm"
+#include "mask_topmenu_usb.lbm"
 };
 
 const uint8_t LBM_HTRIM_FRAME[] = {
-#include "../../bitmaps/horus/mask_htrim_frame.lbm"
+#include "mask_htrim_frame.lbm"
 };
 
 const uint8_t LBM_VTRIM_FRAME[] = {
-#include "../../bitmaps/horus/mask_vtrim_frame.lbm"
+#include "mask_vtrim_frame.lbm"
 };
 
 const uint8_t LBM_TRIM_SHADOW[] = {
-#include "../../bitmaps/horus/mask_trim_shadow.lbm"
+#include "mask_trim_shadow.lbm"
 };
 
 const uint8_t LBM_TIMER_BACKGROUND[] = {
-#include "../../bitmaps/horus/mask_timer_bg.lbm"
+#include "mask_timer_bg.lbm"
 };
 
 const uint8_t LBM_RSCALE[] = {
-#include "../../bitmaps/horus/mask_rscale.lbm"
+#include "mask_rscale.lbm"
 };
 
 /*
@@ -101,31 +101,31 @@ const uint8_t LBM_RSCALE[] = {
  */
 
 const uint8_t LBM_RADIO_ICON[] = {
-#include "../../bitmaps/horus/mask_menu_radio.lbm"
+#include "mask_menu_radio.lbm"
 };
 
 const uint8_t LBM_RADIO_SETUP_ICON[] = {
-#include "../../bitmaps/horus/mask_radio_setup.lbm"
+#include "mask_radio_setup.lbm"
 };
 
 const uint8_t LBM_SD_BROWSER_ICON[] = {
-#include "../../bitmaps/horus/mask_sd_browser.lbm"
+#include "mask_sd_browser.lbm"
 };
 
 const uint8_t LBM_GLOBAL_FUNCTIONS_ICON[] = {
-#include "../../bitmaps/horus/mask_global_functions.lbm"
+#include "mask_global_functions.lbm"
 };
 
 const uint8_t LBM_TRAINER_ICON[] = {
-#include "../../bitmaps/horus/mask_trainer.lbm"
+#include "mask_trainer.lbm"
 };
 
 const uint8_t LBM_CALIBRATION_ICON[] = {
-#include "../../bitmaps/horus/mask_calibration.lbm"
+#include "mask_calibration.lbm"
 };
 
 const uint8_t LBM_VERSION_ICON[] = {
-#include "../../bitmaps/horus/mask_version.lbm"
+#include "mask_version.lbm"
 };
 
 const uint8_t * const LBM_RADIO_ICONS[] = {
@@ -143,55 +143,55 @@ const uint8_t * const LBM_RADIO_ICONS[] = {
  */
 
 const uint8_t LBM_MODEL_ICON[] = {
-#include "../../bitmaps/horus/mask_menu_model.lbm"
+#include "mask_menu_model.lbm"
 };
 
 const uint8_t LBM_MODEL_SETUP_ICON[] = {
-#include "../../bitmaps/horus/mask_model_setup.lbm"
+#include "mask_model_setup.lbm"
 };
 
 const uint8_t LBM_HELI_ICON[] = {
-#include "../../bitmaps/horus/mask_heli.lbm"
+#include "mask_heli.lbm"
 };
 
 const uint8_t LBM_FLIGHT_MODES_ICON[] = {
-#include "../../bitmaps/horus/mask_flight_modes.lbm"
+#include "mask_flight_modes.lbm"
 };
 
 const uint8_t LBM_INPUTS_ICON[] = {
-#include "../../bitmaps/horus/mask_inputs.lbm"
+#include "mask_inputs.lbm"
 };
 
 const uint8_t LBM_MIXER_ICON[] = {
-#include "../../bitmaps/horus/mask_mixer.lbm"
+#include "mask_mixer.lbm"
 };
 
 const uint8_t LBM_OUTPUTS_ICON[] = {
-#include "../../bitmaps/horus/mask_outputs.lbm"
+#include "mask_outputs.lbm"
 };
 
 const uint8_t LBM_CURVES_ICON[] = {
-#include "../../bitmaps/horus/mask_curves.lbm"
+#include "mask_curves.lbm"
 };
 
 const uint8_t LBM_GVARS_ICON[] = {
-#include "../../bitmaps/horus/mask_gvars.lbm"
+#include "mask_gvars.lbm"
 };
 
 const uint8_t LBM_LOGICAL_SWITCHES_ICON[] = {
-#include "../../bitmaps/horus/mask_logical_switches.lbm"
+#include "mask_logical_switches.lbm"
 };
 
 const uint8_t LBM_SPECIAL_FUNCTIONS_ICON[] = {
-#include "../../bitmaps/horus/mask_special_functions.lbm"
+#include "mask_special_functions.lbm"
 };
 
 const uint8_t LBM_LUA_SCRIPTS_ICON[] = {
-#include "../../bitmaps/horus/mask_lua_scripts.lbm"
+#include "mask_lua_scripts.lbm"
 };
 
 const uint8_t LBM_TELEMETRY_ICON[] = {
-#include "../../bitmaps/horus/mask_telemetry.lbm"
+#include "mask_telemetry.lbm"
 };
 
 const uint8_t * const LBM_MODEL_ICONS[] = {
@@ -217,31 +217,31 @@ const uint8_t * const LBM_MODEL_ICONS[] = {
  */
 
 const uint8_t LBM_LIBRARY_ICON[] = {
-#include "../../bitmaps/horus/mask_library.lbm"
+#include "mask_library.lbm"
 };
 
 const uint8_t LBM_LIBRARY_SLOT[] = {
-#include "../../bitmaps/horus/mask_library_slot.lbm"
+#include "mask_library_slot.lbm"
 };
 
 const uint8_t LBM_LIBRARY_CURSOR[] = {
-#include "../../bitmaps/horus/mask_library_category_index.lbm"
+#include "mask_library_category_index.lbm"
 };
 
 const uint8_t LBM_SCORE0[] = {
-#include "../../bitmaps/horus/mask_library_score_0.lbm"
+#include "mask_library_score_0.lbm"
 };
 
 const uint8_t LBM_SCORE1[] = {
-#include "../../bitmaps/horus/mask_library_score_1.lbm"
+#include "mask_library_score_1.lbm"
 };
 
 const uint8_t LBM_STAR0[] = {
-#include "../../bitmaps/horus/mask_library_star_0.lbm"
+#include "mask_library_star_0.lbm"
 };
 
 const uint8_t LBM_STAR1[] = {
-#include "../../bitmaps/horus/mask_library_star_1.lbm"
+#include "mask_library_star_1.lbm"
 };
 
 /*
@@ -249,21 +249,21 @@ const uint8_t LBM_STAR1[] = {
  */
 
 const uint8_t LBM_ASTERISK[] = {
-#include "../../bitmaps/horus/asterisk.lbm"
+#include "asterisk.lbm"
 };
 
 const uint8_t LBM_POINT[] = {
-#include "../../bitmaps/horus/mask_point.lbm"
+#include "mask_point.lbm"
 };
 
 const uint8_t LBM_CURVE_POINT[] = {
-#include "../../bitmaps/horus/mask_cvpoint.lbm"
+#include "mask_cvpoint.lbm"
 };
 
 const uint8_t LBM_CURVE_POINT_CENTER[] = {
-#include "../../bitmaps/horus/mask_cvpoint_center.lbm"
+#include "mask_cvpoint_center.lbm"
 };
 
 const uint8_t LBM_CURVE_COORD_SHADOW[] = {
-#include "../../bitmaps/horus/mask_coord_shadow.lbm"
+#include "mask_coord_shadow.lbm"
 };

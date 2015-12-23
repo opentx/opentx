@@ -77,7 +77,7 @@ inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
   return (!isfile && IS_FILE(line)) || (isfile==IS_FILE(line) && strcasecmp(fn, line) < 0);
 }
 
-bool isBootloader(const char *filename)
+bool isBootloader(const char * filename)
 {
   FIL file;
   f_open(&file, filename, FA_READ);

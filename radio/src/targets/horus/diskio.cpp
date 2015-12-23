@@ -7,9 +7,8 @@
 
 #include "diskio.h"
 #include <string.h> // memcpy
-
-#include "../horus/sdio_sd.h"
-#include "stm32f4xx.h"
+#include "../../opentx.h"
+#include "sdio_sd.h"
 
 #define BLOCK_SIZE            512 /* Block Size in Bytes */
 

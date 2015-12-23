@@ -34,7 +34,7 @@
  *
  */
 
-#include "opentx.h"
+#include "../../opentx.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <stdarg.h>
