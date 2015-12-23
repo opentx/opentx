@@ -1,3 +1,5 @@
+# TODO if the files order is different (these 2 SRC sections exchanged), the bootloader hangs for 20s in USB init. Why?
+
 if(PCBREV STREQUAL REV9E)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
