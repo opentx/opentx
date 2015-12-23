@@ -45,7 +45,8 @@ def writeheader(filename, header):
 def main(args=sys.argv):
     with open(args[1]) as headerfile:
         header = headerfile.readlines()
-    writeheader(args[2], header)
+    for filename in args[2:]:
+        writeheader(filename, header)
 
 
 if __name__ == '__main__':

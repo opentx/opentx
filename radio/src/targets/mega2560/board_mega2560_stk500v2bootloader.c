@@ -1,68 +1,22 @@
-/*****************************************************************************
-Title:     STK500v2 compatible bootloader
-Author:    Peter Fleury <pfleury@gmx.ch>   http://jump.to/fleury
-File:      $Id: stk500boot.c,v 1.11 2006/06/25 12:39:17 peter Exp $
-Compiler:  avr-gcc 3.4.5 or 4.1 / avr-libc 1.4.3
-Hardware:  All AVRs with bootloader support, tested with ATmega8
-License:   GNU General Public License
-
-Modified:  tmrttmrt - JivaroFAD 
-Date:      21 October 2015
-Description: OpenTX - MEGA2560 board
-Recommended fuse setting: low 0xFF, hight 0xD8, extended 0xFD, lock 0x0F
-
-DESCRIPTION:
-    This program allows an AVR with bootloader capabilities to
-    read/write its own Flash/EEprom. To enter Programming mode
-    an input pin is checked. If this pin is pulled low, programming mode
-    is entered. If not, normal execution is done from $0000
-    "reset" vector in Application area.
-    Size fits into a 1024 word bootloader section
-	when compiled with avr-gcc 4.1
-	(direct replace on Wiring Board without fuse setting changed)
-
-USAGE:
-    - Set AVR MCU type and clock-frequency (F_CPU) in the Makefile.
-    - Set baud rate below (AVRISP only works with 115200 bps)
-    - compile/link the bootloader with the supplied Makefile
-    - program the "Boot Flash section size" (BOOTSZ fuses),
-      for boot-size 1024 words:  program BOOTSZ01
-    - enable the BOOT Reset Vector (program BOOTRST)
-    - Upload the hex file to the AVR using any ISP programmer
-    - Program Boot Lock Mode 3 (program BootLock 11 and BootLock 12 lock bits) // (leave them)
-    - Reset your AVR while keeping PROG_PIN pulled low // (for enter bootloader by switch)
-    - Start AVRISP Programmer (AVRStudio/Tools/Program AVR)
-    - AVRISP will detect the bootloader
-    - Program your application FLASH file and optional EEPROM file using AVRISP
-
-Note:
-    Erasing the device without flashing, through AVRISP GUI button "Erase Device"
-    is not implemented, due to AVRStudio limitations.
-    Flash is always erased before programming.
-
-	AVRdude:
-	Please uncomment #define REMOVE_CMD_SPI_MULTI when using AVRdude.
-	Comment #define REMOVE_PROGRAM_LOCK_BIT_SUPPORT to reduce code size
-	Read Fuse Bits and Read/Write Lock Bits is not supported
-
-NOTES:
-    Based on Atmel Application Note AVR109 - Self-programming
-    Based on Atmel Application Note AVR068 - STK500v2 Protocol
-
-LICENSE:
-    Copyright (C) 2006 Peter Fleury
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-*****************************************************************************/
+/*
+ * Copyright (C) OpenTX
+ *
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x 
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 
 //************************************************************************
 //*	Edit History
