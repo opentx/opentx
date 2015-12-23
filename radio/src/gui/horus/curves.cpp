@@ -38,7 +38,7 @@
 
 coord_t getCurveYCoord(FnFuncP fn, coord_t x)
 {
-  return limit(0, CURVE_CENTER_Y - divRoundClosest(fn(divRoundClosest(x * RESX, CURVE_SIDE_WIDTH)) * CURVE_SIDE_WIDTH, RESX), LCD_H-1);
+  return limit(CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_CENTER_Y - divRoundClosest(fn(divRoundClosest(x * RESX, CURVE_SIDE_WIDTH)) * CURVE_SIDE_WIDTH, RESX), CURVE_CENTER_Y+CURVE_SIDE_WIDTH);
 }
 
 void drawFunction(FnFuncP fn, int offset)
