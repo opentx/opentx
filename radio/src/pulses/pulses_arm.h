@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef pulses_arm_h
-#define pulses_arm_h
+#ifndef _PULSES_ARM_H_
+#define _PULSES_ARM_H_
 
 #if NUM_MODULES == 2
   #define MODULES_INIT(...) __VA_ARGS__, __VA_ARGS__
@@ -144,4 +144,4 @@ inline void SEND_FAILSAFE_1S()
     failsafeCounter[i] = 100;
 }
 
-#endif
+#endif // _PULSES_ARM_H_

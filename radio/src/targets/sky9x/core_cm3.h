@@ -21,8 +21,8 @@
  *
  ******************************************************************************/
 
-#ifndef __CM3_CORE_H__
-#define __CM3_CORE_H__
+#ifndef _CORE_CM3_H_
+#define _CORE_CM3_H_
 
 /** @addtogroup CMSIS_CM3_core_LintCinfiguration CMSIS CM3 Core Lint Configuration
  *
@@ -1813,6 +1813,6 @@ static __INLINE int ITM_CheckChar (void) {
 
 /*@}*/ /* end of group CMSIS_CM3_core_definitions */
 
-#endif /* __CM3_CORE_H__ */
+#endif // _CORE_CM3_H_
 
 /*lint -restore */

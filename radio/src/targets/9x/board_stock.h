@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef board_stock_h
-#define board_stock_h
+#ifndef _BOARD_STOCK_H_
+#define _BOARD_STOCK_H_
 
 #include "../common_avr/board_avr.h"
 
@@ -250,4 +250,4 @@ void rotencPoll();
 #define eepromReadBlock(a, b, c)   eeprom_read_block(a, (const void *)b, c)
 #endif
 
-#endif
+#endif // _BOARD_STOCK_H_

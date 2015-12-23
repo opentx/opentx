@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef myeeprom_h
-#define myeeprom_h
+#ifndef _MYEEPROM_H_
+#define _MYEEPROM_H_
 
 #include <inttypes.h>
 
@@ -2358,4 +2358,4 @@ extern ModelData g_model;
 
 #define TOTAL_EEPROM_USAGE (sizeof(ModelData)*MAX_MODELS + sizeof(EEGeneral))
 
-#endif
+#endif // _MYEEPROM_H_

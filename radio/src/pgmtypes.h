@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef __PGMTYPES__
-#define __PGMTYPES__
+#ifndef _PGMTYPES_H_
+#define _PGMTYPES_H_
 
 /* this is workaround for g++ bug: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=34734 */
 #if (((__GNUC__ * 1000) + __GNUC_MINOR__) * 1000 + __GNUC_PATCHLEVEL__) < 4006002
@@ -73,5 +73,5 @@ typedef uint16_t  pm_uint16_t;
 typedef int32_t   pm_int32_t;
 typedef uint32_t  pm_uint32_t;
 
-#endif /* __PGMTYPES__ */
+#endif // _PGMTYPES_H_
 

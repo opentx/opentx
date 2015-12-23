@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef jeti_h
-#define jeti_h
+#ifndef _JETI_H_
+#define _JETI_H_
 
 #define JETI_KEY_LEFT		0x70
 #define JETI_KEY_RIGHT		0xe0
@@ -52,5 +52,5 @@ void JETI_DisableTXD (void);
 void telemetryInterrupt10ms();
 void menuTelemetryJeti(uint8_t event);
 
-#endif
+#endif // _JETI_H_
 

@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef haptic_h
-#define haptic_h
+#ifndef _HAPTIC_H_
+#define _HAPTIC_H_
 
 #define HAPTIC_QUEUE_LENGTH  4
 
@@ -90,4 +90,4 @@ extern hapticQueue haptic;
 #define HAPTIC_HEARTBEAT()   haptic.heartbeat()
 
 
-#endif // haptic_h
+#endif // _HAPTIC_H_

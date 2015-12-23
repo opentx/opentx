@@ -63,6 +63,6 @@ const char * storageRemoveCategory(int category);
 bool storageReadNextCategory(StorageModelsList * storage, char * line, int maxlen);
 bool storageSeekCategory(StorageModelsList * storage, int category);
 
-#endif
+#endif // _SDCARD_RAW_H_
 
 

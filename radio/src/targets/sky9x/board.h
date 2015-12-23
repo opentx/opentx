@@ -36,8 +36,8 @@
 
 // TODO merge this file with board_sky9x.h
 
-#ifndef board_h
-#define board_h
+#ifndef _BOARD_H_
+#define _BOARD_H_
 
 #include <stdint.h>
 
@@ -650,4 +650,4 @@ struct t_serial_tx
   volatile uint16_t ready ;
 };
 
-#endif
+#endif // _BOARD_H_

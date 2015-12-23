@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef _LCD_H
-#define _LCD_H
+#ifndef _LCD_H_
+#define _LCD_H_
 
 #define LCD_W         128
 #define LCD_H         64
@@ -273,4 +273,4 @@ uint8_t	lcdRefresh_ST7920(uint8_t full);
   #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
 #endif
 
-#endif
+#endif // _LCD_H_

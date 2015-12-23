@@ -39,5 +39,5 @@ void AspiData(u8 Para_data);
 }
 #endif
 
-#endif
+#endif // _ASPI_H_
 

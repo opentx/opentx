@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef simpgmspace_h
-#define simpgmspace_h
+#ifndef _SIMPGMSPACE_H_
+#define _SIMPGMSPACE_H_
 
 extern int g_snapshot_idx;
 
@@ -453,4 +453,4 @@ extern char simuSdDirectory[1024];
 #define sd_card_ready()  (true)
 #define sdMounted()      (true)
 
-#endif
+#endif // _SIMPGMSPACE_H_

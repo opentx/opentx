@@ -80,4 +80,4 @@ void timerSet(int idx, int val);
 
 void evalTimers(int16_t throttle, uint8_t tick10ms);
 
-#endif
+#endif // _TIMERS_H_

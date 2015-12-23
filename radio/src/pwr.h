@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef pwr_h
-#define pwr_h
+#ifndef _PWR_H_
+#define _PWR_H_
 
 enum PowerState {
   e_power_on,
@@ -45,4 +45,4 @@ enum PowerState {
   e_power_press,
 };
 
-#endif
+#endif // _PWR_H_

@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef audio_h
-#define audio_h
+#ifndef _AUDIO_AVR_H_
+#define _AUDIO_AVR_H_
 
 #if defined(PCBSTD)
   #define speakerOn()      buzzerOn()
@@ -165,4 +165,4 @@ void audioDefevent(uint8_t e);
 #define PLAY_MODEL_NAME()
 #define START_SILENCE_PERIOD()
 
-#endif
+#endif // _AUDIO_AVR_H_

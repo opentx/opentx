@@ -112,5 +112,5 @@ const char * sdCopyFile(const char * srcFilename, const char * srcDir, const cha
 #define LIST_NONE_SD_FILE   1
 bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen, const char * selection, uint8_t flags=0);
 
-#endif
+#endif // _SDCARD_H_
 

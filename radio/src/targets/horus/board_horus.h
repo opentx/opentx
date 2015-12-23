@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef _BOARD_FLAMENCO_H_
-#define _BOARD_FLAMENCO_H_
+#ifndef _BOARD_HORUS_H_
+#define _BOARD_HORUS_H_
 
 #include "stddef.h"
 
@@ -330,4 +330,4 @@ void usbJoystickUpdate(void);
 
 void checkTrainerSettings(void);
 
-#endif
+#endif // _BOARD_HORUS_H_

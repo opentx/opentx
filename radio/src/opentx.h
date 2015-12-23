@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef opentx_h
-#define opentx_h
+#ifndef _OPENTX_H_
+#define _OPENTX_H_
 
 #include <inttypes.h>
 #include <string.h>
@@ -1738,4 +1738,4 @@ extern Clipboard clipboard;
 extern uint16_t s_anaFilt[NUMBER_ANALOG];
 #endif
 
-#endif
+#endif // _OPENTX_H_

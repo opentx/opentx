@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef fonts_h
-#define fonts_h
+#ifndef _FONTS_H_
+#define _FONTS_H_
 
 #if defined(COLORLCD)
 
@@ -64,4 +64,4 @@ extern const pm_uchar font_4x6_extra[];
 
 #endif
 
-#endif
+#endif // _FONTS_H_

@@ -27,8 +27,8 @@
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 
-#ifndef __USB_DESC_H
-#define __USB_DESC_H
+#ifndef _USBD_DESC_H_
+#define _USBD_DESC_H_
 
 /* Includes ------------------------------------------------------------------*/
 #include "usb_core.h"
@@ -109,7 +109,7 @@ uint8_t *     USBD_USR_USRStringDesc (uint8_t speed, uint8_t idx , uint16_t *len
   * @}
   */ 
 
-#endif /* __USBD_DESC_H */
+#endif // _USBD_DESC_H_
 
 /**
   * @}

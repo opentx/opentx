@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef TELEMETRY_H
-#define TELEMETRY_H
+#ifndef _TELEMETRY_H_
+#define _TELEMETRY_H_
 
 extern Fifo<512> telemetryFifo;
 
@@ -200,4 +200,4 @@ void frskyDSetDefault(int index, uint16_t id);
 #define IS_DISTANCE_UNIT(unit)         ((unit) == UNIT_METERS || (unit) == UNIT_FEET)
 #define IS_SPEED_UNIT(unit)            ((unit) >= UNIT_KTS && (unit) <= UNIT_MPH)
 
-#endif
+#endif // _TELEMETRY_H_

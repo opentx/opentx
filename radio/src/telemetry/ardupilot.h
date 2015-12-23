@@ -34,10 +34,10 @@
  *
  */
 
-#ifndef ardupilot_h
-#define ardupilot_h
+#ifndef _ARDUPILOT_H_
+#define _ARDUPILOT_H_
 void ARDUPILOT_Init(void);
 void ARDUPILOT_EnableRXD (void);
 void menuTelemetryArduPilot(uint8_t event);
-#endif
+#endif // _ARDUPILOT_H_
 

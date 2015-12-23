@@ -284,4 +284,4 @@ inline bool isEepromStart(const void * buffer)
 }
 #endif
 
-#endif
+#endif // _EEPROM_RLC_H_

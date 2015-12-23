@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef pulses_avr_h
-#define pulses_avr_h
+#ifndef _PULSES_AVR_H_
+#define _PULSES_AVR_H_
 
 extern uint8_t s_current_protocol[1];
 extern uint8_t s_pulses_paused;
@@ -60,5 +60,5 @@ void DSM2_Done();
 #define SEND_FAILSAFE_NOW()
 #define SEND_FAILSAFE_1S()
 
-#endif
+#endif // _PULSES_AVR_H_
 /*eof*/

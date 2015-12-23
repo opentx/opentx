@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef translations_h
-#define translations_h
+#ifndef _TRANSLATIONS_H_
+#define _TRANSLATIONS_H_
 
 #if defined(TRANSLATIONS_FR)
 #include "translations/fr.h"
@@ -974,4 +974,4 @@ extern const pm_char STR_BLCOLOR[];
 #define CHR_HOUR   TR_CHR_HOUR
 #define CHR_INPUT  TR_CHR_INPUT
 
-#endif
+#endif // _TRANSLATIONS_H_

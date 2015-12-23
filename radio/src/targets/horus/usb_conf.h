@@ -26,8 +26,8 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USB_CONF__H__
-#define __USB_CONF__H__
+#ifndef _USB_CONF_H_
+#define _USB_CONF_H_
 
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
 
@@ -165,7 +165,7 @@
   #endif /* __CC_ARM */
 #endif
 
-#endif //__USB_CONF__H__
+#endif // _USB_CONF_H_
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 

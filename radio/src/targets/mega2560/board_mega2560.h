@@ -35,8 +35,8 @@
  *
  */
 
-#ifndef board_mega2560_h
-#define board_mega2560_h
+#ifndef _BOARD_MEGA2560_H_
+#define _BOARD_MEGA2560_H_
 
 #include "../common_avr/board_avr.h"
 
@@ -178,4 +178,4 @@ void pwrOff();
 #define eepromReadBlock(a, b, c)   eeprom_read_block(a, (const void *)b, c)
 #endif
 
-#endif
+#endif // _BOARD_MEGA2560_H_

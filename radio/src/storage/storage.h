@@ -73,4 +73,4 @@ void postModelLoad(bool newModel);
 #include "sdcard_raw.h"
 #endif
 
-#endif
+#endif // _STORAGE_H_

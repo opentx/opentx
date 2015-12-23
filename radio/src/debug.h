@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef debug_h
-#define debug_h
+#ifndef _DEBUG_H_
+#define _DEBUG_H_
 
 #include <inttypes.h>
 #include "rtc.h"
@@ -170,5 +170,5 @@ void dumpTraceBuffer();
 #endif
 
 
-#endif  // #ifndef debug_h
+#endif // _DEBUG_H_
 

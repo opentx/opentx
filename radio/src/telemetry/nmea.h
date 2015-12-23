@@ -34,12 +34,12 @@
  *
  */
 
-#ifndef nmea_h
-#define nmea_h
+#ifndef _NMEA_H_
+#define _NMEA_H_
 
 void NMEA_Init(void);
 void NMEA_EnableRXD (void);
 void menuTelemetryNMEA(uint8_t event);
 
-#endif
+#endif // _NMEA_H_
 

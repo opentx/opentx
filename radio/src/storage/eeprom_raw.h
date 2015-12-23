@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef eeprom_arm_h
-#define eeprom_arm_h
+#ifndef _EEPROM_RAW_H_
+#define _EEPROM_RAW_H_
 
 #include <inttypes.h>
 #include <stdint.h>
@@ -81,4 +81,4 @@ void eepromWriteProcess();
 void eepromWriteWait(EepromWriteState state = EEPROM_IDLE);
 bool eepromOpen();
 
-#endif
+#endif // _EEPROM_RAW_H_

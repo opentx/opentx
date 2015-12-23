@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef FRSKY_H
-#define FRSKY_H
+#ifndef _FRSKY_H_
+#define _FRSKY_H_
 
 #include <inttypes.h>
 
@@ -569,4 +569,4 @@ void processSerialData(uint8_t data);
   #define MODEL_TELEMETRY_PROTOCOL() g_model.telemetryProtocol
 #endif
 
-#endif
+#endif // _FRSKY_H_

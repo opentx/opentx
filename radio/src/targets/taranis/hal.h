@@ -1,5 +1,5 @@
-#ifndef _HAL_
-#define _HAL_
+#ifndef _HAL_H_
+#define _HAL_H_
 
 // Keys
 #define KEYS_GPIO_REG_MENU              GPIOD->IDR
@@ -567,4 +567,4 @@
 #define TIMER_2MHz_APB1Periph           RCC_APB1Periph_TIM7
 #define TIMER_2MHz_TIMER                TIM7
 
-#endif
+#endif // _HAL_H_

@@ -96,4 +96,4 @@ enum menuMavlinkSetupItems {
 //! \brief Menu index varible, initialized on info menu.
 uint8_t MAVLINK_menu = MENU_INFO;
 
-#endif
+#endif // _VIEW_MAVLINK_H_

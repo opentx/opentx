@@ -332,5 +332,5 @@ inline uint8_t getPrecisMavlinParamsValue(uint8_t idx) {
 void lcd_outdezFloat(uint8_t x, uint8_t y, float val, uint8_t precis, uint8_t mode);
 #endif
 
-#endif
+#endif // _MAVLINK_H_
 

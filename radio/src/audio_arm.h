@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef audio_h
-#define audio_h
+#ifndef _AUDIO_ARM_H_
+#define _AUDIO_ARM_H_
 
 #include <stddef.h>
 #include "ff.h"
@@ -403,4 +403,4 @@ void referenceModelAudioFiles();
 
 bool isAudioFileReferenced(uint32_t i, char * filename/*at least AUDIO_FILENAME_MAXLEN+1 long*/);
 
-#endif
+#endif // _AUDIO_ARM_H_

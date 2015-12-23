@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef BUZZER_H
-#define BUZZER_H
+#ifndef _BUZZER_H_
+#define _BUZZER_H_
 
 #if defined(BUZZER)
 extern uint8_t g_beepCnt;
@@ -189,4 +189,4 @@ inline void BUZZER_HEARTBEAT()
 #endif // BUZZER
 #endif // CPUARM
 
-#endif
+#endif // _BUZZER_H_

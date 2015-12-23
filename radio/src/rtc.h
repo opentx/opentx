@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef RTC_H
-#define RTC_H
+#ifndef _RTC_H_
+#define _RTC_H_
 
 #include <inttypes.h>
 
@@ -71,4 +71,4 @@ gtime_t gmktime (struct gtm *tm);
 }
 #endif
 
-#endif
+#endif // _RTC_H_

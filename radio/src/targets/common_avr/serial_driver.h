@@ -14,8 +14,8 @@
  *
  */
 
-#ifndef _SERIAL_H_
-#define _SERIAL_H_
+#ifndef _SERIAL_DRIVER_H_
+#define _SERIAL_DRIVER_H_
 
 typedef enum serial_tx_state_ {
 	TX_STATE_EMPTY = 0, //
@@ -56,4 +56,4 @@ extern void SERIAL_send_uart_bytes(uint8_t * buf, uint16_t len);
 void SERIAL_startTX(void);
 #define IS_TX_BUSY (serialTxState!=TX_STATE_EMPTY)
 
-#endif
+#endif // _SERIAL_DRIVER_H_

@@ -53,8 +53,8 @@
  *
  */
 
-#ifndef TEMPLATES_H_
-#define TEMPLATES_H_
+#ifndef _TEMPLATES_H_
+#define _TEMPLATES_H_
 
 #include <inttypes.h>
 
@@ -92,6 +92,6 @@ void clearMixes();
 void clearCurves();
 void applyTemplate(uint8_t idx);
 
-#endif //TEMPLATES_H
+#endif // _TEMPLATES_H_
 
 

@@ -1,5 +1,5 @@
-#ifndef binallocator_h
-#define binallocator_h
+#ifndef _BIN_ALLOCATOR_H_
+#define _BIN_ALLOCATOR_H_
 
 #include "debug.h"
 
@@ -75,4 +75,4 @@ extern BinAllocator_slots2 slots2;
 void *bin_l_alloc (void *ud, void *ptr, size_t osize, size_t nsize);
 #endif   //#if defined(USE_BIN_ALLOCATOR)
 
-#endif //binallocator_h
+#endif // _BIN_ALLOCATOR_H_

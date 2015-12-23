@@ -1,5 +1,5 @@
-#ifndef _HAL_
-#define _HAL_
+#ifndef _HAL_H_
+#define _HAL_H_
 
 // Keys
 #define KEYS_RCC_AHB1Periph_GPIO        (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_GPIOH | RCC_AHB1Periph_GPIOI | RCC_AHB1Periph_GPIOJ)
@@ -249,4 +249,4 @@
 #define TIMER_2MHz_APB1Periph           RCC_APB1Periph_TIM7
 #define TIMER_2MHz_TIMER                TIM7
 
-#endif
+#endif // _HAL_H_

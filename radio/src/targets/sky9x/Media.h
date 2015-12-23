@@ -45,8 +45,8 @@
 ///
 //------------------------------------------------------------------------------
 
-#ifndef MEDIA_H
-#define MEDIA_H
+#ifndef _MEDIA_H_
+#define _MEDIA_H_
 
 //------------------------------------------------------------------------------
 //      Definitions
@@ -284,5 +284,5 @@ static inline void MED_Handler(Media *media)
 
 extern void MED_HandleAll(Media *medias, unsigned char numMedias);
 
-#endif // _MEDIA_H
+#endif // _MEDIA_H_
 

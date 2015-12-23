@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef PULSES_COMMON_H
-#define PULSES_COMMON_H
+#ifndef _PULSES_H_
+#define _PULSES_H_
 
 enum ModuleFlag
 {
@@ -90,4 +90,4 @@ enum ModuleFlag
   #include "pulses_avr.h"
 #endif
 
-#endif
+#endif // _PULSES_H_

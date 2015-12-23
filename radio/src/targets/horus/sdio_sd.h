@@ -27,8 +27,8 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __SDIO_SD_H
-#define __SDIO_SD_H
+#ifndef _SDIO_SD_H_
+#define _SDIO_SD_H_
 
 #include "../horus/board_horus.h"
 
@@ -388,7 +388,7 @@ SD_Error SD_WaitWriteOperation(void);
 
 extern SD_CardInfo SDCardInfo;
 
-#endif /* __STM32F4_DISCOVERY_SDIO_SD_H */
+#endif // _SDIO_SD_H_
 /**
   * @}
   */

@@ -400,4 +400,4 @@ void usbJoystickUpdate(void);
 extern uint8_t currentTrainerMode;
 void checkTrainerSettings(void);
 
-#endif
+#endif // _BOARD_TARANIS_H_

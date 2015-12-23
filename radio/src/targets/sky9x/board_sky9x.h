@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef board_sky9x_h
-#define board_sky9x_h
+#ifndef _BOARD_SKY9X_H_
+#define _BOARD_SKY9X_H_
 
 #include <stdio.h>
 #include "board.h"
@@ -308,4 +308,4 @@ void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size);
 void serial2TelemetryInit(unsigned int protocol);
 bool telemetrySecondPortReceive(uint8_t & data);
 
-#endif
+#endif // _BOARD_SKY9X_H_
