@@ -352,8 +352,8 @@ if(WIN32)
   endif()
 
   set(SYSDIR "$ENV{windir}/system32")
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${COMPANION_NSI_IN_FILE} ${CMAKE_CURRENT_BINARY_DIR}/companion.nsi @ONLY)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${SIMULATOR_NSI_IN_FILE} ${CMAKE_CURRENT_BINARY_DIR}/simulator.nsi @ONLY)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${COMPANION_NSI_IN_FILE} ${PROJECT_BINARY_DIR}/companion/companion.nsi @ONLY)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${SIMULATOR_NSI_IN_FILE} ${PROJECT_BINARY_DIR}/companion/simulator.nsi @ONLY)
 
   find_program(NSIS_EXE makensis.exe PATHS
     "C:/Program Files/NSIS"
@@ -361,21 +361,21 @@ if(WIN32)
     "C:/Programs/NSIS"
     )
 
-  add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/companion-windows.exe
+  add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/companion/companion-windows.exe
     COMMAND "${NSIS_EXE}" ARGS companion.nsi
-    DEPENDS companion simulator opentx-simulators ${PROJECT_BINARY_DIR}/companion.nsi
+    DEPENDS companion simulator opentx-simulators ${PROJECT_BINARY_DIR}/companion/companion.nsi
     COMMENT "Companion Windows NSIS Installer")
 
-  add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/simulator-install.exe
+  add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/companion/simulator-install.exe
     COMMAND "${NSIS_EXE}" ARGS simulator.nsi
-    DEPENDS simulator opentx-simulators ${PROJECT_BINARY_DIR}/simulator.nsi
+    DEPENDS simulator opentx-simulators ${PROJECT_BINARY_DIR}/companion/simulator.nsi
     COMMENT "Simulator Windows NSIS Installer")
 
   add_custom_target(installer
-    DEPENDS ${PROJECT_BINARY_DIR}/companion-windows.exe
-    DEPENDS ${PROJECT_BINARY_DIR}/simulator-windows.exe
-    SOURCES ${PROJECT_BINARY_DIR}/companion.nsi
-    SOURCES ${PROJECT_BINARY_DIR}/simulator.nsi
+    DEPENDS ${PROJECT_BINARY_DIR}/companion/companion-windows.exe
+    DEPENDS ${PROJECT_BINARY_DIR}/companion/simulator-windows.exe
+    SOURCES ${PROJECT_BINARY_DIR}/companion/companion.nsi
+    SOURCES ${PROJECT_BINARY_DIR}/companion/simulator.nsi
     )
 endif()
 

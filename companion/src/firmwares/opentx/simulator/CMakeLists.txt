@@ -9,19 +9,19 @@ set(OPENTX_SRC_FILES
   )
 
 include_directories(
+  ${CMAKE_BINARY_DIR}/radio/src
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${RADIO_BIN_DIRECTORY}
   ${PROJECT_SOURCE_DIR}
   ${COMPANION_SRC_DIRECTORY}/firmwares/opentx
   ${RADIO_SRC_DIRECTORY}
   ${RADIO_SRC_DIRECTORY}/fonts/std
-  ${RADIO_BIN_DIRECTORY}
   ${RADIO_SRC_DIRECTORY}/lua/src
   ${RADIO_SRC_DIRECTORY}/thirdparty
   ${RADIO_SRC_DIRECTORY}/thirdparty/FatFs
   ${RADIO_SRC_DIRECTORY}/thirdparty/FatFs/option
   ${RADIO_SRC_DIRECTORY}/thirdparty/CoOS
   ${RADIO_SRC_DIRECTORY}/thirdparty/Lua/src
-  ${CMAKE_BINARY_DIR}/radio/src
 )
 
 if(APPLE)
