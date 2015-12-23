@@ -204,6 +204,7 @@ uint32_t readTrims(void);
 #define DBLKEYS_PRESSED_UP_DWN(in)  ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
 #define DBLKEYS_PRESSED_RGT_UP(in)  ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
 #define DBLKEYS_PRESSED_LFT_DWN(in) ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
+extern int32_t rotencValue;
 void checkRotaryEncoder(void);
 
 // WDT driver
@@ -235,7 +236,7 @@ enum Analogs {
   MOUSE2,
   NUMBER_ANALOG
 };
-
+extern uint16_t adcValues[NUMBER_ANALOG];
 void adcInit(void);
 void adcRead(void);
 uint16_t getAnalogValue(uint32_t value);
