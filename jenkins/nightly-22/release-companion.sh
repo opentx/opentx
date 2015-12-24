@@ -20,9 +20,9 @@ make clean
 
 # create companion rpm
 rm -rf $DIR/companion-build/
-mkdir -p $DIR/companion-build/
-cd $DIR/companion-build/
-cmake ../opentx/companion/src
+mkdir -p $_
+cd $_
+cmake ../opentx
 make package
 cp ./companion${version}-${release}${OPENTX_VERSION_SUFFIX}-i686.rpm ${DESTDIR}
 
